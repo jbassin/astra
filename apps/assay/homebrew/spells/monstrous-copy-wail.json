@@ -2,9 +2,6 @@
   "_id": "hb4b6c4971fec163",
   "flags": {
     "assay": {
-      "adapterWarnings": [
-        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
-      ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
         "convertedName": "Monstrous Copy: Wail",
@@ -32,7 +29,7 @@
           "damage"
         ],
         "materials": [],
-        "type": "sonic"
+        "type": "mental"
       }
     },
     "defense": {
@@ -42,19 +39,13 @@
       }
     },
     "description": {
-      "value": "<p>You draw upon your knowledge of the Banshee, reshaping your vocal cords into a monstrous approximation of its spectral wail. You unleash a bone-chilling keening cry that pierces the mind of all who hear it. Each creature in the area must attempt a Fortitude saving throw, taking 8d8 sonic damage on a failure. A creature that is @UUID[Compendium.pf2e.conditionitems.Item.Deafened]{Deafened} is immune to this spell.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage and is @UUID[Compendium.pf2e.conditionitems.Item.Stupefied]{Stupefied 2} for 1 minute.</p><p><strong>Critical Failure</strong> The creature takes double damage, is @UUID[Compendium.pf2e.conditionitems.Item.Stupefied]{Stupefied 4} for 1 minute, and is @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} for 1 minute. The creature can attempt a DC 15 flat check at the end of each of its turns to recover from the @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} condition.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 2d8.</p>"
+      "value": "<p>You draw upon your knowledge of the Banshee, reshaping your vocal cords into a monstrous approximation of its spectral wail. You unleash a bone-chilling keening cry that pierces the mind of all who hear it. Each creature in the area must attempt a Fortitude saving throw, taking 8d8 mental damage on a failure.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage and is @UUID[Compendium.pf2e.conditionitems.Item.Stupefied]{Stupefied 2}.</p><p><strong>Critical Failure</strong> The creature takes double damage and is @UUID[Compendium.pf2e.conditionitems.Item.Stupefied]{Stupefied 3}.</p>"
     },
     "duration": {
       "sustained": false,
       "value": ""
     },
-    "heightening": {
-      "damage": {
-        "0": "2d8"
-      },
-      "interval": 1,
-      "type": "interval"
-    },
+    "heightening": null,
     "level": {
       "value": 6
     },
@@ -87,8 +78,7 @@
         "manipulate",
         "mental",
         "morph",
-        "sleep",
-        "sonic"
+        "sleep"
       ]
     }
   },

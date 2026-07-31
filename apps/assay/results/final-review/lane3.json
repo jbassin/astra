@@ -1,0 +1,555 @@
+[
+  {
+    "slug": "monstrous-copy-claws",
+    "comments": [
+      {
+        "id": "67a01a20-cb12-4bc2-928d-0647a9b3b521",
+        "action": "applied",
+        "detail": "replaced '10 higher' with the official 'one degree of success better' idiom (confirmed in codex corpus)"
+      },
+      {
+        "id": "fd80bf7d-37e1-481d-ac91-13811690a0bb",
+        "action": "applied",
+        "detail": "collapsed the 7th/8th/9th fixed damage ladder to a single Heightened (+1) 1d12 line, matching the acupuncture.json interval exemplar"
+      }
+    ],
+    "lockstep": [
+      "heightening: fixed levels {7,8,9} -> interval {damage:{0:'1d12'}, interval:1}",
+      "flags.assay.adapterWarnings: removed stale heightening warning"
+    ],
+    "notes": ""
+  },
+  {
+    "slug": "monstrous-copy-shell",
+    "comments": [
+      {
+        "id": "9bf6203b-c37b-4dde-b510-cbd91d357984",
+        "action": "applied",
+        "detail": "bolded 'Deflecting Shell' and switched '(reaction)' to the store's '[reaction]' bracket convention, matching mark-of-protection/left-hand-of-judgment; also bolded Frequency/Trigger/Effect labels"
+      },
+      {
+        "id": "21112625-becd-4cb2-8b4c-580d724c0f00",
+        "action": "applied",
+        "detail": "deleted 'or a line spell would pass through your space' from the trigger"
+      },
+      {
+        "id": "4c5930ae-df5f-4b23-a5b6-4335b9bc2dfd",
+        "action": "applied",
+        "detail": "removed the AC/resistance bullets, leaving only the Deflecting Shell reaction grant; converted the now-single-item list to prose"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "monstrous-copy-stinger",
+    "comments": [
+      {
+        "id": "d1a5f07d-81b1-4d4d-a804-ea08a1cf509c",
+        "action": "applied",
+        "detail": "deleted the Heightened (+1) line and trailing <hr />"
+      }
+    ],
+    "lockstep": ["heightening: interval{damage:{1:'2d10'}} -> null"],
+    "notes": ""
+  },
+  {
+    "slug": "monstrous-copy-tail",
+    "comments": [
+      {
+        "id": "fe71bbd0-fab8-4c59-baac-2630933e6f4d",
+        "action": "applied",
+        "detail": "reformatted the plain-text/<br />-separated degree-of-success block into bolded per-line <p> paragraphs matching store convention"
+      },
+      {
+        "id": "2e6bb08d-8ac2-4418-b205-cf7a2e3c2032",
+        "action": "applied",
+        "detail": "deleted both Heightened lines and the <hr />"
+      }
+    ],
+    "lockstep": ["heightening: fixed levels {8,9} -> null"],
+    "notes": ""
+  },
+  {
+    "slug": "monstrous-copy-tentacle",
+    "comments": [
+      {
+        "id": "0d9be829-7be4-4411-926e-49eebbbd531a",
+        "action": "applied",
+        "detail": "reformatted the degree-of-success block into bolded per-line <p> paragraphs"
+      },
+      {
+        "id": "4f6780f4-5593-4e93-831f-4bc52b2c3f0f",
+        "action": "applied",
+        "detail": "deleted the 6th/7th Heightened lines verbatim, left 8th/9th untouched per the literal remove span"
+      }
+    ],
+    "lockstep": ["heightening.levels: removed keys '6' and '7', kept '8' and '9'"],
+    "notes": "removal left an unusual heighten gap (base 5, next tier 8th) since only 6th/7th were quoted for removal; flagging in case that's a store-level call rather than a text edit"
+  },
+  {
+    "slug": "monstrous-copy-wail",
+    "comments": [
+      {
+        "id": "a1e59a84-9074-4f8e-b8cd-04413c0572ea",
+        "action": "amended",
+        "detail": "'sonic' removal read as a damage-type fix given the 5e original dealt psychic damage and the spell already carries the mental trait: changed damage type sonic->mental throughout (prose, damage.type field, traits list)"
+      },
+      {
+        "id": "66431fa4-60cd-4c01-b9cc-18e5083f99b0",
+        "action": "applied",
+        "detail": "deleted the Deafened-immunity sentence (no longer applicable once damage type is mental, not sonic)"
+      },
+      {
+        "id": "31844cb9-0bcf-4ae6-8200-e940fa48dd92",
+        "action": "applied",
+        "detail": "dropped 'for 1 minute' from the Failure tier's Stupefied 2 (condition applies without an artificial duration cap)"
+      },
+      {
+        "id": "603506bd-219f-426e-8f44-243350afd94a",
+        "action": "applied",
+        "detail": "replaced the Critical Failure tier's Stupefied 4/Unconscious/flat-check block with a plain Stupefied 3"
+      },
+      {
+        "id": "80403183-888a-4e4e-944d-4a80c53337a3",
+        "action": "applied",
+        "detail": "deleted the Heightened (+1) line and <hr />"
+      }
+    ],
+    "lockstep": [
+      "damage.0.type: sonic -> mental",
+      "traits.value: removed 'sonic'",
+      "heightening: interval{damage:{0:'2d8'}} -> null",
+      "flags.assay.adapterWarnings: removed stale heightening warning"
+    ],
+    "notes": "the sonic->mental swap was inferred from the 5e original (psychic damage) plus the pre-existing mental trait, since the quote itself carried no replacement note; flagging for confirmation"
+  },
+  {
+    "slug": "move-the-cosmic-wheel",
+    "comments": [
+      {
+        "id": "c62f2500-7c0e-41e4-823d-cc0f84c691ef",
+        "action": "amended",
+        "detail": "replaced every occurrence of 'plane'/'planes' with 'world'/'worlds' in the description (terse note applied set-wide across the spell rather than a single instance, since the concept recurs 12 times)"
+      },
+      {
+        "id": "1cb124df-3e91-4564-8e27-a9c327ebf28f",
+        "action": "applied",
+        "detail": "switched the save from Will to Reflex; reworded so arriving creatures never roll a save, only have a 10% GM-determined presence chance"
+      },
+      {
+        "id": "fdeb76ed-77f5-42d3-9d32-a64dcf58df3f",
+        "action": "applied",
+        "detail": "deleted the Critical Success degree line"
+      }
+    ],
+    "lockstep": ["defense.save.statistic: will -> reflex"],
+    "notes": ""
+  },
+  {
+    "slug": "nightfall",
+    "comments": [
+      {
+        "id": "5d541155-a5c3-4ac3-a21d-bc8f1db6ee81",
+        "action": "applied",
+        "detail": "changed 'the sun quickly sets' to 'the suns quickly set' (plural, two-sun setting)"
+      },
+      {
+        "id": "ab0d77da-7874-451c-b65b-496cd279a1bf",
+        "action": "amended",
+        "detail": "dropped 'and the moon rises' (no moon in this setting) rather than inserting a literal duplicate 'stars appear' next to the existing 'stars emerge' a few words earlier; reworded the clause to avoid repeating 'stars' twice in one sentence"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "oblivion",
+    "comments": [
+      {
+        "id": "a6536b11-cd7d-4797-959c-9003d9eb277f",
+        "action": "applied",
+        "detail": "changed 'take 10 void damage' to 'take an additional 10 void damage'"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "oddly-satisfying",
+    "comments": [
+      {
+        "id": "d3837948-5a60-4f4f-b9d3-9baab484d994",
+        "action": "amended",
+        "detail": "changed the Failure tier's per-turn save timing from 'start' to 'end' of turn; also reworded the now-redundant Critical Failure differentiation clause ('at the end instead of the start') to just require succeeding twice, since both tiers now save at turn end"
+      },
+      {
+        "id": "62aefb78-b763-40a8-b757-1a861ae3fd7c",
+        "action": "applied",
+        "detail": "deleted the Heightened (7th) line and <hr />"
+      }
+    ],
+    "lockstep": ["heightening: fixed levels {7} -> null"],
+    "notes": "amended beyond the literal single-word swap to keep the Failure/Critical-Failure timing distinct once both use 'end of turn'; flagging for review"
+  },
+  {
+    "slug": "outside-of-time",
+    "comments": [
+      {
+        "id": "6d508052-dacc-470b-8cc4-6492e8f5920a",
+        "action": "applied",
+        "detail": "deleted ', including by divination magic' from the immunity-to-perception sentence"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "overhaul",
+    "comments": [
+      {
+        "id": "0b82cd0f-79fa-4db0-8411-ee2c098b75fe",
+        "action": "skipped",
+        "detail": "rhetorical question, not an edit instruction — system.ritual already defines primary (Arcana/Occultism expert) and secondary (1 caster, Medicine) fields, matching the store's other rituals (hellforging, worldweaver) which also don't narrate secondary casters in prose"
+      }
+    ],
+    "lockstep": [],
+    "notes": "flagging: this comment reads as a verification question already satisfied by existing structured fields, not a text change — orchestrator may want to double check nothing else was intended"
+  },
+  {
+    "slug": "pendulum",
+    "comments": [
+      {
+        "id": "f6235809-6dce-4ea7-a364-f687eb597420",
+        "action": "applied",
+        "detail": "deleted the Heightened (+2) line and <hr />"
+      }
+    ],
+    "lockstep": ["heightening: interval{damage:{},interval:2} -> null"],
+    "notes": ""
+  },
+  {
+    "slug": "planar-shield",
+    "comments": [
+      {
+        "id": "2ee10615-5ea2-42b3-91ee-7cd82846bad1",
+        "action": "applied",
+        "detail": "changed '(reaction)' to '[reaction]' bracket convention matching the rest of the store"
+      },
+      {
+        "id": "a3bc80dc-b5b0-421f-9d2a-b9f637c874bb",
+        "action": "applied",
+        "detail": "changed damage type vitality -> fire in prose, damage field, and traits list (BRIEF rule 5 exemplar)"
+      }
+    ],
+    "lockstep": ["damage.0.type: vitality -> fire", "traits.value: 'vitality' -> 'fire'"],
+    "notes": ""
+  },
+  {
+    "slug": "poisoned-backflow",
+    "comments": [
+      {
+        "id": "e5f7e840-c641-47cc-b24f-9492de5d9cd6",
+        "action": "applied",
+        "detail": "deleted the Heightened (5th) Aid-action line"
+      },
+      {
+        "id": "26c8fa34-ec10-4496-b891-d4d281505739",
+        "action": "applied",
+        "detail": "deleted the Heightened (+1) void-damage line and <hr />"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "propagating-blast",
+    "comments": [
+      {
+        "id": "75a43817-6630-46ae-8cd8-98d0cae8c161",
+        "action": "applied",
+        "detail": "rewrote the trigger sentence per her note (reflex save vs spell DC; only the first failing creature in the line takes weapon-Strike damage plus 2d8), damage type kept as force per the orchestrator retraction annotation"
+      },
+      {
+        "id": "ddbc4600-68de-46f7-883f-a0c9b9e731b2",
+        "action": "applied",
+        "detail": "deleted the old 4-tier basic-save degree block, superseded by the single pass/fail sentence"
+      }
+    ],
+    "lockstep": ["defense.save.basic: true -> false (no longer a basic/degree-scaled save)"],
+    "notes": ""
+  },
+  {
+    "slug": "raise-island",
+    "comments": [
+      {
+        "id": "0ffaa2b7-4248-4cfc-b5e4-34217bdc6bdd",
+        "action": "applied",
+        "detail": "deleted 'or from beneath a body of water'"
+      },
+      {
+        "id": "694b5d42-fd6c-46ad-bd2d-53969520d0d1",
+        "action": "applied",
+        "detail": "replaced the fixed 'DC 25 Reflex save' with 'Reflex save against your spell DC' (system.defense already used the reflex statistic)"
+      }
+    ],
+    "lockstep": [],
+    "notes": "also applied BRIEF round rule 2 (set-wide activity rewording) to this spell even though it had no comment for it: converted 'As a 2-action activity (concentrate, manipulate) you can issue a movement command' into a named [two-actions] action block ('Command Slab'), mirroring the store's existing [reaction] convention since no closer official exemplar for a permanent-duration movable structure was found in the codex corpus (Spiritual Weapon/Animate Rope/Telekinetic Haul all use Sustain instead, which doesn't fit this spell's permanent duration) — flagging this self-initiated change for review"
+  },
+  {
+    "slug": "rearrange-fate",
+    "comments": [
+      {
+        "id": "918d3e6e-9e4c-4b17-8cd9-46d402284739",
+        "action": "applied",
+        "detail": "deleted the Heightened (+1) line and <hr />"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "reduce-resistivity",
+    "comments": [
+      {
+        "id": "07404034-5324-4313-8d7b-58546ddf84cf",
+        "action": "applied",
+        "detail": "deleted the resistance-reduction sentence from the Failure tier"
+      },
+      {
+        "id": "bda8a51b-eab7-44ff-aec0-7a9a08542ee9",
+        "action": "applied",
+        "detail": "changed the Failure tier's status penalty from -2 to -1"
+      },
+      {
+        "id": "c5989cf3-a28e-481c-8dfa-da97b49a4444",
+        "action": "applied",
+        "detail": "changed the Critical Failure tier's penalty from -3 to -2"
+      },
+      {
+        "id": "4ceedfe1-38fb-42ea-af2a-5cb1e91f7e6a",
+        "action": "applied",
+        "detail": "deleted the all-resistances-reduced clause from Critical Failure"
+      },
+      {
+        "id": "44f68c34-8e1d-459f-90c6-0cf5e68ec161",
+        "action": "applied",
+        "detail": "deleted the Heightened (+2) line and <hr />"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "reflective-defense",
+    "comments": [
+      {
+        "id": "d1c389e5-ce3d-4fb1-8e48-f47523243717",
+        "action": "applied",
+        "detail": "replaced the invented opening flavor line with a translation of the 5e original's 'As luck would have it, all magic just happens to bounce off you' (vendor/run_balance source checked)"
+      },
+      {
+        "id": "bc60a126-ffa3-4e96-b97e-8da5273a19d0",
+        "action": "amended",
+        "detail": "removed only the erroneous second 'to 0' ('amount reduced to 0 to the source' -> 'amount reduced to the source'), kept the first (grammatically required: 'damage that you reduce to 0')"
+      },
+      {
+        "id": "53ba36b0-9844-4f1f-9a2c-61749ef3ee47",
+        "action": "applied",
+        "detail": "deleted 'if the source is a creature, it takes this force damage with no save'"
+      },
+      {
+        "id": "2a7638f7-0231-45ff-9ec9-9cd8f190c7fe",
+        "action": "applied",
+        "detail": "deleted the Heightened (9th) line and <hr />"
+      }
+    ],
+    "lockstep": ["heightening: fixed levels {9} -> null"],
+    "notes": "the 'to 0' quote matched two spots; applied only to the erroneous second instance where 'to 0' didn't grammatically belong, per BRIEF's quote-staleness/intent guidance — flagging for confirmation"
+  },
+  {
+    "slug": "repetitious-trauma",
+    "comments": [
+      {
+        "id": "9eb760e0-a7e3-4809-ad6a-103c787d2238",
+        "action": "applied",
+        "detail": "split the single 8d6-on-cast-and-sustain sentence into two: 8d6 on the cast round, 6d6 on each Sustain round"
+      }
+    ],
+    "lockstep": [
+      "flags.assay.adapterWarnings: added a note that the structured damage field (8d6) only reflects the cast-round formula, not the differing 6d6 sustain-round amount"
+    ],
+    "notes": ""
+  },
+  {
+    "slug": "reposition",
+    "comments": [
+      {
+        "id": "a04c9216-7a87-4cb6-9e90-b3ab76d126c4",
+        "action": "applied",
+        "detail": "deleted 'you can see within range' from the target clause"
+      },
+      {
+        "id": "8095a4d3-bcb0-4aa5-8dd2-2bc3e6053647",
+        "action": "applied",
+        "detail": "deleted the willing-ally-no-save sentence"
+      },
+      {
+        "id": "7c650079-ab56-4457-942d-59766b24d3e3",
+        "action": "applied",
+        "detail": "replaced the +10-feet-distance Heightened line with a +2/target-count version ('Heightened (+2) You can target 1 additional creature'), matching the official idiom found in codex corpus"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "reset",
+    "comments": [
+      {
+        "id": "af3953b0-643e-47b1-9c35-3944f10b5431",
+        "action": "applied",
+        "detail": "deleted the '(this is a fortune effect)' parenthetical"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "retributive-force",
+    "comments": [
+      {
+        "id": "d4279fee-b189-43a3-9638-344dc2cad963",
+        "action": "applied",
+        "detail": "deleted the early-Prone-recovery-save sentence"
+      },
+      {
+        "id": "a626d384-a82a-4c6a-9b23-e45ee159e9f2",
+        "action": "applied",
+        "detail": "deleted the launch-distance-increase clause from the Heightened line, leaving only the damage increase"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "return-spell",
+    "comments": [
+      {
+        "id": "66c0b8e7-be1b-4c3e-923e-30b4e7519277",
+        "action": "applied",
+        "detail": "rewrote the rebound mechanic to match the 5e original (vendor/run_balance checked): success on either party's save rebounds the spell again to the other party, continuing until a failure resolves it or six total saves are made"
+      },
+      {
+        "id": "057c671b-c0a2-4962-8d67-60fea925370d",
+        "action": "applied",
+        "detail": "superseded by the comment-1 rewrite (the 'both parties have already made one save' sentence doesn't appear in the new text)"
+      },
+      {
+        "id": "f2db38fc-9272-490b-89f0-b58c0d6467ff",
+        "action": "applied",
+        "detail": "deleted the once-per-round reaction restriction"
+      },
+      {
+        "id": "694b0fb3-b1ce-47d4-baeb-cf93af82b6e8",
+        "action": "applied",
+        "detail": "deleted the Heightened (9th) line and <hr />"
+      }
+    ],
+    "lockstep": ["heightening: fixed levels {9} -> null"],
+    "notes": ""
+  },
+  {
+    "slug": "revisit",
+    "comments": [
+      {
+        "id": "964a068a-56e6-460b-8aab-ad8698de8153",
+        "action": "applied",
+        "detail": "deleted the running/falling/equipment enumeration sentence"
+      },
+      {
+        "id": "5f51c023-4edb-47e7-a137-db958dfa13c2",
+        "action": "applied",
+        "detail": "changed the base revisit window from 10 minutes to 1 hour"
+      },
+      {
+        "id": "26ebc26a-edc7-4f1a-865c-d4c069d5fb95",
+        "action": "applied",
+        "detail": "replaced the fixed 7th-rank 'within the last hour + 2 creatures' line with a Heightened (+1) '1 additional willing creature' scaling line, since the hour window moved to the base text"
+      }
+    ],
+    "lockstep": ["heightening: fixed levels {7} -> interval {damage:{}, interval:1}"],
+    "notes": ""
+  },
+  {
+    "slug": "rewind-and-playback",
+    "comments": [
+      {
+        "id": "e131915c-0e07-44f5-b6f6-15e7099c6d33",
+        "action": "applied",
+        "detail": "deleted 'up to 3d8+24' from the healing-amount sentence"
+      },
+      {
+        "id": "a24456f1-45ce-4abd-a57d-f1e07bcc0f0a",
+        "action": "applied",
+        "detail": "deleted the 'since you're absorbing it directly, but it can be healed normally afterward' clause"
+      },
+      {
+        "id": "ffea5d8a-af84-46b8-a7b0-b701fbdee069",
+        "action": "applied",
+        "detail": "deleted the Heightened (+1) line and <hr />"
+      }
+    ],
+    "lockstep": ["heightening: interval{damage:{},interval:1} -> null"],
+    "notes": "removing the '3d8+24' cap leaves the healing amount uncapped with no replacement figure supplied — this reads like a balance-affecting store-level call rather than a pure text trim; flagging for orchestrator confirmation"
+  },
+  {
+    "slug": "right-hand-of-judgment",
+    "comments": [
+      {
+        "id": "476ee88b-8889-4745-9c14-7cfca0080fd0",
+        "action": "applied",
+        "detail": "deleted both Heightened lines (6th, 8th) and the <hr />"
+      }
+    ],
+    "lockstep": ["heightening: fixed levels {6,8} -> null"],
+    "notes": ""
+  },
+  {
+    "slug": "sapping-lightning",
+    "comments": [
+      {
+        "id": "9195c1ef-3744-4188-9ef6-2ae3a482a62c",
+        "action": "applied",
+        "detail": "deleted the spell-slot-suppression sentence from the intro paragraph"
+      },
+      {
+        "id": "fdb201ff-38f2-4056-a775-5139cb42f3a1",
+        "action": "applied",
+        "detail": "removed 'basic Reflex save' from the intro, folded into the reworded save sentence (see next comment)"
+      },
+      {
+        "id": "6d0b517c-f714-44b8-b370-e9f1fc26a3bc",
+        "action": "applied",
+        "detail": "deleted 'and its spellcasting is not suppressed' from the Success tier"
+      },
+      {
+        "id": "0cc67270-6cc9-45f9-9b19-e09b43e79ba4",
+        "action": "applied",
+        "detail": "reworded the intro sentence to 'Each creature in the line must attempt a Reflex save against 9d12 electricity damage'"
+      },
+      {
+        "id": "abd038ce-9b6f-441a-9ac5-6a131e37c658",
+        "action": "applied",
+        "detail": "changed the Failure tier's slot effect from 'suppressed until the end of its next turn' to 'lost'"
+      },
+      {
+        "id": "a72274c9-a3c6-4dab-be8f-7d59d72aac42",
+        "action": "applied",
+        "detail": "replaced the Critical Failure line with 'As failure, but double damage'"
+      }
+    ],
+    "lockstep": [],
+    "notes": "defense.save.basic stayed true (unchanged) — the degree-of-success shape (unaffected/half/full/double) is still a basic save even though the word 'basic' was dropped from prose per her comment"
+  }
+]

@@ -28,19 +28,13 @@
       }
     },
     "description": {
-      "value": "<p>You translate a sliver of a creature's soul into readable text, inscribing it into a magical Compendium of Statistics and Secrets that you conjure on the first casting. The Compendium materializes as a small, floating tome visible only to you; it persists indefinitely but contains no information until you cast this spell. The Compendium is a purely mental construct; it is destroyed if you die or prepare new spells. On subsequent castings you choose one of two modes.</p><p>Statistics Mode: You learn one of the following about the target: its creature type, one damage resistance or immunity, one damage weakness, its highest or lowest saving throw modifier (your choice), or the approximate level of its greatest or weakest ability score. The result is recorded in the Compendium under the creature's entry.</p><p>Secrets Mode: The target's Compendium entry gains a one-word descriptor of its current mood, which updates on its own while the creature is within 60 feet of you. The target must attempt a Will saving throw. Regardless of the outcome, you cannot target the same creature in Secrets Mode again for 24 hours.</p><p><strong>Success</strong> The target is unaffected and immediately knows you attempted to read its mind.</p><p><strong>Failure</strong> You learn one secret, a single yes-or-no answer, from the target's psyche, recorded in the Compendium. The target does not know the question was asked.</p><p><strong>Critical Failure</strong> You learn two secrets, each a yes-or-no answer, from the target's psyche, recorded in the Compendium. The target does not know the questions were asked.</p><hr /><p><strong>Heightened (4th)</strong> In Secrets Mode you may ask open-ended questions; the target answers truthfully to the best of its knowledge. In Statistics Mode you learn two statistics per casting instead of one.</p><p><strong>Heightened (6th)</strong> In Secrets Mode you may ask up to three open-ended questions. You may also cast the spell in Statistics Mode and Secrets Mode simultaneously in the same action, using only one casting.</p>"
+      "value": "<p>You translate a sliver of a creature's soul into readable text, inscribing it into a magical Compendium of Statistics and Secrets that you conjure on the first casting. The Compendium materializes as a small, floating tome visible only to you; it persists indefinitely but contains no information until you cast this spell. The Compendium is a purely mental construct; it is destroyed if you die or prepare new spells. On subsequent castings you choose one of two modes.</p><p>Statistics Mode: You learn one of the following about the target: its creature type, one damage resistance or immunity, one damage weakness, its highest or lowest saving throw modifier (your choice), or the approximate level of its greatest or weakest ability score. The result is recorded in the Compendium under the creature's entry.</p><p>Secrets Mode: The target's Compendium entry gains a one-word descriptor of its current mood, which updates on its own while the creature is within 60 feet of you. The target must attempt a Will saving throw. Regardless of the outcome, you cannot target the same creature in Secrets Mode again for 24 hours.</p><p><strong>Success</strong> The target is unaffected and immediately knows you attempted to read its mind.</p><p><strong>Failure</strong> You learn one secret, a single yes-or-no answer, from the target's psyche, recorded in the Compendium. The target does not know the question was asked.</p><p><strong>Critical Failure</strong> You learn two secrets, each a yes-or-no answer, from the target's psyche, recorded in the Compendium. The target does not know the questions were asked.</p>"
     },
     "duration": {
       "sustained": false,
       "value": ""
     },
-    "heightening": {
-      "levels": {
-        "4": {},
-        "6": {}
-      },
-      "type": "fixed"
-    },
+    "heightening": null,
     "level": {
       "value": 2
     },

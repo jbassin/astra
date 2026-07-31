@@ -17,23 +17,17 @@
   "system": {
     "area": null,
     "cost": {
-      "value": "a silken cocoon, which is consumed"
+      "value": ""
     },
     "counteraction": false,
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You dramatically accelerate the flow of time around a willing creature, allowing it to compress an 8-hour long rest into a single hour. The target is wrapped in a thick, iridescent cocoon and does not need to eat or drink during this time. At the end of the hour, the target emerges as if it had just completed a full 8-hour rest.</p><p>While within the cocoon, the target is completely cut off from external stimuli; it cannot perceive the outside world, cannot take actions, cannot speak or be spoken to, and is not aware of what happens outside. The cocoon is fragile: it has AC 10, Hardness 5, and 20 HP. If the cocoon is destroyed, the spell ends immediately and the target emerges @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 2} until the end of its next turn, without having gained the benefits of the rest.</p><hr /><p><strong>Heightened (8th)</strong> The cocoon's HP increases to 40 and its Hardness increases to 10, and the cocoon is visually imperceptible; a creature must succeed at a DC 30 Perception check to notice it.</p>"
+      "value": "<p>You dramatically accelerate the flow of time around a willing creature, allowing it to compress an 8-hour long rest into a single hour. The target is wrapped in a thick, iridescent cocoon and does not need to eat or drink during this time. At the end of the hour, the target emerges as if it had just completed a full 8-hour rest.</p><p>While within the cocoon, the target is completely cut off from outside stimuli. The cocoon is fragile: it has AC 10, Hardness 5, and 20 HP. If the cocoon is destroyed, the spell ends immediately and the target emerges @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 2}, without having gained the benefits of the rest.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "1 hour"
-    },
-    "heightening": {
-      "levels": {
-        "8": {}
-      },
-      "type": "fixed"
     },
     "level": {
       "value": 6

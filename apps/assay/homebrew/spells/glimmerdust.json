@@ -31,18 +31,13 @@
       }
     },
     "description": {
-      "value": "<p>You hurl a cloud of tiny golden shards from the luminous spaces between planes in a 30-foot cone, covering all creatures and objects in the area with a persistent glittering coat.</p><p>A creature that starts its turn in the area, or that moves into the area, must attempt a Fortitude save against the results below. Coated creatures and objects cannot benefit from the invisible condition or similar concealment tied to their visibility. They shed light equivalent to a candle and are always visible, even if they would otherwise be @UUID[Compendium.pf2e.conditionitems.Item.Undetected]{Undetected}. Attack rolls against coated creatures and objects do not suffer the miss chance from concealment due to invisibility or magical darkness.</p><p>Additionally, when a creature is first coated (when it fails its Fortitude save), it may be @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded}:</p><p><strong>Critical Success</strong> The glitter fails to coat the creature; it is completely unaffected.</p><p><strong>Success</strong> The creature is coated with glitter and cannot benefit from the invisible condition or concealment from invisibility or magical darkness, but is not blinded.</p><p><strong>Failure</strong> The creature is coated and is @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} for 1 minute. The creature attempts a Fortitude save at the end of each turn; on a success, the @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} condition ends (but the coating persists).</p><p><strong>Critical Failure</strong> As failure, and the creature cannot attempt saves to end the @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} condition for the first 3 rounds.</p><hr /><p><strong>Heightened (+2)</strong> The cone increases by 15 feet.</p>"
+      "value": "<p>You hurl a cloud of tiny golden shards from the luminous spaces between planes in a 30-foot cone, covering all creatures and objects in the area with a persistent glittering coat.</p><p>A creature that starts its turn in the area, or that moves into the area, must attempt a Fortitude save against the results below. Coated creatures and objects cannot benefit from the invisible condition or similar concealment tied to their visibility. They shed light equivalent to a candle and are always visible, even if they would otherwise be @UUID[Compendium.pf2e.conditionitems.Item.Undetected]{Undetected}. Attack rolls against coated creatures and objects do not suffer the miss chance from concealment due to invisibility or magical darkness.</p><p>Additionally, when a creature is first coated, it may be dazzled or blinded:</p><p><strong>Critical Success</strong> The glitter fails to coat the creature; it is completely unaffected.</p><p><strong>Success</strong> The creature is coated with glitter and cannot benefit from the invisible condition or concealment from invisibility or magical darkness, but is not dazzled.</p><p><strong>Failure</strong> The creature is coated and is @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} for 1 minute. The creature attempts a Fortitude save at the end of each turn; on a success, the @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} condition ends (but the coating persists).</p><p><strong>Critical Failure</strong> As failure, but the creature is @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} instead of @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled}.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "1 minute"
     },
-    "heightening": {
-      "area": 15,
-      "damage": {},
-      "interval": 2,
-      "type": "interval"
-    },
+    "heightening": null,
     "level": {
       "value": 3
     },

@@ -23,19 +23,13 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You draw upon the collective's memory of polymorphing to refine your current form. You must be polymorphed to Cast this Spell; if you are not, the spell fails with no effect. You increase the protection of your current form, but decrease its speed. For the duration, you gain a +2 circumstance bonus to AC in your current form, but your Speed is reduced to 15 feet for all movement types.</p><hr /><p><strong>Heightened (5th)</strong> The circumstance bonus to AC increases to +3, and your Speed penalty is lessened: your Speed is reduced by 10 feet rather than being set to 15 feet.</p><p><strong>Heightened (7th)</strong> The circumstance bonus to AC increases to +4. The Speed penalty is reduced by a further 5 feet (total: Speed reduced by 5 feet).</p>"
+      "value": "<p>You draw upon the collective's memory of polymorphing to refine your current form. You must be polymorphed to Cast this Spell. You increase the protection of your current form, but decrease its speed. For the duration, you gain a +2 circumstance bonus to AC in your current form, but your Speed is reduced to 15 feet for all movement types.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "until your polymorph effect ends"
     },
-    "heightening": {
-      "levels": {
-        "5": {},
-        "7": {}
-      },
-      "type": "fixed"
-    },
+    "heightening": {},
     "level": {
       "value": 3
     },

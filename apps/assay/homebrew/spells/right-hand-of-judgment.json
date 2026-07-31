@@ -23,19 +23,13 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You channel kosmoturgy through your right hand, siphoning the kinetic force of incoming blows and storing it as a cosmic charge that you can spend to devastate your enemies. For the duration, once per round when a creature's attack roll against you fails, you gain 1 charge. You can hold a maximum of 3 charges at one time. Charges dissipate when the spell ends. When you successfully make a Strike, before you roll damage you may expend 1 charge to grant that Strike's damage roll a fortune effect: you roll the damage dice twice and take the higher result.</p><hr /><p><strong>Heightened (6th)</strong> You can hold up to 5 charges, and you also gain 1 charge the first time each round that you successfully hit a creature with a Strike.</p><p><strong>Heightened (8th)</strong> Expending a charge on a Strike also increases the Strike's damage by a number equal to your spellcasting ability modifier.</p>"
+      "value": "<p>You channel kosmoturgy through your right hand, siphoning the kinetic force of incoming blows and storing it as a cosmic charge that you can spend to devastate your enemies. For the duration, once per round when a creature's attack roll against you fails, you gain 1 charge. You can hold a maximum of 3 charges at one time. Charges dissipate when the spell ends. When you successfully make a Strike, before you roll damage you may expend 1 charge to grant that Strike's damage roll a fortune effect: you roll the damage dice twice and take the higher result.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "1 minute"
     },
-    "heightening": {
-      "levels": {
-        "6": {},
-        "8": {}
-      },
-      "type": "fixed"
-    },
+    "heightening": null,
     "level": {
       "value": 4
     },

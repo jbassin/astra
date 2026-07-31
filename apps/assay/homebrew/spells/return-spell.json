@@ -23,18 +23,13 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You weave a ward of antimagic deflection around a willing creature. For the duration, when a spell that requires a saving throw targets the warded creature, the creature can use its reaction to attempt to reflect the spell. The warded creature rolls its saving throw against the reflected spell. On a success, the spell rebounds to the original caster, who must also attempt the saving throw against their own spell, using the same DC. On a failure, the spell takes full effect on the warded creature. Each time the spell rebounds, both parties have already made one save; after each has made three saving throws total, the spell dissipates harmlessly regardless of results. If the reflected spell has an area that partially covers the warded creature, only the portion targeting the warded creature is reflected; the rest functions normally on other targets in the area. The reaction to initiate reflection can be used once per round.</p><hr /><p><strong>Heightened (9th)</strong> The warded creature can use the reaction twice per round and the spell can rebound up to four times total per triggered spell.</p>"
+      "value": "<p>You weave a ward of antimagic deflection around a willing creature. For the duration, when a spell that requires a saving throw targets the warded creature, the creature can use its reaction to attempt to reflect the spell back at the caster. The target of the reflected spell attempts a saving throw against it. On a success, the spell rebounds again to the other party, who then attempts a saving throw of their own; on another success, it rebounds again. This continues until one party fails its save, at which point the spell takes full effect on whichever party just failed and stops rebounding. If six total saving throws have been made — three by each party — without a failure, the spell dissipates harmlessly. If the reflected spell has an area that partially covers the warded creature, only the portion targeting the warded creature is reflected; the rest functions normally on other targets in the area.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "8 hours"
     },
-    "heightening": {
-      "levels": {
-        "9": {}
-      },
-      "type": "fixed"
-    },
+    "heightening": null,
     "level": {
       "value": 7
     },

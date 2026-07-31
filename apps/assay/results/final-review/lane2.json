@@ -1,0 +1,601 @@
+[
+  {
+    "slug": "forceful-onslaught",
+    "comments": [
+      {
+        "id": "cccfb28e-3260-45b6-80a5-cad41615fc8b",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (9th) block"
+      },
+      {
+        "id": "76231755-c4ec-4883-8c61-62de5d73a8de",
+        "action": "applied",
+        "detail": "removed the attack-roll leg of the status bonus, kept Athletics/Fortitude, repaired the list"
+      }
+    ],
+    "lockstep": [
+      "heightening {levels:{9:{damage:{0:'1d6'}}},type:fixed} -> null (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "forensic-analysis",
+    "comments": [
+      {
+        "id": "368508d0-e617-4dea-b415-26d92121f9d7",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (4th)+(6th) block"
+      }
+    ],
+    "lockstep": [
+      "heightening {levels:{4:{},6:{}},type:fixed} -> null (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "fugue",
+    "comments": [
+      {
+        "id": "a365fea8-9801-48b2-8be3-5ab287b0fca4",
+        "action": "applied",
+        "detail": "deleted the parenthetical explaining non-magical indifference"
+      },
+      {
+        "id": "e1b09260-5f60-4971-bd12-46153e8413a9",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (7th) block per her note (touch spell, multi-target doesn't work)"
+      }
+    ],
+    "lockstep": ["heightening {levels:{7:{}},type:fixed} -> null (no Heightened content remains)"]
+  },
+  {
+    "slug": "fumble",
+    "comments": [
+      {
+        "id": "c819a6d2-9c26-44c5-8e6c-59640c6e0549",
+        "action": "applied",
+        "detail": "deleted the weapon-drop/Acrobatics rider and the recurring Will-save-ends-spell sentence from Failure"
+      },
+      {
+        "id": "ac9c5223-0412-49c7-a071-6ade27d05575",
+        "action": "applied",
+        "detail": "save type Will -> Reflex, updated the one remaining prose occurrence and system.defense.save.statistic"
+      },
+      {
+        "id": "05a4c9a0-3c2c-4a23-a309-5f062e618a80",
+        "action": "applied",
+        "detail": "deleted the two-consecutive-saves rider from Critical Failure, repaired the sentence"
+      },
+      {
+        "id": "236913ba-46d4-4c35-a232-4b1ed6db2c90",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (6th) block"
+      }
+    ],
+    "lockstep": [
+      "defense.save.statistic will -> reflex",
+      "heightening {levels:{6:{}},type:fixed} -> null (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "gallows",
+    "comments": [
+      {
+        "id": "7896ccce-f440-4e70-ad30-b9b74ceca5f8",
+        "action": "applied",
+        "detail": "deleted the worked-example parenthetical, removed the empty parens"
+      },
+      {
+        "id": "4abaad2f-4079-49de-8c02-271dbe1fa6a5",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (6th) block"
+      },
+      {
+        "id": "099cc01c-afd8-4705-a76d-b56e9c65bd5c",
+        "action": "applied",
+        "detail": "removed the save entirely; the binding now works automatically per her note, dropped the degree-of-success block, set defense to null"
+      }
+    ],
+    "lockstep": [
+      "defense {save:{basic:false,statistic:'will'}} -> null (no save remains)",
+      "heightening {levels:{6:{}},type:fixed} -> null (no Heightened content remains)"
+    ],
+    "notes": "099cc01c reads as a structural redesign (drop the save + degree-of-success block, not just a wording tweak) rather than a pure text edit -- flagging for orchestrator review even though I applied it faithfully to her note."
+  },
+  {
+    "slug": "gift-of-the-archmage",
+    "comments": [
+      {
+        "id": "80130d5f-2f37-4b71-b862-1abfadddbe49",
+        "action": "applied",
+        "detail": "Heightened (+2)->(+1), 'increases by 2'->'increases by 1'"
+      },
+      {
+        "id": "0f16d6c5-d58f-424f-8250-a5ff34d5e65a",
+        "action": "applied",
+        "detail": "alias substitution: Orichalcum -> Faerock (plain replacement, in cost field)"
+      }
+    ],
+    "lockstep": ["heightening.interval 2 -> 1"]
+  },
+  {
+    "slug": "glimmerdust",
+    "comments": [
+      {
+        "id": "3bbf8b44-c01f-40f0-b1f3-573968005283",
+        "action": "applied",
+        "detail": "deleted the redundant 'when it fails its Fortitude save' clause, repaired the sentence"
+      },
+      {
+        "id": "3d8cd032-261c-4db0-806e-aec165ccc681",
+        "action": "applied",
+        "detail": "Failure now grants Dazzled instead of Blinded, Critical Failure grants Blinded ('as failure, but... instead of Dazzled'); updated Success's contrast clause and the teaser line to match"
+      },
+      {
+        "id": "f6227a26-907e-4cd0-8fd9-101ad00151b5",
+        "action": "applied",
+        "detail": "removed with the Critical Failure restructure (comment above) -- the no-save-to-end-Blinded rider is gone now that crit failure is a plain condition bump"
+      },
+      {
+        "id": "655b984e-4b9d-4106-a8c2-36afa05ae6be",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (+2) block"
+      }
+    ],
+    "lockstep": [
+      "heightening {area:15,damage:{},interval:2,type:interval} -> null (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "gravity-anvil",
+    "comments": [
+      {
+        "id": "e04998a6-bfae-4ff2-b3e7-ffd463807437",
+        "action": "applied",
+        "detail": "Failure: Stunned 2 -> Stunned 1"
+      },
+      {
+        "id": "df3ce83c-cb84-4607-aca2-b5aa92e9e1f8",
+        "action": "applied",
+        "detail": "Critical Failure: Stunned (until save) -> Slowed 1 (until save)"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "grey-frost",
+    "comments": [
+      {
+        "id": "5cd3367e-9dd5-4ba6-94fb-72bdaa4fe8ce",
+        "action": "applied",
+        "detail": "alias substitution: the Grey Waste -> Nowhere (plain replacement)"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "grosteque-selfshape",
+    "comments": [
+      {
+        "id": "7fb91529-6b75-4fca-a9a6-6a225ae555f5",
+        "action": "applied",
+        "detail": "deleted the 'to Huge, or as large as you can safely fit' parenthetical from the Heightened line, repaired the sentence"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "haunt",
+    "comments": [
+      {
+        "id": "25ad4630-78d0-4550-968c-b033f612e761",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (6th) block"
+      }
+    ],
+    "lockstep": ["heightening {levels:{6:{}},type:fixed} -> null (no Heightened content remains)"],
+    "notes": "Also applied the set-wide activity rule here (round rule 2, known instance) though no comment quoted it directly: 'as a 1-action activity' -> 'you can spend a single action, which has the teleportation trait, to' -- mirrored the official 'By spending a single action, which has the concentrate trait, you can...' idiom found in apps/codex/data/corpus/spell/one-with-the-land.json."
+  },
+  {
+    "slug": "hellforging",
+    "comments": [
+      {
+        "id": "8b738d84-c4ad-46d4-88b0-0534a4d7b915",
+        "action": "skipped",
+        "detail": "spell is already ritual-formatted with system.ritual.primary/secondary caster fields; no textual change indicated beyond what's already in place"
+      }
+    ],
+    "lockstep": [],
+    "notes": "8b738d84 reads as a design question (should this be a ritual with a bigger secondary-caster pool?) rather than a text edit -- the store already has ritual.primary/secondary but secondary.casters=1; flagging for orchestrator to confirm whether she wants more secondary casters."
+  },
+  {
+    "slug": "hypercompression",
+    "comments": [
+      {
+        "id": "cd915dcd-2c52-4cde-8c39-2152b81a732a",
+        "action": "applied",
+        "detail": "deleted the redundant leading 'While you sustain the spell,' clause (the sentence already ends with 'when you Sustain the Spell')"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "inquisition",
+    "comments": [
+      {
+        "id": "3861a78e-9bcc-45b9-8bb8-14a6201ea77c",
+        "action": "applied",
+        "detail": "deleted the over-explaining 'echo answers from memory alone' sentence"
+      },
+      {
+        "id": "dfeaf335-9c50-4d4e-afca-47a10d86bca2",
+        "action": "applied",
+        "detail": "the -2 circumstance penalty now always applies (dropped the naturally-sleeping-only carve-out)"
+      },
+      {
+        "id": "a82d2219-ca85-48f2-af7a-911234badf99",
+        "action": "applied",
+        "detail": "deleted the '(the same DC, no penalty)' parenthetical, removed the empty parens"
+      },
+      {
+        "id": "a0917e6d-034e-4357-a9f1-77a1ceb063e0",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (4th)+(6th) block"
+      }
+    ],
+    "lockstep": [
+      "heightening {levels:{4:{},6:{}},type:fixed} -> null (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "instant-exit",
+    "comments": [
+      {
+        "id": "1b3fe466-b6f2-4f44-9d56-75577a0e1f73",
+        "action": "applied",
+        "detail": "deleted the sentence restating that the portal closes at end of duration"
+      },
+      {
+        "id": "b0859866-bcbf-4da5-8261-c6ea60ab2e21",
+        "action": "applied",
+        "detail": "malfunction die d20 -> d100, threshold kept at 'on a 1' per her terse note"
+      },
+      {
+        "id": "def5e24a-6956-450f-9561-4b09e9d8b21e",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (5th)+(7th) block"
+      }
+    ],
+    "lockstep": [
+      "heightening {levels:{5:{},7:{}},type:fixed} -> null (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "jolt",
+    "comments": [
+      {
+        "id": "c3536bf1-fa3a-422d-af3e-dc3f29aa70ca",
+        "action": "applied",
+        "detail": "deleted the order-of-actions fencing sentence"
+      },
+      {
+        "id": "92f9607c-dd32-4ab4-9961-6f5c32203b93",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (9th) block"
+      },
+      {
+        "id": "63d9be0b-25b5-45cd-a8b0-bc080f2e4702",
+        "action": "applied",
+        "detail": "collapsed the fixed Heightened (7th) target-count tier into a flat Heightened (+1) '1 additional willing creature' line, dropping the folded-in range bump"
+      },
+      {
+        "id": "19f938b5-39c0-41e9-9e75-f24ec4624f31",
+        "action": "applied",
+        "detail": "base range field 30 feet -> 60 feet (the range bump is now baked into the base spell instead of a Heightened tier)"
+      }
+    ],
+    "lockstep": [
+      "range.value '30 feet' -> '60 feet'",
+      "heightening {levels:{7:{},9:{}},type:fixed} -> {damage:{},interval:1,type:interval}"
+    ]
+  },
+  {
+    "slug": "kosmoturgist-s-armor",
+    "comments": [
+      {
+        "id": "a64ac6fe-2904-462c-b1db-ea2394902c10",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (+1) block"
+      },
+      {
+        "id": "2d6f70cf-7594-4b3b-a7fc-a37e0d78e411",
+        "action": "skipped",
+        "detail": "force is a legitimate PF2e damage type; no change made"
+      }
+    ],
+    "lockstep": [
+      "no heightening field change needed -- this file already omits the key entirely (equivalent to no heightening)"
+    ],
+    "notes": "2d6f70cf is a clarifying question, not a directive; force damage exists in PF2e (e.g. Force Bolt) so left as-is. Flagging in case she wants confirmation."
+  },
+  {
+    "slug": "kosmoturgist-s-weapon",
+    "comments": [
+      {
+        "id": "9e9e3510-8741-4415-afb4-c36aeb5dcfee",
+        "action": "applied",
+        "detail": "weapon-move distance 20 feet -> 30 feet"
+      },
+      {
+        "id": "53e44874-b12d-40a5-b13e-483e4636dab8",
+        "action": "applied",
+        "detail": "duration -> Sustained; system.duration.sustained false -> true (value stays '1 minute', matching store convention for sustained-up-to durations)"
+      },
+      {
+        "id": "0116aa53-3590-4b23-a119-343fe9fde362",
+        "action": "applied",
+        "detail": "'as a 1-action activity' -> 'when you Sustain the Spell', matching the new Sustained duration"
+      },
+      {
+        "id": "337f7226-4da3-4e64-8a7b-4defaecf7e8b",
+        "action": "applied",
+        "detail": "reformatted the run-on Attack/Defend/Control text into three separate bolded-label paragraphs, matching this store's Critical Success/Success/etc. convention"
+      }
+    ],
+    "lockstep": ["duration.sustained false -> true"]
+  },
+  {
+    "slug": "laixa-s-expert-intuition",
+    "comments": [
+      {
+        "id": "9ef6bdfb-5a8c-4be8-88eb-ebfcd37fcb79",
+        "action": "applied",
+        "detail": "deleted the whole 'cannot be magically compelled' paragraph"
+      },
+      {
+        "id": "9bed88ce-9869-4113-bba3-390f1982ed89",
+        "action": "applied",
+        "detail": "rewrote to match the 5e original's terser phrasing: 'when you attempt a Sense Motive check to detect a lie, you can replace the result you roll with a 15' (dropped the 'if your roll is lower than 15' clause per T6)"
+      },
+      {
+        "id": "76c1b3f6-e4f5-40d9-95af-42c40fc4c3bf",
+        "action": "applied",
+        "detail": "deleted 'this is a fortune effect' sentence, added the fortune trait to system.traits.value instead"
+      },
+      {
+        "id": "3063410d-8d34-4225-88b2-caa976f7486a",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (6th) block"
+      },
+      {
+        "id": "9b3e0ca4-d202-47c5-85a5-082dda369c25",
+        "action": "applied",
+        "detail": "duplicate of 9ef6bdfb (same quote/span); applied once as part of that edit"
+      }
+    ],
+    "lockstep": [
+      "traits.value += 'fortune'",
+      "heightening {levels:{6:{}},type:fixed} -> null (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "laixa-s-historical-tracker",
+    "comments": [
+      {
+        "id": "e503a3c9-6d33-43a1-9114-3549bcd82036",
+        "action": "applied",
+        "detail": "trimmed the wordy Seek/footprints paragraph back toward the 5e original's phrasing per T6, dropped the redundant trailing sentence about trail persistence"
+      },
+      {
+        "id": "337fc330-f62b-4cbb-8aaa-d27de040baf8",
+        "action": "applied",
+        "detail": "deleted 'The duration increases to 1 hour' from Heightened (4th), kept the ancestry-ID upgrade"
+      },
+      {
+        "id": "180ed15d-dd92-4c96-bafa-01151bb5965d",
+        "action": "applied",
+        "detail": "deleted 'The duration increases to 8 hours' from Heightened (6th), kept the name-ID upgrade"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "left-hand-of-judgment",
+    "comments": [
+      {
+        "id": "5956cfb1-38dd-4b1a-bc7a-f1c471efa609",
+        "action": "applied",
+        "detail": "replaced the bracketed '[reaction]' text marker with the action-glyph span convention (<span class=\"action-glyph\">R</span>), matching apps/assay/tests/fixtures/heal.json's icon convention"
+      },
+      {
+        "id": "0e5b48f2-53a7-41a2-b694-4de681ac4ce3",
+        "action": "applied",
+        "detail": "deleted the '(using your best melee attack bonus)' parenthetical"
+      },
+      {
+        "id": "f5ddf26a-4246-46d6-82c6-406f5acccc29",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (6th)+(8th) block"
+      },
+      {
+        "id": "825c8b68-0132-4004-9371-969b2442a883",
+        "action": "applied",
+        "detail": "Effect now makes the triggering creature Off-Guard against the counter-Strike"
+      }
+    ],
+    "lockstep": [
+      "heightening {levels:{6:{},8:{}},type:fixed} -> null (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "legend-killer",
+    "comments": [
+      {
+        "id": "2a7dcf44-324c-4223-9186-83c9cfbc5f89",
+        "action": "applied",
+        "detail": "deleted the '(abilities with the mythic trait)' parenthetical"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "lend-time",
+    "comments": [
+      {
+        "id": "28fb72e9-217f-4e48-8e09-643a0a286ff4",
+        "action": "skipped",
+        "detail": "this store's Foundry schema has no discrete system.trigger field for any of the 174 spells (verified repo-wide) -- can't move it out of body prose without inventing new schema, left as the leading bold Trigger paragraph"
+      },
+      {
+        "id": "c9ef174f-fe19-4c35-918b-011c1dbc31dc",
+        "action": "applied",
+        "detail": "deleted the '(before your original turn would have occurred)' parenthetical"
+      },
+      {
+        "id": "40bb39ff-438d-418a-b06c-07ca9b2fc1ca",
+        "action": "applied",
+        "detail": "deleted the +2-extra-actions upgrade from Heightened (5th); the 2-allies alternative was relocated per the next comment rather than deleted"
+      },
+      {
+        "id": "be151d83-3cfc-473a-8d7f-64c33feeeae5",
+        "action": "amended",
+        "detail": "moved the 'target 2 willing allies, 1 action each' alternative from Heightened (5th) into the base effect per her note, instead of deleting it outright"
+      }
+    ],
+    "lockstep": [
+      "heightening {levels:{5:{}},type:fixed} -> null (no Heightened content remains)",
+      "target.value '1 willing ally' -> '1 willing ally, or 2 willing allies' (reflects the relocated alternative)"
+    ],
+    "notes": "28fb72e9 looks like a store-level schema question (add a discrete trigger field for reaction spells?) rather than a text edit -- same pattern lane4 flagged on solar-rebuke; flagging for the orchestrator."
+  },
+  {
+    "slug": "let-s-start-a-fight",
+    "comments": [
+      {
+        "id": "9504ece4-e278-4858-b9e0-1dff5c7426de",
+        "action": "applied",
+        "detail": "deleted 'The provocation, once loosed, cannot be recalled'"
+      },
+      {
+        "id": "f9d1e93f-f7a4-48d4-9a7b-bf3858c44443",
+        "action": "amended",
+        "detail": "quote matched two identical fencing clauses (Failure's parenthetical and Critical Failure's bare form); struck both since they're the same T2 clause repeated"
+      },
+      {
+        "id": "f783cd5a-87d3-4cd6-92ae-f8c4ed228720",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (+2) block"
+      }
+    ],
+    "lockstep": [
+      "no heightening field change needed -- this file already omits the key entirely (equivalent to no heightening)"
+    ]
+  },
+  {
+    "slug": "lockstep-fate",
+    "comments": [
+      {
+        "id": "dd577ee2-8bb4-47f5-92a9-a1ecc943dc87",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (4th)+(6th) block"
+      }
+    ],
+    "lockstep": [
+      "heightening {levels:{4:{},6:{}},type:fixed} -> null (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "lucky-stars",
+    "comments": [
+      {
+        "id": "03a4870a-e37d-49d0-b460-2cdea44a7a62",
+        "action": "applied",
+        "detail": "rewrote the star-charge timing to be spent before the roll ('roll an additional d20 and use the better result') instead of after seeing the result"
+      },
+      {
+        "id": "75cce131-2a8f-4007-8cdc-6d9e5bc02dd9",
+        "action": "applied",
+        "detail": "deleted the '(even during another creature's turn)' parenthetical"
+      },
+      {
+        "id": "68268906-ea49-43a4-972a-544b3d455979",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (+2) block"
+      }
+    ],
+    "lockstep": [
+      "heightening {damage:{},interval:2,type:interval} -> null (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "lucky-ward",
+    "comments": [
+      {
+        "id": "31de7008-cb55-4a26-90bb-6caeeb92e4b7",
+        "action": "applied",
+        "detail": "deleted the 'once an enemy has rolled, it doesn't roll again' rules-default restatement"
+      },
+      {
+        "id": "86fb8d8c-821d-4bfd-9699-403070428ae3",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (6th)+(9th) block"
+      }
+    ],
+    "lockstep": [
+      "heightening {levels:{6:{},9:{}},type:fixed} -> null (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "mark-of-protection",
+    "comments": [
+      {
+        "id": "0b2f5c60-e09b-407f-b7ca-e58d7bfce661",
+        "action": "applied",
+        "detail": "replaced the bracketed '[reaction]' text marker with the action-glyph span convention (<span class=\"action-glyph\">R</span>)"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "mass-fluency",
+    "comments": [
+      {
+        "id": "c2cb8ae5-0f6a-4b96-a8bc-d030b20776bf",
+        "action": "applied",
+        "detail": "quote matched the structured target field verbatim, not body prose -- edited system.target.value directly, dropping 'touched one at a time'"
+      }
+    ],
+    "lockstep": [
+      "target.value 'up to 4 willing creatures touched one at a time' -> 'up to 4 willing creatures'"
+    ]
+  },
+  {
+    "slug": "mental-balance",
+    "comments": [
+      {
+        "id": "ef336d8d-906b-4d25-8858-3d5c1f2fac0d",
+        "action": "applied",
+        "detail": "restored wording close to the 5e original per T6: 'You temporarily remove all of the target's emotional attachments or biases.'"
+      },
+      {
+        "id": "a4c7815c-fc2d-48fb-83b3-c6a57832db56",
+        "action": "applied",
+        "detail": "deleted 'though it must still attempt Will saves normally'"
+      },
+      {
+        "id": "c07f5128-3d5f-4a28-a0af-44dfa3ff04bb",
+        "action": "applied",
+        "detail": "deleted the whole Heightened (6th) block"
+      },
+      {
+        "id": "2403631d-ee8a-4a63-9c27-bf9295b742bb",
+        "action": "applied",
+        "detail": "deleted 'The target cannot lie', merged the surrounding clauses"
+      },
+      {
+        "id": "c106f97d-853f-48c0-bb38-3c685f7ba940",
+        "action": "applied",
+        "detail": "added the Controlled condition alongside Fascinated to the immunity sentence"
+      }
+    ],
+    "lockstep": ["heightening {levels:{6:{}},type:fixed} -> null (no Heightened content remains)"]
+  }
+]

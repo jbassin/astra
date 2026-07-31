@@ -37,7 +37,7 @@
       }
     },
     "description": {
-      "value": "<p>You exert a crushing gravitational pull on a living creature's vital core, compressing and tearing inward. The target takes 11d10 void damage. If this damage reduces the target to 0 Hit Points, it is immediately slain; its heart (or functional equivalent) is ripped free and appears in your free hand. This is a death effect.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage. If this reduces the creature to 0 Hit Points, it is immediately slain as described above.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 1d10.</p>"
+      "value": "<p>You exert a crushing gravitational pull on a living creature's vital core, compressing and tearing inward. The target must attempt a basic Fortitude save against 11d10 void damage. If this damage reduces the target to 0 Hit Points, it is immediately slain; its heart (or functional equivalent) is ripped free and appears in your free hand. This is a death effect.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 1d10.</p>"
     },
     "duration": {
       "sustained": false,

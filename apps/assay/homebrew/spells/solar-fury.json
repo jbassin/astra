@@ -40,7 +40,7 @@
       }
     },
     "description": {
-      "value": "<p>You become a conduit for the searing light of a solar plane, your body blazing with such intensity that you shed bright light in a 60-foot radius and dim light for a further 60 feet; this counts as sunlight. While Solar Fury is active, you gain immunity to fire damage. Each creature that begins its turn within the 20-foot emanation takes 4d6 fire damage (basic Reflex save).</p><hr /><p><strong>Heightened (+1)</strong> The fire damage increases by 1d6.</p>"
+      "value": "<p>You become a conduit for the searing light of the Godhome, your body blazing with such intensity that you shed bright light in a 60-foot radius and dim light for a further 60 feet; this counts as sunlight. While Solar Fury is active, you gain immunity to fire damage. Each creature that begins its turn within the 20-foot emanation takes 4d6 fire damage (basic Reflex save).</p><hr /><p><strong>Heightened (+1)</strong> The fire damage increases by 1d6.</p>"
     },
     "duration": {
       "sustained": true,

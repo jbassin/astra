@@ -1,0 +1,776 @@
+{
+  "lane": 1,
+  "spells": [
+    {
+      "slug": "chrysalis",
+      "file": "homebrew/spells/chrysalis.json",
+      "annotation": "DECISION (choice a): trim the 4-part \"cut off from stimuli\" enumeration to the 5e one-clause register (\"completely cut off from outside stimuli\").",
+      "comments": [
+        {
+          "id": "ms2aaz3g-5hn9xtyl",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Cost a silken cocoon, which is consumed",
+          "note": "I thought we got rid of material costs like this? did you lie to me when you said we did that?",
+          "at": "2026-07-26T21:02:36.076Z"
+        },
+        {
+          "id": "ms2acmty-e6z0ggtc",
+          "kind": "note",
+          "pane": "store",
+          "quote": "until the end of its next turn",
+          "note": "that how stunned already works, get rid of this",
+          "at": "2026-07-26T21:03:53.494Z"
+        },
+        {
+          "id": "ms2acvpy-shzy024w",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (8th) The cocoon's HP increases to 40 and its Hardness increases to 10, and the cocoon is visually imperceptible; a creature must succeed at a DC 30 Perception check to notice it.",
+          "note": "",
+          "at": "2026-07-26T21:04:05.014Z"
+        },
+        {
+          "id": "ms2af23c-xqgx8crg",
+          "kind": "note",
+          "pane": "store",
+          "quote": "it cannot perceive the outside world, cannot take actions, cannot speak or be spoken to, and is not aware of what happens outside",
+          "note": "stupid stupid repetition, we spoke about this Josh. get rid of this or I'm getting rid of you",
+          "at": "2026-07-26T21:05:46.584Z"
+        }
+      ]
+    },
+    {
+      "slug": "compression",
+      "file": "homebrew/spells/compression.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2agt7x-pui3poc4",
+          "kind": "note",
+          "pane": "store",
+          "quote": ", during which the target is Slowed 1 and can't use the Stride action",
+          "note": "unnecessary, remove",
+          "at": "2026-07-26T21:07:08.397Z"
+        },
+        {
+          "id": "ms2ah0rz-t56awmle",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "as a 1-minute concentrate activity",
+          "note": "",
+          "at": "2026-07-26T21:07:18.191Z"
+        },
+        {
+          "id": "ms2ahchn-qp4v2emn",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (5th) The resistance increases to 10. The target can also pass through locked doors and windows, but not magically sealed ones, without opening them. The reversion time is reduced to 1 action.\n\nHeightened (7th) The resistance extends to magical physical sources as well. The target can pass through any solid non-magical barrier up to 1 foot thick as part of a Stride action.",
+          "note": "",
+          "at": "2026-07-26T21:07:33.371Z"
+        }
+      ]
+    },
+    {
+      "slug": "compressive-weapon",
+      "file": "homebrew/spells/compressive-weapon.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2aj52y-ey4moe09",
+          "kind": "note",
+          "pane": "store",
+          "quote": "The weapon still requires line of effect",
+          "note": "line of effect isn't a thing Josh. get rid of this",
+          "at": "2026-07-26T21:08:57.082Z"
+        },
+        {
+          "id": "ms2ak7je-9ullpah0",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "If you move or the target moves beyond 30 feet, the spell ends.",
+          "note": "",
+          "at": "2026-07-26T21:09:46.922Z"
+        }
+      ]
+    },
+    {
+      "slug": "cone-of-silence",
+      "file": "homebrew/spells/cone-of-silence.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2aozht-fyfnl8mc",
+          "kind": "note",
+          "pane": "store",
+          "quote": "cannot use auditory actions, cannot make sound, and cannot receive auditory information from within the cone",
+          "note": "get rid of this horseshit, its obvious from the deafened condition what they can and cannot do",
+          "at": "2026-07-26T21:13:29.777Z"
+        },
+        {
+          "id": "ms2ap7n6-x861gorj",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Sustaining the spell reorients the cone to face any direction you choose as part of the Sustain action.",
+          "note": "",
+          "at": "2026-07-26T21:13:40.338Z"
+        },
+        {
+          "id": "ms2apj1l-35j208zl",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Creatures within the cone are immune to sonic damage and automatically critically succeed at Perception checks that rely on hearing sounds originating within the cone.",
+          "note": "",
+          "at": "2026-07-26T21:13:55.113Z"
+        },
+        {
+          "id": "ms2aq7ad-46rx3dv1",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Critical Success The creature is unaffected by the silencing.\n\nSuccess The creature is Deafened while inside the cone.\n\nFailure The creature is Deafened while inside the cone and cannot use auditory actions, such as casting spells with the auditory or linguistic trait, while inside the cone.\n\nCritical Failure As failure, and the creature is also Deafened for 1 minute after it leaves the cone.",
+          "note": "get rid of all this shit. everyone in the cone is deafened, no save.",
+          "at": "2026-07-26T21:14:26.533Z"
+        },
+        {
+          "id": "ms2aq963-bhv28whl",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (7th) The cone extends to 120 feet. The silence is total even for creatures who succeed at the Fortitude save; a successful save grants immunity to the Deafened condition only, not to the silence itself.",
+          "note": "",
+          "at": "2026-07-26T21:14:28.971Z"
+        }
+      ]
+    },
+    {
+      "slug": "connection",
+      "file": "homebrew/spells/connection.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2ard3f-piu8e14j",
+          "kind": "note",
+          "pane": "store",
+          "quote": "plane",
+          "note": "world",
+          "at": "2026-07-26T21:15:20.715Z"
+        },
+        {
+          "id": "ms2arle6-um5ilg6s",
+          "kind": "note",
+          "pane": "store",
+          "quote": "plane",
+          "note": "world",
+          "at": "2026-07-26T21:15:31.470Z"
+        },
+        {
+          "id": "ms2asd8p-maai9rzo",
+          "kind": "note",
+          "pane": "store",
+          "quote": "each individual exchanged thought has a 5% chance of failing to arrive",
+          "note": "the spell has a 5% chance of failing to connect, wasting the spell slot.",
+          "at": "2026-07-26T21:16:07.561Z"
+        },
+        {
+          "id": "ms2asonk-01lp526v",
+          "kind": "note",
+          "pane": "store",
+          "quote": "planar",
+          "note": "interhorizon",
+          "at": "2026-07-26T21:16:22.352Z"
+        }
+      ]
+    },
+    {
+      "slug": "copy",
+      "file": "homebrew/spells/copy.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2awjpr-oo7mgdef",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Recall Knowledge",
+          "note": "forgeries are actually covered by the Society skill in pathfinder. You've only been playing this game for a third of your entire life, so I forgive you for not knowing that. Change this to a society check before I throttle you the next time I see you in real life.",
+          "at": "2026-07-26T21:19:22.575Z"
+        }
+      ]
+    },
+    {
+      "slug": "darkseeker-s-aura",
+      "file": "homebrew/spells/darkseeker-s-aura.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2b03wq-p11ojiw6",
+          "kind": "note",
+          "pane": "store",
+          "quote": "the plane of Gehenna",
+          "note": "<Gehenna|the Fetid Maw>",
+          "at": "2026-07-26T21:22:08.714Z"
+        }
+      ]
+    },
+    {
+      "slug": "darkseeker-s-restraint",
+      "file": "homebrew/spells/darkseeker-s-restraint.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2b0lkt-lbgz7xe6",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Gehenna",
+          "note": "<Gehenna|the Fetid Maw>",
+          "at": "2026-07-26T21:22:31.613Z"
+        },
+        {
+          "id": "ms2b1ejd-6dcayhnk",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "While Restrained, the target takes double damage again at the start of each of its turns",
+          "note": "",
+          "at": "2026-07-26T21:23:09.145Z"
+        },
+        {
+          "id": "ms2b1l63-6a9kpk3v",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "The target can attempt a new Will save at the end of each of its turns; on a success it is only Grabbed, not Restrained.",
+          "note": "",
+          "at": "2026-07-26T21:23:17.739Z"
+        }
+      ]
+    },
+    {
+      "slug": "dead-ringer",
+      "file": "homebrew/spells/dead-ringer.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2b2i0v-a6ivdd2t",
+          "kind": "note",
+          "pane": "store",
+          "quote": "rigger: You succeed at a saving throw or are missed by a Strike.",
+          "note": "this should be up with the cast/range/targets section, not here in the body",
+          "at": "2026-07-26T21:24:00.319Z"
+        },
+        {
+          "id": "ms2b6vrm-fw5y1id3",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Targets you",
+          "note": "I've just noticed this. what is this? do pathfinder spells have a \"targets\" section? do they ever say \"targets you\"? this is imbicilic",
+          "at": "2026-07-26T21:27:24.754Z"
+        },
+        {
+          "id": "ms2b8pqr-yz0os8n4",
+          "kind": "note",
+          "pane": "store",
+          "quote": "make an attack roll or Cast a Spell",
+          "note": "take a hostile action",
+          "at": "2026-07-26T21:28:50.259Z"
+        },
+        {
+          "id": "ms2b992f-zsowqf8r",
+          "kind": "note",
+          "pane": "store",
+          "quote": "an Interact action",
+          "note": "Seek",
+          "at": "2026-07-26T21:29:15.303Z"
+        },
+        {
+          "id": "ms2b9nqs-tejnvvqf",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (6th) Your invisibility persists for 1 minute after you attack or cast a spell.",
+          "note": "",
+          "at": "2026-07-26T21:29:34.324Z"
+        }
+      ]
+    },
+    {
+      "slug": "deja-vu",
+      "file": "homebrew/spells/deja-vu.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2bajba-qd483z6n",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Trigger A creature within range is damaged by an attack or effect.",
+          "note": "should be up a section",
+          "at": "2026-07-26T21:30:15.238Z"
+        }
+      ]
+    },
+    {
+      "slug": "disperse-magic",
+      "file": "homebrew/spells/disperse-magic.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2bb2ba-t360z1ka",
+          "kind": "note",
+          "pane": "store",
+          "quote": "rigger You are forced to attempt a saving throw against a spell or magical effect.",
+          "note": "should be up a section",
+          "at": "2026-07-26T21:30:39.862Z"
+        },
+        {
+          "id": "ms2bcc8n-wzblfqgf",
+          "kind": "note",
+          "pane": "store",
+          "quote": "would deal damage and normally allows you to take half damage on a success, you instead take no damage on a success and half damage on a failure",
+          "note": "requires a basic save, increase your degree of success by 1.",
+          "at": "2026-07-26T21:31:39.383Z"
+        },
+        {
+          "id": "ms2bcvp4-lhvozm8i",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (4th) The circumstance bonus to the triggering save increases to +3, and you can also grant the bonus to one adjacent ally who is also targeted by the same effect.",
+          "note": "",
+          "at": "2026-07-26T21:32:04.600Z"
+        }
+      ]
+    },
+    {
+      "slug": "disrupt-movement",
+      "file": "homebrew/spells/disrupt-movement.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2bdzwo-58h0kv32",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (3rd) You can target up to 5 creatures, and the critical failure effect also causes the target to be Immobilized, not reduced to Speed 0, until it succeeds at its end-of-turn save.",
+          "note": "",
+          "at": "2026-07-26T21:32:56.712Z"
+        }
+      ]
+    },
+    {
+      "slug": "djura-s-divine-protection",
+      "file": "homebrew/spells/djura-s-divine-protection.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2bhllt-rkb1ecf8",
+          "kind": "note",
+          "pane": "store",
+          "quote": "jura's signature ward compresses a layer of air to the point of becoming solid around the bodies of your allies.",
+          "note": "stupid fucking rewrite",
+          "at": "2026-07-26T21:35:44.801Z"
+        },
+        {
+          "id": "ms2biuil-79jqec6b",
+          "kind": "note",
+          "pane": "store",
+          "quote": "and slashing damage, as well as resistance 10 to force damage",
+          "note": "slashing, and force damage.\n\nsee how fucking easy that was? why do you use forty words when three do the trick?",
+          "at": "2026-07-26T21:36:43.005Z"
+        }
+      ]
+    },
+    {
+      "slug": "djura-s-divine-razor",
+      "file": "homebrew/spells/djura-s-divine-razor.json",
+      "annotation": "DECISION: bonus-damage window = \"first hit this turn\" (5e window), not \"any hit before the spell ends\".",
+      "comments": [
+        {
+          "id": "ms2bkxl6-ij00sepi",
+          "kind": "decision",
+          "pane": "decision",
+          "quote": "Bonus-damage window: 'first hit this turn' (5e) or 'any hit before spell ends' (store, wider)?",
+          "note": "first hit this turn, since this reads pretty powerful",
+          "at": "2026-07-26T21:38:20.298Z"
+        }
+      ]
+    },
+    {
+      "slug": "djura-s-righteous-pressure",
+      "file": "homebrew/spells/djura-s-righteous-pressure.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2bmcmr-vsnclh1d",
+          "kind": "note",
+          "pane": "store",
+          "quote": "emanation or enters the emanation",
+          "note": "its aura, josh. call it an aura. we already spoke about this. you're going to make me rip out my hair",
+          "at": "2026-07-26T21:39:26.451Z"
+        },
+        {
+          "id": "ms2bnmqu-ix93eh4b",
+          "kind": "note",
+          "pane": "store",
+          "quote": "immediately attempt a Fortitude save.\n\nCreatures hit by this aura also take 2d6 spirit damage.",
+          "note": "what the fuck do you mean \"also\"? its not fucking \"also\", that's the whole fucking point of the spell!\n\nmust immediately attempt a Fortitude save, taking 2d6 spirit damage on a failure.",
+          "at": "2026-07-26T21:40:26.214Z"
+        },
+        {
+          "id": "ms2boe0r-k7trs1gc",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Heightened (6th) The aura also affects humanoids with the evil trait. The spirit damage increases by 2d6.",
+          "note": "just +1: damage increase by 1d6",
+          "at": "2026-07-26T21:41:01.563Z"
+        }
+      ]
+    },
+    {
+      "slug": "do-my-bidding",
+      "file": "homebrew/spells/do-my-bidding.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2boq90-6kyjaksz",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (9th) The range and emanation increase to 120 feet, and you need not be present to maintain the compulsion; affected creatures pursue the goal autonomously for the duration.",
+          "note": "",
+          "at": "2026-07-26T21:41:17.412Z"
+        }
+      ]
+    },
+    {
+      "slug": "earworm",
+      "file": "homebrew/spells/earworm.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2bre4s-0zb6a7yf",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Critical Failure As failure, and you can also see through the target's eyes. You can toggle between auditory-only and auditory-visual as a 1-action concentrate.",
+          "note": "and how, the absolute fuck, do you expect a worm in someone's ear canal to help them see? get rid of this fucking shit",
+          "at": "2026-07-26T21:43:21.676Z"
+        },
+        {
+          "id": "ms2brm6d-7sextq6l",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (5th) The worm can also track the target's location; you know the target's current location as if you had cast status on it, as long as you are on the same plane.\n\nHeightened (7th) The duration increases to until your next daily preparation. The range to implant the worm increases to 30 feet.",
+          "note": "",
+          "at": "2026-07-26T21:43:32.101Z"
+        }
+      ]
+    },
+    {
+      "slug": "ebb-and-flow",
+      "file": "homebrew/spells/ebb-and-flow.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2bsuoy-pzgxqj5h",
+          "kind": "note",
+          "pane": "store",
+          "quote": "and limited to one Strike or one other action per turn while in the zone. This persists for 1 round after it leaves the zone.",
+          "note": "while within the zone",
+          "at": "2026-07-26T21:44:29.794Z"
+        },
+        {
+          "id": "ms2bt15v-h0rtwa8x",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (5th) The allied Speed bonus increases to +20 feet. The zone's radius increases to 30 feet.\n\nHeightened (7th) Enemies that critically fail their Will save are also knocked Prone at the start of each of their turns while in the zone. The allied extra-reaction benefit applies even to allies who enter the zone after it is created.",
+          "note": "",
+          "at": "2026-07-26T21:44:38.179Z"
+        }
+      ]
+    },
+    {
+      "slug": "eldritch-horror",
+      "file": "homebrew/spells/eldritch-horror.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2btuko-1dkrfnx4",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Far Realms",
+          "note": "<Far Realms|Slip>",
+          "at": "2026-07-26T21:45:16.296Z"
+        },
+        {
+          "id": "ms2bujfa-iesku7t4",
+          "kind": "note",
+          "pane": "store",
+          "quote": "at the start of each of your turns while",
+          "note": "once a round when",
+          "at": "2026-07-26T21:45:48.502Z"
+        },
+        {
+          "id": "ms2buxk9-njlwr6f5",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "(Escape DC = your spell DC)",
+          "note": "",
+          "at": "2026-07-26T21:46:06.825Z"
+        },
+        {
+          "id": "ms2bvbci-35ehflx0",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Far Realms",
+          "note": "<Far Realms|Slip>",
+          "at": "2026-07-26T21:46:24.690Z"
+        },
+        {
+          "id": "ms2bwm3w-whw8bze1",
+          "kind": "note",
+          "pane": "store",
+          "quote": "an additional 10 feet toward",
+          "note": "into",
+          "at": "2026-07-26T21:47:25.292Z"
+        },
+        {
+          "id": "ms2bxdl5-7q2pny03",
+          "kind": "note",
+          "pane": "store",
+          "quote": "A creature inside the portal can spend a single action to attempt an Athletics check or an Escape attempt against your spell DC; on a success, it climbs free and emerges in the nearest unoccupied space beside the portal. When the spell ends, all creatures still inside reappear in the nearest unoccupied spaces to where the portal stood, alive or dead.",
+          "note": "this should come before the degrees of success ladder",
+          "at": "2026-07-26T21:48:00.905Z"
+        }
+      ]
+    },
+    {
+      "slug": "excavation",
+      "file": "homebrew/spells/excavation.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2c03oi-8wkbf5tp",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "You channel power from the Plane of Earth, allowing",
+          "note": "",
+          "at": "2026-07-26T21:50:08.034Z"
+        },
+        {
+          "id": "ms2c1g1m-q5yyy57j",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Plane of Earth",
+          "note": "<Plane of Earth|Quarry>",
+          "at": "2026-07-26T21:51:10.714Z"
+        },
+        {
+          "id": "ms2c23yh-opgfh5yl",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Duration 1 hour",
+          "note": "if this spell is sustained why doesn't it say that here?",
+          "at": "2026-07-26T21:51:41.705Z"
+        }
+      ]
+    },
+    {
+      "slug": "farsight",
+      "file": "homebrew/spells/farsight.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2c6xux-8xx8plwb",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "and you can switch between sigils as a free action instead of an Interact action.",
+          "note": "",
+          "at": "2026-07-26T21:55:27.081Z"
+        }
+      ]
+    },
+    {
+      "slug": "fast-forward",
+      "file": "homebrew/spells/fast-forward.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2c7t9t-e45x91kh",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (8th) On a failure, the creature is also Drained 2, which persists until the curse is removed. On a critical failure, it is Drained 3 instead.",
+          "note": "",
+          "at": "2026-07-26T21:56:07.793Z"
+        }
+      ]
+    },
+    {
+      "slug": "fault-line",
+      "file": "homebrew/spells/fault-line.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ms2c8ika-vlbltqsu",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "and is not knocked Prone.",
+          "note": "",
+          "at": "2026-07-26T21:56:40.570Z"
+        },
+        {
+          "id": "ms2c8kmn-qabx9fli",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "and is not knocked Prone.",
+          "note": "",
+          "at": "2026-07-26T21:56:43.247Z"
+        },
+        {
+          "id": "ms2c8oqe-0ebdg5pj",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "it also cannot stand up until the start of its next turn.",
+          "note": "",
+          "at": "2026-07-26T21:56:48.566Z"
+        }
+      ]
+    },
+    {
+      "slug": "festering-slick",
+      "file": "homebrew/spells/festering-slick.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "16c93c03-a3fd-4c5a-83c5-c40aa49322f3",
+          "kind": "note",
+          "pane": "store",
+          "quote": "For the duration of the spell, the weapon has the following property:\n\nOn the first time the weapon hits a creature, the slick creeps from the blade into the wound. The creature takes an additional 3d6 void damage. Additionally, it becomes afflicted with festering corruption. It cannot regain Hit Points until the start of your next turn after the spell ends. Once the slick has triggered against a ",
+          "note": "This whole thing is overwritten. Change it to just the next successful attack deals and additional 3d6 void damage, and applies festering corruption for 1 minute. While a creature is affected by festering corruption it cannot regain hit points via any method.",
+          "at": "2026-07-28T17:49:39.764Z"
+        }
+      ]
+    },
+    {
+      "slug": "flashback",
+      "file": "homebrew/spells/flashback.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "8156bc29-eb1e-49c4-acdf-7a2c24a89d3c",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "If the spell ends unexpectedly because you become incapacitated, the primary target takes 1d6 mental damage from the abrupt severance",
+          "note": "",
+          "at": "2026-07-28T17:50:50.978Z"
+        },
+        {
+          "id": "61ff1403-ab4c-4ee4-8640-54236e0fdad2",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "and observers may also speak into the memory as a whisper the primary target hears",
+          "note": "",
+          "at": "2026-07-28T17:51:02.648Z"
+        }
+      ]
+    },
+    {
+      "slug": "fluid-form",
+      "file": "homebrew/spells/fluid-form.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "0f400144-35d7-456e-9755-92e770b82a4b",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "The resistance increases to 15 and you also gain resistance 10 to acid damage",
+          "note": "",
+          "at": "2026-07-28T17:52:22.798Z"
+        }
+      ]
+    },
+    {
+      "slug": "flutterstep",
+      "file": "homebrew/spells/flutterstep.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "59ed604e-d373-4e02-b2ad-56b88371096c",
+          "kind": "note",
+          "pane": "store",
+          "quote": "1 action",
+          "note": "If it isn’t already, it should just be the 1 action icon",
+          "at": "2026-07-28T17:52:59.318Z"
+        },
+        {
+          "id": "74a8d0c4-0332-4bb9-a41d-f40a248fba58",
+          "kind": "note",
+          "pane": "store",
+          "quote": "reaction",
+          "note": "Same here, this should be the reaction icon",
+          "at": "2026-07-28T17:53:13.957Z"
+        },
+        {
+          "id": "82c47d95-2b1e-460b-a360-a35bed411727",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (5th) Flutter Step increases to 15 feet, and Spatial Dodge increases to a 15-foot teleport. The flat check DC for Spatial Dodge decreases to 8.\n\nHeightened (7th) Flutter Step increases to 30 feet. You can use Spatial Dodge twice per round. Once per round when you successfully dodge an attack with Spatial Dodge, you may Flutter Step as a free action immediately after.",
+          "note": "",
+          "at": "2026-07-28T17:53:27.024Z"
+        },
+        {
+          "id": "5d19d1c5-7c53-4b60-b213-c0892e3cb164",
+          "kind": "note",
+          "pane": "store",
+          "quote": "You teleport to an unoccupied space within 5 feet.",
+          "note": "Let’s change this. Instead it should be that your stride doesn’t provoke reactive strikes",
+          "at": "2026-07-28T17:54:45.138Z"
+        }
+      ]
+    },
+    {
+      "slug": "focus-break",
+      "file": "homebrew/spells/focus-break.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "69afd68a-9cd4-499d-a861-439951b6256a",
+          "kind": "note",
+          "pane": "store",
+          "quote": "concentrating on a magical effect",
+          "note": "Not a thing",
+          "at": "2026-07-28T17:55:31.723Z"
+        },
+        {
+          "id": "884514df-9929-4e52-a83b-da52de2a5046",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "and it cannot Sustain any magical effect until the start of its next turn.",
+          "note": "",
+          "at": "2026-07-28T17:55:48.303Z"
+        },
+        {
+          "id": "9d98bdd1-ae28-4a1a-9c92-3bf9124de382",
+          "kind": "note",
+          "pane": "store",
+          "quote": "concentrating on a magical effect",
+          "note": "Not a thing",
+          "at": "2026-07-28T17:56:16.910Z"
+        }
+      ]
+    },
+    {
+      "slug": "forceful-charge",
+      "file": "homebrew/spells/forceful-charge.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "cb02680b-a2d9-4e8d-b35c-dedde1f092ad",
+          "kind": "note",
+          "pane": "store",
+          "quote": "taking 4d6 bludgeoning damage on a critical failure.",
+          "note": "This damage should apply like normal, with half on success and double on crit fail",
+          "at": "2026-07-28T17:58:08.162Z"
+        },
+        {
+          "id": "558dbf87-8cd4-476c-bb1e-3f607f687dd2",
+          "kind": "note",
+          "pane": "store",
+          "quote": "critical failure increases by 2d6.",
+          "note": "Damage increases by 1d6 each level",
+          "at": "2026-07-28T17:58:33.587Z"
+        }
+      ]
+    }
+  ]
+}

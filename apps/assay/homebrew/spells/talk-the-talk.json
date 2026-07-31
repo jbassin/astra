@@ -23,20 +23,15 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You are suddenly granted the ability to say exactly the right thing in social situations. For the duration, you instinctively know basic public information about any person you can see and interact with: their name, title, immediate family relationships, and publicly known interests, the sort of thing they would freely disclose in a casual public setting.</p><p>This grants you a +2 status bonus to Society and Diplomacy checks to blend into social gatherings you wouldn't normally belong to.</p><p>When the spell ends, you forget any information that was granted to you magically at the start of the spell. Information you personally learned during the hour, such as names you heard people say aloud or secrets whispered in your presence, remains.</p><hr /><p><strong>Heightened (5th)</strong> The +2 status bonus increases to +3, and the information now includes private social affiliations, known enemies, and recent notable activities: anything the subject would discuss in a semi-private setting with peers.</p>"
+      "value": "<p>You touch a creature and are suddenly granted the ability to read them accurately in social situations. For the duration, you instinctively know basic public information about the target: their name, title, immediate family relationships, and publicly known interests, the sort of thing they would freely disclose in a casual public setting.</p><p>This grants you a +2 status bonus to Society and Diplomacy checks against the target.</p><p>When the spell ends, you forget any information that was granted to you magically at the start of the spell. Information you personally learned during the hour, such as names you heard people say aloud or secrets whispered in your presence, remains.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "1 hour"
     },
-    "heightening": {
-      "levels": {
-        "5": {}
-      },
-      "type": "fixed"
-    },
+    "heightening": {},
     "level": {
-      "value": 3
+      "value": 2
     },
     "publication": {
       "license": "OGL",
@@ -44,12 +39,12 @@
       "title": "Liturgy of the Iridite Vol.2"
     },
     "range": {
-      "value": "self"
+      "value": "touch"
     },
     "requirements": "",
     "rules": [],
     "target": {
-      "value": "you"
+      "value": "1 creature"
     },
     "time": {
       "value": "2"

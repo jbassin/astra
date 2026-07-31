@@ -23,17 +23,16 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You rewind your own personal timeline to a location you occupied within the last 10 minutes, snapping back to that position in an instant. You arrive with the exact momentum you had at the moment you left that location. If you were running, you continue running; if you were falling, you continue falling, though you choose the direction again. Any equipment you carry teleports with you. You cannot teleport into a space that is currently occupied by a solid object.</p><hr /><p><strong>Heightened (7th)</strong> You can revisit a location you occupied within the last hour, and you can bring up to 2 willing creatures who are adjacent to you at the time of casting.</p>"
+      "value": "<p>You rewind your own personal timeline to a location you occupied within the last hour, snapping back to that position in an instant. You arrive with the exact momentum you had at the moment you left that location. You cannot teleport into a space that is currently occupied by a solid object.</p><hr /><p><strong>Heightened (+1)</strong> You can bring 1 additional willing creature who is adjacent to you at the time of casting.</p>"
     },
     "duration": {
       "sustained": false,
       "value": ""
     },
     "heightening": {
-      "levels": {
-        "7": {}
-      },
-      "type": "fixed"
+      "damage": {},
+      "interval": 1,
+      "type": "interval"
     },
     "level": {
       "value": 5

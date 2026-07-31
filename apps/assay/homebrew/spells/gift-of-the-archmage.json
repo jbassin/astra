@@ -17,13 +17,13 @@
   "system": {
     "area": null,
     "cost": {
-      "value": "a palm-sized chunk of unrefined Orichalcum ore worth at least 500 gp, which is consumed"
+      "value": "a palm-sized chunk of unrefined Faerock ore worth at least 500 gp, which is consumed"
     },
     "counteraction": false,
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You compress one of your own prepared or known spells of rank 4 or lower into a shimmering arcane singularity and transfer it into a willing creature. The spell must be one you have prepared (if you prepare spells) or one you know (if you have a spell repertoire); it must be rank 4 or lower. You lose access to that spell until the gift is used or the duration ends: if you prepared the spell, the slot is expended; if you know it via a repertoire, you treat yourself as having one fewer spell slot of that rank for the duration.</p><p>The recipient gains the ability to cast the gifted spell exactly once, using your spell DC and spell attack modifier. The recipient must supply any material components or costs the spell normally requires. The recipient must use the gifted spell by the end of their next daily preparations or the gift fades unused.</p><hr /><p><strong>Heightened (+2)</strong> The maximum rank of spell you can gift increases by 2.</p>"
+      "value": "<p>You compress one of your own prepared or known spells of rank 4 or lower into a shimmering arcane singularity and transfer it into a willing creature. The spell must be one you have prepared (if you prepare spells) or one you know (if you have a spell repertoire); it must be rank 4 or lower. You lose access to that spell until the gift is used or the duration ends: if you prepared the spell, the slot is expended; if you know it via a repertoire, you treat yourself as having one fewer spell slot of that rank for the duration.</p><p>The recipient gains the ability to cast the gifted spell exactly once, using your spell DC and spell attack modifier. The recipient must supply any material components or costs the spell normally requires. The recipient must use the gifted spell by the end of their next daily preparations or the gift fades unused.</p><hr /><p><strong>Heightened (+1)</strong> The maximum rank of spell you can gift increases by 1.</p>"
     },
     "duration": {
       "sustained": false,
@@ -31,7 +31,7 @@
     },
     "heightening": {
       "damage": {},
-      "interval": 2,
+      "interval": 1,
       "type": "interval"
     },
     "level": {

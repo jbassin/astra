@@ -23,17 +23,11 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p><strong>Trigger</strong> You are forced to attempt a saving throw against a spell or magical effect.</p><p>You redirect incoming magical energy back into the surrounding field. You gain a +2 circumstance bonus to the triggering saving throw. Additionally, if the triggering effect would deal damage and normally allows you to take half damage on a success, you instead take no damage on a success and half damage on a failure.</p><hr /><p><strong>Heightened (4th)</strong> The circumstance bonus to the triggering save increases to +3, and you can also grant the bonus to one adjacent ally who is also targeted by the same effect.</p>"
+      "value": "<p><strong>Trigger</strong> You are forced to attempt a saving throw against a spell or magical effect.</p><p>You redirect incoming magical energy back into the surrounding field. You gain a +2 circumstance bonus to the triggering saving throw. Additionally, if the triggering effect requires a basic saving throw, you get a result one degree of success better than you rolled.</p>"
     },
     "duration": {
       "sustained": false,
       "value": ""
-    },
-    "heightening": {
-      "levels": {
-        "4": {}
-      },
-      "type": "fixed"
     },
     "level": {
       "value": 2

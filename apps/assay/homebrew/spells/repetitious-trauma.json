@@ -3,7 +3,8 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
+        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented",
+        "sustain-round damage (6d6) differs from the cast-round formula (8d6) in the structured damage field — not structurally split, described only in the prose"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -39,7 +40,7 @@
       }
     },
     "description": {
-      "value": "<p>You twist the strands of time to force a creature to relive a damaging moment over and over. On the round you cast this spell and each round you Sustain it, the target must attempt a Will saving throw against 8d6 damage of the relived type. The damage type each round is the most recent damage type dealt to the target before this spell was cast, or mental if no damage type is known.</p><p><strong>Critical Success</strong> The creature is unaffected this round.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage and is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 2d6.</p>"
+      "value": "<p>You twist the strands of time to force a creature to relive a damaging moment over and over. On the round you cast this spell, the target must attempt a Will saving throw against 8d6 damage of the relived type. Each round you Sustain the spell, the target must attempt a Will saving throw against 6d6 damage of the relived type. The damage type each round is the most recent damage type dealt to the target before this spell was cast, or mental if no damage type is known.</p><p><strong>Critical Success</strong> The creature is unaffected this round.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage and is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 2d6.</p>"
     },
     "duration": {
       "sustained": true,

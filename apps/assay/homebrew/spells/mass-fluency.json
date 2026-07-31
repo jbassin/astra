@@ -43,7 +43,7 @@
     "requirements": "",
     "rules": [],
     "target": {
-      "value": "up to 4 willing creatures touched one at a time"
+      "value": "up to 4 willing creatures"
     },
     "time": {
       "value": "2"

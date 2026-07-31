@@ -23,18 +23,13 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You draw upon the tenebrific shades of Carceri, wreathing yourself in swirling umbral energy. For the duration, you gain the following benefits. At the start of each of your turns, you become @UUID[Compendium.pf2e.conditionitems.Item.Undetected]{Undetected} by any creature that relies on sight, functioning as the invisible condition; this ends immediately if you use a hostile action, rather than lasting until the start of your next turn. You gain darkvision with a range of 120 feet, including the ability to see through magical darkness. Once per minute as a 2-action activity (concentrate, manipulate), you can create a 15-foot-radius sphere of magical darkness centered on a point you can see within 60 feet; this darkness lasts until the end of your next turn or until you dismiss it with a free action.</p><hr /><p><strong>Heightened (8th)</strong> The magical darkness you create lasts until the end of the spell's duration rather than until the end of your next turn.</p>"
+      "value": "<p>You draw upon the tenebrific shades of Umberii, wreathing yourself in swirling umbral energy. For the duration, you gain the following benefits. At the start of each of your turns, you become @UUID[Compendium.pf2e.conditionitems.Item.Undetected]{Undetected} by any creature that relies on sight, functioning as the invisible condition; this ends immediately if you use a hostile action. You gain darkvision with a range of 120 feet, including the ability to see through magical darkness. You gain the following action.</p><p><strong>Umbral Eclipse</strong> <span class=\"action-glyph\">2</span> (concentrate, manipulate) <strong>Frequency</strong> once per minute; <strong>Effect</strong> You create a 15-foot-radius sphere of magical darkness centered on a point you can see within 60 feet. This darkness lasts until the end of your next turn.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "10 minutes"
     },
-    "heightening": {
-      "levels": {
-        "8": {}
-      },
-      "type": "fixed"
-    },
+    "heightening": {},
     "level": {
       "value": 6
     },

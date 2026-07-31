@@ -23,17 +23,13 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You pluck three small pockets of fate from the air, manifesting as sparkling stars orbiting your head. You have 3 star charges that persist for the duration.</p><p>Whenever you attempt an attack roll, skill check, Perception check, or saving throw, you can spend 1 star charge as a free action to roll an additional d20. You may choose which result to use. You can spend a star charge after you roll but before the outcome is determined.</p><p>Whenever an attack roll is made against you, you can spend 1 star charge as a free action (even during another creature's turn) to roll a d20 and force the attacker to use the lower result (misfortune effect).</p><p>The stars fade when all charges are spent or the duration expires.</p><hr /><p><strong>Heightened (+2)</strong> You gain 1 additional star charge when you cast this spell.</p>"
+      "value": "<p>You pluck three small pockets of fate from the air, manifesting as sparkling stars orbiting your head. You have 3 star charges that persist for the duration.</p><p>Before you attempt an attack roll, skill check, Perception check, or saving throw, you can spend 1 star charge as a free action to roll an additional d20 and use the better result.</p><p>Whenever an attack roll is made against you, you can spend 1 star charge as a free action to roll a d20 and force the attacker to use the lower result (misfortune effect).</p><p>The stars fade when all charges are spent or the duration expires.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "1 minute"
     },
-    "heightening": {
-      "damage": {},
-      "interval": 2,
-      "type": "interval"
-    },
+    "heightening": null,
     "level": {
       "value": 3
     },

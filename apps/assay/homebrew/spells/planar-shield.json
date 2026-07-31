@@ -29,12 +29,12 @@
           "damage"
         ],
         "materials": [],
-        "type": "vitality"
+        "type": "fire"
       }
     },
     "defense": null,
     "description": {
-      "value": "<p>You condense raw phlogiston, the luminous substance between planes, onto your shield or held weapon, forming a flickering shell of planar light. The spell stores 4 charges. While this spell is active, you gain the following reaction:</p><p><strong>Planar Burst</strong> (reaction) <strong>Trigger</strong> You are hit by a melee attack while holding the imbued shield or weapon; <strong>Effect</strong> You expend a charge, releasing a burst of phlogiston that scorches attackers and nearby foes: each creature within 5 feet of you, including the attacker, takes 2d6 vitality damage with no save.</p><p>When all 4 charges are expended, the spell ends.</p><hr /><p><strong>Heightened (+1)</strong> The damage per charge increases by 1d6.</p><p><strong>Heightened (5th)</strong> The number of charges increases to 6.</p>"
+      "value": "<p>You condense raw phlogiston, the luminous substance between planes, onto your shield or held weapon, forming a flickering shell of planar light. The spell stores 4 charges. While this spell is active, you gain the following reaction:</p><p><strong>Planar Burst</strong> <span class=\"action-glyph\">R</span> <strong>Trigger</strong> You are hit by a melee attack while holding the imbued shield or weapon; <strong>Effect</strong> You expend a charge, releasing a burst of phlogiston that scorches attackers and nearby foes: each creature within 5 feet of you, including the attacker, takes 2d6 fire damage with no save.</p><p>When all 4 charges are expended, the spell ends.</p><hr /><p><strong>Heightened (+1)</strong> The damage per charge increases by 1d6.</p><p><strong>Heightened (5th)</strong> The number of charges increases to 6.</p>"
     },
     "duration": {
       "sustained": false,
@@ -69,10 +69,10 @@
       ],
       "value": [
         "concentrate",
+        "fire",
         "light",
         "manipulate",
-        "planara",
-        "vitality"
+        "planara"
       ]
     }
   },

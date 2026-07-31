@@ -1,0 +1,570 @@
+[
+  {
+    "slug": "chrysalis",
+    "comments": [
+      {
+        "id": "ms2aaz3g-5hn9xtyl",
+        "action": "applied",
+        "detail": "cleared system.cost.value (material-cost text removed)"
+      },
+      {
+        "id": "ms2acmty-e6z0ggtc",
+        "action": "applied",
+        "detail": "deleted redundant 'until the end of its next turn' (Stunned already governs this)"
+      },
+      {
+        "id": "ms2acvpy-shzy024w",
+        "action": "applied",
+        "detail": "removed Heightened (8th) block, its <hr />, and system.heightening"
+      },
+      {
+        "id": "ms2af23c-xqgx8crg",
+        "action": "applied",
+        "detail": "trimmed 4-part enumeration to 'completely cut off from outside stimuli' per orchestrator DECISION annotation"
+      }
+    ],
+    "lockstep": [
+      "cost.value '' <- 'a silken cocoon, which is consumed'",
+      "heightening key removed (no Heightened content remains)"
+    ],
+    "notes": ""
+  },
+  {
+    "slug": "compression",
+    "comments": [
+      {
+        "id": "ms2agt7x-pui3poc4",
+        "action": "applied",
+        "detail": "removed the Slowed 1/no-Stride clause from the reversion sentence"
+      },
+      {
+        "id": "ms2ah0rz-t56awmle",
+        "action": "applied",
+        "detail": "deleted 'as a 1-minute concentrate activity'"
+      },
+      {
+        "id": "ms2ahchn-qp4v2emn",
+        "action": "applied",
+        "detail": "removed both Heightened (5th)/(7th) blocks, hr, and system.heightening"
+      }
+    ],
+    "lockstep": ["heightening key removed (both tiers deleted)"],
+    "notes": "Round rule 2 (activity wording): also reworded the remaining '1-minute process'/'another 1-minute process' phrasing to plain 'requires 1 minute' idiom (compression is a named known-instance in the brief); not tied to a specific comment id."
+  },
+  {
+    "slug": "compressive-weapon",
+    "comments": [
+      {
+        "id": "ms2aj52y-ey4moe09",
+        "action": "applied",
+        "detail": "deleted 'The weapon still requires line of effect.' (not a PF2e term)"
+      },
+      {
+        "id": "ms2ak7je-9ullpah0",
+        "action": "applied",
+        "detail": "deleted the 'moves beyond 30 feet ends the spell' sentence"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "cone-of-silence",
+    "comments": [
+      {
+        "id": "ms2aozht-fyfnl8mc",
+        "action": "applied",
+        "detail": "deleted redundant auditory-actions/sound/hearing clause"
+      },
+      {
+        "id": "ms2ap7n6-x861gorj",
+        "action": "applied",
+        "detail": "removed the Sustain-reorients-cone sentence"
+      },
+      {
+        "id": "ms2apj1l-35j208zl",
+        "action": "applied",
+        "detail": "removed sonic-immunity/auto-crit-Perception sentence"
+      },
+      {
+        "id": "ms2aq7ad-46rx3dv1",
+        "action": "applied",
+        "detail": "replaced the whole degree-of-success ladder with a flat no-save 'everyone in the cone is Deafened' effect, per her instruction"
+      },
+      {
+        "id": "ms2aq963-bhv28whl",
+        "action": "applied",
+        "detail": "removed Heightened (7th) block, hr, and system.heightening (no save left for it to reference)"
+      }
+    ],
+    "lockstep": [
+      "defense null <- {save:{basic:false,statistic:'fortitude'}} (no more save)",
+      "heightening key removed"
+    ],
+    "notes": ""
+  },
+  {
+    "slug": "connection",
+    "comments": [
+      {
+        "id": "ms2ard3f-piu8e14j",
+        "action": "applied",
+        "detail": "'plane' -> 'world' (1st occurrence)"
+      },
+      {
+        "id": "ms2arle6-um5ilg6s",
+        "action": "applied",
+        "detail": "'plane' -> 'world' (2nd occurrence)"
+      },
+      {
+        "id": "ms2asd8p-maai9rzo",
+        "action": "applied",
+        "detail": "reworded per-thought 5% fail chance into a single spell-wide 5% chance of failing to connect, wasting the slot"
+      },
+      {
+        "id": "ms2asonk-01lp526v",
+        "action": "applied",
+        "detail": "'planar' -> 'interhorizon' in Heightened (8th), reworded to match the new single-chance mechanic ('interhorizon failure chance')"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "copy",
+    "comments": [
+      {
+        "id": "ms2awjpr-oo7mgdef",
+        "action": "applied",
+        "detail": "'Recall Knowledge' -> 'Society' check (forgery detection is a Society skill action in PF2e)"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "darkseeker-s-aura",
+    "comments": [
+      {
+        "id": "ms2b03wq-p11ojiw6",
+        "action": "applied",
+        "detail": "'Gehenna' -> 'the Fetid Maw' (plain substitution, no markup)"
+      }
+    ],
+    "lockstep": [],
+    "notes": "Round rule 2 (activity wording): reworded 'As a 2-action activity, you can focus...' to 'You can spend 2 actions to focus...' matching the official painted-scout.json idiom found in apps/codex/data/corpus/spell/. Not tied to a comment id (no reviewer comment flagged it, but it's a set-wide instance per the brief)."
+  },
+  {
+    "slug": "darkseeker-s-restraint",
+    "comments": [
+      {
+        "id": "ms2b0lkt-lbgz7xe6",
+        "action": "applied",
+        "detail": "'Gehenna' -> 'the Fetid Maw' (plain substitution, no markup)"
+      },
+      {
+        "id": "ms2b1ejd-6dcayhnk",
+        "action": "applied",
+        "detail": "deleted repeat-damage-each-turn clause from Critical Failure"
+      },
+      {
+        "id": "ms2b1l63-6a9kpk3v",
+        "action": "applied",
+        "detail": "deleted end-of-turn save-to-downgrade clause from Critical Failure"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "dead-ringer",
+    "comments": [
+      {
+        "id": "ms2b2i0v-a6ivdd2t",
+        "action": "amended",
+        "detail": "normalized 'Trigger: ...' to the store's bold '<strong>Trigger</strong> ...' convention (matches lend-time/solar-rebuke); could not move it into a separate structured stat-block field since this store's schema has no system.trigger field"
+      },
+      {
+        "id": "ms2b6vrm-fw5y1id3",
+        "action": "applied",
+        "detail": "cleared system.target.value (self-only reaction shouldn't render a 'Targets you' line, matching cone-of-silence's empty-target convention)"
+      },
+      {
+        "id": "ms2b8pqr-yz0os8n4",
+        "action": "applied",
+        "detail": "'make an attack roll or Cast a Spell' -> 'take a hostile action'"
+      },
+      {
+        "id": "ms2b992f-zsowqf8r",
+        "action": "applied",
+        "detail": "'an Interact action' -> 'Seek'"
+      },
+      {
+        "id": "ms2b9nqs-tejnvvqf",
+        "action": "applied",
+        "detail": "removed Heightened (6th) block, hr, and system.heightening"
+      }
+    ],
+    "lockstep": ["target.value '' <- 'you'", "heightening key removed"],
+    "notes": "Flag for orchestrator: the store's spell schema has no dedicated Trigger field distinct from the description body — every reaction spell in this store (lend-time, solar-rebuke, deja-vu, disperse-magic, dead-ringer) keeps Trigger as the first bolded paragraph. Moving Trigger into the stat-block header line is a store-wide schema change, not a single-spell text edit."
+  },
+  {
+    "slug": "deja-vu",
+    "comments": [
+      {
+        "id": "ms2bajba-qd483z6n",
+        "action": "skipped",
+        "detail": "text already matches the store's bold '<strong>Trigger</strong> ...' convention (same as lend-time/solar-rebuke); moving it into a separate stat-block field isn't supported by this store's schema, see dead-ringer note"
+      }
+    ],
+    "lockstep": [],
+    "notes": "Same store-schema gap as dead-ringer's ms2b2i0v — flagging once here too since this spell's comment couldn't be satisfied by a text edit at all."
+  },
+  {
+    "slug": "disperse-magic",
+    "comments": [
+      {
+        "id": "ms2bb2ba-t360z1ka",
+        "action": "skipped",
+        "detail": "text already matches the store's bold Trigger convention; same schema gap as dead-ringer/deja-vu, no structured field to move it into"
+      },
+      {
+        "id": "ms2bcc8n-wzblfqgf",
+        "action": "applied",
+        "detail": "reworded half/no-damage swap into standard PF2e 'basic saving throw... one degree of success better' idiom (matches debilitating-dichotomy.json convention)"
+      },
+      {
+        "id": "ms2bcvp4-lhvozm8i",
+        "action": "applied",
+        "detail": "removed Heightened (4th) block, hr, and system.heightening"
+      }
+    ],
+    "lockstep": ["heightening key removed"],
+    "notes": ""
+  },
+  {
+    "slug": "disrupt-movement",
+    "comments": [
+      {
+        "id": "ms2bdzwo-58h0kv32",
+        "action": "applied",
+        "detail": "removed Heightened (3rd) block, hr, and system.heightening"
+      }
+    ],
+    "lockstep": ["heightening key removed"],
+    "notes": ""
+  },
+  {
+    "slug": "djura-s-divine-protection",
+    "comments": [
+      {
+        "id": "ms2bhllt-rkb1ecf8",
+        "action": "applied",
+        "detail": "restored the 5e original's direct 'You grant up to 8 willing creatures...' phrasing per T6 (translation not rewrite), matching vendor/run_balance's Djura's Divine Protection entry"
+      },
+      {
+        "id": "ms2biuil-79jqec6b",
+        "action": "applied",
+        "detail": "collapsed the split bludgeoning/piercing/slashing + separate force-resistance clause into one list per her exact wording"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "djura-s-divine-razor",
+    "comments": [
+      {
+        "id": "ms2bkxl6-ij00sepi",
+        "action": "applied",
+        "detail": "DECISION applied: bonus-damage window narrowed to 'the first time you hit... this turn' instead of 'before this spell ends'"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "djura-s-righteous-pressure",
+    "comments": [
+      {
+        "id": "ms2bmcmr-vsnclh1d",
+        "action": "applied",
+        "detail": "'emanation' -> 'aura' throughout the body prose (area.type stays 'emanation', the correct technical area-shape field)"
+      },
+      {
+        "id": "ms2bnmqu-ix93eh4b",
+        "action": "applied",
+        "detail": "merged the trigger sentence and the separate 'also take 2d6' sentence into one, using her exact replacement wording"
+      },
+      {
+        "id": "ms2boe0r-k7trs1gc",
+        "action": "applied",
+        "detail": "collapsed Heightened (6th) to flat 'Heightened (+1) The damage increases by 1d6.' per her instruction, dropping the evil-humanoid extension"
+      }
+    ],
+    "lockstep": [
+      "heightening converted from fixed rank-6 {damage:{0:'2d6'}} to interval {damage:{0:'1d6'}, interval:1, type:'interval'}"
+    ],
+    "notes": "Applied 'aura' substitution to both later 'the emanation until start of next turn' occurrences (Failure/Critical Failure) too, for consistency, even though the quoted comment only spans the trigger sentence."
+  },
+  {
+    "slug": "do-my-bidding",
+    "comments": [
+      {
+        "id": "ms2boq90-6kyjaksz",
+        "action": "applied",
+        "detail": "removed Heightened (9th) block, hr, and system.heightening"
+      }
+    ],
+    "lockstep": ["heightening key removed"],
+    "notes": ""
+  },
+  {
+    "slug": "earworm",
+    "comments": [
+      {
+        "id": "ms2bre4s-0zb6a7yf",
+        "action": "applied",
+        "detail": "deleted the Critical Failure paragraph entirely (worm-grants-sight is nonsensical); no Critical Failure entry now means it defaults to the Failure result per core rules"
+      },
+      {
+        "id": "ms2brm6d-7sextq6l",
+        "action": "applied",
+        "detail": "removed both Heightened (5th)/(7th) blocks, hr, and system.heightening"
+      }
+    ],
+    "lockstep": ["heightening key removed"],
+    "notes": ""
+  },
+  {
+    "slug": "ebb-and-flow",
+    "comments": [
+      {
+        "id": "ms2bsuoy-pzgxqj5h",
+        "action": "applied",
+        "detail": "replaced the action-limit + 1-round-lingering clause with 'while within the zone' per her terse replacement"
+      },
+      {
+        "id": "ms2bt15v-h0rtwa8x",
+        "action": "applied",
+        "detail": "removed both Heightened (5th)/(7th) blocks, hr, and system.heightening"
+      }
+    ],
+    "lockstep": ["heightening key removed"],
+    "notes": ""
+  },
+  {
+    "slug": "eldritch-horror",
+    "comments": [
+      {
+        "id": "ms2btuko-1dkrfnx4",
+        "action": "applied",
+        "detail": "'Far Realms' -> 'Slip' (1st occurrence, plain substitution)"
+      },
+      {
+        "id": "ms2bujfa-iesku7t4",
+        "action": "applied",
+        "detail": "'at the start of each of your turns while' -> 'once a round when'"
+      },
+      {
+        "id": "ms2buxk9-njlwr6f5",
+        "action": "applied",
+        "detail": "deleted '(Escape DC = your spell DC)' parenthetical"
+      },
+      {
+        "id": "ms2bvbci-35ehflx0",
+        "action": "applied",
+        "detail": "'Far Realms' -> 'Slip' (2nd occurrence, plain substitution)"
+      },
+      {
+        "id": "ms2bwm3w-whw8bze1",
+        "action": "applied",
+        "detail": "'an additional 10 feet toward' -> 'into' (second Grabbed drag now pulls the creature straight into the portal)"
+      },
+      {
+        "id": "ms2bxdl5-7q2pny03",
+        "action": "applied",
+        "detail": "moved the escape/end-of-spell paragraph to before the degree-of-success ladder"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "excavation",
+    "comments": [
+      {
+        "id": "ms2c03oi-8wkbf5tp",
+        "action": "applied",
+        "detail": "deleted 'You channel power from the Plane of Earth, allowing', repaired to 'You excavate terrain at a rapid rate.'"
+      },
+      {
+        "id": "ms2c1g1m-q5yyy57j",
+        "action": "applied",
+        "detail": "'the Plane of Earth' (remaining occurrence) -> 'Quarry', plain substitution"
+      },
+      {
+        "id": "ms2c23yh-opgfh5yl",
+        "action": "applied",
+        "detail": "set system.duration.sustained = true to match the body's per-round Sustain mechanic"
+      }
+    ],
+    "lockstep": ["duration.sustained true <- false"],
+    "notes": ""
+  },
+  {
+    "slug": "farsight",
+    "comments": [
+      {
+        "id": "ms2c6xux-8xx8plwb",
+        "action": "applied",
+        "detail": "removed the free-action sigil-switching clause from Heightened (6th)"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "fast-forward",
+    "comments": [
+      {
+        "id": "ms2c7t9t-e45x91kh",
+        "action": "applied",
+        "detail": "removed Heightened (8th) block, hr, and system.heightening"
+      }
+    ],
+    "lockstep": ["heightening key removed"],
+    "notes": ""
+  },
+  {
+    "slug": "fault-line",
+    "comments": [
+      {
+        "id": "ms2c8ika-vlbltqsu",
+        "action": "applied",
+        "detail": "deleted 'and is not knocked Prone.' from Critical Success (implicit default)"
+      },
+      {
+        "id": "ms2c8kmn-qabx9fli",
+        "action": "applied",
+        "detail": "deleted 'and is not knocked Prone.' from Success (implicit default, 2nd occurrence)"
+      },
+      {
+        "id": "ms2c8oqe-0ebdg5pj",
+        "action": "applied",
+        "detail": "deleted 'it also cannot stand up until the start of its next turn.' from Critical Failure"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "festering-slick",
+    "comments": [
+      {
+        "id": "16c93c03-a3fd-4c5a-83c5-c40aa49322f3",
+        "action": "applied",
+        "detail": "replaced the whole overwritten weapon-property mechanic with her exact simplified wording: next successful attack deals +3d6 void and applies festering corruption for 1 minute (no regaining HP)"
+      }
+    ],
+    "lockstep": [],
+    "notes": ""
+  },
+  {
+    "slug": "flashback",
+    "comments": [
+      {
+        "id": "8156bc29-eb1e-49c4-acdf-7a2c24a89d3c",
+        "action": "applied",
+        "detail": "deleted the incapacitation-severance 1d6 mental damage sentence"
+      },
+      {
+        "id": "61ff1403-ab4c-4ee4-8640-54236e0fdad2",
+        "action": "applied",
+        "detail": "deleted 'observers may also speak into the memory...' clause from Heightened (3rd)"
+      }
+    ],
+    "lockstep": [
+      "damage {} <- {0:{formula:'1d6',type:'mental',...}} (no damage effect remains in the spell)"
+    ],
+    "notes": ""
+  },
+  {
+    "slug": "fluid-form",
+    "comments": [
+      {
+        "id": "0f400144-35d7-456e-9755-92e770b82a4b",
+        "action": "applied",
+        "detail": "removed 'resistance increases to 15 / gain resistance 10 to acid' clause from Heightened (6th)"
+      }
+    ],
+    "lockstep": [],
+    "notes": "Round rule 2 (activity wording, fluid-form is a named known-instance): reworded 'You can Dismiss this spell as a 2-action activity.' to 'You can Dismiss this spell.' matching the official battle-form idiom (avatar.json/dragon-form.json/elemental-form.json all use the bare 'You can Dismiss this/the spell.' form). Not tied to a comment id."
+  },
+  {
+    "slug": "flutterstep",
+    "comments": [
+      {
+        "id": "59ed604e-d373-4e02-b2ad-56b88371096c",
+        "action": "applied",
+        "detail": "replaced '(1 action)' text with the store's action-glyph span (matches mark-of-protection.json/left-hand-of-judgment.json convention)"
+      },
+      {
+        "id": "74a8d0c4-0332-4bb9-a41d-f40a248fba58",
+        "action": "applied",
+        "detail": "replaced '(reaction, trigger: ...)' with the action-glyph span + bold Trigger/Effect sub-fields"
+      },
+      {
+        "id": "82c47d95-2b1e-460b-a360-a35bed411727",
+        "action": "applied",
+        "detail": "removed both Heightened (5th)/(7th) blocks, hr, and system.heightening"
+      },
+      {
+        "id": "5d19d1c5-7c53-4b60-b213-c0892e3cb164",
+        "action": "applied",
+        "detail": "Flutter Step's effect changed from 'teleport to unoccupied space within 5 feet' to 'Stride; this movement doesn't trigger reactive strikes' per her instruction"
+      }
+    ],
+    "lockstep": ["heightening key removed"],
+    "notes": "Reformatted both granted abilities into the store's action-block idiom (name + action-glyph span, Trigger/Effect for the reaction) — this doubles as the round-rule-2 activity-grant fix, since flutterstep is a named known-instance and its old '(1 action)'/'(reaction, trigger: ...)' inline format was exactly what rule 2 targets."
+  },
+  {
+    "slug": "focus-break",
+    "comments": [
+      {
+        "id": "69afd68a-9cd4-499d-a861-439951b6256a",
+        "action": "applied",
+        "detail": "'concentrating on a magical effect' removed from system.target.value (dead 5e-ism, only occurrence in the file)"
+      },
+      {
+        "id": "884514df-9929-4e52-a83b-da52de2a5046",
+        "action": "applied",
+        "detail": "deleted 'cannot Sustain any magical effect until start of next turn' from Critical Failure"
+      },
+      {
+        "id": "9d98bdd1-ae28-4a1a-9c92-3bf9124de382",
+        "action": "amended",
+        "detail": "duplicate of ms2... same quote as 69afd68a; only one occurrence of the phrase exists in the file (in target.value) — the single fix at 69afd68a covers both comment ids"
+      }
+    ],
+    "lockstep": ["target.value 'a spell' <- 'a spell or concentrating on a magical effect'"],
+    "notes": ""
+  },
+  {
+    "slug": "forceful-charge",
+    "comments": [
+      {
+        "id": "cb02680b-a2d9-4e8d-b35c-dedde1f092ad",
+        "action": "applied",
+        "detail": "converted to a standard basic-save damage ladder (half on success/full on failure/double on crit failure) instead of damage only on critical failure"
+      },
+      {
+        "id": "558dbf87-8cd4-476c-bb1e-3f607f687dd2",
+        "action": "applied",
+        "detail": "Heightened (+1) reworded to flat 'The damage increases by 1d6.' applying to the base damage instead of only the critical-failure damage"
+      }
+    ],
+    "lockstep": ["defense.save.basic true <- false"],
+    "notes": "Pre-existing store gap, not introduced by me: system.damage is {} and there is no system.heightening key for this spell even though the body has a 4d6 base damage and a Heightened (+1) damage line — the adapterWarning notes this was never structurally captured ('interval heightening text is not a pure damage bump'). I left it as-is rather than inventing damage/heightening entries not backed by the adapter; flagging for the orchestrator to decide whether that should be backfilled."
+  }
+]

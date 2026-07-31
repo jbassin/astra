@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You draw upon your knowledge of the Armageddon Engine, growing a dense, iridescent carapace of supernaturally reflective shell. For the duration, you gain the following benefits:</p><p>- You gain a +2 circumstance bonus to AC.<br />- You gain resistance 15 to physical damage.<br />- You gain the Deflecting Shell reaction.</p><p>Deflecting Shell [reaction] Trigger: A ranged spell attack roll targets you, or a line spell would pass through your space; Frequency: once per round. Effect: Roll 1d6. On a 1–5, you are unaffected by the triggering effect. On a 6, you are unaffected and you can redirect the effect as though it originated from your space, choosing new targets or direction within the spell's original range.</p>"
+      "value": "<p>You draw upon your knowledge of the Armageddon Engine, growing a dense, iridescent carapace of supernaturally reflective shell. For the duration, you gain the Deflecting Shell reaction.</p><p><strong>Deflecting Shell</strong> <span class=\"action-glyph\">R</span> <strong>Frequency</strong> once per round; <strong>Trigger</strong> A ranged spell attack roll targets you; <strong>Effect</strong> Roll 1d6. On a 1–5, you are unaffected by the triggering effect. On a 6, you are unaffected and you can redirect the effect as though it originated from your space, choosing new targets or direction within the spell's original range.</p>"
     },
     "duration": {
       "sustained": false,

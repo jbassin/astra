@@ -37,12 +37,12 @@
     },
     "defense": {
       "save": {
-        "basic": true,
+        "basic": false,
         "statistic": "reflex"
       }
     },
     "description": {
-      "value": "<p>You channel violent force through your melee weapon and launch a pulsing bolt that tears a line through space. The bolt travels in a 5-foot-wide, 30-foot-long line originating from your space, passing through all creatures in the area.</p><p>Each creature in the line must attempt a basic Reflex save against 2d8 force damage. When the weapon-effect trigger applies, the affected creature suffers the effects of a successful melee Strike from the weapon used to cast this spell; this does not consume an additional action.</p><p><strong>Critical Success</strong> The creature takes no damage.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage. If it is the first failing creature in the line, it also suffers the effects of a successful melee Strike from the casting weapon.</p><p><strong>Critical Failure</strong> The creature takes double damage. If it is the first failing creature in the line, it also suffers the effects of a successful melee Strike from the casting weapon.</p><hr /><p><strong>Heightened (+1)</strong> The force damage increases by 1d8.</p>"
+      "value": "<p>You channel violent force through your melee weapon and launch a pulsing bolt that tears a line through space. The bolt travels in a 5-foot-wide, 30-foot-long line originating from your space, passing through all creatures in the area.</p><p>Each creature in the line must attempt a Reflex save against your spell DC. The first creature to fail takes damage from a successful melee Strike with the weapon used to cast this spell, plus an additional 2d8 force damage; this does not consume an additional action.</p><hr /><p><strong>Heightened (+1)</strong> The force damage increases by 1d8.</p>"
     },
     "duration": {
       "sustained": false,

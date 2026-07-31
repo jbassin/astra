@@ -28,19 +28,13 @@
       }
     },
     "description": {
-      "value": "<p>You reach across the threads of fate and entangle your luck with that of one creature you can see. The target must attempt a Will save. On a failure, your fortunes are linked for the spell's duration.</p><p>While the link holds, when you roll any d20 (an attack roll, skill check, or saving throw) and dislike the result, you may choose to Hold the Roll, mentally noting the result. The next time the linked creature would roll any d20, it automatically uses your Held Roll as its result instead, and the Hold is discharged. You can hold only one roll at a time and can't replace a held roll with a different one.</p><p>The link ends when you discharge a held roll.</p><p><strong>Critical Success</strong> The target is unaffected and immune to this spell for 24 hours.</p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> The link forms for the duration.</p><p><strong>Critical Failure</strong> The link forms and the first Held Roll you discharge is treated as a natural 1 for the target (regardless of what the roll actually was).</p><hr /><p><strong>Heightened (4th)</strong> You can hold up to two rolls at once (neither can be replaced). When the linked creature would roll a d20, you choose which held roll it uses; the link ends as normal and any unused held roll is lost.</p><p><strong>Heightened (6th)</strong> You can target up to 3 creatures; each attempts its own save. You maintain a single pool of held rolls (maximum 2 at a time) and may assign any held roll to any linked creature's next d20. Discharging a held roll ends the link to that creature only; each remaining link ends when it receives a discharge.</p>"
+      "value": "<p>You reach across the threads of fate and entangle your luck with that of one creature you can see. The target must attempt a Will save. On a failure, your fortunes are linked for the spell's duration.</p><p>While the link holds, when you roll any d20 (an attack roll, skill check, or saving throw) and dislike the result, you may choose to Hold the Roll, mentally noting the result. The next time the linked creature would roll any d20, it automatically uses your Held Roll as its result instead, and the Hold is discharged. You can hold only one roll at a time and can't replace a held roll with a different one.</p><p>The link ends when you discharge a held roll.</p><p><strong>Critical Success</strong> The target is unaffected and immune to this spell for 24 hours.</p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> The link forms for the duration.</p><p><strong>Critical Failure</strong> The link forms and the first Held Roll you discharge is treated as a natural 1 for the target (regardless of what the roll actually was).</p>"
     },
     "duration": {
       "sustained": true,
       "value": "1 minute"
     },
-    "heightening": {
-      "levels": {
-        "4": {},
-        "6": {}
-      },
-      "type": "fixed"
-    },
+    "heightening": null,
     "level": {
       "value": 2
     },

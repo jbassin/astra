@@ -23,19 +23,13 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You draw upon the collective's memory of polymorphing to refine your current form. You must be polymorphed to Cast this Spell; if you are not, the spell fails with no effect. You sharpen the senses of your current form, trading raw striking power for precision. For the duration, your unarmed Strikes in your current form gain a +2 circumstance bonus to attack rolls, but deal 2d6 less damage (minimum 1).</p><hr /><p><strong>Heightened (5th)</strong> The circumstance bonus to attack rolls increases to +3.</p><p><strong>Heightened (7th)</strong> The circumstance bonus to attack rolls increases to +4, and the damage penalty is reduced to 1d6 less.</p>"
+      "value": "<p>You draw upon the collective's memory of polymorphing to refine your current form. You must be polymorphed to Cast this Spell. You sharpen the senses of your current form, trading raw striking power for precision. For the duration, your unarmed Strikes in your current form gain a +2 circumstance bonus to attack rolls, but deal 2d6 less damage (minimum 1).</p>"
     },
     "duration": {
       "sustained": false,
       "value": "until your polymorph effect ends"
     },
-    "heightening": {
-      "levels": {
-        "5": {},
-        "7": {}
-      },
-      "type": "fixed"
-    },
+    "heightening": {},
     "level": {
       "value": 3
     },

@@ -2,9 +2,6 @@
   "_id": "hbcbcd96235ea364",
   "flags": {
     "assay": {
-      "adapterWarnings": [
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
-      ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
         "convertedName": "Monstrous Copy: Claws",
@@ -34,19 +31,18 @@
     },
     "defense": null,
     "description": {
-      "value": "<p>You draw upon your knowledge of the Bulette, reshaping your hands into massive, excavating claws. You gain a burrow Speed equal to your land Speed. You can burrow through non-magical earth, soil, and loose rock at your full burrow Speed. You can burrow through solid stone or worked rock at half your burrow Speed.</p><p>You grow a claws unarmed Strike that deals 2d12 slashing damage and has the magical, sweep, and unarmed traits. Against unattended objects and structures, you treat your attack roll result as 10 higher. You are trained with this attack, and if your weapon proficiency with martial weapons is higher than your unarmed proficiency, your claws use that proficiency instead.</p><hr /><p><strong>Heightened (7th)</strong> The claws' damage increases to 3d10 slashing, and you can burrow through solid stone at your full burrow Speed.</p><p><strong>Heightened (8th)</strong> The claws' damage increases to 3d12 slashing.</p><p><strong>Heightened (9th)</strong> The claws' damage increases to 4d12 slashing, and your burrow Speed increases by 10 feet.</p>"
+      "value": "<p>You draw upon your knowledge of the Bulette, reshaping your hands into massive, excavating claws. You gain a burrow Speed equal to your land Speed. You can burrow through non-magical earth, soil, and loose rock at your full burrow Speed. You can burrow through solid stone or worked rock at half your burrow Speed.</p><p>You grow a claws unarmed Strike that deals 2d12 slashing damage and has the magical, sweep, and unarmed traits. Against unattended objects and structures, you treat your attack roll result as one degree of success better. You are trained with this attack, and if your weapon proficiency with martial weapons is higher than your unarmed proficiency, your claws use that proficiency instead.</p><hr /><p><strong>Heightened (+1)</strong> The slashing damage increases by 1d12.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "1 minute"
     },
     "heightening": {
-      "levels": {
-        "7": {},
-        "8": {},
-        "9": {}
+      "damage": {
+        "0": "1d12"
       },
-      "type": "fixed"
+      "interval": 1,
+      "type": "interval"
     },
     "level": {
       "value": 6

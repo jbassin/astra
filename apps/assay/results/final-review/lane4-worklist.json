@@ -1,0 +1,792 @@
+{
+  "lane": 4,
+  "spells": [
+    {
+      "slug": "shape-modify-accuracy",
+      "file": "homebrew/spells/shape-modify-accuracy.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "e19cfc9b-0cac-40f7-be06-70f10983bd08",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "if you are not, the spell fails with no effect",
+          "note": "",
+          "at": "2026-07-31T00:25:16.113Z"
+        },
+        {
+          "id": "366e7ece-db42-4d70-a8af-52693fea5fc4",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (5th) The circumstance bonus to attack rolls increases to +3.\n\nHeightened (7th) The circumstance bonus to attack rolls increases to +4, and the damage penalty is reduced to 1d6 less.",
+          "note": "",
+          "at": "2026-07-31T00:25:33.399Z"
+        }
+      ]
+    },
+    {
+      "slug": "shape-modify-armor",
+      "file": "homebrew/spells/shape-modify-armor.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "90ad4221-2cec-4e5a-99ed-1157c5e5864c",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "if you are not, the spell fails with no effect",
+          "note": "",
+          "at": "2026-07-31T00:25:45.050Z"
+        },
+        {
+          "id": "b4699e66-c45e-4ac3-a70b-716abd96e819",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (5th) The circumstance bonus to AC increases to +3, and your Speed penalty is lessened: your Speed is reduced by 10 feet rather than being set to 15 feet.\n\nHeightened (7th) The circumstance bonus to AC increases to +4. The Speed penalty is reduced by a further 5 feet (total: Speed reduced by 5 feet).",
+          "note": "",
+          "at": "2026-07-31T00:26:02.949Z"
+        }
+      ]
+    },
+    {
+      "slug": "shape-modify-severity",
+      "file": "homebrew/spells/shape-modify-severity.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "0ba643bd-2330-4ce1-b390-381ece64bb79",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "if you are not, the spell fails with no effect",
+          "note": "",
+          "at": "2026-07-31T00:26:12.464Z"
+        },
+        {
+          "id": "bf4baf52-9ae6-4552-bee7-d86a8465cf66",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+2) The bonus damage increases by 1d6, and the attack roll penalty is reduced by 1.",
+          "note": "",
+          "at": "2026-07-31T00:26:24.428Z"
+        }
+      ]
+    },
+    {
+      "slug": "shape-modify-speed",
+      "file": "homebrew/spells/shape-modify-speed.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "e2b2f4da-b56b-490c-9374-101ef172fe08",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "if you are not, the spell fails with no effect.",
+          "note": "",
+          "at": "2026-07-31T00:26:37.403Z"
+        },
+        {
+          "id": "eccdd3ed-d7c3-465b-a6b9-264293c93b95",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+2) The Speed increase rises by 10 feet, and the AC penalty is reduced by 1.",
+          "note": "",
+          "at": "2026-07-31T00:26:43.834Z"
+        }
+      ]
+    },
+    {
+      "slug": "solar-fury",
+      "file": "homebrew/spells/solar-fury.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "9c607716-e4e8-4687-b702-0e862b71a66b",
+          "kind": "note",
+          "pane": "store",
+          "quote": "a solar plane",
+          "note": "the Godhome",
+          "at": "2026-07-31T00:27:29.439Z"
+        }
+      ]
+    },
+    {
+      "slug": "solar-rebuke",
+      "file": "homebrew/spells/solar-rebuke.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "0633bd92-e8a1-4393-a8e0-5ce6dbc3ba87",
+          "kind": "note",
+          "pane": "store",
+          "quote": "peak of Elysium",
+          "note": "crack in the firmament",
+          "at": "2026-07-31T00:28:00.169Z"
+        },
+        {
+          "id": "54d7b982-6b7d-4600-9b73-3fb223d61071",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Trigger A creature within 60 feet that you can see deals damage to you.",
+          "note": "This should be in the header",
+          "at": "2026-07-31T00:28:21.804Z"
+        },
+        {
+          "id": "0123778c-0cab-4fe5-8244-fbebc2cb2ab9",
+          "kind": "note",
+          "pane": "store",
+          "quote": "damage.",
+          "note": "Specify in the text  of the spell somewhere that the creature has to make a will save",
+          "at": "2026-07-31T00:28:54.184Z"
+        }
+      ]
+    },
+    {
+      "slug": "spawn-animated-spite",
+      "file": "homebrew/spells/spawn-animated-spite.json",
+      "annotation": "Already renamed (file + name field) by the orchestrator; apply only the remaining comments. Original slug in comments: spawn-abyssal-sprite.",
+      "comments": [
+        {
+          "id": "21ad9de5-363c-40de-b1a3-9ce6487ad67b",
+          "kind": "note",
+          "pane": "original",
+          "quote": "Spawn Abyssal Sprite",
+          "note": "Spawn Animated Spite",
+          "at": "2026-07-31T00:30:07.846Z"
+        },
+        {
+          "id": "b80afc51-4396-4911-919a-8dbe7d98c7b0",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "double on a critical hit",
+          "note": "",
+          "at": "2026-07-31T00:30:24.025Z"
+        }
+      ]
+    },
+    {
+      "slug": "sphere-of-preservation",
+      "file": "homebrew/spells/sphere-of-preservation.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "1a5bc11e-6c07-41fa-9967-ad4143163e6a",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "enforcing strict determinism",
+          "note": "",
+          "at": "2026-07-31T00:31:04.393Z"
+        },
+        {
+          "id": "b690a724-be00-4185-88be-4e535bfd9cea",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "ally and enemy alike",
+          "note": "",
+          "at": "2026-07-31T00:31:11.783Z"
+        },
+        {
+          "id": "c62b3820-68ef-4536-b8a7-731cf898bedb",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "2 on a d4, 3 on a d6, 4 on a d8, 5 on a d10, and 6 on a d12",
+          "note": "",
+          "at": "2026-07-31T00:31:20.170Z"
+        },
+        {
+          "id": "7c9d98ee-f588-475e-9716-b5cbe389adf4",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "This affects all dice rolls that occur entirely within the emanation: skill checks, attack rolls, damage rolls, and saving throw rolls.",
+          "note": "",
+          "at": "2026-07-31T00:31:25.412Z"
+        },
+        {
+          "id": "b18ec116-1dd6-4562-82bb-7ac77e0d4ae4",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Sphere of Ruin",
+          "note": "What the fuck?",
+          "at": "2026-07-31T00:31:40.801Z"
+        },
+        {
+          "id": "d774cc63-2a58-4db7-85d3-2f6ff325d35d",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "If you are sustaining both this spell and Sphere of Ruin, attempts to counteract this spell take a -2 circumstance penalty.",
+          "note": "",
+          "at": "2026-07-31T00:31:48.914Z"
+        },
+        {
+          "id": "3ffb6af0-6330-4e0d-84bd-6741c44a52be",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+2) The emanation's radius doubles",
+          "note": "",
+          "at": "2026-07-31T00:31:54.189Z"
+        }
+      ]
+    },
+    {
+      "slug": "sphere-of-ruin",
+      "file": "homebrew/spells/sphere-of-ruin.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "31dfb1c2-182f-4e17-8fd6-c93ee49507e1",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "If you are sustaining both this spell and Sphere of Preservation, this spell's save DC increases by 2",
+          "note": "",
+          "at": "2026-07-31T00:32:09.612Z"
+        },
+        {
+          "id": "b284be52-a550-4702-9150-038b9c029a99",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "a one-foot sphere of chaotic unreality",
+          "note": "",
+          "at": "2026-07-31T00:32:33.482Z"
+        },
+        {
+          "id": "7937c86a-b99b-493d-82d8-0172e4164f96",
+          "kind": "note",
+          "pane": "store",
+          "quote": "At the end of each of your turns while you sustain this spell",
+          "note": "Just when you sustain the spell",
+          "at": "2026-07-31T00:33:04.941Z"
+        },
+        {
+          "id": "483edc3c-1dfe-4933-8bb6-7eafd557273e",
+          "kind": "note",
+          "pane": "store",
+          "quote": "As a single action, you can redirect the sphere to a new creature you can see; the sphere then pursues that target instead.",
+          "note": "This should be part of the sustain",
+          "at": "2026-07-31T00:33:42.091Z"
+        }
+      ]
+    },
+    {
+      "slug": "stolen-moment",
+      "file": "homebrew/spells/stolen-moment.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "be5b8cdb-a30b-4b0d-ad8a-ca4d618ea242",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "it is unaware that any time has passed, and any ongoing effects it was subject to resume as normal, except any that would have already expired during the displacement.",
+          "note": "",
+          "at": "2026-07-31T00:34:58.454Z"
+        },
+        {
+          "id": "0a98a98b-e9eb-4213-96e4-6d65983bdb6a",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "success = reappears at start of its turn that round",
+          "note": "",
+          "at": "2026-07-31T00:35:09.155Z"
+        },
+        {
+          "id": "7cb7d8db-9000-432a-b754-796f2722f149",
+          "kind": "note",
+          "pane": "store",
+          "quote": "start",
+          "note": "end",
+          "at": "2026-07-31T00:35:16.642Z"
+        },
+        {
+          "id": "47c0bde2-ff77-4e02-b37c-57fa9b5814da",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "after the first",
+          "note": "",
+          "at": "2026-07-31T00:35:20.663Z"
+        }
+      ]
+    },
+    {
+      "slug": "summon-heart",
+      "file": "homebrew/spells/summon-heart.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "3d3fe309-77fa-414e-93fc-6c3a4a439c44",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "If this reduces the creature to 0 Hit Points, it is immediately slain as described above.",
+          "note": "",
+          "at": "2026-07-31T00:36:10.302Z"
+        },
+        {
+          "id": "e0a31f85-69af-4db9-a8b2-452e1cb40cdd",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Critical Success The creature is unaffected.\n\nSuccess The creature takes half damage.\n\nFailure The creature takes full damage.\n\nCritical Failure The creature takes double damage. If this reduces the creature to 0 Hit Points, it is immediately slain as described above.",
+          "note": "This is a basic fort save so the whole degrees of success ladder here can go",
+          "at": "2026-07-31T00:36:36.548Z"
+        },
+        {
+          "id": "55f20685-32a9-4f4d-88fd-b7dcfb45c7b7",
+          "kind": "note",
+          "pane": "store",
+          "quote": "The",
+          "note": "Specify somewhere in the body that the target needs to make a basic fortitude save",
+          "at": "2026-07-31T00:37:05.476Z"
+        }
+      ]
+    },
+    {
+      "slug": "summon-servant",
+      "file": "homebrew/spells/summon-servant.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "beca3261-12e7-472c-b07d-eac62b754733",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "with the construct trait",
+          "note": "",
+          "at": "2026-07-31T00:38:27.517Z"
+        },
+        {
+          "id": "c7984c5e-33f7-46be-a711-91840005da74",
+          "kind": "note",
+          "pane": "store",
+          "quote": "the Attack and Stride orders you give it",
+          "note": "Orders to attack and stride",
+          "at": "2026-07-31T00:38:54.076Z"
+        }
+      ]
+    },
+    {
+      "slug": "suspension",
+      "file": "homebrew/spells/suspension.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "2edef5cb-a6f9-47dd-a086-a22e0ac87198",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "such as a shove, bull rush, or gust of wind",
+          "note": "",
+          "at": "2026-07-31T00:39:20.771Z"
+        },
+        {
+          "id": "20357601-7022-4c8a-967f-e40de02f9a5a",
+          "kind": "note",
+          "pane": "store",
+          "quote": "using a reaction",
+          "note": "Move this out of the parentheses. You may spend a reaction to",
+          "at": "2026-07-31T00:39:46.961Z"
+        },
+        {
+          "id": "7cefee6d-2ee1-458c-a66c-b420ff72eb3d",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (5th) The required proximity to a surface extends to 60 feet, and the fly Speed increases to 60 feet.",
+          "note": "",
+          "at": "2026-07-31T00:39:51.226Z"
+        }
+      ]
+    },
+    {
+      "slug": "swap",
+      "file": "homebrew/spells/swap.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ea79b1db-cd57-4972-b15f-aee0af098327",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "in pairs or as a single cycle.",
+          "note": "",
+          "at": "2026-07-31T00:40:20.450Z"
+        }
+      ]
+    },
+    {
+      "slug": "taboo",
+      "file": "homebrew/spells/taboo.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "4e205780-4001-4c9a-916c-d305d51449fd",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "may designate up to 2 taboos on the same creature, or",
+          "note": "",
+          "at": "2026-07-31T00:41:04.491Z"
+        }
+      ]
+    },
+    {
+      "slug": "take-me-instead",
+      "file": "homebrew/spells/take-me-instead.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "571a3395-3853-4bb8-be82-9d9559571720",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "with 1-hour rider on caster",
+          "note": "",
+          "at": "2026-07-31T00:42:58.519Z"
+        },
+        {
+          "id": "12c2fbaf-e960-4bdf-8cc2-386e2fcefd10",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "This spell requires 1 minute of uninterrupted casting, during which you must remain in contact with the corpse",
+          "note": "",
+          "at": "2026-07-31T00:43:06.517Z"
+        },
+        {
+          "id": "686558a2-ee40-4635-9b32-26ffcc5e2772",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (4th) The DC decreases to 15, and the creature returns with 25% of its maximum HP instead of 1 HP. The no-healing rider on the caster is reduced to 10 minutes.\n\nHeightened (6th) The DC decreases to 10. The creature returns with 50% of its maximum HP. You still fall to Dying 1, but the no-healing rider on the caster is removed.",
+          "note": "",
+          "at": "2026-07-31T00:43:31.848Z"
+        }
+      ]
+    },
+    {
+      "slug": "talk-the-talk",
+      "file": "homebrew/spells/talk-the-talk.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "73f043ce-5613-4cae-a0d5-a9c09abb2c61",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (5th) The +2 status bonus increases to +3, and the information now includes private social affiliations, known enemies, and recent notable activities: anything the subject would discuss in a semi-private setting with peers",
+          "note": "",
+          "at": "2026-07-31T03:59:55.168Z"
+        },
+        {
+          "id": "2dc0455e-ec4f-41a7-bc74-826feefa8ec4",
+          "kind": "note",
+          "pane": "store",
+          "quote": "you",
+          "note": "Touch, any one creature",
+          "at": "2026-07-31T04:00:11.836Z"
+        },
+        {
+          "id": "067a4ae8-2517-40e3-a22f-3c4a144f0968",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Rank 3",
+          "note": "Bring this down to rank 2",
+          "at": "2026-07-31T04:00:22.225Z"
+        }
+      ]
+    },
+    {
+      "slug": "temporal-discharge",
+      "file": "homebrew/spells/temporal-discharge.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "09e988f1-8343-47d3-8fa0-ca2193b81ab9",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "and the duration extends by 1 day per additional rank, to a maximum of 1 week.",
+          "note": "",
+          "at": "2026-07-31T04:02:35.354Z"
+        }
+      ]
+    },
+    {
+      "slug": "temporal-threshold",
+      "file": "homebrew/spells/temporal-threshold.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "903213b7-eb30-42e8-9ed9-82f032b69914",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+1) The damage on failure increases by 2d10 force, and the duration of the Paralyzed condition on a critical failure increases by 1 round.",
+          "note": "",
+          "at": "2026-07-31T04:03:50.110Z"
+        },
+        {
+          "id": "6f58b729-cd98-4898-8cd2-c9803bd8ba20",
+          "kind": "note",
+          "pane": "store",
+          "quote": "◆◆",
+          "note": "One minute",
+          "at": "2026-07-31T04:03:58.062Z"
+        }
+      ]
+    },
+    {
+      "slug": "thaumaturgic-inhibition",
+      "file": "homebrew/spells/thaumaturgic-inhibition.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "07b27922-2192-4d7e-9aa6-e3b873af25d0",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (8th) The emanation moves with you and affects your own higher-rank slots unless you expend a free action each round to maintain your connection to the weave.",
+          "note": "",
+          "at": "2026-07-31T04:04:54.864Z"
+        }
+      ]
+    },
+    {
+      "slug": "thaumaturgic-obstruction",
+      "file": "homebrew/spells/thaumaturgic-obstruction.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "497a6b72-9348-4aa8-846e-a614daf8ebb0",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+2) The emanation radius increases by 30 feet",
+          "note": "",
+          "at": "2026-07-31T04:05:41.361Z"
+        }
+      ]
+    },
+    {
+      "slug": "time-loop",
+      "file": "homebrew/spells/time-loop.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "4e33117b-3504-44a3-9f39-142de050b77b",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (8th) You can target up to 3 creatures. Each makes its own Will save.",
+          "note": "",
+          "at": "2026-07-31T04:06:31.385Z"
+        },
+        {
+          "id": "399a37f2-5f5e-4778-bd19-20061dec3fdc",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "within 5 feet",
+          "note": "",
+          "at": "2026-07-31T04:06:37.135Z"
+        },
+        {
+          "id": "83fe1fef-8e26-4b85-aed4-2df6b4527fd2",
+          "kind": "note",
+          "pane": "store",
+          "quote": "is instead Slowed 2 until the start of its next turn",
+          "note": "Instead loses that action",
+          "at": "2026-07-31T04:07:08.968Z"
+        },
+        {
+          "id": "fbba4a6d-548e-46a0-adc6-fb47faa3c844",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Critical Failure As failure, except the creature also gains the Stunned 1 condition at the start of each looped turn, and it must succeed at the Will save twice consecutively to end the effect.",
+          "note": "",
+          "at": "2026-07-31T04:07:36.639Z"
+        }
+      ]
+    },
+    {
+      "slug": "time-step",
+      "file": "homebrew/spells/time-step.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "0118ce8f-5c01-4ea7-9e9b-1ef75c994d87",
+          "kind": "note",
+          "pane": "store",
+          "quote": "◆◆",
+          "note": "1 action, not 2",
+          "at": "2026-07-31T04:08:15.715Z"
+        },
+        {
+          "id": "d6c59f97-ae46-4062-8733-d90ecb80f147",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (4th) You can choose to reappear at the end of your next turn instead of at the start, effectively skipping your next turn entirely. You may still choose to reappear at the start if you prefer.\n\nHeightened (6th) The reappearance range increases to 60 feet, and you can bring up to one willing creature of your size or smaller with you (the creature must be adjacent to you when you cast th",
+          "note": "",
+          "at": "2026-07-31T04:08:35.135Z"
+        }
+      ]
+    },
+    {
+      "slug": "touch-of-madness",
+      "file": "homebrew/spells/touch-of-madness.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "d8834e27-012a-4f24-b7fd-b212d2c85bde",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "and shattered cognition",
+          "note": "",
+          "at": "2026-07-31T04:08:50.391Z"
+        }
+      ]
+    },
+    {
+      "slug": "tunnel-vision",
+      "file": "homebrew/spells/tunnel-vision.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "1c7fb7d8-980f-4310-afc0-9bfc8d9cbaa4",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "the fortune trait applies",
+          "note": "",
+          "at": "2026-07-31T04:09:42.170Z"
+        },
+        {
+          "id": "5d2179e8-051f-40b5-9c30-5092bf6e5e11",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Once the fortune effect is used, only the +1 status bonus remains.",
+          "note": "",
+          "at": "2026-07-31T04:09:53.093Z"
+        },
+        {
+          "id": "c7db69f6-a2b2-42fd-8474-5f6dba7e45a2",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (3rd) The status bonus to initiative increases to +2, and the fortune re-roll can be used twice instead of once",
+          "note": "",
+          "at": "2026-07-31T04:10:07.922Z"
+        }
+      ]
+    },
+    {
+      "slug": "umbral-assimilation",
+      "file": "homebrew/spells/umbral-assimilation.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "5d8276a8-3304-4333-9199-04da70327c03",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (8th) The magical darkness you create lasts until the end of the spell's duration rather than until the end of your next turn.",
+          "note": "",
+          "at": "2026-07-31T04:10:24.510Z"
+        },
+        {
+          "id": "d13dd5e8-d791-4297-adb8-7ff3c742a1f5",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Carceri",
+          "note": "Umberii",
+          "at": "2026-07-31T04:11:53.607Z"
+        },
+        {
+          "id": "5a4d2a37-4f06-4a00-95ec-5d97c4265607",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "rather than lasting until the start of your next turn",
+          "note": "",
+          "at": "2026-07-31T04:12:07.082Z"
+        },
+        {
+          "id": "095ebc7a-d41f-4154-88d7-b274c16c77d8",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "or until you dismiss it with a free action",
+          "note": "",
+          "at": "2026-07-31T04:12:27.876Z"
+        },
+        {
+          "id": "b2220a5f-ca70-4738-8848-d4685f97d394",
+          "kind": "note",
+          "pane": "store",
+          "quote": "as a 2-action activity",
+          "note": "This, and all other “as a … activity” parts of spells should be reworded to be you gain access to the x action and then the action is properly formatted in the pathfinder way",
+          "at": "2026-07-31T04:13:28.656Z"
+        }
+      ]
+    },
+    {
+      "slug": "wall-of-time",
+      "file": "homebrew/spells/wall-of-time.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "bd8373fb-a319-4675-82df-2dade0183257",
+          "kind": "note",
+          "pane": "store",
+          "quote": "The wall also imposes a Fortitude save (DC = your spell DC) on any creature that passes through it; on a failure, the creature is Slowed 1 until the start of its next turn.",
+          "note": "Get rid of the heightened block, make this the default instead of the weird action tax and difficult terrain",
+          "at": "2026-07-31T04:14:25.416Z"
+        },
+        {
+          "id": "4a7def22-369a-460e-8d71-b59ac60bf026",
+          "kind": "note",
+          "pane": "store",
+          "quote": "sustained up to 1 minute",
+          "note": "Just one minute, no sustain",
+          "at": "2026-07-31T04:14:36.008Z"
+        },
+        {
+          "id": "d1b76fe8-5a6c-47c5-82e5-4e1459e21a20",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "but crossing it costs significant action economy.",
+          "note": "",
+          "at": "2026-07-31T04:14:48.299Z"
+        },
+        {
+          "id": "d96b8406-a5a1-47ae-8e6b-e86930b7230c",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "in either direction",
+          "note": "",
+          "at": "2026-07-31T04:15:05.285Z"
+        },
+        {
+          "id": "1bec7df3-d1c0-40a1-bcb4-cc8be5f8c37f",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "an additional action to do so; if the creature crosses as part of a Stride, that Stride counts as having moved an additional 10 feet of difficult terrain. Nonmagical ranged attacks that cross the wall automatically miss, and magical ranged attacks that cross the wall must succeed at a flat check (DC 11) or miss. Each round you Sustain this spell, you may move the wall up to 20 feet along the groun",
+          "note": "",
+          "at": "2026-07-31T04:15:14.260Z"
+        }
+      ]
+    },
+    {
+      "slug": "weight-of-the-world",
+      "file": "homebrew/spells/weight-of-the-world.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "7e9d5ab1-6661-4e17-9a80-f0d910a3d2e3",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "crushing their movement and resolve",
+          "note": "",
+          "at": "2026-07-31T04:15:47.063Z"
+        },
+        {
+          "id": "5b69b94e-9bf0-4f6e-a1ef-3159c776bbb2",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Rank 5",
+          "note": "Make this rank 6",
+          "at": "2026-07-31T04:16:18.655Z"
+        }
+      ]
+    },
+    {
+      "slug": "zone-of-minimization",
+      "file": "homebrew/spells/zone-of-minimization.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "62448167-af3e-491b-a133-28b511e6a3e6",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (9th) Flat damage bonuses are also minimized (treat as 0 instead of their normal value).\n\nHeightened (10th) The burst radius increases to 30 feet.",
+          "note": "",
+          "at": "2026-07-31T04:17:39.825Z"
+        }
+      ]
+    }
+  ]
+}

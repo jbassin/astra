@@ -26,17 +26,13 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You collapse probabilistic variance in a sphere around you, enforcing strict determinism. While this spell is sustained, all creatures inside the 30-foot emanation, ally and enemy alike, treat random rolls as if they had rolled the median value on each die, rounding down: 2 on a d4, 3 on a d6, 4 on a d8, 5 on a d10, and 6 on a d12. This affects all dice rolls that occur entirely within the emanation: skill checks, attack rolls, damage rolls, and saving throw rolls.</p><p>If you are sustaining both this spell and Sphere of Ruin, attempts to counteract this spell take a -2 circumstance penalty.</p><hr /><p><strong>Heightened (+2)</strong> The emanation's radius doubles.</p>"
+      "value": "<p>You collapse probabilistic variance in a sphere around you. While this spell is sustained, all creatures inside the 30-foot emanation treat random rolls as if they had rolled the median value on each die, rounding down.</p>"
     },
     "duration": {
       "sustained": true,
       "value": "1 minute"
     },
-    "heightening": {
-      "damage": {},
-      "interval": 2,
-      "type": "interval"
-    },
+    "heightening": {},
     "level": {
       "value": 6
     },

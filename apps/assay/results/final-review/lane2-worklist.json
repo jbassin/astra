@@ -1,0 +1,815 @@
+{
+  "lane": 2,
+  "spells": [
+    {
+      "slug": "forceful-onslaught",
+      "file": "homebrew/spells/forceful-onslaught.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "cccfb28e-3260-45b6-80a5-cad41615fc8b",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (9th) The additional Strike damage increases to 3d6, and the first time the target is reduced to 0 Hit Points during the duration, it doesn't gain the Dying condition until it falls Unconscious at the start of its next turn.",
+          "note": "",
+          "at": "2026-07-28T17:58:57.741Z"
+        },
+        {
+          "id": "76231755-c4ec-4883-8c61-62de5d73a8de",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "the target gains a +2 status bonus to attack rolls",
+          "note": "",
+          "at": "2026-07-28T17:59:28.425Z"
+        }
+      ]
+    },
+    {
+      "slug": "forensic-analysis",
+      "file": "homebrew/spells/forensic-analysis.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "368508d0-e617-4dea-b415-26d92121f9d7",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (4th) In Secrets Mode you may ask open-ended questions; the target answers truthfully to the best of its knowledge. In Statistics Mode you learn two statistics per casting instead of one.\n\nHeightened (6th) In Secrets Mode you may ask up to three open-ended questions. You may also cast the spell in Statistics Mode and Secrets Mode simultaneously in the same action, using only one casting",
+          "note": "",
+          "at": "2026-07-28T22:51:34.398Z"
+        }
+      ]
+    },
+    {
+      "slug": "fugue",
+      "file": "homebrew/spells/fugue.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "a365fea8-9801-48b2-8be3-5ab287b0fca4",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "(as a non-magical indifference; it resumes hostility if attacked)",
+          "note": "",
+          "at": "2026-07-28T22:52:18.409Z"
+        },
+        {
+          "id": "e1b09260-5f60-4971-bd12-46153e8413a9",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Heightened (7th) The spell can target up to 3 creatures, each of which makes a separate Will save.",
+          "note": "How would this even work, it’s a touch spell? Get rid of it",
+          "at": "2026-07-28T22:53:00.932Z"
+        }
+      ]
+    },
+    {
+      "slug": "fumble",
+      "file": "homebrew/spells/fumble.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "c819a6d2-9c26-44c5-8e6c-59640c6e0549",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Additionally, whenever the target makes a Strike with a held weapon, it must succeed at an Acrobatics check against your spell DC or drop the weapon. The target can attempt a new Will save at the end of each of its turns; on a success, the spell ends.",
+          "note": "",
+          "at": "2026-07-28T22:54:38.156Z"
+        },
+        {
+          "id": "ac9c5223-0412-49c7-a071-6ade27d05575",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Will",
+          "note": "Reflex",
+          "at": "2026-07-28T22:54:57.245Z"
+        },
+        {
+          "id": "05a4c9a0-3c2c-4a23-a309-5f062e618a80",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "and the initial Will save at the end of each of its turns is not granted. Instead, the target must succeed at two consecutive Will saves (one at the end of a turn and one at the start of the next) before the effect ends.",
+          "note": "",
+          "at": "2026-07-28T22:55:13.059Z"
+        },
+        {
+          "id": "236913ba-46d4-4c35-a232-4b1ed6db2c90",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (6th) On a critical failure, the target becomes Clumsy 2 instead of Clumsy 1.",
+          "note": "",
+          "at": "2026-07-28T22:55:17.242Z"
+        }
+      ]
+    },
+    {
+      "slug": "gallows",
+      "file": "homebrew/spells/gallows.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "7896ccce-f440-4e70-ad30-b9b74ceca5f8",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "such as a wall, pillar, archway, or frame",
+          "note": "",
+          "at": "2026-07-28T22:55:55.329Z"
+        },
+        {
+          "id": "4abaad2f-4079-49de-8c02-271dbe1fa6a5",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (6th) You can designate any structure you have visited personally within 100 miles, not just one in your line of sight. The spell's duration becomes until your next daily preparations.",
+          "note": "",
+          "at": "2026-07-28T22:56:04.525Z"
+        },
+        {
+          "id": "099cc01c-afd8-4705-a76d-b56e9c65bd5c",
+          "kind": "note",
+          "pane": "store",
+          "quote": "The target must attempt a Will save.",
+          "note": "I think I want to get rid of the save altogether. It just works.",
+          "at": "2026-07-28T22:56:31.290Z"
+        }
+      ]
+    },
+    {
+      "slug": "gift-of-the-archmage",
+      "file": "homebrew/spells/gift-of-the-archmage.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "80130d5f-2f37-4b71-b862-1abfadddbe49",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Heightened (+2) The maximum rank of spell you can gift increases by 2.",
+          "note": "Change this to be +1 increase by 1",
+          "at": "2026-07-28T22:58:01.108Z"
+        },
+        {
+          "id": "0f16d6c5-d58f-424f-8250-a5ff34d5e65a",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Orichalcum",
+          "note": "<Orichalcum|Faerock>",
+          "at": "2026-07-28T22:59:07.323Z"
+        }
+      ]
+    },
+    {
+      "slug": "glimmerdust",
+      "file": "homebrew/spells/glimmerdust.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "3bbf8b44-c01f-40f0-b1f3-573968005283",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "when it fails its Fortitude save",
+          "note": "",
+          "at": "2026-07-28T22:59:41.519Z"
+        },
+        {
+          "id": "3d8cd032-261c-4db0-806e-aec165ccc681",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Blinded",
+          "note": "Make it failure is dazzled, crit fail is blinded",
+          "at": "2026-07-28T23:00:22.903Z"
+        },
+        {
+          "id": "f6227a26-907e-4cd0-8fd9-101ad00151b5",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "the creature cannot attempt saves to end the Blinded condition for the first 3 rounds",
+          "note": "",
+          "at": "2026-07-28T23:00:36.216Z"
+        },
+        {
+          "id": "655b984e-4b9d-4106-a8c2-36afa05ae6be",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+2) The cone increases by 15 feet.",
+          "note": "",
+          "at": "2026-07-28T23:00:43.366Z"
+        }
+      ]
+    },
+    {
+      "slug": "gravity-anvil",
+      "file": "homebrew/spells/gravity-anvil.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "e04998a6-bfae-4ff2-b3e7-ffd463807437",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Stunned 2",
+          "note": "Stunned 1",
+          "at": "2026-07-28T23:01:27.012Z"
+        },
+        {
+          "id": "df3ce83c-cb84-4607-aca2-b5aa92e9e1f8",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Stunned",
+          "note": "Slowed 1",
+          "at": "2026-07-28T23:01:37.940Z"
+        }
+      ]
+    },
+    {
+      "slug": "grey-frost",
+      "file": "homebrew/spells/grey-frost.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "5cd3367e-9dd5-4ba6-94fb-72bdaa4fe8ce",
+          "kind": "note",
+          "pane": "store",
+          "quote": "the Grey Waste",
+          "note": "<the Grey Waste|Nowhere>",
+          "at": "2026-07-28T23:02:36.447Z"
+        }
+      ]
+    },
+    {
+      "slug": "grosteque-selfshape",
+      "file": "homebrew/spells/grosteque-selfshape.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "7fb91529-6b75-4fca-a9a6-6a225ae555f5",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "to Huge, or as large as you can safely fit",
+          "note": "",
+          "at": "2026-07-28T23:04:15.822Z"
+        }
+      ]
+    },
+    {
+      "slug": "haunt",
+      "file": "homebrew/spells/haunt.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "25ad4630-78d0-4550-968c-b033f612e761",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (6th) The teleportation range increases to 60 feet, and you may teleport to any unoccupied space within 60 feet of the target regardless of line of sight.",
+          "note": "",
+          "at": "2026-07-28T23:05:37.814Z"
+        }
+      ]
+    },
+    {
+      "slug": "hellforging",
+      "file": "homebrew/spells/hellforging.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "8b738d84-c4ad-46d4-88b0-0534a4d7b915",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Rank 7",
+          "note": "Shouldn’t this be a ritual? With primary/secondary casters etc",
+          "at": "2026-07-28T23:07:36.699Z"
+        }
+      ]
+    },
+    {
+      "slug": "hypercompression",
+      "file": "homebrew/spells/hypercompression.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "cd915dcd-2c52-4cde-8c39-2152b81a732a",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "While you sustain the spell",
+          "note": "",
+          "at": "2026-07-28T23:08:29.627Z"
+        }
+      ]
+    },
+    {
+      "slug": "inquisition",
+      "file": "homebrew/spells/inquisition.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "3861a78e-9bcc-45b9-8bb8-14a6201ea77c",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "The echo answers from memory alone; it knows everything the target knew at the time of casting but cannot access anything the target has since learned.",
+          "note": "",
+          "at": "2026-07-28T23:11:03.985Z"
+        },
+        {
+          "id": "dfeaf335-9c50-4d4e-afca-47a10d86bca2",
+          "kind": "note",
+          "pane": "store",
+          "quote": "The target must attempt a Will saving throw. A naturally sleeping creature, rather than one magically rendered Unconscious, attempts this save with a –2 circumstance penalty.",
+          "note": "Always -2",
+          "at": "2026-07-28T23:11:35.576Z"
+        },
+        {
+          "id": "a82d2219-ca85-48f2-af7a-911234badf99",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "the same DC, no penalty",
+          "note": "",
+          "at": "2026-07-28T23:11:50.735Z"
+        },
+        {
+          "id": "a0917e6d-034e-4357-a9f1-77a1ceb063e0",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (4th) You can target a creature that is merely asleep, whether magically or naturally, without the –2 circumstance penalty on its Will save. Additionally, the spell's duration increases to sustained up to 1 hour.\n\nHeightened (6th) The target need not be Unconscious or sleeping; it may be awake but Restrained and unable to speak. The secondary save for sensitive secrets is no longer gran",
+          "note": "",
+          "at": "2026-07-28T23:12:18.921Z"
+        }
+      ]
+    },
+    {
+      "slug": "instant-exit",
+      "file": "homebrew/spells/instant-exit.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "1b3fe466-b6f2-4f44-9d56-75577a0e1f73",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "At the end of the duration (the end of your next turn), the portal closes and disappears.",
+          "note": "",
+          "at": "2026-07-28T23:12:45.673Z"
+        },
+        {
+          "id": "b0859866-bcbf-4da5-8261-c6ea60ab2e21",
+          "kind": "note",
+          "pane": "store",
+          "quote": "d20",
+          "note": "d100",
+          "at": "2026-07-28T23:13:11.148Z"
+        },
+        {
+          "id": "def5e24a-6956-450f-9561-4b09e9d8b21e",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (5th) The destination range increases to 5,000 feet, and you may choose whether all creatures that step through arrive at the same location or each one arrives at a different random location within that range.\n\nHeightened (7th) The malfunction result on the d20 expands to 1–3, and you can set a rough directional preference for the destination; the GM chooses the exact location within 90",
+          "note": "",
+          "at": "2026-07-28T23:13:17.189Z"
+        }
+      ]
+    },
+    {
+      "slug": "jolt",
+      "file": "homebrew/spells/jolt.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "c3536bf1-fa3a-422d-af3e-dc3f29aa70ca",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "The Stride and the Strike can be taken in either order if both are triggered by the same target (the target chooses).",
+          "note": "",
+          "at": "2026-07-28T23:13:47.212Z"
+        },
+        {
+          "id": "92f9607c-dd32-4ab4-9961-6f5c32203b93",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (9th) Each target may use the free action for a Strike, a Stride, or both (in any order).",
+          "note": "",
+          "at": "2026-07-28T23:13:56.769Z"
+        },
+        {
+          "id": "63d9be0b-25b5-45cd-a8b0-bc080f2e4702",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Heightened (7th) The range increases to 60 feet and you can target up to 6 willing creatures.",
+          "note": "+1 increase number of targets by 1",
+          "at": "2026-07-28T23:15:01.695Z"
+        },
+        {
+          "id": "19f938b5-39c0-41e9-9e75-f24ec4624f31",
+          "kind": "note",
+          "pane": "store",
+          "quote": "30",
+          "note": "60",
+          "at": "2026-07-28T23:15:08.690Z"
+        }
+      ]
+    },
+    {
+      "slug": "kosmoturgist-s-armor",
+      "file": "homebrew/spells/kosmoturgist-s-armor.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "a64ac6fe-2904-462c-b1db-ea2394902c10",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+1) The resistance increases by 5.",
+          "note": "",
+          "at": "2026-07-28T23:15:45.962Z"
+        },
+        {
+          "id": "2d6f70cf-7594-4b3b-a7fc-a37e0d78e411",
+          "kind": "note",
+          "pane": "store",
+          "quote": "force",
+          "note": "Is force damage a thing in pathfinder?",
+          "at": "2026-07-28T23:15:57.317Z"
+        }
+      ]
+    },
+    {
+      "slug": "kosmoturgist-s-weapon",
+      "file": "homebrew/spells/kosmoturgist-s-weapon.json",
+      "annotation": "Two force→spirit comments already dropped; the remaining comments (range, duration→sustained, activity rule, prose) all apply. duration→sustained must update system.duration in lockstep.",
+      "comments": [
+        {
+          "id": "9e9e3510-8741-4415-afb4-c36aeb5dcfee",
+          "kind": "note",
+          "pane": "store",
+          "quote": "20",
+          "note": "30",
+          "at": "2026-07-28T23:16:45.079Z"
+        },
+        {
+          "id": "53e44874-b12d-40a5-b13e-483e4636dab8",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Duration 1",
+          "note": "Sustained",
+          "at": "2026-07-28T23:16:55.926Z"
+        },
+        {
+          "id": "0116aa53-3590-4b23-a119-343fe9fde362",
+          "kind": "note",
+          "pane": "store",
+          "quote": "as a 1-action activity",
+          "note": "When you Sustain the Spell",
+          "at": "2026-07-28T23:17:18.627Z"
+        },
+        {
+          "id": "337f7226-4da3-4e64-8a7b-4defaecf7e8b",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Attack: The weapon makes a melee spell attack roll. On a hit, the struck creature takes 3d10+8 force damage (double damage on a critical hit). Defend: The weapon takes position adjacent to a creature of your choice within its reach, granting that creature lesser cover until the start of your next turn. Until the start of your next turn, the first hostile creature that moves to be adjacent to the p",
+          "note": "This is formatted poorly",
+          "at": "2026-07-28T23:18:22.845Z"
+        }
+      ]
+    },
+    {
+      "slug": "laixa-s-expert-intuition",
+      "file": "homebrew/spells/laixa-s-expert-intuition.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "9ef6bdfb-5a8c-4be8-88eb-ebfcd37fcb79",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "In addition, while this spell is active you cannot be magically compelled or enchanted into believing false information you have already consciously identified as false during the duration.",
+          "note": "",
+          "at": "2026-07-28T23:19:49.786Z"
+        },
+        {
+          "id": "9bed88ce-9869-4113-bba3-390f1982ed89",
+          "kind": "note",
+          "pane": "store",
+          "quote": "you may use 15 as your Perception check result if your roll is lower than 15",
+          "note": "Why did this become so much wordier than the original?",
+          "at": "2026-07-29T14:25:23.493Z"
+        },
+        {
+          "id": "76c1b3f6-e4f5-40d9-95af-42c40fc4c3bf",
+          "kind": "note",
+          "pane": "store",
+          "quote": "this is a fortune effect.",
+          "note": "Just aid the fortune trait to the spell instead of this",
+          "at": "2026-07-29T14:25:39.675Z"
+        },
+        {
+          "id": "3063410d-8d34-4225-88b2-caa976f7486a",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (6th) The minimum Perception result for Sense Motive checks increases to 20, and you also gain the same minimum result on Diplomacy checks to read emotions and Deception checks to recognize that someone else is using Deception.",
+          "note": "",
+          "at": "2026-07-29T14:25:48.981Z"
+        },
+        {
+          "id": "9b3e0ca4-d202-47c5-85a5-082dda369c25",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "In addition, while this spell is active you cannot be magically compelled or enchanted into believing false information you have already consciously identified as false during the duration.",
+          "note": "",
+          "at": "2026-07-29T14:26:07.723Z"
+        }
+      ]
+    },
+    {
+      "slug": "laixa-s-historical-tracker",
+      "file": "homebrew/spells/laixa-s-historical-tracker.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "e503a3c9-6d33-43a1-9114-3549bcd82036",
+          "kind": "note",
+          "pane": "store",
+          "quote": "For the duration, you can use a single Seek action to look at a path, road, corridor, or open area within 30 feet of you and see ghostly footprints of the last creature that traveled through that space, displayed as translucent, shimmering impressions that only you can see. You learn the size of the creature and the direction it was headed. The ghostly trail shows only the most recent traveler and",
+          "note": "This is so wordy, and mechanically worse than the original. Revert it",
+          "at": "2026-07-29T14:27:40.676Z"
+        },
+        {
+          "id": "337fc330-f62b-4cbb-8aaa-d27de040baf8",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "The duration increases to 1 hour",
+          "note": "",
+          "at": "2026-07-29T14:27:48.788Z"
+        },
+        {
+          "id": "180ed15d-dd92-4c96-bafa-01151bb5965d",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "The duration increases to 8 hours",
+          "note": "",
+          "at": "2026-07-29T14:27:52.396Z"
+        }
+      ]
+    },
+    {
+      "slug": "left-hand-of-judgment",
+      "file": "homebrew/spells/left-hand-of-judgment.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "5956cfb1-38dd-4b1a-bc7a-f1c471efa609",
+          "kind": "note",
+          "pane": "store",
+          "quote": "reaction",
+          "note": "This should be the icon",
+          "at": "2026-07-29T14:28:08.863Z"
+        },
+        {
+          "id": "0e5b48f2-53a7-41a2-b694-4de681ac4ce3",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "using your best melee attack bonus",
+          "note": "",
+          "at": "2026-07-29T14:28:23.650Z"
+        },
+        {
+          "id": "f5ddf26a-4246-46d6-82c6-406f5acccc29",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (6th) The Gravitational Counter reaction triggers on any melee attack against you (not only hits), and the free Strike gains a +2 circumstance bonus to its attack roll.\n\nHeightened (8th) The free Strike from Gravitational Counter can target any creature within 30 feet (not just the triggering attacker) as your gravitational pull redirects the energy.",
+          "note": "",
+          "at": "2026-07-29T14:29:00.586Z"
+        },
+        {
+          "id": "825c8b68-0132-4004-9371-969b2442a883",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Gravitational Counter",
+          "note": "This should also make the opponent off-guard for the attack",
+          "at": "2026-07-29T14:29:37.696Z"
+        }
+      ]
+    },
+    {
+      "slug": "legend-killer",
+      "file": "homebrew/spells/legend-killer.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "2a7dcf44-324c-4223-9186-83c9cfbc5f89",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "abilities with the mythic trait",
+          "note": "",
+          "at": "2026-07-29T22:37:11.913Z"
+        }
+      ]
+    },
+    {
+      "slug": "lend-time",
+      "file": "homebrew/spells/lend-time.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "28fb72e9-217f-4e48-8e09-643a0a286ff4",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Trigger Immediately before your turn begins",
+          "note": "This should be in the header",
+          "at": "2026-07-29T22:37:39.579Z"
+        },
+        {
+          "id": "c9ef174f-fe19-4c35-918b-011c1dbc31dc",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "before your original turn would have occurred",
+          "note": "",
+          "at": "2026-07-29T22:37:55.454Z"
+        },
+        {
+          "id": "40bb39ff-438d-418a-b06c-07ca9b2fc1ca",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (5th) The ally gains 2 extra actions on their inserted turn. Alternatively, you may target 2 willing allies, each gaining 1 action on an inserted partial turn instead",
+          "note": "",
+          "at": "2026-07-29T22:38:22.930Z"
+        },
+        {
+          "id": "be151d83-3cfc-473a-8d7f-64c33feeeae5",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Alternatively, you may target 2 willing allies, each gaining 1 action on an inserted partial turn instead.",
+          "note": "I like this in general, we should move it to be on the regular un-heightened version",
+          "at": "2026-07-29T22:39:22.297Z"
+        }
+      ]
+    },
+    {
+      "slug": "let-s-start-a-fight",
+      "file": "homebrew/spells/let-s-start-a-fight.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "9504ece4-e278-4858-b9e0-1dff5c7426de",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "The provocation, once loosed, cannot be recalled",
+          "note": "",
+          "at": "2026-07-29T22:39:47.730Z"
+        },
+        {
+          "id": "f9d1e93f-f7a4-48d4-9a7b-bf3858c44443",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "other than the caster",
+          "note": "",
+          "at": "2026-07-29T22:40:15.981Z"
+        },
+        {
+          "id": "f783cd5a-87d3-4cd6-92ae-f8c4ed228720",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+2) The burst radius increases by 10 feet and the minimum group size decreases by 2.",
+          "note": "",
+          "at": "2026-07-29T22:40:42.190Z"
+        }
+      ]
+    },
+    {
+      "slug": "lockstep-fate",
+      "file": "homebrew/spells/lockstep-fate.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "dd577ee2-8bb4-47f5-92a9-a1ecc943dc87",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (4th) You can hold up to two rolls at once (neither can be replaced). When the linked creature would roll a d20, you choose which held roll it uses; the link ends as normal and any unused held roll is lost.\n\nHeightened (6th) You can target up to 3 creatures; each attempts its own save. You maintain a single pool of held rolls (maximum 2 at a time) and may assign any held roll to any lin",
+          "note": "",
+          "at": "2026-07-29T22:41:21.019Z"
+        }
+      ]
+    },
+    {
+      "slug": "lucky-stars",
+      "file": "homebrew/spells/lucky-stars.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "03a4870a-e37d-49d0-b460-2cdea44a7a62",
+          "kind": "note",
+          "pane": "store",
+          "quote": "You can spend a star charge after you roll but before the outcome is determined.",
+          "note": "It should be before rolling, not after",
+          "at": "2026-07-29T22:43:17.467Z"
+        },
+        {
+          "id": "75cce131-2a8f-4007-8cdc-6d9e5bc02dd9",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "even during another creature's turn",
+          "note": "",
+          "at": "2026-07-29T22:43:27.748Z"
+        },
+        {
+          "id": "68268906-ea49-43a4-972a-544b3d455979",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+2) You gain 1 additional star charge when you cast this spell.",
+          "note": "",
+          "at": "2026-07-29T22:43:36.714Z"
+        }
+      ]
+    },
+    {
+      "slug": "lucky-ward",
+      "file": "homebrew/spells/lucky-ward.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "31de7008-cb55-4a26-90bb-6caeeb92e4b7",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "once an enemy has rolled, it doesn't roll again from this casting",
+          "note": "",
+          "at": "2026-07-30T13:55:36.703Z"
+        },
+        {
+          "id": "86fb8d8c-821d-4bfd-9699-403070428ae3",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (6th) The status bonus and penalty both increase to +2 / -2.\n\nHeightened (9th) Both increase to +3 / -3.",
+          "note": "",
+          "at": "2026-07-30T13:55:50.230Z"
+        }
+      ]
+    },
+    {
+      "slug": "mark-of-protection",
+      "file": "homebrew/spells/mark-of-protection.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "0b2f5c60-e09b-407f-b7ca-e58d7bfce661",
+          "kind": "note",
+          "pane": "store",
+          "quote": "reaction",
+          "note": "Should be icon",
+          "at": "2026-07-30T13:57:37.275Z"
+        }
+      ]
+    },
+    {
+      "slug": "mass-fluency",
+      "file": "homebrew/spells/mass-fluency.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "c2cb8ae5-0f6a-4b96-a8bc-d030b20776bf",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "touched one at a time",
+          "note": "",
+          "at": "2026-07-30T13:58:22.768Z"
+        }
+      ]
+    },
+    {
+      "slug": "mental-balance",
+      "file": "homebrew/spells/mental-balance.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "ef336d8d-906b-4d25-8858-3d5c1f2fac0d",
+          "kind": "note",
+          "pane": "store",
+          "quote": "You carefully strip away all emotional attachments, cognitive biases, and memetic influence from the target's mind.",
+          "note": "Change this wording back to the original",
+          "at": "2026-07-30T13:58:50.873Z"
+        },
+        {
+          "id": "a4c7815c-fc2d-48fb-83b3-c6a57832db56",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "though it must still attempt Will saves normally",
+          "note": "",
+          "at": "2026-07-30T13:59:10.276Z"
+        },
+        {
+          "id": "c07f5128-3d5f-4a28-a0af-44dfa3ff04bb",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (6th) The status bonus increases to +3, and the target also gains a +2 status bonus to Perception for the duration. The restrictions on emotion-based decisions are somewhat relaxed; the target may acknowledge emotional context even if it cannot act solely on emotion.",
+          "note": "",
+          "at": "2026-07-30T13:59:24.905Z"
+        },
+        {
+          "id": "2403631d-ee8a-4a63-9c27-bf9295b742bb",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "The target cannot lie",
+          "note": "",
+          "at": "2026-07-30T13:59:45.983Z"
+        },
+        {
+          "id": "c106f97d-853f-48c0-bb38-3c685f7ba940",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Fascinated condition",
+          "note": "Fascinated and controlled",
+          "at": "2026-07-30T14:00:03.456Z"
+        }
+      ]
+    }
+  ]
+}

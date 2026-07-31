@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You touch a written or drawn document and produce a perfect duplicate onto blank pages or a blank surface you supply. You can copy up to 50 pages of text or an equivalent area of drawn material in one casting. Magical writing, including spellbook pages, scrolls, and glyphs, can be copied, but the copy is mundane; it does not retain magical properties. The copy is indistinguishable from the original to mundane inspection but can be identified as a copy with a successful Recall Knowledge check against your spell DC.</p><hr /><p><strong>Heightened (3rd)</strong> You can copy up to 250 pages of text, and the copy retains any non-magical illustrations or illuminations with perfect fidelity.</p>"
+      "value": "<p>You touch a written or drawn document and produce a perfect duplicate onto blank pages or a blank surface you supply. You can copy up to 50 pages of text or an equivalent area of drawn material in one casting. Magical writing, including spellbook pages, scrolls, and glyphs, can be copied, but the copy is mundane; it does not retain magical properties. The copy is indistinguishable from the original to mundane inspection but can be identified as a copy with a successful Society check against your spell DC.</p><hr /><p><strong>Heightened (3rd)</strong> You can copy up to 250 pages of text, and the copy retains any non-magical illustrations or illuminations with perfect fidelity.</p>"
     },
     "duration": {
       "sustained": false,

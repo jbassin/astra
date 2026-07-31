@@ -23,19 +23,13 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You briefly step forward through time, vanishing from your current location. You disappear until the start of your next turn. While displaced, you cannot be targeted by any effect, cannot be detected, cannot observe or interact with the world, and are not affected by anything that happens in your absence.</p><p>At the start of your next turn, you reappear in any unoccupied space within 30 feet of where you vanished. You cannot cast this spell twice in a row.</p><hr /><p><strong>Heightened (4th)</strong> You can choose to reappear at the end of your next turn instead of at the start, effectively skipping your next turn entirely. You may still choose to reappear at the start if you prefer.</p><p><strong>Heightened (6th)</strong> The reappearance range increases to 60 feet, and you can bring up to one willing creature of your size or smaller with you (the creature must be adjacent to you when you cast the spell and reappears adjacent to you).</p>"
+      "value": "<p>You briefly step forward through time, vanishing from your current location. You disappear until the start of your next turn. While displaced, you cannot be targeted by any effect, cannot be detected, cannot observe or interact with the world, and are not affected by anything that happens in your absence.</p><p>At the start of your next turn, you reappear in any unoccupied space within 30 feet of where you vanished. You cannot cast this spell twice in a row.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "until the start of your next turn"
     },
-    "heightening": {
-      "levels": {
-        "4": {},
-        "6": {}
-      },
-      "type": "fixed"
-    },
+    "heightening": {},
     "level": {
       "value": 2
     },
@@ -53,7 +47,7 @@
       "value": "you"
     },
     "time": {
-      "value": "2"
+      "value": "1"
     },
     "traits": {
       "rarity": "common",

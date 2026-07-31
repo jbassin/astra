@@ -1,0 +1,573 @@
+[
+  {
+    "slug": "shape-modify-accuracy",
+    "comments": [
+      {
+        "id": "e19cfc9b-0cac-40f7-be06-70f10983bd08",
+        "action": "applied",
+        "detail": "deleted the fail-with-no-effect clause, repaired the sentence"
+      },
+      {
+        "id": "366e7ece-db42-4d70-a8af-52693fea5fc4",
+        "action": "applied",
+        "detail": "deleted the whole Heightened block"
+      }
+    ],
+    "lockstep": [
+      "heightening {levels:{5:{},7:{}},type:fixed} -> {} (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "shape-modify-armor",
+    "comments": [
+      {
+        "id": "90ad4221-2cec-4e5a-99ed-1157c5e5864c",
+        "action": "applied",
+        "detail": "deleted the fail-with-no-effect clause, repaired the sentence"
+      },
+      {
+        "id": "b4699e66-c45e-4ac3-a70b-716abd96e819",
+        "action": "applied",
+        "detail": "deleted the whole Heightened block"
+      }
+    ],
+    "lockstep": [
+      "heightening {levels:{5:{},7:{}},type:fixed} -> {} (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "shape-modify-severity",
+    "comments": [
+      {
+        "id": "0ba643bd-2330-4ce1-b390-381ece64bb79",
+        "action": "applied",
+        "detail": "deleted the fail-with-no-effect clause, repaired the sentence"
+      },
+      {
+        "id": "bf4baf52-9ae6-4552-bee7-d86a8465cf66",
+        "action": "applied",
+        "detail": "deleted the Heightened (+2) line"
+      }
+    ],
+    "lockstep": [
+      "heightening {damage:{},interval:2,type:interval} -> {} (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "shape-modify-speed",
+    "comments": [
+      {
+        "id": "e2b2f4da-b56b-490c-9374-101ef172fe08",
+        "action": "applied",
+        "detail": "deleted the fail-with-no-effect clause, repaired the sentence"
+      },
+      {
+        "id": "eccdd3ed-d7c3-465b-a6b9-264293c93b95",
+        "action": "applied",
+        "detail": "deleted the Heightened (+2) line"
+      }
+    ],
+    "lockstep": [
+      "heightening {damage:{},interval:2,type:interval} -> {} (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "solar-fury",
+    "comments": [
+      {
+        "id": "9c607716-e4e8-4687-b702-0e862b71a66b",
+        "action": "applied",
+        "detail": "alias substitution: 'a solar plane' -> 'the Godhome'"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "solar-rebuke",
+    "comments": [
+      {
+        "id": "0633bd92-e8a1-4393-a8e0-5ce6dbc3ba87",
+        "action": "applied",
+        "detail": "'the peak of Elysium' -> 'a crack in the firmament'"
+      },
+      {
+        "id": "54d7b982-6b7d-4600-9b73-3fb223d61071",
+        "action": "skipped",
+        "detail": "already the leading bold Trigger paragraph, matching every other reaction spell in this store (dead-ringer/deja-vu/disperse-magic/lend-time); this store's Foundry schema has no discrete trigger field to move it into"
+      },
+      {
+        "id": "0123778c-0cab-4fe5-8244-fbebc2cb2ab9",
+        "action": "applied",
+        "detail": "appended 'The target must attempt a Will save against your spell DC.' after the damage sentence, matching defense.save.statistic=will which the body never stated"
+      }
+    ],
+    "lockstep": [],
+    "notes": "54d7b982: this looks like a possible store-level schema question (should reaction spells get a dedicated trigger field?) rather than a text edit within this store's current schema — flagging for the orchestrator."
+  },
+  {
+    "slug": "spawn-animated-spite",
+    "comments": [
+      {
+        "id": "21ad9de5-363c-40de-b1a3-9ce6487ad67b",
+        "action": "applied",
+        "detail": "name already renamed to 'Spawn Animated Spite' (file + name field) by the orchestrator, per annotation"
+      },
+      {
+        "id": "b80afc51-4396-4911-919a-8dbe7d98c7b0",
+        "action": "applied",
+        "detail": "removed the '(double on a critical hit)' parenthetical (rules-default restatement)"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "sphere-of-preservation",
+    "comments": [
+      {
+        "id": "1a5bc11e-6c07-41fa-9967-ad4143163e6a",
+        "action": "applied",
+        "detail": "removed 'enforcing strict determinism'"
+      },
+      {
+        "id": "b690a724-be00-4185-88be-4e535bfd9cea",
+        "action": "applied",
+        "detail": "removed 'ally and enemy alike'"
+      },
+      {
+        "id": "c62b3820-68ef-4536-b8a7-731cf898bedb",
+        "action": "applied",
+        "detail": "removed the enumerated per-die median list (T1 worked example)"
+      },
+      {
+        "id": "7c9d98ee-f588-475e-9716-b5cbe389adf4",
+        "action": "applied",
+        "detail": "removed the 'affects all dice rolls...' over-explaining sentence"
+      },
+      {
+        "id": "b18ec116-1dd6-4562-82bb-7ac77e0d4ae4",
+        "action": "applied",
+        "detail": "resolved by deleting the Sphere of Ruin cross-reference sentence (same span as d774cc63)"
+      },
+      {
+        "id": "d774cc63-2a58-4db7-85d3-2f6ff325d35d",
+        "action": "applied",
+        "detail": "removed the cross-spell counteract-penalty sentence naming Sphere of Ruin (T3 name-drop)"
+      },
+      {
+        "id": "3ffb6af0-6330-4e0d-84bd-6741c44a52be",
+        "action": "applied",
+        "detail": "deleted the Heightened (+2) line"
+      }
+    ],
+    "lockstep": [
+      "heightening {damage:{},interval:2,type:interval} -> {} (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "sphere-of-ruin",
+    "comments": [
+      {
+        "id": "31dfb1c2-182f-4e17-8fd6-c93ee49507e1",
+        "action": "applied",
+        "detail": "removed the cross-spell DC-increase sentence naming Sphere of Preservation (T3 name-drop, pairs with sphere-of-preservation's removal)"
+      },
+      {
+        "id": "b284be52-a550-4702-9150-038b9c029a99",
+        "action": "applied",
+        "detail": "removed the 'a one-foot sphere of chaotic unreality' appositive (T1)"
+      },
+      {
+        "id": "7937c86a-b99b-493d-82d8-0172e4164f96",
+        "action": "applied",
+        "detail": "reworded 'At the end of each of your turns while you sustain this spell' -> 'When you sustain this spell'"
+      },
+      {
+        "id": "483edc3c-1dfe-4933-8bb6-7eafd557273e",
+        "action": "applied",
+        "detail": "folded the redirect option into the same sustain sentence instead of a separate 'As a single action' paragraph"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "stolen-moment",
+    "comments": [
+      {
+        "id": "be5b8cdb-a30b-4b0d-ad8a-ca4d618ea242",
+        "action": "applied",
+        "detail": "removed the 'unaware that any time has passed...' trailing clause (T2/T4)"
+      },
+      {
+        "id": "0a98a98b-e9eb-4213-96e4-6d65983bdb6a",
+        "action": "applied",
+        "detail": "removed the 'success = reappears at start of its turn that round' parenthetical"
+      },
+      {
+        "id": "7cb7d8db-9000-432a-b754-796f2722f149",
+        "action": "applied",
+        "detail": "'At the start of each round' -> 'At the end of each round'"
+      },
+      {
+        "id": "47c0bde2-ff77-4e02-b37c-57fa9b5814da",
+        "action": "applied",
+        "detail": "removed 'after the first' fencing clause"
+      }
+    ],
+    "lockstep": [],
+    "notes": "comments 0a98a98b/7cb7d8db/47c0bde2 all landed in the same sentence; final wording: 'At the end of each round, it may attempt a new Fortitude save to return early.'"
+  },
+  {
+    "slug": "summon-heart",
+    "comments": [
+      {
+        "id": "3d3fe309-77fa-414e-93fc-6c3a4a439c44",
+        "action": "applied",
+        "detail": "subsumed by e0a31f85's full-ladder deletion (same span)"
+      },
+      {
+        "id": "e0a31f85-69af-4db9-a8b2-452e1cb40cdd",
+        "action": "applied",
+        "detail": "deleted the whole Critical Success/Success/Failure/Critical Failure ladder — basic Fortitude save follows the PF2e default (half/full/double)"
+      },
+      {
+        "id": "55f20685-32a9-4f4d-88fd-b7dcfb45c7b7",
+        "action": "applied",
+        "detail": "added 'must attempt a basic Fortitude save against 11d10 void damage' to the body, matching defense.save.basic=true/statistic=fortitude"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "summon-servant",
+    "comments": [
+      {
+        "id": "beca3261-12e7-472c-b07d-eac62b754733",
+        "action": "applied",
+        "detail": "removed 'with the construct trait'"
+      },
+      {
+        "id": "c7984c5e-33f7-46be-a711-91840005da74",
+        "action": "applied",
+        "detail": "'the Attack and Stride orders you give it' -> 'orders to attack and stride'"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "suspension",
+    "comments": [
+      {
+        "id": "2edef5cb-a6f9-47dd-a086-a22e0ac87198",
+        "action": "applied",
+        "detail": "removed '(such as a shove, bull rush, or gust of wind)' (T1 example list)"
+      },
+      {
+        "id": "20357601-7022-4c8a-967f-e40de02f9a5a",
+        "action": "applied",
+        "detail": "moved the reaction-cast detail out of parentheses: 'You may spend a reaction to cast this spell if you are falling; the vines catch you, negating all falling damage.'"
+      },
+      {
+        "id": "7cefee6d-2ee1-458c-a66c-b420ff72eb3d",
+        "action": "applied",
+        "detail": "deleted the Heightened (5th) line"
+      }
+    ],
+    "lockstep": ["heightening {levels:{5:{}},type:fixed} -> {} (no Heightened content remains)"],
+    "notes": "the reworded reaction clause describes casting this spell two ways (2-action normal cast, or a reaction while falling) but system.time only carries one value ('2') — pre-existing schema limit, not something this pass's comments asked to fix; flagging for the orchestrator."
+  },
+  {
+    "slug": "swap",
+    "comments": [
+      {
+        "id": "ea79b1db-cd57-4972-b15f-aee0af098327",
+        "action": "applied",
+        "detail": "removed 'in pairs or as a single cycle.'"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "taboo",
+    "comments": [
+      {
+        "id": "4e205780-4001-4c9a-916c-d305d51449fd",
+        "action": "applied",
+        "detail": "removed 'may designate up to 2 taboos on the same creature, or', kept 'may' for grammar"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "take-me-instead",
+    "comments": [
+      {
+        "id": "571a3395-3853-4bb8-be82-9d9559571720",
+        "action": "applied",
+        "detail": "removed the redundant '(with 1-hour rider on caster)' summary from the duration field — the rider is already spelled out in the body"
+      },
+      {
+        "id": "12c2fbaf-e960-4bdf-8cc2-386e2fcefd10",
+        "action": "applied",
+        "detail": "removed 'This spell requires 1 minute of uninterrupted casting...' (restates the 1-minute casting time field)"
+      },
+      {
+        "id": "686558a2-ee40-4635-9b32-26ffcc5e2772",
+        "action": "applied",
+        "detail": "deleted both Heightened blocks"
+      }
+    ],
+    "lockstep": [
+      "duration.value 'instantaneous (with 1-hour rider on caster)' -> 'instantaneous'",
+      "heightening {levels:{4:{},6:{}},type:fixed} -> {} (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "talk-the-talk",
+    "comments": [
+      {
+        "id": "73f043ce-5613-4cae-a0d5-a9c09abb2c61",
+        "action": "applied",
+        "detail": "deleted the Heightened (5th) line"
+      },
+      {
+        "id": "2dc0455e-ec4f-41a7-bc74-826feefa8ec4",
+        "action": "amended",
+        "detail": "target field 'you' -> 'Touch, any one creature' per note required a spell-shape change: range self->touch, target you->1 creature, and the body rewritten from a self-buff ('any person you can see') to a touch/single-target read-the-target framing"
+      },
+      {
+        "id": "067a4ae8-2517-40e3-a22f-3c4a144f0968",
+        "action": "applied",
+        "detail": "level.value 3 -> 2"
+      }
+    ],
+    "lockstep": [
+      "range.value 'self' -> 'touch'",
+      "target.value 'you' -> '1 creature'",
+      "level.value 3 -> 2",
+      "heightening {levels:{5:{}},type:fixed} -> {} (no Heightened content remains)"
+    ],
+    "notes": "2dc0455e turns this from a self-buff into a touch/single-target spell — a real design change, not a wording tweak. I rewrote the body to match (see homebrew/spells/talk-the-talk.json). Flagging for orchestrator sanity check since I had to make judgment calls on phrasing."
+  },
+  {
+    "slug": "temporal-discharge",
+    "comments": [
+      {
+        "id": "09e988f1-8343-47d3-8fa0-ca2193b81ab9",
+        "action": "applied",
+        "detail": "removed 'and the duration extends by 1 day per additional rank, to a maximum of 1 week.' from the Heightened line"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "temporal-threshold",
+    "comments": [
+      {
+        "id": "903213b7-eb30-42e8-9ed9-82f032b69914",
+        "action": "applied",
+        "detail": "deleted the Heightened (+1) line"
+      },
+      {
+        "id": "6f58b729-cd98-4898-8cd2-c9803bd8ba20",
+        "action": "applied",
+        "detail": "casting time 2 actions -> 1 minute"
+      }
+    ],
+    "lockstep": ["time.value '2' -> '1 minute'"]
+  },
+  {
+    "slug": "thaumaturgic-inhibition",
+    "comments": [
+      {
+        "id": "07b27922-2192-4d7e-9aa6-e3b873af25d0",
+        "action": "applied",
+        "detail": "deleted the Heightened (8th) line"
+      }
+    ],
+    "lockstep": ["heightening {levels:{8:{}},type:fixed} -> {} (no Heightened content remains)"]
+  },
+  {
+    "slug": "thaumaturgic-obstruction",
+    "comments": [
+      {
+        "id": "497a6b72-9348-4aa8-846e-a614daf8ebb0",
+        "action": "applied",
+        "detail": "deleted the Heightened (+2) line"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "time-loop",
+    "comments": [
+      {
+        "id": "4e33117b-3504-44a3-9f39-142de050b77b",
+        "action": "applied",
+        "detail": "deleted the Heightened (8th) line"
+      },
+      {
+        "id": "399a37f2-5f5e-4778-bd19-20061dec3fdc",
+        "action": "applied",
+        "detail": "removed '(within 5 feet)'"
+      },
+      {
+        "id": "83fe1fef-8e26-4b85-aed4-2df6b4527fd2",
+        "action": "applied",
+        "detail": "'is instead Slowed 2 until the start of its next turn' -> 'instead loses that action'"
+      },
+      {
+        "id": "fbba4a6d-548e-46a0-adc6-fb47faa3c844",
+        "action": "applied",
+        "detail": "removed the whole Critical Failure paragraph"
+      }
+    ],
+    "lockstep": ["heightening {levels:{8:{}},type:fixed} -> {} (no Heightened content remains)"]
+  },
+  {
+    "slug": "time-step",
+    "comments": [
+      {
+        "id": "0118ce8f-5c01-4ea7-9e9b-1ef75c994d87",
+        "action": "applied",
+        "detail": "casting time 2 actions -> 1 action"
+      },
+      {
+        "id": "d6c59f97-ae46-4062-8733-d90ecb80f147",
+        "action": "applied",
+        "detail": "deleted both Heightened (4th)/(6th) blocks (quote truncated by the review tool but clearly spans both)"
+      }
+    ],
+    "lockstep": [
+      "time.value '2' -> '1'",
+      "heightening {levels:{4:{},6:{}},type:fixed} -> {} (no Heightened content remains)"
+    ]
+  },
+  {
+    "slug": "touch-of-madness",
+    "comments": [
+      {
+        "id": "d8834e27-012a-4f24-b7fd-b212d2c85bde",
+        "action": "applied",
+        "detail": "removed 'and shattered cognition'"
+      }
+    ],
+    "lockstep": []
+  },
+  {
+    "slug": "tunnel-vision",
+    "comments": [
+      {
+        "id": "1c7fb7d8-980f-4310-afc0-9bfc8d9cbaa4",
+        "action": "applied",
+        "detail": "removed '(the fortune trait applies)' — already declared structurally in traits.value"
+      },
+      {
+        "id": "5d2179e8-051f-40b5-9c30-5092bf6e5e11",
+        "action": "applied",
+        "detail": "removed 'Once the fortune effect is used, only the +1 status bonus remains.' (T2/T4)"
+      },
+      {
+        "id": "c7db69f6-a2b2-42fd-8474-5f6dba7e45a2",
+        "action": "applied",
+        "detail": "deleted the Heightened (3rd) line"
+      }
+    ],
+    "lockstep": ["heightening {levels:{3:{}},type:fixed} -> {} (no Heightened content remains)"]
+  },
+  {
+    "slug": "umbral-assimilation",
+    "comments": [
+      {
+        "id": "5d8276a8-3304-4333-9199-04da70327c03",
+        "action": "applied",
+        "detail": "deleted the Heightened (8th) line"
+      },
+      {
+        "id": "d13dd5e8-d791-4297-adb8-7ff3c742a1f5",
+        "action": "applied",
+        "detail": "alias substitution: 'Carceri' -> 'Umberii'"
+      },
+      {
+        "id": "5a4d2a37-4f06-4a00-95ec-5d97c4265607",
+        "action": "applied",
+        "detail": "removed 'rather than lasting until the start of your next turn'"
+      },
+      {
+        "id": "095ebc7a-d41f-4154-88d7-b274c16c77d8",
+        "action": "applied",
+        "detail": "removed 'or until you dismiss it with a free action'"
+      },
+      {
+        "id": "b2220a5f-ca70-4738-8848-d4685f97d394",
+        "action": "applied",
+        "detail": "set-wide activity rule: reworded 'as a 2-action activity' into a granted named action ('Umbral Eclipse' [two-actions] (concentrate, manipulate), Frequency once per minute), mirroring this store's own established granted-reaction idiom (planar-shield.json)"
+      }
+    ],
+    "lockstep": ["heightening {levels:{8:{}},type:fixed} -> {} (no Heightened content remains)"]
+  },
+  {
+    "slug": "wall-of-time",
+    "comments": [
+      {
+        "id": "bd8373fb-a319-4675-82df-2dade0183257",
+        "action": "amended",
+        "detail": "promoted the Heightened (7th) Fortitude-save/Slowed-1 effect to the spell's default mechanic (dropping the Heightened block), replacing the action-tax/difficult-terrain mechanic per the note; added defense.save {basic:false, statistic:fortitude} which the spell previously lacked entirely"
+      },
+      {
+        "id": "4a7def22-369a-460e-8d71-b59ac60bf026",
+        "action": "applied",
+        "detail": "duration.sustained true -> false, keeping value '1 minute'"
+      },
+      {
+        "id": "d1b76fe8-5a6c-47c5-82e5-4e1459e21a20",
+        "action": "applied",
+        "detail": "removed 'but crossing it costs significant action economy.'"
+      },
+      {
+        "id": "d96b8406-a5a1-47ae-8e6b-e86930b7230c",
+        "action": "applied",
+        "detail": "removed 'in either direction' (subsumed by the same paragraph rewrite as 1bec7df3)"
+      },
+      {
+        "id": "1bec7df3-d1c0-40a1-bcb4-cc8be5f8c37f",
+        "action": "applied",
+        "detail": "removed the entire action-tax/difficult-terrain/ranged-attack/wall-movement paragraph, replaced by the promoted Fortitude-save default"
+      }
+    ],
+    "lockstep": [
+      "defense null -> {save:{basic:false,statistic:'fortitude'}}",
+      "duration.sustained true -> false",
+      "heightening {levels:{7:{}},type:fixed} -> {} (no Heightened content remains)"
+    ],
+    "notes": "this is a real mechanical redesign per her explicit instruction, not a pure wording pass — dropped the action-tax/difficult-terrain/ranged-attack-miss mechanic wholesale and replaced it with a Fortitude save + Slowed 1 default, and removed Sustain entirely. Flagging for orchestrator sanity check on the new mechanic and the added defense field."
+  },
+  {
+    "slug": "weight-of-the-world",
+    "comments": [
+      {
+        "id": "7e9d5ab1-6661-4e17-9a80-f0d910a3d2e3",
+        "action": "applied",
+        "detail": "removed 'crushing their movement and resolve'"
+      },
+      {
+        "id": "5b69b94e-9bf0-4f6e-a1ef-3159c776bbb2",
+        "action": "applied",
+        "detail": "level.value 5 -> 6"
+      }
+    ],
+    "lockstep": ["level.value 5 -> 6"]
+  },
+  {
+    "slug": "zone-of-minimization",
+    "comments": [
+      {
+        "id": "62448167-af3e-491b-a133-28b511e6a3e6",
+        "action": "applied",
+        "detail": "deleted both Heightened (9th)/(10th) lines"
+      }
+    ],
+    "lockstep": [
+      "heightening {levels:{9:{},10:{}},type:fixed} -> {} (no Heightened content remains)"
+    ]
+  }
+]

@@ -1,0 +1,752 @@
+{
+  "lane": 3,
+  "spells": [
+    {
+      "slug": "monstrous-copy-claws",
+      "file": "homebrew/spells/monstrous-copy-claws.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "67a01a20-cb12-4bc2-928d-0647a9b3b521",
+          "kind": "note",
+          "pane": "store",
+          "quote": "10 higher",
+          "note": "One degree higher",
+          "at": "2026-07-30T14:00:35.474Z"
+        },
+        {
+          "id": "fd80bf7d-37e1-481d-ac91-13811690a0bb",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Heightened (7th) The claws' damage increases to 3d10 slashing, and you can burrow through solid stone at your full burrow Speed.\n\nHeightened (8th) The claws' damage increases to 3d12 slashing.\n\nHeightened (9th) The claws' damage increases to 4d12 slashing, and your burrow Speed increases by 10 feet.",
+          "note": "Just +1: increase damage by 1d12",
+          "at": "2026-07-30T14:01:11.082Z"
+        }
+      ]
+    },
+    {
+      "slug": "monstrous-copy-shell",
+      "file": "homebrew/spells/monstrous-copy-shell.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "9bf6203b-c37b-4dde-b510-cbd91d357984",
+          "kind": "note",
+          "pane": "store",
+          "quote": "reaction",
+          "note": "Should be icon",
+          "at": "2026-07-30T14:03:24.070Z"
+        },
+        {
+          "id": "21112625-becd-4cb2-8b4c-580d724c0f00",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "or a line spell would pass through your space",
+          "note": "",
+          "at": "2026-07-30T14:03:49.090Z"
+        },
+        {
+          "id": "4c5930ae-df5f-4b23-a5b6-4335b9bc2dfd",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "You gain a +2 circumstance bonus to AC.\n- You gain resistance 15 to physical damage",
+          "note": "",
+          "at": "2026-07-30T14:04:01.577Z"
+        }
+      ]
+    },
+    {
+      "slug": "monstrous-copy-stinger",
+      "file": "homebrew/spells/monstrous-copy-stinger.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "d1a5f07d-81b1-4d4d-a804-ea08a1cf509c",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+1) The stinger's poison damage increases by 2d10.",
+          "note": "",
+          "at": "2026-07-30T14:04:54.081Z"
+        }
+      ]
+    },
+    {
+      "slug": "monstrous-copy-tail",
+      "file": "homebrew/spells/monstrous-copy-tail.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "fe71bbd0-fab8-4c59-baac-2630933e6f4d",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Critical Success: The creature is unaffected and is temporarily immune to this effect for 1 minute.\nSuccess: The creature is unaffected.\nFailure: The creature is Stunned 1.\nCritical Failure: The creature is Stunned 3.",
+          "note": "Fix formatting",
+          "at": "2026-07-30T14:05:15.991Z"
+        },
+        {
+          "id": "2e6bb08d-8ac2-4418-b205-cf7a2e3c2032",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (8th) The tail's damage increases to 3d12 bludgeoning.\n\nHeightened (9th) The tail's damage increases to 4d10 bludgeoning.",
+          "note": "",
+          "at": "2026-07-30T14:05:29.117Z"
+        }
+      ]
+    },
+    {
+      "slug": "monstrous-copy-tentacle",
+      "file": "homebrew/spells/monstrous-copy-tentacle.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "0d9be829-7be4-4411-926e-49eebbbd531a",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Critical Success: The creature is unaffected and is temporarily immune to this poison for 24 hours.\nSuccess: The creature is unaffected.\nFailure: The creature is afflicted with Tentacle Venom at stage 1.\nCritical Failure: The creature is afflicted with Tentacle Venom at stage 2.",
+          "note": "Formatting",
+          "at": "2026-07-30T14:06:23.519Z"
+        },
+        {
+          "id": "4f6780f4-5593-4e93-831f-4bc52b2c3f0f",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (6th) The tentacle's base damage increases to 2d10 piercing.\n\nHeightened (7th) The tentacle's base damage increases to 3d8 piercing.",
+          "note": "",
+          "at": "2026-07-30T14:06:33.539Z"
+        }
+      ]
+    },
+    {
+      "slug": "monstrous-copy-wail",
+      "file": "homebrew/spells/monstrous-copy-wail.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "a1e59a84-9074-4f8e-b8cd-04413c0572ea",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "sonic",
+          "note": "",
+          "at": "2026-07-30T14:07:08.247Z"
+        },
+        {
+          "id": "66431fa4-60cd-4c01-b9cc-18e5083f99b0",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "A creature that is Deafened is immune to this spell.",
+          "note": "",
+          "at": "2026-07-30T14:07:20.435Z"
+        },
+        {
+          "id": "31844cb9-0bcf-4ae6-8200-e940fa48dd92",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Stupefied 2 for 1 minute.",
+          "note": "Not how stupefied works, they’re just stupefied 2, no limit",
+          "at": "2026-07-30T14:08:12.400Z"
+        },
+        {
+          "id": "603506bd-219f-426e-8f44-243350afd94a",
+          "kind": "note",
+          "pane": "store",
+          "quote": "4 for 1 minute, and is Unconscious for 1 minute. The creature can attempt a DC 15 flat check at the end of each of its turns to recover from the Unconscious condition",
+          "note": "Just stupefied 3",
+          "at": "2026-07-30T14:08:35.158Z"
+        },
+        {
+          "id": "80403183-888a-4e4e-944d-4a80c53337a3",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+1) The damage increases by 2d8.",
+          "note": "",
+          "at": "2026-07-30T14:08:39.726Z"
+        }
+      ]
+    },
+    {
+      "slug": "move-the-cosmic-wheel",
+      "file": "homebrew/spells/move-the-cosmic-wheel.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "c62f2500-7c0e-41e4-823d-cc0f84c691ef",
+          "kind": "note",
+          "pane": "store",
+          "quote": "plane",
+          "note": "world",
+          "at": "2026-07-30T14:09:01.333Z"
+        },
+        {
+          "id": "1cb124df-3e91-4564-8e27-a9c327ebf28f",
+          "kind": "note",
+          "pane": "store",
+          "quote": "reatures from your plane inside the bubble when it fully manifests must attempt a Will save. Creatures arriving from the other plane into the bubble on your plane likewise may attempt a Will save if the GM determines they are present, which has a 10% chance.",
+          "note": "Let’s change this to be a reflex save. Also, creatures arriving have a 10% chance, but don’t make a save",
+          "at": "2026-07-30T14:11:33.119Z"
+        },
+        {
+          "id": "fdeb76ed-77f5-42d3-9d32-a64dcf58df3f",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Critical Success The creature is unaffected and may observe the bubble safely",
+          "note": "",
+          "at": "2026-07-30T14:11:43.567Z"
+        }
+      ]
+    },
+    {
+      "slug": "nightfall",
+      "file": "homebrew/spells/nightfall.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "5d541155-a5c3-4ac3-a21d-bc8f1db6ee81",
+          "kind": "note",
+          "pane": "store",
+          "quote": "sun",
+          "note": "suns, this setting has two suns",
+          "at": "2026-07-30T14:14:05.017Z"
+        },
+        {
+          "id": "ab0d77da-7874-451c-b65b-496cd279a1bf",
+          "kind": "note",
+          "pane": "store",
+          "quote": "moon rises",
+          "note": "stars appear. This setting has no moon",
+          "at": "2026-07-30T14:14:36.485Z"
+        }
+      ]
+    },
+    {
+      "slug": "oblivion",
+      "file": "homebrew/spells/oblivion.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "a6536b11-cd7d-4797-959c-9003d9eb277f",
+          "kind": "note",
+          "pane": "store",
+          "quote": "take 10 void damage",
+          "note": "take an additional 10 void damage",
+          "at": "2026-07-30T14:15:53.482Z"
+        }
+      ]
+    },
+    {
+      "slug": "oddly-satisfying",
+      "file": "homebrew/spells/oddly-satisfying.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "d3837948-5a60-4f4f-b9d3-9baab484d994",
+          "kind": "note",
+          "pane": "store",
+          "quote": "start",
+          "note": "end",
+          "at": "2026-07-30T14:16:52.658Z"
+        },
+        {
+          "id": "62aefb78-b763-40a8-b757-1a861ae3fd7c",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (7th) The range becomes 30 feet, and you can target up to 2 creatures.",
+          "note": "",
+          "at": "2026-07-30T14:17:16.050Z"
+        }
+      ]
+    },
+    {
+      "slug": "outside-of-time",
+      "file": "homebrew/spells/outside-of-time.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "6d508052-dacc-470b-8cc4-6492e8f5920a",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "including by divination magic",
+          "note": "",
+          "at": "2026-07-30T14:17:42.195Z"
+        }
+      ]
+    },
+    {
+      "slug": "overhaul",
+      "file": "homebrew/spells/overhaul.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "0b82cd0f-79fa-4db0-8411-ee2c098b75fe",
+          "kind": "note",
+          "pane": "store",
+          "quote": "living",
+          "note": "This is a ritual right? Shouldn’t It have primary and secondary casters?",
+          "at": "2026-07-30T14:18:41.741Z"
+        }
+      ]
+    },
+    {
+      "slug": "pendulum",
+      "file": "homebrew/spells/pendulum.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "f6235809-6dce-4ea7-a364-f687eb597420",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+2) You can target 1 additional creature with this spell.",
+          "note": "",
+          "at": "2026-07-30T14:20:54.007Z"
+        }
+      ]
+    },
+    {
+      "slug": "planar-shield",
+      "file": "homebrew/spells/planar-shield.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "2ee10615-5ea2-42b3-91ee-7cd82846bad1",
+          "kind": "note",
+          "pane": "store",
+          "quote": "reaction",
+          "note": "Should be icon",
+          "at": "2026-07-30T14:22:49.357Z"
+        },
+        {
+          "id": "a3bc80dc-b5b0-421f-9d2a-b9f637c874bb",
+          "kind": "note",
+          "pane": "store",
+          "quote": "vitality",
+          "note": "Fire",
+          "at": "2026-07-30T14:23:20.024Z"
+        }
+      ]
+    },
+    {
+      "slug": "poisoned-backflow",
+      "file": "homebrew/spells/poisoned-backflow.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "e5f7e840-c641-47cc-b24f-9492de5d9cd6",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (5th) The curse also triggers when the target uses the Aid action to help another creature regain Hit Points.",
+          "note": "",
+          "at": "2026-07-30T14:24:41.801Z"
+        },
+        {
+          "id": "26c8fa34-ec10-4496-b891-d4d281505739",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+1) The void damage increases by 1d6",
+          "note": "",
+          "at": "2026-07-30T14:24:48.797Z"
+        }
+      ]
+    },
+    {
+      "slug": "propagating-blast",
+      "file": "homebrew/spells/propagating-blast.json",
+      "annotation": "RETRACTION INTERACTION: apply the save-mechanics rewrite from her long note, but the damage type stays FORCE (her force→spirit comments are retracted). Render as \"an additional 2d8 force damage\".",
+      "comments": [
+        {
+          "id": "75a43817-6630-46ae-8cd8-98d0cae8c161",
+          "kind": "note",
+          "pane": "store",
+          "quote": "basic Reflex save against 2d8 force damage. When the weapon-effect trigger applies, the affected creature suffers the effects of a successful melee Strike from the weapon used to cast this spell; this does not consume an additional action.",
+          "note": "The targets in the line make a reflex save against your spell dc. The first in the line to fail takes your weapon’s damage with an additional 2d8 spirit damage.",
+          "at": "2026-07-30T14:28:22.063Z"
+        },
+        {
+          "id": "ddbc4600-68de-46f7-883f-a0c9b9e731b2",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Critical Success The creature takes no damage.\n\nSuccess The creature takes half damage.\n\nFailure The creature takes full damage. If it is the first failing creature in the line, it also suffers the effects of a successful melee Strike from the casting weapon.\n\nCritical Failure The creature takes double damage. If it is the first failing creature in the line, it also suffers the effects of a succes",
+          "note": "",
+          "at": "2026-07-30T14:28:27.638Z"
+        }
+      ]
+    },
+    {
+      "slug": "raise-island",
+      "file": "homebrew/spells/raise-island.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "0ffaa2b7-4248-4cfc-b5e4-34217bdc6bdd",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "or from beneath a body of water",
+          "note": "",
+          "at": "2026-07-30T14:28:42.218Z"
+        },
+        {
+          "id": "694b5d42-fd6c-46ad-bd2d-53969520d0d1",
+          "kind": "note",
+          "pane": "store",
+          "quote": "DC 25 Reflex save",
+          "note": "reflex save against your spell dc",
+          "at": "2026-07-30T14:29:15.376Z"
+        }
+      ]
+    },
+    {
+      "slug": "rearrange-fate",
+      "file": "homebrew/spells/rearrange-fate.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "918d3e6e-9e4c-4b17-8cd9-46d402284739",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+1) You can target 1 additional willing creature.",
+          "note": "",
+          "at": "2026-07-30T14:29:50.667Z"
+        }
+      ]
+    },
+    {
+      "slug": "reduce-resistivity",
+      "file": "homebrew/spells/reduce-resistivity.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "07404034-5324-4313-8d7b-58546ddf84cf",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Additionally, the first time the creature benefits from its resistance to a damage type during this duration, that resistance is reduced by 5 until the end of its next turn.",
+          "note": "",
+          "at": "2026-07-31T00:04:09.358Z"
+        },
+        {
+          "id": "bda8a51b-eab7-44ff-aec0-7a9a08542ee9",
+          "kind": "note",
+          "pane": "store",
+          "quote": "–2",
+          "note": "-1",
+          "at": "2026-07-31T00:05:01.073Z"
+        },
+        {
+          "id": "c5989cf3-a28e-481c-8dfa-da97b49a4444",
+          "kind": "note",
+          "pane": "store",
+          "quote": "–3",
+          "note": "-2",
+          "at": "2026-07-31T00:05:13.906Z"
+        },
+        {
+          "id": "4ceedfe1-38fb-42ea-af2a-5cb1e91f7e6a",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "and all of the creature's resistances to damage are reduced by 5 for the duration",
+          "note": "",
+          "at": "2026-07-31T00:05:17.950Z"
+        },
+        {
+          "id": "44f68c34-8e1d-459f-90c6-0cf5e68ec161",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+2) The status penalty to saving throws against spells on failure increases by 1, and the resistance reduction increases by 5.",
+          "note": "",
+          "at": "2026-07-31T00:05:21.612Z"
+        }
+      ]
+    },
+    {
+      "slug": "reflective-defense",
+      "file": "homebrew/spells/reflective-defense.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "d1c389e5-ce3d-4fb1-8e48-f47523243717",
+          "kind": "note",
+          "pane": "store",
+          "quote": "You twist luck around your body like a shimmering mirror",
+          "note": "Bring back the original text",
+          "at": "2026-07-31T00:06:36.425Z"
+        },
+        {
+          "id": "bc60a126-ffa3-4e96-b97e-8da5273a19d0",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "to 0",
+          "note": "",
+          "at": "2026-07-31T00:07:05.347Z"
+        },
+        {
+          "id": "53ba36b0-9844-4f1f-9a2c-61749ef3ee47",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "if the source is a creature, it takes this force damage with no save",
+          "note": "",
+          "at": "2026-07-31T00:07:12.998Z"
+        },
+        {
+          "id": "2a7638f7-0231-45ff-9ec9-9cd8f190c7fe",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (9th) Resistance increases to 40 and applies to all damage, not just magical.",
+          "note": "",
+          "at": "2026-07-31T00:07:20.251Z"
+        }
+      ]
+    },
+    {
+      "slug": "repetitious-trauma",
+      "file": "homebrew/spells/repetitious-trauma.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "9eb760e0-a7e3-4809-ad6a-103c787d2238",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Sustain",
+          "note": "6d6 on sustain",
+          "at": "2026-07-31T00:09:19.865Z"
+        }
+      ]
+    },
+    {
+      "slug": "reposition",
+      "file": "homebrew/spells/reposition.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "a04c9216-7a87-4cb6-9e90-b3ab76d126c4",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "you can see within range",
+          "note": "",
+          "at": "2026-07-31T00:09:49.810Z"
+        },
+        {
+          "id": "8095a4d3-bcb0-4aa5-8dd2-2bc3e6053647",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "If the target is a willing ally, no save is required",
+          "note": "",
+          "at": "2026-07-31T00:10:13.153Z"
+        },
+        {
+          "id": "7c650079-ab56-4457-942d-59766b24d3e3",
+          "kind": "note",
+          "pane": "store",
+          "quote": "The maximum teleportation distance increases by 10 feet.",
+          "note": "This should be increase targets, 1 every 2 levels",
+          "at": "2026-07-31T00:11:05.974Z"
+        }
+      ]
+    },
+    {
+      "slug": "reset",
+      "file": "homebrew/spells/reset.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "af3953b0-643e-47b1-9c35-3944f10b5431",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "this is a fortune effect",
+          "note": "",
+          "at": "2026-07-31T00:11:48.582Z"
+        }
+      ]
+    },
+    {
+      "slug": "retributive-force",
+      "file": "homebrew/spells/retributive-force.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "d4279fee-b189-43a3-9638-344dc2cad963",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "The creature may attempt a new Fortitude save at the end of each of its turns to end the Prone condition early",
+          "note": "",
+          "at": "2026-07-31T00:13:59.313Z"
+        },
+        {
+          "id": "a626d384-a82a-4c6a-9b23-e45ee159e9f2",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "and the launch distance on failure increases by 5 feet.",
+          "note": "",
+          "at": "2026-07-31T00:14:15.081Z"
+        }
+      ]
+    },
+    {
+      "slug": "return-spell",
+      "file": "homebrew/spells/return-spell.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "66c0b8e7-be1b-4c3e-923e-30b4e7519277",
+          "kind": "note",
+          "pane": "store",
+          "quote": "On a failure, the spell takes full effect on the warded creature",
+          "note": "This was made way less clear than the original. It should specify that if that creature succeeded then it rebounds again",
+          "at": "2026-07-31T00:17:04.889Z"
+        },
+        {
+          "id": "057c671b-c0a2-4962-8d67-60fea925370d",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Each time the spell rebounds, both parties have already made one save",
+          "note": "",
+          "at": "2026-07-31T00:17:15.738Z"
+        },
+        {
+          "id": "f2db38fc-9272-490b-89f0-b58c0d6467ff",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "The reaction to initiate reflection can be used once per round.",
+          "note": "",
+          "at": "2026-07-31T00:17:37.298Z"
+        },
+        {
+          "id": "694b0fb3-b1ce-47d4-baeb-cf93af82b6e8",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (9th) The warded creature can use the reaction twice per round and the spell can rebound up to four times total per triggered spell.",
+          "note": "",
+          "at": "2026-07-31T00:17:47.974Z"
+        }
+      ]
+    },
+    {
+      "slug": "revisit",
+      "file": "homebrew/spells/revisit.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "964a068a-56e6-460b-8aab-ad8698de8153",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "If you were running, you continue running; if you were falling, you continue falling, though you choose the direction again. Any equipment you carry teleports with you.",
+          "note": "",
+          "at": "2026-07-31T00:18:42.670Z"
+        },
+        {
+          "id": "5f51c023-4edb-47e7-a137-db958dfa13c2",
+          "kind": "note",
+          "pane": "store",
+          "quote": "10",
+          "note": "1 hour",
+          "at": "2026-07-31T00:18:51.544Z"
+        },
+        {
+          "id": "26ebc26a-edc7-4f1a-865c-d4c069d5fb95",
+          "kind": "note",
+          "pane": "store",
+          "quote": "You can revisit a location you occupied within the last hour, and you can bring up to 2 willing creatures who are adjacent to you at the time of casting.",
+          "note": "This should be 1 additional target for each rank heightened",
+          "at": "2026-07-31T00:19:20.895Z"
+        }
+      ]
+    },
+    {
+      "slug": "rewind-and-playback",
+      "file": "homebrew/spells/rewind-and-playback.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "e131915c-0e07-44f5-b6f6-15e7099c6d33",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "up to 3d8+24",
+          "note": "",
+          "at": "2026-07-31T00:20:13.048Z"
+        },
+        {
+          "id": "a24456f1-45ce-4abd-a57d-f1e07bcc0f0a",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "since you're absorbing it directly, but it can be healed normally afterward.",
+          "note": "",
+          "at": "2026-07-31T00:20:25.819Z"
+        },
+        {
+          "id": "ffea5d8a-af84-46b8-a7b0-b701fbdee069",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (+1) The maximum healing increases by 1d8+8",
+          "note": "",
+          "at": "2026-07-31T00:20:33.816Z"
+        }
+      ]
+    },
+    {
+      "slug": "right-hand-of-judgment",
+      "file": "homebrew/spells/right-hand-of-judgment.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "476ee88b-8889-4745-9c14-7cfca0080fd0",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "Heightened (6th) You can hold up to 5 charges, and you also gain 1 charge the first time each round that you successfully hit a creature with a Strike.\n\nHeightened (8th) Expending a charge on a Strike also increases the Strike's damage by a number equal to your spellcasting ability modifier.",
+          "note": "",
+          "at": "2026-07-31T00:21:40.015Z"
+        }
+      ]
+    },
+    {
+      "slug": "sapping-lightning",
+      "file": "homebrew/spells/sapping-lightning.json",
+      "annotation": null,
+      "comments": [
+        {
+          "id": "9195c1ef-3744-4188-9ef6-2ae3a482a62c",
+          "kind": "note",
+          "pane": "store",
+          "quote": "A failing creature also has its highest-rank currently prepared, spontaneous, or innate spell slot suppressed rather than consumed.",
+          "note": "What’s wrong with you? Get rid of this",
+          "at": "2026-07-31T00:23:22.822Z"
+        },
+        {
+          "id": "fdb201ff-38f2-4056-a775-5139cb42f3a1",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "basic Reflex save",
+          "note": "",
+          "at": "2026-07-31T00:23:38.973Z"
+        },
+        {
+          "id": "6d0b517c-f714-44b8-b370-e9f1fc26a3bc",
+          "kind": "remove",
+          "pane": "store",
+          "quote": "and its spellcasting is not suppressed",
+          "note": "",
+          "at": "2026-07-31T00:23:47.293Z"
+        },
+        {
+          "id": "0cc67270-6cc9-45f9-9b19-e09b43e79ba4",
+          "kind": "note",
+          "pane": "store",
+          "quote": "Each",
+          "note": "Reword this sentence to say that the creature attempts a reflex save",
+          "at": "2026-07-31T00:24:18.700Z"
+        },
+        {
+          "id": "abd038ce-9b6f-441a-9ac5-6a131e37c658",
+          "kind": "note",
+          "pane": "store",
+          "quote": "suppressed until the end of its next turn",
+          "note": "Lost",
+          "at": "2026-07-31T00:24:28.648Z"
+        },
+        {
+          "id": "a72274c9-a3c6-4dab-be8f-7d59d72aac42",
+          "kind": "note",
+          "pane": "store",
+          "quote": "The creature takes double damage and its two highest-rank spell slots are suppressed until the end of its next turn.",
+          "note": "As failure, but double damage",
+          "at": "2026-07-31T00:24:50.206Z"
+        }
+      ]
+    }
+  ]
+}
