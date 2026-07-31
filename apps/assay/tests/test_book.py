@@ -201,6 +201,62 @@ def test_footnotes_on_chapter_pages(built: book.BookResult) -> None:
     assert built.markdown.count("{{pageNumber,auto}}") == built.report.page_count
 
 
+def test_spell_list_tables_are_wide(built: book.BookResult) -> None:
+    """Homebrewery tables carry ``break-inside: avoid`` — an in-column
+    spell-list table clips (live-render verified). Every chapter table must
+    ship inside a ``{{wide}}`` block, under the theme-NEUTRAL
+    ``vol2SpellTable`` class — the PHB theme's own ``.spellList`` columns
+    rule squeezes any child table into a ~160px sub-column."""
+    assert built.markdown.count("{{wide,vol2SpellTable") == len(book.SCHOOLS)
+    assert "spellList" not in built.markdown
+
+
+def test_wide_block_costs_both_columns() -> None:
+    md = "{{wide,vol2SpellTable\n| a | b |\n| c | d |\n}}"
+    assert book.estimate_flow_cost(md) == pytest.approx(2.0 * book.estimate_md_lines(md, wide=True))
+    # An ordinary (non-wide) block costs its plain line estimate.
+    assert book.estimate_flow_cost("plain text") == book.estimate_md_lines("plain text")
+
+
+def test_wide_table_rows_cost_by_content_width() -> None:
+    # Rank|Spell|Actions|Summary rows: single-line while name+summary fit
+    # ~70 chars at full width, two lines past that (planara calibration).
+    short = "| 3 | Jolt | {{aa}} | " + "s" * 60 + " |"
+    long = "| 3 | A Rather Long Spell Name Indeed | {{aa}} | " + "s" * 60 + " |"
+    assert book.estimate_md_lines(short, wide=True) == pytest.approx(1.1)
+    assert book.estimate_md_lines(long, wide=True) == pytest.approx(2.2)
+
+
+def test_in_column_table_rows_cost_by_wrap() -> None:
+    long_row = "| 1–3 | " + "x" * 90 + " | " + "y" * 90 + " |"
+    # In-column: flat +8 zebra padding/border surcharge + wrap-based rows.
+    assert book.estimate_md_lines(long_row) > 6.0
+    # The same row inside a wide block: 3 cells -> whole-line fallback, but
+    # still cheaper than in-column (no wrap-by-52-chars, no surcharge).
+    assert book.estimate_md_lines(long_row, wide=True) == pytest.approx(2.2)
+
+
+def test_in_column_table_flat_surcharge_once_per_table() -> None:
+    one_table = "| a | b |\n| c | d |"
+    two_tables = "| a | b |\n\ntext\n\n| c | d |"
+    base_rows = 2 * 1.1
+    assert book.estimate_md_lines(one_table) == pytest.approx(8.0 + base_rows)
+    # Two separate tables each pay the surcharge (plus the interposed lines).
+    assert book.estimate_md_lines(two_tables) == pytest.approx(8.0 + 1.1 + 0.6 + 1 + 8.0 + 1.1)
+
+
+def test_style_block_precedes_front_cover(built: book.BookResult) -> None:
+    """The generated <style> block (spell-list table width overrides) must
+    open the document, ahead of the front cover — the vol2 .css stays a
+    byte-verbatim vol1 copy, so these overrides live in the md itself."""
+    md = built.markdown
+    assert md.startswith("<!-- vol2 generated style — spell-list tables -->\n<style>")
+    assert md.index("</style>") < md.index("{{frontCover")
+    style = md.split("</style>")[0]
+    assert ".page .vol2SpellTable table" in style
+    assert "font-size: 0.9em;" in style
+
+
 def test_fragments_consumed_when_present(tmp_path: Path) -> None:
     content = tmp_path / "content"
     (content / "chapters").mkdir(parents=True)
@@ -210,7 +266,9 @@ def test_fragments_consumed_when_present(tmp_path: Path) -> None:
         json.dumps({"jolt": "Grant allies a bonus action."}), encoding="utf-8"
     )
     result = book.build_book(content_dir=content)
-    assert result.markdown.startswith("REAL FRONT MATTER")
+    # The generated style block always opens the doc; the fragment follows.
+    after_style = result.markdown.split("</style>", 1)[1]
+    assert after_style.lstrip().startswith("REAL FRONT MATTER")
     assert "REAL ANTILLURGY OPENER" in result.markdown
     assert "| 5 | Jolt | {{aa}} | Grant allies a bonus action. |" in result.markdown
     # The remaining chapters still fail soft to generated openers.
@@ -230,7 +288,7 @@ def test_partition_hard_fails_on_leftovers(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 # Pagination model calibration — vol1's PDF renders every \page correctly,
 # so its densest statblock pages must estimate within capacity (the model
-# must never badly UNDER-estimate, or our 92% fill target would overflow).
+# must never badly UNDER-estimate, or the fill target would overflow).
 # ---------------------------------------------------------------------------
 
 

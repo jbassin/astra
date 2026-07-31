@@ -7,7 +7,9 @@ book at ``apps/codex/books/liturgy_vol2/liturgy_of_the_iridite_vol2.md``,
 alongside a byte-verbatim copy of vol1's ``.css`` (the shared class
 vocabulary: ``.ruleBlock``/``.preamble``/``.traits``/``.definitions``/
 ``.postamble``, ``.trait`` + ``,unique/,rare/,uncommon`` variants, the
-``.a/.aa/.aaa/.r/.f`` action glyphs, ``.spellList`` tables).
+``.a/.aa/.aaa/.r/.f`` action glyphs). Spell-list table styling lives in a
+generated in-markdown ``<style>`` block under the theme-neutral
+``vol2SpellTable`` class (never ``spellList`` — the PHB theme claims it).
 
 Book structure (Track A of a two-track build — Track B concurrently authors
 prose fragments under ``<out>/content/``, which this generator consumes
@@ -20,7 +22,8 @@ fail-soft):
 3. eight school chapters in the fixed order below (seraphic LAST — the
    capstone: one ritual, Worldweaver), each = opener
    (``content/chapters/<school>.md`` verbatim, else a generated
-   ``{{chapter,gradient}}`` header + the trait blurb) + a ``{{spellList}}``
+   ``{{chapter,gradient}}`` header + the trait blurb) + a
+   ``{{wide,vol2SpellTable}}``
    table (summaries from ``content/summaries.json``, blank fail-soft) + the
    school's spells sorted by (rank, name) as ``{{ruleBlock}}`` statblocks.
 
@@ -34,10 +37,13 @@ statblock pages (the ``{{ruleBlock}}`` run around its md lines 1442–1568,
 which the vol1 PDF is known to render correctly): a column holds ~54 text
 lines at ~52 chars/line; absolutely-positioned furniture (``imageWrapper``,
 ``caption``, ``pageNumber``, ``footnote``) costs no flow lines. Pages are
-filled to ~92% of the 2-column capacity and a ruleBlock is never split
-across a page (a block may span columns naturally). The build prints a
-report: pages, blocks/page, and any page estimated over 100% (manual-review
-flags).
+filled to ~88% of the 2-column capacity (the margin was tuned by a
+live-render pass against homebrewery.naturalcrit.com) and a ruleBlock is
+never split across a page (a block may span columns naturally). Chapter
+spell-list tables ship as ``{{wide}}`` blocks — Homebrewery tables carry
+``break-inside: avoid`` and clip when squeezed into one column — costing
+both columns in the fill model. The build prints a report: pages,
+blocks/page, and any page estimated over 100% (manual-review flags).
 """
 
 from __future__ import annotations
@@ -98,7 +104,9 @@ LINES_PER_COLUMN = 54
 CHARS_PER_LINE = 52
 COLUMNS_PER_PAGE = 2
 PAGE_CAPACITY = LINES_PER_COLUMN * COLUMNS_PER_PAGE
-FILL_TARGET = 0.92
+#: Live-render verification (real Chromium against homebrewery.naturalcrit.com)
+#: found one ~3-line overflow at a 92% target — 88% is the safety margin.
+FILL_TARGET = 0.88
 
 _UUID_RE = re.compile(r"@UUID\[([^\]]+)\](?:\{([^}]*)\})?")
 
@@ -527,17 +535,24 @@ _ZERO_FLOW_BLOCKS = ("imageWrapper", "caption", "artist", "watercolor")
 _ZERO_FLOW_LINES = ("{{pageNumber", "{{footnote")
 
 
-def estimate_md_lines(md: str) -> float:
+def estimate_md_lines(md: str, *, wide: bool = False) -> float:
     """Estimate rendered flow lines for a markdown chunk, mirroring how the
     generator's own output (and vol1's statblock pages) lay out: text wraps
     at ``CHARS_PER_LINE``, headers/banners cost extra, absolutely-positioned
-    furniture costs nothing."""
+    furniture costs nothing.
+
+    ``wide=True`` estimates a ``{{wide}}`` (column-span: all) block, where
+    table rows render single-line at full page width (~1.1 lines each);
+    in-column tables instead wrap and cost by character length."""
     total = 0.0
     depth_zero_flow = 0
     brace_depth = 0
     in_chapter_banner = False
+    in_table = False
     for raw in md.split("\n"):
         line = raw.strip()
+        if not line.startswith("|"):
+            in_table = False
         opens = line.count("{{")
         closes = line.count("}}")
         if depth_zero_flow == 0 and any(line.startswith(f"{{{{{b}") for b in _ZERO_FLOW_BLOCKS):
@@ -559,7 +574,7 @@ def estimate_md_lines(md: str) -> float:
         if line in ("{{ruleBlock", "{{preamble", "{{definitions", "{{postamble", "{{traits"):
             total += 0.3
             continue
-        if line.startswith(("{{toc", "{{note", "{{descriptive", "{{spellList", "{{banner")):
+        if line.startswith(("{{toc", "{{note", "{{descriptive", "{{wide", "{{banner")):
             total += 1.0
             continue
         if line == "}}":
@@ -585,13 +600,50 @@ def estimate_md_lines(md: str) -> float:
             total += 1.5
             continue
         if line.startswith("|"):
-            total += 1.2
+            # In-column tables (302px) wrap, so cost rows by character
+            # length (the p31 Monstrous Copy overflow class), plus a flat
+            # per-table surcharge: zebra-row padding/borders add real render
+            # height the character model can't see. Live-render measured
+            # ~26px per zebra row vs the ~19px character model, so the
+            # surcharge is 8 lines (a +4 cushion still left the Eye Stalks
+            # d8-table page 70px over on re-audit).
+            if not in_table:
+                in_table = True
+                if not wide:
+                    total += 8.0
+            if wide:
+                # Full-width (~672px at 0.9em) rows hold ~95 chars; a
+                # Rank|Spell|Actions|Summary row stays single-line when
+                # name+summary fit ~70 chars, else it wraps to two
+                # (live-render calibrated on the planara chapter table).
+                cells = [c.strip() for c in line.strip("|").split("|")]
+                content = len(cells[1]) + len(cells[3]) if len(cells) == 4 else len(line)
+                total += 1.1 if content <= 70 else 2.2
+            else:
+                # Table cells share the 302px column with padding/borders, so
+                # the effective wrap width is far narrower than prose CHARS_PER_LINE
+                # (~40 chars/row at the 0.85em in-block table size, live-render
+                # calibrated on the Eye Stalks d8 table).
+                total += 1.1 * max(1, math.ceil(len(line) / 40))
             continue
         if line.startswith("- "):
             total += max(1, math.ceil(len(line) / CHARS_PER_LINE))
             continue
         total += max(1, math.ceil(len(line) / CHARS_PER_LINE))
     return total
+
+
+def estimate_flow_cost(md: str) -> float:
+    """Capacity cost of a block in COLUMN-lines. Homebrewery gives tables
+    ``break-inside: avoid`` (they cannot split across the page's 2 CSS
+    columns — live-render verified), so spell-list tables ship inside a
+    ``{{wide}}`` block (column-span: all): every rendered line of a wide
+    block consumes both columns, i.e. 2 column-lines. Content after a wide
+    block resumes 2-column flow below it on the same page, so wide blocks
+    participate in the same page-fill pool as ordinary blocks."""
+    if md.startswith("{{wide"):
+        return 2.0 * estimate_md_lines(md, wide=True)
+    return estimate_md_lines(md)
 
 
 # ---------------------------------------------------------------------------
@@ -691,8 +743,17 @@ def _chapter_opener_md(chapter_no: int, school: str, blurb: str | None) -> str:
 
 
 def _spell_list_md(school: str, spells: list[RenderedSpell], summaries: dict[str, str]) -> str:
+    """The chapter spell-list table, wrapped ``{{wide,vol2SpellTable``:
+    Homebrewery's ``break-inside: avoid`` on tables means an in-column table
+    cannot split across the page's 2 CSS columns and clips (live-render
+    verified at 1,903px tall in a 302px column) — ``wide`` (column-span:
+    all) spans the page, and the generated style block forces the table
+    full-width. The class is deliberately theme-NEUTRAL: the 5e PHB theme
+    itself defines a ``.spellList`` columns rule (classic PHB spell-name
+    lists) that lays any child table into a ~160px sub-column — never name
+    this block ``spellList`` (live-DOM-forensics finding)."""
     lines = [
-        "{{spellList",
+        "{{wide,vol2SpellTable",
         f"##### {_title_case(school)} Spells",
         "| Rank | Spell | Actions | Summary |",
         "|:---:|:---|:---:|:---|",
@@ -733,6 +794,53 @@ def _read_fragment(path: Path, report: BookReport) -> str | None:
     report.missing_fragments.append(str(path))
     return None
 
+
+#: Emitted at the very top of the generated md, BEFORE the front cover.
+#: Homebrewery renders in-text ``<style>`` tags exactly like its style tab,
+#: and being in the document body it cascades AFTER the vol1 css file — so
+#: the vol2 ``.css`` stays byte-verbatim while these rules win ties.
+#: Live-render finding: Homebrewery does not stretch tables (natural/auto
+#: width, ~224px measured even inside ``{{wide}}``), so the spell-list
+#: tables must be forced full-width or their Summary cells wrap 4–6 lines
+#: deep and overflow the page. ``<style>`` is display:none — zero flow cost.
+_GENERATED_STYLE = """\
+<!-- vol2 generated style — spell-list tables -->
+<style>
+  /* Homebrewery leaves tables at natural width; span the whole wide row.
+     vol2SpellTable is a theme-NEUTRAL class name — the PHB theme's own
+     spell-list class lays any child table into a ~160px sub-column, so it
+     must not be reused here. 0.9em buys wrap headroom on long name/summary
+     rows. (No mustache braces in this block — Homebrewery substitutes them
+     even inside style tags.) */
+  .page .vol2SpellTable table {
+    width: 100%;
+    font-size: 0.9em;
+  }
+  /* Narrow Rank/Actions columns, spell names single-line, Summary takes
+     the remaining width. */
+  .page .vol2SpellTable table th:nth-child(1),
+  .page .vol2SpellTable table td:nth-child(1) {
+    width: 3em;
+  }
+  .page .vol2SpellTable table td:nth-child(2) {
+    white-space: nowrap;
+  }
+  .page .vol2SpellTable table th:nth-child(3),
+  .page .vol2SpellTable table td:nth-child(3) {
+    width: 4em;
+  }
+  /* In-statblock tables (random-effect tables like Eye Stalks' d8 rays)
+     wrap long cells hard in a 302px column; smaller type + tighter cell
+     padding keeps the worst block within one page, matching how official
+     books set big tables. (0.85em left Eye Stalks 38px over on live audit;
+     0.8em + 0.5mm padding measured it inside the page.) */
+  .page .ruleBlock table {
+    font-size: 0.8em;
+  }
+  .page .ruleBlock table td {
+    padding: 0.5mm;
+  }
+</style>"""
 
 _PLACEHOLDER_FRONTMATTER = """\
 {{frontCover}}
@@ -792,13 +900,13 @@ def build_book(
                 f"chapters/{school}.md contains \\page — the pagination model assumes "
                 "chapter openers are single-page; toc anchors/footnotes may be off"
             )
-        blocks = [_FlowBlock(opener, estimate_md_lines(opener), starts_page=True)]
+        blocks = [_FlowBlock(opener, estimate_flow_cost(opener), starts_page=True)]
         names = [f"{school}/opener"]
         table = _spell_list_md(school, spells, summaries)
-        blocks.append(_FlowBlock(table, estimate_md_lines(table)))
+        blocks.append(_FlowBlock(table, estimate_flow_cost(table)))
         names.append(f"{school}/spell-list")
         for sp in spells:
-            blocks.append(_FlowBlock(sp.md, estimate_md_lines(sp.md)))
+            blocks.append(_FlowBlock(sp.md, estimate_flow_cost(sp.md)))
             names.append(f"{school}/{sp.slug}")
         chapter_blocks.append(blocks)
         chapter_block_names.append(names)
@@ -834,7 +942,7 @@ def build_book(
     toc_md = "\n".join(toc_lines)
 
     # -- emit ---------------------------------------------------------------
-    out: list[str] = [frontmatter, "", "\\page", "", toc_md, ""]
+    out: list[str] = [_GENERATED_STYLE, "", frontmatter, "", "\\page", "", toc_md, ""]
     page_no = toc_page_no
     for chapter_no, school in enumerate(SCHOOLS, start=1):
         blocks = chapter_blocks[chapter_no - 1]
