@@ -1,0 +1,21 @@
+{{chapter,gradient,--color:#7c4848
+
+## Chapter 5
+# Memetics
+___
+}}
+
+You have had a song stuck in your head. Consider, for a moment, what that sentence actually describes: a thing made of nothing, caught like a cold, living in your mind without paying rent, and leaving only when *it* decides to. Memetics is the school that takes this everyday haunting seriously. It is the magic of minds and of the ideas that inhabit them -- implanting memories and erasing them, seeding compulsions, prying truth out of thoughts that would rather keep it. Its gentlest workings are clerical conveniences. Its harshest linger as curses that rewrite how a mind works until someone with sufficient skill pries them back out.
+
+The school's history runs through Færrin's worst neighborhoods. In the dark ages the old cabals -- the Pale Lantern Society among them, in its lean and secretive years -- traded memetic techniques alongside necromantic ones, on the sensible grounds that the mind is just one more thing that can be made to keep working after it should have stopped. The firmament's opening gentrified the craft. Today the cold war that replaced Færrin's hot ones is fought in screamsheet editorials, radio jingles, and lovingly engineered rumors, and memetics is that war's artillery. Every major Org maintains what its ledgers call a *communications directorate*. The people who work in them have, without exception, excellent handwriting and alarming eyes.
+
+It must be said that most memetic practice is friendly, even mundane. Clerks duplicate fifty pages with a touch and un-write them just as cleanly. Diplomats hear every language in a room at once. Distant lovers and distant handlers alike keep telepathic threads humming across the continent, and a socialite with the right training simply *knows*, on a handshake, which cousin matters. The school makes Færrin's paperwork move, and it would be a duller, slower planet without it.
+
+But the chapter you are about to read has a locked drawer, and honesty requires opening it. There are workings here that seat a listening worm beneath the skin of an unsuspecting ear; that seal a topic inside a mind so thoroughly the tongue rebels at approaching it; that empty a person of their own name and let them walk on, smiling, unencumbered. The Scale prosecutes the worst of these vigorously, the Church preaches against them beautifully, and both institutions, according to persistent and well-engineered rumor, retain specialists. The reader is invited to notice how comfortable that sentence was to read. That comfort is the school working as intended.
+
+{{descriptive
+##### On Reading This Chapter
+Printed matter cannot cast spells, and this chapter is inert ink -- mostly. But ideas are the medium of this school, and ideas travel by exactly the route you are using now. Should any phrase from the following pages recur to you unbidden for more than three days, hum persistently, or begin to feel *load-bearing*, the compilers recommend a licensed practitioner, a Church confessor, or a genuinely absorbing hobby. This notice is a formality. Almost always, it is a formality.
+}}
+
+<!-- ART SLOT [ch5-memetics]: {{imageWrapper,chapterSidebarRight {{borderImage ![](URL) {top:0px,left:-90px,height:1000px,width:562px} }} }} — suggested subject: a communications-directorate office at night — pinboard of screamsheet clippings connected by golden thread, one thread leading into a listener's ear -->

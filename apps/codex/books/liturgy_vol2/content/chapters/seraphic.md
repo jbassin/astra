@@ -1,0 +1,19 @@
+{{chapter,gradient,--color:#7c4848
+
+## Chapter 8
+# Seraphic
+___
+}}
+
+Every canon must end, and the Liturgy ends here, at the school that stands above the other seven the way the firmament stands above the weather. Seraphic magic is not a body of technique. It has no apprentices, no journeymen, no retail applications, no second example. It is the revision of reality itself, and it is codified in this book for the same reason cartographers mark the edge of the map: not so that you will go there, but so that you will know, with precision, where *there* begins.
+
+The school's sole known working is the Worldweaver ritual. Sixteen casters, each commanding magic of the ninth rank, form a ring around an eight-pointed star -- one point for each school of the Liturgy -- and at the center they place a sliver of Ruin and a slice of Preservation, intertwined, the twin currencies of fate spent in a single transaction. When the casting concludes, the cosmos resets to its beginning and history runs forward again, altered: each of the sixteen may amend one event -- a person unborn, a battle reversed, an incursion turned back at its origin -- and causality is left to settle the consequences across the whole re-run of creation. When the new present arrives, only the circle remembers that anything was ever otherwise. Sixteen changes. Sixteen witnesses. Everyone else simply lives in the result, and calls it history.
+
+The archivists of Belvedere, who are professionally incapable of leaving a question alone, note the obvious: a ritual is codified because someone composed it, and compositions are rarely left unperformed. Nothing in any chancery on Færrin records a casting of Worldweaver. The archivists further note, in the smallest hand their discipline permits, that this is exactly what the record would show either way.
+
+{{descriptive
+##### On Precedent
+Asked whether the world we stand in is a first draft, the Liturgy's compilers offer only this: examine history closely and you will find no seam -- no scar where a life was excised, no echo of a battle that went the other way. That is either the reassurance of an untouched creation, or the signature of sixteen very careful hands. The Church teaches the former. The Church would.
+}}
+
+<!-- ART SLOT [ch8-seraphic]: {{imageWrapper,chapterSidebarRight {{borderImage ![](URL) {top:0px,left:-90px,height:1000px,width:562px} }} }} — suggested subject: sixteen robed casters ringing an eight-pointed chalk star, the intertwined sliver of Ruin and slice of Preservation blazing at the center, the sky above them beginning to unspool into raw light -->

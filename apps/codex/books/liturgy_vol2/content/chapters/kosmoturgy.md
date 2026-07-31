@@ -1,0 +1,21 @@
+{{chapter,gradient,--color:#7c4848
+
+## Chapter 4
+# Kosmoturgy
+___
+}}
+
+The universe has machinery. Beneath the paint of the world there are levers -- gravity, force, the seams where space is stitched to itself -- and kosmoturgy is the school that grabs them with both hands. Its casters crack the earth along invented fault lines, crush the unrighteous under anvils of compressed gravity, and pull hundred-foot slabs of bedrock into the sky because the battle would go better with high ground. It is the least subtle school in the Liturgy, and its practitioners regard this as a feature. Subtlety, one war-college maxim runs, is what you resort to when you cannot simply move the planet.
+
+From its beginnings the school has understood itself as an instrument of divine judgment. The theology is straightforward: the Gods built the machinery, so pulling its levers in their name is not presumption but *citation*. No figure embodies this better than Djura, the battle-saint of the crusading years, whose canon anchors the school's devotional wing -- the compressed-air aegis she raised over whole shield-walls, the razor-edge she whispered onto blades until they cut the fabric of reality, the holy pressure that rolls off a consecrated caster like heat off a forge. Her catechism survives in the school's most distinctive pairing, the two Hands of Judgment: the left hand, which answers every blow with a counter, and the right, which keeps accounts and pays them back with interest. Novices are taught both, and taught which one to lead with, and the answer is a small theology lesson in itself.
+
+In the present peace -- which is to say, the present arms race -- kosmoturgy is soldier's magic, and everyone who employs soldiers knows it. Calarian crusade doctrine reserves a battery of kosmoturgists for every field army; the Protectorate bills theirs out at rates that would embarrass a cardinal; and the Orgs have found gentler employment for the same levers, raising foundations, dropping mineshafts, and moving cargo that no crane on Færrin could love. A kosmoturgist never wants for work. The levers are always there, and something always needs moving.
+
+The public reaction is the parade-ground kind: awe with the safety off. Crowds turn out to watch a demonstration -- the anvil falling, the island rising -- and cheer with the particular enthusiasm of people who are very glad the machinery is on their side. The school's own texts encourage this. Judgment, they note, works best when the sentence is legible from a distance.
+
+{{note
+##### Field Sermon, attributed to Djura
+They will tell you the earth is patient. The earth is not patient. The earth is *held* -- every stone of it, every second, by a grip that does not tire. Ours is a borrowed hand upon that grip. So when you break the ground beneath the wicked, break it as a signature, not a tantrum. The weight is His. The aim, my friends, is yours. Aim well.
+}}
+
+<!-- ART SLOT [ch4-kosmoturgy]: {{imageWrapper,chapterSidebarRight {{borderImage ![](URL) {top:0px,left:-90px,height:1000px,width:562px} }} }} — suggested subject: a battle-cleric on a shattered field, a translucent anvil of warped gravity descending from above her raised hand, the ground fracturing in a radial fault -->
