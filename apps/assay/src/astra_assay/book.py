@@ -30,19 +30,18 @@ fail-soft):
 **Determinism:** sorted store glob, stable sort keys, no timestamps —
 double runs are byte-identical.
 
-**Pagination model (calibrated against vol1):** Homebrewery v3 pages clip
-overflow and auto-flow two columns, so ``\\page`` breaks are placed by a
-line-estimation model. Constants were derived by measuring vol1's densest
-statblock pages (the ``{{ruleBlock}}`` run around its md lines 1442–1568,
-which the vol1 PDF is known to render correctly): a column holds ~54 text
-lines at ~52 chars/line; absolutely-positioned furniture (``imageWrapper``,
-``caption``, ``pageNumber``, ``footnote``) costs no flow lines. Pages are
-filled to ~88% of the 2-column capacity (the margin was tuned by a
-live-render pass against homebrewery.naturalcrit.com) and a ruleBlock is
-never split across a page (a block may span columns naturally). Chapter
-spell-list tables ship as ``{{wide}}`` blocks — Homebrewery tables carry
-``break-inside: avoid`` and clip when squeezed into one column — costing
-both columns in the fill model. The build prints a report: pages,
+**Pagination model (measured pixels):** Homebrewery v3 pages clip overflow,
+so ``\\page`` breaks are placed from REAL rendered heights: the committed
+``calibration.json`` (written by ``tools/measure-heights.mjs`` driving live
+Homebrewery) carries a measured px height per spell ruleBlock; blocks
+without a measurement fall back to a vol1-calibrated line estimator ×
+``LINE_H_PX`` × a correction factor fitted against the measured set. The
+generated style block sets ``.ruleBlock { break-inside: auto }`` so spell
+blocks flow across columns like official print — content between two
+``\\page`` markers fills column 1 then column 2 continuously, and a page
+breaks before the block that would exceed ~97% of the 2×935px usable pool.
+Wide spell-list tables span both columns (their height drains the pool
+twice). The build prints a report: fitted correction factor, pages,
 blocks/page, and any page estimated over 100% (manual-review flags).
 """
 
@@ -107,6 +106,30 @@ PAGE_CAPACITY = LINES_PER_COLUMN * COLUMNS_PER_PAGE
 #: Live-render verification (real Chromium against homebrewery.naturalcrit.com)
 #: found one ~3-line overflow at a 92% target — 88% is the safety margin.
 FILL_TARGET = 0.88
+
+# --- pixel calibration (live-Homebrewery measurements) ---------------------
+#: Measured body line-height in live Homebrewery (the real_heights audit).
+LINE_H_PX = 15.4205
+#: Usable flow height per CSS column. Provenance: the live audit's fitting
+#: pages topped out at contentBottom ≈ 990px with content starting ≈ 53px
+#: into the 1,056px page → ~935px of usable column height (coordinator's
+#: DOM audit, 2026-07-31; cross-checked against the measured block heights
+#: of full columns in the same audit).
+USABLE_COLUMN_PX = 935.0
+PAGE_CAPACITY_PX = USABLE_COLUMN_PX * COLUMNS_PER_PAGE
+#: Flow-mode reserve for what the per-block calibration cannot see: the
+#: preamble/traits keep-together rule pushes up to ~100px of waste at each
+#: column boundary. (Calibration is margin-INCLUSIVE — an earlier
+#: margin-exclusive measurement under-modeled blocks ~12% and spilled
+#: spells into a clipped third column on 11-19/62 live pages.)
+FILL_TARGET_PX = 0.95
+#: Committed per-spell measured px heights (tools/measure-heights.mjs).
+CALIBRATION_PATH = DEFAULT_OUT_DIR / "calibration.json"
+#: Measured wide spell-list table metrics (0.9em, ~672px full width):
+#: 26px single-line rows, 39px when a row wraps, + heading/margins.
+WIDE_ROW_PX = 26.0
+WIDE_ROW_WRAP_PX = 39.0
+WIDE_TABLE_CHROME_PX = 100.0
 
 _UUID_RE = re.compile(r"@UUID\[([^\]]+)\](?:\{([^}]*)\})?")
 
@@ -535,15 +558,16 @@ _ZERO_FLOW_BLOCKS = ("imageWrapper", "caption", "artist", "watercolor")
 _ZERO_FLOW_LINES = ("{{pageNumber", "{{footnote")
 
 
-def estimate_md_lines(md: str, *, wide: bool = False) -> float:
+def estimate_md_lines(md: str) -> float:
     """Estimate rendered flow lines for a markdown chunk, mirroring how the
     generator's own output (and vol1's statblock pages) lay out: text wraps
     at ``CHARS_PER_LINE``, headers/banners cost extra, absolutely-positioned
     furniture costs nothing.
 
-    ``wide=True`` estimates a ``{{wide}}`` (column-span: all) block, where
-    table rows render single-line at full page width (~1.1 lines each);
-    in-column tables instead wrap and cost by character length."""
+    This is the FALLBACK sizing model: real pagination uses the measured
+    per-spell px heights in ``calibration.json``; blocks without a
+    measurement (new/renamed spells, chapter openers) use these lines ×
+    ``LINE_H_PX`` × the fitted correction factor (see ``fit_correction``)."""
     total = 0.0
     depth_zero_flow = 0
     brace_depth = 0
@@ -609,22 +633,12 @@ def estimate_md_lines(md: str, *, wide: bool = False) -> float:
             # d8-table page 70px over on re-audit).
             if not in_table:
                 in_table = True
-                if not wide:
-                    total += 8.0
-            if wide:
-                # Full-width (~672px at 0.9em) rows hold ~95 chars; a
-                # Rank|Spell|Actions|Summary row stays single-line when
-                # name+summary fit ~70 chars, else it wraps to two
-                # (live-render calibrated on the planara chapter table).
-                cells = [c.strip() for c in line.strip("|").split("|")]
-                content = len(cells[1]) + len(cells[3]) if len(cells) == 4 else len(line)
-                total += 1.1 if content <= 70 else 2.2
-            else:
-                # Table cells share the 302px column with padding/borders, so
-                # the effective wrap width is far narrower than prose CHARS_PER_LINE
-                # (~40 chars/row at the 0.85em in-block table size, live-render
-                # calibrated on the Eye Stalks d8 table).
-                total += 1.1 * max(1, math.ceil(len(line) / 40))
+                total += 8.0
+            # Table cells share the 302px column with padding/borders, so
+            # the effective wrap width is far narrower than prose
+            # CHARS_PER_LINE (~40 chars/row at the 0.85em in-block table
+            # size, live-render calibrated on the Eye Stalks d8 table).
+            total += 1.1 * max(1, math.ceil(len(line) / 40))
             continue
         if line.startswith("- "):
             total += max(1, math.ceil(len(line) / CHARS_PER_LINE))
@@ -633,17 +647,47 @@ def estimate_md_lines(md: str, *, wide: bool = False) -> float:
     return total
 
 
-def estimate_flow_cost(md: str) -> float:
-    """Capacity cost of a block in COLUMN-lines. Homebrewery gives tables
-    ``break-inside: avoid`` (they cannot split across the page's 2 CSS
-    columns — live-render verified), so spell-list tables ship inside a
-    ``{{wide}}`` block (column-span: all): every rendered line of a wide
-    block consumes both columns, i.e. 2 column-lines. Content after a wide
-    block resumes 2-column flow below it on the same page, so wide blocks
-    participate in the same page-fill pool as ordinary blocks."""
-    if md.startswith("{{wide"):
-        return 2.0 * estimate_md_lines(md, wide=True)
-    return estimate_md_lines(md)
+def load_calibration(path: Path = CALIBRATION_PATH) -> dict[str, float]:
+    """Measured px height per spell ruleBlock, keyed by spell title —
+    written by ``tools/measure-heights.mjs`` against live Homebrewery.
+    Missing file → empty dict (everything falls back to the estimator)."""
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {str(k): float(v) for k, v in data.items()}
+
+
+def fit_correction(pairs: list[tuple[float, float]]) -> tuple[float, float]:
+    """Fit ONE global correction factor from (measured px, estimated px)
+    pairs — least squares through the origin — plus the mean |residual| as
+    a fraction of the measured height. The factor rescales the estimator
+    fallback (blocks with no calibration entry) onto the measured scale;
+    the line model systematically over-prices (e.g. Eye Stalks modeled ~93
+    lines vs ~52 rendered), which stranded ~45% of every page pre-rework."""
+    if not pairs:
+        return 1.0, 0.0
+    den = sum(est * est for _, est in pairs)
+    if den == 0:
+        return 1.0, 0.0
+    factor = sum(real * est for real, est in pairs) / den
+    spread = sum(abs(real - factor * est) / real for real, est in pairs) / len(pairs)
+    return factor, spread
+
+
+def _wide_table_px(md: str) -> float:
+    """Rendered px height of a ``{{wide,vol2SpellTable}}`` block, from
+    measured row metrics: 26px single-line rows, 39px when name+summary
+    exceed the ~70-char single-line budget (planara calibration), plus
+    heading/margins. The ``|:---:|`` separator is syntax, not a row."""
+    px = WIDE_TABLE_CHROME_PX
+    for raw in md.split("\n"):
+        line = raw.strip()
+        if not line.startswith("|") or line.startswith("|:"):
+            continue
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        content = len(cells[1]) + len(cells[3]) if len(cells) == 4 else len(line)
+        px += WIDE_ROW_WRAP_PX if content > 70 else WIDE_ROW_PX
+    return px
 
 
 # ---------------------------------------------------------------------------
@@ -654,7 +698,7 @@ def estimate_flow_cost(md: str) -> float:
 @dataclass
 class _FlowBlock:
     md: str
-    lines: float
+    px: float  # capacity cost in COLUMN-px (wide blocks already ×2)
     starts_page: bool = False
 
 
@@ -662,11 +706,11 @@ class _FlowBlock:
 class PageInfo:
     page_no: int
     blocks: int
-    est_lines: float
+    est_px: float
 
     @property
     def fill(self) -> float:
-        return self.est_lines / PAGE_CAPACITY
+        return self.est_px / PAGE_CAPACITY_PX
 
 
 @dataclass
@@ -678,6 +722,9 @@ class BookReport:
     oversized_blocks: list[str] = field(default_factory=list)
     missing_fragments: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    calibrated_blocks: int = 0
+    correction_factor: float = 1.0
+    correction_spread: float = 0.0
 
     @property
     def page_count(self) -> int:
@@ -767,22 +814,25 @@ def _spell_list_md(school: str, spells: list[RenderedSpell], summaries: dict[str
 
 
 def _paginate(blocks: list[_FlowBlock], report: BookReport, names: list[str]) -> list[list[int]]:
-    """Greedy whole-block fill to ~FILL_TARGET of a page; returns pages as
-    lists of block indices. A single block may exceed the target alone (it
-    spans columns naturally); one estimated taller than a FULL page is
-    flagged for manual review."""
+    """Continuous column-flow fill (``break-inside: auto`` — content between
+    two ``\\page`` markers fills col1 then col2 without whole-block column
+    jumps): accumulate measured block px in order and break the page before
+    the block that would push the total past ``PAGE_CAPACITY_PX ×
+    FILL_TARGET_PX``. Wide blocks arrive pre-doubled (they span both
+    columns). A single block taller than a FULL page is flagged for manual
+    review."""
     pages: list[list[int]] = []
     current: list[int] = []
     fill = 0.0
     for i, b in enumerate(blocks):
-        if b.lines > PAGE_CAPACITY:
+        if b.px > PAGE_CAPACITY_PX:
             report.oversized_blocks.append(names[i])
-        if current and (b.starts_page or fill + b.lines > PAGE_CAPACITY * FILL_TARGET):
+        if current and (b.starts_page or fill + b.px > PAGE_CAPACITY_PX * FILL_TARGET_PX):
             pages.append(current)
             current = []
             fill = 0.0
         current.append(i)
-        fill += b.lines
+        fill += b.px
     if current:
         pages.append(current)
     return pages
@@ -827,7 +877,19 @@ _GENERATED_STYLE = """\
   }
   .page .vol2SpellTable table th:nth-child(3),
   .page .vol2SpellTable table td:nth-child(3) {
+    /* shrink-to-fit hint + nowrap: long CAST TIMES ("10 minutes") render as
+       text here, and a hard 4em pin wrapped those rows to 39px — the last
+       two live-audit page overflows (planara/mercuromancy tables). */
     width: 4em;
+    white-space: nowrap;
+  }
+  /* With break-inside:auto content, the browser's default column-fill:
+     balance spreads a page's content EQUALLY across as many columns as it
+     likes — spilling a clipped third column off the page edge while the
+     two real columns sit part-empty. Fill top-to-bottom instead. */
+  .page,
+  .page .columnWrapper {
+    column-fill: auto;
   }
   /* In-statblock tables (random-effect tables like Eye Stalks' d8 rays)
      wrap long cells hard in a 302px column; smaller type + tighter cell
@@ -839,6 +901,29 @@ _GENERATED_STYLE = """\
   }
   .page .ruleBlock table td {
     padding: 0.5mm;
+  }
+  /* Let spell blocks flow across columns (how official books print):
+     Homebrewery's default break-inside: avoid jumps a non-fitting block
+     wholesale to the next column/page, stranding empty space ("huge empty
+     gaps" stakeholder feedback). Title+pills stay attached; body/table/
+     postamble may split at a column boundary. */
+  .page .columnWrapper .ruleBlock {
+    /* !important + prefixed variants: Homebrewery's own avoid rule wins
+       the plain declaration, silently keeping blocks atomic — columns
+       ended early at block boundaries (live audit: col1 stopped 300px
+       short, spilling a clipped 3rd column on 13/64 pages). */
+    break-inside: auto !important;
+    -webkit-column-break-inside: auto !important;
+    page-break-inside: auto !important;
+    /* THE actual unlock: Homebrewery blocks are display:inline-block —
+       atomic inline-level boxes that can never fragment across columns
+       regardless of break-inside. Real block display lets spells flow
+       like official print. */
+    display: block !important;
+  }
+  .page .ruleBlock .preamble,
+  .page .ruleBlock .traits {
+    break-inside: avoid;
   }
 </style>"""
 
@@ -862,12 +947,20 @@ def build_book(
     store_dir: Path = STORE_DIR,
     traits_dir: Path = TRAITS_DIR,
     content_dir: Path | None = None,
+    calibration_path: Path | None = None,
 ) -> BookResult:
     """Assemble the whole book. ``content_dir`` defaults to
     ``DEFAULT_OUT_DIR/content`` (Track B's directory — consumed read-only,
-    fail-soft when fragments are missing)."""
+    fail-soft when fragments are missing); ``calibration_path`` defaults to
+    the committed ``calibration.json`` (measured px block heights)."""
     content_dir = content_dir if content_dir is not None else DEFAULT_OUT_DIR / "content"
+    calibration = load_calibration(calibration_path or CALIBRATION_PATH)
     report = BookReport()
+    if not calibration:
+        report.warnings.append(
+            "no calibration.json — pagination running entirely on the line "
+            "estimator (refresh with tools/measure-heights.mjs)"
+        )
 
     docs = _load_store(store_dir)
     by_school = _partition_by_school(docs)
@@ -880,18 +973,39 @@ def build_book(
     else:
         report.missing_fragments.append(str(summaries_path))
 
-    # -- render every chapter's flow blocks --------------------------------
-    chapter_blocks: list[list[_FlowBlock]] = []
-    chapter_block_names: list[list[str]] = []
-    for chapter_no, school in enumerate(SCHOOLS, start=1):
+    # -- pass 1: render every spell + fit the estimator correction ---------
+    spells_by_school: dict[str, list[RenderedSpell]] = {}
+    est_px_by_title: dict[str, float] = {}
+    fit_pairs: list[tuple[float, float]] = []
+    for school in SCHOOLS:
         spells: list[RenderedSpell] = []
         for slug, doc in by_school[school]:
             rs = render_spell(doc, slug, school)
             report.warnings.extend(f"{slug}: {w}" for w in rs.warnings)
             spells.append(rs)
+            est_px = estimate_md_lines(rs.md) * LINE_H_PX
+            est_px_by_title[rs.name] = est_px
+            if rs.name in calibration:
+                fit_pairs.append((calibration[rs.name], est_px))
         spells.sort(key=lambda s: (s.rank, s.name.lower()))
+        spells_by_school[school] = spells
         report.spells += len(spells)
+    factor, spread = fit_correction(fit_pairs)
+    report.calibrated_blocks = len(fit_pairs)
+    report.correction_factor = factor
+    report.correction_spread = spread
 
+    def spell_px(rs: RenderedSpell) -> float:
+        measured = calibration.get(rs.name)
+        if measured is not None:
+            return measured
+        return est_px_by_title[rs.name] * factor
+
+    # -- pass 2: per-chapter flow blocks sized in px -----------------------
+    chapter_blocks: list[list[_FlowBlock]] = []
+    chapter_block_names: list[list[str]] = []
+    for chapter_no, school in enumerate(SCHOOLS, start=1):
+        spells = spells_by_school[school]
         opener = _read_fragment(content_dir / "chapters" / f"{school}.md", report)
         if opener is None:
             opener = _chapter_opener_md(chapter_no, school, blurbs.get(school))
@@ -900,13 +1014,15 @@ def build_book(
                 f"chapters/{school}.md contains \\page — the pagination model assumes "
                 "chapter openers are single-page; toc anchors/footnotes may be off"
             )
-        blocks = [_FlowBlock(opener, estimate_flow_cost(opener), starts_page=True)]
+        opener_px = estimate_md_lines(opener) * LINE_H_PX * factor
+        blocks = [_FlowBlock(opener, opener_px, starts_page=True)]
         names = [f"{school}/opener"]
         table = _spell_list_md(school, spells, summaries)
-        blocks.append(_FlowBlock(table, estimate_flow_cost(table)))
+        # Wide blocks span BOTH columns: their height drains the pool twice.
+        blocks.append(_FlowBlock(table, 2.0 * _wide_table_px(table)))
         names.append(f"{school}/spell-list")
         for sp in spells:
-            blocks.append(_FlowBlock(sp.md, estimate_flow_cost(sp.md)))
+            blocks.append(_FlowBlock(sp.md, spell_px(sp)))
             names.append(f"{school}/{sp.slug}")
         chapter_blocks.append(blocks)
         chapter_block_names.append(names)
@@ -954,11 +1070,11 @@ def build_book(
             for i in page_blocks:
                 out.append(blocks[i].md)
                 out.append("")
-                est += blocks[i].lines
+                est += blocks[i].px
             out.append("{{pageNumber,auto}}")
             out.append(f"{{{{footnote Chapter {chapter_no} | {_title_case(school)}}}}}")
             out.append("")
-            info = PageInfo(page_no=page_no, blocks=len(page_blocks), est_lines=est)
+            info = PageInfo(page_no=page_no, blocks=len(page_blocks), est_px=est)
             report.pages.append(info)
             if info.fill > 1.0:
                 report.overflow_pages.append(info)
@@ -978,6 +1094,11 @@ def format_report(report: BookReport) -> str:
         f"assay export-book: {report.spells} spells, {len(report.chapters)} chapters, "
         f"{report.page_count} content pages",
     ]
+    lines.append(
+        f"  calibration: {report.calibrated_blocks} measured blocks, estimator "
+        f"correction ×{report.correction_factor:.3f} "
+        f"(mean |residual| {report.correction_spread:.1%})"
+    )
     for school, n, page in report.chapters:
         lines.append(f"  chapter {_title_case(school)}: {n} spells, starts p{page}")
     fills = [p.fill for p in report.pages]

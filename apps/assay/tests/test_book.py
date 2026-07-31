@@ -211,29 +211,21 @@ def test_spell_list_tables_are_wide(built: book.BookResult) -> None:
     assert "spellList" not in built.markdown
 
 
-def test_wide_block_costs_both_columns() -> None:
-    md = "{{wide,vol2SpellTable\n| a | b |\n| c | d |\n}}"
-    assert book.estimate_flow_cost(md) == pytest.approx(2.0 * book.estimate_md_lines(md, wide=True))
-    # An ordinary (non-wide) block costs its plain line estimate.
-    assert book.estimate_flow_cost("plain text") == book.estimate_md_lines("plain text")
-
-
-def test_wide_table_rows_cost_by_content_width() -> None:
-    # Rank|Spell|Actions|Summary rows: single-line while name+summary fit
-    # ~70 chars at full width, two lines past that (planara calibration).
+def test_wide_table_px_rows_and_wrap() -> None:
+    # Rank|Spell|Actions|Summary rows: 26px single-line while name+summary
+    # fit ~70 chars at full width, 39px past that (planara calibration);
+    # the |:---:| separator is syntax, not a rendered row.
     short = "| 3 | Jolt | {{aa}} | " + "s" * 60 + " |"
     long = "| 3 | A Rather Long Spell Name Indeed | {{aa}} | " + "s" * 60 + " |"
-    assert book.estimate_md_lines(short, wide=True) == pytest.approx(1.1)
-    assert book.estimate_md_lines(long, wide=True) == pytest.approx(2.2)
+    md = "{{wide,vol2SpellTable\n##### X Spells\n|:---:|:---|\n" + short + "\n" + long + "\n}}"
+    expected = book.WIDE_TABLE_CHROME_PX + book.WIDE_ROW_PX + book.WIDE_ROW_WRAP_PX
+    assert book._wide_table_px(md) == pytest.approx(expected)
 
 
 def test_in_column_table_rows_cost_by_wrap() -> None:
     long_row = "| 1–3 | " + "x" * 90 + " | " + "y" * 90 + " |"
     # In-column: flat +8 zebra padding/border surcharge + wrap-based rows.
     assert book.estimate_md_lines(long_row) > 6.0
-    # The same row inside a wide block: 3 cells -> whole-line fallback, but
-    # still cheaper than in-column (no wrap-by-52-chars, no surcharge).
-    assert book.estimate_md_lines(long_row, wide=True) == pytest.approx(2.2)
 
 
 def test_in_column_table_flat_surcharge_once_per_table() -> None:
@@ -255,6 +247,54 @@ def test_style_block_precedes_front_cover(built: book.BookResult) -> None:
     style = md.split("</style>")[0]
     assert ".page .vol2SpellTable table" in style
     assert "font-size: 0.9em;" in style
+
+
+def test_style_block_lets_ruleblocks_flow(built: book.BookResult) -> None:
+    """Spell blocks must flow across columns (break-inside: auto) with the
+    title+pills kept attached — Homebrewery's default avoid strands empty
+    column space (the stakeholder's "huge empty gaps")."""
+    style = built.markdown.split("</style>")[0]
+    # The three-part unlock (each live-render verified as individually
+    # necessary): break-inside auto (+prefixed variants) AND display:block —
+    # Homebrewery blocks are display:inline-block, atomic boxes that never
+    # fragment regardless of break rules; all !important to beat the theme.
+    assert "break-inside: auto !important;" in style
+    assert "-webkit-column-break-inside: auto !important;" in style
+    assert "display: block !important;" in style
+    assert (
+        ".page .ruleBlock .preamble,\n  .page .ruleBlock .traits {\n    break-inside: avoid;"
+        in (style)
+    )
+
+
+def test_calibration_prefers_measured_px_and_corrects_fallback(tmp_path: Path) -> None:
+    cal_path = tmp_path / "calibration.json"
+    cal_path.write_text(json.dumps({"Jolt": 250.0}), encoding="utf-8")
+    calibration = book.load_calibration(cal_path)
+    assert calibration == {"Jolt": 250.0}
+    assert book.load_calibration(tmp_path / "absent.json") == {}
+    # Fit: real = 0.5 x est exactly -> factor 0.5, zero residual spread.
+    factor, spread = book.fit_correction([(100.0, 200.0), (50.0, 100.0)])
+    assert factor == pytest.approx(0.5)
+    assert spread == pytest.approx(0.0)
+    assert book.fit_correction([]) == (1.0, 0.0)
+
+
+def test_real_build_uses_committed_calibration(built: book.BookResult) -> None:
+    """All 173 store spells are measured; the fallback correction factor is
+    fitted from them (over-pricing line model -> factor well below 1)."""
+    assert built.report.calibrated_blocks == 173
+    assert 0.5 < built.report.correction_factor < 1.0
+
+
+def test_paginator_continuous_fill_with_px_heights() -> None:
+    """With break-inside:auto flow, blocks pack the whole 2x935px pool: 4
+    blocks of 400px per page (1600 <= 1814 target), NOT 2-per-column."""
+    report = book.BookReport()
+    blocks = [book._FlowBlock(md=f"b{i}", px=400.0) for i in range(8)]
+    pages = book._paginate(blocks, report, [f"b{i}" for i in range(8)])
+    assert [len(p) for p in pages] == [4, 4]
+    assert report.oversized_blocks == []
 
 
 def test_fragments_consumed_when_present(tmp_path: Path) -> None:

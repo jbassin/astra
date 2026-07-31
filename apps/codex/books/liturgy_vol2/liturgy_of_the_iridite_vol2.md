@@ -21,7 +21,19 @@
   }
   .page .vol2SpellTable table th:nth-child(3),
   .page .vol2SpellTable table td:nth-child(3) {
+    /* shrink-to-fit hint + nowrap: long CAST TIMES ("10 minutes") render as
+       text here, and a hard 4em pin wrapped those rows to 39px — the last
+       two live-audit page overflows (planara/mercuromancy tables). */
     width: 4em;
+    white-space: nowrap;
+  }
+  /* With break-inside:auto content, the browser's default column-fill:
+     balance spreads a page's content EQUALLY across as many columns as it
+     likes — spilling a clipped third column off the page edge while the
+     two real columns sit part-empty. Fill top-to-bottom instead. */
+  .page,
+  .page .columnWrapper {
+    column-fill: auto;
   }
   /* In-statblock tables (random-effect tables like Eye Stalks' d8 rays)
      wrap long cells hard in a 302px column; smaller type + tighter cell
@@ -33,6 +45,29 @@
   }
   .page .ruleBlock table td {
     padding: 0.5mm;
+  }
+  /* Let spell blocks flow across columns (how official books print):
+     Homebrewery's default break-inside: avoid jumps a non-fitting block
+     wholesale to the next column/page, stranding empty space ("huge empty
+     gaps" stakeholder feedback). Title+pills stay attached; body/table/
+     postamble may split at a column boundary. */
+  .page .columnWrapper .ruleBlock {
+    /* !important + prefixed variants: Homebrewery's own avoid rule wins
+       the plain declaration, silently keeping blocks atomic — columns
+       ended early at block boundaries (live audit: col1 stopped 300px
+       short, spilling a clipped 3rd column on 13/64 pages). */
+    break-inside: auto !important;
+    -webkit-column-break-inside: auto !important;
+    page-break-inside: auto !important;
+    /* THE actual unlock: Homebrewery blocks are display:inline-block —
+       atomic inline-level boxes that can never fragment across columns
+       regardless of break-inside. Real block display lets spells flow
+       like official print. */
+    display: block !important;
+  }
+  .page .ruleBlock .preamble,
+  .page .ruleBlock .traits {
+    break-inside: avoid;
   }
 </style>
 
@@ -121,13 +156,13 @@ Each chapter opens its spell list with a table of one-line summaries. These are 
 # Contents
 
 - ## [{{ Chapter 1 — Antillurgy}}{{ 6}}](#p6)
-- ## [{{ Chapter 2 — Chronomancy}}{{ 15}}](#p15)
-- ## [{{ Chapter 3 — Gestalt}}{{ 27}}](#p27)
-- ## [{{ Chapter 4 — Kosmoturgy}}{{ 37}}](#p37)
-- ## [{{ Chapter 5 — Memetics}}{{ 50}}](#p50)
-- ## [{{ Chapter 6 — Mercuromancy}}{{ 66}}](#p66)
-- ## [{{ Chapter 7 — Planara}}{{ 75}}](#p75)
-- ## [{{ Chapter 8 — Seraphic}}{{ 87}}](#p87)
+- ## [{{ Chapter 2 — Chronomancy}}{{ 13}}](#p13)
+- ## [{{ Chapter 3 — Gestalt}}{{ 21}}](#p21)
+- ## [{{ Chapter 4 — Kosmoturgy}}{{ 28}}](#p28)
+- ## [{{ Chapter 5 — Memetics}}{{ 37}}](#p37)
+- ## [{{ Chapter 6 — Mercuromancy}}{{ 48}}](#p48)
+- ## [{{ Chapter 7 — Planara}}{{ 55}}](#p55)
+- ## [{{ Chapter 8 — Seraphic}}{{ 63}}](#p63)
 }}
 
 \page
@@ -164,7 +199,7 @@ A spell is not a miracle. A spell is fuel, briefly organized. The caster across 
 | Rank | Spell | Actions | Summary |
 |:---:|:---|:---:|:---|
 | 1 | Antimagic Shroud | {{aa}} | Absorb a spell's sting, erupt at its caster |
-| 1 | Elemental Sink | {{aa}} | Sustained sink amplifies damage with elemental riders |
+| 1 | Elemental Sink | {{aa}} | Sustained sink adds elemental riders |
 | 1 | Macabredanse | {{aa}} | Cantrip of three minor antillurgical tricks |
 | 2 | Disperse Magic | {{r}} | Reaction: save bonus and better basic-save degree |
 | 2 | Divine Regression | {{aa}} | Afflicted target's healing becomes void damage |
@@ -174,11 +209,11 @@ A spell is not a miracle. A spell is fuel, briefly organized. The caster across 
 | 3 | Festering Slick | {{a}} | Weapon slick: void damage, blocks healing |
 | 4 | Arcane Interdiction | {{aa}} | Emanation: enemy spells risk fizzling entirely |
 | 4 | Phlogistic Shield | {{aa}} | Floating lens negates spells passing through |
-| 5 | Almonk's Retribution | {{aa}} | Burning zone punishes every spellcaster within |
+| 5 | Almonk's Retribution | {{aa}} | Burning zone punishes spellcasters |
 | 5 | Focus Break | {{aa}} | End a sustained spell, possibly stunning |
 | 5 | Reduce Resistivity | {{aa}} | Penalize a foe's saves against spells |
 | 6 | Thaumaturgic Inhibition | {{aa}} | Emanation weakens spells cast within it |
-| 6 | Thaumaturgic Obstruction | {{aa}} | Emanation makes enemy spells cost extra actions |
+| 6 | Thaumaturgic Obstruction | {{aa}} | Enemy spells cost extra actions |
 | 7 | Containment Orbs | {{aa}} | Three orbs each devour one tradition's spell |
 | 7 | Return Spell | {{aa}} | Ward lets an ally reflect spells back |
 | 7 | Sapping Lightning | {{aa}} | Lightning line that burns away spell slots |
@@ -273,11 +308,6 @@ You conjure one of three minor antillurgical effects within range. Choose one wh
 You may have up to two non-instantaneous Macabredanse effects active at a time. Dismissing an active effect is a single action with the concentrate trait.
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 1 | Antillurgy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Disperse Magic}} {{r}} {{spacer}} {{kind Spell}} {{level 2}}
@@ -320,6 +350,11 @@ You reverse the flow of vital energy within a creature, weaponizing its own capa
 }}
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 1 | Antillurgy}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Poisoned Backflow}} {{aa}} {{spacer}} {{kind Spell}} {{level 2}}
@@ -351,11 +386,6 @@ The curse can be removed only with a successful counteract check against this sp
 
 **Critical Failure** The target is cursed for 1 day and immediately takes 3d6 void damage.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 1 | Antillurgy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -436,11 +466,6 @@ You speak a word of antillurgic power and coat a melee weapon you are holding wi
 }}
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 1 | Antillurgy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Arcane Interdiction}} {{aa}} {{spacer}} {{kind Spell}} {{level 4}}
@@ -465,6 +490,11 @@ Creatures entering the area mid-turn must attempt the flat check if they cast a 
 **Heightened (+2)** :: The flat check DC to cast spells in the area increases by 2.
 }}
 }}
+
+{{pageNumber,auto}}
+{{footnote Chapter 1 | Antillurgy}}
+
+\page
 
 {{ruleBlock
 {{preamble
@@ -525,11 +555,6 @@ Whenever a creature within the area casts a spell or uses a magical ability that
 **Heightened (+1)** :: The damage on failure increases by 1d6.
 }}
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 1 | Antillurgy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -605,6 +630,11 @@ You tear at the magical defenses of a target creature, leaving its arcane shield
 You weave antillurgic interference through the ambient aether, throttling spellcasting within the sphere. Any creature other than you that casts a spell while within the 60-foot emanation must attempt a DC equal to your spell DC check using its key spellcasting attribute. On a failure, the spell is cast as if using the lowest possible spell slot that could produce it (minimum rank 1), and the spell's damage dice each roll one lower than normal (minimum 1 per die). On a success, the spell takes effect normally.
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 1 | Antillurgy}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Thaumaturgic Obstruction}} {{aa}} {{spacer}} {{kind Spell}} {{level 6}}
@@ -623,11 +653,6 @@ You weave antillurgic interference through the ambient aether, throttling spellc
 
 You envelope yourself in a field of temporal-aetheric drag that slows the casting process for all spellcasters other than yourself within range. While you sustain this spell, any creature within the 60-foot emanation (other than you) that casts a spell requires one additional action beyond the spell's normal casting time. Spells that normally require 1 action to cast require 2 actions; spells requiring 2 actions require 3 actions; spells requiring 3 actions cannot be cast at all while within the emanation. Free-action and reaction spells are unaffected.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 1 | Antillurgy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -701,11 +726,6 @@ You unleash a beam of antillurgic energy from your fingertips in a sizzling 120-
 }}
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 1 | Antillurgy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Zone of Minimization}} {{aa}} {{spacer}} {{kind Spell}} {{level 8}}
@@ -726,6 +746,11 @@ You saturate an area with antillurgic energy that collapses all damage potential
 
 The zone does not affect damage from spells or abilities that originate entirely outside the zone.
 }}
+
+{{pageNumber,auto}}
+{{footnote Chapter 1 | Antillurgy}}
+
+\page
 
 {{ruleBlock
 {{preamble
@@ -801,18 +826,18 @@ The bearer is reminded that workings which displace a creature from the timestre
 | 2 | Laixa's Historical Tracker | {{aa}} | Lens reveals an area's recent past |
 | 2 | Time Step | {{a}} | Vanish outside time until next turn |
 | 3 | Lend Time | {{r}} | Give your entire turn to an ally |
-| 3 | Lyrr's Chronomantic Shell | {{aa}} | Traveling shell of calm, moderated weather |
+| 3 | Lyrr's Chronomantic Shell | {{aa}} | Traveling shell of calmed weather |
 | 3 | Nightfall | {{aa}} | Cylinder of premature midnight and starlight |
 | 3 | Rewind and Playback | {{aa}} | Heal by channeling wounds into yourself |
-| 4 | Celestial Preservation | 1 hour | Preserve the dead as a waiting constellation |
+| 4 | Celestial Preservation | 1 hour | Preserve dead as a constellation |
 | 4 | Ebb and Flow | {{aa}} | Zone hastens allies, slows failing enemies |
 | 4 | Force Drumfire | {{aa}} | Force missiles loop back to strike again |
 | 4 | Reset | {{aa}} | Force initiative rerolls favoring your side |
 | 4 | Temporal Discharge | 10 minutes | Object trap discharges stored elemental burst |
-| 4 | Temporal Threshold | 1 minute | Doorway trap of violently conflicting time-flows |
+| 4 | Temporal Threshold | 1 minute | Doorway of clashing time-flows |
 | 5 | Jolt | {{aa}} | Grant allies an immediate extra action |
 | 5 | Legend Killer | {{a}} | Suppress a foe's mythic abilities |
-| 5 | Repetitious Trauma | {{aa}} | Foe relives damaging moment each sustained round |
+| 5 | Repetitious Trauma | {{aa}} | Foe relives damage each sustained round |
 | 5 | Revisit | {{aa}} | Snap back to a recently occupied spot |
 | 5 | Wall of Time | {{aa}} | Temporal wall slows those passing through |
 | 6 | Chrysalis | 10 minutes | Cocoon compresses eight-hour rest into one |
@@ -902,11 +927,6 @@ You twist time to force a creature to relive the worst moment of its recent past
 **Heightened (+1)** :: The maximum echoed damage increases by 6.
 }}
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 2 | Chronomancy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -1048,11 +1068,6 @@ The spell ends automatically at midnight as the wider world catches up to the ti
 You reach through time and pull a creature's wounds backward, rewinding the damage into the past and redirecting it through yourself as a conduit. Choose the number of Hit Points to restore to the target. You take 1d6 void damage for every 6 Hit Points restored, rounding up to the next multiple of 6; this damage can't be reduced by resistance, immunity, or any other means.
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 2 | Chronomancy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Celestial Preservation}} {{spacer}} {{kind Spell}} {{level 4}}
@@ -1106,6 +1121,11 @@ Allied creatures that begin their turn within the zone gain a +10-foot status bo
 **Critical Failure** As failure, and the creature also loses its reaction while within the zone.
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 2 | Chronomancy}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Force Drumfire}} {{aa}} {{spacer}} {{kind Spell}} {{level 4}}
@@ -1130,11 +1150,6 @@ After the missiles impact, they snap back to orbit you, hovering visibly. On sub
 **Heightened (+2)** :: The number of missiles increases by 1.
 }}
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 2 | Chronomancy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -1283,11 +1298,6 @@ You slow down the flow of time around a mighty creature. The target must attempt
 **Critical Failure** As failure, and the creature is Stunned 1.
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 2 | Chronomancy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Repetitious Trauma}} {{aa}} {{spacer}} {{kind Spell}} {{level 5}}
@@ -1341,6 +1351,11 @@ You rewind your own personal timeline to a location you occupied within the last
 }}
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 2 | Chronomancy}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Wall of Time}} {{aa}} {{spacer}} {{kind Spell}} {{level 5}}
@@ -1361,11 +1376,6 @@ You tear a rift in linear time and shape it into a translucent, rippling wall of
 
 The wall imposes a Fortitude save (DC = your spell DC) on any creature that passes through it. On a failure, the creature is Slowed 1 until the start of its next turn.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 2 | Chronomancy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -1441,11 +1451,6 @@ You trap a creature in a closed loop of time, forcing it to replay the broad str
 **Failure** The creature is pulled back to its approximate position at the start of its previous turn and must spend its actions this turn in the same categories as last turn: if it Moved then Struck, it can only Move then Strike, choosing any targets and directions freely. If the required action type is impossible, the creature instead loses that action. The creature repeats the saving throw at the end of each of its turns; on a success the effect ends.
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 2 | Chronomancy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Anomalous Object}} {{aa}} {{spacer}} {{kind Spell}} {{level 7}}
@@ -1468,6 +1473,11 @@ You reach through time to retrieve a duplicate of a touched object from another 
 **Heightened (9th)** :: The object can be up to 4 Bulk and the duration extends to 8 hours.
 }}
 }}
+
+{{pageNumber,auto}}
+{{footnote Chapter 2 | Chronomancy}}
+
+\page
 
 {{ruleBlock
 {{preamble
@@ -1520,11 +1530,6 @@ You reach into the flow of time and pluck the target entirely out of it. The tar
 
 When you Cast this Spell, you choose the duration, from 1 round to 24 hours. The target returns automatically at the end of the chosen duration, reappearing in the nearest unoccupied space to where it left. The target experiences no subjective passage of time and is not aware it was gone. Any ongoing effects active on the target (except sustained spells) resume exactly as they were.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 2 | Chronomancy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -1612,29 +1617,29 @@ No one agrees on what the gestalt collective actually is. The Children call it t
 ##### Gestalt Spells
 | Rank | Spell | Actions | Summary |
 |:---:|:---|:---:|:---|
-| 1 | Body Enhancement: Claws | {{aa}} | Grow claw Strikes with agile slashing damage |
+| 1 | Body Enhancement: Claws | {{aa}} | Agile slashing claw Strikes |
 | 1 | Body Enhancement: Fangs | {{aa}} | Bite a foe for immediate piercing damage |
-| 1 | Body Enhancement: Hide | {{aa}} | Thick hide grants recurring temporary Hit Points |
+| 1 | Body Enhancement: Hide | {{aa}} | Recurring temporary Hit Points |
 | 1 | Body Enhancement: Sense | {{aa}} | Sharpen one sense to bestial acuity |
 | 2 | Body Enhancement: Horns | {{aa}} | Gore a foe with heavy horn damage |
-| 2 | Body Enhancement: Mind | {{aa}} | Sharpen cognition: Will bonus plus mental edge |
+| 2 | Body Enhancement: Mind | {{aa}} | Will bonus plus mental edge |
 | 3 | Bestial Rage | {{a}} | Frenzy boosts beast-form attacks and damage dice |
 | 3 | Shape Modify: Accuracy | {{a}} | Trade form's power for attack precision |
 | 3 | Shape Modify: Armor | {{a}} | Trade form's speed for tougher armor |
-| 3 | Shape Modify: Severity | {{a}} | Trade form's senses for sharper natural weapons |
+| 3 | Shape Modify: Severity | {{a}} | Trade senses for sharper weapons |
 | 3 | Shape Modify: Speed | {{a}} | Trade form's padding for faster Speeds |
 | 4 | Fluid Form | {{aa}} | Become amorphous liquid with your gear |
 | 4 | Grosteque Selfshape | {{aa}} | Grow Large: temporary HP, reach, bonus damage |
 | 4 | Suspension | {{aa}} | Vines grant flight near surfaces, negate falls |
 | 5 | Blades of Bone | {{aa}} | Bone spurs make your grapples deal damage |
 | 5 | Incensed Bestial Rage | {{a}} | Push battle form feral: damage up, AC down |
-| 5 | Monstrous Copy: Tentacle | {{aa}} | Tentacle Strike: agile, disarm, grapple, reach |
+| 5 | Monstrous Copy: Tentacle | {{aa}} | Agile disarm-grapple reach Strike |
 | 6 | Monstrous Copy: Claws | {{aa}} | Excavating claws grant full-speed burrowing |
 | 6 | Monstrous Copy: Wail | {{aa}} | Keening wail: mental damage and stupefaction |
-| 7 | Monstrous Copy: Eye Stalks | {{aaa}} | Three eye-stalk rays with random effects |
+| 7 | Monstrous Copy: Eye Stalks | {{aaa}} | Three rays with random effects |
 | 7 | Monstrous Copy: Tail | {{aa}} | Reach tail Strike batters with stunning force |
-| 8 | Monstrous Copy: Stinger | {{aa}} | Venomous reach stinger with devastating poison |
-| 9 | Monstrous Copy: Shell | {{aa}} | Reaction deflects ranged spell attacks, sometimes reflecting |
+| 8 | Monstrous Copy: Stinger | {{aa}} | Reach stinger, devastating poison |
+| 9 | Monstrous Copy: Shell | {{aa}} | Reaction deflects ranged spell attacks |
 }}
 
 {{ruleBlock
@@ -1764,11 +1769,6 @@ You draw upon the collective's memory of wildshaping to partially modify your bo
 }}
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 3 | Gestalt}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Body Enhancement: Mind}} {{aa}} {{spacer}} {{kind Spell}} {{level 2}}
@@ -1809,6 +1809,11 @@ You channel the gestalt collective's memory of wildshaping at its most savage, s
 For the duration of your current polymorph, you gain a +1 status bonus to melee attack rolls made with your natural attacks, and your natural attack damage dice increase by one step: d4 to d6, d6 to d8, d8 to d10, or d10 to d12. Creatures attacking you with melee Strikes gain a +1 circumstance bonus to their attack rolls.
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 3 | Gestalt}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Shape Modify: Accuracy}} {{a}} {{spacer}} {{kind Spell}} {{level 3}}
@@ -1846,11 +1851,6 @@ You draw upon the collective's memory of polymorphing to refine your current for
 
 You draw upon the collective's memory of polymorphing to refine your current form. You must be polymorphed to Cast this Spell. You increase the protection of your current form, but decrease its speed. For the duration, you gain a +2 circumstance bonus to AC in your current form, but your Speed is reduced to 15 feet for all movement types.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 3 | Gestalt}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -1917,11 +1917,6 @@ You can Dismiss this spell.
 }}
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 3 | Gestalt}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Grosteque Selfshape}} {{aa}} {{spacer}} {{kind Spell}} {{level 4}}
@@ -1946,6 +1941,11 @@ While in this form, your unarmed Strikes and weapon Strikes deal an additional 2
 **Heightened (+2)** :: Your size increases by one step, the additional Strike damage increases by 1d6, and the temporary Hit Points you gain (both on cast and each turn) each increase by 5.
 }}
 }}
+
+{{pageNumber,auto}}
+{{footnote Chapter 3 | Gestalt}}
+
+\page
 
 {{ruleBlock
 {{preamble
@@ -1986,11 +1986,6 @@ You turn your gestalt wildshaping energy inward, forcing long, curved spurs of h
 
 While this spell is active, when you successfully Grapple a creature, you deal 3d6 piercing damage to that creature in addition to the Grapple's effects, and at the start of each of your turns while you have a creature Grabbed, that creature takes 2d6 piercing damage.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 3 | Gestalt}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -2108,11 +2103,6 @@ You draw upon your knowledge of the Banshee, reshaping your vocal cords into a m
 
 **Critical Failure** The creature takes double damage and is Stupefied 3.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 3 | Gestalt}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -2284,22 +2274,22 @@ They will tell you the earth is patient. The earth is not patient. The earth is 
 | 3 | Swap | {{aa}} | Exchange two creatures' positions through space |
 | 4 | Djura's Righteous Pressure | {{aa}} | Holy aura sears undead and fiends |
 | 4 | Forceful Charge | {{aa}} | Charge in a line, battering everyone through |
-| 4 | Left Hand of Judgment | {{a}} | Reaction: counter melee hits with free Strikes |
+| 4 | Left Hand of Judgment | {{a}} | Counter melee hits with free Strikes |
 | 4 | Mark of Protection | {{aa}} | Swap in to absorb a marked ally's damage |
-| 4 | Right Hand of Judgment | {{a}} | Missed attacks bank charges boosting damage rolls |
-| 5 | Djura's Divine Razor | {{a}} | Reality-cutting edge: force damage, transferable curse |
+| 4 | Right Hand of Judgment | {{a}} | Missed attacks bank damage charges |
+| 5 | Djura's Divine Razor | {{a}} | Force-cutting edge, transferable curse |
 | 5 | Oblivion | {{aa}} | Void-and-force burst crushes everything nearby |
 | 6 | Fault Line | {{aa}} | Rupture the earth in a devastating line |
 | 6 | Kosmoturgist's Armor | {{aa}} | Hardened-air shell grants broad resistance |
 | 6 | Summon Heart | {{aa}} | Gravitationally crush a creature's living core |
-| 6 | Weight of the World | {{aa}} | Crushing weight slows and debilitates creatures |
+| 6 | Weight of the World | {{aa}} | Crushing weight slows creatures |
 | 7 | Forceful Onslaught | {{aa}} | Empower a creature's might and blows |
 | 7 | Gravity Anvil | {{aa}} | Compressed-gravity anvil crushes one target |
 | 7 | Kosmoturgist's Weapon | {{aa}} | Sustained floating force weapon attacks foes |
 | 7 | Raise Island | {{aa}} | Levitate a hundred-foot slab of rock |
 | 8 | Carnage | {{aa}} | Teleport far, then Strike everyone in reach |
 | 8 | Hypercompression | {{aa}} | Dark gravity orb drags and crushes creatures |
-| 9 | Djura's Divine Protection | {{aa}} | Eight allies gain broad damage resistance |
+| 9 | Djura's Divine Protection | {{aa}} | Eight allies resist damage |
 }}
 
 {{pageNumber,auto}}
@@ -2387,11 +2377,6 @@ Make a melee weapon Strike as part of Casting the Spell; if the weapon Strike mi
 }}
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 4 | Kosmoturgy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Reposition}} {{aa}} {{spacer}} {{kind Spell}} {{level 1}}
@@ -2451,6 +2436,11 @@ Retributive energy flows through your weapon, ready to rebound. For the duration
 }}
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 4 | Kosmoturgy}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Compressive Weapon}} {{aa}} {{spacer}} {{kind Spell}} {{level 2}}
@@ -2473,11 +2463,6 @@ You compress the intervening space between yourself and a target creature, creat
 **Heightened (+1)** :: The range of the compressive reach increases by 10 feet.
 }}
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 4 | Kosmoturgy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -2554,11 +2539,6 @@ You gain better control of the eddies in the space around you, letting you find 
 **Spatial Dodge** {{r}} **Trigger** A creature targets you with an attack roll. **Effect** Attempt a DC 11 flat check. On a success, you teleport 5 feet to an unoccupied space and the attack misses automatically. On a failure, the attack is resolved normally, then you teleport 5 feet.
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 4 | Kosmoturgy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Swap}} {{aa}} {{spacer}} {{kind Spell}} {{level 3}}
@@ -2587,6 +2567,11 @@ You twist the fabric of space, swapping the positions of two creatures both with
 **Heightened (+1)** :: You can target 1 additional creature with this spell. You choose how the targets exchange positions.
 }}
 }}
+
+{{pageNumber,auto}}
+{{footnote Chapter 4 | Kosmoturgy}}
+
+\page
 
 {{ruleBlock
 {{preamble
@@ -2619,11 +2604,6 @@ You radiate a great holy pressure that is anathema to undead and fiends. Any und
 **Heightened (+1)** :: The damage increases by 1d6.
 }}
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 4 | Kosmoturgy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -2678,11 +2658,6 @@ You channel a subtle gravitational pull through your left hand, bending the forc
 **Gravitational Counter** {{r}} **Trigger** A creature within your reach successfully hits you with a melee attack. **Effect** The attacker's force pulls them off-balance, and they are Off-Guard against the triggering Strike. You may immediately make one melee Strike against the triggering creature. This Strike doesn't use or contribute to your multiple attack penalty.
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 4 | Kosmoturgy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Mark of Protection}} {{aa}} {{spacer}} {{kind Spell}} {{level 4}}
@@ -2711,6 +2686,11 @@ You can only have one Mark of Protection active at a time. Casting this spell wh
 }}
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 4 | Kosmoturgy}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Right Hand of Judgment}} {{a}} {{spacer}} {{kind Spell}} {{level 4}}
@@ -2729,11 +2709,6 @@ You can only have one Mark of Protection active at a time. Casting this spell wh
 
 You channel kosmoturgy through your right hand, siphoning the kinetic force of incoming blows and storing it as a cosmic charge that you can spend to devastate your enemies. For the duration, once per round when a creature's attack roll against you fails, you gain 1 charge. You can hold a maximum of 3 charges at one time. Charges dissipate when the spell ends. When you successfully make a Strike, before you roll damage you may expend 1 charge to grant that Strike's damage roll a fortune effect: you roll the damage dice twice and take the higher result.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 4 | Kosmoturgy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -2824,11 +2799,6 @@ You rupture the ground along a line, splitting the earth and hurling debris in a
 }}
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 4 | Kosmoturgy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Kosmoturgist's Armor}} {{aa}} {{spacer}} {{kind Spell}} {{level 6}}
@@ -2847,6 +2817,11 @@ You rupture the ground along a line, splitting the earth and hurling debris in a
 
 You compress the ambient air around a willing creature you touch, hardening it into a near-solid shell of force-locked atmosphere. For the duration, the target gains resistance 10 to bludgeoning, piercing, slashing, and force damage. You cannot have this spell active on more than one creature at a time; casting it again ends the previous casting.
 }}
+
+{{pageNumber,auto}}
+{{footnote Chapter 4 | Kosmoturgy}}
+
+\page
 
 {{ruleBlock
 {{preamble
@@ -2922,11 +2897,6 @@ You call down the weight of existence upon those around a chosen point. Each cre
 You infuse a creature with explosive gravitational momentum, pressing beyond the limits of ordinary physiology. For the duration, the target gains a +2 status bonus to Athletics checks and Fortitude saving throws. The target deals an additional 2d6 force damage on all weapon Strikes. At the start of each of the target's turns, it gains 10 temporary Hit Points. Finally, if the target is reduced to 0 Hit Points, it gains the Dying condition as normal, but it doesn't fall Unconscious until the start of its next turn and can act normally until then. It attempts recovery checks as normal, and it can't be stabilized by any means while it remains conscious this way.
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 4 | Kosmoturgy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Gravity Anvil}} {{aa}} {{spacer}} {{kind Spell}} {{level 7}}
@@ -2990,6 +2960,11 @@ You cannot have more than one Kosmoturgist's Weapon active at a time.
 }}
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 4 | Kosmoturgy}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Raise Island}} {{aa}} {{spacer}} {{kind Spell}} {{level 7}}
@@ -3014,11 +2989,6 @@ You rip a massive slab of bare rock from the ground and levitate it 10 feet abov
 **Heightened (9th)** :: The slab is 200 feet to a side and can be commanded to move at 20 feet per round.
 }}
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 4 | Kosmoturgy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -3047,11 +3017,6 @@ On your subsequent turns, you can Sustain the spell to continue your deadly assa
 
 **Fourth Sustain** You teleport up to 60 feet into the air and descend, smashing into the ground at a point you can see within 120 feet of where you started. You take no falling damage. Each creature within 30 feet of you must attempt a basic Fortitude save against 6d12 force damage. You then make a melee Strike against one creature within your reach; if you hit, the target takes an additional 8d12 force damage.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 4 | Kosmoturgy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -3090,6 +3055,11 @@ You can move the orb up to 20 feet as a free action when you Sustain the Spell. 
 **Heightened (+1)** :: The damage at 5 feet increases by 1d10.
 }}
 }}
+
+{{pageNumber,auto}}
+{{footnote Chapter 4 | Kosmoturgy}}
+
+\page
 
 {{ruleBlock
 {{preamble
@@ -3258,11 +3228,6 @@ You touch an object or surface bearing writing, drawing, or inscription and eras
 }}
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 5 | Memetics}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Flashback}} {{spacer}} {{kind Spell}} {{level 1}}
@@ -3290,6 +3255,11 @@ You touch a willing creature and guide its mind back to a specific memory it exp
 }}
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 5 | Memetics}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Acupuncture}} {{aa}} {{spacer}} {{kind Spell}} {{level 2}}
@@ -3312,11 +3282,6 @@ You summon a cluster of fine arcane needles and drive them into a target's press
 **Heightened (+1)** :: The piercing damage increases by 2d6.
 }}
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 5 | Memetics}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -3435,11 +3400,6 @@ This grants you a +2 status bonus to Society and Diplomacy checks against the ta
 When the spell ends, you forget any information that was granted to you magically at the start of the spell. Information you personally learned during the hour, such as names you heard people say aloud or secrets whispered in your presence, remains.
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 5 | Memetics}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Arcane Tattoo}} {{spacer}} {{kind Spell}} {{level 3}}
@@ -3473,6 +3433,11 @@ Choose one of the following tattoo types when scribing:
 **Purple:** The recipient fades into the background. They gain a +3 status bonus to Stealth checks for 10 minutes, and can attempt to Hide even while observed, though the usual –2 penalty for observed creatures still applies.
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 5 | Memetics}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Artist's Rendition}} {{aa}} {{spacer}} {{kind Spell}} {{level 3}}
@@ -3494,11 +3459,6 @@ The created object cannot have a value greater than 25 gp; if the drawing depict
 
 The created object is permanent but behaves as any mundane object of its type.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 5 | Memetics}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -3547,11 +3507,6 @@ You implant a tiny worm woven from arcane thread beneath the skin of a creature,
 **Failure** The worm seats itself. You hear all sounds the target hears for the duration, as long as you and the target are on the same plane of existence. The target is unaware of the eavesdropping. The worm dissolves at the end of the spell's duration. A creature that successfully uses the Seek action against your spell DC can feel the arcane thread and is then aware of the worm's presence.
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 5 | Memetics}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Illusory Illusion}} {{aa}} {{spacer}} {{kind Spell}} {{level 3}}
@@ -3584,6 +3539,11 @@ You subtly reframe the perceptions of creatures nearby, convincing their minds t
 }}
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 5 | Memetics}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Taboo}} {{aa}} {{spacer}} {{kind Spell}} {{level 3}}
@@ -3615,11 +3575,6 @@ If the curse takes hold, whenever the target attempts to speak about the forbidd
 **Heightened (+2)** :: You may target 1 additional creature with a single taboo each.
 }}
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 5 | Memetics}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -3744,11 +3699,6 @@ For the duration, the target gains a +2 status bonus to saving throws against em
 The target cannot show favoritism or make decisions based on personal loyalty, emotion, or preference; all its decisions must follow the letter of the law it is bound by, and cannot be compelled by magically-imposed emotion to act against its rational conclusions.
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 5 | Memetics}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Cone of Silence}} {{aa}} {{spacer}} {{kind Spell}} {{level 5}}
@@ -3796,6 +3746,11 @@ You open a telepathic connection to a willing creature you know personally. For 
 }}
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 5 | Memetics}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Fugue}} {{aa}} {{spacer}} {{kind Spell}} {{level 5}}
@@ -3823,11 +3778,6 @@ Your touch causes the target to forget its identity and purpose. The target reta
 
 **Critical Failure** As failure, but the creature forgets its identity for the full duration with no hourly saves. It also takes a –2 status penalty to attack rolls and skill checks while the fugue persists, as its actions feel detached and purposeless.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 5 | Memetics}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -3944,11 +3894,6 @@ You spend an hour inscribing a memetic link between two willing creatures who ea
 **Heightened (9th)** :: The duration becomes unlimited; the link lasts permanently until counteracted or willingly ended by both linked creatures.
 }}
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 5 | Memetics}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -4107,7 +4052,7 @@ The Wheel welcomes all patrons and their money. Be advised: fate-work at the tab
 | 6 | Sphere of Preservation | {{aa}} | Everyone inside rolls exact median dice |
 | 7 | Do My Bidding | 10 minutes | Ten-minute speech bends a crowd's purpose |
 | 7 | Sphere of Ruin | {{aa}} | Relentless sphere inflicts random ruinous effects |
-| 8 | Reflective Defense | {{a}} | Resist 30 vs magic; fully-blocked damage rebounds |
+| 8 | Reflective Defense | {{a}} | Resist 30 vs magic; blocks rebound |
 | 9 | Extra Motivation | {{aa}} | Recover three expended spell slots instantly |
 }}
 
@@ -4194,11 +4139,6 @@ You twist the threads of fate in a dome around yourself so that fortune favors y
 **Critical Failure** As failure, and the penalty also applies to the enemy's saving throws while inside the emanation.
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 6 | Mercuromancy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Take Me Instead}} {{spacer}} {{kind Spell}} {{level 2}}
@@ -4250,6 +4190,11 @@ Whenever an attack roll is made against you, you can spend 1 star charge as a fr
 The stars fade when all charges are spent or the duration expires.
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 6 | Mercuromancy}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Pendulum}} {{aa}} {{spacer}} {{kind Spell}} {{level 3}}
@@ -4277,11 +4222,6 @@ The oscillating fate sequence replaces the target's d20 rolls with a fixed patte
 
 **Critical Failure** As failure, and the target doesn't realize the sequence is predictable until it has rolled at least twice.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 6 | Mercuromancy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -4427,11 +4367,6 @@ The recipient gains the ability to cast the gifted spell exactly once, using you
 }}
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 6 | Mercuromancy}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Let's Start a Fight}} {{aa}} {{spacer}} {{kind Spell}} {{level 5}}
@@ -4459,6 +4394,11 @@ You channel fate's desire for chaos into a single provocative word or gesture, d
 
 **Critical Failure** As failure, and the creature immediately uses its reaction (if available) to Stride toward the nearest creature and make a Strike against it.
 }}
+
+{{pageNumber,auto}}
+{{footnote Chapter 6 | Mercuromancy}}
+
+\page
 
 {{ruleBlock
 {{preamble
@@ -4504,11 +4444,6 @@ Only one Healing Draught can exist at a time from a given caster; casting this s
 
 You collapse probabilistic variance in a sphere around you. While this spell is sustained, all creatures inside the 30-foot emanation treat random rolls as if they had rolled the median value on each die, rounding down.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 6 | Mercuromancy}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -4659,7 +4594,7 @@ Which leaves the door itself, and the school's standing embarrassment: portals d
 ##### Planara Spells
 | Rank | Spell | Actions | Summary |
 |:---:|:---|:---:|:---|
-| 1 | Patishvat's Perfect Pocket | 1 minute | Anchored extraplanar pocket carries fifty Bulk weightlessly |
+| 1 | Patishvat's Perfect Pocket | 1 minute | Anchored pocket holds fifty Bulk |
 | 1 | Summon Servant | {{aaa}} | Bind a minor extraplanar servant creature |
 | 2 | Extraplanar Pulse | {{aa}} | Vitality bolt that sickens its target |
 | 2 | Planar Shield | {{aa}} | Four charges burst fire at melee attackers |
@@ -4678,7 +4613,7 @@ Which leaves the door itself, and the school's standing embarrassment: portals d
 | 6 | Extraplanar Beam | {{aa}} | Line of between-planes light, vitality damage |
 | 6 | Solar Fury | {{aa}} | Blaze with sunlight of the Godhome |
 | 6 | Solar Rebuke | {{r}} | Reaction: solar lance sears your attacker |
-| 6 | Umbral Assimilation | {{aa}} | Recurring invisibility, greater darkvision, darkness bursts |
+| 6 | Umbral Assimilation | {{aa}} | Recurring invisibility and darkness bursts |
 | 7 | Grey Frost | {{aa}} | Nowhere's cold: damage, restraint, icy petrification |
 | 7 | Spawn Animated Spite | {{aa}} | Void bolt leaps from target to target |
 | 8 | Move the Cosmic Wheel | 10 minutes | Swap terrain bubbles between two worlds |
@@ -4770,11 +4705,6 @@ You hurl a ball of pulsing violet light harvested from the space between planes.
 }}
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 7 | Planara}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Planar Shield}} {{aa}} {{spacer}} {{kind Spell}} {{level 2}}
@@ -4802,6 +4732,11 @@ When all 4 charges are expended, the spell ends.
 **Heightened (5th)** :: The number of charges increases to 6.
 }}
 }}
+
+{{pageNumber,auto}}
+{{footnote Chapter 7 | Planara}}
+
+\page
 
 {{ruleBlock
 {{preamble
@@ -4834,11 +4769,6 @@ Additionally, when a creature is first coated, it may be dazzled or blinded:
 
 **Critical Failure** As failure, but the creature is Blinded instead of Dazzled.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 7 | Planara}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -5011,11 +4941,6 @@ You can also use this spell to tunnel through earth. If you create a tunnel long
 }}
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 7 | Planara}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Gallows}} {{spacer}} {{kind Spell}} {{level 4}}
@@ -5060,6 +4985,11 @@ You rip open a shimmering, door-shaped portal on a flat surface you can see with
 When the first creature passes through the portal, roll a d100. On a 1, the portal malfunctions and instead leads to a random plane as determined by the GM; this outcome applies to all creatures that pass through during the casting.
 }}
 
+{{pageNumber,auto}}
+{{footnote Chapter 7 | Planara}}
+
+\page
+
 {{ruleBlock
 {{preamble
 {{title Tag}} {{a}} {{spacer}} {{kind Spell}} {{level 4}}
@@ -5089,11 +5019,6 @@ The spell ends when the charge detonates or after 1 minute elapses with no deton
 **Heightened (+2)** :: The damage on detonation increases by 1d8 fire and 1d8 mental.
 }}
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 7 | Planara}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -5183,11 +5108,6 @@ Each creature in the line takes 6d12 vitality damage.
 }}
 }}
 
-{{pageNumber,auto}}
-{{footnote Chapter 7 | Planara}}
-
-\page
-
 {{ruleBlock
 {{preamble
 {{title Solar Fury}} {{aa}} {{spacer}} {{kind Spell}} {{level 6}}
@@ -5211,6 +5131,11 @@ You become a conduit for the searing light of the Godhome, your body blazing wit
 **Heightened (+1)** :: The fire damage increases by 1d6.
 }}
 }}
+
+{{pageNumber,auto}}
+{{footnote Chapter 7 | Planara}}
+
+\page
 
 {{ruleBlock
 {{preamble
@@ -5264,11 +5189,6 @@ You draw upon the tenebrific shades of Umberii, wreathing yourself in swirling u
 
 **Umbral Eclipse** {{aa}} (concentrate, manipulate) **Frequency** once per minute; **Effect** You create a 15-foot-radius sphere of magical darkness centered on a point you can see within 60 feet. This darkness lasts until the end of your next turn.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 7 | Planara}}
-
-\page
 
 {{ruleBlock
 {{preamble
@@ -5362,11 +5282,6 @@ For the duration, the boundary of the bubble is permeable: creatures and effects
 
 **Critical Failure** The creature is transported to the other world and is Stunned 1 from the disorientation.
 }}
-
-{{pageNumber,auto}}
-{{footnote Chapter 7 | Planara}}
-
-\page
 
 {{ruleBlock
 {{preamble
