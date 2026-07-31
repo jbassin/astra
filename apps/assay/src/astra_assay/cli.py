@@ -38,6 +38,7 @@ from pathlib import Path
 from astra_observe import get_tracer, init_telemetry, shutdown
 
 from . import (
+    book,
     buffs,
     comparables,
     export,
@@ -1679,6 +1680,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_export.set_defaults(func=cmd_export_codex)
 
     homebrew.register_subparsers(sub)
+    book.register_subparsers(sub)
 
     return parser
 
