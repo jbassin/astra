@@ -60,8 +60,10 @@
 % ---------------------------------------------------------------- packages
 \RequirePackage{graphicx}
 \RequirePackage{multicol}
+\RequirePackage{changepage}
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{tikz}
+\usetikzlibrary{calc}
 \RequirePackage{titlesec}
 \RequirePackage{tabularx}
 \RequirePackage{enumitem}
@@ -108,7 +110,12 @@
 % + a FULL-WIDTH footer accent line (vol1/PHB pattern: width:100%, mirrored
 % via scaleX(-1) on alternating pages so the decorative curl always lands on
 % the OUTER edge -- right on odd/recto, left on even/verso).
-\newcommand{\liturgyfootnotelabel}{Chapter 1 \textbar\ Antillurgy}
+% Default before chapter 1's own \renewcommand fires (book.py) — front
+% matter (cover/credits/Reading This Book/How to Read a Spell Block/
+% Contents) renders under THIS default, so it must not be a chapter label
+% (was literally "Chapter 1 | Antillurgy", leaking a wrong chapter title
+% onto 5 pre-chapter pages — S3 live-render catch).
+\newcommand{\liturgyfootnotelabel}{Liturgy of the Iridite \textbar\ Volume II}
 \newcommand{\liturgyfooterart}{%
   \ifodd\value{page}
     \includegraphics[width=\paperwidth]{assets/img/vLDUmXL.png}%
@@ -151,6 +158,53 @@
 \newcommand{\chapternum}[1]{{\mreaves\fontsize{0.74cm}{0.85cm}\selectfont\color{DarkRed}\MakeUppercase{#1}\par}}
 \newcommand{\chaptertitle}[1]{{\wolpe\fontsize{1.4cm}{1.5cm}\selectfont\color{ChapterTitle}\MakeUppercase{#1}\par}}
 \newcommand{\chapterrule}{\vspace{-2pt}\includegraphics[width=\textwidth]{assets/img/w1Yiycy.png}\vspace{4pt}}
+
+% Chapter openers reserve their RIGHT column for the future ART SLOT image
+% (ART-SLOTS.md) instead of flowing opener prose through both multicols
+% columns -- the vol1 Homebrewery original kept opener prose to ONE column
+% and let a chapterSidebarRight image occupy the other. multicols cannot be
+% used for this: its column-balancing pass overrides a mid-flow
+% \columnbreak whenever the preceding content exceeds one column's height
+% (verified with a minimal tectonic reproduction -- text spilled across
+% BOTH columns and the forced break landed on a phantom extra page instead;
+% a documented multicol limitation, not a mistuning). A single narrowed
+% text measure via adjustwidth paginates normally instead.
+%
+% \openerreserve started at the vol1 mask ratio (332/794 =~ 0.42\textwidth)
+% but 3 of the 8 openers (chronomancy/gestalt/memetics -- the longest,
+% 5-paragraph fragments) overflowed a SECOND page at that width even with
+% nothing shortened, which then rendered the reservation TWICE (once on the
+% opener page, once on the spillover spell-list page -- worse than the
+% original defect). A SEPARATE bug (below, \liturgynote's dropped
+% \needspace) was masking the true fit at first; once that was fixed, the
+% width still had to come down to 0.30\textwidth (+ a slightly tighter
+% opener \parskip, still well short of \spellflow's dense 0.15cm) before
+% the longest fragment (planara, 4 dense paragraphs + a 6-row glossary
+% note) cleared one page with room to spare.
+\newlength{\openerreserve}
+\setlength{\openerreserve}{0.30\textwidth}
+\newenvironment{openerbody}{%
+  \begin{adjustwidth}{0pt}{\openerreserve}%
+  \setlength{\parskip}{0.18cm}%
+}{%
+  \end{adjustwidth}%
+}
+% Placeholder frame for the reserved column, drawn independently of text
+% flow via a page-absolute tikz overlay (so it can never collide with the
+% adjustwidth'd prose). Purely a review aid -- it marks the reservation as
+% deliberate rather than a rendering bug -- and is meant to be deleted the
+% moment real art lands in ART-SLOTS.md.
+\newcommand{\openerartslot}[1]{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[Gold, dashed, rounded corners=3mm]
+      ($(current page.north east) + (-1.9cm-\openerreserve+0.5cm, -5.0cm)$) rectangle
+      ($(current page.south east) + (-1.9cm, 2.3cm)$);
+    \node[align=center, text width=0.8\openerreserve, font=\itshape\small,
+          color=DarkRed!70]
+      at ($(current page.north east) + (-1.9cm-0.5\openerreserve, -11cm)$)
+      {Art placeholder\\[3pt]\texttt{\footnotesize#1}\\[6pt]see ART-SLOTS.md};
+  \end{tikzpicture}%
+}
 
 % drop cap: lettrine + Wolpe Pegasus; the CSS target layers a gradient fill
 % behind a symbol image (6tnz3j7.png) -- approximated here as a flat
@@ -222,8 +276,14 @@
   \end{scope}\end{tikzpicture}}\vspace{3pt}\par}
 
 % ---------------------------------------------------------------- note box
+% needspace DROPPED (S3 live-render catch): it measures against
+% \pagegoal/\pagetotal (whole-page, per the \blockhead note above) and, once
+% enough content follows LATER in the document, was observed to fire a
+% spurious break that silently discarded the openerbody narrowing on the
+% CURRENT page (reproduced in isolation -- removing this one line fixed it).
+% tcolorbox's own (non-breakable by default) box already keeps the note
+% intact as a unit; no manual keep-together guard is worth needspace's risk.
 \newcommand{\liturgynote}[1]{%
-  \needspace{5\baselineskip}%
   \begin{tcolorbox}[colback=NoteBg,colframe=DarkRed,boxrule=0.8pt,arc=1mm,
     left=2mm,right=2mm,top=1.5mm,bottom=1.5mm]
     {\scaly\fontsize{9pt}{11pt}\selectfont #1}
@@ -233,6 +293,26 @@
 % ---------------------------------------------------------------- tables
 % plain-rule (booktabs-free) striped table helper colors set at call site
 \newcommand{\tblhead}[1]{\scalycapsbold\fontsize{9pt}{11pt}\selectfont\color{DarkRed}#1}
+
+% In-block random-effect tables (e.g. Eye Stalks' d8 Ray/Effect table) are
+% NOT emitted as one multi-row tabularx -- a plain tabularx has no internal
+% page/column-break points, so a table taller than one column either
+% overflows the text block into the footer or silently drops whatever falls
+% past the page edge (confirmed against a pre-fix render: rows 7-8 of the
+% Eye Stalks table never made it onto page 28 at all). Instead book.py calls
+% \tblrow once per physical table-row (header+first-row paired together, see
+% book.py's ``_render_table_latex``), each its own tabularx built from the
+% SAME colspec -- so the rows stay pixel-aligned -- separated by an ordinary
+% blank-line paragraph break, which tectonic is free to break a column/page
+% at exactly like it already does between any two flowing blocks. #1 =
+% colspec (identical across every call for one table), #2 = the row's body
+% (whatever mix of \hline/\rowcolor/cells the caller needs).
+\newcommand{\tblrow}[2]{%
+  \noindent
+  \begin{tabularx}{\linewidth}{#1}
+  #2
+  \end{tabularx}%
+}
 
 % ---------------------------------------------------------------- inline action glyph
 % for an action-glyph appearing IN BODY TEXT (e.g. "you may Stride as a free

@@ -408,40 +408,109 @@ def _render_row_value(raw: str, warnings: list[str]) -> str:
 # ---------------------------------------------------------------------------
 
 
+def _col_max_word_len(block: _Block, col_idx: int, header_text: str) -> int:
+    """Longest single WORD (not cell) in a column, header + every row —
+    narrow-column sizing must survive whatever the row DATA contains, not
+    just the header label. A short header like "Ray" paired with long row
+    values ("Disintegration Ray") was getting the narrow bucket on header
+    length alone and clipping mid-word (S3 live-render catch, Eye Stalks
+    d8 table) — measuring only the header reproduces that bug."""
+    max_len = 0
+    texts = [header_text] + [row[col_idx] for row in block.rows if col_idx < len(row)]
+    for text in texts:
+        for word in re.split(r"\s+", text.strip("*_ \t")):
+            max_len = max(max_len, len(word.strip("*_")))
+    return max_len
+
+
 def _render_table_latex(block: _Block, warnings: list[str]) -> str:
     header = block.header or ([""] * (len(block.rows[0]) if block.rows else 1))
     n = max(1, len(header))
     if n == 1:
         cols = ["X"]
     else:
-        # Narrow+centered ONLY for a genuinely short header (a "d8"/"1d6"
-        # roll column) — sizing narrow off column POSITION alone wrapped a
-        # long header like "Damage Type" into an unreadable per-word stack
-        # (live tectonic render caught this: "Damag/Type"). The last column
-        # always gets the flexible remainder.
+        # Narrow+centered ONLY when the LONGEST WORD anywhere in the column
+        # (header or data) is short (a "d8"/"1d6" roll column) — sizing
+        # narrow off the header alone wrapped a long header like "Damage
+        # Type" into an unreadable per-word stack (live tectonic render
+        # caught this: "Damag/Type") AND, separately, let a short header
+        # over long row data ("Ray" over "Disintegration Ray") clip mid-word
+        # (also a live tectonic render catch). The last column always gets
+        # the flexible remainder.
+        #
+        # Widths are in EM, not \linewidth fractions: these tables render in
+        # TWO different containers — the wide chapter-opening spell-list
+        # (\linewidth = the full page) and in-block random-effect tables
+        # inside the two-column spellflow (\linewidth = one ~8.5cm column).
+        # A \linewidth-fraction tuned against the wide container is roughly
+        # HALF as wide in the narrow one — the Sphere of Ruin 1d6 table
+        # (in-block) hyphenated "crea-ture" mid-word at the same 0.22
+        # fraction that renders "Curse Effect"/"Failure" cleanly elsewhere
+        # (live tectonic render catch). EM is tied to font size, not
+        # container width, so one set of buckets now serves both.
         cols = []
         for i, h in enumerate(header):
             if i == n - 1:
                 cols.append("X")
-            elif len(h) <= 5:
-                cols.append(r">{\centering\arraybackslash}p{0.09\linewidth}")
+                continue
+            max_word = _col_max_word_len(block, i, h)
+            if max_word <= 5:
+                cols.append(r">{\centering\arraybackslash}p{2.6em}")
+            elif max_word <= 13:
+                cols.append(r"p{8.5em}")
             else:
-                cols.append(r"p{0.22\linewidth}")
+                # A single word past 13 chars ("Disintegration Ray", 15)
+                # still clipped at the medium bucket (live tectonic render
+                # catch, same class as the len(header)-only bug above) —
+                # widen further rather than re-guess a second flat bucket.
+                cols.append(r"p{12em}")
     colspec = "@{}" + " ".join(cols) + "@{}"
+
+    # BREAKABLE emission (S4 live-render catch, "Eye Stalks" table): a single
+    # multi-row tabularx has no page-break points, so an in-block table taller
+    # than one column either overflows into the footer or — worse, confirmed
+    # against the pre-fix PDF — silently LOSES whatever text falls past the
+    # page edge (tectonic never re-flows it onto the next page/column at
+    # all). \tblrow (liturgy.sty) wraps ONE physical table-row (or, for the
+    # header, the header PLUS the first data row together) in its own
+    # tabularx built from the SAME colspec every call, so tectonic can break
+    # the ordinary paragraph glue between calls exactly like it already does
+    # between any two flowing blocks. Striping is set explicitly per row via
+    # \rowcolor (stable across whatever page a row lands on) rather than the
+    # retired \rowcolors directive, which counts physical rows within ONE
+    # table and can't survive a table becoming N independent tables.
+    header_cells = " & ".join(f"\\tblhead{{{_render_inline(h, warnings)}}}" for h in header)
+    row_cells = [" & ".join(_render_inline(c, warnings) for c in row) for row in block.rows]
+
     lines = [
         "\\begingroup",
         "\\renewcommand{\\arraystretch}{1.15}",
-        "\\rowcolors{2}{TableBlue}{TableWhite}",
-        "\\noindent",
-        f"\\begin{{tabularx}}{{\\linewidth}}{{{colspec}}}",
-        "\\hline",
-        " & ".join(f"\\tblhead{{{_render_inline(h, warnings)}}}" for h in header) + " \\\\",
-        "\\hline",
+        # kill the ambient \parskip between our per-row paragraphs — each
+        # \tblrow call is its own paragraph (that's what makes it a legal
+        # break point) but the rows must still look like ONE seamless table
+        # when nothing forces a break, not a stack of separately-spaced boxes.
+        "\\setlength{\\parskip}{0pt}",
     ]
-    for row in block.rows:
-        lines.append(" & ".join(_render_inline(c, warnings) for c in row) + " \\\\")
-    lines.append("\\hline")
-    lines.append("\\end{tabularx}")
+    # Header + first data row travel together in ONE \tblrow call — an
+    # atomic unit that can only move whole to the next column, so a break
+    # never strands a bare header at the bottom of one and the first row
+    # at the top of the next.
+    header_body = ["\\hline", header_cells + " \\\\", "\\hline"]
+    if row_cells:
+        header_body.append("\\rowcolor{TableBlue}")
+        header_body.append(row_cells[0] + " \\\\")
+        if len(row_cells) == 1:
+            header_body.append("\\hline")
+    lines.append(f"\\tblrow{{{colspec}}}{{{chr(10).join(header_body)}}}")
+
+    for idx, cells in enumerate(row_cells[1:], start=1):
+        color = "TableBlue" if idx % 2 == 0 else "TableWhite"
+        row_body = [f"\\rowcolor{{{color}}}", cells + " \\\\"]
+        if idx == len(row_cells) - 1:
+            row_body.append("\\hline")
+        lines.append("")  # blank line -> a new (breakable) paragraph
+        lines.append(f"\\tblrow{{{colspec}}}{{{chr(10).join(row_body)}}}")
+
     lines.append("\\endgroup")
     return "\n".join(lines)
 
@@ -1015,8 +1084,10 @@ def _assemble_chapter(
     body_tex: str,
     spell_list_tex: str,
     block_tex_parts: list[str],
+    art_slot_id: str | None = None,
 ) -> str:
     title = _title_case(school)
+    art_slot_tex = f"\\openerartslot{{{art_slot_id}}}" if art_slot_id else ""
     parts = [
         f"\\renewcommand{{\\liturgyfootnotelabel}}{{Chapter {chapter_no} \\textbar\\ {title}}}",
         f"\\label{{chapter:{school}}}",
@@ -1024,11 +1095,12 @@ def _assemble_chapter(
         f"\\chaptertitle{{{title}}}",
         "\\chapterrule",
         "",
-        "\\begin{multicols}{2}",
+        "\\begin{openerbody}",
         "",
         body_tex,
         "",
-        "\\end{multicols}",
+        "\\end{openerbody}",
+        art_slot_tex,
         "",
         spell_list_tex,
         "",
@@ -1168,9 +1240,15 @@ def build_book(
         report.chapters.append((school, len(records)))
 
         opener_fragment = _read_fragment(content_dir / "chapters" / f"{school}.md", report)
+        art_slot_id: str | None = None
         if opener_fragment is not None:
             elements = _parse_neutral(opener_fragment)
             body_tex = _render_chapter_body(elements, report.warnings)
+            for el in elements:
+                if isinstance(el, NArtSlot):
+                    m_id = re.search(r"ART SLOT \[([\w-]+)\]", el.comment)
+                    if m_id:
+                        art_slot_id = m_id.group(1)
         else:
             blurb_blocks = blurbs.get(school)
             body_tex = _render_body_blocks(blurb_blocks, report.warnings) if blurb_blocks else ""
@@ -1183,7 +1261,9 @@ def build_book(
             report.warnings.extend(f"{rec.slug}: {w}" for w in rec.warnings)
 
         chapters_tex.append(
-            _assemble_chapter(chapter_no, school, body_tex, spell_list_tex, block_tex_parts)
+            _assemble_chapter(
+                chapter_no, school, body_tex, spell_list_tex, block_tex_parts, art_slot_id
+            )
         )
 
     frontmatter_fragment = _read_fragment(content_dir / "frontmatter.md", report)

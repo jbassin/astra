@@ -14,6 +14,7 @@ compiling the ``.tex`` happens only via the CLI (or manually).
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -58,8 +59,8 @@ def test_degree_of_success_and_table_spell() -> None:
     tex = book.emit_spell_latex(rec)
     # Degree-of-success paragraphs render as plain bold-lead body text.
     assert "\\textbf{Critical Success} The creature is unaffected" in tex
-    # <table> -> a striped LaTeX tabularx, not GFM.
-    assert "\\begin{tabularx}" in tex
+    # <table> -> a striped, per-row-breakable \tblrow table, not GFM.
+    assert "\\tblrow{" in tex
     assert "\\tblhead{1d6} & \\tblhead{Failure} & \\tblhead{Critical Failure} \\\\" in tex
     assert "Stunned 1" in tex
     # @UUID[...]{Label} -> Label, no residue.
@@ -223,11 +224,16 @@ def test_render_table_latex_striped() -> None:
         "table", header=["d8", "Effect"], rows=[["1", "Charm Ray"], ["2", "Fear Ray"]]
     )
     tex = book._render_block_latex(block, [])
-    assert "\\begin{tabularx}" in tex
-    assert "\\rowcolors{2}{TableBlue}{TableWhite}" in tex
+    assert "\\tblrow{" in tex
     assert "\\tblhead{d8} & \\tblhead{Effect} \\\\" in tex
     assert "1 & Charm Ray \\\\" in tex
     assert "2 & Fear Ray \\\\" in tex
+    # striping is set explicitly per row (\rowcolors was retired — it counts
+    # physical rows within ONE table and can't survive the table becoming N
+    # independent \tblrow tables, see test_render_table_latex_breakable_shape).
+    assert "\\rowcolors" not in tex
+    assert "\\rowcolor{TableBlue}" in tex
+    assert "\\rowcolor{TableWhite}" in tex
 
 
 def test_render_table_latex_wide_header_not_squeezed_narrow() -> None:
@@ -236,7 +242,55 @@ def test_render_table_latex_wide_header_not_squeezed_narrow() -> None:
     wrapping "Damage Type" into an unreadable "Damag/Type" stack."""
     block = book._Block("table", header=["Damage Type", "Effect"], rows=[["Acid", "1 damage."]])
     tex = book._render_block_latex(block, [])
-    assert r"p{0.09\linewidth}" not in tex.split("\n")[4]  # the colspec line
+    colspec_line = next(line for line in tex.split("\n") if line.startswith("\\tblrow{"))
+    assert r"p{0.09\linewidth}" not in colspec_line
+
+
+def test_render_table_latex_breakable_shape() -> None:
+    """The DEFECT this pins: a single multi-row tabularx has no page/column
+    break points, so an in-block table taller than one column either
+    overflows the text block into the footer or silently drops whatever
+    falls past the page edge (confirmed on the pre-fix PDF: rows 7-8 of the
+    Eye Stalks table never rendered anywhere at all). Every physical row now
+    gets its OWN \\tblrow call (a self-contained tabularx), separated by an
+    ordinary blank-line paragraph break — a legal break point — instead of
+    one unbreakable environment holding every row."""
+    block = book._Block(
+        "table",
+        header=["d8", "Effect"],
+        rows=[["1", "Charm Ray"], ["2", "Fear Ray"], ["3", "Slowing Ray"]],
+    )
+    tex = book._render_block_latex(block, [])
+    # one \tblrow call per physical table-row, EXCEPT the header travels
+    # with the first data row in a single call (so a break can never strand
+    # a bare header at the bottom of a column) — 3 data rows - 1 (folded
+    # into the header call) + 1 (the header call itself) = 3 \tblrow calls.
+    # \tblrow (liturgy.sty) is itself a self-contained tabularx per call —
+    # never one shared multi-row table.
+    assert tex.count("\\tblrow{") == 3
+    # the header call carries BOTH the header row and the first data row.
+    header_call = tex.split("\\tblrow{", 2)[1]
+    assert "\\tblhead{d8}" in header_call
+    assert "1 & Charm Ray" in header_call
+    assert "\\rowcolor{TableBlue}" in header_call  # row 1 (index 0) stripes Blue
+    # a blank line precedes every \tblrow call after the header+first-row
+    # call — the actual break point between rows.
+    assert "\n\n\\tblrow{" in tex
+    assert tex.count("\n\n\\tblrow{") == 2  # one before row 2, one before row 3
+    # striping alternates by DATA-ROW index, stable regardless of which page
+    # a row lands on (row 2 = index 1 = White, row 3 = index 2 = Blue).
+    stripes = re.findall(r"\\rowcolor\{(\w+)\}", tex)
+    assert stripes == ["TableBlue", "TableWhite", "TableBlue"]
+    # only the LAST row closes the table with a bottom rule; earlier rows
+    # (incl. the header+first-row call) do not.
+    assert tex.count("\\hline") == 3  # header top + header bottom + final close
+    last_row_call = tex.rsplit("\\tblrow{", 1)[1]
+    assert "\\hline" in last_row_call
+    assert "3 & Slowing Ray" in last_row_call
+    assert "2 & Fear Ray" not in last_row_call  # the middle row is its OWN call
+    # \parskip is zeroed for the group so the per-row paragraphs still read
+    # as one seamless table when nothing forces a break.
+    assert "\\setlength{\\parskip}{0pt}" in tex
 
 
 def test_render_list_latex() -> None:

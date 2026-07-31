@@ -91,7 +91,7 @@ Each chapter opens its spell list with a table of one-line summaries. These are 
 \chaptertitle{Antillurgy}
 \chapterrule
 
-\begin{multicols}{2}
+\begin{openerbody}
 
 \liturgydropcap{T}{here} is an old joke in the dueling halls of Hallia: the most dangerous mage in any room is the one who hates magic professionally. Antillurgy is that hatred, refined into a curriculum. It is magic turned against magic — the art of drinking a hostile spell out of the air, of pinching a rival's power off at the source, and, at its terrible height, of severing a caster from spellcasting altogether. Its practitioners will tell you, with straight faces, that theirs is the only honest school in the Liturgy. Everyone else makes more magic. They clean it up.
 
@@ -106,7 +106,8 @@ A spell is not a miracle. A spell is fuel, briefly organized. The caster across 
 
 % ART SLOT [ch1-antillurgy]: {{imageWrapper,chapterSidebarRight {{borderImage ![](URL) {top:0px,left:-90px,height:1000px,width:562px} }} }} — suggested subject: a composed antillurgist mid-duel, black siphon-orb orbiting their head as it swallows an incoming lance of spellfire
 
-\end{multicols}
+\end{openerbody}
+\openerartslot{ch1-antillurgy}
 
 \subsubsection*{Antillurgy Spells}
 \begingroup
@@ -177,19 +178,25 @@ You form an elemental sink on a creature you can see within range. Choose one da
 
 \begingroup
 \renewcommand{\arraystretch}{1.15}
-\rowcolors{2}{TableBlue}{TableWhite}
-\noindent
-\begin{tabularx}{\linewidth}{@{}p{0.22\linewidth} X@{}}
-\hline
+\setlength{\parskip}{0pt}
+\tblrow{@{}p{8.5em} X@{}}{\hline
 \tblhead{Damage Type} & \tblhead{Effect} \\
 \hline
-Acid & One creature adjacent to the target takes 1 acid damage. \\
-Cold & The target's Speed is reduced by 10 feet until the end of its next turn. \\
-Electricity & The target cannot take reactions until the end of its next turn. \\
-Fire & The target sheds bright light in a 10-foot emanation until the end of its next turn, and the next Strike against it before the end of its next turn gains a +1 circumstance bonus to the attack roll. \\
+\rowcolor{TableBlue}
+Acid & One creature adjacent to the target takes 1 acid damage. \\}
+
+\tblrow{@{}p{8.5em} X@{}}{\rowcolor{TableWhite}
+Cold & The target's Speed is reduced by 10 feet until the end of its next turn. \\}
+
+\tblrow{@{}p{8.5em} X@{}}{\rowcolor{TableBlue}
+Electricity & The target cannot take reactions until the end of its next turn. \\}
+
+\tblrow{@{}p{8.5em} X@{}}{\rowcolor{TableWhite}
+Fire & The target sheds bright light in a 10-foot emanation until the end of its next turn, and the next Strike against it before the end of its next turn gains a +1 circumstance bonus to the attack roll. \\}
+
+\tblrow{@{}p{8.5em} X@{}}{\rowcolor{TableBlue}
 Sonic & The target is pushed 5 feet away from you. \\
-\hline
-\end{tabularx}
+\hline}
 \endgroup
 
 If the target is reduced to 0 HP while the spell is sustained, you can move the sink to a new creature within range as a free action when you Sustain the Spell on your next turn.
@@ -555,7 +562,7 @@ The curse, if applied, prevents the target from Casting Spells and from using in
 \chaptertitle{Chronomancy}
 \chapterrule
 
-\begin{multicols}{2}
+\begin{openerbody}
 
 \liturgydropcap{S}{omewhere} in Velthara right now, a root cellar is defying entropy. The preserves in it will taste of last summer forever, because a traveling caster was paid three coins and a hot meal to freeze time inside the jars. This is chronomancy at its most domestic, and it is worth holding onto that image, because the rest of the school is considerably less cozy. Chronomancy is the magic of time's flow — of \textit{when} rather than \textit{what}. Its practitioners displace creatures out of the timeline entirely, rewind wounds into the past, and force moments to replay until they come out differently. A chronomancer does not change what happens. They change when it happens, which turns out to be the same thing with better paperwork.
 
@@ -572,7 +579,8 @@ The bearer is reminded that workings which displace a creature from the timestre
 
 % ART SLOT [ch2-chronomancy]: {{imageWrapper,chapterSidebarRight {{borderImage ![](URL) {top:0px,left:-90px,height:1000px,width:562px} }} }} — suggested subject: a memorial constellation rising from a dissolving body into the night sky above an Austrene observatory, mourners lit by starlight
 
-\end{multicols}
+\end{openerbody}
+\openerartslot{ch2-chronomancy}
 
 \subsubsection*{Chronomancy Spells}
 \begingroup
@@ -1137,7 +1145,7 @@ If the target would be reduced to 0 HP or would die outright at any point during
 \chaptertitle{Gestalt}
 \chapterrule
 
-\begin{multicols}{2}
+\begin{openerbody}
 
 \liturgydropcap{E}{very} shapeshifter learns the same secret eventually: the shapes remember. Somewhere beneath the surface of every transformation lies a vast communal reservoir — every wing ever worn, every fang ever grown, every heartbeat of every borrowed body, pooled into what practitioners call the gestalt collective. Ordinary polymorphy draws a whole form out of that pool at once. Gestalt magic is the finer art of drawing \textit{pieces}: the refinement of the shapeshifter's craft, augmenting an already-transformed body with grafted claws, monstrous organs, and musculature tuned like an engine. Nearly all of it demands that the caster already wear another form. You cannot edit a page you have not turned to.
 
@@ -1152,7 +1160,8 @@ No one agrees on what the gestalt collective actually is. The Children call it t
 
 % ART SLOT [ch3-gestalt]: {{imageWrapper,chapterSidebarRight {{borderImage ![](URL) {top:0px,left:-90px,height:1000px,width:562px} }} }} — suggested subject: a druid mid-refinement — half-human silhouette with bone blades erupting at the joints, ghostly outlines of a hundred prior shapes layered behind them
 
-\end{multicols}
+\end{openerbody}
+\openerartslot{ch3-gestalt}
 
 \subsubsection*{Gestalt Spells}
 \begingroup
@@ -1518,22 +1527,34 @@ You draw upon your knowledge of the Aberrant, sprouting three writhing eye stalk
 
 \begingroup
 \renewcommand{\arraystretch}{1.15}
-\rowcolors{2}{TableBlue}{TableWhite}
-\noindent
-\begin{tabularx}{\linewidth}{@{}>{\centering\arraybackslash}p{0.09\linewidth} >{\centering\arraybackslash}p{0.09\linewidth} X@{}}
-\hline
+\setlength{\parskip}{0pt}
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{12em} X@{}}{\hline
 \tblhead{d8} & \tblhead{Ray} & \tblhead{Effect} \\
 \hline
-1 & Charm Ray & The target must attempt a Will save. On a failure, the creature is Fascinated by you and must spend its first action each turn attempting to approach or aid you; this lasts 1 minute or until you or your allies harm the creature. \\
-2 & Fear Ray & The target must attempt a Will save. On a failure, the creature is Frightened 3 (Frightened 4 on a critical failure). \\
-3 & Slowing Ray & The target must attempt a Will save. On a failure, the creature is Slowed 1 for 1 minute (Slowed 2 on a critical failure). The creature can attempt a Will save at the end of each of its turns to end the effect. \\
-4 & Sleep Ray & The target must attempt a Will save. On a failure, the creature falls Unconscious for 1 minute. The creature wakes if it takes damage or if an adjacent creature spends an action to rouse it. This ray has no effect on constructs and undead. \\
-5 & Enervation Ray & The target must attempt a basic Fortitude save; on a failure, it takes 6d10 void damage. \\
-6 & Telekinetic Ray & The target must attempt a Fortitude save. On a failure, you can move the target up to 20 feet in any direction and it is Grabbed until the start of your next turn. \\
-7 & Petrification Ray & The target must attempt a Fortitude save. On a failure, the target is Slowed 1 and is becoming Petrified; at the start of your next turn the target must attempt another Fortitude save. On a failure of that second save, the target is Petrified. On a success, the petrification ends. \\
+\rowcolor{TableBlue}
+1 & Charm Ray & The target must attempt a Will save. On a failure, the creature is Fascinated by you and must spend its first action each turn attempting to approach or aid you; this lasts 1 minute or until you or your allies harm the creature. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{12em} X@{}}{\rowcolor{TableWhite}
+2 & Fear Ray & The target must attempt a Will save. On a failure, the creature is Frightened 3 (Frightened 4 on a critical failure). \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{12em} X@{}}{\rowcolor{TableBlue}
+3 & Slowing Ray & The target must attempt a Will save. On a failure, the creature is Slowed 1 for 1 minute (Slowed 2 on a critical failure). The creature can attempt a Will save at the end of each of its turns to end the effect. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{12em} X@{}}{\rowcolor{TableWhite}
+4 & Sleep Ray & The target must attempt a Will save. On a failure, the creature falls Unconscious for 1 minute. The creature wakes if it takes damage or if an adjacent creature spends an action to rouse it. This ray has no effect on constructs and undead. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{12em} X@{}}{\rowcolor{TableBlue}
+5 & Enervation Ray & The target must attempt a basic Fortitude save; on a failure, it takes 6d10 void damage. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{12em} X@{}}{\rowcolor{TableWhite}
+6 & Telekinetic Ray & The target must attempt a Fortitude save. On a failure, you can move the target up to 20 feet in any direction and it is Grabbed until the start of your next turn. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{12em} X@{}}{\rowcolor{TableBlue}
+7 & Petrification Ray & The target must attempt a Fortitude save. On a failure, the target is Slowed 1 and is becoming Petrified; at the start of your next turn the target must attempt another Fortitude save. On a failure of that second save, the target is Petrified. On a success, the petrification ends. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{12em} X@{}}{\rowcolor{TableWhite}
 8 & Disintegration Ray & The target must attempt a basic Fortitude save; on a failure, it takes 10d10 force damage. If this reduces the creature to 0 HP, it is reduced to dust. \\
-\hline
-\end{tabularx}
+\hline}
 \endgroup
 \thinrule
 \heightened{8th}{You fire four rays instead of three, rerolling duplicates. The Enervation and Disintegration ray damage each increase by 2d10.}
@@ -1613,7 +1634,7 @@ You draw upon your knowledge of the Armageddon Engine, growing a dense, iridesce
 \chaptertitle{Kosmoturgy}
 \chapterrule
 
-\begin{multicols}{2}
+\begin{openerbody}
 
 \liturgydropcap{T}{he} universe has machinery. Beneath the paint of the world there are levers — gravity, force, the seams where space is stitched to itself — and kosmoturgy is the school that grabs them with both hands. Its casters crack the earth along invented fault lines, crush the unrighteous under anvils of compressed gravity, and pull hundred-foot slabs of bedrock into the sky because the battle would go better with high ground. It is the least subtle school in the Liturgy, and its practitioners regard this as a feature. Subtlety, one war-college maxim runs, is what you resort to when you cannot simply move the planet.
 
@@ -1628,7 +1649,8 @@ They will tell you the earth is patient. The earth is not patient. The earth is 
 
 % ART SLOT [ch4-kosmoturgy]: {{imageWrapper,chapterSidebarRight {{borderImage ![](URL) {top:0px,left:-90px,height:1000px,width:562px} }} }} — suggested subject: a battle-cleric on a shattered field, a translucent anvil of warped gravity descending from above her raised hand, the ground fracturing in a radial fault
 
-\end{multicols}
+\end{openerbody}
+\openerartslot{ch4-kosmoturgy}
 
 \subsubsection*{Kosmoturgy Spells}
 \begingroup
@@ -2233,7 +2255,7 @@ You grant up to 8 willing creatures within range a hardened layer of air compres
 \chaptertitle{Memetics}
 \chapterrule
 
-\begin{multicols}{2}
+\begin{openerbody}
 
 \liturgydropcap{Y}{ou} have had a song stuck in your head. Consider, for a moment, what that sentence actually describes: a thing made of nothing, caught like a cold, living in your mind without paying rent, and leaving only when \textit{it} decides to. Memetics is the school that takes this everyday haunting seriously. It is the magic of minds and of the ideas that inhabit them — implanting memories and erasing them, seeding compulsions, prying truth out of thoughts that would rather keep it. Its gentlest workings are clerical conveniences. Its harshest linger as curses that rewrite how a mind works until someone with sufficient skill pries them back out.
 
@@ -2248,7 +2270,8 @@ Printed matter cannot cast spells, and this chapter is inert ink — mostly. But
 
 % ART SLOT [ch5-memetics]: {{imageWrapper,chapterSidebarRight {{borderImage ![](URL) {top:0px,left:-90px,height:1000px,width:562px} }} }} — suggested subject: a communications-directorate office at night — pinboard of screamsheet clippings connected by golden thread, one thread leading into a listener's ear
 
-\end{multicols}
+\end{openerbody}
+\openerartslot{ch5-memetics}
 
 \subsubsection*{Memetics Spells}
 \begingroup
@@ -2881,20 +2904,28 @@ The curse persists indefinitely; removing it or the permanent Stupefied conditio
 
 \begingroup
 \renewcommand{\arraystretch}{1.15}
-\rowcolors{2}{TableBlue}{TableWhite}
-\noindent
-\begin{tabularx}{\linewidth}{@{}>{\centering\arraybackslash}p{0.09\linewidth} p{0.22\linewidth} X@{}}
-\hline
+\setlength{\parskip}{0pt}
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{8.5em} X@{}}{\hline
 \tblhead{d6} & \tblhead{Curse Effect} & \tblhead{Effect} \\
 \hline
-1 & Haunting Presence & The target is Frightened 2 whenever it can perceive you. \\
-2 & Phobia & The target develops a severe phobia and is Frightened 2 in the presence of a common object the GM names. \\
-3 & Shattered Intellect & The target automatically critically fails Intelligence-based skill checks. \\
-4 & Lingering Confusion & The target is Confused for 1 minute, then must save against your spell DC each day or be Confused for 1 round. \\
-5 & Amnesia & The target cannot Recall Knowledge or use class abilities that require memory of its training. \\
+\rowcolor{TableBlue}
+1 & Haunting Presence & The target is Frightened 2 whenever it can perceive you. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{8.5em} X@{}}{\rowcolor{TableWhite}
+2 & Phobia & The target develops a severe phobia and is Frightened 2 in the presence of a common object the GM names. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{8.5em} X@{}}{\rowcolor{TableBlue}
+3 & Shattered Intellect & The target automatically critically fails Intelligence-based skill checks. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{8.5em} X@{}}{\rowcolor{TableWhite}
+4 & Lingering Confusion & The target is Confused for 1 minute, then must save against your spell DC each day or be Confused for 1 round. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{8.5em} X@{}}{\rowcolor{TableBlue}
+5 & Amnesia & The target cannot Recall Knowledge or use class abilities that require memory of its training. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{8.5em} X@{}}{\rowcolor{TableWhite}
 6 & Regression & The target undergoes childlike mental regression, and the GM controls its non-combat social behavior. \\
-\hline
-\end{tabularx}
+\hline}
 \endgroup
 
 \textbf{Critical Success} The target is unaffected.
@@ -2916,7 +2947,7 @@ The curse persists indefinitely; removing it or the permanent Stupefied conditio
 \chaptertitle{Mercuromancy}
 \chapterrule
 
-\begin{multicols}{2}
+\begin{openerbody}
 
 \liturgydropcap{E}{veryone} on Færrin gambles. The farmer gambles on rain, the Org on quarterly returns, the pilgrim on the afterlife, and all of them at rather worse odds than they imagine. Mercuromancy is the school for people who checked the odds and found them negotiable. It bends fate and probability the way other schools bend fire or stone — rigging games of chance, banking good fortune before the dice fall, and cursing rivals with the sort of luck that follows a person up stairwells. Where the rest of the Liturgy asks \textit{what can be done}, mercuromancy asks the older, ruder question: \textit{what are the chances?} — and then answers it personally.
 
@@ -2931,7 +2962,8 @@ The Wheel welcomes all patrons and their money. Be advised: fate-work at the tab
 
 % ART SLOT [ch6-mercuromancy]: {{imageWrapper,chapterSidebarRight {{borderImage ![](URL) {top:0px,left:-90px,height:1000px,width:562px} }} }} — suggested subject: a card table mid-hand — a gambler with three sparkling stars orbiting her head, opposite a rival whose cards are quietly catching iridescent rot
 
-\end{multicols}
+\end{openerbody}
+\openerartslot{ch6-mercuromancy}
 
 \subsubsection*{Mercuromancy Spells}
 \begingroup
@@ -3293,17 +3325,19 @@ You summon a swirling iridescent sliver of Ruin adjacent to you, and choose a cr
 
 \begingroup
 \renewcommand{\arraystretch}{1.15}
-\rowcolors{2}{TableBlue}{TableWhite}
-\noindent
-\begin{tabularx}{\linewidth}{@{}>{\centering\arraybackslash}p{0.09\linewidth} p{0.22\linewidth} X@{}}
-\hline
+\setlength{\parskip}{0pt}
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{8.5em} X@{}}{\hline
 \tblhead{1d6} & \tblhead{Failure} & \tblhead{Critical Failure} \\
 \hline
-1—3 & The creature is Stunned 1. & The creature is Stunned 2. \\
-4—5 & The creature is Confused until the start of your next turn. & The creature is Confused for 1 round and must attempt a Will save at the start of its next turn to end the confusion. \\
+\rowcolor{TableBlue}
+1—3 & The creature is Stunned 1. & The creature is Stunned 2. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{8.5em} X@{}}{\rowcolor{TableWhite}
+4—5 & The creature is Confused until the start of your next turn. & The creature is Confused for 1 round and must attempt a Will save at the start of its next turn to end the confusion. \\}
+
+\tblrow{@{}>{\centering\arraybackslash}p{2.6em} p{8.5em} X@{}}{\rowcolor{TableBlue}
 6 & The creature is Slowed 1 until the start of your next turn. & The creature Strides in a random direction using its full Speed and falls Prone at the destination. \\
-\hline
-\end{tabularx}
+\hline}
 \endgroup
 \vspace{8pt}
 
@@ -3346,7 +3380,7 @@ Once you Cast this Spell, you cannot Cast it again until your next daily prepara
 \chaptertitle{Planara}
 \chapterrule
 
-\begin{multicols}{2}
+\begin{openerbody}
 
 \liturgydropcap{F}{or} most of its history, Færrin had no elsewhere. One sphere, one sun, one sky, and beyond them nothing at all — no heavens to petition, no hells to fear, not so much as a rumor of a neighbor. Then the firmament cracked, and Færrin discovered that it had been living, all along, in a crowded building with the door painted shut. Planara is the school of the opened door. It reaches across the planes: tearing portals between here and elsewhere, calling extraplanar servants into harness, and hauling the raw substance of other realities into this one by the fistful. Its greatest workings swap whole swaths of terrain between worlds. Its worst tear openings into places that were sealed for excellent reasons.
 
@@ -3366,7 +3400,8 @@ Which leaves the door itself, and the school's standing embarrassment: portals d
 
 % ART SLOT [ch7-planara]: {{imageWrapper,chapterSidebarRight {{borderImage ![](URL) {top:0px,left:-90px,height:1000px,width:562px} }} }} — suggested subject: a planarist holding open a door-shaped portal on a freight dock, violet-white between-space light spilling across stacked cargo, dockworkers pointedly not looking inside
 
-\end{multicols}
+\end{openerbody}
+\openerartslot{ch7-planara}
 
 \subsubsection*{Planara Spells}
 \begingroup
@@ -3907,7 +3942,7 @@ A creature inside the portal can spend a single action to attempt an Athletics c
 \chaptertitle{Seraphic}
 \chapterrule
 
-\begin{multicols}{2}
+\begin{openerbody}
 
 \liturgydropcap{E}{very} canon must end, and the Liturgy ends here, at the school that stands above the other seven the way the firmament stands above the weather. Seraphic magic is not a body of technique. It has no apprentices, no journeymen, no retail applications, no second example. It is the revision of reality itself, and it is codified in this book for the same reason cartographers mark the edge of the map: not so that you will go there, but so that you will know, with precision, where \textit{there} begins.
 
@@ -3920,7 +3955,8 @@ Asked whether the world we stand in is a first draft, the Liturgy's compilers of
 
 % ART SLOT [ch8-seraphic]: {{imageWrapper,chapterSidebarRight {{borderImage ![](URL) {top:0px,left:-90px,height:1000px,width:562px} }} }} — suggested subject: sixteen robed casters ringing an eight-pointed chalk star, the intertwined sliver of Ruin and slice of Preservation blazing at the center, the sky above them beginning to unspool into raw light
 
-\end{multicols}
+\end{openerbody}
+\openerartslot{ch8-seraphic}
 
 \subsubsection*{Seraphic Spells}
 \begingroup
