@@ -11,7 +11,7 @@
       }
     }
   },
-  "name": "Spawn Abyssal Sprite",
+  "name": "Spawn Animated Spite",
   "system": {
     "area": null,
     "cost": {
@@ -32,7 +32,7 @@
     },
     "defense": null,
     "description": {
-      "value": "<p>You crack a demon's finger bone and hurl an abyssal bolt of void energy at a creature you can see within range. Make a spell attack roll against the target. On a hit, the bolt deals 12d6 void damage (double on a critical hit). The bolt then leaps to another creature of your choice within 30 feet of the previous target that has not already been struck by this casting; make a new spell attack roll for each subsequent target. The chain continues until you miss or no eligible target remains within 30 feet of the last target struck.</p><hr /><p><strong>Heightened (+1)</strong> The initial damage increases by 2d6.</p>"
+      "value": "<p>You crack a demon's finger bone and hurl an abyssal bolt of void energy at a creature you can see within range. Make a spell attack roll against the target. On a hit, the bolt deals 12d6 void damage. The bolt then leaps to another creature of your choice within 30 feet of the previous target that has not already been struck by this casting; make a new spell attack roll for each subsequent target. The chain continues until you miss or no eligible target remains within 30 feet of the last target struck.</p><hr /><p><strong>Heightened (+1)</strong> The initial damage increases by 2d6.</p>"
     },
     "duration": {
       "sustained": false,
