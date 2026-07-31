@@ -2,55 +2,50 @@
 
 Converts the canonical homebrew spell store (``apps/assay/homebrew/spells/``,
 173 Foundry-shaped docs) + the 8 school trait blurbs
-(``apps/assay/homebrew/traits/``) into a Homebrewery-v3-flavored markdown
-book at ``apps/codex/books/liturgy_vol2/liturgy_of_the_iridite_vol2.md``,
-alongside a byte-verbatim copy of vol1's ``.css`` (the shared class
-vocabulary: ``.ruleBlock``/``.preamble``/``.traits``/``.definitions``/
-``.postamble``, ``.trait`` + ``,unique/,rare/,uncommon`` variants, the
-``.a/.aa/.aaa/.r/.f`` action glyphs). Spell-list table styling lives in a
-generated in-markdown ``<style>`` block under the theme-neutral
-``vol2SpellTable`` class (never ``spellList`` — the PHB theme claims it).
+(``apps/assay/homebrew/traits/``) into a **LaTeX** book at
+``apps/codex/books/liturgy_vol2/liturgy_of_the_iridite_vol2.tex``, compiled
+with ``tectonic`` into a PDF alongside it. The visual style lives in the
+stakeholder-approved ``liturgy.sty`` (parchment, chapter openers, spell-block
+plumbing, trait pills) — this module emits LaTeX *content* against that
+style layer; it never re-derives the look.
 
-Book structure (Track A of a two-track build — Track B concurrently authors
-prose fragments under ``<out>/content/``, which this generator consumes
-fail-soft):
+Book structure (Track A of a two-track build — Track B authors prose
+fragments under ``<out>/content/``, in a small neutral markup dialect this
+module parses; see ``_parse_neutral``):
 
-1. front matter — ``content/frontmatter.md`` verbatim if present, else a
-   clearly-marked placeholder cover;
-2. a ``{{toc}}`` page generated from the chapter structure with ``#pN``
-   anchors matching this module's own pagination;
+1. front matter — ``content/frontmatter.md`` (cover + credits/imprimatur +
+   "Reading This Book" + "How to Read a Spell Block"), consumed fail-soft
+   (a placeholder cover stands in if absent);
+2. a real LaTeX table of contents (``\\tocentry`` + ``\\pageref``, so page
+   numbers come from the actual compiled layout — there is no manual
+   pagination model anymore: LaTeX/tectonic flows and paginates natively);
 3. eight school chapters in the fixed order below (seraphic LAST — the
    capstone: one ritual, Worldweaver), each = opener
-   (``content/chapters/<school>.md`` verbatim, else a generated
-   ``{{chapter,gradient}}`` header + the trait blurb) + a
-   ``{{wide,vol2SpellTable}}``
-   table (summaries from ``content/summaries.json``, blank fail-soft) + the
-   school's spells sorted by (rank, name) as ``{{ruleBlock}}`` statblocks.
+   (``content/chapters/<school>.md``, else a generated fallback built from
+   the school's trait blurb) + a spell-list table (summaries from
+   ``content/summaries.json``, blank fail-soft) + the school's spells sorted
+   by (rank, name) as spell blocks.
 
 **Determinism:** sorted store glob, stable sort keys, no timestamps —
-double runs are byte-identical.
+double runs are byte-identical .tex.
 
-**Pagination model (measured pixels):** Homebrewery v3 pages clip overflow,
-so ``\\page`` breaks are placed from REAL rendered heights: the committed
-``calibration.json`` (written by ``tools/measure-heights.mjs`` driving live
-Homebrewery) carries a measured px height per spell ruleBlock; blocks
-without a measurement fall back to a vol1-calibrated line estimator ×
-``LINE_H_PX`` × a correction factor fitted against the measured set. The
-generated style block sets ``.ruleBlock { break-inside: auto }`` so spell
-blocks flow across columns like official print — content between two
-``\\page`` markers fills column 1 then column 2 continuously, and a page
-breaks before the block that would exceed ~97% of the 2×935px usable pool.
-Wide spell-list tables span both columns (their height drains the pool
-twice). The build prints a report: fitted correction factor, pages,
-blocks/page, and any page estimated over 100% (manual-review flags).
+**Structured intermediate:** every spell is first turned into a
+``SpellRecord`` (name/rank/school/kind/glyph/rarity/traits/rows/body
+blocks/heightened pairs — all still *raw* text) and only THEN emitted to
+LaTeX (escaping + macro calls happen at emission, never earlier) — the
+parse layer (``_DescriptionParser``, ``parse_description``,
+``convert_description``) stays presentation-neutral so it could feed any
+renderer, not just this one.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import math
+import os
 import re
+import shutil
+import subprocess
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from pathlib import Path
@@ -62,10 +57,9 @@ APP_ROOT = Path(__file__).resolve().parents[2]  # src/astra_assay/book.py -> app
 REPO_ROOT = APP_ROOT.parents[1]
 STORE_DIR = APP_ROOT / "homebrew" / "spells"
 TRAITS_DIR = APP_ROOT / "homebrew" / "traits"
-VOL1_CSS_PATH = REPO_ROOT / "apps/codex/books/liturgy_vol1/liturgy_of_the_iridite_vol1.css"
 DEFAULT_OUT_DIR = REPO_ROOT / "apps/codex/books/liturgy_vol2"
-BOOK_MD_NAME = "liturgy_of_the_iridite_vol2.md"
-BOOK_CSS_NAME = "liturgy_of_the_iridite_vol2.css"
+BOOK_TEX_NAME = "liturgy_of_the_iridite_vol2.tex"
+BOOK_PDF_NAME = "liturgy_of_the_iridite_vol2.pdf"
 
 #: Chapter order — seraphic deliberately LAST (the capstone: Worldweaver).
 SCHOOLS: tuple[str, ...] = (
@@ -79,68 +73,36 @@ SCHOOLS: tuple[str, ...] = (
     "seraphic",
 )
 
-#: Cast-time values that render as a title glyph instead of a **Cast** row.
+#: Cast-time values that render as a title glyph instead of a **Cast** row —
+#: raw ``\actionfont`` characters (see ``liturgy.sty``'s ``\spelltitle`` /
+#: ``\actglyph``), not markup macros.
 ACTION_GLYPHS: dict[str, str] = {
-    "1": "{{a}}",
-    "2": "{{aa}}",
-    "3": "{{aaa}}",
-    "reaction": "{{r}}",
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "reaction": "r",
 }
 
-#: ``<span class="action-glyph">X</span>`` content -> inline glyph macro.
+#: ``<span class="action-glyph">X</span>`` content -> ``\actionfont`` char.
 SPAN_GLYPHS: dict[str, str] = {
-    "1": "{{a}}",
-    "2": "{{aa}}",
-    "3": "{{aaa}}",
-    "r": "{{r}}",
-    "f": "{{f}}",
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "r": "r",
+    "f": "f",
 }
-
-CHAPTER_COLOR = "#7c4848"
-
-# --- pagination model (see module docstring for the vol1 calibration) -----
-LINES_PER_COLUMN = 54
-CHARS_PER_LINE = 52
-COLUMNS_PER_PAGE = 2
-PAGE_CAPACITY = LINES_PER_COLUMN * COLUMNS_PER_PAGE
-#: Live-render verification (real Chromium against homebrewery.naturalcrit.com)
-#: found one ~3-line overflow at a 92% target — 88% is the safety margin.
-FILL_TARGET = 0.88
-
-# --- pixel calibration (live-Homebrewery measurements) ---------------------
-#: Measured body line-height in live Homebrewery (the real_heights audit).
-LINE_H_PX = 15.4205
-#: Usable flow height per CSS column. Provenance: the live audit's fitting
-#: pages topped out at contentBottom ≈ 990px with content starting ≈ 53px
-#: into the 1,056px page → ~935px of usable column height (coordinator's
-#: DOM audit, 2026-07-31; cross-checked against the measured block heights
-#: of full columns in the same audit).
-USABLE_COLUMN_PX = 935.0
-PAGE_CAPACITY_PX = USABLE_COLUMN_PX * COLUMNS_PER_PAGE
-#: Flow-mode reserve for what the per-block calibration cannot see: the
-#: preamble/traits keep-together rule pushes up to ~100px of waste at each
-#: column boundary. (Calibration is margin-INCLUSIVE — an earlier
-#: margin-exclusive measurement under-modeled blocks ~12% and spilled
-#: spells into a clipped third column on 11-19/62 live pages.)
-FILL_TARGET_PX = 0.95
-#: Committed per-spell measured px heights (tools/measure-heights.mjs).
-CALIBRATION_PATH = DEFAULT_OUT_DIR / "calibration.json"
-#: Measured wide spell-list table metrics (0.9em, ~672px full width):
-#: 26px single-line rows, 39px when a row wraps, + heading/margins.
-WIDE_ROW_PX = 26.0
-WIDE_ROW_WRAP_PX = 39.0
-WIDE_TABLE_CHROME_PX = 100.0
 
 _UUID_RE = re.compile(r"@UUID\[([^\]]+)\](?:\{([^}]*)\})?")
 
 
 class BookBuildError(Exception):
     """A hard structural failure (e.g. a spell landing in zero or several
-    school chapters) — the build STOPS rather than emit a wrong book."""
+    school chapters, or emitted LaTeX containing unconverted residue) — the
+    build STOPS rather than emit a wrong book."""
 
 
 # ---------------------------------------------------------------------------
-# Description HTML -> markdown blocks (stdlib html.parser; no new deps).
+# Description HTML -> presentation-neutral blocks (stdlib html.parser).
 # ---------------------------------------------------------------------------
 
 
@@ -166,29 +128,27 @@ def _flatten_enrichers(text: str) -> str:
     return _UUID_RE.sub(repl, text)
 
 
-def _escape_braces(text: str) -> str:
-    """Homebrewery mustache is greedy — escape literal braces in source
-    prose. (Applied to text nodes only, before glyph macros are inserted.)"""
-    return text.replace("{", "\\{").replace("}", "\\}")
-
-
 class _DescriptionParser(HTMLParser):
     """Parses a store ``description.value`` HTML fragment into ``_Block``s.
 
     Inline: ``<strong>`` -> ``**..**``, ``<em>`` -> ``*..*`` (defensive; the
-    store has none), ``<span class="action-glyph">X</span>`` -> the inline
-    glyph macro. Blocks: ``<p>``, ``<hr>``, ``<table>``, ``<ul>``.
+    store has none), ``<span class="action-glyph">X</span>`` -> a
+    ``\\x00GLYPH:X\\x00END`` sentinel. Blocks: ``<p>``, ``<hr>``, ``<table>``,
+    ``<ul>``/``<ol>``. Output is presentation-neutral markup text — no
+    escaping and no glyph resolution happen here; both are emission-time
+    concerns (see ``_render_inline``), so this parser could feed any
+    renderer, not just LaTeX.
     """
 
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.blocks: list[_Block] = []
-        self.warnings: list[str] = []
         self._buf: list[str] = []
         self._in_glyph_span = False
         self._table: _Block | None = None
         self._in_thead = False
         self._row: list[str] | None = None
+        self._row_has_th = False
         self._list: _Block | None = None
 
     # -- inline buffer ------------------------------------------------------
@@ -222,8 +182,11 @@ class _DescriptionParser(HTMLParser):
             self._in_thead = True
         elif tag == "tr":
             self._row = []
+            self._row_has_th = False
         elif tag in ("th", "td"):
             self._buf = []
+            if tag == "th":
+                self._row_has_th = True
         elif tag in ("ul", "ol"):
             self._list = _Block("list")
         elif tag == "li":
@@ -246,16 +209,21 @@ class _DescriptionParser(HTMLParser):
             self._in_glyph_span = False
             self._emit("\x00END")
         elif tag in ("th", "td"):
-            cell = self._take_buf().replace("|", "\\|")
+            cell = self._take_buf()
             if self._row is not None:
                 self._row.append(cell)
         elif tag == "tr":
             if self._table is not None and self._row is not None:
-                if self._in_thead:
+                # A header row is either explicitly <thead>-wrapped OR just
+                # a bare <tr> of <th> cells (the store has BOTH forms — e.g.
+                # elemental-sink's table has <th> cells with no <thead>).
+                is_header = (self._in_thead or self._row_has_th) and not self._table.header
+                if is_header:
                     self._table.header = self._row
                 else:
                     self._table.rows.append(self._row)
             self._row = None
+            self._row_has_th = False
         elif tag == "thead":
             self._in_thead = False
         elif tag == "table":
@@ -275,74 +243,34 @@ class _DescriptionParser(HTMLParser):
         if self._in_glyph_span:
             self._emit(data)
         else:
-            self._emit(_escape_braces(_flatten_enrichers(data)))
+            self._emit(_flatten_enrichers(data))
 
 
-def _resolve_glyph_tokens(text: str, warnings: list[str]) -> str:
-    """Replace the parser's ``\\x00GLYPH:<content>\\x00END`` markers with the
-    matching ``{{a}}``-family macro."""
-
-    def repl(m: re.Match[str]) -> str:
-        token = m.group(1).strip().lower()
-        glyph = SPAN_GLYPHS.get(token)
-        if glyph is None:
-            warnings.append(f"unknown action-glyph span content {token!r} kept as text")
-            return m.group(1).strip()
-        return glyph
-
-    return re.sub("\x00GLYPH:(.*?)\x00END", repl, text)
-
-
-def parse_description(html_value: str) -> tuple[list[_Block], list[str]]:
+def parse_description(html_value: str) -> list[_Block]:
     parser = _DescriptionParser()
     parser.feed(html_value)
     parser.close()
-    warnings = parser.warnings
-    for b in parser.blocks:
-        b.text = _resolve_glyph_tokens(b.text, warnings)
-        b.items = [_resolve_glyph_tokens(i, warnings) for i in b.items]
-        b.header = [_resolve_glyph_tokens(c, warnings) for c in b.header]
-        b.rows = [[_resolve_glyph_tokens(c, warnings) for c in row] for row in b.rows]
-    return parser.blocks, warnings
+    return parser.blocks
 
 
 # ---------------------------------------------------------------------------
-# Blocks -> body markdown + lifted rows (Trigger/Requirements, Heightened).
+# Blocks -> structured body + lifted rows (Trigger/Requirements, Heightened).
 # ---------------------------------------------------------------------------
 
-_HEIGHTENED_RE = re.compile(r"^\*\*(Heightened \([^)]*\))\*\*\s*(.*)$", re.DOTALL)
+_HEIGHTENED_RE = re.compile(r"^\*\*Heightened \(([^)]*)\)\*\*\s*(.*)$", re.DOTALL)
 _LEAD_LIFT_RE = re.compile(r"^\*\*(Trigger|Requirements)\*\*\s*(.*)$", re.DOTALL)
 
 
 @dataclass
 class ConvertedDescription:
-    body_md: str
-    heightened_rows: list[str]  # "**Heightened (+1)** :: text"
+    body_blocks: list[_Block]
+    heightened: list[tuple[str, str]]  # (level label e.g. "+1"/"8th", text)
     trigger: str | None
     requirements: str | None
-    warnings: list[str]
-
-
-def _render_block(block: _Block) -> str:
-    if block.kind == "p":
-        return block.text
-    if block.kind == "hr":
-        return "___"
-    if block.kind == "list":
-        return "\n".join(f"- {item}" for item in block.items)
-    if block.kind == "table":
-        header = block.header or [""] * (len(block.rows[0]) if block.rows else 1)
-        lines = [
-            "| " + " | ".join(header) + " |",
-            "|" + "|".join(":---:" for _ in header) + "|",
-        ]
-        lines.extend("| " + " | ".join(row) + " |" for row in block.rows)
-        return "\n".join(lines)
-    raise BookBuildError(f"unknown block kind {block.kind!r}")
 
 
 def convert_description(html_value: str) -> ConvertedDescription:
-    blocks, warnings = parse_description(html_value)
+    blocks = parse_description(html_value)
 
     # Leading **Trigger** / **Requirements** paragraph -> definitions row.
     trigger: str | None = None
@@ -371,43 +299,177 @@ def convert_description(html_value: str) -> ConvertedDescription:
             split_at = i
         break  # only the LAST hr is a candidate
 
-    heightened_rows: list[str] = []
+    heightened: list[tuple[str, str]] = []
     if split_at is not None:
         for b in blocks[split_at + 1 :]:
             m = _HEIGHTENED_RE.match(b.text)
             assert m is not None  # guaranteed by the split_at scan
-            heightened_rows.append(f"**{m.group(1)}** :: {m.group(2).strip()}")
+            heightened.append((m.group(1).strip(), m.group(2).strip()))
         blocks = blocks[:split_at]
 
-    body_md = "\n\n".join(_render_block(b) for b in blocks)
     return ConvertedDescription(
-        body_md=body_md,
-        heightened_rows=heightened_rows,
+        body_blocks=blocks,
+        heightened=heightened,
         trigger=trigger,
         requirements=requirements,
-        warnings=warnings,
     )
 
 
 # ---------------------------------------------------------------------------
-# Spell doc -> {{ruleBlock}}.
+# LaTeX escaping + inline rendering — the ONE place raw text becomes LaTeX.
+# ---------------------------------------------------------------------------
+
+_LATEX_SPECIAL: dict[str, str] = {
+    "\\": r"\textbackslash{}",
+    "&": r"\&",
+    "%": r"\%",
+    "$": r"\$",
+    "#": r"\#",
+    "_": r"\_",
+    "{": r"\{",
+    "}": r"\}",
+    "~": r"\textasciitilde{}",
+    "^": r"\textasciicircum{}",
+}
+_LATEX_SPECIAL_RE = re.compile("|".join(re.escape(c) for c in _LATEX_SPECIAL))
+
+#: Runs of 2-3 ASCII hyphens (the store/fragment prose convention for a
+#: dash) are normalized straight to a literal em dash, bypassing XeTeX's
+#: ``Ligatures=TeX`` engine entirely — the book's display faces (Bookinsanity,
+#: Scaly Sans, Mr Eaves Small Caps) measurably lack an EN DASH glyph (the
+#: ligature's usual target for "--"), confirmed via `fontTools` cmap
+#: inspection and a live tectonic compile (missing-character warnings).
+_DASH_RUN_RE = re.compile(r"-{2,3}")
+#: A handful of literal Unicode characters present in the store/fragment
+#: text that the SAME fonts also lack — MINUS SIGN (used in "level −1"),
+#: MIDDLE DOT (the cover subtitle's "·"), and EN DASH itself, if it ever
+#: arrives pre-ligated rather than as "--". Mapped to covered look-alikes.
+_UNSAFE_GLYPH_MAP: dict[str, str] = {
+    "–": "—",  # en dash -> em dash
+    "−": "-",  # minus sign -> ascii hyphen
+    "·": "-",  # middle dot -> ascii hyphen
+}
+_UNSAFE_GLYPH_RE = re.compile("|".join(re.escape(c) for c in _UNSAFE_GLYPH_MAP))
+
+
+def _latex_escape_text(text: str) -> str:
+    """Escape LaTeX-special characters in a plain-text run. Most Unicode
+    (—, Æ, æ, ×, smart quotes, ...) passes through untouched — XeTeX/fontspec
+    handles it natively (verified against the compiled PDF) — except the
+    small uncovered-glyph set normalized above."""
+    text = _DASH_RUN_RE.sub("—", text)
+    text = _UNSAFE_GLYPH_RE.sub(lambda m: _UNSAFE_GLYPH_MAP[m.group(0)], text)
+    return _LATEX_SPECIAL_RE.sub(lambda m: _LATEX_SPECIAL[m.group(0)], text)
+
+
+#: Tokens the inline renderer treats specially: markdown-ish bold/italic
+#: toggles (as emitted by ``_DescriptionParser``, or hand-authored in
+#: fragment prose) and the neutral action-glyph sentinel. Everything else is
+#: a plain-text run, LaTeX-escaped.
+_INLINE_TOKEN_RE = re.compile(r"(\*\*|\*|\x00GLYPH:.*?\x00END)")
+
+
+def _render_inline(text: str, warnings: list[str]) -> str:
+    out: list[str] = []
+    bold = False
+    italic = False
+    for piece in _INLINE_TOKEN_RE.split(text):
+        if not piece:
+            continue
+        if piece == "**":
+            out.append("}" if bold else "\\textbf{")
+            bold = not bold
+        elif piece == "*":
+            out.append("}" if italic else "\\textit{")
+            italic = not italic
+        elif piece.startswith("\x00GLYPH:"):
+            content = piece[len("\x00GLYPH:") : -len("\x00END")].strip().lower()
+            glyph = SPAN_GLYPHS.get(content)
+            if glyph is None:
+                warnings.append(f"unknown action-glyph span content {content!r} kept as text")
+                out.append(_latex_escape_text(content))
+            else:
+                out.append(f"\\actglyph{{{glyph}}}")
+        else:
+            out.append(_latex_escape_text(piece))
+    return "".join(out)
+
+
+def _render_row_value(raw: str, warnings: list[str]) -> str:
+    """Plain-string system fields (Range/Cost/Requirements/...) are neither
+    HTML-parsed nor guaranteed markup-free — flatten any stray enricher then
+    render inline (a no-op beyond escaping unless the text happens to carry
+    ``**``/``*`` markup, e.g. a lifted Trigger/Requirements paragraph)."""
+    return _render_inline(_flatten_enrichers(raw), warnings)
+
+
+# ---------------------------------------------------------------------------
+# Body blocks -> LaTeX (tables, lists, paragraphs, rules).
+# ---------------------------------------------------------------------------
+
+
+def _render_table_latex(block: _Block, warnings: list[str]) -> str:
+    header = block.header or ([""] * (len(block.rows[0]) if block.rows else 1))
+    n = max(1, len(header))
+    if n == 1:
+        cols = ["X"]
+    else:
+        # Narrow+centered ONLY for a genuinely short header (a "d8"/"1d6"
+        # roll column) — sizing narrow off column POSITION alone wrapped a
+        # long header like "Damage Type" into an unreadable per-word stack
+        # (live tectonic render caught this: "Damag/Type"). The last column
+        # always gets the flexible remainder.
+        cols = []
+        for i, h in enumerate(header):
+            if i == n - 1:
+                cols.append("X")
+            elif len(h) <= 5:
+                cols.append(r">{\centering\arraybackslash}p{0.09\linewidth}")
+            else:
+                cols.append(r"p{0.22\linewidth}")
+    colspec = "@{}" + " ".join(cols) + "@{}"
+    lines = [
+        "\\begingroup",
+        "\\renewcommand{\\arraystretch}{1.15}",
+        "\\rowcolors{2}{TableBlue}{TableWhite}",
+        "\\noindent",
+        f"\\begin{{tabularx}}{{\\linewidth}}{{{colspec}}}",
+        "\\hline",
+        " & ".join(f"\\tblhead{{{_render_inline(h, warnings)}}}" for h in header) + " \\\\",
+        "\\hline",
+    ]
+    for row in block.rows:
+        lines.append(" & ".join(_render_inline(c, warnings) for c in row) + " \\\\")
+    lines.append("\\hline")
+    lines.append("\\end{tabularx}")
+    lines.append("\\endgroup")
+    return "\n".join(lines)
+
+
+def _render_block_latex(block: _Block, warnings: list[str]) -> str:
+    if block.kind == "p":
+        return _render_inline(block.text, warnings)
+    if block.kind == "hr":
+        return "\\bodyhr"
+    if block.kind == "list":
+        items = "\n".join(f"\\item {_render_inline(i, warnings)}" for i in block.items)
+        return "\\begin{itemize}\n" + items + "\n\\end{itemize}"
+    if block.kind == "table":
+        return _render_table_latex(block, warnings)
+    raise BookBuildError(f"unknown block kind {block.kind!r}")
+
+
+def _render_body_blocks(blocks: list[_Block], warnings: list[str]) -> str:
+    return "\n\n".join(_render_block_latex(b, warnings) for b in blocks)
+
+
+# ---------------------------------------------------------------------------
+# Spell doc -> SpellRecord (structure only, no LaTeX) -> LaTeX (emission).
 # ---------------------------------------------------------------------------
 
 
 def _title_case(trait: str) -> str:
     return " ".join(part.capitalize() for part in trait.replace("-", " ").split(" "))
-
-
-def _trait_pills(doc: dict[str, Any], school: str) -> str:
-    traits = doc["system"]["traits"]
-    rarity = traits.get("rarity", "common")
-    pills: list[str] = []
-    if rarity in ("uncommon", "rare"):
-        pills.append(f"{{{{trait,{rarity} {_title_case(rarity)}}}}}")
-    pills.append(f"{{{{trait,unique {_title_case(school)}}}}}")
-    rest = sorted(t for t in traits.get("value") or [] if t != school)
-    pills.extend(f"{{{{trait {_title_case(t)}}}}}" for t in rest)
-    return "".join(pills)
 
 
 def _format_defense(defense: dict[str, Any]) -> str:
@@ -439,44 +501,54 @@ def spell_school(doc: dict[str, Any]) -> list[str]:
 
 
 @dataclass
-class RenderedSpell:
+class SpellRow:
+    label: str
+    value: str  # raw text — escaped at emission
+
+
+@dataclass
+class SpellRecord:
     name: str
     slug: str
     rank: int
     school: str
+    kind: str  # "Ritual" | "Cantrip" | "Spell"
     is_ritual: bool
     time_value: str
-    md: str
-    warnings: list[str]
+    glyph: str | None  # raw \actionfont char, or None (title shows no glyph)
+    rarity: str
+    traits: list[str]  # OTHER traits, title-cased, alphabetical (school/rarity excluded)
+    rows: list[SpellRow]
+    body_blocks: list[_Block]
+    heightened: list[tuple[str, str]]
+    warnings: list[str] = field(default_factory=list)
 
 
-def render_spell(doc: dict[str, Any], slug: str, school: str) -> RenderedSpell:
+def build_spell_record(doc: dict[str, Any], slug: str, school: str) -> SpellRecord:
     system = doc["system"]
     name = doc["name"]
     rank = int(system["level"]["value"])
     time_value = str(system["time"]["value"]).strip()
     ritual = system.get("ritual")
     is_ritual = bool(ritual)
-    traits = system["traits"]
-    is_cantrip = "cantrip" in (traits.get("value") or [])
+    traits_obj = system["traits"]
+    is_cantrip = "cantrip" in (traits_obj.get("value") or [])
 
     conv = convert_description(system["description"]["value"])
-    warnings = list(conv.warnings)
+    warnings: list[str] = []
 
-    # -- preamble ----------------------------------------------------------
     kind = "Ritual" if is_ritual else ("Cantrip" if is_cantrip else "Spell")
     glyph = None if is_ritual else ACTION_GLYPHS.get(time_value.lower())
-    title = f"{{{{title {name}}}}}"
-    if glyph:
-        title += f" {glyph}"
-    preamble = f"{title} {{{{spacer}}}} {{{{kind {kind}}}}} {{{{level {rank}}}}}"
 
-    # -- definitions rows --------------------------------------------------
-    rows: list[str] = []
+    rarity = traits_obj.get("rarity", "common")
+    other_traits = sorted(t for t in traits_obj.get("value") or [] if t != school)
+    traits_titled = [_title_case(t) for t in other_traits]
+
+    rows: list[SpellRow] = []
 
     def row(label: str, value: str) -> None:
         if value:
-            rows.append(f"**{label}** :: {value}")
+            rows.append(SpellRow(label, value))
 
     requirements = str(system.get("requirements") or "").strip() or conv.requirements or ""
     if is_ritual:
@@ -500,7 +572,7 @@ def render_spell(doc: dict[str, Any], slug: str, school: str) -> RenderedSpell:
         row("Targets", str(system.get("target", {}).get("value") or "").strip())
         row("Duration", _format_duration(system.get("duration") or {}))
     else:
-        traditions = traits.get("traditions") or []
+        traditions = traits_obj.get("traditions") or []
         row("Traditions", ", ".join(traditions))
         if glyph is None:
             row("Cast", time_value)
@@ -516,225 +588,465 @@ def render_spell(doc: dict[str, Any], slug: str, school: str) -> RenderedSpell:
             row("Defense", _format_defense(system["defense"]))
         row("Duration", _format_duration(system.get("duration") or {}))
 
-    parts = [
-        "{{ruleBlock",
-        "{{preamble",
-        preamble,
-        "}}",
-        "",
-        "{{traits",
-        _trait_pills(doc, school),
-        "}}",
-        "",
-        "{{definitions",
-        *rows,
-        "}}",
-        "",
-        conv.body_md,
-    ]
-    if conv.heightened_rows:
-        parts.extend(["", "{{postamble", *conv.heightened_rows, "}}"])
-    parts.append("}}")
-    md = "\n".join(parts)
-
-    return RenderedSpell(
+    return SpellRecord(
         name=name,
         slug=slug,
         rank=rank,
         school=school,
+        kind=kind,
         is_ritual=is_ritual,
         time_value=time_value,
-        md=md,
+        glyph=glyph,
+        rarity=rarity,
+        traits=traits_titled,
+        rows=rows,
+        body_blocks=conv.body_blocks,
+        heightened=conv.heightened,
         warnings=warnings,
     )
 
 
+def _pills_latex(rec: SpellRecord, warnings: list[str]) -> str:
+    """Pill row order (stakeholder rule): rarity pill (if any) -> school
+    pill (purple ``\\schoolpill``) -> remaining traits alphabetical."""
+    pills: list[str] = []
+    if rec.rarity in ("uncommon", "rare"):
+        pills.append(f"\\raritypill{{{_render_inline(rec.rarity, warnings)}}}")
+    pills.append(f"\\schoolpill{{{_render_inline(_title_case(rec.school), warnings)}}}")
+    pills.extend(f"\\pill{{{_render_inline(t, warnings)}}}" for t in rec.traits)
+    return "\\hspace{1pt}".join(pills) + "\\par"
+
+
+def emit_spell_latex(rec: SpellRecord) -> str:
+    """``SpellRecord`` -> a full ``blockhead``/``blockrule``/body/postamble
+    LaTeX spell block (mirrors the S1-approved ``sample.tex`` usage of
+    ``liturgy.sty``'s spell-block macros). Emission-time warnings (e.g. an
+    unrecognized action-glyph span) are appended into ``rec.warnings``."""
+    parts: list[str] = [
+        "\\begin{blockhead}",
+        f"\\spelltitle{{{_render_inline(rec.name, rec.warnings)}}}"
+        f"{{{rec.glyph or ''}}}{{{rec.kind} {rec.rank}}}",
+        _pills_latex(rec, rec.warnings),
+        "\\vspace{3pt}",
+    ]
+    for r in rec.rows:
+        parts.append(f"\\defrow{{{r.label}}}{{{_render_row_value(r.value, rec.warnings)}}}")
+    parts.append("\\end{blockhead}")
+    parts.append("\\blockrule")
+    parts.append(_render_body_blocks(rec.body_blocks, rec.warnings))
+    if rec.heightened:
+        parts.append("\\thinrule")
+        for level, text in rec.heightened:
+            parts.append(
+                f"\\heightened{{{_render_inline(level, rec.warnings)}}}"
+                f"{{{_render_inline(text, rec.warnings)}}}"
+            )
+    parts.append("\\vspace{8pt}")
+    return "\n".join(parts)
+
+
+def _emit_spell_list_latex(
+    school: str, spells: list[SpellRecord], summaries: dict[str, str], warnings: list[str]
+) -> str:
+    """The chapter spell-list table (Rank/Spell/Actions/Summary) — the same
+    striped ``tabularx`` shape as the S1 sample's Antillurgy Spells table."""
+    lines = [
+        f"\\subsubsection*{{{_title_case(school)} Spells}}",
+        "\\begingroup",
+        "\\renewcommand{\\arraystretch}{1.3}",
+        "\\rowcolors{2}{TableBlue}{TableWhite}",
+        "\\noindent",
+        "\\begin{tabularx}{\\textwidth}{@{}>{\\centering\\arraybackslash}p{0.07\\textwidth} "
+        "p{0.24\\textwidth} >{\\centering\\arraybackslash}p{0.10\\textwidth} X@{}}",
+        "\\hline",
+        "\\tblhead{Rank} & \\tblhead{Spell} & \\tblhead{Actions} & \\tblhead{Summary} \\\\",
+        "\\hline",
+    ]
+    for sp in spells:
+        actions_char = ACTION_GLYPHS.get(sp.time_value.lower())
+        if actions_char:
+            actions_tex = f"{{\\actionfont {actions_char}}}"
+        else:
+            actions_tex = f"{{\\scaly {_latex_escape_text(sp.time_value)}}}"
+        name_tex = _render_inline(sp.name, warnings)
+        summary_tex = _render_inline(summaries.get(sp.slug, ""), warnings)
+        lines.append(
+            f"{{\\scaly {sp.rank}}} & {{\\scaly {name_tex}}} & {actions_tex} & "
+            f"{{\\scaly {summary_tex}}} \\\\"
+        )
+    lines.append("\\hline")
+    lines.append("\\end{tabularx}")
+    lines.append("\\endgroup")
+    return "\n".join(lines)
+
+
 # ---------------------------------------------------------------------------
-# Line-height estimation (the vol1-calibrated pagination model).
+# Neutral fragment dialect (Track B content) -> LaTeX.
+# ---------------------------------------------------------------------------
+#
+# A SMALL markup vocabulary the content fragments (front matter + chapter
+# openers) are hand-authored in: blank-line-separated paragraphs with
+# ``**bold**``/``*italic*`` inline; ``#``.."#####" headings; ``:::note`` /
+# ``:::descriptive`` fenced boxes (both render via ``\liturgynote`` — a
+# documented approximation, no distinct visual language was reviewed for
+# "descriptive" boxes); ``:::rightAligned`` fenced blocks; bare ``\page`` /
+# ``\column`` directive lines; ``<!-- ART SLOT [id]: ... -->`` comments
+# (preserved as LaTeX comments at their original position — no art is final
+# yet, so no space is reserved; ART-SLOTS.md remains the placement ledger);
+# and ``**Label** :: value`` lines (a definition-list row, reused inside
+# glossary-style note boxes and the credits page).
+
+
+@dataclass
+class NHeading:
+    level: int
+    text: str
+
+
+@dataclass
+class NParagraph:
+    text: str
+    comment: str = ""
+
+
+@dataclass
+class NDefRow:
+    label: str
+    value: str
+    comment: str = ""
+
+
+@dataclass
+class NNote:
+    kind: str  # "note" | "descriptive"
+    children: list[Any]
+
+
+@dataclass
+class NArtSlot:
+    comment: str
+
+
+@dataclass
+class NPageBreak:
+    pass
+
+
+@dataclass
+class NColumnBreak:
+    pass
+
+
+@dataclass
+class NRightAligned:
+    text: str
+
+
+NElement = (
+    NHeading | NParagraph | NDefRow | NNote | NArtSlot | NPageBreak | NColumnBreak | NRightAligned
+)
+
+_N_HEADING_RE = re.compile(r"^(#{1,5})\s+(.*)$")
+_N_DEFROW_RE = re.compile(r"^\*\*([^*]+)\*\*\s*::\s*(.*)$")
+_N_ARTSLOT_RE = re.compile(r"^<!--\s*(ART SLOT.*?)\s*-->$")
+_N_INLINE_COMMENT_RE = re.compile(r"<!--.*?-->")
+
+
+def _parse_neutral(text: str) -> list[NElement]:
+    lines = text.split("\n")
+    elements: list[NElement] = []
+    n = len(lines)
+    para_buf: list[str] = []
+
+    def flush_para() -> None:
+        if not para_buf:
+            return
+        raw = " ".join(line.strip() for line in para_buf).strip()
+        para_buf.clear()
+        comments = _N_INLINE_COMMENT_RE.findall(raw)
+        raw = re.sub(r"\s+", " ", _N_INLINE_COMMENT_RE.sub("", raw)).strip()
+        comment = "; ".join(comments)
+        if not raw:
+            return
+        m = _N_DEFROW_RE.match(raw)
+        if m:
+            elements.append(NDefRow(m.group(1).strip(), m.group(2).strip(), comment=comment))
+        else:
+            elements.append(NParagraph(raw, comment=comment))
+
+    def read_fenced_block(start: int) -> tuple[list[str], int]:
+        j = start
+        inner: list[str] = []
+        while j < n and lines[j].strip() != ":::":
+            inner.append(lines[j])
+            j += 1
+        return inner, j + 1
+
+    i = 0
+    while i < n:
+        stripped = lines[i].strip()
+        if not stripped:
+            flush_para()
+            i += 1
+            continue
+        m_art = _N_ARTSLOT_RE.match(stripped)
+        if m_art:
+            flush_para()
+            elements.append(NArtSlot(m_art.group(1)))
+            i += 1
+            continue
+        if stripped == "\\page":
+            flush_para()
+            elements.append(NPageBreak())
+            i += 1
+            continue
+        if stripped == "\\column":
+            flush_para()
+            elements.append(NColumnBreak())
+            i += 1
+            continue
+        m_h = _N_HEADING_RE.match(stripped)
+        if m_h:
+            flush_para()
+            elements.append(NHeading(len(m_h.group(1)), m_h.group(2).strip()))
+            i += 1
+            continue
+        m_row = _N_DEFROW_RE.match(stripped)
+        if m_row:
+            # Definition-list rows (credits, glossary boxes) are ONE PER
+            # SOURCE LINE with no blank-line separator between them — unlike
+            # prose, consecutive rows must NOT be paragraph-joined, or every
+            # row after the first collapses into the first row's value text.
+            flush_para()
+            comments = _N_INLINE_COMMENT_RE.findall(stripped)
+            clean = _N_INLINE_COMMENT_RE.sub("", stripped).strip()
+            m_row = _N_DEFROW_RE.match(clean)
+            assert m_row is not None
+            elements.append(
+                NDefRow(m_row.group(1).strip(), m_row.group(2).strip(), comment="; ".join(comments))
+            )
+            i += 1
+            continue
+        if stripped in (":::note", ":::descriptive"):
+            flush_para()
+            inner, i = read_fenced_block(i + 1)
+            elements.append(NNote(stripped[3:], _parse_neutral("\n".join(inner))))
+            continue
+        if stripped == ":::rightAligned":
+            flush_para()
+            inner, i = read_fenced_block(i + 1)
+            raw = " ".join(line.strip() for line in inner).strip()
+            elements.append(NRightAligned(raw))
+            continue
+        if stripped == ":::":
+            # Bare separator (Homebrewery flex-wrapper noise) — no-op.
+            flush_para()
+            i += 1
+            continue
+        para_buf.append(lines[i])
+        i += 1
+    flush_para()
+    return elements
+
+
+def _split_pages(elements: list[NElement]) -> list[list[NElement]]:
+    pages: list[list[NElement]] = [[]]
+    for el in elements:
+        if isinstance(el, NPageBreak):
+            pages.append([])
+        else:
+            pages[-1].append(el)
+    return pages
+
+
+_HEADING_CMD = {
+    1: "section",
+    2: "subsection",
+    3: "subsubsection",
+    4: "paragraph",
+    5: "subparagraph",
+}
+
+
+def _render_neutral_element(el: NElement, warnings: list[str]) -> str:
+    if isinstance(el, NHeading):
+        cmd = _HEADING_CMD[el.level]
+        return f"\\{cmd}*{{{_render_inline(el.text, warnings)}}}"
+    if isinstance(el, NParagraph):
+        prefix = f"% {el.comment}\n" if el.comment else ""
+        return prefix + _render_inline(el.text, warnings)
+    if isinstance(el, NDefRow):
+        prefix = f"% {el.comment}\n" if el.comment else ""
+        label_tex = _render_inline(el.label, warnings)
+        value_tex = _render_inline(el.value, warnings)
+        return prefix + f"\\defrow{{{label_tex}}}{{{value_tex}}}"
+    if isinstance(el, NArtSlot):
+        return f"% {el.comment}"
+    if isinstance(el, NPageBreak):
+        return "\\clearpage"
+    if isinstance(el, NColumnBreak):
+        return "\\columnbreak"
+    if isinstance(el, NRightAligned):
+        return f"\\begin{{flushright}}\n{_render_inline(el.text, warnings)}\n\\end{{flushright}}"
+    if isinstance(el, NNote):
+        return _render_note_latex(el, warnings)
+    raise BookBuildError(f"unknown neutral element {el!r}")
+
+
+def _render_note_latex(note: NNote, warnings: list[str]) -> str:
+    """A ``#####``-headed note box renders its title as bold-lead text (the
+    S1-approved pattern — ``liturgynote`` boxes use ``\\textbf{title} \\\\``,
+    not a titlesec heading command, per ``sample.tex``'s Almonk epigraph)."""
+    children = note.children
+    parts: list[str] = []
+    start = 0
+    if children and isinstance(children[0], NHeading):
+        title_tex = f"\\textbf{{{_render_inline(children[0].text, warnings)}}} \\\\"
+        if len(children) > 1 and isinstance(children[1], (NParagraph, NDefRow)):
+            parts.append(title_tex + "\n" + _render_neutral_element(children[1], warnings))
+            start = 2
+        else:
+            parts.append(title_tex)
+            start = 1
+    inner = _join_neutral(children[start:], warnings, seed=parts)
+    return f"\\liturgynote{{{inner}}}"
+
+
+def _join_neutral(
+    elements: list[NElement],
+    warnings: list[str],
+    first_paragraph_transform: Any = None,
+    seed: list[str] | None = None,
+) -> str:
+    """Join rendered elements with blank-line paragraph breaks — EXCEPT
+    between consecutive ``NDefRow``s, which use a single newline (each
+    ``\\defrow`` call already ends in its own ``\\\\`` line break; a blank
+    line there would open a stray new LaTeX paragraph mid-list)."""
+    out: list[str] = list(seed) if seed else []
+    prev_is_row = bool(seed)
+    used_transform = False
+    for el in elements:
+        if (
+            first_paragraph_transform is not None
+            and not used_transform
+            and isinstance(el, NParagraph)
+        ):
+            tex = first_paragraph_transform(el, warnings)
+            used_transform = True
+        else:
+            tex = _render_neutral_element(el, warnings)
+        is_row = isinstance(el, NDefRow)
+        if out:
+            out.append("\n" if (prev_is_row and is_row) else "\n\n")
+        out.append(tex)
+        prev_is_row = is_row
+    return "".join(out)
+
+
+_DROPCAP_WORD_RE = re.compile(r"^(\w)(\w*)")
+
+
+def _apply_dropcap(el: NParagraph, warnings: list[str]) -> str:
+    stripped = el.text.lstrip()
+    m = _DROPCAP_WORD_RE.match(stripped)
+    if not m:
+        return _render_inline(el.text, warnings)
+    first, rest_of_word = m.group(1), m.group(2)
+    remainder = _render_inline(stripped[m.end() :], warnings)
+    return f"\\liturgydropcap{{{first}}}{{{rest_of_word}}}{remainder}"
+
+
+def _render_chapter_body(elements: list[NElement], warnings: list[str]) -> str:
+    return _join_neutral(elements, warnings, first_paragraph_transform=_apply_dropcap)
+
+
+# ---------------------------------------------------------------------------
+# Front matter + table of contents.
 # ---------------------------------------------------------------------------
 
-#: Absolutely-positioned Homebrewery blocks that cost no flow lines.
-_ZERO_FLOW_BLOCKS = ("imageWrapper", "caption", "artist", "watercolor")
-_ZERO_FLOW_LINES = ("{{pageNumber", "{{footnote")
+_PLACEHOLDER_FRONTMATTER = """\
+# LITURGY OF THE IRIDITE
+
+## VOLUME II
+
+<!-- ART SLOT [fm-placeholder]: content/frontmatter.md has not been authored yet (Track B) -->
+"""
 
 
-def estimate_md_lines(md: str) -> float:
-    """Estimate rendered flow lines for a markdown chunk, mirroring how the
-    generator's own output (and vol1's statblock pages) lay out: text wraps
-    at ``CHARS_PER_LINE``, headers/banners cost extra, absolutely-positioned
-    furniture costs nothing.
-
-    This is the FALLBACK sizing model: real pagination uses the measured
-    per-spell px heights in ``calibration.json``; blocks without a
-    measurement (new/renamed spells, chapter openers) use these lines ×
-    ``LINE_H_PX`` × the fitted correction factor (see ``fit_correction``)."""
-    total = 0.0
-    depth_zero_flow = 0
-    brace_depth = 0
-    in_chapter_banner = False
-    in_table = False
-    for raw in md.split("\n"):
-        line = raw.strip()
-        if not line.startswith("|"):
-            in_table = False
-        opens = line.count("{{")
-        closes = line.count("}}")
-        if depth_zero_flow == 0 and any(line.startswith(f"{{{{{b}") for b in _ZERO_FLOW_BLOCKS):
-            depth_zero_flow = brace_depth + 1
-        brace_depth += opens - closes
-        if depth_zero_flow:
-            if brace_depth < depth_zero_flow:
-                depth_zero_flow = 0
-            continue
-        if not line:
-            total += 0.3
-            continue
-        if any(line.startswith(z) for z in _ZERO_FLOW_LINES):
-            continue
-        if line.startswith("{{chapter"):
-            in_chapter_banner = True
-            total += 2.0
-            continue
-        if line in ("{{ruleBlock", "{{preamble", "{{definitions", "{{postamble", "{{traits"):
-            total += 0.3
-            continue
-        if line.startswith(("{{toc", "{{note", "{{descriptive", "{{wide", "{{banner")):
-            total += 1.0
-            continue
-        if line == "}}":
-            if in_chapter_banner and brace_depth == 0:
-                in_chapter_banner = False
-                total += 2.0
+def _render_cover_page(elements: list[NElement], warnings: list[str]) -> str:
+    parts = ["\\vspace*{2.5cm}", "\\begin{center}"]
+    for el in elements:
+        if isinstance(el, NHeading):
+            text = _render_inline(el.text, warnings)
+            if el.level <= 1:
+                parts.append(f"\\covertitle{{{text}}}\\vspace{{0.6cm}}")
+            elif el.level == 2:
+                parts.append(f"\\coversubtitle{{{text}}}\\vspace{{0.6cm}}")
             else:
-                total += 0.3
-            continue
-        if line.startswith("{{title"):
-            total += 2.0
-            continue
-        if line.startswith("{{trait"):
-            # Pills flex-wrap: ~40 visible label chars per row, taller rows.
-            visible = len(re.sub(r"\{\{trait[^ ]* |\}\}", "", line))
-            total += 1.5 * max(1, math.ceil(visible / 40))
-            continue
-        if line.startswith("#"):
-            level = len(line) - len(line.lstrip("#"))
-            total += {1: 5.0, 2: 4.0}.get(level, 2.0) if in_chapter_banner else 2.0
-            continue
-        if line == "___":
-            total += 1.5
-            continue
-        if line.startswith("|"):
-            # In-column tables (302px) wrap, so cost rows by character
-            # length (the p31 Monstrous Copy overflow class), plus a flat
-            # per-table surcharge: zebra-row padding/borders add real render
-            # height the character model can't see. Live-render measured
-            # ~26px per zebra row vs the ~19px character model, so the
-            # surcharge is 8 lines (a +4 cushion still left the Eye Stalks
-            # d8-table page 70px over on re-audit).
-            if not in_table:
-                in_table = True
-                total += 8.0
-            # Table cells share the 302px column with padding/borders, so
-            # the effective wrap width is far narrower than prose
-            # CHARS_PER_LINE (~40 chars/row at the 0.85em in-block table
-            # size, live-render calibrated on the Eye Stalks d8 table).
-            total += 1.1 * max(1, math.ceil(len(line) / 40))
-            continue
-        if line.startswith("- "):
-            total += max(1, math.ceil(len(line) / CHARS_PER_LINE))
-            continue
-        total += max(1, math.ceil(len(line) / CHARS_PER_LINE))
-    return total
+                parts.append(f"\\covereyebrow{{{text}}}\\vspace{{0.8cm}}")
+        elif isinstance(el, NArtSlot):
+            parts.append(f"% {el.comment}")
+    parts.append("\\end{center}")
+    parts.append("\\vfill")
+    return "\n".join(parts)
 
 
-def load_calibration(path: Path = CALIBRATION_PATH) -> dict[str, float]:
-    """Measured px height per spell ruleBlock, keyed by spell title —
-    written by ``tools/measure-heights.mjs`` against live Homebrewery.
-    Missing file → empty dict (everything falls back to the estimator)."""
-    if not path.exists():
-        return {}
-    data = json.loads(path.read_text(encoding="utf-8"))
-    return {str(k): float(v) for k, v in data.items()}
+def _render_frontmatter_body(pages: list[list[NElement]], warnings: list[str]) -> str:
+    rendered = [_render_cover_page(pages[0], warnings)]
+    for page in pages[1:]:
+        has_column_break = any(isinstance(e, NColumnBreak) for e in page)
+        body = _join_neutral(page, warnings)
+        if has_column_break:
+            body = "\\begin{multicols}{2}\n" + body + "\n\\end{multicols}"
+        rendered.append(body)
+    return "\n\n\\clearpage\n\n".join(rendered)
 
 
-def fit_correction(pairs: list[tuple[float, float]]) -> tuple[float, float]:
-    """Fit ONE global correction factor from (measured px, estimated px)
-    pairs — least squares through the origin — plus the mean |residual| as
-    a fraction of the measured height. The factor rescales the estimator
-    fallback (blocks with no calibration entry) onto the measured scale;
-    the line model systematically over-prices (e.g. Eye Stalks modeled ~93
-    lines vs ~52 rendered), which stranded ~45% of every page pre-rework."""
-    if not pairs:
-        return 1.0, 0.0
-    den = sum(est * est for _, est in pairs)
-    if den == 0:
-        return 1.0, 0.0
-    factor = sum(real * est for real, est in pairs) / den
-    spread = sum(abs(real - factor * est) / real for real, est in pairs) / len(pairs)
-    return factor, spread
+def _render_toc() -> str:
+    lines = ["\\section*{Contents}", ""]
+    for chapter_no, school in enumerate(SCHOOLS, start=1):
+        lines.append(f"\\tocentry{{{chapter_no}}}{{{_title_case(school)}}}{{chapter:{school}}}")
+    return "\n".join(lines)
 
 
-def _wide_table_px(md: str) -> float:
-    """Rendered px height of a ``{{wide,vol2SpellTable}}`` block, from
-    measured row metrics: 26px single-line rows, 39px when name+summary
-    exceed the ~70-char single-line budget (planara calibration), plus
-    heading/margins. The ``|:---:|`` separator is syntax, not a row."""
-    px = WIDE_TABLE_CHROME_PX
-    for raw in md.split("\n"):
-        line = raw.strip()
-        if not line.startswith("|") or line.startswith("|:"):
-            continue
-        cells = [c.strip() for c in line.strip("|").split("|")]
-        content = len(cells[1]) + len(cells[3]) if len(cells) == 4 else len(line)
-        px += WIDE_ROW_WRAP_PX if content > 70 else WIDE_ROW_PX
-    return px
+def _assemble_chapter(
+    chapter_no: int,
+    school: str,
+    body_tex: str,
+    spell_list_tex: str,
+    block_tex_parts: list[str],
+) -> str:
+    title = _title_case(school)
+    parts = [
+        f"\\renewcommand{{\\liturgyfootnotelabel}}{{Chapter {chapter_no} \\textbar\\ {title}}}",
+        f"\\label{{chapter:{school}}}",
+        f"\\chapternum{{Chapter {chapter_no}}}",
+        f"\\chaptertitle{{{title}}}",
+        "\\chapterrule",
+        "",
+        "\\begin{multicols}{2}",
+        "",
+        body_tex,
+        "",
+        "\\end{multicols}",
+        "",
+        spell_list_tex,
+        "",
+        "\\newpage",
+        "",
+        "\\begin{multicols}{2}",
+        "\\spellflow",
+        "",
+        "\n\n".join(block_tex_parts),
+        "",
+        "\\end{multicols}",
+    ]
+    return "\n".join(parts)
 
 
 # ---------------------------------------------------------------------------
-# Assembly + pagination.
+# Assembly.
 # ---------------------------------------------------------------------------
-
-
-@dataclass
-class _FlowBlock:
-    md: str
-    px: float  # capacity cost in COLUMN-px (wide blocks already ×2)
-    starts_page: bool = False
-
-
-@dataclass
-class PageInfo:
-    page_no: int
-    blocks: int
-    est_px: float
-
-    @property
-    def fill(self) -> float:
-        return self.est_px / PAGE_CAPACITY_PX
-
-
-@dataclass
-class BookReport:
-    spells: int = 0
-    chapters: list[tuple[str, int, int]] = field(default_factory=list)  # (school, n, page)
-    pages: list[PageInfo] = field(default_factory=list)
-    overflow_pages: list[PageInfo] = field(default_factory=list)
-    oversized_blocks: list[str] = field(default_factory=list)
-    missing_fragments: list[str] = field(default_factory=list)
-    warnings: list[str] = field(default_factory=list)
-    calibrated_blocks: int = 0
-    correction_factor: float = 1.0
-    correction_spread: float = 0.0
-
-    @property
-    def page_count(self) -> int:
-        return len(self.pages)
-
-
-@dataclass
-class BookResult:
-    markdown: str
-    report: BookReport
 
 
 def _load_store(store_dir: Path) -> list[tuple[str, dict[str, Any]]]:
@@ -744,15 +1056,15 @@ def _load_store(store_dir: Path) -> list[tuple[str, dict[str, Any]]]:
     return docs
 
 
-def _load_trait_blurbs(traits_dir: Path) -> dict[str, str]:
-    blurbs: dict[str, str] = {}
+def _load_trait_blurbs(traits_dir: Path) -> dict[str, list[_Block]]:
+    blurbs: dict[str, list[_Block]] = {}
     for school in SCHOOLS:
         path = traits_dir / f"{school}.json"
         if not path.exists():
             continue
         doc = json.loads(path.read_text(encoding="utf-8"))
         conv = convert_description(doc["description"]["value"])
-        blurbs[school] = conv.body_md
+        blurbs[school] = conv.body_blocks
     return blurbs
 
 
@@ -775,69 +1087,6 @@ def _partition_by_school(
     return by_school
 
 
-def _chapter_opener_md(chapter_no: int, school: str, blurb: str | None) -> str:
-    banner = (
-        f"{{{{chapter,gradient,--color:{CHAPTER_COLOR}\n"
-        f"\n"
-        f"## Chapter {chapter_no}\n"
-        f"# {_title_case(school)}\n"
-        f"___\n"
-        f"}}}}"
-    )
-    if blurb:
-        return f"{banner}\n\n\n{blurb}"
-    return banner
-
-
-def _spell_list_md(school: str, spells: list[RenderedSpell], summaries: dict[str, str]) -> str:
-    """The chapter spell-list table, wrapped ``{{wide,vol2SpellTable``:
-    Homebrewery's ``break-inside: avoid`` on tables means an in-column table
-    cannot split across the page's 2 CSS columns and clips (live-render
-    verified at 1,903px tall in a 302px column) — ``wide`` (column-span:
-    all) spans the page, and the generated style block forces the table
-    full-width. The class is deliberately theme-NEUTRAL: the 5e PHB theme
-    itself defines a ``.spellList`` columns rule (classic PHB spell-name
-    lists) that lays any child table into a ~160px sub-column — never name
-    this block ``spellList`` (live-DOM-forensics finding)."""
-    lines = [
-        "{{wide,vol2SpellTable",
-        f"##### {_title_case(school)} Spells",
-        "| Rank | Spell | Actions | Summary |",
-        "|:---:|:---|:---:|:---|",
-    ]
-    for sp in spells:
-        actions = ACTION_GLYPHS.get(sp.time_value.lower(), sp.time_value)
-        summary = summaries.get(sp.slug, "")
-        lines.append(f"| {sp.rank} | {sp.name} | {actions} | {summary} |")
-    lines.append("}}")
-    return "\n".join(lines)
-
-
-def _paginate(blocks: list[_FlowBlock], report: BookReport, names: list[str]) -> list[list[int]]:
-    """Continuous column-flow fill (``break-inside: auto`` — content between
-    two ``\\page`` markers fills col1 then col2 without whole-block column
-    jumps): accumulate measured block px in order and break the page before
-    the block that would push the total past ``PAGE_CAPACITY_PX ×
-    FILL_TARGET_PX``. Wide blocks arrive pre-doubled (they span both
-    columns). A single block taller than a FULL page is flagged for manual
-    review."""
-    pages: list[list[int]] = []
-    current: list[int] = []
-    fill = 0.0
-    for i, b in enumerate(blocks):
-        if b.px > PAGE_CAPACITY_PX:
-            report.oversized_blocks.append(names[i])
-        if current and (b.starts_page or fill + b.px > PAGE_CAPACITY_PX * FILL_TARGET_PX):
-            pages.append(current)
-            current = []
-            fill = 0.0
-        current.append(i)
-        fill += b.px
-    if current:
-        pages.append(current)
-    return pages
-
-
 def _read_fragment(path: Path, report: BookReport) -> str | None:
     if path.exists():
         return path.read_text(encoding="utf-8").rstrip("\n")
@@ -845,122 +1094,60 @@ def _read_fragment(path: Path, report: BookReport) -> str | None:
     return None
 
 
-#: Emitted at the very top of the generated md, BEFORE the front cover.
-#: Homebrewery renders in-text ``<style>`` tags exactly like its style tab,
-#: and being in the document body it cascades AFTER the vol1 css file — so
-#: the vol2 ``.css`` stays byte-verbatim while these rules win ties.
-#: Live-render finding: Homebrewery does not stretch tables (natural/auto
-#: width, ~224px measured even inside ``{{wide}}``), so the spell-list
-#: tables must be forced full-width or their Summary cells wrap 4–6 lines
-#: deep and overflow the page. ``<style>`` is display:none — zero flow cost.
-_GENERATED_STYLE = """\
-<!-- vol2 generated style — spell-list tables -->
-<style>
-  /* Homebrewery leaves tables at natural width; span the whole wide row.
-     vol2SpellTable is a theme-NEUTRAL class name — the PHB theme's own
-     spell-list class lays any child table into a ~160px sub-column, so it
-     must not be reused here. 0.9em buys wrap headroom on long name/summary
-     rows. (No mustache braces in this block — Homebrewery substitutes them
-     even inside style tags.) */
-  .page .vol2SpellTable table {
-    width: 100%;
-    font-size: 0.9em;
-  }
-  /* Narrow Rank/Actions columns, spell names single-line, Summary takes
-     the remaining width. */
-  .page .vol2SpellTable table th:nth-child(1),
-  .page .vol2SpellTable table td:nth-child(1) {
-    width: 3em;
-  }
-  .page .vol2SpellTable table td:nth-child(2) {
-    white-space: nowrap;
-  }
-  .page .vol2SpellTable table th:nth-child(3),
-  .page .vol2SpellTable table td:nth-child(3) {
-    /* shrink-to-fit hint + nowrap: long CAST TIMES ("10 minutes") render as
-       text here, and a hard 4em pin wrapped those rows to 39px — the last
-       two live-audit page overflows (planara/mercuromancy tables). */
-    width: 4em;
-    white-space: nowrap;
-  }
-  /* With break-inside:auto content, the browser's default column-fill:
-     balance spreads a page's content EQUALLY across as many columns as it
-     likes — spilling a clipped third column off the page edge while the
-     two real columns sit part-empty. Fill top-to-bottom instead. */
-  .page,
-  .page .columnWrapper {
-    column-fill: auto;
-  }
-  /* In-statblock tables (random-effect tables like Eye Stalks' d8 rays)
-     wrap long cells hard in a 302px column; smaller type + tighter cell
-     padding keeps the worst block within one page, matching how official
-     books set big tables. (0.85em left Eye Stalks 38px over on live audit;
-     0.8em + 0.5mm padding measured it inside the page.) */
-  .page .ruleBlock table {
-    font-size: 0.8em;
-  }
-  .page .ruleBlock table td {
-    padding: 0.5mm;
-  }
-  /* Let spell blocks flow across columns (how official books print):
-     Homebrewery's default break-inside: avoid jumps a non-fitting block
-     wholesale to the next column/page, stranding empty space ("huge empty
-     gaps" stakeholder feedback). Title+pills stay attached; body/table/
-     postamble may split at a column boundary. */
-  .page .columnWrapper .ruleBlock {
-    /* !important + prefixed variants: Homebrewery's own avoid rule wins
-       the plain declaration, silently keeping blocks atomic — columns
-       ended early at block boundaries (live audit: col1 stopped 300px
-       short, spilling a clipped 3rd column on 13/64 pages). */
-    break-inside: auto !important;
-    -webkit-column-break-inside: auto !important;
-    page-break-inside: auto !important;
-    /* THE actual unlock: Homebrewery blocks are display:inline-block —
-       atomic inline-level boxes that can never fragment across columns
-       regardless of break-inside. Real block display lets spells flow
-       like official print. */
-    display: block !important;
-  }
-  .page .ruleBlock .preamble,
-  .page .ruleBlock .traits {
-    break-inside: avoid;
-  }
-</style>"""
+@dataclass
+class BookReport:
+    spells: int = 0
+    chapters: list[tuple[str, int]] = field(default_factory=list)  # (school, n)
+    missing_fragments: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
 
-_PLACEHOLDER_FRONTMATTER = """\
-{{frontCover}}
 
-### PER ASPERA, AD ASTRA
+@dataclass
+class BookResult:
+    tex: str
+    report: BookReport
 
-# LITURGY OF THE IRIDITE
 
-## VOLUME II
+_RESIDUE_TOKENS: tuple[str, ...] = ("@UUID", "<p>", "</p>", "<strong>", "<hr", "<table", "\x00")
 
-{{note
-##### Placeholder
-`content/frontmatter.md` has not been authored yet (Track B) — this cover
-page is a generated stand-in.
-}}"""
+
+def _check_residue(tex: str) -> None:
+    for residue in _RESIDUE_TOKENS:
+        if residue in tex:
+            raise BookBuildError(f"emitted tex contains unconverted residue {residue!r}")
+    # "{{" never appears in LEGITIMATE emitted LaTeX (every macro call in this
+    # module uses single-brace args) — EXCEPT inside a preserved ART-SLOT "%"
+    # comment, which verbatim-quotes the original Homebrewery wrapper hint
+    # text on purpose (see ``_render_neutral_element``'s ``NArtSlot`` case).
+    for line in tex.split("\n"):
+        if line.strip().startswith("%"):
+            continue
+        if "{{" in line:
+            raise BookBuildError(f"emitted tex contains unconverted Homebrewery markup: {line!r}")
+
+
+def _wrap_document(body: str) -> str:
+    return (
+        "% Generated by `uv run assay export-book` — DO NOT EDIT BY HAND.\n"
+        "\\documentclass[10pt,letterpaper]{article}\n"
+        "\\usepackage{liturgy}\n"
+        "\\hypersetup{hidelinks}\n"
+        "\\begin{document}\n\n"
+        f"{body}\n\n"
+        "\\end{document}\n"
+    )
 
 
 def build_book(
     store_dir: Path = STORE_DIR,
     traits_dir: Path = TRAITS_DIR,
     content_dir: Path | None = None,
-    calibration_path: Path | None = None,
 ) -> BookResult:
     """Assemble the whole book. ``content_dir`` defaults to
     ``DEFAULT_OUT_DIR/content`` (Track B's directory — consumed read-only,
-    fail-soft when fragments are missing); ``calibration_path`` defaults to
-    the committed ``calibration.json`` (measured px block heights)."""
+    fail-soft when fragments are missing)."""
     content_dir = content_dir if content_dir is not None else DEFAULT_OUT_DIR / "content"
-    calibration = load_calibration(calibration_path or CALIBRATION_PATH)
     report = BookReport()
-    if not calibration:
-        report.warnings.append(
-            "no calibration.json — pagination running entirely on the line "
-            "estimator (refresh with tools/measure-heights.mjs)"
-        )
 
     docs = _load_store(store_dir)
     by_school = _partition_by_school(docs)
@@ -973,150 +1160,54 @@ def build_book(
     else:
         report.missing_fragments.append(str(summaries_path))
 
-    # -- pass 1: render every spell + fit the estimator correction ---------
-    spells_by_school: dict[str, list[RenderedSpell]] = {}
-    est_px_by_title: dict[str, float] = {}
-    fit_pairs: list[tuple[float, float]] = []
-    for school in SCHOOLS:
-        spells: list[RenderedSpell] = []
-        for slug, doc in by_school[school]:
-            rs = render_spell(doc, slug, school)
-            report.warnings.extend(f"{slug}: {w}" for w in rs.warnings)
-            spells.append(rs)
-            est_px = estimate_md_lines(rs.md) * LINE_H_PX
-            est_px_by_title[rs.name] = est_px
-            if rs.name in calibration:
-                fit_pairs.append((calibration[rs.name], est_px))
-        spells.sort(key=lambda s: (s.rank, s.name.lower()))
-        spells_by_school[school] = spells
-        report.spells += len(spells)
-    factor, spread = fit_correction(fit_pairs)
-    report.calibrated_blocks = len(fit_pairs)
-    report.correction_factor = factor
-    report.correction_spread = spread
-
-    def spell_px(rs: RenderedSpell) -> float:
-        measured = calibration.get(rs.name)
-        if measured is not None:
-            return measured
-        return est_px_by_title[rs.name] * factor
-
-    # -- pass 2: per-chapter flow blocks sized in px -----------------------
-    chapter_blocks: list[list[_FlowBlock]] = []
-    chapter_block_names: list[list[str]] = []
+    chapters_tex: list[str] = []
     for chapter_no, school in enumerate(SCHOOLS, start=1):
-        spells = spells_by_school[school]
-        opener = _read_fragment(content_dir / "chapters" / f"{school}.md", report)
-        if opener is None:
-            opener = _chapter_opener_md(chapter_no, school, blurbs.get(school))
-        elif "\\page" in opener:
-            report.warnings.append(
-                f"chapters/{school}.md contains \\page — the pagination model assumes "
-                "chapter openers are single-page; toc anchors/footnotes may be off"
-            )
-        opener_px = estimate_md_lines(opener) * LINE_H_PX * factor
-        blocks = [_FlowBlock(opener, opener_px, starts_page=True)]
-        names = [f"{school}/opener"]
-        table = _spell_list_md(school, spells, summaries)
-        # Wide blocks span BOTH columns: their height drains the pool twice.
-        blocks.append(_FlowBlock(table, 2.0 * _wide_table_px(table)))
-        names.append(f"{school}/spell-list")
-        for sp in spells:
-            blocks.append(_FlowBlock(sp.md, spell_px(sp)))
-            names.append(f"{school}/{sp.slug}")
-        chapter_blocks.append(blocks)
-        chapter_block_names.append(names)
+        records = [build_spell_record(doc, slug, school) for slug, doc in by_school[school]]
+        records.sort(key=lambda r: (r.rank, r.name.lower()))
+        report.spells += len(records)
+        report.chapters.append((school, len(records)))
 
-    # -- front matter ------------------------------------------------------
-    frontmatter = _read_fragment(content_dir / "frontmatter.md", report)
-    if frontmatter is None:
-        frontmatter = _PLACEHOLDER_FRONTMATTER
-    frontmatter_pages = frontmatter.count("\\page") + 1
-    toc_page_no = frontmatter_pages + 1
+        opener_fragment = _read_fragment(content_dir / "chapters" / f"{school}.md", report)
+        if opener_fragment is not None:
+            elements = _parse_neutral(opener_fragment)
+            body_tex = _render_chapter_body(elements, report.warnings)
+        else:
+            blurb_blocks = blurbs.get(school)
+            body_tex = _render_body_blocks(blurb_blocks, report.warnings) if blurb_blocks else ""
 
-    # -- paginate chapters (page numbers known before the toc is written) --
-    chapter_pages: list[list[list[int]]] = []
-    next_page = toc_page_no + 1
-    chapter_start_pages: list[int] = []
-    for chapter_no, school in enumerate(SCHOOLS, start=1):
-        pages = _paginate(
-            chapter_blocks[chapter_no - 1], report, chapter_block_names[chapter_no - 1]
+        spell_list_tex = _emit_spell_list_latex(school, records, summaries, report.warnings)
+
+        block_tex_parts: list[str] = []
+        for rec in records:
+            block_tex_parts.append(emit_spell_latex(rec))
+            report.warnings.extend(f"{rec.slug}: {w}" for w in rec.warnings)
+
+        chapters_tex.append(
+            _assemble_chapter(chapter_no, school, body_tex, spell_list_tex, block_tex_parts)
         )
-        chapter_pages.append(pages)
-        chapter_start_pages.append(next_page)
-        report.chapters.append((school, len(by_school[school]), next_page))
-        next_page += len(pages)
 
-    # -- toc ----------------------------------------------------------------
-    toc_lines = ["{{toc", "# Contents", ""]
-    for chapter_no, school in enumerate(SCHOOLS, start=1):
-        page = chapter_start_pages[chapter_no - 1]
-        toc_lines.append(
-            f"- ## [{{{{ Chapter {chapter_no} — {_title_case(school)}}}}}{{{{ {page}}}}}](#p{page})"
-        )
-    toc_lines.append("}}")
-    toc_md = "\n".join(toc_lines)
+    frontmatter_fragment = _read_fragment(content_dir / "frontmatter.md", report)
+    if frontmatter_fragment is not None:
+        pages = _split_pages(_parse_neutral(frontmatter_fragment))
+        frontmatter_tex = _render_frontmatter_body(pages, report.warnings)
+    else:
+        pages = _split_pages(_parse_neutral(_PLACEHOLDER_FRONTMATTER))
+        frontmatter_tex = _render_frontmatter_body(pages, report.warnings)
 
-    # -- emit ---------------------------------------------------------------
-    out: list[str] = [_GENERATED_STYLE, "", frontmatter, "", "\\page", "", toc_md, ""]
-    page_no = toc_page_no
-    for chapter_no, school in enumerate(SCHOOLS, start=1):
-        blocks = chapter_blocks[chapter_no - 1]
-        for page_blocks in chapter_pages[chapter_no - 1]:
-            out.append("\\page")
-            out.append("")
-            page_no += 1
-            est = 0.0
-            for i in page_blocks:
-                out.append(blocks[i].md)
-                out.append("")
-                est += blocks[i].px
-            out.append("{{pageNumber,auto}}")
-            out.append(f"{{{{footnote Chapter {chapter_no} | {_title_case(school)}}}}}")
-            out.append("")
-            info = PageInfo(page_no=page_no, blocks=len(page_blocks), est_px=est)
-            report.pages.append(info)
-            if info.fill > 1.0:
-                report.overflow_pages.append(info)
+    toc_tex = _render_toc()
 
-    markdown = "\n".join(out).rstrip("\n") + "\n"
+    body = "\n\n\\clearpage\n\n".join([frontmatter_tex, toc_tex, *chapters_tex])
+    tex = _wrap_document(body)
 
-    # -- residue self-checks (STOP, never ship a broken book) --------------
-    for residue in ("@UUID", "<p>", "</p>", "<strong>", "<hr", "<table", "\x00"):
-        if residue in markdown:
-            raise BookBuildError(f"emitted markdown contains unconverted residue {residue!r}")
+    _check_residue(tex)
 
-    return BookResult(markdown=markdown, report=report)
+    return BookResult(tex=tex, report=report)
 
 
 def format_report(report: BookReport) -> str:
-    lines = [
-        f"assay export-book: {report.spells} spells, {len(report.chapters)} chapters, "
-        f"{report.page_count} content pages",
-    ]
-    lines.append(
-        f"  calibration: {report.calibrated_blocks} measured blocks, estimator "
-        f"correction ×{report.correction_factor:.3f} "
-        f"(mean |residual| {report.correction_spread:.1%})"
-    )
-    for school, n, page in report.chapters:
-        lines.append(f"  chapter {_title_case(school)}: {n} spells, starts p{page}")
-    fills = [p.fill for p in report.pages]
-    if fills:
-        lines.append(
-            f"  page fill: min {min(fills):.0%}  mean {sum(fills) / len(fills):.0%}  "
-            f"max {max(fills):.0%}"
-        )
-    blocks_per_page = [p.blocks for p in report.pages]
-    if blocks_per_page:
-        lines.append(
-            f"  blocks/page: min {min(blocks_per_page)}  "
-            f"mean {sum(blocks_per_page) / len(blocks_per_page):.1f}  max {max(blocks_per_page)}"
-        )
-    for p in report.overflow_pages:
-        lines.append(f"  OVER 100%: p{p.page_no} est {p.fill:.0%} ({p.blocks} blocks) — review")
-    for name in report.oversized_blocks:
-        lines.append(f"  BLOCK TALLER THAN A PAGE: {name} — review")
+    lines = [f"assay export-book: {report.spells} spells, {len(report.chapters)} chapters"]
+    for school, n in report.chapters:
+        lines.append(f"  chapter {_title_case(school)}: {n} spells")
     for frag in report.missing_fragments:
         lines.append(f"  missing content fragment (fail-soft): {frag}")
     for w in report.warnings:
@@ -1132,28 +1223,61 @@ _tracer = get_tracer("astra.assay")
 
 
 def cmd_export_book(args: argparse.Namespace) -> None:
-    """Build the Vol.2 Homebrewery book from the canonical store; write the
-    ``.md`` + a byte-verbatim copy of vol1's ``.css`` into ``--out``
-    (default ``apps/codex/books/liturgy_vol2``). Never touches
+    """Build the Vol.2 LaTeX book from the canonical store, write the
+    ``.tex`` into ``--out`` (default ``apps/codex/books/liturgy_vol2``), then
+    compile it with ``tectonic`` (skip via ``--no-compile``). Never touches
     ``<out>/content/`` (Track B's directory — read-only input)."""
     with _tracer.start_as_current_span("assay.export-book") as span:
         out_dir = Path(args.out).resolve() if args.out else DEFAULT_OUT_DIR
         result = build_book(content_dir=out_dir / "content")
         out_dir.mkdir(parents=True, exist_ok=True)
-        (out_dir / BOOK_MD_NAME).write_text(result.markdown, encoding="utf-8")
-        (out_dir / BOOK_CSS_NAME).write_bytes(VOL1_CSS_PATH.read_bytes())
+        tex_path = out_dir / BOOK_TEX_NAME
+        tex_path.write_text(result.tex, encoding="utf-8")
         span.set_attribute("assay.export_book.spells", result.report.spells)
-        span.set_attribute("assay.export_book.pages", result.report.page_count)
         span.set_attribute("assay.export_book.chapters", len(result.report.chapters))
         print(format_report(result.report))
-        print(f"-> {out_dir / BOOK_MD_NAME}")
+        print(f"-> {tex_path}")
+
+        if args.no_compile:
+            return
+
+        tectonic = args.tectonic_path or shutil.which("tectonic")
+        if not tectonic:
+            print(
+                "warning: tectonic not found on PATH — skipping compile "
+                "(pass --tectonic-path or --no-compile)"
+            )
+            span.set_attribute("assay.export_book.compiled", False)
+            return
+
+        env = dict(os.environ)
+        env["SOURCE_DATE_EPOCH"] = "0"
+        proc = subprocess.run(
+            [tectonic, tex_path.name],
+            cwd=out_dir,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if proc.stdout:
+            print(proc.stdout)
+        if proc.stderr:
+            print(proc.stderr)
+        if proc.returncode != 0:
+            span.set_attribute("assay.export_book.compiled", False)
+            raise BookBuildError(f"tectonic compile failed (exit {proc.returncode})")
+
+        pdf_path = out_dir / BOOK_PDF_NAME
+        span.set_attribute("assay.export_book.compiled", pdf_path.exists())
+        print(f"-> {pdf_path}")
 
 
 def register_subparsers(sub: argparse._SubParsersAction) -> None:
     p_book = sub.add_parser(
         "export-book",
         help=(
-            "build the Liturgy of the Iridite Vol.2 Homebrewery book from the canonical "
+            "build the Liturgy of the Iridite Vol.2 LaTeX book from the canonical "
             "homebrew store -> apps/codex/books/liturgy_vol2/"
         ),
     )
@@ -1161,5 +1285,15 @@ def register_subparsers(sub: argparse._SubParsersAction) -> None:
         "--out",
         default=None,
         help="output directory (default apps/codex/books/liturgy_vol2)",
+    )
+    p_book.add_argument(
+        "--no-compile",
+        action="store_true",
+        help="write the .tex only — skip the tectonic PDF compile step",
+    )
+    p_book.add_argument(
+        "--tectonic-path",
+        default=None,
+        help="path to the tectonic binary (default: PATH lookup)",
     )
     p_book.set_defaults(func=cmd_export_book)

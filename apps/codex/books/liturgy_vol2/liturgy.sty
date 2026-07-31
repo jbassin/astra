@@ -1,0 +1,256 @@
+% liturgy.sty --- Liturgy of the Iridite Vol.2 Homebrewery-look style layer
+% Recreates the vol1 D&D-2024-PHB parchment look under tectonic/XeTeX.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{liturgy}[2026/07/31 Liturgy of the Iridite book style]
+
+% ---------------------------------------------------------------- geometry
+\RequirePackage[letterpaper,top=1.4cm,left=1.9cm,right=1.9cm,bottom=1.7cm]{geometry}
+
+% ---------------------------------------------------------------- fonts
+\RequirePackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{Bookinsanity.ttf}[
+  Path = ./assets/fonts/,
+  BoldFont = Bookinsanity_Bold.ttf,
+  ItalicFont = Bookinsanity_Italic.ttf,
+  BoldItalicFont = Bookinsanity_Bold_Italic.ttf]
+
+\newfontfamily\scaly{Scaly_Sans.ttf}[Path=./assets/fonts/,
+  BoldFont=Scaly_Sans_Bold.ttf, ItalicFont=Scaly_Sans_Italic.ttf]
+% Scaly Sans Small Caps has no shipped bold face -- FakeBold synthesizes one
+% (approximation: not a true bold-weight small-caps design).
+\newfontfamily\scalycaps{Scaly_Sans_Caps.ttf}[Path=./assets/fonts/]
+\newfontfamily\scalycapsbold{Scaly_Sans_Caps.ttf}[Path=./assets/fonts/, FakeBold=2.2]
+\newfontfamily\mreaves{Mr_Eaves_Small_Caps.ttf}[Path=./assets/fonts/]
+\newfontfamily\wolpe{WolpePegasus.ttf}[Path=./assets/fonts/]
+\newfontfamily\optipegasus{OPTIPegasus.ttf}[Path=./assets/fonts/]
+\newfontfamily\actionfont{Pathfinder2eActions.ttf}[Path=./assets/fonts/]
+
+% body: BookInsanityRemake ~9.6pt / 1.25 leading; 0.325cm paragraph spacing
+\renewcommand{\normalsize}{\fontsize{9.6pt}{12pt}\selectfont}
+\normalsize
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.325cm}
+
+% tighter intra-block paragraph spacing for spell-block flow (body prose,
+% consecutive \heightened entries). The default \parskip above is sized for
+% flowing chapter-opener prose; call \spellflow once at the start of a
+% spell-listing region (e.g. right after \begin{multicols} on the spell
+% pages) to tighten paragraph gaps WITHIN blocks. Separation BETWEEN blocks
+% stays large because it is the explicit \vspace{8pt} + \blockrule (both
+% independent of \parskip), not this register.
+\newcommand{\spellflow}{\setlength{\parskip}{0.15cm}}
+
+% ---------------------------------------------------------------- colors
+% xcolor[table] loaded exactly once, early (avoids the option-clash gotcha)
+\RequirePackage[table]{xcolor}
+\definecolor{DarkRed}{HTML}{531004}
+\definecolor{Gold}{HTML}{d3b885}
+\definecolor{PillGold}{HTML}{d5c489}
+\definecolor{TableBlue}{HTML}{dae8ed}
+\definecolor{TableWhite}{HTML}{f2f7f9}
+\definecolor{NoteBg}{HTML}{e8d7c4}
+\definecolor{RarityUncommon}{HTML}{c45500}
+\definecolor{RarityRare}{HTML}{0c1466}
+\definecolor{RarityUnique}{HTML}{800080}
+% drop-cap approximation color (real design is a gradient + symbol-behind)
+\definecolor{DropGold}{HTML}{b89956}
+\definecolor{ChapterTitle}{HTML}{610500}
+
+% ---------------------------------------------------------------- packages
+\RequirePackage{graphicx}
+\RequirePackage{multicol}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{tikz}
+\RequirePackage{titlesec}
+\RequirePackage{tabularx}
+\RequirePackage{enumitem}
+\RequirePackage{microtype}
+\RequirePackage{needspace}
+\RequirePackage{eso-pic}
+\RequirePackage{lettrine}
+\RequirePackage{hyperref}
+
+\setlength{\columnsep}{0.9cm}
+\setlist{nosep}
+
+% ---------------------------------------------------------------- headers
+% h1
+\titleformat{\section}{\mreaves\fontsize{0.89cm}{1.05cm}\selectfont\color{DarkRed}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{0pt}{0.3cm}
+% h2
+\titleformat{\subsection}{\mreaves\fontsize{0.62cm}{0.75cm}\selectfont\color{DarkRed}}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{0.4cm}{0.2cm}
+% h3 -- gold underline rule
+\titleformat{\subsubsection}{\mreaves\fontsize{0.575cm}{0.7cm}\selectfont\color{DarkRed}}{}{0pt}{}[{\color{Gold}\titlerule[1.5pt]}]
+\titlespacing*{\subsubsection}{0pt}{0.35cm}{0.15cm}
+% h4
+\titleformat{\paragraph}[runin]{\mreaves\fontsize{0.458cm}{0.55cm}\selectfont\color{DarkRed}}{}{0pt}{}
+\titlespacing*{\paragraph}{0pt}{0.3cm}{0.5em}
+% h5 -- ScalySansSmallCaps
+\titleformat{\subparagraph}[runin]{\scalycapsbold\fontsize{0.423cm}{0.5cm}\selectfont\color{DarkRed}}{}{0pt}{}
+\titlespacing*{\subparagraph}{0pt}{0.25cm}{0.5em}
+
+% ---------------------------------------------------------------- page furniture
+% Parchment: KjUQoJD.jpg is a two-page spread -- pre-cropped odd(left)/even(right)
+% halves at asset-prep time (more robust than in-TeX viewport arithmetic).
+\newcommand{\liturgyparchment}{%
+  \ifodd\value{page}
+    \AtPageLowerLeft{\includegraphics[width=\paperwidth,height=\paperheight]{assets/img/parchment-left.jpg}}%
+  \else
+    \AtPageLowerLeft{\includegraphics[width=\paperwidth,height=\paperheight]{assets/img/parchment-right.jpg}}%
+  \fi
+}
+\AddToShipoutPictureBG{\liturgyparchment}
+
+% footer: page number (outer, dark red OPTIPegasus, nested in the ornament's
+% outer curl) + footnote label (inner, Wolpe Pegasus small caps, unchanged)
+% + a FULL-WIDTH footer accent line (vol1/PHB pattern: width:100%, mirrored
+% via scaleX(-1) on alternating pages so the decorative curl always lands on
+% the OUTER edge -- right on odd/recto, left on even/verso).
+\newcommand{\liturgyfootnotelabel}{Chapter 1 \textbar\ Antillurgy}
+\newcommand{\liturgyfooterart}{%
+  \ifodd\value{page}
+    \includegraphics[width=\paperwidth]{assets/img/vLDUmXL.png}%
+  \else
+    \reflectbox{\includegraphics[width=\paperwidth]{assets/img/vLDUmXL.png}}%
+  \fi
+}
+\newcommand{\liturgyfurniture}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \begin{scope}[opacity=0.6]
+      \node[anchor=south west, inner sep=0pt] at (current page.south west)
+        {\liturgyfooterart};
+    \end{scope}
+    % Page-number x/y offsets are tuned to nest the digit in the footer
+    % ornament's open hook pocket (the wedge between the curl stroke and the
+    % rule it springs from), clear of every stroke. The curl departs the
+    % rule ~1.3cm from the outer edge, which is exactly where the digit used
+    % to collide with it -- pulling the anchor in to ~0.7cm from the edge
+    % lands the digit inside the pocket instead. Symmetric across parities
+    % (the art is reflectbox-mirrored on even pages, so one offset pair
+    % serves both -- verified against rendered odd/even proofs).
+    \ifodd\value{page}
+      \node[anchor=south east, xshift=-0.76cm, yshift=0.66cm] at (current page.south east)
+        {\optipegasus\fontsize{12pt}{12pt}\selectfont\color{DarkRed}\thepage};
+      \node[anchor=south west, xshift=1.9cm, yshift=0.6cm] at (current page.south west)
+        {\wolpe\fontsize{0.37cm}{0.45cm}\selectfont\color{DarkRed}\liturgyfootnotelabel};
+    \else
+      \node[anchor=south west, xshift=0.76cm, yshift=0.66cm] at (current page.south west)
+        {\optipegasus\fontsize{12pt}{12pt}\selectfont\color{DarkRed}\thepage};
+      \node[anchor=south east, xshift=-1.9cm, yshift=0.6cm] at (current page.south east)
+        {\wolpe\fontsize{0.37cm}{0.45cm}\selectfont\color{DarkRed}\liturgyfootnotelabel};
+    \fi
+  \end{tikzpicture}%
+}
+\AddToShipoutPictureFG{\liturgyfurniture}
+\pagestyle{empty}
+
+% ---------------------------------------------------------------- chapter opener
+% Wolpe Pegasus small-caps title; gradient fill approximated as solid ChapterTitle.
+\newcommand{\chapternum}[1]{{\mreaves\fontsize{0.74cm}{0.85cm}\selectfont\color{DarkRed}\MakeUppercase{#1}\par}}
+\newcommand{\chaptertitle}[1]{{\wolpe\fontsize{1.4cm}{1.5cm}\selectfont\color{ChapterTitle}\MakeUppercase{#1}\par}}
+\newcommand{\chapterrule}{\vspace{-2pt}\includegraphics[width=\textwidth]{assets/img/w1Yiycy.png}\vspace{4pt}}
+
+% drop cap: lettrine + Wolpe Pegasus; the CSS target layers a gradient fill
+% behind a symbol image (6tnz3j7.png) -- approximated here as a flat
+% DropGold-colored letter, symbol-behind not composited.
+\newcommand{\liturgydropcap}[2]{%
+  \lettrine[lines=3,loversize=0.1,lraise=0.05,nindent=0pt]%
+    {\wolpe\color{DropGold}#1}{#2}}
+
+% ---------------------------------------------------------------- trait pills
+% Approximation: single gold frame (design target = 2px DOUBLE gold border).
+% Sized ~0.95em of the 9.6pt body (~8pt) with tight padding so the row reads
+% compact, matching the vol1/PHB reference rather than the earlier oversized pass.
+\newcommand{\pill}[1]{\tcbox[colback=DarkRed,colframe=PillGold,boxrule=1.1pt,
+  arc=0pt,left=1.5pt,right=1.5pt,top=1pt,bottom=1pt,on line,
+  fontupper=\scalycaps\fontsize{8pt}{8.5pt}\selectfont\color{white}]{\MakeUppercase{#1}}}
+
+\RequirePackage{xstring}
+\newcommand{\rpillbox}[2]{\tcbox[colback=#1,colframe=PillGold,boxrule=1.1pt,
+  arc=0pt,left=1.5pt,right=1.5pt,top=1pt,bottom=1pt,on line,
+  fontupper=\scalycaps\fontsize{8pt}{8.5pt}\selectfont\color{white}]{\MakeUppercase{#2}}}
+\newcommand{\raritypill}[1]{%
+  \IfStrEq{#1}{uncommon}{\rpillbox{RarityUncommon}{#1}}{%
+  \IfStrEq{#1}{rare}{\rpillbox{RarityRare}{#1}}{%
+  \IfStrEq{#1}{unique}{\rpillbox{RarityUnique}{#1}}{\rpillbox{DarkRed}{#1}}}}}
+% school pill: the 8 school traits (antillurgy, chronomancy, gestalt,
+% kosmoturgy, memetics, mercuromancy, planara, seraphic) render in the same
+% purple used for 'unique' rarity, not the default dark-red pill background.
+% Pill row order (stakeholder rule): rarity pill (if any) -> school pill ->
+% remaining traits alphabetical.
+\newcommand{\schoolpill}[1]{\rpillbox{RarityUnique}{#1}}
+
+% ---------------------------------------------------------------- spell block plumbing
+% preamble title line: Name (+ optional action glyph) ... right-aligned Kind
+% Built as one \hbox (not fill-glue inside a \par'd paragraph) so the line
+% never wraps/re-breaks, then the rule is a SEPARATE hrule dropped just below
+% the text baseline (nointerlineskip + a small clearance) -- previously the
+% negative \vspace{-3pt} after \par pulled the rule up onto the text itself,
+% striking through the title/kind glyphs. Trailing space trimmed to 2pt so
+% the (now-smaller) trait-pill row hugs the rule instead of floating below it.
+\newcommand{\spelltitle}[3]{%
+  \hbox to \linewidth{%
+    \scalycapsbold\fontsize{0.46cm}{0.5cm}\selectfont\color{black}#1%
+    \IfStrEq{#2}{}{}{\ {\actionfont\fontsize{0.46cm}{0.5cm}\selectfont#2}}%
+    \hfil
+    \scalycapsbold\fontsize{0.4cm}{0.45cm}\selectfont\MakeUppercase{#3}}\par
+  \nointerlineskip\vspace{1.5pt}\hrule height 0.4pt\vspace{2pt}%
+}
+% Keep the preamble+pills+first def-rows together as one atomic block so it
+% never splits mid-title across a column break. NOTE: needspace was tried
+% first (per the design brief) but is documented as unreliable inside
+% multicols -- it measures against \pagegoal/\pagetotal (whole-page), not
+% the current column, and produced enormous spurious blank gaps at the
+% bottom of columns. A minipage is sized/measured correctly per-column, so
+% it is used here instead: the header only ever moves whole to the next
+% column, never leaving a large gap behind.
+\newenvironment{blockhead}{\begin{minipage}{\linewidth}}{\end{minipage}\par}
+
+% a definition row: bold label, plain value
+\newcommand{\defrow}[2]{\textbf{#1} #2\\}
+% rule between block sections
+\newcommand{\blockrule}{\par\vspace{2pt}\hrule height 0.8pt\vspace{4pt}}
+\newcommand{\thinrule}{\par\vspace{3pt}\hrule height 0.5pt\vspace{3pt}}
+% heightened postamble entry
+\newcommand{\heightened}[2]{\textbf{Heightened (#1)} #2\par}
+
+% body hr: a low-opacity decorative texture strip
+\newcommand{\bodyhr}{\par\vspace{3pt}{\begin{tikzpicture}\begin{scope}[opacity=0.45]
+  \node[inner sep=0pt]{\includegraphics[width=\linewidth,height=2.5mm]{assets/img/RhYXAkP.png}};
+  \end{scope}\end{tikzpicture}}\vspace{3pt}\par}
+
+% ---------------------------------------------------------------- note box
+\newcommand{\liturgynote}[1]{%
+  \needspace{5\baselineskip}%
+  \begin{tcolorbox}[colback=NoteBg,colframe=DarkRed,boxrule=0.8pt,arc=1mm,
+    left=2mm,right=2mm,top=1.5mm,bottom=1.5mm]
+    {\scaly\fontsize{9pt}{11pt}\selectfont #1}
+  \end{tcolorbox}%
+}
+
+% ---------------------------------------------------------------- tables
+% plain-rule (booktabs-free) striped table helper colors set at call site
+\newcommand{\tblhead}[1]{\scalycapsbold\fontsize{9pt}{11pt}\selectfont\color{DarkRed}#1}
+
+% ---------------------------------------------------------------- inline action glyph
+% for an action-glyph appearing IN BODY TEXT (e.g. "you may Stride as a free
+% action {glyph}"), as opposed to the title-line glyph \spelltitle sets
+% directly. Same Pathfinder2eActions font, just a plain inline call.
+\newcommand{\actglyph}[1]{{\actionfont #1}}
+
+% ---------------------------------------------------------------- front matter + toc
+% Added for the vol2 LaTeX cutover (S2) -- front matter/ToC were never part
+% of the S1-reviewed sample, so these are NEW macros, not a restyle of
+% anything the stakeholder signed off. They deliberately reuse the already-
+% approved display faces (Wolpe Pegasus, Mr Eaves Small Caps) rather than
+% introducing new fonts.
+\newcommand{\covereyebrow}[1]{{\wolpe\fontsize{0.42cm}{0.5cm}\selectfont\color{DarkRed}\MakeUppercase{#1}\par}}
+\newcommand{\covertitle}[1]{{\wolpe\fontsize{2.1cm}{2.3cm}\selectfont\color{ChapterTitle}\MakeUppercase{#1}\par}}
+\newcommand{\coversubtitle}[1]{{\mreaves\fontsize{0.85cm}{1.0cm}\selectfont\color{DarkRed}#1\par}}
+% one contents-page row: chapter number, title, \pageref label (tectonic
+% resolves \pageref automatically via its built-in multi-pass rerun).
+\newcommand{\tocentry}[3]{\noindent\hbox to \linewidth{\mreaves\fontsize{0.5cm}{0.6cm}\selectfont\color{DarkRed}Chapter #1 --- #2\hfill\pageref{#3}}\par\vspace{0.3cm}}
+
+\endinput

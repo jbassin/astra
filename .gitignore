@@ -77,6 +77,10 @@ apps/linguist/script/*
 apps/mouthpiece-backend/episodes/*
 !apps/mouthpiece-backend/episodes/.gitkeep
 
-# Homebrewery book references — keep the md/css sources, not the rendered PDFs
-# (7 MB binaries re-exportable from the Homebrewery editor).
+# Book references — keep the .tex/.md sources, not scratch-rendered PDFs
+# (re-exportable; vol1 was Homebrewery, vol2 is `uv run assay export-book`'s
+# tectonic compile). vol2's OWN compiled PDF is the committed book artifact
+# (S2 LaTeX cutover) — tracked explicitly below; every other PDF under
+# books/ (vol1, any local scratch renders) stays ignored.
 apps/codex/books/**/*.pdf
+!apps/codex/books/liturgy_vol2/liturgy_of_the_iridite_vol2.pdf

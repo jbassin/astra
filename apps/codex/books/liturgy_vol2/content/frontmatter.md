@@ -1,5 +1,3 @@
-{{frontCover}}
-
 ### PER ASPERA, AD ASTRA
 
 # LITURGY OF THE IRIDITE
@@ -13,25 +11,19 @@
 # Liturgy of the Iridite
 ### Volume II — The Eight Schools
 
-:::
-
 **Written & Compiled** :: Josh Bassin
 **Spell Conversion & Review** :: Josh Bassin <!-- TODO: confirm/add reviewer credit -->
 **Cover & Interior Art** :: TODO
 **Cartography of the Astra** :: The chanceries of Belvedere, by their leave
 
-:::
-
-{{descriptive
+:::descriptive
 ##### Imprimatur
 Set to type in Hallia, in the shadow of the Basilica, and distributed with the blessing (if not always the close reading) of the appropriate convox. The workings herein are recorded as they are practiced, not as any institution might prefer them to be practiced. Errors of transcription are the compiler's; errors of judgment are the caster's.
-}}
-
 :::
 
-{{rightAligned
-_Per aspera, ad astra._
-}}
+:::rightAligned
+*Per aspera, ad astra.*
+:::
 
 \page
 
@@ -43,16 +35,14 @@ Magic came to this planet late, and it came all at once. The rest of the Astra h
 
 Each school receives a chapter: first the school as Færrin knows it -- who practices it, who profits from it, who lies awake because of it -- and then its codified spells in full.
 
-{{note
+:::note
 ##### These Spells Are Setting-Native
 Every working in this volume was developed on Færrin, inside the firmament, by Færrish casters. None of them appear in the standard canons of the wider Astra, and a traveler abroad should expect blank stares (or professional interest, or arrest) when producing them. At your table, treat them as uncommon at minimum: access flows through the schools' practitioners, institutions, and archives described in each chapter, or however else your GM sees fit.
-}}
+:::
 
 \column
 
 <!-- ART SLOT [fm-reading]: {{imageWrapper,fullSidebarRight {{borderImage ![](URL) {top:0px,left:-160px,width:650px} }} }} — suggested subject: a cluttered scriptorium desk in Hallia — spell diagrams, a smoldering censer, a half-drunk coffee, a fax machine -->
-
-{{pageNumber,auto}}
 
 \page
 
@@ -70,9 +60,7 @@ A brief word from your compilers, with the liturgical register set aside: the en
 
 **Rituals.** A handful of workings in this book are too large for spell slots -- they are rituals, cast over hours or days, often by more than one participant. Færrish convention is firm on this point: if it takes longer than an hour, it is a ritual, and it will say so.
 
-{{descriptive
+:::descriptive
 ##### On the Summaries
 Each chapter opens its spell list with a table of one-line summaries. These are the compiler's plain-language cribs, not rules text. When a summary and a spell block disagree, the spell block wins, and the compiler apologizes.
-}}
-
-{{pageNumber,auto}}
+:::
