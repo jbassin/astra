@@ -72,9 +72,11 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 > 5. **⚠ Gotcha struck again:** missing-pathspec ABORTED a `git add` (deleted-file pathspec)
 >    → sweep commit initially captured only the pre-staged deletion; recovered by amend
 >    pre-push. ⚠ RTK grep/compaction garbled two greps mid-gate — python was the comparator.
-> 6. **Residue (registered):** homebrew ingest DROPS `system.cost` → costs (incl. Faerock)
->    invisible on codex pages — PRE-EXISTING gap (hellforging never showed cost either),
->    matters for the Foundry module round · monstrous-copy-tentacle heighten gap (base r5 →
+> 6. **Residue:** ~~homebrew ingest drops `system.cost`/`system.ritual` stats~~ **FIXED
+>    same day (`6a2c167`):** loadHomebrewSide synthesizes resurrect-shaped statRows
+>    (Cost/Secondary Casters + Primary Check/Secondary Checks; lone stat = bold-label
+>    paragraph, statRow.cells pins >=2); live-verified on all 3 rituals + 10 costed
+>    spells, SigNoz clean · monstrous-copy-tentacle heighten gap (base r5 →
 >    next tier 8th, her drawn strike boundary — flag at joint review) · "Trigger in header"
 >    ×3 skipped (store schema has no trigger field — schema decision, ask before Foundry
 >    module) · scriptorium teardown pending her confirmation (unit + caddy stanza live).
