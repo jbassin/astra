@@ -1083,7 +1083,13 @@ def _render_cover_page(
                 report.art_real.append("fm-cover")
             else:
                 report.art_placeholder.append("fm-cover")
-    parts: list[str] = [cover_art_tex] if cover_art_tex else []
+    parts: list[str] = []
+    if cover_art_tex:
+        # Art-backed cover: light shadowed text + no page furniture (the
+        # dark-red text/footer line are illegible/noise over full-bleed art).
+        parts.append(cover_art_tex)
+        parts.append("\\global\\liturgycoverarttrue")
+        parts.append("\\global\\liturgysuppressfurnituretrue")
     parts += ["\\vspace*{2.5cm}", "\\begin{center}"]
     for el in elements:
         if isinstance(el, NHeading):
@@ -1159,6 +1165,14 @@ def _assemble_chapter(
         "",
         "\\end{openerbody}",
         art_slot_tex,
+        "",
+        # The opener page is prose + the full-height framed art column ONLY
+        # (vol1's full-page chapter-intro pattern). The spell-list table gets
+        # the NEXT page at full \textwidth — a full-width table sharing the
+        # opener page slices across the art window (struck on seraphic, the
+        # shortest chapter), and narrowing the table to the opener measure
+        # instead wraps every Summary cell taller (+6 pages book-wide).
+        "\\newpage",
         "",
         spell_list_tex,
         "",

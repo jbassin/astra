@@ -123,7 +123,18 @@
     \reflectbox{\includegraphics[width=\paperwidth]{assets/img/vLDUmXL.png}}%
   \fi
 }
+% One-shot furniture suppression: over full-bleed cover art the footer
+% line/label/page-number are visual noise (vol1 covers carry no furniture).
+% book.py sets this on the art-backed cover page; the shipout hook consumes
+% and clears it so every later page renders furniture normally.
+\newif\ifliturgysuppressfurniture
 \newcommand{\liturgyfurniture}{%
+  \ifliturgysuppressfurniture
+    \global\liturgysuppressfurniturefalse
+  \else
+  \liturgyfurnituredraw
+  \fi}
+\newcommand{\liturgyfurnituredraw}{%
   \begin{tikzpicture}[remember picture,overlay]
     \begin{scope}[opacity=0.6]
       \node[anchor=south west, inner sep=0pt] at (current page.south west)
@@ -181,6 +192,14 @@
 % opener \parskip, still well short of \spellflow's dense 0.15cm) before
 % the longest fragment (planara, 4 dense paragraphs + a 6-row glossary
 % note) cleared one page with room to spare.
+%
+% Design-fix round (stakeholder: art read as an undersized floating strip,
+% no gold frame): re-tried WIDER at 0.34\textwidth once the art started
+% actually FILLING its window (see \openerartimage below) instead of
+% floating top-aligned at natural aspect -- planara (still the tightest
+% fragment) overflowed to a SECOND page at 0.34 (chapter 7 grew 53-60 ->
+% 53-61, the whole book 62 -> 63pp), so per the fallback rule this stayed
+% at 0.30\textwidth rather than shipping a book-length regression.
 \newlength{\openerreserve}
 \setlength{\openerreserve}{0.30\textwidth}
 \newenvironment{openerbody}{%
@@ -189,42 +208,131 @@
 }{%
   \end{adjustwidth}%
 }
+
+% ---- opener art window geometry (shared by the placeholder + the real
+% art + the frame) -----------------------------------------------------
+% Vertical bounds are FIXED regardless of \openerreserve -- only the width
+% (below) tracks the reserved column. Same -5.0cm/+2.3cm bounds the
+% placeholder always used, now named so all three consumers agree.
+\newlength{\openerwindowtop}
+\setlength{\openerwindowtop}{5.0cm}
+\newlength{\openerwindowbottom}
+\setlength{\openerwindowbottom}{2.3cm}
+\newlength{\openerwindowheight}
+\setlength{\openerwindowheight}{\dimexpr\paperheight-\openerwindowtop-\openerwindowbottom\relax}
+% width = reserve MINUS the 0.5cm prose gutter -- adjustwidth's boundary
+% sits exactly at \openerreserve, so a full-reserve image would touch the
+% prose column (the original live-render defect, first art drop).
+\newlength{\openerwindowwidth}
+\setlength{\openerwindowwidth}{\dimexpr\openerreserve-0.5cm\relax}
+% Sets up (owNW)/(owNE)/(owSW)/(owSE) page-absolute tikz coordinates for
+% the reserved window's four corners; right edge at the text margin.
+\newcommand{\openersetupwindow}{%
+  \coordinate (owNE) at ($(current page.north east) + (-1.9cm, -\openerwindowtop)$);
+  \coordinate (owSE) at ($(current page.south east) + (-1.9cm, \openerwindowbottom)$);
+  \coordinate (owNW) at ($(owNE) + (-\openerwindowwidth, 0pt)$);
+  \coordinate (owSW) at ($(owSE) + (-\openerwindowwidth, 0pt)$);
+}
+
+% ---- gold frame (vol1 parity: assets/img/frame-gold.png, the ORIGINAL
+% https://i.imgur.com/10FwDJM.png Homebrewery border-image source) -----
+% A true 9-patch: 4 fixed-scale ornamental corners + 4 stretched edge
+% bands, sliced straight out of the 562x562 source via \includegraphics
+% trim+clip (bp==px here -- the PNG carries no dpi chunk, so tectonic's
+% default 72dpi treatment makes 1px==1bp, verified against a live render).
+% border-image-slice:270 on a 562px image -> corner blocks are 270px,
+% leaving a 22px middle strip (562-270-270) that supplies the edge bands'
+% cross-section, stretched along the run between corners.
+%
+% Sizes are tuned against the ACTUAL vol1 PDF render, not the Homebrewery
+% CSS text: the CSS claims border-image-width:24mm, but measuring the
+% live vol1 export (pdftoppm at 400dpi, same letter page size we use)
+% shows the frame band is really ~3mm wide on the page -- the export
+% pipeline never honored the CSS mm value literally. \openerframeband
+% below matches that measured absolute width; \openerframecorner is a
+% touch larger than a pure width-ratio scale-down (vol1's ~8.8cm window
+% carried a ~9.5mm corner) so the chamfer still reads as ornamental at
+% our narrower ~5cm column instead of shrinking to an illegible nub.
+\newlength{\openerframecorner}
+\setlength{\openerframecorner}{7mm}
+\newlength{\openerframeband}
+\setlength{\openerframeband}{3mm}
+% Frame straddles the window boundary (vol1: the frame extends ~3.8mm
+% outside its mask, and the art tucks under the frame's inner lip) --
+% split evenly: half bleeds past the window into the margin/gutter, half
+% overlaps inward and covers the art's outer rim.
+\newlength{\openerframebleed}
+\setlength{\openerframebleed}{1.5mm}
+\newcommand{\openerdrawframe}{%
+  \coordinate (ofNW) at ($(owNW) + (-\openerframebleed, \openerframebleed)$);
+  \coordinate (ofNE) at ($(owNE) + (\openerframebleed, \openerframebleed)$);
+  \coordinate (ofSW) at ($(owSW) + (-\openerframebleed, -\openerframebleed)$);
+  \coordinate (ofSE) at ($(owSE) + (\openerframebleed, -\openerframebleed)$);
+  % corners -- trim=(left,bottom,right,top) in bp against the 562x562
+  % source (slice=270, mid-strip boundary=292 == 562-270)
+  \node[anchor=north west, inner sep=0pt] at (ofNW)
+    {\includegraphics[trim=0bp 292bp 292bp 0bp,clip,
+      width=\openerframecorner,height=\openerframecorner]{assets/img/frame-gold.png}};
+  \node[anchor=north east, inner sep=0pt] at (ofNE)
+    {\includegraphics[trim=292bp 292bp 0bp 0bp,clip,
+      width=\openerframecorner,height=\openerframecorner]{assets/img/frame-gold.png}};
+  \node[anchor=south west, inner sep=0pt] at (ofSW)
+    {\includegraphics[trim=0bp 0bp 292bp 292bp,clip,
+      width=\openerframecorner,height=\openerframecorner]{assets/img/frame-gold.png}};
+  \node[anchor=south east, inner sep=0pt] at (ofSE)
+    {\includegraphics[trim=292bp 0bp 0bp 292bp,clip,
+      width=\openerframecorner,height=\openerframecorner]{assets/img/frame-gold.png}};
+  % edges -- stretched to span between the corners along each run
+  \pgfmathsetlengthmacro{\openeredgeh}{\openerwindowwidth+2\openerframebleed-2\openerframecorner}
+  \pgfmathsetlengthmacro{\openeredgev}{\openerwindowheight+2\openerframebleed-2\openerframecorner}
+  \node[anchor=north, inner sep=0pt] at ($(ofNW)!0.5!(ofNE)$)
+    {\includegraphics[trim=270bp 292bp 270bp 0bp,clip,
+      width=\openeredgeh,height=\openerframeband]{assets/img/frame-gold.png}};
+  \node[anchor=south, inner sep=0pt] at ($(ofSW)!0.5!(ofSE)$)
+    {\includegraphics[trim=270bp 0bp 270bp 292bp,clip,
+      width=\openeredgeh,height=\openerframeband]{assets/img/frame-gold.png}};
+  \node[anchor=west, inner sep=0pt] at ($(ofNW)!0.5!(ofSW)$)
+    {\includegraphics[trim=0bp 270bp 292bp 270bp,clip,
+      width=\openerframeband,height=\openeredgev]{assets/img/frame-gold.png}};
+  \node[anchor=east, inner sep=0pt] at ($(ofNE)!0.5!(ofSE)$)
+    {\includegraphics[trim=292bp 270bp 0bp 270bp,clip,
+      width=\openerframeband,height=\openeredgev]{assets/img/frame-gold.png}};
+}
+
 % Placeholder frame for the reserved column, drawn independently of text
 % flow via a page-absolute tikz overlay (so it can never collide with the
 % adjustwidth'd prose). Purely a review aid -- it marks the reservation as
 % deliberate rather than a rendering bug -- and is meant to be deleted the
-% moment real art lands in ART-SLOTS.md.
+% moment real art lands in ART-SLOTS.md. Previews the SAME window bounds
+% \openerartimage fills, via the shared \openersetupwindow coordinates.
 \newcommand{\openerartslot}[1]{%
   \begin{tikzpicture}[remember picture, overlay]
-    \draw[Gold, dashed, rounded corners=3mm]
-      ($(current page.north east) + (-1.9cm-\openerreserve+0.5cm, -5.0cm)$) rectangle
-      ($(current page.south east) + (-1.9cm, 2.3cm)$);
-    \node[align=center, text width=0.8\openerreserve, font=\itshape\small,
+    \openersetupwindow
+    \draw[Gold, dashed, rounded corners=3mm] (owNW) rectangle (owSE);
+    \node[align=center, text width=0.8\openerwindowwidth, font=\itshape\small,
           color=DarkRed!70]
-      at ($(current page.north east) + (-1.9cm-0.5\openerreserve, -11cm)$)
+      at ($(owNW)!0.5!(owSE)$)
       {Art placeholder\\[3pt]\texttt{\footnotesize#1}\\[6pt]see ART-SLOTS.md};
   \end{tikzpicture}%
 }
 % Real stakeholder art for a chapter opener, once dropped into
 % assets/img/processed/<school>.(png|jpg) (book.py's fail-soft lookup swaps
-% \openerartslot for this the moment the file exists). Anchored at the SAME
-% north-east/-5.0cm corner \openerartslot's dashed box starts from, width
-% pinned to \openerreserve (the exact column the text narrowing in
-% \openerbody already frees up) so the right edge lines up with the text
-% margin and the left edge lines up with the adjustwidth boundary -- no
-% overlap with the (narrowed) prose column is possible by construction.
-% Height is natural (no forced aspect stretch); the column-fit source art
-% (610x~1648) at \openerreserve's width comfortably clears the placeholder
-% box's ~20.6cm reserved height with room to spare. Top-aligned, no caption.
+% \openerartslot for this the moment the file exists). Vol1-style FRAMED
+% WINDOW: the art fills the reserved column's full height (cover-fit --
+% scaled to the window height, then center-cropped horizontally via a
+% tikz \clip, since every source piece is much taller/narrower than the
+% window at our column width) with no distortion and no letterboxing, and
+% a true gold 9-patch frame (\openerdrawframe) is drawn on top, straddling
+% the window edge the same way vol1's border-image does.
 \newcommand{\openerartimage}[1]{%
   \begin{tikzpicture}[remember picture, overlay]
-    \node[anchor=north east, inner sep=0pt]
-      at ($(current page.north east) + (-1.9cm, -5.0cm)$)
-      % width = reserve MINUS the 0.5cm prose gutter the dashed box keeps on
-      % its left edge -- adjustwidth's boundary sits exactly at \openerreserve,
-      % so a full-reserve image touches the prose column (live-render defect,
-      % first art drop).
-      {\includegraphics[width=\dimexpr\openerreserve-0.5cm\relax]{#1}};
+    \openersetupwindow
+    \begin{scope}
+      \clip (owNW) rectangle (owSE);
+      \node[anchor=center, inner sep=0pt] at ($(owNW)!0.5!(owSE)$)
+        {\includegraphics[height=\openerwindowheight]{#1}};
+    \end{scope}
+    \openerdrawframe
   \end{tikzpicture}%
 }
 
@@ -348,9 +456,39 @@
 % anything the stakeholder signed off. They deliberately reuse the already-
 % approved display faces (Wolpe Pegasus, Mr Eaves Small Caps) rather than
 % introducing new fonts.
-\newcommand{\covereyebrow}[1]{{\wolpe\fontsize{0.42cm}{0.5cm}\selectfont\color{DarkRed}\MakeUppercase{#1}\par}}
-\newcommand{\covertitle}[1]{{\wolpe\fontsize{2.1cm}{2.3cm}\selectfont\color{ChapterTitle}\MakeUppercase{#1}\par}}
-\newcommand{\coversubtitle}[1]{{\mreaves\fontsize{0.85cm}{1.0cm}\selectfont\color{DarkRed}#1\par}}
+% Art-mode cover text: over real cover art the dark-red text is illegible
+% (live catch on the first fm-cover drop) -- vol1's cover idiom is light
+% text with a dark poster shadow. book.py sets \liturgycoverarttrue on the
+% cover page ONLY when fm-cover art was actually placed; the three cover
+% macros then render cream with a shadow (two offset tikz nodes -- the
+% contour package isn't a bundle certainty, layered nodes are).
+\newif\ifliturgycoverart
+\definecolor{CoverCream}{HTML}{EEE5CE}
+\newcommand{\livshadowline}[1]{%
+  \begin{tikzpicture}[baseline]
+    \node[align=center, text width=0.92\textwidth, inner sep=0pt,
+          text=black, opacity=0.8] at (0.05cm,-0.05cm) {#1};
+    \node[align=center, text width=0.92\textwidth, inner sep=0pt,
+          text=CoverCream] at (0cm,0cm) {#1};
+  \end{tikzpicture}\par}
+\newcommand{\covereyebrow}[1]{%
+  \ifliturgycoverart
+    {\wolpe\fontsize{0.42cm}{0.5cm}\selectfont\livshadowline{\MakeUppercase{#1}}}%
+  \else
+    {\wolpe\fontsize{0.42cm}{0.5cm}\selectfont\color{DarkRed}\MakeUppercase{#1}\par}%
+  \fi}
+\newcommand{\covertitle}[1]{%
+  \ifliturgycoverart
+    {\wolpe\fontsize{2.1cm}{2.3cm}\selectfont\livshadowline{\MakeUppercase{#1}}}%
+  \else
+    {\wolpe\fontsize{2.1cm}{2.3cm}\selectfont\color{ChapterTitle}\MakeUppercase{#1}\par}%
+  \fi}
+\newcommand{\coversubtitle}[1]{%
+  \ifliturgycoverart
+    {\mreaves\fontsize{0.85cm}{1.0cm}\selectfont\livshadowline{#1}}%
+  \else
+    {\mreaves\fontsize{0.85cm}{1.0cm}\selectfont\color{DarkRed}#1\par}%
+  \fi}
 % Real stakeholder cover art (assets/img/processed/fm-cover.(png|jpg)), once
 % it lands -- book.py wires this in fail-soft, same as the chapter openers.
 % vol1 idiom: full-bleed art BEHIND the title text, not beside it. eso-pic's
