@@ -205,6 +205,28 @@
       {Art placeholder\\[3pt]\texttt{\footnotesize#1}\\[6pt]see ART-SLOTS.md};
   \end{tikzpicture}%
 }
+% Real stakeholder art for a chapter opener, once dropped into
+% assets/img/processed/<school>.(png|jpg) (book.py's fail-soft lookup swaps
+% \openerartslot for this the moment the file exists). Anchored at the SAME
+% north-east/-5.0cm corner \openerartslot's dashed box starts from, width
+% pinned to \openerreserve (the exact column the text narrowing in
+% \openerbody already frees up) so the right edge lines up with the text
+% margin and the left edge lines up with the adjustwidth boundary -- no
+% overlap with the (narrowed) prose column is possible by construction.
+% Height is natural (no forced aspect stretch); the column-fit source art
+% (610x~1648) at \openerreserve's width comfortably clears the placeholder
+% box's ~20.6cm reserved height with room to spare. Top-aligned, no caption.
+\newcommand{\openerartimage}[1]{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=north east, inner sep=0pt]
+      at ($(current page.north east) + (-1.9cm, -5.0cm)$)
+      % width = reserve MINUS the 0.5cm prose gutter the dashed box keeps on
+      % its left edge -- adjustwidth's boundary sits exactly at \openerreserve,
+      % so a full-reserve image touches the prose column (live-render defect,
+      % first art drop).
+      {\includegraphics[width=\dimexpr\openerreserve-0.5cm\relax]{#1}};
+  \end{tikzpicture}%
+}
 
 % drop cap: lettrine + Wolpe Pegasus; the CSS target layers a gradient fill
 % behind a symbol image (6tnz3j7.png) -- approximated here as a flat
@@ -329,6 +351,24 @@
 \newcommand{\covereyebrow}[1]{{\wolpe\fontsize{0.42cm}{0.5cm}\selectfont\color{DarkRed}\MakeUppercase{#1}\par}}
 \newcommand{\covertitle}[1]{{\wolpe\fontsize{2.1cm}{2.3cm}\selectfont\color{ChapterTitle}\MakeUppercase{#1}\par}}
 \newcommand{\coversubtitle}[1]{{\mreaves\fontsize{0.85cm}{1.0cm}\selectfont\color{DarkRed}#1\par}}
+% Real stakeholder cover art (assets/img/processed/fm-cover.(png|jpg)), once
+% it lands -- book.py wires this in fail-soft, same as the chapter openers.
+% vol1 idiom: full-bleed art BEHIND the title text, not beside it. eso-pic's
+% STARRED \AddToShipoutPictureBG* queues a one-shot background for the very
+% next \shipout only (unlike the persistent \liturgyparchment hook above,
+% which re-fires every page) -- called from the cover page's own content, it
+% layers over that page's parchment (starred hooks run after the persistent
+% ones already queued) without touching any other page's background.
+\newcommand{\covercoverart}[1]{%
+  \AddToShipoutPictureBG*{\AtPageLowerLeft{\includegraphics[width=\paperwidth,height=\paperheight]{#1}}}%
+}
+% Real stakeholder "Reading This Book" sidebar art
+% (assets/img/processed/fm-reading.(png|jpg)). The right column it fills is
+% ALREADY reserved by the page's own \columnbreak (frontmatter.md's
+% \column directive inside a 2-column \multicols) -- unlike the chapter
+% openers there is no tikz-overlay reservation to match, so this is a plain
+% in-flow image sized to the column measure.
+\newcommand{\readingartimage}[1]{\includegraphics[width=\linewidth]{#1}\par}
 % one contents-page row: chapter number, title, \pageref label (tectonic
 % resolves \pageref automatically via its built-in multi-pass rerun).
 \newcommand{\tocentry}[3]{\noindent\hbox to \linewidth{\mreaves\fontsize{0.5cm}{0.6cm}\selectfont\color{DarkRed}Chapter #1 --- #2\hfill\pageref{#3}}\par\vspace{0.3cm}}

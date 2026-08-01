@@ -395,3 +395,99 @@ def test_fragments_consumed_when_present(tmp_path: Path) -> None:
     missing = "\n".join(result.report.missing_fragments)
     assert "frontmatter.md" not in missing
     assert "chronomancy.md" in missing
+
+
+# ---------------------------------------------------------------------------
+# Stakeholder art fail-soft wiring — assets/img/processed/<slot>.(png|jpg).
+# ---------------------------------------------------------------------------
+
+
+def test_chapter_opener_art_fail_soft(tmp_path: Path) -> None:
+    content = tmp_path / "content"
+    (content / "chapters").mkdir(parents=True)
+    (content / "chapters" / "antillurgy.md").write_text(
+        "Opener prose.\n\n<!-- ART SLOT [ch1-antillurgy]: a duel -->\n", encoding="utf-8"
+    )
+    art_dir = tmp_path / "art"
+    art_dir.mkdir()
+
+    # No processed/antillurgy.(png|jpg) yet -> the dashed placeholder, keyed
+    # by the fragment's OWN art-slot id (not the school name).
+    no_art = book.build_book(content_dir=content, art_dir=art_dir)
+    assert "\\openerartslot{ch1-antillurgy}" in no_art.tex
+    assert "\\openerartimage{" not in no_art.tex
+    assert no_art.report.art_placeholder == ["antillurgy"]
+    assert no_art.report.art_real == []
+
+    # Real art present -> \openerartimage, keyed by SCHOOL (the lookup is
+    # school-keyed so it applies even to chapters with no opener fragment at
+    # all — see test_chapter_opener_art_without_fragment below).
+    (art_dir / "antillurgy.png").write_bytes(b"fake-png")
+    with_art = book.build_book(content_dir=content, art_dir=art_dir)
+    assert "\\openerartimage{assets/img/processed/antillurgy.png}" in with_art.tex
+    assert "\\openerartslot{" not in with_art.tex
+    assert with_art.report.art_real == ["antillurgy"]
+    assert with_art.report.art_placeholder == []
+
+
+def test_chapter_opener_art_without_fragment(tmp_path: Path) -> None:
+    """The art lookup is school-keyed, not fragment-keyed — a chapter with
+    NO opener fragment (the trait-blurb fallback path, no ART-SLOT comment
+    at all) still gets real art the moment it exists."""
+    content = tmp_path / "content"
+    art_dir = tmp_path / "art"
+    art_dir.mkdir()
+    (art_dir / "chronomancy.jpg").write_bytes(b"fake-jpg")
+    result = book.build_book(content_dir=content, art_dir=art_dir)
+    assert "\\openerartimage{assets/img/processed/chronomancy.jpg}" in result.tex
+    assert result.report.art_real == ["chronomancy"]
+    # no ART-SLOT comment anywhere for the other 7 -> no placeholder either.
+    assert result.report.art_placeholder == []
+
+
+def test_chapter_opener_art_prefers_png_over_jpg(tmp_path: Path) -> None:
+    content = tmp_path / "content"
+    art_dir = tmp_path / "art"
+    art_dir.mkdir()
+    (art_dir / "antillurgy.png").write_bytes(b"p")
+    (art_dir / "antillurgy.jpg").write_bytes(b"j")
+    result = book.build_book(content_dir=content, art_dir=art_dir)
+    assert "assets/img/processed/antillurgy.png" in result.tex
+    assert "antillurgy.jpg" not in result.tex
+
+
+def test_frontmatter_art_fail_soft(tmp_path: Path) -> None:
+    content = tmp_path / "content"
+    content.mkdir(parents=True)
+    frontmatter = (
+        "# TITLE\n\n"
+        "<!-- ART SLOT [fm-cover]: a lone caster -->\n\n"
+        "\\page\n\n"
+        "# Reading This Book\n\n"
+        "Some prose.\n\n"
+        "\\column\n\n"
+        "<!-- ART SLOT [fm-reading]: a scriptorium desk -->\n\n"
+        "\\page\n\n"
+        "## How to Read a Spell Block\n\nMore prose.\n"
+    )
+    (content / "frontmatter.md").write_text(frontmatter, encoding="utf-8")
+    art_dir = tmp_path / "art"
+    art_dir.mkdir()
+
+    # No fm-* art yet -> both slots render exactly as today (background-free
+    # cover, comment-only empty reading-column) — nothing new appears.
+    no_art = book.build_book(content_dir=content, art_dir=art_dir)
+    assert "\\covercoverart{" not in no_art.tex
+    assert "\\readingartimage{" not in no_art.tex
+    assert no_art.report.art_placeholder == ["fm-cover", "fm-reading"]
+    assert no_art.report.art_real == []
+
+    # Real art present -> cover gets a full-bleed background, reading gets
+    # its reserved column filled.
+    (art_dir / "fm-cover.png").write_bytes(b"c")
+    (art_dir / "fm-reading.jpg").write_bytes(b"r")
+    with_art = book.build_book(content_dir=content, art_dir=art_dir)
+    assert "\\covercoverart{assets/img/processed/fm-cover.png}" in with_art.tex
+    assert "\\readingartimage{assets/img/processed/fm-reading.jpg}" in with_art.tex
+    assert with_art.report.art_real == ["fm-cover", "fm-reading"]
+    assert with_art.report.art_placeholder == []

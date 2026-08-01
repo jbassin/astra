@@ -94,6 +94,13 @@ SPAN_GLYPHS: dict[str, str] = {
 
 _UUID_RE = re.compile(r"@UUID\[([^\]]+)\](?:\{([^}]*)\})?")
 
+#: Stakeholder art lands in ``<out>/assets/img/processed/<slot>.(png|jpg)``,
+#: keyed by slot id (a school name for the 8 chapter openers, else
+#: "fm-cover"/"fm-reading" — see ``content/ART-SLOTS.md``). png checked
+#: before jpg (both existing for one slot would be unexpected, but the
+#: order must still be deterministic).
+_ART_EXTS: tuple[str, ...] = ("png", "jpg")
+
 
 class BookBuildError(Exception):
     """A hard structural failure (e.g. a spell landing in zero or several
@@ -760,9 +767,14 @@ def _emit_spell_list_latex(
 # documented approximation, no distinct visual language was reviewed for
 # "descriptive" boxes); ``:::rightAligned`` fenced blocks; bare ``\page`` /
 # ``\column`` directive lines; ``<!-- ART SLOT [id]: ... -->`` comments
-# (preserved as LaTeX comments at their original position — no art is final
-# yet, so no space is reserved; ART-SLOTS.md remains the placement ledger);
-# and ``**Label** :: value`` lines (a definition-list row, reused inside
+# (preserved as a LaTeX comment at their original position, always — the id
+# is ALSO looked up fail-soft against ``<out>/assets/img/processed/<id or
+# school>.(png|jpg)``: real stakeholder art gets placed into the reserved
+# art column/background/sidebar the moment it lands there, no fragment edit
+# required; absent art, the reservation stays exactly as it renders today
+# — a dashed placeholder for chapter openers, an empty background/column
+# for fm-cover/fm-reading. ART-SLOTS.md remains the placement ledger); and
+# ``**Label** :: value`` lines (a definition-list row, reused inside
 # glossary-style note boxes and the credits page).
 
 
@@ -986,11 +998,19 @@ def _join_neutral(
     warnings: list[str],
     first_paragraph_transform: Any = None,
     seed: list[str] | None = None,
+    art_slot_override: Any = None,  # Callable[[NArtSlot], str | None]
 ) -> str:
     """Join rendered elements with blank-line paragraph breaks — EXCEPT
     between consecutive ``NDefRow``s, which use a single newline (each
     ``\\defrow`` call already ends in its own ``\\\\`` line break; a blank
-    line there would open a stray new LaTeX paragraph mid-list)."""
+    line there would open a stray new LaTeX paragraph mid-list).
+
+    ``art_slot_override``, when given, is consulted for every ``NArtSlot``
+    element FIRST — returning ``None`` falls through to the default "%"
+    comment rendering (``_render_neutral_element``), letting a caller (the
+    frontmatter body, for the "Reading This Book" sidebar) swap in real
+    stakeholder art for ONE specific slot id without touching every other
+    ART-SLOT comment (chapter-body ones, unrelated frontmatter ones)."""
     out: list[str] = list(seed) if seed else []
     prev_is_row = bool(seed)
     used_transform = False
@@ -1002,6 +1022,9 @@ def _join_neutral(
         ):
             tex = first_paragraph_transform(el, warnings)
             used_transform = True
+        elif art_slot_override is not None and isinstance(el, NArtSlot):
+            override = art_slot_override(el)
+            tex = override if override is not None else _render_neutral_element(el, warnings)
         else:
             tex = _render_neutral_element(el, warnings)
         is_row = isinstance(el, NDefRow)
@@ -1042,8 +1065,26 @@ _PLACEHOLDER_FRONTMATTER = """\
 """
 
 
-def _render_cover_page(elements: list[NElement], warnings: list[str]) -> str:
-    parts = ["\\vspace*{2.5cm}", "\\begin{center}"]
+def _render_cover_page(
+    elements: list[NElement], warnings: list[str], art_dir: Path, report: BookReport
+) -> str:
+    # Fail-soft cover art: real stakeholder art at fm-cover.(png|jpg) renders
+    # full-bleed BEHIND the title text (vol1 idiom — \covercoverart is a
+    # one-shot eso-pic background, layered under everything else on this
+    # page); absent that, the cover renders exactly as before (no
+    # background, just the centered title stack) — the ART-SLOT comment
+    # stays a "%"-comment placement note either way.
+    cover_art_tex = ""
+    for el in elements:
+        if isinstance(el, NArtSlot) and _art_slot_id(el.comment) == "fm-cover":
+            art_path = _find_art(art_dir, "fm-cover")
+            if art_path is not None:
+                cover_art_tex = f"\\covercoverart{{{_art_include_path(art_path)}}}\n"
+                report.art_real.append("fm-cover")
+            else:
+                report.art_placeholder.append("fm-cover")
+    parts: list[str] = [cover_art_tex] if cover_art_tex else []
+    parts += ["\\vspace*{2.5cm}", "\\begin{center}"]
     for el in elements:
         if isinstance(el, NHeading):
             text = _render_inline(el.text, warnings)
@@ -1060,11 +1101,29 @@ def _render_cover_page(elements: list[NElement], warnings: list[str]) -> str:
     return "\n".join(parts)
 
 
-def _render_frontmatter_body(pages: list[list[NElement]], warnings: list[str]) -> str:
-    rendered = [_render_cover_page(pages[0], warnings)]
+def _render_frontmatter_body(
+    pages: list[list[NElement]], warnings: list[str], art_dir: Path, report: BookReport
+) -> str:
+    def reading_art_override(el: NArtSlot) -> str | None:
+        # Fail-soft "Reading This Book" sidebar art: the right column is
+        # ALREADY reserved (frontmatter.md's own \column break into a
+        # 2-column multicols) — real art at fm-reading.(png|jpg) just fills
+        # that existing blank column; absent that, the page renders exactly
+        # as before (a "%"-comment placement note in an otherwise-empty
+        # second column), per ``_render_neutral_element``'s default.
+        if _art_slot_id(el.comment) != "fm-reading":
+            return None
+        art_path = _find_art(art_dir, "fm-reading")
+        if art_path is None:
+            report.art_placeholder.append("fm-reading")
+            return None
+        report.art_real.append("fm-reading")
+        return f"\\readingartimage{{{_art_include_path(art_path)}}}"
+
+    rendered = [_render_cover_page(pages[0], warnings, art_dir, report)]
     for page in pages[1:]:
         has_column_break = any(isinstance(e, NColumnBreak) for e in page)
-        body = _join_neutral(page, warnings)
+        body = _join_neutral(page, warnings, art_slot_override=reading_art_override)
         if has_column_break:
             body = "\\begin{multicols}{2}\n" + body + "\n\\end{multicols}"
         rendered.append(body)
@@ -1084,10 +1143,9 @@ def _assemble_chapter(
     body_tex: str,
     spell_list_tex: str,
     block_tex_parts: list[str],
-    art_slot_id: str | None = None,
+    art_slot_tex: str = "",
 ) -> str:
     title = _title_case(school)
-    art_slot_tex = f"\\openerartslot{{{art_slot_id}}}" if art_slot_id else ""
     parts = [
         f"\\renewcommand{{\\liturgyfootnotelabel}}{{Chapter {chapter_no} \\textbar\\ {title}}}",
         f"\\label{{chapter:{school}}}",
@@ -1166,12 +1224,42 @@ def _read_fragment(path: Path, report: BookReport) -> str | None:
     return None
 
 
+_ART_SLOT_ID_RE = re.compile(r"ART SLOT \[([\w-]+)\]")
+
+
+def _art_slot_id(comment: str) -> str | None:
+    """Extract the slot id out of a raw ``ART SLOT [id]: ...`` comment body
+    (``NArtSlot.comment`` never includes the ``<!-- -->`` wrapper)."""
+    m = _ART_SLOT_ID_RE.search(comment)
+    return m.group(1) if m else None
+
+
+def _find_art(art_dir: Path, slot: str) -> Path | None:
+    """Fail-soft stakeholder-art lookup: ``<art_dir>/<slot>.png`` else
+    ``<art_dir>/<slot>.jpg`` else ``None`` (dir need not even exist)."""
+    for ext in _ART_EXTS:
+        candidate = art_dir / f"{slot}.{ext}"
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def _art_include_path(path: Path) -> str:
+    """The relative-to-``<out>`` include path tectonic resolves at compile
+    time — always the canonical ``assets/img/processed/<file>`` location
+    regardless of what ``art_dir`` a caller (e.g. a test) pointed the
+    existence check at."""
+    return f"assets/img/processed/{path.name}"
+
+
 @dataclass
 class BookReport:
     spells: int = 0
     chapters: list[tuple[str, int]] = field(default_factory=list)  # (school, n)
     missing_fragments: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    art_real: list[str] = field(default_factory=list)  # slot ids that got real stakeholder art
+    art_placeholder: list[str] = field(default_factory=list)  # slot ids still on the placeholder
 
 
 @dataclass
@@ -1214,11 +1302,19 @@ def build_book(
     store_dir: Path = STORE_DIR,
     traits_dir: Path = TRAITS_DIR,
     content_dir: Path | None = None,
+    art_dir: Path | None = None,
 ) -> BookResult:
     """Assemble the whole book. ``content_dir`` defaults to
     ``DEFAULT_OUT_DIR/content`` (Track B's directory — consumed read-only,
-    fail-soft when fragments are missing)."""
+    fail-soft when fragments are missing). ``art_dir`` defaults to
+    ``<content_dir's parent>/assets/img/processed`` (the production layout
+    is ``<out>/content`` + ``<out>/assets/img/processed``) — the stakeholder
+    art drop point (``<slot>.png``/``<slot>.jpg``), consulted fail-soft: a
+    missing dir or file just falls back to the existing placeholder/no-op,
+    same as a missing content fragment."""
     content_dir = content_dir if content_dir is not None else DEFAULT_OUT_DIR / "content"
+    if art_dir is None:
+        art_dir = content_dir.parent / "assets" / "img" / "processed"
     report = BookReport()
 
     docs = _load_store(store_dir)
@@ -1246,12 +1342,27 @@ def build_book(
             body_tex = _render_chapter_body(elements, report.warnings)
             for el in elements:
                 if isinstance(el, NArtSlot):
-                    m_id = re.search(r"ART SLOT \[([\w-]+)\]", el.comment)
+                    m_id = _art_slot_id(el.comment)
                     if m_id:
-                        art_slot_id = m_id.group(1)
+                        art_slot_id = m_id
         else:
             blurb_blocks = blurbs.get(school)
             body_tex = _render_body_blocks(blurb_blocks, report.warnings) if blurb_blocks else ""
+
+        # Fail-soft chapter-opener art: real stakeholder art (keyed by
+        # SCHOOL, not the fragment's own ART-SLOT id — the lookup applies
+        # even when a chapter has no opener fragment at all, i.e. the
+        # trait-blurb fallback path) fills the reserved right column;
+        # otherwise the dashed placeholder stands in, same as before.
+        art_path = _find_art(art_dir, school)
+        if art_path is not None:
+            art_tex = f"\\openerartimage{{{_art_include_path(art_path)}}}"
+            report.art_real.append(school)
+        elif art_slot_id:
+            art_tex = f"\\openerartslot{{{art_slot_id}}}"
+            report.art_placeholder.append(school)
+        else:
+            art_tex = ""
 
         spell_list_tex = _emit_spell_list_latex(school, records, summaries, report.warnings)
 
@@ -1262,17 +1373,17 @@ def build_book(
 
         chapters_tex.append(
             _assemble_chapter(
-                chapter_no, school, body_tex, spell_list_tex, block_tex_parts, art_slot_id
+                chapter_no, school, body_tex, spell_list_tex, block_tex_parts, art_tex
             )
         )
 
     frontmatter_fragment = _read_fragment(content_dir / "frontmatter.md", report)
     if frontmatter_fragment is not None:
         pages = _split_pages(_parse_neutral(frontmatter_fragment))
-        frontmatter_tex = _render_frontmatter_body(pages, report.warnings)
+        frontmatter_tex = _render_frontmatter_body(pages, report.warnings, art_dir, report)
     else:
         pages = _split_pages(_parse_neutral(_PLACEHOLDER_FRONTMATTER))
-        frontmatter_tex = _render_frontmatter_body(pages, report.warnings)
+        frontmatter_tex = _render_frontmatter_body(pages, report.warnings, art_dir, report)
 
     toc_tex = _render_toc()
 
@@ -1288,6 +1399,10 @@ def format_report(report: BookReport) -> str:
     lines = [f"assay export-book: {report.spells} spells, {len(report.chapters)} chapters"]
     for school, n in report.chapters:
         lines.append(f"  chapter {_title_case(school)}: {n} spells")
+    for slot in report.art_real:
+        lines.append(f"  art slot {slot}: real art placed")
+    for slot in report.art_placeholder:
+        lines.append(f"  art slot {slot}: placeholder (no processed/{slot}.png|jpg yet)")
     for frag in report.missing_fragments:
         lines.append(f"  missing content fragment (fail-soft): {frag}")
     for w in report.warnings:
