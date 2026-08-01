@@ -36,41 +36,41 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `3d35727`, 2026-07-31 late — **the Vol.2 book is now a LaTeX/tectonic PDF; the Homebrewery pipeline is RETIRED** — stakeholder disliked the Homebrewery output and redirected to LaTeX; built scope→S1 visual gate→S2 emitter→S3 audit→S4 art wiring in one session, all pushed; ▶ NEXT = stakeholder finishes the 10 art drops + book content review, then Foundry compendium module → joint review)
+## Current state — UPDATE THIS SECTION (as of `5e69859`, 2026-08-01 — **the Vol.2 LaTeX book is FULLY ILLUSTRATED + polished** — Homebrewery retired, all 9 art slots carry real stakeholder art (uncropped, gold-framed), front matter trimmed to cover+contents, table defects root-caused incl. a wild \pageref/\fontsize strutbox corruption; ▶ NEXT = stakeholder content review (incl. the staff prose trims), then Foundry compendium module → joint review)
 
-> **✅ Liturgy Vol.2 LaTeX cutover, 2026-07-31 late (`28d084a` S2 emitter · `4697ad0`
-> S3 audit fixes · `3d35727` S4 art wiring + Homebrewery retirement, all pushed):**
-> 1. **Product:** `uv run assay export-book` now emits `liturgy_of_the_iridite_vol2.tex`
->    and compiles the committed 65-page PDF via **tectonic** (XeTeX, ~20 s, byte-
->    deterministic .tex, `--no-compile` flag; tests stay tectonic-free). Style =
->    committed `liturgy.sty` (PHB-2024 look, stakeholder-gated on an S1 sample:
->    rule-below-title, compact pills, school pill PURPLE #800080 first-after-rarity,
->    tight intra-block parskip, full-width parity-flipped footer w/ page number in
->    the hook at xshift ±0.76cm/yshift 0.66cm). Fonts/art vendored under
->    `books/liturgy_vol2/assets/` (Solbera remakes + commercial faces extracted from
->    the PHB2024 css — personal-use licensing flagged).
-> 2. **Emitter:** structured SpellRecord seam in book.py (escaping/glyphs/blocks all
->    emission-time); the whole pixel-calibration apparatus DELETED; authored fragments
->    converted to a neutral dialect (`:::note` fences, `\page`, ART-SLOT comments),
->    prose byte-preserved; real ToC via \pageref. Old Homebrewery md/css/calibration/
->    tools deleted at `3d35727`.
-> 3. **⭐ The LaTeX traps (detail in [[liturgy-vol2-latex-book]]):** `\needspace` is
->    BROKEN inside multicols (struck ×2) → minipage keep-together · multicols
->    balancing silently overrides `\columnbreak` → opener art column = adjustwidth
->    single-column (reserve 0.30\textwidth, planara-constrained) · unbreakable
->    tabularx SILENTLY DROPS rows past the page edge (Eye Stalks rays 7–8 vanished)
->    → per-row `\tblrow` boxes w/ explicit striping · opener art width = reserve −
->    0.5cm gutter (full-reserve touches prose).
-> 4. **Art pipeline (stakeholder in progress):** drops land in `assets/img/processed/
->    <school>.{png,jpg}` (610×1650; cover 1275×1650) → next export places them
->    fail-soft (placeholder otherwise; fm-cover/fm-reading pre-wired). 3 of 8
->    chapters have art (antillurgy/chronomancy/mercuromancy); `preprocessed/`
->    raw generations gitignored.
-> - **▶ NEXT: (1) stakeholder finishes art (7 slots) + book content review** (chapter-
->   intro liberties, 23 trimmed summaries, credits TODOs carry over from the
->   Homebrewery round); **(2) Foundry compendium module** (trigger-field +
->   cost-surfacing questions at its scoping); **(3) joint review** (revisions.md @
->   173). codex gate H unchanged; heartwood ⏸.
+> **✅ Liturgy Vol.2 LaTeX book, 2026-07-31→08-01 (`28d084a` S2 emitter · `4697ad0`
+> S3 audit · `3d35727` S4 art wiring + Homebrewery retirement · `d0b81ec` front-matter
+> trim · `2d95b8e` framed art + cover treatment · `5e69859` full-art/no-crop + table
+> fixes, all pushed):**
+> 1. **Product:** `uv run assay export-book` emits the .tex + compiles the committed
+>    **63-page** PDF via tectonic (XeTeX ~20 s, byte-deterministic, `--no-compile`
+>    flag, tests tectonic-free). Front matter = cover + Contents ONLY (credits/
+>    Reading-This-Book/How-to-Read pages deleted on stakeholder call, `d0b81ec`;
+>    fm-reading art slot retired with its page). Chapter layout: opener page (prose
+>    at ~54% measure + full-height framed art) → spell-list table on its OWN page →
+>    two-column spells.
+> 2. **Art: ALL 9 slots live** (8 chapters + fm-cover). Openers show art UNCROPPED —
+>    `\openerreserve` is DERIVED (art ratio 0.370 × window height + 0.5cm gutter ≈
+>    0.457\textwidth); art clipped to a 1.2mm-chamfer octagon under a true 9-patch
+>    gold frame (vol1's actual border asset; frame band built to the ~3mm MEASURED
+>    vol1 render, not the CSS's claimed 24mm). Art-backed cover = cream shadowed
+>    title + one-shot furniture suppression. **6 opener fragments were staff
+>    prose-trimmed** (stakeholder-authorized, ~400-450 words each) to fit the
+>    narrower measure — ⚠ pending stakeholder review.
+> 3. **⭐ The LaTeX traps (detail in [[liturgy-vol2-latex-book]]):** `\needspace`
+>    broken in multicols · multicols balancing overrides `\columnbreak` → adjustwidth
+>    openers · unbreakable tabularx SILENTLY DROPS overflow rows → per-row `\tblrow`
+>    boxes · ⭐ NEW: `\pageref` expanding inside a fresh `\fontsize\selectfont`
+>    corrupts `\strutbox` HEIGHT for the rest of the compile (+19pt phantom rows in
+>    every spell-list table; bisection-proven, hyperref/colortbl innocent; fix =
+>    resolve \pageref at ambient size, \scalebox the finished box back up) · engineer
+>    "visually verified" claims failed 3 rounds running — orchestrator render-pass
+>    with pdftotext-bbox MEASUREMENT is the gate that holds.
+> - **▶ NEXT: (1) stakeholder book content review** — the 6 trimmed openers + the
+>   carried items (chapter-intro liberties, 23 trimmed summaries; credits page now
+>   deleted); **(2) Foundry compendium module** (trigger-field + cost-surfacing
+>   questions at its scoping); **(3) joint review** (revisions.md @ 173). codex
+>   gate H unchanged; heartwood ⏸.
 
 ---
 

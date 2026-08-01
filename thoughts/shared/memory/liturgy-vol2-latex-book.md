@@ -38,30 +38,49 @@ before distributing.
 2. **multicols balancing silently overrides `\columnbreak`** once content
    exceeds one column → the chapter-opener art column could not be reserved
    with multicols at all. Fix = **adjustwidth single-column** narrowed by
-   `\openerreserve` (0.30\textwidth — tuned down from vol1's 0.42 ratio;
-   planara, the longest opener, is the binding constraint).
+   `\openerreserve`.
 3. **An unbreakable tabularx taller than a column SILENTLY DROPS rows** past
    the page edge — Eye Stalks' rays 7–8 never rendered in the pre-fix PDF (not
    just overflow: content loss). Fix = per-row `\tblrow` boxes (one tabularx
    per row, header+first-row atomic, explicit per-row \rowcolor striping —
-   `\rowcolors` needs `\usepackage[table]{xcolor}` loaded once early).
-4. **Opener art width = \openerreserve − 0.5cm** — the dashed placeholder kept
-   a 0.5cm prose gutter inside the reservation; a full-reserve image touches
-   the prose column (struck on the first real art drop).
+   `\rowcolors` needs `\usepackage[table]{xcolor}` loaded once early). Label
+   columns size to longest CELL capped at 7em; the prose column takes the rest.
+4. **⭐ `\pageref` expanding while a fresh `\fontsize{}{}\selectfont` is active
+   corrupts `\strutbox` HEIGHT for the REST OF THE COMPILE** — surfaced as
+   quantized +19pt phantom-tall rows scattered through every spell-list table
+   (array's \@arstrutbox height tripled on p{}/X columns). Bisection-proven
+   (delete ToC → vanishes; one \tocentry-shaped call → returns); hyperref and
+   colortbl both innocent (an earlier `\rowcolors`-counter "fix" changed
+   nothing — measure, don't trust). No \edef workaround survives. Fix =
+   resolve `\pageref` at ambient `\normalsize` inside its own group, then
+   `\scalebox` the FINISHED box back up (box scaling never touches font
+   machinery).
 
-**Art-drop workflow (stakeholder, in progress):** finished art →
-`assets/img/processed/<school>.{png,jpg}` (**610×1650**; cover `fm-cover` at
-1275×1650, `fm-reading` sidebar same as chapters) → next `export-book` places
-it fail-soft (dashed placeholder otherwise; BookReport lists real vs
-placeholder). 3/8 chapters done (antillurgy/chronomancy/mercuromancy).
-`preprocessed/` (raw generations) + `books/**/*.log` gitignored; `processed/`
-committed. Fragments were converted to a neutral dialect (`:::note` fences,
-bare `\page`, ART-SLOT comments → % comments) with prose byte-preserved.
+**Layout decisions (stakeholder-locked):** chapter = opener page (prose at the
+narrowed measure + full-height framed art) → **spell-list table on its OWN
+full-width page** (sharing the opener page slices across the art; narrowing
+the table instead wrapped cells taller, +6 pages book-wide) → two-column
+spells. Front matter = **cover + Contents only** (credits/Reading-This-Book/
+How-to-Read deleted on stakeholder call; the fm-reading slot retired with its
+page). Art-backed cover = cream shadowed title (`\livshadowline`, two offset
+tikz nodes — contour pkg not a bundle certainty) + one-shot furniture
+suppression (`\ifliturgysuppressfurniture`, consumed at shipout).
 
-**Audit method:** pdftoppm → READ the PNGs; engineer "visually verified" claims
-missed both the zero-gutter art and the footer-band overflow — **orchestrator
-spot-checks of the actual renders are load-bearing**. A PIL bottom-band ink
-detector (validated against the known-bad page) sweeps all 65 pages for
-footer intrusion. Review-pending content residue carries over from the
-Homebrewery round: chapter-intro creative liberties, 23 trimmed summaries,
-credits TODOs ([[assay-0030-gotchas]] for the store itself).
+**Art (ALL 9 slots real, `5e69859`):** drops land in
+`assets/img/processed/<school>.{png,jpg}` + `fm-cover` → export places them
+fail-soft. **NO CROP is the stakeholder rule** — `\openerreserve` is DERIVED:
+art ratio 0.370 × window height + 0.5cm gutter ≈ 0.457\textwidth; prose
+measure ~9.65cm (needed `\tolerance=2000`+`\emergencystretch` and **staff
+prose trims of 6 opener fragments** to ~400-450 words each — stakeholder
+authorized the cuts, review pending). Art clips to a **1.2mm-chamfer octagon**
+tucked under a true 9-patch gold frame built from vol1's actual border asset
+(`frame-gold.png`; frame band sized to the ~3mm MEASURED vol1 render — the
+CSS's `border-image-width: 24mm` was never honored by Homebrewery).
+`preprocessed/` + `books/**/*.log` gitignored; `processed/` committed.
+
+**Audit method (the meta-lesson):** engineer "visually verified" claims failed
+THREE consecutive rounds (zero-gutter art, footer overflow, the +19pt rows) —
+**the orchestrator's own render pass + pdftotext-bbox MEASUREMENT is the gate
+that holds**; a PIL bottom-band ink detector sweeps for footer intrusion.
+Review-pending content residue: the 6 trimmed openers, chapter-intro creative
+liberties, 23 trimmed summaries ([[assay-0030-gotchas]] for the store).
