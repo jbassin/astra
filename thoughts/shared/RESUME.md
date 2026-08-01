@@ -36,7 +36,47 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `79affe5`, 2026-07-31 late — **"Liturgy of the Iridite Vol.2" Homebrewery book BUILT + LIVE-RENDER-VERIFIED** — the 173-spell store is now a paste-ready 64-page spell compendium; ▶ NEXT = stakeholder reviews the book content + drops art in, then Foundry compendium module → joint review)
+## Current state — UPDATE THIS SECTION (as of `3d35727`, 2026-07-31 late — **the Vol.2 book is now a LaTeX/tectonic PDF; the Homebrewery pipeline is RETIRED** — stakeholder disliked the Homebrewery output and redirected to LaTeX; built scope→S1 visual gate→S2 emitter→S3 audit→S4 art wiring in one session, all pushed; ▶ NEXT = stakeholder finishes the 10 art drops + book content review, then Foundry compendium module → joint review)
+
+> **✅ Liturgy Vol.2 LaTeX cutover, 2026-07-31 late (`28d084a` S2 emitter · `4697ad0`
+> S3 audit fixes · `3d35727` S4 art wiring + Homebrewery retirement, all pushed):**
+> 1. **Product:** `uv run assay export-book` now emits `liturgy_of_the_iridite_vol2.tex`
+>    and compiles the committed 65-page PDF via **tectonic** (XeTeX, ~20 s, byte-
+>    deterministic .tex, `--no-compile` flag; tests stay tectonic-free). Style =
+>    committed `liturgy.sty` (PHB-2024 look, stakeholder-gated on an S1 sample:
+>    rule-below-title, compact pills, school pill PURPLE #800080 first-after-rarity,
+>    tight intra-block parskip, full-width parity-flipped footer w/ page number in
+>    the hook at xshift ±0.76cm/yshift 0.66cm). Fonts/art vendored under
+>    `books/liturgy_vol2/assets/` (Solbera remakes + commercial faces extracted from
+>    the PHB2024 css — personal-use licensing flagged).
+> 2. **Emitter:** structured SpellRecord seam in book.py (escaping/glyphs/blocks all
+>    emission-time); the whole pixel-calibration apparatus DELETED; authored fragments
+>    converted to a neutral dialect (`:::note` fences, `\page`, ART-SLOT comments),
+>    prose byte-preserved; real ToC via \pageref. Old Homebrewery md/css/calibration/
+>    tools deleted at `3d35727`.
+> 3. **⭐ The LaTeX traps (detail in [[liturgy-vol2-latex-book]]):** `\needspace` is
+>    BROKEN inside multicols (struck ×2) → minipage keep-together · multicols
+>    balancing silently overrides `\columnbreak` → opener art column = adjustwidth
+>    single-column (reserve 0.30\textwidth, planara-constrained) · unbreakable
+>    tabularx SILENTLY DROPS rows past the page edge (Eye Stalks rays 7–8 vanished)
+>    → per-row `\tblrow` boxes w/ explicit striping · opener art width = reserve −
+>    0.5cm gutter (full-reserve touches prose).
+> 4. **Art pipeline (stakeholder in progress):** drops land in `assets/img/processed/
+>    <school>.{png,jpg}` (610×1650; cover 1275×1650) → next export places them
+>    fail-soft (placeholder otherwise; fm-cover/fm-reading pre-wired). 3 of 8
+>    chapters have art (antillurgy/chronomancy/mercuromancy); `preprocessed/`
+>    raw generations gitignored.
+> - **▶ NEXT: (1) stakeholder finishes art (7 slots) + book content review** (chapter-
+>   intro liberties, 23 trimmed summaries, credits TODOs carry over from the
+>   Homebrewery round); **(2) Foundry compendium module** (trigger-field +
+>   cost-surfacing questions at its scoping); **(3) joint review** (revisions.md @
+>   173). codex gate H unchanged; heartwood ⏸.
+
+---
+
+### Previous section (2026-07-31 late) — Homebrewery book round (superseded — pipeline retired at `3d35727`)
+
+## (was) Current state (as of `79affe5`, 2026-07-31 late — **"Liturgy of the Iridite Vol.2" Homebrewery book BUILT + LIVE-RENDER-VERIFIED** — the 173-spell store is now a paste-ready 64-page spell compendium; ▶ NEXT = stakeholder reviews the book content + drops art in, then Foundry compendium module → joint review)
 
 > **✅ Liturgy Vol.2 Homebrewery book, 2026-07-31 late (`585e754` vol1 reference ·
 > `3048db6` generator · `8dbb224`+`79affe5` pagination fix rounds · `239d664`
