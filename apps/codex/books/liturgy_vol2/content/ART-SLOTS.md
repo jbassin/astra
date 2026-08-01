@@ -9,7 +9,6 @@ points.
 | id | file / location | suggested wrapper class | suggested subject |
 |---|---|---|---|
 | fm-cover | `frontmatter.md`, front cover page | bare full-bleed `![]` (vol1 cover idiom) or `fullPage` | A lone caster silhouetted against the crack in the firmament, spell-light of all eight schools braiding upward into the second sun |
-| fm-reading | `frontmatter.md`, "Reading This Book" page, right column | `fullSidebarRight` | A cluttered scriptorium desk in Hallia — spell diagrams, a smoldering censer, a half-drunk coffee, a fax machine |
 | ch1-antillurgy | `chapters/antillurgy.md`, end of opener | `chapterSidebarRight` | A composed antillurgist mid-duel, black siphon-orb orbiting their head as it swallows an incoming lance of spellfire |
 | ch2-chronomancy | `chapters/chronomancy.md`, end of opener | `chapterSidebarRight` | A memorial constellation rising from a dissolving body into the night sky above an Austrene observatory, mourners lit by starlight |
 | ch3-gestalt | `chapters/gestalt.md`, end of opener | `chapterSidebarRight` | A druid mid-refinement — half-human silhouette with bone blades erupting at the joints, ghostly outlines of a hundred prior shapes layered behind them |
