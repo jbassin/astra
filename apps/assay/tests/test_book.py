@@ -246,6 +246,35 @@ def test_render_table_latex_wide_header_not_squeezed_narrow() -> None:
     assert r"p{0.09\linewidth}" not in colspec_line
 
 
+def test_render_table_latex_label_column_capped_for_prose_column() -> None:
+    """S5 column-width rework (Eye Stalks defect): a label-ish column with
+    ONE outlier long cell ("Disintegration Ray" alongside mostly-short "X
+    Ray" labels) used to jump the WHOLE column to a flat 12em bucket the
+    instant any single word passed 13 characters — starving the prose
+    "Effect" column down to a sliver (confirmed live: the Eye Stalks table
+    nearly doubled its page footprint). The label column must now be
+    capped well under the old 12em ceiling, and the trailing prose column
+    (always "X") must end up the widest column by a comfortable margin."""
+    block = book._Block(
+        "table",
+        header=["d8", "Ray", "Effect"],
+        rows=[
+            ["1", "Charm Ray", "Short effect."],
+            ["8", "Disintegration Ray", "A longer effect description."],
+        ],
+    )
+    tex = book._render_block_latex(block, [])
+    colspec_line = next(line for line in tex.split("\n") if line.startswith("\\tblrow{"))
+    assert "p{12.00em}" not in colspec_line
+    assert "p{8.50em}" not in colspec_line
+    # the "Ray" column's cap (see _COL_CAP_EM) leaves "Effect" (the X
+    # column) the widest by construction — assert the cap is small enough
+    # that it can't have crowded the prose column the way the old 12em
+    # bucket did.
+    em_widths = [float(w) for w in re.findall(r"p\{([\d.]+)em\}", colspec_line)]
+    assert em_widths and max(em_widths) <= book._COL_CAP_EM
+
+
 def test_render_table_latex_breakable_shape() -> None:
     """The DEFECT this pins: a single multi-row tabularx has no page/column
     break points, so an in-block table taller than one column either
@@ -291,6 +320,29 @@ def test_render_table_latex_breakable_shape() -> None:
     # \parskip is zeroed for the group so the per-row paragraphs still read
     # as one seamless table when nothing forces a break.
     assert "\\setlength{\\parskip}{0pt}" in tex
+
+
+def test_emit_spell_list_latex_explicit_rowcolor_not_rowcolors() -> None:
+    """S5 row-height fix: the chapter spell-list table used to hand row
+    striping to \\rowcolors{2}{TableBlue}{TableWhite} (colortbl's automatic
+    per-row counter) — empirically, ONLY in the full multi-chapter book (a
+    single-table reproduction never showed it), a handful of that table's
+    rows rendered ~2.3x the uniform row height with a blank leading gap
+    (confirmed via bbox-layout y-deltas on a live render: 14.8-15.5pt
+    normal vs. 33.9-34.7pt on the affected rows). Emitting \\rowcolor{...}
+    explicitly per row from a Python-computed alternation — no shared
+    LaTeX-side counel — removes the dependency on \\rowcolors entirely."""
+    spells = [_record("jolt"), _record("jolt")]
+    spells[1].slug = "jolt-2"
+    spells[1].name = "Second Jolt"
+    tex = book._emit_spell_list_latex("antillurgy", spells, {}, [])
+    assert "\\rowcolors" not in tex
+    stripes = re.findall(r"\\rowcolor\{(\w+)\}", tex)
+    # header row (TableBlue) + one per data row, alternating White/Blue —
+    # matches the retired \rowcolors{2}{TableBlue}{TableWhite} parity
+    # exactly (table row 1 = header = odd = Blue, row 2 = first data row =
+    # even = White, row 3 = second data row = odd = Blue, ...).
+    assert stripes == ["TableBlue", "TableWhite", "TableBlue"]
 
 
 def test_render_list_latex() -> None:

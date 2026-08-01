@@ -200,15 +200,25 @@
 % fragment) overflowed to a SECOND page at 0.34 (chapter 7 grew 53-60 ->
 % 53-61, the whole book 62 -> 63pp), so per the fallback rule this stayed
 % at 0.30\textwidth rather than shipping a book-length regression.
+%
+% S5 NO-CROP round (stakeholder: "we can substantially cut down on the
+% prose ... I'd rather get the full art" -- explicit authorization to trim
+% opener prose in exchange for showing the art UNCROPPED): the delivered
+% art is a tall, narrow ~610x1650px slice (ratio ~0.370, verified against
+% every processed/<school>.png) and the old 0.30\textwidth reserve cropped
+% roughly a third of its width away under cover-fit. \openerartratio is
+% that measured minimum width/height ratio across the 8 processed images
+% (mercuromancy's 585x1581 is the tightest at exactly 0.3700; the others
+% run 0.3701-0.3708) -- using the MINIMUM means \openerwindowwidth (below)
+% is always <= every image's natural width at the fixed window height, so
+% the \clip in \openerartimage removes at most a hairline sliver (<0.3%)
+% on the few images slightly above the minimum ratio and NOTHING on
+% mercuromancy -- never a letterboxing gap. \openerreserve is now DERIVED
+% from the window (not the other way around, S1-S4's direction): the
+% window height is fixed page geometry, so ratio*height fixes the window
+% width, and reserve is just that plus the 0.5cm prose gutter.
+\newcommand{\openerartratio}{0.370}
 \newlength{\openerreserve}
-\setlength{\openerreserve}{0.30\textwidth}
-\newenvironment{openerbody}{%
-  \begin{adjustwidth}{0pt}{\openerreserve}%
-  \setlength{\parskip}{0.18cm}%
-}{%
-  \end{adjustwidth}%
-}
-
 % ---- opener art window geometry (shared by the placeholder + the real
 % art + the frame) -----------------------------------------------------
 % Vertical bounds are FIXED regardless of \openerreserve -- only the width
@@ -220,11 +230,30 @@
 \setlength{\openerwindowbottom}{2.3cm}
 \newlength{\openerwindowheight}
 \setlength{\openerwindowheight}{\dimexpr\paperheight-\openerwindowtop-\openerwindowbottom\relax}
-% width = reserve MINUS the 0.5cm prose gutter -- adjustwidth's boundary
-% sits exactly at \openerreserve, so a full-reserve image would touch the
-% prose column (the original live-render defect, first art drop).
+% width = the no-crop target ratio times the (fixed) window height --
+% see the S5 comment above. \openerreserve then adds back the 0.5cm prose
+% gutter that keeps the art clear of the narrowed text column.
 \newlength{\openerwindowwidth}
-\setlength{\openerwindowwidth}{\dimexpr\openerreserve-0.5cm\relax}
+\setlength{\openerwindowwidth}{\openerartratio\openerwindowheight}
+\setlength{\openerreserve}{\dimexpr\openerwindowwidth+0.5cm\relax}
+% S5 no-crop round narrowed the opener measure from ~12.45cm to ~9.65cm
+% (0.70\textwidth -> ~0.54\textwidth), which pushed a handful of lines --
+% mostly ones ending in a long unhyphenated compound like "timestream" --
+% into a badly Overfull \hbox (up to ~24pt, visibly clipped text touching
+% the art frame; confirmed against a live render, not just the log
+% warning). \tolerance/\emergencystretch give the line breaker a last-
+% resort escape valve (extra interword stretch) before it accepts an
+% overfull line, at the cost of very slightly looser spacing on the rare
+% line that needs it -- default \tolerance (200) is right for the WIDE
+% chapter body (spellflow columns), too strict for this narrow measure.
+\newenvironment{openerbody}{%
+  \begin{adjustwidth}{0pt}{\openerreserve}%
+  \setlength{\parskip}{0.18cm}%
+  \tolerance=2000
+  \emergencystretch=2em
+}{%
+  \end{adjustwidth}%
+}
 % Sets up (owNW)/(owNE)/(owSW)/(owSE) page-absolute tikz coordinates for
 % the reserved window's four corners; right edge at the text margin.
 \newcommand{\openersetupwindow}{%
@@ -263,6 +292,37 @@
 % overlaps inward and covers the art's outer rim.
 \newlength{\openerframebleed}
 \setlength{\openerframebleed}{1.5mm}
+% S5 corner-mask round (stakeholder: art corners poked past the frame's
+% corner ornaments): the corner tile (assets/img/frame-gold.png, 292x292bp
+% slice) is mostly TRANSPARENT except a thin gold L-bracket hugging the
+% outer edge with a rounded/chamfered inner joint (verified visually) --
+% by design the box's own fill shows through that transparent interior
+% (ordinary border-image behavior), but the ART's hard RECTANGULAR corner
+% was extending all the way into that transparent area, so its sharp
+% square edge stuck out past the bracket's curved joint instead of
+% terminating at (or behind) it. Vol1's own export does the same thing
+% Homebrewery's CSS can't: it clips the ARTWORK to a chamfered (45°-cut)
+% rectangle so the art's corner recedes with the bracket instead of
+% fighting it. \openerartchamfer was calibrated empirically against a
+% standalone 400dpi render (a fast \openerartimage-only test doc, swept
+% 1.0/1.3/1.6/3.0mm and diffed the corner crop pixel-for-pixel): 3mm
+% overshot badly (a wide bare-parchment wedge between the bracket and the
+% art's cut edge -- the naive "corner tile is 7mm, cut ~15-20% of that"
+% math above OVERSTATES the bracket's real reach, since most of the 7mm
+% tile's tail is the bleed-out margin and stretched edge-strip overlap,
+% not corner-local coverage); 1.2mm tucks the art's cut edge under the
+% bracket's curve with only a hairline of parchment at the very tip --
+% matching vol1's own reference look rather than a seamless (impossible
+% without redrawing frame-gold.png) mask.
+\newlength{\openerartchamfer}
+\setlength{\openerartchamfer}{1.2mm}
+\newcommand{\openerartclip}{%
+  \clip ($(owNW)+(0,-\openerartchamfer)$) -- ($(owNW)+(\openerartchamfer,0)$)
+        -- ($(owNE)+(-\openerartchamfer,0)$) -- ($(owNE)+(0,-\openerartchamfer)$)
+        -- ($(owSE)+(0,\openerartchamfer)$) -- ($(owSE)+(-\openerartchamfer,0)$)
+        -- ($(owSW)+(\openerartchamfer,0)$) -- ($(owSW)+(0,\openerartchamfer)$)
+        -- cycle;
+}
 \newcommand{\openerdrawframe}{%
   \coordinate (ofNW) at ($(owNW) + (-\openerframebleed, \openerframebleed)$);
   \coordinate (ofNE) at ($(owNE) + (\openerframebleed, \openerframebleed)$);
@@ -318,17 +378,19 @@
 % Real stakeholder art for a chapter opener, once dropped into
 % assets/img/processed/<school>.(png|jpg) (book.py's fail-soft lookup swaps
 % \openerartslot for this the moment the file exists). Vol1-style FRAMED
-% WINDOW: the art fills the reserved column's full height (cover-fit --
-% scaled to the window height, then center-cropped horizontally via a
-% tikz \clip, since every source piece is much taller/narrower than the
-% window at our column width) with no distortion and no letterboxing, and
-% a true gold 9-patch frame (\openerdrawframe) is drawn on top, straddling
-% the window edge the same way vol1's border-image does.
+% WINDOW: the art fills the reserved column's full height at its OWN
+% native aspect (\openerwindowwidth is derived from \openerartratio, S5
+% round, so this is a no-crop fit, not cover-fit center-cropping) with no
+% distortion and no letterboxing; the tikz \clip is chamfered
+% (\openerartclip, S5 corner-mask round) rather than a plain rectangle so
+% the art's own corner recedes under the frame's bracket instead of
+% poking past it; a true gold 9-patch frame (\openerdrawframe) is drawn on
+% top, straddling the window edge the same way vol1's border-image does.
 \newcommand{\openerartimage}[1]{%
   \begin{tikzpicture}[remember picture, overlay]
     \openersetupwindow
     \begin{scope}
-      \clip (owNW) rectangle (owSE);
+      \openerartclip
       \node[anchor=center, inner sep=0pt] at ($(owNW)!0.5!(owSE)$)
         {\includegraphics[height=\openerwindowheight]{#1}};
     \end{scope}
@@ -509,6 +571,35 @@
 \newcommand{\readingartimage}[1]{\includegraphics[width=\linewidth]{#1}\par}
 % one contents-page row: chapter number, title, \pageref label (tectonic
 % resolves \pageref automatically via its built-in multi-pass rerun).
-\newcommand{\tocentry}[3]{\noindent\hbox to \linewidth{\mreaves\fontsize{0.5cm}{0.6cm}\selectfont\color{DarkRed}Chapter #1 --- #2\hfill\pageref{#3}}\par\vspace{0.3cm}}
+%
+% ⭐ THE row-height corruption bug (bisected against the FULL 8-chapter book
+% -- never reproducible in an isolated single-table document, exactly like
+% the \rowcolors counter this table's \rowcolor already ruled out): calling
+% \pageref while \mreaves sits at a FRESH \fontsize{}{}\selectfont value
+% (i.e. NOT the already-active ambient size) corrupts \strutbox's HEIGHT
+% component for the REST OF THE DOCUMENT COMPILE -- surfacing as a handful
+% of spell-list-table data rows (in EVERY one of the 8 chapter tables, not
+% just this one) rendering ~19pt taller than their neighbors, with a blank
+% gap above the row's own text (confirmed via \tracingoutput box dumps:
+% array's \@arstrutbox height triples on exactly those rows' non-centered
+% p{}/X columns while the centered columns and the cell's OWN internal line
+% strut stay normal). Root cause isolated empirically (fontspec/XeTeX
+% font-metric loading interacting with \pageref's deferred/\protect'd
+% expansion when the reference is still unresolved on an intervening pass
+% -- \label/\pageref alone reproduce it with hyperref fully disabled, so
+% this is NOT a hyperref bug); no \edef/\protected@edef pre-resolution
+% trick survives (hyperref's \pageref is fundamentally not \edef-safe --
+% it either crashes outright on an undefined target or, once safely
+% deferred via \protected@edef, still performs its real expansion at
+% typeset time inside the very font context we needed to avoid). The
+% ONLY reliable fix found: never let \pageref's typeset-time expansion
+% happen while a freshly-\fontsize'd size is active -- \pageref#3} is
+% wrapped in its own group that drops back to \normalsize (the document's
+% own already-active ambient size, still \mreaves for the family) FIRST.
+% The page number is typeset at \normalsize (safe) and then the finished
+% BOX is \scalebox'd back up to match the 0.5cm entry text -- box scaling
+% never touches the font-size machinery, so it cannot re-trigger the strut
+% corruption the \normalsize drop avoids.
+\newcommand{\tocentry}[3]{\noindent\hbox to \linewidth{\mreaves\fontsize{0.5cm}{0.6cm}\selectfont\color{DarkRed}Chapter #1 --- #2\hfill\scalebox{1.47}{{\normalsize\mreaves\pageref{#3}}}}\par\vspace{0.3cm}}
 
 \endinput

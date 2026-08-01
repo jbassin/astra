@@ -430,20 +430,52 @@ def _col_max_word_len(block: _Block, col_idx: int, header_text: str) -> int:
     return max_len
 
 
+def _col_max_cell_len(block: _Block, col_idx: int, header_text: str) -> int:
+    """Longest CELL (the whole label, not a single word) in a column,
+    header + every row — the S5 column-width rework sizes a label-ish
+    column off this (how wide it needs to be to show its typical entry on
+    one line), not off a flat word-length bucket."""
+    max_len = 0
+    texts = [header_text] + [row[col_idx] for row in block.rows if col_idx < len(row)]
+    for text in texts:
+        max_len = max(max_len, len(text.strip("*_ \t")))
+    return max_len
+
+
+# S5 column-width rework (Eye Stalks defect): the old bucket scheme jumped a
+# WHOLE column straight to a flat 12em the instant ANY single word in it
+# passed 13 characters ("Disintegration Ray" has one 14-char word) — so one
+# outlier cell dragged the entire "Ray" column (mostly 8-11-char "X Ray"
+# labels) to nearly a third of the in-block container's width, starving the
+# "Effect" prose column down to a sliver and forcing it into a wall of
+# wrapped lines (confirmed live: the Eye Stalks table nearly doubled its
+# page footprint). A label-ish column's real requirement is "fit its
+# TYPICAL entry, and let the rare long one wrap or hyphenate" — not "fit
+# the single worst-case entry on one line at any cost". These constants
+# convert a character count to an EM width (approximate — em is tied to
+# the OUTER document font at the colspec, not the \scaly cell font, same
+# caveat the old bucket scheme carried) and CAP every non-last column so
+# the prose column (always the trailing "X") stays the widest by far.
+_COL_CHAR_EM = 0.55  # ~average glyph advance, in em, for this body font
+_COL_PAD_EM = 0.7  # breathing room so text doesn't kiss the column edge
+_COL_MIN_EM = 2.4  # floor — narrow numeric columns ("d8"/"1d6") stay tight
+_COL_CAP_EM = 7.0  # ceiling — a label column never outweighs the prose one
+
+
 def _render_table_latex(block: _Block, warnings: list[str]) -> str:
     header = block.header or ([""] * (len(block.rows[0]) if block.rows else 1))
     n = max(1, len(header))
     if n == 1:
         cols = ["X"]
     else:
-        # Narrow+centered ONLY when the LONGEST WORD anywhere in the column
-        # (header or data) is short (a "d8"/"1d6" roll column) — sizing
-        # narrow off the header alone wrapped a long header like "Damage
-        # Type" into an unreadable per-word stack (live tectonic render
-        # caught this: "Damag/Type") AND, separately, let a short header
-        # over long row data ("Ray" over "Disintegration Ray") clip mid-word
-        # (also a live tectonic render catch). The last column always gets
-        # the flexible remainder.
+        # Every non-last column is sized to its OWN natural content width
+        # (longest cell, floored by the longest single word so a word never
+        # gets force-broken narrower than itself, capped at _COL_CAP_EM so
+        # no label column can crowd the prose column) — see the S5 rework
+        # note above _COL_CHAR_EM. The trailing column is always "X": the
+        # flexible remainder, and because every other column is capped
+        # small, X ends up the widest column by far, exactly where the
+        # prose payload (an Effect/Summary cell) belongs.
         #
         # Widths are in EM, not \linewidth fractions: these tables render in
         # TWO different containers — the wide chapter-opening spell-list
@@ -461,16 +493,16 @@ def _render_table_latex(block: _Block, warnings: list[str]) -> str:
                 cols.append("X")
                 continue
             max_word = _col_max_word_len(block, i, h)
-            if max_word <= 5:
-                cols.append(r">{\centering\arraybackslash}p{2.6em}")
-            elif max_word <= 13:
-                cols.append(r"p{8.5em}")
+            max_cell = _col_max_cell_len(block, i, h)
+            if max_word <= 5 and max_cell <= 5:
+                # A short numeric/roll column ("d8"/"1d6") reads better
+                # narrow AND centered rather than left-set at the same
+                # floor width every other short column gets.
+                cols.append(r">{\centering\arraybackslash}p{" + f"{_COL_MIN_EM:.2f}" + "em}")
             else:
-                # A single word past 13 chars ("Disintegration Ray", 15)
-                # still clipped at the medium bucket (live tectonic render
-                # catch, same class as the len(header)-only bug above) —
-                # widen further rather than re-guess a second flat bucket.
-                cols.append(r"p{12em}")
+                natural = max_cell * _COL_CHAR_EM + _COL_PAD_EM
+                width_em = max(_COL_MIN_EM, min(natural, _COL_CAP_EM))
+                cols.append(r"p{" + f"{width_em:.2f}" + "em}")
     colspec = "@{}" + " ".join(cols) + "@{}"
 
     # BREAKABLE emission (S4 live-render catch, "Eye Stalks" table): a single
@@ -726,19 +758,34 @@ def _emit_spell_list_latex(
 ) -> str:
     """The chapter spell-list table (Rank/Spell/Actions/Summary) — the same
     striped ``tabularx`` shape as the S1 sample's Antillurgy Spells table."""
+    # Explicit \rowcolor per data row (S5 row-height fix), NOT the automatic
+    # \rowcolors{2}{...}{...} counter this table used before: \rowcolors
+    # drives colortbl's internal \rownum counter, which — empirically, in
+    # the FULL multi-chapter book (never reproducible in an isolated
+    # single-table document; only appears once enough later chapters exist
+    # to change how many passes/labels the whole document resolves) —
+    # occasionally desyncs and stretches a handful of data rows to ~2.3x the
+    # uniform row height with a blank leading gap above the row's own text
+    # (confirmed via bbox-layout y-deltas: e.g. the Memetics table's
+    # Acupuncture/Compression/Farsight/Oddly Satisfying/Mass Fluency/Bound
+    # Minds rows rendered 33.9-34.7pt tall against a uniform 14.8-15.5pt for
+    # every other row). Emitting \rowcolor{...} directly per row (computed
+    # in Python, deterministic, no shared LaTeX-side counter) removes the
+    # dependency on that counter entirely and produces uniform row heights
+    # — verified against the same live render.
     lines = [
         f"\\subsubsection*{{{_title_case(school)} Spells}}",
         "\\begingroup",
         "\\renewcommand{\\arraystretch}{1.3}",
-        "\\rowcolors{2}{TableBlue}{TableWhite}",
         "\\noindent",
         "\\begin{tabularx}{\\textwidth}{@{}>{\\centering\\arraybackslash}p{0.07\\textwidth} "
         "p{0.24\\textwidth} >{\\centering\\arraybackslash}p{0.10\\textwidth} X@{}}",
         "\\hline",
+        "\\rowcolor{TableBlue}",
         "\\tblhead{Rank} & \\tblhead{Spell} & \\tblhead{Actions} & \\tblhead{Summary} \\\\",
         "\\hline",
     ]
-    for sp in spells:
+    for idx, sp in enumerate(spells, start=1):
         actions_char = ACTION_GLYPHS.get(sp.time_value.lower())
         if actions_char:
             actions_tex = f"{{\\actionfont {actions_char}}}"
@@ -746,6 +793,11 @@ def _emit_spell_list_latex(
             actions_tex = f"{{\\scaly {_latex_escape_text(sp.time_value)}}}"
         name_tex = _render_inline(sp.name, warnings)
         summary_tex = _render_inline(summaries.get(sp.slug, ""), warnings)
+        # Matches the prior \rowcolors{2}{TableBlue}{TableWhite} parity
+        # exactly: data row 1 (table row 2, even) was TableWhite, data row 2
+        # (table row 3, odd) was TableBlue, alternating.
+        color = "TableWhite" if idx % 2 == 1 else "TableBlue"
+        lines.append(f"\\rowcolor{{{color}}}")
         lines.append(
             f"{{\\scaly {sp.rank}}} & {{\\scaly {name_tex}}} & {actions_tex} & "
             f"{{\\scaly {summary_tex}}} \\\\"
