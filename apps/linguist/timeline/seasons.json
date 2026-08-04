@@ -7,8 +7,8 @@
       "seasons": [
         {
           "number": 1,
-          "title": "Blood and Badges",
-          "arc_summary": "The party establishes themselves in Hallia, taking courier jobs that unravel a conspiracy of flesh-monster impostors, illegal augury, and radar dishes spreading a mysterious signal. The arc culminates in their descent into the Quiet Below and discovery of Master Grayson's necromantic experiments inside a Fane of the Pulse.",
+          "title": "Delivery Boys",
+          "arc_summary": "A ragtag party forms at the Sin and Tonic, takes courier and investigation work, and uncovers a conspiracy of Ugathul infiltrators, Embercall radar dishes, and a necromancer named Grayson operating out of an impossible underground manor.",
           "episode_dates": [
             "2025-8-28",
             "2025-10-20",
@@ -20,22 +20,22 @@
         },
         {
           "number": 2,
-          "title": "The Black and White",
-          "arc_summary": "A disastrous ambush at the Crowded Flea leaves three party members dead, sending survivors through the Black and White to meet the entity Aut. Resurrected but diminished, the party reforms with Sir Arctos, hunts down Hlarf and Tywelwyn Leatherhide, and discovers six alien gods are using radar dishes to crack the Firmament and invade Færrin.",
+          "title": "Rainbow's End",
+          "arc_summary": "A disastrous ambush at the Crowded Flea leaves three party members dead; Johnny and Benny are resurrected through the mysterious Black and White, Argyle is permanently lost, and the reformed party hunts down Hlarf and Tywelwyn Leatherhide, uncovering a cosmic invasion plan by six new gods.",
           "episode_dates": [
             "2025-12-2",
             "2025-12-9",
             "2025-12-16",
             "2025-12-23",
-            "2025-12-30"
+            "2025-12-30",
+            "2026-1-6"
           ]
         },
         {
           "number": 3,
-          "title": "The Keystone Hunt",
-          "arc_summary": "The party reports their findings to the Convox and Inquisition, rescues Anaïs from an Aut-branded trap, and learns of the cosmic 'Narrative' family. They attend the Pilgrimage at Ragged Roost, survive a gladiatorial trial, and pursue a keystone scavenger hunt across Hallia—trading stolen art to a sentient transit heart to secure passage aboard a colossal Strider.",
+          "title": "The Pilgrimage",
+          "arc_summary": "The party rescues Anaïs, learns of the cosmic Narrative siblings, attends a massive pilgrimage gathering at Ragged Roost to compete for a keystone, and navigates art heists, demon assassins, and rival factions to claim their prize — even as a half-returned Argyle walks back through the door.",
           "episode_dates": [
-            "2026-1-6",
             "2026-1-13",
             "2026-1-20",
             "2026-1-27",
@@ -48,7 +48,7 @@
         {
           "number": 4,
           "title": "Cracks in the Firmament",
-          "arc_summary": "Argyle returns from the dead in altered form, and after a six-month downtime the party investigates the quarantined Teller's Run through the sewers. They discover a hairline fracture in reality with a two-mile-tall imprisoned god behind it, a research compound engineering a harmony to shatter the Firmament, and a conspiracy reaching the Prime Minister—culminating in a bombing that collapses the underground facility.",
+          "arc_summary": "With Argyle's return confirmed and six months of downtime behind them, the party descends into the sewers beneath Teller's Run and discovers a hairline fracture in reality itself — a parallel world imprisoning a two-mile-tall deity — then bombs the research operation before fleeing the collapsing underground.",
           "episode_dates": [
             "2026-3-9",
             "2026-3-16",
@@ -59,8 +59,8 @@
         },
         {
           "number": 5,
-          "title": "Aboard the Providence",
-          "arc_summary": "The party boards the colossal Strider alongside nineteen rival factions, creates their own heart 'Eerie,' and navigates deadly politics including a weekly energy tithe that kills the unprepared. They forge a coalition of smaller factions, explore the Strider's Undercroft to ally with an ancient Machine God, and begin assaulting the Herald's cultists hidden within the Strider's depths.",
+          "title": "The Strider",
+          "arc_summary": "Iconoclasm boards a colossal arachnid Strider alongside nineteen rival organizations for a voidward pilgrimage, building alliances and surviving lethal weekly tithes while exploring the Undercroft to forge an alliance with the ancient Machine God and assault the Herald's cultists within the machine.",
           "episode_dates": [
             "2026-5-7",
             "2026-5-11",
@@ -74,7 +74,8 @@
             "2026-7-6",
             "2026-7-13",
             "2026-7-20",
-            "2026-7-27"
+            "2026-7-27",
+            "2026-8-3"
           ]
         }
       ]
@@ -101,8 +102,8 @@
       "seasons": [
         {
           "number": 1,
-          "title": "Season 1 — The Cagley Middle Finale",
-          "arc_summary": "Noah's Cagley Middle one-shot reaches its conclusion as the 8th-grade heroes descend into the Terror of Cagley's lair and slay the shadow demon.",
+          "title": "The Cagley Terror",
+          "arc_summary": "Four 8th-grade heroes descend into the Terror of Cagley's lair and slay the shadow demon, saving the town of Cagley. This concludes Noah's middle-school one-shot.",
           "episode_dates": [
             "2025-6-9",
             "2025-6-16",
@@ -118,18 +119,11 @@
       "seasons": [
         {
           "number": 1,
-          "title": "The Verdant Expanse",
-          "arc_summary": "Convox detectives investigate husk-murders in the logging town of Wrenford, tracking a mysterious suspect into the mile-tall Verdant Expanse where they encounter fey courts, cursed children, and a growing supernatural threat.",
+          "title": "The Verdant Expanse: The Husk Murders",
+          "arc_summary": "Iridescent Church convox detectives travel to the logging town of Wrenford to investigate husk-murders linked to a mysterious visitor, tracking a Feyrock necklace deep into the mile-tall Verdant Expanse where they battle fey creatures, rescue a child, and confront a masked fey court before discovering the murder suspect is already dead—yet the huskification curse continues. The trail leads back to Hallia, where they uncover a ritual transmuting corpses into fey stone via the Gloaming Codex and are pulled into the book's pages.",
           "episode_dates": [
             "2025-9-11",
-            "2025-9-18"
-          ]
-        },
-        {
-          "number": 2,
-          "title": "The Gloaming Codex",
-          "arc_summary": "Following fey stone leads into the heart of Hallia, the detectives uncover a ritual transmutation operation tied to a cursed book — the Gloaming Codex — and are pulled into its pages to fight for their lives against carnivorous ink and cursed thoughts.",
-          "episode_dates": [
+            "2025-9-18",
             "2025-9-25"
           ]
         }
@@ -157,10 +151,17 @@
       "seasons": [
         {
           "number": 1,
-          "title": "Sedecium Fire Team",
-          "arc_summary": "Three Sedecium agents — Old Man Scrazzy, Lieutenant Foral, and Ozzie — carry out high-risk missions across the slip and beyond, first investigating a derelict orbital observatory to uncover a Thessian's plot, then mounting a daring raid on the divine essence of a freshly-killed god before the God Eater Harrow can consume it all.",
+          "title": "The Everdawn Drift",
+          "arc_summary": "A newly-formed Sedecium fire team — Scrazzy, Foral, and Ozzie — is sent into a slip-damaged orbital observatory to follow a lead from the mysterious 'entity.' They free a tortured ship AI, rotate the station out of the slip, and uncover that the Thessian Esoterica (formerly Gremory) recently accessed records of a massive magical spike near the Astra's core.",
           "episode_dates": [
-            "2026-4-6",
+            "2026-4-6"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "One Last Job",
+          "arc_summary": "Pulled from retirement, the fire team boards a Sundom planet-killer warship on a desperate raid to steal divine essence from the freshly-killed Thessian 'Tithe' before the God Eater Harrow finishes devouring it — navigating slip-puzzles and spider temples to become the only team to succeed.",
+          "episode_dates": [
             "2026-4-27"
           ]
         }
@@ -182,5 +183,5 @@
       ]
     }
   ],
-  "inputs_hash": "ca6f0bec8066ae36ad3651cb940b6f16d59c0d922e54450d6f408f7177976b23"
+  "inputs_hash": "b030401005a0bbd9bb49c9f595c68ae14744f722a7ad0f3e065d4f326787c6a4"
 }
