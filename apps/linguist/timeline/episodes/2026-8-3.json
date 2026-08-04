@@ -1,0 +1,83 @@
+{
+  "date": "2026-8-3",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Sentinel Distributor, the Sabotaged Heart, and the Five Siblings",
+    "synopsis": "After clearing the Undercroft of Lifeline's forces, the party returns home to research, reconnoiter, and prepare for their next move against the Ashen Pact. Anzu makes a major breakthrough on a method to counter the Herald's Song — but needs a living carrier of it to proceed. The second Tithe strikes, and Verdant Holdings is found destroyed not by the Tithe but by sabotage, while the Twins reveal that cosmic siblings of their patron Rengar are now watching the Strider, making this potentially the most important event in existence.",
+    "key_beats": [
+      "Argyle pushes Machine God to modify the Strider for self-defense; Machine God refuses (designed for espionage/management, not construction) and brain-zaps Argyle as punishment, cutting communication with him. Anzu asks if Aurelia's relics would help Machine God — he'd want them but they'd grant no power.",
+      "The party returns home with blue liquid samples. Anzu identifies the liquid (roll of 36) as a dilute form of the glowing substance seen in Sable & Sun firearms and under Teller's Run — it's both a magic battery and an information store, with no fundamental difference between energy and information at the deepest level.",
+      "Johnny scouts the Strider surface (perception 27), cataloguing every faction's upgrades and territorial changes: Protectorate overgrown with trees, Iridescent Church doubled in size with an aurora, Pale Lantern Society paved white with a people-wave sculpture, Amber Hall a Victorian manor with lightning, Ternion Heavy building a biplane, Verdant Holdings visibly split in two, Necrolog abandoned.",
+      "The party decides their Fane's developing geographic identity: alpine city with Art Deco influences, fitting their mountain-city origins.",
+      "Argyle learns the origin of his curse — a coven of night hags drained 3/4 of his lifespan when he was young and arrogant; he has ~5-6 years left. He meditates at the Protectorate's garden and learns the Aurelia schism (Aurelia VI tried to break the reincarnation cycle, splitting the church between Brithwyn and Calaria).",
+      "Benny trains allies (Kadou, Salvado, others) at the gym, then investigates the Harlequins' library. The library has void-troughs with disembodied hands radiating cold. He finds 800 years of checkout records but no recognizable names, plus books in an unknown alphabet. A nondescript figure occasionally visits.",
+      "Anzu spends 3.5 days modifying the Sentience Distributor to emit interference between the Voidsong and Herald's Song (occultism 26, will 35, academia lore nat-20/39). He hooks himself to it and nearly splits his beak. He succeeds in writing the full plan — but needs a living Herald Song carrier as a reference to complete it.",
+      "The party plans a kidnapping mission to Neweth, the mongrel-folk settlement around Tally the Heart (a timekeeper heart), where Anzu's sister Gozu and three other Tengu reside among Herald's children. They stockpile anti-magic shackles, gags, and debuff strategies.",
+      "The second Tithe strikes at midnight: 29 energy pulled from the party's heart (down to 75), tithe burden rises from 29 to 34. Anzu (perception 35) glimpses a humanoid figure in the gyroscope rings for a split second.",
+      "Verdant Holdings is found as a smoking crater. Benny (crit 36) determines it was sabotaged with physical ordnance timed to look like a Tithe failure — not the same phenomenon as Garrick Textiles. Necrolog is also gone (fallow). The party alerts all Skein allies; Prime Meridian suspects RunGunners and Aetherion Limited.",
+      "Johnny presses the Twins (sense motive 41) — they're shaken. Anakul reveals a 'rude sibling' of their patron Rengar visited, one of five cosmic siblings now watching the Strider. This sibling 'raises the stakes' rather than acting directly. The Twins deny bombing Verdant Holdings and confirm all five siblings may now be focused here, making events on the Strider possibly the most important thing in existence."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Anzu",
+      "Benny",
+      "Johnny Skyfall",
+      "Machine God",
+      "Anakul (Twin)",
+      "Anaïs (Twin)",
+      "Paavo",
+      "Salvado",
+      "Kadou",
+      "Gozu (mentioned)",
+      "Ocelith (mentioned)",
+      "Jethro (mentioned)"
+    ],
+    "locations": [
+      "The Undercroft",
+      "Iconoclasm Fane (party base)",
+      "The Strider surface",
+      "Protectorate territory",
+      "Harlequins' library",
+      "Hildebrandt compound",
+      "Verdant Holdings (crater)",
+      "Ternion Heavy",
+      "Neweth/Tally the Heart (mentioned, planned destination)"
+    ],
+    "factions": [
+      "Iconoclasm",
+      "Ashen Pact",
+      "Machine God",
+      "Radiant Arms",
+      "Hildebrandt",
+      "RunGunners",
+      "The Protectorate",
+      "The Scale",
+      "Iridescent Church",
+      "Necrolog (destroyed)",
+      "Prime Meridian",
+      "Sable and Sun",
+      "Verdant Holdings (destroyed)",
+      "Aetherion Limited",
+      "Pale Lantern Society",
+      "Amber Hall",
+      "The Harlequins",
+      "Ternion Heavy",
+      "Ministry of Cultural Progress",
+      "Alkahest Freight",
+      "Solari Sub-surface",
+      "Rengar's siblings (cosmic entities)"
+    ],
+    "items": [
+      "Sentience Distributor (being modified for anti-Herald field)",
+      "Blue liquid samples (dilute Voidsong liquid in water skins)",
+      "Anti-magic shackles",
+      "Anti-magic gag",
+      "Minesweeper shield attachment (crafted by Twins)",
+      "Anzu's totem",
+      "Aurelia's armor (borrowed for meditation)",
+      "Void paper research notes",
+      "Anzu's written musical notes of the Voidsong"
+    ],
+    "cliffhanger": "With the second Tithe survived and Verdant Holdings destroyed by unknown saboteurs, the party plans to infiltrate Neweth — the mongrel-folk settlement around Tally the Heart — to kidnap a living carrier of the Herald's Song, with Anzu's sister Gozu among the targets and five cosmic siblings now watching the Strider."
+  }
+}
