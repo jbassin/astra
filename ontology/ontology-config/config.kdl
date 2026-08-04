@@ -80,7 +80,9 @@ linguist {
     surface-escalate-low 0.4
     surface-escalate-high 0.75
     surface-confidence-floor 0.6
-    surface-judge-max-tokens 4096
+    // GLM-5.2 reasoning tokens share this budget; 4096 truncated the judge mid-reasoning
+    // (text=None AdapterParseError) on 2026-8-3 — same class as the heartwood 8k→16k bump.
+    surface-judge-max-tokens 16384
 }
 
 mouthpiece {
