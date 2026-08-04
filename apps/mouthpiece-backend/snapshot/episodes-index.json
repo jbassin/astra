@@ -19787,6 +19787,635 @@
           "text": "No. It isn't. And the waking clan won't be sleeping."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-8-3",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 14,
+      "isMain": true,
+      "date": "2026-8-3",
+      "dateSortKey": 20260803,
+      "title": "Static, Blue Liquid, and the Cosmic Noise Machine",
+      "episodeTitle": "Static, Blue Liquid, and the Cosmic Noise Machine",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm and dry, precise but pointed; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date the others fumble for and reins Bram in with a flat one-line correction — she finishes her sentences and finishes them short. But she's not only the fact-checker: she needles, too, pushing on WHY the characters did what they did and making Bram defend his reads, poking at the table's heroics and at sentiment with a wink. Grounds events in how the world actually works; the only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle"
+        }
+      },
+      "synopsis": "Fresh from their Undercroft victory, the party regroups at home to take stock of strange new spoils: a blue liquid that stores not just magical energy but information itself. Anzu's days-long research into the Sentience Distributor yields a breakthrough—an interference field that could cancel the Herald Song against the Voidsong—but it requires a living carrier of the Herald Song to complete, sending the party's thoughts toward a dangerous extraction in the mongrel-folk settlement of Tally. When the midnight tithe falls, the Strider's burden jumps sharply: Verdant Holdings has been wiped off the map, not by tithe failure but by calculated explosive sabotage. And the twins reveal that something far larger is in motion—five cosmic siblings of their patron Rengar now watch the Strider, hinting that this voyage may be the most important event in existence.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So look, the big thing everyone's going to talk about is the Verdant Holdings crater, and yeah, we'll get there, but I want to start with the Machine God stuff because I think that sets up everything that follows — Argyle pokes the bear, the bear hangs up on him, and I think that moment is more important than people realize because it tells you exactly what kind of ally they've got."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It tells you Argyle doesn't know when to stop talking. That's what it tells you."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "No, no, no — okay, yes, it tells you that too, but come on, the guy's trying to think critically! He's looking at this ancient heart, right, this thing that's supposed to be this incredible asset, and he's realizing it can't remodel hallways, it can't close doors, it can't quarantine itself — it's an espionage and management system, that's it. And Argyle's reaction is the natural one, which is \"why did you get jumped then?\" That's a fair question!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a fair question that he asked in the most insulting possible way, to a telepathic entity, while the telepathic entity was listening. And then Johnny comes in with the used-car-salesman pitch — \"hey buddy, how you doing, I believe in you\" — and it's like watching someone try to flatter a mountain."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Johnny's pitch was great! Johnny's pitch was — okay, it was a little oily, but it was genuine, and the aid check was genuinely good, and the Machine God didn't shut Johnny out. The Machine God shut Argyle out. There's a difference. Argyle got the static, Argyle got cut off, and I think that's the Machine God drawing a line. He's saying \"I am not your baby heart, I am not Eerie, I don't reshape reality for you, and if you can't respect that, I will stop listening.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is exactly what an espionage-and-management system would do. It controls information flow. Argyle was a noise source, so it muted him. That's not a personality conflict, that's a function."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But it IS a personality conflict, because the Machine God clearly has one — he said \"the punishment is not understood unless it is experienced in its entirety.\" That's not a thermostat talking, that's someone who was offended and wants you to know it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Fine. He's a someone who was offended. But Argyle poking at him about whether Aurelia's armor would help — after he'd already been muted — and trying to get Anzu to relay the apology on his behalf—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That was hilarious though."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It was funny, but it was also Argyle trying to use his friends as a customer service hotline, and Anzu correctly said no. You don't hand a borrowed relic of Aurelia to a heart you've known for a week and who you just insulted, especially when the relic is on loan from Yao and the Protectorate would literally kill you if you didn't return it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I know, I know, and Anzu was right to shut that down, but I also think Argyle's instinct isn't crazy — the Machine God served Aurelia's original party, he said he'd be \"very interested in acquiring\" relics of his former masters, that's a thread. It's just not a thread for right now."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Agreed. Not for right now. And frankly, if the Machine God wanted to be more useful, he could start by not hanging up on the one party member who actually worships something connected to his original masters."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "See, now you're making my argument for me."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm not. I'm saying Argyle fumbled a relationship that mattered. Moving on — the blue liquid."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, the blue liquid! Okay so this is — Anzu rolls absurdly high, Johnny's giving him a shoulder rub for a thirty aid, and what comes out of this identification is genuinely one of the coolest lore drops of the night, which is that this glowing blue stuff, this Mountain Dew Baja Blast—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Thank you for that image."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—it's not just a battery. It stores information. Magic and information are the same thing at the deepest level of the universe, and this liquid is recording data, not just energy. That's what the Sable and Sun guns are running on, that's what was under Teller's Run, and Lifeline was cooking up a diluted version of it in those vats."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the reason that matters is because it connects three threads they've been pulling on separately — the weapons trade, the Undercroft operations, and now the heart systems. It's all the same substrate. The question is who designed it and what information is encoded in the concentrated versions."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right, and Argyle immediately wants to know if they can feed it to Eerie, which — no, they can't, and I think that's the right call from Josh because you don't want this stuff anywhere near your heart until you understand it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But they're handing samples out to the twins and to Radiant Arms, and I think that's actually the smart play here. You give small amounts to your researchers, you let them poke at it, and you don't try to haul eight thousand pounds of mystery fluid up through the Undercroft in a clockwork wagon."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "About the wagon — okay, so Argyle wants to build a clockwork wagon to haul the vats, and the vats are ten feet tall and each one is a thousand gallons, which is four tons each, and there's this whole conversation about bulk and whether you can modify the wagon to fit through the hallways, and I love that the table has this moment of \"we can absolutely engineer our way out of this\" and Josh is just sitting there like \"do you understand how heavy water is.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's the classic thing where adventurers see a big thing full of liquid and think \"we should take the big thing.\" You don't need the vats. You need the liquid in smaller containers. Take your waterskins, take your samples, come back with better receptacles later. The vats are not going anywhere — who else is going down there?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Grayson."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Grayson is not going down there."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Grayson is absolutely going down there! Grayson's area is right below — Argyle even points it out, he says this is right above Grayson's thing! If Grayson's undead scouts find this stuff—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Then Grayson gets a diluted mystery liquid that he doesn't know how to use either. It's fine. The Machine God is expanding into that territory. He'll have eyes on it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I hope so, because that's a lot of informational battery juice just sitting there unattended. But fine, let's move on — the scouting, because Johnny's walkaround the top of the Strider is where we start seeing the board shift, and I think this is one of those sessions where the world-building does so much heavy lifting that people might miss it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a survey, not a strategy session. Johnny rolls well, he gets a snapshot of all twenty slices, and the picture is — everyone's entrenching. The Protectorate's land is growing grass and trees. The Scale's land is turning to rock. The Pale Lantern Society has paved themselves over in white concrete and built a wave made of people."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A wave made of people! That's macabre and also incredible and also what is the Pale Lantern Society doing with a sculpture made of corpses facing outward to block the view of their base?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They're a necromantic org that also runs hospitals. The columbariums are literally art displays of preserved dead bodies. A wave of people is on brand."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's on brand but it's also defensive architecture — you can't see past it, you can't scout their base from the exterior. That's smart. And then you've got Amber Call with the reddish grass and the lightning and the Victorian manor, and the Iridescent Church has an aurora hovering above a building that's doubled in size, and Ternion Heavy is building a biplane with a slide so it can take off and come back—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is the most Ternion Heavy thing possible. They're building a little airplane on a walking city. Of course they are."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then the one that matters: Verdant Holdings has split in two. There's an obvious schism, and the RunGunners' road has crept into Verdant's territory, and you don't know if that's friendly or hostile. That's the setup. That's the fuse."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Necrolog looks abandoned. That's two pieces on the board that are wobbling before the tithe even hits. Verdant is fractured and Necrolog is empty. So when the tithe comes and the burden jumps, you've got your suspects lined up."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Let's talk about Argyle's spiritual detour, because I think this is more interesting than people give it credit for. He goes to the Protectorate, he meditates in their garden, he starts learning about the Aurelia schism — the Brithwyn church believing that Aurelia the Sixth perverted the reincarnation cycle, that the Calarian church is covering up the fact that Aurelia didn't come back, that the true Aurelia is out on the horizon somewhere, which connects to the Voidsong."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It connects directly to what Yao told Anzu two sessions ago — that the true Aurelia is trapped on the horizon and the Voidsong is her cry for help. Argyle is being exposed to the same theology from a different angle. And the thing that's interesting is that he's a fallen celestial who doesn't even know why he fell, and he's reaching out to the Judge and getting nothing back."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Nothing! He prays, he rolls well, he gets silence. And then he starts thinking about reaching out to the Host directly, and Josh says it wouldn't burn a bridge but the Judge might not love it. That's a character at a crossroads."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or a character who's bored in downtime and casting about for meaning. I'm not sure Argyle has a theological crisis so much as he has nothing to do for three days and he's filling time."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "No, I think it's real — the guy has a custode he's trying to heal who's got maybe five years left because of a nighthag curse he can't break, he's got a patron who won't answer him, and he's sitting in a garden run by people who have a compelling alternative mythology that ties into everything he's seeing on the Strider. That's not boredom, that's pressure."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Okay, I'll give you it's pressure. But I want to get to Anzu's research because that's the mechanical backbone of the whole session and I think the table undersold what he actually accomplished."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They absolutely undersold it! Anzu spends three and a half days on this, he's got the twins and the Radiant Arms people looking over his shoulder, Salvado walks in and immediately walks out—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Of course he does, Salvado walks into a room and a tengu's jaw is splitting open with blinding light, you'd leave too."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The jaw thing! So Anzu hooks himself up to the Sentience Distributor as the anchor, right, and for a half second the whole room lights up and his beak starts to split vertically — which, by the way, if you know what Herald looks like under the glamor, that's a cleft chin that forms jagged mandibles. That's Herald imagery. Anzu is carrying both the Voidsong and something else, and when he connects to the Distributor, the something else starts to manifest."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He's carrying a hybrid version. He's got the Voidsong from his original exposure and he's got the Herald Song from whatever happened to him in the Undercroft, and the interference between them is what he's trying to isolate. That's the breakthrough — he realizes he can use the Sentience Distributor to project the delta between the two songs, essentially creating a cancellation field."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "An interference field. Like noise-canceling headphones for cosmic horror songs. That's the plan. And he rolls a natural twenty on his academia lore for a thirty-nine, which is just—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a thirty-nine. It's very high. The point is he fully writes out the plans for how to modify the Sentience Distributor. He's done. The research is complete. Except for one catch."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "You need a living reference. You need someone who's actually carrying the Herald Song to plug into the other side of the equation. Anzu's got the Voidsong side handled, but without a Herald Song carrier, the interference field can't work."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And that's what sends them to Tally. That's the whole reason the next session is about kidnapping someone from a mongrel-folk settlement. The research is brilliant and it's also useless until they take that step."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And here's where I want to push on something — Benny's plan. Benny hears \"we need a Herald Song carrier\" and immediately goes \"okay, we grab someone, Anzu brainwashes them like he did to the bird, we turn them into a puppet, we use the rest of the awake ones.\" And nobody really pushes back on this except Anzu himself saying he's not sure how permanent the effect would be."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Because the bird died. The bird's personality was completely overwritten. Benny even says it — \"he killed that, effectively killed the bird, just rewrote its entire sentience.\" And then in the next breath he's saying \"we can do that with the rest of them.\" That's... that's a position."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's a nine-year-old android's position on prisoners of war, and it's horrifying, and it's also arguably the most pragmatic thing anyone said all night. If you can rewrite someone's brain to remove the Herald Song, that's a cure. That's a mass cure. The ethical cost is erasing who they were, but if the Herald Song has already overwritten who they were—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Then you're just overwriting an overwrite. I hear the argument. I don't think it's that clean, because Anzu's sister is one of the people carrying the Herald Song, and if the cure for her is \"erase Galzu and install a new personality,\" that's not a rescue. That's a replacement."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And I think Anzu knows that, which is why he's hesitant. He says \"I'm not sure how permanent of an effect I can have just yet.\" He's not saying no. He's saying not yet, and not without understanding it better. That's the right read."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I think the right read is also \"we should try this on someone who isn't my sister first,\" which is exactly what they're planning. Grab a Herald cultist from Tally, bring them back, use them as the reference for the interference field, and see what happens."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which brings us to Tally. The Machine God points them there — it's a mongrel-folk settlement, a thousand to two thousand people, built around a heart called Tally who was the timekeeper for the Strider, responsible for religious rites and logging where the Strider went. And the Machine God says he fears Tally is already dead, which means the Herald cultists have taken over another heart."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Anzu's sister is there. With three other tengu. They don't separate. So you're going into a settlement of one to two thousand mongrel folk who use ration slips as currency, who may or may not attack you on sight, to extract four tengu from a group that never splits up, in territory controlled by Herald's children."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's a grab-and-grab."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a nightmare is what it is. But let's get to the tithe first, because the timing matters."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The tithe. Okay. Midnight, the gyroscope rings align, purple energy sweeps out, takes twenty-nine energy from the heart — they're at a hundred and four, they're fine — and then the totem."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Strider's burden totem. It was at — they believed it was a constant four hundred, and it jumps to thirty-four."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "From twenty-nine to thirty-four, which means groups are gone, and Benny immediately does the math — that's two groups dead. And the party goes driving around in the middle of the night checking on everyone."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is the right instinct. You verify your alliance is intact, and then you figure out who's missing. The skein check confirms everyone in the coalition is fine. Then they drive by the neighbors."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Verdant Holdings is a crater."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A crater. Not a collapsed building — Garrick Textiles collapsed when the heart died, the building fell in. This is different. This is a divot in the ground. A chunk of matter just ceased to exist. And Benny rolls a thirty-six perception — a crit — and identifies it as ordnance. Not tithe failure. Sabotage. Someone planted explosives on Verdant's heart and timed it to look like a tithe default."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And that's huge because it means someone on this Strider has the capability and the willingness to assassinate an entire faction and disguise it as natural attrition. That's a player move. That's something a faction with military intelligence and explosive expertise would do."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Like the RunGunners, whose road was already creeping into Verdant's territory. Or Ætherion Limited, who Prime Meridian publicly notes have experience with explosives. Or someone else entirely."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And keeping it off the skein initially — I think that was smart. You don't broadcast \"we found evidence of a bombing\" until you know who's listening, because the bomber is on the skein too."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I disagree. I think keeping it off the skein was paranoid and potentially counterproductive, because if another faction gets bombed next, you've deprived them of warning. You sent the message eventually, but you hesitated, and that hesitation could cost someone."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They sent it the same night! They drove around, confirmed their allies, checked the crater, then broadcast. That's not hesitation, that's verification. You don't yell \"fire\" in a crowded theater until you've confirmed there's a fire."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "There was a crater. The fire was confirmed."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The cause wasn't. Not until Benny critted. Before that, it could have been a void heart, it could have been a natural collapse, it could have been anything. You don't panic the skein with \"Verdant Holdings exploded, check your hearts\" until you know what you're warning them about."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Fine. But the timing of it — the sabotage happening exactly at the tithe — that's the detail that makes this scary. Someone calculated the tithe schedule, planted ordnance, and detonated at the exact moment when the death would be indistinguishable from default. That's not a hot-blooded attack. That's cold."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's very cold. And then they go to the twins."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the twins are rattled."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The twins are never rattled! Anaïs and Onik are the most composed people on the Strider, and Johnny walks in and they're mid-conversation that they immediately stop, and Johnny reads them and they're on edge, and the cover story is \"we're stressed about the tithe\" — which, okay, maybe, but Johnny pushes and they crack."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Johnny's diplomacy check is absurd. He rolls terribly and then rerolls into the stratosphere—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Johnny always does this! Johnny rolls garbage and then burns the reroll and comes up huge on the exact social check that matters. It's the most Noah thing at the table."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "—and they tell him. A sibling of their patron Rengar paid a visit. Not Rengar herself. One of her siblings. Specifically the one they describe as \"half a man but the mountain to be overcome,\" the one who raises the stakes, who acts as a filter for those who are not worthy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And they say this is the third sibling to take an interest. Three of five. And at this point they assume all five are watching."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which means this voyage — the Strider heading toward the Quorum — is not just politically significant. It's cosmically significant. The twins say it straight: they would assume all five have interest, and when Johnny says \"it seems like whatever's happening might be the most important thing in existence,\" the twins say that is not inaccurate."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's the line of the night. \"This is not inaccurate.\" From the people who never say anything they don't mean. That's five cosmic entities looking at the Strider and going \"this one matters.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the twin — I think it's Anouk — specifically says this sibling is not one to enact immediate violence. He raises the stakes generally. So the Verdant bombing probably wasn't him, which brings us back to a mortal player."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Unless the sibling empowered someone else to do it. The twins say the more deviated from the predestined plot things get, the more empowered these entities are to act. So if the Strider is going off-script, these siblings get more authority to intervene directly."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But they also say they don't know what the predestined plot is. Nobody does. So you can't know if you're deviating from it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which is the most terrifying part! You're being judged by entities whose rules you can't read against a script you can't see. You're in a play where you don't know the genre and the director is five different people who disagree on what the ending should be."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's a good metaphor, actually."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Thank you. I have my moments."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Don't let it go to your head. The Verdant bombing — I want to come back to this because I think the table moved past it too fast. Benny's instinct to not share on the skein, then the table checks the twins, the twins say they didn't do it—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the twins are genuinely offended! They break their composure to say \"we did not bomb Verdant Holdings, for what reason would we bomb — that is unfair.\" They're not just denying it, they're insulted by the implication. And then they say if Rengar told them to bomb someone, they would, but Rengar didn't. That's a really important distinction — the twins aren't free agents, they're operatives with a chain of command, and the chain of command didn't issue that order."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which means either another faction did it on their own initiative, or one of the other siblings told someone else to do it. And if it's the latter, you're looking at cosmic-level proxy warfare on a walking city."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the party's response is \"we should go to Tally while there's chaos.\" Which — yes! If everyone's reeling from the tithe and the bombing, the Herald cultists are probably also distracted, and that's the window to extract someone for the interference field."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The window is good. The plan is thin. They're going into a settlement of one to two thousand mongrel folk with a currency system they don't understand, to grab four tengu who never separate, from a group of Herald cultists who the Machine God says don't stay alone in hidden areas. And their toolkit is \"stack debuffs and gag someone.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The anti-magic shackles and the gag! They still have those from — what, two sessions ago?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They have the anti-magic shackles and gag, they have Johnny's debuff stack — Dirge of Doom, Calm, Silence — and they have Anzu's brainwashing. It's a real plan, it's just a plan with a thousand ways to go wrong."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But it's the plan that follows from the research. Anzu needs a Herald Song carrier. The Herald Song carriers are in Tally. Tally is accessible. You go, you grab, you come back. It's clean if you're smart about it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's clean if the mongrel folk don't mob you, if the four tengu don't raise an alarm, if the Herald cultists don't have capabilities you haven't seen yet, and if Anzu's brainwashing actually works on a person the way it worked on a bird. Four ifs."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Four ifs that are all manageable. The Machine God can guide them through the Undercroft, they've got stealth options, they've got Johnny's social toolkit, and they've got the element of surprise because nobody expects four surface-worlders to come down into a mongrel-folk settlement in the middle of a post-tithe chaos window."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I want to believe that. I think the thing that worries me is the sister. Anzu doesn't know what she looks like."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He knows what she looks like!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He didn't! He got put on blast at the table — Josh asked him for a physical description and he couldn't give one. He didn't have a name ready. He came up with \"Galzu\" on the spot."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "In his defense, he did give a description eventually — black feathers, blue tips, same plumage as him, related genetically — and Josh confirmed that's consistent with what he had. And the Machine God can locate her. He's an espionage heart, he's already identified her position in Neweth around Tally. They're not going in blind."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They're going in with partial information into a hostile civilian environment. That's not blind, but it's not great either. And the emotional component — Anzu being nervous, Anzu being scared to find her — that's the thing that could derail the clean extraction. If he freezes, if he tries to talk to her first, if the Herald Song in her head makes her react badly—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Then the plan adapts. That's what the party is for. Johnny talks, Benny grabs, Argyle shields, Anzu does the psychic work. They've got the roles."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They've got the roles on paper. In a settlement of two thousand people where the currency is ration slips and the locals might rob you or worship you or both, plans last about thirty seconds."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's what makes it fun though! That's next session. That's the whole hook. You've got the research done, you've got the target identified, you've got the cosmic stakes established, and now you've got to walk into the scariest neighborhood on the Strider and steal someone's brain."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Not steal. Borrow. They need a living reference."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Borrow someone's brain, use it as a tuning fork for an interference field that cancels out a cosmic horror song, and then ideally give it back intact. Sure. Borrow."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I want to go back to one thing before we wrap — Argyle and the Lance curse. He's tried twice, failed twice, one point short on the second attempt, and Josh says he just can't do it at his current level. He has to wait. And Lance has maybe five years left."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Five or six years. He's twenty-five, he's got a quarter of his lifespan because three nighthags are siphoning the rest. And Argyle says \"I will fix this\" and then he can't. That's a thread that's going to simmer."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a thread that should simmer. It's not urgent in the way the Tally extraction is urgent, but it's the kind of character debt that pays off later when Argyle levels up and can finally crack it. The question is whether Lance is still around by then."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He's around for five years. That's a long time in campaign terms. They'll get there."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They'll get there if the Strider doesn't kill them first. Which, given that five cosmic entities are watching and someone is bombing factions at midnight, is not a given."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "No. No, it's not. But that's the game, right? You play the board in front of you. And right now the board says go to Tally, grab a singer, and find out if Anzu's interference field actually works. Everything else — the Verdant bombing, the siblings, Argyle's faith, Lance's curse — it's all in motion, but the next move is Tally."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The next move is Tally. And I'll be very curious to see whether they go in quiet or whether it becomes a smash-and-grab after all."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It won't be a smash-and-grab. It can't be. You're in a town of two thousand people. You start a fight in there, you're fighting the town."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You say that like this party has never started a fight they couldn't finish."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's... okay, that's fair. But this time they know the stakes. This time they've got the prep. This time—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "This time it's the most important thing in existence."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "This time it's the most important thing in existence, yeah. So maybe they'll be careful."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Maybe."
+        }
+      ]
     }
   ]
 }
