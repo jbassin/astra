@@ -6,4 +6,5 @@ publish = false
 
 [dependencies]
 logos = "0.15"
+num-bigint = "0.5.1"
 rowan = "0.16"
