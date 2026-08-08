@@ -1,0 +1,9 @@
+[package]
+name = "weal-engine"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+logos = "0.15"
+rowan = "0.16"
