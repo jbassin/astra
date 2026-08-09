@@ -1,0 +1,19 @@
+{
+  "name": "@astra/weal-engine",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "module": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "echo '@astra/weal-engine: no build step (gen/ is committed; rebuild via just weal-engine-build)'"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "vitest": "^4.1.9"
+  }
+}

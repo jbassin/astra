@@ -556,6 +556,38 @@ codex-refresh:
 codex-search-index:
     pnpm --filter @astra/codex search:build
 
+# --- weal engine (0032 D32-13) ---
+
+# Rebuild the committed @astra/weal-engine wasm artifact from
+# libs/rust/weal-engine: cargo (wasm32 release; the 8 MiB stack flag lives in
+# the crate's .cargo/config.toml, target-scoped) → wasm-bindgen --target
+# nodejs into libs/ts/weal-engine/gen → wasm-opt -O2 in place → re-write
+# gen/package.json {"type":"commonjs"} (wasm-bindgen won't; the CJS marker is
+# what lets the ESM wrapper createRequire the glue). BOTH tools are
+# HARD-REQUIRED at pinned versions (committed bytes must be
+# machine-independent): wasm-bindgen-cli 0.2.127 (== the crate's wasm-bindgen
+# pin; `cargo install wasm-bindgen-cli --version 0.2.127 --locked`) and
+# binaryen wasm-opt version 124 (GitHub release binary → ~/.local/bin).
+# Deterministic: two runs → byte-identical gen/ (recorded at S5).
+weal_bindgen_version := "0.2.127"
+weal_wasm_opt_version := "124"
+weal-engine-build:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd libs/rust/weal-engine
+    gen="../../ts/weal-engine/gen"
+    command -v wasm-bindgen >/dev/null || { echo "FATAL: wasm-bindgen not installed — cargo install wasm-bindgen-cli --version {{weal_bindgen_version}} --locked" >&2; exit 1; }
+    command -v wasm-opt >/dev/null || { echo "FATAL: wasm-opt not installed — binaryen version_{{weal_wasm_opt_version}} release into ~/.local/bin" >&2; exit 1; }
+    bg_v="$(wasm-bindgen --version | awk '{print $2}')"
+    [ "$bg_v" = "{{weal_bindgen_version}}" ] || { echo "FATAL: wasm-bindgen $bg_v != pinned {{weal_bindgen_version}}" >&2; exit 1; }
+    wo_v="$(wasm-opt --version | awk '{print $3}')"
+    [ "$wo_v" = "{{weal_wasm_opt_version}}" ] || { echo "FATAL: wasm-opt $wo_v != pinned {{weal_wasm_opt_version}}" >&2; exit 1; }
+    cargo build --release --target wasm32-unknown-unknown
+    wasm-bindgen --target nodejs --out-dir "$gen" target/wasm32-unknown-unknown/release/weal_engine.wasm
+    wasm-opt -O2 -o "$gen/weal_engine_bg.wasm" "$gen/weal_engine_bg.wasm"
+    printf '{\n  "type": "commonjs"\n}\n' > "$gen/package.json"
+    sha256sum "$gen"/weal_engine_bg.wasm "$gen"/weal_engine.js
+
 # --- Host edge (shared reverse proxy) ---
 
 # The decrypted CF token, exported as {$CF_API_TOKEN} for the caddyfile adapter.

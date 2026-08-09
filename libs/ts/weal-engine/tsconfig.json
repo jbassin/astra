@@ -1,0 +1,5 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  // gen/*.d.ts is wasm-bindgen output — skipLibCheck (base) keeps tsc off it.
+  "include": ["src"]
+}

@@ -113,7 +113,8 @@
     "**/public/**",
     "**/*.sdPlugin/**",
     "**/codex/data/**",
-    "**/codex/fixtures/**"
+    "**/codex/fixtures/**",
+    "**/weal-engine/gen/**"
   ],
   "overrides": [
     // --- 13 blocks ported 1:1 from biome.json's `overrides` (same file globs) ---

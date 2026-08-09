@@ -99,7 +99,7 @@ jobs:
   # typecheck/test/build are orchestrated by vp (0022 S15, D7) — `vite-plus` is a
   # root devDependency (pnpm-lock.yaml-pinned, installed by setup-pnpm's frozen
   # install, no separate install step), so `pnpm exec vp` resolves the exact locked
-  # binary. `vp run -r <task>` fans the task out across all 21 TS workspace members
+  # binary. `vp run -r <task>` fans the task out across all 22 TS workspace members
   # (task-graph + local caching; caching buys nothing on an ephemeral CI runner, so
   # no cache is persisted here — see [[viteplus-cutover-0022]] for the local-only
   # cache-hit evidence). `tsc --noEmit` stays the actual typecheck gate underneath
