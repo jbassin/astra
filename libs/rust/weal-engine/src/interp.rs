@@ -924,7 +924,12 @@ fn die_operand(v: Value) -> Box<DieTree> {
     })
 }
 
-fn cmp_values(op: CmpOp, l: Value, r: Value, span: Option<Span>) -> Result<Value, EvalError> {
+pub(crate) fn cmp_values(
+    op: CmpOp,
+    l: Value,
+    r: Value,
+    span: Option<Span>,
+) -> Result<Value, EvalError> {
     // ANY die operand lifts to Die[Bool] (D32-3).
     if matches!(l, Value::Die(_)) || matches!(r, Value::Die(_)) {
         return Ok(Value::Die(DieTree::Cmp {
@@ -961,7 +966,7 @@ fn cmp_values(op: CmpOp, l: Value, r: Value, span: Option<Span>) -> Result<Value
 
 // -- arithmetic -------------------------------------------------------------
 
-fn arith(op: BinOp, l: Value, r: Value, span: Option<Span>) -> Result<Value, EvalError> {
+pub(crate) fn arith(op: BinOp, l: Value, r: Value, span: Option<Span>) -> Result<Value, EvalError> {
     use crate::value::{DEC_SCALE, dec_check, dec_check_big};
     if matches!(l, Value::Die(_)) || matches!(r, Value::Die(_)) {
         // die ⊗ die / die ⊗ const stays symbolic (D32-4). A CONSTANT zero
@@ -1075,11 +1080,16 @@ pub struct RunOutput {
 
 /// A [`run`] failure. `Check` covers parse + type errors (the wasm API
 /// splits stages at S5); `Save` is a failing SAVES entry (D32-11
-/// `stage:"prelude"`); `Eval` carries the eval/fuel kind.
+/// `stage:"prelude"` — `span` points into THAT save's source); `Eval`
+/// carries the eval/fuel kind.
 #[derive(Debug, Clone, PartialEq)]
 pub enum RunError {
     Check(TypeError),
-    Save { name: String, message: String },
+    Save {
+        name: String,
+        message: String,
+        span: Option<Span>,
+    },
     Eval(EvalError),
 }
 
@@ -1099,7 +1109,7 @@ fn compile(source: &str, saves_env: &[(String, Scheme)]) -> Result<SExpr, TypeEr
     Ok(attach_spans(&core, &ast, &spans))
 }
 
-fn save_scheme(ty: &crate::types::Type) -> Scheme {
+pub(crate) fn save_scheme(ty: &crate::types::Type) -> Scheme {
     let mut vars = Vec::new();
     ty.free_vars(&mut vars);
     Scheme {
@@ -1131,16 +1141,19 @@ pub fn run(
                 return Err(RunError::Save {
                     name: name.clone(),
                     message: format!("parse error: {}", e.message),
+                    span: Some(e.span),
                 });
             }
             let (ast, spans) =
                 lower_root_spanned(&parsed.syntax()).map_err(|e| RunError::Save {
                     name: name.clone(),
                     message: e.message,
+                    span: Some((0, src.len())),
                 })?;
             let (core, ty) = check(&ast, &spans, &schemes).map_err(|e| RunError::Save {
                 name: name.clone(),
                 message: e.message,
+                span: Some(e.span),
             })?;
             (attach_spans(&core, &ast, &spans), ty)
         };
@@ -1150,6 +1163,7 @@ pub fn run(
         let v = it.eval(&sexpr, &env).map_err(|e| RunError::Save {
             name: name.clone(),
             message: e.message,
+            span: e.span,
         })?;
         env = env_bind(&env, name.clone(), v);
         schemes.push((name.clone(), save_scheme(&ty)));

@@ -4,7 +4,20 @@ version = "0.1.0"
 edition = "2024"
 publish = false
 
+# cdylib: the wasm32 build emits weal_engine.wasm for wasm-bindgen (D32-11);
+# rlib keeps native tests/examples linking as before.
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
+ab_glyph = "0.2"
 logos = "0.15"
 num-bigint = "0.5.1"
+plotters = { version = "0.3.7", default-features = false, features = ["bitmap_backend", "ab_glyph"] }
+png = "0.18.1"
+rand_chacha = "0.10.0"
+rand_core = "0.10.1"
 rowan = "0.16"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+wasm-bindgen = "=0.2.127"

@@ -1,0 +1,7 @@
+# S5 (0032 §6): the engine's 256-frame recursion depth cap needs a sized
+# stack under wasm32 — debug-sized frames overflowed a 2 MiB stack at S3, so
+# the wasm link gets 8 MiB. Target-scoped: native builds are untouched, and
+# the flag applies no matter who invokes cargo (the just recipe, CI, or a
+# by-hand build), keeping the committed artifact reproducible.
+[target.wasm32-unknown-unknown]
+rustflags = ["-C", "link-arg=-zstack-size=8388608"]

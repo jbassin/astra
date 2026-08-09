@@ -21,7 +21,12 @@
 //! symbolic [`DieTree`] into the engine and return a `SeamDist` with plain
 //! [`Value`] faces (evaluate(), lifted comparisons, min/max on dice, and
 //! the distribution accessors S5 reads).
+//!
+//! Slice S5: the render tree + seeded sampling + goodness (`render`), the
+//! D32-16 PMF plot (`plot`), and the D32-11 JSON seam (`api`) — [`evaluate`]
+//! is the single function the wasm module exports.
 
+pub mod api;
 pub mod ast;
 pub mod cst;
 pub mod dist;
@@ -32,11 +37,14 @@ pub mod interp;
 pub mod lexer;
 pub mod lower;
 pub mod parser;
+pub mod plot;
 pub mod prelude;
 pub mod printer;
+pub mod render;
 pub mod types;
 pub mod value;
 
+pub use api::evaluate;
 pub use ast::Expr;
 pub use fuel::Fuel;
 pub use infer::{CoreExpr, PreludeEntry, TypeError, check, check_source, prelude_types};
@@ -46,6 +54,7 @@ pub use interp::{
 pub use lower::{SpanTree, lower_root_spanned};
 pub use parser::{Parse, ParseError, parse};
 pub use printer::print;
+pub use render::{Goodness, RenderedDisplay, Sampler, render_die_display};
 pub use types::{Scheme, Type};
 pub use value::{Cmd, DieTree, DisplayItem, ErrorKind, EvalError, Keep, PoolTree, SaveCmd, Value};
 
