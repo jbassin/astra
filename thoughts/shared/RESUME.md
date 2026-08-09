@@ -36,7 +36,50 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `5e69859`, 2026-08-01 — **the Vol.2 LaTeX book is FULLY ILLUSTRATED + polished** — Homebrewery retired, all 9 art slots carry real stakeholder art (uncropped, gold-framed), front matter trimmed to cover+contents, table defects root-caused incl. a wild \pageref/\fontsize strutbox corruption; ▶ NEXT = stakeholder content review (incl. the staff prose trims), then Foundry compendium module → joint review)
+## Current state — UPDATE THIS SECTION (as of `2fa5d93`, 2026-08-09 — **weal v2 (0032) BUILT + DEPLOYED LIVE**: the typed dice language + exact-distribution Rust engine → committed wasm → bot swap, S1–S7 all pushed; gates A/B/C/G met, **D/E/F ◐ PARTIAL — one Discord checklist pass + one bot restart closes them**; ▶ NEXT = the live-gate residue below, then the carried items: Vol.2 book stakeholder review → Foundry compendium module → joint review)
+
+> **✅ weal v2 (0032), 2026-08-09 (`798f8e3` S1 lexer/CST · `bc8049d` S2 checker ·
+> `500179f` S3 interpreter · `a060c4b`+`52c8984` S4/S4b dist engine (icepool port,
+> oracle 32/32) · `7875cbb`+`e09695f` S5 render/plot/wasm + committed member ·
+> `40c7dde` S6 bot swap (v1 roller/ DELETED) · `2dd2cea` S7 live fix · `2fa5d93` S7
+> docs/charter, all pushed + DEPLOYED):**
+> 1. **Product:** rostered players type weal v2 in Discord — a small strict HM-typed
+>    expression language where dice are exact distributions (icepool-ported engine,
+>    BigUint weights); traces w/ strikethrough/chains, goodness tiers, PMF plot PNGs,
+>    `save` macros as source text in `funcs_v2` (v1 `funcs` = dead archive by design).
+>    Language guide = `apps/weal-bot/README.md`; engine = `libs/rust/weal-engine`
+>    (the repo's ONLY Rust, charter-amended into CLAUDE.md/CONTRIBUTING.md) compiled
+>    via `just weal-engine-build` to the COMMITTED `libs/ts/weal-engine/gen/` wasm.
+> 2. **Gate record (spec §6):** A ✅ cargo clean at HEAD (381 tests/16 suites) ·
+>    B ✅ scoped pnpm at HEAD + per-slice full lanes · C ✅ oracle/goldens/round-trip ·
+>    G ✅ docs+charter · **D/E/F ◐ PARTIAL** — deploy-window rolls verified (17 spans,
+>    0 ERROR logs, `astra.weal.rolls{goodness}` live; the Results-field defect
+>    found+fixed live `2dd2cea`) but the per-case list is unexercised, `funcs_v2` is
+>    EMPTY (no live save yet), and `weal.v2.errors`/`weal.v2.fuel_aborts` are unborn
+>    lazyCounters (fire on first error — not a wiring bug).
+> 3. **⭐ Gotchas in [[weal-0032-gotchas]]:** unanchored `dist/` gitignore swallowed
+>    `src/dist/` · plotters cfg-outs its font backend on wasm32 (ab_glyph direct +
+>    label-PIXEL goldens) · depth-256 needs the 8 MiB wasm stack · build recipe
+>    hard-pins wasm-bindgen 0.2.127 + wasm-opt 124, byte-deterministic · D32-15
+>    doubled trailing value (live-found) · fuel m6 record: real macros ≤15 ms, worst
+>    abort `1000d1000` = 1.7 s (`states`) — adversarial only, accepted residue.
+> - **▶ NEXT: (1) close gates D/E/F** — a rostered player types the 15-message
+>   checklist (d20+7 · 2d20kh1+7 · 4d6kh3 · labels · `dl([:fine,:good,:great])` +
+>   overlay `display` · `1 + "a"` caret · `lol`/`:p`/parse-fail silence ·
+>   `save(:smite, |n| sum(pool(n, d8)) + 5)` + `smite(3)` · `save(:pow, |die, n|
+>   explode(die, n))` + `4d6pow2` · `10000d10000` fuel abort · `plot(4d6kh3)` ·
+>   giant-Str-face truncation); then staff: bot restart → `smite(3)` still callable +
+>   hand-inserted stale funcs_v2 row → exactly a WARN · confirm the two v2 counters
+>   born in SigNoz · append the results to spec §6. **(2) carried:** Vol.2 book
+>   stakeholder content review (6 trimmed openers) → **(3) Foundry compendium module**
+>   (trigger-field + cost-surfacing questions at scoping) → **(4) joint review**
+>   (revisions.md @ 173). codex gate H unchanged; heartwood ⏸.
+
+---
+
+### Previous section (2026-08-01) — Liturgy Vol.2 LaTeX book (superseded above)
+
+## (was) Current state (as of `5e69859`, 2026-08-01 — **the Vol.2 LaTeX book is FULLY ILLUSTRATED + polished** — Homebrewery retired, all 9 art slots carry real stakeholder art (uncropped, gold-framed), front matter trimmed to cover+contents, table defects root-caused incl. a wild \pageref/\fontsize strutbox corruption; ▶ NEXT = stakeholder content review (incl. the staff prose trims), then Foundry compendium module → joint review)
 
 > **✅ Liturgy Vol.2 LaTeX book, 2026-07-31→08-01 (`28d084a` S2 emitter · `4697ad0`
 > S3 audit · `3d35727` S4 art wiring + Homebrewery retirement · `d0b81ec` front-matter

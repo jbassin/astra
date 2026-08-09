@@ -383,3 +383,67 @@ things; constructor leaves exempt); (3) pools show faces with dropped dice struc
   SeamDist accessor surface for S5 (plain-Value faces; Dec-face mean/std included); Budget
   fresh-per-call (S5 wires the wasm budget); 319 tests total. Callback amended to 4-arg
   (per-node evaluator funcs — nested evaluate support).
+- **S5** `7875cbb` crate half + `e09695f` member half (sonnet): render.rs (ChaCha20 seeded
+  sampling, keep-window strikethrough, `face→face` chains, §3 collapse policy incl. depth-4 +
+  900-char progressive collapse, markdown escaping, headline ≤ 80, goodness thirds-by-position;
+  goldens under seed `[77u8; 32]`; recorded deviation: count-1 dice render `d6` not `1d6`);
+  plot.rs (**recorded DEVIATION from D32-9's letter:** plotters 0.3.7 cfg-OUTS the ab_glyph
+  backend on wasm32 and hard-selects a browser-DOM backend — a Node trap — so plotters draws
+  geometry only and text is rasterized directly via ab_glyph over the one embedded
+  DejaVuSans.ttf; identical pixels native/wasm; label-pixel goldens guard blank text; base64
+  hand-rolled); api.rs per D32-11; `.cargo/config.toml` wasm32 `-zstack-size=8388608` (the S3
+  depth-256 flag, proven via wasm-dis `__stack_pointer`). Member: `just weal-engine-build`
+  (wasm-bindgen-cli 0.2.127 + binaryen wasm-opt 124 both HARD-pinned, fails loudly;
+  determinism proven — two runs byte-identical, hashes in the commit); committed `gen/` (CJS
+  glue + 1.9 MB wasm + `{"type":"commonjs"}` marker); ESM wrapper via createRequire w/
+  wasm-trap catch → `{ok:false, stage:"fuel"}`; vitest smoke on the REAL artifact; oxlint/oxfmt
+  ignores; ci.yml member count 21→22; NO Dockerfile edits (libs/ts COPY'd wholesale, proven
+  with a weal-bot image build). 381 cargo tests total.
+- **S6** `40c7dde` (sonnet): the bot swap — engine.ts (noise gate, panic catch +
+  `reinstantiate()`, seed dep, `weal.v2.errors{stage:"panic"}`), rng.ts relocation + the entire
+  v1 `roller/` DELETED (13 files, −2,440 lines; grep-proven no dangling imports), error replies
+  (fence-safe caret spans), plot file seam, funcs_v2 DDL + ordered boot-load + skip-on-stale,
+  defensive embed truncation + boundary test, overlay 3-file change (plain `expression`,
+  `display` headline), telemetry adds (`weal.v2.errors`/`weal.v2.fuel_aborts` lazyCounters).
+  Vitest on the real wasm: 70 tests (handler suite, error-reply goldens, noise-gate cases,
+  panic fixture → WARN + reply, funcs_v2 load/skip, persistence guards).
+- **S7** `2dd2cea` fix + `2fa5d93` docs + deploy (orchestrator, two sessions): `just up`
+  rebuilt + recreated weal-bot/weal-overlay (bot boot 2026-08-09 10:49 UTC — clean connect,
+  "loaded 0/0 saved weal v2 sources"). Live rolls in the window found the ONE defect:
+  D32-15's literal Results template appended the backticked headline after renderText's own
+  trailing `= value` (`…kh3 = 15 = \`15\``) → field now replaces the trailing plain value with
+  the backticked one (`2dd2cea`), naive-append fallback kept for tail divergence — D32-15
+  clarified to that reading. Docs: `apps/weal-bot/README.md` language guide +
+  `libs/rust/weal-engine/README.md` + the CLAUDE.md/CONTRIBUTING.md Rust-lane charter
+  amendment (M9). **Fuel tuning (m6) recorded** vs the committed wasm on the deploy host:
+  every realistic macro ≤ 15 ms (adv/bless/smite/successes/explode ≤ 8 ms warm); heaviest
+  legal case measured `30d20` = 266 ms, `plot(30d20)` = 148 ms; abort paths: `10000d10000`
+  222 ms (transitions), explode-depth/recursion < 1 ms, **worst case `1000d1000` = 1.7 s
+  hitting the `states` counter** — adversarial input only, two orders above any real macro;
+  accepted as residue (a states-cap retune would need an engine rebuild — revisit only if a
+  player actually hits it).
+
+### Gate record (S7 close, 2026-08-09)
+
+- **A ✅** at HEAD `2fa5d93`: `cargo fmt --check` clean, `cargo clippy --all-targets -- -D
+  warnings` clean, **381 tests / 16 suites** green.
+- **B ✅ (scoped)** at HEAD: `@astra/weal-engine` wasm smoke + `@astra/weal-bot` 70 tests +
+  typecheck green; full repo lanes were reproduced per-slice before each push (commit
+  discipline); uv lane untouched by 0032 (no Python files in any slice).
+- **C ✅** oracle 32/32 exact (S4); §3 render goldens + printer round-trip property +
+  plot label-pixel golden all inside the gate-A suite at HEAD.
+- **D ◐ PARTIAL** — the deploy-window live pass (17 `weal.handleMessage` spans, 12:54–13:11
+  UTC, real rolls w/ goodness INFO logs; noise-gated messages span < 1 ms with no reply;
+  the Results-field defect found + fixed live). NOT yet formally exercised live:
+  the per-case checklist (coercion, strikethrough, labels, atom die + overlay `display`,
+  type-error caret, `lol`/`:p` silence, `save` → callable + suffix, fuel abort, plot PNG,
+  giant-Str truncation). The 15-message checklist is written up in RESUME — one Discord
+  pass + one bot restart closes it.
+- **E ◐ PARTIAL** — `dice` rows written w/ guards (24 rows in-window incl. dropped dice);
+  v1 `funcs` untouched (11 rows); funcs_v2 boot-load runs. NOT yet: a live `save`
+  (funcs_v2 still empty), restart → still-callable, the hand-inserted stale-row WARN test.
+- **F ◐ PARTIAL** — `astra.weal.rolls{goodness}` live in SigNoz (bad/okay/good series born
+  in-window); **0 ERROR logs** in the deploy window ✅. `weal.v2.errors`/`weal.v2.fuel_aborts`
+  are lazyCounters that have never fired live, so the metrics don't exist yet — they're born
+  with the gate-D error cases.
+- **G ✅** READMEs + charter amendment (`2fa5d93`); RESUME/memory checkpoint = this commit.
