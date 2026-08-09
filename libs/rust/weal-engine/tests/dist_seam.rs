@@ -399,15 +399,48 @@ fn evaluate_hit_counting_is_the_exact_binomial() {
 
 #[test]
 fn evaluate_iterates_faces_in_descending_face_order() {
-    // Encode the visit sequence into the state: with one die the counts
-    // don't disturb the digits, so every path sees :c, :b, :a (descending
-    // rank) → 321 exactly.
+    // Encode the visit sequence into the state. The closure fires only for
+    // LANDED faces (the D32-8 count-0 amendment), so each path's digits are
+    // its distinct faces in descending rank order: {a,b} → 21 (never 12),
+    // {a,c} → 31, {b,c} → 32; doubles see one face.
     let tree = die_of(
-        "evaluate(pool(1, dl([:a, :b, :c])), 0, \
+        "evaluate(pool(2, dl([:a, :b, :c])), 0, \
          |s, f, n| match f | :a -> s * 10 + 1 | :b -> s * 10 + 2 | _ -> s * 10 + 3)",
     );
     let d = dist_with_interp(&tree).unwrap();
-    assert_eq!(num_support(&d), vec![(321, 3)]);
+    assert_eq!(d.denominator(), w(9));
+    assert_eq!(
+        num_support(&d),
+        vec![(1, 1), (2, 1), (3, 1), (21, 2), (31, 2), (32, 2)]
+    );
+}
+
+#[test]
+fn evaluate_closure_never_sees_count_zero_faces() {
+    // The divergence regression (goodness-null root cause): a count-blind
+    // fold like `s + f` must fold over the faces that LANDED, not the whole
+    // support with count-0 calls (which made every path a constant 21 over
+    // 2d6 and collapsed the dist to a single face). Exact dist: doubles
+    // {a,a} → a (weight 1 each), pairs {a,b} → a+b (weight 2 each).
+    let tree = die_of("evaluate(pool(2, d6), 0, |s, f, n| s + f)");
+    let d = dist_with_interp(&tree).unwrap();
+    assert_eq!(d.denominator(), w(36));
+    assert_eq!(
+        num_support(&d),
+        vec![
+            (1, 1),
+            (2, 1),
+            (3, 3),
+            (4, 3),
+            (5, 5),
+            (6, 5),
+            (7, 6),
+            (8, 4),
+            (9, 4),
+            (10, 2),
+            (11, 2),
+        ]
+    );
 }
 
 #[test]

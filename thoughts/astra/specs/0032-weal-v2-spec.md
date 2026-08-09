@@ -124,7 +124,12 @@ type/eval errors get a visible reply (R9) — gated so ordinary chat can never t
   engine bakes the face-order rank into the sort key, so atom dice iterate in descending
   face-order — the original "face-order vector, reversed" wording holds for atoms and `NdM`,
   and diverges only for `dm` with out-of-insertion-order numeric keys, where numeric order is
-  the correct semantics)*, pinned + documented.
+  the correct semantics)*, pinned + documented. *(Second amendment, post-S7: the user closure
+  fires ONLY for faces with count >= 1 — a count-0 DP transition is the identity, never a
+  closure application. S4b had pinned icepool's count-0 contract on the dist side while S5's
+  sampler folded landed faces only; count-sensitive folds (e.g. `s + f`) got divergent
+  dists — constant 21 over 2d6 — and null goodness. The sampler/README semantic won: traces
+  show the landed faces, so the fold folds over exactly those.)*
 
 ### Engine
 
@@ -422,6 +427,19 @@ things; constructor leaves exempt); (3) pools show faces with dropped dice struc
   hitting the `states` counter** — adversarial input only, two orders above any real macro;
   accepted as residue (a states-cap retune would need an engine rebuild — revisit only if a
   player actually hits it).
+
+- **Post-S7 fix** (orchestrator, 2026-08-09): the **D32-8 second amendment** — dist-side
+  evaluate called the user closure for count-0 faces (S4b's icepool contract) while the
+  sampler folded landed faces only; any count-sensitive fold (`s + f`) got a divergent,
+  degenerate dist (constant 21 over 2d6, support 1) and null goodness — found chasing a
+  goodness-null report on an atom-valued evaluate. Fix: `run_evaluator_step` short-circuits
+  count 0 to the identity (interp.rs); the descending-order pin test rewritten over a 2-die
+  pool (its order-pinning purpose survives); regression tests: exact landed-face dist of
+  `s + f` over 2d6 (11-face support, denom 36) + render-level goodness non-null. Cargo 383
+  green; wasm rebuilt via the pinned recipe (glue js byte-identical, only the wasm changed);
+  member smoke 5 + bot 70 green on the new artifact. Every count-neutral fold's dist is
+  byte-identical (oracle/goldens untouched). Verified worked example: Blades in the Dark
+  outcome dists 0d–8d match exact enumeration to 6 decimals through `plot`.
 
 ### Gate record (S7 close, 2026-08-09)
 

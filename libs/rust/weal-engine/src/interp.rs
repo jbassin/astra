@@ -529,6 +529,12 @@ impl<'f> Interp<'f> {
     /// `(state, face, count)` with the effect guard armed. This is the
     /// callback body S4's DP loop wraps into
     /// [`crate::dist_seam::dist_of_with`].
+    ///
+    /// The user closure sees ONLY faces that actually landed (count >= 1) —
+    /// the language semantic the render sampler and the README define. The
+    /// DP loop still transitions through every support face for state
+    /// alignment, but a count-0 transition is the identity, never a closure
+    /// application (D32-8 amendment at the goodness/dist-divergence fix).
     pub fn run_evaluator_step(
         &mut self,
         func: &Value,
@@ -536,6 +542,9 @@ impl<'f> Interp<'f> {
         face: &Value,
         count: u64,
     ) -> Result<Value, EvalError> {
+        if count == 0 {
+            return Ok(state.clone());
+        }
         self.evaluate_depth += 1;
         let result = self.apply(
             func.clone(),

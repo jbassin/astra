@@ -299,3 +299,15 @@ fn sampling_is_deterministic_per_seed() {
     let c = weal_engine::evaluate("4d6kh3", "[]", &[99u8; 32], 0, "run");
     assert_ne!(a, c);
 }
+
+// -- the D32-8 count-0 amendment (goodness/dist divergence regression) ------
+
+#[test]
+fn evaluate_goodness_reflects_the_landed_face_dist() {
+    // Before the amendment the dist side folded count-0 faces too,
+    // collapsing `s + f` over 2d6 to the constant 21 — support_len 1 →
+    // goodness null despite a real spread. The closure now fires only for
+    // landed faces on BOTH sides.
+    let d = display0("evaluate(pool(2, d6), 0, |s, f, c| s + f)");
+    assert_ne!(d["goodness"], Json::Null);
+}
