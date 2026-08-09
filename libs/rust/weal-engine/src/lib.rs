@@ -13,6 +13,7 @@
 
 pub mod ast;
 pub mod cst;
+pub mod dist;
 pub mod infer;
 pub mod lexer;
 pub mod lower;
