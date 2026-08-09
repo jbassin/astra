@@ -119,7 +119,12 @@ type/eval errors get a visible reply (R9) — gated so ordinary chat can never t
 - **D32-8 — User evaluators (R17).** `evaluate(Pool[T], S, S -> T -> Num -> S) -> Die[S]`;
   transition closure interpreted inside the DP loop (whole interpreter lives in the wasm module).
   States = weal values, structural eq/hash; the equatable check per D32-3. Iteration =
-  **descending** face order (the die's face-order vector, reversed), pinned + documented.
+  **descending SORTED order** *(amended at S4 build: the keep-tuple mechanism is defined over
+  sorted positions, so sorted order is the only coherent iteration; for non-numeric faces the
+  engine bakes the face-order rank into the sort key, so atom dice iterate in descending
+  face-order — the original "face-order vector, reversed" wording holds for atoms and `NdM`,
+  and diverges only for `dm` with out-of-insertion-order numeric keys, where numeric order is
+  the correct semantics)*, pinned + documented.
 
 ### Engine
 
@@ -345,4 +350,36 @@ things; constructor leaves exempt); (3) pools show faces with dropped dice struc
 
 ## 6. Build record
 
-(to be filled per slice)
+- **S1** `798f8e3` (sonnet): crate + logos lexer (fat die token w/ priority) + rowan lossless CST
+  + recoverable parser + AST/lowering (placeholder desugaring, suffix split) + canonical printer;
+  54 tests; toolchain pinned stable 1.96.0. Spec gap closed in-slice: a `TYPE_NAME` token
+  (D32-2's `annot` needed it, D32-1's list omitted it).
+- **S2** `bc8049d` (sonnet): checker + elaborator per D32-3/4/5 — union lattice w/ contravariant
+  domain intersection, exhaustiveness/redundancy (Maranget usefulness), sum coercion, both-shape
+  suffix resolution (pool-wins), monomorphic recursion, equatable-deferred; CoreExpr contract +
+  parallel SpanTree (the S1 span gap closed without touching AST equality); 146 tests total.
+  In-envelope calls recorded in module docs (two-var arithmetic defaults Num; `4d6kh3e2` ≡
+  `4d6e2kh3` — the suffix classes commute in the pool representation).
+- **S3** `500179f` (sonnet, resumed cleanly after a session-limit kill): values + symbolic
+  DieTree + interpreter (currying, captures, monomorphic recursion) + fuel (incl. construction
+  caps + depth 256) + effect guard + native prelude w/ prelude_types drift test + the R21 save
+  serializer (capture→`let`s, prelude-collision renames); 231 tests total. Keeps live on
+  `PoolTree.keep` (window chain), not Kh/Kl tree nodes — (count, die, keep) recoverable as
+  pinned. Flag for S5: depth-256 needs a sized wasm stack (debug frames overflowed a 2 MiB
+  test thread).
+- **S4** `a060c4b` (sonnet, worktree, resumed after the same kill; merge `cd70b41`): the icepool
+  port — Weight u128→BigUint, Dist w/ explicit face-order vector, pool DP (comb_row cache,
+  keep-tuples incl. negative, room memo, skip_weight w/ the count-0 contract, lo_hi_skip),
+  keep-1 closed forms (property-proven ≡ pool recursion), explode/reroll (laws verified against
+  icepool source), successes, exact mean/std; Budget w/ D32-12 defaults (transitions also meter
+  comb_row cells). **Oracle: 32/32 exact** vs Python icepool v2.2.2 `33e7e650` (gate C half
+  met at S4). 193 tests in-worktree. **D32-8 AMENDED** (see the decision): eval_pool iterates
+  descending SORTED order; rank-baked non-numeric faces make that ≡ face order. Repo trap
+  fixed at merge: root `.gitignore`'s unanchored `dist/` swallowed `src/dist/` — negation added.
+- **S4b** `52c8984` (sonnet): dist_seam wired — Face enum (rankless numeric / rank-baked
+  Ranked), every DieTree kind lowered, keep-chain→single-KeepTuple (5d10kh3kl1 ≡ middle
+  window proven), evaluate() end-to-end through the language (binomial over `dl([:hit,:miss])`,
+  kept-pool count-0 contract, effect-guard surfacing), Cmp face order forced `[:false,:true]`,
+  SeamDist accessor surface for S5 (plain-Value faces; Dec-face mean/std included); Budget
+  fresh-per-call (S5 wires the wasm budget); 319 tests total. Callback amended to 4-arg
+  (per-node evaluator funcs — nested evaluate support).
