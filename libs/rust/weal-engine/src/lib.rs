@@ -13,9 +13,14 @@
 //!
 //! Slice S3: runtime values + symbolic die trees (`value`), the
 //! tree-walking interpreter with fuel/effects/saves (`interp` + `fuel` +
-//! `prelude`), and the S4 distribution seam (`dist_seam` — stubbed until
-//! `dist.rs` lands). [`run`] is the top-level check→interp→display driver
-//! that S5's wasm API wraps.
+//! `prelude`). [`run`] is the top-level check→interp→display driver that
+//! S5's wasm API wraps.
+//!
+//! Slice S4: the exact-distribution engine (`dist`, the icepool port) and —
+//! at S4b — the wired seam (`dist_seam`): `dist_of`/`dist_of_with` lower a
+//! symbolic [`DieTree`] into the engine and return a `SeamDist` with plain
+//! [`Value`] faces (evaluate(), lifted comparisons, min/max on dice, and
+//! the distribution accessors S5 reads).
 
 pub mod ast;
 pub mod cst;

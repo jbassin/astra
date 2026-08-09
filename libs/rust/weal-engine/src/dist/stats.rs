@@ -76,8 +76,9 @@ pub fn variance_rational<F: NumFace>(die: &Dist<F>) -> (BigInt, BigUint) {
 const DECIMAL_PLACES: u32 = 6;
 
 /// Format `num/den` (den > 0) as a decimal string with 6 places,
-/// round-half-away-from-zero.
-fn rational_to_decimal(num: &BigInt, den: &BigUint) -> String {
+/// round-half-away-from-zero. (`pub(crate)`: the dist seam reuses this for
+/// Dec-face means with a scale-adjusted denominator.)
+pub(crate) fn rational_to_decimal(num: &BigInt, den: &BigUint) -> String {
     let scale = BigUint::from(10u32).pow(DECIMAL_PLACES);
     let mag = num.magnitude() * &scale;
     // round(mag / den) half-up on the magnitude.

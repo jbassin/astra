@@ -47,6 +47,7 @@ pub use budget::{Budget, DistError};
 pub use die_ops::{explode, reroll_face, reroll_faces};
 pub use keep::KeepTuple;
 pub use pool::{eval_pool, highest_1, lowest_1, successes, sum_pool};
+pub(crate) use stats::rational_to_decimal;
 pub use stats::{
     NumFace, mean_decimal, mean_rational, quantity_ge, quantity_le, std_decimal, variance_rational,
 };
