@@ -162,7 +162,7 @@ describe("die rolls (real engine, seeded)", () => {
     expect(msg?.host.slug).toBe("gsr");
     expect(msg?.title).toBe("Argyle: 11");
     expect(msg?.contents).toBe("BAD_LINE");
-    expect(msg?.fields).toEqual([["Results", "d20 ⟪4⟫ + 7 = 11 = `11`"]]);
+    expect(msg?.fields).toEqual([["Results", "d20 ⟪4⟫ + 7 = `11`"]]);
     expect(msg?.thumbnail).toBe("https://2e.aonprd.com/Images/Class/champion_Icon.png");
     expect(msg?.footer).toBe("bad • 999 (Josh did this)");
     expect(h.broadcasts).toEqual([
@@ -195,7 +195,7 @@ describe("die rolls (real engine, seeded)", () => {
   test("2d20kh1 + 7 (the sum-coercion case) shows the struck dropped die", async () => {
     const h = harness();
     await handleMessage("2d20kh1 + 7", PROFILE, h.deps);
-    expect(h.sent[0]?.fields).toEqual([["Results", "2d20 ⟪~~4~~,15⟫kh1 + 7 = 22 = `22`"]]);
+    expect(h.sent[0]?.fields).toEqual([["Results", "2d20 ⟪~~4~~,15⟫kh1 + 7 = `22`"]]);
     // BOTH sampled dice persist, kept and dropped alike (D32-17)
     expect(h.store.inserts).toEqual([
       [20, 4, 42, 1],
@@ -343,7 +343,7 @@ describe("persistence guards (D32-17)", () => {
   test("4d6kh3 writes all 4 sampled rows incl. the dropped die", async () => {
     const h = harness();
     await handleMessage("4d6kh3", PROFILE, h.deps);
-    expect(h.sent[0]?.fields).toEqual([["Results", "4d6 ⟪6,~~1~~,3,6⟫kh3 = 15 = `15`"]]);
+    expect(h.sent[0]?.fields).toEqual([["Results", "4d6 ⟪6,~~1~~,3,6⟫kh3 = `15`"]]);
     expect(h.store.inserts).toEqual([
       [6, 6, 42, 1],
       [6, 1, 42, 1],

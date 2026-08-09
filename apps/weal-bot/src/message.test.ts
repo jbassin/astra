@@ -62,7 +62,13 @@ describe("defensive truncation (D32-15 boundary)", () => {
 
   test("an in-limit title/field passes through exactly", () => {
     expect(dieTitle("Argyle", "21", "good")).toBe("Argyle: 21");
-    expect(resultsField(dieDisplay())).toEqual(["Results", "d20 ⟪14⟫ + 7 = 21 = `21`"]);
+    // the trailing plain value is replaced by the backticked one (S7 clarification)
+    expect(resultsField(dieDisplay())).toEqual(["Results", "d20 ⟪14⟫ + 7 = `21`"]);
+  });
+
+  test("a renderText without the headline tail falls back to the naive append", () => {
+    const display = dieDisplay({ renderText: "d20 ⟪14⟫ + 7", headline: "21" });
+    expect(resultsField(display)).toEqual(["Results", "d20 ⟪14⟫ + 7 = `21`"]);
   });
 });
 

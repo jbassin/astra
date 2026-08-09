@@ -120,9 +120,19 @@ export function dieFooter(goodness: WealGoodness | null, seed: number, blame: st
   }
 }
 
-/** The `Results` field for a roll embed: `` {renderText} = `{headline}` ``. */
+/**
+ * The `Results` field for a roll embed: the render trace with its final value
+ * backticked — `` 4d6 ⟪6,~~1~~,3,6⟫kh3 = `15` ``. The engine's renderText already
+ * ends in `= {headline}` (§3), so the D32-15 template's naive append would double
+ * the value; strip the trailing plain value and re-append it backticked (S7
+ * clarification). Falls back to the naive form if the tail ever diverges.
+ */
 export function resultsField(display: WealDieDisplay): [string, string] {
-  return ["Results", truncate(`${display.renderText} = \`${display.headline}\``, FIELD_LIMIT)];
+  const tail = ` = ${display.headline}`;
+  const text = display.renderText.endsWith(tail)
+    ? `${display.renderText.slice(0, -tail.length)} = \`${display.headline}\``
+    : `${display.renderText} = \`${display.headline}\``;
+  return ["Results", truncate(text, FIELD_LIMIT)];
 }
 
 // --- error reply (D32-14) ------------------------------------------------------------
