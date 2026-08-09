@@ -10,7 +10,8 @@ and ship work here" companion.** Read both.
 ## 1. What astra is (orient first)
 
 astra is the campaign's live stack — a **polyglot monorepo**: Python (data + LLM, managed by **uv**) and
-TypeScript (web, managed by **pnpm**), two toolchains, no third language. It began as a re-architecture of
+TypeScript (web, managed by **pnpm**), two primary toolchains — plus one deliberately confined third:
+Rust, for the `libs/rust/weal-engine` crate only (§4). It began as a re-architecture of
 its predecessor (faerrin, since decommissioned and deleted); that migration is long complete, and new work
 builds on astra's own established subsystems and patterns.
 
@@ -87,6 +88,17 @@ declares** (`pyproject.toml` → uv; `package.json` → pnpm). They never cross-
 **uv rejects empty members** (a glob-matched dir without a `pyproject.toml` is a hard error) → don't
 pre-create placeholder member dirs; keep glob roots in git with a `.gitkeep` *file*. pnpm ignores
 manifest-less dirs, so this is uv-only.
+
+**Rust (confined — the weal engine only, 0032):** `libs/rust/weal-engine/` is the repo's ONLY Rust — the
+weal v2 dice-language engine, compiled to wasm and **committed** under `libs/ts/weal-engine/gen/` (the
+`@astra/weal-engine` pnpm member consumes it; no app ever runs cargo). Toolchain pinned **1.96.0** via
+`rust-toolchain.toml`. Rebuild the artifact with **`just weal-engine-build`** (pinned wasm-bindgen-cli
+0.2.127 + wasm-opt 124, hard-required; deterministic — two runs are byte-identical). **Never hand-edit
+`gen/`** — it's a build product in git; always regenerate via the recipe. There is **no Rust CI lane**;
+the local gate is
+`cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test`
+(run from the crate dir, recorded per slice) — a vitest wasm smoke guards the committed artifact in CI.
+See `libs/rust/weal-engine/README.md`.
 
 ---
 
@@ -252,7 +264,8 @@ Cadence: commit each green slice, push on chunk completion (§3). Reproduce CI l
 ```
 apps/        # per-subsystem apps (py or ts, manifest-decided); frontends are SSR services
 libs/py/     # observe, config, llm, ontology  (+ _smoke)
-libs/ts/     # observe, config, gothic, vellum-lang  (+ _smoke)
+libs/ts/     # observe, config, gothic, vellum-lang  (+ _smoke); weal-engine = committed wasm
+libs/rust/   # weal-engine — the only Rust (0032); rebuild via `just weal-engine-build`
 ontology/    # ontology-being (table META), ontology-config (KDL config/secret refs)
 dagster/     # Dagster code location (loads each pipeline app's assets; schedules/sensors)
 deploy/      # docker-compose.yml, otel-collector.yaml, SOPS

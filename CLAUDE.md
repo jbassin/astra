@@ -2,7 +2,10 @@
 
 Root guidance for **astra** — the campaign's live stack (a completed 2026 re-architecture of its
 now-decommissioned predecessor, faerrin). astra is a **polyglot monorepo**: Python (data + LLM, managed by **uv**) and TypeScript (web servers +
-frontends, managed by **pnpm**) — two toolchains, no third language. Read [`ASTRA.md`](./ASTRA.md) for the
+frontends, managed by **pnpm**) — two primary toolchains, plus a third, **deliberately confined** one:
+Rust, for the `libs/rust/weal-engine` crate only (0032), compiled to a **committed** wasm artifact
+(`libs/ts/weal-engine/gen/`) that the pnpm workspace consumes — cargo is needed only when the engine
+changes, and CI lanes are unchanged (no Rust CI lane). Read [`ASTRA.md`](./ASTRA.md) for the
 product vision and [`thoughts/astra/plans/`](./thoughts/astra/plans/) for the migration roadmap (`0000`)
 and per-subsystem sub-plans. **[`CONTRIBUTING.md`](./CONTRIBUTING.md)** is the practical onboarding guide —
 the dev process, exact CI commands, working-style expectations, and the load-bearing gotchas catalog.
@@ -107,7 +110,8 @@ Three non-overlapping concerns; **SigNoz/OTel is the single pane across all thre
 ```
 apps/        # per-subsystem apps (py or ts, manifest-decided); sites build to dist/
 libs/py/     # observe, config, llm  (+ _smoke)
-libs/ts/     # observe, config, gothic, vellum-lang  (+ _smoke)
+libs/ts/     # observe, config, gothic, vellum-lang  (+ _smoke); weal-engine = committed wasm artifact
+libs/rust/   # weal-engine — the ONLY Rust in the repo (0032); builds via `just weal-engine-build`
 ontology/    # ontology-being, ontology-config (py truth + config stores)
 dagster/     # Dagster definitions (loads each pipeline app's assets; schedules/sensors)
 deploy/      # docker-compose.yml (Dagster + SigNoz + services), otel-collector.yaml, SOPS
@@ -125,6 +129,12 @@ dist/        # all site-gen output (gitignored), served by Caddy
   lint); typescript **5.x**; **vite-plus (`vp`) `0.2.2`** exact-pinned root devDependency — the
   orchestrator for typecheck/test/build (task graph + local caching; `tsc --noEmit` stays the
   actual typecheck gate underneath it, D8).
+- Rust **1.96.0** (pinned via `libs/rust/weal-engine/rust-toolchain.toml`) for the weal-engine crate
+  ONLY — compiled to the committed `libs/ts/weal-engine/gen/` wasm via `just weal-engine-build`
+  (wasm-bindgen-cli **0.2.127** + binaryen wasm-opt **124**, both hard-pinned in the recipe). cargo
+  runs only when the engine changes; **no Rust CI lane** — the local gate
+  (`cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test`) is recorded per
+  slice, and a vitest wasm smoke guards the committed artifact in CI.
 - Reproduce CI locally:
   `uv run ruff check && uv run ruff format --check && uv run ty check && uv run pytest` and
   `pnpm exec vp run -r typecheck && pnpm run lint && pnpm run format:check && pnpm exec vp run -r
