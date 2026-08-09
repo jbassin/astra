@@ -19,6 +19,7 @@
 
 pub mod ast;
 pub mod cst;
+pub mod dist;
 pub mod dist_seam;
 pub mod fuel;
 pub mod infer;

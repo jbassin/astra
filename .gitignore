@@ -1,5 +1,8 @@
 # Build output (all site-gen lands here; served by Caddy)
 dist/
+# …but the weal-engine's dist(ribution) module is source, not build output
+# (the unanchored pattern above silently swallowed it — 0032 S4 merge)
+!libs/rust/weal-engine/src/dist/
 
 # Runtime artifacts — the single bind-mount root for state that used to live in named
 # Docker volumes (audio + Postgres data). Created/owned by the host (uid 1000) so the
