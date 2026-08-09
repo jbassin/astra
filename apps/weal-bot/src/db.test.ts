@@ -1,18 +1,20 @@
 /**
- * Store logic — the save-guards and schema, unit-tested with a fake store (no live
- * Postgres, per spec W12). The PostgresStore wire layer is exercised in the Phase-6
- * migration/integration run.
+ * Store logic — the save-guards over engine `standardDice` pairs (spec 0032
+ * D32-17) and the schema, unit-tested with a fake store (no live Postgres).
+ * The PostgresStore wire layer is exercised at the S7 live gate.
  */
 
 import { describe, expect, test } from "vitest";
 
-import { diceToPersist, type Func, MAX_POOL, SCHEMA, saveDie, type WealStore } from "./db";
-import type { RollDie } from "./roller";
-
-function rollDie(dice: [number, number][]): RollDie {
-  const value = dice.reduce((s, [, v]) => s + v, 0);
-  return { k: "Die", text: "x", value, min: 0, max: 0, dice, reroll: () => rollDie(dice) };
-}
+import {
+  diceToPersist,
+  type Func,
+  type FuncV2,
+  MAX_POOL,
+  SCHEMA,
+  saveDice,
+  type WealStore,
+} from "./db";
 
 class FakeStore implements WealStore {
   readonly inserts: [number, number, number, number][] = [];
@@ -29,17 +31,21 @@ class FakeStore implements WealStore {
   insertFunc(): Promise<void> {
     return Promise.resolve();
   }
+  getAllFuncsV2(): Promise<FuncV2[]> {
+    return Promise.resolve([]);
+  }
+  insertFuncV2(): Promise<void> {
+    return Promise.resolve();
+  }
 }
 
-describe("diceToPersist — save-guards", () => {
-  test("normal pool persists every die", () => {
+describe("diceToPersist — save-guards over standardDice", () => {
+  test("normal pool persists every sampled die", () => {
     expect(
-      diceToPersist(
-        rollDie([
-          [20, 5],
-          [6, 3],
-        ]),
-      ),
+      diceToPersist([
+        [20, 5],
+        [6, 3],
+      ]),
     ).toEqual([
       [20, 5],
       [6, 3],
@@ -48,37 +54,35 @@ describe("diceToPersist — save-guards", () => {
 
   test("base > 100 is dropped per-die (rest kept)", () => {
     expect(
-      diceToPersist(
-        rollDie([
-          [200, 5],
-          [20, 3],
-        ]),
-      ),
+      diceToPersist([
+        [200, 5],
+        [20, 3],
+      ]),
     ).toEqual([[20, 3]]);
   });
 
   test("base == 100 is kept (boundary)", () => {
-    expect(diceToPersist(rollDie([[100, 7]]))).toEqual([[100, 7]]);
+    expect(diceToPersist([[100, 7]])).toEqual([[100, 7]]);
   });
 
   test("pool of exactly MAX_POOL persists; one more is dropped wholesale", () => {
     const ok = Array.from({ length: MAX_POOL }, () => [6, 1] as [number, number]);
-    expect(diceToPersist(rollDie(ok))).toHaveLength(MAX_POOL);
+    expect(diceToPersist(ok)).toHaveLength(MAX_POOL);
     const tooBig = Array.from({ length: MAX_POOL + 1 }, () => [6, 1] as [number, number]);
-    expect(diceToPersist(rollDie(tooBig))).toEqual([]);
+    expect(diceToPersist(tooBig)).toEqual([]);
   });
 });
 
-describe("saveDie", () => {
+describe("saveDice", () => {
   test("inserts exactly the persisted dice with player/blame ids", async () => {
     const store = new FakeStore();
-    await saveDie(
+    await saveDice(
       store,
-      rollDie([
+      [
         [20, 5],
         [200, 9],
         [6, 2],
-      ]),
+      ],
       42,
       7,
     );
@@ -91,7 +95,7 @@ describe("saveDie", () => {
   test("a junk pool inserts nothing", async () => {
     const store = new FakeStore();
     const tooBig = Array.from({ length: MAX_POOL + 1 }, () => [6, 1] as [number, number]);
-    await saveDie(store, rollDie(tooBig), 1, 1);
+    await saveDice(store, tooBig, 1, 1);
     expect(store.inserts).toEqual([]);
   });
 });
@@ -102,5 +106,10 @@ describe("SCHEMA", () => {
     expect(SCHEMA).toContain("create table if not exists funcs");
     expect(SCHEMA).toContain("dice_base_timestamp");
     expect(SCHEMA).toContain("player_id integer");
+  });
+
+  test("appends the D32-17 funcs_v2 table (v1 funcs untouched)", () => {
+    expect(SCHEMA).toContain("create table if not exists funcs_v2");
+    expect(SCHEMA).toContain("source text not null");
   });
 });

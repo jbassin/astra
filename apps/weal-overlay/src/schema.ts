@@ -17,6 +17,8 @@ export interface RollEvent {
   dice: number[] | null;
   /** flat modifier, or null when not provided. */
   modifier: number | null;
+  /** weal v2 display headline (e.g. ":great") — preferred over total when present. */
+  display: string | null;
   /** mirrored from weal-bot's RollGoodness::Crit. */
   isCrit: boolean;
   /** mirrored from weal-bot's RollGoodness::Fumble. */
@@ -48,6 +50,8 @@ export function parseRollEvent(input: unknown): RollEvent | null {
 
   const expression = typeof input.expression === "string" ? input.expression : null;
 
+  const display = typeof input.display === "string" && input.display !== "" ? input.display : null;
+
   const dice = Array.isArray(input.dice)
     ? input.dice.filter((d): d is number => asFiniteNumber(d) !== null)
     : null;
@@ -63,5 +67,5 @@ export function parseRollEvent(input: unknown): RollEvent | null {
 
   const v = asFiniteNumber(input.v) ?? 1;
 
-  return { v, user, expression, total, dice, modifier, isCrit, isFumble, ts };
+  return { v, user, expression, display, total, dice, modifier, isCrit, isFumble, ts };
 }

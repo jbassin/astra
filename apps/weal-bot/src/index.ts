@@ -14,6 +14,7 @@ import { loadConfig } from "@astra/config";
 import { loadBeing } from "@astra/ontology";
 
 import { PostgresStore } from "./db";
+import { loadValidatedFuncs } from "./engine";
 import { Gateway } from "./gateway";
 import { Roster } from "./roster";
 import { startSpeakServer } from "./speak";
@@ -35,8 +36,14 @@ async function main(): Promise<void> {
 
   const store = new PostgresStore(cfg.weal.databaseUrl);
   await store.ensureSchema();
-  const funcs = (await store.getAllFuncs()).map((f) => [f.name, f.payload] as [string, string]);
-  log.emit({ severityText: "INFO", body: `loaded ${funcs.length} saved macros` });
+  // D32-17 boot: funcs_v2 in id order, each mode:"check"-validated against the
+  // prior valid rows; stale rows are WARN-skipped inside loadValidatedFuncs.
+  const rows = await store.getAllFuncsV2();
+  const funcs = loadValidatedFuncs(rows);
+  log.emit({
+    severityText: "INFO",
+    body: `loaded ${funcs.length}/${rows.length} saved weal v2 sources`,
+  });
 
   const gateway = new Gateway(
     {

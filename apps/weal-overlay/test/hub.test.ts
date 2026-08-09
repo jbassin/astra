@@ -7,6 +7,7 @@ const evt: RollEvent = {
   v: 1,
   user: "Kethra",
   expression: "1d20+7",
+  display: "27",
   total: 27,
   dice: [20],
   modifier: 7,

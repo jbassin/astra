@@ -20,7 +20,20 @@ type GenModule = {
   ): string;
 };
 
-const gen = require("../gen/weal_engine.js") as GenModule;
+const GLUE_SPECIFIER = "../gen/weal_engine.js";
+
+let gen = require(GLUE_SPECIFIER) as GenModule;
+
+/**
+ * Drop and re-require the CommonJS glue, re-instantiating the wasm module from
+ * the committed bytes (the glue reads + instantiates at require time). The bot
+ * calls this after a caught wasm trap/panic — post-panic engine state is
+ * undefined (spec D32-14) — and it doubles as the memory high-water release.
+ */
+export function reinstantiate(): void {
+  delete require.cache[require.resolve(GLUE_SPECIFIER)];
+  gen = require(GLUE_SPECIFIER) as GenModule;
+}
 
 /** The D32-11 error stages. */
 export type WealStage = "parse" | "type" | "eval" | "fuel" | "prelude";

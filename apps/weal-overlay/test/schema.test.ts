@@ -27,6 +27,27 @@ test("parses the v1 (rich) payload in full", () => {
   });
 });
 
+test("carries the v2 display headline when present (atom roll shape)", () => {
+  const e = parseRollEvent({
+    v: 1,
+    user: "Kethra",
+    expression: "dl([:fine, :good, :great])",
+    display: ":great",
+    total: 0,
+    is_crit: true,
+    is_fumble: false,
+  });
+  expect(e?.display).toBe(":great");
+  expect(e?.total).toBe(0);
+  expect(e?.isCrit).toBe(true);
+});
+
+test("normalizes a missing/blank/non-string display to null", () => {
+  expect(parseRollEvent({ user: "A", total: 5 })?.display).toBeNull();
+  expect(parseRollEvent({ user: "A", total: 5, display: "" })?.display).toBeNull();
+  expect(parseRollEvent({ user: "A", total: 5, display: 7 })?.display).toBeNull();
+});
+
 test("defaults v to 1 when omitted (total present)", () => {
   const e = parseRollEvent({ user: "A", expression: "3d8", total: 14 });
   expect(e?.v).toBe(1);

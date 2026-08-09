@@ -14,7 +14,7 @@ export function RollRow({ roll, ttlMs }: { roll: TickerRoll; ttlMs: number }) {
       {roll.dice && roll.dice.length > 0 && (
         <span className="eerie-row__dice">{roll.dice.join(" · ")}</span>
       )}
-      <span className="eerie-row__total">{roll.total}</span>
+      <span className="eerie-row__total">{roll.display ?? roll.total}</span>
       {tone !== "normal" && (
         <span className="eerie-row__badge">{roll.isCrit ? "CRIT" : "FUMBLE"}</span>
       )}

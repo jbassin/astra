@@ -4,7 +4,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { evaluate } from "./index.js";
+import { evaluate, reinstantiate } from "./index.js";
 
 // The S5 golden seed (libs/rust/weal-engine/tests/render_goldens.rs).
 const seed = new Uint8Array(32).fill(77);
@@ -41,6 +41,14 @@ describe("@astra/weal-engine wasm smoke", () => {
     expect(result.stage).toBe("type");
     expect(result.span).toEqual({ start: 0, end: 7 });
     expect(result.preludeName).toBeNull();
+  });
+
+  it("reinstantiate() swaps in a fresh wasm instance that still evaluates", () => {
+    const before = evaluate("2d6", [], seed, 0, "run");
+    expect(before.ok).toBe(true);
+    reinstantiate();
+    const after = evaluate("2d6", [], seed, 0, "run");
+    expect(after).toEqual(before); // same fixed seed → identical roll from the fresh instance
   });
 
   it("prelude errors name the failing save", () => {

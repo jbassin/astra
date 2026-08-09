@@ -6,9 +6,12 @@
  * runtime check); the message pipeline it drives is unit-tested via injected deps.
  */
 
+import { randomBytes } from "node:crypto";
+
 import { getLogger } from "@astra/observe";
 import type { WealHost } from "@astra/ontology";
 import {
+  AttachmentBuilder,
   ChannelType,
   Client,
   type ColorResolvable,
@@ -24,7 +27,7 @@ import {
 import type { WealStore } from "./db";
 import { type HandlerDeps, handleMessage, type OutgoingMessage } from "./handler";
 import { type OverlayPayload, randomSeed, type SeedInfo } from "./message";
-import { EntropyRng } from "./roller";
+import { EntropyRng } from "./rng";
 import type { Roster } from "./roster";
 
 const log = getLogger("astra.weal-bot");
@@ -119,9 +122,11 @@ export class Gateway {
       store: this.store,
       host: (slug) => this.host(slug),
       initFuncs: () => this.funcs,
-      addFunc: (name, payload) => {
-        this.funcs.push([name, payload]);
+      addFunc: (name, source) => {
+        this.funcs.push([name, source]);
       },
+      savedNames: () => [...new Set(this.funcs.map(([name]) => name))],
+      seed: () => randomBytes(32),
       getSeed: () => this.seed,
       setSeed: (seed) => {
         this.seed = seed;
@@ -136,6 +141,8 @@ export class Gateway {
       username: msg.host.name,
       avatarURL: msg.host.avatar || undefined,
       embeds: [buildEmbed(msg)],
+      // Plot PNGs ride as attachments the embed references (D32-16).
+      files: msg.files?.map((f) => new AttachmentBuilder(Buffer.from(f.data), { name: f.name })),
     });
   }
 
@@ -146,7 +153,7 @@ export class Gateway {
         this.feed = new WebhookClient({ url: this.cfg.diceFeedUrl });
       }
       if (this.feed !== null) {
-        await this.feed.send({ username: playerName, content: `rolled a ${payload.total}` });
+        await this.feed.send({ username: playerName, content: `rolled a ${payload.display}` });
       }
       if (this.cfg.feedWsUrl !== "") {
         const headers: Record<string, string> = { "content-type": "application/json" };
@@ -213,6 +220,7 @@ function buildEmbed(msg: OutgoingMessage): EmbedBuilder {
   if (msg.contents !== undefined && msg.contents !== "") e.setDescription(msg.contents);
   for (const [name, value] of msg.fields) e.addFields({ name, value, inline: false });
   if (msg.thumbnail !== undefined) e.setThumbnail(msg.thumbnail);
+  if (msg.image !== undefined) e.setImage(msg.image);
   if (msg.footer !== undefined) e.setFooter({ text: msg.footer });
   return e;
 }

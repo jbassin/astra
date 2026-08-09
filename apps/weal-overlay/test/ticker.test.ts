@@ -8,6 +8,7 @@ function row(id: string, total: number): TickerRoll {
     v: 1,
     user: "X",
     expression: null,
+    display: null,
     total,
     dice: null,
     modifier: null,

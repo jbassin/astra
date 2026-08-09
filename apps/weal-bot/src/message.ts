@@ -1,18 +1,22 @@
 /**
- * Pure message classification + embed/overlay builders — TS port of the formatting in
- * faerrin's `discord/src/handler.rs` (send_die/send_number/handle_save/reseed) and the
- * thumbnail map. No I/O: the gateway ([[gateway.ts]]) feeds these into discord.js.
+ * Pure message classification + embed/overlay builders. Classification (trim +
+ * reseed detection) is the faerrin port, unchanged; the builders are rewired
+ * off `@astra/weal-engine`'s display contract (spec 0032 D32-15/D32-18).
  *
- * Note: the GSR/Rex/Els/Whiskers goodness banks live in the ontology (K8). The small
- * Knife-host UI strings (number/reseed flavor) are NOT goodness banks — they stay here
- * as bot constants, faithful to faerrin.
+ * Every builder that feeds an embed clamps defensively to Discord's limits
+ * (title 256 / field value 1024 — D32-15): the engine caps headline ≤ 80 and
+ * renderText ≤ 900 in-engine, but the bot never trusts that at the seam.
+ *
+ * Note: the GSR/Rex/Els/Whiskers goodness banks live in the ontology (K8). The
+ * small Knife-host UI strings (number/reseed flavor) are NOT goodness banks —
+ * they stay here as bot constants, faithful to faerrin.
  */
 
-import type { RollGoodness } from "./hosts";
-import { type Roll, rollText, rollValue } from "./roller";
+import type { WealDieDisplay, WealGoodness, WealSpan } from "@astra/weal-engine";
+
 import type { Profile } from "./roster";
 
-/** Cosmetic seed (K10) — shown in footers, never actually seeds the roller. */
+/** Cosmetic seed (K10) — shown in footers, never actually seeds the engine. */
 export interface SeedInfo {
   seed: number;
   blameId: number;
@@ -74,14 +78,35 @@ export function thumbnailFor(
   return hostAvatar;
 }
 
-export function dieTitle(characterName: string, value: number, goodness: RollGoodness): string {
-  if (goodness === "crit") return `${characterName}: ${value} [Crit!]`;
-  if (goodness === "fumble") return `${characterName}: ${value} [Fumble!]`;
-  return `${characterName}: ${value}`;
+// --- defensive truncation (D32-15) ---------------------------------------------------
+
+/** Discord's embed-title limit. */
+export const TITLE_LIMIT = 256;
+/** Discord's embed-field-value limit. */
+export const FIELD_LIMIT = 1024;
+
+/** Clamp to `max` chars INCLUSIVE, replacing the tail with an ellipsis. */
+export function truncate(s: string, max: number): string {
+  return s.length <= max ? s : `${s.slice(0, max - 1)}…`;
 }
 
-export function dieFooter(goodness: RollGoodness, seed: number, blame: string): string {
-  switch (goodness) {
+// --- roll-embed builders (D32-15) ----------------------------------------------------
+
+/** `{characterName}: {headline}` + tag; null goodness = no tag (D32-11). */
+export function dieTitle(
+  characterName: string,
+  headline: string,
+  goodness: WealGoodness | null,
+): string {
+  const base = `${characterName}: ${headline}`;
+  if (goodness === "crit") return truncate(`${base} [Crit!]`, TITLE_LIMIT);
+  if (goodness === "fumble") return truncate(`${base} [Fumble!]`, TITLE_LIMIT);
+  return truncate(base, TITLE_LIMIT);
+}
+
+/** Footer takes the goodness word; null → "okay" (D32-15). */
+export function dieFooter(goodness: WealGoodness | null, seed: number, blame: string): string {
+  switch (goodness ?? "okay") {
     case "crit":
       return `very good • ${seed} (from ${blame}, with love)`;
     case "fumble":
@@ -95,12 +120,60 @@ export function dieFooter(goodness: RollGoodness, seed: number, blame: string): 
   }
 }
 
-/** The `Results` field for a roll embed: `` {text} = `{value}` ``. */
-export function resultsField(roll: Roll): [string, string] {
-  return ["Results", `${rollText(roll)} = \`${rollValue(roll)}\``];
+/** The `Results` field for a roll embed: `` {renderText} = `{headline}` ``. */
+export function resultsField(display: WealDieDisplay): [string, string] {
+  return ["Results", truncate(`${display.renderText} = \`${display.headline}\``, FIELD_LIMIT)];
 }
 
-/** v1 overlay payload (the weal → weal-overlay wire). */
+// --- error reply (D32-14) ------------------------------------------------------------
+
+/**
+ * The source line containing the span, with a caret line under the span.
+ * A zero-width span (end-of-input errors) still draws one caret.
+ */
+export function spanExcerpt(source: string, span: WealSpan): string {
+  const lineStart = source.lastIndexOf("\n", Math.max(0, span.start - 1)) + 1;
+  const newline = source.indexOf("\n", span.start);
+  const lineEnd = newline === -1 ? source.length : newline;
+  const line = source.slice(lineStart, lineEnd);
+  const caretStart = Math.min(span.start, lineEnd) - lineStart;
+  const caretLen = Math.max(1, Math.min(span.end, lineEnd) - span.start);
+  return `${line}\n${" ".repeat(caretStart)}${"^".repeat(caretLen)}`;
+}
+
+/** Code-fence `text` with a delimiter longer than any backtick run inside it. */
+export function fenced(text: string): string {
+  let longest = 2;
+  for (const run of text.match(/`+/g) ?? []) longest = Math.max(longest, run.length);
+  const delimiter = "`".repeat(longest + 1);
+  return `${delimiter}\n${text}\n${delimiter}`;
+}
+
+/**
+ * The visible-error description: the engine message, a fenced span excerpt
+ * (when a span is present), and `(in {name})` for prelude errors. A prelude
+ * span points into the failing SAVE's source (D32-11), so callers pass the
+ * saves list and the excerpt is drawn from that source, not the message.
+ */
+export function errorDescription(
+  source: string,
+  err: { stage: string; message: string; span: WealSpan | null; preludeName: string | null },
+  saves: readonly [string, string][] = [],
+): string {
+  const spanSource =
+    err.stage === "prelude"
+      ? (saves.find(([name]) => name === err.preludeName)?.[1] ?? null)
+      : source;
+  const parts = [err.message];
+  if (err.span !== null && spanSource !== null)
+    parts.push(fenced(spanExcerpt(spanSource, err.span)));
+  if (err.stage === "prelude" && err.preludeName !== null) parts.push(`(in ${err.preludeName})`);
+  return parts.join("\n");
+}
+
+// --- overlay payload (D32-18) --------------------------------------------------------
+
+/** v1 overlay payload + the v2 `display` headline (the weal → weal-overlay wire). */
 export interface OverlayPayload {
   v: 1;
   user: string;
@@ -109,21 +182,32 @@ export interface OverlayPayload {
   value: number;
   is_crit: boolean;
   is_fumble: boolean;
+  display: string;
 }
 
+/**
+ * Numeric rolls keep the v1 shape + `display`; atom (non-numeric) rolls send
+ * `total: 0` / `value: 0` with goodness-derived flags. `expression` is the
+ * PLAIN SOURCE TEXT, never renderText (OBS would show raw `~~`/`⟪⟫`).
+ */
 export function overlayPayload(
   playerName: string,
-  roll: Roll,
-  goodness: RollGoodness,
+  source: string,
+  display: WealDieDisplay,
 ): OverlayPayload {
+  const numeric =
+    display.value.t === "num" || display.value.t === "dec" || display.value.t === "float";
+  const parsed = numeric ? Number(display.value.v) : 0;
+  const total = Number.isFinite(parsed) ? parsed : 0;
   return {
     v: 1,
     user: playerName,
-    expression: rollText(roll),
-    total: rollValue(roll),
-    value: rollValue(roll),
-    is_crit: goodness === "crit",
-    is_fumble: goodness === "fumble",
+    expression: source,
+    total,
+    value: total,
+    is_crit: display.goodness === "crit",
+    is_fumble: display.goodness === "fumble",
+    display: display.headline,
   };
 }
 
@@ -156,7 +240,8 @@ const FUNC_RE = /^\s*(.+)\((.*)\)\s*$/;
 /**
  * Classify a raw message: empty → ignore; `reseed()` → reseed; everything else → a
  * roll attempt. faerrin's `plot(base,interval)` command is dropped (K4 — historical
- * viz moves to akasha-frontend); the in-roller `plot()` builtin still parses as a roll.
+ * viz moves to akasha-frontend); the in-engine `plot()` builtin still classifies as
+ * a roll.
  */
 export function classify(raw: string): MessageAction {
   const content = trimContent(raw);
