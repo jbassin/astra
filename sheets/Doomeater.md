@@ -85,11 +85,3 @@
 - Navigator's Tools · Rope (50 ft) · Traveler's Clothes · Explorer's Pack
 
 **Money:** 28 gp 1 sp
-
-## Cheat Sheet
-
-- **Standard round:** Attack (unarmed +7) → Flurry of Blows (1 pt, two more at +7). Each hit can be force damage; first hit can shove 5 ft.
-- **Shadow round:** Darkness (1 pt) centered on yourself → you see out, they can't see in: attacks against you have disadvantage, yours have advantage. Scatter caltrops/ball bearings inside it.
-- **Nova opener:** roll initiative → Uncanny Metabolism (all 4 points back + heal 4+1d6).
-- **Tanking:** Deflect Attacks every round it triggers (−1d10−8 is huge at this level); Patient Defense when swarmed.
-- **Don't forget:** Adrenaline Rush is a *free* engine — Dash + 2 temp HP, twice per short rest.
