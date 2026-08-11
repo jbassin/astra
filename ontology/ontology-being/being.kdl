@@ -175,10 +175,10 @@ campaign "chuul-hunt" {
     role player="josh" character="Doomeater" class="monk" {
         desc "a teenage warrior of the tribe, hunting their first big game to be considered an adult; an orc monk"
     }
-    role player="jorge" character="Niso" class="barbarian" {
+    role player="jorge" character="Ni-So" class="barbarian" {
         desc "a teenage warrior of the tribe, hunting their first big game to be considered an adult; a goliath barbarian"
     }
-    role player="mike" character="Zolgrath" class="wizard" {
+    role player="mike" character="Zulgrath" class="wizard" {
         desc "a teenage warrior of the tribe, hunting their first big game to be considered an adult; an orc wizard"
     }
 }
