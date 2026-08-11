@@ -42,6 +42,12 @@ pub const BUILTINS: &[(&str, usize)] = &[
     ("reroll", 2),
     ("r", 2),
     ("successes", 2),
+    ("repeat", 2),
+    ("concat", 2),
+    ("map", 2),
+    ("filter", 2),
+    ("fold", 3),
+    ("len", 1),
     ("min", 2),
     ("max", 2),
     ("dec", 1),
@@ -316,6 +322,64 @@ pub fn dispatch(
             let target = as_num(&args[1], "the successes target")?;
             let pool = as_pool(args.swap_remove(0), "successes' first argument")?;
             Ok(Value::Die(DieTree::Successes { pool, target }))
+        }
+        // -- the list toolkit. Die values are symbolic trees that re-sample per
+        // occurrence, so `repeat(d20, 3)` is three INDEPENDENT dice by the same
+        // rule that makes `let x = d20; [x, x, x]` three. The closure-taking
+        // entries re-enter the interpreter through `apply` (ordinary calls —
+        // fuel-metered, and effects behave exactly as in any user function,
+        // unlike `evaluate`'s DP-guarded closures).
+        "repeat" => {
+            let n = as_num(&args[1], "the repeat count")?;
+            if n.sign() == num_bigint::Sign::Minus {
+                return Err(EvalError::eval("repeat count can't be negative", span));
+            }
+            let count = num_to_u64(&n, "repeat count", span)?;
+            Fuel::check_list_len(count, span)?;
+            let item = args.swap_remove(0);
+            Ok(Value::List(vec![item; count as usize]))
+        }
+        "concat" => {
+            let b = as_list(args.swap_remove(1), "concat's second argument")?;
+            let mut a = as_list(args.swap_remove(0), "concat's first argument")?;
+            a.extend(b);
+            Ok(Value::List(a))
+        }
+        "map" => {
+            let f = args.swap_remove(1);
+            let items = as_list(args.swap_remove(0), "map's first argument")?;
+            let mut out = Vec::with_capacity(items.len());
+            for item in items {
+                out.push(interp.apply(f.clone(), vec![item], false, span)?);
+            }
+            Ok(Value::List(out))
+        }
+        "filter" => {
+            let pred = args.swap_remove(1);
+            let items = as_list(args.swap_remove(0), "filter's first argument")?;
+            let mut out = Vec::new();
+            for item in items {
+                match interp.apply(pred.clone(), vec![item.clone()], false, span)? {
+                    Value::Atom(a) if a == "true" => out.push(item),
+                    Value::Atom(a) if a == "false" => {}
+                    _ => return Err(internal("filter's predicate must return a Bool")),
+                }
+            }
+            Ok(Value::List(out))
+        }
+        "fold" => {
+            let f = args.swap_remove(2);
+            let init = args.swap_remove(1);
+            let items = as_list(args.swap_remove(0), "fold's first argument")?;
+            let mut acc = init;
+            for item in items {
+                acc = interp.apply(f.clone(), vec![acc, item], false, span)?;
+            }
+            Ok(acc)
+        }
+        "len" => {
+            let items = as_list(args.swap_remove(0), "len's argument")?;
+            Ok(Value::Num(BigInt::from(items.len())))
         }
         "min" | "max" => {
             let b = args.pop().expect("arity 2");

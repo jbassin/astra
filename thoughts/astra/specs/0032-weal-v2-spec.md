@@ -465,3 +465,20 @@ things; constructor leaves exempt); (3) pools show faces with dropped dice struc
   are lazyCounters that have never fired live, so the metrics don't exist yet — they're born
   with the gate-D error cases.
 - **G ✅** READMEs + charter amendment (`2fa5d93`); RESUME/memory checkpoint = this commit.
+
+### D32-19 amendment — the list toolkit (2026-08-10, stakeholder request)
+
+Six new prelude builtins, data-first argument order mirroring `evaluate`:
+`repeat(x, n) : a -> Num -> List[a]` (n=0 → `[]`, negative → eval error, n capped by the
+new `list length` construction counter = the pool cap constant) · `concat(a, b)` ·
+`map(list, f)` · `filter(list, pred)` (pred returns Bool) · `fold(list, init, f)` ·
+`len(list)`. No syntax change (no `++` operator — deliberately deferred). Die values
+re-sample per occurrence, so `repeat(d20, 3)` is three INDEPENDENT dice (same rule as
+`let x = d20; [x, x, x]`); a top-level list renders one display per element. The
+closure-taking entries re-enter the interpreter via ordinary `apply` (fuel-metered;
+effects behave as in any user call — NOT the `evaluate` DP purity guard). **Recorded
+limitation (pre-existing, now pinned in the reject suite):** binop die-lifting resolves
+eagerly, so a lambda-bound die param infers Num — `map([d6], _ + 1)` and
+`let f(d) = d + 1; f(d6)` both reject; map over dice works through prelude fns
+(`explode`/`label`/`reroll`). Local gate at this amendment: 393 tests / 16 suites,
+clippy `-D warnings` clean, fmt clean.

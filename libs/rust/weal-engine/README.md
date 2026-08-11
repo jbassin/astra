@@ -39,8 +39,9 @@ For the player-facing language guide, see `apps/weal-bot/README.md`.
   before-allocation construction caps (pool count, explode depth). Distribution-side budgets
   live in `dist/`.
 - **`prelude.rs`** — the D32-19 prelude as a NATIVE builtin table (`kh`/`kl`/`sum`/`pool`/`dl`/
-  `dm`/`evaluate`/`label`/`explode`+`e`/`reroll`/`r`/`successes`/`min`/`max`/`dec`/`float`/
-  `num`/`round`/`floor`/`ceil`/`abs`/`roll`/`plot`/`save`), pinned 1:1 against the checker's
+  `dm`/`evaluate`/`label`/`explode`+`e`/`reroll`/`r`/`successes`/the list toolkit
+  `repeat`/`concat`/`map`/`filter`/`fold`/`len` (2026-08-10 amendment)/`min`/`max`/`dec`/
+  `float`/`num`/`round`/`floor`/`ceil`/`abs`/`roll`/`plot`/`save`), pinned 1:1 against the checker's
   `prelude_types()` by the `native_table_matches_prelude_types` drift test.
 - **`dist/`** (facade **`dist.rs`**) — the exact-distribution engine, generic over any `Ord`
   face: `Weight` (u128 fast path, checked `BigUint` promotion, bit-capped), `Dist`
@@ -135,6 +136,7 @@ wasm `budget` argument scales interpreter steps ONLY (non-zero = the absolute st
 | interpreter steps | 2,000,000 | `fuel.rs` (`INTERP_STEPS`) |
 | recursion depth | 256 | `fuel.rs` — the interpreter's `eval` frames; counts expression nesting AND closure applications, so it catches both paren bombs and `let f(x) = f(x)` |
 | pool count (construction cap) | 10,000 | `fuel.rs`, checked before allocation |
+| `repeat` list length (construction cap) | 10,000 | `fuel.rs` (`check_list_len`, the pool-cap constant), checked before allocation |
 | explode depth (construction cap) | 8 | `fuel.rs`, checked before allocation |
 | DP transitions (+ `comb_row` cells) | 1,000,000 | `dist/budget.rs` |
 | concurrent DP state-map entries | 200,000 | `dist/budget.rs` |

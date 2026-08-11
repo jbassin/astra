@@ -70,6 +70,15 @@ impl Fuel {
         Ok(())
     }
 
+    /// Construction cap: `repeat` list length ≤ the pool-count cap (same constant —
+    /// both bound how many things one expression materializes before allocation).
+    pub fn check_list_len(count: u64, span: Option<Span>) -> Result<(), EvalError> {
+        if count > POOL_COUNT_CAP {
+            return Err(EvalError::fuel("list length", span));
+        }
+        Ok(())
+    }
+
     /// Construction cap: explode depth ≤ 8.
     pub fn check_explode_depth(depth: u64, span: Option<Span>) -> Result<(), EvalError> {
         if depth > EXPLODE_DEPTH_CAP {

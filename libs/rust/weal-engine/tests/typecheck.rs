@@ -509,6 +509,45 @@ fn reroll_face_list_must_match_die() {
     err("reroll(dl([:a]), [1])");
 }
 
+// -- the list toolkit (repeat/concat/map/filter/fold) -----------------------
+
+#[test]
+fn list_toolkit_types() {
+    assert_eq!(ty("repeat(d20, 3)"), "List[Die[Num]]");
+    assert_eq!(ty("repeat(5, 2)"), "List[Num]");
+    assert_eq!(ty("repeat([:a], 2)"), "List[List[:a]]");
+    assert_eq!(ty("concat([1], [2, 3])"), "List[Num]");
+    assert_eq!(ty("concat(repeat(d6, 2), [d20])"), "List[Die[Num]]");
+    assert_eq!(ty("map([1, 2], _ * 2)"), "List[Num]");
+    assert_eq!(
+        ty("map(repeat(d6, 2), |d| explode(d, 1))"),
+        "List[Die[Num]]"
+    );
+    assert_eq!(ty("filter([1, 2, 3], _ >= 2)"), "List[Num]");
+    assert_eq!(ty("fold([1, 2, 3], 0, |a, b| a + b)"), "Num");
+    assert_eq!(
+        ty("fold([1, 2], [], |acc, x| concat(acc, [x]))"),
+        "List[Num]"
+    );
+    assert_eq!(ty("len([1, 2, 3])"), "Num");
+    assert_eq!(ty("len(repeat(d6, 2)) + 1"), "Num");
+    // Currying: builtins partially apply like any function.
+    assert_eq!(ty("let two = |x| repeat(x, 2); two(d8)"), "List[Die[Num]]");
+}
+
+#[test]
+fn list_toolkit_rejects() {
+    err("concat([1], [:a])"); // element types must unify
+    err("repeat(d6, :three)"); // count is a Num
+    err("filter(repeat(d6, 2), |d| d >= 4)"); // die comparison is Die[Bool], not Bool
+    err("fold([1], :zero, |a, b| a + b)"); // accumulator must unify with the closure
+    err("map([1], |x| x) + 1"); // a list is not a number
+    // KNOWN LIMITATION (pre-existing, not list-toolkit-specific): binop die-lifting
+    // resolves eagerly, so a lambda-bound die param infers Num — `let f(d) = d + 1;
+    // f(d6)` fails identically. Flip this pin deliberately if arith ever defers.
+    err("map([d6], _ + 1)");
+}
+
 #[test]
 fn casts_and_rounding() {
     assert_eq!(ty("dec(1)"), "Dec");

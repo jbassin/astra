@@ -215,6 +215,82 @@ fn warnings_is_reserved_and_empty() {
     assert_eq!(v["warnings"], serde_json::json!([]));
 }
 
+// -- the list toolkit (repeat/concat/map/filter/fold) -----------------------
+
+#[test]
+fn fold_repeat_collapses_die_free_math() {
+    let v = parse(&eval("fold(repeat(3, 4), 0, |a, b| a + b)", "[]", 0, "run"));
+    assert_eq!(v["ok"], Json::Bool(true));
+    assert_eq!(v["displays"][0]["headline"], "12");
+}
+
+#[test]
+fn map_filter_fold_compose() {
+    // [1,2,3,4] -> [2,4,6,8] -> [6,8] -> 14
+    let v = parse(&eval(
+        "fold(filter(map([1, 2, 3, 4], _ * 2), _ >= 5), 0, |a, b| a + b)",
+        "[]",
+        0,
+        "run",
+    ));
+    assert_eq!(v["displays"][0]["headline"], "14");
+}
+
+#[test]
+fn repeat_die_rolls_independently() {
+    let v = parse(&eval("repeat(d20, 3)", "[]", 0, "run"));
+    let displays = v["displays"].as_array().unwrap();
+    assert_eq!(displays.len(), 3, "one die display per element");
+    for d in displays {
+        assert_eq!(d["kind"], "die");
+        assert_eq!(d["standardDice"].as_array().unwrap().len(), 1);
+    }
+    // Independence: the three sampled faces are not all forced equal (the fixed
+    // seed samples leaves in source order — a shared-sample bug would repeat one
+    // face three times AND collapse standardDice; this pins the shape).
+    let faces: Vec<&str> = displays
+        .iter()
+        .map(|d| d["headline"].as_str().unwrap())
+        .collect();
+    assert_eq!(faces.len(), 3);
+}
+
+#[test]
+fn concat_lists_of_dice() {
+    let v = parse(&eval("concat(repeat(d6, 2), [d20])", "[]", 0, "run"));
+    let displays = v["displays"].as_array().unwrap();
+    assert_eq!(displays.len(), 3);
+    assert_eq!(displays[2]["standardDice"][0][0], 20);
+}
+
+#[test]
+fn len_counts_after_filter() {
+    let v = parse(&eval("len(filter([1, 2, 3, 4], _ >= 3))", "[]", 0, "run"));
+    assert_eq!(v["displays"][0]["headline"], "2");
+}
+
+#[test]
+fn repeat_zero_is_empty() {
+    let v = parse(&eval("repeat(d20, 0)", "[]", 0, "run"));
+    assert_eq!(v["ok"], Json::Bool(true));
+    assert_eq!(v["displays"].as_array().unwrap().len(), 0);
+}
+
+#[test]
+fn repeat_negative_is_eval_error() {
+    let v = parse(&eval("repeat(d20, 0 - 1)", "[]", 0, "run"));
+    assert_eq!(v["ok"], Json::Bool(false));
+    assert_eq!(v["stage"], "eval");
+}
+
+#[test]
+fn repeat_over_cap_is_fuel() {
+    let v = parse(&eval("repeat(d20, 10001)", "[]", 0, "run"));
+    assert_eq!(v["ok"], Json::Bool(false));
+    assert_eq!(v["stage"], "fuel");
+    assert!(v["message"].as_str().unwrap().contains("list length"));
+}
+
 #[test]
 fn short_seed_is_zero_padded() {
     // Documented robustness: a short seed behaves like its zero-padded form.

@@ -278,6 +278,59 @@ pub fn prelude_types() -> Vec<(&'static str, PreludeEntry)> {
                 dnum.clone(),
             ))),
         ),
+        // -- the list toolkit (2026-08-10 amendment: repeat/concat/map/filter/fold).
+        // Data-first argument order throughout, mirroring `evaluate(pool, init, fn)`.
+        (
+            "repeat",
+            one(Scheme::poly(
+                vec![0],
+                Type::arrows(vec![t(), Type::Num], Type::list(t())),
+            )),
+        ),
+        (
+            "concat",
+            one(Scheme::poly(
+                vec![0],
+                Type::arrows(vec![Type::list(t()), Type::list(t())], Type::list(t())),
+            )),
+        ),
+        (
+            "map",
+            one(Scheme::poly(
+                vec![0, 1],
+                Type::arrows(
+                    vec![Type::list(t()), Type::arrow(t(), s())],
+                    Type::list(s()),
+                ),
+            )),
+        ),
+        (
+            "filter",
+            one(Scheme::poly(
+                vec![0],
+                Type::arrows(
+                    vec![Type::list(t()), Type::arrow(t(), Type::bool())],
+                    Type::list(t()),
+                ),
+            )),
+        ),
+        (
+            "fold",
+            one(Scheme::poly(
+                vec![0, 1],
+                Type::arrows(
+                    vec![Type::list(t()), s(), Type::arrows(vec![s(), t()], s())],
+                    s(),
+                ),
+            )),
+        ),
+        (
+            "len",
+            one(Scheme::poly(
+                vec![0],
+                Type::arrow(Type::list(t()), Type::Num),
+            )),
+        ),
         ("min", minmax()),
         ("max", minmax()),
         ("dec", one(Scheme::mono(Type::arrow(Type::Num, Type::Dec)))),

@@ -167,6 +167,32 @@ mechanic built in. Evaluator closures must be pure — `roll`/`plot`/`save` insi
 Note a non-numeric pool can't be summed (`sum(pool(2, dl([:a, :b])))` is a type error) — that's
 what `evaluate` is for.
 
+### Lists: `repeat`, `concat`, `map`, `filter`, `fold`, `len`
+
+A list of dice displays one roll per element — `repeat(d20, 3)` is three *independent*
+d20s (dice re-roll per mention, so `let x = d20; [x, x, x]` is three rolls too):
+
+```
+repeat(d20, 3)   →  d20 ⟪17⟫ = 17 · d20 ⟪9⟫ = 9 · d20 ⟪17⟫ = 17
+```
+
+The rest of the toolkit takes the list first (like `evaluate`): `concat(a, b)` joins two
+lists, `map(list, f)` transforms each element, `filter(list, pred)` keeps elements whose
+predicate is `:true`, `fold(list, init, f)` threads an accumulator, `len(list)` counts.
+
+```
+concat(repeat(d6, 2), [d20])                    (* [d6, d6, d20] — mixed dice *)
+map(repeat(d6, 3), |d| explode(d, 2))           (* three exploding d6s *)
+fold([1, 2, 3], 0, |a, b| a + b)                →  6
+len(filter([1, 2, 3, 4], _ >= 3))               →  2
+```
+
+`repeat(x, 0)` is `[]`, a negative count is an error, and the count shares the pool
+construction cap. One trap: a lambda's die parameter can't do bare arithmetic —
+`map([d6], _ + 1)` is a type error (die `+` needs the die visible at the operator, a
+known checker limitation) — go through prelude functions like `explode`/`label`, or
+restructure so the `+` sees the die directly.
+
 ### `plot`
 
 `plot(4d6kh3)` replies with the exact probability chart (a PNG), plus mean `12.244599` and std
