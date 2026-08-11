@@ -44,7 +44,10 @@ uv_bin := env_var_or_default("UV_BIN", "/home/jbassin/.local/bin/uv")
 # `environment:` passes the UPPER_CASED keys it needs, and @astra/config's env-override
 # path (`process.env[KEY.toUpperCase()]` wins) resolves them in-container — so no
 # sops/age-key/secrets file is ever baked into an image. Run on a host with the age key.
-up:
+# Optional args scope it to named compose services (`just up weal-bot`) — the SAFE
+# scoped deploy: same SOPS env injection, so it never hits the plain
+# `docker compose up -d <svc>` silent-secret-drop trap. No args = the whole stack.
+up *services:
     #!/usr/bin/env bash
     set -euo pipefail
     export SOPS_AGE_KEY_FILE="{{sops_age_key}}"
@@ -57,7 +60,7 @@ up:
       export "${k^^}=$v"
     done <<< "$secrets"
     just artifacts-init
-    cd deploy && docker compose up -d --build
+    cd deploy && docker compose up -d --build {{services}}
 
 # Create the gitignored bind-mount source tree as the host user (uid 1000) BEFORE `up`.
 # Docker would otherwise create a missing bind source as root — re-introducing the exact
