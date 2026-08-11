@@ -47,6 +47,7 @@ pub const BUILTINS: &[(&str, usize)] = &[
     ("map", 2),
     ("filter", 2),
     ("fold", 3),
+    ("reduce", 2),
     ("len", 1),
     ("min", 2),
     ("max", 2),
@@ -373,6 +374,20 @@ pub fn dispatch(
             let items = as_list(args.swap_remove(0), "fold's first argument")?;
             let mut acc = init;
             for item in items {
+                acc = interp.apply(f.clone(), vec![acc, item], false, span)?;
+            }
+            Ok(acc)
+        }
+        "reduce" => {
+            // fold seeded by the first element — the homogeneous cousin
+            // (`reduce([d20, d20], |x, y| x + y)` needs no dl([0]) zero-die).
+            let f = args.swap_remove(1);
+            let items = as_list(args.swap_remove(0), "reduce's first argument")?;
+            let mut iter = items.into_iter();
+            let Some(mut acc) = iter.next() else {
+                return Err(EvalError::eval("reduce needs at least one element", span));
+            };
+            for item in iter {
                 acc = interp.apply(f.clone(), vec![acc, item], false, span)?;
             }
             Ok(acc)

@@ -327,6 +327,16 @@ pub fn prelude_types() -> Vec<(&'static str, PreludeEntry)> {
             )),
         ),
         (
+            "reduce",
+            one(Scheme::poly(
+                vec![0],
+                Type::arrows(
+                    vec![Type::list(t()), Type::arrows(vec![t(), t()], t())],
+                    t(),
+                ),
+            )),
+        ),
+        (
             "len",
             one(Scheme::poly(
                 vec![0],

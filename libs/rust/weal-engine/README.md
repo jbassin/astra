@@ -40,7 +40,7 @@ For the player-facing language guide, see `apps/weal-bot/README.md`.
   live in `dist/`.
 - **`prelude.rs`** — the D32-19 prelude as a NATIVE builtin table (`kh`/`kl`/`sum`/`pool`/`dl`/
   `dm`/`evaluate`/`label`/`explode`+`e`/`reroll`/`r`/`successes`/the list toolkit
-  `repeat`/`concat`/`map`/`filter`/`fold`/`len` (2026-08-10 amendment)/`min`/`max`/`dec`/
+  `repeat`/`concat`/`map`/`filter`/`fold`/`reduce`/`len` (2026-08-10 amendment)/`min`/`max`/`dec`/
   `float`/`num`/`round`/`floor`/`ceil`/`abs`/`roll`/`plot`/`save`), pinned 1:1 against the checker's
   `prelude_types()` by the `native_table_matches_prelude_types` drift test.
 - **`dist/`** (facade **`dist.rs`**) — the exact-distribution engine, generic over any `Ord`

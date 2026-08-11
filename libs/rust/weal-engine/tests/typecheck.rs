@@ -698,3 +698,15 @@ fn user_shadowing_of_prelude_names() {
 fn curried_partial_application() {
     assert_eq!(ty("let k = kh(pool(2, d6)); k(1)"), "Die[Num]");
 }
+
+#[test]
+fn reduce_types() {
+    assert_eq!(ty("reduce([1, 2, 3], |a, b| a + b)"), "Num");
+    assert_eq!(ty("reduce([d20, d20], _ + _)"), "Die[Num]");
+    assert_eq!(
+        ty("reduce(concat(repeat(d6, 2), [d20]), _ + _)"),
+        "Die[Num]"
+    );
+    err("reduce([1], |a, b| :x)"); // closure must return the element type
+    err("reduce([1], 0)"); // second argument is a function
+}

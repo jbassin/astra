@@ -167,7 +167,7 @@ mechanic built in. Evaluator closures must be pure — `roll`/`plot`/`save` insi
 Note a non-numeric pool can't be summed (`sum(pool(2, dl([:a, :b])))` is a type error) — that's
 what `evaluate` is for.
 
-### Lists: `repeat`, `concat`, `map`, `filter`, `fold`, `len`
+### Lists: `repeat`, `concat`, `map`, `filter`, `fold`, `reduce`, `len`
 
 A list of dice displays one roll per element — `repeat(d20, 3)` is three *independent*
 d20s (dice re-roll per mention, so `let x = d20; [x, x, x]` is three rolls too):
@@ -178,14 +178,18 @@ repeat(d20, 3)   →  d20 ⟪17⟫ = 17 · d20 ⟪9⟫ = 9 · d20 ⟪17⟫ = 17
 
 The rest of the toolkit takes the list first (like `evaluate`): `concat(a, b)` joins two
 lists, `map(list, f)` transforms each element, `filter(list, pred)` keeps elements whose
-predicate is `:true`, `fold(list, init, f)` threads an accumulator, `len(list)` counts.
+predicate is `:true`, `fold(list, init, f)` threads an accumulator, `reduce(list, f)`
+folds with the first element as the seed (≥1 element required), `len(list)` counts.
 
 ```
 concat(repeat(d6, 2), [d20])                    (* [d6, d6, d20] — mixed dice *)
 map(repeat(d6, 3), _ + 1)                       (* three d6+1 rolls *)
-fold(repeat(d6, 3), d4, |a, b| a + b)           →  d4 ⟪1⟫ + d6 ⟪3⟫ + d6 ⟪1⟫ + d6 ⟪1⟫ = 6
+reduce(concat(repeat(d6, 2), [d20]), _ + _)     →  d6 ⟪3⟫ + d6 ⟪3⟫ + d20 ⟪17⟫ = 23
 len(filter([1, 2, 3, 4], _ >= 3))               →  2
 ```
+
+`fold` needs its accumulator to keep one type, so summing dice with a `0` seed rejects
+(`Num + Die` is a die — use `reduce`, or seed with the constant die `dl([0])`).
 
 `repeat(x, 0)` is `[]`, a negative count is an error, and the count shares the pool
 construction cap. Arithmetic in a lambda lifts over dice like anywhere else — the

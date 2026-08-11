@@ -329,3 +329,30 @@ fn short_seed_is_zero_padded() {
     let b = weal_engine::evaluate("d20", "[]", &padded, 0, "run");
     assert_eq!(a, b);
 }
+
+#[test]
+fn reduce_sums_dice_without_a_seed() {
+    let v = parse(&eval("reduce([d20, d20], _ + _)", "[]", 0, "run"));
+    assert_eq!(v["ok"], Json::Bool(true));
+    let d = &v["displays"][0];
+    assert_eq!(d["kind"], "die");
+    assert_eq!(d["standardDice"].as_array().unwrap().len(), 2);
+}
+
+#[test]
+fn reduce_empty_is_eval_error() {
+    let v = parse(&eval(
+        "reduce(filter([1], _ >= 2), |a, b| a + b)",
+        "[]",
+        0,
+        "run",
+    ));
+    assert_eq!(v["ok"], Json::Bool(false));
+    assert_eq!(v["stage"], "eval");
+    assert!(
+        v["message"]
+            .as_str()
+            .unwrap()
+            .contains("at least one element")
+    );
+}

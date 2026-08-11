@@ -502,3 +502,9 @@ would need result-directed back-propagation — out of scope); saves still pin a
 save boundary (`save_scheme` quantifies the post-solve zonked type — a saved
 `|x| x + 1` stays `Num -> Num`, verified). Gate: 399 tests / 16 suites, clippy
 `-D warnings`, fmt, wasm rebuilt + committed, bot suites green.
+
+### List-toolkit addendum — `reduce` (2026-08-10, same session)
+
+`reduce(list, f) : List[a] -> (a -> a -> a) -> a` — fold seeded by the first element,
+so summing a dice list needs no `dl([0])` zero-die (`reduce([d20, d20], _ + _)`).
+Empty list = eval error ("reduce needs at least one element"). Gate: 402 tests.
