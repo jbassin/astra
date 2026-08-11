@@ -157,7 +157,8 @@ def test_index_arc_title_and_main_from_ontology(index) -> None:
     for e in index.episodes:
         assert e.arc_slug == "through-a-song-darkly"
         assert e.arc_title == "Through a Song, Darkly"
-        assert e.is_main is True
+        # `main` currently sits on the Chuul Hunt one-shot, so this arc reads non-main
+        assert e.is_main is False
 
 
 def test_index_hosts_and_episode_title(index) -> None:

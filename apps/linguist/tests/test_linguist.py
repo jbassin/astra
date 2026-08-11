@@ -8,6 +8,7 @@ raw `script.json`.
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 
 from astra_lexicon import build_replacer, load_corrections
@@ -201,6 +202,9 @@ def test_real_session_canonical_parity() -> None:
     transcript = Transcript.model_validate(json.loads((DATA_DIR / f"{date}.json").read_text()))
     matched = match_campaign(transcript, campaign_views(load_being(BEING_KDL_PATH)))
     assert matched is not None
+    # The committed transcript was produced while Through a Song, Darkly held `main`;
+    # the flag moves with the weal-bot active campaign, so pin the processing-time state.
+    matched = replace(matched, campaign=replace(matched.campaign, is_main=True))
 
     canonical = to_canonical(build_context(transcript, matched))
     expected = (

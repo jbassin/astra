@@ -21,15 +21,21 @@ def test_guest_color_carries_over() -> None:
     assert load().guest_color == "rgb(235,235,236)"
 
 
-def test_main_campaign_and_double_pc() -> None:
+def test_exactly_one_main_campaign() -> None:
+    # `main` is the weal-bot active campaign (and the pipeline's main/one-shot flag);
+    # it moves between arcs, so pin the invariant (exactly one) rather than the slug.
     being = load()
-    main = next(c for c in being.campaigns if c.main)
-    assert main.slug == "through-a-song-darkly"
-    assert main.edition == "pathfinder_2e"
-    jorge_pcs = [r.character for r in main.roles if r.player == "jorge"]
-    assert jorge_pcs == ["Argyle", "Arctos"]  # Jorge plays two PCs in the main arc
-    assert main.world == "faerrin"
-    argyle = next(r for r in main.roles if r.character == "Argyle")
+    assert sum(1 for c in being.campaigns if c.main) == 1
+
+
+def test_song_darkly_and_double_pc() -> None:
+    being = load()
+    song = next(c for c in being.campaigns if c.slug == "through-a-song-darkly")
+    assert song.edition == "pathfinder_2e"
+    jorge_pcs = [r.character for r in song.roles if r.player == "jorge"]
+    assert jorge_pcs == ["Argyle", "Arctos"]  # Jorge plays two PCs in this arc
+    assert song.world == "faerrin"
+    argyle = next(r for r in song.roles if r.character == "Argyle")
     assert argyle.character_class == "champion"
     assert len(argyle.descriptions) == 3
 

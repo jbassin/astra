@@ -2,7 +2,7 @@
   "campaigns": [
     {
       "edition": "pathfinder_2e",
-      "main": true,
+      "main": false,
       "name": "Through a Song, Darkly",
       "roles": [
         {
@@ -326,6 +326,45 @@
       ],
       "slug": "fey-in-the-mists",
       "world": "finnegan's ring"
+    },
+    {
+      "edition": "dnd_5e",
+      "main": true,
+      "name": "Chuul Hunt",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "tanner"
+        },
+        {
+          "character": "Doomeater",
+          "character_class": "monk",
+          "descriptions": [
+            "a teenage warrior of the tribe, hunting their first big game to be considered an adult; an orc monk"
+          ],
+          "player": "josh"
+        },
+        {
+          "character": "Niso",
+          "character_class": "barbarian",
+          "descriptions": [
+            "a teenage warrior of the tribe, hunting their first big game to be considered an adult; a goliath barbarian"
+          ],
+          "player": "jorge"
+        },
+        {
+          "character": "Zolgrath",
+          "character_class": "wizard",
+          "descriptions": [
+            "a teenage warrior of the tribe, hunting their first big game to be considered an adult; an orc wizard"
+          ],
+          "player": "mike"
+        }
+      ],
+      "slug": "chuul-hunt",
+      "world": "chuul-hunt"
     }
   ],
   "guest_color": "rgb(235,235,236)",

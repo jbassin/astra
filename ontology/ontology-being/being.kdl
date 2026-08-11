@@ -70,7 +70,7 @@ guest-color "rgb(235,235,236)"
 campaign "through-a-song-darkly" {
     name "Through a Song, Darkly"
     edition "pathfinder_2e"
-    main #true
+    main #false
     world "faerrin"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Argyle" class="champion" {
@@ -164,6 +164,23 @@ campaign "fey-in-the-mists" {
     role player="josh" character="Mango" { desc "an elven ranger, following the caravan on Finnegan's Ring." }
     role player="noah" character="Egan" { desc "an orc druid, following the caravan on Finnegan's Ring." }
     role player="mike" character="Doug" { desc "a gnome rogue, following the caravan on Finnegan's Ring." }
+}
+
+campaign "chuul-hunt" {
+    name "Chuul Hunt"
+    edition "dnd_5e"
+    main #true
+    world "chuul-hunt"
+    role player="tanner" character="Gamemaster" class="gm"
+    role player="josh" character="Doomeater" class="monk" {
+        desc "a teenage warrior of the tribe, hunting their first big game to be considered an adult; an orc monk"
+    }
+    role player="jorge" character="Niso" class="barbarian" {
+        desc "a teenage warrior of the tribe, hunting their first big game to be considered an adult; a goliath barbarian"
+    }
+    role player="mike" character="Zolgrath" class="wizard" {
+        desc "a teenage warrior of the tribe, hunting their first big game to be considered an adult; an orc wizard"
+    }
 }
 
 // --- weal-host: weal-bot Discord message-send identities (mouth/host.rs) --------------

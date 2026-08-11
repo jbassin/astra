@@ -50,13 +50,12 @@ def _write_episodes(episodes_dir: Path, entries: list[EpisodeEntry]) -> None:
 # ── show taxonomy ───────────────────────────────────────────────────────────
 def test_show_index_has_all_campaigns() -> None:
     shows = show_index()
-    assert len(shows) == 7
-    main = shows["through-a-song-darkly"]
-    assert main.is_main is True
-    assert main.name == "Through a Song, Darkly"
-    assert main.order == 0  # the main show is first in being.campaigns
-    # every other show is a non-main side story
-    assert all(not s.is_main for slug, s in shows.items() if slug != "through-a-song-darkly")
+    assert len(shows) == 8
+    song = shows["through-a-song-darkly"]
+    assert song.name == "Through a Song, Darkly"
+    assert song.order == 0  # first in being.campaigns
+    # `main` currently sits on the Chuul Hunt one-shot (the weal-bot active campaign)
+    assert [slug for slug, s in shows.items() if s.is_main] == ["chuul-hunt"]
 
 
 # ── date → show resolution (real transcript filenames) ──────────────────────
