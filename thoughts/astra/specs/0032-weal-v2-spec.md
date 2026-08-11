@@ -482,3 +482,23 @@ eagerly, so a lambda-bound die param infers Num — `map([d6], _ + 1)` and
 `let f(d) = d + 1; f(d6)` both reject; map over dice works through prelude fns
 (`explode`/`label`/`reroll`). Local gate at this amendment: 393 tests / 16 suites,
 clippy `-D warnings` clean, fmt clean.
+
+### D32-4 amendment — deferred die-lifting arithmetic (2026-08-10, stakeholder request)
+
+The eager Var→Num pin at arithmetic operators is gone: when an operand's shape is still
+a type Var and its partner is Num/Die/Var, the scalar-vs-lifted choice becomes an
+`ArithPending` constraint solved after inference (`Checker::solve_arith`, FIFO =
+inner-first dependency order), defaulting unresolved operands to Num (the documented
+default is preserved: `|x, y| x + y` is still `Num -> Num -> Num`). Constraints ride
+schemes exactly like the equatable migration, so a let-bound `|x| x + 1` lifts
+per call site (`{f(1), f(d6)}` = `{Num, Die[Num]}`). Unary negation defers the same
+way. So `map([d6], _ + 1)`, `let f(d) = d + 1; f(d6)`, and
+`fold(repeat(d6, 3), d4, |a, b| a + b)` all lift now — the list-toolkit amendment's
+"recorded limitation" is CLOSED and its reject pin flipped into the
+`deferred_arith_*` accept suite. Elaboration needed ZERO changes (CoreExpr::Binary/Neg
+are value-directed at runtime). Boundaries kept: Dec/Float partners still decide
+eagerly (dice can't carry those faces); comparisons still pin eagerly (deferring them
+would need result-directed back-propagation — out of scope); saves still pin at the
+save boundary (`save_scheme` quantifies the post-solve zonked type — a saved
+`|x| x + 1` stays `Num -> Num`, verified). Gate: 399 tests / 16 suites, clippy
+`-D warnings`, fmt, wasm rebuilt + committed, bot suites green.

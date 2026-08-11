@@ -64,7 +64,7 @@
 
 use crate::ast::{BinOp, CmpOp, Expr, MatchPat, Pattern};
 use crate::lower::{Span, SpanTree};
-use crate::types::{EquatableConstraint, EquatableSite, Scheme, Type};
+use crate::types::{ArithConstraint, EquatableConstraint, EquatableSite, Scheme, Type};
 use std::collections::{BTreeSet, HashMap};
 
 // ---------------------------------------------------------------------------
@@ -215,6 +215,7 @@ pub fn prelude_types() -> Vec<(&'static str, PreludeEntry)> {
                     ty: t(),
                     site: EquatableSite::DictKey,
                 }],
+                arith: Vec::new(),
                 ty: Type::arrow(Type::dict(t(), Type::Num), Type::die(t())),
             }),
         ),
@@ -226,6 +227,7 @@ pub fn prelude_types() -> Vec<(&'static str, PreludeEntry)> {
                     ty: s(),
                     site: EquatableSite::EvaluatorState,
                 }],
+                arith: Vec::new(),
                 ty: Type::arrows(
                     vec![
                         Type::pool(t()),
@@ -389,6 +391,7 @@ pub fn check(
     // D32-7: a bare top-level Pool[Num] display auto-sums via the D32-4
     // coercion; a top-level Pool[T ≠ Num] is the targeted error.
     let (core, ty) = ck.sum_if_pool(core, ty, spans.span)?;
+    ck.solve_arith()?;
     ck.check_deferred()?;
     Ok((core, ck.zonk(&ty)))
 }
@@ -520,6 +523,7 @@ fn primary_scheme(sb: SpecialBuiltin) -> Scheme {
                 ty: Type::Var(0),
                 site: EquatableSite::RollArgument,
             }],
+            arith: Vec::new(),
             ty: Type::arrow(Type::Var(0), Type::Unit),
         },
     }
@@ -552,11 +556,29 @@ struct Deferred {
     site: EquatableSite,
 }
 
+/// A pending die-lifting arithmetic decision (the 2026-08-10 D32-4
+/// amendment): created whenever an operand's shape is still a Var (so
+/// `Num` vs `Die[Num]` is undecidable at the operator), solved in
+/// [`Checker::solve_arith`] after inference — by which point outer
+/// context (a call site, a list element join) has usually resolved it.
+/// Still-unresolved operands take the documented `Num` default.
+#[derive(Debug, Clone)]
+struct ArithPending {
+    l: Type,
+    /// `None` = unary negation (shape-preserving: Dec/Float legal).
+    r: Option<Type>,
+    ret: Type,
+    lspan: Span,
+    rspan: Span,
+    span: Span,
+}
+
 #[derive(Default)]
 struct Checker {
     subst: HashMap<u32, Type>,
     next_var: u32,
     deferred: Vec<Deferred>,
+    arith: Vec<ArithPending>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -652,6 +674,16 @@ impl Checker {
                 site: c.site,
             });
         }
+        for a in &s.arith {
+            self.arith.push(ArithPending {
+                l: apply_map(&a.l, &map),
+                r: a.r.as_ref().map(|r| apply_map(r, &map)),
+                ret: apply_map(&a.ret, &map),
+                lspan: span,
+                rspan: span,
+                span,
+            });
+        }
         apply_map(&s.ty, &map)
     }
 
@@ -697,11 +729,95 @@ impl Checker {
             }
         }
         self.deferred = kept;
+        // Same migration for pending arith constraints — this is what makes a
+        // let-bound `|x| x + 1` lift independently per call site instead of
+        // pinning at its first use.
+        let mut arith_kept = Vec::new();
+        let mut arith_moved = Vec::new();
+        for a in std::mem::take(&mut self.arith) {
+            let zl = self.zonk(&a.l);
+            let zr = a.r.as_ref().map(|r| self.zonk(r));
+            let zret = self.zonk(&a.ret);
+            let mut f = Vec::new();
+            zl.free_vars(&mut f);
+            if let Some(r) = &zr {
+                r.free_vars(&mut f);
+            }
+            zret.free_vars(&mut f);
+            if f.iter().any(|v| qvars.contains(v)) {
+                arith_moved.push(ArithConstraint {
+                    l: zl,
+                    r: zr,
+                    ret: zret,
+                });
+            } else {
+                arith_kept.push(ArithPending {
+                    l: zl,
+                    r: zr,
+                    ret: zret,
+                    ..a
+                });
+            }
+        }
+        self.arith = arith_kept;
         Scheme {
             vars: qvars,
             constraints: moved,
+            arith: arith_moved,
             ty: zty,
         }
+    }
+
+    /// Solve every pending die-lifting arithmetic constraint (run after
+    /// inference, before the equatable sweep — solving binds vars those
+    /// checks zonk through). FIFO = creation order = inner-expressions
+    /// first, which is dependency order for chained arithmetic.
+    fn solve_arith(&mut self) -> Result<(), TypeError> {
+        for c in std::mem::take(&mut self.arith) {
+            match &c.r {
+                Some(r) => {
+                    let rl = self.resolve(&c.l);
+                    let rr = self.resolve(r);
+                    if matches!(rl, Type::Die(_)) || matches!(rr, Type::Die(_)) {
+                        for (t, s) in [(&rl, c.lspan), (&rr, c.rspan)] {
+                            match t {
+                                Type::Die(e) => {
+                                    self.merge(e, &Type::Num, JoinMode::Join, s)?;
+                                }
+                                other => self.subsume(other, &Type::Num, s)?,
+                            }
+                        }
+                        self.merge(&c.ret, &Type::die(Type::Num), JoinMode::Join, c.span)?;
+                    } else {
+                        // No die materialized: the documented Num default.
+                        for (t, s) in [(&rl, c.lspan), (&rr, c.rspan)] {
+                            self.subsume(t, &Type::Num, s)?;
+                        }
+                        self.merge(&c.ret, &Type::Num, JoinMode::Join, c.span)?;
+                    }
+                }
+                None => match self.resolve(&c.l) {
+                    Type::Die(e) => {
+                        self.merge(&e, &Type::Num, JoinMode::Join, c.lspan)?;
+                        self.merge(&c.ret, &Type::die(Type::Num), JoinMode::Join, c.span)?;
+                    }
+                    t @ (Type::Num | Type::Dec | Type::Float) => {
+                        self.merge(&c.ret, &t, JoinMode::Join, c.span)?;
+                    }
+                    Type::Var(v) => {
+                        self.bind(v, &Type::Num, c.lspan)?;
+                        self.merge(&c.ret, &Type::Num, JoinMode::Join, c.span)?;
+                    }
+                    other => {
+                        return Err(TypeError {
+                            message: format!("cannot negate `{}`", self.zonk(&other)),
+                            span: c.lspan,
+                        });
+                    }
+                },
+            }
+        }
+        Ok(())
     }
 
     fn check_deferred(&self) -> Result<(), TypeError> {
@@ -981,9 +1097,19 @@ impl Checker {
                         self.merge(&e, &Type::Num, JoinMode::Join, isp.span)?;
                         Type::die(Type::Num)
                     }
-                    Type::Var(v) => {
-                        self.bind(v, &Type::Num, isp.span)?;
-                        Type::Num
+                    v @ Type::Var(_) => {
+                        // Same D32-4 amendment as infer_binary: negation is
+                        // shape-preserving, so defer the Num-vs-Die[Num] choice.
+                        let ret = self.fresh();
+                        self.arith.push(ArithPending {
+                            l: v,
+                            r: None,
+                            ret: ret.clone(),
+                            lspan: isp.span,
+                            rspan: isp.span,
+                            span: sp.span,
+                        });
+                        ret
                     }
                     other => {
                         return Err(TypeError {
@@ -1147,6 +1273,35 @@ impl Checker {
         let (rc, rt) = self.sum_if_pool(rc, rt, rsp.span)?;
         let rl = self.resolve(&lt);
         let rr = self.resolve(&rt);
+        // D32-4 amendment (2026-08-10): a Var operand whose partner is Num,
+        // Die, or another Var can still go EITHER way (scalar or lifted) —
+        // defer the decision instead of pinning Num at the operator, so
+        // `map([d6], _ + 1)` / `let f(d) = d + 1; f(d6)` lift once the
+        // context resolves the operand. A Dec/Float/other partner still
+        // decides eagerly below (no die can carry those faces).
+        let liftable = |t: &Type| matches!(t, Type::Var(_) | Type::Num | Type::Die(_));
+        if (matches!(rl, Type::Var(_)) || matches!(rr, Type::Var(_)))
+            && liftable(&rl)
+            && liftable(&rr)
+        {
+            let ret = self.fresh();
+            self.arith.push(ArithPending {
+                l: rl,
+                r: Some(rr),
+                ret: ret.clone(),
+                lspan: lsp.span,
+                rspan: rsp.span,
+                span: sp.span,
+            });
+            return Ok((
+                CoreExpr::Binary {
+                    op,
+                    lhs: Box::new(lc),
+                    rhs: Box::new(rc),
+                },
+                ret,
+            ));
+        }
         let lifted = matches!(rl, Type::Die(_)) || matches!(rr, Type::Die(_));
         let ty = if lifted {
             for (t, s) in [(&rl, lsp.span), (&rr, rsp.span)] {

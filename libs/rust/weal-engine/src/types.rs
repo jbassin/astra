@@ -198,14 +198,30 @@ pub struct EquatableConstraint {
     pub site: EquatableSite,
 }
 
+/// A deferred die-lifting arithmetic constraint (the 2026-08-10 D32-4
+/// amendment): `l ⊕ r = ret`, where a Var operand may still resolve to
+/// either `Num` or `Die[Num]` — the choice is made at solve time (end of
+/// checking, or per instantiation when carried by a scheme), defaulting
+/// to `Num` when nothing resolves it. `r = None` is unary negation
+/// (shape-preserving, so Dec/Float operands stay legal there).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ArithConstraint {
+    pub l: Type,
+    pub r: Option<Type>,
+    pub ret: Type,
+}
+
 /// A rank-1 type scheme: `∀ vars . constraints => ty`. Constraints are
 /// re-instantiated (with the caller's span) every time the scheme is
 /// instantiated — this is what makes generic wrappers around `evaluate`
-/// still reject closure states at THEIR call sites.
+/// still reject closure states at THEIR call sites, and what lets a
+/// let-bound `|x| x + 1` lift to dice at one call site and stay numeric
+/// at another (`arith`).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Scheme {
     pub vars: Vec<u32>,
     pub constraints: Vec<EquatableConstraint>,
+    pub arith: Vec<ArithConstraint>,
     pub ty: Type,
 }
 
@@ -215,6 +231,7 @@ impl Scheme {
         Scheme {
             vars: Vec::new(),
             constraints: Vec::new(),
+            arith: Vec::new(),
             ty,
         }
     }
@@ -224,6 +241,7 @@ impl Scheme {
         Scheme {
             vars,
             constraints: Vec::new(),
+            arith: Vec::new(),
             ty,
         }
     }

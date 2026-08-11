@@ -264,6 +264,35 @@ fn concat_lists_of_dice() {
 }
 
 #[test]
+fn deferred_arith_maps_over_dice_at_runtime() {
+    // The D32-4 amendment end-to-end: the lambda's die param lifts and the
+    // interpreter builds the symbolic +1 per element.
+    let v = parse(&eval("map([d6, d6], _ + 1)", "[]", 0, "run"));
+    assert_eq!(v["ok"], Json::Bool(true));
+    let displays = v["displays"].as_array().unwrap();
+    assert_eq!(displays.len(), 2);
+    for d in displays {
+        assert_eq!(d["kind"], "die");
+        assert_eq!(d["standardDice"].as_array().unwrap().len(), 1);
+    }
+}
+
+#[test]
+fn deferred_arith_folds_dice_at_runtime() {
+    let v = parse(&eval(
+        "fold(repeat(d6, 3), d4, |a, b| a + b)",
+        "[]",
+        0,
+        "run",
+    ));
+    assert_eq!(v["ok"], Json::Bool(true));
+    let d = &v["displays"][0];
+    assert_eq!(d["kind"], "die");
+    // d4 + three d6 chains = 4 sampled standard dice in one display.
+    assert_eq!(d["standardDice"].as_array().unwrap().len(), 4);
+}
+
+#[test]
 fn len_counts_after_filter() {
     let v = parse(&eval("len(filter([1, 2, 3, 4], _ >= 3))", "[]", 0, "run"));
     assert_eq!(v["displays"][0]["headline"], "2");

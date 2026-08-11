@@ -1119,11 +1119,15 @@ fn compile(source: &str, saves_env: &[(String, Scheme)]) -> Result<SExpr, TypeEr
 }
 
 pub(crate) fn save_scheme(ty: &crate::types::Type) -> Scheme {
+    // NB: `ty` is the post-check zonked type — any deferred arith constraints
+    // were already solved (defaulted) by then, so quantifying without carrying
+    // `arith` is sound: a save's die-lifting pins at the save boundary.
     let mut vars = Vec::new();
     ty.free_vars(&mut vars);
     Scheme {
         vars,
         constraints: Vec::new(),
+        arith: Vec::new(),
         ty: ty.clone(),
     }
 }

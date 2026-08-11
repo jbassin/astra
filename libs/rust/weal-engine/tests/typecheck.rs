@@ -542,10 +542,48 @@ fn list_toolkit_rejects() {
     err("filter(repeat(d6, 2), |d| d >= 4)"); // die comparison is Die[Bool], not Bool
     err("fold([1], :zero, |a, b| a + b)"); // accumulator must unify with the closure
     err("map([1], |x| x) + 1"); // a list is not a number
-    // KNOWN LIMITATION (pre-existing, not list-toolkit-specific): binop die-lifting
-    // resolves eagerly, so a lambda-bound die param infers Num — `let f(d) = d + 1;
-    // f(d6)` fails identically. Flip this pin deliberately if arith ever defers.
-    err("map([d6], _ + 1)");
+}
+
+// -- deferred die-lifting arithmetic (the 2026-08-10 D32-4 amendment) -------
+// A Var operand no longer pins Num at the operator; the scalar-vs-lifted
+// choice is solved after inference (or per instantiation via the scheme),
+// defaulting to Num when nothing resolves it.
+
+#[test]
+fn deferred_arith_lifts_lambda_die_params() {
+    assert_eq!(ty("map([d6], _ + 1)"), "List[Die[Num]]");
+    assert_eq!(ty("let f(d) = d + 1; f(d6)"), "Die[Num]");
+    assert_eq!(ty("let f = |x| x * 2; f(d20)"), "Die[Num]");
+    assert_eq!(ty("fold(repeat(d6, 3), d4, |a, b| a + b)"), "Die[Num]");
+    assert_eq!(ty("map([d6], |d| -d)"), "List[Die[Num]]");
+    // Chained arithmetic through the deferral.
+    assert_eq!(ty("let f(d) = d + 1 + d6; f(d20)"), "Die[Num]");
+}
+
+#[test]
+fn deferred_arith_is_let_polymorphic() {
+    // The constraint rides the scheme, so each call site decides on its own.
+    assert_eq!(ty("let f = |x| x + 1; {f(1), f(d6)}"), "{Num, Die[Num]}");
+}
+
+#[test]
+fn deferred_arith_defaults_num() {
+    // Documented default preserved: nothing resolves the operands -> Num.
+    assert_eq!(ty("|x, y| x + y"), "Num -> Num -> Num");
+    assert_eq!(ty("|x| -x"), "Num -> Num");
+    // Monomorphic double use inside ONE body: first constraint defaults the
+    // shared param to Num, the die side still lifts.
+    assert_eq!(ty("|x| {x + 1, x + d6}"), "Num -> {Num, Die[Num]}");
+}
+
+#[test]
+fn deferred_arith_still_rejects_mixing() {
+    err("1 + 1.5"); // eager path unchanged
+    // A Dec partner decides eagerly (dice can't carry Dec faces), so the die
+    // application fails exactly as before.
+    err("let f(d) = d + 1.5; f(d6)");
+    // A die materializing where a plain Bool is needed still rejects.
+    err("filter([d6], _ + 0 >= 4)");
 }
 
 #[test]

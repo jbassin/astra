@@ -182,16 +182,17 @@ predicate is `:true`, `fold(list, init, f)` threads an accumulator, `len(list)` 
 
 ```
 concat(repeat(d6, 2), [d20])                    (* [d6, d6, d20] — mixed dice *)
-map(repeat(d6, 3), |d| explode(d, 2))           (* three exploding d6s *)
-fold([1, 2, 3], 0, |a, b| a + b)                →  6
+map(repeat(d6, 3), _ + 1)                       (* three d6+1 rolls *)
+fold(repeat(d6, 3), d4, |a, b| a + b)           →  d4 ⟪1⟫ + d6 ⟪3⟫ + d6 ⟪1⟫ + d6 ⟪1⟫ = 6
 len(filter([1, 2, 3, 4], _ >= 3))               →  2
 ```
 
 `repeat(x, 0)` is `[]`, a negative count is an error, and the count shares the pool
-construction cap. One trap: a lambda's die parameter can't do bare arithmetic —
-`map([d6], _ + 1)` is a type error (die `+` needs the die visible at the operator, a
-known checker limitation) — go through prelude functions like `explode`/`label`, or
-restructure so the `+` sees the die directly.
+construction cap. Arithmetic in a lambda lifts over dice like anywhere else — the
+checker decides Num-vs-die per call site (`let f = |x| x + 1; {f(1), f(d6)}` gives `2`
+and a rolled `d6 + 1`), defaulting to plain numbers when nothing says die. The one
+place that pins early: a save's type is fixed when saved, so a saved `|x| x + 1` that
+first checks alone stays numeric — save die-flavored macros with the die visible.
 
 ### `plot`
 
