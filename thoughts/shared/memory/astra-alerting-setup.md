@@ -231,4 +231,6 @@ Builds on [[pipeline-live-run-gotchas]] + [[deploy-sops-injection]] + [[signoz-m
 
 </details>
 
+**2026-08-10: Class B gained a NIC link-integrity check** (`check_nic`, after the [[chuul-hunt-active-campaign]] CRC incident): pages on ANY growth of `/sys/class/net/$NIC_IFACE/statistics/rx_crc_errors` between ticks (healthy wired = literally +0 for days; reads /sys, not `ethtool -S`, so no root). `WATCHDOG_NIC_IFACE` overrides `enp4s0`. ⭐ Counter-delta checks must NOT go through `confirm()` — each call rewrites the baseline, so an immediate re-probe always reads +0 and masks the fault; it runs once per tick. First run seeds silently (1.5M historical errors on the counter). Script-only edit, no alert-install needed.
+
 Builds on [[pipeline-live-run-gotchas]] + [[deploy-sops-injection]] + [[signoz-mcp]] + [[no-ci-monitoring]] + [[config-single-source]].

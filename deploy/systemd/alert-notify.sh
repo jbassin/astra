@@ -22,6 +22,10 @@ STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/astra-watchdog"
 
 # The pipeline's front door (same default + override as `just craig-sync`).
 DRIVE_MOUNT="${CRAIG_DROP_DIR:-/ruby/data/home/drive/Craig}"
+# The uplink NIC (the 2026-08-10 incident: a marginal gigabit cable corrupted frames —
+# 20% LAN loss, rx_crc_errors +75/s — presenting as bulk-transfer stalls while small
+# requests squeaked through on TCP retransmits).
+NIC_IFACE="${WATCHDOG_NIC_IFACE:-enp4s0}"
 # Timers whose health == the pipeline is armed. (The watchdog can't meaningfully check
 # its OWN timer — if that died, this script wouldn't be running.)
 WATCHED_TIMERS=(craig-sync.timer linguist-commit.timer)
@@ -294,6 +298,29 @@ remediate_mount() {
   return 1
 }
 
+# NIC link integrity: page when the interface's rx CRC counter GREW since the previous
+# tick — a healthy wired link stays at literally +0 for days, so any growth is physical
+# corruption (cable/port/NIC). Reads /sys (no root, unlike `ethtool -S`). Counter-delta
+# semantics: each call consumes the window by rewriting the baseline, so this must NOT
+# be wrapped in confirm() (an immediate re-probe would always read +0 and mask a fault);
+# run_watchdog calls it exactly once per tick. First-ever run seeds the baseline
+# silently (the incident left ~1.5M historical errors on the counter).
+check_nic() {
+  local stats="/sys/class/net/$NIC_IFACE/statistics/rx_crc_errors"
+  [ -r "$stats" ] || return 0   # interface gone/renamed — not this check's concern
+  local f="$STATE_DIR/nic-crc.last" now prev delta speed
+  now="$(cat "$stats" 2>/dev/null || echo 0)"
+  mkdir -p "$STATE_DIR"
+  prev="$(cat "$f" 2>/dev/null || true)"
+  printf '%s' "$now" >"$f"
+  [ -n "$prev" ] || return 0
+  delta=$((now - prev))
+  [ "$delta" -le 0 ] && return 0
+  speed="$(cat "/sys/class/net/$NIC_IFACE/speed" 2>/dev/null || echo '?')"
+  echo "NIC $NIC_IFACE is corrupting frames: +$delta rx CRC errors since the last tick (total $now, link ${speed}Mb/s) — bad cable/port/NIC (stopgap: sudo ethtool -s $NIC_IFACE advertise 0x008 forces clean 100FD; fix: swap the cable/port)"
+  return 1
+}
+
 check_timer() {
   local t="$1"
   if [ "$(systemctl --user is-active "$t" 2>/dev/null)" != "active" ]; then
@@ -339,6 +366,8 @@ run_watchdog() {
   else
     transition mount bad "$reason — auto-remediation: $fix"
   fi
+  if reason="$(check_nic)"; then transition nic ok  "NIC $NIC_IFACE link clean again (no new rx CRC errors this tick)"
+  else                           transition nic bad "$reason"; fi
   local t
   for t in "${WATCHED_TIMERS[@]}"; do
     if reason="$(confirm check_timer "$t")"; then transition "timer-$t" ok  "timer $t healthy again"
