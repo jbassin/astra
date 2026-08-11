@@ -318,19 +318,25 @@ alert-install:
     echo "smoke-test a Discord page with: deploy/systemd/alert-notify.sh test"
     echo "one-time root step for vanished-mount auto-remediation: just alert-sudoers-install"
 
-# One-time ROOT step: install the NOPASSWD sudoers drop-in that lets the watchdog
-# force-restart gdrive.service when the Drive mount VANISHES (daemon alive but mount
-# detached — Restart=always can't fire). Validates with visudo before installing so a
-# bad file can never lock sudo. Prompts for your password (system-scope install).
+# One-time ROOT step: install the NOPASSWD sudoers drop-ins the watchdog's
+# auto-remediations need — astra-gdrive (force-restart gdrive.service when the Drive
+# mount VANISHES) and astra-ethtool (retrain/renegotiate a frame-corrupting NIC link).
+# Validates each with visudo before installing so a bad file can never lock sudo.
+# Prompts for your password (system-scope install). Verification is non-destructive
+# (`sudo -n -l <cmd>` — never actually restarts the mount or blips the link).
 alert-sudoers-install:
     #!/usr/bin/env bash
     set -euo pipefail
     cd /ruby/data/experiments/astra
-    src=deploy/systemd/sudoers.d/astra-gdrive
-    sudo visudo -cf "$src"                       # syntax-check BEFORE touching /etc
-    sudo install -o root -g root -m 0440 "$src" /etc/sudoers.d/astra-gdrive
-    echo "installed /etc/sudoers.d/astra-gdrive; verifying passwordless restart is allowed:"
-    sudo -n /usr/bin/systemctl restart gdrive.service && echo "OK — watchdog can now self-heal a vanished mount"
+    for src in deploy/systemd/sudoers.d/astra-gdrive deploy/systemd/sudoers.d/astra-ethtool; do
+      sudo visudo -cf "$src"                     # syntax-check BEFORE touching /etc
+      sudo install -o root -g root -m 0440 "$src" "/etc/sudoers.d/$(basename "$src")"
+      echo "installed /etc/sudoers.d/$(basename "$src")"
+    done
+    echo "verifying passwordless commands are allowed:"
+    sudo -n -l /usr/bin/systemctl restart gdrive.service >/dev/null && echo "  OK — gdrive restart"
+    sudo -n -l /usr/sbin/ethtool -r enp4s0 >/dev/null && echo "  OK — NIC retrain"
+    sudo -n -l /usr/sbin/ethtool -s enp4s0 advertise 0x008 >/dev/null && echo "  OK — NIC 100FD fallback — watchdog can now self-heal the link"
 
 # Install + start the scriptorium (the assay 0030 prose-review UI) as a user unit so
 # it survives shell/session churn while exposed at scriptorium.iridi.cc (basicauth'd

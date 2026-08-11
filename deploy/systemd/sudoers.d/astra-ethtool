@@ -1,0 +1,12 @@
+# Let the astra liveness watchdog (astra-watchdog.service, user scope, runs as jbassin)
+# heal a frame-corrupting NIC link. The 2026-08-10 incident: the 1000BASE-T PHY training
+# settled into a marginal state (20% LAN loss, rx CRC errors +75/s) and stayed there for
+# ~11 days — link training only re-runs on a link event, and forcing renegotiation fixed
+# it with the SAME cable. Rung 1 retrains at full speed (-r); rung 2 renegotiates to
+# clean 100FD (advertise 0x008 — autoneg stays on); the 0x03f line is the gigabit
+# restore (used by a human after a cable swap, never by the watchdog). Exact commands
+# only — no wildcards (sudoers arg globs match across words; enumerating is safer).
+# Install to /etc/sudoers.d/astra-ethtool, mode 0440 (`just alert-sudoers-install`).
+jbassin ALL=(root) NOPASSWD: /usr/sbin/ethtool -r enp4s0
+jbassin ALL=(root) NOPASSWD: /usr/sbin/ethtool -s enp4s0 advertise 0x008
+jbassin ALL=(root) NOPASSWD: /usr/sbin/ethtool -s enp4s0 advertise 0x03f

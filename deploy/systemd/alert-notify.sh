@@ -298,6 +298,11 @@ remediate_mount() {
   return 1
 }
 
+# How long to wait for carrier after a forced renegotiation (a retrain blips ~2-3s).
+NIC_RELINK_WAIT_S="${WATCHDOG_NIC_RELINK_WAIT_S:-20}"
+
+nic_crc_now() { cat "/sys/class/net/$NIC_IFACE/statistics/rx_crc_errors" 2>/dev/null || echo 0; }
+
 # NIC link integrity: page when the interface's rx CRC counter GREW since the previous
 # tick — a healthy wired link stays at literally +0 for days, so any growth is physical
 # corruption (cable/port/NIC). Reads /sys (no root, unlike `ethtool -S`). Counter-delta
@@ -309,7 +314,7 @@ check_nic() {
   local stats="/sys/class/net/$NIC_IFACE/statistics/rx_crc_errors"
   [ -r "$stats" ] || return 0   # interface gone/renamed — not this check's concern
   local f="$STATE_DIR/nic-crc.last" now prev delta speed
-  now="$(cat "$stats" 2>/dev/null || echo 0)"
+  now="$(nic_crc_now)"
   mkdir -p "$STATE_DIR"
   prev="$(cat "$f" 2>/dev/null || true)"
   printf '%s' "$now" >"$f"
@@ -318,6 +323,77 @@ check_nic() {
   [ "$delta" -le 0 ] && return 0
   speed="$(cat "/sys/class/net/$NIC_IFACE/speed" 2>/dev/null || echo '?')"
   echo "NIC $NIC_IFACE is corrupting frames: +$delta rx CRC errors since the last tick (total $now, link ${speed}Mb/s) — bad cable/port/NIC (stopgap: sudo ethtool -s $NIC_IFACE advertise 0x008 forces clean 100FD; fix: swap the cable/port)"
+  return 1
+}
+
+# After a forced renegotiation: wait for carrier, then push ~36 KB of large pings at the
+# default gateway and re-read the CRC counter — errors only accrue with inbound traffic,
+# so an idle link proving "+0" proves nothing. Echoes the delta; returns 1 if the link
+# never came back within NIC_RELINK_WAIT_S.
+nic_probe_delta() {
+  local waited=0 before after gw
+  while [ "$(cat "/sys/class/net/$NIC_IFACE/carrier" 2>/dev/null || echo 0)" != "1" ]; do
+    if [ "$waited" -ge "$NIC_RELINK_WAIT_S" ]; then return 1; fi
+    sleep 1; waited=$((waited + 1))
+  done
+  sleep 2   # let the PHY settle post-training before judging it
+  before="$(nic_crc_now)"
+  gw="$(ip route show default 2>/dev/null | awk '/default/ {print $3; exit}')"
+  if [ -n "$gw" ]; then ping -c 30 -i 0.1 -q -s 1200 "$gw" >/dev/null 2>&1 || true
+  else sleep 3; fi
+  after="$(nic_crc_now)"
+  echo $((after - before))
+}
+
+# Attempt to heal a corrupting NIC link (the 2026-08-10 incident, automated). The root
+# cause there was MARGINAL 1000BASE-T LINK TRAINING, not the copper — training only
+# re-runs on a link event, so a bad settle corrupts indefinitely, and a forced
+# renegotiation fixed it with the same cable. Rung 1 retrains at full speed
+# (`ethtool -r`, ~2-3s blip — the proven fix); rung 2 renegotiates down to 100FD
+# (`advertise 0x008`, autoneg stays ON — never `autoneg off`, that's the
+# duplex-mismatch trap), which marginal copper runs clean at the cost of bandwidth.
+# Un-degrading is deliberately NOT automated: once clean there is no corruption signal
+# to distinguish "cable swapped" from "still marginal", and probing gigabit would blip
+# the link every attempt — restoring is the human's move (advertise 0x03f). Needs the
+# astra-ethtool NOPASSWD drop-in (`just alert-sudoers-install`); without it sudo -n
+# fails fast → page-only. Shares the WATCHDOG_REMEDIATE kill-switch + debounce window.
+remediate_nic() {
+  local f="$STATE_DIR/remediate-nic.ts" now last delta speed
+  mkdir -p "$STATE_DIR"
+  now="$(date +%s)"; last="$(cat "$f" 2>/dev/null || echo 0)"
+  if [ "${WATCHDOG_REMEDIATE:-1}" = "0" ]; then
+    echo "disabled (WATCHDOG_REMEDIATE=0)"; return 1
+  fi
+  if [ $((now - last)) -lt "$REMEDIATE_DEBOUNCE_S" ]; then
+    echo "already attempted $((now - last))s ago (debounce ${REMEDIATE_DEBOUNCE_S}s) — not retrying"
+    return 1
+  fi
+  if [ "${ALERT_DRY_RUN:-}" = "1" ]; then
+    echo "[dry-run] would retrain $NIC_IFACE (ethtool -r), then fall back to 100FD"; return 1
+  fi
+  printf '%s' "$now" >"$f"
+  log "remediating corrupting NIC link on $NIC_IFACE — rung 1: PHY retrain at full speed"
+  if ! sudo -n /usr/sbin/ethtool -r "$NIC_IFACE" >/dev/null 2>&1; then
+    echo "no passwordless ethtool (one-time root step: just alert-sudoers-install) — cannot self-heal"
+    return 1
+  fi
+  if delta="$(nic_probe_delta)" && [ "$delta" -le 0 ]; then
+    speed="$(cat "/sys/class/net/$NIC_IFACE/speed" 2>/dev/null || echo '?')"
+    printf '%s' "$(nic_crc_now)" >"$STATE_DIR/nic-crc.last"
+    echo "PHY retrain (ethtool -r) cleaned it — link at ${speed}Mb/s, +0 CRC over a large-ping probe. Marginal training settle; if this keeps recurring, swap the cable/port."
+    return 0
+  fi
+  log "retrain insufficient (delta ${delta:-link-down}) — rung 2: renegotiate to 100FD"
+  if ! sudo -n /usr/sbin/ethtool -s "$NIC_IFACE" advertise 0x008 >/dev/null 2>&1; then
+    echo "retrain did not clean the link (+${delta:-link-down}) and the 100FD fallback sudo failed"
+    return 1
+  fi
+  if delta="$(nic_probe_delta)" && [ "$delta" -le 0 ]; then
+    printf '%s' "$(nic_crc_now)" >"$STATE_DIR/nic-crc.last"
+    echo "retrain was not enough; DEGRADED to clean 100FD. Swap the cable/port, then restore gigabit: sudo ethtool -s $NIC_IFACE advertise 0x03f"
+    return 0
+  fi
+  echo "still corrupting even at 100FD (+${delta:-link-down}) — hardware is failing; left at 100FD (restore attempt: sudo ethtool -s $NIC_IFACE advertise 0x03f)"
   return 1
 }
 
@@ -366,8 +442,13 @@ run_watchdog() {
   else
     transition mount bad "$reason — auto-remediation: $fix"
   fi
-  if reason="$(check_nic)"; then transition nic ok  "NIC $NIC_IFACE link clean again (no new rx CRC errors this tick)"
-  else                           transition nic bad "$reason"; fi
+  if reason="$(check_nic)"; then transition nic ok "NIC $NIC_IFACE link clean again (no new rx CRC errors this tick)"
+  elif fix="$(remediate_nic)"; then
+    post "🟠 **astra watchdog auto-remediated** — NIC $NIC_IFACE was corrupting frames: $fix"
+    mkdir -p "$STATE_DIR"; printf 'ok' >"$STATE_DIR/nic.state"
+  else
+    transition nic bad "$reason — auto-remediation: $fix"
+  fi
   local t
   for t in "${WATCHED_TIMERS[@]}"; do
     if reason="$(confirm check_timer "$t")"; then transition "timer-$t" ok  "timer $t healthy again"
