@@ -85,8 +85,15 @@ api.akasha.iridi.cc {
 	redir / /scripts/ 302
 	handle_path /scripts* {
 		root * /ruby/data/experiments/astra/apps/linguist/data
-		file_server browse {
+		# The directory index renders as a bare JSON array of full file URLs
+		# (deploy/caddy/scripts-index.tmpl) instead of the default browse.html.
+		header {
+			Content-Type application/json
+			defer
+		}
+		file_server {
 			hide *.candidates.json
+			browse /ruby/data/experiments/astra/deploy/caddy/scripts-index.tmpl
 		}
 	}
 }

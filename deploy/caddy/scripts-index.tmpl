@@ -1,0 +1,12 @@
+{{- /* JSON index for api.akasha.iridi.cc/scripts/ — replaces the default
+     browse.html: a bare JSON array of full URLs, one per (non-hidden) file.
+     Referenced by sites.caddyfile's api.akasha stanza; `hide` entries never
+     reach .Items, so candidates files stay out. */ -}}
+{{- $first := true -}}
+[
+{{- range .Items -}}
+{{- if not .IsDir -}}
+{{- if $first }}{{ $first = false }}{{ else }},{{ end }}"https://api.akasha.iridi.cc/scripts/{{ .Name }}"
+{{- end -}}
+{{- end -}}
+]
