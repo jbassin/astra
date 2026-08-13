@@ -75,6 +75,20 @@ akasha.iridi.cc {
 	reverse_proxy localhost:10365
 }
 
+# api.akasha.iridi.cc — raw session-script JSON straight off the repo working
+# tree (the same committed apps/linguist/data/*.json GitHub serves; corrections
+# already applied at processing time). `browse` auto-generates the index at
+# /scripts/. Already public via the GitHub repo, so no gate. Caddy runs as
+# uid 1000 post the run-as-1000 cutover, so it reads the repo directly.
+api.akasha.iridi.cc {
+	import astra_site
+	redir / /scripts/ 302
+	handle_path /scripts* {
+		root * /ruby/data/experiments/astra/apps/linguist/data
+		file_server browse
+	}
+}
+
 # heart.iridi.cc — alias host for akasha-frontend (same SSR service, port 10365).
 # (Needs a heart.iridi.cc DNS record — manual, like the other deferred hosts.)
 heart.iridi.cc {
