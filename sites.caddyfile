@@ -85,7 +85,9 @@ api.akasha.iridi.cc {
 	redir / /scripts/ 302
 	handle_path /scripts* {
 		root * /ruby/data/experiments/astra/apps/linguist/data
-		file_server browse
+		file_server browse {
+			hide *.candidates.json
+		}
 	}
 }
 
