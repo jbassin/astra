@@ -54,8 +54,7 @@ def test_show_index_has_all_campaigns() -> None:
     song = shows["through-a-song-darkly"]
     assert song.name == "Through a Song, Darkly"
     assert song.order == 0  # first in being.campaigns
-    # `main` currently sits on the Chuul Hunt one-shot (the weal-bot active campaign)
-    assert [slug for slug, s in shows.items() if s.is_main] == ["chuul-hunt"]
+    assert [slug for slug, s in shows.items() if s.is_main] == ["through-a-song-darkly"]
 
 
 # ── date → show resolution (real transcript filenames) ──────────────────────

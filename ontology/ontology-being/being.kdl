@@ -70,7 +70,7 @@ guest-color "rgb(235,235,236)"
 campaign "through-a-song-darkly" {
     name "Through a Song, Darkly"
     edition "pathfinder_2e"
-    main #false
+    main #true
     world "faerrin"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Argyle" class="champion" {
@@ -169,7 +169,7 @@ campaign "fey-in-the-mists" {
 campaign "chuul-hunt" {
     name "Chuul Hunt"
     edition "dnd_5e"
-    main #true
+    main #false
     world "chuul-hunt"
     role player="tanner" character="Gamemaster" class="gm"
     role player="josh" character="Doomeater" class="monk" {

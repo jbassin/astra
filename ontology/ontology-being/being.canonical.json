@@ -2,7 +2,7 @@
   "campaigns": [
     {
       "edition": "pathfinder_2e",
-      "main": false,
+      "main": true,
       "name": "Through a Song, Darkly",
       "roles": [
         {
@@ -329,7 +329,7 @@
     },
     {
       "edition": "dnd_5e",
-      "main": true,
+      "main": false,
       "name": "Chuul Hunt",
       "roles": [
         {
