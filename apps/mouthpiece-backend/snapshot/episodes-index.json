@@ -20416,6 +20416,435 @@
           "text": "Maybe."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-8-17",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 15,
+      "isMain": true,
+      "date": "2026-8-17",
+      "dateSortKey": 20260817,
+      "title": "The Menhir's Last Chime",
+      "episodeTitle": "The Menhir's Last Chime",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm and dry, precise but pointed; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date the others fumble for and reins Bram in with a flat one-line correction — she finishes her sentences and finishes them short. But she's not only the fact-checker: she needles, too, pushing on WHY the characters did what they did and making Bram defend his reads, poking at the table's heroics and at sentiment with a wink. Grounds events in how the world actually works; the only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle"
+        }
+      },
+      "synopsis": "A desperate plea to the Menhir for a hero's blessing sends the party into the Black and White, where visions of trials to come are accompanied by a gift: an ornate revolver called The End and seventeen golden bullets. But when the only way home proves to be pulling the trigger on their benefactor, the consequences are immediate and catastrophic — the Strider grinds to a halt in a dead, scoured world, the Harlequins are annihilated by void eruptions, and the remaining Narrative turn their fury on the party. With a stolen Voidheart in hand and an angry god-beast on their heels, the group must reckon with the question every hero faces: was the price of the call worth the cost?",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So look, I've been thinking about this all week, and I still maintain that Johnny walking out onto that stage with cardboard cutouts of the Menhir and just — just declaring himself the hero of the story is maybe the single most Johnny thing that has ever happened at our table, and I include the time he talked a mechanical heart into being his best friend with a natural twenty, because this time he wasn't rolling for diplomacy with something that could talk back, he was — he was doing performance art at god, Maeve, he was doing performance art at literal cosmic forces and it WORKED."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It worked because the dice worked. Let's not conflate a good performance check with a good plan, because those are very different things, and I think the session pretty conclusively proved that."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "See, I knew you'd go there, I knew you'd immediately go to \"the dice\" and I think that's — okay, yes, the rolls were extraordinary, Johnny was rolling out of his mind, but you don't roll high enough to hit a difficulty that's effectively a max-level skill check by accident. That's not just dice, that's the whole package — the crafting, Argyle's religion support, Anzu helping build the menhir replicas, the mythic point on Perceive the Threads — Johnny poured everything he had into this and it landed, and I think the reason it landed is that the Menhir recognized something genuine in it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or the Menhir recognized that these four idiots were desperate enough to be useful. Those aren't the same thing. The Menhir didn't bless them because Johnny's poetry moved a bunch of rocks. It blessed them because it was tired, because Ought had just left, and because the alternative was — what? Waiting another thousand years for someone else to show up?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's a very — that's a very cold read on what I think was a genuinely moving scene, and I want to push back on it, because the Menhir's chimes, the way they harmonized, Johnny making the connection that this was what deities sound like when they speak in their own language — that's not transactional, that's — there was something sacramental about it, and I think the visions they got, the four silhouettes in the storm with six looming figures, the cracked sun, the twelve shadows from four people — these aren't a contract, these are a calling."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A calling that cost them a member of the Narrative. Let's — can we actually talk about the part where they killed a god?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They didn't kill a god, they killed — okay, they killed one of the Menhir, which is — yes, a member of the Narrative, but — and here's the thing, and this is where I will die on this hill — the Menhir ASKED for it. The Menhir gave them the gun. The Menhir gave them seventeen bullets and then basically stood there going \"so... how are you getting home?\" The chime of mourning, the melancholy, the resonance in the bullet box — the Menhir was sad but it was — it was a willing sacrifice, it was the mentor dying so the hero could grow, and Argyle even caught that, he literally invoked the story of the Judge asking his son to go up the mountain and —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Argyle invoked a story from his own religion to justify pulling the trigger on a cosmic entity. That's not the same as the cosmic entity asking to die."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But what else were they supposed to do? They tried walking away, they tried walking toward the Pharos, they tried asking nicely three times — which, by the way, they caught the Rule of Three even there — and none of it worked. The Menhir wouldn't let them leave. The bullets resonated when they asked. Everything pointed at \"shoot the rock.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Everything pointed at \"something has to die for you to leave.\" They assumed it was the Menhir. They could have —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Could have what? Shot themselves? They discussed that! Johnny literally offered to shoot himself in the head because he's died before and come back, and Argyle offered to take the bullet — I mean, at one point they were going to shoot the bird, which — okay, that was dark, but the point is they explored the options, and the gun was given to them BY the Menhir, so shooting the Menhir with the Menhir's own gift — that's not murder, that's — it's almost liturgical, it's a sacrament, it's —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a god-killing gun handed to level eight characters with the instruction \"figure it out.\" And they figured it out by shooting their benefactor. And I want to be clear — I think Argyle pulling that trigger was the right call given the information they had. What I'm pushing back on is this romantic framing of it as a noble sacrifice, because we don't actually know that's what it was. We know the Menhir was tired. We know the chimes were sad. We don't know that the Menhir chose to die. It might have just been stuck in the same bind they were."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, that's — I'll give you that, I'll give you that we can't be certain of the Menhir's intent, but Josh himself said afterward that the Menhir put all its eggs in one basket, that it saw them as a chance for real change — those are his words, essentially — and that the low d one hundred roll meant the Menhir was effectively saying \"I don't know if I can continue anymore, these people have got it.\" That's not ambiguous, that's a being choosing to pass the torch."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And I think Josh is a generous GM who retroactively narrativizes chaos into meaning, which is his prerogative and frankly his skill, but it doesn't change what actually happened at the table, which is: four level eights panicked and shot a rock."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Four level eights who had been told \"you want to be heroes, here's the hero's path,\" and the path involved a gun called The End and seventeen golden bullets — I mean, at some point you have to engage with the metaphor, Maeve, the gun is called The End, it came with a fixed number of bullets, the bullets aren't magic — which, by the way, Anzu caught that, and I think that's an incredible detail — the bullets are NOT magic, the gun is, the bullets are just — they're just this impossible gold material, and —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The gun is called The End and it kills gods. That's not a metaphor, that's a weapon. And I think the interesting question isn't whether the Menhir wanted to die, it's whether the party understood what they were being handed. Because Johnny's immediate instinct was \"Godkiller bullets?\" and Argyle's was \"we should probably try shooting one of us first.\" There's a real difference in how they processed that moment, and I think it matters."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I think Argyle offering to take the bullet was actually — okay, hear me out — I think it was the most in-character thing he's ever done, because this is a guy who's spent his whole life trying to fix the world, who has five years left on a hag's curse, who's literally a failed celestial trying to be better — of COURSE he offers to die, of course he puts the gun to his own head, because in his mind that's the heroic move, and then when they figure out it's the Menhir that has to go, HE pulls the trigger, because he's the one who's already made peace with sacrifice."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or he's the one who was most willing to kill something and live with it, which is a different quality. And I notice that Benny was the holdout on accepting the call, by the way — everyone kneeled and accepted, but Benny stood, and I don't think that was accidental."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "No, no, that's — actually, yeah, Benny's reluctance was fascinating because Benny is the one who's been questioning the whole hero framework all along, he's the one who later says \"I don't think we're supposed to be worshipped, I think this accelerates the struggle,\" and I think —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I think Benny is nine years old and standing in front of cosmic entities and has the good sense to be wary, which puts him ahead of every adult in the party."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, fair, fair — but let's move to what happened when they got back, because I think that's where the real debate is, and I want to hear your take on the Ought confrontation first, because — oh man, oh man, the Ought scene, I — that was — you had to be there, it was this incredible messy breakup where Ought is hurt that they didn't come to him, and Johnny's trying to explain \"we didn't want another Raelion,\" and Ought just twists it into \"so you want to take and not give, that's selfish,\" and it's like — it's like arguing with an ex, it's this completely emotional irrational guilt trip from a being that is literally a cosmic force of narrative, and I think it's the best RP Josh has done as an NPC in maybe ever."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It was a strong scene. I'll give you that. But I think Johnny fumbled it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Fumbled it? He — what?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Johnny's argument was \"we didn't come to you because you'd want something in return and we didn't want to blow up another country.\" Ought's counter was \"sometimes heroes have to blow stuff up.\" And instead of engaging with that — which is actually a real philosophical tension, right, is collateral damage acceptable in pursuit of a greater good — Johnny just says \"that's what people with no moral Scale do.\" He shuts down the argument by calling Ought immoral, which is both rude and strategically stupid when you're talking to something that can brand you with burning tattoos."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He spat on the ground after Ought left and said it was for his wife! That's — that's not shutting down the argument, that's — Johnny's wife was killed in Raelion, Ought was involved, and here's Ought basically saying \"sometimes you gotta blow up a country\" to the guy whose country got blown up — I think Johnny was remarkably restrained!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm not saying Ought was right. I'm saying Johnny wasn't arguing, he was reacting, and there's a difference. And the cost of that failed conversation was real — they lost Ought as a potential ally, they got the three-dot brand burned into them, and they went into the Menhir encounter with one fewer friend in high places. That matters."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But they gained the Menhir, which is — I mean, if you're trading Ought for the Menhir plus a god-killing revolver, that's — that's a pretty good trade, honestly."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Is it? Is it a good trade when the immediate consequence is that the Strider grinds to a halt in a dead world?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, now we're — yes, let's talk about the consequences, because that's where I think things get really interesting and where I actually think the party's response was — I mean, the Strider stops, they're in this scoured, dead, stripped-bare world with two dim suns, the Harlequins are just gone, replaced by void eruptions and hand creatures pouring out —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the Voidsong is the quietest it's ever been."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right, which is terrifying, because Anzu has been chasing that signal for a year, and now it's fading, which means they're far from where they need to be, and — but okay, here's where I want to push on you, because I think the party's response to the crisis was actually incredibly decisive and smart. They don't panic, they immediately assess — Johnny grabs the twins, they figure out the Harlequins are gone, the Machine God can't help with movement, Chuck's summon returns a desiccated corpse — and then they make the call to go grab a Voidheart."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They make the call to drive into the void eruption zone at level eight with four people and a bird, and I think that was reckless."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It was decisive! There's a difference! They had a window — they were first on the scene because they understood what happened before anyone else did, and they knew that Voidhearts are valuable, they'd used one before, and the Harlequin town was right there with multiple portals torn open. The smart play was to grab one and get out before the other factions started scrambling."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The smart play would have been to call allies. They have the Protectorate, they have the Scale, they have a whole coalition. Argyle even raises the possibility and talks himself out of it because he's worried about Grayson finding out. They chose to go alone because they didn't want to share information, and that's not decisiveness, that's paranoia."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's — okay, it's a little paranoid, but Argyle's reasoning was sound! Grayson has already demonstrated he'll backstab allies, and if you broadcast \"hey we know what happened and we're going to the Harlequin ruins,\" that's painting a target. They went in quiet, they got in, they got out —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Benny nearly died."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Benny nearly — okay, yes, Benny got hit hard by those void hand bolts, but he also — he grabbed the Voidheart clean! The athletics check to pull it out of the portal was — I mean, that was a natural crit, he just — he yoinked a god-organ out of a void pocket and ran with it, silenced, hasted, god-speeded, this nine-year-old android just sprinting through a dimension carrying a chitinous orb while a Quellant — which is a terrifying three-legged three-armed faceless thing that apparently used to be on the Archives of Nethys but got removed, which is its own kind of eerie — and he made it out!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He made it out unconscious, slumped over the steering wheel, and Johnny had to lunge across the passenger seat to keep the car from — well, there's no road, so I guess keep the car from just going sideways into rock, and Argyle had to pour healing into him to get him back up. That's not a clean extraction, that's barely surviving."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But they DID survive, and they came home with eighty energy worth of Voidheart, which they fed to Eerie and got the Arcane Dampener — a defensive upgrade that penalizes any non-coalition caster inside their Fane. That's huge! That's — for a base defense, that's genuinely important, and they got it because they took a risk and it paid off."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They got it because they rolled well on the identification checks. Again, I think you're attributing outcome to skill when a lot of it is dice. And I want to talk about the Quellant, because I think that creature is more significant than anyone at the table realized."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, the Quellant — yes, okay, because it comes out of the void portal, it's this — it's stalking around the Voidheart, it's pacing like a guard, and when Benny grabs the heart, it pulls itself out through the portal and hits Benny with Crushing Despair — which slows him — and Josh spent a mythic point to give it an extra action to do that, which —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Josh spent a mythic point. On an NPC. To debuff a player. In a session where the players had just killed a member of the Narrative."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He had a mythic point from the recap! He earned that fair and square!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He earned a mythic point by recapping a one-shot where he couldn't remember what happened, and then spent it to make an already-dangerous situation worse for the party. I'm not saying it was unfair. I'm saying it was pointed."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I think — I think Josh was reacting to the table in real time, and he needed the Quellant to be a real threat to sell the danger, and it worked! The escape sequence was — you had Benny silenced and hasted and god-speeded, running a hundred and seventy feet a turn, Johnny casting Noise Blast behind them as an auditory smokescreen, Argyle throwing up a fourth-level Silence on the car so the void hands couldn't target them, Anzu re-upping Vector Screens — it was this incredible coordinated tactical retreat, and they made it out by the skin of their teeth, and I think that's exactly the kind of scene the system is built for."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Silence on the car was clever, I'll grant that. The second-level Silence on Benny specifically — not the area version, the targeted version — was also smart, because it meant the void hands' echo-sense couldn't detect him as a gap in sound. That was a genuine tactical insight, probably the sharpest play of the night."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And it was Argyle's call! Argyle, who — five minutes earlier had killed a god — figured out that the targeted Silence doesn't create a detectable sound-hole the way the area version does. That's — I mean, that's the kind of rules-engagement that makes Pathfinder worth playing, honestly."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's also the kind of rules-engagement that only matters because they're using Foundry and can see the distinction between the two spell versions instantly. But that's a separate conversation we've already had."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Don't — don't restart the Foundry debate, we'll be here all night."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Fine. Let's talk about the twins' reaction, because I think that's the scene that actually reveals the most about where the campaign is going."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, the twins — the twins popping into existence and doing the Goblet of Fire — the not-French twins swivel — that was — I laughed, I genuinely laughed, because Anouk and Anaïs are these sophisticated operatives and they just completely lose it, they're walking toward the party with their arms out going \"what did you do,\" and Johnny's standing there with \"with great power comes great responsibility,\" and the twins are just —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "\"You could have said no.\" That's the line that matters. \"You could have said no. You go back home. You live an uneventful life.\" Because the twins are right."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The twins are — okay, the twins are right in the abstract, but they're also — they're operating from a completely different framework. They serve Renge. They have a patron. The party just chose to take on a patron of their own, and the twins are upset because it changes the power dynamic, because now the party isn't just the twins' useful pawns, they're someone else's chosen."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or the twins are upset because the Strider just stopped moving in a dead world and the Harlequins are all dead and everything is terrible and the four people responsible are standing there quoting Spider-Man at them. I think it's possible to be upset about consequences without it being a power play."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's — okay, that's actually a good point, I'll give you that. The twins' panic was genuine. They were scared. They were — they literally said \"this is too much responsibility,\" and for characters who serve a cosmic entity to say that — that carries weight."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And then the twins cast the chronomantic shell, the temperature bubble, which I think people overlooked because of the chaos. They immediately solved the cold problem. While the party was arguing about where to hide the gun — in Anzu's sleeves, by the way, which Anzu had to point out aren't shadow sleeves, they're just sleeves — the twins were already mitigating the environmental threat."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's a really good catch, actually, because the twins' response to crisis is infrastructure and the party's response to crisis is action, and that's — that's the fundamental divide in how these groups operate, and it's going to matter going forward."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It already matters. The party grabbed a Voidheart and got a base upgrade. The twins kept everyone from freezing to death. Both were necessary. Neither was sufficient."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So — okay, so let's talk about the endgame, because the post-session discussion was where I think the real disagreement is, because you have the party sitting there going \"we have sixteen god-killing bullets and six evil gods and four remaining members of the Narrative, that's — that's exactly enough\" — and Argyle is doing the math, he's literally counting, and —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He's counting wrong, by the way. He said six gods plus six evil gods plus four Narrative, and I'm not sure what the first six refers to, but the Ashen Pact is six entities, the remaining Narrative is four, and the Menhir are dead. The math doesn't actually clean up the way he wants it to."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But the FEELING of it — the feeling that the bullets map to the threats — that's not nothing, that's — Josh gave them seventeen bullets, they spent one to kill the Menhir, they have sixteen left, and if there are six Ashen Pact members and four Narrative, that's ten, with six to spare, and I don't think that's accidental, I think the bullet count is —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I think you're pattern-matching where there may not be a pattern. The bullets might be for the Ashen Pact. They might be for the Narrative. They might be for something we haven't seen yet. The party assuming they know the budget is exactly the kind of hubris that got them into this mess."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's — okay, that's fair, but let me ask you this: was reaching out to the Menhir the right call?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "In terms of outcome? They got a god-killing weapon, a hero's blessing, a level up, and a base upgrade. They lost Ought, killed a member of the Narrative, stranded the Strider in a dead world, annihilated the Harlequins, and painted a target on themselves for every remaining cosmic entity. I think the honest answer is: it's too early to tell."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's — wow, that's the most Maeve answer possible."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But I'll say this. I think Johnny was right that they needed more power, and I think the Menhir was the right entity to approach, because unlike Ought and unlike Renge, the Menhir's whole thing is heroes. It's the one member of the Narrative that's explicitly aligned with the protagonist's journey. So the choice of whom to ask was good. The execution was a disaster, but the instinct was sound."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And I think — I think the disaster IS the story. That's what heroism looks like from the inside, it's messy and costly and you do things you can't take back and then you have to figure out what to do with the wreckage, and the party — they didn't sulk about it, they didn't — I mean, Johnny felt bad, but within ten minutes of getting back they were in a car driving toward the void, and I think that's — that's the energy of this group, that's what makes them fun to watch, is that they make a mess and then they drive into it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They make a mess and then they drive into it. That should be on the show notes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It should! It should be — that's the campaign tagline at this point, honestly, because — and then the final thing, the final beat where they're talking about next steps and Argyle says \"should we lure the void things to Grayson\" — I mean, the fact that he even thought about that —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Argyle suggested weaponizing the void eruption against a neighboring faction. In the same session where he killed a god. I think Argyle is having a very interesting character arc."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He's having THE character arc! He went from \"failed celestial trying to do good\" to \"the most dangerous person on the Strider\" in one session, and I don't think he's even realized it yet. He's still framing himself as the righteous one, the one who does what's just, and meanwhile he's killing cosmic entities and contemplating biological warfare and —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He pulled the trigger. That's the thing I keep coming back to. When everyone was hesitating, when Benny was worried, when Johnny was offering to shoot himself, when Anzu was counting Menhir — Argyle just grabbed the gun and pulled the trigger. And I think that tells you everything about who Argyle actually is versus who Argyle thinks he is."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "See, I read that completely differently — I think Argyle pulled the trigger BECAUSE he's the one who takes responsibility, because he's the one who's willing to bear the cost so the others don't have to, and that's —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's the same thing, Bram. Taking responsibility for killing a god and being the person willing to kill a god — those aren't different qualities. They're the same quality described from different angles."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And — okay, I — that's — fine, but I think the angle matters! I think the angle matters because it determines what he does next, and if he thinks of himself as the sacrificer rather than the killer, then his next move is going to be shaped by that self-image, and I think — I think the next session, when they go after Tally, when they try to deal with the Herald's people, that's where we're going to see whether Argyle's self-image can survive what he's become."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And whether the party can survive being stranded in a dead world with no way home, angry gods on their heels, and sixteen bullets that might or might not be enough for whatever's coming. I think the real question — the one the session asked and didn't answer — is whether the call was worth the cost. And I think we're going to spend the rest of the campaign finding out."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And I think — I think the answer is going to be yes, but it's going to cost them more than they can imagine right now, and that's — that's the best kind of story, the kind where you get what you asked for and it breaks you and then you have to put yourself back together, and — man, I just — I cannot wait for next session, honestly, I — you had to be there for the moment Argyle pulled that trigger, the whole table just — it went silent, and —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The whole table went silent because they'd just killed a god and stranded themselves in the void. That's not dramatic tension, Bram, that's consequences."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's the same thing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "No. It isn't."
+        }
+      ]
     }
   ]
 }
