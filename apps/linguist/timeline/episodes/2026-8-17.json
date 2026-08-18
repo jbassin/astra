@@ -1,0 +1,69 @@
+{
+  "date": "2026-8-17",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The End of the Menhir: A God-Killing Gun and a Stranded Strider",
+    "synopsis": "The party conducts an impromptu ritual to recruit the Menhir — the heroes' patron among the Narrative — as an ally. Transported to the Black and White void, they are confronted by a jealous Ought, then receive visions and a god-killing revolver called \"The End\" from the Menhir themselves. When Argyle shoots a Menhir with the gun to escape the void, he destroys all of the Menhir — a member of the Narrative — triggering catastrophic consequences: the Strider is flung far starward to a dead, scoured world, the Harlequins are wiped out, and void portals tear open across the prow. The party raids the ruined Harlequin town for a Voidheart, barely escaping with Benny's life, and feeds the heart to Eerie to gain an Arcane Dampener for their Fae. Now stranded off the atlas with an angry Narrative, they must rally the remaining factions.",
+    "key_beats": [
+      "The session opens with recaps: Josh summarizes Tanner's one-shot (hunting a chule in the forest with bugs, a monkey, and a troll), and Mike summarizes the previous campaign session (Machine God chat, blue liquid, Verdant Holdings crater, Benny training, Argyle's hag curse attempts, Anzu needing a living Herald reference — his sister Galzu in Tally, paying the tithe of 34, the Bifurcated Man appearing).",
+      "Picking up in conversation with the twins Anouk and Anaïs, Johnny proposes contacting the Menhir — the Narrative's hero patron — to gain a powerful ally. The twins warn that accepting a Menhir boon paints a target on the party's back from the rest of the Narrative.",
+      "The party conducts an impromptu ritual: Johnny builds a stage with cardboard Menhir cutouts while Argyle (religion, 34) and Anzu (crafting, 30) serve as secondary casters. Despite penalties, Johnny delivers an extraordinary performance (38 crit, DC 40) and the party is transported to the Black and White void.",
+      "In the void, they see the Pharos (displaced), uncountable Menhir pillars, and Ought — a gangly stick-figure being with a featureless sphere-face and massive grin. Ought is hurt they sought the Menhir instead of him, declares they're no longer friends, searingly burns their three-dot tattoos, and departs with a bitter 'good luck!'",
+      "The party kneels before the Menhir. Johnny performs again (occultism 38 crit) and the Menhir chime, showing visions: four silhouettes in a storm with six looming figures; silhouettes before a cracked sun; four haggard figures holding light with twelve shadows cast; and four silhouettes before the Pharos with five figures blocking them (rocks, a bifurcated man, a door, a long-armed old lady, a stick-figure homunculus). An unspoken question: 'Can you? Will you?' The party accepts.",
+      "A pedestal rises bearing 'The End' — an ivory-and-gold revolver — and a box of 17 golden spike-bullets. Anzu identifies the gun (occultism 30): its magic is entirely unknowable. The bullets are non-magical. The party struggles to leave until Argyle takes the gun and shoots a Menhir; the bullet crumbles that Menhir and ALL the Menhir collapse. The party is returned to the Strider.",
+      "A d100 roll of 10 (catastrophically low) means the Narrative is immediately aware of the Menhir's death. Further dice rolls come up high, so the Narrative cannot directly confront the party but can affect the Strider itself. The Strider lurches and is flung to a dead, scoured world — no grass, no water, two dim suns, freezing cold — far off the atlas, likely far starward. Chuck's and Ichelle's Harlequin totems produce only desiccated corpses. The Machine God reports the prow is riddled with void portals and many-fingered creatures emerging.",
+      "The party drives to the ruined Harlequin town, finding it torn apart by purple void tears with Hands of the Void emerging. They send a silenced, hasted, godspeeded, heroismed Benny into the nearest portal to grab a Voidheart. Benny avoids a stalking Quailant (a tripod creature), grabs the heart (athletics crit 45), and escapes — but the Quailant begins pulling itself out of the portal behind him.",
+      "Fleeing in the car, five Hands of the Void fire bolts through the windows, knocking Benny unconscious with three hits. Johnny grabs the wheel, Argyle heals Benny and casts Spiritual Renewal (fast healing), and the car escapes the 1000-foot range. The party returns home and feeds the Voidheart entirely to Eerie for void bolstering, unlocking the 'Arcane Dampener' — a -1 circumstance penalty to all non-faction spellcasting within their Fae.",
+      "Anzu checks the Voidsong (lore 34): it is the quietest it has ever been, even quieter than when they saw the Giant — confirming they are extremely far starward. The party gets on the skein to inform allies; Johnny calms the panicked factions (diplomacy 41) and they are looked to as de facto leaders to organize a meeting. The party levels up to 9."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Johnny Scaff",
+      "Anzu",
+      "Benny",
+      "Othello",
+      "Anouk",
+      "Anaïs",
+      "Ought",
+      "The Menhir",
+      "Machine God (Kadou)",
+      "Chuck (corpse)",
+      "Ichelle"
+    ],
+    "locations": [
+      "The Strider",
+      "The party's Fae (Eerie's workshop)",
+      "The Black and White void",
+      "The Pharos (visible in the void)",
+      "The ruined Harlequin town",
+      "The dead scoured Joker world (far starward)",
+      "A Voidheart portal interior"
+    ],
+    "factions": [
+      "The party's faction",
+      "The Narrative (Ought, Renge, the Menhir, Insuperlex, the Bifurcated Man)",
+      "The Harlequins",
+      "The Protectorate",
+      "The Scale",
+      "Prime Meridian",
+      "Hildebrandt",
+      "Radiant Arms",
+      "Verdant Holdings (destroyed)",
+      "Ætherion Limited",
+      "RunGunners",
+      "Ministry of Cultural Progress (Mockp)",
+      "Necrolog"
+    ],
+    "items": [
+      "The End (ivory-and-gold god-killing revolver)",
+      "16 remaining golden spike-bullets (17 originally)",
+      "Voidheart (retrieved and fed to Eerie)",
+      "Eerie (the party's reality-bending heart)",
+      "The Atlas",
+      "Chuck's Harlequin totem",
+      "Ichelle's Harlequin totem",
+      "Arcane Dampener (new Fae upgrade)"
+    ],
+    "cliffhanger": "Stranded on a dead world far starward off the atlas, with the Menhir dead, the Narrative furious, the Harlequins wiped out, and void portals tearing open across the Strider, the party must organize a summit of remaining factions and decide their next move — with potential plans to kill Tally, slay the Giant for its energy, or use The End's 16 remaining bullets against the remaining four members of the Narrative."
+  }
+}
