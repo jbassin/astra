@@ -7,8 +7,8 @@
       "seasons": [
         {
           "number": 1,
-          "title": "Blood Nourishment and Blackline Badges",
-          "arc_summary": "The party forms as couriers for Iconoclasm and investigates a web of conspiracies in Hallia — Ugathul skinwalkers, Pyrelight radar dishes, and the Roundhat Gang — culminating in the discovery of Grayson's necromantic Fane beneath the sewers and a narrow escape with damning evidence.",
+          "title": "Delivery Boys",
+          "arc_summary": "The newly formed party takes courier jobs and stumbles into a conspiracy involving Ugathul skinwalkers, Embercall Inc., and illegal augury, culminating in their descent into the sewers and discovery of Grayson's necromantic manor beneath the Quiet Below.",
           "episode_dates": [
             "2025-8-28",
             "2025-10-20",
@@ -21,7 +21,7 @@
         {
           "number": 2,
           "title": "The Black and White",
-          "arc_summary": "A catastrophic near-total party kill at the Crowded Flea sends Johnny and Benny's souls to the Black and White, where the entity Aut restores them to life. The party kills Hlarf in revenge, hunts down and slays Tywelwyn Leatherhide, and uncovers that six outer gods are using radar dishes to crack the Firmament.",
+          "arc_summary": "After a catastrophic TPK at the Crowded Flea, the party is resurrected through the Black and White by the entity Aut, then exacts revenge on Hlarf and Tywelwyn while uncovering a cosmic invasion plan by six outer gods using radar dishes to crack the firmament.",
           "episode_dates": [
             "2025-12-2",
             "2025-12-9",
@@ -33,8 +33,8 @@
         },
         {
           "number": 3,
-          "title": "The Pilgrimage and the Keystone",
-          "arc_summary": "The party rescues Anaïs, learns of the cosmic Narrative, attends a mysterious Pilgrimage gathering, competes in a keystone scavenger hunt, and trades a stolen painting to the Heart Rapid Connection to secure their passage aboard the Strider — while Argyle mysteriously returns from the dead.",
+          "title": "The Pilgrimage",
+          "arc_summary": "The rescue of Anaïs reveals the cosmic Narrative, and the party travels to Ragged Roost to attend a mysterious Pilgrimage, competing in a keystone scavenger hunt to secure passage aboard a colossal Strider bound for the Void Side Wall.",
           "episode_dates": [
             "2026-1-13",
             "2026-1-20",
@@ -48,7 +48,7 @@
         {
           "number": 4,
           "title": "Cracks in the Firmament",
-          "arc_summary": "During months of downtime, the party investigates a hairline fracture in reality beneath Teller's Run, discovering an imprisoned giant god and a conspiracy reaching the Prime Minister. They bomb the research facility, collapsing Teller's Run and triggering the Harlequin's call to depart on the Pilgrimage.",
+          "arc_summary": "During extended downtime, the party discovers a fracture in reality beneath Teller's Run, an imprisoned giant god, and a conspiracy to shatter the firmament — leading them to bomb the research facility and depart on the Pilgrimage.",
           "episode_dates": [
             "2026-3-9",
             "2026-3-16",
@@ -60,7 +60,7 @@
         {
           "number": 5,
           "title": "The Strider",
-          "arc_summary": "Aboard the colossal Strider, the party builds their Fane, navigates deadly faction politics and weekly void-energy tithes, forges an alliance with the ancient Machine God in the Undercroft, destroys the sleeping clan — and accidentally kills a member of the cosmic Narrative, stranding the Strider far off the atlas on a dead world.",
+          "arc_summary": "Aboard the colossal Strider, the party builds their heart Eerie, navigates deadly faction politics and the weekly Tithe, forges an alliance with the ancient Machine God, and accidentally destroys a member of the Narrative — stranding the Strider far beyond the known map.",
           "episode_dates": [
             "2026-5-7",
             "2026-5-11",
@@ -76,7 +76,8 @@
             "2026-7-20",
             "2026-7-27",
             "2026-8-3",
-            "2026-8-17"
+            "2026-8-17",
+            "2026-8-24"
           ]
         }
       ]
@@ -103,8 +104,8 @@
       "seasons": [
         {
           "number": 1,
-          "title": "Season 1",
-          "arc_summary": "The first episode is a split session: Noah's one-shot concludes and Josh's new Scale one-shot begins. The real arc begins with episode 2's entry into the Joker World's Quorum.",
+          "title": "From Cagley's Shadow to the Voice of Many",
+          "arc_summary": "Noah's Cagley Middle one-shot concludes as four 8th-grade heroes slay the Terror of Cagley, then Josh's new Scale one-shot opens with four high-ranking operatives descending onto a shattered Joker World. Across the three sessions they battle through demon swarms, infiltrate the vine-covered black-metal Quorum, solve its gear-and-riddle puzzles, and ultimately plunge through a bloodfall portal to rescue the divine heart Voice of Many — a child of Sigzil and grandchild of the Judge — in a desperate ten-round defense before escaping back to Scale headquarters.",
           "episode_dates": [
             "2025-6-9",
             "2025-6-16",
@@ -121,10 +122,17 @@
         {
           "number": 1,
           "title": "The Husk Murders",
-          "arc_summary": "Three Iridescent Church convox detectives travel to Wrenford to investigate a wave of husk-murders linked to a mysterious visitor and a rare fey stone. Their investigation takes them deep into the Verdant Expanse to confront a fey court, then back to the city where they discover the Gloaming Codex — a book that pulls them into its pages.",
+          "arc_summary": "Three Iridescent Church convox detectives travel to the logging town of Wrenford to investigate a wave of husk-murders, uncover a commune of Green Father worshippers, and follow a fey stone necklace deep into the mile-tall Verdant Expanse — surviving giant mantises, a laughing wave, and a hostile fey court before returning a lost child home.",
           "episode_dates": [
             "2025-9-11",
-            "2025-9-18",
+            "2025-9-18"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "The Gloaming Codex",
+          "arc_summary": "The convox pivots to an urban investigation in Hallia, tracing fey stone to a jeweler's conference and a mysterious black-raimented ritualist. They discover the Gloaming Codex — a book that transmutes living bodies into fey stone — and are pulled into its pages, battling carnivorous ink before stepping through a stairway into the void.",
+          "episode_dates": [
             "2025-9-25"
           ]
         }
@@ -152,17 +160,10 @@
       "seasons": [
         {
           "number": 1,
-          "title": "The Everdawn Drift",
-          "arc_summary": "Three Sedecium agents investigate an unpowered orbital station half-sunk in the slip, uncovering that the Thessian Gremory (now 'Esoterica') tortured the station's AI and accessed records of a massive magical spike near the Astra's core.",
+          "title": "Observatory, Slipped",
+          "arc_summary": "The Sedecium fire team of Old Man Scrazzy, Lieutenant Foral, and Ozzie investigate a derelict orbital station half-sunk in the slip, uncovering the Thessian Esoterica's tampering and records of a massive magical spike near the Astra's core — then are pulled from retirement for a daring one-shot heist to steal divine essence from the freshly-killed god Tithe before the God Eater Harrow devours it entirely.",
           "episode_dates": [
-            "2026-4-6"
-          ]
-        },
-        {
-          "number": 2,
-          "title": "One Last Job: Stealing from a Dead God",
-          "arc_summary": "Pulled from retirement, the fire team raids the divine essence of the freshly-killed Thessian 'Tithe' before the God Eater Harrow finishes devouring it, navigating slip-puzzles and spider temples to become the first and only team to succeed.",
-          "episode_dates": [
+            "2026-4-6",
             "2026-4-27"
           ]
         }
@@ -184,5 +185,5 @@
       ]
     }
   ],
-  "inputs_hash": "2999aedd6e5fdc64b6eeefc8b1ca05de86b48db9f75d3c4ef4e88c66b2b08aaf"
+  "inputs_hash": "f78e9320573dc317acf43a297ec8cb3f4687c2f9e84f21cbe627c740787c5ed7"
 }
