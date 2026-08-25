@@ -1,0 +1,74 @@
+{
+  "date": "2026-8-24",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Egan's Mindscape: The Bone-Carved Necklace",
+    "synopsis": "Stranded far beyond the known map on a cold, godless horizon, the party convenes a summit of all surviving Strider factions to chart a path forward. A parlay with Silven Grayson establishes a fragile ceasefire and reveals the Harlequins serve an entity called War. Investigating motion near the abandoned Verdant Holdings crater, the party discovers Egan Arithmites — a half-minotaur gunslinger escaped from the Herald's thrall — and Anzu attempts a dangerous mind-meld to free him by imprinting the Voidsong over the Herald's song, plunging the whole party into Egan's mindscape.",
+    "key_beats": [
+      "The party rests in their Fane and receives RSVPs from all invited factions for a summit; the Strider's population falls into three camps — the terrified, the curious, and the combat-ready.",
+      "A Pale Lantern Society drone (a skeleton with grown musculature) delivers an envelope at the Fane's perimeter, triggering the alarm wards: Silven Grayson requests a parlay at Giacomo's in 90 minutes.",
+      "The full summit convenes in the War Room. Johnny pitches unity under threat; Kadou reveals the Strider has been to this location before (metal oxidation evidence); a religion check confirms this is likely not the Godhome, though the Godholm is absent from the sky — only one sun remains.",
+      "The party travels to Giacomo's with Tamara (Protectorate) and Bishop (Scale) as observers. Grayson, Stoke of the Iridescent Church (a blind priest), and Giannos of MoCuP are present.",
+      "Grayson proposes a ceasefire until return to Færrin Prime, shares that the Harlequins serve an entity called War, and claims the void creatures don't attack him. The parties agree to neutral ground at Giacomo's, no territory encroachment, and information sharing via notes.",
+      "Anzu flies 500 feet up to the central gyroscope tower, perceives its fractal intricacy and active internal machinery, detects level 4-6 magic effects inside, and learns from Machine God that Harlequins are still alive within the tower's central chamber.",
+      "Anzu spots motion near the abandoned Verdant Holdings crater. The party drives over and Argyle uses Heat Vision to detect a large camouflaged creature approaching them.",
+      "Egan Arithmites emerges — a nine-foot half-minotaur gunslinger from Lorandris, formerly under the Herald's song-compulsion, who regained lucidity when the Strider began moving and snuck up from below through the Verdant Holdings elevator shaft.",
+      "The party brings Egan to their Fane. Anzu researches the interference between the Herald's song and the Voidsong, theorizing that imprinting the Voidsong onto Egan could break the Herald's hold.",
+      "The entire party links hands and Anzu mind-melds into Egan's consciousness. They collapse unconscious and find themselves in a vision of a Lorandris pirate convocation — a stacked-ship fortress on unfamiliar waters — where Egan stands at a merchant stall holding a bone-carved necklace as black-smoke hands reach from it toward his face."
+    ],
+    "characters_present": [
+      "Johnny Skyfall",
+      "Argyle",
+      "Benny",
+      "Anzu",
+      "Egan Arithmites",
+      "Othello",
+      "Silven Grayson",
+      "Stoke",
+      "Giannos",
+      "Kadou",
+      "Tamara",
+      "Bishop",
+      "Paavo",
+      "Tas",
+      "Anaïs",
+      "Anouk",
+      "Machine God"
+    ],
+    "locations": [
+      "The Fane (party's base)",
+      "The Strider (off the map, cold wasteland)",
+      "Giacomo's (neutral restaurant)",
+      "Central gyroscope tower",
+      "Verdant Holdings crater",
+      "Egan's Mindscape (Lorandris pirate convocation)"
+    ],
+    "factions": [
+      "The Coalition (party's alliance)",
+      "Grayson Family",
+      "Iridescent Church",
+      "MoCuP (Ministry of Cultural Progress)",
+      "Pale Lantern Society",
+      "Solari Sub-surface",
+      "Alkahest Freight",
+      "Hildebrandt",
+      "Prime Meridian",
+      "The Scale",
+      "Radiant Arms",
+      "Protectorate",
+      "The Harlequins",
+      "The Ashen Pact / The Herald",
+      "Ternion Heavy Industries"
+    ],
+    "items": [
+      "Bone-carved necklace (source of the Herald's influence on Egan)",
+      "Black Raymond (Ashen Pact-linked raiment)",
+      "Egan's long rifle",
+      "Egan's gun-sword",
+      "Alarm wards / Morphic Moat upgrade",
+      "Void Hearts",
+      "The god-killing golden needle gun (referenced)"
+    ],
+    "cliffhanger": "The party stands inside Egan's mindscape at a Lorandris pirate convocation, watching black-smoke hands reach out from a bone-carved necklace toward Egan's face — about to confront the Herald's influence directly."
+  }
+}
