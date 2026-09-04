@@ -21284,6 +21284,645 @@
           "text": "It's the only plan. And that's what makes it terrifying."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-9-3",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 17,
+      "isMain": true,
+      "date": "2026-9-3",
+      "dateSortKey": 20260903,
+      "title": "The Rats Took It",
+      "episodeTitle": "The Rats Took It",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm and dry, precise but pointed; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date the others fumble for and reins Bram in with a flat one-line correction — she finishes her sentences and finishes them short. But she's not only the fact-checker: she needles, too, pushing on WHY the characters did what they did and making Bram defend his reads, poking at the table's heroics and at sentiment with a wink. Grounds events in how the world actually works; the only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle"
+        }
+      },
+      "synopsis": "When an arcane intelligence at Bisney and Dixar Animated Studios runs overnight without supervision, it accidentally pulls three Disney villains — Hades, Fulton, and Runway Brian — into a glitchy, asset-reusing movie world. Chosen by a divine mandrill statue on the island of Afro-China, the trio must cross an ocean, survive a stampede in the Serengeti, and recover an enchanted mirror stolen by Maui from the Elephant Graveyard of Wonders. Along the way they outwit a riddle-keeping tiger construct, defeat the genie-hybrid Jaskar, and wish their way past entire encounters before facing the Legally Distinct Nostalgia Hydra on a crumbling soundstage. With the mirror in hand, they dive through — and into the real world.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the thing I can't get over — the thing I keep coming back to — is that Josh sat down to play a champion, got told sure, you can play a champion, and then just... built a completely different class, forgot he'd asked, and only found out when he scrolled back through the discord. That's the most Josh thing that has ever happened at a table."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He didn't forget. He went into Pathbuilder, didn't remember what he intended to build, picked something that sounded right in the moment, and never cross-referenced. That's not forgetting, that's just not paying attention."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But it set the whole tone for the night — Jorge's over here picking necromancer because he wants to raise dead things, Mike's a monk, and Josh is sort of orbiting in his own solar system picking mountaineering training of all things, and the whole table is just three people who did not coordinate a single decision."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The mountaineering training was the funny part, though. He picked it over aquatics, and then spent the first ten minutes trying to figure out if it was going to matter, and it never did."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It mattered once! At the very end, right before they jump in the mirror, he uses it to give everybody a climb speed just in case — which I thought was a sweet little callback to the whole running gag—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That was a joke. He said it himself, he was just doing it to do it. It had no mechanical relevance to anything that happened."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, but that's the bit — the whole night was this perfectly loose, chaotic energy where half the choices were jokes and the other half accidentally worked, and I think that's what made it sing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You're romanticizing it. The night worked because Noah built encounters that were agnostic to whatever characters showed up, which was smart given that nobody coordinated. The mountaineering training was just a wash."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Fine, but the opening — the Bisney and Dixar thing, the arcane intelligence running overnight without supervision, the intern just... leaving it running and going home — that was inspired. This \"creating movie, creating movie\" just churning through the night until it hits \"paradox encountered, circumventing\" and starts making something new."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That was good. The escalating error messages turning into spellcraft was the right amount of creepy-funny for a Disney one-shot."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then it pulls three Disney villains into this glitchy asset-reusing nightmare — Hades, who is just Jorge doing a Hades voice and immediately being insufferable about being a god, Fulton, who is Josh playing what is essentially Gaston but legally distinct—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's not Gaston. He said it's Fulton. It's completely different."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's what I said! And then Runway Brian, who is Mike playing this... what even was Brian, some kind of forgotten, ravaged, half-rendered thing from a real Disney short that nobody's ever heard of?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The bit was that Brian was from an actual real Disney property that looked bizarre and unsettling, and Mike just committed to it completely. The moment where he said it was real, that he'd watched the whole thing — that was the best character introduction of the night."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "One hundred percent. The other two are doing recognizable villains with recognizable voices and then Brian is just this feral, half-broken thing that can barely talk, and it works because Mike plays it completely straight. So the mandrill statue gives them the quest — recover the enchanted mirror Maui stole, it's in the Elephant Graveyard of Wonders, go get it — and Jorge immediately tries to teleport and just..."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Snaps his fingers. Nothing happens. Noah says the island blocks teleportation."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Jorge keeps trying to teleport for the rest of the night. He wants it SO badly."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The funny part is that Jorge was wrong about the lore. He kept insisting Hades can teleport in the movie, and Josh — who was playing a completely different character — was the one who kept pushing back, saying no, the whole point of Hades is that he's stuck in the underworld, he sends Pain and Panic to do things."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which is... actually correct? Josh was right?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Josh was right. Hades doesn't teleport in the movie. Jorge was conflating the Disney movie with the actual mythology and also just making things up, and Noah let it slide because it was a one-shot."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But the payoff was worth it — the whole wish sequence at the end, where Jorge uses Jaskar's genie to wish Hades' teleportation back, and Noah just gives it to him. That was earned."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That was not earned. That was Noah shrugging and going fine, you can cast teleport at ninth level, which is a massive mechanical concession in exchange for a gag. The second wish was the one that actually mattered — wishing to be taken to the mirror — and that's where I have a real issue with how the party played it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "How so?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They got three wishes. The first wish was the fireproof hat, which was a joke. The second wish was for Hades' teleportation back. The third was to be taken to the mirror. But the genie told them — literally told them — I can't bring the mirror to you, but I can bring you to the mirror. So the third wish was redundant with the second. They could have used the second wish for something actually useful and still gotten to the mirror."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Wait — no, because the teleportation was a personal power. Hades gets teleport, but he can only take the party with him if he knows where the mirror is. He didn't know where the mirror was. The genie was the one who could take them there."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But that's not what they wished for. They wished for teleportation powers back, and then separately wished to be taken to the mirror. The genie handled both as separate wishes. If they'd just wished \"take us to the mirror and give Hades his teleportation back,\" that's one wish, and they save two."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "...okay, that's actually a fair point. They burned the wishes inefficiently."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They burned all three wishes on what could have been one combined wish, and Noah let it happen because it was a one-shot and the wishes were funny. But it was wasteful."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The hat, though — the hat was worth it. Hades wishing for a fireproof hat, and the genie just... burying his head in laurels until it hurt a little."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The laurels were good. The \"it's one hat but there's so many of them it kind of hurts\" was the right monkey's-paw energy for a Disney genie."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, let me go back to the Serengeti, because the stampede scene — Fulton is standing there, Josh is like I should check for traps, doesn't check for traps, kicks a pebble, and the pebble rolls off a cliff into a herd of wildebeest and triggers a stampede, and Fulton just... gets trampled."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He took nine points of bludgeoning. From wildebeest stepping on his toes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "In his regular boots! His toes aren't armored! That's the detail that kills me — Josh is like, they stepped on my toes, which are not armored, it's very painful, I'm just wearing regular boots."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It was a good bit. The whole stampede was essentially the Mufasa scene from the Lion King played for laughs, with Fulton as Mufasa, except Fulton survived because of bulwark armor."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then they just keep walking through the desert, shirts over their heads because it's so hot, following elephant prints to the Elephant Graveyard, and up comes this giant head — the Cave of Wonders, but it's a lion."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Noah said tiger first and then corrected to lion."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right, and it asks them the riddle. And this is where I want to talk about the riddle, because the answer they gave was correct but the reasoning was completely unhinged."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The riddle was what is the most powerful magic — true love's kiss, friendship, or an uninterrupted long rest. And the answer was any of the three."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Any of the three! Noah said afterward that any answer was the right answer, and the riddle was just a stop to see if they could respond. But Jorge's reasoning for long rest was — he said true love's kiss doesn't mean anything because people sleep with hookers, friendship isn't real because everyone wants something from you, and long rest is the only thing that keeps you from dying, and then he pointed at Brian and said you agree, right?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Brian just said \"rest.\" One word. Very deliberate."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Just \"rest.\" And the winds kicked up and the cave opened and that was it. That was the solve. The reasoning was wrong, the answer was right, and it worked because all answers were right."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Jorge talked himself into the correct answer through completely deranged logic. That's not skill, that's a Rube Goldberg machine that happens to drop a marble in the right cup."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But the journey to the answer was the content! Hades dismissing friendship as not real, Fulton wanting to say chronomancy, Brian just placing \"rest\" on the table like a card — that's three characters being themselves in one moment, and for a one-shot that's what you want."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Fine, the riddle scene was good. The Jaskar fight is where I want to push, because I think you're going to tell me Runway Brian was the MVP, and it was the thralls."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It was Brian! Brian critted twice in the first round of the Jaskar fight, he's the one who killed Jaskar, he's the one who grappled him—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Brian did damage. Brian is a monk with stone strike and a high attack modifier — of course he does damage. But the thralls were doing thirty-plus points of void damage per explosion, hitting multiple creatures at once, and Jorge was generating three of them per action. The action economy was the thralls."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But Brian's killing blow on Jaskar — he punches through Jaskar's chest, lightning coming off his hand, pulls his hand out, and as Jaskar crumbles and gets slurped back into his lamp, the voice just goes \"the rats took it!\" The mirror is gone, the rats took it, and Jaskar is screaming about the rats. That was the best moment of the night."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "\"The rats took it\" was the best line of the night. But the kill was set up by Hades slowing Jaskar with the thrall bombs, and then Brian walked in and finished a target that was already softened. Brian was the closer, not the engine."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, I'll concede the thralls were the engine, but Brian's grapple on Jaskar was a big moment — he runs up, uses mixed maneuver, tries to trip, can't because Jaskar is immune to prone, but then grabs him and holds him in place. That's not just damage, that's control."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "For one round. Jaskar immediately smoke-slipped out of the grab and reappeared somewhere else. The grapple lasted one round."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "One round of flat-footed is one round of crits, and that's when the damage started landing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'll give you that the grapple set up the damage window, but the damage window existed because Hades was generating thralls faster than Jaskar could kill them, and Fulton was giving everybody free attacks through demoralizing charge. The party comp was what worked, not any single character."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Let me talk about Fulton for a second, because I think Josh's commander was the most confusing class at the table and I'm not sure Josh knew what he was doing half the time."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He didn't know what he was doing. He'd never played Pathfinder before this. He was reading his abilities off Pathbuilder in real time and admitted it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And yet the demoralizing charge — this ability where he signals all squadmates and they all get to move and one of them gets a free strike — that was genuinely strong. Every turn, Brian gets to move for free and hit something."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's what the class does. Commander is a support class that gives the party extra actions, and in a party with a necromancer who has six disposable bodies and a monk who crits on everything, that's a force multiplier. Josh stumbled into the right class for this party comp by accident."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He also did that combat assessment thing where he hits something and then immediately recalls knowledge on it — he hit the swarm and found out it was weak to area damage, which is exactly what Jorge's bombs were doing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That was a good recall. The combat assessment into recall knowledge is a useful combo. But he didn't plan it, he read the ability and went I guess I'll do this. It's luck, not strategy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Does it matter if it was luck? The result was the same — the party knew to hit the swarms with area damage, and Hades was already doing exactly that."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It matters for how we evaluate the play. Smart call because he understood the tactical situation is good play. Smart call because he read an ability and went sure, I'll try that, is luck. Both are fine for a one-shot, but they're different things."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I think you're being hard on Josh. The guy had never played Pathfinder, he built a commander by accident, and he still managed to be useful every round."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The commander class carried him. It's designed to be useful by default — you give people extra actions, you give people movement, you heal with the banner. It's hard to be useless as a commander, which is probably why Josh survived the night without knowing the rules."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Alright, the Hydra. The Legally Distinct Nostalgia Hydra. Six heads, each a Disney reference, on a crumbling soundstage with the abyss on either side and the mirror glinting behind a curtain in the back—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Five heads. It had five heads. The ice queen, the space ranger, the mouse that looked like Brian, the red-haired woman, the blonde."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Five, right — and seven arms, which Josh commented on, but that's a weird detail. Anyway, the Hydra hits them with the broom flood — the Sorcerer's Apprentice reference — and just shoves everybody toward the abyss, and all three of them fail the reflex save."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That was a rough opener. Three failures on the first save of the fight, and they all took damage and got repositioned. But none were critical failures, so it was just damage, not a disaster."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Here's what I loved about the Hydra — the regeneration. When you pop a head off, it doesn't grow back immediately, it says \"remake pending\" over the stump, and then at the top of the next round it splits into two smaller heads. That's not just a hydra mechanic, that's a Disney remake mechanic. The heads regenerate as remakes."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That was clever. The \"remake pending\" text over the stump was a better mechanical representation of hydra regeneration than most actual hydra stat blocks get."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then when they bleed it enough, the lights go dark one by one, and the voice says \"live action reboot initiated,\" and the whole thing comes back with all five heads but now it's disturbingly realistically rendered. The Disney remake becomes a live-action remake, and it's worse. That's the phase two."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It came back with all five heads and more health, which is the correct escalation for a boss fight. But here's my issue — the party didn't know how to stop the regeneration. They guessed push it into the abyss early, and then Josh's recall knowledge told them they needed fire or acid to cauterize the stumps. None of them had fire or acid."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So they went back to plan A — push it into the abyss."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And then they never did, because they killed it before they needed to. The thralls did enough damage that the regeneration couldn't keep up, and the bleed was ticking every round."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which I think is the smarter play — they recognized that the bleed was outsizing the regeneration and they just focused on damage."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The bleed was meaningful but it wasn't the kill. The kill was Jorge generating thralls, attacking every head simultaneously, and then detonating them for void damage on top. He was rolling very high on his explosion damage, consistently, and it was hitting every head at once."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So your read is that Hades carried the Hydra fight."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Hades carried both fights. The Jaskar fight and the Hydra fight were both won by necromancer thralls doing area damage to clustered targets. Brian was the single-target damage, Fulton was the support, but the engine was the thralls."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I'll concede the engine, but Brian popping the mouse head clean off the body — Noah says you see this weird black bar with white wording there, \"remake pending\" — and then later when they pop the apprentice mouse head again in the live-action phase, there's no remake pending, the head is just gone. That's a detail that tells you something changed about the fight."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The first time a head gets popped in the live-action phase it doesn't regenerate. That's the signal that the fight is winnable, that you're past the regeneration phase. It's good encounter design — the visual language tells you the mechanic changed without the GM having to explain it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then the final push — the thralls all swarming the last two heads, Brian smashing the space ranger's helmet, Hades singing Song of the Soul for the fast healing — they just overwhelm it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Hades singing was funny. Jorge just announces that Hades breaks out into a tune and he's surprisingly very good at singing, and you'd think he should be one of the main leads of something, and Noah just lets him have it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Because Disney characters sing! That's the rule!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That is the rule. And then the Hydra falls, the abyss cracks open wider, and they run for the mirror."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They get to the mirror, it's wavy, almost like a film of water, and they just... jump in. One after the other. Into the real world. And Noah says that's where we'll end the one-shot."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Josh immediately goes \"that's just setting it up for the next one-shot, we've built Toontown.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Of course he did. Josh saw the sequel hook immediately."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And then the post-game — the stuff they skipped. Noah reveals there was a whole section between Jaskar and the Hydra that they bypassed with the wishes. There was a puzzle, there was a map covered in rat paws that would have led them to a temple with a kitchen where they'd have to make Ratatouille."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They skipped the Ratatouille puzzle! Jorge wished them straight to the mirror and they bypassed the entire Ratatouille cooking sequence!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And there was loot. The lamp itself could have been attuned to for three charges of a manifestation ability. There was a glass slipper that gave speed, a rose that gave extra health—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They left all of that on the table because Jorge was like, I don't need loot, I have the underworld."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Jorge was playing Hades as someone who doesn't need mortal possessions, which is in character, but it cost the party mechanical resources. The manifestation charges alone would have been useful in the Hydra fight — three extra casts of a fourth-level spell."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But they didn't need them! They beat the Hydra without the loot. The thralls were enough."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They beat the Hydra because Jorge rolled well on bombs and the bleed outsized the regeneration. If he'd rolled average, the Hydra would have regenerated faster than they could kill it, and they'd have needed the extra resources. They got lucky."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "You're conflating luck with build strength. Jorge built a necromancer with a healing focus and then just used the bombs, and the bombs are strong because they scale with the number of thralls, and the thralls are cheap because he's a puppeteer who generates three per action. That's not luck, that's a build that happens to be very good at area damage."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The build is good. The rolls were also good. Both—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "You're going to say both things can be true again."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Both things can be true."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The class discussion at the end, though — Josh saying he liked commander, that it's weird but fun, and then Noah saying commander and necromancer work really well together, and Josh immediately going so what you should do is three necromancers and a commander."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And a bard, and a tank. Josh was theorycrafting the optimal party comp in real time, which is what Josh does."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then the Egan discussion — Noah saying he's excited to play Egan because he hasn't played melee in a while and hoping Egan is as nasty as he built it to be, and Josh saying they'll have to figure out what to do with Johnny because he can't have Noah running both characters at the same time."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The logistics of running Egan and Johnny simultaneously in the main campaign is a real problem. You can't pilot two characters in two encounters at the same time. Josh's solution — Baldur's Gate rules, you have a roster and swap people in and out — is reasonable, but it requires the story to support it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Mike just goes \"oh, we're totally killing Gelzu.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Don't tell Tanner."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They said don't tell Tanner! And then the Benny optimization talk — the Acrobat dedication giving legendary acrobatics at level fifteen for free, and then Mike taking Operatic Adventurer at twelve to get master performance, which scales to legendary at fifteen. Two feats, two legendary skills."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's a known optimization. Acrobat into Operatic Adventurer is efficient because neither requires you to invest skill increases, so you save four skill increases across two skills. Johnny could do the same thing through Dandy, which he already has, without needing Acrobat."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So Johnny's already got the face skills covered, and Benny's going to be legendary in athletics, acrobatics, and performance for two feats."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "For two feats. That's a good deal."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's a lot of legendary skills for a nine-year-old android."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Benny is level fifteen. He's been doing this for a while."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So bottom line — the one-shot. Where do you land?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The one-shot was a good time. The tone was right, the encounters were well-designed for an uncoordinated party, and Noah's GMing was flexible enough to absorb three players who didn't know what they were doing. The party comp was accidentally optimal — necromancer plus commander is a strong combination, and Brian's monk handled the single-target damage. The wishes were wasteful, the loot was skipped, and the Ratatouille puzzle will haunt me, but for a one-shot, the pacing was right."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I think you're underrating how fun it was. The energy at that table — Jorge being insufferable as Hades, Josh not knowing the rules and somehow being useful anyway, Mike playing this feral forgotten IP who can barely communicate but keeps critting — that energy doesn't come from good encounter design. It comes from three people committing to the bit."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm not underrating it. I'm saying the fun came from the players, not the mechanics, which is exactly what a one-shot should be. The mechanics were the scaffolding. The players were the show."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the show was good."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The show was good."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Even if they skipped the Ratatouille puzzle."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Especially because they skipped the Ratatouille puzzle. Can you imagine Josh trying to make Ratatouille in Pathfinder?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "...that would have been incredible, actually."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It would have been two hours."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Two hours of Josh not knowing how cooking works while Jorge tries to poison the food and Mike just punches the ingredients."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Jorge would have turned the rat into a thrall."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Mike would have punched the rat into a thrall."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And that's why they skip the puzzle."
+        }
+      ]
     }
   ]
 }
