@@ -1,0 +1,48 @@
+{
+  "date": "2026-9-3",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Be Our Guest: The Bisney & Dixar AI Movie Incident",
+    "synopsis": "When a goblin intern at Bisney & Dixar Animated Studios connects a new arcane intelligence to the studio's databases, the AI overloads and casts a spell that engulfs Los Diablos in a blackout and creates a 'movie' on the island of Afro-China. Three Disney villains — Hades, Fulton (Gaston's legally distinct cousin), and Runway Brian (a forgotten Disney short mouse) — are chosen by a mandrill statue of Zeus to recover an enchanted mirror stolen by Maui, now hidden in an Elephant Graveyard of Wonders. After surviving a wildebeest stampede, solving the Cave of Wonders' riddle, defeating the hybrid genie Jaskar (Jafar-Scar fusion), and wishing themselves past a whole skipped sequence to the final soundstage, the trio battles the Legally Distinct Nostalgia Hydra — a five-headed amalgamation of iconic Disney characters that undergoes a terrifying live-action reboot mid-fight. They slay it, seize the mirror, and dive through it into the real world.",
+    "key_beats": [
+      "A goblin intern at Bisney & Dixar studios hooks up an arcane intelligence to create movies; it overloads, casting a city-wide blackout spell and beginning to generate a film.",
+      "On the island of Afro-China, the animated mandrill statue of Zeus tasks Hades, Fulton, and Runway Brian with recovering Maui's stolen enchanted mirror from the Elephant Graveyard of Wonders.",
+      "The trio sets sail on a Polynesian wayfinder; Hades summons the River Styx (critical success) to safely cross the ocean, avoiding a whale and other hazards.",
+      "On the Serengeti desert, Fulton triggers a wildebeest stampede trap but survives via Bulwark armor; the group follows elephant tracks to the Elephant Graveyard.",
+      "The Cave of Wonders (a Giant tiger/construct head) demands they answer 'what is the most powerful magic?' — they answer 'an uninterrupted long rest' and are allowed entry.",
+      "Inside, they meet Jaskar (a Jafar-Scar hybrid genie) who summons swarms of poorly-animated animal assets; after a tough fight, Brian punches through Jaskar's chest and he retreats into his lamp.",
+      "Hades has a thrall rub the lamp to summon Jaskar for three wishes: a fireproof laurel hat for Hades, restored teleportation powers, and transport to the mirror — skipping an entire intermediate sequence Noah had prepared.",
+      "The trio arrives on a soundstage and battles the Legally Distinct Nostalgia Hydra — five heads combining the Apprentice Mouse, Ice Queen, Space Ranger, Red-haired Sea Woman, and Long-Haired Princess. Severed heads display 'Remake Pending' then regenerate; Hades's Necrotic Bomb detonations wipe multiple heads at once.",
+      "The Hydra undergoes a 'live action reboot,' restoring all five heads in disturbingly realistic form, but the party kills them faster than they regenerate, with Brian smashing the Space Ranger head and Hades's thralls detonating the rest.",
+      "The trio grabs the mirror, notices the cat-hanging-from-branch image in the sky again, and jumps through the mirror into the real world — ending the one-shot.",
+      "characters_present"
+    ],
+    "characters_present": [
+      "Hades",
+      "Fulton (Gaston-adjacent)",
+      "Runway Brian",
+      "Jaskar (Jafar-Scar hybrid genie)",
+      "Zeus Mandrill Statue",
+      "Cave of Wonders Tiger Head",
+      "Legally Distinct Nostalgia Hydra"
+    ],
+    "locations": [
+      "Bisney & Dixar Animated Studios, Los Diablos",
+      "Afro-China (Notre Dame tower, Temple of Zeus)",
+      "The Serengeti Desert",
+      "Elephant Graveyard of Wonders",
+      "The Soundstage"
+    ],
+    "factions": [
+      "Bisney & Dixar Animated Studios",
+      "The Singers of the Herald Star (mentioned out-of-character)"
+    ],
+    "items": [
+      "Enchanted Mirror (Maui's stolen artifact)",
+      "Jaskar's Genie Lamp",
+      "Elephant Tusk (looted by Fulton)",
+      "Fireproof Laurel Hat (wished for Hades)"
+    ],
+    "cliffhanger": "The trio jumps through the mirror into the real world, leaving what trouble awaits on the other side unknown."
+  }
+}
