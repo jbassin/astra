@@ -74,11 +74,11 @@ class MouthpieceConfig(_Base):
     # The LLM for mouthpiece's clean/enrich/script calls — its OWN pin, separate from
     # `llm.default-model` (linguist's compiled judge + heartwood stay on that one).
     model: str = "openrouter/z-ai/glm-5.3"
-    # Which TTS backend renders episodes. "cartesia" (Sonic-3, per-turn) is the live
-    # default; "elevenlabs" (v3 dialogue) is the previous backend; "mock" is offline
-    # silence. The asset layer fails LOUD if the chosen provider's key/voices are
-    # missing — never a silent fallback to another backend.
-    tts_provider: Literal["cartesia", "elevenlabs", "mock"] = "cartesia"
+    # Which TTS backend renders episodes. "elevenlabs" (v3 dialogue) is the live default;
+    # "cartesia" (Sonic-3, per-turn) is wired but was rejected on voice quality (2026-09);
+    # "mock" is offline silence. The asset layer fails LOUD if the chosen provider's
+    # key/voices are missing — never a silent fallback to another backend.
+    tts_provider: Literal["cartesia", "elevenlabs", "mock"] = "elevenlabs"
     elevenlabs_api_key: SecretRef | None = None
     cartesia_api_key: SecretRef | None = None
 

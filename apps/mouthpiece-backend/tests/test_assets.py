@@ -55,14 +55,15 @@ def test_llm_model_comes_from_config_not_the_client_constant() -> None:
     assert mp._llm_model() != DEFAULT_MODEL
 
 
-def test_tts_provider_is_cartesia_and_fails_loud_without_key(monkeypatch) -> None:
-    """The live backend is Cartesia; a missing/empty key (what `${KEY:-}` injects when the
-    SOPS entry is absent) raises instead of silently falling back to another provider."""
+def test_tts_provider_is_elevenlabs_and_fails_loud_without_key(monkeypatch) -> None:
+    """The live backend is ElevenLabs (Cartesia is wired but was rejected on voice quality);
+    a missing/empty key (what `${KEY:-}` injects when the SOPS entry is absent) raises
+    instead of silently falling back to another provider."""
     from astra_ontology_config import load
 
-    assert load().mouthpiece.tts_provider == "cartesia"
-    monkeypatch.setenv("CARTESIA_API_KEY", "")
-    with pytest.raises(RuntimeError, match="cartesia_api_key"):
+    assert load().mouthpiece.tts_provider == "elevenlabs"
+    monkeypatch.setenv("ELEVENLABS_API_KEY", "")
+    with pytest.raises(RuntimeError, match="elevenlabs_api_key"):
         mp._provider()
 
 

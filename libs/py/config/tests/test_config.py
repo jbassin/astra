@@ -30,7 +30,7 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.llm.default_model == "openrouter/z-ai/glm-5.2"
     assert cfg.llm.default_max_tokens == 16000  # int, not str
     assert cfg.mouthpiece.model == "openrouter/z-ai/glm-5.3"  # its own pin, not llm.default
-    assert cfg.mouthpiece.tts_provider == "cartesia"
+    assert cfg.mouthpiece.tts_provider == "elevenlabs"
     assert cfg.mouthpiece.cartesia_api_key is not None
     assert cfg.linguist.review_port == 10116
     assert cfg.telemetry.otlp_endpoint == "http://signoz-otel-collector:4318"

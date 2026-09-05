@@ -96,12 +96,12 @@ mouthpiece {
     // OpenRouter (2026-09). Deliberately separate from llm.default-model: linguist's
     // compiled dspy judge + heartwood were tuned on GLM 5.2 and stay there.
     model "openrouter/z-ai/glm-5.3"
-    // TTS backend for the episode audio: "cartesia" (Sonic-3, one clip per turn with
-    // the jittered inter-turn gaps) | "elevenlabs" (v3 Text-to-Dialogue, the previous
-    // backend) | "mock" (offline silence). With "cartesia", the key AND both
-    // podcast-persona cartesia-voice-ids (being.kdl) must be set — the asset fails
-    // loud otherwise, never a silent fallback.
-    tts-provider "cartesia"
+    // TTS backend for the episode audio: "elevenlabs" (v3 Text-to-Dialogue — the live
+    // backend; Cartesia was tried 2026-09-04 and the stakeholder rejected the voices) |
+    // "cartesia" (Sonic-3, one clip per turn; needs the key AND both podcast-persona
+    // cartesia-voice-ids) | "mock" (offline silence). The asset fails loud on a
+    // missing key/voice for the chosen provider — never a silent fallback.
+    tts-provider "elevenlabs"
     elevenlabs-api-key ref="sops:elevenlabs_api_key"
     cartesia-api-key ref="sops:cartesia_api_key"
 }

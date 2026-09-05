@@ -109,9 +109,10 @@ def _required_key(ref: SecretRef | None, name: str) -> str:
 
 
 def _provider() -> TTSProvider:
-    """The configured TTS backend (`mouthpiece.tts-provider`): Cartesia Sonic-3 (live),
-    ElevenLabs v3 (previous), or the offline mock. Never a silent cross-provider fallback —
-    a missing key raises so a paid run can't quietly render placeholder audio."""
+    """The configured TTS backend (`mouthpiece.tts-provider`): ElevenLabs v3 (live),
+    Cartesia Sonic-3 (wired; voices rejected 2026-09), or the offline mock. Never a silent
+    cross-provider fallback — a missing key raises so a paid run can't quietly render
+    placeholder audio."""
     cfg = _config()
     if cfg.tts_provider == "cartesia":
         return CartesiaTTSProvider(_required_key(cfg.cartesia_api_key, "cartesia_api_key"))

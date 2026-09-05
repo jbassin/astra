@@ -36,7 +36,7 @@ describe("@astra/config", () => {
     expect(cfg.llm.defaultModel).toBe("openrouter/z-ai/glm-5.2");
     expect(cfg.llm.defaultMaxTokens).toBe(16000); // number, not string
     expect(cfg.mouthpiece.model).toBe("openrouter/z-ai/glm-5.3"); // its own pin
-    expect(cfg.mouthpiece.ttsProvider).toBe("cartesia");
+    expect(cfg.mouthpiece.ttsProvider).toBe("elevenlabs");
     expect(cfg.linguist.reviewPort).toBe(10116);
     expect(cfg.telemetry.otlpEndpoint).toBe("http://signoz-otel-collector:4318");
     expect(cfg.orator.targetLufs).toBe(-16); // negative number
