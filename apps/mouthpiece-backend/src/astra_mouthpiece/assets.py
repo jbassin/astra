@@ -8,9 +8,10 @@ materialization):
 
     session_digest → session_script → session_audio_clips → session_episode
 
-The **live** materialization is deferred (gate K): clean/enrich + the two-pass script
-spend Claude tokens, and the v3 audio path is paid ElevenLabs. This layer is
-import-/structure-tested; the per-stage logic is unit-tested via injected seams.
+The live chain is paid: clean/enrich + the two-pass script spend GLM tokens
+(`mouthpiece.model`), and the audio stage is paid Cartesia (`mouthpiece.tts-provider`).
+This layer is import-/structure-tested; the per-stage logic is unit-tested via
+injected seams.
 """
 
 # No `from __future__ import annotations`: Dagster introspects the `context`/`config`
@@ -20,6 +21,7 @@ from pathlib import Path
 
 import dagster as dg
 from astra_akasha_backend.corpus import load_corpus
+from astra_config import SecretRef
 from astra_linguist.chronicle import recent_prior_entries, season_for, show_for_date
 from astra_llm import LiteLLMClient
 from astra_observe import get_logger, get_meter, get_tracer
@@ -39,6 +41,7 @@ from .hosts import load_hosts
 from .models import AudioManifest, HostConfig, Script, SessionDigest, VoiceConfig
 from .roster import build_roster_block
 from .session import build_episode_script
+from .tts.cartesia import CartesiaTTSProvider
 from .tts.elevenlabs import ElevenLabsTTSProvider
 from .tts.mock import MockTTSProvider
 from .tts.provider import TTSProvider
@@ -65,11 +68,13 @@ def _config():
 
 
 def _llm_model() -> str:
-    """The configured LLM for clean/enrich/script (config-single-source) — not the
-    LiteLLMClient constant default. linguist reads its judge models from config the same way."""
+    """The configured LLM for clean/enrich/script (config-single-source) — mouthpiece's
+    OWN `mouthpiece.model` pin (GLM 5.3), not the shared `llm.default-model` and not the
+    LiteLLMClient constant default. An empty pin falls back to the shared default."""
     from astra_ontology_config import load as load_config
 
-    return load_config().llm.default_model
+    cfg = load_config()
+    return cfg.mouthpiece.model or cfg.llm.default_model
 
 
 def _out_root() -> Path:
@@ -89,15 +94,49 @@ def _atomic_write(path: Path, text: str) -> None:
     os.replace(tmp, path)
 
 
+def _required_key(ref: SecretRef | None, name: str) -> str:
+    """Resolve a provider key or fail LOUD. `just up` injects `${KEY:-}` so an absent
+    SOPS entry arrives as an EMPTY env var, which `resolve()` returns as "" — treat that
+    as missing too, else the run would 401 (or worse, silently pick another backend)."""
+    value = ref.resolve() if ref is not None else ""
+    if not value:
+        raise RuntimeError(
+            f"mouthpiece.tts-provider needs the {name!r} secret: add it to "
+            "deploy/sops/secrets.enc.yaml (then `just up` re-injects it), or set "
+            f"${name.upper()} for a host run."
+        )
+    return value
+
+
 def _provider() -> TTSProvider:
-    """ElevenLabs v3 when the key resolves (gate K, paid), else the offline mock."""
-    key = _config().elevenlabs_api_key
-    if key is not None and key.resolve():
-        return ElevenLabsTTSProvider(key.resolve())
+    """The configured TTS backend (`mouthpiece.tts-provider`): Cartesia Sonic-3 (live),
+    ElevenLabs v3 (previous), or the offline mock. Never a silent cross-provider fallback —
+    a missing key raises so a paid run can't quietly render placeholder audio."""
+    cfg = _config()
+    if cfg.tts_provider == "cartesia":
+        return CartesiaTTSProvider(_required_key(cfg.cartesia_api_key, "cartesia_api_key"))
+    if cfg.tts_provider == "elevenlabs":
+        return ElevenLabsTTSProvider(_required_key(cfg.elevenlabs_api_key, "elevenlabs_api_key"))
     return MockTTSProvider()
 
 
-def _voices(hosts: HostConfig) -> VoiceConfig:
+def _voices(hosts: HostConfig, provider: str | None = None) -> VoiceConfig:
+    """Per-provider voice ids from ontology-being. Cartesia ids (`cartesia-voice-id`) are
+    required when Cartesia renders — an empty one fails loud here rather than as a
+    Cartesia 4xx mid-episode."""
+    provider = provider or _config().tts_provider
+    if provider == "cartesia":
+        missing = [h.name for h in (hosts.a, hosts.b) if not h.cartesia_voice_id]
+        if missing:
+            raise RuntimeError(
+                f"podcast-persona cartesia-voice-id unset for {missing} in being.kdl — "
+                "pick voices with `just mouthpiece-cartesia-voices` and fill them in."
+            )
+        return VoiceConfig(
+            a=hosts.a.cartesia_voice_id,
+            b=hosts.b.cartesia_voice_id,
+            c=hosts.c.cartesia_voice_id if hosts.c and hosts.c.cartesia_voice_id else None,
+        )
     return VoiceConfig(
         a=hosts.a.voice_id,
         b=hosts.b.voice_id,
@@ -115,7 +154,7 @@ def _read_script(key: str) -> Script:
 
 # ── the 4-asset per-session graph ────────────────────────────────────────────
 
-# A transient external-API failure (Anthropic 529 "Overloaded", an ElevenLabs blip)
+# A transient external-API failure (an OpenRouter 5xx, a Cartesia blip)
 # shouldn't fail an unattended run — the sensor won't re-fire an already-partitioned
 # session, so a one-off provider outage would otherwise need a manual re-run. Retry the
 # step a few times with a growing delay to ride through a multi-minute outage (libs/py/llm
@@ -224,14 +263,16 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     retry_policy=_EXTERNAL_RETRY,
 )
 def session_audio_clips(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
-    """Script → TTS clips + manifest (Stage 4; ElevenLabs v3 / mock)."""
+    """Script → TTS clips + manifest (Stage 4; Cartesia Sonic-3 / ElevenLabs v3 / mock)."""
     key = context.partition_key
     with _tracer.start_as_current_span("mouthpiece.session_audio_clips") as span:
         span.set_attribute("mouthpiece.key", key)
         script = _read_script(key)
         hosts = load_hosts()
+        provider = _provider()
+        span.set_attribute("mouthpiece.tts_provider", _config().tts_provider)
         manifest = synthesize_script(
-            script, provider=_provider(), voices=_voices(hosts), out_dir=_session_dir(key)
+            script, provider=provider, voices=_voices(hosts), out_dir=_session_dir(key)
         )
         _atomic_write(_session_dir(key) / "manifest.json", manifest.model_dump_json(indent=2))
         span.set_attribute("mouthpiece.clips", len(manifest.clips))

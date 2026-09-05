@@ -8,6 +8,8 @@ turns a mistyped KDL key into a loud error instead of a silent drop.
 
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from .secrets import SecretRef
@@ -69,7 +71,16 @@ class LinguistConfig(_Base):
 
 class MouthpieceConfig(_Base):
     episodes_path: str = ""
+    # The LLM for mouthpiece's clean/enrich/script calls — its OWN pin, separate from
+    # `llm.default-model` (linguist's compiled judge + heartwood stay on that one).
+    model: str = "openrouter/z-ai/glm-5.3"
+    # Which TTS backend renders episodes. "cartesia" (Sonic-3, per-turn) is the live
+    # default; "elevenlabs" (v3 dialogue) is the previous backend; "mock" is offline
+    # silence. The asset layer fails LOUD if the chosen provider's key/voices are
+    # missing — never a silent fallback to another backend.
+    tts_provider: Literal["cartesia", "elevenlabs", "mock"] = "cartesia"
     elevenlabs_api_key: SecretRef | None = None
+    cartesia_api_key: SecretRef | None = None
 
 
 class WealConfig(_Base):

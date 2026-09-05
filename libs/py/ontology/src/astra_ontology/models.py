@@ -69,8 +69,11 @@ class PodcastPersona(_Base):
 
     slug: str
     name: str
+    #: ElevenLabs voice id (the previous TTS backend; kept for re-renders/back-compat).
     voice_id: str
     voice_name: str
+    #: Cartesia (Sonic-3) voice id — the live TTS backend since 2026-09. "" = unset.
+    cartesia_voice_id: str = ""
     persona: str
 
 

@@ -21,8 +21,11 @@ x-dagster-env: &dagster-env
   ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
   GROQ_API_KEY: ${GROQ_API_KEY:-}
   ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
-  # mouthpiece's clean/enrich/script calls run on GLM 5.2 via OpenRouter; litellm reads
-  # this key from env (llm.default-model = openrouter/z-ai/glm-5.2).
+  # mouthpiece's episode TTS (mouthpiece.tts-provider = cartesia, Sonic-3).
+  CARTESIA_API_KEY: ${CARTESIA_API_KEY:-}
+  # mouthpiece's clean/enrich/script calls run on GLM 5.3 via OpenRouter
+  # (mouthpiece.model); linguist's judges use GLM 5.2 (llm.default-model). litellm
+  # reads this key from env.
   OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
 
 # Pipeline data dirs bind-mounted into every Dagster service (code/webserver/daemon)

@@ -67,7 +67,12 @@ const Linguist = z
 const Mouthpiece = z
   .object({
     episodesPath: z.string().default(""),
+    // mouthpiece's own LLM pin (clean/enrich/script), separate from llm.defaultModel.
+    model: z.string().default("openrouter/z-ai/glm-5.3"),
+    // TTS backend: cartesia (Sonic-3, live default) | elevenlabs (v3) | mock (offline).
+    ttsProvider: z.enum(["cartesia", "elevenlabs", "mock"]).default("cartesia"),
     elevenlabsApiKey: secret(),
+    cartesiaApiKey: secret(),
   })
   .strict();
 

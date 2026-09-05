@@ -70,6 +70,8 @@ def test_host_types_are_distinct_and_populated() -> None:
     assert hosts["gsr"].color == "#276C4C"
     personas = {p.slug: p for p in being.podcast_personas}
     assert personas["bram"].voice_id == "3jR9BuQAOPMWUjWpi0ll"
+    # cartesia-voice-id is optional in the KDL (defaults ""), present on both personas.
+    assert all(hasattr(p, "cartesia_voice_id") for p in personas.values())
     # The two identity kinds never share slugs (distinct node types).
     assert set(hosts) & set(personas) == set()
 

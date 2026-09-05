@@ -84,13 +84,18 @@ def _cleaned_turns() -> list[tuple[int, str, str]]:
     return [(1, "Archie", "they did a thing")]
 
 
-# ── prompts (gate C — load-bearing lines + interpolation; two-host, calmer) ──
-def test_improv_prompt_is_the_debate_transcript_prompt() -> None:
+# ── prompts (gate C — load-bearing lines + interpolation; two-host, two friends) ──
+def test_improv_prompt_is_the_two_friends_recap_prompt() -> None:
     p = build_improv_system_prompt(HOSTS)
-    assert "recorded podcast DEBATE between two co-hosts" in p
-    # Debate format: the two co-hosts genuinely disagree and pushback is the rhythm.
-    assert "they do NOT agree" in p
-    assert "Pushback is the rhythm" in p
+    assert "recorded podcast RECAP between two co-hosts" in p
+    # Two friends building on each other + trading theories — NOT the retired debate
+    # rhythm (propose / object / repeat), which over-tuned Maeve into a contrarian.
+    assert "They BUILD on each other" in p
+    assert "They TRADE THEORIES" in p
+    assert "They LIVE IN THE WORLD" in p
+    assert "Disagreement is SEASONING, not structure" in p
+    assert "DEBATE" not in p
+    assert "Pushback is the rhythm" not in p
     # Host names interpolate into the speaker-label example, two hosts only.
     assert "Bram: what they said" in p
     assert "Bram and Maeve" in p
@@ -127,6 +132,8 @@ def test_dressing_prompt_forbids_polishing() -> None:
     p = build_dressing_system_prompt(HOSTS)
     assert "You are a careful transcript FORMATTER, not a writer." in p
     assert "DO NOT improve the dialogue." in p
+    # Provider-neutral delivery tags (Cartesia translates, ElevenLabs passes through).
+    assert "ElevenLabs" not in p and "recapping" in p
     assert "Bram → A" in p and "Maeve → B" in p
     assert "Pip" not in p and "→ C" not in p
     # Quotation marks stay punctuation — never spoken "quote"/"end quote".

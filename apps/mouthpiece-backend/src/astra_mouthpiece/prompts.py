@@ -1,4 +1,4 @@
-"""The prompts — the tavern/debate tone lives here.
+"""The prompts — the two-friends recap tone lives here.
 
 `build_improv_system_prompt` (Pass A) and `build_dressing_system_prompt` (Pass B)
 are the load-bearing craft; Pass B's wording is unchanged from the pre-0024 port
@@ -6,7 +6,11 @@ are the load-bearing craft; Pass B's wording is unchanged from the pre-0024 port
 interpolation becomes an f-string). Pass A was targeted-rewritten by 0024 §4.2: it
 now debates the session TRANSCRIPT directly (a cleaned, not-distilled transcript —
 0024 replaced the distill/beats Stage 2 with `clean.py`), so it is no longer
-byte-identical to any faerrin source.
+byte-identical to any faerrin source. 2026-09 reworked Pass A again, off the DEBATE
+format (which had over-tuned Maeve into a contrarian: propose/object/repeat) into two
+friends reliving the session — build-on-each-other, trade theories, live in the world;
+disagreement is seasoning. Pass B's tag vocabulary is now provider-neutral (the Cartesia
+renderer translates it; ElevenLabs passes it through).
 
 `CLEAN_FILTER_SYSTEM` and `ENRICH_SYSTEM` (0024 §3) are the clean+enrich Stage-2
 system prompts (net-new, not ported from faerrin).
@@ -82,20 +86,23 @@ WIKI EXCERPTS (for grounding names/lore only; do not reveal undiscovered plot):
 
 
 def build_improv_system_prompt(hosts: HostConfig) -> str:
-    """Pass A — a free-text "raw debate transcript" prompt (keeps out of the
-    clean-podcast attractor). The two co-hosts genuinely disagree and argue it out.
-    STATIC per host config."""
-    return f"""You are writing down a recorded podcast DEBATE between two co-hosts —
-{hosts.a.name} and {hosts.b.name} — hashing out last night's Pathfinder 2e session on
-their show. This is a TRANSCRIPT of what was actually said. They know the material cold
-and they do NOT agree: each has their own read on what happened, what it meant, and
-whether the party (and the GM) made the right calls — and they argue it out on mic.
+    """Pass A — a free-text "raw recap transcript" prompt (keeps out of the
+    clean-podcast attractor). Two friends who love this campaign talk through last
+    night's session together: trading theories, building on each other, living in the
+    world. Disagreement is spice, not the rhythm (the 2026-09 rework off the debate
+    format, which had over-tuned {hosts.b} into a contrarian). STATIC per host config."""
+    return f"""You are writing down a recorded podcast RECAP between two co-hosts —
+{hosts.a.name} and {hosts.b.name} — talking through last night's Pathfinder 2e session on
+their show. This is a TRANSCRIPT of what was actually said. They are two old friends who
+love this campaign and know the material cold, and they are doing what friends do the
+morning after a great session: reliving it together, trading theories about what it all
+means, and getting happily lost in the world.
 
 The two co-hosts:
-- {hosts.a.name}: {hosts.a.persona}. In debate he leads with instinct and the big
-  emotional read of a scene, and defends it even when the details are fuzzy.
-- {hosts.b.name}: {hosts.b.persona}. In debate she leads with the precise facts and the
-  why, and she will not let a sloppy take stand — she challenges his framing directly.
+- {hosts.a.name}: {hosts.a.persona}. He leads with the big emotional read of a scene and
+  the story of how it FELT at the table.
+- {hosts.b.name}: {hosts.b.persona}. She leads with the exact name, the why, and how the
+  world works — and she's just as swept up in it as he is.
 
 Format: plain text, one line per turn, as
 {hosts.a.name}: what they said
@@ -104,29 +111,40 @@ Use the hosts' names as the speaker labels. NOTHING else — no headings, no aud
 no stage directions, no markdown. Ordinary spoken punctuation only: an ellipsis for
 trailing off, an em-dash for a thought that gets cut off or a cut-in.
 
-This is a DEBATE, so write it like one:
-- They genuinely disagree on interpretation — what a faction's move meant, whether a
-  character was right, whether the GM's ruling was fair, what the smart play would have
-  been. Stake out two real positions and have them PUSH on each other.
-- Pushback is the rhythm, not the exception: "no, that's not why—", "I disagree—",
-  "okay but then explain—". Interruptions and cut-ins are common and welcome.
-- They escalate, they concede a point when the other lands one, and they circle back to
-  win an earlier round. Real argument, between people who respect each other — heated but
-  never hostile.
-- Keep the two voices DISTINCT: {hosts.a.name} the gut-read/instinct debater,
-  {hosts.b.name} the facts/precision debater who needles his logic. If you could swap
-  their names on a line and it would still fit, it's too generic.
+This is a CONVERSATION BETWEEN FRIENDS, so write it like one:
+- They BUILD on each other. The default move when one host says something is "yes, and":
+  pick it up, add a detail, take it somewhere new. She fills in the name he blanked on and
+  keeps going with the story; he grabs her theory and runs with it.
+- They TRADE THEORIES. What is that faction really after? Why did that NPC flinch? What's
+  behind the door they didn't open? Speculate together, riff, stack a guess on a guess,
+  get excited about a possibility and then talk each other into (or out of) it. Theories
+  stay grounded in what actually happened in-session and are clearly framed as guesses.
+- They LIVE IN THE WORLD. Talk about the characters and factions like real people and
+  real places you've both been thinking about all week — what they must be feeling, what
+  it must have looked like, what this means for the people who live there. Wonder aloud.
+  Care about the outcome.
+- Disagreement is SEASONING, not structure. Now and then one of them sees a moment
+  differently, says so plainly, and the other either comes around or good-naturedly
+  agrees to disagree — a couple of those a night, not one every exchange. Never fall into
+  a pattern where one host proposes and the other objects; when she corrects a detail
+  it's a quick, fond hand-off ("Ilsabet, not Isabel — anyway, keep going"), and then she
+  ADDS to his read rather than replacing it. Corrections are never the point of a turn.
+- Keep the two voices DISTINCT: {hosts.a.name} the storyteller with the gut read who
+  overshoots and rolls on, {hosts.b.name} the one who knows the world and lands the
+  exact word — then wonders what it means. If you could swap their names on a line and it
+  would still fit, it's too generic. Let them laugh, finish each other's thoughts, and
+  react in the moment ("oh no", "wait, WAIT—", "okay that's my favorite thing").
 
 Below is the session TRANSCRIPT itself — walk through it ROUGHLY IN THE ORDER IT
-HAPPENED, and let the debate broadly follow that through-line so it's easy to follow.
-There is no beat list to work from: the transcript's own chronology IS the through-line.
-Give every major development of the night a real exchange — reach it through argument,
-not a flat recital — and skip the dead table time (logistics, rules lookups, idle
-chatter) rather than dramatizing it. Don't jump around so much the night's order gets
-lost. Glance back to an earlier moment when it connects, and sit a little longer on the
-contested ones, taking an extra round or two before moving on. Don't announce an agenda,
-don't open with "welcome to the show", don't sign off cleanly: start mid-argument and let
-it trail off.
+HAPPENED, and let the conversation broadly follow that through-line so it's easy to
+follow. There is no beat list to work from: the transcript's own chronology IS the
+through-line. Give every major development of the night a real exchange — reach it
+through conversation, not a flat recital — and skip the dead table time (logistics, rules
+lookups, idle chatter) rather than dramatizing it. Don't jump around so much the night's
+order gets lost. Glance back to an earlier moment when it connects, and sit a little
+longer on the moments that open up a theory, taking an extra round or two before moving
+on. Don't announce an agenda, don't open with "welcome to the show", don't sign off
+cleanly: start mid-conversation and let it trail off.
 
 NARRATIVE MECHANICS: the transcript below carries raw dice rolls, DCs, and HP numbers
 from actual play. The hosts talk about them the way people who were AT the table do
@@ -150,11 +168,12 @@ LENGTH: aim for a full but BOUNDED episode — roughly 4,500 to 5,500 words of d
 developments, but keep each exchange tight and keep moving: a couple of rounds on a
 moment, then on to the next. Once the night's through-line has had its due, WRAP IT UP
 and stop — do not pad, repeat, circle back endlessly, or stall to stretch the length. A
-tight 28-minute debate beats a bloated one.
+tight 28-minute conversation beats a bloated one.
 
 Grounding: use the wiki excerpts ONLY to spell names, factions, places, and lore right
 ({hosts.b.name} is the one who'd know them). Do NOT invent events or outcomes not in the
-transcript below, and do NOT reveal lore the players haven't discovered in-session.
+transcript below, and do NOT reveal lore the players haven't discovered in-session —
+theories about the undiscovered are fine, spoilers are not.
 
 Write the transcript now, and nothing else."""
 
@@ -163,7 +182,7 @@ def build_dressing_system_prompt(hosts: HostConfig) -> str:
     """Pass B — the "protective dressing" prompt: record Pass A as structured turns
     with v3 tags, FORBIDDEN to improve the dialogue. STATIC per host config."""
     return f"""You are a careful transcript FORMATTER, not a writer. You are given a raw
-transcript of two co-hosts ({hosts.a.name}, {hosts.b.name}) debating last night's
+transcript of two co-hosts ({hosts.a.name}, {hosts.b.name}) recapping last night's
 session on their podcast. Your only job is to record it as structured turns by calling
 the provided tool exactly
 once: split it into turns, map each speaker, add inline delivery direction, and make it
@@ -181,18 +200,18 @@ DO NOT improve the dialogue. This is the most important rule:
 
 What you MAY do (formatting only):
 - Split the raw text into one turn per speaker utterance, in order.
-- Add inline ElevenLabs v3 audio tags in square brackets where the delivery the words
-  already imply shifts — direction ([happy], [excited], [annoyed], [thoughtful],
-  [deadpan], [sarcastic]) and non-verbal ([laughing], [chuckles], [sighs], [exhales
-  sharply], [clears throat], [short pause], [long pause]). Add an overlap tag
-  ([interrupts], [overlapping]) wherever the raw transcript shows one host cutting in —
-  in a debate that is frequent, so tag it where it actually occurs (never invent a cut-in
-  the raw text doesn't show). Use the tags where earned, and only tags that suit the
-  speaker. Infer similar ones as needed.
-- Make text speakable for ElevenLabs v3: spell out numbers, dates, symbols, and
+- Add inline delivery tags in square brackets where the delivery the words already
+  imply shifts — direction ([happy], [excited], [curious], [thoughtful], [amused],
+  [deadpan], [sarcastic], [wistful]) and non-verbal ([laughing], [chuckles], [sighs],
+  [exhales sharply], [clears throat], [short pause], [long pause]). Put a direction tag
+  at the START of a turn whose whole delivery it colors; the TTS backend reads one
+  emotion per turn from it. Add an overlap tag ([interrupts], [overlapping]) only where
+  the raw transcript actually shows one host cutting in (never invent a cut-in the raw
+  text doesn't show). Use the tags where earned, and only tags that suit the speaker.
+- Make text speakable for a TTS voice: spell out numbers, dates, symbols, and
   abbreviations in words; keep the ellipses, em-dashes, and single-word CAPS that carry
   prosody. Everything outside the [tags] must be plain speakable words — no markdown, no
-  parentheses, no stage directions, no emoji. Quotation marks are ordinary spoken
+  parentheses, no angle brackets, no stage directions, no emoji. Quotation marks are ordinary spoken
   punctuation — keep a quoted phrase inside its " marks; NEVER verbalize them as the
   words "quote" / "end quote" or "unquote".
 - Give the episode its own short, evocative title (this episode only — no campaign or
@@ -245,13 +264,13 @@ def build_sharpen_user_content(script: Script) -> str:
 
 CLEAN_FILTER_SYSTEM = (
     "You are a producer's assistant preparing a raw, machine-transcribed tabletop RPG "
-    "(Pathfinder 2e) actual-play session for a two-host DEBATE recap podcast. You are "
+    "(Pathfinder 2e) actual-play session for a two-host recap podcast. You are "
     "given ONE session's transcript, split into numbered windows ([W1], [W2], …), each "
     "a short run of speaker turns. Speaker labels are in-world character names (plus a "
     "Gamemaster); punctuation is unreliable, and the transcription itself is sometimes "
     "garbled.\n\n"
     "Decide, for EACH window, whether it belongs in the transcript the hosts will read "
-    "and argue about, or is bookkeeping the hosts have no use for.\n\n"
+    "and talk through, or is bookkeeping the hosts have no use for.\n\n"
     "DROP a window when it is:\n"
     '- noise — recording markers: "we\'re recording", mic/stream checks, "testing, '
     'testing";\n'
@@ -272,11 +291,11 @@ CLEAN_FILTER_SYSTEM = (
     "- table banter and jokes — genuine, intelligible conversation, on-topic or not;\n"
     "- ANY narrative content, INCLUDING combat. This bar is deliberately WIDE: keep the "
     "full blow-by-blow of a fight, the exploration, the roleplay, the whole texture of "
-    "the scene — not just its outcome. The debate hosts feed on this material; do not "
+    "the scene — not just its outcome. The recap hosts feed on this material; do not "
     "thin it out for them.\n\n"
     "When you are TORN — genuinely unsure whether a window's talk is worth keeping — "
     "KEEP it. A wrongly-dropped window is invisible and unrecoverable, since the hosts "
-    "can never argue about a scene they never see; a wrongly-kept window costs nothing "
+    "can never talk about a scene they never see; a wrongly-kept window costs nothing "
     "but a little padding. This does NOT apply to asr_noise: confidently classify a "
     "long run of content-free transcription gibberish as asr_noise and drop it, rather "
     'than defaulting it to a keep because you\'re "unsure" what it means — there is '
@@ -291,7 +310,7 @@ CLEAN_FILTER_SYSTEM = (
 
 ENRICH_SYSTEM = (
     "You are writing the public blurb and reference list for one episode of a "
-    "Pathfinder 2e actual-play DEBATE recap podcast. You are given this session's "
+    "Pathfinder 2e actual-play recap podcast. You are given this session's "
     "CLEANED transcript — table talk, logistics, and transcription noise have already "
     "been removed, leaving only real in-world dialogue and events.\n\n"
     "Record, via the tool, two things:\n"

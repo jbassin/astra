@@ -148,6 +148,7 @@ export function loadBeing(path?: string): Being {
           name: String(scalar(node, "name")),
           voice_id: String(scalar(node, "voice-id")),
           voice_name: String(scalar(node, "voice-name")),
+          cartesia_voice_id: String(scalar(node, "cartesia-voice-id") ?? ""),
           persona: String(scalar(node, "persona")),
         });
         break;

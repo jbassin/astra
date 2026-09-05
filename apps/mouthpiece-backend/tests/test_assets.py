@@ -44,11 +44,42 @@ def test_session_script_depends_on_digest() -> None:
 
 
 def test_llm_model_comes_from_config_not_the_client_constant() -> None:
-    """distill/script use the configured `llm.default-model` (config-single-source),
-    so changing config.kdl actually moves the pipeline's model."""
+    """clean/enrich/script use mouthpiece's OWN `mouthpiece.model` pin (GLM 5.3), not the
+    shared `llm.default-model` (linguist's judge stays on 5.2) and not the client constant."""
+    from astra_llm import DEFAULT_MODEL
     from astra_ontology_config import load
 
-    assert mp._llm_model() == load().llm.default_model
+    cfg = load()
+    assert mp._llm_model() == cfg.mouthpiece.model == "openrouter/z-ai/glm-5.3"
+    assert mp._llm_model() != cfg.llm.default_model
+    assert mp._llm_model() != DEFAULT_MODEL
+
+
+def test_tts_provider_is_cartesia_and_fails_loud_without_key(monkeypatch) -> None:
+    """The live backend is Cartesia; a missing/empty key (what `${KEY:-}` injects when the
+    SOPS entry is absent) raises instead of silently falling back to another provider."""
+    from astra_ontology_config import load
+
+    assert load().mouthpiece.tts_provider == "cartesia"
+    monkeypatch.setenv("CARTESIA_API_KEY", "")
+    with pytest.raises(RuntimeError, match="cartesia_api_key"):
+        mp._provider()
+
+
+def test_voices_require_cartesia_ids_when_cartesia_renders() -> None:
+    from astra_mouthpiece.models import HostConfig, HostPersona
+
+    hosts = HostConfig(
+        a=HostPersona(name="Bram", persona="x", voice_id="ea", cartesia_voice_id="ca"),
+        b=HostPersona(name="Maeve", persona="x", voice_id="eb"),
+    )
+    with pytest.raises(RuntimeError, match="Maeve"):
+        mp._voices(hosts, "cartesia")
+    hosts.b.cartesia_voice_id = "cb"
+    assert mp._voices(hosts, "cartesia").a == "ca"
+    assert mp._voices(hosts, "cartesia").b == "cb"
+    # The ElevenLabs path still reads the ElevenLabs ids.
+    assert mp._voices(hosts, "elevenlabs").a == "ea"
 
 
 def test_external_api_assets_have_a_retry_policy() -> None:

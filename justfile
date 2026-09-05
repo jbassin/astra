@@ -360,6 +360,21 @@ scriptorium-install:
     systemctl --user enable --now scriptorium.service
     systemctl --user --no-pager status scriptorium.service | head -5
 
+# List Cartesia voices (mouthpiece's TTS backend) so the two podcast-persona
+# `cartesia-voice-id`s in being.kdl can be picked. Decrypts the key from SOPS on the host
+# (never written to disk); pass a query to filter by name/description, e.g.
+# `just mouthpiece-cartesia-voices "british"`. Prints id · name · gender · language · tagline.
+mouthpiece-cartesia-voices q="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    export SOPS_AGE_KEY_FILE="{{sops_age_key}}"
+    key="$(sops -d --extract '["cartesia_api_key"]' "{{sops_file}}")"
+    q="{{q}}"
+    curl -sS -G "https://api.cartesia.ai/voices" \
+      -H "Authorization: Bearer $key" -H "Cartesia-Version: 2026-08-14" \
+      --data-urlencode "limit=100" --data-urlencode "language=en" ${q:+--data-urlencode "q=$q"} \
+    | python3 -c 'import json,sys; d=json.load(sys.stdin); [print(f"{v[\"id\"]}  {v[\"name\"]:<28} {v.get(\"gender\",\"\"):<15} {v.get(\"language\",\"\"):<6} {v.get(\"tagline\") or v.get(\"description\",\"\")}") for v in d["data"]]; print(f"-- {len(d[\"data\"])} voices, has_more={d.get(\"has_more\")}", file=sys.stderr)'
+
 # Migrate faerrin's historical episode CATALOG (script + digest) into astra's
 # episodes corpus (step 2 — catalog union), so episodes_index + the snapshot include
 # the back-catalog alongside live pipeline renders. Idempotent; live renders win for

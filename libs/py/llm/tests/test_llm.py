@@ -131,6 +131,10 @@ def test_cost_known_model_and_unknown_zero() -> None:
     glm = "openrouter/z-ai/glm-5.2"
     assert cost_usd(glm, TokenCounts(1_000_000, 0, 0, 0)) == pytest.approx(0.95)
     assert cost_usd(glm, TokenCounts(0, 0, 0, 1_000_000)) == pytest.approx(3.0)
+    # GLM 5.3 via OpenRouter (mouthpiece.model): $1.15/1M in, $3.50/1M out.
+    glm53 = "openrouter/z-ai/glm-5.3"
+    assert cost_usd(glm53, TokenCounts(1_000_000, 0, 0, 0)) == pytest.approx(1.15)
+    assert cost_usd(glm53, TokenCounts(0, 0, 0, 1_000_000)) == pytest.approx(3.5)
     assert cost_usd("no-such-model", TokenCounts(1_000_000, 0, 0, 0)) == 0.0
 
 

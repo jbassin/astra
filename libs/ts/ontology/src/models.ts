@@ -66,6 +66,8 @@ export const PodcastPersonaSchema = z
     name: z.string(),
     voice_id: z.string(),
     voice_name: z.string(),
+    // Cartesia (Sonic-3) voice id — the live TTS backend since 2026-09; "" = unset.
+    cartesia_voice_id: z.string(),
     persona: z.string(),
   })
   .strict();

@@ -147,6 +147,7 @@ def _persona(node: Any) -> PodcastPersona:
         name=str(_scalar(node, "name")),
         voice_id=str(_scalar(node, "voice-id")),
         voice_name=str(_scalar(node, "voice-name")),
+        cartesia_voice_id=str(_scalar(node, "cartesia-voice-id", "")),
         persona=str(_scalar(node, "persona")),
     )
 

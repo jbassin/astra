@@ -445,6 +445,7 @@
   ],
   "podcast_personas": [
     {
+      "cartesia_voice_id": "",
       "name": "Bram",
       "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots",
       "slug": "bram",
@@ -452,8 +453,9 @@
       "voice_name": "Mark"
     },
     {
+      "cartesia_voice_id": "",
       "name": "Maeve",
-      "persona": "warm and dry, precise but pointed; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date the others fumble for and reins Bram in with a flat one-line correction — she finishes her sentences and finishes them short. But she's not only the fact-checker: she needles, too, pushing on WHY the characters did what they did and making Bram defend his reads, poking at the table's heroics and at sentiment with a wink. Grounds events in how the world actually works; the only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle",
+      "persona": "warm and dry, precise but easygoing; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date Bram fumbles for and hands it to him in a short, plain sentence — she finishes her sentences and finishes them short — then gets right back into the story with him. She's not the fact-checker; she's the friend who remembers. She's as invested in the characters as he is: she wonders aloud WHY someone did what they did, floats her own theory about what a faction is really up to, and builds on Bram's read as often as she tweaks it. Her wit is dry and fond, aimed at the world and the table's heroics, never at him. Grounds events in how the world actually works; usually right, so let her be plainly wrong exactly once so she isn't an oracle",
       "slug": "maeve",
       "voice_id": "BZgkqPqms7Kj9ulSkVzn",
       "voice_name": "Juniper"

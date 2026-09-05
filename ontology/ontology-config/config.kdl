@@ -92,7 +92,18 @@ mouthpiece {
     // docker-compose.yml). Empty would resolve to the cwd — set it so a real pipeline
     // run lands here. (NB the mouthpiece-FRONTEND audio volume is separate, D2.)
     episodes-path "/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes"
+    // mouthpiece's OWN model for clean/enrich + the two-pass script — GLM 5.3 via
+    // OpenRouter (2026-09). Deliberately separate from llm.default-model: linguist's
+    // compiled dspy judge + heartwood were tuned on GLM 5.2 and stay there.
+    model "openrouter/z-ai/glm-5.3"
+    // TTS backend for the episode audio: "cartesia" (Sonic-3, one clip per turn with
+    // the jittered inter-turn gaps) | "elevenlabs" (v3 Text-to-Dialogue, the previous
+    // backend) | "mock" (offline silence). With "cartesia", the key AND both
+    // podcast-persona cartesia-voice-ids (being.kdl) must be set — the asset fails
+    // loud otherwise, never a silent fallback.
+    tts-provider "cartesia"
     elevenlabs-api-key ref="sops:elevenlabs_api_key"
+    cartesia-api-key ref="sops:cartesia_api_key"
 }
 
 weal {

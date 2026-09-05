@@ -30,6 +30,11 @@ PRICING_USD_PER_1M: dict[str, ModelPricing] = {
     "openrouter/z-ai/glm-5.2": ModelPricing(
         input=0.95, cache_read=0.095, cache_write=1.19, output=3.0
     ),
+    # GLM 5.3 via OpenRouter — mouthpiece's model (mouthpiece.model, 2026-09). OpenRouter
+    # listing: $1.15/$3.50 per 1M, cache read $0.10; cache_write kept at the 1.25x ratio.
+    "openrouter/z-ai/glm-5.3": ModelPricing(
+        input=1.15, cache_read=0.10, cache_write=1.4375, output=3.5
+    ),
 }
 
 

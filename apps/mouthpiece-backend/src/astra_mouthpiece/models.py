@@ -67,8 +67,10 @@ class HostPersona(BaseModel):
     name: str
     #: One-line persona used in the (static, cacheable) system prompt.
     persona: str
-    #: Provider voice id (ElevenLabs) — carried from ontology-being.
+    #: ElevenLabs voice id — carried from ontology-being (the previous TTS backend).
     voice_id: str = ""
+    #: Cartesia Sonic-3 voice id — carried from ontology-being (the live backend).
+    cartesia_voice_id: str = ""
 
 
 class HostConfig(BaseModel):
