@@ -1,9 +1,15 @@
 ---
 name: mouthpiece-2026-09-recap-glm53-cartesia
-description: mouthpiece 2026-09 rework — Pass A debate→two-friends recap (Maeve de-contrarianed), mouthpiece-scoped GLM 5.3 pin, Cartesia Sonic-3 per-turn TTS replacing ElevenLabs; what's wired vs what still needs the user (SOPS key + voice ids) before the next `just up`
+description: mouthpiece 2026-09 rework — Pass A debate→two-friends recap (Maeve de-contrarianed), mouthpiece-scoped GLM 5.3 pin, Cartesia Sonic-3 TTS tried + REJECTED on voice quality (ElevenLabs v3 stays live; Cartesia remains a wired alternate)
 metadata:
   type: project
 ---
+
+**⚠ 2026-09-04 late: Cartesia REJECTED after one listen ("I hate it") → `tts-provider "elevenlabs"`
+again (`0e1588af`, py/ts defaults + tests flipped, dagster `just up`'d), 2026-8-24 audio
+re-rendered ElevenLabs-only (`--select session_audio_clips,session_episode`, script kept).
+Cartesia stays wired (provider, key in SOPS, voice ids on the personas) as a selectable
+alternate — the prompt rework + GLM 5.3 pin are what survived.**
 
 **2026-09-04 — three stakeholder-directed mouthpiece changes, BUILT + DEPLOYED + LIVE**
 (`0d5c6a1e` code, `21eeebc6` key + voices; dagster services `just up`'d; first Cartesia/GLM-5.3
