@@ -5,8 +5,10 @@ metadata:
   type: project
 ---
 
-**2026-09-04 — three stakeholder-directed mouthpiece changes, BUILT + CI-green locally,
-NOT yet deployed** (the audio stage needs two inputs only the user can supply).
+**2026-09-04 — three stakeholder-directed mouthpiece changes, BUILT + DEPLOYED + LIVE**
+(`0d5c6a1e` code, `21eeebc6` key + voices; dagster services `just up`'d; first Cartesia/GLM-5.3
+episode = 2026-8-24 "One Foot Over the Line", 129 turns / 31.1 min, auto-published + live on
+mouthpiece.iridi.cc). Voices: Bram → Cartesia "Austin", Maeve → "Gemma".
 
 1. **Pass A is a two-friends RECAP, not a DEBATE** (`prompts.py build_improv_system_prompt`).
    The debate prompt ("they do NOT agree", "Pushback is the rhythm") had over-tuned Maeve into
@@ -39,21 +41,23 @@ NOT yet deployed** (the audio stage needs two inputs only the user can supply).
    which `SecretRef.resolve()` returns as "" — treat empty as missing); no silent
    cross-provider fallback (the old mock-fallback trap).
 
-**▶ BEFORE the next `just up` (else `session_audio_clips` fails loud on every new session):**
-1. `sops deploy/sops/secrets.enc.yaml` → add `cartesia_api_key: sk_car_…`.
-2. `just mouthpiece-cartesia-voices [query]` → pick a masculine (Bram) + feminine (Maeve) voice,
-   paste ids into `being.kdl` `cartesia-voice-id`, then regen the canonical JSON:
-   `uv run python -c "from astra_ontology import canonical_json; from astra_ontology_being import CANONICAL_JSON_PATH, load; CANONICAL_JSON_PATH.write_text(canonical_json(load()), encoding='utf-8')"`
-   (py+ts parity tests gate it).
-3. `just up dagster-code dagster-daemon dagster-webserver` (image-baked code; SOPS env).
-4. Re-render one recent session to hear it: swap nothing, `dagster asset materialize
-   --select session_script,session_audio_clips,session_episode --partition <date>` in the
-   dagster-code container (`sh -c`, `/opt/venv/bin/dagster`), then `just mouthpiece-publish`
-   (paid: GLM + Cartesia; flag at the moment). Compare against the last ElevenLabs episode.
-
-Untested live (paid): the Cartesia call itself — request shape is unit-tested against the
-docs (`test_cartesia.py`); `voice: {"mode":"id","id":…}` form + `language:"en"`. If Cartesia
-rejects `mode`, a bare voice-id string is also accepted per the bytes docs.
+**First live result (2026-8-24 re-render, 40 min wall: script ~25 min GLM 5.3 + 129 Cartesia
+POSTs + ffmpeg):** 4/129 turns open with an objection (Maeve 2), 40 open build-on ("yes/okay
+so/exactly/and…"), Maeve completes-and-extends ("Three buckets." → he runs with it) — the
+contrarian loop is gone. Tags GLM emitted: amused/chuckles/deadpan/excited/happy/laughing/
+overlapping/serious/short pause/sighs/thoughtful/whisper/wistful → Cartesia got emotion for the
+direction ones, `<break/>` for the pause, the rest stripped. Cartesia accepted
+`voice:{mode:id,id}` + `language:en` (smoke + full render). ⭐ Ops gotchas: the Bash tool caps
+at 10 min → run the materialize DETACHED (`docker exec -d … > episodes/.rerender-<date>.log`,
+delete the log after) and tail the log; a client-killed `docker exec` leaves the in-container
+run ALIVE (two renders raced until I killed the orphan) — the image has NO pkill/pgrep, list
+via `/proc/*/cmdline` + plain `kill`. `.last-rendered` → the path unit auto-published within
+seconds of RUN_SUCCESS (two `chore(mouthpiece)` commits: path unit + 15-min timer). Re-render
+recipe: `dagster asset materialize -f definitions.py --select 'session_script,session_audio_clips,session_episode' --partition <date>`
+from `/opt/dagster/app`. To re-render with the ElevenLabs voices instead, flip
+`tts-provider "elevenlabs"` (its key/ids are still wired). ⚠ the Cartesia key transited chat
+2026-09-04 — rotate when convenient (`sops set` + `just up dagster-*`). 2026-9-3 was NOT
+re-rendered (a one-shot, stakeholder call); its ElevenLabs episode stays live.
 
 Builds on [[mouthpiece-0024-gotchas]] + [[mouthpiece-glm-debate-switch]] +
 [[mouthpiece-two-host-gotchas]] + [[deploy-sops-injection]] + [[flag-paid-live-actions]].
