@@ -20855,8 +20855,8 @@
       "isMain": true,
       "date": "2026-8-24",
       "dateSortKey": 20260824,
-      "title": "The Cardboard Shrine and the Clown in the Machine",
-      "episodeTitle": "The Cardboard Shrine and the Clown in the Machine",
+      "title": "One Foot Over the Line",
+      "episodeTitle": "One Foot Over the Line",
       "hosts": {
         "A": {
           "name": "Bram",
@@ -20864,7 +20864,7 @@
         },
         "B": {
           "name": "Maeve",
-          "persona": "warm and dry, precise but pointed; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date the others fumble for and reins Bram in with a flat one-line correction — she finishes her sentences and finishes them short. But she's not only the fact-checker: she needles, too, pushing on WHY the characters did what they did and making Bram defend his reads, poking at the table's heroics and at sentiment with a wink. Grounds events in how the world actually works; the only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle"
+          "persona": "warm and dry, precise but easygoing; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date Bram fumbles for and hands it to him in a short, plain sentence — she finishes her sentences and finishes them short — then gets right back into the story with him. She's not the fact-checker; she's the friend who remembers. She's as invested in the characters as he is: she wonders aloud WHY someone did what they did, floats her own theory about what a faction is really up to, and builds on Bram's read as often as she tweaks it. Her wit is dry and fond, aimed at the world and the table's heroics, never at him. Grounds events in how the world actually works; usually right, so let her be plainly wrong exactly once so she isn't an oracle"
         }
       },
       "synopsis": "Stranded beyond the edge of the known world in a gray, sunless wasteland, the Coalition calls a summit of their uneasy alliance — and discovers just how rattled their companions truly are. A parlay at Giacomo's with Silven Grayson yields a fragile ceasefire and a startling revelation: the Harlequins served an entity called War, and the Strider's helm lies within its great gyroscopic tower, where Harlequins may still be alive. But the session's most unexpected turn comes from the ruins of Verdant Holdings, where the party finds Egan Arithmites — a half-minotaur gunslinger who has broken free of the Herald's controlling song and may hold the key to silencing it for good.",
@@ -20876,412 +20876,647 @@
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Okay, but here's the thing about last night — the summit, the Grayson parlay, the whole thing — the party walked into that summit thinking they were the adults in the room, and they were, sort of, but the adults in a room full of VERY rattled children, and I don't think Johnny understood the assignment."
+          "text": "No, see, I keep coming back to the summit, because we called this big grand alliance meeting expecting a war council, right, everyone squared up around the map table, little faction minis, Argyle doing his whole commander-of-the-watch routine in actual armor — and what we actually got was twelve hours of everyone's nerves lying on the table bare, Josh just laying the whole skein out like a mood ring, like a therapist reading the room."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "What do you mean? Johnny ran that summit. He set the agenda, he framed the three priorities, he got everyone pointed in the same direction. That's literally what a leader does when everyone's panicking."
+          "text": "Three buckets. The terrified, the curious, and the ready to shoot first."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "No, no, no — I'm not saying he didn't lead, I'm saying he led like a guy who just killed a god and doesn't want anyone to know. The whole summit had this energy of like, hey everybody, everything's bad, WE don't know why, let's all figure it out together, and the whole time there's a cardboard Menhir stage sitting in his front yard. That's the elephant in the room nobody's talking about."
+          "text": "Three buckets! That's exactly it. And the terrifying bucket was the big one, which — you know, when the bucket with the screaming in it is the majority, that tells you something about the state of your alliance."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Because nobody knows what a Menhir is. That's the point. Josh made it very clear — the stage with the rocks reads as a weird art project to anyone who hasn't been to the Black and White, which is everyone. The twins know, the party knows, and that's it. Johnny rolled well enough on his deception that nobody at the summit caught anything."
+          "text": "Most of Solari Sub-surface, most of Alkahest, a lot of the Hildebrandt folk. The ones who never had a say in any of this and now have even less of one."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Right, but that's a temporary solution, right? That stage is apparently PERMANENT now. Josh said it doesn't go away. So at some point, someone who DOES know what a Menhir is is going to walk past the Coalition's front yard and see a shrine to the dead god they killed, and that's going to be a problem."
+          "text": "And poor Salvado. Salvado, who has been trying to drink his way through this entire voyage, and they purged the alcohol out of his body at some point — Argyle did — so now the man physically cannot drink, he goes near a bottle and his whole body says no."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Maybe. But that's a future problem, and last night was about immediate problems. You're skipping the actual meat of the summit, which is the three buckets. Josh laid out three very distinct reactions to being stranded — the terrified noncombatants, the curious researchers, and the hyper-vigilant fighters — and I think the party read that situation correctly."
+          "text": "He's trying, though. You have to respect the effort."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Oh, the buckets were GREAT. I loved the buckets. The Solari Sub-surface people getting hammered, Alkahest Freight scratching at scabs, Salvado dry-heaving because they PURGED THE ALCOHOL FROM HIS SYSTEM — that's grim comedy at its finest. But here's what got me: Kadou, right? Kadou's out there taking measurements with his alchemical instruments, completely unbothered, and he's the one who drops the BOMB that the Strider's been to this dead world before."
+          "text": "He is a man locked out of his own coping mechanism, Maeve. Meanwhile the rest of Solari Sub-surface is absolutely out of their gourds on something, twelve hours deep, unclear on what, and Alkahest is biting their nails down to the knuckle, scratching at scabs — Kadou's people are coming apart at the seams."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "That was a genuinely excellent reveal. And it wasn't random — it was earned. Kadou's been scraping metal filings for days, trying to figure out the alloy, and the missing component oxidized when exposed to the air HERE, which means the Strider's exterior already adapted to this environment on a previous visit. That's not just lore, that's evidence. It means the Strider made this trip and came back."
+          "text": "Except Kadou. Kadou's been awake as long as we have, taking measurements out at the edge with a whole kit of alchemical instruments, completely fine. Fascinated, even."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Which means they're not stuck! That's the one ray of hope in the whole session. Everyone's panicking, and Kadou's standing there with his notebook going \"actually, I think we've been here before.\" That's the moment that should have changed the whole tone of the summit. And Johnny kind of used it, right? He worked it into his pitch."
+          "text": "Which we'll get to, because Kadou — hold that thought, because Kadou is the hinge of the entire night, I'm telling you right now. But first, the middle bucket, the curious bucket — Kadou, most of the Scale, and Tas Millett."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "He did, but Anzu was the one who brought it to the table. Johnny set the agenda, but Anzu's the one who framed it as evidence they weren't permanently stranded. And that's important because Anzu's the one whose sister is still down in Neweth under the Herald's Song. He needs to believe the Strider can get back, or the whole rescue mission is pointless."
+          "text": "Tas Millett of Prime Meridian. To him this is a cartography problem before it's a survival problem."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Right, right, and speaking of the Herald's Song — can we talk about Grayson? Because the parlay at Giacomo's was — okay, first of all, the drone showing up at the door with the envelope? That was perfect. The bing-bong alarm going off because Grayson's muscle-drone isn't on the allow-list, and it's just standing there with its muscles and sinew grown over a skeleton holding a letter in red cursive. That's a villain entrance! That's a great villain entrance!"
+          "text": "Right, the man looks at the end of the known world and his first thought is \"there might be something of worth here,\" which is either the most Prime Meridian thing I've ever heard or the bravest. And the Scale — the Scale is treating this like a Tuesday, basically, because they've spent more time out past the edges of the map than anybody, this is strange but not new for them."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Except he's not a villain. That's what the session was actually about, and I think you're missing it."
+          "text": "And the third bucket is the Protectorate, and Paavo, and kind of the twins. Fight. Shoot anything that comes close before it can kill us. Paavo warned us ahead of time he'd be traveling with an armed guard now — which, credit to him, announcing it so nobody gets surprised at the door, that's Paavo."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "He's NOT — okay, hear me out — he's not a villain YET. He's a Joffrey. He's a rich kid over his head. Josh basically told them that, through the perception check, right? Johnny and Argyle both rolled well enough to see that Grayson doesn't match the evil mastermind they'd built up in their heads."
+          "text": "So there's your alliance. A third of it drunk, a third of it pointing weapons at the horizon, and a third taking notes. And into that walks the doorbell."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "They rolled a thirty-two perception, and Josh said point-blank that every word out of Grayson's mouth moved him further from \"evil schemer\" and closer to \"rich kid who's always been the most important person in the room.\" And I think that's a really important distinction, because the party's been treating Grayson as the primary threat, and he's not. He's a secondary threat who happens to be adjacent to the primary threat."
+          "text": "The bing-bong."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "But here's where I push back — okay, so Grayson's a dumb rich kid, fine, but he's a dumb rich kid whose FAMILY was approached by an entity called War. War! One of the Ashen Pact! And he just drops that at the dinner table like it's small talk! He's like, oh yeah, the Harlequins were working for this outer god called War, my family got a LinkedIn request from them, we said no, anyway how's the couscous?"
+          "text": "The bing-bong! Okay, so — quick setup, because it pays off all night. They've got the alarm wards and the moat around the Fane, and Josh asks who's allowed through without setting it off, and of course the table starts listing allies, and Argyle shuts it down — no, everyone rings the bell, the only people who don't ring the bell are the five of us. Which is the correct security posture! You want Paavo sneaking in at three in the morning without so much as a chime?"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "He said his family declined. And you can choose not to believe that, but there's no evidence to the contrary. What there IS evidence of is that Grayson has information the party needs, and he gave it freely. The Harlequins served War. The helm is in the gyroscope. Those are two massive pieces of intelligence that the party did not have before that meeting."
+          "text": "It's the dry cleaner bell. Every guest arrives, bing-bong, everyone inside has to stop and pretend they weren't just talking about them."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "The helm! The helm being in the gyroscope — that's the big one for me. Because the party's been assuming the helm would be in the Harlequin town, in the ruins, and Grayson just goes \"no, it's up there\" and points at the giant spinning thing. And then Argyle tries to play it cool and asks if there's a creature moving inside, and Grayson just... confirms it. He confirms there's something alive in the gyroscope."
+          "text": "And it goes off, and they go out to the moat, and standing there — one foot over the line, deliberately, exactly one foot, like it knows where the line is — is one of those Pale Lantern drones. The skeleton with the muscles grown on top of it? Standing stock still, holding an envelope in both bony hands."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And then Anzu flies up there and confirms it independently. The Machine God sees Harlequins moving through the chamber beneath the tower, going UP. So the Harlequins aren't all dead. The Menhir's death wiped out the ones on the surface, the totems produced desiccated corpses, but there are living Harlequins inside the gyroscopic structure. That's a problem the party didn't know they had twelve hours ago."
+          "text": "Othello does a flyby and takes it. And the drone does this little bow and walks north. Very polite delivery."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "That's a HUGE problem! They thought they were done with the Harlequins! They killed Fraxolith, they wiped out the town, they grabbed the Voidheart, they fed it to Eerie, done. And now it's like, no, there are clowns in the machine, and the machine is what steers the whole Strider. You can't even get to the helm without going through them."
+          "text": "Very polite! And the note is — flowing cursive, deep red ink — \"I wish to parlay, signed Grayson.\" Time and place, hour and a half, Giacomo's. An hour and a half! The man gives you ninety minutes' notice like he's ordering takeout."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Or negotiating with them. That's an option too."
+          "text": "No magic on the envelope. Anzu checked. Not even a listening charm. Just paper."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Negotiating with the Harlequins? The faction that was serving an entity literally named WAR?"
+          "text": "Which is its own message, right? A guy who could enchant the letter and doesn't bother — that's either confidence or contempt and honestly with Grayson it was both. But before all that, can we — the sun thing. Did that hit you as hard as it hit the table?"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "They were serving War. That doesn't mean they still are. Grayson said they might still be alive but spread throughout the Strider. The ones in the gyroscope could be cut off, could be acting independently. You don't know until you engage."
+          "text": "One sun. We'd been walking around under two — the sun and the Godhome shining through — and out here there's just the one. The plain fireball. No Godhome in the sky."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Okay, I'll give you that as a possibility, but I don't think the party's going to take that route. Argyle's already in crusade mode. He's talking about stealth missions, anointing party members with silence, ripping Voidhearts out one at a time. That's his whole plan for the void incursions, and I think he's going to apply the same logic to the Harlequins in the tower."
+          "text": "And Argyle immediately — he's got religion coming out of his ears lately, so he checks, right, are we in the Godhome, is this it, are we literally standing in the seat of the gods — and the answer comes back... it was basically no. But it was the careful kind of no."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And that's the wrong read. Argyle wants to solve everything with targeted strikes, and that works for the void portals — you silence someone, send them in, grab the heart, get out. But the Harlequins in the gyroscope aren't a portal you can close. They're a faction with their own agenda, living inside the steering wheel of the Strider. You can't just punch your way through that."
+          "text": "Can't know for sure, but probably not. Apparently maybe seventeen people in all of history have gone past the Godhome and come back, and none of them were writers, so the descriptions are thin."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "No, I think you're right about that, I think you're right, but here's the thing that the parlay REALLY told us, and I think this is the most important detail of the whole session — Grayson said the void creatures don't attack him. And he said it like FIVE times. \"They don't attack me. They didn't attack me. I don't know how to get this through your thick skulls.\""
+          "text": "But the bits that do exist do not describe a gray scoured wasteland, is the thing — they describe splendor, glowing, thrones. So no."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "That was genuinely unsettling."
+          "text": "And Bishop had the interesting half of it. The Scale still has their raiment working, and that means the gods' reach still touches us even if we can't see the house. Which is almost worse, isn't it? The light gets here but the home doesn't."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "It was UNSETTLING. And the party doesn't know what to do with it. They're all looking at each other like, is this guy lying, or did he make some kind of deal, or is he just so oblivious that the void creatures look at him and go \"nah, not worth it\"? And Anzu — Anzu's the one who says \"I think he's not afraid of them\" and \"I don't think he was bluffing.\""
+          "text": "Oh, that's chilling. That's the distance measured in a very personal way — far enough that the sun's gone, close enough that prayer still picks up. Okay — the war room. The actual summit. Johnny gets up in front of everyone and opens with — you remember the line — \"friends, friends,\" and then the Shakespeare. \"Countrymen, lend me your ears.\""
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And I think Anzu's right. Here's what we know: the void creatures emerged from the portals and attacked indiscriminately at the ball. Everyone was a target except Grayson. He says they don't attack him. He's not in the Harlequin territory, he's not adjacent to the portals — he's on the opposite side of the Strider. So either there's a geographic component, or there's something about Grayson specifically that makes him immune, or—"
+          "text": "Which lands sideways, because half the room isn't Calarian, and the two from the Protectorate are actively annoyed. And Johnny's defense is that it had the most syllables that rhymed the best."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Or he's got some kind of arrangement. His family was approached by War. They said no. But did they? Did they really? Because a rich kid who's in over his head is EXACTLY the kind of person you'd approach if you wanted a puppet. You don't go to the mastermind grandfather, you go to the dumb grandson who thinks he's running the show."
+          "text": "The most rhyming syllables, yes, that's his entire criteria for international diplomacy. And then he does this thing where he's laying out priorities — get the Strider moving, stop the incursion, unite the factions — and he invents a word, on the spot, in front of everybody."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "That's speculation. And it's speculation that Argyle was doing at the table, and it's speculation that gets people killed. The party has exactly one piece of evidence about Grayson and War: Grayson's own statement that his family was approached and declined. Everything else is vibes."
+          "text": "Balkanization."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Vibes and the fact that void creatures WON'T TOUCH HIM."
+          "text": "Balkanization! And Tas — deadpan, completely straight — goes, \"are you implying, with this new word, that you wish us to ally with more people?\" like Johnny just proposed something radical, like the concept of people cooperating had never occurred to anyone on this continent."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Which could mean a dozen things. He could be wearing something, he could be aligned with something, the void creatures could simply not perceive him as a threat. You don't know. And the party doesn't know. And that's actually fine for now, because the ceasefire is fragile but it's holding, and the immediate priority is the Strider, not Grayson."
+          "text": "To be fair, in-setting it may not have."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Okay, okay, let me pivot, because we need to talk about the REAL star of the session, and that's Egan Arithmites. Half-minotaur gunslinger. Nine feet tall. Hooves. A sniper rifle and a sword that is ALSO a gun. This guy — this guy is the best thing that happened all night."
+          "text": "And then Kadou. Okay. Kadou, from the curious bucket, from the measuring-instruments bucket, stands up with his notebook and drops the single most hopeful thing anyone said all night: the Strider has been here before."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "He's a very significant discovery. I'll give you that."
+          "text": "It's the metal. He's been scraping filings off the hull for days — apologies to our sod, he dug a hole in it — because the Strider should be rusting. Long transits cause slip rust, it's a known problem, the Istrians used to manage it by hand, crews greasing the hull between jumps, and nobody's done that here. No grease, no rust. So he takes his shavings outside, into whatever this air is, and the filings instantly oxidize — into the exact missing component of the alloy. The air here is part of the metal."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Not just significant, Maeve — narratively perfect. The party's been needing a living carrier of the Herald's Song. Anzu's been working on this interference device for DAYS, he's got the theory, he's got the Sentience Distributor modified, but he can't complete it without a reference. And then a nine-foot-tall half-minotaur crawls out of the elevator shaft at Verdant Holdings, and he's broken free of the song because the Strider was moving, and he's been lucid enough to camouflage himself in mud and grass stains and hide. That's not luck. That's—"
+          "text": "Which means the hull already drank this air. Means the Strider sat in this place long enough, sometime in its past, to weather itself against it. It's been here and it left."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It's luck. It's absolutely luck. Anzu flew up the tower, happened to look down, happened to catch a glint, and they drove over to investigate. If Anzu hadn't rolled a thirty-eight on that perception check, they never would have noticed him."
+          "text": "And Giannos — MoCuP's man, we'll get to him — backs it up later at the parlay. The folk living down under the Strider, near Tally, they've got an oral genealogy, and there's a long stay in it at some place the locals call the Lores. Fifteen-year lifespans, so it's all hearsay, but it's hearsay with a shape."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "But that's what I mean! It's narratively perfect luck. It's the kind of thing where the story just DELIVERS what you need at exactly the right moment, and the fact that Egan's a gunslinger with a Black Raymond — that's a connection to the Ashen Pact, which means his story ties directly into the larger mythology."
+          "text": "A named era in a people's memory. That's not nothing, that's evidence with a mythology wrapped around it. And the question that raised for me — and nobody answered, because nobody can — is fine, it's been here before, it came back... who flew it back? Because they asked the Machine God, and the Machine God says the engines that used to move this thing are long dead. Engine hearts, scattered through the Strider, burned out over centuries because nobody maintained them, dead long before the Harlequins' devils ever set foot aboard. And back when they ran, they ran on songs — the gods donated the energy directly, boundless, that was the fuel."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "The Black Raymond is interesting, but I want to be precise about what we know: every entity the party has seen with a Black Raymond has had some relationship to the Ashen Pact. That's all Josh said. We don't know what Egan's relationship is. He might have been given it by the Herald's people. He might have picked it up independently. He might not even know what it means."
+          "text": "Six of the first Hierophants rode this thing, is the detail that got me. All six traveled on the Strider, back when it was actually alive."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "He clearly doesn't! When Argyle asks about the raiment, Egan just says it kind of happened, that it turned black when the song took hold. And Josh let Noah pick which god he follows — he's from Lorandris, so naturally he picks the Compelled. A pirate-gunslinger who follows the god of laws. That's a great character detail."
+          "text": "So the return trip is possible — proven, physically proven by the hull — but the fuel source was gods, and the engines are corpses. That's the size of the problem they're standing in."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It's a contradiction, which is what makes it good. But let's talk about the actual mechanics of what Anzu discovered, because that's the most important thing that happened last night and you're getting distracted by the cool factor."
+          "text": "And Argyle got his connection back, didn't he. The Machine God cut him off weeks ago for pushing too hard, zapped him —"
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "I am NOT — okay, fine, yes, the cool factor is very high, but you're right, the Anzu-Egan mind meld is the meat. Let's talk about it."
+          "text": "Brain-zapped him, yes —"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "So Anzu's been researching interference between the Voidsong and the Herald's Song. He's got the theory that the two harmonics disrupt each other. He sits down with Egan, and Josh confirms it: the reason Egan broke free is that the Strider's movement voidward — toward the Voidsong — weakened the Herald's hold. The two songs interfere with each other. And Anzu already has the Voidsong in his head, which is why the Herald's Song never took root in him."
+          "text": "— and after Anzu spent the whole afternoon playing telephone for him, the Machine God just quietly reinstates him. Soft ping in the back of the mind. \"This is more annoying than punishing him.\""
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "So the solution is... give everyone the Voidsong?"
+          "text": "The most passive-aggressive deific reconciliation in campaign history. And Argyle immediately apologizes for all the inconvenience he's caused, which — Argyle, buddy, the inconvenience was you getting electrocuted, but fine. Okay. The parlay. Giacomo's. Do you want the setup or should I just — because the pre-meeting is half the comedy. They're standing outside going, should we buff up, and Argyle says, out loud, at the table: \"should we just totally kill this guy?\""
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "That's what Anzu's considering. Josh said it would be the first known case of someone propagating the Voidsong to another person. Anzu would effectively be proselytizing on behalf of the Voidsong. And that is a TERRIFYING ethical position."
+          "text": "And Anzu shuts it down in one line. Giacomo's is neutral ground, and — his words — they have such good couscous."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "It is! It's terrifying! You're talking about taking the song that's been haunting you, the song that may or may not be the cry of a trapped god, and deliberately putting it in someone else's head as a vaccine against the Herald's Song. That's — you're trading one cosmic infection for another."
+          "text": "The couscous defense of international law. And it holds! It actually holds the whole session. Meanwhile Argyle's heroismed to the gills, Johnny's running his aura — everyone within fifteen feet gets his blessing, and a reroll against anything hurting them, so everybody stay close to the bard, which is the most Johnny sentence possible — and Argyle walks in with his perception check and just completely whiffs it. Fumbles. Sees nothing. Fresh eyes, nothing."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And that's before you consider what happens when you stop moving. Egan said the song gets louder when the Strider's still. The Voidsong interference only works when you're heading voidward. Right now, the Strider's stranded. The interference is weakening by the hour. So even if Anzu imprints the Voidsong on Egan, on his sister, on anyone — it's a temporary fix that depends on a moving Strider."
+          "text": "Both good and bad, per Josh. Which is very Josh."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Which means the priority hierarchy is actually correct: get the Strider moving first, THEN deal with the Herald's Song, THEN deal with the Ashen Pact. You can't treat the song without motion. And motion means the helm, and the helm means the gyroscope, and the gyroscope means the Harlequins. It all chains together."
+          "text": "So they walk into Giacomo's and it's empty — no wait staff, no cooks, big round table with one leftover tablecloth — and Grayson opens by dryly apologizing that there are no refreshments because somebody killed the wait staff. Which, I mean."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It does. And that's why the Grayson meeting, even though it felt like a sideshow, was actually critical. Grayson gave them the helm's location. Without that, they'd still be digging through Harlequin ruins looking for a steering wheel that's five hundred feet in the air."
+          "text": "Points for self-awareness. Points deducted for the cause."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Okay, but can we talk about the mind meld itself? Because the whole party going into Egan's brain — that was — first of all, the image of four people standing around a nine-foot-tall half-minotaur and then all collapsing unconscious while the twins just keep poking at their glass cylinder? That's comedy gold. The twins didn't even look up."
+          "text": "And seated with him — this is the part I made everyone at work listen to — Stoke of the Iridescent Church, the blind priest, both eyes clouded completely milk-white, and a few seats down, just... some guy."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "The twins are working on something with that spiky black liquid in the clear cylinder. That's a thread they haven't pulled yet, and I think it's going to matter later. But yes, the mind meld — Josh took them into a vision of Egan's memory. A convocation, which is the Lorandrin neutral meeting ground. Ships stacked on top of each other. And Egan's standing at a merchant stall holding a bone-carved necklace, and black smoke hands are reaching out of it trying to grab his face."
+          "text": "Some guy. And the table refuses to accept it. There's a will save, right, something nudging at their heads going, this is just a guy, don't worry about it — and half the party just... accepts it. Rolls with it. Anzu's sitting there going, I'm not really concerned about this at all."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "The necklace! That's the thing that started everything for Egan. That's how the Herald's Song got into his head. He bought a cursed necklace at a pirate market and it put a god's song in his brain. And now the party is in there with him, and that's where the session ends. Cliffhanger city."
+          "text": "Only Johnny cuts through. Johnny, with heroism stacked on, sees it clean — and it's the man from the Ministry of Cultural Progress, the one Benny chatted with at the gym on day one. Giannos."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And the necklace is presumably still physically real — Josh confirmed it exists, Anzu noticed Egan's Black Raymond. The question is whether destroying the necklace breaks the connection, or whether the song has already metastasized beyond the physical object."
+          "text": "Giannos. And he is doing a bit, the whole scene. \"It's just a guy, why are you asking so much about just a guy.\" Mike's yelling \"this is some guy\" from across the table. He's being gaslit outside the game and inside it simultaneously."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "I think it's the latter. I think the necklace was the delivery mechanism, but the song doesn't need the necklace anymore. It's in his head. The necklace is just the origin point in the memory, the moment everything went wrong. And now the party has to navigate Egan's trauma landscape to figure out how to install the counter-frequency."
+          "text": "And of course the second Johnny's sure it's him, the first thing out of Jorge's mouth is — can I look for mandibles."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Which is a very different kind of challenge than what they've been doing. They've been doing combat, diplomacy, logistics. This is psychic surgery. And Anzu's leading it with a thirty-seven occultism check and a forty aid from Johnny, which is good, but the real test is going to be what happens inside the vision. They're not spectators in there — Josh pulled their consciousness in. They're participants."
+          "text": "Which, given what the Herald is, under the glamor — the split chin, the mandibles, the dotted eyes — it's not paranoid, it's due diligence. And the answer comes back: chin intact. Big cleft, mind you. Intact chin."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "And Argyle — Argyle wanted to RIP THE SPIRIT out of Egan before the mind meld. He's sitting there going \"should I cast Rip the Spirit? Should I cast Unravel Existence? Can I use these new spells?\" and Anzu's like \"dude, let me handle this, you're going to kill the guy we need.\""
+          "text": "For now. For now the chin is intact. Okay, and then the talk itself — Grayson lays it out almost politely. He's not stupid, he knows they've all been flung past the edge of everything, and his offer is: ceasefire. No hostilities, until everyone's at least back to Færrin Prime. Share knowledge. His side has hands, plenty of hands, but few researchers — the party's side is drowning in pencil pushers. He's literally proposing a merger of complementary assets, and Johnny needles him — are we still playing games here — and Grayson comes back with the most Grayson thing possible, something like: the games never stop, if you think they stop when you're in danger you're just not holding on hard enough, and if you stab me mid-game, fine, the game had more rules than I thought. That's a man who has never once considered exiting the game."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "That's Argyle in a nutshell. He gets a new toy and he's looking for any excuse to use it. Rip the Spirit is a real spell, it's from Impossible Magic, and it does exactly what it sounds like — it tears the spiritual component out of a creature. That is NOT something you do to the one living carrier of the Herald's Song you've managed to find."
+          "text": "He also says, flatly, that nobody sets foot on his property, and suggests they all adopt the same policy — and that the central hub, Giacomo's and the ring around it, becomes a neutral zone. Nobody owns it, nobody fights in it, leave notes at the restaurant and send messengers to check the mail."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "No! Obviously not! But I love that his instinct is just like \"I could punch this problem with a new spell\" and Anzu has to be the adult. It's a good dynamic. Argyle's the divine hammer, Anzu's the psychic scalpel, and Egan is the patient they're all standing over."
+          "text": "The restaurant becomes a post office. I love that so much. War correspondence by place setting."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "I want to talk about one more thing before we wrap, which is the Ring of Truth moment with Egan. Argyle proposes it, Egan immediately counters with the same proposal back at them — you consent to a Ring of Truth saying you'll actually help me. And then they realize neither of them has it prepared."
+          "text": "And Stoke agrees for the Church — says, in effect, they never intended to attack anyone to begin with, and he's troubled by the missing Godhome and wants to be back under its light like everyone else. Which is the first time the Church's man and our table have wanted the same thing."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Tomorrow!"
+          "text": "Meanwhile Tamara of the Protectorate is sitting there radiating suspicion the whole time —"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "But the exchange matters. Egan's got one bullet and a sword-gun and he's telling Argyle \"if you're lying, I'll kill you.\" And Argyle's response is \"you would not be able to kill me.\" There's this mutual sizing-up that's happening, and it's happening between two people who both think they're the toughest person in the room, and the thing is — Egan might be right."
+          "text": "Tamara, yes —"
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Egan's got a forty-two will save."
+          "text": "— but she's not a political animal, she's a hit-things-until-they-stop person, so she's basically taken the party as her current commanding officers and is waiting for someone to point her at something. And Bishop, Bishop's quietly delighted, because a ceasefire means the Scale can aim their paranoia outward for once instead of at each other. Good old Bishop. He only came to the parlay to make sure we weren't lying to the alliance, which, rude, fair, and correct."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Egan's got a forty-two will save. That's absurd for a level nine character. He shook off the Herald's Song through sheer stubbornness. Argyle's the divine champion, but Egan's the guy who sat in a cult for months and went \"no, I don't think I will.\""
+          "text": "And they did lie, a little. Or at least withheld. After the summit, Johnny has to smooth over exactly how much they know about what happened — because the whole alliance watched them come back from a play with cardboard cutouts in the yard and no explanation — and he carries it. Carries it cleanly enough that nobody in the room looks alarmed."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "And that's why he's the perfect test subject for Anzu's device. He's already proven he can resist the song. If anyone can hold both songs in their head simultaneously — the Herald's Song and the Voidsong — it's the half-minotaur with the unbreakable spirit and the forty-two will save."
+          "text": "And the beautiful, stupid detail there is the stage. The Menhir stage is still standing. Argyle wants to magic it away and Josh won't allow it — it doesn't go away, it's there now — so there's just, permanently, in the front yard of the coalition base, a stage with rocks around it, which to any visitor looks like an avant-garde art installation or, per the table, a very Bohemian Grove sort of owl shrine."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Assuming the necklace in the vision doesn't eat them all first."
+          "text": "Incriminating to anyone who knows what a Menhir is. Saved by the fact that apparently nobody on this Strider does. They look at it and see a failed homage."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Assuming that, yeah. That necklace with the black smoke hands reaching for Egan's face — that's one of the Ashen Pact, maybe all of them, reaching through a memory. And the whole party is standing right there in the memory with him. If those hands can reach Egan, they might be able to reach Anzu, too. And Anzu's head is already running hot — literally, Argyle noticed his head is five or six degrees hotter than it should be during that heat vision scan."
+          "text": "Okay — the reveals. This is where the parlay earns its couscous. Grayson offers a trade, one piece of information for the one they gave, and the party picks the Harlequins. And Grayson says it almost casually — the Harlequins were working for an entity outside the firmament. It's called War."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "That detail bothered me. Argyle spotted it, flagged it, and then they got distracted by Egan and never circled back. Anzu's head running hot while he's in proximity to the gyroscope, while he's working with the Herald's Song, while the Voidsong is the quietest it's ever been — something is changing in Anzu, and nobody's tracking it."
+          "text": "War. And I want to sit on that name for a second, because the wiki-brain part of me went straight to the Ashen Pact — six entities over a burning plain, the vision Anzu pulled out of that sleeping thing's head — and if the Harlequins were the hands of one of those six, on this Strider, for the whole voyage..."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "The Voidsong being quiet — that's the part that gets me. Anzu said it himself: it's never been this quiet. They're so far starward that the song's barely there. And if the Voidsong is what's keeping the Herald's Song from taking root in Anzu, and the Voidsong is fading—"
+          "text": "The whole pilgrimage was somebody else's errand. That's the door that opens. Every weird thing the Harlequins did — the library, the void-troughs, the checkout cards, all of it — was housekeeping for War. And then the second half of Grayson's little gift, which is that War approached his family. Separately. Through a liaison. Asked if the Graysons would handle some tasks the costumed ones couldn't. And the family said no, of course, we would never align with a strange outer entity — and Maeve, the table's faces. The table did not believe a word of it."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Then Anzu's protection is eroding. The interference works both ways. If the Voidsong fades, the Herald's Song has room. And they're about to go into a mind meld where Anzu is deliberately trying to imprint the Voidsong on someone else, which might dilute what's already in him."
+          "text": "He gave them that information about himself for free. Whether it's a lie or a confession, either way he handed it over like it was trivia."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Oh, I didn't think about that. If the Voidsong is a finite resource in Anzu's head and he's trying to share it—"
+          "text": "And here's the read that changed the whole session — Johnny and Argyle are watching him while he talks, reading him hard, reading him clean, and what they get back is: this isn't the mastermind. This is a rich kid in over his head. Every word out of his mouth moves the image from schemer toward scion — a man who's rarely been in a room where he wasn't the most important person or related to the most important person."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "We don't know that. We don't know how it works. That's the problem. Anzu is conducting experimental psychic surgery on a stranger using a cosmic frequency he doesn't fully understand, and the party is letting him do it because they need results."
+          "text": "The table's line was that they thought he was Cersei, and he's actually Joffrey."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "They need results and Egan needs help and Egan is — I mean, narratively, Egan is the most sympathetic character to show up in this campaign in a while. He's a guy who bought a necklace, lost control of his life, got herded onto a pilgrim Strider, was forced to hand out pamphlets, and now he's sitting in the freezing cold on a dead world going \"please get this song out of my head and I will kill anyone you need killed.\" That's — you root for that guy."
+          "text": "He's Joffrey! And that reframes everything, right — the attempt on the Protectorate, the ballroom, all of it is not a chess player, it's a kid the family sent somewhere with instructions and no idea what's happening. But I'll push on it a little, because Anzu read it darker at the time and I half-agree — the Joffrey read doesn't make him harmless, it makes him a lever. Somebody's using him. War asked his family and got told no, and then somehow the family's heir is out here at the edge of the world sitting pretty anyway?"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And the party has a use for him beyond the research. They've been talking about going to Tally, about Anzu's sister Gozu, about kidnapping a living carrier. They don't need to kidnap one anymore. They have one. And Egan's motivated. \"Get this out of my head and I'll fight for you\" is the cleanest deal anyone's offered the Coalition since the Machine God."
+          "text": "That's the question I went to sleep on. \"We said no\" and yet there he is, positioned right next to everything. Either the no was a lie, or the no didn't take, or the liaison went around the family. All three of those are interesting and none of them are good for him."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Cleaner, actually, because Egan doesn't want territory or energy or tithes. He wants his brain back. That's it. That's the whole ask."
+          "text": "And there's one more tell in that scene — Johnny floats the Bifurcated Man's name into the conversation, just drops it in to see who flinches — and Stoke and Giannos both flinch. Covered fast, but they flinch. Grayson doesn't. Nothing."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And the party can't guarantee it. That's the tension. Anzu has a theory and a modified device and a promising first attempt, but he hasn't solved it. He's got interference, not a cure. The best case is that the Voidsong acts as a suppressant, which only works while they're moving voidward. The worst case is that imprinting the Voidsong on Egan makes things worse."
+          "text": "Which reads two ways, and the table said both: either Grayson doesn't know who that is — consistent with Joffrey — or the two beside him know exactly who that is."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Or that the thing in the necklace in the vision reaches out and grabs all four of them."
+          "text": "A blind priest and the ministry's radio man, both going stiff when the bifurcated man walks into the conversation. Filed. Filed and flagged. Okay — and then the two things Grayson let slip that he absolutely meant to keep. First: they tell him the plan includes taking the Harlequins' old territory, and he asks why, and Johnny says — more or less off the cuff — \"the helm's there.\" And Grayson just corrects him. The helm is not in the Harlequin town. The helm is inside the great gyroscope, that massive spinning structure over the center of everything. Says it right out, then goes, oh well, too late, you owe me one."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "That too."
+          "text": "And you can feel Josh enjoying that. The party fished for the helm and accidentally got a free map pin because they revealed their own intent first. Trade gone wrong."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "So where does this leave them? Going into next session, they're unconscious in Egan's brain, standing in front of a cursed necklace in a pirate market, and the black smoke hands are reaching for them. They've got a ceasefire with Grayson, a lead on the helm, confirmation that Harlequins are alive in the gyroscope, and a nine-foot-tall gunslinger who might be their key to the Herald's Song or might be the doorway to something much worse."
+          "text": "And the second thing — oh, this is my favorite sixty seconds of the night — Argyle, doing the math out loud, asks him: you're not worried? The void portals are opening in your backyard, essentially, the hands are everywhere, and Grayson says — and repeats, and repeats, growing more offended each time — they don't attack me. They came for all of you at the ballroom, they very much attacked the rest of the Strider, but they don't attack me."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And the Strider's not moving. The clock is ticking on the interference effect. Every hour they're stranded, the Herald's Song gets louder in Egan's head and the Voidsong gets quieter in Anzu's. They need to get through this vision, get whatever insight the necklace memory gives them, and get the Strider moving again before the songs start reasserting themselves."
+          "text": "He says it like it's a point of pride, and the table cannot process it. Benny's asking if it's a point of pride. Who is this for?"
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "And somewhere up in the gyroscope, Harlequins are moving through a chamber and going up into a tower that has no entrance, piloted by an entity called War, and the party just killed the one god who might have been able to help them. Good position to be in."
+          "text": "Who is that sentence for! And the table splits into theories right there. Argyle's going maybe he made a deal — some entity arrangement the family made, or he made, that he doesn't even fully understand. And Anzu — the character who I'd argue has the best instinct for what things are afraid of — Anzu says, no, I don't think he's bluffing. I think he's genuinely not afraid of them. He's not concerned. Something about him and the void things are just... not in conflict."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Great position, actually, if you're the kind of person who thinks having sixteen god-killing bullets and a half-minotaur with a sword-gun is a solid plan."
+          "text": "And there was the table theory that at the ballroom fight, the one creature near him — he steered it. Sent it at someone else. Which would make \"they don't attack me\" less of an immunity and more of a leash in his hand."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "I mean... it's not the WORST plan."
+          "text": "I flip between those two all night. Because Maeve — if the void creatures are organized, if they came through on their own, if they're a faction now — a faction that does not touch Silven Grayson is a faction that has an opinion about Silven Grayson, and I want to know what it is before we ever stand between them."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It's the only plan. And that's what makes it terrifying."
+          "text": "Agreed to be worried about it. Different reasons, same worry."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So — ceasefire secured, terms in the restaurant, Argyle tries to close with everyone swearing under Ring of Truth and then remembers he didn't prepare it today, so it's penciled in for the next meeting, and Grayson's response to \"nobody magically alters the neutral zone, agreed\" is this drier-than-dry, \"I would never.\" That man. That man is going to be a problem for years."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And on the walk out they do the Giannos pass — Argyle just stares him down over the mandible thing, and gets a shrug. Whatever he's doing, it's apparently easier for everyone if he keeps doing it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Fine. Fine. New problem: the tower. Because if the helm is up in the gyroscope, someone has to go look at the gyroscope, and Anzu — who has been quietly working on flying, like, psychic self-launching with the big spectral wings —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "First big flight of the campaign, and it's a beauty. The structure's about five hundred feet up — it only looks close because it's so enormous —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's what got me, the scale correction. And up close it's fractal — rings within rings, scoops on arms, and on each arm another rotating ring, narrowing down and down, machinery far too intricate to have been built by anything the party recognizes as a civilization. Anzu's read was that even Belvedere with its whole fortune couldn't figure out how to make one. No door, though. No entrance, no hatch, no window — sheer gold-colored metal all the way around. You enter from below, or the Harlequins imposed a doorway somehow."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And it's one huge artifact — the whole thing reads as a single magic — but there are items inside it, separate magics pinging in and out of range as he circles, some of them serious, and through the wall he can hear pneumatics. Hissing, pumping. Something in there is running."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's alive in there. And then — the moment. He asks the Machine God: was anyone active at the center of the Strider, up top, before? And the Machine God says yes, the Harlequins traveled through there constantly, and there's a chamber directly beneath it that extends up past his sight, and there are living things moving up and down in it. Right now. And Anzu asks the question and gets the answer — yes. Those little clown devils. Harlequins are alive in the tower."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Harlequins. Alive. The faction we spent a whole session mourning and looting, and they've been in the helm the whole time."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which retroactively explains so much and also reframes that parlay — Grayson said it himself, maybe not in their little town but spread through the Strider, sure, and none of us took him seriously! And now there are clowns in the control room. That's the next expedition, and I am terrified of it, because the helm is the goal and the helm is where they live."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And on the flight down, one more thing catches his eye — motion coming out of what's left of Verdant Holdings. The crater. Fallow since the bombing, nobody's claimed it, and something is moving out of it, camouflaged so well against the ground that the only reason he sees it at all is one glint. One flash of light off glass."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And they drive out. And it's cold — I want to flag the cold, because the GM is being very patient about it but the world is being very clear: you've got maybe an hour or two outside before it starts dragging on you, and it's not a wind, it's just... being outside is cold. It cuts through the clothes. The world itself is unwelcoming, ambiently, at all times."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "So Argyle, thinking ahead, casts heat vision before they arrive. Which nearly doesn't matter — constructs run at ambient temperature, Josh loves constructs, everyone knows Josh loves constructs — but if something's alive, or steam-powered, it'll glow."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And here's the beautiful part. Without the heat vision, they never see this thing. Josh says it plainly — it's not invisible, it's just so good at moving unseen, so well camouflaged, that eyes alone fail. With the heat vision: a big warm blob, low to the ground, slinking, and one very hot point near the top of it. And also, incidentally, this is the first time Argyle's ever swept the party with heat vision, and Anzu's head reads several degrees hot."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Hot brain."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Psychic powers, per the table. Johnny's diagnosis. And we're going to come back to that hot head at the end of this, because the G M went out of his way to make it a thing, and I don't think it's a throwaway. But first — they get out of the car, Argyle walks up, shield out, weapon down, and calls out, hello, thing, friend. And the rock stands up."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Nine feet. Upper body human, mid-forties, copper skin covered in scars, black hair tied back, shaggy gray-shot beard, big black overcoat — and the lower half is fur and cloven hooves. And the first thing this man does is bring a long rifle to his shoulder and aim it at Argyle's head."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the second thing he does is hear the word \"song.\" Somebody says the Strider, the Voidsong, whatever — the word song crosses the table and the safety comes off, and he snarls, oh, so you're all with the singers. And then he clocks Anzu. And Anzu is a black-feathered tengu with blue tips, and this man has met exactly one tengu like that in his life, and it was under the worst circumstances of his life, and the rifle swings from Argyle to Anzu just like that."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "So you and your sister are in this together, is what he says. And Anzu — Anzu, who has been trying to reach his sister for weeks, whose sister is down in Herald territory — has to stand in front of a gun and say, no, they kidnapped her."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the diplomacy lands. It lands clean — the best Anzu's ever talked, a natural at exactly the moment it matters — and the safety goes back on, the rifle comes down, and this enormous stranger basically says: if you're not with the singers, then you have to help me."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Egan. Egan Arithmites. A ship's captain out of Lorandris — pirate country, skybreaker country — and his story is the Herald's whole operation in one biography. He heard the song one day. So did his crew. And it seemed like a really good idea, suddenly, to sell the boat and go inland, and the singers herded them aboard like they were all in a dream. And then he's just... there. For who knows how long. Lucid in flashes, then under again. Handing out pamphlets. Little stones with a trumpet symbol on them. And the people he came aboard with — some of them have mandibles now. The Herald isn't just recruiting, it's editing people."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the detail that matters mechanically, the detail Anzu seized on: it got weaker when the Strider moved. He surfaced when the pilgrimage was in motion. Now it's stopped, and the song in his head is getting louder by the hour. The motion itself was interference."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The Strider moving was suppressing the Herald's song. Which, hold that — that's the key that unlocks the ending, we're getting there. So Egan — and I want to be fair to the table here, because Anzu looked at this man and said, out loud, this couldn't be more serendipitous. The one thing Anzu's been missing for two sessions is a living carrier of the song, someone with it still in their head, and one has crawled out of the crater next door with a rifle."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The universe providing. Or something arranging it. With this campaign, honestly, either."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the ride home is all gold. The alarm goes bing-bong as he crosses the moat because he's obviously not on the list. Argyle asks him to consent to a Ring of Truth to prove he's not going to betray them, and Egan flips it — fine, but you consent to one proving you're not with the singers. Neither of them can cast it today. So it's a handshake deal backed by a threat, and Egan's threat is, and I need you to hear the delivery, this man has one bullet in the long rifle and a sword that is also a gun, and his stated position is \"I can do it.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "His spirit, when Argyle asks? Unbreakable."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Unbreakable! And Anaïs — the twin — pops out of the workshop, sees the nine-foot stranger, and asks the single most Anaïs question of the campaign: why are you so tall and made of fur, but only on the bottom half? And Egan says — dead flat, no hesitation —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "\"My mom was a minotaur.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"My mom was a minotaur.\" And Anaïs goes, excellent, you'll fit in well here, and pops back in the workshop. Unconcerned. That's the coalition's vetting process now. Also — Argyle does try to catch him in a lie about being a demon, because cloven hooves, and it comes back clean: demons either hide what they are or they announce it, and this man's just a half-minotaur from Lorandris who worships the Compelled."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the black raiment. Don't skip the black raiment. Everyone else's raiment is gold — his is black, and every black raiment they've ever seen has been tangled up with the Ashen Pact somehow. So the question hanging over this lovely gun-toting uncle is: why does the Pact's color follow a man whose only crime was buying the wrong necklace?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And there's the deal. The handshake. Egan's terms, in full, paraphrased only slightly: you get this song out of my head, and I'll fight the singers, I'll fight the necromancer, I'll fight anyone you need fought. Somebody ruined his life, and he's offering the party a nine-foot engine of revenge at very reasonable rates."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Then the workshop. The twins are in there poking at a cylinder of clear liquid with a denser black spiky liquid floating in it — don't ask, they're the twins — and Anzu sets up his research with Egan as the guinea pig. Openly tells him: you're my guinea pig, I don't know what's going to happen. And Egan just bends in half and puts his head in front of him. That's the trust economy of this table now."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the finding — okay, this is the lore payoff of the entire night, this is the thing. Anzu gets in there with Johnny backing him, rolls beautifully, and the answer is interference. The songs jam each other. Anzu has had the Herald's song knocking around his head the whole voyage — and it never took his agency, and now he knows why: the Voidsong was already in there, taking up the space. The two harmonics can't hold the same skull."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Egan is the control case. Only ever the Herald's song, for months — but proximity to Anzu, to the gyroscope, to the voidward motion, tenuously, temporarily, broke the hold. So the method writes itself: put the Voidsong into a Herald-carrier and it evicts the other song."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which sounds clean until you say the next sentence out loud, which Josh said, deadpan, to the table: congratulations, you'd be the first known case of anyone propagating the Voidsong to another person. You would be proselytizing on behalf of the Voidsong. That's the cure. The cure for the Herald's song is missionary work for the other one."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And nobody flinched. That's the part I keep turning over. The party that accidentally killed a member of the Narrative three days ago heard \"you'd be evangelizing the alien dirge\" and went, yes, and, how do we scale it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "In fairness — in fairness — nobody's ever caught anything fatal from the Voidsong that we know of, and it's the only reason Anzu's still himself, and his sister is down there full of the wrong song with the clock running. But Maeve, you give the Voidsong to enough people on a stranded ship and you've founded a congregation, and the Voidsong is the thing that's been quiet since they got here — quietest it's ever been — and Anzu said it himself: there's something else rattling around in there now and he doesn't want to think about it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is the hot head. I keep coming back to the hot head. Argyle swept him and his skull's running several degrees above the rest of him, and nobody knows tengu biology well enough to say if that's normal, and the G M flagged it, unprompted. Fevers are how the body fights infection. Psychic fevers would be how a mind fights one."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh no. Oh, I hate that, and I believe it. Okay — the actual dive. They all hold hands around Egan — which, the visual, a nine-foot minotaur man being circled by four much shorter people and everyone in the workshop watching the whole pile go unconscious on the floor — and they go in."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And it's not the black-and-white void, it's not the burning plain. It's his mind, so it's Lorandris. A convocation — three ships lashed and stacked into a roving fortress on open water, neutral ground for pirates, the same place he found a certain bone-carved necklace at a merchant stall once."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And there he is, memory-Egan, standing at the stall with the necklace in his hands. And out of the necklace comes black smoke, forming hands — many hands — reaching for his face."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And that's where we stopped."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's where we stopped! And you and I have not talked about this yet, so — theories, right now, because I've been staring at the ceiling about it. The necklace is where it started. Whatever the Herald's grip is on this man, it's anchored at the moment he picked that thing up. So when Anzu goes rooting around in there to install a new song, the old one is going to be sitting right there, at the bottom of the memory, wearing that necklace, with all those hands."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or — and this is the version that worries me — the necklace isn't just where the song lives. The G M called it loot, afterward, jokingly, and nothing that man jokes about is only a joke. If the Voidsong crowds the Herald out of Egan, whatever's in that necklace is loose in there with nowhere to go."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the alternative to giving him the Voidsong — they talked about this at the table — is the other plan. The old plan. Go down to Tally in the morning, and instead of a rescue, it's a harvest. Take the sister, leave the rest, because \"salvageable\" was the word Benny used and it's the right word, those people down there are victims wearing a song, and Egan is proof some of them can come back."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But the clock on that is the thing he kept saying — the longer the Strider sits still, the louder it gets. The stopped Strider is re-tightening the Herald's grip on everybody below decks, every hour. So the kindest plan and the most urgent plan and the most dangerous plan are all the same plan, and it all runs through Anzu's brain touching Egan's brain."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A psychic bird, a pirate the size of a shed, a haunted necklace, and the loneliest song in the world, all in one skull. And meanwhile there are Harlequins alive in the helm, a rich kid with some kind of arrangement with the void, and a Machine God who wants his house back. You... you had to be there. Next session is going to be a lot of skull."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It really is. Poor Egan. He just wanted to hide until the Strider started moving again."
         }
       ]
     },
