@@ -163,6 +163,7 @@ describe("queue advance + loop (B7/B8)", () => {
     const e = engine();
     const [a, b] = [mkTrack("a"), mkTrack("b")];
     await e.play({ trackIds: [a, b], userId: "op" });
+    await e.setLoop("none");
     await voice.fireEnd("finished");
     expect(voice.playing).toBe("/data/b.ogg");
   });
