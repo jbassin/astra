@@ -70,10 +70,10 @@ export interface PlayRequest {
 export class PlaybackEngine {
   private queue: number[] = [];
   private index = 0;
-  // Loop the queue by default (stakeholder call 2026-09-07): ambience/OST queues should
-  // keep going unattended; "none" is still one click away in the UI. Persists across
-  // play() calls; only setLoop changes it.
-  private loopMode: LoopMode = "playlist";
+  // Loop the current track by default (stakeholder call 2026-09-07): a single ambience
+  // track should repeat unattended; "playlist"/"none" stay one click away in the UI.
+  // Persists across play() calls; only setLoop changes it.
+  private loopMode: LoopMode = "track";
   private status: PlaybackStatus = "idle";
   private currentTitle = "";
   private currentDurationMs: number | null = null;

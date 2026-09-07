@@ -173,10 +173,10 @@ describe("queue advance + loop (B7/B8)", () => {
     await voice.fireEnd("finished");
     expect(e.nowPlaying().status).toBe("idle");
   });
-  test("default loop mode is playlist: a fresh engine wraps the queue", async () => {
+  test("default loop mode is track: a fresh engine repeats the current track", async () => {
     const e = engine();
-    expect(e.nowPlaying().loopMode).toBe("playlist");
-    await e.play({ trackIds: [mkTrack("a")], userId: "op" });
+    expect(e.nowPlaying().loopMode).toBe("track");
+    await e.play({ trackIds: [mkTrack("a"), mkTrack("b")], userId: "op" });
     await voice.fireEnd("finished");
     expect(e.nowPlaying().status).toBe("playing");
     expect(voice.playing).toBe("/data/a.ogg");
