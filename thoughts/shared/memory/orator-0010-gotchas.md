@@ -128,3 +128,10 @@ orator-postgres are **up locally + verified** (10363/10364: healthy, serves SPA+
 migrated library). **Deferred (spec-sanctioned):** the **public edge** (`just caddy-reload` + `orator.iridi.cc`
 DNS — outward-facing/manual), the **live Discord run** (SOPS token), and the **physical Stream Deck hardware
 test**. See [[no-ci-monitoring]], [[deploy-apply-with-just]], [[verify-before-acting]], [[config-single-source]].
+
+## 2026-09-07 — yt-dlp imports 403 (stale binary) — FIXED `3d70105b`
+
+**Symptom:** every orator import failed; in-container `yt-dlp -f bestaudio/best …` → `HTTP Error 403: Forbidden` (metadata/`--flat-playlist` still worked, so enumerate looked fine).
+**Cause:** the Dockerfile fetched yt-dlp from the `releases/latest` URL, but that `RUN` layer was cached — the image silently froze at 2026.07.04 and YouTube broke it. Also yt-dlp now deprecates YouTube extraction without a JS runtime (EJS) and only enables deno by default.
+**Fix:** `ARG YT_DLP_VERSION=2026.08.19` (pinned download URL) + `--js-runtimes node` on both invocations in `src/media/ytdlp.ts` (node 24 is in the runtime image). `just up orator-backend`, verified a real download in the new container.
+**How to apply next time:** on a 403/"unable to download video data", bump `YT_DLP_VERSION` in `apps/orator-backend/Dockerfile` to the current release + `just up orator-backend`. Expect this every 1–2 months. Test in-container with the exact flags from `ytdlp.ts`; `curl` is purged from the runtime image (`docker cp` a binary in to test a newer release first).
