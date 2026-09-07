@@ -98,11 +98,19 @@ async function runJson(cmd: string[]): Promise<unknown> {
   return JSON.parse(out);
 }
 
+/**
+ * yt-dlp needs a JavaScript runtime for YouTube's signature challenges (EJS);
+ * only deno is enabled by default and the runtime image ships node, so opt it in.
+ * Without a runtime, extraction is deprecated and formats go missing (403s).
+ */
+const JS_RUNTIME_ARGS = ["--js-runtimes", "node"] as const;
+
 /** The real yt-dlp-backed implementation used on the host. */
 export const realYtDlp: YtDlp = {
   async enumerate(url) {
     const data = (await runJson([
       "yt-dlp",
+      ...JS_RUNTIME_ARGS,
       "--flat-playlist",
       "--dump-single-json",
       "--no-warnings",
@@ -122,6 +130,7 @@ export const realYtDlp: YtDlp = {
     const proc = spawn(
       "yt-dlp",
       [
+        ...JS_RUNTIME_ARGS,
         "-f",
         "bestaudio/best",
         "--no-playlist",

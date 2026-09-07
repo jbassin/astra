@@ -66,9 +66,13 @@ WORKDIR /repo/apps/orator-backend
 ENV NODE_ENV=production
 
 # ffmpeg (loudness/encode) + yt-dlp (a python zipapp, needs python3) on PATH (M5).
+# yt-dlp is PINNED, not `latest`: YouTube breaks old releases every few weeks
+# (2026-09-07: 2026.07.04 403'd every download) and a `latest` URL behind a cached
+# layer never refreshes — bump the ARG to force the layer to rebuild.
+ARG YT_DLP_VERSION=2026.08.19
 RUN apt-get update && apt-get install -y --no-install-recommends \
       ffmpeg python3 ca-certificates curl \
-    && curl -fsSL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp \
+    && curl -fsSL "https://github.com/yt-dlp/yt-dlp/releases/download/${YT_DLP_VERSION}/yt-dlp" \
          -o /usr/local/bin/yt-dlp \
     && chmod a+rx /usr/local/bin/yt-dlp \
     && apt-get purge -y curl && apt-get autoremove -y \
