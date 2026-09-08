@@ -22158,6 +22158,750 @@
           "text": "And that's why they skip the puzzle."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-9-7",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 18,
+      "isMain": true,
+      "date": "2026-9-7",
+      "dateSortKey": 20260907,
+      "title": "Firebombing the Patient",
+      "episodeTitle": "Firebombing the Patient",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm and dry, precise but easygoing; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date Bram fumbles for and hands it to him in a short, plain sentence — she finishes her sentences and finishes them short — then gets right back into the story with him. She's not the fact-checker; she's the friend who remembers. She's as invested in the characters as he is: she wonders aloud WHY someone did what they did, floats her own theory about what a faction is really up to, and builds on Bram's read as often as she tweaks it. Her wit is dry and fond, aimed at the world and the table's heroics, never at him. Grounds events in how the world actually works; usually right, so let her be plainly wrong exactly once so she isn't an oracle"
+        }
+      },
+      "synopsis": "The Strider drifts dead while the party takes a frantic detour through a pirate's past. Egan's head contains a whole world—the floating whalebone necklace, the mindflayer, the ghost ship-crew of Lurantris—and something in there is trying to keep him. In the memory-fight that follows, Argyle dispels the wrong thing and the Herald's champion of fog comes out swinging, while Anzu and Othello try to decide if this is a rescue or an interrogation. The answers they dig up point toward a second, similar mind somewhere on the Strider, and the hardest question yet: what do you do with a pirate you cannot trust?",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "— and before you say anything, yes, I know I say this every week, so don't start, but last night was the best session of the run. Top to bottom. I'm prepared to defend it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You said that about the hospital."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And I was right then and I'm right now! The hospital was a horror movie. This was surgery. The entire night is surgery on a screaming man who is also the operating table. Where do you even want me to start."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The ship. Start with the ship."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The ship is dead. That's the mood hanging over everything — since the Menhir business the Strider's just drifting, dead in the water, cold sky, no grass, no wind, nothing on the horizon, and the whole population's split between the terrified, the curious, and the ones sharpening things. And our heroes' big errand coming in was the tower — get inside the gyroscope, find the controls, get her moving again."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Still the errand. They just decided to climb inside a man's head on the way. Like a detour for coffee."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "On the way! Okay — background, for anyone who needs it, which is us — Egan Arithmites. Nine-foot half-minotaur gunslinger out of Lorandris."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Lurantris."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Lurantris, the freebooter country — and it used to be a bigger country once, before the plague-heir's champion tore through it — Orthalaxis, the Plague Bearer — salted Scythis into desert, all of it, centuries back."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which matters here for one reason: Egan's from there, and as Josh reminded the table, you never really know how old a half-minotaur is."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Ten years a captain, age unknown, noted. Anyway — this is the big fellow they found skulking around the Verdant crater, former Herald thrall, and here's the thing everybody's filed away: he went lucid the moment the Strider got flung off the map. Motion shook the song loose. He's been sitting in their base ever since with the Herald's tune stuck in his skull like a radio he can't switch off."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Anzu's research all along has been that the two songs interfere. The Voidsong and the Herald's song jam each other."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the theory of the operation — imprint the Voidsong over the Herald's song, and the leash stops holding. The whole party holds hands around the big man, Anzu mind-melds, everybody drops like a sack of flour, and they wake up inside Egan's memory. And the memory, Maeve. The memory."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A pirate convocation. Ships lashed and stacked on a rock, hulls and masts, a floating shantytown of a trading post. The kind of place a crew stops to refit and get into trouble."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And you look around and the population is pirates, except you can see through them — they waver, like heat off a deck. The whole crew is a rumor of itself. Shades. And in the middle of the market, at a merchant's stall, stands Egan, staring down at a whalebone necklace carved into the Herald's horn. Same curved sigil the singers wear. And out of the necklace comes this black smoke, and the smoke has hands, and the hands are reaching for his face."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And here's the detail. Josh says this isn't a general pirate flashback. This is the exact day. The moment the song got in."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's the one that's been living in my chest since ten o'clock. The whole fortress, the market, the crew — it's all scaffolding the song built to keep that one moment standing. The mindscape grew around the wound."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The song doesn't live in the present tense. It lives in the day it arrived, and everything since is scar tissue."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And nobody — nobody! — asked about the merchant. There is a stall. There is a person who owned that necklace, in a memory specifically about acquiring that necklace, and the party was too busy almost dying to go — hang on. Who sold you this?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "In fairness, the almost dying started immediately."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It started SO immediately. They land on the deck, nothing's hostile yet, and Josh says the sentence that tells you everything — no check needed, you simply know the song will not let him go peacefully. And the first domino is Noah. Johnny walks up to do the supportive bard thing, lines his buff up on Egan, and Josh goes — hmm, no. Egan's not currently an ally. He's set dressing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "So Noah takes the whole turn back like a returned parcel and does the other bard thing instead. The dirge. Frightens every shade on the deck."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Josh stops everything — this is such a Josh ruling, this is the ruling the whole fight hangs on — that counts as a hostile action. You just frightened a man's memories. And the deck murmurs. And Egan — the patient — flips hostile. One refunded buff, and the nervous system they're standing inside mounts an immune response."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's someone else's brain. Stomp around in it, the brain notices."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And out of the necklace rises the thing. This ghost — translucent like the shades, except the necklace itself is solid, hanging around its neck. The only solid thing on it. Think about that. The cursed bone is the real animal and the ghost is just the wrapping it walks around in."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The table lands on the coiled horn for it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The coiled horn — I called it the quill-horn for half the night, the Quilted Horn, I was tired — and I want to flag what Argyle clocks mid-fight, because Josh confirms the thing is, technically, divine. Divine. And Argyle — our celestial in an elven body, on loan from the Scale — is genuinely offended. Says it gives actual otherworldly beings a bad name."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's wearing holy the way the skinwalkers wore people."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Say that again louder, because — the sleeping clan, the oogathals, stolen skin was their entire thing, and now the Herald's ghost shows up in stolen church? Everything in this arc is secondhand. Nothing out here is wearing anything it was born with."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Not even the Strider."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Not even the — okay, hold that thought, because the fight. The opening movements are a tragedy of good intentions. Argyle announces the plan is to free Egan, the horn does this hollow gaze at Benny and just pulls the vitality out of the boy through his eyeballs, and Argyle immediately says, out loud, new plan, not freeing Egan. And Noah, across the table: no, we should free Egan. The plan has a lifespan of about thirty seconds at all times."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And then the ghost points at Egan, and Egan walks over and stabs-and-blasts Benny. His gun-sword. It's a sword, it's also a gun."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The man's weapon of choice is both weapons, and the ghost puppets him around the deck like a ventriloquist with a very large pirate. And the table goes quiet, because they realize the person they came to save is the biggest problem on the board — everything you want to hit is standing behind him. So the friendly fire starts. Argyle's first big spell of the night lands on Egan and the ghost both. Round one of the rescue, and they firebombed the patient."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "There's no clean line on that deck. There never was going to be."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Meanwhile Anzu does the homework — reads the thing in the necklace — and gets the answer that explains the whole night: spirit, undead, unholy, and it shrugs off nearly everything you'd swing at it. There's a short list of things that actually bite it, which is why Benny's swords keep sliding off the ghost like it's made of harbor fog, and why the fight splits in two — the casters duel the ghost, and everybody else wrestles the memory."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the memory wrestles back. That's the other discovery. When a shade dies near the necklace, the necklace eats it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Explain it properly, because this broke my brain."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The ghost drinks the dead man's echo out of the air. Heals itself. And everyone standing close catches the backlash in the mind. Every crewmate they cut down is a meal for the thing they're trying to kill."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's an economy! They're fighting the boss and tithing to it at the same time. And I lay awake doing this — the tithe, the necklace, the hearts — everything on this ship is a mouth."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Careful. The Verdant crater was bombs, not tithe — Prime Meridian called that one. But the rhyme is real. Something out here is always collecting."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Something out here is always collecting. And it's the Herald's whole style, right — it doesn't just command its congregation. It grazes on it. The end state of serving that song isn't servitude, it's dinner. Okay. Moments, in order, because there were so many. Anzu spends a full round charging — hands out, visibly straining, everyone's attention dragging toward him, this muffled scream — and then releases a burst that only clips enemies, because he held it that long. Half the deck crew is bloodied in one breath."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And for a while there are two of him. The wooden double shows up and spends a couple of exchanges catching daggers meant for the original. Like a stunt bird."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The double — the wooden — what's his — Othello."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Othello."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Othello. I love that thing. And — wait, no, I have to do my favorite micro-moment first. The ghost orders Egan to kill Benny. Stab and blast. And Josh goes to resolve it and goes — oh. He's not loaded. The gun-sword is empty. Egan's first action as a mind slave is reloading. Noah built this gorgeous gunslinger and forgot to chamber a round."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And then he misses anyway. The ghost picked a champion who can't shoot."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The ghost is doing its best with limited materiel! But here's the other gift that keeps giving — early on, Benny smashes his hook sword and his falcata together, this ringing challenge, just a wall of noise, and the coiled horn goes deaf. The divine horror cannot hear. And for the rest of the fight, everything that thing wants to do, it first has to remember how. It's got all these auditory toys, and over and over there's a chance it just doesn't hear itself doing them."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It yells in Benny's face at one point and the sound falls out of the air. The kid turned the boss's voice off."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The kid turned the boss's voice off. Meanwhile Josh is rolling for the shade crew like a cursed man — the first mate lunges at Johnny and throws the most natural of natural ones, a legendary whiff, dislocates his shoulder on it — and the poor quartermaster spends the entire fight walking upstairs, missing, walking downstairs. At one point he swaps places with another shade like a dance move. He was so tired. He was at the end of a long shift."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And somewhere in there Anzu does the smart thing with the monster's rules — he times a kill. Takes the bosun out right after the necklace has fed, so that one just ceases. No snack. They learn its rhythm mid-fight, which is the only reason it ever comes off the ropes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay. The moment of the night. Mid-fight, Jorge announces Argyle's done being careful, and the reasoning he gives is so good — the group's usual move, he says, is to write off the new guy and move on, but he's decided to be a decent person for once."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Josh reminds the table of the stakes. If the mind imagining this world dies, nobody knows what happens to the world. Almost certainly bad. So no shortcuts. They can't shoot Egan and loot the memory."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So Argyle does the cleric thing — pours a healing font straight into clarity of mind, walks over, and tries to peel the ghost's grip off Egan's will directly. Head to head with the thing. And the first attempt — you could hear it not land. Josh winced. The room winced."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Jorge goes, fine — and reaches for the mythic."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Spends the mythic point, and it lands. The control snaps. Egan is theirs — Josh flips him to the party right there on the board — and the celebration lasts exactly one Egan turn, because Noah, now playing two characters, has the big man bellow that nobody — and this is the line of the night — nobody fucks with Egan Arithmites —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And then he shoves the nearest shade so hard the man explodes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He detonates! Like a packed suitcase! And the necklace, being the necklace, tries to eat the explosion — but the shove carried the poor man far enough that the splashback misses Benny. The murder-shove was a rescue. A rescue via launching a ghost pirate until he pops."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is the whole fight in miniature. Everything deliberate fed the necklace. The thing that finally goes right goes right by accident, at exactly the right distance."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then the ghost does the annoying thing — floats. Straight up, out of reach, hanging over the deck like a kite with a grudge. So now it's an artillery problem, and Noah tries to talk Josh into letting the nine-foot man reach a ghost that's nineteen feet up with a ten-foot weapon — walks him through the math, clearly hoping Josh will blink —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Josh did the math back at him."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Josh did the math back at him! So — boots. Johnny goes up on the blast boots. And Benny can't fly, so the boy runs to the rail, leaps, and freezes his hook sword in midair — the immovable-rod enchantment — and just hangs there. Off a frozen sword. Like a monkey bar. At eye level with a divine ghost. That's my favorite thing this campaign. Top five. Top three, fine."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the ghost looked at that arrangement and kept its distance as long as it could. When it finally tried to slip, it had to cross both of them — the boy on his sword and the minotaur — and they cut it as it went, and that's when Josh says it. The thing is mortal."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Mortal! After a whole night of shrugging. And in the middle of all that, it keeps trying to take Benny's mind — twice, this claiming grip — and both times the boy hears, for one second, a melody he doesn't know, something from very far away... and both times he just throws it out. Sheer refusal. A little scrambled after, but the head stays his."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's the beat I keep circling. The song has taken a whole congregation of adults. The one mind it can't get a grip on is nine years old and handmade."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Maybe it needs a crack to get in through. A want. A grief. A door left open. And the boy's a closed shop."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or he's nine, and a nine-year-old is the most stubborn material known to engineering. But I like your version. Let me like your version."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then — the heal. We cannot close the middle act without the heal."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Johnny goes to soothe Egan, who by now is bleeding from several friendly incidents, and misclicks. Casts it on the ghost. The ghost heals. A lot."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The table turns on him like a flock — Josh, reverse those hit points! And the capper is that the ghost is deaf at this point, so Johnny's next move, the withering insult, just dies in the air. It can't hear him. The man's entire kit is auditory and he is fighting a deaf ghost. He has words for days and nowhere to put them."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "So he hastes Benny and gets out of the way. Growth."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Growth. And then the ghost comes down at last — Benny's monster hit while dangling off his own sword, Egan's reach, it's bloodied and wobbling — it tries to flee, takes two more cuts crossing them, tries to grab the boy's mind one last time and gets told no again, and Argyle finishes it. Divine wrath. And the necklace just — drops. Clatters onto the deck. The most dangerous piece of pirate jewelry in the world, lying on the boards, and everyone gathers around it like it's a dead wasp."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And it's hard. It's a solid little object and it does not want to break."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which sets up the single funniest sequence of the night, a party of extremely powerful people versus a necklace. Johnny misses it twice. Argyle tries an axe he isn't trained for and misses so hard it should be a felony, tries to cleanse it like a curse, no, tries darts, no, and eventually just stands there radiating. And Anzu tries to identify it and crit-fails —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And confidently announces, to the room, that it is immune to everything and has no weaknesses. It cannot be vanquished. Says this out loud. While Benny is visibly chipping it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "While it is actively being chipped! And at the bottom of the round Josh calls for a random roll and the whole table flinches — did we kill the Menhir again, not again — and it's nothing, it's just a leftover shade across the map popping into smoke and getting slurped into the necklace. Between courses. Snacking. Then Benny finally lands one on it — Mike chanting his game-show prayer over the dice like a man at a roulette table — and then the whalebone breaks, and it's Egan's own crit that does it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "His necklace, in his memory. If anything in that head was going to be the thing that broke it, it was him."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The man shattering his own chain. And they get one second of victory lap, and Egan fails a save, and the room goes cold. Because the ghost isn't finished. It's out of bones. So it starts rebuilding around the man."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And this is where Tanner asks the most Anzu question ever asked at a table. Can he make a check to figure out what he's even trying to do. Mid-combat. Requesting permission to have introspection."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A psychic, asking the GM if he's allowed to understand his own intentions. Frame it. Hang it in a museum. And the check shows him the worst image of the night, and it's barely even there — a faint black shape wrapped around Egan from behind. Arms around him. Like a hug."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Wearing him."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Wearing him. And now the surgery gets ugly, because you can't touch the shroud without going through the patient. Anzu's throwing frost at his own rescue target. Johnny floods the man with roaring applause just to slow him down, then delivers the insult of the century at his own character and announces he'll just play the session by himself. Benny knocks pieces of the shroud off with the flat of everything he owns. And that's the question the whole session is quietly asking, right — when does rescue become interrogation —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They never answer it. They just get the man loose in time."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Because Argyle does it again. Same spell, same man, second time — and Josh gives him the how-do-you-want-to-do-this, and Jorge says Argyle's been getting stronger, that his angelic side is showing through. And then he looks at Egan, and he says nothing, and his hand glows, and he reaches into the man's chest — past the ribs, into where the soul sits — and pulls the darkness out, and burns it in his bare hands. And his eyes go back to normal. And the whole table went quiet. You... you had to be there. I can't do it justice."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And his eyes go back to normal."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I called it the halo moment — the first fully angelic thing he's done since they split him in two. You didn't love that read."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's beautiful. It unsettles me, is all. A man reaching into another man's soul and deciding which part is the darkness — I keep wondering how he knows which part to burn. The Scale raised him to believe that's knowable. I'm not sure it is."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "...Okay, I hear the shape of that. Counterpoint — the thing he pulled out had been puppeting the man all night, so, probably that part. But no, I take the point. It's a mercy with a very straight back."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a mercy with a very straight back. That's Argyle in five words."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the memory folds up under them, and they come up in the war room — the five of them, six counting the patient — and no time has passed, but the spell slots are real. Josh is very clear the bill for that fight is due in the waking world, and very clear it won't be the last time they do this to somebody's head. And Egan comes up with the song gone. And here's the gut-punch, because Josh narrates the inside of it — what the man wanted, what he came looking for, was quiet. Just two minutes of quiet, for the first time in years."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And what he got was a different song. The Herald's melody is scrubbed out, and in its place, the Voidsong. He's not compelled. It doesn't drive him anywhere. But it's still loud in there."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Anzu is delighted — he does this radio-announcer bit, tells the man what station he's on now — and the table immediately starts calling it the vocalist, and honestly so will we, I think that's out of our hands now. Egan announces he's accepted the vocalist into his heart. Says he's born again."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And it's funny, and I laughed, and I've been uneasy about it since about midnight."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Because — okay, this is the thing I want to actually fight about. Did they free him, or did they change his station? Nobody asked him which replacement song he wanted. He asked for the song out and they installed a different one, and the fact that the new one's, quote the table, groovier —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Groovier was said, yes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Groovier was said! That doesn't make it consent! And Anzu defends it — they didn't rewrite the man's mind, he says, they replaced one influence with a different, much better influence — and Benny, nine years old, looks at him and points out that swapping the influence out is just rewriting with better paperwork."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The child is the ethics committee. And to be fair to Anzu — the compulsion was the harm. That's the part that made the man a puppet. Whatever the Voidsong is, it doesn't seem to want anything from him. And remember the Brithwyn read — Yao told Anzu it's Aurelia's cry for help. If that's true, Anzu didn't fit a new leash. He tuned the man to a lifeline."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But the song has wanted something since the opening credits — the dream by the river, the person singing beside you, it wants something. If we're tuning heads to it, I'd like to know what. And note the man's raiment stays black — the power he's carrying was granted by the Herald, and it didn't leave with the song. He's a Voidsong listener wearing Herald armor."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "So is Anzu, arguably. Whatever the vocalist wants, our psychic is already listening to it too."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, I hate how much I love that sentence. Okay — the after-party. Egan, freshly unhaunted, looks around the war room and goes, essentially: am I in the gang now? Are there shirts? And Johnny runs off and comes back with a spare denim poncho. They have a uniform. The uniform is a denim poncho."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And then they try to explain the org chart, and it goes so badly. Two co-leaders, allegedly. Then the nine-year-old, who is the treasurer, the driver, and the muscle — three jobs, one of them is driving — and their last leader went missing, some fellow named Amari, so it's been a scramble. And per Josh's official summary, Johnny is also there."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Johnny also exists, per the record. And Egan asks who's in charge and gets told, roughly, the bird and the guy in sunglasses. And somewhere in there Egan mentions he captained his own ship for ten years, and Argyle asks who granted the title, and Egan says he did, when he stole the boat. And Argyle decides the man is Mister Egan now. Just — docked. A judge docking a pirate for piracy."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is a clean little window into where Argyle's head is at. We'll come back to it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "We will, because first — the intel. This is what the whole session was secretly for. Egan knows Galzu."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Anzu's sister. Galzu."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Galzu — I had it — and the picture he paints is not the picture Anzu's been carrying. The Herald's people came to the Strider in waves. Egan's first wave — his crowd, his level, the B-team of the damned. Then months back the second wave arrives, and they're worse. More fervent. Stronger. More gifted. And Galzu came in with the second wave."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Egan's read, having watched her work, is that she may be stronger than he is. Which tracks with what Anzu would've told you before he ran — she was the better psychic of the two of them."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the sister they've been planning to rescue is in the deep end of the pool. And there's this exchange — Argyle just asks it flat. What if she's evil? What if she's doing this of her own volition? And Anzu doesn't blink. Then they have a heart-to-heart, and they make her see reason."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Benny asks if heart-to-heart means rewriting her mind the way they just rewrote Egan's. And Anzu says no — he can't do that to a person. He'll do it to Egan, apparently. But not to her."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And I think that's actually where his line sits, and it's an interesting place — Egan was already somebody else's rewrite, so clearing him felt like restoration. Galzu would be his first original work, and he won't do original work. That's either ethics or a technicality and I genuinely can't tell which."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And when they ask Josh whether you can tell the willing from the corrupted, the answer's brutal. No. The end state is the same — enthusiastically serving the Herald. Strip the song from a true believer and they experience it as being torn from their god. They will not thank you."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the sentence that keeps me up: Egan's own crew went from begrudgingly complicit to enthusiastic over a few weeks, and nobody noticed the moment it turned. It's not a collar you can see. It's a conversion. Something about serving that song, over enough weeks, turns complicity into faith."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which means the window matters. You want these people at the begrudging stage. And the only thing they've ever seen snap a singer loose is the Strider moving."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which is exactly why the plan shakes out the way it does — because at the end there's the fork, sister or tower, and Argyle does his whole this-is-why-I'm-the-team-leader routine and says tower first. Get the ship moving. Shake the whole congregation loose, then go get Galzu while they're wobbling."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And it's the right call, and it isn't close. You walk into the deep end of the singers with everyone at full fervor, or you walk in after the whole world's been jostled awake. One of those fights starts with the enemy lucid."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Plus the ship is dead, Maeve. There's a version of this where they never get her moving and everybody just sings until the lights go out. And the tower's not a ghost town — the town's a graveyard, but Anzu's flyby weeks back had the Machine God reading live Harlequins up in the central chamber."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Harlequins all died with the Menhir, though. The whole faction went when they did — what's left to staff the —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The town went. The tower didn't. That's the whole reason for the down-and-up — and remember whose people those are. Grayson said it himself. They serve War. So the errand is climb a dead tower, deal with War's leftovers, take the wheel."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "...I'm thinking of the town. You're right. Town's a graveyard, tower's staffed. Casual errand."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Light errand. And then base logistics, which is where the night quietly becomes a horror show — they're shopping. Johnny lobbies for an automated turret with the enthusiasm of a man describing a sandwich. There's a meditation shrine on the list, which Benny despises on principle because he's got no focus points to regain — the boy cannot profit from a spa, it's the great injustice of his life —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the dungeon. That's a real line item. A room to hold kidnapped singers, in the anti-magic shackles, while the party goes into their heads one at a time and fights their memories for them. That's the business model now. The heroes' shopping list includes a brain dungeon."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the capper is somebody going — you realize Anouk is going to walk past that room. One of the twins. You said you weren't the kind of people who lock folks in dungeons. And you're using the same shackles."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They've been dodging the twins conversation since the Menhir died, and the dungeon is going to force it. The twins' loyalty was always to their patron first — they said so, they said don't make us choose — and now five cosmic siblings are watching this ship, and the party walks around with a god-killing revolver they call the family toaster. At some point someone has to ask, out loud, whether they're the twins' enemy now."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Argyle's answer is that they're the heroes of the story and he isn't sure the twins are allowed to also be. Which is either a joke or the most chilling sentence said on this show."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Why not both."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Why not both. And this is where I circle back to Argyle, because the end of the night belongs to him and it's so quiet. Anzu — of all people — asks him whether getting thrown off the map wrecked his journey, the finding-his-other-half thing. And Argyle admits it did. And admits he didn't think any of them would care. And Johnny tells him they care about him as a person and want him to see it through, and it's genuinely warm. And then the same table votes to adopt the pirate, and Jorge is sitting there going — this is the exact opposite of everything my character is. The Scale, the creed, his father, all of it. A Lurantris freebooter is the antithesis."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And where does he sleep that night? Not at the Fane. He goes back to the Scale. Benny bunks down next to the heart. Egan gets a room on the outermost edge — newest man, seat by the door — and the last shot of the night is that nine-foot minotaur making himself a couch. On the edge of everything."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Making a couch, in a base that spent an hour debating whether he's a teammate or a prisoner. And where'd they land — because I had him trustworthy the moment he fought his own memories for them."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And I'm with Benny. Everything the man has shown them so far has been words. He's very large, and he's said he'll help, and those are his qualifications. Johnny's compromise is the right one — small job, front line, watch what he does when it's brass tacks. A trial run."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which the table took, basically word for word. But I'm filing for the record that they ran a background check on a man whose brain they personally renovated."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's exactly why the check matters. They renovated it. Nobody in that room actually knows what they built."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "...Nobody knows what they built. Oh, that's going to keep me up too. Okay — and the very end, off the clock, Josh being coy. Someone asks how long he's been sitting on the pirate-outpost map, and he admits he keeps a folder of maps he's waiting for an excuse to use. Including, he just says this, the interior of a bag of holding. Which they have apparently been inside once before. During a crime."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "There was a crime, yes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "There was a crime. But the actual moment is Argyle asking what Galzu's mindscape will look like, if they go in after her — and answering his own question. It's a birdcage."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Josh doesn't say no. He says it'll be something equally strange. Which means he already knows. He's got the map, or he's got something worse."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He's got something. Because think about what's in that head — Qureshi, the aristocratic family, the big house, apprenticed to the grandmother, a whole life with rooms in it, and she left it. Ran off with the Herald's people, which Anzu says isn't something she would ever do. And he'd know, because he's the one who ran away from that house."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Two runaways from the same nest, opposite directions. He ran from the family, she ran toward the song, and they ended up on the same dead ship at the end of the map."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And if her cage is gilded, and the door's standing open, and she's still sitting inside it — I will need to be escorted from the building. Because the line that's going to sit with me all week — they're all doing the math on her, can they take her, is she too strong, what if she wants this — and Anzu just cuts through all of it. Doesn't matter how strong she is. She's my sister."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And next week everyone finds out what a heart-to-heart costs."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "With shackles, a dungeon, a turret, and a bard."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's the family channel."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's the family... same dead ship, a rebranded pirate asleep on the couch by the door, a tower full of War's leftovers, and a birdcage waiting somewhere down below for the best psychic either of those two ever produced, and I..."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Mm."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I'm fine. I'm completely fine."
+        }
+      ]
     }
   ]
 }
