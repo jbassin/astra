@@ -5,6 +5,8 @@ metadata:
   type: project
 ---
 
+**⭐ GLM 5.3 REASONING SHARES `max_tokens` — the 16k client default truncates the clean filter (2026-9-7, fixed `b637d806`).** First real end-to-end digest on GLM 5.3: `session_digest` failed 4/4 (RetryPolicy exhausted) with "Tool-call output hit max_tokens (16000)" — reproduced on the host: a 98-window filter batch drew 16.8k+ reasoning tokens and ZERO tool output (the verdict payload is ~2k). Fix = `clean.DEFAULT_CLEAN_MAX_TOKENS = 64_000` threaded into `classify_windows`/`enrich_session` + `DEFAULT_SCRIPT_MAX_TOKENS` 32k→64k (stakeholder call: raise the budget, do NOT lower effort/disable reasoning — OpenRouter also rejects `reasoning.enabled=false` for this endpoint: "Reasoning is mandatory"). Note `llm.default-max-tokens` in config.kdl is consumed NOWHERE — the astra_llm `DEFAULT_MAX_TOKENS` constant (16k) is what applies unless a caller passes `max_tokens`. Oddity: at a 64k ceiling 3/3 host samples returned with 0 reasoning tokens in <1 min (provider routing by requested budget?). Recovery = `launchRunReexecution FROM_FAILURE` after `just up dagster-code` (digest persisted, script+audio re-ran); 9-7 episode "Firebombing the Patient" 34.3 min auto-published by the timer.
+
 **⚠ 2026-09-04 late: Cartesia REJECTED after one listen ("I hate it") → `tts-provider "elevenlabs"`
 again (`0e1588af`, py/ts defaults + tests flipped, dagster `just up`'d), 2026-8-24 audio
 re-rendered ElevenLabs-only (`--select session_audio_clips,session_episode`, script kept).
