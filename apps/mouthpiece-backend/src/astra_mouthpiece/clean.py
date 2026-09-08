@@ -35,6 +35,13 @@ FILTER_WINDOW_TURNS = 20
 FILTER_BATCH_WORDS = 12_000
 KEPT_LINES_FLOOR = 150
 
+#: Output ceiling for the clean/enrich tool calls. The tool payloads themselves are small
+#: (~2k tokens of verdicts), but GLM 5.3's reasoning tokens SHARE `max_tokens` and it can
+#: think for well over 16k on a 100-window filter batch (2026-9-7: every attempt truncated
+#: at the 16k client default with zero tool output). Reasoning is deliberately left on;
+#: the budget is the knob (the model's own output limit is ~940k).
+DEFAULT_CLEAN_MAX_TOKENS = 64_000
+
 Turn = tuple[int, str, str]  # (line_id, speaker, text) — astra_mouthpiece.linguist_io shape
 
 _Decision = Literal["keep", "drop"]
@@ -170,7 +177,11 @@ def resolve_verdicts(verdicts: list[WindowVerdict]) -> dict[int, WindowVerdict |
 
 
 def classify_windows(
-    windows: list[Window], *, client: LlmClient, model: str | None = None
+    windows: list[Window],
+    *,
+    client: LlmClient,
+    model: str | None = None,
+    max_tokens: int = DEFAULT_CLEAN_MAX_TOKENS,
 ) -> list[WindowVerdict]:
     """Classify every window keep/drop, batching calls under the word budget."""
     verdicts: list[WindowVerdict] = []
@@ -179,6 +190,7 @@ def classify_windows(
             "system": CLEAN_FILTER_SYSTEM,
             "user_content": _render_batch(batch),
             "tool": clean_filter_tool,
+            "max_tokens": max_tokens,
         }
         if model is not None:
             req_kwargs["model"] = model
@@ -310,13 +322,18 @@ def _parse_enrichment(raw: Any) -> tuple[str, list[str]]:
 
 
 def enrich_session(
-    client: LlmClient, turns: list[Turn], *, model: str | None = None
+    client: LlmClient,
+    turns: list[Turn],
+    *,
+    model: str | None = None,
+    max_tokens: int = DEFAULT_CLEAN_MAX_TOKENS,
 ) -> tuple[str, list[str]]:
     """One forced-tool call on the CLEANED transcript -> (synopsis, wiki_refs)."""
     req_kwargs: dict[str, Any] = {
         "system": ENRICH_SYSTEM,
         "user_content": _render_cleaned_transcript(turns),
         "tool": clean_enrich_tool,
+        "max_tokens": max_tokens,
     }
     if model is not None:
         req_kwargs["model"] = model

@@ -14,6 +14,7 @@ from typing import Any
 import pytest
 from astra_llm import TextRequest, ToolCallRequest
 from astra_mouthpiece.clean import (
+    DEFAULT_CLEAN_MAX_TOKENS,
     FILTER_WINDOW_TURNS,
     KEPT_LINES_FLOOR,
     DegenerateTranscriptError,
@@ -61,12 +62,14 @@ class FakeClient:
         self._enrich_raw = enrich_raw
         self.calls: list[str] = []
         self.filter_batches: list[str] = []
+        self.max_tokens_seen: list[int] = []
 
     def call_text(self, req: TextRequest) -> str:
         raise NotImplementedError
 
     def call_tool(self, req: ToolCallRequest) -> dict[str, Any]:
         self.calls.append(req.tool.name)
+        self.max_tokens_seen.append(req.max_tokens)
         if req.tool.name == CLEAN_FILTER_TOOL_NAME:
             self.filter_batches.append(req.user_content)
             ids = [int(m) for m in re.findall(r"\[W(\d+)\]", req.user_content)]
@@ -387,6 +390,19 @@ def test_enrich_session_malformed_output_raises() -> None:
     client = FakeClient(enrich_raw={"synopsis": 5})
     with pytest.raises(EnrichParseError):
         enrich_session(client, [(1, "A", "x")])
+
+
+def test_clean_tool_calls_carry_the_raised_output_ceiling() -> None:
+    """GLM 5.3 reasoning shares max_tokens and blew past the 16k client default on a real
+    filter batch (2026-9-7); every clean-stage tool call must carry the raised ceiling."""
+    from astra_llm.client import DEFAULT_MAX_TOKENS
+
+    client = FakeClient()
+    turns = [(i, "A", f"line {i}") for i in range(1, 400)]
+    clean_session(client, "sid", turns)
+    assert client.max_tokens_seen  # filter batches + enrich
+    assert all(m == DEFAULT_CLEAN_MAX_TOKENS for m in client.max_tokens_seen)
+    assert DEFAULT_CLEAN_MAX_TOKENS >= 4 * DEFAULT_MAX_TOKENS
 
 
 # ── clean_session end to end ───────────────────────────────────────────────────────

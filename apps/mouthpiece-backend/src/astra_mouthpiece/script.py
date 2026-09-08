@@ -26,8 +26,9 @@ from .prompts import (
 )
 from .schemas import script_tool
 
-#: A 30-40 minute episode is a large output; give the model ample room (M12).
-DEFAULT_SCRIPT_MAX_TOKENS = 32_000
+#: A 30-40 minute episode is a large output; give the model ample room (M12). Raised
+#: 32k→64k with GLM 5.3: its reasoning tokens share this budget (see clean.py).
+DEFAULT_SCRIPT_MAX_TOKENS = 64_000
 
 #: Max words of Pass A transcript fed to a single Pass B typesetting call. Pass B emits a
 #: whole segment as one structured tool call; GLM's structured output is reliable up to a
