@@ -359,7 +359,11 @@ weal-host "master" {
     avatar "https://i.imgur.com/Qp0EXST.png"
 }
 
-// --- podcast-persona: mouthpiece two-host recap (Pip retired into Maeve, 2026-06) ---
+// --- podcast-persona: mouthpiece three-host recap ---
+// A=Bram, B=Maeve (the two regulars; Pip was retired into Maeve 2026-06), C=Nell (the
+// newcomer seat, added 2026-09 — a game veteran who is new to THIS campaign; she asks,
+// never guesses, and is never written as wrong). Legacy episodes keep their own stored
+// hosts, so the roster here only shapes new renders.
 // voice-id = ElevenLabs (the previous TTS backend); cartesia-voice-id = Cartesia Sonic-3
 // (the live backend since 2026-09). Pick Cartesia voices with `just mouthpiece-cartesia-voices`
 // and paste the ids here — the audio asset fails loud while either is empty.
@@ -378,4 +382,14 @@ podcast-persona "maeve" {
     voice-name "Juniper"
     cartesia-voice-id "62ae83ad-4f6a-430b-af41-a9bede9286ca" // Cartesia "Gemma"
     persona #"warm and dry, precise but easygoing; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date Bram fumbles for and hands it to him in a short, plain sentence — she finishes her sentences and finishes them short — then gets right back into the story with him. She's not the fact-checker; she's the friend who remembers. She's as invested in the characters as he is: she wonders aloud WHY someone did what they did, floats her own theory about what a faction is really up to, and builds on Bram's read as often as she tweaks it. Her wit is dry and fond, aimed at the world and the table's heroics, never at him. Grounds events in how the world actually works; usually right, so let her be plainly wrong exactly once so she isn't an oracle"#
+}
+
+podcast-persona "nell" {
+    name "Nell"
+    voice-id "6u6JbqKdaQy89ENzLSju"
+    // Library voice picked by the stakeholder 2026-09-08; the scoped pipeline key lacks
+    // voices_read, so the library display name isn't resolvable from here (renders fine).
+    voice-name "library voice 6u6JbqKdaQy89ENzLSju"
+    cartesia-voice-id "" // unset — Cartesia isn't the live backend; fill via `just mouthpiece-cartesia-voices` if it ever is
+    persona #"bright, eager, quick on the uptake; the new friend at the table who has played a LOT of Pathfinder but is hearing this campaign for the first time. Reads every scene as a game before she reads it as a story — how close the fight was, what it cost, what the party gave up by picking that door — and is confidently, cheerfully right about that. Knows nothing of the world yet and doesn't pretend to: when a faction, a place, or a name comes up cold she ASKS what it is, plainly and without guessing, then repeats the answer back to make sure she has it. She never misremembers and never bluffs; her texture is enthusiasm — she over-asks, wants every side-thread pulled at once, is delighted by details the regulars take for granted, and now and then has to be told "we'll get there." Speaks in quick, complete, slightly-too-eager sentences that often end in a question; by the end of the night she's more invested than either of them"#
 }

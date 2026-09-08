@@ -10,8 +10,8 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-#: Which host is speaking. A=Recapper (Bram), B=the grounded foil (Maeve). "C" is a
-#: retired third host (Pip) kept only so the pre-2026-06 three-host episodes still parse.
+#: Which host is speaking. A=Recapper (Bram), B=the grounded foil (Maeve), C=the
+#: newcomer (Nell, since 2026-09; on pre-2026-06 episodes "C" was the retired Pip).
 SpeakerId = Literal["A", "B", "C"]
 
 
@@ -62,7 +62,7 @@ class ScriptTurn(BaseModel):
 
 
 class HostPersona(BaseModel):
-    """One host's identity for the script. Speaker A/B (and legacy C) resolve to these."""
+    """One host's identity for the script. Speaker A/B/C resolve to these."""
 
     name: str
     #: One-line persona used in the (static, cacheable) system prompt.
@@ -74,9 +74,10 @@ class HostPersona(BaseModel):
 
 
 class HostConfig(BaseModel):
-    """The podcast hosts read from ontology-being. The current roster is two
-    (A=Bram, B=Maeve); `c` is an optional retired third host (Pip), present only on the
-    legacy three-host episodes recorded before the 2026-06 two-host change."""
+    """The podcast hosts read from ontology-being. The current roster is three
+    (A=Bram, B=Maeve, C=Nell). `c` stays optional because the episodes rendered between
+    the 2026-06 two-host change and the 2026-09 newcomer seat store `c=None` (and the
+    pre-2026-06 ones store Pip there)."""
 
     a: HostPersona
     b: HostPersona
@@ -93,7 +94,7 @@ class HostConfig(BaseModel):
 
 
 class Script(BaseModel):
-    """A two-host podcast script for one session (legacy episodes carry a third)."""
+    """A podcast script for one session (three hosts; legacy episodes carry two)."""
 
     session_id: str
     title: str
@@ -114,7 +115,7 @@ class GroundingEntry(BaseModel):
 
 
 class VoiceConfig(BaseModel):
-    """Provider voice ids for the hosts (speaker A/B, plus legacy C)."""
+    """Provider voice ids for the hosts (speaker A/B/C; C absent on two-host scripts)."""
 
     a: str
     b: str

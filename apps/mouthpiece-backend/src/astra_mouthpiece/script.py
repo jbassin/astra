@@ -177,5 +177,5 @@ def generate_script(
     return script
 
 
-# Speaker ids in the current (two-host) roster, for callers that need to iterate them.
-SPEAKERS: tuple[SpeakerId, ...] = ("A", "B")
+# Speaker ids in the current (three-host) roster, for callers that need to iterate them.
+SPEAKERS: tuple[SpeakerId, ...] = ("A", "B", "C")

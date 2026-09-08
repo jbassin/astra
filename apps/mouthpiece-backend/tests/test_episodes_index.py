@@ -178,7 +178,7 @@ def test_index_inlines_a_stripped_named_transcript(index) -> None:
     for line in e.transcript:
         # speaker labels resolve to host names; no leftover ElevenLabs [..] cues
         assert line.speaker in {"A", "B", "C"}
-        assert line.name in {"Bram", "Maeve", "Pip"}
+        assert line.name in {"Bram", "Maeve", "Pip", "Nell"}
         assert not re.search(r"\[[^\][]*\]", line.text)
 
 
@@ -199,7 +199,7 @@ def test_index_dumps_camelcase_for_the_ts_consumer(index) -> None:
     ):
         assert key in row
     assert row["hosts"]["A"]["name"] == "Bram"
-    assert row["transcript"][0]["name"] in {"Bram", "Maeve", "Pip"}
+    assert row["transcript"][0]["name"] in {"Bram", "Maeve", "Pip", "Nell"}
 
 
 # ── the impure shell over a session-dir tree ─────────────────────────────────

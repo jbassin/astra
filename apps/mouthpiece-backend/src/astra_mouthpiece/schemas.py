@@ -20,8 +20,8 @@ from astra_llm import ToolSpec
 SCRIPT_TOOL_NAME = "record_script"
 
 _SCRIPT_DESC = (
-    "Record the finished two-host podcast script as an episode title plus an "
-    "ordered list of spoken turns shared between the two hosts (a conversation, not "
+    "Record the finished three-host podcast script as an episode title plus an "
+    "ordered list of spoken turns shared between the three hosts (a conversation, not "
     "a fixed rotation). Call this exactly once with the full script."
 )
 _TITLE_DESC = (
@@ -34,12 +34,16 @@ _TITLE_DESC = (
 _TURNS_DESC = (
     "The dialogue in spoken order. Each turn is one host speaking. Write "
     "natural, conversational lines — not narration or stage directions. The "
-    "two hosts should genuinely share the floor, unevenly; avoid a rigid "
-    "A-B-A-B rotation, but mostly they take turns and finish their thoughts. "
+    "three hosts should genuinely share the floor, unevenly; avoid a rigid "
+    "A-B-C rotation (two of them often run for a stretch while the third listens), "
+    "but mostly they take turns and finish their thoughts. "
     "Vary turn length hard (long riffs next to one-word reactions); most lines "
     "are plain talk, not a punchline per turn."
 )
-_SPEAKER_DESC = "A = Host A (the Recapper, Bram), B = Host B (the grounded foil, Maeve)."
+_SPEAKER_DESC = (
+    "A = Host A (the Recapper, Bram), B = Host B (the grounded foil, Maeve), "
+    "C = Host C (the Newcomer, Nell)."
+)
 _TEXT_DESC = (
     "What this host says, as it should be spoken aloud. Punctuate for prosody: "
     "an ellipsis for a trailing-off or hesitation, an em-dash for an abrupt cut, "
@@ -71,7 +75,7 @@ script_tool = ToolSpec(
                     "properties": {
                         "speaker": {
                             "type": "string",
-                            "enum": ["A", "B"],
+                            "enum": ["A", "B", "C"],
                             "description": _SPEAKER_DESC,
                         },
                         "text": {"type": "string", "description": _TEXT_DESC},

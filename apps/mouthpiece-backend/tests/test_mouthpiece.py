@@ -46,8 +46,10 @@ SCRIPTS = sorted(GOLDEN.glob("*.script.json"))
 HOSTS = HostConfig(
     a=HostPersona(name="Bram", persona="fluent but imprecise", voice_id="va"),
     b=HostPersona(name="Maeve", persona="precise but terse", voice_id="vb"),
-    c=HostPersona(name="Pip", persona="fast but scattered", voice_id="vc"),
+    c=HostPersona(name="Nell", persona="eager, asks, never guesses", voice_id="vc"),
 )
+# The 2026-06→2026-09 two-host config (c=None), still valid for the dressing pass.
+TWO_HOSTS = HostConfig(a=HOSTS.a, b=HOSTS.b)
 
 
 # ── stub LLM client (the LlmClient protocol) ───────────────────────────────
@@ -84,10 +86,10 @@ def _cleaned_turns() -> list[tuple[int, str, str]]:
     return [(1, "Archie", "they did a thing")]
 
 
-# ── prompts (gate C — load-bearing lines + interpolation; two-host, two friends) ──
+# ── prompts (gate C — load-bearing lines + interpolation; three hosts, two friends + newcomer) ──
 def test_improv_prompt_is_the_two_friends_recap_prompt() -> None:
     p = build_improv_system_prompt(HOSTS)
-    assert "recorded podcast RECAP between two co-hosts" in p
+    assert "recorded podcast RECAP between three co-hosts" in p
     # Two friends building on each other + trading theories — NOT the retired debate
     # rhythm (propose / object / repeat), which over-tuned Maeve into a contrarian.
     assert "They BUILD on each other" in p
@@ -96,10 +98,34 @@ def test_improv_prompt_is_the_two_friends_recap_prompt() -> None:
     assert "Disagreement is SEASONING, not structure" in p
     assert "DEBATE" not in p
     assert "Pushback is the rhythm" not in p
-    # Host names interpolate into the speaker-label example, two hosts only.
+    # Host names interpolate into the speaker-label example, all three seats.
     assert "Bram: what they said" in p
-    assert "Bram and Maeve" in p
+    assert "Maeve: what they said" in p
+    assert "Nell: what they said" in p
+    assert "Bram, Maeve, and Nell" in p
     assert "Pip" not in p
+
+
+def test_improv_prompt_newcomer_asks_and_is_never_wrong() -> None:
+    p = build_improv_system_prompt(HOSTS)
+    flat = " ".join(p.split())
+    # The newcomer seat: asks (not guesses), owns the game read, is never corrected —
+    # Bram stays the only host who misremembers (the stakeholder's one exclusion).
+    assert "Nell ASKS, she never guesses" in flat
+    assert "NEVER wrong about a fact" in flat
+    assert "she is never corrected" in flat
+    assert "Bram stays the only host who misremembers" in flat
+    assert "Her texture is eagerness" in flat
+    assert "Three people don't talk in a circle" in flat
+    assert "Keep the three voices DISTINCT" in flat
+    assert "Nell is the one who'd ask" in flat
+
+
+def test_improv_prompt_requires_three_hosts() -> None:
+    import pytest
+
+    with pytest.raises(ValueError, match="three hosts"):
+        build_improv_system_prompt(TWO_HOSTS)
 
 
 def test_improv_prompt_frames_the_transcript_not_a_digest() -> None:
@@ -134,8 +160,11 @@ def test_dressing_prompt_forbids_polishing() -> None:
     assert "DO NOT improve the dialogue." in p
     # Provider-neutral delivery tags (Cartesia translates, ElevenLabs passes through).
     assert "ElevenLabs" not in p and "recapping" in p
-    assert "Bram → A" in p and "Maeve → B" in p
-    assert "Pip" not in p and "→ C" not in p
+    assert "Bram → A, Maeve → B, Nell → C" in p and "3 co-hosts (Bram, Maeve, Nell)" in p
+    assert "Pip" not in p
+    # A two-host config (the 2026-06→09 episodes) still dresses with a two-seat map.
+    two = build_dressing_system_prompt(TWO_HOSTS)
+    assert "Bram → A, Maeve → B." in two and "→ C" not in two and "2 co-hosts" in two
     # Quotation marks stay punctuation — never spoken "quote"/"end quote".
     flat = " ".join(p.split())
     assert 'NEVER verbalize them as the words "quote" / "end quote"' in flat
@@ -314,3 +343,12 @@ def test_lint_distinguishes_clean_from_tavern() -> None:
     tm = compute_metrics(tavern)
     assert cm.clean_line_ratio > tm.clean_line_ratio
     assert tm.disfluency_ratio > cm.disfluency_ratio
+
+
+# ── roster (ontology-being is the single source; 2026-09 newcomer seat) ───────
+def test_load_hosts_carries_the_three_seat_roster() -> None:
+    hosts = load_hosts()
+    assert (hosts.a.name, hosts.b.name) == ("Bram", "Maeve")
+    assert hosts.c is not None and hosts.c.name == "Nell"
+    assert hosts.c.voice_id == "6u6JbqKdaQy89ENzLSju"  # the stakeholder-picked library voice
+    assert "never bluffs" in hosts.c.persona

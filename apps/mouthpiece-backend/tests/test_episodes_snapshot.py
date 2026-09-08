@@ -88,7 +88,7 @@ def test_build_path_produces_wellformed_catalog_over_golden(tmp_path: Path) -> N
     first = data["episodes"][0]
     assert first["arcTitle"] == "Through a Song, Darkly"
     assert first["episodeNo"] == 1
-    assert first["transcript"][0]["name"] in {"Bram", "Maeve", "Pip"}
+    assert first["transcript"][0]["name"] in {"Bram", "Maeve", "Pip", "Nell"}
     # exactly one mega recap (episodeNo 0); every other episode is numbered >= 1
     recaps = [e for e in data["episodes"] if e["episodeNo"] == 0]
     assert len(recaps) == 1

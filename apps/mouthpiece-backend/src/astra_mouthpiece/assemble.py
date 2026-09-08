@@ -173,6 +173,9 @@ def build_concat_list(
 # ── transcript (pure) ────────────────────────────────────────────────────────
 
 
+_SEAT_C_ROLES = {"Pip": "the Instigator", "Nell": "the Newcomer"}
+
+
 def render_transcript(script: Script) -> str:
     """Render a readable Markdown transcript (delivery shown as inline v3 tags)."""
 
@@ -181,8 +184,10 @@ def render_transcript(script: Script) -> str:
 
     hosts = script.hosts
     byline = [f"{hosts.a.name} (the Recapper)", f"{hosts.b.name} (the grounded foil)"]
-    if hosts.c is not None:  # legacy three-host episodes
-        byline.append(f"{hosts.c.name} (the Instigator)")
+    if hosts.c is not None:
+        # Seat C has held two different hosts: Pip (pre-2026-06) and Nell (2026-09→).
+        role = _SEAT_C_ROLES.get(hosts.c.name, "the third chair")
+        byline.append(f"{hosts.c.name} ({role})")
     lines = [
         f"# {script.title}",
         "",

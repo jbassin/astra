@@ -10,7 +10,14 @@ import { TRANSCRIPTS } from "@/generated/transcripts";
 // <Player> island (MediaSession/scrubbing/resume) replaces the native audio in
 // slice 5. The loader does the SSR 404; the component reads the static, fully-typed
 // generated modules directly. Dotted `$id` round-trips losslessly (Risk 2).
-const ROLE: Record<string, string> = { A: "Recapper", B: "Lorekeeper", C: "Instigator" };
+// Roles are keyed by host NAME, not seat: seat C has held two different hosts (Pip, the
+// Instigator, on the pre-2026-06 episodes; Nell, the Newcomer, from 2026-09).
+const ROLE: Record<string, string> = {
+  Bram: "Recapper",
+  Maeve: "Lorekeeper",
+  Pip: "Instigator",
+  Nell: "Newcomer",
+};
 
 export const Route = createFileRoute("/episode/$id")({
   loader: ({ params }) => {
@@ -46,7 +53,7 @@ function EpisodeComponent() {
           {Object.entries(episode.hosts).map(([speaker, host]) => (
             <span key={speaker} className={`host ${speaker}`}>
               {host.name}
-              {ROLE[speaker] ? ` · ${ROLE[speaker]}` : ""}
+              {ROLE[host.name] ? ` · ${ROLE[host.name]}` : ""}
             </span>
           ))}
         </div>

@@ -127,7 +127,8 @@ def _voices(hosts: HostConfig, provider: str | None = None) -> VoiceConfig:
     Cartesia 4xx mid-episode."""
     provider = provider or _config().tts_provider
     if provider == "cartesia":
-        missing = [h.name for h in (hosts.a, hosts.b) if not h.cartesia_voice_id]
+        roster = [h for h in (hosts.a, hosts.b, hosts.c) if h is not None]
+        missing = [h.name for h in roster if not h.cartesia_voice_id]
         if missing:
             raise RuntimeError(
                 f"podcast-persona cartesia-voice-id unset for {missing} in being.kdl — "
@@ -310,15 +311,18 @@ def session_episode(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
 
 
 def _episode_hosts() -> dict[str, EpisodeHost]:
-    """The current-roster persona block (A=Bram, B=Maeve) from ontology-being, used as
-    the FALLBACK host block in build_index. Each episode normally carries its own stored
-    hosts (so legacy three-host episodes keep their roster); this covers a script that
-    omits hosts entirely."""
+    """The current-roster persona block (A=Bram, B=Maeve, C=Nell) from ontology-being,
+    used as the FALLBACK host block in build_index. Each episode normally carries its own
+    stored hosts (so earlier rosters keep theirs); this covers a script that omits hosts
+    entirely."""
     h = load_hosts()
-    return {
+    out = {
         "A": EpisodeHost(name=h.a.name, persona=h.a.persona),
         "B": EpisodeHost(name=h.b.name, persona=h.b.persona),
     }
+    if h.c is not None:
+        out["C"] = EpisodeHost(name=h.c.name, persona=h.c.persona)
+    return out
 
 
 def _arc_maps() -> tuple[dict[str, str], dict[str, bool]]:
