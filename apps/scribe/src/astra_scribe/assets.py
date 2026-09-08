@@ -34,7 +34,7 @@ from astra_ontology_config import load as load_config
 
 from .ingest import session_id
 from .roster import Roster
-from .sensor import new_sessions
+from .sensor import is_session_zip, new_sessions
 from .session import build_transcript, extract_session_tracks, merge_audio
 from .transcribe import TrackTranscriber
 
@@ -51,9 +51,9 @@ _sessions_counter = _meter.create_counter(
 
 
 def _find_zip(incoming: str, date_key: str) -> Path:
-    """The dropped zip whose stem maps to this session/date partition."""
+    """The dropped zip whose stem maps to this session/date partition (stubs skipped)."""
     for zip_path in sorted(Path(incoming).glob("*.zip")):
-        if session_id(zip_path) == date_key:
+        if session_id(zip_path) == date_key and is_session_zip(zip_path):
             return zip_path
     raise FileNotFoundError(f"no Craig zip for session {date_key} in {incoming}")
 

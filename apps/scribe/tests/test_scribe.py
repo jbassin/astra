@@ -17,7 +17,7 @@ import pytest
 from astra_scribe.audio import chunk_args, merge_args, parse_silences, silencedetect_args
 from astra_scribe.naming import session_date, track_index, track_user
 from astra_scribe.roster import Roster
-from astra_scribe.sensor import new_sessions
+from astra_scribe.sensor import MIN_ZIP_BYTES, new_sessions
 from astra_scribe.session import extract_session_tracks
 from astra_scribe.sound_stack import SoundStack
 from astra_scribe.transcribe import TrackTranscriber
@@ -336,10 +336,30 @@ def test_parse_silences() -> None:
 
 
 # ── sensor partition logic (gate G) ────────────────────────────────────────
-def test_new_sessions_skips_known_and_unparseable() -> None:
-    zips = ["g_c_2025-1-1_a.zip", "g_c_2025-2-2_b.zip", "bad.zip"]
+def test_new_sessions_skips_known_and_unparseable(tmp_path: Path) -> None:
+    zips = [tmp_path / n for n in ("g_c_2025-1-1_a.zip", "g_c_2025-2-2_b.zip", "bad.zip")]
+    for z in zips:
+        z.write_bytes(b"x" * MIN_ZIP_BYTES)
     found = new_sessions(zips, existing_keys={"2025-1-1"})
-    assert found == {"2025-2-2": "g_c_2025-2-2_b.zip"}
+    assert found == {"2025-2-2": str(tmp_path / "g_c_2025-2-2_b.zip")}
+
+
+def test_new_sessions_skips_stub_zips_so_the_real_zip_claims_the_date(tmp_path: Path) -> None:
+    """The 2026-9-7 incident: an aborted-recording stub (~900 B) sorted ahead of the real
+    zip and claimed the date partition; both the sensor and the per-partition zip lookup
+    must ignore anything under the size floor."""
+    from astra_scribe.assets import _find_zip
+
+    stub = tmp_path / "craig_A_2026-9-7_23-29-10.aac.zip"
+    real = tmp_path / "craig_B_2026-9-7_23-33-57.aac.zip"
+    stub.write_bytes(b"x" * 917)
+    real.write_bytes(b"x" * MIN_ZIP_BYTES)
+    assert new_sessions(tmp_path.glob("*.zip"), existing_keys=set()) == {"2026-9-7": str(real)}
+    assert _find_zip(str(tmp_path), "2026-9-7") == real
+    real.unlink()
+    assert new_sessions(tmp_path.glob("*.zip"), existing_keys=set()) == {}
+    with pytest.raises(FileNotFoundError):
+        _find_zip(str(tmp_path), "2026-9-7")
 
 
 # ── 0021 fan-out: asset wiring + cleanup fan-in ────────────────────────────
