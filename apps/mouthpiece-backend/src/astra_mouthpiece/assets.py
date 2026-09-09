@@ -44,7 +44,7 @@ from .session import build_episode_script
 from .tts.cartesia import CartesiaTTSProvider
 from .tts.elevenlabs import ElevenLabsTTSProvider
 from .tts.mock import MockTTSProvider
-from .tts.provider import TTSProvider
+from .tts.provider import TtsClientError, TTSProvider
 from .tts.synth import synthesize_script
 
 SESSIONS_NAME = "mouthpiece_sessions"
@@ -273,9 +273,15 @@ def session_audio_clips(context: dg.AssetExecutionContext) -> dg.MaterializeResu
         hosts = load_hosts()
         provider = _provider()
         span.set_attribute("mouthpiece.tts_provider", _config().tts_provider)
-        manifest = synthesize_script(
-            script, provider=provider, voices=_voices(hosts), out_dir=_session_dir(key)
-        )
+        try:
+            manifest = synthesize_script(
+                script, provider=provider, voices=_voices(hosts), out_dir=_session_dir(key)
+            )
+        except TtsClientError as err:
+            # A 4xx is deterministic: the RetryPolicy would re-render (and re-bill) every
+            # chunk before the bad one, then hit the same rejection — fail once, loudly.
+            span.record_exception(err)
+            raise dg.Failure(description=str(err), allow_retries=False) from err
         _atomic_write(_session_dir(key) / "manifest.json", manifest.model_dump_json(indent=2))
         span.set_attribute("mouthpiece.clips", len(manifest.clips))
         span.set_attribute("mouthpiece.mode", manifest.mode)

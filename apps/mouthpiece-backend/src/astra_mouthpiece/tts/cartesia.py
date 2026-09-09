@@ -23,7 +23,7 @@ from typing import Any
 from astra_observe import get_meter
 
 from .mock import estimate_duration_ms
-from .provider import SynthesisRequest, SynthesisResult
+from .provider import SynthesisRequest, SynthesisResult, TtsClientError
 
 _tts_duration = get_meter("astra.mouthpiece").create_histogram(
     "astra.mouthpiece.tts.cartesia.duration_ms",
@@ -131,6 +131,8 @@ def _httpx_post(url: str, headers: dict[str, str], json: dict[str, Any]) -> byte
     started = time.perf_counter()
     try:
         resp = httpx.post(url, headers=headers, json=json, timeout=120.0)
+        if 400 <= resp.status_code < 500:
+            raise TtsClientError(resp.status_code, url, resp.text)
         resp.raise_for_status()
         return resp.content
     finally:

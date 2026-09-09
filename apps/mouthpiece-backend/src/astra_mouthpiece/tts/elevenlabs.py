@@ -15,7 +15,7 @@ from typing import Any
 from astra_observe import get_meter
 
 from .mock import estimate_duration_ms
-from .provider import DialogueRequest, SynthesisRequest, SynthesisResult
+from .provider import DialogueRequest, SynthesisRequest, SynthesisResult, TtsClientError
 from .tags import strip_audio_tags
 
 # The TTS HTTP round-trip is the dominant cost of the audio stage; time it (success or
@@ -41,6 +41,8 @@ def _httpx_post(url: str, headers: dict[str, str], json: dict[str, Any]) -> byte
     started = time.perf_counter()
     try:
         resp = httpx.post(url, headers=headers, json=json, timeout=120.0)
+        if 400 <= resp.status_code < 500:
+            raise TtsClientError(resp.status_code, url, resp.text)
         resp.raise_for_status()
         return resp.content
     finally:

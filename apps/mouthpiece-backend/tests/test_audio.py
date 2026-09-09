@@ -13,6 +13,7 @@ import wave
 from pathlib import Path
 from typing import Any
 
+import pytest
 from astra_llm import TextRequest, ToolCallRequest
 from astra_mouthpiece.assemble import (
     BedOptions,
@@ -194,3 +195,67 @@ def test_produce_episode_end_to_end(tmp_path: Path) -> None:
     assert Path(result["episode"]).exists()
     assert Path(result["transcript"]).exists()
     assert "**Bram:** hey" in Path(result["transcript"]).read_text()
+
+
+# ── tag-only turns + deterministic rejections (the 2026-9-7 render failure) ──
+def test_synthesize_skips_tag_only_turns_in_turns_mode(tmp_path: Path) -> None:
+    script = Script(
+        session_id="sid",
+        title="t",
+        hosts=HOSTS,
+        turns=[
+            ScriptTurn(speaker="A", text="hello"),
+            ScriptTurn(speaker="C", text="[stunned silence]"),
+            ScriptTurn(speaker="B", text="[sighs] hi there"),
+        ],
+    )
+    manifest = synthesize_script(
+        script, provider=MockTTSProvider(), voices=VOICES, out_dir=tmp_path
+    )
+    assert [c.speaker for c in manifest.clips] == ["A", "B"]
+
+
+def test_dialogue_chunks_never_send_an_empty_input() -> None:
+    from astra_mouthpiece.tts.elevenlabs import ElevenLabsTTSProvider
+
+    bodies: list[dict] = []
+
+    def fake_post(url: str, headers: dict[str, str], json: dict) -> bytes:
+        bodies.append(json)
+        return b"audio"
+
+    script = Script(
+        session_id="sid",
+        title="t",
+        hosts=HOSTS,
+        turns=[
+            ScriptTurn(speaker="A", text="It's Argyle."),
+            ScriptTurn(speaker="C", text="[stunned silence]"),
+            ScriptTurn(speaker="A", text="[soft] You had to be there."),
+        ],
+    )
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as d:
+        manifest = synthesize_script(
+            script, provider=ElevenLabsTTSProvider("k", post=fake_post), voices=VOICES, out_dir=d
+        )
+    assert manifest.mode == "dialogue" and len(bodies) == 1
+    texts = [i["text"] for i in bodies[0]["inputs"]]
+    assert texts == ["It's Argyle.", "[soft] You had to be there."]
+
+
+def test_httpx_post_surfaces_4xx_body_as_client_error(monkeypatch) -> None:
+    import httpx
+    from astra_mouthpiece.tts import elevenlabs
+    from astra_mouthpiece.tts.provider import TtsClientError
+
+    def fake_post(url, headers=None, json=None, timeout=None):
+        return httpx.Response(
+            400, json={"detail": "text must not be empty"}, request=httpx.Request("POST", url)
+        )
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    with pytest.raises(TtsClientError) as ei:
+        elevenlabs._httpx_post("https://x/v1/text-to-dialogue", {}, {})
+    assert ei.value.status == 400 and "text must not be empty" in str(ei.value)

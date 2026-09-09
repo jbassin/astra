@@ -67,3 +67,18 @@ class DialogueTTSProvider(Protocol):
     def synthesize(self, req: SynthesisRequest) -> SynthesisResult: ...
 
     def synthesize_dialogue(self, req: DialogueRequest) -> SynthesisResult: ...
+
+
+class TtsClientError(RuntimeError):
+    """The TTS backend REJECTED the request (an HTTP 4xx): bad input, not a blip.
+
+    Carries the response body so the reason lands in the log (a bare
+    `raise_for_status` hid the 2026-9-7 cause — an all-tag turn with no spoken
+    words), and lets the asset mark the failure non-retryable: a step retry re-spends
+    every already-rendered chunk on the same deterministic rejection (4× on 2026-9-7).
+    """
+
+    def __init__(self, status: int, url: str, body: str) -> None:
+        super().__init__(f"TTS backend rejected the request ({status} {url}): {body[:500]}")
+        self.status = status
+        self.body = body

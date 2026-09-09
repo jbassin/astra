@@ -6,6 +6,7 @@ one clip per turn. Writes `<out_dir>/clips/NNN.<fmt>`.
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import cast
 
@@ -23,7 +24,9 @@ from .provider import (
     SynthesisRequest,
     TTSProvider,
 )
-from .tags import render_delivery
+from .tags import render_delivery, strip_audio_tags
+
+_log = logging.getLogger("astra.mouthpiece.tts")
 
 #: Placeholder voice ids for the mock provider; real providers override these.
 DEFAULT_VOICES = VoiceConfig(a="mock-voice-a", b="mock-voice-b")
@@ -34,8 +37,29 @@ _tts_clips = get_meter("astra.mouthpiece").create_counter(
 )
 
 
+# Turns dropped because they carry no spoken words (an all-tag line like
+# "[stunned silence]"). ElevenLabs Text-to-Dialogue 400s on an empty input.
+_tts_skipped = get_meter("astra.mouthpiece").create_counter(
+    "astra.mouthpiece.tts.skipped_turns", description="TTS turns skipped (no spoken words)"
+)
+
+
 def _clip_name(index: int, fmt: str) -> str:
     return f"{index:03d}.{fmt}"
+
+
+def speakable_turns(turns: list[ScriptTurn]) -> list[ScriptTurn]:
+    """Drop turns with nothing to say once the [audio tags] are stripped. The model
+    occasionally emits a bare stage direction as a turn ("[stunned silence]"); no
+    backend can voice it, and ElevenLabs rejects the whole dialogue chunk over it."""
+    kept: list[ScriptTurn] = []
+    for turn in turns:
+        if strip_audio_tags(turn.text).strip():
+            kept.append(turn)
+        else:
+            _log.warning("skipping tag-only turn for %s: %r", turn.speaker, turn.text)
+            _tts_skipped.add(1, {"speaker": turn.speaker})
+    return kept
 
 
 def synthesize_script(
@@ -73,7 +97,7 @@ def _synthesize_per_turn(
     script: Script, provider: TTSProvider, voices: VoiceConfig, clips_dir: Path
 ) -> list[TtsClip]:
     clips: list[TtsClip] = []
-    for i, turn in enumerate(script.turns):
+    for i, turn in enumerate(speakable_turns(script.turns)):
         index = i + 1
         result = provider.synthesize(
             SynthesisRequest(text=turn.text, voice=voices.by_id(turn.speaker), emotion=turn.emotion)
@@ -96,7 +120,9 @@ def _synthesize_dialogue_chunks(
     def render(turn: ScriptTurn) -> str:
         return _apply(render_delivery(turn.text, turn.emotion, True), lexicon)
 
-    chunks = chunk_turns(script.turns, DEFAULT_DIALOGUE_BUDGET, lambda t: len(render(t)))
+    chunks = chunk_turns(
+        speakable_turns(script.turns), DEFAULT_DIALOGUE_BUDGET, lambda t: len(render(t))
+    )
     synth_dialogue = cast(DialogueTTSProvider, provider).synthesize_dialogue
 
     clips: list[TtsClip] = []
