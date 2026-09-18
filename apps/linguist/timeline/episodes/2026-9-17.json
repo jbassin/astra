@@ -1,0 +1,54 @@
+{
+  "date": "2026-9-17",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Elastic Spire and the Corrupted Harlequins",
+    "synopsis": "The party wakes after resting and decides to enter the Strider's spire to deal with the Harlequins and get the massive machine moving again, leaving Egan behind. They navigate the Undercroft, discover increasingly elastic and blood-stained corridors near the spire's base, and uncover strange documents hinting at the Strider's mysterious starward trajectory. Inside the spire, they are ambushed by Corrupted Harlequins—twisted, void-infused monstrosities pushing through the very walls—in a grueling extended fight that is still ongoing at session's end.",
+    "key_beats": [
+      "Anzu apologizes to Argyle for downplaying the Egan danger; party debates whether to pursue the Harlequins in the spire or rescue Anzu's sister first, ultimately deciding on the Harlequins and leaving Egan behind.",
+      "The party makes religion/occult checks to theorize whether the Ashen Pact might operate like the Outer Gods via the Godhome; they conclude it's unlikely but cannot rule out that the MoCuP representative Giannos could be a Hierophant-like figure.",
+      "Guided by the Machine God, the party navigates the Undercroft toward the spire's base, noticing the metal floor growing increasingly elastic and malleable as they approach.",
+      "They reach a large cylindrical shaft where the catwalks have been torn away; a 30-foot gap separates them from the suspended platform. Anzu flies across, Argyle's wrist grappler malfunctions (nat 1), and Johnny successfully shoots a rope line. Argyle crosses with a crit athletics (36), Benny follows.",
+      "In a 10x10 antechamber, Argyle's crit medicine check (39) reveals bubbling, blue-streaked, copper-smelling Harlequin blood on the floor, with the floor sinking beneath the pools.",
+      "They enter a common area with undulating walls; Johnny's society check (36) recovers scattered documents: geological surveys of unknown territory, a log of starward coordinates spanning seven years trending toward zero (their current location), and a denied requisition form for 'flugistim' (spire fuel) written in archaic Earthrum.",
+      "Opening the blood-trail door, they encounter Corrupted Harlequins—grotesquely misshapen void-infused creatures whose bodies clip through floors and walls, with fused masks and purple energy emanating from open orifices. Initiative is rolled.",
+      "Benny is Baleful Polymorphed into a tiny rock creature for several rounds; the party uses One Moment to Glory to grant him repeated saves until he reverts. Anzu is hit with Spellrack (persistent force damage whenever under spell effects). Argyle is Enfeebled.",
+      "More Corrupted Harlequins push through the elastic walls over successive rounds; Argyle's Glimpse of Redemption champion reaction repeatedly mitigates damage and inflicts Stupefied/Enfeebled on attackers, proving pivotal to the party's survival.",
+      "The party gradually wears down the Corrupted Harlequins—Benny kills the Hungry one, Argyle's Holy Light and Johnny's Needle Darts deal heavy damage to others. Session ends mid-combat with most Harlequins dead or near death but at least one still standing."
+    ],
+    "characters_present": [
+      "Argyle (Jorge)",
+      "Benny (Mike)",
+      "Johnny (Noah)",
+      "Anzu (Tanner)",
+      "Othello (Anzu's bird familiar)",
+      "Egan (mentioned, stayed behind)",
+      "The Machine God (ally, guides navigation)",
+      "Corrupted Harlequins (multiple enemies)"
+    ],
+    "locations": [
+      "The Strider (party's mobile base)",
+      "The Undercroft",
+      "The Spire (interior)",
+      "Cylindrical shaft beneath the spire",
+      "Blood-stained antechamber",
+      "Common area with undulating walls"
+    ],
+    "factions": [
+      "Machine God",
+      "Harlequins / Corrupted Harlequins",
+      "The Ashen Pact (mentioned)",
+      "The Heralds (mentioned)",
+      "Egan's crew (Egan left behind)"
+    ],
+    "items": [
+      "Geological/hydrological survey maps (unknown territory)",
+      "Starward coordinate log (7 years trending to zero = current location)",
+      "Requisition form for 'flugistim' (spire fuel, denied due to shortages)",
+      "Wrist grappler (broken on nat 1)",
+      "Benny's falcata and hook",
+      "Cold iron (discussed as a weakness of Corrupted Harlequins)"
+    ],
+    "cliffhanger": "The fight against the Corrupted Harlequins inside the spire is still ongoing. Most are dead or badly wounded, but at least one Corrupted Harlequin remains standing, and the party is battered and running low on resources. The elastic walls continue to bulge as more threats may push through."
+  }
+}
