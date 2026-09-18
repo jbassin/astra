@@ -23681,6 +23681,1059 @@
           "text": "We all do, Nell — and the man has a map already drawn, which is somehow the scariest part..."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-9-17",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 19,
+      "isMain": true,
+      "date": "2026-9-17",
+      "dateSortKey": 20260917,
+      "title": "They Marooned Themselves",
+      "episodeTitle": "They Marooned Themselves",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm and dry, precise but easygoing; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date Bram fumbles for and hands it to him in a short, plain sentence — she finishes her sentences and finishes them short — then gets right back into the story with him. She's not the fact-checker; she's the friend who remembers. She's as invested in the characters as he is: she wonders aloud WHY someone did what they did, floats her own theory about what a faction is really up to, and builds on Bram's read as often as she tweaks it. Her wit is dry and fond, aimed at the world and the table's heroics, never at him. Grounds events in how the world actually works; usually right, so let her be plainly wrong exactly once so she isn't an oracle"
+        },
+        "C": {
+          "name": "Nell",
+          "persona": "bright, eager, quick on the uptake; the new friend at the table who has played a LOT of Pathfinder but is hearing this campaign for the first time. Reads every scene as a game before she reads it as a story — how close the fight was, what it cost, what the party gave up by picking that door — and is confidently, cheerfully right about that. Knows nothing of the world yet and doesn't pretend to: when a faction, a place, or a name comes up cold she ASKS what it is, plainly and without guessing, then repeats the answer back to make sure she has it. She never misremembers and never bluffs; her texture is enthusiasm — she over-asks, wants every side-thread pulled at once, is delighted by details the regulars take for granted, and now and then has to be told \"we'll get there.\" Speaks in quick, complete, slightly-too-eager sentences that often end in a question; by the end of the night she's more invested than either of them"
+        }
+      },
+      "synopsis": "Morning never quite dawns over the endless grey expanse, and the crew wakes to an uncomfortable question: what do you do with a redeemed pirate whose god now lives under your roof? The debate gets shelved for more urgent business — the Strider is stalled, Harlequins hold the spire at its heart, and somebody has to go clear them out. Down in the Undercroft, the party finds bridges torn away from the inside, bubbling blue-streaked blood on floors gone strangely soft, and half-ruined papers hinting at a course set somewhere beyond any charted wall. Whatever waits behind the spire's doors is masked, misshapen, and very hungry — and the walls themselves have begun to lean in.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So we pick up the morning after the great couch migration, right — half the party sleeping with one eye open, one of them fully leaving the house over it — and the show opens on a morning that never actually comes, because out there on that dead grey world there's no sunrise, there's no day, there's just this endless noncommittal grey, dreary around the clock, a sky that refuses to commit to anything."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "No dawn. You just stop being asleep."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's so bleak and I love it — and they're still parked on the dead world from the Menhir night? Two dim suns, no grass, everything frozen?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The very same spot, nothing has thawed, nothing ever will, and the first order of business is not the tower, it's not the Harlequins — it's the nine-foot pirate on the front lawn doing shirtless handstand push-ups and counting out loud the moment Argyle walks outside, like the count is a message."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The count is the message. What time did you wake up. About twenty minutes ago."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "He's doing cardio AT him. At the end of the world there is still a guy doing cardio at another guy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Argyle calls him a loser and walks back inside — this man rose early specifically to be annoyed — but the reason Anzu went looking for him is the scene I actually want to open with, because Anzu apologizes, and it's the realest two minutes of the night."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "For the override, right? Last episode he basically rewired Egan's whole head — deleted the Herald's song, pasted the Voidsong over the hole — and everybody kind of went quiet after. What's the apology actually for?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "For the night before. Argyle had said, this man is dangerous, and Anzu waved him off — it's fine, don't worry — and in the grey of morning Anzu owns every bit of it: I was out of my mind excited, the imprint worked, I was blinded by that, you were right, we need to be careful."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But he doesn't walk it all the way back. He says the man is dangerous and that his gun is pointed where we tell him to point it — and then, because he's Anzu, that they might be the most important people alive right now."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The apology arrives with a footnote about cosmic significance — the most Anzu document ever drafted — and I ate it up, because with five cosmic siblings literally watching the Strider, the footnote's not even wrong."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay so the tension isn't \"is Egan evil,\" it's \"is Egan safe under supervision\" — and Argyle's counter-position is...?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Argyle's position is that the man should absolutely die for his sins. He's just in no particular hurry about it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then he proposes — and I need everyone to hold my hand, because this was a real plan said out loud at a real table — that they build a dungeon first, and then forcibly redeem him, because it worked for his uncle."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "It worked for his— was nobody in the room going, hello? Help?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Johnny's contribution is that the uncle came out of the process still a demon."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Redeemed and still a demon, which is honestly the campaign in one sentence — and then the pirate code derail happens, which is my favorite kind, because Anzu goes, pirates have codes, I've read about this, and Argyle decides the code only covers other pirates, and Johnny floats that maybe the code is the song."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The yo-ho song?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the table rules that the song is not the code — the song is the preamble."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Article one. We, the pirates of Lorandris, say yo-ho."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The pirate constitution opens with the yo-ho — I'm never recovering from that — okay, so then do they settle Egan, or does the day start?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Egan gets shelved, correctly, because there's a fork: clear the Harlequins out of the spire and get the Strider walking again, or go down and pull Anzu's sister, Gazoo—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Galzu."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—Galzu, thank you, out of the Herald's congregation first, and it's Johnny's argument that tips it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The engine is the weapon. Egan only woke up in the first place because the Strider started moving — the Herald's grip slipped while it walked. So get it moving and the song weakens everywhere, including around Galzu."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Oh, that's not even a theory, that's a proof of concept — they have one freed pirate as the evidence — so the repair job is secretly an attack, I love that. But it's a real fork, right? What's the case for the sister first?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Benny makes it, kind of — grab the person while the grabbing's good — and Benny also makes the adult case against, which is that getting a dead colossus to walk is a technological feat, not a lever you just pull."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Johnny doesn't trust the truce. Grayson's ceasefire runs until they're back on Fairrin Prime — the day the Strider walks, the clock starts on it."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "So fix the engine and you weaken the Herald but arm the countdown — and the capacity problem settles it, doesn't it? The elevator?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Four. The elevator seats four, and there's a spot for the bird — that's a real sentence someone said, four and a perch — so Egan stays home, doing one-legged squats, unbothered."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The bird counts, though. Othello rides."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Wait, before we leave the breakfast table — the Ministry guy. Johnny floats something about him and I never had the shape of it — who is he?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Giannos, of the Ministry of Cultural Progress — MoCuP, the radio people, they own the entire spectrum — and Giannos is aggressively unremarkable, he's the beige-est man at any table, and Johnny's thought — framed as just a thought, putting it on everyone's radar — is that this nobody might be the Herald's hierophant."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay, I have to stop you — hierophant. I know the card, I don't know the job. What is one, exactly?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Not a rank. A place you've been. A hierophant is someone who walked into the Godhome and walked back out."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Aurelia did it first — peasant girl, heard a voice through a crack in the sky, pried the crack wide enough to fit a person, stepped through, met the gods, came home with a second sun behind her — that's year one of the calendar, that's the whole world's reset."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "So it's not a promotion, it's a pilgrimage with a return ticket — and saying Giannos is one for the Herald is saying he's been to the gods' house on the Herald's arm. Did the table check that or just vibe it?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They checked. And it mostly doesn't add up — the only known door into the Godhome is that crack, and it burns as bright as a sun. Nobody slips in or out of that unnoticed."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So for the Ashen Pact to have hierophants the way the proper gods do, they'd have to be sitting behind that same door, and the check basically comes back with a shrug."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The Ashen Pact — okay, I've heard you two say that name across two episodes and I still don't have the shape of it. Who are they, actually?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Six of them. That's what Anzu saw when he mind-dove that sleeping creature, way back in the Sleeping Clan days — a burning plain, a city, and six enormous figures looking down at it — six entities that seem to be overseeing everything, and nobody at that table can prove they're not the reason for any of this."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the running guess since then is that they're tangled up with the Voidsong, somehow. Guess. Emphasis on guess."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Six figures, burning plain, tied to the song — noted, going on my list — so if they can't have hierophants, where does the table land on the beige man?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Anzu's counter: they don't need door-crashers. They could just have champions, built some other way. Doesn't have to look like a pilgrimage."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which leaves Giannos exactly as suspicious as he was before the check — the most delicious non-answer in the world."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Fine, the beige man stays on the board — so, four and a bird, into the Undercroft. Set the scene for me, because I've never been down there."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, the Undercroft is the basement of the world — steam-grim, half-twisting hallways — and here's the detail I always forget to tell people: their god is a satnav. The Machine God just narrates directions into everyone's ears. Turn left. In three hallways, turn right. Getting lost is off the table, that's part of the arrangement."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Divine GPS will never not be funny to me. And is it empty down there?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Mongrel-folk. They live in the Undercroft and keep the Strider's systems running — the machine has a congregation in its basement. The party steers around them, because nobody has the energy for that conversation today."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Same people as the settlement around Tally, or cousins of them? I genuinely don't know, and I'm not sure the party does either — imagine finding out the Herald's congregation is also the maintenance crew."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Oh no. Oh, that's a whole thing — I'm writing it down, we're pulling that thread someday —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "We'll get there, we'll get there — because the walk ends, and the room opens up: this huge bell-shaped shaft in the guts of the Strider, balconies ringing it, and hanging in the middle on giant cables, one platform — a single room suspended in the void — and the bridges to it are gone."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "All of them, every balcony. Ripped away. Railings and gates torn off too."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And how do they read that? Because from the sound of it — where did those bridges tear from?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "My first read was a moat — somebody pulling the bridges down to keep people out of the tower. That's how you hold a keep."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "But wait, didn't the grating tear loose from the balcony end? It's still bolted to the platform and hanging down from that side — so the people in the middle cut their own ropes, from the middle."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "...Huh. Then it's not a moat. They marooned themselves in."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Anzu calls it at the table almost in those words — they marooned themselves — and I refuse to believe that's defense, because nothing about that spire has ever said defense, it has all said we are holding this door shut with our bodies."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or they knew what was in there and didn't want it having a bridge. And remember — the Machine God watched the Harlequins go into that tower, and then lost them. Whatever's in there, it's beyond even his sight."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The architecture is a combatant before anyone rolls anything, noted — okay, but the floors. Tell me the floors, because that's the preamble creep, right?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Benny clocks it first — the last few hallways, the metal underfoot has give, like the floor's gone faintly elastic, and Anzu checks it, and the answer is the bad one: it's not magic, there's no field, it's just the metal itself, mundane and wrong at the same time."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's worse than a curse — a curse you can dispel — how do you even check \"the metal changed its mind\"?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He scratched at it. Still the same alloy the whole Strider is made of. It just has give that metal shouldn't have."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Argyle — who hates this, you can feel him hating it through the screen — is the one who connects it: this is the same elastic push as inside the Voidheart. Same feeling. And then he asks the question of the night: are we trying to drive this Strider into whatever void hearts come out of?"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The Voidheart — the one they stole from the ruined Harlequin town and fed to Eerie — so the theory is the Strider is going void at its own center and the spire is the bruise, spreading outward."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Like a bruise blooming out of the heart of the thing — hold that image, because the blood is coming, and I want you to be as unprepared as I was. But first, the crossing."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Yes — thirty feet of nothing and one hanging room — who does what, and how badly?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Anzu flies, obviously, bird's fine — but first he tries to help, fires his wrist grappler across, and rolls the kind of natural one that should end with the thing sailing off into the abyss — and instead the rope catches the hanging bridge, swings, and locks into a perfect anchor."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "No. A nat one that WORKS? That's the best fumble I've ever heard — he broke the gadget and won the shot in the same motion — did it at least cost him something?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It cost him the grappler. The fumble was real. It was just a load-bearing fumble."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then Argyle, whom we all treat as the plate-mail grandfather, fires a rope across clean and then monkey-hauls himself over the chasm like it's nothing, and when Josh asks how, Jorge explains, very calmly, that Argyle was also a child soldier, so he did a great deal of rope work."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Oh no. That's so dark, and it's also the funniest possible justification for a perfect climb — why are you good at ropes? P.T."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Benny follows on tiny arms with a full-grown man's weight, so the rope dips like a bass line, but everyone makes it — and then the door. Maeve, the door."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "No knob. Two metal sheets meeting in the middle — you put both hands in and push one half up and one half down."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Hold on. Hold on — both hands? Every door in this place costs you your entire offense to open? You cannot walk through a threshold holding a weapon — that is the most quietly hostile architecture I have ever heard described."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And soft! Argyle puts his hand on it and it gives under his palm, and he says, basically, it's soft, it's spongy, I don't like that — the man touches one door and files a complaint with the universe."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "A ten-by-ten metal box on the other side, right — and this is the blood room?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The blood room — floor covered, no body to account for it — and Argyle, our doctor, our collector of samples, reads it like a chart: it's bubbling, slightly, like it's boiling, but it isn't hot. It's streaked through with blue. And it smells of copper, not iron."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's the part I couldn't shake. Blood smells of iron because it's full of iron — copper blood is a different recipe. And the Harlequins themselves smell sulfurous and coppery. So it's theirs. And it's wrong."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Blue streaks — okay, blue like what? Is that a thing here, or is that a clue?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a clue. That blue is the same stuff from under Teller's Run and inside the Sable and Sun firearms — the liquid that's a battery and a library at the same time. Power and information, and at the bottom there's no real difference between them."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So whatever's being done to these Harlequins, it's writing in their blood while it runs them — and the floor's in on it too, because where the blood pools, the metal dips into little divots underneath, like the floor is drinking."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The floor is eating the evidence — okay, I hate it, it's perfect — now tell me someone says the Egan thing, because four people and a bird crammed in one blood-soaked box, someone says it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Somebody says we should have brought Egan, and Anzu has to point out that Egan cannot physically enter this room — the man is boat-scaled, he has never in his life existed anywhere that wasn't an open deck — and Johnny goes, oh, right, he was on a boat."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "His whole biography is open-plan. Doors are theoretical to him."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "He was on a boat — that is going to haunt me — okay, so out of the blood-box, and they follow the blood?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The blood points forward, so forward — and the instant that door opens, another door closes off to the left, like something in the next room left as they arrived."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the walls are moving. Slightly. In and out. And the party pairs up on the threshold — bird and bard, man and child — and Argyle, who has decided the doors themselves are the enemy, proposes wedging his shield between them so nothing can close on the group."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "They pre-negotiated with the architecture — that's such a player move, you love to see it — and the room beyond is the common room, yes? What's in it besides more blood and still no bodies?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Papers. Torn, stamped, blood-soaked, strewn everywhere like somebody was mid-work when the work stopped — and Anzu and Johnny piece them together, and this is where the session quietly turns from horror movie into something much bigger. This is the biggest lore drop of the season — top two — the Menhir exists, fine, top three, it's in the conversation."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Three finds. Maps, a list, and a form."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The maps are geological surveys of nowhere anyone recognizes — hydrological charts of unplaceable territory, and I want you to just hold that in your pocket — and the list is the one that stopped my heart."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The numbers? Go."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A torn page of dates and star numbers — worlds on the Infinite Horizon — first visible entry about seven years ago, and it's three-point-four billion—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Million. Three million and change — and the part that matters is that it sits about a million and a half farther starward than the wall."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A million and a half stars past the wall — past any charted anything — and then entry after entry, roughly every six months, the number ticking down, year after year, until it hits zero. And zero is Fairrin Prime. Home."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Wait. Wait wait wait — so seven years ago, whatever this log belongs to was out past the wall, and it has been walking toward Fairrin Prime on a schedule this entire time — whose list is that? Who wrote it?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Nobody knows. But Kadou's find from the summit still stands — the Strider has been to this dead world before, the oxidation says so. The thing has a history of going out there."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So put it together — the Strider doesn't wander, the Strider commutes, out past the wall and back, and it pulled into Fairrin Prime six months ago like a scheduled stop — and Argyle's call at the table is immediate and loud: the Ashen Pact."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The six figures — so the theory is the Strider is theirs? A probe, a delivery?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Or a pilgrim — I'm telling you, when they find the bridge up in that spire I expect it to be pointed at the burning plain — this machine came from out past the wall, and it came to us on purpose."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's a tall stack of guesses. I keep mine in the same pile, but it is a pile of guesses."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And the third find — you said a form?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A requisition. A fuel request for the spire itself — three barrels of something, and the word is flugistim... flugelstim... flugelhorn—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Flugistim. And it's strange even to Anzu, who speaks dead languages — it's a loan word from a version of Earthrum older than Earthrum. Like finding Norman French inside a Latin ledger."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "A word so old the old language looks new beside it — because there was no word for the thing, so they borrowed the only one that fit — okay, and what is flugistim? Fuel for what, actually?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Fuel for the spire. That's all the form says. And Johnny cleans the blood off the page with a cantrip, one fleck at a time, so they can read the stamp."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Josh — who has a rule, on the record, that blood-ruined paper stays ruined, precedent matters — immediately suspends the rule because it's funnier — and the stamp is the kicker: denied. Ten months ago. Fuel request denied, due to shortages."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Denied — wait, that's terrifying — you can clear every Harlequin out of that spire, find the bridge, sit down at the controls, and if the tank is dry, none of it matters — the whole mission has a hidden failure condition and it's paperwork."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's paperwork! The scariest word on that page is denied — and nobody knows what flugistim even is, or where one acquires barrels of it, so that goes on the quest board in invisible ink."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They know one thing. The Harlequins wanted it. And did not get it."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And then they pick the door with the fresh blood, the one that closed on its own — and Benny opens it — Bram, describe this reveal properly, because I could hear it in everyone's voices."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Standing right there is a Harlequin — except wrong. Joints bent at angles joints don't do, torso rearranged, the mask not worn anymore but fused, pressed into the bone of the face — and one leg is clipping through the floor, not punched through, the floor just dips around it like the floor is an opinion—"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Clipping through the floor — no no no, that's the scariest thing a creature can do to a map — it's not breaking the rules, it's not noticing them — and it's holding something, isn't it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's holding another Harlequin. Deceased. And it is eating him — mask mouth unhinged, half of the poor soul being stuffed in, this wet crunch — and Josh says, very calmly, roll initiative."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And its name is Hungry."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Because of the adjective roller — Josh names these things off a random list, and he kept rerolling because it kept offering him lethargic and euphoric, which he felt was the wrong flavor for a creature actively eating its coworker — so, Hungry."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Euphoric corrupted Harlequin would have been a very different session — okay, so how many come out of the woodwork, total?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A dozen, at least, they're in the walls—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Four. Four that we meet. And the walls try to deliver at least one more."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Four on four in a map the size of a hallway — and the party opens with weapons, or—?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The party opens with diplomacy. Argyle attempts to file his initiative as a will save, Johnny asks whether he can open negotiations with the creature that is currently mid-meal, and Josh rules that Johnny may, in fact, attempt diplomacy, at a truly insulting penalty."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Benny's ruling on the situation: these are turn-based negotiations."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Turn-based negotiations — okay, so how close is this thing actually? Because it sounds close."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's close in the sneaky way, because nobody's dying, exactly, but every resource is bleeding out and the building itself keeps joining in — start at the start, though, the bite."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Hungry goes for Benny first. Piercing and spirit both — and it carries the abyssal plague, and the save is a real one."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Benny, nine years old, calm as a Tuesday, burns his surge — the little one-use trick built into him — and drags himself from a fail to a pass by the thinnest possible margin, and that's your tell: you don't spend the trick on a nothing disease."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Exactly — a resource like that only comes out when the alternative is your sheet growing a section called consequences — and then the mouth? The purple beam?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The mouth is a weapons platform — it unhinges further, and inside there's this swirling purple light, and it hoses a line of it down the corridor at Benny and Argyle, who get clear enough to only take half — and then it screeches, which is the bad kind of doorbell, because now the entire spire knows dinner's interrupted."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And the second one, the caster — that's where the psychic nearly gets deleted, walk me through it, because I remember noise."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So this one is leaning through a wall — through it, clipping like the first — and its costume has a seam that peels open into that same purple, and it spends everything it has on a single spell, every missile it can muster, aimed at Anzu."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Johnny siphons it. He's been sitting on this counter-spell that catches shadow and force and turns it down a notch — and this is the moment he's been saving it for."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's the whole fight right there — unhalved, that barrage just deletes the psychic, first exchange of the night — instead he's bruised and rude about it — and Josh rolled for the target? The bird just lost a coin flip of the universe?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Lost it loudly. And then the same Harlequin — this one has a whole curriculum — curses Anzu with something called spellrack."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which is a mage-eater's curse: any spell that lands on you afterward burns you, and the burn eats the spell's duration off you. Your own support becomes friendly fire."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Oh, that's nasty — so the party just can't buff their psychic, at all —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Johnny immediately declares that nobody is to haste him, under any circumstances, please."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Meanwhile Argyle is having his own private crisis, right — the reaction thing?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Mid-fight, mid-swing, Argyle discovers — discovers! — that he has been carrying the best protective reaction in the entire game since roughly the Menhir, unused, and Johnny's disbelief is so loud it's basically a fourth combatant."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Wait, the champion redirect? He just found it NOW?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Found it now, and the moment he starts using it, he's the em-vee-pee of the encounter — every time something swings at anyone in his aura, he siphons the hurt away and leaves the attacker stupefied — the man was sitting on the party's damage dial and forgot which pocket it was in."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's the most level-nine thing I've ever heard, I can't be mad — okay, the polymorph. Tell me the polymorph, because I heard about it and went, what."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "One of them — I truly lose track of which, they're all named after moods — vomits this black light over Benny, and where a nine-year-old swordsman was standing, there is now a small rock. With little rock arms. Sitting on top of two swords."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "They polymorphed the fighter into a rock. You... what does a rock even do on its turn? What are a rock's options?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Scurry. It scurries."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It scurries — Benny's whole turn is being picked up, put down, and attempting to be a doorstop, and at one point a Harlequin just steps over him, over the rock, on its way to somewhere, and the rock has to live with that — at a certain point it's not even a fight, it's just... you had to be there."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Two full rounds of the party's best damage, gone, as a rock, while four things attack AND the walls attack — that's what made this fight close, that's the real cost — what breaks him out?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Johnny chains saves at him — this little performance number that hands everyone a fresh save with a bonus — and Benny claws his way back to humanoid, tiny and furious, and his first act as a person again is a crit."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Rock revenge — poetic — okay, and the retreat? There was an abortive retreat, I heard about it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A full mid-fight committee meeting about grabbing the rock and fleeing — Argyle picks up the rock, opens the door, holds the retreat — and then everyone looks around and realizes they've backed themselves into a corner where only two of the four can reach them at once, and that's apparently optimal, so they stay."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Josh's closing ruling on the night: the strategy of backing into a corner so you're beset on all sides is good, apparently."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The textbook working by accident — the walls, though. I need the walls, because this is where my two episodes of listening finally paid off."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The walls bulge. You see the impression of hands pressing through from the other side, and when one finally breaks in, it's a gloved hand — blue and yellow checkered, Harlequin gloves — a Harlequin forcing itself through solid metal like it's wet paper, and the whole time, through everyone's headphones, there's just this ambient wet digestion sound from a Harlequin in another room, Josh has a soundboard now and he's not sorry."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The checkered glove — wait, those are the hands from the prow, right? After the Menhir died, the portals, the many-fingered things — same hands, same void — so whatever's in this spire is the same infection that tore the Harlequin town apart."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Same family of thing, at least. Except these are wearing the house colors. The Harlequins aren't being invaded by the void so much as repossessed by it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Repossessed — that's the word of the night — the void is calling in War's collateral, eating the staff and keeping the uniforms — and somebody should tell Grayson his arrangement does not appear to cover this."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He did say the void things don't attack him. He never said why."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And now his people ARE the void things — that's a whole tragedy in one sentence — okay, the moonlight ray. Tell me the moonlight ray."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Argyle, out of patience, puts a moonlight ray straight into the mouth of one of them — hits something important — and the seam of the mouth just keeps going, down the sides, and the entire front of the creature falls open into one larger mouth, purple light pouring out, and there are hands inside, trying to crawl out."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The mouth was a door the whole time — the body is a doorway wearing a costume — I'm going to be sick — and it doesn't even die from that, does it?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Nothing dies when it should. They unravel instead — edges fraying, purple bleeding through — and they keep casting the entire time."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Which tracks with what Anzu digs up on the recall, right — the cold iron thing?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Cold-iron weak — and here's the joke of the night: nobody has cold iron. Anzu makes a note to buy some, Argyle's ray turns out to be silver, Johnny's darts are silver — they found the skeleton key and nobody in the building owned the key, so they just hit the lock with silver and force until it opened."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "A shopping-list fight, incredible — okay, the first kill. Tell me the first kill, because I heard it was funny."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Hungry — the original, the doorway ghoul — tries to cast sleep on the group. Sleep has words. Sleep has gestures. Benny is permitted to hit him mid-gesture, and does — and before I tell you what happens, you should know that Josh turned to the table and asked them to guess how much was left on the thing."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "No."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Anzu says twelve. It was twelve. Exactly."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "TWELVE? That's not luck, that's counting cards, he's been tracking damage in his head the entire — wait, doesn't he do it again? Later?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A different one, later. He says nine. It was nine."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The man is a bestiary in a trench coat, Josh threatened to audit his search history — so Hungry dies mid-lullaby, and the way he goes is my favorite image of the whole year: the floor indents under him like the space-time fabric demo at a science museum, the heavy ball on the stretched sheet — and then the sheet springs back, and he's gone."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The universe tidying up — okay — and Johnny, the bard, what's the song situation, because I heard about a song."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The dirge — the fear song, the one that keeps everything frightened — runs out, and Johnny clears his throat and starts it back up, except canonically, as of this session, the scariest song on the Strider is War Pigs. Generals gathered in their masses. With air guitar."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Harlequins are now frightened of Black Sabbath, and honestly, correct."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's the funniest possible morale weapon — wait, and the drop spell — that's Johnny too? The ten-foot drop, and that's where the Giant plan comes out?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He drops one of the Harlequins ten feet into its own floor — it goes prone, extremely funny — and then gets this gleam and explains he picked the spell up for the day they finally fight the Giant, because if it works on a two-mile colossus, the Giant falls prone on turn one."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And you can watch Josh's brain visibly blue-screen trying to compute how a two-mile-tall being falls ten feet. Where do the other two miles go. There is no answer."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "He's owned the spell for one session and it already has a nemesis — I'm delighted — okay, so the caster, the spellrack one — how does it end?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It tries its whole syllabus — dominate at Anzu and the will holds, slow at Johnny and he shrugs, enfeeble at Benny and it gets crit for its trouble — and eventually Argyle just starts unmaking the room it's standing in. There's a zone he sustains, turn after turn, reality bending to his will, and everything caught in it frays."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The reality blender — and that plus the holy light?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The holy light — and mind you this is the man who is very clear he heals through the holy light of the judge, he has a jurisdiction, not a doctorate — and the caster's last visible moment is its face stretching like putty, because half its head is stuck in the ceiling."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He gives himself a raise at one point. He's the healer, the exorcist, and the architecture problem, all in one suit of plate."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And Anzu — cursed all night — how does the bird end his night?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He drains one. Vampiric feast — reaches out and reaps the life right out of the thing, takes a little shield of stolen health for himself — after a whole night of being the cursed one, that's the pettiest possible revenge, and I respect it enormously."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Petty psychic, perfect — and Johnny's big finish? Because I heard something about him hitting himself?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Johnny has a quip-spell — weaponized diplomacy, basically — and he's down to his last mythic resource, so naturally he spends it on the joke, crit-fails, and hits himself with it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He then has to spend his next chance un-hitting himself. One of the classic blunders."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "He boned-mowed himself — I can't — okay, so where does the night actually stop? Because this fight doesn't finish, right?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's past midnight and Josh calls it — offers one more round as a courtesy — and they take it, and it goes well, and the ruling from the chair is that there's not much left. Cleanup at the top of next session."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Two of them still standing. Barely. The other two are floor stains."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And the party's own verdict on the night?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Anzu's is that it's a good thing they didn't run."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Good thing we didn't run — after the entire committee meeting about running, with a rock under one arm — that's the show, that's the whole show, and the walls are still leaning in, mind, whatever is deeper in that spire has not introduced itself yet."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "So next week is cleanup, then the actual spire — the bridge, the controls, the fuel — and wait, does anyone even check whether there's flugistim left in the tank? Because if the request was denied—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Nobody knows! That's the beautiful awful thing — they cleared the waiting room and the fuel question is still sitting there like a landlord's note on the door — and I'll make the prediction now, on the record: the bridge of that Strider is going to be alive, or a mouth, or a hand. One of the three."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's a guess, not a finding."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's a loud guess and I'm proud of it — and meanwhile, back at the Fane — who's watching Egan?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The twins."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The twins and the reformed pirate. Alone. In the alpine Art Deco house. For an entire session."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "You know, when they come home and that house is fine, I'll be almost disappointed — and Argyle has already pre-ruled on how he'd feel if it's not. His note on the tragedy would be one word: judgment. And a second word, about the victims."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Morons."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "I have known this campaign for two episodes and I already care about that house more than my own apartment — okay, next week: cleanup, bridge, fuel, cold iron shopping, and Galzu still waiting at the bottom of the world, and I want answers on the basement congregation."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "We'll get there, we'll get there — and somebody has to figure out how you get a nine-foot pirate through a doorway, because sooner or later—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He was on a boat."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He was on a boat — and really, what has that man ever met that argued with him."
+        }
+      ]
     }
   ]
 }
