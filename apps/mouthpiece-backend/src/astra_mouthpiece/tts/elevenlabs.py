@@ -1,6 +1,7 @@
-"""ElevenLabs v3 Text-to-Dialogue provider (network-deferred — gate K).
+"""ElevenLabs Text-to-Dialogue provider (network-deferred — gate K).
 
-The credential resolves via `astra_config` (verified), but the live v3 dialogue
+The model is `mouthpiece.elevenlabs-model` (eleven_v4 since 2026-09-28).
+The credential resolves via `astra_config` (verified), but the live dialogue
 call is paid/tier-gated, so it is NOT exercised in CI (hermetic, M11). The HTTP
 seam is injectable (`post`) so the request-building is unit-testable without a
 network; the default `post` uses httpx. Edge/mock are the offline fallbacks.
@@ -29,7 +30,7 @@ _tts_duration = get_meter("astra.mouthpiece").create_histogram(
 DEFAULT_ELEVENLABS_VOICES = {"a": "", "b": "", "c": ""}
 _DIALOGUE_URL = "https://api.elevenlabs.io/v1/text-to-dialogue"
 _TTS_URL = "https://api.elevenlabs.io/v1/text-to-speech"
-_MODEL_ID = "eleven_v3"
+_MODEL_ID = "eleven_v4"
 
 #: A `post(url, headers, json) -> bytes` seam; the default calls httpx.
 PostFn = Callable[[str, dict[str, str], dict[str, Any]], bytes]
@@ -50,7 +51,7 @@ def _httpx_post(url: str, headers: dict[str, str], json: dict[str, Any]) -> byte
 
 
 class ElevenLabsTTSProvider:
-    """v3 Text-to-Dialogue (multi-turn) provider. `synthesize_dialogue` is the
+    """Text-to-Dialogue (multi-turn) provider. `synthesize_dialogue` is the
     primary path; `synthesize` covers the single-turn fallback."""
 
     format = "mp3"

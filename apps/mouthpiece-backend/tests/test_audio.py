@@ -243,6 +243,7 @@ def test_dialogue_chunks_never_send_an_empty_input() -> None:
     assert manifest.mode == "dialogue" and len(bodies) == 1
     texts = [i["text"] for i in bodies[0]["inputs"]]
     assert texts == ["It's Argyle.", "[soft] You had to be there."]
+    assert bodies[0]["model_id"] == "eleven_v4"
 
 
 def test_httpx_post_surfaces_4xx_body_as_client_error(monkeypatch) -> None:
