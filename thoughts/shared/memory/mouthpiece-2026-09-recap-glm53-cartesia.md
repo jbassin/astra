@@ -71,3 +71,9 @@ re-rendered (a one-shot, stakeholder call); its ElevenLabs episode stays live.
 
 Builds on [[mouthpiece-0024-gotchas]] + [[mouthpiece-glm-debate-switch]] +
 [[mouthpiece-two-host-gotchas]] + [[deploy-sops-injection]] + [[flag-paid-live-actions]].
+
+## 2026-09-28 — ElevenLabs Eleven v4 (`7b0f4423`)
+- The model id is now config: `mouthpiece.elevenlabs-model` (py + ts schemas), set to `eleven_v4` (released 2026-09-28). v4 supports Text-to-Dialogue, inline audio tags and IPA, so the request body is unchanged. Roll back by setting `eleven_v3`.
+- Probed live: a two-voice dialogue call on `eleven_v4` with the scoped key returned 200 audio/mpeg.
+- A host-side `sops exec-env` needs `SOPS_AGE_KEY_FILE=deploy/sops/age.key` (the justfile exports it; bare sops fails on ~/.ssh/id_rsa).
+- v4 accepts 10,000 chars/request (v3 ~2,000); dialogue chunking was not widened.
