@@ -85,3 +85,16 @@
 - Navigator's Tools · Rope (50 ft) · Traveler's Clothes · Explorer's Pack
 
 **Money:** 28 gp 1 sp
+
+## Notes
+
+I'd like to add a new campaign and update the active campaign in the dice bot:
+
+Campaign is a 5e one shot called Chuul Hunt.
+
+Tanner is the Game Master
+Josh is Doomeater the Orc Monk
+Jorge is Niso the Goliath Barbarian
+Mike is Zolgrath the Orc Wizard
+
+All characters are teenage warriors hunting their first big game to be considered adults in their tribe.
