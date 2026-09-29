@@ -76,4 +76,6 @@ Builds on [[mouthpiece-0024-gotchas]] + [[mouthpiece-glm-debate-switch]] +
 - The model id is now config: `mouthpiece.elevenlabs-model` (py + ts schemas), set to `eleven_v4` (released 2026-09-28). v4 supports Text-to-Dialogue, inline audio tags and IPA, so the request body is unchanged. Roll back by setting `eleven_v3`.
 - Probed live: a two-voice dialogue call on `eleven_v4` with the scoped key returned 200 audio/mpeg.
 - A host-side `sops exec-env` needs `SOPS_AGE_KEY_FILE=deploy/sops/age.key` (the justfile exports it; bare sops fails on ~/.ssh/id_rsa).
-- v4 accepts 10,000 chars/request (v3 ~2,000); dialogue chunking was not widened.
+- Dialogue chunks WIDENED (`80496c50`): the provider's `dialogue_budget` is keyed by model — eleven_v4 = 9,000 rendered chars, eleven_v3/unknown = 1,800 — so a rollback also restores the v3 budget. ElevenLabs' dialogue API page still says ≤2,000 "for reliable generation"; a live 8,955-char v4 probe returned 200, 9.3 min audio, no >2 s silences.
+- ⭐ A 9k-char v4 chunk takes ~146 s to render → HTTP timeout raised 120 → 600 s. The old timeout would have failed every chunk, and the RetryPolicy re-bills on each retry.
+- Full `just up` deployed 2026-09-28; `_provider()` in astra-dagster-code resolves eleven_v4 / 9000 / 600 s.
