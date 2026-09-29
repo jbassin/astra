@@ -95,3 +95,6 @@ apps/codex/books/**/*.log
 # scratch space; only the finished `assets/img/processed/` art is committed
 # and consumed by book.py's fail-soft art wiring.
 apps/codex/books/**/assets/img/preprocessed/
+
+# Playwright MCP console logs + page snapshots (tool debris)
+.playwright-mcp/
