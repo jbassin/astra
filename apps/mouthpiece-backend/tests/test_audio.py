@@ -265,12 +265,12 @@ def test_httpx_post_surfaces_4xx_body_as_client_error(monkeypatch) -> None:
 def test_elevenlabs_dialogue_budget_follows_the_model() -> None:
     from astra_mouthpiece.tts.elevenlabs import ElevenLabsTTSProvider
 
-    assert ElevenLabsTTSProvider("k").dialogue_budget == 9000  # eleven_v4 default
+    assert ElevenLabsTTSProvider("k").dialogue_budget == 1800  # eleven_v4 default
     assert ElevenLabsTTSProvider("k", model_id="eleven_v3").dialogue_budget == 1800
     assert ElevenLabsTTSProvider("k", model_id="eleven_future").dialogue_budget == 1800
 
 
-@pytest.mark.parametrize(("model_id", "requests"), [("eleven_v4", 1), ("eleven_v3", 3)])
+@pytest.mark.parametrize(("model_id", "requests"), [("eleven_v4", 3), ("eleven_v3", 3)])
 def test_dialogue_chunking_uses_the_provider_budget(
     tmp_path: Path, model_id: str, requests: int
 ) -> None:
@@ -282,7 +282,7 @@ def test_dialogue_chunking_uses_the_provider_budget(
         bodies.append(json)
         return b"audio"
 
-    # 5 turns × 800 chars: one v4 request (≤9,000); v3 packs two per request (≤1,800) → 3.
+    # 5 turns × 800 chars: both models pack two per request (≤1,800) → 3.
     a = ScriptTurn(speaker="A", text="x" * 800)
     b = ScriptTurn(speaker="B", text="y" * 800)
     script = Script(session_id="sid", title="t", hosts=HOSTS, turns=[a, b, a, b, a])

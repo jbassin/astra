@@ -34,12 +34,17 @@ _TTS_URL = "https://api.elevenlabs.io/v1/text-to-speech"
 _MODEL_ID = "eleven_v4"
 
 #: Per-model dialogue chunk budget (rendered chars per request). v3 is capped ~2,000
-#: chars; v4 takes 10,000 (probed 2026-09-28: 8,955 chars → 200, 9.3 min audio, no
-#: dropouts). Unknown models get the conservative v3 budget.
-_DIALOGUE_BUDGETS = {"eleven_v3": DEFAULT_DIALOGUE_BUDGET, "eleven_v4": 9000}
+#: chars. v4 takes 10,000 (probed 2026-09-28: 8,955 chars → 200, 9.3 min audio), and
+#: ran at 9,000 briefly, but the stakeholder chose the v3-sized chunks for v4 too
+#: (2026-09-28). Unknown models get the same conservative budget.
+_DIALOGUE_BUDGETS = {
+    "eleven_v3": DEFAULT_DIALOGUE_BUDGET,
+    "eleven_v4": DEFAULT_DIALOGUE_BUDGET,
+}
 
 #: HTTP timeout. A 9k-char v4 chunk took 146 s to render (the old 120 s would have timed
-#: out, and the RetryPolicy would have re-billed the chunk), so leave ample headroom.
+#: out, and the RetryPolicy would have re-billed the chunk). Kept generous so a larger
+#: v4 budget stays safe to turn back on.
 _TIMEOUT_S = 600.0
 
 #: A `post(url, headers, json) -> bytes` seam; the default calls httpx.
