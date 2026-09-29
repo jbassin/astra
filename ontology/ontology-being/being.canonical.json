@@ -449,24 +449,24 @@
       "name": "Bram",
       "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots",
       "slug": "bram",
-      "voice_id": "3jR9BuQAOPMWUjWpi0ll",
-      "voice_name": "Mark"
+      "voice_id": "c6SfcYrb2t09NHXiT80T",
+      "voice_name": "library voice c6SfcYrb2t09NHXiT80T"
     },
     {
       "cartesia_voice_id": "62ae83ad-4f6a-430b-af41-a9bede9286ca",
       "name": "Maeve",
       "persona": "warm and dry, precise but easygoing; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date Bram fumbles for and hands it to him in a short, plain sentence — she finishes her sentences and finishes them short — then gets right back into the story with him. She's not the fact-checker; she's the friend who remembers. She's as invested in the characters as he is: she wonders aloud WHY someone did what they did, floats her own theory about what a faction is really up to, and builds on Bram's read as often as she tweaks it. Her wit is dry and fond, aimed at the world and the table's heroics, never at him. Grounds events in how the world actually works; usually right, so let her be plainly wrong exactly once so she isn't an oracle",
       "slug": "maeve",
-      "voice_id": "BZgkqPqms7Kj9ulSkVzn",
-      "voice_name": "Juniper"
+      "voice_id": "DODLEQrClDo8wCz460ld",
+      "voice_name": "library voice DODLEQrClDo8wCz460ld"
     },
     {
       "cartesia_voice_id": "",
       "name": "Nell",
       "persona": "bright, eager, quick on the uptake; the new friend at the table who has played a LOT of Pathfinder but is hearing this campaign for the first time. Reads every scene as a game before she reads it as a story — how close the fight was, what it cost, what the party gave up by picking that door — and is confidently, cheerfully right about that. Knows nothing of the world yet and doesn't pretend to: when a faction, a place, or a name comes up cold she ASKS what it is, plainly and without guessing, then repeats the answer back to make sure she has it. She never misremembers and never bluffs; her texture is enthusiasm — she over-asks, wants every side-thread pulled at once, is delighted by details the regulars take for granted, and now and then has to be told \"we'll get there.\" Speaks in quick, complete, slightly-too-eager sentences that often end in a question; by the end of the night she's more invested than either of them",
       "slug": "nell",
-      "voice_id": "6u6JbqKdaQy89ENzLSju",
-      "voice_name": "library voice 6u6JbqKdaQy89ENzLSju"
+      "voice_id": "eXpIbVcVbLo8ZJQDlDnl",
+      "voice_name": "library voice eXpIbVcVbLo8ZJQDlDnl"
     }
   ],
   "weal_hosts": [

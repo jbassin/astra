@@ -350,5 +350,5 @@ def test_load_hosts_carries_the_three_seat_roster() -> None:
     hosts = load_hosts()
     assert (hosts.a.name, hosts.b.name) == ("Bram", "Maeve")
     assert hosts.c is not None and hosts.c.name == "Nell"
-    assert hosts.c.voice_id == "6u6JbqKdaQy89ENzLSju"  # the stakeholder-picked library voice
+    assert hosts.c.voice_id == "eXpIbVcVbLo8ZJQDlDnl"  # the stakeholder-picked v4 voice
     assert "never bluffs" in hosts.c.persona
