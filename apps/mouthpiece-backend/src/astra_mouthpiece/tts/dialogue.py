@@ -1,7 +1,8 @@
 """Dialogue chunking — ported verbatim from caster `tts/dialogue.ts`.
 
-ElevenLabs Text-to-Dialogue accepts ~2,000 chars/request, so a full episode is
-split into chunks (budgeted below that for the request JSON + promoted tags).
+ElevenLabs Text-to-Dialogue caps chars/request per model (~2,000 on v3, 10,000 on
+v4), so a full episode is split into chunks. The provider's `dialogue_budget` sets the
+size; the default here is the conservative v3 budget.
 """
 
 from __future__ import annotations

@@ -13,7 +13,7 @@ from typing import cast
 from astra_observe import get_meter
 
 from ..models import AudioManifest, Script, ScriptTurn, TtsClip, VoiceConfig
-from .dialogue import DEFAULT_DIALOGUE_BUDGET, chunk_turns
+from .dialogue import chunk_turns
 from .mock import MockTTSProvider
 from .pronunciation import Lexicon
 from .pronunciation import apply_pronunciations as _apply
@@ -120,10 +120,11 @@ def _synthesize_dialogue_chunks(
     def render(turn: ScriptTurn) -> str:
         return _apply(render_delivery(turn.text, turn.emotion, True), lexicon)
 
+    dialogue_provider = cast(DialogueTTSProvider, provider)
     chunks = chunk_turns(
-        speakable_turns(script.turns), DEFAULT_DIALOGUE_BUDGET, lambda t: len(render(t))
+        speakable_turns(script.turns), dialogue_provider.dialogue_budget, lambda t: len(render(t))
     )
-    synth_dialogue = cast(DialogueTTSProvider, provider).synthesize_dialogue
+    synth_dialogue = dialogue_provider.synthesize_dialogue
 
     clips: list[TtsClip] = []
     for i, chunk in enumerate(chunks):

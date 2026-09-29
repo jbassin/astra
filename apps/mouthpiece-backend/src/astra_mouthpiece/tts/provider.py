@@ -63,6 +63,9 @@ class DialogueTTSProvider(Protocol):
 
     format: str
     dialogue: bool
+    #: Max rendered chars per dialogue request (the model's per-request limit, less
+    #: headroom); the orchestrator chunks turns under it.
+    dialogue_budget: int
 
     def synthesize(self, req: SynthesisRequest) -> SynthesisResult: ...
 

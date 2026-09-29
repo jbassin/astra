@@ -15,6 +15,7 @@ from typing import Any
 
 from astra_observe import get_meter
 
+from .dialogue import DEFAULT_DIALOGUE_BUDGET
 from .mock import estimate_duration_ms
 from .provider import DialogueRequest, SynthesisRequest, SynthesisResult, TtsClientError
 from .tags import strip_audio_tags
@@ -32,6 +33,15 @@ _DIALOGUE_URL = "https://api.elevenlabs.io/v1/text-to-dialogue"
 _TTS_URL = "https://api.elevenlabs.io/v1/text-to-speech"
 _MODEL_ID = "eleven_v4"
 
+#: Per-model dialogue chunk budget (rendered chars per request). v3 is capped ~2,000
+#: chars; v4 takes 10,000 (probed 2026-09-28: 8,955 chars → 200, 9.3 min audio, no
+#: dropouts). Unknown models get the conservative v3 budget.
+_DIALOGUE_BUDGETS = {"eleven_v3": DEFAULT_DIALOGUE_BUDGET, "eleven_v4": 9000}
+
+#: HTTP timeout. A 9k-char v4 chunk took 146 s to render (the old 120 s would have timed
+#: out, and the RetryPolicy would have re-billed the chunk), so leave ample headroom.
+_TIMEOUT_S = 600.0
+
 #: A `post(url, headers, json) -> bytes` seam; the default calls httpx.
 PostFn = Callable[[str, dict[str, str], dict[str, Any]], bytes]
 
@@ -41,7 +51,7 @@ def _httpx_post(url: str, headers: dict[str, str], json: dict[str, Any]) -> byte
 
     started = time.perf_counter()
     try:
-        resp = httpx.post(url, headers=headers, json=json, timeout=120.0)
+        resp = httpx.post(url, headers=headers, json=json, timeout=_TIMEOUT_S)
         if 400 <= resp.status_code < 500:
             raise TtsClientError(resp.status_code, url, resp.text)
         resp.raise_for_status()
@@ -63,6 +73,7 @@ class ElevenLabsTTSProvider:
         self._key = api_key
         self._post = post
         self._model_id = model_id
+        self.dialogue_budget = _DIALOGUE_BUDGETS.get(model_id, DEFAULT_DIALOGUE_BUDGET)
 
     def _headers(self) -> dict[str, str]:
         return {"xi-api-key": self._key, "Content-Type": "application/json"}

@@ -260,3 +260,33 @@ def test_httpx_post_surfaces_4xx_body_as_client_error(monkeypatch) -> None:
     with pytest.raises(TtsClientError) as ei:
         elevenlabs._httpx_post("https://x/v1/text-to-dialogue", {}, {})
     assert ei.value.status == 400 and "text must not be empty" in str(ei.value)
+
+
+def test_elevenlabs_dialogue_budget_follows_the_model() -> None:
+    from astra_mouthpiece.tts.elevenlabs import ElevenLabsTTSProvider
+
+    assert ElevenLabsTTSProvider("k").dialogue_budget == 9000  # eleven_v4 default
+    assert ElevenLabsTTSProvider("k", model_id="eleven_v3").dialogue_budget == 1800
+    assert ElevenLabsTTSProvider("k", model_id="eleven_future").dialogue_budget == 1800
+
+
+@pytest.mark.parametrize(("model_id", "requests"), [("eleven_v4", 1), ("eleven_v3", 3)])
+def test_dialogue_chunking_uses_the_provider_budget(
+    tmp_path: Path, model_id: str, requests: int
+) -> None:
+    from astra_mouthpiece.tts.elevenlabs import ElevenLabsTTSProvider
+
+    bodies: list[dict] = []
+
+    def fake_post(url: str, headers: dict[str, str], json: dict) -> bytes:
+        bodies.append(json)
+        return b"audio"
+
+    # 5 turns × 800 chars: one v4 request (≤9,000); v3 packs two per request (≤1,800) → 3.
+    a = ScriptTurn(speaker="A", text="x" * 800)
+    b = ScriptTurn(speaker="B", text="y" * 800)
+    script = Script(session_id="sid", title="t", hosts=HOSTS, turns=[a, b, a, b, a])
+    provider = ElevenLabsTTSProvider("k", post=fake_post, model_id=model_id)
+    synthesize_script(script, provider=provider, voices=VOICES, out_dir=tmp_path)
+    assert len(bodies) == requests
+    assert all(b["model_id"] == model_id for b in bodies)
