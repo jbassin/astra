@@ -11,18 +11,26 @@
 # at config-adapt time from the SOPS-decrypted value the reload command exports —
 # so the token is never written to this file or to disk.
 #
-# The `:unset-at-boot` default keeps the Caddyfile parseable when the systemd
-# unit starts WITHOUT the token (boot!) — before it, the first reboot in 108
-# days took the whole edge down with "tls: missing API token" (2026-07-29
-# disk-full incident). With the placeholder, boot serves from cached certs;
-# ACME RENEWALS fail until a `just caddy-reload` injects the real token — so
-# run `just caddy-reload` after any reboot.
+# At boot the token comes from the root-only /etc/caddy-cf.env, loaded by the
+# systemd drop-in caddy.service.d/cf-token.conf (added 2026-09-28). Before that,
+# renewal jobs created at boot kept the placeholder token for the life of the
+# process (a reload does not replace them), and certs expired unnoticed for a
+# week. The `:unset-at-boot` default stays as a guard: it keeps the Caddyfile
+# parseable if the env file is ever missing (a missing token took the whole edge
+# down on 2026-07-29).
+#
+# No DNS propagation check: `*.iridi.cc` is a wildcard CNAME to iridi.cc, and
+# Cloudflare answers the CNAME lookup for `_acme-challenge.<host>.iridi.cc`
+# with it even when the challenge TXT exists. Caddy's check follows that CNAME,
+# looks for the TXT at iridi.cc, and times out. So skip the check and wait a
+# fixed delay before asking Let's Encrypt to validate (it queries TXT directly).
 
 (astra_site) {
 	tls {
 		issuer acme {
 			dns cloudflare {$CF_API_TOKEN:unset-at-boot}
-			propagation_timeout 5m
+			propagation_delay 60s
+			propagation_timeout -1
 			resolvers 1.1.1.1 8.8.8.8
 		}
 	}
