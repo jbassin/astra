@@ -671,6 +671,61 @@ services:
       start_period: 30s
     restart: unless-stopped
 
+  # --- node-exporter: host health metrics (CPU/mem/disk/net) + ethtool NIC counters
+  # (the enp4s0 rx_crc_errors / collisions that flagged the 2026-08 link flaps).
+  # `network_mode: host` is required — ethtool + netdev stats only exist in the host
+  # netns, so this service is NOT on signoz-net; the otel-collector scrapes it across
+  # the bridge at the signoz-net gateway (172.27.0.1:9100, see the vendored
+  # otel-collector-config.yaml's node-exporter job). Listens on :9100 (LAN-visible,
+  # read-only metrics). Scrape interval is the receiver's global 60s. ---
+  node-exporter:
+    image: prom/node-exporter:v1.9.1
+    container_name: astra-node-exporter
+    network_mode: host
+    pid: host
+    # DBUS_...: the systemd collector reads unit states over the system bus; the
+    # socket is reachable through the / bind-mount, no extra privileges needed
+    # (read-only queries are allowed to any uid by dbus policy).
+    environment:
+      DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
+    volumes:
+      - /:/host:ro,rslave
+      # smart-exporter (below) writes smartmon.prom here; served via --collector.textfile.
+      - /ruby/data/experiments/astra/artifacts/node-exporter/textfile:/textfile:ro
+    command:
+      - --path.rootfs=/host
+      - --collector.ethtool
+      # ethtool stats for the uplink NIC only — every veth/bridge would be noise.
+      - --collector.ethtool.device-include=^enp4s0$
+      # per-state process/thread counts (runaway/zombie detection)
+      - --collector.processes
+      # host service health (restarts, failed state) for the units we actually
+      # care about — unfiltered it's a series per snap/mount unit, all noise
+      - --collector.systemd
+      - --collector.systemd.unit-include=^(caddy|coder|containerd|covert|cron|docker|gdrive|ssh|tailscaled)\.service$
+      # serve any *.prom dropped by sidecars (currently: smart-exporter's SMART stats)
+      - --collector.textfile.directory=/textfile
+    restart: unless-stopped
+
+  # --- smart-exporter: SMART disk health (the 14.6T media spinner + both NVMe)
+  # as Prometheus textfile metrics. smartctl needs root + raw /dev access, so this
+  # runs privileged as a separate sidecar and node-exporter stays unprivileged;
+  # the only coupling is the shared textfile dir. No network (network_mode: none) —
+  # it only writes a file. Rescans every 5 min (SMART reads are passive/cheap). ---
+  smart-exporter:
+    build:
+      context: smart-exporter
+    image: astra-smart-exporter:local
+    container_name: astra-smart-exporter
+    privileged: true
+    network_mode: none
+    environment:
+      SMARTMON_INTERVAL: "300"
+      SMARTMON_OUT: /textfile
+    volumes:
+      - /ruby/data/experiments/astra/artifacts/node-exporter/textfile:/textfile
+    restart: unless-stopped
+
 # The production edge is the shared HOST reverse proxy at /ruby/data/reverse-proxy
 # (it imports this repo's root sites.caddyfile; reload via `just caddy-reload`), so
 # the substrate runs no Caddy of its own — services are reachable on their
