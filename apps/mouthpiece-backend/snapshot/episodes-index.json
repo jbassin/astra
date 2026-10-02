@@ -24594,6 +24594,1074 @@
           "text": "I'm saying the dungeon finally met a form it can't corrupt."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-10-1",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 20,
+      "isMain": true,
+      "date": "2026-10-1",
+      "dateSortKey": 20261001,
+      "title": "Do Not Feed the Angel",
+      "episodeTitle": "Do Not Feed the Angel",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm and dry, precise but easygoing; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date Bram fumbles for and hands it to him in a short, plain sentence — she finishes her sentences and finishes them short — then gets right back into the story with him. She's not the fact-checker; she's the friend who remembers. She's as invested in the characters as he is: she wonders aloud WHY someone did what they did, floats her own theory about what a faction is really up to, and builds on Bram's read as often as she tweaks it. Her wit is dry and fond, aimed at the world and the table's heroics, never at him. Grounds events in how the world actually works; usually right, so let her be plainly wrong exactly once so she isn't an oracle"
+        },
+        "C": {
+          "name": "Nell",
+          "persona": "bright, eager, quick on the uptake; the new friend at the table who has played a LOT of Pathfinder but is hearing this campaign for the first time. Reads every scene as a game before she reads it as a story — how close the fight was, what it cost, what the party gave up by picking that door — and is confidently, cheerfully right about that. Knows nothing of the world yet and doesn't pretend to: when a faction, a place, or a name comes up cold she ASKS what it is, plainly and without guessing, then repeats the answer back to make sure she has it. She never misremembers and never bluffs; her texture is enthusiasm — she over-asks, wants every side-thread pulled at once, is delighted by details the regulars take for granted, and now and then has to be told \"we'll get there.\" Speaks in quick, complete, slightly-too-eager sentences that often end in a question; by the end of the night she's more invested than either of them"
+        }
+      },
+      "synopsis": "The ritual has been interrupted, but the angel it bound into mortal flesh still stands — and Anzu's sister Galzu is already gone through a portal that is far more than a doorway. The chase carries the party past the agitated edge of a Fane and into places that should only exist in memory: a tavern endlessly reliving the two minutes before a bomb falls, a crack in the sky being pried ever wider, and a battle out of legend on an open plain. Every step brings them closer to the heart of Tali, where Galzu waits mid-ritual and something long dead is beginning to stir. And she did not come alone.",
+      "durationMs": 2303269,
+      "hasAudio": true,
+      "hasTranscript": true,
+      "audioVersion": "2325416-6abf46bc",
+      "transcript": [
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay, before we do anything else, somebody has to bridge the gap for me, because the last episode I have ends mid-fight — you're in the spire, the walls are bulging, there's at least one corrupted Harlequin still up, and then two weeks of nothing. I have been walking around with that cliffhanger in my chest."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Nell, I'm so glad you asked, because the answer is a mega session that we then failed to record, which might be the most this-campaign thing that's ever happened — the spire fight turns around, they win, and then the night goes completely strange."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It turned on a dime, for the record. They were losing that fight when we left them, and they came back and finished it clean."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They finish the Harlequins, they notice the little room they're standing in is an elevator, and this is where it all goes sideways — they flip some knobs and the lift translates itself, and them, out of real space."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Slip space. Josh called it slip space."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Slip space! They're flying around cables in the not-world, and every few steps they flicker into this interplanar library and back —"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Wait, flicker into a — one step you're in a library?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "One step in the stacks, next step back on the catwalk. The spire and a library were taking turns being real, and nobody ever found the seam."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's horrifying. What was in the library?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Books that all say Harrow. Shelves of one word, over and over, and if you resonate at them they resonate back the wrong answer, and the party — being geniuses — goes, should we take a copy home, and then, being cowards, goes, no."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Harrow's a god-eater from the old campaign. Somebody was keeping a shelf warm for it. I didn't love that either."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "A god-eater with a library. Great. Cool. Continue."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Dead Harlequins everywhere, one glowy book that Argyle's will save told him not to touch in the strongest possible terms —"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "his save told him not to touch it?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's how you know it's bad! When the numbers come back and say the best move is to walk away — they left it, and Argyle is still mad about it, he thinks it solved — anyway — the control room, and in the control room, the bone devil."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Ocelith."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Ocelith! And they cut a deal, two questions and he walks, and he answers the two questions and then just keeps voluntarily offering information like the world's most cooperative devil, so —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "So they took the head."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "I'm sorry, they what?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Took the head. It's the only part of him that survived, his claim anyway, and now it rides around in Anzu's sleeve."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Whose sleeve? Why is there a skull in a sleeve?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Because Anzu's sleeves are interdimensional, Nell, keep up — one of them is currently rooming a talking skull with his familiar, the skull and the bird, cohabitants, and I would pay real money to be a fly on that wall."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The bird's Othello. The head mostly complains now."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's the grim-smart play, actually — he's a witness to whatever yanked the Strider off the map. Okay, and then they went home?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They went home, Egan turns up — you know Egan, the big rescued gunslinger from the mindscape episodes —"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The one who came out of his own brain hearing the Voidsong instead of the Herald's song. Is he on the roster now?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "On probation. And hold that thought, because probation is the whole theme of last night."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Egan tells Argyle he's not going to hurt their people, and Argyle, whose entire theology is people deciding to be better, takes that at face value — friends now, very sweet — and then the diner scene, where Johnny sits down with a blind priest and just announces he knows the one true gods, and everyone else walks in on that with no context."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "why would he — okay, no, we'll get there. Who's next, the sister?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Grayson gave them a retrieval job first — seventeen barrels, the biplane people are allegedly handling it — and then the whole reason for the season. Galzu."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Anzu's sister. Black feathers, blue tips, same as him, and a fervent believer in the Herald, down in Tali with the singers."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Wait — the table was calling her something else, I remember laughing about this on the —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Girl Zoo."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Galzu."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Two people said it at the table, Josh ruled it canon, he ruled the pink feathers canon too —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He ruled no such thing, and he held the line. Black feathers, blue tips, same as Anzu. Anyway — they need her."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Right, because of the counter-song — Anzu built the interference rig but he needs a living carrier of the Herald's song to tune it against. She's the carrier."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "She's on a very short list, and she fireballed him on sight last session. Didn't say one word. Her own brother. Keep that in your pocket, because it never stops being true."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the trail — a tavern called the Craven Roost where the singers drink, and the barkeep mentions the cult rents the back room, and Egan, who has the social grace of a collapsed barn, announces they rent the back room at a volume calibrated for a different building, and the back room is a summoning circle and a pile of ash."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "A failed summoning?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A failed Aetherhost. That's the ritual — you land a celestial in a mortal body, with its consent, and you get one of those. The first try left the ash. Someone was going to try again."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the someone is Galzu — they trace a stolen censer through the Apothecarium back to the Chapel of the Six, the chapel in Tali's heart devoted to Aurelia and her original party, the six heroes of the old age, they augury on the way, which comes back with the least useful prophecy Josh has ever handed anyone — big things are happening and they're happening fast — so they sprint, four rounds of crossing a chapel floor, bust in mid-ritual, and she looks up and says bye, one syllable, that's the whole farewell, and steps backward off the world into this enormous red portal framed in bones. A hundred feet of it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Two hundred tall, forty across. And the circle around the angel dies when she goes — but the angel doesn't. That's the kickoff. Binding gone, angel still standing, sister gone."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's where last night starts. Okay. Set the scene, I have questions queued up like planes on a runway."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Chapel, red light everywhere, angel in the middle of where a circle used to be, one slime-thing the Harlequins apparently upgraded — Josh's words were they're not dead anymore, they're better, which I did not enjoy — and a cultist priest the stat sheet calls the Faithless Ecclesiarch, who spends the whole fight declaring Argyle a heretic and smiting him with spirit damage. A faithless priest. Smiting the redeemed celestial. For heresy. The irony was doing loops."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "So the angel — what is it, mechanically, a boss? What does it do?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's a vampire, is what it is. First thing it does is latch onto Benny and feed — and Benny's night goes badly there, and then Josh stops the fight, mid-boss-turn, to ask permission to fix his own mistake, because the angel had flown off before attacking, and the table, fatally agreeable, says sure, redo it —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And it crits Benny into the floor. We voted for that. We did it to ourselves."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Down goes the nine-year-old. And Argyle?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Argyle has his big oh-no moment — he's got the one reaction that eats damage, Glimpse of Redemption, and he'd spent it wrong — so now he's doing cleanup, burning a whole turn scrubbing the blindness Galzu left on Benny so the boy wakes up able to see."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "who blinded him?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Galzu, on the way in. She works fast."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And meanwhile Egan — and I need you to understand that Noah spent the entire pre-show volunteering Egan for portal duty, on the grounds that he is, in the player's technical terms, disposable — Egan just goes. Godspeed, says he'll be back hopefully, straight into the big red door after Galzu."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "and?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the portal is not a portal! He comes out on a windswept plain — dry, cracking ground, and these massive rib cages jutting up out of the earth at wrong angles, like something enormous died there, with purple crystal growing in around the bases — and no Galzu. Nobody. Turns around, goes back through, and comes out somewhere else entirely — a green valley between mountain ranges with a stairway made of clouds climbing into the sky toward a glowing opening that is getting wider —"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "a stairway of clouds —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "— and through again, back on the bone plain, and again, bone plain, and somewhere in there the slime gets his legs and makes him jog in place like a windup toy — the point is he's bouncing between worlds shouting updates, and the update is that the door goes lots of places, and none of them have his sister in them."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay, hold on. A portal with different exits every time — that's not gate behavior. Is that a thing here?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I called gate in the moment, I'll be honest — huge gate spell, that's why it stands there open like a door. I was wrong, and the session proved it: a gate goes stale after about a minute and goes exactly one place, and this thing had been open too long and had several. It's not a door at all."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Because Anzu is the one who puts words to it — he gets up in the air near the thing and does his occultism at it, and Josh gives him the read. You know that fizz you feel crossing into a Fane? That tingle, like the air's gone carbonated?"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "that's the edge of a Fane — okay, wait, and a Fane is?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The ground a Heart claims. The skin of its presence — you cross the line, you feel the fizz, you're inside somebody. The party's been living in one all season, theirs is why magic goes slightly wrong around their house."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So Anzu's read is — this is not a doorway to somewhere else. This is the edge of a Fane turned up to eleven, agitated, like chop on the surface of an ocean, and walking through it doesn't take you to a new place. Every step takes you one step closer to whatever is manifesting the Fane."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "...the Fane belongs to Tali. The dead heart. You're telling me the chapel portal opens into a dead heart's ground. Its — skin."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the doors inside it open onto places that should only exist in memory. Hold that thought, because it gets worse and better at the same time."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Meanwhile the fight! The angel puts up a fire shield, takes to the air, starts swatting — the table learns mid-swat that void damage feeds it, because Anzu reaches for something void-flavored and three people yell at him in unison, do not feed the angel — Anzu settles for hammering it with telekinesis instead, throws his biggest mind-blast at it and the angel just succeeds, then mythic-succeeds, upgrades its own save, nothing happens. The thing is built like a vault. And it has mythic points, Nell! The angel is on the party's tier! It got stunned once and just spent a mythic point and shrugged the stun off like a coat."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "okay, that's the fight telling you what it is — if the enemy has your toys, the fight is fair in the worst possible way. What closed the distance?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Taunting, weirdly — Egan gets under its skin, so when it swings at Anzu it swings sloppy — Argyle's been chewing it with that pocket of his, the unraveled reality, the little patch of the world he holds wrong and everything inside it regrets — by the end he was feeding it corpses — and then the finish. Egan tags it with the rifle, Josh asks Tanner to guess how much the angel has left, and the truth was so much lower than the guess that a sound came out of Tanner I cannot describe — and Egan watches it turn on Anzu, and he says — he says I know who my friends are, and puts the bullet through its eye. Out the back of the head. It stops glowing before it finishes falling."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "I know who my friends are. From the probation guy. The guy whose whole question is which song he's listening to."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's the line. Whatever else is true about Egan — and I go back and forth on him weekly — in that second, he chose. And then he cleaned out the rest of the room so nobody had to sit with it too long."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So that's Egan's thesis, since you asked about probation — the man they can't quite trust keeps passing tests nobody set for him. It's very inconvenient for everyone's theories."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "okay — loot and lore hour. What do they learn from the body?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Argyle goes to religion on it, has to spend a mythic point just to scrape a success, and the read is: not an angel, not technically — a celestial that agreed to be landed in a mortal body. Consent! Willingly! And no Outer God would ever allow one of theirs to do that, which leaves the other group."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "the Ashen Pact. The Herald's people."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is the frightening part, because the party knows almost nothing about how the Pact works. Their entire file is one horn motif and a book they're all too scared to read."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "wait, the book — Galzu was reading something at the lectern when they broke in."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The book! Still there. Anzu, most learned, goes to look, and Josh makes everyone roll will saves just to look, and Anzu describes the words as — his word was unwords. Shapes that should be letters and aren't, that you can somehow read anyway, and reading feels like falling, and he catches himself mouthing along, stops, and comes away shivering with his bones cold and a new little twitch in his beak."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "and they took it. They took the book?!"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They took the book! Ropes it shut — both directions, like it's a crocodile — and files it in the other sleeve."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "his OTHER sleeve —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The item sleeve. Bird and skull in the first, evil book in the second. He runs a very tidy interdimensional closet, I'll give him that."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And there's a horn embossed on the cover. A big old horn. And if you were in Egan's brain with us, you know — the thing that hooked him to the Herald was a horn on a cord. Same silhouette."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "so it's the Herald's book. The manual. That's how you land an angel in a person."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Argyle — who wanted to feed it to Eerie, for the record, that's his fix for every artifact now —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The party's whole artifact policy is have the Fae eat it, and honestly the record's not bad!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "— asks the real question instead: can the chapel be un-hexed? And Josh says a strong enough break curse, maybe, but it's above his weight, and it'd take about eight hours. So that goes on the someday pile, with everything else on the someday pile."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "okay, but the door is still standing there. The giant red bone door into a dead heart, and the sister went through it. Someone has to follow her."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Argyle preps his travel spell, Wanderer's Guide, sets the destination as Galzu — Josh says a person is not a destination, fine, Tali — and this golden route line appears on the floor and walks straight into the portal, and they all hold hands before jumping, which someone proposed and nobody was brave enough to refuse."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the spell matters here, so keep it in mind. Josh says the portal has six ways it can go, and the Guide narrows it — instead of a die, he has them flip a literal coin. Two doors, both equally close to Tali, heads or tails."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The spell picks the shortest routes, so they see three of six doors — and the other three just never open. Do we know what was behind them?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "We know nothing! That's the beauty and the horror! Josh said afterward they made it through the three shortest routes and never had to deal with all six."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Three doors down, three unopened, inside a dead lorekeeper's — okay, hold that thought, you said memory, I'm holding it. What's behind door one?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Door one is a town. Canals, brick cobbles, a sunny noon, people in silver raiments going about their day — except everyone's motion stutters, like the whole place is a film with frames missing — and the perception calls come back, and Benny, tiny Benny, human encyclopedia of his father's Belvedere trivia, places it from pictures. Hellmester. A town in Raelion."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "...Johnny's from Raelion."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Johnny's from Hellmester. He owned the tavern there. And they brought Egan."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They brought Egan! To the Johnny memory! It's Arctos at the Argyle vision all over again — this party never brings the right person to the thing."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "wait — they can just swap? Mid-dungeon? Like a video-game roster swap?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "There's a whole mechanic! Camp swap! Anzu clicks his little menu, dismisses Egan, summons Johnny — takes about two hours in-world, don't ask me how the two hours fit inside a memory, the answer raised more questions —"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "I'm not asking, I'm delighted. They fielded the man the memory belongs to."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And then the bomb goes off."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Not a metaphor! A bright white bloom way off past the rooftops, half a second later the shockwave takes every window in town, and then it takes the town, and then it takes them — bones, blood, skin, Josh does not editorialize — and then they're standing exactly where they were. Noon. Silver raiments. Everyone going about their day. Two minutes till the bomb. The town is living its last two minutes before the Midnight Sun falls, on loop, forever."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "the Midnight Sun. Okay. His hometown. His tavern, and the bomb. This is the worst possible memory for the Fane to have on its shelf."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or the most important one it had. Because Argyle's read later is that the whole thing is wrong — and the wrongness turns out to be the puzzle."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The Guide points them at a tavern — The Last Stand."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Last Stop."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The Last Stand — packed, lunch rush — and behind the bar, a taller, younger elf in red sunglasses and a denim jacket, holding the whole room with a story about cave-diving somewhere exotic."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "it's him. Young Johnny, behind his own bar."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Telling, beautifully, a story about an adventure he never took. The memory keeps the swagger, not the truth. Nobody at the table was okay after that detail."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And they can't touch him — you walk straight through everyone here, the crowd's all half-there, young Johnny doesn't react to his own future — so they do what this party does, which is improvise increasingly unhinged experiments. Somebody stabs ghost Johnny — knife goes right through, incorporeal. Anzu tries to grab the Watcher as it manifests —"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "the WATCHER?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Because here's the thing — every loop, in the last half-second before the blast, out of young Johnny's shadow, the Watcher erupts. And I need to describe this carefully because it deserves it: a mass of shapes that don't fit together, triangles whose inside angles add up wrong — Nell, you're the numbers person, is that even a thing?"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Triangles are supposed to add to a hundred and eighty, so if the angles are coming in over, that's not flat — that's curvature. The Watcher is shaped like the inside of a curve, which is — give me a second — that's horrifying?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A thousand stalks off a wrong body, and every stalk ends in one eye, and they're all — all of them — swiveling. At the party, at Johnny, out the window at the blast."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And it wraps the whole tavern, and the blast hits, and the shield shatters, and it dies screaming with everybody else, and the loop resets and it does it all again. The Watcher, failing to save him, every two minutes, forever."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "the Watcher With a Thousand Eyes — Belvedere's whole mandate, the first Provost climbing the highest peaks so the Watcher's view of the sky was unimpeded — that Watcher is dying in a loop in a bartender's shadow. And Johnny — the current one, the one they swapped in — he's standing in his own bar watching it happen. Watching himself die, over and over."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He was there the whole time. That's the part I keep coming back to. Whatever else the party does with this, Johnny stood in the doorway of his own funeral on a two-minute replay."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the experiments escalate — Anzu makes eye contact with it, nothing. Egan grabs it and it is solid, actually solid, for that half-second, and then the bomb kills everyone including the hands. Argyle throws a sigil on it — and the next loop, there it is wearing the sigil. It kept it. The Watcher remembered being touched. Somebody tries to cast guidance on it, can't get the timing, starts the spell and gets liquified mid-syllable. And at some point Benny just starts talking at the sky — Watcher, come out, please come out before the explosion, like it's a cat under a porch —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Josh, with the weariness of a man who has now heard everything, just goes, you cannot taunt the explosion."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "okay, so you can't grab it and you can't talk to it — so what fixes it?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The wrongness fixes it. Argyle finally puts a religion check together — spends his last mythic point on it — and Josh hands him three problems. The sky is wrong: one sun, and Raelion had two, the Godhome was in the sky back then. The clock is wrong: it's noon, and the bomb was called the Midnight Sun for a reason. And the scene is wrong: this is not how the story went. And the key — Argyle asks the Machine God, way back, what did Tali do? Lorekeeper. The heart kept records. This isn't a dungeon, Nell. It's an archive. The whole portal system is Tali's card catalog, and the Hellmester shelf had the label on wrong."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "so the record was wrong, and the fix is — you correct the record?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They walk to the tavern clock and turn the hands — and the sun moves. The sun in the sky moves with the clock, Nell. The sky is on the same winding key as the bar clock."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "no."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They wind it toward midnight. They pour drinks behind the bar, because the real bar was packed that night — people filter in from the sounds of it. And the second sun is the problem, and Anzu points at the sky and demands the Godhome like a game show host, and Josh gives him a flicker — the sky wants to comply, but it needs a light up there —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And that's the spell. Somebody puts light into the sky, a little cantrip aimed at the ceiling, and it catches — and there's the second sun. The Godhome, back over a dead country, for one night, because somebody thought to look up. You had to be there, honestly. The whole table went quiet."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "and then?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then it's real. The bomb comes — and this time it's the true version. The Watcher fades out first, and Josh is very specific: it was not there in actuality. And the blast goes through, and everyone in the Last Stop dies. Johnny behind his own bar, with them. And the party just stands there, untouched, while a tavern full of ghosts finishes the worst night of their lives. And then a second flash, purple, inside the blast — and the entire world gets pulled sideways into one point in the middle of the bowl of mountains and flushed. Buildings, streets, all of it, gone. And the party's standing on a ravaged mountainside with one road onward, into the dark under where the shadow used to be."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "okay. Okay. Because the Watcher's absence is the thing, right? The version they saw first — the Watcher wrapping him, failing, dying with him — that's the story version. The true one has no Watcher in the bar at all."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's my read, and I'll own it as a read. Which means the blessing was never a shield. He died with everyone else, and the Watcher found him after. What the Watcher does isn't protection — it's resurrection. The shield was the story Johnny told himself so that night would be survivable. And now he's watched the corrected version. I think about that a lot."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And here's the theory I left the table with — the record was editable. They went into a dead heart's archive and corrected a memory, and the archive took the correction. Midnight, two suns, a full house, and it locked."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Whoever finishes reviving that heart holds the pen. That's the thought I hate the most from the whole night."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "but why was the record wrong in the first place? A lorekeeper should have the true file on the Midnight Sun."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Maybe it did, once. Hearts die — maybe the record rots with the heart. Or maybe the true file was taken, and what's left on the shelf is what people remember. Pick your nightmare."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "I hate both. I choose both. What's behind door two?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Door two is fifteen miles up. They come out standing on a platform made of pure light, over three mountain ranges laid out in an H — you can hear Josh building it as he goes, what are some landmarks, he says, out loud, like a man assembling a cathedral — and far, far below them: a battlefield. Craters, the scars of heavy magic, and parked at the edge of it, a city on legs. A strider. An old one."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "a DIFFERENT strider? There are others?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "There was at least one, once, in the age of legend. That's all we know, and it's a lot."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And above them is the sun — except it's not. It's a crack in the sky with gold pouring out, and standing right in front of the crack, a small woman bathed in every color at once, hands physically inside it, prying it wider. And out of the crack, a silhouette starts coming through."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And what you see depends on your save. That was the mechanic — everyone rolled, and everyone who made it saw the same thing: four arms, a horn growing out of the chest like a crest, mandibles, fly's eyes down the face. And Benny, who missed the save, saw just — some guy. The most average human you've ever seen in your life."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "the same silhouette reads as a monster or as — depending on your save?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Depending on your save. And Josh gave the some guy a name, too — Rollo Willsafe — and dropped it like we'd all know it. Nobody knew it. I've been chewing on that name since midnight."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "you don't know it? You know everything."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I don't know that one. It's not from anything the party's touched."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "If you averaged every man alive, you'd get Rollo Willsafe — that's the bit, the average man is the monster, depending on your save — and the table does not stand on ceremony. Somebody shoves him. A full platform-clearing shove, straight back into the crack. And the woman gets pushed back from her work, and the light they're standing on gives out, and they fall fifteen miles through the next door."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "wait, wait — hold on, they just closed that door. On an Aurelia. Mid-pry. They shoved the Godhome shut like a fridge at midnight — that's intel nobody gets now. Who was she? What was she letting through?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Nobody knows! That's the cost of the shove, and I hadn't even clocked it until you said it — the coin flip means they only ever got the two-minute version of everything."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And door three confirms she matters, because it drops them into an open plain — Benny places it, the southeast, where the Succithus Desert should be, except it's grass — and in front of them, two figures locked in a battle. A woman in armor made of rainbow light, close enough to her that the pressure singes your eyelashes — and fifteen feet of Orthalaxis."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Orthoclax — the Plaguebearer —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Orthalaxis the Plaguebearer."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Him!"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Josh's description is a war crime — a giant rotting as he stands, mouths opening and closing in the skin, belly folds weeping green, armor growing out of hardened pus, eyes like a fly's — and the knowledge check comes back: this is one of his legendary fights with the Aurelias."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "tell me the legend, I don't know the legend."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He fought two of them, back to back. Killed the second Aurelia. Died to the third. And the party's check wasn't sharp enough to say which one is in front of them — so even standing ten feet away, nobody knows if that's the Aurelia who dies or the one who wins."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "...what does the party do?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The party attacks Orthalaxis."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "THE PARTY ATTACKS ORTHALAXIS."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Somebody asks which one the sword hits, the answer comes back, the big guy, and then it is six seconds of the most violent group project I have ever heard narrated — Anzu crits, the guns crit, everything crits — and Josh is counting out loud because Orthalaxis is closing his wounds as fast as they open, growing back stronger, and the damage total comes in a hair over the line. A hair, Nell. One point worse anywhere and that legend ends different."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "they jumped a legend-tier monster mid-legend and beat his healing by a hair. And here's my thing — the Hellmester memory folded them in when they changed it. So does the record now say Orthalaxis fell to four strangers and an Aurelia? Are they IN the legend now? Is that on the shelf?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They've been editing a lorekeeper's records from the inside, and they've left fingerprints everywhere. That's the question I'd be asking Josh if I could ask Josh anything."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Orthalaxis folds inward when he goes down — his whole body collapses into a red portal going down, like the world's worst piñata — and the Guide points straight into it, and Anzu says great work, team, like a little-league coach, and in they go."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "and that's when it stops being memories?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's when it stops being memories. The fizz stays — still in the Fane — but everything about the space says real now, and they're standing in the inner sanctum of the chapel, the deep part that shouldn't exist: a great staircase curving down around spires to a center point. And at the center is Tali. The actual heart. A red disc, pulsing, filled with soft-moving veins — dead, that's the read, but being brought back — and standing over it, mid-spell, pouring magic into it: Galzu. Black feathers, blue tips. And at her feet, four dogs."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "dogs?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Summoned, and she didn't walk in with them — she pulled them up once she was already inside. Whatever the Herald's taught her, summoning's on the list. The table called them Tallyhunds, and the table should be ashamed, and I include myself."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "okay — she's mid-ritual, the heart is coming back, the party's on a staircase. What's the play?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The two-week-old plan, executed flawlessly for about ninety seconds: they Silence Benny — the nine-year-old becomes legally noiseless — stances get set, stealth gets rolled, and they are, and I want to quote the room's energy, very quiet and totally visible. Sneaking down a curved staircase in a bright room, in full view."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "full stealth in plain sight, a classic. Does she notice?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "She's mid-ritual. She finishes one piece of it while they're creeping — the heart moves, actually vibrates, a little life comes into it — and then Josh calls initiative, and it's a meat grinder from there. Chip damage, all the way down. Josh apologized afterward. He was right to."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Because Benny sprints the length of the room first, seventy feet of tiny android, and ends up in the eyes of all four hounds at once — and this is the bit I need you to appreciate — the hounds have a gaze weapon, and Benny saves against it, and saves, and saves. He crit-saves all four. Unaffected. Immune for the rest of the day. The boy walked into the monsters' one gimmick and negated it with his whole chest."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "that's a fortitude build doing fortitude things, honestly, nine-year-olds are famously durable — and the dogs are mad about it?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Furious! Josh rolls back-to-back crits on the dice and apologizes, twice, sincerely, and Benny takes the worst bite-and-claw of the night. That's the shape of the whole fight — untouchable to the gaze, getting absolutely run through by teeth."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "and you said the hounds were weird? Geometrically?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Geometrically. Anzu puts knowledge to them: they can teleport — but only next to a right angle, a proper ninety-degree corner. And they're weak to curved space, and the map was full of curves, so their armor was half-off the whole fight. Nobody at the table could explain why a dog is bound to corners."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A lorekeeper heart guarded by dogs that only exist in right angles — there's a clock joke in there somewhere and I cannot find it —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Quarter past, half past. A timekeeper's heart likes its angles."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "wait, Tali's a timekeeper? I thought the read was lorekeeper."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Both, depending on who you ask — the Machine God's called it a timekeeper, Argyle's read called it a lorekeeper, and the two might be the same job. A heart that keeps what happened, and when."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Galzu herself — here's the wrinkle. The whole anti-caster package they packed, silence and gags and shackles, and she casts straight through the silence. Subtle Spell — no words to silence. And Josh confirmed it after: she prepared for them. She knew they were coming."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "she KNEW. How? How does she know?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "My money's on the Craven Roost — they kicked a cult door in and asked questions all over town two weeks ago, someone talked. Or the answer I like less: the song. Anzu worked out that the song isn't just a sound, it's a medium, it carries information. If she's plugged into it, she heard about the bar fight before the bar fight was cold."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "so the kidnapping plan got scouted, she prepped a counter — and she fireballs anyway."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "She fireballs ANYWAY — Anzu and Argyle eat it — and the single best moment of the fight is Anzu, mid-fireball, remembering that he eats fire. The bird is fireproof! Something in his build just takes the spell out behind the shed. His poor sister."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the ritual stalls — that's the quiet headline. Every action she had went into fighting and fleeing. Her casting is subtle but her ritual work isn't, and the pressure bought that: zero progress on Tali past the first piece. Without the silence, the dogs hold them off at range and she calmly finishes waking a god."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "so the gimmick half-failed and still won the fight. That's — okay. And Egan?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Egan, who they'd swapped back in somewhere on the road — don't ask me when, the two-hour rule broke my ledger — takes a running start with those boots and jumps seventy-five feet from a standstill and catches Galzu out of the air. Just plucks her out of the sky mid-fly, like a dad grabbing a cat off a curtain."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "out of the AIR —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Hauls her down, parks her next to Benny inside the quiet, three hands on her, and the table spends a whole round just carving. She's caught, she's silenced for anything that matters, and the knives come out."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And she mythic-points the grapple off herself, flies up thirty feet, and chain lightnings the two of them. Benny goes down — second time on the night — and Egan survives the same blast by one thread of fate, his last mythic point, clinging on. Screaming. Silently. Inside a bubble of magical quiet, where nobody can even hear him screaming."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "how close was this? Real talk. Give it to me straight."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Nell, at one point the board was: four dogs, a flying witch, a half-alive heart — and Benny down, Egan at the edge, Argyle fighting his own little war by the stairs, Anzu throwing rocks from a balcony. Least glamorous fight of the campaign, closest they've come in months to a wipe."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "and who closes it?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Everybody, a slice at a time. Benny's back up and cuts her deep while she's caught. Anzu hits her with a frostbite that Josh narrates as putting her on death's door — still standing, still flying, mortal but standing. And Argyle finishes it, his last attack — and she doesn't die. She drops. Dying, not dead. And Josh pulls back the sheet and shows the table: she had two hit points left. Two."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "TWO hit points. The entire margin of the war was two hit points — oh my god, the manacles. The whole plan was a kidnapping, they came here for a prisoner, and the prisoner is dying on the floor of her own ritual with the party standing over her holding anti-magic shackles."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the heart's half-lit. One piece of the ritual took. Tali's got a pulse for the first time in living memory — nobody down there has ever known it alive — and the woman who lit it is unconscious at the top of the stairs. That's where the night ends."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "so let me just line up the questions, because there are so many: does Galzu live? Do the dogs pop when their summoner drops? What happens to a town whose dead heart wakes up under the Herald's —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Monday. All of that is Monday, and I need Josh to open on the manacle check."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "and Anzu — okay, I have to say this — the entire fight happened in total silence. His sister never said one word to him. Again. They fought to the death of one of them in dead quiet, and I don't think anyone at the table said that out loud."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Nobody's mentioned it, and everybody knows it. That's the Anzu episode, whenever it comes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the table's already floating the brain dive — they did it for Egan, and there's talk of going into her head the way they went into his, and someone called her brain weak, which is apparently a thing you say about your own sister."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "they're going to walk into a brain the Herald's been living in? It worked last time, but last time they swapped his song for the Voidsong, so unless the plan is to swap hers for — oh. OH. Is that the plan? Is the plan to swap her song out the way they did Egan's?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Nobody said it out loud! But that's the shape of the hole they're standing in front of."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's the obvious next door. Whether it's a good door is a Monday problem."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "and the three doors they never opened, and the break-curse someday-list, and whether Johnny ever says out loud what he watched in that bar, and Rollo Willsafe — ROLLO WILLSAFE, I'm going to be saying that in my sleep — I've known this campaign for three episodes and I need the bird to get his sister back more than I need most things, I need you both to understand that."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And whether Egan's a friend, which — I mean, he told us. He looked at that angel and he told us who his friends are, and then he proved it twice more before the night was over, and at some point you just have to let the man be on the team."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The head in the sleeve has seen more of this campaign than we have. That's my closing image — a skull, a bird, and an evil book, in two sleeves, walking into a dead heart's half-lit chamber. And if that heart finishes waking up before they get back to it, that's not a boss fight, that's a whole town's god coming back wrong, and I —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Monday. It's Monday. I need it to be Monday."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "You're both on record. I'm holding you to Monday."
+        }
+      ]
     }
   ]
 }
