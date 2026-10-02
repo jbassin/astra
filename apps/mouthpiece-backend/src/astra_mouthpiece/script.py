@@ -27,8 +27,10 @@ from .prompts import (
 from .schemas import script_tool
 
 #: A 30-40 minute episode is a large output; give the model ample room (M12). Raised
-#: 32k→64k with GLM 5.3: its reasoning tokens share this budget (see clean.py).
-DEFAULT_SCRIPT_MAX_TOKENS = 64_000
+#: 32k→64k with GLM 5.3: its reasoning tokens share this budget (see clean.py). Raised
+#: 64k→128k after the long 2026-10-1 session's Pass A hit 64k on all four attempts
+#: (GLM 5.3's OpenRouter completion cap is 131,072).
+DEFAULT_SCRIPT_MAX_TOKENS = 128_000
 
 #: Max words of Pass A transcript fed to a single Pass B typesetting call. Pass B emits a
 #: whole segment as one structured tool call; GLM's structured output is reliable up to a
