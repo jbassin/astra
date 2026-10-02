@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-1",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Through the Fane: Three Vignettes and a Falling Star",
+    "synopsis": "The party finishes the chapel battle against the Aetherhost and its allies, then pursues Galzu through a massive portal into the Fane of Tali. Inside, they traverse three surreal vignettes — Johnny's death at Hellmester, Aurelia pulling open the Godhome, and Aurelia's battle with Orthalaxis the Plaguebearer — before reaching the inner sanctum where Galzu is reviving Tali's dead Heart. A desperate fight against Galzu and her summoned Tallyhunts ends with Galzu brought down to dying.",
+    "key_beats": [
+      "Galzu ducks through the massive red portal as the magic circle around the Aetherhost fades; Egan gives chase, bouncing through several strange locations (a windswept plain of crystallized rib-cages, a cloud-stair valley) but never finds Galzu, returning to the fight.",
+      "The party finishes the chapel combat: Benny kills the Proto Slipweird, Egan crits the Aetherhost with his long rifle and kills it with a shot through the eye, then shoves the Faithless Ecclesiarch to death.",
+      "Argyle studies the celestial corpse (religion check): it was a celestial from the Ashen Pact, not the outer gods, summoned into a mortal body but weakened because the ritual was rushed; killing it banished the celestial back. He records the circle's runes. Anzu secures the binding book (with a horn cover and mind-bending 'unwords') in his sleeve. The portal is determined to be the agitated edge of a Fane, not a Gate spell.",
+      "Argyle casts Wanderer's Guide toward Tali's Heart; the party holds hands and jumps through the portal together into the Fane.",
+      "First vignette — Hellmester, Raelion (Johnny's hometown): a looping memory of the Midnight Sun bombing. The party repeatedly dies and resets. They find the Watcher (a geometric, thousand-eyed entity) emerging from young Johnny's shadow at the Last Stop tavern, failing to protect him each loop. Argyle's religion check reveals the memory is wrong: one sun instead of two, bomb at noon instead of midnight. The party fixes the memory — sets the clock to midnight, casts Light to create a second sun (Godhome), pours drinks to fill the tavern. On the corrected loop the Watcher never appears; Johnny dies in the bombing and the entire world is 'flushed' inward, revealing a path deeper.",
+      "Second vignette — a platform of light 15 miles up: Aurelia is physically pulling open a crack in the firmament (the Godhome). A silhouette of Rollo Willsafe emerges — most see a four-armed, ram-horned, mandibled horror; Benny sees 'just some guy.' The party attacks and pushes it back into the crack; the platform collapses and they fall through another portal.",
+      "Third vignette — the Succithus Desert (grassy, southeastern Adan): Aurelia in rainbow-light armor battles Orthalaxis the Plaguebearer, a rotting, insectoid giant. The party unloads on Orthalaxis and barely kills him (six damage over the threshold); his body folds inward revealing a red portal.",
+      "The party passes through into the inner sanctum of the Fane: Galzu stands on a staircase commanding magic flowing into Tali's dead Heart (a pulsing red disc being revived), guarded by four summoned Tallyhunts. The party casts Silence and sneaks in, but some poor stealth rolls limit their approach before combat begins.",
+      "Combat in the sanctum: Egan uses blast boots to long-jump 75 feet, grapples Galzu, and repositions her into the Silence zone. Benny double-slices her. The Tallyhuns converge with Ripping Gaze auras and bites, heavily damaging Benny and Egan. Galzu uses a mythic point to escape the grab, flies 30 feet up, and casts Chain Lightning — dropping both Benny and Egan. Egan survives only by spending his last mythic point on Divert Destiny.",
+      "Anzu casts Amped Frostbite on Galzu for 35 damage, bringing her to death's door. Argyle follows with Whispers of the Void; Galzu fails her Fortitude save and drops to 2 HP, dying 1. The Tallyhunts begin to fade with their summoner fallen. Session ends."
+    ],
+    "characters_present": [
+      "Egan/Johnny (Noah)",
+      "Benny/Benicounce (Mike)",
+      "Anzu (Tanner)",
+      "Argyle (Jorge)",
+      "Galzu (NPC)",
+      "The Watcher (NPC)",
+      "Aetherhost (NPC)",
+      "Faithless Ecclesiarch (NPC)",
+      "Proto Slipweird (NPC)",
+      "Tallyhunts (NPC)",
+      "Aurelia (NPC vision)",
+      "Orthalaxis the Plaguebearer (NPC vision)",
+      "Rollo Willsafe silhouette (NPC vision)",
+      "younger Johnny (NPC memory)"
+    ],
+    "locations": [
+      "Chapel of the Six (Tali)",
+      "Fane of Tali (portal interior)",
+      "Hellmester, Raelion (memory vignette)",
+      "The Last Stop tavern (memory vignette)",
+      "Platform of light above Adan (vignette)",
+      "Succithus Desert (vignette)",
+      "Inner sanctum of the Fane"
+    ],
+    "factions": [
+      "Singers of the Herald Star (Herald cult)",
+      "Ashen Pact",
+      "Machine God"
+    ],
+    "items": [
+      "Ritual book with horn cover (celestial binding text, 'unwords')",
+      "Ocelith the bone devil's head",
+      "Egan's long rifle",
+      "Blast boots",
+      "Boots of bounding",
+      "Wanderer's Guide spell",
+      "Silence spell"
+    ],
+    "cliffhanger": "Galzu lies dying (dying 1) in the inner sanctum with the Tallyhunts fading around her; the party must decide whether to kill her, capture her, or attempt to enter her brain next session."
+  }
+}
