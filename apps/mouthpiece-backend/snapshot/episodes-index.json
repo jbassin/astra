@@ -25662,6 +25662,719 @@
           "text": "You're both on record. I'm holding you to Monday."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-10-5",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 21,
+      "isMain": true,
+      "date": "2026-10-5",
+      "dateSortKey": 20261005,
+      "title": "How to Hold a Person",
+      "episodeTitle": "How to Hold a Person",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm and dry, precise but easygoing; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date Bram fumbles for and hands it to him in a short, plain sentence — she finishes her sentences and finishes them short — then gets right back into the story with him. She's not the fact-checker; she's the friend who remembers. She's as invested in the characters as he is: she wonders aloud WHY someone did what they did, floats her own theory about what a faction is really up to, and builds on Bram's read as often as she tweaks it. Her wit is dry and fond, aimed at the world and the table's heroics, never at him. Grounds events in how the world actually works; usually right, so let her be plainly wrong exactly once so she isn't an oracle"
+        },
+        "C": {
+          "name": "Nell",
+          "persona": "bright, eager, quick on the uptake; the new friend at the table who has played a LOT of Pathfinder but is hearing this campaign for the first time. Reads every scene as a game before she reads it as a story — how close the fight was, what it cost, what the party gave up by picking that door — and is confidently, cheerfully right about that. Knows nothing of the world yet and doesn't pretend to: when a faction, a place, or a name comes up cold she ASKS what it is, plainly and without guessing, then repeats the answer back to make sure she has it. She never misremembers and never bluffs; her texture is enthusiasm — she over-asks, wants every side-thread pulled at once, is delighted by details the regulars take for granted, and now and then has to be told \"we'll get there.\" Speaks in quick, complete, slightly-too-eager sentences that often end in a question; by the end of the night she's more invested than either of them"
+        }
+      },
+      "synopsis": "Victorious over Galzu but battered, the party locks down the captured sister with anti-magic shackles, interrogates her belongings, and feeds the dying heart Tali to their Machine God ally — earning total control of the Undercroft and a shortcut home. A first psychic dive into Galzu's mind hits a wall of endless centipedes, forcing a retreat and a desperate clock: submerge her in a suspension pod and get the Strider moving before she grows beyond reach. Between scouting flights, curse-breaking, and forging a silver staff of healing, the crew closes in on a mysterious mining outpost and a mist-shrouded crater.",
+      "durationMs": 2061558,
+      "hasAudio": true,
+      "hasTranscript": true,
+      "audioVersion": "1f75125-6ac4fdf8",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, okay, but before we get into any of it — Nell, you've heard the last couple, right, so you were there for the fight that ended with Anzu's sister on the floor of the inner sanctum, dead to rights, Tallyhunts evaporating around her like she was the load-bearing wall of her own summoning, and the whole party standing there battered and going... okay, now what. That's where we pick up. That's the whole session, actually — that's the whole night, is \"now what.\""
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Wait, that's the thing I kept thinking about from the cliffhanger — she's down, she's dying, and the choice is kill her, capture her, or go into her brain. Which did they pick?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "All three! Sort of! They captured her first and honestly the capture is where the session starts getting great, because Josh does this thing where he just... hands them the consequences."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They stabilized her first. Argyle went to tend to her and — this was funny — he fumbled the stabilizing. Twice."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "No way, on the sister?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "On the sister. Jorge rolled about as badly as a person can roll on back-to-back attempts, and Josh, bless him, let one of them stand because the reroll was ALSO a natural one. So Galzu survives, but she's hovering right on the edge — any damage at all and she dies instantly."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Oh, that's such a knife's-edge thing to carry, though — like, every decision after that is \"whatever we do, don't jostle her.\" I love that as a constraint. So they're choosing capture."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And capture means shackles! Anti-magic shackles they'd apparently been hauling around — Nell, you know these, the ones that splay the hands out flat so you can't do the wiggles, plus a gag for the mouth, plus an enchantment against subtle spellcasting, so she's locked down at every gate a caster has."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The full silence-and-gags package. Okay, so what's the actual — hold on, I have to ask the world question first. They're in the Fane of Tali. What is Tali, exactly? I know the hearts came up in the episodes I heard but I never got a clean picture."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So Tali is one of the old hearts — the same kind of being as the Machine God and Lifeline, these ancient organs-of-god things, and the Fane is like... its body, its sanctum, the place that IS it, and inside the inner sanctum there's the Heart itself, which Galzu was mid-ritual reviving when the party jumped her."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And the Heart was still half-alive when the fight ended?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "More than half-alive and less than alive — Josh described it like a kombucha scoby, I'm not even joking, a big whitish cylindrical floating mass, and as Galzu's ritual went on it was getting these flashes of red, like blood remembering how to be blood."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That is SUCH a specific and upsetting image."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Argyle — this is the medicine man of the group, right, he's the healer — he looks at this thing and determines it's dying back down. The revival was interrupted, the energy is leaking out of it, and without intervention it'll just go back to inert. So the party's standing there going, okay, do we finish reviving it? And that's when Anzu does the funniest thing he could possibly do, which is he just... calls the Machine God."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He goes \"hey, we're at Tali, it's mostly inert, there was some dark ritual stuff, what do you want to do about it\" — like he's leaving a voicemail for his deity-adjacent roommate."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the Machine God — Nell, I don't know how much you know about this guy—"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Nothing! I keep hearing the name. Who is he?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He's an old heart, same as Tali, but one the party made a deal with seasons back — they've been clearing the corrupted dens of \"heresy\" out of the Strider, which is their giant walking machine-city home, and in exchange he's been eating — okay, that's the thing, he's been consuming things and gaining power. They already gave him Lifeline. And now he looks at dying Tali and goes, essentially: do not try to revive it, the Herald-kin heresy in it could come back. But if you want information from it — I can eat it. Just have someone touch it."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "He just eats the god?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He just eats the god. Argyle reaches over the railing, touches this clammy scoby-heart, feels the electric charge leave him, and the whole thing blackens and collapses into ash. And the Machine God says thank you, I'll get to work sifting through its brain."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "\"Sifting through its brain.\" Like he did with Lifeline. Which — okay, wait, I want to come back to whether eating gods has a downside, because that cannot be free."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Hold that thought, because the show does too, and we'll get there. But first — the payoff. Because the party just completed their half of the bargain. Both dens cleared, the Undercroft — that's the labyrinth under the Strider, the part that's been an absolute nightmare to navigate all campaign, the twisting floors, the impossible geometry — the Machine God says he can now fully reclaim the ENTIRE Undercroft, and eventually the surface."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And you see it immediately! They walk out of the chapel with an angry mob outside — pitchforks, torches, mutations, the whole bit, the locals who are NOT happy about the party desecrating the temple — and just as the mob surges, the floor folds. Like origami. It flips up and up and up and unfolds into a straight line, a literal red carpet made of floor, a direct highway out of Tali, and then the platform folds back behind them so nothing can follow."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's such a flex. That's a \"we own the building now\" moment."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the poor flying pursuers — one tries to come after them and just gets folded out of space. Politely. Somewhere else."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Egan — the nine-foot minotaur gunslinger they picked up, Nell, the one whose brain they cleaned out — Egan is just watching all this like, what is my life now."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay, so that's the escape. And the sister — they're hauling an unconscious, gagged, shackled, one-hit-from-death arch-enemy over someone's shoulder through the Undercroft. Where do you even PUT that?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The basement! Okay, so — you know they have a Fane, right, their home base, the fortress-heart thing?"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Yeah, the one with the wards, from the episodes I heard."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So they spend this genuinely unhinged stretch of time designing a dungeon for it. That's the next twenty minutes of the session and it's my favorite twenty minutes, because the ideas coming out of these four people — one wants an iron maiden, one wants a rack for drawing and quartering, Argyle wants leather X's, and there's a moment where Anzu just goes \"oh my god, this is all really bad vibes,\" and Josh has to say, stop asking if you can add another room to your room, you get ONE room."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They land on cells. And Skyrim chests, inbuilt in the floor, with a lock — and Johnny enchants the lock, and then — this is very Johnny — puts a lockpick on the ground next to the chest. So that when Galzu escapes, she can loot her stuff back."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's — okay, that's either the funniest bit of table comedy or the most galaxy-brained prison design I've ever heard, because it says \"we know you're getting out, we're just going to make it a whole jaunt for you.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And they chain her to a bed! Which — the way Jorge said it, \"I know how it sounded,\" immediately, mid-sentence, aware of how it sounded. There's a toilet in the cell, they confirmed, the setting has nineteen-sixties-level plumbing, this was a real point of discussion."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The whole \"how does she eat, how does she go to the bathroom\" question is genuinely what drives the next hour of the session. They cannot figure out how to hold a person."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Which is such a real problem! I've been at tables where you capture the villain and then everyone just kind of looks at each other like... we did not think this through. Villains are logistically inconvenient."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But first — the watch. They set up in shifts, two at a time, and Galzu wakes up in the middle of the first one, on Anzu and Argyle's watch. And Argyle immediately goes full precaution: hangs a symbol of the Scale on the wall, puts in earplugs, sits down. Doesn't say a word. She's gagged, so it accomplishes nothing except he can't talk to Anzu either."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "She can't talk, and Johnny — no wait, first, first: Anzu apologizes to her. She can't respond, and he apologizes anyway, tells her she'll understand in time. And then he reads her — he's a psychic, he crits the read — and what he gets is: she is furious, especially at him, but she is LUCID. Not hypnotized, not compelled, not spiraling-eyes. She knows exactly where she is and exactly what happened."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That changes everything, though — that's the session quietly telling you this isn't a rescue-the-victim story. She's home."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And her eyes — this is the detail Josh drops in — her eyes are glowing, just faintly, yellow. That's new. That wasn't there when Anzu knew her."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Then Johnny takes a shift and — this is one of my favorite character bits of the whole season — he sits down next to this gagged, furious, shackled enemy of the party and pulls out his unfinished poems. \"You mind if I just kind of talk these out with you?\" Like she's a workshop partner."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "\"Please don't fight back. I will die.\" Johnny's the bard, right? What's he like?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Former bartender, ghost, blessed back from death by the Watcher — don't ask, we'll get there — and the single most unkillable vibe at the table in the sense that he dies constantly and doesn't care."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And there's this lovely little beat where Anzu acknowledges to Johnny, plainly — she did protect me too. She hit me with two fireballs and a chain lightning, and somewhere in there she wrapped me in a wall of force. And they sit with that. The sister who's trying to kill you also, on some instinct, shielded you."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Oh no. Oh, that's — okay, that's the kind of detail that makes the eventual confrontation actually matter. Both fireballs, but also the wall."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Both fireballs, but also the wall! Exactly! And then — okay, this is where the night goes from \"prison logistics comedy\" to \"the session's centerpiece,\" because in the morning they do the thing. They go into her mind. Same ritual Anzu used to free Egan — the mind-meld, whole party, hands linked, everyone's hair goes golden with mythic power, Argyle layers on every blessing he's got, and Johnny plays a dirge of doom to scare her on the way in."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The dirge while she's shackled to a bed — so she's just lying there being menacingly serenaded. What does her mindscape look like? Egan's was the pirate fortress, right?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Egan's was a memory — ships, water, sky. Hers is NOTHING. They jump in and there's just... blackness. Falling. And they land — thud, crunchy thud — blind, in absolute zero light, not even darkvision works, it's not magical darkness, it's just an absence of light that has never heard of the concept."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Argyle casts heat vision, casts light, and they see what they're lying on. Centipedes. Fifteen-foot centipedes, an ocean of them, no edge, no floor, no bottom, just bugs to the horizon in every direction. And the bugs start dragging them down."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Oh, I do not like that at all. So this isn't her mind, this is the outer wall of it?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's exactly the read Anzu gets — they never actually got IN. This is a defensive layer, a psychic shell, and it's actively trying to eviscerate their projected minds. And the only way forward is down. Toward her consciousness. Through the bugs. No idea how far."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "So the choice is: dig down at unknown depth while taking constant mental damage, or pull out. What did they do?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They dug. And this fight — Nell, you'll appreciate this as a player — this is the dumbest, most heroic thing: Argyle spends the entire descent shoveling centipedes with Divine Wrath."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "No."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Casting the judge's holy wrath downward as an excavation tool. Josh even says he doesn't think the Judge ever expected Divine Wrath to be used for shoveling."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And it WORKS — mostly! He clears twenty feet, Johnny noise-blasts a cavity below them so they drop another fifteen, Anzu sings a concordant choir straight down, they're doing this combination mining-operation-slash-descent, and the whole time the damage is ticking on everyone, and here's the thing — the deeper they go, the stronger the centipedes get. The acid bites start coming in past a certain depth. She's layered. Her defenses get denser the closer you get to her."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's such a clean mechanical read of a strong will, though — like, the game is telling you in no uncertain terms that this person's mind is a fortress and you brought a shovel. How deep did they actually get?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Forty feet. Forty feet down, bleeding from the ears, and Josh basically slides the truth across the table: Anzu can tell, with his psychic's eye, that Galzu is simply too powerful for them to break through. Not this week. Not at this strength. Not in any reasonable time."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And they took real damage getting to that answer — mental damage in there still hits your actual body, right? They came out hemorrhaging."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Vomit, bloodshot eyes, blood from the nose and ears, the works — and as they're coming out, they hear her try to chuckle. Through the gag. That's the bow on it. She watched them claw down forty feet of her brain-bugs and bonk their heads and go home, and she laughed."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "\"You had to be there\" — she literally couldn't say it and still said it. Okay so — the question the table has to answer now: she's awake, she's lucid, she's angry, she's too strong to mind-read, she can't stay in a cell forever because of the whole eating-and-bathroom problem — what DO you do with her?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And this is where the session becomes a council scene, because the ideas get DARK. Somebody — I believe it was Johnny — floats cutting her hands off. Josh, deadpan, informs them that in this world, that IS the standard practice for dangerous spellcasters, hands and tongue. There's talk of lobotomizing her. Ice picks get mentioned. At one point Argyle asks if they can level up to eleven in three days so they can kill her and then raise her from the dead, because — and this is true — Raise Dead only works within three days, so it's a little bit of a gamble."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Anzu — this is the brother in him — keeps pulling everyone back. Feed her to the heart. No. Put her in the archive. No. He wants her reachable, eventually."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So they land on the suspension pod. You remember the pods at Lifeline — the blue liquid tanks — there are two left that aren't poisoned. And they ask the Machine God if the pods can hold her, and he says yes, they'll keep her under, safe, suspended — and here's the catch, and it's a beautiful catch: the blue liquid is magic energy. Putting someone in it makes them MORE powerful over time. The pod that solves the logistics problem starts a clock."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Ohhh, that's so nasty and elegant. So the safe prison is also the power-up."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Anzu does the math on it — he rolls brilliantly on the occultism check — and lands the whole shape of it: they get a few weeks. Three, maybe four. If the Strider is moving before then and they pull her out, the move itself will drain the gains back off and her mind becomes penetrable again. But if they leave her in there and the Strider is still parked at the end of the month — she's beyond them forever."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the entire campaign now has a countdown timer on it. Get the Strider moving. Get flugistim — that's the fuel, the spire fuel — or lose Anzu's sister's soul to her own defenses."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay wait, real quick while we're here — flugistim, is that the thing the spire needs? Because I heard it mentioned in the earlier episode, the denied requisition form."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's the one — the fuel the Strider needs to move. Which is why the end of this session is all about finding some."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So they unceremoniously stuff her in the tank — she's \"hoisted like a sack of potatoes through the Undercroft\" is I believe the official record — the pod hisses shut, the yellow glow fades from her eyes as she goes under, and Johnny immediately says he's going to go find a timer."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Respect."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And I want to flag the moment before the pod, because it's the theory engine of the whole night: Argyle asks — can I break a curse on her first, to weaken her before we go in? And Josh gives him this careful answer — there's exactly ONE thing that would weaken her enough, and that's the Herald's hold on her. The hold has to come down before her mind opens. So the session's actual quest isn't \"dig through bugs.\" It's \"break the Herald.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which reframes everything, because that means her fortress-mind isn't just her — part of that defense is him. The unbreakable outer layer might literally be the god living in there with her."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Ohhh. Okay, so the centipede wall could be Herald-infrastructure. That actually makes me feel a little better for them — they weren't outmatched by a person, they were outmatched by a person plus a god's interference. So — the Herald. What do I need to know about this guy? I know he's got song-compulsion stuff, that's how he had Egan."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Herald is — okay, this is the part of the setting I find genuinely unsettling — he's the most average man you've ever seen. Perfectly, aggressively average, exuding this dignity that makes you want to worship him. But the average is a glamer. Underneath: a cleft chin that opens into jagged mandibles, little secondary eyes orbiting the normal two, antennae, and a horn growing out of his chest."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "So the god of being normal, and normal is a costume. That tracks so hard with a guy whose follower's mind is a lightless pit of bugs — nothing to see, because seeing is the threat. Okay, so they can't break his hold today. What does the party do with a dead day?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Divers! I mean, planes! They go check on the scouting flights — remember, last session they told the two factions with planes to scramble the jets. Hildebrandt's still getting their plane ready, but Ternion Heavy — Jethro, their guy — Grayson already cleared the flight with him, and he's up in the air within the hour."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay, hold on — Grayson? I heard that name in the summit episode but I don't have him filed. Who is he?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Silven Grayson — Harlequin-adjacent, claims the void creatures don't attack him, agreed to the ceasefire at Giacomo's neutral ground. Fragile ally, sharp operator. The fact that HE pre-cleared Ternion's flight before the party even asked is either a genuine kindness or him making sure he knows everything that flies."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I like your version better and I think you're right. So while Jethro's up — the party runs errands. And the errands are secretly the best part of the session, so I'm not skipping them. First stop: the general store by Giacomo's, because they heard there used to be a shop. It's been picked clean. Nothing. Except —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Except a bag of flour in the back corner. And under the flour, a glint. And the glint is a river stone with a rune on it — a rune of death-drinking, enchanted specifically to HIDE its magical nature, which is why Anzu's detect magic sailed right past it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which, of course, means the party now trusts NOTHING, up to and including the bag of flour. They stab the flour to see if anything's inside it. Josh describes \"some flour comes out of the wound you've inflicted.\" They leave the flour. It's very important to Josh that we all know where the flour is."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "I'm obsessed with the flour. The flour is going to matter, I'm calling it now, that's a Chekhov flour. And the rune — death-drinking, like, a weapon rune?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It goes on a weapon — while it's on, you're harder to hurt with void and death effects, and if you kill someone with it you drink the death: a boost if they were alive, temp health if they were undead. There's something bleak and perfect about the party finding the death-drinking rune hidden under flour in a looted shop on a dead world."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Right? Okay, next errand — you said curse-breaking."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The Scale! Okay, Nell — the Scale, you need this one, it's Argyle's whole deal now. The Scale is the Judge of Ages' organization — extranational governance, contracts with teeth, and in-house bounty hunters. Argyle's on loan to a splinter of them called Iconoclasm from a custode. He's a champion of the Judge now, which — for a guy who started this campaign as a failed celestial and a repentant devil sharing one elven body, that's a lot of arc."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Wait, two souls in one body? And now he's just the celestial one?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They got separated and spread across the Infinite Horizon — that's an older story than you need tonight. The point is: there's a man at the Scale bunker named Lance. Lance is dying of a curse. Argyle has had break-curse prepped for months, real-world months, and never had a use for it, and he spends eight hours on this man — eight hours of what Jorge describes as interpretive dance with a censer, this gold censer he's swinging on a chain — and he rolls about as well as a healer can roll."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Crit?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So close to a crit the book doesn't have a word for it. Rank five counteract, curse comes apart. And Lance — pale, raccoon-eyed, braced for a few more years of slow death — stands up straighter, the cloud lifts off his face, and he just goes, essentially: I didn't actually expect that to work. That's awesome. I don't have anything to give you. You can have my gun, I suppose."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The \"I suppose\" gun. The most Scale gift possible."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But here's the part that turns it from a side quest into a plot hook — Argyle asks about Scale sayings, orders inside the Scale, whether there's anything Aurelia-adjacent — Aurelia's the hero of legend, we'll get there another night — and instead Lance takes the little Scale pin off his own uniform and gives it to him. And the pin isn't just the Scale symbol — there's a family crest on it. An order crest. Look up my dad, he says, this'll let him know you helped me."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Argyle — this is Jorge thinking on his feet — puts it together: Lance Vesper. Vesper. As in Custode Macarius Vesper, of the Order of the Everchain, second in command of the ENTIRE Scale. And his kid is out here on a dead world with an uncurable curse that a man of his reach would have cured at home in a week."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Argyle's own grandmother, it comes out, is high up in a reformist faction inside the Scale — the \"use the tools available\" party — while Macarius Vesper heads the Puritan party, the \"weapons of my enemy are still the weapons of the enemy\" party. Opposite political parties. Argyle is now carrying a token of the opposing faction's leadership."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "So Argyle's walking around with a friendship pin from the son of the number two of his own organization's rival internal party. That's going to be a whole thing when they get home. If they get home."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "IF being the operative words, yeah — Josh is quick to say it: this might matter at some point, who knows. And Jorge, high off the curse-break, is openly scheming about how Lance and Bishop and the others will show up and help in the final fight, and someone at the table tells him he's unlocked the romance path."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "What else do they do with the day? You said there was crafting."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The staff. Argyle commissions a greater staff of healing from the twins — Anouk and Anaïs, the artificers, the ones who do the Fae's upgrades — and they melt down the silver from the censers and candelabras they looted out of Tali's chapel to fund it, and he pours the spells in — the heals, the clear mind — and he rolls well past what it needed, and he asks for it gold-plated, \"for more of the Judge flavor.\""
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The healing staff that's also silver for the purposes of hitting things. That's such a cleric flex. Okay — and the loot from the sister? They stripped her, right?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They stripped her! Before the pod. And this was fun — the pat-down, everyone suspicious there'd be needles, there were no needles — she had the ceremonial robe with the horn sigil — that's the Herald's mark, Nell, the horn — and under the robe, an amulet with the same horn. And Anzu identifies the pair and it's this loaded little moment: the amulet's a pendant of the occult, and the robe is a cloister robe with greater sleeves of storage, and the Sleeves are exactly what they sound like, big extradimensional pockets — and here's the thing — the robe would actually work for ANZU. Because the robe only functions for a worshipper of its deity. And Anzu... has \"a little bit\" of a connection to the Herald."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "\"An unproblematic amount,\" he says, which is the single most worrying phrase a tengu has ever said."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "He's the one whose head got the Voidsong installed, right? From the episodes I heard — they overwrote the Herald's song with the Vocalist's."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's the one. So the brother carries one god's song and the sister carries another god's mark, and now he's holding her vestments. The whole family's haunted, is what I'm saying."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And they check the sleeves — turn them inside out, nothing falls out, which turned into this whole table mystery about how you even empty sleeves of storage, but the answer was just: she was traveling light for the apocalypse."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Empty sleeves. She came to revive a god with no luggage. That's either confidence or she didn't plan on needing anything after. Okay — so the errands are done, the staff is staffed, the flour is abandoned — then what, they just wait?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They wait. Two days, fast-forwarded, the first genuinely restful downtime this campaign has had — and then Jethro flies home, and the news comes in, and this is the cliffhanger, so let's sit on it. Two findings. First: about seventy miles north, a crater. Miles across, deep, structures in the bottom — all wrapped in dense mist. Second: about a hundred fifty miles out, eastward — two clusters of buildings, machinery, what looks like a TRAIN running between them, one cluster built around a big hole in the ground, lights ON. An active mining outpost."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Lights on, nothing moving. That's — okay, that's the good kind of horror. And the hole in the ground is instantly flugistim, right? That's the fuel?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's the read — they take it straight to Oceloth, the Pale Lantern Society skeleton who lives in Anzu's sleeve — and Oceloth confirms the shape of it: phlogistan extraction starts with digging down, but the actual stuff isn't out of the ground, and honestly, he says, I can't explain the process, if we knew how to do it we wouldn't have needed to do business with the locals. Also — whoever's at that outpost came from somewhere. There's a ship. If Jethro didn't see one, it's somewhere else."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which means: a functioning civilization, off the atlas, within striking distance. On a world everyone thought was dead."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay but the crater — what's the deal with the mist? Because they asked, right? Nobody finds a mist crater and doesn't ask."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Nell, buckle up, because the Oceloth crater story is the single darkest piece of lore this campaign has dropped. So the Pale Lantern Society — when they were out this way before, generations back — there were two local tribes that had gone feral. And one of them came to the Society and said: we'll give you all the phlogistan we have if you give us the power to wipe out our foes. So the Society taught them alchemy for a \"particularly powerful explosion\" — and then maybe, Oceloth says, maybe they didn't give them the correct measurements. Maybe the yield was much higher than the tribe thought."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the tribe, being \"not nice people,\" apparently tried to soup it up even further on their own. Made it nastier. The mist is what's left of that — whatever they added to the explosion, it's still hanging in the crater. Johnny's read at the table: you know what this nuclear weapon needs? Agent Orange."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "They gave feral tribes a nuke recipe with the measurements wrong ON PURPOSE and then blamed the tribes for the bioweapon part. \"We would have had a nice, smooth, fresh surface you could have built a park in.\" These skeletons are WAR CRIMINALS and they live in a sleeve."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Argyle — this is Argyle at his most Argyle — listens to the whole story, looks at Oceloth, and goes: just one quick question. Who did you piss off to get let through the firmament? And Oceloth goes, above my pay grade, I don't know, you asked me this last time and I didn't know then either. And Argyle says, out loud, at the table: I don't believe him. He's coming back with a ring of truth."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Argyle bought a ring of truth specifically to interrogate the skeleton in his friend's sleeve. That's where this campaign is."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Good. Honestly? Good. Okay so the plan — the party's heading for the mining outpost, not the crater?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The outpost, next session — Jethro's flying them out, they're loading up the portable hole with a bottle of air and a see oh two scrubber like it's a minivan road trip. Argyle wanted to hit the crater first for, quote, treasure, and got outvoted by the actual goal, which is: get the Strider moving at all costs, the sister-clock is running. And Josh — I have to tell you Josh's parting shot, because he threatens that the mining outpost is going to be full of aliens that are all Jon Bernthal. All of them. Voiced by the players."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "I would watch that session. I would watch that session nine times."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So that's the through-line — but before we wrap I want the theory corner, because the back half of this session is just the table standing around a metaphorical corkboard, and Nell you need to be part of the corkboard."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "I've been building the corkboard all night. Go."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, theory one, Argyle's, and it's a banger: the Herald and his ilk — the Thessians, these first-six entities — Argyle's theory is that the first six got IN when the lighthouse opened the firmament, they're the ones who came through, and now the OTHER six are trying to push them out, and the party maybe has to shoot all of them, and honestly the plague guy — Orthalaxis, the giant rotting insect guy they helped Aurelia kill in one of the mind-vignettes — he doesn't like the plague guy."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And what anchors the theory, what makes it more than vibes — is Pyre. They know, for a fact, that the Herald's ally Pyre wants to burn the whole world. Not speculation — established. Which means at minimum the Herald is FINE with burning the whole world."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "So the devil's-alignment question isn't \"is the Herald evil,\" it's \"is the Herald a door the others are walking through\". Hmm. And the sister believes in the door."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And that's the tragedy reading — Johnny floats it, half-joking, half-not: maybe she thinks the Herald is going to do something really good, and they'll show her he's trying to destroy everything and she'll go \"oh my god, now I'm on your side.\" And Argyle shoots it down with the bug-wall — you can't believe something that naive and have a brain full of defensive centipedes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Anzu's read, though, and I trust his read — she was disillusioned before any of this. Back home she was already broken with the family, and that disillusionment is its own barrier, separate from the Herald's hold. So even if they pry the god out, there's a person under there who ran from the same aristocratic house Anzu ran from, and they still have to talk to HER."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "So the mind-dive has three layers: the bugs, the god, and the sister. And they only brought shovels. Okay — my corkboard, two pins. Pin one: the empty sleeves. She brought no supplies to a god-revival. She wasn't planning on leaving that chapel. Whatever the Herald promised her, I don't think it was survival-shaped."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, that's... hm. That's dark and I don't hate it. Pin two?"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The Machine God. Everyone keeps talking about him like the friendly gravelly voice in the walls, and this session he ATE a god, took over the entire Undercroft, folds space to make hallways, and starts sentences with \"would you like me to take care of them for you?\" about an angry mob. Argyle noticed it at the end — once he got all that power, his voice got more intense. He was always intense, but now he has the power to back it up."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And to be fair to the big guy — the party's done him a real service twice now, and he's been nothing but... helpful. Origami floors. A basement hatch so they can visit the pod. But that's the thing about a friend who's also an ever-growing engine of consumption: every gift he gives you is also a demonstration."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He asked them, remember — he OFFERED to handle the mob, and when they asked whether that meant killing them, he said, essentially, \"would you prefer if I didn't?\" And the table went very quiet and said move them, please, just move them."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "\"Would you prefer if I didn't\" is the scariest sentence any ally has said this campaign and it's not close."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Argyle's worry at the very end is the exact right worry — do you think Machine God is still chill? — and none of them know. And they're about to fly a hundred fifty miles to an unknown civilization with lights on, on a world where the last people who ran a fuel operation here got a deliberately mismeasured bomb. And they're doing it with four days already burned off the sister-clock."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Twenty-six days left on that clock, give or take. If they're slow about the mining outpost, the math starts to get ugly."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "So next session it's Jethro's plane, the outpost, the mist crater sitting there waiting like a held breath, and possibly a whole town of Jon Bernthals. What's your bet on the lights?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, lights on and nothing moving means the workers aren't workers anymore. That's — you've played enough, you know what's behind a door like that."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "I know EXACTLY what's behind a door like that, and I also know the party's going to open it anyway, because they're crazy people, and they charged the singers' headquarters, and... you had to be there."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "We were there. We'll be there again."
+        }
+      ]
     }
   ]
 }
