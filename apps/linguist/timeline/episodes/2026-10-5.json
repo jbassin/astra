@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-5",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Bugs in the Brain and a Curse Broken",
+    "synopsis": "Fresh off their victory over Galzu inside Tally's Fane, the party stabilizes and shackles Anzu's sister, then allows the Machine God to consume Tally's remains. With the Undercroft fully under Machine God's control, they return to their base, attempt a psychic dive into Galzu's mind — and are repelled by an ocean of biting centipedes. They stash Galzu in a Lifeline suspension pod (starting a multi-week timer), craft new gear, and Argyle breaks a curse on Lance Vesper of the Scale, uncovering political connections. Scouting planes report a potential phlogiston mining outpost 150 miles away, giving the party their next destination.",
+    "key_beats": [
+      "The party stabilizes the unconscious, doomed Galzu with anti-magic shackles and gag, preventing her from casting spells of 6th rank or below.",
+      "Argyle touches the inert body of Tally (resembling a kombucha SCOBY), and the Machine God consumes it, sifting through its remains — mirroring what it did with Lifeline. Machine God now claims full control of the Undercroft.",
+      "Machine God clears the angry mob outside the chapel by folding space, then creates a direct path back to the party's base, reducing travel from ~90 minutes to ~30 minutes. He also restores Benny from the dead as a gift.",
+      "Looting the chapel: ~600gp of silver censers/candelabras plus a large bowl made of sovereign steel (~700gp, standard grade — enough for one weapon or armor piece).",
+      "Searching Galzu's person reveals an amulet of the Herald (also a greater pendant of the occult) and a lesser cloister robe with greater sleeves of storage (20 bulk per sleeve).",
+      "The party builds a dungeon in their basement and chains Galzu to a bed, then attempts a psychic dive into her mindscape. They land in an endless pit of giant centipedes that bite and drag them down, dealing escalating mental/piercing/acid damage. Despite multiple Divine Wraths and sonic blasts clearing space, they cannot penetrate her defenses at 40 feet deep and retreat, hemorrhaging from eyes and ears.",
+      "Anzu's occultism check (nat 20, 40) reveals that placing Galzu in a Lifeline suspension pod will increase her power almost immediately but grants a 3-4 week window before she becomes unassailable — if they get the Strider moving and pull her out in time, the gains would be wiped. They deposit her in the pod, starting the timer.",
+      "The party checks on scouting planes: Hildebrandt still preparing, Ternion Heavy's Jethro about to launch. They also visit the ransacked general store, finding a hidden rune of death on a runestone buried in flour.",
+      "Argyle spends 8 hours performing a Break Curse ritual on Lance Vesper at the Scale's bunker, achieving a critical success (nat 20, 40). Lance is freed and gives Argyle a Scale pin token. Argyle learns Lance's father is Custode Macarius Vesper, second-in-command of the Scale and head of the Puritan sect — politically opposed to Argyle's reformist family.",
+      "Argyle crafts a greater staff of healing (level 8) from the looted silver, spending ~423gp with the workshop discount. The party also plans to forge Benny a sovereign steel falcata from the bowl (~1690gp total cost).",
+      "Anzu analyzes the Herald items: they aren't cursed or corrupting, but changing their iconography would break the magic. The cloister robe would function for Anzu due to his latent Herald connection.",
+      "Two days pass. Jethro reports finding a large mist-filled crater (~70 miles north, few miles across) with structures visible in fog, and a mining outpost (~150 miles east) with two building clusters, a train between them, and active lights — a potential phlogiston source. Ocelith confirms the outpost description fits. The party decides to fly to the mining outpost next."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Anzu",
+      "Benny",
+      "Johnny",
+      "Egan",
+      "Galzu",
+      "Machine God",
+      "Ocelith",
+      "Lance Vesper",
+      "Jethro",
+      "Bishop",
+      "Cassie",
+      "Drake",
+      "Anaïs",
+      "Anouk"
+    ],
+    "locations": [
+      "Tally's Fane (chapel interior)",
+      "The Undercroft",
+      "Party base (with new basement dungeon)",
+      "Lifeline's chambers (suspension pods)",
+      "Ransacked general store",
+      "The Scale's bunker",
+      "Giacomo's diner area"
+    ],
+    "factions": [
+      "The Scale",
+      "Ternion Heavy",
+      "Hildebrandt",
+      "Machine God / Undercroft",
+      "The Herald's forces",
+      "Lifeline",
+      "The Protectorate"
+    ],
+    "items": [
+      "Anti-magic shackles and gag (inhibit 6th rank and below casting)",
+      "Sovereign steel bowl (~700gp, standard grade)",
+      "Amulet of the Herald / greater pendant of the occult",
+      "Lesser cloister robe with greater sleeves of storage",
+      "Rune of death (on concealed runestone)",
+      "Greater staff of healing (crafted by Argyle, level 8)",
+      "Lance Vesper's Scale order pin/token",
+      "Silver censers and candelabras (~600gp)",
+      "Bag of flour (left behind)"
+    ],
+    "cliffhanger": "The party prepares to fly out with Jethro to the phlogiston mining outpost 150 miles east, racing against the 3-4 week timer before Galzu becomes too powerful to reach in the suspension pod."
+  }
+}
