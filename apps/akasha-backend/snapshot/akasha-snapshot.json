@@ -519,6 +519,27 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
+      "alias": "Velvet Mark",
+      "heading": null,
+      "resolved": "Org/Velvet Mark/index",
+      "source": "Geography/Calaria/Hallia/Masque District/index",
+      "target": "Org/Velvet Mark/index"
+    },
+    {
+      "alias": "Teller's Run",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
+      "source": "Geography/Calaria/Hallia/Masque District/index",
+      "target": "Geography/Calaria/Hallia/Teller's Run/index"
+    },
+    {
+      "alias": "Pyrelight",
+      "heading": null,
+      "resolved": "Org/Pyrelight/index",
+      "source": "Geography/Calaria/Hallia/Masque District/index",
+      "target": "Org/Pyrelight/index"
+    },
+    {
       "alias": "the Horizon",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/the Horizon/index",
@@ -664,6 +685,27 @@
       "resolved": "Geography/Calaria/Hallia/index",
       "source": "Geography/Calaria/Hallia/Teller's Run/index",
       "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Masque District",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Masque District/index",
+      "source": "Geography/Calaria/Hallia/Teller's Run/index",
+      "target": "Geography/Calaria/Hallia/Masque District/index"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Geography/Calaria/Hallia/Teller's Run/index",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Pyrelight",
+      "heading": null,
+      "resolved": "Org/Pyrelight/index",
+      "source": "Geography/Calaria/Hallia/Teller's Run/index",
+      "target": "Org/Pyrelight/index"
     },
     {
       "alias": "Hallia",
@@ -1240,6 +1282,13 @@
       "target": "Heart"
     },
     {
+      "alias": "Pyrelight",
+      "heading": null,
+      "resolved": "Org/Pyrelight/index",
+      "source": "Org/Embercall Industries/index",
+      "target": "Org/Pyrelight/index"
+    },
+    {
       "alias": "Garrick Textiles",
       "heading": null,
       "resolved": "Org/Garrick Textiles/index",
@@ -1793,18 +1842,53 @@
       "target": "Org/index"
     },
     {
-      "alias": null,
+      "alias": "Pyrelight",
       "heading": null,
-      "resolved": null,
-      "source": "Org/Pyrelight/index",
-      "target": "Embercall Industries"
+      "resolved": "Org/Pyrelight/index",
+      "source": "Org/Pyrelight/People/The Spark",
+      "target": "Org/Pyrelight/index"
     },
     {
-      "alias": null,
+      "alias": "Teller's Run",
       "heading": null,
-      "resolved": null,
+      "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
+      "source": "Org/Pyrelight/People/The Spark",
+      "target": "Geography/Calaria/Hallia/Teller's Run/index"
+    },
+    {
+      "alias": "Masque District",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Masque District/index",
+      "source": "Org/Pyrelight/People/The Spark",
+      "target": "Geography/Calaria/Hallia/Masque District/index"
+    },
+    {
+      "alias": "Embercall Industries",
+      "heading": null,
+      "resolved": "Org/Embercall Industries/index",
       "source": "Org/Pyrelight/index",
-      "target": "Pyrelight"
+      "target": "Org/Embercall Industries/index"
+    },
+    {
+      "alias": "Teller's Run",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
+      "source": "Org/Pyrelight/index",
+      "target": "Geography/Calaria/Hallia/Teller's Run/index"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Pyrelight/index",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "The Spark",
+      "heading": null,
+      "resolved": "Org/Pyrelight/People/The Spark",
+      "source": "Org/Pyrelight/index",
+      "target": "Org/Pyrelight/People/The Spark"
     },
     {
       "alias": "Radiant Arms",
@@ -2129,6 +2213,97 @@
       "target": "Geography/Calaria/Hallia/Sableclutch/index"
     },
     {
+      "alias": "Velvet Mark",
+      "heading": null,
+      "resolved": "Org/Velvet Mark/index",
+      "source": "Org/Threshold Authority/index",
+      "target": "Org/Velvet Mark/index"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/Threshold Authority/index",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Velvet Mark",
+      "heading": null,
+      "resolved": "Org/Velvet Mark/index",
+      "source": "Org/Velvet Mark/People/Archie",
+      "target": "Org/Velvet Mark/index"
+    },
+    {
+      "alias": "Velvet Mark",
+      "heading": null,
+      "resolved": "Org/Velvet Mark/index",
+      "source": "Org/Velvet Mark/People/Branson Pluckwort",
+      "target": "Org/Velvet Mark/index"
+    },
+    {
+      "alias": "Infinite Horizon",
+      "heading": null,
+      "resolved": "Phenomena/Infinite Horizon",
+      "source": "Org/Velvet Mark/People/Branson Pluckwort",
+      "target": "Phenomena/Infinite Horizon"
+    },
+    {
+      "alias": "Velvet Mark",
+      "heading": null,
+      "resolved": "Org/Velvet Mark/index",
+      "source": "Org/Velvet Mark/People/Combo",
+      "target": "Org/Velvet Mark/index"
+    },
+    {
+      "alias": "Velvet Mark",
+      "heading": null,
+      "resolved": "Org/Velvet Mark/index",
+      "source": "Org/Velvet Mark/People/Father Marone",
+      "target": "Org/Velvet Mark/index"
+    },
+    {
+      "alias": "Masque District",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Masque District/index",
+      "source": "Org/Velvet Mark/People/Father Marone",
+      "target": "Geography/Calaria/Hallia/Masque District/index"
+    },
+    {
+      "alias": "the Spark",
+      "heading": null,
+      "resolved": "Org/Pyrelight/People/The Spark",
+      "source": "Org/Velvet Mark/People/Father Marone",
+      "target": "Org/Pyrelight/People/The Spark"
+    },
+    {
+      "alias": "Velvet Mark",
+      "heading": null,
+      "resolved": "Org/Velvet Mark/index",
+      "source": "Org/Velvet Mark/People/Salvatore Barbieri",
+      "target": "Org/Velvet Mark/index"
+    },
+    {
+      "alias": "Teller's Run",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
+      "source": "Org/Velvet Mark/People/Salvatore Barbieri",
+      "target": "Geography/Calaria/Hallia/Teller's Run/index"
+    },
+    {
+      "alias": "Masque District",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Masque District/index",
+      "source": "Org/Velvet Mark/index",
+      "target": "Geography/Calaria/Hallia/Masque District/index"
+    },
+    {
+      "alias": "Father Marone",
+      "heading": null,
+      "resolved": "Org/Velvet Mark/People/Father Marone",
+      "source": "Org/Velvet Mark/index",
+      "target": "Org/Velvet Mark/People/Father Marone"
+    },
+    {
       "alias": "Verdant Holdings",
       "heading": null,
       "resolved": "Org/Verdant Holdings/index",
@@ -2155,6 +2330,13 @@
       "resolved": "Org/Ætherion Limited/index",
       "source": "Org/Ætherion Limited/People/Braxton Hall",
       "target": "Org/Ætherion Limited/index"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "People/Feathers",
+      "target": "Geography/Calaria/Hallia/index"
     },
     {
       "alias": "twin suns",
@@ -3297,6 +3479,21 @@
           "alias": "Hallia",
           "heading": null,
           "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Velvet Mark",
+          "heading": null,
+          "target": "Org/Velvet Mark/index"
+        },
+        {
+          "alias": "Teller's Run",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Teller's Run/index"
+        },
+        {
+          "alias": "Pyrelight",
+          "heading": null,
+          "target": "Org/Pyrelight/index"
         }
       ],
       "date": "2025-08-28T00:00:00-04:00",
@@ -3492,6 +3689,21 @@
           "alias": "Hallia",
           "heading": null,
           "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Masque District",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Masque District/index"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Pyrelight",
+          "heading": null,
+          "target": "Org/Pyrelight/index"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -4457,6 +4669,28 @@
     {
       "crossrefs": [
         {
+          "alias": "Pyrelight",
+          "heading": null,
+          "target": "Org/Pyrelight/index"
+        }
+      ],
+      "date": "2025-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Mercantile"
+        ],
+        "title": null
+      },
+      "path": "Org/Embercall Industries/index"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Garrick Textiles",
           "heading": null,
           "target": "Org/Garrick Textiles/index"
@@ -5395,14 +5629,56 @@
     {
       "crossrefs": [
         {
-          "alias": null,
+          "alias": "Pyrelight",
           "heading": null,
-          "target": "Embercall Industries"
+          "target": "Org/Pyrelight/index"
         },
         {
-          "alias": null,
+          "alias": "Teller's Run",
           "heading": null,
-          "target": "Pyrelight"
+          "target": "Geography/Calaria/Hallia/Teller's Run/index"
+        },
+        {
+          "alias": "Masque District",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Masque District/index"
+        }
+      ],
+      "date": "2025-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "Org/Pyrelight/People/The Spark"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Embercall Industries",
+          "heading": null,
+          "target": "Org/Embercall Industries/index"
+        },
+        {
+          "alias": "Teller's Run",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Teller's Run/index"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "The Spark",
+          "heading": null,
+          "target": "Org/Pyrelight/People/The Spark"
         }
       ],
       "date": "2026-06-06T22:12:21-04:00",
@@ -6063,6 +6339,16 @@
           "alias": "Sableclutch",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Sableclutch/index"
+        },
+        {
+          "alias": "Velvet Mark",
+          "heading": null,
+          "target": "Org/Velvet Mark/index"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
         }
       ],
       "date": "2025-08-28T00:00:00-04:00",
@@ -6078,6 +6364,168 @@
         "title": null
       },
       "path": "Org/Threshold Authority/index"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Velvet Mark",
+          "heading": null,
+          "target": "Org/Velvet Mark/index"
+        }
+      ],
+      "date": "2025-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "Org/Velvet Mark/People/Archie"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Velvet Mark",
+          "heading": null,
+          "target": "Org/Velvet Mark/index"
+        },
+        {
+          "alias": "Infinite Horizon",
+          "heading": null,
+          "target": "Phenomena/Infinite Horizon"
+        }
+      ],
+      "date": "2025-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Pluckwort",
+          "Mr. Pluckwort"
+        ],
+        "extra": {
+          "date": "2025-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Lizardfolk"
+        ],
+        "title": null
+      },
+      "path": "Org/Velvet Mark/People/Branson Pluckwort"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Velvet Mark",
+          "heading": null,
+          "target": "Org/Velvet Mark/index"
+        }
+      ],
+      "date": "2025-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Construct"
+        ],
+        "title": null
+      },
+      "path": "Org/Velvet Mark/People/Combo"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Velvet Mark",
+          "heading": null,
+          "target": "Org/Velvet Mark/index"
+        },
+        {
+          "alias": "Masque District",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Masque District/index"
+        },
+        {
+          "alias": "the Spark",
+          "heading": null,
+          "target": "Org/Pyrelight/People/The Spark"
+        }
+      ],
+      "date": "2025-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Marone"
+        ],
+        "extra": {
+          "date": "2025-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/Velvet Mark/People/Father Marone"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Velvet Mark",
+          "heading": null,
+          "target": "Org/Velvet Mark/index"
+        },
+        {
+          "alias": "Teller's Run",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Teller's Run/index"
+        }
+      ],
+      "date": "2025-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Salvatore"
+        ],
+        "extra": {
+          "date": "2025-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Orc"
+        ],
+        "title": null
+      },
+      "path": "Org/Velvet Mark/People/Salvatore Barbieri"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Masque District",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Masque District/index"
+        },
+        {
+          "alias": "Father Marone",
+          "heading": null,
+          "target": "Org/Velvet Mark/People/Father Marone"
+        }
+      ],
+      "date": "2025-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Martial"
+        ],
+        "title": null
+      },
+      "path": "Org/Velvet Mark/index"
     },
     {
       "crossrefs": [
@@ -6183,6 +6631,28 @@
         "title": null
       },
       "path": "Org/Ætherion Limited/index"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        }
+      ],
+      "date": "2025-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Kenku"
+        ],
+        "title": null
+      },
+      "path": "People/Feathers"
     },
     {
       "crossrefs": [],
@@ -6663,14 +7133,6 @@
     {
       "source": "Org/Prime Meridian/index",
       "target": "Prime (Zero)"
-    },
-    {
-      "source": "Org/Pyrelight/index",
-      "target": "Embercall Industries"
-    },
-    {
-      "source": "Org/Pyrelight/index",
-      "target": "Pyrelight"
     },
     {
       "source": "Org/Roundhat Gang/index",

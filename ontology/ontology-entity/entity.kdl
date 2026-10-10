@@ -96,7 +96,8 @@ entity "Anzu said he's" {
     alias "Aunt Suzette is"
     source "defs"
 }
-entity "Archie" kind="person" being="tanner" {
+entity "Archie" kind="person" page="Org/Velvet Mark/People/Archie" being="tanner" {
+    source "akasha"
     source "being"
 }
 entity "Archmechanic" {
@@ -259,6 +260,11 @@ entity "Black and White" kind="place" page="Geography/Black and White/index" {
 entity "Blackline" kind="org" page="Org/Blackline/index" {
     source "akasha"
 }
+entity "Branson Pluckwort" kind="person" page="Org/Velvet Mark/People/Branson Pluckwort" {
+    alias "Pluckwort"
+    alias "Mr. Pluckwort"
+    source "akasha"
+}
 entity "Braxton Hall" kind="person" page="Org/Ætherion Limited/People/Braxton Hall" {
     alias "Braxton"
     source "akasha"
@@ -326,7 +332,8 @@ entity "Chorath Engineering" kind="org" page="Org/Chorath Engineering" {
 entity "Cliff" kind="person" being="jorge" {
     source "being"
 }
-entity "Combo" kind="person" being="mike" {
+entity "Combo" kind="person" page="Org/Velvet Mark/People/Combo" being="mike" {
+    source "akasha"
     source "being"
 }
 entity "Concordia" kind="org" page="Org/Concordia" {
@@ -415,6 +422,9 @@ entity "Embercall" {
     alias "EmberCole"
     source "defs"
 }
+entity "Embercall Industries" kind="org" page="Org/Embercall Industries/index" {
+    source "akasha"
+}
 entity "Embercall's" {
     alias "Ember\\s*Calls"
     source "defs"
@@ -453,6 +463,10 @@ entity "Fane" {
     alias "vein"
     alias "fane"
     source "defs"
+}
+entity "Father Marone" kind="person" page="Org/Velvet Mark/People/Father Marone" {
+    alias "Marone"
+    source "akasha"
 }
 entity "Feep" {
     alias "Feeb"
@@ -1222,6 +1236,10 @@ entity "Salvado Tarragona" kind="person" page="Org/Solari Sub-surface/People/Sal
 entity "Salvatore" kind="person" being="noah" {
     source "being"
 }
+entity "Salvatore Barbieri" kind="person" page="Org/Velvet Mark/People/Salvatore Barbieri" {
+    alias "Salvatore"
+    source "akasha"
+}
 entity "Sbrtlby" {
     alias "Spartleby"
     alias "Spurdleby"
@@ -1428,6 +1446,9 @@ entity "the Scale's" {
     alias "the\\s*Scales"
     source "defs"
 }
+entity "The Spark" kind="person" page="Org/Pyrelight/People/The Spark" {
+    source "akasha"
+}
 entity "The Undertable" kind="org" page="Org/The Undertable/index" {
     source "akasha"
 }
@@ -1522,6 +1543,9 @@ entity "Velthara" kind="place" page="Geography/Velthara/index" {
     alias "Althara"
     source "akasha"
     source "defs"
+}
+entity "Velvet Mark" kind="org" page="Org/Velvet Mark/index" {
+    source "akasha"
 }
 entity "Verdant" {
     alias "Vernon"
