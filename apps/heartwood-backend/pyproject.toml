@@ -1,9 +1,10 @@
 [project]
 name = "astra-heartwood-backend"
 version = "0.0.0"
-description = "heartwood-backend — the akasha setting-wiki maintainer (0020). Phase 2: a read-only extraction engine — world-filter → LLM filter (drop OOC/combat/play-by-play) → call_structured noun-facts → resolve() against the entity registry → committed per-session facts. Dagster per-session asset; LLM via libs/py/llm (raw, no dspy)."
+description = "heartwood-backend — the akasha setting-wiki maintainer (0033). A dspy.RLM agent reads one faerrin-world session transcript, browses the wiki + earlier transcripts through host-side tools, and edits apps/akasha-backend/content/ in a staging copy that publishes with no human review. Host-run CLI; LLM via libs/py/llm."
 requires-python = ">=3.12"
 dependencies = [
+    "astra-akasha-backend",
     "astra-config",
     "astra-linguist",
     "astra-llm",
@@ -12,14 +13,7 @@ dependencies = [
     "astra-ontology-being",
     "astra-ontology-config",
     "astra-ontology-entity",
-    "dagster",
-    "pydantic>=2",
 ]
-
-[project.scripts]
-astra-heartwood-extract = "astra_heartwood.pipeline:main"
-astra-heartwood-propose = "astra_heartwood.proposer.pipeline:main"
-astra-heartwood-apply = "astra_heartwood.apply:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -29,6 +23,7 @@ build-backend = "hatchling.build"
 packages = ["src/astra_heartwood"]
 
 [tool.uv.sources]
+astra-akasha-backend = { workspace = true }
 astra-config = { workspace = true }
 astra-linguist = { workspace = true }
 astra-llm = { workspace = true }

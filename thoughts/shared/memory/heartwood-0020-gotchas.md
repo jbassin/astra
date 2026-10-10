@@ -5,6 +5,8 @@ metadata:
   type: project
 ---
 
+**SUPERSEDED by 0033 (2026-10-10): pipeline + review site retired; see thoughts/astra/specs/0033-heartwood-agent-spec.md**
+
 **heartwood (0020)** — a net-new **multi-phase** subsystem: an LLM (GLM-5.2) reads play-session
 transcripts and maintains the akasha **setting wiki** (the "nouns" — people/places/things, NOT
 play-by-play; chronicle + Script pages already cover narrative sequence), proposing changes for

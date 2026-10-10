@@ -212,19 +212,6 @@ const Ledger = z
   })
   .strict();
 
-// The heartwood review surface (0020 Phase 4) — a PR-style review app on the
-// strider/vellum-editor template (Decision I). serviceName + port are the single
-// source for server.ts + vite's dev port; serviceName derives the browser RUM name.
-// Reads its content at runtime from narrow bind-mounts (no baked content). (config-
-// single-source)
-const Heartwood = z
-  .object({
-    serviceName: z.string().default("astra.heartwood-frontend"),
-    port: z.number().default(10371),
-    publicOrigin: z.string().default("https://heartwood.iridi.cc"),
-  })
-  .strict();
-
 // portal (0023) — MCP+WS server for the live FoundryVTT "Faerrin" world, on the
 // orator-backend template. No serviceName field (D3): unlike the SSR frontends
 // there's no browser RUM surface, so `astra.portal` is hardcoded in
@@ -328,7 +315,6 @@ export const ConfigSchema = z
     vellumRender: VellumRender.default(() => VellumRender.parse({})),
     harrow: Harrow.default(() => Harrow.parse({})),
     ledger: Ledger.default(() => Ledger.parse({})),
-    heartwood: Heartwood.default(() => Heartwood.parse({})),
     portal: Portal.default(() => Portal.parse({})),
     portalHeadless: PortalHeadless.default(() => PortalHeadless.parse({})),
     codex: Codex.default(() => Codex.parse({})),

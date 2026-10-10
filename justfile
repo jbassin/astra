@@ -163,52 +163,6 @@ craig-timer-install:
     echo "installed. timer schedule:"; systemctl --user list-timers craig-sync.timer --no-pager
 
 # Commit + push new linguist transcripts/data (the pipeline's tracked source-of-record).
-# heartwood Phase-4 write-back (P4.1): apply ONE approved change-set to the akasha corpus.
-# The public review surface only stages decisions in proposals/<date>/review.kdl (a narrow
-# rw bind-mount); this host-side recipe is the only place the corpus is written, the snapshot
-# regenerated, and akasha redeployed — kept off the no-auth public app deliberately. Steps:
-# write approved pages + registry-adds (astra-heartwood-apply) → validate the corpus (catches
-# a bad write before commit) → regen the snapshot → path-scoped commit + fetch/rebase (the
-# linguist-commit timer moves origin/main) + push → rebuild akasha so the edits go live.
-# `just heartwood-apply 2025-8-28`.  (Dry run: `uv run astra-heartwood-apply <date> --dry-run`.)
-heartwood-apply date:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    cd /ruby/data/experiments/astra
-    echo "heartwood-apply {{date}}: writing approved pages + registry adds…"
-    OTEL_SDK_DISABLED=true uv run astra-heartwood-apply {{date}}
-    echo "heartwood-apply: validating the corpus…"
-    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
-      libs/ts/vellum-lang/scripts/validate-corpus.ts --dir apps/akasha-backend/content
-    echo "heartwood-apply: regenerating the akasha snapshot…"
-    OTEL_SDK_DISABLED=true uv run akasha-snapshot
-    # The whole proposals/<date> dir, not just review.kdl: the facts-only rework made the
-    # proposal .vellum bodies HUMAN-edited (the editor saves them to disk) — leaving them
-    # unstaged aborts the rebase below with "cannot rebase: You have unstaged changes".
-    git add apps/akasha-backend/content apps/akasha-backend/snapshot/akasha-snapshot.json \
-            ontology/ontology-entity/entity.kdl "apps/heartwood-backend/proposals/{{date}}"
-    if git diff --cached --quiet; then
-      echo "heartwood-apply: nothing approved/changed for {{date}} — done."
-      exit 0
-    fi
-    # Path-scoped, machine-generated/human-approved content (all biome-excluded) → --no-verify.
-    git commit --no-verify -q \
-      -m "feat(akasha): heartwood write-back {{date}}" \
-      -m "Approved heartwood change-set applied via just heartwood-apply (P4.1)."
-    git fetch -q origin
-    if ! git rebase -q origin/main; then
-      echo "heartwood-apply: rebase conflict against origin/main — resolve, then push + redeploy manually" >&2
-      exit 1
-    fi
-    git push -q origin main && echo "heartwood-apply: committed + pushed"
-    echo "heartwood-apply: rebuilding akasha-frontend so the edits go live…"
-    if (cd deploy && docker compose up -d --build akasha-frontend); then
-      echo "heartwood-apply: akasha-frontend redeployed — edits live"
-    else
-      echo "heartwood-apply: akasha redeploy FAILED (rerun: cd deploy && docker compose up -d --build akasha-frontend)" >&2
-      exit 1
-    fi
-
 # The Dagster run workers write apps/linguist/{transcripts,data} to the host via bind mounts,
 # but the containers have no .git — so this host-side recipe is what tracks them. gitignore
 # already excludes *.candidates.json and the large scribe/mouthpiece binaries, so a plain

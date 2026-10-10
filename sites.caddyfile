@@ -144,17 +144,6 @@ ledger.iridi.cc {
 	reverse_proxy localhost:10370
 }
 
-# heartwood — the setting-wiki review surface (0020 Phase 4), a PR-style review app on
-# the strider/vellum-editor template where a human approves/edits/rejects the LLM-
-# proposed akasha pages. No editor-only gate: the WHOLE surface is public (D5, no auth)
-# — the dangerous write-back is a host-run `just heartwood-apply`, not a public route.
-# Compose publishes host port 10371. (*.iridi.cc is a wildcard — the subdomain should
-# resolve without a manual DNS record; the ledger surprise.)
-heartwood.iridi.cc {
-	import astra_site
-	reverse_proxy localhost:10371
-}
-
 # codex — the PF2e compendium/rules browser (0029), SSR frontend on port 10374.
 # Public with NO auth gate (C-8) but NOINDEXED (C-1): the X-Robots-Tag header here is
 # layer 3 of 3 (the SSR HTML always carries a robots meta tag; /robots.txt Disallow-all
@@ -249,7 +238,7 @@ orator.iridi.cc {
 # https://portal.iridi.cc/module/module.json; the catch-all would cover it too, but
 # the explicit route documents intent + lets caching be tuned here later). Compose
 # publishes host port 10372. (Needs a portal.iridi.cc DNS record — *.iridi.cc is a
-# wildcard, so it should resolve without one, like ledger/heartwood.)
+# wildcard, so it should resolve without one, like ledger.)
 portal.iridi.cc {
 	import astra_site
 
@@ -273,8 +262,9 @@ portal.iridi.cc {
 # python server (deploy/systemd/scriptorium.service, port 10390), NOT a Compose
 # service. A temporary surface so the stakeholder can review from his phone; remove
 # this stanza (+ disable the unit) when the review closes. NO auth (stakeholder call,
-# heartwood D5 posture): the write endpoints are append-only marginalia on an
-# obscure noindexed host, and the review artifact is staff-judged before any apply.
+# like the retired 0020 heartwood review site): the write endpoints are append-only
+# marginalia on an obscure noindexed host, and the review artifact is staff-judged
+# before any apply.
 # Noindexed like codex (plain header — must always win).
 # (*.iridi.cc wildcard — no DNS record needed; cert already minted.)
 scriptorium.iridi.cc {

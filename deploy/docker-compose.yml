@@ -82,7 +82,7 @@ services:
     command: ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000", "-f", "definitions.py"]
     # Run as the host repo owner (uid 1000) so the run worker's writes into the bind-mounted
     # pipeline dirs (linguist/data, transcripts, timeline, mouthpiece episodes, scribe data)
-    # land host-owned instead of root:root — the same fix as heartwood below. The image
+    # land host-owned instead of root:root — the same fix as the frontends below. The image
     # chowns /opt/dagster to 1000 (compute logs / DAGSTER_HOME) so this works.
     user: "1000:1000"
     environment: *dagster-env
@@ -291,7 +291,7 @@ services:
     restart: unless-stopped
 
   # --- codex (0029): the PF2e compendium/rules browser — SSR Compose service
-  # (Decision I), on the heartwood-frontend model (not akasha's): nothing
+  # (Decision I), on the runtime-mount model (not akasha's baked one): nothing
   # content-shaped is baked into the image — the corpus + Pagefind search index
   # arrive via read-only bind mounts, request-time reads (D29-31). D29-53: the two
   # mounts are IDENTICAL host-path==container-path binds, the Dagster
@@ -544,49 +544,6 @@ services:
     networks: [signoz-net]
     healthcheck:
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10370/').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-
-  # --- heartwood: the setting-wiki review surface (0020 Phase 4) — a PR-style review
-  # app on the strider/vellum-editor template, where a human approves/edits/rejects the
-  # LLM-proposed akasha pages heartwood-backend stages. THE departure from the other
-  # frontends: it reads its content at RUNTIME from narrow bind-mounts (no baked
-  # snapshot) and persists review decisions back to proposals/. ---
-  heartwood:
-    build:
-      context: ..
-      dockerfile: apps/heartwood-frontend/Dockerfile
-      args:
-        APP: heartwood-frontend # the one knob in the templated frontend Dockerfile
-    image: astra-heartwood:local
-    container_name: astra-heartwood
-    # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
-    # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
-    # B1 (the load-bearing bind-mount fix): every frontend/dagster container runs as
-    # ROOT by default (no USER directive in any frontend Dockerfile). Without this, container
-    # writes to proposals/ land 0:0 and the host (uid 1000, the repo owner) can't
-    # git-commit them or let `just heartwood-apply` stamp review.kdl in place (the
-    # vellum-render/dist EACCES class). 1000:1000 = the host repo owner → host-owned
-    # writes. No `user:` precedent elsewhere in compose — added deliberately here.
-    user: "1000:1000"
-    # No PORT env — serviceName/port come from config.kdl (config-single-source);
-    # compose only maps the published host port below.
-    ports:
-      - "10371:10371" # heartwood SSR (astra range) — also reachable directly
-    # Narrow bind-mounts (the heartwood departure, P4.7): the surface reads the staged
-    # proposals (rw — it writes review.kdl + edited .vellum back) and the akasha corpus
-    # + snapshot (ro — for the rewrite diff + the crossref/slug set). The dangerous
-    # write-BACK to the corpus is NOT here — it's the host-run `just heartwood-apply`.
-    volumes:
-      - /ruby/data/experiments/astra/apps/heartwood-backend/proposals:/repo/apps/heartwood-backend/proposals:rw
-      - /ruby/data/experiments/astra/apps/akasha-backend/content:/repo/apps/akasha-backend/content:ro
-      - /ruby/data/experiments/astra/apps/akasha-backend/snapshot:/repo/apps/akasha-backend/snapshot:ro
-    networks: [signoz-net]
-    healthcheck:
-      test: ["CMD", "node", "-e", "await fetch('http://localhost:10371/').then(r=>process.exit(r.ok?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 5

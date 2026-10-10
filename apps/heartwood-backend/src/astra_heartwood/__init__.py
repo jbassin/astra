@@ -1,11 +1,11 @@
-"""heartwood-backend (0020) — the akasha setting-wiki maintainer.
+"""heartwood-backend (0033) — the akasha setting-wiki maintainer agent.
 
-Phase 2 is a **read-only extraction engine**: it ingests one linguist-corrected
-transcript (faerrin-world only), filters out OOC/combat/play-by-play, extracts atomic
-noun-facts, resolves each against the Phase-1 entity registry, and emits a structured
-per-session facts artifact. No prose, no corpus writes, no review surface (Phases 3-5).
+A ``dspy.RLM`` agent reads one session transcript, browses the akasha wiki and earlier
+same-world transcripts through host-side tools, and edits the wiki directly; its changes
+publish with no human review (the 0020 extract → propose → review pipeline is retired).
+The code lives in the ``agent/`` sub-package.
 
-Spec: thoughts/astra/specs/0020-heartwood-phase2-extraction-spec.md
+Spec: thoughts/astra/specs/0033-heartwood-agent-spec.md
 """
 
 from __future__ import annotations

@@ -107,7 +107,6 @@
     "**/tests/fixtures/**",
     "**/linguist/data/**",
     "**/linguist/timeline/**",
-    "**/heartwood-backend/facts/**",
     "**/routeTree.gen.ts",
     "**/src/generated/**",
     "**/public/**",
@@ -168,17 +167,6 @@
     },
     {
       "files": ["**/vellum-frontend/src/domain/editor/**"],
-      "rules": {
-        "no-non-null-assertion": "off",
-        "no-cond-assign": "off",
-        "prefer-tag-over-role": "off"
-      }
-    },
-    {
-      "files": [
-        "**/heartwood-frontend/src/domain/editor/**",
-        "**/heartwood-frontend/src/domain/review/diff.ts"
-      ],
       "rules": {
         "no-non-null-assertion": "off",
         "no-cond-assign": "off",
@@ -253,7 +241,6 @@
       // static/stable-order lists (noArrayIndexKey exempted per-line in the source)
       "files": [
         "**/akasha-frontend/src/domain/components/Chronicle.tsx",
-        "**/heartwood-frontend/src/domain/components/ProposalCard.tsx",
         "**/harrow/src/domain/components/CardSpread.tsx",
         "**/mouthpiece-frontend/src/routes/episode/$id.tsx"
       ],
@@ -272,7 +259,6 @@
         "**/ledger/src/routes/__root.tsx",
         "**/harrow/src/routes/__root.tsx",
         "**/mouthpiece-frontend/src/routes/__root.tsx",
-        "**/heartwood-frontend/src/routes/__root.tsx",
         "**/codex/src/routes/__root.tsx",
         "**/codex/src/domain/search/SearchPage.tsx"
       ],

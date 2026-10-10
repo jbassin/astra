@@ -59,9 +59,6 @@ describe("@astra/config", () => {
     expect(cfg.ledger.serviceName).toBe("astra.ledger");
     expect(cfg.ledger.port).toBe(10370);
     expect(cfg.ledger.publicOrigin).toBe("https://ledger.iridi.cc");
-    expect(cfg.heartwood.serviceName).toBe("astra.heartwood-frontend");
-    expect(cfg.heartwood.port).toBe(10371);
-    expect(cfg.heartwood.publicOrigin).toBe("https://heartwood.iridi.cc");
     expect(cfg.portal.port).toBe(10372);
     expect(cfg.portal.publicOrigin).toBe("https://portal.iridi.cc");
     expect(cfg.portal.bridgeTimeoutMs).toBe(15000);
