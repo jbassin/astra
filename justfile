@@ -598,16 +598,20 @@ heartwood-sandbox-warm:
 #   just heartwood-agent 2025-8-28 --dry-run --model=<id> [--sub-model=<id>]
 #                                               override heartwood.model / sub-model for this
 #                                               run only (model comparisons; no config edit)
-# Steps: (0) refuse unless apps/akasha-backend/content + the ledger are clean and HEAD is
-# on main; (1) `astra-heartwood-agent run` stages + runs (artifacts under
+# Steps: (0) refuse unless apps/akasha-backend/content, the ledger and the entity registry
+# (ontology/ontology-entity/entity.kdl) are clean and HEAD is on main; (1)
+# `astra-heartwood-agent run` stages + runs (artifacts under
 # artifacts/heartwood/<date>/<run-id>/); (2) publish-sync applies the change-set to the live
 # corpus (aborts, writing nothing, if a touched page changed live); (3) whole-corpus
-# validate; (4) akasha-snapshot + the unresolved-link delta (reported, not enforced); on a
-# 3/4 failure it prints the exact restore command; (5) ledger-append + a path-scoped
-# `commit --only` (body = counts + model + cost + changelog, wrapped at 100); (6) fetch,
+# validate; (4) akasha-snapshot, then reseed entity.kdl from the new snapshot (keeps the
+# registry's drift-gate test green and lets later sessions' resolve_name see these pages),
+# then the unresolved-link delta (reported, not enforced); on a 3/4 failure it prints the
+# exact restore command; (5) ledger-append + a path-scoped `commit --only` of content,
+# snapshot, ledger and entity.kdl (body = counts + model + cost + changelog, wrapped at
+# 100); (6) fetch,
 # rebase --autostash onto origin/main (skipped when already based on it), push, redeploy.
 # Exit codes: 0 ok · 1 run failed · 2 run incomplete (iteration cap) · 3 publish conflict ·
-# 4 publish refused · 6 dirty corpus/ledger or not on main · 7 validate/snapshot failed
+# 4 publish refused · 6 dirty corpus/ledger/registry or not on main · 7 validate/snapshot/seed failed
 # (restore printed) · 8 commit/rebase/push failed · 9 redeploy failed or skipped · 64 bad flag.
 # Run + publish one session via the heartwood agent (PAID + LIVE; --dry-run / --no-push).
 heartwood-agent date *flags:
@@ -629,11 +633,12 @@ heartwood-agent date *flags:
     content=apps/akasha-backend/content
     snapshot=apps/akasha-backend/snapshot
     ledger=apps/heartwood-backend/agent-runs.jsonl
-    restore="git checkout -- $content $snapshot && git clean -fd $content"
+    entity=ontology/ontology-entity/entity.kdl
+    restore="git checkout -- $content $snapshot $entity && git clean -fd $content"
     # (0) a dirty corpus would be staged into the run and then committed under its name.
-    dirty="$(git status --porcelain -- "$content" "$ledger")"
+    dirty="$(git status --porcelain -- "$content" "$ledger" "$entity")"
     if [ -n "$dirty" ]; then
-      echo "heartwood-agent: refusing — uncommitted changes under $content / $ledger:" >&2
+      echo "heartwood-agent: refusing — uncommitted changes under $content / $ledger / $entity:" >&2
       printf '%s\n' "$dirty" >&2
       exit 6
     fi
@@ -669,23 +674,25 @@ heartwood-agent date *flags:
       echo "  inspect, then restore with:  $restore" >&2
       exit 7
     }
-    # (3) whole-corpus validation, (4) snapshot + unresolved-link delta (reported only).
+    # (3) whole-corpus validation, (4) snapshot, registry reseed (reads the new snapshot, so
+    # it must follow it) + unresolved-link delta (reported only).
     node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
       libs/ts/vellum-lang/scripts/validate-corpus.ts --dir "$content" || fail_restore "corpus validation"
     OTEL_SDK_DISABLED=true "{{uv_bin}}" run akasha-snapshot || fail_restore "akasha-snapshot"
+    OTEL_SDK_DISABLED=true "{{uv_bin}}" run astra-ontology-entity-seed || fail_restore "entity registry seed"
     hw unresolved-delta "$tmp/snapshot-before.json" || echo "heartwood-agent: (unresolved-delta report failed — not fatal)" >&2
     # (5) ledger line + path-scoped commit. --only: anything else staged stays out of it.
     if git ls-files --error-unmatch "$ledger" >/dev/null 2>&1; then undo_ledger="git checkout -- $ledger"
     else undo_ledger="rm -f $ledger"; fi
     fail_commit() {
       echo "heartwood-agent: $1 FAILED — published but uncommitted. Restore with:" >&2
-      echo "  git reset -q -- $content $snapshot $ledger && $restore && $undo_ledger" >&2
+      echo "  git reset -q -- $content $snapshot $ledger $entity && $restore && $undo_ledger" >&2
       exit 8
     }
     hw ledger-append "$run_dir" || fail_commit "ledger-append"
-    git add "$content" "$snapshot" "$ledger" || fail_commit "git add"
+    git add "$content" "$snapshot" "$ledger" "$entity" || fail_commit "git add"
     hw commit-message "$run_dir" >"$tmp/msg" || fail_commit "commit-message"
-    git commit --only --no-verify -q -F "$tmp/msg" -- "$content" "$snapshot" "$ledger" \
+    git commit --only --no-verify -q -F "$tmp/msg" -- "$content" "$snapshot" "$ledger" "$entity" \
       || fail_commit "git commit"
     echo "heartwood-agent: committed $(git rev-parse --short HEAD) $(head -n 1 "$tmp/msg")"
     # (6) push + redeploy (the backfill passes --no-push and does this once at the end).
@@ -726,12 +733,14 @@ _heartwood-push-deploy:
 
 # Undo ONE published heartwood session (0033 §5) — LIVE (pushes + redeploys akasha).
 # `git revert --no-commit` of that session's commit (the latest `feat(akasha): heartwood
-# agent <date>`), then agent-runs.jsonl + the snapshot are restored from HEAD (both conflict
-# on any non-latest revert), a `reverted` ledger line is appended, the snapshot regenerated,
-# the corpus validated, and `revert(akasha): heartwood agent <date>` committed (--only),
-# pushed, redeployed. A CONTENT conflict (a later session edited the same lines) aborts the
-# revert untouched — resolve by hand. Exit codes: 4 not published / no commit found ·
-# 6 dirty tree or not on main · 7 snapshot/validate failed · 8 revert/commit/push failed ·
+# agent <date>`), then agent-runs.jsonl, the snapshot and the entity registry
+# (ontology/ontology-entity/entity.kdl) are restored from HEAD (all conflict on any
+# non-latest revert), a `reverted` ledger line is appended, the snapshot regenerated, the
+# registry reseeded from it, the corpus validated, and `revert(akasha): heartwood agent
+# <date>` committed (--only), pushed, redeployed. A CONTENT conflict (a later session edited
+# the same lines) aborts the revert untouched — resolve by hand. Exit codes: 4 not
+# published / no commit found · 6 dirty tree or not on main · 7 snapshot/seed/validate
+# failed · 8 revert/commit/push failed ·
 # 9 redeploy failed.
 # Undo one published heartwood session: revert commit + ledger line + push + redeploy (LIVE).
 heartwood-revert date:
@@ -744,7 +753,8 @@ heartwood-revert date:
     content=apps/akasha-backend/content
     snapshot=apps/akasha-backend/snapshot
     ledger=apps/heartwood-backend/agent-runs.jsonl
-    dirty="$(git status --porcelain -- "$content" "$snapshot" "$ledger")"
+    entity=ontology/ontology-entity/entity.kdl
+    dirty="$(git status --porcelain -- "$content" "$snapshot" "$ledger" "$entity")"
     if [ -n "$dirty" ]; then
       echo "heartwood-revert: refusing — uncommitted changes:" >&2; printf '%s\n' "$dirty" >&2; exit 6
     fi
@@ -762,8 +772,9 @@ heartwood-revert date:
     if [ "$rc" -ne 0 ] && ! git rev-parse -q --verify REVERT_HEAD >/dev/null; then
       echo "heartwood-revert: git revert failed before applying anything (exit $rc)" >&2; exit 8
     fi
-    # The ledger + snapshot are regenerated below, so their (expected) conflicts don't matter.
-    git checkout HEAD -- "$ledger" "$snapshot"
+    # The ledger, snapshot + registry are regenerated below, so their (expected) conflicts
+    # don't matter.
+    git checkout HEAD -- "$ledger" "$snapshot" "$entity"
     unmerged="$(git diff --name-only --diff-filter=U)"
     if [ -n "$unmerged" ]; then
       echo "heartwood-revert: content conflicts with later edits — aborting, nothing changed:" >&2
@@ -774,12 +785,13 @@ heartwood-revert date:
     fail() { echo "heartwood-revert: $1 FAILED — restore with: $undo" >&2; exit "$2"; }
     hw ledger-revert "$date" || fail "ledger-revert" 8
     OTEL_SDK_DISABLED=true "{{uv_bin}}" run akasha-snapshot || fail "akasha-snapshot" 7
+    OTEL_SDK_DISABLED=true "{{uv_bin}}" run astra-ontology-entity-seed || fail "entity registry seed" 7
     node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
       libs/ts/vellum-lang/scripts/validate-corpus.ts --dir "$content" || fail "corpus validation" 7
-    git add "$content" "$snapshot" "$ledger" || fail "git add" 8
+    git add "$content" "$snapshot" "$ledger" "$entity" || fail "git add" 8
     git commit --only --no-verify -q \
       -m "revert(akasha): heartwood agent $date" -m "This reverts commit $commit." \
-      -- "$content" "$snapshot" "$ledger" || fail "git commit" 8
+      -- "$content" "$snapshot" "$ledger" "$entity" || fail "git commit" 8
     echo "heartwood-revert: committed $(git rev-parse --short HEAD)"
     "{{just_executable()}}" _heartwood-push-deploy
 
@@ -866,7 +878,7 @@ _heartwood-backfill-loop from:
       echo "--- $(ts) $d"
       rc=0; "{{just_executable()}}" heartwood-agent "$d" --no-push || rc=$?
       if [ "$rc" -ne 0 ]; then
-        stop="heartwood-agent $d exited $rc (1 failed · 2 incomplete · 3 conflict · 4 refused · 6 dirty · 7 validate/snapshot · 8 commit)"
+        stop="heartwood-agent $d exited $rc (1 failed · 2 incomplete · 3 conflict · 4 refused · 6 dirty · 7 validate/snapshot/seed · 8 commit)"
         rerun="$d"; break
       fi
       published=$((published + 1))

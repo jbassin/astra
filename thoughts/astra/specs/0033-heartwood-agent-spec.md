@@ -100,7 +100,7 @@ Scope decisions D1–D9 carry over verbatim. Build decisions:
 - **D33-9 — Run robustness + outcome.** `HeartwoodRLM(dspy.RLM)` overrides:
   - `_execute_iteration`: catch `AdapterParseError` from `generate_action` (dspy lets it escape
     `forward`, killing the run on one malformed reply — a real risk over 40 Flash-model turns) and append
-    an `[Error] could not parse your reply — answer with reasoning + a python code block` history entry,
+    an `[Error] could not parse your reply; answer with reasoning + a python code block` history entry,
     costing one iteration instead of the run. Mirror the running history onto `self` every step so a
     failed run still writes `trajectory.json`.
   - `_extract_fallback`: set `self.hit_cap = True`, then defer to super.
@@ -232,28 +232,35 @@ stopping the timer. It still pushes whenever local main is ahead, so the backfil
 
 **`just heartwood-agent <date> [--dry-run]`**
 
-0. Precondition: `git status --porcelain apps/akasha-backend/content apps/heartwood-backend/agent-runs.jsonl`
-   is empty, else refuse (a dirty corpus would be staged into the run).
+0. Precondition: `git status --porcelain apps/akasha-backend/content apps/heartwood-backend/agent-runs.jsonl
+   ontology/ontology-entity/entity.kdl` is empty, else refuse (a dirty corpus would be staged into the
+   run).
 1. `astra-heartwood-agent run <date>` → stage, run, artifacts. Exit 2/1 for incomplete/failed → stop.
    `--dry-run` stops here and prints the `diff.patch` path + summary.
 2. `astra-heartwood-agent publish-sync <run>` → apply the change-set to the live corpus. For each
    touched path, require the live file's hash to equal the run's baseline, else abort with a conflict
    listing (no file written). Write created/updated, remove deleted and moved-from, prune emptied dirs.
-3. Whole-corpus `validate-corpus.ts`. 4. `akasha-snapshot`; print the unresolved-link delta vs. the
-   pre-run snapshot (baseline 35 on 2026-10-10) — reported, not enforced.
-   On failure at 3 or 4: print the exact restore command
-   (`git checkout -- apps/akasha-backend/content apps/akasha-backend/snapshot && git clean -fd apps/akasha-backend/content`).
-5. `astra-heartwood-agent ledger-append <run>`; `git add` the three paths; `git commit --only --no-verify
-   -- apps/akasha-backend/content apps/akasha-backend/snapshot apps/heartwood-backend/agent-runs.jsonl`.
+3. Whole-corpus `validate-corpus.ts`. 4. `akasha-snapshot`; then reseed the entity registry
+   (`OTEL_SDK_DISABLED=true uv run astra-ontology-entity-seed` → `ontology/ontology-entity/entity.kdl`).
+   The seed reads the committed snapshot, so it runs after `akasha-snapshot`. Reseeding keeps the
+   registry's drift-gate test (`test_entity_kdl_is_not_stale`) green, and it lets the `resolve_name`
+   tool in later sessions see the pages this session published. Then print the unresolved-link delta
+   vs. the pre-run snapshot (baseline 35 on 2026-10-10) — reported, not enforced.
+   On failure at 3 or 4 (validate, snapshot or seed): print the exact restore command
+   (`git checkout -- apps/akasha-backend/content apps/akasha-backend/snapshot
+   ontology/ontology-entity/entity.kdl && git clean -fd apps/akasha-backend/content`) and exit 7.
+5. `astra-heartwood-agent ledger-append <run>`; `git add` the four paths; `git commit --only --no-verify
+   -- apps/akasha-backend/content apps/akasha-backend/snapshot apps/heartwood-backend/agent-runs.jsonl
+   ontology/ontology-entity/entity.kdl`.
    Subject `feat(akasha): heartwood agent <date>`; body = counts + model + cost + changelog, wrapped at
    100 columns (commitlint).
 6. Unless `--no-push`: `git fetch` + `git rebase --autostash origin/main` (skip when origin/main is
    already an ancestor), push, `docker compose up -d --build akasha-frontend`.
 
 **`just heartwood-revert <date>`** — `git revert --no-commit <that session's commit>`, restore
-`agent-runs.jsonl` and the snapshot from HEAD (both conflict on any non-latest revert), append a
-`reverted` ledger line, regenerate the snapshot, validate, commit `revert(akasha): heartwood agent
-<date>`, push, redeploy.
+`agent-runs.jsonl`, the snapshot and `entity.kdl` from HEAD (all conflict on any non-latest revert),
+append a `reverted` ledger line, regenerate the snapshot, reseed `entity.kdl` from it, validate, commit
+`revert(akasha): heartwood agent <date>` (the same four paths), push, redeploy.
 
 **`just heartwood-backfill [from]`** — always launched detached:
 `systemd-run --user --unit=heartwood-backfill` with output to `artifacts/heartwood/backfill.log`.
