@@ -17,12 +17,13 @@ from __future__ import annotations
 import re
 import tempfile
 from collections.abc import Callable
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from astra_akasha_backend.corpus import load_corpus
-from astra_akasha_backend.crossref import resolve_corpus
+from astra_akasha_backend.corpus import Page, load_corpus
+from astra_akasha_backend.crossref import index_pages, resolve_corpus, resolve_target
 from astra_linguist.chronicle import TRANSCRIPT_DIR, date_key
 from astra_ontology import Resolution
 from astra_ontology.models import Being
@@ -89,6 +90,44 @@ def stamp_date(text: str, *, existing: str | None, target_iso: str) -> str:
     return f"---\n{block}\n---\n{text[fm.end() :]}"
 
 
+@dataclass(frozen=True)
+class LinkState:
+    """Staging's link graph at one mutation generation, built with akasha's own resolver."""
+
+    pages: dict[str, Page]
+    by_path: dict[str, str]
+    by_stem: dict[str, list[str]]
+    #: ``{target: [sources]}`` over the resolved edges (self-links excluded).
+    backlinks: dict[str, list[str]]
+
+    def resolves(self, target: str) -> bool:
+        return resolve_target(target, self.by_path, self.by_stem) is not None
+
+    def suggest(self, target: str) -> str | None:
+        """A page ``target`` probably meant, when akasha cannot resolve it.
+
+        A folder's main page is ``<Folder>/index``, whose basename is ``index``, so a bare
+        ``[[Folder]]`` link misses it; the same goes for a basename that differs only in
+        case. Folder index pages win over plain pages, then akasha's shortest-path rule.
+        """
+        base = target.strip().removesuffix(".md").rsplit("/", 1)[-1].casefold()
+        if not base:
+            return None
+        folders = [
+            p
+            for p in self.by_path
+            if p.endswith("/index") and p.rsplit("/", 2)[-2].casefold() == base
+        ]
+        pages = [p for p in self.by_path if p.rsplit("/", 1)[-1].casefold() == base]
+        pool = folders or pages
+        return min(pool, key=lambda p: (p.count("/"), len(p), p)) if pool else None
+
+
+def _link_text(target: str, heading: str | None, label: str | None) -> str:
+    head = f"#{heading}" if heading else ""
+    return f"[[{target}{head}|{label}]]" if label else f"[[{target}{head}]]"
+
+
 def _matcher(pattern: str, regex: bool) -> Callable[[str], bool]:
     if not isinstance(pattern, str) or not pattern:
         raise ValueError("pattern must be a non-empty string")
@@ -136,7 +175,7 @@ class HeartwoodTools:
                 slug = faerrin_session(d, being=being, transcript_dir=transcript_dir)
                 if slug is not None:
                     self.sessions[d] = slug
-        self._backlink_cache: tuple[int, dict[str, list[str]]] | None = None
+        self._link_cache: tuple[int, LinkState] | None = None
 
     # ── helpers ──
     def _page_file(self, path: str) -> Path:
@@ -145,18 +184,44 @@ class HeartwoodTools:
             raise ValueError(f"no page {path!r} (list_pages() shows what exists)")
         return file
 
-    def _backlink_index(self) -> dict[str, list[str]]:
-        """``{target: [sources]}`` from akasha's resolver, cached per mutation generation."""
-        if self._backlink_cache is None or self._backlink_cache[0] != self.ws.generation:
+    def _links(self) -> LinkState:
+        """Staging's ``LinkState`` (akasha's loader + resolver), cached per mutation generation."""
+        if self._link_cache is None or self._link_cache[0] != self.ws.generation:
+            pages = load_corpus(self.ws.content_dir)
+            by_path, by_stem = index_pages(pages)
             index: dict[str, set[str]] = {}
-            for edge in resolve_corpus(load_corpus(self.ws.content_dir)):
+            for edge in resolve_corpus(pages):
                 if edge.resolved is not None and edge.resolved != edge.source:
                     index.setdefault(edge.resolved, set()).add(edge.source)
-            self._backlink_cache = (
-                self.ws.generation,
-                {k: sorted(v) for k, v in index.items()},
+            state = LinkState(
+                pages={p.path: p for p in pages},
+                by_path=by_path,
+                by_stem=by_stem,
+                backlinks={k: sorted(v) for k, v in index.items()},
             )
-        return self._backlink_cache[1]
+            self._link_cache = (self.ws.generation, state)
+        return self._link_cache[1]
+
+    def unresolved_links(self, path: str) -> list[str]:
+        """Page ``path``'s links that resolve to no staging page, one entry per distinct
+        target in page order, each with a ``(did you mean …?)`` hint when one is found."""
+        links = self._links()
+        page = links.pages.get(path)
+        if page is None:
+            return []
+        seen: set[str] = set()
+        report: list[str] = []
+        for ref in page.metadata.crossrefs:
+            if ref.target in seen or links.resolves(ref.target):
+                continue
+            seen.add(ref.target)
+            entry = _link_text(ref.target, ref.heading, ref.alias)
+            hint = links.suggest(ref.target)
+            if hint is not None:
+                label = ref.alias or ref.target.strip().rsplit("/", 1)[-1]
+                entry += f" (did you mean {_link_text(hint, ref.heading, label)}?)"
+            report.append(entry)
+        return report
 
     def _permitted(self, date: str) -> None:
         if date not in self.sessions:
@@ -191,9 +256,11 @@ class HeartwoodTools:
 
     def write_page(self, path: str, text: str) -> str:
         """Create or replace page `path` with vellum `text` (parent folders are created; the
-        frontmatter date is set for you). Returns 'created <path>', 'updated <path>', or
-        'rejected: <validator report>' (nothing written; fix and retry). Raises ValueError on a
-        bad path."""
+        frontmatter date is set for you). Returns 'created <path>' or 'updated <path>'; when
+        some of the page's links match no page, a second line follows: 'unresolved links:
+        [[X]] (did you mean [[Y|X]]?), [[Z]]'. The page is written either way; rewrite it to
+        fix those links. Returns 'rejected: <validator report>' when the text fails validation
+        (nothing written; fix and retry). Raises ValueError on a bad path."""
         key = check_path_key(path)
         file = self.ws.file(key)
         if not isinstance(text, str) or not text.strip():
@@ -210,11 +277,15 @@ class HeartwoodTools:
             if report is not None:
                 return f"rejected: {report.replace(tmp + '/', '').strip()}"
         created = self.ws.write(key, candidate)
-        return f"{'created' if created else 'updated'} {key}"
+        result = f"{'created' if created else 'updated'} {key}"
+        unresolved = self.unresolved_links(key)
+        if unresolved:
+            result += "\nunresolved links: " + ", ".join(unresolved)
+        return result
 
     def move_page(self, src: str, dst: str) -> dict[str, Any]:
         """Move page `src` to path `dst` (empty folders are removed). Returns {'moved': [src,
-        dst], 'backlinks': [pages that linked to src before the move — fix or drop their
+        dst], 'backlinks': [pages that linked to src before the move; fix or drop their
         links]}. Raises ValueError if src is missing or dst already exists."""
         src, dst = check_path_key(src), check_path_key(dst)
         self._page_file(src)
@@ -226,7 +297,7 @@ class HeartwoodTools:
 
     def delete_page(self, path: str) -> dict[str, Any]:
         """Delete page `path` (empty folders are removed). Returns {'deleted': path,
-        'backlinks': [pages that linked to it — fix or drop their links]}. Raises ValueError if
+        'backlinks': [pages that linked to it; fix or drop their links]}. Raises ValueError if
         the page does not exist."""
         key = check_path_key(path)
         self._page_file(key)
@@ -239,7 +310,7 @@ class HeartwoodTools:
         resolver: exact path, folder index, else shortest path with the same basename).
         Raises ValueError on a bad path."""
         key = check_path_key(path)
-        return list(self._backlink_index().get(key, []))
+        return list(self._links().backlinks.get(key, []))
 
     # ── transcripts ──
     def list_sessions(self) -> list[dict[str, Any]]:

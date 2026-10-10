@@ -13,13 +13,17 @@ wrap the call itself. ``MeteringMixin`` carries the logic so tests can meter a
 **``HeartwoodRLM``** — a ``dspy.RLM`` that survives one malformed main-LM reply
 (``AdapterParseError`` costs one iteration, not the run), mirrors the running REPL
 history onto ``self`` each step (so a failed run still writes ``trajectory.json``), and
-flags ``hit_cap`` when the iteration cap forces the extract fallback.
+flags ``hit_cap`` when the iteration cap forces the extract fallback. Near the cap it
+appends a ``[Budget]`` note to each step's REPL output so the model wraps up and calls
+``SUBMIT`` instead of running out (the first live run ended on its 60th of 60 steps).
 
 Both lean on dspy 3.2.1 internals; line numbers are cited where we depend on them.
 """
 
 from __future__ import annotations
 
+import math
+from fractions import Fraction
 from typing import Any
 
 import dspy
@@ -32,10 +36,28 @@ from .telemetry import LmMeter, RunParent, instruments, log, tracer
 
 #: The history entry a malformed reply becomes (D33-9).
 PARSE_ERROR_OUTPUT = (
-    "[Error] could not parse your reply — answer with reasoning + a python code block"
+    "[Error] could not parse your reply; answer with reasoning + a python code block"
 )
 #: How much of the unparseable reply is echoed back (enough to see what went wrong).
 PARSE_ERROR_ECHO_CHARS = 300
+#: From this fraction of ``max_iterations`` on, every step's output carries a budget note
+#: (a ``Fraction`` so the threshold is exact: ``0.8 * 15`` is 12.000000000000002 in floats).
+BUDGET_WARN_FRACTION = Fraction(4, 5)
+
+
+def budget_warn_from(max_iterations: int) -> int:
+    """The first 0-based iteration index whose output gets the budget note."""
+    return math.ceil(BUDGET_WARN_FRACTION * max_iterations)
+
+
+def budget_note(step: int, max_iterations: int) -> str:
+    """The note appended after 1-based ``step``; the model reads it on its next turn."""
+    left = max_iterations - step
+    return (
+        f"[Budget] Step {step} of {max_iterations} used. Finish your remaining writes and "
+        f"fix unresolved links now; call SUBMIT(changelog=...) within the next {left} "
+        f"step{'' if left == 1 else 's'}."
+    )
 
 
 def _int(value: Any) -> int:
@@ -155,8 +177,33 @@ class HeartwoodRLM(dspy.RLM):  # ty: ignore[invalid-base]  (@experimental-wrappe
             # Same entry shape every other iteration appends (rlm.py:500/527).
             result = history.append(reasoning="", code="", output=output)
         if isinstance(result, REPLHistory):
+            result = self._with_budget_note(result, iteration)
             self.repl_history = result
         return result
+
+    def _with_budget_note(self, history: REPLHistory, iteration: int) -> REPLHistory:
+        """Append the ``[Budget]`` note to the newest entry's output once ``iteration`` reaches
+        ``budget_warn_from``; skipped on the last step (the extract fallback follows it).
+
+        The note rides the REPL output because that is what the model reads back each turn:
+        RLM.forward (rlm.py:597-603) passes this history to the next ``generate_action``
+        (rlm.py:552-556), whose ``iteration`` field shows only "N/M". Entries and the history
+        are frozen pydantic models (repl_types.py:109/137), so the last entry is rebuilt.
+        ``REPLEntry.format_output`` (repl_types.py:112-119) truncates long output in the
+        middle, keeping its tail, so a note at the end stays visible.
+        """
+        step = iteration + 1
+        if iteration < budget_warn_from(self.max_iterations) or step >= self.max_iterations:
+            return history
+        if not history.entries:
+            return history
+        last = history.entries[-1]
+        note = budget_note(step, self.max_iterations)
+        output = f"{last.output}\n\n{note}" if last.output else note
+        return REPLHistory(
+            entries=[*history.entries[:-1], last.model_copy(update={"output": output})],
+            max_output_chars=history.max_output_chars,
+        )
 
     def _extract_fallback(
         self,

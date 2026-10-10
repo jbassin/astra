@@ -21,6 +21,8 @@ from astra_heartwood.agent.rlm import (
     HeartwoodRLM,
     MeteredLM,
     MeteringMixin,
+    budget_note,
+    budget_warn_from,
 )
 from astra_heartwood.agent.run import determine_status
 from astra_heartwood.agent.telemetry import LmMeter, RunParent, instrument_tool, tool_outcome
@@ -325,6 +327,67 @@ def test_submit_is_ok_and_state_resets_per_call(fake_metrics, spans) -> None:
         agent.hit_cap = True
         agent(q="b")
     assert agent.iterations == 1 and not agent.hit_cap
+
+
+# ── step-budget note ──
+def test_budget_threshold_and_note_text() -> None:
+    assert budget_warn_from(60) == 48 and budget_warn_from(10) == 8 and budget_warn_from(3) == 3
+    assert budget_warn_from(15) == 12 and budget_warn_from(12) == 10
+    assert budget_note(49, 60) == (
+        "[Budget] Step 49 of 60 used. Finish your remaining writes and fix unresolved links "
+        "now; call SUBMIT(changelog=...) within the next 11 steps."
+    )
+    assert budget_note(59, 60).endswith("within the next 1 step.")
+
+
+_STEP = {"reasoning": "r", "code": "```python\nprint(1)\n```"}
+
+
+def test_budget_note_reaches_the_next_turn(fake_metrics, spans) -> None:
+    # max 15 → note after steps 13 and 14 (0-based 12, 13); none on the last step 15
+    main = MeteredDummyLM([_STEP] * 15 + [{"changelog": "- forced"}], role="main")
+    agent = HeartwoodRLM("q -> changelog", max_iterations=15, interpreter=FakeInterpreter())
+    with dspy.context(lm=main):
+        pred = agent(q="hi")
+    outputs = [e["output"] for e in pred.trajectory]
+    assert outputs[:12] == ["ran"] * 12 and outputs[14] == "ran"
+    assert outputs[12] == "ran\n\n" + budget_note(13, 15)
+    assert outputs[13] == "ran\n\n" + budget_note(14, 15)
+    assert agent.hit_cap and agent.iterations == 15
+    assert [e["output"] for e in agent.trajectory()] == outputs  # mirrored on self too
+    # the 14th main call (0-based 13) is the first whose prompt carries the note
+    prompts = [str(h["messages"]) for h in main.history]
+    assert "[Budget]" not in prompts[12] and "Step 13 of 15 used" in prompts[13]
+
+
+def test_budget_note_on_an_absorbed_parse_error(fake_metrics, spans) -> None:
+    # the malformed reply lands on step 9 of 10 (two LM calls: ChatAdapter + JSON fallback)
+    replies = [_STEP] * 8 + [{"garbage": "x"}, {"garbage": "y"}] + [_STEP]
+    main = MeteredDummyLM([*replies, {"changelog": "- forced"}], role="main")
+    agent = HeartwoodRLM("q -> changelog", max_iterations=10, interpreter=FakeInterpreter())
+    with dspy.context(lm=main):
+        pred = agent(q="hi")
+    ninth = pred.trajectory[8]["output"]
+    assert agent.parse_errors == 1 and agent.hit_cap
+    assert ninth.startswith(PARSE_ERROR_OUTPUT) and ninth.endswith(budget_note(9, 10))
+
+
+def test_budget_note_skips_submit(fake_metrics, spans) -> None:
+    class SubmitLast(FakeInterpreter):
+        def execute(self, code: str, variables: dict[str, Any] | None = None) -> Any:
+            from dspy.primitives.code_interpreter import FinalOutput
+
+            self.codes.append(code)
+            return FinalOutput({"changelog": "- done"}) if "SUBMIT" in code else "ran"
+
+    done = {"reasoning": "r", "code": "SUBMIT(changelog='- done')"}
+    main = MeteredDummyLM([_STEP] * 13 + [done], role="main")  # SUBMIT on step 14 of 15
+    agent = HeartwoodRLM("q -> changelog", max_iterations=15, interpreter=SubmitLast())
+    with dspy.context(lm=main):
+        pred = agent(q="hi")
+    assert pred.changelog == "- done" and not agent.hit_cap
+    assert pred.trajectory[-1]["output"].startswith("FINAL:")
+    assert "[Budget]" not in pred.trajectory[-1]["output"]
 
 
 # ── outcome (D33-9) ──

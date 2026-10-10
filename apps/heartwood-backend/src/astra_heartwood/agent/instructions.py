@@ -86,7 +86,11 @@ class MaintainWiki(dspy.Signature):
 
     Page format (vellum): each page starts with YAML frontmatter (`---` lines; keep
     existing fields such as `tags` and `aliases`; the `date` field is set for you).
-    Link pages with `[[Path/To/Page]]`, `[[Name]]` or `[[Target|label]]`. Avoid the
+    Link pages with `[[Path/To/Page]]`, `[[Name]]` or `[[Target|label]]`. A link
+    resolves by exact path or by page file name. A folder's main page is
+    `<Folder>/index`, so link it as `[[Org/Blackline/index|Blackline]]`; a bare
+    `[[Blackline]]` will not resolve. When `write_page` reports `unresolved links`,
+    fix them (point each at a real page, or drop the brackets). Avoid the
     sigils `#word`, `@word` and `||text||` in prose: they render as card markup, and the
     validator rejects some of them (`#word` and `:name[...]` directives are rejected).
     `write_page` validates every write: if it returns a string starting with

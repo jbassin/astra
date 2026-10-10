@@ -254,6 +254,43 @@ def test_write_empty_text_raises(env) -> None:
         t.write_page("Bestiary/X", "   ")
 
 
+def test_write_reports_unresolved_links_with_hints(env) -> None:
+    ws, t, _, _ = env
+    text = (
+        "Kin of [[Ugathal]] in [[Geography/Hallia]]. Seen in [[Hallia]], [[Hallia|the city]];"
+        " hunted by [[auger|augers]]; sworn to [[Nowhere#Oath]]."
+    )
+    out = t.write_page("Bestiary/Grell", text)
+    # [[Hallia]] misses Geography/Hallia/index (its basename is 'index'); [[auger]] misses
+    # Bestiary/Auger by case; duplicates of one target are reported once, in page order
+    assert out.splitlines() == [
+        "created Bestiary/Grell",
+        "unresolved links: [[Hallia]] (did you mean [[Geography/Hallia/index|Hallia]]?), "
+        "[[auger|augers]] (did you mean [[Bestiary/Auger|augers]]?), "
+        "[[Nowhere#Oath]]",
+    ]
+    assert t.read_page("Bestiary/Grell").endswith(text + "\n")  # written anyway
+    assert ws.ops() == [{"op": "write", "path": "Bestiary/Grell"}]
+
+
+def test_write_unresolved_links_track_staging(env) -> None:
+    _, t, _, _ = env
+    assert t.write_page("Divinity/Iris", "Sister of [[Ombra]].") == (
+        "created Divinity/Iris\nunresolved links: [[Ombra]]"
+    )
+    assert t.write_page("Divinity/Ombra/index", "Sister of [[Iris]].") == (
+        "created Divinity/Ombra/index"
+    )
+    # still unresolved: a bare folder name does not reach <Folder>/index
+    assert t.write_page("Divinity/Iris", "Sister of [[Ombra]].") == (
+        "updated Divinity/Iris\nunresolved links: "
+        "[[Ombra]] (did you mean [[Divinity/Ombra/index|Ombra]]?)"
+    )
+    fixed = "Sister of [[Divinity/Ombra/index|Ombra]] and [[Divinity/Ombra]]."
+    assert t.write_page("Divinity/Iris", fixed) == "updated Divinity/Iris"
+    assert t.backlinks("Divinity/Ombra/index") == ["Divinity/Iris"]
+
+
 # ── backlinks / move / delete ──
 def test_backlinks_use_akasha_resolver(env) -> None:
     _, t, _, _ = env

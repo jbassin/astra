@@ -25,8 +25,8 @@ class Edge(BaseModel):
     alias: str | None = None
 
 
-def _index(pages: list[Page]) -> tuple[dict[str, str], dict[str, list[str]]]:
-    """Build path→path and stem→[paths] indices for resolution."""
+def index_pages(pages: list[Page]) -> tuple[dict[str, str], dict[str, list[str]]]:
+    """Build the path→path and stem→[paths] indices ``resolve_target`` takes."""
     by_path: dict[str, str] = {}
     by_stem: dict[str, list[str]] = {}
     for page in pages:
@@ -57,7 +57,7 @@ def resolve_target(
 
 def resolve_corpus(pages: list[Page]) -> list[Edge]:
     """Every crossref in the corpus as a resolved/unresolved edge, in page order."""
-    by_path, by_stem = _index(pages)
+    by_path, by_stem = index_pages(pages)
     edges: list[Edge] = []
     for page in pages:
         for ref in page.metadata.crossrefs:
