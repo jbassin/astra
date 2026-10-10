@@ -595,6 +595,9 @@ heartwood-sandbox-warm:
 #   just heartwood-agent 2025-8-28              run → publish → commit → push → redeploy
 #   just heartwood-agent 2025-8-28 --dry-run    run + artifacts only; prints diff + summary
 #   just heartwood-agent 2025-8-28 --no-push    commit locally, no push/redeploy (backfill)
+#   just heartwood-agent 2025-8-28 --dry-run --model=<id> [--sub-model=<id>]
+#                                               override heartwood.model / sub-model for this
+#                                               run only (model comparisons; no config edit)
 # Steps: (0) refuse unless apps/akasha-backend/content + the ledger are clean and HEAD is
 # on main; (1) `astra-heartwood-agent run` stages + runs (artifacts under
 # artifacts/heartwood/<date>/<run-id>/); (2) publish-sync applies the change-set to the live
@@ -612,12 +615,14 @@ heartwood-agent date *flags:
     set -euo pipefail
     cd /ruby/data/experiments/astra
     export PATH="$HOME/.deno/bin:$PATH"   # dspy launches bare `deno`
-    date="{{date}}"; dry_run=0; push=1
+    date="{{date}}"; dry_run=0; push=1; model_flags=()
     for f in {{flags}}; do
       case "$f" in
         --dry-run) dry_run=1 ;;
         --no-push) push=0 ;;
-        *) echo "heartwood-agent: unknown flag '$f' (use --dry-run / --no-push)" >&2; exit 64 ;;
+        --model=?*) model_flags+=(--model "${f#--model=}") ;;
+        --sub-model=?*) model_flags+=(--sub-model "${f#--sub-model=}") ;;
+        *) echo "heartwood-agent: unknown flag '$f' (use --dry-run / --no-push / --model=<id> / --sub-model=<id>)" >&2; exit 64 ;;
       esac
     done
     hw() { "{{uv_bin}}" run astra-heartwood-agent "$@"; }
@@ -639,7 +644,7 @@ heartwood-agent date *flags:
     tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
     cp "$snapshot/akasha-snapshot.json" "$tmp/snapshot-before.json"
     # (1) stage + run. The CLI's last stdout line is RUN_DIR=<path>.
-    run_flags=(); if [ "$dry_run" = 1 ]; then run_flags+=(--dry-run); fi
+    run_flags=("${model_flags[@]}"); if [ "$dry_run" = 1 ]; then run_flags+=(--dry-run); fi
     rc=0; hw run "$date" "${run_flags[@]}" | tee "$tmp/run.out" || rc=$?
     run_dir="$(sed -n 's/^RUN_DIR=//p' "$tmp/run.out" | tail -n 1)"
     if [ "$rc" -ne 0 ]; then

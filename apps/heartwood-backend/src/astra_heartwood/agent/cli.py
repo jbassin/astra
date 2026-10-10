@@ -1,7 +1,10 @@
 """``astra-heartwood-agent`` — the heartwood agent's host CLI (0033 D33-1, §5).
 
-    run <date> [--dry-run]        stage + run one session (never publishes); the last
-                                  stdout line is ``RUN_DIR=<path>``
+    run <date> [--dry-run] [--model ID] [--sub-model ID]
+                                  stage + run one session (never publishes); the last
+                                  stdout line is ``RUN_DIR=<path>``. ``--model`` /
+                                  ``--sub-model`` override ``heartwood.model`` /
+                                  ``sub-model`` for this run only (model comparisons)
     sessions [--from DATE]        pending faerrin dates, oldest first — dates the ledger
                                   shows as published are skipped (D33-12)
     publish-sync <run-dir>        apply an ``ok`` run's change-set to the live corpus
@@ -105,7 +108,12 @@ def _err(msg: str) -> None:
 
 # ── subcommands ────────────────────────────────────────────────────────────
 def _cmd_run(args: argparse.Namespace) -> int:
-    result = run_session(args.date, dry_run=args.dry_run)
+    overrides = {
+        k: v for k, v in (("model", args.model), ("sub_model", args.sub_model)) if v is not None
+    }
+    # A per-run copy: summary.json, the run span and the ledger record what actually ran.
+    config = load_config().heartwood.model_copy(update=overrides) if overrides else None
+    result = run_session(args.date, dry_run=args.dry_run, config=config)
     print(format_summary(result))
     print(f"RUN_DIR={result.run_dir}")  # machine-readable, always the last line
     return result.exit_code
@@ -202,6 +210,8 @@ def build_parser() -> argparse.ArgumentParser:
     run = sub.add_parser("run", help="stage + run the agent over one session (never publishes)")
     run.add_argument("date", help="session date, e.g. 2025-8-28")
     run.add_argument("--dry-run", action="store_true", help="record the run as a dry run")
+    run.add_argument("--model", default=None, help="override heartwood.model for this run")
+    run.add_argument("--sub-model", default=None, help="override heartwood.sub-model for this run")
     run.set_defaults(func=_cmd_run)
 
     sessions = sub.add_parser("sessions", help="pending sessions (ledger-skipped), oldest first")

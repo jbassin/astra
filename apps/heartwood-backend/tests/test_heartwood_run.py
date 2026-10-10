@@ -343,3 +343,67 @@ def test_non_ingestible_date_raises_before_staging(env) -> None:
                 **env,
             )
     assert not env["artifacts_root"].exists()
+
+
+# ── CLI per-run model overrides (S5 prep: model comparisons via dry runs) ──
+def _cli_run(env, monkeypatch, argv: list[str]) -> tuple[int, dict[str, Any], list[str]]:
+    """Drive ``cli run`` with the fixture env + dummy LMs; return (exit, summary, models
+    the LM factory was asked for)."""
+    from types import SimpleNamespace
+
+    from astra_heartwood.agent import cli as cli_mod
+
+    seen: list[str] = []
+    steps = [{"reasoning": "look", "code": "print(1)"}, {"changelog": "- partial"}]
+    factory, _ = dummy_factory(steps, [])
+
+    def recording_factory(model: str, role: str) -> MeteredDummyLM:
+        seen.append(model)
+        return factory(model, role)
+
+    real_run = cli_mod.run_session
+
+    def run_with_fixtures(date: str, **kw: Any) -> Any:
+        if kw.get("config") is None:  # no override → what run_session would load itself
+            kw["config"] = cfg(max_iterations=1)
+        return real_run(
+            date,
+            lm_factory=recording_factory,
+            interpreter_factory=FakeInterpreter,
+            **kw,
+            **env,
+        )
+
+    monkeypatch.setattr(
+        cli_mod, "load_config", lambda: SimpleNamespace(heartwood=cfg(max_iterations=1))
+    )
+    monkeypatch.setattr(cli_mod, "run_session", run_with_fixtures)
+    code = cli_mod.cli(["run", TARGET, "--dry-run", *argv])
+    summary = read_json(env["artifacts_root"] / TARGET / "r1" / "summary.json")
+    return code, summary, seen
+
+
+def test_cli_model_overrides_reach_lm_factory_summary_and_span(env, spans, monkeypatch) -> None:
+    code, summary, seen = _cli_run(
+        env, monkeypatch, ["--model", "or/override-main", "--sub-model", "or/override-sub"]
+    )
+    assert code == 2  # incomplete at the 1-iteration cap — the run itself is not the point
+    assert seen == ["or/override-main", "or/override-sub"]
+    assert summary["model"] == "or/override-main"
+    assert summary["sub_model"] == "or/override-sub"
+    assert summary["dry_run"] is True and summary["max_iterations"] == 1  # rest of cfg kept
+    run_span = next(x for x in spans.get_finished_spans() if x.name == "heartwood.agent.run")
+    assert run_span.attributes["heartwood.model"] == "or/override-main"
+    assert run_span.attributes["heartwood.sub_model"] == "or/override-sub"
+
+
+def test_cli_single_override_keeps_the_other_model(env, spans, monkeypatch) -> None:
+    _, summary, seen = _cli_run(env, monkeypatch, ["--model", "or/override-main"])
+    assert seen == ["or/override-main", "dummy/sub"]
+    assert (summary["model"], summary["sub_model"]) == ("or/override-main", "dummy/sub")
+
+
+def test_cli_without_overrides_uses_config_models(env, spans, monkeypatch) -> None:
+    _, summary, seen = _cli_run(env, monkeypatch, [])
+    assert seen == ["dummy/main", "dummy/sub"]
+    assert (summary["model"], summary["sub_model"]) == ("dummy/main", "dummy/sub")
