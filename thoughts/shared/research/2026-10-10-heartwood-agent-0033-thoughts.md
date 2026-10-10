@@ -24,7 +24,7 @@ stakeholder's bet for fixing that.
 | D4 | Trigger | **Manual CLI first** (`uv run astra-heartwood-agent <date>`); Dagster wiring later. |
 | D5 | Which sessions | **Chronological backfill** of every faerrin-world session, publishing each, then new sessions going forward. |
 | D6 | Background transcripts | **Faerrin world only, dated ≤ the target session.** No future leakage, no other worlds. |
-| D7 | Model | **`openrouter/deepseek/deepseek-v4.1-flash`** for both the main RLM loop and `llm_query` sub-calls. (Revised same day from Kimi K3 on cost: Kimi output is $13.50/M.) |
+| D7 | Model | **`openrouter/deepseek/deepseek-v4.1-flash`** for both the main RLM loop and `llm_query` sub-calls. (Revised same day from Kimi K3 on cost: Kimi output is $13.50/M.) **Budget ceiling: under Kimi's ~$160 backfill estimate.** Before the backfill, dry-run one session on DeepSeek V4.1 Flash and on GLM 5.3 (`openrouter/z-ai/glm-5.3`, $0.04/$4.80, already used by mouthpiece) and compare the diffs (~$2 total). The model stays a config value so the winner is a one-line change. |
 | D8 | Guard rails | **Validate every write** (vellum parse in the write tool, error returned to the agent) + **alias lookup tool** (entity registry). Nothing else. Not chosen: a no-delete/no-move rail, abort-on-final-check. |
 | D9 | Agent freedom | **Free rein.** Create, edit, move and delete are all first-class tools. The point of the rework is unconstrained updates, so the spec adds no rails beyond D8. |
 
