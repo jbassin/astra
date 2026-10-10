@@ -358,3 +358,21 @@ litellm 1.89.2 and the repo.
   (`heartwood-revert`); detached launch + PATH (`systemd-run`, pinned paths, reset recipe). MINORs
   folded: reuse `date_key`, move `_iso_date`, no ignore entries needed, 100-col bodies, gate A grep
   scope, ci.yml line.
+
+## 10. Build record (2026-10-10)
+
+S1 `b12a7b8a` · S2 `30db0066` · S3 `a6a94134` · S4 `22036ffc` · model-override flags `8c3b9b3f`.
+Gates A, B, C met (local CI lanes green; real-Deno scripted run passes; pyodide 314.0.7). D met:
+the DeepSeek dry run of 2025-8-28 ended `ok`. E partly met: tool + LM spans reach SigNoz from the host
+via `host-otlp-endpoint`.
+
+**S5 model comparison → gate F: DeepSeek V4.1 Flash (stakeholder, 2026-10-10).**
+- DeepSeek V4.1 Flash: `ok`, 39/40 iterations, 63 main + 5 sub calls, 3.3M tokens, **$0.31**, 21 min;
+  created 16 pages, updated 3. Prose readable and in the wiki's voice; it extended `Bestiary/Ugathal`
+  instead of rewriting it. One instruction miss: combat mechanics ("resistant to bludgeoning") leaked
+  into Ugathal.
+- GLM 5.3: stopped by the stakeholder after 42 min, 38 LM calls averaging ~46 s (latest calls ~4 min),
+  0 writes — still researching. Nothing published.
+- Config already names DeepSeek; no change. Stakeholder: frontmatter key reordering in diffs is fine.
+- Open before S6: the 39/40 iteration margin is thin — a session with more to write may end
+  `incomplete`, which stops the backfill.
