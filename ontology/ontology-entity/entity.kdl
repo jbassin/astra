@@ -256,6 +256,9 @@ entity "Black and White" kind="place" page="Geography/Black and White/index" {
     source "akasha"
     source "defs"
 }
+entity "Blackline" kind="org" page="Org/Blackline/index" {
+    source "akasha"
+}
 entity "Braxton Hall" kind="person" page="Org/Ætherion Limited/People/Braxton Hall" {
     alias "Braxton"
     source "akasha"
@@ -333,9 +336,10 @@ entity "Convox" {
     alias "cot box"
     source "defs"
 }
-entity "Copperjaw" {
+entity "Copperjaw" kind="person" page="Org/Sableclutch Scrap/People/Copperjaw" {
     alias "Cobblejaw"
     alias "Coppajaw"
+    source "akasha"
     source "defs"
 }
 entity "Cross Trevils" kind="person" page="Org/Verdant Holdings/People/Cross Trevils" {
@@ -364,6 +368,9 @@ entity "dhampir" {
     alias "Dompierre"
     alias "Dompir"
     source "defs"
+}
+entity "Diamond District" kind="place" page="Geography/Calaria/Hallia/Diamond District/index" {
+    source "akasha"
 }
 entity "Divex" {
     alias "Dybeck"
@@ -889,8 +896,9 @@ entity "Manus Sudrenus" kind="person" page="Org/Pale Lantern Society/People/Manu
     source "akasha"
     source "defs"
 }
-entity "Masque District" {
+entity "Masque District" kind="place" page="Geography/Calaria/Hallia/Masque District/index" {
     alias "Mask District"
+    source "akasha"
     source "defs"
 }
 entity "Master Grayson" {
@@ -947,6 +955,9 @@ entity "Mutagen" {
     alias "Mutant Jinn"
     source "defs"
 }
+entity "Mute" kind="person" page="Org/Blackline/People/Mute" {
+    source "akasha"
+}
 entity "NecroLog" kind="org" page="Org/NecroLog/index" {
     alias "Necrologue"
     alias "Necrolug"
@@ -983,6 +994,9 @@ entity "of Hallia" {
 entity "of Iconoclasm" {
     alias "A vicanoclasm"
     source "defs"
+}
+entity "Officer Smith" kind="person" page="Org/Blackline/People/Officer Smith" {
+    source "akasha"
 }
 entity "Opaline Reserve" kind="org" page="Org/Opaline Reserve" {
     source "akasha"
@@ -1075,6 +1089,9 @@ entity "Pharos" kind="place" page="Geography/Black and White/Pharos" {
 }
 entity "Pluckwort" kind="person" being="jorge" {
     source "being"
+}
+entity "Prime (Zero)" kind="place" page="Geography/Calaria/Hallia/Prime (Zero)/index" {
+    source "akasha"
 }
 entity "Prime Meridian" kind="org" page="Org/Prime Meridian/index" {
     alias "Primerudian"
@@ -1185,6 +1202,9 @@ entity "Sableclutch" kind="place" page="Geography/Calaria/Hallia/Sableclutch/ind
     source "akasha"
     source "defs"
 }
+entity "Sableclutch Scrap" kind="org" page="Org/Sableclutch Scrap/index" {
+    source "akasha"
+}
 entity "Salvado" {
     alias "Silvado"
     alias "Solvado"
@@ -1243,6 +1263,9 @@ entity "Sedecium" {
     alias "Sedesium"
     source "defs"
 }
+entity "Sentience Distributor" kind="phenomenon" page="Phenomena/Sentience Distributor" {
+    source "akasha"
+}
 entity "Sentinel Dynamics" kind="org" page="Org/Sentinel Dynamics" {
     source "akasha"
 }
@@ -1288,10 +1311,11 @@ entity "skein" {
     alias "Skain"
     source "defs"
 }
-entity "Smiler" {
+entity "Smiler" kind="person" page="Org/The Undertable/People/Smiler" {
     alias "Smila"
     alias "Milo"
     alias "Soiler"
+    source "akasha"
     source "defs"
 }
 entity "Solari Sub-surface" kind="org" page="Org/Solari Sub-surface/index" {
@@ -1301,6 +1325,9 @@ entity "Solari Sub-surface" kind="org" page="Org/Solari Sub-surface/index" {
     alias "Solaria\\s*Subservice"
     source "akasha"
     source "defs"
+}
+entity "Star 12" kind="place" page="Geography/Calaria/Hallia/Star 12/index" {
+    source "akasha"
 }
 entity "starward" {
     alias "star\\s*w[ao]rd"
@@ -1385,6 +1412,9 @@ entity "the Heart" {
     alias "the\\s*Hart"
     source "defs"
 }
+entity "the Horizon" kind="place" page="Geography/Calaria/Hallia/the Horizon/index" {
+    source "akasha"
+}
 entity "The Master of Ceremonies" kind="person" page="Org/The Harlequins/People/The Master of Ceremonies" {
     source "akasha"
 }
@@ -1398,6 +1428,9 @@ entity "the Scale's" {
     alias "the\\s*Scales"
     source "defs"
 }
+entity "The Undertable" kind="org" page="Org/The Undertable/index" {
+    source "akasha"
+}
 entity "The Zorbon" kind="deity" page="Divinity/Unknown Entities/The Zorbon" {
     alias "Zorbon"
     alias "the\\s*Sorbonne"
@@ -1410,6 +1443,9 @@ entity "The Zorbon" kind="deity" page="Divinity/Unknown Entities/The Zorbon" {
 entity "Thistle Monroe" {
     alias "Fissel Monroe"
     source "defs"
+}
+entity "Threshold Authority" kind="org" page="Org/Threshold Authority/index" {
+    source "akasha"
 }
 entity "Tithe" {
     alias "Aibh"

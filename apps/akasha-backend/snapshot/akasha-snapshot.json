@@ -8,11 +8,11 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
-      "alias": null,
+      "alias": "Blackline",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Blackline/index",
       "source": "Bestiary/Ugathal",
-      "target": "Blackline"
+      "target": "Org/Blackline/index"
     },
     {
       "alias": "Hallia",
@@ -519,11 +519,11 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
-      "alias": null,
+      "alias": "the Horizon",
       "heading": null,
-      "resolved": null,
+      "resolved": "Geography/Calaria/Hallia/the Horizon/index",
       "source": "Geography/Calaria/Hallia/Prime (Zero)/index",
-      "target": "the Horizon"
+      "target": "Geography/Calaria/Hallia/the Horizon/index"
     },
     {
       "alias": "Hallia",
@@ -533,11 +533,11 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
-      "alias": null,
+      "alias": "Prime Meridian",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Prime Meridian/index",
       "source": "Geography/Calaria/Hallia/Prime (Zero)/index",
-      "target": "Prime Meridian"
+      "target": "Org/Prime Meridian/index"
     },
     {
       "alias": "Sableclutch",
@@ -638,11 +638,11 @@
       "target": "goblinoid"
     },
     {
-      "alias": null,
+      "alias": "the Horizon",
       "heading": null,
-      "resolved": null,
+      "resolved": "Geography/Calaria/Hallia/the Horizon/index",
       "source": "Geography/Calaria/Hallia/Star 12/index",
-      "target": "the Horizon"
+      "target": "Geography/Calaria/Hallia/the Horizon/index"
     },
     {
       "alias": "Hallia",
@@ -652,11 +652,11 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
-      "alias": null,
+      "alias": "The Undertable",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/The Undertable/index",
       "source": "Geography/Calaria/Hallia/Star 12/index",
-      "target": "The Undertable"
+      "target": "Org/The Undertable/index"
     },
     {
       "alias": "Hallia",
@@ -687,18 +687,18 @@
       "target": "the Horizon"
     },
     {
-      "alias": null,
+      "alias": "Blackline",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Blackline/index",
       "source": "Geography/Calaria/Hallia/index",
-      "target": "Blackline"
+      "target": "Org/Blackline/index"
     },
     {
-      "alias": null,
+      "alias": "Threshold Authority",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Threshold Authority/index",
       "source": "Geography/Calaria/Hallia/index",
-      "target": "Threshold Authority"
+      "target": "Org/Threshold Authority/index"
     },
     {
       "alias": "Sableclutch",
@@ -708,11 +708,11 @@
       "target": "Geography/Calaria/Hallia/Sableclutch/index"
     },
     {
-      "alias": null,
+      "alias": "Prime Meridian",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Prime Meridian/index",
       "source": "Geography/Calaria/Hallia/index",
-      "target": "Prime Meridian"
+      "target": "Org/Prime Meridian/index"
     },
     {
       "alias": "Star 12",
@@ -722,11 +722,11 @@
       "target": "Geography/Calaria/Hallia/Star 12/index"
     },
     {
-      "alias": null,
+      "alias": "Prime (Zero)",
       "heading": null,
-      "resolved": null,
+      "resolved": "Geography/Calaria/Hallia/Prime (Zero)/index",
       "source": "Geography/Calaria/Hallia/index",
-      "target": "Prime (Zero)"
+      "target": "Geography/Calaria/Hallia/Prime (Zero)/index"
     },
     {
       "alias": "Hallia",
@@ -736,11 +736,11 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
-      "alias": null,
+      "alias": "Prime Meridian",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Prime Meridian/index",
       "source": "Geography/Calaria/Hallia/the Horizon/index",
-      "target": "Prime Meridian"
+      "target": "Org/Prime Meridian/index"
     },
     {
       "alias": null,
@@ -750,11 +750,11 @@
       "target": "the Host"
     },
     {
-      "alias": null,
+      "alias": "Prime (Zero)",
       "heading": null,
-      "resolved": null,
+      "resolved": "Geography/Calaria/Hallia/Prime (Zero)/index",
       "source": "Geography/Calaria/Hallia/the Horizon/index",
-      "target": "Prime (Zero)"
+      "target": "Geography/Calaria/Hallia/Prime (Zero)/index"
     },
     {
       "alias": null,
@@ -1093,11 +1093,11 @@
       "target": "Hearts"
     },
     {
-      "alias": null,
+      "alias": "Blackline",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Blackline/index",
       "source": "Org/Blackline/People/Mute",
-      "target": "Blackline"
+      "target": "Org/Blackline/index"
     },
     {
       "alias": null,
@@ -1107,11 +1107,11 @@
       "target": "Officer Smith"
     },
     {
-      "alias": null,
+      "alias": "Blackline",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Blackline/index",
       "source": "Org/Blackline/People/Officer Smith",
-      "target": "Blackline"
+      "target": "Org/Blackline/index"
     },
     {
       "alias": "Hallia",
@@ -1121,11 +1121,11 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
-      "alias": null,
+      "alias": "Sableclutch Scrap",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Sableclutch Scrap/index",
       "source": "Org/Blackline/People/Officer Smith",
-      "target": "Sableclutch Scrap"
+      "target": "Org/Sableclutch Scrap/index"
     },
     {
       "alias": null,
@@ -1149,11 +1149,11 @@
       "target": "Geography/Calaria/Hallia/Sableclutch/index"
     },
     {
-      "alias": null,
+      "alias": "Sableclutch Scrap",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Sableclutch Scrap/index",
       "source": "Org/Blackline/index",
-      "target": "Sableclutch Scrap"
+      "target": "Org/Sableclutch Scrap/index"
     },
     {
       "alias": "Heir",
@@ -1345,11 +1345,11 @@
       "target": "Copperjaw"
     },
     {
-      "alias": null,
+      "alias": "Sableclutch Scrap",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Sableclutch Scrap/index",
       "source": "Org/Iconoclasm/People/Anouk Marchal",
-      "target": "Sableclutch Scrap"
+      "target": "Org/Sableclutch Scrap/index"
     },
     {
       "alias": "Host",
@@ -1961,11 +1961,11 @@
       "target": "Geography/Rhædon/index"
     },
     {
-      "alias": null,
+      "alias": "Sableclutch Scrap",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Sableclutch Scrap/index",
       "source": "Org/Sableclutch Scrap/People/Copperjaw",
-      "target": "Sableclutch Scrap"
+      "target": "Org/Sableclutch Scrap/index"
     },
     {
       "alias": "Sableclutch",
@@ -2087,11 +2087,11 @@
       "target": "arbiters"
     },
     {
-      "alias": null,
+      "alias": "The Undertable",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/The Undertable/index",
       "source": "Org/The Undertable/People/Smiler",
-      "target": "The Undertable"
+      "target": "Org/The Undertable/index"
     },
     {
       "alias": "Star 12",
@@ -2416,11 +2416,11 @@
       "target": "Copperjaw"
     },
     {
-      "alias": null,
+      "alias": "Sableclutch Scrap",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Sableclutch Scrap/index",
       "source": "Timeline",
-      "target": "Sableclutch Scrap"
+      "target": "Org/Sableclutch Scrap/index"
     },
     {
       "alias": "Hallia",
@@ -2474,9 +2474,9 @@
           "target": "Geography/Calaria/Hallia/index"
         },
         {
-          "alias": null,
+          "alias": "Blackline",
           "heading": null,
-          "target": "Blackline"
+          "target": "Org/Blackline/index"
         }
       ],
       "date": "2025-08-28T00:00:00-04:00",
@@ -3314,9 +3314,9 @@
     {
       "crossrefs": [
         {
-          "alias": null,
+          "alias": "the Horizon",
           "heading": null,
-          "target": "the Horizon"
+          "target": "Geography/Calaria/Hallia/the Horizon/index"
         },
         {
           "alias": "Hallia",
@@ -3324,9 +3324,9 @@
           "target": "Geography/Calaria/Hallia/index"
         },
         {
-          "alias": null,
+          "alias": "Prime Meridian",
           "heading": null,
-          "target": "Prime Meridian"
+          "target": "Org/Prime Meridian/index"
         }
       ],
       "date": "2025-08-28T00:00:00-04:00",
@@ -3459,9 +3459,9 @@
     {
       "crossrefs": [
         {
-          "alias": null,
+          "alias": "the Horizon",
           "heading": null,
-          "target": "the Horizon"
+          "target": "Geography/Calaria/Hallia/the Horizon/index"
         },
         {
           "alias": "Hallia",
@@ -3469,9 +3469,9 @@
           "target": "Geography/Calaria/Hallia/index"
         },
         {
-          "alias": null,
+          "alias": "The Undertable",
           "heading": null,
-          "target": "The Undertable"
+          "target": "Org/The Undertable/index"
         }
       ],
       "date": "2025-08-28T00:00:00-04:00",
@@ -3539,14 +3539,14 @@
           "target": "the Horizon"
         },
         {
-          "alias": null,
+          "alias": "Blackline",
           "heading": null,
-          "target": "Blackline"
+          "target": "Org/Blackline/index"
         },
         {
-          "alias": null,
+          "alias": "Threshold Authority",
           "heading": null,
-          "target": "Threshold Authority"
+          "target": "Org/Threshold Authority/index"
         },
         {
           "alias": "Sableclutch",
@@ -3554,9 +3554,9 @@
           "target": "Geography/Calaria/Hallia/Sableclutch/index"
         },
         {
-          "alias": null,
+          "alias": "Prime Meridian",
           "heading": null,
-          "target": "Prime Meridian"
+          "target": "Org/Prime Meridian/index"
         },
         {
           "alias": "Star 12",
@@ -3564,9 +3564,9 @@
           "target": "Geography/Calaria/Hallia/Star 12/index"
         },
         {
-          "alias": null,
+          "alias": "Prime (Zero)",
           "heading": null,
-          "target": "Prime (Zero)"
+          "target": "Geography/Calaria/Hallia/Prime (Zero)/index"
         }
       ],
       "date": "2026-06-06T22:12:21-04:00",
@@ -3589,9 +3589,9 @@
           "target": "Geography/Calaria/Hallia/index"
         },
         {
-          "alias": null,
+          "alias": "Prime Meridian",
           "heading": null,
-          "target": "Prime Meridian"
+          "target": "Org/Prime Meridian/index"
         },
         {
           "alias": null,
@@ -3599,9 +3599,9 @@
           "target": "the Host"
         },
         {
-          "alias": null,
+          "alias": "Prime (Zero)",
           "heading": null,
-          "target": "Prime (Zero)"
+          "target": "Geography/Calaria/Hallia/Prime (Zero)/index"
         }
       ],
       "date": "2025-08-28T00:00:00-04:00",
@@ -4230,9 +4230,9 @@
     {
       "crossrefs": [
         {
-          "alias": null,
+          "alias": "Blackline",
           "heading": null,
-          "target": "Blackline"
+          "target": "Org/Blackline/index"
         },
         {
           "alias": null,
@@ -4257,9 +4257,9 @@
     {
       "crossrefs": [
         {
-          "alias": null,
+          "alias": "Blackline",
           "heading": null,
-          "target": "Blackline"
+          "target": "Org/Blackline/index"
         },
         {
           "alias": "Hallia",
@@ -4267,9 +4267,9 @@
           "target": "Geography/Calaria/Hallia/index"
         },
         {
-          "alias": null,
+          "alias": "Sableclutch Scrap",
           "heading": null,
-          "target": "Sableclutch Scrap"
+          "target": "Org/Sableclutch Scrap/index"
         },
         {
           "alias": null,
@@ -4304,9 +4304,9 @@
           "target": "Geography/Calaria/Hallia/Sableclutch/index"
         },
         {
-          "alias": null,
+          "alias": "Sableclutch Scrap",
           "heading": null,
-          "target": "Sableclutch Scrap"
+          "target": "Org/Sableclutch Scrap/index"
         }
       ],
       "date": "2025-08-28T00:00:00-04:00",
@@ -4660,9 +4660,9 @@
           "target": "Copperjaw"
         },
         {
-          "alias": null,
+          "alias": "Sableclutch Scrap",
           "heading": null,
-          "target": "Sableclutch Scrap"
+          "target": "Org/Sableclutch Scrap/index"
         }
       ],
       "date": "2026-06-06T22:12:21-04:00",
@@ -5685,9 +5685,9 @@
     {
       "crossrefs": [
         {
-          "alias": null,
+          "alias": "Sableclutch Scrap",
           "heading": null,
-          "target": "Sableclutch Scrap"
+          "target": "Org/Sableclutch Scrap/index"
         },
         {
           "alias": "Sableclutch",
@@ -6001,9 +6001,9 @@
     {
       "crossrefs": [
         {
-          "alias": null,
+          "alias": "The Undertable",
           "heading": null,
-          "target": "The Undertable"
+          "target": "Org/The Undertable/index"
         },
         {
           "alias": "Star 12",
@@ -6507,9 +6507,9 @@
           "target": "Copperjaw"
         },
         {
-          "alias": null,
+          "alias": "Sableclutch Scrap",
           "heading": null,
-          "target": "Sableclutch Scrap"
+          "target": "Org/Sableclutch Scrap/index"
         },
         {
           "alias": "Hallia",
@@ -6561,10 +6561,6 @@
   ],
   "unresolved": [
     {
-      "source": "Bestiary/Ugathal",
-      "target": "Blackline"
-    },
-    {
       "source": "Divinity/Hierophant",
       "target": "The Scale"
     },
@@ -6575,14 +6571,6 @@
     {
       "source": "Geography/Brithwyn/index",
       "target": "Protectorate"
-    },
-    {
-      "source": "Geography/Calaria/Hallia/Prime (Zero)/index",
-      "target": "the Horizon"
-    },
-    {
-      "source": "Geography/Calaria/Hallia/Prime (Zero)/index",
-      "target": "Prime Meridian"
     },
     {
       "source": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
@@ -6605,14 +6593,6 @@
       "target": "goblinoid"
     },
     {
-      "source": "Geography/Calaria/Hallia/Star 12/index",
-      "target": "the Horizon"
-    },
-    {
-      "source": "Geography/Calaria/Hallia/Star 12/index",
-      "target": "The Undertable"
-    },
-    {
       "source": "Geography/Calaria/Hallia/index",
       "target": "the Host"
     },
@@ -6621,32 +6601,8 @@
       "target": "the Horizon"
     },
     {
-      "source": "Geography/Calaria/Hallia/index",
-      "target": "Blackline"
-    },
-    {
-      "source": "Geography/Calaria/Hallia/index",
-      "target": "Threshold Authority"
-    },
-    {
-      "source": "Geography/Calaria/Hallia/index",
-      "target": "Prime Meridian"
-    },
-    {
-      "source": "Geography/Calaria/Hallia/index",
-      "target": "Prime (Zero)"
-    },
-    {
-      "source": "Geography/Calaria/Hallia/the Horizon/index",
-      "target": "Prime Meridian"
-    },
-    {
       "source": "Geography/Calaria/Hallia/the Horizon/index",
       "target": "the Host"
-    },
-    {
-      "source": "Geography/Calaria/Hallia/the Horizon/index",
-      "target": "Prime (Zero)"
     },
     {
       "source": "Geography/Raelion/index",
@@ -6659,22 +6615,6 @@
     {
       "source": "Org/Belvedere",
       "target": "Fanes"
-    },
-    {
-      "source": "Org/Blackline/People/Mute",
-      "target": "Blackline"
-    },
-    {
-      "source": "Org/Blackline/People/Officer Smith",
-      "target": "Blackline"
-    },
-    {
-      "source": "Org/Blackline/People/Officer Smith",
-      "target": "Sableclutch Scrap"
-    },
-    {
-      "source": "Org/Blackline/index",
-      "target": "Sableclutch Scrap"
     },
     {
       "source": "Org/Chorath Engineering",
@@ -6695,10 +6635,6 @@
     {
       "source": "Org/Iconoclasm/People/Anouk Marchal",
       "target": "Sableclutch"
-    },
-    {
-      "source": "Org/Iconoclasm/People/Anouk Marchal",
-      "target": "Sableclutch Scrap"
     },
     {
       "source": "Org/Iconoclasm/People/Elias Ramsey",
@@ -6753,10 +6689,6 @@
       "target": "Protectorate"
     },
     {
-      "source": "Org/Sableclutch Scrap/People/Copperjaw",
-      "target": "Sableclutch Scrap"
-    },
-    {
       "source": "Org/Ternion Heavy Industries/index",
       "target": "Hildebrandt Corporation"
     },
@@ -6769,20 +6701,12 @@
       "target": "arbiters"
     },
     {
-      "source": "Org/The Undertable/People/Smiler",
-      "target": "The Undertable"
-    },
-    {
       "source": "Timeline",
       "target": "The Scale"
     },
     {
       "source": "Timeline",
       "target": "Prime Meridian"
-    },
-    {
-      "source": "Timeline",
-      "target": "Sableclutch Scrap"
     }
   ]
 }
