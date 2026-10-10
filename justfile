@@ -566,6 +566,23 @@ weal-engine-build:
     printf '{\n  "type": "commonjs"\n}\n' > "$gen/package.json"
     sha256sum "$gen"/weal_engine_bg.wasm "$gen"/weal_engine.js
 
+# --- heartwood (0033) ---
+
+# Warm the heartwood agent's sandbox (0033 D33-3): dspy's PythonInterpreter runs Deno +
+# Pyodide, and its runner.js imports an UNPINNED `npm:pyodide` + deno.land/std, fetched into
+# the Deno cache on first use (network). Run once per host, and again after a Deno-cache wipe
+# or a new Pyodide release — then re-run gate C (the scripted real-Deno test). Prints the
+# resolved Pyodide version for the build record. dspy calls bare `deno`, hence the PATH;
+# `prepare_sandbox_env` also sets DENO_NO_PACKAGE_JSON (the repo's package.json otherwise
+# hides npm:pyodide) and a real-path DENO_DIR ($HOME is a symlink; Deno's read grant must
+# name the resolved cache path) — the same env every agent run uses.
+heartwood-sandbox-warm:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    export PATH="$HOME/.deno/bin:$PATH"
+    deno --version | head -1
+    {{uv_bin}} run python -c 'from astra_heartwood.agent.run import make_interpreter as mk, sandbox_version as v; i = mk(); print("sandbox:", i.execute("print(1)").strip()); print("pyodide:", v(i)); i.shutdown()'
+
 # --- Host edge (shared reverse proxy) ---
 
 # The decrypted CF token, exported as {$CF_API_TOKEN} for the caddyfile adapter.

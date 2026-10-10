@@ -33,6 +33,11 @@ telemetry {
     // server-side otlp-endpoint above is not browser-reachable in prod; this is
     // the Caddy-exposed collector (otel.iridi.cc → localhost:10353, with CORS).
     rum-endpoint "https://otel.iridi.cc"
+    // The same collector as the HOST sees it (its OTLP/HTTP port published on
+    // localhost). For host-run CLIs that export telemetry — the heartwood agent
+    // (0033 D33-10) is the first; every earlier host recipe ran with
+    // OTEL_SDK_DISABLED=true because otlp-endpoint above doesn't resolve here.
+    host-otlp-endpoint "http://localhost:10353"
 }
 
 scribe {
@@ -251,6 +256,20 @@ ledger {
     service-name "astra.ledger"
     port 10370
     public-origin "https://ledger.iridi.cc"
+}
+
+heartwood {
+    // The heartwood wiki-maintainer agent (0033) — a host-run dspy.RLM that reads one
+    // faerrin session transcript and edits the akasha wiki (no review site; the 0020
+    // review surface is retired). Both LMs route through astra_llm (OpenRouter); the
+    // run builds two distinct LM instances even when the ids match (role = instance).
+    model "openrouter/deepseek/deepseek-v4.1-flash"      // main RLM loop
+    sub-model "openrouter/deepseek/deepseek-v4.1-flash"  // llm_query / llm_query_batched
+    max-iterations 40      // bounds MAIN-LM calls (≤ max-iterations + 1 forced extract)
+    max-llm-calls 100      // bounds SUB-LM calls only
+    max-tokens 64000       // per LM call; reasoning tokens share it (GLM lesson)
+    max-output-chars 10000 // REPL output shown back per iteration (dspy default)
+    backfill-budget-usd 100 // cumulative backfill ceiling — stakeholder 2026-10-10 (≈2× the ~$50 estimate)
 }
 
 portal {

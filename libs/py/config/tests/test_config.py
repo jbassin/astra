@@ -35,6 +35,7 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.mouthpiece.cartesia_api_key is not None
     assert cfg.linguist.review_port == 10116
     assert cfg.telemetry.otlp_endpoint == "http://signoz-otel-collector:4318"
+    assert cfg.telemetry.host_otlp_endpoint == "http://localhost:10353"
     assert cfg.orator.target_lufs == -16  # negative int
     assert cfg.orator.measure_loudness is True  # bool, not str
     assert cfg.weal.bind_addr == "127.0.0.1:10203"
@@ -55,6 +56,13 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.ledger.service_name == "astra.ledger"
     assert cfg.ledger.port == 10370
     assert cfg.ledger.public_origin == "https://ledger.iridi.cc"
+    assert cfg.heartwood.model == "openrouter/deepseek/deepseek-v4.1-flash"
+    assert cfg.heartwood.sub_model == "openrouter/deepseek/deepseek-v4.1-flash"
+    assert cfg.heartwood.max_iterations == 40
+    assert cfg.heartwood.max_llm_calls == 100
+    assert cfg.heartwood.max_tokens == 64000
+    assert cfg.heartwood.max_output_chars == 10000
+    assert cfg.heartwood.backfill_budget_usd == 100
     assert cfg.portal.port == 10372
     assert cfg.portal.public_origin == "https://portal.iridi.cc"
     assert cfg.portal.bridge_timeout_ms == 15000

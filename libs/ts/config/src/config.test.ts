@@ -39,6 +39,7 @@ describe("@astra/config", () => {
     expect(cfg.mouthpiece.ttsProvider).toBe("elevenlabs");
     expect(cfg.linguist.reviewPort).toBe(10116);
     expect(cfg.telemetry.otlpEndpoint).toBe("http://signoz-otel-collector:4318");
+    expect(cfg.telemetry.hostOtlpEndpoint).toBe("http://localhost:10353");
     expect(cfg.orator.targetLufs).toBe(-16); // negative number
     expect(cfg.orator.measureLoudness).toBe(true); // boolean
     expect(cfg.weal.bindAddr).toBe("127.0.0.1:10203");
@@ -59,6 +60,13 @@ describe("@astra/config", () => {
     expect(cfg.ledger.serviceName).toBe("astra.ledger");
     expect(cfg.ledger.port).toBe(10370);
     expect(cfg.ledger.publicOrigin).toBe("https://ledger.iridi.cc");
+    expect(cfg.heartwood.model).toBe("openrouter/deepseek/deepseek-v4.1-flash");
+    expect(cfg.heartwood.subModel).toBe("openrouter/deepseek/deepseek-v4.1-flash");
+    expect(cfg.heartwood.maxIterations).toBe(40);
+    expect(cfg.heartwood.maxLlmCalls).toBe(100);
+    expect(cfg.heartwood.maxTokens).toBe(64000);
+    expect(cfg.heartwood.maxOutputChars).toBe(10000);
+    expect(cfg.heartwood.backfillBudgetUsd).toBe(100);
     expect(cfg.portal.port).toBe(10372);
     expect(cfg.portal.publicOrigin).toBe("https://portal.iridi.cc");
     expect(cfg.portal.bridgeTimeoutMs).toBe(15000);

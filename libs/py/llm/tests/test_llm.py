@@ -220,3 +220,19 @@ def test_default_completion_sets_num_retries(monkeypatch: pytest.MonkeyPatch) ->
     captured.clear()
     _default_completion(model="x", messages=[], num_retries=0)
     assert captured["num_retries"] == 0
+
+
+def test_make_dspy_lm_passes_kwargs_and_class() -> None:
+    import dspy
+    from astra_llm import make_dspy_lm
+
+    plain = make_dspy_lm("openrouter/z-ai/glm-5.2", max_tokens=123)
+    assert type(plain) is dspy.LM and plain.cache is True
+    assert plain.kwargs["max_tokens"] == 123
+    assert make_dspy_lm("claude-x").model == "anthropic/claude-x"
+
+    class Sub(dspy.LM):
+        pass
+
+    lm = make_dspy_lm("openrouter/x/y", max_tokens=7, lm_class=Sub, cache=False)
+    assert type(lm) is Sub and lm.cache is False and lm.kwargs["max_tokens"] == 7

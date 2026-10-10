@@ -31,6 +31,9 @@ class TelemetryConfig(_Base):
     # localhost:10353 is only host-reachable; a container needs this name.
     otlp_endpoint: str = "http://signoz-otel-collector:4318"
     rum_endpoint: str = "http://localhost:10353"
+    # The collector as a HOST-run process reaches it (published port). For host CLIs
+    # that export (the heartwood agent, 0033 D33-10); containers use otlp_endpoint.
+    host_otlp_endpoint: str = "http://localhost:10353"
 
 
 class ScribeConfig(_Base):
@@ -202,6 +205,21 @@ class LedgerConfig(_Base):
     public_origin: str = "https://ledger.iridi.cc"
 
 
+class HeartwoodConfig(_Base):
+    # The heartwood wiki-maintainer agent (0033 D33-7) — a host-run dspy.RLM. model
+    # drives the main loop, sub_model serves llm_query/llm_query_batched (two distinct
+    # LM instances even when equal). max_iterations bounds main-LM calls, max_llm_calls
+    # sub-LM calls; max_tokens is per call (reasoning shares it). backfill_budget_usd
+    # is the cumulative ceiling `just heartwood-backfill` enforces from the run ledger.
+    model: str = "openrouter/deepseek/deepseek-v4.1-flash"
+    sub_model: str = "openrouter/deepseek/deepseek-v4.1-flash"
+    max_iterations: int = 40
+    max_llm_calls: int = 100
+    max_tokens: int = 64000
+    max_output_chars: int = 10000
+    backfill_budget_usd: float = 100.0
+
+
 class PortalConfig(_Base):
     # portal (0023) — MCP+WS server for the live FoundryVTT "Faerrin" world, on the
     # orator-backend template. No service_name field (D3): unlike the SSR frontends
@@ -283,6 +301,7 @@ class Config(_Base):
     vellum_render: VellumRenderConfig = Field(default_factory=VellumRenderConfig)
     harrow: HarrowConfig = Field(default_factory=HarrowConfig)
     ledger: LedgerConfig = Field(default_factory=LedgerConfig)
+    heartwood: HeartwoodConfig = Field(default_factory=HeartwoodConfig)
     portal: PortalConfig = Field(default_factory=PortalConfig)
     portal_headless: PortalHeadlessConfig = Field(default_factory=PortalHeadlessConfig)
     codex: CodexConfig = Field(default_factory=CodexConfig)

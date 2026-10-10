@@ -101,12 +101,22 @@ def ensure_openrouter_env() -> str:
     return key
 
 
-def make_dspy_lm(model: str = DEFAULT_MODEL, *, max_tokens: int = DEFAULT_MAX_TOKENS) -> Any:
+def make_dspy_lm(
+    model: str = DEFAULT_MODEL,
+    *,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
+    lm_class: type | None = None,
+    **lm_kwargs: Any,
+) -> Any:
     """A `dspy.LM` routed through litellm to `model` (the Phase-3 program-layer entry).
 
-    dspy is imported lazily so `import astra_llm` and the offline unit tests stay light.
+    ``lm_kwargs`` pass straight through to the constructor (e.g. ``cache=False`` so a
+    rerun makes real calls). ``lm_class`` swaps in a ``dspy.LM`` subclass (heartwood's
+    metering ``MeteredLM``, 0033 D33-10); it receives the same arguments. dspy is
+    imported lazily so `import astra_llm` and the offline unit tests stay light.
     """
     import dspy
 
     routed = model if "/" in model else f"anthropic/{model}"
-    return dspy.LM(routed, max_tokens=max_tokens)
+    cls = lm_class if lm_class is not None else dspy.LM
+    return cls(routed, max_tokens=max_tokens, **lm_kwargs)

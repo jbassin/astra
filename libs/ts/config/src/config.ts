@@ -212,6 +212,22 @@ const Ledger = z
   })
   .strict();
 
+// The heartwood wiki-maintainer agent (0033 D33-7) — a host-run dspy.RLM (Python
+// only; mirrored here so the two schemas keep the same field set). model drives the
+// main loop, subModel serves llm_query; maxIterations bounds main-LM calls,
+// maxLlmCalls sub-LM calls; backfillBudgetUsd is the cumulative backfill ceiling.
+const Heartwood = z
+  .object({
+    model: z.string().default("openrouter/deepseek/deepseek-v4.1-flash"),
+    subModel: z.string().default("openrouter/deepseek/deepseek-v4.1-flash"),
+    maxIterations: z.number().default(40),
+    maxLlmCalls: z.number().default(100),
+    maxTokens: z.number().default(64000),
+    maxOutputChars: z.number().default(10000),
+    backfillBudgetUsd: z.number().default(100),
+  })
+  .strict();
+
 // portal (0023) — MCP+WS server for the live FoundryVTT "Faerrin" world, on the
 // orator-backend template. No serviceName field (D3): unlike the SSR frontends
 // there's no browser RUM surface, so `astra.portal` is hardcoded in
@@ -291,6 +307,9 @@ const Telemetry = z
     // localhost:10353 is only host-reachable; a container needs this name.
     otlpEndpoint: z.string().default("http://signoz-otel-collector:4318"),
     rumEndpoint: z.string().default("http://localhost:10353"),
+    // The collector as a HOST-run process reaches it (published port). For host CLIs
+    // that export (the heartwood agent, 0033 D33-10); containers use otlpEndpoint.
+    hostOtlpEndpoint: z.string().default("http://localhost:10353"),
   })
   .strict();
 
@@ -315,6 +334,7 @@ export const ConfigSchema = z
     vellumRender: VellumRender.default(() => VellumRender.parse({})),
     harrow: Harrow.default(() => Harrow.parse({})),
     ledger: Ledger.default(() => Ledger.parse({})),
+    heartwood: Heartwood.default(() => Heartwood.parse({})),
     portal: Portal.default(() => Portal.parse({})),
     portalHeadless: PortalHeadless.default(() => PortalHeadless.parse({})),
     codex: Codex.default(() => Codex.parse({})),
