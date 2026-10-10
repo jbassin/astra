@@ -29,6 +29,11 @@ NIC_IFACE="${WATCHDOG_NIC_IFACE:-enp4s0}"
 # Timers whose health == the pipeline is armed. (The watchdog can't meaningfully check
 # its OWN timer — if that died, this script wouldn't be running.)
 WATCHED_TIMERS=(craig-sync.timer linguist-commit.timer)
+# `just heartwood-backfill` (0033 §5) deliberately stops linguist-commit.{timer,path} for
+# the whole run and holds this lock; while it exists the linguist-commit timer check is
+# skipped (journal-only), so a planned suppression never pages. A hard-killed backfill
+# leaves the lock behind: `just heartwood-backfill-reset` re-arms the units + removes it.
+HEARTWOOD_BACKFILL_LOCK="${HEARTWOOD_BACKFILL_LOCK:-$REPO/artifacts/heartwood/backfill.lock}"
 
 # Confirmation window. The watchdog runs on *:0/15 — the SAME wall-clock ticks the watched
 # timers fire on (craig-sync *:0/5, linguist-commit hourly). So a naive single sample
@@ -451,6 +456,10 @@ run_watchdog() {
   fi
   local t
   for t in "${WATCHED_TIMERS[@]}"; do
+    if [ "$t" = "linguist-commit.timer" ] && [ -e "$HEARTWOOD_BACKFILL_LOCK" ]; then
+      log "timer $t check suppressed — heartwood backfill holds $HEARTWOOD_BACKFILL_LOCK"
+      continue
+    fi
     if reason="$(confirm check_timer "$t")"; then transition "timer-$t" ok  "timer $t healthy again"
     else                                          transition "timer-$t" bad "$reason"; fi
   done

@@ -173,14 +173,20 @@ linguist-commit:
     #!/usr/bin/env bash
     set -euo pipefail
     cd /ruby/data/experiments/astra
-    git add apps/linguist/transcripts apps/linguist/data apps/linguist/timeline
+    # Commit ONLY our own paths (0033 §5): anything another workflow has staged (a manual
+    # commit mid-add, heartwood's publish) stays staged and out of this commit — the timer
+    # swept foreign staged files five times before this. `--only` takes the exact changed
+    # file list (not the dirs): a dir pathspec with no file left in HEAD/index hard-errors.
+    lpaths=(apps/linguist/transcripts apps/linguist/data apps/linguist/timeline)
+    git add "${lpaths[@]}"
     changed=""
-    if ! git diff --cached --quiet; then
-      changed=$(git diff --cached --name-only)
+    if ! git diff --cached --quiet -- "${lpaths[@]}"; then
+      changed=$(git diff --cached --name-only --no-renames -- "${lpaths[@]}")
       n=$(printf '%s\n' "$changed" | grep -c .)
-      git commit --no-verify -q \
-        -m "chore(linguist): auto-commit ${n} new transcript/data file(s)" \
-        -m "Pipeline-generated source-of-record, committed by the linguist-commit timer."
+      git diff --cached --name-only --no-renames -z -- "${lpaths[@]}" \
+        | git commit --no-verify -q --only --pathspec-from-file=- --pathspec-file-nul \
+            -m "chore(linguist): auto-commit ${n} new transcript/data file(s)" \
+            -m "Pipeline-generated source-of-record, committed by the linguist-commit timer."
       echo "linguist-commit: committed ${n} file(s)"
     fi
     # Push if local main is ahead of origin — also retries a prior run whose push failed.
@@ -212,11 +218,12 @@ linguist-commit:
     # lands. A separate commit (own message); on change, seed the audio volume + redeploy the
     # frontend. Non-fatal: a publish/redeploy hiccup must not fail the linguist push above.
     if {{just_executable()}} mouthpiece-publish; then
-      git add apps/mouthpiece-backend/snapshot/episodes-index.json
-      if ! git diff --cached --quiet; then
-        git commit --no-verify -q \
+      mp_snapshot=apps/mouthpiece-backend/snapshot/episodes-index.json
+      git add "$mp_snapshot"
+      if ! git diff --cached --quiet -- "$mp_snapshot"; then
+        git commit --no-verify -q --only \
           -m "chore(mouthpiece): auto-publish episode catalog snapshot" \
-          -m "Regenerated from the live corpus by the linguist-commit timer."
+          -m "Regenerated from the live corpus by the linguist-commit timer." -- "$mp_snapshot"
         if git push -q origin main; then echo "linguist-commit: mouthpiece snapshot pushed"; else
           echo "linguist-commit: mouthpiece snapshot push FAILED (will retry next run)" >&2; fi
         echo "linguist-commit: mouthpiece snapshot changed — seeding audio + redeploying frontend"
@@ -582,6 +589,311 @@ heartwood-sandbox-warm:
     export PATH="$HOME/.deno/bin:$PATH"
     deno --version | head -1
     {{uv_bin}} run python -c 'from astra_heartwood.agent.run import make_interpreter as mk, sandbox_version as v; i = mk(); print("sandbox:", i.execute("print(1)").strip()); print("pyodide:", v(i)); i.shutdown()'
+
+# Run the heartwood agent over ONE session and publish its edits to akasha with no human
+# review (0033 §5) — PAID (OpenRouter LLM calls) and LIVE (pushes + redeploys akasha):
+#   just heartwood-agent 2025-8-28              run → publish → commit → push → redeploy
+#   just heartwood-agent 2025-8-28 --dry-run    run + artifacts only; prints diff + summary
+#   just heartwood-agent 2025-8-28 --no-push    commit locally, no push/redeploy (backfill)
+# Steps: (0) refuse unless apps/akasha-backend/content + the ledger are clean and HEAD is
+# on main; (1) `astra-heartwood-agent run` stages + runs (artifacts under
+# artifacts/heartwood/<date>/<run-id>/); (2) publish-sync applies the change-set to the live
+# corpus (aborts, writing nothing, if a touched page changed live); (3) whole-corpus
+# validate; (4) akasha-snapshot + the unresolved-link delta (reported, not enforced); on a
+# 3/4 failure it prints the exact restore command; (5) ledger-append + a path-scoped
+# `commit --only` (body = counts + model + cost + changelog, wrapped at 100); (6) fetch,
+# rebase --autostash onto origin/main (skipped when already based on it), push, redeploy.
+# Exit codes: 0 ok · 1 run failed · 2 run incomplete (iteration cap) · 3 publish conflict ·
+# 4 publish refused · 6 dirty corpus/ledger or not on main · 7 validate/snapshot failed
+# (restore printed) · 8 commit/rebase/push failed · 9 redeploy failed or skipped · 64 bad flag.
+# Run + publish one session via the heartwood agent (PAID + LIVE; --dry-run / --no-push).
+heartwood-agent date *flags:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    export PATH="$HOME/.deno/bin:$PATH"   # dspy launches bare `deno`
+    date="{{date}}"; dry_run=0; push=1
+    for f in {{flags}}; do
+      case "$f" in
+        --dry-run) dry_run=1 ;;
+        --no-push) push=0 ;;
+        *) echo "heartwood-agent: unknown flag '$f' (use --dry-run / --no-push)" >&2; exit 64 ;;
+      esac
+    done
+    hw() { "{{uv_bin}}" run astra-heartwood-agent "$@"; }
+    content=apps/akasha-backend/content
+    snapshot=apps/akasha-backend/snapshot
+    ledger=apps/heartwood-backend/agent-runs.jsonl
+    restore="git checkout -- $content $snapshot && git clean -fd $content"
+    # (0) a dirty corpus would be staged into the run and then committed under its name.
+    dirty="$(git status --porcelain -- "$content" "$ledger")"
+    if [ -n "$dirty" ]; then
+      echo "heartwood-agent: refusing — uncommitted changes under $content / $ledger:" >&2
+      printf '%s\n' "$dirty" >&2
+      exit 6
+    fi
+    if [ "$dry_run" = 0 ] && [ "$(git rev-parse --abbrev-ref HEAD)" != main ]; then
+      echo "heartwood-agent: refusing — HEAD is not on main (publishes push origin main)" >&2
+      exit 6
+    fi
+    tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+    cp "$snapshot/akasha-snapshot.json" "$tmp/snapshot-before.json"
+    # (1) stage + run. The CLI's last stdout line is RUN_DIR=<path>.
+    run_flags=(); if [ "$dry_run" = 1 ]; then run_flags+=(--dry-run); fi
+    rc=0; hw run "$date" "${run_flags[@]}" | tee "$tmp/run.out" || rc=$?
+    run_dir="$(sed -n 's/^RUN_DIR=//p' "$tmp/run.out" | tail -n 1)"
+    if [ "$rc" -ne 0 ]; then
+      echo "heartwood-agent: run exited $rc (1 failed / 2 incomplete) — nothing published${run_dir:+; artifacts: $run_dir}" >&2
+      exit "$rc"
+    fi
+    if [ -z "$run_dir" ]; then echo "heartwood-agent: run printed no RUN_DIR line" >&2; exit 1; fi
+    if [ "$dry_run" = 1 ]; then
+      echo "heartwood-agent: dry run — nothing published."
+      echo "  diff:    $run_dir/diff.patch"
+      echo "  summary: $run_dir/summary.json"
+      exit 0
+    fi
+    # (2) apply the change-set to the live corpus (3 = conflict, 4 = refused; nothing written).
+    rc=0; hw publish-sync "$run_dir" || rc=$?
+    if [ "$rc" -ne 0 ]; then
+      echo "heartwood-agent: publish-sync exited $rc — the live corpus is untouched; re-run the date" >&2
+      exit "$rc"
+    fi
+    fail_restore() {
+      echo "heartwood-agent: $1 FAILED after publish-sync — $content holds the run's unvalidated edits." >&2
+      echo "  inspect, then restore with:  $restore" >&2
+      exit 7
+    }
+    # (3) whole-corpus validation, (4) snapshot + unresolved-link delta (reported only).
+    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+      libs/ts/vellum-lang/scripts/validate-corpus.ts --dir "$content" || fail_restore "corpus validation"
+    OTEL_SDK_DISABLED=true "{{uv_bin}}" run akasha-snapshot || fail_restore "akasha-snapshot"
+    hw unresolved-delta "$tmp/snapshot-before.json" || echo "heartwood-agent: (unresolved-delta report failed — not fatal)" >&2
+    # (5) ledger line + path-scoped commit. --only: anything else staged stays out of it.
+    if git ls-files --error-unmatch "$ledger" >/dev/null 2>&1; then undo_ledger="git checkout -- $ledger"
+    else undo_ledger="rm -f $ledger"; fi
+    fail_commit() {
+      echo "heartwood-agent: $1 FAILED — published but uncommitted. Restore with:" >&2
+      echo "  git reset -q -- $content $snapshot $ledger && $restore && $undo_ledger" >&2
+      exit 8
+    }
+    hw ledger-append "$run_dir" || fail_commit "ledger-append"
+    git add "$content" "$snapshot" "$ledger" || fail_commit "git add"
+    hw commit-message "$run_dir" >"$tmp/msg" || fail_commit "commit-message"
+    git commit --only --no-verify -q -F "$tmp/msg" -- "$content" "$snapshot" "$ledger" \
+      || fail_commit "git commit"
+    echo "heartwood-agent: committed $(git rev-parse --short HEAD) $(head -n 1 "$tmp/msg")"
+    # (6) push + redeploy (the backfill passes --no-push and does this once at the end).
+    if [ "$push" = 0 ]; then echo "heartwood-agent: --no-push — committed locally only"; exit 0; fi
+    "{{just_executable()}}" _heartwood-push-deploy
+
+# Shared tail of the heartwood recipes: fetch, rebase --autostash onto origin/main (skipped
+# when origin/main is already an ancestor), push main, rebuild + redeploy akasha-frontend.
+# Exit 8 = rebase/push failed (nothing redeployed); 9 = redeploy failed, or skipped because
+# the corpus has uncommitted edits (the image builds from the working tree).
+_heartwood-push-deploy:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    git fetch -q origin
+    if git merge-base --is-ancestor origin/main HEAD; then
+      echo "heartwood: already based on origin/main — no rebase"
+    elif ! git rebase -q --autostash origin/main; then
+      echo "heartwood: rebase onto origin/main FAILED — resolve (or git rebase --abort), then: just _heartwood-push-deploy" >&2
+      exit 8
+    fi
+    if [ -n "$(git rev-list origin/main..HEAD)" ]; then
+      git push -q origin main || { echo "heartwood: push FAILED — rerun: just _heartwood-push-deploy" >&2; exit 8; }
+      echo "heartwood: pushed"
+    else
+      echo "heartwood: nothing to push"
+    fi
+    if [ -n "$(git status --porcelain -- apps/akasha-backend/content apps/akasha-backend/snapshot)" ]; then
+      echo "heartwood: NOT redeploying — the akasha corpus has uncommitted edits (the image would bake them in)" >&2
+      exit 9
+    fi
+    if (cd deploy && docker compose up -d --build akasha-frontend); then
+      echo "heartwood: akasha-frontend redeployed — edits live"
+    else
+      echo "heartwood: akasha redeploy FAILED (rerun: cd deploy && docker compose up -d --build akasha-frontend)" >&2
+      exit 9
+    fi
+
+# Undo ONE published heartwood session (0033 §5) — LIVE (pushes + redeploys akasha).
+# `git revert --no-commit` of that session's commit (the latest `feat(akasha): heartwood
+# agent <date>`), then agent-runs.jsonl + the snapshot are restored from HEAD (both conflict
+# on any non-latest revert), a `reverted` ledger line is appended, the snapshot regenerated,
+# the corpus validated, and `revert(akasha): heartwood agent <date>` committed (--only),
+# pushed, redeployed. A CONTENT conflict (a later session edited the same lines) aborts the
+# revert untouched — resolve by hand. Exit codes: 4 not published / no commit found ·
+# 6 dirty tree or not on main · 7 snapshot/validate failed · 8 revert/commit/push failed ·
+# 9 redeploy failed.
+# Undo one published heartwood session: revert commit + ledger line + push + redeploy (LIVE).
+heartwood-revert date:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    export PATH="$HOME/.deno/bin:$PATH"
+    date="{{date}}"
+    hw() { "{{uv_bin}}" run astra-heartwood-agent "$@"; }
+    content=apps/akasha-backend/content
+    snapshot=apps/akasha-backend/snapshot
+    ledger=apps/heartwood-backend/agent-runs.jsonl
+    dirty="$(git status --porcelain -- "$content" "$snapshot" "$ledger")"
+    if [ -n "$dirty" ]; then
+      echo "heartwood-revert: refusing — uncommitted changes:" >&2; printf '%s\n' "$dirty" >&2; exit 6
+    fi
+    if [ "$(git rev-parse --abbrev-ref HEAD)" != main ]; then
+      echo "heartwood-revert: refusing — HEAD is not on main" >&2; exit 6
+    fi
+    hw ledger-revert "$date" --check || exit 4
+    subject="feat(akasha): heartwood agent $date"
+    commit="$(git log --format='%H%x09%s' -- "$ledger" \
+      | awk -F'\t' -v s="$subject" '$2 == s && !found { print $1; found = 1 }')"
+    if [ -z "$commit" ]; then echo "heartwood-revert: no commit titled '$subject'" >&2; exit 4; fi
+    echo "heartwood-revert: reverting $(git log -1 --format='%h %s' "$commit")"
+    undo="git revert --abort  (if that refuses: git reset --merge HEAD && git clean -fd $content)"
+    rc=0; git revert --no-commit "$commit" || rc=$?
+    if [ "$rc" -ne 0 ] && ! git rev-parse -q --verify REVERT_HEAD >/dev/null; then
+      echo "heartwood-revert: git revert failed before applying anything (exit $rc)" >&2; exit 8
+    fi
+    # The ledger + snapshot are regenerated below, so their (expected) conflicts don't matter.
+    git checkout HEAD -- "$ledger" "$snapshot"
+    unmerged="$(git diff --name-only --diff-filter=U)"
+    if [ -n "$unmerged" ]; then
+      echo "heartwood-revert: content conflicts with later edits — aborting, nothing changed:" >&2
+      printf '%s\n' "$unmerged" | sed 's/^/  /' >&2
+      git revert --abort || echo "  abort failed — run: $undo" >&2
+      exit 8
+    fi
+    fail() { echo "heartwood-revert: $1 FAILED — restore with: $undo" >&2; exit "$2"; }
+    hw ledger-revert "$date" || fail "ledger-revert" 8
+    OTEL_SDK_DISABLED=true "{{uv_bin}}" run akasha-snapshot || fail "akasha-snapshot" 7
+    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+      libs/ts/vellum-lang/scripts/validate-corpus.ts --dir "$content" || fail "corpus validation" 7
+    git add "$content" "$snapshot" "$ledger" || fail "git add" 8
+    git commit --only --no-verify -q \
+      -m "revert(akasha): heartwood agent $date" -m "This reverts commit $commit." \
+      -- "$content" "$snapshot" "$ledger" || fail "git commit" 8
+    echo "heartwood-revert: committed $(git rev-parse --short HEAD)"
+    "{{just_executable()}}" _heartwood-push-deploy
+
+# Replay every pending faerrin session oldest-first (0033 §5) — PAID + LIVE, hours long.
+# Always runs DETACHED as the transient user unit `heartwood-backfill` (survives the shell;
+# output → artifacts/heartwood/backfill.log; follow with `tail -f`). `from` = first date
+# (inclusive); dates the ledger shows as published are skipped, so re-running resumes.
+# While it runs, linguist-commit.{timer,path} are stopped (they push whenever main is
+# ahead) and artifacts/heartwood/backfill.lock tells the watchdog not to page about it. The
+# loop's EXIT trap re-arms both units and removes the lock; a HARD-killed backfill (SIGKILL,
+# reboot) skips the trap — then run `just heartwood-backfill-reset`. Stop it cleanly with
+# `systemctl --user stop heartwood-backfill` (the trap still runs).
+# Replay all pending faerrin sessions, detached + budget-capped (PAID + LIVE).
+heartwood-backfill from="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    mkdir -p artifacts/heartwood
+    if systemctl --user is-active --quiet heartwood-backfill.service; then
+      echo "heartwood-backfill: already running — tail -f artifacts/heartwood/backfill.log" >&2; exit 1
+    fi
+    systemctl --user reset-failed heartwood-backfill.service 2>/dev/null || true
+    log="/ruby/data/experiments/astra/artifacts/heartwood/backfill.log"
+    # The user manager's PATH lacks nvm's node and ~/.deno/bin — hand the unit ours.
+    env_args=(--setenv=PATH="$HOME/.deno/bin:$PATH" --setenv=HOME="$HOME")
+    if [ -n "${SSH_AUTH_SOCK:-}" ]; then env_args+=(--setenv=SSH_AUTH_SOCK="$SSH_AUTH_SOCK"); fi
+    systemd-run --user --unit=heartwood-backfill --collect \
+      --working-directory=/ruby/data/experiments/astra "${env_args[@]}" \
+      -p StandardOutput=append:"$log" -p StandardError=append:"$log" \
+      "{{just_executable()}}" _heartwood-backfill-loop "{{from}}"
+    echo "heartwood-backfill: launched detached — tail -f $log"
+    echo "  stop: systemctl --user stop heartwood-backfill   (hard-killed? just heartwood-backfill-reset)"
+
+# The backfill's body (run by `heartwood-backfill` inside its systemd unit — not directly).
+# Before each date: `budget-check` (stop when the ledger's summed cost_usd >= the config's
+# heartwood backfill-budget-usd, or any ledger cost is unknown — so the last run may
+# overshoot by its own cost). Each date = `heartwood-agent <date> --no-push`; any non-zero
+# exit stops the loop. Stopped or done, it pushes what is committed + redeploys akasha once.
+_heartwood-backfill-loop from:
+    #!/usr/bin/env bash
+    # No -e: every failure below is handled explicitly so the push + re-arm still happen.
+    set -uo pipefail
+    cd /ruby/data/experiments/astra || exit 1
+    export PATH="$HOME/.deno/bin:$PATH"
+    from="{{from}}"
+    lock=artifacts/heartwood/backfill.lock
+    hw() { "{{uv_bin}}" run astra-heartwood-agent "$@"; }
+    ts() { date -u +%FT%TZ; }
+    rearm() {
+      rm -f "$lock"
+      if systemctl --user start linguist-commit.timer linguist-commit.path; then
+        echo "heartwood-backfill: linguist-commit timer + path re-armed"
+      else
+        echo "heartwood-backfill: re-arm FAILED — run: just heartwood-backfill-reset" >&2
+      fi
+      echo "=== heartwood backfill end $(ts)"
+    }
+    echo "=== heartwood backfill start $(ts) (from: ${from:-the first session})"
+    mkdir -p artifacts/heartwood
+    touch "$lock"            # before the stop, so the watchdog never sees a disarmed timer
+    trap rearm EXIT
+    trap 'exit 143' TERM INT HUP
+    systemctl --user stop linguist-commit.timer linguist-commit.path \
+      || { echo "heartwood-backfill: could not stop linguist-commit units" >&2; exit 1; }
+    waited=0
+    while :; do
+      state="$(systemctl --user is-active linguist-commit.service)"
+      case "$state" in active|activating|deactivating|reloading) ;; *) break ;; esac
+      if [ "$waited" -ge 1800 ]; then
+        echo "heartwood-backfill: linguist-commit.service still $state after 30 min — aborting" >&2; exit 1
+      fi
+      echo "heartwood-backfill: waiting for linguist-commit.service ($state)…"
+      sleep 15; waited=$((waited + 15))
+    done
+    sessions_args=(); if [ -n "$from" ]; then sessions_args=(--from "$from"); fi
+    if ! pending="$(hw sessions "${sessions_args[@]}")"; then
+      echo "heartwood-backfill: listing sessions FAILED" >&2; exit 1
+    fi
+    todo=(); while IFS= read -r d; do [ -n "$d" ] && todo+=("$d"); done <<<"$pending"
+    echo "heartwood-backfill: ${#todo[@]} pending session(s): ${todo[*]}"
+    published=0; stop=""; rerun=""
+    for d in "${todo[@]}"; do
+      if ! hw budget-check; then stop="budget"; rerun="$d"; break; fi
+      echo "--- $(ts) $d"
+      rc=0; "{{just_executable()}}" heartwood-agent "$d" --no-push || rc=$?
+      if [ "$rc" -ne 0 ]; then
+        stop="heartwood-agent $d exited $rc (1 failed · 2 incomplete · 3 conflict · 4 refused · 6 dirty · 7 validate/snapshot · 8 commit)"
+        rerun="$d"; break
+      fi
+      published=$((published + 1))
+    done
+    echo "heartwood-backfill: published $published session(s) this run"
+    if [ -n "$(git rev-list origin/main..HEAD 2>/dev/null)" ]; then
+      "{{just_executable()}}" _heartwood-push-deploy \
+        || echo "heartwood-backfill: push/redeploy FAILED — rerun: just _heartwood-push-deploy" >&2
+    fi
+    if [ -n "$stop" ]; then
+      echo "heartwood-backfill: STOPPED — $stop"
+      echo "heartwood-backfill: resume with: just heartwood-backfill $rerun"
+      exit 1
+    fi
+    echo "heartwood-backfill: complete"
+
+# Recover from a HARD-killed backfill (its EXIT trap never ran): re-arm linguist-commit's
+# timer + path units and remove the watchdog lock. Refuses while the backfill still runs.
+# Re-arm linguist-commit + drop the watchdog lock after a hard-killed backfill.
+heartwood-backfill-reset:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    if systemctl --user is-active --quiet heartwood-backfill.service; then
+      echo "heartwood-backfill-reset: the backfill is still running — stop it first:" >&2
+      echo "  systemctl --user stop heartwood-backfill   (its EXIT trap re-arms + unlocks)" >&2
+      exit 1
+    fi
+    systemctl --user reset-failed heartwood-backfill.service 2>/dev/null || true
+    systemctl --user start linguist-commit.timer linguist-commit.path
+    rm -f artifacts/heartwood/backfill.lock
+    echo "heartwood-backfill-reset: linguist-commit.timer $(systemctl --user is-active linguist-commit.timer), .path $(systemctl --user is-active linguist-commit.path); lock removed"
 
 # --- Host edge (shared reverse proxy) ---
 
