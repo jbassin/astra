@@ -77,7 +77,7 @@ Scope decisions D1–D9 carry over verbatim. Build decisions:
   heartwood {
       model "openrouter/deepseek/deepseek-v4.1-flash"      // main RLM loop
       sub-model "openrouter/deepseek/deepseek-v4.1-flash"  // llm_query / llm_query_batched
-      max-iterations 40      // bounds MAIN-LM calls (≤ max-iterations + 1 forced extract)
+      max-iterations 60      // bounds MAIN-LM calls (≤ max-iterations + 1 forced extract)
       max-llm-calls 100      // bounds SUB-LM calls only
       max-tokens 64000       // per LM call; reasoning tokens share it (GLM lesson)
       max-output-chars 10000 // REPL output shown back per iteration (dspy default)
@@ -191,8 +191,14 @@ Instruction requirements (exact wording tuned in S5):
    creatures, phenomena — and their relationships and history.
 2. Freedom: create, rewrite, restructure, move, merge or delete pages when that makes the wiki better.
 3. What doesn't belong: out-of-character talk, rules discussion, dice and combat play-by-play, game
-   mechanics. Transcripts are speech-to-text: names are often misheard — call `resolve_name()` and
-   search the wiki and older transcripts before creating a page for an unfamiliar name.
+   mechanics. Mechanics is spelled out as statblock language: resistances/weaknesses/immunities,
+   damage types, HP, AC, saves, DCs, levels, spell ranks, condition names used as rules terms,
+   action counts, dice, bonuses, and prices as a shop list (money stays only as an in-world fact,
+   e.g. a fee an NPC offers). Describe what a creature or person does and is like in the fiction,
+   with one Bad→Good example (the S5 Ugathal "resistant to bludgeoning" leak rewritten as what
+   blows did and didn't do). Transcripts are speech-to-text: names are often misheard — call
+   `resolve_name()` and search the wiki and older transcripts before creating a page for an
+   unfamiliar name.
 4. **The wiki may already be ahead of this session** (backfill replays old sessions against a current
    wiki). Add what is missing; never overwrite a later state with an earlier one. When the session
    contradicts the wiki, prefer the wiki unless the session clearly supersedes it.
@@ -203,6 +209,15 @@ Instruction requirements (exact wording tuned in S5):
 8. REPL hygiene: `transcript`, `target_date`, `campaign` are reset every step — store derived data
    under new names. Tools raise on error; use try/except where useful.
 9. Finish with `SUBMIT(changelog=…)`.
+10. No AI slop (added after the S5 dry run, whose pages leaned on ` -- ` asides and summing-up
+    last lines): plain, concrete sentences in the register of the existing human pages. A concrete
+    don't-list: no ` -- `/em-dash asides or chains; no "not X, but Y" framings; no rhythmic
+    triads; no stock words (testament, tapestry, delve, whispers of, steeped in, looms, enigmatic,
+    ever-shifting, …) or filler size words; no coinages the transcript and wiki don't use; no
+    hedges the source doesn't make; no summarizing/moralizing last lines; no speculation beyond
+    the table; no size-word opener + "It is …" follow-on (the 0020 Bad/Good calibration pair,
+    reused from `f3a834b4^:…/proposer/voice.py`). When extending a page, add rather than restyle
+    the human's sentences. A short page of solid facts beats a padded one.
 
 ## 5. Publish, revert, backfill
 
@@ -375,4 +390,5 @@ via `host-otlp-endpoint`.
   0 writes — still researching. Nothing published.
 - Config already names DeepSeek; no change. Stakeholder: frontmatter key reordering in diffs is fine.
 - Open before S6: the 39/40 iteration margin is thin — a session with more to write may end
-  `incomplete`, which stops the backfill.
+  `incomplete`, which stops the backfill. **Resolved pre-S6:** `max-iterations` 40 → 60 (D33-7), and the §4
+  instructions tightened (requirement 3 mechanics list, new requirement 10 anti-slop).

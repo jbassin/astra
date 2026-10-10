@@ -265,7 +265,7 @@ heartwood {
     // run builds two distinct LM instances even when the ids match (role = instance).
     model "openrouter/deepseek/deepseek-v4.1-flash"      // main RLM loop
     sub-model "openrouter/deepseek/deepseek-v4.1-flash"  // llm_query / llm_query_batched
-    max-iterations 40      // bounds MAIN-LM calls (≤ max-iterations + 1 forced extract)
+    max-iterations 60      // bounds MAIN-LM calls (≤ max-iterations + 1 forced extract)
     max-llm-calls 100      // bounds SUB-LM calls only
     max-tokens 64000       // per LM call; reasoning tokens share it (GLM lesson)
     max-output-chars 10000 // REPL output shown back per iteration (dspy default)

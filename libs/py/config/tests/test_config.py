@@ -58,7 +58,7 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.ledger.public_origin == "https://ledger.iridi.cc"
     assert cfg.heartwood.model == "openrouter/deepseek/deepseek-v4.1-flash"
     assert cfg.heartwood.sub_model == "openrouter/deepseek/deepseek-v4.1-flash"
-    assert cfg.heartwood.max_iterations == 40
+    assert cfg.heartwood.max_iterations == 60
     assert cfg.heartwood.max_llm_calls == 100
     assert cfg.heartwood.max_tokens == 64000
     assert cfg.heartwood.max_output_chars == 10000

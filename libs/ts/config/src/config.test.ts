@@ -62,7 +62,7 @@ describe("@astra/config", () => {
     expect(cfg.ledger.publicOrigin).toBe("https://ledger.iridi.cc");
     expect(cfg.heartwood.model).toBe("openrouter/deepseek/deepseek-v4.1-flash");
     expect(cfg.heartwood.subModel).toBe("openrouter/deepseek/deepseek-v4.1-flash");
-    expect(cfg.heartwood.maxIterations).toBe(40);
+    expect(cfg.heartwood.maxIterations).toBe(60);
     expect(cfg.heartwood.maxLlmCalls).toBe(100);
     expect(cfg.heartwood.maxTokens).toBe(64000);
     expect(cfg.heartwood.maxOutputChars).toBe(10000);

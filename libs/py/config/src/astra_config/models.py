@@ -213,7 +213,7 @@ class HeartwoodConfig(_Base):
     # is the cumulative ceiling `just heartwood-backfill` enforces from the run ledger.
     model: str = "openrouter/deepseek/deepseek-v4.1-flash"
     sub_model: str = "openrouter/deepseek/deepseek-v4.1-flash"
-    max_iterations: int = 40
+    max_iterations: int = 60
     max_llm_calls: int = 100
     max_tokens: int = 64000
     max_output_chars: int = 10000

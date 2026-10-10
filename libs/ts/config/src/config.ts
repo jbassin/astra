@@ -220,7 +220,7 @@ const Heartwood = z
   .object({
     model: z.string().default("openrouter/deepseek/deepseek-v4.1-flash"),
     subModel: z.string().default("openrouter/deepseek/deepseek-v4.1-flash"),
-    maxIterations: z.number().default(40),
+    maxIterations: z.number().default(60),
     maxLlmCalls: z.number().default(100),
     maxTokens: z.number().default(64000),
     maxOutputChars: z.number().default(10000),
