@@ -24,7 +24,7 @@ stakeholder's bet for fixing that.
 | D4 | Trigger | **Manual CLI first** (`uv run astra-heartwood-agent <date>`); Dagster wiring later. |
 | D5 | Which sessions | **Chronological backfill** of every faerrin-world session, publishing each, then new sessions going forward. |
 | D6 | Background transcripts | **Faerrin world only, dated ≤ the target session.** No future leakage, no other worlds. |
-| D7 | Model | **`openrouter/moonshotai/kimi-k3`** for both the main RLM loop and `llm_query` sub-calls. |
+| D7 | Model | **`openrouter/deepseek/deepseek-v4.1-flash`** for both the main RLM loop and `llm_query` sub-calls. (Revised same day from Kimi K3 on cost: Kimi output is $13.50/M.) |
 | D8 | Guard rails | **Validate every write** (vellum parse in the write tool, error returned to the agent) + **alias lookup tool** (entity registry). Nothing else. Not chosen: a no-delete/no-move rail, abort-on-final-check. |
 | D9 | Agent freedom | **Free rein.** Create, edit, move and delete are all first-class tools. The point of the rework is unconstrained updates, so the spec adds no rails beyond D8. |
 
@@ -57,8 +57,9 @@ backfill must order with an int-tuple `date_key` (chronicle precedent). The real
 up -d --build akasha-frontend`. The new flow reuses everything after "write pages". The manifest/review.kdl
 reading in `apply.py` goes away.
 
-**Model.** `moonshotai/kimi-k3` is on OpenRouter: 1,048,576-token context, $0.50/M input, $13.50/M output,
-supports `reasoning`/`reasoning_effort`/`max_tokens`. Routed through litellm as `openrouter/moonshotai/kimi-k3`.
+**Model.** `deepseek/deepseek-v4.1-flash` is on OpenRouter: 1,048,576-token context, max completion 943,718 tokens,
+$0.30/M input, $1.20/M output, supports `reasoning`/`reasoning_effort`/`max_tokens`/`tools`. Routed through litellm as
+`openrouter/deepseek/deepseek-v4.1-flash`. (Kimi K3, the first pick, was $0.50/M input and $13.50/M output.)
 `OPENROUTER_API_KEY` is already in SOPS and resolved by `astra_llm.ensure_openrouter_env()`.
 
 **Alias registry.** `ontology/ontology-entity/entity.kdl` (311 entities) via `astra_ontology.resolve()`. Only
@@ -84,7 +85,7 @@ New module in `apps/heartwood-backend` (keep the package; replace its internals)
 - **Telemetry:** one span per run, a child span per RLM iteration and per tool call; counters for pages
   created/edited/moved/deleted, validation rejections, tokens and cost. Must call `init_telemetry` in the CLI
   (short-lived process → `shutdown()` in `finally`, per the telemetry-coverage memory).
-- **Config:** a new `heartwood { model "openrouter/moonshotai/kimi-k3" … }` block in config.kdl + both
+- **Config:** a new `heartwood { model "openrouter/deepseek/deepseek-v4.1-flash" … }` block in config.kdl + both
   schema mirrors (config-single-source). RLM limits (`max-iterations`, `max-llm-calls`) live there too.
 
 ## Risks to carry into the spec
@@ -101,9 +102,12 @@ New module in `apps/heartwood-backend` (keep the package; replace its internals)
    deleted page can leave dangling links. This is not a rail. Proposal: `move_page`/`delete_page` return
    the list of pages that link to the target, so the agent can fix them in the same run, and the run
    summary lists any crossrefs still broken.
-4. **Cost.** Rough guess before measurement: about $2–5 per session (output-heavy: $13.50/M plus reasoning
-   tokens) → roughly $100–250 for the 53-session backfill. The first dry run must measure the real figure
-   before the backfill starts. Kimi reasoning tokens probably share `max_tokens` the way GLM's did (memory:
+4. **Cost and quality.** Rough guess before measurement, assuming about 2M input + 150K output tokens per
+   session: about $0.80 per session → roughly $40 for the 53-session backfill (Kimi K3 would have been about
+   $3 per session, about $160). Input now dominates the cost, so how often the agent re-reads transcripts matters
+   more than how much it writes. The first dry run must measure the real figure before the backfill starts.
+   A Flash-tier model is the main quality risk: judge the first dry-run diffs on prose and reasoning before
+   committing to the backfill. Reasoning tokens probably share `max_tokens` the way GLM's did (memory:
    GLM truncation at 16k), so set generous ceilings.
 5. **`dspy.RLM` is experimental.** Pin behavior with a stub-LM unit test for the tool bridge. Interface
    drift on a dspy bump is likely.
