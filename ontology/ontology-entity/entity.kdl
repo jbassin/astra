@@ -192,6 +192,9 @@ entity "autobody" {
     alias "Autobot"
     source "defs"
 }
+entity "Babau" kind="creature" page="Bestiary/Babau" {
+    source "akasha"
+}
 entity "Bait-and-Tackle Shop" {
     alias "Bain Tackle Shop"
     alias "Bait and tackle shop"
@@ -324,9 +327,6 @@ entity "Calaria" kind="place" page="Geography/Calaria/index" {
 entity "Calarian" {
     alias "Calerian"
     source "defs"
-}
-entity "Calarian Museum of Art" kind="place" page="Geography/Calaria/Hallia/Calarian Museum of Art" {
-    source "akasha"
 }
 entity "Calarians" {
     alias "Calerians"
@@ -1129,6 +1129,9 @@ entity "MetCon" {
     alias "METCOP"
     source "defs"
 }
+entity "Metropolitan Conservatory" kind="place" page="Geography/Calaria/Hallia/Metropolitan Conservatory" {
+    source "akasha"
+}
 entity "Mickey" kind="person" being="tanner" {
     source "being"
 }
@@ -1137,6 +1140,9 @@ entity "Mickey Ironroots" kind="person" page="Org/Iridescent Church/Convox/Magic
     source "akasha"
 }
 entity "Ministry of Cultural Progress" kind="org" page="Org/Ministry of Cultural Progress/index" {
+    source "akasha"
+}
+entity "Mioktan" kind="creature" page="Bestiary/Mioktan" {
     source "akasha"
 }
 entity "MoCuP" {
@@ -1349,6 +1355,9 @@ entity "Psiburst" {
     alias "Cyburst"
     alias "Psyburst"
     source "defs"
+}
+entity "Pusk" kind="creature" page="Bestiary/Pusk" {
+    source "akasha"
 }
 entity "Pyre" kind="deity" page="Divinity/Ashen Pact/Pyre" {
     alias "pyre"
