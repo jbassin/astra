@@ -103,10 +103,11 @@ entity "Archie" kind="person" page="Org/Velvet Mark/People/Archie" being="tanner
     source "akasha"
     source "being"
 }
-entity "Archmechanic" {
+entity "Archmechanic" kind="org" page="Org/Prime Meridian/Archmechanic" {
     alias "arc mechanic"
     alias "art mechanic"
     alias "Arch Mechanicus"
+    source "akasha"
     source "defs"
 }
 entity "Archmechanic's" {
@@ -227,6 +228,9 @@ entity "Beats in Time" {
     source "defs"
 }
 entity "Belvedere" kind="org" page="Org/Belvedere" {
+    source "akasha"
+}
+entity "Belvedere Library" kind="place" page="Geography/Calaria/Hallia/Masque District/Belvedere Library" {
     source "akasha"
 }
 entity "benediction" {
