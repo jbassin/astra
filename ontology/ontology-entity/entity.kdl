@@ -364,6 +364,10 @@ entity "Cedric Corot" kind="person" page="Org/Iridescent Church/Convox/Magical C
 entity "Celestial Prescence" kind="deity" page="Divinity/Celestial Prescence" {
     source "akasha"
 }
+entity "Celestials" kind="creature" page="Bestiary/Celestials" {
+    alias "Ki-Rin"
+    source "akasha"
+}
 entity "Ceres" kind="person" page="Org/RunGunners/People/Ceres" {
     source "akasha"
 }
@@ -599,6 +603,7 @@ entity "Feyrock" kind="phenomenon" page="Phenomena/Feyrock" {
 entity "Fiends" kind="creature" page="Bestiary/Fiends" {
     alias "Babau"
     alias "Barbazu"
+    alias "Barghest"
     alias "Brimorak"
     alias "Hellion"
     alias "Ort"
@@ -1955,6 +1960,15 @@ entity "Voice of Many" kind="org" page="Org/The Scale/Voice of Many" {
     alias "the Voice of Many"
     source "akasha"
 }
+entity "Void" kind="creature" page="Bestiary/Void" {
+    alias "Hand of the Void"
+    alias "Hands of the Void"
+    source "akasha"
+}
+entity "Voidheart" kind="phenomenon" page="Phenomena/Voidheart" {
+    alias "Voidheart"
+    source "akasha"
+}
 entity "Voidsong" kind="phenomenon" page="Phenomena/Harmony/Voidsong" {
     alias "Void Song"
     alias "voidsaw"
@@ -1978,6 +1992,10 @@ entity "War" kind="deity" page="Divinity/Ashen Pact/War" {
 }
 entity "Watcher With 1,000 Eyes" kind="deity" page="Divinity/Outer Gods/Watcher With 1,000 Eyes" {
     alias "Watcher"
+    source "akasha"
+}
+entity "Weave" kind="phenomenon" page="Phenomena/Weave" {
+    alias "the weave"
     source "akasha"
 }
 entity "Werecreature" kind="creature" page="Bestiary/Werecreature" {

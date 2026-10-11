@@ -29,6 +29,20 @@
       "target": "Verdant Expanse"
     },
     {
+      "alias": "weave",
+      "heading": null,
+      "resolved": "Phenomena/Weave",
+      "source": "Bestiary/Celestials",
+      "target": "Phenomena/Weave"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Bestiary/Celestials",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
       "alias": "Gloaming Codex",
       "heading": null,
       "resolved": "Phenomena/Gloaming Codex",
@@ -69,6 +83,20 @@
       "resolved": "People/Sbrtlby Jotes",
       "source": "Bestiary/Fiends",
       "target": "People/Sbrtlby Jotes"
+    },
+    {
+      "alias": "Ragged Roost",
+      "heading": null,
+      "resolved": "Geography/Calaria/Ragged Roost",
+      "source": "Bestiary/Fiends",
+      "target": "Geography/Calaria/Ragged Roost"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Bestiary/Fiends",
+      "target": "Org/The Harlequins/Providence"
     },
     {
       "alias": "Ragged Roost",
@@ -335,6 +363,20 @@
       "resolved": "People/Gerhard",
       "source": "Bestiary/Vermin",
       "target": "People/Gerhard"
+    },
+    {
+      "alias": "weave",
+      "heading": null,
+      "resolved": "Phenomena/Weave",
+      "source": "Bestiary/Void",
+      "target": "Phenomena/Weave"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Bestiary/Void",
+      "target": "Org/The Harlequins/Providence"
     },
     {
       "alias": "Roundhat Gang",
@@ -3830,6 +3872,27 @@
       "target": "Org/Belvedere/index"
     },
     {
+      "alias": "pilgrimage",
+      "heading": null,
+      "resolved": "Phenomena/Pilgrimage",
+      "source": "Org/Alkahest Freight/index",
+      "target": "Phenomena/Pilgrimage"
+    },
+    {
+      "alias": "Raelion",
+      "heading": null,
+      "resolved": "Geography/Raelion/index",
+      "source": "Org/Alkahest Freight/index",
+      "target": "Geography/Raelion/index"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Org/Alkahest Freight/index",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
       "alias": "Pulse",
       "heading": null,
       "resolved": "Divinity/Outer Gods/Eternal Pulse",
@@ -3940,6 +4003,41 @@
       "resolved": "Org/Amber Call/index",
       "source": "Org/Amber Call/People/Silven Grayson",
       "target": "Org/Amber Call/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Amber Call/People/Silven Grayson",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "pilgrimage",
+      "heading": null,
+      "resolved": "Phenomena/Pilgrimage",
+      "source": "Org/Amber Call/People/Silven Grayson",
+      "target": "Phenomena/Pilgrimage"
+    },
+    {
+      "alias": "Manus Sudrenus",
+      "heading": null,
+      "resolved": "Org/Pale Lantern Society/People/Manus Sudrenus",
+      "source": "Org/Amber Call/People/Silven Grayson",
+      "target": "Org/Pale Lantern Society/People/Manus Sudrenus"
+    },
+    {
+      "alias": "Gaspar Caetano",
+      "heading": null,
+      "resolved": "Org/NecroLog/People/Gaspar Caetano",
+      "source": "Org/Amber Call/People/Silven Grayson",
+      "target": "Org/NecroLog/People/Gaspar Caetano"
+    },
+    {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "Org/Amber Call/People/Silven Grayson",
+      "target": "People/Argyle"
     },
     {
       "alias": null,
@@ -4689,13 +4787,6 @@
       "resolved": "Geography/Calaria/Ragged Roost",
       "source": "Org/Garrick Textiles/People/Letov Obratz",
       "target": "Geography/Calaria/Ragged Roost"
-    },
-    {
-      "alias": "Voidsong",
-      "heading": null,
-      "resolved": "Phenomena/Harmony/Voidsong",
-      "source": "Org/Garrick Textiles/People/Letov Obratz",
-      "target": "Phenomena/Harmony/Voidsong"
     },
     {
       "alias": "Heart",
@@ -7078,6 +7169,27 @@
       "target": "Org/Ternion Heavy Industries/index"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Ternion Heavy Industries/People/Jethro Twill",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Ragged Roost",
+      "heading": null,
+      "resolved": "Geography/Calaria/Ragged Roost",
+      "source": "Org/Ternion Heavy Industries/People/Jethro Twill",
+      "target": "Geography/Calaria/Ragged Roost"
+    },
+    {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "Org/Ternion Heavy Industries/People/Jethro Twill",
+      "target": "People/Argyle"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": null,
@@ -7888,6 +8000,20 @@
       "resolved": "Org/Verdant Holdings/index",
       "source": "Org/Verdant Holdings/People/Cross Trevils",
       "target": "Org/Verdant Holdings/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Verdant Holdings/People/Cross Trevils",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Ragged Roost",
+      "heading": null,
+      "resolved": "Geography/Calaria/Ragged Roost",
+      "source": "Org/Verdant Holdings/People/Cross Trevils",
+      "target": "Geography/Calaria/Ragged Roost"
     },
     {
       "alias": "Hildebrandt Corporation",
@@ -10438,6 +10564,13 @@
       "target": "Org/Hildebrandt Corporation/index"
     },
     {
+      "alias": "the weave",
+      "heading": null,
+      "resolved": "Phenomena/Weave",
+      "source": "Phenomena/Pilgrimage",
+      "target": "Phenomena/Weave"
+    },
+    {
       "alias": "Providence",
       "heading": null,
       "resolved": "Org/The Harlequins/Providence",
@@ -10674,6 +10807,41 @@
       "resolved": "Geography/Black and White/index",
       "source": "Phenomena/Voice Box",
       "target": "Geography/Black and White/index"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Phenomena/Voidheart",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "weave",
+      "heading": null,
+      "resolved": "Phenomena/Weave",
+      "source": "Phenomena/Voidheart",
+      "target": "Phenomena/Weave"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Phenomena/Voidheart",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Phenomena/Weave",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Letov Obratz",
+      "heading": null,
+      "resolved": "Org/Garrick Textiles/People/Letov Obratz",
+      "source": "Phenomena/Weave",
+      "target": "Org/Garrick Textiles/People/Letov Obratz"
     },
     {
       "alias": "Harmony",
@@ -10937,6 +11105,33 @@
     {
       "crossrefs": [
         {
+          "alias": "weave",
+          "heading": null,
+          "target": "Phenomena/Weave"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        }
+      ],
+      "date": "2026-06-01T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Ki-Rin"
+        ],
+        "extra": {
+          "date": "2026-06-01T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Celestials"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Gloaming Codex",
           "heading": null,
           "target": "Phenomena/Gloaming Codex"
@@ -11011,6 +11206,16 @@
           "target": "Geography/Calaria/Ragged Roost"
         },
         {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Ragged Roost",
+          "heading": null,
+          "target": "Geography/Calaria/Ragged Roost"
+        },
+        {
           "alias": "Ragged Roost",
           "heading": null,
           "target": "Geography/Calaria/Ragged Roost"
@@ -11041,11 +11246,12 @@
           "target": "Org/The Scale/Voice of Many"
         }
       ],
-      "date": "2026-05-11T00:00:00-04:00",
+      "date": "2026-06-01T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Babau",
           "Barbazu",
+          "Barghest",
           "Brimorak",
           "Hellion",
           "Ort",
@@ -11054,7 +11260,7 @@
           "Vitriolite"
         ],
         "extra": {
-          "date": "2026-05-11T00:00:00-04:00"
+          "date": "2026-06-01T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -11378,6 +11584,34 @@
         "title": null
       },
       "path": "Bestiary/Vermin"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "weave",
+          "heading": null,
+          "target": "Phenomena/Weave"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        }
+      ],
+      "date": "2026-06-01T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Hand of the Void",
+          "Hands of the Void"
+        ],
+        "extra": {
+          "date": "2026-06-01T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Void"
     },
     {
       "crossrefs": [
@@ -15426,6 +15660,21 @@
           "alias": "Belvedere",
           "heading": null,
           "target": "Org/Belvedere/index"
+        },
+        {
+          "alias": "pilgrimage",
+          "heading": null,
+          "target": "Phenomena/Pilgrimage"
+        },
+        {
+          "alias": "Raelion",
+          "heading": null,
+          "target": "Geography/Raelion/index"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -15599,6 +15848,31 @@
           "alias": "Amber Call",
           "heading": null,
           "target": "Org/Amber Call/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "pilgrimage",
+          "heading": null,
+          "target": "Phenomena/Pilgrimage"
+        },
+        {
+          "alias": "Manus Sudrenus",
+          "heading": null,
+          "target": "Org/Pale Lantern Society/People/Manus Sudrenus"
+        },
+        {
+          "alias": "Gaspar Caetano",
+          "heading": null,
+          "target": "Org/NecroLog/People/Gaspar Caetano"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -16498,11 +16772,6 @@
           "alias": "Ragged Roost",
           "heading": null,
           "target": "Geography/Calaria/Ragged Roost"
-        },
-        {
-          "alias": "Voidsong",
-          "heading": null,
-          "target": "Phenomena/Harmony/Voidsong"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -19502,6 +19771,21 @@
           "alias": "Ternion Heavy Industries",
           "heading": null,
           "target": "Org/Ternion Heavy Industries/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Ragged Roost",
+          "heading": null,
+          "target": "Geography/Calaria/Ragged Roost"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -19665,11 +19949,11 @@
           "target": "Phenomena/Keystone"
         }
       ],
-      "date": "2026-05-25T00:00:00-04:00",
+      "date": "2026-06-01T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-25T00:00:00-04:00"
+          "date": "2026-06-01T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -20572,6 +20856,16 @@
           "alias": "Verdant Holdings",
           "heading": null,
           "target": "Org/Verdant Holdings/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Ragged Roost",
+          "heading": null,
+          "target": "Geography/Calaria/Ragged Roost"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -23159,13 +23453,13 @@
           "target": "Geography/Færrin"
         }
       ],
-      "date": "2026-01-13T00:00:00-04:00",
+      "date": "2026-06-01T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Joker Worlds"
         ],
         "extra": {
-          "date": "2026-01-13T00:00:00-04:00"
+          "date": "2026-06-01T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -23408,6 +23702,11 @@
           "target": "Org/Hildebrandt Corporation/index"
         },
         {
+          "alias": "the weave",
+          "heading": null,
+          "target": "Phenomena/Weave"
+        },
+        {
           "alias": "Providence",
           "heading": null,
           "target": "Org/The Harlequins/Providence"
@@ -23418,11 +23717,11 @@
           "target": "Org/Garrick Textiles/People/Letov Obratz"
         }
       ],
-      "date": "2026-05-25T00:00:00-04:00",
+      "date": "2026-06-01T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-25T00:00:00-04:00"
+          "date": "2026-06-01T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -23694,6 +23993,65 @@
         "title": null
       },
       "path": "Phenomena/Voice Box"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "weave",
+          "heading": null,
+          "target": "Phenomena/Weave"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        }
+      ],
+      "date": "2026-06-01T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Voidheart"
+        ],
+        "extra": {
+          "date": "2026-06-01T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Phenomena/Voidheart"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Letov Obratz",
+          "heading": null,
+          "target": "Org/Garrick Textiles/People/Letov Obratz"
+        }
+      ],
+      "date": "2026-06-01T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "the weave"
+        ],
+        "extra": {
+          "date": "2026-06-01T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Phenomena/Weave"
     },
     {
       "crossrefs": [
