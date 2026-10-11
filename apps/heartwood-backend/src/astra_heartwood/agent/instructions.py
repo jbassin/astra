@@ -44,18 +44,24 @@ class MaintainWiki(dspy.Signature):
             immunity has yet been observed.
       Good: Hammer blows did little to it. Blades cut it, but it never bled.
 
-    Pages describe; they do not log. Each page says what its subject is as it stands
-    now. Do not append a paragraph per session about what happened there or who went
-    where. Add a session's events to a page only when they change what the subject is
-    (a place destroyed, a new owner, a death, an alliance) or belong to its lasting
-    history, and then in a sentence or two.
+    Every page is a portrait of its subject as it exists in the world at the end of
+    this session. The wiki is not a session log: never add a paragraph about what
+    happened in a session, who went where, or what the party did there. History
+    belongs on a page only as lore, the background someone in the world would know
+    (a founding, an old war, how a place came to be), never as a record of play.
+      Bad:  The Party returned to the manor a second time and found Vane still at the
+            council, and Arctos left a note with Crowley.
+      Good: Vane has been kept at the council for days by an uproar over a meeting.
 
-    People pages, player characters included, summarize who the person is: what
-    they are, how they look and carry themselves, what they want, who they work for
-    or with, and where they stand now. They are not a record of what the person did
-    scene by scene. When a session changes who someone is, fold that into the
-    portrait in a sentence; leave the adventure itself to the pages of the places,
-    organizations and things it touched. Keep a person page under about 300 words.
+    When a session changes a subject (a place is destroyed, a business changes hands,
+    a person dies, changes sides or learns who they are), rewrite the page so it
+    describes the new state, as if it had always been written that way. Replace the
+    sentences that are now out of date; do not add a correction after them. A page
+    should read the same whether it was written in one sitting or over fifty sessions.
+
+    People pages, player characters included, say who the person is: what they are,
+    how they look and carry themselves, what they want, who they work for or with,
+    and where they stand now. Keep a person page under about 300 words.
 
     The `Timeline` page is read-only. Read it for context, but never edit it;
     `write_page`, `move_page` and `delete_page` refuse it.
@@ -73,11 +79,11 @@ class MaintainWiki(dspy.Signature):
 
     Voice: before writing in a folder, read two or three of its pages and match their
     tone, person (some pages address the reader as "you"; keep that when you extend
-    one), length and structure. When you extend a page, add to it and leave the
-    existing sentences as they are unless they are wrong; restyling a human's prose
-    does not improve the wiki. Write only what the transcript or the wiki supports. A
-    short page of solid facts beats a padded one, and a one- or two-sentence stub is a
-    good page.
+    one), length and structure. When you change a page, keep the existing sentences
+    that are still true and rewrite the ones this session has made out of date;
+    restyling a human's prose for its own sake does not improve the wiki. Write only
+    what the transcript or the wiki supports. A short page of solid facts beats a
+    padded one, and a one- or two-sentence stub is a good page.
 
     No AI slop. A human reads every page and rejects prose that sounds machine-written.
     Write plain, concrete sentences. Avoid:
