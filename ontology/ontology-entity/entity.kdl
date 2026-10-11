@@ -83,6 +83,9 @@ entity "Anouk's" {
     alias "Onyx's"
     source "defs"
 }
+entity "Anti-Zorbon Taskforce" kind="org" page="Org/Anti-Zorbon Taskforce" {
+    source "akasha"
+}
 entity "Anzu" kind="person" being="tanner" {
     alias "Anzi"
     alias "Hanzo"
@@ -394,7 +397,7 @@ entity "Combo" kind="person" page="Org/Velvet Mark/People/Combo" being="mike" {
     source "akasha"
     source "being"
 }
-entity "Concordia" kind="org" page="Org/Concordia" {
+entity "Concordia" kind="org" page="Org/Concordia/index" {
     source "akasha"
 }
 entity "Convox" {
@@ -922,7 +925,7 @@ entity "Insuperlex" kind="deity" page="Divinity/The Narrative/Insuperlex" {
     source "akasha"
     source "defs"
 }
-entity "Iomenei" kind="place" page="Geography/Istria/Iomenei" {
+entity "Iomenei" kind="place" page="Geography/Istria/Iomenei/index" {
     alias "Iomene"
     alias "Iominae"
     alias "Iomine"
@@ -1661,6 +1664,9 @@ entity "Solari Sub-surface" kind="org" page="Org/Solari Sub-surface/index" {
     source "akasha"
     source "defs"
 }
+entity "Song on Fire" kind="place" page="Geography/Black and White/Song on Fire" {
+    source "akasha"
+}
 entity "Soundscape Theaters" kind="place" page="Geography/Black and White/Soundscape Theaters" {
     alias "Soundscape Theater"
     source "akasha"
@@ -1797,6 +1803,9 @@ entity "the Scale's" {
     source "defs"
 }
 entity "The Sears" kind="org" page="Org/The Sears/index" {
+    source "akasha"
+}
+entity "The Situation Room" kind="org" page="Org/The Situation Room" {
     source "akasha"
 }
 entity "The Spark" kind="person" page="Org/Pyrelight/People/The Spark" {
