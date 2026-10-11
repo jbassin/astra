@@ -1203,6 +1203,12 @@ entity "MoCuP" {
     alias "MOCUP"
     source "defs"
 }
+entity "Mongrel Folk" kind="creature" page="Bestiary/Mongrel Folk" {
+    alias "Mongrelfolk"
+    alias "Slip-Warped"
+    alias "Slip-Affected"
+    source "akasha"
+}
 entity "Mr. Whiskers" kind="person" page="Org/Amber Call/People/Mr. Whiskers" {
     alias "Whiskers"
     alias "Mr\\s*Whisker"

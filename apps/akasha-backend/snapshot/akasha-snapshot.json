@@ -162,6 +162,48 @@
       "target": "Geography/Calaria/Hallia/Teller's Run/index"
     },
     {
+      "alias": "Infinite Horizon",
+      "heading": null,
+      "resolved": "Phenomena/Infinite Horizon",
+      "source": "Bestiary/Mongrel Folk",
+      "target": "Phenomena/Infinite Horizon"
+    },
+    {
+      "alias": "Iomenei's Undercroft",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei/Undercroft",
+      "source": "Bestiary/Mongrel Folk",
+      "target": "Geography/Istria/Iomenei/Undercroft"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Bestiary/Mongrel Folk",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Harlequins",
+      "heading": null,
+      "resolved": "Org/The Harlequins/index",
+      "source": "Bestiary/Mongrel Folk",
+      "target": "Org/The Harlequins/index"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Bestiary/Mongrel Folk",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Bestiary/Mongrel Folk",
+      "target": "People/Anzu"
+    },
+    {
       "alias": "royal waterways",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Sewers",
@@ -7729,6 +7771,20 @@
       "target": "Phenomena/Keystone"
     },
     {
+      "alias": "Harlequins",
+      "heading": null,
+      "resolved": "Org/The Harlequins/index",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Org/The Harlequins/index"
+    },
+    {
+      "alias": "mongrel folk",
+      "heading": null,
+      "resolved": "Bestiary/Mongrel Folk",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Bestiary/Mongrel Folk"
+    },
+    {
       "alias": "Providence",
       "heading": null,
       "resolved": "Org/The Harlequins/Providence",
@@ -9892,6 +9948,27 @@
       "target": "Bestiary/Fey"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "People/Maranthorn",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Harlequins",
+      "heading": null,
+      "resolved": "Org/The Harlequins/index",
+      "source": "People/Maranthorn",
+      "target": "Org/The Harlequins/index"
+    },
+    {
+      "alias": "Johnny",
+      "heading": null,
+      "resolved": "People/Johnny",
+      "source": "People/Maranthorn",
+      "target": "People/Johnny"
+    },
+    {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
@@ -10779,6 +10856,13 @@
       "resolved": "Org/Protectorate/index",
       "source": "Phenomena/Infinite Horizon",
       "target": "Org/Protectorate/index"
+    },
+    {
+      "alias": "mongrel folk",
+      "heading": null,
+      "resolved": "Bestiary/Mongrel Folk",
+      "source": "Phenomena/Infinite Horizon",
+      "target": "Bestiary/Mongrel Folk"
     },
     {
       "alias": null,
@@ -11812,6 +11896,55 @@
         "title": null
       },
       "path": "Bestiary/Genies"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Infinite Horizon",
+          "heading": null,
+          "target": "Phenomena/Infinite Horizon"
+        },
+        {
+          "alias": "Iomenei's Undercroft",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei/Undercroft"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Harlequins",
+          "heading": null,
+          "target": "Org/The Harlequins/index"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        }
+      ],
+      "date": "2026-06-22T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Mongrelfolk",
+          "Slip-Warped",
+          "Slip-Affected"
+        ],
+        "extra": {
+          "date": "2026-06-22T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Mongrel Folk"
     },
     {
       "crossrefs": [
@@ -20820,13 +20953,23 @@
           "alias": "keystone",
           "heading": null,
           "target": "Phenomena/Keystone"
+        },
+        {
+          "alias": "Harlequins",
+          "heading": null,
+          "target": "Org/The Harlequins/index"
+        },
+        {
+          "alias": "mongrel folk",
+          "heading": null,
+          "target": "Bestiary/Mongrel Folk"
         }
       ],
-      "date": "2026-06-08T00:00:00-04:00",
+      "date": "2026-06-22T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-08T00:00:00-04:00"
+          "date": "2026-06-22T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -20867,11 +21010,11 @@
           "target": "Org/The Harlequins/People/Ocelith"
         }
       ],
-      "date": "2026-06-18T00:00:00-04:00",
+      "date": "2026-06-22T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-18T00:00:00-04:00"
+          "date": "2026-06-22T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -23419,6 +23562,39 @@
     {
       "crossrefs": [
         {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Harlequins",
+          "heading": null,
+          "target": "Org/The Harlequins/index"
+        },
+        {
+          "alias": "Johnny",
+          "heading": null,
+          "target": "People/Johnny"
+        }
+      ],
+      "date": "2026-06-22T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Marin",
+          "Maren"
+        ],
+        "extra": {
+          "date": "2026-06-22T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "People/Maranthorn"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Hallia",
           "heading": null,
           "target": "Geography/Calaria/Hallia/index"
@@ -24372,15 +24548,20 @@
           "alias": "Protectorates",
           "heading": null,
           "target": "Org/Protectorate/index"
+        },
+        {
+          "alias": "mongrel folk",
+          "heading": null,
+          "target": "Bestiary/Mongrel Folk"
         }
       ],
-      "date": "2026-06-05T16:40:21-04:00",
+      "date": "2026-06-22T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Horizon"
         ],
         "extra": {
-          "date": "2026-06-05T16:40:21-04:00"
+          "date": "2026-06-22T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
