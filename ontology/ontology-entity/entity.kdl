@@ -688,6 +688,10 @@ entity "Gaspar Caetano" kind="person" page="Org/NecroLog/People/Gaspar Caetano" 
 entity "General Thematics" kind="org" page="Org/General Thematics/index" {
     source "akasha"
 }
+entity "Genies" kind="creature" page="Bestiary/Genies" {
+    alias "Ifrit"
+    source "akasha"
+}
 entity "Geography" kind="place" page="Geography/index" {
     source "akasha"
 }
@@ -1025,6 +1029,9 @@ entity "Lark Crowe" kind="person" page="Org/Sable and Suns/People/Lark Crowe" {
     source "defs"
 }
 entity "Ledger, Ledger, and Light" kind="place" page="Geography/Calaria/Hallia/Ledger, Ledger, and Light" {
+    source "akasha"
+}
+entity "Lemon Pepper" kind="deity" page="Divinity/Fiends/Lemon Pepper" {
     source "akasha"
 }
 entity "Letov" {

@@ -113,6 +113,20 @@
       "target": "Org/The Scale/Voice of Many"
     },
     {
+      "alias": "Embercall",
+      "heading": null,
+      "resolved": "Org/Embercall Industries/index",
+      "source": "Bestiary/Genies",
+      "target": "Org/Embercall Industries/index"
+    },
+    {
+      "alias": "Teller's Run",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
+      "source": "Bestiary/Genies",
+      "target": "Geography/Calaria/Hallia/Teller's Run/index"
+    },
+    {
       "alias": "royal waterways",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Sewers",
@@ -608,6 +622,34 @@
       "resolved": "Org/The Scale/People/Manuel de la Cruzada",
       "source": "Divinity/Fiends/Flintlock Toboggan",
       "target": "Org/The Scale/People/Manuel de la Cruzada"
+    },
+    {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "Divinity/Fiends/Flintlock Toboggan",
+      "target": "People/Argyle"
+    },
+    {
+      "alias": "Lemon Pepper",
+      "heading": null,
+      "resolved": "Divinity/Fiends/Lemon Pepper",
+      "source": "Divinity/Fiends/Flintlock Toboggan",
+      "target": "Divinity/Fiends/Lemon Pepper"
+    },
+    {
+      "alias": "Dame Quay",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Dame Quay",
+      "source": "Divinity/Fiends/Flintlock Toboggan",
+      "target": "Org/The Scale/People/Dame Quay"
+    },
+    {
+      "alias": "Flintlock Toboggan",
+      "heading": null,
+      "resolved": "Divinity/Fiends/Flintlock Toboggan",
+      "source": "Divinity/Fiends/Lemon Pepper",
+      "target": "Divinity/Fiends/Flintlock Toboggan"
     },
     {
       "alias": "Judge",
@@ -2638,6 +2680,13 @@
       "resolved": "Divinity/Ashen Pact/Pyre",
       "source": "Geography/Calaria/Hallia/Teller's Run/index",
       "target": "Divinity/Ashen Pact/Pyre"
+    },
+    {
+      "alias": "Masque District",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Masque District/index",
+      "source": "Geography/Calaria/Hallia/Teller's Run/index",
+      "target": "Geography/Calaria/Hallia/Masque District/index"
     },
     {
       "alias": "Heart",
@@ -7281,6 +7330,13 @@
       "target": "People/Othello"
     },
     {
+      "alias": "Teller's Run",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
+      "source": "People/Anzu",
+      "target": "Geography/Calaria/Hallia/Teller's Run/index"
+    },
+    {
       "alias": "Austrene",
       "heading": null,
       "resolved": "Geography/Austrene/index",
@@ -7426,6 +7482,20 @@
       "resolved": "Divinity/Outer Gods/Judge of Ages",
       "source": "People/Argyle",
       "target": "Divinity/Outer Gods/Judge of Ages"
+    },
+    {
+      "alias": "Dame Quay",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Dame Quay",
+      "source": "People/Argyle",
+      "target": "Org/The Scale/People/Dame Quay"
+    },
+    {
+      "alias": "pilgrimage",
+      "heading": null,
+      "resolved": "Phenomena/Pilgrimage",
+      "source": "People/Argyle",
+      "target": "Phenomena/Pilgrimage"
     },
     {
       "alias": "Cunning Man",
@@ -8352,6 +8422,20 @@
       "target": "People/Johnny"
     },
     {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "People/Othello",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Teller's Run",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
+      "source": "People/Othello",
+      "target": "Geography/Calaria/Hallia/Teller's Run/index"
+    },
+    {
       "alias": "Tormeré",
       "heading": null,
       "resolved": "Geography/Tormeré/index",
@@ -8945,6 +9029,13 @@
       "resolved": "Geography/Calaria/Hallia/index",
       "source": "Phenomena/Firmament",
       "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Teller's Run",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
+      "source": "Phenomena/Firmament",
+      "target": "Geography/Calaria/Hallia/Teller's Run/index"
     },
     {
       "alias": "Teller's Run",
@@ -9967,6 +10058,33 @@
     {
       "crossrefs": [
         {
+          "alias": "Embercall",
+          "heading": null,
+          "target": "Org/Embercall Industries/index"
+        },
+        {
+          "alias": "Teller's Run",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Teller's Run/index"
+        }
+      ],
+      "date": "2026-04-13T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Ifrit"
+        ],
+        "extra": {
+          "date": "2026-04-13T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Genies"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "royal waterways",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Sewers"
@@ -10594,6 +10712,21 @@
           "alias": "Reverend Warden Manuel de la Cruzada",
           "heading": null,
           "target": "Org/The Scale/People/Manuel de la Cruzada"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
+        },
+        {
+          "alias": "Lemon Pepper",
+          "heading": null,
+          "target": "Divinity/Fiends/Lemon Pepper"
+        },
+        {
+          "alias": "Dame Quay",
+          "heading": null,
+          "target": "Org/The Scale/People/Dame Quay"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -10609,6 +10742,28 @@
         "title": null
       },
       "path": "Divinity/Fiends/Flintlock Toboggan"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Flintlock Toboggan",
+          "heading": null,
+          "target": "Divinity/Fiends/Flintlock Toboggan"
+        }
+      ],
+      "date": "2026-04-13T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-04-13T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Fiend"
+        ],
+        "title": null
+      },
+      "path": "Divinity/Fiends/Lemon Pepper"
     },
     {
       "crossrefs": [
@@ -12742,11 +12897,11 @@
           "target": "Org/Embercall Industries/index"
         }
       ],
-      "date": "2026-03-30T00:00:00-04:00",
+      "date": "2026-04-13T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-30T00:00:00-04:00"
+          "date": "2026-04-13T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -12895,6 +13050,11 @@
           "alias": "Pyre",
           "heading": null,
           "target": "Divinity/Ashen Pact/Pyre"
+        },
+        {
+          "alias": "Masque District",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Masque District/index"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -15020,11 +15180,11 @@
           "target": "Org/Amber Call/People/Benjamin Grayson"
         }
       ],
-      "date": "2026-03-30T00:00:00-04:00",
+      "date": "2026-04-13T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-30T00:00:00-04:00"
+          "date": "2026-04-13T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -18001,11 +18161,11 @@
           "target": "Divinity/Fiends/Flintlock Toboggan"
         }
       ],
-      "date": "2026-03-09T00:00:00-04:00",
+      "date": "2026-04-13T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-09T00:00:00-04:00"
+          "date": "2026-04-13T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -18965,6 +19125,11 @@
           "target": "People/Othello"
         },
         {
+          "alias": "Teller's Run",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Teller's Run/index"
+        },
+        {
           "alias": "Austrene",
           "heading": null,
           "target": "Geography/Austrene/index"
@@ -19040,11 +19205,11 @@
           "target": "Aut"
         }
       ],
-      "date": "2026-03-23T00:00:00-04:00",
+      "date": "2026-04-13T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-23T00:00:00-04:00"
+          "date": "2026-04-13T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -19087,6 +19252,16 @@
           "target": "Divinity/Outer Gods/Judge of Ages"
         },
         {
+          "alias": "Dame Quay",
+          "heading": null,
+          "target": "Org/The Scale/People/Dame Quay"
+        },
+        {
+          "alias": "pilgrimage",
+          "heading": null,
+          "target": "Phenomena/Pilgrimage"
+        },
+        {
           "alias": "Cunning Man",
           "heading": null,
           "target": "People/Sharp the Cunning Man"
@@ -19097,11 +19272,11 @@
           "target": "Sin and Tonic"
         }
       ],
-      "date": "2026-03-23T00:00:00-04:00",
+      "date": "2026-04-13T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-23T00:00:00-04:00"
+          "date": "2026-04-13T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -20156,12 +20331,23 @@
       "path": "People/Moonlight"
     },
     {
-      "crossrefs": [],
-      "date": "2025-11-04T00:00:00-04:00",
+      "crossrefs": [
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Teller's Run",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Teller's Run/index"
+        }
+      ],
+      "date": "2026-04-13T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-11-04T00:00:00-04:00"
+          "date": "2026-04-13T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -20794,6 +20980,11 @@
           "alias": "Teller's Run",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Teller's Run/index"
+        },
+        {
+          "alias": "Teller's Run",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Teller's Run/index"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -21129,13 +21320,13 @@
           "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2026-03-23T00:00:00-04:00",
+      "date": "2026-04-13T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "keystones"
         ],
         "extra": {
-          "date": "2026-03-23T00:00:00-04:00"
+          "date": "2026-04-13T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -21246,11 +21437,11 @@
           "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2026-03-30T00:00:00-04:00",
+      "date": "2026-04-13T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-30T00:00:00-04:00"
+          "date": "2026-04-13T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
