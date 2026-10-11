@@ -425,8 +425,9 @@ entity "Deadly Mantis" kind="creature" page="Bestiary/Deadly Mantis" {
     alias "mantis"
     source "akasha"
 }
-entity "Deosil" {
+entity "Deosil" kind="place" page="Geography/Calaria/Hallia/Deosil" {
     alias "Diesel"
+    source "akasha"
     source "defs"
 }
 entity "Detective Ellis Brooks" kind="person" page="Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks" {
@@ -1343,6 +1344,9 @@ entity "Raelion" kind="place" page="Geography/Raelion/index" {
     alias "Raelio"
     source "akasha"
     source "defs"
+}
+entity "Ragged Roost" kind="place" page="Geography/Calaria/Ragged Roost" {
+    source "akasha"
 }
 entity "Rainy Days Incorporated" kind="org" page="Org/Rainy Days Incorporated" {
     source "akasha"
