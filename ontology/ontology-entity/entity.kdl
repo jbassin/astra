@@ -1253,6 +1253,9 @@ entity "Pyrelight" kind="org" page="Org/Pyrelight/index" {
 entity "Quiet Below" kind="place" page="Geography/Quiet Below/index" {
     source "akasha"
 }
+entity "Radar Dishes" kind="phenomenon" page="Phenomena/Radar Dishes" {
+    source "akasha"
+}
 entity "Radiant Arms" kind="org" page="Org/Radiant Arms/index" {
     source "akasha"
 }
@@ -1384,8 +1387,9 @@ entity "Scrazzy" {
     alias "Scrazz"
     source "defs"
 }
-entity "Second Sun Diner" {
+entity "Second Sun Diner" kind="place" page="Geography/Calaria/Hallia/Sableclutch/Second Sun Diner" {
     alias "Second Son Diner"
+    source "akasha"
     source "defs"
 }
 entity "Sedecium" {
@@ -1475,6 +1479,9 @@ entity "starward" {
     alias "star\\s*w[ao]rd"
     alias "Star Wars"
     source "defs"
+}
+entity "Stepwell" kind="place" page="Geography/Calaria/Hallia/Stepwell/index" {
+    source "akasha"
 }
 entity "Stillness" kind="phenomenon" page="Phenomena/Stillness" {
     source "akasha"
