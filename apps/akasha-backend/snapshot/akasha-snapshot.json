@@ -281,6 +281,167 @@
       "target": "Geography/Calaria/Hallia/Sableclutch/index"
     },
     {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "Divinity/Ashen Pact/Esoterica",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "Divinity/Ashen Pact/Giant",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Divinity/Ashen Pact/Giant",
+      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "Divinity/Ashen Pact/Pyre",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Divinity/Ashen Pact/Pyre",
+      "target": "Gas-n-Go Heart"
+    },
+    {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Divinity/Ashen Pact/Pyre",
+      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Embercall",
+      "heading": null,
+      "resolved": "Org/Embercall Industries/index",
+      "source": "Divinity/Ashen Pact/Pyre",
+      "target": "Org/Embercall Industries/index"
+    },
+    {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "Divinity/Ashen Pact/Regent",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "the Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "Divinity/Ashen Pact/Regent",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "Divinity/Ashen Pact/War",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Divinity/Ashen Pact/War",
+      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Pyre",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Pyre",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Divinity/Ashen Pact/Pyre"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Giant",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Giant",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Divinity/Ashen Pact/Giant"
+    },
+    {
+      "alias": "War",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/War",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Divinity/Ashen Pact/War"
+    },
+    {
+      "alias": "Esoterica",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Esoterica",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Divinity/Ashen Pact/Esoterica"
+    },
+    {
+      "alias": "Regent",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Regent",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Divinity/Ashen Pact/Regent"
+    },
+    {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Gas-n-Go Heart"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Færrin",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Færrin"
+    },
+    {
+      "alias": "Embercall",
+      "heading": null,
+      "resolved": "Org/Embercall Industries/index",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Org/Embercall Industries/index"
+    },
+    {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
@@ -1681,6 +1842,83 @@
       "target": "Org/Pyrelight/index"
     },
     {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "target": "Hearts"
+    },
+    {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Pyre",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Pyre",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "target": "Divinity/Ashen Pact/Pyre"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Giant",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Giant",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "target": "Divinity/Ashen Pact/Giant"
+    },
+    {
+      "alias": "War",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/War",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "target": "Divinity/Ashen Pact/War"
+    },
+    {
+      "alias": "Esoterica",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Esoterica",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "target": "Divinity/Ashen Pact/Esoterica"
+    },
+    {
+      "alias": "Regent",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Regent",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "target": "Divinity/Ashen Pact/Regent"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Færrin",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "target": "Færrin"
+    },
+    {
+      "alias": "Embercall",
+      "heading": null,
+      "resolved": "Org/Embercall Industries/index",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "target": "Org/Embercall Industries/index"
+    },
+    {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
@@ -1714,6 +1952,62 @@
       "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
       "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
       "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "target": "Gas-n-Go Heart"
+    },
+    {
+      "alias": "Pyre",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Pyre",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "target": "Divinity/Ashen Pact/Pyre"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Giant",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Giant",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "target": "Divinity/Ashen Pact/Giant"
+    },
+    {
+      "alias": "War",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/War",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "target": "Divinity/Ashen Pact/War"
+    },
+    {
+      "alias": "Esoterica",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Esoterica",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "target": "Divinity/Ashen Pact/Esoterica"
+    },
+    {
+      "alias": "Regent",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Regent",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "target": "Divinity/Ashen Pact/Regent"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "target": "Geography/Calaria/Hallia/index"
     },
     {
       "alias": "Hallia",
@@ -2729,6 +3023,13 @@
       "resolved": "Phenomena/Harmony/Voidsong",
       "source": "Org/Embercall Industries/index",
       "target": "Voidsong"
+    },
+    {
+      "alias": "Pyre",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Pyre",
+      "source": "Org/Embercall Industries/index",
+      "target": "Divinity/Ashen Pact/Pyre"
     },
     {
       "alias": "Pyre",
@@ -3879,6 +4180,48 @@
       "target": "People/Anzu"
     },
     {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "target": "Gas-n-Go Heart"
+    },
+    {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Pyre",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Pyre",
+      "source": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "target": "Divinity/Ashen Pact/Pyre"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Embercall",
+      "heading": null,
+      "resolved": "Org/Embercall Industries/index",
+      "source": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "target": "Org/Embercall Industries/index"
+    },
+    {
+      "alias": "Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+    },
+    {
       "alias": "Sableclutch",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Sableclutch/index",
@@ -3989,6 +4332,20 @@
       "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
       "source": "Org/Roundhat Gang/index",
       "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Org/Roundhat Gang/index",
+      "target": "Gas-n-Go Heart"
+    },
+    {
+      "alias": "Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "Org/Roundhat Gang/index",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
     },
     {
       "alias": "RunGunners",
@@ -4796,6 +5153,13 @@
       "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
     },
     {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "People/Argyle",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
       "alias": "Iconoclasm",
       "heading": null,
       "resolved": "Org/Iconoclasm/index",
@@ -4864,6 +5228,13 @@
       "resolved": "Org/Roundhat Gang/People/Hlarf",
       "source": "People/Benny",
       "target": "Org/Roundhat Gang/People/Hlarf"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "People/Benny",
+      "target": "Geography/Calaria/Hallia/index"
     },
     {
       "alias": "Iridescent Church",
@@ -5034,6 +5405,20 @@
       "target": "Org/The Undertable/index"
     },
     {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "People/Johnny",
+      "target": "Gas-n-Go Heart"
+    },
+    {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "People/Johnny",
+      "target": "People/Argyle"
+    },
+    {
       "alias": "Tommy Lagerman",
       "heading": null,
       "resolved": "People/Tommy Lagerman",
@@ -5186,6 +5571,20 @@
       "resolved": "Divinity/The Narrative/Aut",
       "source": "People/Sir Arctos",
       "target": "Aut"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "People/Sir Arctos",
+      "target": "Gas-n-Go Heart"
+    },
+    {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "People/Sir Arctos",
+      "target": "People/Argyle"
     },
     {
       "alias": null,
@@ -5529,6 +5928,41 @@
       "resolved": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
       "source": "Phenomena/Radar Dishes",
       "target": "Sin and Tonic"
+    },
+    {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Phenomena/Radar Dishes",
+      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Phenomena/Radar Dishes",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Sableclutch",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/index",
+      "source": "Phenomena/Radar Dishes",
+      "target": "Geography/Calaria/Hallia/Sableclutch/index"
+    },
+    {
+      "alias": "Gryphonline",
+      "heading": null,
+      "resolved": "Org/Gryphonline/index",
+      "source": "Phenomena/Radar Dishes",
+      "target": "Org/Gryphonline/index"
+    },
+    {
+      "alias": "Teller's Run",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
+      "source": "Phenomena/Radar Dishes",
+      "target": "Geography/Calaria/Hallia/Teller's Run/index"
     },
     {
       "alias": null,
@@ -7202,6 +7636,132 @@
       "resolved": "People/Anzu",
       "source": "Timeline",
       "target": "People/Anzu"
+    },
+    {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Timeline",
+      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Timeline",
+      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Pyre",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Pyre",
+      "source": "Timeline",
+      "target": "Divinity/Ashen Pact/Pyre"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Timeline",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Giant",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Giant",
+      "source": "Timeline",
+      "target": "Divinity/Ashen Pact/Giant"
+    },
+    {
+      "alias": "War",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/War",
+      "source": "Timeline",
+      "target": "Divinity/Ashen Pact/War"
+    },
+    {
+      "alias": "Esoterica",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Esoterica",
+      "source": "Timeline",
+      "target": "Divinity/Ashen Pact/Esoterica"
+    },
+    {
+      "alias": "Regent",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Regent",
+      "source": "Timeline",
+      "target": "Divinity/Ashen Pact/Regent"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Færrin",
+      "source": "Timeline",
+      "target": "Færrin"
+    },
+    {
+      "alias": "Embercall",
+      "heading": null,
+      "resolved": "Org/Embercall Industries/index",
+      "source": "Timeline",
+      "target": "Org/Embercall Industries/index"
+    },
+    {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "Timeline",
+      "target": "People/Argyle"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Gryphonline",
+      "heading": null,
+      "resolved": "Org/Gryphonline/index",
+      "source": "Timeline",
+      "target": "Org/Gryphonline/index"
+    },
+    {
+      "alias": "Teller's Run",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Teller's Run/index"
+    },
+    {
+      "alias": "Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+    },
+    {
+      "alias": "Embercall",
+      "heading": null,
+      "resolved": "Org/Embercall Industries/index",
+      "source": "Timeline",
+      "target": "Org/Embercall Industries/index"
+    },
+    {
+      "alias": "Grayson",
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Benjamin Grayson",
+      "source": "Timeline",
+      "target": "Org/Amber Call/People/Benjamin Grayson"
+    },
+    {
+      "alias": "Illmari",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/People/Illmari Vaino",
+      "source": "Timeline",
+      "target": "Org/Iconoclasm/People/Illmari Vaino"
     }
   ],
   "pages": [
@@ -7755,7 +8315,13 @@
       "path": "Bestiary/Werecreature"
     },
     {
-      "crossrefs": [],
+      "crossrefs": [
+        {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        }
+      ],
       "date": "2026-07-29T23:41:12-04:00",
       "frontmatter": {
         "aliases": [],
@@ -7769,7 +8335,18 @@
       "path": "Divinity/Ashen Pact/Esoterica"
     },
     {
-      "crossrefs": [],
+      "crossrefs": [
+        {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        }
+      ],
       "date": "2026-07-29T23:41:12-04:00",
       "frontmatter": {
         "aliases": [],
@@ -7783,7 +8360,13 @@
       "path": "Divinity/Ashen Pact/Giant"
     },
     {
-      "crossrefs": [],
+      "crossrefs": [
+        {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        }
+      ],
       "date": "2026-07-29T23:41:12-04:00",
       "frontmatter": {
         "aliases": [],
@@ -7797,7 +8380,28 @@
       "path": "Divinity/Ashen Pact/Herald"
     },
     {
-      "crossrefs": [],
+      "crossrefs": [
+        {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Gas-n-Go Heart"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Embercall",
+          "heading": null,
+          "target": "Org/Embercall Industries/index"
+        }
+      ],
       "date": "2026-07-29T23:41:12-04:00",
       "frontmatter": {
         "aliases": [],
@@ -7811,7 +8415,18 @@
       "path": "Divinity/Ashen Pact/Pyre"
     },
     {
-      "crossrefs": [],
+      "crossrefs": [
+        {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        },
+        {
+          "alias": "the Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        }
+      ],
       "date": "2026-07-29T23:41:12-04:00",
       "frontmatter": {
         "aliases": [],
@@ -7825,7 +8440,18 @@
       "path": "Divinity/Ashen Pact/Regent"
     },
     {
-      "crossrefs": [],
+      "crossrefs": [
+        {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        }
+      ],
       "date": "2026-07-29T23:41:12-04:00",
       "frontmatter": {
         "aliases": [],
@@ -7837,6 +8463,76 @@
         "title": null
       },
       "path": "Divinity/Ashen Pact/War"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Pyre",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Pyre"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Giant",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Giant"
+        },
+        {
+          "alias": "War",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/War"
+        },
+        {
+          "alias": "Esoterica",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Esoterica"
+        },
+        {
+          "alias": "Regent",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Regent"
+        },
+        {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Gas-n-Go Heart"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Færrin"
+        },
+        {
+          "alias": "Embercall",
+          "heading": null,
+          "target": "Org/Embercall Industries/index"
+        }
+      ],
+      "date": "2025-12-30T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-12-30T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Divinity/Ashen Pact/index"
     },
     {
       "crossrefs": [
@@ -9563,6 +10259,79 @@
     {
       "crossrefs": [
         {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Hearts"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Pyre",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Pyre"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Giant",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Giant"
+        },
+        {
+          "alias": "War",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/War"
+        },
+        {
+          "alias": "Esoterica",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Esoterica"
+        },
+        {
+          "alias": "Regent",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Regent"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Færrin"
+        },
+        {
+          "alias": "Embercall",
+          "heading": null,
+          "target": "Org/Embercall Industries/index"
+        }
+      ],
+      "date": "2025-12-30T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Gas-n-Go Heart",
+          "the iron gauntlet in a glass glove"
+        ],
+        "extra": {
+          "date": "2025-12-30T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Hallia",
           "heading": null,
           "target": "Geography/Calaria/Hallia/index"
@@ -9586,13 +10355,53 @@
           "alias": "Tywelwyn",
           "heading": null,
           "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Gas-n-Go Heart"
+        },
+        {
+          "alias": "Pyre",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Pyre"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Giant",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Giant"
+        },
+        {
+          "alias": "War",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/War"
+        },
+        {
+          "alias": "Esoterica",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Esoterica"
+        },
+        {
+          "alias": "Regent",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Regent"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
         }
       ],
-      "date": "2025-12-23T00:00:00-04:00",
+      "date": "2025-12-30T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-23T00:00:00-04:00"
+          "date": "2025-12-30T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -11026,13 +11835,18 @@
           "alias": "Pyre",
           "heading": null,
           "target": "Divinity/Ashen Pact/Pyre"
+        },
+        {
+          "alias": "Pyre",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Pyre"
         }
       ],
-      "date": "2025-12-16T00:00:00-04:00",
+      "date": "2025-12-30T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-16T00:00:00-04:00"
+          "date": "2025-12-30T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -12711,6 +13525,36 @@
           "alias": "Anzu",
           "heading": null,
           "target": "People/Anzu"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Gas-n-Go Heart"
+        },
+        {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        },
+        {
+          "alias": "Pyre",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Pyre"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Embercall",
+          "heading": null,
+          "target": "Org/Embercall Industries/index"
+        },
+        {
+          "alias": "Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -12810,6 +13654,16 @@
           "alias": "Gas-n-Go",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Gas-n-Go Heart"
+        },
+        {
+          "alias": "Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
         }
       ],
       "date": "2026-06-06T22:12:21-04:00",
@@ -14073,11 +14927,11 @@
           "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
         }
       ],
-      "date": "2025-12-23T00:00:00-04:00",
+      "date": "2025-12-30T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-23T00:00:00-04:00"
+          "date": "2025-12-30T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -14113,13 +14967,18 @@
           "alias": "the Crowded Flea",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        },
+        {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
         }
       ],
-      "date": "2025-12-09T00:00:00-04:00",
+      "date": "2025-12-30T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-09T00:00:00-04:00"
+          "date": "2025-12-30T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -14178,13 +15037,18 @@
           "alias": "Hlarf",
           "heading": null,
           "target": "Org/Roundhat Gang/People/Hlarf"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
         }
       ],
-      "date": "2025-12-23T00:00:00-04:00",
+      "date": "2025-12-30T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-23T00:00:00-04:00"
+          "date": "2025-12-30T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -14417,13 +15281,23 @@
           "alias": "the Undertable",
           "heading": null,
           "target": "Org/The Undertable/index"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Gas-n-Go Heart"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
         }
       ],
-      "date": "2025-12-23T00:00:00-04:00",
+      "date": "2025-12-30T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-23T00:00:00-04:00"
+          "date": "2025-12-30T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -14626,13 +15500,23 @@
           "alias": null,
           "heading": null,
           "target": "Aut"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Gas-n-Go Heart"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
         }
       ],
-      "date": "2025-12-23T00:00:00-04:00",
+      "date": "2025-12-30T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-23T00:00:00-04:00"
+          "date": "2025-12-30T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -15079,13 +15963,38 @@
           "alias": null,
           "heading": null,
           "target": "Sin and Tonic"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Sableclutch",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/index"
+        },
+        {
+          "alias": "Gryphonline",
+          "heading": null,
+          "target": "Org/Gryphonline/index"
+        },
+        {
+          "alias": "Teller's Run",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Teller's Run/index"
         }
       ],
-      "date": "2025-11-04T00:00:00-04:00",
+      "date": "2025-12-30T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-11-04T00:00:00-04:00"
+          "date": "2025-12-30T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -16407,6 +17316,96 @@
           "alias": "Anzu",
           "heading": null,
           "target": "People/Anzu"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Pyre",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Pyre"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Giant",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Giant"
+        },
+        {
+          "alias": "War",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/War"
+        },
+        {
+          "alias": "Esoterica",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Esoterica"
+        },
+        {
+          "alias": "Regent",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Regent"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Færrin"
+        },
+        {
+          "alias": "Embercall",
+          "heading": null,
+          "target": "Org/Embercall Industries/index"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Gryphonline",
+          "heading": null,
+          "target": "Org/Gryphonline/index"
+        },
+        {
+          "alias": "Teller's Run",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Teller's Run/index"
+        },
+        {
+          "alias": "Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        },
+        {
+          "alias": "Embercall",
+          "heading": null,
+          "target": "Org/Embercall Industries/index"
+        },
+        {
+          "alias": "Grayson",
+          "heading": null,
+          "target": "Org/Amber Call/People/Benjamin Grayson"
+        },
+        {
+          "alias": "Illmari",
+          "heading": null,
+          "target": "Org/Iconoclasm/People/Illmari Vaino"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",

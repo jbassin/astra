@@ -146,6 +146,9 @@ entity "Argyle's" {
     alias "Artie Kyle's"
     source "defs"
 }
+entity "Ashen Pact" kind="deity" page="Divinity/Ashen Pact/index" {
+    source "akasha"
+}
 entity "Atum" {
     alias "Adam"
     source "defs"
@@ -614,6 +617,11 @@ entity "Garrick Textiles" kind="org" page="Org/Garrick Textiles/index" {
     source "defs"
 }
 entity "Gas-n-Go" kind="place" page="Geography/Calaria/Hallia/Widdershins/Gas-n-Go" {
+    source "akasha"
+}
+entity "Gas-n-Go Heart" kind="place" page="Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart" {
+    alias "Gas-n-Go Heart"
+    alias "the iron gauntlet in a glass glove"
     source "akasha"
 }
 entity "Gas-n-Go℠" {
