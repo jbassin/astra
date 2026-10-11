@@ -10,6 +10,27 @@
     {
       "alias": null,
       "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Bestiary/Keeper of Chains",
+      "target": "Sigzil Haight"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Voice of Many",
+      "source": "Bestiary/Keeper of Chains",
+      "target": "Voice of Many"
+    },
+    {
+      "alias": "Hellions",
+      "heading": null,
+      "resolved": "Bestiary/Hellion",
+      "source": "Bestiary/Rancorous Priest",
+      "target": "Hellion"
+    },
+    {
+      "alias": null,
+      "heading": null,
       "resolved": "Geography/Cagley",
       "source": "Bestiary/Terror of Cagley",
       "target": "Cagley"
@@ -27,6 +48,55 @@
       "resolved": "Org/Blackline/index",
       "source": "Bestiary/Ugathal",
       "target": "Org/Blackline/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Voice of Many",
+      "source": "Bestiary/Vitriolite",
+      "target": "Voice of Many"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Bestiary/Voice of Many",
+      "target": "Sigzil Haight"
+    },
+    {
+      "alias": "the Quorum",
+      "heading": null,
+      "resolved": "Geography/The Quorum",
+      "source": "Bestiary/Voice of Many",
+      "target": "Geography/The Quorum"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Bestiary/Voice of Many",
+      "target": "Hearts"
+    },
+    {
+      "alias": "Manuel de la Cruzada",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Manuel de la Cruzada",
+      "source": "Bestiary/Voice of Many",
+      "target": "Org/The Scale/People/Manuel de la Cruzada"
+    },
+    {
+      "alias": "Judge",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Judge of Ages",
+      "source": "Bestiary/Voice of Many",
+      "target": "Judge of Ages"
+    },
+    {
+      "alias": "the Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "Bestiary/Voice of Many",
+      "target": "Org/The Scale/index"
     },
     {
       "alias": "Hallia",
@@ -139,6 +209,27 @@
       "resolved": "Divinity/Fiends/Flintlock Toboggan",
       "source": "Divinity/Fiends/Sigzil Haight",
       "target": "Flintlock Toboggan"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Voice of Many",
+      "source": "Divinity/Fiends/Sigzil Haight",
+      "target": "Voice of Many"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Divinity/Fiends/Sigzil Haight",
+      "target": "Hearts"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Keeper of Chains",
+      "source": "Divinity/Fiends/Sigzil Haight",
+      "target": "Keeper of Chains"
     },
     {
       "alias": "the Quorum",
@@ -1042,6 +1133,34 @@
       "resolved": "Org/index",
       "source": "Geography/Rhædon/index",
       "target": "Org/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Phenomena/Infinite Horizon",
+      "source": "Geography/Sigzil Haight's Demesne",
+      "target": "Infinite Horizon"
+    },
+    {
+      "alias": "Star 221,325",
+      "heading": null,
+      "resolved": "Geography/Star 221,325",
+      "source": "Geography/Sigzil Haight's Demesne",
+      "target": "Geography/Star 221,325"
+    },
+    {
+      "alias": "the Quorum",
+      "heading": null,
+      "resolved": "Geography/The Quorum",
+      "source": "Geography/Sigzil Haight's Demesne",
+      "target": "Geography/The Quorum"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Voice of Many",
+      "source": "Geography/Sigzil Haight's Demesne",
+      "target": "Voice of Many"
     },
     {
       "alias": null,
@@ -2325,6 +2444,27 @@
       "target": "Geography/Star 221,325"
     },
     {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Org/The Scale/People/Cliff Vandertrip",
+      "target": "Sigzil Haight"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Voice of Many",
+      "source": "Org/The Scale/People/Cliff Vandertrip",
+      "target": "Voice of Many"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Fiends/Flintlock Toboggan",
+      "source": "Org/The Scale/People/Cliff Vandertrip",
+      "target": "Flintlock Toboggan"
+    },
+    {
       "alias": "The Scale",
       "heading": null,
       "resolved": "Org/The Scale/index",
@@ -2337,6 +2477,27 @@
       "resolved": "Geography/Star 221,325",
       "source": "Org/The Scale/People/Gregor",
       "target": "Geography/Star 221,325"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Org/The Scale/People/Gregor",
+      "target": "Sigzil Haight"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Keeper of Chains",
+      "source": "Org/The Scale/People/Gregor",
+      "target": "Keeper of Chains"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Voice of Many",
+      "source": "Org/The Scale/People/Gregor",
+      "target": "Voice of Many"
     },
     {
       "alias": "The Scale",
@@ -2374,6 +2535,13 @@
       "target": "Flintlock Toboggan"
     },
     {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Voice of Many",
+      "source": "Org/The Scale/People/Manuel de la Cruzada",
+      "target": "Voice of Many"
+    },
+    {
       "alias": "The Scale",
       "heading": null,
       "resolved": "Org/The Scale/index",
@@ -2402,6 +2570,20 @@
       "target": "Geography/The Quorum"
     },
     {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Org/The Scale/People/Zangron Lee",
+      "target": "Sigzil Haight"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Voice of Many",
+      "source": "Org/The Scale/People/Zangron Lee",
+      "target": "Voice of Many"
+    },
+    {
       "alias": "Judge",
       "heading": null,
       "resolved": "Divinity/Outer Gods/Judge of Ages",
@@ -2421,6 +2603,34 @@
       "resolved": "Divinity/Outer Gods/Judge of Ages",
       "source": "Org/The Scale/index",
       "target": "Judge of Ages"
+    },
+    {
+      "alias": "Farrow Cross",
+      "heading": null,
+      "resolved": "People/Farrow Cross",
+      "source": "Org/The Scale/index",
+      "target": "People/Farrow Cross"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Voice of Many",
+      "source": "Org/The Scale/index",
+      "target": "Voice of Many"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/The Scale/index",
+      "target": "Hearts"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Org/The Scale/index",
+      "target": "Sigzil Haight"
     },
     {
       "alias": "The Undertable",
@@ -2582,6 +2792,20 @@
       "resolved": "Org/Ætherion Limited/index",
       "source": "Org/Ætherion Limited/People/Braxton Hall",
       "target": "Org/Ætherion Limited/index"
+    },
+    {
+      "alias": "the Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "People/Farrow Cross",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "People/Farrow Cross",
+      "target": "Sigzil Haight"
     },
     {
       "alias": "Hallia",
@@ -2759,11 +2983,11 @@
       "target": "Geography/Austrene/index"
     },
     {
-      "alias": null,
+      "alias": "The Scale",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/The Scale/index",
       "source": "Timeline",
-      "target": "The Scale"
+      "target": "Org/The Scale/index"
     },
     {
       "alias": "Raelion",
@@ -2815,11 +3039,11 @@
       "target": "Geography/Fenrith/index"
     },
     {
-      "alias": null,
+      "alias": "Prime Meridian",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/Prime Meridian/index",
       "source": "Timeline",
-      "target": "Prime Meridian"
+      "target": "Org/Prime Meridian/index"
     },
     {
       "alias": "Org",
@@ -2925,6 +3149,48 @@
       "resolved": "Geography/Calaria/Hallia/index",
       "source": "Timeline",
       "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "the Quorum",
+      "heading": null,
+      "resolved": "Geography/The Quorum",
+      "source": "Timeline",
+      "target": "Geography/The Quorum"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Timeline",
+      "target": "Sigzil Haight"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Voice of Many",
+      "source": "Timeline",
+      "target": "Voice of Many"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Timeline",
+      "target": "Hearts"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Keeper of Chains",
+      "source": "Timeline",
+      "target": "Keeper of Chains"
+    },
+    {
+      "alias": "the Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "Timeline",
+      "target": "Org/The Scale/index"
     }
   ],
   "pages": [
@@ -2961,6 +3227,55 @@
         "title": null
       },
       "path": "Bestiary/Hellion"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sigzil Haight"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Voice of Many"
+        }
+      ],
+      "date": "2025-06-23T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-06-23T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Fiend"
+        ],
+        "title": null
+      },
+      "path": "Bestiary/Keeper of Chains"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Hellions",
+          "heading": null,
+          "target": "Hellion"
+        }
+      ],
+      "date": "2025-06-23T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-06-23T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Fiend"
+        ],
+        "title": null
+      },
+      "path": "Bestiary/Rancorous Priest"
     },
     {
       "crossrefs": [
@@ -3009,6 +3324,77 @@
         "title": null
       },
       "path": "Bestiary/Ugathal"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Voice of Many"
+        }
+      ],
+      "date": "2025-06-23T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-06-23T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Fiend"
+        ],
+        "title": null
+      },
+      "path": "Bestiary/Vitriolite"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sigzil Haight"
+        },
+        {
+          "alias": "the Quorum",
+          "heading": null,
+          "target": "Geography/The Quorum"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Hearts"
+        },
+        {
+          "alias": "Manuel de la Cruzada",
+          "heading": null,
+          "target": "Org/The Scale/People/Manuel de la Cruzada"
+        },
+        {
+          "alias": "Judge",
+          "heading": null,
+          "target": "Judge of Ages"
+        },
+        {
+          "alias": "the Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        }
+      ],
+      "date": "2025-06-23T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "the Voice of Many"
+        ],
+        "extra": {
+          "date": "2025-06-23T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Heart"
+        ],
+        "title": null
+      },
+      "path": "Bestiary/Voice of Many"
     },
     {
       "crossrefs": [],
@@ -3222,6 +3608,21 @@
           "alias": null,
           "heading": null,
           "target": "Flintlock Toboggan"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Voice of Many"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Hearts"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Keeper of Chains"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -3261,11 +3662,11 @@
           "target": "Org/The Scale/People/Manuel de la Cruzada"
         }
       ],
-      "date": "2025-06-16T00:00:00-04:00",
+      "date": "2025-06-23T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-06-16T00:00:00-04:00"
+          "date": "2025-06-23T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -4547,6 +4948,41 @@
         {
           "alias": null,
           "heading": null,
+          "target": "Infinite Horizon"
+        },
+        {
+          "alias": "Star 221,325",
+          "heading": null,
+          "target": "Geography/Star 221,325"
+        },
+        {
+          "alias": "the Quorum",
+          "heading": null,
+          "target": "Geography/The Quorum"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Voice of Many"
+        }
+      ],
+      "date": "2025-06-23T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-06-23T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Sigzil Haight's Demesne"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
           "target": "Joker World"
         },
         {
@@ -4605,11 +5041,11 @@
           "target": "Sigzil Haight"
         }
       ],
-      "date": "2025-06-16T00:00:00-04:00",
+      "date": "2025-06-23T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-06-16T00:00:00-04:00"
+          "date": "2025-06-23T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -6722,16 +7158,31 @@
           "alias": "Star 221,325",
           "heading": null,
           "target": "Geography/Star 221,325"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sigzil Haight"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Voice of Many"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Flintlock Toboggan"
         }
       ],
-      "date": "2025-06-16T00:00:00-04:00",
+      "date": "2025-06-23T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Cliff",
-          "Sir Cliff"
+          "Seer Cliff"
         ],
         "extra": {
-          "date": "2025-06-16T00:00:00-04:00"
+          "date": "2025-06-23T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -6752,13 +7203,28 @@
           "alias": "Star 221,325",
           "heading": null,
           "target": "Geography/Star 221,325"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sigzil Haight"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Keeper of Chains"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Voice of Many"
         }
       ],
-      "date": "2025-06-16T00:00:00-04:00",
+      "date": "2025-06-23T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-06-16T00:00:00-04:00"
+          "date": "2025-06-23T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -6811,9 +7277,14 @@
           "alias": null,
           "heading": null,
           "target": "Flintlock Toboggan"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Voice of Many"
         }
       ],
-      "date": "2025-06-16T00:00:00-04:00",
+      "date": "2025-06-23T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Manuel",
@@ -6821,7 +7292,7 @@
           "Reverend Manuel de la Cruzada"
         ],
         "extra": {
-          "date": "2025-06-16T00:00:00-04:00"
+          "date": "2025-06-23T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -6869,15 +7340,25 @@
           "alias": "the Quorum",
           "heading": null,
           "target": "Geography/The Quorum"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sigzil Haight"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Voice of Many"
         }
       ],
-      "date": "2025-06-16T00:00:00-04:00",
+      "date": "2025-06-23T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Zangron"
         ],
         "extra": {
-          "date": "2025-06-16T00:00:00-04:00"
+          "date": "2025-06-23T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -6901,6 +7382,26 @@
           "alias": "Judge",
           "heading": null,
           "target": "Judge of Ages"
+        },
+        {
+          "alias": "Farrow Cross",
+          "heading": null,
+          "target": "People/Farrow Cross"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Voice of Many"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Hearts"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sigzil Haight"
         }
       ],
       "date": "2026-06-06T22:12:21-04:00",
@@ -7279,6 +7780,35 @@
     {
       "crossrefs": [
         {
+          "alias": "the Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sigzil Haight"
+        }
+      ],
+      "date": "2025-06-23T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Farrow Cross"
+        ],
+        "extra": {
+          "date": "2025-06-23T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "People/Farrow Cross"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Hallia",
           "heading": null,
           "target": "Geography/Calaria/Hallia/index"
@@ -7588,9 +8118,9 @@
           "target": "Geography/Austrene/index"
         },
         {
-          "alias": null,
+          "alias": "The Scale",
           "heading": null,
-          "target": "The Scale"
+          "target": "Org/The Scale/index"
         },
         {
           "alias": "Raelion",
@@ -7628,9 +8158,9 @@
           "target": "Geography/Fenrith/index"
         },
         {
-          "alias": null,
+          "alias": "Prime Meridian",
           "heading": null,
-          "target": "Prime Meridian"
+          "target": "Org/Prime Meridian/index"
         },
         {
           "alias": "Org",
@@ -7706,6 +8236,36 @@
           "alias": "Hallia",
           "heading": null,
           "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "the Quorum",
+          "heading": null,
+          "target": "Geography/The Quorum"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sigzil Haight"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Voice of Many"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Hearts"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Keeper of Chains"
+        },
+        {
+          "alias": "the Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -7859,14 +8419,6 @@
     {
       "source": "Org/Ternion Heavy Industries/index",
       "target": "Hildebrandt Corporation"
-    },
-    {
-      "source": "Timeline",
-      "target": "The Scale"
-    },
-    {
-      "source": "Timeline",
-      "target": "Prime Meridian"
     }
   ]
 }

@@ -337,7 +337,7 @@ entity "Cliff" kind="person" being="jorge" {
 }
 entity "Cliff Vandertrip" kind="person" page="Org/The Scale/People/Cliff Vandertrip" {
     alias "Cliff"
-    alias "Sir Cliff"
+    alias "Seer Cliff"
     source "akasha"
 }
 entity "Combo" kind="person" page="Org/Velvet Mark/People/Combo" being="mike" {
@@ -838,6 +838,9 @@ entity "Kadou Floch" kind="person" page="Org/Alkahest Freight/People/Kadou Floch
     alias "Kadou"
     source "akasha"
 }
+entity "Keeper of Chains" kind="creature" page="Bestiary/Keeper of Chains" {
+    source "akasha"
+}
 entity "keystone" {
     alias "Aggie Stone"
     source "defs"
@@ -1182,6 +1185,9 @@ entity "Raelion" kind="place" page="Geography/Raelion/index" {
 entity "Ralph Bishop" kind="person" page="Org/The Scale/People/Ralph Bishop" {
     source "akasha"
 }
+entity "Rancorous Priest" kind="creature" page="Bestiary/Rancorous Priest" {
+    source "akasha"
+}
 entity "Regent" kind="deity" page="Divinity/Ashen Pact/Regent" {
     alias "regent"
     source "akasha"
@@ -1321,6 +1327,9 @@ entity "Sigzil Haight" kind="deity" page="Divinity/Fiends/Sigzil Haight" {
     alias "Sigilhite"
     source "akasha"
     source "defs"
+}
+entity "Sigzil Haight's Demesne" kind="place" page="Geography/Sigzil Haight's Demesne" {
+    source "akasha"
 }
 entity "Silven" {
     alias "Sylvan"
@@ -1601,6 +1610,13 @@ entity "Verdant Holdings" kind="org" page="Org/Verdant Holdings/index" {
 entity "Vilksnake" {
     alias "vilk snake"
     source "defs"
+}
+entity "Vitriolite" kind="creature" page="Bestiary/Vitriolite" {
+    source "akasha"
+}
+entity "Voice of Many" kind="creature" page="Bestiary/Voice of Many" {
+    alias "the Voice of Many"
+    source "akasha"
 }
 entity "Voidsong" kind="phenomenon" page="Phenomena/Harmony/Voidsong" {
     alias "Void Song"
