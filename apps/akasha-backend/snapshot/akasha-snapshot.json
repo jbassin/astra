@@ -120,6 +120,55 @@
       "target": "Geography/Star 221,325"
     },
     {
+      "alias": "Iomenei",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei",
+      "source": "Bestiary/Hivemother",
+      "target": "Geography/Istria/Iomenei"
+    },
+    {
+      "alias": "swarm children",
+      "heading": null,
+      "resolved": "Bestiary/Swarm Child",
+      "source": "Bestiary/Hivemother",
+      "target": "Bestiary/Swarm Child"
+    },
+    {
+      "alias": "Gerhard",
+      "heading": null,
+      "resolved": "People/Gerhard",
+      "source": "Bestiary/Hivemother",
+      "target": "People/Gerhard"
+    },
+    {
+      "alias": "Barlow Crane",
+      "heading": null,
+      "resolved": "People/Barlow Crane",
+      "source": "Bestiary/Hivemother",
+      "target": "People/Barlow Crane"
+    },
+    {
+      "alias": "Grant FireEye",
+      "heading": null,
+      "resolved": "People/Grant FireEye",
+      "source": "Bestiary/Hivemother",
+      "target": "People/Grant FireEye"
+    },
+    {
+      "alias": "Gage",
+      "heading": null,
+      "resolved": "People/Gage",
+      "source": "Bestiary/Hivemother",
+      "target": "People/Gage"
+    },
+    {
+      "alias": "Archie",
+      "heading": null,
+      "resolved": "Org/Velvet Mark/People/Archie",
+      "source": "Bestiary/Hivemother",
+      "target": "Org/Velvet Mark/People/Archie"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Divinity/Fiends/Sigzil Haight",
@@ -202,6 +251,27 @@
       "resolved": "Phenomena/Voice Box",
       "source": "Bestiary/Shade",
       "target": "Phenomena/Voice Box"
+    },
+    {
+      "alias": "Iomenei",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei",
+      "source": "Bestiary/Swarm Child",
+      "target": "Geography/Istria/Iomenei"
+    },
+    {
+      "alias": "Undercroft",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei/Undercroft",
+      "source": "Bestiary/Swarm Child",
+      "target": "Geography/Istria/Iomenei/Undercroft"
+    },
+    {
+      "alias": "Hivemother",
+      "heading": null,
+      "resolved": "Bestiary/Hivemother",
+      "source": "Bestiary/Swarm Child",
+      "target": "Bestiary/Hivemother"
     },
     {
       "alias": null,
@@ -384,6 +454,27 @@
       "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
       "source": "Divinity/Ashen Pact/Herald",
       "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Iomenei",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "Geography/Istria/Iomenei"
+    },
+    {
+      "alias": "Gerhard",
+      "heading": null,
+      "resolved": "People/Gerhard",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "People/Gerhard"
+    },
+    {
+      "alias": "Barlow Crane",
+      "heading": null,
+      "resolved": "People/Barlow Crane",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "People/Barlow Crane"
     },
     {
       "alias": "Gas-n-Go",
@@ -2876,6 +2967,125 @@
       "resolved": "Divinity/Hierophant",
       "source": "Geography/Godhome",
       "target": "Hierophant"
+    },
+    {
+      "alias": "Iomenei",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei",
+      "source": "Geography/Istria/Iomenei/Undercroft",
+      "target": "Geography/Istria/Iomenei"
+    },
+    {
+      "alias": "Varian Khan",
+      "heading": null,
+      "resolved": "People/Varian Khan",
+      "source": "Geography/Istria/Iomenei/Undercroft",
+      "target": "People/Varian Khan"
+    },
+    {
+      "alias": "Infinite Horizon",
+      "heading": null,
+      "resolved": "Phenomena/Infinite Horizon",
+      "source": "Geography/Istria/Iomenei/Undercroft",
+      "target": "Phenomena/Infinite Horizon"
+    },
+    {
+      "alias": "Engine Heart",
+      "heading": null,
+      "resolved": "Phenomena/Engine Heart",
+      "source": "Geography/Istria/Iomenei/Undercroft",
+      "target": "Phenomena/Engine Heart"
+    },
+    {
+      "alias": "Engine Heart",
+      "heading": null,
+      "resolved": "Phenomena/Engine Heart",
+      "source": "Geography/Istria/Iomenei/Undercroft",
+      "target": "Phenomena/Engine Heart"
+    },
+    {
+      "alias": "swarm children",
+      "heading": null,
+      "resolved": "Bestiary/Swarm Child",
+      "source": "Geography/Istria/Iomenei/Undercroft",
+      "target": "Bestiary/Swarm Child"
+    },
+    {
+      "alias": "Hivemother",
+      "heading": null,
+      "resolved": "Bestiary/Hivemother",
+      "source": "Geography/Istria/Iomenei/Undercroft",
+      "target": "Bestiary/Hivemother"
+    },
+    {
+      "alias": "Gerhard",
+      "heading": null,
+      "resolved": "People/Gerhard",
+      "source": "Geography/Istria/Iomenei/Undercroft",
+      "target": "People/Gerhard"
+    },
+    {
+      "alias": "Istria",
+      "heading": null,
+      "resolved": "Geography/Istria/index",
+      "source": "Geography/Istria/Iomenei",
+      "target": "Geography/Istria/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Færrin",
+      "source": "Geography/Istria/Iomenei",
+      "target": "Færrin"
+    },
+    {
+      "alias": "Infinite Horizon",
+      "heading": null,
+      "resolved": "Phenomena/Infinite Horizon",
+      "source": "Geography/Istria/Iomenei",
+      "target": "Phenomena/Infinite Horizon"
+    },
+    {
+      "alias": "Undercroft",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei/Undercroft",
+      "source": "Geography/Istria/Iomenei",
+      "target": "Geography/Istria/Iomenei/Undercroft"
+    },
+    {
+      "alias": "Pulse",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Eternal Pulse",
+      "source": "Geography/Istria/Iomenei",
+      "target": "Divinity/Outer Gods/Eternal Pulse"
+    },
+    {
+      "alias": "Stillness",
+      "heading": null,
+      "resolved": "Phenomena/Stillness",
+      "source": "Geography/Istria/Iomenei",
+      "target": "Phenomena/Stillness"
+    },
+    {
+      "alias": "Barlow Crane",
+      "heading": null,
+      "resolved": "People/Barlow Crane",
+      "source": "Geography/Istria/Iomenei",
+      "target": "People/Barlow Crane"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Geography/Istria/Iomenei",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Gerhard",
+      "heading": null,
+      "resolved": "People/Gerhard",
+      "source": "Geography/Istria/Iomenei",
+      "target": "People/Gerhard"
     },
     {
       "alias": null,
@@ -5685,6 +5895,41 @@
       "target": "Org/Velvet Mark/index"
     },
     {
+      "alias": "Iomenei",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei",
+      "source": "Org/Velvet Mark/People/Archie",
+      "target": "Geography/Istria/Iomenei"
+    },
+    {
+      "alias": "Barlow Crane",
+      "heading": null,
+      "resolved": "People/Barlow Crane",
+      "source": "Org/Velvet Mark/People/Archie",
+      "target": "People/Barlow Crane"
+    },
+    {
+      "alias": "Grant FireEye",
+      "heading": null,
+      "resolved": "People/Grant FireEye",
+      "source": "Org/Velvet Mark/People/Archie",
+      "target": "People/Grant FireEye"
+    },
+    {
+      "alias": "Gage",
+      "heading": null,
+      "resolved": "People/Gage",
+      "source": "Org/Velvet Mark/People/Archie",
+      "target": "People/Gage"
+    },
+    {
+      "alias": "Hivemother",
+      "heading": null,
+      "resolved": "Bestiary/Hivemother",
+      "source": "Org/Velvet Mark/People/Archie",
+      "target": "Bestiary/Hivemother"
+    },
+    {
       "alias": "Velvet Mark",
       "heading": null,
       "resolved": "Org/Velvet Mark/index",
@@ -6112,6 +6357,34 @@
       "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
     },
     {
+      "alias": "Undercroft",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei/Undercroft",
+      "source": "People/Barlow Crane",
+      "target": "Geography/Istria/Iomenei/Undercroft"
+    },
+    {
+      "alias": "Iomenei",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei",
+      "source": "People/Barlow Crane",
+      "target": "Geography/Istria/Iomenei"
+    },
+    {
+      "alias": "Gerhard",
+      "heading": null,
+      "resolved": "People/Gerhard",
+      "source": "People/Barlow Crane",
+      "target": "People/Gerhard"
+    },
+    {
+      "alias": "Hivemother",
+      "heading": null,
+      "resolved": "Bestiary/Hivemother",
+      "source": "People/Barlow Crane",
+      "target": "Bestiary/Hivemother"
+    },
+    {
       "alias": "Iconoclasm",
       "heading": null,
       "resolved": "Org/Iconoclasm/index",
@@ -6383,6 +6656,118 @@
       "resolved": "Org/Iridescent Church/index",
       "source": "People/Forster Cain",
       "target": "Org/Iridescent Church/index"
+    },
+    {
+      "alias": "Undercroft",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei/Undercroft",
+      "source": "People/Gage",
+      "target": "Geography/Istria/Iomenei/Undercroft"
+    },
+    {
+      "alias": "Iomenei",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei",
+      "source": "People/Gage",
+      "target": "Geography/Istria/Iomenei"
+    },
+    {
+      "alias": "Gerhard",
+      "heading": null,
+      "resolved": "People/Gerhard",
+      "source": "People/Gage",
+      "target": "People/Gerhard"
+    },
+    {
+      "alias": "Barlow",
+      "heading": null,
+      "resolved": "People/Barlow Crane",
+      "source": "People/Gage",
+      "target": "People/Barlow Crane"
+    },
+    {
+      "alias": "Grant",
+      "heading": null,
+      "resolved": "People/Grant FireEye",
+      "source": "People/Gage",
+      "target": "People/Grant FireEye"
+    },
+    {
+      "alias": "Varian Khan",
+      "heading": null,
+      "resolved": "People/Varian Khan",
+      "source": "People/Gage",
+      "target": "People/Varian Khan"
+    },
+    {
+      "alias": "Undercroft",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei/Undercroft",
+      "source": "People/Gerhard",
+      "target": "Geography/Istria/Iomenei/Undercroft"
+    },
+    {
+      "alias": "Iomenei",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei",
+      "source": "People/Gerhard",
+      "target": "Geography/Istria/Iomenei"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "People/Gerhard",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Undercroft",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei/Undercroft",
+      "source": "People/Grant FireEye",
+      "target": "Geography/Istria/Iomenei/Undercroft"
+    },
+    {
+      "alias": "Iomenei",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei",
+      "source": "People/Grant FireEye",
+      "target": "Geography/Istria/Iomenei"
+    },
+    {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "People/Grant FireEye",
+      "target": "People/Argyle"
+    },
+    {
+      "alias": "Judge",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Judge of Ages",
+      "source": "People/Grant FireEye",
+      "target": "Divinity/Outer Gods/Judge of Ages"
+    },
+    {
+      "alias": "Gerhard",
+      "heading": null,
+      "resolved": "People/Gerhard",
+      "source": "People/Grant FireEye",
+      "target": "People/Gerhard"
+    },
+    {
+      "alias": "Barlow",
+      "heading": null,
+      "resolved": "People/Barlow Crane",
+      "source": "People/Grant FireEye",
+      "target": "People/Barlow Crane"
+    },
+    {
+      "alias": "Gage",
+      "heading": null,
+      "resolved": "People/Gage",
+      "source": "People/Grant FireEye",
+      "target": "People/Gage"
     },
     {
       "alias": "Hallia",
@@ -7239,6 +7624,27 @@
       "target": "Geography/Calaria/Hallia/Masque District/Belvedere Library"
     },
     {
+      "alias": "Undercroft",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei/Undercroft",
+      "source": "People/Varian Khan",
+      "target": "Geography/Istria/Iomenei/Undercroft"
+    },
+    {
+      "alias": "Iomenei",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei",
+      "source": "People/Varian Khan",
+      "target": "Geography/Istria/Iomenei"
+    },
+    {
+      "alias": "Gerhard",
+      "heading": null,
+      "resolved": "People/Gerhard",
+      "source": "People/Varian Khan",
+      "target": "People/Gerhard"
+    },
+    {
       "alias": "Calaria",
       "heading": null,
       "resolved": "Geography/Calaria/index",
@@ -7293,6 +7699,27 @@
       "resolved": "Org/The Sears/index",
       "source": "Phenomena/Augury",
       "target": "Org/The Sears/index"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Phenomena/Engine Heart",
+      "target": "Hearts"
+    },
+    {
+      "alias": "Istria",
+      "heading": null,
+      "resolved": "Geography/Istria/index",
+      "source": "Phenomena/Engine Heart",
+      "target": "Geography/Istria/index"
+    },
+    {
+      "alias": "Iomenei",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei",
+      "source": "Phenomena/Engine Heart",
+      "target": "Geography/Istria/Iomenei"
     },
     {
       "alias": null,
@@ -8098,6 +8525,34 @@
       "resolved": "Org/Pyrelight/index",
       "source": "Timeline",
       "target": "Org/Pyrelight/index"
+    },
+    {
+      "alias": "Iconoclasm",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/index",
+      "source": "Timeline",
+      "target": "Org/Iconoclasm/index"
+    },
+    {
+      "alias": "Iomenei",
+      "heading": null,
+      "resolved": "Geography/Istria/Iomenei",
+      "source": "Timeline",
+      "target": "Geography/Istria/Iomenei"
+    },
+    {
+      "alias": "Gerhard",
+      "heading": null,
+      "resolved": "People/Gerhard",
+      "source": "Timeline",
+      "target": "People/Gerhard"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Timeline",
+      "target": "Divinity/Ashen Pact/Herald"
     },
     {
       "alias": "Iconoclasm",
@@ -10931,6 +11386,58 @@
     {
       "crossrefs": [
         {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei"
+        },
+        {
+          "alias": "swarm children",
+          "heading": null,
+          "target": "Bestiary/Swarm Child"
+        },
+        {
+          "alias": "Gerhard",
+          "heading": null,
+          "target": "People/Gerhard"
+        },
+        {
+          "alias": "Barlow Crane",
+          "heading": null,
+          "target": "People/Barlow Crane"
+        },
+        {
+          "alias": "Grant FireEye",
+          "heading": null,
+          "target": "People/Grant FireEye"
+        },
+        {
+          "alias": "Gage",
+          "heading": null,
+          "target": "People/Gage"
+        },
+        {
+          "alias": "Archie",
+          "heading": null,
+          "target": "Org/Velvet Mark/People/Archie"
+        }
+      ],
+      "date": "2026-02-10T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "hivemother"
+        ],
+        "extra": {
+          "date": "2026-02-10T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Hivemother"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": null,
           "heading": null,
           "target": "Sigzil Haight"
@@ -11069,6 +11576,38 @@
         "title": null
       },
       "path": "Bestiary/Shade"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei"
+        },
+        {
+          "alias": "Undercroft",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei/Undercroft"
+        },
+        {
+          "alias": "Hivemother",
+          "heading": null,
+          "target": "Bestiary/Hivemother"
+        }
+      ],
+      "date": "2026-02-10T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "swarm children"
+        ],
+        "extra": {
+          "date": "2026-02-10T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Swarm Child"
     },
     {
       "crossrefs": [
@@ -11368,6 +11907,21 @@
           "alias": "Gas-n-Go",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        },
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei"
+        },
+        {
+          "alias": "Gerhard",
+          "heading": null,
+          "target": "People/Gerhard"
+        },
+        {
+          "alias": "Barlow Crane",
+          "heading": null,
+          "target": "People/Barlow Crane"
         }
       ],
       "date": "2026-07-29T23:41:12-04:00",
@@ -14327,6 +14881,121 @@
         "title": null
       },
       "path": "Geography/Godhome"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei"
+        },
+        {
+          "alias": "Varian Khan",
+          "heading": null,
+          "target": "People/Varian Khan"
+        },
+        {
+          "alias": "Infinite Horizon",
+          "heading": null,
+          "target": "Phenomena/Infinite Horizon"
+        },
+        {
+          "alias": "Engine Heart",
+          "heading": null,
+          "target": "Phenomena/Engine Heart"
+        },
+        {
+          "alias": "Engine Heart",
+          "heading": null,
+          "target": "Phenomena/Engine Heart"
+        },
+        {
+          "alias": "swarm children",
+          "heading": null,
+          "target": "Bestiary/Swarm Child"
+        },
+        {
+          "alias": "Hivemother",
+          "heading": null,
+          "target": "Bestiary/Hivemother"
+        },
+        {
+          "alias": "Gerhard",
+          "heading": null,
+          "target": "People/Gerhard"
+        }
+      ],
+      "date": "2026-02-10T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-02-10T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Istria/Iomenei/Undercroft"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Istria",
+          "heading": null,
+          "target": "Geography/Istria/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Færrin"
+        },
+        {
+          "alias": "Infinite Horizon",
+          "heading": null,
+          "target": "Phenomena/Infinite Horizon"
+        },
+        {
+          "alias": "Undercroft",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei/Undercroft"
+        },
+        {
+          "alias": "Pulse",
+          "heading": null,
+          "target": "Divinity/Outer Gods/Eternal Pulse"
+        },
+        {
+          "alias": "Stillness",
+          "heading": null,
+          "target": "Phenomena/Stillness"
+        },
+        {
+          "alias": "Barlow Crane",
+          "heading": null,
+          "target": "People/Barlow Crane"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Gerhard",
+          "heading": null,
+          "target": "People/Gerhard"
+        }
+      ],
+      "date": "2026-02-10T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-02-10T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Istria/Iomenei"
     },
     {
       "crossrefs": [
@@ -18316,13 +18985,38 @@
           "alias": "Velvet Mark",
           "heading": null,
           "target": "Org/Velvet Mark/index"
+        },
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei"
+        },
+        {
+          "alias": "Barlow Crane",
+          "heading": null,
+          "target": "People/Barlow Crane"
+        },
+        {
+          "alias": "Grant FireEye",
+          "heading": null,
+          "target": "People/Grant FireEye"
+        },
+        {
+          "alias": "Gage",
+          "heading": null,
+          "target": "People/Gage"
+        },
+        {
+          "alias": "Hivemother",
+          "heading": null,
+          "target": "Bestiary/Hivemother"
         }
       ],
-      "date": "2025-05-21T00:00:00-04:00",
+      "date": "2026-02-10T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-05-21T00:00:00-04:00"
+          "date": "2026-02-10T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -18896,6 +19590,43 @@
     {
       "crossrefs": [
         {
+          "alias": "Undercroft",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei/Undercroft"
+        },
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei"
+        },
+        {
+          "alias": "Gerhard",
+          "heading": null,
+          "target": "People/Gerhard"
+        },
+        {
+          "alias": "Hivemother",
+          "heading": null,
+          "target": "Bestiary/Hivemother"
+        }
+      ],
+      "date": "2026-02-10T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-02-10T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Elf"
+        ],
+        "title": null
+      },
+      "path": "People/Barlow Crane"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Iconoclasm",
           "heading": null,
           "target": "Org/Iconoclasm/index"
@@ -19202,6 +19933,137 @@
         "title": null
       },
       "path": "People/Forster Cain"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Undercroft",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei/Undercroft"
+        },
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei"
+        },
+        {
+          "alias": "Gerhard",
+          "heading": null,
+          "target": "People/Gerhard"
+        },
+        {
+          "alias": "Barlow",
+          "heading": null,
+          "target": "People/Barlow Crane"
+        },
+        {
+          "alias": "Grant",
+          "heading": null,
+          "target": "People/Grant FireEye"
+        },
+        {
+          "alias": "Varian Khan",
+          "heading": null,
+          "target": "People/Varian Khan"
+        }
+      ],
+      "date": "2026-02-10T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-02-10T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "People/Gage"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Undercroft",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei/Undercroft"
+        },
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        }
+      ],
+      "date": "2026-02-10T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-02-10T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Elf"
+        ],
+        "title": null
+      },
+      "path": "People/Gerhard"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Undercroft",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei/Undercroft"
+        },
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
+        },
+        {
+          "alias": "Judge",
+          "heading": null,
+          "target": "Divinity/Outer Gods/Judge of Ages"
+        },
+        {
+          "alias": "Gerhard",
+          "heading": null,
+          "target": "People/Gerhard"
+        },
+        {
+          "alias": "Barlow",
+          "heading": null,
+          "target": "People/Barlow Crane"
+        },
+        {
+          "alias": "Gage",
+          "heading": null,
+          "target": "People/Gage"
+        }
+      ],
+      "date": "2026-02-10T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-02-10T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Dwarf"
+        ],
+        "title": null
+      },
+      "path": "People/Grant FireEye"
     },
     {
       "crossrefs": [
@@ -20041,6 +20903,36 @@
     {
       "crossrefs": [
         {
+          "alias": "Undercroft",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei/Undercroft"
+        },
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei"
+        },
+        {
+          "alias": "Gerhard",
+          "heading": null,
+          "target": "People/Gerhard"
+        }
+      ],
+      "date": "2026-02-10T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-02-10T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "People/Varian Khan"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Calaria",
           "heading": null,
           "target": "Geography/Calaria/index"
@@ -20094,6 +20986,39 @@
         "title": null
       },
       "path": "Phenomena/Augury"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Hearts"
+        },
+        {
+          "alias": "Istria",
+          "heading": null,
+          "target": "Geography/Istria/index"
+        },
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei"
+        }
+      ],
+      "date": "2026-02-10T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "engine hearts",
+          "Engine Hearts"
+        ],
+        "extra": {
+          "date": "2026-02-10T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Phenomena/Engine Heart"
     },
     {
       "crossrefs": [
@@ -20995,6 +21920,26 @@
           "alias": "Pyrelight",
           "heading": null,
           "target": "Org/Pyrelight/index"
+        },
+        {
+          "alias": "Iconoclasm",
+          "heading": null,
+          "target": "Org/Iconoclasm/index"
+        },
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei"
+        },
+        {
+          "alias": "Gerhard",
+          "heading": null,
+          "target": "People/Gerhard"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
         },
         {
           "alias": "Iconoclasm",

@@ -502,6 +502,11 @@ entity "Embercall's" {
     alias "Ember\\s*Calls"
     source "defs"
 }
+entity "Engine Heart" kind="phenomenon" page="Phenomena/Engine Heart" {
+    alias "engine hearts"
+    alias "Engine Hearts"
+    source "akasha"
+}
 entity "Esoterica" kind="deity" page="Divinity/Ashen Pact/Esoterica" {
     alias "esoterica"
     source "akasha"
@@ -784,6 +789,10 @@ entity "Hildebrandt" {
 entity "Hildebrandt Corporation" kind="org" page="Org/Hildebrandt Corporation/index" {
     source "akasha"
 }
+entity "Hivemother" kind="creature" page="Bestiary/Hivemother" {
+    alias "hivemother"
+    source "akasha"
+}
 entity "Hlarf" kind="person" page="Org/Roundhat Gang/People/Hlarf" {
     alias "Flarf"
     alias "Hoth"
@@ -886,10 +895,11 @@ entity "Insuperlex" kind="deity" page="Divinity/The Narrative/Insuperlex" {
     source "akasha"
     source "defs"
 }
-entity "Iomenei" {
+entity "Iomenei" kind="place" page="Geography/Istria/Iomenei" {
     alias "Iomene"
     alias "Iominae"
     alias "Iomine"
+    source "akasha"
     source "defs"
 }
 entity "Iridescent Church" kind="org" page="Org/Iridescent Church/index" {
@@ -1622,6 +1632,10 @@ entity "Sundom" {
     alias "Sundome"
     source "defs"
 }
+entity "Swarm Child" kind="creature" page="Bestiary/Swarm Child" {
+    alias "swarm children"
+    source "akasha"
+}
 entity "Syrin" kind="person" page="Org/Amber Call/People/Syrin" {
     alias "Syrin"
     alias "Siren"
@@ -1802,6 +1816,9 @@ entity "Ugathal" kind="creature" page="Bestiary/Ugathal" {
     alias "Ukathals"
     source "akasha"
     source "defs"
+}
+entity "Undercroft" kind="place" page="Geography/Istria/Iomenei/Undercroft" {
+    source "akasha"
 }
 entity "Vaino" {
     alias "Vino"
