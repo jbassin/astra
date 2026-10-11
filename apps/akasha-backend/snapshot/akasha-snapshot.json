@@ -813,6 +813,13 @@
       "target": "Divinity/Fiends/The Harlequin"
     },
     {
+      "alias": "the Eye",
+      "heading": null,
+      "resolved": "Divinity/The Eye",
+      "source": "Divinity/Fiends/Sigzil Haight",
+      "target": "Divinity/The Eye"
+    },
+    {
       "alias": "the Shackle",
       "heading": null,
       "resolved": "Divinity/Fiends/Sigzil Haight",
@@ -841,6 +848,13 @@
       "target": "Org/The Harlequins/People/The Master of Ceremonies"
     },
     {
+      "alias": "the Eye",
+      "heading": null,
+      "resolved": "Divinity/The Eye",
+      "source": "Divinity/Fiends/The Harlequin",
+      "target": "Divinity/The Eye"
+    },
+    {
       "alias": "the Shackle",
       "heading": null,
       "resolved": "Divinity/Fiends/Sigzil Haight",
@@ -855,6 +869,13 @@
       "target": "Divinity/Fiends/The Harlequin"
     },
     {
+      "alias": "the Eye",
+      "heading": null,
+      "resolved": "Divinity/The Eye",
+      "source": "Divinity/Fiends/The Hooded",
+      "target": "Divinity/The Eye"
+    },
+    {
       "alias": "the Shackle",
       "heading": null,
       "resolved": "Divinity/Fiends/Sigzil Haight",
@@ -867,6 +888,13 @@
       "resolved": "Divinity/Fiends/The Harlequin",
       "source": "Divinity/Fiends/The Loam",
       "target": "Divinity/Fiends/The Harlequin"
+    },
+    {
+      "alias": "the Eye",
+      "heading": null,
+      "resolved": "Divinity/The Eye",
+      "source": "Divinity/Fiends/The Loam",
+      "target": "Divinity/The Eye"
     },
     {
       "alias": "Watcher",
@@ -1119,6 +1147,55 @@
       "resolved": "Divinity/Celestial Prescence",
       "source": "Divinity/Outer Gods/Watcher With 1,000 Eyes",
       "target": "Celestial Prescence"
+    },
+    {
+      "alias": "the Shackle",
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Divinity/The Eye",
+      "target": "Divinity/Fiends/Sigzil Haight"
+    },
+    {
+      "alias": "the Harlequin",
+      "heading": null,
+      "resolved": "Divinity/Fiends/The Harlequin",
+      "source": "Divinity/The Eye",
+      "target": "Divinity/Fiends/The Harlequin"
+    },
+    {
+      "alias": "the Hooded",
+      "heading": null,
+      "resolved": "Divinity/Fiends/The Hooded",
+      "source": "Divinity/The Eye",
+      "target": "Divinity/Fiends/The Hooded"
+    },
+    {
+      "alias": "the Loam",
+      "heading": null,
+      "resolved": "Divinity/Fiends/The Loam",
+      "source": "Divinity/The Eye",
+      "target": "Divinity/Fiends/The Loam"
+    },
+    {
+      "alias": "library",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Harlequin Town",
+      "source": "Divinity/The Eye",
+      "target": "Org/The Harlequins/Harlequin Town"
+    },
+    {
+      "alias": "Ocelith",
+      "heading": null,
+      "resolved": "Org/The Harlequins/People/Ocelith",
+      "source": "Divinity/The Eye",
+      "target": "Org/The Harlequins/People/Ocelith"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Divinity/The Eye",
+      "target": "Phenomena/Harmony/Voidsong"
     },
     {
       "alias": null,
@@ -3928,6 +4005,20 @@
       "target": "Phenomena/Harmony/Voidsong"
     },
     {
+      "alias": "Eerie",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/Eerie",
+      "source": "Org/Alkahest Freight/index",
+      "target": "Org/Iconoclasm/Eerie"
+    },
+    {
+      "alias": "Protectorate",
+      "heading": null,
+      "resolved": "Org/Protectorate/index",
+      "source": "Org/Alkahest Freight/index",
+      "target": "Org/Protectorate/index"
+    },
+    {
       "alias": "Providence",
       "heading": null,
       "resolved": "Org/The Harlequins/Providence",
@@ -3996,6 +4087,27 @@
       "resolved": "Org/Hildebrandt Corporation/index",
       "source": "Org/Alliance",
       "target": "Org/Hildebrandt Corporation/index"
+    },
+    {
+      "alias": "Alkahest Freight",
+      "heading": null,
+      "resolved": "Org/Alkahest Freight/index",
+      "source": "Org/Alliance",
+      "target": "Org/Alkahest Freight/index"
+    },
+    {
+      "alias": "Solari Sub-surface",
+      "heading": null,
+      "resolved": "Org/Solari Sub-surface/index",
+      "source": "Org/Alliance",
+      "target": "Org/Solari Sub-surface/index"
+    },
+    {
+      "alias": "Protectorate",
+      "heading": null,
+      "resolved": "Org/Protectorate/index",
+      "source": "Org/Alliance",
+      "target": "Org/Protectorate/index"
     },
     {
       "alias": "Pulse",
@@ -5263,6 +5375,27 @@
       "resolved": "Org/Iconoclasm/People/Anaïs Marchal",
       "source": "Org/Iconoclasm/Eerie",
       "target": "Org/Iconoclasm/People/Anaïs Marchal"
+    },
+    {
+      "alias": "Marchal",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/People/Anaïs Marchal",
+      "source": "Org/Iconoclasm/Eerie",
+      "target": "Org/Iconoclasm/People/Anaïs Marchal"
+    },
+    {
+      "alias": "Alkahest Freight",
+      "heading": null,
+      "resolved": "Org/Alkahest Freight/index",
+      "source": "Org/Iconoclasm/Eerie",
+      "target": "Org/Alkahest Freight/index"
+    },
+    {
+      "alias": "Solari Sub-surface",
+      "heading": null,
+      "resolved": "Org/Solari Sub-surface/index",
+      "source": "Org/Iconoclasm/Eerie",
+      "target": "Org/Solari Sub-surface/index"
     },
     {
       "alias": "Anouk",
@@ -7358,6 +7491,13 @@
       "target": "Phenomena/Pilgrimage"
     },
     {
+      "alias": "Eerie",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/Eerie",
+      "source": "Org/Solari Sub-surface/index",
+      "target": "Org/Iconoclasm/Eerie"
+    },
+    {
       "alias": "Protectorate",
       "heading": null,
       "resolved": "Org/Protectorate/index",
@@ -7400,6 +7540,48 @@
       "target": "Hildebrandt Corporation"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Harlequin Town",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Ocelith",
+      "heading": null,
+      "resolved": "Org/The Harlequins/People/Ocelith",
+      "source": "Org/The Harlequins/Harlequin Town",
+      "target": "Org/The Harlequins/People/Ocelith"
+    },
+    {
+      "alias": "zabubs",
+      "heading": null,
+      "resolved": "Bestiary/Vermin",
+      "source": "Org/The Harlequins/Harlequin Town",
+      "target": "Bestiary/Vermin"
+    },
+    {
+      "alias": "Harlequins",
+      "heading": null,
+      "resolved": "Org/The Harlequins/index",
+      "source": "Org/The Harlequins/Harlequin Town",
+      "target": "Org/The Harlequins/index"
+    },
+    {
+      "alias": "Heart's",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/The Harlequins/Harlequin Town",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Orts",
+      "heading": null,
+      "resolved": "Bestiary/Fiends",
+      "source": "Org/The Harlequins/Harlequin Town",
+      "target": "Bestiary/Fiends"
+    },
+    {
       "alias": "Harlequin",
       "heading": null,
       "resolved": "Org/The Harlequins/index",
@@ -7426,6 +7608,34 @@
       "resolved": "Phenomena/Keystone",
       "source": "Org/The Harlequins/People/Chuck",
       "target": "Phenomena/Keystone"
+    },
+    {
+      "alias": "Ocelith",
+      "heading": null,
+      "resolved": "Org/The Harlequins/People/Ocelith",
+      "source": "Org/The Harlequins/People/Chuck",
+      "target": "Org/The Harlequins/People/Ocelith"
+    },
+    {
+      "alias": "Johnny",
+      "heading": null,
+      "resolved": "People/Johnny",
+      "source": "Org/The Harlequins/People/Chuck",
+      "target": "People/Johnny"
+    },
+    {
+      "alias": "Harlequin Town",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Harlequin Town",
+      "source": "Org/The Harlequins/People/Ocelith",
+      "target": "Org/The Harlequins/Harlequin Town"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/People/Ocelith",
+      "target": "Org/The Harlequins/Providence"
     },
     {
       "alias": "The Harlequins",
@@ -7545,6 +7755,20 @@
       "resolved": "Org/The Harlequins/People/Chuck",
       "source": "Org/The Harlequins/index",
       "target": "Org/The Harlequins/People/Chuck"
+    },
+    {
+      "alias": "library and clock tower",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Harlequin Town",
+      "source": "Org/The Harlequins/index",
+      "target": "Org/The Harlequins/Harlequin Town"
+    },
+    {
+      "alias": "Ocelith",
+      "heading": null,
+      "resolved": "Org/The Harlequins/People/Ocelith",
+      "source": "Org/The Harlequins/index",
+      "target": "Org/The Harlequins/People/Ocelith"
     },
     {
       "alias": "Heart",
@@ -8252,6 +8476,48 @@
       "resolved": "Geography/Calaria/Ragged Roost",
       "source": "Org/Verdant Holdings/People/Cross Trevils",
       "target": "Geography/Calaria/Ragged Roost"
+    },
+    {
+      "alias": "Hlarf",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Hlarf",
+      "source": "Org/Verdant Holdings/People/Dr. Thrain",
+      "target": "Org/Roundhat Gang/People/Hlarf"
+    },
+    {
+      "alias": "Verdant Holdings",
+      "heading": null,
+      "resolved": "Org/Verdant Holdings/index",
+      "source": "Org/Verdant Holdings/People/Dr. Thrain",
+      "target": "Org/Verdant Holdings/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Verdant Holdings/People/Dr. Thrain",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Hildebrandt Corporation",
+      "heading": null,
+      "resolved": "Org/Hildebrandt Corporation/index",
+      "source": "Org/Verdant Holdings/People/Dr. Thrain",
+      "target": "Org/Hildebrandt Corporation/index"
+    },
+    {
+      "alias": "Dr. Thrain",
+      "heading": null,
+      "resolved": "Org/Verdant Holdings/People/Dr. Thrain",
+      "source": "Org/Verdant Holdings/index",
+      "target": "Org/Verdant Holdings/People/Dr. Thrain"
+    },
+    {
+      "alias": "Hildebrandt Corporation",
+      "heading": null,
+      "resolved": "Org/Hildebrandt Corporation/index",
+      "source": "Org/Verdant Holdings/index",
+      "target": "Org/Hildebrandt Corporation/index"
     },
     {
       "alias": "Hildebrandt Corporation",
@@ -11820,7 +12086,7 @@
           "target": "People/Gerhard"
         }
       ],
-      "date": "2026-02-24T00:00:00-04:00",
+      "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Deadly Mantis",
@@ -11829,7 +12095,7 @@
           "The Hivemother"
         ],
         "extra": {
-          "date": "2026-02-24T00:00:00-04:00"
+          "date": "2026-06-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -12360,15 +12626,20 @@
           "alias": "the Harlequin",
           "heading": null,
           "target": "Divinity/Fiends/The Harlequin"
+        },
+        {
+          "alias": "the Eye",
+          "heading": null,
+          "target": "Divinity/The Eye"
         }
       ],
-      "date": "2026-06-05T16:40:21-04:00",
+      "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Shackled Prince"
         ],
         "extra": {
-          "date": "2026-06-05T16:40:21-04:00"
+          "date": "2026-06-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -12397,13 +12668,18 @@
           "alias": "Master of Ceremonies",
           "heading": null,
           "target": "Org/The Harlequins/People/The Master of Ceremonies"
+        },
+        {
+          "alias": "the Eye",
+          "heading": null,
+          "target": "Divinity/The Eye"
         }
       ],
-      "date": "2026-05-21T00:00:00-04:00",
+      "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-21T00:00:00-04:00"
+          "date": "2026-06-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -12424,13 +12700,18 @@
           "alias": "the Harlequin",
           "heading": null,
           "target": "Divinity/Fiends/The Harlequin"
+        },
+        {
+          "alias": "the Eye",
+          "heading": null,
+          "target": "Divinity/The Eye"
         }
       ],
-      "date": "2026-05-21T00:00:00-04:00",
+      "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-21T00:00:00-04:00"
+          "date": "2026-06-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -12451,13 +12732,18 @@
           "alias": "the Harlequin",
           "heading": null,
           "target": "Divinity/Fiends/The Harlequin"
+        },
+        {
+          "alias": "the Eye",
+          "heading": null,
+          "target": "Divinity/The Eye"
         }
       ],
-      "date": "2026-05-21T00:00:00-04:00",
+      "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-21T00:00:00-04:00"
+          "date": "2026-06-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -12791,6 +13077,56 @@
         "title": null
       },
       "path": "Divinity/Outer Gods/Watcher With 1,000 Eyes"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "the Shackle",
+          "heading": null,
+          "target": "Divinity/Fiends/Sigzil Haight"
+        },
+        {
+          "alias": "the Harlequin",
+          "heading": null,
+          "target": "Divinity/Fiends/The Harlequin"
+        },
+        {
+          "alias": "the Hooded",
+          "heading": null,
+          "target": "Divinity/Fiends/The Hooded"
+        },
+        {
+          "alias": "the Loam",
+          "heading": null,
+          "target": "Divinity/Fiends/The Loam"
+        },
+        {
+          "alias": "library",
+          "heading": null,
+          "target": "Org/The Harlequins/Harlequin Town"
+        },
+        {
+          "alias": "Ocelith",
+          "heading": null,
+          "target": "Org/The Harlequins/People/Ocelith"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        }
+      ],
+      "date": "2026-06-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-06-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Divinity/The Eye"
     },
     {
       "crossrefs": [
@@ -15952,13 +16288,23 @@
           "alias": "Voidsong",
           "heading": null,
           "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "Eerie",
+          "heading": null,
+          "target": "Org/Iconoclasm/Eerie"
+        },
+        {
+          "alias": "Protectorate",
+          "heading": null,
+          "target": "Org/Protectorate/index"
         }
       ],
-      "date": "2026-06-08T00:00:00-04:00",
+      "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-08T00:00:00-04:00"
+          "date": "2026-06-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -16019,13 +16365,28 @@
           "alias": "Hildebrandt Corporation",
           "heading": null,
           "target": "Org/Hildebrandt Corporation/index"
+        },
+        {
+          "alias": "Alkahest Freight",
+          "heading": null,
+          "target": "Org/Alkahest Freight/index"
+        },
+        {
+          "alias": "Solari Sub-surface",
+          "heading": null,
+          "target": "Org/Solari Sub-surface/index"
+        },
+        {
+          "alias": "Protectorate",
+          "heading": null,
+          "target": "Org/Protectorate/index"
         }
       ],
-      "date": "2026-06-08T00:00:00-04:00",
+      "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-08T00:00:00-04:00"
+          "date": "2026-06-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -17591,16 +17952,31 @@
           "alias": "Marchal",
           "heading": null,
           "target": "Org/Iconoclasm/People/Anaïs Marchal"
+        },
+        {
+          "alias": "Marchal",
+          "heading": null,
+          "target": "Org/Iconoclasm/People/Anaïs Marchal"
+        },
+        {
+          "alias": "Alkahest Freight",
+          "heading": null,
+          "target": "Org/Alkahest Freight/index"
+        },
+        {
+          "alias": "Solari Sub-surface",
+          "heading": null,
+          "target": "Org/Solari Sub-surface/index"
         }
       ],
-      "date": "2026-06-08T00:00:00-04:00",
+      "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "the Ear that Hears the Truth",
           "Ear that Hears the Truth"
         ],
         "extra": {
-          "date": "2026-06-08T00:00:00-04:00"
+          "date": "2026-06-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -20158,16 +20534,21 @@
           "target": "Phenomena/Pilgrimage"
         },
         {
+          "alias": "Eerie",
+          "heading": null,
+          "target": "Org/Iconoclasm/Eerie"
+        },
+        {
           "alias": "Protectorate",
           "heading": null,
           "target": "Org/Protectorate/index"
         }
       ],
-      "date": "2026-06-08T00:00:00-04:00",
+      "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-08T00:00:00-04:00"
+          "date": "2026-06-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -20242,6 +20623,51 @@
     {
       "crossrefs": [
         {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Ocelith",
+          "heading": null,
+          "target": "Org/The Harlequins/People/Ocelith"
+        },
+        {
+          "alias": "zabubs",
+          "heading": null,
+          "target": "Bestiary/Vermin"
+        },
+        {
+          "alias": "Harlequins",
+          "heading": null,
+          "target": "Org/The Harlequins/index"
+        },
+        {
+          "alias": "Heart's",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Orts",
+          "heading": null,
+          "target": "Bestiary/Fiends"
+        }
+      ],
+      "date": "2026-06-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-06-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/The Harlequins/Harlequin Town"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Harlequin",
           "heading": null,
           "target": "Org/The Harlequins/index"
@@ -20260,21 +20686,56 @@
           "alias": "keystone",
           "heading": null,
           "target": "Phenomena/Keystone"
+        },
+        {
+          "alias": "Ocelith",
+          "heading": null,
+          "target": "Org/The Harlequins/People/Ocelith"
+        },
+        {
+          "alias": "Johnny",
+          "heading": null,
+          "target": "People/Johnny"
         }
       ],
-      "date": "2026-05-21T00:00:00-04:00",
+      "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Butler"
         ],
         "extra": {
-          "date": "2026-05-21T00:00:00-04:00"
+          "date": "2026-06-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
         "title": null
       },
       "path": "Org/The Harlequins/People/Chuck"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Harlequin Town",
+          "heading": null,
+          "target": "Org/The Harlequins/Harlequin Town"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        }
+      ],
+      "date": "2026-06-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-06-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/The Harlequins/People/Ocelith"
     },
     {
       "crossrefs": [
@@ -20394,13 +20855,23 @@
           "alias": "Chuck",
           "heading": null,
           "target": "Org/The Harlequins/People/Chuck"
+        },
+        {
+          "alias": "library and clock tower",
+          "heading": null,
+          "target": "Org/The Harlequins/Harlequin Town"
+        },
+        {
+          "alias": "Ocelith",
+          "heading": null,
+          "target": "Org/The Harlequins/People/Ocelith"
         }
       ],
-      "date": "2026-06-05T16:40:21-04:00",
+      "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-05T16:40:21-04:00"
+          "date": "2026-06-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -21320,12 +21791,62 @@
       "path": "Org/Verdant Holdings/People/Cross Trevils"
     },
     {
-      "crossrefs": [],
-      "date": "2026-06-05T16:40:21-04:00",
+      "crossrefs": [
+        {
+          "alias": "Hlarf",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Hlarf"
+        },
+        {
+          "alias": "Verdant Holdings",
+          "heading": null,
+          "target": "Org/Verdant Holdings/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Hildebrandt Corporation",
+          "heading": null,
+          "target": "Org/Hildebrandt Corporation/index"
+        }
+      ],
+      "date": "2026-06-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Dr. Thrain"
+        ],
+        "extra": {
+          "date": "2026-06-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Half-Giant"
+        ],
+        "title": null
+      },
+      "path": "Org/Verdant Holdings/People/Dr. Thrain"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Dr. Thrain",
+          "heading": null,
+          "target": "Org/Verdant Holdings/People/Dr. Thrain"
+        },
+        {
+          "alias": "Hildebrandt Corporation",
+          "heading": null,
+          "target": "Org/Hildebrandt Corporation/index"
+        }
+      ],
+      "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-05T16:40:21-04:00"
+          "date": "2026-06-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [

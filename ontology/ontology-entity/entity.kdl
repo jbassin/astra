@@ -487,6 +487,10 @@ entity "Dorcan" {
     alias "Dorkin"
     source "defs"
 }
+entity "Dr. Thrain" kind="person" page="Org/Verdant Holdings/People/Dr. Thrain" {
+    alias "Dr. Thrain"
+    source "akasha"
+}
 entity "Dura" {
     alias "Jura"
     alias "Duro"
@@ -809,6 +813,9 @@ entity "Hallia" kind="place" page="Geography/Calaria/Hallia/index" {
     source "defs"
 }
 entity "Hallia Exchange" kind="org" page="Org/Hallia Exchange" {
+    source "akasha"
+}
+entity "Harlequin Town" kind="org" page="Org/The Harlequins/Harlequin Town" {
     source "akasha"
 }
 entity "Harmony" kind="phenomenon" page="Phenomena/Harmony/index" {
@@ -1240,6 +1247,9 @@ entity "occultism" {
     alias "Occultistborn"
     alias "Heraclitism"
     source "defs"
+}
+entity "Ocelith" kind="person" page="Org/The Harlequins/People/Ocelith" {
+    source "akasha"
 }
 entity "of Hallia" {
     alias "of Hellion"
@@ -1763,6 +1773,9 @@ entity "The Crowded Flea" kind="place" page="Geography/Calaria/Hallia/Sableclutc
     source "defs"
 }
 entity "The Deep" kind="deity" page="Divinity/Unknown Entities/The Deep" {
+    source "akasha"
+}
+entity "The Eye" kind="deity" page="Divinity/The Eye" {
     source "akasha"
 }
 entity "The Harlequin" kind="deity" page="Divinity/Fiends/The Harlequin" {
