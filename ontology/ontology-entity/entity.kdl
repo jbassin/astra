@@ -196,6 +196,9 @@ entity "Bait-and-Tackle Shop" {
     alias "Bait and tackle shop"
     source "defs"
 }
+entity "Barbazu" kind="creature" page="Bestiary/Barbazu" {
+    source "akasha"
+}
 entity "barghest" {
     alias "Barguest"
     alias "Barghest"
@@ -277,6 +280,9 @@ entity "Branson Pluckwort" kind="person" page="Org/Velvet Mark/People/Branson Pl
 }
 entity "Braxton Hall" kind="person" page="Org/Ætherion Limited/People/Braxton Hall" {
     alias "Braxton"
+    source "akasha"
+}
+entity "Brimorak" kind="creature" page="Bestiary/Brimorak" {
     source "akasha"
 }
 entity "Brithwyn" kind="place" page="Geography/Brithwyn/index" {
@@ -952,8 +958,10 @@ entity "Kadou Floch" kind="person" page="Org/Alkahest Freight/People/Kadou Floch
 entity "Keeper of Chains" kind="creature" page="Bestiary/Keeper of Chains" {
     source "akasha"
 }
-entity "keystone" {
+entity "Keystone" kind="phenomenon" page="Phenomena/Keystone" {
+    alias "keystones"
     alias "Aggie Stone"
+    source "akasha"
     source "defs"
 }
 entity "Ki-Rin" {
@@ -1058,6 +1066,9 @@ entity "Manus Sudrenus" kind="person" page="Org/Pale Lantern Society/People/Manu
     source "defs"
 }
 entity "Maple Tree Farms" kind="org" page="Org/Maple Tree Farms/index" {
+    source "akasha"
+}
+entity "Mask Makers" kind="org" page="Org/Mask Makers" {
     source "akasha"
 }
 entity "Masque District" kind="place" page="Geography/Calaria/Hallia/Masque District/index" {
@@ -1310,6 +1321,9 @@ entity "Protectorate" kind="org" page="Org/Protectorate/index" {
 entity "Protectorates" {
     alias "protectorates"
     source "defs"
+}
+entity "Providence" kind="org" page="Org/The Harlequins/Providence" {
+    source "akasha"
 }
 entity "Psiburst" {
     alias "Cyburst"
