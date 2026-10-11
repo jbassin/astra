@@ -41,6 +41,9 @@ entity "Amber Call" kind="org" page="Org/Amber Call/index" {
     source "akasha"
     source "defs"
 }
+entity "Amos Guren" kind="person" page="Org/Guren and Guren/People/Amos Guren" {
+    source "akasha"
+}
 entity "ampoule" {
     alias "ampule"
     source "defs"
@@ -306,6 +309,9 @@ entity "Calarians" {
 entity "Candescent Legion" kind="org" page="Org/Candescent Legion" {
     source "akasha"
 }
+entity "Carnivorous Ink" kind="creature" page="Bestiary/Carnivorous Ink" {
+    source "akasha"
+}
 entity "Cassian Drake" kind="person" page="Org/The Scale/People/Cassian Drake" {
     alias "Cassian"
     source "akasha"
@@ -371,6 +377,15 @@ entity "Cross Trevils" kind="person" page="Org/Verdant Holdings/People/Cross Tre
 entity "Crowe" {
     alias "Crow"
     source "defs"
+}
+entity "Crystal Random" kind="org" page="Org/Crystal Random/index" {
+    source "akasha"
+}
+entity "Crystal's Rock" kind="org" page="Org/Crystal's Rock" {
+    source "akasha"
+}
+entity "Cursed Thought" kind="creature" page="Bestiary/Cursed Thought" {
+    source "akasha"
 }
 entity "Dame Quay" {
     alias "Dame Key"
@@ -617,8 +632,16 @@ entity "Gin Soaked Rag" kind="person" page="Org/Iconoclasm/People/Gin Soaked Rag
     source "akasha"
     source "defs"
 }
+entity "Glasswater" kind="place" page="Geography/Calaria/Hallia/Glasswater/index" {
+    source "akasha"
+}
 entity "Glide Ape" kind="creature" page="Bestiary/Glide Ape" {
     alias "glide apes"
+    source "akasha"
+}
+entity "Gloaming Codex" kind="phenomenon" page="Phenomena/Gloaming Codex" {
+    alias "the Gloaming"
+    alias "Gloaming"
     source "akasha"
 }
 entity "Godhome" kind="place" page="Geography/Godhome" {
@@ -650,6 +673,12 @@ entity "Gryphon" {
 entity "Gryphonline" {
     alias "Griffin\\s*line"
     source "defs"
+}
+entity "Gullet" kind="place" page="Geography/Calaria/Hallia/Gullet/index" {
+    source "akasha"
+}
+entity "Guren and Guren" kind="org" page="Org/Guren and Guren/index" {
+    source "akasha"
 }
 entity "Hallia" kind="place" page="Geography/Calaria/Hallia/index" {
     alias "Halia"
