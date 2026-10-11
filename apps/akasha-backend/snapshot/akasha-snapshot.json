@@ -750,6 +750,69 @@
       "target": "Hearts"
     },
     {
+      "alias": "the Harlequin",
+      "heading": null,
+      "resolved": "Divinity/Fiends/The Harlequin",
+      "source": "Divinity/Fiends/Sigzil Haight",
+      "target": "Divinity/Fiends/The Harlequin"
+    },
+    {
+      "alias": "the Shackle",
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Divinity/Fiends/The Harlequin",
+      "target": "Divinity/Fiends/Sigzil Haight"
+    },
+    {
+      "alias": "Sigzil Haight's",
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Divinity/Fiends/The Harlequin",
+      "target": "Sigzil Haight"
+    },
+    {
+      "alias": "Harlequins",
+      "heading": null,
+      "resolved": "Org/The Harlequins/index",
+      "source": "Divinity/Fiends/The Harlequin",
+      "target": "Org/The Harlequins/index"
+    },
+    {
+      "alias": "Master of Ceremonies",
+      "heading": null,
+      "resolved": "Org/The Harlequins/People/The Master of Ceremonies",
+      "source": "Divinity/Fiends/The Harlequin",
+      "target": "Org/The Harlequins/People/The Master of Ceremonies"
+    },
+    {
+      "alias": "the Shackle",
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Divinity/Fiends/The Hooded",
+      "target": "Divinity/Fiends/Sigzil Haight"
+    },
+    {
+      "alias": "the Harlequin",
+      "heading": null,
+      "resolved": "Divinity/Fiends/The Harlequin",
+      "source": "Divinity/Fiends/The Hooded",
+      "target": "Divinity/Fiends/The Harlequin"
+    },
+    {
+      "alias": "the Shackle",
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Divinity/Fiends/The Loam",
+      "target": "Divinity/Fiends/Sigzil Haight"
+    },
+    {
+      "alias": "the Harlequin",
+      "heading": null,
+      "resolved": "Divinity/Fiends/The Harlequin",
+      "source": "Divinity/Fiends/The Loam",
+      "target": "Divinity/Fiends/The Harlequin"
+    },
+    {
       "alias": "Watcher",
       "heading": null,
       "resolved": "Divinity/Outer Gods/Watcher With 1,000 Eyes",
@@ -4754,6 +4817,27 @@
       "target": "Org/Hildebrandt Corporation/index"
     },
     {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Org/Hildebrandt Corporation/People/Paavo Karhu",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "Yao Addington",
+      "heading": null,
+      "resolved": "Org/Protectorate/People/Yao Addington",
+      "source": "Org/Hildebrandt Corporation/People/Paavo Karhu",
+      "target": "Org/Protectorate/People/Yao Addington"
+    },
+    {
+      "alias": "Ralph Bishop",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Ralph Bishop",
+      "source": "Org/Hildebrandt Corporation/People/Paavo Karhu",
+      "target": "Org/The Scale/People/Ralph Bishop"
+    },
+    {
       "alias": "General Thematics",
       "heading": null,
       "resolved": "Org/General Thematics/index",
@@ -5300,6 +5384,20 @@
       "target": "Org/Iconoclasm/People/Dura Oil-Drinker"
     },
     {
+      "alias": "Master of Ceremonies",
+      "heading": null,
+      "resolved": "Org/The Harlequins/People/The Master of Ceremonies",
+      "source": "Org/Iconoclasm/People/Illmari Vaino",
+      "target": "Org/The Harlequins/People/The Master of Ceremonies"
+    },
+    {
+      "alias": "pilgrimage",
+      "heading": null,
+      "resolved": "Phenomena/Pilgrimage",
+      "source": "Org/Iconoclasm/People/Illmari Vaino",
+      "target": "Phenomena/Pilgrimage"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Phenomena/Harmony/Voidsong",
@@ -5650,6 +5748,20 @@
       "target": "Org/Iridescent Church/index"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Iridescent Church/People/Walter Stoke",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/Iridescent Church/People/Walter Stoke",
+      "target": "Phenomena/Hearts"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Divinity/Hierophant",
@@ -5762,6 +5874,27 @@
       "target": "Org/NecroLog/index"
     },
     {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/NecroLog/People/Gaspar Caetano",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/NecroLog/People/Gaspar Caetano",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Pale Lantern Society",
+      "heading": null,
+      "resolved": "Org/Pale Lantern Society/index",
+      "source": "Org/NecroLog/People/Gaspar Caetano",
+      "target": "Org/Pale Lantern Society/index"
+    },
+    {
       "alias": "Pale Lantern Society",
       "heading": null,
       "resolved": "Org/Pale Lantern Society/index",
@@ -5872,6 +6005,34 @@
       "resolved": "People/Hogan Voss Darkmoor",
       "source": "Org/Prime Meridian/Archmechanic",
       "target": "People/Hogan Voss Darkmoor"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/Prime Meridian/Axis Interlink",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Prime Meridian",
+      "heading": null,
+      "resolved": "Org/Prime Meridian/index",
+      "source": "Org/Prime Meridian/Axis Interlink",
+      "target": "Org/Prime Meridian/index"
+    },
+    {
+      "alias": "Tas Millett",
+      "heading": null,
+      "resolved": "Org/Prime Meridian/People/Tas Millett",
+      "source": "Org/Prime Meridian/Axis Interlink",
+      "target": "Org/Prime Meridian/People/Tas Millett"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Prime Meridian/Axis Interlink",
+      "target": "Org/The Harlequins/Providence"
     },
     {
       "alias": "Prime Meridian",
@@ -6075,6 +6236,20 @@
       "resolved": "Org/Protectorate/index",
       "source": "Org/Protectorate/People/Yao Addington",
       "target": "Org/Protectorate/index"
+    },
+    {
+      "alias": "Paavo Karhu",
+      "heading": null,
+      "resolved": "Org/Hildebrandt Corporation/People/Paavo Karhu",
+      "source": "Org/Protectorate/People/Yao Addington",
+      "target": "Org/Hildebrandt Corporation/People/Paavo Karhu"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Org/Protectorate/People/Yao Addington",
+      "target": "Phenomena/Harmony/Voidsong"
     },
     {
       "alias": "Brithwyn",
@@ -6763,6 +6938,41 @@
       "target": "Org/The Harlequins/index"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/People/The Master of Ceremonies",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "pilgrimage",
+      "heading": null,
+      "resolved": "Phenomena/Pilgrimage",
+      "source": "Org/The Harlequins/People/The Master of Ceremonies",
+      "target": "Phenomena/Pilgrimage"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Org/The Harlequins/People/The Master of Ceremonies",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "the Harlequin",
+      "heading": null,
+      "resolved": "Divinity/Fiends/The Harlequin",
+      "source": "Org/The Harlequins/People/The Master of Ceremonies",
+      "target": "Divinity/Fiends/The Harlequin"
+    },
+    {
+      "alias": "Illmari Vaino",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/People/Illmari Vaino",
+      "source": "Org/The Harlequins/People/The Master of Ceremonies",
+      "target": "Org/Iconoclasm/People/Illmari Vaino"
+    },
+    {
       "alias": "Ragged Roost",
       "heading": null,
       "resolved": "Geography/Calaria/Ragged Roost",
@@ -6775,6 +6985,20 @@
       "resolved": "Phenomena/Pilgrimage",
       "source": "Org/The Harlequins/Providence",
       "target": "Phenomena/Pilgrimage"
+    },
+    {
+      "alias": "the Master of Ceremonies",
+      "heading": null,
+      "resolved": "Org/The Harlequins/People/The Master of Ceremonies",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Org/The Harlequins/People/The Master of Ceremonies"
+    },
+    {
+      "alias": "orts",
+      "heading": null,
+      "resolved": "Bestiary/Fiends",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Bestiary/Fiends"
     },
     {
       "alias": "the Master",
@@ -6826,11 +7050,60 @@
       "target": "Org/The Harlequins/People/Chuck"
     },
     {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/The Scale/Asteris Lux",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "The Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "Org/The Scale/Asteris Lux",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/The Scale/Asteris Lux",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Bishop",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Ralph Bishop",
+      "source": "Org/The Scale/Asteris Lux",
+      "target": "Org/The Scale/People/Ralph Bishop"
+    },
+    {
+      "alias": "Lance Vesper",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Lance Vesper",
+      "source": "Org/The Scale/People/Cassian Drake",
+      "target": "Org/The Scale/People/Lance Vesper"
+    },
+    {
       "alias": "The Scale",
       "heading": null,
       "resolved": "Org/The Scale/index",
       "source": "Org/The Scale/People/Cassian Drake",
       "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Bishop",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Ralph Bishop",
+      "source": "Org/The Scale/People/Cassian Drake",
+      "target": "Org/The Scale/People/Ralph Bishop"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Org/The Scale/People/Cassian Drake",
+      "target": "Phenomena/Harmony/Voidsong"
     },
     {
       "alias": "Judge",
@@ -6945,11 +7218,25 @@
       "target": "Divinity/Fiends/Sigzil Haight"
     },
     {
-      "alias": "The Scale",
+      "alias": "Scale",
       "heading": null,
       "resolved": "Org/The Scale/index",
       "source": "Org/The Scale/People/Lance Vesper",
       "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Bishop",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Ralph Bishop",
+      "source": "Org/The Scale/People/Lance Vesper",
+      "target": "Org/The Scale/People/Ralph Bishop"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Org/The Scale/People/Lance Vesper",
+      "target": "Phenomena/Harmony/Voidsong"
     },
     {
       "alias": "The Scale",
@@ -6992,6 +7279,34 @@
       "resolved": "Org/The Scale/index",
       "source": "Org/The Scale/People/Ralph Bishop",
       "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "hearts",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/The Scale/People/Ralph Bishop",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Org/The Scale/People/Ralph Bishop",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/The Scale/People/Ralph Bishop",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Paavo Karhu",
+      "heading": null,
+      "resolved": "Org/Hildebrandt Corporation/People/Paavo Karhu",
+      "source": "Org/The Scale/People/Ralph Bishop",
+      "target": "Org/Hildebrandt Corporation/People/Paavo Karhu"
     },
     {
       "alias": "The Scale",
@@ -7118,6 +7433,34 @@
       "resolved": "Divinity/Fiends/Sigzil Haight",
       "source": "Org/The Scale/index",
       "target": "Sigzil Haight"
+    },
+    {
+      "alias": "overseer Ralph Bishop",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Ralph Bishop",
+      "source": "Org/The Scale/index",
+      "target": "Org/The Scale/People/Ralph Bishop"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/The Scale/index",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/The Scale/index",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Asteris Lux",
+      "heading": null,
+      "resolved": "Org/The Scale/Asteris Lux",
+      "source": "Org/The Scale/index",
+      "target": "Org/The Scale/Asteris Lux"
     },
     {
       "alias": "Hallia",
@@ -11299,6 +11642,11 @@
           "alias": "Heart",
           "heading": null,
           "target": "Hearts"
+        },
+        {
+          "alias": "the Harlequin",
+          "heading": null,
+          "target": "Divinity/Fiends/The Harlequin"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -11314,6 +11662,97 @@
         "title": null
       },
       "path": "Divinity/Fiends/Sigzil Haight"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "the Shackle",
+          "heading": null,
+          "target": "Divinity/Fiends/Sigzil Haight"
+        },
+        {
+          "alias": "Sigzil Haight's",
+          "heading": null,
+          "target": "Sigzil Haight"
+        },
+        {
+          "alias": "Harlequins",
+          "heading": null,
+          "target": "Org/The Harlequins/index"
+        },
+        {
+          "alias": "Master of Ceremonies",
+          "heading": null,
+          "target": "Org/The Harlequins/People/The Master of Ceremonies"
+        }
+      ],
+      "date": "2026-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Fiend"
+        ],
+        "title": null
+      },
+      "path": "Divinity/Fiends/The Harlequin"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "the Shackle",
+          "heading": null,
+          "target": "Divinity/Fiends/Sigzil Haight"
+        },
+        {
+          "alias": "the Harlequin",
+          "heading": null,
+          "target": "Divinity/Fiends/The Harlequin"
+        }
+      ],
+      "date": "2026-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Fiend"
+        ],
+        "title": null
+      },
+      "path": "Divinity/Fiends/The Hooded"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "the Shackle",
+          "heading": null,
+          "target": "Divinity/Fiends/Sigzil Haight"
+        },
+        {
+          "alias": "the Harlequin",
+          "heading": null,
+          "target": "Divinity/Fiends/The Harlequin"
+        }
+      ],
+      "date": "2026-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Fiend"
+        ],
+        "title": null
+      },
+      "path": "Divinity/Fiends/The Loam"
     },
     {
       "crossrefs": [
@@ -16072,6 +16511,21 @@
           "alias": "Hildebrandt Corporation",
           "heading": null,
           "target": "Org/Hildebrandt Corporation/index"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "Yao Addington",
+          "heading": null,
+          "target": "Org/Protectorate/People/Yao Addington"
+        },
+        {
+          "alias": "Ralph Bishop",
+          "heading": null,
+          "target": "Org/The Scale/People/Ralph Bishop"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -16645,6 +17099,16 @@
           "alias": "Dura",
           "heading": null,
           "target": "Org/Iconoclasm/People/Dura Oil-Drinker"
+        },
+        {
+          "alias": "Master of Ceremonies",
+          "heading": null,
+          "target": "Org/The Harlequins/People/The Master of Ceremonies"
+        },
+        {
+          "alias": "pilgrimage",
+          "heading": null,
+          "target": "Phenomena/Pilgrimage"
         }
       ],
       "date": "2026-06-06T22:12:21-04:00",
@@ -17097,6 +17561,16 @@
           "alias": "Iridescent Church",
           "heading": null,
           "target": "Org/Iridescent Church/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -17319,6 +17793,21 @@
           "alias": "NecroLog",
           "heading": null,
           "target": "Org/NecroLog/index"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Pale Lantern Society",
+          "heading": null,
+          "target": "Org/Pale Lantern Society/index"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -17517,6 +18006,43 @@
         "title": null
       },
       "path": "Org/Prime Meridian/Archmechanic"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Prime Meridian",
+          "heading": null,
+          "target": "Org/Prime Meridian/index"
+        },
+        {
+          "alias": "Tas Millett",
+          "heading": null,
+          "target": "Org/Prime Meridian/People/Tas Millett"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        }
+      ],
+      "date": "2026-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Heart"
+        ],
+        "title": null
+      },
+      "path": "Org/Prime Meridian/Axis Interlink"
     },
     {
       "crossrefs": [
@@ -17748,6 +18274,16 @@
           "alias": "Protectorate",
           "heading": null,
           "target": "Org/Protectorate/index"
+        },
+        {
+          "alias": "Paavo Karhu",
+          "heading": null,
+          "target": "Org/Hildebrandt Corporation/People/Paavo Karhu"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -18630,13 +19166,13 @@
           "target": "Phenomena/Keystone"
         }
       ],
-      "date": "2026-05-11T00:00:00-04:00",
+      "date": "2026-05-21T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Butler"
         ],
         "extra": {
-          "date": "2026-05-11T00:00:00-04:00"
+          "date": "2026-05-21T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -18650,6 +19186,31 @@
           "alias": "The Harlequins",
           "heading": null,
           "target": "Org/The Harlequins/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "pilgrimage",
+          "heading": null,
+          "target": "Phenomena/Pilgrimage"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "the Harlequin",
+          "heading": null,
+          "target": "Divinity/Fiends/The Harlequin"
+        },
+        {
+          "alias": "Illmari Vaino",
+          "heading": null,
+          "target": "Org/Iconoclasm/People/Illmari Vaino"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -18679,6 +19240,16 @@
           "target": "Phenomena/Pilgrimage"
         },
         {
+          "alias": "the Master of Ceremonies",
+          "heading": null,
+          "target": "Org/The Harlequins/People/The Master of Ceremonies"
+        },
+        {
+          "alias": "orts",
+          "heading": null,
+          "target": "Bestiary/Fiends"
+        },
+        {
           "alias": "the Master",
           "heading": null,
           "target": "Org/The Harlequins/People/The Master of Ceremonies"
@@ -18694,11 +19265,11 @@
           "target": "Phenomena/Keystone"
         }
       ],
-      "date": "2026-05-11T00:00:00-04:00",
+      "date": "2026-05-21T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-11T00:00:00-04:00"
+          "date": "2026-05-21T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -18744,9 +19315,61 @@
     {
       "crossrefs": [
         {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
           "alias": "The Scale",
           "heading": null,
           "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Bishop",
+          "heading": null,
+          "target": "Org/The Scale/People/Ralph Bishop"
+        }
+      ],
+      "date": "2026-05-21T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-05-21T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Heart"
+        ],
+        "title": null
+      },
+      "path": "Org/The Scale/Asteris Lux"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Lance Vesper",
+          "heading": null,
+          "target": "Org/The Scale/People/Lance Vesper"
+        },
+        {
+          "alias": "The Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Bishop",
+          "heading": null,
+          "target": "Org/The Scale/People/Ralph Bishop"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -18902,9 +19525,19 @@
     {
       "crossrefs": [
         {
-          "alias": "The Scale",
+          "alias": "Scale",
           "heading": null,
           "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Bishop",
+          "heading": null,
+          "target": "Org/The Scale/People/Ralph Bishop"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -18973,6 +19606,26 @@
           "alias": "The Scale",
           "heading": null,
           "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "hearts",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Paavo Karhu",
+          "heading": null,
+          "target": "Org/Hildebrandt Corporation/People/Paavo Karhu"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -19116,6 +19769,26 @@
           "alias": null,
           "heading": null,
           "target": "Sigzil Haight"
+        },
+        {
+          "alias": "overseer Ralph Bishop",
+          "heading": null,
+          "target": "Org/The Scale/People/Ralph Bishop"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Asteris Lux",
+          "heading": null,
+          "target": "Org/The Scale/Asteris Lux"
         }
       ],
       "date": "2026-06-06T22:12:21-04:00",

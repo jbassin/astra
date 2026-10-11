@@ -158,6 +158,9 @@ entity "Argyle's" {
 entity "Ashen Pact" kind="deity" page="Divinity/Ashen Pact/index" {
     source "akasha"
 }
+entity "Asteris Lux" kind="org" page="Org/The Scale/Asteris Lux" {
+    source "akasha"
+}
 entity "Atum" kind="org" page="Org/Belvedere/Atum" {
     alias "Adam"
     source "akasha"
@@ -200,6 +203,9 @@ entity "Aut" kind="deity" page="Divinity/The Narrative/Aut" {
 entity "autobody" {
     alias "Autobot"
     source "defs"
+}
+entity "Axis Interlink" kind="org" page="Org/Prime Meridian/Axis Interlink" {
+    source "akasha"
 }
 entity "Bait-and-Tackle Shop" {
     alias "Bain Tackle Shop"
@@ -1744,6 +1750,9 @@ entity "The Crowded Flea" kind="place" page="Geography/Calaria/Hallia/Sableclutc
 entity "The Deep" kind="deity" page="Divinity/Unknown Entities/The Deep" {
     source "akasha"
 }
+entity "The Harlequin" kind="deity" page="Divinity/Fiends/The Harlequin" {
+    source "akasha"
+}
 entity "The Harlequins" kind="org" page="Org/The Harlequins/index" {
     alias "the\\s*Harley\\s*Quinn's"
     source "akasha"
@@ -1756,7 +1765,13 @@ entity "the Heart" {
     alias "the\\s*Hart"
     source "defs"
 }
+entity "The Hooded" kind="deity" page="Divinity/Fiends/The Hooded" {
+    source "akasha"
+}
 entity "the Horizon" kind="place" page="Geography/Calaria/Hallia/the Horizon/index" {
+    source "akasha"
+}
+entity "The Loam" kind="deity" page="Divinity/Fiends/The Loam" {
     source "akasha"
 }
 entity "The Master of Ceremonies" kind="person" page="Org/The Harlequins/People/The Master of Ceremonies" {
