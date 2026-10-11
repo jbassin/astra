@@ -378,6 +378,9 @@ entity "Crowe" {
     alias "Crow"
     source "defs"
 }
+entity "Crystal Hill" kind="place" page="Geography/Calaria/Hallia/Diamond District/Crystal Hill" {
+    source "akasha"
+}
 entity "Crystal Random" kind="org" page="Org/Crystal Random/index" {
     source "akasha"
 }
@@ -387,11 +390,12 @@ entity "Crystal's Rock" kind="org" page="Org/Crystal's Rock" {
 entity "Cursed Thought" kind="creature" page="Bestiary/Cursed Thought" {
     source "akasha"
 }
-entity "Dame Quay" {
+entity "Dame Quay" kind="person" page="Org/The Scale/People/Dame Quay" {
     alias "Dame Key"
     alias "Dan Key"
     alias "Dame Keeney"
     alias "damn\\s*Quay"
+    source "akasha"
     source "defs"
 }
 entity "Deadly Mantis" kind="creature" page="Bestiary/Deadly Mantis" {
@@ -670,8 +674,9 @@ entity "Gryphon" {
     alias "Griffin"
     source "defs"
 }
-entity "Gryphonline" {
+entity "Gryphonline" kind="org" page="Org/Gryphonline/index" {
     alias "Griffin\\s*line"
+    source "akasha"
     source "defs"
 }
 entity "Gullet" kind="place" page="Geography/Calaria/Hallia/Gullet/index" {
@@ -954,6 +959,9 @@ entity "Low-Mechanitor Exitum-ρ-15" {
     alias "Loma Canator Exitum Row 15"
     source "defs"
 }
+entity "Luxottica" kind="org" page="Org/Luxottica/index" {
+    source "akasha"
+}
 entity "Magical Crimes" kind="org" page="Org/Iridescent Church/Convox/Magical Crimes/index" {
     source "akasha"
 }
@@ -986,6 +994,9 @@ entity "Manus Sudrenus" kind="person" page="Org/Pale Lantern Society/People/Manu
     alias "Manas Adrenas"
     source "akasha"
     source "defs"
+}
+entity "Maple Tree Farms" kind="org" page="Org/Maple Tree Farms/index" {
+    source "akasha"
 }
 entity "Masque District" kind="place" page="Geography/Calaria/Hallia/Masque District/index" {
     alias "Mask District"
@@ -1181,6 +1192,9 @@ entity "Pharos" kind="place" page="Geography/Black and White/Pharos" {
     alias "Firas"
     source "akasha"
     source "defs"
+}
+entity "Pier 54" kind="place" page="Geography/Calaria/Hallia/Sableclutch/Pier 54" {
+    source "akasha"
 }
 entity "Pluckwort" kind="person" being="jorge" {
     source "being"
@@ -1379,6 +1393,9 @@ entity "sewer" {
     alias "Syria"
     source "defs"
 }
+entity "Shannon Soul" kind="place" page="Geography/Calaria/Hallia/Sableclutch/People/Shannon Soul" {
+    source "akasha"
+}
 entity "Sigzil Haight" kind="deity" page="Divinity/Fiends/Sigzil Haight" {
     alias "Shackled Prince"
     alias "Sigilheit"
@@ -1549,6 +1566,9 @@ entity "The Scale" kind="org" page="Org/The Scale/index" {
 entity "the Scale's" {
     alias "the\\s*Scales"
     source "defs"
+}
+entity "The Sears" kind="org" page="Org/The Sears/index" {
+    source "akasha"
 }
 entity "The Spark" kind="person" page="Org/Pyrelight/People/The Spark" {
     source "akasha"
