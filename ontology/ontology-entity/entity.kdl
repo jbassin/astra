@@ -48,6 +48,11 @@ entity "ampoule" {
     alias "ampule"
     source "defs"
 }
+entity "An Iron Gauntlet in a Glass Glove" kind="place" page="Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove" {
+    alias "Gas-n-Go Heart"
+    alias "the iron gauntlet in a glass glove"
+    source "akasha"
+}
 entity "Anaïs" {
     alias "Anai"
     alias "Danai"
@@ -195,16 +200,10 @@ entity "autobody" {
     alias "Autobot"
     source "defs"
 }
-entity "Babau" kind="creature" page="Bestiary/Babau" {
-    source "akasha"
-}
 entity "Bait-and-Tackle Shop" {
     alias "Bain Tackle Shop"
     alias "Bait and tackle shop"
     source "defs"
-}
-entity "Barbazu" kind="creature" page="Bestiary/Barbazu" {
-    source "akasha"
 }
 entity "barghest" {
     alias "Barguest"
@@ -228,6 +227,13 @@ entity "barghests" {
 }
 entity "Barlow" kind="person" being="noah" {
     source "being"
+}
+entity "Beasts" kind="creature" page="Bestiary/Beasts" {
+    alias "Cave Serpent"
+    alias "Chorister Bird"
+    alias "Glide Ape"
+    alias "Vine Snake"
+    source "akasha"
 }
 entity "Beats in Time" {
     alias "Beats and Time"
@@ -292,9 +298,6 @@ entity "Braxton Hall" kind="person" page="Org/Ætherion Limited/People/Braxton H
     alias "Braxton"
     source "akasha"
 }
-entity "Brimorak" kind="creature" page="Bestiary/Brimorak" {
-    source "akasha"
-}
 entity "Brithwyn" kind="place" page="Geography/Brithwyn/index" {
     alias "Brithwin"
     alias "Brithwen"
@@ -310,9 +313,6 @@ entity "cadre" {
     source "defs"
 }
 entity "Cagley" kind="place" page="Geography/Cagley" {
-    source "akasha"
-}
-entity "Cairn White" kind="creature" page="Bestiary/Cairn White" {
     source "akasha"
 }
 entity "Calaria" kind="place" page="Geography/Calaria/index" {
@@ -339,16 +339,8 @@ entity "Calarians" {
 entity "Candescent Legion" kind="org" page="Org/Candescent Legion" {
     source "akasha"
 }
-entity "Carnivorous Ink" kind="creature" page="Bestiary/Carnivorous Ink" {
-    source "akasha"
-}
 entity "Cassian Drake" kind="person" page="Org/The Scale/People/Cassian Drake" {
     alias "Cassian"
-    source "akasha"
-}
-entity "Cave Serpent" kind="creature" page="Bestiary/Cave Serpent" {
-    alias "giant serpents"
-    alias "cave serpents"
     source "akasha"
 }
 entity "Cedric" kind="person" being="jorge" {
@@ -375,10 +367,6 @@ entity "Chorath" {
     source "defs"
 }
 entity "Chorath Engineering" kind="org" page="Org/Chorath Engineering" {
-    source "akasha"
-}
-entity "Chorister Bird" kind="creature" page="Bestiary/Chorister Bird" {
-    alias "chorister birds"
     source "akasha"
 }
 entity "Citizens Committee for Metaphysical Stability" kind="org" page="Org/Citizens Committee for Metaphysical Stability/index" {
@@ -413,6 +401,11 @@ entity "Copperjaw" kind="person" page="Org/Sableclutch Scrap/People/Copperjaw" {
 entity "Crawford Reeves" kind="person" page="Org/Concordia/People/Crawford Reeves" {
     source "akasha"
 }
+entity "Creatures of the Gloaming Codex" kind="creature" page="Bestiary/Creatures of the Gloaming Codex" {
+    alias "Carnivorous Ink"
+    alias "Cursed Thought"
+    source "akasha"
+}
 entity "Cross Trevils" kind="person" page="Org/Verdant Holdings/People/Cross Trevils" {
     source "akasha"
 }
@@ -432,9 +425,6 @@ entity "Crystal Random" kind="org" page="Org/Crystal Random/index" {
 entity "Crystal's Rock" kind="org" page="Org/Crystal's Rock" {
     source "akasha"
 }
-entity "Cursed Thought" kind="creature" page="Bestiary/Cursed Thought" {
-    source "akasha"
-}
 entity "Dame Quay" kind="person" page="Org/The Scale/People/Dame Quay" {
     alias "Dame Key"
     alias "Dan Key"
@@ -442,11 +432,6 @@ entity "Dame Quay" kind="person" page="Org/The Scale/People/Dame Quay" {
     alias "damn\\s*Quay"
     source "akasha"
     source "defs"
-}
-entity "Deadly Mantis" kind="creature" page="Bestiary/Deadly Mantis" {
-    alias "deadly mantises"
-    alias "mantis"
-    source "akasha"
 }
 entity "Deosil" kind="place" page="Geography/Calaria/Hallia/Deosil" {
     alias "Diesel"
@@ -581,8 +566,24 @@ entity "Feep" {
 entity "Fenrith" kind="place" page="Geography/Fenrith/index" {
     source "akasha"
 }
+entity "Fey" kind="creature" page="Bestiary/Fey" {
+    alias "Verdant Court Fey"
+    alias "Jin"
+    alias "Oriel"
+    source "akasha"
+}
 entity "Feyrock" kind="phenomenon" page="Phenomena/Feyrock" {
     alias "Fey rock"
+    source "akasha"
+}
+entity "Fiends" kind="creature" page="Bestiary/Fiends" {
+    alias "Babau"
+    alias "Barbazu"
+    alias "Brimorak"
+    alias "Hellion"
+    alias "Pusk"
+    alias "Rancorous Priest"
+    alias "Vitriolite"
     source "akasha"
 }
 entity "firearm manufacturer" {
@@ -672,11 +673,6 @@ entity "Garrick Textiles" kind="org" page="Org/Garrick Textiles/index" {
 entity "Gas-n-Go" kind="place" page="Geography/Calaria/Hallia/Widdershins/Gas-n-Go" {
     source "akasha"
 }
-entity "Gas-n-Go Heart" kind="place" page="Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart" {
-    alias "Gas-n-Go Heart"
-    alias "the iron gauntlet in a glass glove"
-    source "akasha"
-}
 entity "Gas-n-Go℠" {
     alias "Gas & Go"
     alias "Gas and go"
@@ -723,10 +719,6 @@ entity "Gin Soaked Rag" kind="person" page="Org/Iconoclasm/People/Gin Soaked Rag
 entity "Glasswater" kind="place" page="Geography/Calaria/Hallia/Glasswater/index" {
     source "akasha"
 }
-entity "Glide Ape" kind="creature" page="Bestiary/Glide Ape" {
-    alias "glide apes"
-    source "akasha"
-}
 entity "Gloaming Codex" kind="phenomenon" page="Phenomena/Gloaming Codex" {
     alias "the Gloaming"
     alias "Gloaming"
@@ -742,9 +734,6 @@ entity "Godly Interplay" kind="deity" page="Divinity/Godly Interplay" {
 }
 entity "Grant" kind="person" being="jorge" {
     source "being"
-}
-entity "Gray Ooze" kind="creature" page="Bestiary/Gray Ooze" {
-    source "akasha"
 }
 entity "Grayson" {
     alias "Graystone"
@@ -796,9 +785,6 @@ entity "Heir of the Plague" kind="deity" page="Divinity/Outer Gods/Heir of the P
     alias "Heir"
     source "akasha"
 }
-entity "Hellion" kind="creature" page="Bestiary/Hellion" {
-    source "akasha"
-}
 entity "Herald" kind="deity" page="Divinity/Ashen Pact/Herald" {
     alias "herald"
     alias "Harold"
@@ -820,10 +806,6 @@ entity "Hildebrandt" {
     source "defs"
 }
 entity "Hildebrandt Corporation" kind="org" page="Org/Hildebrandt Corporation/index" {
-    source "akasha"
-}
-entity "Hivemother" kind="creature" page="Bestiary/Hivemother" {
-    alias "hivemother"
     source "akasha"
 }
 entity "Hlarf" kind="person" page="Org/Roundhat Gang/People/Hlarf" {
@@ -1002,9 +984,6 @@ entity "Kadou Floch" kind="person" page="Org/Alkahest Freight/People/Kadou Floch
     alias "Kadou"
     source "akasha"
 }
-entity "Keeper of Chains" kind="creature" page="Bestiary/Keeper of Chains" {
-    source "akasha"
-}
 entity "Keystone" kind="phenomenon" page="Phenomena/Keystone" {
     alias "keystones"
     alias "Aggie Stone"
@@ -1057,9 +1036,6 @@ entity "Letov Obratz" kind="person" page="Org/Garrick Textiles/People/Letov Obra
     alias "Letov"
     source "akasha"
 }
-entity "Living Tar" kind="creature" page="Bestiary/Living Tar" {
-    source "akasha"
-}
 entity "Lorandris" kind="place" page="Geography/Lorandris/index" {
     alias "Laurentius"
     alias "Lorandrus"
@@ -1070,9 +1046,6 @@ entity "Lorandris" kind="place" page="Geography/Lorandris/index" {
 entity "Louis Maller" kind="person" page="Org/Concordia/People/Louis Maller" {
     alias "Lewis Mallard"
     alias "Louis Mallard"
-    source "akasha"
-}
-entity "Lovelorn" kind="creature" page="Bestiary/Lovelorn" {
     source "akasha"
 }
 entity "Low-Mechanitor" {
@@ -1180,9 +1153,6 @@ entity "Mickey Ironroots" kind="person" page="Org/Iridescent Church/Convox/Magic
 entity "Ministry of Cultural Progress" kind="org" page="Org/Ministry of Cultural Progress/index" {
     source "akasha"
 }
-entity "Mioktan" kind="creature" page="Bestiary/Mioktan" {
-    source "akasha"
-}
 entity "MoCuP" {
     alias "MOCUP"
     source "defs"
@@ -1232,9 +1202,6 @@ entity "occultism" {
     alias "Heraclitism"
     source "defs"
 }
-entity "Ochre Jelly" kind="creature" page="Bestiary/Ochre Jelly" {
-    source "akasha"
-}
 entity "of Hallia" {
     alias "of Hellion"
     alias "of\\s*Alia"
@@ -1248,6 +1215,13 @@ entity "Officer Smith" kind="person" page="Org/Blackline/People/Officer Smith" {
     source "akasha"
 }
 entity "Oil of Unlife" kind="phenomenon" page="Phenomena/Oil of Unlife" {
+    source "akasha"
+}
+entity "Oozes" kind="creature" page="Bestiary/Oozes" {
+    alias "Gray Ooze"
+    alias "Ochre Jelly"
+    alias "Living Tar"
+    alias "Verdant Ooze"
     source "akasha"
 }
 entity "Opaline Reserve" kind="org" page="Org/Opaline Reserve" {
@@ -1350,9 +1324,6 @@ entity "Pharos" kind="place" page="Geography/Black and White/Pharos" {
     source "akasha"
     source "defs"
 }
-entity "Pier 54" kind="place" page="Geography/Calaria/Hallia/Sableclutch/Pier 54" {
-    source "akasha"
-}
 entity "Pilgrimage" kind="phenomenon" page="Phenomena/Pilgrimage" {
     source "akasha"
 }
@@ -1404,9 +1375,6 @@ entity "Psiburst" {
     alias "Psyburst"
     source "defs"
 }
-entity "Pusk" kind="creature" page="Bestiary/Pusk" {
-    source "akasha"
-}
 entity "Pyre" kind="deity" page="Divinity/Ashen Pact/Pyre" {
     alias "pyre"
     source "akasha"
@@ -1443,9 +1411,6 @@ entity "Rainy Days Incorporated" kind="org" page="Org/Rainy Days Incorporated" {
     source "akasha"
 }
 entity "Ralph Bishop" kind="person" page="Org/The Scale/People/Ralph Bishop" {
-    source "akasha"
-}
-entity "Rancorous Priest" kind="creature" page="Bestiary/Rancorous Priest" {
     source "akasha"
 }
 entity "Rapid Connection" kind="org" page="Org/Prime Meridian/Rapid Connection" {
@@ -1667,9 +1632,6 @@ entity "Solari Sub-surface" kind="org" page="Org/Solari Sub-surface/index" {
     source "akasha"
     source "defs"
 }
-entity "Song on Fire" kind="place" page="Geography/Black and White/Song on Fire" {
-    source "akasha"
-}
 entity "Soundscape Theaters" kind="place" page="Geography/Black and White/Soundscape Theaters" {
     alias "Soundscape Theater"
     source "akasha"
@@ -1706,10 +1668,6 @@ entity "Sundom" {
     alias "Sundub"
     alias "Sundome"
     source "defs"
-}
-entity "Swarm Child" kind="creature" page="Bestiary/Swarm Child" {
-    alias "swarm children"
-    source "akasha"
 }
 entity "Syrin" kind="person" page="Org/Amber Call/People/Syrin" {
     alias "Syrin"
@@ -1766,9 +1724,6 @@ entity "The Crowded Flea" kind="place" page="Geography/Calaria/Hallia/Sableclutc
     source "defs"
 }
 entity "The Deep" kind="deity" page="Divinity/Unknown Entities/The Deep" {
-    source "akasha"
-}
-entity "The Fixer" kind="deity" page="Divinity/Fiends/The Fixer" {
     source "akasha"
 }
 entity "The Harlequins" kind="org" page="Org/The Harlequins/index" {
@@ -1895,6 +1850,11 @@ entity "Ugathal" kind="creature" page="Bestiary/Ugathal" {
     source "akasha"
     source "defs"
 }
+entity "Undead" kind="creature" page="Bestiary/Undead" {
+    alias "Cairn White"
+    alias "Lovelorn"
+    source "akasha"
+}
 entity "Undercroft" kind="place" page="Geography/Istria/Iomenei/Undercroft" {
     source "akasha"
 }
@@ -1919,9 +1879,6 @@ entity "Verdant" {
     alias "Vernon"
     source "defs"
 }
-entity "Verdant Court Fey" kind="creature" page="Bestiary/Verdant Court Fey" {
-    source "akasha"
-}
 entity "Verdant Expanse" kind="place" page="Geography/Calaria/Verdant Expanse" {
     alias "Green Sea"
     alias "Emerald Deep"
@@ -1932,27 +1889,21 @@ entity "Verdant Expanse" kind="place" page="Geography/Calaria/Verdant Expanse" {
 entity "Verdant Holdings" kind="org" page="Org/Verdant Holdings/index" {
     source "akasha"
 }
-entity "Verdant Ooze" kind="creature" page="Bestiary/Verdant Ooze" {
-    alias "ooze"
+entity "Vermin" kind="creature" page="Bestiary/Vermin" {
+    alias "Deadly Mantis"
+    alias "Mioktan"
+    alias "Swarm Child"
+    alias "The Hivemother"
     source "akasha"
 }
 entity "Vilksnake" {
     alias "vilk snake"
     source "defs"
 }
-entity "Vine Snake" kind="creature" page="Bestiary/Vine Snake" {
-    alias "vine snakes"
-    alias "divine serpents"
-    alias "vine serpents"
-    source "akasha"
-}
-entity "Vitriolite" kind="creature" page="Bestiary/Vitriolite" {
-    source "akasha"
-}
 entity "Voice Box" kind="phenomenon" page="Phenomena/Voice Box" {
     source "akasha"
 }
-entity "Voice of Many" kind="creature" page="Bestiary/Voice of Many" {
+entity "Voice of Many" kind="org" page="Org/The Scale/Voice of Many" {
     alias "the Voice of Many"
     source "akasha"
 }

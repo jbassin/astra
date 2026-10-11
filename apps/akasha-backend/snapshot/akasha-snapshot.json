@@ -1,221 +1,144 @@
 {
   "edges": [
     {
-      "alias": "Sbrtlby Jotes",
-      "heading": null,
-      "resolved": "People/Sbrtlby Jotes",
-      "source": "Bestiary/Babau",
-      "target": "People/Sbrtlby Jotes"
-    },
-    {
-      "alias": "Ragged Roost",
-      "heading": null,
-      "resolved": "Geography/Calaria/Ragged Roost",
-      "source": "Bestiary/Barbazu",
-      "target": "Geography/Calaria/Ragged Roost"
-    },
-    {
-      "alias": "Barbazu",
-      "heading": null,
-      "resolved": "Bestiary/Barbazu",
-      "source": "Bestiary/Brimorak",
-      "target": "Bestiary/Barbazu"
-    },
-    {
-      "alias": "Ragged Roost",
-      "heading": null,
-      "resolved": "Geography/Calaria/Ragged Roost",
-      "source": "Bestiary/Brimorak",
-      "target": "Geography/Calaria/Ragged Roost"
-    },
-    {
-      "alias": "Detective Brooks",
-      "heading": null,
-      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
-      "source": "Bestiary/Cairn White",
-      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
-    },
-    {
-      "alias": "Anzu",
-      "heading": null,
-      "resolved": "People/Anzu",
-      "source": "Bestiary/Cairn White",
-      "target": "People/Anzu"
-    },
-    {
-      "alias": "Gloaming Codex",
-      "heading": null,
-      "resolved": "Phenomena/Gloaming Codex",
-      "source": "Bestiary/Carnivorous Ink",
-      "target": "Phenomena/Gloaming Codex"
-    },
-    {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
-      "source": "Bestiary/Cave Serpent",
+      "source": "Bestiary/Beasts",
       "target": "Geography/Calaria/Hallia/index"
     },
     {
-      "alias": "Gloaming Codex",
-      "heading": null,
-      "resolved": "Phenomena/Gloaming Codex",
-      "source": "Bestiary/Cursed Thought",
-      "target": "Phenomena/Gloaming Codex"
-    },
-    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Calaria/Verdant Expanse",
-      "source": "Bestiary/Deadly Mantis",
-      "target": "Verdant Expanse"
-    },
-    {
-      "alias": null,
-      "heading": null,
-      "resolved": "Geography/Calaria/Verdant Expanse",
-      "source": "Bestiary/Glide Ape",
+      "source": "Bestiary/Beasts",
       "target": "Verdant Expanse"
     },
     {
       "alias": "Wrenford",
       "heading": null,
       "resolved": "Geography/Calaria/Wrenford",
-      "source": "Bestiary/Glide Ape",
+      "source": "Bestiary/Beasts",
       "target": "Geography/Calaria/Wrenford"
     },
     {
-      "alias": "royal waterways",
+      "alias": null,
       "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Sewers",
-      "source": "Bestiary/Gray Ooze",
-      "target": "Geography/Calaria/Hallia/Sewers"
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Bestiary/Beasts",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Gloaming Codex",
+      "heading": null,
+      "resolved": "Phenomena/Gloaming Codex",
+      "source": "Bestiary/Creatures of the Gloaming Codex",
+      "target": "Phenomena/Gloaming Codex"
+    },
+    {
+      "alias": "Gloaming Codex",
+      "heading": null,
+      "resolved": "Phenomena/Gloaming Codex",
+      "source": "Bestiary/Creatures of the Gloaming Codex",
+      "target": "Phenomena/Gloaming Codex"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Bestiary/Fey",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Unknown Entities/Green Father",
+      "source": "Bestiary/Fey",
+      "target": "Green Father"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Bestiary/Fey",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
+      "alias": "Sbrtlby Jotes",
+      "heading": null,
+      "resolved": "People/Sbrtlby Jotes",
+      "source": "Bestiary/Fiends",
+      "target": "People/Sbrtlby Jotes"
+    },
+    {
+      "alias": "Ragged Roost",
+      "heading": null,
+      "resolved": "Geography/Calaria/Ragged Roost",
+      "source": "Bestiary/Fiends",
+      "target": "Geography/Calaria/Ragged Roost"
+    },
+    {
+      "alias": "Ragged Roost",
+      "heading": null,
+      "resolved": "Geography/Calaria/Ragged Roost",
+      "source": "Bestiary/Fiends",
+      "target": "Geography/Calaria/Ragged Roost"
     },
     {
       "alias": "Joker World at Star 221,325",
       "heading": null,
       "resolved": "Geography/Star 221,325",
-      "source": "Bestiary/Hellion",
+      "source": "Bestiary/Fiends",
       "target": "Geography/Star 221,325"
-    },
-    {
-      "alias": "Iomenei",
-      "heading": null,
-      "resolved": "Geography/Istria/Iomenei/index",
-      "source": "Bestiary/Hivemother",
-      "target": "Geography/Istria/Iomenei/index"
-    },
-    {
-      "alias": "swarm children",
-      "heading": null,
-      "resolved": "Bestiary/Swarm Child",
-      "source": "Bestiary/Hivemother",
-      "target": "Bestiary/Swarm Child"
-    },
-    {
-      "alias": "Barlow Crane",
-      "heading": null,
-      "resolved": "People/Barlow Crane",
-      "source": "Bestiary/Hivemother",
-      "target": "People/Barlow Crane"
-    },
-    {
-      "alias": "Grant FireEye",
-      "heading": null,
-      "resolved": "People/Grant FireEye",
-      "source": "Bestiary/Hivemother",
-      "target": "People/Grant FireEye"
-    },
-    {
-      "alias": "Gage",
-      "heading": null,
-      "resolved": "People/Gage",
-      "source": "Bestiary/Hivemother",
-      "target": "People/Gage"
-    },
-    {
-      "alias": "Archie",
-      "heading": null,
-      "resolved": "Org/Velvet Mark/People/Archie",
-      "source": "Bestiary/Hivemother",
-      "target": "Org/Velvet Mark/People/Archie"
-    },
-    {
-      "alias": "Gerhard",
-      "heading": null,
-      "resolved": "People/Gerhard",
-      "source": "Bestiary/Hivemother",
-      "target": "People/Gerhard"
-    },
-    {
-      "alias": null,
-      "heading": null,
-      "resolved": "Divinity/Fiends/Sigzil Haight",
-      "source": "Bestiary/Keeper of Chains",
-      "target": "Sigzil Haight"
-    },
-    {
-      "alias": null,
-      "heading": null,
-      "resolved": "Bestiary/Voice of Many",
-      "source": "Bestiary/Keeper of Chains",
-      "target": "Voice of Many"
-    },
-    {
-      "alias": "royal waterways",
-      "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Sewers",
-      "source": "Bestiary/Living Tar",
-      "target": "Geography/Calaria/Hallia/Sewers"
-    },
-    {
-      "alias": "Anzu",
-      "heading": null,
-      "resolved": "People/Anzu",
-      "source": "Bestiary/Lovelorn",
-      "target": "People/Anzu"
-    },
-    {
-      "alias": "Detective Brooks",
-      "heading": null,
-      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
-      "source": "Bestiary/Lovelorn",
-      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
     },
     {
       "alias": "Deosil",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Deosil",
-      "source": "Bestiary/Mioktan",
+      "source": "Bestiary/Fiends",
       "target": "Geography/Calaria/Hallia/Deosil"
     },
     {
       "alias": "Sbrtlby Jotes",
       "heading": null,
       "resolved": "People/Sbrtlby Jotes",
-      "source": "Bestiary/Mioktan",
+      "source": "Bestiary/Fiends",
       "target": "People/Sbrtlby Jotes"
     },
     {
-      "alias": "pusks",
+      "alias": "Voice of Many",
       "heading": null,
-      "resolved": "Bestiary/Pusk",
-      "source": "Bestiary/Mioktan",
-      "target": "Bestiary/Pusk"
+      "resolved": "Org/The Scale/Voice of Many",
+      "source": "Bestiary/Fiends",
+      "target": "Org/The Scale/Voice of Many"
     },
     {
       "alias": "royal waterways",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Sewers",
-      "source": "Bestiary/Ochre Jelly",
+      "source": "Bestiary/Oozes",
       "target": "Geography/Calaria/Hallia/Sewers"
     },
     {
-      "alias": "Johnny",
+      "alias": "royal waterways",
       "heading": null,
-      "resolved": "People/Johnny",
-      "source": "Bestiary/Ochre Jelly",
-      "target": "People/Johnny"
+      "resolved": "Geography/Calaria/Hallia/Sewers",
+      "source": "Bestiary/Oozes",
+      "target": "Geography/Calaria/Hallia/Sewers"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Bestiary/Oozes",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Wrenford",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford",
+      "source": "Bestiary/Oozes",
+      "target": "Geography/Calaria/Wrenford"
     },
     {
       "alias": "Hallia",
@@ -223,27 +146,6 @@
       "resolved": "Geography/Calaria/Hallia/index",
       "source": "Bestiary/Pale Servant",
       "target": "Geography/Calaria/Hallia/index"
-    },
-    {
-      "alias": "Deosil",
-      "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Deosil",
-      "source": "Bestiary/Pusk",
-      "target": "Geography/Calaria/Hallia/Deosil"
-    },
-    {
-      "alias": "Sbrtlby Jotes",
-      "heading": null,
-      "resolved": "People/Sbrtlby Jotes",
-      "source": "Bestiary/Pusk",
-      "target": "People/Sbrtlby Jotes"
-    },
-    {
-      "alias": "Hellions",
-      "heading": null,
-      "resolved": "Bestiary/Hellion",
-      "source": "Bestiary/Rancorous Priest",
-      "target": "Hellion"
     },
     {
       "alias": "Black and White",
@@ -267,27 +169,6 @@
       "target": "Phenomena/Voice Box"
     },
     {
-      "alias": "Iomenei",
-      "heading": null,
-      "resolved": "Geography/Istria/Iomenei/index",
-      "source": "Bestiary/Swarm Child",
-      "target": "Geography/Istria/Iomenei/index"
-    },
-    {
-      "alias": "Undercroft",
-      "heading": null,
-      "resolved": "Geography/Istria/Iomenei/Undercroft",
-      "source": "Bestiary/Swarm Child",
-      "target": "Geography/Istria/Iomenei/Undercroft"
-    },
-    {
-      "alias": "Hivemother",
-      "heading": null,
-      "resolved": "Bestiary/Hivemother",
-      "source": "Bestiary/Swarm Child",
-      "target": "Bestiary/Hivemother"
-    },
-    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Cagley",
@@ -309,109 +190,116 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
-      "alias": null,
+      "alias": "Detective Brooks",
       "heading": null,
-      "resolved": "Geography/Calaria/Verdant Expanse",
-      "source": "Bestiary/Verdant Court Fey",
-      "target": "Verdant Expanse"
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "source": "Bestiary/Undead",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
     },
     {
-      "alias": "Oriel",
+      "alias": "Anzu",
       "heading": null,
-      "resolved": "People/Oriel",
-      "source": "Bestiary/Verdant Court Fey",
-      "target": "People/Oriel"
+      "resolved": "People/Anzu",
+      "source": "Bestiary/Undead",
+      "target": "People/Anzu"
     },
     {
-      "alias": "Jin",
+      "alias": "Anzu",
       "heading": null,
-      "resolved": "People/Jin",
-      "source": "Bestiary/Verdant Court Fey",
-      "target": "People/Jin"
+      "resolved": "People/Anzu",
+      "source": "Bestiary/Undead",
+      "target": "People/Anzu"
     },
     {
-      "alias": null,
+      "alias": "Detective Brooks",
       "heading": null,
-      "resolved": "Divinity/Unknown Entities/Green Father",
-      "source": "Bestiary/Verdant Court Fey",
-      "target": "Green Father"
-    },
-    {
-      "alias": "Iridescent Church",
-      "heading": null,
-      "resolved": "Org/Iridescent Church/index",
-      "source": "Bestiary/Verdant Court Fey",
-      "target": "Org/Iridescent Church/index"
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "source": "Bestiary/Undead",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
     },
     {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Calaria/Verdant Expanse",
-      "source": "Bestiary/Verdant Ooze",
+      "source": "Bestiary/Vermin",
       "target": "Verdant Expanse"
     },
     {
-      "alias": "Wrenford",
+      "alias": "Deosil",
       "heading": null,
-      "resolved": "Geography/Calaria/Wrenford",
-      "source": "Bestiary/Verdant Ooze",
-      "target": "Geography/Calaria/Wrenford"
+      "resolved": "Geography/Calaria/Hallia/Deosil",
+      "source": "Bestiary/Vermin",
+      "target": "Geography/Calaria/Hallia/Deosil"
     },
     {
-      "alias": null,
+      "alias": "Sbrtlby Jotes",
       "heading": null,
-      "resolved": "Geography/Calaria/Verdant Expanse",
-      "source": "Bestiary/Vine Snake",
-      "target": "Verdant Expanse"
+      "resolved": "People/Sbrtlby Jotes",
+      "source": "Bestiary/Vermin",
+      "target": "People/Sbrtlby Jotes"
     },
     {
-      "alias": null,
+      "alias": "pusks",
       "heading": null,
-      "resolved": "Bestiary/Voice of Many",
-      "source": "Bestiary/Vitriolite",
-      "target": "Voice of Many"
+      "resolved": "Bestiary/Fiends",
+      "source": "Bestiary/Vermin",
+      "target": "Bestiary/Fiends"
     },
     {
-      "alias": "Heart",
+      "alias": "Iomenei",
       "heading": null,
-      "resolved": "Phenomena/Hearts",
-      "source": "Bestiary/Voice of Many",
-      "target": "Hearts"
+      "resolved": "Geography/Istria/Iomenei/index",
+      "source": "Bestiary/Vermin",
+      "target": "Geography/Istria/Iomenei/index"
     },
     {
-      "alias": "Manuel de la Cruzada",
+      "alias": "Undercroft",
       "heading": null,
-      "resolved": "Org/The Scale/People/Manuel de la Cruzada",
-      "source": "Bestiary/Voice of Many",
-      "target": "Org/The Scale/People/Manuel de la Cruzada"
+      "resolved": "Geography/Istria/Iomenei/Undercroft",
+      "source": "Bestiary/Vermin",
+      "target": "Geography/Istria/Iomenei/Undercroft"
     },
     {
-      "alias": null,
+      "alias": "Iomenei",
       "heading": null,
-      "resolved": "Divinity/Fiends/Sigzil Haight",
-      "source": "Bestiary/Voice of Many",
-      "target": "Sigzil Haight"
+      "resolved": "Geography/Istria/Iomenei/index",
+      "source": "Bestiary/Vermin",
+      "target": "Geography/Istria/Iomenei/index"
     },
     {
-      "alias": "Judge",
+      "alias": "Barlow Crane",
       "heading": null,
-      "resolved": "Divinity/Outer Gods/Judge of Ages",
-      "source": "Bestiary/Voice of Many",
-      "target": "Judge of Ages"
+      "resolved": "People/Barlow Crane",
+      "source": "Bestiary/Vermin",
+      "target": "People/Barlow Crane"
     },
     {
-      "alias": "the Quorum",
+      "alias": "Grant FireEye",
       "heading": null,
-      "resolved": "Geography/The Quorum",
-      "source": "Bestiary/Voice of Many",
-      "target": "Geography/The Quorum"
+      "resolved": "People/Grant FireEye",
+      "source": "Bestiary/Vermin",
+      "target": "People/Grant FireEye"
     },
     {
-      "alias": "the Scale",
+      "alias": "Gage",
       "heading": null,
-      "resolved": "Org/The Scale/index",
-      "source": "Bestiary/Voice of Many",
-      "target": "Org/The Scale/index"
+      "resolved": "People/Gage",
+      "source": "Bestiary/Vermin",
+      "target": "People/Gage"
+    },
+    {
+      "alias": "Archie",
+      "heading": null,
+      "resolved": "Org/Velvet Mark/People/Archie",
+      "source": "Bestiary/Vermin",
+      "target": "Org/Velvet Mark/People/Archie"
+    },
+    {
+      "alias": "Gerhard",
+      "heading": null,
+      "resolved": "People/Gerhard",
+      "source": "Bestiary/Vermin",
+      "target": "People/Gerhard"
     },
     {
       "alias": "Roundhat Gang",
@@ -493,9 +381,9 @@
     {
       "alias": "Heart",
       "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "resolved": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "source": "Divinity/Ashen Pact/Pyre",
-      "target": "Gas-n-Go Heart"
+      "target": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
     },
     {
       "alias": "Tywelwyn",
@@ -598,9 +486,9 @@
     {
       "alias": "Heart",
       "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "resolved": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "source": "Divinity/Ashen Pact/index",
-      "target": "Gas-n-Go Heart"
+      "target": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
     },
     {
       "alias": null,
@@ -752,9 +640,9 @@
     {
       "alias": "Hellions",
       "heading": null,
-      "resolved": "Bestiary/Hellion",
+      "resolved": "Bestiary/Fiends",
       "source": "Divinity/Fiends/Sigzil Haight",
-      "target": "Hellion"
+      "target": "Bestiary/Fiends"
     },
     {
       "alias": null,
@@ -764,11 +652,11 @@
       "target": "Flintlock Toboggan"
     },
     {
-      "alias": null,
+      "alias": "Voice of Many",
       "heading": null,
-      "resolved": "Bestiary/Voice of Many",
+      "resolved": "Org/The Scale/Voice of Many",
       "source": "Divinity/Fiends/Sigzil Haight",
-      "target": "Voice of Many"
+      "target": "Org/The Scale/Voice of Many"
     },
     {
       "alias": "Heart",
@@ -776,41 +664,6 @@
       "resolved": "Phenomena/Hearts",
       "source": "Divinity/Fiends/Sigzil Haight",
       "target": "Hearts"
-    },
-    {
-      "alias": null,
-      "heading": null,
-      "resolved": "Bestiary/Keeper of Chains",
-      "source": "Divinity/Fiends/Sigzil Haight",
-      "target": "Keeper of Chains"
-    },
-    {
-      "alias": "the Quorum",
-      "heading": null,
-      "resolved": "Geography/The Quorum",
-      "source": "Divinity/Fiends/The Fixer",
-      "target": "Geography/The Quorum"
-    },
-    {
-      "alias": "Joker World at Star 221,325",
-      "heading": null,
-      "resolved": "Geography/Star 221,325",
-      "source": "Divinity/Fiends/The Fixer",
-      "target": "Geography/Star 221,325"
-    },
-    {
-      "alias": null,
-      "heading": null,
-      "resolved": "Divinity/Fiends/Sigzil Haight",
-      "source": "Divinity/Fiends/The Fixer",
-      "target": "Sigzil Haight"
-    },
-    {
-      "alias": "Reverend Warden Manuel de la Cruzada",
-      "heading": null,
-      "resolved": "Org/The Scale/People/Manuel de la Cruzada",
-      "source": "Divinity/Fiends/The Fixer",
-      "target": "Org/The Scale/People/Manuel de la Cruzada"
     },
     {
       "alias": "Watcher",
@@ -1417,9 +1270,9 @@
     {
       "alias": "court of fey",
       "heading": null,
-      "resolved": "Bestiary/Verdant Court Fey",
+      "resolved": "Bestiary/Fey",
       "source": "Divinity/Unknown Entities/Green Father",
-      "target": "Bestiary/Verdant Court Fey"
+      "target": "Bestiary/Fey"
     },
     {
       "alias": "Renge",
@@ -1674,81 +1527,46 @@
       "target": "Pharos"
     },
     {
-      "alias": "Soundscape Theaters",
-      "heading": null,
-      "resolved": "Geography/Black and White/Soundscape Theaters",
-      "source": "Geography/Black and White/Song on Fire",
-      "target": "Geography/Black and White/Soundscape Theaters"
-    },
-    {
       "alias": "plaza",
       "heading": null,
       "resolved": "Geography/Black and White/Plaza",
-      "source": "Geography/Black and White/Song on Fire",
+      "source": "Geography/Black and White/Soundscape Theaters",
       "target": "Geography/Black and White/Plaza"
     },
     {
       "alias": "Black and White",
       "heading": null,
       "resolved": "Geography/Black and White/index",
-      "source": "Geography/Black and White/Song on Fire",
+      "source": "Geography/Black and White/Soundscape Theaters",
       "target": "Geography/Black and White/index"
     },
     {
       "alias": "Tywelwyn Leatherhide",
       "heading": null,
       "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
-      "source": "Geography/Black and White/Song on Fire",
+      "source": "Geography/Black and White/Soundscape Theaters",
       "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
     },
     {
       "alias": "Pyre",
       "heading": null,
       "resolved": "Divinity/Ashen Pact/Pyre",
-      "source": "Geography/Black and White/Song on Fire",
+      "source": "Geography/Black and White/Soundscape Theaters",
       "target": "Divinity/Ashen Pact/Pyre"
     },
     {
       "alias": "Pyrelight",
       "heading": null,
       "resolved": "Org/Pyrelight/index",
-      "source": "Geography/Black and White/Song on Fire",
+      "source": "Geography/Black and White/Soundscape Theaters",
       "target": "Org/Pyrelight/index"
     },
     {
       "alias": "Teller's Run",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
-      "source": "Geography/Black and White/Song on Fire",
+      "source": "Geography/Black and White/Soundscape Theaters",
       "target": "Geography/Calaria/Hallia/Teller's Run/index"
-    },
-    {
-      "alias": "plaza",
-      "heading": null,
-      "resolved": "Geography/Black and White/Plaza",
-      "source": "Geography/Black and White/Soundscape Theaters",
-      "target": "Geography/Black and White/Plaza"
-    },
-    {
-      "alias": "Black and White",
-      "heading": null,
-      "resolved": "Geography/Black and White/index",
-      "source": "Geography/Black and White/Soundscape Theaters",
-      "target": "Geography/Black and White/index"
-    },
-    {
-      "alias": "Tywelwyn Leatherhide",
-      "heading": null,
-      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
-      "source": "Geography/Black and White/Soundscape Theaters",
-      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
-    },
-    {
-      "alias": "Pyre",
-      "heading": null,
-      "resolved": "Divinity/Ashen Pact/Pyre",
-      "source": "Geography/Black and White/Soundscape Theaters",
-      "target": "Divinity/Ashen Pact/Pyre"
     },
     {
       "alias": null,
@@ -2251,27 +2069,6 @@
       "alias": "Sableclutch",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Sableclutch/index",
-      "source": "Geography/Calaria/Hallia/Sableclutch/Pier 54",
-      "target": "Geography/Calaria/Hallia/Sableclutch/index"
-    },
-    {
-      "alias": "The Crowded Flea",
-      "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
-      "source": "Geography/Calaria/Hallia/Sableclutch/Pier 54",
-      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
-    },
-    {
-      "alias": "Tywelwyn",
-      "heading": null,
-      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
-      "source": "Geography/Calaria/Hallia/Sableclutch/Pier 54",
-      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
-    },
-    {
-      "alias": "Sableclutch",
-      "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Sableclutch/index",
       "source": "Geography/Calaria/Hallia/Sableclutch/Prime Meridian Sub Transit Nexus",
       "target": "Geography/Calaria/Hallia/Sableclutch/index"
     },
@@ -2535,6 +2332,13 @@
       "target": "Org/Roundhat Gang/index"
     },
     {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
@@ -2614,23 +2418,23 @@
     {
       "alias": "ochre jellies",
       "heading": null,
-      "resolved": "Bestiary/Ochre Jelly",
+      "resolved": "Bestiary/Oozes",
       "source": "Geography/Calaria/Hallia/Sewers",
-      "target": "Bestiary/Ochre Jelly"
+      "target": "Bestiary/Oozes"
     },
     {
       "alias": "gray ooze",
       "heading": null,
-      "resolved": "Bestiary/Gray Ooze",
+      "resolved": "Bestiary/Oozes",
       "source": "Geography/Calaria/Hallia/Sewers",
-      "target": "Bestiary/Gray Ooze"
+      "target": "Bestiary/Oozes"
     },
     {
       "alias": "living tar",
       "heading": null,
-      "resolved": "Bestiary/Living Tar",
+      "resolved": "Bestiary/Oozes",
       "source": "Geography/Calaria/Hallia/Sewers",
-      "target": "Bestiary/Living Tar"
+      "target": "Bestiary/Oozes"
     },
     {
       "alias": "Argyle",
@@ -2836,94 +2640,94 @@
       "target": "Divinity/Ashen Pact/Pyre"
     },
     {
-      "alias": "Gas-n-Go",
-      "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
-      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
-    },
-    {
       "alias": "Heart",
       "heading": null,
       "resolved": "Phenomena/Hearts",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "target": "Hearts"
+    },
+    {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
     },
     {
       "alias": "Tywelwyn",
       "heading": null,
       "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
     },
     {
       "alias": "Pyre",
       "heading": null,
       "resolved": "Divinity/Ashen Pact/Pyre",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "target": "Divinity/Ashen Pact/Pyre"
     },
     {
       "alias": "Pyre",
       "heading": null,
       "resolved": "Divinity/Ashen Pact/Pyre",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "target": "Divinity/Ashen Pact/Pyre"
     },
     {
       "alias": "Herald",
       "heading": null,
       "resolved": "Divinity/Ashen Pact/Herald",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "target": "Divinity/Ashen Pact/Herald"
     },
     {
       "alias": "Giant",
       "heading": null,
       "resolved": "Divinity/Ashen Pact/Giant",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "target": "Divinity/Ashen Pact/Giant"
     },
     {
       "alias": "War",
       "heading": null,
       "resolved": "Divinity/Ashen Pact/War",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "target": "Divinity/Ashen Pact/War"
     },
     {
       "alias": "Esoterica",
       "heading": null,
       "resolved": "Divinity/Ashen Pact/Esoterica",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "target": "Divinity/Ashen Pact/Esoterica"
     },
     {
       "alias": "Regent",
       "heading": null,
       "resolved": "Divinity/Ashen Pact/Regent",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "target": "Divinity/Ashen Pact/Regent"
     },
     {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Færrin",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "target": "Færrin"
     },
     {
       "alias": "Embercall",
       "heading": null,
       "resolved": "Org/Embercall Industries/index",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "target": "Org/Embercall Industries/index"
     },
     {
       "alias": "Inquisition",
       "heading": null,
       "resolved": "Org/Iridescent Church/Convox/Inquisition/index",
-      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "target": "Org/Iridescent Church/Convox/Inquisition/index"
     },
     {
@@ -2971,9 +2775,9 @@
     {
       "alias": "Heart",
       "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "resolved": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
-      "target": "Gas-n-Go Heart"
+      "target": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
     },
     {
       "alias": "Pyre",
@@ -3237,37 +3041,37 @@
     {
       "alias": "deadly mantises",
       "heading": null,
-      "resolved": "Bestiary/Deadly Mantis",
+      "resolved": "Bestiary/Vermin",
       "source": "Geography/Calaria/Verdant Expanse",
-      "target": "Bestiary/Deadly Mantis"
+      "target": "Bestiary/Vermin"
     },
     {
       "alias": "glide apes",
       "heading": null,
-      "resolved": "Bestiary/Glide Ape",
+      "resolved": "Bestiary/Beasts",
       "source": "Geography/Calaria/Verdant Expanse",
-      "target": "Bestiary/Glide Ape"
+      "target": "Bestiary/Beasts"
     },
     {
       "alias": "vine snakes",
       "heading": null,
-      "resolved": "Bestiary/Vine Snake",
+      "resolved": "Bestiary/Beasts",
       "source": "Geography/Calaria/Verdant Expanse",
-      "target": "Bestiary/Vine Snake"
+      "target": "Bestiary/Beasts"
     },
     {
       "alias": "chorister birds",
       "heading": null,
-      "resolved": "Bestiary/Chorister Bird",
+      "resolved": "Bestiary/Beasts",
       "source": "Geography/Calaria/Verdant Expanse",
-      "target": "Bestiary/Chorister Bird"
+      "target": "Bestiary/Beasts"
     },
     {
       "alias": "A court of fey",
       "heading": null,
-      "resolved": "Bestiary/Verdant Court Fey",
+      "resolved": "Bestiary/Fey",
       "source": "Geography/Calaria/Verdant Expanse",
-      "target": "Bestiary/Verdant Court Fey"
+      "target": "Bestiary/Fey"
     },
     {
       "alias": "Wrenford",
@@ -3496,16 +3300,16 @@
     {
       "alias": "swarm children",
       "heading": null,
-      "resolved": "Bestiary/Swarm Child",
+      "resolved": "Bestiary/Vermin",
       "source": "Geography/Istria/Iomenei/Undercroft",
-      "target": "Bestiary/Swarm Child"
+      "target": "Bestiary/Vermin"
     },
     {
       "alias": "Hivemother",
       "heading": null,
-      "resolved": "Bestiary/Hivemother",
+      "resolved": "Bestiary/Vermin",
       "source": "Geography/Istria/Iomenei/Undercroft",
-      "target": "Bestiary/Hivemother"
+      "target": "Bestiary/Vermin"
     },
     {
       "alias": "Gerhard",
@@ -3704,11 +3508,11 @@
       "target": "Geography/The Quorum"
     },
     {
-      "alias": null,
+      "alias": "Voice of Many",
       "heading": null,
-      "resolved": "Bestiary/Voice of Many",
+      "resolved": "Org/The Scale/Voice of Many",
       "source": "Geography/Sigzil Haight's Demesne",
-      "target": "Voice of Many"
+      "target": "Org/The Scale/Voice of Many"
     },
     {
       "alias": null,
@@ -3734,9 +3538,9 @@
     {
       "alias": "Hellions",
       "heading": null,
-      "resolved": "Bestiary/Hellion",
+      "resolved": "Bestiary/Fiends",
       "source": "Geography/Star 221,325",
-      "target": "Hellion"
+      "target": "Bestiary/Fiends"
     },
     {
       "alias": "the Quorum",
@@ -4726,6 +4530,13 @@
       "target": "Geography/Raelion/index"
     },
     {
+      "alias": "Donovan Hale",
+      "heading": null,
+      "resolved": "People/Donnie",
+      "source": "Org/Ghosts of Raelion",
+      "target": "People/Donnie"
+    },
+    {
       "alias": "Donnie",
       "heading": null,
       "resolved": "People/Donnie",
@@ -5323,9 +5134,9 @@
     {
       "alias": "Heart",
       "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "resolved": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "source": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence",
-      "target": "Gas-n-Go Heart"
+      "target": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
     },
     {
       "alias": "Iridescent Church",
@@ -5561,9 +5372,9 @@
     {
       "alias": "court of fey",
       "heading": null,
-      "resolved": "Bestiary/Verdant Court Fey",
+      "resolved": "Bestiary/Fey",
       "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
-      "target": "Bestiary/Verdant Court Fey"
+      "target": "Bestiary/Fey"
     },
     {
       "alias": "Feyrock",
@@ -6233,9 +6044,9 @@
     {
       "alias": "Pier 54",
       "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Sableclutch/Pier 54",
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
       "source": "Org/Roundhat Gang/People/Hlarf",
-      "target": "Geography/Calaria/Hallia/Sableclutch/Pier 54"
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
     },
     {
       "alias": "Widdershins",
@@ -6324,9 +6135,9 @@
     {
       "alias": "Heart",
       "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "resolved": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "source": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
-      "target": "Gas-n-Go Heart"
+      "target": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
     },
     {
       "alias": "Gas-n-Go",
@@ -6443,9 +6254,9 @@
     {
       "alias": "Heart",
       "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "resolved": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove",
       "source": "Org/Roundhat Gang/index",
-      "target": "Gas-n-Go Heart"
+      "target": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
     },
     {
       "alias": "Crowded Flea",
@@ -6763,11 +6574,11 @@
       "target": "Geography/Star 221,325"
     },
     {
-      "alias": null,
+      "alias": "Voice of Many",
       "heading": null,
-      "resolved": "Bestiary/Voice of Many",
+      "resolved": "Org/The Scale/Voice of Many",
       "source": "Org/The Scale/People/Cliff Vandertrip",
-      "target": "Voice of Many"
+      "target": "Org/The Scale/Voice of Many"
     },
     {
       "alias": null,
@@ -6833,11 +6644,11 @@
       "target": "Geography/Star 221,325"
     },
     {
-      "alias": null,
+      "alias": "Voice of Many",
       "heading": null,
-      "resolved": "Bestiary/Voice of Many",
+      "resolved": "Org/The Scale/Voice of Many",
       "source": "Org/The Scale/People/Gregor",
-      "target": "Voice of Many"
+      "target": "Org/The Scale/Voice of Many"
     },
     {
       "alias": null,
@@ -6847,11 +6658,11 @@
       "target": "Sigzil Haight"
     },
     {
-      "alias": null,
+      "alias": "Keeper of Chains",
       "heading": null,
-      "resolved": "Bestiary/Keeper of Chains",
+      "resolved": "Divinity/Fiends/Sigzil Haight",
       "source": "Org/The Scale/People/Gregor",
-      "target": "Keeper of Chains"
+      "target": "Divinity/Fiends/Sigzil Haight"
     },
     {
       "alias": "The Scale",
@@ -6889,11 +6700,11 @@
       "target": "Geography/The Quorum"
     },
     {
-      "alias": null,
+      "alias": "Voice of Many",
       "heading": null,
-      "resolved": "Bestiary/Voice of Many",
+      "resolved": "Org/The Scale/Voice of Many",
       "source": "Org/The Scale/People/Manuel de la Cruzada",
-      "target": "Voice of Many"
+      "target": "Org/The Scale/Voice of Many"
     },
     {
       "alias": "The Scale",
@@ -6924,11 +6735,11 @@
       "target": "Geography/The Quorum"
     },
     {
-      "alias": null,
+      "alias": "Voice of Many",
       "heading": null,
-      "resolved": "Bestiary/Voice of Many",
+      "resolved": "Org/The Scale/Voice of Many",
       "source": "Org/The Scale/People/Zangron Lee",
-      "target": "Voice of Many"
+      "target": "Org/The Scale/Voice of Many"
     },
     {
       "alias": null,
@@ -6936,6 +6747,48 @@
       "resolved": "Divinity/Fiends/Sigzil Haight",
       "source": "Org/The Scale/People/Zangron Lee",
       "target": "Sigzil Haight"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/The Scale/Voice of Many",
+      "target": "Hearts"
+    },
+    {
+      "alias": "Manuel de la Cruzada",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Manuel de la Cruzada",
+      "source": "Org/The Scale/Voice of Many",
+      "target": "Org/The Scale/People/Manuel de la Cruzada"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Fiends/Sigzil Haight",
+      "source": "Org/The Scale/Voice of Many",
+      "target": "Sigzil Haight"
+    },
+    {
+      "alias": "Judge",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Judge of Ages",
+      "source": "Org/The Scale/Voice of Many",
+      "target": "Judge of Ages"
+    },
+    {
+      "alias": "the Quorum",
+      "heading": null,
+      "resolved": "Geography/The Quorum",
+      "source": "Org/The Scale/Voice of Many",
+      "target": "Geography/The Quorum"
+    },
+    {
+      "alias": "the Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "Org/The Scale/Voice of Many",
+      "target": "Org/The Scale/index"
     },
     {
       "alias": "Judge",
@@ -6966,11 +6819,11 @@
       "target": "People/Farrow Cross"
     },
     {
-      "alias": null,
+      "alias": "Voice of Many",
       "heading": null,
-      "resolved": "Bestiary/Voice of Many",
+      "resolved": "Org/The Scale/Voice of Many",
       "source": "Org/The Scale/index",
-      "target": "Voice of Many"
+      "target": "Org/The Scale/Voice of Many"
     },
     {
       "alias": "Heart",
@@ -7101,9 +6954,9 @@
     {
       "alias": "Hivemother",
       "heading": null,
-      "resolved": "Bestiary/Hivemother",
+      "resolved": "Bestiary/Vermin",
       "source": "Org/Velvet Mark/People/Archie",
-      "target": "Bestiary/Hivemother"
+      "target": "Bestiary/Vermin"
     },
     {
       "alias": "Barlow Crane",
@@ -7612,9 +7465,9 @@
     {
       "alias": "Hivemother",
       "heading": null,
-      "resolved": "Bestiary/Hivemother",
+      "resolved": "Bestiary/Vermin",
       "source": "People/Barlow Crane",
-      "target": "Bestiary/Hivemother"
+      "target": "Bestiary/Vermin"
     },
     {
       "alias": "Iconoclasm",
@@ -7883,7 +7736,7 @@
       "target": "Phenomena/Firmament"
     },
     {
-      "alias": "Ghost",
+      "alias": "Ghosts",
       "heading": null,
       "resolved": "Org/Ghosts of Raelion",
       "source": "People/Donnie",
@@ -7960,11 +7813,11 @@
       "target": "People/Camden Levine"
     },
     {
-      "alias": null,
+      "alias": "Song on Fire",
       "heading": null,
-      "resolved": "Geography/Black and White/Song on Fire",
+      "resolved": "Geography/Black and White/Soundscape Theaters",
       "source": "People/Elara Vance",
-      "target": "Song on Fire"
+      "target": "Geography/Black and White/Soundscape Theaters"
     },
     {
       "alias": "Soundscape Theaters",
@@ -8233,13 +8086,6 @@
       "target": "Org/Prime Meridian/Rapid Connection"
     },
     {
-      "alias": null,
-      "heading": null,
-      "resolved": "Geography/Calaria/Verdant Expanse",
-      "source": "People/Jin",
-      "target": "Verdant Expanse"
-    },
-    {
       "alias": "Iconoclasm",
       "heading": null,
       "resolved": "Org/Iconoclasm/index",
@@ -8473,9 +8319,9 @@
     {
       "alias": "court of fey",
       "heading": null,
-      "resolved": "Bestiary/Verdant Court Fey",
+      "resolved": "Bestiary/Fey",
       "source": "People/Lyric Burke",
-      "target": "Bestiary/Verdant Court Fey"
+      "target": "Bestiary/Fey"
     },
     {
       "alias": "Hallia",
@@ -8506,20 +8352,6 @@
       "target": "People/Johnny"
     },
     {
-      "alias": null,
-      "heading": null,
-      "resolved": "Geography/Calaria/Verdant Expanse",
-      "source": "People/Oriel",
-      "target": "Verdant Expanse"
-    },
-    {
-      "alias": "Jin",
-      "heading": null,
-      "resolved": "People/Jin",
-      "source": "People/Oriel",
-      "target": "People/Jin"
-    },
-    {
       "alias": "Tormeré",
       "heading": null,
       "resolved": "Geography/Tormeré/index",
@@ -8543,9 +8375,9 @@
     {
       "alias": "babau",
       "heading": null,
-      "resolved": "Bestiary/Babau",
+      "resolved": "Bestiary/Fiends",
       "source": "People/Sbrtlby Jotes",
-      "target": "Bestiary/Babau"
+      "target": "Bestiary/Fiends"
     },
     {
       "alias": "Deosil",
@@ -8557,16 +8389,16 @@
     {
       "alias": "pusks",
       "heading": null,
-      "resolved": "Bestiary/Pusk",
+      "resolved": "Bestiary/Fiends",
       "source": "People/Sbrtlby Jotes",
-      "target": "Bestiary/Pusk"
+      "target": "Bestiary/Fiends"
     },
     {
       "alias": "mioktans",
       "heading": null,
-      "resolved": "Bestiary/Mioktan",
+      "resolved": "Bestiary/Vermin",
       "source": "People/Sbrtlby Jotes",
-      "target": "Bestiary/Mioktan"
+      "target": "Bestiary/Vermin"
     },
     {
       "alias": null,
@@ -9054,9 +8886,9 @@
     {
       "alias": "court of fey",
       "heading": null,
-      "resolved": "Bestiary/Verdant Court Fey",
+      "resolved": "Bestiary/Fey",
       "source": "Phenomena/Feyrock",
-      "target": "Bestiary/Verdant Court Fey"
+      "target": "Bestiary/Fey"
     },
     {
       "alias": "Hallia",
@@ -9145,9 +8977,9 @@
     {
       "alias": "ink",
       "heading": null,
-      "resolved": "Bestiary/Carnivorous Ink",
+      "resolved": "Bestiary/Creatures of the Gloaming Codex",
       "source": "Phenomena/Gloaming Codex",
-      "target": "Bestiary/Carnivorous Ink"
+      "target": "Bestiary/Creatures of the Gloaming Codex"
     },
     {
       "alias": "twin suns",
@@ -9973,205 +9805,10 @@
     {
       "crossrefs": [
         {
-          "alias": "Sbrtlby Jotes",
-          "heading": null,
-          "target": "People/Sbrtlby Jotes"
-        }
-      ],
-      "date": "2026-02-24T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2026-02-24T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Fiend"
-        ],
-        "title": null
-      },
-      "path": "Bestiary/Babau"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "Ragged Roost",
-          "heading": null,
-          "target": "Geography/Calaria/Ragged Roost"
-        }
-      ],
-      "date": "2026-01-27T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2026-01-27T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Fiend"
-        ],
-        "title": null
-      },
-      "path": "Bestiary/Barbazu"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "Barbazu",
-          "heading": null,
-          "target": "Bestiary/Barbazu"
-        },
-        {
-          "alias": "Ragged Roost",
-          "heading": null,
-          "target": "Geography/Calaria/Ragged Roost"
-        }
-      ],
-      "date": "2026-01-27T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2026-01-27T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Fiend"
-        ],
-        "title": null
-      },
-      "path": "Bestiary/Brimorak"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "Detective Brooks",
-          "heading": null,
-          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
-        },
-        {
-          "alias": "Anzu",
-          "heading": null,
-          "target": "People/Anzu"
-        }
-      ],
-      "date": "2026-01-06T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2026-01-06T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [],
-        "title": null
-      },
-      "path": "Bestiary/Cairn White"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "Gloaming Codex",
-          "heading": null,
-          "target": "Phenomena/Gloaming Codex"
-        }
-      ],
-      "date": "2025-09-25T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2025-09-25T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Ooze"
-        ],
-        "title": null
-      },
-      "path": "Bestiary/Carnivorous Ink"
-    },
-    {
-      "crossrefs": [
-        {
           "alias": "Hallia",
           "heading": null,
           "target": "Geography/Calaria/Hallia/index"
-        }
-      ],
-      "date": "2025-11-18T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [
-          "giant serpents",
-          "cave serpents"
-        ],
-        "extra": {
-          "date": "2025-11-18T00:00:00-04:00"
         },
-        "img": null,
-        "tags": [],
-        "title": null
-      },
-      "path": "Bestiary/Cave Serpent"
-    },
-    {
-      "crossrefs": [],
-      "date": "2025-09-11T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [
-          "chorister birds"
-        ],
-        "extra": {
-          "date": "2025-09-11T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [],
-        "title": null
-      },
-      "path": "Bestiary/Chorister Bird"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "Gloaming Codex",
-          "heading": null,
-          "target": "Phenomena/Gloaming Codex"
-        }
-      ],
-      "date": "2025-09-25T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2025-09-25T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [],
-        "title": null
-      },
-      "path": "Bestiary/Cursed Thought"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": null,
-          "heading": null,
-          "target": "Verdant Expanse"
-        }
-      ],
-      "date": "2025-09-11T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [
-          "deadly mantises",
-          "mantis"
-        ],
-        "extra": {
-          "date": "2025-09-11T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [],
-        "title": null
-      },
-      "path": "Bestiary/Deadly Mantis"
-    },
-    {
-      "crossrefs": [
         {
           "alias": null,
           "heading": null,
@@ -10181,192 +9818,116 @@
           "alias": "Wrenford",
           "heading": null,
           "target": "Geography/Calaria/Wrenford"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
         }
       ],
-      "date": "2025-09-11T00:00:00-04:00",
+      "date": "2025-11-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
-          "glide apes"
+          "Cave Serpent",
+          "Chorister Bird",
+          "Glide Ape",
+          "Vine Snake"
         ],
         "extra": {
-          "date": "2025-09-11T00:00:00-04:00"
+          "date": "2025-11-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
         "title": null
       },
-      "path": "Bestiary/Glide Ape"
+      "path": "Bestiary/Beasts"
     },
     {
       "crossrefs": [
         {
-          "alias": "royal waterways",
+          "alias": "Gloaming Codex",
           "heading": null,
-          "target": "Geography/Calaria/Hallia/Sewers"
+          "target": "Phenomena/Gloaming Codex"
+        },
+        {
+          "alias": "Gloaming Codex",
+          "heading": null,
+          "target": "Phenomena/Gloaming Codex"
         }
       ],
-      "date": "2026-03-23T00:00:00-04:00",
+      "date": "2025-09-25T00:00:00-04:00",
       "frontmatter": {
-        "aliases": [],
+        "aliases": [
+          "Carnivorous Ink",
+          "Cursed Thought"
+        ],
         "extra": {
-          "date": "2026-03-23T00:00:00-04:00"
+          "date": "2025-09-25T00:00:00-04:00"
         },
         "img": null,
-        "tags": [
-          "Ooze"
-        ],
+        "tags": [],
         "title": null
       },
-      "path": "Bestiary/Gray Ooze"
+      "path": "Bestiary/Creatures of the Gloaming Codex"
     },
     {
       "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Green Father"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        }
+      ],
+      "date": "2025-09-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Verdant Court Fey",
+          "Jin",
+          "Oriel"
+        ],
+        "extra": {
+          "date": "2025-09-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Fey"
+        ],
+        "title": null
+      },
+      "path": "Bestiary/Fey"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Sbrtlby Jotes",
+          "heading": null,
+          "target": "People/Sbrtlby Jotes"
+        },
+        {
+          "alias": "Ragged Roost",
+          "heading": null,
+          "target": "Geography/Calaria/Ragged Roost"
+        },
+        {
+          "alias": "Ragged Roost",
+          "heading": null,
+          "target": "Geography/Calaria/Ragged Roost"
+        },
         {
           "alias": "Joker World at Star 221,325",
           "heading": null,
           "target": "Geography/Star 221,325"
-        }
-      ],
-      "date": "2025-06-09T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2025-06-09T00:00:00-04:00"
         },
-        "img": null,
-        "tags": [],
-        "title": null
-      },
-      "path": "Bestiary/Hellion"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "Iomenei",
-          "heading": null,
-          "target": "Geography/Istria/Iomenei/index"
-        },
-        {
-          "alias": "swarm children",
-          "heading": null,
-          "target": "Bestiary/Swarm Child"
-        },
-        {
-          "alias": "Barlow Crane",
-          "heading": null,
-          "target": "People/Barlow Crane"
-        },
-        {
-          "alias": "Grant FireEye",
-          "heading": null,
-          "target": "People/Grant FireEye"
-        },
-        {
-          "alias": "Gage",
-          "heading": null,
-          "target": "People/Gage"
-        },
-        {
-          "alias": "Archie",
-          "heading": null,
-          "target": "Org/Velvet Mark/People/Archie"
-        },
-        {
-          "alias": "Gerhard",
-          "heading": null,
-          "target": "People/Gerhard"
-        }
-      ],
-      "date": "2026-02-10T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [
-          "hivemother"
-        ],
-        "extra": {
-          "date": "2026-02-10T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [],
-        "title": null
-      },
-      "path": "Bestiary/Hivemother"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": null,
-          "heading": null,
-          "target": "Sigzil Haight"
-        },
-        {
-          "alias": null,
-          "heading": null,
-          "target": "Voice of Many"
-        }
-      ],
-      "date": "2025-06-23T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2025-06-23T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Fiend"
-        ],
-        "title": null
-      },
-      "path": "Bestiary/Keeper of Chains"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "royal waterways",
-          "heading": null,
-          "target": "Geography/Calaria/Hallia/Sewers"
-        }
-      ],
-      "date": "2026-03-23T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2026-03-23T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Ooze"
-        ],
-        "title": null
-      },
-      "path": "Bestiary/Living Tar"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "Anzu",
-          "heading": null,
-          "target": "People/Anzu"
-        },
-        {
-          "alias": "Detective Brooks",
-          "heading": null,
-          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
-        }
-      ],
-      "date": "2026-01-06T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2026-01-06T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [],
-        "title": null
-      },
-      "path": "Bestiary/Lovelorn"
-    },
-    {
-      "crossrefs": [
         {
           "alias": "Deosil",
           "heading": null,
@@ -10378,24 +9939,30 @@
           "target": "People/Sbrtlby Jotes"
         },
         {
-          "alias": "pusks",
+          "alias": "Voice of Many",
           "heading": null,
-          "target": "Bestiary/Pusk"
+          "target": "Org/The Scale/Voice of Many"
         }
       ],
       "date": "2026-02-24T00:00:00-04:00",
       "frontmatter": {
-        "aliases": [],
+        "aliases": [
+          "Babau",
+          "Barbazu",
+          "Brimorak",
+          "Hellion",
+          "Pusk",
+          "Rancorous Priest",
+          "Vitriolite"
+        ],
         "extra": {
           "date": "2026-02-24T00:00:00-04:00"
         },
         "img": null,
-        "tags": [
-          "Fiend"
-        ],
+        "tags": [],
         "title": null
       },
-      "path": "Bestiary/Mioktan"
+      "path": "Bestiary/Fiends"
     },
     {
       "crossrefs": [
@@ -10405,24 +9972,37 @@
           "target": "Geography/Calaria/Hallia/Sewers"
         },
         {
-          "alias": "Johnny",
+          "alias": "royal waterways",
           "heading": null,
-          "target": "People/Johnny"
+          "target": "Geography/Calaria/Hallia/Sewers"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Wrenford",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford"
         }
       ],
       "date": "2026-03-23T00:00:00-04:00",
       "frontmatter": {
-        "aliases": [],
+        "aliases": [
+          "Gray Ooze",
+          "Ochre Jelly",
+          "Living Tar",
+          "Verdant Ooze"
+        ],
         "extra": {
           "date": "2026-03-23T00:00:00-04:00"
         },
         "img": null,
-        "tags": [
-          "Ooze"
-        ],
+        "tags": [],
         "title": null
       },
-      "path": "Bestiary/Ochre Jelly"
+      "path": "Bestiary/Oozes"
     },
     {
       "crossrefs": [
@@ -10443,55 +10023,6 @@
         "title": null
       },
       "path": "Bestiary/Pale Servant"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "Deosil",
-          "heading": null,
-          "target": "Geography/Calaria/Hallia/Deosil"
-        },
-        {
-          "alias": "Sbrtlby Jotes",
-          "heading": null,
-          "target": "People/Sbrtlby Jotes"
-        }
-      ],
-      "date": "2026-02-24T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2026-02-24T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Fiend"
-        ],
-        "title": null
-      },
-      "path": "Bestiary/Pusk"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "Hellions",
-          "heading": null,
-          "target": "Hellion"
-        }
-      ],
-      "date": "2025-06-23T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2025-06-23T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Fiend"
-        ],
-        "title": null
-      },
-      "path": "Bestiary/Rancorous Priest"
     },
     {
       "crossrefs": [
@@ -10525,38 +10056,6 @@
         "title": null
       },
       "path": "Bestiary/Shade"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "Iomenei",
-          "heading": null,
-          "target": "Geography/Istria/Iomenei/index"
-        },
-        {
-          "alias": "Undercroft",
-          "heading": null,
-          "target": "Geography/Istria/Iomenei/Undercroft"
-        },
-        {
-          "alias": "Hivemother",
-          "heading": null,
-          "target": "Bestiary/Hivemother"
-        }
-      ],
-      "date": "2026-02-10T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [
-          "swarm children"
-        ],
-        "extra": {
-          "date": "2026-02-10T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [],
-        "title": null
-      },
-      "path": "Bestiary/Swarm Child"
     },
     {
       "crossrefs": [
@@ -10609,71 +10108,40 @@
     {
       "crossrefs": [
         {
-          "alias": null,
+          "alias": "Detective Brooks",
           "heading": null,
-          "target": "Verdant Expanse"
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
         },
         {
-          "alias": "Oriel",
+          "alias": "Anzu",
           "heading": null,
-          "target": "People/Oriel"
+          "target": "People/Anzu"
         },
         {
-          "alias": "Jin",
+          "alias": "Anzu",
           "heading": null,
-          "target": "People/Jin"
+          "target": "People/Anzu"
         },
         {
-          "alias": null,
+          "alias": "Detective Brooks",
           "heading": null,
-          "target": "Green Father"
-        },
-        {
-          "alias": "Iridescent Church",
-          "heading": null,
-          "target": "Org/Iridescent Church/index"
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
         }
       ],
-      "date": "2025-09-18T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2025-09-18T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Fey"
-        ],
-        "title": null
-      },
-      "path": "Bestiary/Verdant Court Fey"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": null,
-          "heading": null,
-          "target": "Verdant Expanse"
-        },
-        {
-          "alias": "Wrenford",
-          "heading": null,
-          "target": "Geography/Calaria/Wrenford"
-        }
-      ],
-      "date": "2025-09-11T00:00:00-04:00",
+      "date": "2026-01-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
-          "ooze"
+          "Cairn White",
+          "Lovelorn"
         ],
         "extra": {
-          "date": "2025-09-11T00:00:00-04:00"
+          "date": "2026-01-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
         "title": null
       },
-      "path": "Bestiary/Verdant Ooze"
+      "path": "Bestiary/Undead"
     },
     {
       "crossrefs": [
@@ -10681,94 +10149,79 @@
           "alias": null,
           "heading": null,
           "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Deosil",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Deosil"
+        },
+        {
+          "alias": "Sbrtlby Jotes",
+          "heading": null,
+          "target": "People/Sbrtlby Jotes"
+        },
+        {
+          "alias": "pusks",
+          "heading": null,
+          "target": "Bestiary/Fiends"
+        },
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei/index"
+        },
+        {
+          "alias": "Undercroft",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei/Undercroft"
+        },
+        {
+          "alias": "Iomenei",
+          "heading": null,
+          "target": "Geography/Istria/Iomenei/index"
+        },
+        {
+          "alias": "Barlow Crane",
+          "heading": null,
+          "target": "People/Barlow Crane"
+        },
+        {
+          "alias": "Grant FireEye",
+          "heading": null,
+          "target": "People/Grant FireEye"
+        },
+        {
+          "alias": "Gage",
+          "heading": null,
+          "target": "People/Gage"
+        },
+        {
+          "alias": "Archie",
+          "heading": null,
+          "target": "Org/Velvet Mark/People/Archie"
+        },
+        {
+          "alias": "Gerhard",
+          "heading": null,
+          "target": "People/Gerhard"
         }
       ],
-      "date": "2025-09-11T00:00:00-04:00",
+      "date": "2026-02-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
-          "vine snakes",
-          "divine serpents",
-          "vine serpents"
+          "Deadly Mantis",
+          "Mioktan",
+          "Swarm Child",
+          "The Hivemother"
         ],
         "extra": {
-          "date": "2025-09-11T00:00:00-04:00"
+          "date": "2026-02-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
         "title": null
       },
-      "path": "Bestiary/Vine Snake"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": null,
-          "heading": null,
-          "target": "Voice of Many"
-        }
-      ],
-      "date": "2025-06-23T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2025-06-23T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Fiend"
-        ],
-        "title": null
-      },
-      "path": "Bestiary/Vitriolite"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "Heart",
-          "heading": null,
-          "target": "Hearts"
-        },
-        {
-          "alias": "Manuel de la Cruzada",
-          "heading": null,
-          "target": "Org/The Scale/People/Manuel de la Cruzada"
-        },
-        {
-          "alias": null,
-          "heading": null,
-          "target": "Sigzil Haight"
-        },
-        {
-          "alias": "Judge",
-          "heading": null,
-          "target": "Judge of Ages"
-        },
-        {
-          "alias": "the Quorum",
-          "heading": null,
-          "target": "Geography/The Quorum"
-        },
-        {
-          "alias": "the Scale",
-          "heading": null,
-          "target": "Org/The Scale/index"
-        }
-      ],
-      "date": "2025-06-23T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [
-          "the Voice of Many"
-        ],
-        "extra": {
-          "date": "2025-06-23T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Heart"
-        ],
-        "title": null
-      },
-      "path": "Bestiary/Voice of Many"
+      "path": "Bestiary/Vermin"
     },
     {
       "crossrefs": [
@@ -10890,7 +10343,7 @@
         {
           "alias": "Heart",
           "heading": null,
-          "target": "Gas-n-Go Heart"
+          "target": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
         },
         {
           "alias": "Tywelwyn",
@@ -11010,7 +10463,7 @@
         {
           "alias": "Heart",
           "heading": null,
-          "target": "Gas-n-Go Heart"
+          "target": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
         },
         {
           "alias": null,
@@ -11182,7 +10635,7 @@
         {
           "alias": "Hellions",
           "heading": null,
-          "target": "Hellion"
+          "target": "Bestiary/Fiends"
         },
         {
           "alias": null,
@@ -11190,19 +10643,14 @@
           "target": "Flintlock Toboggan"
         },
         {
-          "alias": null,
+          "alias": "Voice of Many",
           "heading": null,
-          "target": "Voice of Many"
+          "target": "Org/The Scale/Voice of Many"
         },
         {
           "alias": "Heart",
           "heading": null,
           "target": "Hearts"
-        },
-        {
-          "alias": null,
-          "heading": null,
-          "target": "Keeper of Chains"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -11218,43 +10666,6 @@
         "title": null
       },
       "path": "Divinity/Fiends/Sigzil Haight"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "the Quorum",
-          "heading": null,
-          "target": "Geography/The Quorum"
-        },
-        {
-          "alias": "Joker World at Star 221,325",
-          "heading": null,
-          "target": "Geography/Star 221,325"
-        },
-        {
-          "alias": null,
-          "heading": null,
-          "target": "Sigzil Haight"
-        },
-        {
-          "alias": "Reverend Warden Manuel de la Cruzada",
-          "heading": null,
-          "target": "Org/The Scale/People/Manuel de la Cruzada"
-        }
-      ],
-      "date": "2025-06-23T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2025-06-23T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Fiend"
-        ],
-        "title": null
-      },
-      "path": "Divinity/Fiends/The Fixer"
     },
     {
       "crossrefs": [
@@ -11937,7 +11348,7 @@
         {
           "alias": "court of fey",
           "heading": null,
-          "target": "Bestiary/Verdant Court Fey"
+          "target": "Bestiary/Fey"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -12257,11 +11668,6 @@
     {
       "crossrefs": [
         {
-          "alias": "Soundscape Theaters",
-          "heading": null,
-          "target": "Geography/Black and White/Soundscape Theaters"
-        },
-        {
           "alias": "plaza",
           "heading": null,
           "target": "Geography/Black and White/Plaza"
@@ -12290,41 +11696,6 @@
           "alias": "Teller's Run",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Teller's Run/index"
-        }
-      ],
-      "date": "2025-12-16T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2025-12-16T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [],
-        "title": null
-      },
-      "path": "Geography/Black and White/Song on Fire"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "plaza",
-          "heading": null,
-          "target": "Geography/Black and White/Plaza"
-        },
-        {
-          "alias": "Black and White",
-          "heading": null,
-          "target": "Geography/Black and White/index"
-        },
-        {
-          "alias": "Tywelwyn Leatherhide",
-          "heading": null,
-          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
-        },
-        {
-          "alias": "Pyre",
-          "heading": null,
-          "target": "Divinity/Ashen Pact/Pyre"
         }
       ],
       "date": "2025-12-16T00:00:00-04:00",
@@ -13001,38 +12372,6 @@
           "target": "Geography/Calaria/Hallia/Sableclutch/index"
         },
         {
-          "alias": "The Crowded Flea",
-          "heading": null,
-          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
-        },
-        {
-          "alias": "Tywelwyn",
-          "heading": null,
-          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
-        }
-      ],
-      "date": "2025-10-20T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2025-10-20T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Geography"
-        ],
-        "title": null
-      },
-      "path": "Geography/Calaria/Hallia/Sableclutch/Pier 54"
-    },
-    {
-      "crossrefs": [
-        {
-          "alias": "Sableclutch",
-          "heading": null,
-          "target": "Geography/Calaria/Hallia/Sableclutch/index"
-        },
-        {
           "alias": "Prime Meridian",
           "heading": null,
           "target": "Org/Prime Meridian/index"
@@ -13261,6 +12600,11 @@
           "alias": "Roundhat Gang",
           "heading": null,
           "target": "Org/Roundhat Gang/index"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -13350,17 +12694,17 @@
         {
           "alias": "ochre jellies",
           "heading": null,
-          "target": "Bestiary/Ochre Jelly"
+          "target": "Bestiary/Oozes"
         },
         {
           "alias": "gray ooze",
           "heading": null,
-          "target": "Bestiary/Gray Ooze"
+          "target": "Bestiary/Oozes"
         },
         {
           "alias": "living tar",
           "heading": null,
-          "target": "Bestiary/Living Tar"
+          "target": "Bestiary/Oozes"
         },
         {
           "alias": "Argyle",
@@ -13568,14 +12912,14 @@
     {
       "crossrefs": [
         {
-          "alias": "Gas-n-Go",
-          "heading": null,
-          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
-        },
-        {
           "alias": "Heart",
           "heading": null,
           "target": "Hearts"
+        },
+        {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
         },
         {
           "alias": "Tywelwyn",
@@ -13646,7 +12990,7 @@
         "tags": [],
         "title": null
       },
-      "path": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart"
+      "path": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
     },
     {
       "crossrefs": [
@@ -13683,7 +13027,7 @@
         {
           "alias": "Heart",
           "heading": null,
-          "target": "Gas-n-Go Heart"
+          "target": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
         },
         {
           "alias": "Pyre",
@@ -13967,27 +13311,27 @@
         {
           "alias": "deadly mantises",
           "heading": null,
-          "target": "Bestiary/Deadly Mantis"
+          "target": "Bestiary/Vermin"
         },
         {
           "alias": "glide apes",
           "heading": null,
-          "target": "Bestiary/Glide Ape"
+          "target": "Bestiary/Beasts"
         },
         {
           "alias": "vine snakes",
           "heading": null,
-          "target": "Bestiary/Vine Snake"
+          "target": "Bestiary/Beasts"
         },
         {
           "alias": "chorister birds",
           "heading": null,
-          "target": "Bestiary/Chorister Bird"
+          "target": "Bestiary/Beasts"
         },
         {
           "alias": "A court of fey",
           "heading": null,
-          "target": "Bestiary/Verdant Court Fey"
+          "target": "Bestiary/Fey"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -14278,12 +13622,12 @@
         {
           "alias": "swarm children",
           "heading": null,
-          "target": "Bestiary/Swarm Child"
+          "target": "Bestiary/Vermin"
         },
         {
           "alias": "Hivemother",
           "heading": null,
-          "target": "Bestiary/Hivemother"
+          "target": "Bestiary/Vermin"
         },
         {
           "alias": "Gerhard",
@@ -14546,9 +13890,9 @@
           "target": "Geography/The Quorum"
         },
         {
-          "alias": null,
+          "alias": "Voice of Many",
           "heading": null,
-          "target": "Voice of Many"
+          "target": "Org/The Scale/Voice of Many"
         }
       ],
       "date": "2025-06-23T00:00:00-04:00",
@@ -14583,7 +13927,7 @@
         {
           "alias": "Hellions",
           "heading": null,
-          "target": "Hellion"
+          "target": "Bestiary/Fiends"
         },
         {
           "alias": "the Quorum",
@@ -15879,6 +15223,11 @@
           "target": "Geography/Raelion/index"
         },
         {
+          "alias": "Donovan Hale",
+          "heading": null,
+          "target": "People/Donnie"
+        },
+        {
           "alias": "Donnie",
           "heading": null,
           "target": "People/Donnie"
@@ -16610,7 +15959,7 @@
         {
           "alias": "Heart",
           "heading": null,
-          "target": "Gas-n-Go Heart"
+          "target": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
         }
       ],
       "date": "2026-01-06T00:00:00-04:00",
@@ -16912,7 +16261,7 @@
         {
           "alias": "court of fey",
           "heading": null,
-          "target": "Bestiary/Verdant Court Fey"
+          "target": "Bestiary/Fey"
         },
         {
           "alias": "Feyrock",
@@ -17874,7 +17223,7 @@
         {
           "alias": "Pier 54",
           "heading": null,
-          "target": "Geography/Calaria/Hallia/Sableclutch/Pier 54"
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
         },
         {
           "alias": "Widdershins",
@@ -17971,7 +17320,7 @@
         {
           "alias": "Heart",
           "heading": null,
-          "target": "Gas-n-Go Heart"
+          "target": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
         },
         {
           "alias": "Gas-n-Go",
@@ -18075,7 +17424,7 @@
         {
           "alias": "Heart",
           "heading": null,
-          "target": "Gas-n-Go Heart"
+          "target": "Geography/Calaria/Hallia/Widdershins/An Iron Gauntlet in a Glass Glove"
         },
         {
           "alias": "Crowded Flea",
@@ -18592,9 +17941,9 @@
           "target": "Geography/Star 221,325"
         },
         {
-          "alias": null,
+          "alias": "Voice of Many",
           "heading": null,
-          "target": "Voice of Many"
+          "target": "Org/The Scale/Voice of Many"
         },
         {
           "alias": null,
@@ -18679,9 +18028,9 @@
           "target": "Geography/Star 221,325"
         },
         {
-          "alias": null,
+          "alias": "Voice of Many",
           "heading": null,
-          "target": "Voice of Many"
+          "target": "Org/The Scale/Voice of Many"
         },
         {
           "alias": null,
@@ -18689,9 +18038,9 @@
           "target": "Sigzil Haight"
         },
         {
-          "alias": null,
+          "alias": "Keeper of Chains",
           "heading": null,
-          "target": "Keeper of Chains"
+          "target": "Divinity/Fiends/Sigzil Haight"
         }
       ],
       "date": "2025-06-23T00:00:00-04:00",
@@ -18753,9 +18102,9 @@
           "target": "Geography/The Quorum"
         },
         {
-          "alias": null,
+          "alias": "Voice of Many",
           "heading": null,
-          "target": "Voice of Many"
+          "target": "Org/The Scale/Voice of Many"
         }
       ],
       "date": "2025-06-23T00:00:00-04:00",
@@ -18816,9 +18165,9 @@
           "target": "Geography/The Quorum"
         },
         {
-          "alias": null,
+          "alias": "Voice of Many",
           "heading": null,
-          "target": "Voice of Many"
+          "target": "Org/The Scale/Voice of Many"
         },
         {
           "alias": null,
@@ -18843,6 +18192,55 @@
     {
       "crossrefs": [
         {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Hearts"
+        },
+        {
+          "alias": "Manuel de la Cruzada",
+          "heading": null,
+          "target": "Org/The Scale/People/Manuel de la Cruzada"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sigzil Haight"
+        },
+        {
+          "alias": "Judge",
+          "heading": null,
+          "target": "Judge of Ages"
+        },
+        {
+          "alias": "the Quorum",
+          "heading": null,
+          "target": "Geography/The Quorum"
+        },
+        {
+          "alias": "the Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        }
+      ],
+      "date": "2025-06-23T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "the Voice of Many"
+        ],
+        "extra": {
+          "date": "2025-06-23T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Heart"
+        ],
+        "title": null
+      },
+      "path": "Org/The Scale/Voice of Many"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Judge",
           "heading": null,
           "target": "Judge of Ages"
@@ -18863,9 +18261,9 @@
           "target": "People/Farrow Cross"
         },
         {
-          "alias": null,
+          "alias": "Voice of Many",
           "heading": null,
-          "target": "Voice of Many"
+          "target": "Org/The Scale/Voice of Many"
         },
         {
           "alias": "Heart",
@@ -19061,7 +18459,7 @@
         {
           "alias": "Hivemother",
           "heading": null,
-          "target": "Bestiary/Hivemother"
+          "target": "Bestiary/Vermin"
         },
         {
           "alias": "Barlow Crane",
@@ -19731,7 +19129,7 @@
         {
           "alias": "Hivemother",
           "heading": null,
-          "target": "Bestiary/Hivemother"
+          "target": "Bestiary/Vermin"
         }
       ],
       "date": "2026-02-10T00:00:00-04:00",
@@ -20037,7 +19435,7 @@
     {
       "crossrefs": [
         {
-          "alias": "Ghost",
+          "alias": "Ghosts",
           "heading": null,
           "target": "Org/Ghosts of Raelion"
         },
@@ -20074,7 +19472,9 @@
       ],
       "date": "2026-02-17T00:00:00-04:00",
       "frontmatter": {
-        "aliases": [],
+        "aliases": [
+          "Donovan Hale"
+        ],
         "extra": {
           "date": "2026-02-17T00:00:00-04:00"
         },
@@ -20109,9 +19509,9 @@
           "target": "People/Camden Levine"
         },
         {
-          "alias": null,
+          "alias": "Song on Fire",
           "heading": null,
-          "target": "Song on Fire"
+          "target": "Geography/Black and White/Soundscape Theaters"
         },
         {
           "alias": "Soundscape Theaters",
@@ -20485,28 +19885,6 @@
     {
       "crossrefs": [
         {
-          "alias": null,
-          "heading": null,
-          "target": "Verdant Expanse"
-        }
-      ],
-      "date": "2025-09-18T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2025-09-18T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Fey"
-        ],
-        "title": null
-      },
-      "path": "People/Jin"
-    },
-    {
-      "crossrefs": [
-        {
           "alias": "Iconoclasm",
           "heading": null,
           "target": "Org/Iconoclasm/index"
@@ -20723,7 +20101,7 @@
         {
           "alias": "court of fey",
           "heading": null,
-          "target": "Bestiary/Verdant Court Fey"
+          "target": "Bestiary/Fey"
         }
       ],
       "date": "2025-09-18T00:00:00-04:00",
@@ -20778,33 +20156,6 @@
       "path": "People/Moonlight"
     },
     {
-      "crossrefs": [
-        {
-          "alias": null,
-          "heading": null,
-          "target": "Verdant Expanse"
-        },
-        {
-          "alias": "Jin",
-          "heading": null,
-          "target": "People/Jin"
-        }
-      ],
-      "date": "2025-09-18T00:00:00-04:00",
-      "frontmatter": {
-        "aliases": [],
-        "extra": {
-          "date": "2025-09-18T00:00:00-04:00"
-        },
-        "img": null,
-        "tags": [
-          "Fey"
-        ],
-        "title": null
-      },
-      "path": "People/Oriel"
-    },
-    {
       "crossrefs": [],
       "date": "2025-11-04T00:00:00-04:00",
       "frontmatter": {
@@ -20853,7 +20204,7 @@
         {
           "alias": "babau",
           "heading": null,
-          "target": "Bestiary/Babau"
+          "target": "Bestiary/Fiends"
         },
         {
           "alias": "Deosil",
@@ -20863,12 +20214,12 @@
         {
           "alias": "pusks",
           "heading": null,
-          "target": "Bestiary/Pusk"
+          "target": "Bestiary/Fiends"
         },
         {
           "alias": "mioktans",
           "heading": null,
-          "target": "Bestiary/Mioktan"
+          "target": "Bestiary/Vermin"
         },
         {
           "alias": null,
@@ -21380,7 +20731,7 @@
         {
           "alias": "court of fey",
           "heading": null,
-          "target": "Bestiary/Verdant Court Fey"
+          "target": "Bestiary/Fey"
         },
         {
           "alias": "Hallia",
@@ -21477,7 +20828,7 @@
         {
           "alias": "ink",
           "heading": null,
-          "target": "Bestiary/Carnivorous Ink"
+          "target": "Bestiary/Creatures of the Gloaming Codex"
         }
       ],
       "date": "2025-09-25T00:00:00-04:00",
