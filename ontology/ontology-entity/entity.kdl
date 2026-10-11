@@ -1348,6 +1348,10 @@ entity "Sableclutch" kind="place" page="Geography/Calaria/Hallia/Sableclutch/ind
 entity "Sableclutch Scrap" kind="org" page="Org/Sableclutch Scrap/index" {
     source "akasha"
 }
+entity "Salo Murn" kind="person" page="Org/Amber Call/People/Salo Murn" {
+    alias "Salo"
+    source "akasha"
+}
 entity "Salvado" {
     alias "Silvado"
     alias "Solvado"
@@ -1519,8 +1523,10 @@ entity "Sundom" {
     alias "Sundome"
     source "defs"
 }
-entity "Syrin" {
+entity "Syrin" kind="person" page="Org/Amber Call/People/Syrin" {
+    alias "Syrin"
     alias "Siren"
+    source "akasha"
     source "defs"
 }
 entity "Tamara McKay" kind="person" page="Org/Protectorate/People/Tamara McKay" {

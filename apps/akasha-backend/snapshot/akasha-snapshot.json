@@ -729,6 +729,13 @@
       "target": "Org/Amber Call/index"
     },
     {
+      "alias": "Whiskers",
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Mr. Whiskers",
+      "source": "Divinity/Unknown Entities/The Zorbon",
+      "target": "Org/Amber Call/People/Mr. Whiskers"
+    },
+    {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
@@ -1604,6 +1611,34 @@
       "target": "Benjamin Grayson"
     },
     {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Ossain Madrun",
+      "source": "Geography/Quiet Below/Nos Mortem",
+      "target": "Ossain Madrun"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Salo Murn",
+      "source": "Geography/Quiet Below/Nos Mortem",
+      "target": "Salo Murn"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Syrin",
+      "source": "Geography/Quiet Below/Nos Mortem",
+      "target": "Syrin"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Mr. Whiskers",
+      "source": "Geography/Quiet Below/Nos Mortem",
+      "target": "Mr. Whiskers"
+    },
+    {
       "alias": "Edan",
       "heading": null,
       "resolved": "Geography/index",
@@ -1835,6 +1870,13 @@
       "target": "Nos Mortem"
     },
     {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Mr. Whiskers",
+      "source": "Org/Amber Call/People/Benjamin Grayson",
+      "target": "Mr. Whiskers"
+    },
+    {
       "alias": "Sableclutch",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Sableclutch/index",
@@ -1877,11 +1919,32 @@
       "target": "Nos Mortem"
     },
     {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Quiet Below/Nos Mortem",
+      "source": "Org/Amber Call/People/Salo Murn",
+      "target": "Nos Mortem"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Syrin",
+      "source": "Org/Amber Call/People/Salo Murn",
+      "target": "Syrin"
+    },
+    {
       "alias": "Amber Call",
       "heading": null,
       "resolved": "Org/Amber Call/index",
       "source": "Org/Amber Call/People/Silven Grayson",
       "target": "Org/Amber Call/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Quiet Below/Nos Mortem",
+      "source": "Org/Amber Call/People/Syrin",
+      "target": "Nos Mortem"
     },
     {
       "alias": "Orgs",
@@ -3149,6 +3212,13 @@
       "resolved": "Org/Pyrelight/index",
       "source": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
       "target": "Org/Pyrelight/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Benjamin Grayson",
+      "source": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "target": "Benjamin Grayson"
     },
     {
       "alias": "Sableclutch",
@@ -5396,6 +5466,90 @@
       "resolved": "Bestiary/Cave Serpent",
       "source": "Timeline",
       "target": "Bestiary/Cave Serpent"
+    },
+    {
+      "alias": "serpents",
+      "heading": null,
+      "resolved": "Bestiary/Cave Serpent",
+      "source": "Timeline",
+      "target": "Bestiary/Cave Serpent"
+    },
+    {
+      "alias": "fane",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Timeline",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Pulse",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Eternal Pulse",
+      "source": "Timeline",
+      "target": "Eternal Pulse"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Quiet Below/Nos Mortem",
+      "source": "Timeline",
+      "target": "Nos Mortem"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Ossain Madrun",
+      "source": "Timeline",
+      "target": "Ossain Madrun"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Syrin",
+      "source": "Timeline",
+      "target": "Syrin"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Salo Murn",
+      "source": "Timeline",
+      "target": "Salo Murn"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Mr. Whiskers",
+      "source": "Timeline",
+      "target": "Mr. Whiskers"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Belvedere",
+      "source": "Timeline",
+      "target": "Belvedere"
+    },
+    {
+      "alias": "Widdershins",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/index",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Widdershins/index"
+    },
+    {
+      "alias": "Magical Crimes Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
+      "alias": "Detective Brooks",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
     }
   ],
   "pages": [
@@ -5473,14 +5627,14 @@
           "target": "Geography/Calaria/Hallia/index"
         }
       ],
-      "date": "2025-11-11T00:00:00-04:00",
+      "date": "2025-11-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "giant serpents",
           "cave serpents"
         ],
         "extra": {
-          "date": "2025-11-11T00:00:00-04:00"
+          "date": "2025-11-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -6576,6 +6730,11 @@
           "alias": "Amber Call",
           "heading": null,
           "target": "Org/Amber Call/index"
+        },
+        {
+          "alias": "Whiskers",
+          "heading": null,
+          "target": "Org/Amber Call/People/Mr. Whiskers"
         },
         {
           "alias": "Hallia",
@@ -7754,6 +7913,26 @@
           "alias": null,
           "heading": null,
           "target": "Benjamin Grayson"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Ossain Madrun"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Salo Murn"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Syrin"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Mr. Whiskers"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -8104,6 +8283,11 @@
           "alias": null,
           "heading": null,
           "target": "Nos Mortem"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Mr. Whiskers"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -8193,6 +8377,35 @@
     {
       "crossrefs": [
         {
+          "alias": null,
+          "heading": null,
+          "target": "Nos Mortem"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Syrin"
+        }
+      ],
+      "date": "2025-11-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Salo"
+        ],
+        "extra": {
+          "date": "2025-11-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Ghost"
+        ],
+        "title": null
+      },
+      "path": "Org/Amber Call/People/Salo Murn"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Amber Call",
           "heading": null,
           "target": "Org/Amber Call/index"
@@ -8213,6 +8426,30 @@
         "title": null
       },
       "path": "Org/Amber Call/People/Silven Grayson"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Nos Mortem"
+        }
+      ],
+      "date": "2025-11-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Syrin"
+        ],
+        "extra": {
+          "date": "2025-11-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Ghoul"
+        ],
+        "title": null
+      },
+      "path": "Org/Amber Call/People/Syrin"
     },
     {
       "crossrefs": [],
@@ -10151,6 +10388,11 @@
           "alias": "Pyrelight",
           "heading": null,
           "target": "Org/Pyrelight/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Benjamin Grayson"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -12936,6 +13178,66 @@
           "alias": "serpents",
           "heading": null,
           "target": "Bestiary/Cave Serpent"
+        },
+        {
+          "alias": "serpents",
+          "heading": null,
+          "target": "Bestiary/Cave Serpent"
+        },
+        {
+          "alias": "fane",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Pulse",
+          "heading": null,
+          "target": "Eternal Pulse"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Nos Mortem"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Ossain Madrun"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Syrin"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Salo Murn"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Mr. Whiskers"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Belvedere"
+        },
+        {
+          "alias": "Widdershins",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/index"
+        },
+        {
+          "alias": "Magical Crimes Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+        },
+        {
+          "alias": "Detective Brooks",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
