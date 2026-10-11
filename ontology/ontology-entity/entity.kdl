@@ -569,6 +569,9 @@ entity "Fort DC" {
     alias "fort\\s*TC"
     source "defs"
 }
+entity "Friends of Aut" kind="org" page="Org/Friends of Aut" {
+    source "akasha"
+}
 entity "Færrin" kind="place" page="Geography/Færrin" {
     alias "Farron"
     alias "Ferrum"
@@ -1225,6 +1228,9 @@ entity "Pharos" kind="place" page="Geography/Black and White/Pharos" {
 entity "Pier 54" kind="place" page="Geography/Calaria/Hallia/Sableclutch/Pier 54" {
     source "akasha"
 }
+entity "Plaza" kind="place" page="Geography/Black and White/Plaza" {
+    source "akasha"
+}
 entity "Pluckwort" kind="person" being="jorge" {
     source "being"
 }
@@ -1751,6 +1757,9 @@ entity "Vine Snake" kind="creature" page="Bestiary/Vine Snake" {
     source "akasha"
 }
 entity "Vitriolite" kind="creature" page="Bestiary/Vitriolite" {
+    source "akasha"
+}
+entity "Voice Box" kind="phenomenon" page="Phenomena/Voice Box" {
     source "akasha"
 }
 entity "Voice of Many" kind="creature" page="Bestiary/Voice of Many" {

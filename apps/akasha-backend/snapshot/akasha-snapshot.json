@@ -680,6 +680,34 @@
       "target": "Geography/Black and White/index"
     },
     {
+      "alias": "Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "Divinity/The Narrative/Aut",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Færrin",
+      "source": "Divinity/The Narrative/Aut",
+      "target": "Færrin"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Godhome",
+      "source": "Divinity/The Narrative/Aut",
+      "target": "Godhome"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Black and White/Pharos",
+      "source": "Divinity/The Narrative/Aut",
+      "target": "Pharos"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Calaria/Verdant Expanse",
@@ -834,6 +862,48 @@
       "target": "Geography/Calaria/Hallia/Aurideon/index"
     },
     {
+      "alias": "Friends of Aut",
+      "heading": null,
+      "resolved": "Org/Friends of Aut",
+      "source": "Geography/Black and White/Pharos",
+      "target": "Org/Friends of Aut"
+    },
+    {
+      "alias": "voice boxes",
+      "heading": null,
+      "resolved": "Phenomena/Voice Box",
+      "source": "Geography/Black and White/Pharos",
+      "target": "Phenomena/Voice Box"
+    },
+    {
+      "alias": "Black and White",
+      "heading": null,
+      "resolved": "Geography/Black and White/Plaza",
+      "source": "Geography/Black and White/Pharos",
+      "target": "Geography/Black and White/Plaza"
+    },
+    {
+      "alias": "Black and White",
+      "heading": null,
+      "resolved": "Geography/Black and White/index",
+      "source": "Geography/Black and White/Plaza",
+      "target": "Geography/Black and White/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Black and White/Pharos",
+      "source": "Geography/Black and White/Plaza",
+      "target": "Pharos"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Geography/Black and White/Plaza",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Færrin",
@@ -846,6 +916,13 @@
       "resolved": "Geography/Black and White/Pharos",
       "source": "Geography/Black and White/index",
       "target": "Pharos"
+    },
+    {
+      "alias": "plaza",
+      "heading": null,
+      "resolved": "Geography/Black and White/Plaza",
+      "source": "Geography/Black and White/index",
+      "target": "Geography/Black and White/Plaza"
     },
     {
       "alias": "Calaria's",
@@ -916,6 +993,27 @@
       "resolved": "Divinity/Celestial Prescence",
       "source": "Geography/Calaria/Hallia/Aurideon/index",
       "target": "Celestial Prescence"
+    },
+    {
+      "alias": "Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "Geography/Calaria/Hallia/Aurideon/index",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Black and White/Pharos",
+      "source": "Geography/Calaria/Hallia/Aurideon/index",
+      "target": "Pharos"
+    },
+    {
+      "alias": "Friends of Aut",
+      "heading": null,
+      "resolved": "Org/Friends of Aut",
+      "source": "Geography/Calaria/Hallia/Aurideon/index",
+      "target": "Org/Friends of Aut"
     },
     {
       "alias": "Diamond District",
@@ -1147,6 +1245,20 @@
       "resolved": "Org/Iconoclasm/People/Anaïs Marchal",
       "source": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
       "target": "Org/Iconoclasm/People/Anaïs Marchal"
+    },
+    {
+      "alias": "Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+    },
+    {
+      "alias": "Roundhat Gang",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/index",
+      "source": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+      "target": "Org/Roundhat Gang/index"
     },
     {
       "alias": "Sableclutch",
@@ -2239,6 +2351,34 @@
       "resolved": "Org/Pyrelight/index",
       "source": "Org/Embercall Industries/index",
       "target": "Org/Pyrelight/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/The Narrative/Aut",
+      "source": "Org/Friends of Aut",
+      "target": "Aut"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Black and White/Pharos",
+      "source": "Org/Friends of Aut",
+      "target": "Pharos"
+    },
+    {
+      "alias": "Aurideon",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Aurideon/index",
+      "source": "Org/Friends of Aut",
+      "target": "Geography/Calaria/Hallia/Aurideon/index"
+    },
+    {
+      "alias": "Black and White",
+      "heading": null,
+      "resolved": "Geography/Black and White/index",
+      "source": "Org/Friends of Aut",
+      "target": "Geography/Black and White/index"
     },
     {
       "alias": "Garrick Textiles",
@@ -4061,6 +4201,167 @@
       "target": "Phenomena/Feyrock"
     },
     {
+      "alias": "Iconoclasm",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/index",
+      "source": "People/Anzu",
+      "target": "Org/Iconoclasm/index"
+    },
+    {
+      "alias": "Othello",
+      "heading": null,
+      "resolved": "People/Othello",
+      "source": "People/Anzu",
+      "target": "People/Othello"
+    },
+    {
+      "alias": "Austrene",
+      "heading": null,
+      "resolved": "Geography/Austrene/index",
+      "source": "People/Anzu",
+      "target": "Geography/Austrene/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Org/Belvedere",
+      "source": "People/Anzu",
+      "target": "Belvedere"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "People/Anzu",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "Roundhat Gang",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/index",
+      "source": "People/Anzu",
+      "target": "Org/Roundhat Gang/index"
+    },
+    {
+      "alias": "the Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "People/Anzu",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+    },
+    {
+      "alias": "Sir Arctos",
+      "heading": null,
+      "resolved": "People/Sir Arctos",
+      "source": "People/Anzu",
+      "target": "People/Sir Arctos"
+    },
+    {
+      "alias": "Johnny Skyfall",
+      "heading": null,
+      "resolved": "People/Johnny",
+      "source": "People/Anzu",
+      "target": "People/Johnny"
+    },
+    {
+      "alias": "Benny",
+      "heading": null,
+      "resolved": "People/Benny",
+      "source": "People/Anzu",
+      "target": "People/Benny"
+    },
+    {
+      "alias": "Iconoclasm",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/index",
+      "source": "People/Argyle",
+      "target": "Org/Iconoclasm/index"
+    },
+    {
+      "alias": "Dame Quay",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Dame Quay",
+      "source": "People/Argyle",
+      "target": "Org/The Scale/People/Dame Quay"
+    },
+    {
+      "alias": "the Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "People/Argyle",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Roundhat Gang",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/index",
+      "source": "People/Argyle",
+      "target": "Org/Roundhat Gang/index"
+    },
+    {
+      "alias": "the Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "People/Argyle",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+    },
+    {
+      "alias": "Iconoclasm",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/index",
+      "source": "People/Benny",
+      "target": "Org/Iconoclasm/index"
+    },
+    {
+      "alias": "Johnny Skyfall",
+      "heading": null,
+      "resolved": "People/Johnny",
+      "source": "People/Benny",
+      "target": "People/Johnny"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "People/Benny",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Roundhat Gang",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/index",
+      "source": "People/Benny",
+      "target": "Org/Roundhat Gang/index"
+    },
+    {
+      "alias": "the Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "People/Benny",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Black and White/Pharos",
+      "source": "People/Benny",
+      "target": "Pharos"
+    },
+    {
+      "alias": "Hlarf",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Hlarf",
+      "source": "People/Benny",
+      "target": "Org/Roundhat Gang/People/Hlarf"
+    },
+    {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "People/Benny",
+      "target": "People/Argyle"
+    },
+    {
       "alias": "Widdershins",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Widdershins/index",
@@ -4129,6 +4430,62 @@
       "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot",
       "source": "People/Jin",
       "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+    },
+    {
+      "alias": "Iconoclasm",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/index",
+      "source": "People/Johnny",
+      "target": "Org/Iconoclasm/index"
+    },
+    {
+      "alias": "Ghost",
+      "heading": null,
+      "resolved": "Org/Ghosts of Raelion",
+      "source": "People/Johnny",
+      "target": "Org/Ghosts of Raelion"
+    },
+    {
+      "alias": "Benny",
+      "heading": null,
+      "resolved": "People/Benny",
+      "source": "People/Johnny",
+      "target": "People/Benny"
+    },
+    {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "People/Johnny",
+      "target": "People/Argyle"
+    },
+    {
+      "alias": "Roundhat Gang",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/index",
+      "source": "People/Johnny",
+      "target": "Org/Roundhat Gang/index"
+    },
+    {
+      "alias": "the Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "People/Johnny",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/The Narrative/Aut",
+      "source": "People/Johnny",
+      "target": "Aut"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Black and White/Pharos",
+      "source": "People/Johnny",
+      "target": "Pharos"
     },
     {
       "alias": "Tommy Lagerman",
@@ -4213,6 +4570,34 @@
       "resolved": "People/Jin",
       "source": "People/Oriel",
       "target": "People/Jin"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "People/Sir Arctos",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
+      "alias": "Austrene",
+      "heading": null,
+      "resolved": "Geography/Austrene/index",
+      "source": "People/Sir Arctos",
+      "target": "Geography/Austrene/index"
+    },
+    {
+      "alias": "Iconoclasm",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/index",
+      "source": "People/Sir Arctos",
+      "target": "Org/Iconoclasm/index"
+    },
+    {
+      "alias": "Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "People/Sir Arctos",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
     },
     {
       "alias": null,
@@ -4577,6 +4962,27 @@
       "resolved": "Geography/Star 221,325",
       "source": "Phenomena/Sky Metal",
       "target": "Geography/Star 221,325"
+    },
+    {
+      "alias": "Friends of Aut",
+      "heading": null,
+      "resolved": "Org/Friends of Aut",
+      "source": "Phenomena/Voice Box",
+      "target": "Org/Friends of Aut"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Black and White/Pharos",
+      "source": "Phenomena/Voice Box",
+      "target": "Pharos"
+    },
+    {
+      "alias": "Black and White",
+      "heading": null,
+      "resolved": "Geography/Black and White/index",
+      "source": "Phenomena/Voice Box",
+      "target": "Geography/Black and White/index"
     },
     {
       "alias": "Harmony",
@@ -5767,6 +6173,111 @@
       "resolved": "Org/Roundhat Gang/People/Hlarf",
       "source": "Timeline",
       "target": "Org/Roundhat Gang/People/Hlarf"
+    },
+    {
+      "alias": "Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+      "source": "Timeline",
+      "target": "Sin and Tonic"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/The Narrative/Aut",
+      "source": "Timeline",
+      "target": "Aut"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Færrin",
+      "source": "Timeline",
+      "target": "Færrin"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Godhome",
+      "source": "Timeline",
+      "target": "Godhome"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Black and White/Pharos",
+      "source": "Timeline",
+      "target": "Pharos"
+    },
+    {
+      "alias": "Hlarf",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Hlarf",
+      "source": "Timeline",
+      "target": "Org/Roundhat Gang/People/Hlarf"
+    },
+    {
+      "alias": "Sir Arctos",
+      "heading": null,
+      "resolved": "People/Sir Arctos",
+      "source": "Timeline",
+      "target": "People/Sir Arctos"
+    },
+    {
+      "alias": "Iconoclasm",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/index",
+      "source": "Timeline",
+      "target": "Org/Iconoclasm/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Timeline",
+      "target": "Voidsong"
+    },
+    {
+      "alias": "Aurideon",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Aurideon/index",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Aurideon/index"
+    },
+    {
+      "alias": "Friends of Aut",
+      "heading": null,
+      "resolved": "Org/Friends of Aut",
+      "source": "Timeline",
+      "target": "Org/Friends of Aut"
+    },
+    {
+      "alias": "voice boxes",
+      "heading": null,
+      "resolved": "Phenomena/Voice Box",
+      "source": "Timeline",
+      "target": "Phenomena/Voice Box"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Black and White/Pharos",
+      "source": "Timeline",
+      "target": "Pharos"
+    },
+    {
+      "alias": "Black and White",
+      "heading": null,
+      "resolved": "Geography/Black and White/Plaza",
+      "source": "Timeline",
+      "target": "Geography/Black and White/Plaza"
     }
   ],
   "pages": [
@@ -6897,6 +7408,26 @@
           "alias": "Black and White",
           "heading": null,
           "target": "Geography/Black and White/index"
+        },
+        {
+          "alias": "Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Færrin"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Godhome"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Pharos"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -7084,6 +7615,21 @@
           "alias": "Aurideon",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Aurideon/index"
+        },
+        {
+          "alias": "Friends of Aut",
+          "heading": null,
+          "target": "Org/Friends of Aut"
+        },
+        {
+          "alias": "voice boxes",
+          "heading": null,
+          "target": "Phenomena/Voice Box"
+        },
+        {
+          "alias": "Black and White",
+          "heading": null,
+          "target": "Geography/Black and White/Plaza"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -7101,6 +7647,36 @@
     {
       "crossrefs": [
         {
+          "alias": "Black and White",
+          "heading": null,
+          "target": "Geography/Black and White/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Pharos"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        }
+      ],
+      "date": "2025-12-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-12-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Black and White/Plaza"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": null,
           "heading": null,
           "target": "Færrin"
@@ -7109,6 +7685,11 @@
           "alias": null,
           "heading": null,
           "target": "Pharos"
+        },
+        {
+          "alias": "plaza",
+          "heading": null,
+          "target": "Geography/Black and White/Plaza"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -7204,6 +7785,21 @@
           "alias": "aurorae",
           "heading": null,
           "target": "Celestial Prescence"
+        },
+        {
+          "alias": "Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Pharos"
+        },
+        {
+          "alias": "Friends of Aut",
+          "heading": null,
+          "target": "Org/Friends of Aut"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -7542,6 +8138,16 @@
           "alias": "twins",
           "heading": null,
           "target": "Org/Iconoclasm/People/Anaïs Marchal"
+        },
+        {
+          "alias": "Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        },
+        {
+          "alias": "Roundhat Gang",
+          "heading": null,
+          "target": "Org/Roundhat Gang/index"
         }
       ],
       "date": "2026-06-06T22:12:21-04:00",
@@ -9121,6 +9727,41 @@
     {
       "crossrefs": [
         {
+          "alias": null,
+          "heading": null,
+          "target": "Aut"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Pharos"
+        },
+        {
+          "alias": "Aurideon",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Aurideon/index"
+        },
+        {
+          "alias": "Black and White",
+          "heading": null,
+          "target": "Geography/Black and White/index"
+        }
+      ],
+      "date": "2025-12-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-12-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/Friends of Aut"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Garrick Textiles",
           "heading": null,
           "target": "Org/Garrick Textiles/index"
@@ -10657,11 +11298,11 @@
           "target": "Geography/Calaria/Hallia/Sableclutch/Pier 54"
         }
       ],
-      "date": "2025-12-02T00:00:00-04:00",
+      "date": "2025-12-09T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-02T00:00:00-04:00"
+          "date": "2025-12-09T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -11989,6 +12630,170 @@
     {
       "crossrefs": [
         {
+          "alias": "Iconoclasm",
+          "heading": null,
+          "target": "Org/Iconoclasm/index"
+        },
+        {
+          "alias": "Othello",
+          "heading": null,
+          "target": "People/Othello"
+        },
+        {
+          "alias": "Austrene",
+          "heading": null,
+          "target": "Geography/Austrene/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Belvedere"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "Roundhat Gang",
+          "heading": null,
+          "target": "Org/Roundhat Gang/index"
+        },
+        {
+          "alias": "the Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        },
+        {
+          "alias": "Sir Arctos",
+          "heading": null,
+          "target": "People/Sir Arctos"
+        },
+        {
+          "alias": "Johnny Skyfall",
+          "heading": null,
+          "target": "People/Johnny"
+        },
+        {
+          "alias": "Benny",
+          "heading": null,
+          "target": "People/Benny"
+        }
+      ],
+      "date": "2025-12-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-12-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Tengu"
+        ],
+        "title": null
+      },
+      "path": "People/Anzu"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Iconoclasm",
+          "heading": null,
+          "target": "Org/Iconoclasm/index"
+        },
+        {
+          "alias": "Dame Quay",
+          "heading": null,
+          "target": "Org/The Scale/People/Dame Quay"
+        },
+        {
+          "alias": "the Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Roundhat Gang",
+          "heading": null,
+          "target": "Org/Roundhat Gang/index"
+        },
+        {
+          "alias": "the Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        }
+      ],
+      "date": "2025-12-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-12-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "People/Argyle"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Iconoclasm",
+          "heading": null,
+          "target": "Org/Iconoclasm/index"
+        },
+        {
+          "alias": "Johnny Skyfall",
+          "heading": null,
+          "target": "People/Johnny"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Roundhat Gang",
+          "heading": null,
+          "target": "Org/Roundhat Gang/index"
+        },
+        {
+          "alias": "the Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Pharos"
+        },
+        {
+          "alias": "Hlarf",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Hlarf"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
+        }
+      ],
+      "date": "2025-12-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-12-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "People/Benny"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Widdershins",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Widdershins/index"
@@ -12126,6 +12931,63 @@
     {
       "crossrefs": [
         {
+          "alias": "Iconoclasm",
+          "heading": null,
+          "target": "Org/Iconoclasm/index"
+        },
+        {
+          "alias": "Ghost",
+          "heading": null,
+          "target": "Org/Ghosts of Raelion"
+        },
+        {
+          "alias": "Benny",
+          "heading": null,
+          "target": "People/Benny"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
+        },
+        {
+          "alias": "Roundhat Gang",
+          "heading": null,
+          "target": "Org/Roundhat Gang/index"
+        },
+        {
+          "alias": "the Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Aut"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Pharos"
+        }
+      ],
+      "date": "2025-12-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-12-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Half-Elf"
+        ],
+        "title": null
+      },
+      "path": "People/Johnny"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Tommy Lagerman",
           "heading": null,
           "target": "People/Tommy Lagerman"
@@ -12249,6 +13111,41 @@
         "title": null
       },
       "path": "People/Othello"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        },
+        {
+          "alias": "Austrene",
+          "heading": null,
+          "target": "Geography/Austrene/index"
+        },
+        {
+          "alias": "Iconoclasm",
+          "heading": null,
+          "target": "Org/Iconoclasm/index"
+        },
+        {
+          "alias": "Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        }
+      ],
+      "date": "2025-12-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-12-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "People/Sir Arctos"
     },
     {
       "crossrefs": [
@@ -12760,6 +13657,36 @@
         "title": null
       },
       "path": "Phenomena/Stillness"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Friends of Aut",
+          "heading": null,
+          "target": "Org/Friends of Aut"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Pharos"
+        },
+        {
+          "alias": "Black and White",
+          "heading": null,
+          "target": "Geography/Black and White/index"
+        }
+      ],
+      "date": "2025-12-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-12-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Phenomena/Voice Box"
     },
     {
       "crossrefs": [
@@ -13657,6 +14584,81 @@
           "alias": "Hlarf",
           "heading": null,
           "target": "Org/Roundhat Gang/People/Hlarf"
+        },
+        {
+          "alias": "Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sin and Tonic"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Aut"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Færrin"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Godhome"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Pharos"
+        },
+        {
+          "alias": "Hlarf",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Hlarf"
+        },
+        {
+          "alias": "Sir Arctos",
+          "heading": null,
+          "target": "People/Sir Arctos"
+        },
+        {
+          "alias": "Iconoclasm",
+          "heading": null,
+          "target": "Org/Iconoclasm/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Voidsong"
+        },
+        {
+          "alias": "Aurideon",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Aurideon/index"
+        },
+        {
+          "alias": "Friends of Aut",
+          "heading": null,
+          "target": "Org/Friends of Aut"
+        },
+        {
+          "alias": "voice boxes",
+          "heading": null,
+          "target": "Phenomena/Voice Box"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Pharos"
+        },
+        {
+          "alias": "Black and White",
+          "heading": null,
+          "target": "Geography/Black and White/Plaza"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
