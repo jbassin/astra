@@ -397,6 +397,9 @@ entity "Crowe" {
     alias "Crow"
     source "defs"
 }
+entity "Crystal Globe" kind="place" page="Geography/Calaria/Hallia/Masque District/Crystal Globe" {
+    source "akasha"
+}
 entity "Crystal Hill" kind="place" page="Geography/Calaria/Hallia/Diamond District/Crystal Hill" {
     source "akasha"
 }
@@ -865,9 +868,11 @@ entity "Inquisitor Penitence" kind="person" page="Org/Iridescent Church/Convox/I
     alias "Penitence"
     source "akasha"
 }
-entity "Insuperlex" {
+entity "Insuperlex" kind="deity" page="Divinity/The Narrative/Insuperlex" {
+    alias "Insuperlex"
     alias "Insuperlix"
     alias "Superlex"
+    source "akasha"
     source "defs"
 }
 entity "Iomenei" {
@@ -1072,11 +1077,14 @@ entity "meeting you, Aut" {
     alias "meeting you, Art"
     source "defs"
 }
-entity "Menhir" {
+entity "Menhir" kind="deity" page="Divinity/The Narrative/Menhir" {
+    alias "the Menhir"
+    alias "Menhir"
     alias "Menhirs"
     alias "Menyr"
     alias "Menir"
     alias "Menyir"
+    source "akasha"
     source "defs"
 }
 entity "mental" {
@@ -1252,6 +1260,11 @@ entity "PaSuun" {
     alias "Hasun"
     source "defs"
 }
+entity "Petr" kind="deity" page="Divinity/The Narrative/Petr" {
+    alias "P'ter"
+    alias "Petr"
+    source "akasha"
+}
 entity "Pharos" kind="place" page="Geography/Black and White/Pharos" {
     alias "Ferris"
     alias "Firas"
@@ -1259,6 +1272,9 @@ entity "Pharos" kind="place" page="Geography/Black and White/Pharos" {
     source "defs"
 }
 entity "Pier 54" kind="place" page="Geography/Calaria/Hallia/Sableclutch/Pier 54" {
+    source "akasha"
+}
+entity "Pilgrimage" kind="phenomenon" page="Phenomena/Pilgrimage" {
     source "akasha"
 }
 entity "Plaza" kind="place" page="Geography/Black and White/Plaza" {
@@ -1342,9 +1358,12 @@ entity "Regent" kind="deity" page="Divinity/Ashen Pact/Regent" {
     source "akasha"
     source "defs"
 }
-entity "Renge" {
+entity "Renge" kind="deity" page="Divinity/The Narrative/Renge" {
+    alias "Renge"
+    alias "the Fickle Mistress"
     alias "Renga"
     alias "Rengo"
+    source "akasha"
     source "defs"
 }
 entity "Reverend" kind="person" being="noah" {
@@ -1635,6 +1654,9 @@ entity "The Crowded Flea" kind="place" page="Geography/Calaria/Hallia/Sableclutc
     source "akasha"
     source "defs"
 }
+entity "The Deep" kind="deity" page="Divinity/Unknown Entities/The Deep" {
+    source "akasha"
+}
 entity "The Fixer" kind="deity" page="Divinity/Fiends/The Fixer" {
     source "akasha"
 }
@@ -1654,6 +1676,9 @@ entity "the Horizon" kind="place" page="Geography/Calaria/Hallia/the Horizon/ind
     source "akasha"
 }
 entity "The Master of Ceremonies" kind="person" page="Org/The Harlequins/People/The Master of Ceremonies" {
+    source "akasha"
+}
+entity "The Narrative" kind="deity" page="Divinity/The Narrative/index" {
     source "akasha"
 }
 entity "The Quorum" kind="place" page="Geography/The Quorum" {
