@@ -623,6 +623,9 @@ entity "Fort DC" {
     alias "fort\\s*TC"
     source "defs"
 }
+entity "Fracture Compound" kind="place" page="Geography/Fracture Compound" {
+    source "akasha"
+}
 entity "Friends of Aut" kind="org" page="Org/Friends of Aut" {
     source "akasha"
 }
