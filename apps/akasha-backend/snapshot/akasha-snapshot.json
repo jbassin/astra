@@ -1,6 +1,27 @@
 {
   "edges": [
     {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Bestiary/Deadly Mantis",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Bestiary/Glide Ape",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Wrenford",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford",
+      "source": "Bestiary/Glide Ape",
+      "target": "Geography/Calaria/Wrenford"
+    },
+    {
       "alias": "Joker World at Star 221,325",
       "heading": null,
       "resolved": "Geography/Star 221,325",
@@ -48,6 +69,27 @@
       "resolved": "Org/Blackline/index",
       "source": "Bestiary/Ugathal",
       "target": "Org/Blackline/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Bestiary/Verdant Ooze",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Wrenford",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford",
+      "source": "Bestiary/Verdant Ooze",
+      "target": "Geography/Calaria/Wrenford"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Bestiary/Vine Snake",
+      "target": "Verdant Expanse"
     },
     {
       "alias": null,
@@ -547,6 +589,27 @@
       "target": "Celestial Prescence"
     },
     {
+      "alias": "Wrenford",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford",
+      "source": "Divinity/Unknown Entities/Green Father",
+      "target": "Geography/Calaria/Wrenford"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Divinity/Unknown Entities/Green Father",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Wrenford commune",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford Commune",
+      "source": "Divinity/Unknown Entities/Green Father",
+      "target": "Geography/Calaria/Wrenford Commune"
+    },
+    {
       "alias": "Grayson",
       "heading": null,
       "resolved": "Org/Amber Call/People/Benjamin Grayson",
@@ -995,6 +1058,69 @@
       "target": "Geography/Calaria/Hallia/Prime (Zero)/index"
     },
     {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Geography/Calaria/Verdant Expanse",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
+      "alias": "Wrenford",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford",
+      "source": "Geography/Calaria/Verdant Expanse",
+      "target": "Geography/Calaria/Wrenford"
+    },
+    {
+      "alias": "deadly mantises",
+      "heading": null,
+      "resolved": "Bestiary/Deadly Mantis",
+      "source": "Geography/Calaria/Verdant Expanse",
+      "target": "Bestiary/Deadly Mantis"
+    },
+    {
+      "alias": "glide apes",
+      "heading": null,
+      "resolved": "Bestiary/Glide Ape",
+      "source": "Geography/Calaria/Verdant Expanse",
+      "target": "Bestiary/Glide Ape"
+    },
+    {
+      "alias": "vine snakes",
+      "heading": null,
+      "resolved": "Bestiary/Vine Snake",
+      "source": "Geography/Calaria/Verdant Expanse",
+      "target": "Bestiary/Vine Snake"
+    },
+    {
+      "alias": "chorister birds",
+      "heading": null,
+      "resolved": "Bestiary/Chorister Bird",
+      "source": "Geography/Calaria/Verdant Expanse",
+      "target": "Bestiary/Chorister Bird"
+    },
+    {
+      "alias": "Wrenford",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford",
+      "source": "Geography/Calaria/Wrenford Commune",
+      "target": "Geography/Calaria/Wrenford"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Geography/Calaria/Wrenford Commune",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Unknown Entities/Green Father",
+      "source": "Geography/Calaria/Wrenford Commune",
+      "target": "Green Father"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Calaria/Verdant Expanse",
@@ -1028,6 +1154,27 @@
       "resolved": "Divinity/Outer Gods/Iridescent Host",
       "source": "Geography/Calaria/Wrenford",
       "target": "Iridescent Host"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Geography/Calaria/Wrenford",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Prime Meridian",
+      "heading": null,
+      "resolved": "Org/Prime Meridian/index",
+      "source": "Geography/Calaria/Wrenford",
+      "target": "Org/Prime Meridian/index"
+    },
+    {
+      "alias": "Wrenford commune",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford Commune",
+      "source": "Geography/Calaria/Wrenford",
+      "target": "Geography/Calaria/Wrenford Commune"
     },
     {
       "alias": null,
@@ -1884,11 +2031,53 @@
       "target": "Sin and Tonic"
     },
     {
+      "alias": "Magical Crimes Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
       "alias": "Host",
       "heading": null,
       "resolved": "Divinity/Outer Gods/Iridescent Host",
       "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
       "target": "Iridescent Host"
+    },
+    {
+      "alias": "Magical Crimes Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
+      "alias": "Magical Crimes Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Mickey Ironroots",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Mickey Ironroots",
+      "target": "Org/Iridescent Church/index"
     },
     {
       "alias": "Iridescent Church",
@@ -1917,6 +2106,41 @@
       "resolved": "Geography/Calaria/Hallia/Aurideon/index",
       "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
       "target": "Geography/Calaria/Hallia/Aurideon/index"
+    },
+    {
+      "alias": "Wrenford",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "target": "Geography/Calaria/Wrenford"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Mickey Ironroots",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Mickey Ironroots",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Mickey Ironroots"
+    },
+    {
+      "alias": "Cedric Corot",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+    },
+    {
+      "alias": "Krod Snodman",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman"
     },
     {
       "alias": "Iridescent Church",
@@ -2815,6 +3039,76 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "People/Herald Vanderbloom",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Wrenford commune",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford Commune",
+      "source": "People/Lyric Burke",
+      "target": "Geography/Calaria/Wrenford Commune"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "People/Lyric Burke",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Feyrock",
+      "heading": null,
+      "resolved": "Phenomena/Feyrock",
+      "source": "People/Lyric Burke",
+      "target": "Phenomena/Feyrock"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "People/Lyric Burke",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Herald Vanderbloom",
+      "heading": null,
+      "resolved": "People/Herald Vanderbloom",
+      "source": "People/Lyric Burke",
+      "target": "People/Herald Vanderbloom"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Færrin",
+      "source": "Phenomena/Feyrock",
+      "target": "Færrin"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Godhome",
+      "source": "Phenomena/Feyrock",
+      "target": "Godhome"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "People/Lyric Burke",
+      "source": "Phenomena/Feyrock",
+      "target": "Lyric Burke"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Phenomena/Feyrock",
+      "target": "Verdant Expanse"
+    },
+    {
       "alias": "twin suns",
       "heading": null,
       "resolved": "Geography/Godhome",
@@ -3191,6 +3485,90 @@
       "resolved": "Org/The Scale/index",
       "source": "Timeline",
       "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "People/Herald Vanderbloom",
+      "source": "Timeline",
+      "target": "Herald Vanderbloom"
+    },
+    {
+      "alias": "Magical Crimes Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
+      "alias": "Wrenford",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Wrenford"
+    },
+    {
+      "alias": "Mickey Ironroots",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Mickey Ironroots",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Mickey Ironroots"
+    },
+    {
+      "alias": "Cedric Corot",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+    },
+    {
+      "alias": "Krod Snodman",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman"
+    },
+    {
+      "alias": "Wrenford commune",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford Commune",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Wrenford Commune"
+    },
+    {
+      "alias": "Lyric Burke",
+      "heading": null,
+      "resolved": "People/Lyric Burke",
+      "source": "Timeline",
+      "target": "People/Lyric Burke"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Timeline",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Feyrock",
+      "heading": null,
+      "resolved": "Phenomena/Feyrock",
+      "source": "Timeline",
+      "target": "Phenomena/Feyrock"
+    },
+    {
+      "alias": "deadly mantises",
+      "heading": null,
+      "resolved": "Bestiary/Deadly Mantis",
+      "source": "Timeline",
+      "target": "Bestiary/Deadly Mantis"
     }
   ],
   "pages": [
@@ -3207,6 +3585,72 @@
         "title": null
       },
       "path": "Bestiary/Auger"
+    },
+    {
+      "crossrefs": [],
+      "date": "2025-09-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "chorister birds"
+        ],
+        "extra": {
+          "date": "2025-09-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Chorister Bird"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        }
+      ],
+      "date": "2025-09-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "deadly mantises",
+          "mantis"
+        ],
+        "extra": {
+          "date": "2025-09-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Deadly Mantis"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Wrenford",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford"
+        }
+      ],
+      "date": "2025-09-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "glide apes"
+        ],
+        "extra": {
+          "date": "2025-09-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Glide Ape"
     },
     {
       "crossrefs": [
@@ -3324,6 +3768,57 @@
         "title": null
       },
       "path": "Bestiary/Ugathal"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Wrenford",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford"
+        }
+      ],
+      "date": "2025-09-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "ooze"
+        ],
+        "extra": {
+          "date": "2025-09-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Verdant Ooze"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        }
+      ],
+      "date": "2025-09-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "vine snakes",
+          "divine serpents",
+          "vine serpents"
+        ],
+        "extra": {
+          "date": "2025-09-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Vine Snake"
     },
     {
       "crossrefs": [
@@ -4042,6 +4537,21 @@
           "alias": null,
           "heading": null,
           "target": "Celestial Prescence"
+        },
+        {
+          "alias": "Wrenford",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Wrenford commune",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford Commune"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -4664,7 +5174,38 @@
       "path": "Geography/Calaria/Hallia/the Horizon/index"
     },
     {
-      "crossrefs": [],
+      "crossrefs": [
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        },
+        {
+          "alias": "Wrenford",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford"
+        },
+        {
+          "alias": "deadly mantises",
+          "heading": null,
+          "target": "Bestiary/Deadly Mantis"
+        },
+        {
+          "alias": "glide apes",
+          "heading": null,
+          "target": "Bestiary/Glide Ape"
+        },
+        {
+          "alias": "vine snakes",
+          "heading": null,
+          "target": "Bestiary/Vine Snake"
+        },
+        {
+          "alias": "chorister birds",
+          "heading": null,
+          "target": "Bestiary/Chorister Bird"
+        }
+      ],
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [
@@ -4679,6 +5220,39 @@
         "title": null
       },
       "path": "Geography/Calaria/Verdant Expanse"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Wrenford",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Green Father"
+        }
+      ],
+      "date": "2025-09-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "the Wrenford commune",
+          "Wrenford commune"
+        ],
+        "extra": {
+          "date": "2025-09-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Calaria/Wrenford Commune"
     },
     {
       "crossrefs": [
@@ -4706,6 +5280,21 @@
           "alias": "Host",
           "heading": null,
           "target": "Iridescent Host"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Prime Meridian",
+          "heading": null,
+          "target": "Org/Prime Meridian/index"
+        },
+        {
+          "alias": "Wrenford commune",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford Commune"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -6094,6 +6683,35 @@
     {
       "crossrefs": [
         {
+          "alias": "Magical Crimes Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        }
+      ],
+      "date": "2025-09-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Cedric"
+        ],
+        "extra": {
+          "date": "2025-09-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Lizardfolk"
+        ],
+        "title": null
+      },
+      "path": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Host",
           "heading": null,
           "target": "Iridescent Host"
@@ -6118,6 +6736,64 @@
     {
       "crossrefs": [
         {
+          "alias": "Magical Crimes Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        }
+      ],
+      "date": "2025-09-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Krod"
+        ],
+        "extra": {
+          "date": "2025-09-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Shuni"
+        ],
+        "title": null
+      },
+      "path": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Magical Crimes Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        }
+      ],
+      "date": "2025-09-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Mickey"
+        ],
+        "extra": {
+          "date": "2025-09-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Dwarf"
+        ],
+        "title": null
+      },
+      "path": "Org/Iridescent Church/Convox/Magical Crimes/People/Mickey Ironroots"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Iridescent Church",
           "heading": null,
           "target": "Org/Iridescent Church/index"
@@ -6136,6 +6812,31 @@
           "alias": "Aurideon",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Aurideon/index"
+        },
+        {
+          "alias": "Wrenford",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Mickey Ironroots",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Mickey Ironroots"
+        },
+        {
+          "alias": "Cedric Corot",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+        },
+        {
+          "alias": "Krod Snodman",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -7829,6 +8530,109 @@
       "path": "People/Feathers"
     },
     {
+      "crossrefs": [
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        }
+      ],
+      "date": "2025-09-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-09-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "People/Herald Vanderbloom"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Wrenford commune",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford Commune"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Feyrock",
+          "heading": null,
+          "target": "Phenomena/Feyrock"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Herald Vanderbloom",
+          "heading": null,
+          "target": "People/Herald Vanderbloom"
+        }
+      ],
+      "date": "2025-09-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Lyric"
+        ],
+        "extra": {
+          "date": "2025-09-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "People/Lyric Burke"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Færrin"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Godhome"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Lyric Burke"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        }
+      ],
+      "date": "2025-09-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Fey rock"
+        ],
+        "extra": {
+          "date": "2025-09-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Phenomena/Feyrock"
+    },
+    {
       "crossrefs": [],
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
@@ -8266,6 +9070,66 @@
           "alias": "the Scale",
           "heading": null,
           "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Herald Vanderbloom"
+        },
+        {
+          "alias": "Magical Crimes Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+        },
+        {
+          "alias": "Wrenford",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford"
+        },
+        {
+          "alias": "Mickey Ironroots",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Mickey Ironroots"
+        },
+        {
+          "alias": "Cedric Corot",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+        },
+        {
+          "alias": "Krod Snodman",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman"
+        },
+        {
+          "alias": "Wrenford commune",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford Commune"
+        },
+        {
+          "alias": "Lyric Burke",
+          "heading": null,
+          "target": "People/Lyric Burke"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Feyrock",
+          "heading": null,
+          "target": "Phenomena/Feyrock"
+        },
+        {
+          "alias": "deadly mantises",
+          "heading": null,
+          "target": "Bestiary/Deadly Mantis"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",

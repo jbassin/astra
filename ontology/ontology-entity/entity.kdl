@@ -313,6 +313,10 @@ entity "Cassian Drake" kind="person" page="Org/The Scale/People/Cassian Drake" {
 entity "Cedric" kind="person" being="jorge" {
     source "being"
 }
+entity "Cedric Corot" kind="person" page="Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot" {
+    alias "Cedric"
+    source "akasha"
+}
 entity "Celestial Prescence" kind="deity" page="Divinity/Celestial Prescence" {
     source "akasha"
 }
@@ -330,6 +334,10 @@ entity "Chorath" {
     source "defs"
 }
 entity "Chorath Engineering" kind="org" page="Org/Chorath Engineering" {
+    source "akasha"
+}
+entity "Chorister Bird" kind="creature" page="Bestiary/Chorister Bird" {
+    alias "chorister birds"
     source "akasha"
 }
 entity "Cliff" kind="person" being="jorge" {
@@ -370,6 +378,11 @@ entity "Dame Quay" {
     alias "Dame Keeney"
     alias "damn\\s*Quay"
     source "defs"
+}
+entity "Deadly Mantis" kind="creature" page="Bestiary/Deadly Mantis" {
+    alias "deadly mantises"
+    alias "mantis"
+    source "akasha"
 }
 entity "Deosil" {
     alias "Diesel"
@@ -483,6 +496,10 @@ entity "Feep" {
     source "defs"
 }
 entity "Fenrith" kind="place" page="Geography/Fenrith/index" {
+    source "akasha"
+}
+entity "Feyrock" kind="phenomenon" page="Phenomena/Feyrock" {
+    alias "Fey rock"
     source "akasha"
 }
 entity "firearm manufacturer" {
@@ -599,6 +616,10 @@ entity "Gin Soaked Rag" kind="person" page="Org/Iconoclasm/People/Gin Soaked Rag
     alias "Gin-Soaked\\s*Rag"
     source "akasha"
     source "defs"
+}
+entity "Glide Ape" kind="creature" page="Bestiary/Glide Ape" {
+    alias "glide apes"
+    source "akasha"
 }
 entity "Godhome" kind="place" page="Geography/Godhome" {
     alias "god\\s*home"
@@ -863,6 +884,10 @@ entity "Ki-Rin's" {
 entity "Krod" kind="person" being="mike" {
     source "being"
 }
+entity "Krod Snodman" kind="person" page="Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman" {
+    alias "Krod"
+    source "akasha"
+}
 entity "Laity" kind="org" page="Org/Laity" {
     source "akasha"
 }
@@ -973,6 +998,10 @@ entity "MetCon" {
 }
 entity "Mickey" kind="person" being="tanner" {
     source "being"
+}
+entity "Mickey Ironroots" kind="person" page="Org/Iridescent Church/Convox/Magical Crimes/People/Mickey Ironroots" {
+    alias "Mickey"
+    source "akasha"
 }
 entity "Ministry of Cultural Progress" kind="org" page="Org/Ministry of Cultural Progress/index" {
     source "akasha"
@@ -1607,9 +1636,19 @@ entity "Verdant Expanse" kind="place" page="Geography/Calaria/Verdant Expanse" {
 entity "Verdant Holdings" kind="org" page="Org/Verdant Holdings/index" {
     source "akasha"
 }
+entity "Verdant Ooze" kind="creature" page="Bestiary/Verdant Ooze" {
+    alias "ooze"
+    source "akasha"
+}
 entity "Vilksnake" {
     alias "vilk snake"
     source "defs"
+}
+entity "Vine Snake" kind="creature" page="Bestiary/Vine Snake" {
+    alias "vine snakes"
+    alias "divine serpents"
+    alias "vine serpents"
+    source "akasha"
 }
 entity "Vitriolite" kind="creature" page="Bestiary/Vitriolite" {
     source "akasha"
@@ -1658,6 +1697,11 @@ entity "Wrenford" kind="place" page="Geography/Calaria/Wrenford" {
     alias "renford"
     source "akasha"
     source "defs"
+}
+entity "Wrenford Commune" kind="place" page="Geography/Calaria/Wrenford Commune" {
+    alias "the Wrenford commune"
+    alias "Wrenford commune"
+    source "akasha"
 }
 entity "Yao Addington" kind="person" page="Org/Protectorate/People/Yao Addington" {
     alias "Yao"
