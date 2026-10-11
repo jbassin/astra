@@ -2024,6 +2024,13 @@
       "target": "Org/Crystal Random/index"
     },
     {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Hallia Exchange",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
       "alias": "Hildebrandt Corporation",
       "heading": null,
       "resolved": "Org/Hildebrandt Corporation/index",
@@ -2328,6 +2335,41 @@
       "alias": "Magical Crimes Convox",
       "heading": null,
       "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "the radio",
+      "heading": null,
+      "resolved": "The Situation Room",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster",
+      "target": "The Situation Room"
+    },
+    {
+      "alias": "augury",
+      "heading": null,
+      "resolved": "Phenomena/Augury",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster",
+      "target": "Phenomena/Augury"
+    },
+    {
+      "alias": "Horizon",
+      "heading": null,
+      "resolved": "Phenomena/Infinite Horizon",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster",
+      "target": "Infinite Horizon"
+    },
+    {
+      "alias": "Magical Crimes Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
       "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman",
       "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
     },
@@ -2374,11 +2416,39 @@
       "target": "Verdant Expanse"
     },
     {
+      "alias": "augury",
+      "heading": null,
+      "resolved": "Phenomena/Augury",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "target": "Phenomena/Augury"
+    },
+    {
       "alias": "Aurideon",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Aurideon/index",
       "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
       "target": "Geography/Calaria/Hallia/Aurideon/index"
+    },
+    {
+      "alias": "Ewan McFoster",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "the radio",
+      "heading": null,
+      "resolved": "The Situation Room",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "target": "The Situation Room"
     },
     {
       "alias": "Wrenford",
@@ -2785,6 +2855,20 @@
       "resolved": "Geography/Calaria/index",
       "source": "Org/Radiant Arms/index",
       "target": "Geography/Calaria/index"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Rainy Days Incorporated",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "The Situation Room",
+      "source": "Org/Rainy Days Incorporated",
+      "target": "The Situation Room"
     },
     {
       "alias": "Roundhat Gang",
@@ -3683,6 +3767,62 @@
       "target": "People/Karen Lagerman"
     },
     {
+      "alias": "Calaria",
+      "heading": null,
+      "resolved": "Geography/Calaria/index",
+      "source": "Phenomena/Augury",
+      "target": "Geography/Calaria/index"
+    },
+    {
+      "alias": "Horizon",
+      "heading": null,
+      "resolved": "Phenomena/Infinite Horizon",
+      "source": "Phenomena/Augury",
+      "target": "Infinite Horizon"
+    },
+    {
+      "alias": "Magical Crimes Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "Phenomena/Augury",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Phenomena/Augury",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Ewan McFoster",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster",
+      "source": "Phenomena/Augury",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster"
+    },
+    {
+      "alias": "Tor's Strand",
+      "heading": null,
+      "resolved": "Geography/Velthara/index",
+      "source": "Phenomena/Augury",
+      "target": "Geography/Velthara/index"
+    },
+    {
+      "alias": "hierophants",
+      "heading": null,
+      "resolved": "Divinity/Hierophant",
+      "source": "Phenomena/Augury",
+      "target": "Hierophant"
+    },
+    {
+      "alias": "Sears",
+      "heading": null,
+      "resolved": "Org/The Sears/index",
+      "source": "Phenomena/Augury",
+      "target": "Org/The Sears/index"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Færrin",
@@ -3884,6 +4024,34 @@
       "resolved": "Phenomena/Harmony/Voidsong",
       "source": "Rules/Resonance Spells",
       "target": "Voidsong"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "The Situation Room",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Ewan McFoster",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster",
+      "source": "The Situation Room",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster"
+    },
+    {
+      "alias": "Magical Crimes Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "The Situation Room",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
+      "alias": "augury",
+      "heading": null,
+      "resolved": "Phenomena/Augury",
+      "source": "The Situation Room",
+      "target": "Phenomena/Augury"
     },
     {
       "alias": null,
@@ -4528,6 +4696,48 @@
       "resolved": "Org/Gryphonline/index",
       "source": "Timeline",
       "target": "Org/Gryphonline/index"
+    },
+    {
+      "alias": "Gryphonline",
+      "heading": null,
+      "resolved": "Org/Gryphonline/index",
+      "source": "Timeline",
+      "target": "Org/Gryphonline/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "The Situation Room",
+      "source": "Timeline",
+      "target": "The Situation Room"
+    },
+    {
+      "alias": "Magical Crimes Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
+      "alias": "Ewan McFoster",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster"
+    },
+    {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Timeline",
+      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Pier 54",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/Pier 54",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Sableclutch/Pier 54"
     }
   ],
   "pages": [
@@ -7669,6 +7879,28 @@
     {
       "crossrefs": [
         {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        }
+      ],
+      "date": "2025-10-27T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-10-27T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Mercantile"
+        ],
+        "title": null
+      },
+      "path": "Org/Hallia Exchange"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Hildebrandt Corporation",
           "heading": null,
           "target": "Org/Hildebrandt Corporation/index"
@@ -8110,6 +8342,51 @@
           "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
         },
         {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "the radio",
+          "heading": null,
+          "target": "The Situation Room"
+        },
+        {
+          "alias": "augury",
+          "heading": null,
+          "target": "Phenomena/Augury"
+        },
+        {
+          "alias": "Horizon",
+          "heading": null,
+          "target": "Infinite Horizon"
+        }
+      ],
+      "date": "2025-10-27T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "McFoster",
+          "Ewan"
+        ],
+        "extra": {
+          "date": "2025-10-27T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Magical Crimes Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+        },
+        {
           "alias": "Iridescent Church",
           "heading": null,
           "target": "Org/Iridescent Church/index"
@@ -8178,9 +8455,29 @@
           "target": "Verdant Expanse"
         },
         {
+          "alias": "augury",
+          "heading": null,
+          "target": "Phenomena/Augury"
+        },
+        {
           "alias": "Aurideon",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Aurideon/index"
+        },
+        {
+          "alias": "Ewan McFoster",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "the radio",
+          "heading": null,
+          "target": "The Situation Room"
         },
         {
           "alias": "Wrenford",
@@ -8856,6 +9153,33 @@
         "title": null
       },
       "path": "Org/Radiant Arms/index"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "The Situation Room"
+        }
+      ],
+      "date": "2025-10-27T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-10-27T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Mercantile"
+        ],
+        "title": null
+      },
+      "path": "Org/Rainy Days Incorporated"
     },
     {
       "crossrefs": [
@@ -10372,6 +10696,63 @@
     {
       "crossrefs": [
         {
+          "alias": "Calaria",
+          "heading": null,
+          "target": "Geography/Calaria/index"
+        },
+        {
+          "alias": "Horizon",
+          "heading": null,
+          "target": "Infinite Horizon"
+        },
+        {
+          "alias": "Magical Crimes Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Ewan McFoster",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster"
+        },
+        {
+          "alias": "Tor's Strand",
+          "heading": null,
+          "target": "Geography/Velthara/index"
+        },
+        {
+          "alias": "hierophants",
+          "heading": null,
+          "target": "Hierophant"
+        },
+        {
+          "alias": "Sears",
+          "heading": null,
+          "target": "Org/The Sears/index"
+        }
+      ],
+      "date": "2025-10-27T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-10-27T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Research"
+        ],
+        "title": null
+      },
+      "path": "Phenomena/Augury"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": null,
           "heading": null,
           "target": "Færrin"
@@ -10715,6 +11096,41 @@
         "title": null
       },
       "path": "Rules/Resonance Spells"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Ewan McFoster",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster"
+        },
+        {
+          "alias": "Magical Crimes Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+        },
+        {
+          "alias": "augury",
+          "heading": null,
+          "target": "Phenomena/Augury"
+        }
+      ],
+      "date": "2025-10-27T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-10-27T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "The Situation Room"
     },
     {
       "crossrefs": [
@@ -11177,6 +11593,36 @@
           "alias": "Gryphonline",
           "heading": null,
           "target": "Org/Gryphonline/index"
+        },
+        {
+          "alias": "Gryphonline",
+          "heading": null,
+          "target": "Org/Gryphonline/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "The Situation Room"
+        },
+        {
+          "alias": "Magical Crimes Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+        },
+        {
+          "alias": "Ewan McFoster",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Pier 54",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/Pier 54"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",

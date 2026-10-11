@@ -153,6 +153,9 @@ entity "Atum" {
 entity "Auger" kind="creature" page="Bestiary/Auger" {
     source "akasha"
 }
+entity "Augury" kind="phenomenon" page="Phenomena/Augury" {
+    source "akasha"
+}
 entity "Aurideon" kind="place" page="Geography/Calaria/Hallia/Aurideon/index" {
     alias "Iridiu[mn]"
     alias "Oridia[mn]"
@@ -484,6 +487,11 @@ entity "Eternal Pulse" kind="deity" page="Divinity/Outer Gods/Eternal Pulse" {
     alias "Pulse"
     source "akasha"
 }
+entity "Ewan McFoster" kind="person" page="Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster" {
+    alias "McFoster"
+    alias "Ewan"
+    source "akasha"
+}
 entity "Exitum-ρ-15" {
     alias "Exitum Roe"
     source "defs"
@@ -695,6 +703,9 @@ entity "Hallia" kind="place" page="Geography/Calaria/Hallia/index" {
     alias "Hellia"
     source "akasha"
     source "defs"
+}
+entity "Hallia Exchange" kind="org" page="Org/Hallia Exchange" {
+    source "akasha"
 }
 entity "Harmony" kind="phenomenon" page="Phenomena/Harmony/index" {
     source "akasha"
@@ -1253,6 +1264,9 @@ entity "Raelion" kind="place" page="Geography/Raelion/index" {
     alias "Raelio"
     source "akasha"
     source "defs"
+}
+entity "Rainy Days Incorporated" kind="org" page="Org/Rainy Days Incorporated" {
+    source "akasha"
 }
 entity "Ralph Bishop" kind="person" page="Org/The Scale/People/Ralph Bishop" {
     source "akasha"
