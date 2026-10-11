@@ -378,6 +378,10 @@ entity "Chorister Bird" kind="creature" page="Bestiary/Chorister Bird" {
     alias "chorister birds"
     source "akasha"
 }
+entity "Citizens Committee for Metaphysical Stability" kind="org" page="Org/Citizens Committee for Metaphysical Stability/index" {
+    alias "CCMS"
+    source "akasha"
+}
 entity "Cliff" kind="person" being="jorge" {
     source "being"
 }
@@ -483,6 +487,10 @@ entity "Dura Oil-Drinker" kind="person" page="Org/Iconoclasm/People/Dura Oil-Dri
     alias "Dura"
     source "akasha"
 }
+entity "Eilebrin Observatory" kind="place" page="Geography/Calaria/Eilebrin Observatory" {
+    alias "Eilebrin Observatories"
+    source "akasha"
+}
 entity "Elara Vance" {
     alias "Lara Vance"
     alias "Alara Vance"
@@ -526,6 +534,9 @@ entity "Estañion" {
 }
 entity "Eternal Pulse" kind="deity" page="Divinity/Outer Gods/Eternal Pulse" {
     alias "Pulse"
+    source "akasha"
+}
+entity "Ethervolt" kind="org" page="Org/Ethervolt/index" {
     source "akasha"
 }
 entity "Ewan McFoster" kind="person" page="Org/Iridescent Church/Convox/Magical Crimes/People/Ewan McFoster" {
@@ -595,6 +606,9 @@ entity "Flintlock Toboggan" kind="deity" page="Divinity/Fiends/Flintlock Tobogga
 entity "Floch" {
     alias "Floak"
     source "defs"
+}
+entity "Flynn" kind="person" page="Org/Iconoclasm/People/Flynn" {
+    source "akasha"
 }
 entity "Foral" {
     alias "Forell"
@@ -668,6 +682,9 @@ entity "Gaspar Caetano" kind="person" page="Org/NecroLog/People/Gaspar Caetano" 
     alias "Gasper\\s*Caetano"
     source "akasha"
     source "defs"
+}
+entity "General Thematics" kind="org" page="Org/General Thematics/index" {
+    source "akasha"
 }
 entity "Geography" kind="place" page="Geography/index" {
     source "akasha"
@@ -1288,6 +1305,9 @@ entity "pactbroker" {
     alias "PAC broker"
     source "defs"
 }
+entity "PactLogic" kind="org" page="Org/PactLogic/index" {
+    source "akasha"
+}
 entity "Pale Lantern Society" kind="org" page="Org/Pale Lantern Society/index" {
     alias "Pell\\s*Lantern\\s*Society"
     source "akasha"
@@ -1326,6 +1346,10 @@ entity "Plaza" kind="place" page="Geography/Black and White/Plaza" {
 }
 entity "Pluckwort" kind="person" being="jorge" {
     source "being"
+}
+entity "Polar Shiv" kind="phenomenon" page="Phenomena/Polar Shiv" {
+    alias "Polar Shiv Zero"
+    source "akasha"
 }
 entity "Prime (Zero)" kind="place" page="Geography/Calaria/Hallia/Prime (Zero)/index" {
     source "akasha"
