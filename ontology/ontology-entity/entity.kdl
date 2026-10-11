@@ -370,6 +370,10 @@ entity "Chorath" {
 entity "Chorath Engineering" kind="org" page="Org/Chorath Engineering" {
     source "akasha"
 }
+entity "Chuck" kind="person" page="Org/The Harlequins/People/Chuck" {
+    alias "Butler"
+    source "akasha"
+}
 entity "Citizens Committee for Metaphysical Stability" kind="org" page="Org/Citizens Committee for Metaphysical Stability/index" {
     alias "CCMS"
     source "akasha"
@@ -474,6 +478,11 @@ entity "Dura" {
 }
 entity "Dura Oil-Drinker" kind="person" page="Org/Iconoclasm/People/Dura Oil-Drinker" {
     alias "Dura"
+    source "akasha"
+}
+entity "Eerie" kind="org" page="Org/Iconoclasm/Eerie" {
+    alias "the Ear that Hears the Truth"
+    alias "Ear that Hears the Truth"
     source "akasha"
 }
 entity "Eilebrin Observatory" kind="place" page="Geography/Calaria/Eilebrin Observatory" {
@@ -582,6 +591,7 @@ entity "Fiends" kind="creature" page="Bestiary/Fiends" {
     alias "Barbazu"
     alias "Brimorak"
     alias "Hellion"
+    alias "Ort"
     alias "Pusk"
     alias "Rancorous Priest"
     alias "Vitriolite"
@@ -1792,6 +1802,14 @@ entity "The Zorbon" kind="deity" page="Divinity/Unknown Entities/The Zorbon" {
 entity "Thistle Monroe" {
     alias "Fissel Monroe"
     source "defs"
+}
+entity "Thoughts" kind="creature" page="Bestiary/Thoughts" {
+    alias "Thought"
+    alias "thoughts"
+    alias "Star-Aligned Thought"
+    alias "Void-Aligned Thought"
+    alias "Fractured Ideal"
+    source "akasha"
 }
 entity "Threshold Authority" kind="org" page="Org/Threshold Authority/index" {
     source "akasha"

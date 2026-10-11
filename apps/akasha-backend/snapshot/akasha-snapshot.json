@@ -92,6 +92,13 @@
       "target": "Geography/Star 221,325"
     },
     {
+      "alias": "Harlequins",
+      "heading": null,
+      "resolved": "Org/The Harlequins/index",
+      "source": "Bestiary/Fiends",
+      "target": "Org/The Harlequins/index"
+    },
+    {
       "alias": "Deosil",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Deosil",
@@ -188,6 +195,20 @@
       "resolved": "Geography/Cagley",
       "source": "Bestiary/Terror of Cagley",
       "target": "Cagley"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Bestiary/Thoughts",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "keystone",
+      "heading": null,
+      "resolved": "Phenomena/Keystone",
+      "source": "Bestiary/Thoughts",
+      "target": "Phenomena/Keystone"
     },
     {
       "alias": "Blackline",
@@ -3074,18 +3095,18 @@
       "target": "Phenomena/Infinite Horizon"
     },
     {
-      "alias": "pilgrimage",
-      "heading": null,
-      "resolved": "Phenomena/Pilgrimage",
-      "source": "Geography/Calaria/Ragged Roost",
-      "target": "Phenomena/Pilgrimage"
-    },
-    {
       "alias": "Providence",
       "heading": null,
       "resolved": "Org/The Harlequins/Providence",
       "source": "Geography/Calaria/Ragged Roost",
       "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "pilgrimage",
+      "heading": null,
+      "resolved": "Phenomena/Pilgrimage",
+      "source": "Geography/Calaria/Ragged Roost",
+      "target": "Phenomena/Pilgrimage"
     },
     {
       "alias": "keystones",
@@ -4775,11 +4796,60 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Hildebrandt Corporation/index",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Ragged Roost",
+      "heading": null,
+      "resolved": "Geography/Calaria/Ragged Roost",
+      "source": "Org/Hildebrandt Corporation/index",
+      "target": "Geography/Calaria/Ragged Roost"
+    },
+    {
+      "alias": "keystone",
+      "heading": null,
+      "resolved": "Phenomena/Keystone",
+      "source": "Org/Hildebrandt Corporation/index",
+      "target": "Phenomena/Keystone"
+    },
+    {
       "alias": "Istria",
       "heading": null,
       "resolved": "Geography/Istria/index",
       "source": "Org/Hollowpact",
       "target": "Geography/Istria/index"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/Iconoclasm/Eerie",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "keystone 14",
+      "heading": null,
+      "resolved": "Phenomena/Keystone",
+      "source": "Org/Iconoclasm/Eerie",
+      "target": "Phenomena/Keystone"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Iconoclasm/Eerie",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Marchal",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/People/Anaïs Marchal",
+      "source": "Org/Iconoclasm/Eerie",
+      "target": "Org/Iconoclasm/People/Anaïs Marchal"
     },
     {
       "alias": "Anouk",
@@ -6658,6 +6728,34 @@
       "target": "Hildebrandt Corporation"
     },
     {
+      "alias": "Harlequin",
+      "heading": null,
+      "resolved": "Org/The Harlequins/index",
+      "source": "Org/The Harlequins/People/Chuck",
+      "target": "Org/The Harlequins/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/People/Chuck",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/The Harlequins/People/Chuck",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "keystone",
+      "heading": null,
+      "resolved": "Phenomena/Keystone",
+      "source": "Org/The Harlequins/People/Chuck",
+      "target": "Phenomena/Keystone"
+    },
+    {
       "alias": "The Harlequins",
       "heading": null,
       "resolved": "Org/The Harlequins/index",
@@ -6670,6 +6768,34 @@
       "resolved": "Geography/Calaria/Ragged Roost",
       "source": "Org/The Harlequins/Providence",
       "target": "Geography/Calaria/Ragged Roost"
+    },
+    {
+      "alias": "pilgrimage",
+      "heading": null,
+      "resolved": "Phenomena/Pilgrimage",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Phenomena/Pilgrimage"
+    },
+    {
+      "alias": "the Master",
+      "heading": null,
+      "resolved": "Org/The Harlequins/People/The Master of Ceremonies",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Org/The Harlequins/People/The Master of Ceremonies"
+    },
+    {
+      "alias": "Hildebrandt Corporation",
+      "heading": null,
+      "resolved": "Org/Hildebrandt Corporation/index",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Org/Hildebrandt Corporation/index"
+    },
+    {
+      "alias": "keystone",
+      "heading": null,
+      "resolved": "Phenomena/Keystone",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Phenomena/Keystone"
     },
     {
       "alias": "Providence",
@@ -6691,6 +6817,13 @@
       "resolved": "Phenomena/Keystone",
       "source": "Org/The Harlequins/index",
       "target": "Phenomena/Keystone"
+    },
+    {
+      "alias": "Chuck",
+      "heading": null,
+      "resolved": "Org/The Harlequins/People/Chuck",
+      "source": "Org/The Harlequins/index",
+      "target": "Org/The Harlequins/People/Chuck"
     },
     {
       "alias": "The Scale",
@@ -9549,6 +9682,20 @@
       "target": "Phenomena/Hearts"
     },
     {
+      "alias": "Watcher",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Watcher With 1,000 Eyes",
+      "source": "Phenomena/Keystone",
+      "target": "Divinity/Outer Gods/Watcher With 1,000 Eyes"
+    },
+    {
+      "alias": "thoughts",
+      "heading": null,
+      "resolved": "Bestiary/Thoughts",
+      "source": "Phenomena/Keystone",
+      "target": "Bestiary/Thoughts"
+    },
+    {
       "alias": "Rapid Connection",
       "heading": null,
       "resolved": "Org/Prime Meridian/Rapid Connection",
@@ -9591,18 +9738,18 @@
       "target": "Org/Concordia/index"
     },
     {
-      "alias": "Marchal",
+      "alias": "Providence",
       "heading": null,
-      "resolved": "Org/Iconoclasm/People/Anouk Marchal",
+      "resolved": "Org/The Harlequins/Providence",
       "source": "Phenomena/Keystone",
-      "target": "Org/Iconoclasm/People/Anouk Marchal"
+      "target": "Org/The Harlequins/Providence"
     },
     {
-      "alias": null,
+      "alias": "Eerie",
       "heading": null,
-      "resolved": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+      "resolved": "Org/Iconoclasm/Eerie",
       "source": "Phenomena/Keystone",
-      "target": "Sin and Tonic"
+      "target": "Org/Iconoclasm/Eerie"
     },
     {
       "alias": "Iridescent Church",
@@ -9722,6 +9869,27 @@
       "resolved": "Phenomena/Harmony/Voidsong",
       "source": "Phenomena/Pilgrimage",
       "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "keystones",
+      "heading": null,
+      "resolved": "Phenomena/Keystone",
+      "source": "Phenomena/Pilgrimage",
+      "target": "Phenomena/Keystone"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Phenomena/Pilgrimage",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Hildebrandt Corporation",
+      "heading": null,
+      "resolved": "Org/Hildebrandt Corporation/index",
+      "source": "Phenomena/Pilgrimage",
+      "target": "Org/Hildebrandt Corporation/index"
     },
     {
       "alias": "Arctos",
@@ -10293,6 +10461,11 @@
           "target": "Geography/Star 221,325"
         },
         {
+          "alias": "Harlequins",
+          "heading": null,
+          "target": "Org/The Harlequins/index"
+        },
+        {
           "alias": "Deosil",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Deosil"
@@ -10308,19 +10481,20 @@
           "target": "Org/The Scale/Voice of Many"
         }
       ],
-      "date": "2026-02-24T00:00:00-04:00",
+      "date": "2026-05-11T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Babau",
           "Barbazu",
           "Brimorak",
           "Hellion",
+          "Ort",
           "Pusk",
           "Rancorous Priest",
           "Vitriolite"
         ],
         "extra": {
-          "date": "2026-02-24T00:00:00-04:00"
+          "date": "2026-05-11T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -10470,6 +10644,37 @@
         "title": null
       },
       "path": "Bestiary/Terror of Cagley"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "keystone",
+          "heading": null,
+          "target": "Phenomena/Keystone"
+        }
+      ],
+      "date": "2026-05-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Thought",
+          "thoughts",
+          "Star-Aligned Thought",
+          "Void-Aligned Thought",
+          "Fractured Ideal"
+        ],
+        "extra": {
+          "date": "2026-05-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Thoughts"
     },
     {
       "crossrefs": [
@@ -13717,14 +13922,14 @@
           "target": "Phenomena/Infinite Horizon"
         },
         {
-          "alias": "pilgrimage",
-          "heading": null,
-          "target": "Phenomena/Pilgrimage"
-        },
-        {
           "alias": "Providence",
           "heading": null,
           "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "pilgrimage",
+          "heading": null,
+          "target": "Phenomena/Pilgrimage"
         },
         {
           "alias": "keystones",
@@ -13742,11 +13947,11 @@
           "target": "People/Sir Arctos"
         }
       ],
-      "date": "2026-05-07T00:00:00-04:00",
+      "date": "2026-05-11T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-07T00:00:00-04:00"
+          "date": "2026-05-11T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -14850,11 +15055,11 @@
           "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2026-05-07T00:00:00-04:00",
+      "date": "2026-05-11T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-07T00:00:00-04:00"
+          "date": "2026-05-11T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -15916,6 +16121,21 @@
           "alias": "Hallia",
           "heading": null,
           "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Ragged Roost",
+          "heading": null,
+          "target": "Geography/Calaria/Ragged Roost"
+        },
+        {
+          "alias": "keystone",
+          "heading": null,
+          "target": "Phenomena/Keystone"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -15955,6 +16175,46 @@
         "title": null
       },
       "path": "Org/Hollowpact"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "keystone 14",
+          "heading": null,
+          "target": "Phenomena/Keystone"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Marchal",
+          "heading": null,
+          "target": "Org/Iconoclasm/People/Anaïs Marchal"
+        }
+      ],
+      "date": "2026-05-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "the Ear that Hears the Truth",
+          "Ear that Hears the Truth"
+        ],
+        "extra": {
+          "date": "2026-05-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Heart"
+        ],
+        "title": null
+      },
+      "path": "Org/Iconoclasm/Eerie"
     },
     {
       "crossrefs": [
@@ -18350,6 +18610,43 @@
     {
       "crossrefs": [
         {
+          "alias": "Harlequin",
+          "heading": null,
+          "target": "Org/The Harlequins/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "keystone",
+          "heading": null,
+          "target": "Phenomena/Keystone"
+        }
+      ],
+      "date": "2026-05-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Butler"
+        ],
+        "extra": {
+          "date": "2026-05-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/The Harlequins/People/Chuck"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "The Harlequins",
           "heading": null,
           "target": "Org/The Harlequins/index"
@@ -18375,13 +18672,33 @@
           "alias": "Ragged Roost",
           "heading": null,
           "target": "Geography/Calaria/Ragged Roost"
+        },
+        {
+          "alias": "pilgrimage",
+          "heading": null,
+          "target": "Phenomena/Pilgrimage"
+        },
+        {
+          "alias": "the Master",
+          "heading": null,
+          "target": "Org/The Harlequins/People/The Master of Ceremonies"
+        },
+        {
+          "alias": "Hildebrandt Corporation",
+          "heading": null,
+          "target": "Org/Hildebrandt Corporation/index"
+        },
+        {
+          "alias": "keystone",
+          "heading": null,
+          "target": "Phenomena/Keystone"
         }
       ],
-      "date": "2026-05-07T00:00:00-04:00",
+      "date": "2026-05-11T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-07T00:00:00-04:00"
+          "date": "2026-05-11T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -18405,6 +18722,11 @@
           "alias": "keystone",
           "heading": null,
           "target": "Phenomena/Keystone"
+        },
+        {
+          "alias": "Chuck",
+          "heading": null,
+          "target": "Org/The Harlequins/People/Chuck"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -21801,6 +22123,16 @@
           "target": "Phenomena/Hearts"
         },
         {
+          "alias": "Watcher",
+          "heading": null,
+          "target": "Divinity/Outer Gods/Watcher With 1,000 Eyes"
+        },
+        {
+          "alias": "thoughts",
+          "heading": null,
+          "target": "Bestiary/Thoughts"
+        },
+        {
           "alias": "Rapid Connection",
           "heading": null,
           "target": "Org/Prime Meridian/Rapid Connection"
@@ -21831,14 +22163,14 @@
           "target": "Org/Concordia/index"
         },
         {
-          "alias": "Marchal",
+          "alias": "Providence",
           "heading": null,
-          "target": "Org/Iconoclasm/People/Anouk Marchal"
+          "target": "Org/The Harlequins/Providence"
         },
         {
-          "alias": null,
+          "alias": "Eerie",
           "heading": null,
-          "target": "Sin and Tonic"
+          "target": "Org/Iconoclasm/Eerie"
         },
         {
           "alias": "Iridescent Church",
@@ -21856,13 +22188,13 @@
           "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2026-04-13T00:00:00-04:00",
+      "date": "2026-05-11T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "keystones"
         ],
         "extra": {
-          "date": "2026-04-13T00:00:00-04:00"
+          "date": "2026-05-11T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -21971,13 +22303,28 @@
           "alias": "Voidsong",
           "heading": null,
           "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "keystones",
+          "heading": null,
+          "target": "Phenomena/Keystone"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Hildebrandt Corporation",
+          "heading": null,
+          "target": "Org/Hildebrandt Corporation/index"
         }
       ],
-      "date": "2026-05-07T00:00:00-04:00",
+      "date": "2026-05-11T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-07T00:00:00-04:00"
+          "date": "2026-05-11T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
