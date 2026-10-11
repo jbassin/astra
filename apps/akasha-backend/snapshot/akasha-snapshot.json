@@ -1,6 +1,20 @@
 {
   "edges": [
     {
+      "alias": "Joker World at Star 221,325",
+      "heading": null,
+      "resolved": "Geography/Star 221,325",
+      "source": "Bestiary/Hellion",
+      "target": "Geography/Star 221,325"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Cagley",
+      "source": "Bestiary/Terror of Cagley",
+      "target": "Cagley"
+    },
+    {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
@@ -470,6 +484,13 @@
       "target": "Protectorate"
     },
     {
+      "alias": null,
+      "heading": null,
+      "resolved": "Bestiary/Terror of Cagley",
+      "source": "Geography/Cagley",
+      "target": "Terror of Cagley"
+    },
+    {
       "alias": "Iridescent Church",
       "heading": null,
       "resolved": "Org/Iridescent Church/index",
@@ -937,6 +958,34 @@
       "resolved": "Org/index",
       "source": "Geography/Rhædon/index",
       "target": "Org/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Phenomena/Joker World",
+      "source": "Geography/Star 221,325",
+      "target": "Joker World"
+    },
+    {
+      "alias": "Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "Geography/Star 221,325",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Phenomena/Infinite Horizon",
+      "source": "Geography/Star 221,325",
+      "target": "Infinite Horizon"
+    },
+    {
+      "alias": "Hellions",
+      "heading": null,
+      "resolved": "Bestiary/Hellion",
+      "source": "Geography/Star 221,325",
+      "target": "Hellion"
     },
     {
       "alias": "Host",
@@ -2136,6 +2185,41 @@
       "target": "Org/The Scale/index"
     },
     {
+      "alias": "Judge",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Judge of Ages",
+      "source": "Org/The Scale/People/Cliff Vandertrip",
+      "target": "Judge of Ages"
+    },
+    {
+      "alias": "The Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "Org/The Scale/People/Cliff Vandertrip",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Star 221,325",
+      "heading": null,
+      "resolved": "Geography/Star 221,325",
+      "source": "Org/The Scale/People/Cliff Vandertrip",
+      "target": "Geography/Star 221,325"
+    },
+    {
+      "alias": "The Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "Org/The Scale/People/Gregor",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Star 221,325",
+      "heading": null,
+      "resolved": "Geography/Star 221,325",
+      "source": "Org/The Scale/People/Gregor",
+      "target": "Geography/Star 221,325"
+    },
+    {
       "alias": "The Scale",
       "heading": null,
       "resolved": "Org/The Scale/index",
@@ -2146,8 +2230,36 @@
       "alias": "The Scale",
       "heading": null,
       "resolved": "Org/The Scale/index",
+      "source": "Org/The Scale/People/Manuel de la Cruzada",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Star 221,325",
+      "heading": null,
+      "resolved": "Geography/Star 221,325",
+      "source": "Org/The Scale/People/Manuel de la Cruzada",
+      "target": "Geography/Star 221,325"
+    },
+    {
+      "alias": "The Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
       "source": "Org/The Scale/People/Ralph Bishop",
       "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "The Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "Org/The Scale/People/Zangron Lee",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Star 221,325",
+      "heading": null,
+      "resolved": "Geography/Star 221,325",
+      "source": "Org/The Scale/People/Zangron Lee",
+      "target": "Geography/Star 221,325"
     },
     {
       "alias": "Judge",
@@ -2157,18 +2269,11 @@
       "target": "Judge of Ages"
     },
     {
-      "alias": null,
+      "alias": "The Scale",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/The Scale/index",
       "source": "Org/The Scale/index",
-      "target": "The Scale"
-    },
-    {
-      "alias": null,
-      "heading": null,
-      "resolved": null,
-      "source": "Org/The Scale/index",
-      "target": "arbiters"
+      "target": "Org/The Scale/index"
     },
     {
       "alias": "The Undertable",
@@ -2386,6 +2491,27 @@
       "resolved": "Phenomena/Firmament",
       "source": "Phenomena/Infinite Horizon",
       "target": "Firmament"
+    },
+    {
+      "alias": "Joker Worlds",
+      "heading": null,
+      "resolved": "Phenomena/Joker World",
+      "source": "Phenomena/Infinite Horizon",
+      "target": "Joker World"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Phenomena/Infinite Horizon",
+      "source": "Phenomena/Joker World",
+      "target": "Infinite Horizon"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Færrin",
+      "source": "Phenomena/Joker World",
+      "target": "Færrin"
     },
     {
       "alias": "Harmony",
@@ -2647,6 +2773,49 @@
         "title": null
       },
       "path": "Bestiary/Auger"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Joker World at Star 221,325",
+          "heading": null,
+          "target": "Geography/Star 221,325"
+        }
+      ],
+      "date": "2025-06-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-06-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Hellion"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Cagley"
+        }
+      ],
+      "date": "2025-06-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "the Terror",
+          "Shadow Demon"
+        ],
+        "extra": {
+          "date": "2025-06-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Terror of Cagley"
     },
     {
       "crossrefs": [
@@ -3416,6 +3585,26 @@
     {
       "crossrefs": [
         {
+          "alias": null,
+          "heading": null,
+          "target": "Terror of Cagley"
+        }
+      ],
+      "date": "2025-06-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-06-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Cagley"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Iridescent Church",
           "heading": null,
           "target": "Org/Iridescent Church/index"
@@ -4107,6 +4296,41 @@
         "title": null
       },
       "path": "Geography/Rhædon/index"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Joker World"
+        },
+        {
+          "alias": "Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Infinite Horizon"
+        },
+        {
+          "alias": "Hellions",
+          "heading": null,
+          "target": "Hellion"
+        }
+      ],
+      "date": "2025-06-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-06-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Star 221,325"
     },
     {
       "crossrefs": [
@@ -6200,6 +6424,68 @@
     {
       "crossrefs": [
         {
+          "alias": "Judge",
+          "heading": null,
+          "target": "Judge of Ages"
+        },
+        {
+          "alias": "The Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Star 221,325",
+          "heading": null,
+          "target": "Geography/Star 221,325"
+        }
+      ],
+      "date": "2025-06-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Cliff",
+          "Sir Cliff"
+        ],
+        "extra": {
+          "date": "2025-06-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "Org/The Scale/People/Cliff Vandertrip"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "The Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Star 221,325",
+          "heading": null,
+          "target": "Geography/Star 221,325"
+        }
+      ],
+      "date": "2025-06-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-06-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "Org/The Scale/People/Gregor"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "The Scale",
           "heading": null,
           "target": "Org/The Scale/index"
@@ -6218,6 +6504,37 @@
         "title": null
       },
       "path": "Org/The Scale/People/Lance Vesper"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "The Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Star 221,325",
+          "heading": null,
+          "target": "Geography/Star 221,325"
+        }
+      ],
+      "date": "2025-06-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Manuel",
+          "the Reverend",
+          "Reverend Manuel de la Cruzada"
+        ],
+        "extra": {
+          "date": "2025-06-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Hobgoblin"
+        ],
+        "title": null
+      },
+      "path": "Org/The Scale/People/Manuel de la Cruzada"
     },
     {
       "crossrefs": [
@@ -6244,19 +6561,41 @@
     {
       "crossrefs": [
         {
+          "alias": "The Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Star 221,325",
+          "heading": null,
+          "target": "Geography/Star 221,325"
+        }
+      ],
+      "date": "2025-06-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Zangron"
+        ],
+        "extra": {
+          "date": "2025-06-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/The Scale/People/Zangron Lee"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Judge",
           "heading": null,
           "target": "Judge of Ages"
         },
         {
-          "alias": null,
+          "alias": "The Scale",
           "heading": null,
-          "target": "The Scale"
-        },
-        {
-          "alias": null,
-          "heading": null,
-          "target": "arbiters"
+          "target": "Org/The Scale/index"
         }
       ],
       "date": "2026-06-06T22:12:21-04:00",
@@ -6750,6 +7089,11 @@
           "alias": "firmament",
           "heading": null,
           "target": "Firmament"
+        },
+        {
+          "alias": "Joker Worlds",
+          "heading": null,
+          "target": "Joker World"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -6765,6 +7109,33 @@
         "title": null
       },
       "path": "Phenomena/Infinite Horizon"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Infinite Horizon"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Færrin"
+        }
+      ],
+      "date": "2025-06-09T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Joker Worlds"
+        ],
+        "extra": {
+          "date": "2025-06-09T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Phenomena/Joker World"
     },
     {
       "crossrefs": [],
@@ -7153,14 +7524,6 @@
     {
       "source": "Org/Ternion Heavy Industries/index",
       "target": "Hildebrandt Corporation"
-    },
-    {
-      "source": "Org/The Scale/index",
-      "target": "The Scale"
-    },
-    {
-      "source": "Org/The Scale/index",
-      "target": "arbiters"
     },
     {
       "source": "Timeline",

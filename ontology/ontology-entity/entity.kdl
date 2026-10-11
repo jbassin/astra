@@ -279,6 +279,9 @@ entity "cadre" {
     alias "Khadra"
     source "defs"
 }
+entity "Cagley" kind="place" page="Geography/Cagley" {
+    source "akasha"
+}
 entity "Calaria" kind="place" page="Geography/Calaria/index" {
     alias "Galeria"
     alias "Caleria"
@@ -331,6 +334,11 @@ entity "Chorath Engineering" kind="org" page="Org/Chorath Engineering" {
 }
 entity "Cliff" kind="person" being="jorge" {
     source "being"
+}
+entity "Cliff Vandertrip" kind="person" page="Org/The Scale/People/Cliff Vandertrip" {
+    alias "Cliff"
+    alias "Sir Cliff"
+    source "akasha"
 }
 entity "Combo" kind="person" page="Org/Velvet Mark/People/Combo" being="mike" {
     source "akasha"
@@ -610,7 +618,8 @@ entity "Grayson" {
 entity "Green Father" kind="deity" page="Divinity/Unknown Entities/Green Father" {
     source "akasha"
 }
-entity "Gregor" kind="person" being="tanner" {
+entity "Gregor" kind="person" page="Org/The Scale/People/Gregor" being="tanner" {
+    source "akasha"
     source "being"
 }
 entity "Gryphon" {
@@ -640,6 +649,9 @@ entity "Hearts" kind="phenomenon" page="Phenomena/Hearts" {
 }
 entity "Heir of the Plague" kind="deity" page="Divinity/Outer Gods/Heir of the Plague" {
     alias "Heir"
+    source "akasha"
+}
+entity "Hellion" kind="creature" page="Bestiary/Hellion" {
     source "akasha"
 }
 entity "Herald" kind="deity" page="Divinity/Ashen Pact/Herald" {
@@ -794,8 +806,10 @@ entity "Jethro Twill" kind="person" page="Org/Ternion Heavy Industries/People/Je
 entity "Johnny" kind="person" being="noah" {
     source "being"
 }
-entity "Joker World" {
+entity "Joker World" kind="phenomenon" page="Phenomena/Joker World" {
+    alias "Joker Worlds"
     alias "Jokerworld"
+    source "akasha"
     source "defs"
 }
 entity "Joker Worlds" {
@@ -899,6 +913,12 @@ entity "majordomo" {
 entity "majordomo Ossain" {
     alias "Major Domo a saint"
     source "defs"
+}
+entity "Manuel de la Cruzada" kind="person" page="Org/The Scale/People/Manuel de la Cruzada" {
+    alias "Manuel"
+    alias "the Reverend"
+    alias "Reverend Manuel de la Cruzada"
+    source "akasha"
 }
 entity "Manus" {
     alias "Manas"
@@ -1347,6 +1367,9 @@ entity "Solari Sub-surface" kind="org" page="Org/Solari Sub-surface/index" {
 entity "Star 12" kind="place" page="Geography/Calaria/Hallia/Star 12/index" {
     source "akasha"
 }
+entity "Star 221,325" kind="place" page="Geography/Star 221,325" {
+    source "akasha"
+}
 entity "starward" {
     alias "star\\s*w[ao]rd"
     alias "Star Wars"
@@ -1409,6 +1432,11 @@ entity "Ternion Heavy Industries" kind="org" page="Org/Ternion Heavy Industries/
     alias "Turnian\\s*Heavy\\s*Industries"
     source "akasha"
     source "defs"
+}
+entity "Terror of Cagley" kind="creature" page="Bestiary/Terror of Cagley" {
+    alias "the Terror"
+    alias "Shadow Demon"
+    source "akasha"
 }
 entity "The Compelled" kind="deity" page="Divinity/Outer Gods/The Compelled" {
     source "akasha"
@@ -1626,6 +1654,10 @@ entity "Yeenut Guy" {
 }
 entity "Zangron" kind="person" being="mike" {
     source "being"
+}
+entity "Zangron Lee" kind="person" page="Org/The Scale/People/Zangron Lee" {
+    alias "Zangron"
+    source "akasha"
 }
 entity "Zorbon" {
     alias "Zorbot"
