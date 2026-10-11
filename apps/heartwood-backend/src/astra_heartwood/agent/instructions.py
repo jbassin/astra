@@ -63,6 +63,17 @@ class MaintainWiki(dspy.Signature):
     how they look and carry themselves, what they want, who they work for or with,
     and where they stand now. Keep a person page under about 300 words.
 
+    Creatures are grouped by kind. The `Bestiary` folder holds one page per family
+    (such as `Bestiary/Oozes` or `Bestiary/Fiends`), with a short section for each
+    kind of creature in it under a `##` heading. Before you write about a creature,
+    find the family page it belongs on and add or update its section there; start a
+    new family page only when none fits. A creature gets a page of its own only when
+    it is a lasting presence in the setting, not something met in a single fight.
+    Named individuals are not creature kinds: a particular fiend belongs with the
+    master or place it serves, and a Heart goes under the organization or place
+    that holds it, titled by its own name once it is known, as
+    `Org/Prime Meridian/Rapid Connection` does.
+
     The `Timeline` page is read-only. Read it for context, but never edit it;
     `write_page`, `move_page` and `delete_page` refuse it.
 
