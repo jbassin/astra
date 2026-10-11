@@ -27,6 +27,9 @@ entity "Alkahest Freight" kind="org" page="Org/Alkahest Freight/index" {
     source "akasha"
     source "defs"
 }
+entity "Alliance" kind="org" page="Org/Alliance" {
+    source "akasha"
+}
 entity "Althane" {
     alias "Ulthane"
     alias "Ossine"
