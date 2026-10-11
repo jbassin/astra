@@ -1349,6 +1349,9 @@ entity "skein" {
     alias "Skain"
     source "defs"
 }
+entity "Sky Metal" kind="phenomenon" page="Phenomena/Sky Metal" {
+    source "akasha"
+}
 entity "Smiler" kind="person" page="Org/The Undertable/People/Smiler" {
     alias "Smila"
     alias "Milo"
@@ -1446,6 +1449,9 @@ entity "The Crowded Flea" kind="place" page="Geography/Calaria/Hallia/Sableclutc
     source "akasha"
     source "defs"
 }
+entity "The Fixer" kind="deity" page="Divinity/Fiends/The Fixer" {
+    source "akasha"
+}
 entity "The Harlequins" kind="org" page="Org/The Harlequins/index" {
     alias "the\\s*Harley\\s*Quinn's"
     source "akasha"
@@ -1462,6 +1468,9 @@ entity "the Horizon" kind="place" page="Geography/Calaria/Hallia/the Horizon/ind
     source "akasha"
 }
 entity "The Master of Ceremonies" kind="person" page="Org/The Harlequins/People/The Master of Ceremonies" {
+    source "akasha"
+}
+entity "The Quorum" kind="place" page="Geography/The Quorum" {
     source "akasha"
 }
 entity "The Scale" kind="org" page="Org/The Scale/index" {
