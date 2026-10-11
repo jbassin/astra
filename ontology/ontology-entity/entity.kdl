@@ -259,6 +259,7 @@ entity "Bev Sirnow" {
     source "defs"
 }
 entity "Black and White" kind="place" page="Geography/Black and White/index" {
+    alias "Noire"
     alias "black and white"
     source "akasha"
     source "defs"
@@ -773,6 +774,9 @@ entity "Hollowpact" kind="org" page="Org/Hollowpact" {
     alias "Holopact"
     source "akasha"
     source "defs"
+}
+entity "Horizon Gate Hotel" kind="place" page="Geography/Black and White/Horizon Gate Hotel" {
+    source "akasha"
 }
 entity "https://btl.iridi.cc" {
     alias "btl.ready.cc"
@@ -1383,6 +1387,9 @@ entity "Salvatore Barbieri" kind="person" page="Org/Velvet Mark/People/Salvatore
     alias "Salvatore"
     source "akasha"
 }
+entity "Save Your Soul Incorporated" kind="place" page="Geography/Black and White/Save Your Soul Incorporated" {
+    source "akasha"
+}
 entity "Sbrtlby" {
     alias "Spartleby"
     alias "Spurdleby"
@@ -1442,6 +1449,11 @@ entity "sewer" {
 entity "Sewers" kind="place" page="Geography/Calaria/Hallia/Sewers" {
     source "akasha"
 }
+entity "Shade" kind="creature" page="Bestiary/Shade" {
+    alias "shades"
+    alias "shadows"
+    source "akasha"
+}
 entity "Shannon Soul" kind="place" page="Geography/Calaria/Hallia/Sableclutch/People/Shannon Soul" {
     source "akasha"
 }
@@ -1499,6 +1511,10 @@ entity "Solari Sub-surface" kind="org" page="Org/Solari Sub-surface/index" {
     alias "Solaria\\s*Subservice"
     source "akasha"
     source "defs"
+}
+entity "Soundscape Theaters" kind="place" page="Geography/Black and White/Soundscape Theaters" {
+    alias "Soundscape Theater"
+    source "akasha"
 }
 entity "Star 12" kind="place" page="Geography/Calaria/Hallia/Star 12/index" {
     source "akasha"
