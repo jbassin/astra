@@ -365,6 +365,27 @@
       "target": "Org/Embercall Industries/index"
     },
     {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/The Narrative/Aut",
+      "source": "Divinity/Ashen Pact/Giant",
+      "target": "Aut"
+    },
+    {
+      "alias": "firmament",
+      "heading": null,
+      "resolved": "Phenomena/Firmament",
+      "source": "Divinity/Ashen Pact/Giant",
+      "target": "Firmament"
+    },
+    {
+      "alias": "Judge",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Judge of Ages",
+      "source": "Divinity/Ashen Pact/Giant",
+      "target": "Divinity/Outer Gods/Judge of Ages"
+    },
+    {
       "alias": "Gas-n-Go",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
@@ -722,11 +743,11 @@
       "target": "Eternal Pulse"
     },
     {
-      "alias": null,
+      "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Divinity/Godly Interplay",
-      "target": "Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Heir",
@@ -792,11 +813,11 @@
       "target": "Godhome"
     },
     {
-      "alias": null,
+      "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Divinity/Hierophant",
-      "target": "Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "the Scale",
@@ -939,11 +960,11 @@
       "target": "Celestial Prescence"
     },
     {
-      "alias": null,
+      "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Divinity/Outer Gods/Watcher With 1,000 Eyes",
-      "target": "Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": null,
@@ -1009,11 +1030,11 @@
       "target": "Org/Amber Call/People/Benjamin Grayson"
     },
     {
-      "alias": null,
+      "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Divinity/The Narrative/Aut",
-      "target": "Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Church",
@@ -1070,6 +1091,20 @@
       "resolved": "Geography/Rhædon/index",
       "source": "Divinity/The Narrative/Aut",
       "target": "Geography/Rhædon/index"
+    },
+    {
+      "alias": "Marchal",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/People/Anaïs Marchal",
+      "source": "Divinity/The Narrative/Aut",
+      "target": "Org/Iconoclasm/People/Anaïs Marchal"
+    },
+    {
+      "alias": "Calaria",
+      "heading": null,
+      "resolved": "Geography/Calaria/index",
+      "source": "Divinity/The Narrative/Aut",
+      "target": "Geography/Calaria/index"
     },
     {
       "alias": "Anaïs Marchal",
@@ -1387,11 +1422,11 @@
       "target": "Firmament"
     },
     {
-      "alias": null,
+      "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Geography/Austrene/index",
-      "target": "Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "firmament",
@@ -1704,9 +1739,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Geography/Calaria/Eilebrin Observatory",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Watcher",
@@ -1900,9 +1935,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Geography/Calaria/Hallia/Masque District/Belvedere Library",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Austrene",
@@ -2166,9 +2201,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Geography/Calaria/Hallia/Sableclutch/Prime Meridian Sub Transit Nexus",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Anzu",
@@ -3265,9 +3300,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Geography/Fracture Compound",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Embercall",
@@ -3706,9 +3741,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Org/Alkahest Freight/index",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Pulse",
@@ -3851,94 +3886,122 @@
       "target": "People/Cora Honeysap"
     },
     {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/Belvedere/Atum",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Belvedere",
+      "heading": null,
+      "resolved": "Org/Belvedere/index",
+      "source": "Org/Belvedere/Atum",
+      "target": "Org/Belvedere/index"
+    },
+    {
+      "alias": "Benny",
+      "heading": null,
+      "resolved": "People/Benny",
+      "source": "Org/Belvedere/Atum",
+      "target": "People/Benny"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Org/Belvedere/Atum",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
       "alias": "Orgs",
       "heading": null,
       "resolved": "Org/index",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "Org/index"
     },
     {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Færrin",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "Færrin"
     },
     {
       "alias": "Watcher",
       "heading": null,
       "resolved": "Divinity/Outer Gods/Watcher With 1,000 Eyes",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "Watcher With 1,000 Eyes"
     },
     {
       "alias": "Austrene",
       "heading": null,
       "resolved": "Geography/Austrene/index",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "Geography/Austrene/index"
     },
     {
       "alias": null,
       "heading": null,
       "resolved": "Phenomena/Hearts",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "Hearts"
     },
     {
       "alias": "Austrene",
       "heading": null,
       "resolved": "Geography/Austrene/index",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "Geography/Austrene/index"
     },
     {
       "alias": null,
       "heading": null,
       "resolved": "Phenomena/Hearts",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "Hearts"
     },
     {
       "alias": "Masque District",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Masque District/index",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "Geography/Calaria/Hallia/Masque District/index"
     },
     {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "Geography/Calaria/Hallia/index"
     },
     {
       "alias": "Singers of the Herald's Star",
       "heading": null,
       "resolved": "Org/Singers of the Herald's Star",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "Org/Singers of the Herald's Star"
     },
     {
       "alias": "Galzu",
       "heading": null,
       "resolved": "People/Galzu",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "People/Galzu"
     },
     {
       "alias": "Anzu",
       "heading": null,
       "resolved": "People/Anzu",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "People/Anzu"
     },
     {
       "alias": "Voidsong",
       "heading": null,
       "resolved": "Phenomena/Harmony/Voidsong",
-      "source": "Org/Belvedere",
+      "source": "Org/Belvedere/index",
       "target": "Phenomena/Harmony/Voidsong"
     },
     {
@@ -4224,9 +4287,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Org/Concordia/index",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "keystone 14",
@@ -4448,9 +4511,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Org/Ethervolt/index",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Benny",
@@ -4553,9 +4616,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Org/General Thematics/index",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Hildebrandt",
@@ -4563,6 +4626,13 @@
       "resolved": "Org/Hildebrandt Corporation/index",
       "source": "Org/General Thematics/index",
       "target": "Org/Hildebrandt Corporation/index"
+    },
+    {
+      "alias": "Qureshi",
+      "heading": null,
+      "resolved": "People/Qureshi",
+      "source": "Org/General Thematics/index",
+      "target": "People/Qureshi"
     },
     {
       "alias": "Org",
@@ -4672,9 +4742,37 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Org/Hildebrandt Corporation/index",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
+    },
+    {
+      "alias": "Qureshi",
+      "heading": null,
+      "resolved": "People/Qureshi",
+      "source": "Org/Hildebrandt Corporation/index",
+      "target": "People/Qureshi"
+    },
+    {
+      "alias": "Yamamoto Aerospace",
+      "heading": null,
+      "resolved": "Org/Yamamoto Aerospace",
+      "source": "Org/Hildebrandt Corporation/index",
+      "target": "Org/Yamamoto Aerospace"
+    },
+    {
+      "alias": "keystones",
+      "heading": null,
+      "resolved": "Phenomena/Keystone",
+      "source": "Org/Hildebrandt Corporation/index",
+      "target": "Phenomena/Keystone"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Hildebrandt Corporation/index",
+      "target": "Geography/Calaria/Hallia/index"
     },
     {
       "alias": "Istria",
@@ -6009,9 +6107,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Org/Pyrelight/index",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Elara Vance",
@@ -6485,9 +6583,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "Org/Singers of the Herald's Star",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Austrene",
@@ -6987,6 +7085,13 @@
       "target": "Phenomena/Hearts"
     },
     {
+      "alias": "Teller's Run",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
+      "source": "Org/Threshold Authority/index",
+      "target": "Geography/Calaria/Hallia/Teller's Run/index"
+    },
+    {
       "alias": "Velvet Mark",
       "heading": null,
       "resolved": "Org/Velvet Mark/index",
@@ -7127,6 +7232,27 @@
       "target": "Org/Verdant Holdings/index"
     },
     {
+      "alias": "Hildebrandt Corporation",
+      "heading": null,
+      "resolved": "Org/Hildebrandt Corporation/index",
+      "source": "Org/Yamamoto Aerospace",
+      "target": "Org/Hildebrandt Corporation/index"
+    },
+    {
+      "alias": "keystones",
+      "heading": null,
+      "resolved": "Phenomena/Keystone",
+      "source": "Org/Yamamoto Aerospace",
+      "target": "Phenomena/Keystone"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Yamamoto Aerospace",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
       "alias": "Sableclutch",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Sableclutch/index",
@@ -7155,6 +7281,13 @@
       "target": "Geography/Austrene/index"
     },
     {
+      "alias": "Qureshi",
+      "heading": null,
+      "resolved": "People/Qureshi",
+      "source": "People/Adal",
+      "target": "People/Qureshi"
+    },
+    {
       "alias": "Anzu",
       "heading": null,
       "resolved": "People/Anzu",
@@ -7171,9 +7304,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "People/Adal",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Calaria",
@@ -7195,6 +7328,34 @@
       "resolved": "Org/Singers of the Herald's Star",
       "source": "People/Adal",
       "target": "Org/Singers of the Herald's Star"
+    },
+    {
+      "alias": "Austrene",
+      "heading": null,
+      "resolved": "Geography/Austrene/index",
+      "source": "People/Aguirzu",
+      "target": "Geography/Austrene/index"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "People/Aguirzu",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Galzu",
+      "heading": null,
+      "resolved": "People/Galzu",
+      "source": "People/Aguirzu",
+      "target": "People/Galzu"
+    },
+    {
+      "alias": "Adal",
+      "heading": null,
+      "resolved": "People/Adal",
+      "source": "People/Aguirzu",
+      "target": "People/Adal"
     },
     {
       "alias": "Embercall",
@@ -7344,11 +7505,18 @@
       "target": "Geography/Austrene/index"
     },
     {
-      "alias": null,
+      "alias": "Qureshis",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "People/Qureshi",
       "source": "People/Anzu",
-      "target": "Belvedere"
+      "target": "People/Qureshi"
+    },
+    {
+      "alias": "Belvedere",
+      "heading": null,
+      "resolved": "Org/Belvedere/index",
+      "source": "People/Anzu",
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Adal",
@@ -7356,6 +7524,13 @@
       "resolved": "People/Adal",
       "source": "People/Anzu",
       "target": "People/Adal"
+    },
+    {
+      "alias": "Aguirzu",
+      "heading": null,
+      "resolved": "People/Aguirzu",
+      "source": "People/Anzu",
+      "target": "People/Aguirzu"
     },
     {
       "alias": "Galzu",
@@ -7484,6 +7659,13 @@
       "target": "Divinity/Outer Gods/Judge of Ages"
     },
     {
+      "alias": "Flintlock Toboggan",
+      "heading": null,
+      "resolved": "Divinity/Fiends/Flintlock Toboggan",
+      "source": "People/Argyle",
+      "target": "Divinity/Fiends/Flintlock Toboggan"
+    },
+    {
       "alias": "Dame Quay",
       "heading": null,
       "resolved": "Org/The Scale/People/Dame Quay",
@@ -7547,6 +7729,20 @@
       "target": "Org/Iconoclasm/index"
     },
     {
+      "alias": "Heart Atum",
+      "heading": null,
+      "resolved": "Org/Belvedere/Atum",
+      "source": "People/Benny",
+      "target": "Org/Belvedere/Atum"
+    },
+    {
+      "alias": "Belvedere",
+      "heading": null,
+      "resolved": "Org/Belvedere/index",
+      "source": "People/Benny",
+      "target": "Org/Belvedere/index"
+    },
+    {
       "alias": "Garrick Textiles",
       "heading": null,
       "resolved": "Org/Garrick Textiles/index",
@@ -7554,11 +7750,11 @@
       "target": "Org/Garrick Textiles/index"
     },
     {
-      "alias": null,
+      "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "People/Benny",
-      "target": "Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Voidsong",
@@ -7668,9 +7864,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "People/Camden Levine",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Elara Vance",
@@ -7871,9 +8067,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "People/Elara Vance",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Camden Levine",
@@ -8039,9 +8235,9 @@
     {
       "alias": "Belvedere",
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": "Org/Belvedere/index",
       "source": "People/Galzu",
-      "target": "Org/Belvedere"
+      "target": "Org/Belvedere/index"
     },
     {
       "alias": "Undercroft",
@@ -8170,6 +8366,13 @@
       "target": "People/Sbrtlby Jotes"
     },
     {
+      "alias": "Watcher",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Watcher With 1,000 Eyes",
+      "source": "People/Johnny",
+      "target": "Divinity/Outer Gods/Watcher With 1,000 Eyes"
+    },
+    {
       "alias": "Roundhat Gang",
       "heading": null,
       "resolved": "Org/Roundhat Gang/index",
@@ -8203,6 +8406,13 @@
       "resolved": "People/Sharp the Cunning Man",
       "source": "People/Johnny",
       "target": "People/Sharp the Cunning Man"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "People/Johnny",
+      "target": "Phenomena/Harmony/Voidsong"
     },
     {
       "alias": "Ghost",
@@ -8455,6 +8665,69 @@
       "resolved": "Geography/Calaria/Hallia/index",
       "source": "People/Paolo Barreto",
       "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Austrene",
+      "heading": null,
+      "resolved": "Geography/Austrene/index",
+      "source": "People/Qureshi",
+      "target": "Geography/Austrene/index"
+    },
+    {
+      "alias": "Belvedere",
+      "heading": null,
+      "resolved": "Org/Belvedere/index",
+      "source": "People/Qureshi",
+      "target": "Org/Belvedere/index"
+    },
+    {
+      "alias": "Adal",
+      "heading": null,
+      "resolved": "People/Adal",
+      "source": "People/Qureshi",
+      "target": "People/Adal"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "People/Qureshi",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "People/Qureshi",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Aguirzu",
+      "heading": null,
+      "resolved": "People/Aguirzu",
+      "source": "People/Qureshi",
+      "target": "People/Aguirzu"
+    },
+    {
+      "alias": "Galzu",
+      "heading": null,
+      "resolved": "People/Galzu",
+      "source": "People/Qureshi",
+      "target": "People/Galzu"
+    },
+    {
+      "alias": "General Thematics",
+      "heading": null,
+      "resolved": "Org/General Thematics/index",
+      "source": "People/Qureshi",
+      "target": "Org/General Thematics/index"
+    },
+    {
+      "alias": "Hildebrandt",
+      "heading": null,
+      "resolved": "Org/Hildebrandt Corporation/index",
+      "source": "People/Qureshi",
+      "target": "Org/Hildebrandt Corporation/index"
     },
     {
       "alias": "babau",
@@ -9740,7 +10013,7 @@
     {
       "alias": null,
       "heading": null,
-      "resolved": "Org/Belvedere",
+      "resolved": null,
       "source": "Timeline",
       "target": "Belvedere"
     },
@@ -10407,6 +10680,21 @@
           "alias": "Embercall",
           "heading": null,
           "target": "Org/Embercall Industries/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Aut"
+        },
+        {
+          "alias": "firmament",
+          "heading": null,
+          "target": "Firmament"
+        },
+        {
+          "alias": "Judge",
+          "heading": null,
+          "target": "Divinity/Outer Gods/Judge of Ages"
         }
       ],
       "date": "2026-07-29T23:41:12-04:00",
@@ -10835,9 +11123,9 @@
           "target": "Eternal Pulse"
         },
         {
-          "alias": null,
+          "alias": "Belvedere",
           "heading": null,
-          "target": "Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Heir",
@@ -10900,9 +11188,9 @@
           "target": "Godhome"
         },
         {
-          "alias": null,
+          "alias": "Belvedere",
           "heading": null,
-          "target": "Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "the Scale",
@@ -11118,9 +11406,9 @@
     {
       "crossrefs": [
         {
-          "alias": null,
+          "alias": "Belvedere",
           "heading": null,
-          "target": "Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": null,
@@ -11185,9 +11473,9 @@
           "target": "Org/Amber Call/People/Benjamin Grayson"
         },
         {
-          "alias": null,
+          "alias": "Belvedere",
           "heading": null,
-          "target": "Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Church",
@@ -11228,6 +11516,16 @@
           "alias": "Rhædon",
           "heading": null,
           "target": "Geography/Rhædon/index"
+        },
+        {
+          "alias": "Marchal",
+          "heading": null,
+          "target": "Org/Iconoclasm/People/Anaïs Marchal"
+        },
+        {
+          "alias": "Calaria",
+          "heading": null,
+          "target": "Geography/Calaria/index"
         },
         {
           "alias": "Anaïs Marchal",
@@ -11618,9 +11916,9 @@
     {
       "crossrefs": [
         {
-          "alias": null,
+          "alias": "Belvedere",
           "heading": null,
-          "target": "Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "firmament",
@@ -11984,7 +12282,7 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Watcher",
@@ -11997,13 +12295,13 @@
           "target": "People/Benny"
         }
       ],
-      "date": "2026-03-16T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Eilebrin Observatories"
         ],
         "extra": {
-          "date": "2026-03-16T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -12267,7 +12565,7 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Austrene",
@@ -12275,11 +12573,11 @@
           "target": "Geography/Austrene/index"
         }
       ],
-      "date": "2026-02-03T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-02-03T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -12564,7 +12862,7 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Anzu",
@@ -12572,11 +12870,11 @@
           "target": "People/Anzu"
         }
       ],
-      "date": "2026-03-09T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-09T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -13444,11 +13742,11 @@
           "target": "People/Sir Arctos"
         }
       ],
-      "date": "2026-01-27T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-01-27T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -13677,7 +13975,7 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Embercall",
@@ -13685,11 +13983,11 @@
           "target": "Org/Embercall Industries/index"
         }
       ],
-      "date": "2026-03-30T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-30T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -14266,7 +14564,7 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -14532,6 +14830,43 @@
     {
       "crossrefs": [
         {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Belvedere",
+          "heading": null,
+          "target": "Org/Belvedere/index"
+        },
+        {
+          "alias": "Benny",
+          "heading": null,
+          "target": "People/Benny"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        }
+      ],
+      "date": "2026-05-07T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-05-07T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Heart"
+        ],
+        "title": null
+      },
+      "path": "Org/Belvedere/Atum"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Orgs",
           "heading": null,
           "target": "Org/index"
@@ -14610,7 +14945,7 @@
         ],
         "title": null
       },
-      "path": "Org/Belvedere"
+      "path": "Org/Belvedere/index"
     },
     {
       "crossrefs": [
@@ -14975,7 +15310,7 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "keystone 14",
@@ -15204,7 +15539,7 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Benny",
@@ -15222,11 +15557,11 @@
           "target": "Org/Concordia/index"
         }
       ],
-      "date": "2026-03-30T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-30T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -15348,19 +15683,24 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Hildebrandt",
           "heading": null,
           "target": "Org/Hildebrandt Corporation/index"
+        },
+        {
+          "alias": "Qureshi",
+          "heading": null,
+          "target": "People/Qureshi"
         }
       ],
-      "date": "2026-03-16T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-16T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -15555,7 +15895,27 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
+        },
+        {
+          "alias": "Qureshi",
+          "heading": null,
+          "target": "People/Qureshi"
+        },
+        {
+          "alias": "Yamamoto Aerospace",
+          "heading": null,
+          "target": "Org/Yamamoto Aerospace"
+        },
+        {
+          "alias": "keystones",
+          "heading": null,
+          "target": "Phenomena/Keystone"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -17256,7 +17616,7 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Elara Vance",
@@ -17849,7 +18209,7 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Austrene",
@@ -17877,11 +18237,11 @@
           "target": "Divinity/Ashen Pact/index"
         }
       ],
-      "date": "2026-03-09T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-09T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -18017,11 +18377,11 @@
           "target": "Geography/Calaria/Ragged Roost"
         }
       ],
-      "date": "2026-02-03T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-02-03T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -18588,13 +18948,18 @@
           "alias": "Heart",
           "heading": null,
           "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Teller's Run",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Teller's Run/index"
         }
       ],
-      "date": "2025-08-28T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-08-28T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -18848,6 +19213,38 @@
     {
       "crossrefs": [
         {
+          "alias": "Hildebrandt Corporation",
+          "heading": null,
+          "target": "Org/Hildebrandt Corporation/index"
+        },
+        {
+          "alias": "keystones",
+          "heading": null,
+          "target": "Phenomena/Keystone"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        }
+      ],
+      "date": "2026-05-07T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-05-07T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Mercantile"
+        ],
+        "title": null
+      },
+      "path": "Org/Yamamoto Aerospace"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Sableclutch",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Sableclutch/index"
@@ -18919,6 +19316,11 @@
           "target": "Geography/Austrene/index"
         },
         {
+          "alias": "Qureshi",
+          "heading": null,
+          "target": "People/Qureshi"
+        },
+        {
           "alias": "Anzu",
           "heading": null,
           "target": "People/Anzu"
@@ -18931,7 +19333,7 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Calaria",
@@ -18949,11 +19351,11 @@
           "target": "Org/Singers of the Herald's Star"
         }
       ],
-      "date": "2026-03-09T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-09T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -18962,6 +19364,43 @@
         "title": null
       },
       "path": "People/Adal"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Austrene",
+          "heading": null,
+          "target": "Geography/Austrene/index"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Galzu",
+          "heading": null,
+          "target": "People/Galzu"
+        },
+        {
+          "alias": "Adal",
+          "heading": null,
+          "target": "People/Adal"
+        }
+      ],
+      "date": "2026-05-07T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-05-07T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Tengu"
+        ],
+        "title": null
+      },
+      "path": "People/Aguirzu"
     },
     {
       "crossrefs": [
@@ -19135,14 +19574,24 @@
           "target": "Geography/Austrene/index"
         },
         {
-          "alias": null,
+          "alias": "Qureshis",
           "heading": null,
-          "target": "Belvedere"
+          "target": "People/Qureshi"
+        },
+        {
+          "alias": "Belvedere",
+          "heading": null,
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Adal",
           "heading": null,
           "target": "People/Adal"
+        },
+        {
+          "alias": "Aguirzu",
+          "heading": null,
+          "target": "People/Aguirzu"
         },
         {
           "alias": "Galzu",
@@ -19205,11 +19654,11 @@
           "target": "Aut"
         }
       ],
-      "date": "2026-04-13T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-04-13T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -19252,6 +19701,11 @@
           "target": "Divinity/Outer Gods/Judge of Ages"
         },
         {
+          "alias": "Flintlock Toboggan",
+          "heading": null,
+          "target": "Divinity/Fiends/Flintlock Toboggan"
+        },
+        {
           "alias": "Dame Quay",
           "heading": null,
           "target": "Org/The Scale/People/Dame Quay"
@@ -19272,11 +19726,11 @@
           "target": "Sin and Tonic"
         }
       ],
-      "date": "2026-04-13T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-04-13T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -19329,14 +19783,24 @@
           "target": "Org/Iconoclasm/index"
         },
         {
+          "alias": "Heart Atum",
+          "heading": null,
+          "target": "Org/Belvedere/Atum"
+        },
+        {
+          "alias": "Belvedere",
+          "heading": null,
+          "target": "Org/Belvedere/index"
+        },
+        {
           "alias": "Garrick Textiles",
           "heading": null,
           "target": "Org/Garrick Textiles/index"
         },
         {
-          "alias": null,
+          "alias": "Belvedere",
           "heading": null,
-          "target": "Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Voidsong",
@@ -19394,15 +19858,15 @@
           "target": "Geography/Calaria/Eilebrin Observatory"
         }
       ],
-      "date": "2026-03-23T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-23T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [
-          "Human"
+          "Android"
         ],
         "title": null
       },
@@ -19433,7 +19897,7 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Elara Vance",
@@ -19451,11 +19915,11 @@
           "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2026-03-30T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-30T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -19676,7 +20140,7 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         },
         {
           "alias": "Camden Levine",
@@ -19699,11 +20163,11 @@
           "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
         }
       ],
-      "date": "2026-03-16T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-16T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -19894,14 +20358,14 @@
         {
           "alias": "Belvedere",
           "heading": null,
-          "target": "Org/Belvedere"
+          "target": "Org/Belvedere/index"
         }
       ],
-      "date": "2026-03-09T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-09T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -20070,6 +20534,11 @@
           "target": "People/Sbrtlby Jotes"
         },
         {
+          "alias": "Watcher",
+          "heading": null,
+          "target": "Divinity/Outer Gods/Watcher With 1,000 Eyes"
+        },
+        {
           "alias": "Roundhat Gang",
           "heading": null,
           "target": "Org/Roundhat Gang/index"
@@ -20093,6 +20562,11 @@
           "alias": "Cunning Man",
           "heading": null,
           "target": "People/Sharp the Cunning Man"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
         },
         {
           "alias": "Ghost",
@@ -20140,11 +20614,11 @@
           "target": "Geography/Calaria/Hallia/Teller's Run/index"
         }
       ],
-      "date": "2026-03-23T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-03-23T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -20343,11 +20817,11 @@
           "target": "Geography/Calaria/Hallia/Teller's Run/index"
         }
       ],
-      "date": "2026-04-13T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-04-13T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -20384,6 +20858,68 @@
         "title": null
       },
       "path": "People/Paolo Barreto"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Austrene",
+          "heading": null,
+          "target": "Geography/Austrene/index"
+        },
+        {
+          "alias": "Belvedere",
+          "heading": null,
+          "target": "Org/Belvedere/index"
+        },
+        {
+          "alias": "Adal",
+          "heading": null,
+          "target": "People/Adal"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Aguirzu",
+          "heading": null,
+          "target": "People/Aguirzu"
+        },
+        {
+          "alias": "Galzu",
+          "heading": null,
+          "target": "People/Galzu"
+        },
+        {
+          "alias": "General Thematics",
+          "heading": null,
+          "target": "Org/General Thematics/index"
+        },
+        {
+          "alias": "Hildebrandt",
+          "heading": null,
+          "target": "Org/Hildebrandt Corporation/index"
+        }
+      ],
+      "date": "2026-05-07T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-05-07T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Tengu"
+        ],
+        "title": null
+      },
+      "path": "People/Qureshi"
     },
     {
       "crossrefs": [
@@ -21437,11 +21973,11 @@
           "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2026-04-13T00:00:00-04:00",
+      "date": "2026-05-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-04-13T00:00:00-04:00"
+          "date": "2026-05-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -21967,6 +22503,10 @@
     {
       "source": "Org/Ternion Heavy Industries/index",
       "target": "Hildebrandt Corporation"
+    },
+    {
+      "source": "Timeline",
+      "target": "Belvedere"
     }
   ]
 }

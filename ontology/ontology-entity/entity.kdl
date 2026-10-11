@@ -158,8 +158,9 @@ entity "Argyle's" {
 entity "Ashen Pact" kind="deity" page="Divinity/Ashen Pact/index" {
     source "akasha"
 }
-entity "Atum" {
+entity "Atum" kind="org" page="Org/Belvedere/Atum" {
     alias "Adam"
+    source "akasha"
     source "defs"
 }
 entity "Auger" kind="creature" page="Bestiary/Auger" {
@@ -239,7 +240,7 @@ entity "Beats in Time" {
     alias "Beats and Time"
     source "defs"
 }
-entity "Belvedere" kind="org" page="Org/Belvedere" {
+entity "Belvedere" kind="org" page="Org/Belvedere/index" {
     source "akasha"
 }
 entity "Belvedere Library" kind="place" page="Geography/Calaria/Hallia/Masque District/Belvedere Library" {
@@ -1961,6 +1962,9 @@ entity "Wrenford" kind="place" page="Geography/Calaria/Wrenford" {
 entity "Wrenford Commune" kind="place" page="Geography/Calaria/Wrenford Commune" {
     alias "the Wrenford commune"
     alias "Wrenford commune"
+    source "akasha"
+}
+entity "Yamamoto Aerospace" kind="org" page="Org/Yamamoto Aerospace" {
     source "akasha"
 }
 entity "Yao Addington" kind="person" page="Org/Protectorate/People/Yao Addington" {
