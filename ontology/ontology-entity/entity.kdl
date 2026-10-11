@@ -1602,6 +1602,9 @@ entity "Sin and Tonic" kind="place" page="Geography/Calaria/Hallia/Sableclutch/S
     source "akasha"
     source "defs"
 }
+entity "Singers of the Herald's Star" kind="org" page="Org/Singers of the Herald's Star" {
+    source "akasha"
+}
 entity "skein" {
     alias "Skeen"
     alias "Skain"
