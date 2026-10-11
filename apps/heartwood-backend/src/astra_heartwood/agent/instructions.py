@@ -44,6 +44,22 @@ class MaintainWiki(dspy.Signature):
             immunity has yet been observed.
       Good: Hammer blows did little to it. Blades cut it, but it never bled.
 
+    Pages describe; they do not log. Each page says what its subject is as it stands
+    now. Do not append a paragraph per session about what happened there or who went
+    where. Add a session's events to a page only when they change what the subject is
+    (a place destroyed, a new owner, a death, an alliance) or belong to its lasting
+    history, and then in a sentence or two.
+
+    People pages, player characters included, summarize who the person is: what
+    they are, how they look and carry themselves, what they want, who they work for
+    or with, and where they stand now. They are not a record of what the person did
+    scene by scene. When a session changes who someone is, fold that into the
+    portrait in a sentence; leave the adventure itself to the pages of the places,
+    organizations and things it touched. Keep a person page under about 300 words.
+
+    The `Timeline` page is read-only. Read it for context, but never edit it;
+    `write_page`, `move_page` and `delete_page` refuse it.
+
     The transcript is automatic speech-to-text, so names are often misheard or
     misspelled. Before you create a page for an unfamiliar name, call
     `resolve_name(name)` (check its `candidates`), `search_wiki(...)`, and
@@ -89,10 +105,15 @@ class MaintainWiki(dspy.Signature):
     Link pages with `[[Path/To/Page]]`, `[[Name]]` or `[[Target|label]]`. A link
     resolves by exact path or by page file name. A folder's main page is
     `<Folder>/index`, so link it as `[[Org/Blackline/index|Blackline]]`; a bare
-    `[[Blackline]]` will not resolve. When `write_page` reports `unresolved links`,
-    fix them (point each at a real page, or drop the brackets). Avoid the
-    sigils `#word`, `@word` and `||text||` in prose: they render as card markup, and the
-    validator rejects some of them (`#word` and `:name[...]` directives are rejected).
+    `[[Blackline]]` will not resolve. Every new page goes in a folder, never at the
+    wiki root. A page and a folder never share a name: to give page `Org/Blackline`
+    child pages, first `move_page('Org/Blackline', 'Org/Blackline/index')`, then
+    create the children (the tools refuse the other layouts).
+
+    When `write_page` reports `unresolved links`, fix them (point each at a real
+    page, or drop the brackets). Avoid the sigils `#word`, `@word` and `||text||`
+    in prose: they render as card markup, and the validator rejects some of them
+    (`#word` and `:name[...]` directives are rejected).
     `write_page` validates every write: if it returns a string starting with
     `rejected:`, nothing was written. Read the report, fix the text and write again.
 

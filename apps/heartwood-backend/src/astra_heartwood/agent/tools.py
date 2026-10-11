@@ -38,6 +38,9 @@ from .workspace import PAGE_SUFFIX, Workspace, check_path_key
 MAX_RESULTS = 200
 #: How many ``resolve_name`` candidates to surface.
 MAX_CANDIDATES = 5
+#: Pages the agent may read but never write, move or delete. The Timeline is kept by hand
+#: (stakeholder call 2026-10-11, after the first backfill turned it into a session log).
+PROTECTED_PAGES = frozenset({"Timeline"})
 
 _FRONTMATTER = re.compile(r"\A---[ \t]*\n(.*?)^---[ \t]*$\n?", re.S | re.M)
 _DATE_LINE = re.compile(r"^date:[ \t]*(.*?)[ \t]*$", re.M)
@@ -223,6 +226,34 @@ class HeartwoodTools:
             report.append(entry)
         return report
 
+    def _check_writable(self, key: str) -> None:
+        if key in PROTECTED_PAGES:
+            raise ValueError(f"page {key!r} is read-only; do not change it")
+
+    def _check_new_path(self, key: str, *, moving_from: str | None = None) -> None:
+        """Raise unless ``key`` is a sound place for a page that does not exist yet.
+
+        New pages go inside a folder (never at the wiki root), a page never sits beside a
+        folder of the same name (a folder's main page is ``<Folder>/index``), and a page
+        cannot be created under another page's path. ``moving_from`` is exempt as a parent,
+        so ``move_page('Org/X', 'Org/X/index')`` is the way to turn a page into a folder.
+        """
+        if "/" not in key:
+            raise ValueError(
+                f"new pages go in a folder, not the wiki root (got {key!r}); "
+                "pick the folder that fits, e.g. 'Org/…', 'People/…' or 'Phenomena/…'"
+            )
+        parts = key.split("/")
+        for i in range(1, len(parts)):
+            parent = "/".join(parts[:i])
+            if parent != moving_from and self.ws.file(parent).is_file():
+                raise ValueError(
+                    f"{parent!r} is a page, so {key!r} cannot go under it. To give it child "
+                    f"pages, first call move_page({parent!r}, {parent + '/index'!r})"
+                )
+        if (self.ws.content_dir / key).is_dir():
+            raise ValueError(f"{key!r} is a folder; its main page is {key + '/index'!r}")
+
     def _permitted(self, date: str) -> None:
         if date not in self.sessions:
             raise ValueError(
@@ -260,11 +291,16 @@ class HeartwoodTools:
         some of the page's links match no page, a second line follows: 'unresolved links:
         [[X]] (did you mean [[Y|X]]?), [[Z]]'. The page is written either way; rewrite it to
         fix those links. Returns 'rejected: <validator report>' when the text fails validation
-        (nothing written; fix and retry). Raises ValueError on a bad path."""
+        (nothing written; fix and retry). Raises ValueError on a bad path, a read-only page
+        (Timeline), a new page at the wiki root, or a new page beside or under another page
+        of the same name."""
         key = check_path_key(path)
+        self._check_writable(key)
         file = self.ws.file(key)
         if not isinstance(text, str) or not text.strip():
             raise ValueError("text must be non-empty vellum")
+        if not file.is_file():
+            self._check_new_path(key)
         existing = frontmatter_date(file.read_text(encoding="utf-8")) if file.is_file() else None
         candidate = stamp_date(text, existing=existing, target_iso=self.target_iso)
         if not candidate.endswith("\n"):
@@ -286,11 +322,16 @@ class HeartwoodTools:
     def move_page(self, src: str, dst: str) -> dict[str, Any]:
         """Move page `src` to path `dst` (empty folders are removed). Returns {'moved': [src,
         dst], 'backlinks': [pages that linked to src before the move; fix or drop their
-        links]}. Raises ValueError if src is missing or dst already exists."""
+        links]}. To give a page child pages, move 'X' to 'X/index'. Raises ValueError if src
+        is missing, dst already exists, either is read-only (Timeline), or dst breaks the
+        same rules as a new page in write_page."""
         src, dst = check_path_key(src), check_path_key(dst)
+        self._check_writable(src)
+        self._check_writable(dst)
         self._page_file(src)
         if self.ws.file(dst).exists():
             raise ValueError(f"destination {dst!r} already exists")
+        self._check_new_path(dst, moving_from=src)
         links = self.backlinks(src)
         self.ws.move(src, dst)
         return {"moved": [src, dst], "backlinks": links}
@@ -298,8 +339,9 @@ class HeartwoodTools:
     def delete_page(self, path: str) -> dict[str, Any]:
         """Delete page `path` (empty folders are removed). Returns {'deleted': path,
         'backlinks': [pages that linked to it; fix or drop their links]}. Raises ValueError if
-        the page does not exist."""
+        the page does not exist or is read-only (Timeline)."""
         key = check_path_key(path)
+        self._check_writable(key)
         self._page_file(key)
         links = self.backlinks(key)
         self.ws.delete(key)

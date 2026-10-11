@@ -449,3 +449,47 @@ def test_real_validator(tmp_path: Path) -> None:
         (bad / "Bestiary" / "Auger.vellum").write_text(f"---\ntags: []\n---\n\n{body}\n")
         report = node_validator(str(bad))
         assert report is not None and "Bestiary/Auger.vellum" in report
+
+
+# ── read-only + placement guards (2026-10-11 backfill review) ──
+def test_timeline_is_read_only(env) -> None:
+    ws, t, _, _ = env
+    ws.write("Timeline", "---\ndate: 2026-06-05T16:40:21-04:00\n---\n\n- {1ag} Founding.\n")
+    ops_before = ws.ops()
+    before = hash_tree(ws.content_dir)
+    assert "Founding" in t.read_page("Timeline")
+    for call in [
+        lambda: t.write_page("Timeline", "- {2ag} New."),
+        lambda: t.move_page("Timeline", "History/Timeline"),
+        lambda: t.move_page("Divinity/Aut", "Timeline"),
+        lambda: t.delete_page("Timeline"),
+    ]:
+        with pytest.raises(ValueError, match="read-only"):
+            call()
+    assert hash_tree(ws.content_dir) == before
+    assert ws.ops() == ops_before
+
+
+def test_new_pages_not_at_root(env) -> None:
+    ws, t, _, _ = env
+    with pytest.raises(ValueError, match="not the wiki root"):
+        t.write_page("Radio Show", "A show.")
+    with pytest.raises(ValueError, match="not the wiki root"):
+        t.move_page("Divinity/Aut", "Aut")
+    assert t.write_page("index", "Home again.") == "updated index"  # existing root page is fine
+
+
+def test_page_and_folder_never_share_a_name(env) -> None:
+    ws, t, _, _ = env
+    # a child under an existing page
+    with pytest.raises(ValueError, match=r"move_page\('Divinity/Aut', 'Divinity/Aut/index'\)"):
+        t.write_page("Divinity/Aut/Priest", "A priest.")
+    # a page beside an existing folder
+    with pytest.raises(ValueError, match="is a folder"):
+        t.write_page("Geography/Hallia", "Hallia.")
+    with pytest.raises(ValueError, match="is a folder"):
+        t.move_page("Divinity/Aut", "Geography/Hallia")
+    # the sanctioned conversion: page → folder index, then children
+    moved = t.move_page("Divinity/Aut", "Divinity/Aut/index")
+    assert moved["moved"] == ["Divinity/Aut", "Divinity/Aut/index"]
+    assert t.write_page("Divinity/Aut/Priest", "A priest.") == "created Divinity/Aut/Priest"
