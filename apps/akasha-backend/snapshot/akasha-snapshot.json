@@ -74,6 +74,41 @@
       "alias": null,
       "heading": null,
       "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Bestiary/Verdant Court Fey",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Oriel",
+      "heading": null,
+      "resolved": "People/Oriel",
+      "source": "Bestiary/Verdant Court Fey",
+      "target": "People/Oriel"
+    },
+    {
+      "alias": "Jin",
+      "heading": null,
+      "resolved": "People/Jin",
+      "source": "Bestiary/Verdant Court Fey",
+      "target": "People/Jin"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Unknown Entities/Green Father",
+      "source": "Bestiary/Verdant Court Fey",
+      "target": "Green Father"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Bestiary/Verdant Court Fey",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
       "source": "Bestiary/Verdant Ooze",
       "target": "Verdant Expanse"
     },
@@ -610,6 +645,13 @@
       "target": "Geography/Calaria/Wrenford Commune"
     },
     {
+      "alias": "court of fey",
+      "heading": null,
+      "resolved": "Bestiary/Verdant Court Fey",
+      "source": "Divinity/Unknown Entities/Green Father",
+      "target": "Bestiary/Verdant Court Fey"
+    },
+    {
       "alias": "Grayson",
       "heading": null,
       "resolved": "Org/Amber Call/People/Benjamin Grayson",
@@ -1098,6 +1140,13 @@
       "resolved": "Bestiary/Chorister Bird",
       "source": "Geography/Calaria/Verdant Expanse",
       "target": "Bestiary/Chorister Bird"
+    },
+    {
+      "alias": "A court of fey",
+      "heading": null,
+      "resolved": "Bestiary/Verdant Court Fey",
+      "source": "Geography/Calaria/Verdant Expanse",
+      "target": "Bestiary/Verdant Court Fey"
     },
     {
       "alias": "Wrenford",
@@ -2143,6 +2192,27 @@
       "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman"
     },
     {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "court of fey",
+      "heading": null,
+      "resolved": "Bestiary/Verdant Court Fey",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "target": "Bestiary/Verdant Court Fey"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
       "alias": "Iridescent Church",
       "heading": null,
       "resolved": "Org/Iridescent Church/index",
@@ -3018,6 +3088,34 @@
       "target": "Org/Ætherion Limited/index"
     },
     {
+      "alias": "Cedric Corot",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot",
+      "source": "People/Andros Anthropos",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+    },
+    {
+      "alias": "Krod Snodman",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman",
+      "source": "People/Andros Anthropos",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "People/Andros Anthropos",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Tommy Lagerman",
+      "heading": null,
+      "resolved": "People/Tommy Lagerman",
+      "source": "People/Andros Anthropos",
+      "target": "People/Tommy Lagerman"
+    },
+    {
       "alias": "the Scale",
       "heading": null,
       "resolved": "Org/The Scale/index",
@@ -3044,6 +3142,48 @@
       "resolved": "Geography/Calaria/Hallia/index",
       "source": "People/Herald Vanderbloom",
       "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "People/Jin",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Cedric Corot",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot",
+      "source": "People/Jin",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+    },
+    {
+      "alias": "Tommy Lagerman",
+      "heading": null,
+      "resolved": "People/Tommy Lagerman",
+      "source": "People/Karen Lagerman",
+      "target": "People/Tommy Lagerman"
+    },
+    {
+      "alias": "Wrenford",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford",
+      "source": "People/Karen Lagerman",
+      "target": "Geography/Calaria/Wrenford"
+    },
+    {
+      "alias": "Green Man",
+      "heading": null,
+      "resolved": "Divinity/Unknown Entities/Green Father",
+      "source": "People/Karen Lagerman",
+      "target": "Green Father"
+    },
+    {
+      "alias": "Cedric Corot",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot",
+      "source": "People/Karen Lagerman",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
     },
     {
       "alias": "Wrenford commune",
@@ -3081,6 +3221,76 @@
       "target": "People/Herald Vanderbloom"
     },
     {
+      "alias": "court of fey",
+      "heading": null,
+      "resolved": "Bestiary/Verdant Court Fey",
+      "source": "People/Lyric Burke",
+      "target": "Bestiary/Verdant Court Fey"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "People/Oriel",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Jin",
+      "heading": null,
+      "resolved": "People/Jin",
+      "source": "People/Oriel",
+      "target": "People/Jin"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "People/Tommy Lagerman",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Wrenford",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford",
+      "source": "People/Tommy Lagerman",
+      "target": "Geography/Calaria/Wrenford"
+    },
+    {
+      "alias": "Host",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Iridescent Host",
+      "source": "People/Tommy Lagerman",
+      "target": "Iridescent Host"
+    },
+    {
+      "alias": "Cedric Corot",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot",
+      "source": "People/Tommy Lagerman",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+    },
+    {
+      "alias": "Green Man",
+      "heading": null,
+      "resolved": "Divinity/Unknown Entities/Green Father",
+      "source": "People/Tommy Lagerman",
+      "target": "Green Father"
+    },
+    {
+      "alias": "Cedric",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot",
+      "source": "People/Tommy Lagerman",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+    },
+    {
+      "alias": "Karen Lagerman",
+      "heading": null,
+      "resolved": "People/Karen Lagerman",
+      "source": "People/Tommy Lagerman",
+      "target": "People/Karen Lagerman"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Færrin",
@@ -3107,6 +3317,13 @@
       "resolved": "Geography/Calaria/Verdant Expanse",
       "source": "Phenomena/Feyrock",
       "target": "Verdant Expanse"
+    },
+    {
+      "alias": "court of fey",
+      "heading": null,
+      "resolved": "Bestiary/Verdant Court Fey",
+      "source": "Phenomena/Feyrock",
+      "target": "Bestiary/Verdant Court Fey"
     },
     {
       "alias": "twin suns",
@@ -3569,6 +3786,76 @@
       "resolved": "Bestiary/Deadly Mantis",
       "source": "Timeline",
       "target": "Bestiary/Deadly Mantis"
+    },
+    {
+      "alias": "Tommy Lagerman",
+      "heading": null,
+      "resolved": "People/Tommy Lagerman",
+      "source": "Timeline",
+      "target": "People/Tommy Lagerman"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Verdant Expanse",
+      "source": "Timeline",
+      "target": "Verdant Expanse"
+    },
+    {
+      "alias": "Wrenford",
+      "heading": null,
+      "resolved": "Geography/Calaria/Wrenford",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Wrenford"
+    },
+    {
+      "alias": "Host",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Iridescent Host",
+      "source": "Timeline",
+      "target": "Iridescent Host"
+    },
+    {
+      "alias": "court of fey",
+      "heading": null,
+      "resolved": "Bestiary/Verdant Court Fey",
+      "source": "Timeline",
+      "target": "Bestiary/Verdant Court Fey"
+    },
+    {
+      "alias": "Oriel",
+      "heading": null,
+      "resolved": "People/Oriel",
+      "source": "Timeline",
+      "target": "People/Oriel"
+    },
+    {
+      "alias": "Jin",
+      "heading": null,
+      "resolved": "People/Jin",
+      "source": "Timeline",
+      "target": "People/Jin"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Tommy Lagerman",
+      "heading": null,
+      "resolved": "People/Tommy Lagerman",
+      "source": "Timeline",
+      "target": "People/Tommy Lagerman"
+    },
+    {
+      "alias": "Karen Lagerman",
+      "heading": null,
+      "resolved": "People/Karen Lagerman",
+      "source": "Timeline",
+      "target": "People/Karen Lagerman"
     }
   ],
   "pages": [
@@ -3768,6 +4055,48 @@
         "title": null
       },
       "path": "Bestiary/Ugathal"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Oriel",
+          "heading": null,
+          "target": "People/Oriel"
+        },
+        {
+          "alias": "Jin",
+          "heading": null,
+          "target": "People/Jin"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Green Father"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        }
+      ],
+      "date": "2025-09-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-09-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Fey"
+        ],
+        "title": null
+      },
+      "path": "Bestiary/Verdant Court Fey"
     },
     {
       "crossrefs": [
@@ -4552,6 +4881,11 @@
           "alias": "Wrenford commune",
           "heading": null,
           "target": "Geography/Calaria/Wrenford Commune"
+        },
+        {
+          "alias": "court of fey",
+          "heading": null,
+          "target": "Bestiary/Verdant Court Fey"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -5204,6 +5538,11 @@
           "alias": "chorister birds",
           "heading": null,
           "target": "Bestiary/Chorister Bird"
+        },
+        {
+          "alias": "A court of fey",
+          "heading": null,
+          "target": "Bestiary/Verdant Court Fey"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -6837,6 +7176,21 @@
           "alias": "Krod Snodman",
           "heading": null,
           "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "court of fey",
+          "heading": null,
+          "target": "Bestiary/Verdant Court Fey"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -8481,6 +8835,43 @@
     {
       "crossrefs": [
         {
+          "alias": "Cedric Corot",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+        },
+        {
+          "alias": "Krod Snodman",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Krod Snodman"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Tommy Lagerman",
+          "heading": null,
+          "target": "People/Tommy Lagerman"
+        }
+      ],
+      "date": "2025-09-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-09-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "People/Andros Anthropos"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "the Scale",
           "heading": null,
           "target": "Org/The Scale/index"
@@ -8554,6 +8945,70 @@
     {
       "crossrefs": [
         {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Cedric Corot",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+        }
+      ],
+      "date": "2025-09-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-09-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Fey"
+        ],
+        "title": null
+      },
+      "path": "People/Jin"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Tommy Lagerman",
+          "heading": null,
+          "target": "People/Tommy Lagerman"
+        },
+        {
+          "alias": "Wrenford",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford"
+        },
+        {
+          "alias": "Green Man",
+          "heading": null,
+          "target": "Green Father"
+        },
+        {
+          "alias": "Cedric Corot",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+        }
+      ],
+      "date": "2025-09-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-09-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "People/Karen Lagerman"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Wrenford commune",
           "heading": null,
           "target": "Geography/Calaria/Wrenford Commune"
@@ -8577,15 +9032,20 @@
           "alias": "Herald Vanderbloom",
           "heading": null,
           "target": "People/Herald Vanderbloom"
+        },
+        {
+          "alias": "court of fey",
+          "heading": null,
+          "target": "Bestiary/Verdant Court Fey"
         }
       ],
-      "date": "2025-09-11T00:00:00-04:00",
+      "date": "2025-09-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Lyric"
         ],
         "extra": {
-          "date": "2025-09-11T00:00:00-04:00"
+          "date": "2025-09-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -8594,6 +9054,85 @@
         "title": null
       },
       "path": "People/Lyric Burke"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Jin",
+          "heading": null,
+          "target": "People/Jin"
+        }
+      ],
+      "date": "2025-09-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-09-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Fey"
+        ],
+        "title": null
+      },
+      "path": "People/Oriel"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Wrenford",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford"
+        },
+        {
+          "alias": "Host",
+          "heading": null,
+          "target": "Iridescent Host"
+        },
+        {
+          "alias": "Cedric Corot",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+        },
+        {
+          "alias": "Green Man",
+          "heading": null,
+          "target": "Green Father"
+        },
+        {
+          "alias": "Cedric",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
+        },
+        {
+          "alias": "Karen Lagerman",
+          "heading": null,
+          "target": "People/Karen Lagerman"
+        }
+      ],
+      "date": "2025-09-18T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-09-18T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "People/Tommy Lagerman"
     },
     {
       "crossrefs": [
@@ -8616,15 +9155,20 @@
           "alias": null,
           "heading": null,
           "target": "Verdant Expanse"
+        },
+        {
+          "alias": "court of fey",
+          "heading": null,
+          "target": "Bestiary/Verdant Court Fey"
         }
       ],
-      "date": "2025-09-11T00:00:00-04:00",
+      "date": "2025-09-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Fey rock"
         ],
         "extra": {
-          "date": "2025-09-11T00:00:00-04:00"
+          "date": "2025-09-18T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -9130,6 +9674,56 @@
           "alias": "deadly mantises",
           "heading": null,
           "target": "Bestiary/Deadly Mantis"
+        },
+        {
+          "alias": "Tommy Lagerman",
+          "heading": null,
+          "target": "People/Tommy Lagerman"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Verdant Expanse"
+        },
+        {
+          "alias": "Wrenford",
+          "heading": null,
+          "target": "Geography/Calaria/Wrenford"
+        },
+        {
+          "alias": "Host",
+          "heading": null,
+          "target": "Iridescent Host"
+        },
+        {
+          "alias": "court of fey",
+          "heading": null,
+          "target": "Bestiary/Verdant Court Fey"
+        },
+        {
+          "alias": "Oriel",
+          "heading": null,
+          "target": "People/Oriel"
+        },
+        {
+          "alias": "Jin",
+          "heading": null,
+          "target": "People/Jin"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Tommy Lagerman",
+          "heading": null,
+          "target": "People/Tommy Lagerman"
+        },
+        {
+          "alias": "Karen Lagerman",
+          "heading": null,
+          "target": "People/Karen Lagerman"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",

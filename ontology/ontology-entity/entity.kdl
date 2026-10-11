@@ -1626,6 +1626,9 @@ entity "Verdant" {
     alias "Vernon"
     source "defs"
 }
+entity "Verdant Court Fey" kind="creature" page="Bestiary/Verdant Court Fey" {
+    source "akasha"
+}
 entity "Verdant Expanse" kind="place" page="Geography/Calaria/Verdant Expanse" {
     alias "Green Sea"
     alias "Emerald Deep"
