@@ -15,11 +15,25 @@
       "target": "Org/Amber Call/People/Mr. Whiskers"
     },
     {
+      "alias": "Cora Honeysap",
+      "heading": null,
+      "resolved": "People/Cora Honeysap",
+      "source": "Anti-Zorbon Taskforce",
+      "target": "People/Cora Honeysap"
+    },
+    {
       "alias": "Gloaming Codex",
       "heading": null,
       "resolved": "Phenomena/Gloaming Codex",
       "source": "Bestiary/Carnivorous Ink",
       "target": "Phenomena/Gloaming Codex"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Bestiary/Cave Serpent",
+      "target": "Geography/Calaria/Hallia/index"
     },
     {
       "alias": "Gloaming Codex",
@@ -69,6 +83,13 @@
       "resolved": "Bestiary/Voice of Many",
       "source": "Bestiary/Keeper of Chains",
       "target": "Voice of Many"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Bestiary/Pale Servant",
+      "target": "Geography/Calaria/Hallia/index"
     },
     {
       "alias": "Hellions",
@@ -1135,6 +1156,27 @@
       "target": "goblinoid"
     },
     {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Geography/Calaria/Hallia/Sewers",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Widdershins",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/index",
+      "source": "Geography/Calaria/Hallia/Sewers",
+      "target": "Geography/Calaria/Hallia/Widdershins/index"
+    },
+    {
+      "alias": "Anti-Zorbon Taskforce",
+      "heading": null,
+      "resolved": "Anti-Zorbon Taskforce",
+      "source": "Geography/Calaria/Hallia/Sewers",
+      "target": "Anti-Zorbon Taskforce"
+    },
+    {
       "alias": "the Horizon",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/the Horizon/index",
@@ -1245,6 +1287,20 @@
       "resolved": "Geography/Færrin",
       "source": "Geography/Calaria/Hallia/Widdershins/index",
       "target": "Færrin"
+    },
+    {
+      "alias": "sewers",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sewers",
+      "source": "Geography/Calaria/Hallia/Widdershins/index",
+      "target": "Geography/Calaria/Hallia/Sewers"
+    },
+    {
+      "alias": "Anti-Zorbon Taskforce",
+      "heading": null,
+      "resolved": "Anti-Zorbon Taskforce",
+      "source": "Geography/Calaria/Hallia/Widdershins/index",
+      "target": "Anti-Zorbon Taskforce"
     },
     {
       "alias": null,
@@ -1548,6 +1604,34 @@
       "target": "Benjamin Grayson"
     },
     {
+      "alias": "Edan",
+      "heading": null,
+      "resolved": "Geography/index",
+      "source": "Geography/Quiet Below/index",
+      "target": "Geography/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Færrin",
+      "source": "Geography/Quiet Below/index",
+      "target": "Færrin"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Geography/Quiet Below/index",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Judge",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Judge of Ages",
+      "source": "Geography/Quiet Below/index",
+      "target": "Judge of Ages"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": null,
@@ -1770,6 +1854,13 @@
       "resolved": "Geography/Calaria/Hallia/Widdershins/index",
       "source": "Org/Amber Call/People/Mr. Whiskers",
       "target": "Geography/Calaria/Hallia/Widdershins/index"
+    },
+    {
+      "alias": "Cora Honeysap",
+      "heading": null,
+      "resolved": "People/Cora Honeysap",
+      "source": "Org/Amber Call/People/Mr. Whiskers",
+      "target": "People/Cora Honeysap"
     },
     {
       "alias": null,
@@ -3795,6 +3886,34 @@
       "target": "Phenomena/Feyrock"
     },
     {
+      "alias": "Widdershins",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/index",
+      "source": "People/Cora Honeysap",
+      "target": "Geography/Calaria/Hallia/Widdershins/index"
+    },
+    {
+      "alias": "Host",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Iridescent Host",
+      "source": "People/Cora Honeysap",
+      "target": "Iridescent Host"
+    },
+    {
+      "alias": "Anti-Zorbon Taskforce",
+      "heading": null,
+      "resolved": "Anti-Zorbon Taskforce",
+      "source": "People/Cora Honeysap",
+      "target": "Anti-Zorbon Taskforce"
+    },
+    {
+      "alias": "Whiskers",
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Mr. Whiskers",
+      "source": "People/Cora Honeysap",
+      "target": "Org/Amber Call/People/Mr. Whiskers"
+    },
+    {
       "alias": "the Scale",
       "heading": null,
       "resolved": "Org/The Scale/index",
@@ -4185,6 +4304,20 @@
       "resolved": "Geography/Færrin",
       "source": "Phenomena/Joker World",
       "target": "Færrin"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Phenomena/Mythotoxin",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Phenomena/Oil of Unlife",
+      "target": "Geography/Calaria/Hallia/index"
     },
     {
       "alias": "sentience distributor",
@@ -5193,6 +5326,76 @@
       "resolved": "Divinity/Unknown Entities/The Zorbon",
       "source": "Timeline",
       "target": "The Zorbon"
+    },
+    {
+      "alias": "Widdershins",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/index",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Widdershins/index"
+    },
+    {
+      "alias": "Cora Honeysap",
+      "heading": null,
+      "resolved": "People/Cora Honeysap",
+      "source": "Timeline",
+      "target": "People/Cora Honeysap"
+    },
+    {
+      "alias": "sewers",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sewers",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Sewers"
+    },
+    {
+      "alias": "Anti-Zorbon Taskforce",
+      "heading": null,
+      "resolved": "Anti-Zorbon Taskforce",
+      "source": "Timeline",
+      "target": "Anti-Zorbon Taskforce"
+    },
+    {
+      "alias": "Whiskers'",
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Mr. Whiskers",
+      "source": "Timeline",
+      "target": "Org/Amber Call/People/Mr. Whiskers"
+    },
+    {
+      "alias": "oil of unlife",
+      "heading": null,
+      "resolved": "Phenomena/Oil of Unlife",
+      "source": "Timeline",
+      "target": "Phenomena/Oil of Unlife"
+    },
+    {
+      "alias": "mythotoxin",
+      "heading": null,
+      "resolved": "Phenomena/Mythotoxin",
+      "source": "Timeline",
+      "target": "Phenomena/Mythotoxin"
+    },
+    {
+      "alias": "Host",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Iridescent Host",
+      "source": "Timeline",
+      "target": "Iridescent Host"
+    },
+    {
+      "alias": "Judge",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Judge of Ages",
+      "source": "Timeline",
+      "target": "Judge of Ages"
+    },
+    {
+      "alias": "serpents",
+      "heading": null,
+      "resolved": "Bestiary/Cave Serpent",
+      "source": "Timeline",
+      "target": "Bestiary/Cave Serpent"
     }
   ],
   "pages": [
@@ -5207,13 +5410,18 @@
           "alias": "Mr. Whiskers",
           "heading": null,
           "target": "Org/Amber Call/People/Mr. Whiskers"
+        },
+        {
+          "alias": "Cora Honeysap",
+          "heading": null,
+          "target": "People/Cora Honeysap"
         }
       ],
-      "date": "2025-11-04T00:00:00-04:00",
+      "date": "2025-11-11T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-11-04T00:00:00-04:00"
+          "date": "2025-11-11T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -5256,6 +5464,29 @@
         "title": null
       },
       "path": "Bestiary/Carnivorous Ink"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        }
+      ],
+      "date": "2025-11-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "giant serpents",
+          "cave serpents"
+        ],
+        "extra": {
+          "date": "2025-11-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Cave Serpent"
     },
     {
       "crossrefs": [],
@@ -5389,6 +5620,26 @@
         "title": null
       },
       "path": "Bestiary/Keeper of Chains"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        }
+      ],
+      "date": "2025-11-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-11-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Pale Servant"
     },
     {
       "crossrefs": [
@@ -6940,6 +7191,36 @@
     {
       "crossrefs": [
         {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Widdershins",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/index"
+        },
+        {
+          "alias": "Anti-Zorbon Taskforce",
+          "heading": null,
+          "target": "Anti-Zorbon Taskforce"
+        }
+      ],
+      "date": "2025-11-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-11-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Calaria/Hallia/Sewers"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "the Horizon",
           "heading": null,
           "target": "Geography/Calaria/Hallia/the Horizon/index"
@@ -7063,6 +7344,16 @@
           "alias": null,
           "heading": null,
           "target": "Færrin"
+        },
+        {
+          "alias": "sewers",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sewers"
+        },
+        {
+          "alias": "Anti-Zorbon Taskforce",
+          "heading": null,
+          "target": "Anti-Zorbon Taskforce"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -7478,7 +7769,28 @@
       "path": "Geography/Quiet Below/Nos Mortem"
     },
     {
-      "crossrefs": [],
+      "crossrefs": [
+        {
+          "alias": "Edan",
+          "heading": null,
+          "target": "Geography/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Færrin"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Judge",
+          "heading": null,
+          "target": "Judge of Ages"
+        }
+      ],
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
@@ -7826,6 +8138,11 @@
           "alias": "Widdershins",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Widdershins/index"
+        },
+        {
+          "alias": "Cora Honeysap",
+          "heading": null,
+          "target": "People/Cora Honeysap"
         },
         {
           "alias": null,
@@ -11091,6 +11408,43 @@
     {
       "crossrefs": [
         {
+          "alias": "Widdershins",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/index"
+        },
+        {
+          "alias": "Host",
+          "heading": null,
+          "target": "Iridescent Host"
+        },
+        {
+          "alias": "Anti-Zorbon Taskforce",
+          "heading": null,
+          "target": "Anti-Zorbon Taskforce"
+        },
+        {
+          "alias": "Whiskers",
+          "heading": null,
+          "target": "Org/Amber Call/People/Mr. Whiskers"
+        }
+      ],
+      "date": "2025-11-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-11-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Orc"
+        ],
+        "title": null
+      },
+      "path": "People/Cora Honeysap"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "the Scale",
           "heading": null,
           "target": "Org/The Scale/index"
@@ -11667,6 +12021,46 @@
         "title": null
       },
       "path": "Phenomena/Joker World"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        }
+      ],
+      "date": "2025-11-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-11-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Phenomena/Mythotoxin"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        }
+      ],
+      "date": "2025-11-11T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-11-11T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Phenomena/Oil of Unlife"
     },
     {
       "crossrefs": [
@@ -12492,6 +12886,56 @@
           "alias": "Zorbon",
           "heading": null,
           "target": "The Zorbon"
+        },
+        {
+          "alias": "Widdershins",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/index"
+        },
+        {
+          "alias": "Cora Honeysap",
+          "heading": null,
+          "target": "People/Cora Honeysap"
+        },
+        {
+          "alias": "sewers",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sewers"
+        },
+        {
+          "alias": "Anti-Zorbon Taskforce",
+          "heading": null,
+          "target": "Anti-Zorbon Taskforce"
+        },
+        {
+          "alias": "Whiskers'",
+          "heading": null,
+          "target": "Org/Amber Call/People/Mr. Whiskers"
+        },
+        {
+          "alias": "oil of unlife",
+          "heading": null,
+          "target": "Phenomena/Oil of Unlife"
+        },
+        {
+          "alias": "mythotoxin",
+          "heading": null,
+          "target": "Phenomena/Mythotoxin"
+        },
+        {
+          "alias": "Host",
+          "heading": null,
+          "target": "Iridescent Host"
+        },
+        {
+          "alias": "Judge",
+          "heading": null,
+          "target": "Judge of Ages"
+        },
+        {
+          "alias": "serpents",
+          "heading": null,
+          "target": "Bestiary/Cave Serpent"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",

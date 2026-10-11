@@ -319,6 +319,11 @@ entity "Cassian Drake" kind="person" page="Org/The Scale/People/Cassian Drake" {
     alias "Cassian"
     source "akasha"
 }
+entity "Cave Serpent" kind="creature" page="Bestiary/Cave Serpent" {
+    alias "giant serpents"
+    alias "cave serpents"
+    source "akasha"
+}
 entity "Cedric" kind="person" being="jorge" {
     source "being"
 }
@@ -1075,6 +1080,9 @@ entity "Mutagen" {
 entity "Mute" kind="person" page="Org/Blackline/People/Mute" {
     source "akasha"
 }
+entity "Mythotoxin" kind="phenomenon" page="Phenomena/Mythotoxin" {
+    source "akasha"
+}
 entity "NecroLog" kind="org" page="Org/NecroLog/index" {
     alias "Necrologue"
     alias "Necrolug"
@@ -1113,6 +1121,9 @@ entity "of Iconoclasm" {
     source "defs"
 }
 entity "Officer Smith" kind="person" page="Org/Blackline/People/Officer Smith" {
+    source "akasha"
+}
+entity "Oil of Unlife" kind="phenomenon" page="Phenomena/Oil of Unlife" {
     source "akasha"
 }
 entity "Opaline Reserve" kind="org" page="Org/Opaline Reserve" {
@@ -1189,6 +1200,9 @@ entity "Pale Lantern Society" kind="org" page="Org/Pale Lantern Society/index" {
     alias "Pell\\s*Lantern\\s*Society"
     source "akasha"
     source "defs"
+}
+entity "Pale Servant" kind="creature" page="Bestiary/Pale Servant" {
+    source "akasha"
 }
 entity "parries" {
     alias "Perry's"
@@ -1410,6 +1424,9 @@ entity "SeRaan" {
 entity "sewer" {
     alias "Syria"
     source "defs"
+}
+entity "Sewers" kind="place" page="Geography/Calaria/Hallia/Sewers" {
+    source "akasha"
 }
 entity "Shannon Soul" kind="place" page="Geography/Calaria/Hallia/Sableclutch/People/Shannon Soul" {
     source "akasha"
