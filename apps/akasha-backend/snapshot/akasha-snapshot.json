@@ -4656,6 +4656,69 @@
       "target": "Org/Garrick Textiles/index"
     },
     {
+      "alias": "pilgrimage",
+      "heading": null,
+      "resolved": "Phenomena/Pilgrimage",
+      "source": "Org/Garrick Textiles/People/Letov Obratz",
+      "target": "Phenomena/Pilgrimage"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Garrick Textiles/People/Letov Obratz",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Garrick Textiles/People/Letov Obratz",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Velthara",
+      "heading": null,
+      "resolved": "Geography/Velthara/index",
+      "source": "Org/Garrick Textiles/People/Letov Obratz",
+      "target": "Geography/Velthara/index"
+    },
+    {
+      "alias": "Ragged Roost",
+      "heading": null,
+      "resolved": "Geography/Calaria/Ragged Roost",
+      "source": "Org/Garrick Textiles/People/Letov Obratz",
+      "target": "Geography/Calaria/Ragged Roost"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Org/Garrick Textiles/People/Letov Obratz",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/Garrick Textiles/Whirling in Rags",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Garrick Textiles",
+      "heading": null,
+      "resolved": "Org/Garrick Textiles/index",
+      "source": "Org/Garrick Textiles/Whirling in Rags",
+      "target": "Org/Garrick Textiles/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Garrick Textiles/Whirling in Rags",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
       "alias": "Concordia",
       "heading": null,
       "resolved": "Org/Concordia/index",
@@ -4689,6 +4752,20 @@
       "resolved": "People/Benny",
       "source": "Org/Garrick Textiles/index",
       "target": "People/Benny"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Garrick Textiles/index",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Whirling in Rags",
+      "heading": null,
+      "resolved": "Org/Garrick Textiles/Whirling in Rags",
+      "source": "Org/Garrick Textiles/index",
+      "target": "Org/Garrick Textiles/Whirling in Rags"
     },
     {
       "alias": "Concordia",
@@ -5846,6 +5923,13 @@
       "target": "Geography/Calaria/Ragged Roost"
     },
     {
+      "alias": "Host",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/Ministry of Cultural Progress/People/Giannos Hasikos",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
       "alias": "Ministry of Cultural Progress",
       "heading": null,
       "resolved": "Org/Ministry of Cultural Progress/index",
@@ -5865,6 +5949,20 @@
       "resolved": "Geography/Tormeré/index",
       "source": "Org/Ministry of Cultural Progress/index",
       "target": "Geography/Tormeré/index"
+    },
+    {
+      "alias": "Brithwyn",
+      "heading": null,
+      "resolved": "Geography/Brithwyn/index",
+      "source": "Org/Ministry of Cultural Progress/index",
+      "target": "Geography/Brithwyn/index"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/Ministry of Cultural Progress/index",
+      "target": "Org/Iridescent Church/index"
     },
     {
       "alias": "NecroLog",
@@ -5949,6 +6047,27 @@
       "resolved": "Geography/Calaria/Hallia/Widdershins/index",
       "source": "Org/Opaline Reserve",
       "target": "Geography/Calaria/Hallia/Widdershins/index"
+    },
+    {
+      "alias": "Manus Sudrenus",
+      "heading": null,
+      "resolved": "Org/Pale Lantern Society/People/Manus Sudrenus",
+      "source": "Org/Pale Lantern Society/People/Brienne",
+      "target": "Org/Pale Lantern Society/People/Manus Sudrenus"
+    },
+    {
+      "alias": "Pale Lantern Society",
+      "heading": null,
+      "resolved": "Org/Pale Lantern Society/index",
+      "source": "Org/Pale Lantern Society/People/Brienne",
+      "target": "Org/Pale Lantern Society/index"
+    },
+    {
+      "alias": "Pale Lantern Society",
+      "heading": null,
+      "resolved": "Org/Pale Lantern Society/index",
+      "source": "Org/Pale Lantern Society/People/Brienne",
+      "target": "Org/Pale Lantern Society/index"
     },
     {
       "alias": "Pale Lantern Society",
@@ -6385,6 +6504,55 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/Radiant Arms/Final Caliber",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Radiant Arms",
+      "heading": null,
+      "resolved": "Org/Radiant Arms/index",
+      "source": "Org/Radiant Arms/Final Caliber",
+      "target": "Org/Radiant Arms/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Radiant Arms/Final Caliber",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Radiant Arms",
+      "heading": null,
+      "resolved": "Org/Radiant Arms/index",
+      "source": "Org/Radiant Arms/People/Ichel",
+      "target": "Org/Radiant Arms/index"
+    },
+    {
+      "alias": "Istria",
+      "heading": null,
+      "resolved": "Geography/Istria/index",
+      "source": "Org/Radiant Arms/People/Ichel",
+      "target": "Geography/Istria/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Radiant Arms/People/Ichel",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Radiant Arms/People/Ichel",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
       "alias": "Radiant Arms",
       "heading": null,
       "resolved": "Org/Radiant Arms/index",
@@ -6397,6 +6565,20 @@
       "resolved": "Geography/Calaria/index",
       "source": "Org/Radiant Arms/index",
       "target": "Geography/Calaria/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Org/Radiant Arms/index",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Final Caliber",
+      "heading": null,
+      "resolved": "Org/Radiant Arms/Final Caliber",
+      "source": "Org/Radiant Arms/index",
+      "target": "Org/Radiant Arms/Final Caliber"
     },
     {
       "alias": "Hallia",
@@ -10116,6 +10298,27 @@
       "target": "Phenomena/Harmony/Voidsong"
     },
     {
+      "alias": "Master of Ceremonies",
+      "heading": null,
+      "resolved": "Org/The Harlequins/People/The Master of Ceremonies",
+      "source": "Phenomena/Keystone",
+      "target": "Org/The Harlequins/People/The Master of Ceremonies"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Phenomena/Keystone",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Ragged Roost",
+      "heading": null,
+      "resolved": "Geography/Calaria/Ragged Roost",
+      "source": "Phenomena/Keystone",
+      "target": "Geography/Calaria/Ragged Roost"
+    },
+    {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
@@ -10233,6 +10436,20 @@
       "resolved": "Org/Hildebrandt Corporation/index",
       "source": "Phenomena/Pilgrimage",
       "target": "Org/Hildebrandt Corporation/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Phenomena/Pilgrimage",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Letov Obratz",
+      "heading": null,
+      "resolved": "Org/Garrick Textiles/People/Letov Obratz",
+      "source": "Phenomena/Pilgrimage",
+      "target": "Org/Garrick Textiles/People/Letov Obratz"
     },
     {
       "alias": "Arctos",
@@ -16256,6 +16473,36 @@
           "alias": "Garrick Textiles",
           "heading": null,
           "target": "Org/Garrick Textiles/index"
+        },
+        {
+          "alias": "pilgrimage",
+          "heading": null,
+          "target": "Phenomena/Pilgrimage"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Velthara",
+          "heading": null,
+          "target": "Geography/Velthara/index"
+        },
+        {
+          "alias": "Ragged Roost",
+          "heading": null,
+          "target": "Geography/Calaria/Ragged Roost"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -16273,6 +16520,38 @@
         "title": null
       },
       "path": "Org/Garrick Textiles/People/Letov Obratz"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Garrick Textiles",
+          "heading": null,
+          "target": "Org/Garrick Textiles/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        }
+      ],
+      "date": "2026-05-25T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-05-25T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Heart"
+        ],
+        "title": null
+      },
+      "path": "Org/Garrick Textiles/Whirling in Rags"
     },
     {
       "crossrefs": [
@@ -16300,6 +16579,16 @@
           "alias": "Benny",
           "heading": null,
           "target": "People/Benny"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Whirling in Rags",
+          "heading": null,
+          "target": "Org/Garrick Textiles/Whirling in Rags"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -17739,6 +18028,11 @@
     {
       "crossrefs": [
         {
+          "alias": "Host",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        },
+        {
           "alias": "Ministry of Cultural Progress",
           "heading": null,
           "target": "Org/Ministry of Cultural Progress/index"
@@ -17771,6 +18065,16 @@
           "alias": "Tormeré",
           "heading": null,
           "target": "Geography/Tormeré/index"
+        },
+        {
+          "alias": "Brithwyn",
+          "heading": null,
+          "target": "Geography/Brithwyn/index"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -17914,6 +18218,40 @@
         "title": null
       },
       "path": "Org/PactLogic/index"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Manus Sudrenus",
+          "heading": null,
+          "target": "Org/Pale Lantern Society/People/Manus Sudrenus"
+        },
+        {
+          "alias": "Pale Lantern Society",
+          "heading": null,
+          "target": "Org/Pale Lantern Society/index"
+        },
+        {
+          "alias": "Pale Lantern Society",
+          "heading": null,
+          "target": "Org/Pale Lantern Society/index"
+        }
+      ],
+      "date": "2026-05-25T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Brini"
+        ],
+        "extra": {
+          "date": "2026-05-25T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Elf"
+        ],
+        "title": null
+      },
+      "path": "Org/Pale Lantern Society/People/Brienne"
     },
     {
       "crossrefs": [
@@ -18450,6 +18788,58 @@
     {
       "crossrefs": [
         {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Radiant Arms",
+          "heading": null,
+          "target": "Org/Radiant Arms/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        }
+      ],
+      "date": "2026-05-25T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-05-25T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Heart"
+        ],
+        "title": null
+      },
+      "path": "Org/Radiant Arms/Final Caliber"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Radiant Arms",
+          "heading": null,
+          "target": "Org/Radiant Arms/index"
+        },
+        {
+          "alias": "Istria",
+          "heading": null,
+          "target": "Geography/Istria/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
           "alias": "Radiant Arms",
           "heading": null,
           "target": "Org/Radiant Arms/index"
@@ -18475,6 +18865,16 @@
           "alias": "Calaria",
           "heading": null,
           "target": "Geography/Calaria/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Final Caliber",
+          "heading": null,
+          "target": "Org/Radiant Arms/Final Caliber"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -19265,11 +19665,11 @@
           "target": "Phenomena/Keystone"
         }
       ],
-      "date": "2026-05-21T00:00:00-04:00",
+      "date": "2026-05-25T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-21T00:00:00-04:00"
+          "date": "2026-05-25T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -22859,15 +23259,30 @@
           "alias": "Voidsong",
           "heading": null,
           "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "Master of Ceremonies",
+          "heading": null,
+          "target": "Org/The Harlequins/People/The Master of Ceremonies"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Ragged Roost",
+          "heading": null,
+          "target": "Geography/Calaria/Ragged Roost"
         }
       ],
-      "date": "2026-05-11T00:00:00-04:00",
+      "date": "2026-05-25T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "keystones"
         ],
         "extra": {
-          "date": "2026-05-11T00:00:00-04:00"
+          "date": "2026-05-25T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -22991,13 +23406,23 @@
           "alias": "Hildebrandt Corporation",
           "heading": null,
           "target": "Org/Hildebrandt Corporation/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Letov Obratz",
+          "heading": null,
+          "target": "Org/Garrick Textiles/People/Letov Obratz"
         }
       ],
-      "date": "2026-05-11T00:00:00-04:00",
+      "date": "2026-05-25T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-11T00:00:00-04:00"
+          "date": "2026-05-25T00:00:00-04:00"
         },
         "img": null,
         "tags": [],

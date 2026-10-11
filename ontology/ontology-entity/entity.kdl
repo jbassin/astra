@@ -305,6 +305,10 @@ entity "Braxton Hall" kind="person" page="Org/Ætherion Limited/People/Braxton H
     alias "Braxton"
     source "akasha"
 }
+entity "Brienne" kind="person" page="Org/Pale Lantern Society/People/Brienne" {
+    alias "Brini"
+    source "akasha"
+}
 entity "Brithwyn" kind="place" page="Geography/Brithwyn/index" {
     alias "Brithwin"
     alias "Brithwen"
@@ -601,6 +605,9 @@ entity "Fiends" kind="creature" page="Bestiary/Fiends" {
     alias "Pusk"
     alias "Rancorous Priest"
     alias "Vitriolite"
+    source "akasha"
+}
+entity "Final Caliber" kind="org" page="Org/Radiant Arms/Final Caliber" {
     source "akasha"
 }
 entity "firearm manufacturer" {
@@ -1974,6 +1981,9 @@ entity "Watcher With 1,000 Eyes" kind="deity" page="Divinity/Outer Gods/Watcher 
     source "akasha"
 }
 entity "Werecreature" kind="creature" page="Bestiary/Werecreature" {
+    source "akasha"
+}
+entity "Whirling in Rags" kind="org" page="Org/Garrick Textiles/Whirling in Rags" {
     source "akasha"
 }
 entity "Whiskers" {
