@@ -737,6 +737,9 @@ entity "Godly Interplay" kind="deity" page="Divinity/Godly Interplay" {
 entity "Grant" kind="person" being="jorge" {
     source "being"
 }
+entity "Gray Ooze" kind="creature" page="Bestiary/Gray Ooze" {
+    source "akasha"
+}
 entity "Grayson" {
     alias "Graystone"
     source "defs"
@@ -1048,6 +1051,9 @@ entity "Letov Obratz" kind="person" page="Org/Garrick Textiles/People/Letov Obra
     alias "Letov"
     source "akasha"
 }
+entity "Living Tar" kind="creature" page="Bestiary/Living Tar" {
+    source "akasha"
+}
 entity "Lorandris" kind="place" page="Geography/Lorandris/index" {
     alias "Laurentius"
     alias "Lorandrus"
@@ -1219,6 +1225,9 @@ entity "occultism" {
     alias "Occultistborn"
     alias "Heraclitism"
     source "defs"
+}
+entity "Ochre Jelly" kind="creature" page="Bestiary/Ochre Jelly" {
+    source "akasha"
 }
 entity "of Hallia" {
     alias "of Hellion"
