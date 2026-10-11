@@ -325,6 +325,9 @@ entity "Calarian" {
     alias "Calerian"
     source "defs"
 }
+entity "Calarian Museum of Art" kind="place" page="Geography/Calaria/Hallia/Calarian Museum of Art" {
+    source "akasha"
+}
 entity "Calarians" {
     alias "Calerians"
     alias "Galarians"
@@ -1318,6 +1321,9 @@ entity "Prime Meridian" kind="org" page="Org/Prime Meridian/index" {
     source "akasha"
     source "defs"
 }
+entity "Prime Meridian Sub Transit Nexus" kind="place" page="Geography/Calaria/Hallia/Sableclutch/Prime Meridian Sub Transit Nexus" {
+    source "akasha"
+}
 entity "Prime Meridian's" {
     alias "Prime\\s*Meridians"
     source "defs"
@@ -1383,6 +1389,9 @@ entity "Ralph Bishop" kind="person" page="Org/The Scale/People/Ralph Bishop" {
     source "akasha"
 }
 entity "Rancorous Priest" kind="creature" page="Bestiary/Rancorous Priest" {
+    source "akasha"
+}
+entity "Rapid Connection" kind="org" page="Org/Prime Meridian/Rapid Connection" {
     source "akasha"
 }
 entity "Regent" kind="deity" page="Divinity/Ashen Pact/Regent" {
