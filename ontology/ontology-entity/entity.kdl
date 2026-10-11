@@ -285,11 +285,18 @@ entity "Brithwyn" kind="place" page="Geography/Brithwyn/index" {
     source "akasha"
     source "defs"
 }
+entity "Brother Zeal" kind="person" page="Org/Iridescent Church/Convox/Inquisition/People/Brother Zeal" {
+    alias "Zeal"
+    source "akasha"
+}
 entity "cadre" {
     alias "Khadra"
     source "defs"
 }
 entity "Cagley" kind="place" page="Geography/Cagley" {
+    source "akasha"
+}
+entity "Cairn White" kind="creature" page="Bestiary/Cairn White" {
     source "akasha"
 }
 entity "Calaria" kind="place" page="Geography/Calaria/index" {
@@ -851,6 +858,13 @@ entity "Infinite Horizon" kind="phenomenon" page="Phenomena/Infinite Horizon" {
 entity "Inner Gods" kind="deity" page="Divinity/Inner Gods" {
     source "akasha"
 }
+entity "Inquisition" kind="org" page="Org/Iridescent Church/Convox/Inquisition/index" {
+    source "akasha"
+}
+entity "Inquisitor Penitence" kind="person" page="Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence" {
+    alias "Penitence"
+    source "akasha"
+}
 entity "Insuperlex" {
     alias "Insuperlix"
     alias "Superlex"
@@ -988,6 +1002,9 @@ entity "Lorandris" kind="place" page="Geography/Lorandris/index" {
     alias "Larandrus"
     source "akasha"
     source "defs"
+}
+entity "Lovelorn" kind="creature" page="Bestiary/Lovelorn" {
+    source "akasha"
 }
 entity "Low-Mechanitor" {
     alias "Loma Canada"
@@ -1262,6 +1279,9 @@ entity "Prime Meridian" kind="org" page="Org/Prime Meridian/index" {
 entity "Prime Meridian's" {
     alias "Prime\\s*Meridians"
     source "defs"
+}
+entity "Prism Heights" kind="place" page="Geography/Calaria/Hallia/Prism Heights/index" {
+    source "akasha"
 }
 entity "Protectorate" kind="org" page="Org/Protectorate/index" {
     alias "protectorate"

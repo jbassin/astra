@@ -22,6 +22,34 @@
       "target": "People/Cora Honeysap"
     },
     {
+      "alias": "Detective Brooks",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "source": "Bestiary/Cairn White",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Bestiary/Cairn White",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Benny",
+      "heading": null,
+      "resolved": "People/Benny",
+      "source": "Bestiary/Cairn White",
+      "target": "People/Benny"
+    },
+    {
+      "alias": "Johnny",
+      "heading": null,
+      "resolved": "People/Johnny",
+      "source": "Bestiary/Cairn White",
+      "target": "People/Johnny"
+    },
+    {
       "alias": "Gloaming Codex",
       "heading": null,
       "resolved": "Phenomena/Gloaming Codex",
@@ -83,6 +111,34 @@
       "resolved": "Bestiary/Voice of Many",
       "source": "Bestiary/Keeper of Chains",
       "target": "Voice of Many"
+    },
+    {
+      "alias": "Detective Brooks",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "source": "Bestiary/Lovelorn",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+    },
+    {
+      "alias": "Johnny",
+      "heading": null,
+      "resolved": "People/Johnny",
+      "source": "Bestiary/Lovelorn",
+      "target": "People/Johnny"
+    },
+    {
+      "alias": "Arctos",
+      "heading": null,
+      "resolved": "People/Sir Arctos",
+      "source": "Bestiary/Lovelorn",
+      "target": "People/Sir Arctos"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Bestiary/Lovelorn",
+      "target": "People/Anzu"
     },
     {
       "alias": "Hallia",
@@ -1548,6 +1604,20 @@
       "target": "Org/Prime Meridian/index"
     },
     {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Geography/Calaria/Hallia/Prism Heights/index",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Detective Ellis Brooks",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "source": "Geography/Calaria/Hallia/Prism Heights/index",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+    },
+    {
       "alias": "The Crowded Flea",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
@@ -1700,6 +1770,27 @@
       "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
       "source": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
       "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Inquisition",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/index",
+      "source": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+      "target": "Org/Iridescent Church/Convox/Inquisition/index"
+    },
+    {
+      "alias": "Smiler",
+      "heading": null,
+      "resolved": "Org/The Undertable/People/Smiler",
+      "source": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+      "target": "Org/The Undertable/People/Smiler"
     },
     {
       "alias": "Sableclutch",
@@ -2008,6 +2099,13 @@
       "resolved": "Geography/Calaria/Hallia/index",
       "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
       "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Inquisition",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/index",
+      "source": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "target": "Org/Iridescent Church/Convox/Inquisition/index"
     },
     {
       "alias": "Hallia",
@@ -3445,6 +3543,62 @@
       "target": "Sin and Tonic"
     },
     {
+      "alias": "Inquisition",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/index",
+      "source": "Org/Iridescent Church/Convox/Inquisition/People/Brother Zeal",
+      "target": "Org/Iridescent Church/Convox/Inquisition/index"
+    },
+    {
+      "alias": "Inquisition",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/index",
+      "source": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence",
+      "target": "Org/Iridescent Church/Convox/Inquisition/index"
+    },
+    {
+      "alias": "Arctos",
+      "heading": null,
+      "resolved": "People/Sir Arctos",
+      "source": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence",
+      "target": "People/Sir Arctos"
+    },
+    {
+      "alias": "Brother Zeal",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/People/Brother Zeal",
+      "source": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence",
+      "target": "Org/Iridescent Church/Convox/Inquisition/People/Brother Zeal"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go Heart",
+      "source": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence",
+      "target": "Gas-n-Go Heart"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/Iridescent Church/Convox/Inquisition/index",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
+      "alias": "Host",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Iridescent Host",
+      "source": "Org/Iridescent Church/Convox/Inquisition/index",
+      "target": "Iridescent Host"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Org/Iridescent Church/Convox/Inquisition/index",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
       "alias": "Magical Crimes Convox",
       "heading": null,
       "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
@@ -3499,6 +3653,34 @@
       "resolved": "Geography/Calaria/index",
       "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
       "target": "Geography/Calaria/index"
+    },
+    {
+      "alias": "Magical Crimes Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
+      "alias": "Prism Heights",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Prism Heights/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "target": "Geography/Calaria/Hallia/Prism Heights/index"
+    },
+    {
+      "alias": "skeleton",
+      "heading": null,
+      "resolved": "Bestiary/Cairn White",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "target": "Bestiary/Cairn White"
+    },
+    {
+      "alias": "heart-undead",
+      "heading": null,
+      "resolved": "Bestiary/Lovelorn",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "target": "Bestiary/Lovelorn"
     },
     {
       "alias": "Magical Crimes Convox",
@@ -4782,6 +4964,27 @@
       "target": "Geography/Calaria/Hallia/Ye Olde Apothecary"
     },
     {
+      "alias": "Roundhat Gang",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/index",
+      "source": "Org/The Undertable/People/Smiler",
+      "target": "Org/Roundhat Gang/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+      "source": "Org/The Undertable/People/Smiler",
+      "target": "Sin and Tonic"
+    },
+    {
+      "alias": "Widdershins",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/index",
+      "source": "Org/The Undertable/People/Smiler",
+      "target": "Geography/Calaria/Hallia/Widdershins/index"
+    },
+    {
       "alias": "Star 12",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Star 12/index",
@@ -5118,6 +5321,34 @@
       "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
     },
     {
+      "alias": "Brooks",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "source": "People/Anzu",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+    },
+    {
+      "alias": "cairn white",
+      "heading": null,
+      "resolved": "Bestiary/Cairn White",
+      "source": "People/Anzu",
+      "target": "Bestiary/Cairn White"
+    },
+    {
+      "alias": "lovelorn",
+      "heading": null,
+      "resolved": "Bestiary/Lovelorn",
+      "source": "People/Anzu",
+      "target": "Bestiary/Lovelorn"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "People/Anzu",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
       "alias": "Iconoclasm",
       "heading": null,
       "resolved": "Org/Iconoclasm/index",
@@ -5237,6 +5468,27 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
+      "alias": "Brooks",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "source": "People/Benny",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+    },
+    {
+      "alias": "cairn white",
+      "heading": null,
+      "resolved": "Bestiary/Cairn White",
+      "source": "People/Benny",
+      "target": "Bestiary/Cairn White"
+    },
+    {
+      "alias": "Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "People/Benny",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
       "alias": "Iridescent Church",
       "heading": null,
       "resolved": "Org/Iridescent Church/index",
@@ -5249,6 +5501,27 @@
       "resolved": "Divinity/The Narrative/Aut",
       "source": "People/Cardinal Weatherhead",
       "target": "Aut"
+    },
+    {
+      "alias": "Arctos",
+      "heading": null,
+      "resolved": "People/Sir Arctos",
+      "source": "People/Cardinal Weatherhead",
+      "target": "People/Sir Arctos"
+    },
+    {
+      "alias": "Inquisition",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/index",
+      "source": "People/Cardinal Weatherhead",
+      "target": "Org/Iridescent Church/Convox/Inquisition/index"
+    },
+    {
+      "alias": "Penitence",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence",
+      "source": "People/Cardinal Weatherhead",
+      "target": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence"
     },
     {
       "alias": "Widdershins",
@@ -5419,6 +5692,55 @@
       "target": "People/Argyle"
     },
     {
+      "alias": "Inquisition",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/index",
+      "source": "People/Johnny",
+      "target": "Org/Iridescent Church/Convox/Inquisition/index"
+    },
+    {
+      "alias": "Penitence",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence",
+      "source": "People/Johnny",
+      "target": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/The Narrative/Aut",
+      "source": "People/Johnny",
+      "target": "Aut"
+    },
+    {
+      "alias": "Brooks",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "source": "People/Johnny",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+    },
+    {
+      "alias": "cairn white",
+      "heading": null,
+      "resolved": "Bestiary/Cairn White",
+      "source": "People/Johnny",
+      "target": "Bestiary/Cairn White"
+    },
+    {
+      "alias": "lovelorn",
+      "heading": null,
+      "resolved": "Bestiary/Lovelorn",
+      "source": "People/Johnny",
+      "target": "Bestiary/Lovelorn"
+    },
+    {
+      "alias": "Smiler",
+      "heading": null,
+      "resolved": "Org/The Undertable/People/Smiler",
+      "source": "People/Johnny",
+      "target": "Org/The Undertable/People/Smiler"
+    },
+    {
       "alias": "Tommy Lagerman",
       "heading": null,
       "resolved": "People/Tommy Lagerman",
@@ -5585,6 +5907,55 @@
       "resolved": "People/Argyle",
       "source": "People/Sir Arctos",
       "target": "People/Argyle"
+    },
+    {
+      "alias": "Inquisition",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/index",
+      "source": "People/Sir Arctos",
+      "target": "Org/Iridescent Church/Convox/Inquisition/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/The Narrative/Aut",
+      "source": "People/Sir Arctos",
+      "target": "Aut"
+    },
+    {
+      "alias": "Penitence",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence",
+      "source": "People/Sir Arctos",
+      "target": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence"
+    },
+    {
+      "alias": "lovelorn",
+      "heading": null,
+      "resolved": "Bestiary/Lovelorn",
+      "source": "People/Sir Arctos",
+      "target": "Bestiary/Lovelorn"
+    },
+    {
+      "alias": "Brooks",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "source": "People/Sir Arctos",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+    },
+    {
+      "alias": "augury",
+      "heading": null,
+      "resolved": "Phenomena/Augury",
+      "source": "People/Sir Arctos",
+      "target": "Phenomena/Augury"
+    },
+    {
+      "alias": "Host",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Iridescent Host",
+      "source": "People/Sir Arctos",
+      "target": "Iridescent Host"
     },
     {
       "alias": null,
@@ -7757,6 +8128,202 @@
       "target": "Org/Amber Call/People/Benjamin Grayson"
     },
     {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+      "source": "Timeline",
+      "target": "Sin and Tonic"
+    },
+    {
+      "alias": "Dura",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/People/Dura Oil-Drinker",
+      "source": "Timeline",
+      "target": "Org/Iconoclasm/People/Dura Oil-Drinker"
+    },
+    {
+      "alias": "Magical Crimes Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
+      "alias": "Aurideon",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Aurideon/index",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Aurideon/index"
+    },
+    {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Timeline",
+      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Brooks",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+    },
+    {
+      "alias": "Inquisition",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/index",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Inquisition/index"
+    },
+    {
+      "alias": "Penitence",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/The Narrative/Aut",
+      "source": "Timeline",
+      "target": "Aut"
+    },
+    {
+      "alias": "Gas-n-Go",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+    },
+    {
+      "alias": "Grayson",
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Benjamin Grayson",
+      "source": "Timeline",
+      "target": "Org/Amber Call/People/Benjamin Grayson"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/The Narrative/Aut",
+      "source": "Timeline",
+      "target": "Aut"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Timeline",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Timeline",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "Arctos",
+      "heading": null,
+      "resolved": "People/Sir Arctos",
+      "source": "Timeline",
+      "target": "People/Sir Arctos"
+    },
+    {
+      "alias": "Host",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Iridescent Host",
+      "source": "Timeline",
+      "target": "Iridescent Host"
+    },
+    {
+      "alias": "Johnny",
+      "heading": null,
+      "resolved": "People/Johnny",
+      "source": "Timeline",
+      "target": "People/Johnny"
+    },
+    {
+      "alias": "Smiler",
+      "heading": null,
+      "resolved": "Org/The Undertable/People/Smiler",
+      "source": "Timeline",
+      "target": "Org/The Undertable/People/Smiler"
+    },
+    {
+      "alias": "the Undertable",
+      "heading": null,
+      "resolved": "Org/The Undertable/index",
+      "source": "Timeline",
+      "target": "Org/The Undertable/index"
+    },
+    {
+      "alias": "Prism Heights",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Prism Heights/index",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Prism Heights/index"
+    },
+    {
+      "alias": "Benny",
+      "heading": null,
+      "resolved": "People/Benny",
+      "source": "Timeline",
+      "target": "People/Benny"
+    },
+    {
+      "alias": "Johnny",
+      "heading": null,
+      "resolved": "People/Johnny",
+      "source": "Timeline",
+      "target": "People/Johnny"
+    },
+    {
+      "alias": "cairn white",
+      "heading": null,
+      "resolved": "Bestiary/Cairn White",
+      "source": "Timeline",
+      "target": "Bestiary/Cairn White"
+    },
+    {
+      "alias": "lovelorn",
+      "heading": null,
+      "resolved": "Bestiary/Lovelorn",
+      "source": "Timeline",
+      "target": "Bestiary/Lovelorn"
+    },
+    {
+      "alias": "Benny",
+      "heading": null,
+      "resolved": "People/Benny",
+      "source": "Timeline",
+      "target": "People/Benny"
+    },
+    {
+      "alias": "Arctos",
+      "heading": null,
+      "resolved": "People/Sir Arctos",
+      "source": "Timeline",
+      "target": "People/Sir Arctos"
+    },
+    {
+      "alias": "augury",
+      "heading": null,
+      "resolved": "Phenomena/Augury",
+      "source": "Timeline",
+      "target": "Phenomena/Augury"
+    },
+    {
+      "alias": "Smiler",
+      "heading": null,
+      "resolved": "Org/The Undertable/People/Smiler",
+      "source": "Timeline",
+      "target": "Org/The Undertable/People/Smiler"
+    },
+    {
       "alias": "Illmari",
       "heading": null,
       "resolved": "Org/Iconoclasm/People/Illmari Vaino",
@@ -7808,6 +8375,41 @@
         "title": null
       },
       "path": "Bestiary/Auger"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Detective Brooks",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Benny",
+          "heading": null,
+          "target": "People/Benny"
+        },
+        {
+          "alias": "Johnny",
+          "heading": null,
+          "target": "People/Johnny"
+        }
+      ],
+      "date": "2026-01-06T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-01-06T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Cairn White"
     },
     {
       "crossrefs": [
@@ -7986,6 +8588,41 @@
         "title": null
       },
       "path": "Bestiary/Keeper of Chains"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Detective Brooks",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+        },
+        {
+          "alias": "Johnny",
+          "heading": null,
+          "target": "People/Johnny"
+        },
+        {
+          "alias": "Arctos",
+          "heading": null,
+          "target": "People/Sir Arctos"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        }
+      ],
+      "date": "2026-01-06T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-01-06T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Lovelorn"
     },
     {
       "crossrefs": [
@@ -9895,6 +10532,31 @@
     {
       "crossrefs": [
         {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Detective Ellis Brooks",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+        }
+      ],
+      "date": "2026-01-06T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-01-06T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Calaria/Hallia/Prism Heights/index"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "The Crowded Flea",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
@@ -10052,6 +10714,21 @@
           "alias": "Gas-n-Go",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        },
+        {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        },
+        {
+          "alias": "Inquisition",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/index"
+        },
+        {
+          "alias": "Smiler",
+          "heading": null,
+          "target": "Org/The Undertable/People/Smiler"
         }
       ],
       "date": "2026-06-06T22:12:21-04:00",
@@ -10395,13 +11072,18 @@
           "alias": "Hallia",
           "heading": null,
           "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Inquisition",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/index"
         }
       ],
-      "date": "2025-12-30T00:00:00-04:00",
+      "date": "2026-01-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-30T00:00:00-04:00"
+          "date": "2026-01-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -12470,6 +13152,101 @@
     {
       "crossrefs": [
         {
+          "alias": "Inquisition",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/index"
+        }
+      ],
+      "date": "2026-01-06T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Zeal"
+        ],
+        "extra": {
+          "date": "2026-01-06T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "Org/Iridescent Church/Convox/Inquisition/People/Brother Zeal"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Inquisition",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/index"
+        },
+        {
+          "alias": "Arctos",
+          "heading": null,
+          "target": "People/Sir Arctos"
+        },
+        {
+          "alias": "Brother Zeal",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/People/Brother Zeal"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Gas-n-Go Heart"
+        }
+      ],
+      "date": "2026-01-06T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Penitence"
+        ],
+        "extra": {
+          "date": "2026-01-06T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        },
+        {
+          "alias": "Host",
+          "heading": null,
+          "target": "Iridescent Host"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        }
+      ],
+      "date": "2026-01-06T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-01-06T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Religious"
+        ],
+        "title": null
+      },
+      "path": "Org/Iridescent Church/Convox/Inquisition/index"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Magical Crimes Convox",
           "heading": null,
           "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
@@ -12527,6 +13304,26 @@
           "alias": "Calaria",
           "heading": null,
           "target": "Geography/Calaria/index"
+        },
+        {
+          "alias": "Magical Crimes Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+        },
+        {
+          "alias": "Prism Heights",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Prism Heights/index"
+        },
+        {
+          "alias": "skeleton",
+          "heading": null,
+          "target": "Bestiary/Cairn White"
+        },
+        {
+          "alias": "heart-undead",
+          "heading": null,
+          "target": "Bestiary/Lovelorn"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -14393,13 +15190,28 @@
           "alias": "Ye Olde Apothecary",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Ye Olde Apothecary"
+        },
+        {
+          "alias": "Roundhat Gang",
+          "heading": null,
+          "target": "Org/Roundhat Gang/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sin and Tonic"
+        },
+        {
+          "alias": "Widdershins",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/index"
         }
       ],
-      "date": "2025-12-23T00:00:00-04:00",
+      "date": "2026-01-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-23T00:00:00-04:00"
+          "date": "2026-01-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -14925,13 +15737,33 @@
           "alias": "Tywelwyn",
           "heading": null,
           "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Brooks",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+        },
+        {
+          "alias": "cairn white",
+          "heading": null,
+          "target": "Bestiary/Cairn White"
+        },
+        {
+          "alias": "lovelorn",
+          "heading": null,
+          "target": "Bestiary/Lovelorn"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2025-12-30T00:00:00-04:00",
+      "date": "2026-01-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-30T00:00:00-04:00"
+          "date": "2026-01-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -15042,13 +15874,28 @@
           "alias": "Hallia",
           "heading": null,
           "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Brooks",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+        },
+        {
+          "alias": "cairn white",
+          "heading": null,
+          "target": "Bestiary/Cairn White"
+        },
+        {
+          "alias": "Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
         }
       ],
-      "date": "2025-12-30T00:00:00-04:00",
+      "date": "2026-01-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-30T00:00:00-04:00"
+          "date": "2026-01-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -15069,13 +15916,28 @@
           "alias": null,
           "heading": null,
           "target": "Aut"
+        },
+        {
+          "alias": "Arctos",
+          "heading": null,
+          "target": "People/Sir Arctos"
+        },
+        {
+          "alias": "Inquisition",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/index"
+        },
+        {
+          "alias": "Penitence",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence"
         }
       ],
-      "date": "2025-12-16T00:00:00-04:00",
+      "date": "2026-01-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-16T00:00:00-04:00"
+          "date": "2026-01-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -15291,13 +16153,48 @@
           "alias": "Argyle",
           "heading": null,
           "target": "People/Argyle"
+        },
+        {
+          "alias": "Inquisition",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/index"
+        },
+        {
+          "alias": "Penitence",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Aut"
+        },
+        {
+          "alias": "Brooks",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+        },
+        {
+          "alias": "cairn white",
+          "heading": null,
+          "target": "Bestiary/Cairn White"
+        },
+        {
+          "alias": "lovelorn",
+          "heading": null,
+          "target": "Bestiary/Lovelorn"
+        },
+        {
+          "alias": "Smiler",
+          "heading": null,
+          "target": "Org/The Undertable/People/Smiler"
         }
       ],
-      "date": "2025-12-30T00:00:00-04:00",
+      "date": "2026-01-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-30T00:00:00-04:00"
+          "date": "2026-01-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -15510,13 +16407,48 @@
           "alias": "Argyle",
           "heading": null,
           "target": "People/Argyle"
+        },
+        {
+          "alias": "Inquisition",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Aut"
+        },
+        {
+          "alias": "Penitence",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence"
+        },
+        {
+          "alias": "lovelorn",
+          "heading": null,
+          "target": "Bestiary/Lovelorn"
+        },
+        {
+          "alias": "Brooks",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+        },
+        {
+          "alias": "augury",
+          "heading": null,
+          "target": "Phenomena/Augury"
+        },
+        {
+          "alias": "Host",
+          "heading": null,
+          "target": "Iridescent Host"
         }
       ],
-      "date": "2025-12-30T00:00:00-04:00",
+      "date": "2026-01-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-12-30T00:00:00-04:00"
+          "date": "2026-01-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -17401,6 +18333,146 @@
           "alias": "Grayson",
           "heading": null,
           "target": "Org/Amber Call/People/Benjamin Grayson"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sin and Tonic"
+        },
+        {
+          "alias": "Dura",
+          "heading": null,
+          "target": "Org/Iconoclasm/People/Dura Oil-Drinker"
+        },
+        {
+          "alias": "Magical Crimes Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+        },
+        {
+          "alias": "Aurideon",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Aurideon/index"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Brooks",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+        },
+        {
+          "alias": "Inquisition",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/index"
+        },
+        {
+          "alias": "Penitence",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Inquisition/People/Inquisitor Penitence"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Aut"
+        },
+        {
+          "alias": "Gas-n-Go",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go"
+        },
+        {
+          "alias": "Grayson",
+          "heading": null,
+          "target": "Org/Amber Call/People/Benjamin Grayson"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Aut"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "Arctos",
+          "heading": null,
+          "target": "People/Sir Arctos"
+        },
+        {
+          "alias": "Host",
+          "heading": null,
+          "target": "Iridescent Host"
+        },
+        {
+          "alias": "Johnny",
+          "heading": null,
+          "target": "People/Johnny"
+        },
+        {
+          "alias": "Smiler",
+          "heading": null,
+          "target": "Org/The Undertable/People/Smiler"
+        },
+        {
+          "alias": "the Undertable",
+          "heading": null,
+          "target": "Org/The Undertable/index"
+        },
+        {
+          "alias": "Prism Heights",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Prism Heights/index"
+        },
+        {
+          "alias": "Benny",
+          "heading": null,
+          "target": "People/Benny"
+        },
+        {
+          "alias": "Johnny",
+          "heading": null,
+          "target": "People/Johnny"
+        },
+        {
+          "alias": "cairn white",
+          "heading": null,
+          "target": "Bestiary/Cairn White"
+        },
+        {
+          "alias": "lovelorn",
+          "heading": null,
+          "target": "Bestiary/Lovelorn"
+        },
+        {
+          "alias": "Benny",
+          "heading": null,
+          "target": "People/Benny"
+        },
+        {
+          "alias": "Arctos",
+          "heading": null,
+          "target": "People/Sir Arctos"
+        },
+        {
+          "alias": "augury",
+          "heading": null,
+          "target": "Phenomena/Augury"
+        },
+        {
+          "alias": "Smiler",
+          "heading": null,
+          "target": "Org/The Undertable/People/Smiler"
         },
         {
           "alias": "Illmari",
