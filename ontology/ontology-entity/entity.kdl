@@ -403,6 +403,9 @@ entity "Copperjaw" kind="person" page="Org/Sableclutch Scrap/People/Copperjaw" {
     source "akasha"
     source "defs"
 }
+entity "Crawford Reeves" kind="person" page="Org/Concordia/People/Crawford Reeves" {
+    source "akasha"
+}
 entity "Cross Trevils" kind="person" page="Org/Verdant Holdings/People/Cross Trevils" {
     source "akasha"
 }
@@ -530,8 +533,9 @@ entity "Ewan McFoster" kind="person" page="Org/Iridescent Church/Convox/Magical 
     alias "Ewan"
     source "akasha"
 }
-entity "Exitum-ρ-15" {
+entity "Exitum-ρ-15" kind="person" page="Org/Prime Meridian/People/Exitum-ρ-15" {
     alias "Exitum Roe"
+    source "akasha"
     source "defs"
 }
 entity "Fae" {
@@ -1033,6 +1037,11 @@ entity "Lorandris" kind="place" page="Geography/Lorandris/index" {
     alias "Larandrus"
     source "akasha"
     source "defs"
+}
+entity "Louis Maller" kind="person" page="Org/Concordia/People/Louis Maller" {
+    alias "Lewis Mallard"
+    alias "Louis Mallard"
+    source "akasha"
 }
 entity "Lovelorn" kind="creature" page="Bestiary/Lovelorn" {
     source "akasha"
@@ -1556,6 +1565,9 @@ entity "Shade" kind="creature" page="Bestiary/Shade" {
     source "akasha"
 }
 entity "Shannon Soul" kind="place" page="Geography/Calaria/Hallia/Sableclutch/People/Shannon Soul" {
+    source "akasha"
+}
+entity "Shiver" kind="phenomenon" page="Phenomena/Shiver" {
     source "akasha"
 }
 entity "Sigzil Haight" kind="deity" page="Divinity/Fiends/Sigzil Haight" {
