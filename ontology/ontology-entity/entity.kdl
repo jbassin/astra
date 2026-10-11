@@ -748,7 +748,7 @@ entity "Hildebrandt" {
 entity "Hildebrandt Corporation" kind="org" page="Org/Hildebrandt Corporation/index" {
     source "akasha"
 }
-entity "Hlarf" {
+entity "Hlarf" kind="person" page="Org/Roundhat Gang/People/Hlarf" {
     alias "Flarf"
     alias "Hoth"
     alias "Larf"
@@ -763,6 +763,7 @@ entity "Hlarf" {
     alias "Blarf"
     alias "Clarf"
     alias "Hlarif"
+    source "akasha"
     source "defs"
 }
 entity "Hollowpact" kind="org" page="Org/Hollowpact" {
@@ -949,6 +950,9 @@ entity "Lark Crowe" kind="person" page="Org/Sable and Suns/People/Lark Crowe" {
     alias "Lark\\s*Rowe"
     source "akasha"
     source "defs"
+}
+entity "Ledger, Ledger, and Light" kind="place" page="Geography/Calaria/Hallia/Ledger, Ledger, and Light" {
+    source "akasha"
 }
 entity "Letov" {
     alias "Ledov"
@@ -1776,6 +1780,9 @@ entity "War" kind="deity" page="Divinity/Ashen Pact/War" {
 }
 entity "Watcher With 1,000 Eyes" kind="deity" page="Divinity/Outer Gods/Watcher With 1,000 Eyes" {
     alias "Watcher"
+    source "akasha"
+}
+entity "Werecreature" kind="creature" page="Bestiary/Werecreature" {
     source "akasha"
 }
 entity "Whiskers" {

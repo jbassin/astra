@@ -239,6 +239,20 @@
       "target": "Org/The Scale/index"
     },
     {
+      "alias": "Roundhat Gang",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/index",
+      "source": "Bestiary/Werecreature",
+      "target": "Org/Roundhat Gang/index"
+    },
+    {
+      "alias": "Sableclutch",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/index",
+      "source": "Bestiary/Werecreature",
+      "target": "Geography/Calaria/Hallia/Sableclutch/index"
+    },
+    {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
@@ -944,6 +958,20 @@
       "resolved": "Geography/Calaria/Hallia/index",
       "source": "Geography/Calaria/Hallia/Gullet/index",
       "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Geography/Calaria/Hallia/Ledger, Ledger, and Light",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Grayson",
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Benjamin Grayson",
+      "source": "Geography/Calaria/Hallia/Ledger, Ledger, and Light",
+      "target": "Org/Amber Call/People/Benjamin Grayson"
     },
     {
       "alias": "Hallia",
@@ -2619,6 +2647,27 @@
       "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
     },
     {
+      "alias": "Grayson",
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Benjamin Grayson",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "target": "Org/Amber Call/People/Benjamin Grayson"
+    },
+    {
+      "alias": "Amber Call",
+      "heading": null,
+      "resolved": "Org/Amber Call/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "target": "Org/Amber Call/index"
+    },
+    {
+      "alias": "Calaria",
+      "heading": null,
+      "resolved": "Geography/Calaria/index",
+      "source": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "target": "Geography/Calaria/index"
+    },
+    {
       "alias": "Magical Crimes Convox",
       "heading": null,
       "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
@@ -3189,6 +3238,34 @@
       "alias": "Roundhat Gang",
       "heading": null,
       "resolved": "Org/Roundhat Gang/index",
+      "source": "Org/Roundhat Gang/People/Hlarf",
+      "target": "Org/Roundhat Gang/index"
+    },
+    {
+      "alias": "The Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "Org/Roundhat Gang/People/Hlarf",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+    },
+    {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Org/Roundhat Gang/People/Hlarf",
+      "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Pier 54",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/Pier 54",
+      "source": "Org/Roundhat Gang/People/Hlarf",
+      "target": "Geography/Calaria/Hallia/Sableclutch/Pier 54"
+    },
+    {
+      "alias": "Roundhat Gang",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/index",
       "source": "Org/Roundhat Gang/People/Jasper Glover",
       "target": "Org/Roundhat Gang/index"
     },
@@ -3263,6 +3340,13 @@
       "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
     },
     {
+      "alias": "Hlarf",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Hlarf",
+      "source": "Org/Roundhat Gang/index",
+      "target": "Org/Roundhat Gang/People/Hlarf"
+    },
+    {
       "alias": "Tywelwyn",
       "heading": null,
       "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
@@ -3282,6 +3366,27 @@
       "resolved": "Geography/Calaria/Hallia/Sableclutch/Second Sun Diner",
       "source": "Org/Roundhat Gang/index",
       "target": "Geography/Calaria/Hallia/Sableclutch/Second Sun Diner"
+    },
+    {
+      "alias": "werecreatures",
+      "heading": null,
+      "resolved": "Bestiary/Werecreature",
+      "source": "Org/Roundhat Gang/index",
+      "target": "Bestiary/Werecreature"
+    },
+    {
+      "alias": "Hlarf",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Hlarf",
+      "source": "Org/Roundhat Gang/index",
+      "target": "Org/Roundhat Gang/People/Hlarf"
+    },
+    {
+      "alias": "Tywelwyn",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+      "source": "Org/Roundhat Gang/index",
+      "target": "Tywelwyn Leatherhide"
     },
     {
       "alias": "RunGunners",
@@ -5550,6 +5655,118 @@
       "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
       "source": "Timeline",
       "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+    },
+    {
+      "alias": "Grayson",
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Benjamin Grayson",
+      "source": "Timeline",
+      "target": "Org/Amber Call/People/Benjamin Grayson"
+    },
+    {
+      "alias": "Detective Brooks",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+    },
+    {
+      "alias": "Magical Crimes Convox",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/Convox/Magical Crimes/index",
+      "source": "Timeline",
+      "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+    },
+    {
+      "alias": "Amber Call",
+      "heading": null,
+      "resolved": "Org/Amber Call/index",
+      "source": "Timeline",
+      "target": "Org/Amber Call/index"
+    },
+    {
+      "alias": "Calaria",
+      "heading": null,
+      "resolved": "Geography/Calaria/index",
+      "source": "Timeline",
+      "target": "Geography/Calaria/index"
+    },
+    {
+      "alias": "Grayson",
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Benjamin Grayson",
+      "source": "Timeline",
+      "target": "Org/Amber Call/People/Benjamin Grayson"
+    },
+    {
+      "alias": "Ledger, Ledger, and Light",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Ledger, Ledger, and Light",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Ledger, Ledger, and Light"
+    },
+    {
+      "alias": "Hallia",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/index",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Smiler",
+      "heading": null,
+      "resolved": "Org/The Undertable/People/Smiler",
+      "source": "Timeline",
+      "target": "Org/The Undertable/People/Smiler"
+    },
+    {
+      "alias": "the Undertable",
+      "heading": null,
+      "resolved": "Org/The Undertable/index",
+      "source": "Timeline",
+      "target": "Org/The Undertable/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+      "source": "Timeline",
+      "target": "Sin and Tonic"
+    },
+    {
+      "alias": "Anouk",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/People/Anouk Marchal",
+      "source": "Timeline",
+      "target": "Org/Iconoclasm/People/Anouk Marchal"
+    },
+    {
+      "alias": "cave serpents",
+      "heading": null,
+      "resolved": "Bestiary/Cave Serpent",
+      "source": "Timeline",
+      "target": "Bestiary/Cave Serpent"
+    },
+    {
+      "alias": "the Crowded Flea",
+      "heading": null,
+      "resolved": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea",
+      "source": "Timeline",
+      "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+    },
+    {
+      "alias": "Roundhats",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/index",
+      "source": "Timeline",
+      "target": "Org/Roundhat Gang/index"
+    },
+    {
+      "alias": "Hlarf",
+      "heading": null,
+      "resolved": "Org/Roundhat Gang/People/Hlarf",
+      "source": "Timeline",
+      "target": "Org/Roundhat Gang/People/Hlarf"
     }
   ],
   "pages": [
@@ -6038,6 +6255,31 @@
         "title": null
       },
       "path": "Bestiary/Voice of Many"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Roundhat Gang",
+          "heading": null,
+          "target": "Org/Roundhat Gang/index"
+        },
+        {
+          "alias": "Sableclutch",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/index"
+        }
+      ],
+      "date": "2025-12-02T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-12-02T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Werecreature"
     },
     {
       "crossrefs": [],
@@ -7067,6 +7309,33 @@
         "title": null
       },
       "path": "Geography/Calaria/Hallia/Gullet/index"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Grayson",
+          "heading": null,
+          "target": "Org/Amber Call/People/Benjamin Grayson"
+        }
+      ],
+      "date": "2025-12-02T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-12-02T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Mercantile"
+        ],
+        "title": null
+      },
+      "path": "Geography/Calaria/Hallia/Ledger, Ledger, and Light"
     },
     {
       "crossrefs": [
@@ -9465,6 +9734,21 @@
           "alias": "Tywelwyn",
           "heading": null,
           "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Grayson",
+          "heading": null,
+          "target": "Org/Amber Call/People/Benjamin Grayson"
+        },
+        {
+          "alias": "Amber Call",
+          "heading": null,
+          "target": "Org/Amber Call/index"
+        },
+        {
+          "alias": "Calaria",
+          "heading": null,
+          "target": "Geography/Calaria/index"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -10356,6 +10640,41 @@
           "alias": "Roundhat Gang",
           "heading": null,
           "target": "Org/Roundhat Gang/index"
+        },
+        {
+          "alias": "The Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Pier 54",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/Pier 54"
+        }
+      ],
+      "date": "2025-12-02T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-12-02T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/Roundhat Gang/People/Hlarf"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Roundhat Gang",
+          "heading": null,
+          "target": "Org/Roundhat Gang/index"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
@@ -10444,6 +10763,11 @@
           "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
         },
         {
+          "alias": "Hlarf",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Hlarf"
+        },
+        {
           "alias": "Tywelwyn",
           "heading": null,
           "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
@@ -10457,6 +10781,21 @@
           "alias": "Second Sun Diner",
           "heading": null,
           "target": "Geography/Calaria/Hallia/Sableclutch/Second Sun Diner"
+        },
+        {
+          "alias": "werecreatures",
+          "heading": null,
+          "target": "Bestiary/Werecreature"
+        },
+        {
+          "alias": "Hlarf",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Hlarf"
+        },
+        {
+          "alias": "Tywelwyn",
+          "heading": null,
+          "target": "Tywelwyn Leatherhide"
         }
       ],
       "date": "2026-06-06T22:12:21-04:00",
@@ -13238,6 +13577,86 @@
           "alias": "Detective Brooks",
           "heading": null,
           "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+        },
+        {
+          "alias": "Grayson",
+          "heading": null,
+          "target": "Org/Amber Call/People/Benjamin Grayson"
+        },
+        {
+          "alias": "Detective Brooks",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+        },
+        {
+          "alias": "Magical Crimes Convox",
+          "heading": null,
+          "target": "Org/Iridescent Church/Convox/Magical Crimes/index"
+        },
+        {
+          "alias": "Amber Call",
+          "heading": null,
+          "target": "Org/Amber Call/index"
+        },
+        {
+          "alias": "Calaria",
+          "heading": null,
+          "target": "Geography/Calaria/index"
+        },
+        {
+          "alias": "Grayson",
+          "heading": null,
+          "target": "Org/Amber Call/People/Benjamin Grayson"
+        },
+        {
+          "alias": "Ledger, Ledger, and Light",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Ledger, Ledger, and Light"
+        },
+        {
+          "alias": "Hallia",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Smiler",
+          "heading": null,
+          "target": "Org/The Undertable/People/Smiler"
+        },
+        {
+          "alias": "the Undertable",
+          "heading": null,
+          "target": "Org/The Undertable/index"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Sin and Tonic"
+        },
+        {
+          "alias": "Anouk",
+          "heading": null,
+          "target": "Org/Iconoclasm/People/Anouk Marchal"
+        },
+        {
+          "alias": "cave serpents",
+          "heading": null,
+          "target": "Bestiary/Cave Serpent"
+        },
+        {
+          "alias": "the Crowded Flea",
+          "heading": null,
+          "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
+        },
+        {
+          "alias": "Roundhats",
+          "heading": null,
+          "target": "Org/Roundhat Gang/index"
+        },
+        {
+          "alias": "Hlarf",
+          "heading": null,
+          "target": "Org/Roundhat Gang/People/Hlarf"
         }
       ],
       "date": "2026-06-05T16:40:21-04:00",
