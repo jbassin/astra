@@ -1106,6 +1106,9 @@ entity "Low-Mechanitor Exitum-ρ-15" {
 entity "Luxottica" kind="org" page="Org/Luxottica/index" {
     source "akasha"
 }
+entity "Machine God" kind="org" page="Org/The Harlequins/Providence/Machine God" {
+    source "akasha"
+}
 entity "Magical Crimes" kind="org" page="Org/Iridescent Church/Convox/Magical Crimes/index" {
     source "akasha"
 }
@@ -1422,7 +1425,7 @@ entity "Protectorates" {
     alias "protectorates"
     source "defs"
 }
-entity "Providence" kind="org" page="Org/The Harlequins/Providence" {
+entity "Providence" kind="org" page="Org/The Harlequins/Providence/index" {
     source "akasha"
 }
 entity "Psiburst" {
@@ -1971,6 +1974,7 @@ entity "Vermin" kind="creature" page="Bestiary/Vermin" {
     alias "The Hivemother"
     alias "Scythe-Armed Spider"
     alias "Apothecary Bug"
+    alias "Hiveling"
     source "akasha"
 }
 entity "Vilksnake" {

@@ -38,7 +38,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Bestiary/Celestials",
       "target": "Org/The Harlequins/Providence"
     },
@@ -94,7 +94,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Bestiary/Fiends",
       "target": "Org/The Harlequins/Providence"
     },
@@ -178,7 +178,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Bestiary/Mongrel Folk",
       "target": "Org/The Harlequins/Providence"
     },
@@ -409,7 +409,14 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Bestiary/Vermin",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Bestiary/Vermin",
       "target": "Org/The Harlequins/Providence"
     },
@@ -423,7 +430,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Bestiary/Void",
       "target": "Org/The Harlequins/Providence"
     },
@@ -531,6 +538,20 @@
       "resolved": "People/Gerhard",
       "source": "Divinity/Ashen Pact/Herald",
       "target": "People/Gerhard"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "Org/The Harlequins/Providence"
     },
     {
       "alias": "Gas-n-Go",
@@ -3363,7 +3384,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Geography/Calaria/Ragged Roost",
       "target": "Org/The Harlequins/Providence"
     },
@@ -4091,7 +4112,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Alliance",
       "target": "Org/The Harlequins/Providence"
     },
@@ -4157,27 +4178,6 @@
       "resolved": "Org/Hildebrandt Corporation/index",
       "source": "Org/Alliance",
       "target": "Org/Hildebrandt Corporation/index"
-    },
-    {
-      "alias": "Alkahest Freight",
-      "heading": null,
-      "resolved": "Org/Alkahest Freight/index",
-      "source": "Org/Alliance",
-      "target": "Org/Alkahest Freight/index"
-    },
-    {
-      "alias": "Solari Sub-surface",
-      "heading": null,
-      "resolved": "Org/Solari Sub-surface/index",
-      "source": "Org/Alliance",
-      "target": "Org/Solari Sub-surface/index"
-    },
-    {
-      "alias": "Protectorate",
-      "heading": null,
-      "resolved": "Org/Protectorate/index",
-      "source": "Org/Alliance",
-      "target": "Org/Protectorate/index"
     },
     {
       "alias": "Pulse",
@@ -4294,7 +4294,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Amber Call/People/Silven Grayson",
       "target": "Org/The Harlequins/Providence"
     },
@@ -5071,7 +5071,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Garrick Textiles/People/Letov Obratz",
       "target": "Org/The Harlequins/Providence"
     },
@@ -5113,7 +5113,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Garrick Textiles/Whirling in Rags",
       "target": "Org/The Harlequins/Providence"
     },
@@ -5169,7 +5169,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Garrick Textiles/index",
       "target": "Org/The Harlequins/Providence"
     },
@@ -5330,7 +5330,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Hildebrandt Corporation/People/Paavo Karhu",
       "target": "Org/The Harlequins/Providence"
     },
@@ -5379,7 +5379,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Hildebrandt Corporation/index",
       "target": "Org/The Harlequins/Providence"
     },
@@ -5421,7 +5421,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Iconoclasm/Eerie",
       "target": "Org/The Harlequins/Providence"
     },
@@ -6282,7 +6282,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Iridescent Church/People/Walter Stoke",
       "target": "Org/The Harlequins/Providence"
     },
@@ -6436,7 +6436,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/NecroLog/People/Gaspar Caetano",
       "target": "Org/The Harlequins/Providence"
     },
@@ -6604,7 +6604,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Prime Meridian/Axis Interlink",
       "target": "Org/The Harlequins/Providence"
     },
@@ -6989,7 +6989,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Radiant Arms/Final Caliber",
       "target": "Org/The Harlequins/Providence"
     },
@@ -7010,7 +7010,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Radiant Arms/People/Ichel",
       "target": "Org/The Harlequins/Providence"
     },
@@ -7038,7 +7038,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Radiant Arms/index",
       "target": "Org/The Harlequins/Providence"
     },
@@ -7584,7 +7584,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Ternion Heavy Industries/People/Jethro Twill",
       "target": "Org/The Harlequins/Providence"
     },
@@ -7612,7 +7612,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/The Harlequins/Harlequin Town",
       "target": "Org/The Harlequins/Providence"
     },
@@ -7661,7 +7661,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/The Harlequins/People/Chuck",
       "target": "Org/The Harlequins/Providence"
     },
@@ -7703,7 +7703,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/The Harlequins/People/Ocelith",
       "target": "Org/The Harlequins/Providence"
     },
@@ -7717,7 +7717,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/The Harlequins/People/The Master of Ceremonies",
       "target": "Org/The Harlequins/Providence"
     },
@@ -7750,107 +7750,163 @@
       "target": "Org/Iconoclasm/People/Illmari Vaino"
     },
     {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Horizon",
+      "heading": null,
+      "resolved": "Phenomena/Infinite Horizon",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "Phenomena/Infinite Horizon"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
       "alias": "Ragged Roost",
       "heading": null,
       "resolved": "Geography/Calaria/Ragged Roost",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Geography/Calaria/Ragged Roost"
     },
     {
       "alias": "pilgrimage",
       "heading": null,
       "resolved": "Phenomena/Pilgrimage",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Phenomena/Pilgrimage"
     },
     {
       "alias": "the Master of Ceremonies",
       "heading": null,
       "resolved": "Org/The Harlequins/People/The Master of Ceremonies",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Org/The Harlequins/People/The Master of Ceremonies"
     },
     {
       "alias": "orts",
       "heading": null,
       "resolved": "Bestiary/Fiends",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Bestiary/Fiends"
     },
     {
       "alias": "the Master",
       "heading": null,
       "resolved": "Org/The Harlequins/People/The Master of Ceremonies",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Org/The Harlequins/People/The Master of Ceremonies"
     },
     {
       "alias": "Hildebrandt Corporation",
       "heading": null,
       "resolved": "Org/Hildebrandt Corporation/index",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Org/Hildebrandt Corporation/index"
     },
     {
       "alias": "keystone",
       "heading": null,
       "resolved": "Phenomena/Keystone",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Phenomena/Keystone"
     },
     {
       "alias": "Harlequins",
       "heading": null,
       "resolved": "Org/The Harlequins/index",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Org/The Harlequins/index"
     },
     {
       "alias": "mongrel folk",
       "heading": null,
       "resolved": "Bestiary/Mongrel Folk",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Bestiary/Mongrel Folk"
     },
     {
       "alias": "Heart",
       "heading": null,
       "resolved": "Phenomena/Hearts",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Phenomena/Hearts"
     },
     {
       "alias": "Aurelia I",
       "heading": null,
       "resolved": "Divinity/Hierophant",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Divinity/Hierophant"
     },
     {
       "alias": "Iridescent Church",
       "heading": null,
       "resolved": "Org/Iridescent Church/index",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Org/Iridescent Church/index"
+    },
+    {
+      "alias": "Culoum Honor-Sworn",
+      "heading": null,
+      "resolved": "People/Culoum Honor-Sworn",
+      "source": "Org/The Harlequins/Providence/index",
+      "target": "People/Culoum Honor-Sworn"
     },
     {
       "alias": "the Scale",
       "heading": null,
       "resolved": "Org/The Scale/index",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Org/The Scale/index"
     },
     {
       "alias": "Belvedere",
       "heading": null,
       "resolved": "Org/Belvedere/index",
-      "source": "Org/The Harlequins/Providence",
+      "source": "Org/The Harlequins/Providence/index",
       "target": "Org/Belvedere/index"
+    },
+    {
+      "alias": "Machine God",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Machine God",
+      "source": "Org/The Harlequins/Providence/index",
+      "target": "Org/The Harlequins/Providence/Machine God"
+    },
+    {
+      "alias": "Horizon",
+      "heading": null,
+      "resolved": "Phenomena/Infinite Horizon",
+      "source": "Org/The Harlequins/Providence/index",
+      "target": "Phenomena/Infinite Horizon"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Org/The Harlequins/Providence/index",
+      "target": "Divinity/Ashen Pact/Herald"
     },
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/The Harlequins/index",
       "target": "Org/The Harlequins/Providence"
     },
@@ -7906,7 +7962,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/The Scale/Asteris Lux",
       "target": "Org/The Harlequins/Providence"
     },
@@ -8095,7 +8151,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/The Scale/People/Lance Vesper",
       "target": "Org/The Harlequins/Providence"
     },
@@ -8158,7 +8214,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/The Scale/People/Ralph Bishop",
       "target": "Org/The Harlequins/Providence"
     },
@@ -8179,7 +8235,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/The Scale/People/Ralph Bishop",
       "target": "Org/The Harlequins/Providence"
     },
@@ -8268,6 +8324,20 @@
       "target": "Judge of Ages"
     },
     {
+      "alias": "Culoum Honor-Sworn",
+      "heading": null,
+      "resolved": "People/Culoum Honor-Sworn",
+      "source": "Org/The Scale/index",
+      "target": "People/Culoum Honor-Sworn"
+    },
+    {
+      "alias": "Aurelia I",
+      "heading": null,
+      "resolved": "Divinity/Hierophant",
+      "source": "Org/The Scale/index",
+      "target": "Divinity/Hierophant"
+    },
+    {
       "alias": "The Scale",
       "heading": null,
       "resolved": "Org/The Scale/index",
@@ -8319,7 +8389,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/The Scale/index",
       "target": "Org/The Harlequins/Providence"
     },
@@ -8585,7 +8655,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Verdant Holdings/People/Cross Trevils",
       "target": "Org/The Harlequins/Providence"
     },
@@ -8613,7 +8683,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/Verdant Holdings/People/Dr. Thrain",
       "target": "Org/The Harlequins/Providence"
     },
@@ -9388,6 +9458,48 @@
       "target": "People/Sbrtlby Jotes"
     },
     {
+      "alias": "Aurelia I",
+      "heading": null,
+      "resolved": "Divinity/Hierophant",
+      "source": "People/Culoum Honor-Sworn",
+      "target": "Divinity/Hierophant"
+    },
+    {
+      "alias": "Judge",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/Judge of Ages",
+      "source": "People/Culoum Honor-Sworn",
+      "target": "Judge of Ages"
+    },
+    {
+      "alias": "Calaria",
+      "heading": null,
+      "resolved": "Geography/Calaria/index",
+      "source": "People/Culoum Honor-Sworn",
+      "target": "Geography/Calaria/index"
+    },
+    {
+      "alias": "the Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "People/Culoum Honor-Sworn",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "People/Culoum Honor-Sworn",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "People/Culoum Honor-Sworn",
+      "target": "People/Argyle"
+    },
+    {
       "alias": "Embercall",
       "heading": null,
       "resolved": "Org/Embercall Industries/index",
@@ -10013,7 +10125,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "People/Maranthorn",
       "target": "Org/The Harlequins/Providence"
     },
@@ -11042,7 +11154,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Phenomena/Keystone",
       "target": "Org/The Harlequins/Providence"
     },
@@ -11084,7 +11196,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Phenomena/Keystone",
       "target": "Org/The Harlequins/Providence"
     },
@@ -11161,7 +11273,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Phenomena/Pilgrimage",
       "target": "Org/The Harlequins/Providence"
     },
@@ -11231,7 +11343,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Phenomena/Pilgrimage",
       "target": "Org/The Harlequins/Providence"
     },
@@ -11483,7 +11595,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Phenomena/Voidheart",
       "target": "Org/The Harlequins/Providence"
     },
@@ -11497,7 +11609,7 @@
     {
       "alias": "Providence",
       "heading": null,
-      "resolved": "Org/The Harlequins/Providence",
+      "resolved": "Org/The Harlequins/Providence/index",
       "source": "Phenomena/Weave",
       "target": "Org/The Harlequins/Providence"
     },
@@ -12285,9 +12397,14 @@
           "alias": "Providence",
           "heading": null,
           "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-06-29T00:00:00-04:00",
+      "date": "2026-07-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Deadly Mantis",
@@ -12295,10 +12412,11 @@
           "Swarm Child",
           "The Hivemother",
           "Scythe-Armed Spider",
-          "Apothecary Bug"
+          "Apothecary Bug",
+          "Hiveling"
         ],
         "extra": {
-          "date": "2026-06-29T00:00:00-04:00"
+          "date": "2026-07-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -12455,6 +12573,16 @@
           "alias": "Gerhard",
           "heading": null,
           "target": "People/Gerhard"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
         }
       ],
       "date": "2026-07-29T23:41:12-04:00",
@@ -16583,28 +16711,13 @@
           "alias": "Hildebrandt Corporation",
           "heading": null,
           "target": "Org/Hildebrandt Corporation/index"
-        },
-        {
-          "alias": "Alkahest Freight",
-          "heading": null,
-          "target": "Org/Alkahest Freight/index"
-        },
-        {
-          "alias": "Solari Sub-surface",
-          "heading": null,
-          "target": "Org/Solari Sub-surface/index"
-        },
-        {
-          "alias": "Protectorate",
-          "heading": null,
-          "target": "Org/Protectorate/index"
         }
       ],
-      "date": "2026-06-18T00:00:00-04:00",
+      "date": "2026-07-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-18T00:00:00-04:00"
+          "date": "2026-07-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -21005,6 +21118,43 @@
     {
       "crossrefs": [
         {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Horizon",
+          "heading": null,
+          "target": "Phenomena/Infinite Horizon"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        }
+      ],
+      "date": "2026-07-06T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-07-06T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Heart"
+        ],
+        "title": null
+      },
+      "path": "Org/The Harlequins/Providence/Machine God"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Ragged Roost",
           "heading": null,
           "target": "Geography/Calaria/Ragged Roost"
@@ -21065,6 +21215,11 @@
           "target": "Org/Iridescent Church/index"
         },
         {
+          "alias": "Culoum Honor-Sworn",
+          "heading": null,
+          "target": "People/Culoum Honor-Sworn"
+        },
+        {
           "alias": "the Scale",
           "heading": null,
           "target": "Org/The Scale/index"
@@ -21073,19 +21228,34 @@
           "alias": "Belvedere",
           "heading": null,
           "target": "Org/Belvedere/index"
+        },
+        {
+          "alias": "Machine God",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Machine God"
+        },
+        {
+          "alias": "Horizon",
+          "heading": null,
+          "target": "Phenomena/Infinite Horizon"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
         }
       ],
-      "date": "2026-06-29T00:00:00-04:00",
+      "date": "2026-07-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-29T00:00:00-04:00"
+          "date": "2026-07-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
         "title": null
       },
-      "path": "Org/The Harlequins/Providence"
+      "path": "Org/The Harlequins/Providence/index"
     },
     {
       "crossrefs": [
@@ -21586,6 +21756,16 @@
           "target": "Judge of Ages"
         },
         {
+          "alias": "Culoum Honor-Sworn",
+          "heading": null,
+          "target": "People/Culoum Honor-Sworn"
+        },
+        {
+          "alias": "Aurelia I",
+          "heading": null,
+          "target": "Divinity/Hierophant"
+        },
+        {
           "alias": "The Scale",
           "heading": null,
           "target": "Org/The Scale/index"
@@ -21636,11 +21816,11 @@
           "target": "Org/The Scale/Asteris Lux"
         }
       ],
-      "date": "2026-06-06T22:12:21-04:00",
+      "date": "2026-07-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-06T22:12:21-04:00"
+          "date": "2026-07-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -22626,11 +22806,11 @@
           "target": "Sin and Tonic"
         }
       ],
-      "date": "2026-05-07T00:00:00-04:00",
+      "date": "2026-07-06T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-07T00:00:00-04:00"
+          "date": "2026-07-06T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -22940,6 +23120,55 @@
         "title": null
       },
       "path": "People/Crowley Hart"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Aurelia I",
+          "heading": null,
+          "target": "Divinity/Hierophant"
+        },
+        {
+          "alias": "Judge",
+          "heading": null,
+          "target": "Judge of Ages"
+        },
+        {
+          "alias": "Calaria",
+          "heading": null,
+          "target": "Geography/Calaria/index"
+        },
+        {
+          "alias": "the Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
+        }
+      ],
+      "date": "2026-07-06T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Coulombe Honorsworn",
+          "Culoum Honorsworn",
+          "Culoum Honor-Sworn"
+        ],
+        "extra": {
+          "date": "2026-07-06T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "People/Culoum Honor-Sworn"
     },
     {
       "crossrefs": [
