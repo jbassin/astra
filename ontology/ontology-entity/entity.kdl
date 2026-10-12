@@ -15,6 +15,9 @@ entity "a Will save" {
     alias "Uh\\s*We'll\\s*save"
     source "defs"
 }
+entity "Afro-China" kind="place" page="Geography/Afro-China" {
+    source "akasha"
+}
 entity "Alfie Gallagher" {
     alias "Elfie Gallagher"
     source "defs"
@@ -109,6 +112,9 @@ entity "Anzu" kind="person" being="tanner" {
 entity "Anzu said he's" {
     alias "Aunt Suzette is"
     source "defs"
+}
+entity "Arcane Intelligence" kind="org" page="Org/Bisney and Dixar/Arcane Intelligence" {
+    source "akasha"
 }
 entity "Archie" kind="person" page="Org/Velvet Mark/People/Archie" being="tanner" {
     source "akasha"
@@ -289,6 +295,9 @@ entity "Berth Four" {
 entity "Bev Sirnow" {
     alias "Bev Cerno"
     source "defs"
+}
+entity "Bisney and Dixar" kind="org" page="Org/Bisney and Dixar/index" {
+    source "akasha"
 }
 entity "Black and White" kind="place" page="Geography/Black and White/index" {
     alias "Noire"
@@ -501,6 +510,9 @@ entity "Dura Oil-Drinker" kind="person" page="Org/Iconoclasm/People/Dura Oil-Dri
     alias "Dura"
     source "akasha"
 }
+entity "Earth" kind="place" page="Geography/Earth" {
+    source "akasha"
+}
 entity "Eerie" kind="org" page="Org/Iconoclasm/Eerie" {
     alias "the Ear that Hears the Truth"
     alias "Ear that Hears the Truth"
@@ -514,6 +526,9 @@ entity "Elara Vance" {
     alias "Lara Vance"
     alias "Alara Vance"
     source "defs"
+}
+entity "Elephant Graveyard of Wonders" kind="place" page="Geography/Elephant Graveyard of Wonders" {
+    source "akasha"
 }
 entity "Elias Ramsey" kind="person" page="Org/Iconoclasm/People/Elias Ramsey" {
     source "akasha"
@@ -534,6 +549,9 @@ entity "Embercall Industries" kind="org" page="Org/Embercall Industries/index" {
 entity "Embercall's" {
     alias "Ember\\s*Calls"
     source "defs"
+}
+entity "Enchanted Mirror" kind="phenomenon" page="Phenomena/Enchanted Mirror" {
+    source "akasha"
 }
 entity "Engine Heart" kind="phenomenon" page="Phenomena/Engine Heart" {
     alias "engine hearts"
@@ -1105,6 +1123,9 @@ entity "Lorandris" kind="place" page="Geography/Lorandris/index" {
     alias "Larandrus"
     source "akasha"
     source "defs"
+}
+entity "Los Diablos" kind="place" page="Geography/Los Diablos" {
+    source "akasha"
 }
 entity "Louis Maller" kind="person" page="Org/Concordia/People/Louis Maller" {
     alias "Lewis Mallard"

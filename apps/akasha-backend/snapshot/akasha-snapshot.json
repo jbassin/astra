@@ -1877,6 +1877,34 @@
       "target": "Firmament"
     },
     {
+      "alias": "arcane intelligence",
+      "heading": null,
+      "resolved": "Org/Bisney and Dixar/Arcane Intelligence",
+      "source": "Geography/Afro-China",
+      "target": "Org/Bisney and Dixar/Arcane Intelligence"
+    },
+    {
+      "alias": "Hades",
+      "heading": null,
+      "resolved": "People/Hades",
+      "source": "Geography/Afro-China",
+      "target": "People/Hades"
+    },
+    {
+      "alias": "Fulton",
+      "heading": null,
+      "resolved": "People/Fulton",
+      "source": "Geography/Afro-China",
+      "target": "People/Fulton"
+    },
+    {
+      "alias": "Runway Brian",
+      "heading": null,
+      "resolved": "People/Runway Brian",
+      "source": "Geography/Afro-China",
+      "target": "People/Runway Brian"
+    },
+    {
       "alias": "Belvedere",
       "heading": null,
       "resolved": "Org/Belvedere/index",
@@ -3727,6 +3755,48 @@
     {
       "alias": null,
       "heading": null,
+      "resolved": "Geography/Færrin",
+      "source": "Geography/Earth",
+      "target": "Færrin"
+    },
+    {
+      "alias": "Los Diablos",
+      "heading": null,
+      "resolved": "Geography/Los Diablos",
+      "source": "Geography/Earth",
+      "target": "Geography/Los Diablos"
+    },
+    {
+      "alias": "Bisney and Dixar",
+      "heading": null,
+      "resolved": "Org/Bisney and Dixar/index",
+      "source": "Geography/Earth",
+      "target": "Org/Bisney and Dixar/index"
+    },
+    {
+      "alias": "arcane intelligence",
+      "heading": null,
+      "resolved": "Org/Bisney and Dixar/Arcane Intelligence",
+      "source": "Geography/Elephant Graveyard of Wonders",
+      "target": "Org/Bisney and Dixar/Arcane Intelligence"
+    },
+    {
+      "alias": "Jaskar",
+      "heading": null,
+      "resolved": "People/Jaskar",
+      "source": "Geography/Elephant Graveyard of Wonders",
+      "target": "People/Jaskar"
+    },
+    {
+      "alias": "enchanted mirror",
+      "heading": null,
+      "resolved": "Phenomena/Enchanted Mirror",
+      "source": "Geography/Elephant Graveyard of Wonders",
+      "target": "Phenomena/Enchanted Mirror"
+    },
+    {
+      "alias": null,
+      "heading": null,
       "resolved": "Divinity/Outer Gods/The Compelled",
       "source": "Geography/Fenrith/index",
       "target": "The Compelled"
@@ -3961,6 +4031,20 @@
       "resolved": "Geography/Fenrith/index",
       "source": "Geography/Lorandris/index",
       "target": "Geography/Fenrith/index"
+    },
+    {
+      "alias": "Earth",
+      "heading": null,
+      "resolved": "Geography/Earth",
+      "source": "Geography/Los Diablos",
+      "target": "Geography/Earth"
+    },
+    {
+      "alias": "Bisney and Dixar",
+      "heading": null,
+      "resolved": "Org/Bisney and Dixar/index",
+      "source": "Geography/Los Diablos",
+      "target": "Org/Bisney and Dixar/index"
     },
     {
       "alias": "Istria",
@@ -4857,6 +4941,69 @@
       "resolved": "Phenomena/Harmony/Voidsong",
       "source": "Org/Belvedere/index",
       "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "Bisney and Dixar",
+      "heading": null,
+      "resolved": "Org/Bisney and Dixar/index",
+      "source": "Org/Bisney and Dixar/Arcane Intelligence",
+      "target": "Org/Bisney and Dixar/index"
+    },
+    {
+      "alias": "Los Diablos",
+      "heading": null,
+      "resolved": "Geography/Los Diablos",
+      "source": "Org/Bisney and Dixar/Arcane Intelligence",
+      "target": "Geography/Los Diablos"
+    },
+    {
+      "alias": "Afro-China",
+      "heading": null,
+      "resolved": "Geography/Afro-China",
+      "source": "Org/Bisney and Dixar/Arcane Intelligence",
+      "target": "Geography/Afro-China"
+    },
+    {
+      "alias": "Hades",
+      "heading": null,
+      "resolved": "People/Hades",
+      "source": "Org/Bisney and Dixar/Arcane Intelligence",
+      "target": "People/Hades"
+    },
+    {
+      "alias": "Fulton",
+      "heading": null,
+      "resolved": "People/Fulton",
+      "source": "Org/Bisney and Dixar/Arcane Intelligence",
+      "target": "People/Fulton"
+    },
+    {
+      "alias": "Runway Brian",
+      "heading": null,
+      "resolved": "People/Runway Brian",
+      "source": "Org/Bisney and Dixar/Arcane Intelligence",
+      "target": "People/Runway Brian"
+    },
+    {
+      "alias": "Los Diablos",
+      "heading": null,
+      "resolved": "Geography/Los Diablos",
+      "source": "Org/Bisney and Dixar/index",
+      "target": "Geography/Los Diablos"
+    },
+    {
+      "alias": "Earth",
+      "heading": null,
+      "resolved": "Geography/Earth",
+      "source": "Org/Bisney and Dixar/index",
+      "target": "Geography/Earth"
+    },
+    {
+      "alias": "arcane intelligence",
+      "heading": null,
+      "resolved": "Org/Bisney and Dixar/Arcane Intelligence",
+      "source": "Org/Bisney and Dixar/index",
+      "target": "Org/Bisney and Dixar/Arcane Intelligence"
     },
     {
       "alias": "Blackline",
@@ -10648,6 +10795,20 @@
       "target": "Org/Iridescent Church/index"
     },
     {
+      "alias": "arcane intelligence",
+      "heading": null,
+      "resolved": "Org/Bisney and Dixar/Arcane Intelligence",
+      "source": "People/Fulton",
+      "target": "Org/Bisney and Dixar/Arcane Intelligence"
+    },
+    {
+      "alias": "enchanted mirror",
+      "heading": null,
+      "resolved": "Phenomena/Enchanted Mirror",
+      "source": "People/Fulton",
+      "target": "Phenomena/Enchanted Mirror"
+    },
+    {
       "alias": "Undercroft",
       "heading": null,
       "resolved": "Geography/Istria/Iomenei/Undercroft",
@@ -10823,6 +10984,27 @@
       "target": "People/Gage"
     },
     {
+      "alias": "arcane intelligence",
+      "heading": null,
+      "resolved": "Org/Bisney and Dixar/Arcane Intelligence",
+      "source": "People/Hades",
+      "target": "Org/Bisney and Dixar/Arcane Intelligence"
+    },
+    {
+      "alias": "Afro-China",
+      "heading": null,
+      "resolved": "Geography/Afro-China",
+      "source": "People/Hades",
+      "target": "Geography/Afro-China"
+    },
+    {
+      "alias": "enchanted mirror",
+      "heading": null,
+      "resolved": "Phenomena/Enchanted Mirror",
+      "source": "People/Hades",
+      "target": "Phenomena/Enchanted Mirror"
+    },
+    {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
@@ -10863,6 +11045,27 @@
       "resolved": "Org/Prime Meridian/Rapid Connection",
       "source": "People/Hogan Voss Darkmoor",
       "target": "Org/Prime Meridian/Rapid Connection"
+    },
+    {
+      "alias": "arcane intelligence",
+      "heading": null,
+      "resolved": "Org/Bisney and Dixar/Arcane Intelligence",
+      "source": "People/Jaskar",
+      "target": "Org/Bisney and Dixar/Arcane Intelligence"
+    },
+    {
+      "alias": "enchanted mirror",
+      "heading": null,
+      "resolved": "Phenomena/Enchanted Mirror",
+      "source": "People/Jaskar",
+      "target": "Phenomena/Enchanted Mirror"
+    },
+    {
+      "alias": "Elephant Graveyard of Wonders",
+      "heading": null,
+      "resolved": "Geography/Elephant Graveyard of Wonders",
+      "source": "People/Jaskar",
+      "target": "Geography/Elephant Graveyard of Wonders"
     },
     {
       "alias": "Iconoclasm",
@@ -11276,6 +11479,20 @@
       "resolved": "Org/Hildebrandt Corporation/index",
       "source": "People/Qureshi",
       "target": "Org/Hildebrandt Corporation/index"
+    },
+    {
+      "alias": "arcane intelligence",
+      "heading": null,
+      "resolved": "Org/Bisney and Dixar/Arcane Intelligence",
+      "source": "People/Runway Brian",
+      "target": "Org/Bisney and Dixar/Arcane Intelligence"
+    },
+    {
+      "alias": "Elephant Graveyard of Wonders",
+      "heading": null,
+      "resolved": "Geography/Elephant Graveyard of Wonders",
+      "source": "People/Runway Brian",
+      "target": "Geography/Elephant Graveyard of Wonders"
     },
     {
       "alias": "babau",
@@ -11752,6 +11969,34 @@
       "resolved": "Org/The Sears/index",
       "source": "Phenomena/Augury",
       "target": "Org/The Sears/index"
+    },
+    {
+      "alias": "arcane intelligence",
+      "heading": null,
+      "resolved": "Org/Bisney and Dixar/Arcane Intelligence",
+      "source": "Phenomena/Enchanted Mirror",
+      "target": "Org/Bisney and Dixar/Arcane Intelligence"
+    },
+    {
+      "alias": "Elephant Graveyard of Wonders",
+      "heading": null,
+      "resolved": "Geography/Elephant Graveyard of Wonders",
+      "source": "Phenomena/Enchanted Mirror",
+      "target": "Geography/Elephant Graveyard of Wonders"
+    },
+    {
+      "alias": "Jaskar",
+      "heading": null,
+      "resolved": "People/Jaskar",
+      "source": "Phenomena/Enchanted Mirror",
+      "target": "People/Jaskar"
+    },
+    {
+      "alias": "Runway Brian",
+      "heading": null,
+      "resolved": "People/Runway Brian",
+      "source": "Phenomena/Enchanted Mirror",
+      "target": "People/Runway Brian"
     },
     {
       "alias": "Heart",
@@ -15264,6 +15509,41 @@
     {
       "crossrefs": [
         {
+          "alias": "arcane intelligence",
+          "heading": null,
+          "target": "Org/Bisney and Dixar/Arcane Intelligence"
+        },
+        {
+          "alias": "Hades",
+          "heading": null,
+          "target": "People/Hades"
+        },
+        {
+          "alias": "Fulton",
+          "heading": null,
+          "target": "People/Fulton"
+        },
+        {
+          "alias": "Runway Brian",
+          "heading": null,
+          "target": "People/Runway Brian"
+        }
+      ],
+      "date": "2026-09-03T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-09-03T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Afro-China"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Belvedere",
           "heading": null,
           "target": "Org/Belvedere/index"
@@ -17288,6 +17568,66 @@
         {
           "alias": null,
           "heading": null,
+          "target": "Færrin"
+        },
+        {
+          "alias": "Los Diablos",
+          "heading": null,
+          "target": "Geography/Los Diablos"
+        },
+        {
+          "alias": "Bisney and Dixar",
+          "heading": null,
+          "target": "Org/Bisney and Dixar/index"
+        }
+      ],
+      "date": "2026-09-03T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-09-03T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Earth"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "arcane intelligence",
+          "heading": null,
+          "target": "Org/Bisney and Dixar/Arcane Intelligence"
+        },
+        {
+          "alias": "Jaskar",
+          "heading": null,
+          "target": "People/Jaskar"
+        },
+        {
+          "alias": "enchanted mirror",
+          "heading": null,
+          "target": "Phenomena/Enchanted Mirror"
+        }
+      ],
+      "date": "2026-09-03T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-09-03T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Elephant Graveyard of Wonders"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
           "target": "The Compelled"
         }
       ],
@@ -17602,6 +17942,31 @@
         "title": null
       },
       "path": "Geography/Lorandris/index"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Earth",
+          "heading": null,
+          "target": "Geography/Earth"
+        },
+        {
+          "alias": "Bisney and Dixar",
+          "heading": null,
+          "target": "Org/Bisney and Dixar/index"
+        }
+      ],
+      "date": "2026-09-03T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-09-03T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Los Diablos"
     },
     {
       "crossrefs": [
@@ -18638,6 +19003,81 @@
         "title": null
       },
       "path": "Org/Belvedere/index"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Bisney and Dixar",
+          "heading": null,
+          "target": "Org/Bisney and Dixar/index"
+        },
+        {
+          "alias": "Los Diablos",
+          "heading": null,
+          "target": "Geography/Los Diablos"
+        },
+        {
+          "alias": "Afro-China",
+          "heading": null,
+          "target": "Geography/Afro-China"
+        },
+        {
+          "alias": "Hades",
+          "heading": null,
+          "target": "People/Hades"
+        },
+        {
+          "alias": "Fulton",
+          "heading": null,
+          "target": "People/Fulton"
+        },
+        {
+          "alias": "Runway Brian",
+          "heading": null,
+          "target": "People/Runway Brian"
+        }
+      ],
+      "date": "2026-09-03T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-09-03T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/Bisney and Dixar/Arcane Intelligence"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Los Diablos",
+          "heading": null,
+          "target": "Geography/Los Diablos"
+        },
+        {
+          "alias": "Earth",
+          "heading": null,
+          "target": "Geography/Earth"
+        },
+        {
+          "alias": "arcane intelligence",
+          "heading": null,
+          "target": "Org/Bisney and Dixar/Arcane Intelligence"
+        }
+      ],
+      "date": "2026-09-03T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-09-03T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/Bisney and Dixar/index"
     },
     {
       "crossrefs": [
@@ -25435,6 +25875,33 @@
     {
       "crossrefs": [
         {
+          "alias": "arcane intelligence",
+          "heading": null,
+          "target": "Org/Bisney and Dixar/Arcane Intelligence"
+        },
+        {
+          "alias": "enchanted mirror",
+          "heading": null,
+          "target": "Phenomena/Enchanted Mirror"
+        }
+      ],
+      "date": "2026-09-03T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Fuelton"
+        ],
+        "extra": {
+          "date": "2026-09-03T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "People/Fulton"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Undercroft",
           "heading": null,
           "target": "Geography/Istria/Iomenei/Undercroft"
@@ -25628,6 +26095,36 @@
     {
       "crossrefs": [
         {
+          "alias": "arcane intelligence",
+          "heading": null,
+          "target": "Org/Bisney and Dixar/Arcane Intelligence"
+        },
+        {
+          "alias": "Afro-China",
+          "heading": null,
+          "target": "Geography/Afro-China"
+        },
+        {
+          "alias": "enchanted mirror",
+          "heading": null,
+          "target": "Phenomena/Enchanted Mirror"
+        }
+      ],
+      "date": "2026-09-03T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-09-03T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "People/Hades"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Hallia",
           "heading": null,
           "target": "Geography/Calaria/Hallia/index"
@@ -25686,6 +26183,38 @@
         "title": null
       },
       "path": "People/Hogan Voss Darkmoor"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "arcane intelligence",
+          "heading": null,
+          "target": "Org/Bisney and Dixar/Arcane Intelligence"
+        },
+        {
+          "alias": "enchanted mirror",
+          "heading": null,
+          "target": "Phenomena/Enchanted Mirror"
+        },
+        {
+          "alias": "Elephant Graveyard of Wonders",
+          "heading": null,
+          "target": "Geography/Elephant Graveyard of Wonders"
+        }
+      ],
+      "date": "2026-09-03T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Jeskar"
+        ],
+        "extra": {
+          "date": "2026-09-03T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "People/Jaskar"
     },
     {
       "crossrefs": [
@@ -26146,6 +26675,33 @@
         "title": null
       },
       "path": "People/Qureshi"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "arcane intelligence",
+          "heading": null,
+          "target": "Org/Bisney and Dixar/Arcane Intelligence"
+        },
+        {
+          "alias": "Elephant Graveyard of Wonders",
+          "heading": null,
+          "target": "Geography/Elephant Graveyard of Wonders"
+        }
+      ],
+      "date": "2026-09-03T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Brian"
+        ],
+        "extra": {
+          "date": "2026-09-03T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "People/Runway Brian"
     },
     {
       "crossrefs": [
@@ -26650,6 +27206,41 @@
         "title": null
       },
       "path": "Phenomena/Augury"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "arcane intelligence",
+          "heading": null,
+          "target": "Org/Bisney and Dixar/Arcane Intelligence"
+        },
+        {
+          "alias": "Elephant Graveyard of Wonders",
+          "heading": null,
+          "target": "Geography/Elephant Graveyard of Wonders"
+        },
+        {
+          "alias": "Jaskar",
+          "heading": null,
+          "target": "People/Jaskar"
+        },
+        {
+          "alias": "Runway Brian",
+          "heading": null,
+          "target": "People/Runway Brian"
+        }
+      ],
+      "date": "2026-09-03T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-09-03T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Phenomena/Enchanted Mirror"
     },
     {
       "crossrefs": [
