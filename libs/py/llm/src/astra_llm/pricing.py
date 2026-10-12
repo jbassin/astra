@@ -36,10 +36,10 @@ PRICING_USD_PER_1M: dict[str, ModelPricing] = {
         input=1.15, cache_read=0.10, cache_write=1.4375, output=3.5
     ),
     # DeepSeek V4.1 Flash via OpenRouter — heartwood's agent model and the 0034 producer +
-    # experiment arm. OpenRouter listing (0033 scope, 2026-10-10): $0.30/$1.20 per 1M;
-    # cache_* kept at the usual 0.1x/1.25x ratios (OpenRouter reports ~none).
+    # experiment arm. OpenRouter listing 2026-10-12: $0.15/$0.60 per 1M (was $0.30/$1.20
+    # at the 0033 scope); cache_* kept at the usual 0.1x/1.25x ratios.
     "openrouter/deepseek/deepseek-v4.1-flash": ModelPricing(
-        input=0.30, cache_read=0.03, cache_write=0.375, output=1.20
+        input=0.15, cache_read=0.015, cache_write=0.1875, output=0.60
     ),
 }
 
