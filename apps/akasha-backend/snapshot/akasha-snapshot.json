@@ -8464,6 +8464,20 @@
       "target": "Org/The Harlequins/Providence"
     },
     {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Org/The Harlequins/People/Ocelith",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Othello",
+      "heading": null,
+      "resolved": "People/Othello",
+      "source": "Org/The Harlequins/People/Ocelith",
+      "target": "People/Othello"
+    },
+    {
       "alias": "The Harlequins",
       "heading": null,
       "resolved": "Org/The Harlequins/index",
@@ -8546,6 +8560,13 @@
       "resolved": "People/Galzu",
       "source": "Org/The Harlequins/Providence/Chapel of the Six",
       "target": "People/Galzu"
+    },
+    {
+      "alias": "Machine God",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Machine God",
+      "source": "Org/The Harlequins/Providence/Chapel of the Six",
+      "target": "Org/The Harlequins/Providence/Machine God"
     },
     {
       "alias": "Providence",
@@ -8632,6 +8653,13 @@
       "target": "Divinity/Ashen Pact/Herald"
     },
     {
+      "alias": "Galzu",
+      "heading": null,
+      "resolved": "People/Galzu",
+      "source": "Org/The Harlequins/Providence/Lifeline",
+      "target": "People/Galzu"
+    },
+    {
       "alias": "Heart",
       "heading": null,
       "resolved": "Phenomena/Hearts",
@@ -8700,6 +8728,20 @@
       "resolved": "Org/Ætherion Limited/index",
       "source": "Org/The Harlequins/Providence/Machine God",
       "target": "Org/Ætherion Limited/index"
+    },
+    {
+      "alias": "Lifeline",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Lifeline",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "Org/The Harlequins/Providence/Lifeline"
+    },
+    {
+      "alias": "Johnny",
+      "heading": null,
+      "resolved": "People/Johnny",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "People/Johnny"
     },
     {
       "alias": "Tally",
@@ -8779,13 +8821,6 @@
       "target": "Org/The Harlequins/Providence/Machine God"
     },
     {
-      "alias": "mongrel folk",
-      "heading": null,
-      "resolved": "Bestiary/Mongrel Folk",
-      "source": "Org/The Harlequins/Providence/Tally",
-      "target": "Bestiary/Mongrel Folk"
-    },
-    {
       "alias": "Galzu",
       "heading": null,
       "resolved": "People/Galzu",
@@ -8798,6 +8833,13 @@
       "resolved": "People/Anzu",
       "source": "Org/The Harlequins/Providence/Tally",
       "target": "People/Anzu"
+    },
+    {
+      "alias": "mongrel folk",
+      "heading": null,
+      "resolved": "Bestiary/Mongrel Folk",
+      "source": "Org/The Harlequins/Providence/Tally",
+      "target": "Bestiary/Mongrel Folk"
     },
     {
       "alias": "Herald",
@@ -9255,11 +9297,18 @@
       "target": "Phenomena/Harmony/Voidsong"
     },
     {
-      "alias": "Bishop",
+      "alias": "Argyle",
       "heading": null,
-      "resolved": "Org/The Scale/People/Ralph Bishop",
+      "resolved": "People/Argyle",
       "source": "Org/The Scale/People/Lance Vesper",
-      "target": "Org/The Scale/People/Ralph Bishop"
+      "target": "People/Argyle"
+    },
+    {
+      "alias": "Macarius Vesper",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Macarius Vesper",
+      "source": "Org/The Scale/People/Lance Vesper",
+      "target": "Org/The Scale/People/Macarius Vesper"
     },
     {
       "alias": "void-thing",
@@ -9274,6 +9323,34 @@
       "resolved": "Org/The Harlequins/Providence/index",
       "source": "Org/The Scale/People/Lance Vesper",
       "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "the Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "Org/The Scale/People/Macarius Vesper",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Lance Vesper",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Lance Vesper",
+      "source": "Org/The Scale/People/Macarius Vesper",
+      "target": "Org/The Scale/People/Lance Vesper"
+    },
+    {
+      "alias": "Dame Quay",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Dame Quay",
+      "source": "Org/The Scale/People/Macarius Vesper",
+      "target": "Org/The Scale/People/Dame Quay"
+    },
+    {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "Org/The Scale/People/Macarius Vesper",
+      "target": "People/Argyle"
     },
     {
       "alias": "The Scale",
@@ -9477,6 +9554,13 @@
       "resolved": "People/Farrow Cross",
       "source": "Org/The Scale/index",
       "target": "People/Farrow Cross"
+    },
+    {
+      "alias": "Macarius Vesper",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Macarius Vesper",
+      "source": "Org/The Scale/index",
+      "target": "Org/The Scale/People/Macarius Vesper"
     },
     {
       "alias": "Voice of Many",
@@ -10242,6 +10326,13 @@
       "target": "Org/The Harlequins/Providence/Tally"
     },
     {
+      "alias": "Lifeline",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Lifeline",
+      "source": "People/Anzu",
+      "target": "Org/The Harlequins/Providence/Lifeline"
+    },
+    {
       "alias": "Roundhat Gang",
       "heading": null,
       "resolved": "Org/Roundhat Gang/index",
@@ -10338,6 +10429,13 @@
       "resolved": "Org/The Scale/index",
       "source": "People/Argyle",
       "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Macarius Vesper",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Macarius Vesper",
+      "source": "People/Argyle",
+      "target": "Org/The Scale/People/Macarius Vesper"
     },
     {
       "alias": "Roundhat Gang",
@@ -11138,11 +11236,18 @@
       "target": "Divinity/Ashen Pact/Herald"
     },
     {
-      "alias": "Anzu",
+      "alias": "Lifeline",
       "heading": null,
-      "resolved": "People/Anzu",
+      "resolved": "Org/The Harlequins/Providence/Lifeline",
       "source": "People/Galzu",
-      "target": "People/Anzu"
+      "target": "Org/The Harlequins/Providence/Lifeline"
+    },
+    {
+      "alias": "Machine God",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Machine God",
+      "source": "People/Galzu",
+      "target": "Org/The Harlequins/Providence/Machine God"
     },
     {
       "alias": "Undercroft",
@@ -11367,6 +11472,20 @@
       "resolved": "Phenomena/Harmony/Voidsong",
       "source": "People/Johnny",
       "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "Machine God",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Machine God",
+      "source": "People/Johnny",
+      "target": "Org/The Harlequins/Providence/Machine God"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "People/Johnny",
+      "target": "Org/The Harlequins/Providence"
     },
     {
       "alias": "Ghost",
@@ -23431,13 +23550,23 @@
           "alias": "Providence",
           "heading": null,
           "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Othello",
+          "heading": null,
+          "target": "People/Othello"
         }
       ],
-      "date": "2026-07-13T00:00:00-04:00",
+      "date": "2026-10-05T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-13T00:00:00-04:00"
+          "date": "2026-10-05T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -23523,13 +23652,18 @@
           "alias": "Galzu",
           "heading": null,
           "target": "People/Galzu"
+        },
+        {
+          "alias": "Machine God",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Machine God"
         }
       ],
-      "date": "2026-10-01T00:00:00-04:00",
+      "date": "2026-10-05T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-10-01T00:00:00-04:00"
+          "date": "2026-10-05T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -23628,13 +23762,18 @@
           "alias": "Herald",
           "heading": null,
           "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Galzu",
+          "heading": null,
+          "target": "People/Galzu"
         }
       ],
-      "date": "2026-07-27T00:00:00-04:00",
+      "date": "2026-10-05T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-27T00:00:00-04:00"
+          "date": "2026-10-05T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -23697,6 +23836,16 @@
           "target": "Org/Ætherion Limited/index"
         },
         {
+          "alias": "Lifeline",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Lifeline"
+        },
+        {
+          "alias": "Johnny",
+          "heading": null,
+          "target": "People/Johnny"
+        },
+        {
           "alias": "Tally",
           "heading": null,
           "target": "Org/The Harlequins/Providence/Tally"
@@ -23707,11 +23856,11 @@
           "target": "Phenomena/Infinite Horizon"
         }
       ],
-      "date": "2026-09-17T00:00:00-04:00",
+      "date": "2026-10-05T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-09-17T00:00:00-04:00"
+          "date": "2026-10-05T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -23784,11 +23933,6 @@
           "target": "Org/The Harlequins/Providence/Machine God"
         },
         {
-          "alias": "mongrel folk",
-          "heading": null,
-          "target": "Bestiary/Mongrel Folk"
-        },
-        {
           "alias": "Galzu",
           "heading": null,
           "target": "People/Galzu"
@@ -23797,6 +23941,11 @@
           "alias": "Anzu",
           "heading": null,
           "target": "People/Anzu"
+        },
+        {
+          "alias": "mongrel folk",
+          "heading": null,
+          "target": "Bestiary/Mongrel Folk"
         },
         {
           "alias": "Herald",
@@ -23809,11 +23958,11 @@
           "target": "Org/Iridescent Church/index"
         }
       ],
-      "date": "2026-10-01T00:00:00-04:00",
+      "date": "2026-10-05T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-10-01T00:00:00-04:00"
+          "date": "2026-10-05T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -23946,11 +24095,11 @@
           "target": "Org/Amber Call/index"
         }
       ],
-      "date": "2026-09-17T00:00:00-04:00",
+      "date": "2026-10-05T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-09-17T00:00:00-04:00"
+          "date": "2026-10-05T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -24261,9 +24410,14 @@
           "target": "Phenomena/Harmony/Voidsong"
         },
         {
-          "alias": "Bishop",
+          "alias": "Argyle",
           "heading": null,
-          "target": "Org/The Scale/People/Ralph Bishop"
+          "target": "People/Argyle"
+        },
+        {
+          "alias": "Macarius Vesper",
+          "heading": null,
+          "target": "Org/The Scale/People/Macarius Vesper"
         },
         {
           "alias": "void-thing",
@@ -24276,11 +24430,11 @@
           "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-08-03T00:00:00-04:00",
+      "date": "2026-10-05T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-03T00:00:00-04:00"
+          "date": "2026-10-05T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -24289,6 +24443,43 @@
         "title": null
       },
       "path": "Org/The Scale/People/Lance Vesper"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "the Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Lance Vesper",
+          "heading": null,
+          "target": "Org/The Scale/People/Lance Vesper"
+        },
+        {
+          "alias": "Dame Quay",
+          "heading": null,
+          "target": "Org/The Scale/People/Dame Quay"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
+        }
+      ],
+      "date": "2026-10-05T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-10-05T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Human"
+        ],
+        "title": null
+      },
+      "path": "Org/The Scale/People/Macarius Vesper"
     },
     {
       "crossrefs": [
@@ -24512,6 +24703,11 @@
           "target": "People/Farrow Cross"
         },
         {
+          "alias": "Macarius Vesper",
+          "heading": null,
+          "target": "Org/The Scale/People/Macarius Vesper"
+        },
+        {
           "alias": "Voice of Many",
           "heading": null,
           "target": "Org/The Scale/Voice of Many"
@@ -24547,11 +24743,11 @@
           "target": "Org/The Scale/Asteris Lux"
         }
       ],
-      "date": "2026-07-06T00:00:00-04:00",
+      "date": "2026-10-05T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-06T00:00:00-04:00"
+          "date": "2026-10-05T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -25485,6 +25681,11 @@
           "target": "Org/The Harlequins/Providence/Tally"
         },
         {
+          "alias": "Lifeline",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Lifeline"
+        },
+        {
           "alias": "Roundhat Gang",
           "heading": null,
           "target": "Org/Roundhat Gang/index"
@@ -25540,11 +25741,11 @@
           "target": "People/Egan Arithmites"
         }
       ],
-      "date": "2026-10-01T00:00:00-04:00",
+      "date": "2026-10-05T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-10-01T00:00:00-04:00"
+          "date": "2026-10-05T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -25570,6 +25771,11 @@
           "alias": "the Scale",
           "heading": null,
           "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Macarius Vesper",
+          "heading": null,
+          "target": "Org/The Scale/People/Macarius Vesper"
         },
         {
           "alias": "Roundhat Gang",
@@ -25642,11 +25848,11 @@
           "target": "Divinity/Ashen Pact/Herald"
         }
       ],
-      "date": "2026-09-07T00:00:00-04:00",
+      "date": "2026-10-05T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-09-07T00:00:00-04:00"
+          "date": "2026-10-05T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -26438,16 +26644,21 @@
           "target": "Divinity/Ashen Pact/Herald"
         },
         {
-          "alias": "Anzu",
+          "alias": "Lifeline",
           "heading": null,
-          "target": "People/Anzu"
+          "target": "Org/The Harlequins/Providence/Lifeline"
+        },
+        {
+          "alias": "Machine God",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Machine God"
         }
       ],
-      "date": "2026-10-01T00:00:00-04:00",
+      "date": "2026-10-05T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-10-01T00:00:00-04:00"
+          "date": "2026-10-05T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -26718,6 +26929,16 @@
           "target": "Phenomena/Harmony/Voidsong"
         },
         {
+          "alias": "Machine God",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Machine God"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
           "alias": "Ghost",
           "heading": null,
           "target": "Org/Ghosts of Raelion"
@@ -26763,11 +26984,11 @@
           "target": "Geography/Calaria/Hallia/Teller's Run/index"
         }
       ],
-      "date": "2026-08-17T00:00:00-04:00",
+      "date": "2026-10-05T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-17T00:00:00-04:00"
+          "date": "2026-10-05T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -28305,6 +28526,20 @@
         "title": null
       },
       "path": "Phenomena/Oil of Unlife"
+    },
+    {
+      "crossrefs": [],
+      "date": "2026-10-05T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-10-05T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Phenomena/Phlogiston"
     },
     {
       "crossrefs": [

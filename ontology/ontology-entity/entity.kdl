@@ -1149,6 +1149,9 @@ entity "Low-Mechanitor Exitum-ρ-15" {
 entity "Luxottica" kind="org" page="Org/Luxottica/index" {
     source "akasha"
 }
+entity "Macarius Vesper" kind="person" page="Org/The Scale/People/Macarius Vesper" {
+    source "akasha"
+}
 entity "Machine God" kind="org" page="Org/The Harlequins/Providence/Machine God" {
     source "akasha"
 }
@@ -1427,6 +1430,9 @@ entity "Pharos" kind="place" page="Geography/Black and White/Pharos" {
     alias "Firas"
     source "akasha"
     source "defs"
+}
+entity "Phlogiston" kind="phenomenon" page="Phenomena/Phlogiston" {
+    source "akasha"
 }
 entity "Pilgrimage" kind="phenomenon" page="Phenomena/Pilgrimage" {
     source "akasha"
