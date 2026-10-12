@@ -582,6 +582,20 @@
       "target": "Org/The Harlequins/Providence"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Tally",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Tally",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "Org/The Harlequins/Providence/Tally"
+    },
+    {
       "alias": "Gas-n-Go",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
@@ -1658,6 +1672,13 @@
       "resolved": "Org/index",
       "source": "Divinity/The Narrative/index",
       "target": "Org/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Divinity/The Narrative/index",
+      "target": "Org/The Harlequins/Providence"
     },
     {
       "alias": null,
@@ -6686,6 +6707,13 @@
       "target": "Org/Sable and Suns/index"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/NecroLog/index",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
       "alias": "Widdershins",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Widdershins/index",
@@ -7806,6 +7834,20 @@
       "target": "Divinity/Ashen Pact/index"
     },
     {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Machine God",
+      "source": "Org/Singers of the Herald's Star",
+      "target": "Org/The Harlequins/Providence/Machine God"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/Singers of the Herald's Star",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
       "alias": "Solari Sub-surface",
       "heading": null,
       "resolved": "Org/Solari Sub-surface/index",
@@ -8121,6 +8163,83 @@
       "target": "Org/Iridescent Church/index"
     },
     {
+      "alias": "Tally",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Tally",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "Org/The Harlequins/Providence/Tally"
+    },
+    {
+      "alias": "Verdant Holdings",
+      "heading": null,
+      "resolved": "Org/Verdant Holdings/index",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "Org/Verdant Holdings/index"
+    },
+    {
+      "alias": "Ætherion Limited",
+      "heading": null,
+      "resolved": "Org/Ætherion Limited/index",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "Org/Ætherion Limited/index"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/The Harlequins/Providence/Tally",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/The Harlequins/Providence/Tally",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Machine God",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Machine God",
+      "source": "Org/The Harlequins/Providence/Tally",
+      "target": "Org/The Harlequins/Providence/Machine God"
+    },
+    {
+      "alias": "mongrel folk",
+      "heading": null,
+      "resolved": "Bestiary/Mongrel Folk",
+      "source": "Org/The Harlequins/Providence/Tally",
+      "target": "Bestiary/Mongrel Folk"
+    },
+    {
+      "alias": "Galzu",
+      "heading": null,
+      "resolved": "People/Galzu",
+      "source": "Org/The Harlequins/Providence/Tally",
+      "target": "People/Galzu"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Org/The Harlequins/Providence/Tally",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Org/The Harlequins/Providence/Tally",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/The Harlequins/Providence/Tally",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
       "alias": "Ragged Roost",
       "heading": null,
       "resolved": "Geography/Calaria/Ragged Roost",
@@ -8252,6 +8371,20 @@
       "resolved": "Org/The Harlequins/Providence/Lifeline",
       "source": "Org/The Harlequins/Providence/index",
       "target": "Org/The Harlequins/Providence/Lifeline"
+    },
+    {
+      "alias": "Tally",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Tally",
+      "source": "Org/The Harlequins/Providence/index",
+      "target": "Org/The Harlequins/Providence/Tally"
+    },
+    {
+      "alias": "mongrel folk",
+      "heading": null,
+      "resolved": "Bestiary/Mongrel Folk",
+      "source": "Org/The Harlequins/Providence/index",
+      "target": "Bestiary/Mongrel Folk"
     },
     {
       "alias": "Providence",
@@ -9066,6 +9199,20 @@
       "target": "Org/Hildebrandt Corporation/index"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/Verdant Holdings/index",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "RunGunners",
+      "heading": null,
+      "resolved": "Org/RunGunners/index",
+      "source": "Org/Verdant Holdings/index",
+      "target": "Org/RunGunners/index"
+    },
+    {
       "alias": "Dr. Thrain",
       "heading": null,
       "resolved": "Org/Verdant Holdings/People/Dr. Thrain",
@@ -9423,6 +9570,13 @@
       "target": "Phenomena/Harmony/Voidsong"
     },
     {
+      "alias": "sentience distributor",
+      "heading": null,
+      "resolved": "Phenomena/Sentience Distributor",
+      "source": "People/Anzu",
+      "target": "Phenomena/Sentience Distributor"
+    },
+    {
       "alias": "Herald",
       "heading": null,
       "resolved": "Divinity/Ashen Pact/Herald",
@@ -9444,11 +9598,18 @@
       "target": "Divinity/Ashen Pact/Herald"
     },
     {
-      "alias": "Voidsong",
+      "alias": "Machine God",
       "heading": null,
-      "resolved": "Phenomena/Harmony/Voidsong",
+      "resolved": "Org/The Harlequins/Providence/Machine God",
       "source": "People/Anzu",
-      "target": "Phenomena/Harmony/Voidsong"
+      "target": "Org/The Harlequins/Providence/Machine God"
+    },
+    {
+      "alias": "Tally",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Tally",
+      "source": "People/Anzu",
+      "target": "Org/The Harlequins/Providence/Tally"
     },
     {
       "alias": "Roundhat Gang",
@@ -9596,6 +9757,13 @@
       "resolved": "Org/The Scale/People/Lance Vesper",
       "source": "People/Argyle",
       "target": "Org/The Scale/People/Lance Vesper"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "People/Argyle",
+      "target": "Org/Iridescent Church/index"
     },
     {
       "alias": "Undercroft",
@@ -10184,6 +10352,34 @@
       "resolved": "Org/Belvedere/index",
       "source": "People/Galzu",
       "target": "Org/Belvedere/index"
+    },
+    {
+      "alias": "Machine God",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Machine God",
+      "source": "People/Galzu",
+      "target": "Org/The Harlequins/Providence/Machine God"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "People/Galzu",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Tally",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Tally",
+      "source": "People/Galzu",
+      "target": "Org/The Harlequins/Providence/Tally"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "People/Galzu",
+      "target": "Divinity/Ashen Pact/Herald"
     },
     {
       "alias": "Undercroft",
@@ -11684,6 +11880,20 @@
       "target": "Phenomena/Hearts"
     },
     {
+      "alias": "Verdant Holdings",
+      "heading": null,
+      "resolved": "Org/Verdant Holdings/index",
+      "source": "Phenomena/Keystone",
+      "target": "Org/Verdant Holdings/index"
+    },
+    {
+      "alias": "NecroLog",
+      "heading": null,
+      "resolved": "Org/NecroLog/index",
+      "source": "Phenomena/Keystone",
+      "target": "Org/NecroLog/index"
+    },
+    {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
@@ -11983,6 +12193,20 @@
       "resolved": "Geography/Calaria/Hallia/Teller's Run/index",
       "source": "Phenomena/Radar Dishes",
       "target": "Geography/Calaria/Hallia/Teller's Run/index"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Phenomena/Sentience Distributor",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Phenomena/Sentience Distributor",
+      "target": "People/Anzu"
     },
     {
       "alias": "Calaria",
@@ -13146,16 +13370,26 @@
           "alias": "Providence",
           "heading": null,
           "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Tally",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Tally"
         }
       ],
-      "date": "2026-07-29T23:41:12-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "True Kin",
           "true kin"
         ],
         "extra": {
-          "date": "2026-07-29T23:41:12-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -14223,13 +14457,13 @@
           "target": "Divinity/The Narrative/Renge"
         }
       ],
-      "date": "2026-01-13T00:00:00-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Insuperlex"
         ],
         "extra": {
-          "date": "2026-01-13T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -14372,13 +14606,18 @@
           "alias": "Org",
           "heading": null,
           "target": "Org/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-01-13T00:00:00-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-01-13T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -20249,13 +20488,18 @@
           "alias": "Sable and Suns",
           "heading": null,
           "target": "Org/Sable and Suns/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-06-05T16:40:21-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-05T16:40:21-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -21040,11 +21284,11 @@
           "target": "Org/Iconoclasm/Eerie"
         }
       ],
-      "date": "2026-07-13T00:00:00-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-13T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -21594,13 +21838,23 @@
           "alias": "Ashen Pact",
           "heading": null,
           "target": "Divinity/Ashen Pact/index"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Machine God"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-05-07T00:00:00-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-07T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -21988,13 +22242,28 @@
           "alias": "Iridescent Church",
           "heading": null,
           "target": "Org/Iridescent Church/index"
+        },
+        {
+          "alias": "Tally",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Tally"
+        },
+        {
+          "alias": "Verdant Holdings",
+          "heading": null,
+          "target": "Org/Verdant Holdings/index"
+        },
+        {
+          "alias": "Ætherion Limited",
+          "heading": null,
+          "target": "Org/Ætherion Limited/index"
         }
       ],
-      "date": "2026-07-27T00:00:00-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-27T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -22003,6 +22272,63 @@
         "title": null
       },
       "path": "Org/The Harlequins/Providence/Machine God"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Machine God",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Machine God"
+        },
+        {
+          "alias": "mongrel folk",
+          "heading": null,
+          "target": "Bestiary/Mongrel Folk"
+        },
+        {
+          "alias": "Galzu",
+          "heading": null,
+          "target": "People/Galzu"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        }
+      ],
+      "date": "2026-08-03T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-08-03T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Heart"
+        ],
+        "title": null
+      },
+      "path": "Org/The Harlequins/Providence/Tally"
     },
     {
       "crossrefs": [
@@ -22100,13 +22426,23 @@
           "alias": "Lifeline",
           "heading": null,
           "target": "Org/The Harlequins/Providence/Lifeline"
+        },
+        {
+          "alias": "Tally",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Tally"
+        },
+        {
+          "alias": "mongrel folk",
+          "heading": null,
+          "target": "Bestiary/Mongrel Folk"
         }
       ],
-      "date": "2026-07-27T00:00:00-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-27T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -22417,11 +22753,11 @@
           "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-07-20T00:00:00-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-20T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -23137,6 +23473,16 @@
     {
       "crossrefs": [
         {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "RunGunners",
+          "heading": null,
+          "target": "Org/RunGunners/index"
+        },
+        {
           "alias": "Dr. Thrain",
           "heading": null,
           "target": "Org/Verdant Holdings/People/Dr. Thrain"
@@ -23147,11 +23493,11 @@
           "target": "Org/Hildebrandt Corporation/index"
         }
       ],
-      "date": "2026-07-13T00:00:00-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-13T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -23576,6 +23922,11 @@
           "target": "Phenomena/Harmony/Voidsong"
         },
         {
+          "alias": "sentience distributor",
+          "heading": null,
+          "target": "Phenomena/Sentience Distributor"
+        },
+        {
           "alias": "Herald",
           "heading": null,
           "target": "Divinity/Ashen Pact/Herald"
@@ -23591,9 +23942,14 @@
           "target": "Divinity/Ashen Pact/Herald"
         },
         {
-          "alias": "Voidsong",
+          "alias": "Machine God",
           "heading": null,
-          "target": "Phenomena/Harmony/Voidsong"
+          "target": "Org/The Harlequins/Providence/Machine God"
+        },
+        {
+          "alias": "Tally",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Tally"
         },
         {
           "alias": "Roundhat Gang",
@@ -23641,11 +23997,11 @@
           "target": "Aut"
         }
       ],
-      "date": "2026-07-27T00:00:00-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-27T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -23716,13 +24072,18 @@
           "alias": "Lance Vesper",
           "heading": null,
           "target": "Org/The Scale/People/Lance Vesper"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
         }
       ],
-      "date": "2026-07-20T00:00:00-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-20T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -24400,13 +24761,33 @@
           "alias": "Belvedere",
           "heading": null,
           "target": "Org/Belvedere/index"
+        },
+        {
+          "alias": "Machine God",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Machine God"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Tally",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Tally"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
         }
       ],
-      "date": "2026-05-07T00:00:00-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-07T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -26030,15 +26411,25 @@
           "alias": "Heart",
           "heading": null,
           "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Verdant Holdings",
+          "heading": null,
+          "target": "Org/Verdant Holdings/index"
+        },
+        {
+          "alias": "NecroLog",
+          "heading": null,
+          "target": "Org/NecroLog/index"
         }
       ],
-      "date": "2026-06-08T00:00:00-04:00",
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "keystones"
         ],
         "extra": {
-          "date": "2026-06-08T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -26339,12 +26730,23 @@
       "path": "Phenomena/Radar Dishes"
     },
     {
-      "crossrefs": [],
-      "date": "2025-11-04T00:00:00-04:00",
+      "crossrefs": [
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        }
+      ],
+      "date": "2026-08-03T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2025-11-04T00:00:00-04:00"
+          "date": "2026-08-03T00:00:00-04:00"
         },
         "img": null,
         "tags": [],

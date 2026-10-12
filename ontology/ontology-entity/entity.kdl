@@ -1747,6 +1747,9 @@ entity "Syrin" kind="person" page="Org/Amber Call/People/Syrin" {
     source "akasha"
     source "defs"
 }
+entity "Tally" kind="org" page="Org/The Harlequins/Providence/Tally" {
+    source "akasha"
+}
 entity "Tamara McKay" kind="person" page="Org/Protectorate/People/Tamara McKay" {
     alias "Tamara"
     source "akasha"
