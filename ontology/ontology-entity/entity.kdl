@@ -756,6 +756,9 @@ entity "Gin Soaked Rag" kind="person" page="Org/Iconoclasm/People/Gin Soaked Rag
     source "akasha"
     source "defs"
 }
+entity "Glacier" kind="place" page="Geography/Glacier" {
+    source "akasha"
+}
 entity "Glasswater" kind="place" page="Geography/Calaria/Hallia/Glasswater/index" {
     source "akasha"
 }
@@ -826,6 +829,9 @@ entity "Hearts" kind="phenomenon" page="Phenomena/Hearts" {
 }
 entity "Heir of the Plague" kind="deity" page="Divinity/Outer Gods/Heir of the Plague" {
     alias "Heir"
+    source "akasha"
+}
+entity "Hellsmith" kind="place" page="Geography/Hellsmith" {
     source "akasha"
 }
 entity "Herald" kind="deity" page="Divinity/Ashen Pact/Herald" {
@@ -1165,6 +1171,9 @@ entity "maître d'" {
 entity "meeting you, Aut" {
     alias "meeting you, Art"
     source "defs"
+}
+entity "Menagerie" kind="place" page="Geography/Menagerie" {
+    source "akasha"
 }
 entity "Menhir" kind="deity" page="Divinity/The Narrative/Menhir" {
     alias "the Menhir"
@@ -1991,6 +2000,9 @@ entity "Voice of Many" kind="org" page="Org/The Scale/Voice of Many" {
 entity "Void" kind="creature" page="Bestiary/Void" {
     alias "Hand of the Void"
     alias "Hands of the Void"
+    source "akasha"
+}
+entity "Void Atlas" kind="phenomenon" page="Phenomena/Void Atlas" {
     source "akasha"
 }
 entity "Voidheart" kind="phenomenon" page="Phenomena/Voidheart" {
