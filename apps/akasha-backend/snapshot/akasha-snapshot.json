@@ -351,6 +351,20 @@
       "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
     },
     {
+      "alias": "Pale Lantern Society",
+      "heading": null,
+      "resolved": "Org/Pale Lantern Society/index",
+      "source": "Bestiary/Undead",
+      "target": "Org/Pale Lantern Society/index"
+    },
+    {
+      "alias": "Othello",
+      "heading": null,
+      "resolved": "People/Othello",
+      "source": "Bestiary/Undead",
+      "target": "People/Othello"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Calaria/Verdant Expanse",
@@ -664,6 +678,34 @@
       "resolved": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
       "source": "Divinity/Ashen Pact/War",
       "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+    },
+    {
+      "alias": "Harlequins",
+      "heading": null,
+      "resolved": "Org/The Harlequins/index",
+      "source": "Divinity/Ashen Pact/War",
+      "target": "Org/The Harlequins/index"
+    },
+    {
+      "alias": "pilgrimage",
+      "heading": null,
+      "resolved": "Phenomena/Pilgrimage",
+      "source": "Divinity/Ashen Pact/War",
+      "target": "Phenomena/Pilgrimage"
+    },
+    {
+      "alias": "firmament",
+      "heading": null,
+      "resolved": "Phenomena/Firmament",
+      "source": "Divinity/Ashen Pact/War",
+      "target": "Phenomena/Firmament"
+    },
+    {
+      "alias": "Amber Call",
+      "heading": null,
+      "resolved": "Org/Amber Call/index",
+      "source": "Divinity/Ashen Pact/War",
+      "target": "Org/Amber Call/index"
     },
     {
       "alias": "Pyre",
@@ -4369,6 +4411,48 @@
       "target": "Org/The Harlequins/Providence"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/Alliance",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Silven Grayson",
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Silven Grayson",
+      "source": "Org/Alliance",
+      "target": "Org/Amber Call/People/Silven Grayson"
+    },
+    {
+      "alias": "Amber Call",
+      "heading": null,
+      "resolved": "Org/Amber Call/index",
+      "source": "Org/Alliance",
+      "target": "Org/Amber Call/index"
+    },
+    {
+      "alias": "Walter Stoke",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/People/Walter Stoke",
+      "source": "Org/Alliance",
+      "target": "Org/Iridescent Church/People/Walter Stoke"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/Alliance",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
+      "alias": "Giacomo's",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Giacomo's",
+      "source": "Org/Alliance",
+      "target": "Org/The Harlequins/Providence/Giacomo's"
+    },
+    {
       "alias": "Pulse",
       "heading": null,
       "resolved": "Divinity/Outer Gods/Eternal Pulse",
@@ -4535,6 +4619,41 @@
       "resolved": "Org/The Scale/index",
       "source": "Org/Amber Call/People/Silven Grayson",
       "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Giacomo's",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Giacomo's",
+      "source": "Org/Amber Call/People/Silven Grayson",
+      "target": "Org/The Harlequins/Providence/Giacomo's"
+    },
+    {
+      "alias": "Walter Stoke",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/People/Walter Stoke",
+      "source": "Org/Amber Call/People/Silven Grayson",
+      "target": "Org/Iridescent Church/People/Walter Stoke"
+    },
+    {
+      "alias": "Giannos",
+      "heading": null,
+      "resolved": "Org/Ministry of Cultural Progress/People/Giannos Hasikos",
+      "source": "Org/Amber Call/People/Silven Grayson",
+      "target": "Org/Ministry of Cultural Progress/People/Giannos Hasikos"
+    },
+    {
+      "alias": "Harlequins",
+      "heading": null,
+      "resolved": "Org/The Harlequins/index",
+      "source": "Org/Amber Call/People/Silven Grayson",
+      "target": "Org/The Harlequins/index"
+    },
+    {
+      "alias": "War",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/War",
+      "source": "Org/Amber Call/People/Silven Grayson",
+      "target": "Divinity/Ashen Pact/War"
     },
     {
       "alias": null,
@@ -6574,6 +6693,13 @@
       "target": "Phenomena/Hearts"
     },
     {
+      "alias": "Giacomo's",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Giacomo's",
+      "source": "Org/Iridescent Church/People/Walter Stoke",
+      "target": "Org/The Harlequins/Providence/Giacomo's"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Divinity/Hierophant",
@@ -7897,6 +8023,20 @@
       "target": "Org/The Harlequins/Providence"
     },
     {
+      "alias": "Egan Arithmites",
+      "heading": null,
+      "resolved": "People/Egan Arithmites",
+      "source": "Org/Singers of the Herald's Star",
+      "target": "People/Egan Arithmites"
+    },
+    {
+      "alias": "Lorandris",
+      "heading": null,
+      "resolved": "Geography/Lorandris/index",
+      "source": "Org/Singers of the Herald's Star",
+      "target": "Geography/Lorandris/index"
+    },
+    {
       "alias": "Solari Sub-surface",
       "heading": null,
       "resolved": "Org/Solari Sub-surface/index",
@@ -8128,6 +8268,48 @@
       "target": "Org/Iconoclasm/People/Illmari Vaino"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/The Harlequins/Providence/Giacomo's",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Silven Grayson",
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Silven Grayson",
+      "source": "Org/The Harlequins/Providence/Giacomo's",
+      "target": "Org/Amber Call/People/Silven Grayson"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/The Harlequins/Providence/Helm",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Giacomo's",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Giacomo's",
+      "source": "Org/The Harlequins/Providence/Helm",
+      "target": "Org/The Harlequins/Providence/Giacomo's"
+    },
+    {
+      "alias": "Belvedere",
+      "heading": null,
+      "resolved": "Org/Belvedere/index",
+      "source": "Org/The Harlequins/Providence/Helm",
+      "target": "Org/Belvedere/index"
+    },
+    {
+      "alias": "Grayson",
+      "heading": null,
+      "resolved": "Org/Amber Call/People/Silven Grayson",
+      "source": "Org/The Harlequins/Providence/Helm",
+      "target": "Org/Amber Call/People/Silven Grayson"
+    },
+    {
       "alias": "Heart",
       "heading": null,
       "resolved": "Phenomena/Hearts",
@@ -8324,6 +8506,13 @@
       "target": "Org/The Harlequins/People/The Master of Ceremonies"
     },
     {
+      "alias": "Giacomo's",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Giacomo's",
+      "source": "Org/The Harlequins/Providence/index",
+      "target": "Org/The Harlequins/Providence/Giacomo's"
+    },
+    {
       "alias": "orts",
       "heading": null,
       "resolved": "Bestiary/Fiends",
@@ -8450,6 +8639,20 @@
       "target": "Bestiary/Mongrel Folk"
     },
     {
+      "alias": "Giacomo's",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Giacomo's",
+      "source": "Org/The Harlequins/Providence/index",
+      "target": "Org/The Harlequins/Providence/Giacomo's"
+    },
+    {
+      "alias": "Amber Call",
+      "heading": null,
+      "resolved": "Org/Amber Call/index",
+      "source": "Org/The Harlequins/Providence/index",
+      "target": "Org/Amber Call/index"
+    },
+    {
       "alias": "Providence",
       "heading": null,
       "resolved": "Org/The Harlequins/Providence/index",
@@ -8497,6 +8700,20 @@
       "resolved": "Org/The Harlequins/People/Chuck",
       "source": "Org/The Harlequins/index",
       "target": "Org/The Harlequins/People/Chuck"
+    },
+    {
+      "alias": "War",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/War",
+      "source": "Org/The Harlequins/index",
+      "target": "Divinity/Ashen Pact/War"
+    },
+    {
+      "alias": "Amber Call",
+      "heading": null,
+      "resolved": "Org/Amber Call/index",
+      "source": "Org/The Harlequins/index",
+      "target": "Org/Amber Call/index"
     },
     {
       "alias": "Heart",
@@ -9745,6 +9962,20 @@
       "target": "Aut"
     },
     {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "People/Anzu",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Egan",
+      "heading": null,
+      "resolved": "People/Egan Arithmites",
+      "source": "People/Anzu",
+      "target": "People/Egan Arithmites"
+    },
+    {
       "alias": "Iconoclasm",
       "heading": null,
       "resolved": "Org/Iconoclasm/index",
@@ -10240,6 +10471,69 @@
       "resolved": "Org/Iconoclasm/index",
       "source": "People/Donnie",
       "target": "Org/Iconoclasm/index"
+    },
+    {
+      "alias": "Lorandris",
+      "heading": null,
+      "resolved": "Geography/Lorandris/index",
+      "source": "People/Egan Arithmites",
+      "target": "Geography/Lorandris/index"
+    },
+    {
+      "alias": "the Compelled",
+      "heading": null,
+      "resolved": "Divinity/Outer Gods/The Compelled",
+      "source": "People/Egan Arithmites",
+      "target": "Divinity/Outer Gods/The Compelled"
+    },
+    {
+      "alias": "Singers of the Herald's Star",
+      "heading": null,
+      "resolved": "Org/Singers of the Herald's Star",
+      "source": "People/Egan Arithmites",
+      "target": "Org/Singers of the Herald's Star"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "People/Egan Arithmites",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Verdant Holdings",
+      "heading": null,
+      "resolved": "Org/Verdant Holdings/index",
+      "source": "People/Egan Arithmites",
+      "target": "Org/Verdant Holdings/index"
+    },
+    {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "People/Egan Arithmites",
+      "target": "People/Argyle"
+    },
+    {
+      "alias": "Ashen Pact",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/index",
+      "source": "People/Egan Arithmites",
+      "target": "Divinity/Ashen Pact/index"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "People/Egan Arithmites",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "People/Egan Arithmites",
+      "target": "Divinity/Ashen Pact/Herald"
     },
     {
       "alias": "Pyrelight",
@@ -11479,6 +11773,20 @@
       "resolved": "Geography/Istria/Iomenei/index",
       "source": "Phenomena/Engine Heart",
       "target": "Geography/Istria/Iomenei/index"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Phenomena/Engine Heart",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Machine God",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Machine God",
+      "source": "Phenomena/Engine Heart",
+      "target": "Org/The Harlequins/Providence/Machine God"
     },
     {
       "alias": null,
@@ -13227,16 +13535,26 @@
           "alias": "Detective Brooks",
           "heading": null,
           "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks"
+        },
+        {
+          "alias": "Pale Lantern Society",
+          "heading": null,
+          "target": "Org/Pale Lantern Society/index"
+        },
+        {
+          "alias": "Othello",
+          "heading": null,
+          "target": "People/Othello"
         }
       ],
-      "date": "2026-01-06T00:00:00-04:00",
+      "date": "2026-08-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Cairn White",
           "Lovelorn"
         ],
         "extra": {
-          "date": "2026-01-06T00:00:00-04:00"
+          "date": "2026-08-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -13604,13 +13922,33 @@
           "alias": "Tywelwyn",
           "heading": null,
           "target": "Org/Roundhat Gang/People/Tywelwyn Leatherhide"
+        },
+        {
+          "alias": "Harlequins",
+          "heading": null,
+          "target": "Org/The Harlequins/index"
+        },
+        {
+          "alias": "pilgrimage",
+          "heading": null,
+          "target": "Phenomena/Pilgrimage"
+        },
+        {
+          "alias": "firmament",
+          "heading": null,
+          "target": "Phenomena/Firmament"
+        },
+        {
+          "alias": "Amber Call",
+          "heading": null,
+          "target": "Org/Amber Call/index"
         }
       ],
-      "date": "2026-07-29T23:41:12-04:00",
+      "date": "2026-08-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-29T23:41:12-04:00"
+          "date": "2026-08-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -17653,13 +17991,13 @@
           "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2026-07-13T00:00:00-04:00",
+      "date": "2026-08-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Kadou"
         ],
         "extra": {
-          "date": "2026-07-13T00:00:00-04:00"
+          "date": "2026-08-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -17785,13 +18123,43 @@
           "alias": "Providence",
           "heading": null,
           "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Silven Grayson",
+          "heading": null,
+          "target": "Org/Amber Call/People/Silven Grayson"
+        },
+        {
+          "alias": "Amber Call",
+          "heading": null,
+          "target": "Org/Amber Call/index"
+        },
+        {
+          "alias": "Walter Stoke",
+          "heading": null,
+          "target": "Org/Iridescent Church/People/Walter Stoke"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        },
+        {
+          "alias": "Giacomo's",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Giacomo's"
         }
       ],
-      "date": "2026-08-17T00:00:00-04:00",
+      "date": "2026-08-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-17T00:00:00-04:00"
+          "date": "2026-08-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -17996,15 +18364,40 @@
           "alias": "Scale",
           "heading": null,
           "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Giacomo's",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Giacomo's"
+        },
+        {
+          "alias": "Walter Stoke",
+          "heading": null,
+          "target": "Org/Iridescent Church/People/Walter Stoke"
+        },
+        {
+          "alias": "Giannos",
+          "heading": null,
+          "target": "Org/Ministry of Cultural Progress/People/Giannos Hasikos"
+        },
+        {
+          "alias": "Harlequins",
+          "heading": null,
+          "target": "Org/The Harlequins/index"
+        },
+        {
+          "alias": "War",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/War"
         }
       ],
-      "date": "2026-06-08T00:00:00-04:00",
+      "date": "2026-08-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Silven"
         ],
         "extra": {
-          "date": "2026-06-08T00:00:00-04:00"
+          "date": "2026-08-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -20358,15 +20751,20 @@
           "alias": "Heart",
           "heading": null,
           "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Giacomo's",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Giacomo's"
         }
       ],
-      "date": "2026-06-05T16:40:21-04:00",
+      "date": "2026-08-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Walter"
         ],
         "extra": {
-          "date": "2026-06-05T16:40:21-04:00"
+          "date": "2026-08-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -22009,13 +22407,23 @@
           "alias": "Providence",
           "heading": null,
           "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Egan Arithmites",
+          "heading": null,
+          "target": "People/Egan Arithmites"
+        },
+        {
+          "alias": "Lorandris",
+          "heading": null,
+          "target": "Geography/Lorandris/index"
         }
       ],
-      "date": "2026-08-03T00:00:00-04:00",
+      "date": "2026-08-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-03T00:00:00-04:00"
+          "date": "2026-08-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -22328,6 +22736,66 @@
     {
       "crossrefs": [
         {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Silven Grayson",
+          "heading": null,
+          "target": "Org/Amber Call/People/Silven Grayson"
+        }
+      ],
+      "date": "2026-08-24T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-08-24T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/The Harlequins/Providence/Giacomo's"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Giacomo's",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Giacomo's"
+        },
+        {
+          "alias": "Belvedere",
+          "heading": null,
+          "target": "Org/Belvedere/index"
+        },
+        {
+          "alias": "Grayson",
+          "heading": null,
+          "target": "Org/Amber Call/People/Silven Grayson"
+        }
+      ],
+      "date": "2026-08-24T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-08-24T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/The Harlequins/Providence/Helm"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Heart",
           "heading": null,
           "target": "Phenomena/Hearts"
@@ -22430,11 +22898,11 @@
           "target": "Phenomena/Infinite Horizon"
         }
       ],
-      "date": "2026-08-17T00:00:00-04:00",
+      "date": "2026-08-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-17T00:00:00-04:00"
+          "date": "2026-08-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -22517,6 +22985,11 @@
           "alias": "the Master of Ceremonies",
           "heading": null,
           "target": "Org/The Harlequins/People/The Master of Ceremonies"
+        },
+        {
+          "alias": "Giacomo's",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Giacomo's"
         },
         {
           "alias": "orts",
@@ -22607,13 +23080,23 @@
           "alias": "mongrel folk",
           "heading": null,
           "target": "Bestiary/Mongrel Folk"
+        },
+        {
+          "alias": "Giacomo's",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Giacomo's"
+        },
+        {
+          "alias": "Amber Call",
+          "heading": null,
+          "target": "Org/Amber Call/index"
         }
       ],
-      "date": "2026-08-17T00:00:00-04:00",
+      "date": "2026-08-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-17T00:00:00-04:00"
+          "date": "2026-08-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -22657,13 +23140,23 @@
           "alias": "Chuck",
           "heading": null,
           "target": "Org/The Harlequins/People/Chuck"
+        },
+        {
+          "alias": "War",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/War"
+        },
+        {
+          "alias": "Amber Call",
+          "heading": null,
+          "target": "Org/Amber Call/index"
         }
       ],
-      "date": "2026-08-17T00:00:00-04:00",
+      "date": "2026-08-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-17T00:00:00-04:00"
+          "date": "2026-08-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -24171,13 +24664,23 @@
           "alias": null,
           "heading": null,
           "target": "Aut"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Egan",
+          "heading": null,
+          "target": "People/Egan Arithmites"
         }
       ],
-      "date": "2026-08-03T00:00:00-04:00",
+      "date": "2026-08-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-03T00:00:00-04:00"
+          "date": "2026-08-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -24707,6 +25210,66 @@
         "title": null
       },
       "path": "People/Donnie"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Lorandris",
+          "heading": null,
+          "target": "Geography/Lorandris/index"
+        },
+        {
+          "alias": "the Compelled",
+          "heading": null,
+          "target": "Divinity/Outer Gods/The Compelled"
+        },
+        {
+          "alias": "Singers of the Herald's Star",
+          "heading": null,
+          "target": "Org/Singers of the Herald's Star"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Verdant Holdings",
+          "heading": null,
+          "target": "Org/Verdant Holdings/index"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
+        },
+        {
+          "alias": "Ashen Pact",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/index"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        }
+      ],
+      "date": "2026-08-24T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-08-24T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "People/Egan Arithmites"
     },
     {
       "crossrefs": [
@@ -26104,16 +26667,26 @@
           "alias": "Iomenei",
           "heading": null,
           "target": "Geography/Istria/Iomenei/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Machine God",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Machine God"
         }
       ],
-      "date": "2026-02-10T00:00:00-04:00",
+      "date": "2026-08-24T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "engine hearts",
           "Engine Hearts"
         ],
         "extra": {
-          "date": "2026-02-10T00:00:00-04:00"
+          "date": "2026-08-24T00:00:00-04:00"
         },
         "img": null,
         "tags": [],

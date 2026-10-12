@@ -736,6 +736,9 @@ entity "Ghosts of Raelion" kind="org" page="Org/Ghosts of Raelion" {
     source "akasha"
     source "defs"
 }
+entity "Giacomo's" kind="org" page="Org/The Harlequins/Providence/Giacomo's" {
+    source "akasha"
+}
 entity "Giannos" {
     alias "Janus"
     alias "Giannis"
@@ -832,6 +835,9 @@ entity "Heir of the Plague" kind="deity" page="Divinity/Outer Gods/Heir of the P
     source "akasha"
 }
 entity "Hellsmith" kind="place" page="Geography/Hellsmith" {
+    source "akasha"
+}
+entity "Helm" kind="org" page="Org/The Harlequins/Providence/Helm" {
     source "akasha"
 }
 entity "Herald" kind="deity" page="Divinity/Ashen Pact/Herald" {
