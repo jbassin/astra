@@ -624,6 +624,41 @@
       "target": "Org/The Harlequins/Providence/Tally"
     },
     {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "People/Argyle"
+    },
+    {
+      "alias": "Egan",
+      "heading": null,
+      "resolved": "People/Egan Arithmites",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "People/Egan Arithmites"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "Egan",
+      "heading": null,
+      "resolved": "People/Egan Arithmites",
+      "source": "Divinity/Ashen Pact/Herald",
+      "target": "People/Egan Arithmites"
+    },
+    {
       "alias": "Gas-n-Go",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Widdershins/Gas-n-Go",
@@ -9941,6 +9976,20 @@
       "target": "Org/Iconoclasm/index"
     },
     {
+      "alias": "Argyle",
+      "heading": null,
+      "resolved": "People/Argyle",
+      "source": "People/Anzu",
+      "target": "People/Argyle"
+    },
+    {
+      "alias": "Illmari",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/People/Illmari Vaino",
+      "source": "People/Anzu",
+      "target": "Org/Iconoclasm/People/Illmari Vaino"
+    },
+    {
       "alias": "Othello",
       "heading": null,
       "resolved": "People/Othello",
@@ -10212,6 +10261,34 @@
       "resolved": "Org/Iridescent Church/index",
       "source": "People/Argyle",
       "target": "Org/Iridescent Church/index"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "People/Argyle",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Illmari",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/People/Illmari Vaino",
+      "source": "People/Argyle",
+      "target": "Org/Iconoclasm/People/Illmari Vaino"
+    },
+    {
+      "alias": "Egan",
+      "heading": null,
+      "resolved": "People/Egan Arithmites",
+      "source": "People/Argyle",
+      "target": "People/Egan Arithmites"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "People/Argyle",
+      "target": "Divinity/Ashen Pact/Herald"
     },
     {
       "alias": "Undercroft",
@@ -10648,13 +10725,6 @@
       "target": "Org/The Harlequins/Providence"
     },
     {
-      "alias": "Verdant Holdings",
-      "heading": null,
-      "resolved": "Org/Verdant Holdings/index",
-      "source": "People/Egan Arithmites",
-      "target": "Org/Verdant Holdings/index"
-    },
-    {
       "alias": "Argyle",
       "heading": null,
       "resolved": "People/Argyle",
@@ -10669,6 +10739,13 @@
       "target": "Divinity/Ashen Pact/index"
     },
     {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "People/Egan Arithmites",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
       "alias": "Anzu",
       "heading": null,
       "resolved": "People/Anzu",
@@ -10676,11 +10753,11 @@
       "target": "People/Anzu"
     },
     {
-      "alias": "Herald",
+      "alias": "Voidsong",
       "heading": null,
-      "resolved": "Divinity/Ashen Pact/Herald",
+      "resolved": "Phenomena/Harmony/Voidsong",
       "source": "People/Egan Arithmites",
-      "target": "Divinity/Ashen Pact/Herald"
+      "target": "Phenomena/Harmony/Voidsong"
     },
     {
       "alias": "Pyrelight",
@@ -10912,6 +10989,20 @@
       "resolved": "Divinity/Ashen Pact/Herald",
       "source": "People/Galzu",
       "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "People/Galzu",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "People/Galzu",
+      "target": "People/Anzu"
     },
     {
       "alias": "Undercroft",
@@ -12298,6 +12389,27 @@
       "resolved": "Org/The Harlequins/Providence/index",
       "source": "Phenomena/Harmony/Voidsong",
       "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Phenomena/Harmony/Voidsong",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Egan",
+      "heading": null,
+      "resolved": "People/Egan Arithmites",
+      "source": "Phenomena/Harmony/Voidsong",
+      "target": "People/Egan Arithmites"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Phenomena/Harmony/Voidsong",
+      "target": "Divinity/Ashen Pact/Herald"
     },
     {
       "alias": null,
@@ -14079,16 +14191,41 @@
           "alias": "Tally",
           "heading": null,
           "target": "Org/The Harlequins/Providence/Tally"
+        },
+        {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
+        },
+        {
+          "alias": "Egan",
+          "heading": null,
+          "target": "People/Egan Arithmites"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "Egan",
+          "heading": null,
+          "target": "People/Egan Arithmites"
         }
       ],
-      "date": "2026-08-03T00:00:00-04:00",
+      "date": "2026-09-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "True Kin",
           "true kin"
         ],
         "extra": {
-          "date": "2026-08-03T00:00:00-04:00"
+          "date": "2026-09-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -24986,6 +25123,16 @@
           "target": "Org/Iconoclasm/index"
         },
         {
+          "alias": "Argyle",
+          "heading": null,
+          "target": "People/Argyle"
+        },
+        {
+          "alias": "Illmari",
+          "heading": null,
+          "target": "Org/Iconoclasm/People/Illmari Vaino"
+        },
+        {
           "alias": "Othello",
           "heading": null,
           "target": "People/Othello"
@@ -25116,11 +25263,11 @@
           "target": "People/Egan Arithmites"
         }
       ],
-      "date": "2026-08-24T00:00:00-04:00",
+      "date": "2026-09-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-24T00:00:00-04:00"
+          "date": "2026-09-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -25196,13 +25343,33 @@
           "alias": "Iridescent Church",
           "heading": null,
           "target": "Org/Iridescent Church/index"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Illmari",
+          "heading": null,
+          "target": "Org/Iconoclasm/People/Illmari Vaino"
+        },
+        {
+          "alias": "Egan",
+          "heading": null,
+          "target": "People/Egan Arithmites"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
         }
       ],
-      "date": "2026-08-03T00:00:00-04:00",
+      "date": "2026-09-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-03T00:00:00-04:00"
+          "date": "2026-09-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -25674,11 +25841,6 @@
           "target": "Org/The Harlequins/Providence"
         },
         {
-          "alias": "Verdant Holdings",
-          "heading": null,
-          "target": "Org/Verdant Holdings/index"
-        },
-        {
           "alias": "Argyle",
           "heading": null,
           "target": "People/Argyle"
@@ -25689,21 +25851,26 @@
           "target": "Divinity/Ashen Pact/index"
         },
         {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
           "alias": "Anzu",
           "heading": null,
           "target": "People/Anzu"
         },
         {
-          "alias": "Herald",
+          "alias": "Voidsong",
           "heading": null,
-          "target": "Divinity/Ashen Pact/Herald"
+          "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2026-08-24T00:00:00-04:00",
+      "date": "2026-09-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-24T00:00:00-04:00"
+          "date": "2026-09-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -25992,13 +26159,23 @@
           "alias": "Herald",
           "heading": null,
           "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
         }
       ],
-      "date": "2026-08-03T00:00:00-04:00",
+      "date": "2026-09-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-03T00:00:00-04:00"
+          "date": "2026-09-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -27526,13 +27703,28 @@
           "alias": "Providence",
           "heading": null,
           "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Egan",
+          "heading": null,
+          "target": "People/Egan Arithmites"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
         }
       ],
-      "date": "2026-08-17T00:00:00-04:00",
+      "date": "2026-09-07T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-17T00:00:00-04:00"
+          "date": "2026-09-07T00:00:00-04:00"
         },
         "img": null,
         "tags": [
