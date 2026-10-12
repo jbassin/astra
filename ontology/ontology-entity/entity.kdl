@@ -1801,6 +1801,10 @@ entity "The Crowded Flea" kind="place" page="Geography/Calaria/Hallia/Sableclutc
 entity "The Deep" kind="deity" page="Divinity/Unknown Entities/The Deep" {
     source "akasha"
 }
+entity "The End" kind="phenomenon" page="Phenomena/The End" {
+    alias "the godkiller"
+    source "akasha"
+}
 entity "The Eye" kind="deity" page="Divinity/The Eye" {
     source "akasha"
 }

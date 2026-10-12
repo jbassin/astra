@@ -477,6 +477,20 @@
       "target": "Org/The Scale/index"
     },
     {
+      "alias": "Voidheart",
+      "heading": null,
+      "resolved": "Phenomena/Voidheart",
+      "source": "Bestiary/Void",
+      "target": "Phenomena/Voidheart"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Bestiary/Void",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
       "alias": "Roundhat Gang",
       "heading": null,
       "resolved": "Org/Roundhat Gang/index",
@@ -1394,6 +1408,13 @@
       "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
     },
     {
+      "alias": "the Menhir",
+      "heading": null,
+      "resolved": "Divinity/The Narrative/Menhir",
+      "source": "Divinity/The Narrative/Aut",
+      "target": "Divinity/The Narrative/Menhir"
+    },
+    {
       "alias": "Master Grayson",
       "heading": null,
       "resolved": "Org/Amber Call/People/Benjamin Grayson",
@@ -1574,6 +1595,20 @@
       "resolved": "Divinity/The Narrative/Insuperlex",
       "source": "Divinity/The Narrative/Menhir",
       "target": "Divinity/The Narrative/Insuperlex"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Divinity/The Narrative/Menhir",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "The End",
+      "heading": null,
+      "resolved": "Phenomena/The End",
+      "source": "Divinity/The Narrative/Menhir",
+      "target": "Phenomena/The End"
     },
     {
       "alias": null,
@@ -4327,6 +4362,13 @@
       "target": "People/Argyle"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/Alliance",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
       "alias": "Pulse",
       "heading": null,
       "resolved": "Divinity/Outer Gods/Eternal Pulse",
@@ -5697,6 +5739,13 @@
       "resolved": "Org/Radiant Arms/index",
       "source": "Org/Iconoclasm/Eerie",
       "target": "Org/Radiant Arms/index"
+    },
+    {
+      "alias": "Voidheart",
+      "heading": null,
+      "resolved": "Phenomena/Voidheart",
+      "source": "Org/Iconoclasm/Eerie",
+      "target": "Phenomena/Voidheart"
     },
     {
       "alias": "Anouk",
@@ -8184,6 +8233,20 @@
       "target": "Org/Ætherion Limited/index"
     },
     {
+      "alias": "Tally",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Tally",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "Org/The Harlequins/Providence/Tally"
+    },
+    {
+      "alias": "horizon",
+      "heading": null,
+      "resolved": "Phenomena/Infinite Horizon",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "Phenomena/Infinite Horizon"
+    },
+    {
       "alias": "Heart",
       "heading": null,
       "resolved": "Phenomena/Hearts",
@@ -8427,6 +8490,13 @@
       "resolved": "Org/The Harlequins/People/Ocelith",
       "source": "Org/The Harlequins/index",
       "target": "Org/The Harlequins/People/Ocelith"
+    },
+    {
+      "alias": "Chuck",
+      "heading": null,
+      "resolved": "Org/The Harlequins/People/Chuck",
+      "source": "Org/The Harlequins/index",
+      "target": "Org/The Harlequins/People/Chuck"
     },
     {
       "alias": "Heart",
@@ -9857,6 +9927,13 @@
       "target": "Aut"
     },
     {
+      "alias": "Menhir",
+      "heading": null,
+      "resolved": "Divinity/The Narrative/Menhir",
+      "source": "People/Benny",
+      "target": "Divinity/The Narrative/Menhir"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Black and White/Pharos",
@@ -10541,6 +10618,13 @@
       "resolved": "Geography/Black and White/Pharos",
       "source": "People/Johnny",
       "target": "Pharos"
+    },
+    {
+      "alias": "Menhir",
+      "heading": null,
+      "resolved": "Divinity/The Narrative/Menhir",
+      "source": "People/Johnny",
+      "target": "Divinity/The Narrative/Menhir"
     },
     {
       "alias": "Cunning Man",
@@ -11642,6 +11726,27 @@
       "target": "Geography/Brithwyn/index"
     },
     {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Phenomena/Harmony/Voidsong",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Giant",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Giant",
+      "source": "Phenomena/Harmony/Voidsong",
+      "target": "Divinity/Ashen Pact/Giant"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Phenomena/Harmony/Voidsong",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Færrin",
@@ -12251,6 +12356,20 @@
       "target": "Geography/Star 221,325"
     },
     {
+      "alias": "Menhir",
+      "heading": null,
+      "resolved": "Divinity/The Narrative/Menhir",
+      "source": "Phenomena/The End",
+      "target": "Divinity/The Narrative/Menhir"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Phenomena/The End",
+      "target": "People/Anzu"
+    },
+    {
       "alias": "Friends of Aut",
       "heading": null,
       "resolved": "Org/Friends of Aut",
@@ -12361,6 +12480,13 @@
       "resolved": "Org/The Harlequins/Providence/index",
       "source": "Phenomena/Voidheart",
       "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Eerie",
+      "heading": null,
+      "resolved": "Org/Iconoclasm/Eerie",
+      "source": "Phenomena/Voidheart",
+      "target": "Org/Iconoclasm/Eerie"
     },
     {
       "alias": "Eerie",
@@ -13232,16 +13358,26 @@
           "alias": "the Scale",
           "heading": null,
           "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Voidheart",
+          "heading": null,
+          "target": "Phenomena/Voidheart"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-06-08T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Hand of the Void",
           "Hands of the Void"
         ],
         "extra": {
-          "date": "2026-06-08T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -14322,6 +14458,11 @@
           "target": "Geography/Calaria/Hallia/Sableclutch/The Crowded Flea"
         },
         {
+          "alias": "the Menhir",
+          "heading": null,
+          "target": "Divinity/The Narrative/Menhir"
+        },
+        {
           "alias": "Master Grayson",
           "heading": null,
           "target": "Org/Amber Call/People/Benjamin Grayson"
@@ -14422,11 +14563,11 @@
           "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2026-06-05T16:40:21-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-05T16:40:21-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": "https://i.imgur.com/COpKANE.jpeg",
         "tags": [],
@@ -14457,13 +14598,13 @@
           "target": "Divinity/The Narrative/Renge"
         }
       ],
-      "date": "2026-08-03T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Insuperlex"
         ],
         "extra": {
-          "date": "2026-08-03T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -14482,16 +14623,26 @@
           "alias": "Insuperlex",
           "heading": null,
           "target": "Divinity/The Narrative/Insuperlex"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "The End",
+          "heading": null,
+          "target": "Phenomena/The End"
         }
       ],
-      "date": "2026-01-13T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "the Menhir",
           "Menhir"
         ],
         "extra": {
-          "date": "2026-01-13T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -14613,11 +14764,11 @@
           "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-08-03T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-03T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -17629,13 +17780,18 @@
           "alias": "Argyle",
           "heading": null,
           "target": "People/Argyle"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-07-13T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-13T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -19277,16 +19433,21 @@
           "alias": "Radiant Arms",
           "heading": null,
           "target": "Org/Radiant Arms/index"
+        },
+        {
+          "alias": "Voidheart",
+          "heading": null,
+          "target": "Phenomena/Voidheart"
         }
       ],
-      "date": "2026-07-13T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "the Ear that Hears the Truth",
           "Ear that Hears the Truth"
         ],
         "extra": {
-          "date": "2026-07-13T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -22033,11 +22194,11 @@
           "target": "Bestiary/Fiends"
         }
       ],
-      "date": "2026-06-18T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-18T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -22078,13 +22239,13 @@
           "target": "People/Johnny"
         }
       ],
-      "date": "2026-06-18T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Butler"
         ],
         "extra": {
-          "date": "2026-06-18T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -22257,13 +22418,23 @@
           "alias": "Ætherion Limited",
           "heading": null,
           "target": "Org/Ætherion Limited/index"
+        },
+        {
+          "alias": "Tally",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Tally"
+        },
+        {
+          "alias": "horizon",
+          "heading": null,
+          "target": "Phenomena/Infinite Horizon"
         }
       ],
-      "date": "2026-08-03T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-03T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -22438,11 +22609,11 @@
           "target": "Bestiary/Mongrel Folk"
         }
       ],
-      "date": "2026-08-03T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-03T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -22481,13 +22652,18 @@
           "alias": "Ocelith",
           "heading": null,
           "target": "Org/The Harlequins/People/Ocelith"
+        },
+        {
+          "alias": "Chuck",
+          "heading": null,
+          "target": "Org/The Harlequins/People/Chuck"
         }
       ],
-      "date": "2026-06-22T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-22T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -24176,6 +24352,11 @@
           "target": "Aut"
         },
         {
+          "alias": "Menhir",
+          "heading": null,
+          "target": "Divinity/The Narrative/Menhir"
+        },
+        {
           "alias": null,
           "heading": null,
           "target": "Pharos"
@@ -24211,11 +24392,11 @@
           "target": "Geography/Calaria/Eilebrin Observatory"
         }
       ],
-      "date": "2026-07-20T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-20T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -24981,6 +25162,11 @@
           "target": "Pharos"
         },
         {
+          "alias": "Menhir",
+          "heading": null,
+          "target": "Divinity/The Narrative/Menhir"
+        },
+        {
           "alias": "Cunning Man",
           "heading": null,
           "target": "People/Sharp the Cunning Man"
@@ -25036,11 +25222,11 @@
           "target": "Geography/Calaria/Hallia/Teller's Run/index"
         }
       ],
-      "date": "2026-05-07T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-07T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -26161,13 +26347,28 @@
           "alias": "Brithwyn",
           "heading": null,
           "target": "Geography/Brithwyn/index"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Giant",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Giant"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-07-20T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-20T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -26831,6 +27032,33 @@
     {
       "crossrefs": [
         {
+          "alias": "Menhir",
+          "heading": null,
+          "target": "Divinity/The Narrative/Menhir"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        }
+      ],
+      "date": "2026-08-17T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "the godkiller"
+        ],
+        "extra": {
+          "date": "2026-08-17T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Phenomena/The End"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Friends of Aut",
           "heading": null,
           "target": "Org/Friends of Aut"
@@ -26944,15 +27172,20 @@
           "alias": "Eerie",
           "heading": null,
           "target": "Org/Iconoclasm/Eerie"
+        },
+        {
+          "alias": "Eerie",
+          "heading": null,
+          "target": "Org/Iconoclasm/Eerie"
         }
       ],
-      "date": "2026-06-08T00:00:00-04:00",
+      "date": "2026-08-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Voidheart"
         ],
         "extra": {
-          "date": "2026-06-08T00:00:00-04:00"
+          "date": "2026-08-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
