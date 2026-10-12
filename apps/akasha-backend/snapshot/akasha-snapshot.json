@@ -22,6 +22,20 @@
       "target": "Geography/Calaria/Wrenford"
     },
     {
+      "alias": "Galzu",
+      "heading": null,
+      "resolved": "People/Galzu",
+      "source": "Bestiary/Beasts",
+      "target": "People/Galzu"
+    },
+    {
+      "alias": "dead Heart",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Tally",
+      "source": "Bestiary/Beasts",
+      "target": "Org/The Harlequins/Providence/Tally"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Calaria/Verdant Expanse",
@@ -41,6 +55,41 @@
       "resolved": "Org/The Harlequins/Providence/index",
       "source": "Bestiary/Celestials",
       "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Bestiary/Celestials",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Tali",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Tali",
+      "source": "Bestiary/Celestials",
+      "target": "Org/The Harlequins/Providence/Tali"
+    },
+    {
+      "alias": "Chapel of the Six",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Chapel of the Six",
+      "source": "Bestiary/Celestials",
+      "target": "Org/The Harlequins/Providence/Chapel of the Six"
+    },
+    {
+      "alias": "Galzu",
+      "heading": null,
+      "resolved": "People/Galzu",
+      "source": "Bestiary/Celestials",
+      "target": "People/Galzu"
+    },
+    {
+      "alias": "Egan",
+      "heading": null,
+      "resolved": "People/Egan Arithmites",
+      "source": "Bestiary/Celestials",
+      "target": "People/Egan Arithmites"
     },
     {
       "alias": "Gloaming Codex",
@@ -8457,6 +8506,48 @@
       "target": "Org/Iconoclasm/People/Illmari Vaino"
     },
     {
+      "alias": "Tali",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Tali",
+      "source": "Org/The Harlequins/Providence/Chapel of the Six",
+      "target": "Org/The Harlequins/Providence/Tali"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/The Harlequins/Providence/Chapel of the Six",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Færrin",
+      "heading": null,
+      "resolved": "Geography/Færrin",
+      "source": "Org/The Harlequins/Providence/Chapel of the Six",
+      "target": "Geography/Færrin"
+    },
+    {
+      "alias": "Aurelia",
+      "heading": null,
+      "resolved": "Divinity/Hierophant",
+      "source": "Org/The Harlequins/Providence/Chapel of the Six",
+      "target": "Divinity/Hierophant"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Org/The Harlequins/Providence/Chapel of the Six",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Galzu",
+      "heading": null,
+      "resolved": "People/Galzu",
+      "source": "Org/The Harlequins/Providence/Chapel of the Six",
+      "target": "People/Galzu"
+    },
+    {
       "alias": "Providence",
       "heading": null,
       "resolved": "Org/The Harlequins/Providence/index",
@@ -8623,6 +8714,48 @@
       "resolved": "Phenomena/Infinite Horizon",
       "source": "Org/The Harlequins/Providence/Machine God",
       "target": "Phenomena/Infinite Horizon"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/The Harlequins/Providence/Tali",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "mongrel folk",
+      "heading": null,
+      "resolved": "Bestiary/Mongrel Folk",
+      "source": "Org/The Harlequins/Providence/Tali",
+      "target": "Bestiary/Mongrel Folk"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Org/The Harlequins/Providence/Tali",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Singers of the Herald's Star",
+      "heading": null,
+      "resolved": "Org/Singers of the Herald's Star",
+      "source": "Org/The Harlequins/Providence/Tali",
+      "target": "Org/Singers of the Herald's Star"
+    },
+    {
+      "alias": "Chapel of the Six",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Chapel of the Six",
+      "source": "Org/The Harlequins/Providence/Tali",
+      "target": "Org/The Harlequins/Providence/Chapel of the Six"
+    },
+    {
+      "alias": "Tally",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Tally",
+      "source": "Org/The Harlequins/Providence/Tali",
+      "target": "Org/The Harlequins/Providence/Tally"
     },
     {
       "alias": "Heart",
@@ -10977,13 +11110,6 @@
       "target": "Org/Belvedere/index"
     },
     {
-      "alias": "Machine God",
-      "heading": null,
-      "resolved": "Org/The Harlequins/Providence/Machine God",
-      "source": "People/Galzu",
-      "target": "Org/The Harlequins/Providence/Machine God"
-    },
-    {
       "alias": "Providence",
       "heading": null,
       "resolved": "Org/The Harlequins/Providence/index",
@@ -10998,11 +11124,11 @@
       "target": "Org/The Harlequins/Providence/Tally"
     },
     {
-      "alias": "Herald",
+      "alias": "Egan",
       "heading": null,
-      "resolved": "Divinity/Ashen Pact/Herald",
+      "resolved": "People/Egan Arithmites",
       "source": "People/Galzu",
-      "target": "Divinity/Ashen Pact/Herald"
+      "target": "People/Egan Arithmites"
     },
     {
       "alias": "Herald",
@@ -13425,21 +13551,32 @@
           "target": "Geography/Calaria/Wrenford"
         },
         {
+          "alias": "Galzu",
+          "heading": null,
+          "target": "People/Galzu"
+        },
+        {
+          "alias": "dead Heart",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Tally"
+        },
+        {
           "alias": null,
           "heading": null,
           "target": "Verdant Expanse"
         }
       ],
-      "date": "2025-11-18T00:00:00-04:00",
+      "date": "2026-10-01T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Cave Serpent",
           "Chorister Bird",
           "Glide Ape",
+          "Tallyhunt",
           "Vine Snake"
         ],
         "extra": {
-          "date": "2025-11-18T00:00:00-04:00"
+          "date": "2026-10-01T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -13458,15 +13595,40 @@
           "alias": "Providence",
           "heading": null,
           "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Tali",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Tali"
+        },
+        {
+          "alias": "Chapel of the Six",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Chapel of the Six"
+        },
+        {
+          "alias": "Galzu",
+          "heading": null,
+          "target": "People/Galzu"
+        },
+        {
+          "alias": "Egan",
+          "heading": null,
+          "target": "People/Egan Arithmites"
         }
       ],
-      "date": "2026-06-01T00:00:00-04:00",
+      "date": "2026-10-01T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Ki-Rin"
         ],
         "extra": {
-          "date": "2026-06-01T00:00:00-04:00"
+          "date": "2026-10-01T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -23333,6 +23495,51 @@
     {
       "crossrefs": [
         {
+          "alias": "Tali",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Tali"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Færrin",
+          "heading": null,
+          "target": "Geography/Færrin"
+        },
+        {
+          "alias": "Aurelia",
+          "heading": null,
+          "target": "Divinity/Hierophant"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Galzu",
+          "heading": null,
+          "target": "People/Galzu"
+        }
+      ],
+      "date": "2026-10-01T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-10-01T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/The Harlequins/Providence/Chapel of the Six"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Providence",
           "heading": null,
           "target": "Org/The Harlequins/Providence"
@@ -23517,6 +23724,51 @@
     {
       "crossrefs": [
         {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "mongrel folk",
+          "heading": null,
+          "target": "Bestiary/Mongrel Folk"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Singers of the Herald's Star",
+          "heading": null,
+          "target": "Org/Singers of the Herald's Star"
+        },
+        {
+          "alias": "Chapel of the Six",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Chapel of the Six"
+        },
+        {
+          "alias": "Tally",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Tally"
+        }
+      ],
+      "date": "2026-10-01T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-10-01T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Org/The Harlequins/Providence/Tali"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Heart",
           "heading": null,
           "target": "Phenomena/Hearts"
@@ -23557,11 +23809,11 @@
           "target": "Org/Iridescent Church/index"
         }
       ],
-      "date": "2026-08-03T00:00:00-04:00",
+      "date": "2026-10-01T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-03T00:00:00-04:00"
+          "date": "2026-10-01T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -25288,11 +25540,11 @@
           "target": "People/Egan Arithmites"
         }
       ],
-      "date": "2026-09-07T00:00:00-04:00",
+      "date": "2026-10-01T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-09-07T00:00:00-04:00"
+          "date": "2026-10-01T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -26166,11 +26418,6 @@
           "target": "Org/Belvedere/index"
         },
         {
-          "alias": "Machine God",
-          "heading": null,
-          "target": "Org/The Harlequins/Providence/Machine God"
-        },
-        {
           "alias": "Providence",
           "heading": null,
           "target": "Org/The Harlequins/Providence"
@@ -26181,9 +26428,9 @@
           "target": "Org/The Harlequins/Providence/Tally"
         },
         {
-          "alias": "Herald",
+          "alias": "Egan",
           "heading": null,
-          "target": "Divinity/Ashen Pact/Herald"
+          "target": "People/Egan Arithmites"
         },
         {
           "alias": "Herald",
@@ -26196,11 +26443,11 @@
           "target": "People/Anzu"
         }
       ],
-      "date": "2026-09-07T00:00:00-04:00",
+      "date": "2026-10-01T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-09-07T00:00:00-04:00"
+          "date": "2026-10-01T00:00:00-04:00"
         },
         "img": null,
         "tags": [

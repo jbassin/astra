@@ -248,6 +248,7 @@ entity "Beasts" kind="creature" page="Bestiary/Beasts" {
     alias "Cave Serpent"
     alias "Chorister Bird"
     alias "Glide Ape"
+    alias "Tallyhunt"
     alias "Vine Snake"
     source "akasha"
 }
@@ -381,6 +382,9 @@ entity "Celestials" kind="creature" page="Bestiary/Celestials" {
     source "akasha"
 }
 entity "Ceres" kind="person" page="Org/RunGunners/People/Ceres" {
+    source "akasha"
+}
+entity "Chapel of the Six" kind="org" page="Org/The Harlequins/Providence/Chapel of the Six" {
     source "akasha"
 }
 entity "Children of the Heir" kind="org" page="Org/Children of the Heir" {
@@ -1774,6 +1778,9 @@ entity "Syrin" kind="person" page="Org/Amber Call/People/Syrin" {
     alias "Siren"
     source "akasha"
     source "defs"
+}
+entity "Tali" kind="org" page="Org/The Harlequins/Providence/Tali" {
+    source "akasha"
 }
 entity "Tally" kind="org" page="Org/The Harlequins/Providence/Tally" {
     source "akasha"
