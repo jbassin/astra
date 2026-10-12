@@ -835,6 +835,8 @@ entity "Hellsmith" kind="place" page="Geography/Hellsmith" {
     source "akasha"
 }
 entity "Herald" kind="deity" page="Divinity/Ashen Pact/Herald" {
+    alias "True Kin"
+    alias "true kin"
     alias "herald"
     alias "Harold"
     source "akasha"
@@ -1086,6 +1088,9 @@ entity "Letov" {
 }
 entity "Letov Obratz" kind="person" page="Org/Garrick Textiles/People/Letov Obratz" {
     alias "Letov"
+    source "akasha"
+}
+entity "Lifeline" kind="org" page="Org/The Harlequins/Providence/Lifeline" {
     source "akasha"
 }
 entity "Lorandris" kind="place" page="Geography/Lorandris/index" {
@@ -1928,8 +1933,10 @@ entity "Tywelwyn's" {
     source "defs"
 }
 entity "Ugathal" kind="creature" page="Bestiary/Ugathal" {
-    alias "Ugothal"
     alias "Oogathal"
+    alias "oogathal"
+    alias "Skinwalker"
+    alias "Ugothal"
     alias "Ugathol"
     alias "Ugithul"
     alias "Ukathal"

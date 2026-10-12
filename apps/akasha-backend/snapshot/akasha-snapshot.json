@@ -295,6 +295,20 @@
       "target": "Geography/Calaria/Hallia/index"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Bestiary/Ugathal",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Machine God",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Machine God",
+      "source": "Bestiary/Ugathal",
+      "target": "Org/The Harlequins/Providence/Machine God"
+    },
+    {
       "alias": "Detective Brooks",
       "heading": null,
       "resolved": "Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks",
@@ -4432,6 +4446,41 @@
       "target": "Nos Mortem"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/Amber Call/index",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Garrick Textiles",
+      "heading": null,
+      "resolved": "Org/Garrick Textiles/index",
+      "source": "Org/Amber Call/index",
+      "target": "Org/Garrick Textiles/index"
+    },
+    {
+      "alias": "Harlequins",
+      "heading": null,
+      "resolved": "Org/The Harlequins/index",
+      "source": "Org/Amber Call/index",
+      "target": "Org/The Harlequins/index"
+    },
+    {
+      "alias": "Protectorate",
+      "heading": null,
+      "resolved": "Org/Protectorate/index",
+      "source": "Org/Amber Call/index",
+      "target": "Org/Protectorate/index"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/Amber Call/index",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
       "alias": "Widdershins",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/Widdershins/index",
@@ -6959,6 +7008,34 @@
       "target": "Phenomena/Harmony/Voidsong"
     },
     {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Org/Protectorate/People/Yao Addington",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Org/Protectorate/People/Yao Addington",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Amber Call",
+      "heading": null,
+      "resolved": "Org/Amber Call/index",
+      "source": "Org/Protectorate/People/Yao Addington",
+      "target": "Org/Amber Call/index"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/Protectorate/People/Yao Addington",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
       "alias": "Brithwyn",
       "heading": null,
       "resolved": "Geography/Brithwyn/index",
@@ -6985,6 +7062,27 @@
       "resolved": "Phenomena/Pilgrimage",
       "source": "Org/Protectorate/index",
       "target": "Phenomena/Pilgrimage"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/Protectorate/index",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
+      "alias": "Calaria",
+      "heading": null,
+      "resolved": "Geography/Calaria/index",
+      "source": "Org/Protectorate/index",
+      "target": "Geography/Calaria/index"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Org/Protectorate/index",
+      "target": "Phenomena/Harmony/Voidsong"
     },
     {
       "alias": "Pyrelight",
@@ -7907,6 +8005,34 @@
       "alias": "Heart",
       "heading": null,
       "resolved": "Phenomena/Hearts",
+      "source": "Org/The Harlequins/Providence/Lifeline",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/The Harlequins/Providence/Lifeline",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": "Machine God",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Machine God",
+      "source": "Org/The Harlequins/Providence/Lifeline",
+      "target": "Org/The Harlequins/Providence/Machine God"
+    },
+    {
+      "alias": "oogathals",
+      "heading": null,
+      "resolved": "Bestiary/Ugathal",
+      "source": "Org/The Harlequins/Providence/Lifeline",
+      "target": "Bestiary/Ugathal"
+    },
+    {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
       "source": "Org/The Harlequins/Providence/Machine God",
       "target": "Phenomena/Hearts"
     },
@@ -7937,6 +8063,13 @@
       "resolved": "Divinity/Ashen Pact/Herald",
       "source": "Org/The Harlequins/Providence/Machine God",
       "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Lifeline",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Lifeline",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "Org/The Harlequins/Providence/Lifeline"
     },
     {
       "alias": "Ragged Roost",
@@ -8063,6 +8196,20 @@
       "resolved": "Divinity/Ashen Pact/Herald",
       "source": "Org/The Harlequins/Providence/index",
       "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Lifeline",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Lifeline",
+      "source": "Org/The Harlequins/Providence/index",
+      "target": "Org/The Harlequins/Providence/Lifeline"
+    },
+    {
+      "alias": "oogathals",
+      "heading": null,
+      "resolved": "Bestiary/Ugathal",
+      "source": "Org/The Harlequins/Providence/index",
+      "target": "Bestiary/Ugathal"
     },
     {
       "alias": "Providence",
@@ -9304,6 +9451,27 @@
       "target": "Aut"
     },
     {
+      "alias": "Galzu",
+      "heading": null,
+      "resolved": "People/Galzu",
+      "source": "People/Anzu",
+      "target": "People/Galzu"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "People/Anzu",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "People/Anzu",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
       "alias": "Iconoclasm",
       "heading": null,
       "resolved": "Org/Iconoclasm/index",
@@ -9379,6 +9547,13 @@
       "resolved": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
       "source": "People/Argyle",
       "target": "Sin and Tonic"
+    },
+    {
+      "alias": "Lance Vesper",
+      "heading": null,
+      "resolved": "Org/The Scale/People/Lance Vesper",
+      "source": "People/Argyle",
+      "target": "Org/The Scale/People/Lance Vesper"
     },
     {
       "alias": "Undercroft",
@@ -11208,6 +11383,27 @@
       "target": "Phenomena/Pilgrimage"
     },
     {
+      "alias": "Protectorate",
+      "heading": null,
+      "resolved": "Org/Protectorate/index",
+      "source": "Phenomena/Harmony/Voidsong",
+      "target": "Org/Protectorate/index"
+    },
+    {
+      "alias": "Yao Addington",
+      "heading": null,
+      "resolved": "Org/Protectorate/People/Yao Addington",
+      "source": "Phenomena/Harmony/Voidsong",
+      "target": "Org/Protectorate/People/Yao Addington"
+    },
+    {
+      "alias": "Brithwyn",
+      "heading": null,
+      "resolved": "Geography/Brithwyn/index",
+      "source": "Phenomena/Harmony/Voidsong",
+      "target": "Geography/Brithwyn/index"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Færrin",
@@ -12580,13 +12776,27 @@
           "alias": "Hallia",
           "heading": null,
           "target": "Geography/Calaria/Hallia/index"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Machine God",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Machine God"
         }
       ],
-      "date": "2025-10-20T00:00:00-04:00",
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
-        "aliases": [],
+        "aliases": [
+          "Oogathal",
+          "oogathal",
+          "Skinwalker"
+        ],
         "extra": {
-          "date": "2025-10-20T00:00:00-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -12888,7 +13098,10 @@
       ],
       "date": "2026-07-29T23:41:12-04:00",
       "frontmatter": {
-        "aliases": [],
+        "aliases": [
+          "True Kin",
+          "true kin"
+        ],
         "extra": {
           "date": "2026-07-29T23:41:12-04:00"
         },
@@ -17364,12 +17577,38 @@
       "path": "Org/Amber Call/People/Syrin"
     },
     {
-      "crossrefs": [],
-      "date": "2026-06-05T16:40:21-04:00",
+      "crossrefs": [
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": "Garrick Textiles",
+          "heading": null,
+          "target": "Org/Garrick Textiles/index"
+        },
+        {
+          "alias": "Harlequins",
+          "heading": null,
+          "target": "Org/The Harlequins/index"
+        },
+        {
+          "alias": "Protectorate",
+          "heading": null,
+          "target": "Org/Protectorate/index"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        }
+      ],
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-05T16:40:21-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -20387,13 +20626,13 @@
           "target": "People/Sir Arctos"
         }
       ],
-      "date": "2026-06-05T16:40:21-04:00",
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Tamara"
         ],
         "extra": {
-          "date": "2026-06-05T16:40:21-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -20419,15 +20658,35 @@
           "alias": "Voidsong",
           "heading": null,
           "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Amber Call",
+          "heading": null,
+          "target": "Org/Amber Call/index"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
         }
       ],
-      "date": "2026-06-05T16:40:21-04:00",
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Yao"
         ],
         "extra": {
-          "date": "2026-06-05T16:40:21-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -20458,13 +20717,28 @@
           "alias": "pilgrimage",
           "heading": null,
           "target": "Phenomena/Pilgrimage"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        },
+        {
+          "alias": "Calaria",
+          "heading": null,
+          "target": "Geography/Calaria/index"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2026-06-08T00:00:00-04:00",
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-08T00:00:00-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -21582,6 +21856,43 @@
           "target": "Org/The Harlequins/Providence"
         },
         {
+          "alias": "Machine God",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Machine God"
+        },
+        {
+          "alias": "oogathals",
+          "heading": null,
+          "target": "Bestiary/Ugathal"
+        }
+      ],
+      "date": "2026-07-20T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-07-20T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [
+          "Heart"
+        ],
+        "title": null
+      },
+      "path": "Org/The Harlequins/Providence/Lifeline"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
           "alias": "Herald",
           "heading": null,
           "target": "Divinity/Ashen Pact/Herald"
@@ -21595,13 +21906,18 @@
           "alias": "Herald",
           "heading": null,
           "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Lifeline",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Lifeline"
         }
       ],
-      "date": "2026-07-13T00:00:00-04:00",
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-13T00:00:00-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -21702,13 +22018,23 @@
           "alias": "Herald",
           "heading": null,
           "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Lifeline",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Lifeline"
+        },
+        {
+          "alias": "oogathals",
+          "heading": null,
+          "target": "Bestiary/Ugathal"
         }
       ],
-      "date": "2026-07-06T00:00:00-04:00",
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-06T00:00:00-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -22019,11 +22345,11 @@
           "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-06-08T00:00:00-04:00",
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-08T00:00:00-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -22117,11 +22443,11 @@
           "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-06-08T00:00:00-04:00",
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-08T00:00:00-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -23226,13 +23552,28 @@
           "alias": null,
           "heading": null,
           "target": "Aut"
+        },
+        {
+          "alias": "Galzu",
+          "heading": null,
+          "target": "People/Galzu"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2026-05-07T00:00:00-04:00",
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-07T00:00:00-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -23298,13 +23639,18 @@
           "alias": null,
           "heading": null,
           "target": "Sin and Tonic"
+        },
+        {
+          "alias": "Lance Vesper",
+          "heading": null,
+          "target": "Org/The Scale/People/Lance Vesper"
         }
       ],
-      "date": "2026-07-06T00:00:00-04:00",
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-06T00:00:00-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -23432,11 +23778,11 @@
           "target": "Geography/Calaria/Eilebrin Observatory"
         }
       ],
-      "date": "2026-05-07T00:00:00-04:00",
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-05-07T00:00:00-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -25347,13 +25693,28 @@
           "alias": "pilgrimage",
           "heading": null,
           "target": "Phenomena/Pilgrimage"
+        },
+        {
+          "alias": "Protectorate",
+          "heading": null,
+          "target": "Org/Protectorate/index"
+        },
+        {
+          "alias": "Yao Addington",
+          "heading": null,
+          "target": "Org/Protectorate/People/Yao Addington"
+        },
+        {
+          "alias": "Brithwyn",
+          "heading": null,
+          "target": "Geography/Brithwyn/index"
         }
       ],
-      "date": "2026-06-05T16:40:21-04:00",
+      "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-05T16:40:21-04:00"
+          "date": "2026-07-20T00:00:00-04:00"
         },
         "img": null,
         "tags": [
