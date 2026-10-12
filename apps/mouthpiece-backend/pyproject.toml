@@ -12,10 +12,14 @@ dependencies = [
     "astra-ontology",
     "astra-ontology-being",
     "astra-ontology-config",
+    "astra-ontology-entity",
     "dagster",
     "httpx",
     "pydantic>=2",
 ]
+
+[project.scripts]
+astra-mouthpiece-producer = "astra_mouthpiece.producer.cli:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -33,3 +37,4 @@ astra-observe = { workspace = true }
 astra-ontology = { workspace = true }
 astra-ontology-being = { workspace = true }
 astra-ontology-config = { workspace = true }
+astra-ontology-entity = { workspace = true }

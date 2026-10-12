@@ -228,6 +228,26 @@ const Heartwood = z
   })
   .strict();
 
+// The mouthpiece producer (0034 D34-3) — a host-run, read-only dspy.RLM (Python only;
+// mirrored here so the two schemas keep the same field set). experimentModels[i] pairs
+// with experimentMaxTokens[i]; a one-argument KDL node loads as a scalar, so both lists
+// accept a bare value.
+const toList = (value: unknown): unknown => (Array.isArray(value) ? value : [value]);
+const MouthpieceProducer = z
+  .object({
+    model: z.string().default("openrouter/deepseek/deepseek-v4.1-flash"),
+    subModel: z.string().default("openrouter/deepseek/deepseek-v4.1-flash"),
+    maxIterations: z.number().default(30),
+    maxLlmCalls: z.number().default(60),
+    maxTokens: z.number().default(64000),
+    maxOutputChars: z.number().default(10000),
+    experimentModels: z
+      .preprocess(toList, z.array(z.string()))
+      .default(["openrouter/z-ai/glm-5.3", "openrouter/deepseek/deepseek-v4.1-flash"]),
+    experimentMaxTokens: z.preprocess(toList, z.array(z.number())).default([128000, 64000]),
+  })
+  .strict();
+
 // portal (0023) — MCP+WS server for the live FoundryVTT "Faerrin" world, on the
 // orator-backend template. No serviceName field (D3): unlike the SSR frontends
 // there's no browser RUM surface, so `astra.portal` is hardcoded in
@@ -335,6 +355,7 @@ export const ConfigSchema = z
     harrow: Harrow.default(() => Harrow.parse({})),
     ledger: Ledger.default(() => Ledger.parse({})),
     heartwood: Heartwood.default(() => Heartwood.parse({})),
+    mouthpieceProducer: MouthpieceProducer.default(() => MouthpieceProducer.parse({})),
     portal: Portal.default(() => Portal.parse({})),
     portalHeadless: PortalHeadless.default(() => PortalHeadless.parse({})),
     codex: Codex.default(() => Codex.parse({})),

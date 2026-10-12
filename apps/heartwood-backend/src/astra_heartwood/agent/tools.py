@@ -25,6 +25,7 @@ from typing import Any
 from astra_akasha_backend.corpus import Page, load_corpus
 from astra_akasha_backend.crossref import index_pages, resolve_corpus, resolve_target
 from astra_linguist.chronicle import TRANSCRIPT_DIR, date_key
+from astra_llm.rlm import text_matcher as _matcher
 from astra_ontology import Resolution
 from astra_ontology.models import Being
 from astra_ontology_entity import resolve
@@ -129,19 +130,6 @@ class LinkState:
 def _link_text(target: str, heading: str | None, label: str | None) -> str:
     head = f"#{heading}" if heading else ""
     return f"[[{target}{head}|{label}]]" if label else f"[[{target}{head}]]"
-
-
-def _matcher(pattern: str, regex: bool) -> Callable[[str], bool]:
-    if not isinstance(pattern, str) or not pattern:
-        raise ValueError("pattern must be a non-empty string")
-    if regex:
-        try:
-            rx = re.compile(pattern, re.I)
-        except re.error as exc:
-            raise ValueError(f"invalid regex {pattern!r}: {exc}") from exc
-        return lambda line: rx.search(line) is not None
-    needle = pattern.casefold()
-    return lambda line: needle in line.casefold()
 
 
 class HeartwoodTools:

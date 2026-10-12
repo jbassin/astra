@@ -138,6 +138,7 @@ def generate_script(
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     continuity_block: str = "",
     sharpen: bool = False,
+    brief_block: str = "",
 ) -> Script:
     """Pass A (free-text debate transcript) → Pass B (structured dressing, no
     polishing) — the only script-generation path (0024 deleted the one-shot arm).
@@ -147,9 +148,9 @@ def generate_script(
     so each segment gets its own Pass B call and the turns are concatenated (the title
     comes from the first segment). A short transcript is one segment — a single Pass B call,
     unchanged. With `sharpen`, run a focused per-host voice pass afterward (one call per
-    host)."""
+    host). A `brief_block` (0034 producer notes) replaces grounding + continuity."""
     user_content = build_script_user_content(
-        digest, cleaned_turns, roster_block, grounding, continuity_block
+        digest, cleaned_turns, roster_block, grounding, continuity_block, brief_block
     )
     # Pass A — raw, imperfect plaintext debate transcript.
     transcript = client.call_text(

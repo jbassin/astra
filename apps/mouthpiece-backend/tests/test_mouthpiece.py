@@ -352,3 +352,69 @@ def test_load_hosts_carries_the_three_seat_roster() -> None:
     assert hosts.c is not None and hosts.c.name == "Nell"
     assert hosts.c.voice_id == "6u6JbqKdaQy89ENzLSju"  # the stakeholder-picked library voice
     assert "never bluffs" in hosts.c.persona
+
+
+# ── 0034 producer brief seam (gate B) ────────────────────────────────────────
+def _golden_inputs() -> tuple[SessionDigest, list[tuple[int, str, str]], list[GroundingEntry]]:
+    digest = SessionDigest(
+        session_id="000.x.2025-1-1",
+        synopsis="The party fought a thing.",
+        wiki_refs=["Page"],
+        kept_ranges=[(5, 6)],
+        stats=DigestStats(lines=2, kept_lines=2, windows=1, dropped_windows=0),
+    )
+    grounding = [
+        GroundingEntry(refs=["Page"], title="Page", path="page", text="lore about the page"),
+        GroundingEntry(refs=["Other"], title="Other", path="other", text="more lore"),
+    ]
+    return digest, [(5, "Bram", "hello"), (6, "Maeve", "hi")], grounding
+
+
+def test_script_user_content_without_brief_is_byte_identical_to_pre_0034() -> None:
+    digest, cleaned, grounding = _golden_inputs()
+    golden = (Path(__file__).parent / "fixtures/golden/script_user_content.txt").read_text(
+        encoding="utf-8"
+    )
+    content = build_script_user_content(
+        digest,
+        cleaned,
+        "THE TABLE:\n- Bram plays Argyle",
+        grounding,
+        "PREVIOUSLY ON THE SHOW:\n- ep 1",
+    )
+    assert content == golden
+    assert content == build_script_user_content(
+        digest,
+        cleaned,
+        "THE TABLE:\n- Bram plays Argyle",
+        grounding,
+        "PREVIOUSLY ON THE SHOW:\n- ep 1",
+        brief_block="   ",
+    )
+
+
+def test_brief_replaces_continuity_and_wiki_in_the_continuity_slot() -> None:
+    digest, cleaned, grounding = _golden_inputs()
+    content = build_script_user_content(
+        digest,
+        cleaned,
+        "THE TABLE:\n- x",
+        grounding,
+        "PREVIOUSLY ON THE SHOW:\n- ep 1",
+        brief_block="PRODUCER NOTES:\n- a moment",
+    )
+    assert "PREVIOUSLY ON THE SHOW" not in content
+    assert "WIKI EXCERPTS" not in content and "lore about the page" not in content
+    assert content.index("Synopsis:") < content.index("PRODUCER NOTES:")
+    assert content.index("PRODUCER NOTES:") < content.index("THE TABLE:")
+    assert content.index("THE TABLE:") < content.index("Bram: hello")
+    assert content.rstrip().endswith("Maeve: hi")
+
+
+def test_generate_script_threads_the_brief_into_pass_a() -> None:
+    client = StubClient(
+        text="Bram: hey",
+        tool={"title": "T", "turns": [{"speaker": "A", "text": "hey"}]},
+    )
+    generate_script(client, _digest(), _cleaned_turns(), [], HOSTS, brief_block="NOTES: x")
+    assert "NOTES: x" in client.last_text_req.user_content

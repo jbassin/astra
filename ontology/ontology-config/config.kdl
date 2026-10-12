@@ -272,6 +272,22 @@ heartwood {
     backfill-budget-usd 100 // cumulative backfill ceiling — stakeholder 2026-10-10 (≈2× the ~$50 estimate)
 }
 
+mouthpiece-producer {
+    // The mouthpiece producer (0034) — a host-run, read-only dspy.RLM that briefs the
+    // recap script (moments, lore, callbacks) in place of the fixed wiki excerpts +
+    // continuity block. Experiment-only until the 0034 D4 runtime decision.
+    model "openrouter/deepseek/deepseek-v4.1-flash"      // main RLM loop
+    sub-model "openrouter/deepseek/deepseek-v4.1-flash"  // llm_query / llm_query_batched
+    max-iterations 30      // bounds MAIN-LM calls
+    max-llm-calls 60       // bounds SUB-LM calls only
+    max-tokens 64000       // per LM call; reasoning tokens share it
+    max-output-chars 10000 // REPL output shown back per iteration
+    // The experiment's script arms (same order in both lists): the two-pass script runs
+    // once per model with that model's per-call max_tokens. Production keeps mouthpiece.model.
+    experiment-models "openrouter/z-ai/glm-5.3" "openrouter/deepseek/deepseek-v4.1-flash"
+    experiment-max-tokens 128000 64000
+}
+
 portal {
     // portal (0023) — a TypeScript MCP+WS server for the live FoundryVTT "Faerrin"
     // campaign world, on the orator-backend template (D3: no build step, no browser

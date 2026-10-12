@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from .secrets import SecretRef
 
@@ -220,6 +220,29 @@ class HeartwoodConfig(_Base):
     backfill_budget_usd: float = 100.0
 
 
+class MouthpieceProducerConfig(_Base):
+    # The mouthpiece producer (0034 D34-3) — a host-run, read-only dspy.RLM that writes
+    # the recap script's brief. model/sub_model/max_* mirror HeartwoodConfig. The
+    # experiment's script arms pair experiment_models[i] with experiment_max_tokens[i].
+    # A one-argument KDL node loads as a scalar, so both lists accept a bare value.
+    model: str = "openrouter/deepseek/deepseek-v4.1-flash"
+    sub_model: str = "openrouter/deepseek/deepseek-v4.1-flash"
+    max_iterations: int = 30
+    max_llm_calls: int = 60
+    max_tokens: int = 64000
+    max_output_chars: int = 10000
+    experiment_models: list[str] = [
+        "openrouter/z-ai/glm-5.3",
+        "openrouter/deepseek/deepseek-v4.1-flash",
+    ]
+    experiment_max_tokens: list[int] = [128000, 64000]
+
+    @field_validator("experiment_models", "experiment_max_tokens", mode="before")
+    @classmethod
+    def _scalar_to_list(cls, value: object) -> object:
+        return value if isinstance(value, list) else [value]
+
+
 class PortalConfig(_Base):
     # portal (0023) — MCP+WS server for the live FoundryVTT "Faerrin" world, on the
     # orator-backend template. No service_name field (D3): unlike the SSR frontends
@@ -302,6 +325,7 @@ class Config(_Base):
     harrow: HarrowConfig = Field(default_factory=HarrowConfig)
     ledger: LedgerConfig = Field(default_factory=LedgerConfig)
     heartwood: HeartwoodConfig = Field(default_factory=HeartwoodConfig)
+    mouthpiece_producer: MouthpieceProducerConfig = Field(default_factory=MouthpieceProducerConfig)
     portal: PortalConfig = Field(default_factory=PortalConfig)
     portal_headless: PortalHeadlessConfig = Field(default_factory=PortalHeadlessConfig)
     codex: CodexConfig = Field(default_factory=CodexConfig)

@@ -34,6 +34,7 @@ import functools
 import json
 import math
 import os
+import re
 import shutil
 import subprocess
 import threading
@@ -389,6 +390,22 @@ def _arg_hint(args: tuple[Any, ...], kwargs: dict[str, Any]) -> str:
         if isinstance(value, str):
             return f" ({value[:80]!r})"
     return ""
+
+
+def text_matcher(pattern: str, regex: bool) -> Callable[[str], bool]:
+    """A case-insensitive line predicate for agent search tools: literal substring, or a
+    regex when ``regex``. Raises ``ValueError`` on an empty pattern or invalid regex (the
+    sandbox bridge turns it into a catchable error)."""
+    if not isinstance(pattern, str) or not pattern:
+        raise ValueError("pattern must be a non-empty string")
+    if regex:
+        try:
+            rx = re.compile(pattern, re.I)
+        except re.error as exc:
+            raise ValueError(f"invalid regex {pattern!r}: {exc}") from exc
+        return lambda line: rx.search(line) is not None
+    needle = pattern.casefold()
+    return lambda line: needle in line.casefold()
 
 
 # ── sandbox ────────────────────────────────────────────────────────────────

@@ -38,6 +38,7 @@ from .episodes_index import (
 )
 from .grounding import pages_from_corpus
 from .hosts import load_hosts
+from .inputs import cleaned_turns_for
 from .models import AudioManifest, HostConfig, Script, SessionDigest, VoiceConfig
 from .roster import build_roster_block
 from .session import build_episode_script
@@ -218,18 +219,8 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     with _tracer.start_as_current_span("mouthpiece.session_script") as span:
         span.set_attribute("mouthpiece.key", key)
         digest = _read_digest(key)
-        # Stage-3 re-read guard (§4.3): re-parse the canonical transcript fresh rather
-        # than trusting anything cached from Stage 2 — a FROM_FAILURE re-execution could
-        # have regenerated it, and kept_ranges are line-id ranges into a SPECIFIC file.
-        tpath = linguist_io.transcript_for(key)
-        if tpath is None:
-            raise FileNotFoundError(f"no linguist transcript for session {key}")
-        turns = linguist_io.parse_canonical_transcript(tpath.read_text(encoding="utf-8"))
-        clean.assert_no_drift(turns, digest)
-        # Symmetric with Stage 2: hallucination lines were dropped BEFORE windowing there,
-        # so drop them here too before applying the ranges (deterministic — always agrees).
-        speech, _ = clean.drop_hallucinations(turns)
-        cleaned_turns = clean.apply_kept_ranges(speech, digest.kept_ranges)
+        # Stage-3 re-read guard (§4.3) — shared with the 0034 producer (inputs.py).
+        cleaned_turns = cleaned_turns_for(key, digest)
         pages = pages_from_corpus(load_corpus())
         hosts = load_hosts()
         # Recap continuity (0021 Change B): prior episodes + best-effort season arc of THIS

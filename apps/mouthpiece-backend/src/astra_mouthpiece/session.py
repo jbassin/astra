@@ -35,6 +35,7 @@ def build_episode_script(
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     continuity_block: str = "",
     sharpen: bool = False,
+    brief_block: str = "",
 ) -> Script:
     """Ground the digest against the akasha pages, then run the two-pass script
     over the cleaned transcript (0024 §4)."""
@@ -50,6 +51,7 @@ def build_episode_script(
         max_tokens=max_tokens,
         continuity_block=continuity_block,
         sharpen=sharpen,
+        brief_block=brief_block,
     )
 
 

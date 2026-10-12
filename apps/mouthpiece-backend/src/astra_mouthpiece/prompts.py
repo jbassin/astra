@@ -37,10 +37,19 @@ def build_script_user_content(
     roster_block: str,
     grounding: list[GroundingEntry],
     continuity_block: str = "",
+    brief_block: str = "",
 ) -> str:
     """Per-session user content, rendered in order (§4.1): header + synopsis, prior-
     episode continuity, the deterministic character roster, the cleaned transcript
-    (speaker: text, line ids stripped), then wiki excerpts."""
+    (speaker: text, line ids stripped), then wiki excerpts.
+
+    With a `brief_block` (0034 D34-7, the producer's notes) the brief takes the
+    continuity slot and REPLACES both the continuity block and the wiki excerpts;
+    `continuity_block` and `grounding` are ignored. Empty → byte-identical to before."""
+    if brief_block.strip() != "":
+        return _render_user_content(
+            digest, f"{brief_block.strip()}\n\n---\n\n", roster_block, cleaned_turns, None
+        )
     wiki_parts: list[str] = []
     used = 0
     for g in grounding:
@@ -60,26 +69,43 @@ def build_script_user_content(
     # Continuity frames "what came before" BEFORE this session's transcript. Empty →
     # the prompt is byte-identical to the no-context form (forward-only, 0021).
     continuity = "" if continuity_block.strip() == "" else f"{continuity_block.strip()}\n\n---\n\n"
+    return _render_user_content(digest, continuity, roster_block, cleaned_turns, wiki)
+
+
+def _render_user_content(
+    digest: SessionDigest,
+    lead: str,
+    roster_block: str,
+    cleaned_turns: list[tuple[int, str, str]],
+    wiki: str | None,
+) -> str:
+    """The shared layout. `lead` is the pre-rendered continuity-or-brief section (with
+    its trailing rule) or ""; `wiki` None omits the WIKI EXCERPTS section entirely."""
     # The roster is best-effort (an unmatched/excluded show yields "") — omit it
     # cleanly rather than leaving a blank heading.
     roster = "" if roster_block.strip() == "" else f"{roster_block.strip()}\n\n"
     transcript = _render_cleaned_transcript(cleaned_turns)
-
-    return f"""SESSION — {digest.session_id}
-
-Synopsis: {digest.synopsis}
-
-{continuity}{roster}Transcript of this session, in order — walk through it roughly in this order
-so the recap is easy to follow, but talk ABOUT each moment as you reach it; don't
-just read it back:
-
-{transcript}
+    wiki_section = (
+        ""
+        if wiki is None
+        else f"""
 
 ---
 
 WIKI EXCERPTS (for grounding names/lore only; do not reveal undiscovered plot):
 
 {wiki}"""
+    )
+
+    return f"""SESSION — {digest.session_id}
+
+Synopsis: {digest.synopsis}
+
+{lead}{roster}Transcript of this session, in order — walk through it roughly in this order
+so the recap is easy to follow, but talk ABOUT each moment as you reach it; don't
+just read it back:
+
+{transcript}{wiki_section}"""
 
 
 # ── two-pass: Pass A (improv) + Pass B (dressing) ────────────────────────────

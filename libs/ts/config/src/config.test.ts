@@ -67,6 +67,13 @@ describe("@astra/config", () => {
     expect(cfg.heartwood.maxTokens).toBe(64000);
     expect(cfg.heartwood.maxOutputChars).toBe(10000);
     expect(cfg.heartwood.backfillBudgetUsd).toBe(100);
+    expect(cfg.mouthpieceProducer.model).toBe("openrouter/deepseek/deepseek-v4.1-flash");
+    expect(cfg.mouthpieceProducer.maxIterations).toBe(30);
+    expect(cfg.mouthpieceProducer.experimentModels).toEqual([
+      "openrouter/z-ai/glm-5.3",
+      "openrouter/deepseek/deepseek-v4.1-flash",
+    ]);
+    expect(cfg.mouthpieceProducer.experimentMaxTokens).toEqual([128000, 64000]);
     expect(cfg.portal.port).toBe(10372);
     expect(cfg.portal.publicOrigin).toBe("https://portal.iridi.cc");
     expect(cfg.portal.bridgeTimeoutMs).toBe(15000);
@@ -131,5 +138,16 @@ describe("@astra/config", () => {
     const tmp = `${process.env.TMPDIR ?? "/tmp"}/astra-config-bad-${Date.now()}.kdl`;
     await writeFile(tmp, 'llm {\n  default-model "x"\n  bogus-field "nope"\n}\n');
     expect(() => loadConfig(tmp)).toThrow();
+  });
+
+  test("single-value producer lists load as lists", async () => {
+    const tmp = `${process.env.TMPDIR ?? "/tmp"}/astra-config-one-${Date.now()}.kdl`;
+    await writeFile(
+      tmp,
+      'mouthpiece-producer {\n  experiment-models "openrouter/z-ai/glm-5.3"\n  experiment-max-tokens 128000\n}\n',
+    );
+    const cfg = loadConfig(tmp);
+    expect(cfg.mouthpieceProducer.experimentModels).toEqual(["openrouter/z-ai/glm-5.3"]);
+    expect(cfg.mouthpieceProducer.experimentMaxTokens).toEqual([128000]);
   });
 });

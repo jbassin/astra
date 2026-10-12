@@ -63,6 +63,13 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.heartwood.max_tokens == 64000
     assert cfg.heartwood.max_output_chars == 10000
     assert cfg.heartwood.backfill_budget_usd == 100
+    assert cfg.mouthpiece_producer.model == "openrouter/deepseek/deepseek-v4.1-flash"
+    assert cfg.mouthpiece_producer.max_iterations == 30
+    assert cfg.mouthpiece_producer.experiment_models == [
+        "openrouter/z-ai/glm-5.3",
+        "openrouter/deepseek/deepseek-v4.1-flash",
+    ]
+    assert cfg.mouthpiece_producer.experiment_max_tokens == [128000, 64000]
     assert cfg.portal.port == 10372
     assert cfg.portal.public_origin == "https://portal.iridi.cc"
     assert cfg.portal.bridge_timeout_ms == 15000
@@ -136,6 +143,21 @@ def test_unknown_kdl_key_is_rejected(tmp_path: Path) -> None:
     )
     with pytest.raises(Exception, match="bogus_field|bogus-field|extra"):
         load_config(bad)
+
+
+def test_single_value_producer_lists_load_as_lists(tmp_path: Path) -> None:
+    one = tmp_path / "config.kdl"
+    one.write_text(
+        textwrap.dedent("""
+        mouthpiece-producer {
+            experiment-models "openrouter/z-ai/glm-5.3"
+            experiment-max-tokens 128000
+        }
+    """)
+    )
+    cfg = load_config(one)
+    assert cfg.mouthpiece_producer.experiment_models == ["openrouter/z-ai/glm-5.3"]
+    assert cfg.mouthpiece_producer.experiment_max_tokens == [128000]
 
 
 def test_config_kdl_path_points_at_the_real_file() -> None:
