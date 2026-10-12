@@ -302,11 +302,25 @@
       "target": "Org/The Harlequins/Providence"
     },
     {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Bestiary/Ugathal",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
       "alias": "Machine God",
       "heading": null,
       "resolved": "Org/The Harlequins/Providence/Machine God",
       "source": "Bestiary/Ugathal",
       "target": "Org/The Harlequins/Providence/Machine God"
+    },
+    {
+      "alias": "Lifeline",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/Lifeline",
+      "source": "Bestiary/Ugathal",
+      "target": "Org/The Harlequins/Providence/Lifeline"
     },
     {
       "alias": "Detective Brooks",
@@ -699,6 +713,27 @@
       "resolved": "Org/Embercall Industries/index",
       "source": "Divinity/Ashen Pact/index",
       "target": "Org/Embercall Industries/index"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Anzu",
+      "heading": null,
+      "resolved": "People/Anzu",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "People/Anzu"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Phenomena/Harmony/Voidsong"
     },
     {
       "alias": "Anaïs Marchal",
@@ -8030,6 +8065,13 @@
       "target": "Bestiary/Ugathal"
     },
     {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Org/The Harlequins/Providence/Lifeline",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
       "alias": "Heart",
       "heading": null,
       "resolved": "Phenomena/Hearts",
@@ -8070,6 +8112,13 @@
       "resolved": "Org/The Harlequins/Providence/Lifeline",
       "source": "Org/The Harlequins/Providence/Machine God",
       "target": "Org/The Harlequins/Providence/Lifeline"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/The Harlequins/Providence/Machine God",
+      "target": "Org/Iridescent Church/index"
     },
     {
       "alias": "Ragged Roost",
@@ -8203,13 +8252,6 @@
       "resolved": "Org/The Harlequins/Providence/Lifeline",
       "source": "Org/The Harlequins/Providence/index",
       "target": "Org/The Harlequins/Providence/Lifeline"
-    },
-    {
-      "alias": "oogathals",
-      "heading": null,
-      "resolved": "Bestiary/Ugathal",
-      "source": "Org/The Harlequins/Providence/index",
-      "target": "Bestiary/Ugathal"
     },
     {
       "alias": "Providence",
@@ -9353,13 +9395,6 @@
       "target": "Org/Belvedere/index"
     },
     {
-      "alias": "Adal",
-      "heading": null,
-      "resolved": "People/Adal",
-      "source": "People/Anzu",
-      "target": "People/Adal"
-    },
-    {
       "alias": "Aguirzu",
       "heading": null,
       "resolved": "People/Aguirzu",
@@ -9379,6 +9414,34 @@
       "resolved": "Org/Singers of the Herald's Star",
       "source": "People/Anzu",
       "target": "Org/Singers of the Herald's Star"
+    },
+    {
+      "alias": "Voidsong",
+      "heading": null,
+      "resolved": "Phenomena/Harmony/Voidsong",
+      "source": "People/Anzu",
+      "target": "Phenomena/Harmony/Voidsong"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "People/Anzu",
+      "target": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "alias": "Galzu",
+      "heading": null,
+      "resolved": "People/Galzu",
+      "source": "People/Anzu",
+      "target": "People/Galzu"
+    },
+    {
+      "alias": "Herald",
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "People/Anzu",
+      "target": "Divinity/Ashen Pact/Herald"
     },
     {
       "alias": "Voidsong",
@@ -9449,27 +9512,6 @@
       "resolved": "Divinity/The Narrative/Aut",
       "source": "People/Anzu",
       "target": "Aut"
-    },
-    {
-      "alias": "Galzu",
-      "heading": null,
-      "resolved": "People/Galzu",
-      "source": "People/Anzu",
-      "target": "People/Galzu"
-    },
-    {
-      "alias": "Herald",
-      "heading": null,
-      "resolved": "Divinity/Ashen Pact/Herald",
-      "source": "People/Anzu",
-      "target": "Divinity/Ashen Pact/Herald"
-    },
-    {
-      "alias": "Voidsong",
-      "heading": null,
-      "resolved": "Phenomena/Harmony/Voidsong",
-      "source": "People/Anzu",
-      "target": "Phenomena/Harmony/Voidsong"
     },
     {
       "alias": "Iconoclasm",
@@ -12783,12 +12825,22 @@
           "target": "Org/The Harlequins/Providence"
         },
         {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
           "alias": "Machine God",
           "heading": null,
           "target": "Org/The Harlequins/Providence/Machine God"
+        },
+        {
+          "alias": "Lifeline",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence/Lifeline"
         }
       ],
-      "date": "2026-07-20T00:00:00-04:00",
+      "date": "2026-07-27T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Oogathal",
@@ -12796,7 +12848,7 @@
           "Skinwalker"
         ],
         "extra": {
-          "date": "2026-07-20T00:00:00-04:00"
+          "date": "2026-07-27T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -13254,6 +13306,21 @@
           "target": "Org/Embercall Industries/index"
         },
         {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Anzu",
+          "heading": null,
+          "target": "People/Anzu"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
           "alias": "Anaïs Marchal",
           "heading": null,
           "target": "Org/Iconoclasm/People/Anaïs Marchal"
@@ -13274,11 +13341,11 @@
           "target": "Divinity/Ashen Pact/Giant"
         }
       ],
-      "date": "2026-01-13T00:00:00-04:00",
+      "date": "2026-07-27T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-01-13T00:00:00-04:00"
+          "date": "2026-07-27T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -21864,13 +21931,18 @@
           "alias": "oogathals",
           "heading": null,
           "target": "Bestiary/Ugathal"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
         }
       ],
-      "date": "2026-07-20T00:00:00-04:00",
+      "date": "2026-07-27T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-20T00:00:00-04:00"
+          "date": "2026-07-27T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -21911,13 +21983,18 @@
           "alias": "Lifeline",
           "heading": null,
           "target": "Org/The Harlequins/Providence/Lifeline"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
         }
       ],
-      "date": "2026-07-20T00:00:00-04:00",
+      "date": "2026-07-27T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-20T00:00:00-04:00"
+          "date": "2026-07-27T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -22023,18 +22100,13 @@
           "alias": "Lifeline",
           "heading": null,
           "target": "Org/The Harlequins/Providence/Lifeline"
-        },
-        {
-          "alias": "oogathals",
-          "heading": null,
-          "target": "Bestiary/Ugathal"
         }
       ],
-      "date": "2026-07-20T00:00:00-04:00",
+      "date": "2026-07-27T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-20T00:00:00-04:00"
+          "date": "2026-07-27T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -23484,11 +23556,6 @@
           "target": "Org/Belvedere/index"
         },
         {
-          "alias": "Adal",
-          "heading": null,
-          "target": "People/Adal"
-        },
-        {
           "alias": "Aguirzu",
           "heading": null,
           "target": "People/Aguirzu"
@@ -23502,6 +23569,26 @@
           "alias": "Singers of the Herald's Star",
           "heading": null,
           "target": "Org/Singers of the Herald's Star"
+        },
+        {
+          "alias": "Voidsong",
+          "heading": null,
+          "target": "Phenomena/Harmony/Voidsong"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
+        },
+        {
+          "alias": "Galzu",
+          "heading": null,
+          "target": "People/Galzu"
+        },
+        {
+          "alias": "Herald",
+          "heading": null,
+          "target": "Divinity/Ashen Pact/Herald"
         },
         {
           "alias": "Voidsong",
@@ -23552,28 +23639,13 @@
           "alias": null,
           "heading": null,
           "target": "Aut"
-        },
-        {
-          "alias": "Galzu",
-          "heading": null,
-          "target": "People/Galzu"
-        },
-        {
-          "alias": "Herald",
-          "heading": null,
-          "target": "Divinity/Ashen Pact/Herald"
-        },
-        {
-          "alias": "Voidsong",
-          "heading": null,
-          "target": "Phenomena/Harmony/Voidsong"
         }
       ],
-      "date": "2026-07-20T00:00:00-04:00",
+      "date": "2026-07-27T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-07-20T00:00:00-04:00"
+          "date": "2026-07-27T00:00:00-04:00"
         },
         "img": null,
         "tags": [
