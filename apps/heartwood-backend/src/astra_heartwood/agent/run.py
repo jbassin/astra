@@ -25,9 +25,6 @@ from __future__ import annotations
 
 import contextlib
 import json
-import os
-import shutil
-import subprocess
 import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -39,6 +36,13 @@ from astra_akasha_backend.corpus import CONTENT_DIR
 from astra_config import load_config
 from astra_config.models import HeartwoodConfig
 from astra_linguist.chronicle import TRANSCRIPT_DIR
+
+# Sandbox helpers live in astra_llm.rlm (0034 D34-1); re-exported for callers and the
+# `heartwood-sandbox-warm` recipe, which imports them from here.
+from astra_llm.rlm import deno_available as deno_available
+from astra_llm.rlm import make_interpreter as make_interpreter
+from astra_llm.rlm import prepare_sandbox_env as prepare_sandbox_env
+from astra_llm.rlm import sandbox_version as sandbox_version
 from astra_ontology import Resolution
 from astra_ontology.models import Being
 from astra_ontology_entity import resolve
@@ -58,51 +62,6 @@ RunStatus = Literal["ok", "incomplete", "failed"]
 LmFactory = Callable[[str, str], Any]
 #: ``interpreter_factory()`` → a dspy ``CodeInterpreter`` (``PythonInterpreter`` by default).
 InterpreterFactory = Callable[[], Any]
-
-DENO_BIN = Path.home() / ".deno" / "bin"
-
-
-# ── sandbox ────────────────────────────────────────────────────────────────
-def prepare_sandbox_env() -> None:
-    """Make dspy's ``PythonInterpreter`` launchable from this process (module docstring).
-
-    Idempotent; only fills in what is unset. Call before the first interpreter is built
-    (``PythonInterpreter._get_deno_dir`` is ``lru_cache``d on first use).
-    """
-    if shutil.which("deno") is None and (DENO_BIN / "deno").is_file():
-        os.environ["PATH"] = f"{DENO_BIN}{os.pathsep}{os.environ.get('PATH', '')}"
-    os.environ.setdefault("DENO_NO_PACKAGE_JSON", "1")
-    if "DENO_DIR" not in os.environ and shutil.which("deno") is not None:
-        proc = subprocess.run(
-            ["deno", "info", "--json"], capture_output=True, text=True, check=False
-        )
-        if proc.returncode == 0:
-            deno_dir = json.loads(proc.stdout).get("denoDir")
-            if deno_dir:
-                os.environ["DENO_DIR"] = os.path.realpath(deno_dir)
-
-
-def deno_available() -> bool:
-    prepare_sandbox_env()
-    return shutil.which("deno") is not None
-
-
-def sandbox_version(interpreter: Any) -> str | None:
-    """The Pyodide + Python version inside ``interpreter`` (best effort, else ``None``)."""
-    try:
-        out = interpreter.execute(
-            "import pyodide, sys\nprint(pyodide.__version__, sys.version.split()[0])"
-        )
-    except Exception:
-        return None
-    return str(out).strip() or None
-
-
-def make_interpreter() -> Any:
-    from dspy.primitives.python_interpreter import PythonInterpreter
-
-    prepare_sandbox_env()
-    return PythonInterpreter()
 
 
 def default_lm_factory(cfg: HeartwoodConfig) -> LmFactory:
