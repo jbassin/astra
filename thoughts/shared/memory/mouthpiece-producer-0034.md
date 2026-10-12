@@ -13,11 +13,11 @@ into Dagster; runtime placement (Deno in dagster-code vs host step) is decided o
 **Result on 2026-10-5:** producer $0.20 / 10 min / 0 bad citations, callbacks back to May. GLM 5.3 + brief
 = best script (lint 8/10 vs live 7/10, 18/22 lore names vs 13/22). DeepSeek as the DIALOGUE model is weak
 (464 choppy turns, clean-line tell) — keep DeepSeek for the producer only. ⚠ Brief makes Nell (newcomer)
-stop asking (16/50 question turns vs 31/52) — needs a "newcomer hasn't read the notes" prompt fix.
+stop asking (16/50 question turns vs 31/52); the seat guard `4d5c4e30` ("only the regulars read the notes") brought it to 25/64, lint 9/10. **Stakeholder 2026-10-12: GLM writes the scripts**; experiment default = one GLM arm.
 
 **Why:** [[heartwood-0033-gotchas]] showed DeepSeek RLMs navigate transcript+wiki cheaply; fixed grounding
 needed the manual force-grounding recipe ([[ashen-pact-mouthpiece-grounding]]).
-**How to apply:** next = stakeholder reads the three scripts → newcomer fix → ship decision (D4).
+**How to apply:** next = ship decision (D4: Deno in dagster-code vs host step) and wiring into `session_script`.
 
 Gotchas:
 - dspy RLM typed output: declare `brief: ProducerBrief` — a `str` output `str()`s a submitted dict into a

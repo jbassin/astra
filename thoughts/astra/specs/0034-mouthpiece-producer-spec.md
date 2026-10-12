@@ -319,3 +319,9 @@ the table's $1.15/$3.50 — pre-existing drift, left for a separate fix.
   has NOT read the producer notes (heading/prompt wording) — a stakeholder decision.
 - Reading: DeepSeek's dialogue is choppy sitcom rhythm; GLM + brief reads closest to the live show with
   better grounding and real long-range callbacks.
+
+**Follow-up, 2026-10-12 (stakeholder: GLM writes the scripts).** `4d5c4e30` adds a newcomer seat guard to the
+rendered brief and makes the default experiment one GLM arm. Re-run with the same brief
+(`…/2026-10-5/20261012T182801Z/`): Nell's question turns 25/64 (39%) vs 16/50 (32%) without the guard and
+31/52 (60%) live; no "homework" recitation; Maeve/Bram now answer her from the notes. Lint 9/10, 19/22 lore
+names, 5,188 words, $0.40 (table price).
