@@ -912,6 +912,25 @@ heartwood-backfill-reset:
     rm -f artifacts/heartwood/backfill.lock
     echo "heartwood-backfill-reset: linguist-commit.timer $(systemctl --user is-active linguist-commit.timer), .path $(systemctl --user is-active linguist-commit.path); lock removed"
 
+# --- mouthpiece producer (0034) ---
+# Warm the dspy sandbox (Deno + Pyodide) the producer runs in — idempotent; the first run
+# fetches Pyodide into DENO_DIR (network), later runs are offline.
+mouthpiece-sandbox-warm:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    export PATH="$HOME/.deno/bin:$PATH"
+    deno --version | head -1
+    {{uv_bin}} run python -c 'from astra_llm.rlm import make_interpreter as mk, sandbox_version as v; i = mk(); print("sandbox:", i.execute("print(1)").strip()); print("pyodide:", v(i)); i.shutdown()'
+
+# The 0034 comparison for ONE session — PAID (OpenRouter: the producer RLM + one two-pass
+# script per experiment-models arm, ≈ $2–3), never live: writes only under
+# artifacts/mouthpiece-experiments/<date>/<run>/ (no TTS, nothing under episodes/, no commit).
+#   just mouthpiece-experiment 2026-10-5
+#   just mouthpiece-experiment 2026-10-5 --arm glm-5.3
+#   just mouthpiece-experiment 2026-10-5 --reuse-brief artifacts/mouthpiece-experiments/2026-10-5/<run>
+mouthpiece-experiment date *flags: mouthpiece-sandbox-warm
+    cd /ruby/data/experiments/astra && {{uv_bin}} run astra-mouthpiece-producer experiment {{date}} {{flags}}
+
 # --- Host edge (shared reverse proxy) ---
 
 # The decrypted CF token, exported as {$CF_API_TOKEN} for the caddyfile adapter.

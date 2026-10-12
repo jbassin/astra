@@ -3,12 +3,17 @@
     brief <date> [--model ID]     run the producer over one session; writes brief.json /
                                   brief.md / trajectory / warnings / summary into a fresh
                                   run dir. The last stdout line is ``RUN_DIR=<path>``.
+    experiment <date> [--arm ID]... [--reuse-brief RUN_DIR]
+                                  the 0034 comparison: one brief (or a reused one), the
+                                  two-pass script once per ``experiment-models`` arm, and
+                                  ``report.md`` against the live script. ``--arm`` (repeat)
+                                  picks arms by model id or slug (e.g. ``glm-5.3``).
 
 PAID (OpenRouter LLM calls), never live: nothing is written under ``episodes/``, nothing
 is committed, no TTS. The ``just mouthpiece-*`` recipes wrap these.
 
 Exit codes: 0 ``ok``; 1 ``failed`` or an unexpected error; 2 ``incomplete`` (iteration cap,
-brief still usable).
+brief still usable). ``experiment`` exits 1 if the producer failed or every arm failed.
 
 Telemetry exports from the host: ``main`` calls ``init_telemetry`` with
 ``telemetry.host-otlp-endpoint`` and ``shutdown()`` flushes in ``finally``. ``cli()`` is
@@ -20,11 +25,13 @@ from __future__ import annotations
 import argparse
 import sys
 from collections.abc import Sequence
+from pathlib import Path
 
 from astra_config import load_config
 from astra_llm.rlm import deno_available
 from astra_observe import init_telemetry, shutdown
 
+from .experiment import run_experiment
 from .run import RunStatus, run_producer
 
 EXIT_OK = 0
@@ -54,6 +61,19 @@ def _cmd_brief(args: argparse.Namespace) -> int:
     return _EXIT[result.status]
 
 
+def _cmd_experiment(args: argparse.Namespace) -> int:
+    reuse = Path(args.reuse_brief) if args.reuse_brief else None
+    if reuse is None and not deno_available():
+        print("deno not found — run `just mouthpiece-sandbox-warm` first", file=sys.stderr)
+        return EXIT_FAILED
+    result = run_experiment(args.date, arms=args.arm or None, reuse_brief=reuse)
+    print(result.report)
+    print(f"RUN_DIR={result.run_dir}")
+    if result.producer_status == "failed" or not any(a.script for a in result.arms):
+        return EXIT_FAILED
+    return EXIT_OK
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="astra-mouthpiece-producer")
     sub = parser.add_subparsers(required=True)
@@ -61,6 +81,11 @@ def build_parser() -> argparse.ArgumentParser:
     brief.add_argument("date")
     brief.add_argument("--model", help="override main + sub model for this run")
     brief.set_defaults(func=_cmd_brief)
+    exp = sub.add_parser("experiment", help="brief + script arms + report for one session")
+    exp.add_argument("date")
+    exp.add_argument("--arm", action="append", help="model id or slug; repeat for several")
+    exp.add_argument("--reuse-brief", help="run dir holding a brief.json to reuse")
+    exp.set_defaults(func=_cmd_experiment)
     return parser
 
 
