@@ -69,11 +69,9 @@ describe("@astra/config", () => {
     expect(cfg.heartwood.backfillBudgetUsd).toBe(100);
     expect(cfg.mouthpieceProducer.model).toBe("openrouter/deepseek/deepseek-v4.1-flash");
     expect(cfg.mouthpieceProducer.maxIterations).toBe(30);
-    expect(cfg.mouthpieceProducer.experimentModels).toEqual([
-      "openrouter/z-ai/glm-5.3",
-      "openrouter/deepseek/deepseek-v4.1-flash",
-    ]);
-    expect(cfg.mouthpieceProducer.experimentMaxTokens).toEqual([128000, 64000]);
+    // the live KDL has ONE arm — exercises the scalar→list coercion for real
+    expect(cfg.mouthpieceProducer.experimentModels).toEqual(["openrouter/z-ai/glm-5.3"]);
+    expect(cfg.mouthpieceProducer.experimentMaxTokens).toEqual([128000]);
     expect(cfg.portal.port).toBe(10372);
     expect(cfg.portal.publicOrigin).toBe("https://portal.iridi.cc");
     expect(cfg.portal.bridgeTimeoutMs).toBe(15000);

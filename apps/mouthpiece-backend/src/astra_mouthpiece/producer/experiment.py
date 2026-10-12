@@ -81,6 +81,10 @@ class ArmResult:
     error: str | None = None
 
 
+def _newcomer(hosts: HostConfig) -> str:
+    return hosts.c.name if hosts.c is not None else "The newcomer"
+
+
 def run_arm(
     model: str,
     max_tokens: int,
@@ -312,7 +316,7 @@ def run_experiment(
             summary = json.loads((out / "summary.json").read_text())
         if (out / "warnings.json").is_file():
             warnings = json.loads((out / "warnings.json").read_text())
-        block = render_brief(brief)
+        block = render_brief(brief, newcomer=_newcomer(host_cfg))
         (out / "brief.md").write_text(block + "\n", encoding="utf-8")
     else:
         result = producer(date, config=cfg, inputs=inp, run_dir=out)
@@ -320,13 +324,14 @@ def run_experiment(
         summary = result.summary
         warnings = json.loads((out / "warnings.json").read_text())
         brief = result.brief
-        block = result.brief_block
         if result.status == "failed" or brief is None:
             report = build_report(date, summary, warnings, None, [])
             (out / "report.md").write_text(report, encoding="utf-8")
             return ExperimentResult(
                 run_dir=out, producer_status=result.status, arms=[], report=report
             )
+        block = render_brief(brief, newcomer=_newcomer(host_cfg))
+        (out / "brief.md").write_text(block + "\n", encoding="utf-8")
 
     results = [run_arm(m, t, inp, block, host_cfg, client_factory=client_factory) for m, t in pairs]
     for arm in results:

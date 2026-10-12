@@ -65,11 +65,9 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.heartwood.backfill_budget_usd == 100
     assert cfg.mouthpiece_producer.model == "openrouter/deepseek/deepseek-v4.1-flash"
     assert cfg.mouthpiece_producer.max_iterations == 30
-    assert cfg.mouthpiece_producer.experiment_models == [
-        "openrouter/z-ai/glm-5.3",
-        "openrouter/deepseek/deepseek-v4.1-flash",
-    ]
-    assert cfg.mouthpiece_producer.experiment_max_tokens == [128000, 64000]
+    # the live KDL has ONE arm — exercises the scalar→list coercion for real
+    assert cfg.mouthpiece_producer.experiment_models == ["openrouter/z-ai/glm-5.3"]
+    assert cfg.mouthpiece_producer.experiment_max_tokens == [128000]
     assert cfg.portal.port == 10372
     assert cfg.portal.public_origin == "https://portal.iridi.cc"
     assert cfg.portal.bridge_timeout_ms == 15000

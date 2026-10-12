@@ -110,9 +110,20 @@ BRIEF_HEADING = (
 )
 
 
-def render_brief(brief: ProducerBrief) -> str:
-    """The Pass A block: sections in schema order, line ids omitted, empty sections skipped."""
-    parts = [BRIEF_HEADING]
+def newcomer_rule(newcomer: str) -> str:
+    """The seat guard (0034 experiment finding): with the notes in view, the newcomer stopped
+    asking and recited lore. She has not read them."""
+    return (
+        f"Only the two regular hosts have read these notes. {newcomer} has NOT: she knows only "
+        "the last couple of episodes, so she still asks about anything older or unexplained, "
+        "and the others answer her from these notes. Never have her recite lore from them."
+    )
+
+
+def render_brief(brief: ProducerBrief, *, newcomer: str = "The newcomer") -> str:
+    """The Pass A block: sections in schema order, line ids omitted, empty sections skipped.
+    ``newcomer`` is the newcomer host's name (``hosts.c``), used in the seat guard."""
+    parts = [BRIEF_HEADING, newcomer_rule(newcomer)]
     parts.append(
         "\nMoments worth talking about:\n"
         + "\n".join(
@@ -138,7 +149,7 @@ def render_brief(brief: ProducerBrief) -> str:
         )
     if brief.newcomer_questions:
         parts.append(
-            "\nWhat the newcomer would ask:\n"
+            f"\nQuestions {newcomer} should ask on air (she asks; the others answer):\n"
             + "\n".join(f"- {q}" for q in brief.newcomer_questions)
         )
     return "\n".join(parts)

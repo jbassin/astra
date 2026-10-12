@@ -107,6 +107,13 @@ def test_render_brief_omits_line_ids_and_empty_sections() -> None:
     assert "- Galzu: Anzu's sister." in text and "Who is Galzu?" in text
 
 
+def test_render_brief_guards_the_newcomer_seat() -> None:
+    text = render_brief(ProducerBrief.model_validate(brief_dict()), newcomer="Nell")
+    assert "Nell has NOT" in text and "Never have her recite lore" in text
+    assert "Questions Nell should ask on air" in text
+    assert "The newcomer has NOT" in render_brief(ProducerBrief.model_validate(brief_dict()))
+
+
 def test_render_transcript_carries_line_ids() -> None:
     assert render_transcript(TURNS) == "10\tGamemaster: Galzu flees.\n11\tAda: After her!"
 

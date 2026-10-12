@@ -284,8 +284,10 @@ mouthpiece-producer {
     max-output-chars 10000 // REPL output shown back per iteration
     // The experiment's script arms (same order in both lists): the two-pass script runs
     // once per model with that model's per-call max_tokens. Production keeps mouthpiece.model.
-    experiment-models "openrouter/z-ai/glm-5.3" "openrouter/deepseek/deepseek-v4.1-flash"
-    experiment-max-tokens 128000 64000
+    // GLM only since 2026-10-12: DeepSeek wrote choppy dialogue on 2026-10-5 (stakeholder:
+    // GLM writes the scripts; DeepSeek stays the producer). Add it back to compare again.
+    experiment-models "openrouter/z-ai/glm-5.3"
+    experiment-max-tokens 128000
 }
 
 portal {
