@@ -407,6 +407,13 @@
       "target": "People/Gerhard"
     },
     {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence",
+      "source": "Bestiary/Vermin",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
       "alias": "weave",
       "heading": null,
       "resolved": "Phenomena/Weave",
@@ -1021,6 +1028,27 @@
       "resolved": "Geography/Godhome",
       "source": "Divinity/Hierophant",
       "target": "Godhome"
+    },
+    {
+      "alias": "Belvedere",
+      "heading": null,
+      "resolved": "Org/Belvedere/index",
+      "source": "Divinity/Hierophant",
+      "target": "Org/Belvedere/index"
+    },
+    {
+      "alias": "the Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "Divinity/Hierophant",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Raelion",
+      "heading": null,
+      "resolved": "Geography/Raelion/index",
+      "source": "Divinity/Hierophant",
+      "target": "Geography/Raelion/index"
     },
     {
       "alias": "Belvedere",
@@ -7785,6 +7813,41 @@
       "target": "Bestiary/Mongrel Folk"
     },
     {
+      "alias": "Heart",
+      "heading": null,
+      "resolved": "Phenomena/Hearts",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Aurelia I",
+      "heading": null,
+      "resolved": "Divinity/Hierophant",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Divinity/Hierophant"
+    },
+    {
+      "alias": "Iridescent Church",
+      "heading": null,
+      "resolved": "Org/Iridescent Church/index",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Org/Iridescent Church/index"
+    },
+    {
+      "alias": "the Scale",
+      "heading": null,
+      "resolved": "Org/The Scale/index",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Org/The Scale/index"
+    },
+    {
+      "alias": "Belvedere",
+      "heading": null,
+      "resolved": "Org/Belvedere/index",
+      "source": "Org/The Harlequins/Providence",
+      "target": "Org/Belvedere/index"
+    },
+    {
       "alias": "Providence",
       "heading": null,
       "resolved": "Org/The Harlequins/Providence",
@@ -12217,18 +12280,25 @@
           "alias": "Gerhard",
           "heading": null,
           "target": "People/Gerhard"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-06-18T00:00:00-04:00",
+      "date": "2026-06-29T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Deadly Mantis",
           "Mioktan",
           "Swarm Child",
-          "The Hivemother"
+          "The Hivemother",
+          "Scythe-Armed Spider",
+          "Apothecary Bug"
         ],
         "extra": {
-          "date": "2026-06-18T00:00:00-04:00"
+          "date": "2026-06-29T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -12974,6 +13044,21 @@
           "target": "Org/The Scale/index"
         },
         {
+          "alias": "Raelion",
+          "heading": null,
+          "target": "Geography/Raelion/index"
+        },
+        {
+          "alias": "Belvedere",
+          "heading": null,
+          "target": "Org/Belvedere/index"
+        },
+        {
+          "alias": "the Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        },
+        {
           "alias": null,
           "heading": null,
           "target": "Heir of the Plague"
@@ -12989,11 +13074,11 @@
           "target": "Org/Iridescent Church/index"
         }
       ],
-      "date": "2026-06-05T16:40:21-04:00",
+      "date": "2026-06-29T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-05T16:40:21-04:00"
+          "date": "2026-06-29T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -20963,13 +21048,38 @@
           "alias": "mongrel folk",
           "heading": null,
           "target": "Bestiary/Mongrel Folk"
+        },
+        {
+          "alias": "Heart",
+          "heading": null,
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Aurelia I",
+          "heading": null,
+          "target": "Divinity/Hierophant"
+        },
+        {
+          "alias": "Iridescent Church",
+          "heading": null,
+          "target": "Org/Iridescent Church/index"
+        },
+        {
+          "alias": "the Scale",
+          "heading": null,
+          "target": "Org/The Scale/index"
+        },
+        {
+          "alias": "Belvedere",
+          "heading": null,
+          "target": "Org/Belvedere/index"
         }
       ],
-      "date": "2026-06-22T00:00:00-04:00",
+      "date": "2026-06-29T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-22T00:00:00-04:00"
+          "date": "2026-06-29T00:00:00-04:00"
         },
         "img": null,
         "tags": [],

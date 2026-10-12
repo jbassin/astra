@@ -1969,6 +1969,8 @@ entity "Vermin" kind="creature" page="Bestiary/Vermin" {
     alias "Mioktan"
     alias "Swarm Child"
     alias "The Hivemother"
+    alias "Scythe-Armed Spider"
+    alias "Apothecary Bug"
     source "akasha"
 }
 entity "Vilksnake" {
