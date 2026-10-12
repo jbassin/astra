@@ -113,6 +113,13 @@
       "target": "Geography/Calaria/Ragged Roost"
     },
     {
+      "alias": "Harlequins",
+      "heading": null,
+      "resolved": "Org/The Harlequins/index",
+      "source": "Bestiary/Fiends",
+      "target": "Org/The Harlequins/index"
+    },
+    {
       "alias": "Joker World at Star 221,325",
       "heading": null,
       "resolved": "Geography/Star 221,325",
@@ -8485,6 +8492,13 @@
       "target": "Org/Belvedere/index"
     },
     {
+      "alias": "corrupted Harlequins",
+      "heading": null,
+      "resolved": "Bestiary/Fiends",
+      "source": "Org/The Harlequins/Providence/Helm",
+      "target": "Bestiary/Fiends"
+    },
+    {
       "alias": "Grayson",
       "heading": null,
       "resolved": "Org/Amber Call/People/Silven Grayson",
@@ -13552,6 +13566,11 @@
           "target": "Geography/Calaria/Ragged Roost"
         },
         {
+          "alias": "Harlequins",
+          "heading": null,
+          "target": "Org/The Harlequins/index"
+        },
+        {
           "alias": "Joker World at Star 221,325",
           "heading": null,
           "target": "Geography/Star 221,325"
@@ -13577,13 +13596,14 @@
           "target": "Org/The Scale/Voice of Many"
         }
       ],
-      "date": "2026-06-01T00:00:00-04:00",
+      "date": "2026-09-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Babau",
           "Barbazu",
           "Barghest",
           "Brimorak",
+          "Corrupted Harlequin",
           "Hellion",
           "Ort",
           "Pusk",
@@ -13591,7 +13611,7 @@
           "Vitriolite"
         ],
         "extra": {
-          "date": "2026-06-01T00:00:00-04:00"
+          "date": "2026-09-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -23353,16 +23373,21 @@
           "target": "Org/Belvedere/index"
         },
         {
+          "alias": "corrupted Harlequins",
+          "heading": null,
+          "target": "Bestiary/Fiends"
+        },
+        {
           "alias": "Grayson",
           "heading": null,
           "target": "Org/Amber Call/People/Silven Grayson"
         }
       ],
-      "date": "2026-08-24T00:00:00-04:00",
+      "date": "2026-09-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-24T00:00:00-04:00"
+          "date": "2026-09-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -23475,11 +23500,11 @@
           "target": "Phenomena/Infinite Horizon"
         }
       ],
-      "date": "2026-08-24T00:00:00-04:00",
+      "date": "2026-09-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-24T00:00:00-04:00"
+          "date": "2026-09-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -23669,11 +23694,11 @@
           "target": "Org/Amber Call/index"
         }
       ],
-      "date": "2026-08-24T00:00:00-04:00",
+      "date": "2026-09-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-24T00:00:00-04:00"
+          "date": "2026-09-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -23729,11 +23754,11 @@
           "target": "Org/Amber Call/index"
         }
       ],
-      "date": "2026-08-24T00:00:00-04:00",
+      "date": "2026-09-17T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-08-24T00:00:00-04:00"
+          "date": "2026-09-17T00:00:00-04:00"
         },
         "img": null,
         "tags": [],

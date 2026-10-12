@@ -630,6 +630,7 @@ entity "Fiends" kind="creature" page="Bestiary/Fiends" {
     alias "Barbazu"
     alias "Barghest"
     alias "Brimorak"
+    alias "Corrupted Harlequin"
     alias "Hellion"
     alias "Ort"
     alias "Pusk"
