@@ -1,6 +1,6 @@
 # 0034 — mouthpiece producer: an RLM that briefs the recap script (spec)
 
-**Status:** FINAL (2026-10-12) — ready to build — adversarial review folded (2 blockers + 5 majors + 7 minors,
+**Status:** BUILT (2026-10-12) — S1–S3 + the experiment run done; ship decision pending — adversarial review folded (2 blockers + 5 majors + 7 minors,
 evidence spot-checked, all folded — see §9).
 **Scope doc:** `thoughts/shared/research/2026-10-12-mouthpiece-producer-0034-thoughts.md` (D1–D5 stakeholder-resolved).
 **Template:** heartwood 0033's RLM machinery (`apps/heartwood-backend/src/astra_heartwood/agent/`) and
@@ -291,3 +291,31 @@ One reviewer, verified against the repo; all folded.
 - **Minors folded:** D34-3 rationale corrected + scalar→list coercion; brief placement pinned; shared
   `cleaned_turns_for` (D34-11); gate C mechanism + gate D pass bar; wiki head start/end + dirty flag; metric
   name `cost_usd`; sandbox warm always + fail-fast.
+
+## 10. Build record (2026-10-12)
+
+Commits: S1 `d76feccf` (lift RLM core → `astra_llm.rlm`), S2 `b278dc02` (producer + prompt seam),
+S3 `a2a298d0` (experiment runner + recipes), `f340693d` (DeepSeek price → current listing).
+
+Gates: **A** heartwood suite green after S1 and S2 with zero test edits · **B** golden byte-identity test
+· **C** read-only (tree hash + write-mode guards) and boundary tests; real-Deno scripted run proves a
+typed `SUBMIT(brief={...})` incl. an in-loop `[Type Error]` retry · **D** below · **E** run dir delivered,
+nothing under `episodes/` touched.
+
+Pre-run check (free OpenRouter `/models`): DeepSeek V4.1 Flash max completion 393,216, `tools` +
+`tool_choice` supported; listing price $0.15/$0.60 (row corrected). GLM 5.3 listing is $0.079/$4.80 vs
+the table's $1.15/$3.50 — pre-existing drift, left for a separate fix.
+
+**Experiment, 2026-10-5** (`artifacts/mouthpiece-experiments/2026-10-5/20261012T175346Z/`):
+
+- Producer: `ok`, 28/30 iterations, 0 parse errors, 607 s, **$0.196**; 12 moments, 22 lore notes (19 with
+  pages), 9 callbacks reaching back to 2026-5-21, 0/144 citations repaired. Wiki head `bad677b5` clean at
+  start and end.
+- Scripts: GLM 5.3 + brief — 5,181 words, lint 8/10, **$0.22**; DeepSeek + brief — 5,861 words but 464
+  short turns, clean-line ratio 0.78 (lint 5/10), **$0.04**; live baseline lint 7/10.
+- Brief lore names said: baseline 13/22, GLM 18/22, DeepSeek 17/22.
+- ⚠ Finding: the brief erodes the newcomer seat — Nell's turns with a question drop from 31/52 (baseline)
+  to 16/50 (GLM); she recites brief lore ("I did my homework"). Fix candidate: tell Pass A the newcomer
+  has NOT read the producer notes (heading/prompt wording) — a stakeholder decision.
+- Reading: DeepSeek's dialogue is choppy sitcom rhythm; GLM + brief reads closest to the live show with
+  better grounding and real long-range callbacks.
