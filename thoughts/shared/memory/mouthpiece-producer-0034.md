@@ -17,7 +17,11 @@ stop asking (16/50 question turns vs 31/52); the seat guard `4d5c4e30` ("only th
 
 **Why:** [[heartwood-0033-gotchas]] showed DeepSeek RLMs navigate transcript+wiki cheaply; fixed grounding
 needed the manual force-grounding recipe ([[ashen-pact-mouthpiece-grounding]]).
-**How to apply:** next = ship decision (D4: Deno in dagster-code vs host step) and wiring into `session_script`.
+**LIVE since 2026-10-12 (0035, `997d2904`+`8eb9cd06`):** `session_brief` asset (digest → brief → script) runs in
+dagster-code with Deno 2.5.6 cache-only (Pyodide 314.0.7 warmed at build); wiki mounted live read-only. Producer
+failure → no `brief.json` → script falls back to the old prompt (WARN, no page). In-container proof on 2026-10-5:
+$0.06, 4 min. Spec `thoughts/astra/specs/0035-mouthpiece-producer-wiring-spec.md`.
+**How to apply:** check the first new session's `mouthpiece.script.brief` span attr = "used" and listen to it.
 
 Gotchas:
 - dspy RLM typed output: declare `brief: ProducerBrief` — a `str` output `str()`s a submitted dict into a
@@ -30,3 +34,11 @@ Gotchas:
 - `LiteLLMClient` prices from a static table: an unknown model silently costs $0; GLM 5.3's row has
   drifted from the OpenRouter listing ($0.079/$4.80 now).
 - `pnpm run lint` OOMs at default threads; run `oxlint ... --threads=4` directly.
+- (0035) The dagster-code image has NO git: `subprocess.run(["git",…])` raises FileNotFoundError regardless
+  of `check=False` — catch OSError. A detached CLI `dagster asset materialize` exports no telemetry; launch
+  proof runs via GraphQL `launchRun` (location `astra-pipeline`, repo `__repository__`, job `__ASSET_JOB`).
+- (0035) `--select session_script` re-renders now REUSE `episodes/<date>/brief.json` (2026-10-5 has one);
+  add `session_brief` to the selection for a fresh brief. The force-grounding recipe only affects the fallback.
+- (0035) The Deno warm layer re-runs on any source change and may pull a newer unpinned Pyodide — the build log
+  prints it; `sandbox_version` swallows errors, so the warm step exits 1 on `None`.
+- (0035) Before 0035 the container read an image-baked wiki copy (stale since the last `just up`).

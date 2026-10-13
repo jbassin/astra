@@ -1,6 +1,6 @@
 # 0035 — mouthpiece producer wiring: the brief in the live pipeline (spec)
 
-**Status:** FINAL (2026-10-12) — ready to build — adversarial review folded (1 blocker + 3 majors + 7 minors,
+**Status:** BUILT + DEPLOYED + LIVE (2026-10-12) — adversarial review folded (1 blocker + 3 majors + 7 minors,
 evidence spot-checked — see §5).
 **Scope doc:** `thoughts/shared/research/2026-10-12-mouthpiece-producer-wiring-0035-thoughts.md` (D1–D5 stakeholder-resolved).
 **Builds on:** 0034 (`thoughts/astra/specs/0034-mouthpiece-producer-spec.md`) — the producer, `astra_llm.rlm`,
@@ -150,3 +150,24 @@ One reviewer, verified against the repo and the running container; all folded.
   Debian 13 glibc runs Deno; paths resolve in-container; `OPENROUTER_API_KEY` in the dagster env; no paid
   downstream re-run for 2026-10-5; publish/seed/timers ignore `brief.json` and `producer/`; two concurrent
   runs are safe (date-keyed dirs, read-only cache).
+
+## 6. Build record (2026-10-12)
+
+Commits: S1 `997d2904` (Deno cache-only sandbox in the image + live read-only wiki mount), S2 `8eb9cd06`
+(`session_brief` asset + script brief path + wiring + `wiki_head` without git). Deployed with `just up`.
+
+- **A ✅** build log `pyodide: 314.0.7 3.14.2` (same as the host); `docker run --network none --user
+  1000:1000` of `astra-dagster:local` → `cmd: ['deno', 'run', '--cached-only']`, `out: 1`.
+- **B ✅** full Python lane green (stage tests ok/incomplete/failed/setup-error, used/fallback/invalid,
+  `wiki_head` without git, sensor target + defs + no retry policy; 0034 golden still passes).
+- **C ✅** GraphQL `launchRun` of `session_brief` for 2026-10-5 (run `b02ccc02`): SUCCESS; producer `ok`,
+  27 iterations, 247 s, **$0.062** (current DeepSeek price), 11 moments / 19 lore (all with pages) / 7
+  callbacks, 0/102 citations repaired, `wiki_head` sha None (no git, as designed). SigNoz: `mouthpiece.session_brief`
+  → `mouthpiece.producer.run` under `astra.pipeline`, no error spans, 0 ERROR/FATAL logs.
+- **D ✅** 2026-10-5 `script.json`, episode mp3 and `digest.json` sha256-identical before/after; no TTS.
+
+Pre-existing residue seen: a run for 2026-6-22 (`6bd2d792`, digest+script) stuck in STARTED since
+2026-06-26 — orphaned by an old container restart, not running; left untouched.
+
+**Next proof:** the first new session after this deploy — check `mouthpiece.script.brief="used"` on its
+`mouthpiece.session_script` span and listen to the episode.
