@@ -167,7 +167,8 @@ Commits: S1 `997d2904` (Deno cache-only sandbox in the image + live read-only wi
 - **D ✅** 2026-10-5 `script.json`, episode mp3 and `digest.json` sha256-identical before/after; no TTS.
 
 Pre-existing residue seen: a run for 2026-6-22 (`6bd2d792`, digest+script) stuck in STARTED since
-2026-06-26 — orphaned by an old container restart, not running; left untouched.
+2026-06-26 — orphaned by an old container restart, not running; marked FAILURE by hand on request
+(`instance.report_run_failed`, 2026-10-12).
 
 **Next proof:** the first new session after this deploy — check `mouthpiece.script.brief="used"` on its
 `mouthpiece.session_script` span and listen to the episode.
