@@ -48,6 +48,11 @@ x-dagster-volumes: &dagster-pipeline-volumes
   # in the container layer, never reaching the host. Mount it so it persists host-owned.
   - /ruby/data/experiments/astra/apps/linguist/timeline:/repo/apps/linguist/timeline
   - /ruby/data/experiments/astra/apps/mouthpiece-backend/episodes:/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes
+  # The akasha wiki, LIVE and read-only (0035 D35-3): the producer (session_brief) and the
+  # script fallback's grounding read it. Before this the container read the copy baked in
+  # at the last `just up`, missing everything heartwood published since. Nothing in Dagster
+  # writes here (akasha_corpus_snapshot writes apps/akasha-backend/snapshot/).
+  - /ruby/data/experiments/astra/apps/akasha-backend/content:/repo/apps/akasha-backend/content:ro
 
 services:
   # --- Dagster: the batch-pipeline control plane ---

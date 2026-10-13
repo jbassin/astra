@@ -54,6 +54,20 @@ RUN uv sync --frozen --no-dev
 # server's gRPC protocol matches the webserver/daemon.
 RUN uv pip install "dagster-webserver==1.13.10" "dagster-postgres==0.29.10"
 
+# Deno for dspy's RLM sandbox (Deno + Pyodide) — the mouthpiece producer's session_brief
+# asset (0035 D35-1). Pinned to the host's 2.5.6. dspy's runner.js imports an UNPINNED
+# npm:pyodide + deno.land/std@0.186.0, so warm them into DENO_DIR here (network at build
+# time) and run the sandbox cache-only at runtime (ASTRA_DENO_CACHED_ONLY → `deno run
+# --cached-only`, astra_llm.rlm.make_interpreter): a runtime can never fetch a different
+# Pyodide; a rebuild can, and this step prints the version. start() raises on a failed
+# fetch and a None version fails the build (sandbox_version swallows errors). This layer
+# sits after the workspace COPY, so any source change re-runs it.
+COPY --from=denoland/deno:bin-2.5.6 /deno /usr/local/bin/deno
+ENV DENO_DIR=/opt/deno \
+    DENO_NO_PACKAGE_JSON=1 \
+    ASTRA_DENO_CACHED_ONLY=1
+RUN ASTRA_DENO_CACHED_ONLY= python -c 'import sys; from astra_llm.rlm import make_interpreter as mk, sandbox_version as v; i = mk(); i.start(); ver = v(i); print("pyodide:", ver); i.shutdown(); sys.exit(0 if ver else 1)'
+
 # Code location: definitions.py loads the asset graph (imports the installed packages).
 WORKDIR /opt/dagster/app
 COPY dagster/definitions.py ./
@@ -74,5 +88,5 @@ COPY dagster/dagster.yaml dagster/workspace.yaml "$DAGSTER_HOME"/
 # dir to create the file — this step failed with EACCES after the run-as-1000 cutover).
 ENV HOME=/opt/dagster/home
 RUN mkdir -p "$DAGSTER_HOME/storage" \
-    && chown -R 1000:1000 /opt/dagster \
+    && chown -R 1000:1000 /opt/dagster /opt/deno \
     && chown 1000:1000 /repo/apps/linguist

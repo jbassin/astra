@@ -447,8 +447,27 @@ def sandbox_version(interpreter: Any) -> str | None:
     return str(out).strip() or None
 
 
+#: Set (non-empty) in the dagster-code image (0035 D35-2): the sandbox runs ``deno run
+#: --cached-only`` so a runtime can never fetch a different Pyodide than the build warmed.
+CACHED_ONLY_ENV = "ASTRA_DENO_CACHED_ONLY"
+
+
 def make_interpreter() -> Any:
+    """dspy's ``PythonInterpreter``; cache-only when ``ASTRA_DENO_CACHED_ONLY`` is set.
+
+    The cache-only command keeps dspy's default read grants (``runner.js`` + ``DENO_DIR``,
+    dspy 3.2.1 ``python_interpreter.py:144-156``); with ``deno_command`` overridden dspy
+    still injects tools and output fields and passes ``os.environ``.
+    """
     from dspy.primitives.python_interpreter import PythonInterpreter
 
     prepare_sandbox_env()
-    return PythonInterpreter()
+    if not os.environ.get(CACHED_ONLY_ENV):
+        return PythonInterpreter()
+    probe = PythonInterpreter()
+    runner, deno_dir = probe._get_runner_path(), probe._get_deno_dir()
+    if not deno_dir:
+        raise RuntimeError(f"{CACHED_ONLY_ENV} is set but DENO_DIR could not be resolved")
+    return PythonInterpreter(
+        deno_command=["deno", "run", "--cached-only", f"--allow-read={runner},{deno_dir}", runner]
+    )

@@ -133,3 +133,41 @@ def test_hardened_rlm_uses_the_supplied_budget_note() -> None:
     plain = HardenedRLM(Sig, max_iterations=10)
     assert plain._budget_note is default_budget_note
     assert "SUBMIT" in default_budget_note(9, 10) and "1 step." in default_budget_note(9, 10)
+
+
+def test_make_interpreter_default_is_dspy_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv(rlm_mod.CACHED_ONLY_ENV, raising=False)
+    interp = rlm_mod.make_interpreter()
+    assert "--cached-only" not in interp.deno_command
+
+
+def test_make_interpreter_cached_only_command(monkeypatch: pytest.MonkeyPatch) -> None:
+    from dspy.primitives.python_interpreter import PythonInterpreter
+
+    monkeypatch.setenv(rlm_mod.CACHED_ONLY_ENV, "1")
+    # _get_deno_dir is lru_cached on first use, so stub it rather than DENO_DIR
+    monkeypatch.setattr(PythonInterpreter, "_get_deno_dir", lambda self: "/opt/deno")
+    interp = rlm_mod.make_interpreter()
+    cmd = interp.deno_command
+    assert cmd[:3] == ["deno", "run", "--cached-only"]
+    assert cmd[3].startswith("--allow-read=") and cmd[3].endswith(",/opt/deno")
+    assert cmd[-1].endswith("runner.js") and cmd[3].split("=", 1)[1].split(",")[0] == cmd[-1]
+
+
+def test_make_interpreter_cached_only_needs_a_deno_dir(monkeypatch: pytest.MonkeyPatch) -> None:
+    from dspy.primitives.python_interpreter import PythonInterpreter
+
+    monkeypatch.setenv(rlm_mod.CACHED_ONLY_ENV, "1")
+    monkeypatch.setattr(PythonInterpreter, "_get_deno_dir", lambda self: None)
+    with pytest.raises(RuntimeError, match="DENO_DIR"):
+        rlm_mod.make_interpreter()
+
+
+@pytest.mark.skipif(not rlm_mod.deno_available(), reason="needs deno (warmed cache)")
+def test_cached_only_sandbox_executes(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv(rlm_mod.CACHED_ONLY_ENV, "1")
+    interp = rlm_mod.make_interpreter()
+    try:
+        assert interp.execute("print(6 * 7)").strip() == "42"
+    finally:
+        interp.shutdown()
