@@ -95,6 +95,36 @@ def test_call_structured_returns_validated_model() -> None:
     assert beat.title == "The Voidheart" and beat.order == 1
 
 
+def _sequence_client(*responses: Any) -> tuple[LiteLLMClient, list[int]]:
+    """A client returning `responses` in order; the list counts completions made."""
+    calls: list[int] = []
+    queue = list(responses)
+
+    def completion(**_: Any) -> Any:
+        calls.append(1)
+        return queue.pop(0)
+
+    return LiteLLMClient(completion_fn=completion), calls
+
+
+def test_call_structured_retries_a_reply_that_fails_validation() -> None:
+    # 2026-10-12 chronicle: a list field arrived as a JSON-encoded string + a field dropped
+    bad = _response(tool_args={"title": "x", "order": "not-an-int"}, finish_reason="tool_calls")
+    good = _response(tool_args={"title": "The Voidheart", "order": 1}, finish_reason="tool_calls")
+    client, calls = _sequence_client(bad, good)
+    beat = client.call_structured(_Beat, system="sys", user_content="hi")
+    assert beat.order == 1 and len(calls) == 2
+
+
+def test_call_structured_gives_up_with_a_typed_error() -> None:
+    bad = _response(tool_args={"title": "x"}, finish_reason="tool_calls")  # order missing
+    client, calls = _sequence_client(bad, bad, bad)
+    with pytest.raises(LlmError, match="failed validation after 3 attempts") as exc:
+        client.call_structured(_Beat, system="sys", user_content="hi")
+    assert len(calls) == 3
+    assert exc.value.__cause__ is not None  # chained to the last ValidationError
+
+
 # --- call_text -------------------------------------------------------------------------
 def test_call_text_returns_text() -> None:
     client = _client(_response(content="Bram: uh— Maeve: the Voidheart.", finish_reason="stop"))

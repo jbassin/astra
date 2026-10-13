@@ -22,11 +22,13 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Protocol, TypeVar
 
-from astra_observe import get_meter
+from astra_observe import get_logger, get_meter
 from opentelemetry import trace
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from .pricing import TokenCounts, cost_usd
+
+_log = get_logger("astra.llm")
 
 # Fallback when a caller passes no model (kept config-agnostic — this lib is a pure seam).
 # The PIPELINE is authoritative via config.kdl: scribe passes `scribe.model` and the
@@ -43,6 +45,10 @@ REQUEST_TIMEOUT_S = 300
 #: model glitch on large structured outputs). litellm's `num_retries` only covers API errors,
 #: so we retry the whole completion this many times before giving up with a typed LlmError.
 _TOOL_JSON_ATTEMPTS = 3
+#: `call_structured`: a forced tool call can return well-formed JSON that still fails the
+#: output model (GLM/OpenRouter: a list field sent as a JSON-encoded string, a required field
+#: dropped — chronicle 2026-10-12). Retry the whole call this many times on ValidationError.
+_STRUCTURED_ATTEMPTS = 3
 _ANTHROPIC_PREFIX = "anthropic/"
 
 T = TypeVar("T", bound=BaseModel)
@@ -298,22 +304,42 @@ class LiteLLMClient:
         tool_name: str = "record",
         tool_description: str = "Record the structured result.",
     ) -> T:
-        """Forced-tool → validated Pydantic instance (the typed-output path)."""
+        """Forced-tool → validated Pydantic instance (the typed-output path).
+
+        A reply that fails `output_model` validation is retried as a whole call, up to
+        `_STRUCTURED_ATTEMPTS` times; then a typed `LlmError` (chained to the last
+        ValidationError) is raised. Each attempt is a real, billed completion.
+        """
         tool = ToolSpec(
             name=tool_name,
             description=tool_description,
             input_schema=output_model.model_json_schema(),
         )
-        raw = self.call_tool(
-            ToolCallRequest(
-                system=system,
-                user_content=user_content,
-                tool=tool,
-                model=model,
-                max_tokens=max_tokens,
-            )
+        req = ToolCallRequest(
+            system=system,
+            user_content=user_content,
+            tool=tool,
+            model=model,
+            max_tokens=max_tokens,
         )
-        return output_model.model_validate(raw)
+        last: ValidationError | None = None
+        for attempt in range(1, _STRUCTURED_ATTEMPTS + 1):
+            raw = self.call_tool(req)
+            try:
+                return output_model.model_validate(raw)
+            except ValidationError as err:
+                last = err
+                _log.warning(
+                    "call_structured %s: reply failed validation (attempt %d/%d): %s",
+                    output_model.__name__,
+                    attempt,
+                    _STRUCTURED_ATTEMPTS,
+                    str(err).splitlines()[0],
+                )
+        raise LlmError(
+            f"Structured output for {output_model.__name__} failed validation after "
+            f"{_STRUCTURED_ATTEMPTS} attempts: {last}"
+        ) from last
 
     def call_text(self, req: TextRequest) -> str:
         """Free-text completion (no tool). Truncation + empty-output both raise."""
