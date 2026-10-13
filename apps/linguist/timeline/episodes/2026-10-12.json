@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-12",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Hesperid 3: The Ghosts of a Seventy-Year Siege",
+    "synopsis": "The party loads up their SUV and drives ~150 miles across the wastes to investigate a mysterious mining outpost detected by Ternion Heavy's scouting plane. They discover \"Hesperid 3\" — a half-submerged steel facility manned long ago by a team of off-world phlogiston miners who were abandoned by their HQ for decades. After clearing a rockfall and repairing a severed power line, the party opens a sealed door and is ambushed by the flame-wreathed undead remains of the mining crew and their extra-planar handlers.",
+    "key_beats": [
+      "The party attempts to borrow a vehicle from the RunGunners, but finds their Fane heavily fortified with walls, turrets, and Gatling guns. A sniper fires warning shots and they are turned away despite Johnny's diplomacy attempt (35).",
+      "The party recruits Tamara and Yao from the Protectorate to drive a second car as backup. Argyle casts Show the Way and Wanderer's Guide to negate difficult terrain for the journey, and the Machine God secretly lowers their car via elevator (keeping the trump card hidden from the Protectorate).",
+      "A crit-41 survival check from Argyle finds a dried riverbed acting as a natural highway, making the ~2-hour drive to the outpost smooth at full speed.",
+      "They arrive at 'Hesperid 3' — a recycled-steel building half-sunk into the ground with red glow-lights and a monorail track. Detect Metal reveals an unfamiliar iron-carbon-boron alloy and unusually structured titanium throughout.",
+      "The intercom cycles through unknown languages; Argyle casts Translate on Johnny and the message says 'Hesperid 3 awaiting maintenance, door unlocked.' They enter to find a cool, dry interior with a bubbling pool of dark red liquid (not raw phlogiston per Oceloth), workstations, lab equipment, and a console reading 'Auxiliary Power Online / Refining Interrupted / Breach in Refinement Cell.'",
+      "Personal effects reveal the occupants were off-world humanoids: an animated photo shows a human (Sergeant Ulrich Benda), an elf, and a dwarf in militaristic blue uniforms bearing a 16-dot star logo — an organization from beyond Færrin.",
+      "A series of mail logs from Ulrich Benda spans 70 years: Year 72 (arrival, expecting 1-2 year stay), Year 84 (3 months without HQ contact, 2nd barrel nearly done), Year 94 (nearly a decade without HQ, Thurston burned, Sybil's train trips fail, 3rd barrel shipped, musing about escape), Year 121 (Sybil dead of old age, only 6 barrels produced in 50 years, Ulrich and Thurston accelerating production and declaring 'we left, you abandoned us').",
+      "The party finds 4 full phlogiston barrels in a train car at the secondary station. A console map shows a blockage on the monorail line; Anzu uses Telekinetic Haul to clear the rockfall, revealing a crushed wire. His crafting repair fails (23), but Argyle casts Mending over 10 minutes to restore the connection, unlocking sealed doors.",
+      "Opening the newly unlocked door reveals undead: 'Once Was Thurston,' 'Once Was Ulrich,' 'Once Was Sybil' (skeletal, wreathed in red flames, semi-corporeal) and 'Thing from Beyond' extra-planar entities. Combat erupts.",
+      "Argyle's Define Wrath deals persistent force damage to the extra-planar creatures; Anzu's amped Frostbite deals enormous damage (79 twice, gaining 39+ temp HP each time); Johnny stacks debuffs (Dirge of Doom, Bon Mot, Synesthesia, Albatross Curse); Benny's slowed status from Crushing Despair limits him but his crit death-drinking falcata strike disintegrates Once Was Ulrich — and Sibyl collapses with him. The Things from Beyond are destroyed by force damage.",
+      "Post-combat, the party spots another full barrel in the room. They have 5 barrels of phlogiston and a partially-built spaceship, while the Strider still needs to get moving within weeks and Galzu continues powering up in her pod."
+    ],
+    "characters_present": [
+      "Argyle (Jorge)",
+      "Anzu (Tanner)",
+      "Benny (Mike)",
+      "Johnny (Noah)",
+      "Oceloth (familiar, NPC)",
+      "Machine God (NPC)",
+      "Tamara (Protectorate, NPC)",
+      "Yao (Protectorate, NPC)",
+      "Sergeant Ulrich Benda (voice logs, NPC)",
+      "Thurston (voice logs / undead, NPC)",
+      "Sybil (voice logs / undead, NPC)",
+      "Jethro (Ternion Heavy, referenced)",
+      "Egan (NPC, stayed at base)",
+      "Once Was Thurston (undead)",
+      "Once Was Ulrich (undead)",
+      "Once Was Sybil (undead)",
+      "Thing from Beyond (extra-planar entity, x2)"
+    ],
+    "locations": [
+      "The Strider (mobile base)",
+      "RunGunners' Fane",
+      "Hesperid 3 (phlogiston mining outpost)",
+      "The wastes between the Strider and the outpost"
+    ],
+    "factions": [
+      "The Party's Fane",
+      "RunGunners",
+      "The Protectorate",
+      "Ternion Heavy",
+      "The Scale",
+      "16 Stars (Ulrich Benda's organization)",
+      "Machine God"
+    ],
+    "items": [
+      "Party SUV (armored)",
+      "Protectorate vehicle (driven by Tamara/Yao)",
+      "5 barrels of refined phlogiston",
+      "Empty titanium-lined barrels (abjurative magic)",
+      "Partially-constructed spaceship/train (space-time manipulation magic)",
+      "Monorail train car",
+      "Animated photo frame of Ulrich Benda's crew",
+      "Console systems with mail logs",
+      "Oceloth (owl familiar)",
+      "Benny's silvered falcata with death-drinking rune",
+      "Benny's silvered polytool with crushing rune",
+      "Sovereign Steel needle darts"
+    ],
+    "cliffhanger": "The party has cleared Hesperid 3 of its undead inhabitants and recovered 5 barrels of phlogiston plus a partially-built spaceship — but there's still more of the facility to explore, Galzu is still powering up in her pod back on the Strider, and the RunGunners refused to help when asked."
+  }
+}
