@@ -21,7 +21,10 @@ needed the manual force-grounding recipe ([[ashen-pact-mouthpiece-grounding]]).
 dagster-code with Deno 2.5.6 cache-only (Pyodide 314.0.7 warmed at build); wiki mounted live read-only. Producer
 failure → no `brief.json` → script falls back to the old prompt (WARN, no page). In-container proof on 2026-10-5:
 $0.06, 4 min. Spec `thoughts/astra/specs/0035-mouthpiece-producer-wiring-spec.md`.
-**How to apply:** check the first new session's `mouthpiece.script.brief` span attr = "used" and listen to it.
+**First live session 2026-10-12 ✅:** brief 4m29s/$0.18 (0/92 citations bad) → script `brief=used` in 12m08s (fastest
+on record) "The Door Answers With a Rifle", lint 8/10, Nell asks 47% (live pre-brief 60%), 6,727 words (over the
+~6k cap). Zip → published 44 min. Stage history table: `artifacts/pipeline-timing-2026-10-12.md` (gitignored).
+**How to apply:** listen to 2026-10-12; watch Nell's share and episode length on the next sessions.
 
 Gotchas:
 - dspy RLM typed output: declare `brief: ProducerBrief` — a `str` output `str()`s a submitted dict into a
@@ -42,3 +45,10 @@ Gotchas:
 - (0035) The Deno warm layer re-runs on any source change and may pull a newer unpinned Pyodide — the build log
   prints it; `sandbox_version` swallows errors, so the warm step exits 1 on `None`.
 - (0035) Before 0035 the container read an image-baked wiki copy (stale since the last `just up`).
+- (2026-10-12) chronicle `session_episode_summary` failed on GLM structured output that parsed but failed
+  `EpisodeSummary` (items as a JSON string, cliffhanger missing) → mouthpiece gate stayed closed until a hand
+  FROM_FAILURE re-run. Fixed `a8de0bcd`: `call_structured` retries ValidationError ×3 then raises LlmError
+  (deployed 00:40 after the episode — `just up` mid-run would kill the mouthpiece run).
+- Pipeline stage times (first passes, 9-7…10-12): scribe 8–11.5 min (Whisper), linguist+chronicle 1–6 min,
+  digest 1–11 min, brief ≈ 4.5 min, script 12–36 min (most failure-prone), TTS 7–15 min, assemble ≈ 20 s;
+  sensor handoffs 10–30 s. Dagster `stepStats` via GraphQL has every run's step times.
