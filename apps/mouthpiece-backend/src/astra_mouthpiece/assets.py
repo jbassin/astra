@@ -40,6 +40,7 @@ from .grounding import pages_from_corpus
 from .hosts import load_hosts
 from .inputs import cleaned_turns_for
 from .models import AudioManifest, HostConfig, Script, SessionDigest, VoiceConfig
+from .producer.stage import produce_brief, script_brief_block
 from .roster import build_roster_block
 from .session import build_episode_script
 from .tts.cartesia import CartesiaTTSProvider
@@ -59,6 +60,9 @@ _meter = get_meter("astra.mouthpiece")
 _tracer = get_tracer("astra.mouthpiece")
 _episodes_counter = _meter.create_counter(
     "astra.mouthpiece.episodes", description="episodes produced"
+)
+_brief_counter = _meter.create_counter(
+    "astra.mouthpiece.script.brief", description="scripts written with / without a producer brief"
 )
 
 
@@ -206,9 +210,30 @@ def session_digest(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
         )
 
 
+@dg.asset(partitions_def=mouthpiece_sessions, deps=[session_digest], group_name="mouthpiece")
+def session_brief(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+    """The producer brief (0035): a read-only DeepSeek RLM reads the cleaned transcript +
+    the live akasha wiki, the chronicle, earlier transcripts and scripts → `brief.json`.
+
+    NO retry policy: a ~10-minute paid RLM must not run 4× (litellm retries transient
+    provider errors per call). A failed producer still materializes — with no
+    `brief.json` — so `session_script` falls back to the old prompt (0035 D2)."""
+    key = context.partition_key
+    with _tracer.start_as_current_span("mouthpiece.session_brief") as span:
+        span.set_attribute("mouthpiece.key", key)
+        meta = produce_brief(key)
+        span.set_attribute("mouthpiece.brief.status", meta["status"])
+        if meta.get("cost_usd") is not None:
+            span.set_attribute("mouthpiece.brief.cost_usd", meta["cost_usd"])
+        _log.info("mouthpiece brief %s → %s", key, meta["status"])
+        return dg.MaterializeResult(
+            metadata={k: v for k, v in meta.items() if v is not None and k != "run_dir"}
+        )
+
+
 @dg.asset(
     partitions_def=mouthpiece_sessions,
-    deps=[session_digest],
+    deps=[session_digest, session_brief],
     group_name="mouthpiece",
     retry_policy=_EXTERNAL_RETRY,
 )
@@ -233,6 +258,11 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
         # Deterministic character roster (§4.1.3) — same best-effort posture as
         # continuity: an unmatched/excluded show yields no roster block, not an error.
         roster_block = build_roster_block(show.slug) if show else ""
+        # The producer brief (0035 D35-5): when present it replaces the wiki excerpts +
+        # continuity in Pass A; absent/unreadable → today's prompt, unchanged.
+        brief_block, brief_outcome = script_brief_block(key, hosts)
+        span.set_attribute("mouthpiece.script.brief", "used" if brief_block else "fallback")
+        _brief_counter.add(1, {"outcome": brief_outcome})
         script = build_episode_script(
             LiteLLMClient(),
             digest,
@@ -242,6 +272,7 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
             roster_block=roster_block,
             continuity_block=continuity_block,
             model=_llm_model(),
+            brief_block=brief_block,
         )
         span.set_attribute("mouthpiece.continuity_episodes", len(prior))
         span.set_attribute("mouthpiece.continuity_chars", len(continuity_block))
@@ -373,7 +404,7 @@ def episodes_index(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
 # was exactly that. Adoption registers the existing transcripts as done-at-rest partitions
 # without running them, so only sessions that appear AFTER enable trigger the paid chain.
 @dg.sensor(
-    target=[session_digest, session_script, session_audio_clips, session_episode],
+    target=[session_digest, session_brief, session_script, session_audio_clips, session_episode],
     minimum_interval_seconds=30,
     default_status=dg.DefaultSensorStatus.RUNNING,
 )
@@ -420,6 +451,7 @@ def linguist_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResu
 defs = dg.Definitions(
     assets=[
         session_digest,
+        session_brief,
         session_script,
         session_audio_clips,
         session_episode,

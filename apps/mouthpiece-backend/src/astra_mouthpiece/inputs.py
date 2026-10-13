@@ -8,9 +8,13 @@ only reads: the digest is loaded without `assets._session_dir`'s `mkdir`.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from . import clean, linguist_io
 from .models import SessionDigest
+
+if TYPE_CHECKING:
+    from .producer.brief import ProducerBrief
 
 
 def episodes_root() -> Path:
@@ -46,3 +50,18 @@ def cleaned_turns_for(
     clean.assert_no_drift(turns, digest)
     speech, _ = clean.drop_hallucinations(turns)
     return clean.apply_kept_ranges(speech, digest.kept_ranges)
+
+
+def brief_path(key: str, *, root: Path | None = None) -> Path:
+    """`episodes/<key>/brief.json` — the producer brief `session_script` reads (0035 D35-8)."""
+    return (root if root is not None else episodes_root()) / key / "brief.json"
+
+
+def read_brief(key: str, *, root: Path | None = None) -> ProducerBrief | None:
+    """The session's brief, or None when absent. Raises on an invalid file (caller WARNs)."""
+    from .producer.brief import ProducerBrief
+
+    path = brief_path(key, root=root)
+    if not path.is_file():
+        return None
+    return ProducerBrief.model_validate_json(path.read_text(encoding="utf-8"))

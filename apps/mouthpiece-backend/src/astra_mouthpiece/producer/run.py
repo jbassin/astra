@@ -90,9 +90,14 @@ def wiki_head(repo: Path = REPO_ROOT) -> dict[str, Any]:
     """The last commit touching the wiki tree + whether it has local changes (D34-5)."""
 
     def git(*args: str) -> str:
-        proc = subprocess.run(
-            ["git", "-C", str(repo), *args], capture_output=True, text=True, check=False
-        )
+        # The dagster-code image has no git; subprocess.run raises FileNotFoundError for a
+        # missing binary whatever check= says (0035 D35-7) — degrade to "unknown".
+        try:
+            proc = subprocess.run(
+                ["git", "-C", str(repo), *args], capture_output=True, text=True, check=False
+            )
+        except OSError:
+            return ""
         return proc.stdout.strip() if proc.returncode == 0 else ""
 
     return {

@@ -19,6 +19,7 @@ def test_defs_builds() -> None:
 def test_the_four_assets_plus_index_have_expected_keys() -> None:
     keys = {
         mp.session_digest.key.to_user_string(),
+        mp.session_brief.key.to_user_string(),
         mp.session_script.key.to_user_string(),
         mp.session_audio_clips.key.to_user_string(),
         mp.session_episode.key.to_user_string(),
@@ -26,6 +27,7 @@ def test_the_four_assets_plus_index_have_expected_keys() -> None:
     }
     assert keys == {
         "session_digest",
+        "session_brief",
         "session_script",
         "session_audio_clips",
         "session_episode",
@@ -41,6 +43,17 @@ def test_partition_and_sensor_present() -> None:
 def test_session_script_depends_on_digest() -> None:
     upstream = {k.to_user_string() for k in mp.session_script.dependency_keys}
     assert "session_digest" in upstream
+
+
+def test_session_brief_sits_between_digest_and_script_and_has_no_retry() -> None:
+    """0035 D35-4/D35-6: brief after digest, script after brief; no retry (a paid ~10-min RLM);
+    the sensor launches it and the module defs carry it."""
+    assert {k.to_user_string() for k in mp.session_brief.dependency_keys} == {"session_digest"}
+    assert "session_brief" in {k.to_user_string() for k in mp.session_script.dependency_keys}
+    assert mp.session_brief.op.retry_policy is None
+    target = mp.linguist_output_sensor.targets[0]
+    targets = {a.key.to_user_string() for a in (target.assets_defs or [])}
+    assert "session_brief" in targets and "session_script" in targets
 
 
 def test_llm_model_comes_from_config_not_the_client_constant() -> None:
