@@ -8,36 +8,36 @@
         {
           "number": 1,
           "title": "Delivery Boys",
-          "arc_summary": "The party forms, takes courier jobs, and investigates the Ugathal/Blackline conspiracy — becoming Magical Crimes Convox consultants before descending into the Widdershins sewers and uncovering Master Grayson's necromantic experiments in an underground Victorian Fane.",
+          "arc_summary": "The party forms as novice couriers in Hallia, stumbling into a conspiracy of Ugathul infiltrators, illegal augury, and radar dishes while becoming consultants for the Magical Crimes Convox. The arc culminates in a disastrous ambush at the Crowded Flea that leaves three party members dead in a near-total party kill.",
           "episode_dates": [
             "2025-8-28",
             "2025-10-20",
             "2025-10-27",
             "2025-11-4",
             "2025-11-11",
-            "2025-11-18"
+            "2025-11-18",
+            "2025-12-2"
           ]
         },
         {
           "number": 2,
-          "title": "Rainbow's End",
-          "arc_summary": "A disastrous ambush at the Crowded Flea leaves three party members dead. Johnny and Benny are resurrected by Aut in the Black and White void (losing Argyle permanently), and the reformed party — joined by Sir Arctos — hunts down Hlarf and Tywelwyn, discovers the six Thessian gods invading Færrin, and learns of the cosmic Narrative from the rescued Anaïs.",
+          "title": "The Black and White",
+          "arc_summary": "Johnny and Benny navigate the void between life and death, forge a pact with the entity Aut, and return to exact revenge on Hlarf and Tywelwyn Leatherhide — uncovering a plot by six Thessian gods to crack the Firmament. The rescue of Anaïs reveals the cosmic Narrative and its five warring siblings, reframing everything the party thought they knew about their patron.",
           "episode_dates": [
-            "2025-12-2",
             "2025-12-9",
             "2025-12-16",
             "2025-12-23",
             "2025-12-30",
             "2026-1-6",
-            "2026-1-13"
+            "2026-1-13",
+            "2026-1-20"
           ]
         },
         {
           "number": 3,
-          "title": "The Pilgrimage",
-          "arc_summary": "The party enters a keystone scavenger hunt at a mysterious Pilgrimage gathering, builds alliances across Hallia's factions, and uncovers a vast conspiracy to crack the firmament — culminating in the bombing of Teller's Run and the Harlequin's announcement of the Strider's departure.",
+          "title": "Keystones and Fractures",
+          "arc_summary": "The party attends a mysterious pilgrimage gathering at Ragged Roost, competing in gladiatorial trials and solving puzzles to earn a keystone granting passage aboard a colossal Strider. During the subsequent downtime, they discover a hairline fracture in reality beneath Teller's Run imprisoning a colossal deity, and bomb the research facility attempting to shatter the Firmament — triggering the keystone's activation and the Strider's imminent departure.",
           "episode_dates": [
-            "2026-1-20",
             "2026-1-27",
             "2026-2-3",
             "2026-2-17",
@@ -52,8 +52,8 @@
         },
         {
           "number": 4,
-          "title": "Aboard the Strider",
-          "arc_summary": "Boarding the colossal Strider, the party builds their Fane, navigates the deadly weekly Tithe, forges an alliance with the ancient Machine God deep in the Undercroft, and accidentally destroys the Menhir — flinging the Strider far starward to a dead world with catastrophic consequences for all aboard.",
+          "title": "The Strider",
+          "arc_summary": "Aboard the colossal Strider on its voidward pilgrimage, the party builds a Fane, navigates deadly faction politics and tithes, allies with the ancient Machine God deep in the Undercroft, and battles Herald cultists and corrupted hearts. The arc ends catastrophically when the party accidentally destroys the Menhir — a member of the cosmic Narrative — flinging the Strider far off the atlas to a dead, godless world.",
           "episode_dates": [
             "2026-5-7",
             "2026-5-11",
@@ -74,8 +74,8 @@
         },
         {
           "number": 5,
-          "title": "Stranded",
-          "arc_summary": "Stranded on a scoured world far from home, the party rallies surviving factions, recruits the freed gunslinger Egan, assaults the corrupted Harlequin spire, pursues Anzu's sister Galzu through surreal memory-vignettes, and discovers a potential way forward at the abandoned Hesperid 3 mining outpost.",
+          "title": "Far Starward",
+          "arc_summary": "Stranded on a scoured world beyond all known maps, the party rallies surviving factions, frees a half-minotaur gunslinger from the Herald's song, assaults the Strider's corrupted spire, and pursues Anzu's sister Galzu through a surreal Fane of Aurelia's memories. With the Strider still immobilized and a captured Herald cultist growing more powerful by the day, the party seeks phlogiston fuel at the abandoned Hesperid mining outposts — discovering a tessellated ghost ship trapped across six timelines.",
           "episode_dates": [
             "2026-8-24",
             "2026-9-3",
@@ -83,7 +83,8 @@
             "2026-9-17",
             "2026-10-1",
             "2026-10-5",
-            "2026-10-12"
+            "2026-10-12",
+            "2026-10-19"
           ]
         }
       ]
@@ -110,10 +111,17 @@
       "seasons": [
         {
           "number": 1,
-          "title": "The Quorum on the Joker World",
-          "arc_summary": "Four high-ranking Scale operatives are dispatched to a shattered Joker World to investigate a mysterious slip-shielded structure. They battle through fiend-infested ruins, infiltrate the Quorum — a demonic installation built atop a bloodfall portal — and descend into its depths to rescue Voice of Many, a trapped divine heart and grandchild of the Judge, fighting a desperate multi-wave defense to free it and escape back to Scale headquarters.",
+          "title": "The Fall of the Terror",
+          "arc_summary": "The 8th-grade heroes of Cagley Middle descend into Mt. Cagley and slay the shadow demon Terror, saving the town before getting in trouble with their parents. The session then pivots to a new arc as four elite Scale operatives are dispatched to a shattered Joker World to investigate a mysterious slip-shielded structure.",
           "episode_dates": [
-            "2025-6-9",
+            "2025-6-9"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "The Quorum and the Voice of Many",
+          "arc_summary": "The Scale team breaches the fiend-built Quorum, solves its monolith puzzles, and battles through Sigzilheight's forces to discover Voice of Many — a trapped divine heart and child of Sigzil. After a desperate ten-round defense against the Keeper of Chains, they free the entity and escape back to headquarters.",
+          "episode_dates": [
             "2025-6-16",
             "2025-6-23"
           ]
@@ -127,8 +135,8 @@
       "seasons": [
         {
           "number": 1,
-          "title": "Into the Verdant Expanse",
-          "arc_summary": "The Convox investigates a wave of husk-murders in the logging town of Wrenford, following a feyrock necklace into the mile-tall Verdant Expanse. They battle forest predators, rescue a lost child named Tommy, and ultimately confront the fey Court of Masks — only to learn their suspect is already dead and the huskification curse continues unabated.",
+          "title": "The Husk Murders",
+          "arc_summary": "The convox detectives travel to the logging town of Wrenford to investigate a wave of husk-murders, follow a Feyrock necklace into the mile-tall Verdant Expanse, and battle through giant mantises, a laughing wave, and a fey Court of Masks — only to learn the curse continues unabated.",
           "episode_dates": [
             "2025-9-11",
             "2025-9-18"
@@ -137,7 +145,7 @@
         {
           "number": 2,
           "title": "The Gloaming Codex",
-          "arc_summary": "The investigation pivots back to the city of Hallia as the Convox traces fey stone to a jeweler's conference and a mysterious black-raimented figure's apartment, where they discover the Gloaming Codex — a ritual book that transmutes bodies into fey stone. When a crime scene investigator accidentally activates the book, the entire party is pulled into its pages to fight for their lives against carnivorous ink and cursed thoughts.",
+          "arc_summary": "Pivoting from the wilderness to the city, the detectives trace fey-stone leads through a jeweler's conference and a suspect's apartment to the Gloaming Codex — a book that drags the entire party into its pages to fight carnivorous ink and cursed thoughts.",
           "episode_dates": [
             "2025-9-25"
           ]
@@ -166,8 +174,8 @@
       "seasons": [
         {
           "number": 1,
-          "title": "The Sedecium Missions",
-          "arc_summary": "A Sedecium fire team — Old Man Scrazzy, Lieutenant Foral, and Ozzie — investigates a derelict orbital station sinking into the slip, uncovering evidence that the Thessian Esoterica accessed observatory records of a massive magical spike near the Astra's core, then undertakes a daring raid through the Slip to steal divine essence from the freshly-killed Thessian god 'Tithe' before the God Eater Harrow devours it entirely.",
+          "title": "Sedecium's Fire Team",
+          "arc_summary": "Three Sedecium agents — the wizard Old Man Scrazzy, goblin gunslinger Lieutenant Foral, and orcish guardian Ozzie — investigate a slip-sunken observatory station and uncover the Thessian Esoterica's interest in a massive magical spike near the Astra's core, then are pulled into a perilous raid to steal divine essence from a freshly-killed god before the God Eater Harrow devours it whole.",
           "episode_dates": [
             "2026-4-6",
             "2026-4-27"
@@ -191,5 +199,5 @@
       ]
     }
   ],
-  "inputs_hash": "f83f763b715ffb47ede7b62a5a47847dfdfd5d0d00874d0b7f5c4ae7984ff7e6"
+  "inputs_hash": "5e69a068b329cfa769827cc6003001bc4c7965b0ccde4553e7c56e3f8c713b8d"
 }
