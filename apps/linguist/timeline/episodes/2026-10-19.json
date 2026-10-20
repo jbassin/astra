@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-19",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Six Tracks to Nowhere: The Tessellated Hesperid",
+    "synopsis": "The party concludes a combat aboard the Strider, then fully explores the abandoned Hesperid 3 outpost — discovering a six-spigot anomaly in the refinery and a console mapping connections to other outposts and an HQ. They rest, recruit their Protectorate escorts, and board a train north across the Far Realms' gray waste. A tessellated sandstorm reveals six parallel rail-tracks; emerging from it, they find Hesperid HQ — a massive spaceship sheared in half and kaleidoscoped into six copies, each existing in a different time period. Navigating between timelines, they locate one with five barrels of phlogiston, then descend into a skull-lined elevator shaft where a divine curse animates the wreckage into hostile constructs, forcing a retreat.",
+    "key_beats": [
+      "Combat with the Mortal Herald concludes aboard the Strider (Pyre and Giant already fallen); Benny deals with the Herald via a dimensional hole.",
+      "The party explores the Hesperid 3 refinery, discovering an anomalous six-spigot configuration on one output tank — one spigot duplicated five more times at 60-degree intervals — which Argyle's religion check confirms is not a curse but something 'funky.'",
+      "A console in the final unlocked room shows active connections from Hesperid 3 to Hesperid (HQ), with broken connections from HQ to Hesperid 1 and 2; the HQ line appears as six tightly-packed lines with the HQ itself blurred in six after-images.",
+      "Anzu critically succeeds (46) analyzing the refinery machinery and determines it is unsafe to restart — the breach was caused by Ulrich's attempt to improve phlogiston yield, creating a pressure drop-spike event. He gains a lasting +1 circumstance bonus to phlogiston machinery checks in the Far Realms.",
+      "The party rests at Hesperid 3, recovering spells and resources. Tamara and Yao (the Protectorate escorts) join them inside with their sandbag embankment and mounted machine gun. Argyle debates spell prep — keeping Wanderer's Guide and Translate, refusing to prepare Breath of Life.",
+      "They board the train and travel north across the endless gray waste. Argyle casts Augury asking whether to continue toward HQ for phlogiston; the result is auspicious.",
+      "After hours of travel they hit a massive tessellated sandstorm. Argyle's survival check reveals the storm's wind patterns are duplicated across six regions simultaneously — tessellated, not natural. Detect metal confirms six parallel steel-alloy rails. Benny steers left to dodge a rock on the tracks; an explosion erupts on the parallel right track where the obstacle would have been.",
+      "Emerging from the storm, the party sees six parallel tracks in a kaleidoscope circle. Ahead looms Hesperid HQ — a colossal spaceship sheared in half and tessellated into six copies rotating around a central point with a reverberating heartbeat. Anzu's occultism (36) identifies the tessellation as a living curse, divine in origin, distinct from the ship's original grievous damage.",
+      "Inside HQ's folded cargo bay (gravity bends across walls and ceiling), the party discovers the six tracks correspond to different time periods. By hopping between tracks they find: Year 72 (3 barrels), Year 82 (0), Year 94 (1), Year 112 (0), Year 122 (0), Year 131 (5 barrels). They settle on the Year 131 timeline.",
+      "Walking up the wall and across the ceiling (gravity shifts with contact surface), the party reaches a skull-lined elevator shaft with a sickly glowing door at its base. Argyle's crit religion check (38) reveals this is a powerful divine curse — a perversion of a god's power that took decades to develop — far more complex than the spigot anomaly.",
+      "Tessellated metal constructs crawl from exploding skulls in the shaft; combat begins on the gravity-bending map. The creatures are weak to area/splash damage, immune to mental/void/vitality, lowest save Will. After partial engagement, Anzu determines the animating force emanates from the door below and that the creatures are likely innumerable and too powerful to fight through.",
+      "The party retreats from the elevator shaft. Josh calls the session. Post-game discussion reveals the time-travel mechanic: the party could jump to an earlier timeline where the curse hasn't fully developed, echoing a puzzle from Campaign One (the baby dragon)."
+    ],
+    "characters_present": [
+      "Argyle (Jorge) — cleric, detects metal, casts Unravel Existence and Augury",
+      "Anzu (Tanner) — Tengu occult caster, can fly, expert in arcana/crafting/occultism",
+      "Johnny (Noah) — sonic/noise caster, uses Drum of War and Dirge of Doom",
+      "Benny (Mike) — vehicle savant, uses Ringing Challenge; pilots the train",
+      "Othello — crew member aboard the train",
+      "Tamara — Protectorate escort, brings sandbag fortifications and mounted machine gun",
+      "Yao — Protectorate escort, drives a trailing car",
+      "Ulrich Benda — deceased Hesperid 3 resident (mentioned in logs)",
+      "Sybil — deceased Hesperid 3 resident, an elf (mentioned in logs)",
+      "Thurston — deceased Hesperid 3 resident, a dwarf (mentioned in logs)",
+      "Mortal Herald — combat encounter at session start (defeated)",
+      "Tessellated metal constructs — hostile enemies in the elevator shaft"
+    ],
+    "locations": [
+      "The Strider (ongoing combat at session start)",
+      "Hesperid 3 — abandoned phlogiston refinery outpost in the Far Realms",
+      "The gray waste — endless dust and nothingness of the Far Realms",
+      "The tessellated sandstorm — six-fold duplicated weather formation on the approach",
+      "Hesperid HQ — a colossal sheared spaceship tessellated into six time-displaced copies",
+      "The folded cargo bay — gravity-bending interior with tarmac wrapping walls and ceiling",
+      "The skull-lined elevator shaft — cursed ossuary with a sickly glowing door at its base"
+    ],
+    "factions": [
+      "The Protectorate — Tamara and Yao, escorts holding the escape route",
+      "The Machine God — referenced as a patron the party trusts and considers arming with salvaged technology",
+      "The RunGunners — mentioned as consulted contacts",
+      "Divine entity responsible for the tessellation curse — unidentified, not one of Argyle's allies"
+    ],
+    "items": [
+      "Five barrels of phlogiston (stored in bag of holding)",
+      "Bag of holding",
+      "Ulrich's tablet/logs — documenting outpost isolation and declining morale",
+      "The train/spaceship hybrid — phlogiston-powered vehicle used to travel north",
+      "Automated pallet — six-wheeled barrel rack with no visible motor, found in HQ cargo bay",
+      "Hesperid 3 refinery machinery — impellers, pipes, six-spigot output anomaly",
+      "Intake/outtake logs — shack documents showing barrel receipts across different time periods",
+      "Drum of War (Johnny)",
+      "Concordant Choir (Anzu's spell)"
+    ],
+    "cliffhanger": "The party retreats from the skull-lined elevator shaft, having realized the six parallel tracks are six different time periods — and that the divine curse animating the HQ deepens over decades. They stand poised to attempt a time-jump to an earlier era where the"
+  }
+}
