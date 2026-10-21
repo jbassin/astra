@@ -871,6 +871,9 @@ entity "Herald" kind="deity" page="Divinity/Ashen Pact/Herald" {
     source "akasha"
     source "defs"
 }
+entity "Hesperid 3" kind="place" page="Geography/Hesperid 3" {
+    source "akasha"
+}
 entity "Hey, Aut" {
     alias "Hey, Art"
     source "defs"
@@ -1995,6 +1998,9 @@ entity "Ugathal" kind="creature" page="Bestiary/Ugathal" {
 entity "Undead" kind="creature" page="Bestiary/Undead" {
     alias "Cairn White"
     alias "Lovelorn"
+    alias "Once Was"
+    alias "Thing from Beyond"
+    alias "Things from Beyond"
     source "akasha"
 }
 entity "Undercroft" kind="place" page="Geography/Istria/Iomenei/Undercroft" {

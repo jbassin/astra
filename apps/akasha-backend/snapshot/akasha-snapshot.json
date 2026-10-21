@@ -421,6 +421,20 @@
       "target": "People/Othello"
     },
     {
+      "alias": "Hesperid 3",
+      "heading": null,
+      "resolved": "Geography/Hesperid 3",
+      "source": "Bestiary/Undead",
+      "target": "Geography/Hesperid 3"
+    },
+    {
+      "alias": "Ulrich Benda",
+      "heading": null,
+      "resolved": "People/Ulrich Benda",
+      "source": "Bestiary/Undead",
+      "target": "People/Ulrich Benda"
+    },
+    {
       "alias": null,
       "heading": null,
       "resolved": "Geography/Calaria/Verdant Expanse",
@@ -3982,6 +3996,55 @@
       "resolved": "Geography/Glacier",
       "source": "Geography/Hellsmith",
       "target": "Geography/Glacier"
+    },
+    {
+      "alias": "Joker world",
+      "heading": null,
+      "resolved": "Phenomena/Joker World",
+      "source": "Geography/Hesperid 3",
+      "target": "Phenomena/Joker World"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Geography/Hesperid 3",
+      "target": "Org/The Harlequins/Providence"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Geography/Færrin",
+      "source": "Geography/Hesperid 3",
+      "target": "Færrin"
+    },
+    {
+      "alias": "phlogiston",
+      "heading": null,
+      "resolved": "Phenomena/Phlogiston",
+      "source": "Geography/Hesperid 3",
+      "target": "Phenomena/Phlogiston"
+    },
+    {
+      "alias": "Ulrich Benda",
+      "heading": null,
+      "resolved": "People/Ulrich Benda",
+      "source": "Geography/Hesperid 3",
+      "target": "People/Ulrich Benda"
+    },
+    {
+      "alias": "once was",
+      "heading": null,
+      "resolved": "Bestiary/Undead",
+      "source": "Geography/Hesperid 3",
+      "target": "Bestiary/Undead"
+    },
+    {
+      "alias": "things from beyond",
+      "heading": null,
+      "resolved": "Bestiary/Undead",
+      "source": "Geography/Hesperid 3",
+      "target": "Bestiary/Undead"
     },
     {
       "alias": "Iomenei",
@@ -8051,18 +8114,25 @@
       "target": "Geography/Fenrith/index"
     },
     {
-      "alias": null,
+      "alias": "RunGunners",
       "heading": null,
-      "resolved": null,
+      "resolved": "Org/RunGunners/index",
       "source": "Org/RunGunners/index",
-      "target": "RunGunners"
+      "target": "Org/RunGunners/index"
     },
     {
       "alias": "Hearts",
       "heading": null,
-      "resolved": null,
+      "resolved": "Phenomena/Hearts",
       "source": "Org/RunGunners/index",
-      "target": "Heart"
+      "target": "Phenomena/Hearts"
+    },
+    {
+      "alias": "Providence",
+      "heading": null,
+      "resolved": "Org/The Harlequins/Providence/index",
+      "source": "Org/RunGunners/index",
+      "target": "Org/The Harlequins/Providence"
     },
     {
       "alias": "Sable and Suns",
@@ -9008,6 +9078,13 @@
       "resolved": "Bestiary/Mongrel Folk",
       "source": "Org/The Harlequins/Providence/index",
       "target": "Bestiary/Mongrel Folk"
+    },
+    {
+      "alias": "Hesperid 3",
+      "heading": null,
+      "resolved": "Geography/Hesperid 3",
+      "source": "Org/The Harlequins/Providence/index",
+      "target": "Geography/Hesperid 3"
     },
     {
       "alias": "Giacomo's",
@@ -12146,6 +12223,13 @@
       "target": "Org/Iridescent Church/Convox/Magical Crimes/People/Cedric Corot"
     },
     {
+      "alias": "Hesperid 3",
+      "heading": null,
+      "resolved": "Geography/Hesperid 3",
+      "source": "People/Ulrich Benda",
+      "target": "Geography/Hesperid 3"
+    },
+    {
       "alias": "Radiant Arms",
       "heading": null,
       "resolved": "Org/Radiant Arms/index",
@@ -12935,6 +13019,13 @@
       "resolved": "Geography/Calaria/Hallia/index",
       "source": "Phenomena/Oil of Unlife",
       "target": "Geography/Calaria/Hallia/index"
+    },
+    {
+      "alias": "Hesperid 3",
+      "heading": null,
+      "resolved": "Geography/Hesperid 3",
+      "source": "Phenomena/Phlogiston",
+      "target": "Geography/Hesperid 3"
     },
     {
       "alias": "the Harlequins",
@@ -14203,16 +14294,29 @@
           "alias": "Othello",
           "heading": null,
           "target": "People/Othello"
+        },
+        {
+          "alias": "Hesperid 3",
+          "heading": null,
+          "target": "Geography/Hesperid 3"
+        },
+        {
+          "alias": "Ulrich Benda",
+          "heading": null,
+          "target": "People/Ulrich Benda"
         }
       ],
-      "date": "2026-08-24T00:00:00-04:00",
+      "date": "2026-10-12T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Cairn White",
-          "Lovelorn"
+          "Lovelorn",
+          "Once Was",
+          "Thing from Beyond",
+          "Things from Beyond"
         ],
         "extra": {
-          "date": "2026-08-24T00:00:00-04:00"
+          "date": "2026-10-12T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -14346,14 +14450,14 @@
           "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-08-17T00:00:00-04:00",
+      "date": "2026-10-12T00:00:00-04:00",
       "frontmatter": {
         "aliases": [
           "Hand of the Void",
           "Hands of the Void"
         ],
         "extra": {
-          "date": "2026-08-17T00:00:00-04:00"
+          "date": "2026-10-12T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -18220,6 +18324,56 @@
         "title": null
       },
       "path": "Geography/Hellsmith"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Joker world",
+          "heading": null,
+          "target": "Phenomena/Joker World"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Færrin"
+        },
+        {
+          "alias": "phlogiston",
+          "heading": null,
+          "target": "Phenomena/Phlogiston"
+        },
+        {
+          "alias": "Ulrich Benda",
+          "heading": null,
+          "target": "People/Ulrich Benda"
+        },
+        {
+          "alias": "once was",
+          "heading": null,
+          "target": "Bestiary/Undead"
+        },
+        {
+          "alias": "things from beyond",
+          "heading": null,
+          "target": "Bestiary/Undead"
+        }
+      ],
+      "date": "2026-10-12T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-10-12T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Hesperid 3"
     },
     {
       "crossrefs": [
@@ -23034,21 +23188,26 @@
           "target": "Geography/Fenrith/index"
         },
         {
-          "alias": null,
+          "alias": "RunGunners",
           "heading": null,
-          "target": "RunGunners"
+          "target": "Org/RunGunners/index"
         },
         {
           "alias": "Hearts",
           "heading": null,
-          "target": "Heart"
+          "target": "Phenomena/Hearts"
+        },
+        {
+          "alias": "Providence",
+          "heading": null,
+          "target": "Org/The Harlequins/Providence"
         }
       ],
-      "date": "2026-06-06T22:12:21-04:00",
+      "date": "2026-10-12T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-06-06T22:12:21-04:00"
+          "date": "2026-10-12T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -24085,6 +24244,11 @@
           "target": "Bestiary/Mongrel Folk"
         },
         {
+          "alias": "Hesperid 3",
+          "heading": null,
+          "target": "Geography/Hesperid 3"
+        },
+        {
           "alias": "Giacomo's",
           "heading": null,
           "target": "Org/The Harlequins/Providence/Giacomo's"
@@ -24095,11 +24259,11 @@
           "target": "Org/Amber Call/index"
         }
       ],
-      "date": "2026-10-05T00:00:00-04:00",
+      "date": "2026-10-12T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-10-05T00:00:00-04:00"
+          "date": "2026-10-12T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -27688,6 +27852,26 @@
     {
       "crossrefs": [
         {
+          "alias": "Hesperid 3",
+          "heading": null,
+          "target": "Geography/Hesperid 3"
+        }
+      ],
+      "date": "2026-10-12T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-10-12T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "People/Ulrich Benda"
+    },
+    {
+      "crossrefs": [
+        {
           "alias": "Radiant Arms",
           "heading": null,
           "target": "Org/Radiant Arms/index"
@@ -28528,12 +28712,18 @@
       "path": "Phenomena/Oil of Unlife"
     },
     {
-      "crossrefs": [],
-      "date": "2026-10-05T00:00:00-04:00",
+      "crossrefs": [
+        {
+          "alias": "Hesperid 3",
+          "heading": null,
+          "target": "Geography/Hesperid 3"
+        }
+      ],
+      "date": "2026-10-12T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-10-05T00:00:00-04:00"
+          "date": "2026-10-12T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -29324,14 +29514,6 @@
     {
       "source": "Org/Chorath Engineering",
       "target": "Hallia"
-    },
-    {
-      "source": "Org/RunGunners/index",
-      "target": "RunGunners"
-    },
-    {
-      "source": "Org/RunGunners/index",
-      "target": "Heart"
     },
     {
       "source": "Timeline",
