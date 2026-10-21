@@ -92,6 +92,13 @@
       "target": "People/Egan Arithmites"
     },
     {
+      "alias": "Hesperid",
+      "heading": null,
+      "resolved": "Geography/Hesperid",
+      "source": "Bestiary/Constructs",
+      "target": "Geography/Hesperid"
+    },
+    {
       "alias": "Gloaming Codex",
       "heading": null,
       "resolved": "Phenomena/Gloaming Codex",
@@ -4026,6 +4033,13 @@
       "target": "Phenomena/Phlogiston"
     },
     {
+      "alias": "Hesperid",
+      "heading": null,
+      "resolved": "Geography/Hesperid",
+      "source": "Geography/Hesperid 3",
+      "target": "Geography/Hesperid"
+    },
+    {
       "alias": "Ulrich Benda",
       "heading": null,
       "resolved": "People/Ulrich Benda",
@@ -4045,6 +4059,27 @@
       "resolved": "Bestiary/Undead",
       "source": "Geography/Hesperid 3",
       "target": "Bestiary/Undead"
+    },
+    {
+      "alias": "Hesperid 3",
+      "heading": null,
+      "resolved": "Geography/Hesperid 3",
+      "source": "Geography/Hesperid",
+      "target": "Geography/Hesperid 3"
+    },
+    {
+      "alias": "Calaria",
+      "heading": null,
+      "resolved": "Geography/Calaria/index",
+      "source": "Geography/Hesperid",
+      "target": "Geography/Calaria/index"
+    },
+    {
+      "alias": "living incantations",
+      "heading": null,
+      "resolved": "Bestiary/Constructs",
+      "source": "Geography/Hesperid",
+      "target": "Bestiary/Constructs"
     },
     {
       "alias": "Iomenei",
@@ -12230,6 +12265,13 @@
       "target": "Geography/Hesperid 3"
     },
     {
+      "alias": "Hesperid",
+      "heading": null,
+      "resolved": "Geography/Hesperid",
+      "source": "People/Ulrich Benda",
+      "target": "Geography/Hesperid"
+    },
+    {
       "alias": "Radiant Arms",
       "heading": null,
       "resolved": "Org/Radiant Arms/index",
@@ -13026,6 +13068,13 @@
       "resolved": "Geography/Hesperid 3",
       "source": "Phenomena/Phlogiston",
       "target": "Geography/Hesperid 3"
+    },
+    {
+      "alias": "Hesperid",
+      "heading": null,
+      "resolved": "Geography/Hesperid",
+      "source": "Phenomena/Phlogiston",
+      "target": "Geography/Hesperid"
     },
     {
       "alias": "the Harlequins",
@@ -13845,6 +13894,29 @@
         "title": null
       },
       "path": "Bestiary/Celestials"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Hesperid",
+          "heading": null,
+          "target": "Geography/Hesperid"
+        }
+      ],
+      "date": "2026-10-19T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Living Incantation",
+          "Living Incantations"
+        ],
+        "extra": {
+          "date": "2026-10-19T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Constructs"
     },
     {
       "crossrefs": [
@@ -18348,6 +18420,11 @@
           "target": "Phenomena/Phlogiston"
         },
         {
+          "alias": "Hesperid",
+          "heading": null,
+          "target": "Geography/Hesperid"
+        },
+        {
           "alias": "Ulrich Benda",
           "heading": null,
           "target": "People/Ulrich Benda"
@@ -18363,17 +18440,49 @@
           "target": "Bestiary/Undead"
         }
       ],
-      "date": "2026-10-12T00:00:00-04:00",
+      "date": "2026-10-19T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-10-12T00:00:00-04:00"
+          "date": "2026-10-19T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
         "title": null
       },
       "path": "Geography/Hesperid 3"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": "Hesperid 3",
+          "heading": null,
+          "target": "Geography/Hesperid 3"
+        },
+        {
+          "alias": "Calaria",
+          "heading": null,
+          "target": "Geography/Calaria/index"
+        },
+        {
+          "alias": "living incantations",
+          "heading": null,
+          "target": "Bestiary/Constructs"
+        }
+      ],
+      "date": "2026-10-19T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "HQ"
+        ],
+        "extra": {
+          "date": "2026-10-19T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Geography/Hesperid"
     },
     {
       "crossrefs": [
@@ -25905,11 +26014,11 @@
           "target": "People/Egan Arithmites"
         }
       ],
-      "date": "2026-10-05T00:00:00-04:00",
+      "date": "2026-10-19T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-10-05T00:00:00-04:00"
+          "date": "2026-10-19T00:00:00-04:00"
         },
         "img": null,
         "tags": [
@@ -27855,13 +27964,18 @@
           "alias": "Hesperid 3",
           "heading": null,
           "target": "Geography/Hesperid 3"
+        },
+        {
+          "alias": "Hesperid",
+          "heading": null,
+          "target": "Geography/Hesperid"
         }
       ],
-      "date": "2026-10-12T00:00:00-04:00",
+      "date": "2026-10-19T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-10-12T00:00:00-04:00"
+          "date": "2026-10-19T00:00:00-04:00"
         },
         "img": null,
         "tags": [],
@@ -28717,13 +28831,18 @@
           "alias": "Hesperid 3",
           "heading": null,
           "target": "Geography/Hesperid 3"
+        },
+        {
+          "alias": "Hesperid",
+          "heading": null,
+          "target": "Geography/Hesperid"
         }
       ],
-      "date": "2026-10-12T00:00:00-04:00",
+      "date": "2026-10-19T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
         "extra": {
-          "date": "2026-10-12T00:00:00-04:00"
+          "date": "2026-10-19T00:00:00-04:00"
         },
         "img": null,
         "tags": [],

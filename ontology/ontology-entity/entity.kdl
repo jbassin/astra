@@ -423,6 +423,11 @@ entity "Combo" kind="person" page="Org/Velvet Mark/People/Combo" being="mike" {
 entity "Concordia" kind="org" page="Org/Concordia/index" {
     source "akasha"
 }
+entity "Constructs" kind="creature" page="Bestiary/Constructs" {
+    alias "Living Incantation"
+    alias "Living Incantations"
+    source "akasha"
+}
 entity "Convox" {
     alias "cot box"
     source "defs"
@@ -870,6 +875,10 @@ entity "Herald" kind="deity" page="Divinity/Ashen Pact/Herald" {
     alias "Harold"
     source "akasha"
     source "defs"
+}
+entity "Hesperid" kind="place" page="Geography/Hesperid" {
+    alias "HQ"
+    source "akasha"
 }
 entity "Hesperid 3" kind="place" page="Geography/Hesperid 3" {
     source "akasha"
