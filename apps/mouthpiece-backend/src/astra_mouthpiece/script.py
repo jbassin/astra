@@ -126,6 +126,35 @@ def _split_transcript(transcript: str, max_words: int) -> list[str]:
     return segments
 
 
+def dress_transcript(
+    client: LlmClient,
+    transcript: str,
+    session_id: str,
+    hosts: HostConfig,
+    *,
+    model: str | None = None,
+    max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
+) -> Script:
+    """Pass B — protective dressing of a Pass A transcript into structured turns (no
+    polishing), one call per word-bounded segment; the title comes from the first."""
+    title = ""
+    turns: list[ScriptTurn] = []
+    for i, segment in enumerate(_split_transcript(transcript, PASS_B_CHUNK_WORDS)):
+        raw = client.call_tool(
+            _tool_req(
+                build_dressing_system_prompt(hosts),
+                build_dressing_user_content(segment),
+                model,
+                max_tokens,
+            )
+        )
+        part = parse_script(session_id, raw, hosts)
+        if i == 0:
+            title = part.title
+        turns.extend(part.turns)
+    return Script(session_id=session_id, title=title, hosts=hosts, turns=turns)
+
+
 def generate_script(
     client: LlmClient,
     digest: SessionDigest,
@@ -156,23 +185,9 @@ def generate_script(
     transcript = client.call_text(
         _text_req(build_improv_system_prompt(hosts), user_content, model, max_tokens)
     )
-    # Pass B — protective dressing into structured turns (no polishing), per segment.
-    title = ""
-    turns: list[ScriptTurn] = []
-    for i, segment in enumerate(_split_transcript(transcript, PASS_B_CHUNK_WORDS)):
-        raw = client.call_tool(
-            _tool_req(
-                build_dressing_system_prompt(hosts),
-                build_dressing_user_content(segment),
-                model,
-                max_tokens,
-            )
-        )
-        part = parse_script(digest.session_id, raw, hosts)
-        if i == 0:
-            title = part.title
-        turns.extend(part.turns)
-    script = Script(session_id=digest.session_id, title=title, hosts=hosts, turns=turns)
+    script = dress_transcript(
+        client, transcript, digest.session_id, hosts, model=model, max_tokens=max_tokens
+    )
     if sharpen:
         from .sharpen import sharpen_voices  # lazy: sharpen imports parse_script from here
 

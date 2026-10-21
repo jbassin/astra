@@ -20,6 +20,7 @@ dependencies = [
 
 [project.scripts]
 astra-mouthpiece-producer = "astra_mouthpiece.producer.cli:main"
+astra-mouthpiece-roundtable = "astra_mouthpiece.roundtable.cli:main"
 
 [build-system]
 requires = ["hatchling"]

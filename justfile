@@ -931,6 +931,14 @@ mouthpiece-sandbox-warm:
 mouthpiece-experiment date *flags: mouthpiece-sandbox-warm
     cd /ruby/data/experiments/astra && {{uv_bin}} run astra-mouthpiece-producer experiment {{date}} {{flags}}
 
+# The prediction-roundtable special. dossier + script are PAID (OpenRouter) and write only
+# under artifacts/mouthpiece-experiments/roundtable-<latest>/<run>/; render is PAID + LIVE.
+#   just mouthpiece-roundtable dossier                  survey the main campaign → mystery file
+#   just mouthpiece-roundtable script <run-dir>         ~45-min roundtable script from it
+#   just mouthpiece-roundtable render <run-dir>         TTS + assemble into episodes/ + auto-publish
+mouthpiece-roundtable *args: mouthpiece-sandbox-warm
+    cd /ruby/data/experiments/astra && export PATH="$HOME/.deno/bin:$PATH" && {{uv_bin}} run astra-mouthpiece-roundtable {{args}}
+
 # --- Host edge (shared reverse proxy) ---
 
 # The decrypted CF token, exported as {$CF_API_TOKEN} for the caddyfile adapter.
