@@ -18,7 +18,14 @@ run_coordinator:
   config:
     # The pipeline runs are heavy (Whisper transcription, LLM distill/script, TTS) — cap
     # concurrency low so they don't pile 10-deep and thrash the box (the default is 10).
-    max_concurrent_runs: 2
+    # 2 → 3 with heartwood (0036 D36-9): a session_wiki run holds a slot for its whole
+    # host-side wait (15–55 min) while using no CPU, so it must not halve pipeline capacity.
+    max_concurrent_runs: 3
+    # ...and at most one of them waits at a time (the host runs them serially anyway), so a
+    # multi-session backlog queues here instead of blocking every slot.
+    tag_concurrency_limits:
+      - key: "astra/heartwood"
+        limit: 1
 
 # Auto-detect + fail "zombie" runs whose worker died (e.g. a container recreated mid-run
 # via `just up`) instead of leaving them STARTED forever, holding queue slots. Without
