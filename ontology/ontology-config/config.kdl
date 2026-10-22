@@ -270,6 +270,11 @@ heartwood {
     max-tokens 64000       // per LM call; reasoning tokens share it (GLM lesson)
     max-output-chars 10000 // REPL output shown back per iteration (dspy default)
     backfill-budget-usd 100 // cumulative backfill ceiling — stakeholder 2026-10-10 (≈2× the ~$50 estimate)
+    // 0036: the Dagster session_wiki asset files <date>.request.json here and waits for the
+    // host runner's <date>.result.json. Host-absolute; bind-mounted at the SAME path into the
+    // Dagster services (deploy/docker-compose.yml) and created by `just artifacts-init`.
+    requests-path "/ruby/data/experiments/astra/artifacts/heartwood/requests"
+    request-timeout-minutes 180 // how long session_wiki waits for the host before failing
 }
 
 mouthpiece-producer {

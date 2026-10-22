@@ -225,6 +225,9 @@ const Heartwood = z
     maxTokens: z.number().default(64000),
     maxOutputChars: z.number().default(10000),
     backfillBudgetUsd: z.number().default(100),
+    // 0036 (Python-only consumers): the Dagster↔host request dir + the asset's wait.
+    requestsPath: z.string().default("/ruby/data/experiments/astra/artifacts/heartwood/requests"),
+    requestTimeoutMinutes: z.number().default(180),
   })
   .strict();
 

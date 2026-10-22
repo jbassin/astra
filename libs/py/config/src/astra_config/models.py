@@ -218,6 +218,10 @@ class HeartwoodConfig(_Base):
     max_tokens: int = 64000
     max_output_chars: int = 10000
     backfill_budget_usd: float = 100.0
+    # 0036: the Dagster↔host request dir (same path in the containers) and how long the
+    # session_wiki asset waits for the host runner's result before failing.
+    requests_path: str = "/ruby/data/experiments/astra/artifacts/heartwood/requests"
+    request_timeout_minutes: int = 180
 
 
 class MouthpieceProducerConfig(_Base):

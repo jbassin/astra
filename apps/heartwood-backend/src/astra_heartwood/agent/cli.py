@@ -14,6 +14,9 @@
     budget-check                  may the backfill start another date?
     commit-message <run-dir>      print the session commit message (wrapped at 100)
     unresolved-delta <before>     unresolved-link report: snapshot JSON before → now
+    drain-requests [--requests DIR]  the host runner (0036): run ``just heartwood-agent`` for
+                                  every pending Dagster request, oldest first, and write
+                                  each result (exit 0 unless the runner itself crashed)
 
 The ``just heartwood-*`` recipes compose these (justfile, ``--- heartwood (0033) ---``).
 
@@ -198,6 +201,18 @@ def _cmd_unresolved_delta(args: argparse.Namespace) -> int:
     return EXIT_OK
 
 
+def _cmd_drain_requests(args: argparse.Namespace) -> int:
+    from ..requests import drain_requests  # lazy: only the host runner needs it
+
+    root = args.requests or Path(load_config().heartwood.requests_path)
+    report = drain_requests(root)
+    for r in report.results:
+        print(f"{r.date}: {r.outcome} (exit {r.exit_code}: {r.meaning})")
+    if report.stopped_for_backfill:
+        print("stopped: a heartwood backfill holds the lock — requests left pending")
+    return EXIT_OK
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="astra-heartwood-agent", description="The heartwood akasha-wiki agent (0033)."
@@ -248,6 +263,12 @@ def build_parser() -> argparse.ArgumentParser:
     delta.add_argument("before", type=Path)
     delta.add_argument("--after", type=Path, default=SNAPSHOT_PATH, help=argparse.SUPPRESS)
     delta.set_defaults(func=_cmd_unresolved_delta)
+
+    drain = sub.add_parser("drain-requests", help="host runner: process pending Dagster requests")
+    drain.add_argument(
+        "--requests", type=Path, default=None, help="default: heartwood.requests-path"
+    )
+    drain.set_defaults(func=_cmd_drain_requests)
     return parser
 
 

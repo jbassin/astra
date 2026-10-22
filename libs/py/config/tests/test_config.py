@@ -63,6 +63,8 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.heartwood.max_tokens == 64000
     assert cfg.heartwood.max_output_chars == 10000
     assert cfg.heartwood.backfill_budget_usd == 100
+    assert cfg.heartwood.requests_path.endswith("/artifacts/heartwood/requests")
+    assert cfg.heartwood.request_timeout_minutes == 180
     assert cfg.mouthpiece_producer.model == "openrouter/deepseek/deepseek-v4.1-flash"
     assert cfg.mouthpiece_producer.max_iterations == 30
     # the live KDL has ONE arm — exercises the scalar→list coercion for real

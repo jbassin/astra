@@ -67,6 +67,8 @@ describe("@astra/config", () => {
     expect(cfg.heartwood.maxTokens).toBe(64000);
     expect(cfg.heartwood.maxOutputChars).toBe(10000);
     expect(cfg.heartwood.backfillBudgetUsd).toBe(100);
+    expect(cfg.heartwood.requestsPath).toMatch(/\/artifacts\/heartwood\/requests$/);
+    expect(cfg.heartwood.requestTimeoutMinutes).toBe(180);
     expect(cfg.mouthpieceProducer.model).toBe("openrouter/deepseek/deepseek-v4.1-flash");
     expect(cfg.mouthpieceProducer.maxIterations).toBe(30);
     // the live KDL has ONE arm — exercises the scalar→list coercion for real
