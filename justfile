@@ -71,7 +71,8 @@ up *services:
 artifacts-init:
     #!/usr/bin/env bash
     set -euo pipefail
-    mkdir -p "{{artifacts}}"/audio/{akasha,mouthpiece,orator} "{{artifacts}}"/postgres "{{artifacts}}"/portal-oauth "{{artifacts}}"/menhir
+    mkdir -p "{{artifacts}}"/audio/{akasha,mouthpiece,orator} "{{artifacts}}"/postgres "{{artifacts}}"/portal-oauth "{{artifacts}}"/menhir \
+      "{{artifacts}}"/heartwood/requests/logs  # = heartwood.requests-path (0036)
 
 # Stop the stack; keep volumes (ClickHouse / Postgres / SigNoz data persist).
 down:
@@ -173,6 +174,11 @@ linguist-commit:
     #!/usr/bin/env bash
     set -euo pipefail
     cd /ruby/data/experiments/astra
+    # One git publisher at a time (0036 D36-5): heartwood-agent/-revert hold this lock while
+    # they publish, commit and redeploy akasha. Held for this whole body (no sub-recipe here
+    # runs git or takes the lock — a nested flock on a fresh fd would deadlock).
+    exec 9>artifacts/git-publish.lock
+    flock -w 1800 9 || { echo "linguist-commit: git-publish lock busy for 30 min — skipping this run" >&2; exit 1; }
     # Commit ONLY our own paths (0033 §5): anything another workflow has staged (a manual
     # commit mid-add, heartwood's publish) stays staged and out of this commit — the timer
     # swept foreign staged files five times before this. `--only` takes the exact changed
@@ -612,7 +618,8 @@ heartwood-sandbox-warm:
 # rebase --autostash onto origin/main (skipped when already based on it), push, redeploy.
 # Exit codes: 0 ok · 1 run failed · 2 run incomplete (iteration cap) · 3 publish conflict ·
 # 4 publish refused · 6 dirty corpus/ledger/registry or not on main · 7 validate/snapshot/seed failed
-# (restore printed) · 8 commit/rebase/push failed · 9 redeploy failed or skipped · 64 bad flag.
+# (restore printed) · 8 commit/rebase/push failed · 9 redeploy failed or skipped · 10 git-publish
+# lock busy for 30 min, nothing written (0036) · 64 bad flag.
 # Run + publish one session via the heartwood agent (PAID + LIVE; --dry-run / --no-push).
 heartwood-agent date *flags:
     #!/usr/bin/env bash
@@ -630,6 +637,10 @@ heartwood-agent date *flags:
       esac
     done
     hw() { "{{uv_bin}}" run astra-heartwood-agent "$@"; }
+    # node for the validate step: PATH, else the newest nvm install (a systemd unit's PATH
+    # has no nvm — 0036 review B1). Same order as astra_heartwood.agent.validate.find_node.
+    node_bin="$(command -v node || ls -1d "$HOME"/.nvm/versions/node/v*/bin/node 2>/dev/null | sort -V | tail -n 1)"
+    if [ -z "$node_bin" ]; then echo "heartwood: node not found (PATH or ~/.nvm) — nothing done" >&2; exit 1; fi
     content=apps/akasha-backend/content
     snapshot=apps/akasha-backend/snapshot
     ledger=apps/heartwood-backend/agent-runs.jsonl
@@ -663,6 +674,15 @@ heartwood-agent date *flags:
       echo "  summary: $run_dir/summary.json"
       exit 0
     fi
+    # One git publisher at a time (0036 D36-5): from publish-sync through push + redeploy, so
+    # linguist-commit never builds akasha from unvalidated content. The agent run above stays
+    # outside. The lock is released when this script exits; _heartwood-push-deploy (a child)
+    # never takes it itself.
+    exec 9>artifacts/git-publish.lock
+    if ! flock -w 1800 9; then
+      echo "heartwood-agent: git-publish lock busy for 30 min — nothing written; re-run the date" >&2
+      exit 10
+    fi
     # (2) apply the change-set to the live corpus (3 = conflict, 4 = refused; nothing written).
     rc=0; hw publish-sync "$run_dir" || rc=$?
     if [ "$rc" -ne 0 ]; then
@@ -676,7 +696,7 @@ heartwood-agent date *flags:
     }
     # (3) whole-corpus validation, (4) snapshot, registry reseed (reads the new snapshot, so
     # it must follow it) + unresolved-link delta (reported only).
-    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+    "$node_bin" --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
       libs/ts/vellum-lang/scripts/validate-corpus.ts --dir "$content" || fail_restore "corpus validation"
     OTEL_SDK_DISABLED=true "{{uv_bin}}" run akasha-snapshot || fail_restore "akasha-snapshot"
     OTEL_SDK_DISABLED=true "{{uv_bin}}" run astra-ontology-entity-seed || fail_restore "entity registry seed"
@@ -750,6 +770,10 @@ heartwood-revert date:
     export PATH="$HOME/.deno/bin:$PATH"
     date="{{date}}"
     hw() { "{{uv_bin}}" run astra-heartwood-agent "$@"; }
+    # node for the validate step: PATH, else the newest nvm install (a systemd unit's PATH
+    # has no nvm — 0036 review B1). Same order as astra_heartwood.agent.validate.find_node.
+    node_bin="$(command -v node || ls -1d "$HOME"/.nvm/versions/node/v*/bin/node 2>/dev/null | sort -V | tail -n 1)"
+    if [ -z "$node_bin" ]; then echo "heartwood: node not found (PATH or ~/.nvm) — nothing done" >&2; exit 1; fi
     content=apps/akasha-backend/content
     snapshot=apps/akasha-backend/snapshot
     ledger=apps/heartwood-backend/agent-runs.jsonl
@@ -768,6 +792,10 @@ heartwood-revert date:
     if [ -z "$commit" ]; then echo "heartwood-revert: no commit titled '$subject'" >&2; exit 4; fi
     echo "heartwood-revert: reverting $(git log -1 --format='%h %s' "$commit")"
     undo="git revert --abort  (if that refuses: git reset --merge HEAD && git clean -fd $content)"
+    # One git publisher at a time (0036 D36-5): held from the revert's index changes through
+    # push + redeploy.
+    exec 9>artifacts/git-publish.lock
+    flock -w 1800 9 || { echo "heartwood-revert: git-publish lock busy for 30 min — nothing changed" >&2; exit 10; }
     rc=0; git revert --no-commit "$commit" || rc=$?
     if [ "$rc" -ne 0 ] && ! git rev-parse -q --verify REVERT_HEAD >/dev/null; then
       echo "heartwood-revert: git revert failed before applying anything (exit $rc)" >&2; exit 8
@@ -786,7 +814,7 @@ heartwood-revert date:
     hw ledger-revert "$date" || fail "ledger-revert" 8
     OTEL_SDK_DISABLED=true "{{uv_bin}}" run akasha-snapshot || fail "akasha-snapshot" 7
     OTEL_SDK_DISABLED=true "{{uv_bin}}" run astra-ontology-entity-seed || fail "entity registry seed" 7
-    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+    "$node_bin" --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
       libs/ts/vellum-lang/scripts/validate-corpus.ts --dir "$content" || fail "corpus validation" 7
     git add "$content" "$snapshot" "$ledger" "$entity" || fail "git add" 8
     git commit --only --no-verify -q \
@@ -847,6 +875,11 @@ _heartwood-backfill-loop from:
       else
         echo "heartwood-backfill: re-arm FAILED — run: just heartwood-backfill-reset" >&2
       fi
+      # 0036: re-arm the request runner and drain anything Dagster filed meanwhile (no-block:
+      # a drained request can run for an hour).
+      systemctl --user start heartwood-request.timer heartwood-request.path 2>/dev/null \
+        && systemctl --user start --no-block heartwood-request.service 2>/dev/null \
+        || echo "heartwood-backfill: heartwood-request re-arm skipped (units not installed?)" >&2
       echo "=== heartwood backfill end $(ts)"
     }
     echo "=== heartwood backfill start $(ts) (from: ${from:-the first session})"
@@ -856,15 +889,20 @@ _heartwood-backfill-loop from:
     trap 'exit 143' TERM INT HUP
     systemctl --user stop linguist-commit.timer linguist-commit.path \
       || { echo "heartwood-backfill: could not stop linguist-commit units" >&2; exit 1; }
-    waited=0
-    while :; do
-      state="$(systemctl --user is-active linguist-commit.service)"
-      case "$state" in active|activating|deactivating|reloading) ;; *) break ;; esac
-      if [ "$waited" -ge 1800 ]; then
-        echo "heartwood-backfill: linguist-commit.service still $state after 30 min — aborting" >&2; exit 1
-      fi
-      echo "heartwood-backfill: waiting for linguist-commit.service ($state)…"
-      sleep 15; waited=$((waited + 15))
+    # The 0036 request runner too: stop its triggers, then wait out an in-flight run (it may
+    # be publishing a date this loop would otherwise run again).
+    systemctl --user stop heartwood-request.timer heartwood-request.path 2>/dev/null || true
+    for svc in linguist-commit.service heartwood-request.service; do
+      waited=0
+      while :; do
+        state="$(systemctl --user is-active "$svc")"
+        case "$state" in active|activating|deactivating|reloading) ;; *) break ;; esac
+        if [ "$waited" -ge 1800 ]; then
+          echo "heartwood-backfill: $svc still $state after 30 min — aborting" >&2; exit 1
+        fi
+        echo "heartwood-backfill: waiting for $svc ($state)…"
+        sleep 15; waited=$((waited + 15))
+      done
     done
     sessions_args=(); if [ -n "$from" ]; then sessions_args=(--from "$from"); fi
     if ! pending="$(hw sessions "${sessions_args[@]}")"; then
@@ -910,7 +948,35 @@ heartwood-backfill-reset:
     systemctl --user reset-failed heartwood-backfill.service 2>/dev/null || true
     systemctl --user start linguist-commit.timer linguist-commit.path
     rm -f artifacts/heartwood/backfill.lock
+    systemctl --user start heartwood-request.timer heartwood-request.path 2>/dev/null \
+      && systemctl --user start --no-block heartwood-request.service 2>/dev/null \
+      || echo "heartwood-backfill-reset: heartwood-request units not installed — skipped" >&2
     echo "heartwood-backfill-reset: linguist-commit.timer $(systemctl --user is-active linguist-commit.timer), .path $(systemctl --user is-active linguist-commit.path); lock removed"
+
+# --- heartwood in Dagster (0036) ---
+# The host side of Dagster's session_wiki asset: run `just heartwood-agent <date>` for every
+# pending request under heartwood.requests-path, oldest first, and write each result —
+# PAID + LIVE per request (the agent run + publish). Started by heartwood-request.path
+# (fires when Dagster files a request) and heartwood-request.timer (hourly fallback); safe
+# to run by hand (no-op with nothing pending). The systemd user PATH lacks uv/just/node, so
+# the runner resolves each tool itself (preflight) — never call bare `uv` here.
+heartwood-requests:
+    cd /ruby/data/experiments/astra && JUST="{{just_executable()}}" UV="{{uv_bin}}" "{{uv_bin}}" run astra-heartwood-agent drain-requests
+
+# Install + start the 0036 request runner units (idempotent; re-run after editing them).
+heartwood-request-install:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    just artifacts-init
+    unit_dir="$HOME/.config/systemd/user"
+    mkdir -p "$unit_dir"
+    cp deploy/systemd/heartwood-request.service deploy/systemd/heartwood-request.path \
+       deploy/systemd/heartwood-request.timer "$unit_dir/"
+    systemctl --user daemon-reload
+    systemctl --user enable --now heartwood-request.path heartwood-request.timer
+    echo "path unit: $(systemctl --user is-active heartwood-request.path)"
+    systemctl --user list-timers heartwood-request.timer --no-pager
 
 # --- mouthpiece producer (0034) ---
 # Warm the dspy sandbox (Deno + Pyodide) the producer runs in — idempotent; the first run

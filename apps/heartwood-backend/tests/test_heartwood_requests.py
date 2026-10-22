@@ -220,4 +220,6 @@ def test_cli_drain_on_a_published_date_spends_nothing(
     monkeypatch.setattr(rq, "resolve_tools", lambda: TOOLS)
     monkeypatch.setattr(rq, "BACKFILL_LOCK", tmp_path / "none.lock")
     assert cli.cli(["drain-requests", "--requests", str(root)]) == 0
-    assert "2025-8-28: already-published" in capsys.readouterr().out
+    out = capsys.readouterr().out
+    assert "2025-8-28: already-published" in out
+    assert "preflight ok: node=/opt/node/bin/node" in out

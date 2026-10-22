@@ -241,6 +241,7 @@ def _summary(run_dir: Path | None) -> dict[str, Any]:
 class DrainReport:
     results: list[Result] = field(default_factory=list)
     stopped_for_backfill: bool = False
+    tools: dict[str, str | None] = field(default_factory=dict)
 
 
 def drain_requests(
@@ -256,6 +257,7 @@ def drain_requests(
     logs = root / "logs"
     logs.mkdir(parents=True, exist_ok=True)
     tools = tools if tools is not None else resolve_tools()
+    report.tools = tools
     missing = sorted(name for name, path in tools.items() if not path)
     if missing:
         for req in pending(root):

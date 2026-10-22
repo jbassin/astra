@@ -28,12 +28,16 @@ DRIVE_MOUNT="${CRAIG_DROP_DIR:-/ruby/data/home/drive/Craig}"
 NIC_IFACE="${WATCHDOG_NIC_IFACE:-enp4s0}"
 # Timers whose health == the pipeline is armed. (The watchdog can't meaningfully check
 # its OWN timer — if that died, this script wouldn't be running.)
-WATCHED_TIMERS=(craig-sync.timer linguist-commit.timer)
+WATCHED_TIMERS=(craig-sync.timer linguist-commit.timer heartwood-request.timer)
+# Event-driven path units (0036): a .path unit has no next-elapse, so check_timer would call
+# it "not armed" — these get check_path_unit (is-active only).
+WATCHED_PATHS=(linguist-commit.path heartwood-request.path)
 # `just heartwood-backfill` (0033 §5) deliberately stops linguist-commit.{timer,path} for
-# the whole run and holds this lock; while it exists the linguist-commit timer check is
-# skipped (journal-only), so a planned suppression never pages. A hard-killed backfill
+# the whole run and holds this lock; while it exists the checks of every unit it stops
+# (BACKFILL_SUPPRESSED) are skipped (journal-only), so a planned suppression never pages. A hard-killed backfill
 # leaves the lock behind: `just heartwood-backfill-reset` re-arms the units + removes it.
 HEARTWOOD_BACKFILL_LOCK="${HEARTWOOD_BACKFILL_LOCK:-$REPO/artifacts/heartwood/backfill.lock}"
+BACKFILL_SUPPRESSED=" linguist-commit.timer linguist-commit.path heartwood-request.timer heartwood-request.path "
 
 # Confirmation window. The watchdog runs on *:0/15 — the SAME wall-clock ticks the watched
 # timers fire on (craig-sync *:0/5, linguist-commit hourly). So a naive single sample
@@ -402,6 +406,14 @@ remediate_nic() {
   return 1
 }
 
+check_path_unit() {
+  local p="$1"
+  if [ "$(systemctl --user is-active "$p" 2>/dev/null)" != "active" ]; then
+    echo "path unit $p is not active"; return 1
+  fi
+  return 0
+}
+
 check_timer() {
   local t="$1"
   if [ "$(systemctl --user is-active "$t" 2>/dev/null)" != "active" ]; then
@@ -455,13 +467,15 @@ run_watchdog() {
     transition nic bad "$reason — auto-remediation: $fix"
   fi
   local t
-  for t in "${WATCHED_TIMERS[@]}"; do
-    if [ "$t" = "linguist-commit.timer" ] && [ -e "$HEARTWOOD_BACKFILL_LOCK" ]; then
-      log "timer $t check suppressed — heartwood backfill holds $HEARTWOOD_BACKFILL_LOCK"
+  for t in "${WATCHED_TIMERS[@]}" "${WATCHED_PATHS[@]}"; do
+    if [[ "$BACKFILL_SUPPRESSED" == *" $t "* ]] && [ -e "$HEARTWOOD_BACKFILL_LOCK" ]; then
+      log "unit $t check suppressed — heartwood backfill holds $HEARTWOOD_BACKFILL_LOCK"
       continue
     fi
-    if reason="$(confirm check_timer "$t")"; then transition "timer-$t" ok  "timer $t healthy again"
-    else                                          transition "timer-$t" bad "$reason"; fi
+    local check=check_timer
+    [[ "$t" == *.path ]] && check=check_path_unit
+    if reason="$(confirm "$check" "$t")"; then transition "timer-$t" ok  "unit $t healthy again"
+    else                                       transition "timer-$t" bad "$reason"; fi
   done
   clear_recovered_failures
 }

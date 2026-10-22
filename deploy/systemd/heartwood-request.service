@@ -1,0 +1,13 @@
+[Unit]
+Description=Run heartwood for every pending Dagster session_wiki request (0036)
+Documentation=https://github.com/jbassin/astra
+# Class C: page Discord if the runner itself fails (a failed SESSION is a result file —
+# session_wiki pages for that through SigNoz). Must be in [Unit]; [Service] ignores it.
+OnFailure=astra-alert@%n.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/ruby/data/experiments/astra
+# One agent run is 15–55 min plus publish; oneshot has no start timeout by default. The
+# runner resolves node/deno/uv/just itself (this unit's PATH has none of them).
+ExecStart=/home/jbassin/.cargo/bin/just heartwood-requests

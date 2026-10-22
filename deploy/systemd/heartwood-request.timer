@@ -1,0 +1,11 @@
+[Unit]
+Description=Hourly fallback sweep for heartwood session_wiki requests (0036)
+Documentation=https://github.com/jbassin/astra
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=heartwood-request.service
+
+[Install]
+WantedBy=timers.target

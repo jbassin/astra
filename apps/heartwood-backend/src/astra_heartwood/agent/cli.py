@@ -206,6 +206,9 @@ def _cmd_drain_requests(args: argparse.Namespace) -> int:
 
     root = args.requests or Path(load_config().heartwood.requests_path)
     report = drain_requests(root)
+    missing = [k for k, v in report.tools.items() if not v]
+    tools = " ".join(f"{k}={v}" for k, v in report.tools.items())
+    print(f"preflight {'FAILED, missing ' + ', '.join(missing) if missing else 'ok'}: {tools}")
     for r in report.results:
         print(f"{r.date}: {r.outcome} (exit {r.exit_code}: {r.meaning})")
     if report.stopped_for_backfill:

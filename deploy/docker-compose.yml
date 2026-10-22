@@ -53,6 +53,10 @@ x-dagster-volumes: &dagster-pipeline-volumes
   # at the last `just up`, missing everything heartwood published since. Nothing in Dagster
   # writes here (akasha_corpus_snapshot writes apps/akasha-backend/snapshot/).
   - /ruby/data/experiments/astra/apps/akasha-backend/content:/repo/apps/akasha-backend/content:ro
+  # heartwood.requests-path (0036): session_wiki files <date>.request.json here and waits for
+  # the host heartwood-request unit's <date>.result.json. Identical path on both sides; the
+  # dir is created by `just artifacts-init` as uid 1000 (Docker would create it as root).
+  - /ruby/data/experiments/astra/artifacts/heartwood/requests:/ruby/data/experiments/astra/artifacts/heartwood/requests
 
 services:
   # --- Dagster: the batch-pipeline control plane ---

@@ -1,0 +1,14 @@
+[Unit]
+Description=Run heartwood the moment Dagster files a session_wiki request (0036)
+Documentation=https://github.com/jbassin/astra
+
+[Path]
+# session_wiki (dagster-code, bind-mounted at the same path) writes <date>.request.json here.
+# A directory watch fires on any create/rename inside it — including the runner's own
+# result writes, which cost one no-op drain. Logs live in logs/ so they don't trigger it.
+# heartwood-request.timer stays enabled as the fallback sweep for a missed event.
+PathModified=/ruby/data/experiments/astra/artifacts/heartwood/requests
+Unit=heartwood-request.service
+
+[Install]
+WantedBy=paths.target
