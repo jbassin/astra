@@ -1,0 +1,21 @@
+[Unit]
+Description=astra nightly backup — Postgres dumps + irreplaceable state + SigNoz alert rules to the sda backup disk
+Documentation=https://github.com/jbassin/astra
+# Class C alerting: page Discord when a backup run fails (alert-notify.sh debounces repeat
+# failures of the same unit). OnFailure is a [Unit] key — systemd ignores it under [Service].
+OnFailure=astra-alert@%n.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/ruby/data/experiments/astra
+# The script refuses to run unless the backup root sits on the sda mount, so an unmounted
+# disk fails the unit (and pages) instead of quietly writing the backup to the nvme.
+ExecStart=/ruby/data/experiments/astra/deploy/systemd/astra-backup.sh run
+# Backstop only: a normal night copies just what changed (minutes); the first run copies
+# ~35 GB. If anything wedges, the unit goes `failed` (visible + paged) instead of hanging.
+TimeoutStartSec=3h
+# Stay out of the live stack's way: low CPU priority and the lowest best-effort IO class.
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+UMask=0077

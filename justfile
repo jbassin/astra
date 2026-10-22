@@ -78,7 +78,11 @@ artifacts-init:
 down:
     cd deploy && docker compose down
 
-# Stop AND drop volumes — a fresh SigNoz needs re-onboarding on the next `up`.
+# The SigNoz volumes hold the alert rules, the discord-ops channel and the users; the rules
+# are also in deploy/signoz/rules/ and the nightly backup (`just backup-now` first if in
+# doubt). A fresh SigNoz needs re-onboarding on the next `up`.
+# Stop AND drop the SigNoz volumes (asks for confirmation first).
+[confirm("down-volumes DELETES the SigNoz volumes (alert rules, notification channel, users). Type y to continue:")]
 down-volumes:
     cd deploy && docker compose down -v
 
@@ -307,6 +311,44 @@ alert-sudoers-install:
     sudo -n -l /usr/bin/systemctl restart gdrive.service >/dev/null && echo "  OK — gdrive restart"
     sudo -n -l /usr/sbin/ethtool -r enp4s0 >/dev/null && echo "  OK — NIC retrain"
     sudo -n -l /usr/sbin/ethtool -s enp4s0 advertise 0x008 >/dev/null && echo "  OK — NIC 100FD fallback — watchdog can now self-heal the link"
+
+# --- backups (0037 OPS-6) ---
+# Nightly snapshot to the sda disk (/ruby/data/plex/data/astra-backups): pg_dump of the
+# three astra databases, the irreplaceable state dirs (hardlinked against the previous
+# snapshot), and the SigNoz alert rules. Keeps 14 daily + 8 weekly snapshots. Everything
+# lives in deploy/systemd/astra-backup.sh (header = what, why, retention, manual restore).
+
+# Idempotent; re-run after editing the units. The script stays in the repo (the unit
+# ExecStarts its absolute path), and a failed run pages through astra-alert@ (Class C).
+# Install + enable the nightly backup timer (03:30, Persistent).
+backup-install:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    chmod +x deploy/systemd/astra-backup.sh
+    unit_dir="$HOME/.config/systemd/user"
+    mkdir -p "$unit_dir"
+    cp deploy/systemd/astra-backup.service deploy/systemd/astra-backup.timer "$unit_dir/"
+    systemctl --user daemon-reload
+    systemctl --user enable --now astra-backup.timer
+    systemctl --user list-timers astra-backup.timer --no-pager
+
+# Take one snapshot now, in the foreground (waits if the nightly run holds the lock).
+backup-now:
+    "{{justfile_directory()}}/deploy/systemd/astra-backup.sh" run
+
+# Each Postgres dump goes into a throwaway --network none container and its row counts are
+# compared with dump time and live; state dirs get file counts + a sha256 sample vs the
+# source; rule files must parse. Read-only against the live stack.
+# Prove the newest snapshot (or the named one) restores.
+backup-restore-test snapshot="":
+    "{{justfile_directory()}}/deploy/systemd/astra-backup.sh" restore-test {{snapshot}}
+
+# Rules only — never the notification channel, which holds the webhook. The nightly backup
+# logs a warning when the live rules drift from the committed copy.
+# Re-export the live SigNoz alert rules into deploy/signoz/rules/ for git.
+signoz-rules-export:
+    "{{justfile_directory()}}/deploy/systemd/astra-backup.sh" export-rules "{{justfile_directory()}}/deploy/signoz/rules"
 
 # List Cartesia voices (mouthpiece's TTS backend) so the two podcast-persona
 # `cartesia-voice-id`s in being.kdl can be picked. Decrypts the key from SOPS on the host

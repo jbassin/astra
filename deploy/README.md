@@ -80,9 +80,29 @@ docker exec signoz-clickhouse clickhouse-client -q \
    WHERE serviceName LIKE 'astra-smoke-%' GROUP BY serviceName"
 ```
 
+## Backups
+
+A nightly user timer (`astra-backup.timer`, 03:30, `just backup-install`) writes one snapshot to
+the sda data disk at `/ruby/data/plex/data/astra-backups/<UTC timestamp>/` (`latest` points at the
+newest). A failed run pages Discord through `astra-alert@` (Class C). Each snapshot holds:
+
+- `postgres/` — `pg_dump -Fc` of the dagster, weal and orator databases, with per-table row counts
+  taken in the same transaction snapshot as the dump;
+- `signoz/rules/` — the SigNoz alert rules (not the notification channel, which holds the webhook);
+  the same files are committed in `signoz/rules/` (refresh with `just signoz-rules-export`);
+- `state/` — `artifacts/` (minus live PGDATA, node-exporter output and lock files),
+  `apps/assay/review-ui/state/` and `apps/mouthpiece-backend/episodes/`, hardlinked against the
+  previous snapshot so unchanged files cost nothing.
+
+Retention: the newest snapshot of each of the last 14 days plus the newest of each of the last 8
+ISO weeks. `just backup-now` takes a snapshot; `just backup-restore-test` restores every dump into a
+throwaway `--network none` Postgres and checks row counts, then checksums a sample of state files.
+Manual restore steps are in the header of `systemd/astra-backup.sh`. The SOPS age key
+(`sops/age.key`) is deliberately not in the backup; its second copy lives in the password manager.
+
 ## Tear down
 
 ```sh
 docker compose down       # stop; keep volumes (clickhouse/pg/signoz data persist)
-docker compose down -v    # also drop volumes (fresh SigNoz onboarding next time)
+just down-volumes         # also drop the SigNoz volumes (asks first; fresh onboarding next time)
 ```

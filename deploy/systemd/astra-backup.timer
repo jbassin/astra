@@ -1,0 +1,12 @@
+[Unit]
+Description=Run the astra backup nightly at 03:30
+
+[Timer]
+# 03:30 local, clear of the 03:00 slot where the Drive FUSE mount has been wedging
+# (craig-sync / watchdog, 2026-10-19 and 2026-10-21). Persistent catches up a run missed
+# while the host was off, as soon as it is back.
+OnCalendar=*-*-* 03:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
