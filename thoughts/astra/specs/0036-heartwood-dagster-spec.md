@@ -1,6 +1,6 @@
 # 0036 — heartwood in the Dagster pipeline (spec)
 
-**Status:** SPEC — adversarial review folded (2 blockers + 5 majors + 11 minors, blockers spot-checked — see §5).
+**Status:** BUILT + DEPLOYED + LIVE (2026-10-22; gate E pending the next session) — adversarial review folded (2 blockers + 5 majors + 11 minors, blockers spot-checked — see §5).
 **Scope doc:** `thoughts/shared/research/2026-10-21-heartwood-dagster-0036-thoughts.md` (D1–D3 stakeholder-resolved).
 **Builds on:** 0033 (`thoughts/astra/specs/0033-heartwood-agent-spec.md`) — the agent, `just heartwood-agent`,
 its exit codes, ledger, revert and backfill are built and unchanged here except where §2 says so.
@@ -224,3 +224,28 @@ re-verified B1 (user-manager PATH has no node; node only under `~/.nvm`) and B2 
   in-repo age key (no env needed); SSH push + `docker compose --build` work from a user oneshot; `flock`
   at `/usr/bin/flock`; systemd 249 directory `PathModified` semantics; oneshot has no start timeout; no
   nested-lock risk in linguist-commit; the SigNoz Class A rule is enabled; no run max-runtime/retries.
+
+## 6. Build record (2026-10-21/22)
+
+Commits: S1 `3ea28180` (config + request protocol + `drain-requests`), S2 `1e79425a` (`session_wiki` +
+`heartwood_sensor` + dagster.yaml concurrency), S3 `9b4fb1e5` (units, recipes, git-publish lock, node
+resolution, backfill interplay, watchdog). Deployed with `just up dagster-code dagster-webserver
+dagster-daemon`.
+
+- **A ✅** 12 runner tests; a real host `drain-requests` on 2026-10-19 → `already-published`, nothing spent.
+- **B ✅** asset/sensor tests; full Python lane (only the pre-existing `icepool` ty diagnostics); TS config
+  7/7; `uv lock --check` clean; the real code location loads (17 assets, `heartwood_sensor`).
+- **C ✅** `systemd-analyze --user verify` clean; a second `flock` holder waited exactly for the first;
+  watchdog dry-runs (isolated state, no remediation): all four units suppressed under a backfill lock,
+  `linguist-commit.path` ok through `check_path_unit`.
+- **D ✅** sensor adopted 55 partitions, 0 runs, `sessions` empty; GraphQL `launchRun` of `session_wiki`
+  for 2026-10-19 (run `f44632f5`) → path unit fired → journal `preflight ok` with node (nvm), deno, git,
+  docker, uv, just → result `already-published` → run SUCCESS; `heartwood.session_wiki` span under
+  `astra.pipeline` (30 s, no error); 0 ERROR/FATAL logs; no heartwood commit.
+- **E ⏳** the next faerrin session.
+
+Deviations: the host units were installed during S3, before the Dagster deploy — the live watchdog runs
+`alert-notify.sh` from the repo and would have paged about the missing units within 15 minutes. A manual
+`just linguist-commit` (proving it under the lock) pushed S1/S2 early (it pushes whenever main is ahead);
+both slices were lane-green. The runner's `preflight` line is printed to stdout (the `astra.*` logger
+exports to SigNoz only, so the journal showed nothing).

@@ -28,5 +28,5 @@ Gotchas:
 - `SessionDigest` REQUIRES `stats` — a special writes a plain `{session_id, synopsis}` digest (the shape
   the recap capstones use; the catalog reads only those keys).
 - `render` is classified a production deploy: needs the user's explicit "deploy it" in the moment.
-- heartwood is NOT in Dagster (S6 go-live pending): sessions after the last manual
-  `just heartwood-agent` are missing from the wiki — 10-12/10-19 were run for this ($0.47 + $0.32).
+- heartwood was NOT in Dagster then: 10-12/10-19 were run by hand for this ($0.47 + $0.32). Since
+  2026-10-22 it runs per session automatically ([[heartwood-dagster-0036]]).

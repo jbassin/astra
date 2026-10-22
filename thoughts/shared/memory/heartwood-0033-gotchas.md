@@ -17,6 +17,8 @@ no human review; `just heartwood-agent <date> [--dry-run|--no-push|--model=…]`
 
 **Why:** the stakeholder judged the 0020 fixed pipeline too rigid to reason across transcript + wiki.
 **How to apply:** S6 (go-live + backfill) is next and is PAID + LIVE — flag it ([[flag-paid-live-actions]]).
+**Update 2026-10-22:** backfill done (all 55 faerrin sessions published) and heartwood now runs per session
+automatically through Dagster — see [[heartwood-dagster-0036]].
 
 Gotchas:
 - dspy callbacks never see cost/usage → `MeteredLM.forward` reads the litellm response; litellm already
