@@ -28,6 +28,7 @@
     "**/codex/books/**",
     "**/assay/vendor/**",
     "**/assay/homebrew/**",
-    "**/weal-engine/gen/**"
+    "**/weal-engine/gen/**",
+    "thoughts/**"
   ]
 }

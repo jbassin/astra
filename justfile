@@ -308,25 +308,6 @@ alert-sudoers-install:
     sudo -n -l /usr/sbin/ethtool -r enp4s0 >/dev/null && echo "  OK — NIC retrain"
     sudo -n -l /usr/sbin/ethtool -s enp4s0 advertise 0x008 >/dev/null && echo "  OK — NIC 100FD fallback — watchdog can now self-heal the link"
 
-# Install + start the scriptorium (the assay 0030 prose-review UI) as a user unit so
-# it survives shell/session churn while exposed at scriptorium.iridi.cc (basicauth'd
-# stanza in sites.caddyfile). Idempotent; re-run after editing the unit. Kills any
-# ad-hoc `python3 server.py 10390` first (the port would collide). Disable with
-# `systemctl --user disable --now scriptorium` when the review closes.
-scriptorium-install:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    cd /ruby/data/experiments/astra
-    unit_dir="$HOME/.config/systemd/user"
-    mkdir -p "$unit_dir"
-    cp deploy/systemd/scriptorium.service "$unit_dir/"
-    systemctl --user daemon-reload
-    # an ad-hoc foreground server may hold :10390 — replace it with the unit
-    pkill -f 'review-ui/server\.py' 2>/dev/null || true
-    sleep 1
-    systemctl --user enable --now scriptorium.service
-    systemctl --user --no-pager status scriptorium.service | head -5
-
 # List Cartesia voices (mouthpiece's TTS backend) so the two podcast-persona
 # `cartesia-voice-id`s in being.kdl can be picked. Decrypts the key from SOPS on the host
 # (never written to disk); pass a query to filter by name/description, e.g.
