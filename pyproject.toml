@@ -20,7 +20,7 @@ dev-dependencies = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["libs/py", "apps", "ontology"]
+testpaths = ["libs/py", "apps", "ontology", "dagster"]
 addopts = "-q"
 
 [tool.ty.src]
