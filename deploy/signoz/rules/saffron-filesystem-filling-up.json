@@ -1,0 +1,131 @@
+{
+  "alert": "saffron filesystem filling up",
+  "alertType": "METRIC_BASED_ALERT",
+  "annotations": {
+    "description": "Filesystem {{$mountpoint}} on saffron is {{$value}}% used (threshold {{$threshold}}%). Free up space or expand.",
+    "summary": "{{$mountpoint}} is {{$value}}% full"
+  },
+  "condition": {
+    "compositeQuery": {
+      "panelType": "graph",
+      "queries": [
+        {
+          "spec": {
+            "aggregations": [
+              {
+                "metricName": "node_filesystem_avail_bytes",
+                "spaceAggregation": "min",
+                "timeAggregation": "min"
+              }
+            ],
+            "disabled": true,
+            "filter": {
+              "expression": "fstype IN ('ext4','xfs')"
+            },
+            "groupBy": [
+              {
+                "fieldContext": "attribute",
+                "fieldDataType": "string",
+                "name": "mountpoint"
+              }
+            ],
+            "name": "A",
+            "signal": "metrics",
+            "stepInterval": 60
+          },
+          "type": "builder_query"
+        },
+        {
+          "spec": {
+            "aggregations": [
+              {
+                "metricName": "node_filesystem_size_bytes",
+                "spaceAggregation": "max",
+                "timeAggregation": "max"
+              }
+            ],
+            "disabled": true,
+            "filter": {
+              "expression": "fstype IN ('ext4','xfs')"
+            },
+            "groupBy": [
+              {
+                "fieldContext": "attribute",
+                "fieldDataType": "string",
+                "name": "mountpoint"
+              }
+            ],
+            "name": "B",
+            "signal": "metrics",
+            "stepInterval": 60
+          },
+          "type": "builder_query"
+        },
+        {
+          "spec": {
+            "expression": "(1 - A/B) * 100",
+            "legend": "{{mountpoint}}",
+            "name": "F1"
+          },
+          "type": "builder_formula"
+        }
+      ],
+      "queryType": "builder",
+      "unit": "percent"
+    },
+    "selectedQueryName": "F1",
+    "thresholds": {
+      "kind": "basic",
+      "spec": [
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "at_least_once",
+          "name": "warning",
+          "op": "above",
+          "recoveryTarget": 80,
+          "target": 85
+        },
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "at_least_once",
+          "name": "critical",
+          "op": "above",
+          "recoveryTarget": 90,
+          "target": 95
+        }
+      ]
+    }
+  },
+  "description": "A real filesystem on saffron (ext4/xfs: /, /boot, /ruby, plex data disk) is above 85% (warning) or 95% (critical) used.",
+  "evaluation": {
+    "kind": "rolling",
+    "spec": {
+      "evalWindow": "15m",
+      "frequency": "5m"
+    }
+  },
+  "labels": {
+    "host": "saffron",
+    "severity": "critical"
+  },
+  "notificationSettings": {
+    "groupBy": [
+      "mountpoint"
+    ],
+    "renotify": {
+      "alertStates": [
+        "firing"
+      ],
+      "enabled": true,
+      "interval": "12h"
+    }
+  },
+  "ruleType": "threshold_rule",
+  "schemaVersion": "v2alpha1",
+  "source": "mcp",
+  "version": "v5"
+}

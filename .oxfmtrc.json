@@ -29,6 +29,8 @@
     "**/assay/vendor/**",
     "**/assay/homebrew/**",
     "**/weal-engine/gen/**",
-    "thoughts/**"
+    "**/weal-engine/gen/**",
+    "thoughts/**",
+    "deploy/signoz/rules/**"
   ]
 }

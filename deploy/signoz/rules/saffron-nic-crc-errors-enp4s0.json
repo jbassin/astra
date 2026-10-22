@@ -1,0 +1,83 @@
+{
+  "alert": "saffron NIC CRC errors (enp4s0)",
+  "alertType": "METRIC_BASED_ALERT",
+  "annotations": {
+    "description": "rx_crc_errors on {{$device}} is increasing at {{$value}}/s - corrupt frames arriving on the wire. Check the cable and the switch port (and the 3 AM link-flap suspect).",
+    "summary": "{{$device}} taking CRC errors ({{$value}}/s)"
+  },
+  "condition": {
+    "compositeQuery": {
+      "panelType": "graph",
+      "queries": [
+        {
+          "spec": {
+            "aggregations": [
+              {
+                "metricName": "node_ethtool_received_crc_errors",
+                "spaceAggregation": "max",
+                "timeAggregation": "rate"
+              }
+            ],
+            "groupBy": [
+              {
+                "fieldContext": "attribute",
+                "fieldDataType": "string",
+                "name": "device"
+              }
+            ],
+            "legend": "{{device}}",
+            "name": "A",
+            "signal": "metrics",
+            "stepInterval": 60
+          },
+          "type": "builder_query"
+        }
+      ],
+      "queryType": "builder"
+    },
+    "selectedQueryName": "A",
+    "thresholds": {
+      "kind": "basic",
+      "spec": [
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "at_least_once",
+          "name": "warning",
+          "op": "above",
+          "recoveryTarget": null,
+          "target": 0
+        }
+      ]
+    }
+  },
+  "description": "The uplink NIC enp4s0 on saffron is accumulating new rx CRC errors (corrupt frames on the wire - cable/switch problem, the Aug 2026 flapping signature).",
+  "evaluation": {
+    "kind": "rolling",
+    "spec": {
+      "evalWindow": "15m",
+      "frequency": "5m"
+    }
+  },
+  "labels": {
+    "host": "saffron",
+    "severity": "warning"
+  },
+  "notificationSettings": {
+    "groupBy": [
+      "device"
+    ],
+    "renotify": {
+      "alertStates": [
+        "firing"
+      ],
+      "enabled": true,
+      "interval": "4h"
+    }
+  },
+  "ruleType": "threshold_rule",
+  "schemaVersion": "v2alpha1",
+  "source": "mcp",
+  "version": "v5"
+}

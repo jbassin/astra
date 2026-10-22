@@ -1,0 +1,83 @@
+{
+  "alert": "saffron NVMe media errors",
+  "alertType": "METRIC_BASED_ALERT",
+  "annotations": {
+    "description": "smartmon_nvme_media_errors on {{$disk}} is {{$value}} — the controller hit uncorrectable NAND errors. Check smartmon_nvme_percentage_used and available_spare.",
+    "summary": "NVMe {{$disk}} media errors: {{$value}}"
+  },
+  "condition": {
+    "compositeQuery": {
+      "panelType": "graph",
+      "queries": [
+        {
+          "spec": {
+            "aggregations": [
+              {
+                "metricName": "smartmon_nvme_media_errors",
+                "spaceAggregation": "max",
+                "timeAggregation": "max"
+              }
+            ],
+            "groupBy": [
+              {
+                "fieldContext": "attribute",
+                "fieldDataType": "string",
+                "name": "disk"
+              }
+            ],
+            "legend": "{{disk}}",
+            "name": "A",
+            "signal": "metrics",
+            "stepInterval": 60
+          },
+          "type": "builder_query"
+        }
+      ],
+      "queryType": "builder"
+    },
+    "selectedQueryName": "A",
+    "thresholds": {
+      "kind": "basic",
+      "spec": [
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "at_least_once",
+          "name": "warning",
+          "op": "above",
+          "recoveryTarget": null,
+          "target": 0
+        }
+      ]
+    }
+  },
+  "description": "An NVMe drive on saffron logged media errors (uncorrectable NAND-level read/write failures) in its health log.",
+  "evaluation": {
+    "kind": "rolling",
+    "spec": {
+      "evalWindow": "15m",
+      "frequency": "5m"
+    }
+  },
+  "labels": {
+    "host": "saffron",
+    "severity": "warning"
+  },
+  "notificationSettings": {
+    "groupBy": [
+      "disk"
+    ],
+    "renotify": {
+      "alertStates": [
+        "firing"
+      ],
+      "enabled": true,
+      "interval": "24h"
+    }
+  },
+  "ruleType": "threshold_rule",
+  "schemaVersion": "v2alpha1",
+  "source": "mcp",
+  "version": "v5"
+}

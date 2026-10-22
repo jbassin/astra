@@ -1,0 +1,83 @@
+{
+  "alert": "astra error/fatal logs",
+  "alertType": "LOGS_BASED_ALERT",
+  "annotations": {
+    "description": "{{$service.name}} emitted {{$value}} ERROR/FATAL log(s) in the last 5m.",
+    "summary": "astra error logs on {{$service.name}}"
+  },
+  "condition": {
+    "compositeQuery": {
+      "panelType": "graph",
+      "queries": [
+        {
+          "spec": {
+            "aggregations": [
+              {
+                "expression": "count()"
+              }
+            ],
+            "filter": {
+              "expression": "severity_text IN ['ERROR', 'FATAL']"
+            },
+            "groupBy": [
+              {
+                "fieldContext": "resource",
+                "fieldDataType": "string",
+                "name": "service.name"
+              }
+            ],
+            "legend": "{{service.name}}",
+            "name": "A",
+            "signal": "logs",
+            "stepInterval": 60
+          },
+          "type": "builder_query"
+        }
+      ],
+      "queryType": "builder"
+    },
+    "selectedQueryName": "A",
+    "thresholds": {
+      "kind": "basic",
+      "spec": [
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "at_least_once",
+          "name": "error",
+          "op": "above",
+          "recoveryTarget": null,
+          "target": 0
+        }
+      ]
+    }
+  },
+  "description": "Class A in-band catch-all: any ERROR or FATAL log emitted by an astra service (pipeline asset failures, LLM errors after retries, service exceptions). Routes to the Discord ops channel.",
+  "evaluation": {
+    "kind": "rolling",
+    "spec": {
+      "evalWindow": "5m",
+      "frequency": "1m"
+    }
+  },
+  "labels": {
+    "severity": "error"
+  },
+  "notificationSettings": {
+    "groupBy": [
+      "service.name"
+    ],
+    "renotify": {
+      "alertStates": [
+        "firing"
+      ],
+      "enabled": true,
+      "interval": "1h"
+    }
+  },
+  "ruleType": "threshold_rule",
+  "schemaVersion": "v2alpha1",
+  "source": "mcp",
+  "version": "v5"
+}
