@@ -5,10 +5,13 @@ on:
     branches: [main]
   pull_request:
 
-# Cancel superseded runs on the same ref.
+# Pull requests: a newer push to the same PR cancels the older run.
+# main: never cancel. `cancel-in-progress: false` alone is not enough, because a
+# concurrency group also replaces a *pending* run whenever a newer one queues
+# behind it. So every main run gets its own group (the run id) and runs to the end.
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   # Path filter: only run a lane when files it cares about changed.
@@ -32,6 +35,13 @@ jobs:
               - 'apps/**'
               - 'libs/py/**'
               - 'ontology/**'
+              # dagster/ and deploy/ are under ruff and ty.
+              - 'dagster/**'
+              - 'deploy/**'
+              # ruff also lints the standalone scripts under libs/rust/ (gen_oracle.py).
+              - 'libs/rust/**/*.py'
+              # Root fixtures: read by libs/py/vellum-lang's corpus test.
+              - 'fixtures/**'
               - 'pyproject.toml'
               - 'uv.lock'
               - 'ruff.toml'
@@ -39,7 +49,15 @@ jobs:
             ts:
               - 'apps/**'
               - 'libs/ts/**'
-              - 'package.json'
+              # libs/ts/config reads ontology/ontology-config/config.kdl.
+              - 'ontology/**'
+              # The weal-engine crate; the committed wasm is smoke-tested by
+              # libs/ts/weal-engine's vitest suite.
+              - 'libs/rust/**'
+              # Root fixtures: read by libs/ts/vellum-lang's corpus test.
+              - 'fixtures/**'
+              # Root-level files oxfmt checks (package.json, commitlint.config.js).
+              - '*.{js,mjs,cjs,json}'
               - 'pnpm-lock.yaml'
               - 'pnpm-workspace.yaml'
               - '.oxlintrc.json'
@@ -96,14 +114,12 @@ jobs:
       - uses: ./.github/actions/setup-uv
       - run: uv run pytest
 
-  # typecheck/test/build are orchestrated by vp (0022 S15, D7) — `vite-plus` is a
-  # root devDependency (pnpm-lock.yaml-pinned, installed by setup-pnpm's frozen
-  # install, no separate install step), so `pnpm exec vp` resolves the exact locked
-  # binary. `vp run -r <task>` fans the task out across all 27 TS workspace members
-  # (task-graph + local caching; caching buys nothing on an ephemeral CI runner, so
-  # no cache is persisted here — see [[viteplus-cutover-0022]] for the local-only
-  # cache-hit evidence). `tsc --noEmit` stays the actual typecheck gate underneath
-  # (D8) — vp only orchestrates the fan-out, it doesn't replace the checker.
+  # typecheck/test/build fan out with `pnpm -r --no-bail run <script>`: every
+  # workspace member that defines the script runs (in dependency order), a failing
+  # member no longer hides the ones after it, and the command still exits non-zero
+  # if any member failed. `--aggregate-output` prints each member's log as one block.
+  # This replaces `vp run -r`, which stops at the first failure (0037 decision:
+  # replace vite-plus with `pnpm -r`). `tsc --noEmit` stays the typecheck gate.
   ts-typecheck:
     needs: changes
     if: needs.changes.outputs.ts == 'true'
@@ -111,12 +127,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
-      - run: pnpm exec vp run -r typecheck
+      - run: pnpm -r --no-bail --aggregate-output run typecheck
 
-  # Lint/format stay DIRECT oxlint/oxfmt (not vp-wrapped): `vp lint`/`vp fmt` are
-  # thin pass-throughs to the same binaries with no default glob-scoping of their
-  # own, so routing through vp would add a layer without adding safety — the
-  # explicit globs here are what keeps oxfmt off markdown/toml/the SOPS file.
+  # Lint/format stay DIRECT oxlint/oxfmt: the explicit globs here are what keeps
+  # oxfmt off markdown/toml/the SOPS file.
   ts-lint:
     needs: changes
     if: needs.changes.outputs.ts == 'true'
@@ -134,7 +148,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
-      - run: pnpm exec vp run -r test
+      - run: pnpm -r --no-bail --aggregate-output run test
 
   ts-build:
     needs: changes
@@ -143,7 +157,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
-      - run: pnpm exec vp run -r build
+      - run: pnpm -r --no-bail --aggregate-output run build
 
   # The akasha corpus structural gate (0007/F3): the TS reference parser asserts
   # zero error chips + zero sigil collisions over every converted vellum page.
@@ -208,7 +222,14 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: cd apps/codex && npx playwright install --with-deps chromium
       - run: pnpm --filter @astra/codex build
-      - run: cd apps/codex && node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts
+      # CODEX_CORPUS_ROOT pins the guard to the committed fixture corpus. Inside a
+      # container job `${{ github.workspace }}` expands to the HOST path
+      # (/home/runner/work/...), not the container mount (/__w/...), so the path is
+      # built from the in-container $GITHUB_WORKSPACE instead.
+      - run: |
+          export CODEX_CORPUS_ROOT="$GITHUB_WORKSPACE/apps/codex/fixtures/entities"
+          cd apps/codex
+          node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts
 
   # P9 S2 (D29-84/-85/-90) — the listing-virtualization INTERACTION guard: a
   # real Chromium probe over gate C (j/k frontier + wheel-unmount-resume +
@@ -236,18 +257,92 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: cd apps/codex && npx playwright install --with-deps chromium
       - run: pnpm --filter @astra/codex build
-      - run: cd apps/codex && node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts
+      # Same CODEX_CORPUS_ROOT pin as codex-row-height-drift-guard (see the note there).
+      - run: |
+          export CODEX_CORPUS_ROOT="$GITHUB_WORKSPACE/apps/codex/fixtures/entities"
+          cd apps/codex
+          node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts
 
+  # Conventional Commits (commitlint.config.js extends @commitlint/config-conventional).
+  # Pull requests lint base..head; pushes to main lint only the pushed range, so
+  # commits that predate this job can never fail it.
   commitlint:
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-pnpm
-      - run: >-
-          pnpm exec commitlint
-          --from "${{ github.event.pull_request.base.sha }}"
-          --to "${{ github.event.pull_request.head.sha }}"
-          --verbose
+      - name: Lint the pull request's commits
+        if: github.event_name == 'pull_request'
+        env:
+          FROM: ${{ github.event.pull_request.base.sha }}
+          TO: ${{ github.event.pull_request.head.sha }}
+        run: pnpm exec commitlint --from "$FROM" --to "$TO" --verbose
+      - name: Lint the pushed commits
+        if: github.event_name == 'push'
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          # A branch creation sends an all-zero `before`, and a force push can send a
+          # `before` this clone no longer has. Neither gives a base for a range, so
+          # lint the pushed tip commit alone.
+          if [[ "$BEFORE" =~ ^0+$ ]] || ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            echo "No usable base commit (before=$BEFORE); linting $AFTER only."
+            pnpm exec commitlint --last --verbose
+          else
+            pnpm exec commitlint --from "$BEFORE" --to "$AFTER" --verbose
+          fi
+
+  # The single status check branch protection will require. It needs every other
+  # job: a failed or cancelled job fails it, and a job skipped by the path filter
+  # counts as passed. It blocks; it does not notify anyone, by design.
+  # Add every new job to `needs` below; the first step fails if one is missing.
+  ci-ok:
+    if: always()
+    needs:
+      - changes
+      - py-lint
+      - py-typecheck
+      - py-test
+      - ts-typecheck
+      - ts-lint
+      - ts-test
+      - ts-build
+      - corpus-validate
+      - vellum-visual-regression
+      - codex-row-height-drift-guard
+      - codex-virtualization-interaction-guard
+      - commitlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/workflows/ci.yml
+          sparse-checkout-cone-mode: false
+      - name: Check that ci-ok needs every job in this workflow
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          declared=$(awk '/^jobs:/ { in_jobs = 1; next }
+            in_jobs && /^  [A-Za-z0-9_-]+:/ { sub(/^  /, ""); sub(/:.*/, ""); print }' \
+            .github/workflows/ci.yml | grep -vx ci-ok | sort)
+          needed=$(jq -r 'keys[]' <<<"$NEEDS" | sort)
+          missing=$(comm -23 <(echo "$declared") <(echo "$needed") | paste -sd, -)
+          if [ -n "$missing" ]; then
+            echo "::error::ci-ok does not need these jobs: $missing"
+            exit 1
+          fi
+      - name: Check that every job passed or was skipped
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          jq -r 'to_entries[] | "\(.key): \(.value.result)"' <<<"$NEEDS"
+          bad=$(jq -r '[to_entries[]
+            | select(.value.result != "success" and .value.result != "skipped")
+            | .key] | join(", ")' <<<"$NEEDS")
+          if [ -n "$bad" ]; then
+            echo "::error::These jobs failed or were cancelled: $bad"
+            exit 1
+          fi
