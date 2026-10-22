@@ -19,4 +19,5 @@ APIs beyond routine GLM pennies) or (b) replaces/publishes live content (episode
 publish, edge cutover), state it in one explicit line — what it costs, what it replaces — and in
 interactive sessions give the user a beat to object (or an AskUserQuestion when the action is
 both paid AND destructive-ish). Routine cheap LLM calls and gitignored-artifact writes don't
-need this. Related: [[no-silent-scope-cuts]], [[deploy-apply-with-just]].
+need this. Routine live infra steps are covered by a standing approval instead:
+[[live-infra-changes-authorized]]. Related: [[no-silent-scope-cuts]], [[deploy-apply-with-just]].
