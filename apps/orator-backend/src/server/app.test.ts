@@ -120,3 +120,28 @@ describe("oauth login + callback", () => {
     expect(res.status).toBe(403);
   });
 });
+
+describe("fail closed (0037 SVC-2)", () => {
+  test("an empty allowlist admits no session", async () => {
+    const token = signSession("allowed-uid", SECRET);
+    const app = makeApp(testConfig({ allowlist: new Set() }));
+    const res = await app.handle(get("/api/v1/me", { cookie: `orator_session=${token}` }));
+    expect(res.status).toBe(401);
+  });
+
+  test("an empty allowlist 403s every OAuth callback", async () => {
+    const fetchImpl = async (input: string): Promise<Response> => {
+      if (input.includes("/token"))
+        return new Response(JSON.stringify({ access_token: "t", token_type: "Bearer" }));
+      return new Response(JSON.stringify({ id: "anyone", username: "x" }));
+    };
+    const state = encodeURIComponent(signSession("nonce", SECRET, 600));
+    const app = makeApp(testConfig({ allowlist: new Set() }), { fetchImpl });
+    const res = await app.handle(get(`/auth/callback?code=c&state=${state}`));
+    expect(res.status).toBe(403);
+  });
+
+  test.each(["", "  "])("createApp refuses a blank session secret %j", (blank) => {
+    expect(() => makeApp(testConfig({ sessionSecret: blank }))).toThrow(/sessionSecret is blank/);
+  });
+});

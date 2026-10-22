@@ -1,6 +1,7 @@
 import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 
+import { isBlankSecret } from "@astra/config";
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import { serveFile } from "@astra/site-kit";
 import { type Server, serve } from "srvx";
@@ -23,8 +24,9 @@ const SSE_HEADERS = {
 } as const;
 
 export interface AppOptions {
-  /** Shared secret required as the `x-eerie-token` header on ingest. null = open (dev). */
-  token: string | null;
+  /** Shared secret required as the `x-eerie-token` header on ingest. Must be non-blank:
+   * there is no open mode (fail closed, 0037 SEC-12) — createApp throws on a blank token. */
+  token: string;
   /** Absolute path to the built overlay (vite `dist/`). */
   distDir: string;
   /** Public browser OTLP endpoint, injected into index.html for client RUM ("" = off). */
@@ -54,11 +56,14 @@ export function createApp(opts: AppOptions): {
 } {
   const hub = opts.hub ?? new RollHub();
   const { token, distDir, rumEndpoint = "" } = opts;
+  if (isBlankSecret(token)) {
+    throw new Error("weal-overlay createApp: ingest token is blank — refusing an open ingest");
+  }
 
   async function ingest(req: Request): Promise<Response> {
     return tracer.startActiveSpan("overlay.ingest", async (span) => {
       try {
-        if (token !== null && req.headers.get("x-eerie-token") !== token) {
+        if (req.headers.get("x-eerie-token") !== token) {
           rollsCounter.add(1, { outcome: "unauthorized" });
           return new Response("unauthorized\n", { status: 401 });
         }

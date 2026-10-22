@@ -20,6 +20,7 @@ import { stat } from "node:fs/promises";
 import type * as NodeHttp from "node:http";
 import { resolve } from "node:path";
 
+import { isBlankSecret } from "@astra/config";
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import { serveFile } from "@astra/site-kit";
 import { SpanStatusCode } from "@opentelemetry/api";
@@ -65,7 +66,9 @@ const API_ROUTES: ApiRoute[] = [...libraryRoutes, ...playbackRoutes, ...ingestRo
 /** The full runtime config the app needs (built in the entrypoint from cfg.orator). */
 export interface AppConfig {
   port: number;
+  /** HMAC key for session cookies + OAuth state. Must be non-blank (createApp throws). */
   sessionSecret: string;
+  /** Permitted operator Discord ids. Fail closed: an EMPTY set admits no one. */
   allowlist: Set<string>;
   oauth: OAuthConfig;
   publicOrigin: string;
@@ -95,6 +98,11 @@ export interface App {
 }
 
 export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps = {}): App {
+  // Defence in depth behind the entrypoint's startup guards (0037 SVC-2): HMAC with a
+  // blank key would let anyone mint a valid session cookie.
+  if (isBlankSecret(config.sessionSecret)) {
+    throw new Error("orator createApp: sessionSecret is blank — refusing to sign sessions");
+  }
   const fetchImpl = deps.fetchImpl ?? fetch;
   const now = deps.now ?? Date.now;
   const makeState = deps.makeState ?? (() => randomBytes(16).toString("hex"));
@@ -104,7 +112,7 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
     const cookies = parseCookies(req.headers.get("cookie"));
     const session = verifySession(cookies[SESSION_COOKIE], config.sessionSecret, now());
     if (!session) return null;
-    if (config.allowlist.size > 0 && !config.allowlist.has(session.uid)) return null;
+    if (!config.allowlist.has(session.uid)) return null;
     return session;
   }
 
@@ -118,11 +126,7 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
     const raw = extractApiKey(req.headers);
     if (raw) {
       const key = await store.getApiKeyByHash(hashKey(raw));
-      if (
-        key &&
-        !key.revoked_at &&
-        (config.allowlist.size === 0 || config.allowlist.has(key.user_id))
-      ) {
+      if (key && !key.revoked_at && config.allowlist.has(key.user_id)) {
         await store.touchApiKey(key.id);
         return {
           session: { uid: key.user_id, exp: Math.floor(now() / 1000) + 60 },
@@ -168,8 +172,7 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
     } catch {
       return json({ error: "oauth_exchange_failed" }, 502);
     }
-    if (config.allowlist.size > 0 && !config.allowlist.has(user.id))
-      return json({ error: "not_allowlisted" }, 403);
+    if (!config.allowlist.has(user.id)) return json({ error: "not_allowlisted" }, 403);
     const token = signSession(user.id, config.sessionSecret, undefined, now());
     return new Response(null, {
       status: 302,

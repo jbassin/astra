@@ -1,9 +1,10 @@
 import { resolve } from "node:path";
 
 import { loadConfig } from "@astra/config";
-import { initTelemetry } from "@astra/observe";
+import { getLogger, initTelemetry } from "@astra/observe";
 
 import { startServer } from "./src/server";
+import { requireIngestToken } from "./src/startup";
 
 // Telemetry first (server-side traces/metrics/logs → SigNoz).
 const telemetry = initTelemetry("astra.weal-overlay");
@@ -12,24 +13,22 @@ const telemetry = initTelemetry("astra.weal-overlay");
 // shared ingest token, the browser RUM endpoint) comes from config.kdl via @astra/config.
 const cfg = loadConfig();
 const port = cfg.wealOverlay.port;
-const token = (() => {
-  try {
-    return cfg.wealOverlay.token?.resolve() || null;
-  } catch {
-    return null;
-  }
-})();
+// Fail closed (0037 SEC-12): no token = refuse to start, never an open public ingest.
+let token: string;
+try {
+  token = requireIngestToken(cfg.wealOverlay.token);
+} catch (err) {
+  const body = `weal-overlay failed to start: ${err instanceof Error ? err.message : err}`;
+  console.error(body);
+  getLogger("astra.weal-overlay").emit({ severityText: "FATAL", body });
+  // Flush first, so the refusal reaches SigNoz (and Class A paging).
+  await telemetry.shutdown().catch(() => {});
+  process.exit(1);
+}
 const rumEndpoint = cfg.telemetry.rumEndpoint;
 // `import.meta.dir` is a Bun-only extension — `import.meta.dirname` is the
 // standard (Node 20.11+/24, and Bun too) equivalent (R3, 0022 S8).
 const distDir = resolve(import.meta.dirname, "dist");
-
-if (!token) {
-  console.warn(
-    "⚠️  weal-overlay token is unset — POST /api/v1/roll is UNAUTHENTICATED. " +
-      "Set the SOPS weal_token before exposing the ingest endpoint.",
-  );
-}
 
 const { server } = startServer({ port, token, distDir, rumEndpoint });
 // srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once

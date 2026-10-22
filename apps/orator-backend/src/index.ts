@@ -6,6 +6,8 @@
  *
  * The bot is **optional**: without a resolved token the web UI + library + REST
  * still run, and playback routes return 503 (the deferred live-Discord seam).
+ * The session secret and the operator allowlist are NOT optional: either one missing
+ * or empty stops startup before anything else runs (fail closed, 0037 SVC-2).
  */
 
 import { getLogger, initTelemetry } from "@astra/observe";
@@ -29,22 +31,26 @@ import { realYtDlp } from "./media/ytdlp";
 import { type AppConfig, startServer } from "./server/app";
 import { IngestService } from "./server/ingest";
 import { JobHub } from "./server/jobhub";
-
-/** Resolve a SOPS `ref=` secret; unresolved (e.g. not provisioned) → "" (feature off). */
-function resolveSecret(ref: { resolve: () => string } | null | undefined): string {
-  try {
-    return ref?.resolve() ?? "";
-  } catch {
-    return "";
-  }
-}
+import {
+  MIN_SESSION_SECRET_BYTES,
+  optionalSecret,
+  requireAllowlist,
+  requireSecret,
+} from "./startup";
 
 async function main(): Promise<void> {
   const cfg = loadConfig();
   const being = loadBeing();
 
   // Operators = ontology admin snowflakes ∪ the optional config override (M1).
-  const allowlist = buildAllowlist(being, cfg.orator.allowedUserIds);
+  // Fail closed before touching the DB: no operators, or a blank session secret (which
+  // would sign forgeable cookies), stops startup (0037 SVC-2).
+  const allowlist = requireAllowlist(buildAllowlist(being, cfg.orator.allowedUserIds));
+  const sessionSecret = requireSecret(
+    cfg.orator.sessionSecret,
+    "sessionSecret",
+    MIN_SESSION_SECRET_BYTES,
+  );
 
   // All runtime config comes from config.kdl via @astra/config (config-single-source)
   // — no env overrides. The data dir is the Compose audio-volume mount; the dist dir
@@ -78,11 +84,11 @@ async function main(): Promise<void> {
   const publicOrigin = cfg.orator.publicOrigin;
   const config: AppConfig = {
     port: cfg.orator.port,
-    sessionSecret: resolveSecret(cfg.orator.sessionSecret),
+    sessionSecret,
     allowlist,
     oauth: {
-      clientId: resolveSecret(cfg.orator.discordClientId),
-      clientSecret: resolveSecret(cfg.orator.discordClientSecret),
+      clientId: optionalSecret(cfg.orator.discordClientId),
+      clientSecret: optionalSecret(cfg.orator.discordClientSecret),
       redirectUri: `${publicOrigin}/auth/callback`,
     },
     publicOrigin,
@@ -97,7 +103,7 @@ async function main(): Promise<void> {
   // The Discord bot (voice/playback) is optional: without a token the web UI +
   // library still run, and playback routes return 503.
   let playback: PlaybackEngine | undefined;
-  const token = resolveSecret(cfg.orator.discordToken);
+  const token = optionalSecret(cfg.orator.discordToken);
   if (token && config.guildId) {
     try {
       const bot = await startBot({
@@ -136,8 +142,14 @@ async function main(): Promise<void> {
 }
 
 main().catch((e) => {
-  log.emit({ severityText: "FATAL", body: `orator-backend failed to start: ${e}` });
-  process.exit(1);
+  const body = `orator-backend failed to start: ${e}`;
+  // stderr too: OTel logs aren't mirrored locally, and `docker logs` must say why a
+  // fail-closed refusal is crash-looping.
+  console.error(body);
+  log.emit({ severityText: "FATAL", body });
+  // Flush first, so a fail-closed refusal reaches SigNoz (and Class A paging) instead of
+  // dying in the batch buffer.
+  void telemetry.shutdown().finally(() => process.exit(1));
 });
 
 // Flush buffered spans/metrics/logs before the container stops (compose SIGTERM).
