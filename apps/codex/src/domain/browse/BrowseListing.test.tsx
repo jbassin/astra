@@ -8,7 +8,7 @@
 
 import { createRootRoute, createRouter, RouterProvider } from "@tanstack/react-router";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
-import { useState, type ReactElement } from "react";
+import { useLayoutEffect, useState, type ReactElement } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { IndexRow } from "@/schema/entity";
@@ -734,6 +734,39 @@ describe("BrowseListing pane-swap tier-cross (P13 S2, D29-123)", () => {
     });
     expect(filtersButton.getAttribute("aria-expanded")).toBe("false");
     expect(document.querySelector(".codex-filter-pane")).toBeNull();
+  });
+
+  // The interaction guard's narrow-tier case caught this under CPU load: a
+  // Filters click that lands after the first commit but before the tier
+  // hook's first `matchMedia` reading. That reading replaces the SSR default,
+  // and treating it as a tier crossing closed the sheet before it ever
+  // opened. A sibling's layout effect clicks inside the first commit, before
+  // any passive effect has run, which reproduces that ordering exactly.
+  it("a Filters click before the first matchMedia reading still opens the narrow-tier sheet", () => {
+    window.matchMedia = vi
+      .fn()
+      .mockReturnValue(new FakeMediaQueryList(false)) as unknown as typeof window.matchMedia;
+    function ClickFiltersDuringFirstCommit(): null {
+      useLayoutEffect(() => {
+        screen.getByRole("button", { name: /^Filters/ }).click();
+      }, []);
+      return null;
+    }
+    render(
+      <>
+        <StatefulHarness />
+        <ClickFiltersDuringFirstCommit />
+      </>,
+    );
+    const filtersButton = screen.getByRole("button", { name: /^Filters/ });
+    const sheet = document.querySelector<HTMLDialogElement>(".codex-filter-drawer");
+    expect(filtersButton.getAttribute("aria-expanded")).toBe("true");
+    expect(sheet?.open).toBe(true);
+    expect(document.querySelector(".codex-filter-pane")).toBeNull();
+    // Focus still moves to the sheet's ✕ once the sheet actually opens.
+    expect(document.activeElement).toBe(
+      within(sheet as HTMLElement).getByRole("button", { name: "Close filters" }),
+    );
   });
 });
 

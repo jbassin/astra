@@ -3,11 +3,11 @@
   "slug": "virt-080",
   "category": "ritual",
   "name": "Virt Synth Ritual 080",
-  "edition": "remaster",
+  "edition": "legacy",
   "source": {
-    "book": "Player Core",
-    "license": "ORC",
-    "page": 580
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 480
   },
   "level": 1,
   "traits": [

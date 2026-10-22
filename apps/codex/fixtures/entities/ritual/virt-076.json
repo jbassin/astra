@@ -3,11 +3,11 @@
   "slug": "virt-076",
   "category": "ritual",
   "name": "Virt Synth Ritual 076",
-  "edition": "remaster",
+  "edition": "legacy",
   "source": {
-    "book": "Player Core",
-    "license": "ORC",
-    "page": 576
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 476
   },
   "level": 7,
   "traits": [

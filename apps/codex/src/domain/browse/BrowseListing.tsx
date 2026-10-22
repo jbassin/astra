@@ -113,14 +113,23 @@ function focusAnchorForSlug(container: HTMLElement, slug: string): boolean {
  * spec's own Risk section documents as the actual outcome at that width
  * ("56rem collapse means a mid-width desktop window gets the sheet... 56rem
  * boundary pinned in a test", gate D) — this hook is what makes that literal.
- * SSR-safe default `true` (assume two-column/wide): harmless either way
- * since `filtersOpen` is itself client-only-true (below), so this value is
- * never consulted before a real `matchMedia` reading has landed.
+ *
+ * Returns `null` until the first client-side reading lands (always `null` at
+ * SSR and on the hydration pass). A Filters click CAN land before that
+ * reading: after hydration commits but before its passive effects run, which
+ * a loaded box or a slow phone widens. Callers must therefore treat `null`
+ * as "tier unknown", never as either tier, and must not treat the first
+ * reading as a tier crossing (see the dialog effect in `BrowseListing`). No
+ * `matchMedia` at all (jsdom) reads as two-column.
  */
-function useTwoColumnFilterTier(): boolean {
-  const [isTwoColumn, setIsTwoColumn] = useState(true);
+function useTwoColumnFilterTier(): boolean | null {
+  const [isTwoColumn, setIsTwoColumn] = useState<boolean | null>(null);
   useEffect(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+    if (typeof window === "undefined") return;
+    if (typeof window.matchMedia !== "function") {
+      setIsTwoColumn(true);
+      return;
+    }
     const mql = window.matchMedia(SPLIT_VIEW_MEDIA);
     setIsTwoColumn(mql.matches);
     const onChange = (e: MediaQueryListEvent) => setIsTwoColumn(e.matches);
@@ -311,7 +320,12 @@ export function BrowseListing({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const listingPaneRef = useRef<HTMLDivElement>(null);
   const narrow = useNarrowListingContainer(listingPaneRef);
-  const isTwoColumnTier = useTwoColumnFilterTier();
+  // `null` until the first `matchMedia` reading (see the hook). Neither the
+  // pane nor the sheet opens while the tier is unknown; an early open simply
+  // waits for the reading.
+  const filterTier = useTwoColumnFilterTier();
+  const isTwoColumnTier = filterTier === true;
+  const filterContainerLive = filtersOpen && filterTier !== null;
   const entrySlugRef = useRef(entrySlug);
   useEffect(() => {
     entrySlugRef.current = entrySlug;
@@ -323,7 +337,7 @@ export function BrowseListing({
   // real buttons regardless of where the EFFECT that reads them lives.
   const filtersButtonRef = useRef<HTMLButtonElement>(null);
   const filterCloseButtonRef = useRef<HTMLButtonElement>(null);
-  const wasFiltersOpenRef = useRef(false);
+  const wasFilterContainerLiveRef = useRef(false);
 
   // Native `<dialog>` owns its own open/close semantics (Esc, backdrop via
   // the `::backdrop` pseudo-element, native focus-trap + focus-return) —
@@ -340,10 +354,16 @@ export function BrowseListing({
   // FIRST (a single early `return`) so a live tier flip can never also fall
   // through into the `shouldShowModal` branch below and momentarily
   // re-open a sheet on the SAME commit it's supposed to be closing.
-  const prevIsTwoColumnRef = useRef(isTwoColumnTier);
+  //
+  // Only a change between two REAL readings is a crossing. The first reading
+  // replaces the unknown `null`; counting it as a crossing closed a sheet
+  // opened by a Filters click that landed before the reading (found by the
+  // interaction guard's narrow-tier case under CPU load).
+  const prevFilterTierRef = useRef(filterTier);
   useEffect(() => {
-    const tierChanged = prevIsTwoColumnRef.current !== isTwoColumnTier;
-    prevIsTwoColumnRef.current = isTwoColumnTier;
+    const prevTier = prevFilterTierRef.current;
+    const tierChanged = prevTier !== null && prevTier !== filterTier;
+    prevFilterTierRef.current = filterTier;
     const dialog = dialogRef.current;
     if (tierChanged && filtersOpen) {
       setFiltersOpen(false);
@@ -351,10 +371,10 @@ export function BrowseListing({
       return;
     }
     if (!dialog) return;
-    const shouldShowModal = filtersOpen && !isTwoColumnTier;
+    const shouldShowModal = filtersOpen && filterTier === false;
     if (shouldShowModal && !dialog.open) dialog.showModal();
     if (!shouldShowModal && dialog.open) dialog.close();
-  }, [filtersOpen, isTwoColumnTier]);
+  }, [filtersOpen, filterTier]);
 
   // P13 S2 (D29-123) — Esc sequencing on the two-column-tier PANE (no
   // `<dialog>` there to lean on the native cancel/close-watcher path the
@@ -815,14 +835,19 @@ export function BrowseListing({
   // effect ran AFTER it in the same commit and silently stole focus back
   // onto that row, defeating "closing returns focus to the Filters button."
   // Declaring this one LAST guarantees it always has the final word.
+  //
+  // Keyed on `filterContainerLive`, not bare `filtersOpen`: an open that
+  // lands before the first tier reading has no live ✕ to focus yet (the pane
+  // isn't mounted and the sheet isn't shown), so the move waits for the
+  // commit where the pane or sheet actually appears.
   useEffect(() => {
-    if (filtersOpen && !wasFiltersOpenRef.current) {
+    if (filterContainerLive && !wasFilterContainerLiveRef.current) {
       filterCloseButtonRef.current?.focus({ preventScroll: true });
-    } else if (!filtersOpen && wasFiltersOpenRef.current) {
+    } else if (!filterContainerLive && wasFilterContainerLiveRef.current) {
       filtersButtonRef.current?.focus({ preventScroll: true });
     }
-    wasFiltersOpenRef.current = filtersOpen;
-  }, [filtersOpen]);
+    wasFilterContainerLiveRef.current = filterContainerLive;
+  }, [filterContainerLive]);
 
   // P9 S2 (D29-85) — j/k resolve the next/prev row purely off `visible` +
   // `focusedSlugRef` (the SYNCHRONOUS ref above — read fresh on every

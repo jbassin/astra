@@ -18,7 +18,11 @@
  * real category comfortably past `SSR_WINDOW` (60, `virtualization.ts`) to
  * drive — every other fixture category tops out at 7 rows, nowhere near
  * enough to exercise "walks past the SSR window" or "deep-link centers a row
- * far from the top" for real.
+ * far from the top" for real. Every fourth synthetic row (virt-004, -008, …,
+ * -088: 22 rows) is a never-remastered LEGACY ritual (Core Rulebook, OGL, not
+ * superseded), so the default listing shows two editions (71 Remaster, 22
+ * Legacy) the way the real `ritual` category does, and the Edition facet
+ * toggle below has something to narrow.
  *
  * Deliberately CORPUS-SIZE-AGNOSTIC (never hardcodes a row count or a
  * specific slug): `TOTAL_ROWS` below is read live off the rendered table's
@@ -659,13 +663,22 @@ try {
     const countBefore = await page.locator(".codex-listing-count").textContent();
     await page.getByRole("button", { name: /^Filters/ }).click();
     await page.locator(".codex-filter-pane").waitFor();
-    // Edition is always present (core dimension, chip row, D29-126) — a
-    // real, corpus-size-agnostic toggle every category carries.
-    const editionChip = page
+    // Edition is always present (core dimension, chip row, D29-126), but
+    // toggling it narrows the listing only when the visible rows carry BOTH
+    // editions. The real `ritual` category does (never-remastered legacy
+    // rituals stay visible); the fixture does via its legacy virt-* rows (see
+    // this file's header). Assert that shape up front so a fixture
+    // regression fails here with a clear reason, not as "count unchanged".
+    const editionChips = page
       .locator(".codex-filter-pane .codex-toggle-chip")
-      .filter({ hasText: /Remaster|Legacy/ })
-      .first();
-    await editionChip.click();
+      .filter({ hasText: /Remaster|Legacy/ });
+    const editionChipCount = await editionChips.count();
+    check(
+      "precondition — /ritual's visible rows carry both editions (two Edition chips)",
+      editionChipCount >= 2,
+      `edition chips=${editionChipCount}`,
+    );
+    await editionChips.first().click();
     await page.waitForTimeout(200);
     const countAfter = await page.locator(".codex-listing-count").textContent();
     check(
