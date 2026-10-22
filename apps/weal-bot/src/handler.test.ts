@@ -337,6 +337,89 @@ describe("saves (D32-15/17)", () => {
       "hmm.... okay jorge, ill remember that\n```weal\n|x| x + 3\n```",
     );
   });
+
+  test("replacing an existing save with a good one persists it", async () => {
+    const h = harness([["bonus", "3"]]);
+    await handleMessage("save(:bonus, 5)", PROFILE, h.deps);
+    expect(h.store.funcsV2).toEqual([{ id: 1, name: "bonus", source: "5" }]);
+    expect(h.sent[0]?.title).toBe("bonus saved!");
+    await handleMessage("bonus + 1", PROFILE, h.deps);
+    expect(h.sent[1]?.title).toBe("i invented the number 6");
+  });
+});
+
+describe("the save guard (WEAL-2)", () => {
+  test("`save(:adv, || 2d20kh1)` is refused: nothing persisted, clear reply", async () => {
+    const h = harness();
+    await handleMessage("save(:adv, || 2d20kh1)", PROFILE, h.deps);
+    expect(h.store.funcsV2).toEqual([]);
+    expect(h.funcsAdded).toEqual([]);
+    expect(h.deps.savedNames()).toEqual([]);
+    expect(h.sent).toHaveLength(1);
+    expect(h.sent[0]?.host.slug).toBe("knife");
+    expect(h.sent[0]?.title).toBe("adv not saved");
+    expect(h.sent[0]?.contents).toBe(
+      [
+        "nope jorge, i won't remember `adv` — with it saved, `d20` would break for everyone:",
+        "sum's argument must be a pool — the checker should have rejected this",
+        "(in adv)", // the engine gives this internal error no span, so no excerpt
+        "macros with no inputs (`|| …`) don't work yet — save the roll itself instead: `save(:adv, kh(pool(2, d20), 1))`",
+      ].join("\n"),
+    );
+  });
+
+  test("after a refusal every roll still works, and the suggested save does too", async () => {
+    const h = harness();
+    await handleMessage("save(:adv, || 2d20kh1)", PROFILE, h.deps);
+    await handleMessage("d20 + 7", PROFILE, h.deps);
+    expect(h.sent[1]?.title).toBe("Argyle: 11");
+    await handleMessage("save(:adv, kh(pool(2, d20), 1))", PROFILE, h.deps);
+    expect(h.store.funcsV2).toEqual([{ id: 1, name: "adv", source: "kh(pool(2, d20), 1)" }]);
+    await handleMessage("adv + 7", PROFILE, h.deps);
+    expect(h.sent[3]?.fields).toEqual([["Results", "2d20 ⟪~~4~~,15⟫kh1 + 7 = `22`"]]);
+  });
+
+  test("a bad replacement is refused and the old save keeps working", async () => {
+    const h = harness([["adv", "kh(pool(2, d20), 1)"]]);
+    await handleMessage("save(:adv, || 2d20kh1)", PROFILE, h.deps);
+    expect(h.store.funcsV2).toEqual([]);
+    expect(h.deps.initFuncs()).toEqual([["adv", "kh(pool(2, d20), 1)"]]);
+    expect(h.sent[0]?.title).toBe("adv not saved");
+    await handleMessage("adv + 7", PROFILE, h.deps);
+    expect(h.sent[1]?.fields).toEqual([["Results", "2d20 ⟪~~4~~,15⟫kh1 + 7 = `22`"]]);
+  });
+
+  test("shadowing a builtin is refused with the broken roll and a rename hint", async () => {
+    const h = harness();
+    await handleMessage("save(:kh, 3)", PROFILE, h.deps);
+    expect(h.store.funcsV2).toEqual([]);
+    expect(h.sent[0]?.title).toBe("kh not saved");
+    expect(h.sent[0]?.contents).toBe(
+      [
+        "nope jorge, i won't remember `kh` — with it saved, `2d20kh1 + 1` would break for everyone:",
+        "die suffix `kh` has the wrong shape — need `Pool[T] -> Num -> Pool[T]` or `Die[T] -> Num -> Die[T]`",
+        "```",
+        "2d20kh1 + 1",
+        "    ^^",
+        "```",
+        "`kh` is a built-in — save under another name",
+      ].join("\n"),
+    );
+  });
+
+  test("a macro that loads but breaks on use is refused (kind `use`)", async () => {
+    const h = harness();
+    await handleMessage("save(:atk, || d20 + 7)", PROFILE, h.deps);
+    expect(h.store.funcsV2).toEqual([]);
+    expect(h.sent[0]?.title).toBe("atk not saved");
+    expect(h.sent[0]?.contents).toBe(
+      [
+        "nope jorge, i won't remember `atk` — using it (`atk + 1`) trips a bug in the dice engine:",
+        "internal error: cannot apply arithmetic to a function — the checker should have rejected this",
+        "macros with no inputs (`|| …`) don't work yet — save the roll itself instead: `save(:atk, d20 + 7)`",
+      ].join("\n"),
+    );
+  });
 });
 
 describe("persistence guards (D32-17)", () => {

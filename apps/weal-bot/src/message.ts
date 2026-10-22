@@ -14,6 +14,7 @@
 
 import type { WealDieDisplay, WealGoodness, WealSpan } from "@astra/weal-engine";
 
+import type { SaveRefusal } from "./engine";
 import type { Profile } from "./roster";
 
 /** Cosmetic seed (K10) — shown in footers, never actually seeds the engine. */
@@ -84,6 +85,8 @@ export function thumbnailFor(
 export const TITLE_LIMIT = 256;
 /** Discord's embed-field-value limit. */
 export const FIELD_LIMIT = 1024;
+/** Discord's embed-description limit. */
+export const DESCRIPTION_LIMIT = 4096;
 
 /** Clamp to `max` chars INCLUSIVE, replacing the tail with an ellipsis. */
 export function truncate(s: string, max: number): string {
@@ -179,6 +182,56 @@ export function errorDescription(
     parts.push(fenced(spanExcerpt(spanSource, err.span)));
   if (err.stage === "prelude" && err.preludeName !== null) parts.push(`(in ${err.preludeName})`);
   return parts.join("\n");
+}
+
+// --- save refusal (the save guard) ---------------------------------------------------
+
+/** A zero-parameter lambda (`|| e`) or `let f() = …` anywhere in a saved source. */
+const NULLARY_RE = /\|\s*\||\blet\s+[a-z][a-zA-Z0-9_]*\s*\(\s*\)/;
+/** A saved source that is one zero-parameter lambda; captures its body. */
+const NULLARY_LAMBDA_RE = /^\|\s*\|\s*([\s\S]+)$/;
+
+/**
+ * The Knife's reply when the save guard refuses a save: what was refused and
+ * why, the engine's error, and a hint when the fix is known. Zero-parameter
+ * macros are a known engine bug (they load but never run their body), and the
+ * workaround is to save the roll itself, which re-rolls on every use.
+ */
+export function saveRefusal(
+  playerName: string,
+  name: string,
+  source: string,
+  refusal: SaveRefusal,
+): { title: string; contents: string } {
+  const lead = `nope ${playerName.toLowerCase()}, i won't remember \`${name}\``;
+  const lines = [
+    refusal.kind === "rolls"
+      ? `${lead} — with it saved, \`${refusal.probe}\` would break for everyone:`
+      : `${lead} — using it (\`${refusal.probe}\`) trips a bug in the dice engine:`,
+  ];
+  if (refusal.error === null) {
+    lines.push("the dice engine crashed while i was checking it");
+  } else if (refusal.kind === "rolls") {
+    // A prelude error here can only be the new save (every other save loads
+    // the same with or without it), so its span points into `source`.
+    lines.push(errorDescription(refusal.probe, refusal.error, [[name, source]]));
+  } else {
+    // The use ran wrapped, so its span points into source the player never typed.
+    lines.push(refusal.error.message);
+  }
+  if (NULLARY_RE.test(source)) {
+    const body = NULLARY_LAMBDA_RE.exec(source)?.[1];
+    lines.push(
+      body === undefined
+        ? "macros with no inputs (`|| …`, `let f() = …`) don't work yet — save the roll itself instead"
+        : `macros with no inputs (\`|| …\`) don't work yet — save the roll itself instead: \`save(:${name}, ${body})\``,
+    );
+  }
+  if (refusal.shadowsBuiltin) lines.push(`\`${name}\` is a built-in — save under another name`);
+  return {
+    title: truncate(`${name} not saved`, TITLE_LIMIT),
+    contents: truncate(lines.join("\n"), DESCRIPTION_LIMIT),
+  };
 }
 
 // --- overlay payload (D32-18) --------------------------------------------------------

@@ -158,6 +158,24 @@ describe("boot validation logging (D32-17)", () => {
   });
 });
 
+describe("save guard telemetry", () => {
+  test("a refused save counts weal.v2.saves_refused{kind}, sets the span attr, logs WARN", async () => {
+    await handleMessage("save(:adv, || 2d20kh1)", PROFILE, deps());
+    expect(counted).toContainEqual({ name: "weal.v2.saves_refused", attrs: { kind: "rolls" } });
+    expect(spanAttrs["weal.save_refused"]).toBe("rolls");
+    const warns = logged.filter((l) => String(l.body).includes("refused save adv"));
+    expect(warns).toHaveLength(1);
+    expect(warns[0]?.severityText).toBe("WARN");
+    expect(String(warns[0]?.body)).toContain("from Jorge (rolls, `d20`): prelude:");
+    expect(logged.some((l) => l.severityText === "ERROR")).toBe(false);
+  });
+
+  test("an accepted save counts no refusal", async () => {
+    await handleMessage("save(:smite, |x| x + 3)", PROFILE, deps());
+    expect(counted.some((c) => c.name === "weal.v2.saves_refused")).toBe(false);
+  });
+});
+
 describe("span attributes (D32-20)", () => {
   test("a roll sets weal.goodness + weal.engine_ms on the message span", async () => {
     await handleMessage("d6", PROFILE, deps());

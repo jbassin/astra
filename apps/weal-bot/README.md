@@ -221,6 +221,18 @@ identifiers — `save(:my-macro, …)` is rejected (kebab atoms can't be referen
 A saved function whose name is all lowercase letters and whose shape fits becomes a **die
 suffix**: after `save(:pow, |die, n| explode(die, n))`, both `pow(d6, 2)` and `4d6pow2` work.
 
+Every roll re-loads every save, so one bad save could break every roll for everyone. The bot
+therefore dry-runs a new save before keeping it, and refuses it (with a reply saying why) when:
+
+- with it saved, one of a few everyday rolls would fail where it worked before: `d20`,
+  `2d20kh1 + 1`, `2d20kl1`, `d6e1`, `d6r1`, `plot(d6)`, `save(:x, 1)`. This catches a save that
+  fails to load, and one that reuses a built-in's name with the wrong shape (`save(:kh, 3)`).
+- using it (`name + 1` or `name(1)`) hits an engine internal error. This catches macros that load
+  but never work.
+
+Macros with no inputs (`save(:adv, || 2d20kh1)`) are refused this way until the engine supports
+them; save the roll itself instead (`save(:adv, 2d20kh1)` re-rolls on every use).
+
 ### Fuel — what "too expensive" means
 
 Every distribution is exact, so some expressions are genuinely enormous. The engine meters its
@@ -267,7 +279,8 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
   `expression` and the headline as `display` (atom rolls send `total: 0`).
 - **Telemetry:** `astra.weal-bot` — roll spans (`weal.goodness`, `weal.engine_ms`),
   `astra.weal.rolls{goodness}`, `weal.v2.errors{stage}` (incl. contained `panic`, which also
-  re-instantiates the wasm), `weal.v2.fuel_aborts`. Engine faults log WARN, never ERROR.
+  re-instantiates the wasm), `weal.v2.fuel_aborts`, `weal.v2.saves_refused{kind}` (the save
+  guard; each refusal also logs a WARN naming the save). Engine faults log WARN, never ERROR.
 
 ## Dev
 

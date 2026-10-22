@@ -7,6 +7,7 @@ import type { WealDieDisplay } from "@astra/weal-engine";
 import { describe, expect, test } from "vitest";
 
 import {
+  DESCRIPTION_LIMIT,
   dieFooter,
   dieTitle,
   errorDescription,
@@ -14,6 +15,7 @@ import {
   fenced,
   overlayPayload,
   resultsField,
+  saveRefusal,
   spanExcerpt,
   TITLE_LIMIT,
   truncate,
@@ -116,6 +118,56 @@ describe("error-reply helpers (D32-14)", () => {
       [["bad", "1 +"]],
     );
     expect(description).toBe("parse error\n```\n1 +\n   ^\n```\n(in bad)");
+  });
+});
+
+describe("saveRefusal (the save guard's reply)", () => {
+  test("an engine fault says so; a nested nullary gets the generic hint", () => {
+    const reply = saveRefusal("Jorge", "atk", "let f() = d20; f", {
+      kind: "use",
+      probe: "atk + 1",
+      error: null,
+      shadowsBuiltin: false,
+    });
+    expect(reply.title).toBe("atk not saved");
+    expect(reply.contents).toBe(
+      [
+        "nope jorge, i won't remember `atk` — using it (`atk + 1`) trips a bug in the dice engine:",
+        "the dice engine crashed while i was checking it",
+        "macros with no inputs (`|| …`, `let f() = …`) don't work yet — save the roll itself instead",
+      ].join("\n"),
+    );
+  });
+
+  const typeError = {
+    ok: false,
+    stage: "type",
+    message: "boom",
+    span: null,
+    preludeName: null,
+  } as const;
+
+  test("an ordinary refusal carries no hints", () => {
+    const reply = saveRefusal("Jorge", "bonus", "3", {
+      kind: "rolls",
+      probe: "d20",
+      error: typeError,
+      shadowsBuiltin: false,
+    });
+    expect(reply.contents).toBe(
+      "nope jorge, i won't remember `bonus` — with it saved, `d20` would break for everyone:\nboom",
+    );
+  });
+
+  test("a huge name or source is clamped to Discord's title/description limits", () => {
+    const reply = saveRefusal("Jorge", "x".repeat(300), `|| ${"y".repeat(5000)}`, {
+      kind: "use",
+      probe: "x + 1",
+      error: typeError,
+      shadowsBuiltin: false,
+    });
+    expect(reply.title).toHaveLength(TITLE_LIMIT);
+    expect(reply.contents).toHaveLength(DESCRIPTION_LIMIT);
   });
 });
 

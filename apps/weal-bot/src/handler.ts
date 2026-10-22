@@ -7,7 +7,9 @@
  * silent (chat noise); other engine errors reply visibly only past the noise
  * gate; a contained panic replies with an engine-fault notice. Persistence
  * writes only for roll-resolving results; plot-only results skip persistence
- * AND the overlay broadcast (D32-16/17).
+ * AND the overlay broadcast (D32-16/17). A save persists only after the save
+ * guard ({@link checkNewSave}) dry-runs it against the current saves; a
+ * refused save gets a reply and is neither stored nor added to the list.
  */
 
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
@@ -22,7 +24,14 @@ import type {
 import { type Span, SpanStatusCode } from "@opentelemetry/api";
 
 import { saveDice, type WealStore } from "./db";
-import { type EngineHooks, isBareAtom, passesNoiseGate, runEngine } from "./engine";
+import {
+  checkNewSave,
+  type EngineHooks,
+  isBareAtom,
+  passesNoiseGate,
+  runEngine,
+  type SaveRefusal,
+} from "./engine";
 import { hostSays } from "./hosts";
 import {
   classify,
@@ -36,6 +45,7 @@ import {
   overlayPayload,
   RESEED_LINES,
   resultsField,
+  saveRefusal,
   type SeedInfo,
   thumbnailFor,
   truncate,
@@ -91,6 +101,9 @@ const errorsCounter = lazyCounter("astra.weal-bot", "weal.v2.errors", {
 });
 const fuelAbortsCounter = lazyCounter("astra.weal-bot", "weal.v2.fuel_aborts", {
   description: "weal v2 fuel-budget aborts",
+});
+const savesRefusedCounter = lazyCounter("astra.weal-bot", "weal.v2.saves_refused", {
+  description: "weal v2 saves the save guard refused, by kind (rolls / use)",
 });
 
 /** Entry: classify a raw Discord message and run the matching flow. */
@@ -158,7 +171,7 @@ async function doRoll(
     else await sendValue(text, display, profile, deps);
   }
   for (const plot of plots) await sendPlot(plot, deps);
-  for (const save of newSaves) await handleSave(save, profile, deps);
+  for (const save of newSaves) await handleSave(save, profile, deps, span);
 }
 
 async function handleDie(
@@ -216,7 +229,19 @@ async function sendPlot(plot: WealPlot, deps: HandlerDeps): Promise<void> {
   });
 }
 
-async function handleSave(save: WealSave, profile: Profile, deps: HandlerDeps): Promise<void> {
+async function handleSave(
+  save: WealSave,
+  profile: Profile,
+  deps: HandlerDeps,
+  span: Span,
+): Promise<void> {
+  // Read the list now, not at the top of doRoll: the awaits in between can let
+  // another message's save land first. No await separates check and add.
+  const check = checkNewSave(save.name, save.source, deps.initFuncs(), deps.engineHooks);
+  if (!check.ok) {
+    await refuseSave(save, check, profile, deps, span);
+    return;
+  }
   deps.addFunc(save.name, save.source);
   await deps.store.insertFuncV2(save.name, save.source);
   await deps.send({
@@ -225,6 +250,26 @@ async function handleSave(save: WealSave, profile: Profile, deps: HandlerDeps): 
     contents: `hmm.... okay ${profile.playerName.toLowerCase()}, ill remember that\n\`\`\`weal\n${save.source}\n\`\`\``,
     fields: [],
   });
+}
+
+async function refuseSave(
+  save: WealSave,
+  refusal: SaveRefusal,
+  profile: Profile,
+  deps: HandlerDeps,
+  span: Span,
+): Promise<void> {
+  savesRefusedCounter.add(1, { kind: refusal.kind });
+  span.setAttribute("weal.save_refused", refusal.kind);
+  const reason =
+    refusal.error === null ? "engine fault" : `${refusal.error.stage}: ${refusal.error.message}`;
+  // WARN, never ERROR: a refused save is handled, and ERROR pages Discord (Class A).
+  log.emit({
+    severityText: "WARN",
+    body: `refused save ${save.name} from ${profile.playerName} (${refusal.kind}, \`${refusal.probe}\`): ${reason}`,
+  });
+  const { title, contents } = saveRefusal(profile.playerName, save.name, save.source, refusal);
+  await deps.send({ host: deps.host("knife"), title, contents, fields: [] });
 }
 
 async function handleError(
