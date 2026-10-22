@@ -29874,6 +29874,809 @@
           "text": "Don't give him ideas. The man loves time shenanigans."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-10-19-recap-of-2025-8-28",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 0,
+      "isMain": true,
+      "date": "2026-10-19-recap-of-2025-8-28",
+      "dateSortKey": 20261019,
+      "title": "It Wants Something",
+      "episodeTitle": "It Wants Something",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm and dry, precise but easygoing; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date Bram fumbles for and hands it to him in a short, plain sentence — she finishes her sentences and finishes them short — then gets right back into the story with him. She's not the fact-checker; she's the friend who remembers. She's as invested in the characters as he is: she wonders aloud WHY someone did what they did, floats her own theory about what a faction is really up to, and builds on Bram's read as often as she tweaks it. Her wit is dry and fond, aimed at the world and the table's heroics, never at him. Grounds events in how the world actually works; usually right, so let her be plainly wrong exactly once so she isn't an oracle"
+        },
+        "C": {
+          "name": "Nell",
+          "persona": "bright, eager, quick on the uptake; the new friend at the table who has played a LOT of Pathfinder but is hearing this campaign for the first time. Reads every scene as a game before she reads it as a story — how close the fight was, what it cost, what the party gave up by picking that door — and is confidently, cheerfully right about that. Knows nothing of the world yet and doesn't pretend to: when a faction, a place, or a name comes up cold she ASKS what it is, plainly and without guessing, then repeats the answer back to make sure she has it. She never misremembers and never bluffs; her texture is enthusiasm — she over-asks, wants every side-thread pulled at once, is delighted by details the regulars take for granted, and now and then has to be told \"we'll get there.\" Speaks in quick, complete, slightly-too-eager sentences that often end in a question; by the end of the night she's more invested than either of them"
+        }
+      },
+      "synopsis": "A special episode: no session to recap, so the hosts finally sit down for the theory episode. Breadcrumbs from every season, the mysteries closest to the party, and three locked-in predictions each to check back on.",
+      "durationMs": 2705398,
+      "hasAudio": true,
+      "hasTranscript": true,
+      "audioVersion": "2948126-6ad95ee0",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So here's the thing — we have no fight to break down this week, and I have been sitting on, oh, I don't know, seven months of unresolved gut feelings, little hairs on the back of my neck, moments where Josh said something and then just... moved on, and I think tonight is the night we finally put the corkboard up, you know, red string, the whole bit."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "No session to recap, so yes — tonight we speculate. Responsibly. Ish."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay, so as the new one, I want to say I've binged everything back to the Crowded Flea and I have a legal pad. An actual legal pad. Where do we start, because my top of the page is just one word written four times."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Say it."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Voidsong."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Voidsong! Yes. Okay. So for anyone who joined this season — the Voidsong is this melody that Anzu hears, our bird aristocrat, the runaway Qureshi boy, and it's the one thing in the entire campaign that Aut cannot predict. Aut, our cosmic author patron, the guy who knows everything, who called every ambush, who told Johnny and Benny what was coming down the pipe in the void between life and death — cannot see this song. Cannot predict people touched by it. That's been true since season two."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Wait, back up — who's Aut exactly? I've heard you say the name fifty times and I still only half have it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Entity they met in the Black and White — the space between life and the Godhome — after three of them died at the Crowded Flea. He's a writer, in the most literal sense. He brought Johnny and Benny back, and he's been feeding them intelligence ever since. Until recently."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay. And he genuinely can't predict the Voidsong — that's confirmed, not just vibes?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Confirmed by Aut himself, back when they first met him. He can predict everything except those touched by the Voidsong. He said it plainly."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then this season, back in the painting episode — no wait, it was the library day, the episode where they got turned away at Prime Meridian — Anzu said something that has been rattling around in my skull ever since. He said, my belief is that the vocalist has been here all along. The vocalist. Meaning the song has a singer, and the singer is native. Not some far-off outer god screaming across the void — someone or something already inside Færrin."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That tracks with something I noticed as a player-brain, which is that Josh gives the song a voice underneath the harmony. Like, the game master narration doesn't just describe a melody — there's a second thing under it, described as insistent. Insistent is a motive word. Things that insist want stuff."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right! And the wiki handout — you know the one, the little writeup Nell found — says, you know only one thing: it is real, and it wants something. That's the whole document. That is a game master who knows exactly what the song wants and is not telling us."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But here's the fork I keep coming back to, because the table itself split on it. One read is the song is a warning — the vocalist reaching out to the people of Færrin because existential threats are incoming, because the six gods are coming. The other read, and I believe Tanner floated this on mic, is that it's backwards — the vocalist reached out for some unrelated reason, and the reaching itself was the beacon. The song called the six gods here. The song is the reason the Ashen Pact is inbound."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Oh, that's way better dramatically. If the song is the beacon, then Anzu hearing it makes him a walking antenna for the apocalypse, and the pilgrimage isn't a rescue, it's a delivery service of marked listeners straight toward the source."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which is dark, and I love it, and I half believe it, except — okay, here's the counterweight. Anzu's own latest read, the one he pulled out of that psychic delve into the sleeping creature's mind down in the poisoned hospital. He said: and the vocalist is life. Life! He's decided the singer isn't a god at all, it's — I don't know, the world's own life-force, the whole biosphere humming."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And there's a real clue under that one, which people forget. Back at the fracture, before they bombed it, the lore was explicit that the Voidsong passes through the firmament without issue. Nothing gets through that wall. Gods beat on it for years — the Giant's been hammering at it forever with nothing to show. Copies of the song fail. But the song itself crosses freely. If life is inside the world and inside the firmament, the song crossing the wall freely is exactly what you'd expect."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Hold on, I need the firmament. That's the shell around the whole world, right? The sky is a wall?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The shell around all of Færrin. There's one original crack in it — that's the second sun, the Godhome's door, the way Aurelia got up. And everything this campaign is about, really, is who gets to make a second door."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which brings us to the big ones, the six — the Ashen Pact. Okay, so, listeners, this goes all the way back to season two. After they killed Tywelwyn — the gang boss, the simulacrum guy, they tore him apart in his own Fane beneath a gas station, it was beautiful, there was a living cape — they go down another level and find a heart, a floating obsidian chunk with stained-glass veins, and this heart tells them everything. It says the six gods that made Tywelwyn, that it inherited by virtue of being created by him — Pyre, Herald, Giant, War, Esoterica, Regent — they come from a Godhome, and they just want to visit their blessings upon Færrin. Eternal fire. Torment. Clean slate. Those are the blessings. That's the menu."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's an incredible non-player character, by the way. The heart under the gas station is one of my favorite bits of game master craft in the whole back catalog — Josh introduced it, had it dump the campaign's cosmology, and then the party had to decide whether to keep it as a secret base."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And there's an actual chamber, right? Heptagonal, under that same Fane — six wrought-iron doors, one for each of them, their likenesses standing on the doors. Six doors. Josh does not build a heptagonal room with six god-doors under a gas station unless somebody is eventually going to walk through one of those doors."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And I'll say the part I keep coming back to: Anzu's delve in the sleeping hospital, when he went into that creature's mind, he described standing inside something like a diorama. A small-scale model of the world, and there are six creatures looking down at it from above. Builders. Not visitors — builders standing over their model, watching it burn."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That changes the whole theology, doesn't it? If they built the world, then the firmament isn't a wall keeping them out — it's maybe a wall keeping something in, or a job fence, or a show-case lid."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Or it means the clean slate is literal! It's not conquest, it's demolition before the renovation! They're not invaders, they're the contractors coming back to rip out the old kitchen!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Easy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I'm easy, I'm calm, but that's the read that makes my spine go cold, because it means the party aren't heroes defending a world, they're termites fighting the exterminator."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "I actually think there's a middle option nobody's said yet, and it comes from something real: at Ragged Roost, the masked host, the gangly figure on the strider — that whole pilgrimage was pitched as passage to the Void Side Wall. If the six built the world and the wall is theirs, then the pilgrimage isn't a rescue ship, it's a scheduled tour to the wall's face, and the tithe — the weekly draining of everyone aboard — reads like the ship feeding something on a schedule. What if the Harlequins built the Providence trip as a courier run? Not passengers. Cargo."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Ooooh. And the tithe is payment."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The tithe is rent. Every week, on time."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's the door into the next thing I want on the board, because the Master of Ceremonies — the devil running the pilgrimage, openly expecting the nineteen orgs aboard to murder each other — knew Illmari's name unprompted. Our Illmari. The founder of Iconoclasm, the guy whose bar they all drink in, who left the night of the party at Teller's Run and never came back."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Whoa, whoa, hang on, I thought — okay, so you're pulling Illmari into this, fine, but before we leave the Ashen Pact — Nell, do you know the Embercall? Have you met the Embercall in your listening?"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Only in the wiki sense — the radar dish corporation, right? The company making the dishes that spread the resonance? I haven't heard a season one episode yet where they matter, so tell me who Grayson is, actually."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Senator Grayson! Our nemesis! The lich! Well — the mind-control guy, the psyche-manipulation guy, season one's big bad, the one whose journal they stole out of the Victorian manor in the Fane with the red lightning grass — and his journal said, and I remember this because I gasped, a lot of this is specifically Grayson's experimentation on replacing pieces of the psyche of a person. Replacing. Pieces. Of the psyche. And then one line later he's griping about a deer, right, some ally, he says I think that idiot deer is two-timing, because I know his people are setting up radar dishes even after we promised him all that we promised him."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which means the radar dishes predate Grayson's involvement. He was recruited, or he recruited in, someone else's program and someone else's promise. He didn't invent the dishes."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "So who's the deer? Because a deer ally with dish-setters under him sounds like a named entity the party hasn't met."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Unknown. Genuinely unknown. That's one of the clean open threads from season one that Josh has never paid off — and Josh, from what I've seen, does pay things off."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay, here's where my player-brain lights up, though — and this connects to what you were saying about the crack. The party found the fracture under Teller's Run and bombed the research compound, right? The facility trying to shatter the firmament, funded by Grayson, involving the Prime Minister. And the terminal they hacked said the operation was to engineer a harmony that can shatter the firmament. A harmony. That's the same language the wiki uses for the Embercall — synthesis tried to build a new harmony in the Voidsong's likeness, marked a failure, but it produced the Embercall proper."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which means — say it with me — the radar dishes are trying to copy the Voidsong."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The dishes are cover bands. That's what Embercall is. It's a cover band, and the cover band's job is to play the song loud enough to break the sky."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "THAT is the sentence of the episode. The dishes are a cover band trying to shatter the firmament with a bootleg Voidsong."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the wiki already links Grayson to the Zorbon — the mind-controlling entity from the sewer arc, the thing that massacred Whiskers' resistance and took the bodies. If Grayson isn't the author of the plan, and the Zorbon sits somewhere near or inside him, then the real question is whether Grayson is a person at all anymore, or a hand puppet. His journal was about replacing pieces of the psyche. The psyche-surgeon might be somebody's patient."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Ohh, and that would explain a thing that's been bugging me since you said it — Aut can predict everything except Voidsong-touched people. Is Grayson Voidsong-touched? Because if Aut can't see him either, that's a hole in the cosmic plot shaped exactly like this guy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And I don't think Aut can see Grayson! I've got zero textual evidence for that, I want to be clear, this is pure gut, but the whole shape of it — you don't build a season-one villain out of a mind-taker's corpse-parts unless he's load-bearing for the cosmology later."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Careful, though, we should keep the layers separate. We know the six gods are real, we know the dishes are real, we know the fracture was real and that the party genuinely destroyed that compound. Grayson being Aut-proof is a guess. Grayson being Zorbon-adjacent is wiki-level soft canon, it's a believed thing, not a witnessed thing."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Noted. And the same week they blew the compound, they found out what's on the other side of that crack, which — I need you to confirm I have this right, because it's enormous. Behind the hairline fracture in the firmament, there's a figure. Two miles tall. Robed. Standing there. Presumably the Giant, one of the six, stuck at the far starward end, beating against the wall for years."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's exactly right, and the wiki — Aut's own words — says the Giant is held there by whoever made the firmament. Held. By the makers. And then Anzu's vision shows six builders looking down at the model. So here's my leap, and I am fully aware it's a leap: what if the Giant isn't with the other five? What if the Pact isn't a pact? What if the Giant is the prisoner of the other five, sealed behind the wall, and the crack under Teller's Run was a jailbreak — not an invasion — being dug from both sides?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Hm."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "You hate it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I don't hate it. I'll tell you what cuts against it, though — the heart under the gas station named all six together, as a set, as its maker's gods. It described them as a group with a shared blessing menu. If the Giant were a captive, the heart had no reason to list him as one of the six coming to visit. But — and I'll give you this — the heart also said they come from a Godhome. Come from. Not reign over, not rule. Come from, like a place they left."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's the kind of distinction I'd bet money Josh means on purpose. His word choice is unreal."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, so park the Giant on the board with a little question mark. Because the thing under Teller's Run also gives us the other half of the season-one mystery — the fracture was artificial, someone was pumping energy into it with machines, and the compound had plans to co-opt the upcoming pilgrimage. Grayson's fingerprints on a Godhome-door project. And who shows up the moment the party flees the bombing? Three fiery Embercall agents. Ifrit. Servants of Pyrelight."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "So the chain is: Embercall makes the fake harmony, the fake harmony cracks the firmament, Pyrelight runs the boots on the ground, Grayson signs the checks, the Prime Minister signs the permits. And the party nuked one facility, one facility, out of what has to be a network."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Which the show has already confirmed, sort of — the console at Hesperid HQ maps connections to other outposts. That mining company is plugged into the same world-spanning machinery as everything else."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Yes, and I'm so glad you said Hesperid because that's the freshest wound, from the most recent episode — but hold on, I promised myself we'd do the strider first, the ship itself, because Nell you've been asking about this the whole time, the tower."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The tower! Finally! Okay, so — from the listening side, the strider is a colossal arachnid city-ship, right? Legs, decks, the whole thing. And at its center there's a tower and a gyroscope, no visible entrance, and when the party got close they could hear active machinery inside it. Running. Still running. On a ship that's been stranded, dead, on a godless world for months. And here's the part that made me sit up: the Machine God — their huge ancient ally down in the Undercroft, the one who's eaten half the ship by now — cannot see into the tower. His one blind spot."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Confirmed, not guessed — the wiki says it plainly. It sees everything within the strider except above, and the tower it can see who enters but not what is within. Way in is from below, through the lower decks. Which is exactly the route the party took, funnily enough."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the question, and I want everyone to sit with the shape of it, is: what does a building-sized blind spot mean? Because blind spots aren't accidents in this campaign. The Voidsong is Aut's blind spot. Grayson might be Aut's blind spot. The tower is the Machine God's blind spot. Josh keeps building gods with one patch of the map inked out."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "As a GM move, that's a tell. You don't write an omniscient ally and then carve out one room unless the room is the campaign. So what's in it? My read, and I'll own that this is a read: the tower is the actual helm. The real steering wheel of the whole strider. The Harlequins retrofitted the ship — their tithes, their devil games, all of that is bolt-on — but the tower predates them, and something in the tower has been on this entire time. Whoever holds the tower decides where this ship goes."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the strider's own history supports the tower mattering. The Machine God called the ship — I'll get the wording close — a trap that was never really sprung. His old inhabitants were taken, changed, when the Herald wormed its way into them. And the ship was adrift far along the horizon long before the devils ever arrived. The Harlequins built their Providence on the hull of something much older that they found already drifting."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the devil circus is a squatter in someone else's machine."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which makes you ask what the machine was for."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right, a trap that was never sprung — a trap needs a prey, you know? Something traveling the horizon that this thing was built, or left, or set to catch. And it drifted, unsprung, for ages, until the Herald got in and ate the crew, and then the devils got in and stapled a carnival on top, and now here comes this little band of idiots, our idiots, keystone in hand, and they board it, and it starts tithing, and then they kill a cosmic sibling and the ship gets flung off the atlas to a dead world —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Where it's now sitting still. Beached."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay, so here's my counter-read, and I genuinely think it might be the boring-but-true one: the strider stopped because the tithe machinery stopped. The Harlequins are wiped out, the whole economy of hearts and energy that moved the ship is dead, the engine hearts burned out ages ago — pieces of hearts, not fully formed, that's what the deep dive turned up. It's not a chosen stop. It's a dead battery. The drama is upstream in who gets to jump it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the Machine God is the jumper cables."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "He is literally an engine heart. That's the name the party uses for him. He identifies with the strider's original engines, before the fiend retrofit."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "So which is he? Because that's the next big personal one for me. Everything the party has done for two months on this dead world — the hospital purge, the spire fight, feeding him Tally's remains, the whole Undercroft handover — it's all been in service of building this guy up. And he has grown. His voice has grown steadier with every heart he takes. He brought Johnny back from the dead as a thank-you gift. This is a powerful, ancient, polite entity who says things like it holds the whole Undercroft and means to reclaim the surface in time."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "In time. He said in time."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He said in time. And no one at that table asked when."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "I want to be fair to him, because I think the text wants us to — every deal he's struck he's kept, he fought alongside them in the conduit chamber, the diplomacy that woke him was Johnny rolling a natural twenty, which as a table moment tells me Josh wanted him woken. But you're right, the trajectory is the thing. He eats hearts and gets stronger. They keep feeding him hearts. There are only so many hearts left on this dead world before the only hearts remaining are the ones in the party's chest."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, so, dark horse theory, and I'm giving this one my full endorsement until someone takes it from me: the Machine God and the tower are the same mystery. The blind spot and the blind man. What if the tower is the original Machine God — the real engine, the first one, the one whose chamber he can't look into because you can't see your own head? And our friendly Undercroft heart is a shard of it, an echo, a piece of hearts not fully formed —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's actually elegant, Bram."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Don't patronize me, I'm on a roll — and the reason he can't see in is that it's him, it's the rest of him, whatever got taken or sealed up there when the trap never sprang. And the machinery running inside the tower is him trying to wake himself up. He said his inhabitants were taken and changed. He never said by what, or from where. From above, maybe."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The part of me that's played forever loves that, and the part of me that's listened to five seasons of this GM loves it even more, because Josh planted it: the tower was introduced ages ago, described in detail — no entrance, active machinery — and then never explained. Introduced and not explained is a GM rolling something forward. You don't spend narration on a sealed room you never intend to open."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'll flag the other tower read, the spookier one, before we move off it — and I don't love it, but it's on the file. What if the tower is a blind spot because something from beyond the firmament is already sitting in it? The Harlequins served War, we learned that in the parlay with Grayson on the dead world — the devils weren't freelancers, they had a god. The strider got flung off the atlas the moment the Menhir died. What if it wasn't flung? What if it was taken? Parked?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Parked by whom, though — the Narrative? Aut's family? Because that drags us straight into the thing I've been dancing around all night, which is the Menhir."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Yes please, the Menhir, because as a newcomer this is the one that made my jaw drop. So — the party is told about the Menhir, one of five cosmic siblings called the Narrative. They do a ritual to recruit the Menhir as an ally, get pulled into the Black and White void, and this god, the Menhir, hands them a gift: a revolver. Called the End."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A god-killing gun."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "A god-killing gun given to the party by one of the gods it kills. And then Argyle shoots a Menhir with it to escape the void — and not just kills that Menhir, he kills all of the Menhir. Every one. The wiki says one of those spikes fired into a single stone brought down the whole ring, and the rest of the narrative felt it die at once. And then the strider gets flung off the map, the Harlequins get wiped out, portals tear open across the ship."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And I have to say — because I've seen some chatter about this and I want to defend my boy Argyle a little — the situation in that void was bad. They were confronted by a jealous Ought — Aut, jealous, showing up angry — the party was cornered, and the gun was right there in Argyle's hand. Was it a mistake? Absolutely. Was it a mistake a god handed them and then dared them into? Also yes."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Well, and here's the thing that I think the table has started to reckon with and that Josh has been very careful about: Aut's reaction. He didn't just get angry. He ended the relationship. He said — and I was listening close — we're not friends anymore, because I'm not friends with people who go behind my back. And then, the detail that chilled me: the party's marks — you know Aut had marked his people, three little dots — he turned the marks into a punishment. Intense, searing pain where those three dots are. He took his blessing and flipped it into a curse, on the spot."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay, so my read, and I feel decent about it: this is a custody fight. The wiki says the siblings are empowered to act the further events stray from the plot they mean the story to follow. They feed on deviation. The party has been the main deviation engine for five seasons — off-script at every turn — so Aut's been getting stronger off them, right? And then the Menhir — the sibling I'd bet is the heroes' patron, the one whose role is the adventuring party — comes down and starts courting them directly. Aut lost his cast to a rival and threw a fit."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And here's my leap, which Maeve has heard and which she hates — I think the Menhir wanted to die."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I don't hate it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "You hate it a normal amount. Think about it! A god whose whole domain is being the hero's patron, in a story where the heroes keep getting ground up by cosmic nonsense, hands the mortal party a gun that can kill gods, gets cornered by his jealous brother, and stands in front of the barrel. One bullet. Out of a gun that had, what, how many shots —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Sixteen left, by the count the party keeps. The gun came loaded, one was spent."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Sixteen left. One bullet ends the entire Menhir. That's not a misfire, that's a seppuku with a mortal's finger on the trigger. The Menhir wanted out of the Narrative, couldn't quit, so it quit through the party. And now the party is holding sixteen more god-killing bullets and the four surviving siblings know it."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That's — okay, that's a genuinely great theory and it changes the morality of the whole episode, but here's the strategic fact I keep circling back to: the remaining four siblings. The wiki names five: Aut the Writer, Renge the Fickle Mistress, the Menhir, and two we mostly know by implication. One slot in that family just got vacated, very loudly, and everybody felt it. Somebody is going to come collect. Either to punish the vacancy or to fill it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the party's other thread to that family is the twins — Anaïs and Anouk, our twins, who serve Renge the Fickle Mistress, Aut's rival. If the party is now, as Johnny put it on mic, done being controlled by the story — he said something like, because they've been controlling the story, that's why he wanted out — then the natural next move is the party drifting toward Renge's side. Which Aut would read as the second betrayal."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the prediction I'll stake: before this campaign ends, the party uses The End again, and it's on a sibling, and they'll think it's a free choice and it'll turn out to be exactly what Renge wanted. The Fickle Mistress doesn't have to lift a finger. That's the whole gimmick."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Oh, that's good."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's grim. I like it and I hope you're wrong, which is most of my opinions about this campaign."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, before we get to the legal pad's lightning round — and we will, I promise — we've got two personal ones left and Nell has been vibrating about one of them for twenty minutes."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "The sister! Galzu. Okay, so — Anzu's older sister, aristocratic family, Belvedere, the whole thing. Vanished around the same time as a break-in at a Belvedere archive, joined the Singers of the Herald's Star, and then turned up on the dead world leading Herald forces, fought the party inside the Fane of Tali, got shackled and stuck in a suspension pod, which — crucially — is not neutralizing her, it's powering her up on a timer. Three, four weeks, before she's too strong to reach. And the party's response to this was to drive a hundred and fifty miles away to a mining outpost, which as a strategy is insane, but they need fuel, so."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And there's the thing the wiki says that I think is the load-bearing sentence about her: she was lucid through all of it, and no spell of the mind held her. She chose the Herald. Nobody rode her."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which — I keep flip-flopping. On the one hand, fine, she's a cultist, she signed up, the party found her reviving Tali's dead heart with her bare hands, that's a war crime, that's an initiative roll. But on the other hand, and this is where I've landed after a lot of pacing in my kitchen: what does a Qureshi heiress want so badly that the Herald's Star is the best shop in town?"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Ask the better question: why was the break-in geographically linked to her family? The wiki on her says the theft happened near where her grandmother was that night. The stolen thing from the Belvedere archive —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "— was a twelve-sided green stone in a golden case. Ringing with the Voidsong."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Twelve-sided. Which, by the way, matches an artifact Atum described — Benny's father, the Heart at Belvedere, who set his nine-year-old android son to recover this exact stolen stone, because it carries a similar harmonic resonance to the Voidsong."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which — okay, hold on, I want to be careful, because I almost mixed this up on the last episode and Maeve caught me: the stone that got stolen is the stone Atum wants. One stone. It matches something the party had already described seeing — floating green rock, twelve sides, golden case — I want to say they'd seen it in a dream or a Fane, Maeve, where did they —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You described it in a dream first, back around the Teller's Run arc. That's what Atum's message said — it bears striking resemblance to something you described. So the party's own dream furniture matches the artifact that was stolen months later. That's a planted connection, not a coincidence."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "So here's the chain I want to propose, and tell me where it breaks: Galzu was already investigating the Voidsong before the party left Hallia. The Singers recruit her — or she recruits them. The Belvedere archive holds a Voidsong-resonant relic. The break-in happens right in her family's backyard, the same night her grandmother is there, and then she's gone. Then months later, she's on the strider's far side doing ritual work for the Herald. Either the Singers took the stone, or Galzu took the stone for the Singers, and either way — Atum wants it because it's a portable Voidsong carrier, and whoever holds it holds a piece of the one song Aut can't predict."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Galzu is lucid — fully, deliberately lucid — meaning she's not the Herald's puppet, she's its student. She thinks the Herald's Star has the right answer to the song. That's her whole motive, I'd bet: the family that produced Anzu, the boy who hears the Voidsong, and nobody ever once explained it to either of them, and here comes a church that says, we know what that sound is, come learn."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That I believe, actually. The Qureshis knew what Anzu was, sent people after him when he ran, treated the song as a family matter to be managed rather than explained. Of course one of the kids went looking for answers at the first church that offered them."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And the tactical reading, which I'm confident about as a game-brain: her mental defenses — the party tried a psychic dive into her mind after stabilizing her, and got repelled by an ocean of biting centipedes. The wiki says the only way to weaken her is to weaken the god's hold on her. Which means the win condition was never in her skull. It's up in the spire. Beat the Herald's Song on the strider, and she wakes up as a person. They've already done it once — Egan."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Poor Egan. Okay, real fast for Nell's benefit: Egan Arithmites, half-minotaur gunslinger, they found him escaped from the Herald's thrall on the dead world, Anzu mind-melded him to overwrite the Herald's song — with the Voidsong."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is the funniest and most alarming fix in the campaign. They didn't cure him. They changed his radio station."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And Anzu's method for countering the Herald's Song needs a living carrier to work — he had that breakthrough right before the second tithe. Egan is now the living carrier of the Voidsong. So is Johnny, by the way, sort of — every time he dies, he hears the Voidsong instead of his god."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which is the other personal one on my list! The Watcher! Because that one's been quiet for so long people forget it's even open. Johnny's whole deal — the bard, our bartender from Raelion — is that he dies, and he comes back, and he tells the Watcher what he's learned of people. That's the pact. That's why he came back from the Crowded Flea. Except the last death before all this, he heard the Voidsong instead of the Watcher, and he has not been able to reach his god since."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Silenced. Not gone, as far as anyone knows — just unreachable, crowded out by the song."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And here's a connection I haven't heard anyone on the show make yet, so I want to put it on the corkboard: Aut can't predict Voidsong-touched people. The Voidsong is now sitting on the channel between Johnny and his god. Johnny — the one party member Aut invested in personally back in the void. If I were a cosmic author and my marked instrument suddenly went into a fog bank I couldn't read, I might be very interested in getting eyes on the fog. And lo and behold, the entire pilgrimage the party is riding is aimed at the Void Side Wall, in the direction everyone's theories point the singer."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Ohhh, that's good — the Watcher and Aut both want the same thing the party's heading toward anyway. Everyone's carpooling to the source of the song and nobody's telling the passengers."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'll add one and then I really do want Hesperid before the round, because it's the freshest: Illmari. I said I'd come back to him. The founder, the bar, the night of Teller's Run. Gone the same night the party leveled that district."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And the Master of Ceremonies — a devil, remember, and one whose own face is complete burn, like scar tissue, featureless — knows the name unprompted, and says only that Illmari is alive and that what has become of him is not his to tell."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Not his to tell! Devil-speak for I know exactly where he is and I'm being paid to keep my mouth shut. That's a clause in a contract. That's contract language!"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "That is one hundred percent contract language. Devils in this campaign don't do favors, they do terms."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "So the safe read is: the Harlequins took him, or bought him, the night of Teller's Run, for what he knew about the fracture — he was in the bar, the party was planning, walls have ears when devils rent the next room over — and he traded himself somehow. His silence, his freedom, something, for the bar staying standing and the twins staying safe. That's the version where we meet him at the pilgrimage's end, changed."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the unsafe read, the one I don't even want to say in my own voice — the Master of Ceremonies' face is burnt featureless, right. Never explained. Introduced, described, never explained."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "No. Don't."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He's not wearing their founder as a suit, Bram."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I didn't say it! I indicated in its direction! The face is scar tissue, Maeve! Whose scars?!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The twins knew Illmari personally, for what that's worth. They stayed at that bar. Anaïs is a servant of Renge, who's a sibling of Aut, who would know. If anyone in the cast could clock whether the devil in the mask is their old friend, it's those two, and they haven't said anything."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Hmm."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which I admit is silence, not evidence."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay, Hesperid, because I have a whole theory and it's been thirty seconds of me not interrupting you, which is a record. Six Tracks to Nowhere. The party finds Hesperid three — a half-submerged mining outpost, phlogiston, fuel, done, great haul. But then they take a train north, a tessellated sandstorm parts, and there are six parallel rail-tracks. And at the end of them, Hesperid H Q — a massive spaceship sheared in half and tessellated into six copies, each one existing in a different time period. They hop between timelines, they grab five barrels, they descend into a skull-lined elevator shaft, and a divine curse animates the wreckage into constructs and kicks them out."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the curse — I love this detail — deepens over decades. The further back in time you go, the weaker it is. So the play, obviously, is to jump back to an earlier era, before the curse cooks off. The party literally stood on the threshold of a time machine when the session ended."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the number, though. Six tracks, six copies, six time periods — and the intake back at Hesperid three, one spigot duplicated five times over, six spigots joined to a single tube with five hooked to nothing. That's not damage. Somebody built that number into the plumbing."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Into the plumbing, into the tracks, into the company's own map — the wiki says the line from Hesperid three is drawn as six lines packed so close they read as one. Six is a signature, and I refuse to believe it's a coincidence, because this campaign's number vocabulary is not casual. Six wrought-iron god-doors under the gas station. Six Thessian gods. Six-fold spigots. If I'm right that six is the Pact's number, then the mining company that built the Hesperids served one of the six — from beyond the firmament — seventy-some years ago, back when the outposts were live, which would mean the gods' reach into this world is much older and much deeper than anyone at the table thinks."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Or — counterpoint, and I'm genuinely split — six might be the firmament's number, not the gods'. Six time-streams around one object, six copies of one hull: that's the same move as the tessellation itself. What if the fold through time and the wall around the world are the same machinery, and Hesperid H Q is sitting half inside the firmament's own filing system? The curse is a divine curse. Divines don't like it when you poke the folds."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Then the time-jump isn't just a fuel errand, it's a proof of concept. If the party can move a ship through the six streams, they can move the strider."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They can move the strider home."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or wherever the six tracks actually point. Which — Bram's eyes just went very wide, and I know that look, that's the look he gets before the big dumb beautiful leap, so let's have it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The strider was a trap that was never sprung, adrift far along the horizon, aimed — Johnny's own theory, from the library stretch, he said it out loud — aimed at the wall, at the void side. The tracks run north. The strider's dead on a dead world and the one fresh thing on that whole gray continent is a six-fold train station that folds time. What if the tracks and the strider are the same network? What if the way home and the way to the singer are the same rails, and the whole stranded season has been the party standing in a waiting room the entire time, not because they failed, but because they're early?"
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "...I genuinely have chills."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I have a note and then you can have your moment: the wiki says the original borrowers of the Void Atlas were linked to Pyrolyte — the atlas the party traded a stolen ink ribbon for, the one with the prior route data. There's a history of things riding these routes. Something rode this way before."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Something rode this way before! And it left a trap out here! For something!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Breathe."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I'm breathed. Okay. I'm breathed. Nell, are you — no, wait, hold on, one thing, I promised myself I'd get this in: Argyle's other half. Quick version. Our champion, Argyle — formerly a failed celestial and a repentant devil sharing one elven body, and when he came back to us in season three only the holy half walked back in, and here's the kicker: he says the judge ripped me from perdition. The Judge did it, not Aut, not the pact. And of the two halves he says — this is the line that got me — we were bonded. It is meant to be bonded. The separation is the aberration. Whatever split him wasn't a purification, it was an injury that somebody means to repair."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "And the demon half went voidward. Which is where the party now is. They've been shipped to the exact half of the world his other half fled to."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the wiki warns that anyone who sees another Argyle should report it, since it's likely a demon wearing his face. So the campaign is explicitly anticipating a second Argyle walking around out here."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "In the direction the party has already been shipped! By the pilgrims! Who are devils! I'm just saying the phrase meant to be bonded and letting everyone at home do the math."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "One caveat I keep for that one: even the demon half belongs to the Judge, he said so — it is part of the judge as well. So the reunion may not be a fight or a corruption, it may be a custody hearing. Celestial paperwork."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Celestial paperwork, Maeve, that's the whole show, it's all celestial paperwork. Okay. Okay! Lightning round. This is the bit where we each lock in three predictions so the audience can come back in a year and watch us be wrong. Nell, you've been the most right tonight, so you go first, no — no, actually, me first, because I've been holding these in like a full bladder. Prediction one: the Vocalist is inside someone the party has already met — not a god, a person, and I'd put money on it being someone on the strider — and the reveal lands when Aut's blindness suddenly makes retroactive sense. Confidence, high, like drinks-dinner high. Prediction two: the tower at the strider's heart holds the original engine — the real Machine God, the rest of our Machine God — and the way the party restarts the ship is Argyle, our Argyle, walking into the one room the god can't see. Confidence: medium-high, medium-ish. And prediction three — this is the one Maeve's going to hate — Aut's breakup is a setup, the whole we're not friends anymore is theater, because Renge's whole game is making Aut overplay his hand and crawl back, and the moment he does, he's going to hand the party exactly the next move they need, and it's going to feel like mercy and it's going to be a trap. Confidence: I don't know, forty percent, but I'll be so smug."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Forty percent smugness is your resting state. Fine. Mine: one — Galzu chose the Herald, but the way out of her skull is the strider, not the pod; when Anzu's counter-song works on the sleeping clan's leftovers up top or the Herald's grip slips, she wakes as their sister, and the party's timer was never about killing her, it was about finishing first. I'd say... seventy percent, somewhere in there. Two — the six-fold at Hesperid is the Pact's signature and the mining company was theirs, which means by the time the party rides the tracks to an early era, they're going to find people — live people, seventy years back — working for a god that the party knows is coming, and that episode is going to be about whether they burn the payroll or the cult. Sixty percent, a soft sixty. And three — I'll take Bram's tower and raise it one room further: whatever is in the tower has been listening to the Machine God grow, and the sealed helm is sealed from the inside not to keep people out but to keep from being found until it's finished waking up. Fifty, fifty, honestly, that one's a coin flip with nice wallpaper."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Okay. Mine, and I've written them down so I can't chicken out. One: the Embercall's fake harmony and the original firmament crack are the same maker's work, and somewhere in the Hesperid time-logs — because that's what the party will find in the earlier era, the logs — there will be a name or a mark that the party already saw on the doors under the Gas-n-Go, and that's the episode where season one and season five shake hands. I'm — God — I'm at like eighty percent on that and I've known this campaign for six weeks, don't tell me percentages mean anything. Two: the stone. The twelve-sided green stone. Atum sent his actual nine-year-old son to fetch a Voidsong resonator, and the way the party gets the stone back — because I think it's on this dead world, I think Galzu's people brought it out here, that's why her work reviving Tali's heart looked song-shaped — the way they get it is going to teach Benny what he is. Because a dream that featured the stone before it was ever stolen means somebody in that party's head was already tuned to it, and I don't think it was Anzu. Sixty-five percent. And three — the softest one but my favorite — the Master of Ceremonies didn't survive the Harlequin wipeout, or didn't survive it as himself, and the thing that burned his face off is connected to whatever the Harlequins did when War stopped answering them, and when the party finally enters the tower from below, the devil's going to be in there, waiting, because it was his room first. Forty percent. Maybe forty."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Forty percent on a locked-room devil reveal is a very confident forty percent."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "I've been told I over-commit. It's my whole thing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "What."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Nothing. I was just going to say — of the nine things we've put on the board tonight, seven of them ended with the same sentence. Somebody already knows."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Somebody already knows, and it's never us, and that's why we come back every week. God. Alright — next episode the party's jumping the tracks to an earlier era, apparently, so we'll find out if the curse rule holds and, knowing this table, if something's waiting in the past that's been waiting seventy years to be found. Red string stays up until then. Nell, welcome to the corkboard, by the way."
+        },
+        {
+          "speaker": "C",
+          "name": "Nell",
+          "text": "Best seat in the building."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It really is. Okay. We'll get there."
+        }
+      ]
     }
   ]
 }
