@@ -74,6 +74,7 @@ STATE_DIRS=(
   artifacts                         # bind-mount state for the live stack (see excludes)
   apps/assay/review-ui/state        # scriptorium review decisions + comments (human work)
   apps/mouthpiece-backend/episodes  # paid LLM + TTS renders (scripts, briefs, clips, mp3s)
+  apps/scribe/incoming              # raw Craig zips; the Google Drive originals can be cleaned out
 )
 # rsync exclude patterns per state dir (anchored at the dir root with a leading /).
 excludes_for() {
