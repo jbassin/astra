@@ -8,4 +8,4 @@
  *   cfg.orator.sessionSecret?.resolve(); // SOPS-decrypted on demand
  */
 export { type Config, ConfigSchema, defaultConfigFile, loadConfig } from "./config";
-export { defaultSecretsFile, resolveSopsRef, SecretRef } from "./secrets";
+export { defaultSecretsFile, isBlankSecret, resolveSopsRef, SecretRef } from "./secrets";

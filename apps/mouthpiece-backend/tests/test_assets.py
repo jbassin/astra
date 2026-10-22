@@ -68,14 +68,17 @@ def test_llm_model_comes_from_config_not_the_client_constant() -> None:
     assert mp._llm_model() != DEFAULT_MODEL
 
 
-def test_tts_provider_is_elevenlabs_and_fails_loud_without_key(monkeypatch) -> None:
+def test_tts_provider_is_elevenlabs_and_fails_loud_without_key(monkeypatch, tmp_path) -> None:
     """The live backend is ElevenLabs (Cartesia is wired but was rejected on voice quality);
     a missing/empty key (what `${KEY:-}` injects when the SOPS entry is absent) raises
     instead of silently falling back to another provider."""
     from astra_ontology_config import load
 
     assert load().mouthpiece.tts_provider == "elevenlabs"
+    # An empty env var now counts as unset and falls through to SOPS (0037); point that at
+    # a missing file — the in-container state — so a host with the age key can't decrypt.
     monkeypatch.setenv("ELEVENLABS_API_KEY", "")
+    monkeypatch.setenv("ASTRA_SOPS_FILE", str(tmp_path / "absent.enc.yaml"))
     with pytest.raises(RuntimeError, match="elevenlabs_api_key"):
         mp._provider()
 

@@ -101,15 +101,20 @@ def _atomic_write(path: Path, text: str) -> None:
 
 def _required_key(ref: SecretRef | None, name: str) -> str:
     """Resolve a provider key or fail LOUD. `just up` injects `${KEY:-}` so an absent
-    SOPS entry arrives as an EMPTY env var, which `resolve()` returns as "" — treat that
-    as missing too, else the run would 401 (or worse, silently pick another backend)."""
-    value = ref.resolve() if ref is not None else ""
+    SOPS entry arrives as an EMPTY env var; `resolve()` treats that as unset (0037) and
+    raises when nothing else supplies the key. Re-raise every such failure as one clear
+    error, else the run would 401 (or worse, silently pick another backend)."""
+    message = (
+        f"mouthpiece.tts-provider needs the {name!r} secret: add it to "
+        "deploy/sops/secrets.enc.yaml (then `just up` re-injects it), or set "
+        f"${name.upper()} for a host run."
+    )
+    try:
+        value = ref.resolve() if ref is not None else ""
+    except (KeyError, OSError, RuntimeError) as exc:  # missing key / no SOPS file / sops failed
+        raise RuntimeError(message) from exc
     if not value:
-        raise RuntimeError(
-            f"mouthpiece.tts-provider needs the {name!r} secret: add it to "
-            "deploy/sops/secrets.enc.yaml (then `just up` re-injects it), or set "
-            f"${name.upper()} for a host run."
-        )
+        raise RuntimeError(message)
     return value
 
 

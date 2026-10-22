@@ -27,7 +27,7 @@ from .models import (
     WealConfig,
     WealOverlayConfig,
 )
-from .secrets import SecretRef, default_secrets_file, resolve_sops_ref
+from .secrets import SecretRef, default_secrets_file, is_blank_secret, resolve_sops_ref
 
 __all__ = [
     "CaddyConfig",
@@ -44,6 +44,7 @@ __all__ = [
     "WealOverlayConfig",
     "default_config_file",
     "default_secrets_file",
+    "is_blank_secret",
     "load_config",
     "resolve_sops_ref",
 ]
