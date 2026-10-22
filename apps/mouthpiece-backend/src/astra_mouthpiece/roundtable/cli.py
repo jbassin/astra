@@ -36,7 +36,7 @@ from astra_ontology_being import BEING_KDL_PATH, load_being
 from ..hosts import load_hosts
 from ..inputs import episodes_root
 from ..lint import score_script
-from ..models import Script, SessionDigest
+from ..models import Script
 from ..producer.experiment import MeteredClient, host_shares, script_words
 from ..producer.tools import permitted_dates
 from ..roster import build_roster_block
@@ -131,8 +131,9 @@ def _cmd_render(args: argparse.Namespace) -> int:
     out = episodes_root() / sid
     out.mkdir(parents=True, exist_ok=True)
     _atomic_write(out / "script.json", script.model_dump_json(indent=2))
-    digest = SessionDigest.model_validate({"session_id": sid, "synopsis": SYNOPSIS})
-    _atomic_write(out / "digest.json", digest.model_dump_json(indent=2))
+    # Not a SessionDigest (no clean pass, no stats): the catalog reads only these two keys,
+    # the same shape as the earlier recap capstones.
+    _atomic_write(out / "digest.json", json.dumps({"session_id": sid, "synopsis": SYNOPSIS}))
     manifest = synthesize_script(
         script, provider=_provider(), voices=_voices(load_hosts()), out_dir=out
     )
