@@ -253,6 +253,10 @@ export function fixtureCorpusRoot(): string {
  * corpus with a loud one-time WARN. Exported (not just used internally) so
  * `corpusFns.ts`/tests can see which root a given process actually resolved to. */
 export function resolveCorpusRoot(): string {
+  // An explicit root wins. The test setup pins it to the committed fixture corpus, so
+  // a test run never depends on whether this host happens to have the real corpus.
+  const explicitRoot = process.env.CODEX_CORPUS_ROOT;
+  if (explicitRoot) return explicitRoot;
   const dataPath = loadConfig().codex.dataPath;
   const realRoot = join(dataPath, "corpus");
   if (existsSync(join(realRoot, "manifest.json"))) return realRoot;

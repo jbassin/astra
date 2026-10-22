@@ -12,13 +12,16 @@ describe("build-content (reads the committed episodes-index.json)", () => {
     expect(EPISODES.length).toBeGreaterThanOrEqual(7);
   });
 
-  test("episodes are sorted arc-then-date; exactly one mega recap", () => {
+  test("episodes are sorted by date; recaps and specials are episode 0", () => {
     expect(EPISODES[0].episodeNo).toBe(1);
     const keys = EPISODES.map((e) => e.dateSortKey);
     expect([...keys]).toEqual([...keys].sort((a, b) => a - b));
-    // the recap is the capstone of its sub-arc (episodeNo 0); later live sessions may
-    // sort after it, so don't assert it's last — just that there's exactly one.
-    expect(EPISODES.filter((e) => e.episodeNo === 0)).toHaveLength(1);
+    // The catalog is live data, so assert its shape, not its counts: recaps and
+    // specials carry episodeNo 0 and a "-recap-of-" id; every session is numbered.
+    for (const e of EPISODES) {
+      expect(Number.isInteger(e.episodeNo) && e.episodeNo >= 0).toBe(true);
+      expect(e.episodeNo === 0).toBe(e.id.includes("-recap-of-"));
+    }
   });
 
   test("catalog carries the load-bearing fields incl. a same-origin mp3Url", () => {

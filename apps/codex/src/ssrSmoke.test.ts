@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
@@ -18,14 +18,38 @@ import { createCorpusReader, fixtureCorpusRoot, resolveCorpusRoot } from "@/serv
  * whole file sidesteps that class of bug entirely.)
  *
  * We chose a build + `ssr.fetch(...)` assertion over a full Playwright lane: it
- * runs in the existing `test` lane with no new CI infra. Build prerequisite:
- * needs `dist/server/server.js`, so `beforeAll` builds once if it's absent
- * (CI's test job starts without a build) — this ALSO always exercises the
- * fixture-fallback corpus root in CI (D29-23: zero `data/` by construction), the
- * same root every route test below runs against.
+ * runs in the existing `test` lane with no new CI infra. `beforeAll` rebuilds
+ * `dist/server/server.js` whenever it is missing or older than its sources, so
+ * the smoke never passes against code that no longer exists. The vitest setup
+ * file pins `CODEX_CORPUS_ROOT` to the committed fixture corpus, so every route
+ * test below sees the same data locally and in CI.
  */
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
 const SERVER_BUNDLE = path.join(APP_ROOT, "dist/server/server.js");
+const BUNDLE_INPUTS = ["src", "server.ts", "vite.config.ts", "../../libs/ts"].map((p) =>
+  path.join(APP_ROOT, p),
+);
+
+/** Newest mtime of the non-test source files under `p` (0 when `p` is absent). */
+function newestSourceMtime(p: string): number {
+  if (!existsSync(p)) return 0;
+  const st = statSync(p);
+  if (!st.isDirectory()) return /\.test\.tsx?$/.test(p) ? 0 : st.mtimeMs;
+  let newest = 0;
+  for (const entry of readdirSync(p, { withFileTypes: true })) {
+    if (entry.name === "node_modules" || entry.name === "dist" || entry.name.startsWith(".")) {
+      continue;
+    }
+    newest = Math.max(newest, newestSourceMtime(path.join(p, entry.name)));
+  }
+  return newest;
+}
+
+function bundleIsStale(): boolean {
+  if (!existsSync(SERVER_BUNDLE)) return true;
+  const built = statSync(SERVER_BUNDLE).mtimeMs;
+  return BUNDLE_INPUTS.some((p) => newestSourceMtime(p) > built);
+}
 const RUNNER = path.join(APP_ROOT, "scripts/ssrSmoke.ts");
 // 0022 S11 — off bun: `pnpm run build` for the workspace script, `node --import
 // nodeTsResolve.mjs` for the raw-TS runner subprocess (same hook every server.ts
@@ -35,7 +59,7 @@ const NODE_TS_RESOLVE_HOOK = path.join(APP_ROOT, "../../libs/ts/site-kit/src/nod
 let ssr: { fetch: (req: Request) => Promise<Response> };
 
 beforeAll(async () => {
-  if (!existsSync(SERVER_BUNDLE)) {
+  if (bundleIsStale()) {
     execFileSync("pnpm", ["run", "build"], { cwd: APP_ROOT, stdio: "inherit" });
   }
   const mod = (await import(SERVER_BUNDLE)) as {
