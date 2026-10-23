@@ -34,13 +34,13 @@ WORKDIR /repo
 # --frozen` refuses a missing member distribution outright) + all libs/py + ontology.
 # (The TS apps are uv-excluded and intentionally absent.)
 COPY pyproject.toml uv.lock ./
-COPY apps/scribe apps/scribe
-COPY apps/linguist apps/linguist
-COPY apps/akasha-backend apps/akasha-backend
-COPY apps/mouthpiece-backend apps/mouthpiece-backend
-COPY apps/heartwood-backend apps/heartwood-backend
-COPY apps/_smoke-substrate apps/_smoke-substrate
-COPY apps/assay apps/assay
+COPY apps/scribe/py apps/scribe/py
+COPY apps/linguist/py apps/linguist/py
+COPY apps/akasha/py apps/akasha/py
+COPY apps/mouthpiece/py apps/mouthpiece/py
+COPY apps/heartwood/py apps/heartwood/py
+COPY apps/_smoke/py apps/_smoke/py
+COPY apps/assay/py apps/assay/py
 COPY libs/py libs/py
 COPY ontology ontology
 

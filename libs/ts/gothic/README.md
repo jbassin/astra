@@ -30,7 +30,7 @@ shows the primitives and vellum fixtures.
 2. gothic: add a card component and a `case` in `DocumentView`'s block switch.
 3. vellum-frontend: add a slash snippet (`slashComplete.ts`) and a template.
 4. vellum-render: add a fixture to `test/visual/fixtures.ts` and generate its golden (see
-   `apps/vellum-render/README.md`).
+   `apps/vellum/render/README.md`).
 
 Author new wiki content in the VSS brace form; the akasha corpus has no `:::` openers left.
 

@@ -3,11 +3,11 @@
 The Rust crate behind weal v2 (spec `thoughts/archive/specs/0032-weal-v2-spec.md`): parser, type
 checker, interpreter, exact-distribution engine (an icepool port), render/plot layer, and the
 single wasm JSON API. It compiles to `wasm32-unknown-unknown` and ships as a **committed**
-artifact under `libs/ts/weal-engine/gen/`, consumed by `apps/weal-bot` via the `@astra/weal-engine`
+artifact under `libs/ts/weal-engine/gen/`, consumed by `apps/weal/bot` via the `@astra/weal-engine`
 pnpm member. This is astra's only Rust — deliberately confined here (see the root `CLAUDE.md`
 charter note); cargo is needed only when the engine itself changes.
 
-For the player-facing language guide, see `apps/weal-bot/README.md`.
+For the player-facing language guide, see `apps/weal/bot/README.md`.
 
 ## Crate layout (`src/`)
 

@@ -186,7 +186,7 @@ services:
     build:
       labels: *build-labels
       context: ..
-      dockerfile: apps/weal-bot/Dockerfile
+      dockerfile: apps/weal/bot/Dockerfile
     image: astra-weal-bot:local
     container_name: astra-weal-bot
     # All astra app containers run as the host owner (uid 1000) — node:24-slim (the
@@ -219,7 +219,7 @@ services:
     build:
       labels: *build-labels
       context: ..
-      dockerfile: apps/weal-overlay/Dockerfile
+      dockerfile: apps/weal/overlay/Dockerfile
     image: astra-weal-overlay:local
     container_name: astra-weal-overlay
     # Node 24 runtime (R3, 0022 S8 — the runtime-exit recipe; D13). node:24-slim
@@ -248,7 +248,7 @@ services:
     build:
       labels: *build-labels
       context: ..
-      dockerfile: apps/menhir/Dockerfile
+      dockerfile: apps/menhir/web/Dockerfile
     image: astra-menhir:local
     container_name: astra-menhir
     # Node 24 runtime (see weal-overlay); node:24-slim global fetch → healthcheck.
@@ -270,9 +270,9 @@ services:
     build:
       labels: *build-labels
       context: ..
-      dockerfile: apps/strider/Dockerfile
+      dockerfile: apps/strider/web/Dockerfile
       args:
-        APP: strider # the one knob in the templated frontend Dockerfile
+        APP: strider/web # the one knob in the templated frontend Dockerfile
     image: astra-strider:local
     container_name: astra-strider
     # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
@@ -301,7 +301,7 @@ services:
     build:
       labels: *build-labels
       context: ..
-      dockerfile: apps/akasha-frontend/Dockerfile
+      dockerfile: apps/akasha/web/Dockerfile
       # The published datasets the build bakes in (COPY --from=astra-data), never read
       # from the code repo. deploy.sh exports ASTRA_DATA_CONTEXT = a clean export of the
       # astra-data clone's HEAD (committed content only); the default fails on purpose, so a
@@ -309,7 +309,7 @@ services:
       additional_contexts:
         astra-data: ${ASTRA_DATA_CONTEXT:-/nonexistent/build-only-via-deploy.sh}
       args:
-        APP: akasha-frontend # the one knob in the templated frontend Dockerfile
+        APP: akasha/web # the one knob in the templated frontend Dockerfile
     image: astra-akasha-frontend:local
     container_name: astra-akasha-frontend
     # Node 24 runtime (R3, 0022 S6 — the audio-mounts Range/206 pilot; D13). node:24-slim
@@ -349,9 +349,9 @@ services:
     build:
       labels: *build-labels
       context: ..
-      dockerfile: apps/codex/Dockerfile
+      dockerfile: apps/codex/web/Dockerfile
       args:
-        APP: codex # the one knob in the templated frontend Dockerfile
+        APP: codex/web # the one knob in the templated frontend Dockerfile
     image: astra-codex:local
     container_name: astra-codex
     # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; build stage also Node 24 + pnpm, 0022 S11).
@@ -368,7 +368,7 @@ services:
     # the three dirs as uid 1000 (empty on a fresh host, so the server serves the
     # fixture corpus until `codex-refresh` runs once).
     # D30-41 (0030 round 4): a THIRD identical-path `:ro` bind for the
-    # `apps/assay` verdict artifact (`assay/spell-power.json`) — same
+    # `apps/assay/py` verdict artifact (`assay/spell-power.json`) — same
     # D29-53 convention as the two below. NO fixture fallback on the codex
     # side (D30-39): this dir can be absent/empty pre-integration, and the
     # server just renders every spell page without its Assay block until
@@ -395,7 +395,7 @@ services:
     build:
       labels: *build-labels
       context: ..
-      dockerfile: apps/mouthpiece-frontend/Dockerfile
+      dockerfile: apps/mouthpiece/web/Dockerfile
       # The published datasets the build bakes in (COPY --from=astra-data), never read
       # from the code repo. deploy.sh exports ASTRA_DATA_CONTEXT = a clean export of the
       # astra-data clone's HEAD (committed content only); the default fails on purpose, so a
@@ -403,7 +403,7 @@ services:
       additional_contexts:
         astra-data: ${ASTRA_DATA_CONTEXT:-/nonexistent/build-only-via-deploy.sh}
       args:
-        APP: mouthpiece-frontend # the one knob in the templated frontend Dockerfile
+        APP: mouthpiece/web # the one knob in the templated frontend Dockerfile
     image: astra-mouthpiece-frontend:local
     container_name: astra-mouthpiece-frontend
     # Node 24 runtime (R3, 0022 S6 — the audio-mounts Range/206 pilot; D13). node:24-slim
@@ -433,9 +433,9 @@ services:
     build:
       labels: *build-labels
       context: ..
-      dockerfile: apps/vellum-frontend/Dockerfile
+      dockerfile: apps/vellum/web/Dockerfile
       args:
-        APP: vellum-frontend # the one knob in the templated frontend Dockerfile
+        APP: vellum/web # the one knob in the templated frontend Dockerfile
     image: astra-vellum-frontend:local
     container_name: astra-vellum-frontend
     # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
@@ -461,9 +461,9 @@ services:
     build:
       labels: *build-labels
       context: ..
-      dockerfile: apps/vellum-render/Dockerfile
+      dockerfile: apps/vellum/render/Dockerfile
       args:
-        APP: vellum-render
+        APP: vellum/render
     image: astra-vellum-render:local
     container_name: astra-vellum-render
     # Node 24 runtime (R3, 0022 S9 — the runtime-exit recipe; D13). node:24-slim
@@ -516,7 +516,7 @@ services:
     build:
       labels: *build-labels
       context: ..
-      dockerfile: apps/orator-backend/Dockerfile
+      dockerfile: apps/orator/bot/Dockerfile
     image: astra-orator-backend:local
     container_name: astra-orator-backend
     # Runs as 1000 so its ingest writes into the bind-mounted /data audio dir land
@@ -554,9 +554,9 @@ services:
     build:
       labels: *build-labels
       context: ..
-      dockerfile: apps/harrow/Dockerfile
+      dockerfile: apps/harrow/web/Dockerfile
       args:
-        APP: harrow # the one knob in the templated frontend Dockerfile
+        APP: harrow/web # the one knob in the templated frontend Dockerfile
     image: astra-harrow:local
     container_name: astra-harrow
     # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
@@ -583,9 +583,9 @@ services:
     build:
       labels: *build-labels
       context: ..
-      dockerfile: apps/ledger/Dockerfile
+      dockerfile: apps/ledger/web/Dockerfile
       args:
-        APP: ledger # the one knob in the templated frontend Dockerfile
+        APP: ledger/web # the one knob in the templated frontend Dockerfile
     image: astra-ledger:local
     container_name: astra-ledger
     # Node 24 runtime (R3, 0022 S4 — the pilot; D13). node:24-slim has global

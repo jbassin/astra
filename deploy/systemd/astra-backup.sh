@@ -90,7 +90,7 @@ PG_CONTAINERS=(astra-dagster-postgres astra-weal-postgres astra-orator-postgres)
 #   codex          the AoN/Foundry snapshots, corpus and index (1.7 GB), re-fetched and rebuilt
 #                  by `just codex-refresh`
 #   locks          runtime locks, no data
-# Not backed up from anywhere: the scriptorium review state (apps/assay/review-ui/state in the
+# Not backed up from anywhere: the scriptorium review state (apps/assay/py/review-ui/state in the
 # developer tree) was archived byte-identical into git at
 # thoughts/archive/scriptorium-review-state/ when the scriptorium was torn down, and
 # nothing writes it any more.

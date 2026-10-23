@@ -112,7 +112,7 @@ in the [runbook](runbook.md).
 ## Code layout
 
 ```
-apps/        one directory per app; its manifest decides the lane (pyproject.toml = uv, package.json = pnpm)
+apps/        apps/<domain>/<role>/: py (the uv member) or web, bot, overlay, render, controller (pnpm)
 libs/py/     config, llm, observe, ontology, lexicon, vellum-lang (+ _smoke)
 libs/ts/     config, observe, ontology, gothic, site-kit, content-build, backdrop, vellum-lang,
              weal-engine (the committed wasm build) (+ _smoke)

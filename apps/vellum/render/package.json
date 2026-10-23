@@ -1,0 +1,42 @@
+{
+  "name": "@astra/vellum-render",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "module": "src/server.ts",
+  "scripts": {
+    "dev": "vite --configLoader runner",
+    "build": "vite build --configLoader runner",
+    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "visual-regression": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts",
+    "visual-regression:update": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts --update"
+  },
+  "dependencies": {
+    "@astra/config": "workspace:*",
+    "@astra/gothic": "workspace:*",
+    "@astra/observe": "workspace:*",
+    "@astra/site-kit": "workspace:*",
+    "@astra/vellum-lang": "workspace:*",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@opentelemetry/api": "^1.9.1",
+    "playwright": "^1.60.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "srvx": "0.11.20"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.2",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "pixelmatch": "^6.0.0",
+    "pngjs": "^7.0.0",
+    "tailwindcss": "^4.3.2",
+    "vite": "8.1.6",
+    "vitest": "^4.1.9"
+  }
+}

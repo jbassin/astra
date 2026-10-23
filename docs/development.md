@@ -24,8 +24,8 @@ just check   # format + lint gate over the whole tree (the pre-commit hook runs 
 just fix     # apply formatters and safe autofixes for both lanes
 just test    # both test lanes
 just ci      # everything CI runs, plus commitlint over origin/main..HEAD (pre-push runs it)
-just dev <app>                 # one TS app's dev server, e.g. just dev codex
-uv run pytest apps/<app>       # one Python app (they run as Dagster assets, no dev server)
+just dev <domain>/<role>       # one TS app's dev server, e.g. just dev codex/web
+uv run pytest apps/<domain>/py # one Python app (they run as Dagster assets, no dev server)
 ```
 
 Each CI job in `.github/workflows/ci.yml` runs the `just` recipe of the same name, so `just ci`
@@ -53,8 +53,10 @@ body lines of at most 100 characters.
 
 ## Toolchains
 
-Two disjoint workspaces share the tree. A directory belongs to the lane its manifest declares
-(`pyproject.toml` = uv, `package.json` = pnpm).
+Two disjoint workspaces share the tree. Apps live at `apps/<domain>/<role>/`
+([ADR 0015](adr/0015-repo-layout-by-domain.md)): the Python one is `apps/<domain>/py/`, the
+TypeScript ones are `web`, `bot`, `overlay`, `render`, `controller` and portal's four parts. The
+location decides the lane, so neither workspace keeps a list of apps.
 
 **Pins.** uv 0.11.19 and just 1.23.0 (`mise.toml`, repeated in `.github/actions/setup-{uv,just}`);
 pnpm 10.34.4 (root `packageManager`, repeated in `mise.toml`); Node 24; Python 3.12 (production runs
@@ -62,12 +64,12 @@ pnpm 10.34.4 (root `packageManager`, repeated in `mise.toml`); Node 24; Python 3
 TypeScript 5; Rust 1.96.0 with wasm-bindgen-cli 0.2.127 and wasm-opt 124 (hard-pinned in
 `just weal-engine-build`). Bump a pin deliberately, in every place that repeats it.
 
-**Python (uv).** Virtual workspace in the root `pyproject.toml`; members `apps/*`, `libs/py/*`,
+**Python (uv).** Virtual workspace in the root `pyproject.toml`; members `apps/*/py`, `libs/py/*`,
 `ontology/*`. ruff (line length 100) lints and formats, ty (pinned `==0.0.51`, preview) type-checks,
 pytest tests in `importlib` mode.
 
-**TypeScript (pnpm).** Workspace in `pnpm-workspace.yaml`; members `apps/*`, `apps/portal/*`,
-`libs/ts/*`. Node 24 and pnpm 10.34.4 (root `packageManager`). oxlint and oxfmt lint and format;
+**TypeScript (pnpm).** Workspace in `pnpm-workspace.yaml`; members `apps/*/*` (a directory without
+a `package.json` is skipped) and `libs/ts/*`. Node 24 and pnpm 10.34.4 (root `packageManager`). oxlint and oxfmt lint and format;
 `tsc --noEmit` against `tsconfig.base.json` (strict) type-checks; vitest tests. typecheck, test and
 build fan out with `pnpm -r --no-bail --aggregate-output run <task>`. `vite-plus` is still a root
 devDependency but nothing runs it.
@@ -104,38 +106,44 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
 - **Frontends** follow the strider pattern (build-time content, generated modules, route loaders)
   and run as SSR Compose services ([ADR 0009](adr/0009-ssr-frontends.md)). Before frontend work,
   read the TanStack Start skill bundled with the package
-  (`apps/<app>/node_modules/@tanstack/react-start/skills/react-start/SKILL.md`); server logic is
-  `createServerFn`.
+  (`apps/<domain>/web/node_modules/@tanstack/react-start/skills/react-start/SKILL.md`); server
+  logic is `createServerFn`.
 
 ## Adding an app
 
-Adding an app still touches several hand-maintained lists (paydown Phase 2 removes them). Check each:
+Put the app at `apps/<domain>/<role>/`: `py` for a Python app, `web` for a frontend, or a name
+for what it is (`bot`, `overlay`, `render`, `controller`). Its manifest (`pyproject.toml` or
+`package.json`) makes it a uv or pnpm member; no workspace list needs editing. uv rejects a
+`apps/*/py` directory without a `pyproject.toml`, so never create an empty one. A TypeScript app's
+`tsconfig.json` extends `../../../tsconfig.base.json`, and its scripts reach the repo root with
+three `../`. What is still hand-maintained:
 
-1. The manifest (`pyproject.toml` or `package.json`) in `apps/<app>/`. uv rejects a glob-matched
-   directory without a `pyproject.toml`, so never create an empty member directory.
-2. A TypeScript app: add it to the `exclude` list in the root `pyproject.toml`.
-3. A pnpm member: `COPY apps/<app>/package.json apps/<app>/` in every Dockerfile that lists
-   workspace manifests (find them with `grep -rl "COPY apps/ledger/package.json" --include=Dockerfile`;
-   a glob misses the nested `apps/portal/headless`), or `--frozen-lockfile` fails. Add its paths to the
-   `.dockerignore` allowlist (literal paths only, no wildcards). A new `libs/ts` package needs neither.
-4. A Dagster asset: the asset list in `dagster/definitions.py`, and `COPY apps/<app>` in
-   `dagster/Dockerfile`.
-5. A service: a compose service in `deploy/docker-compose.yml` (port in 10350 to 10399, `user:
-   "1000:1000"`, healthcheck, `restart: unless-stopped`, its secrets in `environment:`). Paths the
-   container writes are identical-path bind mounts under `/ruby/data/astra-state`; add the dir to
-   `deploy.sh` `init_artifacts` and to the `config.kdl` `data` comment. A public host is a
+1. A pnpm member: `COPY apps/<domain>/<role>/package.json apps/<domain>/<role>/` in every
+   Dockerfile that lists workspace manifests (find them with
+   `grep -rl "COPY apps/ledger/web/package.json" --include=Dockerfile`), or `--frozen-lockfile`
+   fails. Add its paths to the `.dockerignore` allowlist (literal paths only, no wildcards). A new
+   `libs/ts` package needs neither.
+2. A Dagster asset: the asset list in `dagster/definitions.py`, and `COPY apps/<domain>/py` in
+   `dagster/Dockerfile` (plus its `.dockerignore` line).
+3. A service: a compose service in `deploy/docker-compose.yml` (port in 10350 to 10399, `user:
+   "1000:1000"`, healthcheck, `restart: unless-stopped`, its secrets in `environment:`). A templated
+   frontend Dockerfile takes `APP: <domain>/web`. Paths the container writes are identical-path bind
+   mounts under `/ruby/data/astra-state`; add the dir to `deploy.sh` `init_artifacts` and to the
+   `config.kdl` `data` comment. A public host is a
    `sites.caddyfile` block with `import astra_site` (plus `import local_only` for private paths); the
    `*.iridi.cc` wildcard needs no DNS step, and the certificate is issued on the first request.
    A frontend that bakes astra-data also needs `COPY --from=astra-data` in its Dockerfile,
    `additional_contexts` in compose, and matching data under `fixtures/astra-data/`.
-6. Its config block in `config.kdl` and in both schema mirrors (`libs/py/config`, `libs/ts/config`;
+4. Its config block in `config.kdl` and in both schema mirrors (`libs/py/config`, `libs/ts/config`;
    the Python mirror forbids unknown top-level keys, so even a TS-only app needs it).
-7. At least one test: `vitest run` with no test files exits 1.
-8. Telemetry in the real entrypoint. TS services get no HTTP auto-instrumentation, so add
+5. At least one test: `vitest run` with no test files exits 1.
+6. Telemetry in the real entrypoint. TS services get no HTTP auto-instrumentation, so add
    `startActiveSpan` spans on request paths, or traces stay empty while metrics flow. Never log ERROR
    for a user-content problem: every ERROR log pages Discord.
-9. A short `README.md`: what it is, where it runs, operations, traps. Check visual changes
+7. A short `README.md`: what it is, where it runs, operations, traps. Check visual changes
    (CSS, pixi) in a real browser; no unit test sees them.
+8. A new CI path filter only if the app gets its own CI job (like `codex` or `vellumRender` in
+   `.github/workflows/ci.yml`); the `py` and `ts` lanes already watch `apps/*/py/**` and `apps/**`.
 
 ## Traps
 

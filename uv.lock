@@ -255,7 +255,7 @@ wheels = [
 [[package]]
 name = "astra-akasha-backend"
 version = "0.0.0"
-source = { editable = "apps/akasha-backend" }
+source = { editable = "apps/akasha/py" }
 dependencies = [
     { name = "astra-config" },
     { name = "astra-observe" },
@@ -276,7 +276,7 @@ requires-dist = [
 [[package]]
 name = "astra-assay"
 version = "0.0.0"
-source = { editable = "apps/assay" }
+source = { editable = "apps/assay/py" }
 dependencies = [
     { name = "astra-config" },
     { name = "astra-observe" },
@@ -312,7 +312,7 @@ requires-dist = [
 [[package]]
 name = "astra-heartwood-backend"
 version = "0.0.0"
-source = { editable = "apps/heartwood-backend" }
+source = { editable = "apps/heartwood/py" }
 dependencies = [
     { name = "astra-akasha-backend" },
     { name = "astra-config" },
@@ -328,9 +328,9 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "astra-akasha-backend", editable = "apps/akasha-backend" },
+    { name = "astra-akasha-backend", editable = "apps/akasha/py" },
     { name = "astra-config", editable = "libs/py/config" },
-    { name = "astra-linguist", editable = "apps/linguist" },
+    { name = "astra-linguist", editable = "apps/linguist/py" },
     { name = "astra-llm", editable = "libs/py/llm" },
     { name = "astra-observe", editable = "libs/py/observe" },
     { name = "astra-ontology", editable = "libs/py/ontology" },
@@ -360,7 +360,7 @@ requires-dist = [
 [[package]]
 name = "astra-linguist"
 version = "0.0.0"
-source = { editable = "apps/linguist" }
+source = { editable = "apps/linguist/py" }
 dependencies = [
     { name = "astra-config" },
     { name = "astra-lexicon" },
@@ -412,7 +412,7 @@ requires-dist = [
 [[package]]
 name = "astra-mouthpiece-backend"
 version = "0.0.0"
-source = { editable = "apps/mouthpiece-backend" }
+source = { editable = "apps/mouthpiece/py" }
 dependencies = [
     { name = "astra-akasha-backend" },
     { name = "astra-config" },
@@ -430,9 +430,9 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "astra-akasha-backend", editable = "apps/akasha-backend" },
+    { name = "astra-akasha-backend", editable = "apps/akasha/py" },
     { name = "astra-config", editable = "libs/py/config" },
-    { name = "astra-linguist", editable = "apps/linguist" },
+    { name = "astra-linguist", editable = "apps/linguist/py" },
     { name = "astra-llm", editable = "libs/py/llm" },
     { name = "astra-observe", editable = "libs/py/observe" },
     { name = "astra-ontology", editable = "libs/py/ontology" },
@@ -526,7 +526,7 @@ requires-dist = [
 [[package]]
 name = "astra-scribe"
 version = "0.0.0"
-source = { editable = "apps/scribe" }
+source = { editable = "apps/scribe/py" }
 dependencies = [
     { name = "astra-config" },
     { name = "astra-llm" },
@@ -558,7 +558,7 @@ source = { editable = "libs/py/_smoke" }
 [[package]]
 name = "astra-smoke-substrate"
 version = "0.0.0"
-source = { editable = "apps/_smoke-substrate" }
+source = { editable = "apps/_smoke/py" }
 dependencies = [
     { name = "astra-config" },
     { name = "astra-llm" },

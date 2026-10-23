@@ -163,14 +163,14 @@ Each session is a Dagster partition. The detailed commands (GraphQL calls, conta
    (delete the session's outputs and its dynamic partitions; the sensor re-registers it).
 5. A Craig zip whose name has no date is skipped silently: hard-link it under a dated name in
    `/ruby/data/astra-state/scribe/incoming` (date from the zip's `info.txt`), keeping the original
-   name. See [`apps/scribe/README.md`](../apps/scribe/README.md#operations).
+   name. See [`apps/scribe/py/README.md`](../apps/scribe/py/README.md#operations).
 
 ## heartwood session held or wrong
 
 heartwood runs per session through Dagster: `session_wiki` files a request, and the host unit
 `heartwood-request` runs the agent and publishes to astra-data. Run manual commands against the
 deploy checkout (`just -f /ruby/data/astra-deploy/justfile ...`) so live data meets deployed code.
-Exit codes and details: [`apps/heartwood-backend/README.md`](../apps/heartwood-backend/README.md#operations).
+Exit codes and details: [`apps/heartwood/py/README.md`](../apps/heartwood/py/README.md#operations).
 
 1. Read the run's log under `/ruby/data/astra-state/heartwood/requests/logs/` and its exit code.
 2. Exit 1 or 2 (nothing published): fix the cause, then re-execute `session_wiki` or run
@@ -185,7 +185,7 @@ Exit codes and details: [`apps/heartwood-backend/README.md`](../apps/heartwood-b
 ## mouthpiece re-render an episode
 
 Paid (ElevenLabs) and replaces published audio: flag it first. Full steps in
-[`apps/mouthpiece-backend/README.md`](../apps/mouthpiece-backend/README.md#operations).
+[`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md#operations).
 
 1. Back up the episode dir `/ruby/data/astra-state/mouthpiece/episodes/<date>/`.
 2. Materialize the audio steps detached in the container:
@@ -201,9 +201,9 @@ Paid (ElevenLabs) and replaces published audio: flag it first. Full steps in
 
 ## codex refresh or republish
 
-Details: [`apps/codex/README.md`](../apps/codex/README.md#operations).
+Details: [`apps/codex/web/README.md`](../apps/codex/web/README.md#operations).
 
-1. Full refresh from upstream sources: `just codex-refresh` (needs a clean `apps/codex`; it fetches,
+1. Full refresh from upstream sources: `just codex-refresh` (needs a clean `apps/codex/web`; it fetches,
    transforms, reindexes and restarts codex). Revert a timestamp-only `corpus-manifest.json` diff.
 2. Transform only (ingest code or the assay store changed): `pnpm --filter @astra/codex transform`,
    then `just codex-search-index` if search rows changed, then `just deploy --restart codex`.
@@ -226,8 +226,8 @@ Details: [`apps/portal/README.md`](../apps/portal/README.md#operations).
 
 ## orator YouTube imports fail
 
-yt-dlp breaks when YouTube changes. Bump `ARG YT_DLP_VERSION` in `apps/orator-backend/Dockerfile`,
-push, and `just deploy orator-backend`. See [`apps/orator-backend/README.md`](../apps/orator-backend/README.md).
+yt-dlp breaks when YouTube changes. Bump `ARG YT_DLP_VERSION` in `apps/orator/bot/Dockerfile`,
+push, and `just deploy orator-backend`. See [`apps/orator/bot/README.md`](../apps/orator/bot/README.md).
 
 ## Switch the main campaign
 
@@ -237,8 +237,8 @@ Exactly one campaign in `ontology/ontology-being/being.kdl` has `main #true`.
 2. Regenerate the canonical JSON: write `astra_ontology.canonical_json(astra_ontology_being.load())`
    to `astra_ontology_being.CANONICAL_JSON_PATH` (no recipe yet; `libs/py/ontology/tests/test_ontology.py`
    checks drift).
-3. Re-pin the main-campaign tests (`apps/linguist/tests/test_chronicle.py`,
-   `apps/mouthpiece-backend/tests/test_episodes_index.py`).
+3. Re-pin the main-campaign tests (`apps/linguist/py/tests/test_chronicle.py`,
+   `apps/mouthpiece/py/tests/test_episodes_index.py`).
 4. `just ci`, commit, push, `just deploy`.
 5. If episodes were published while flipped, run `just mouthpiece-publish` to recompute `is_main`.
 
