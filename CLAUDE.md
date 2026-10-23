@@ -65,12 +65,11 @@ log's per-slice rhythm; don't accumulate a large uncommitted/unpushed working tr
   pins the exact version via `packageManager` + corepack. Lint = **oxlint** (`--type-aware
   --deny-warnings`), format = **oxfmt** (`sortImports` on) — deliberately two tools (both VoidZero/oxc,
   biome retired at 0022 S13). Type-check = `tsc --noEmit` against `tsconfig.base.json` (strict), stays
-  the gate even under vp (D8). **`vp` (`vite-plus`, exact-pinned root devDependency) orchestrates
-  typecheck/test/build** (0022 S15) — `vp run -r <task>` fans a task out across all 21 members with a
-  local task-graph cache; lint/format stay **direct** oxlint/oxfmt (vp's `lint`/`fmt` are thin
-  pass-throughs with no scoping of their own — the explicit globs are what keeps oxfmt off
-  markdown/toml/the SOPS file). Run `pnpm install`, `pnpm exec vp run -r {typecheck,test,build}` /
-  `pnpm run lint` / `pnpm run format:check`.
+  the gate. **typecheck/test/build fan out with `pnpm -r --no-bail --aggregate-output run <task>`**
+  (0037: `vp run -r` stopped at the first failing package and hid the rest; `vite-plus` is still a
+  devDependency until it is removed). Lint/format stay **direct** oxlint/oxfmt — the explicit globs
+  are what keeps oxfmt off markdown/toml/the SOPS file. Run `pnpm install`,
+  `pnpm -r --no-bail run {typecheck,test,build}` / `pnpm run lint` / `pnpm run format:check`.
 - **Disjoint globs, manifest-decided membership.** Both lanes glob `apps/*`; a directory belongs to
   whichever lane its manifest declares (`pyproject.toml` → uv; `package.json` → pnpm). They never
   cross-claim.
@@ -137,5 +136,6 @@ dist/        # all site-gen output (gitignored), served by Caddy
   slice, and a vitest wasm smoke guards the committed artifact in CI.
 - Reproduce CI locally:
   `uv run ruff check && uv run ruff format --check && uv run ty check && uv run pytest` and
-  `pnpm exec vp run -r typecheck && pnpm run lint && pnpm run format:check && pnpm exec vp run -r
-  test && pnpm exec vp run -r build`.
+  `pnpm -r --no-bail run typecheck && pnpm run lint && pnpm run format:check && pnpm -r --no-bail run
+  test && pnpm -r --no-bail run build` (exactly what `.github/workflows/ci.yml` runs; `ci-ok` is the
+  one job that sums them up).

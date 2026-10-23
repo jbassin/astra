@@ -111,7 +111,7 @@ uv run ruff check && uv run ruff format --check && uv run ty check && uv run pyt
 
 # TypeScript lane
 pnpm install
-pnpm exec vp run -r typecheck && pnpm run lint && pnpm run format:check && pnpm exec vp run -r test && pnpm exec vp run -r build
+pnpm -r --no-bail run typecheck && pnpm run lint && pnpm run format:check && pnpm -r --no-bail run test && pnpm -r --no-bail run build
 ```
 
 CI (GitHub Actions, `.github/workflows/ci.yml`) is parallel + path-filtered, so scope your local run to
