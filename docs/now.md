@@ -12,9 +12,9 @@ Updated 2026-10-23.
 
 Start **Phase 2** (section 5 of the paydown plan): structural refactors as parallel worktree tracks
 (repo, libraries, kits, pipeline, codex, assay, services, weal, ops). The repo layout move
-([ADR 0015](adr/0015-repo-layout-by-domain.md)) is first in the repo track. Switching `main` to
-pull requests with auto-merge ([ADR 0016](adr/0016-merge-model-auto-merge.md)) is now possible,
-because no bot pushes to the code repo.
+([ADR 0015](adr/0015-repo-layout-by-domain.md)) is first in the repo track; land it alone before
+the other tracks start, because it moves nearly every path. `main` now takes changes only through
+pull requests with auto-merge ([ADR 0016](adr/0016-merge-model-auto-merge.md)).
 
 ## Blocked or waiting
 

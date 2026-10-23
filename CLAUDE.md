@@ -54,32 +54,41 @@ and don't write scope, spec or research documents or decision IDs by default.
    - No checkout holds runtime data: it all lives under `/ruby/data/astra-state` (`config.kdl`
      `data.root`: recordings, episodes, corpora, audio, the astra-data clone). Point agents at those
      paths, read-only, when they need it.
-   - Review each diff, cherry-pick it onto `main`, then run `just ci` on the merged result before
-     pushing. Each agent proved only its own slice.
+   - Review each diff, then push the agent's branch and open its pull request from the main session
+     (see step 6). Branches don't need to be current with `main`, so each pull request checks its own
+     slice; the `main` run after each merge checks the combination. If that run goes red, fix it
+     before merging anything else.
    - Run live steps from the main session. The auto-mode classifier blocks subagents from deploying.
 5. **Review where the risk is.** Security and auth changes, data migrations, and anything that replaces
    live content get an independent review before merge. Give the reviewer the code and the goal, not
    your conclusion. Everything else relies on tests and CI.
-6. **Gate every commit and push.** Run `just ci` (or at least the touched lanes' `just <job>`
-   recipes) before committing, and never commit a red lane; the pre-push hook runs `just ci`. Commit each green slice as you go and push when a chunk is
-   done; don't build up unpushed work. After a push, confirm it and check the CI run once; don't poll.
+6. **Gate every commit, and merge through pull requests.** Run `just ci` (or at least the touched
+   lanes' `just <job>` recipes) before committing, and never commit a red lane; the pre-push hook
+   runs `just ci`. `main` accepts changes only through pull requests that pass `ci-ok`
+   ([ADR 0016](./docs/adr/0016-merge-model-auto-merge.md)). Work on a short-lived branch, push it,
+   then `gh pr create --fill` and `gh pr merge --auto --rebase`; GitHub merges when `ci-ok` passes
+   and deletes the branch. Don't build up unmerged work. Don't poll: check the pull request once,
+   and if CI fails, fix the branch and push again. Admins can bypass the gate only by merging a pull
+   request (`gh pr merge --admin`), and only in a real emergency.
    The bots (`linguist-commit`, heartwood) commit and push only the separate `astra-data` repo (the
    pipeline's published output and the wiki, live clone `/ruby/data/astra-state/astra-data`); they
    never run git in this repo.
 7. **Live steps.** Routine live infrastructure work that carries out an agreed plan needs no approval:
    `just up`, edge edits with `just caddy-reload`, installing or removing systemd units, image rebuilds,
-   pruning dangling images and build cache, and pushing green commits. State each step in one line as you
+   pruning dangling images and build cache, and pushing and merging green pull requests. State each step in one line as you
    run it. Before rebuilding Dagster, check for in-flight runs. Spending money or replacing published
    content (TTS renders, episodes, snapshots) gets an explicit flag first. Irreversible data loss
    (dropping a volume or database, `prune -a` on the shared Docker daemon) needs an explicit yes.
 8. **Wrap up.** Tick the plan's checklist, update `docs/now.md` and `docs/backlog.md`, record
    load-bearing gotchas where they belong (the app's README, `docs/`, or memory; edit entries in place:
-   a doc describes the current state), then commit and push.
+   a doc describes the current state), then merge it through a pull request.
 
 ## Version control
 
 Plain git on GitHub with Conventional Commits (`type(scope): subject`, lower-case subject, body
-lines of at most 100 characters). The pre-commit hook format- and lint-checks staged files; the
+lines of at most 100 characters). Pull requests merge by rebase only, so each commit lands on `main`
+as written, but with a new SHA: after a merge, `git switch main && git pull --ff-only` and delete
+the local branch with `git branch -D`. The pre-commit hook format- and lint-checks staged files; the
 pre-push hook runs `just ci`. Lint exceptions go inline with a reason. Bypass a hook only in a real
 emergency with `--no-verify`.
 

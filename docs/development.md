@@ -42,6 +42,10 @@ added to its `needs`.
   --report-unused-disable-directives`) and oxfmt `--check` for TypeScript, `ruff check` and
   `ruff format --check` for Python. It never edits files; fix with `just fix` and stage the result.
 - **pre-push** runs `just ci`.
+- **GitHub** then gates `main` with the ruleset `main`: changes arrive only through pull requests
+  that pass `ci-ok`, merged by rebase, with no force pushes or deletion. Branches don't need to be
+  current with `main`. Only admins can bypass it, and only by merging a pull request
+  (`gh pr merge --admin`). Auto-merge is on, and merged branches are deleted.
 - Bypass either only in a real emergency with `--no-verify`.
 
 Commit messages follow Conventional Commits; commitlint enforces a lower-case subject start and
@@ -174,7 +178,7 @@ Adding an app still touches several hand-maintained lists (paydown Phase 2 remov
   fail-closed service crash-loops.
 - An MCP client keeps the tool list it connected with; after a deploy that adds tools, reconnect
   (`/mcp` in Claude Code).
-- Local edits never ship: commit, push, then `just deploy`. See [`deploy/README.md`](../deploy/README.md).
+- Local edits never ship: merge the pull request, then `just deploy`. See [`deploy/README.md`](../deploy/README.md).
 - Tests point `ASTRA_DATA_ROOT` at the checkout under test and never touch `/ruby/data/astra-state`.
   Without `CODEX_CORPUS_ROOT`, codex in a worktree reads the main checkout's real corpus, because
   `codex.data-path` is absolute.

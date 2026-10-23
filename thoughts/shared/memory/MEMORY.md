@@ -1,7 +1,7 @@
 Start with `docs/now.md` and `docs/backlog.md`; app facts are in each app's README. Rules below.
 
 - [No broken commits](no-broken-commits.md) — read before any commit or push: get touched lanes green (`just ci`); block, don't alert.
-- [No CI monitoring](no-ci-monitoring.md) — read after a push: confirm it and check the run once; never poll.
+- [No CI monitoring](no-ci-monitoring.md) — read after opening a pull request: auto-merge waits; check once, never poll.
 - [Lighter process, no octo](lighter-process-no-octo.md) — read when planning: no octo skills, no spec ritual; CLAUDE.md is the process.
 - [Ask real decisions early](resolve-open-questions-before-next-stage.md) — read when a product/cost call comes up: ask before building on it.
 - [No silent scope cuts](no-silent-scope-cuts.md) — read when work outgrows your budget: surface the trade-off, never cut quietly.
