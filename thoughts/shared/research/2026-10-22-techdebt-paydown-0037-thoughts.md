@@ -163,8 +163,21 @@ done", which replaces the three gates and octo). Remaining, in order:
 2. One data root, and pipeline output out of git into a separate `astra-data` repo written by a bot
    (decision table in section 0). This removes the timer's commit-and-push job. **Settled with Josh
    (session 3):** name `astra-data`, **public**, starts from a fresh snapshot commit (no history
-   carried; the old history stays in the code repo). Move linguist-commit and heartwood-request
-   off the dev tree here (heartwood's akasha wiki commits included in the decision).
+   carried; the old history stays in the code repo). **The wiki moves too** (Josh, session 3):
+   akasha content and snapshot, heartwood's run ledger and the entity registry go to astra-data,
+   so no bot commits to the code repo. Layout: `linguist/{transcripts,data,timeline}`,
+   `mouthpiece/snapshot`, `akasha/{content,snapshot}`, `heartwood/agent-runs.jsonl`,
+   `entity/entity.kdl`. akasha and mouthpiece keep baking content at build time; the deploy passes
+   the data clone as an extra Docker build context (not runtime mounts: those would mean
+   rewriting the generated-modules pattern). Three slices:
+   - [ ] 2a. Every data path from config (`data-root` + relative paths), identical host and
+     container mount paths, build-content reads `ASTRA_CONTENT_ROOT` with a checked-in
+     `fixtures/astra-data/` fallback so CI and tests need no real data. No behaviour change.
+   - [ ] 2b. Create `jbassin/astra-data`, linguist-commit and heartwood commit there (your SSH key;
+     bot identity is Later), extra build context in deploy, code repo untracks the files.
+   - [ ] 2c. Move all runtime data to `/ruby/data/astra-state/` (one downtime window, backup
+     first), point compose, config, justfile, backup/watchdog and the `api.akasha` edge stanza at
+     it, move linguist-commit and heartwood-request units to the deploy checkout.
 3. Developer entry point: `just bootstrap/check/fix/test/ci/dev`, `mise.toml`, `.python-version`
    (3.12 everywhere), pytest `importlib` mode.
 4. Gate tightening: `erasableSyntaxOnly`, tsconfigs include scripts and server entries, the
