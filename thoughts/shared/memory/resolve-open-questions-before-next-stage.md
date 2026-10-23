@@ -15,3 +15,9 @@ Josh wants to make his calls before they are locked.
 choice needs context, ask in plain text, because the question tool hides the text written before
 it ([ADR 0013](../../../docs/adr/0013-how-claude-asks-questions.md)). Questions the repo can answer
 are not questions: check them yourself ([[verify-before-acting]]).
+
+**The bar is high** (Josh, 2026-10-23): if you have a strong recommendation that doesn't walk back
+something already agreed with him, do it and say what you decided. Ask only for real product,
+cost, stakeholder or visual calls, or a reversal of an earlier agreement. During long autonomous
+runs, park such a call in `docs/backlog.md` ("Paydown decisions (Josh)") and keep working on
+everything it doesn't block.

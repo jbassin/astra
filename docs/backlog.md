@@ -57,6 +57,20 @@ Pointer: [`apps/mouthpiece-backend/README.md`](../apps/mouthpiece-backend/README
 - [ ] Check whether the old standalone harrow container still runs unrouted on `localhost:10204`
       and remove it (opened 2026-06-26).
 
+### Paydown decisions (Josh)
+Parked during the Phase 2 run; everything they don't block keeps going. Each has a recommendation.
+- [ ] **codex alias removal date** ([ADR 0026](adr/0026-codex-url-alias-removal-date.md); same item
+      as above). Recommend 2027-01-01, since the site is noindexed. Blocks cdx-alias.
+- [ ] **assay canonical scoring engine.** The two engines disagree on 21 of 173 spells, and the
+      Stage-B reference numbers follow the same call. Recommend keeping the engine the store and
+      book use now, and sending the co-author a disagreement report. Blocks asy-3.
+- [ ] **Renovate or Dependabot.** Needs your GitHub app install. Recommend Renovate (pnpm catalogs,
+      uv, image digests; patch updates auto-merge behind `ci-ok`). Blocks ops-6.
+- [ ] **Paid verification for pipe-4c and pipe-6.** Recommend verifying both on the next real
+      session instead of a forced re-render, so nothing extra is spent; your flag before deploy.
+- [ ] **Campaign content** (`menagerie-puzzles.md`, `sheets/`): astra-data is public and the
+      puzzles may spoil the players. Recommend a private repo. Blocks that part of p3-docs.
+
 ## Waiting on an event
 
 - **heartwood gate E** (agent, opened 2026-10-22): the next session must publish its wiki edits with

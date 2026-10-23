@@ -287,6 +287,63 @@ done", which replaces the three gates and octo). Remaining, in order:
   when it has data to commit it pushes `main`, including any unpushed local commits, so only
   green commits may sit unpushed on `main`. Phase 1 removes its commit job.
 
+**Phase 2 and 3 checklist (planned 2026-10-23, session 4).** Josh's instruction: work slice by
+slice, phase by phase, with agents implementing in worktrees and the main session orchestrating;
+decide anything with a strong recommendation that doesn't reverse an agreement; park real calls in
+`docs/backlog.md` ("Paydown decisions (Josh)") and keep going. Each slice merges through a pull
+request behind `ci-ok`. Marks: `D(x)` = `just deploy x` plus a live check (sites 200, no new ERROR
+in SigNoz); **R** = independent review before merge; **$** = Josh's flag first; **J** = a step only
+Josh can do. Exclusive files while in flight: Dockerfiles (repo-2), `deploy/docker-compose.yml`
+(repo-3), every `package.json` (repo-4, repo-6), the config schemas (lib-4), the `justfile`
+(ops-1a/1b). Engineering calls made: Zod generated from Pydantic; tsdown for server entries; the
+migration runner is a TS package; the ops CLI is Python; Dagster eager automation ships with old
+backfills off; a nullary weal function re-runs its body each call; akasha SPA navigation and the
+token source keep today's look exactly (no stakeholder sign-off needed); assay theme P stays out
+(ADR 0043).
+
+- [ ] **repo-1** layout move to `apps/<domain>/{py,web}` (ADR 0015); lands alone first. D(all).
+- Wave 1:
+  - [ ] repo-2 one Node Dockerfile (`ARG APP`, `pnpm fetch`/`deploy --prod`); retire the
+    `.dockerignore` allowlist. D(all).
+  - [ ] lib-1 `SecretRef.require()/optional()` in both languages; delete app wrappers. R.
+  - [ ] lib-2 per-language namespace validation; one whole-file CI test; fixture KDL; one root finder.
+  - [ ] pipe-1 `Definitions.merge` + load test; `dagster/` a uv member; delete the dead assets.
+  - [ ] pipe-2 decided deletions (ADR 0021, 0022, 0023).
+  - [ ] cdx-1 corpus-root injection; production fails closed; real-corpus suite opt-in.
+  - [ ] cdx-3 codex dead code (ADR 0020) and the small bug list.
+  - [ ] asy-1 archive the workshop and `review-ui/`; ASY-5, ASY-21.
+  - [ ] svc-1 one typed portal tool registry.
+  - [ ] weal-1 Rust CI lane, `gen/` source-hash check, WEAL-4, WEAL-23.
+  - [ ] weal-2 nullary functions re-evaluate (WEAL-1); generative test; rebuild wasm.
+  - [ ] ops-2 `just doctor`; watchdog checks backup age and entity drift; scheduled restore test.
+- Wave 2: repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
+  `[tool.uv.sources]` (after repo-2); lib-3 dead config and the every-field-has-a-reader check
+  (after lib-2, pipe-2); lib-7b Python observe bootstrap; lib-8a typed KDL decoders; lib-9 vellum
+  parity over the corpus; pipe-3 sessions library; pipe-4a Dagster resources; cdx-2 regenerated
+  fixture; asy-2 store model and formatter (R); svc-2 versioned bridge handshake (R, J for the
+  module install); weal-3 bot load and error handling; ops-11 deploy follow-ups (R).
+- Wave 3: repo-5 vitest projects, drop vite-plus; lib-4 Zod from Pydantic; lib-7a Node observe
+  register; lib-8b one `being.kdl` parser; pipe-4b one partition set (R); pipe-5 blocking asset
+  checks and the lexicon; cdx-4 immutable releases (R); cdx-5a corpus library; asy-4 books to
+  assay; svc-3a portal pf2e layer; svc-4 migration runner and store integration tests (R);
+  weal-4 one wire schema; ops-1a Python ops CLI; ops-8 split the Docker network (R).
+- Wave 4: repo-6 package-script hygiene; kit-1a site-kit preset (strider, akasha, mouthpiece);
+  kit-2a `createService()` (orator, menhir; R); lib-5 LLM client owns keys ($ small); pipe-4c eager
+  automation ($); pipe-6 resumable paid stages ($); pipe-8 Docker run launcher and in-flight
+  guard; cdx-5b ingest CLI; svc-3b `handlers.ts` split; weal-5a one pipeline; ops-1b thin justfile;
+  ops-3 edge in the repo (R, J sudo); ops-4 alert rules as code; ops-7/10 image layer order and
+  infra CI lane.
+- Waves 5 and 6: kit-1b, kit-1c, kit-2b, kit-3 (tsdown, delete `nodeTsResolve.mjs`); lib-6 one
+  cost meter and retry budget; lib-7c `opentelemetry-api` 1.45.1; pipe-7a/7b heartwood (wait for
+  gate E; 7b R); pipe-9 rclone sensor (J); pipe-10 timeline; cdx-6 pass registry; cdx-7 Playwright
+  lane; svc-3c; svc-5; weal-5b, weal-5c; ops-5 live smoke timer; ops-6 Renovate (parked); ops-9.
+- Phase 3, each after its area: p3-0 CI check against decision IDs (first); comment sweeps per
+  area; p3-tests behaviour-named tests; p3-docs per-domain READMEs and `CLAUDE.md` files (campaign
+  content parked); p3-dead knip deletions; p3-fe-a..e frontend items (fe-c akasha SPA and fe-d
+  tokens keep the look); p3-ratchet CI ratchets over section 8.
+- Blocked: cdx-8 popover and listing redesign waits for codex gate H; asy-3 single `Scorer`,
+  cdx-alias, ops-6 and the campaign-content move wait on the parked decisions.
+
 **Context for the next session:** the review page is
 https://claude.ai/artifact/PfwtSxfVtGGKnyFQ54RREH (Josh's verdicts live in its `reviews` store).
 The 13 lane reports with full evidence are in `artifacts/research/techdebt-0037/lanes/`.
@@ -1010,11 +1067,11 @@ in section 8.
 
 ### Definition of done for the cycle
 
-- Main is green, protected by `ci-ok`, and a red main posts to Discord.
+- Main is green and protected by `ci-ok` (a red change is blocked, not announced: ADR 0012).
 - No hand-maintained registration list remains (uv excludes, Dockerfile manifest lines, the Dagster
   asset list).
 - No frontend or service shell file exists as a per-app copy.
-- Every leaked secret has been rotated; backups run nightly and a restore has been tested.
+- Backups run nightly and a restore has been tested (secrets are not rotated: ADR 0041).
 - No bot commits to the code repo.
 - `MEMORY.md` is under its size budget; every app has a current README.
 - The scoreboard in section 8 is re-measured, and CI ratchets prevent regression.
