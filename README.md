@@ -1,13 +1,13 @@
 # astra
 
-The next generation of [faerrin](/ruby/data/experiments/faerrin): a polyglot monorepo for a Pathfinder 2e
-campaign. **Python (uv)** runs the data + LLM pipeline; **TypeScript (bun)** runs the web servers and
-frontends. Pipeline orchestration is **Dagster**, long-running services run on **Docker Compose**, the
-edge is **Caddy**, and observability is **OTel → SigNoz**.
+The live stack for a Pathfinder 2e campaign: it turns session recordings into transcripts, a
+setting wiki and a recap podcast, and runs the campaign's sites and Discord bots. Python (uv) runs
+the data and LLM pipeline on Dagster; TypeScript (pnpm) runs the SSR frontends and services on
+Docker Compose; Caddy is the edge; OpenTelemetry feeds SigNoz.
 
 - **Vision:** [`ASTRA.md`](./ASTRA.md)
-- **Migration roadmap + sub-plans:** [`thoughts/archive/plans/`](./thoughts/archive/plans/)
-- **Conventions:** plain git + Conventional Commits; CI is GitHub Actions. See [`CLAUDE.md`](./CLAUDE.md).
+- **Docs:** [`docs/`](./docs/README.md): architecture, development, runbook, now, backlog, ADRs
+- **Rules for agents:** [`CLAUDE.md`](./CLAUDE.md)
 
 ## Quickstart
 
@@ -17,12 +17,4 @@ just bootstrap               # both workspaces, the git hooks, the codex guards'
 just ci                      # everything CI runs
 ```
 
-See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the rest (`just check`, `just fix`, `just test`,
-`just dev <app>`).
-
-## Status
-
-**Phase 0 (Foundation): complete.** Dual workspaces + CI + conventions are green; the `deploy/`
-substrate (Dagster + SigNoz + Caddy) comes up via one `docker compose up`, SOPS decrypts, and py+ts
-spans land in SigNoz. Bring it up with [`deploy/README.md`](./deploy/README.md). Next: Phase 1
-(ontology + shared libs) — see [`thoughts/archive/plans/`](./thoughts/archive/plans/).
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the rest.
