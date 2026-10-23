@@ -218,6 +218,41 @@ done", which replaces the three gates and octo). Remaining, in order:
 4. Gate tightening: `erasableSyntaxOnly`, tsconfigs include scripts and server entries, the
    immediate ruff and oxlint rule sets, path overrides become inline disables, a staged-files
    pre-commit hook, `.claude/settings.json` deny rules (e.g. `git stash`).
+
+   Built (session 3, agent branch; awaiting review and merge). Path exemptions now cover only
+   whole categories of file: oxlint went from 19 override blocks (49 globs, 3 dead) to 2 (scripts
+   may use the console; tests may use `!` and async mocks without await); ruff gained 6
+   category globs (tests: assert, fixture args, white-box access, temp paths, fake classes; CLI
+   entry points: print); ty keeps its one structural exclude (`libs/rust/`, PEP 723 scripts).
+   Typecheck covers 791 of 795 tracked TS files (was 741). The lint script adds
+   `--report-unused-disable-directives`, and ruff runs RUF100, so a dead suppression fails.
+
+   Ratchets: what is still excused inline or deferred. Each count should only go down.
+
+   | Rule | Now | Note |
+   |---|---|---|
+   | oxlint `no-non-null-assertion` | 94 inline (98 sites) | Mostly strider index access; tests exempt (37) |
+   | oxlint `no-console` | 41 inline | Services have no OTel logger yet (libraries track) |
+   | oxlint `require-await` | 26 inline | Async interfaces (OAuth provider, handlers); tests exempt (39) |
+   | oxlint `react/no-array-index-key` | 26 inline | Static lists with no id |
+   | oxlint `no-explicit-any` | 22 inline | 19 in akasha `Graph.tsx` (d3/pixi seam) |
+   | oxlint `react/no-danger` | 11 inline | Pre-paint scripts, build-time HTML, Pagefind excerpts |
+   | oxlint `jsx-a11y/*` | 21 inline | Custom modals and role groups; native `<dialog>` is the fix |
+   | oxlint `no-unnecessary-type-assertion` | 3 inline | tsgolint false positives; tsc needs the assertion |
+   | oxlint `no-unsafe-type-assertion` | off (~872) | Type-aware; start with portal's Foundry boundary |
+   | oxlint `consistent-return`, `no-base-to-string`, other type-aware | off (~89) | Census counts, not re-measured |
+   | oxlint `no-array-sort` / `no-await-in-loop` / `no-underscore-dangle` / `consistent-function-scoping` | off (~204 / 70 / 74 / 58) | Census counts |
+   | oxlint `max-lines` / `max-lines-per-function` / `complexity` / `max-depth` | not on | Warning plus baseline first |
+   | oxlint `react-hooks/exhaustive-deps` | not on | 3 block disables already sit in the code |
+   | oxlint `no-useless-return` | off for good | Flags each switch case's own `return`; removing them makes fall-through chains |
+   | ruff `T201` | 37 (5 file-level) | Command-line output outside `cli.py`/`__main__.py`/`scripts/` |
+   | ruff `BLE001` | 18 inline | Deliberate fail-soft paths (LLM output, artifacts, probes) |
+   | ruff `C901` (max 15) | 8 inline | assay 7, linguist 1; split them in Phase 2 |
+   | ruff `S101` / `ARG001` / `PTH117+118` / `PLW` | 4 / 4 / 4 / 4 inline | Type narrowing; dispatch signatures; config str paths; singletons, late binding |
+   | ruff `TID251`, `PLR09xx`, `PLR2004`, `PLC0415`, `FBT`, `ANN401` | not on | After cleanup (census: 15+14 / 77 / 48 / 55 / 27 / 85) |
+   | ruff `S603`, `S607`, `RUF001-003`, `TRY003` | off | Subprocess by name; prompt punctuation; inline messages |
+   | clippy `-D unwrap_used` | not added | No Rust lane; add to the recorded local gate |
+   | Conventions as rules (`getMeter` export, Dagster future import, env reads) | not done | Theme J; needs `no-restricted-imports`/`TID251` |
 5. Docs skeleton: `docs/` tree, ADR seed set (including the accepted risks), backlog seeded from
    memory, RESUME, specs, section 2 and the follow-ups below, `docs/now.md`, the rest of the
    `CLAUDE.md` rewrite, a memory size check, and rewritten `load`/`save` skills.
