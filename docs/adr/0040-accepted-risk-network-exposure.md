@@ -6,7 +6,7 @@
 
 ## Context
 
-Compose publishes service ports, including the Postgres instances and the Dagster UI, on every interface, and the host firewall is empty.
+Some service ports are reachable from the local network, not only from the host.
 
 ## Decision
 

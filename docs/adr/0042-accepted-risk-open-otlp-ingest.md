@@ -6,7 +6,7 @@
 
 ## Context
 
-`otel.iridi.cc` accepts telemetry from anyone, because browser RUM and a desktop plugin post to it, and an ERROR log there can page the ops channel.
+The public telemetry ingest endpoint does not authenticate senders, because browser RUM and a desktop plugin post to it.
 
 ## Decision
 

@@ -6,7 +6,7 @@
 
 ## Context
 
-The portal Foundry module registers its handlers where any logged-in Foundry player could invoke them, bypassing the portal's own auth and audit path.
+The portal Foundry module's request handling has an access-control gap inside the Foundry world.
 
 ## Decision
 
