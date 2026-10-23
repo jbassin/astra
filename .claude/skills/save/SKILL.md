@@ -1,58 +1,57 @@
 ---
 name: save
-description: End-of-session checkpoint for the astra repo. Records the session's progress into the durable docs — RESUME.md current-state, the active spec's status, the subsystem memory (load-bearing gotchas) + the MEMORY.md index — then commits and pushes the docs. Invoke when wrapping up an astra work session, or whenever asked to "save", "checkpoint", or "update the docs".
+description: End-of-session checkpoint for the astra repo. Updates docs/now.md, the backlog, the relevant app README or docs and memory (edit in place; archive what became history), then commits and pushes. Invoke when wrapping up an astra session, or when asked to "save", "checkpoint" or "update the docs".
 ---
 
-# /astra:save — checkpoint the durable docs at session end
+# /save — checkpoint at session end
 
-Persist what this session learned and landed so the next session (a cold `/astra:load`) picks up exactly
-where this one left off. The durable docs are the handoff — keep them honest.
+Write the docs against what actually landed, so the next `/load` starts cold and correct. Every doc
+describes the current state: edit in place, never append a dated log.
 
-## 0. Establish ground truth first
+## 1. Establish ground truth
 
-- `git log --oneline -10` + `git status` — know exactly which slices/commits landed and whether the tree
-  is clean and pushed. Write the docs against reality, not intentions.
+```sh
+git log --oneline -10
+git status --short
+```
 
-## 1. Update `thoughts/archive/RESUME.md` — the **"Current state"** section
+Know which commits landed and whether the tree is clean and pushed.
 
-This is the only part that goes stale; it must be exact.
-- Bump the `as of commit <hash>` reference to the latest commit.
-- For the in-flight subsystem: list the slices **done + pushed** (with commit hashes), and the slices
-  **remaining**, with a precise **"resume at slice N"** pointer describing the next action.
-- Note any **spec-sanctioned deferrals** (e.g. a live run blocked on a SOPS secret).
-- Update the **"Next"** section to match.
+## 2. Update `docs/now.md` (at most 2 KB)
 
-## 2. Update the active spec's status
+Rewrite it: the date, what is in flight, the next action, what is blocked and on whom. Drop
+anything finished.
 
-- `thoughts/archive/specs/<NNNN>-<subsystem>-spec.md` — move the **Status** line to reflect reality
-  (`Plan (pre-implementation)` → `IN PROGRESS — slices X of N built …` → `BUILT`), and check off
-  acceptance-gate items that are genuinely met.
+## 3. Update `docs/backlog.md`
 
-## 3. Write/update the subsystem memory (the load-bearing gotchas)
+- Delete the line of every item finished this session.
+- Add every new open item, one line: owner (Josh or agent), why, pointer.
+- A new stakeholder gate gets a checklist and the date it opened, under "Stakeholder gates".
+- If a multi-session plan has a checklist (for example section 0.1 of the paydown doc), tick it there.
 
-- One fact per file under `thoughts/shared/memory/` (harness format — frontmatter `name`/`description`/
-  `metadata.type`, then body). For an in-flight subsystem this is usually a `<subsystem>-<NNNN>-gotchas.md`
-  of type `project`: the non-obvious things a fresh session would re-derive painfully (porting seams,
-  test-double strategy, dialect/ripple gotchas, locked decisions, ports, deferrals).
-- **Check for an existing file first** and update it rather than duplicating. Link related memories with
-  `[[name]]`.
-- Add/refresh the **one-line pointer in `MEMORY.md`** (`- [Title](file.md) — hook`). Never put memory
-  body in `MEMORY.md`; never write astra memory to `~/.claude`.
-- Don't record what the repo already encodes (code structure, git history, CLAUDE.md) — capture what was
-  non-obvious.
+## 4. Record what was learned where it belongs
 
-## 4. (If the session changed conventions) update the guides
+- A trap or operation for one app goes in that app's `README.md` (`## Operations`, `## Traps`).
+- A repo-wide fact goes in `docs/` (development, architecture, runbook).
+- A binding decision gets a new ADR in `docs/adr/` (next number, a row in its README); a decision
+  that replaces an older one marks the old ADR `Superseded by NNNN`.
+- A rule about how to work, owned by no app, goes in a memory file under `thoughts/shared/memory/`
+  (frontmatter `name`, `description`, `metadata.type`), with one index line in `MEMORY.md` that says
+  "read when ...". Never write astra memory to `~/.claude`.
+- A doc that became history moves to `thoughts/archive/` with `git mv` in the same commit, and its
+  index line goes.
+- Don't record what the code or git log already says.
 
-- If the dev process / CI commands / standing principles changed, reflect it in `CONTRIBUTING.md` /
-  `CLAUDE.md`. Skip if nothing structural changed.
+## 5. Check and commit
 
-## 5. Commit + push the docs
+```sh
+just docs-check   # memory index budget and doc links
+```
 
-- Stage `thoughts/` (+ any guide changes), commit with a **Conventional Commit** (`docs(<scope>): …`),
-  and **push**. Docs-only ⇒ no CI lanes to reproduce; per `no-ci-monitoring`, confirm the push + don't
-  watch the GHA run.
-- End the commit message with the standard `Co-Authored-By` / `Claude-Session` trailers.
+Commit with a Conventional Commit (`docs(<scope>): ...`, body lines at most 100 characters) and the
+session's trailers, then push. If the commit also touches code, run `just ci` first. Confirm the
+push and check the CI run once; don't poll.
 
 ## 6. Report
 
-State plainly what was recorded and the single-sentence handoff a fresh `/astra:load` will see.
+Say what was recorded and give the one-sentence handoff the next `/load` will see in `docs/now.md`.

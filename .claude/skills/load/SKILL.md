@@ -1,56 +1,45 @@
 ---
 name: load
-description: Start-of-session orientation for the astra repo. Reads the durable docs — RESUME.md, the memory index + feedback memories, the active spec/scope, and the conventions — then reports the current state and the next action. Invoke at the beginning of an astra work session (or after a context reset) before picking up work.
+description: Start-of-session orientation for the astra repo. Reads docs/now.md, the backlog, the target app's README and the CI status, then reports what is in flight and the next action. Invoke at the start of an astra work session (or after a context reset) before picking up work.
 ---
 
-# /astra:load — orient at session start
+# /load — orient at session start
 
-Read astra's durable docs in order, then report where things stand and what's next.
-**Read, don't skim** — these are the single source of truth for in-flight work. Do this before
-touching code.
+Read a small, fixed set of docs, check them against git and CI, then report. Budget: about 10,000
+tokens of reading. `CLAUDE.md` and the memory index are already loaded; do not re-read them.
 
-## 1. Read the living handoff (the spine)
+## 1. Read the current state
 
-- **`thoughts/archive/RESUME.md`** — start here. The **"Current state"** section is the only part that
-  goes stale; it names which subsystem is in flight, which slices are done/pushed, and the exact "resume
-  at slice N" pointer. The **"Next"** section names the next action.
+- `docs/now.md` — in flight, blocked, next action. Always.
+- `docs/backlog.md` — skim the headings and the stakeholder gates; read the section for the area
+  you are about to work in.
+- If now.md names a live multi-session plan, read only its checklist section (for the 0037 paydown:
+  section 0.1 of `thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`).
 
-## 2. Read the conventions + roadmap
+## 2. Read the target area
 
-- **`CONTRIBUTING.md`** — the practical guide: dev process (Scope → Spec → Implement), the exact CI
-  commands, working-style rules, the gotchas catalog.
-- **`CLAUDE.md`** (root) — authoritative conventions (plain git + conventional commits, two toolchains,
-  telemetry-from-day-one, KDL+SOPS, the standing principles).
-- **`thoughts/archive/plans/0000-astra-migration-roadmap.md`** — phases + the A–I decisions ledger.
+When the user or now.md names an app or area:
 
-## 3. Load memory (background context, already auto-imported — re-read the relevant ones)
+- that app's `README.md` (its Operations and Traps sections first);
+- any memory file whose index line says "read when" for this kind of work;
+- `docs/architecture.md` or `docs/runbook.md` only if the work touches deploy, data or recovery;
+- `docs/adr/README.md` (the table only) before proposing anything that might reopen a decision.
 
-- **`thoughts/shared/memory/MEMORY.md`** — the one-line index. Open the memory files relevant to the
-  in-flight subsystem (e.g. its `*-gotchas.md`) **and** the feedback memories — especially
-  `verify-before-acting`, `no-silent-scope-cuts`, `no-ci-monitoring`, `deploy-apply-with-just`,
-  `telemetry-built-in`, `config-single-source`.
-- Memories reflect what was true when written — if one names a file/flag/function, verify it still
-  exists before relying on it.
+Do not read `thoughts/archive/`; it is history. Open an archived file only to answer a specific
+question about why something was done.
 
-## 4. Read the active subsystem's paper trail
+## 3. Check reality
 
-For the subsystem RESUME says is in flight, open:
-- its **spec** — `thoughts/archive/specs/<NNNN>-<subsystem>-spec.md` (the locked decisions, scope in/out,
-  acceptance gate, the slice list);
-- its **scope/research** — `thoughts/shared/research/<date>-<subsystem>-<NNNN>-thoughts.md`.
+```sh
+git log --oneline -8
+git status --short
+gh run list --branch main --limit 3
+```
 
-## 5. Confirm the real state against git
+Docs can lag the last commit; trust git. Note a red `main` run: fixing it comes before new work.
 
-- `git log --oneline -8` and `git status` — confirm which slices actually landed and whether the tree is
-  clean / pushed (RESUME can lag the last commit).
+## 4. Report, then wait
 
-## 6. Report back (don't start coding yet)
-
-Summarize in a few lines: **what subsystem is in flight, which slice is next, the locked decisions that
-constrain it, and any spec-sanctioned deferrals.** Then ask whether to proceed (unless the invoking
-prompt already said to continue).
-
-> The hard rules (from the feedback memories): **reuse what exists, don't reinvent** (mirror the
-> nearest already-built astra subsystem); **verify before acting**; **build the spec's scope in full** —
-> surface trade-offs, never silently defer; **commit each CI-green slice + push on chunk completion**
-> after reproducing CI locally (don't watch the GHA run).
+In a few lines: what is in flight, the next action, what is blocked and on whom, the state of
+`main` (clean, pushed, CI green or red), and the decisions or traps that constrain the next step.
+Then ask whether to proceed, unless the prompt already said to continue.
