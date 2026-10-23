@@ -139,9 +139,9 @@ export interface AonLinkTable {
 export function normalizeUrlKey(rawHref: string): string {
   let href = rawHref
     .trim()
-    .replace(/&amp;/gi, "&")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;|&apos;/gi, "'");
+    .replaceAll(/&amp;/gi, "&")
+    .replaceAll(/&quot;/gi, '"')
+    .replaceAll(/&#39;|&apos;/gi, "'");
   const hashIndex = href.indexOf("#");
   if (hashIndex >= 0) href = href.slice(0, hashIndex);
   if (!href.startsWith("/")) href = `/${href}`;

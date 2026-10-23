@@ -10,6 +10,7 @@ export function flattenInline(nodes: readonly PhrasingContent[]): string {
     if (node.type === "text" || node.type === "inlineCode") {
       out += node.value;
     } else if (node.type === "textDirective") {
+      // A directive contributes no plain text.
     } else if ((node as unknown as CrossRef).type === "crossref") {
       const ref = node as unknown as CrossRef;
       out += ref.alias ?? ref.target;
@@ -25,7 +26,7 @@ export function trimInline(nodes: PhrasingContent[]): PhrasingContent[] {
   const out = nodes.map((n) => ({ ...n }));
   const first = out[0];
   if (first?.type === "text") first.value = first.value.replace(/^\s+/, "");
-  const last = out[out.length - 1];
+  const last = out.at(-1);
   if (last?.type === "text") last.value = last.value.replace(/\s+$/, "");
   return out.filter((n) => !(n.type === "text" && n.value === ""));
 }

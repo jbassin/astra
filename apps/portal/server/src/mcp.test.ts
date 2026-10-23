@@ -255,9 +255,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     // Every field on every new tool's schema must carry a .describe() — the 0023
     // acceptance lesson (zod JSDoc never crosses the wire, .describe() does).
     const schemaOf = (tool: string): { properties?: Record<string, { description?: string }> } =>
-      (tools.find((t) => t.name === tool)?.inputSchema ?? {}) as {
-        properties?: Record<string, { description?: string }>;
-      };
+      tools.find((t) => t.name === tool)?.inputSchema ?? {};
     const newToolFields: Record<string, string[]> = {
       "create-actor": ["type", "name", "system", "items", "baseUuid", "folder", "img"],
       "create-item": ["name", "type", "system", "actorId", "baseUuid", "rulesSelections", "img"],

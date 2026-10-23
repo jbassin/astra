@@ -86,7 +86,7 @@ const EM_DASH = "—";
 // ---------------------------------------------------------------------------
 
 function facetRaw(row: IndexRow, key: string): RawFacetValue | undefined {
-  return row.facets?.[key as keyof Facets] as RawFacetValue | undefined;
+  return row.facets?.[key as keyof Facets];
 }
 
 function rawStringValue(col: ColumnDef, row: IndexRow): string | undefined {
@@ -179,7 +179,7 @@ function rankComparator(col: ColumnDef, table: readonly string[]): RowComparator
   return {
     valueOf: (row) => {
       const raw = rawStringValue(col, row);
-      if (raw === undefined) return undefined;
+      if (raw === undefined) return;
       const idx = table.indexOf(raw);
       return idx === -1 ? undefined : idx;
     },
@@ -329,7 +329,7 @@ function renderPrice(row: IndexRow): ReactNode {
 function renderRange(row: IndexRow): ReactNode {
   const raw = row.facets?.range;
   if (raw === undefined || raw.trim() === "") return EM_DASH;
-  const abbreviated = raw.replace(/\bfeet\b/g, "ft");
+  const abbreviated = raw.replaceAll(/\bfeet\b/g, "ft");
   return (
     <span className="codex-col-truncate" title={raw}>
       {abbreviated}

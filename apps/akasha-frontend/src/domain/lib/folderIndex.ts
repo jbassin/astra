@@ -12,7 +12,7 @@
  */
 export function folderIndexName(rel: string): string | null {
   const parts = rel.split("/");
-  if (parts[parts.length - 1] !== "index.md") return null;
+  if (parts.at(-1) !== "index.md") return null;
   if (parts.length < 2) return null; // root index.md — no parent folder
-  return parts[parts.length - 2] ?? null;
+  return parts.at(-2) ?? null;
 }

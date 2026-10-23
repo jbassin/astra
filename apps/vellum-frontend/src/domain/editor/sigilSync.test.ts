@@ -46,7 +46,7 @@ function directiveNames(source: string): string[] {
     if (DIRECTIVE_TYPES.has(node.type) && node.name) names.push(node.name);
     if (node.children) for (const child of node.children) walk(child);
   };
-  walk(parseMarkdown(source) as unknown as AstNode);
+  walk(parseMarkdown(source));
   return names;
 }
 

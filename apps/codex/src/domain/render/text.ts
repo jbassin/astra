@@ -20,7 +20,7 @@ const KEY_OVERRIDES: Readonly<Record<string, string>> = {
 
 export function humanizeFacetKey(key: string): string {
   const words = key
-    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replaceAll(/([a-z0-9])([A-Z])/g, "$1 $2")
     .split(/[\s_-]+/)
     .filter((w) => w.length > 0);
   return words.map((w) => KEY_OVERRIDES[w.toLowerCase()] ?? capitalize(w)).join(" ");
@@ -136,7 +136,7 @@ export function firstParagraphSummary(body: readonly CodexNode[], maxLen = 200):
   const first = body.find((n) => n.kind === "paragraph");
   const source = first ?? body.find((n) => n.kind === "statRow");
   if (!source) return "";
-  const collapsed = collectNodeText(source, false).trim().replace(/\s+/g, " ");
+  const collapsed = collectNodeText(source, false).trim().replaceAll(/\s+/g, " ");
   if (collapsed.length <= maxLen) return collapsed;
   return `${collapsed.slice(0, maxLen - 1).trimEnd()}…`;
 }
@@ -157,7 +157,7 @@ export function collectText(nodes: readonly CodexNode[]): string {
   return nodes
     .map((n) => collectNodeText(n, true))
     .join(" ")
-    .replace(/\s+/g, " ")
+    .replaceAll(/\s+/g, " ")
     .trim();
 }
 

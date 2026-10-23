@@ -69,7 +69,7 @@ function entityPageDataFor(sourceRow: IndexRow): EntityPageData {
       edition: sourceRow.edition,
       facets: {},
       body: [],
-    } as unknown as EntityPageData["entity"],
+    },
     embeds: {},
     knownTraitIds: [],
     embedCapHit: false,
@@ -85,7 +85,7 @@ function mockSplitViewViewport(isDesktop: boolean): void {
     media: query,
     addEventListener: () => {},
     removeEventListener: () => {},
-  })) as unknown as typeof window.matchMedia;
+  }));
 }
 
 function Harness({
@@ -152,10 +152,7 @@ class FakeResizeObserver {
   unobserve(): void {}
   disconnect(): void {}
   trigger(width: number): void {
-    this.callback(
-      [{ contentRect: { width } } as ResizeObserverEntry],
-      this as unknown as ResizeObserver,
-    );
+    this.callback([{ contentRect: { width } } as ResizeObserverEntry], this);
   }
 }
 
@@ -724,7 +721,7 @@ describe("BrowseListing pane-swap tier-cross (P13 S2, D29-123)", () => {
 
   it("tier-crossing while open closes the panel", () => {
     const mql = new FakeMediaQueryList(true);
-    window.matchMedia = vi.fn().mockReturnValue(mql) as unknown as typeof window.matchMedia;
+    window.matchMedia = vi.fn().mockReturnValue(mql);
     render(<StatefulHarness />);
     const filtersButton = screen.getByRole("button", { name: /^Filters/ });
     fireEvent.click(filtersButton);
@@ -743,9 +740,7 @@ describe("BrowseListing pane-swap tier-cross (P13 S2, D29-123)", () => {
   // opened. A sibling's layout effect clicks inside the first commit, before
   // any passive effect has run, which reproduces that ordering exactly.
   it("a Filters click before the first matchMedia reading still opens the narrow-tier sheet", () => {
-    window.matchMedia = vi
-      .fn()
-      .mockReturnValue(new FakeMediaQueryList(false)) as unknown as typeof window.matchMedia;
+    window.matchMedia = vi.fn().mockReturnValue(new FakeMediaQueryList(false));
     function ClickFiltersDuringFirstCommit(): null {
       useLayoutEffect(() => {
         screen.getByRole("button", { name: /^Filters/ }).click();

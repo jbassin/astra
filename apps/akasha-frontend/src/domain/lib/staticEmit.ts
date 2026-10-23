@@ -22,10 +22,10 @@ export interface SiteMeta {
 
 export function escapeXml(s: string): string {
   return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
 }
 
 /**
@@ -35,8 +35,8 @@ export function escapeXml(s: string): string {
 export function stripToText(body: string): string {
   return body
     .replace(/^---[\s\S]*?---/, "")
-    .replace(/[#>*_`[\]()!]/g, "")
-    .replace(/\s+/g, " ")
+    .replaceAll(/[#>*_`[\]()!]/g, "")
+    .replaceAll(/\s+/g, " ")
     .trim()
     .slice(0, 150);
 }

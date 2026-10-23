@@ -89,7 +89,7 @@ function harness(initFuncs: [string, string][] = []): Harness {
   const broadcasts: { payload: OverlayPayload; playerName: string }[] = [];
   const funcs = [...initFuncs];
   const funcsAdded: [string, string][] = [];
-  const state = { seed: { seed: 999, blameId: 1, blame: "Josh" } as SeedInfo };
+  const state = { seed: { seed: 999, blameId: 1, blame: "Josh" } };
   const deps: HandlerDeps = {
     rng: { choose: <T>(xs: readonly T[]) => xs[0] as T },
     store,

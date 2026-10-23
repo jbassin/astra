@@ -20,7 +20,7 @@ const ctx = rootRenderCtx({ resolveEmbed: noEmbeds(), knownTraitIds: new Set() }
  * before asserting so these tests check rendered TEXT content, tolerant of
  * the wrapping tags. */
 function text(html: string): string {
-  return html.replace(/<[^>]+>/g, "");
+  return html.replaceAll(/<[^>]+>/g, "");
 }
 
 function entityWith(
@@ -154,7 +154,7 @@ describe("GenericFacetLine (the ~80 other categories)", () => {
   });
 
   it("a catchall (arbitrary AoN-only) field renders humanized", () => {
-    const entity = entityWith("ancestry", { sizeId: 2 } as unknown as Facets);
+    const entity = entityWith("ancestry", { sizeId: 2 });
     const out = text(renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />));
     expect(out).toContain("Size Id: 2");
   });

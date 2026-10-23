@@ -30,6 +30,7 @@ export function orderEdgesIntoPath(edges: ReadonlyArray<EdgeSegment>): EdgeSegme
   }
 
   function consume(idx: number): EdgeSegment {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the key was taken from this map
     const seg = remaining.get(idx)!;
     remaining.delete(idx);
     for (const k of [pointKey(seg[0], seg[1]), pointKey(seg[2], seg[3])]) {

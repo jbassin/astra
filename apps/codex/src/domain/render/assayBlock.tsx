@@ -137,6 +137,7 @@ function ComparablesLine({ entry }: { entry: AssayEntry }): ReactElement | null 
         // per-render array (the same `PartsRow`/`mastheadExtraParts` idiom
         // used elsewhere in this directory) — `c.id` alone would do, but a
         // malformed export could in principle repeat one.
+        // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
         <span key={`${i}-${c.id}`}>
           {i > 0 ? ", " : ""}
           <ComparableLink comparable={c} />
@@ -239,6 +240,7 @@ export function AssayBlock({
       <div className="codex-content">
         {assayContentNodes(assay)}
         {assay.variants?.map((v, i) => (
+          // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
           <AssayVariantBlock key={`${i}-${v.label}`} variant={v} />
         ))}
       </div>

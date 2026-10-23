@@ -38,11 +38,13 @@ export default function Modal({ content, onClose }: ModalProps) {
       onClick={onClose}
       role="presentation"
     >
+      {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- custom modal: the backdrop click closes and Escape is handled; a native <dialog> is a behaviour change */}
       <div
         ref={cardRef}
         className={styles.card}
         style={{ "--faction-color": color } as React.CSSProperties}
         onClick={(e) => e.stopPropagation()}
+        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- custom modal: the backdrop click closes and Escape is handled; a native <dialog> is a behaviour change
         role="dialog"
         aria-modal="true"
         aria-label={label}

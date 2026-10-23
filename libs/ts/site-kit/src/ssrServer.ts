@@ -85,6 +85,7 @@ export function createSsrServer(opts: SsrServerOptions): Server {
   try {
     telemetry = initTelemetry(serviceName);
   } catch (err) {
+    // oxlint-disable-next-line no-console -- startup line on stdout
     console.warn(
       `[${serviceName}] telemetry init skipped: ${err instanceof Error ? err.message : err}`,
     );
@@ -147,6 +148,7 @@ export function createSsrServer(opts: SsrServerOptions): Server {
   // srvx prints its own untagged "Listening on" line from `serve()`; ours adds
   // the serviceName tag once the (possibly async, on Node) listen completes.
   void server.ready().then((s) => {
+    // oxlint-disable-next-line no-console -- startup line on stdout
     console.log(`[${serviceName}] SSR listening on ${s.url}`);
   });
 

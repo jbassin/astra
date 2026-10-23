@@ -5,7 +5,7 @@
  * does NOT resolve targets; that is akasha-backend's job (0007). The same grammar is
  * mirrored by the Python regex scan (K2); the shared `.meta.json` is the parity gate.
  */
-import type { Nodes, PhrasingContent, Root, Text } from "mdast";
+import type { PhrasingContent, Root, Text } from "mdast";
 import { visit } from "unist-util-visit";
 
 import type { CrossRef, VellumDocument, VellumNode } from "./model";
@@ -63,7 +63,7 @@ function walkMdast(node: unknown, out: CrossRef[]): void {
 export function collectCrossRefs(doc: VellumDocument): CrossRef[] {
   const out: CrossRef[] = [];
   const walkAll = (nodes: readonly unknown[]): void => {
-    for (const c of nodes) walkMdast(c as Nodes, out);
+    for (const c of nodes) walkMdast(c, out);
   };
   const walkVellum = (vn: VellumNode): void => {
     switch (vn.type) {

@@ -34,9 +34,9 @@ const PATHFINDER_PREFIX = "Pathfinder ";
 
 function mechanicalClean(raw: string): string {
   return raw
-    .replace(/[\r\n\t]+/g, "")
+    .replaceAll(/[\r\n\t]+/g, "")
     .trim()
-    .replace(/\s+/g, " ");
+    .replaceAll(/\s+/g, " ");
 }
 
 export type BookMergeKind = "whitespace" | "caseFold" | "prefixMerge";

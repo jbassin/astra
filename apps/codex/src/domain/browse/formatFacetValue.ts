@@ -154,7 +154,7 @@ function parseStringifiedList(value: string): readonly string[] | null {
     .map((part) =>
       part
         .trim()
-        .replace(/^['"]|['"]$/g, "")
+        .replaceAll(/^['"]|['"]$/g, "")
         .trim(),
     )
     .filter((part) => part.length > 0);

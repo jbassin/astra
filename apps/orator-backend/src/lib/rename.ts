@@ -32,7 +32,7 @@ function applyOp(title: string, op: RenameOp): string {
     case "set":
       return op.value;
     case "collapseWhitespace":
-      return title.replace(/\s+/g, " ").trim();
+      return title.replaceAll(/\s+/g, " ").trim();
     case "stripPrefix":
       return title.startsWith(op.value) ? title.slice(op.value.length) : title;
     case "stripSuffix":

@@ -30,7 +30,7 @@ describe("crossref resolver seam", () => {
 
   test("resolver hit → real <a href>; null → placeholder; nested crossrefs resolved too", () => {
     const resolve: CrossRefResolver = (node) =>
-      node.target === "Nowhere" ? null : { href: `/${node.target.replace(/ /g, "-")}/` };
+      node.target === "Nowhere" ? null : { href: `/${node.target.replaceAll(" ", "-")}/` };
 
     const html = renderToStaticMarkup(
       <DocumentView document={parseDocument(DOC)} resolveCrossref={resolve} />,

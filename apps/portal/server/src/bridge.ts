@@ -336,6 +336,7 @@ export class Bridge {
    * reply, `bridge-offline` for every still-pending query if the module disconnects
    * mid-flight, or whatever typed code the module's own response carries.
    */
+  // oxlint-disable-next-line require-await -- async so a throw reaches the caller as a rejection
   async sendQuery(method: string, params?: unknown): Promise<unknown> {
     return tracer.startActiveSpan("portal.bridge.query", async (span) => {
       span.setAttribute("portal.bridge.method", method);

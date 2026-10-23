@@ -189,7 +189,6 @@ describe("SearchPage Superseded control — restyled (D29-130), behavior unchang
     const checkbox = await screen.findByLabelText("Include superseded content");
     fireEvent.click(checkbox);
     expect(onSearchChange).toHaveBeenCalledTimes(1);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- exercised above
     const updater = onSearchChange.mock.calls[0]![0] as (
       prev: Record<string, unknown>,
     ) => Record<string, unknown>;

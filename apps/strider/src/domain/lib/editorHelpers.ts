@@ -23,9 +23,9 @@ export function slugify(name: string): string {
   return name
     .toLowerCase()
     .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    .replaceAll(/[̀-ͯ]/g, "")
+    .replaceAll(/[^a-z0-9]+/g, "-")
+    .replaceAll(/^-+|-+$/g, "");
 }
 
 let _hexFactionMap: Map<string, number> | null = null;
@@ -63,6 +63,7 @@ export function layerFilename(timestamp: string, slug: string): string {
   const m = /^(\d+)-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/.exec(timestamp);
   if (!m) throw new Error(`layerFilename: timestamp must be ISO-8601: ${timestamp}`);
   const [, year, mm, dd, hh, mi, ss] = m;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the regex match guarantees this group
   const paddedYear = year!.padStart(4, "0");
   return `${paddedYear}-${mm}-${dd}T${hh}${mi}${ss}-${slug}.kdl`;
 }
@@ -199,7 +200,7 @@ function serializeChange(c: Change): string[] {
 // chars that occur in our values (timestamps, slugs, names, messages, body
 // prose). KDL v2 understands `\n` inside a quoted string.
 function kdlString(s: string): string {
-  return `"${s.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n")}"`;
+  return `"${s.replaceAll("\\", "\\\\").replaceAll('"', '\\"').replaceAll("\n", "\\n")}"`;
 }
 
 export type { Layer };

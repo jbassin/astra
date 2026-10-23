@@ -15,12 +15,7 @@ import { join } from "node:path";
 
 import { loadConfig } from "@astra/config";
 
-import {
-  type AonDocMeta,
-  type AonHit,
-  aonSkipReason,
-  extractAonMeta,
-} from "../src/ingest/aonFacets";
+import { type AonDocMeta, aonSkipReason, extractAonMeta } from "../src/ingest/aonFacets";
 import { buildAonLinkTable, createLinkResolver } from "../src/ingest/aonLinkTable";
 import { parseAonMarkdown } from "../src/ingest/aonMarkup";
 import { parseManifest } from "../src/schema/manifest";
@@ -64,13 +59,13 @@ const hardFailures: string[] = [];
 for (const file of categoryFiles) {
   const snap = JSON.parse(readFileSync(join(snapshotDir, file), "utf8")) as SnapshotFile;
   for (const hit of snap.hits) {
-    const skip = aonSkipReason(hit as unknown as AonHit);
+    const skip = aonSkipReason(hit);
     if (skip !== undefined) {
       skipCounts.set(skip, (skipCounts.get(skip) ?? 0) + 1);
       continue;
     }
     try {
-      metas.push(extractAonMeta(snap.category, hit as unknown as AonHit, report));
+      metas.push(extractAonMeta(snap.category, hit, report));
     } catch (e) {
       hardFailures.push(`[meta] ${snap.category}/${hit._id}: ${String(e)}`);
     }

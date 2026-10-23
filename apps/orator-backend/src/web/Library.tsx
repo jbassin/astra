@@ -219,7 +219,7 @@ export function Library() {
   }
 
   async function moveSelected(value: string) {
-    if (!value || !selected.size) return;
+    if (!value || selected.size === 0) return;
     const target = value === "none" ? null : Number(value);
     await withBusy(async () => {
       await apiSend("POST", "/api/v1/tracks/bulk-move", { ids: selectedIds, collectionId: target });
@@ -229,7 +229,7 @@ export function Library() {
   }
 
   async function applyTags(addTags: string[]) {
-    if (addTags.length === 0 || !selected.size) return;
+    if (addTags.length === 0 || selected.size === 0) return;
     await withBusy(async () => {
       await apiSend("POST", "/api/v1/tracks/bulk-tag", { ids: selectedIds, addTags });
       await loadFacets();
@@ -253,7 +253,7 @@ export function Library() {
   }
 
   async function removeTag(removeTagId: number) {
-    if (!selected.size) return;
+    if (selected.size === 0) return;
     await withBusy(async () => {
       await apiSend("POST", "/api/v1/tracks/bulk-tag", {
         ids: selectedIds,
@@ -439,7 +439,7 @@ export function Library() {
           <span className="lib__selcount">{selected.size} selected</span>
           <Menu
             label="Rename"
-            disabled={!selected.size || busy}
+            disabled={selected.size === 0 || busy}
             items={[
               { label: "Strip prefix…", onSelect: () => void stripPrefix() },
               { label: "Strip suffix…", onSelect: () => void stripSuffix() },
@@ -448,7 +448,7 @@ export function Library() {
           />
           <Menu
             label="Tag"
-            disabled={!selected.size || busy}
+            disabled={selected.size === 0 || busy}
             items={[
               ...tags.map((t) => ({
                 label: t.name,
@@ -460,7 +460,7 @@ export function Library() {
           />
           <Menu
             label="Untag"
-            disabled={!selectedTags.length || busy}
+            disabled={selectedTags.length === 0 || busy}
             items={selectedTags.map((t) => ({
               label: t.name,
               color: t.color,
@@ -470,7 +470,7 @@ export function Library() {
           />
           <Menu
             label="Move to"
-            disabled={!selected.size || busy}
+            disabled={selected.size === 0 || busy}
             items={[
               { label: "(no collection)", onSelect: () => void moveSelected("none") },
               ...collections.map((c) => ({
@@ -482,7 +482,7 @@ export function Library() {
           <button
             type="button"
             className="btn btn--ghost btn--danger"
-            disabled={!selected.size || busy}
+            disabled={selected.size === 0 || busy}
             onClick={() => void deleteSelected()}
           >
             Delete
@@ -490,7 +490,7 @@ export function Library() {
           <button
             type="button"
             className="btn"
-            disabled={!selected.size || busy}
+            disabled={selected.size === 0 || busy}
             onClick={() => void play(selectedIds)}
           >
             ▶ Play

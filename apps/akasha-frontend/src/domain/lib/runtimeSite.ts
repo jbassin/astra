@@ -149,7 +149,7 @@ export function resolvePath(rawPath: string): Resolved | null {
   } catch {
     norm = rawPath;
   }
-  norm = norm.replace(/^\/+|\/+$/g, "");
+  norm = norm.replaceAll(/^\/+|\/+$/g, "");
   const slug = norm === "" ? "index" : norm;
 
   // content page (the root index, or any non-folder-index page)

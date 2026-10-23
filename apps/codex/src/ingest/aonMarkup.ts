@@ -410,7 +410,7 @@ function flattenDisplay(display: string): { text: string; hadInnerLink: boolean 
     hadInnerLink = true;
     return inner;
   });
-  text = decodeAonEntities(text).replace(/\s+/g, " ").trim();
+  text = decodeAonEntities(text).replaceAll(/\s+/g, " ").trim();
   for (;;) {
     if (text.startsWith("**") && text.endsWith("**") && text.length >= 4) {
       text = text.slice(2, -2).trim();
@@ -1061,7 +1061,7 @@ function parseInlineSpan(
   }
   // One implicit line: newlines are soft breaks here.
   const oneLine: Seg[] = flow.map((s) =>
-    s.kind === "text" ? { kind: "text", text: s.text.replace(/\n/g, " ") } : s,
+    s.kind === "text" ? { kind: "text", text: s.text.replaceAll("\n", " ") } : s,
   );
   return parseInlineSegs(oneLine, ctx).filter(
     (n) => !(n.kind === "text" && n.content.trim() === ""),
@@ -1333,7 +1333,7 @@ function parseTable(cursor: TokenCursor, ctx: AonParseCtx, scopes: ReadonlySet<s
  * `AonMarkupError` on anything outside the discovered grammar.
  */
 export function parseAonMarkdown(markdown: string, ctx: AonParseCtx): BlockNode[] {
-  const normalized = markdown.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  const normalized = markdown.replaceAll("\r\n", "\n").replaceAll("\r", "\n");
   try {
     const tokens = tokenize(normalized, ctx);
     const cursor = new TokenCursor(tokens);
@@ -1449,7 +1449,7 @@ export function stripMasthead(
 
   const mastheadExtra = pairs.filter((p) => p.label !== "Source");
   return {
-    body: remaining as BlockNode[],
+    body: remaining,
     ...(mastheadExtra.length > 0 ? { mastheadExtra } : {}),
   };
 }

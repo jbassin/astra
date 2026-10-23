@@ -82,11 +82,13 @@ class CapturingRes extends PassThrough {
   // single override can forward whichever overload `send` calls at runtime — it
   // only ever uses the (chunk) and (chunk, callback) shapes, but Writable's own
   // overloads don't collapse into one spreadable signature.
+  // oxlint-disable-next-line typescript/no-explicit-any -- mirrors Node's overloaded write/end signatures
   override write(...args: any[]): boolean {
     this.#head();
     return super.write(...(args as [string]));
   }
 
+  // oxlint-disable-next-line typescript/no-explicit-any -- mirrors Node's overloaded write/end signatures
   override end(...args: any[]): this {
     this.#head();
     return super.end(...(args as []));

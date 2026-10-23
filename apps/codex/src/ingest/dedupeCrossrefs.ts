@@ -53,7 +53,7 @@ type CrossrefNode = Extract<InlineNode, { kind: "crossref" }>;
  * intact everywhere except the dropped duplicate (never mutates the kept
  * node's own `display`). */
 function foldDisplay(display: string): string {
-  return display.toLowerCase().replace(/[’']/g, "'");
+  return display.toLowerCase().replaceAll(/[’']/g, "'");
 }
 
 /** A text node whose content is entirely non-letter/non-digit (whitespace

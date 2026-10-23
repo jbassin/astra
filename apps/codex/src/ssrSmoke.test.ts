@@ -121,7 +121,7 @@ async function getFollow(pathAndQuery: string): Promise<{ status: number; html: 
  * normalize this first (found while proving the acceptance-C alias-decode
  * checks; confirmed nothing else in the dehydration payload varies). */
 function stripVolatile(html: string): string {
-  return html.replace(/u:\d+/g, "u:0");
+  return html.replaceAll(/u:\d+/g, "u:0");
 }
 
 /**
@@ -244,7 +244,7 @@ describe("$category/$slug route (D29-22/-23/-25/-29 tier 3)", () => {
  * trailing `?superseded=1` (M7 — every row's own href carries it once the
  * view is widened, `rowHref`'s own comment). */
 function rendersRow(html: string, id: string): boolean {
-  const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escaped = id.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const re = new RegExp(`href="/${escaped}(?:\\?superseded=1)?" class="codex-listing-name"`);
   return re.test(html);
 }

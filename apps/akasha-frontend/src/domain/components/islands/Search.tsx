@@ -64,7 +64,7 @@ export function Search() {
   const runSearch = useCallback(
     async (q: string) => {
       const token = ++tokenRef.current; // discard out-of-order / post-close responses
-      if (!q || q.trim().length < 1) {
+      if (!q || q.trim().length === 0) {
         setResults([]);
         return;
       }
@@ -118,6 +118,7 @@ export function Search() {
         </svg>
       </button>
 
+      {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- the backdrop click closes the modal; Escape is handled on the document */}
       <div
         className={open ? "search-container active" : "search-container"}
         onClick={(e) => {
@@ -139,6 +140,7 @@ export function Search() {
               {results.map((r) => (
                 <a className="result-card" key={r.url} href={r.url.replace(/\.html$/, "")}>
                   <h3>{r.meta.title ?? r.url}</h3>
+                  {/* oxlint-disable-next-line react/no-danger -- a Pagefind excerpt; Pagefind escapes the page text */}
                   <p dangerouslySetInnerHTML={{ __html: r.excerpt }} />
                 </a>
               ))}

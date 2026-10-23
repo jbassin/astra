@@ -103,6 +103,7 @@ function buildDecorations(view: EditorView): DecorationSet {
         INLINE.lastIndex = 0;
         let m = INLINE.exec(text);
         while (m) {
+          // oxlint-disable-next-line typescript/no-non-null-assertion -- the regex match guarantees this group
           const known = KNOWN_INLINE.has(m[1]!.toLowerCase());
           const start = line.from + m.index;
           out.push((known ? inlineMark : inlineUnknownMark).range(start, start + m[0].length));
@@ -174,6 +175,7 @@ const vssFold = foldService.of((state, lineStart, lineEnd) => {
   let openPos = -1;
   let openCh = "";
   for (let i = 0; i < line.length; i++) {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const c = line[i]!;
     if (c === "{" || c === "[") {
       openPos = lineStart + i;

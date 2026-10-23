@@ -46,14 +46,17 @@ export {
   foldSkein,
 };
 
+// oxlint-disable-next-line require-await -- route loaders call this as async; content is build-time today
 export async function getAllLayers(): Promise<Layer[]> {
   return LAYERS as Layer[];
 }
 
+// oxlint-disable-next-line require-await -- route loaders call this as async; content is build-time today
 export async function getCurrentRegions(): Promise<Region[]> {
   return CURRENT_REGIONS as Region[];
 }
 
+// oxlint-disable-next-line require-await -- route loaders call this as async; content is build-time today
 export async function getCurrentSkein(): Promise<SkeinState> {
   return CURRENT_SKEIN;
 }

@@ -13,6 +13,7 @@ export function Fields({ node }: { node: VellumFields }): ReactElement {
   return (
     <dl className="gothic-content my-[0.6rem] grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1">
       {node.items.map((item, i) => (
+        // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
         <div key={i} className="contents">
           <dt className="font-display text-[0.95rem] uppercase tracking-[0.04em] text-accent [[data-mode=diegetic]_&]:text-wax">
             {item.term}

@@ -85,6 +85,7 @@ function EpisodeComponent() {
         </summary>
         <div className="transcript-root">
           {transcript.map((line, i) => (
+            // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
             <p key={i} className={`transcript-line ${line.speaker}`}>
               <span className="transcript-name">{line.name}</span>{" "}
               <span className="transcript-text">{line.text}</span>

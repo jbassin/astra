@@ -20,11 +20,11 @@ import { RENDER_ERROR_ATTR, renderNodes } from "./nodes";
  * does to text content. */
 function reactEscape(s: string): string {
   return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;");
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#x27;");
 }
 
 describe("D29-29 tier 1: totality over the full fixture matrix (88 categories)", () => {

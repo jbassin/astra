@@ -271,6 +271,7 @@ export function resolveEntityPageData(
   const embedCapHit = targetIds.length > EMBED_INLINE_CAP;
   const capped = embedCapHit ? targetIds.slice(0, EMBED_INLINE_CAP) : targetIds;
   if (embedCapHit) {
+    // oxlint-disable-next-line no-console -- server-side warning to stdout; codex has no OTel logger yet
     console.warn(
       `[codex] ${entity.id} references ${targetIds.length} depth-0 embed targets — ` +
         `capping inlining to the first ${EMBED_INLINE_CAP} (spec §6 risk).`,
@@ -299,6 +300,7 @@ export function resolveEntityPageData(
     } catch (err) {
       // Fail-soft (D29-23/-25's own posture): a genuinely missing/malformed
       // `rules-tree.json` shouldn't 500 the entity page, only strip its nav.
+      // oxlint-disable-next-line no-console -- server-side warning to stdout; codex has no OTel logger yet
       console.warn(`[codex] failed to resolve rules nav for ${entity.id}: ${String(err)}`);
     }
   }
@@ -357,6 +359,7 @@ export function resolveAttachedSidebars(
         superseded: (sidebar.remasteredAs?.length ?? 0) > 0,
       });
     } catch (err) {
+      // oxlint-disable-next-line no-console -- server-side warning to stdout; codex has no OTel logger yet
       console.warn(
         `[codex] attached sidebar "${sidebarId}" on ${entity.id} failed to resolve: ${String(err)}`,
       );

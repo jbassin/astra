@@ -28,7 +28,7 @@ import {
  * router pipeline, so a single narrow cast at the call site stands in for
  * the router's own internal typing. */
 function parseQuery(queryString: string): Record<string, unknown> {
-  return defaultParseSearch(queryString) as Record<string, unknown>;
+  return defaultParseSearch(queryString);
 }
 
 // ---------------------------------------------------------------------------

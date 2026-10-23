@@ -250,7 +250,7 @@ export function splitCsv(raw: string): string[] {
 }
 
 function escapeCsvToken(value: string): string {
-  return value.replace(/\\/g, "\\\\").replace(/,/g, "\\,");
+  return value.replaceAll("\\", "\\\\").replaceAll(",", "\\,");
 }
 
 export function joinCsv(values: readonly string[]): string {

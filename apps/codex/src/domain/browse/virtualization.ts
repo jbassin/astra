@@ -76,7 +76,7 @@ export function initialWindowRange(count: number): { startIndex: number; endInde
   const items = virtualizer.getVirtualItems();
   if (items.length === 0) return { startIndex: 0, endIndex: 0 };
   const first = items[0];
-  const last = items[items.length - 1];
+  const last = items.at(-1);
   return { startIndex: first?.index ?? 0, endIndex: (last?.index ?? -1) + 1 };
 }
 

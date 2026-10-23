@@ -414,6 +414,7 @@ function buildScene(
         g.hitArea = LOCAL_HEX_HITAREA;
         const fIdx = owner as number;
         g.on("pointerdown", () => {
+          // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
           propsRef.current.onFactionClick(propsRef.current.factions[fIdx]!);
         });
         g.on("pointerover", () => {
@@ -536,12 +537,15 @@ function buildScene(
 
         const slug = region.slug;
         fill.on("pointerdown", () => {
+          // oxlint-disable-next-line typescript/no-non-null-assertion -- the hit test above found an entry
           const idx = entry!.factionIdx;
           if (idx !== null) {
+            // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
             propsRef.current.onFactionClick(propsRef.current.factions[idx]!);
           }
         });
         fill.on("pointerover", () => {
+          // oxlint-disable-next-line typescript/no-non-null-assertion -- the hit test above found an entry
           propsRef.current.onRegionHover(slug, entry!.factionIdx);
         });
         fill.on("pointerout", () => {
@@ -595,6 +599,7 @@ function buildScene(
       hoverGlowLayer.visible = false;
       return;
     }
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const faction = propsRef.current.factions[idx]!;
     const territoryEdges = propsRef.current.territoryBorders[idx] ?? [];
     drawEdgesPath(hoverGlowLayer, territoryEdges);
@@ -695,6 +700,7 @@ function buildScene(
     for (let i = 0; i < e.beads.length; i++) {
       const t = (((tBase + i * e.sig.beadSpacing) % 1) + 1) % 1;
       const p = samplePoint(e.curve, t);
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
       const bead = e.beads[i]!;
       bead.position.set(p.x, p.y);
       bead.rotation = Math.atan2(p.ty, p.tx);
@@ -860,6 +866,7 @@ function buildScene(
           if (!region) return;
           const idx = factionIdxBySlug.get(region.faction) ?? null;
           if (idx !== null) {
+            // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
             propsRef.current.onFactionClick(propsRef.current.factions[idx]!);
           }
         });
@@ -1008,7 +1015,8 @@ function buildScene(
     const ordered = flip.hexes
       .map((h) => ({ hex: h, d: axialDistance(h, flip.originHex) }))
       .sort((a, b) => a.d - b.d);
-    const maxRing = ordered[ordered.length - 1]!.d;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
+    const maxRing = ordered.at(-1)!.d;
     const ringCount = Math.max(1, maxRing + 1);
 
     // Per-hex flip stays at PER_HEX_FLIP_MS; the wave step shrinks as needed
@@ -1130,6 +1138,7 @@ function buildScene(
     const ensureTile = (i: number): Graphics => {
       const existing = titheActiveTiles.get(i);
       if (existing) return existing;
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
       const t = titheTiles[i]!;
       const g = new Graphics();
       g.poly(TITHE_LOCAL_VERTS).fill(0xffffff);
@@ -1160,6 +1169,7 @@ function buildScene(
         // Advance the live shader so the purple field actually swirls.
         setTitheTime(now - startAt);
         for (let d = 0; d <= titheMaxRing; d++) {
+          // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
           const ring = titheRings[d]!;
           const s = scaleYAt(d, now);
           if (s <= 0.001) {
@@ -1211,6 +1221,7 @@ function buildScene(
     // World is shared with PixiHost — clean its children but leave the
     // container itself so the next HexMap mount can rebuild into it.
     while (world.children.length > 0) {
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
       const child = world.children[0]!;
       world.removeChild(child);
       child.destroy({ children: true });

@@ -152,6 +152,7 @@ export function EpisodeDetail({
         <ol className="chronicle-beats">
           {episode.keyBeats.map((beat, i) => (
             // beats are ordered prose with no stable id; index key is correct here
+            // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
             <li key={i}>{beat}</li>
           ))}
         </ol>

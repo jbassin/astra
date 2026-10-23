@@ -45,6 +45,7 @@ export function contentWatchPlugin(opts: ContentWatchOptions): Plugin {
       cwd: root,
       stdio: "inherit",
     });
+    // oxlint-disable-next-line no-console -- dev-server build output
     if (result.status !== 0) console.error("[content-watch] build-content failed");
   }
 

@@ -79,8 +79,11 @@ function registerSettings(): void {
 
 function consoleLog(level: "info" | "warn" | "error", message: string): void {
   const line = `[${MODULE_ID}] ${message}`;
+  // oxlint-disable-next-line no-console -- Foundry module: the browser console is the GM's log
   if (level === "error") console.error(line);
+  // oxlint-disable-next-line no-console -- Foundry module: the browser console is the GM's log
   else if (level === "warn") console.warn(line);
+  // oxlint-disable-next-line no-console -- Foundry module: the browser console is the GM's log
   else console.log(line);
 }
 

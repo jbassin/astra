@@ -10,8 +10,8 @@ export function parseCard(raw: string, filePath: string): TarotCard {
   // astra's base tsconfig has `noUncheckedIndexedAccess` (harrow's source didn't),
   // so index/match-group accesses below are asserted `as string` — same logic, no
   // behaviour change.
-  const deck = split[split.length - 2] as string;
-  const filename = split[split.length - 1] as string;
+  const deck = split.at(-2) as string;
+  const filename = split.at(-1) as string;
   const id = filename.replace(/\.card$/, "");
   const tag = `[${filename}]`;
 

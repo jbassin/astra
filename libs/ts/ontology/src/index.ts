@@ -37,7 +37,7 @@ function slug(node: Node): string {
 
 function scalar(node: Node, name: string): unknown {
   const entries = childrenNamed(node, name)[0]?.getArgumentEntries() ?? [];
-  return entries.length ? entries[0]?.getValue() : undefined;
+  return entries.length > 0 ? entries[0]?.getValue() : undefined;
 }
 
 function argList(node: Node, name: string): string[] {
@@ -166,7 +166,7 @@ function sortKeysDeep(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(sortKeysDeep);
   if (value && typeof value === "object") {
     const sorted: Record<string, unknown> = {};
-    for (const key of Object.keys(value as Record<string, unknown>).sort()) {
+    for (const key of Object.keys(value).sort()) {
       sorted[key] = sortKeysDeep((value as Record<string, unknown>)[key]);
     }
     return sorted;

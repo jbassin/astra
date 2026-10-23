@@ -34,14 +34,17 @@ export function deriveTitle(source: string): string {
   const vss = source.match(/^\s*@[a-z]+\s+"([^"]+)"/m);
 
   const candidates: { index: number; raw: string }[] = [];
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
   if (canonical) candidates.push({ index: canonical.index ?? 0, raw: canonical[1]! });
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
   if (vss) candidates.push({ index: vss.index ?? 0, raw: vss[1]! });
   if (candidates.length === 0) return UNTITLED;
   candidates.sort((a, b) => a.index - b.index);
 
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
   const title = candidates[0]!.raw
-    .replace(/:[a-z][\w-]*\[[^\]\n]*\]/gi, "") // drop inline directives
-    .replace(/\s+/g, " ")
+    .replaceAll(/:[a-z][\w-]*\[[^\]\n]*\]/gi, "") // drop inline directives
+    .replaceAll(/\s+/g, " ")
     .trim();
   return title || UNTITLED;
 }
@@ -70,6 +73,7 @@ export function emptyStore(source = "", opts?: { id?: string; now?: number }): D
 }
 
 export function activeDoc(store: DocStore): VellumDoc {
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- every link endpoint is a node in this list
   return store.docs.find((d) => d.id === store.activeId) ?? store.docs[0]!;
 }
 
@@ -122,7 +126,8 @@ export function renameActive(store: DocStore, title: string): DocStore {
 export function deleteDoc(store: DocStore, id: string): DocStore {
   if (store.docs.length <= 1) return emptyStore("");
   const docs = store.docs.filter((d) => d.id !== id);
-  const activeId = store.activeId === id ? docs[docs.length - 1]!.id : store.activeId;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
+  const activeId = store.activeId === id ? docs.at(-1)!.id : store.activeId;
   return { docs, activeId };
 }
 

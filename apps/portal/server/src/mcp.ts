@@ -125,6 +125,7 @@ function registerBridgeTool<Args extends z.ZodType>(
   // an abstract type parameter of *this* wrapper function (it only resolves once a
   // caller below supplies a concrete schema) — so the callback has to cross the `as
   // never` seam once, here, instead of at all nine call sites.
+  // oxlint-disable-next-line require-await -- the MCP SDK expects an async handler
   const handler = async (params: unknown) => {
     return tracer.startActiveSpan(`portal.mcp.tool.${name}`, async (span) => {
       span.setAttribute("auth", auth.method);
@@ -248,6 +249,7 @@ export function buildMcpServer(
         "currently connected. Every other portal tool depends on this being connected — " +
         "call it first if a prior call returned a 'bridge-offline' error.",
     },
+    // oxlint-disable-next-line require-await -- the MCP SDK expects an async handler
     async () => {
       return tracer.startActiveSpan("portal.mcp.tool.bridge-status", (span) => {
         span.setAttribute("auth", auth.method);

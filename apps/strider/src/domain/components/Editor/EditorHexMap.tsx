@@ -36,7 +36,9 @@ function dashedPolylinePath(
   const period = dash + gap;
   let phase = 0; // distance walked within the current period
   for (let i = 1; i < points.length; i++) {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const [ax, ay] = points[i - 1]!;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const [bx, by] = points[i]!;
     const segLen = Math.hypot(bx - ax, by - ay);
     if (segLen === 0) continue;
@@ -133,6 +135,7 @@ export default function EditorHexMap(props: EditorHexMapProps) {
 
       host.dataset.mapReady = "true";
     })().catch((err: unknown) => {
+      // oxlint-disable-next-line no-console -- WebGL init failure, shown in the browser console
       console.error("EditorHexMap: init failed", err);
     });
 
@@ -212,6 +215,7 @@ function buildEditorScene(
 
   // --- Faction hexes (always reactive to onHexClick) ---
   CURRENT_FACTION_HEXES.forEach((hexes, factionIdx) => {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const faction = propsRef.current.factions[factionIdx]!;
     for (const [q, r] of hexes) {
       const [cx, cy] = hexPixel(q, r);

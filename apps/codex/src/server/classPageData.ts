@@ -148,6 +148,7 @@ function resolveGrantedFeatures(
       const doc = reader.entity(split.category, split.slug);
       out.push({ id: doc.id, name: doc.name, level: grant.level, body: doc.body });
     } catch (err) {
+      // oxlint-disable-next-line no-console -- server-side warning to stdout; codex has no OTel logger yet
       console.warn(`[codex] granted feature "${grant.targetId}" failed to resolve: ${String(err)}`);
     }
   }
@@ -177,6 +178,7 @@ function resolveSelectedSubclasses(
     try {
       out.push(reader.entity(split.category, split.slug));
     } catch (err) {
+      // oxlint-disable-next-line no-console -- server-side warning to stdout; codex has no OTel logger yet
       console.warn(
         `[codex] selected subclass "${option.targetId}" failed to resolve: ${String(err)}`,
       );
@@ -247,6 +249,7 @@ export function resolveClassPageData(
   const embedCapHit = allTargetIds.length > EMBED_INLINE_CAP;
   const capped = embedCapHit ? allTargetIds.slice(0, EMBED_INLINE_CAP) : allTargetIds;
   if (embedCapHit) {
+    // oxlint-disable-next-line no-console -- server-side warning to stdout; codex has no OTel logger yet
     console.warn(
       `[codex] ${entity.id} references ${allTargetIds.length} depth-0 embed targets across ` +
         `its class body, granted features, and selected subclasses — capping inlining to the ` +

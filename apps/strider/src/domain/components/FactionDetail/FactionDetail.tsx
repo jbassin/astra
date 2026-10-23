@@ -37,6 +37,7 @@ export default function FactionDetail({ faction }: FactionDetailProps) {
               headings. */}
           <div
             className={styles.description}
+            // oxlint-disable-next-line react/no-danger -- HTML rendered at build time from the faction's vellum file
             dangerouslySetInnerHTML={{ __html: faction.description }}
           />
         </section>

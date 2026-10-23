@@ -88,7 +88,7 @@ describe("entityPage.tsx: GenericFacetLine humanization on the real anadi fixtur
     const anadi = requireEntity(byId, "ancestry/anadi");
     expect(anadi.facets.size).toBe("med"); // the predicate's own input, pinned
     const rendered = renderToStaticMarkup(<EntityPage entity={anadi} ctx={ctx} />);
-    const plainText = rendered.replace(/<[^>]+>/g, "");
+    const plainText = rendered.replaceAll(/<[^>]+>/g, "");
     expect(plainText).toContain("Size: Medium");
     expect(plainText).not.toContain("Size: med");
   });

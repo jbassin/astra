@@ -201,6 +201,7 @@ export function createApp(opts: AppOptions): {
     });
   }
 
+  // oxlint-disable-next-line require-await -- an async request handler: a throw becomes a rejected response promise
   async function handle(req: Request): Promise<Response> {
     const { pathname } = new URL(req.url);
     const method = req.method;

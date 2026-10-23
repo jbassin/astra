@@ -106,7 +106,7 @@ export const Route = createFileRoute("/$category/")({
       const windowed = computeWindowedListing(
         listing.category,
         listing.rows,
-        location.search as BrowseSearch,
+        location.search,
         deps.entry,
       );
       // D29-111 (P11 S4, a real bug found live verifying this decision) —

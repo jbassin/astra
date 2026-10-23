@@ -27,9 +27,10 @@ export function Frontmatter({
           {title}
         </h1>
       ) : null}
-      {tags.length ? (
+      {tags.length > 0 ? (
         <div className="mt-[0.6rem] flex flex-wrap gap-x-2 gap-y-[0.4rem]">
           {tags.map((tag, i) => (
+            // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
             <TraitPill key={i} name={tag} />
           ))}
         </div>

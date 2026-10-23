@@ -21,7 +21,7 @@ const AUDIO_EXTS = new Set([".mp3", ".flac", ".wav", ".ogg", ".opus", ".m4a", ".
 /** Sanitize a display title from an uploaded filename (drop extension). */
 export function titleFromFilename(name: string): string {
   const base = name.replace(/\.[^.]+$/, "");
-  return base.replace(/[_]+/g, " ").trim() || name;
+  return base.replaceAll(/[_]+/g, " ").trim() || name;
 }
 
 export async function handleUpload(opts: {

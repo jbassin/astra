@@ -28,7 +28,9 @@ export function strokePolyline(
   points: ReadonlyArray<readonly [number, number]>,
 ): void {
   if (points.length < 2) return;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
   g.moveTo(points[0]![0], points[0]![1]);
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
   for (let i = 1; i < points.length; i++) g.lineTo(points[i]![0], points[i]![1]);
 }
 

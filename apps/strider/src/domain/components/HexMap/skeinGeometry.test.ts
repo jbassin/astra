@@ -57,7 +57,7 @@ describe("computeSkeinCurve", () => {
     const curve = computeSkeinCurve(10, 20, 30, 40, sig);
     expect(curve.samples[0]![0]).toBeCloseTo(10);
     expect(curve.samples[0]![1]).toBeCloseTo(20);
-    const last = curve.samples[curve.samples.length - 1]!;
+    const last = curve.samples.at(-1)!;
     expect(last[0]).toBeCloseTo(30);
     expect(last[1]).toBeCloseTo(40);
   });

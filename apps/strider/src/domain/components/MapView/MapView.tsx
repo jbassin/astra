@@ -86,7 +86,8 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
     () => buildTimelineFrames(layers, factions, factionSlugs),
     [layers, factions, factionSlugs],
   );
-  const frame = frames[layerIndex] ?? frames[frames.length - 1]!;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
+  const frame = frames[layerIndex] ?? frames.at(-1)!;
   const regions = frame.regions;
   const skein = frame.skein;
 
@@ -219,6 +220,7 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
             return [key, idx] as const;
           });
           return {
+            // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
             originHex: c.hexes[0]!,
             hexes: c.hexes,
             prevFactionIdxByHex: lookups,
@@ -239,12 +241,14 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
           for (const member of bf.members) {
             const idx = slugToIdx.get(member);
             if (idx === undefined) continue;
+            // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
             for (const [q, r] of prevPerFaction[idx]!) {
               hexes.push([q, r]);
               lookups.push([`${q},${r}`, idx]);
             }
           }
           if (hexes.length > 0) {
+            // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
             factionFlips.push({ originHex: hexes[0]!, hexes, prevFactionIdxByHex: lookups });
           }
         }

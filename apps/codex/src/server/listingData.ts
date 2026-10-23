@@ -65,6 +65,7 @@ function bookToProductLine(reader: CorpusReader): ReadonlyMap<string, string> {
     if (!(err instanceof CorpusNotFoundError)) throw err;
     if (!warnedMissingSourcesIndex) {
       warnedMissingSourcesIndex = true;
+      // oxlint-disable-next-line no-console -- server-side warning to stdout; codex has no OTel logger yet
       console.warn(
         "[codex] no sources-index.json (or it's malformed) — every /{category} listing's " +
           `"sourceLines" map will fall back to "${OTHER_GROUP_LABEL}" for every book (the ` +

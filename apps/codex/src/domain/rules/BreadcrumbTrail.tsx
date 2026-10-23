@@ -34,9 +34,8 @@ export function BreadcrumbTrail({
           // Ancestor names aren't globally unique (generic chapter titles
           // recur across books, D29-39) and synthetic ancestors have no id
           // — index-keying is the only stable option for this fixed-shape,
-          // server-rendered, never-reordered array (the `.oxlintrc.json`
-          // path override next to codex's other corpus-array renderers
-          // covers this file).
+          // server-rendered, never-reordered array.
+          // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
           <li className="codex-rules-breadcrumb-item" key={`${i}-${a.name}`}>
             {a.id !== undefined ? (
               <a href={`/${a.id}`}>{a.name}</a>

@@ -61,9 +61,10 @@ export function StatCard({
           {price}
         </div>
       ) : null}
-      {traits.length ? (
+      {traits.length > 0 ? (
         <div className="mb-[0.6rem] flex flex-wrap gap-[0.35rem]">
           {traits.map((trait, i) => (
+            // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
             <TraitPill key={i} name={trait} />
           ))}
         </div>

@@ -55,8 +55,10 @@ function computeAssignments(): {
         }
       }
       if (nearestDist <= TERRITORY_RADIUS) {
+        // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
         factionHexes[nearestIdx]!.push([q, r]);
       } else {
+        // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
         factionHexes[HARLEQUINS_INDEX]!.push([q, r]);
       }
     }
@@ -68,6 +70,7 @@ function computeAssignments(): {
   const unownedBase: Array<readonly [number, number]> = [];
   for (let i = 0; i < factionHexes.length; i++) {
     if (i === HARLEQUINS_INDEX) continue;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     unownedBase.push(...factionHexes[i]!);
     factionHexes[i] = [];
   }
@@ -140,6 +143,7 @@ export function computeAssignmentBorders(
 } {
   const hexFaction = new Map<string, number>();
   for (let i = 0; i < assignments.length; i++) {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     for (const [q, r] of assignments[i]!) {
       hexFaction.set(`${q},${r}`, i);
     }
@@ -151,6 +155,7 @@ export function computeAssignmentBorders(
 
   for (let fi = 0; fi < assignments.length; fi++) {
     const factionEdgeSet = new Set<string>();
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     for (const [q, r] of assignments[fi]!) {
       const v = hexCorners(q, r);
       for (const [dq, dr, va, vb] of HEX_NEIGHBORS) {
@@ -162,15 +167,14 @@ export function computeAssignmentBorders(
         const fKey = `${v[va][0]},${v[va][1]},${v[vb][0]},${v[vb][1]}`;
         if (!factionEdgeSet.has(fKey)) {
           factionEdgeSet.add(fKey);
+          // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
           perFaction[fi]!.push(seg);
         }
 
         // Canonical key so the A→B edge and B→A edge deduplicate to one entry
-        if (fi < nfi || nfi === -1) {
-          if (!allEdgeSet.has(fKey)) {
-            allEdgeSet.add(fKey);
-            allBorders.push(seg);
-          }
+        if ((fi < nfi || nfi === -1) && !allEdgeSet.has(fKey)) {
+          allEdgeSet.add(fKey);
+          allBorders.push(seg);
         }
       }
     }
@@ -238,9 +242,11 @@ export function computeEffectiveAssignments(
   const unowned: Array<[number, number]> = [];
 
   for (let baseIdx = 0; baseIdx < baseHexes.length; baseIdx++) {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     for (const [q, r] of baseHexes[baseIdx]!) {
       const key = `${q},${r}`;
       if (!overrides.has(key)) {
+        // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
         perFaction[baseIdx]!.push([q, r]);
         continue;
       }
@@ -255,6 +261,7 @@ export function computeEffectiveAssignments(
           `computeEffectiveAssignments: claim references unknown faction '${target}' at hex [${q}, ${r}]`,
         );
       }
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
       perFaction[targetIdx]!.push([q, r]);
     }
   }
@@ -276,6 +283,7 @@ export function computeEffectiveAssignments(
         `computeEffectiveAssignments: claim references unknown faction '${target}' at hex [${q}, ${r}]`,
       );
     }
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     perFaction[targetIdx]!.push([q, r]);
   }
 
@@ -323,6 +331,7 @@ export function computeBannerAssignments(
           `computeBannerAssignments: banner '${banner.slug}' references unknown faction '${member}'`,
         );
       }
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
       for (const [q, r] of remainingPerFaction[idx]!) {
         hexes.push([q, r]);
         constituents.push([`${q},${r}`, idx]);

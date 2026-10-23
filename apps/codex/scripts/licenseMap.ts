@@ -79,9 +79,9 @@ export const REMASTER_CUTOVER_DATE = "2023-11-15";
  */
 export function normalizeBookName(raw: string): string {
   return raw
-    .replace(/[\r\n]+/g, "")
+    .replaceAll(/[\r\n]+/g, "")
     .trim()
-    .replace(/\s+/g, " ");
+    .replaceAll(/\s+/g, " ");
 }
 
 /**

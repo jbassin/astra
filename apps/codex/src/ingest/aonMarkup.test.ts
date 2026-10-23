@@ -245,7 +245,7 @@ describe("real docs", () => {
       "Will +16",
     ]);
     for (const cell of saveRow.cells) {
-      const last = cell[cell.length - 1];
+      const last = cell.at(-1);
       if (last?.kind === "text") expect(last.content).not.toMatch(/\s$/);
     }
 
@@ -473,7 +473,7 @@ describe("mappings", () => {
     // at a non-boundary position and must survive untouched).
     const bulkCell = row.cells[0] ?? [];
     expect(bulkCell).toHaveLength(3);
-    const lastOfBulk = bulkCell[bulkCell.length - 1];
+    const lastOfBulk = bulkCell.at(-1);
     expect(lastOfBulk?.kind).toBe("crossref");
 
     // Cell 2: the trailing " 5 gp " value text is trimEnd'd (trailing space
@@ -482,7 +482,7 @@ describe("mappings", () => {
     // `**Price**` is the true leading edge and needs no trim).
     expect(textContent(row.cells[1] ?? [])).toBe("Price 5 gp");
     const priceCell = row.cells[1] ?? [];
-    const lastOfPrice = priceCell[priceCell.length - 1];
+    const lastOfPrice = priceCell.at(-1);
     if (lastOfPrice?.kind !== "text") throw new Error("expected trailing text node");
     expect(lastOfPrice.content).not.toMatch(/\s$/);
   });

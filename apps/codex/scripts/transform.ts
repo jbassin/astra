@@ -27,12 +27,7 @@ import { pathToFileURL } from "node:url";
 import { loadConfig } from "@astra/config";
 
 import { dedupeAonMetas } from "../src/ingest/aonDedup";
-import {
-  type AonHit,
-  type AonDocMeta,
-  aonSkipReason,
-  extractAonMeta,
-} from "../src/ingest/aonFacets";
+import { type AonDocMeta, aonSkipReason, extractAonMeta } from "../src/ingest/aonFacets";
 import { buildAonLinkTable, normalizeUrlKey, type LinkTableDoc } from "../src/ingest/aonLinkTable";
 import { augmentClassStats } from "../src/ingest/augmentClassStats";
 import { normalizeBookNames } from "../src/ingest/bookNormalize";
@@ -141,7 +136,7 @@ function makeCtx(
 
 function basenameOf(relPath: string): string {
   const parts = relPath.replace(/\.json$/, "").split("/");
-  return parts[parts.length - 1] ?? "";
+  return parts.at(-1) ?? "";
 }
 
 interface FoundrySide {
@@ -169,10 +164,8 @@ function loadFoundrySide(
   const registry: readonly PackRegistryEntry[] = buildPackRegistry(systemManifest);
   assertRegistryIsTotal(packsRoot, registry);
   for (const entry of registry) {
-    if (entry.docClass === "Actor" || entry.docClass === "Item") {
-      if (!isKnownPack(entry.dir)) {
-        throw new Error(`transform: pack "${entry.dir}" not recognized by categoryMap.ts`);
-      }
+    if ((entry.docClass === "Actor" || entry.docClass === "Item") && !isKnownPack(entry.dir)) {
+      throw new Error(`transform: pack "${entry.dir}" not recognized by categoryMap.ts`);
     }
   }
 
@@ -307,12 +300,12 @@ function loadAonSide(snapshotDir: string, report: ReportFn, hardFailures: HardFa
       hits: Array<{ _id: string; _source: Record<string, unknown> }>;
     };
     for (const hit of snap.hits) {
-      if (aonSkipReason(hit as unknown as AonHit) !== undefined) {
+      if (aonSkipReason(hit) !== undefined) {
         report("aonNamelessFragment", hit._id);
         continue;
       }
       try {
-        const meta = extractAonMeta(snap.category, hit as unknown as AonHit, report);
+        const meta = extractAonMeta(snap.category, hit, report);
         metas.push(meta);
         const markdown = hit._source.markdown;
         if (typeof markdown === "string" && markdown.trim().length > 0) {

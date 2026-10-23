@@ -221,7 +221,7 @@ function buildBookTree(
     if (path.length === 0) {
       roots.push(synthetic);
     } else {
-      const grandParentName = path[path.length - 1] as string;
+      const grandParentName = path.at(-1) as string;
       const grandParentPath = path.slice(0, -1);
       const grandParent = resolveParent(grandParentName, grandParentPath, depth + 1);
       grandParent.children.push(synthetic);
@@ -235,7 +235,7 @@ function buildBookTree(
       roots.push(node);
       continue;
     }
-    const parentName = doc.breadcrumbs[doc.breadcrumbs.length - 1] as string;
+    const parentName = doc.breadcrumbs.at(-1) as string;
     const parentPath = doc.breadcrumbs.slice(0, -1);
     const parent = resolveParent(parentName, parentPath, 0);
     parent.children.push(node);
@@ -289,10 +289,7 @@ function buildBookTree(
         visited.add(current.aonId);
         ordered.push(current);
         const nextId: string | undefined = current.nextAonId;
-        current =
-          nextId !== undefined && groupAonIds.has(nextId)
-            ? (byAonId.get(nextId) as (BuildNode & { aonId: string }) | undefined)
-            : undefined;
+        current = nextId !== undefined && groupAonIds.has(nextId) ? byAonId.get(nextId) : undefined;
       }
     }
     if (chainParticipants.size > 0 && heads.length === 0) {

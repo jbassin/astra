@@ -34,6 +34,7 @@ let telemetry: { shutdown: () => Promise<void> } | null = null;
 try {
   telemetry = initTelemetry(serviceName);
 } catch (err) {
+  // oxlint-disable-next-line no-console -- startup line on stdout
   console.warn(
     `[${serviceName}] telemetry init skipped: ${err instanceof Error ? err.message : err}`,
   );
@@ -105,6 +106,7 @@ async function serveStatic(req: Request, pathname: string): Promise<Response> {
 }
 
 const service = new RenderService(BASE_URL);
+// oxlint-disable-next-line no-console -- startup line on stdout
 console.log(`[${serviceName}] warming Chromium…`);
 await service.start();
 
@@ -198,6 +200,7 @@ const server = serve({
 // srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
 // listening completes (async on the Node runtime), so log from `.ready()`.
 void server.ready().then(() => {
+  // oxlint-disable-next-line no-console -- startup line on stdout
   console.log(`[${serviceName}] render service on ${BASE_URL} (ready=${service.isReady()})`);
 });
 

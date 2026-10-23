@@ -196,8 +196,8 @@ function convertTimeline(body: string, report: PageReport): string {
     // Text = everything after the first <br/>, tags stripped, whitespace collapsed.
     const afterBreak = inner.replace(/[\s\S]*?<br\s*\/?>/, "");
     const text = afterBreak
-      .replace(/<[^>]+>/g, "")
-      .replace(/\s+/g, " ")
+      .replaceAll(/<[^>]+>/g, "")
+      .replaceAll(/\s+/g, " ")
       .trim();
     if (text) entries.push(`- ${era ? `{${era}} ` : ""}${text}`);
     m = liRe.exec(body);
@@ -218,20 +218,20 @@ function htmlToMarkdown(body: string, report: PageReport): string {
   if (!/<[a-z]/i.test(body)) return body;
   let s = body;
   // `<pre>` preformatted (verse) → fenced code; strip inner tags, keep newlines.
-  s = s.replace(/<pre[^>]*>([\s\S]*?)<\/pre>/gi, (_m, inner: string) => {
-    const text = inner.replace(/<[^>]+>/g, "").replace(/^\n+|\n+$/g, "");
+  s = s.replaceAll(/<pre[^>]*>([\s\S]*?)<\/pre>/gi, (_m, inner: string) => {
+    const text = inner.replaceAll(/<[^>]+>/g, "").replaceAll(/^\n+|\n+$/g, "");
     return `\n\`\`\`\n${text}\n\`\`\`\n`;
   });
   s = s
-    .replace(
+    .replaceAll(
       /<li[^>]*>([\s\S]*?)<\/li>/gi,
-      (_m, t: string) => `- ${t.replace(/<[^>]+>/g, "").trim()}`,
+      (_m, t: string) => `- ${t.replaceAll(/<[^>]+>/g, "").trim()}`,
     )
-    .replace(/<\/?(ul|ol|div)[^>]*>/gi, "")
-    .replace(/<(em|i)>([\s\S]*?)<\/\1>/gi, "*$2*")
-    .replace(/<(strong|b)>([\s\S]*?)<\/\1>/gi, "**$2**")
-    .replace(/<br\s*\/?>/gi, "  \n")
-    .replace(/<\/?(span|small|sup|sub)[^>]*>/gi, "");
+    .replaceAll(/<\/?(ul|ol|div)[^>]*>/gi, "")
+    .replaceAll(/<(em|i)>([\s\S]*?)<\/\1>/gi, "*$2*")
+    .replaceAll(/<(strong|b)>([\s\S]*?)<\/\1>/gi, "**$2**")
+    .replaceAll(/<br\s*\/?>/gi, "  \n")
+    .replaceAll(/<\/?(span|small|sup|sub)[^>]*>/gi, "");
   report.transforms.push("html→md");
   if (/<[a-z][^>]*>/i.test(s)) report.flags.push("residual-html");
   return s;
@@ -243,7 +243,7 @@ function htmlToMarkdown(body: string, report: PageReport): string {
  * parser never expands sigils in code), so flagging it would be a false alarm.
  */
 function flagResiduals(body: string, report: PageReport): void {
-  const noCode = body.replace(/```[\s\S]*?```/g, "");
+  const noCode = body.replaceAll(/```[\s\S]*?```/g, "");
   if (/<\/?(ul|ol|li|div|span|pre|table|small|sup|sub)\b/i.test(noCode))
     report.flags.push("raw-html");
   if (/(^|\s)#[A-Za-z]/.test(noCode)) report.flags.push("hash-sigil");

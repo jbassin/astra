@@ -136,6 +136,7 @@ async function renderGraph(
   } = cfg;
 
   const data = rawData;
+  // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
   const graphData: { nodes: any[]; links: any[] } = buildGraphData(data, slug, cfg);
 
   // No edges → skip pixi entirely and show an intentional placeholder. Otherwise a
@@ -159,6 +160,7 @@ async function renderGraph(
     .force("charge", forceManyBody().strength(-100 * repelForce))
     .force("center", forceCenter().strength(centerForce))
     .force("link", forceLink(graphData.links).distance(linkDistance))
+    // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
     .force("collide", forceCollide((n: any) => nodeRadius(n)).iterations(3));
 
   const radius = (Math.min(width, height) / 2) * 0.8;
@@ -179,13 +181,16 @@ async function renderGraph(
     "--bodyFont": cs.getPropertyValue("--bodyFont"),
   };
 
+  // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
   const color = (dd: any) => {
     if (dd.id === slug) return computedStyleMap["--secondary"];
     if (visited.has(dd.id) || dd.id.startsWith("tags/")) return computedStyleMap["--tertiary"];
     return computedStyleMap["--gray"];
   };
+  // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
   function nodeRadius(dd: any) {
     const numLinks = graphData.links.filter(
+      // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
       (l: any) => l.source.id === dd.id || l.target.id === dd.id,
     ).length;
     return 2 + Math.sqrt(numLinks);
@@ -193,7 +198,9 @@ async function renderGraph(
 
   let hoveredNodeId: string | null = null;
   let hoveredNeighbours = new Set<string>();
+  // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
   const linkRenderData: any[] = [];
+  // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
   const nodeRenderData: any[] = [];
   function updateHoverInfo(newHoveredId: string | null) {
     hoveredNodeId = newHoveredId;
@@ -329,6 +336,7 @@ async function renderGraph(
     })
       .circle(0, 0, nodeRadius(n))
       .fill({ color: isTagNode ? computedStyleMap["--light"] : color(n) })
+      // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
       .on("pointerover", (e: any) => {
         updateHoverInfo(e.target.label);
         oldLabelOpacity = label.alpha;
@@ -366,10 +374,13 @@ async function renderGraph(
 
   let currentTransform = zoomIdentity;
   if (enableDrag) {
+    // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
     select(app.canvas as any).call(
       drag()
+        // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
         .container(() => app.canvas as any)
         .subject(() => graphData.nodes.find((n) => n.id === hoveredNodeId))
+        // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
         .on("start", (event: any) => {
           if (!event.active) simulation.alphaTarget(1).restart();
           event.subject.fx = event.subject.x;
@@ -383,11 +394,13 @@ async function renderGraph(
           dragStartTime = Date.now();
           dragging = true;
         })
+        // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
         .on("drag", (event: any) => {
           const initPos = event.subject.__initialDragPos;
           event.subject.fx = initPos.x + (event.x - initPos.x) / currentTransform.k;
           event.subject.fy = initPos.y + (event.y - initPos.y) / currentTransform.k;
         })
+        // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
         .on("end", (event: any) => {
           if (!event.active) simulation.alphaTarget(0);
           event.subject.fx = null;
@@ -397,6 +410,7 @@ async function renderGraph(
             const node = graphData.nodes.find((n) => n.id === event.subject.id);
             window.location.assign(resolveRelative(fullSlug as FullSlug, node.id));
           }
+          // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
         }) as any,
     );
   } else {
@@ -408,6 +422,7 @@ async function renderGraph(
   }
 
   if (enableZoom) {
+    // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
     select(app.canvas as any).call(
       zoom()
         .extent([
@@ -415,6 +430,7 @@ async function renderGraph(
           [width, height],
         ])
         .scaleExtent([0.25, 4])
+        // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
         .on("zoom", ({ transform }: any) => {
           currentTransform = transform;
           stage.scale.set(transform.k, transform.k);
@@ -425,8 +441,10 @@ async function renderGraph(
             nodeRenderData.filter((n) => n.active).flatMap((n) => n.label),
           );
           for (const label of labelsContainer.children) {
+            // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
             if (!activeNodes.has(label)) (label as any).alpha = scaleOpacity;
           }
+          // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
         }) as any,
     );
   }

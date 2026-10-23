@@ -98,14 +98,14 @@ describe("TimelineStrip", () => {
 
   it("keeps the arrows usable while playing (manual stepping interrupts playback)", () => {
     renderStrip({ index: 1, isPlaying: true });
-    expect((screen.getByLabelText("Previous layer") as HTMLButtonElement).disabled).toBe(false);
-    expect((screen.getByLabelText("Next layer") as HTMLButtonElement).disabled).toBe(false);
+    expect(screen.getByLabelText<HTMLButtonElement>("Previous layer").disabled).toBe(false);
+    expect(screen.getByLabelText<HTMLButtonElement>("Next layer").disabled).toBe(false);
   });
 
   it("disables prev at index 0 and next at index === layers.length", () => {
     const { rerender } = renderStrip({ index: 0 });
-    expect((screen.getByLabelText("Previous layer") as HTMLButtonElement).disabled).toBe(true);
-    expect((screen.getByLabelText("Next layer") as HTMLButtonElement).disabled).toBe(false);
+    expect(screen.getByLabelText<HTMLButtonElement>("Previous layer").disabled).toBe(true);
+    expect(screen.getByLabelText<HTMLButtonElement>("Next layer").disabled).toBe(false);
 
     rerender(
       <TimelineStrip
@@ -118,8 +118,8 @@ describe("TimelineStrip", () => {
         onReplay={() => {}}
       />,
     );
-    expect((screen.getByLabelText("Previous layer") as HTMLButtonElement).disabled).toBe(false);
-    expect((screen.getByLabelText("Next layer") as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByLabelText<HTMLButtonElement>("Previous layer").disabled).toBe(false);
+    expect(screen.getByLabelText<HTMLButtonElement>("Next layer").disabled).toBe(true);
   });
 
   it("calls onIndexChange with neighboring index on arrow click", () => {

@@ -39,9 +39,12 @@ export function TagEditModal({
   }
 
   return (
+    // oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- custom modal: the backdrop click closes and Escape is handled; a native <dialog> is a behaviour change
     <div className="modal__backdrop" onClick={onClose}>
+      {/* oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- custom modal: the backdrop click closes and Escape is handled; a native <dialog> is a behaviour change */}
       <div
         className="modal"
+        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- custom modal: the backdrop click closes and Escape is handled; a native <dialog> is a behaviour change
         role="dialog"
         aria-modal="true"
         aria-label={`Edit tag ${tag.name}`}

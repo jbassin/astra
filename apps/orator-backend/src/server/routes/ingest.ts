@@ -53,6 +53,7 @@ export const ingestRoutes: ApiRoute[] = [
       if (!body.url?.trim()) throw new HttpError(400, "url_required");
       const { job, done } = await ingest.start(body.url.trim(), body.collectionId ?? undefined);
       // Run in the background; never block the request on the download.
+      // oxlint-disable-next-line no-console -- to stdout; orator has no OTel logger yet
       void done.catch((err) => console.error("[orator] ingest job failed", err));
       return json(job, 202);
     },

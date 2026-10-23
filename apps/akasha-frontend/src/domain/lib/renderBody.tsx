@@ -28,7 +28,7 @@ export function renderBody(source: string, resolveCrossref: CrossRefResolver): s
  * displayed-value parity isn't required (N4).
  */
 export function readingMinutes(source: string): number {
-  const text = source.replace(/^---[\s\S]*?---/, "").replace(/[#>*_`[\]()!]/g, " ");
+  const text = source.replace(/^---[\s\S]*?---/, "").replaceAll(/[#>*_`[\]()!]/g, " ");
   const words = text.split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.ceil(words / 200));
 }

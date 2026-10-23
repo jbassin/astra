@@ -47,6 +47,7 @@ export class DiscordVoiceAdapter implements VoiceAdapter {
     // blip mid-track means the ffmpeg/opus pipe underran (startup ramp), not a
     // voice reconnect (those show up on the connection's stateChange log).
     this.player.on("stateChange", (o, n) => {
+      // oxlint-disable-next-line no-console -- to stdout; orator has no OTel logger yet
       if (o.status !== n.status) console.log(`[orator] audio player ${o.status} → ${n.status}`);
     });
     this.player.on("error", (err) => {
@@ -83,6 +84,7 @@ export class DiscordVoiceAdapter implements VoiceAdapter {
           });
           if (conn !== this.connection) {
             conn.on("stateChange", (o, n) =>
+              // oxlint-disable-next-line no-console -- to stdout; orator has no OTel logger yet
               console.log(`[orator] voice connection ${o.status} → ${n.status}`),
             );
             conn.on("error", (err) =>
@@ -130,6 +132,7 @@ export class DiscordVoiceAdapter implements VoiceAdapter {
     return this.channelId;
   }
 
+  // oxlint-disable-next-line require-await -- an async request handler: a throw becomes a rejected response promise
   async play(
     filePath: string,
     filter: string,

@@ -257,6 +257,7 @@ export default function Player({ id, src, title, artist, runtimeMs, iconVersion 
   // oxlint-enable react-hooks/exhaustive-deps
 
   return (
+    // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a custom audio control with its own keyboard handling
     <div className="player" role="group" aria-label={`Audio player: ${title}`}>
       {/* oxlint-disable media-has-caption -- the transcript on the page is the caption */}
       <audio ref={audioRef} src={src} preload="metadata" />
@@ -298,6 +299,7 @@ export default function Player({ id, src, title, artist, runtimeMs, iconVersion 
             onPointerDown={onTrackPointerDown}
             onPointerMove={onTrackPointerMove}
             onPointerUp={onTrackPointerUp}
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a custom audio control with its own keyboard handling
             role="slider"
             tabIndex={0}
             aria-label="Seek"

@@ -166,7 +166,7 @@ function matchesEnum(
 
 function rawFacetValue(row: IndexRow, key: string): RawFacetValue | undefined {
   const value = row.facets?.[key];
-  return value as RawFacetValue | undefined;
+  return value;
 }
 
 // ---------------------------------------------------------------------------

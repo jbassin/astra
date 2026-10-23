@@ -17,6 +17,7 @@ function FieldRun({ items }: { items: ReturnType<typeof parseFieldItems> }): Rea
   return (
     <div className="gothic-content my-[0.3rem] flex flex-col gap-[0.3rem]">
       {items.map((item, i) => (
+        // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
         <p key={i} className="m-0 leading-[1.5]">
           <span className="mr-[0.5em] font-display text-[0.82rem] uppercase tracking-[0.05em] text-accent [[data-mode=diegetic]_&]:text-wax">
             {item.term}
@@ -62,6 +63,7 @@ export function DeityCard({
       flushRun(`grid-${i}`);
       segments.push(
         <h3
+          // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
           key={`head-${i}`}
           className="mb-[0.15rem] mt-[0.8rem] font-display text-[0.95rem] uppercase tracking-[0.06em] text-accent-amber [[data-mode=diegetic]_&]:text-wax"
         >

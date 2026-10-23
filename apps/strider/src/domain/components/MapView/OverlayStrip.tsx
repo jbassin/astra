@@ -12,6 +12,7 @@ interface OverlayStripProps {
 
 export default function OverlayStrip({ overlays, visible, onToggle }: OverlayStripProps) {
   return (
+    // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a labelled group of buttons; a fieldset would bring its own styling
     <div className={styles.strip} role="group" aria-label="Map overlays">
       <div className={styles.headerRibbon}>
         <span className={styles.headerHair} aria-hidden="true" />

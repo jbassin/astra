@@ -309,6 +309,7 @@ export function suppressLoreSections(
  * silent. */
 export function reportLoreSuppression(entityId: string, result: LoreDedupeResult): void {
   if (result.totalSections > 0 && result.suppressedSections === result.totalSections) {
+    // oxlint-disable-next-line no-console -- SSR render warning to stdout; codex has no OTel logger yet
     console.warn(
       `[codex] ${entityId}: loreDedupe suppressed ALL ${result.totalSections} lore section(s) — ` +
         `the Lore card is now fully empty. Worth checking against the real doc: either genuinely ` +

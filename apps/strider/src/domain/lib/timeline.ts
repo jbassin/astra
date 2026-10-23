@@ -20,6 +20,7 @@ export type TimelineEntry =
 export function visibleEntries(layers: Layer[], index: number): TimelineEntry[] {
   const out: TimelineEntry[] = [];
   for (let i = index - 1; i >= 0 && out.length < VISIBLE_SLOTS; i--) {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const layer = layers[i]!;
     out.push({
       key: `layer-${i}`,
@@ -49,7 +50,9 @@ export function imperialDate(timestamp: string): string {
   const m = /^(\d+)-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(timestamp);
   if (!m) return timestamp.replace("T", " ").replace(/Z$/, "");
   const [, year, mm, dd, hh, mi] = m;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the regex match guarantees this group
   const monthIdx = Number.parseInt(mm!, 10) - 1;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the regex match guarantees this group
   const day = Number.parseInt(dd!, 10);
   const doy = (DAYS_BEFORE_MONTH[monthIdx] ?? 0) + day;
   return `M.${year}.${String(doy).padStart(3, "0")} +${hh}${mi}hrs`;

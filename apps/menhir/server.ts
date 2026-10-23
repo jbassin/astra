@@ -23,6 +23,7 @@ const distDir = resolve(import.meta.dirname, "dist");
 const quizzesDir = resolve(import.meta.dirname, "quizzes");
 
 const { quizzes, summary } = loadQuizzes(quizzesDir);
+// oxlint-disable-next-line no-console -- startup line on stdout
 console.log(summary);
 
 const { server } = startServer({
@@ -33,6 +34,7 @@ const { server } = startServer({
 // srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
 // listening completes (async on the Node runtime), so log from `.ready()`.
 void server.ready().then((s) => {
+  // oxlint-disable-next-line no-console -- startup line on stdout
   console.log(`menhir listening on ${s.url}`);
 });
 

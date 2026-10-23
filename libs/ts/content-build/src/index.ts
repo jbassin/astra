@@ -29,7 +29,7 @@ export function parseFrontmatter(raw: string): {
   content: string;
 } {
   const { data, content } = matter(raw);
-  return { data: data as Record<string, unknown>, content };
+  return { data: data, content };
 }
 
 /**
@@ -142,6 +142,7 @@ export function astraContentRoot(fromDir: string): string {
   const explicit = process.env[ASTRA_CONTENT_ROOT_ENV];
   if (explicit) return path.resolve(explicit);
   const fixture = fixtureContentRoot(fromDir);
+  // oxlint-disable-next-line no-console -- build-time warning
   console.warn(
     `[content-build] ${ASTRA_CONTENT_ROOT_ENV} is unset; reading the fixture at ${fixture}`,
   );

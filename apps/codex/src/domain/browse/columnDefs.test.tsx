@@ -190,7 +190,7 @@ describe("columnDefs: per-group column sets", () => {
       ["feat", featRows],
     ] as const) {
       const cols = columnsFor(category, rows);
-      expect(cols[cols.length - 1]?.key).toBe("source");
+      expect(cols.at(-1)?.key).toBe("source");
     }
   });
 });

@@ -68,6 +68,7 @@ export function buildGraphData(
   let d = depth;
   if (d >= 0) {
     while (d >= 0 && wl.length > 0) {
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the loop runs only while the list is non-empty
       const cur = wl.shift()!;
       if (cur === "__SENTINEL") {
         d--;
@@ -92,7 +93,9 @@ export function buildGraphData(
   const graphLinks: GraphLink[] = links
     .filter((l) => neighbourhood.has(l.source) && neighbourhood.has(l.target))
     .map((l) => ({
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- every link endpoint is a node in this list
       source: nodes.find((n) => n.id === l.source)!,
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- every link endpoint is a node in this list
       target: nodes.find((n) => n.id === l.target)!,
     }));
 

@@ -39,8 +39,10 @@ function Node({ node }: { node: VellumNode }): ReactNode {
           style={{ "--vellum-column-count": node.columns.length } as CSSProperties}
         >
           {node.columns.map((column, i) => (
+            // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
             <div key={i} className="gothic-column">
               {column.map((child, j) => (
+                // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
                 <Node key={j} node={child} />
               ))}
             </div>
@@ -85,6 +87,7 @@ export function DocumentView({
     >
       <Frontmatter frontmatter={document.frontmatter} />
       {document.nodes.map((node, i) => (
+        // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
         <Node key={i} node={node} />
       ))}
     </article>

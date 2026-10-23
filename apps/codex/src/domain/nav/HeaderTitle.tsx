@@ -49,7 +49,7 @@ interface MinimalRouteMatch {
  * `RouterProvider` mount needed) — `HeaderTitle` below is the thin
  * router-coupled wrapper. `null` means "render the wordmark instead." */
 export function deriveHeaderTitle(matches: readonly MinimalRouteMatch[]): string | null {
-  const leaf = matches[matches.length - 1];
+  const leaf = matches.at(-1);
   if (!leaf) return null;
   switch (leaf.routeId) {
     case "/$category/": {

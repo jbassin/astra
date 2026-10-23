@@ -22,6 +22,7 @@ export async function startRum(getConfig: () => Promise<RumConfig>): Promise<voi
     const { endpoint, serviceName } = await getConfig();
     if (endpoint) initRum({ serviceName, endpoint });
   } catch (err) {
+    // oxlint-disable-next-line no-console -- RUM failing to start can only report to the browser console
     console.warn("[site-kit] RUM init skipped:", err);
   }
 }

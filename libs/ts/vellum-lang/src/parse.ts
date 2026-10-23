@@ -35,7 +35,7 @@ const processor = unified().use(remarkParse).use(remarkGfm).use(remarkDirective)
  * `#trait`), then remark parses; finally `transformCrossRefs` splits `[[…]]` runs out
  * of text nodes into `crossref` nodes. */
 export function parseMarkdown(source: string): Root {
-  const root = processor.parse(desugar(compileVss(source))) as Root;
+  const root = processor.parse(desugar(compileVss(source)));
   transformCrossRefs(root);
   return root;
 }
@@ -86,7 +86,7 @@ function splitLabel(directive: ContainerDirective): {
     const label = inlineText(labelNodes).trim();
     return {
       label: label || undefined,
-      labelNodes: labelNodes.length ? labelNodes : undefined,
+      labelNodes: labelNodes.length > 0 ? labelNodes : undefined,
       children: rest,
     };
   }

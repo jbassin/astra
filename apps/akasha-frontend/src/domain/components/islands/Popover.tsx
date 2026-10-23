@@ -85,6 +85,7 @@ function initPopovers(): () => void {
       return;
     }
 
+    // oxlint-disable-next-line no-console -- a failed preview fetch is logged in the browser; there is no client log pipeline
     const response = await fetchCanonical(targetUrl).catch((err) => console.error(err));
     if (!response) return;
     const [contentType = ""] = (response.headers.get("Content-Type") ?? "").split(";");

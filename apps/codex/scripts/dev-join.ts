@@ -24,12 +24,7 @@ import { join } from "node:path";
 import { loadConfig } from "@astra/config";
 
 import { dedupeAonMetas } from "../src/ingest/aonDedup";
-import {
-  type AonHit,
-  type AonDocMeta,
-  aonSkipReason,
-  extractAonMeta,
-} from "../src/ingest/aonFacets";
+import { type AonDocMeta, aonSkipReason, extractAonMeta } from "../src/ingest/aonFacets";
 import { buildAonLinkTable, type LinkTableDoc } from "../src/ingest/aonLinkTable";
 import { applyAonPrimaryDrop } from "../src/ingest/drop";
 import {
@@ -121,7 +116,7 @@ function makeCtx(
 
 function basenameOf(relPath: string): string {
   const parts = relPath.replace(/\.json$/, "").split("/");
-  return parts[parts.length - 1] ?? "";
+  return parts.at(-1) ?? "";
 }
 
 interface FoundrySide {
@@ -141,10 +136,8 @@ function loadFoundry(): FoundrySide {
   const registry: readonly PackRegistryEntry[] = buildPackRegistry(systemManifest);
   assertRegistryIsTotal(packsRoot, registry);
   for (const entry of registry) {
-    if (entry.docClass === "Actor" || entry.docClass === "Item") {
-      if (!isKnownPack(entry.dir)) {
-        throw new Error(`dev-join: pack "${entry.dir}" not recognized by categoryMap.ts`);
-      }
+    if ((entry.docClass === "Actor" || entry.docClass === "Item") && !isKnownPack(entry.dir)) {
+      throw new Error(`dev-join: pack "${entry.dir}" not recognized by categoryMap.ts`);
     }
   }
 
@@ -272,9 +265,9 @@ function loadAon(): AonSide {
       hits: Array<{ _id: string; _source: Record<string, unknown> }>;
     };
     for (const hit of snap.hits) {
-      if (aonSkipReason(hit as unknown as AonHit) !== undefined) continue;
+      if (aonSkipReason(hit) !== undefined) continue;
       try {
-        const meta = extractAonMeta(snap.category, hit as unknown as AonHit, report);
+        const meta = extractAonMeta(snap.category, hit, report);
         metas.push(meta);
         const markdown = hit._source.markdown;
         if (typeof markdown === "string" && markdown.trim().length > 0) {

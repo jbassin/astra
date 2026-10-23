@@ -73,6 +73,7 @@ function check(label: string, ok: boolean, detail?: string): void {
   }
 }
 
+// oxlint-disable-next-line require-await -- async so a throw reaches the caller as a rejection
 async function focusedRowIndex(page: Page): Promise<{ index: number | null; slug: string | null }> {
   return page.evaluate(() => {
     const active = document.activeElement;

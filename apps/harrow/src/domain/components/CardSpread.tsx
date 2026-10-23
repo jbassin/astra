@@ -118,6 +118,7 @@ export function CardSpread({ drawnCards, spread }: CardSpreadProps) {
           const len = Math.sqrt((to.x - from.x) ** 2 + (to.y - from.y) ** 2);
           return (
             <line
+              // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
               key={i}
               x1={from.x}
               y1={from.y}

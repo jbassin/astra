@@ -24,10 +24,10 @@ export interface RenderOpts {
 
 function esc(s: string): string {
   return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
 }
 
 export function dataUri(svg: string): string {
@@ -50,10 +50,10 @@ export function wrapLines(text: string, maxChars: number, maxLines: number): str
     }
   }
   if (cur && lines.length < maxLines) lines.push(cur);
-  const last = lines[lines.length - 1];
+  const last = lines.at(-1);
   if (last && last.length > maxChars) lines[lines.length - 1] = `${last.slice(0, maxChars - 1)}…`;
   const consumed = lines.join(" ").split(/\s+/).length;
-  const l = lines[lines.length - 1];
+  const l = lines.at(-1);
   if (consumed < words.length && l !== undefined) {
     lines[lines.length - 1] = l.length > maxChars - 1 ? `${l.slice(0, maxChars - 1)}…` : `${l}…`;
   }

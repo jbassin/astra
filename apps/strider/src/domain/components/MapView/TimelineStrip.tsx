@@ -50,6 +50,7 @@ export default function TimelineStrip({
   const cursorVisible = topEntry?.kind === "null" || stillTyping || (isPlaying && !atEnd);
 
   return (
+    // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a labelled group of buttons; a fieldset would bring its own styling
     <div className={styles.strip} role="group" aria-label="Vox-log timeline">
       <div className={styles.headerRibbon}>
         <span className={styles.headerHair} aria-hidden="true" />

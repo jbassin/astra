@@ -111,7 +111,7 @@ function chipsForNode(node: VellumNode, chips: string[], collisions: string[]): 
       findChips(node.children, chips, collisions);
       break;
     case "block":
-      if (node.labelNodes) findChips(node.labelNodes as Nodes[], chips, collisions);
+      if (node.labelNodes) findChips(node.labelNodes, chips, collisions);
       findChips(node.children, chips, collisions);
       break;
     case "columns":
@@ -119,7 +119,7 @@ function chipsForNode(node: VellumNode, chips: string[], collisions: string[]): 
         for (const inner of col) chipsForNode(inner, chips, collisions);
       break;
     case "fields":
-      for (const item of node.items) findChips(item.value as Nodes[], chips, collisions);
+      for (const item of node.items) findChips(item.value, chips, collisions);
       break;
     case "timeline":
       for (const entry of node.entries) findChips(entry.children, chips, collisions);

@@ -51,8 +51,8 @@ function PartsRow({ parts }: { parts: readonly ReactNode[] }): ReactElement {
       {parts.map((part, i) => (
         // Index-keyed: a fixed-shape, never-reordered per-render array of
         // facet parts with no natural id (same idiom as this directory's
-        // other corpus-array renderers — `no-array-index-key` is off
-        // repo-wide for `codex/src/domain/render/**`, `.oxlintrc.json`).
+        // other corpus-array renderers).
+        // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
         <span key={i}>
           {i > 0 ? <span className="codex-facet-sep"> | </span> : null}
           {part}
@@ -110,6 +110,7 @@ function mastheadExtraParts(
       // Index-keyed (post-filter): a fixed-shape, never-reordered per-render
       // array with no natural id — same idiom as `PartsRow`'s own key
       // comment above.
+      // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
       <Part key={`masthead-${i}`} label={pair.label}>
         {renderNodes(pair.value, ctx)}
       </Part>
@@ -250,7 +251,7 @@ export function EquipmentFacetHeader({
   if (f.usage !== undefined) {
     parts.push(
       <Part key="usage" label="Usage">
-        {f.usage.replace(/-/g, " ")}
+        {f.usage.replaceAll("-", " ")}
       </Part>,
     );
     shownLabels.add("usage");

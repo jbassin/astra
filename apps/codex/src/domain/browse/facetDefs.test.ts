@@ -6,7 +6,6 @@ import { createCorpusReader, fixtureCorpusRoot } from "@/server/corpusFs";
 
 import {
   FACET_DEFS,
-  type RawFacetValue,
   allFacetKeys,
   enumTagsFor,
   numericValueFor,
@@ -59,7 +58,7 @@ describe("facetDefs.ts: D29-32 conformance", () => {
       for (const category of reader.categories()) {
         if (!facetKeysFor(category).includes(key)) continue;
         for (const row of reader.index(category)) {
-          const raw = row.facets?.[key] as RawFacetValue | undefined;
+          const raw = row.facets?.[key];
           const tags = enumTagsFor(def, raw);
           if (!tags) continue;
           for (const tag of tags) {

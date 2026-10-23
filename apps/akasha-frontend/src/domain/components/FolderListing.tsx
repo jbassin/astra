@@ -18,6 +18,7 @@ export function FolderListing({ view }: { view: FolderView }) {
       </div>
       <div className="popover-hint">
         {/* the folder index's own vellum body (if any) renders above the listing */}
+        {/* oxlint-disable-next-line react/no-danger -- body HTML rendered at build time from the wiki */}
         <article data-pagefind-body dangerouslySetInnerHTML={{ __html: view.bodyHtml }} />
         <div className="page-listing">
           <p>{view.itemsLabel}</p>

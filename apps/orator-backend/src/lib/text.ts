@@ -6,17 +6,17 @@
 
 /** Normalize a tag name: trim, collapse inner whitespace, lowercase. */
 export function normalizeTag(name: string): string {
-  return name.replace(/\s+/g, " ").trim().toLowerCase();
+  return name.replaceAll(/\s+/g, " ").trim().toLowerCase();
 }
 
 /** URL/identity slug from arbitrary text: lowercase, non-alphanumerics → '-'. */
 export function slugify(text: string): string {
   return text
     .normalize("NFKD")
-    .replace(/\p{Diacritic}/gu, "")
+    .replaceAll(/\p{Diacritic}/gu, "")
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
+    .replaceAll(/[^a-z0-9]+/g, "-")
+    .replaceAll(/^-+|-+$/g, "")
     .slice(0, 80);
 }
 

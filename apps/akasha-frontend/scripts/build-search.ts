@@ -42,13 +42,14 @@ export async function main(): Promise<void> {
       url: searchUrl(page.slug),
       content: searchDoc(page.title, body),
     });
-    if (addErrors.length)
+    if (addErrors.length > 0)
       throw new Error(`pagefind addHTMLFile (${page.slug}): ${addErrors.join(", ")}`);
     indexed += 1;
   }
 
   const { errors: writeErrors } = await index.writeFiles({ outputPath: OUT_DIR });
-  if (writeErrors.length) throw new Error(`pagefind writeFiles failed: ${writeErrors.join(", ")}`);
+  if (writeErrors.length > 0)
+    throw new Error(`pagefind writeFiles failed: ${writeErrors.join(", ")}`);
   await pagefind.close();
   console.log(`  pagefind: indexed ${indexed} pages → ${OUT_DIR}`);
 }

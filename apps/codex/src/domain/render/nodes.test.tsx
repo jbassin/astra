@@ -504,7 +504,7 @@ describe("nodes.tsx: D29-136 (P14 S2) — embed fail-soft NEVER renders node.tar
  * TEXT content — distinct from `text()` above (the InlineNode builder); a
  * differently-named local helper avoids shadowing it. */
 function plainText(markup: string): string {
-  return markup.replace(/<[^>]+>/g, "");
+  return markup.replaceAll(/<[^>]+>/g, "");
 }
 
 describe("nodes.tsx: D29-139 (P14 S2) — heading inline-run whitespace normalization", () => {

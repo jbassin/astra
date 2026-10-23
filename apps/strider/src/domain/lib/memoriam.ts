@@ -24,6 +24,7 @@ export function computeFallenStateByCursor(
 
   const baseOwnerByHex = new Map<string, number>();
   for (let baseIdx = 0; baseIdx < FACTION_HEXES.length; baseIdx++) {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     for (const [q, r] of FACTION_HEXES[baseIdx]!) {
       baseOwnerByHex.set(`${q},${r}`, baseIdx);
     }
@@ -47,6 +48,7 @@ export function computeFallenStateByCursor(
   };
 
   for (let li = 0; li < layers.length; li++) {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const layer = layers[li]!;
     for (const change of layer.changes) {
       if (change.op !== "claim") continue;
@@ -82,6 +84,7 @@ export function fallenAtCursor(
   cursor: number,
 ): FallenEntry[] {
   const clamped = Math.max(0, Math.min(cursor, fallenStateByCursor.length - 1));
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
   const state = fallenStateByCursor[clamped]!;
   const entries: FallenEntry[] = [];
   state.forEach((fallLayerIdx, idx) => {
@@ -89,6 +92,7 @@ export function fallenAtCursor(
     const layer = layers[fallLayerIdx - 1];
     if (!layer) return;
     entries.push({
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
       faction: factions[idx]!,
       fallTimestamp: layer.timestamp,
       fallLayerIdx,

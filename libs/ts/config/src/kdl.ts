@@ -25,7 +25,7 @@ export function nodeProps(node: Node): Record<string, unknown> {
 
 /** KDL kebab-case node name → JS camelCase key. */
 export function camel(name: string): string {
-  return name.replace(/-([a-z0-9])/g, (_m, c: string) => c.toUpperCase());
+  return name.replaceAll(/-([a-z0-9])/g, (_m, c: string) => c.toUpperCase());
 }
 
 function args(node: Node): unknown[] {

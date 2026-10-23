@@ -17,6 +17,7 @@ export function Title({
   className,
   ...props
 }: HTMLAttributes<HTMLHeadingElement> & { level?: 1 | 2 | 3 }): ReactElement {
+  // oxlint-disable-next-line typescript/no-unnecessary-type-assertion -- tsc needs it: without it Tag is a plain string and JSX rejects it
   const Tag = `h${level}` as "h1" | "h2" | "h3";
   return (
     <Tag

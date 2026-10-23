@@ -85,7 +85,7 @@ export function parsePriceToCopper(raw: string): number | null {
   let total = 0;
   let matched = false;
   for (const m of body.matchAll(PRICE_PART_RE)) {
-    const amount = Number(m[1]?.replace(/,/g, ""));
+    const amount = Number(m[1]?.replaceAll(",", ""));
     const denom = m[2] ?? "";
     const perUnit = COPPER_PER_DENOM[denom];
     if (Number.isNaN(amount) || perUnit === undefined) continue;
@@ -121,7 +121,7 @@ function rangeBucket(raw: string): string | null {
   if (lower.includes("unlimited")) return "unlimited";
   const feet = /(\d[\d,]*)\s*feet/.exec(lower);
   if (!feet) return null;
-  const n = Number(feet[1]?.replace(/,/g, ""));
+  const n = Number(feet[1]?.replaceAll(",", ""));
   if (Number.isNaN(n)) return null;
   if (n <= 30) return "0-30";
   if (n <= 100) return "30-100";

@@ -128,8 +128,8 @@ export function parseChange(raw: unknown, ctx: string): Change {
     }
     return {
       op: "claim",
-      hexes: c.hexes as Array<[number, number]>,
-      faction: c.faction as string | null,
+      hexes: c.hexes,
+      faction: c.faction,
     };
   }
 
@@ -149,7 +149,7 @@ export function parseChange(raw: unknown, ctx: string): Change {
       slug,
       name: c.name,
       faction: c.faction,
-      hexes: c.hexes as Array<[number, number]>,
+      hexes: c.hexes,
     };
   }
 
@@ -169,7 +169,7 @@ export function parseChange(raw: unknown, ctx: string): Change {
       if (!Array.isArray(c.hexes) || !c.hexes.every(isHexPair)) {
         throw new Error(`${ctx}: update ${slug} 'hexes' must be an array of [q, r] pairs`);
       }
-      out.hexes = c.hexes as Array<[number, number]>;
+      out.hexes = c.hexes;
     }
     return out;
   }
@@ -242,7 +242,7 @@ export function parseChange(raw: unknown, ctx: string): Change {
       slug,
       name: c.name,
       color: c.color,
-      symbol: (c.symbol as string | null | undefined) ?? null,
+      symbol: c.symbol ?? null,
       members: c.members as string[],
     };
   }

@@ -49,6 +49,7 @@ export class RenderService {
     return this.browser?.isConnected() ?? false;
   }
 
+  // oxlint-disable-next-line require-await -- an async request handler: a throw becomes a rejected response promise
   async render(req: RenderRequest): Promise<Buffer> {
     const browser = this.browser;
     if (!browser) throw new RenderCapError("render service not started", 503);

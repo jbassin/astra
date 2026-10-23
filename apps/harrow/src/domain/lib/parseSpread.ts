@@ -26,7 +26,7 @@ export function parseSpread(raw: string, filePath: string): ParsedSpreadRaw {
   const parts = filePath.split("/");
   // astra's base tsconfig has `noUncheckedIndexedAccess` (harrow's source didn't),
   // so index/match-group accesses below are asserted `as string` — same logic.
-  const filename = parts[parts.length - 1] as string;
+  const filename = parts.at(-1) as string;
   const id = filename.replace(/\.spread$/, "");
   const date = id.split(".")[0] as string;
   const tag = `[${filename}]`;
@@ -99,6 +99,7 @@ export function parseSpread(raw: string, filePath: string): ParsedSpreadRaw {
     return {
       positionLabel: POSITION_LABELS[pos] as string,
       cardId,
+      // oxlint-disable-next-line typescript/no-unnecessary-type-assertion -- tsc needs it: the parsed value is a plain string
       orientation: orientation as CardOrientation,
     };
   });

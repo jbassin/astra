@@ -221,9 +221,9 @@ export interface PartitionedNameMatches {
 function normalizeForMatch(raw: string): string {
   return raw
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replaceAll(/[\u0300-\u036f]/g, "")
     .trim()
-    .replace(/\s+/g, " ")
+    .replaceAll(/\s+/g, " ")
     .toLowerCase();
 }
 

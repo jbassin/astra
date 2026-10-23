@@ -35,6 +35,7 @@ export function ContentArticle({ view }: { view: ContentView }) {
       <article
         className="popover-hint"
         data-pagefind-body
+        // oxlint-disable-next-line react/no-danger -- body HTML rendered at build time from the wiki
         dangerouslySetInnerHTML={{ __html: view.bodyHtml }}
       />
       {/* Progressive-enhancement: attaches to the SSR-emitted transcript markup on

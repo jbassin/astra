@@ -121,6 +121,8 @@ function DerivedFacetSection({
   state: BrowseFilterState;
   onChange: StateUpdater;
 }): ReactElement | null {
+  // Hooks run before any early return; the range widget simply ignores the query.
+  const [query, setQuery] = useState("");
   const ambient = ambientRows(rows, state, { kind: "facet", key: facetKey });
   const missing = missingCount(ambient, facetKey);
 
@@ -147,7 +149,6 @@ function DerivedFacetSection({
   const rawOptions = enumOptionCounts(ambient, facetKey);
   const labelOf = (v: string): string => humanizedLabelFor(def, v);
   const sorted = sortOptionsFor(facetKey, rawOptions, { labelOf });
-  const [query, setQuery] = useState("");
   if (sorted.length === 0 && missing === 0) return null;
   const visible = filterOptionsByQuery(sorted, query, labelOf);
   const selected = state.facetEnum.get(facetKey) ?? new Set<string>();

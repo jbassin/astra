@@ -1389,7 +1389,7 @@ function ListingTable({
   const desc = sort.startsWith("-");
   const activeKey = desc ? sort.slice(1) : sort;
   const firstIndex = virtualRows[0]?.index ?? 0;
-  const lastIndex = virtualRows[virtualRows.length - 1]?.index ?? -1;
+  const lastIndex = virtualRows.at(-1)?.index ?? -1;
   const topSpacerHeight = firstIndex * ROW_PITCH_PX;
   const bottomSpacerHeight = Math.max(0, totalRowCount - 1 - lastIndex) * ROW_PITCH_PX;
   const colSpan = cols.length + 1; // + the fixed edition-icon end column
@@ -1445,7 +1445,7 @@ function ListingTable({
                 row.id === selectedId && "codex-listing-row-selected",
               )}
               aria-rowindex={virtualRow.index + 1}
-              // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- D29-90: a pointer-target widening ONLY (no `role`/`tabindex` on the `<tr>` — the name anchor stays the row's single focusable element, R5/keyboard path untouched, see `BrowseListing`'s own `handleRowBodyClick` doc comment).
+              // D29-90: the row click is a pointer-target widening ONLY (no `role`/`tabindex` on the `<tr>` — the name anchor stays the row's single focusable element, R5/keyboard path untouched, see `BrowseListing`'s own `handleRowBodyClick` doc comment).
               onClick={(e) => onRowBodyClick(e, row)}
             >
               {cols.map((col) => (

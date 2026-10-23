@@ -138,11 +138,15 @@ export function computeSkeinCurve(
   const cumLen: number[] = Array.from({ length: samples.length });
   cumLen[0] = 0;
   for (let i = 1; i < samples.length; i++) {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const [ax, ay] = samples[i - 1]!;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const [bx, by] = samples[i]!;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     cumLen[i] = cumLen[i - 1]! + Math.hypot(bx - ax, by - ay);
   }
-  return { samples, cumLen, arcLength: cumLen[cumLen.length - 1]! };
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
+  return { samples, cumLen, arcLength: cumLen.at(-1)! };
 }
 
 // Sample the curve at normalized arc-length t ∈ [0, 1].
@@ -163,12 +167,17 @@ export function samplePoint(
   let hi = cumLen.length - 1;
   while (lo + 1 < hi) {
     const mid = (lo + hi) >>> 1;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     if (cumLen[mid]! <= target) lo = mid;
     else hi = mid;
   }
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
   const segLen = cumLen[hi]! - cumLen[lo]!;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
   const frac = segLen === 0 ? 0 : (target - cumLen[lo]!) / segLen;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
   const [ax, ay] = samples[lo]!;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
   const [bx, by] = samples[hi]!;
   const x = ax + (bx - ax) * frac;
   const y = ay + (by - ay) * frac;
@@ -187,19 +196,28 @@ export function partialCurvePolyline(
 ): Array<readonly [number, number]> {
   const { samples, cumLen, arcLength } = curve;
   if (samples.length === 0) return [];
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
   if (arcLength === 0) return [samples[0]!];
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
   if (t <= 0) return [samples[0]!];
   if (t >= 1) return samples.slice();
   const target = t * arcLength;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
   const out: Array<readonly [number, number]> = [samples[0]!];
   for (let i = 1; i < samples.length; i++) {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     if (cumLen[i]! <= target) {
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
       out.push(samples[i]!);
       continue;
     }
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const segLen = cumLen[i]! - cumLen[i - 1]!;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const frac = segLen === 0 ? 0 : (target - cumLen[i - 1]!) / segLen;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const [ax, ay] = samples[i - 1]!;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const [bx, by] = samples[i]!;
     out.push([ax + (bx - ax) * frac, ay + (by - ay) * frac]);
     break;

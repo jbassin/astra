@@ -152,6 +152,7 @@ function parseContent(s: string, depth: number): VssNode[] {
 function tryConstruct(s: string, j: number, depth: number): Parsed | null {
   const m = /^@([a-z]+)/.exec(s.slice(j, j + 32));
   if (!m) return null;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the regex match guarantees this group
   const word = m[1]!;
   const after = s[j + 1 + word.length];
   // Whole-word boundary: a trailing word char means this isn't a bare kind.
@@ -276,6 +277,7 @@ function parseBlockTail(
     }
     // E10 — a mid-line unexpected token (e.g. a second quoted string).
     let e = r;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     while (e < s.length && !/\s/.test(s[e]!) && s[e] !== "{") e++;
     return {
       node: errNode(`@${kind}: unexpected ${s.slice(r, e)}`),
@@ -313,6 +315,7 @@ function buildAttrs(
 /** Parse `@columns [ {…} {…} ]`. The `@columns` is at `j`. */
 function parseColumns(s: string, j: number, depth: number): Parsed {
   let p = j + "@columns".length;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
   while (p < s.length && /\s/.test(s[p]!)) p++;
   if (s[p] !== "[") {
     // E4 — no `[`; skip to next line.
@@ -324,6 +327,7 @@ function parseColumns(s: string, j: number, depth: number): Parsed {
   const errors: string[] = [];
 
   for (;;) {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     while (p < s.length && /\s/.test(s[p]!)) p++;
     if (p >= s.length) {
       errors.push("@columns: unterminated column list"); // E5
@@ -545,10 +549,13 @@ function joinContent(nodes: VssNode[]): string {
   let out = "";
   for (let i = 0; i < parts.length; i++) {
     if (i > 0) {
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
       const prev = parts[i - 1]!;
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
       const cur = parts[i]!;
       out += cur.dir && prev.dir ? "\n" : "\n\n";
     }
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     out += parts[i]!.text;
   }
   return out;
@@ -563,9 +570,9 @@ function serializeNode(node: VssNode): string {
     const pre = node.errors.map((e) => `:vsserr[${sanitize(e)}]\n\n`).join("");
     // An empty title emits no [label] at all — `:::item[]` and `:::item` are
     // model-equal, and the bare form is the cleaner canonical output.
-    const label = node.title === "" ? "" : "[" + escapeLabel(node.title) + "]";
+    const label = node.title === "" ? "" : `[${escapeLabel(node.title)}]`;
     const header = fence + node.kind + label + attrBlock(node.attrs);
-    return pre + header + "\n" + joinContent(node.body) + "\n" + fence;
+    return `${pre + header}\n${joinContent(node.body)}\n${fence}`;
   }
 
   // columns
@@ -573,20 +580,20 @@ function serializeNode(node: VssNode): string {
   const pre = node.errors.map((e) => `:vsserr[${sanitize(e)}]\n\n`).join("");
   const cols = node.groups.map((g) => {
     const cf = ":".repeat(columnColons(g));
-    return cf + "column\n" + joinContent(g) + "\n" + cf;
+    return `${cf}column\n${joinContent(g)}\n${cf}`;
   });
-  return pre + fence + "columns\n" + cols.join("\n") + "\n" + fence;
+  return `${pre + fence}columns\n${cols.join("\n")}\n${fence}`;
 }
 
 /** `{key="value" …}` for non-empty attrs, else "". */
 function attrBlock(attrs: [string, string][]): string {
   if (attrs.length === 0) return "";
-  return "{" + attrs.map(([k, v]) => `${k}="${v}"`).join(" ") + "}";
+  return `{${attrs.map(([k, v]) => `${k}="${v}"`).join(" ")}}`;
 }
 
 /** Backslash-escape `[`/`]` so a title with brackets can't close `[label]`. */
 function escapeLabel(title: string): string {
-  return title.replace(/([[\]])/g, "\\$1");
+  return title.replaceAll(/([[\]])/g, "\\$1");
 }
 
 /**
@@ -597,8 +604,8 @@ function escapeLabel(title: string): string {
  */
 function sanitize(reason: string): string {
   return reason
-    .replace(/([[\]])/g, "\\$1")
-    .replace(/\s+/g, " ")
+    .replaceAll(/([[\]])/g, "\\$1")
+    .replaceAll(/\s+/g, " ")
     .trim()
     .slice(0, 80);
 }
@@ -613,6 +620,7 @@ function dedent(text: string): string {
   let min = Infinity;
   for (const line of lines) {
     if (line.trim() === "") continue;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the regex match guarantees this group
     const indent = /^[ \t]*/.exec(line)![0].length;
     if (indent < min) min = indent;
   }

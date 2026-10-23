@@ -84,6 +84,7 @@ export default function EditorView({ factions, regions, skein, banners }: Editor
 
   const factionIdxForSelection = useMemo<number | null>(() => {
     if (state.selectedHexes.length === 0) return null;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
     const [q, r] = state.selectedHexes[0]!;
     return hexFaction.get(`${q},${r}`) ?? null;
   }, [state.selectedHexes, hexFaction]);
@@ -719,6 +720,7 @@ function computeDraftChange(
     ) {
       return null;
     }
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
     const [q, r] = state.selectedHexes[0]!;
     return {
       op: "skein-add",

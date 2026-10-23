@@ -40,11 +40,11 @@ export function sluggify(s: string): string {
     .split("/")
     .map((segment) =>
       segment
-        .replace(/\s/g, "-")
-        .replace(/&/g, "-and-")
-        .replace(/%/g, "-percent")
-        .replace(/\?/g, "")
-        .replace(/#/g, ""),
+        .replaceAll(/\s/g, "-")
+        .replaceAll("&", "-and-")
+        .replaceAll("%", "-percent")
+        .replaceAll("?", "")
+        .replaceAll("#", ""),
     )
     .join("/") // always use / as sep
     .replace(/\/$/, "");
@@ -53,7 +53,7 @@ export function sluggify(s: string): string {
 export function slugifyFilePath(fp: FilePath, excludeExt?: boolean): FullSlug {
   fp = stripSlashes(fp) as FilePath;
   let ext = getFileExtension(fp);
-  const withoutFileExt = fp.replace(new RegExp(ext + "$"), "");
+  const withoutFileExt = fp.replace(new RegExp(`${ext}$`), "");
   if (excludeExt || [".md", ".html", undefined].includes(ext)) {
     ext = "";
   }
@@ -74,7 +74,7 @@ export function simplifySlug(fp: FullSlug): SimpleSlug {
 }
 
 export function endsWith(s: string, suffix: string): boolean {
-  return s === suffix || s.endsWith("/" + suffix);
+  return s === suffix || s.endsWith(`/${suffix}`);
 }
 
 export function trimSuffix(s: string, suffix: string): string {
@@ -115,7 +115,7 @@ export function splitAnchor(link: string): [string, string] {
   if (fp.endsWith(".pdf")) {
     return [fp, anchor === undefined ? "" : `#${anchor}`];
   }
-  anchor = anchor === undefined ? "" : "#" + slugAnchor(anchor);
+  anchor = anchor === undefined ? "" : `#${slugAnchor(anchor)}`;
   return [fp, anchor];
 }
 
@@ -139,12 +139,12 @@ export function joinSegments(...args: string[]): string {
   // if the first segment starts with a slash, add it back (args is non-empty here;
   // `?? ""` only satisfies strict index access — same runtime behavior).
   if ((args[0] ?? "").startsWith("/")) {
-    joined = "/" + joined;
+    joined = `/${joined}`;
   }
 
   // if the last segment is a folder, add a trailing slash
-  if ((args[args.length - 1] ?? "").endsWith("/")) {
-    joined = joined + "/";
+  if ((args.at(-1) ?? "").endsWith("/")) {
+    joined = `${joined}/`;
   }
 
   return joined;
@@ -191,30 +191,29 @@ export function transformLink(src: FullSlug, target: string, opts: TransformOpti
   const targetSlug = transformInternalLink(target);
 
   if (opts.strategy === "relative") {
-    return targetSlug as RelativeURL;
-  } else {
-    const folderTail = isFolderPath(targetSlug) ? "/" : "";
-    const canonicalSlug = stripSlashes(targetSlug.slice(".".length));
-    const [targetCanonical, targetAnchor] = splitAnchor(canonicalSlug);
-
-    if (opts.strategy === "shortest") {
-      // if the file name is unique, then it's just the filename
-      const matchingFileNames = opts.allSlugs.filter((slug) => {
-        const parts = slug.split("/");
-        const fileName = parts.at(-1);
-        return targetCanonical === fileName;
-      });
-
-      // only match, just use it (length===1 guarantees [0]; assert for strict index access)
-      if (matchingFileNames.length === 1) {
-        const uniqueSlug = matchingFileNames[0] as FullSlug;
-        return (resolveRelative(src, uniqueSlug) + targetAnchor) as RelativeURL;
-      }
-    }
-
-    // if it's not unique, then it's the absolute path from the vault root
-    return (joinSegments(pathToRoot(src), canonicalSlug) + folderTail) as RelativeURL;
+    return targetSlug;
   }
+  const folderTail = isFolderPath(targetSlug) ? "/" : "";
+  const canonicalSlug = stripSlashes(targetSlug.slice(".".length));
+  const [targetCanonical, targetAnchor] = splitAnchor(canonicalSlug);
+
+  if (opts.strategy === "shortest") {
+    // if the file name is unique, then it's just the filename
+    const matchingFileNames = opts.allSlugs.filter((slug) => {
+      const parts = slug.split("/");
+      const fileName = parts.at(-1);
+      return targetCanonical === fileName;
+    });
+
+    // only match, just use it (length===1 guarantees [0]; assert for strict index access)
+    if (matchingFileNames.length === 1) {
+      const uniqueSlug = matchingFileNames[0] as FullSlug;
+      return (resolveRelative(src, uniqueSlug) + targetAnchor) as RelativeURL;
+    }
+  }
+
+  // if it's not unique, then it's the absolute path from the vault root
+  return (joinSegments(pathToRoot(src), canonicalSlug) + folderTail) as RelativeURL;
 }
 
 export function isFolderPath(fplike: string): boolean {

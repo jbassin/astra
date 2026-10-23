@@ -213,7 +213,6 @@ export function SearchPage({
     return () => window.clearTimeout(timerRef.current);
     // `state` is a fresh object each render (derived from `search` above) —
     // its own dependency already captures every field that can change.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, pf]);
 
   async function loadMore() {
@@ -456,6 +455,7 @@ function SearchResultRow({
         // Pagefind's own excerpt HTML (`<mark>` around matched terms) — the
         // one intentional `dangerouslySetInnerHTML` in this island, same
         // pattern akasha's Search.tsx uses.
+        // oxlint-disable-next-line react/no-danger -- a Pagefind excerpt; Pagefind escapes the page text
         <p className="codex-search-excerpt" dangerouslySetInnerHTML={{ __html: item.excerpt }} />
       ) : null}
     </li>

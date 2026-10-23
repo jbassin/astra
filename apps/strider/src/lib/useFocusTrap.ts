@@ -23,6 +23,7 @@ export function useFocusTrap(
       }
       if (e.key !== "Tab") return;
 
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- only called once the container is mounted
       const focusables = [...container!.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)];
       if (focusables.length === 0) {
         e.preventDefault();
@@ -30,7 +31,7 @@ export function useFocusTrap(
       }
 
       const first = focusables[0];
-      const last = focusables[focusables.length - 1];
+      const last = focusables.at(-1);
       const onFirst = document.activeElement === first || document.activeElement === container;
       const onLast = document.activeElement === last || document.activeElement === container;
 

@@ -29,7 +29,7 @@ describe("backdrop catalog", () => {
           expect(spec.fragment).toContain(name);
           if (u.type === "vec3<f32>") {
             expect(u.value).toBeInstanceOf(Float32Array);
-            expect((u.value as Float32Array).length).toBe(3);
+            expect(u.value.length).toBe(3);
           } else {
             expect(typeof u.value).toBe("number");
           }

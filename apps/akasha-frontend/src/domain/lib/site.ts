@@ -159,7 +159,10 @@ export function breadcrumbsFor(
   if (parts.at(-1) === "index") parts = parts.slice(0, -1); // folder index → folder
 
   const crumbs: Crumb[] = [
-    { displayName: rootName, path: parts.length ? resolveRelative(slug, "/" as SimpleSlug) : "" },
+    {
+      displayName: rootName,
+      path: parts.length > 0 ? resolveRelative(slug, "/" as SimpleSlug) : "",
+    },
   ];
 
   for (let i = 0; i < parts.length; i++) {

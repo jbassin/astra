@@ -24,6 +24,7 @@ export function handleAddClick(ctx: HexClickContext, q: number, r: number): void
   if (clickedFactionIdx === null) return;
 
   if (factionIdxForSelection !== null && clickedFactionIdx !== factionIdxForSelection) {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const otherName = factions[clickedFactionIdx]!.name;
     dispatch({
       type: "setError",
@@ -93,6 +94,7 @@ export function handleUpdateClick(ctx: HexClickContext, q: number, r: number): v
   ) {
     dispatch({
       type: "setError",
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
       error: `Region must stay inside ${factions[pickedFactionIdx]!.name}; that hex belongs to another faction.`,
     });
     return;

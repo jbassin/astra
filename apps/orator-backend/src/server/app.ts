@@ -190,6 +190,7 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
     });
   }
 
+  // oxlint-disable-next-line require-await -- an async request handler: a throw becomes a rejected response promise
   async function dispatchApi(req: Request, url: URL): Promise<Response> {
     return tracer.startActiveSpan(
       "orator.api",
@@ -262,6 +263,7 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
     return new Response("not found\n", { status: 404 });
   }
 
+  // oxlint-disable-next-line require-await -- an async request handler: a throw becomes a rejected response promise
   async function handle(req: Request): Promise<Response> {
     const url = new URL(req.url);
     const { pathname } = url;

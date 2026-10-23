@@ -172,6 +172,7 @@ export function VellumEditor() {
         <div className={styles.spacer} />
 
         {note ? (
+          // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a status note and a button group; output/fieldset would change the layout
           <span className={styles.note} role="status">
             {note}
           </span>
@@ -182,6 +183,7 @@ export function VellumEditor() {
           </span>
         ) : null}
 
+        {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a status note and a button group; output/fieldset would change the layout */}
         <div className={styles.modeToggle} role="group" aria-label="Theme mode">
           <button
             type="button"

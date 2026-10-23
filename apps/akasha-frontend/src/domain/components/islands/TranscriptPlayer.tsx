@@ -54,6 +54,7 @@ function initTranscriptPlayer(): (() => void) | null {
   const lines = Array.from(document.querySelectorAll(".transcript-line")) as HTMLElement[];
   if (!audio || lines.length === 0) return null;
 
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
   const root = lines[0]!.parentElement;
   if (!root) return null;
   root.classList.add("transcript-root");
@@ -82,7 +83,7 @@ function initTranscriptPlayer(): (() => void) | null {
     step: "0.1",
     value: "0",
     "aria-label": "Seek",
-  }) as HTMLInputElement;
+  });
   const timeLabel = el("span", "tp-time");
   timeLabel.textContent = "0:00 / 0:00";
 
@@ -93,7 +94,7 @@ function initTranscriptPlayer(): (() => void) | null {
     type: "search",
     placeholder: "Search transcript…",
     "aria-label": "Search transcript",
-  }) as HTMLInputElement;
+  });
   const searchCount = el("span", "tp-search-count");
   const searchPrev = btn("tp-btn tp-search-nav", "Previous match", icons.prev);
   const searchNext = btn("tp-btn tp-search-nav", "Next match", icons.next);
@@ -110,7 +111,7 @@ function initTranscriptPlayer(): (() => void) | null {
       type: "button",
       "aria-pressed": "true",
       title: `Toggle ${sp}`,
-    }) as HTMLButtonElement;
+    });
     const dot = el("span", "tp-chip-dot");
     const label = el("span", "tp-chip-label");
     label.textContent = sp;
@@ -151,6 +152,7 @@ function initTranscriptPlayer(): (() => void) | null {
       labelEl.textContent = nameMode === "char" ? (spToChar.get(sp) ?? sp) : sp;
     }
     if (namesBtn) {
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the element is created just above
       namesBtn.querySelector(".tp-names-label")!.textContent =
         nameMode === "char" ? "Characters" : "Real names";
       namesBtn.setAttribute("aria-pressed", String(nameMode === "char"));
@@ -162,7 +164,7 @@ function initTranscriptPlayer(): (() => void) | null {
   };
 
   if (hasCharacters) {
-    namesBtn = el("button", "tp-names-toggle", { type: "button" }) as HTMLButtonElement;
+    namesBtn = el("button", "tp-names-toggle", { type: "button" });
     namesBtn.innerHTML = `${icons.names}<span class="tp-names-label"></span>`;
     namesBtn.addEventListener("click", () => {
       nameMode = nameMode === "char" ? "real" : "char";
@@ -200,6 +202,7 @@ function initTranscriptPlayer(): (() => void) | null {
     let ans = -1;
     while (lo <= hi) {
       const mid = (lo + hi) >> 1;
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
       if (seconds[mid]! <= t) {
         ans = mid;
         lo = mid + 1;
@@ -214,10 +217,13 @@ function initTranscriptPlayer(): (() => void) | null {
   const updateActive = () => {
     const idx = activeIndexFor(audio.currentTime);
     if (idx === activeIdx) return;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     if (activeIdx >= 0) lines[activeIdx]!.classList.remove("is-playing");
     activeIdx = idx;
     if (idx >= 0) {
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
       lines[idx]!.classList.add("is-playing");
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
       if (follow) lines[idx]!.scrollIntoView({ block: "center", behavior: "smooth" });
     }
   };
@@ -260,6 +266,7 @@ function initTranscriptPlayer(): (() => void) | null {
   scrubber.addEventListener("change", onScrubChange);
 
   const scrollToActive = () => {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     if (activeIdx >= 0) lines[activeIdx]!.scrollIntoView({ block: "center", behavior: "smooth" });
   };
   locateBtn.addEventListener("click", () => {
@@ -297,8 +304,10 @@ function initTranscriptPlayer(): (() => void) | null {
   };
   const showMatch = (pos: number) => {
     if (matches.length === 0) return;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     if (matchPos >= 0) matches[matchPos]!.classList.remove("search-current");
     matchPos = (pos + matches.length) % matches.length;
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const m = matches[matchPos]!;
     m.classList.add("search-current");
     m.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -352,6 +361,7 @@ function initTranscriptPlayer(): (() => void) | null {
   const seekLine = (delta: number) => {
     const idx = activeIdx >= 0 ? activeIdx + delta : 0;
     const clamped = Math.max(0, Math.min(lines.length - 1, idx));
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
     const line = lines[clamped]!;
     seekTo(Number(line.dataset.second), line.dataset.user || "");
   };

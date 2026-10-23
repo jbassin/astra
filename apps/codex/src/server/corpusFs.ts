@@ -261,6 +261,7 @@ export function resolveCorpusRoot(): string {
   const realRoot = join(dataPath, "corpus");
   if (existsSync(join(realRoot, "manifest.json"))) return realRoot;
   const fixtureRoot = fixtureCorpusRoot();
+  // oxlint-disable-next-line no-console -- server-side warning to stdout; codex has no OTel logger yet
   console.warn(
     `[codex] no corpus at "${realRoot}" (config.kdl's codex.data-path) — falling back to the ` +
       `fixture corpus at "${fixtureRoot}". Expected in CI / a fresh clone; if you meant ` +

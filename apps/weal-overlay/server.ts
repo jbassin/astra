@@ -19,6 +19,7 @@ try {
   token = requireIngestToken(cfg.wealOverlay.token);
 } catch (err) {
   const body = `weal-overlay failed to start: ${err instanceof Error ? err.message : err}`;
+  // oxlint-disable-next-line no-console -- startup and fatal lines on stdout
   console.error(body);
   getLogger("astra.weal-overlay").emit({ severityText: "FATAL", body });
   // Flush first, so the refusal reaches SigNoz (and Class A paging).
@@ -34,6 +35,7 @@ const { server } = startServer({ port, token, distDir, rumEndpoint });
 // srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
 // listening completes (async on the Node runtime), so log from `.ready()`.
 void server.ready().then((s) => {
+  // oxlint-disable-next-line no-console -- startup and fatal lines on stdout
   console.log(`weal-overlay listening on ${s.url}`);
 });
 

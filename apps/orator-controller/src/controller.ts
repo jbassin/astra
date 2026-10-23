@@ -80,7 +80,7 @@ export class OratorController {
     const settings = (await streamDeck.settings.getGlobalSettings()) as OratorGlobalSettings;
     this.applySettings(settings);
     streamDeck.settings.onDidReceiveGlobalSettings((ev) => {
-      this.applySettings(ev.settings as OratorGlobalSettings);
+      this.applySettings(ev.settings);
       void this.reloadAndRenderAll();
     });
   }

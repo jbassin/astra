@@ -316,11 +316,13 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
    * pending consent and show the form. By the time this runs, the SDK's own
    * `authorizationHandler` has already resolved+validated `client` and checked
    * `params.redirectUri` against the client's registered URIs. */
+  // oxlint-disable-next-line require-await -- implements the MCP SDK's async OAuth provider interface
   async authorize(
     client: OAuthClientInformationFull,
     params: AuthorizationParams,
     res: Response,
   ): Promise<void> {
+    // oxlint-disable-next-line require-await -- implements the MCP SDK's async OAuth provider interface
     return tracer.startActiveSpan("portal.oauth.authorize", async (span) => {
       try {
         this.#prunePendingConsents();
@@ -393,6 +395,7 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
     return entry;
   }
 
+  // oxlint-disable-next-line require-await -- implements the MCP SDK's async OAuth provider interface
   async challengeForAuthorizationCode(
     client: OAuthClientInformationFull,
     authorizationCode: string,
@@ -410,12 +413,14 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
    * supplied one, must match what was recorded at consent time (OAuth 2.1
    * consistency check — belt-and-suspenders alongside the SDK's own registered-URI
    * check at `/authorize` time). */
+  // oxlint-disable-next-line require-await -- implements the MCP SDK's async OAuth provider interface
   async exchangeAuthorizationCode(
     client: OAuthClientInformationFull,
     authorizationCode: string,
     _codeVerifier?: string,
     redirectUri?: string,
   ): Promise<OAuthTokens> {
+    // oxlint-disable-next-line require-await -- implements the MCP SDK's async OAuth provider interface
     return tracer.startActiveSpan("portal.oauth.token", async (span) => {
       try {
         const entry = this.#peekCode(authorizationCode);
@@ -448,11 +453,13 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
   /** Rotation (D-7, OAuth 2.1 public-client requirement): the presented refresh
    * token is deleted unconditionally before a new pair is issued, so a dead/reused
    * refresh token can never succeed twice. */
+  // oxlint-disable-next-line require-await -- implements the MCP SDK's async OAuth provider interface
   async exchangeRefreshToken(
     client: OAuthClientInformationFull,
     refreshToken: string,
     scopes?: string[],
   ): Promise<OAuthTokens> {
+    // oxlint-disable-next-line require-await -- implements the MCP SDK's async OAuth provider interface
     return tracer.startActiveSpan("portal.oauth.token", async (span) => {
       try {
         const hash = sha256Hex(refreshToken);
@@ -494,6 +501,7 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
   /** Called directly by `mcp.ts`'s dual-auth check in S2 (not by `mcpAuthRouter`
    * itself — the SDK's bearer middleware, `requireBearerAuth`, is Express-only and
    * portal's `/mcp` stays on the raw-node handler). */
+  // oxlint-disable-next-line require-await -- implements the MCP SDK's async OAuth provider interface
   async verifyAccessToken(token: string): Promise<AuthInfo> {
     const hash = sha256Hex(token);
     const stored = this.#state.accessTokens[hash];
@@ -504,6 +512,7 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
     return { token, clientId: stored.clientId, scopes: stored.scopes, expiresAt: stored.expiresAt };
   }
 
+  // oxlint-disable-next-line require-await -- implements the MCP SDK's async OAuth provider interface
   async revokeToken(
     _client: OAuthClientInformationFull,
     request: OAuthTokenRevocationRequest,
@@ -527,11 +536,11 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
 
 function escapeHtml(value: string): string {
   return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 function renderConsentPage(opts: {

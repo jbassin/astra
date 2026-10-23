@@ -78,7 +78,7 @@ describe("portal-module main — ready hook designated-dialer gate (0027 S1, Fou
   beforeAll(async () => {
     globalThis.Hooks = {
       once: (hook, fn) => {
-        if (hook === "ready") readyHook = fn as () => void;
+        if (hook === "ready") readyHook = fn;
       },
       on: () => {},
     };

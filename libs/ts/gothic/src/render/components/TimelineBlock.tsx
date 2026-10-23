@@ -13,6 +13,7 @@ export function TimelineBlock({ node }: { node: VellumTimeline }): ReactElement 
   return (
     <ol className="gothic-content my-[0.6rem] grid grid-cols-[max-content_1fr] gap-x-4 gap-y-2 border-l-2 border-rule pl-4 [[data-mode=diegetic]_&]:border-[color-mix(in_srgb,var(--color-parchment-edge)_70%,transparent)]">
       {node.entries.map((entry, i) => (
+        // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
         <li key={i} className="contents">
           <span className="whitespace-nowrap font-mono text-[0.8rem] uppercase tracking-[0.06em] text-accent-amber [[data-mode=diegetic]_&]:text-wax">
             {entry.marker ?? ""}

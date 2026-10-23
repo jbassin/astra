@@ -74,6 +74,7 @@ function sparseClone(tag: string, destDir: string): void {
   });
 }
 
+// oxlint-disable-next-line require-await -- async so a throw reaches the caller as a rejection
 async function main(): Promise<void> {
   const cfg = loadConfig();
   const manifest = readManifest();

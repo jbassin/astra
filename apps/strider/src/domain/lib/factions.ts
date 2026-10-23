@@ -10,10 +10,12 @@ export interface Faction {
   description: string;
 }
 
+// oxlint-disable-next-line require-await -- route loaders call this as async; content is build-time today
 export async function getAllFactions(): Promise<Faction[]> {
   return FACTIONS as Faction[];
 }
 
+// oxlint-disable-next-line require-await -- route loaders call this as async; content is build-time today
 export async function getFactionBySlug(slug: string): Promise<Faction | null> {
   return factionBySlug(slug) ?? null;
 }

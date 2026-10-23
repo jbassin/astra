@@ -310,7 +310,7 @@ function isKnownPackCount(registry: readonly PackRegistryEntry[]): number {
 /** The pack file's own basename (no `.json`) — D29-1's identity source. */
 function basenameOf(relPath: string): string {
   const parts = relPath.replace(/\.json$/, "").split("/");
-  return parts[parts.length - 1] ?? "";
+  return parts.at(-1) ?? "";
 }
 
 main();

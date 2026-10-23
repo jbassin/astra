@@ -149,6 +149,7 @@ function ModalShell({
       );
       if (!focusables || focusables.length === 0) return;
       const first = focusables[0];
+      // oxlint-disable-next-line unicorn/prefer-at -- a NodeList has no .at()
       const last = focusables[focusables.length - 1];
       if (!first || !last) return;
       if (e.shiftKey && document.activeElement === first) {
@@ -162,9 +163,12 @@ function ModalShell({
   };
 
   return (
+    // oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- custom modal: the backdrop click cancels and Escape is handled; a native <dialog> is a behaviour change
     <div className="modal__backdrop" onClick={onCancel}>
+      {/* oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- custom modal: the backdrop click cancels and Escape is handled; a native <dialog> is a behaviour change */}
       <div
         className="modal"
+        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- custom modal: the backdrop click cancels and Escape is handled; a native <dialog> is a behaviour change
         role="dialog"
         aria-modal="true"
         aria-label={opts.title}

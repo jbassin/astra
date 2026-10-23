@@ -69,6 +69,7 @@ export function ShaderBackground({ spec }: { spec: BackdropSpec }) {
       a.ticker.add(tick);
       destroy = bg.destroy;
     })().catch((err: unknown) => {
+      // oxlint-disable-next-line no-console -- WebGL init failure, shown in the browser console
       console.error("ShaderBackground: init failed", err);
     });
 

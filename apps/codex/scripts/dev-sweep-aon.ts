@@ -113,7 +113,7 @@ function main(): void {
         const tag = (m[1] ?? "").toLowerCase();
         tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
       }
-      const lf = md.replace(/\r\n/g, "\n");
+      const lf = md.replaceAll("\r\n", "\n");
       mdLinks += (lf.match(/\[[^\]]*\]\([^)]*\)/g) ?? []).length;
       boldMarkers += (lf.match(/\*\*/g) ?? []).length;
       italicMarkers += (lf.match(/_/g) ?? []).length;

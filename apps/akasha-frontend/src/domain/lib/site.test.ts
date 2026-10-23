@@ -49,7 +49,7 @@ describe("site index — derived structure (lifted Quartz semantics)", () => {
     expect(tree.some((n) => n.isFolder && n.displayName === "Divinity")).toBe(true);
     // backlinks invert the snapshot edges: some page links to the Iridescent Host.
     const host = site.docs.find((d) => d.slug.endsWith("Iridescent-Host"));
-    expect(host && backlinksFor(site, host.slug).length).toBeGreaterThan(0);
+    expect(host ? backlinksFor(site, host.slug).length : 0).toBeGreaterThan(0);
   });
 
   it("bakes the snapshot git date (committer date — N4) onto dated pages", () => {

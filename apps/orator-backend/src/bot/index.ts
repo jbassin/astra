@@ -51,6 +51,7 @@ export async function startBot(opts: {
         return vs?.channel_id ?? null;
       } catch (err) {
         if ((err as { status?: number }).status !== 404) {
+          // oxlint-disable-next-line no-console -- to stdout; orator has no OTel logger yet
           console.error(
             `[orator] voice-state lookup failed for ${userId}:`,
             (err as Error).message,
@@ -82,6 +83,7 @@ export async function startBot(opts: {
   await client.login(opts.token);
   await ready;
   const guild = client.guilds.cache.get(opts.guildId);
+  // oxlint-disable-next-line no-console -- to stdout; orator has no OTel logger yet
   console.log(`[orator] bot ready as ${client.user?.tag} in "${guild?.name ?? opts.guildId}"`);
 
   return { client, engine, stop: () => void client.destroy() };

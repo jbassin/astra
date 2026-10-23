@@ -286,6 +286,7 @@ const MODULE_MAX_CREATES_CEILING = 50;
  * to that callback (it's `main.ts`-local), and D14's bridge-forwarded log-event wire
  * shape is a separate, not-yet-built feature — this is a local, always-on record. */
 function auditLog(tool: string, params: unknown, outcome: string): void {
+  // oxlint-disable-next-line no-console -- Foundry module: the browser console is the GM's log
   console.log(
     `[${MODULE_ID} audit] tool=${tool} outcome=${outcome} params=${JSON.stringify(params)}`,
   );
@@ -572,7 +573,7 @@ async function handleCreateActor(rawParams: unknown): Promise<CreateActorResult>
           ...collectRuleWarnings(
             it.name,
             source?.system as Record<string, unknown> | undefined,
-            it as FoundryItemLike,
+            it,
           ),
         );
       });
@@ -640,7 +641,7 @@ async function handleCreateItem(rawParams: unknown): Promise<CreateItemResult> {
         throw new BridgeHandlerError("foundry-error", "item creation returned no document");
       }
       created = item;
-      warnings = collectRuleWarnings(item.name, sentSystem, item as FoundryItemLike);
+      warnings = collectRuleWarnings(item.name, sentSystem, item);
     } else {
       // World items have no owning actor, so pf2e's data-prep (which instantiates
       // rule elements) never runs on them — there is nothing to read back (D-7).
@@ -1444,6 +1445,7 @@ function readDerivedNumber(
   if (typeof cur === "number") return cur;
   const message = `query-player stats: missing/invalid derived path "system.${path}"`;
   warnings.push(message);
+  // oxlint-disable-next-line no-console -- Foundry module: the browser console is the GM's log
   console.warn(`[${MODULE_ID}] ${message}`);
   return undefined;
 }
@@ -1642,9 +1644,7 @@ function buildSpells(
     // reliable live home is the ACTOR-level `system.attributes.spellDC.value` (the
     // D28-2 verified path, pf2e.mjs ~:58730). Preference: live embedded entry (in
     // case a future pf2e writes it back) → live actor spellDC → stored source.
-    const liveEsys = doc.items?.get(String(entry._id ?? ""))?.system as
-      | Record<string, unknown>
-      | undefined;
+    const liveEsys = doc.items?.get(String(entry._id ?? ""))?.system;
     const liveEntryDc = (liveEsys?.spelldc as Record<string, unknown> | undefined)?.dc;
     const actorAttributes = (doc.system?.attributes ?? {}) as Record<string, unknown>;
     const actorSpellDc = (actorAttributes.spellDC as Record<string, unknown> | undefined)?.value;
@@ -2306,8 +2306,8 @@ function parseRollJson(
 function deriveCheckNameFromFlavor(flavor: string | undefined): string | undefined {
   if (!flavor) return undefined;
   const stripped = flavor
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
+    .replaceAll(/<[^>]+>/g, " ")
+    .replaceAll(/\s+/g, " ")
     .trim();
   if (stripped.length === 0) return undefined;
   return stripped.length > 120 ? `${stripped.slice(0, 120)}…` : stripped;

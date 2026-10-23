@@ -145,6 +145,7 @@ main().catch((e) => {
   const body = `orator-backend failed to start: ${e}`;
   // stderr too: OTel logs aren't mirrored locally, and `docker logs` must say why a
   // fail-closed refusal is crash-looping.
+  // oxlint-disable-next-line no-console -- to stdout; orator has no OTel logger yet
   console.error(body);
   log.emit({ severityText: "FATAL", body });
   // Flush first, so a fail-closed refusal reaches SigNoz (and Class A paging) instead of

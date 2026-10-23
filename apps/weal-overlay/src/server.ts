@@ -60,6 +60,7 @@ export function createApp(opts: AppOptions): {
     throw new Error("weal-overlay createApp: ingest token is blank — refusing an open ingest");
   }
 
+  // oxlint-disable-next-line require-await -- an async request handler: a throw becomes a rejected response promise
   async function ingest(req: Request): Promise<Response> {
     return tracer.startActiveSpan("overlay.ingest", async (span) => {
       try {
@@ -144,6 +145,7 @@ export function createApp(opts: AppOptions): {
     return serveFile(req, target);
   }
 
+  // oxlint-disable-next-line require-await -- an async request handler: a throw becomes a rejected response promise
   async function handle(req: Request): Promise<Response> {
     const { pathname } = new URL(req.url);
     if (req.method === "POST" && pathname === "/api/v1/roll") return ingest(req);

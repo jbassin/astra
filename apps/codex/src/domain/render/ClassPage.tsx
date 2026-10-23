@@ -144,6 +144,7 @@ function CoreTraitsBox({
  * regardless of node type. */
 function joinWithComma(parts: readonly ReactNode[]): ReactNode {
   return parts.map((part, i) => (
+    // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
     <Fragment key={i}>
       {i > 0 ? ", " : ""}
       {part}
@@ -475,6 +476,7 @@ export function ClassPage({
     // Belt-and-braces (D29-119's own "assert exactly-one" text) — measured
     // exactly 1 on all 27 real stats-bearing classes; a future re-snapshot
     // drifting this is worth a loud dev-time signal, not a 500.
+    // oxlint-disable-next-line no-console -- SSR render warning to stdout; codex has no OTel logger yet
     console.warn(
       `[codex] ${entity.id}: expected exactly 1 "Your Level"/"Class Features" progression ` +
         `table to suppress from the Description body, found ${suppressedCount}.`,

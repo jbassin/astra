@@ -80,6 +80,7 @@ export function createAssayReader(dataDir: string): AssayReader {
       // distinction between the two, and neither should this loader.
       if (!warned) {
         warned = true;
+        // oxlint-disable-next-line no-console -- server-side warning to stdout; codex has no OTel logger yet
         console.warn(
           `[codex] no assay/spell-power.json (or it's malformed) at "${path}" — every spell ` +
             'page\'s "Assay (experimental)" block will be omitted (fail-soft, D30-39; no fixture ' +

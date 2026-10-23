@@ -19,7 +19,7 @@ async function resolveTrackIds(
   ctx: ApiCtx,
   body: { trackIds?: number[]; trackId?: number; collectionId?: number; playlistId?: number },
 ): Promise<number[]> {
-  if (Array.isArray(body.trackIds) && body.trackIds.length) return body.trackIds;
+  if (Array.isArray(body.trackIds) && body.trackIds.length > 0) return body.trackIds;
   if (body.trackId) return [body.trackId];
   if (body.collectionId)
     return (await ctx.store.listTracks({ collectionId: body.collectionId, limit: 500 })).map(
@@ -116,6 +116,7 @@ export const playbackRoutes: ApiRoute[] = [
     path: "/api/v1/voice/join",
     handler: async (ctx) => {
       const body = await readJson<{ channelId?: string }>(ctx.req).catch(
+        // oxlint-disable-next-line typescript/no-unnecessary-type-assertion -- tsc needs it, or body.channelId doesn't typecheck
         () => ({}) as { channelId?: string },
       );
       await engineOf(ctx).join({ userId: ctx.session.uid, channelId: body.channelId });

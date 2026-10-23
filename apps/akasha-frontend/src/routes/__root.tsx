@@ -56,12 +56,14 @@ function RootComponent() {
             is no light branch and no theme toggle). Runs pre-hydration so there's
             no flash. */}
         <script
+          // oxlint-disable-next-line react/no-danger -- an inline pre-paint script or CSS built from constants
           dangerouslySetInnerHTML={{
             __html: `document.documentElement.setAttribute("saved-theme","dark")`,
           }}
         />
         {/* Speaker colors (I5) — `--text<Name>` vars + per-speaker transcript rules,
             generated from ontology-being at build (see scripts/build-content.ts). */}
+        {/* oxlint-disable-next-line react/no-danger -- an inline pre-paint script or CSS built from constants */}
         <style dangerouslySetInnerHTML={{ __html: SPEAKER_CSS }} />
         <HeadContent />
       </head>

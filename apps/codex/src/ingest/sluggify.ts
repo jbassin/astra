@@ -60,10 +60,10 @@ export function sluggify(text: string, { camel = null }: { camel?: SlugCamel } =
       return text
         .replace(lowerCaseThenUpperCaseRE, "$1-$2")
         .toLowerCase()
-        .replace(/['’]/g, "")
+        .replaceAll(/['’]/g, "")
         .replace(nonWordCharacterRE, " ")
         .trim()
-        .replace(/[-\s]+/g, "-");
+        .replaceAll(/[-\s]+/g, "-");
     case "bactrian": {
       const dromedary = sluggify(text, { camel: "dromedary" });
       return dromedary.charAt(0).toUpperCase() + dromedary.slice(1);
@@ -71,11 +71,11 @@ export function sluggify(text: string, { camel = null }: { camel?: SlugCamel } =
     case "dromedary":
       return text
         .replace(nonWordCharacterHyphenOrSpaceRE, "")
-        .replace(/[-_]+/g, " ")
+        .replaceAll(/[-_]+/g, " ")
         .replace(upperOrWordBoundariedLowerRE, (part: string, index: number) =>
           index === 0 ? part.toLowerCase() : part.toUpperCase(),
         )
-        .replace(/\s+/g, "");
+        .replaceAll(/\s+/g, "");
     default:
       throw new Error("sluggify: unrecognized camel option");
   }

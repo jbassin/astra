@@ -31,14 +31,12 @@ export default function FactionSymbol({ faction, size }: FactionSymbolProps) {
   return (
     <div
       className={styles.placeholder}
-      style={
-        {
-          width: size,
-          height: size,
-          background: faction.color,
-          fontSize: `${Math.max(8, Math.round(size * 0.36))}px`,
-        } as React.CSSProperties
-      }
+      style={{
+        width: size,
+        height: size,
+        background: faction.color,
+        fontSize: `${Math.max(8, Math.round(size * 0.36))}px`,
+      }}
       aria-label={`${faction.name} symbol placeholder`}
     >
       {initials(faction.name)}

@@ -118,6 +118,7 @@ function renderNode(node: RenderableNode, key: number): ReactNode {
             <thead>
               <tr>
                 {head.children.map((cell, i) => (
+                  // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
                   <th key={i} style={cellAlign(i)}>
                     {renderNodes(cell.children)}
                   </th>
@@ -127,8 +128,10 @@ function renderNode(node: RenderableNode, key: number): ReactNode {
           ) : null}
           <tbody>
             {body.map((row, r) => (
+              // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
               <tr key={r}>
                 {row.children.map((cell, i) => (
+                  // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
                   <td key={i} style={cellAlign(i)}>
                     {renderNodes(cell.children)}
                   </td>

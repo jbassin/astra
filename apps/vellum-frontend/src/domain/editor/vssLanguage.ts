@@ -95,8 +95,10 @@ function parseVssOpener(cx: BlockContext, line: Line): boolean {
 
   const m = OPENER.exec(text);
   if (!m) return false;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the regex match guarantees this group
   const children = [{ type: "VSSKind", from, to: from + 1 + m[1]!.length }];
   if (m[2]) {
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- the regex match guarantees this group
     const open = text.indexOf('"', 1 + m[1]!.length);
     children.push({ type: "VSSTitle", from: from + open, to: from + m[0].length });
   }
@@ -108,6 +110,7 @@ function parseVssAttr(cx: BlockContext, line: Line): boolean {
   const m = ATTR.exec(line.text.slice(line.pos));
   if (!m) return false;
   const from = cx.lineStart + line.pos;
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- the regex match guarantees this group
   return claimLine(cx, line, "VSSAttr", [{ type: "VSSAttrKey", from, to: from + m[1]!.length }]);
 }
 

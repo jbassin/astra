@@ -409,7 +409,7 @@ export class PostgresStore implements LibraryStore {
       params.push(`%${f.q}%`);
       where.push(`t.title ilike $${params.length}`);
     }
-    const whereSql = where.length ? `where ${where.join(" and ")}` : "";
+    const whereSql = where.length > 0 ? `where ${where.join(" and ")}` : "";
     const limit = Math.min(Math.max(f.limit ?? 200, 1), 500);
     const offset = Math.max(f.offset ?? 0, 0);
     params.push(limit, offset);
@@ -590,7 +590,7 @@ export class PostgresStore implements LibraryStore {
       params.push(patch.shuffle ? 1 : 0);
       sets.push(`shuffle = $${params.length}`);
     }
-    if (!sets.length) return false;
+    if (sets.length === 0) return false;
     params.push(id);
     sets.push("updated_at = now()");
     const rows = await this.#all(
@@ -675,7 +675,7 @@ export class PostgresStore implements LibraryStore {
     if (patch.error !== undefined) push("error", patch.error);
     if (patch.title !== undefined) push("title", patch.title);
     if (patch.collectionId !== undefined) push("collection_id", patch.collectionId);
-    if (!sets.length) return;
+    if (sets.length === 0) return;
     params.push(id);
     sets.push("updated_at = now()");
     await this.#all(
@@ -722,7 +722,7 @@ export class PostgresStore implements LibraryStore {
     if (patch.progressPct !== undefined) push("progress_pct", patch.progressPct);
     if (patch.error !== undefined) push("error", patch.error);
     if (patch.trackId !== undefined) push("track_id", patch.trackId);
-    if (!sets.length) return;
+    if (sets.length === 0) return;
     params.push(id);
     await this.#all(
       `update download_job_items set ${sets.join(", ")} where id = $${params.length}`,

@@ -41,7 +41,7 @@ function fakeReader(overrides: {
 
 function indexRow(
   book: string,
-  id = `spell/${book.toLowerCase().replace(/\s+/gu, "-")}`,
+  id = `spell/${book.toLowerCase().replaceAll(/\s+/gu, "-")}`,
 ): IndexRow {
   return {
     id,

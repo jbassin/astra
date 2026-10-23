@@ -196,12 +196,15 @@ function boundaryNeedsSpace(prev: string, next: string): boolean {
 function normalizeHeadingChildren(children: readonly InlineNode[]): InlineNode[] {
   const out: InlineNode[] = [];
   for (const child of children) {
-    const prev = out[out.length - 1];
-    if (prev !== undefined && prev.kind === "text" && child.kind === "text") {
-      if (boundaryNeedsSpace(prev.content, child.content)) {
-        out.push({ ...child, content: ` ${child.content}` });
-        continue;
-      }
+    const prev = out.at(-1);
+    if (
+      prev !== undefined &&
+      prev.kind === "text" &&
+      child.kind === "text" &&
+      boundaryNeedsSpace(prev.content, child.content)
+    ) {
+      out.push({ ...child, content: ` ${child.content}` });
+      continue;
     }
     out.push(child);
   }
@@ -448,6 +451,7 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
       return (
         <Tag key={key}>
           {node.items.map((item, i) => (
+            // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
             <li key={i}>{renderNodes(item, ctx)}</li>
           ))}
         </Tag>
@@ -459,11 +463,14 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
           {node.caption ? <caption>{renderNodes(node.caption, ctx)}</caption> : null}
           <tbody>
             {node.rows.map((row, r) => (
+              // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
               <tr key={r}>
                 {row.cells.map((cell, c) =>
                   row.header ? (
+                    // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
                     <th key={c}>{renderNodes(cell, ctx)}</th>
                   ) : (
+                    // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
                     <td key={c}>{renderNodes(cell, ctx)}</td>
                   ),
                 )}
@@ -502,6 +509,7 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
           {node.cells.map((cell, c) => {
             const Tag = paragraphCarriesBlockContent(cell, ctx) ? "div" : "span";
             return (
+              // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
               <Tag key={c} className="codex-stat-line-cell">
                 {renderNodes(cell, ctx)}
               </Tag>

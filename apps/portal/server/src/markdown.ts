@@ -46,7 +46,7 @@ const HTML_ENTITY_NAMES: Record<string, string> = {
 };
 
 function decodeHtmlEntities(text: string): string {
-  return text.replace(/&(#x[0-9a-fA-F]+|#\d+|[a-zA-Z]+);/g, (whole, code: string) => {
+  return text.replaceAll(/&(#x[0-9a-fA-F]+|#\d+|[a-zA-Z]+);/g, (whole, code: string) => {
     if (code.startsWith("#x") || code.startsWith("#X")) {
       return String.fromCodePoint(Number.parseInt(code.slice(2), 16));
     }
@@ -65,7 +65,7 @@ function decodeHtmlEntities(text: string): string {
  * Argyle fixture; deeper nesting is rare and degrades to leftover bracket text
  * (lossy-but-safe: never HTML, just imperfect enricher stripping). */
 function stripEnrichers(html: string): string {
-  return html.replace(
+  return html.replaceAll(
     /@[A-Za-z]+\[((?:[^[\]]|\[[^\]]*\])*)\](?:\{([^}]*)\})?/g,
     (_whole, content: string, label?: string) => {
       if (label) return label;
@@ -83,33 +83,36 @@ export function htmlToMarkdown(html: string): string {
   if (!html) return "";
   let text = stripEnrichers(html);
 
-  text = text.replace(
+  text = text.replaceAll(
     /<h([1-6])[^>]*>([\s\S]*?)<\/h\1>/gi,
     (_w, level: string, inner: string) => `\n${"#".repeat(Number(level))} ${inner.trim()}\n\n`,
   );
-  text = text.replace(/<hr\s*\/?>/gi, "\n\n---\n\n");
-  text = text.replace(/<br\s*\/?>/gi, "\n");
-  text = text.replace(
+  text = text.replaceAll(/<hr\s*\/?>/gi, "\n\n---\n\n");
+  text = text.replaceAll(/<br\s*\/?>/gi, "\n");
+  text = text.replaceAll(
     /<(strong|b)[^>]*>([\s\S]*?)<\/\1>/gi,
     (_w, _tag: string, inner: string) => `**${inner.trim()}**`,
   );
-  text = text.replace(
+  text = text.replaceAll(
     /<(em|i)[^>]*>([\s\S]*?)<\/\1>/gi,
     (_w, _tag: string, inner: string) => `*${inner.trim()}*`,
   );
-  text = text.replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, (_w, inner: string) => `- ${inner.trim()}\n`);
-  text = text.replace(/<\/?(ul|ol)[^>]*>/gi, "\n");
-  text = text.replace(/<a[^>]*>([\s\S]*?)<\/a>/gi, (_w, inner: string) => inner.trim());
-  text = text.replace(/<p[^>]*>([\s\S]*?)<\/p>/gi, (_w, inner: string) => `${inner.trim()}\n\n`);
+  text = text.replaceAll(
+    /<li[^>]*>([\s\S]*?)<\/li>/gi,
+    (_w, inner: string) => `- ${inner.trim()}\n`,
+  );
+  text = text.replaceAll(/<\/?(ul|ol)[^>]*>/gi, "\n");
+  text = text.replaceAll(/<a[^>]*>([\s\S]*?)<\/a>/gi, (_w, inner: string) => inner.trim());
+  text = text.replaceAll(/<p[^>]*>([\s\S]*?)<\/p>/gi, (_w, inner: string) => `${inner.trim()}\n\n`);
   // Anything left (a tag this function doesn't special-case) — strip it to plain
   // text. This is the "never emit raw HTML" backstop.
-  text = text.replace(/<[^>]+>/g, "");
+  text = text.replaceAll(/<[^>]+>/g, "");
   text = decodeHtmlEntities(text);
   text = text
     .split("\n")
     .map((line) => line.replace(/[ \t]+$/, ""))
     .join("\n");
-  return text.replace(/\n{3,}/g, "\n\n").trim();
+  return text.replaceAll(/\n{3,}/g, "\n\n").trim();
 }
 
 // ---------------------------------------------------------------------------

@@ -15,6 +15,7 @@ export async function startRum(): Promise<void> {
     const endpoint = await getRumEndpoint();
     if (endpoint) initRum({ serviceName: "astra.orator-rum", endpoint });
   } catch (err) {
+    // oxlint-disable-next-line no-console -- RUM failing to start can only report to the browser console
     console.warn("[orator] RUM init skipped:", err);
   }
 }

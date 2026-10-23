@@ -104,7 +104,7 @@ export async function fetchAllForCategory(
     const page = res.hits.hits;
     if (page.length === 0) break;
     hits.push(...page);
-    const lastHit = page[page.length - 1];
+    const lastHit = page.at(-1);
     if (lastHit === undefined) break; // unreachable given the length check above
     searchAfter = lastHit.sort;
     if (page.length < pageSize) break;

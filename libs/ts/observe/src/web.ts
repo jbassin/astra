@@ -45,6 +45,7 @@ export function initRum({ serviceName, endpoint }: RumOptions): void {
     if (document.readyState === "complete") finish();
     else window.addEventListener("load", finish, { once: true });
   } catch (err) {
+    // oxlint-disable-next-line no-console -- RUM failing to start can only report to the browser console
     console.warn("[observe/web] RUM init skipped:", err);
   }
 }

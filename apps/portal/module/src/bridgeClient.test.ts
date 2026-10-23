@@ -30,7 +30,7 @@ class FakeSocket implements MinimalWebSocket {
     if (type === "open") this.#openListener = listener as Listener;
     else if (type === "close") this.#closeListener = listener as Listener;
     else if (type === "error") this.#errorListener = listener as Listener;
-    else if (type === "message") this.#messageListener = listener as MessageListener;
+    else if (type === "message") this.#messageListener = listener;
   }
 
   /** Test helper: simulate the socket finishing its opening handshake. */

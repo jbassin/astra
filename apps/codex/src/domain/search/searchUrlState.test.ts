@@ -18,7 +18,7 @@ import {
  * is what actually proves the B1 gotcha (a bare `+` decoding to a space)
  * never regresses on `/search`'s own params. */
 function parseQuery(queryString: string): Record<string, unknown> {
-  return defaultParseSearch(queryString) as Record<string, unknown>;
+  return defaultParseSearch(queryString);
 }
 
 describe("validateSearchPageSearch", () => {

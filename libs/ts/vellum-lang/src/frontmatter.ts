@@ -14,7 +14,7 @@ export const EMPTY_FRONTMATTER: Frontmatter = Object.freeze({
   tags: [],
   aliases: [],
   extra: {},
-}) as Frontmatter;
+});
 
 /** Split a leading `---…---` YAML block off the source; `yaml` is the block's body. */
 export function splitFrontmatter(source: string): { yaml: string; body: string } {

@@ -251,9 +251,7 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
     }
   }
 
-  const gcTimer = unrefTimer(
-    setInterval(() => gcSweepOnce(), gcIntervalMs) as unknown as ReturnType<typeof setTimeout>,
-  );
+  const gcTimer = unrefTimer(setInterval(() => gcSweepOnce(), gcIntervalMs));
 
   const heartbeatTimer = unrefTimer(
     setInterval(() => {
@@ -262,7 +260,7 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
         for (const sink of room.hostSinks) sink.send(frame);
         for (const set of room.playerSinks.values()) for (const sink of set) sink.send(frame);
       }
-    }, HEARTBEAT_MS) as unknown as ReturnType<typeof setTimeout>,
+    }, HEARTBEAT_MS),
   );
 
   return {

@@ -38,6 +38,7 @@ function RootComponent() {
         {/* Dark-only void theme: force the dark palette before first paint, pre-
             hydration so there's no flash (gothic ships dark unconditionally). */}
         <script
+          // oxlint-disable-next-line react/no-danger -- an inline pre-paint script or CSS built from constants
           dangerouslySetInnerHTML={{
             __html: `document.documentElement.setAttribute("saved-theme","dark")`,
           }}

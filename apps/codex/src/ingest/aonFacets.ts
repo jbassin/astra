@@ -125,9 +125,9 @@ function readLinkUrl(v: unknown): string | undefined {
  * normalized strings — the tree builder never re-normalizes. */
 export function normalizeBreadcrumbElement(raw: string): string {
   return raw
-    .replace(/[\r\n\t]+/g, "")
+    .replaceAll(/[\r\n\t]+/g, "")
     .trim()
-    .replace(/\s+/g, " ");
+    .replaceAll(/\s+/g, " ");
 }
 
 /** Defensive normalization for `remaster_id`/`legacy_id`: verified always an
@@ -147,7 +147,7 @@ const PAGE_RE = /pg\.\s*(?<page>\d+)\s*$/;
  * (378 real docs) or is itself absent. */
 function parsePage(raw: string | undefined): number | undefined {
   if (!raw) return undefined;
-  const cleaned = raw.replace(/[\r\n]+/g, "").trim();
+  const cleaned = raw.replaceAll(/[\r\n]+/g, "").trim();
   const match = PAGE_RE.exec(cleaned);
   const page = match?.groups?.page;
   return page !== undefined ? Number(page) : undefined;

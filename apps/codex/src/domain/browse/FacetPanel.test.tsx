@@ -87,7 +87,6 @@ describe("FacetPanel range widgets — no 'Must have a value' checkbox anywhere 
     const levelHeading = screen.getByText("Level");
     const section = levelHeading.closest("section");
     expect(section).not.toBeNull();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
     expect(section!.querySelectorAll('input[type="checkbox"]')).toHaveLength(0);
   });
 
@@ -535,7 +534,6 @@ describe("FacetPanel: Traits section (D29-107a, D29-125 OptionSearch, D29-127 re
     );
     const showAll = screen.getAllByRole("button", { name: /Show all 50/ })[0];
     expect(showAll).not.toBeNull();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
     fireEvent.click(showAll!);
     expect(container.querySelectorAll(".codex-trait-chips li").length).toBeGreaterThanOrEqual(50);
   });
@@ -562,7 +560,6 @@ describe("FacetPanel: Rarity section (D29-107c rank order + D29-126 chips + D29-
     const rarityHeading = screen.getByText("Rarity");
     const section = rarityHeading.closest("section");
     expect(section).not.toBeNull();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
     expect(section!.querySelectorAll('input[type="checkbox"]')).toHaveLength(0);
     const chips = [...container.querySelectorAll(".codex-facet-section")]
       .find((s) => s.querySelector("h3")?.textContent === "Rarity")
@@ -694,9 +691,7 @@ describe("FacetPanel: custom checkbox styling hook (D29-126) present without rem
     const sourceHeading = screen.getByText("Source");
     const section = sourceHeading.closest("section");
     expect(section).not.toBeNull();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
     fireEvent.click(within(section!).getByRole("button", { name: `Toggle ${OTHER_GROUP_LABEL}` }));
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
     const checkboxes = within(section!).getAllByRole("checkbox");
     expect(checkboxes.length).toBeGreaterThan(0);
   });
@@ -727,7 +722,6 @@ describe("FacetPanel: active-section badge + per-section clear (D29-124)", () =>
     const rarityHeading = screen.getByText("Rarity");
     const section = rarityHeading.closest("section");
     expect(section).not.toBeNull();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
     expect(within(section!).queryByLabelText("Clear Rarity")).toBeNull();
     expect(section?.querySelector(".codex-facet-title-badge")).toBeNull();
   });
@@ -751,11 +745,9 @@ describe("FacetPanel: active-section badge + per-section clear (D29-124)", () =>
     // a bare `getByText("1")` would also match a chip's own per-option
     // count span, an unrelated "1".
     expect(section?.querySelector(".codex-facet-title-badge")?.textContent).toBe("1");
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
     const clearButton = within(section!).getByLabelText("Clear Rarity");
     fireEvent.click(clearButton);
     expect(onChange).toHaveBeenCalledTimes(1);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- exercised above
     const updater = onChange.mock.calls[0]![0] as (prev: BrowseFilterState) => BrowseFilterState;
     expect(updater(state).rarity.size).toBe(0); // withoutDimension — only rarity cleared
   });
@@ -796,10 +788,8 @@ describe("FacetPanel: active-section badge + per-section clear (D29-124)", () =>
     const section = levelHeading.closest("section");
     expect(section).not.toBeNull();
     expect(section?.querySelector(".codex-facet-title-badge")?.textContent).toBe("1");
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
     fireEvent.click(within(section!).getByLabelText("Clear Level"));
     expect(onChange).toHaveBeenCalledTimes(1);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- exercised above
     const updater = onChange.mock.calls[0]![0] as (prev: BrowseFilterState) => BrowseFilterState;
     expect(updater(state).level).toEqual({});
   });
@@ -818,7 +808,6 @@ describe("FacetPanel: active-section badge + per-section clear (D29-124)", () =>
     const supersededHeading = screen.getByText("Including superseded");
     const section = supersededHeading.closest("section");
     expect(section).not.toBeNull();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
     expect(within(section!).queryByLabelText(/^Clear /)).toBeNull();
     expect(section?.querySelector(".codex-facet-title-badge")).toBeNull();
   });
