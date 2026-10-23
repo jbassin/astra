@@ -6,7 +6,7 @@ metadata:
 ---
 
 **portal-oauth (0025) — BUILT + DEPLOYED + LIVE-VERIFIED 2026-07-07** (S1 `b6de520` · S2 `fa988ff` ·
-S3 deploy; spec `thoughts/astra/specs/0025-portal-oauth-spec.md`, scope
+S3 deploy; spec `thoughts/archive/specs/0025-portal-oauth-spec.md`, scope
 `…/research/2026-07-07-portal-oauth-0025-thoughts.md`). claude.ai custom connectors support ONLY
 OAuth 2.1 (no static bearer — the `static_headers` beta wasn't on the account), so portal-server now
 runs a **single-user OAuth 2.1 authorization server**: the SDK's own `mcpAuthRouter` toolkit (D-5)

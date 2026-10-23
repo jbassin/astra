@@ -9,7 +9,7 @@ PROJECT 2026-07-27 **COMPLETE — scope → spec → adversarial ×2 → S1/S2/S
 menhir.iridi.cc in ONE session** (`e71fffd` spec · `17bae8f` S1 · `5b0568d` S2 · `ad17173` S2b ·
 `7bc3017` S3). A Kahoot clone for session-opener quizzes: host screen + phone players (QR join),
 SSE snapshots down / POST up, committed KDL quizzes, ephemeral rooms + results JSONL, no auth
-(per-game hostToken guards host actions). Spec `thoughts/astra/specs/0031-menhir-spec.md`
+(per-game hostToken guards host actions). Spec `thoughts/archive/specs/0031-menhir-spec.md`
 (D31-1..12 + §7 build record), port 10375, template = weal-overlay.
 
 **⭐ The load-bearing finds:**

@@ -8,8 +8,8 @@ metadata:
 **Vite+ cutover (0022)** — stakeholders want the whole TS lane on Vite+ (VoidZero `vp`, beta v0.2.2,
 **fully MIT/free** since the March-2026 reversal; Cloudflare acquired VoidZero 2026-06-04).
 Scoping doc + Phase-0 addendum + revised R1–R7 roadmap:
-`thoughts/shared/research/2026-07-02-viteplus-migration-0022-thoughts.md`. **SPEC'D 2026-07-02:
-`thoughts/astra/specs/0022-viteplus-cutover-spec.md` — 14 decisions (D1–D14), 15 slices S1–S15 up
+`thoughts/archive/research/2026-07-02-viteplus-migration-0022-thoughts.md`. **SPEC'D 2026-07-02:
+`thoughts/archive/specs/0022-viteplus-cutover-spec.md` — 14 decisions (D1–D14), 15 slices S1–S15 up
 the R-ladder (R1 vite-8 lockstep → R2 bun:test→vitest → R3 runtime exit → R4 pnpm → R5
 oxlint+oxfmt → R6 vp+tsdown; R7 = TS7 at GA, independent), verified-footprint table (corrects the
 scope doc: 7 Start apps not 8, 50 bun:test files not 48, 5-of-7 globalSetup) + an adversarial pass

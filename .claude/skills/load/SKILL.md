@@ -11,7 +11,7 @@ touching code.
 
 ## 1. Read the living handoff (the spine)
 
-- **`thoughts/shared/RESUME.md`** — start here. The **"Current state"** section is the only part that
+- **`thoughts/archive/RESUME.md`** — start here. The **"Current state"** section is the only part that
   goes stale; it names which subsystem is in flight, which slices are done/pushed, and the exact "resume
   at slice N" pointer. The **"Next"** section names the next action.
 
@@ -21,7 +21,7 @@ touching code.
   commands, working-style rules, the gotchas catalog.
 - **`CLAUDE.md`** (root) — authoritative conventions (plain git + conventional commits, two toolchains,
   telemetry-from-day-one, KDL+SOPS, the standing principles).
-- **`thoughts/astra/plans/0000-astra-migration-roadmap.md`** — phases + the A–I decisions ledger.
+- **`thoughts/archive/plans/0000-astra-migration-roadmap.md`** — phases + the A–I decisions ledger.
 
 ## 3. Load memory (background context, already auto-imported — re-read the relevant ones)
 
@@ -35,7 +35,7 @@ touching code.
 ## 4. Read the active subsystem's paper trail
 
 For the subsystem RESUME says is in flight, open:
-- its **spec** — `thoughts/astra/specs/<NNNN>-<subsystem>-spec.md` (the locked decisions, scope in/out,
+- its **spec** — `thoughts/archive/specs/<NNNN>-<subsystem>-spec.md` (the locked decisions, scope in/out,
   acceptance gate, the slice list);
 - its **scope/research** — `thoughts/shared/research/<date>-<subsystem>-<NNNN>-thoughts.md`.
 

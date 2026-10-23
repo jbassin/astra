@@ -7,9 +7,9 @@ metadata:
 
 `astra` (`/ruby/data/experiments/astra`, fresh git repo; spec `ASTRA.md`) is a **re-architecture** of
 faerrin, not a lift-and-shift. Approach chosen: research-first → phased program.
-- **Research:** `thoughts/shared/research/2026-06-18-astra-migration-discovery.md` (full faerrin→astra
+- **Research:** `thoughts/archive/research/2026-06-18-astra-migration-discovery.md` (full faerrin→astra
   map, per-subsystem evidence, net-new tech, repo skeleton, contracts, decisions ledger).
-- **Plan:** `thoughts/astra/plans/` — **ALL 16 docs written + decision-complete** (`0000` roadmap
+- **Plan:** `thoughts/archive/plans/` — **ALL 16 docs written + decision-complete** (`0000` roadmap
   [7-phase spine: Foundation→Substrate→Shared→Pipeline→Services→Frontends→Cutover] + `0001`–`0015`
   sub-plans). Each sub-plan carries a settled decisions table. Critical path = `0004` vellum-lang →
   `0007` akasha-backend (full-vellum). Cutover (`0015`) = **big-bang, same-host coexist, ~1-min rollback
@@ -22,7 +22,7 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   **SOPS+age** secrets in `deploy/sops/` (private key gitignored, recipient `age1q4l83…`); **OTLP py+ts
   spans verified landing in SigNoz** (`astra-smoke-{py,ts}` in `signoz_traces.distributed_signoz_index_v3`).
   Host ports confined to **10350–10399** (10350 dagster, 10351 signoz, 10352/10353 otlp, 10354/10355
-  caddy). Spec `thoughts/astra/specs/0001-phase0-foundation-spec.md`; runbook `deploy/README.md`.
+  caddy). Spec `thoughts/archive/specs/0001-phase0-foundation-spec.md`; runbook `deploy/README.md`.
   **Gotchas (load-bearing):** (1) uv hard-errors on an empty glob-matched member dir → track glob roots
   with a `.gitkeep` *file*, create a member dir only with a manifest; (2) `bun --filter '*' build` exits
   1 when no workspace owns the script → smoke lib carries a no-op `build`; (3) `biome migrate` rewrites
@@ -35,7 +35,7 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   workspace members (exclude `dagster/`, `deploy/`). SigNoz admin seeded: admin@astra.local.
 
 - **Phase 1 (substrate) COMPLETE + verified** (2026-06-19; 8 conventional commits on astra `main`;
-  `ci.yml` triggered). Spec `thoughts/astra/specs/0002-substrate-spec.md`. Members added:
+  `ci.yml` triggered). Spec `thoughts/archive/specs/0002-substrate-spec.md`. Members added:
   `libs/py/{observe,config,ontology,llm}`, `libs/ts/{observe,config,ontology}`,
   `ontology/ontology-{config,being}`, `apps/_smoke-substrate`. **KDL parsers:** py `ckdl` (C, v2),
   ts `@bgotink/kdl` (v2) — kept at the edge → Pydantic/Zod immediately. **SOPS:** reused the Phase-0
@@ -71,7 +71,7 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
 - **Phase 2 — sequencing: do 0004 (vellum-lang) BEFORE 0003 (gothic).** gothic's renderer renders
   vellum-lang's AST and *depends-on 0004*; vellum-lang has no gothic dep + is the documented critical
   path → build it first (user-confirmed). **vellum-lang (0004) COMPLETE + verified** (2026-06-19; 5
-  commits on astra `main`; CI green). Spec `thoughts/astra/specs/0004-vellum-lang-spec.md`. It's the
+  commits on astra `main`; CI green). Spec `thoughts/archive/specs/0004-vellum-lang-spec.md`. It's the
   **parser/AST only — the React renderer is 0003 (gothic)**. `libs/ts/vellum-lang` (`@astra/vellum-lang`)
   = the **TS reference** (full `VellumDocument` AST): lifted faerrin parse/surface/vss/model + **4 new
   full-vellum constructs** — YAML frontmatter, inline `[[crossref]]` (a pure unist text-node transform;
@@ -95,8 +95,8 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   divergence-prone inputs (dates, exotic scalars, code edges), not just happy paths.**
 
 - **gothic (0003) COMPLETE + verified** (2026-06-19; astra `main`; CI reproduced locally).
-  Spec `thoughts/astra/specs/0003-gothic-spec.md`; pre-impl thoughts
-  `thoughts/shared/research/2026-06-19-gothic-0003-thoughts.md`. `libs/ts/gothic` (`@astra/gothic`,
+  Spec `thoughts/archive/specs/0003-gothic-spec.md`; pre-impl thoughts
+  `thoughts/archive/research/2026-06-19-gothic-0003-thoughts.md`. `libs/ts/gothic` (`@astra/gothic`,
   bun/React 19) = astra's UI framework: (1) **tokens as a Tailwind v4 `@theme`** CSS (the ~20 gothic
   vars under `--color-*`/`--font-*` namespaces → both runtime vars AND utilities) + bundled fonts
   (Caslon/ITC Serif Gothic + `@fontsource/ibm-plex-mono`); (2) **identity-color seam (I5)** =
@@ -125,8 +125,8 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   `Nodes` union lacks `crossref` → renderer input widened to `Nodes | CrossRef`.
 
 - **akasha-backend (0007) COMPLETE + verified** (2026-06-19; astra `main`; CI reproduced locally incl. a
-  new `corpus-validate` job). Spec `thoughts/astra/specs/0007-akasha-backend-spec.md`; thoughts
-  `thoughts/shared/research/2026-06-19-akasha-backend-0007-thoughts.md`. The critical-path long pole.
+  new `corpus-validate` job). Spec `thoughts/archive/specs/0007-akasha-backend-spec.md`; thoughts
+  `thoughts/archive/research/2026-06-19-akasha-backend-0007-thoughts.md`. The critical-path long pole.
   **Decided forks (with Josh):** F1 full end-to-end now; **F2 TS converter**; **F3 validator in
   `libs/ts/vellum-lang/scripts/`** (the one-shot TS tools co-locate with the parser since the uv app
   can't be a dual manifest); resulting split = build-time TS (convert+validate, reference parser) vs
@@ -153,8 +153,8 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   `[[Undertable]]`≠`The Undertable` correctly stay unresolved (match by path, slug is 0011's job).
 
 - **scribe (0005) COMPLETE + verified** (2026-06-19; astra `main`; gates A–G; **H=live run deferred** by
-  design). Spec `thoughts/astra/specs/0005-scribe-spec.md`; thoughts
-  `thoughts/shared/research/2026-06-19-scribe-0005-thoughts.md`. The pipeline **head**: Craig `.zip` →
+  design). Spec `thoughts/archive/specs/0005-scribe-spec.md`; thoughts
+  `thoughts/archive/research/2026-06-19-scribe-0005-thoughts.md`. The pipeline **head**: Craig `.zip` →
   per-session `audio.mp3` + raw `script.json` (`[{start,end,text,user}]`, line-level, raw-id speakers,
   **words dropped** F1) as a Dagster **per-session partitioned** asset, transcribing on **Groq
   `whisper-large-v3`** (Decision G — no GPU/local model). **Decided forks (with Josh):** G1 build
@@ -180,8 +180,8 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
 
 - **linguist (0006) COMPLETE + verified** (2026-06-19; astra `main`; gates A–K — **J (live dspy judge +
   MIPROv2 compile) NOW DONE**, committed `judge.compiled.json`; see [[linguist-gate-j-dspy-judge]]). Spec
-  `thoughts/astra/specs/0006-linguist-spec.md`; thoughts
-  `thoughts/shared/research/2026-06-19-linguist-0006-thoughts.md`. The largest subsystem (faerrin
+  `thoughts/archive/specs/0006-linguist-spec.md`; thoughts
+  `thoughts/archive/research/2026-06-19-linguist-0006-thoughts.md`. The largest subsystem (faerrin
   `content/scripts`), built in 3 slices. **Decided forks (with Josh):** H1 pipeline + surfacer machinery
   now, **defer the live dspy judge + optimizer**; **H2 commit ALL ~75 MB** historical; **H3 rapidfuzz +
   metaphone(double) + hand-Dice**. **`apps/linguist`:** the deterministic pipeline (`models` byte-order,
@@ -214,8 +214,8 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
 
 - **mouthpiece-backend (0008) COMPLETE + verified** (2026-06-20; astra `main` `2bbbcaa`; gates A–J; **K =
   live ElevenLabs v3 run deferred** by design, paid/tier-gated). Spec
-  `thoughts/astra/specs/0008-mouthpiece-backend-spec.md`; thoughts
-  `thoughts/shared/research/2026-06-20-mouthpiece-backend-0008-thoughts.md`. Rewrote faerrin `caster`
+  `thoughts/archive/specs/0008-mouthpiece-backend-spec.md`; thoughts
+  `thoughts/archive/research/2026-06-20-mouthpiece-backend-0008-thoughts.md`. Rewrote faerrin `caster`
   (Bun TTS) → `apps/mouthpiece-backend` (uv) as a **Dagster per-session asset graph**: session_digest →
   session_script → session_audio_clips → session_episode (+ mega_digest date-range fuse) + a
   linguist→mouthpiece sensor; wired into `dagster/definitions.py`. **Decided H1 (with Josh): script +
@@ -236,8 +236,8 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   ElevenLabs/Anthropic/ffmpeg); the live v3 run is the one deferred item (gate K).
 
 - **strider (0014) COMPLETE + verified** (2026-06-20; astra `main`; 7 slices, all CI-green locally; both
-  toolchains). Spec `thoughts/astra/specs/0014-strider-spec.md`; thoughts
-  `thoughts/shared/research/2026-06-20-strider-0014-thoughts.md`. The **first `apps/*` TS frontend** and the
+  toolchains). Spec `thoughts/archive/specs/0014-strider-spec.md`; thoughts
+  `thoughts/archive/research/2026-06-20-strider-0014-thoughts.md`. The **first `apps/*` TS frontend** and the
   **canonical SSR-Compose-behind-Caddy template** (Decision I) that 0011–0013 copy. Lifted faerrin
   `pkg/strider` (TanStack Start + vite 6 + React 19 + pixi 8): build-content→generated→loader pipeline,
   faction/territory/layer/skein data model, pixi hexmap, MapView + faction routes, editor + layer-writer

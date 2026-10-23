@@ -11,7 +11,7 @@ A second static key (`portal_player_api_key`) on the same `/mcp` exposes exactly
 tools — `bridge-status`, `query-party`, `query-player` (7 sections), `query-item` (tri-scope),
 `query-rolls` (public-only, cursor-paginated) — rendered as markdown at the server (module wire
 stays typed JSON). S1 `8655edb` · S2 `a889034` · S3 `a59d53c` · live-gate fixes `0.4.1`/`0.4.2`;
-spec `thoughts/astra/specs/0028-portal-player-spec.md`; scope doc + its S2/S3 appendices =
+spec `thoughts/archive/specs/0028-portal-player-spec.md`; scope doc + its S2/S3 appendices =
 THE pf2e data-shape reference (ChatMessage v13, Roll JSON, prepared-actor paths, biography
 visibility, pack ownership).
 

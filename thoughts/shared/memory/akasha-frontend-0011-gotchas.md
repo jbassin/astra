@@ -8,8 +8,8 @@ metadata:
 Porting faerrin `aether` (Astro 5 SSG + 8 Solid islands, a Quartz port) → **akasha-frontend**, an SSR
 TanStack-Start site on the strider template. **COMPLETE — all 9 slices built; deployed-local-verified
 (healthy on 10365, SigNoz SSR spans, URL-parity cutover gate GREEN 217==faerrin); public DNS deferred.**
-Scope `thoughts/shared/research/2026-06-21-akasha-frontend-0011-thoughts.md`, spec
-`thoughts/astra/specs/0011-akasha-frontend-spec.md`. The critical-path long pole; `[[migration-guide]]` +
+Scope `thoughts/archive/research/2026-06-21-akasha-frontend-0011-thoughts.md`, spec
+`thoughts/archive/specs/0011-akasha-frontend-spec.md`. The critical-path long pole; `[[migration-guide]]` +
 `apps/strider/README.md` are the recipe; pairs with `[[strider-0016-gotchas]]`, `[[tanstack-start-skill]]`.
 
 **Load-bearing reframings (the sub-plan 0011 was drafted pre-Decision-I and is stale on these):**

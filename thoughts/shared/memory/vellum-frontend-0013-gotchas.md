@@ -9,7 +9,7 @@ metadata:
 astra as **two Compose units**. **COMPLETE — all 7 slices BUILT + PUSHED + DEPLOYED-LOCAL + VERIFIED LIVE**
 (`3835dae`(s1)…`f1171fd`(s7), 2026-06-23). The fourth/final 0011–0013 frontend. Scope+spec gates done
 (`ab04539`/`0dba4ef` scope, `5bf93b8` spec); **D2/D4/D5 locked with the user, D1/D3/D6 accepted** — see the
-spec `thoughts/astra/specs/0013-vellum-frontend-spec.md`. Pairs with [[strider-0016-gotchas]],
+spec `thoughts/archive/specs/0013-vellum-frontend-spec.md`. Pairs with [[strider-0016-gotchas]],
 [[akasha-frontend-0011-gotchas]], [[mouthpiece-frontend-0012-gotchas]].
 
 **Two apps (D2):** `apps/vellum-frontend` (SSR editor, **10367**) + `apps/vellum-render` (Bun + Playwright,

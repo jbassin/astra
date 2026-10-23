@@ -9,9 +9,9 @@ metadata:
 
 A dedicated Foundry GM account ("Portal") permanently logged in via headless Chromium (Compose
 unit `apps/portal/headless`, port 10373) so portal MCP tools work 24/7 tab-free. Scope
-`thoughts/shared/research/2026-07-08-headless-gm-0027-thoughts.md` (THE reference: live-host
+`thoughts/archive/research/2026-07-08-headless-gm-0027-thoughts.md` (THE reference: live-host
 findings, Foundry v13.351 `/join`+session mechanics read from the live server's own `foundry.mjs`);
-spec `thoughts/astra/specs/0027-headless-gm-spec.md` (D27-1..14). S1 `32f509b` (designated dialer +
+spec `thoughts/archive/specs/0027-headless-gm-spec.md` (D27-1..14). S1 `32f509b` (designated dialer +
 identity, module 0.3.0) · S2 `f281283` (supervisor service) · S3 `4914111` (container + compose).
 
 ## Load-bearing findings (verified, will bite again)

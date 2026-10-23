@@ -118,7 +118,7 @@ Josh gave standing approval for routine live infra steps (memory
    config override); weal-overlay refuses to start without its token (open mode removed). A plain
    `docker compose up -d` of either now crash-loops with a clear message instead of running open.
 5. Scriptorium torn down (`5102848f`): state archived byte-identical under
-   `thoughts/shared/archive/scriptorium-review-state/`, unit removed, Caddy stanza removed, edge
+   `thoughts/archive/scriptorium-review-state/`, unit removed, Caddy stanza removed, edge
    reloaded. `thoughts/**` is now oxfmt-ignored. The `apps/assay/review-ui/` source remains until
    the assay workshop is archived.
 6. weal save guard (`33cc5120`): a new save is dry-run against all saves with seven everyday rolls

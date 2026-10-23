@@ -12,7 +12,7 @@ linking the five player-facing sites (strider/akasha/mouthpiece/harrow/vellum). 
 `service.name=astra.ledger`), the **simplest frontend in the repo** — a sibling of
 harrow but even smaller (no content files, one route). 3 CI-green slices
 (`e6aeaea` config → `cab6ebe` app → `ae8b27e` deploy), pushed + deployed +
-edge-reloaded + live-verified. Spec `thoughts/astra/specs/0018-ledger-spec.md`. Built
+edge-reloaded + live-verified. Spec `thoughts/archive/specs/0018-ledger-spec.md`. Built
 on [[migration-guide]] + `apps/strider/README.md` + [[harrow-0017-gotchas]].
 
 **Decisions (user-chosen):** host = a new subdomain `ledger.iridi.cc` (not the apex

@@ -6,7 +6,7 @@ metadata:
 ---
 
 Before starting any app migration — especially the remaining frontends 0011–0013 — read
-**`thoughts/shared/guides/migrating-an-app-into-astra.md`**: the sequenced how-to
+**`thoughts/archive/guides/migrating-an-app-into-astra.md`**: the sequenced how-to
 (scope→spec→implement, the 7 frontend phases A–G, a framework-translation cheat-sheet)
 plus a comprehensive **dos & don'ts** and the load-bearing gotchas.
 

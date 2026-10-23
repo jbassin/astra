@@ -104,8 +104,8 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
   collector's signoz-net name (`http://signoz-otel-collector:4318`), not `localhost`.
 
 For the full sequenced playbook + ecosystem dos/don'ts (read this before a migration),
-see **`thoughts/shared/guides/migrating-an-app-into-astra.md`**. Background:
-`thoughts/astra/specs/0014-strider-spec.md` (original lift) and
+see **`thoughts/archive/guides/migrating-an-app-into-astra.md`**. Background:
+`thoughts/archive/specs/0014-strider-spec.md` (original lift) and
 `0016-strider-hardening-spec.md` (this template hardening), plus the memories
 `strider-0016-gotchas`, `tanstack-start-skill`, `config-single-source`,
 `deploy-apply-with-just`.

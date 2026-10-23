@@ -6,7 +6,7 @@ or a save confirmation. The language is weal v2 — a small, strict, type-inferr
 language where dice are exact probability distributions, evaluated by a Rust engine compiled to
 wasm (`libs/rust/weal-engine`, consumed as the committed `@astra/weal-engine` artifact).
 
-Spec: `thoughts/astra/specs/0032-weal-v2-spec.md` (D32-1..20). Engine internals:
+Spec: `thoughts/archive/specs/0032-weal-v2-spec.md` (D32-1..20). Engine internals:
 `libs/rust/weal-engine/README.md`.
 
 ## How the bot listens

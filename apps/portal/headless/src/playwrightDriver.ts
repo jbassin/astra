@@ -2,7 +2,7 @@
  * The real Chromium `PageAdapter` (spec 0027 D27-6/-7/-9/-10) — one warm, persistent
  * page for process life (vellum-render's browser-lifecycle pattern, `--no-sandbox`),
  * driving the actual Foundry v13.351 `/join` mechanics verified in the scope doc
- * (`thoughts/shared/research/2026-07-08-headless-gm-0027-thoughts.md` §2.3, read from
+ * (`thoughts/archive/research/2026-07-08-headless-gm-0027-thoughts.md` §2.3, read from
  * the live server's own `scripts/foundry.mjs`). Deliberately thin and NOT exercised in
  * unit CI (no Chromium there, mirroring vellum-render) — all the branching logic lives
  * in `supervisor.ts`, which IS unit-tested via a fake `PageAdapter`. Verify the DOM

@@ -5,14 +5,14 @@ metadata:
   type: project
 ---
 
-**SUPERSEDED by 0033 (2026-10-10): pipeline + review site retired; see thoughts/astra/specs/0033-heartwood-agent-spec.md**
+**SUPERSEDED by 0033 (2026-10-10): pipeline + review site retired; see thoughts/archive/specs/0033-heartwood-agent-spec.md**
 
 **heartwood (0020)** — a net-new **multi-phase** subsystem: an LLM (GLM-5.2) reads play-session
 transcripts and maintains the akasha **setting wiki** (the "nouns" — people/places/things, NOT
 play-by-play; chronicle + Script pages already cover narrative sequence), proposing changes for
 **human-gated PR-style review** at a bespoke **`heartwood.iridi.cc`** (vellum-editor base). Docs:
-`thoughts/shared/research/2026-06-27-heartwood-0020-thoughts.md` (umbrella, decisions D1–D10 + open-Qs §7
-all resolved), `…-0020-phase1-registry-thoughts.md` (Phase-1 scope), `thoughts/astra/specs/0020-heartwood-phase1-registry-spec.md`.
+`thoughts/archive/research/2026-06-27-heartwood-0020-thoughts.md` (umbrella, decisions D1–D10 + open-Qs §7
+all resolved), `…-0020-phase1-registry-thoughts.md` (Phase-1 scope), `thoughts/archive/specs/0020-heartwood-phase1-registry-spec.md`.
 
 **Phase structure (5):** (1) ontology infra — `world` field + typed entity registry ✅ **DONE**;
 (2) **extraction engine** ✅ **DONE (acceptance CLOSED)**; (3) **prose proposer** (the make-or-break

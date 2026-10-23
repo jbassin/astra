@@ -8,9 +8,9 @@ data) and the **Archives of Nethys** Elasticsearch index (prose, citations, page
 plus a **TanStack Start SSR frontend** (`src/routes/`, `src/server/`, `src/domain/render/`)
 that reads the emitted corpus from disk at request time and renders it. P1 (the ingest) was
 deliberately frontend-free — it ends with a validated, deterministic, sharded corpus + a
-transform report on disk. P2 (`thoughts/astra/specs/0029-codex-p2-entity-pages-spec.md`) adds
+transform report on disk. P2 (`thoughts/archive/specs/0029-codex-p2-entity-pages-spec.md`) adds
 the frontend on top, unmodified corpus contract. See
-`thoughts/astra/specs/0029-codex-p1-ingest-spec.md` for the ingest spec.
+`thoughts/archive/specs/0029-codex-p1-ingest-spec.md` for the ingest spec.
 
 ## The frontend (P2)
 
@@ -192,7 +192,7 @@ none of the host-only memory profile above (that only shows up at real-corpus sc
 gone), rules entity pages gain hierarchy navigation (breadcrumb + a sidebar + a page-turn
 pager), every category can render **attached sidebars** on its host pages, and `/sources`
 adds an aggregate book index. One transform slice feeds all four; see
-`thoughts/astra/specs/0029-codex-p4-rules-browser-spec.md` for the full decision record
+`thoughts/archive/specs/0029-codex-p4-rules-browser-spec.md` for the full decision record
 (D29-39..45) — this section is the durable "how it works" summary.
 
 ### The tree model — sibling chains, not page-turn
@@ -295,7 +295,7 @@ P4.5 is frontend-only — no corpus/transform change (fixtures untouched) — an
 independent surfaces per stakeholder redirect at P4's exit gate H: the whole visual system,
 global nav + a real landing page, the legacy-toggle mechanism, category browse, and a
 page-surface restyle sweep. See
-`thoughts/astra/specs/0029-codex-p45-ux-restyle-spec.md` (D29-46..52, §8 build record) for
+`thoughts/archive/specs/0029-codex-p45-ux-restyle-spec.md` (D29-46..52, §8 build record) for
 the full decision ledger.
 
 ### Parchment theme, self-hosted fonts, `src/ui/` (S1, D29-46)
@@ -829,8 +829,8 @@ live `2e.iridi.cc` — byte-identical SSR payload between the two hosts (a diff 
 
 P8 is render/client-only — no corpus/transform/index change; deploy = `just up` alone.
 Provenance: the 2026-07-16 5e.tools UX comparison
-(`thoughts/shared/research/2026-07-16-codex-vs-5etools-spell-browse-ux-thoughts.md`); spec
-`thoughts/astra/specs/0029-codex-p8-density-tables-spec.md`.
+(`thoughts/archive/research/2026-07-16-codex-vs-5etools-spell-browse-ux-thoughts.md`); spec
+`thoughts/archive/specs/0029-codex-p8-density-tables-spec.md`.
 
 - **Table register (D29-78/-79, S1):** every `/{category}` listing is a flat sortable table —
   per-category column sets from `src/domain/browse/columnDefs.tsx` (spell: Lvl/Cast/Range ·
@@ -865,7 +865,7 @@ Provenance: the 2026-07-16 5e.tools UX comparison
 P9 is render/client-only — no corpus/transform/index change; deploy = `just up` alone. Killed the
 /feat-class parse+hydrate cost (8,485 SSR'd+hydrated `<tr>`s → ~2.8s parse+~1s hydrate at 4×
 throttle) two ways at once: DOM windowing over the row array, and pulling the full row array out
-of the router's dehydration payload entirely. Spec `thoughts/astra/specs/0029-codex-p9-
+of the router's dehydration payload entirely. Spec `thoughts/archive/specs/0029-codex-p9-
 virtualization-spec.md` (D29-83..90, status BUILT). Slices: **S1 `d467e78`** windowed table + SSR
 data split · **S2 `9542d0c`** interaction parity + whole-row click · **S3** this sweep.
 
@@ -949,7 +949,7 @@ data split · **S2 `9542d0c`** interaction parity + whole-row click · **S3** th
 `/class` and `/class/{slug}` are a dedicated surface (the 5e.tools model) instead of the generic
 prose pipeline — a Core Traits box, a level-by-level progression table with anchor-linked
 features, subclass toggles, and a level-ordered feature stream, backed by a new typed `stats`
-model on `class` entities. Spec `thoughts/astra/specs/0029-codex-p12-class-page-spec.md`
+model on `class` entities. Spec `thoughts/archive/specs/0029-codex-p12-class-page-spec.md`
 (D29-113..120, status BUILT). Slices: **S1 `21547da`** transform · **S2 `ed40bab`** server +
 routes · **S3 `93fa2e2`** render · **S4** this sweep.
 
@@ -1047,7 +1047,7 @@ values, icon-only Edition, Superseded reachable twice) is replaced by a **pane-s
 two-column tier the panel content moves INTO the entry-pane grid cell (no modal at all); on the
 narrow tier it's still a `<dialog>` bottom sheet. Render/server-only round — `filterEngine.ts`,
 `urlState.ts`, and the corpus/index are untouched. Spec
-`thoughts/astra/specs/0029-codex-p13-filter-redesign-spec.md` (D29-121..131, status BUILT).
+`thoughts/archive/specs/0029-codex-p13-filter-redesign-spec.md` (D29-121..131, status BUILT).
 Slices: **S1 `c60bdbe`** shared primitives + facet content · **S2 `f443d31`** container swap +
 chrome · **S3 `713c138`** source groups + `/search` · **S4** this sweep.
 

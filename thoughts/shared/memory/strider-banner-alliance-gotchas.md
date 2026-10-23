@@ -9,7 +9,7 @@ The strider "factions ally and combine their land under one banner" feature
 (2026-06-23, COMPLETE + pushed + deployed live on `astra-strider`/10360,
 `strider.iridi.cc`). A net-new product feature, NOT a port — verified absent in
 faerrin's `pkg/strider` (the `Change` union is byte-identical there). Scope:
-`thoughts/shared/research/2026-06-23-strider-banner-alliance-thoughts.md`.
+`thoughts/archive/research/2026-06-23-strider-banner-alliance-thoughts.md`.
 
 **Model (the two new `Change` ops, `src/domain/lib/regions.ts`):**
 `banner-form { slug, name, color, symbol?, members[] }` + `banner-dissolve { slug }`,

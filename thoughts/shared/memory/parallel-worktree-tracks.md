@@ -7,7 +7,7 @@ metadata:
 
 **The parallel-worktree-track pattern** (first use: codex 0029 P6, 2026-07-15 — 4 tracks + serial
 integration, worked on the first try; spec section = D29-71 in
-`thoughts/astra/specs/0029-codex-p6-feedback-spec.md`).
+`thoughts/archive/specs/0029-codex-p6-feedback-spec.md`).
 
 Structure the SPEC (not just the task assignment) around it:
 

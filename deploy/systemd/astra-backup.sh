@@ -92,7 +92,7 @@ PG_CONTAINERS=(astra-dagster-postgres astra-weal-postgres astra-orator-postgres)
 #   locks          runtime locks, no data
 # Not backed up from anywhere: the scriptorium review state (apps/assay/review-ui/state in the
 # developer tree) was archived byte-identical into git at
-# thoughts/shared/archive/scriptorium-review-state/ when the scriptorium was torn down, and
+# thoughts/archive/scriptorium-review-state/ when the scriptorium was torn down, and
 # nothing writes it any more.
 SKIP_DIRS=(postgres node-exporter codex locks)
 # A run refuses unless these exist, so a wrong or unmounted DATA_ROOT fails the unit instead

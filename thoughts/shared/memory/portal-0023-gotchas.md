@@ -14,8 +14,8 @@ PASSED** (all A–H met; spec status header carries the detail). Live-verified t
 reads (Monster-Core search, full-actor get-document, current scene `engine-heart`, world search), writes
 (import Goblin Warrior → token on the active scene tokenCount 7→8 → journal; `cap-exceeded` at 11 vs
 cap 10; every write audit-logged with span-linked `portal.audit.*`), SigNoz three signals 0 unexpected
-errors. Scope `thoughts/shared/research/2026-07-06-portal-0023-thoughts.md`; spec
-`thoughts/astra/specs/0023-portal-spec.md` (6 slices S1–S6, decisions D1–D14; commit map in the header).
+errors. Scope `thoughts/archive/research/2026-07-06-portal-0023-thoughts.md`; spec
+`thoughts/archive/specs/0023-portal-spec.md` (6 slices S1–S6, decisions D1–D14; commit map in the header).
 
 **⭐ Live-acceptance gotchas (2026-07-07, found by running the acceptance):**
 

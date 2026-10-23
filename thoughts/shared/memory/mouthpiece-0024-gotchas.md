@@ -6,7 +6,7 @@ metadata:
 ---
 
 **0024 mouthpiece script-generation rework — BUILT + DEPLOYED + LIVE 2026-07-07** (S1 `7eec3d4` →
-S5 `66799a5` + S6 deploy; spec `thoughts/astra/specs/0024-mouthpiece-script-rework-spec.md`, scope
+S5 `66799a5` + S6 deploy; spec `thoughts/archive/specs/0024-mouthpiece-script-rework-spec.md`, scope
 doc `…/research/2026-07-07-mouthpiece-script-rework-0024-thoughts.md`). Stage 2 is now
 **clean+enrich** (`clean.py`: heartwood-style 20-turn windowed keep/drop → compact inclusive
 line-id `kept_ranges` + `dropped` audit trail + `KEPT_LINES_FLOOR=150` loud-fail; one enrich call →

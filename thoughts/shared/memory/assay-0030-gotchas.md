@@ -35,7 +35,7 @@ joint review.
 **PROJECT 2026-07-19 — assay (0030) COMPLETE through round 3, one session:** `apps/assay`
 (uv member) scores PF2e homebrew spells against the codex Foundry snapshot
 (`apps/codex/data/snapshots/foundry/pf2e-*/packs/pf2e/spells/spells/`, read-only). Scope
-doc `thoughts/shared/research/2026-07-19-assay-spell-power-0030-thoughts.md` (§6/§7 =
+doc `thoughts/archive/research/2026-07-19-assay-spell-power-0030-thoughts.md` (§6/§7 =
 outcomes); specs `0030-assay-round{2,3}-spec.md` w/ §5 build records. Commits: r1
 `e6df546`/`4285ce8` · r2 `6d77fa7`/`4098bff` · r3 `3783473`/`5ea0e5e`. 176 tests.
 
@@ -435,7 +435,7 @@ pre-application texts at `7c9577f^`. Scorer gotcha: engineer quotes raw `@UUID[�
 where marginalia quote rendered text — token-overlap matching + manual pass on
 misses. ⭐ **CSS: an animation owns its properties and BEATS a :hover transition**
 (the mock's "half-fade" bug — kill the animation on hover). **Alias feature:** scope
-`thoughts/shared/research/2026-07-25-memetic-alias-0030-thoughts.md`; stakeholders
+`thoughts/archive/research/2026-07-25-memetic-alias-0030-thoughts.md`; stakeholders
 picked variant **D "Veiled Iridescence"** off the live mock (R1/R2 RESOLVED; mock
 committed as D3 reference impl `…/2026-07-25-memetic-alias-mock.html`); registry-
 over-inline so Foundry ships zero true names; search indexes alias only (by design).

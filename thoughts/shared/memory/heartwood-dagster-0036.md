@@ -5,7 +5,7 @@ metadata:
   type: project
 ---
 
-PROJECT 2026-10-22: heartwood is LIVE in the pipeline (spec `thoughts/astra/specs/0036-heartwood-dagster-spec.md`,
+PROJECT 2026-10-22: heartwood is LIVE in the pipeline (spec `thoughts/archive/specs/0036-heartwood-dagster-spec.md`,
 `3ea28180`/`1e79425a`/`9b4fb1e5`). New faerrin transcript → `heartwood_sensor` → `session_wiki` files
 `/ruby/data/astra-state/heartwood/requests/<date>.request.json` (config heartwood.requests-path) → host
 `heartwood-request.{path,timer}` (linked from and run in the deploy checkout `/ruby/data/astra-deploy`

@@ -7,7 +7,7 @@ metadata:
 
 **0012 mouthpiece-frontend** = port faerrin `face` (Astro 5 SSG podcast player) → an astra **SSR** TanStack
 frontend (strider/akasha template, **port 10366**). Scope gate COMPLETE 2026-06-21; spec next. Scope doc:
-`thoughts/shared/research/2026-06-21-mouthpiece-frontend-0012-thoughts.md`. The renderer work is genuinely
+`thoughts/archive/research/2026-06-21-mouthpiece-frontend-0012-thoughts.md`. The renderer work is genuinely
 small (1 self-contained `Player` island, 2 routes) — the load-bearing parts are the data/audio/styling seams.
 
 **The Scope gate overturned 3 sub-plan assumptions** (plan dated 2026-06-19, pre-Decision-I, pre-0008-build):
@@ -68,7 +68,7 @@ for heavy server-only payloads, no editor). New config namespace **`mouthpiece-f
 ## BUILD COMPLETE (2026-06-23) — all 6 slices pushed + deployed-local + verified live
 
 Commits `032e107`(s1)…`9639bd5`(s6). Healthy on **10366**; the third 0011–0013 SSR frontend. **D4–D7
-settled in the spec** (`thoughts/astra/specs/0012-mouthpiece-frontend-spec.md`); one **mid-build decision
+settled in the spec** (`thoughts/archive/specs/0012-mouthpiece-frontend-spec.md`); one **mid-build decision
 revised D6** (see below).
 
 **Slice 1 — `episodes_index` backend asset (D1).** 0012's first slice is a **mouthpiece-BACKEND** change

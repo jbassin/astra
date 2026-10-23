@@ -6,7 +6,7 @@ metadata:
 ---
 
 PROJECT 2026-10-10: heartwood rebuilt as ONE dspy.RLM agent per session (spec
-`thoughts/astra/specs/0033-heartwood-agent-spec.md`); supersedes [[heartwood-0020-gotchas]]. S1–S4 built +
+`thoughts/archive/specs/0033-heartwood-agent-spec.md`); supersedes [[heartwood-0020-gotchas]]. S1–S4 built +
 pushed (`b12a7b8a`…`22036ffc`, `8c3b9b3f`); heartwood.iridi.cc + the review frontend RETIRED. Auto-publish,
 no human review; `just heartwood-agent <date> [--dry-run|--no-push|--model=…]`, `just heartwood-revert`,
 `just heartwood-backfill` (detached systemd-run, budget `heartwood.backfill-budget-usd` 100).

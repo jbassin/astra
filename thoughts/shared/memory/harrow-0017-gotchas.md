@@ -11,8 +11,8 @@ tarot deck reader, page-title "Harrow") into astra as a **backend-less SSR front
 template** — a sibling of strider, NOT a read-surface. Net-new post-cutover product work (the faerrin
 migration is done; this reused the 0011–0013 playbook). Live on **port 10369** / **`harrow.iridi.cc`**,
 `service.name=astra.harrow` in SigNoz (0 errors, SSR spans for `/`, `/gallery`, `/spreads`,
-`/spreads/history`). Scope/spec: `thoughts/shared/research/2026-06-26-harrow-0017-thoughts.md`,
-`thoughts/astra/specs/0017-harrow-spec.md`. Builds on [[migration-guide]] + [[strider-0016-gotchas]] +
+`/spreads/history`). Scope/spec: `thoughts/archive/research/2026-06-26-harrow-0017-thoughts.md`,
+`thoughts/archive/specs/0017-harrow-spec.md`. Builds on [[migration-guide]] + [[strider-0016-gotchas]] +
 [[akasha-session-audio-dependency]] (the edge-decommission pattern).
 
 **Decisions:** full gothic re-skin (A); app name `harrow` on `harrow.iridi.cc` (B — bare name like strider,

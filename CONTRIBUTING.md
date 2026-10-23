@@ -18,15 +18,15 @@ builds on astra's own established subsystems and patterns.
 **Read order before touching a subsystem:**
 1. `ASTRA.md` — product vision.
 2. `CLAUDE.md` — conventions (authoritative).
-3. `thoughts/astra/plans/0000-astra-migration-roadmap.md` — the spine: phases, the **decisions ledger
+3. `thoughts/archive/plans/0000-astra-migration-roadmap.md` — the spine: phases, the **decisions ledger
    (A–I)**, critical path, cutover runbook.
 4. `thoughts/shared/memory/MEMORY.md` + the memories it indexes — accumulated facts + feedback.
-5. The subsystem's **sub-plan** (`thoughts/astra/plans/NNNN-*.md`), **spec** (`thoughts/astra/specs/`),
+5. The subsystem's **sub-plan** (`thoughts/archive/plans/NNNN-*.md`), **spec** (`thoughts/archive/specs/`),
    and **pre-impl thoughts** (`thoughts/shared/research/`) if they exist.
 
 **Migration status:** COMPLETE (2026-06-23, Phases 0–6). astra is the live stack — every public host
 serves, the pipeline + bots run with SigNoz telemetry, all data migrated. See the spine memory
-([[astra-migration-research]]) and `thoughts/shared/RESUME.md` for what's current.
+([[astra-migration-research]]) and `thoughts/archive/RESUME.md` for what's current.
 
 ---
 
@@ -38,7 +38,7 @@ Every subsystem moves through three gates, each leaving a doc in `thoughts/`:
    prior art, **verify every claim against the actual repo** (resolve real config/secrets, load real
    ontology, inspect real fixtures — don't list "open questions" that are checkable now), and surface the
    decisions to confirm before speccing.
-2. **Spec** → `thoughts/astra/specs/<NNNN>-<subsystem>-spec.md` via `octo:spec`. Match the format of an
+2. **Spec** → `thoughts/archive/specs/<NNNN>-<subsystem>-spec.md` via `octo:spec`. Match the format of an
    existing spec (`0005-scribe`, `0008-mouthpiece-backend`). Encode: decisions in force, scope in/out,
    locked technical decisions, acceptance criteria, risks, hand-off. Flag decisions that need the user.
 3. **Implement** → `octo:embrace`. Build the spec's scope **in full**, commit per green slice, update the
@@ -254,8 +254,8 @@ file (frontmatter + body), with a one-line pointer in `MEMORY.md` (auto-loaded e
 finish a subsystem, **add its load-bearing gotchas to the spine memory** and write any new feedback
 lessons. Don't duplicate what the code/git already records.
 
-`thoughts/` also holds the migration **plans** (`thoughts/astra/plans/`), **specs**
-(`thoughts/astra/specs/`), and **research** (`thoughts/shared/research/`).
+`thoughts/` also holds the migration **plans** (`thoughts/archive/plans/`), **specs**
+(`thoughts/archive/specs/`), and **research** (`thoughts/shared/research/`).
 
 ---
 
@@ -289,9 +289,9 @@ dist/        # site build output (gitignored)
 
 | Need | Where |
 |---|---|
-| **Resume / pick up work** | **`thoughts/shared/RESUME.md`** (current state + next action) |
-| The plan / decisions ledger | `thoughts/astra/plans/0000-astra-migration-roadmap.md` |
-| A subsystem's contract | `thoughts/astra/specs/NNNN-*-spec.md` |
+| **Resume / pick up work** | **`thoughts/archive/RESUME.md`** (current state + next action) |
+| The plan / decisions ledger | `thoughts/archive/plans/0000-astra-migration-roadmap.md` |
+| A subsystem's contract | `thoughts/archive/specs/NNNN-*-spec.md` |
 | Why a decision was made | the roadmap decisions table + the spec + the spine memory |
 | How an already-built app is structured | `apps/scribe`, `apps/linguist`, `apps/mouthpiece-backend`, `apps/strider` |
 | Accumulated facts + feedback | `thoughts/shared/memory/` (indexed by `MEMORY.md`) |

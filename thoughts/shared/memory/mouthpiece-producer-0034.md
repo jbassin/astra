@@ -7,7 +7,7 @@ metadata:
 
 PROJECT 2026-10-12: 0034 built (S1 `d76feccf` lift heartwood's RLM core → `astra_llm.rlm`; S2 `b278dc02`
 read-only producer RLM + `brief_block` Pass A seam; S3 `a2a298d0` `just mouthpiece-experiment`). Spec
-`thoughts/astra/specs/0034-mouthpiece-producer-spec.md` §10 has the full results. Experiment-only — NOT wired
+`thoughts/archive/specs/0034-mouthpiece-producer-spec.md` §10 has the full results. Experiment-only — NOT wired
 into Dagster; runtime placement (Deno in dagster-code vs host step) is decided only if it ships.
 
 **Result on 2026-10-5:** producer $0.20 / 10 min / 0 bad citations, callbacks back to May. GLM 5.3 + brief
@@ -20,7 +20,7 @@ needed the manual force-grounding recipe ([[ashen-pact-mouthpiece-grounding]]).
 **LIVE since 2026-10-12 (0035, `997d2904`+`8eb9cd06`):** `session_brief` asset (digest → brief → script) runs in
 dagster-code with Deno 2.5.6 cache-only (Pyodide 314.0.7 warmed at build); wiki mounted live read-only. Producer
 failure → no `brief.json` → script falls back to the old prompt (WARN, no page). In-container proof on 2026-10-5:
-$0.06, 4 min. Spec `thoughts/astra/specs/0035-mouthpiece-producer-wiring-spec.md`.
+$0.06, 4 min. Spec `thoughts/archive/specs/0035-mouthpiece-producer-wiring-spec.md`.
 **First live session 2026-10-12 ✅:** brief 4m29s/$0.18 (0/92 citations bad) → script `brief=used` in 12m08s (fastest
 on record) "The Door Answers With a Rifle", lint 8/10, Nell asks 47% (live pre-brief 60%), 6,727 words (over the
 ~6k cap). Zip → published 44 min. Stage history table: `artifacts/pipeline-timing-2026-10-12.md` (gitignored).

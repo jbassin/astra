@@ -7,7 +7,7 @@ metadata:
 
 A critical design pass over how **gothic** renders content + the four public frontends
 (live-captured with Playwright + cached Chromium against `*.iridi.cc`). Full audit +
-per-finding root causes: `thoughts/shared/research/2026-06-24-gothic-frontend-design-audit-thoughts.md`.
+per-finding root causes: `thoughts/archive/research/2026-06-24-gothic-frontend-design-audit-thoughts.md`.
 Shipped in 6 CI-green slices (`e3f7581` gothic → `1c7e507` akasha content).
 
 **THE load-bearing gotcha (`F0`, cross-cutting):** every frontend's `*{margin:0;padding:0}`

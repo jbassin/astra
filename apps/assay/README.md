@@ -6,12 +6,12 @@ quantitative rank-equivalent score; hostile effect (condition-only) spells get a
 view (top-5 similar official spells + an induced rank range) and a **prior-anchored price card** —
 explicitly labeled priors, not fits.
 
-**Provenance / specs:** `thoughts/astra/specs/0030-assay-round3-spec.md` (D30-21..27) — read this
+**Provenance / specs:** `thoughts/archive/specs/0030-assay-round3-spec.md` (D30-21..27) — read this
 first, it is the locked round-3 design (status header carries the stakeholder-fork history: the
 original generative control-spell fit was killed by adversarial review, replaced by comparables).
-`thoughts/astra/specs/0030-assay-round2-spec.md` (D30-1..11) is still authoritative for the damage
+`thoughts/archive/specs/0030-assay-round2-spec.md` (D30-1..11) is still authoritative for the damage
 ladder + Stage A/B mechanics, which round 3 carries unchanged. Round 1's scope doc (data reality,
-extractor traps) still applies: `thoughts/shared/research/2026-07-19-assay-spell-power-0030-thoughts.md`.
+extractor traps) still applies: `thoughts/archive/research/2026-07-19-assay-spell-power-0030-thoughts.md`.
 
 ## What the pipeline does
 
@@ -170,7 +170,7 @@ better-identified structural axis; V3′'s misses split into an architectural ex
 attack-then-save double-gate). V4′ (ladder vs. the community 7×rank line) tracks tightly, within
 ±6% rank 3–10.
 
-**Round 3 gates (V-A..V-D, `thoughts/astra/specs/0030-assay-round3-spec.md` D30-25):** V-A
+**Round 3 gates (V-A..V-D, `thoughts/archive/specs/0030-assay-round3-spec.md` D30-25):** V-A
 (comparables leave-one-out) reports an honest 40% pass rate against the ≥70% target — the
 neighbors are QUALITATIVELY correct (fear-themed spells cluster with Fear, mind-control spells
 with Paralyze) but two spells sharing a condition profile can differ enormously in overall rank
@@ -182,7 +182,7 @@ shipped ladder.
 
 ## Round 4: buff comparables + summon bands + the codex export
 
-**Provenance:** `thoughts/astra/specs/0030-assay-round4-spec.md` (D30-35..38). Three additions on
+**Provenance:** `thoughts/archive/specs/0030-assay-round4-spec.md` (D30-35..38). Three additions on
 top of round 3's engine, all Track A (assay-only) — the codex-side render lives in
 `apps/codex/**`, out of this app's scope.
 

@@ -11,7 +11,7 @@ astra** at `akasha.iridi.cc/audio/<date>.mp3`, replacing the surviving faerrin
 (`9aea97d`→`976db90`→`2fced17`→the recipe fix); the **whole** faerrin caddyfile import was
 removed from the shared proxy. Related: [[akasha-frontend-0011-gotchas]],
 [[mouthpiece-frontend-0012-gotchas]], [[pipeline-live-run-gotchas]]. Scope:
-`thoughts/shared/research/2026-06-24-akasha-session-audio-thoughts.md`.
+`thoughts/archive/research/2026-06-24-akasha-session-audio-thoughts.md`.
 
 **What shipped (mirrors the mouthpiece `/audio` D2 pattern):**
 - `akashaFrontend.audio-dir = "/audio"` in all three config schemas (kdl + py + ts); akasha

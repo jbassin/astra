@@ -30,5 +30,5 @@ content as HTML — today layer `body` is stored raw and never passed through
 `toHtml`/`dangerouslySetInnerHTML`, so the auth gap can't become stored XSS; if that
 ever changes, the risk acceptance is void. The cheap mitigation if ever wanted: don't
 ship the editor route/server-fn in production builds at all (authoring is dev-time).
-Full context in thoughts/shared/research/2026-06-21-strider-template-review-thoughts.md.
+Full context in thoughts/archive/research/2026-06-21-strider-template-review-thoughts.md.
 Related: [[tanstack-start-skill]].

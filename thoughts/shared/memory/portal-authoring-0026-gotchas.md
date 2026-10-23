@@ -12,8 +12,8 @@ metadata:
 via D-1 hybrid (clone+patch preferred, hand-authored where no base). Slices S1 `ccaadbe` (contracts+server)
 · S2 `f1c8431` (module creates + D-6 stamp incl. 0023 retrofit) · S3 `c7a3958` (mutations + the
 `allow-macro-execution` setting) · S4 deploy+acceptance+docs. Spec
-`thoughts/astra/specs/0026-portal-authoring-spec.md`; scope
-`thoughts/shared/research/2026-07-07-portal-authoring-0026-thoughts.md` (THE pf2e reference: validation
+`thoughts/archive/specs/0026-portal-authoring-spec.md`; scope
+`thoughts/archive/research/2026-07-07-portal-authoring-0026-thoughts.md` (THE pf2e reference: validation
 split npc/spell=template.json-unvalidated vs hazard/effect=DataModel-strict; RE fail-soft `ignored:true`;
 aura two-item pattern; spell castable only when `system.location.value` = spellcastingEntry id; PC
 derived fields typed `never`).

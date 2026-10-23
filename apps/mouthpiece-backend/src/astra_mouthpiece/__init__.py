@@ -4,8 +4,8 @@ reworked onto clean+enrich + a cleaned-transcript Pass A by 0024).
 
 LLM via raw `libs/py/llm` (`call_text`/`call_tool`, no dspy — H1); the verbatim
 two-pass prompts carry the tavern tone; grounding reads the akasha corpus; hosts +
-voices come from ontology-being. See `thoughts/astra/specs/0008-mouthpiece-backend-spec.md`
-and `thoughts/astra/specs/0024-mouthpiece-script-rework-spec.md`.
+voices come from ontology-being. See `thoughts/archive/specs/0008-mouthpiece-backend-spec.md`
+and `thoughts/archive/specs/0024-mouthpiece-script-rework-spec.md`.
 """
 
 from __future__ import annotations

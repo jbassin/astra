@@ -154,7 +154,7 @@ the nav; the <64rem block hands it back to the omnibar where the nav wraps to it
 **P11 BUILT + DEPLOYED + LIVE 2026-07-19 — six serial slices S1 `0f2a452` (transform/search) ·
 S2 `0d015ac` (tables/facets/filter/rules) · S3 `a271419` (popovers/scrollbars) · S4 `52a046e`
 (nav/reveal/header) · S5 `6fc2a9e` (polish/search-meta) · S6 `13b99b6` (sweep+deploy record);
-spec `thoughts/astra/specs/0029-codex-p11-backlog-round-spec.md` D29-98..112 status
+spec `thoughts/archive/specs/0029-codex-p11-backlog-round-spec.md` D29-98..112 status
 BUILT+DEPLOYED w/ full §6 evidence; scope `…/research/2026-07-18-codex-0029-p11-backlog-round-
 thoughts.md`. Corpus 46,192 → 44,808 (activation drop 1,384 = paren 1,224 + digit 160; keep-9
 ID-keyed; 55 dangling edition pointers stripped); 12 ACTION.TYPES/TRAITS name-templates resolved
@@ -187,7 +187,7 @@ absence, not fail-soft), traits=fire 686 == the S1 pin (S5's 539 was the pre-dro
 `level: 1` headings); 200 ms popover grace tunable; post-curation no live dropdown scrolls.**
 
 **P10 BUILT + DEPLOYED + LIVE 2026-07-18 — S1 `0b7b3f8` (ingest/schema) · S2 `cf254a4`
-(render/chip/regen/deploy); spec `thoughts/astra/specs/0029-codex-p10-statrow-size-spec.md`
+(render/chip/regen/deploy); spec `thoughts/archive/specs/0029-codex-p10-statrow-size-spec.md`
 D29-91..97 status BUILT w/ §6 record; scope `…/research/2026-07-18-codex-0029-p10-statrow-size-
 thoughts.md`.** Provenance: mid-gate-H "look at /creature/aso-berang" → triage split 4 oddities
 into 2 ours (stat-line sprawl from D29-2 row-flattening; size rendered NOWHERE) + 2 upstream-
@@ -234,7 +234,7 @@ decoded −11%, but main-thread UNCHANGED — bytes-not-nodes: each glyph kept i
 wrapper so node count never dropped; the dedupe was worth it for weight, virtualization was the
 real fix) → stakeholder chose full windowing over the recommended progressive-append (option 2).
 Listing windowed virtualization; spec
-`thoughts/astra/specs/0029-codex-p9-virtualization-spec.md` D29-83..90 status BUILT w/ §7 build
+`thoughts/archive/specs/0029-codex-p9-virtualization-spec.md` D29-83..90 status BUILT w/ §7 build
 record.** Killed the /feat-class parse+hydrate cost two ways: `@tanstack/react-virtual`
 `useWindowVirtualizer` DOM-windows every category `<tbody>` (spacer-`<td>`s, overscan 20, slug
 keys), AND — the actual bulk of the win — the router's auto-dehydration payload now ships only the
@@ -284,7 +284,7 @@ aria-rowcount/rowindex compensation, R5; name column single-line + ellipsis, R6;
 cold-load filter window, D29-89).**
 
 **P8 BUILT + DEPLOYED + LIVE 2026-07-17 (density/table restyle + UX round; spec
-`thoughts/astra/specs/0029-codex-p8-density-tables-spec.md` D29-77..82 status BUILT w/ §7 build
+`thoughts/archive/specs/0029-codex-p8-density-tables-spec.md` D29-77..82 status BUILT w/ §7 build
 record; scope `…/research/2026-07-16-codex-0029-p8-density-thoughts.md` R1–R4).** Provenance
 chain, all 2026-07-16→17: **P7 deploy sanctioned + edge-verified** (P7 spec → BUILT; the
 "Gambling Lore" reindex proof made non-vacuous via Satinder Morne — a creature whose lore skill
@@ -331,7 +331,7 @@ return if H asks). ▶ **OPEN: gate H, now the consolidated P2–P8 review on th
 2026-07-17).
 
 **P6 BUILT + LIVE 2026-07-15 (gate-H feedback round; spec
-`thoughts/astra/specs/0029-codex-p6-feedback-spec.md` D29-59..71, status BUILT; scope
+`thoughts/archive/specs/0029-codex-p6-feedback-spec.md` D29-59..71, status BUILT; scope
 `…/research/2026-07-15-codex-0029-p6-feedback-thoughts.md` R1–R11 all stakeholder-resolved).**
 P5's gate H was a REDIRECT with 11 items; the whole round ran scope→spec→adversarial-×2→build→
 deploy in one session. **FIRST USE of the 4-parallel-worktree-track structure (D29-71):** Track A
@@ -375,7 +375,7 @@ R6 footer deleted outright — the site now has ZERO global disclaimer, stakehol
 `2e.iridi.cc` = discrete alias stanza (heart precedent), TLS ~10s, byte-identical SSR both hosts.
 
 _(P4.5, superseded detail:)_ **P4.5 BUILT 2026-07-15 (UX rework + bespoke restyle; spec
-`thoughts/astra/specs/0029-codex-p45-ux-restyle-spec.md` D29-46..52, status BUILT; scope
+`thoughts/archive/specs/0029-codex-p45-ux-restyle-spec.md` D29-46..52, status BUILT; scope
 `…/research/2026-07-14-codex-0029-p45-ux-restyle-thoughts.md` + ui-map + style-tokens
 companions).** P4's acceptance H was a stakeholder REDIRECT: 5e.tools-style split-column
 browse, header nav dropdowns, real landing, kill the legacy checkbox, and a **bespoke
@@ -408,7 +408,7 @@ repointing gothic's var NAMES to parchment values (globals.css untouched-by-rena
 utility classes). Weights for P5: `/rules` 401/79 gz · `/sources` 705/65 · heaviest host
 415/80 · `/` 12/3 · `/feat?entry=` 5.81 MB/537 KB · fonts 70.5 KB.
 
-**P5 DEPLOY BUILT + LIVE 2026-07-15 (spec `thoughts/astra/specs/0029-codex-p5-deploy-spec.md`
+**P5 DEPLOY BUILT + LIVE 2026-07-15 (spec `thoughts/archive/specs/0029-codex-p5-deploy-spec.md`
 D29-53..58, status BUILT — spec'd, adversarially reviewed (0 blockers), built S1 `dd42b19` + S2
 `7e3e348`, and LIVE on `codex.iridi.cc` in one session; gate H folds the deferred consolidated
 stakeholder review into P5's exit, stakeholder-resolved).** THE P5 finds: (1) **the D29-53
@@ -435,7 +435,7 @@ in `public/` served via the clientDir fallback, favicon-proven mechanism · plai
 C-1); the wildcard cert minted in ~20 s. Non-astra host residue surfaced, untouched:
 `nextcloud-app` crash-looping for months.
 
-**P1 BUILT 2026-07-13** (spec `thoughts/astra/specs/0029-codex-p1-ingest-spec.md`, status FINAL →
+**P1 BUILT 2026-07-13** (spec `thoughts/archive/specs/0029-codex-p1-ingest-spec.md`, status FINAL →
 all four slices committed same-day by staff-orchestrator + sonnet engineers): S1 `108571d`
 (member + fetchers + real snapshots) · S2 `40b2447` (CodexNode/CodexEntity schema, sluggify port,
 enricher grammar, HTML parser, assembly+journals — 25,781 Foundry entities) · S3 `8465625` (AoN

@@ -6,7 +6,7 @@ frontends, managed by **pnpm**) — two primary toolchains, plus a third, **deli
 Rust, for the `libs/rust/weal-engine` crate only (0032), compiled to a **committed** wasm artifact
 (`libs/ts/weal-engine/gen/`) that the pnpm workspace consumes — cargo is needed only when the engine
 changes, and CI lanes are unchanged (no Rust CI lane). Read [`ASTRA.md`](./ASTRA.md) for the
-product vision and [`thoughts/astra/plans/`](./thoughts/astra/plans/) for the migration roadmap (`0000`)
+product vision and [`thoughts/archive/plans/`](./thoughts/archive/plans/) for the migration roadmap (`0000`)
 and per-subsystem sub-plans. **[`CONTRIBUTING.md`](./CONTRIBUTING.md)** is the practical onboarding guide —
 the dev process, exact CI commands, working-style expectations, and the load-bearing gotchas catalog.
 

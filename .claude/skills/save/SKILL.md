@@ -13,7 +13,7 @@ where this one left off. The durable docs are the handoff — keep them honest.
 - `git log --oneline -10` + `git status` — know exactly which slices/commits landed and whether the tree
   is clean and pushed. Write the docs against reality, not intentions.
 
-## 1. Update `thoughts/shared/RESUME.md` — the **"Current state"** section
+## 1. Update `thoughts/archive/RESUME.md` — the **"Current state"** section
 
 This is the only part that goes stale; it must be exact.
 - Bump the `as of commit <hash>` reference to the latest commit.
@@ -24,7 +24,7 @@ This is the only part that goes stale; it must be exact.
 
 ## 2. Update the active spec's status
 
-- `thoughts/astra/specs/<NNNN>-<subsystem>-spec.md` — move the **Status** line to reflect reality
+- `thoughts/archive/specs/<NNNN>-<subsystem>-spec.md` — move the **Status** line to reflect reality
   (`Plan (pre-implementation)` → `IN PROGRESS — slices X of N built …` → `BUILT`), and check off
   acceptance-gate items that are genuinely met.
 

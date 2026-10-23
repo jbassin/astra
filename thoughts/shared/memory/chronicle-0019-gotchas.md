@@ -9,8 +9,8 @@ PROJECT 2026-06-27 **COMPLETE + LIVE**: built **chronicle**, an akasha section
 (`akasha.iridi.cc/chronicle`) presenting an **automatically structured Show → Season →
 Episode campaign timeline** — GLM-5.2 summarizes each session transcript into a Rich
 `EpisodeSummary` and groups each show's episodes into seasons. Scope→spec→implement gates
-in `thoughts/shared/research/2026-06-27-akasha-chronicle-0019-thoughts.md` +
-`thoughts/astra/specs/0019-chronicle-spec.md`. 7 CI-green slices.
+in `thoughts/archive/research/2026-06-27-akasha-chronicle-0019-thoughts.md` +
+`thoughts/archive/specs/0019-chronicle-spec.md`. 7 CI-green slices.
 
 **Architecture (3 layers):**
 - **linguist** (`apps/linguist/src/astra_linguist/chronicle.py` models + `chronicle_llm.py`

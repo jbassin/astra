@@ -187,9 +187,9 @@ sequentially, zero concurrency) — net-new refinement, not a regression. Change
 **running-threads** memory (jokes/grudges mined from past episodes, injected at the SCRIPT stage) is
 the portable continuity-injection shape; the Show→Season→Episode chronicle itself is net-new.
 
-**Change A spec = `thoughts/astra/specs/0021-pipeline-scribe-parallel-spec.md` — BUILT (all 4 slices,
-`6dc4a63`).** **Change B spec = `thoughts/astra/specs/0021-pipeline-chronicle-context-spec.md` — WRITTEN
-(ready to implement).** Scope doc = `thoughts/shared/research/2026-06-30-pipeline-reorder-0021-thoughts.md`.
+**Change A spec = `thoughts/archive/specs/0021-pipeline-scribe-parallel-spec.md` — BUILT (all 4 slices,
+`6dc4a63`).** **Change B spec = `thoughts/archive/specs/0021-pipeline-chronicle-context-spec.md` — WRITTEN
+(ready to implement).** Scope doc = `thoughts/archive/research/2026-06-30-pipeline-reorder-0021-thoughts.md`.
 
 **▶ NEXT:** implement Change B (`octo:embrace` against the spec, start S1 = linguist selectors).
 Builds on [[chronicle-0019-gotchas]] + [[mouthpiece-glm-debate-switch]] + [[pipeline-live-run-gotchas]]

@@ -6,8 +6,8 @@ metadata:
 ---
 
 Hardening strider into the *copy* template for frontends 0011–0013, per the 2026-06-21 review
-(`thoughts/shared/research/2026-06-21-strider-template-review-thoughts.md`). Spec:
-`thoughts/astra/specs/0016-strider-hardening-spec.md`. **Slices 1–6a BUILT + PUSHED** (`68fcff0`…`4658bcb`);
+(`thoughts/archive/research/2026-06-21-strider-template-review-thoughts.md`). Spec:
+`thoughts/archive/specs/0016-strider-hardening-spec.md`. **Slices 1–6a BUILT + PUSHED** (`68fcff0`…`4658bcb`);
 **resume at slice 6b**. Builds on [[astra-migration-research]]; honors [[verify-before-acting]],
 [[no-silent-scope-cuts]], [[config-single-source]], [[telemetry-built-in]], [[deploy-apply-with-just]].
 
