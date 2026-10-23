@@ -83,16 +83,17 @@ akasha.iridi.cc {
 	reverse_proxy localhost:10365
 }
 
-# api.akasha.iridi.cc — raw session-script JSON straight off the repo working
-# tree (the same committed apps/linguist/data/*.json GitHub serves; corrections
+# api.akasha.iridi.cc — raw session-script JSON straight off the astra-data clone's
+# working tree (config data.linguist-data: the same committed linguist/data/*.json the
+# public github.com/jbassin/astra-data repo serves; corrections
 # already applied at processing time). `browse` auto-generates the index at
 # /scripts/. Already public via the GitHub repo, so no gate. Caddy runs as
-# uid 1000 post the run-as-1000 cutover, so it reads the repo directly.
+# uid 1000 post the run-as-1000 cutover, so it reads the clone directly.
 api.akasha.iridi.cc {
 	import astra_site
 	redir / /scripts/ 302
 	handle_path /scripts* {
-		root * /ruby/data/experiments/astra/apps/linguist/data
+		root * /ruby/data/astra-state/astra-data/linguist/data
 		# The directory index renders as a bare JSON array of full file URLs
 		# (deploy/caddy/scripts-index.tmpl) instead of the default browse.html.
 		header {

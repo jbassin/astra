@@ -33,32 +33,35 @@ x-dagster-env: &dagster-env
 # so the assets' disk-cache seams persist + are shared across the control plane (and
 # with host-dev `uv run dagster dev`, which uses the same host dirs). Every mount is
 # IDENTICAL-PATH (container path == host path): the code reads each path from the baked
-# config.kdl (data.root + the relative data paths), so the same resolved path must exist
-# inside the container. Moving the data = changing config.kdl + these mount pairs.
+# config.kdl (data.root / data.content-root + the relative data paths), so the same
+# resolved path must exist inside the container. Moving the data = changing config.kdl +
+# these mount pairs. The published datasets live in the astra-data clone
+# (data.content-root, /ruby/data/astra-state/astra-data): the run workers write
+# the linguist datasets there and the host linguist-commit timer commits + pushes them.
+# The clone must exist before a deploy (Docker would create a missing source as root).
 x-dagster-volumes: &dagster-pipeline-volumes
   # scribe.incoming-path — the local Craig drop dir (zips copied here from the Drive
   # fuse mount, which Docker can't bind-mount). scribe reads + extracts, never deletes.
   - /ruby/data/experiments/astra/apps/scribe/incoming:/ruby/data/experiments/astra/apps/scribe/incoming
   - /ruby/data/experiments/astra/apps/scribe/data:/ruby/data/experiments/astra/apps/scribe/data
   - /ruby/data/experiments/astra/apps/scribe/tmp:/ruby/data/experiments/astra/apps/scribe/tmp
-  # data.linguist-{transcripts,data,timeline} + linguist.script-path (which also holds
-  # linguist.shibboleth-path).
-  - /ruby/data/experiments/astra/apps/linguist/transcripts:/ruby/data/experiments/astra/apps/linguist/transcripts
+  # linguist.script-path (which also holds linguist.shibboleth-path) — operator state.
   - /ruby/data/experiments/astra/apps/linguist/script:/ruby/data/experiments/astra/apps/linguist/script
-  - /ruby/data/experiments/astra/apps/linguist/data:/ruby/data/experiments/astra/apps/linguist/data
-  - /ruby/data/experiments/astra/apps/linguist/timeline:/ruby/data/experiments/astra/apps/linguist/timeline
+  # data.linguist-{transcripts,data,timeline} — in the astra-data clone.
+  - /ruby/data/astra-state/astra-data/linguist/transcripts:/ruby/data/astra-state/astra-data/linguist/transcripts
+  - /ruby/data/astra-state/astra-data/linguist/data:/ruby/data/astra-state/astra-data/linguist/data
+  - /ruby/data/astra-state/astra-data/linguist/timeline:/ruby/data/astra-state/astra-data/linguist/timeline
   - /ruby/data/experiments/astra/apps/mouthpiece-backend/episodes:/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes
   # The akasha wiki, LIVE and read-only (0035 D35-3): the producer (session_brief) and the
   # script fallback's grounding read it. Before this the container read the copy baked in
   # at the last `just up`, missing everything heartwood published since. Nothing in Dagster
   # writes here (akasha_corpus_snapshot writes data.akasha-snapshot, which is not mounted:
   # that asset needs node, which the image lacks, so it cannot run here anyway).
-  - /ruby/data/experiments/astra/apps/akasha-backend/content:/ruby/data/experiments/astra/apps/akasha-backend/content:ro
+  - /ruby/data/astra-state/astra-data/akasha/content:/ruby/data/astra-state/astra-data/akasha/content:ro
   # data.entity-registry, read-only: session_brief's producer resolves names against it
-  # (astra_ontology_entity.resolve). Before the config-path switch the container read the
-  # copy baked into the image at the last deploy; the directory (not the file) is mounted
-  # so a git checkout/rebase that replaces entity.kdl's inode stays visible.
-  - /ruby/data/experiments/astra/ontology/ontology-entity:/ruby/data/experiments/astra/ontology/ontology-entity:ro
+  # (astra_ontology_entity.resolve). The directory (not the file) is mounted so a git
+  # checkout/rebase in the clone that replaces entity.kdl's inode stays visible.
+  - /ruby/data/astra-state/astra-data/entity:/ruby/data/astra-state/astra-data/entity:ro
   # heartwood.requests-path (0036): session_wiki files <date>.request.json here and waits for
   # the host heartwood-request unit's <date>.result.json. Identical path on both sides; the
   # dir is created by `just artifacts-init` as uid 1000 (Docker would create it as root).
@@ -296,6 +299,11 @@ services:
       labels: *build-labels
       context: ..
       dockerfile: apps/akasha-frontend/Dockerfile
+      # The published datasets the build bakes in (COPY --from=astra-data), never read
+      # from the code repo. deploy.sh exports ASTRA_DATA_CONTEXT = a clean export of the
+      # astra-data clone's HEAD (committed content only); the default is the clone itself.
+      additional_contexts:
+        astra-data: ${ASTRA_DATA_CONTEXT:-/ruby/data/astra-state/astra-data}
       args:
         APP: akasha-frontend # the one knob in the templated frontend Dockerfile
     image: astra-akasha-frontend:local
@@ -384,6 +392,11 @@ services:
       labels: *build-labels
       context: ..
       dockerfile: apps/mouthpiece-frontend/Dockerfile
+      # The published datasets the build bakes in (COPY --from=astra-data), never read
+      # from the code repo. deploy.sh exports ASTRA_DATA_CONTEXT = a clean export of the
+      # astra-data clone's HEAD (committed content only); the default is the clone itself.
+      additional_contexts:
+        astra-data: ${ASTRA_DATA_CONTEXT:-/ruby/data/astra-state/astra-data}
       args:
         APP: mouthpiece-frontend # the one knob in the templated frontend Dockerfile
     image: astra-mouthpiece-frontend:local

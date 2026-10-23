@@ -17,9 +17,16 @@
 #      compose `environment:` blocks pass the keys each service needs, and @astra/config's
 #      env-override path resolves them in-container — no sops/age key/secrets in any image)
 #   5. create the bind-mount source tree as uid 1000 (Docker would create a missing one as root)
-#   6. docker compose up -d --build [SERVICE...] with ASTRA_REVISION=<sha>, which every built
+#   6. export the astra-data clone's HEAD ($ASTRA_CONTENT_ROOT, default
+#      /ruby/data/astra-state/astra-data = config.kdl data.content-root) into a temp dir and
+#      pass it as ASTRA_DATA_CONTEXT: akasha-frontend and mouthpiece-frontend bake the
+#      published datasets from that `astra-data` build context (compose additional_contexts).
+#      Committed content only — whatever the pipeline or a heartwood run has written but
+#      not yet committed in the clone never ships. The clone's HEAD need not be pushed (the
+#      bots push after they commit; a failed push must not hold the site back).
+#   7. docker compose up -d --build [SERVICE...] with ASTRA_REVISION=<sha>, which every built
 #      image carries as the org.opencontainers.image.revision label
-#   7. record the outcome (below)
+#   8. record the outcome (below)
 # --dry-run does 1–3's checks and prints the compose command; it never checks out, runs sops
 # or runs docker. Rollback = `deploy.sh --sha <older pushed sha>`.
 #
@@ -30,14 +37,18 @@
 #                                      compose service (a whole-stack deploy rewrites all of
 #                                      them; a scoped one only its own). `--restart` leaves them.
 #   $ARTIFACTS/deploy/history.jsonl    one JSON line per attempt that got past argument parsing:
-#                                      {time, mode, sha, services, result, exit}. mode is
-#                                      deploy / restart / dry-run; services is "all" or a list.
+#                                      {time, mode, sha, data_sha, services, result, exit}.
+#                                      mode is deploy / restart / dry-run; services is "all"
+#                                      or a list; data_sha is the astra-data commit baked in
+#                                      ("" when the deploy did not export it).
 #
 # Exit codes: 0 ok · 2 usage · 3 lock busy · 4 target unknown or not pushed · 5 deploy checkout
-# dirty or missing · 6 secrets decrypt failed · 7 docker compose failed.
+# dirty or missing · 6 secrets decrypt failed · 7 docker compose failed · 8 the astra-data
+# clone is missing or its HEAD could not be exported (nothing built).
 #
-# The data still lives in the developer tree (/ruby/data/experiments/astra, the compose bind
-# mounts are host-absolute), so ARTIFACTS defaults there, as the justfile's `artifacts` does.
+# The untracked state still lives in the developer tree (/ruby/data/experiments/astra, the
+# compose bind mounts are host-absolute), so ARTIFACTS defaults there, as the justfile's
+# `artifacts` does.
 set -Eeuo pipefail
 
 # systemd user units have a minimal PATH; sops lives in /usr/local/bin.
@@ -45,6 +56,8 @@ export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
 
 DEPLOY_ROOT="${ASTRA_DEPLOY_ROOT:-/ruby/data/astra-deploy}"
 ARTIFACTS="${ARTIFACTS:-/ruby/data/experiments/astra/artifacts}"
+# The astra-data clone (mirrors config.kdl data.content-root; the same variable overrides it).
+CONTENT_REPO="${ASTRA_CONTENT_ROOT:-/ruby/data/astra-state/astra-data}"
 LOCK_TIMEOUT="${DEPLOY_LOCK_TIMEOUT:-1800}"
 # sops's own default key location; the key never lives in a checkout that builds images.
 export SOPS_AGE_KEY_FILE="${SOPS_AGE_KEY_FILE:-$HOME/.config/sops/age/keys.txt}"
@@ -125,9 +138,12 @@ fi
 
 mkdir -p "$STATE_DIR"
 sha=""
+data_sha=""
+data_ctx=""
 
 record() {
   local rc="$1" result=ok svc_json
+  [ -z "$data_ctx" ] || rm -rf "$data_ctx"
   [ "$rc" -eq 0 ] || result=failed
   if [ "${#services[@]}" -eq 0 ]; then
     svc_json='"all"'
@@ -135,8 +151,9 @@ record() {
     svc_json="$(printf '%s\n' "${services[@]}" | jq -R . | jq -sc .)"
   fi
   jq -nc --arg time "$(date -u +%FT%TZ)" --arg mode "$mode" --arg sha "$sha" \
-    --argjson services "$svc_json" --arg result "$result" --argjson exit "$rc" \
-    '{time: $time, mode: $mode, sha: $sha, services: $services, result: $result, exit: $exit}' \
+    --arg data_sha "$data_sha" --argjson services "$svc_json" --arg result "$result" \
+    --argjson exit "$rc" \
+    '{time: $time, mode: $mode, sha: $sha, data_sha: $data_sha, services: $services, result: $result, exit: $exit}' \
     >>"$STATE_DIR/history.jsonl" || log "could not append to $STATE_DIR/history.jsonl"
 }
 trap 'record "$?"' EXIT
@@ -190,6 +207,7 @@ if [ "$mode" = dry-run ]; then
   log "would: git -C $DEPLOY_ROOT checkout -q --detach $sha"
   log "would: decrypt $SECRETS_FILE with $SOPS_AGE_KEY_FILE and export each key UPPER_CASED"
   log "would: create the bind-mount tree under $ARTIFACTS"
+  log "would: export $CONTENT_REPO HEAD as the astra-data build context (if building a frontend that bakes it)"
   log "would: ASTRA_REVISION=$sha ASTRA_REVISION_DATE=$ASTRA_REVISION_DATE ${compose[*]}"
   exit 0
 fi
@@ -209,9 +227,31 @@ while IFS='=' read -r k v; do
 done <<<"$secrets"
 unset secrets
 
-# --- 5–6. build and start -------------------------------------------------------------------
+# --- 5–7. build and start -------------------------------------------------------------------
 
 init_artifacts
+
+# 6. The astra-data build context, for the services that bake the published datasets.
+needs_data=0
+if [ "${#services[@]}" -eq 0 ]; then
+  needs_data=1
+else
+  for s in "${services[@]}"; do
+    case "$s" in akasha-frontend | mouthpiece-frontend) needs_data=1 ;; esac
+  done
+fi
+if [ "$needs_data" = 1 ]; then
+  [ -d "$CONTENT_REPO/.git" ] ||
+    die 8 "the astra-data clone $CONTENT_REPO is missing (git clone git@github.com:jbassin/astra-data.git $CONTENT_REPO)"
+  data_sha="$(git -C "$CONTENT_REPO" rev-parse -q --verify 'HEAD^{commit}')" ||
+    die 8 "$CONTENT_REPO has no commit to build from"
+  data_ctx="$(mktemp -d "$STATE_DIR/astra-data-context.XXXXXX")"
+  git -C "$CONTENT_REPO" archive --format=tar "$data_sha" | tar -x -C "$data_ctx" ||
+    die 8 "could not export $CONTENT_REPO at ${data_sha:0:12}"
+  export ASTRA_DATA_CONTEXT="$data_ctx"
+  log "astra-data context: $CONTENT_REPO at ${data_sha:0:12} ($(git -C "$CONTENT_REPO" log -1 --format=%s "$data_sha"))"
+fi
+
 log "ASTRA_REVISION=${sha:0:12} ${compose[*]}"
 "${compose[@]}" || die 7 "docker compose up failed — containers whose build failed keep running the previous image"
 

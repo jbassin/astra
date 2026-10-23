@@ -15,7 +15,7 @@ next faerrin session should publish with no command** — check the commit, ledg
 
 **Why:** the wiki was two sessions stale on 2026-10-21 because heartwood only ran by hand.
 **How to apply:** to redo a session, `just heartwood-revert <date>` first — re-materializing a published date
-is a no-op (`already-published`). Exit 8/9 = committed but not pushed/redeployed → `just _heartwood-push-deploy`.
+is a no-op (`already-published`). Exit 8/9 = committed but not pushed / not redeployed → `just _heartwood-push-deploy`.
 
 Gotchas:
 - The agent CAN'T run in dagster-code: `write_page` shells out to node (vellum validator) and the diff step to
@@ -31,5 +31,9 @@ Gotchas:
   15-min tick — install new units before that.
 - `session_wiki` holds a Dagster run slot while it waits → `max_concurrent_runs` 3 + tag limit
   `astra/heartwood`=1. Don't `just up` while one waits (the request survives and still publishes; the run fails).
-- `just linguist-commit` pushes whenever main is ahead — running it by hand publishes your local commits.
+- Since 0037 item 2b every heartwood/linguist-commit git call runs in the astra-data clone (content,
+  snapshot, ledger, entity.kdl live there); the code repo is never touched. `_astra-data-push` fetches,
+  rebases onto a moved origin (aborts a conflicting rebase, exit 8), pushes. A failed push still
+  redeploys (deploy bakes the clone's HEAD), then exits 8. `heartwood-revert` can't revert a session
+  published before the astra-data snapshot commit (no commit there; exit 4).
 - Automated runs' `cost_usd` counts against `backfill-budget-usd` (budget-check sums the whole ledger).

@@ -16,7 +16,7 @@ set -uo pipefail
 
 # Two roots: CODE_ROOT is the checkout this script runs from (the deploy checkout,
 # /ruby/data/astra-deploy, when the units run it), used for the committed SOPS file;
-# DATA_ROOT is where the live state lives (still the developer tree until 0037 Phase 1 item 2).
+# DATA_ROOT is where the live state lives (still the developer tree until 0037 Phase 1 item 2c).
 CODE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)"
 DATA_ROOT="${ASTRA_DATA_ROOT:-/ruby/data/experiments/astra}"
 SECRETS="$CODE_ROOT/deploy/sops/secrets.enc.yaml"

@@ -22,8 +22,12 @@ Since 2026-10-22 (0037 Phase 1 item 1) production never builds from a developer 
   (refreshes the checkout) → `just caddy-reload`.
 - Units for craig-sync, astra-watchdog, astra-alert@, astra-backup are `systemctl --user link`ed
   from the deploy checkout: a deploy updates their scripts; a changed `.service`/`.timer` needs its
-  install recipe re-run. linguist-commit and heartwood-request still run in the dev tree (they
-  commit pipeline output written there) until Phase 1 item 2.
+  install recipe re-run. linguist-commit and heartwood-request still run in the dev tree until
+  Phase 1 item 2c, but since 2b they run git only in the astra-data clone, never in this repo.
+- akasha-frontend and mouthpiece-frontend bake the published datasets from the `astra-data` build
+  context: deploy.sh exports the clone's (`/ruby/data/astra-state/astra-data`) committed HEAD, not
+  its working tree and not a pushed sha (exit 8 if the clone is missing). `data_sha` in
+  history.jsonl records which data commit a deploy baked.
 - The first whole-stack deploy recreates SigNoz too (its included compose file's relative mounts
   resolve under the deploy checkout); its log count can read 0 for a while because astra logs
   are sparse — check traces to prove ingest.

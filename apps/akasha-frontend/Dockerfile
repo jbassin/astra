@@ -58,10 +58,10 @@ COPY ontology/ontology-config /repo/ontology/ontology-config
 # carries the campaign roster (matchCampaign) + speaker colors (loadBeing, slice 7);
 # without it the transcript build throws. (The Pagefind index step in `pnpm run build`
 # uses the pagefind binary that `pnpm install` already fetched into node_modules.)
-COPY apps/akasha-backend/snapshot /content/akasha/snapshot
-COPY apps/akasha-backend/content /content/akasha/content
-COPY apps/linguist/data /content/linguist/data
-COPY apps/linguist/timeline /content/linguist/timeline
+COPY --from=astra-data akasha/snapshot /content/akasha/snapshot
+COPY --from=astra-data akasha/content /content/akasha/content
+COPY --from=astra-data linguist/data /content/linguist/data
+COPY --from=astra-data linguist/timeline /content/linguist/timeline
 ENV ASTRA_CONTENT_ROOT=/content
 COPY ontology/ontology-being /repo/ontology/ontology-being
 

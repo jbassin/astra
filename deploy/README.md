@@ -21,6 +21,16 @@ image with the commit (`org.opencontainers.image.revision`). History and the per
 under `artifacts/deploy/`; the header of `deploy.sh` has the details. Do not run a bare
 `docker compose up`: it starts every service with empty secrets.
 
+The pipeline's published datasets (linguist transcripts, data and chronicle timeline, the mouthpiece
+episode catalog, the akasha wiki and its snapshot, heartwood's run ledger, the entity registry) are
+not in this repo. They live in the **astra-data** repo (`github.com/jbassin/astra-data`), whose live
+clone is `/ruby/data/astra-state/astra-data` (`config.kdl` `data.content-root`). The Dagster services
+write the linguist datasets into the clone through identical-path bind mounts; `linguist-commit` and
+the heartwood recipes commit and push them there (seed files for a fresh clone: `deploy/astra-data/`).
+akasha-frontend and mouthpiece-frontend bake the datasets at build time from the `astra-data` build
+context: `deploy.sh` exports the clone's committed HEAD to a temp dir and passes it as
+`ASTRA_DATA_CONTEXT`.
+
 **First run only** — a fresh SigNoz needs a one-time org/admin before it ingests telemetry (until then
 the collector logs `cannot create agent without orgId` and the OTLP receiver drops data):
 

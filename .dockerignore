@@ -67,8 +67,7 @@
 !apps/orator-controller/package.json
 
 # --- Python workspace members (dagster/Dockerfile: `uv sync --frozen` needs every
-# uv.lock member present). apps/akasha-backend/{snapshot,content}, apps/linguist/
-# {data,timeline} and apps/mouthpiece-backend/snapshot are also frontend build inputs. ---
+# uv.lock member present). ---
 !apps/_smoke-substrate
 !apps/akasha-backend
 !apps/assay
@@ -86,14 +85,23 @@
 
 # Pipeline runtime data. All of it is bind-mounted into the Dagster services at run time
 # (deploy/docker-compose.yml `x-dagster-volumes`), so an image copy is dead weight.
-# apps/linguist/data + apps/linguist/timeline stay IN: akasha-frontend's build reads them.
 apps/scribe/incoming
 apps/scribe/data
 apps/scribe/tmp
 apps/mouthpiece-backend/episodes
 apps/linguist/script
+
+# The published datasets' OLD in-tree paths (0037 Phase 1 item 2): they live in the
+# astra-data repo now and the frontends bake them from the `astra-data` build context
+# (compose additional_contexts), so no image may read a stale copy from this tree.
 apps/linguist/transcripts
-apps/linguist/data/*.candidates.json
+apps/linguist/data
+apps/linguist/timeline
+apps/mouthpiece-backend/snapshot
+apps/akasha-backend/content
+apps/akasha-backend/snapshot
+apps/heartwood-backend/agent-runs.jsonl
+ontology/ontology-entity/entity.kdl
 
 # codex's fetched corpus + Pagefind index (~1.5 GB) — mounted read-only at run time
 # (D29-53/54); the build is corpus-free.

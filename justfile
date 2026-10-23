@@ -177,98 +177,141 @@ _unit-link +units:
     done
     systemctl --user daemon-reload
 
-# Commit + push new linguist transcripts/data (the pipeline's tracked source-of-record).
-# The Dagster run workers write apps/linguist/{transcripts,data} to the host via bind mounts,
-# but the containers have no .git — so this host-side recipe is what tracks them. gitignore
-# already excludes *.candidates.json and the large scribe/mouthpiece binaries, so a plain
-# `add` of those two dirs stages exactly the right files. No-ops cleanly when nothing's new.
-# Uses --no-verify: the commit is data-only (the biome/ruff pre-commit gate is irrelevant and
-# needs pnpm/uv on PATH, which the systemd user service lacks); CI still lints on push.
+# Commit + push the pipeline's new output to the astra-data repo (0037 Phase 1 item 2), then
+# redeploy the frontends that bake it. The Dagster run workers write the linguist datasets
+# into the astra-data clone (config.kdl data.content-root) via bind mounts, but the
+# containers have no git — so this host-side recipe is what commits them. It runs git ONLY
+# against the clone (`git -C`), never against the code repo. Steps, under the git-publish
+# lock: (1) commit the linguist datasets; (2) `mouthpiece-publish` regenerates the episode
+# catalog snapshot (in the clone), commit it if it changed; (3) `_astra-data-push` (fetch,
+# rebase onto origin/main if it moved, push — also retries an earlier failed push);
+# (4) seed audio + `just deploy` akasha-frontend / mouthpiece-frontend for what changed.
+# deploy.sh bakes the clone's committed HEAD, so a redeploy no longer waits for the push:
+# a failed push still redeploys, then exits non-zero (OnFailure pages) and the next run
+# retries it. No-ops cleanly when nothing's new. The clone's .gitignore keeps the
+# *.candidates.json triage files out. --no-verify: the commit is data-only (the astra-data
+# repo has no hooks today; the systemd user service has no pnpm/uv on PATH).
 linguist-commit:
     #!/usr/bin/env bash
     set -euo pipefail
-    cd /ruby/data/experiments/astra
+    cd "{{justfile_directory()}}"
+    just_cmd() { "{{just_executable()}}" -f "{{justfile()}}" "$@"; }
     # One git publisher at a time (0036 D36-5): heartwood-agent/-revert hold this lock while
     # they publish, commit and redeploy akasha. Held for this whole body (no sub-recipe here
-    # runs git or takes the lock — a nested flock on a fresh fd would deadlock).
+    # takes the lock — a nested flock on a fresh fd would deadlock).
     exec 9>artifacts/git-publish.lock
     flock -w 1800 9 || { echo "linguist-commit: git-publish lock busy for 30 min — skipping this run" >&2; exit 1; }
-    # Commit ONLY our own paths (0033 §5): anything another workflow has staged (a manual
-    # commit mid-add, heartwood's publish) stays staged and out of this commit — the timer
-    # swept foreign staged files five times before this. `--only` takes the exact changed
-    # file list (not the dirs): a dir pathspec with no file left in HEAD/index hard-errors.
-    # The linguist datasets, from config.kdl (absolute paths; git accepts them as pathspecs).
-    mapfile -t lpaths < <({{uv_bin}} run python -m astra_ontology_config \
-      data.linguist-transcripts data.linguist-data data.linguist-timeline)
-    if [ "${#lpaths[@]}" -ne 3 ]; then echo "linguist-commit: could not read data paths from config" >&2; exit 1; fi
-    git add "${lpaths[@]}"
+    # The astra-data clone + the datasets this recipe commits, from config.kdl (absolute
+    # paths inside the clone; git accepts them as pathspecs).
+    mapfile -t cpaths < <({{uv_bin}} run python -m astra_ontology_config data.content-root \
+      data.linguist-transcripts data.linguist-data data.linguist-timeline data.mouthpiece-snapshot)
+    if [ "${#cpaths[@]}" -ne 5 ]; then echo "linguist-commit: could not read data paths from config" >&2; exit 1; fi
+    repo="${cpaths[0]}"; lpaths=("${cpaths[@]:1:3}"); mp_snapshot="${cpaths[4]}/episodes-index.json"
+    dgit() { git -C "$repo" "$@"; }
+    if [ ! -d "$repo/.git" ]; then echo "linguist-commit: the astra-data clone $repo is missing" >&2; exit 1; fi
+    if [ "$(dgit rev-parse --abbrev-ref HEAD)" != main ]; then
+      echo "linguist-commit: refusing — $repo is not on main" >&2; exit 1
+    fi
+    # (1) Commit ONLY our own paths (0033 §5): anything else staged in the clone (heartwood's
+    # publish, a manual edit) stays staged and out of this commit. `--only` takes the exact
+    # changed file list (not the dirs): a dir pathspec with no file left in HEAD/index errors.
+    dgit add "${lpaths[@]}"
     changed=""
-    if ! git diff --cached --quiet -- "${lpaths[@]}"; then
-      changed=$(git diff --cached --name-only --no-renames -- "${lpaths[@]}")
+    if ! dgit diff --cached --quiet -- "${lpaths[@]}"; then
+      changed=$(dgit diff --cached --name-only --no-renames -- "${lpaths[@]}")
       n=$(printf '%s\n' "$changed" | grep -c .)
-      git diff --cached --name-only --no-renames -z -- "${lpaths[@]}" \
-        | git commit --no-verify -q --only --pathspec-from-file=- --pathspec-file-nul \
-            -m "chore(linguist): auto-commit ${n} new transcript/data file(s)" \
+      dgit diff --cached --name-only --no-renames -z -- "${lpaths[@]}" \
+        | dgit commit --no-verify -q --only --pathspec-from-file=- --pathspec-file-nul \
+            -m "chore(content): add ${n} linguist transcript/data file(s)" \
             -m "Pipeline-generated source-of-record, committed by the linguist-commit timer."
       echo "linguist-commit: committed ${n} file(s)"
     fi
-    # Push if local main is ahead of origin — also retries a prior run whose push failed.
-    if [ -n "$(git rev-list origin/main..HEAD 2>/dev/null || true)" ]; then
-      if git push -q origin main; then echo "linguist-commit: pushed"; else
-        echo "linguist-commit: push FAILED (will retry next run)" >&2; exit 1; fi
+    # (2) mouthpiece-frontend bakes the episode catalog snapshot, so regenerate it from the
+    # live corpus (the pipeline writes new episodes under episodes_path). Idempotent and
+    # deterministic: a no-op until a new episode lands. Non-fatal: a publish hiccup must not
+    # stop the linguist push below.
+    mp_changed=0
+    if just_cmd mouthpiece-publish; then
+      dgit add "$mp_snapshot"
+      if ! dgit diff --cached --quiet -- "$mp_snapshot"; then
+        dgit commit --no-verify -q --only \
+          -m "chore(content): refresh the mouthpiece episode catalog" \
+          -m "Regenerated from the live corpus by the linguist-commit timer." -- "$mp_snapshot"
+        mp_changed=1
+        echo "linguist-commit: committed the mouthpiece snapshot"
+      fi
     else
-      echo "linguist-commit: nothing to push"
+      echo "linguist-commit: mouthpiece-publish FAILED (snapshot not refreshed this run)" >&2
     fi
-    # If this run committed akasha content (it reads the linguist transcripts/data/timeline at
-    # build), rebuild + redeploy the wiki so the new sessions actually appear. `just deploy`
-    # builds from the deploy checkout at origin/main, which the push above just updated; a
-    # failed build leaves the running container untouched (no downtime).
+    # (3) Push whatever the clone has that origin lacks (also retries a prior failed push).
+    push_rc=0; just_cmd _astra-data-push || push_rc=$?
+    # (4) Redeploy what changed. deploy.sh builds from the clone's committed HEAD, and a failed
+    # build leaves the running container untouched (no downtime).
     if [ -n "$changed" ]; then
       echo "linguist-commit: akasha content changed — seeding audio + rebuilding + redeploying akasha-frontend"
       # The new session's combined recording is already on disk (scribe wrote it before
       # linguist produced the transcript); land it in the audio volume before redeploy so
       # the transcript page's /audio/<date>.mp3 resolves. Incremental → cheap (see akasha-seed).
-      {{just_executable()}} akasha-seed || echo "linguist-commit: akasha-seed FAILED (rerun: just akasha-seed)" >&2
-      if {{just_executable()}} deploy akasha-frontend; then
+      just_cmd akasha-seed || echo "linguist-commit: akasha-seed FAILED (rerun: just akasha-seed)" >&2
+      if just_cmd deploy akasha-frontend; then
         echo "linguist-commit: akasha-frontend redeployed"
       else
         echo "linguist-commit: akasha-frontend redeploy FAILED (rerun: just deploy akasha-frontend)" >&2
       fi
     fi
-    # Mouthpiece phase: unlike akasha (build-time content read), mouthpiece-frontend reads a
-    # COMMITTED snapshot, so regenerate it from the live corpus (the pipeline writes new
-    # episodes under episodes_path). Idempotent + deterministic → a no-op until a new episode
-    # lands. A separate commit (own message); on change, seed the audio volume + redeploy the
-    # frontend. Non-fatal: a publish/redeploy hiccup must not fail the linguist push above.
-    if {{just_executable()}} mouthpiece-publish; then
-      mp_snapshot="$({{uv_bin}} run python -m astra_ontology_config data.mouthpiece-snapshot)/episodes-index.json"
-      git add "$mp_snapshot"
-      if ! git diff --cached --quiet -- "$mp_snapshot"; then
-        git commit --no-verify -q --only \
-          -m "chore(mouthpiece): auto-publish episode catalog snapshot" \
-          -m "Regenerated from the live corpus by the linguist-commit timer." -- "$mp_snapshot"
-        # The deploy builds from origin/main, so an unpushed snapshot can't ship yet: skip the
-        # redeploy and let the next run (which retries the push above) do it.
-        if git push -q origin main; then
-          echo "linguist-commit: mouthpiece snapshot pushed — seeding audio + redeploying frontend"
-          {{just_executable()}} mouthpiece-seed || echo "linguist-commit: mouthpiece-seed FAILED (rerun: just mouthpiece-seed)" >&2
-          if {{just_executable()}} deploy mouthpiece-frontend; then
-            echo "linguist-commit: mouthpiece-frontend redeployed"
-          else
-            echo "linguist-commit: mouthpiece-frontend redeploy FAILED (rerun: just deploy mouthpiece-frontend)" >&2
-          fi
-        else
-          echo "linguist-commit: mouthpiece snapshot push FAILED — not redeploying (rerun: git push, then just deploy mouthpiece-frontend)" >&2
-        fi
+    if [ "$mp_changed" = 1 ]; then
+      echo "linguist-commit: mouthpiece snapshot changed — seeding audio + redeploying mouthpiece-frontend"
+      just_cmd mouthpiece-seed || echo "linguist-commit: mouthpiece-seed FAILED (rerun: just mouthpiece-seed)" >&2
+      if just_cmd deploy mouthpiece-frontend; then
+        echo "linguist-commit: mouthpiece-frontend redeployed"
+      else
+        echo "linguist-commit: mouthpiece-frontend redeploy FAILED (rerun: just deploy mouthpiece-frontend)" >&2
       fi
+    fi
+    if [ "$push_rc" -ne 0 ]; then
+      echo "linguist-commit: astra-data push FAILED (exit $push_rc) — committed locally; the next run retries" >&2
+      exit 1
+    fi
+
+# Publish the astra-data clone (config.kdl data.content-root): fetch; if origin/main moved,
+# rebase the clone's local commits onto it (the repo is bot-written data, so rebasing them is
+# safe; --autostash carries uncommitted pipeline writes across); push main if it is ahead.
+# Runs git ONLY in the clone, never in the code repo. A failed rebase is aborted at once, so
+# the clone is never left mid-rebase for the next timer run; resolve by hand in the clone.
+# Callers (linguist-commit, heartwood) hold the git-publish lock — never take it here (a
+# nested flock on a fresh fd deadlocks). Exit 8 = fetch, rebase or push failed; the local
+# commits stay and the next caller retries.
+_astra-data-push:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{justfile_directory()}}"
+    repo="$({{uv_bin}} run python -m astra_ontology_config data.content-root)"
+    dgit() { git -C "$repo" "$@"; }
+    if [ ! -d "$repo/.git" ]; then echo "astra-data: the clone $repo is missing" >&2; exit 8; fi
+    if [ "$(dgit rev-parse --abbrev-ref HEAD)" != main ]; then
+      echo "astra-data: $repo is not on main — not pushing" >&2; exit 8
+    fi
+    dgit fetch -q origin || { echo "astra-data: fetch FAILED in $repo" >&2; exit 8; }
+    if dgit merge-base --is-ancestor origin/main HEAD; then
+      :
+    elif ! dgit rebase -q --autostash origin/main; then
+      dgit rebase --abort || echo "astra-data: rebase --abort failed too — inspect $repo" >&2
+      echo "astra-data: rebase onto origin/main FAILED in $repo (aborted; local commits kept) — resolve by hand: git -C $repo pull --rebase" >&2
+      exit 8
     else
-      echo "linguist-commit: mouthpiece-publish FAILED (snapshot not refreshed this run)" >&2
+      echo "astra-data: rebased onto origin/main"
+    fi
+    if [ -n "$(dgit rev-list origin/main..HEAD)" ]; then
+      dgit push -q origin main || { echo "astra-data: push FAILED from $repo" >&2; exit 8; }
+      echo "astra-data: pushed $(dgit rev-parse --short HEAD)"
+    else
+      echo "astra-data: nothing to push"
     fi
 
 # Install + start the systemd USER timer that runs `linguist-commit` every 15 min. One-time
-# setup (mirrors craig-timer-install); needs lingering for the user. The timer pushes to
-# origin/main, so the user's git identity + a non-interactive SSH push key must be available
-# to the systemd user session (same key the user pushes with).
+# setup (mirrors craig-timer-install); needs lingering for the user. The timer pushes the
+# astra-data clone to its origin, so the user's git identity + a non-interactive SSH push key
+# must be available to the systemd user session (same key the user pushes with).
 linguist-commit-timer-install:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -291,8 +334,8 @@ linguist-commit-timer-install:
 # craig-sync + linguist-commit services that carry `OnFailure=astra-alert@%n.service`.
 # The alerting, watchdog and craig-sync units are LINKED from the deploy checkout (they
 # ExecStart its alert-notify.sh, so each deploy updates the script); linguist-commit.service
-# is still COPIED from this tree (it commits where the pipeline writes; moves in 0037 Phase 1
-# item 2). The webhook is decrypted from SOPS at runtime (Class A — SigNoz's own Discord
+# is still COPIED from this tree (it still runs in the dev tree; moves in 0037 Phase 1
+# item 2c). The webhook is decrypted from SOPS at runtime (Class A — SigNoz's own Discord
 # channel/rules — lives in SigNoz, not here). Needs lingering for the user (already on).
 alert-install: (_unit-link "astra-alert@.service" "astra-watchdog.service" "astra-watchdog.timer" "craig-sync.service")
     #!/usr/bin/env bash
@@ -382,9 +425,9 @@ mouthpiece-cartesia-voices q="":
 mouthpiece-migrate-history:
     MOUTHPIECE_AUDIO_SRC="{{mouthpiece_audio_src}}" {{uv_bin}} run python -m astra_mouthpiece.migrate
 
-# Regenerate the committed mouthpiece snapshot (apps/mouthpiece-backend/snapshot/
-# episodes-index.json) from the live corpus — the frontend's single committed build
-# input (step 4/5). Ensures the historical back-catalog is present (idempotent migrate),
+# Regenerate the mouthpiece snapshot (config data.mouthpiece-snapshot/episodes-index.json,
+# in the astra-data clone) from the live corpus — the frontend's single build input
+# (step 4/5). Writes only; linguist-commit commits it to astra-data. Ensures the historical back-catalog is present (idempotent migrate),
 # then rebuilds the catalog over the full corpus (migrated ∪ live renders). Deterministic,
 # so a no-op when nothing new landed. Run on the HOST (needs uv + ffprobe + the repo; the
 # dagster container can't reach the committed snapshot/ dir). Pairs with `mouthpiece-seed`
@@ -392,7 +435,7 @@ mouthpiece-migrate-history:
 mouthpiece-publish:
     #!/usr/bin/env bash
     set -euo pipefail
-    cd /ruby/data/experiments/astra
+    cd "{{justfile_directory()}}"
     MOUTHPIECE_AUDIO_SRC="{{mouthpiece_audio_src}}" {{uv_bin}} run python -m astra_mouthpiece.migrate
     {{uv_bin}} run python -m astra_mouthpiece.publish
 
@@ -631,15 +674,17 @@ heartwood-sandbox-warm:
     {{uv_bin}} run python -c 'from astra_heartwood.agent.run import make_interpreter as mk, sandbox_version as v; i = mk(); print("sandbox:", i.execute("print(1)").strip()); print("pyodide:", v(i)); i.shutdown()'
 
 # Run the heartwood agent over ONE session and publish its edits to akasha with no human
-# review (0033 §5) — PAID (OpenRouter LLM calls) and LIVE (pushes + redeploys akasha):
+# review (0033 §5) — PAID (OpenRouter LLM calls) and LIVE (pushes + redeploys akasha).
+# Every git step runs in the astra-data clone (config.kdl data.content-root), which holds
+# the wiki content, its snapshot, this ledger and the entity registry — never the code repo:
 #   just heartwood-agent 2025-8-28              run → publish → commit → push → redeploy
 #   just heartwood-agent 2025-8-28 --dry-run    run + artifacts only; prints diff + summary
 #   just heartwood-agent 2025-8-28 --no-push    commit locally, no push/redeploy (backfill)
 #   just heartwood-agent 2025-8-28 --dry-run --model=<id> [--sub-model=<id>]
 #                                               override heartwood.model / sub-model for this
 #                                               run only (model comparisons; no config edit)
-# Steps: (0) refuse unless apps/akasha-backend/content, the ledger and the entity registry
-# (ontology/ontology-entity/entity.kdl) are clean and HEAD is on main; (1)
+# Steps: (0) refuse unless the wiki content, the ledger and the entity registry are clean
+# in the clone and its HEAD is on main; (1)
 # `astra-heartwood-agent run` stages + runs (artifacts under
 # artifacts/heartwood/<date>/<run-id>/); (2) publish-sync applies the change-set to the live
 # corpus (aborts, writing nothing, if a touched page changed live); (3) whole-corpus
@@ -648,8 +693,8 @@ heartwood-sandbox-warm:
 # then the unresolved-link delta (reported, not enforced); on a 3/4 failure it prints the
 # exact restore command; (5) ledger-append + a path-scoped `commit --only` of content,
 # snapshot, ledger and entity.kdl (body = counts + model + cost + changelog, wrapped at
-# 100); (6) fetch,
-# rebase --autostash onto origin/main (skipped when already based on it), push, redeploy.
+# 100); (6) `_heartwood-push-deploy`: `_astra-data-push` (fetch, rebase onto origin/main
+# when it moved, push), then redeploy akasha-frontend.
 # Exit codes: 0 ok · 1 run failed · 2 run incomplete (iteration cap) · 3 publish conflict ·
 # 4 publish refused · 6 dirty corpus/ledger/registry or not on main · 7 validate/snapshot/seed failed
 # (restore printed) · 8 commit/rebase/push failed · 9 redeploy failed · 10 git-publish
@@ -658,7 +703,7 @@ heartwood-sandbox-warm:
 heartwood-agent date *flags:
     #!/usr/bin/env bash
     set -euo pipefail
-    cd /ruby/data/experiments/astra
+    cd "{{justfile_directory()}}"
     export PATH="$HOME/.deno/bin:$PATH"   # dspy launches bare `deno`
     date="{{date}}"; dry_run=0; push=1; model_flags=()
     for f in {{flags}}; do
@@ -675,21 +720,24 @@ heartwood-agent date *flags:
     # has no nvm — 0036 review B1). Same order as astra_heartwood.agent.validate.find_node.
     node_bin="$(command -v node || ls -1d "$HOME"/.nvm/versions/node/v*/bin/node 2>/dev/null | sort -V | tail -n 1)"
     if [ -z "$node_bin" ]; then echo "heartwood: node not found (PATH or ~/.nvm) — nothing done" >&2; exit 1; fi
-    # The wiki datasets, from config.kdl (absolute paths; git accepts them as pathspecs).
-    mapfile -t dpaths < <("{{uv_bin}}" run python -m astra_ontology_config \
+    # The astra-data clone + the wiki datasets in it, from config.kdl (absolute paths; git
+    # accepts them as pathspecs). Every git call below targets the clone.
+    mapfile -t dpaths < <("{{uv_bin}}" run python -m astra_ontology_config data.content-root \
       data.akasha-content data.akasha-snapshot data.heartwood-ledger data.entity-registry)
-    if [ "${#dpaths[@]}" -ne 4 ]; then echo "heartwood: could not read data paths from config" >&2; exit 1; fi
-    content="${dpaths[0]}"; snapshot="${dpaths[1]}"; ledger="${dpaths[2]}"; entity="${dpaths[3]}"
-    restore="git checkout -- $content $snapshot $entity && git clean -fd $content"
+    if [ "${#dpaths[@]}" -ne 5 ]; then echo "heartwood: could not read data paths from config" >&2; exit 1; fi
+    repo="${dpaths[0]}"; content="${dpaths[1]}"; snapshot="${dpaths[2]}"; ledger="${dpaths[3]}"; entity="${dpaths[4]}"
+    dgit() { git -C "$repo" "$@"; }
+    if [ ! -d "$repo/.git" ]; then echo "heartwood: the astra-data clone $repo is missing — nothing done" >&2; exit 6; fi
+    restore="git -C $repo checkout -- $content $snapshot $entity && git -C $repo clean -fd $content"
     # (0) a dirty corpus would be staged into the run and then committed under its name.
-    dirty="$(git status --porcelain -- "$content" "$ledger" "$entity")"
+    dirty="$(dgit status --porcelain -- "$content" "$ledger" "$entity")"
     if [ -n "$dirty" ]; then
       echo "heartwood-agent: refusing — uncommitted changes under $content / $ledger / $entity:" >&2
       printf '%s\n' "$dirty" >&2
       exit 6
     fi
-    if [ "$dry_run" = 0 ] && [ "$(git rev-parse --abbrev-ref HEAD)" != main ]; then
-      echo "heartwood-agent: refusing — HEAD is not on main (publishes push origin main)" >&2
+    if [ "$dry_run" = 0 ] && [ "$(dgit rev-parse --abbrev-ref HEAD)" != main ]; then
+      echo "heartwood-agent: refusing — $repo is not on main (publishes push origin main)" >&2
       exit 6
     fi
     tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
@@ -737,55 +785,50 @@ heartwood-agent date *flags:
     OTEL_SDK_DISABLED=true "{{uv_bin}}" run astra-ontology-entity-seed || fail_restore "entity registry seed"
     hw unresolved-delta "$tmp/snapshot-before.json" || echo "heartwood-agent: (unresolved-delta report failed — not fatal)" >&2
     # (5) ledger line + path-scoped commit. --only: anything else staged stays out of it.
-    if git ls-files --error-unmatch "$ledger" >/dev/null 2>&1; then undo_ledger="git checkout -- $ledger"
+    if dgit ls-files --error-unmatch "$ledger" >/dev/null 2>&1; then undo_ledger="git -C $repo checkout -- $ledger"
     else undo_ledger="rm -f $ledger"; fi
     fail_commit() {
       echo "heartwood-agent: $1 FAILED — published but uncommitted. Restore with:" >&2
-      echo "  git reset -q -- $content $snapshot $ledger $entity && $restore && $undo_ledger" >&2
+      echo "  git -C $repo reset -q -- $content $snapshot $ledger $entity && $restore && $undo_ledger" >&2
       exit 8
     }
     hw ledger-append "$run_dir" || fail_commit "ledger-append"
-    git add "$content" "$snapshot" "$ledger" "$entity" || fail_commit "git add"
+    dgit add "$content" "$snapshot" "$ledger" "$entity" || fail_commit "git add"
     hw commit-message "$run_dir" >"$tmp/msg" || fail_commit "commit-message"
-    git commit --only --no-verify -q -F "$tmp/msg" -- "$content" "$snapshot" "$ledger" "$entity" \
+    dgit commit --only --no-verify -q -F "$tmp/msg" -- "$content" "$snapshot" "$ledger" "$entity" \
       || fail_commit "git commit"
-    echo "heartwood-agent: committed $(git rev-parse --short HEAD) $(head -n 1 "$tmp/msg")"
+    echo "heartwood-agent: committed $(dgit rev-parse --short HEAD) $(head -n 1 "$tmp/msg")"
     # (6) push + redeploy (the backfill passes --no-push and does this once at the end).
     if [ "$push" = 0 ]; then echo "heartwood-agent: --no-push — committed locally only"; exit 0; fi
-    "{{just_executable()}}" _heartwood-push-deploy
+    "{{just_executable()}}" -f "{{justfile()}}" _heartwood-push-deploy
 
-# Shared tail of the heartwood recipes: fetch, rebase --autostash onto origin/main (skipped
-# when origin/main is already an ancestor), push main, rebuild + redeploy akasha-frontend
-# via `just deploy` (builds from the deploy checkout at origin/main, so only pushed content
-# ships). Exit 8 = rebase/push failed (nothing redeployed); 9 = redeploy failed.
+# Shared tail of the heartwood recipes: `_astra-data-push` (fetch, rebase onto origin/main
+# when it moved, push the astra-data clone — never the code repo), then rebuild + redeploy
+# akasha-frontend via `just deploy` (which bakes the clone's committed HEAD). A failed push
+# still redeploys (the commit is local and the deploy does not need it pushed), then exits 8.
+# Exit 8 = rebase/push failed; 9 = redeploy failed. Rerunning this recipe retries both.
 _heartwood-push-deploy:
     #!/usr/bin/env bash
     set -euo pipefail
-    cd /ruby/data/experiments/astra
-    git fetch -q origin
-    if git merge-base --is-ancestor origin/main HEAD; then
-      echo "heartwood: already based on origin/main — no rebase"
-    elif ! git rebase -q --autostash origin/main; then
-      echo "heartwood: rebase onto origin/main FAILED — resolve (or git rebase --abort), then: just _heartwood-push-deploy" >&2
-      exit 8
-    fi
-    if [ -n "$(git rev-list origin/main..HEAD)" ]; then
-      git push -q origin main || { echo "heartwood: push FAILED — rerun: just _heartwood-push-deploy" >&2; exit 8; }
-      echo "heartwood: pushed"
-    else
-      echo "heartwood: nothing to push"
-    fi
-    if "{{just_executable()}}" deploy akasha-frontend; then
+    cd "{{justfile_directory()}}"
+    push_rc=0; "{{just_executable()}}" -f "{{justfile()}}" _astra-data-push || push_rc=$?
+    if "{{just_executable()}}" -f "{{justfile()}}" deploy akasha-frontend; then
       echo "heartwood: akasha-frontend redeployed — edits live"
     else
       echo "heartwood: akasha redeploy FAILED (rerun: just deploy akasha-frontend)" >&2
       exit 9
     fi
+    if [ "$push_rc" -ne 0 ]; then
+      echo "heartwood: astra-data push FAILED — rerun: just _heartwood-push-deploy" >&2
+      exit 8
+    fi
 
-# Undo ONE published heartwood session (0033 §5) — LIVE (pushes + redeploys akasha).
-# `git revert --no-commit` of that session's commit (the latest `feat(akasha): heartwood
+# Undo ONE published heartwood session (0033 §5) — LIVE (pushes + redeploys akasha). All git
+# runs in the astra-data clone (config data.content-root); its history starts at the
+# snapshot commit, so a session published before astra-data existed has no commit to
+# revert there (exit 4) — undo those by hand. `git revert --no-commit` of that session's commit (the latest `feat(akasha): heartwood
 # agent <date>`), then agent-runs.jsonl, the snapshot and the entity registry
-# (ontology/ontology-entity/entity.kdl) are restored from HEAD (all conflict on any
+# (entity/entity.kdl) are restored from HEAD (all conflict on any
 # non-latest revert), a `reverted` ledger line is appended, the snapshot regenerated, the
 # registry reseeded from it, the corpus validated, and `revert(akasha): heartwood agent
 # <date>` committed (--only), pushed, redeployed. A CONTENT conflict (a later session edited
@@ -797,7 +840,7 @@ _heartwood-push-deploy:
 heartwood-revert date:
     #!/usr/bin/env bash
     set -euo pipefail
-    cd /ruby/data/experiments/astra
+    cd "{{justfile_directory()}}"
     export PATH="$HOME/.deno/bin:$PATH"
     date="{{date}}"
     hw() { "{{uv_bin}}" run astra-heartwood-agent "$@"; }
@@ -805,41 +848,44 @@ heartwood-revert date:
     # has no nvm — 0036 review B1). Same order as astra_heartwood.agent.validate.find_node.
     node_bin="$(command -v node || ls -1d "$HOME"/.nvm/versions/node/v*/bin/node 2>/dev/null | sort -V | tail -n 1)"
     if [ -z "$node_bin" ]; then echo "heartwood: node not found (PATH or ~/.nvm) — nothing done" >&2; exit 1; fi
-    # The wiki datasets, from config.kdl (absolute paths; git accepts them as pathspecs).
-    mapfile -t dpaths < <("{{uv_bin}}" run python -m astra_ontology_config \
+    # The astra-data clone + the wiki datasets in it, from config.kdl (absolute paths; git
+    # accepts them as pathspecs). Every git call below targets the clone.
+    mapfile -t dpaths < <("{{uv_bin}}" run python -m astra_ontology_config data.content-root \
       data.akasha-content data.akasha-snapshot data.heartwood-ledger data.entity-registry)
-    if [ "${#dpaths[@]}" -ne 4 ]; then echo "heartwood: could not read data paths from config" >&2; exit 1; fi
-    content="${dpaths[0]}"; snapshot="${dpaths[1]}"; ledger="${dpaths[2]}"; entity="${dpaths[3]}"
-    dirty="$(git status --porcelain -- "$content" "$snapshot" "$ledger" "$entity")"
+    if [ "${#dpaths[@]}" -ne 5 ]; then echo "heartwood: could not read data paths from config" >&2; exit 1; fi
+    repo="${dpaths[0]}"; content="${dpaths[1]}"; snapshot="${dpaths[2]}"; ledger="${dpaths[3]}"; entity="${dpaths[4]}"
+    dgit() { git -C "$repo" "$@"; }
+    if [ ! -d "$repo/.git" ]; then echo "heartwood-revert: the astra-data clone $repo is missing" >&2; exit 6; fi
+    dirty="$(dgit status --porcelain -- "$content" "$snapshot" "$ledger" "$entity")"
     if [ -n "$dirty" ]; then
       echo "heartwood-revert: refusing — uncommitted changes:" >&2; printf '%s\n' "$dirty" >&2; exit 6
     fi
-    if [ "$(git rev-parse --abbrev-ref HEAD)" != main ]; then
-      echo "heartwood-revert: refusing — HEAD is not on main" >&2; exit 6
+    if [ "$(dgit rev-parse --abbrev-ref HEAD)" != main ]; then
+      echo "heartwood-revert: refusing — $repo is not on main" >&2; exit 6
     fi
     hw ledger-revert "$date" --check || exit 4
     subject="feat(akasha): heartwood agent $date"
-    commit="$(git log --format='%H%x09%s' -- "$ledger" \
+    commit="$(dgit log --format='%H%x09%s' -- "$ledger" \
       | awk -F'\t' -v s="$subject" '$2 == s && !found { print $1; found = 1 }')"
-    if [ -z "$commit" ]; then echo "heartwood-revert: no commit titled '$subject'" >&2; exit 4; fi
-    echo "heartwood-revert: reverting $(git log -1 --format='%h %s' "$commit")"
-    undo="git revert --abort  (if that refuses: git reset --merge HEAD && git clean -fd $content)"
+    if [ -z "$commit" ]; then echo "heartwood-revert: no commit titled '$subject' in $repo" >&2; exit 4; fi
+    echo "heartwood-revert: reverting $(dgit log -1 --format='%h %s' "$commit")"
+    undo="git -C $repo revert --abort  (if that refuses: git -C $repo reset --merge HEAD && git -C $repo clean -fd $content)"
     # One git publisher at a time (0036 D36-5): held from the revert's index changes through
     # push + redeploy.
     exec 9>artifacts/git-publish.lock
     flock -w 1800 9 || { echo "heartwood-revert: git-publish lock busy for 30 min — nothing changed" >&2; exit 10; }
-    rc=0; git revert --no-commit "$commit" || rc=$?
-    if [ "$rc" -ne 0 ] && ! git rev-parse -q --verify REVERT_HEAD >/dev/null; then
+    rc=0; dgit revert --no-commit "$commit" || rc=$?
+    if [ "$rc" -ne 0 ] && ! dgit rev-parse -q --verify REVERT_HEAD >/dev/null; then
       echo "heartwood-revert: git revert failed before applying anything (exit $rc)" >&2; exit 8
     fi
     # The ledger, snapshot + registry are regenerated below, so their (expected) conflicts
     # don't matter.
-    git checkout HEAD -- "$ledger" "$snapshot" "$entity"
-    unmerged="$(git diff --name-only --diff-filter=U)"
+    dgit checkout HEAD -- "$ledger" "$snapshot" "$entity"
+    unmerged="$(dgit diff --name-only --diff-filter=U)"
     if [ -n "$unmerged" ]; then
       echo "heartwood-revert: content conflicts with later edits — aborting, nothing changed:" >&2
       printf '%s\n' "$unmerged" | sed 's/^/  /' >&2
-      git revert --abort || echo "  abort failed — run: $undo" >&2
+      dgit revert --abort || echo "  abort failed — run: $undo" >&2
       exit 8
     fi
     fail() { echo "heartwood-revert: $1 FAILED — restore with: $undo" >&2; exit "$2"; }
@@ -848,19 +894,19 @@ heartwood-revert date:
     OTEL_SDK_DISABLED=true "{{uv_bin}}" run astra-ontology-entity-seed || fail "entity registry seed" 7
     "$node_bin" --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
       libs/ts/vellum-lang/scripts/validate-corpus.ts --dir "$content" || fail "corpus validation" 7
-    git add "$content" "$snapshot" "$ledger" "$entity" || fail "git add" 8
-    git commit --only --no-verify -q \
+    dgit add "$content" "$snapshot" "$ledger" "$entity" || fail "git add" 8
+    dgit commit --only --no-verify -q \
       -m "revert(akasha): heartwood agent $date" -m "This reverts commit $commit." \
       -- "$content" "$snapshot" "$ledger" "$entity" || fail "git commit" 8
-    echo "heartwood-revert: committed $(git rev-parse --short HEAD)"
-    "{{just_executable()}}" _heartwood-push-deploy
+    echo "heartwood-revert: committed $(dgit rev-parse --short HEAD)"
+    "{{just_executable()}}" -f "{{justfile()}}" _heartwood-push-deploy
 
 # Replay every pending faerrin session oldest-first (0033 §5) — PAID + LIVE, hours long.
 # Always runs DETACHED as the transient user unit `heartwood-backfill` (survives the shell;
 # output → artifacts/heartwood/backfill.log; follow with `tail -f`). `from` = first date
 # (inclusive); dates the ledger shows as published are skipped, so re-running resumes.
-# While it runs, linguist-commit.{timer,path} are stopped (they push whenever main is
-# ahead) and artifacts/heartwood/backfill.lock tells the watchdog not to page about it. The
+# While it runs, linguist-commit.{timer,path} are stopped (they push the astra-data clone
+# whenever it is ahead, and take the git-publish lock) and artifacts/heartwood/backfill.lock tells the watchdog not to page about it. The
 # loop's EXIT trap re-arms both units and removes the lock; a HARD-killed backfill (SIGKILL,
 # reboot) skips the trap — then run `just heartwood-backfill-reset`. Stop it cleanly with
 # `systemctl --user stop heartwood-backfill` (the trap still runs).
@@ -894,7 +940,7 @@ _heartwood-backfill-loop from:
     #!/usr/bin/env bash
     # No -e: every failure below is handled explicitly so the push + re-arm still happen.
     set -uo pipefail
-    cd /ruby/data/experiments/astra || exit 1
+    cd "{{justfile_directory()}}" || exit 1
     export PATH="$HOME/.deno/bin:$PATH"
     from="{{from}}"
     lock=artifacts/heartwood/backfill.lock
@@ -946,7 +992,7 @@ _heartwood-backfill-loop from:
     for d in "${todo[@]}"; do
       if ! hw budget-check; then stop="budget"; rerun="$d"; break; fi
       echo "--- $(ts) $d"
-      rc=0; "{{just_executable()}}" heartwood-agent "$d" --no-push || rc=$?
+      rc=0; "{{just_executable()}}" -f "{{justfile()}}" heartwood-agent "$d" --no-push || rc=$?
       if [ "$rc" -ne 0 ]; then
         stop="heartwood-agent $d exited $rc (1 failed · 2 incomplete · 3 conflict · 4 refused · 6 dirty · 7 validate/snapshot/seed · 8 commit)"
         rerun="$d"; break
@@ -954,8 +1000,10 @@ _heartwood-backfill-loop from:
       published=$((published + 1))
     done
     echo "heartwood-backfill: published $published session(s) this run"
-    if [ -n "$(git rev-list origin/main..HEAD 2>/dev/null)" ]; then
-      "{{just_executable()}}" _heartwood-push-deploy \
+    # Push + redeploy once if the astra-data clone has unpushed commits (never the code repo).
+    repo="$("{{uv_bin}}" run python -m astra_ontology_config data.content-root)"
+    if [ -n "$(git -C "$repo" rev-list origin/main..HEAD 2>/dev/null)" ]; then
+      "{{just_executable()}}" -f "{{justfile()}}" _heartwood-push-deploy \
         || echo "heartwood-backfill: push/redeploy FAILED — rerun: just _heartwood-push-deploy" >&2
     fi
     if [ -n "$stop" ]; then

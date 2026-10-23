@@ -58,7 +58,7 @@ COPY ontology/ontology-config /repo/ontology/ontology-config
 # mouthpiece-backend's episodes-index.json (D1) → the generated modules, from one root in
 # the astra-data layout, $ASTRA_CONTENT_ROOT (unset, it would build the checked-in
 # fixture). The 173 MB of audio is NOT here — it's the runtime volume (D2, slice 6).
-COPY apps/mouthpiece-backend/snapshot /content/mouthpiece/snapshot
+COPY --from=astra-data mouthpiece/snapshot /content/mouthpiece/snapshot
 ENV ASTRA_CONTENT_ROOT=/content
 
 # Build the selected app (build-content runs in the vite buildStart hook).

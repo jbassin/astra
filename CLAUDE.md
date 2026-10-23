@@ -67,8 +67,9 @@ and don't write scope, spec or research documents or decision IDs by default.
 6. **Gate every commit and push.** Run the touched CI lanes locally first (the commands are under
    "Pins" below) and never commit a red lane. Commit each green slice as you go and push when a chunk is
    done; don't build up unpushed work. After a push, confirm it and check the CI run once; don't poll.
-   The `linguist-commit` timer pushes `main` whenever it has data to commit, taking any unpushed local
-   commits with it, so only green commits may sit unpushed on `main`.
+   The bots (`linguist-commit`, heartwood) commit and push only the separate `astra-data` repo (the
+   pipeline's published output and the wiki, live clone `/ruby/data/astra-state/astra-data`); they
+   never run git in this repo.
 7. **Live steps.** Routine live infrastructure work that carries out an agreed plan needs no approval:
    `just up`, edge edits with `just caddy-reload`, installing or removing systemd units, image rebuilds,
    pruning dangling images and build cache, and pushing green commits. State each step in one line as you

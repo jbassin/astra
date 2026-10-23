@@ -52,7 +52,7 @@ shopt -s nullglob
 
 # Two roots: CODE_ROOT is the checkout this script runs from (the deploy checkout,
 # /ruby/data/astra-deploy, when the unit runs it), used only for the committed alert rules;
-# DATA_ROOT is where the live state lives (still the developer tree until 0037 Phase 1 item 2).
+# DATA_ROOT is where the live state lives (still the developer tree until 0037 Phase 1 item 2c).
 CODE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)"
 DATA_ROOT="${ASTRA_DATA_ROOT:-/ruby/data/experiments/astra}"
 BACKUP_ROOT="${ASTRA_BACKUP_ROOT:-/ruby/data/plex/data/astra-backups}"
