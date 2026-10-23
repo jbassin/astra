@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Bash(git stash *)",
+      "Bash(git -C * stash)",
+      "Bash(git -C * stash *)",
+
+      "Bash(git push --force*)",
+      "Bash(git push -f)",
+      "Bash(git push -f *)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f)",
+      "Bash(git push * -f *)",
+      "Bash(git push * +main*)",
+      "Bash(git -C * push * --force*)",
+      "Bash(git -C * push * -f)",
+      "Bash(git -C * push * -f *)",
+
+      "Bash(git reset --hard origin*)",
+      "Bash(git reset --hard @{u}*)",
+      "Bash(git reset --hard @{upstream}*)",
+      "Bash(git -C * reset --hard origin*)",
+
+      "Bash(docker compose down -v*)",
+      "Bash(docker compose down --volumes*)",
+      "Bash(docker compose down * -v*)",
+      "Bash(docker compose down * --volumes*)",
+      "Bash(docker compose * down -v*)",
+      "Bash(docker compose * down --volumes*)",
+      "Bash(docker compose * down * -v*)",
+      "Bash(docker compose * down * --volumes*)",
+      "Bash(docker-compose * -v*)",
+      "Bash(docker-compose * --volumes*)",
+      "Bash(just down-volumes*)",
+      "Bash(just * down-volumes*)",
+
+      "Bash(docker system prune -a*)",
+      "Bash(docker system prune --all*)",
+      "Bash(docker system prune * -a*)",
+      "Bash(docker system prune * --all*)",
+      "Bash(docker image prune -a*)",
+      "Bash(docker image prune --all*)",
+      "Bash(docker image prune * -a*)",
+      "Bash(docker image prune * --all*)"
+    ]
+  }
+}
