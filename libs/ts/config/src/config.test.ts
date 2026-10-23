@@ -1,11 +1,12 @@
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
-import { loadConfig, resolveSopsRef, SecretRef } from "./index";
+import { findRepoRoot, loadConfig, resolveSopsRef, SecretRef } from "./index";
 
 // Actually decrypting needs the `sops` binary + the gitignored age key — host only.
 // CI has neither, so the decrypt-backed check skips there (the env-override test still
@@ -187,5 +188,14 @@ describe("@astra/config", () => {
       delete process.env.ASTRA_DATA_ROOT;
       delete process.env.ASTRA_CONTENT_ROOT;
     }
+  });
+});
+
+describe("findRepoRoot", () => {
+  test("walks up to the checkout from any depth, and throws outside one", () => {
+    const root = findRepoRoot();
+    expect(existsSync(join(root, "ontology", "ontology-config", "config.kdl"))).toBe(true);
+    expect(findRepoRoot(join(root, "apps", "any", "depth"))).toBe(root);
+    expect(() => findRepoRoot(tmpdir())).toThrow(/ontology-config/);
   });
 });

@@ -46,17 +46,33 @@ __all__ = [
     "WealOverlayConfig",
     "default_config_file",
     "default_secrets_file",
+    "find_repo_root",
     "is_blank_secret",
     "load_config",
     "resolve_sops_ref",
 ]
 
 
-def _find_repo_root(start: Path) -> Path:
-    for parent in [start, *start.parents]:
+def find_repo_root(start: Path | None = None) -> Path:
+    """The checkout root: the nearest ancestor of `start` holding `ontology/ontology-config`.
+
+    `start` defaults to this module's own file, which sits inside the checkout because
+    workspace members install editable (`/repo` in the Dagster image). Code calls this
+    instead of counting `Path.parents`, so no path depends on how deep an app sits under
+    `apps/`. Raises `FileNotFoundError` when no ancestor matches.
+    """
+    origin = (start if start is not None else Path(__file__)).resolve()
+    for parent in [origin, *origin.parents]:
         if (parent / "ontology" / "ontology-config").is_dir():
             return parent
-    return start
+    raise FileNotFoundError(f"no ancestor of {origin} holds ontology/ontology-config")
+
+
+def _find_repo_root(start: Path) -> Path:
+    try:
+        return find_repo_root(start)
+    except FileNotFoundError:
+        return start
 
 
 def default_config_file() -> Path:

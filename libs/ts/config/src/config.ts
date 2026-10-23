@@ -419,19 +419,30 @@ export const ConfigSchema = z
 
 export type Config = z.infer<typeof ConfigSchema>;
 
-function findRepoRoot(startDir: string): string {
+/** The checkout root: the nearest ancestor of `startDir` holding
+ * `ontology/ontology-config` (the py `astra_config.find_repo_root` twin). Code calls
+ * this instead of climbing `../../`, so no path depends on how deep an app sits under
+ * `apps/`. Throws when no ancestor matches. */
+export function findRepoRoot(startDir: string = import.meta.dirname): string {
   let dir = resolve(startDir);
   for (;;) {
     if (existsSync(join(dir, "ontology", "ontology-config"))) return dir;
     const parent = dirname(dir);
-    if (parent === dir) return resolve(startDir);
+    if (parent === dir)
+      throw new Error(`no ancestor of ${startDir} holds ontology/ontology-config`);
     dir = parent;
   }
 }
 
 /** `<repo-root>/ontology/ontology-config/config.kdl`. */
 export function defaultConfigFile(): string {
-  return join(findRepoRoot(import.meta.dirname), "ontology", "ontology-config", "config.kdl");
+  let root: string;
+  try {
+    root = findRepoRoot(import.meta.dirname);
+  } catch {
+    root = resolve(import.meta.dirname);
+  }
+  return join(root, "ontology", "ontology-config", "config.kdl");
 }
 
 /** Resolve relative data-path fields against `data.root` and relative content-path

@@ -2,6 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
+import { nodeTsResolveHook } from "@astra/site-kit/nodeTsResolveHook";
 import { beforeAll, describe, expect, it } from "vitest";
 
 // SSR render smoke. We chose a build + ssr.fetch('/') assertion over a full
@@ -14,7 +15,7 @@ const RUNNER = path.join(APP_ROOT, "scripts/ssrSmoke.ts");
 // 0022 S11 — off bun: `pnpm run build` for the workspace script, `node --import
 // nodeTsResolve.mjs` for the raw-TS runner subprocess (same hook every server.ts
 // entry uses).
-const NODE_TS_RESOLVE_HOOK = path.join(APP_ROOT, "../../libs/ts/site-kit/src/nodeTsResolve.mjs");
+const NODE_TS_RESOLVE_HOOK = nodeTsResolveHook;
 
 describe("SSR smoke", () => {
   beforeAll(() => {

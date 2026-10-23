@@ -6,7 +6,8 @@
   "module": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./web": "./src/web.ts"
+    "./web": "./src/web.ts",
+    "./nodeTsResolveHook": "./src/nodeTsResolveHook.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

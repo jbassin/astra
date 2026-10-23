@@ -15,6 +15,7 @@ step. How to start a new frontend from these pieces is in `apps/strider/README.m
 | `generateRouteTree` | `scripts/generate-routes.ts` | regenerates `src/routeTree.gen.ts` |
 | `startRum` (`@astra/site-kit/web`) | browser | starts browser RUM with the endpoint the app's server function returns |
 | `src/nodeTsResolve.mjs` | every `node` run of workspace TS | resolve hook, loaded with `node --import` |
+| `nodeTsResolveHook` (`@astra/site-kit/nodeTsResolveHook`) | vitest setups, ssrSmoke tests | the hook's absolute path, for code that spawns `node --import`; use it instead of `../../libs/ts/...` |
 
 ## Traps
 

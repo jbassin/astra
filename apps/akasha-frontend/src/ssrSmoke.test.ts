@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { promisify } from "node:util";
 
+import { nodeTsResolveHook } from "@astra/site-kit/nodeTsResolveHook";
 import { beforeAll, describe, expect, it } from "vitest";
 
 // SSR render smoke (the strider template pattern): a build + ssr.fetch('/') assertion
@@ -23,7 +24,7 @@ const RUNNER = path.join(APP_ROOT, "scripts/ssrSmoke.ts");
 // 0022 S11 — off bun: `pnpm exec vite` for the workspace-local vite binary, `node
 // --import nodeTsResolve.mjs` for the raw-TS runner subprocess (same hook every
 // server.ts entry uses).
-const NODE_TS_RESOLVE_HOOK = path.join(APP_ROOT, "../../libs/ts/site-kit/src/nodeTsResolve.mjs");
+const NODE_TS_RESOLVE_HOOK = nodeTsResolveHook;
 
 describe("SSR smoke", () => {
   beforeAll(async () => {

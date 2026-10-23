@@ -1,7 +1,7 @@
 import { copyFileSync, createReadStream, existsSync, mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
+import { fontsDir } from "@astra/gothic/fontsDir";
 import type { Plugin } from "vite";
 
 // gothic owns the webfonts (theme.css references absolute /fonts/*). The strider
@@ -11,8 +11,7 @@ import type { Plugin } from "vite";
 // and (b) copies the gothic fonts into `dist/fonts/` at build — gothic stays the
 // single source of truth, no font copy is vendored into git.
 
-const HERE = path.dirname(fileURLToPath(import.meta.url));
-const FONTS_DIR = path.resolve(HERE, "../../../libs/ts/gothic/src/fonts");
+const FONTS_DIR = fontsDir;
 
 const CONTENT_TYPE: Record<string, string> = {
   ".ttf": "font/ttf",
