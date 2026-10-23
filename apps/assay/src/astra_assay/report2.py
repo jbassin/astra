@@ -169,7 +169,7 @@ class ConditionPriceRow:
 def condition_price_card(
     stage_a: pricing.StageAFit, ladder: pricing.LadderFit
 ) -> list[ConditionPriceRow]:
-    from .conditions import _FLAT_TIER, _VALUED_TIER, DurationClass  # noqa: PLC0415
+    from .conditions import _FLAT_TIER, _VALUED_TIER, DurationClass  # lazy: avoids an import cycle
 
     rows: list[ConditionPriceRow] = []
     seen: set[str] = set()

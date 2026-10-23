@@ -141,7 +141,7 @@ def test_unknown_kdl_key_is_rejected(tmp_path: Path) -> None:
         }
     """)
     )
-    with pytest.raises(Exception, match="bogus_field|bogus-field|extra"):
+    with pytest.raises(Exception, match=r"bogus_field|bogus-field|extra"):
         load_config(bad)
 
 

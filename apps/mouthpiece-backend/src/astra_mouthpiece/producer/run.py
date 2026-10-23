@@ -275,7 +275,7 @@ def run_producer(
                     roster=inp.roster,
                     transcript=render_transcript(inp.cleaned_turns),
                 )
-        except BaseException as exc:  # recorded below; non-Exceptions re-raised after artifacts
+        except BaseException as exc:  # noqa: BLE001 -- recorded below; non-Exceptions re-raised after artifacts
             error = exc
             span.record_exception(exc)
         finally:
@@ -289,7 +289,7 @@ def run_producer(
                 brief = raw
             elif raw is not None:
                 brief = ProducerBrief.model_validate(raw)
-        except Exception as exc:  # the extract fallback produced something unusable
+        except Exception as exc:  # noqa: BLE001 -- the extract fallback produced something unusable
             if error is None:
                 error = exc
         if brief is not None:

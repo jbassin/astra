@@ -189,6 +189,6 @@ def coverage_duration_multiplier_guidance() -> tuple[dict[str, float], dict[str,
     """D30-24's "coverage/duration adjustment guidance" — the SAME declared
     constants D30-4/8b already use, surfaced here as design-time multiplier
     tables rather than internal fit machinery."""
-    from .conditions import DURATION_FACTOR, OUTCOME_PROBABILITY  # noqa: PLC0415
+    from .conditions import DURATION_FACTOR, OUTCOME_PROBABILITY  # lazy: avoids an import cycle
 
     return dict(OUTCOME_PROBABILITY), {k.value: v for k, v in DURATION_FACTOR.items()}

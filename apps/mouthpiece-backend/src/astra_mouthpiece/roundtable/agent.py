@@ -275,7 +275,7 @@ def run_dossier(
                     campaign_overview=overview,
                     roster=build_roster_block(show),
                 )
-        except BaseException as exc:
+        except BaseException as exc:  # noqa: BLE001 -- recorded below; non-Exceptions re-raised after artifacts
             error = exc
             span.record_exception(exc)
         finally:
@@ -289,7 +289,7 @@ def run_dossier(
                 dossier = raw
             elif raw is not None:
                 dossier = Dossier.model_validate(raw)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- the extract fallback produced something unusable
             if error is None:
                 error = exc
         if dossier is not None:

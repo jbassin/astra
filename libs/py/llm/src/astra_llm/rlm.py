@@ -442,7 +442,7 @@ def sandbox_version(interpreter: Any) -> str | None:
         out = interpreter.execute(
             "import pyodide, sys\nprint(pyodide.__version__, sys.version.split()[0])"
         )
-    except Exception:
+    except Exception:  # noqa: BLE001 -- best-effort version probe
         return None
     return str(out).strip() or None
 
@@ -465,7 +465,7 @@ def make_interpreter() -> Any:
     if not os.environ.get(CACHED_ONLY_ENV):
         return PythonInterpreter()
     probe = PythonInterpreter()
-    runner, deno_dir = probe._get_runner_path(), probe._get_deno_dir()
+    runner, deno_dir = probe._get_runner_path(), probe._get_deno_dir()  # noqa: SLF001 -- dspy has no public accessor for these
     if not deno_dir:
         raise RuntimeError(f"{CACHED_ONLY_ENV} is set but DENO_DIR could not be resolved")
     return PythonInterpreter(

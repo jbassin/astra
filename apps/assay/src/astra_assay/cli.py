@@ -160,8 +160,8 @@ def cmd_fit(args: argparse.Namespace) -> None:
             encoding="utf-8",
         )
 
-        main_dm, main_fit = _fit_population(extract_result.rows, cantrip=False)
-        cantrip_dm, cantrip_fit = _fit_population(extract_result.rows, cantrip=True)
+        _main_dm, main_fit = _fit_population(extract_result.rows, cantrip=False)
+        _cantrip_dm, cantrip_fit = _fit_population(extract_result.rows, cantrip=True)
         span.set_attribute("assay.fit.main.n_obs", main_fit.n_obs)
         span.set_attribute("assay.fit.cantrip.n_obs", cantrip_fit.n_obs)
         span.set_attribute("assay.fit.main.r_squared", main_fit.r_squared)
@@ -206,8 +206,10 @@ def _write_point_tables(main_fit: FitResult, cantrip_fit: FitResult) -> None:
     lines.append("")
     lines.append("| Facet | Multiplier | Rounded (clean fraction) |")
     lines.append("|---|---|---|")
-    for f in report.facet_multiplier_table(main_fit):
-        lines.append(f"| {f.name} | ×{f.multiplier:.3f} | ×{f.rounded:.3f} |")
+    lines.extend(
+        f"| {f.name} | ×{f.multiplier:.3f} | ×{f.rounded:.3f} |"
+        for f in report.facet_multiplier_table(main_fit)
+    )
     lines.append("")
     lines.append("## Cantrip fit (separate curve, rank-1-only population)")
     lines.append("")
@@ -219,8 +221,10 @@ def _write_point_tables(main_fit: FitResult, cantrip_fit: FitResult) -> None:
     lines.append("")
     lines.append("| Facet | Multiplier | Rounded (clean fraction) |")
     lines.append("|---|---|---|")
-    for f in report.facet_multiplier_table(cantrip_fit):
-        lines.append(f"| {f.name} | ×{f.multiplier:.3f} | ×{f.rounded:.3f} |")
+    lines.extend(
+        f"| {f.name} | ×{f.multiplier:.3f} | ×{f.rounded:.3f} |"
+        for f in report.facet_multiplier_table(cantrip_fit)
+    )
     lines.append("")
     POINT_TABLES_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -238,18 +242,18 @@ def _write_power_ledger(main_fit: FitResult, cantrip_fit: FitResult) -> None:
         lines.append("|---|---|---|---|---|")
         top = ledger[:10]
         bottom = ledger[-10:] if len(ledger) > 10 else []
-        for row in top:
-            lines.append(
-                f"| {row.name} | {row.rank} | {row.ev:.1f} | {row.predicted_ev:.1f} | "
-                f"{row.residual_rank_equiv:+.2f} |"
-            )
+        lines.extend(
+            f"| {row.name} | {row.rank} | {row.ev:.1f} | {row.predicted_ev:.1f} | "
+            f"{row.residual_rank_equiv:+.2f} |"
+            for row in top
+        )
         if bottom:
             lines.append("| … | | | | |")
-            for row in bottom:
-                lines.append(
-                    f"| {row.name} | {row.rank} | {row.ev:.1f} | {row.predicted_ev:.1f} | "
-                    f"{row.residual_rank_equiv:+.2f} |"
-                )
+            lines.extend(
+                f"| {row.name} | {row.rank} | {row.ev:.1f} | {row.predicted_ev:.1f} | "
+                f"{row.residual_rank_equiv:+.2f} |"
+                for row in bottom
+            )
         lines.append("")
         lines.append(
             f"<details><summary>Full {label.lower()} ledger ({len(ledger)} spells)</summary>"
@@ -257,11 +261,11 @@ def _write_power_ledger(main_fit: FitResult, cantrip_fit: FitResult) -> None:
         lines.append("")
         lines.append(f"| Spell | Rank | EV | Predicted | {residual_col} |")
         lines.append("|---|---|---|---|---|")
-        for row in ledger:
-            lines.append(
-                f"| {row.name} | {row.rank} | {row.ev:.1f} | {row.predicted_ev:.1f} | "
-                f"{row.residual_rank_equiv:+.2f} |"
-            )
+        lines.extend(
+            f"| {row.name} | {row.rank} | {row.ev:.1f} | {row.predicted_ev:.1f} | "
+            f"{row.residual_rank_equiv:+.2f} |"
+            for row in ledger
+        )
         lines.append("")
         lines.append("</details>")
         lines.append("")
@@ -675,10 +679,10 @@ def _write_point_tables_v2(
         "| Rank | Budget (excl. singleton) | Budget (incl. singleton) | Community 7×rank |"
     )
     lines.append("|---|---|---|---|")
-    for r in range(1, 11):
-        lines.append(
-            f"| {r} | {ladder.budget(r):.2f} | {ladder_with_singleton.budget(r):.2f} | {7 * r} |"
-        )
+    lines.extend(
+        f"| {r} | {ladder.budget(r):.2f} | {ladder_with_singleton.budget(r):.2f} | {7 * r} |"
+        for r in range(1, 11)
+    )
     lines.append("")
     lines.append(f"Cantrip ladder (intercept-only, n={cantrip_ladder.n_obs}): ")
     lines.append(f"budget = **{cantrip_ladder.budget():.2f}** (all pure cantrips are rank 1).")
@@ -730,8 +734,10 @@ def _write_point_tables_v2(
             f"{tr.rate:.3f} |"
         )
     lines.append("")
-    for tier in (Tier.T4, Tier.T3, Tier.T2, Tier.T1):
-        lines.append(f"- **{tier.value}**: {tier_rates[tier].anchor.anchor_note}")
+    lines.extend(
+        f"- **{tier.value}**: {tier_rates[tier].anchor.anchor_note}"
+        for tier in (Tier.T4, Tier.T3, Tier.T2, Tier.T1)
+    )
     lines.append("")
     lines.append(
         "**Table representative point vs. the tier anchors above:** every row below is "
@@ -814,15 +820,16 @@ def _write_point_tables_v2(
     lines.append("")
     lines.append("| Condition | Tier | Budget fraction *p* | Rank-equivalent @ rank 5 |")
     lines.append("|---|---|---|---|")
-    for row in report2.condition_price_card(stage_a, ladder):
-        lines.append(
-            f"| {row.condition} | {row.tier.value} | {row.budget_fraction:.3f} | "
-            f"{row.rank_equivalent_at_rank5:.2f} |"
-        )
+    lines.extend(
+        f"| {row.condition} | {row.tier.value} | {row.budget_fraction:.3f} | "
+        f"{row.rank_equivalent_at_rank5:.2f} |"
+        for row in report2.condition_price_card(stage_a, ladder)
+    )
     lines.append("")
     lines.append(_ROUND1_APPENDIX)
-    for r in range(1, 11):
-        lines.append(f"| {r} | see `README.md` / git history | {ladder.budget(r):.2f} |")
+    lines.extend(
+        f"| {r} | see `README.md` / git history | {ladder.budget(r):.2f} |" for r in range(1, 11)
+    )
     lines.append("")
 
     lines.append("---")
@@ -845,8 +852,7 @@ def _write_point_tables_v2(
         lines.append("")
         lines.append("| Rank | Value |")
         lines.append("|---|---|")
-        for pt in anchor.points:
-            lines.append(f"| {pt.rank} | {pt.value:g} |")
+        lines.extend(f"| {pt.rank} | {pt.value:g} |" for pt in anchor.points)
         lines.append("")
     lines.append(
         "Resistance-per-rank family: Mountain Resilience above is the named anchor (physical "
@@ -907,11 +913,10 @@ def _write_power_ledger_v2(population: report2.Population) -> None:
     lines.append("")
     lines.append("| Spell | Rank | Kind | EV/score | Residual (rank-equiv) |")
     lines.append("|---|---|---|---|---|")
-    for s in non_cantrip:
-        lines.append(
-            f"| {s.name} | {s.rank} | {s.kind} | {s.ev_or_score:.2f} | "
-            f"{s.residual_rank_equiv:+.2f} |"
-        )
+    lines.extend(
+        f"| {s.name} | {s.rank} | {s.kind} | {s.ev_or_score:.2f} | {s.residual_rank_equiv:+.2f} |"
+        for s in non_cantrip
+    )
     lines.append("")
     lines.append("</details>")
     lines.append("")
@@ -946,10 +951,10 @@ def _write_validation_v2(
     lines.append("")
     lines.append("| Subpopulation | n | share within ±½ rank | p10 | p90 |")
     lines.append("|---|---|---|---|---|")
-    for r in v1:
-        lines.append(
-            f"| {r.subpop} | {r.n} | {r.share_within_half_rank:.1%} | {r.p10:+.2f} | {r.p90:+.2f} |"
-        )
+    lines.extend(
+        f"| {r.subpop} | {r.n} | {r.share_within_half_rank:.1%} | {r.p10:+.2f} | {r.p90:+.2f} |"
+        for r in v1
+    )
     lines.append("")
     lines.append(
         "Diagnosis: the 'pure'/'hybrid' labels here are the BROAD damage-row split "
@@ -1159,8 +1164,7 @@ def _write_validation_v2(
     lines.append("")
     lines.append(f"Named `routing-ambiguous` list ({len(ambiguous_names)}):")
     lines.append("")
-    for n in sorted(set(ambiguous_names)):
-        lines.append(f"- {n}")
+    lines.extend(f"- {n}" for n in sorted(set(ambiguous_names)))
     lines.append("")
     lines.append(
         "Damage-side non-regression: Fireball's V2′ spot-check above is unchanged from round 2 "
@@ -1186,7 +1190,7 @@ def _write_validation_v2(
     lines.append("")
 
     if round4 is not None:
-        _append_round4_sections(lines, rows, population, round4)
+        _append_round4_sections(lines, rows, round4)
 
     VALIDATION_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -1194,7 +1198,6 @@ def _write_validation_v2(
 def _append_round4_sections(
     lines: list[str],
     rows: list[SpellFeatures],
-    population: report2.Population,
     r4: Round4Report,
 ) -> None:
     lines.append("---")
@@ -1457,11 +1460,11 @@ def _warn_condition_word_with_zero_refs(description_html: str) -> list[str]:
     pure damage (an overscore) — warn, don't guess."""
     if "@UUID" in description_html and "conditionitems.Item" in description_html:
         return []  # at least one real ref exists somewhere; not the failure mode
-    hits = []
-    for word in _CONDITION_WORDS:
-        if re.search(rf"\b{re.escape(word)}\b", description_html, re.IGNORECASE):
-            hits.append(word)
-    return hits
+    return [
+        word
+        for word in _CONDITION_WORDS
+        if re.search(rf"\b{re.escape(word)}\b", description_html, re.IGNORECASE)
+    ]
 
 
 def _print_comparables(
@@ -1511,7 +1514,7 @@ def _print_comparables(
             print(f"    - {label} ({row.tier.value}): prior ≈ {req} rank-equivalents (at ~1 round)")
 
 
-def cmd_score(args: argparse.Namespace) -> None:
+def cmd_score(args: argparse.Namespace) -> None:  # noqa: C901 -- over the complexity limit; ratchet, split it in Phase 2
     with _tracer.start_as_current_span("assay.score") as span:
         spell_path = Path(args.spell)
         data = load_spell_json(spell_path)

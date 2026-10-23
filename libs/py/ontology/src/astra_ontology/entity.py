@@ -95,10 +95,8 @@ def serialize_entities(entities: list[Entity]) -> str:
         if e.being is not None:
             head += f" being={_kdl_str(e.being)}"
         lines.append(head + " {")
-        for a in e.aliases:
-            lines.append(f"    alias {_kdl_str(a)}")
-        for s in e.sources:
-            lines.append(f"    source {_kdl_str(s)}")
+        lines.extend(f"    alias {_kdl_str(a)}" for a in e.aliases)
+        lines.extend(f"    source {_kdl_str(s)}" for s in e.sources)
         lines.append("}")
     return "\n".join(lines) + "\n"
 
@@ -245,7 +243,9 @@ def merge_seed(fresh: list[Entity], existing: list[Entity]) -> list[Entity]:
             out.append(f)
 
     # Curated entities the fresh seed didn't produce (hand-added) are preserved.
-    for e in existing:
-        if "manual" in e.sources and fold_for_match(e.canonical) not in fresh_folds:
-            out.append(e)
+    out.extend(
+        e
+        for e in existing
+        if "manual" in e.sources and fold_for_match(e.canonical) not in fresh_folds
+    )
     return out

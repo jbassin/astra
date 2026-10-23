@@ -190,7 +190,7 @@ def session_episode_summary(context: dg.AssetExecutionContext) -> dg.Materialize
 
 
 @dg.asset(deps=[session_episode_summary], group_name="chronicle")
-def campaign_timeline(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+def campaign_timeline() -> dg.MaterializeResult:
     """Group every episode summary into the Show → Season → Episode `Chronicle`.
 
     Reads all `timeline/episodes/*.json`, groups by show, orders shows main-first then
@@ -246,9 +246,7 @@ campaign_timeline_job = dg.define_asset_job("campaign_timeline_job", selection=[
     cron_schedule="0 * * * *",
     default_status=dg.DefaultScheduleStatus.RUNNING,
 )
-def campaign_timeline_schedule(
-    context: dg.ScheduleEvaluationContext,
-) -> dg.RunRequest:
+def campaign_timeline_schedule() -> dg.RunRequest:
     """Hourly regen of the chronicle seasons (a no-op until a new episode summary lands)."""
     return dg.RunRequest()
 
@@ -292,11 +290,10 @@ def _to_json(value: object) -> str:
 
 def _atomic_write(path: Path, text: str) -> None:
     """Write `.tmp`→rename so an output only appears whole (a partition = done)."""
-    import os
 
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(text, encoding="utf-8")
-    os.replace(tmp, path)
+    tmp.replace(path)
 
 
 defs = dg.Definitions(

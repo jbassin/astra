@@ -60,14 +60,14 @@ def resolve_corpus(pages: list[Page]) -> list[Edge]:
     by_path, by_stem = index_pages(pages)
     edges: list[Edge] = []
     for page in pages:
-        for ref in page.metadata.crossrefs:
-            edges.append(
-                Edge(
-                    source=page.path,
-                    target=ref.target,
-                    resolved=resolve_target(ref.target, by_path, by_stem),
-                    heading=ref.heading,
-                    alias=ref.alias,
-                )
+        edges.extend(
+            Edge(
+                source=page.path,
+                target=ref.target,
+                resolved=resolve_target(ref.target, by_path, by_stem),
+                heading=ref.heading,
+                alias=ref.alias,
             )
+            for ref in page.metadata.crossrefs
+        )
     return edges

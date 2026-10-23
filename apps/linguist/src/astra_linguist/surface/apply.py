@@ -13,6 +13,8 @@ Pure — no LLM, no network. The fragment/idempotency logic lives in `..correcti
 unit-tested there; this is the thin CLI + selection over the reviewed file.
 """
 
+# ruff: noqa: T201 -- a command-line tool; print is its output
+
 from __future__ import annotations
 
 import argparse

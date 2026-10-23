@@ -276,7 +276,7 @@ def test_collapse_keeps_on_conflicting_duplicate_resolved_to_none() -> None:
 def test_collapse_skips_windows_with_no_turns() -> None:
     empty = Window(index=1, turns=[])
     real = Window(index=2, turns=[(5, "A", "x")])
-    kept, dropped, dropped_windows = _collapse_ranges(
+    kept, _dropped, dropped_windows = _collapse_ranges(
         [empty, real], {2: WindowVerdict(window=2, decision="keep", category="content")}
     )
     assert kept == [(5, 5)]
@@ -353,7 +353,7 @@ def test_parse_enrichment_happy_path() -> None:
 
 
 def test_parse_enrichment_wiki_refs_defaults_to_empty() -> None:
-    synopsis, wiki_refs = _parse_enrichment({"synopsis": "A tale."})
+    _synopsis, wiki_refs = _parse_enrichment({"synopsis": "A tale."})
     assert wiki_refs == []
 
 

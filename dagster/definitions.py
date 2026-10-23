@@ -116,7 +116,7 @@ def pipeline_failure_alert(context: dg.RunFailureSensorContext) -> None:
     failure = context.failure_event
     try:
         step_events = context.get_step_failure_events()
-    except Exception:
+    except Exception:  # noqa: BLE001 -- see below: page without the step detail
         # The detail lookup is an event-log query; if it fails, still page with the
         # run-level message rather than losing the alert (the cursor advances regardless).
         step_events = []

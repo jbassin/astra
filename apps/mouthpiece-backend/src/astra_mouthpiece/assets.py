@@ -16,7 +16,6 @@ injected seams.
 
 # No `from __future__ import annotations`: Dagster introspects the `context`/`config`
 # annotations at definition time and needs the real types, not strings (scribe N.B.).
-import os
 from pathlib import Path
 
 import dagster as dg
@@ -96,7 +95,7 @@ def _atomic_write(path: Path, text: str) -> None:
     """Write `.tmp`→rename so an output only appears whole (a partition = done)."""
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(text, encoding="utf-8")
-    os.replace(tmp, path)
+    tmp.replace(path)
 
 
 def _required_key(ref: SecretRef | None, name: str) -> str:
@@ -384,7 +383,7 @@ def build_episodes_index(root: Path | None = None) -> EpisodesIndex:
 
 
 @dg.asset(group_name="mouthpiece")
-def episodes_index(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+def episodes_index() -> dg.MaterializeResult:
     """Glob the session dirs → one sorted ``episodes-index.json`` catalog that
     mouthpiece-frontend (0012) reads at build. Owns id-parse, the arc-then-date
     sort, per-arc episode numbering, arc titles (campaign.name), ffprobe duration

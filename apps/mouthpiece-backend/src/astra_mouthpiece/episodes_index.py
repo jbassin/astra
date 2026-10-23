@@ -106,7 +106,7 @@ def episode_title(title: str, arc_title: str) -> str:
 
 def date_sort_key(date: str) -> int:
     """Numeric key for a "YYYY-M-D" (unpadded) date — ported from `dateSortKey`."""
-    parts = (date.split("-") + ["0", "0", "0"])[:3]
+    parts = ([*date.split("-"), "0", "0", "0"])[:3]
     y, m, d = (int(p) if p.isdigit() else 0 for p in parts)
     return y * 10000 + m * 100 + d
 
@@ -399,12 +399,11 @@ def _read_turns(script: dict) -> tuple[tuple[str, str], ...]:
     raw = script.get("turns")
     if not isinstance(raw, list):
         return ()
-    out: list[tuple[str, str]] = []
-    for t in raw:
-        if (
-            isinstance(t, dict)
-            and isinstance(t.get("speaker"), str)
-            and isinstance(t.get("text"), str)
-        ):
-            out.append((t["speaker"], t["text"]))
+    out: list[tuple[str, str]] = [
+        (t["speaker"], t["text"])
+        for t in raw
+        if isinstance(t, dict)
+        and isinstance(t.get("speaker"), str)
+        and isinstance(t.get("text"), str)
+    ]
     return tuple(out)

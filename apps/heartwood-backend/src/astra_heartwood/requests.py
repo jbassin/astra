@@ -115,7 +115,7 @@ def _now() -> str:
 def _atomic_write(path: Path, text: str) -> None:
     tmp = path.with_name(path.name + ".tmp")
     tmp.write_text(text, encoding="utf-8")
-    os.replace(tmp, path)
+    tmp.replace(path)
 
 
 def request_path(root: Path, date: str) -> Path:

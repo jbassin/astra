@@ -122,7 +122,7 @@ class SecretRef:
     leak the value, so a secret can't be logged by accident.
     """
 
-    __slots__ = ("ref", "_secrets_file")
+    __slots__ = ("_secrets_file", "ref")
 
     def __init__(self, ref: str, *, secrets_file: Path | None = None) -> None:
         self.ref = ref

@@ -8,23 +8,22 @@ State on disk (the review artifact, consumed after the review):
 """
 
 import json
-import os
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
-STATE = os.path.join(ROOT, "state")
-COMMENTS = os.path.join(STATE, "comments.jsonl")
-REVIEWED = os.path.join(STATE, "reviewed.json")
-os.makedirs(STATE, exist_ok=True)
+ROOT = Path(__file__).resolve().parent
+STATE = ROOT / "state"
+COMMENTS = STATE / "comments.jsonl"
+REVIEWED = STATE / "reviewed.json"
+STATE.mkdir(parents=True, exist_ok=True)
 
 
 def _comment_rows():
-    if not os.path.exists(COMMENTS):
+    if not COMMENTS.exists():
         return
-    for line in Path(COMMENTS).read_text().splitlines():
-        line = line.strip()
+    for raw in COMMENTS.read_text().splitlines():
+        line = raw.strip()
         if line:
             yield json.loads(line)
 
@@ -33,7 +32,7 @@ def _read_reviewed():
     # fail-soft: a disk-full incident once truncated this file to 0 bytes, and a
     # parse error here took down /api/state (and with it the client's sync loop)
     try:
-        return json.loads(Path(REVIEWED).read_text())
+        return json.loads(REVIEWED.read_text())
     except (OSError, json.JSONDecodeError):
         return {}
 
@@ -67,11 +66,11 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def _file(self, name, ctype):
-        path = os.path.join(ROOT, name)
-        if not os.path.exists(path):
+        path = ROOT / name
+        if not path.exists():
             self.send_error(404)
             return
-        body = Path(path).read_bytes()
+        body = path.read_bytes()
         self.send_response(200)
         self.send_header("content-type", ctype)
         self.send_header("content-length", str(len(body)))
@@ -96,12 +95,12 @@ class Handler(BaseHTTPRequestHandler):
         row = json.loads(self.rfile.read(n) or b"{}")
         if self.path == "/api/comment":
             if not already_logged(row["id"]):
-                with open(COMMENTS, "a") as f:
+                with COMMENTS.open("a") as f:
                     f.write(json.dumps(row) + "\n")
             self._json({"ok": True})
         elif self.path == "/api/comment/delete":
             if not already_logged(row["id"], op="delete"):
-                with open(COMMENTS, "a") as f:
+                with COMMENTS.open("a") as f:
                     f.write(json.dumps({"op": "delete", "id": row["id"]}) + "\n")
             self._json({"ok": True})
         elif self.path == "/api/reviewed":
@@ -109,19 +108,19 @@ class Handler(BaseHTTPRequestHandler):
             reviewed[row["slug"]] = bool(row["reviewed"])
             # atomic replace — a plain write_text truncates first, so a full
             # disk (or a crash mid-write) destroys the whole map
-            tmp = REVIEWED + ".tmp"
-            Path(tmp).write_text(json.dumps(reviewed, indent=1))
-            os.replace(tmp, REVIEWED)
+            tmp = REVIEWED.with_name(REVIEWED.name + ".tmp")
+            tmp.write_text(json.dumps(reviewed, indent=1))
+            tmp.replace(REVIEWED)
             self._json({"ok": True})
         else:
             self.send_error(404)
 
-    def log_message(self, format, *args):  # noqa: A002 — stdlib signature (Liskov)
+    def log_message(self, format, *args):
         pass
 
 
 if __name__ == "__main__":
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 10390
-    srv = ThreadingHTTPServer(("0.0.0.0", port), Handler)
-    print(f"scriptorium serving on http://0.0.0.0:{port}")
+    srv = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    print(f"scriptorium serving on http://127.0.0.1:{port}")  # noqa: T201 -- CLI output
     srv.serve_forever()

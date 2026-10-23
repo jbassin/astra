@@ -473,7 +473,7 @@ def _plain_mentions(text: str, name: str) -> bool:
     return bool(pattern.search(stripped))
 
 
-def extract_condition_instances(
+def extract_condition_instances(  # noqa: C901 -- over the complexity limit; ratchet, split it in Phase 2
     description_html: str,
     *,
     spell_duration_value: str,
@@ -565,17 +565,17 @@ def extract_condition_instances(
         if _AS_FAILURE_RE.match(sect_text) and "failure" in seen_degrees:
             # Rule (ii): inherit the Failure set (relabeled to this degree),
             # plus this section's own additions.
-            for inherited in seen_degrees["failure"]:
-                instances.append(
-                    ConditionInstance(
-                        condition=inherited.condition,
-                        value=inherited.value,
-                        degree=key,
-                        duration=inherited.duration,
-                        rule=AttributionRule.AS_FAILURE,
-                        tier=inherited.tier,
-                    )
+            instances.extend(
+                ConditionInstance(
+                    condition=inherited.condition,
+                    value=inherited.value,
+                    degree=key,
+                    duration=inherited.duration,
+                    rule=AttributionRule.AS_FAILURE,
+                    tier=inherited.tier,
                 )
+                for inherited in seen_degrees["failure"]
+            )
             addl_text = _AS_FAILURE_RE.sub("", sect_text, count=1)
             for name, value in _find_direct_refs(addl_text):
                 duration = classify_duration(sect_text, spell_duration_value)

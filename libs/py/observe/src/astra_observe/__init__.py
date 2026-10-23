@@ -67,7 +67,7 @@ def init_telemetry(service_name: str, *, endpoint: str | None = None) -> None:
     and apps can both call it defensively. ``service_name`` should be
     ``astra.<subsystem>`` (e.g. ``astra.scribe``).
     """
-    global _state
+    global _state  # noqa: PLW0603 -- the process-wide telemetry singleton
     if _state is not None:
         return
 
@@ -119,7 +119,7 @@ def get_logger(name: str) -> logging.Logger:
 
 def shutdown() -> None:
     """Force-flush + tear down providers. Call before a short-lived process exits."""
-    global _state
+    global _state  # noqa: PLW0603 -- the process-wide telemetry singleton
     if _state is None:
         return
     tracer_provider, meter_provider, logger_provider, handler = _state

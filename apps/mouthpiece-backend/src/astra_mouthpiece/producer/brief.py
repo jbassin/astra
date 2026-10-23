@@ -88,7 +88,8 @@ def check_citations(
             if note.page not in page_set:
                 bad += 1
                 warnings.append(f"lore {note.name!r}: unknown page {note.page!r} cleared")
-                note = note.model_copy(update={"page": None})
+                lore.append(note.model_copy(update={"page": None}))
+                continue
         lore.append(note)
 
     callbacks = []

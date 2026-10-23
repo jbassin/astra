@@ -199,7 +199,7 @@ _PACK_CURVE_LABELS = {
 def build_pack_curve_anchors(
     effect_index: dict[str, dict],
 ) -> list[PackCurveAnchor]:
-    from . import effects  # noqa: PLC0415 — avoid a needless import at module load
+    from . import effects  # lazy: no need to load it at module import
 
     out: list[PackCurveAnchor] = []
     for effect_name, atom_key, ranks in _PACK_CURVE_SPECS:

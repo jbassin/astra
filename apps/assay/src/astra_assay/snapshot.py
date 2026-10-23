@@ -33,7 +33,7 @@ def default_data_root() -> Path | None:
         return None
     try:
         return Path(load_config().codex.data_path)
-    except Exception:
+    except Exception:  # noqa: BLE001 -- no config means no snapshot path; callers handle None
         return None
 
 

@@ -130,9 +130,10 @@ def _extract_usage(raw: Any) -> Usage:
         details = getattr(raw, "prompt_tokens_details", None)
         cache_read = getattr(details, "cached_tokens", 0) if details is not None else 0
     cache_read = int(cache_read or 0)
-    # litellm's anthropic transform sets prompt_tokens = input_tokens + cache_creation +
-    # cache_read (verified in litellm/llms/anthropic/chat/transformation.py), i.e. INCLUSIVE
-    # of cache. Recover the disjoint uncached input so the pricing table isn't double-charged.
+    # litellm's anthropic transform counts the cache inside prompt_tokens: input tokens plus
+    # cache creation plus cache read (verified in transformation.py under
+    # litellm/llms/anthropic/chat), i.e. INCLUSIVE of cache. Recover the disjoint uncached
+    # input so the pricing table isn't double-charged.
     uncached_input = max(0, prompt - cache_read - cache_write)
     return Usage(
         input_tokens=uncached_input,

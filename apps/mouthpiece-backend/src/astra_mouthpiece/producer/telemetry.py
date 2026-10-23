@@ -64,7 +64,7 @@ def instrument_tool(fn: Callable[..., Any], parent: RunParent) -> Callable[..., 
         fn,
         parent,
         prefix="mouthpiece.producer",
-        tracer=lambda: tracer(),
+        tracer=lambda: tracer(),  # noqa: PLW0108 -- late lookup, so tests can patch tracer
         calls=lambda: instruments()["tool_calls"],
         logger=log,
     )

@@ -24,6 +24,8 @@ Conventions:
   the two constructions cancel.
 """
 
+# ruff: noqa: T201 -- a one-shot generator script; print is its report
+
 from __future__ import annotations
 
 import json
@@ -204,9 +206,8 @@ CASES: list[tuple[str, Die, str]] = [
 def dump_die(die: Die) -> tuple[list[tuple[int, int]], int]:
     die = die.simplify()
     items: list[tuple[int, int]] = []
-    for outcome, weight in die.items():
-        if isinstance(outcome, bool):
-            outcome = int(outcome)
+    for raw, weight in die.items():
+        outcome = int(raw) if isinstance(raw, bool) else raw
         if not isinstance(outcome, int):
             raise TypeError(f"non-integer outcome {outcome!r}")
         items.append((outcome, weight))
@@ -220,8 +221,8 @@ def main() -> None:
     fixtures.mkdir(exist_ok=True)
 
     names = [name for name, _, _ in CASES]
-    assert len(names) == len(set(names)), "duplicate case names"
-    assert len(CASES) >= 25, f"need >= 25 oracle cases, have {len(CASES)}"
+    assert len(names) == len(set(names)), "duplicate case names"  # noqa: S101 -- script self-check
+    assert len(CASES) >= 25, f"need >= 25 oracle cases, have {len(CASES)}"  # noqa: S101 -- script self-check
 
     json_cases = []
     rs_cases = []
@@ -264,7 +265,7 @@ def main() -> None:
             capture_output=True,
             check=True,
         )
-    except Exception:
+    except Exception:  # noqa: BLE001 -- formatting is optional; warn and carry on
         print(f"warning: could not oxfmt {oracle_json}; run `pnpm exec oxfmt` on it manually")
 
     header = (

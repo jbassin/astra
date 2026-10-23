@@ -8,6 +8,7 @@ config, so the run-request + dynamic-partition wiring is covered without externa
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import astra_linguist.assets as assets
 import dagster as dg
@@ -48,7 +49,7 @@ def test_scribe_output_sensor_emits_partition_and_run_request(
 ) -> None:
     _session(tmp_path, "2026-6-8")
     monkeypatch.setattr(
-        assets, "_linguist_config", lambda: type("C", (), {"ingest_saved_dir": str(tmp_path)})()
+        assets, "_linguist_config", lambda: SimpleNamespace(ingest_saved_dir=str(tmp_path))
     )
     result = assets.scribe_output_sensor(
         dg.build_sensor_context(instance=dg.DagsterInstance.ephemeral())
@@ -59,9 +60,7 @@ def test_scribe_output_sensor_emits_partition_and_run_request(
 
 
 def test_scribe_output_sensor_quiet_without_dir(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(
-        assets, "_linguist_config", lambda: type("C", (), {"ingest_saved_dir": ""})()
-    )
+    monkeypatch.setattr(assets, "_linguist_config", lambda: SimpleNamespace(ingest_saved_dir=""))
     result = assets.scribe_output_sensor(
         dg.build_sensor_context(instance=dg.DagsterInstance.ephemeral())
     )

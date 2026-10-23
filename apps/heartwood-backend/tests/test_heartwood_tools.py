@@ -383,7 +383,7 @@ def test_search_transcripts(env) -> None:
 
 # ── resolve_name ──
 def test_resolve_name_json_shape(env) -> None:
-    ws, t, _, _ = env
+    _ws, t, _, _ = env
     r = t.resolve_name("ugathal")
     assert r == {
         "status": "resolved",
@@ -471,7 +471,7 @@ def test_timeline_is_read_only(env) -> None:
 
 
 def test_new_pages_not_at_root(env) -> None:
-    ws, t, _, _ = env
+    _ws, t, _, _ = env
     with pytest.raises(ValueError, match="not the wiki root"):
         t.write_page("Radio Show", "A show.")
     with pytest.raises(ValueError, match="not the wiki root"):
@@ -480,7 +480,7 @@ def test_new_pages_not_at_root(env) -> None:
 
 
 def test_page_and_folder_never_share_a_name(env) -> None:
-    ws, t, _, _ = env
+    _ws, t, _, _ = env
     # a child under an existing page
     with pytest.raises(ValueError, match=r"move_page\('Divinity/Aut', 'Divinity/Aut/index'\)"):
         t.write_page("Divinity/Aut/Priest", "A priest.")

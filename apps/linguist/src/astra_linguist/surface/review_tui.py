@@ -19,6 +19,8 @@ Mined keys:      [c]onfirm→nearest  [r]eject  [n]ew  [s]kip  [k]eep/next  [b]a
 Candidate keys:  [a]ccept  [r]eject  [k]eep/next  [b]ack  [q]save  [Q]quit
 """
 
+# ruff: noqa: T201 -- a command-line tool; print is its output
+
 from __future__ import annotations
 
 import argparse

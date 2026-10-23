@@ -39,7 +39,7 @@ def publish_snapshot(snapshot_path: Path = SNAPSHOT_PATH) -> int:
 
 def main() -> None:
     n = publish_snapshot()
-    print(f"published snapshot with {n} episode(s) → {SNAPSHOT_PATH}")
+    print(f"published snapshot with {n} episode(s) → {SNAPSHOT_PATH}")  # noqa: T201 -- command-line output
 
 
 if __name__ == "__main__":

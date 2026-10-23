@@ -14,6 +14,8 @@ The OpenRouter key is resolved through `astra_config` (via `ensure_openrouter_en
 guardrails + escalation in `judge.py` are unchanged and wrap the compiled program.
 """
 
+# ruff: noqa: T201 -- a command-line tool; print is its output
+
 from __future__ import annotations
 
 import argparse
@@ -129,7 +131,7 @@ def evaluate(program: Any, valset: list[Any], lex: Any, lm: Any) -> dict[str, An
             pred = program(lexicon=ex.lexicon, window=ex.window)
         try:
             cands = [Candidate.model_validate(c) for c in pred.candidates]
-        except Exception:
+        except Exception:  # noqa: BLE001 -- malformed model output counts as no candidates
             cands = []
         kept = apply_guardrails(cands, _one_line_transcript(ex.line_text), lex)
         focal = next(

@@ -475,7 +475,7 @@ def split_goldset(
 ) -> tuple[list[dspy.Example], list[dspy.Example]]:
     """Deterministic shuffle + train/val split."""
     shuffled = list(examples)
-    random.Random(seed).shuffle(shuffled)
+    random.Random(seed).shuffle(shuffled)  # noqa: S311 -- a seeded, reproducible split, not security
     n_val = max(1, int(len(shuffled) * val_frac)) if shuffled else 0
     return shuffled[n_val:], shuffled[:n_val]
 
@@ -494,10 +494,10 @@ def make_metric(lex: Lexicon) -> Any:
     (the safety-relevant signal: never false-confirm ordinary English / a near-miss).
     """
 
-    def metric(example: dspy.Example, pred: Any, trace: Any = None) -> bool:
+    def metric(example: dspy.Example, pred: Any, trace: Any = None) -> bool:  # noqa: ARG001 -- dspy metric signature
         try:
             pred_cands = [Candidate.model_validate(c) for c in pred.candidates]
-        except Exception:
+        except Exception:  # noqa: BLE001 -- malformed model output scores as a miss
             return False
         transcript = _one_line_transcript(example.line_text)
         kept = apply_guardrails(pred_cands, transcript, lex)

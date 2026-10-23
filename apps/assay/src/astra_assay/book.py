@@ -199,7 +199,7 @@ class _DescriptionParser(HTMLParser):
         elif tag == "li":
             self._buf = []
 
-    def handle_endtag(self, tag: str) -> None:
+    def handle_endtag(self, tag: str) -> None:  # noqa: C901 -- over the complexity limit; ratchet, split it in Phase 2
         if tag == "p":
             text = self._take_buf()
             if not text:
@@ -310,7 +310,7 @@ def convert_description(html_value: str) -> ConvertedDescription:
     if split_at is not None:
         for b in blocks[split_at + 1 :]:
             m = _HEIGHTENED_RE.match(b.text)
-            assert m is not None  # guaranteed by the split_at scan
+            assert m is not None  # noqa: S101 -- narrows the type; the split_at scan guarantees it
             heightened.append((m.group(1).strip(), m.group(2).strip()))
         blocks = blocks[:split_at]
 
@@ -737,8 +737,9 @@ def emit_spell_latex(rec: SpellRecord) -> str:
         _pills_latex(rec, rec.warnings),
         "\\vspace{3pt}",
     ]
-    for r in rec.rows:
-        parts.append(f"\\defrow{{{r.label}}}{{{_render_row_value(r.value, rec.warnings)}}}")
+    parts.extend(
+        f"\\defrow{{{r.label}}}{{{_render_row_value(r.value, rec.warnings)}}}" for r in rec.rows
+    )
     parts.append("\\end{blockhead}")
     parts.append("\\blockrule")
     parts.append(_render_body_blocks(rec.body_blocks, rec.warnings))
@@ -885,7 +886,7 @@ _N_ARTSLOT_RE = re.compile(r"^<!--\s*(ART SLOT.*?)\s*-->$")
 _N_INLINE_COMMENT_RE = re.compile(r"<!--.*?-->")
 
 
-def _parse_neutral(text: str) -> list[NElement]:
+def _parse_neutral(text: str) -> list[NElement]:  # noqa: C901 -- over the complexity limit; ratchet, split it in Phase 2
     lines = text.split("\n")
     elements: list[NElement] = []
     n = len(lines)
@@ -954,7 +955,7 @@ def _parse_neutral(text: str) -> list[NElement]:
             comments = _N_INLINE_COMMENT_RE.findall(stripped)
             clean = _N_INLINE_COMMENT_RE.sub("", stripped).strip()
             m_row = _N_DEFROW_RE.match(clean)
-            assert m_row is not None
+            assert m_row is not None  # noqa: S101 -- narrows the type; the line was classified by this regex
             elements.append(
                 NDefRow(m_row.group(1).strip(), m_row.group(2).strip(), comment="; ".join(comments))
             )
@@ -1246,10 +1247,10 @@ def _assemble_chapter(
 
 
 def _load_store(store_dir: Path) -> list[tuple[str, dict[str, Any]]]:
-    docs = []
-    for path in sorted(store_dir.glob("*.json")):
-        docs.append((path.stem, json.loads(path.read_text(encoding="utf-8"))))
-    return docs
+    return [
+        (path.stem, json.loads(path.read_text(encoding="utf-8")))
+        for path in sorted(store_dir.glob("*.json"))
+    ]
 
 
 def _load_trait_blurbs(traits_dir: Path) -> dict[str, list[_Block]]:
@@ -1465,14 +1466,15 @@ def format_report(report: BookReport) -> str:
     lines = [f"assay export-book: {report.spells} spells, {len(report.chapters)} chapters"]
     for school, n in report.chapters:
         lines.append(f"  chapter {_title_case(school)}: {n} spells")
-    for slot in report.art_real:
-        lines.append(f"  art slot {slot}: real art placed")
-    for slot in report.art_placeholder:
-        lines.append(f"  art slot {slot}: placeholder (no processed/{slot}.png|jpg yet)")
-    for frag in report.missing_fragments:
-        lines.append(f"  missing content fragment (fail-soft): {frag}")
-    for w in report.warnings:
-        lines.append(f"  warning: {w}")
+    lines.extend(f"  art slot {slot}: real art placed" for slot in report.art_real)
+    lines.extend(
+        f"  art slot {slot}: placeholder (no processed/{slot}.png|jpg yet)"
+        for slot in report.art_placeholder
+    )
+    lines.extend(
+        f"  missing content fragment (fail-soft): {frag}" for frag in report.missing_fragments
+    )
+    lines.extend(f"  warning: {w}" for w in report.warnings)
     return "\n".join(lines)
 
 
@@ -1496,15 +1498,15 @@ def cmd_export_book(args: argparse.Namespace) -> None:
         tex_path.write_text(result.tex, encoding="utf-8")
         span.set_attribute("assay.export_book.spells", result.report.spells)
         span.set_attribute("assay.export_book.chapters", len(result.report.chapters))
-        print(format_report(result.report))
-        print(f"-> {tex_path}")
+        print(format_report(result.report))  # noqa: T201 -- command-line output
+        print(f"-> {tex_path}")  # noqa: T201 -- command-line output
 
         if args.no_compile:
             return
 
         tectonic = args.tectonic_path or shutil.which("tectonic")
         if not tectonic:
-            print(
+            print(  # noqa: T201 -- command-line output
                 "warning: tectonic not found on PATH — skipping compile "
                 "(pass --tectonic-path or --no-compile)"
             )
@@ -1522,16 +1524,16 @@ def cmd_export_book(args: argparse.Namespace) -> None:
             check=False,
         )
         if proc.stdout:
-            print(proc.stdout)
+            print(proc.stdout)  # noqa: T201 -- command-line output
         if proc.stderr:
-            print(proc.stderr)
+            print(proc.stderr)  # noqa: T201 -- command-line output
         if proc.returncode != 0:
             span.set_attribute("assay.export_book.compiled", False)
             raise BookBuildError(f"tectonic compile failed (exit {proc.returncode})")
 
         pdf_path = out_dir / BOOK_PDF_NAME
         span.set_attribute("assay.export_book.compiled", pdf_path.exists())
-        print(f"-> {pdf_path}")
+        print(f"-> {pdf_path}")  # noqa: T201 -- command-line output
 
 
 def register_subparsers(sub: argparse._SubParsersAction) -> None:

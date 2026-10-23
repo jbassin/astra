@@ -209,7 +209,7 @@ def run_session(
                 start()
             with dspy.context(lm=main_lm):
                 pred = rlm(target_date=date, campaign=impl.campaign, transcript=transcript)
-        except BaseException as exc:  # recorded below; non-Exceptions re-raised after artifacts
+        except BaseException as exc:  # noqa: BLE001 -- recorded below; non-Exceptions re-raised after artifacts
             error = exc
             span.record_exception(exc)
         finally:
@@ -240,11 +240,11 @@ def run_session(
         try:
             cs = ws.write_changeset()
             artifacts["changeset"] = ws.run_dir / "changeset.json"
-        except Exception as exc:  # journal/staging drift — report, don't mask the run
+        except Exception as exc:  # noqa: BLE001 -- journal/staging drift: report it, don't mask the run
             artifact_errors.append(f"changeset: {exc}")
         try:
             artifacts["diff"] = ws.diff_patch()
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- reported with the run, like the changeset above
             artifact_errors.append(f"diff: {exc}")
 
         main_m, sub_m = main_lm.meter.snapshot(), sub_lm.meter.snapshot()

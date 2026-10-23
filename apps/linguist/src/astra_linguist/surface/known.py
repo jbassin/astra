@@ -103,7 +103,7 @@ def _padded_canonical(window: list[Tok], lex: Lexicon) -> bool:
     return False
 
 
-def find_known(transcript: Transcript, lex: Lexicon) -> list[KnownCandidate]:
+def find_known(transcript: Transcript, lex: Lexicon) -> list[KnownCandidate]:  # noqa: C901 -- over the complexity limit; ratchet, split it in Phase 2
     """Flag OOV unigrams + multi-word n-grams near a canonical, best per line+canonical."""
     multiword = [e for e in lex.entries if " " in e.fold]
     best: dict[str, KnownCandidate] = {}

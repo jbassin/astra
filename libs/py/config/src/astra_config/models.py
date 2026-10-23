@@ -387,10 +387,12 @@ class Config(_Base):
     def _resolve_data_paths(self) -> Config:
         """Resolve relative ``DataPath`` fields against ``data.root`` and relative
         ``ContentPath`` fields against ``data.content-root`` (itself under the root)."""
+        # The config fields are str paths, joined as strings like the TS loader does;
+        # pathlib would normalise them and could change the resolved values.
         root = os.environ.get(DATA_ROOT_ENV) or self.data.root
         content = os.environ.get(CONTENT_ROOT_ENV) or self.data.content_root
-        if root and content and not os.path.isabs(content):
-            content = os.path.join(root, content)
+        if root and content and not os.path.isabs(content):  # noqa: PTH117 -- str paths, see above
+            content = os.path.join(root, content)  # noqa: PTH118 -- str paths, see above
         self.data.root, self.data.content_root = root, content
         bases = {DATA_PATH: root, CONTENT_PATH: content}
         for name in type(self).model_fields:
@@ -398,6 +400,9 @@ class Config(_Base):
             for field, info in type(namespace).model_fields.items():
                 value = getattr(namespace, field)
                 for marker, base in bases.items():
-                    if marker in info.metadata and base and value and not os.path.isabs(value):
-                        setattr(namespace, field, os.path.join(base, value))
+                    if marker not in info.metadata or not (base and value):
+                        continue
+                    if not os.path.isabs(value):  # noqa: PTH117 -- str paths, see above
+                        joined = os.path.join(base, value)  # noqa: PTH118 -- str paths, see above
+                        setattr(namespace, field, joined)
         return self

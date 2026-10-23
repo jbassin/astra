@@ -15,6 +15,7 @@ unstubbed-preview-``ty`` dependency) — no other assay module imports it.
 
 from __future__ import annotations
 
+import itertools
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from math import log
@@ -178,10 +179,7 @@ def fit_ols(dm: DesignMatrix) -> FitResult:
     rank_slopes: dict[int, float] = {}
     if len(rank_coefs) >= 2:
         ranks_sorted = sorted(rank_coefs)
-        deltas = [
-            rank_coefs[b] - rank_coefs[a]
-            for a, b in zip(ranks_sorted[:-1], ranks_sorted[1:], strict=True)
-        ]
+        deltas = [rank_coefs[b] - rank_coefs[a] for a, b in itertools.pairwise(ranks_sorted)]
         rank_slope = sum(deltas) / len(deltas)
         for i, r in enumerate(ranks_sorted):
             if i == 0:

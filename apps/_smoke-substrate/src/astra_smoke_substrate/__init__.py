@@ -84,6 +84,6 @@ def main() -> None:
             span.set_attribute("astra.being.players", summary["players"])
             span.set_attribute("astra.being.parity", summary["being_parity"])
             span.set_attribute("astra.llm.status", summary["status"])
-        print("substrate smoke OK:", summary)
+        print("substrate smoke OK:", summary)  # noqa: T201 -- command-line output
     finally:
         shutdown()  # force-flush spans + metrics before exit

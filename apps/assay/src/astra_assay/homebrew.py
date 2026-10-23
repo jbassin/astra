@@ -115,7 +115,7 @@ def _pseudo_id(slug: str) -> str:
     """A stable, deterministic 16-char pseudo-``_id`` (Foundry-shaped, never
     read by the extractor — cosmetic/provenance only, ``source_id`` defaults
     to ``"<no-id>"`` when absent)."""
-    return "hb" + hashlib.sha1(slug.encode("utf-8")).hexdigest()[:14]
+    return "hb" + hashlib.sha1(slug.encode("utf-8"), usedforsecurity=False).hexdigest()[:14]
 
 
 def _dice_to_formula(dice_text: str) -> str:
@@ -250,7 +250,7 @@ _DAMAGE_TYPE_ALIASES = {
     "necrotic": "void",
     "radiant": "vitality",
 }
-_DICE_TOKEN = r"\d+d\d+(?:\s?[+−–—-]\s?\d+)?"
+_DICE_TOKEN = r"\d+d\d+(?:\s?[+−–—-]\s?\d+)?"  # noqa: S105 -- a dice regex, not a secret
 _DICE_DAMAGE_RE = re.compile(
     rf"({_DICE_TOKEN})\s*(?:("
     + "|".join(sorted(_DAMAGE_TYPES | set(_DAMAGE_TYPE_ALIASES), key=len, reverse=True))
@@ -707,7 +707,7 @@ def _heighten_damage_delta(text: str) -> str | None:
     return _dice_to_formula(m.group(1)) if m else None
 
 
-def _map_heightening(
+def _map_heightening(  # noqa: C901 -- over the complexity limit; ratchet, split it in Phase 2
     heightened: list[dict[str, Any]],
     base_damage: dict[str, dict[str, Any]],
     *,
@@ -890,8 +890,8 @@ def _paragraphs_html(promoted_text: str) -> str:
     if not text:
         return ""
     out = []
-    for para in re.split(r"\n\s*\n", text):
-        para = para.strip()
+    for chunk in re.split(r"\n\s*\n", text):
+        para = chunk.strip()
         if not para:
             continue
         bolded = _convert_markdown_bold(html.escape(para, quote=False))
@@ -1402,15 +1402,13 @@ def _write_revisions_md(report: RevisionsReport, path: Path) -> None:
     if report.missing_from_store:
         lines.append("## Missing from store")
         lines.append("")
-        for slug in report.missing_from_store:
-            lines.append(f"- {slug}")
+        lines.extend(f"- {slug}" for slug in report.missing_from_store)
         lines.append("")
 
     if report.extra_in_store:
         lines.append("## Extra in store (no vendor baseline)")
         lines.append("")
-        for slug in report.extra_in_store:
-            lines.append(f"- {slug}")
+        lines.extend(f"- {slug}" for slug in report.extra_in_store)
         lines.append("")
 
     lines.append("## Deviations")
@@ -1422,8 +1420,7 @@ def _write_revisions_md(report: RevisionsReport, path: Path) -> None:
         for d in report.deviations:
             lines.append(f"### {d.name} (`{d.slug}`)")
             lines.append("")
-            for f in d.fields:
-                lines.append(f"- {f}")
+            lines.extend(f"- {f}" for f in d.fields)
             lines.append("")
 
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -1585,7 +1582,7 @@ def cmd_seed_homebrew(args: argparse.Namespace) -> None:
         span.set_attribute("assay.seed_homebrew.seeded", len(report.seeded))
         span.set_attribute("assay.seed_homebrew.skipped_existing", len(report.skipped_existing))
         span.set_attribute("assay.seed_homebrew.warnings", report.total_warnings)
-        print(
+        print(  # noqa: T201 -- command-line output
             f"assay seed-homebrew: seeded {len(report.seeded)} spell(s) -> {HOMEBREW_STORE_DIR} "
             f"({report.total_warnings} adapter warnings recorded into flags.assay)"
         )
@@ -1597,13 +1594,13 @@ def cmd_seed_homebrew(args: argparse.Namespace) -> None:
                 if len(report.skipped_existing) > 10
                 else ""
             )
-            print(
+            print(  # noqa: T201 -- command-line output
                 f"  {len(report.skipped_existing)} already present, left untouched{suffix}: "
                 f"{preview}{more}"
             )
 
 
-def cmd_homebrew_revisions(args: argparse.Namespace) -> None:
+def cmd_homebrew_revisions(args: argparse.Namespace) -> None:  # noqa: ARG001 -- argparse dispatch passes args to every command
     with _tracer.start_as_current_span("assay.homebrew-revisions") as span:
         report = homebrew_revisions()
         HOMEBREW_DIR.mkdir(parents=True, exist_ok=True)
@@ -1613,7 +1610,7 @@ def cmd_homebrew_revisions(args: argparse.Namespace) -> None:
         span.set_attribute(
             "assay.homebrew_revisions.missing_from_store", len(report.missing_from_store)
         )
-        print(
+        print(  # noqa: T201 -- command-line output
             f"assay homebrew-revisions: {report.store_count} store spells vs "
             f"{report.baseline_count} vendor baseline — {len(report.deviations)} deviation(s), "
             f"{len(report.missing_from_store)} missing from store, "
@@ -1621,7 +1618,7 @@ def cmd_homebrew_revisions(args: argparse.Namespace) -> None:
         )
 
 
-def cmd_score_homebrew(args: argparse.Namespace) -> None:
+def cmd_score_homebrew(args: argparse.Namespace) -> None:  # noqa: ARG001 -- argparse dispatch passes args to every command
     with _tracer.start_as_current_span("assay.score-homebrew") as span:
         results = score_all()
         HOMEBREW_OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -1641,13 +1638,13 @@ def cmd_score_homebrew(args: argparse.Namespace) -> None:
         for k, v in tally.items():
             span.set_attribute(f"assay.score_homebrew.routing.{k}", v)
 
-        print(f"assay score-homebrew: {len(results)} spells scored -> {HOMEBREW_SCORES_PATH}")
-        print(f"  routing tally: {dict(sorted(tally.items()))}")
-        print(f"  adapter warnings: {total_warnings} across {n_with_warnings} spells")
-        print()
+        print(f"assay score-homebrew: {len(results)} spells scored -> {HOMEBREW_SCORES_PATH}")  # noqa: T201 -- command-line output
+        print(f"  routing tally: {dict(sorted(tally.items()))}")  # noqa: T201 -- command-line output
+        print(f"  adapter warnings: {total_warnings} across {n_with_warnings} spells")  # noqa: T201 -- command-line output
+        print()  # noqa: T201 -- command-line output
         header = f"{'name':<40} {'rank':>4}  {'routing':<24} verdict / range"
-        print(header)
-        print("-" * len(header))
+        print(header)  # noqa: T201 -- command-line output
+        print("-" * len(header))  # noqa: T201 -- command-line output
         for r in sorted(results, key=lambda x: str(x["name"])):
             routing = str(r["routing"])
             if routing in ("quantitative", "hybrid"):
@@ -1658,7 +1655,7 @@ def cmd_score_homebrew(args: argparse.Namespace) -> None:
             else:
                 extra = ""
             rank_label = "cantrip" if r.get("isCantrip") else str(r.get("rank", ""))
-            print(f"{str(r['name'])[:40]:<40} {rank_label:>4}  {routing:<24} {extra}")
+            print(f"{str(r['name'])[:40]:<40} {rank_label:>4}  {routing:<24} {extra}")  # noqa: T201 -- command-line output
 
 
 def register_subparsers(sub: argparse._SubParsersAction) -> None:

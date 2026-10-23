@@ -75,24 +75,24 @@ def main(argv: list[str] | None = None) -> int:
             linked,
             unlinked,
         )
-        print(f"entity.kdl: {len(entities)} entities — {summary}")
-        print(f"  pages: {linked} linked, {unlinked} unlinked")
+        print(f"entity.kdl: {len(entities)} entities — {summary}")  # noqa: T201 -- command-line output
+        print(f"  pages: {linked} linked, {unlinked} unlinked")  # noqa: T201 -- command-line output
 
         if args.check:
             current = (
                 ENTITY_KDL_PATH.read_text(encoding="utf-8") if ENTITY_KDL_PATH.exists() else ""
             )
             if current != text:
-                print(
+                print(  # noqa: T201 -- command-line output
                     "DRIFT: entity.kdl is stale vs a fresh seed — run the seed + commit.",
                     file=sys.stderr,
                 )
                 return 1
-            print("entity.kdl is up to date.")
+            print("entity.kdl is up to date.")  # noqa: T201 -- command-line output
             return 0
 
         ENTITY_KDL_PATH.write_text(text, encoding="utf-8")
-        print(f"wrote {ENTITY_KDL_PATH}")
+        print(f"wrote {ENTITY_KDL_PATH}")  # noqa: T201 -- command-line output
         return 0
     finally:
         shutdown()  # console_script exit → flush the run's spans/metrics/logs

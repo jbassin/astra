@@ -429,7 +429,7 @@ def score_condition_control(
     return p * budget * structural
 
 
-def score_damage_row(row: SpellFeatures, ladder: LadderFit | CantripLadderFit) -> float:
+def score_damage_row(row: SpellFeatures, ladder: LadderFit | CantripLadderFit) -> float:  # noqa: ARG001 -- unused function, kept in step with its siblings; delete in the dead-code sweep
     """A pure/hybrid/recovered-damage row's own EV is the score directly (its
     rank-equivalent is read off the ladder against its OWN structural
     multipliers) — Stage A already validates that a hybrid's EV naturally

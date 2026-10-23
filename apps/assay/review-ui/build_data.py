@@ -8,15 +8,15 @@ conversion (vendor all_spells_pf2e.json, matched via seededFrom.convertedName).
 Run from the repo root: python3 apps/assay/review-ui/build_data.py
 """
 
-import glob
+# ruff: noqa: T201 -- a one-shot build script; print is its report
+
 import json
-import os
 import re
 from pathlib import Path
 
-ROOT = os.path.dirname(__file__)
-STORE = os.path.join(ROOT, "..", "homebrew", "spells")
-VENDOR = os.path.join(ROOT, "..", "vendor", "run_balance")
+ROOT = Path(__file__).parent
+STORE = ROOT / ".." / "homebrew" / "spells"
+VENDOR = ROOT / ".." / "vendor" / "run_balance"
 
 UUID_RE = re.compile(r"@UUID\[[^\]]*?\.([^\].]+)\](?:\{([^}]*)\})?")
 
@@ -47,9 +47,9 @@ intermediates = {s["name"]: s for s in inter_raw if isinstance(s, dict) and "nam
 
 spells = []
 unmatched_orig, unmatched_inter = [], []
-for f in sorted(glob.glob(os.path.join(STORE, "*.json"))):
-    doc = json.loads(Path(f).read_text())
-    slug = os.path.basename(f)[:-5]
+for f in sorted(STORE.glob("*.json")):
+    doc = json.loads(f.read_text())
+    slug = f.stem
     seeded = doc.get("flags", {}).get("assay", {}).get("seededFrom", {})
     oname = seeded.get("originalName", doc["name"])
     cname = seeded.get("convertedName", doc["name"])
@@ -81,8 +81,8 @@ for f in sorted(glob.glob(os.path.join(STORE, "*.json"))):
         }
     )
 
-out = os.path.join(ROOT, "data.json")
-Path(out).write_text(json.dumps({"spells": spells}))
+out = ROOT / "data.json"
+out.write_text(json.dumps({"spells": spells}))
 print(f"wrote {out}: {len(spells)} spells")
 print(f"unmatched originals: {unmatched_orig or 'none'}")
 print(f"unmatched intermediates: {unmatched_inter or 'none'}")

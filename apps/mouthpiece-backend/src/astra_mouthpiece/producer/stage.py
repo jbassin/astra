@@ -11,7 +11,6 @@ block the episode (D2); the script falls back to the old prompt.
 
 from __future__ import annotations
 
-import os
 import shutil
 from collections.abc import Callable
 from pathlib import Path
@@ -29,7 +28,7 @@ BriefOutcome = Literal["used", "fallback", "invalid"]
 def _atomic_write(path: Path, text: str) -> None:
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(text, encoding="utf-8")
-    os.replace(tmp, path)
+    tmp.replace(path)
 
 
 def produce_brief(
@@ -46,7 +45,7 @@ def produce_brief(
     run_dir = producer_dir / new_run_id()
     try:
         result = producer(key, run_dir=run_dir)
-    except Exception as exc:  # setup errors raise before run_producer's own try (D35-4)
+    except Exception as exc:  # noqa: BLE001 -- setup errors raise before run_producer's own try; the episode falls back
         target.unlink(missing_ok=True)
         error = f"{type(exc).__name__}: {exc}"
         log.warning("mouthpiece brief %s failed — script will fall back: %s", key, error)
@@ -79,7 +78,7 @@ def script_brief_block(
     """The Pass A brief block for ``key`` and how it was obtained."""
     try:
         brief = read_brief(key, root=root)
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 -- an unreadable brief falls back, logged
         log.warning("mouthpiece brief %s unreadable — falling back: %s", key, exc)
         return "", "invalid"
     if brief is None:

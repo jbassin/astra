@@ -476,7 +476,7 @@ _MANUAL_SCALING_TARGET_OVERRIDE: dict[tuple[str, int], EffectiveTarget] = {
 _ACTION_BUCKET_FOR_COUNT = {1: ActionBucket.ONE, 2: ActionBucket.TWO, 3: ActionBucket.THREE}
 
 
-def extract_single(
+def extract_single(  # noqa: C901 -- over the complexity limit; ratchet, split it in Phase 2
     data: dict[str, Any],
     file: str,
     *,

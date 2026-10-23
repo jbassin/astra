@@ -4,7 +4,32 @@ line-length = 100
 src = ["libs/py", "apps", "ontology"]
 
 [lint]
-select = ["E", "F", "I", "UP", "B", "SIM"]
+select = [
+  "E", "F", "I", "UP", "B", "SIM",
+  "RET", "DTZ", "TRY", "RUF", "ERA", "BLE", "PLW", "PERF", "PTH",
+  "SLF", "ARG", "S", "T20", "C90",
+]
+ignore = [
+  "TRY003",  # long messages in raise: every error here is built inline, on purpose
+  "RUF001", "RUF002", "RUF003",  # ambiguous unicode: the prompts use em dashes and curly quotes
+  "S603", "S607",  # subprocess with argv lists: the CLIs shell out to git, ffmpeg and uv by name
+]
+
+[lint.mccabe]
+max-complexity = 15
+
+# Only whole categories of file get a per-path exemption. Anything narrower is an inline
+# `# noqa: <rule>` with a reason on the line it excuses.
+[lint.per-file-ignores]
+# Tests: pytest's assert, fixtures that exist only to be requested, white-box access
+# to the code under test, temp paths, and fake classes with list attributes.
+"**/tests/**" = ["S101", "ARG", "SLF001", "S108", "RUF012"]
+"**/test_*.py" = ["S101", "ARG", "SLF001", "S108", "RUF012"]
+"**/conftest.py" = ["S101", "ARG", "SLF001"]
+# Command-line entry points: print is their output.
+"**/cli.py" = ["T20"]
+"**/__main__.py" = ["T20"]
+"**/scripts/**" = ["T20"]
 
 [format]
 quote-style = "double"

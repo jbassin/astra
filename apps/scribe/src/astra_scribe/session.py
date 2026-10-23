@@ -10,7 +10,6 @@ fan-out/fan-in orchestration + telemetry spans.
 
 from __future__ import annotations
 
-import os
 import shutil
 from collections.abc import Callable
 from pathlib import Path
@@ -52,11 +51,11 @@ def extract_session_tracks(
     scratch = partial / "_extract"
     extracted = extract(zip_path, scratch)
     for track in player_tracks(extracted, roster):
-        os.replace(track, partial / track.name)  # move up out of the scratch tree
+        track.replace(partial / track.name)  # move up out of the scratch tree
     shutil.rmtree(scratch, ignore_errors=True)
     if dest.exists():
         shutil.rmtree(dest)
-    os.replace(partial, dest)  # atomic publish (dest does not exist → plain rename)
+    partial.replace(dest)  # atomic publish (dest does not exist → plain rename)
     return sorted(dest.glob("*.aac"))
 
 
@@ -75,7 +74,7 @@ def merge_audio(
     out = Path(out_path)
     tmp = out.with_suffix(out.suffix + ".tmp")
     run(audio.merge_args([str(t) for t in tracks], str(tmp)))
-    os.replace(tmp, out)
+    tmp.replace(out)
 
 
 def build_transcript(

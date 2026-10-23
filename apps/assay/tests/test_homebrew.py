@@ -912,7 +912,7 @@ def test_score_glitterdust_returns_usable_comparables() -> None:
     must NOT degrade to a condition-free/no-comparable-profile ledger row."""
     if not homebrew.COMPARABLES_CORPUS_PATH.exists() or not homebrew.FITTED_PARAMS_PATH.exists():
         return
-    ladder, cantrip_ladder, hostile_corpus, buff_corpus = homebrew._load_ladder_and_corpora()
+    ladder, _cantrip_ladder, hostile_corpus, _buff_corpus = homebrew._load_ladder_and_corpora()
     c = homebrew.convert_spell(_vendored("Glitterdust"))
     result = extract_spell(c.foundry, "glitterdust.json")
     assert isinstance(result, SpellFeatures)

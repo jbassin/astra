@@ -115,7 +115,7 @@ def main() -> None:
         pages = snapshot["pages"]
         edges = snapshot["edges"]
         unresolved = snapshot["unresolved"]
-        print(
+        print(  # noqa: T201 -- command-line output
             f"snapshot: {len(pages)} pages, {len(edges)} crossref edges, "
             f"{len(unresolved)} unresolved → {SNAPSHOT_PATH}"
         )

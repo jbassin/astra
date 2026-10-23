@@ -35,7 +35,7 @@ def main() -> None:
         span.set_attribute("astra.lane", "py")
 
     provider.shutdown()  # force-flush the batch processor
-    print(f"py span emitted to {endpoint}")
+    print(f"py span emitted to {endpoint}")  # noqa: T201 -- command-line output
 
 
 if __name__ == "__main__":

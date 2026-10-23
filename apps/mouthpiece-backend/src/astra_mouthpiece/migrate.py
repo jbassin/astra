@@ -77,13 +77,13 @@ def main() -> None:
     # migrate" — skip cleanly rather than fail the whole publish. (migrate_history itself
     # still raises on a missing source, so a *misconfigured* explicit path stays loud.)
     if not source.is_dir():
-        print(
+        print(  # noqa: T201 -- command-line output
             f"no historical episode source at {source} — skipping back-catalog migration "
             f"(one-time import already done; live corpus in {root} is authoritative)"
         )
         return
     copied, skipped = migrate_history(source, root)
-    print(f"migrated {copied} historical episode(s) into {root} ({skipped} already present)")
+    print(f"migrated {copied} historical episode(s) into {root} ({skipped} already present)")  # noqa: T201 -- command-line output
 
 
 if __name__ == "__main__":

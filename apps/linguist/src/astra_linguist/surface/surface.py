@@ -159,14 +159,14 @@ def main(argv: list[str] | None = None) -> int:
     transcript = load_session(args.session)
     lex = build_lexicon(DEFS_PATH)
     flagged = find_flagged(transcript, lex)
-    print(f"{args.session.name}: {len(transcript.script)} lines, {len(flagged)} pre-flagged spans")
+    print(f"{args.session.name}: {len(transcript.script)} lines, {len(flagged)} pre-flagged spans")  # noqa: T201 -- command-line output
     if not flagged:
-        print("nothing to judge — no OOV mistranscriptions flagged.")
+        print("nothing to judge — no OOV mistranscriptions flagged.")  # noqa: T201 -- command-line output
         return 0
 
     from .judge import make_dspy_complete_fn  # lazy: pulls dspy + resolves the key
 
-    print(f"judging (compiled dspy judge, {args.mode})…")
+    print(f"judging (compiled dspy judge, {args.mode})…")  # noqa: T201 -- command-line output
     payload = surface_session_payload(
         transcript,
         lex,
@@ -177,7 +177,7 @@ def main(argv: list[str] | None = None) -> int:
 
     out = args.out or args.session.with_suffix(".candidates.json")
     write_candidates(payload, out)
-    print(f"{sum(payload['counts'].values())} candidate(s) {payload['counts']} → {out}")
+    print(f"{sum(payload['counts'].values())} candidate(s) {payload['counts']} → {out}")  # noqa: T201 -- command-line output
     return 0
 
 

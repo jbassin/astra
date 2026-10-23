@@ -124,7 +124,7 @@ class TrackTranscriber:
                             transcription_fn=self.transcription_fn,
                         )
                     )
-                except Exception as exc:  # noqa: BLE001 — backstop on Groq's own length floor
+                except Exception as exc:  # backstop on Groq's own length floor
                     # Belt-and-suspenders beyond the duration probe: if Groq still rejects the
                     # clip as too short (a silence-padded AAC whose probed duration overstates
                     # the decodable audio), skip it rather than fail the whole session. Any

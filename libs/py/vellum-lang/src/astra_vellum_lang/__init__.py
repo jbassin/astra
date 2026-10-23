@@ -80,7 +80,7 @@ def parse_frontmatter(yaml_text: str) -> Frontmatter:
     if yaml_text.strip() == "":
         return Frontmatter()
     try:
-        raw = yaml.load(yaml_text, Loader=_YamlLoader)  # _YamlLoader is a SafeLoader subclass
+        raw = yaml.load(yaml_text, Loader=_YamlLoader)  # noqa: S506 -- _YamlLoader is a SafeLoader subclass
     except yaml.YAMLError:
         return Frontmatter()
     if not isinstance(raw, dict):

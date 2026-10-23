@@ -35,9 +35,12 @@ ANTHROPIC_API_KEY_ENV = "ANTHROPIC_API_KEY"
 OPENROUTER_API_KEY_ENV = "OPENROUTER_API_KEY"
 
 __all__ = [
+    "ANTHROPIC_API_KEY_ENV",
+    "ANTHROPIC_API_KEY_REF",
     "DEFAULT_MAX_TOKENS",
     "DEFAULT_MODEL",
     "GROQ_WHISPER",
+    "OPENROUTER_API_KEY_ENV",
     "PRICING_USD_PER_1M",
     "LiteLLMClient",
     "LlmClient",
@@ -51,9 +54,6 @@ __all__ = [
     "ToolSpec",
     "TranscriptionFn",
     "Usage",
-    "ANTHROPIC_API_KEY_ENV",
-    "ANTHROPIC_API_KEY_REF",
-    "OPENROUTER_API_KEY_ENV",
     "cost_usd",
     "ensure_anthropic_env",
     "ensure_openrouter_env",

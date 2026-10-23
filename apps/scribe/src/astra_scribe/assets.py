@@ -19,7 +19,6 @@ sensor + the akasha-seed recipe keep working with no config/path change.
 """
 
 import json
-import os
 import shutil
 import tempfile
 from pathlib import Path
@@ -121,7 +120,7 @@ def session_transcript(context: dg.AssetExecutionContext) -> dg.MaterializeResul
         script_path = out / "script.json"
         tmp = script_path.with_suffix(".json.tmp")
         tmp.write_text(json.dumps(script), encoding="utf-8")
-        os.replace(tmp, script_path)
+        tmp.replace(script_path)
         span.set_attribute("scribe.segments", len(script))
     _sessions_counter.add(1)
     _log.info("scribe transcribed session %s (%d segments)", date_key, len(script))

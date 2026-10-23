@@ -136,7 +136,7 @@ def test_one_error_per_failed_run_across_ticks(
 @dg.asset
 def chained_step() -> None:
     try:
-        raise OSError("socket closed")
+        raise OSError("socket closed")  # noqa: TRY301 -- builds a chained exception on purpose
     except OSError as e:
         raise ValueError("TTS upload failed") from e
 

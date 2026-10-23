@@ -30,10 +30,11 @@ def _edge_synth(text: str, voice: str) -> bytes:
     import edge_tts  # ty: ignore[unresolved-import]  # optional runtime dep
 
     async def run() -> bytes:
-        chunks: list[bytes] = []
-        async for chunk in edge_tts.Communicate(text, voice).stream():
-            if chunk["type"] == "audio":
-                chunks.append(chunk["data"])
+        chunks: list[bytes] = [
+            chunk["data"]
+            async for chunk in edge_tts.Communicate(text, voice).stream()
+            if chunk["type"] == "audio"
+        ]
         return b"".join(chunks)
 
     return asyncio.run(run())

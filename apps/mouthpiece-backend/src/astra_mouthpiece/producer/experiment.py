@@ -114,7 +114,7 @@ def run_arm(
             )
             span.set_attribute("mouthpiece.experiment.turns", len(arm.script.turns))
             span.set_attribute("mouthpiece.experiment.words", script_words(arm.script))
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- the failure is recorded on the arm; the other arms still run
             arm.error = f"{type(exc).__name__}: {exc}"
             span.record_exception(exc)
             span.set_status(Status(StatusCode.ERROR, arm.error[:500]))
@@ -208,21 +208,21 @@ def build_report(
             ],
         )
     )
-    for t in THRESHOLDS:
-        rows.append(
-            (
-                f"{t.id} {t.label}",
-                [
-                    "—"
-                    if lab not in reports
-                    else (
-                        f"{next(c for c in reports[lab].criteria if c.id == t.id).value:.2f} "
-                        f"({next(c for c in reports[lab].criteria if c.id == t.id).score})"
-                    )
-                    for lab, *_ in scripts
-                ],
-            )
+    rows.extend(
+        (
+            f"{t.id} {t.label}",
+            [
+                "—"
+                if lab not in reports
+                else (
+                    f"{next(c for c in reports[lab].criteria if c.id == t.id).value:.2f} "
+                    f"({next(c for c in reports[lab].criteria if c.id == t.id).score})"
+                )
+                for lab, *_ in scripts
+            ],
         )
+        for t in THRESHOLDS
+    )
     rows.append(
         (
             "lint subtotal",

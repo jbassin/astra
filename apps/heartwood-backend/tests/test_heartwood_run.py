@@ -144,7 +144,7 @@ def read_json(path: Path) -> Any:
 # ── hermetic outcomes ──
 def test_hitting_max_iterations_is_incomplete(env, spans) -> None:
     steps = [{"reasoning": "look", "code": "print(1)"}] * 2 + [{"changelog": "- partial"}]
-    factory, built = dummy_factory(steps, [])
+    factory, _built = dummy_factory(steps, [])
     interp = FakeInterpreter()
     result = run_session(
         TARGET,
@@ -264,7 +264,7 @@ SCRIPT = [
 
 @pytest.mark.skipif(not deno_available(), reason="deno not installed (CI) — gate C runs locally")
 def test_scripted_run_through_real_deno(env, spans) -> None:
-    factory, built = dummy_factory(
+    factory, _built = dummy_factory(
         SCRIPT, [{"response": "A grell is a floating brain."}, {"response": "A"}, {"response": "B"}]
     )
     result = run_session(

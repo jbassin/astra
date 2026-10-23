@@ -247,7 +247,7 @@ def evaluate_at_base_rank(raw_value: Any, base_rank: int) -> tuple[float | None,
         return None, True
     try:
         result = eval(substituted, {"__builtins__": {}}, dict(_SAFE_NAMESPACE))  # noqa: S307
-    except Exception:
+    except Exception:  # noqa: BLE001 -- any eval failure means "not a formula"
         return None, True
     if isinstance(result, (bool, tuple)):
         return None, True
@@ -337,7 +337,7 @@ def _structured_duration_class(effect_doc: dict[str, Any]) -> str | None:
     prose) -> `conditions.DurationClass` value string. Mirrors
     `conditions.classify_duration`'s bucket boundaries against the numeric
     (value, unit) pair instead of parsing prose."""
-    from .conditions import DurationClass  # noqa: PLC0415 — avoid a module cycle at import time
+    from .conditions import DurationClass  # lazy: avoids an import cycle
 
     duration = effect_doc.get("system", {}).get("duration") or {}
     unit = duration.get("unit")
@@ -357,7 +357,7 @@ def _structured_duration_class(effect_doc: dict[str, Any]) -> str | None:
     return DurationClass.INSTANT.value
 
 
-def build_effect_profile(
+def build_effect_profile(  # noqa: C901 -- over the complexity limit; ratchet, split it in Phase 2
     effect_name: str, effect_doc: dict[str, Any], base_rank: int
 ) -> EffectProfile:
     rules = (effect_doc.get("system") or {}).get("rules") or []
