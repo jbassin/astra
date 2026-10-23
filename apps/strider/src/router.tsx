@@ -12,7 +12,7 @@ function DefaultErrorComponent({ error }: ErrorComponentProps) {
   return (
     <main role="alert" className="route-boundary">
       <h1>Something went wrong</h1>
-      <p>{error.message}</p>
+      <p>{error instanceof Error ? error.message : String(error)}</p>
       <button type="button" onClick={() => router.invalidate()}>
         Retry
       </button>

@@ -9,32 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TagsIndexRouteImport } from './routes/tags/index'
+import { Route as SplatRouteImport } from './routes/$'
 import { Route as ChronicleIndexRouteImport } from './routes/chronicle/index'
+import { Route as TagsIndexRouteImport } from './routes/tags/index'
 import { Route as TagsSplatRouteImport } from './routes/tags/$'
 import { Route as ChronicleShowIndexRouteImport } from './routes/chronicle/$show/index'
 import { Route as ChronicleShowEpisodeRouteImport } from './routes/chronicle/$show/$episode'
 
-const SplatRoute = SplatRouteImport.update({
-  id: '/$',
-  path: '/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TagsIndexRoute = TagsIndexRouteImport.update({
-  id: '/tags/',
-  path: '/tags/',
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChronicleIndexRoute = ChronicleIndexRouteImport.update({
   id: '/chronicle/',
   path: '/chronicle/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TagsIndexRoute = TagsIndexRouteImport.update({
+  id: '/tags/',
+  path: '/tags/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TagsSplatRoute = TagsSplatRouteImport.update({
@@ -123,13 +123,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/$': {
-      id: '/$'
-      path: '/$'
-      fullPath: '/$'
-      preLoaderRoute: typeof SplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -137,11 +130,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tags/': {
-      id: '/tags/'
-      path: '/tags'
-      fullPath: '/tags/'
-      preLoaderRoute: typeof TagsIndexRouteImport
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chronicle/': {
@@ -149,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/chronicle'
       fullPath: '/chronicle/'
       preLoaderRoute: typeof ChronicleIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tags/': {
+      id: '/tags/'
+      path: '/tags'
+      fullPath: '/tags/'
+      preLoaderRoute: typeof TagsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tags/$': {

@@ -9,29 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SourcesRouteImport } from './routes/sources'
-import { Route as SearchRouteImport } from './routes/search'
-import { Route as RulesRouteImport } from './routes/rules'
-import { Route as CategoriesRouteImport } from './routes/categories'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ClassIndexRouteImport } from './routes/class/index'
+import { Route as CategoriesRouteImport } from './routes/categories'
+import { Route as RulesRouteImport } from './routes/rules'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as SourcesRouteImport } from './routes/sources'
 import { Route as CategoryIndexRouteImport } from './routes/$category/index'
-import { Route as ClassSlugRouteImport } from './routes/class/$slug'
 import { Route as CategorySlugRouteImport } from './routes/$category/$slug'
+import { Route as ClassIndexRouteImport } from './routes/class/index'
+import { Route as ClassSlugRouteImport } from './routes/class/$slug'
 
-const SourcesRoute = SourcesRouteImport.update({
-  id: '/sources',
-  path: '/sources',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SearchRoute = SearchRouteImport.update({
-  id: '/search',
-  path: '/search',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RulesRoute = RulesRouteImport.update({
-  id: '/rules',
-  path: '/rules',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategoriesRoute = CategoriesRouteImport.update({
@@ -39,14 +29,19 @@ const CategoriesRoute = CategoriesRouteImport.update({
   path: '/categories',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const RulesRoute = RulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ClassIndexRoute = ClassIndexRouteImport.update({
-  id: '/class/',
-  path: '/class/',
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SourcesRoute = SourcesRouteImport.update({
+  id: '/sources',
+  path: '/sources',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategoryIndexRoute = CategoryIndexRouteImport.update({
@@ -54,14 +49,19 @@ const CategoryIndexRoute = CategoryIndexRouteImport.update({
   path: '/$category/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ClassSlugRoute = ClassSlugRouteImport.update({
-  id: '/class/$slug',
-  path: '/class/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
   id: '/$category/$slug',
   path: '/$category/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClassIndexRoute = ClassIndexRouteImport.update({
+  id: '/class/',
+  path: '/class/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClassSlugRoute = ClassSlugRouteImport.update({
+  id: '/class/$slug',
+  path: '/class/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -149,25 +149,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sources': {
-      id: '/sources'
-      path: '/sources'
-      fullPath: '/sources'
-      preLoaderRoute: typeof SourcesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/search': {
-      id: '/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof SearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rules': {
-      id: '/rules'
-      path: '/rules'
-      fullPath: '/rules'
-      preLoaderRoute: typeof RulesRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/categories': {
@@ -177,18 +163,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/rules': {
+      id: '/rules'
+      path: '/rules'
+      fullPath: '/rules'
+      preLoaderRoute: typeof RulesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/class/': {
-      id: '/class/'
-      path: '/class'
-      fullPath: '/class/'
-      preLoaderRoute: typeof ClassIndexRouteImport
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sources': {
+      id: '/sources'
+      path: '/sources'
+      fullPath: '/sources'
+      preLoaderRoute: typeof SourcesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$category/': {
@@ -198,18 +191,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoryIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/class/$slug': {
-      id: '/class/$slug'
-      path: '/class/$slug'
-      fullPath: '/class/$slug'
-      preLoaderRoute: typeof ClassSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/$category/$slug': {
       id: '/$category/$slug'
       path: '/$category/$slug'
       fullPath: '/$category/$slug'
       preLoaderRoute: typeof CategorySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/class/': {
+      id: '/class/'
+      path: '/class'
+      fullPath: '/class/'
+      preLoaderRoute: typeof ClassIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/class/$slug': {
+      id: '/class/$slug'
+      path: '/class/$slug'
+      fullPath: '/class/$slug'
+      preLoaderRoute: typeof ClassSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
