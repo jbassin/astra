@@ -14,7 +14,8 @@ from astra_mouthpiece.producer import experiment as exp_mod
 from astra_mouthpiece.producer.brief import ProducerBrief, render_brief
 from astra_mouthpiece.producer.experiment import arm_slug, host_shares, run_experiment
 from astra_mouthpiece.producer.run import ProducerResult, RunStatus
-from test_mouthpiece_producer_run import _inputs, brief_dict
+
+from .test_mouthpiece_producer_run import _inputs, brief_dict
 
 HOSTS = load_hosts()
 CFG = MouthpieceProducerConfig(

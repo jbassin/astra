@@ -31,8 +31,9 @@ from dspy.utils.dummies import DummyLM
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
-from test_mouthpiece_producer_tools import SHOWS, TARGET, fake_resolver
-from test_mouthpiece_producer_tools import tree as tree  # noqa: F401  (fixture re-export)
+
+from .test_mouthpiece_producer_tools import SHOWS, TARGET, fake_resolver
+from .test_mouthpiece_producer_tools import tree as tree  # noqa: F401  (fixture re-export)
 
 TURNS = [(10, "Gamemaster", "Galzu flees."), (11, "Ada", "After her!")]
 

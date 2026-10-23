@@ -11,7 +11,8 @@ from astra_mouthpiece.hosts import load_hosts
 from astra_mouthpiece.producer.brief import CitationReport, ProducerBrief
 from astra_mouthpiece.producer.run import ProducerResult, RunStatus, wiki_head
 from astra_mouthpiece.producer.stage import produce_brief, script_brief_block
-from test_mouthpiece_producer_run import brief_dict
+
+from .test_mouthpiece_producer_run import brief_dict
 
 KEY = "2026-1-8"
 HOSTS = load_hosts()
