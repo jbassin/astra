@@ -253,7 +253,7 @@ done", which replaces the three gates and octo). Remaining, in order:
    | ruff `S603`, `S607`, `RUF001-003`, `TRY003` | off | Subprocess by name; prompt punctuation; inline messages |
    | clippy `-D unwrap_used` | not added | No Rust lane; add to the recorded local gate |
    | Conventions as rules (`getMeter` export, Dagster future import, env reads) | not done | Theme J; needs `no-restricted-imports`/`TID251` |
-5. ✅ (session 3, agent branch; awaiting review and merge) Docs skeleton: `docs/` (README,
+5. ✅ (session 3, through `ab6bba48`, merged) Docs skeleton: `docs/` (README,
    architecture, development, runbook, now, backlog), 43 ADRs in `docs/adr/` (including the
    accepted risks), the backlog seeded from memory, RESUME, specs and the follow-ups below; RESUME,
    the built specs and plans, the finished research and 54 memories moved to `thoughts/archive/`;

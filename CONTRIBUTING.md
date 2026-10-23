@@ -25,7 +25,9 @@ just ci                      # everything CI runs
 
 - Commit messages follow Conventional Commits; the hooks check format and lint on commit and run
   `just ci` on push.
-- Never commit a red lane. Commit each green slice; push when a chunk is done.
-- Local edits never ship: push, then `just deploy [service...]` from the deploy checkout.
+- Never commit a red lane. Commit each green slice on a short-lived branch.
+- `main` takes changes only through pull requests that pass `ci-ok`: push the branch, then
+  `gh pr create --fill && gh pr merge --auto --rebase`.
+- Local edits never ship: merge, then `just deploy [service...]` from the deploy checkout.
 - Config lives in `ontology/ontology-config/config.kdl`; secrets are SOPS references.
 - Every app wires telemetry to SigNoz in the process that runs it.

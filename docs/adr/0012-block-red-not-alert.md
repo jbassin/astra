@@ -10,7 +10,7 @@ CI was red for ten weeks while work continued on top of it. A Discord notificati
 
 ## Decision
 
-Josh: "I don't want a discord post, I want you to not commit broken stuff." The pre-commit hook gates format and lint on staged files, the pre-push hook runs `just ci`, and `main` will require the `ci-ok` check through pull requests ([0016](0016-merge-model-auto-merge.md)).
+Josh: "I don't want a discord post, I want you to not commit broken stuff." The pre-commit hook gates format and lint on staged files, the pre-push hook runs `just ci`, and `main` requires the `ci-ok` check through pull requests ([0016](0016-merge-model-auto-merge.md)).
 
 ## Consequences
 
