@@ -71,10 +71,10 @@ product decisions below are applied. Exceptions:
    gate, review where the risk is). Octo is out.
 2. **RTK.** (Done in session 1.) Josh wants it gone entirely: "Disable the hook everywhere." This is a user-level change
    outside the repo.
-3. **The data repo's specifics** (name, visibility, whether to carry existing history) are settled in
-   the spec.
+3. **The data repo's specifics.** **Resolved 2026-10-22 (session 3):** `astra-data`, public, fresh snapshot;
+   see the item 2 checklist entry in section 0.1.
 
-## 0.1 Progress and next steps (updated 2026-10-22, end of session 2)
+## 0.1 Progress and next steps (updated 2026-10-22, session 3)
 
 **Process agreed with Josh:** no octo, no scope/spec/research trio, no decision IDs. Plan in
 the chat; work in slices; get every touched lane green locally before each commit; this
@@ -148,11 +148,23 @@ Josh gave standing approval for routine live infra steps (memory
 
 **Next: Phase 1** (section 5). Done so far: the process section of `CLAUDE.md` ("How work gets
 done", which replaces the three gates and octo). Remaining, in order:
-1. Deploy checkout and one `deploy` command (lock, secret injection, SHA labels, dirty-tree refusal);
-   move the timers and the heartwood runner to it.
+1. ✅ (session 3, `22eae4f5`, `c8161beb`, deployed live) Deploy checkout `/ruby/data/astra-deploy`
+   (plain clone) and `just deploy` (`deploy/deploy.sh`; `just up` is an alias): lock, fetch,
+   refuses unpushed SHAs and a dirty checkout, SOPS from `~/.config/sops/age/keys.txt`, the
+   `org.opencontainers.image.revision` label on all 16 images, `artifacts/deploy/history.jsonl` and
+   `artifacts/deploy/live/<service>`. The linguist-commit, heartwood and codex-refresh deploys go
+   through it. craig-sync, watchdog, alert@ and backup units are linked from the deploy checkout;
+   the edge imports the deploy checkout's `sites.caddyfile`. **Deviation:** linguist-commit and
+   heartwood-request still run in the dev tree, because they commit pipeline output that the
+   pipeline writes there; they move with item 2. Known gaps: a pipeline redeploy moves the checkout
+   back to `origin/main` (partly undoes a `--sha` rollback); if the mouthpiece snapshot push fails,
+   that redeploy waits for a manual push and deploy; `down`/`down-volumes` still run compose from
+   the dev tree (fine: `name: astra`); heartwood's `EXIT_MEANINGS[9]` text still says "or skipped".
 2. One data root, and pipeline output out of git into a separate `astra-data` repo written by a bot
-   (decision table in section 0). This removes the timer's commit-and-push job. Settle the data
-   repo's name, visibility and history with Josh first (open item 3).
+   (decision table in section 0). This removes the timer's commit-and-push job. **Settled with Josh
+   (session 3):** name `astra-data`, **public**, starts from a fresh snapshot commit (no history
+   carried; the old history stays in the code repo). Move linguist-commit and heartwood-request
+   off the dev tree here (heartwood's akasha wiki commits included in the decision).
 3. Developer entry point: `just bootstrap/check/fix/test/ci/dev`, `mise.toml`, `.python-version`
    (3.12 everywhere), pytest `importlib` mode.
 4. Gate tightening: `erasableSyntaxOnly`, tsconfigs include scripts and server entries, the
@@ -193,10 +205,10 @@ done", which replaces the three gates and octo). Remaining, in order:
 https://claude.ai/artifact/PfwtSxfVtGGKnyFQ54RREH (Josh's verdicts live in its `reviews` store).
 The 13 lane reports with full evidence are in `artifacts/research/techdebt-0037/lanes/`.
 Start a session by reading this section, not `RESUME.md` (235 KB and stale since 2026-08-09; the
-`load` skill still reads it first until the skills are rewritten). Two finished agent worktrees
-under `.claude/worktrees/` were still locked by the agent tool at the end of session 2; their
-commits are on `main`, so remove them with `git worktree remove --force` and delete their
-`worktree-agent-*` branches.
+`load` skill still reads it first until the skills are rewritten). At the end of a session,
+remove finished agent worktrees under `.claude/worktrees/` (`git worktree remove --force --force`,
+since the agent tool leaves them locked) and delete their `worktree-agent-*` branches once their
+commits are on `main`.
 
 ## 1. Summary
 

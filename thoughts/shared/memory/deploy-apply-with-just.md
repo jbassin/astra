@@ -1,25 +1,35 @@
 ---
 name: deploy-apply-with-just
-description: after a deploy-affecting change in astra (compose / Dockerfile / server.ts / baked config.kdl / sites.caddyfile), run `just up` + `just caddy-reload` — local edits aren't live until then
+description: production builds ONLY from the deploy checkout /ruby/data/astra-deploy at a pushed sha via `just deploy` (`just up` = alias); push first, then deploy + `just caddy-reload` — local edits are never live
 metadata:
   type: feedback
 ---
 
-In astra, source/config edits do NOT reach the running stack on their own. After any
-deploy-affecting change, apply it (and verify):
+Since 2026-10-22 (0037 Phase 1 item 1) production never builds from a developer tree.
 
-- **`just up`** = `docker compose up -d --build` (run from repo root): rebuilds the affected
-  image (strider / dagster) and recreates the container. Needed for app code, `server.ts`,
-  the Dockerfile, the compose file, AND **`config.kdl`** — it's baked into the strider image
-  via the runtime `COPY ontology/ontology-config`, so a config change isn't live until a
-  rebuild. When a compose service is deleted, also drop its orphaned container
-  (`docker rm -f <name>` — `up` doesn't `--remove-orphans`).
-- **`just caddy-reload`** applies the root `sites.caddyfile` to the shared host edge
-  (`/ruby/data/reverse-proxy`) — the CF token comes from SOPS, validated first. A brand-new
-  subdomain needs a moment for its ACME cert before it serves.
+- **`just deploy [--sha REV] [service...]`** (`deploy/deploy.sh`; `just up` is an alias) takes
+  a lock, fetches, checks out `origin/main` (or a pushed `--sha`) in the deploy checkout
+  `/ruby/data/astra-deploy` (a plain clone; never edit it — a dirty tree is refused, exit 5),
+  decrypts SOPS with `~/.config/sops/age/keys.txt`, and runs `docker compose up -d --build`.
+  An **unpushed commit cannot be deployed** (exit 4): push first. Every built image carries
+  `org.opencontainers.image.revision`; `artifacts/deploy/history.jsonl` logs every attempt and
+  `artifacts/deploy/live/<service>` holds the last sha. `just deploy --restart <svc>` restarts
+  without building (codex-refresh uses it). `--dry-run` does the checks only.
+- Any deploy, scoped or not, moves the checkout to the target, so the linguist-commit and
+  heartwood redeploys (which deploy `origin/main`) partly undo a `--sha` rollback.
+- **`just caddy-reload`** applies `sites.caddyfile` — the edge imports the DEPLOY checkout's copy
+  (`/ruby/data/reverse-proxy/Caddyfile` line ~201), so an edge edit needs push → any `just deploy`
+  (refreshes the checkout) → `just caddy-reload`.
+- Units for craig-sync, astra-watchdog, astra-alert@, astra-backup are `systemctl --user link`ed
+  from the deploy checkout: a deploy updates their scripts; a changed `.service`/`.timer` needs its
+  install recipe re-run. linguist-commit and heartwood-request still run in the dev tree (they
+  commit pipeline output written there) until Phase 1 item 2.
+- The first whole-stack deploy recreates SigNoz too (its included compose file's relative mounts
+  resolve under the deploy checkout); its log count can read 0 for a while because astra logs
+  are sparse — check traces to prove ingest.
 
-**Why:** plain `docker compose up -d` reused a stale image once and silently shipped old code
-(that's why `up` carries `--build`); and the host edge only picks up `sites.caddyfile` on
-reload. **How to apply:** treat "I changed deploy/edge" as "not done until `just up` /
-`just caddy-reload` + a verify curl" (container `healthy`; curl via the edge with
-`--resolve <host>.iridi.cc:2651:127.0.0.1`). config.kdl is the baked source — [[config-single-source]].
+**Why:** deploys from the shared working tree shipped other agents' half-finished edits and
+nobody could say which commit was live (OPS-3). **How to apply:** "I changed deploy/edge/app
+code" is done only after commit → push → `just deploy` (+ `just caddy-reload` for the edge) +
+a verify curl / `docker inspect` revision label. When a compose service is deleted, also
+`docker rm -f` its orphan (no `--remove-orphans`). config.kdl is baked — [[config-single-source]].
