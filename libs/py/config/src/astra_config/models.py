@@ -21,9 +21,18 @@ from .secrets import SecretRef
 DATA_PATH = "astra:data-path"
 DataPath = Annotated[str, DATA_PATH]
 
+#: Marks a field as a published dataset: a relative value is resolved against
+#: ``data.content-root`` (the astra-data clone), not ``data.root``.
+CONTENT_PATH = "astra:content-path"
+ContentPath = Annotated[str, CONTENT_PATH]
+
 #: Overrides ``data.root``. A test and dev seam only: the repo's root conftest points it
-#: at the checkout so pytest reads the checkout's tracked data, not the live data root.
+#: at the checkout so pytest never resolves a path into the live data root.
 DATA_ROOT_ENV = "ASTRA_DATA_ROOT"
+#: Overrides ``data.content-root``. The same name the frontends' build-content reads
+#: (@astra/content-build): the root of a tree laid out like astra-data. The root conftest
+#: points it at fixtures/astra-data so pytest never needs the real datasets.
+CONTENT_ROOT_ENV = "ASTRA_CONTENT_ROOT"
 
 
 class _Base(BaseModel):
@@ -35,15 +44,18 @@ class DataConfig(_Base):
     # published datasets below, and each service's own state paths (scribe.data-path,
     # mouthpiece.episodes-path, ...). Moving the data is a change of these values.
     root: str = ""
-    # The pipeline's published datasets (the astra-data layout).
-    linguist_transcripts: DataPath = "apps/linguist/transcripts"
-    linguist_data: DataPath = "apps/linguist/data"
-    linguist_timeline: DataPath = "apps/linguist/timeline"
-    mouthpiece_snapshot: DataPath = "apps/mouthpiece-backend/snapshot"
-    akasha_content: DataPath = "apps/akasha-backend/content"
-    akasha_snapshot: DataPath = "apps/akasha-backend/snapshot"
-    heartwood_ledger: DataPath = "apps/heartwood-backend/agent-runs.jsonl"
-    entity_registry: DataPath = "ontology/ontology-entity/entity.kdl"
+    # The astra-data clone: the pipeline's published datasets, written and committed by
+    # the bots (linguist-commit, heartwood), never by the code repo. Relative → under
+    # `root`. The datasets below are relative to it, in the astra-data layout.
+    content_root: str = "astra-data"
+    linguist_transcripts: ContentPath = "linguist/transcripts"
+    linguist_data: ContentPath = "linguist/data"
+    linguist_timeline: ContentPath = "linguist/timeline"
+    mouthpiece_snapshot: ContentPath = "mouthpiece/snapshot"
+    akasha_content: ContentPath = "akasha/content"
+    akasha_snapshot: ContentPath = "akasha/snapshot"
+    heartwood_ledger: ContentPath = "heartwood/agent-runs.jsonl"
+    entity_registry: ContentPath = "entity/entity.kdl"
 
 
 class LlmConfig(_Base):
@@ -373,15 +385,19 @@ class Config(_Base):
 
     @model_validator(mode="after")
     def _resolve_data_paths(self) -> Config:
-        """Resolve every relative ``DataPath`` field against ``data.root``."""
+        """Resolve relative ``DataPath`` fields against ``data.root`` and relative
+        ``ContentPath`` fields against ``data.content-root`` (itself under the root)."""
         root = os.environ.get(DATA_ROOT_ENV) or self.data.root
-        self.data.root = root
-        if not root:
-            return self
+        content = os.environ.get(CONTENT_ROOT_ENV) or self.data.content_root
+        if root and content and not os.path.isabs(content):
+            content = os.path.join(root, content)
+        self.data.root, self.data.content_root = root, content
+        bases = {DATA_PATH: root, CONTENT_PATH: content}
         for name in type(self).model_fields:
             namespace = getattr(self, name)
             for field, info in type(namespace).model_fields.items():
                 value = getattr(namespace, field)
-                if DATA_PATH in info.metadata and value and not os.path.isabs(value):
-                    setattr(namespace, field, os.path.join(root, value))
+                for marker, base in bases.items():
+                    if marker in info.metadata and base and value and not os.path.isabs(value):
+                        setattr(namespace, field, os.path.join(base, value))
         return self

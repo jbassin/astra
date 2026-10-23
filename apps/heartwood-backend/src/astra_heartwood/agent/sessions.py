@@ -5,8 +5,8 @@ committed-filename session→show resolution (``show_for_date``, which already h
 ``EXCLUDED_DATES``) with the faerrin world set (``faerrin_campaign_slugs``). An
 unmatched/unknown slug is simply *not* faerrin — never a crash.
 
-Transcripts are the committed ``apps/linguist/transcripts/<prefix>.<slug>.<date>.txt``
-files (``NNNNNN\\tSpeaker: text``). Dates are non-zero-padded, so ordering uses
+Transcripts are the ``<prefix>.<slug>.<date>.txt`` files under config ``data.linguist-transcripts``
+(``NNNNNN\\tSpeaker: text``, in the astra-data repo). Dates are non-zero-padded, so ordering uses
 chronicle's ``date_key`` (a string sort puts 2025-10-20 before 2025-8-28).
 
 Reuse-don't-reinvent: ``TRANSCRIPT_DIR``, ``show_for_date``/``EXCLUDED_DATES`` and

@@ -154,9 +154,12 @@ describe("@astra/config", () => {
   test("real config.kdl resolves data paths under data.root", () => {
     const cfg = loadConfig();
     const root = "/ruby/data/experiments/astra";
+    const content = "/ruby/data/astra-state/astra-data";
     expect(cfg.data.root).toBe(root);
-    expect(cfg.data.akashaContent).toBe(`${root}/apps/akasha-backend/content`);
-    expect(cfg.data.linguistData).toBe(`${root}/apps/linguist/data`);
+    expect(cfg.data.contentRoot).toBe(content);
+    expect(cfg.data.akashaContent).toBe(`${content}/akasha/content`);
+    expect(cfg.data.linguistData).toBe(`${content}/linguist/data`);
+    expect(cfg.data.entityRegistry).toBe(`${content}/entity/entity.kdl`);
     expect(cfg.scribe.dataPath).toBe(`${root}/apps/scribe/data`);
     expect(cfg.mouthpiece.episodesPath).toBe(`${root}/apps/mouthpiece-backend/episodes`);
     expect(cfg.orator.dataDir).toBe("/data"); // a container path, not a data path
@@ -172,12 +175,19 @@ describe("@astra/config", () => {
     expect(cfg.scribe.dataPath).toBe("/srv/state/scribe/data");
     expect(cfg.data.akashaContent).toBe("/elsewhere/content");
     expect(cfg.scribe.incomingPath).toBe("");
-    expect(cfg.data.linguistData).toBe("/srv/state/apps/linguist/data");
+    // A dataset's default resolves under the default content root (`astra-data` under root).
+    expect(cfg.data.linguistData).toBe("/srv/state/astra-data/linguist/data");
     process.env.ASTRA_DATA_ROOT = "/override";
+    process.env.ASTRA_CONTENT_ROOT = "/clone";
     try {
-      expect(loadConfig(tmp).scribe.dataPath).toBe("/override/scribe/data");
+      const over = loadConfig(tmp);
+      expect(over.scribe.dataPath).toBe("/override/scribe/data");
+      expect(over.data.contentRoot).toBe("/clone");
+      expect(over.data.linguistData).toBe("/clone/linguist/data");
+      expect(over.data.akashaContent).toBe("/elsewhere/content");
     } finally {
       delete process.env.ASTRA_DATA_ROOT;
+      delete process.env.ASTRA_CONTENT_ROOT;
     }
   });
 });

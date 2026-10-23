@@ -189,17 +189,24 @@ def test_process_session_end_to_end() -> None:
 
 # ── real-data end-to-end parity (gates E/F/I) ──────────────────────────────
 def test_real_session_canonical_parity() -> None:
-    """A committed historical data.json → match → context → canonical reproduces
-    the committed transcripts/*.txt byte-for-byte (the whole deterministic pipeline)."""
+    """A real session's data.json → match → context → canonical reproduces its committed
+    transcript byte-for-byte (the whole deterministic pipeline).
+
+    The fixture under tests/fixtures/parity is a cut of real data (the session data and
+    transcript live in the astra-data repo): the first 550 script lines of 2026-7-13 (enough
+    for the campaign match to pick the same billing as the full session) and the matching
+    byte prefix of that session's committed transcript, cut from the real file."""
     from astra_linguist.campaigns import campaign_filename, campaign_views, match_campaign
     from astra_linguist.canonical import to_canonical
     from astra_linguist.context import build_context
-    from astra_linguist.historical import DATA_DIR
     from astra_ontology import load_being
     from astra_ontology_being import BEING_KDL_PATH
 
-    date = "2025-10-20"
-    transcript = Transcript.model_validate(json.loads((DATA_DIR / f"{date}.json").read_text()))
+    parity = Path(__file__).parent / "fixtures" / "parity"
+    date = "2026-7-13"
+    transcript = Transcript.model_validate(
+        json.loads((parity / "data" / f"{date}.json").read_text(encoding="utf-8"))
+    )
     matched = match_campaign(transcript, campaign_views(load_being(BEING_KDL_PATH)))
     assert matched is not None
     # The committed transcript was produced while Through a Song, Darkly held `main`;
@@ -207,7 +214,7 @@ def test_real_session_canonical_parity() -> None:
     matched = replace(matched, campaign=replace(matched.campaign, is_main=True))
 
     canonical = to_canonical(build_context(transcript, matched))
-    expected = (
-        DATA_DIR.parent / "transcripts" / f"{campaign_filename(matched)}.{date}.txt"
-    ).read_text()
-    assert canonical == expected  # byte-identical to faerrin's committed transcript
+    expected = (parity / "transcripts" / f"{campaign_filename(matched)}.{date}.txt").read_text(
+        encoding="utf-8"
+    )
+    assert canonical == expected  # byte-identical to the committed transcript

@@ -7,23 +7,28 @@
 // env override (an env var named like the KEY, upper-cased) or by editing this file.
 
 data {
-    // Every data path in this file (the datasets below and each service's own state
-    // paths: scribe.data-path, mouthpiece.episodes-path, heartwood.requests-path, ...)
-    // is relative to `root`; astra_config resolves them to absolute paths at load, so
+    // Every data path in this file (each service's own state paths: scribe.data-path,
+    // mouthpiece.episodes-path, heartwood.requests-path, ...) is relative to `root`,
+    // and the published datasets below to `content-root`; astra_config resolves them to absolute paths at load, so
     // code only ever sees absolute paths. Moving the data = changing these values (plus
     // the identical-path bind mounts in deploy/docker-compose.yml, whose container paths
     // must equal the resolved paths so this baked file means the same thing everywhere).
     // An absolute value is used as-is.
     root "/ruby/data/experiments/astra"
-    // The pipeline's published datasets (the astra-data layout).
-    linguist-transcripts "apps/linguist/transcripts"
-    linguist-data "apps/linguist/data"
-    linguist-timeline "apps/linguist/timeline"
-    mouthpiece-snapshot "apps/mouthpiece-backend/snapshot"
-    akasha-content "apps/akasha-backend/content"
-    akasha-snapshot "apps/akasha-backend/snapshot"
-    heartwood-ledger "apps/heartwood-backend/agent-runs.jsonl"
-    entity-registry "ontology/ontology-entity/entity.kdl"
+    // The astra-data clone (github jbassin/astra-data): the pipeline's published
+    // datasets, committed and pushed by the bots (linguist-commit, heartwood) — the code
+    // repo tracks none of them. A relative value is under `root`. The eight datasets
+    // below are relative to THIS root, in the astra-data layout. ASTRA_CONTENT_ROOT
+    // overrides it (the same variable the frontends' build-content reads).
+    content-root "/ruby/data/astra-state/astra-data"
+    linguist-transcripts "linguist/transcripts"
+    linguist-data "linguist/data"
+    linguist-timeline "linguist/timeline"
+    mouthpiece-snapshot "mouthpiece/snapshot"
+    akasha-content "akasha/content"
+    akasha-snapshot "akasha/snapshot"
+    heartwood-ledger "heartwood/agent-runs.jsonl"
+    entity-registry "entity/entity.kdl"
 }
 
 llm {

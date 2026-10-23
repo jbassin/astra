@@ -1,12 +1,19 @@
 """Repo-wide pytest setup.
 
-Point config's data root at this checkout, so every data path in config.kdl resolves
-inside the tree under test: the same files on a developer host as in CI, never the live
-data root (`data.root` in config.kdl). Set ASTRA_DATA_ROOT yourself to test against
-other data.
+Point config's two data roots inside the tree under test, so pytest reads the same files
+on a developer host as in CI and never the live data:
+
+- ASTRA_DATA_ROOT (`data.root`, each service's own state paths) → this checkout.
+- ASTRA_CONTENT_ROOT (`data.content-root`, the published datasets the bots commit to the
+  astra-data repo) → the checked-in fixture `fixtures/astra-data`, a small slice laid out
+  like astra-data. The code repo tracks none of the real datasets.
+
+Set either variable yourself to test against other data.
 """
 
 import os
 from pathlib import Path
 
-os.environ.setdefault("ASTRA_DATA_ROOT", str(Path(__file__).resolve().parent))
+_ROOT = Path(__file__).resolve().parent
+os.environ.setdefault("ASTRA_DATA_ROOT", str(_ROOT))
+os.environ.setdefault("ASTRA_CONTENT_ROOT", str(_ROOT / "fixtures" / "astra-data"))

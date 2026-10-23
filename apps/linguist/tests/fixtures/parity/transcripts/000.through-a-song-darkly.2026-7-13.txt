@@ -1,0 +1,550 @@
+000001	Benny: Goodly.  
+000002	Gamemaster: Howdy doodly.  
+000003	Gamemaster: Howdy doodly.  
+000004	Benny: Howdy doodly doodly.  
+000005	Gamemaster: I want to take a nap.  
+000006	Benny: I get tired at work and then I come home and I'm not tired.  
+000007	Gamemaster: I've decided.  
+000008	Benny: I'm like, fuck, this would be a great time for a nap.  
+000009	Gamemaster: Hmm.  
+000010	Benny: Can't do it.  
+000011	Gamemaster: I can't actually nap.  
+000012	Gamemaster: I've tried in the past.  
+000013	Gamemaster: I've been like, I'm tired.  
+000014	Gamemaster: I just want to, like, you know, 30 minutes, quick refresher.  
+000015	Gamemaster: It doesn't work.  
+000016	Gamemaster: If I set an alarm, I sleep through it.  
+000017	Benny: Oh, yeah, that's one of the hard parts.  
+000018	Benny: Also, sleeping too long is, you're playing with fire because, I don't know, sometimes you sleep too long and then you wake up and you're like, what's even going on?  
+000019	Gamemaster: I will, once I go to sleep, that means that the next time I'm waking up is the next day.  
+000020	Benny: It's not refreshing.  
+000021	Gamemaster: That's just kind of how it works.  
+000022	Gamemaster: So I'm not a napper.  
+000023	Benny: I've done that before.  
+000024	Gamemaster: I've just, I've resigned to that fate.  
+000025	Benny: but when I try to nap at like 9pm  
+000026	Gamemaster: Or are you just like...  
+000027	Gamemaster: and then it's tomorrow  
+000028	Benny: yep  
+000029	Gamemaster: you napped too long  
+000030	Benny: and then I've slept 11 hours  
+000031	Gamemaster: yep  
+000032	Benny: yeah it's just horrific  
+000033	Benny: or I wake up at like 5 in the morning  
+000034	Gamemaster: yep which does also suck  
+000035	Benny: and I'm like fuck  
+000036	Benny: I fell asleep  
+000037	Benny: because it's not  
+000038	Gamemaster: but  
+000039	Benny: like it's not motivating enough  
+000040	Benny: to try to reset my sleep schedule  
+000041	Benny: and like actually commit to  
+000042	Benny: waking up at like 5 or 6  
+000043	Benny: it just enough to give me like two extra hours of garbage sleep Cause my body like no we got it We normally get this amount Go ahead do something And I like no It like well I just going to be half awake then  
+000044	Gamemaster: Thank you Yeah no it does suck  
+000045	Gamemaster: Instead of napping, I've decided that the alternative is caffeine.  
+000046	Gamemaster: Works just as well.  
+000047	Benny: Which is honestly not a bad substitute. And if you time your caffeine correctly,  
+000048	Benny: you can make,  
+000049	Benny: you can have the crash  
+000050	Benny: happen at an intentional time.  
+000051	Gamemaster: I don't do any of that.  
+000052	Argyle: I like the beard.  
+000053	Anzu: Sounds horribly inefficient.  
+000054	Gamemaster: I wait until I start getting headaches and feel tired, and then I have some caffeine.  
+000055	Benny: Oh.  
+000056	Gamemaster: Hello.  
+000057	Gamemaster: And that's it.  
+000058	Benny: Headaches.  
+000059	Gamemaster: That's the whole, yeah, because of caffeine withdrawal.  
+000060	Gamemaster: Because I'm bad.  
+000061	Benny: Wait, wait, wait.  
+000062	Benny: Are you just perpetually going through  
+000063	Benny: caffeine withdrawal then?  
+000064	Gamemaster: I think so, yeah.  
+000065	Benny: You just wait until the middle of the day  
+000066	Benny: where you're like,  
+000067	Benny: alright, I...  
+000068	Gamemaster: It's...  
+000069	Benny: Thanks.  
+000070	Argyle: you you have like a beard  
+000071	Benny: What? For wait, for who?  
+000072	Benny: Oh, okay.  
+000073	Benny: Yeah.  
+000074	Benny: I've been procrastinating shaving it, so it is  
+000075	Benny: lengthy. But it got  
+000076	Benny: past the weird...  
+000077	Benny: When it's stubble, but it's not  
+000078	Benny: full enough, and it's  
+000079	Benny: a little off, I'm past that,  
+000080	Benny: I think. So now I have to triple down and  
+000081	Benny: ride it out.  
+000082	Benny: who's just a mustache  
+000083	Argyle: it was funny the one when i had a mustache for a little bit and i came into work with a mustache  
+000084	Argyle: and it was funny watching coworkers be like,  
+000085	Gamemaster: Do you not currently have a mustache?  
+000086	Argyle: I want to acknowledge this,  
+000087	Argyle: but I don't know if I'm supposed to because of HR.  
+000088	Argyle: No, it's just like...  
+000089	Gamemaster: That's a beard.  
+000090	Argyle: Unkept.  
+000091	Benny: I could shave  
+000092	Argyle: It's like unkept.  
+000093	Gamemaster: That's...  
+000094	Gamemaster: But, like, a mustache is the bit that's on top of your lips, no?  
+000095	Benny: yeah  
+000096	Argyle: Yeah, like, remember when I shaved everything else  
+000097	Argyle: besides just the mustache?  
+000098	Argyle: I mean I think that's clear from context clues  
+000099	Gamemaster: Oh, okay, sorry.  
+000100	Benny: Yes.  
+000101	Gamemaster: So when you meant that you only had a mustache,  
+000102	Gamemaster: when you were shaving your beard, but you...  
+000103	Gamemaster: Okay.  
+000104	Argyle: Josh yeah yeah well Josh  
+000105	Gamemaster: I didn understand I was confused I wasn trying to be sarcastic I legitimately didn know what you were talking about Hmm  
+000106	Anzu: I agree with Jorge It is possible I feel like if you got a beard  
+000107	Anzu: and just like a very normal  
+000108	Anzu: bit of mustache, then it doesn't really  
+000109	Anzu: stand out.  
+000110	Argyle: Yeah.  
+000111	Anzu: But you could go like handlebar  
+000112	Anzu: with the beard and then it's like, okay, this guy's  
+000113	Anzu: got a beard and a mustache.  
+000114	Argyle: Yeah.  
+000115	Argyle: Yeah.  
+000116	Anzu: But it is tricky.  
+000117	Benny: Hello.  
+000118	Argyle: Noah!  
+000119	Anzu: Hello, Noah.  
+000120	Johnny: Jorge!  
+000121	Johnny: Hi, Tanner.  
+000122	Johnny: Hello, Josh.  
+000123	Johnny: Hey, Mike.  
+000124	Argyle: Oh, Noah, by the way,  
+000125	Argyle: I forgot to tell Mike that you said hi,  
+000126	Argyle: and then I did remember to tell Josh,  
+000127	Anzu: Oh, we did tell Josh.  
+000128	Argyle: and Josh told me to tell you the next time I see you  
+000129	Argyle: that Josh said hi.  
+000130	Johnny: Oh, okay.  
+000131	Johnny: Well, tell Josh next time you see him I asked how his day is going and hope it's going well.  
+000132	Johnny: and hope it's going well.  
+000133	Argyle: Josh, Noah asked...  
+000134	Benny: is it safe for me to look at a UV light  
+000135	Gamemaster: No, no, he said next time you see me.  
+000136	Argyle: I'm looking at you right now.  
+000137	Anzu: Okay.  
+000138	Gamemaster: He said next time, not now.  
+000139	Anzu: Oh.  
+000140	Argyle: I looked away and I looked back.  
+000141	Argyle: I looked away and I looked back.  
+000142	Gamemaster: Nope, nope, it has to be a different time that we're talking.  
+000143	Johnny: Keep linked.  
+000144	Johnny: Keep linked.  
+000145	Johnny: We'll see you next time.  
+000146	Anzu: Jeez, this is getting really messy.  
+000147	Anzu: oh my god he just turned purple  
+000148	Benny: oh  
+000149	Gamemaster: No.  
+000150	Argyle: ...  
+000151	Benny: because I have deep scratches in my phone  
+000152	Gamemaster: Why do you just have a UV light and why was it pointed at your face?  
+000153	Benny: and I got UV adhesive  
+000154	Johnny: Yeah, your eyes will crystallize immediately.  
+000155	Benny: ultra clear to  
+000156	Benny: take care of the scratches.  
+000157	Gamemaster: Okay, yeah.  
+000158	Argyle: your eyes are gonna get hard  
+000159	Benny: I plugged it in. I thought there'd be a button  
+000160	Benny: on it, but it's just like a little  
+000161	Gamemaster: Good.  
+000162	Benny: thing that plugs in via USB  
+000163	Gamemaster: Yeah, no, don't point the UV light at your eyeballs, maybe.  
+000164	Benny: and blinds you.  
+000165	Anzu: Noah, how was your event?  
+000166	Benny: Because it'll crystallize? Because the UV makes  
+000167	Benny: clear things hard?  
+000168	Gamemaster: Yeah.  
+000169	Gamemaster: That's what happens.  
+000170	Benny: Alright.  
+000171	Benny: Do you think...  
+000172	Johnny: it went really great I sold out of so many copies Daisy had to run back to the house to get more copies Yeah it was great It was a lot of fun  
+000173	Gamemaster: That fun  
+000174	Argyle: Congrats Congrats  
+000175	Anzu: People were all about it that awesome  
+000176	Johnny: I was at a farmer's market, a little stall.  
+000177	Anzu: now  
+000178	Johnny: People were walking by.  
+000179	Johnny: I had a lot of weird interactions, but it was fun.  
+000180	Anzu: here's what I need to know  
+000181	Anzu: what happened  
+000182	Anzu: when you rolled pig on the prize wheel  
+000183	Anzu: amazing  
+000184	Johnny: I had a bunch of little plastic pigs.  
+000185	Anzu: Mm-hmm.  
+000186	Argyle: yeah the um i remember when i like first read the book there was like one review that came  
+000187	Johnny: So I could like, give them out to people and I put.  
+000188	Anzu: Mm-hmm.  
+000189	Johnny: There's only 1 slot for pig and I had like, 20 pigs and I was like, oh, that'll be good enough. And then the 1st, like, 30 people to walk by all spun pig.  
+000190	Johnny: Like, this is statistically improbable.  
+000191	Johnny: So, then it was just been again. It was great.  
+000192	Argyle: really quick on Amazon  
+000193	Argyle: from this other lady that did fantasy  
+000194	Argyle: reading. And then I, did you give her like  
+000195	Anzu: That's funny.  
+000196	Benny: well yeah i was i was surprised because i was like i still have to leave a review but i was  
+000197	Gamemaster: They're fake.  
+000198	Johnny: Yeah.  
+000199	Argyle: a copy in advance?  
+000200	Argyle: Because I was like, how did this lady  
+000201	Argyle: find this and read this so quick?  
+000202	Argyle: She had positive things, but...  
+000203	Johnny: Yeah, there were a couple people who I gave advanced copies to.  
+000204	Johnny: There's, like, services online where you can give it to people you don't know so that they give you real reviews.  
+000205	Johnny: Not that your reviews aren't real, but...  
+000206	Argyle: Yeah.  
+000207	Gamemaster: Paid actors.  
+000208	Argyle: Yeah.  
+000209	Benny: Like when I leave a review, I'm in the back of the book.  
+000210	Anzu: She just loves to review books.  
+000211	Johnny: Yeah.  
+000212	Benny: Are people going to like connect the dots when they read it and be like, wait a second.  
+000213	Benny: So then I was like, wait a minute, I can connect the dots.  
+000214	Benny: So then I clicked on reviews and scrolled and like cross-checked and she had the only one that wasn't in the back of the book.  
+000215	Benny: And I was like, who is this lady?  
+000216	Benny: So I started clicking on other books she reviewed.  
+000217	Benny: It's like.  
+000218	Johnny: You can also cross-check and you can see who they're friends with.  
+000219	Johnny: I have a decent amount of reviews.  
+000220	Argyle: Good, good, good.  
+000221	Johnny: I mean, not a decent amount.  
+000222	Johnny: I have a fair amount of reviews from people who I don't know, which is good.  
+000223	Johnny: That's like one of the things they tell you is that if you have only five star reviews your book looks sketchy  
+000224	Gamemaster: So you're saying that if we haven't reviewed it yet,  
+000225	Argyle: Give it four.  
+000226	Anzu: Or is ideal, it sounds like.  
+000227	Johnny: and like it's probably bad and only people you know have reviewed it.  
+000228	Gamemaster: we should go and give it one star  
+000229	Gamemaster: so that it looks more realistic?  
+000230	Johnny: No, please don't give it one star.  
+000231	Argyle: I'm kidding.  
+000232	Gamemaster: For...  
+000233	Anzu: Excuse me.  
+000234	Gamemaster: Nobody reads reviews that aren't one star or five star.  
+000235	Gamemaster: That's how that works.  
+000236	Johnny: One time my dad was like, Noah, have you ever heard of this book?  
+000237	Johnny: And he named some book.  
+000238	Johnny: I was like, no, I haven't.  
+000239	Johnny: And he was like, okay, well, I'm going to go look it up on Goodreads.  
+000240	Johnny: and then later I was like, oh, well, did you get the book?  
+000241	Gamemaster: So...  
+000242	Gamemaster: Yeah, I mean, they...  
+000243	Argyle: Yeah.  
+000244	Anzu: Right.  
+000245	Johnny: And he goes, no, I read the one-star reviews and they were bad.  
+000246	Johnny: And I was like, yeah, they're the one-star reviews.  
+000247	Johnny: Yeah.  
+000248	Gamemaster: The people who leave one-star reviews, uh, uh, presumably, uh, are opinionated enough about the book to say bad things about it.  
+000249	Gamemaster: yeah so long as the one-star reviews aren't like i would never read crap like this i'm i'm giving  
+000250	Anzu: You got to feel strongly to be like, people need to know.  
+000251	Johnny: People need to know how bad.  
+000252	Gamemaster: it a one-star review on principle then you know that's that's not great but if it's like i slogged  
+000253	Benny: I also, I don't, I have too much, I don't, no, I have too much, not enough.  
+000254	Anzu: Hmm.  
+000255	Gamemaster: through this book and i want however many hours it took back then that's that's a pretty good  
+000256	Gamemaster: one-star review  
+000257	Benny: I don't know.  
+000258	Benny: I have an interesting interaction with cognitive dissonance and the sunk cost fallacy.  
+000259	Benny: I can't say bad things about things that I've done for a long time because that would mean  
+000260	Benny: I'm stupid.  
+000261	Johnny: I would play it like that.  
+000262	Benny: I keep doing things I don't like.  
+000263	Benny: Like, if I think about it,  
+000264	Argyle: on a  
+000265	Anzu: My mother-in-law read the book.  
+000266	Benny: have I ever played a bad video game?  
+000267	Benny: It's like, no, they've all been pretty sweet.  
+000268	Benny: It's like,  
+000269	Benny: they've all been pretty sweet.  
+000270	Johnny: a book a book a book I also like the profanity  
+000271	Benny: Yeah, like, I don't hate  
+000272	Gamemaster: I definitely played bad video games Oh How did they like it  
+000273	Benny: any specific game, and then especially  
+000274	Benny: one that I've, like, maybe over 50 hours  
+000275	Benny: in, I would not say are bad.  
+000276	Argyle: oh you Ooh  
+000277	Benny: you I like the profanity  
+000278	Anzu: Yes she read Song of Monsters she borrowed she borrowed my copy which you know she should have supported the cause but what are you going to do  
+000279	Anzu: Her only critique was that she did not like the profanity.  
+000280	Anzu: As did I.  
+000281	Benny: It's just to balance it out.  
+000282	Johnny: I had one character that cursed  
+000283	Benny: They didn't have cursing in the...  
+000284	Anzu: She was like...  
+000285	Johnny: and that's all they did  
+000286	Johnny: there are certain language things  
+000287	Anzu: She was like, I just feel like it doesn't fit with the time period for them to talk like that.  
+000288	Anzu: And I'm like...  
+000289	Benny: Wait, time? What?  
+000290	Anzu: Well, it's a different world, so the time period is kind of, like, not necessarily analogous to anything, but...  
+000291	Benny: Time?  
+000292	Johnny: where I'll run into and be like  
+000293	Johnny: oh, I can't call it a bandolier because that has an actual historical connotation.  
+000294	Benny: It implies the French.  
+000295	Gamemaster: I don't know, you just have to take the, like, Tolkien approach to that kind of stuff, where  
+000296	Johnny: I can say the word fuck.  
+000297	Johnny: You can't say champagne.  
+000298	Benny: Mm-hmm.  
+000299	Gamemaster: you say, oh yeah, this happens in that world, they don't speak English there, this book  
+000300	Gamemaster: is a translation of it, so that you get to use, like, words that are, with, like, English  
+000301	Benny: Ha!  
+000302	Johnny: Mike did you read book two already  
+000303	Gamemaster: connotations and stuff like that, and it's not, you know.  
+000304	Benny: He opened his Samsung refrigerator.  
+000305	Gamemaster: Yeah, I mean, I wouldn't...  
+000306	Benny: lie  
+000307	Argyle: you could  
+000308	Anzu: When you said most famous writer of all time, I thought you were talking about J.K. Rowling.  
+000309	Gamemaster: I wouldn't put a brand name, necessarily.  
+000310	Johnny: how did you know  
+000311	Argyle: you could  
+000312	Argyle: you can just do it  
+000313	Argyle: you know the most famous writer of all time  
+000314	Argyle: you know the guy that wrote all those plays  
+000315	Argyle: did  
+000316	Argyle: Shakespeare and just make up words  
+000317	Argyle: when you want and just make people figure  
+000318	Argyle: it out don't explain it  
+000319	Argyle: um  
+000320	Johnny: hmm  
+000321	Johnny: be like yeah people  
+000322	Gamemaster: Have any of you...  
+000323	Johnny: I also thought of JK.  
+000324	Gamemaster: Have any of you read Anathem by Neal Stephenson I highly recommend it  
+000325	Johnny: I have not read that Neil Stevenson book  
+000326	Benny: I thought of William Shakespeare  
+000327	Gamemaster: The reason I thought of it is specifically because he does this thing that Jorge said,  
+000328	Johnny: It's like a clockwork orange.  
+000329	Gamemaster: where he just makes up words and then you have to figure it out.  
+000330	Gamemaster: And they do it the whole book, all the way through.  
+000331	Benny: Pretty baller.  
+000332	Gamemaster: It's a good time.  
+000333	Benny: Do they have Latin roots?  
+000334	Gamemaster: They do have Latin roots.  
+000335	Benny: that's reasonable  
+000336	Argyle: So this is just,  
+000337	Gamemaster: And I'm...  
+000338	Benny: I'm pretty sure that's what Shakespeare did  
+000339	Benny: Latin or Germanic  
+000340	Gamemaster: Well, yeah, no, so, sorry.  
+000341	Benny: or Greek  
+000342	Gamemaster: When I say he makes up words, what I mean is that he introduces a philosophical concept,  
+000343	Gamemaster: but the concept is only in universe, and then the philosopher who came up with the concept  
+000344	Gamemaster: doesn't exist in real life, and so you have to figure out what the concept they're referring  
+000345	Gamemaster: to is through, like, context clues until you get later into the book, and they just  
+000346	Gamemaster: keep introducing concepts like that. Yeah, no, I really enjoy the book. It's one of my favorite  
+000347	Argyle: this is just you as a writer  
+000348	Anzu: I'll put it on my want to read list.  
+000349	Johnny: but  
+000350	Argyle: yeah  
+000351	Gamemaster: books, and it is like a puzzle in that way, almost, where they do that kind of stuff.  
+000352	Gamemaster: Highly recommend it. I will say... What?  
+000353	Johnny: josh have you read  
+000354	Johnny: have you read snow crash by neil stevenson  
+000355	Gamemaster: No, that's on my list. I, like, that was the first Neal Stephenson book that I read,  
+000356	Gamemaster: from a co-worker recommending it,  
+000357	Gamemaster: and I really liked it, so now I feel like I have to  
+000358	Argyle: Sorry.  
+000359	Gamemaster: go through the rest of his...  
+000360	Benny: Nistography.  
+000361	Anzu: How many books are connected to this book?  
+000362	Johnny: I think it's IMDB.  
+000363	Gamemaster: not discography.  
+000364	Gamemaster: Yeah, not that.  
+000365	Gamemaster: Whatever the actual term is.  
+000366	Johnny: I think it's IMDB.  
+000367	Benny: You have to rummage through his drawers.  
+000368	Gamemaster: Yeah.  
+000369	Gamemaster: I don't know.  
+000370	Gamemaster: If you do...  
+000371	Gamemaster: None.  
+000372	Gamemaster: Anathem is  
+000373	Gamemaster: standalone, as far as I'm aware.  
+000374	Gamemaster: I will say if you start reading it  
+000375	Gamemaster: and after the first chapter you don't like it  
+000376	Gamemaster: it only gets worse  
+000377	Argyle: you you connectically the um on a different note the ef2 assistant now has integrations thank you josh  
+000378	Gamemaster: don push through it if you don like the first chapter Yeah no it like  
+000379	Benny: that how I am with everything if I don like it I stop reading it  
+000380	Johnny: Yes Good Are you all the way Are we all the experience Oh wow  
+000381	Argyle: with foundry so we can look up your characters and party builds so when you ask for pacifics  
+000382	Argyle: or if you say things like, which spell should I take?  
+000383	Argyle: It will be able to figure out which character you are.  
+000384	Argyle: It will be conscientious of the group.  
+000385	Argyle: You might need to prompt it a little bit.  
+000386	Argyle: And also, if you hop on, I added a new dropdown for Impossible Magic.  
+000387	Argyle: Also, thanks, Josh.  
+000388	Argyle: He gave me the book, and I turned it into something that the LLM can look at.  
+000389	Argyle: So you can ask me questions about it specifically.  
+000390	Argyle: It's a separate one.  
+000391	Argyle: eventually when it all gets officially published on Foundry and everything,  
+000392	Argyle: I'll merge all the stuff. But updates.  
+000393	Johnny: I did use it today, earlier today, before I assume you added that in.  
+000394	Gamemaster: That's fine.  
+000395	Anzu: So it knows I'm Anzu.  
+000396	Argyle: Yeah, I added it like an hour ago.  
+000397	Johnny: It's very fun.  
+000398	Gamemaster: I...  
+000399	Gamemaster: I...  
+000400	Gamemaster: It knows your Anzu, and...  
+000401	Anzu: And I could say, what should Anzu...  
+000402	Argyle: You can ask it.  
+000403	Anzu: Can it give me advice mid combat on how I should use my turn?  
+000404	Gamemaster: It knows your...  
+000405	Argyle: No, you should just say, what should I take?  
+000406	Gamemaster: Yeah, it knows your Anzu, and also it knows Anzu's current, like, build on Foundry.  
+000407	Gamemaster: Like, down to how much HP he currently has.  
+000408	Argyle: No, we don't have, we don't, we specifically did not put information about other monsters  
+000409	Gamemaster: I don't expect that bit to ever be useful.  
+000410	Gamemaster: It's just kind of an implementation detail.  
+000411	Gamemaster: but it just has access to the foundry server  
+000412	Johnny: I did ask.  
+000413	Gamemaster: so it can see what you have  
+000414	Gamemaster: because it doesn't have access to like path builder  
+000415	Gamemaster: so it can't see what your build is at the moment  
+000416	Gamemaster: but  
+000417	Gamemaster: I mean  
+000418	Gamemaster: yeah  
+000419	Gamemaster: like the answer is  
+000420	Argyle: for that reason.  
+000421	Gamemaster: is that  
+000422	Gamemaster: I have  
+000423	Gamemaster: the way that I have it set up  
+000424	Gamemaster: is the permissions that are currently hooked up  
+000425	Gamemaster: for Jorge to use  
+000426	Gamemaster: it's  
+000427	Gamemaster: it doesn't like return data on enemies, but like generally speaking the answer is yes, the answer  
+000428	Gamemaster: actual backend does have access to that info,  
+000429	Johnny: Hello.  
+000430	Gamemaster: and my like admin key can be like,  
+000431	Gamemaster: what is the most optimal thing to do?  
+000432	Gamemaster: Actually, not only can it be like,  
+000433	Gamemaster: what is the most optimal thing to do?  
+000434	Gamemaster: It has the ability to place and move pieces as well.  
+000435	Gamemaster: So I could tell it, hey, you go do this.  
+000436	Johnny: Hello.  
+000437	Gamemaster: Just do this turn.  
+000438	Gamemaster: I'm never gonna do that because what's the point?  
+000439	Gamemaster: But that is possible.  
+000440	Gamemaster: I could just have it like pilot all of the tokens  
+000441	Gamemaster: and stuff for us.  
+000442	Argyle: We could also, if we wanted to, all get mics and then just talk to it and be like, hey, Claude, can you do my next turn for me?  
+000443	Johnny: We just announced our turn out loud.  
+000444	Argyle: And then you'll just see it like pause and all of a sudden start moving and like casting spells.  
+000445	Johnny: Oh, no, I'm level 7 still.  
+000446	Argyle: Also.  
+000447	Johnny: Bummer.  
+000448	Argyle: Oh.  
+000449	Gamemaster: This is actually just one step closer to wizard chess,  
+000450	Gamemaster: but for, like, D&D.  
+000451	Argyle: Yeah, yeah.  
+000452	Argyle: another thing also it'll share screen very quickly  
+000453	Johnny: How come Argyle's level eight?  
+000454	Argyle: it even knows  
+000455	Argyle: roles  
+000456	Argyle: so you can do some meta analysis  
+000457	Argyle: this is a request from Mike  
+000458	Argyle: okay  
+000459	Gamemaster: Oh, well, so I actually,  
+000460	Johnny: I'm only level seven.  
+000461	Gamemaster: I haven't leveled up anybody in Foundry yet  
+000462	Gamemaster: because I ran out of time  
+000463	Gamemaster: and I thought I would be able to do it today  
+000464	Gamemaster: before the session,  
+000465	Gamemaster: and I got home like at 7.30.  
+000466	Gamemaster: So if Argyle's level 8,  
+000467	Benny: Jorge is it still thinking on my question  
+000468	Argyle: I think you made my character update last session,  
+000469	Anzu: We give him one temporary hit point Jesus Mike what happened here  
+000470	Johnny: because you were  
+000471	Gamemaster: I think that might just...  
+000472	Gamemaster: I don't know why Argyle's level 8,  
+000473	Gamemaster: to be honest.  
+000474	Argyle: because...  
+000475	Gamemaster: Oh, right.  
+000476	Argyle: Which I feel like I should be rewarded for.  
+000477	Gamemaster: I just did yours last session  
+000478	Gamemaster: because you sent it to me last session  
+000479	Gamemaster: and it was easy.  
+000480	Gamemaster: That works What did you ask it  
+000481	Argyle: What did you ask  
+000482	Johnny: Thank you What 1D124  
+000483	Benny: I'm guessing you can see what I asked.  
+000484	Argyle: I don't have like a good,  
+000485	Argyle: I could look it up.  
+000486	Argyle: I just.  
+000487	Argyle: share screen  
+000488	Benny: I asked...  
+000489	Benny: Oh, okay, okay. It's going, it's going.  
+000490	Benny: So it tells me double slice both swords into Anzu, then a third strike.  
+000491	Benny: Anzu is a glass cannon right now.  
+000492	Benny: 53 out of 69 HP.  
+000493	Benny: AC 23.  
+000494	Benny: I asked it the quickest  
+000495	Gamemaster: Yeah, how could I have known that previously?  
+000496	Anzu: Wait. No.  
+000497	Johnny: Yeah, Tanner,  
+000498	Benny: I asked it the quickest way to kill  
+000499	Argyle: share screen  
+000500	Benny: Oh wait I have to change it in settings  
+000501	Benny: Hold on  
+000502	Benny: I didn't give this thing permission  
+000503	Benny: I'll just take a screenshot of the  
+000504	Benny: of the  
+000505	Benny: Hold on, let me see.  
+000506	Anzu: I can't believe you just let it out to Josh that I'm a glass cannon.  
+000507	Anzu: Now he's going to target me.  
+000508	Gamemaster: I thought you were the tank.  
+000509	Johnny: have you tried just being glass period  
+000510	Anzu: Oh boy.  
+000511	Anzu: How am I going to defend?  
+000512	Johnny: on a related  
+000513	Gamemaster: Mmm.  
+000514	Anzu: All right, now I need to open it and see how do I defend against.  
+000515	Benny: Yeah, see,  
+000516	Gamemaster: Ha ha.  
+000517	Benny: ask how I would defend against Benny  
+000518	Benny: trying to kill me as quick as possible right now.  
+000519	Gamemaster: I mean, that's a good question.  
+000520	Gamemaster: It'll suck when it comes back and says there's nothing you can do.  
+000521	Gamemaster: Benny's unstoppable.  
+000522	Anzu: You are a glass cannon.  
+000523	Gamemaster: and ally flanks  
+000524	Johnny: Get on to off-coat.  
+000525	Anzu: to make it even more certain.  
+000526	Gamemaster: you gotta get by him  
+000527	Anzu: Oh my God.  
+000528	Argyle: I love the  
+000529	Benny: expected damage across those three strings is roughly 55 plus comfortably over Anzu 53  
+000530	Gamemaster: Anzu's real weak spot  
+000531	Argyle: I love the headers  
+000532	Gamemaster: is fort  
+000533	Argyle: Wyatt drops fast  
+000534	Gamemaster: but your kill path  
+000535	Gamemaster: is pure strikes  
+000536	Gamemaster: so just swing  
+000537	Johnny: You a palatist for roughly its entire hit bar Oh no  
+000538	Gamemaster: Crazy.  
+000539	Argyle: Ha ha ha!  
+000540	Benny: and any single Thalcata crit  
+000541	Benny: 30% chance per swing  
+000542	Benny: so well over  
+000543	Benny: 50% chance you land one  
+000544	Benny: across the turn ends it outright  
+000545	Benny: ...  
+000546	Benny: ...  
+000547	Johnny: If we were in a situation where Benny gets controlled,  
+000548	Johnny: We're just fucked. It's over.  
+000549	Benny: Good thing Benny increased his will during this level up.  
+000550	Gamemaster: I can't tell if the bot was sarcastic to you when it responded, Mike, because it says,  

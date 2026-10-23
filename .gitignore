@@ -56,9 +56,20 @@ target/
 .DS_Store
 apps/akasha-backend/migrate/convert-report.json
 
-# linguist surfacer review state — per-session candidate triage files (surface.py
-# output, reviewed in review_tui, applied to defs.yaml via apply.py); not source.
-apps/linguist/data/*.candidates.json
+# The pipeline's published datasets live in the astra-data repo (github jbassin/astra-data,
+# live clone = config.kdl data.content-root), committed by the bots, not here (0037 Phase 1
+# item 2). Ignore their old in-tree paths so a stale working copy can't be re-added. The
+# checked-in stand-in for tests, CI and dev builds is fixtures/astra-data/. The rules this
+# file applied inside them (e.g. linguist/data/*.candidates.json) moved to astra-data's own
+# .gitignore (seed: deploy/astra-data/.gitignore).
+/apps/linguist/transcripts/
+/apps/linguist/data/
+/apps/linguist/timeline/
+/apps/mouthpiece-backend/snapshot/
+/apps/akasha-backend/content/
+/apps/akasha-backend/snapshot/
+/apps/heartwood-backend/agent-runs.jsonl
+/ontology/ontology-entity/entity.kdl
 
 # scribe runtime data — Craig zips (incoming/) + extracted audio.mp3/script.json
 # (data/saved/{date}/); transient pipeline I/O on this deploy, not source.
@@ -71,8 +82,7 @@ apps/codex/data/
 
 # Pipeline output dirs bind-mounted into the Dagster services (deploy/docker-compose).
 # Keep the dir (a .gitkeep so the bind-mount source exists on clone), ignore the live
-# pipeline writes. (linguist/transcripts + linguist/data keep their committed historical
-# data, so they're NOT ignored — live writes there are uncommitted operator state.)
+# pipeline writes.
 apps/scribe/tmp/*
 !apps/scribe/tmp/.gitkeep
 apps/linguist/script/*

@@ -6,7 +6,7 @@ date→show resolution shared by the chronicle assets; generation lives in
 `chronicle_assets`. A **show** is a campaign (its `being.kdl` slug); a **season** is a
 GLM-derived arc *within one show*; an **episode** is one recorded session.
 
-The committed artifacts (under `apps/linguist/timeline/`, auto-committed by the
+The artifacts (under config `data.linguist-timeline` in the astra-data repo, committed by the
 linguist-commit timer) are:
 
 - `timeline/episodes/<date>.json` — one `EpisodeEntry` per session.

@@ -65,7 +65,7 @@ jobs:
               - 'tsconfig.base.json'
               - '.github/**'
             corpus:
-              - 'apps/akasha-backend/content/**'
+              - 'fixtures/astra-data/akasha/content/**'
               - 'libs/ts/vellum-lang/**'
               - '.github/**'
             # The render output depends on the service + the renderer (gothic) + the
@@ -160,7 +160,9 @@ jobs:
       - run: pnpm -r --no-bail --aggregate-output run build
 
   # The akasha corpus structural gate (0007/F3): the TS reference parser asserts
-  # zero error chips + zero sigil collisions over every converted vellum page.
+  # zero error chips + zero sigil collisions over every converted vellum page. The real
+  # wiki lives in the astra-data repo (heartwood validates the whole corpus before every
+  # commit there); CI runs the gate over the checked-in fixture wiki.
   corpus-validate:
     needs: changes
     if: needs.changes.outputs.corpus == 'true'
@@ -168,7 +170,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
-      - run: node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/vellum-lang/scripts/validate-corpus.ts --dir apps/akasha-backend/content
+      - run: node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/vellum-lang/scripts/validate-corpus.ts --dir fixtures/astra-data/akasha/content
 
   # The vellum-render golden-image gate (0013 D4). Runs in the PINNED container
   # node:24-slim with the Chromium the `playwright` lock pins (same env the

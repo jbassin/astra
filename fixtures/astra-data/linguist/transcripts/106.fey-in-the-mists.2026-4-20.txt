@@ -1,0 +1,4 @@
+000001	Mango: Now recording.  
+000002	Gamemaster: Now recording.  
+000003	Gamemaster: It's pretty close.  
+000004	Mango: That was pretty close.  

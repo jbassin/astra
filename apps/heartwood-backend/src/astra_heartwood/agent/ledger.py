@@ -1,4 +1,4 @@
-"""The run ledger — ``apps/heartwood-backend/agent-runs.jsonl`` (0033 D33-12, §5).
+"""The run ledger — config ``data.heartwood-ledger`` (0033 D33-12, §5), in astra-data.
 
 One JSON object per line, keys sorted, appended in commit order:
 

@@ -26,22 +26,35 @@ const dataPath = (def: string) => {
   return schema;
 };
 
+// A published dataset (py `ContentPath`): like a data path, but a relative value is
+// resolved against `data.contentRoot` (the astra-data clone) instead of `data.root`.
+const CONTENT_PATH_SCHEMAS = new WeakSet<z.ZodType>();
+const contentPath = (def: string) => {
+  const schema = z.string().default(def);
+  CONTENT_PATH_SCHEMAS.add(schema);
+  return schema;
+};
+
 /** Overrides `data.root` — a test/dev seam only (the py root conftest sets it). */
 const DATA_ROOT_ENV = "ASTRA_DATA_ROOT";
+/** Overrides `data.contentRoot` — the same variable @astra/content-build reads. */
+const CONTENT_ROOT_ENV = "ASTRA_CONTENT_ROOT";
 
-// The one root every data path in this config is relative to: the pipeline's published
-// datasets below (the astra-data layout) and each service's own state paths.
+// The one root every data path in this config is relative to (each service's own state
+// paths), plus the astra-data clone the bots commit the published datasets to.
 const Data = z
   .object({
     root: z.string().default(""),
-    linguistTranscripts: dataPath("apps/linguist/transcripts"),
-    linguistData: dataPath("apps/linguist/data"),
-    linguistTimeline: dataPath("apps/linguist/timeline"),
-    mouthpieceSnapshot: dataPath("apps/mouthpiece-backend/snapshot"),
-    akashaContent: dataPath("apps/akasha-backend/content"),
-    akashaSnapshot: dataPath("apps/akasha-backend/snapshot"),
-    heartwoodLedger: dataPath("apps/heartwood-backend/agent-runs.jsonl"),
-    entityRegistry: dataPath("ontology/ontology-entity/entity.kdl"),
+    // Relative → under `root`. The datasets below are relative to it (astra-data layout).
+    contentRoot: z.string().default("astra-data"),
+    linguistTranscripts: contentPath("linguist/transcripts"),
+    linguistData: contentPath("linguist/data"),
+    linguistTimeline: contentPath("linguist/timeline"),
+    mouthpieceSnapshot: contentPath("mouthpiece/snapshot"),
+    akashaContent: contentPath("akasha/content"),
+    akashaSnapshot: contentPath("akasha/snapshot"),
+    heartwoodLedger: contentPath("heartwood/agent-runs.jsonl"),
+    entityRegistry: contentPath("entity/entity.kdl"),
   })
   .strict();
 
@@ -421,12 +434,15 @@ export function defaultConfigFile(): string {
   return join(findRepoRoot(import.meta.dirname), "ontology", "ontology-config", "config.kdl");
 }
 
-/** Resolve every relative data-path field against `data.root` (mirrors the py
- * `Config._resolve_data_paths` validator). Mutates and returns `cfg`. */
+/** Resolve relative data-path fields against `data.root` and relative content-path
+ * fields against `data.contentRoot` (mirrors the py `Config._resolve_data_paths`
+ * validator). Mutates and returns `cfg`. */
 function resolveDataPaths(cfg: Config): Config {
   const root = process.env[DATA_ROOT_ENV] || cfg.data.root;
+  let content = process.env[CONTENT_ROOT_ENV] || cfg.data.contentRoot;
+  if (root && content && !isAbsolute(content)) content = join(root, content);
   cfg.data.root = root;
-  if (!root) return cfg;
+  cfg.data.contentRoot = content;
   const namespaces = cfg as unknown as Record<string, Record<string, unknown>>;
   for (const [name, wrapped] of Object.entries(ConfigSchema.shape)) {
     const shape = wrapped.unwrap().shape as Record<string, z.ZodType>;
@@ -434,8 +450,9 @@ function resolveDataPaths(cfg: Config): Config {
     if (!values) continue;
     for (const [field, schema] of Object.entries(shape)) {
       const value = values[field];
-      if (DATA_PATH_SCHEMAS.has(schema) && typeof value === "string" && value && !isAbsolute(value))
-        values[field] = join(root, value);
+      if (typeof value !== "string" || !value || isAbsolute(value)) continue;
+      if (DATA_PATH_SCHEMAS.has(schema) && root) values[field] = join(root, value);
+      else if (CONTENT_PATH_SCHEMAS.has(schema) && content) values[field] = join(content, value);
     }
   }
   return cfg;

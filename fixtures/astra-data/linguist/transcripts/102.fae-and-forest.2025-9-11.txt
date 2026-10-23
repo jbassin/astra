@@ -1,0 +1,4 @@
+000001	Cedric: Yo, yo, yo.  
+000002	Cedric: So at work, I've been using, we have chat GPT cleared.  
+000003	Cedric: We have other APIs, but we can actually use the web chat.  
+000004	Krod: GPT-5 is?  
