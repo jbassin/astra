@@ -170,11 +170,22 @@ done", which replaces the three gates and octo). Remaining, in order:
    `entity/entity.kdl`. akasha and mouthpiece keep baking content at build time; the deploy passes
    the data clone as an extra Docker build context (not runtime mounts: those would mean
    rewriting the generated-modules pattern). Three slices:
-   - [ ] 2a. Every data path from config (`data-root` + relative paths), identical host and
+   - [x] 2a (`eead12c4`, `6e1b8b25`, deployed live). Every data path from config (`data-root` + relative paths), identical host and
      container mount paths, build-content reads `ASTRA_CONTENT_ROOT` with a checked-in
      `fixtures/astra-data/` fallback so CI and tests need no real data. No behaviour change.
-   - [ ] 2b. Create `jbassin/astra-data`, linguist-commit and heartwood commit there (your SSH key;
-     bot identity is Later), extra build context in deploy, code repo untracks the files.
+   - [x] 2b (`d55f5fac`, `0e66d817`, `8987da60`; astra-data `a40c534`; deployed live, counts
+     unchanged: 97 scripts, 456 pages, 26 episodes). `jbassin/astra-data` is live with clone
+     `/ruby/data/astra-state/astra-data`; config has `data.content-root`; linguist-commit and
+     heartwood commit, rebase and push only there (`_astra-data-push` aborts a conflicting
+     rebase); deploy.sh `git archive`s the clone's committed HEAD as the frontends' build context
+     (`data_sha` in history.jsonl); the code repo untracked 578 files; tests and CI use
+     `fixtures/astra-data/`. Independent review found no code bug. Follow-ups: add the clone to
+     `astra-backup.sh` once 2c puts it under the data root; `convert-wiki.ts --dest` should be
+     required; linguist-commit redeploys akasha only on linguist changes, so a pushed hand wiki
+     edit waits for the next publish; nothing checks the real `entity.kdl` for drift when
+     `defs.kdl`/`being.kdl` change in the code repo (run `astra-ontology-entity-seed --check`
+     from the watchdog); `heartwood-revert` can't revert sessions published before the snapshot
+     commit; a redeploy now ships the clone's local HEAD even when its push failed (pages).
    - [ ] 2c. Move all runtime data to `/ruby/data/astra-state/` (one downtime window, backup
      first), point compose, config, justfile, backup/watchdog and the `api.akasha` edge stanza at
      it, move linguist-commit and heartwood-request units to the deploy checkout.
