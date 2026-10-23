@@ -215,7 +215,7 @@ done", which replaces the three gates and octo). Remaining, in order:
    dot-folder (fixed via `send`'s `root`, independently reviewed safe; symlinks inside a served
    dir are still followed, as before); pyenv shims now fail on bare `python3` inside the repo
    until mise is active or pyenv has 3.12.
-4. Gate tightening: `erasableSyntaxOnly`, tsconfigs include scripts and server entries, the
+4. ✅ (session 3, through `241974a6`, deployed) Gate tightening: `erasableSyntaxOnly`, tsconfigs include scripts and server entries, the
    immediate ruff and oxlint rule sets, path overrides become inline disables, a staged-files
    pre-commit hook, `.claude/settings.json` deny rules (e.g. `git stash`).
 
