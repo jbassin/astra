@@ -1,0 +1,33 @@
+# The host toolchain this repo needs. `just bootstrap` runs `mise install`.
+# (First time on a machine: `mise trust && mise install`, then activate mise in your shell.)
+#
+# One source per version:
+#   - Python: .python-version (3.12). uv reads it too, so dev, CI and the Dagster image
+#     (python:3.12-slim) all run 3.12.
+#   - Node: .node-version (24). CI's setup-node reads it; the Dockerfiles say node:24 / 24-slim.
+#   - pnpm: must equal package.json's packageManager (CI and corepack read that one).
+#   - uv and just: CI's .github/actions/setup-{uv,just} repeat these pins; keep them in step.
+#
+# Not provided here (install by hand when you need them):
+#   - Rust, for libs/rust/weal-engine only: rustup reads the crate's rust-toolchain.toml.
+#   - tectonic, for `uv run assay export-book` only (no prebuilt mise package).
+#   - docker, the custom caddy build (/ruby/data/reverse-proxy) and the Drive FUSE mount:
+#     production-host infrastructure, not developer tools.
+
+[settings]
+# Read .python-version and .node-version, so those files stay the only pin.
+idiomatic_version_file_enable_tools = ["node", "python"]
+
+[tools]
+pnpm = "10.34.4"
+uv = "0.11.19"
+just = "1.23.0"
+# sops: decrypts deploy/sops/secrets.enc.yaml (deploy, caddy recipes, the alert scripts).
+sops = "3.13.1"
+# deno: the dspy sandbox for heartwood and the mouthpiece producer.
+deno = "2.5.6"
+# jq: deploy.sh, the backup and alert scripts.
+jq = "1.8.1"
+# wasm-bindgen + wasm-opt: `just weal-engine-build`, which hard-requires these exact versions.
+"github:wasm-bindgen/wasm-bindgen" = "0.2.127"
+"github:WebAssembly/binaryen" = { version = "124", version_prefix = "version_" }
