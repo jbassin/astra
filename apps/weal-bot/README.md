@@ -265,9 +265,11 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
 ## Operations
 
 - **Runtime:** a Docker Compose unit (`weal-bot` in `deploy/docker-compose.yml`) + its Postgres
-  (`weal-postgres`, bind-mounted under `artifacts/`). Secrets (Discord token, overlay token) come
-  from SOPS via `just up` env injection; config via `ontology-config` (`config.kdl`).
-- **Deploy:** `just up` from the repo root (rebuild + recreate). The engine wasm is a
+  (`weal-postgres`, data in `/ruby/data/astra-state/postgres/weal`). Secrets (Discord token,
+  overlay token) come from SOPS via `just deploy` env injection; config via `ontology-config`
+  (`config.kdl`).
+- **Deploy:** push, then `just deploy weal-bot` (it builds from the deploy checkout at the pushed
+  commit; local edits never ship). The engine wasm is a
   **committed** artifact — changing the language means editing `libs/rust/weal-engine` and
   running `just weal-engine-build` first (see that crate's README); the bot image just copies
   `libs/ts` wholesale.
@@ -281,6 +283,24 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
   `astra.weal.rolls{goodness}`, `weal.v2.errors{stage}` (incl. contained `panic`, which also
   re-instantiates the wasm), `weal.v2.fuel_aborts`, `weal.v2.saves_refused{kind}` (the save
   guard; each refusal also logs a WARN naming the save). Engine faults log WARN, never ERROR.
+
+## Traps
+
+- **Macros with no inputs don't work yet.** An engine bug makes a nullary function fail or return
+  nothing (`let f() = 2d20kh1; f()` errors with "sum's argument must be a pool"). The save guard
+  refuses such saves; players should save the bare roll (`save(:adv, 2d20kh1)`), which re-rolls on
+  every use.
+- **Saves share one namespace with the built-ins.** `save(:kh, 3)` would shadow `kh` and break every
+  `kh` roll. The save guard catches it; keep its everyday-roll list in step with the prelude.
+- **`check` mode alone cannot validate a save.** It type-checks `|| e` as `e`, so a nullary macro
+  passes the boot check and fails only when used. That is why the guard also tries two real uses.
+- **The v2 counters appear in SigNoz only after their first increment.** `weal.v2.errors` and
+  `weal.v2.fuel_aborts` missing from the metric list is not a wiring bug while no engine error or
+  fuel abort has happened.
+- **An empty `funcs_v2` is normal on a fresh database.** v1 saves did not migrate, so the boot log
+  "loaded 0/0 saved weal v2 sources" is correct.
+- **CI never talks to Postgres.** The store runs only against the live `weal-postgres`; check a SQL
+  change there before you deploy it.
 
 ## Dev
 

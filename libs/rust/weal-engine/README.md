@@ -145,3 +145,26 @@ wasm `budget` argument scales interpreter steps ONLY (non-zero = the absolute st
 
 (The spec's ninth counter — render nodes 10,000 — was not shipped as a counter; render size is
 bounded by the ≤900-char collapse policy instead.)
+
+## Traps
+
+- **Nullary functions are broken (open bug).** Applying a zero-parameter function never runs its body
+  correctly: `let f() = 2d20kh1; f()` fails at eval with "sum's argument must be a pool", and
+  `let f() = d6e1; f()` returns nothing. The `sum` auto-coercion misplaces on unit-argument
+  application. weal-bot's save guard refuses such saves until this is fixed.
+- **The root `.gitignore` ignores every `dist/`.** A negation entry re-includes this crate's
+  `src/dist/`; any new source directory named `dist` needs its own negation.
+- **plotters cannot render text on wasm32.** Its `ab_glyph` font backend is compiled out on
+  `wasm32-unknown-unknown`, and the web backend it picks instead traps under Node. `plot.rs` lets
+  plotters draw geometry only and rasterizes all text with the `ab_glyph` crate over the committed
+  font; the `title_label_pixels_are_drawn` test in `plot.rs` guards against blank labels.
+- **Deep recursion needs the sized wasm stack.** Without the 8 MiB `-zstack-size` flag in
+  `.cargo/config.toml`, the 256-frame recursion cap overflows the default stack before fuel can stop
+  it.
+- **The TS wrapper turns a wasm trap into a fuel error.** `libs/ts/weal-engine/src/index.ts` loads the
+  CommonJS glue with `createRequire` and reports a trap (for example a stack overflow) as
+  `{ok:false, stage:"fuel"}` with a message starting `engine trap:`. A "fuel" error on a small input
+  can be a trap, not a budget.
+- **Some adversarial inputs are slow before fuel stops them.** Realistic macros run in 15 ms or less,
+  but `1000d1000` takes about 1.7 s to exhaust the `states` counter. Retuning a budget means a
+  rebuild of the committed wasm.

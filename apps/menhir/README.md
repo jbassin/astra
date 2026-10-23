@@ -22,8 +22,8 @@ identities.
 
 ## Authoring a quiz
 
-Drop a KDL file in `apps/menhir/quizzes/` (id = basename) and redeploy (the compose image bakes
-the dir; `docker compose up -d --build menhir` from `deploy/`):
+Drop a KDL file in `apps/menhir/quizzes/` (id = basename), push, and run `just deploy menhir`
+(the image bakes the dir):
 
 ```kdl
 quiz "My Quiz Title" {
@@ -41,7 +41,8 @@ verified against the codex corpus (see the starter's inline citations).
 ## Results
 
 Every game that reaches the podium (including aborted ones, flagged `aborted:true`) appends a
-standings row to `artifacts/menhir/results.jsonl` (identical-path bind mount, host-owned).
+standings row to `/ruby/data/astra-state/menhir/results.jsonl` (config `menhir.results-path`,
+relative to `data.root`; identical-path bind mount, host-owned).
 
 ## Caveats
 
@@ -61,3 +62,26 @@ cd apps/menhir && node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs ser
 Server entry wires telemetry first (`astra.menhir`: manual spans on the mutating API routes —
 @astra/observe registers no HTTP auto-instrumentation — plus lazyCounter metrics
 `menhir.{games.started,games.finished,players.joined,answers.received}`).
+
+## Traps
+
+- **Re-arm the question timer after every reduction.** `rooms.ts` clears the room timer before each
+  reduction and only `schedule` effects re-arm it, and only question-open emits one. So after an
+  answer, join or connect mid-question, the runtime must re-arm the outstanding deadline, or the
+  countdown silently stops. The reducer tests can't see this; `test/rooms.test.ts` covers the
+  runtime with an injected test clock.
+- **Never answer the SSE endpoint with 404.** Browsers stop reconnecting an `EventSource` for good
+  after an HTTP error. An unknown or collected room returns 200 with one `{phase:"gone"}` frame.
+- **Don't simulate many players in one browser.** Six `EventSource`s in one tab hit Chromium's
+  per-origin connection limit and freeze the tab. Drive extra players from a Node script.
+- **A room with no connected players never closes a question early.** POST-only clients (curl
+  smoke tests) aren't "connected", so they always wait out the timer.
+- **In the lobby `questionIndex` is -1.** Host actions carry an absolute `fromIndex`, which must
+  match it.
+- **Quiz parse failures log WARN, not ERROR.** Any ERROR log pages Discord through the SigNoz
+  alert rule; a quiz typo must not.
+- **Draw icons as SVG, not emoji.** Emoji render as empty boxes on hosts without an emoji font
+  (`src/marks.tsx`). Kahoot yellow behind white text is about 2:1 contrast: keep tiles dark and put
+  the hue on the glyph.
+- **The runtime image ships only what its Dockerfile copies.** `quizzes/` has an explicit COPY in
+  the runtime stage; a new data dir needs one too.

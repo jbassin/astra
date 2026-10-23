@@ -12,6 +12,156 @@ transform report on disk. P2 (`thoughts/archive/specs/0029-codex-p2-entity-pages
 the frontend on top, unmodified corpus contract. See
 `thoughts/archive/specs/0029-codex-p1-ingest-spec.md` for the ingest spec.
 
+## Operations
+
+The data dir is `codex.data-path` (`codex/data` under `data.root`, so
+`/ruby/data/astra-state/codex/data`): `corpus/`, `search/`, `snapshots/`, `assay/`. The
+transform and the search build write the **live** dirs the container mounts read-only.
+
+- **Full refresh** (re-fetch both sources, transform, reindex, restart): `just codex-refresh`.
+  It refuses a dirty `apps/codex`, because the `corpus-manifest.json` diff it writes must be
+  reviewable alone. If that diff is timestamp-only, revert it.
+- **Transform-only change** (ingest code or the assay homebrew store changed, sources did not):
+  skip the re-fetch, which can pull in upstream drift.
+
+  ```bash
+  pnpm --filter @astra/codex transform
+  just codex-search-index        # only if search rows changed (names, statsText, meta, entity set)
+  just deploy --restart codex    # corpusFs caches listings per process; restart to flush
+  ```
+
+  The transform reads code and the homebrew store from the checkout it runs in, so run it from
+  a clean checkout at a pushed commit.
+- **Render-only change** (`src/` only, corpus and index untouched): push, then
+  `just deploy codex`.
+- **Order when both change:** push and `just deploy codex` first (the image build is slow),
+  then transform, reindex and restart. The transform wipes and rewrites `corpus/` in place, so
+  the site serves errors or partial data until it finishes; keep that window short.
+- **Verify a deploy against the real corpus, never by status codes.** A missing mount falls back
+  to the committed fixture and still returns 200 everywhere. Check a real-corpus marker (a
+  listing count in the thousands, a dragon page) and the startup log for
+  `falling back to the fixture corpus`.
+
+## Traps
+
+**Corpus and ingest**
+- Run the real transform before trusting any count in a spec, test or golden. Counts derived
+  from a proxy (grepping one field, raw AoN doc counts) have been wrong in both directions.
+- Foundry packs have no `system.slug`; the pack file basename is the slug. AoN URLs are not
+  unique (tiered items, class/class-feature twins), so join by `pickCanonical`, never by URL.
+- A plain crossref (`{category}/{slug}`) carries no provenance. Repoint links at
+  link-resolution time (url → aonId → final id), not by patching strings afterwards.
+- Any pass that drops entities needs its own crossref/embed reconciliation afterwards. Emit-time
+  Zod checks shape only, not referential integrity.
+- Embed overrides apply only in `reconcileInline` (post-drop); applied earlier they are a silent
+  no-op. Ids from the parse-time repoint seam are pre-collision; use `aonIdToFinalId` for any
+  url-keyed join.
+- The crossref/embed patcher must walk every `BlockNode[]` field, including the hazard
+  `stats` fields (`disable`, `routine`, `reset`).
+- Class grants resolve by the corpus's masthead "Class" label, then `legacyOf`, then level.
+  Twelve classes share one Foundry item uuid, so a uuid map links the wrong class.
+- Drop predicates must be scoped with `proseOnly === true`; Foundry adventure actions also
+  start with "(".
+- Facets exist only on Foundry-merged entities. Trait casing differs by edition (fold it);
+  `usage`/`itemCategory` mean different things per category (never share facet defs by key
+  name); `facets.size` is the Foundry token default, not an ancestry's size.
+- `statsText` is gated to creature/hazard; on other categories it indexes junk like "HP 8".
+- Never write raw control bytes (NUL, SOH) in template literals: git then treats the source as
+  binary and the Read tool hides them. Use `\u0000` escapes. Sweep with
+  `perl -ne 'print "$ARGV\n" if /[\x00-\x08\x0b\x0c\x0e-\x1f]/' <files>`.
+
+**Homebrew (assay store) ingest**
+- Homebrew names can collide with legacy AoN-only spells. Check a new name against the full
+  emitted id space, not just the Foundry packs.
+- `CodexEntitySchema` and `parseManifest` are `.strict()`: keep homebrew provenance in
+  `report.json` and the `homebrewIds` parameter, never as an entity field or manifest key.
+- Homebrew assembly must reuse the Foundry `UuidIndex`, or every `@UUID` ref in the store
+  silently becomes a broken ref.
+- Store basenames are the ids. Basenames hyphenate apostrophes where `sluggify` strips them, so a
+  fixed set of `slugMismatch` reports is expected; a change in that count is a real problem.
+- Trait source docs carry `{name, description}` only. A stray `level` adds a Lvl column to every
+  `/trait` row.
+- A book with no AoN presence gets "License unknown" on `/sources`; set it in
+  `BOOK_LICENSE_OVERRIDE` (`sourcesIndexBuild.ts`).
+
+**Fixture and tests**
+- `vitest.setup.ts` pins `CODEX_CORPUS_ROOT` to `fixtures/entities/`. The dev server and
+  scripts have no such pin and read the real corpus at `codex.data-path`, from any checkout.
+- `scripts/extract-fixture.ts` wipes `fixtures/entities/` and rebuilds it from the real corpus.
+  The 90 `ritual/virt-*` rows the virtualization guard needs have no generator: restore them
+  from git and re-add them to `ritual/_index.json`. Never restore the whole `entities/` tree.
+- Fixtures for a new entity shape need a second source in the fixture pipeline, because the
+  canonical sweep only picks from the real emitted corpus.
+- `scripts/regen-goldens.ts` runs under `nodeTsResolve.mjs`, which resolves only relative
+  specifiers. An `@/*` import in anything EntityPage reaches breaks golden regen while tsc,
+  vite and vitest pass.
+- DOM tests carry a per-file `// @vitest-environment jsdom` docblock. jsdom lacks
+  `HTMLDialogElement.showModal` (tests polyfill it).
+
+**Search index**
+- The Pagefind build is host-only (~3.8 GB RSS). Run `just codex-search-index`; never in CI or
+  Docker. The server picks up a new index without a restart.
+- Pagefind fragments are gzip; grep decompressed bytes. `meta.title` has no ranking weight and
+  weight spans leak into excerpts; exact-name ranking comes from the client-side boost, so don't
+  retry index-side weighting.
+- `vite dev` does not serve `staticMounts`; `/pagefind/` needs `build` + `start`.
+
+**SSR, routing and hydration**
+- Any export in a `createServerFn` file drags its imports into the client bundle, and so does
+  any module-scope call into `node:fs` or `loadConfig`. Keep fs in `corpusFs.ts` behind the lazy
+  `getCorpusReader()`, server fns alone in `corpusFns.ts`. Verify by grepping the client bundle
+  for `readFileSync`/`loadConfig`.
+- `import.meta.dirname` paths break after `vite build` relocates modules; use `findAppRoot`.
+- A loader driven by search params needs `loaderDeps`, or it silently never re-runs.
+- The router's search parser decodes `+` to a space, coerces bare numbers, and round-trips
+  arrays as real `string[]`. Accept both shapes in `validateSearch`.
+- `?entry=` takes the bare slug, not `category/slug`. When rebuilding search from filter state,
+  carry `entry` through `filterStateToSearch` explicitly.
+- `deriveHeaderTitle` (`router.tsx`) must list every new route family. Standalone h1s are
+  sr-only on the premise the header shows the title, so a missed case leaves the page with no
+  visible title.
+- A resolved depth-0 embed renders a block `<div>`; a paragraph holding one must render as a
+  `<div>` (`embedRendersAsBlock`), or hydration mismatches.
+- With `hydrateRoot(document)`, React's listeners are siblings of manual `document` listeners:
+  only `nativeEvent.stopImmediatePropagation()` blocks them.
+- `sources-index.json` is server-only. Client code that needs book abbreviations uses
+  `abbreviateBook()`.
+
+**Listings and virtualization**
+- The SSR window (`SSR_WINDOW`) is derived from `ROW_PITCH_PX` and the initial rect through the
+  real virtualizer; change the inputs, never the constant. The loader ships only the window's
+  rows (the dehydration payload was the real weight) and sets an explicit `windowed` flag; the
+  client then fetches the full array via `memoizedListing`.
+- Programmatic focus in listings uses `{ preventScroll: true }`; coalesce `scrollToIndex` per
+  animation frame; timers read current values from a ref; entry navigations pass
+  `resetScroll: false`.
+- Keyboard Enter on a row anchor is a click with `detail === 0`; let it fall through to native
+  navigation. Whole-row click is implemented directly, never by a synthetic `anchor.click()`.
+- Tier decisions (pane vs bottom sheet) use the `matchMedia` hook in `BrowseListing.tsx`, which
+  mirrors the CSS breakpoint; the container-width flag misreads 700–850 px.
+
+**Styling**
+- A closed `<details>` hides its content through `::details-content { content-visibility:
+  hidden }`, which no descendant rule can undo. Override `::details-content`, or use a
+  conditional render instead of `<details>`.
+- A higher-specificity `padding` shorthand beats a lower-specificity `padding-inline`. Check
+  column and row geometry in a real browser (`just codex-row-height-drift-guard`), not jsdom.
+- `dialog:modal` UA centering breaks on tall content; set `position: fixed; inset: 0; margin:
+  auto`.
+- Exactly one flex auto-margin owns the header's right push (`.codex-header-nav`).
+- Reuse exported orderings and maps (`PINNED_PRODUCT_LINE_ORDER`, `formatFacetValue`'s label
+  map); a redeclared copy forks.
+
+**Verification**
+- React SSR puts `<!-- -->` between text nodes, so "145 of 145 shown" doesn't match as plain
+  text in served HTML. Virtualized listings prove additions by the toolbar count, not row greps.
+- Playwright's locator `.click()` scrolls the target into view; use
+  `evaluate(el => el.click())` in scroll assertions.
+- `codex.port` has no env override (only secrets and the data roots do). A scratch serve needs
+  its own `createSsrServer` boot script; never edit `config.kdl` or touch 10374.
+- Local telemetry smoke: call `initTelemetry("astra.codex", { endpoint: "http://localhost:10353" })`
+  before `createSsrServer` (first call wins), then check SigNoz.
+
 ## The frontend (P2)
 
 Every entity lives at `/{category}/{slug}` (the corpus id, verbatim — `/spell/heal`,
@@ -61,8 +211,8 @@ P3 S5 full-corpus Playwright pass. Fixed by asking the SAME question `renderEmbe
 - **`src/routes/`** — `__root.tsx` (header omnibar + legacy toggle, every page), `index.tsx`
   (category directory), `$category/index.tsx` (P3 faceted listing), `$category/$slug.tsx` (entity
   page), `search.tsx` (P3 `/search`, below).
-- **Run it:** `pnpm --filter @astra/codex dev` (real corpus if `data/corpus/` exists, else the
-  fixture) / `pnpm --filter @astra/codex build && pnpm --filter @astra/codex start` (production
+- **Run it:** `pnpm --filter @astra/codex dev` (`CODEX_CORPUS_ROOT` if set, else the real
+  corpus if `<codex.data-path>/corpus/` exists, else the fixture) / `pnpm --filter @astra/codex build && pnpm --filter @astra/codex start` (production
   parity, wires `astra.codex` OTel spans via `@astra/site-kit`'s `createSsrServer`). **Note:**
   `staticMounts` (below) is a `createSsrServer`-only mechanism — `/pagefind/*` only serves under
   `build && start`, not under plain `vite dev`.
@@ -135,7 +285,7 @@ exists, and a freshly-built index comes online with no server restart.
 
 > ⚠️ **Host-only, ~3.8 GB RSS.** The native Pagefind indexer's peak memory during `writeFiles`
 > over the full ~46,192-entity corpus is ~3.8–4 GB (measured) — this build step must **never**
-> run in CI, a Docker build, or `vite build` (verified: `vp run -r build` only ever invokes
+> run in CI, a Docker build, or `vite build` (`pnpm -r run build` only ever invokes
 > `vite build` for codex). Run it on the host via `just codex-search-index`, or as the last step
 > of `just codex-refresh` (transform → search index). A real run takes ~25–35s and produces a
 > **203 MB** bundle (measured 2026-07-15, P5 sizing pass) — `fragment/` 184 MB (46,192 files,

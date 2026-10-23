@@ -72,12 +72,12 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
   default Node-externalizing loader; `runner` loads the config through vite's own TS
   pipeline. This is the real shape of "vite.config can't import @astra/config".
   Verified again on Rolldown-vite 8.
-- **`vite` is exact-pinned (no caret), currently `8.1.3`.** Every vite-using member in
+- **`vite` is exact-pinned (no caret), currently `8.1.6`.** Every vite-using member in
   the workspace moves in lockstep — a partial bump silently installs a duplicate
   `vite` (two resolved versions in the lockfile), which is the actual trigger behind
   the once-presumed TanStack/router#7614 blocker. Bump `vite` only as one atomic
-  change across all 12 vite-using members, re-verify the lockfile has exactly ONE
-  `vite@` line, and don't caret it until TanStack officially certifies the major.
+  change across all 13 vite-using members, re-verify the lockfile resolves exactly one
+  `vite` version, and don't caret it until TanStack officially certifies the major.
   `vitest` tracks the matching major (`^4.1` alongside vite 8) — `vitest` staying
   green on an older major is a false signal, since its `vite-node` dep can pin a
   private vite internally.
@@ -103,9 +103,74 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
 - **Telemetry** lands only from in-cluster: config `telemetry.otlp-endpoint` is the
   collector's signoz-net name (`http://signoz-otel-collector:4318`), not `localhost`.
 
-For the full sequenced playbook + ecosystem dos/don'ts (read this before a migration),
-see **`thoughts/archive/guides/migrating-an-app-into-astra.md`**. Background:
-`thoughts/archive/specs/0014-strider-spec.md` (original lift) and
-`0016-strider-hardening-spec.md` (this template hardening), plus the memories
-`strider-0016-gotchas`, `tanstack-start-skill`, `config-single-source`,
-`deploy-apply-with-just`.
+The cross-app frontend traps (TanStack Start, the Node resolve hook, SSR smoke tests, CSS
+layering, the gothic theme import) are in `libs/ts/site-kit/README.md` and
+`libs/ts/gothic/README.md`. Background (archived): `thoughts/archive/specs/0014-strider-spec.md`
+(original lift) and `0016-strider-hardening-spec.md` (template hardening).
+
+## strider itself: the faction map
+
+strider is also a live product: the campaign's faction map at `https://strider.iridi.cc`
+(Compose service `strider`, port 10360, `service.name=astra.strider`). Content is
+`content/factions/*.vellum` (one vellum document per faction, frontmatter `name`/`color`/`symbol`)
+and `content/layers/*.kdl` (one timestamped change set per file, folded in `timestamp` order).
+
+### Operations
+
+- **Author layers in dev:** `just dev strider`, open `/editor`, save, then commit the new `.kdl`
+  and `just deploy strider`. The production container has no mount for `content/layers`, so an
+  editor save there never reaches git.
+- Layer format (`scripts/build-content.ts` parses it, `serializeLayer` in
+  `src/domain/lib/editorHelpers.ts` writes it; they are exact inverses): `timestamp` and
+  `message` are top-level nodes; every other top-level node is a change whose node name is the op;
+  `slug` is the first argument, scalars are props, coordinates are `hex q r` children, banner
+  members are `member "slug"` children.
+
+```kdl
+timestamp "0863-07-18T04:14:00Z"
+message "Radiant Arms Base established."
+add "radiant-arms-base" name="Radiant Arms Base" faction="radiant-arms" {
+    hex -23 5
+}
+claim faction=#null { hex -7 -9 }   // unowned
+```
+
+### Traps
+
+- **KDL keywords need `#`.** An unowned claim is `faction=#null`; bare `null` is a parse error.
+- **Prove a layer-format change by regenerating.** Same layers in must give a byte-identical
+  `src/generated/layers.ts`.
+- **Don't import `scripts/build-content.ts` from a `src/` test.** It pulls the script into the
+  `tsc` program; parse/serialize round-trip tests live in `scripts/build-content.test.ts`.
+- **Faction bodies render through gothic `DocumentView` at build time** (no wiki-link resolver).
+  Plain prose renders in gothic's mechanical mode (teal headings). The output isn't byte-stable
+  across gothic changes, so check faction pages by eye.
+- **Pixi filters and masks don't compose.** A filtered object that is masked (directly or via a
+  parent) renders nothing.
+- **Rendering to a RenderTexture inside the ticker yields a blank texture.** For an animated
+  shader clipped to shapes, put white shapes in a container, filter the container, and make the
+  shader multiply its colour by the input alpha. Add an invisible full-grid rect so the filter
+  bounds (and the screen-space pattern) stay put. The tithe wave and the faction tint both work
+  this way.
+- **Use one filter per layer, never one per hex.** The faction tint is a single
+  `createBalatroFilter(palette, { tintFromTexture: true })` over `factionHexLayer`; it recovers
+  each hex's colour from its own pixels.
+- **Thin horizontal grid lines vanish under a filter** unless its offscreen texture renders at
+  device resolution: keep `filter.resolution = app.renderer.resolution` and
+  `filter.antialias = "on"` (`HexMap.tsx`). Faction borders sit unfiltered above the tint.
+- **Only fresh Graphics play the flip animation.** `setFactionState` reuses Graphics for hexes
+  whose owner didn't change and recreates the changed ones; don't reuse changed hexes.
+- **One pixi Application per page.** `PixiHost` drops the page background on `/editor`, which
+  owns its own Application. strider doesn't use `@astra/backdrop` for the same reason.
+- **Banners render as pseudo-factions.** An active banner is appended to the faction list with
+  its members' hexes merged, so fill, borders, hover, click and the flip animation need no banner
+  code. Banners have no `/factions/$slug` page: a banner click must open the modal.
+  `CURRENT_FACTION_HEXES` is pre-banner (editor only); active banners are `CURRENT_BANNERS`.
+- **Timeline frames are precomputed.** `buildTimelineFrames` (`timelineFrames.ts`) folds every
+  layer once; `MapView` reads `frames[layerIndex]`. Don't fold per render.
+- **Playback reads localStorage only after mount.** `strider:vox-log-seen` holds the last-watched
+  layer count; unseen layers replay once, capped at `MAX_PLAYBACK_LAYERS`. The first render always
+  shows the current state, so SSR and hydration match. `?seen` forces the current state.
+- **Verifying a pixi change:** canvas has no unit test, so look at it in a real browser. Headless
+  Chromium throttles animation frames: lengthen a short animation temporarily and set
+  `reducedMotion: "no-preference"`, or screenshots miss it.

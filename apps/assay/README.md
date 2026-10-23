@@ -75,7 +75,7 @@ uv run assay fit                  # round-1 per-rank-facet fit — SUPERSEDED di
 
 `--data-root` overrides the codex data path (default: `codex.data-path` from `config.kdl` via
 `astra_config` — config-single-source, never hardcoded). If the Foundry snapshot isn't present
-(e.g. a fresh checkout without `apps/codex/data/`), `extract`/`price` fail soft with a clear
+(e.g. a host where `codex.data-path` has no `snapshots/` yet), `extract`/`price` fail soft with a clear
 message; the test suite never touches the snapshot — it runs entirely off the committed fixtures
 under `tests/fixtures/` (real corpus files, one per extractor trap — see `apps/codex/fixtures`
 for the precedent of committing corpus provenance this way). `assay score` never needs the live
@@ -131,7 +131,7 @@ markup**, not plain English:
 
 ## The homebrew canonical store (`homebrew/spells/`)
 
-`apps/assay/homebrew/spells/<slug>.json` is the **single source of truth** for the campaign's 176
+`apps/assay/homebrew/spells/<slug>.json` is the **single source of truth** for the campaign's 173
 homebrew spells going forward — one Foundry-shaped JSON per spell, **committed**, and meant to be
 hand-edited directly (balance repairs, reaction-trigger fixes, dice tweaks — whatever a stakeholder
 decides). It was seeded once from the vendored `run_balance` conversion set
@@ -212,7 +212,7 @@ top of round 3's engine, all Track A (assay-only) — the codex-side render live
    tolerant), checked against the GM Screen journal's own declared curve (STOP on drift).
 4. **Codex export** (`export.py`, D30-38) — `assay export-codex` builds the cross-track contract
    artifact, `apps/assay/out/spell-power.json` (gitignored, reproducible — the orchestrator places
-   a copy into `apps/codex/data/assay/` at integration; this app never writes there itself). One
+   a copy into `<codex.data-path>/assay/` (`just codex-refresh` does this); this app never writes there itself). One
    entry per spell FILE (`spell/<slug>`, slug = the file's own basename), multi-row files collapse
    to one entry with the rest under `variants[]`; a documented reason-code map keeps internal
    ledger prose off the wire; a similarity floor (below 0.1 OR zero shared atoms) degrades a
@@ -232,3 +232,97 @@ Wall/terrain sub-models, forced-movement atoms, any generative control-spell fit
 schema captures effect QUALITY, not just identity), teleportation/utility valuation, focus-spell
 band comparison, ritual scoring, legacy-spell scoring. The codex RENDER surface
 (`apps/codex/**`'s Assay block) is Track B's own scope, spec'd alongside but not built here.
+
+## Operations
+
+assay has three products: the **scorer** (everything above), the **homebrew store**
+(`homebrew/spells/`, 173 spells, plus `homebrew/traits/` for the 8 school traits), and the
+**book** *Liturgy of the Iridite Vol.2*, a LaTeX build of the store. codex ingests the store
+as the source "Liturgy of the Iridite Vol.2" (abbreviation LotI2). The review UI under
+`review-ui/` is torn down; its state is archived in
+`thoughts/archive/scriptorium-review-state/`. That `comments.jsonl` is an append log: drop the
+ids that later `op: delete` lines retract before reading it.
+
+**Edit a store spell.**
+
+1. Edit `homebrew/spells/<slug>.json`. For description-only edits, substitute raw text; a
+   `json.load`/`json.dump` round trip rewrites escaping and newlines across the file.
+2. `uv run assay score-homebrew` and check that score and routing changed only where intended.
+3. `uv run assay homebrew-revisions` to regenerate `homebrew/revisions.md`.
+4. To publish to codex, follow "Transform-only change" in `apps/codex/README.md`.
+
+To measure a variant, edit the store file, run `score-homebrew`, then restore the file. Never
+commit a probe.
+
+**Rename a store spell.** `git mv` the file and change the `name` field. Leave
+`flags.assay.seededFrom` alone; `homebrew-revisions` pairs files through it. Check the new name
+against official spell names (the Foundry snapshot and codex's full id space, including legacy
+AoN-only spells).
+
+**Build the book.**
+
+```bash
+uv run assay export-book               # .tex + PDF into apps/codex/books/liturgy_vol2/
+uv run assay export-book --no-compile  # .tex only
+```
+
+Needs `tectonic` on `PATH` (not in mise; `~/.cargo/bin/tectonic` on this host) or
+`--tectonic-path`. The compile takes about 20 s with `SOURCE_DATE_EPOCH=0`, and the `.tex` is
+byte-deterministic. The style is the committed `liturgy.sty`. School art goes in
+`apps/codex/books/liturgy_vol2/assets/img/processed/<school>.{png,jpg}` (cover: `fm-cover`);
+missing art becomes a placeholder. `preprocessed/` and `*.log` are gitignored. The fonts are
+licensed for personal use only: flag this before distributing the PDF.
+
+## Traps
+
+**Scorer**
+- The generative effect-value fit is dead: effect-spell power lives in unmodeled quality
+  (DCs, riders, scaling text), not in which conditions a spell names. Effect spells get
+  comparables and a rank range, never a point score.
+- `assay fit` overwrites the parameters other commands read, and `seed-homebrew --force`
+  destroys every hand edit. Don't run either casually.
+- Derive any population count by running the real scorer, never from description grep
+  counts or an earlier doc.
+- Known lens artifacts, to record rather than "fix" in dice: conditional or probabilistic
+  damage priced at full weight; recurring zones priced per cast (a per-tick line should sit
+  about 0.9 ranks below the one-shot ladder); sustained engines, weapon morphs and per-round
+  auras; attack-roll spells (no half on a miss); a 3-action cost reads hotter and a reaction
+  colder; area size within a shape is invisible, while the range bucket moves more than a rank;
+  the ladder trains on base-rank rows, so heightened official spells read hot.
+- No extractor axis separates caster from target, so self-benefit spells can route as buffs.
+  Negated or prevented conditions ("does not fall Unconscious") can promote falsely.
+- Degree attribution reads only `<strong>Failure</strong>`-style headed sections. Put the degree
+  block first and any rolled table after it (the Unfathomable Song layout), or the table's
+  conditions go unpriced.
+- A routing flip after a text edit can be the correct result. Compare `assay score --spell`
+  before and after the edit before blaming the lens. `OTEL_SDK_DISABLED=true` silences export
+  noise in local runs.
+
+**Store and adapter**
+- Set-wide policy lives in the adapter (`homebrew.py`); per-spell judgment lives in the store.
+  A policy change edits both in lockstep, and `revisions.md` should show no new deviations.
+- Prose and structure must agree: when a description edit changes an area, damage or save,
+  update the structured field too, and the reverse. Body-only sweeps miss leftovers in
+  structured fields such as `duration.value`.
+- Non-damage heightening by a fixed step encodes as
+  `{"damage": {}, "interval": N, "type": "interval"}`. Official wall spells have
+  `area: null` with dimensions in prose.
+- When a review adds a new field class, check that `homebrew-revisions` diffs it
+  (`_DIFF_FIELDS`).
+- oxfmt ignores `homebrew/**` and `vendor/**` but formats `results/**` JSON; run
+  `pnpm run format` before committing generated ledgers.
+- Before any PF2e rules claim (area behavior, condition mechanics), grep the codex corpus
+  rules docs under `<codex.data-path>/corpus/rules/` and quote them.
+
+**Book (XeTeX via tectonic)**
+- `\needspace` is broken inside `multicols`: it checks the page, not the column. Use a
+  minipage to keep a header with its content.
+- `multicols` balancing overrides `\columnbreak`. Chapter openers use a single-column
+  `adjustwidth` narrowed by `\openerreserve`.
+- An unbreakable `tabularx` taller than a column silently drops rows. Tables are built one
+  row per `\tblrow` box.
+- `\pageref` expanded under a fresh `\fontsize…\selectfont` corrupts `\strutbox` for the rest
+  of the compile (phantom tall table rows). Resolve it at `\normalsize` in its own group, then
+  `\scalebox` the finished box.
+- Never trust "visually verified". Render the PDF yourself and measure (for example with
+  `pdftotext -bbox`).

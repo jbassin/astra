@@ -59,43 +59,18 @@ curl -s -X POST http://localhost:10351/api/v1/register -H 'content-type: applica
 docker compose restart otel-collector     # forces immediate OpAMP re-registration
 ```
 
-## Ports (astra range 10350–10399)
+## Ports and edge
 
-| Host | Service | Container |
-|------|---------|-----------|
-| 10350 | Dagster UI | dagster-webserver:3000 |
-| 10351 | SigNoz UI | signoz:8080 |
-| 10352 | OTLP gRPC | otel-collector:4317 |
-| 10353 | OTLP HTTP | otel-collector:4318 |
-| 10360 | strider SSR | strider:10360 |
+Host ports live in the 10350 to 10399 band; the full host and port table is in
+[`docs/architecture.md`](../docs/architecture.md). ClickHouse, zookeeper and the SigNoz
+query-service are internal.
 
-ClickHouse, zookeeper, Dagster Postgres, and the query-service are **internal** (unpublished).
-
-## strider — the SSR frontend template (Decision I)
-
-`strider` is the first frontend and the **canonical SSR-Compose-behind-Caddy template** that
-`0011`–`0013` (akasha-fe / mouthpiece-fe / vellum-fe) copy. It is **not** prerendered static `dist/`
-served by `file_server` (the old Decision D model); it is a long-running SSR service:
-
-- **Image** (`apps/strider/Dockerfile`, build context = repo root): the build stage `pnpm install`s the
-  workspace and `pnpm run build`s the TanStack Start app on Node 24 + pnpm (0022 S11 — was a Bun build
-  stage through S10); the runtime stage ships `dist/` + `content/` + `server.ts` on Node 24 and invokes
-  `node --import .../nodeTsResolve.mjs server.ts` directly — one SSR process, no package-manager story
-  at runtime (D13).
-- **`server.ts`**: `dist/server/server.js` is a bare Web-`fetch` handler, so this entry serves the hashed
-  client bundle from `dist/client/`, handles the editor save API (`POST /write-layer` → `content/layers`),
-  and falls through to SSR for everything else — a self-contained unit.
-- **Edge**: the substrate runs **no Caddy of its own** — the production edge is the shared host reverse
-  proxy at `/ruby/data/reverse-proxy/` (custom caddy binary w/ the cloudflare-dns plugin), which `import`s
-  this repo's root **`sites.caddyfile`** (`strider.iridi.cc` → `reverse_proxy localhost:10360`, NOT static
-  `file_server` — Decision I). That file carries no secret: the Cloudflare ACME-DNS token is the
-  `{$CF_API_TOKEN}` adapt-time placeholder, supplied from SOPS by **`just caddy-reload`** (`just
-  caddy-validate` to dry-run). The editor (`/editor` + `POST /write-layer`) is gated to the local network
-  there (`import local_only`). For local dev, hit services on their published ports
-  directly (no edge needed).
-
-The new frontend chunks build per-route; pixi stays in a client-only chunk (`<ClientOnly>` + `lazy`), so
-SSR never touches WebGL.
+The substrate runs no Caddy of its own. The shared host proxy at `/ruby/data/reverse-proxy/` (a
+custom caddy build with the Cloudflare DNS plugin) imports the deploy checkout's root
+`sites.caddyfile`. That file carries no secret: the Cloudflare token is the `{$CF_API_TOKEN}`
+placeholder, which the edge's systemd drop-in supplies at start and `just caddy-reload` supplies on a
+reload (`just caddy-validate` dry-runs the merged config). Editor and admin routes are limited to
+the local network with `import local_only`.
 
 ## Secrets (SOPS + age)
 
@@ -146,3 +121,29 @@ Manual restore steps are in the header of `systemd/astra-backup.sh`. The SOPS ag
 docker compose down       # stop; keep volumes (clickhouse/pg/signoz data persist)
 just down-volumes         # also drop the SigNoz volumes (asks first; fresh onboarding next time)
 ```
+
+## Traps
+
+- Every host unit's script runs from the deploy checkout, so a script edit goes live with the next
+  `just deploy` after the push; a changed `.service`, `.timer` or `.path` file needs its install
+  recipe (`just alert-install`, `just backup-install`, ...) re-run.
+- `OnFailure=` belongs in `[Unit]`. In `[Service]` systemd ignores it with only a log warning.
+  Check with `systemctl --user show <unit> -p OnFailure`.
+- `craig-sync` cannot be failed by pointing `CRAIG_DROP_DIR` at a missing directory: its nullglob
+  turns that into "0 new" and exit 0. Test the alert chain with
+  `systemd-run --user -p OnFailure=astra-alert@craig-sync.service.service /bin/false`.
+- Test alerting without paging: `ALERT_DRY_RUN=1 deploy/systemd/alert-notify.sh watchdog`, with
+  `XDG_STATE_HOME` pointed at a scratch dir so the live watchdog state is not disturbed.
+- Never page on one sample of a racy state: the watchdog re-probes a bad reading
+  (`WATCHDOG_CONFIRM_TRIES`) because timers report "not armed" while their service runs. Counter
+  deltas (NIC CRC errors) are the exception and are read once per tick.
+- In bash under `set -u`, `local a="$1" b="$DIR/$a"` fails: `local` expands every argument before
+  assigning. Put the dependent assignment on its own line.
+- A test container must not join `signoz-net`, or its deliberate ERROR logs page Discord.
+- Docker creates a missing bind-mount source as root. `deploy.sh` (`just artifacts-init`) creates the
+  data-root dirs as uid 1000 first; Postgres data dirs stay uid 70, mode 0700.
+- `sudo` needs a password on this host. The user is in the `docker` group, so a throwaway root
+  `alpine` container with a bind mount can fix ownership instead.
+- The Claude Code sandbox has its own mount namespace: host FUSE mounts are invisible there. Check
+  the Drive mount from a real shell.
+- A fresh SigNoz shows few logs because astra logs are sparse; prove ingest with traces.
