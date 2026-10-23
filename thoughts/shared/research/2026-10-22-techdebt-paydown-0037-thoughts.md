@@ -84,7 +84,7 @@ other), cherry-picked onto `main`, both lanes re-run on the merged result before
 Josh gave standing approval for routine live infra steps (memory
 `live-infra-changes-authorized`).
 
-**Phase 0 status:** items 1 to 8 are done and live; item 9 (dependency upgrades) is in progress.
+**Phase 0 status:** all nine items are done and live.
 `main` CI run 39874319399 was fully green, `ci-ok` included, for the first time since August.
 
 **Done in session 1:**
@@ -136,11 +136,15 @@ Josh gave standing approval for routine live infra steps (memory
    `just down-volumes` now asks for confirmation. Josh stores the age key
    (`deploy/sops/age.key`) in his password manager.
 
-**Next:**
-1. Dependency upgrade pass (Phase 0 item 9), in progress in a worktree: TanStack Start and Router
-   first (the reflected-XSS advisory), then the MCP SDK, express, aiohttp, urllib3, litellm.
-   Merge, re-run both lanes, `just up`, check every site.
-2. Then Phase 1 (section 5).
+9. Dependency upgrades (`b2115906`…`d857cf44`, six commits): TanStack Start 1.168.27 → 1.168.61
+   and Router → 1.170.42 (the server-fn reflected XSS and both seroval advisories; the last 1.168
+   patch, not the 1.169 minor), MCP SDK → 1.32.1, express → 5.3.0, vite → 8.1.6, discord.js →
+   14.27.0, aiohttp, urllib3, litellm 1.89.7, anyio, certifi. `pnpm audit --prod` 74 findings →
+   0; pip-audit 26 → 3. Router now types `errorComponent`'s `error` as `unknown`; the seven
+   `DefaultErrorComponent`s handle that. Deployed; every site 200, both Discord bots reconnected,
+   no ERROR logs.
+
+**Next:** Phase 1 (section 5).
 
 **Follow-ups found in session 2 (fold into the backlog):**
 - The watchdog doesn't check `astra-backup.timer` or snapshot age, and the restore test isn't
@@ -157,6 +161,13 @@ Josh gave standing approval for routine live infra steps (memory
   per-row `run` at boot is cheap except for saves with large distributions.
 - `CONTRIBUTING.md`'s vp prose (the toolchain and gotchas sections) still describes vp as the
   orchestrator; rewrite with the Phase 1 docs.
+- Left from the dependency pass: `opentelemetry-api` 1.42.1 (medium, `tracestate` parsing) is
+  fixed only in 1.45.1, three minors up across breaking logs-API changes that `astra-observe`'s
+  `LoggingHandler` use touches; do it as its own slice with a live SigNoz check. `diskcache`
+  5.6.3 (medium, via dspy) has no fixed release.
+- The ledger, harrow, strider and akasha SSR smokes read whatever `dist/` exists, so after a
+  dependency change they fail locally on a stale build (`matchedRoutes is not iterable`) until
+  `build` runs. Give them codex's rebuild-when-stale check. CI is unaffected (no `dist/`).
 - Commit-window hazard, seen again: `git rm` stages a deletion, so a later `git add` naming that
   path aborts the whole add, and restarting the commit timer before the commit lands lets it
   sweep the staged files. Keep the timer stopped from the first `git add`/`git rm` until the
