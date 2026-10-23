@@ -13,6 +13,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "vite.config.ts"],
+  "include": ["src", "scripts", "*.ts"],
   "exclude": ["node_modules", "dist", ".output", ".nitro"]
 }

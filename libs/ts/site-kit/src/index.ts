@@ -1,3 +1,5 @@
+// oxlint-disable-next-line typescript/triple-slash-reference -- ssrBuild.d.ts holds a wildcard module declaration, which only a non-module .d.ts can hold and no import can load
+/// <reference path="./ssrBuild.d.ts" />
 /**
  * @astra/site-kit — the reusable SSR-frontend spine (the strider template, lifted
  * for 0011-0013). Server + build-time pieces live on the root export; the

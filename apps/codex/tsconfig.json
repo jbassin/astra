@@ -12,6 +12,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "scripts", "vite.config.ts"],
+  "include": ["src", "scripts", "*.ts"],
   "exclude": ["node_modules", "dist", ".output", ".nitro"]
 }

@@ -44,9 +44,10 @@ const ROMAN: Record<string, number> = { I: 1, V: 5, X: 10, L: 50, C: 100 };
 function fromRoman(s: string): number {
   let result = 0;
   for (let i = 0; i < s.length; i++) {
-    const cur = ROMAN[s[i]];
-    const next = ROMAN[s[i + 1]];
-    result += next > cur ? -cur : cur;
+    // An unknown numeral counts as NaN, as it did before this was typechecked.
+    const cur = ROMAN[s.charAt(i)] ?? Number.NaN;
+    const next = ROMAN[s.charAt(i + 1)];
+    result += next !== undefined && next > cur ? -cur : cur;
   }
   return result;
 }

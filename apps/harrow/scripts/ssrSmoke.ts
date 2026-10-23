@@ -18,7 +18,9 @@ if (typeof ssr?.fetch !== "function") {
   process.exit(1);
 }
 
-const res = await ssr.fetch(new Request("http://localhost/"));
+// Bound here, where the guard above has narrowed it; check() below can't see that narrowing.
+const render = ssr.fetch.bind(ssr);
+const res = await render(new Request("http://localhost/"));
 const html = await res.text();
 const marker = html.includes("Harrow");
 
@@ -27,7 +29,7 @@ const marker = html.includes("Harrow");
 // proving content + gothic render in the SSR pass. The `/` draw is client-only
 // (Decision D), so it SSRs the deterministic "Shuffling" fallback, not a reading.
 async function check(routePath: string, needle: string): Promise<boolean> {
-  const r = await ssr.fetch(new Request(`http://localhost${routePath}`));
+  const r = await render(new Request(`http://localhost${routePath}`));
   const body = await r.text();
   return r.status === 200 && body.includes(needle);
 }

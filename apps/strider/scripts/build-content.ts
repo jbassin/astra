@@ -30,7 +30,7 @@ import {
   type EdgeSegment,
   FACTION_HEXES,
   UNOWNED_BASE_HEXES,
-} from "../src/domain/lib/hexUtils.ts";
+} from "../src/domain/lib/hexUtils";
 import {
   type Banner,
   type Change,
@@ -41,7 +41,7 @@ import {
   type Layer,
   type Region,
   type SkeinState,
-} from "../src/domain/lib/regions.ts";
+} from "../src/domain/lib/regions";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..");
@@ -303,11 +303,10 @@ function nodeToChangeRecord(node: Node): Record<string, unknown> {
 
 export function parseLayer(filePath: string): Layer {
   const filename = path.basename(filePath, ".kdl");
-  const m = LAYER_FILENAME_RE.exec(filename);
-  if (!m) {
+  const slug = LAYER_FILENAME_RE.exec(filename)?.[2];
+  if (slug === undefined) {
     throw new Error(`Layer filename must be {YYYY}-{MM}-{DD}T{HHMMSS}-{slug}.kdl: ${filename}.kdl`);
   }
-  const slug = m[2];
 
   const doc = parse(fs.readFileSync(filePath, "utf8"));
 

@@ -4,6 +4,11 @@ import { describe, expect, test } from "vitest";
 import { EPISODES, SITE } from "@/generated/episodes";
 import { TRANSCRIPTS } from "@/generated/transcripts";
 
+function defined<T>(value: T | undefined, what: string): T {
+  if (value === undefined) throw new Error(`expected ${what}`);
+  return value;
+}
+
 describe("build-content (reads the committed episodes-index.json)", () => {
   test("emits the catalog + SITE meta", () => {
     expect(SITE.title).toBe("Mouthpiece");
@@ -13,7 +18,7 @@ describe("build-content (reads the committed episodes-index.json)", () => {
   });
 
   test("episodes are sorted by date; recaps and specials are episode 0", () => {
-    expect(EPISODES[0].episodeNo).toBe(1);
+    expect(defined(EPISODES[0], "an episode").episodeNo).toBe(1);
     const keys = EPISODES.map((e) => e.dateSortKey);
     expect([...keys]).toEqual([...keys].sort((a, b) => a - b));
     // The catalog is live data, so assert its shape, not its counts: recaps and
@@ -25,19 +30,19 @@ describe("build-content (reads the committed episodes-index.json)", () => {
   });
 
   test("catalog carries the load-bearing fields incl. a same-origin mp3Url", () => {
-    const e = EPISODES[0];
+    const e = defined(EPISODES[0], "an episode");
     expect(e.arcTitle).toBe("Through a Song, Darkly");
-    expect(e.hosts.A.name).toBe("Bram");
+    expect(e.hosts.A?.name).toBe("Bram");
     // EPISODES[0] is a historical (metadata-only) entry → no audioVersion → no ?v=
     expect(e.mp3Url).toBe(`/audio/${e.id}.mp3`);
   });
 
   test("transcripts split into their own module, keyed by episode id, stripped", () => {
-    const e = EPISODES[0];
-    const lines = TRANSCRIPTS[e.id];
+    const e = defined(EPISODES[0], "an episode");
+    const lines = defined(TRANSCRIPTS[e.id], "a transcript");
     expect(lines.length).toBeGreaterThan(0);
-    expect(lines[0].name).toMatch(/Bram|Maeve|Pip/);
+    expect(defined(lines[0], "a transcript line").name).toMatch(/Bram|Maeve|Pip/);
     // the catalog episode shape no longer carries the transcript inline
-    expect((e as Record<string, unknown>).transcript).toBeUndefined();
+    expect(e).not.toHaveProperty("transcript");
   });
 });
