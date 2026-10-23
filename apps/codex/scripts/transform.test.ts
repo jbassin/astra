@@ -5,12 +5,14 @@ import { fileURLToPath } from "node:url";
 
 import { afterEach, describe, expect, it } from "vitest";
 
+import { loadHomebrewSide, loadHomebrewTraits } from "../src/ingest/homebrew";
 import type { JoinAliasesFile } from "../src/ingest/join";
+import { UuidIndex } from "../src/ingest/uuidResolve";
 import { CodexEntitySchema, IndexRowSchema } from "../src/schema/entity";
 import type { CorpusManifest } from "../src/schema/manifest";
 import { RulesTreeFileSchema } from "../src/schema/rulesTree";
 import { SourcesIndexFileSchema } from "../src/schema/sourcesIndex";
-import { runTransform, type TransformResult } from "./transform";
+import { defaultHomebrewDirs, runTransform, type TransformResult } from "./transform";
 
 /**
  * D29-11's CI-hermetic pipeline test (spec §3/§4 S4, deliverable 4): runs the
@@ -636,5 +638,22 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
         }),
       ).toThrow(/homebrew id "spell\/fireball" collides with/);
     });
+  });
+});
+
+describe("defaultHomebrewDirs (the real host run's homebrew stores)", () => {
+  it("resolves from the repo root to the checked-in stores, which load non-empty", () => {
+    const { homebrewDir, homebrewTraitsDir } = defaultHomebrewDirs();
+    const hardFailures: { path: string; message: string }[] = [];
+    const spells = loadHomebrewSide(homebrewDir, new UuidIndex(), () => {}, hardFailures);
+    const traits = loadHomebrewTraits(homebrewTraitsDir, new UuidIndex(), () => {}, hardFailures);
+    expect(hardFailures).toEqual([]);
+    expect(spells.entities.length).toBeGreaterThan(0);
+    expect(traits.entities.length).toBeGreaterThan(0);
+  });
+
+  it("throws on a missing store rather than yielding zero spells", () => {
+    const missing = join(tmpdir(), "codex-no-such-homebrew-store");
+    expect(() => loadHomebrewSide(missing, new UuidIndex(), () => {}, [])).toThrow(/ENOENT/);
   });
 });

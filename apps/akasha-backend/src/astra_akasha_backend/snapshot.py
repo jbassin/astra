@@ -17,7 +17,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from astra_config import load_config
+from astra_config import find_repo_root, load_config
 from astra_observe import get_tracer, init_telemetry, shutdown
 
 from .corpus import CONTENT_DIR, Page, load_corpus
@@ -25,10 +25,9 @@ from .crossref import Edge, resolve_corpus
 
 _tracer = get_tracer("astra.akasha-backend")
 
-# Code paths (the repo checkout this package runs from), not data.
-# parents: [0] package, [1] src, [2] akasha-backend (app root).
-APP_ROOT = Path(__file__).resolve().parents[2]
-REPO_ROOT = APP_ROOT.parents[1]  # apps/ → repo root
+# Code paths (the repo checkout this package runs from), not data. The repo root comes
+# from a marker walk-up, so it holds however deep this app sits under `apps/`.
+REPO_ROOT = find_repo_root(Path(__file__))
 #: The committed snapshot JSON (config `data.akasha-snapshot`).
 SNAPSHOT_PATH = Path(load_config().data.akasha_snapshot) / "akasha-snapshot.json"
 #: The TS structural validator (F3) — the Dagster asset shells out to it.

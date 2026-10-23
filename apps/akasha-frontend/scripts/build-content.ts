@@ -25,7 +25,7 @@ import {
   emitModule,
 } from "@astra/content-build";
 import type { CrossRefResolver } from "@astra/gothic";
-import { type Being, loadBeing } from "@astra/ontology";
+import { type Being, defaultBeingFile, loadBeing } from "@astra/ontology";
 import { loadSiteConfig } from "@astra/site-kit";
 
 import { buildResolvers } from "../src/domain/lib/crossref";
@@ -62,9 +62,9 @@ const SNAPSHOT = path.join(CONTENT_ROOT, "akasha/snapshot/akasha-snapshot.json")
 const CORPUS_DIR = path.join(CONTENT_ROOT, "akasha/content");
 const DATA_DIR = path.join(CONTENT_ROOT, "linguist/data");
 const TIMELINE_DIR = path.join(CONTENT_ROOT, "linguist/timeline");
-// Explicit being.kdl path: loadBeing()'s default uses Bun's import.meta.dir (undefined
-// under vitest, which runs build-content.test.ts); import.meta.url works in both.
-const BEING = path.resolve(HERE, "../../../ontology/ontology-being/being.kdl");
+// being.kdl comes from @astra/ontology, which owns it and finds it from the repo root,
+// so this path never depends on how deep this app sits under `apps/`.
+const BEING = defaultBeingFile();
 
 // astra's brand for the wiki (faerrin shipped "Heart of Hearts"; the rebuild is
 // "Akasha" — matches __root.tsx + the slice-2 SITE const). Not a parity gate.

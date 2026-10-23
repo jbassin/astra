@@ -24,7 +24,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { loadConfig } from "@astra/config";
+import { findRepoRoot, loadConfig } from "@astra/config";
 
 import { dedupeAonMetas } from "../src/ingest/aonDedup";
 import { type AonDocMeta, aonSkipReason, extractAonMeta } from "../src/ingest/aonFacets";
@@ -334,16 +334,15 @@ export interface TransformPaths {
    * this at `apps/codex/fixtures/raw/aon`. */
   aonSnapshotDir: string;
   /** The homebrew store root (D30-42, 0030 S1) — versioned repo content
-   * (`apps/assay/homebrew/spells/`), resolved repo-relative from
-   * `import.meta.dirname` exactly like the `join-aliases.json` precedent
-   * below, NOT via `cfg.codex.dataPath` (config-single-source isn't
-   * violated — this isn't fetched data). Host-run only; the codex Docker
+   * (`apps/assay/homebrew/spells/`), resolved from the repo root by
+   * `defaultHomebrewDirs()`, NOT via `cfg.codex.dataPath` (config-single-source
+   * isn't violated — this isn't fetched data). Host-run only; the codex Docker
    * image never contains `apps/assay`. The fixture test points this at
    * `apps/codex/fixtures/raw/homebrew`. */
   homebrewDir: string;
   /** The homebrew school-TRAIT store root (D30-44, 0030 S2) — a SIBLING of
    * `homebrewDir` (`apps/assay/homebrew/traits/`), resolved the same way
-   * (repo-relative from `import.meta.dirname`, host-run only). The fixture
+   * (`defaultHomebrewDirs()`, host-run only). The fixture
    * test points this at `apps/codex/fixtures/raw/homebrew-traits`. */
   homebrewTraitsDir: string;
   /** Where the deterministic corpus is written (wiped + rewritten wholesale
@@ -641,6 +640,17 @@ export function runTransform(paths: TransformPaths): TransformResult {
   return { hardFailures, reportJson, reportMarkdown, emit: emitResult };
 }
 
+/** The real homebrew stores (D30-42 spells, D30-44 school traits): versioned repo
+ * content under `apps/assay/homebrew/`, NOT `cfg.codex.dataPath` (this isn't fetched
+ * data). Resolved from the repo root rather than `import.meta.dirname` + `../..`, so
+ * the path holds however deep codex or assay sit under `apps/`. Host-run only; the
+ * codex Docker image never contains `apps/assay`. A missing dir throws (ENOENT from
+ * `walkFiles`) rather than yielding zero spells. */
+export function defaultHomebrewDirs(): { homebrewDir: string; homebrewTraitsDir: string } {
+  const store = join(findRepoRoot(import.meta.dirname), "apps", "assay", "homebrew");
+  return { homebrewDir: join(store, "spells"), homebrewTraitsDir: join(store, "traits") };
+}
+
 // ---------------------------------------------------------------------------
 // CLI wrapper (the real host run: `pnpm --filter @astra/codex transform`)
 // ---------------------------------------------------------------------------
@@ -662,13 +672,7 @@ function main(): void {
   const foundrySnapshotDir = join(cfg.codex.dataPath, "snapshots", "foundry", manifest.foundry.tag);
   const aonSnapshotDir = join(cfg.codex.dataPath, "snapshots", "aon", manifest.aon.snapshotDate);
   const corpusRoot = join(cfg.codex.dataPath, "corpus");
-  // D30-42 (0030 S1): versioned repo content, resolved repo-relative from
-  // `import.meta.dirname` exactly like `aliasesPath` above — NOT
-  // `cfg.codex.dataPath` (this isn't fetched data).
-  const homebrewDir = join(import.meta.dirname, "..", "..", "assay", "homebrew", "spells");
-  // D30-44 (0030 S2): sibling of `homebrewDir`, resolved exactly the same
-  // way — versioned repo content, host-run only.
-  const homebrewTraitsDir = join(import.meta.dirname, "..", "..", "assay", "homebrew", "traits");
+  const { homebrewDir, homebrewTraitsDir } = defaultHomebrewDirs();
 
   console.log(`transform: Foundry snapshot ${foundrySnapshotDir}`);
   console.log(`transform: AoN snapshot ${aonSnapshotDir}`);

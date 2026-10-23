@@ -11,7 +11,7 @@ import textwrap
 from pathlib import Path
 
 import pytest
-from astra_config import SecretRef, load_config
+from astra_config import SecretRef, find_repo_root, load_config
 from astra_config.secrets import default_secrets_file, resolve_sops_ref
 from astra_ontology_config import CONFIG_KDL_PATH, load
 
@@ -217,3 +217,11 @@ def test_data_paths_resolve_against_the_root(
 def test_config_kdl_path_points_at_the_real_file() -> None:
     assert CONFIG_KDL_PATH.is_file()
     assert CONFIG_KDL_PATH.name == "config.kdl"
+
+
+def test_find_repo_root_walks_up_to_the_checkout(tmp_path: Path) -> None:
+    root = find_repo_root()
+    assert (root / "ontology" / "ontology-config" / "config.kdl").is_file()
+    assert find_repo_root(root / "apps" / "any" / "depth" / "file.py") == root
+    with pytest.raises(FileNotFoundError):
+        find_repo_root(tmp_path)

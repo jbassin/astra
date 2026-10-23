@@ -2,6 +2,8 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
+import { findRepoRoot } from "@astra/config";
+import { nodeTsResolveHook } from "@astra/site-kit/nodeTsResolveHook";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { allNavCategories } from "@/domain/nav/navData";
@@ -26,9 +28,12 @@ import { createCorpusReader, fixtureCorpusRoot, resolveCorpusRoot } from "@/serv
  */
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
 const SERVER_BUNDLE = path.join(APP_ROOT, "dist/server/server.js");
-const BUNDLE_INPUTS = ["src", "server.ts", "vite.config.ts", "../../libs/ts"].map((p) =>
-  path.join(APP_ROOT, p),
-);
+// The libs the server bundle inlines, found from the repo root (not `../../`) so the
+// staleness check still sees them however deep this app sits under `apps/`.
+const BUNDLE_INPUTS = [
+  ...["src", "server.ts", "vite.config.ts"].map((p) => path.join(APP_ROOT, p)),
+  path.join(findRepoRoot(APP_ROOT), "libs", "ts"),
+];
 
 /** Newest mtime of the non-test source files under `p` (0 when `p` is absent). */
 function newestSourceMtime(p: string): number {
@@ -54,7 +59,7 @@ const RUNNER = path.join(APP_ROOT, "scripts/ssrSmoke.ts");
 // 0022 S11 — off bun: `pnpm run build` for the workspace script, `node --import
 // nodeTsResolve.mjs` for the raw-TS runner subprocess (same hook every server.ts
 // entry uses).
-const NODE_TS_RESOLVE_HOOK = path.join(APP_ROOT, "../../libs/ts/site-kit/src/nodeTsResolve.mjs");
+const NODE_TS_RESOLVE_HOOK = nodeTsResolveHook;
 
 let ssr: { fetch: (req: Request) => Promise<Response> };
 
