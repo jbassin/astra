@@ -4,6 +4,7 @@
     "customConditions": ["node"],
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
+    "erasableSyntaxOnly": true,
     "module": "ES2022",
     "moduleResolution": "Bundler",
     "types": ["node"]

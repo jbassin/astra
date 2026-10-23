@@ -38,11 +38,6 @@ export interface NowPlaying {
 export class PlaybackError extends Error {
   readonly status: number;
 
-  // Not a TS parameter property (`constructor(public readonly x, …)`) — Node's
-  // `--experimental-strip-types` (R3, 0022 S8) only erases types, it doesn't emit
-  // code, so a parameter property (which needs a real `this.x = x` assignment
-  // generated) throws `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX` when Node runs this file
-  // directly (see [[weal-bot gateway.ts]], S5).
   constructor(status: number, message: string) {
     super(message);
     this.status = status;
@@ -80,7 +75,6 @@ export class PlaybackEngine {
   private lock: Promise<unknown> = Promise.resolve();
   private leaveTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // Not a TS parameter property — see the PlaybackError comment above (R3, 0022 S8).
   private readonly deps: PlaybackDeps;
 
   constructor(deps: PlaybackDeps) {

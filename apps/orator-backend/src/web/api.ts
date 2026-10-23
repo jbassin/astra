@@ -17,11 +17,11 @@ export async function apiSend<T>(method: string, path: string, body?: unknown): 
 }
 
 export class ApiError extends Error {
-  constructor(
-    public readonly status: number,
-    message: string,
-  ) {
+  readonly status: number;
+
+  constructor(status: number, message: string) {
     super(message);
+    this.status = status;
   }
 }
 

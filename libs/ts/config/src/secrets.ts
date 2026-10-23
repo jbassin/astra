@@ -103,12 +103,6 @@ export class SecretRef {
   readonly ref: string;
   readonly #secretsFile?: string;
 
-  // Not a TS parameter property (`constructor(readonly ref, private …)`) — Node's
-  // `--experimental-strip-types` (R3, 0022 S4) only erases types, it doesn't emit
-  // code, so a parameter property (which needs a real `this.x = x` assignment
-  // generated) throws `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX` when Node runs this file
-  // directly (as it does today under Bun's own TS support, but Bun does real
-  // transpilation, not strip-only erasure).
   constructor(ref: string, secretsFile?: string) {
     this.ref = ref;
     this.#secretsFile = secretsFile;

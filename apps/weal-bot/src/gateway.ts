@@ -63,10 +63,6 @@ export class Gateway {
   private readonly hosts: Map<string, WealHost>;
   private readonly store: WealStore;
 
-  // Not TS parameter properties — Node's `--experimental-strip-types` (R3, 0022 S5)
-  // only erases types, it doesn't emit code, so a parameter property (which needs a
-  // real `this.x = x` assignment generated) throws `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX`
-  // when Node runs this file directly. See [[secrets.ts]]'s SecretRef (S4).
   constructor(
     cfg: GatewayConfig,
     roster: Roster,

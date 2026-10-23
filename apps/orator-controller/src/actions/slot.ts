@@ -16,8 +16,11 @@ import type { SlotSettings } from "../settings";
  */
 @action({ UUID: "com.astra.orator.slot" })
 export class Slot extends SingletonAction<SlotSettings> {
-  constructor(private readonly controller: OratorController) {
+  private readonly controller: OratorController;
+
+  constructor(controller: OratorController) {
     super();
+    this.controller = controller;
   }
 
   override onWillAppear(ev: WillAppearEvent<SlotSettings>): Promise<void> {

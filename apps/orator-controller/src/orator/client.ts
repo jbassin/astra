@@ -11,11 +11,11 @@ export interface OratorConfig {
 
 /** Thrown for any non-2xx orator response. `status` carries the HTTP code (401/409/503/…). */
 export class OratorError extends Error {
-  constructor(
-    readonly status: number,
-    message: string,
-  ) {
+  readonly status: number;
+
+  constructor(status: number, message: string) {
     super(message);
+    this.status = status;
     this.name = "OratorError";
   }
 }

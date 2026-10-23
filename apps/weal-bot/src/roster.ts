@@ -24,11 +24,6 @@ export class Roster {
   readonly #bySnowflake: Map<string, Profile>;
   readonly #names: Map<number, string>;
 
-  // Not a TS parameter property (`constructor(private readonly x, …)`) — Node's
-  // `--experimental-strip-types` (R3, 0022 S5) only erases types, it doesn't emit
-  // code, so a parameter property (which needs a real `this.x = x` assignment
-  // generated) throws `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX` when Node runs this file
-  // directly. See [[secrets.ts]]'s SecretRef (S4) for the same fix.
   private constructor(bySnowflake: Map<string, Profile>, names: Map<number, string>) {
     this.#bySnowflake = bySnowflake;
     this.#names = names;
