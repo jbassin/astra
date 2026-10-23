@@ -1,50 +1,22 @@
 #!/bin/sh
-# astra pre-commit gate — mirrors CI (lint + format-check + ruff, warnings treated
-# as errors). Blocks the commit if anything is unclean; never modifies your files.
-# Runs over the whole repo (both linters are fast), so it catches the same things
-# CI does.
+# astra pre-commit gate: `just check`, the fast format + lint subset of CI (oxlint +
+# oxfmt for TS, ruff for Python, warnings treated as errors), over the whole tree.
+# Check-only: it never modifies your files. Typecheck and tests run in the pre-push
+# hook (`just ci`) and in CI.
 #
-# Installed by the root package.json "prepare" script:
-#   git config core.hooksPath .githooks   (runs on `pnpm install`)
+# Installed by `just bootstrap` and by the root package.json "prepare" script
+# (git config core.hooksPath .githooks).
 # Bypass in a genuine emergency with:  git commit --no-verify
 set -u
-fail=0
 
-run() {
-  label=$1
-  shift
-  if ! "$@"; then
-    echo "✖ pre-commit: $label failed" >&2
-    fail=1
-  fi
-}
-
-echo "pre-commit: oxlint + oxfmt (TS) + ruff (Python) …" >&2
-
-# TypeScript lane: oxlint (type-aware, deny-warnings) + oxfmt --check (import-sort
-# included, sortImports: true), scoped to the same globs as `pnpm run format`/
-# `format:check` — a bare oxfmt over the whole tree would rewrite markdown/toml/
-# the SOPS secrets file (0022 D3/R5). D6: this is the SAME strict command CI runs.
-if command -v pnpm >/dev/null 2>&1; then
-  run "oxlint" pnpm exec oxlint --type-aware --deny-warnings apps libs/ts
-  run "oxfmt" pnpm exec oxfmt --check 'apps/**/*.{js,jsx,ts,tsx,json,css}' 'libs/ts/**/*.{js,jsx,ts,tsx,json,css}' '*.{js,mjs,cjs,json}'
-else
-  echo "✖ pre-commit: pnpm not found (needed for the TS lane)" >&2
-  fail=1
+if ! command -v just >/dev/null 2>&1; then
+  echo "✖ pre-commit: just not found (run 'just bootstrap', or activate mise)" >&2
+  exit 1
 fi
 
-# Python lane: lint + format check.
-if command -v uv >/dev/null 2>&1; then
-  run "ruff check" uv run ruff check .
-  run "ruff format" uv run ruff format --check .
-else
-  echo "✖ pre-commit: uv not found (needed for the Python lane)" >&2
-  fail=1
-fi
-
-if [ "$fail" -ne 0 ]; then
+if ! just check; then
   echo "" >&2
-  echo "commit blocked. fix with:  pnpm run format  &&  uv run ruff format ." >&2
+  echo "commit blocked. fix with:  just fix" >&2
   echo "(emergency bypass:          git commit --no-verify)" >&2
   exit 1
 fi

@@ -1,0 +1,21 @@
+#!/bin/sh
+# astra pre-push gate: `just ci`, everything CI runs (both lanes, the corpus gate, the
+# codex Chromium guards, commitlint over origin/main..HEAD), so a red commit never
+# reaches GitHub. Only the vellum render goldens stay CI-only (they need CI's container).
+#
+# Installed with the pre-commit hook (core.hooksPath = .githooks).
+# Bypass in a genuine emergency with:  git push --no-verify
+set -u
+
+if ! command -v just >/dev/null 2>&1; then
+  echo "✖ pre-push: just not found (run 'just bootstrap', or activate mise)" >&2
+  exit 1
+fi
+
+# git feeds the pushed refs on stdin; `just ci` doesn't read them.
+if ! just ci </dev/null; then
+  echo "" >&2
+  echo "push blocked: 'just ci' failed (see the summary above)." >&2
+  echo "(emergency bypass: git push --no-verify)" >&2
+  exit 1
+fi

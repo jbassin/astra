@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "lint": "oxlint --type-aware --deny-warnings apps libs/ts",
+    "lint:fix": "oxlint --type-aware --deny-warnings --fix apps libs/ts",
     "format": "oxfmt --write 'apps/**/*.{js,jsx,ts,tsx,json,css}' 'libs/ts/**/*.{js,jsx,ts,tsx,json,css}' '*.{js,mjs,cjs,json}'",
     "format:check": "oxfmt --check 'apps/**/*.{js,jsx,ts,tsx,json,css}' 'libs/ts/**/*.{js,jsx,ts,tsx,json,css}' '*.{js,mjs,cjs,json}'",
     "prepare": "git config core.hooksPath .githooks || true"

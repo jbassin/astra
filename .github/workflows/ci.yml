@@ -14,6 +14,8 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # Every lint/test job runs one `just <job>` recipe (same name as the job), so `just ci`
+  # locally runs exactly these commands; the setup steps stay here.
   # Path filter: only run a lane when files it cares about changed.
   # apps/** feeds BOTH lanes because an app may be either language; each lane's
   # tooling only acts on members it actually owns (manifest-decided membership).
@@ -45,6 +47,9 @@ jobs:
               - 'pyproject.toml'
               - 'uv.lock'
               - 'ruff.toml'
+              - '.python-version'
+              # Every job runs a `just <job>` recipe.
+              - 'justfile'
               - '.github/**'
             ts:
               - 'apps/**'
@@ -63,10 +68,13 @@ jobs:
               - '.oxlintrc.json'
               - '.oxfmtrc.json'
               - 'tsconfig.base.json'
+              - '.node-version'
+              - 'justfile'
               - '.github/**'
             corpus:
               - 'fixtures/astra-data/akasha/content/**'
               - 'libs/ts/vellum-lang/**'
+              - 'justfile'
               - '.github/**'
             # The render output depends on the service + the renderer (gothic) + the
             # parser (vellum-lang); a change to any can shift the goldens.
@@ -75,6 +83,7 @@ jobs:
               - 'libs/ts/gothic/**'
               - 'libs/ts/vellum-lang/**'
               - 'pnpm-lock.yaml'
+              - 'justfile'
               - '.github/**'
             # P9 S1 (D29-83) — the row-pitch drift guard needs a real Chromium,
             # same "own pinned-container job" posture as vellumRender above.
@@ -84,6 +93,7 @@ jobs:
               - 'libs/ts/observe/**'
               - 'libs/ts/config/**'
               - 'pnpm-lock.yaml'
+              - 'justfile'
               - '.github/**'
 
   py-lint:
@@ -93,8 +103,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-uv
-      - run: uv run ruff check
-      - run: uv run ruff format --check
+      - run: just py-lint
 
   py-typecheck:
     needs: changes
@@ -103,7 +112,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-uv
-      - run: uv run ty check
+      - run: just py-typecheck
 
   py-test:
     needs: changes
@@ -112,14 +121,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-uv
-      - run: uv run pytest
+      - run: just py-test
 
-  # typecheck/test/build fan out with `pnpm -r --no-bail run <script>`: every
-  # workspace member that defines the script runs (in dependency order), a failing
-  # member no longer hides the ones after it, and the command still exits non-zero
-  # if any member failed. `--aggregate-output` prints each member's log as one block.
-  # This replaces `vp run -r`, which stops at the first failure (0037 decision:
-  # replace vite-plus with `pnpm -r`). `tsc --noEmit` stays the typecheck gate.
+  # typecheck/test/build fan out with `pnpm -r --no-bail` (see the ts-typecheck recipe):
+  # a failing member no longer hides the ones after it. This replaces `vp run -r`, which
+  # stops at the first failure (0037 decision: replace vite-plus with `pnpm -r`).
   ts-typecheck:
     needs: changes
     if: needs.changes.outputs.ts == 'true'
@@ -127,10 +133,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
-      - run: pnpm -r --no-bail --aggregate-output run typecheck
+      - run: just ts-typecheck
 
-  # Lint/format stay DIRECT oxlint/oxfmt: the explicit globs here are what keeps
-  # oxfmt off markdown/toml/the SOPS file.
+  # Lint/format stay direct oxlint/oxfmt (no pnpm -r): the explicit globs in the root
+  # package.json scripts are what keep oxfmt off markdown/toml/the SOPS file.
   ts-lint:
     needs: changes
     if: needs.changes.outputs.ts == 'true'
@@ -138,8 +144,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
-      - run: pnpm exec oxlint --type-aware --deny-warnings apps libs/ts
-      - run: pnpm exec oxfmt --check 'apps/**/*.{js,jsx,ts,tsx,json,css}' 'libs/ts/**/*.{js,jsx,ts,tsx,json,css}' '*.{js,mjs,cjs,json}'
+      - run: just ts-lint
 
   ts-test:
     needs: changes
@@ -148,7 +153,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
-      - run: pnpm -r --no-bail --aggregate-output run test
+      - run: just ts-test
 
   ts-build:
     needs: changes
@@ -157,7 +162,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
-      - run: pnpm -r --no-bail --aggregate-output run build
+      - run: just ts-build
 
   # The akasha corpus structural gate (0007/F3): the TS reference parser asserts
   # zero error chips + zero sigil collisions over every converted vellum page. The real
@@ -170,7 +175,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
-      - run: node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/vellum-lang/scripts/validate-corpus.ts --dir fixtures/astra-data/akasha/content
+      - run: just corpus-validate
 
   # The vellum-render golden-image gate (0013 D4). Runs in the PINNED container
   # node:24-slim with the Chromium the `playwright` lock pins (same env the
@@ -189,15 +194,16 @@ jobs:
       # actions/checkout needs git inside the container.
       - run: apt-get update && apt-get install -y --no-install-recommends git ca-certificates
       - uses: actions/checkout@v4
-      - run: corepack enable && corepack prepare pnpm@10.34.4 --activate
+      - uses: ./.github/actions/setup-just
+      # corepack installs the pnpm that package.json's packageManager pins.
+      - run: corepack enable && corepack install
       - run: pnpm install --frozen-lockfile
       # `playwright` is a devDependency of vellum-render only (pnpm's strict layout
       # doesn't hoist it to the root node_modules `npx` would search from root) — run
       # from the app dir, matching apps/vellum-render/Dockerfile's `npx playwright
       # install` (also run from WORKDIR /repo/apps/vellum-render).
       - run: cd apps/vellum-render && npx playwright install --with-deps chromium
-      - run: pnpm --filter @astra/vellum-render build
-      - run: cd apps/vellum-render && node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts
+      - run: just vellum-visual-regression
 
   # P9 S1 (D29-83) — the listing row-pitch drift guard: a real Chromium probe
   # asserting `getBoundingClientRect().height === 24` on a rendered
@@ -220,18 +226,14 @@ jobs:
     steps:
       - run: apt-get update && apt-get install -y --no-install-recommends git ca-certificates
       - uses: actions/checkout@v4
-      - run: corepack enable && corepack prepare pnpm@10.34.4 --activate
+      - uses: ./.github/actions/setup-just
+      - run: corepack enable && corepack install
       - run: pnpm install --frozen-lockfile
       - run: cd apps/codex && npx playwright install --with-deps chromium
-      - run: pnpm --filter @astra/codex build
-      # CODEX_CORPUS_ROOT pins the guard to the committed fixture corpus. Inside a
-      # container job `${{ github.workspace }}` expands to the HOST path
-      # (/home/runner/work/...), not the container mount (/__w/...), so the path is
-      # built from the in-container $GITHUB_WORKSPACE instead.
-      - run: |
-          export CODEX_CORPUS_ROOT="$GITHUB_WORKSPACE/apps/codex/fixtures/entities"
-          cd apps/codex
-          node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts
+      # The recipe builds codex and pins CODEX_CORPUS_ROOT to the committed fixture corpus
+      # from the working directory. (Inside a container job `${{ github.workspace }}` is the
+      # HOST path, not the container mount, so the workflow must not build that path.)
+      - run: just codex-row-height-drift-guard
 
   # P9 S2 (D29-84/-85/-90) — the listing-virtualization INTERACTION guard: a
   # real Chromium probe over gate C (j/k frontier + wheel-unmount-resume +
@@ -255,15 +257,12 @@ jobs:
     steps:
       - run: apt-get update && apt-get install -y --no-install-recommends git ca-certificates
       - uses: actions/checkout@v4
-      - run: corepack enable && corepack prepare pnpm@10.34.4 --activate
+      - uses: ./.github/actions/setup-just
+      - run: corepack enable && corepack install
       - run: pnpm install --frozen-lockfile
       - run: cd apps/codex && npx playwright install --with-deps chromium
-      - run: pnpm --filter @astra/codex build
       # Same CODEX_CORPUS_ROOT pin as codex-row-height-drift-guard (see the note there).
-      - run: |
-          export CODEX_CORPUS_ROOT="$GITHUB_WORKSPACE/apps/codex/fixtures/entities"
-          cd apps/codex
-          node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts
+      - run: just codex-virtualization-interaction-guard
 
   # Conventional Commits (commitlint.config.js extends @commitlint/config-conventional).
   # Pull requests lint base..head; pushes to main lint only the pushed range, so
@@ -280,7 +279,7 @@ jobs:
         env:
           FROM: ${{ github.event.pull_request.base.sha }}
           TO: ${{ github.event.pull_request.head.sha }}
-        run: pnpm exec commitlint --from "$FROM" --to "$TO" --verbose
+        run: just commitlint "$FROM" "$TO"
       - name: Lint the pushed commits
         if: github.event_name == 'push'
         env:
@@ -292,9 +291,9 @@ jobs:
           # lint the pushed tip commit alone.
           if [[ "$BEFORE" =~ ^0+$ ]] || ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
             echo "No usable base commit (before=$BEFORE); linting $AFTER only."
-            pnpm exec commitlint --last --verbose
+            just commitlint "" "$AFTER"
           else
-            pnpm exec commitlint --from "$BEFORE" --to "$AFTER" --verbose
+            just commitlint "$BEFORE" "$AFTER"
           fi
 
   # The single status check branch protection will require. It needs every other

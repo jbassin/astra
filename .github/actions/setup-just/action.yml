@@ -1,0 +1,9 @@
+name: setup-just
+description: Install the pinned just (CI jobs run `just <job>` recipes from the root justfile).
+runs:
+  using: composite
+  steps:
+    # Keep in step with mise.toml's `just` pin.
+    - uses: extractions/setup-just@v2
+      with:
+        just-version: "1.23.0"

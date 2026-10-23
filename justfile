@@ -1,9 +1,165 @@
-# astra task runner. Two concerns:
+# astra task runner. Three concerns:
+#   - dev: the developer entry point (bootstrap, check, fix, test, ci, dev) and one recipe
+#     per CI job. .github/workflows/ci.yml calls the same recipes, so CI and `just ci` run
+#     the same commands.
 #   - the Docker substrate (deploy/): Dagster + SigNoz + the strider services.
 #   - the host edge: the SHARED reverse proxy at /ruby/data/reverse-proxy (a custom
 #     `caddy` binary w/ the cloudflare-dns plugin — the stock /usr/bin/caddy lacks
 #     it) whose Caddyfile `import`s this repo's sites.caddyfile. The caddy recipes
 #     reload/validate it, sourcing the ACME-DNS token from SOPS (never committed).
+#
+# just --list shows the comment line directly above each recipe, so that line is the
+# recipe's one-line summary; longer notes go above it.
+
+# Before this recipe existed, a bare `just` ran the first recipe: `deploy`.
+# List the recipes (what a bare `just` does).
+default:
+    @"{{just_executable()}}" -f "{{justfile()}}" --list --unsorted
+
+# --- dev: the developer entry point ---
+
+# Safe to re-run. On a machine without just yet: `mise trust && mise install`, activate
+# mise in your shell (`mise activate`), then run this.
+# Set up a clone: mise.toml's toolchain, both workspaces, the codex guards' Chromium, hooks.
+bootstrap:
+    mise trust mise.toml
+    mise install
+    mise exec -- uv sync
+    mise exec -- pnpm install
+    mise exec -- pnpm --filter @astra/codex exec playwright install chromium
+    git config core.hooksPath .githooks
+
+# The fast format + lint gate for both lanes (the pre-commit hook runs exactly this).
+check: (_each "check" "ts-lint,py-lint")
+
+# Lint findings the tools can't fix are printed and don't stop the formatters; `just check`
+# shows what is left.
+# Apply the formatters and the safe autofixes for both lanes.
+fix:
+    -pnpm run lint:fix
+    pnpm run format
+    -uv run ruff check --fix
+    uv run ruff format
+
+# Run both test lanes.
+test: (_each "test" "py-test,ts-test")
+
+# The pre-push hook runs this; commitlint covers base..HEAD. Unlike CI, which path-filters
+# its jobs, this always runs every step. Not run here: vellum-visual-regression, because its
+# goldens are pinned to the node:24-slim container's Chromium and fonts (a host browser
+# renders different pixels); it stays CI-only.
+# Run everything CI runs, locally (all but the container-only vellum render goldens).
+ci base="origin/main": (_each "ci" ("py-lint,ts-lint,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard"))
+
+# The Python apps have no dev server: they run as Dagster assets; test them with
+# `uv run pytest apps/<app>`.
+# Run one TS app's dev server, e.g. `just dev codex`.
+dev app:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    app={{quote(app)}}
+    has_dev() { node -e 'process.exit(require(process.argv[1]).scripts?.dev ? 0 : 1)' "$PWD/$1"; }
+    if [ -f "apps/$app/package.json" ] && has_dev "apps/$app/package.json"; then
+      exec pnpm --dir "apps/$app" run dev
+    fi
+    if [ -f "apps/$app/pyproject.toml" ]; then
+      echo "dev: $app is a Python app with no dev server; try: uv run pytest apps/$app" >&2
+    else
+      echo "dev: no TS app with a dev script at apps/$app" >&2
+    fi
+    echo "apps with a dev script:" >&2
+    for p in apps/*/package.json; do
+      if has_dev "$p"; then echo "  $(basename "$(dirname "$p")")" >&2; fi
+    done
+    exit 1
+
+# Run each comma-separated step (a recipe name plus any arguments) even after one fails,
+# then fail if any did, so one red step can't hide the rest.
+_each label steps:
+    #!/usr/bin/env bash
+    set -uo pipefail
+    IFS=, read -ra steps <<< {{quote(steps)}}
+    failed=()
+    for step in "${steps[@]}"; do
+      printf '\n== just %s\n' "$step" >&2
+      read -ra words <<< "$step"
+      "{{just_executable()}}" -f "{{justfile()}}" "${words[@]}" || failed+=("$step")
+    done
+    if [ "${#failed[@]}" -gt 0 ]; then
+      printf '\n{{label}}: FAILED: %s\n' "$(IFS=,; echo "${failed[*]}")" >&2
+      exit 1
+    fi
+    printf '\n{{label}}: all %d steps passed\n' "${#steps[@]}" >&2
+
+# --- dev: one recipe per CI job (ci.yml runs `just <job>`; the names match the job ids) ---
+
+# CI job py-lint: ruff lint + format check.
+py-lint:
+    uv run ruff check
+    uv run ruff format --check
+
+# CI job py-typecheck: ty.
+py-typecheck:
+    uv run ty check
+
+# CI job py-test: pytest.
+py-test:
+    uv run pytest
+
+# typecheck/test/build fan out with `pnpm -r --no-bail`: every member that defines the
+# script runs, a failing member doesn't hide the ones after it, and the command still
+# exits non-zero. `--aggregate-output` prints each member's log as one block.
+# CI job ts-typecheck: tsc --noEmit in every member.
+ts-typecheck:
+    pnpm -r --no-bail --aggregate-output run typecheck
+
+# The lint and format command lines (with the globs that keep oxfmt off markdown, toml and
+# the SOPS file) live once, in the root package.json scripts.
+# CI job ts-lint: oxlint + oxfmt check.
+ts-lint:
+    pnpm run lint
+    pnpm run format:check
+
+# CI job ts-test: vitest in every member.
+ts-test:
+    pnpm -r --no-bail --aggregate-output run test
+
+# CI job ts-build: build every member.
+ts-build:
+    pnpm -r --no-bail --aggregate-output run build
+
+# The real wiki lives in astra-data, where heartwood validates it before every commit.
+# CI job corpus-validate: the akasha corpus gate over the checked-in fixture wiki.
+corpus-validate:
+    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/vellum-lang/scripts/validate-corpus.ts --dir fixtures/astra-data/akasha/content
+
+# An empty `from` lints only HEAD (CI's fallback when a push has no usable base).
+# CI job commitlint: Conventional Commits over from..to.
+commitlint from="origin/main" to="HEAD":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ -z {{quote(from)}} ]; then
+      exec pnpm exec commitlint --last --verbose
+    fi
+    exec pnpm exec commitlint --from {{quote(from)}} --to {{quote(to)}} --verbose
+
+# The codex Chromium guards run against the committed fixture corpus (CODEX_CORPUS_ROOT),
+# so they never read the real corpus. They need the Chromium from `just bootstrap`.
+# CI job codex-row-height-drift-guard: the listing row pitch is exactly 24px.
+codex-row-height-drift-guard:
+    pnpm --filter @astra/codex build
+    cd apps/codex && CODEX_CORPUS_ROOT="$PWD/fixtures/entities" node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts
+
+# CI job codex-virtualization-interaction-guard: listing scroll, keys and reload in Chromium.
+codex-virtualization-interaction-guard:
+    pnpm --filter @astra/codex build
+    cd apps/codex && CODEX_CORPUS_ROOT="$PWD/fixtures/entities" node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts
+
+# CI-only (see `ci`): runs inside node:24-slim with the Chromium the playwright lock pins.
+# CI job vellum-visual-regression: each fixture's rendered PNG against its golden.
+vellum-visual-regression:
+    pnpm --filter @astra/vellum-render build
+    cd apps/vellum-render && node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts
 
 reverse_proxy_dir := "/ruby/data/reverse-proxy"
 sops_age_key := "deploy/sops/age.key"

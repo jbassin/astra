@@ -1,8 +1,11 @@
 name: setup-uv
-description: Install a pinned uv and sync the workspace from the frozen lockfile.
+description: Install just and a pinned uv, and sync the workspace from the frozen lockfile.
 runs:
   using: composite
   steps:
+    - uses: ./.github/actions/setup-just
+    # Keep in step with mise.toml's `uv` pin (and dagster/Dockerfile's uv image).
+    # uv reads .python-version, so the venv is Python 3.12 like production.
     - uses: astral-sh/setup-uv@v5
       with:
         version: "0.11.19"
