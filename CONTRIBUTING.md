@@ -230,6 +230,8 @@ Four non-overlapping concerns; **SigNoz/OTel is the single pane across all of th
   `import.meta.dirname`, not `__dirname`.
 
 **Deploy / infra**
+- Production builds only from the deploy checkout `/ruby/data/astra-deploy` at a pushed commit:
+  `just deploy [service…]` (`deploy/deploy.sh`). Push before you deploy; local edits never ship.
 - A fresh **SigNoz** won't ingest until the first org/admin is registered (`POST :10351/api/v1/register`,
   then `restart otel-collector`). Host ports live in the **10350–10399** band.
 - `sops` decrypts via the age key file directly (no `age` binary needed; `rage`/`rage-keygen` are the

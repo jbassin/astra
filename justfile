@@ -38,41 +38,29 @@ uv_bin := env_var_or_default("UV_BIN", "/home/jbassin/.local/bin/uv")
 
 # --- Docker substrate (deploy/) ---
 
-# Bring the stack up (Dagster + SigNoz + the services). --build so local code changes
-# take effect (cached layers keep it fast when nothing changed). Secrets are decrypted
-# from SOPS on the host and injected as env (roadmap Decision E): each service's compose
-# `environment:` passes the UPPER_CASED keys it needs, and @astra/config's env-override
-# path (`process.env[KEY.toUpperCase()]` wins) resolves them in-container — so no
-# sops/age-key/secrets file is ever baked into an image. Run on a host with the age key.
-# Optional args scope it to named compose services (`just up weal-bot`) — the SAFE
-# scoped deploy: same SOPS env injection, so it never hits the plain
-# `docker compose up -d <svc>` silent-secret-drop trap. No args = the whole stack.
-up *services:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    export SOPS_AGE_KEY_FILE="{{sops_age_key}}"
-    # Decrypt once on the host; export each secret as KEY upper-cased (the env-override
-    # name config checks first). The host shell holds the secrets only for this process;
-    # compose scopes each container to the keys its `environment:` block references.
-    secrets="$(sops -d --output-type dotenv "{{sops_file}}")"
-    while IFS='=' read -r k v; do
-      [ -n "$k" ] || continue
-      export "${k^^}=$v"
-    done <<< "$secrets"
-    just artifacts-init
-    cd deploy && docker compose up -d --build {{services}}
+# Deploy production (0037 OPS-3): everything lives in deploy/deploy.sh (header = steps,
+# flags, exit codes, where the live sha is recorded). Builds ONLY from the deploy checkout
+# ($ASTRA_DEPLOY_ROOT, default /ruby/data/astra-deploy) at a PUSHED commit — origin/main, or
+# `--sha <rev>` for a rollback — never from this working tree, so push first. Takes the
+# deploy lock, injects the SOPS secrets (Decision E), labels every image with the sha.
+#   just deploy                     whole stack at origin/main
+#   just deploy akasha-frontend     one service (same secret injection — never use a bare
+#                                   `docker compose up -d <svc>`, it starts it with no secrets)
+#   just deploy --sha <rev> [svc]   a pushed older commit (rollback)
+#   just deploy --dry-run [svc]     checks only; prints the compose command
+#   just deploy --restart <svc>     restart without a build, under the same lock
+deploy *args:
+    ARTIFACTS="{{artifacts}}" "{{justfile_directory()}}/deploy/deploy.sh" {{args}}
 
-# Create the gitignored bind-mount source tree as the host user (uid 1000) BEFORE `up`.
-# Docker would otherwise create a missing bind source as root — re-introducing the exact
-# root-owned-writes problem this whole setup fixes. The audio dirs are host-owned (the
-# frontends read them ro / orator writes them as 1000); the Postgres PGDATA subdirs are
-# left to the one-time migration / the postgres entrypoint to own as uid 70 (0700), so we
-# only create the `postgres/` parent here, not the per-DB dirs.
+# Alias of `just deploy` (the old name; same args). No args = the whole stack.
+up *services:
+    "{{just_executable()}}" -f "{{justfile()}}" deploy {{services}}
+
+# Create the gitignored bind-mount source tree as the host user (uid 1000) BEFORE a deploy
+# (Docker would otherwise create a missing bind source as root — the root-owned-writes
+# problem). `just deploy` does this itself; the dir list lives in deploy/deploy.sh.
 artifacts-init:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    mkdir -p "{{artifacts}}"/audio/{akasha,mouthpiece,orator} "{{artifacts}}"/postgres "{{artifacts}}"/portal-oauth "{{artifacts}}"/menhir \
-      "{{artifacts}}"/heartwood/requests/logs  # = heartwood.requests-path (0036)
+    ARTIFACTS="{{artifacts}}" "{{justfile_directory()}}/deploy/deploy.sh" --init-artifacts
 
 # Stop the stack; keep volumes (ClickHouse / Postgres / SigNoz data persist).
 down:
@@ -207,8 +195,8 @@ linguist-commit:
       echo "linguist-commit: nothing to push"
     fi
     # If this run committed akasha content (it reads apps/linguist/{transcripts,data,timeline} at build),
-    # rebuild + redeploy the wiki so the new sessions actually appear. akasha bakes content at
-    # build time and needs no secrets, so a plain targeted compose up suffices; a failed build
+    # rebuild + redeploy the wiki so the new sessions actually appear. `just deploy` builds from
+    # the deploy checkout at origin/main, which the push above just updated; a failed build
     # leaves the running container untouched (no downtime).
     if printf '%s\n' "$changed" | grep -qE '^apps/linguist/(transcripts|data|timeline)/'; then
       echo "linguist-commit: akasha content changed — seeding audio + rebuilding + redeploying akasha-frontend"
@@ -216,10 +204,10 @@ linguist-commit:
       # linguist produced the transcript); land it in the audio volume before redeploy so
       # the transcript page's /audio/<date>.mp3 resolves. Incremental → cheap (see akasha-seed).
       {{just_executable()}} akasha-seed || echo "linguist-commit: akasha-seed FAILED (rerun: just akasha-seed)" >&2
-      if (cd deploy && docker compose up -d --build akasha-frontend); then
+      if {{just_executable()}} deploy akasha-frontend; then
         echo "linguist-commit: akasha-frontend redeployed"
       else
-        echo "linguist-commit: akasha-frontend redeploy FAILED (rerun: just up, or compose up --build akasha-frontend)" >&2
+        echo "linguist-commit: akasha-frontend redeploy FAILED (rerun: just deploy akasha-frontend)" >&2
       fi
     fi
     # Mouthpiece phase: unlike akasha (build-time content read), mouthpiece-frontend reads a
@@ -234,14 +222,18 @@ linguist-commit:
         git commit --no-verify -q --only \
           -m "chore(mouthpiece): auto-publish episode catalog snapshot" \
           -m "Regenerated from the live corpus by the linguist-commit timer." -- "$mp_snapshot"
-        if git push -q origin main; then echo "linguist-commit: mouthpiece snapshot pushed"; else
-          echo "linguist-commit: mouthpiece snapshot push FAILED (will retry next run)" >&2; fi
-        echo "linguist-commit: mouthpiece snapshot changed — seeding audio + redeploying frontend"
-        {{just_executable()}} mouthpiece-seed || echo "linguist-commit: mouthpiece-seed FAILED (rerun: just mouthpiece-seed)" >&2
-        if (cd deploy && docker compose up -d --build mouthpiece-frontend); then
-          echo "linguist-commit: mouthpiece-frontend redeployed"
+        # The deploy builds from origin/main, so an unpushed snapshot can't ship yet: skip the
+        # redeploy and let the next run (which retries the push above) do it.
+        if git push -q origin main; then
+          echo "linguist-commit: mouthpiece snapshot pushed — seeding audio + redeploying frontend"
+          {{just_executable()}} mouthpiece-seed || echo "linguist-commit: mouthpiece-seed FAILED (rerun: just mouthpiece-seed)" >&2
+          if {{just_executable()}} deploy mouthpiece-frontend; then
+            echo "linguist-commit: mouthpiece-frontend redeployed"
+          else
+            echo "linguist-commit: mouthpiece-frontend redeploy FAILED (rerun: just deploy mouthpiece-frontend)" >&2
+          fi
         else
-          echo "linguist-commit: mouthpiece-frontend redeploy FAILED (rerun: compose up --build mouthpiece-frontend)" >&2
+          echo "linguist-commit: mouthpiece snapshot push FAILED — not redeploying (rerun: git push, then just deploy mouthpiece-frontend)" >&2
         fi
       fi
     else
@@ -550,11 +542,13 @@ codex-refresh:
     # container keeps serving stale categories after a host-side refresh until it
     # restarts — a restart is the cheap, deterministic flush (the Pagefind
     # staticMount needs no restart, it's per-request fail-soft). Guarded so a fresh
-    # host / no-docker / not-yet-deployed environment never fails this recipe.
+    # host / no-docker / not-yet-deployed environment never fails this recipe. The restart
+    # goes through `just deploy --restart` (takes the deploy lock, logs to history.jsonl) but
+    # builds nothing: the corpus is a runtime mount, not image content.
     echo "codex-refresh: checking for a running astra-codex container (D29-57)..."
     if command -v docker >/dev/null 2>&1 && [ -n "$(docker ps -q -f name='^astra-codex$' 2>/dev/null || true)" ]; then
       echo "codex-refresh: astra-codex is running — restarting to flush corpus caches..."
-      (cd deploy && docker compose restart codex)
+      "{{just_executable()}}" deploy --restart codex
     else
       echo "codex-refresh: astra-codex not running (or docker unavailable) — skipping restart."
     fi
@@ -641,7 +635,7 @@ heartwood-sandbox-warm:
 # rebase --autostash onto origin/main (skipped when already based on it), push, redeploy.
 # Exit codes: 0 ok · 1 run failed · 2 run incomplete (iteration cap) · 3 publish conflict ·
 # 4 publish refused · 6 dirty corpus/ledger/registry or not on main · 7 validate/snapshot/seed failed
-# (restore printed) · 8 commit/rebase/push failed · 9 redeploy failed or skipped · 10 git-publish
+# (restore printed) · 8 commit/rebase/push failed · 9 redeploy failed · 10 git-publish
 # lock busy for 30 min, nothing written (0036) · 64 bad flag.
 # Run + publish one session via the heartwood agent (PAID + LIVE; --dry-run / --no-push).
 heartwood-agent date *flags:
@@ -743,9 +737,9 @@ heartwood-agent date *flags:
     "{{just_executable()}}" _heartwood-push-deploy
 
 # Shared tail of the heartwood recipes: fetch, rebase --autostash onto origin/main (skipped
-# when origin/main is already an ancestor), push main, rebuild + redeploy akasha-frontend.
-# Exit 8 = rebase/push failed (nothing redeployed); 9 = redeploy failed, or skipped because
-# the corpus has uncommitted edits (the image builds from the working tree).
+# when origin/main is already an ancestor), push main, rebuild + redeploy akasha-frontend
+# via `just deploy` (builds from the deploy checkout at origin/main, so only pushed content
+# ships). Exit 8 = rebase/push failed (nothing redeployed); 9 = redeploy failed.
 _heartwood-push-deploy:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -763,14 +757,10 @@ _heartwood-push-deploy:
     else
       echo "heartwood: nothing to push"
     fi
-    if [ -n "$(git status --porcelain -- apps/akasha-backend/content apps/akasha-backend/snapshot)" ]; then
-      echo "heartwood: NOT redeploying — the akasha corpus has uncommitted edits (the image would bake them in)" >&2
-      exit 9
-    fi
-    if (cd deploy && docker compose up -d --build akasha-frontend); then
+    if "{{just_executable()}}" deploy akasha-frontend; then
       echo "heartwood: akasha-frontend redeployed — edits live"
     else
-      echo "heartwood: akasha redeploy FAILED (rerun: cd deploy && docker compose up -d --build akasha-frontend)" >&2
+      echo "heartwood: akasha redeploy FAILED (rerun: just deploy akasha-frontend)" >&2
       exit 9
     fi
 

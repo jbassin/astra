@@ -1,16 +1,25 @@
 # deploy/ — astra runtime substrate
 
-One `docker compose up` brings up the whole substrate (roadmap Decision H): **Dagster** (pipeline
-control plane) + **SigNoz** (observability — the single pane) + **Caddy** (edge). SigNoz is vendored
-under `signoz/` (pinned **v0.129.0** / otel-collector **v0.144.5**) and `include`d into the top-level
-compose; its published ports are remapped into the astra **10350–10399** range.
+One compose file runs the whole substrate (roadmap Decision H): **Dagster** (pipeline control plane)
++ **SigNoz** (observability — the single pane) + the services. The edge is the shared host Caddy. SigNoz
+is vendored under `signoz/` (pinned **v0.129.0** / otel-collector **v0.144.5**) and `include`d into the
+top-level compose; its published ports are remapped into the astra **10350–10399** range.
 
-## Bring up
+## Deploy
 
 ```sh
-cd deploy
-docker compose up -d        # builds the Dagster + strider images; pulls SigNoz / Postgres
+just deploy                    # whole stack at origin/main
+just deploy akasha-frontend    # one service
+just deploy --sha <rev>        # a pushed older commit (rollback)
+just deploy --dry-run          # checks only; prints the compose command
 ```
+
+`just deploy` (`deploy.sh`; `just up` is an alias) builds only from the deploy checkout
+`/ruby/data/astra-deploy` at a **pushed** commit, never from a developer tree, so push first. It takes a
+deploy lock, decrypts the SOPS secrets on the host and passes them as env, and labels every built
+image with the commit (`org.opencontainers.image.revision`). History and the per-service live sha are
+under `artifacts/deploy/`; the header of `deploy.sh` has the details. Do not run a bare
+`docker compose up`: it starts every service with empty secrets.
 
 **First run only** — a fresh SigNoz needs a one-time org/admin before it ingests telemetry (until then
 the collector logs `cannot create agent without orgId` and the OTLP receiver drops data):
@@ -61,11 +70,12 @@ SSR never touches WebGL.
 
 ## Secrets (SOPS + age)
 
-Encrypted values live in `sops/secrets.enc.yaml`; the private key is `sops/age.key` (gitignored). See
-`sops/README.md`. Decrypt with:
+Encrypted values live in `sops/secrets.enc.yaml`. The deploy and the timers read the private key from
+sops's default location, `~/.config/sops/age/keys.txt`; the developer tree also keeps a copy at
+`sops/age.key` (gitignored) for the other recipes. See `sops/README.md`. Decrypt with:
 
 ```sh
-SOPS_AGE_KEY_FILE=$PWD/sops/age.key sops -d sops/secrets.enc.yaml
+SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt sops -d sops/secrets.enc.yaml
 ```
 
 ## Telemetry smoke (prove the OTLP loop)

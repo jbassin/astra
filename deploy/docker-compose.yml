@@ -4,8 +4,9 @@
 #     (../common/...) resolve correctly. Published ports remapped into 10350-10399.
 #   - Dagster control plane (Postgres + code location + webserver + daemon).
 #   - Caddy edge.
-# SigNoz/OTel is the single pane across all three. Run from deploy/:
-#   docker compose up -d
+# SigNoz/OTel is the single pane across all three. Deploy with `just deploy [service...]`
+# (deploy/deploy.sh): it builds from the deploy checkout at a pushed sha and injects the
+# SOPS secrets. A bare `docker compose up` starts services with every secret empty.
 name: astra
 
 include:
@@ -58,6 +59,15 @@ x-dagster-volumes: &dagster-pipeline-volumes
   # dir is created by `just artifacts-init` as uid 1000 (Docker would create it as root).
   - /ruby/data/experiments/astra/artifacts/heartwood/requests:/ruby/data/experiments/astra/artifacts/heartwood/requests
 
+# Labels on every image built here (0037 OPS-3), so `docker inspect` answers "which commit
+# is this container running". deploy/deploy.sh exports ASTRA_REVISION (the full sha it
+# checked out) and ASTRA_REVISION_DATE (that commit's date — not the wall clock, so
+# redeploying the same sha leaves the image config, and so the containers, unchanged). A
+# build outside deploy.sh is labelled `unknown`.
+x-build-labels: &build-labels
+  org.opencontainers.image.revision: ${ASTRA_REVISION:-unknown}
+  org.opencontainers.image.created: ${ASTRA_REVISION_DATE:-unknown}
+
 services:
   # --- Dagster: the batch-pipeline control plane ---
   dagster-postgres:
@@ -82,6 +92,7 @@ services:
 
   dagster-code:
     build:
+      labels: *build-labels
       # Repo root (like the frontend services) — the image `uv sync`s the Python
       # workspace so definitions.py can import the real pipeline packages.
       context: ..
@@ -162,6 +173,7 @@ services:
   # Won't fully run until the SOPS secrets (discord token, weal_token) are provisioned.
   weal-bot:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/weal-bot/Dockerfile
     image: astra-weal-bot:local
@@ -194,6 +206,7 @@ services:
   # weal-overlay: the dice-roll OBS overlay (SSE). Behind Caddy with flush_interval -1.
   weal-overlay:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/weal-overlay/Dockerfile
     image: astra-weal-overlay:local
@@ -222,6 +235,7 @@ services:
   # `just artifacts-init` pre-creates the dir as uid 1000.
   menhir:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/menhir/Dockerfile
     image: astra-menhir:local
@@ -243,6 +257,7 @@ services:
 
   strider:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/strider/Dockerfile
       args:
@@ -273,6 +288,7 @@ services:
   # with `just akasha-seed`; this replaces faerrin's static-audio.iridi.cc. ---
   akasha-frontend:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/akasha-frontend/Dockerfile
       args:
@@ -314,6 +330,7 @@ services:
   # the OTLP endpoint comes from config's in-cluster default. ---
   codex:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/codex/Dockerfile
       args:
@@ -359,6 +376,7 @@ services:
   # image layer (D2). Seed the volume with `just mouthpiece-seed`. ---
   mouthpiece-frontend:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/mouthpiece-frontend/Dockerfile
       args:
@@ -390,6 +408,7 @@ services:
   # export POSTs same-origin /render, which Caddy routes to vellum-render below. ---
   vellum-frontend:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/vellum-frontend/Dockerfile
       args:
@@ -417,6 +436,7 @@ services:
   # Caddy routes vellum.iridi.cc/render + /health here. ---
   vellum-render:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/vellum-render/Dockerfile
       args:
@@ -471,6 +491,7 @@ services:
   # optional: without resolved SOPS secrets it runs web+library, playback → 503.
   orator-backend:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/orator-backend/Dockerfile
     image: astra-orator-backend:local
@@ -508,6 +529,7 @@ services:
   # (every card glyph is inline SVG). Port/service-name from config.kdl. ---
   harrow:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/harrow/Dockerfile
       args:
@@ -536,6 +558,7 @@ services:
   # public-origin at build time. Port/service-name from config.kdl. ---
   ledger:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/ledger/Dockerfile
       args:
@@ -568,6 +591,7 @@ services:
   # constraint — bridge-status surfaces "offline", never a hang). ---
   portal:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/portal/Dockerfile
     image: astra-portal:local
@@ -610,6 +634,7 @@ services:
   # + first navigation + `/join`). ---
   portal-headless:
     build:
+      labels: *build-labels
       context: ..
       dockerfile: apps/portal/headless/Dockerfile
     image: astra-portal-headless:local
@@ -680,6 +705,7 @@ services:
   # it only writes a file. Rescans every 5 min (SMART reads are passive/cheap). ---
   smart-exporter:
     build:
+      labels: *build-labels
       context: smart-exporter
     image: astra-smart-exporter:local
     container_name: astra-smart-exporter
