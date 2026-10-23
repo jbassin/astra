@@ -11,12 +11,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from astra_config import load_config
 from astra_vellum_lang import Metadata, extract_metadata
 from pydantic import BaseModel
 
-# The corpus lives at the app root: apps/akasha-backend/content/.
-# parents: [0] package, [1] src, [2] akasha-backend (app root).
-CONTENT_DIR = Path(__file__).resolve().parents[2] / "content"
+#: The wiki corpus (config `data.akasha-content`).
+CONTENT_DIR = Path(load_config().data.akasha_content)
 
 
 class Page(BaseModel):

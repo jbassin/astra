@@ -17,6 +17,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+from astra_config import load_config
 from astra_linguist.chronicle import (
     EPISODES_DIR,
     SEASONS_PATH,
@@ -28,8 +29,7 @@ from astra_linguist.chronicle import (
 from astra_linguist.chronicle_llm import build_chronicle, build_episode_entry
 from astra_linguist.surface.surface import load_session
 
-APP_ROOT = Path(__file__).resolve().parents[1]
-DATA_DIR = APP_ROOT / "data"
+DATA_DIR = Path(load_config().data.linguist_data)
 WORKERS = 5
 
 

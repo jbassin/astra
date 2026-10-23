@@ -82,11 +82,9 @@ COPY dagster/dagster.yaml dagster/workspace.yaml "$DAGSTER_HOME"/
 # containers). The run worker writes compute logs / local artifact storage under
 # /opt/dagster/home/storage and needs a writable HOME — chown the whole /opt/dagster tree
 # (home + the app cwd) to 1000 and point HOME there. /opt/venv + the editable /repo
-# sources are otherwise root-owned/world-readable (runtime is read-only there) — EXCEPT
-# linguist's package root, where `session_transcripts` atomically writes shibboleth.json
-# (APP_ROOT/shibboleth.json is NOT under a bind-mounted subdir, so uid 1000 must own the
-# dir to create the file — this step failed with EACCES after the run-as-1000 cutover).
+# sources stay root-owned/world-readable: the runtime only writes data paths from
+# config.kdl, all of which are bind mounts (deploy/docker-compose.yml) — including
+# shibboleth.json, which now lives in the mounted linguist script dir.
 ENV HOME=/opt/dagster/home
 RUN mkdir -p "$DAGSTER_HOME/storage" \
-    && chown -R 1000:1000 /opt/dagster /opt/deno \
-    && chown 1000:1000 /repo/apps/linguist
+    && chown -R 1000:1000 /opt/dagster /opt/deno

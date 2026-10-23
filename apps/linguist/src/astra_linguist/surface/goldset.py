@@ -31,6 +31,7 @@ from pathlib import Path
 from typing import Any, cast
 
 import dspy
+from astra_config import load_config
 from astra_lexicon import DEFS_PATH, Lexicon, build_lexicon, fold_for_match, load_defs, tokenize
 
 from ..models import FormattedLine, Speaker, Transcript
@@ -41,8 +42,8 @@ from .known import find_known
 
 #: Committed reviewable artifact of mined negatives (K5 — hand-correctable offline).
 DEFAULT_MINED_PATH = Path(__file__).resolve().parent / "gold" / "mined_negatives.json"
-#: The 76 committed historical transcripts the miner reads.
-DEFAULT_DATA_DIR = Path(__file__).resolve().parents[1].parent.parent / "data"
+#: The committed historical transcripts the miner reads (config `data.linguist-data`).
+DEFAULT_DATA_DIR = Path(load_config().data.linguist_data)
 
 #: Regex metacharacters — a `defs.yaml` fragment containing any is a pattern, not a
 #: literal garble, so it can't be embedded verbatim in a synthetic window (J5).

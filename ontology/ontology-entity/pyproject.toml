@@ -4,6 +4,7 @@ version = "0.0.0"
 description = "Owns entity.kdl (the typed in-world noun registry for heartwood) + the host-run seed/regen entry-point; the typed model + seeding live in astra-ontology."
 requires-python = ">=3.12"
 dependencies = [
+    "astra-config",
     "astra-lexicon",
     "astra-observe",
     "astra-ontology",
@@ -21,6 +22,7 @@ build-backend = "hatchling.build"
 packages = ["src/astra_ontology_entity"]
 
 [tool.uv.sources]
+astra-config = { workspace = true }
 astra-lexicon = { workspace = true }
 astra-observe = { workspace = true }
 astra-ontology = { workspace = true }

@@ -5,7 +5,7 @@
  * `extra="forbid"` — a mistyped KDL key throws instead of being dropped.
  */
 import { existsSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, isAbsolute, join, resolve } from "node:path";
 
 import { z } from "zod";
 
@@ -15,6 +15,35 @@ import { SecretRef } from "./secrets";
 // `.nullish()` (nullable + optional) keeps secret fields input-optional so a sparse
 // namespace still satisfies `.default({})`; an absent secret reads back as undefined.
 const secret = () => z.instanceof(SecretRef).nullish();
+
+// A data path (py `DataPath`): a relative value is resolved against `data.root` when the
+// config loads, so code always sees an absolute path. An absolute value (e.g. a
+// container-only path) and an empty value (unset) pass through unchanged.
+const DATA_PATH_SCHEMAS = new WeakSet<z.ZodType>();
+const dataPath = (def: string) => {
+  const schema = z.string().default(def);
+  DATA_PATH_SCHEMAS.add(schema);
+  return schema;
+};
+
+/** Overrides `data.root` — a test/dev seam only (the py root conftest sets it). */
+const DATA_ROOT_ENV = "ASTRA_DATA_ROOT";
+
+// The one root every data path in this config is relative to: the pipeline's published
+// datasets below (the astra-data layout) and each service's own state paths.
+const Data = z
+  .object({
+    root: z.string().default(""),
+    linguistTranscripts: dataPath("apps/linguist/transcripts"),
+    linguistData: dataPath("apps/linguist/data"),
+    linguistTimeline: dataPath("apps/linguist/timeline"),
+    mouthpieceSnapshot: dataPath("apps/mouthpiece-backend/snapshot"),
+    akashaContent: dataPath("apps/akasha-backend/content"),
+    akashaSnapshot: dataPath("apps/akasha-backend/snapshot"),
+    heartwoodLedger: dataPath("apps/heartwood-backend/agent-runs.jsonl"),
+    entityRegistry: dataPath("ontology/ontology-entity/entity.kdl"),
+  })
+  .strict();
 
 const Llm = z
   .object({
@@ -27,9 +56,9 @@ const Llm = z
 
 const Scribe = z
   .object({
-    dataPath: z.string().default(""),
-    incomingPath: z.string().default(""),
-    tmpPath: z.string().default(""),
+    dataPath: dataPath(""),
+    incomingPath: dataPath(""),
+    tmpPath: dataPath(""),
     stateFile: z.string().default(""),
     downstreamCmd: z.string().default(""),
     keepZip: z.boolean().default(false),
@@ -44,7 +73,10 @@ const Scribe = z
 const Linguist = z
   .object({
     ingestSource: z.string().default(""),
-    ingestSavedDir: z.string().default(""),
+    ingestSavedDir: dataPath(""),
+    // session_transcripts' runtime outputs that are not published datasets.
+    scriptPath: dataPath("apps/linguist/script"),
+    shibbolethPath: dataPath("apps/linguist/script/shibboleth.json"),
     reviewPort: z.number().default(10116),
     podcastEpisodesPath: z.string().default(""),
     surfaceModelJudge: z.string().default("openrouter/z-ai/glm-5.2"),
@@ -66,7 +98,7 @@ const Linguist = z
 
 const Mouthpiece = z
   .object({
-    episodesPath: z.string().default(""),
+    episodesPath: dataPath(""),
     // mouthpiece's own LLM pin (clean/enrich/script), separate from llm.defaultModel.
     model: z.string().default("openrouter/z-ai/glm-5.3"),
     // TTS backend: elevenlabs (live default) | cartesia (Sonic-3, wired) | mock (offline).
@@ -226,8 +258,10 @@ const Heartwood = z
     maxOutputChars: z.number().default(10000),
     backfillBudgetUsd: z.number().default(100),
     // 0036 (Python-only consumers): the Dagster↔host request dir + the asset's wait.
-    requestsPath: z.string().default("/ruby/data/experiments/astra/artifacts/heartwood/requests"),
+    requestsPath: dataPath("artifacts/heartwood/requests"),
     requestTimeoutMinutes: z.number().default(180),
+    // Per-run agent artifacts (staging, diff, summary) + the backfill lock.
+    artifactsPath: dataPath("artifacts/heartwood"),
   })
   .strict();
 
@@ -248,6 +282,8 @@ const MouthpieceProducer = z
       .preprocess(toList, z.array(z.string()))
       .default(["openrouter/z-ai/glm-5.3", "openrouter/deepseek/deepseek-v4.1-flash"]),
     experimentMaxTokens: z.preprocess(toList, z.array(z.number())).default([128000, 64000]),
+    // Per-run producer/experiment/roundtable artifacts.
+    artifactsPath: dataPath("artifacts/mouthpiece-experiments"),
   })
   .strict();
 
@@ -304,21 +340,21 @@ const Codex = z
     serviceName: z.string().default("astra.codex"),
     port: z.number().default(10374),
     publicOrigin: z.string().default("https://codex.iridi.cc"),
-    dataPath: z.string().default("/ruby/data/experiments/astra/apps/codex/data"),
+    dataPath: dataPath("apps/codex/data"),
   })
   .strict();
 
 // menhir (0031) — a Kahoot-style session-opener quiz, on the weal-overlay template
 // (srvx server + SSE fan-out + vite React SPA, no auth per R4). Same config-
 // single-source contract as the other services: server.ts binds this port + names
-// telemetry; no PORT env. resultsPath is the host-absolute JSONL append target
-// (identical-path bind mount, D29-53 convention).
+// telemetry; no PORT env. resultsPath is the JSONL append target (a data path; the
+// container mounts it at the same absolute path, D29-53 convention).
 const Menhir = z
   .object({
     serviceName: z.string().default("astra.menhir"),
     port: z.number().default(10375),
     publicOrigin: z.string().default("https://menhir.iridi.cc"),
-    resultsPath: z.string().default("/ruby/data/experiments/astra/artifacts/menhir/results.jsonl"),
+    resultsPath: dataPath("artifacts/menhir/results.jsonl"),
   })
   .strict();
 
@@ -341,6 +377,7 @@ const Telemetry = z
 // so we hand it the parsed all-defaults object rather than `{}`.
 export const ConfigSchema = z
   .object({
+    data: Data.default(() => Data.parse({})),
     llm: Llm.default(() => Llm.parse({})),
     telemetry: Telemetry.default(() => Telemetry.parse({})),
     scribe: Scribe.default(() => Scribe.parse({})),
@@ -384,9 +421,29 @@ export function defaultConfigFile(): string {
   return join(findRepoRoot(import.meta.dirname), "ontology", "ontology-config", "config.kdl");
 }
 
-/** Parse `config.kdl` → validated `Config` (secrets stay lazy). */
+/** Resolve every relative data-path field against `data.root` (mirrors the py
+ * `Config._resolve_data_paths` validator). Mutates and returns `cfg`. */
+function resolveDataPaths(cfg: Config): Config {
+  const root = process.env[DATA_ROOT_ENV] || cfg.data.root;
+  cfg.data.root = root;
+  if (!root) return cfg;
+  const namespaces = cfg as unknown as Record<string, Record<string, unknown>>;
+  for (const [name, wrapped] of Object.entries(ConfigSchema.shape)) {
+    const shape = wrapped.unwrap().shape as Record<string, z.ZodType>;
+    const values = namespaces[name];
+    if (!values) continue;
+    for (const [field, schema] of Object.entries(shape)) {
+      const value = values[field];
+      if (DATA_PATH_SCHEMAS.has(schema) && typeof value === "string" && value && !isAbsolute(value))
+        values[field] = join(root, value);
+    }
+  }
+  return cfg;
+}
+
+/** Parse `config.kdl` → validated `Config` (secrets stay lazy; data paths absolute). */
 export function loadConfig(path?: string, secretsFile?: string): Config {
   const configPath = path ?? defaultConfigFile();
   const namespaces = topLevelNamespaces(loadDocument(configPath), secretsFile);
-  return ConfigSchema.parse(namespaces);
+  return resolveDataPaths(ConfigSchema.parse(namespaces));
 }

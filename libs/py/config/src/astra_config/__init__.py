@@ -17,6 +17,7 @@ from .kdl import load_document, top_level_namespaces
 from .models import (
     CaddyConfig,
     Config,
+    DataConfig,
     LinguistConfig,
     LlmConfig,
     MouthpieceConfig,
@@ -32,6 +33,7 @@ from .secrets import SecretRef, default_secrets_file, is_blank_secret, resolve_s
 __all__ = [
     "CaddyConfig",
     "Config",
+    "DataConfig",
     "LinguistConfig",
     "LlmConfig",
     "MouthpieceConfig",

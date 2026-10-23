@@ -175,8 +175,7 @@ def _kwargs(tree: dict[str, Any], tmp_path: Path) -> dict[str, Any]:
         "inputs": _inputs(),
         "shows": SHOWS,
         "resolver": fake_resolver,
-        "run_dir": tmp_path / "run",
-        "repo": tmp_path,  # not a git repo → wiki head None, no crash
+        "run_dir": tmp_path / "run",  # content_dir is not in a git repo → wiki head None
     }
 
 

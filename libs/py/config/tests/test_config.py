@@ -82,11 +82,11 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.codex.service_name == "astra.codex"
     assert cfg.codex.port == 10374
     assert cfg.codex.public_origin == "https://codex.iridi.cc"
-    assert cfg.codex.data_path == "/ruby/data/experiments/astra/apps/codex/data"
+    assert cfg.codex.data_path == f"{cfg.data.root}/apps/codex/data"
     assert cfg.menhir.service_name == "astra.menhir"
     assert cfg.menhir.port == 10375
     assert cfg.menhir.public_origin == "https://menhir.iridi.cc"
-    assert cfg.menhir.results_path == "/ruby/data/experiments/astra/artifacts/menhir/results.jsonl"
+    assert cfg.menhir.results_path == f"{cfg.data.root}/artifacts/menhir/results.jsonl"
 
 
 def test_secret_fields_are_lazy_refs_not_plaintext() -> None:
@@ -158,6 +158,48 @@ def test_single_value_producer_lists_load_as_lists(tmp_path: Path) -> None:
     cfg = load_config(one)
     assert cfg.mouthpiece_producer.experiment_models == ["openrouter/z-ai/glm-5.3"]
     assert cfg.mouthpiece_producer.experiment_max_tokens == [128000]
+
+
+def test_real_data_root_resolves_todays_paths(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Without the test override, config.kdl resolves every data path under the live root."""
+    monkeypatch.delenv("ASTRA_DATA_ROOT", raising=False)
+    cfg = load()
+    root = "/ruby/data/experiments/astra"
+    assert cfg.data.root == root
+    assert cfg.data.linguist_transcripts == f"{root}/apps/linguist/transcripts"
+    assert cfg.data.akasha_content == f"{root}/apps/akasha-backend/content"
+    assert cfg.data.entity_registry == f"{root}/ontology/ontology-entity/entity.kdl"
+    assert cfg.scribe.data_path == f"{root}/apps/scribe/data"
+    assert cfg.linguist.ingest_saved_dir == f"{root}/apps/scribe/data/saved"
+    assert cfg.mouthpiece.episodes_path == f"{root}/apps/mouthpiece-backend/episodes"
+    assert cfg.heartwood.requests_path == f"{root}/artifacts/heartwood/requests"
+    assert cfg.orator.data_dir == "/data"  # a container path, not a data path
+
+
+def test_data_paths_resolve_against_the_root(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.delenv("ASTRA_DATA_ROOT", raising=False)
+    kdl = tmp_path / "config.kdl"
+    kdl.write_text(
+        textwrap.dedent("""
+        data {
+            root "/srv/state"
+            akasha-content "/elsewhere/content"
+        }
+        scribe {
+            data-path "scribe/data"
+            state-file ""
+        }
+    """)
+    )
+    cfg = load_config(kdl)
+    assert cfg.scribe.data_path == "/srv/state/scribe/data"  # relative → under root
+    assert cfg.data.akasha_content == "/elsewhere/content"  # absolute → as-is
+    assert cfg.scribe.incoming_path == ""  # empty → unset, not the root
+    assert cfg.data.linguist_data == "/srv/state/apps/linguist/data"  # default, resolved
+    monkeypatch.setenv("ASTRA_DATA_ROOT", "/override")
+    assert load_config(kdl).scribe.data_path == "/override/scribe/data"
 
 
 def test_config_kdl_path_points_at_the_real_file() -> None:

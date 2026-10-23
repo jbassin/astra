@@ -31,29 +31,34 @@ x-dagster-env: &dagster-env
 
 # Pipeline data dirs bind-mounted into every Dagster service (code/webserver/daemon)
 # so the assets' disk-cache seams persist + are shared across the control plane (and
-# with host-dev `uv run dagster dev`, which uses the same host dirs). Host-absolute
-# paths kept (config-single-source: scribe/mouthpiece read them from config.kdl;
-# linguist resolves them package-relative → `/repo/apps/linguist/...` in-container, so
-# its mounts target /repo while scribe/mouthpiece bind same-path under /ruby).
+# with host-dev `uv run dagster dev`, which uses the same host dirs). Every mount is
+# IDENTICAL-PATH (container path == host path): the code reads each path from the baked
+# config.kdl (data.root + the relative data paths), so the same resolved path must exist
+# inside the container. Moving the data = changing config.kdl + these mount pairs.
 x-dagster-volumes: &dagster-pipeline-volumes
   # scribe.incoming-path — the local Craig drop dir (zips copied here from the Drive
   # fuse mount, which Docker can't bind-mount). scribe reads + extracts, never deletes.
   - /ruby/data/experiments/astra/apps/scribe/incoming:/ruby/data/experiments/astra/apps/scribe/incoming
   - /ruby/data/experiments/astra/apps/scribe/data:/ruby/data/experiments/astra/apps/scribe/data
   - /ruby/data/experiments/astra/apps/scribe/tmp:/ruby/data/experiments/astra/apps/scribe/tmp
-  - /ruby/data/experiments/astra/apps/linguist/transcripts:/repo/apps/linguist/transcripts
-  - /ruby/data/experiments/astra/apps/linguist/script:/repo/apps/linguist/script
-  - /ruby/data/experiments/astra/apps/linguist/data:/repo/apps/linguist/data
-  # linguist/timeline is package-relative (chronicle.py) but was NOT mounted — so the
-  # container-written chronicle output (campaign_timeline / session_episode_summary) landed
-  # in the container layer, never reaching the host. Mount it so it persists host-owned.
-  - /ruby/data/experiments/astra/apps/linguist/timeline:/repo/apps/linguist/timeline
+  # data.linguist-{transcripts,data,timeline} + linguist.script-path (which also holds
+  # linguist.shibboleth-path).
+  - /ruby/data/experiments/astra/apps/linguist/transcripts:/ruby/data/experiments/astra/apps/linguist/transcripts
+  - /ruby/data/experiments/astra/apps/linguist/script:/ruby/data/experiments/astra/apps/linguist/script
+  - /ruby/data/experiments/astra/apps/linguist/data:/ruby/data/experiments/astra/apps/linguist/data
+  - /ruby/data/experiments/astra/apps/linguist/timeline:/ruby/data/experiments/astra/apps/linguist/timeline
   - /ruby/data/experiments/astra/apps/mouthpiece-backend/episodes:/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes
   # The akasha wiki, LIVE and read-only (0035 D35-3): the producer (session_brief) and the
   # script fallback's grounding read it. Before this the container read the copy baked in
   # at the last `just up`, missing everything heartwood published since. Nothing in Dagster
-  # writes here (akasha_corpus_snapshot writes apps/akasha-backend/snapshot/).
-  - /ruby/data/experiments/astra/apps/akasha-backend/content:/repo/apps/akasha-backend/content:ro
+  # writes here (akasha_corpus_snapshot writes data.akasha-snapshot, which is not mounted:
+  # that asset needs node, which the image lacks, so it cannot run here anyway).
+  - /ruby/data/experiments/astra/apps/akasha-backend/content:/ruby/data/experiments/astra/apps/akasha-backend/content:ro
+  # data.entity-registry, read-only: session_brief's producer resolves names against it
+  # (astra_ontology_entity.resolve). Before the config-path switch the container read the
+  # copy baked into the image at the last deploy; the directory (not the file) is mounted
+  # so a git checkout/rebase that replaces entity.kdl's inode stays visible.
+  - /ruby/data/experiments/astra/ontology/ontology-entity:/ruby/data/experiments/astra/ontology/ontology-entity:ro
   # heartwood.requests-path (0036): session_wiki files <date>.request.json here and waits for
   # the host heartwood-request unit's <date>.result.json. Identical path on both sides; the
   # dir is created by `just artifacts-init` as uid 1000 (Docker would create it as root).

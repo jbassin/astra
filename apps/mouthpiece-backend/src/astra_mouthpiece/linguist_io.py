@@ -3,8 +3,8 @@
 linguist writes a **canonical** line-numbered transcript (`<stem>.<date>.txt`,
 `NNNNNN\\tSpeaker: text`) and a mouthpiece **context** per date partition. The
 clean+enrich stage (0024) reads the canonical transcript.
-Locating linguist's output dirs via the package keeps the contract explicit
-without re-deriving paths; parsing is pure + unit-tested.
+Both dirs come from config (`data.linguist-transcripts`, `linguist.script-path`);
+parsing is pure + unit-tested.
 """
 
 from __future__ import annotations
@@ -13,13 +13,10 @@ import re
 from collections.abc import Iterable
 from pathlib import Path
 
-import astra_linguist
-from astra_linguist.chronicle import load_episode_summary, show_for_date
+from astra_config import load_config
+from astra_linguist.chronicle import TRANSCRIPT_DIR, load_episode_summary, show_for_date
 
-# linguist's assets.py writes under its app root: APP_ROOT/{transcripts,script}.
-_LINGUIST_ROOT = Path(astra_linguist.__file__).resolve().parents[2]
-TRANSCRIPT_DIR = _LINGUIST_ROOT / "transcripts"
-CONTEXT_DIR = _LINGUIST_ROOT / "script"
+CONTEXT_DIR = Path(load_config().linguist.script_path)
 
 # "<stem>.<date>.txt", e.g. "000.through-a-song-darkly.2025-10-20.txt".
 _FILENAME_RE = re.compile(r"^(?P<stem>.+)\.(?P<date>\d{4}-\d{1,2}-\d{1,2})\.txt$")

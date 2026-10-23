@@ -17,6 +17,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
+from astra_config import load_config
 from astra_observe import get_tracer, init_telemetry, shutdown
 
 from .corpus import CONTENT_DIR, Page, load_corpus
@@ -24,10 +25,12 @@ from .crossref import Edge, resolve_corpus
 
 _tracer = get_tracer("astra.akasha-backend")
 
+# Code paths (the repo checkout this package runs from), not data.
 # parents: [0] package, [1] src, [2] akasha-backend (app root).
 APP_ROOT = Path(__file__).resolve().parents[2]
 REPO_ROOT = APP_ROOT.parents[1]  # apps/ → repo root
-SNAPSHOT_PATH = APP_ROOT / "snapshot" / "akasha-snapshot.json"
+#: The committed snapshot JSON (config `data.akasha-snapshot`).
+SNAPSHOT_PATH = Path(load_config().data.akasha_snapshot) / "akasha-snapshot.json"
 #: The TS structural validator (F3) — the Dagster asset shells out to it.
 VALIDATOR = REPO_ROOT / "libs/ts/vellum-lang/scripts/validate-corpus.ts"
 #: Node ESM resolve hook (0022 S11 — off bun): lets Node walk the workspace's
@@ -114,7 +117,7 @@ def main() -> None:
         unresolved = snapshot["unresolved"]
         print(
             f"snapshot: {len(pages)} pages, {len(edges)} crossref edges, "
-            f"{len(unresolved)} unresolved → {SNAPSHOT_PATH.relative_to(REPO_ROOT)}"
+            f"{len(unresolved)} unresolved → {SNAPSHOT_PATH}"
         )
     finally:
         shutdown()  # console_script exit → flush the run's spans/metrics/logs

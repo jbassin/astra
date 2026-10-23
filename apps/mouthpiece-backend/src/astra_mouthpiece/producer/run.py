@@ -28,7 +28,6 @@ from typing import Any, Literal
 
 import dspy
 from astra_akasha_backend.corpus import CONTENT_DIR
-from astra_akasha_backend.snapshot import REPO_ROOT
 from astra_config import load_config
 from astra_config.models import MouthpieceProducerConfig
 from astra_linguist.chronicle import (
@@ -64,8 +63,7 @@ RunStatus = Literal["ok", "incomplete", "failed"]
 LmFactory = Callable[[str, str], Any]
 InterpreterFactory = Callable[[], Any]
 
-ARTIFACTS_ROOT = REPO_ROOT / "artifacts" / "mouthpiece-experiments"
-WIKI_TREE = "apps/akasha-backend/content"
+ARTIFACTS_ROOT = Path(load_config().mouthpiece_producer.artifacts_path)
 
 
 def budget_note(step: int, max_iterations: int) -> str:
@@ -86,23 +84,29 @@ def render_transcript(turns: list[tuple[int, str, str]]) -> str:
     return "\n".join(f"{i}\t{speaker}: {text}" for i, speaker, text in turns)
 
 
-def wiki_head(repo: Path = REPO_ROOT) -> dict[str, Any]:
-    """The last commit touching the wiki tree + whether it has local changes (D34-5)."""
+def wiki_head(content_dir: Path = CONTENT_DIR) -> dict[str, Any]:
+    """The last commit touching the wiki tree + whether it has local changes (D34-5).
+
+    Asks git from inside ``content_dir``, so it works whichever repo holds the wiki.
+    """
 
     def git(*args: str) -> str:
         # The dagster-code image has no git; subprocess.run raises FileNotFoundError for a
         # missing binary whatever check= says (0035 D35-7) — degrade to "unknown".
         try:
             proc = subprocess.run(
-                ["git", "-C", str(repo), *args], capture_output=True, text=True, check=False
+                ["git", "-C", str(content_dir), *args],
+                capture_output=True,
+                text=True,
+                check=False,
             )
         except OSError:
             return ""
         return proc.stdout.strip() if proc.returncode == 0 else ""
 
     return {
-        "sha": git("log", "-1", "--format=%h", "--", WIKI_TREE) or None,
-        "dirty": bool(git("status", "--porcelain", "--", WIKI_TREE)),
+        "sha": git("log", "-1", "--format=%h", "--", ".") or None,
+        "dirty": bool(git("status", "--porcelain", "--", ".")),
     }
 
 
@@ -194,7 +198,6 @@ def run_producer(
     scripts_root: Path | None = None,
     shows: dict[str, ShowInfo] | None = None,
     resolver: Callable[[str], Resolution] = resolve,
-    repo: Path = REPO_ROOT,
 ) -> ProducerResult:
     """Run the producer over session ``date`` and write its artifacts into ``run_dir``.
 
@@ -206,7 +209,7 @@ def run_producer(
     inp = inputs or load_inputs(date, transcript_dir=transcript_dir, shows=shows)
     out = run_dir if run_dir is not None else ARTIFACTS_ROOT / date / new_run_id()
     out.mkdir(parents=True, exist_ok=True)
-    head_start = wiki_head(repo)
+    head_start = wiki_head(content_dir)
 
     impl = ProducerTools(
         target_date=date,
@@ -299,7 +302,7 @@ def run_producer(
             block = render_brief(brief)
 
         status = determine_status(error=error, hit_cap=rlm.hit_cap, has_brief=brief is not None)
-        head_end = wiki_head(repo)
+        head_end = wiki_head(content_dir)
         artifacts: dict[str, Path] = {}
         if brief is not None:
             artifacts["brief"] = _write_json(out / "brief.json", brief.model_dump())

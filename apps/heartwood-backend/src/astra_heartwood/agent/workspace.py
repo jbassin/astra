@@ -50,11 +50,11 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from astra_akasha_backend.corpus import CONTENT_DIR
-from astra_akasha_backend.snapshot import REPO_ROOT
+from astra_config import load_config
 from pydantic import BaseModel
 
-#: Run artifacts root (repo-root ``artifacts/`` is gitignored + dockerignored).
-ARTIFACTS_ROOT = REPO_ROOT / "artifacts" / "heartwood"
+#: Run artifacts root (config `heartwood.artifacts-path`; gitignored + dockerignored).
+ARTIFACTS_ROOT = Path(load_config().heartwood.artifacts_path)
 PAGE_SUFFIX = ".vellum"
 
 

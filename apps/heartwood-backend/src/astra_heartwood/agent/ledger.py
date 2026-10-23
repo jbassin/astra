@@ -26,9 +26,10 @@ import json
 from pathlib import Path
 from typing import Any
 
-from astra_akasha_backend.snapshot import REPO_ROOT
+from astra_config import load_config
 
-LEDGER_PATH = REPO_ROOT / "apps" / "heartwood-backend" / "agent-runs.jsonl"
+#: The run ledger (config `data.heartwood-ledger`).
+LEDGER_PATH = Path(load_config().data.heartwood_ledger)
 COUNT_KEYS = ("created", "updated", "moved", "deleted")
 
 

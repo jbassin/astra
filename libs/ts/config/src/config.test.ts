@@ -150,4 +150,34 @@ describe("@astra/config", () => {
     expect(cfg.mouthpieceProducer.experimentModels).toEqual(["openrouter/z-ai/glm-5.3"]);
     expect(cfg.mouthpieceProducer.experimentMaxTokens).toEqual([128000]);
   });
+
+  test("real config.kdl resolves data paths under data.root", () => {
+    const cfg = loadConfig();
+    const root = "/ruby/data/experiments/astra";
+    expect(cfg.data.root).toBe(root);
+    expect(cfg.data.akashaContent).toBe(`${root}/apps/akasha-backend/content`);
+    expect(cfg.data.linguistData).toBe(`${root}/apps/linguist/data`);
+    expect(cfg.scribe.dataPath).toBe(`${root}/apps/scribe/data`);
+    expect(cfg.mouthpiece.episodesPath).toBe(`${root}/apps/mouthpiece-backend/episodes`);
+    expect(cfg.orator.dataDir).toBe("/data"); // a container path, not a data path
+  });
+
+  test("data paths: relative → under root, absolute as-is, empty stays unset", async () => {
+    const tmp = `${process.env.TMPDIR ?? "/tmp"}/astra-config-data-${Date.now()}.kdl`;
+    await writeFile(
+      tmp,
+      'data {\n  root "/srv/state"\n  akasha-content "/elsewhere/content"\n}\nscribe {\n  data-path "scribe/data"\n}\n',
+    );
+    const cfg = loadConfig(tmp);
+    expect(cfg.scribe.dataPath).toBe("/srv/state/scribe/data");
+    expect(cfg.data.akashaContent).toBe("/elsewhere/content");
+    expect(cfg.scribe.incomingPath).toBe("");
+    expect(cfg.data.linguistData).toBe("/srv/state/apps/linguist/data");
+    process.env.ASTRA_DATA_ROOT = "/override";
+    try {
+      expect(loadConfig(tmp).scribe.dataPath).toBe("/override/scribe/data");
+    } finally {
+      delete process.env.ASTRA_DATA_ROOT;
+    }
+  });
 });

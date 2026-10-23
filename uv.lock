@@ -257,6 +257,7 @@ name = "astra-akasha-backend"
 version = "0.0.0"
 source = { editable = "apps/akasha-backend" }
 dependencies = [
+    { name = "astra-config" },
     { name = "astra-observe" },
     { name = "astra-vellum-lang" },
     { name = "dagster" },
@@ -265,6 +266,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "astra-config", editable = "libs/py/config" },
     { name = "astra-observe", editable = "libs/py/observe" },
     { name = "astra-vellum-lang", editable = "libs/py/vellum-lang" },
     { name = "dagster" },
@@ -505,6 +507,7 @@ name = "astra-ontology-entity"
 version = "0.0.0"
 source = { editable = "ontology/ontology-entity" }
 dependencies = [
+    { name = "astra-config" },
     { name = "astra-lexicon" },
     { name = "astra-observe" },
     { name = "astra-ontology" },
@@ -513,6 +516,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "astra-config", editable = "libs/py/config" },
     { name = "astra-lexicon", editable = "libs/py/lexicon" },
     { name = "astra-observe", editable = "libs/py/observe" },
     { name = "astra-ontology", editable = "libs/py/ontology" },

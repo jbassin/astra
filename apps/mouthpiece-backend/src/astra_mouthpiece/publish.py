@@ -16,10 +16,12 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+from astra_config import load_config
+
 from .episodes_index import INDEX_FILENAME
 
-#: The committed snapshot the frontend's build-content reads (app-relative, stable).
-SNAPSHOT_PATH = Path(__file__).resolve().parents[2] / "snapshot" / INDEX_FILENAME
+#: The committed snapshot the frontend's build-content reads (config `data.mouthpiece-snapshot`).
+SNAPSHOT_PATH = Path(load_config().data.mouthpiece_snapshot) / INDEX_FILENAME
 
 
 def publish_snapshot(snapshot_path: Path = SNAPSHOT_PATH) -> int:

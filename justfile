@@ -197,7 +197,10 @@ linguist-commit:
     # commit mid-add, heartwood's publish) stays staged and out of this commit — the timer
     # swept foreign staged files five times before this. `--only` takes the exact changed
     # file list (not the dirs): a dir pathspec with no file left in HEAD/index hard-errors.
-    lpaths=(apps/linguist/transcripts apps/linguist/data apps/linguist/timeline)
+    # The linguist datasets, from config.kdl (absolute paths; git accepts them as pathspecs).
+    mapfile -t lpaths < <({{uv_bin}} run python -m astra_ontology_config \
+      data.linguist-transcripts data.linguist-data data.linguist-timeline)
+    if [ "${#lpaths[@]}" -ne 3 ]; then echo "linguist-commit: could not read data paths from config" >&2; exit 1; fi
     git add "${lpaths[@]}"
     changed=""
     if ! git diff --cached --quiet -- "${lpaths[@]}"; then
@@ -216,11 +219,11 @@ linguist-commit:
     else
       echo "linguist-commit: nothing to push"
     fi
-    # If this run committed akasha content (it reads apps/linguist/{transcripts,data,timeline} at build),
-    # rebuild + redeploy the wiki so the new sessions actually appear. `just deploy` builds from
-    # the deploy checkout at origin/main, which the push above just updated; a failed build
-    # leaves the running container untouched (no downtime).
-    if printf '%s\n' "$changed" | grep -qE '^apps/linguist/(transcripts|data|timeline)/'; then
+    # If this run committed akasha content (it reads the linguist transcripts/data/timeline at
+    # build), rebuild + redeploy the wiki so the new sessions actually appear. `just deploy`
+    # builds from the deploy checkout at origin/main, which the push above just updated; a
+    # failed build leaves the running container untouched (no downtime).
+    if [ -n "$changed" ]; then
       echo "linguist-commit: akasha content changed — seeding audio + rebuilding + redeploying akasha-frontend"
       # The new session's combined recording is already on disk (scribe wrote it before
       # linguist produced the transcript); land it in the audio volume before redeploy so
@@ -238,7 +241,7 @@ linguist-commit:
     # lands. A separate commit (own message); on change, seed the audio volume + redeploy the
     # frontend. Non-fatal: a publish/redeploy hiccup must not fail the linguist push above.
     if {{just_executable()}} mouthpiece-publish; then
-      mp_snapshot=apps/mouthpiece-backend/snapshot/episodes-index.json
+      mp_snapshot="$({{uv_bin}} run python -m astra_ontology_config data.mouthpiece-snapshot)/episodes-index.json"
       git add "$mp_snapshot"
       if ! git diff --cached --quiet -- "$mp_snapshot"; then
         git commit --no-verify -q --only \
@@ -672,10 +675,11 @@ heartwood-agent date *flags:
     # has no nvm — 0036 review B1). Same order as astra_heartwood.agent.validate.find_node.
     node_bin="$(command -v node || ls -1d "$HOME"/.nvm/versions/node/v*/bin/node 2>/dev/null | sort -V | tail -n 1)"
     if [ -z "$node_bin" ]; then echo "heartwood: node not found (PATH or ~/.nvm) — nothing done" >&2; exit 1; fi
-    content=apps/akasha-backend/content
-    snapshot=apps/akasha-backend/snapshot
-    ledger=apps/heartwood-backend/agent-runs.jsonl
-    entity=ontology/ontology-entity/entity.kdl
+    # The wiki datasets, from config.kdl (absolute paths; git accepts them as pathspecs).
+    mapfile -t dpaths < <("{{uv_bin}}" run python -m astra_ontology_config \
+      data.akasha-content data.akasha-snapshot data.heartwood-ledger data.entity-registry)
+    if [ "${#dpaths[@]}" -ne 4 ]; then echo "heartwood: could not read data paths from config" >&2; exit 1; fi
+    content="${dpaths[0]}"; snapshot="${dpaths[1]}"; ledger="${dpaths[2]}"; entity="${dpaths[3]}"
     restore="git checkout -- $content $snapshot $entity && git clean -fd $content"
     # (0) a dirty corpus would be staged into the run and then committed under its name.
     dirty="$(git status --porcelain -- "$content" "$ledger" "$entity")"
@@ -801,10 +805,11 @@ heartwood-revert date:
     # has no nvm — 0036 review B1). Same order as astra_heartwood.agent.validate.find_node.
     node_bin="$(command -v node || ls -1d "$HOME"/.nvm/versions/node/v*/bin/node 2>/dev/null | sort -V | tail -n 1)"
     if [ -z "$node_bin" ]; then echo "heartwood: node not found (PATH or ~/.nvm) — nothing done" >&2; exit 1; fi
-    content=apps/akasha-backend/content
-    snapshot=apps/akasha-backend/snapshot
-    ledger=apps/heartwood-backend/agent-runs.jsonl
-    entity=ontology/ontology-entity/entity.kdl
+    # The wiki datasets, from config.kdl (absolute paths; git accepts them as pathspecs).
+    mapfile -t dpaths < <("{{uv_bin}}" run python -m astra_ontology_config \
+      data.akasha-content data.akasha-snapshot data.heartwood-ledger data.entity-registry)
+    if [ "${#dpaths[@]}" -ne 4 ]; then echo "heartwood: could not read data paths from config" >&2; exit 1; fi
+    content="${dpaths[0]}"; snapshot="${dpaths[1]}"; ledger="${dpaths[2]}"; entity="${dpaths[3]}"
     dirty="$(git status --porcelain -- "$content" "$snapshot" "$ledger" "$entity")"
     if [ -n "$dirty" ]; then
       echo "heartwood-revert: refusing — uncommitted changes:" >&2; printf '%s\n' "$dirty" >&2; exit 6

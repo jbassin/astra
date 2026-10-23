@@ -18,6 +18,7 @@ import json
 from pathlib import Path
 
 import dagster as dg
+from astra_config import load_config
 from astra_lexicon import DEFS_PATH, build_lexicon, load_corrections
 from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
@@ -28,6 +29,7 @@ from .chronicle import (
     EPISODES_DIR,
     SEASONS_PATH,
     TIMELINE_DIR,
+    TRANSCRIPT_DIR,
     Chronicle,
     chronicle_inputs_hash,
     load_episode_entries,
@@ -50,11 +52,10 @@ _episodes_counter = _meter.create_counter(
     "astra.chronicle.episodes", description="chronicle episode summaries generated"
 )
 
-APP_ROOT = Path(__file__).resolve().parents[2]
-DATA_DIR = APP_ROOT / "data"
-SCRIPT_DIR = APP_ROOT / "script"
-TRANSCRIPT_DIR = APP_ROOT / "transcripts"
-SHIBBOLETH_PATH = APP_ROOT / "shibboleth.json"
+_CFG = load_config()
+DATA_DIR = Path(_CFG.data.linguist_data)
+SCRIPT_DIR = Path(_CFG.linguist.script_path)
+SHIBBOLETH_PATH = Path(_CFG.linguist.shibboleth_path)
 # Same-origin base: akasha-frontend serves the combined recording at /audio/<date>.mp3
 # off its audio volume (akasha also build-time-normalizes, so the form is belt-and-
 # suspenders). Replaces the old absolute faerrin static-audio.iridi.cc host.

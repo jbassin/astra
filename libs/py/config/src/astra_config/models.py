@@ -8,15 +8,42 @@ turns a mistyped KDL key into a loud error instead of a silent drop.
 
 from __future__ import annotations
 
-from typing import Literal
+import os
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from .secrets import SecretRef
+
+#: Marks a field as a data path: a relative value is resolved against ``data.root``
+#: when the config loads, so code always sees an absolute path. An absolute value
+#: (e.g. a container-only path) and an empty value (unset) pass through unchanged.
+DATA_PATH = "astra:data-path"
+DataPath = Annotated[str, DATA_PATH]
+
+#: Overrides ``data.root``. A test and dev seam only: the repo's root conftest points it
+#: at the checkout so pytest reads the checkout's tracked data, not the live data root.
+DATA_ROOT_ENV = "ASTRA_DATA_ROOT"
 
 
 class _Base(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, extra="forbid")
+
+
+class DataConfig(_Base):
+    # The one root every data path in this config is relative to: the pipeline's
+    # published datasets below, and each service's own state paths (scribe.data-path,
+    # mouthpiece.episodes-path, ...). Moving the data is a change of these values.
+    root: str = ""
+    # The pipeline's published datasets (the astra-data layout).
+    linguist_transcripts: DataPath = "apps/linguist/transcripts"
+    linguist_data: DataPath = "apps/linguist/data"
+    linguist_timeline: DataPath = "apps/linguist/timeline"
+    mouthpiece_snapshot: DataPath = "apps/mouthpiece-backend/snapshot"
+    akasha_content: DataPath = "apps/akasha-backend/content"
+    akasha_snapshot: DataPath = "apps/akasha-backend/snapshot"
+    heartwood_ledger: DataPath = "apps/heartwood-backend/agent-runs.jsonl"
+    entity_registry: DataPath = "ontology/ontology-entity/entity.kdl"
 
 
 class LlmConfig(_Base):
@@ -37,9 +64,9 @@ class TelemetryConfig(_Base):
 
 
 class ScribeConfig(_Base):
-    data_path: str = ""
-    incoming_path: str = ""
-    tmp_path: str = ""
+    data_path: DataPath = ""
+    incoming_path: DataPath = ""
+    tmp_path: DataPath = ""
     state_file: str = ""
     downstream_cmd: str = ""
     keep_zip: bool = False
@@ -52,7 +79,10 @@ class ScribeConfig(_Base):
 
 class LinguistConfig(_Base):
     ingest_source: str = ""
-    ingest_saved_dir: str = ""
+    ingest_saved_dir: DataPath = ""
+    # Runtime outputs of session_transcripts that are not published datasets.
+    script_path: DataPath = "apps/linguist/script"
+    shibboleth_path: DataPath = "apps/linguist/script/shibboleth.json"
     review_port: int = 10116
     podcast_episodes_path: str = ""
     # Phase-2 judge models + Phase-1 filter / windowing tuning (faerrin `config.ts` `surface`).
@@ -73,7 +103,7 @@ class LinguistConfig(_Base):
 
 
 class MouthpieceConfig(_Base):
-    episodes_path: str = ""
+    episodes_path: DataPath = ""
     # The LLM for mouthpiece's clean/enrich/script calls — its OWN pin, separate from
     # `llm.default-model` (linguist's compiled judge + heartwood stay on that one).
     model: str = "openrouter/z-ai/glm-5.3"
@@ -220,8 +250,10 @@ class HeartwoodConfig(_Base):
     backfill_budget_usd: float = 100.0
     # 0036: the Dagster↔host request dir (same path in the containers) and how long the
     # session_wiki asset waits for the host runner's result before failing.
-    requests_path: str = "/ruby/data/experiments/astra/artifacts/heartwood/requests"
+    requests_path: DataPath = "artifacts/heartwood/requests"
     request_timeout_minutes: int = 180
+    # Per-run agent artifacts (staging, diff, summary) + the backfill lock.
+    artifacts_path: DataPath = "artifacts/heartwood"
 
 
 class MouthpieceProducerConfig(_Base):
@@ -240,6 +272,8 @@ class MouthpieceProducerConfig(_Base):
         "openrouter/deepseek/deepseek-v4.1-flash",
     ]
     experiment_max_tokens: list[int] = [128000, 64000]
+    # Per-run producer/experiment/roundtable artifacts.
+    artifacts_path: DataPath = "artifacts/mouthpiece-experiments"
 
     @field_validator("experiment_models", "experiment_max_tokens", mode="before")
     @classmethod
@@ -292,19 +326,19 @@ class CodexConfig(_Base):
     service_name: str = "astra.codex"
     port: int = 10374
     public_origin: str = "https://codex.iridi.cc"
-    data_path: str = "/ruby/data/experiments/astra/apps/codex/data"
+    data_path: DataPath = "apps/codex/data"
 
 
 class MenhirConfig(_Base):
     # menhir (0031) — a Kahoot-style session-opener quiz, on the weal-overlay
     # template (srvx server + SSE fan-out + vite React SPA, no auth per R4). Same
     # config-single-source contract: server.ts binds this port + names telemetry;
-    # no PORT env. results_path is the host-absolute JSONL append target
-    # (identical-path bind mount, D29-53 convention).
+    # no PORT env. results_path is the JSONL append target (a data path; the
+    # container mounts it at the same absolute path, D29-53 convention).
     service_name: str = "astra.menhir"
     port: int = 10375
     public_origin: str = "https://menhir.iridi.cc"
-    results_path: str = "/ruby/data/experiments/astra/artifacts/menhir/results.jsonl"
+    results_path: DataPath = "artifacts/menhir/results.jsonl"
 
 
 class CaddyConfig(_Base):
@@ -312,6 +346,7 @@ class CaddyConfig(_Base):
 
 
 class Config(_Base):
+    data: DataConfig = Field(default_factory=DataConfig)
     llm: LlmConfig = Field(default_factory=LlmConfig)
     telemetry: TelemetryConfig = Field(default_factory=TelemetryConfig)
     scribe: ScribeConfig = Field(default_factory=ScribeConfig)
@@ -335,3 +370,18 @@ class Config(_Base):
     codex: CodexConfig = Field(default_factory=CodexConfig)
     menhir: MenhirConfig = Field(default_factory=MenhirConfig)
     caddy: CaddyConfig = Field(default_factory=CaddyConfig)
+
+    @model_validator(mode="after")
+    def _resolve_data_paths(self) -> Config:
+        """Resolve every relative ``DataPath`` field against ``data.root``."""
+        root = os.environ.get(DATA_ROOT_ENV) or self.data.root
+        self.data.root = root
+        if not root:
+            return self
+        for name in type(self).model_fields:
+            namespace = getattr(self, name)
+            for field, info in type(namespace).model_fields.items():
+                value = getattr(namespace, field)
+                if DATA_PATH in info.metadata and value and not os.path.isabs(value):
+                    setattr(namespace, field, os.path.join(root, value))
+        return self

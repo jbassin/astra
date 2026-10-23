@@ -20,14 +20,15 @@ import hashlib
 import json
 from pathlib import Path
 
+from astra_config import load_config
 from astra_ontology import load_being
 from astra_ontology.models import Being
 from astra_ontology_being import BEING_KDL_PATH
 from pydantic import BaseModel, Field
 
-APP_ROOT = Path(__file__).resolve().parents[2]
-TRANSCRIPT_DIR = APP_ROOT / "transcripts"
-TIMELINE_DIR = APP_ROOT / "timeline"
+_DATA = load_config().data
+TRANSCRIPT_DIR = Path(_DATA.linguist_transcripts)
+TIMELINE_DIR = Path(_DATA.linguist_timeline)
 EPISODES_DIR = TIMELINE_DIR / "episodes"
 SEASONS_PATH = TIMELINE_DIR / "seasons.json"
 

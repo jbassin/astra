@@ -6,6 +6,26 @@
 // code-defaults; deployment-specific values (URLs, paths) are set per-deploy via the
 // env override (an env var named like the KEY, upper-cased) or by editing this file.
 
+data {
+    // Every data path in this file (the datasets below and each service's own state
+    // paths: scribe.data-path, mouthpiece.episodes-path, heartwood.requests-path, ...)
+    // is relative to `root`; astra_config resolves them to absolute paths at load, so
+    // code only ever sees absolute paths. Moving the data = changing these values (plus
+    // the identical-path bind mounts in deploy/docker-compose.yml, whose container paths
+    // must equal the resolved paths so this baked file means the same thing everywhere).
+    // An absolute value is used as-is.
+    root "/ruby/data/experiments/astra"
+    // The pipeline's published datasets (the astra-data layout).
+    linguist-transcripts "apps/linguist/transcripts"
+    linguist-data "apps/linguist/data"
+    linguist-timeline "apps/linguist/timeline"
+    mouthpiece-snapshot "apps/mouthpiece-backend/snapshot"
+    akasha-content "apps/akasha-backend/content"
+    akasha-snapshot "apps/akasha-backend/snapshot"
+    heartwood-ledger "apps/heartwood-backend/agent-runs.jsonl"
+    entity-registry "ontology/ontology-entity/entity.kdl"
+}
+
 llm {
     // mouthpiece runs on GLM 5.2 (open-weight MoE, routed via OpenRouter) — a
     // debate-format recap podcast; cheaper than Opus and free of the Anthropic
@@ -47,9 +67,9 @@ scribe {
     // bind-mount (FUSE isn't in the daemon's namespace) — so zips are copied here from
     // Drive (e.g. `cp /ruby/data/home/drive/Craig/*.zip apps/scribe/incoming/`, or a
     // host-side rclone sync). The craig_drop_sensor globs it for *.zip; keep-zip unused.
-    data-path "/ruby/data/experiments/astra/apps/scribe/data"
-    incoming-path "/ruby/data/experiments/astra/apps/scribe/incoming"
-    tmp-path "/ruby/data/experiments/astra/apps/scribe/tmp"
+    data-path "apps/scribe/data"
+    incoming-path "apps/scribe/incoming"
+    tmp-path "apps/scribe/tmp"
     state-file ""
     downstream-cmd ""
     keep-zip #false
@@ -66,7 +86,12 @@ linguist {
     ingest-source ""
     // INVARIANT: must equal scribe's {data-path}/saved — the scribe→linguist handoff
     // (scribe writes saved/{date}/script.json; the linguist sensor + ingest read it).
-    ingest-saved-dir "/ruby/data/experiments/astra/apps/scribe/data/saved"
+    ingest-saved-dir "apps/scribe/data/saved"
+    // session_transcripts' non-published outputs, both read by nothing today: the
+    // campaign-matched LLM context and the shibboleth campaign map. The shibboleth lives
+    // in the script dir because that dir is bind-mounted writable into the containers.
+    script-path "apps/linguist/script"
+    shibboleth-path "apps/linguist/script/shibboleth.json"
     review-port 10116
     podcast-episodes-path ""
     // Phase-2 judge models + Phase-1 filter / windowing tuning (faerrin `config.ts` `surface`).
@@ -92,11 +117,10 @@ linguist {
 
 mouthpiece {
     // Where the per-session asset graph writes (digest/script/clips/episode.mp3/
-    // transcript.md per session) + the episodes_index asset globs. Host-absolute
-    // under the repo, bind-mounted into the Dagster services at the same path (deploy/
-    // docker-compose.yml). Empty would resolve to the cwd — set it so a real pipeline
+    // transcript.md per session) + the episodes_index asset globs. Bind-mounted
+    // into the Dagster services at the same path (deploy/docker-compose.yml). Empty would resolve to the cwd — set it so a real pipeline
     // run lands here. (NB the mouthpiece-FRONTEND audio volume is separate, D2.)
-    episodes-path "/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes"
+    episodes-path "apps/mouthpiece-backend/episodes"
     // mouthpiece's OWN model for clean/enrich + the two-pass script — GLM 5.3 via
     // OpenRouter (2026-09). Deliberately separate from llm.default-model: linguist's
     // compiled dspy judge + heartwood were tuned on GLM 5.2 and stay there.
@@ -271,10 +295,11 @@ heartwood {
     max-output-chars 10000 // REPL output shown back per iteration (dspy default)
     backfill-budget-usd 100 // cumulative backfill ceiling — stakeholder 2026-10-10 (≈2× the ~$50 estimate)
     // 0036: the Dagster session_wiki asset files <date>.request.json here and waits for the
-    // host runner's <date>.result.json. Host-absolute; bind-mounted at the SAME path into the
-    // Dagster services (deploy/docker-compose.yml) and created by `just artifacts-init`.
-    requests-path "/ruby/data/experiments/astra/artifacts/heartwood/requests"
+    // host runner's <date>.result.json. Bind-mounted at the SAME path into the Dagster
+    // services (deploy/docker-compose.yml) and created by `just artifacts-init`.
+    requests-path "artifacts/heartwood/requests"
     request-timeout-minutes 180 // how long session_wiki waits for the host before failing
+    artifacts-path "artifacts/heartwood" // per-run agent artifacts + the backfill lock
 }
 
 mouthpiece-producer {
@@ -293,6 +318,7 @@ mouthpiece-producer {
     // GLM writes the scripts; DeepSeek stays the producer). Add it back to compare again.
     experiment-models "openrouter/z-ai/glm-5.3"
     experiment-max-tokens 128000
+    artifacts-path "artifacts/mouthpiece-experiments" // per-run producer/roundtable artifacts
 }
 
 portal {
@@ -352,7 +378,7 @@ codex {
     service-name "astra.codex"
     port 10374
     public-origin "https://codex.iridi.cc"
-    data-path "/ruby/data/experiments/astra/apps/codex/data"
+    data-path "apps/codex/data"
 }
 
 menhir {
@@ -360,12 +386,12 @@ menhir {
     // template (srvx server + SSE fan-out + vite React SPA, no auth per R4). Same
     // config-single-source contract: server.ts binds this port + names telemetry;
     // no PORT env. Behind Caddy at menhir.iridi.cc → host 10375. results-path is the
-    // host-absolute JSONL append target (identical-path bind mount, D29-53
-    // convention — plain config fields have no env override).
+    // JSONL append target (identical-path bind mount, D29-53 convention — plain config
+    // fields have no env override).
     service-name "astra.menhir"
     port 10375
     public-origin "https://menhir.iridi.cc"
-    results-path "/ruby/data/experiments/astra/artifacts/menhir/results.jsonl"
+    results-path "artifacts/menhir/results.jsonl"
 }
 
 caddy {
