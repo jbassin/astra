@@ -17,8 +17,8 @@ jobs:
   # Every lint/test job runs one `just <job>` recipe (same name as the job), so `just ci`
   # locally runs exactly these commands; the setup steps stay here.
   # Path filter: only run a lane when files it cares about changed.
-  # apps/** feeds BOTH lanes because an app may be either language; each lane's
-  # tooling only acts on members it actually owns (manifest-decided membership).
+  # Python lives only in apps/<domain>/py/ (ADR 0015), so the py lane watches those;
+  # the ts lane keeps apps/** (every other role dir is a pnpm member).
   changes:
     runs-on: ubuntu-latest
     outputs:
@@ -34,7 +34,7 @@ jobs:
         with:
           filters: |
             py:
-              - 'apps/**'
+              - 'apps/*/py/**'
               - 'libs/py/**'
               - 'ontology/**'
               # dagster/ and deploy/ are under ruff and ty.
@@ -79,7 +79,7 @@ jobs:
             # The render output depends on the service + the renderer (gothic) + the
             # parser (vellum-lang); a change to any can shift the goldens.
             vellumRender:
-              - 'apps/vellum-render/**'
+              - 'apps/vellum/render/**'
               - 'libs/ts/gothic/**'
               - 'libs/ts/vellum-lang/**'
               - 'pnpm-lock.yaml'
@@ -88,7 +88,7 @@ jobs:
             # P9 S1 (D29-83) — the row-pitch drift guard needs a real Chromium,
             # same "own pinned-container job" posture as vellumRender above.
             codex:
-              - 'apps/codex/**'
+              - 'apps/codex/web/**'
               - 'libs/ts/site-kit/**'
               - 'libs/ts/observe/**'
               - 'libs/ts/config/**'
@@ -208,20 +208,20 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # `playwright` is a devDependency of vellum-render only (pnpm's strict layout
       # doesn't hoist it to the root node_modules `npx` would search from root) — run
-      # from the app dir, matching apps/vellum-render/Dockerfile's `npx playwright
-      # install` (also run from WORKDIR /repo/apps/vellum-render).
-      - run: cd apps/vellum-render && npx playwright install --with-deps chromium
+      # from the app dir, matching apps/vellum/render/Dockerfile's `npx playwright
+      # install` (also run from WORKDIR /repo/apps/vellum/render).
+      - run: cd apps/vellum/render && npx playwright install --with-deps chromium
       - run: just vellum-visual-regression
 
   # P9 S1 (D29-83) — the listing row-pitch drift guard: a real Chromium probe
   # asserting `getBoundingClientRect().height === 24` on a rendered
   # `.codex-listing-row`, at both container tiers. Fixed-size windowing has no
   # self-correction if the live rendered height ever drifts off the token — see
-  # `apps/codex/scripts/rowHeightDriftGuard.ts`'s own header for the "proxy-pin
+  # `apps/codex/web/scripts/rowHeightDriftGuard.ts`'s own header for the "proxy-pin
   # class" this exists to catch. Same pinned-container posture as
   # vellum-visual-regression above (this repo's established pattern for a real-
   # Chromium CI check); runs against the committed FIXTURE corpus (CI has no
-  # `apps/codex/data/`, D29-23's own fallback) — hermetic, no real-corpus data
+  # `apps/codex/web/data/`, D29-23's own fallback) — hermetic, no real-corpus data
   # asserted on, only CSS-driven row geometry.
   codex-row-height-drift-guard:
     needs: changes
@@ -237,7 +237,7 @@ jobs:
       - uses: ./.github/actions/setup-just
       - run: corepack enable && corepack install
       - run: pnpm install --frozen-lockfile
-      - run: cd apps/codex && npx playwright install --with-deps chromium
+      - run: cd apps/codex/web && npx playwright install --with-deps chromium
       # The recipe builds codex and pins CODEX_CORPUS_ROOT to the committed fixture corpus
       # from the working directory. (Inside a container job `${{ github.workspace }}` is the
       # HOST path, not the container mount, so the workflow must not build that path.)
@@ -268,7 +268,7 @@ jobs:
       - uses: ./.github/actions/setup-just
       - run: corepack enable && corepack install
       - run: pnpm install --frozen-lockfile
-      - run: cd apps/codex && npx playwright install --with-deps chromium
+      - run: cd apps/codex/web && npx playwright install --with-deps chromium
       # Same CODEX_CORPUS_ROOT pin as codex-row-height-drift-guard (see the note there).
       - run: just codex-virtualization-interaction-guard
 

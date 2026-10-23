@@ -20,7 +20,7 @@ To change a decision, add a new ADR and mark the old one `Superseded by NNNN`; n
 | [0012](0012-block-red-not-alert.md) | Bad changes are blocked, not reported | Accepted |
 | [0013](0013-how-claude-asks-questions.md) | Short decisions use the question tool; decisions with context use plain text | Accepted |
 | [0014](0014-rtk-removed.md) | The RTK output-rewriting hook is removed | Accepted (done) |
-| [0015](0015-repo-layout-by-domain.md) | The repo is laid out by domain | Accepted, not yet built (paydown Phase 2, repo track) |
+| [0015](0015-repo-layout-by-domain.md) | The repo is laid out by domain | Accepted (done 2026-10-23) |
 | [0016](0016-merge-model-auto-merge.md) | Changes merge through branches with auto-merge behind ci-ok | Accepted (done) |
 | [0017](0017-repo-stays-public.md) | The repo stays public without a history scrub | Accepted (accepted risk) |
 | [0018](0018-book-binaries-stay-in-history.md) | Book binaries stay in history; stop committing new ones | Accepted, partly built |

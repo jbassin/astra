@@ -3,7 +3,7 @@
 site-kit holds the parts every TanStack Start frontend shares, so apps don't copy them. Consumers:
 strider, akasha-frontend, mouthpiece-frontend, vellum-frontend, harrow, ledger and codex (plus
 `serveFile` and the resolve hook in the other Node services). It is plain TS source with no build
-step. How to start a new frontend from these pieces is in `apps/strider/README.md`.
+step. How to start a new frontend from these pieces is in `apps/strider/web/README.md`.
 
 | Export | Where it runs | What it does |
 |---|---|---|

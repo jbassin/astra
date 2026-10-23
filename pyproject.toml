@@ -1,14 +1,8 @@
 [tool.uv.workspace]
-# Membership is decided by the presence of a `pyproject.toml` in a matched dir.
-# Empty placeholder dirs are NOT created up front: uv rejects a glob-matched
-# directory that lacks a `pyproject.toml`, so member dirs appear per-phase.
-members = ["apps/*", "libs/py/*", "ontology/*"]
-# TS-only apps live under apps/* too (manifest-decided membership: package.json →
-# bun, pyproject.toml → uv). uv would otherwise hard-error on a glob-matched dir
-# without a pyproject.toml, so exclude the bun-only frontends explicitly. Add each
-# new TS app here (0011-0013 frontends follow strider; weal-bot/weal-overlay are
-# bun services + SPA per 0009).
-exclude = ["apps/strider", "apps/akasha-frontend", "apps/mouthpiece-frontend", "apps/vellum-frontend", "apps/vellum-render", "apps/weal-bot", "apps/weal-overlay", "apps/orator-backend", "apps/orator-controller", "apps/harrow", "apps/ledger", "apps/portal", "apps/codex", "apps/menhir"]
+# Membership follows location (ADR 0015): a Python app lives at apps/<domain>/py/ and
+# is a member because the glob matches it. uv rejects a glob-matched directory that
+# lacks a `pyproject.toml`, so never create an empty apps/<domain>/py/.
+members = ["apps/*/py", "libs/py/*", "ontology/*"]
 
 [tool.uv]
 # Workspace-wide dev tooling — the Astral Python stack.

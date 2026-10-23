@@ -6,7 +6,7 @@ Foundry has no external API, so all world access runs inside a logged-in GM brow
 astra-owned Foundry module dials out to portal over a WebSocket, and portal forwards each MCP tool
 call over that socket. portal never connects to Foundry directly.
 
-Four pnpm members live here (pnpm needs the extra `apps/portal/*` glob; uv excludes `apps/portal`):
+Four pnpm members live here (the `apps/*/*` glob in `pnpm-workspace.yaml` finds them):
 
 - **`server/`** — the MCP and bridge server. Compose service `portal`, port 10372, Caddy at
   `portal.iridi.cc`. Routes: `/mcp` (Streamable HTTP), `/ws` (the module's bridge socket),

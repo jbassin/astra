@@ -13,7 +13,7 @@ Owners: **Josh** (a product, cost or stakeholder call, or a step only he can do)
 Each gate waits on Josh or the players. Tick the boxes as they happen; delete the gate when done.
 
 ### codex gate H: consolidated review of rounds P2 to P14 (opened 2026-07-14, Josh)
-Review the live site and give one round of feedback. Pointer: [`apps/codex/README.md`](../apps/codex/README.md).
+Review the live site and give one round of feedback. Pointer: [`apps/codex/web/README.md`](../apps/codex/web/README.md).
 - [ ] Walk the live site (browse, search, entity pages, class pages, rules, filters).
 - [ ] Decide on the recorded limits: Ctrl+F and Tab only reach rendered rows, name ellipsis, the
       100 to 300 ms cold-load filter window, filters-open state not shareable, no global disclaimer.
@@ -30,7 +30,7 @@ Pointer: checklist in [`thoughts/archive/RESUME.md`](../thoughts/archive/RESUME.
 - [ ] Agent confirms `weal.v2.errors` and `weal.v2.fuel_aborts` appear in SigNoz.
 
 ### Liturgy Vol.2 book: content review (opened 2026-08-01, Josh and the stakeholder)
-Pointer: [`apps/assay/README.md`](../apps/assay/README.md).
+Pointer: [`apps/assay/py/README.md`](../apps/assay/py/README.md).
 - [ ] Review the 6 trimmed chapter openers, the chapter-intro liberties and the 23 trimmed summaries.
 - [ ] Before any distribution, note that the book's fonts are licensed for personal use only.
 
@@ -38,10 +38,10 @@ Pointer: [`apps/assay/README.md`](../apps/assay/README.md).
 - [ ] Decide whether the Foundry module is still wanted (no code exists; the paydown keeps scorer,
       store and book only, [ADR 0019](adr/0019-assay-scope.md)).
 - [ ] If yes: decide whether the store gets a trigger field (three review notes were skipped for lack of one).
-- [ ] Joint review with the co-author, using `apps/assay/homebrew/revisions.md`.
+- [ ] Joint review with the co-author, using `apps/assay/py/homebrew/revisions.md`.
 
 ### mouthpiece: episode shape (opened 2026-09-08, Josh)
-Pointer: [`apps/mouthpiece-backend/README.md`](../apps/mouthpiece-backend/README.md).
+Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 - [ ] Listen to the 2026-10-12 producer-brief episode.
 - [ ] Decide on Nell's question share and Maeve's floor share, and whether to enforce the ~6k-word
       cap (recent episodes run 6.6k to 6.7k words).
@@ -75,7 +75,7 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 - **heartwood gate E** (agent, opened 2026-10-22): the next session must publish its wiki edits with
   no command. Check the astra-data commit, the ledger line and the `session_wiki` outcome.
-  [`apps/heartwood-backend/README.md`](../apps/heartwood-backend/README.md)
+  [`apps/heartwood/py/README.md`](../apps/heartwood/py/README.md)
 - **Pipeline failure alert** (agent): `pipeline_failure_alert` has never fired on a real failure;
   find its ERROR record in SigNoz after the next one. [`dagster/README.md`](../dagster/README.md)
 
@@ -138,7 +138,7 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - Four malformed action entities escape the drop rules (`action/1-minute`, `1-minute-manipulate-6`,
   `1-minute-command-interact`, `action/u`) — agent; flagged 2026-07-19.
 - The /rules sidebar `<details>` has no `::details-content` override, so content can go unpainted on
-  desktop — agent; `apps/codex/src/styles/globals.css`.
+  desktop — agent; `apps/codex/web/src/styles/globals.css`.
 - `useState` after early returns in `FacetPanel.tsx` — agent; product bug (SMELL-4).
 - The client cache keeps rejected promises forever — agent; product bug (CDX-12).
 - Broken references were never styled; the CSS selector never matches — agent; product bug (CDX-23).
@@ -172,7 +172,7 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 - strider's editor becomes dev-only ([ADR 0024](adr/0024-strider-editor-dev-only.md)): `/editor` and
   its write server function still ship in the production build, and production saves vanish on
-  recreate (FE-21) — agent; `apps/strider/src/routes/editor.tsx`.
+  recreate (FE-21) — agent; `apps/strider/web/src/routes/editor.tsx`.
 - akasha still navigates with full-page links; move to SPA navigation with server functions — agent;
   [ADR 0031](adr/0031-akasha-spa-navigation.md).
 - One design-token source for gothic and the parchment theme — agent; [ADR 0032](adr/0032-one-design-token-source.md).

@@ -51,9 +51,9 @@ test: (_each "test" "py-test,ts-test")
 # Run everything CI runs, locally (all but the container-only vellum render goldens).
 ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard"))
 
-# The Python apps have no dev server: they run as Dagster assets; test them with
-# `uv run pytest apps/<app>`.
-# Run one TS app's dev server, e.g. `just dev codex`.
+# `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
+# they run as Dagster assets; test them with `uv run pytest apps/<domain>/py`.
+# Run one TS app's dev server, e.g. `just dev codex/web`.
 dev app:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -68,8 +68,8 @@ dev app:
       echo "dev: no TS app with a dev script at apps/$app" >&2
     fi
     echo "apps with a dev script:" >&2
-    for p in apps/*/package.json; do
-      if has_dev "$p"; then echo "  $(basename "$(dirname "$p")")" >&2; fi
+    for p in apps/*/*/package.json; do
+      if has_dev "$p"; then d="${p#apps/}"; echo "  ${d%/package.json}" >&2; fi
     done
     exit 1
 
@@ -153,18 +153,18 @@ commitlint from="origin/main" to="HEAD":
 # CI job codex-row-height-drift-guard: the listing row pitch is exactly 24px.
 codex-row-height-drift-guard:
     pnpm --filter @astra/codex build
-    cd apps/codex && CODEX_CORPUS_ROOT="$PWD/fixtures/entities" node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts
+    cd apps/codex/web && CODEX_CORPUS_ROOT="$PWD/fixtures/entities" node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts
 
 # CI job codex-virtualization-interaction-guard: listing scroll, keys and reload in Chromium.
 codex-virtualization-interaction-guard:
     pnpm --filter @astra/codex build
-    cd apps/codex && CODEX_CORPUS_ROOT="$PWD/fixtures/entities" node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts
+    cd apps/codex/web && CODEX_CORPUS_ROOT="$PWD/fixtures/entities" node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts
 
 # CI-only (see `ci`): runs inside node:24-slim with the Chromium the playwright lock pins.
 # CI job vellum-visual-regression: each fixture's rendered PNG against its golden.
 vellum-visual-regression:
     pnpm --filter @astra/vellum-render build
-    cd apps/vellum-render && node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts
+    cd apps/vellum/render && node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts
 
 reverse_proxy_dir := "/ruby/data/reverse-proxy"
 sops_age_key := "deploy/sops/age.key"
@@ -727,7 +727,7 @@ portal-module-install: portal-module-build
 
 # Refresh the codex corpus (D29-4): re-fetch both snapshots, re-transform, print
 # the report summary. A deliberate, diffable event, never implicit in a build —
-# refuses to run if the git index is dirty under apps/codex (the
+# refuses to run if the git index is dirty under apps/codex/web (the
 # corpus-manifest.json diff must be reviewable alone, the linguist-commit-timer
 # lesson applied here too). Re-downloads ~259 MB (AoN) + the Foundry sparse
 # clone; not cheap, don't run casually.
@@ -738,10 +738,10 @@ codex-refresh:
     # codex.data-path (config.kdl, under data.root): the scripts below write there via
     # @astra/config; this recipe needs it for the assay artifact and the report.
     codex_data="$({{uv_bin}} run python -m astra_ontology_config codex.data-path)"
-    if [ -n "$(git status --porcelain -- apps/codex)" ]; then
-      echo "codex-refresh: apps/codex has uncommitted changes — commit or stash first" >&2
+    if [ -n "$(git status --porcelain -- apps/codex/web)" ]; then
+      echo "codex-refresh: apps/codex/web has uncommitted changes — commit or stash first" >&2
       echo "(the corpus-manifest.json diff from this refresh must be reviewable alone):" >&2
-      git status --porcelain -- apps/codex >&2
+      git status --porcelain -- apps/codex/web >&2
       exit 1
     fi
     echo "codex-refresh: fetching Foundry snapshot..."
@@ -760,7 +760,7 @@ codex-refresh:
     echo "codex-refresh: regenerating the assay artifact (D30-41)..."
     if uv run assay export-codex; then
       mkdir -p "$codex_data/assay"
-      cp apps/assay/out/spell-power.json "$codex_data/assay/spell-power.json"
+      cp apps/assay/py/out/spell-power.json "$codex_data/assay/spell-power.json"
       echo "codex-refresh: assay artifact regenerated + placed."
     else
       echo "codex-refresh: assay export failed or unavailable — keeping the previous artifact." >&2

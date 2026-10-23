@@ -86,8 +86,8 @@
     "**/src/generated/**",
     "**/public/**",
     "**/*.sdPlugin/**",
-    "**/codex/data/**",
-    "**/codex/fixtures/**",
+    "**/codex/web/data/**",
+    "**/codex/web/fixtures/**",
     "**/weal-engine/gen/**"
   ],
   "overrides": [

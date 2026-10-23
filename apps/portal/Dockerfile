@@ -19,23 +19,23 @@ WORKDIR /repo
 # workspace, so a partial app set reads as "lockfile changed" under
 # --frozen-lockfile. (Add a new app's manifest here too; libs/ts is copied wholesale.)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/akasha-frontend/package.json apps/akasha-frontend/
-COPY apps/codex/package.json apps/codex/
-COPY apps/harrow/package.json apps/harrow/
-COPY apps/ledger/package.json apps/ledger/
-COPY apps/menhir/package.json apps/menhir/
-COPY apps/mouthpiece-frontend/package.json apps/mouthpiece-frontend/
-COPY apps/orator-backend/package.json apps/orator-backend/
-COPY apps/orator-controller/package.json apps/orator-controller/
+COPY apps/akasha/web/package.json apps/akasha/web/
+COPY apps/codex/web/package.json apps/codex/web/
+COPY apps/harrow/web/package.json apps/harrow/web/
+COPY apps/ledger/web/package.json apps/ledger/web/
+COPY apps/menhir/web/package.json apps/menhir/web/
+COPY apps/mouthpiece/web/package.json apps/mouthpiece/web/
+COPY apps/orator/bot/package.json apps/orator/bot/
+COPY apps/orator/controller/package.json apps/orator/controller/
 COPY apps/portal/headless/package.json apps/portal/headless/
 COPY apps/portal/module/package.json apps/portal/module/
 COPY apps/portal/server/package.json apps/portal/server/
 COPY apps/portal/shared/package.json apps/portal/shared/
-COPY apps/strider/package.json apps/strider/
-COPY apps/vellum-frontend/package.json apps/vellum-frontend/
-COPY apps/vellum-render/package.json apps/vellum-render/
-COPY apps/weal-bot/package.json apps/weal-bot/
-COPY apps/weal-overlay/package.json apps/weal-overlay/
+COPY apps/strider/web/package.json apps/strider/web/
+COPY apps/vellum/web/package.json apps/vellum/web/
+COPY apps/vellum/render/package.json apps/vellum/render/
+COPY apps/weal/bot/package.json apps/weal/bot/
+COPY apps/weal/overlay/package.json apps/weal/overlay/
 COPY libs/ts ./libs/ts
 RUN corepack enable && corepack prepare pnpm@10.34.4 --activate \
     && pnpm install --frozen-lockfile

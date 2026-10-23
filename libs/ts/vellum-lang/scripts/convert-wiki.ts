@@ -6,7 +6,7 @@
  *     libs/ts/vellum-lang/scripts/convert-wiki.ts [--src <wiki>] [--dest <corpus>]
  *
  * Reads faerrin's Obsidian wiki and writes the akasha SSOT corpus (full-vellum)
- * under apps/akasha-backend/content/. Idempotent. Emits a per-page conversion
+ * under apps/akasha/py/content/. Idempotent. Emits a per-page conversion
  * report (convert-report.json) flagging any page that still needs a human eye.
  * The TS validator (validate-corpus.ts) is the zero-error-chips gate that follows.
  *
@@ -28,7 +28,7 @@ import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
 const REPO = resolve(import.meta.dirname, "../../../..");
 const SRC = argValue("--src") ?? "/ruby/data/experiments/faerrin/pkg/content/wiki";
-const DEST = argValue("--dest") ?? join(REPO, "apps/akasha-backend/content");
+const DEST = argValue("--dest") ?? join(REPO, "apps/akasha/py/content");
 
 function argValue(flag: string): string | undefined {
   const i = process.argv.indexOf(flag);

@@ -119,7 +119,7 @@ Josh gave standing approval for routine live infra steps (memory
    `docker compose up -d` of either now crash-loops with a clear message instead of running open.
 5. Scriptorium torn down (`5102848f`): state archived byte-identical under
    `thoughts/archive/scriptorium-review-state/`, unit removed, Caddy stanza removed, edge
-   reloaded. `thoughts/**` is now oxfmt-ignored. The `apps/assay/review-ui/` source remains until
+   reloaded. `thoughts/**` is now oxfmt-ignored. The `apps/assay/py/review-ui/` source remains until
    the assay workshop is archived.
 6. weal save guard (`33cc5120`): a new save is dry-run against all saves with seven everyday rolls
    plus two uses of the new name; refused if it breaks something that worked without it. The boot
@@ -133,7 +133,7 @@ Josh gave standing approval for routine live infra steps (memory
    `/ruby/data/plex/data/astra-backups/` (sda disk only, Josh's choice), 14 daily plus 8 weekly,
    hardlinked; `pg_dump` of the three databases, the irreplaceable state (orator music, akasha
    session audio (83 of 104 recordings exist nowhere else), old mouthpiece episodes, heartwood,
-   OAuth, `apps/scribe/incoming` (Drive can be cleaned)), and the SigNoz rules, also committed
+   OAuth, `apps/scribe/py/incoming` (Drive can be cleaned)), and the SigNoz rules, also committed
    under `deploy/signoz/rules/`. `just backup-restore-test` passed (row counts and checksums).
    `just down-volumes` now asks for confirmation. Josh stores the age key
    (`deploy/sops/age.key`) in his password manager.
@@ -723,7 +723,7 @@ incidents are missing, and most stored spans are Docker probing itself.
 - **oxlint.** 18 rules are off repo-wide and 49 path globs disable rules per file (3 point at deleted
   files), on the false premise that oxlint has no line-level disable. The deferred type-aware debt
   grew from 363 to about 1,020 diagnostics. The exemptions hide a real conditional-hook bug
-  (`apps/codex/src/domain/browse/FacetPanel.tsx:150`) and turn off six accessibility rules on whole
+  (`apps/codex/web/src/domain/browse/FacetPanel.tsx:150`) and turn off six accessibility rules on whole
   interactive components. Replace path overrides with reasoned inline disables, adopt the immediate
   rule set, ratchet the rest. REPO-13, SMELL-4, FE-22.
 - **ruff.** Only `E,F,I,UP,B,SIM` are selected, and `dagster/` and `deploy/` are excluded although
@@ -834,7 +834,7 @@ Delete these (git keeps them). Items marked **ask** need a product decision firs
   workaround (and fix the cache that keeps rejected promises forever); render-time data cleanup moved
   into the transform; one book registry instead of six modules. CDX-7, CDX-10, CDX-11, CDX-12,
   CDX-15, CDX-19, CDX-20, CDX-23.
-- **The liturgy books leave codex.** `apps/codex/books/` is assay's print toolchain, codex never
+- **The liturgy books leave codex.** `apps/codex/web/books/` is assay's print toolchain, codex never
   reads it, and its blobs are about 53% of the repo's git history. Move it with assay, treat the PDF
   and processed art as build outputs, dockerignore it. CDX-6, ASY-2, ASY-13.
 - **assay** splits by product: a typed content package for the homebrew store (Pydantic model,
@@ -1145,8 +1145,8 @@ spec.
   `lazyCounter`.
 - **Good commit bodies and session trailers;** the adversarial review before building, for changes
   that warrant it; scope documents that verify claims against the real repo.
-- **Good local docs to copy:** `apps/strider/content/layers/CLAUDE.md`,
-  `libs/rust/weal-engine/README.md`, `apps/menhir/README.md`.
+- **Good local docs to copy:** `apps/strider/web/content/layers/CLAUDE.md`,
+  `libs/rust/weal-engine/README.md`, `apps/menhir/web/README.md`.
 
 ## 8. Baseline scoreboard
 
@@ -1192,8 +1192,8 @@ session.
 
 | Prefix | Area | Findings | Lane file |
 |---|---|---|---|
-| CDX | apps/codex | 30 | `lanes/cdx.md` |
-| ASY | apps/assay, the books, scriptorium | 25 | `lanes/asy.md` |
+| CDX | apps/codex/web | 30 | `lanes/cdx.md` |
+| ASY | apps/assay/py, the books, scriptorium | 25 | `lanes/asy.md` |
 | PIPE | Python pipeline apps and Dagster | 24 | `lanes/pipe.md` |
 | LIB | Shared libraries and ontology (py and ts) | 22 | `lanes/lib.md` |
 | FE | TanStack frontends and UI libraries | 28 | `lanes/fe.md` |
