@@ -67,7 +67,7 @@ describe("@astra/config", () => {
     expect(cfg.heartwood.maxTokens).toBe(64000);
     expect(cfg.heartwood.maxOutputChars).toBe(10000);
     expect(cfg.heartwood.backfillBudgetUsd).toBe(100);
-    expect(cfg.heartwood.requestsPath).toMatch(/\/artifacts\/heartwood\/requests$/);
+    expect(cfg.heartwood.requestsPath).toBe("/ruby/data/astra-state/heartwood/requests");
     expect(cfg.heartwood.requestTimeoutMinutes).toBe(180);
     expect(cfg.mouthpieceProducer.model).toBe("openrouter/deepseek/deepseek-v4.1-flash");
     expect(cfg.mouthpieceProducer.maxIterations).toBe(30);
@@ -86,13 +86,11 @@ describe("@astra/config", () => {
     expect(cfg.codex.serviceName).toBe("astra.codex");
     expect(cfg.codex.port).toBe(10374);
     expect(cfg.codex.publicOrigin).toBe("https://codex.iridi.cc");
-    expect(cfg.codex.dataPath).toBe("/ruby/data/experiments/astra/apps/codex/data");
+    expect(cfg.codex.dataPath).toBe("/ruby/data/astra-state/codex/data");
     expect(cfg.menhir.serviceName).toBe("astra.menhir");
     expect(cfg.menhir.port).toBe(10375);
     expect(cfg.menhir.publicOrigin).toBe("https://menhir.iridi.cc");
-    expect(cfg.menhir.resultsPath).toBe(
-      "/ruby/data/experiments/astra/artifacts/menhir/results.jsonl",
-    );
+    expect(cfg.menhir.resultsPath).toBe("/ruby/data/astra-state/menhir/results.jsonl");
   });
 
   test("secret fields are lazy refs, not plaintext", () => {
@@ -153,15 +151,15 @@ describe("@astra/config", () => {
 
   test("real config.kdl resolves data paths under data.root", () => {
     const cfg = loadConfig();
-    const root = "/ruby/data/experiments/astra";
-    const content = "/ruby/data/astra-state/astra-data";
+    const root = "/ruby/data/astra-state";
+    const content = `${root}/astra-data`;
     expect(cfg.data.root).toBe(root);
     expect(cfg.data.contentRoot).toBe(content);
     expect(cfg.data.akashaContent).toBe(`${content}/akasha/content`);
     expect(cfg.data.linguistData).toBe(`${content}/linguist/data`);
     expect(cfg.data.entityRegistry).toBe(`${content}/entity/entity.kdl`);
-    expect(cfg.scribe.dataPath).toBe(`${root}/apps/scribe/data`);
-    expect(cfg.mouthpiece.episodesPath).toBe(`${root}/apps/mouthpiece-backend/episodes`);
+    expect(cfg.scribe.dataPath).toBe(`${root}/scribe/data`);
+    expect(cfg.mouthpiece.episodesPath).toBe(`${root}/mouthpiece/episodes`);
     expect(cfg.orator.dataDir).toBe("/data"); // a container path, not a data path
   });
 

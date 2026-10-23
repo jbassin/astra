@@ -7,9 +7,13 @@ OnFailure=astra-alert@%n.service
 
 [Service]
 Type=oneshot
-WorkingDirectory=/ruby/data/experiments/astra
-# `just` lives in the user's cargo bin. The recipe stages apps/linguist/{transcripts,data}
-# — which the Dagster run workers write to the host via bind mounts — then commits + pushes
-# to origin/main. Runs as the user (not in a container) so it has the real .git, the git
-# identity, and the SSH push key; the Dagster containers have none of those.
+# Runs the recipe from the deploy checkout (0037 item 2c), with the venv deploy.sh keeps in
+# sync there; every path it touches comes from config.kdl, under the data root
+# /ruby/data/astra-state, never this checkout.
+WorkingDirectory=/ruby/data/astra-deploy
+# `just` lives in the user's cargo bin. The recipe commits the linguist datasets the Dagster
+# run workers write into the astra-data clone (via bind mounts), refreshes the mouthpiece
+# snapshot, pushes the clone and redeploys the frontends. Runs as the user (not in a
+# container) so it has git, the git identity and the SSH push key; the Dagster containers
+# have none of those.
 ExecStart=/home/jbassin/.cargo/bin/just linguist-commit

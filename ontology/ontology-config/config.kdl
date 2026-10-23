@@ -9,18 +9,40 @@
 data {
     // Every data path in this file (each service's own state paths: scribe.data-path,
     // mouthpiece.episodes-path, heartwood.requests-path, ...) is relative to `root`,
-    // and the published datasets below to `content-root`; astra_config resolves them to absolute paths at load, so
-    // code only ever sees absolute paths. Moving the data = changing these values (plus
-    // the identical-path bind mounts in deploy/docker-compose.yml, whose container paths
-    // must equal the resolved paths so this baked file means the same thing everywhere).
-    // An absolute value is used as-is.
-    root "/ruby/data/experiments/astra"
+    // and the published datasets below to `content-root`; astra_config resolves them to
+    // absolute paths at load, so code only ever sees absolute paths. An absolute value is
+    // used as-is. Moving the data = changing these values plus the identical-path bind
+    // mounts in deploy/docker-compose.yml (container path = resolved path, so this baked
+    // file means the same thing everywhere). ASTRA_DATA_ROOT overrides `root` (a test and
+    // dev seam; the host scripts read the same variable for the same root).
+    //
+    // All runtime data lives under `root`, never in a code checkout (0037 Phase 1 item 2c):
+    // one flat dir per service. deploy/deploy.sh init_artifacts creates the uid-1000 dirs
+    // (keep it in step with this list):
+    //   astra-data/              the astra-data clone (content-root, below)
+    //   scribe/incoming/         Craig zips, copied down from Drive by craig-sync
+    //   scribe/data/             scribe output; saved/<date>/ is the scribe -> linguist handoff
+    //   scribe/tmp/              scribe scratch
+    //   linguist/script/         linguist operator state (shibboleth.json inside)
+    //   mouthpiece/episodes/     the episode corpus: per-session renders + .last-rendered
+    //   mouthpiece/experiments/  producer and roundtable runs (0034)
+    //   heartwood/               per-run agent artifacts, backfill.log, backfill.lock
+    //   heartwood/requests/      the Dagster <-> host request files (0036), logs/ inside
+    //   codex/data/              codex corpus, Pagefind index, AoN + Foundry snapshots, assay
+    //   menhir/                  menhir results.jsonl
+    //   audio/{akasha,mouthpiece,orator}/  audio the frontends and orator serve
+    //   postgres/{dagster,orator,weal}/    PGDATA (uid 70, mode 0700; init makes only postgres/)
+    //   portal-oauth/            portal's OAuth state
+    //   node-exporter/textfile/  smartmon.prom (smart-exporter writes, node-exporter serves)
+    //   deploy/                  deploy.lock, history.jsonl, live/<service> (deploy.sh)
+    //   locks/                   git-publish.lock (linguist-commit + the heartwood recipes)
+    root "/ruby/data/astra-state"
     // The astra-data clone (github jbassin/astra-data): the pipeline's published
     // datasets, committed and pushed by the bots (linguist-commit, heartwood) — the code
     // repo tracks none of them. A relative value is under `root`. The eight datasets
     // below are relative to THIS root, in the astra-data layout. ASTRA_CONTENT_ROOT
     // overrides it (the same variable the frontends' build-content reads).
-    content-root "/ruby/data/astra-state/astra-data"
+    content-root "astra-data"
     linguist-transcripts "linguist/transcripts"
     linguist-data "linguist/data"
     linguist-timeline "linguist/timeline"
@@ -70,11 +92,11 @@ scribe {
     // incoming-path is a LOCAL dir (bind-mounted into the Dagster services). The live
     // Craig recordings live on a google-drive-ocamlfuse mount, which Docker can't
     // bind-mount (FUSE isn't in the daemon's namespace) — so zips are copied here from
-    // Drive (e.g. `cp /ruby/data/home/drive/Craig/*.zip apps/scribe/incoming/`, or a
-    // host-side rclone sync). The craig_drop_sensor globs it for *.zip; keep-zip unused.
-    data-path "apps/scribe/data"
-    incoming-path "apps/scribe/incoming"
-    tmp-path "apps/scribe/tmp"
+    // Drive by the host `just craig-sync` timer, which reads incoming-path from here. The
+    // craig_drop_sensor globs it for *.zip; keep-zip unused.
+    data-path "scribe/data"
+    incoming-path "scribe/incoming"
+    tmp-path "scribe/tmp"
     state-file ""
     downstream-cmd ""
     keep-zip #false
@@ -91,12 +113,12 @@ linguist {
     ingest-source ""
     // INVARIANT: must equal scribe's {data-path}/saved — the scribe→linguist handoff
     // (scribe writes saved/{date}/script.json; the linguist sensor + ingest read it).
-    ingest-saved-dir "apps/scribe/data/saved"
+    ingest-saved-dir "scribe/data/saved"
     // session_transcripts' non-published outputs, both read by nothing today: the
     // campaign-matched LLM context and the shibboleth campaign map. The shibboleth lives
     // in the script dir because that dir is bind-mounted writable into the containers.
-    script-path "apps/linguist/script"
-    shibboleth-path "apps/linguist/script/shibboleth.json"
+    script-path "linguist/script"
+    shibboleth-path "linguist/script/shibboleth.json"
     review-port 10116
     podcast-episodes-path ""
     // Phase-2 judge models + Phase-1 filter / windowing tuning (faerrin `config.ts` `surface`).
@@ -125,7 +147,7 @@ mouthpiece {
     // transcript.md per session) + the episodes_index asset globs. Bind-mounted
     // into the Dagster services at the same path (deploy/docker-compose.yml). Empty would resolve to the cwd — set it so a real pipeline
     // run lands here. (NB the mouthpiece-FRONTEND audio volume is separate, D2.)
-    episodes-path "apps/mouthpiece-backend/episodes"
+    episodes-path "mouthpiece/episodes"
     // mouthpiece's OWN model for clean/enrich + the two-pass script — GLM 5.3 via
     // OpenRouter (2026-09). Deliberately separate from llm.default-model: linguist's
     // compiled dspy judge + heartwood were tuned on GLM 5.2 and stay there.
@@ -302,9 +324,9 @@ heartwood {
     // 0036: the Dagster session_wiki asset files <date>.request.json here and waits for the
     // host runner's <date>.result.json. Bind-mounted at the SAME path into the Dagster
     // services (deploy/docker-compose.yml) and created by `just artifacts-init`.
-    requests-path "artifacts/heartwood/requests"
+    requests-path "heartwood/requests"
     request-timeout-minutes 180 // how long session_wiki waits for the host before failing
-    artifacts-path "artifacts/heartwood" // per-run agent artifacts + the backfill lock
+    artifacts-path "heartwood" // per-run agent artifacts + the backfill lock
 }
 
 mouthpiece-producer {
@@ -323,7 +345,7 @@ mouthpiece-producer {
     // GLM writes the scripts; DeepSeek stays the producer). Add it back to compare again.
     experiment-models "openrouter/z-ai/glm-5.3"
     experiment-max-tokens 128000
-    artifacts-path "artifacts/mouthpiece-experiments" // per-run producer/roundtable artifacts
+    artifacts-path "mouthpiece/experiments" // per-run producer/roundtable artifacts
 }
 
 portal {
@@ -376,14 +398,14 @@ codex {
     // The PF2e reference site (0029) — a public-but-noindexed build-time ingest +
     // SSR frontend on the strider template (Decision I). Same config-single-source
     // contract: the server binds this port; no PORT env. Behind Caddy at
-    // codex.iridi.cc → host 10374. data-path is the gitignored corpus dir the ingest
-    // pipeline writes to. P2 S3 (D29-30) wired client RUM (src/observe/{rum,
+    // codex.iridi.cc → host 10374. data-path is the corpus dir the ingest
+    // pipeline (`just codex-refresh`) writes to, under data.root. P2 S3 (D29-30) wired client RUM (src/observe/{rum,
     // rumConfig}.ts, startRum in __root's mount effect) — it reads the top-level
     // telemetry.rum-endpoint (above).
     service-name "astra.codex"
     port 10374
     public-origin "https://codex.iridi.cc"
-    data-path "apps/codex/data"
+    data-path "codex/data"
 }
 
 menhir {
@@ -396,7 +418,7 @@ menhir {
     service-name "astra.menhir"
     port 10375
     public-origin "https://menhir.iridi.cc"
-    results-path "artifacts/menhir/results.jsonl"
+    results-path "menhir/results.jsonl"
 }
 
 caddy {

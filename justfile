@@ -9,15 +9,26 @@ reverse_proxy_dir := "/ruby/data/reverse-proxy"
 sops_age_key := "deploy/sops/age.key"
 sops_file := "deploy/sops/secrets.enc.yaml"
 
-# Single bind-mount root for runtime state that used to live in named Docker volumes
-# (audio + Postgres). Gitignored (/artifacts/). The containers run as 1000:1000, so the
-# source dirs must exist + be host-owned BEFORE `up` (Docker auto-creates a missing bind
-# source as root). `artifacts-init` (run from `up`) creates the tree; override with ARTIFACTS.
-artifacts := env_var_or_default("ARTIFACTS", "/ruby/data/experiments/astra/artifacts")
+# The one data root (0037 Phase 1 item 2c): ALL runtime state — the astra-data clone, every
+# service's state dirs, audio, Postgres, the deploy record, locks — lives here, never in a
+# code checkout. Mirrors config.kdl data.root (whose comment lists the layout); the same
+# ASTRA_DATA_ROOT variable overrides both. The containers run as 1000:1000, so the source
+# dirs must exist + be host-owned BEFORE a deploy (Docker auto-creates a missing bind source
+# as root); `artifacts-init` (run by every deploy) creates them.
+data_root := env_var_or_default("ASTRA_DATA_ROOT", "/ruby/data/astra-state")
+
+# One git publisher at a time (0036 D36-5): linguist-commit and the heartwood recipes hold
+# this flock while they publish. heartwood_dir mirrors config.kdl heartwood.artifacts-path
+# (per-run artifacts, backfill.log and backfill.lock, which the request runner and the
+# watchdog also read).
+git_publish_lock := data_root + "/locks/git-publish.lock"
+heartwood_dir := data_root + "/heartwood"
 
 # The deploy checkout (0037 OPS-3): the only tree that builds production (`just deploy`) and
-# the tree the non-git timers (craig-sync, watchdog, alerting, backup) run from. The install
-# recipes link those units from here. Mirrors deploy.sh's ASTRA_DEPLOY_ROOT default.
+# the tree every host unit runs from (craig-sync, linguist-commit, heartwood-request, watchdog,
+# alerting, backup; 0037 item 2c moved the last two bots here). The install recipes link those
+# units from here, and deploy.sh keeps its venv + node deps in sync for them. Mirrors
+# deploy.sh's ASTRA_DEPLOY_ROOT default.
 deploy_root := env_var_or_default("ASTRA_DEPLOY_ROOT", "/ruby/data/astra-deploy")
 
 # Source of the HISTORICAL podcast episodes for the mouthpiece-frontend audio seed
@@ -26,7 +37,7 @@ mouthpiece_audio_src := env_var_or_default("MOUTHPIECE_AUDIO_SRC", "/ruby/data/e
 
 # astra's own episodes corpus (the live Dagster pipeline's renders + migrated catalog).
 # Mirrors config.kdl mouthpiece.episodes-path; override with MOUTHPIECE_EPISODES.
-mouthpiece_episodes := env_var_or_default("MOUTHPIECE_EPISODES", "/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes")
+mouthpiece_episodes := env_var_or_default("MOUTHPIECE_EPISODES", data_root + "/mouthpiece/episodes")
 
 # Sources for the akasha-frontend session-audio seed (the combined Craig recordings the
 # transcript pages play, served same-origin at /audio/<date>.mp3). HIST = faerrin's
@@ -35,7 +46,7 @@ mouthpiece_episodes := env_var_or_default("MOUTHPIECE_EPISODES", "/ruby/data/exp
 # handoff). Both are `<date>/audio.mp3`; live wins for any date in both. Override with
 # AKASHA_AUDIO_HIST / AKASHA_AUDIO_LIVE.
 akasha_audio_hist := env_var_or_default("AKASHA_AUDIO_HIST", "/ruby/data/experiments/faerrin/pkg/wretch/data/saved")
-akasha_audio_live := env_var_or_default("AKASHA_AUDIO_LIVE", "/ruby/data/experiments/astra/apps/scribe/data/saved")
+akasha_audio_live := env_var_or_default("AKASHA_AUDIO_LIVE", data_root + "/scribe/data/saved")
 
 # uv binary (absolute — the linguist-commit systemd user timer has a minimal PATH without
 # uv, same reason the service hardcodes just's path). Override with UV_BIN on another host.
@@ -55,17 +66,17 @@ uv_bin := env_var_or_default("UV_BIN", "/home/jbassin/.local/bin/uv")
 #   just deploy --dry-run [svc]     checks only; prints the compose command
 #   just deploy --restart <svc>     restart without a build, under the same lock
 deploy *args:
-    ARTIFACTS="{{artifacts}}" "{{justfile_directory()}}/deploy/deploy.sh" {{args}}
+    ASTRA_DATA_ROOT="{{data_root}}" "{{justfile_directory()}}/deploy/deploy.sh" {{args}}
 
 # Alias of `just deploy` (the old name; same args). No args = the whole stack.
 up *services:
     "{{just_executable()}}" -f "{{justfile()}}" deploy {{services}}
 
-# Create the gitignored bind-mount source tree as the host user (uid 1000) BEFORE a deploy
+# Create the data root's dirs as the host user (uid 1000) BEFORE a deploy
 # (Docker would otherwise create a missing bind source as root — the root-owned-writes
 # problem). `just deploy` does this itself; the dir list lives in deploy/deploy.sh.
 artifacts-init:
-    ARTIFACTS="{{artifacts}}" "{{justfile_directory()}}/deploy/deploy.sh" --init-artifacts
+    ASTRA_DATA_ROOT="{{data_root}}" "{{justfile_directory()}}/deploy/deploy.sh" --init-artifacts
 
 # Stop the stack; keep volumes (ClickHouse / Postgres / SigNoz data persist).
 down:
@@ -89,8 +100,12 @@ craig_drop_dir := env_var_or_default("CRAIG_DROP_DIR", "/ruby/data/home/drive/Cr
 craig-sync:
     #!/usr/bin/env bash
     set -euo pipefail
+    cd "{{justfile_directory()}}"
     src="{{craig_drop_dir}}"
-    dest="/ruby/data/experiments/astra/apps/scribe/incoming"
+    # scribe.incoming-path from config.kdl (under data.root), through the checkout's venv
+    # (deploy.sh keeps the deploy checkout's in sync). Local disk, never the FUSE mount.
+    dest="$({{uv_bin}} run python -m astra_ontology_config scribe.incoming-path)"
+    case "$dest" in /?*) ;; *) echo "craig-sync: ERROR — could not read scribe.incoming-path from config" >&2; exit 1 ;; esac
     probe_timeout="${CRAIG_SYNC_PROBE_TIMEOUT:-20}"   # listing the mount is near-instant
     copy_timeout="${CRAIG_SYNC_COPY_TIMEOUT:-900}"    # a real ~1 GB recording: minutes over Drive
 
@@ -199,7 +214,8 @@ linguist-commit:
     # One git publisher at a time (0036 D36-5): heartwood-agent/-revert hold this lock while
     # they publish, commit and redeploy akasha. Held for this whole body (no sub-recipe here
     # takes the lock — a nested flock on a fresh fd would deadlock).
-    exec 9>artifacts/git-publish.lock
+    mkdir -p "$(dirname "{{git_publish_lock}}")"
+    exec 9>"{{git_publish_lock}}"
     flock -w 1800 9 || { echo "linguist-commit: git-publish lock busy for 30 min — skipping this run" >&2; exit 1; }
     # The astra-data clone + the datasets this recipe commits, from config.kdl (absolute
     # paths inside the clone; git accepts them as pathspecs).
@@ -308,18 +324,14 @@ _astra-data-push:
       echo "astra-data: nothing to push"
     fi
 
-# Install + start the systemd USER timer that runs `linguist-commit` every 15 min. One-time
-# setup (mirrors craig-timer-install); needs lingering for the user. The timer pushes the
-# astra-data clone to its origin, so the user's git identity + a non-interactive SSH push key
-# must be available to the systemd user session (same key the user pushes with).
-linguist-commit-timer-install:
+# Install + start the systemd USER timer that runs `linguist-commit` every 15 min. Idempotent;
+# links the units from the deploy checkout (see _unit-link; the service runs the recipe
+# there, with the venv deploy.sh keeps in sync). Needs lingering for the user. The timer
+# pushes the astra-data clone to its origin, so the user's git identity + a non-interactive
+# SSH push key must be available to the systemd user session (same key the user pushes with).
+linguist-commit-timer-install: (_unit-link "linguist-commit.service" "linguist-commit.timer" "linguist-commit.path")
     #!/usr/bin/env bash
     set -euo pipefail
-    unit_dir="$HOME/.config/systemd/user"
-    mkdir -p "$unit_dir"
-    cp deploy/systemd/linguist-commit.service deploy/systemd/linguist-commit.timer \
-       deploy/systemd/linguist-commit.path "$unit_dir/"
-    systemctl --user daemon-reload
     systemctl --user enable --now linguist-commit.timer
     # Event-driven publish: fires linguist-commit the moment session_episode writes the
     # .last-rendered sentinel; the timer above stays on as the fallback sweep.
@@ -332,18 +344,13 @@ linguist-commit-timer-install:
 # when a monitored unit FAILS; (2) the astra-watchdog.{service,timer} — Class B liveness
 # (Drive FUSE mount + pipeline timers armed), every 15 min, debounced; (3) re-installs the
 # craig-sync + linguist-commit services that carry `OnFailure=astra-alert@%n.service`.
-# The alerting, watchdog and craig-sync units are LINKED from the deploy checkout (they
-# ExecStart its alert-notify.sh, so each deploy updates the script); linguist-commit.service
-# is still COPIED from this tree (it still runs in the dev tree; moves in 0037 Phase 1
-# item 2c). The webhook is decrypted from SOPS at runtime (Class A — SigNoz's own Discord
-# channel/rules — lives in SigNoz, not here). Needs lingering for the user (already on).
-alert-install: (_unit-link "astra-alert@.service" "astra-watchdog.service" "astra-watchdog.timer" "craig-sync.service")
+# All of these units are LINKED from the deploy checkout (they ExecStart its scripts and
+# recipes, so each deploy updates them). The webhook is decrypted from SOPS at runtime
+# (Class A — SigNoz's own Discord channel/rules — lives in SigNoz, not here). Needs
+# lingering for the user (already on).
+alert-install: (_unit-link "astra-alert@.service" "astra-watchdog.service" "astra-watchdog.timer" "craig-sync.service" "linguist-commit.service")
     #!/usr/bin/env bash
     set -euo pipefail
-    cd /ruby/data/experiments/astra
-    unit_dir="$HOME/.config/systemd/user"
-    cp deploy/systemd/linguist-commit.service "$unit_dir/"
-    systemctl --user daemon-reload
     systemctl --user enable --now astra-watchdog.timer
     echo "installed. watchdog schedule:"; systemctl --user list-timers astra-watchdog.timer --no-pager
     echo "smoke-test a Discord page with: {{deploy_root}}/deploy/systemd/alert-notify.sh test"
@@ -358,7 +365,7 @@ alert-install: (_unit-link "astra-alert@.service" "astra-watchdog.service" "astr
 alert-sudoers-install:
     #!/usr/bin/env bash
     set -euo pipefail
-    cd /ruby/data/experiments/astra
+    cd "{{justfile_directory()}}"
     for src in deploy/systemd/sudoers.d/astra-gdrive deploy/systemd/sudoers.d/astra-ethtool; do
       sudo visudo -cf "$src"                     # syntax-check BEFORE touching /etc
       sudo install -o root -g root -m 0440 "$src" "/etc/sudoers.d/$(basename "$src")"
@@ -448,22 +455,22 @@ mouthpiece-publish:
 mouthpiece-seed:
     #!/usr/bin/env bash
     set -euo pipefail
-    mkdir -p "{{artifacts}}"/audio/mouthpiece
+    mkdir -p "{{data_root}}"/audio/mouthpiece
     # The faerrin historical back-catalog was decommissioned 2026-07-04; its mp3s already
-    # live in the persistent {{artifacts}}/audio/mouthpiece volume from earlier seeds. Only
+    # live in the persistent {{data_root}}/audio/mouthpiece volume from earlier seeds. Only
     # mount /hist if the source still exists — otherwise Docker would recreate the deleted
     # path as an empty root-owned dir. Live renders are seeded regardless.
     hist_mount=()
     if [ -d "{{mouthpiece_audio_src}}" ]; then hist_mount=(-v "{{mouthpiece_audio_src}}":/hist:ro); fi
     docker run --rm \
-      -v "{{artifacts}}"/audio/mouthpiece:/audio \
+      -v "{{data_root}}"/audio/mouthpiece:/audio \
       "${hist_mount[@]}" \
       -v "{{mouthpiece_episodes}}":/live:ro \
       alpine sh -c '
         set -e
         for f in /hist/*.episode.mp3; do [ -e "$f" ] || continue; cp "$f" "/audio/$(basename "$f" .episode.mp3).mp3"; done
         find /live -name "*.episode.mp3" -exec sh -c "cp \"\$1\" \"/audio/\$(basename \"\$1\" .episode.mp3).mp3\"" _ {} \;
-        n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n episode(s) into {{artifacts}}/audio/mouthpiece"; ls -1 /audio'
+        n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n episode(s) into {{data_root}}/audio/mouthpiece"; ls -1 /audio'
 
 # Seed the akasha-frontend session-audio volume (the combined Craig recordings the
 # transcript pages play, served same-origin at /audio/<date>.mp3 — replaces faerrin's
@@ -478,9 +485,9 @@ mouthpiece-seed:
 akasha-seed:
     #!/usr/bin/env bash
     set -euo pipefail
-    mkdir -p "{{artifacts}}"/audio/akasha
+    mkdir -p "{{data_root}}"/audio/akasha
     docker run --rm \
-      -v "{{artifacts}}"/audio/akasha:/audio \
+      -v "{{data_root}}"/audio/akasha:/audio \
       -v "{{akasha_audio_hist}}":/hist:ro \
       -v "{{akasha_audio_live}}":/live:ro \
       alpine sh -c '
@@ -491,37 +498,37 @@ akasha-seed:
           dest="/audio/${date}.mp3"; [ -e "$dest" ] || cp "$f" "$dest"
         done
         for d in /live/*/; do f="${d}audio.mp3"; [ -e "$f" ] || continue; cp "$f" "/audio/$(basename "$d").mp3"; done
-        n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n session(s) into {{artifacts}}/audio/akasha"'
+        n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n session(s) into {{data_root}}/audio/akasha"'
 
-# One-time: copy the orator music library out of the old named volume into the new
-# artifacts/ bind dir (orator-audio is runtime-ingested, NOT re-seedable). Run with the
+# One-time: copy the orator music library out of the old named volume into the data
+# root's bind dir (orator-audio is runtime-ingested, NOT re-seedable). Run with the
 # orator-backend container stopped. chowns to 1000 so the now-1000 orator-backend writes
 # there. Safe to drop the old volume once verified.
 orator-audio-migrate:
     #!/usr/bin/env bash
     set -euo pipefail
-    mkdir -p "{{artifacts}}"/audio/orator
+    mkdir -p "{{data_root}}"/audio/orator
     docker run --rm \
       -v astra-orator-audio:/from:ro \
-      -v "{{artifacts}}"/audio/orator:/to \
-      alpine sh -c 'cp -a /from/. /to/ && chown -R 1000:1000 /to && echo "migrated orator audio -> {{artifacts}}/audio/orator"'
+      -v "{{data_root}}"/audio/orator:/to \
+      alpine sh -c 'cp -a /from/. /to/ && chown -R 1000:1000 /to && echo "migrated orator audio -> {{data_root}}/audio/orator"'
 
-# One-time: copy a Postgres data dir out of its old named volume into the new artifacts/
+# One-time: copy a Postgres data dir out of its old named volume into the data root's
 # bind dir, preserving uid-70/0700 so the postgres entrypoint accepts PGDATA. Run with the
 # DB container STOPPED. Usage: `just pg-migrate dagster` (or weal / orator).
 pg-migrate name:
     #!/usr/bin/env bash
     set -euo pipefail
-    mkdir -p "{{artifacts}}"/postgres
+    mkdir -p "{{data_root}}"/postgres
     docker run --rm \
       -v astra-{{name}}-pg:/from:ro \
-      -v "{{artifacts}}"/postgres:/parent \
+      -v "{{data_root}}"/postgres:/parent \
       alpine sh -c '
         set -e
         rm -rf /parent/{{name}}; mkdir /parent/{{name}}
         cp -a /from/. /parent/{{name}}/
         chown -R 70:70 /parent/{{name}}; chmod 700 /parent/{{name}}
-        echo "migrated astra-{{name}}-pg -> {{artifacts}}/postgres/{{name}}"'
+        echo "migrated astra-{{name}}-pg -> {{data_root}}/postgres/{{name}}"'
 
 # --- portal (0023) ---
 
@@ -566,7 +573,10 @@ portal-module-install: portal-module-build
 codex-refresh:
     #!/usr/bin/env bash
     set -euo pipefail
-    cd /ruby/data/experiments/astra
+    cd "{{justfile_directory()}}"
+    # codex.data-path (config.kdl, under data.root): the scripts below write there via
+    # @astra/config; this recipe needs it for the assay artifact and the report.
+    codex_data="$({{uv_bin}} run python -m astra_ontology_config codex.data-path)"
     if [ -n "$(git status --porcelain -- apps/codex)" ]; then
       echo "codex-refresh: apps/codex has uncommitted changes — commit or stash first" >&2
       echo "(the corpus-manifest.json diff from this refresh must be reviewable alone):" >&2
@@ -588,15 +598,15 @@ codex-refresh:
     # cache). Guarded: a checkout without the assay env still refreshes codex.
     echo "codex-refresh: regenerating the assay artifact (D30-41)..."
     if uv run assay export-codex; then
-      mkdir -p apps/codex/data/assay
-      cp apps/assay/out/spell-power.json apps/codex/data/assay/spell-power.json
+      mkdir -p "$codex_data/assay"
+      cp apps/assay/out/spell-power.json "$codex_data/assay/spell-power.json"
       echo "codex-refresh: assay artifact regenerated + placed."
     else
       echo "codex-refresh: assay export failed or unavailable — keeping the previous artifact." >&2
     fi
     echo ""
     echo "codex-refresh: done. report.md summary:"
-    head -n 40 apps/codex/data/corpus/report.md
+    head -n 40 "$codex_data/corpus/report.md"
     echo ""
     # D29-57: corpusFs.ts caches the corpus per category per-process, so a running
     # container keeps serving stale categories after a host-side refresh until it
@@ -614,7 +624,7 @@ codex-refresh:
     fi
 
 # Build the codex Pagefind search index (D29-34) from the current corpus at
-# apps/codex/data/corpus/ into apps/codex/data/search/pagefind/, served at
+# <codex.data-path>/corpus/ into <codex.data-path>/search/pagefind/, served at
 # /pagefind/ via server.ts's staticMount. HOST-ONLY — the native Pagefind
 # indexer peaks at ~3.8 GB RSS during writeFiles over the full 46k-entity
 # corpus (measured) — this must NEVER run in CI, a Docker build, or `vite
@@ -686,7 +696,7 @@ heartwood-sandbox-warm:
 # Steps: (0) refuse unless the wiki content, the ledger and the entity registry are clean
 # in the clone and its HEAD is on main; (1)
 # `astra-heartwood-agent run` stages + runs (artifacts under
-# artifacts/heartwood/<date>/<run-id>/); (2) publish-sync applies the change-set to the live
+# <heartwood.artifacts-path>/<date>/<run-id>/); (2) publish-sync applies the change-set to the live
 # corpus (aborts, writing nothing, if a touched page changed live); (3) whole-corpus
 # validate; (4) akasha-snapshot, then reseed entity.kdl from the new snapshot (keeps the
 # registry's drift-gate test green and lets later sessions' resolve_name see these pages),
@@ -761,7 +771,8 @@ heartwood-agent date *flags:
     # linguist-commit never builds akasha from unvalidated content. The agent run above stays
     # outside. The lock is released when this script exits; _heartwood-push-deploy (a child)
     # never takes it itself.
-    exec 9>artifacts/git-publish.lock
+    mkdir -p "$(dirname "{{git_publish_lock}}")"
+    exec 9>"{{git_publish_lock}}"
     if ! flock -w 1800 9; then
       echo "heartwood-agent: git-publish lock busy for 30 min — nothing written; re-run the date" >&2
       exit 10
@@ -872,7 +883,8 @@ heartwood-revert date:
     undo="git -C $repo revert --abort  (if that refuses: git -C $repo reset --merge HEAD && git -C $repo clean -fd $content)"
     # One git publisher at a time (0036 D36-5): held from the revert's index changes through
     # push + redeploy.
-    exec 9>artifacts/git-publish.lock
+    mkdir -p "$(dirname "{{git_publish_lock}}")"
+    exec 9>"{{git_publish_lock}}"
     flock -w 1800 9 || { echo "heartwood-revert: git-publish lock busy for 30 min — nothing changed" >&2; exit 10; }
     rc=0; dgit revert --no-commit "$commit" || rc=$?
     if [ "$rc" -ne 0 ] && ! dgit rev-parse -q --verify REVERT_HEAD >/dev/null; then
@@ -903,31 +915,32 @@ heartwood-revert date:
 
 # Replay every pending faerrin session oldest-first (0033 §5) — PAID + LIVE, hours long.
 # Always runs DETACHED as the transient user unit `heartwood-backfill` (survives the shell;
-# output → artifacts/heartwood/backfill.log; follow with `tail -f`). `from` = first date
+# output → <data root>/heartwood/backfill.log; follow with `tail -f`). `from` = first date
 # (inclusive); dates the ledger shows as published are skipped, so re-running resumes.
 # While it runs, linguist-commit.{timer,path} are stopped (they push the astra-data clone
-# whenever it is ahead, and take the git-publish lock) and artifacts/heartwood/backfill.lock tells the watchdog not to page about it. The
+# whenever it is ahead, and take the git-publish lock) and <data root>/heartwood/backfill.lock tells the watchdog not to page about it. The
 # loop's EXIT trap re-arms both units and removes the lock; a HARD-killed backfill (SIGKILL,
 # reboot) skips the trap — then run `just heartwood-backfill-reset`. Stop it cleanly with
-# `systemctl --user stop heartwood-backfill` (the trap still runs).
+# `systemctl --user stop heartwood-backfill` (the trap still runs). The loop always runs the
+# deploy checkout's recipes (production code at a pushed sha), whichever checkout launched it.
 # Replay all pending faerrin sessions, detached + budget-capped (PAID + LIVE).
 heartwood-backfill from="":
     #!/usr/bin/env bash
     set -euo pipefail
-    cd /ruby/data/experiments/astra
-    mkdir -p artifacts/heartwood
+    cd "{{justfile_directory()}}"
+    log="{{heartwood_dir}}/backfill.log"
+    mkdir -p "{{heartwood_dir}}"
     if systemctl --user is-active --quiet heartwood-backfill.service; then
-      echo "heartwood-backfill: already running — tail -f artifacts/heartwood/backfill.log" >&2; exit 1
+      echo "heartwood-backfill: already running — tail -f $log" >&2; exit 1
     fi
     systemctl --user reset-failed heartwood-backfill.service 2>/dev/null || true
-    log="/ruby/data/experiments/astra/artifacts/heartwood/backfill.log"
     # The user manager's PATH lacks nvm's node and ~/.deno/bin — hand the unit ours.
     env_args=(--setenv=PATH="$HOME/.deno/bin:$PATH" --setenv=HOME="$HOME")
     if [ -n "${SSH_AUTH_SOCK:-}" ]; then env_args+=(--setenv=SSH_AUTH_SOCK="$SSH_AUTH_SOCK"); fi
     systemd-run --user --unit=heartwood-backfill --collect \
-      --working-directory=/ruby/data/experiments/astra "${env_args[@]}" \
+      --working-directory="{{deploy_root}}" "${env_args[@]}" \
       -p StandardOutput=append:"$log" -p StandardError=append:"$log" \
-      "{{just_executable()}}" _heartwood-backfill-loop "{{from}}"
+      "{{just_executable()}}" -f "{{deploy_root}}/justfile" _heartwood-backfill-loop "{{from}}"
     echo "heartwood-backfill: launched detached — tail -f $log"
     echo "  stop: systemctl --user stop heartwood-backfill   (hard-killed? just heartwood-backfill-reset)"
 
@@ -943,7 +956,7 @@ _heartwood-backfill-loop from:
     cd "{{justfile_directory()}}" || exit 1
     export PATH="$HOME/.deno/bin:$PATH"
     from="{{from}}"
-    lock=artifacts/heartwood/backfill.lock
+    lock="{{heartwood_dir}}/backfill.lock"
     hw() { "{{uv_bin}}" run astra-heartwood-agent "$@"; }
     ts() { date -u +%FT%TZ; }
     rearm() {
@@ -961,7 +974,7 @@ _heartwood-backfill-loop from:
       echo "=== heartwood backfill end $(ts)"
     }
     echo "=== heartwood backfill start $(ts) (from: ${from:-the first session})"
-    mkdir -p artifacts/heartwood
+    mkdir -p "{{heartwood_dir}}"
     touch "$lock"            # before the stop, so the watchdog never sees a disarmed timer
     trap rearm EXIT
     trap 'exit 143' TERM INT HUP
@@ -1019,7 +1032,6 @@ _heartwood-backfill-loop from:
 heartwood-backfill-reset:
     #!/usr/bin/env bash
     set -euo pipefail
-    cd /ruby/data/experiments/astra
     if systemctl --user is-active --quiet heartwood-backfill.service; then
       echo "heartwood-backfill-reset: the backfill is still running — stop it first:" >&2
       echo "  systemctl --user stop heartwood-backfill   (its EXIT trap re-arms + unlocks)" >&2
@@ -1027,7 +1039,7 @@ heartwood-backfill-reset:
     fi
     systemctl --user reset-failed heartwood-backfill.service 2>/dev/null || true
     systemctl --user start linguist-commit.timer linguist-commit.path
-    rm -f artifacts/heartwood/backfill.lock
+    rm -f "{{heartwood_dir}}/backfill.lock"
     systemctl --user start heartwood-request.timer heartwood-request.path 2>/dev/null \
       && systemctl --user start --no-block heartwood-request.service 2>/dev/null \
       || echo "heartwood-backfill-reset: heartwood-request units not installed — skipped" >&2
@@ -1041,19 +1053,14 @@ heartwood-backfill-reset:
 # to run by hand (no-op with nothing pending). The systemd user PATH lacks uv/just/node, so
 # the runner resolves each tool itself (preflight) — never call bare `uv` here.
 heartwood-requests:
-    cd /ruby/data/experiments/astra && JUST="{{just_executable()}}" UV="{{uv_bin}}" "{{uv_bin}}" run astra-heartwood-agent drain-requests
+    cd "{{justfile_directory()}}" && JUST="{{just_executable()}}" UV="{{uv_bin}}" "{{uv_bin}}" run astra-heartwood-agent drain-requests
 
+# Links the units from the deploy checkout (see _unit-link; the service runs the recipe
+# there, with the venv + node deps deploy.sh keeps in sync).
 # Install + start the 0036 request runner units (idempotent; re-run after editing them).
-heartwood-request-install:
+heartwood-request-install: artifacts-init (_unit-link "heartwood-request.service" "heartwood-request.path" "heartwood-request.timer")
     #!/usr/bin/env bash
     set -euo pipefail
-    cd /ruby/data/experiments/astra
-    just artifacts-init
-    unit_dir="$HOME/.config/systemd/user"
-    mkdir -p "$unit_dir"
-    cp deploy/systemd/heartwood-request.service deploy/systemd/heartwood-request.path \
-       deploy/systemd/heartwood-request.timer "$unit_dir/"
-    systemctl --user daemon-reload
     systemctl --user enable --now heartwood-request.path heartwood-request.timer
     echo "path unit: $(systemctl --user is-active heartwood-request.path)"
     systemctl --user list-timers heartwood-request.timer --no-pager
@@ -1070,20 +1077,20 @@ mouthpiece-sandbox-warm:
 
 # The 0034 comparison for ONE session — PAID (OpenRouter: the producer RLM + one two-pass
 # script per experiment-models arm, ≈ $2–3), never live: writes only under
-# artifacts/mouthpiece-experiments/<date>/<run>/ (no TTS, nothing under episodes/, no commit).
+# <data root>/mouthpiece/experiments/<date>/<run>/ (no TTS, nothing under episodes/, no commit).
 #   just mouthpiece-experiment 2026-10-5
 #   just mouthpiece-experiment 2026-10-5 --arm glm-5.3
-#   just mouthpiece-experiment 2026-10-5 --reuse-brief artifacts/mouthpiece-experiments/2026-10-5/<run>
+#   just mouthpiece-experiment 2026-10-5 --reuse-brief /ruby/data/astra-state/mouthpiece/experiments/2026-10-5/<run>
 mouthpiece-experiment date *flags: mouthpiece-sandbox-warm
-    cd /ruby/data/experiments/astra && {{uv_bin}} run astra-mouthpiece-producer experiment {{date}} {{flags}}
+    cd "{{justfile_directory()}}" && {{uv_bin}} run astra-mouthpiece-producer experiment {{date}} {{flags}}
 
 # The prediction-roundtable special. dossier + script are PAID (OpenRouter) and write only
-# under artifacts/mouthpiece-experiments/roundtable-<latest>/<run>/; render is PAID + LIVE.
+# under <data root>/mouthpiece/experiments/roundtable-<latest>/<run>/; render is PAID + LIVE.
 #   just mouthpiece-roundtable dossier                  survey the main campaign → mystery file
 #   just mouthpiece-roundtable script <run-dir>         ~45-min roundtable script from it
 #   just mouthpiece-roundtable render <run-dir>         TTS + assemble into episodes/ + auto-publish
 mouthpiece-roundtable *args: mouthpiece-sandbox-warm
-    cd /ruby/data/experiments/astra && export PATH="$HOME/.deno/bin:$PATH" && {{uv_bin}} run astra-mouthpiece-roundtable {{args}}
+    cd "{{justfile_directory()}}" && export PATH="$HOME/.deno/bin:$PATH" && {{uv_bin}} run astra-mouthpiece-roundtable {{args}}
 
 # --- Host edge (shared reverse proxy) ---
 

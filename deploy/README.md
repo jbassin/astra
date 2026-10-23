@@ -18,8 +18,27 @@ just deploy --dry-run          # checks only; prints the compose command
 `/ruby/data/astra-deploy` at a **pushed** commit, never from a developer tree, so push first. It takes a
 deploy lock, decrypts the SOPS secrets on the host and passes them as env, and labels every built
 image with the commit (`org.opencontainers.image.revision`). History and the per-service live sha are
-under `artifacts/deploy/`; the header of `deploy.sh` has the details. Do not run a bare
+under `/ruby/data/astra-state/deploy/`; the header of `deploy.sh` has the details. Do not run a bare
 `docker compose up`: it starts every service with empty secrets.
+
+Every host unit (craig-sync, linguist-commit, heartwood-request, the watchdog, alerting and
+backup) runs from the deploy checkout too; the install recipes `systemctl --user link` the unit
+files from it. After each checkout `deploy.sh` brings that checkout's host tooling up to date for
+them (`uv sync --frozen`, and `pnpm install --frozen-lockfile --filter @astra/vellum-lang` for
+heartwood's validator); both are no-ops when nothing changed. `deploy.sh --host-tooling` runs just
+that step.
+
+## Data root
+
+All runtime data lives under one root, `/ruby/data/astra-state` (`config.kdl` `data.root`), never in
+a code checkout. Each service has a flat dir directly under it (`scribe/`, `linguist/`,
+`mouthpiece/`, `heartwood/`, `codex/`, `menhir/`, `audio/`, `postgres/`, `portal-oauth/`,
+`node-exporter/`, `deploy/`, `locks/`), next to the `astra-data` clone. The full list is in the
+comment on `config.kdl`'s `data` block; `deploy.sh` creates the dirs (`init_artifacts`, also
+`just artifacts-init`). Config resolves every data path against the root, and the compose bind
+mounts use the same absolute paths (identical on both sides where the code reads the path from
+config). `ASTRA_DATA_ROOT` overrides the root for config, the justfile and the host scripts.
+The developer tree's gitignored `artifacts/` holds only dev material (research notes, old logs).
 
 The pipeline's published datasets (linguist transcripts, data and chronicle timeline, the mouthpiece
 episode catalog, the akasha wiki and its snapshot, heartwood's run ledger, the entity registry) are
@@ -110,8 +129,9 @@ newest). A failed run pages Discord through `astra-alert@` (Class C). Each snaps
   taken in the same transaction snapshot as the dump;
 - `signoz/rules/` — the SigNoz alert rules (not the notification channel, which holds the webhook);
   the same files are committed in `signoz/rules/` (refresh with `just signoz-rules-export`);
-- `state/` — `artifacts/` (minus live PGDATA, node-exporter output and lock files),
-  `apps/assay/review-ui/state/` and `apps/mouthpiece-backend/episodes/`, hardlinked against the
+- `state/<dir>/` — every top-level dir of the data root, the `astra-data` clone included (so
+  unpushed bot commits are kept), minus live PGDATA, node-exporter output, the re-fetchable
+  codex data, scribe's derived output and scratch, and lock files; hardlinked against the
   previous snapshot so unchanged files cost nothing.
 
 Retention: the newest snapshot of each of the last 14 days plus the newest of each of the last 8

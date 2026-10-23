@@ -1,9 +1,15 @@
 ---
 name: deploy-artifacts-run-as-user
-description: deploy 2026-06-30 — astra named volumes moved to a gitignored artifacts/ bind-mount root + all app/Dagster containers run as user 1000:1000; the run-as-user + bind-migration gotchas
+description: deploy 2026-06-30 — astra named volumes moved to bind mounts (root now /ruby/data/astra-state, was the dev tree's artifacts/ until 0037 item 2c) + all app/Dagster containers run as user 1000:1000; the run-as-user + bind-migration gotchas
 metadata:
   type: project
 ---
+
+**Current location (0037 Phase 1 item 2c, 2026-10-22):** the bind-mount root is the data root
+`/ruby/data/astra-state` (`audio/<svc>`, `postgres/<svc>`, `portal-oauth`, `menhir`, ...; layout in the
+config.kdl `data` comment), no longer the dev tree's `artifacts/`; `just artifacts-init` = deploy.sh
+`init_artifacts`, and the recipes below use `{{data_root}}`. Everything else in this entry still holds;
+read `artifacts/` below as the data root.
 
 PROJECT 2026-06-30 **DONE + DEPLOYED + verified live + pushed (`6cd6c45`)** — moved the 6 astra **named
 Docker volumes** (audio: akasha/mouthpiece/orator; Postgres: dagster/weal/orator) to **bind mounts under a

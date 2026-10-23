@@ -7,7 +7,10 @@ OnFailure=astra-alert@%n.service
 
 [Service]
 Type=oneshot
-WorkingDirectory=/ruby/data/experiments/astra
+# Runs the recipe from the deploy checkout (0037 item 2c), with the venv + vellum-lang node
+# deps deploy.sh keeps in sync there; the request files and run artifacts live under the
+# data root (config heartwood.requests-path / artifacts-path).
+WorkingDirectory=/ruby/data/astra-deploy
 # One agent run is 15–55 min plus publish; oneshot has no start timeout by default. The
 # runner resolves node/deno/uv/just itself (this unit's PATH has none of them).
 ExecStart=/home/jbassin/.cargo/bin/just heartwood-requests

@@ -88,8 +88,8 @@ const Linguist = z
     ingestSource: z.string().default(""),
     ingestSavedDir: dataPath(""),
     // session_transcripts' runtime outputs that are not published datasets.
-    scriptPath: dataPath("apps/linguist/script"),
-    shibbolethPath: dataPath("apps/linguist/script/shibboleth.json"),
+    scriptPath: dataPath("linguist/script"),
+    shibbolethPath: dataPath("linguist/script/shibboleth.json"),
     reviewPort: z.number().default(10116),
     podcastEpisodesPath: z.string().default(""),
     surfaceModelJudge: z.string().default("openrouter/z-ai/glm-5.2"),
@@ -271,10 +271,10 @@ const Heartwood = z
     maxOutputChars: z.number().default(10000),
     backfillBudgetUsd: z.number().default(100),
     // 0036 (Python-only consumers): the Dagster↔host request dir + the asset's wait.
-    requestsPath: dataPath("artifacts/heartwood/requests"),
+    requestsPath: dataPath("heartwood/requests"),
     requestTimeoutMinutes: z.number().default(180),
     // Per-run agent artifacts (staging, diff, summary) + the backfill lock.
-    artifactsPath: dataPath("artifacts/heartwood"),
+    artifactsPath: dataPath("heartwood"),
   })
   .strict();
 
@@ -296,7 +296,7 @@ const MouthpieceProducer = z
       .default(["openrouter/z-ai/glm-5.3", "openrouter/deepseek/deepseek-v4.1-flash"]),
     experimentMaxTokens: z.preprocess(toList, z.array(z.number())).default([128000, 64000]),
     // Per-run producer/experiment/roundtable artifacts.
-    artifactsPath: dataPath("artifacts/mouthpiece-experiments"),
+    artifactsPath: dataPath("mouthpiece/experiments"),
   })
   .strict();
 
@@ -353,7 +353,7 @@ const Codex = z
     serviceName: z.string().default("astra.codex"),
     port: z.number().default(10374),
     publicOrigin: z.string().default("https://codex.iridi.cc"),
-    dataPath: dataPath("apps/codex/data"),
+    dataPath: dataPath("codex/data"),
   })
   .strict();
 
@@ -367,7 +367,7 @@ const Menhir = z
     serviceName: z.string().default("astra.menhir"),
     port: z.number().default(10375),
     publicOrigin: z.string().default("https://menhir.iridi.cc"),
-    resultsPath: dataPath("artifacts/menhir/results.jsonl"),
+    resultsPath: dataPath("menhir/results.jsonl"),
   })
   .strict();
 

@@ -19,8 +19,9 @@
 #   postgres/<svc>.meta.json     image, server version, db, user, table/row totals
 #   signoz/rules/<slug>.json     SigNoz alert rules (rules ONLY — notification channels hold
 #                                the Discord webhook secret and are deliberately skipped)
-#   state/<path>                 rsync copies of the irreplaceable state dirs (STATE_DIRS,
-#                                paths relative to DATA_ROOT, the live data tree),
+#   state/<dir>                  rsync copies of the state dirs: every top-level dir of
+#                                DATA_ROOT (the one data root, astra-data clone included)
+#                                except SKIP_DIRS (state_dirs below),
 #                                hardlinked (--link-dest) against the previous snapshot, so
 #                                an unchanged 14 GB music library costs nothing per night
 #   manifest.json                written last; a snapshot without it is never trusted
@@ -38,8 +39,9 @@
 #   Postgres  stop the app container, then
 #             docker exec -i astra-weal-postgres pg_restore -U weal -d weal --clean \
 #               --if-exists --no-owner --single-transaction < latest/postgres/weal.dump
-#   state     rsync -a latest/state/artifacts/audio/orator/ \
-#               /ruby/data/experiments/astra/artifacts/audio/orator/   (any path likewise)
+#   state     rsync -a latest/state/audio/orator/ /ruby/data/astra-state/audio/orator/
+#             (any dir likewise; snapshots taken before 0037 item 2c used the old
+#             developer-tree layout: state/artifacts/audio/orator/, state/apps/...)
 #   rules     re-create each latest/signoz/rules/*.json with the signoz_create_alert MCP
 #             tool (or POST /api/v1/rules); the discord-ops channel is re-created from the
 #             SOPS webhook (thoughts/shared/memory/astra-alerting-setup.md)
@@ -52,9 +54,10 @@ shopt -s nullglob
 
 # Two roots: CODE_ROOT is the checkout this script runs from (the deploy checkout,
 # /ruby/data/astra-deploy, when the unit runs it), used only for the committed alert rules;
-# DATA_ROOT is where the live state lives (still the developer tree until 0037 Phase 1 item 2c).
+# DATA_ROOT is the one data root where all live state lives (config.kdl data.root, whose
+# comment lists the layout; the same ASTRA_DATA_ROOT variable overrides both).
 CODE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)"
-DATA_ROOT="${ASTRA_DATA_ROOT:-/ruby/data/experiments/astra}"
+DATA_ROOT="${ASTRA_DATA_ROOT:-/ruby/data/astra-state}"
 BACKUP_ROOT="${ASTRA_BACKUP_ROOT:-/ruby/data/plex/data/astra-backups}"
 # The mount the backup root must live on. If the sda disk is not mounted, its mountpoint
 # is a plain directory on the nvme — writing there would put the "backup" on the same
@@ -73,25 +76,56 @@ SIGNOZ_CONTAINER="${ASTRA_BACKUP_SIGNOZ_CONTAINER:-signoz}"
 # socket auth inside the container is trust, so no credential is needed or stored here.
 PG_CONTAINERS=(astra-dagster-postgres astra-weal-postgres astra-orator-postgres)
 
-# Irreplaceable state, relative to DATA_ROOT. Default-include: everything under artifacts/ is
-# copied unless excluded below with a reason, so a new state dir is backed up without an edit here.
-STATE_DIRS=(
-  artifacts                         # bind-mount state for the live stack (see excludes)
-  apps/assay/review-ui/state        # scriptorium review decisions + comments (human work)
-  apps/mouthpiece-backend/episodes  # paid LLM + TTS renders (scripts, briefs, clips, mp3s)
-  apps/scribe/incoming              # raw Craig zips; the Google Drive originals can be cleaned out
-)
-# rsync exclude patterns per state dir (anchored at the dir root with a leading /).
+# State, relative to DATA_ROOT. Default-include: every top-level dir of the data root is
+# copied (one state/<dir> entry each) unless skipped or excluded below with a reason, so a
+# new state dir is backed up without an edit here. That includes astra-data (the clone, .git
+# and all, so bot commits that have not been pushed yet are kept), audio (83 of 104 session
+# recordings exist nowhere else), mouthpiece (paid LLM + TTS renders), scribe/incoming (raw
+# Craig zips; the Drive originals can be cleaned out), heartwood, portal-oauth, menhir,
+# linguist and deploy.
+# Skipped whole:
+#   postgres       live PGDATA (uid 70, mode 0700): a file copy of a running cluster is not
+#                  consistent and uid 1000 cannot read it; pg_dump covers it
+#   node-exporter  smartmon.prom, rewritten every few minutes by smart-exporter
+#   codex          the AoN/Foundry snapshots, corpus and index (1.7 GB), re-fetched and rebuilt
+#                  by `just codex-refresh`
+#   locks          runtime locks, no data
+# Not backed up from anywhere: the scriptorium review state (apps/assay/review-ui/state in the
+# developer tree) was archived byte-identical into git at
+# thoughts/shared/archive/scriptorium-review-state/ when the scriptorium was torn down, and
+# nothing writes it any more.
+SKIP_DIRS=(postgres node-exporter codex locks)
+# A run refuses unless these exist, so a wrong or unmounted DATA_ROOT fails the unit instead
+# of producing an empty snapshot.
+REQUIRED_DIRS=(astra-data audio heartwood mouthpiece scribe)
+
+# The state dirs to copy: every top-level directory of DATA_ROOT not in SKIP_DIRS, sorted.
+state_dirs() {
+  local d n s skip
+  for d in "$DATA_ROOT"/*/; do
+    n="$(basename "$d")"
+    skip=0
+    for s in "${SKIP_DIRS[@]}"; do [ "$n" != "$s" ] || skip=1; done
+    [ "$skip" = 1 ] || [ -L "${d%/}" ] || printf '%s\n' "$n"
+  done
+}
+
+# rsync exclude patterns per state dir (anchored at the dir root with a leading /). Every dir
+# also excludes *.lock (heartwood/backfill.lock, deploy/deploy.lock: runtime locks, no data).
 excludes_for() {
   case "$1" in
-    artifacts)
-      # /postgres/       live PGDATA (uid 70, mode 0700): a file copy of a running cluster
-      #                  is not consistent and uid 1000 cannot read it; pg_dump covers it
-      # /node-exporter/  smartmon.prom, rewritten every few minutes by smart-exporter
-      # *.lock           git-publish.lock, heartwood backfill.lock: runtime locks, no data
-      printf '%s\n' /postgres/ /node-exporter/ '*.lock'
+    scribe)
+      # /data/  scribe's output (3.6 GB): rebuilt from scribe/incoming by the pipeline, and
+      #         its session audio is also in audio/akasha
+      # /tmp/   scribe scratch
+      printf '%s\n' /data/ /tmp/
+      ;;
+    deploy)
+      # deploy.sh's temp export of the astra-data clone (removed when the deploy exits)
+      printf '%s\n' '/astra-data-context.*/'
       ;;
   esac
+  printf '%s\n' '*.lock'
 }
 
 SNAP_RE='^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6}Z$'
@@ -260,9 +294,13 @@ exclude_args() {
 
 backup_state() {
   local dest="$1" prev="$2" rel src out rc files bytes
-  local -a args excl
+  local -a args excl state
+  for rel in "${REQUIRED_DIRS[@]}"; do
+    [ -d "$DATA_ROOT/$rel" ] || die "required state dir $DATA_ROOT/$rel is missing — is ASTRA_DATA_ROOT right?"
+  done
+  mapfile -t state < <(state_dirs)
   : >"$dest/.state.jsonl"
-  for rel in "${STATE_DIRS[@]}"; do
+  for rel in "${state[@]}"; do
     src="$DATA_ROOT/$rel"
     out="$dest/state/$rel"
     [ -d "$src" ] || die "state dir $src is missing"

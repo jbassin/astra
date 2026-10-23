@@ -7,11 +7,12 @@ OnFailure=astra-alert@%n.service
 
 [Service]
 Type=oneshot
-# Runs the recipe from the deploy checkout (0037 OPS-3); the recipe writes to the absolute
-# data path (/ruby/data/experiments/astra/apps/scribe/incoming), not to this checkout.
+# Runs the recipe from the deploy checkout (0037 OPS-3); the recipe reads its destination
+# (scribe.incoming-path = /ruby/data/astra-state/scribe/incoming) from config.kdl through
+# that checkout's venv, which deploy.sh keeps in sync. It never writes to the checkout.
 WorkingDirectory=/ruby/data/astra-deploy
 # `just` lives in the user's cargo bin; the recipe copies new *.zip from the Drive
-# fuse mount into apps/scribe/incoming, where the containerised craig_drop_sensor sees
+# fuse mount into scribe's incoming dir, where the containerised craig_drop_sensor sees
 # them (Docker can't bind-mount the FUSE mount, so the host bridges it).
 ExecStart=/home/jbassin/.cargo/bin/just craig-sync
 # Backstop watchdog: the recipe self-bounds every FUSE access (see `just craig-sync`),

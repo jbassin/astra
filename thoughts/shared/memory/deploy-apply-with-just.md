@@ -12,18 +12,23 @@ Since 2026-10-22 (0037 Phase 1 item 1) production never builds from a developer 
   `/ruby/data/astra-deploy` (a plain clone; never edit it — a dirty tree is refused, exit 5),
   decrypts SOPS with `~/.config/sops/age/keys.txt`, and runs `docker compose up -d --build`.
   An **unpushed commit cannot be deployed** (exit 4): push first. Every built image carries
-  `org.opencontainers.image.revision`; `artifacts/deploy/history.jsonl` logs every attempt and
-  `artifacts/deploy/live/<service>` holds the last sha. `just deploy --restart <svc>` restarts
+  `org.opencontainers.image.revision`; `/ruby/data/astra-state/deploy/history.jsonl` logs every
+  attempt and `/ruby/data/astra-state/deploy/live/<service>` holds the last sha. `just deploy --restart <svc>` restarts
   without building (codex-refresh uses it). `--dry-run` does the checks only.
 - Any deploy, scoped or not, moves the checkout to the target, so the linguist-commit and
   heartwood redeploys (which deploy `origin/main`) partly undo a `--sha` rollback.
 - **`just caddy-reload`** applies `sites.caddyfile` — the edge imports the DEPLOY checkout's copy
   (`/ruby/data/reverse-proxy/Caddyfile` line ~201), so an edge edit needs push → any `just deploy`
   (refreshes the checkout) → `just caddy-reload`.
-- Units for craig-sync, astra-watchdog, astra-alert@, astra-backup are `systemctl --user link`ed
-  from the deploy checkout: a deploy updates their scripts; a changed `.service`/`.timer` needs its
-  install recipe re-run. linguist-commit and heartwood-request still run in the dev tree until
-  Phase 1 item 2c, but since 2b they run git only in the astra-data clone, never in this repo.
+- Every host unit (craig-sync, linguist-commit, heartwood-request, astra-watchdog, astra-alert@,
+  astra-backup) is `systemctl --user link`ed from the deploy checkout and runs there (0037 item 2c):
+  a deploy updates their scripts and recipes; a changed `.service`/`.timer`/`.path` needs its install
+  recipe re-run. After each checkout deploy.sh syncs that checkout's host tooling for them (`uv sync
+  --frozen`, `pnpm install --frozen-lockfile --filter @astra/vellum-lang`; exit 9 on failure). They
+  run git only in the astra-data clone, never in this repo.
+- All runtime data is under the data root `/ruby/data/astra-state` (config.kdl `data.root`; layout in
+  its comment, dirs created by deploy.sh `init_artifacts`); nothing a deploy or unit uses lives in
+  a code checkout. The dev tree's `artifacts/` is dev material only.
 - akasha-frontend and mouthpiece-frontend bake the published datasets from the `astra-data` build
   context: deploy.sh exports the clone's (`/ruby/data/astra-state/astra-data`) committed HEAD, not
   its working tree and not a pushed sha (exit 8 if the clone is missing). `data_sha` in

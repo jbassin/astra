@@ -7,7 +7,7 @@ Documentation=https://github.com/jbassin/astra
 # A directory watch fires on any create/rename inside it — including the runner's own
 # result writes, which cost one no-op drain. Logs live in logs/ so they don't trigger it.
 # heartwood-request.timer stays enabled as the fallback sweep for a missed event.
-PathModified=/ruby/data/experiments/astra/artifacts/heartwood/requests
+PathModified=/ruby/data/astra-state/heartwood/requests
 Unit=heartwood-request.service
 
 [Install]

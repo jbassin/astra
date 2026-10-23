@@ -3,7 +3,7 @@
     dossier [--show SLUG] [--latest DATE]
         survey the campaign (default: the main show through its newest session) into a
         mystery file in a fresh run dir under
-        artifacts/mouthpiece-experiments/roundtable-<latest>/. PAID (OpenRouter).
+        <mouthpiece-producer.artifacts-path>/roundtable-<latest>/. PAID (OpenRouter).
         Last stdout line RUN_DIR=<path>.
     script RUN_DIR [--model ID]
         write the roundtable script from RUN_DIR's dossier (Pass A roundtable + Pass B

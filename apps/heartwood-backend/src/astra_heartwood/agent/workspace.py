@@ -1,11 +1,12 @@
 """The staging workspace, op journal, change-set and publish sync (0033 D33-2, D33-11).
 
 A run never touches the live corpus while the agent works. ``Workspace.create`` copies
-``apps/akasha-backend/content/`` into ``artifacts/heartwood/<date>/<run-id>/content/``
-(the *staging* copy) plus a pristine ``baseline/`` copy, and records a baseline
-``{path-key: sha256}`` in ``baseline.json``. The wiki tools read and write staging only;
-every mutation goes through ``write`` / ``move`` / ``delete`` here, which append one line
-to ``ops.jsonl`` (the op journal).
+the wiki (config ``data.akasha-content``) into
+``<heartwood.artifacts-path>/<date>/<run-id>/content/`` (the *staging* copy) plus a
+pristine ``baseline/`` copy, and records a baseline ``{path-key: sha256}`` in
+``baseline.json``. The wiki tools read and write staging only; every mutation goes
+through ``write`` / ``move`` / ``delete`` here, which append one line to ``ops.jsonl``
+(the op journal).
 
 **Change-set semantics** (``changeset()``) — replayed from the journal, never inferred
 from hashes. Each current staging page carries an *origin*: the baseline path it

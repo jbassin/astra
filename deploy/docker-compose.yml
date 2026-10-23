@@ -34,24 +34,27 @@ x-dagster-env: &dagster-env
 # with host-dev `uv run dagster dev`, which uses the same host dirs). Every mount is
 # IDENTICAL-PATH (container path == host path): the code reads each path from the baked
 # config.kdl (data.root / data.content-root + the relative data paths), so the same
-# resolved path must exist inside the container. Moving the data = changing config.kdl +
-# these mount pairs. The published datasets live in the astra-data clone
+# resolved path must exist inside the container. Every host path in this file is under
+# the one data root /ruby/data/astra-state (config.kdl data.root, whose comment lists the
+# layout); none is in a code checkout. Moving the data = changing config.kdl + these
+# mount pairs. The published datasets live in the astra-data clone
 # (data.content-root, /ruby/data/astra-state/astra-data): the run workers write
 # the linguist datasets there and the host linguist-commit timer commits + pushes them.
-# The clone must exist before a deploy (Docker would create a missing source as root).
+# The clone must exist before a deploy (Docker would create a missing source as root);
+# deploy.sh creates the other source dirs as uid 1000 (init_artifacts).
 x-dagster-volumes: &dagster-pipeline-volumes
   # scribe.incoming-path — the local Craig drop dir (zips copied here from the Drive
   # fuse mount, which Docker can't bind-mount). scribe reads + extracts, never deletes.
-  - /ruby/data/experiments/astra/apps/scribe/incoming:/ruby/data/experiments/astra/apps/scribe/incoming
-  - /ruby/data/experiments/astra/apps/scribe/data:/ruby/data/experiments/astra/apps/scribe/data
-  - /ruby/data/experiments/astra/apps/scribe/tmp:/ruby/data/experiments/astra/apps/scribe/tmp
+  - /ruby/data/astra-state/scribe/incoming:/ruby/data/astra-state/scribe/incoming
+  - /ruby/data/astra-state/scribe/data:/ruby/data/astra-state/scribe/data
+  - /ruby/data/astra-state/scribe/tmp:/ruby/data/astra-state/scribe/tmp
   # linguist.script-path (which also holds linguist.shibboleth-path) — operator state.
-  - /ruby/data/experiments/astra/apps/linguist/script:/ruby/data/experiments/astra/apps/linguist/script
+  - /ruby/data/astra-state/linguist/script:/ruby/data/astra-state/linguist/script
   # data.linguist-{transcripts,data,timeline} — in the astra-data clone.
   - /ruby/data/astra-state/astra-data/linguist/transcripts:/ruby/data/astra-state/astra-data/linguist/transcripts
   - /ruby/data/astra-state/astra-data/linguist/data:/ruby/data/astra-state/astra-data/linguist/data
   - /ruby/data/astra-state/astra-data/linguist/timeline:/ruby/data/astra-state/astra-data/linguist/timeline
-  - /ruby/data/experiments/astra/apps/mouthpiece-backend/episodes:/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes
+  - /ruby/data/astra-state/mouthpiece/episodes:/ruby/data/astra-state/mouthpiece/episodes
   # The akasha wiki, LIVE and read-only (0035 D35-3): the producer (session_brief) and the
   # script fallback's grounding read it. Before this the container read the copy baked in
   # at the last `just up`, missing everything heartwood published since. Nothing in Dagster
@@ -64,8 +67,8 @@ x-dagster-volumes: &dagster-pipeline-volumes
   - /ruby/data/astra-state/astra-data/entity:/ruby/data/astra-state/astra-data/entity:ro
   # heartwood.requests-path (0036): session_wiki files <date>.request.json here and waits for
   # the host heartwood-request unit's <date>.result.json. Identical path on both sides; the
-  # dir is created by `just artifacts-init` as uid 1000 (Docker would create it as root).
-  - /ruby/data/experiments/astra/artifacts/heartwood/requests:/ruby/data/experiments/astra/artifacts/heartwood/requests
+  # dir is created by deploy.sh init_artifacts as uid 1000 (Docker would create it as root).
+  - /ruby/data/astra-state/heartwood/requests:/ruby/data/astra-state/heartwood/requests
 
 # Labels on every image built here (0037 OPS-3), so `docker inspect` answers "which commit
 # is this container running". deploy/deploy.sh exports ASTRA_REVISION (the full sha it
@@ -85,11 +88,11 @@ services:
       POSTGRES_USER: ${DAGSTER_PG_USERNAME:-dagster}
       POSTGRES_PASSWORD: ${DAGSTER_PG_PASSWORD:-dagster}
       POSTGRES_DB: ${DAGSTER_PG_DB:-dagster}
-    # PGDATA bind-mounted under the gitignored artifacts/ dir (was the named volume
-    # astra-dagster-pg). No `user:` — the postgres entrypoint owns PGDATA as uid 70; the
-    # one-time `just pg-migrate dagster` copy preserves 70:70/0700 so it's accepted.
+    # PGDATA bind-mounted from the data root (was the named volume astra-dagster-pg).
+    # No `user:` — the postgres entrypoint owns PGDATA as uid 70; the one-time
+    # `just pg-migrate dagster` copy preserves 70:70/0700 so it's accepted.
     volumes:
-      - /ruby/data/experiments/astra/artifacts/postgres/dagster:/var/lib/postgresql/data
+      - /ruby/data/astra-state/postgres/dagster:/var/lib/postgresql/data
     networks: [signoz-net]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DAGSTER_PG_USERNAME:-dagster} -d ${DAGSTER_PG_DB:-dagster}"]
@@ -163,9 +166,9 @@ services:
       POSTGRES_USER: ${WEAL_PG_USERNAME:-weal}
       POSTGRES_PASSWORD: ${WEAL_PG_PASSWORD:-weal}
       POSTGRES_DB: ${WEAL_PG_DB:-weal}
-    # PGDATA bind-mounted under artifacts/ (was named volume astra-weal-pg); see dagster-postgres.
+    # PGDATA bind-mounted from the data root (was named volume astra-weal-pg); see dagster-postgres.
     volumes:
-      - /ruby/data/experiments/astra/artifacts/postgres/weal:/var/lib/postgresql/data
+      - /ruby/data/astra-state/postgres/weal:/var/lib/postgresql/data
     ports:
       - "10362:5432" # weal dice/funcs store (astra range) — for the P6 SQLite→PG migration
     networks: [signoz-net]
@@ -240,7 +243,7 @@ services:
   # flush_interval -1. No secrets (no auth, D31-9's hostToken is minted per game).
   # Results JSONL rides an IDENTICAL-PATH rw bind mount (host path == container
   # path — plain config fields have no env override, the D29-53 convention);
-  # `just artifacts-init` pre-creates the dir as uid 1000.
+  # deploy.sh init_artifacts pre-creates the dir as uid 1000.
   menhir:
     build:
       labels: *build-labels
@@ -254,7 +257,7 @@ services:
     ports:
       - "10375:10375"
     volumes:
-      - /ruby/data/experiments/astra/artifacts/menhir:/ruby/data/experiments/astra/artifacts/menhir
+      - /ruby/data/astra-state/menhir:/ruby/data/astra-state/menhir
     networks: [signoz-net]
     healthcheck:
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10375/').then(r=>process.exit(r.ok?0:1))"]
@@ -317,10 +320,10 @@ services:
     # compose only maps the published host port below.
     ports:
       - "10365:10365" # akasha-frontend SSR (astra range) — also reachable directly
-    # Session audio bind-mounted from artifacts/ (was named volume astra-akasha-audio);
+    # Session audio bind-mounted from the data root (was named volume astra-akasha-audio);
     # container path /audio unchanged → no config.kdl change. Seed with `just akasha-seed`.
     volumes:
-      - /ruby/data/experiments/astra/artifacts/audio/akasha:/audio:ro # kdl akasha-frontend.audio-dir; served at /audio/<date>.mp3
+      - /ruby/data/astra-state/audio/akasha:/audio:ro # kdl akasha-frontend.audio-dir; served at /audio/<date>.mp3
     networks: [signoz-net]
     healthcheck:
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10365/').then(r=>process.exit(r.ok?0:1))"]
@@ -360,10 +363,10 @@ services:
     ports:
       - "10374:10374" # codex SSR (astra range) — also reachable directly
     # D29-53: identical-path read-only bind mounts (host path == container path).
-    # Both dirs already exist at this stable host path, produced by
-    # `just codex-refresh` outside artifacts/ — no artifacts-init change, no seed
-    # recipe. Fresh-host caveat: Docker auto-creates a missing bind source as root,
-    # which would serve the fixture corpus until `codex-refresh` runs once.
+    # codex.data-path (config.kdl) = /ruby/data/astra-state/codex/data; `just
+    # codex-refresh` writes corpus/ and search/ there, and deploy.sh init_artifacts creates
+    # the three dirs as uid 1000 (empty on a fresh host, so the server serves the
+    # fixture corpus until `codex-refresh` runs once).
     # D30-41 (0030 round 4): a THIRD identical-path `:ro` bind for the
     # `apps/assay` verdict artifact (`assay/spell-power.json`) — same
     # D29-53 convention as the two below. NO fixture fallback on the codex
@@ -372,9 +375,9 @@ services:
     # `assay export-codex` places the real artifact + `just codex-refresh`
     # restarts this container to pick it up (D30-39's cache-on-success).
     volumes:
-      - /ruby/data/experiments/astra/apps/codex/data/corpus:/ruby/data/experiments/astra/apps/codex/data/corpus:ro
-      - /ruby/data/experiments/astra/apps/codex/data/search:/ruby/data/experiments/astra/apps/codex/data/search:ro
-      - /ruby/data/experiments/astra/apps/codex/data/assay:/ruby/data/experiments/astra/apps/codex/data/assay:ro
+      - /ruby/data/astra-state/codex/data/corpus:/ruby/data/astra-state/codex/data/corpus:ro
+      - /ruby/data/astra-state/codex/data/search:/ruby/data/astra-state/codex/data/search:ro
+      - /ruby/data/astra-state/codex/data/assay:/ruby/data/astra-state/codex/data/assay:ro
     networks: [signoz-net]
     healthcheck:
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10374/').then(r=>process.exit(r.ok?0:1))"]
@@ -411,10 +414,10 @@ services:
     # compose only maps the published host port below.
     ports:
       - "10366:10366" # mouthpiece-frontend SSR (astra range) — also reachable directly
-    # Episode audio bind-mounted from artifacts/ (was named volume astra-mouthpiece-audio);
+    # Episode audio bind-mounted from the data root (was named volume astra-mouthpiece-audio);
     # container path /audio unchanged → no config.kdl change. Seed with `just mouthpiece-seed`.
     volumes:
-      - /ruby/data/experiments/astra/artifacts/audio/mouthpiece:/audio:ro # kdl mouthpiece-frontend.audio-dir; served at /audio/<id>.mp3
+      - /ruby/data/astra-state/audio/mouthpiece:/audio:ro # kdl mouthpiece-frontend.audio-dir; served at /audio/<id>.mp3
     networks: [signoz-net]
     healthcheck:
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10366/').then(r=>process.exit(r.ok?0:1))"]
@@ -490,9 +493,9 @@ services:
       POSTGRES_USER: ${ORATOR_PG_USERNAME:-orator}
       POSTGRES_PASSWORD: ${ORATOR_PG_PASSWORD:-orator}
       POSTGRES_DB: ${ORATOR_PG_DB:-orator}
-    # PGDATA bind-mounted under artifacts/ (was named volume astra-orator-pg); see dagster-postgres.
+    # PGDATA bind-mounted from the data root (was named volume astra-orator-pg); see dagster-postgres.
     volumes:
-      - /ruby/data/experiments/astra/artifacts/postgres/orator:/var/lib/postgresql/data
+      - /ruby/data/astra-state/postgres/orator:/var/lib/postgresql/data
     ports:
       - "10364:5432" # orator music-library store (astra range)
     networks: [signoz-net]
@@ -529,11 +532,11 @@ services:
       ORATOR_DISCORD_CLIENT_ID: ${ORATOR_DISCORD_CLIENT_ID:-}
       ORATOR_DISCORD_CLIENT_SECRET: ${ORATOR_DISCORD_CLIENT_SECRET:-}
       ORATOR_SESSION_SECRET: ${ORATOR_SESSION_SECRET:-}
-    # Audio/data dir bind-mounted from artifacts/ (was named volume astra-orator-audio);
+    # Audio/data dir bind-mounted from the data root (was named volume astra-orator-audio);
     # container path /data unchanged → no config.kdl change. One-time copy of the existing
     # library via `just orator-audio-migrate`.
     volumes:
-      - /ruby/data/experiments/astra/artifacts/audio/orator:/data # kdl orator.data-dir; audio under /data/audio
+      - /ruby/data/astra-state/audio/orator:/data # kdl orator.data-dir; audio under /data/audio
     ports:
       - "10363:10363" # orator-backend (astra range) — also reachable directly
     networks: [signoz-net]
@@ -629,10 +632,10 @@ services:
       PORTAL_PLAYER_API_KEY: ${PORTAL_PLAYER_API_KEY:-}
       PORTAL_BRIDGE_API_KEY: ${PORTAL_BRIDGE_API_KEY:-}
     # 0025 OAuth state (registered claude.ai clients + hashed tokens) bind-mounted
-    # from artifacts/ so connections survive redeploys; container path matches kdl
+    # from the data root so connections survive redeploys; container path matches kdl
     # portal.oauth-state-path (/data/oauth/state.json). Writes land 1000:1000.
     volumes:
-      - /ruby/data/experiments/astra/artifacts/portal-oauth:/data/oauth
+      - /ruby/data/astra-state/portal-oauth:/data/oauth
     ports:
       - "10372:10372" # portal (astra range) — also reachable directly
     networks: [signoz-net]
@@ -702,7 +705,7 @@ services:
     volumes:
       - /:/host:ro,rslave
       # smart-exporter (below) writes smartmon.prom here; served via --collector.textfile.
-      - /ruby/data/experiments/astra/artifacts/node-exporter/textfile:/textfile:ro
+      - /ruby/data/astra-state/node-exporter/textfile:/textfile:ro
     command:
       - --path.rootfs=/host
       - --collector.ethtool
@@ -735,7 +738,7 @@ services:
       SMARTMON_INTERVAL: "300"
       SMARTMON_OUT: /textfile
     volumes:
-      - /ruby/data/experiments/astra/artifacts/node-exporter/textfile:/textfile
+      - /ruby/data/astra-state/node-exporter/textfile:/textfile
     restart: unless-stopped
 
 # The production edge is the shared HOST reverse proxy at /ruby/data/reverse-proxy
@@ -743,8 +746,8 @@ services:
 # the substrate runs no Caddy of its own — services are reachable on their
 # published host ports (Dagster 10350, SigNoz 10351, strider 10360).
 
-# The astra Postgres + audio state that used to live in named volumes now lives in the
-# gitignored artifacts/ dir, bind-mounted into each service (see above). The host owns it
+# The astra Postgres + audio state that used to live in named volumes now lives under the
+# data root /ruby/data/astra-state, bind-mounted into each service (see above). The host owns it
 # (uid 1000; Postgres PGDATA is uid 70 via its entrypoint). SigNoz keeps its own named
 # volumes (declared in the vendored signoz include — clickhouse/sqlite/zookeeper).
 

@@ -10,7 +10,7 @@ Documentation=https://github.com/jbassin/astra
 # directory watch would fire mid-run. The 15-min linguist-commit.timer stays enabled as
 # the fallback sweep (transcript-only sessions never render an episode, and a missed
 # inotify event must not strand a publish).
-PathModified=/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes/.last-rendered
+PathModified=/ruby/data/astra-state/mouthpiece/episodes/.last-rendered
 Unit=linguist-commit.service
 
 [Install]

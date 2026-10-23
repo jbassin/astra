@@ -56,8 +56,9 @@ and don't write scope, spec or research documents or decision IDs by default.
    - The brief states the goal, what is already ruled out, the files the agent owns, how to verify, and
      the hard rules: no git outside its worktree, no `git stash`, no push, no deploy. The agent reports
      its branch, commit, verification evidence and anything surprising.
-   - Worktrees have no gitignored data (`artifacts/`, corpora, recordings). Point agents at the main
-     checkout's paths, read-only, when they need it.
+   - No checkout holds runtime data: it all lives under `/ruby/data/astra-state` (`config.kdl`
+     `data.root`: recordings, episodes, corpora, audio, the astra-data clone). Point agents at those
+     paths, read-only, when they need it.
    - Review each diff, cherry-pick it onto `main`, then run both CI lanes on the merged result before
      pushing. Each agent proved only its own slice.
    - Run live steps from the main session. The auto-mode classifier blocks subagents from deploying.

@@ -232,6 +232,10 @@ Four non-overlapping concerns; **SigNoz/OTel is the single pane across all of th
 **Deploy / infra**
 - Production builds only from the deploy checkout `/ruby/data/astra-deploy` at a pushed commit:
   `just deploy [service…]` (`deploy/deploy.sh`). Push before you deploy; local edits never ship.
+  Every host unit (the bots, watchdog, backup) runs from that checkout as well.
+- All runtime data lives under `/ruby/data/astra-state` (`config.kdl` `data.root`; the layout is in
+  the comment on its `data` block), never in a checkout. pytest points `ASTRA_DATA_ROOT` at the
+  checkout under test, so tests never touch it.
 - A fresh **SigNoz** won't ingest until the first org/admin is registered (`POST :10351/api/v1/register`,
   then `restart otel-collector`). Host ports live in the **10350–10399** band.
 - `sops` decrypts via the age key file directly (no `age` binary needed; `rage`/`rage-keygen` are the

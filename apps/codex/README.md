@@ -681,9 +681,14 @@ path inside the container as on the host — the same convention the Dagster pip
 already use (`deploy/docker-compose.yml`), applied to a frontend for the first time:
 
 ```
-/ruby/data/experiments/astra/apps/codex/data/corpus:/ruby/data/experiments/astra/apps/codex/data/corpus:ro
-/ruby/data/experiments/astra/apps/codex/data/search:/ruby/data/experiments/astra/apps/codex/data/search:ro
+/ruby/data/astra-state/codex/data/corpus:/ruby/data/astra-state/codex/data/corpus:ro
+/ruby/data/astra-state/codex/data/search:/ruby/data/astra-state/codex/data/search:ro
+/ruby/data/astra-state/codex/data/assay:/ruby/data/astra-state/codex/data/assay:ro
 ```
+
+Since 0037 item 2c the data dir lives under the one data root (`data.root`
+`/ruby/data/astra-state`, `codex.data-path "codex/data"`), not in a code checkout; the
+`data/` paths below are relative to it.
 
 `data/snapshots/` (601 MB, runtime-unreferenced ingest input) and `data/tmp/` deliberately
 stay off the mount list — only the two dirs the running server actually reads.

@@ -88,7 +88,9 @@ tick, so transition-style edge-debounce can't help; it re-paged on every timer f
   journal; still-failing re-pages once per window with the accumulated count.
   `clear_recovered_failures()` runs each watchdog tick and drops the state of any unit no
   longer `is-failed`, so a fresh incident pages instantly. **No `just alert-install` needed
-  for script-only edits** — the installed units `ExecStart` the script's absolute in-repo path.
+  for script-only edits** — the installed units `ExecStart` the script in the deploy checkout
+  (`/ruby/data/astra-deploy`, linked by `_unit-link` since 0037 OPS-3), so an edit goes live
+  with the next `just deploy` (any service) after the push.
 - **Same week's Class A noise was self-inflicted:** an ad-hoc 0027 headless-gm container
   verification run attached to `signoz-net` drove the supervisor against a synthetic
   unreachable fixture → 6 real ERRORs into live SigNoz → Discord page. **Rule: negative-path
@@ -120,8 +122,11 @@ re-run the SigNoz channel + `just alert-install` is unaffected). What shipped + 
   each pipeline timer `is-active` AND armed (`NextElapseUSecRealtime` non-empty; the `Trigger: n/a` wedge
   symptom) + **transition debounce** (per-check state file under `$XDG_STATE_HOME/astra-watchdog`, pages
   only ok↔bad; first-run-bad pages, first-run-ok silent).
-- **Install:** **`just alert-install`** (copies the new units + RE-copies the two edited services,
-  `daemon-reload`, `enable --now astra-watchdog.timer`; `chmod +x` the script which stays in-repo).
+- **Install:** **`just alert-install`** (links astra-alert@, the watchdog units, craig-sync.service
+  and linguist-commit.service from the deploy checkout, `daemon-reload`, `enable --now
+  astra-watchdog.timer`). Since 0037 item 2c every watched unit runs from the deploy checkout
+  and the watchdog's data paths (`ASTRA_DATA_ROOT`, the heartwood backfill lock) default to the
+  data root `/ruby/data/astra-state`.
 
 ### THE gotchas (learned building it)
 1. **`OnFailure=` is a `[Unit]` key, NOT `[Service]`.** systemd silently logs `Unknown key name

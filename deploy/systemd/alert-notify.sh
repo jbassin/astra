@@ -16,9 +16,10 @@ set -uo pipefail
 
 # Two roots: CODE_ROOT is the checkout this script runs from (the deploy checkout,
 # /ruby/data/astra-deploy, when the units run it), used for the committed SOPS file;
-# DATA_ROOT is where the live state lives (still the developer tree until 0037 Phase 1 item 2c).
+# DATA_ROOT is the one data root where all live state lives (config.kdl data.root; the same
+# ASTRA_DATA_ROOT variable overrides both).
 CODE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)"
-DATA_ROOT="${ASTRA_DATA_ROOT:-/ruby/data/experiments/astra}"
+DATA_ROOT="${ASTRA_DATA_ROOT:-/ruby/data/astra-state}"
 SECRETS="$CODE_ROOT/deploy/sops/secrets.enc.yaml"
 # sops's own default key location (the same key `just deploy` uses).
 AGE_KEY="${SOPS_AGE_KEY_FILE:-$HOME/.config/sops/age/keys.txt}"
@@ -41,7 +42,8 @@ WATCHED_PATHS=(linguist-commit.path heartwood-request.path)
 # the whole run and holds this lock; while it exists the checks of every unit it stops
 # (BACKFILL_SUPPRESSED) are skipped (journal-only), so a planned suppression never pages. A hard-killed backfill
 # leaves the lock behind: `just heartwood-backfill-reset` re-arms the units + removes it.
-HEARTWOOD_BACKFILL_LOCK="${HEARTWOOD_BACKFILL_LOCK:-$DATA_ROOT/artifacts/heartwood/backfill.lock}"
+# (= config.kdl heartwood.artifacts-path + /backfill.lock)
+HEARTWOOD_BACKFILL_LOCK="${HEARTWOOD_BACKFILL_LOCK:-$DATA_ROOT/heartwood/backfill.lock}"
 BACKFILL_SUPPRESSED=" linguist-commit.timer linguist-commit.path heartwood-request.timer heartwood-request.path "
 
 # Confirmation window. The watchdog runs on *:0/15 — the SAME wall-clock ticks the watched

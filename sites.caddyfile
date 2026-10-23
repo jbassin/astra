@@ -1,7 +1,7 @@
 # astra host-edge sites — imported by the shared reverse proxy at
 # /ruby/data/reverse-proxy/Caddyfile (custom caddy binary w/ the cloudflare-dns
 # plugin), the same way faerrin's sites.caddyfile is. Add this line to that file:
-#   import /ruby/data/experiments/astra/sites.caddyfile
+#   import /ruby/data/astra-deploy/sites.caddyfile   (the deploy checkout, 0037 OPS-3)
 # (and drop faerrin's strider import — both can't own strider.iridi.cc at once).
 #
 # Decision I: frontends are SSR Compose services, REVERSE-PROXIED here (not the
@@ -102,7 +102,7 @@ api.akasha.iridi.cc {
 		}
 		file_server {
 			hide *.candidates.json
-			browse /ruby/data/experiments/astra/deploy/caddy/scripts-index.tmpl
+			browse /ruby/data/astra-deploy/deploy/caddy/scripts-index.tmpl
 		}
 	}
 }

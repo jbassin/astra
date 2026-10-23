@@ -93,8 +93,8 @@ class LinguistConfig(_Base):
     ingest_source: str = ""
     ingest_saved_dir: DataPath = ""
     # Runtime outputs of session_transcripts that are not published datasets.
-    script_path: DataPath = "apps/linguist/script"
-    shibboleth_path: DataPath = "apps/linguist/script/shibboleth.json"
+    script_path: DataPath = "linguist/script"
+    shibboleth_path: DataPath = "linguist/script/shibboleth.json"
     review_port: int = 10116
     podcast_episodes_path: str = ""
     # Phase-2 judge models + Phase-1 filter / windowing tuning (faerrin `config.ts` `surface`).
@@ -262,10 +262,10 @@ class HeartwoodConfig(_Base):
     backfill_budget_usd: float = 100.0
     # 0036: the Dagster↔host request dir (same path in the containers) and how long the
     # session_wiki asset waits for the host runner's result before failing.
-    requests_path: DataPath = "artifacts/heartwood/requests"
+    requests_path: DataPath = "heartwood/requests"
     request_timeout_minutes: int = 180
     # Per-run agent artifacts (staging, diff, summary) + the backfill lock.
-    artifacts_path: DataPath = "artifacts/heartwood"
+    artifacts_path: DataPath = "heartwood"
 
 
 class MouthpieceProducerConfig(_Base):
@@ -285,7 +285,7 @@ class MouthpieceProducerConfig(_Base):
     ]
     experiment_max_tokens: list[int] = [128000, 64000]
     # Per-run producer/experiment/roundtable artifacts.
-    artifacts_path: DataPath = "artifacts/mouthpiece-experiments"
+    artifacts_path: DataPath = "mouthpiece/experiments"
 
     @field_validator("experiment_models", "experiment_max_tokens", mode="before")
     @classmethod
@@ -338,7 +338,7 @@ class CodexConfig(_Base):
     service_name: str = "astra.codex"
     port: int = 10374
     public_origin: str = "https://codex.iridi.cc"
-    data_path: DataPath = "apps/codex/data"
+    data_path: DataPath = "codex/data"
 
 
 class MenhirConfig(_Base):
@@ -350,7 +350,7 @@ class MenhirConfig(_Base):
     service_name: str = "astra.menhir"
     port: int = 10375
     public_origin: str = "https://menhir.iridi.cc"
-    results_path: DataPath = "artifacts/menhir/results.jsonl"
+    results_path: DataPath = "menhir/results.jsonl"
 
 
 class CaddyConfig(_Base):

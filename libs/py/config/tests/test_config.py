@@ -63,7 +63,7 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.heartwood.max_tokens == 64000
     assert cfg.heartwood.max_output_chars == 10000
     assert cfg.heartwood.backfill_budget_usd == 100
-    assert cfg.heartwood.requests_path.endswith("/artifacts/heartwood/requests")
+    assert cfg.heartwood.requests_path.endswith("/heartwood/requests")
     assert cfg.heartwood.request_timeout_minutes == 180
     assert cfg.mouthpiece_producer.model == "openrouter/deepseek/deepseek-v4.1-flash"
     assert cfg.mouthpiece_producer.max_iterations == 30
@@ -82,11 +82,11 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.codex.service_name == "astra.codex"
     assert cfg.codex.port == 10374
     assert cfg.codex.public_origin == "https://codex.iridi.cc"
-    assert cfg.codex.data_path == f"{cfg.data.root}/apps/codex/data"
+    assert cfg.codex.data_path == f"{cfg.data.root}/codex/data"
     assert cfg.menhir.service_name == "astra.menhir"
     assert cfg.menhir.port == 10375
     assert cfg.menhir.public_origin == "https://menhir.iridi.cc"
-    assert cfg.menhir.results_path == f"{cfg.data.root}/artifacts/menhir/results.jsonl"
+    assert cfg.menhir.results_path == f"{cfg.data.root}/menhir/results.jsonl"
 
 
 def test_secret_fields_are_lazy_refs_not_plaintext() -> None:
@@ -165,18 +165,18 @@ def test_real_data_root_resolves_todays_paths(monkeypatch: pytest.MonkeyPatch) -
     monkeypatch.delenv("ASTRA_DATA_ROOT", raising=False)
     monkeypatch.delenv("ASTRA_CONTENT_ROOT", raising=False)
     cfg = load()
-    root = "/ruby/data/experiments/astra"
-    content = "/ruby/data/astra-state/astra-data"
+    root = "/ruby/data/astra-state"
+    content = f"{root}/astra-data"
     assert cfg.data.root == root
     assert cfg.data.content_root == content
     assert cfg.data.linguist_transcripts == f"{content}/linguist/transcripts"
     assert cfg.data.akasha_content == f"{content}/akasha/content"
     assert cfg.data.entity_registry == f"{content}/entity/entity.kdl"
     assert cfg.data.heartwood_ledger == f"{content}/heartwood/agent-runs.jsonl"
-    assert cfg.scribe.data_path == f"{root}/apps/scribe/data"
-    assert cfg.linguist.ingest_saved_dir == f"{root}/apps/scribe/data/saved"
-    assert cfg.mouthpiece.episodes_path == f"{root}/apps/mouthpiece-backend/episodes"
-    assert cfg.heartwood.requests_path == f"{root}/artifacts/heartwood/requests"
+    assert cfg.scribe.data_path == f"{root}/scribe/data"
+    assert cfg.linguist.ingest_saved_dir == f"{root}/scribe/data/saved"
+    assert cfg.mouthpiece.episodes_path == f"{root}/mouthpiece/episodes"
+    assert cfg.heartwood.requests_path == f"{root}/heartwood/requests"
     assert cfg.orator.data_dir == "/data"  # a container path, not a data path
 
 
