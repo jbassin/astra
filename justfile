@@ -29,7 +29,7 @@ bootstrap:
     mise exec -- pnpm --filter @astra/codex exec playwright install chromium
     git config core.hooksPath .githooks
 
-# The fast format + lint gate for both lanes (the pre-commit hook runs exactly this).
+# The fast format + lint gate for both lanes over the whole tree (pre-commit runs it on staged files).
 check: (_each "check" "ts-lint,py-lint")
 
 # Lint findings the tools can't fix are printed and don't stop the formatters; `just check`

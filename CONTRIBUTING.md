@@ -115,7 +115,7 @@ See `libs/rust/weal-engine/README.md`.
 
 ```bash
 just ci      # everything CI runs; the pre-push hook runs it too
-just check   # the fast format + lint gate (what pre-commit runs)
+just check   # the fast format + lint gate over the whole tree (pre-commit runs it on staged files)
 just fix     # apply the formatters and safe autofixes for both lanes
 just test    # both test lanes
 ```
@@ -130,9 +130,17 @@ container's Chromium and fonts. `just ci` also lints your commits with commitlin
 Two hooks in `.githooks/` gate your work; `just bootstrap` (and `pnpm install`'s `prepare` script)
 installs them with `git config core.hooksPath .githooks`:
 
-- **pre-commit** runs `just check`: `oxlint --type-aware --deny-warnings` + `oxfmt --check` (TS, with
-  the globs from the root `package.json` scripts) and `ruff check` + `ruff format --check` (Python),
-  over the whole tree. It's check-only (never edits files); fix with `just fix`.
+- **pre-commit** runs the `just check` tools on the **staged files only**: `oxlint --type-aware
+  --deny-warnings --report-unused-disable-directives` + `oxfmt --check` (TS, same scope as the root
+  `package.json` scripts) and `ruff check` + `ruff format --check` (Python). It checks the staged
+  content: a partially staged file is checked as staged, and unstaged or untracked files never block
+  the commit. For oxlint, a partially staged file is linted through a temporary sibling copy named
+  `<name>.__staged__.<ext>`, removed when the hook exits. It's check-only (never edits files); fix
+  with `just fix`, then stage the result.
+- **Lint exceptions** go inline at the exact line, with a reason:
+  `// oxlint-disable-next-line <rule> -- <why>` (in JSX children, `{/* … */}`) or
+  `# noqa: <rule> -- <why>`. `.oxlintrc.json` overrides and ruff `per-file-ignores` cover only whole
+  categories of file (tests, scripts, CLI entry points). Unused suppressions fail the gate.
 - **pre-push** runs `just ci`.
 
 Bypass either in a genuine emergency with `--no-verify` (`git commit --no-verify`,

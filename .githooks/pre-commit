@@ -1,26 +1,149 @@
-#!/bin/sh
-# astra pre-commit gate: `just check`, the fast format + lint subset of CI (oxlint +
-# oxfmt for TS, ruff for Python, warnings treated as errors), over the whole tree.
-# Check-only: it never modifies your files. Typecheck and tests run in the pre-push
-# hook (`just ci`) and in CI.
+#!/usr/bin/env bash
+# astra pre-commit gate: format + lint the STAGED files only (oxlint + oxfmt for TS, ruff
+# for Python, warnings treated as errors), so other files you or another agent are editing
+# can't block this commit. The full-tree gate is `just check`; the pre-push hook (`just ci`)
+# and CI run everything. Check-only: it never modifies your files.
+#
+# It checks the staged content, not the working copy: Python and oxfmt read the staged
+# blob on stdin; oxlint (which has no stdin mode) lints a partially staged file through a
+# temporary sibling copy of the staged blob, removed on exit. Deleted files, symlinks and
+# submodules are skipped.
 #
 # Installed by `just bootstrap` and by the root package.json "prepare" script
 # (git config core.hooksPath .githooks).
 # Bypass in a genuine emergency with:  git commit --no-verify
-set -u
+set -uo pipefail
 
-if ! command -v just >/dev/null 2>&1; then
-  echo "✖ pre-commit: just not found (run 'just bootstrap', or activate mise)" >&2
-  exit 1
-fi
+for tool in uv pnpm; do
+  if ! command -v "$tool" >/dev/null 2>&1; then
+    echo "✖ pre-commit: $tool not found (run 'just bootstrap', or activate mise)" >&2
+    exit 1
+  fi
+done
 
-# git runs hooks with GIT_DIR, GIT_INDEX_FILE and friends exported; clear them so no tool
-# the gate runs mistakes another directory for this repo (see pre-push).
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+tmp=$(mktemp -d)
+siblings=()
+cleanup() {
+  rm -rf "$tmp"
+  if [ "${#siblings[@]}" -gt 0 ]; then rm -f -- "${siblings[@]}"; fi
+}
+trap cleanup EXIT INT TERM
+
+# The same scopes as package.json's lint and format:check scripts.
+in_oxfmt_scope() {
+  case "$1" in
+    apps/* | libs/ts/*)
+      case "$1" in *.js | *.jsx | *.ts | *.tsx | *.json | *.css) return 0 ;; esac
+      return 1
+      ;;
+    */*) return 1 ;;
+    *.js | *.mjs | *.cjs | *.json) return 0 ;; # root-level files
+  esac
+  return 1
+}
+in_oxlint_scope() {
+  case "$1" in
+    apps/* | libs/ts/*)
+      case "$1" in *.ts | *.tsx | *.mts | *.cts | *.js | *.jsx | *.mjs | *.cjs) return 0 ;; esac
+      ;;
+  esac
+  return 1
+}
+
+# --- 1. Read everything from git while its hook environment is intact: `git commit -a`
+# and `git commit <paths>` point GIT_INDEX_FILE at a temporary index, and that index is
+# what is being committed.
+py=() ; fmt_whole=() ; fmt_part=() ; lint_whole=() ; lint_part=()
+n=0
+while IFS= read -r -d '' f; do
+  mode=$(git ls-files --stage -- "$f" | cut -d' ' -f1)
+  case "$mode" in 120000 | 160000) continue ;; esac  # symlink, submodule
+  n=$((n + 1))
+  blob="$tmp/$n"
+  git cat-file blob ":$f" >"$blob"
+  partial=0
+  git diff --quiet -- "$f" || partial=1  # the working copy differs from the index
+
+  case "$f" in *.py | *.pyi) py+=("$f" "$blob") ;; esac
+  if in_oxfmt_scope "$f"; then
+    if [ "$partial" = 1 ]; then fmt_part+=("$f" "$blob"); else fmt_whole+=("$f"); fi
+  fi
+  if in_oxlint_scope "$f"; then
+    if [ "$partial" = 1 ]; then lint_part+=("$f" "$blob"); else lint_whole+=("$f"); fi
+  fi
+done < <(git diff --cached --name-only -z --diff-filter=ACMR)
+
+# --- 2. git is done; clear its hook environment so no tool mistakes another directory
+# for this repo (see pre-push).
 for var in $(env | sed -n 's/^\(GIT_[A-Z_]*\)=.*/\1/p'); do unset "$var"; done
 
-if ! just check; then
+failed=()
+
+# --- Python: ruff check + ruff format --check on the staged bytes, configured as the
+# real path (per-file ignores, excludes).
+for ((i = 0; i < ${#py[@]}; i += 2)); do
+  f=${py[i]} blob=${py[i + 1]}
+  uv run --frozen ruff check --force-exclude --stdin-filename "$f" - <"$blob" >"$tmp/out" 2>&1 \
+    || { cat "$tmp/out" >&2; failed+=("ruff check: $f"); }
+  uv run --frozen ruff format --check --force-exclude --stdin-filename "$f" - <"$blob" \
+    >/dev/null 2>&1 || failed+=("ruff format: $f")
+done
+
+# --- oxfmt: whole files in one run; partially staged ones via stdin (oxfmt echoes an
+# ignored path unchanged, so a mismatch is always a real formatting difference).
+if [ "${#fmt_whole[@]}" -gt 0 ]; then
+  if ! pnpm exec oxfmt --check "${fmt_whole[@]}" >"$tmp/out" 2>&1; then
+    # Every path ignored is not a failure.
+    if ! grep -q "Expected at least one target file" "$tmp/out"; then
+      cat "$tmp/out" >&2
+      failed+=("oxfmt")
+    fi
+  fi
+fi
+for ((i = 0; i < ${#fmt_part[@]}; i += 2)); do
+  f=${fmt_part[i]} blob=${fmt_part[i + 1]}
+  if ! pnpm exec oxfmt --stdin-filepath "$f" <"$blob" | cmp -s - "$blob"; then
+    echo "oxfmt: the staged version of $f is not formatted" >&2
+    failed+=("oxfmt: $f")
+  fi
+done
+
+# --- oxlint: the staged blob of a partially staged file goes into a sibling named like
+# `foo.__staged__.test.ts`, so its directory, tsconfig, relative imports and globs such as
+# `*.test.ts` still apply. A path oxlint ignores is skipped.
+for ((i = 0; i < ${#lint_part[@]}; i += 2)); do
+  f=${lint_part[i]} blob=${lint_part[i + 1]}
+  if pnpm exec oxlint "$f" 2>&1 | grep -q "No files found to lint"; then continue; fi
+  dir=$(dirname -- "$f") base=$(basename -- "$f")
+  if [ ! -d "$dir" ]; then
+    echo "oxlint: skipped $f (its directory is gone from the working tree; CI lints it)" >&2
+    continue
+  fi
+  stem=${base%%.*} rest=${base#"$stem"}
+  copy="$dir/$stem.__staged__$rest"
+  cp -- "$blob" "$copy"
+  siblings+=("$copy")
+  lint_whole+=("$copy")
+done
+if [ "${#lint_whole[@]}" -gt 0 ]; then
+  if ! pnpm exec oxlint --type-aware --deny-warnings --report-unused-disable-directives \
+    "${lint_whole[@]}" >"$tmp/out" 2>&1; then
+    if ! grep -q "No files found to lint" "$tmp/out"; then
+      cat "$tmp/out" >&2
+      if [ "${#siblings[@]}" -gt 0 ]; then
+        echo "(a *.__staged__.* path is the staged version of a partially staged file)" >&2
+      fi
+      failed+=("oxlint")
+    fi
+  fi
+fi
+
+if [ "${#failed[@]}" -gt 0 ]; then
   echo "" >&2
-  echo "commit blocked. fix with:  just fix" >&2
-  echo "(emergency bypass:          git commit --no-verify)" >&2
+  printf 'commit blocked: %s\n' "${failed[@]}" >&2
+  echo "fix with:  just fix   (then stage the result)" >&2
+  echo "(emergency bypass:  git commit --no-verify)" >&2
   exit 1
 fi

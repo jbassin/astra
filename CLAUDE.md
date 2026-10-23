@@ -16,9 +16,13 @@ astra uses **plain git** on GitHub — no jujutsu. Commit
 messages follow **Conventional Commits** (`type(scope): subject`, lower-case subject start, lines ≤ 100
 chars); CI and `just ci` lint them with commitlint. Two hooks in `.githooks/` (installed by
 `just bootstrap` and the root `package.json` `prepare` script → `git config core.hooksPath .githooks`):
-- **pre-commit** runs `just check`, the fast **format/lint** gate for both lanes — **oxlint**
-  (`--type-aware --deny-warnings`, so warnings block too) + **oxfmt** (`--check`) for TS and **ruff**
-  (check + format) for Python. Check-only (never modifies files); fix with `just fix`.
+- **pre-commit** runs the fast **format/lint** checks on the **staged** files only (their staged
+  content, not the working copy) — **oxlint** (`--type-aware --deny-warnings`, so warnings block
+  too) + **oxfmt** (`--check`) for TS and **ruff** (check + format) for Python. Check-only (never
+  modifies files); fix with `just fix`. `just check` is the same gate over the whole tree.
+- **Lint exceptions are inline, with a reason:** `// oxlint-disable-next-line <rule> -- <why>` or
+  `# noqa: <rule> -- <why>` on the exact line. Path overrides are only for whole categories of
+  file (tests, scripts, CLI entry points); a dead suppression fails the gate.
 - **pre-push** runs `just ci`: everything CI runs, so a red commit never reaches GitHub.
 
 Bypass either in a genuine emergency with `--no-verify`.
@@ -52,8 +56,9 @@ and don't write scope, spec or research documents or decision IDs by default.
    if part of it won't fit, say so and ask rather than dropping it quietly. Copy the nearest existing
    astra pattern rather than inventing a new one.
 4. **Delegate.** For work with more than one slice, the main session orchestrates and agents implement.
-   - Give each independent slice its own agent in its own git worktree. The pre-commit hook lints the
-     whole tree, so agents that share a tree block each other's commits.
+   - Give each independent slice its own agent in its own git worktree. The pre-commit hook checks
+     only staged files, but agents sharing a tree still collide on the index and on each other's
+     work in progress.
    - The brief states the goal, what is already ruled out, the files the agent owns, how to verify, and
      the hard rules: no git outside its worktree, no `git stash`, no push, no deploy. The agent reports
      its branch, commit, verification evidence and anything surprising.
