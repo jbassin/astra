@@ -30,7 +30,7 @@ bootstrap:
     git config core.hooksPath .githooks
 
 # The fast format + lint gate for both lanes over the whole tree (pre-commit runs it on staged files).
-check: (_each "check" "ts-lint,py-lint")
+check: (_each "check" "ts-lint,py-lint,docs-check")
 
 # Lint findings the tools can't fix are printed and don't stop the formatters; `just check`
 # shows what is left.
@@ -49,7 +49,7 @@ test: (_each "test" "py-test,ts-test")
 # goldens are pinned to the node:24-slim container's Chromium and fonts (a host browser
 # renders different pixels); it stays CI-only.
 # Run everything CI runs, locally (all but the container-only vellum render goldens).
-ci base="origin/main": (_each "ci" ("py-lint,ts-lint,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard"))
+ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard"))
 
 # The Python apps have no dev server: they run as Dagster assets; test them with
 # `uv run pytest apps/<app>`.
@@ -97,6 +97,11 @@ _each label steps:
 py-lint:
     uv run ruff check
     uv run ruff format --check
+
+# CI job docs-check: the memory index stays under its size budget and every relative link
+# in the living docs (docs/, root docs, READMEs, memory, skills) resolves.
+docs-check:
+    uv run python scripts/check_docs.py
 
 # CI job py-typecheck: ty.
 py-typecheck:

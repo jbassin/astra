@@ -105,6 +105,14 @@ jobs:
       - uses: ./.github/actions/setup-uv
       - run: just py-lint
 
+  # Memory index budget and doc links (scripts/check_docs.py). Cheap, so no path filter.
+  docs-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-uv
+      - run: just docs-check
+
   py-typecheck:
     needs: changes
     if: needs.changes.outputs.py == 'true'
@@ -305,6 +313,7 @@ jobs:
     needs:
       - changes
       - py-lint
+      - docs-check
       - py-typecheck
       - py-test
       - ts-typecheck
