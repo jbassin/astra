@@ -2,7 +2,7 @@
   "alert": "saffron disk SMART failure",
   "alertType": "METRIC_BASED_ALERT",
   "annotations": {
-    "description": "smartmon_smart_status_passed for {{$disk}} is {{$value}} — the drive self-reports imminent failure (or SMART data went absent). Back up and replace.",
+    "description": "smartmon_smart_status_passed for {{$disk}} has been {{$value}} for 15 minutes — the drive self-reports imminent failure (or SMART data went absent). Back up and replace.",
     "summary": "Disk {{$disk}} on saffron failed SMART"
   },
   "condition": {
@@ -45,16 +45,17 @@
           "channels": [
             "discord-ops"
           ],
-          "matchType": "at_least_once",
+          "matchType": "all_the_times",
           "name": "critical",
           "op": "below",
           "recoveryTarget": null,
-          "target": 1
+          "target": 1,
+          "targetUnit": ""
         }
       ]
     }
   },
-  "description": "A disk on saffron reports SMART overall-health FAILED (smartmon_smart_status_passed = 0), or SMART data stopped arriving (smart-exporter dead). Covers sda (16TB Exos plexdata), nvme0, nvme1.",
+  "description": "A disk on saffron reports SMART overall-health FAILED (smartmon_smart_status_passed = 0) for the whole 15-minute window, or SMART data stopped arriving for 30 minutes (smart-exporter dead). Sustained, not any single sample: stopping node-exporter emits one 0 sample per disk at shutdown (seen 2026-10-23 during a deploy). Covers sda (16TB Exos plexdata), nvme0, nvme1.",
   "evaluation": {
     "kind": "rolling",
     "spec": {
