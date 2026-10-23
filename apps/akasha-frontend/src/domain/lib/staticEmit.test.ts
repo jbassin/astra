@@ -1,6 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { astraContentRoot } from "@astra/content-build";
 import { describe, expect, it } from "vitest";
 
 import { buildSite } from "./site";
@@ -15,7 +16,7 @@ import {
 } from "./staticEmit";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const SNAPSHOT = path.resolve(HERE, "../../../../akasha-backend/snapshot/akasha-snapshot.json");
+const SNAPSHOT = path.join(astraContentRoot(HERE), "akasha/snapshot/akasha-snapshot.json");
 const site = buildSite(loadSnapshot(SNAPSHOT));
 const meta: SiteMeta = { title: "Akasha", baseUrl: "https://akasha.iridi.cc" };
 

@@ -1,13 +1,13 @@
-"""The committed `snapshot/episodes-index.json` gate (+ the build-path correctness check).
+"""The `episodes-index.json` snapshot gate (+ the build-path correctness check).
 
-mouthpiece-frontend (0012) reads a **committed** `episodes-index.json` at build (the
+mouthpiece-frontend (0012) reads a published `episodes-index.json` at build (the
 akasha-snapshot pattern — a deterministic build artifact, no live backend). Since the
 pipeline went live the snapshot is **live-derived** (migrated back-catalog ∪ live renders
 under the gitignored `episodes_path`), so there is no in-git source to rebuild-and-compare
-byte-for-byte. The gate therefore validates the committed file's **shape + invariants** and
-that it never drops the in-git golden baseline — the same content-agnostic posture akasha's
-cutover gates took when its pipeline went live. Regenerate it with
-`uv run python -m astra_mouthpiece.publish` (or `just mouthpiece-publish`).
+byte-for-byte. The gate therefore validates a snapshot's **shape + invariants** and that it
+never drops the in-git golden baseline. It reads the checked-in astra-data fixture (the
+frontend's test input), not the live snapshot, which `uv run python -m
+astra_mouthpiece.publish` (or `just mouthpiece-publish`) regenerates.
 
 The golden fixtures still exercise the **production build path** (`discover_sessions` over a
 session-dir layout → `build_index`) deterministically — that's the build-correctness check.
@@ -22,7 +22,14 @@ from astra_mouthpiece.assets import _arc_maps, _episode_hosts
 from astra_mouthpiece.episodes_index import EpisodesIndex, build_index, discover_sessions
 
 GOLDEN = Path(__file__).parent / "fixtures" / "golden"
-SNAPSHOT = Path(__file__).parents[1] / "snapshot" / "episodes-index.json"
+# The checked-in astra-data fixture's snapshot (the head of the real catalog, transcripts
+# cut short), so the gate never depends on the live data. The real snapshot gets the same
+# shape guarantees from `publish_snapshot`, which writes it through the same model.
+SNAPSHOT = next(
+    p / "fixtures" / "astra-data" / "mouthpiece" / "snapshot" / "episodes-index.json"
+    for p in Path(__file__).resolve().parents
+    if (p / "fixtures" / "astra-data").is_dir()
+)
 GOLDEN_IDS = {p.name[: -len(".script.json")] for p in GOLDEN.glob("*.script.json")}
 
 

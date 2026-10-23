@@ -1,0 +1,21 @@
+{
+  "shows": [
+    {
+      "show": "through-a-song-darkly",
+      "name": "Through a Song, Darkly",
+      "is_main": true,
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Delivery Boys",
+          "arc_summary": "The party forms as novice couriers in Hallia, stumbling into a conspiracy of Ugathul infiltrators, illegal augury, and radar dishes while becoming consultants for the Magical Crimes Convox. The arc culminates in a disastrous ambush at the Crowded Flea that leaves three party members dead in a near-total party kill.",
+          "episode_dates": [
+            "2025-10-20",
+            "2025-10-27"
+          ]
+        }
+      ]
+    }
+  ],
+  "inputs_hash": "5e69a068b329cfa769827cc6003001bc4c7965b0ccde4553e7c56e3f8c713b8d"
+}

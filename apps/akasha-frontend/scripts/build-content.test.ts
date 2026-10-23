@@ -13,9 +13,9 @@ const GENERATED = path.resolve(HERE, "../src/generated/site.ts");
 const PUBLIC = path.resolve(HERE, "../public");
 
 describe("build-content", () => {
-  // Run the full pipeline ONCE (slice 7 made it heavy — it renders 141 vellum
-  // bodies + writes 76 ~1 MB transcript modules). Per-test `await main()` blew the
-  // 5 s vitest default on slower CI runners; a generous beforeAll fixes it.
+  // Run the full pipeline ONCE (heavy against the real data: hundreds of vellum bodies
+  // + ~1 MB transcript modules). Per-test `await main()` blew the 5 s vitest default on
+  // slower CI runners; a generous beforeAll fixes it.
   beforeAll(async () => {
     await main();
   }, 120_000);
@@ -54,7 +54,7 @@ describe("build-content", () => {
     expect(existsSync(path.join(PUBLIC, "sitemap.xml"))).toBe(true);
     const idx = JSON.parse(readFileSync(path.join(PUBLIC, "static/contentIndex.json"), "utf8"));
     // Smoke check only (the faerrin cutover-parity gate was retired post-migration): the
-    // index should hold the bulk of the wiki + transcript pages, not a frozen count.
-    expect(Object.keys(idx).length).toBeGreaterThan(100);
+    // index holds the wiki + transcript pages (the fixture's ~30, or the real few hundred).
+    expect(Object.keys(idx).length).toBeGreaterThan(20);
   });
 });

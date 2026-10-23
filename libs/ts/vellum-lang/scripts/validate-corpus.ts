@@ -4,7 +4,7 @@
  * makes TS the structural authority, D2).
  *
  *   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
- *     libs/ts/vellum-lang/scripts/validate-corpus.ts [--dir <corpus>]
+ *     libs/ts/vellum-lang/scripts/validate-corpus.ts --dir <corpus>
  *
  * Parses every `.vellum` page with the reference parser and reports two things,
  * failing on either (NLSpec 0007 exit gate B + the §1 collision scan):
@@ -28,8 +28,14 @@ import type { Nodes } from "mdast";
 import { parseDocument } from "../src/index";
 import type { VellumNode } from "../src/model";
 
-const REPO = resolve(import.meta.dirname, "../../../..");
-const DIR = argValue("--dir") ?? join(REPO, "apps/akasha-backend/content");
+// The corpus lives wherever config's `data.akasha-content` says; every caller passes it
+// (the akasha-snapshot validate step, the heartwood recipes, CI's checked-out copy).
+const DIR = resolve(argValue("--dir") ?? usage());
+
+function usage(): never {
+  console.error("usage: validate-corpus.ts --dir <corpus> [--allow-sigils]");
+  process.exit(64);
+}
 
 function argValue(flag: string): string | undefined {
   const i = process.argv.indexOf(flag);

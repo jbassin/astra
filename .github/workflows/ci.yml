@@ -168,7 +168,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
-      - run: node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/vellum-lang/scripts/validate-corpus.ts
+      - run: node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/vellum-lang/scripts/validate-corpus.ts --dir apps/akasha-backend/content
 
   # The vellum-render golden-image gate (0013 D4). Runs in the PINNED container
   # node:24-slim with the Chromium the `playwright` lock pins (same env the

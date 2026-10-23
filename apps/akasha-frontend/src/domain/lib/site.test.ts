@@ -1,6 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { astraContentRoot } from "@astra/content-build";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -13,10 +14,10 @@ import {
 } from "./site";
 import { loadSnapshot } from "./snapshot";
 
-// The akasha snapshot (committed, deterministic) is the build-time source. Read it from
-// the workspace — same path the build-content step uses.
+// The akasha snapshot is the build-time source. Read it from the same root the
+// build-content step uses ($ASTRA_CONTENT_ROOT, else the checked-in fixture).
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const SNAPSHOT = path.resolve(HERE, "../../../../akasha-backend/snapshot/akasha-snapshot.json");
+const SNAPSHOT = path.join(astraContentRoot(HERE), "akasha/snapshot/akasha-snapshot.json");
 const site = buildSite(loadSnapshot(SNAPSHOT));
 
 describe("site index — slug invariants", () => {

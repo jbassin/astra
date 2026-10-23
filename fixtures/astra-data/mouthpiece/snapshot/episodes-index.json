@@ -1,0 +1,468 @@
+{
+  "episodes": [
+    {
+      "id": "000.through-a-song-darkly.2026-5-7",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 1,
+      "isMain": true,
+      "date": "2026-5-7",
+      "dateSortKey": 20260507,
+      "title": "We're Hot Rod People Now",
+      "episodeTitle": "We're Hot Rod People Now",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+        },
+        "C": {
+          "name": "Pip",
+          "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+        }
+      },
+      "synopsis": "After two recap segments catching up the table, the party (Argyle, Anzu, Benny, and Johnny — the band \"Iconoclasm\") spent their last night at the Sin and Tonic in Hallia sharing motives and backstory, were pulled into a dream-meeting with the god Aut in the Black and White, then set out by car for Ragnroost to join the strider pilgrimage toward the Voidsong — surviving a magical caltrop sabotage and a mercenary roadblock ambush along the way.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—no but the thing that gets me, the thing I keep coming back to, is they're sitting in the back room, whiskey all round, except Benny's got his little glass of milk because he's nine, and that's when Argyle just goes \"right, confession time, I'm actually a celestial.\""
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "was it whiskey though, or—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "it was whiskey, Pip."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Milk for Benny."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "see that's the part. Why does the android need milk. Like he's pretending, right, but who's he pretending for, it's four guys who all just told each other their darkest secret—"
+        }
+      ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-5-11",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 2,
+      "isMain": true,
+      "date": "2026-5-11",
+      "dateSortKey": 20260511,
+      "title": "Crying and Critting on a City with Legs",
+      "episodeTitle": "Crying and Critting on a City with Legs",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+        },
+        "C": {
+          "name": "Pip",
+          "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+        }
+      },
+      "synopsis": "After finally swapping personal backstories at an inn, the party (Iconoclasm) drives to Ragged Roost, survives an ambush on the road, boards the colossal walking city-machine known as the Strider for a six-day pilgrimage, and plants their keystone — fighting off waves of \"thought\" creatures inside a void-space to birth their own heart, \"Eerie,\" and construct the beginnings of a home aboard the Strider.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—no but the thing is they sat there for nine months, NINE months of in-world travel, getting shot at, nearly dying like four times, and not one of them says a word about where they came from until somebody pours the milk—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "milk and whiskey."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "milk and whiskey, right, and that's the magic combo, that's what cracks 'em."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Benny called it."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Benny didn't want to though, that's the part—"
+        }
+      ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-5-21",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 3,
+      "isMain": true,
+      "date": "2026-5-21",
+      "dateSortKey": 20260521,
+      "title": "The Delivery Truck for a Massacre",
+      "episodeTitle": "The Delivery Truck for a Massacre",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+        },
+        "C": {
+          "name": "Pip",
+          "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+        }
+      },
+      "synopsis": "Newly arrived aboard the Strider, the crew of Iconoclasm settle into their freshly grown Fane, host a cookout to meet their fellow pilgrims, and hold a tense meeting with the masked Master of Ceremonies — only to discover he is a fiend tied to the devil \"the Harlequin\" who openly relishes the bloodshed he expects on the voyage to the edge of the void.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "—no, but see, that's my whole thing, why did he reach for the sword? Like immediately, first instinct—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "because there's a devil running the boat, Pip, that's a perfectly reasonable—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "a devil he just met! Met him for like five minutes and Argyle's already—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He didn't draw it."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "He reached."
+        }
+      ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-5-25",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 4,
+      "isMain": true,
+      "date": "2026-5-25",
+      "dateSortKey": 20260525,
+      "title": "Tithed at the Party",
+      "episodeTitle": "Tithed at the Party",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+        },
+        "C": {
+          "name": "Pip",
+          "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+        }
+      },
+      "synopsis": "As the Strider prepares to depart on its pilgrimage toward the Voidsong, the crew of Iconoclasm spends a week making introductions to the other orgs aboard, recruiting allies into their skein network, before attending the departure gala — where the energy tithe demanded by the Master of Ceremonies wrings a weak attendee inside-out and unleashes a swarm of monsters.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—no but the thing is, the thing you have to understand, is that he got wrung out like a, like an actual dishrag, you know when you wring a mop—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "you said that."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I'm saying it again because it deserves saying twice, his skin actually tore—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "tiefling."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the tiefling, right, Obratz, the old guy with the staircase to nowhere—"
+        }
+      ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-6-1",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 5,
+      "isMain": true,
+      "date": "2026-6-1",
+      "dateSortKey": 20260601,
+      "title": "Twelve Seconds in the Inverted Ballroom",
+      "episodeTitle": "Twelve Seconds in the Inverted Ballroom",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+        },
+        "C": {
+          "name": "Pip",
+          "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+        }
+      },
+      "synopsis": "Aboard the Strider as it begins jumping voidward along the horizon, the party survives the gala turning into a slaughter when a failed tithe rips open a void portal disgorging barghests and Ki-Rin onto the dance floor. After fighting through the carnage alongside rival factions, they brave the collapsing void-pocket beyond the portal to extract a chitinous \"Voidheart\" orb, dragging both their downed comrades and a Giant hand-creature back into real space.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—no, but the bit I keep coming back to is Benny, right, the nine-year-old, butterfly sword, he's just standing there and this horse-god-thing rears up and he goes ting, parries the hoof, like it's nothing, like he's been—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "he's nine."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "he's nine! He's been this size since he was zero days old, and he just—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Ki-Rin."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "what?"
+        }
+      ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-6-8",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 6,
+      "isMain": true,
+      "date": "2026-6-8",
+      "dateSortKey": 20260608,
+      "title": "Just Us, Dressed Up Nice",
+      "episodeTitle": "Just Us, Dressed Up Nice",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+        },
+        "C": {
+          "name": "Pip",
+          "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+        }
+      },
+      "synopsis": "In the immediate aftermath of their excursion into the void portal at the gala, the party fends off the Hand of the Void abomination they dragged back, then loots the dead Garrick Textiles Fane, kills its heart, and feeds the spoils into their own heart-base — investing in a Siphon Array. They check on the unresponsive Protectorate (a false alarm), then convene a multi-faction alliance summit to negotiate excursions, mergers, and how to survive the escalating nine-day tithes aboard the Strider.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—no but you have to start where it actually started, which is us getting yanked out of the hole, the dance floor hole, and we drag the whole — what was it, the Voidheart and the giant hand thing out with us—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Scooby-Doo skedaddle."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That was Johnny's line, \"we Scooby-Doo skedaddled with the Voidheart,\" yeah, and now we're just standing in the middle of the gala with a monster made of hands—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Severed hands."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Right but — okay, why does it have hands. Like why hands. What's it doing with the hands—"
+        }
+      ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-6-8-recap-of-2026-5-7",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 0,
+      "isMain": true,
+      "date": "2026-6-8-recap-of-2026-5-7",
+      "dateSortKey": 20260608,
+      "title": "The Canary in the Ballroom",
+      "episodeTitle": "The Canary in the Ballroom",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+        },
+        "C": {
+          "name": "Pip",
+          "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+        }
+      },
+      "synopsis": "Over a month aboard the colossal walking city-machine the Strider, the band Iconoclasm goes from blowing up a city block in Hallia to becoming the political and military hub of a pilgrimage toward the Voidsong: they finally bare their backstories to one another, refuse a god's bargain on the road, board the Strider and birth their own heart \"Eerie,\" then learn the pilgrimage is a devil-hosted death game powered by a lethal energy tithe — culminating in a gala massacre, a harrowing dive into a collapsing void-pocket for a Voidheart, and a coalition summit where they remake themselves as the alliance that keeps the weak factions alive.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "—no but go back, because that thing with the whiskey and the milk, like, why does that always work? You sit four traumatized weirdos in a back room with a glass of milk—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "With whiskey! Whiskey AND milk, that's the —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "With whiskey and milk and suddenly everyone's confessing their whole tragic origin, it's —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's the milk that does it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's the milk! No, but this was the big one though, right, this was the — after, what, two years? Three years of these guys not telling each other a damn thing, they all just crack open at once, all four of them, Johnny goes first I think and he's like, my god ghosted me—"
+        }
+      ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-6-18",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 7,
+      "isMain": true,
+      "date": "2026-6-18",
+      "dateSortKey": 20260618,
+      "title": "A Big Juicy Heart",
+      "episodeTitle": "A Big Juicy Heart",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+        },
+        "C": {
+          "name": "Pip",
+          "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+        }
+      },
+      "synopsis": "After their meeting of the minds, the party hunts for a route-map of the Strider's path ahead — tracking it to the silent Harlequins' theatrical front-town and Curator Ocelith's library, where they learn the cosmology of the four Princes and the awakening eye and accept a quest to recover Ocelith's stolen ink ribbon from Subdeck 12. Along the way they fail to recruit Verdant Holdings, gather repeated warnings about Hildebrandt and Grayson's rival alliance, then under cover of night consume the hearts of their two newest small-faction allies for energy and fortify their base with walls, a moat, and a honeycomb maze design.",
+      "durationMs": 1389688,
+      "hasAudio": true,
+      "hasTranscript": true,
+      "audioVersion": "153494f-6a3ab9a5",
+      "transcript": [
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "— no but see that's what I don't get, you spend a whole evening figuring out who's got a map and the answer is just, oh, the clowns have it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "well it wasn't just like that, we had leads, we sat down after the meeting of the minds and Argyle's going right, we need a route map, voidward, because Kadou can't build the — the thing —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "the locator."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the locator, right, for magic items, and without a map of what's ahead the whole thing just stalls, so the goal becomes find a map."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "okay but you knew the Harlequins had one."
+        }
+      ]
+    }
+  ]
+}

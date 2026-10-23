@@ -1,0 +1,606 @@
+{
+  "date": "2025-10-20",
+  "audio": "https://static-audio.iridi.cc/2025-10-20/audio.mp3",
+  "script": [
+    {
+      "start": "00:00:11",
+      "second": 11.962,
+      "text": "Thank you.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.343
+    },
+    {
+      "start": "00:00:54",
+      "second": 54.858,
+      "text": "Oh, the joining sound is spooky now because Halloween.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 4.868
+    },
+    {
+      "start": "00:01:09",
+      "second": 69.863,
+      "text": "Good talking to you too.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 1.282
+    },
+    {
+      "start": "00:01:55",
+      "second": 115.085,
+      "text": "Oh, hey.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 1.502
+    },
+    {
+      "start": "00:01:57",
+      "second": 117.228,
+      "text": "Another person.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 0.661
+    },
+    {
+      "start": "00:02:04",
+      "second": 124.397,
+      "text": "Can you say words?",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 0.841
+    },
+    {
+      "start": "00:02:06",
+      "second": 126.273,
+      "text": "Hello?",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 0.3
+    },
+    {
+      "start": "00:02:07",
+      "second": 127.982,
+      "text": "Okay, good.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 0.6
+    },
+    {
+      "start": "00:02:09",
+      "second": 129.083,
+      "text": "Because I've been in the voice chat with Jorge for a few minutes now, and he wasn't saying anything.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 4.426
+    },
+    {
+      "start": "00:02:13",
+      "second": 133.629,
+      "text": "And then you joined, and then you weren't saying anything.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 2.463
+    },
+    {
+      "start": "00:02:14",
+      "second": 134.786,
+      "text": "Always.",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 8.192
+    },
+    {
+      "start": "00:02:16",
+      "second": 136.132,
+      "text": "And so I thought I was crazy.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 2.083
+    },
+    {
+      "start": "00:02:19",
+      "second": 139.096,
+      "text": "But it was Jorge that's crazy.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 1.642
+    },
+    {
+      "start": "00:02:23",
+      "second": 143.078,
+      "text": "It's always Jorge.",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 0.782
+    },
+    {
+      "start": "00:02:25",
+      "second": 145.662,
+      "text": "That guy.",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 0.481
+    },
+    {
+      "start": "00:02:26",
+      "second": 146.483,
+      "text": "Josh, how was the Bahamas?",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 1.022
+    },
+    {
+      "start": "00:02:28",
+      "second": 148.497,
+      "text": "It was good.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 0.641
+    },
+    {
+      "start": "00:02:29",
+      "second": 149.598,
+      "text": "I sat on a beach for a week straight.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 2.203
+    },
+    {
+      "start": "00:02:32",
+      "second": 152.803,
+      "text": "I'm not even that tan because I dove into a bucket of sunscreen every day.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 5.227
+    },
+    {
+      "start": "00:02:38",
+      "second": 158.49,
+      "text": "It was a good time.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 0.521
+    },
+    {
+      "start": "00:02:39",
+      "second": 159.77,
+      "text": "I like your haircut.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 12.58
+    },
+    {
+      "start": "00:02:40",
+      "second": 160.36,
+      "text": "It's cool they have buckets big enough for that.",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 1.442
+    },
+    {
+      "start": "00:02:41",
+      "second": 161.822,
+      "text": "It was BYOB.",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 10.372
+    },
+    {
+      "start": "00:02:42",
+      "second": 162.756,
+      "text": "No, I brought my own.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 0.781
+    },
+    {
+      "start": "00:02:43",
+      "second": 163.817,
+      "text": "What do you mean?",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 0.461
+    },
+    {
+      "start": "00:02:45",
+      "second": 165.499,
+      "text": "Do you take me for an amateur that doesn't vacation with bucket?",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 4.206
+    },
+    {
+      "start": "00:02:53",
+      "second": 173.636,
+      "text": "Thank you, Jorge.",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 0.58
+    },
+    {
+      "start": "00:02:54",
+      "second": 174.236,
+      "text": "Jorge, how was your mini honeymoon?",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 12.175
+    },
+    {
+      "start": "00:02:57",
+      "second": 177.075,
+      "text": "Yeah.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 0.4
+    },
+    {
+      "start": "00:02:59",
+      "second": 179.041,
+      "text": "It was good.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.46
+    },
+    {
+      "start": "00:02:59",
+      "second": 179.521,
+      "text": "It was good.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.882
+    },
+    {
+      "start": "00:03:00",
+      "second": 180.543,
+      "text": "I went to Montreal.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 2.444
+    },
+    {
+      "start": "00:03:03",
+      "second": 183.007,
+      "text": "And have you been to Montreal?",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.302
+    },
+    {
+      "start": "00:03:06",
+      "second": 186.431,
+      "text": "No, I've been to Quebec.",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 1.962
+    },
+    {
+      "start": "00:03:09",
+      "second": 189.385,
+      "text": "So Montreal feels like France run by nice Americans.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 4.228
+    },
+    {
+      "start": "00:03:14",
+      "second": 194.093,
+      "text": "It's great.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.521
+    },
+    {
+      "start": "00:03:15",
+      "second": 195.756,
+      "text": "Everyone goes, bonjour.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.623
+    },
+    {
+      "start": "00:03:17",
+      "second": 197.78,
+      "text": "And then they'll speak whichever one you could speak.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.903
+    },
+    {
+      "start": "00:03:20",
+      "second": 200.625,
+      "text": "We stayed in old Montreal.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.443
+    },
+    {
+      "start": "00:03:22",
+      "second": 202.088,
+      "text": "So there's like cobblestone roads.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.603
+    },
+    {
+      "start": "00:03:24",
+      "second": 204.492,
+      "text": "Two of the top five best restaurants in North America are in Montreal.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 5.33
+    },
+    {
+      "start": "00:03:25",
+      "second": 205.788,
+      "text": "it's okay yeah",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 11.647
+    },
+    {
+      "start": "00:03:30",
+      "second": 210.763,
+      "text": "We bought some art.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.962
+    },
+    {
+      "start": "00:03:32",
+      "second": 212.727,
+      "text": "Just generally good time.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.282
+    },
+    {
+      "start": "00:03:33",
+      "second": 213.078,
+      "text": "What kind of art?",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 3.425
+    },
+    {
+      "start": "00:03:38",
+      "second": 218.984,
+      "text": "I bought a big one that might not fit in the apartment and we might have to just put in storage until we get a house.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 8.852
+    },
+    {
+      "start": "00:03:48",
+      "second": 228.456,
+      "text": "Which is, I think it's like 40 by 40, but it's a ship.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 3.685
+    },
+    {
+      "start": "00:03:52",
+      "second": 232.682,
+      "text": "It's really nice.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.501
+    },
+    {
+      "start": "00:03:54",
+      "second": 234.087,
+      "text": "It inches feet.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 1.843
+    },
+    {
+      "start": "00:03:55",
+      "second": 235.994,
+      "text": "It's an actual boat.",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 6.011
+    },
+    {
+      "start": "00:03:56",
+      "second": 236.107,
+      "text": "Yes!",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.862
+    },
+    {
+      "start": "00:03:57",
+      "second": 237.989,
+      "text": "It's four stories by four stories.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.702
+    },
+    {
+      "start": "00:03:59",
+      "second": 239.731,
+      "text": "And then we got this other...",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 5.868
+    },
+    {
+      "start": "00:04:02",
+      "second": 242.069,
+      "text": "It's a one to one replica.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 4.166
+    },
+    {
+      "start": "00:04:07",
+      "second": 247.013,
+      "text": "We had another more fun, modernist version of a post-modernist version of a flowerpot thing.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 9.894
+    },
+    {
+      "start": "00:04:17",
+      "second": 257.528,
+      "text": "And then there was another small one.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.382
+    },
+    {
+      "start": "00:04:18",
+      "second": 258.93,
+      "text": "Part of the thing is that it's $7.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 3.204
+    },
+    {
+      "start": "00:04:22",
+      "second": 262.835,
+      "text": "It's $7 USD for every $10 Canadian.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 2.463
+    },
+    {
+      "start": "00:04:26",
+      "second": 266.403,
+      "text": "Thank you.",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 29.264
+    },
+    {
+      "start": "00:04:26",
+      "second": 266.881,
+      "text": "And then it was just so efficient to buy things.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 4.045
+    }
+  ]
+}

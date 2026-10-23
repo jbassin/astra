@@ -18,7 +18,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { buildContent, defineContentSource, emitModule } from "@astra/content-build";
+import {
+  astraContentRoot,
+  buildContent,
+  defineContentSource,
+  emitModule,
+} from "@astra/content-build";
 import type { CrossRefResolver } from "@astra/gothic";
 import { type Being, loadBeing } from "@astra/ontology";
 import { loadSiteConfig } from "@astra/site-kit";
@@ -50,10 +55,13 @@ import { buildTranscripts } from "../src/domain/lib/transcriptBuild";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.resolve(HERE, "../src/generated");
 const PUBLIC_DIR = path.resolve(HERE, "../public");
-const SNAPSHOT = path.resolve(HERE, "../../akasha-backend/snapshot/akasha-snapshot.json");
-const CORPUS_DIR = path.resolve(HERE, "../../akasha-backend/content");
-const DATA_DIR = path.resolve(HERE, "../../linguist/data");
-const TIMELINE_DIR = path.resolve(HERE, "../../linguist/timeline");
+// The pipeline's published data (astra-data layout): $ASTRA_CONTENT_ROOT, else the
+// checked-in fixture. The Dockerfile points it at the real datasets.
+const CONTENT_ROOT = astraContentRoot(HERE);
+const SNAPSHOT = path.join(CONTENT_ROOT, "akasha/snapshot/akasha-snapshot.json");
+const CORPUS_DIR = path.join(CONTENT_ROOT, "akasha/content");
+const DATA_DIR = path.join(CONTENT_ROOT, "linguist/data");
+const TIMELINE_DIR = path.join(CONTENT_ROOT, "linguist/timeline");
 // Explicit being.kdl path: loadBeing()'s default uses Bun's import.meta.dir (undefined
 // under vitest, which runs build-content.test.ts); import.meta.url works in both.
 const BEING = path.resolve(HERE, "../../../ontology/ontology-being/being.kdl");

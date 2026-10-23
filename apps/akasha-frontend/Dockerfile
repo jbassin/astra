@@ -50,17 +50,19 @@ COPY tsconfig.base.json ./
 # it via @astra/config (config-single-source). Without it the config load throws.
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
-# akasha-frontend's build-time content sources read the akasha-backend snapshot/corpus
-# (slug.ts/site.ts lift + vellum render) + linguist transcripts (D4) + the chronicle
-# timeline (0019) — COPY them so
-# build-content (run in the vite buildStart hook) can read them. ontology-being carries
-# the campaign roster (matchCampaign) + speaker colors (loadBeing, slice 7); without it
-# the transcript build throws. (The Pagefind index step in `pnpm run build` uses the
-# pagefind binary that `pnpm install` already fetched into node_modules.)
-COPY apps/akasha-backend/snapshot /repo/apps/akasha-backend/snapshot
-COPY apps/akasha-backend/content /repo/apps/akasha-backend/content
-COPY apps/linguist/data /repo/apps/linguist/data
-COPY apps/linguist/timeline /repo/apps/linguist/timeline
+# akasha-frontend's build-time content sources read the akasha snapshot/corpus
+# (slug.ts/site.ts lift + vellum render) + the linguist session JSONs (D4) + the chronicle
+# timeline (0019). build-content (run in the vite buildStart hook) reads them from one
+# root in the astra-data layout, $ASTRA_CONTENT_ROOT — COPY the real datasets into
+# /content in that layout (unset, it would build the checked-in fixture). ontology-being
+# carries the campaign roster (matchCampaign) + speaker colors (loadBeing, slice 7);
+# without it the transcript build throws. (The Pagefind index step in `pnpm run build`
+# uses the pagefind binary that `pnpm install` already fetched into node_modules.)
+COPY apps/akasha-backend/snapshot /content/akasha/snapshot
+COPY apps/akasha-backend/content /content/akasha/content
+COPY apps/linguist/data /content/linguist/data
+COPY apps/linguist/timeline /content/linguist/timeline
+ENV ASTRA_CONTENT_ROOT=/content
 COPY ontology/ontology-being /repo/ontology/ontology-being
 
 # Build the selected app (build-content runs in the vite buildStart hook).
@@ -85,7 +87,7 @@ COPY --from=build /repo/apps/${APP}/dist ./dist
 COPY --from=build /repo/apps/${APP}/server.ts ./server.ts
 COPY --from=build /repo/apps/${APP}/package.json ./package.json
 # Content-pipeline-specific: the generated TS modules the runtime imports (the app
-# imports @/generated/*, never the filesystem — so the snapshot/corpus are build-only).
+# imports @/generated/*, never the filesystem — so /content is build-only).
 COPY --from=build /repo/apps/${APP}/src/generated ./src/generated
 # config.kdl is the single source for serviceName/port + the OTLP endpoint (read via
 # @astra/config); it's located by walking up to <repo>/ontology/ontology-config.

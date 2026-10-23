@@ -114,3 +114,36 @@ export async function buildContent(
   }
   return summaries;
 }
+
+/** Names the astra-data root that site builds read their content from. */
+export const ASTRA_CONTENT_ROOT_ENV = "ASTRA_CONTENT_ROOT";
+
+/** The checked-in astra-data fixture: `<repo>/fixtures/astra-data`, found by walking up
+ * from `fromDir` (throws if there is none). */
+export function fixtureContentRoot(fromDir: string): string {
+  let dir = path.resolve(fromDir);
+  for (;;) {
+    const candidate = path.join(dir, "fixtures", "astra-data");
+    if (fs.existsSync(candidate)) return candidate;
+    const parent = path.dirname(dir);
+    if (parent === dir) throw new Error(`no fixtures/astra-data above ${fromDir}`);
+    dir = parent;
+  }
+}
+
+/**
+ * The astra-data root a site build reads (the pipeline's published datasets, laid out
+ * as `linguist/{data,timeline,transcripts}`, `akasha/{content,snapshot}`,
+ * `mouthpiece/snapshot`, ...). `$ASTRA_CONTENT_ROOT` when set (the production
+ * Dockerfiles point it at the real data), else the checked-in fixture, so tests and CI
+ * never depend on live data.
+ */
+export function astraContentRoot(fromDir: string): string {
+  const explicit = process.env[ASTRA_CONTENT_ROOT_ENV];
+  if (explicit) return path.resolve(explicit);
+  const fixture = fixtureContentRoot(fromDir);
+  console.warn(
+    `[content-build] ${ASTRA_CONTENT_ROOT_ENV} is unset; reading the fixture at ${fixture}`,
+  );
+  return fixture;
+}

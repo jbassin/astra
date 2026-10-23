@@ -18,13 +18,20 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { buildContent, defineContentSource, emitModule } from "@astra/content-build";
+import {
+  astraContentRoot,
+  buildContent,
+  defineContentSource,
+  emitModule,
+} from "@astra/content-build";
 import { loadSiteConfig } from "@astra/site-kit";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.resolve(HERE, "../src/generated");
 const PUBLIC_DIR = path.resolve(HERE, "../public");
-const SNAPSHOT = path.resolve(HERE, "../../mouthpiece-backend/snapshot/episodes-index.json");
+// The pipeline's published data (astra-data layout): $ASTRA_CONTENT_ROOT, else the
+// checked-in fixture. The Dockerfile points it at the real snapshot.
+const SNAPSHOT = path.join(astraContentRoot(HERE), "mouthpiece/snapshot/episodes-index.json");
 
 // astra's brand for the podcast surface (faerrin shipped "Caster"; the rebuild is
 // "Mouthpiece"). Not a parity gate.

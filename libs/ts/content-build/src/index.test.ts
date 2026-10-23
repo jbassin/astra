@@ -5,9 +5,11 @@ import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import {
+  astraContentRoot,
   buildContent,
   defineContentSource,
   emitModule,
+  fixtureContentRoot,
   hashFiles,
   listFilesWithExtension,
   listMarkdownFiles,
@@ -122,5 +124,22 @@ describe("buildContent", () => {
     expect(readFileSync(path.join(dir, ".gitignore"), "utf8")).toBe("*\n!.gitignore\n");
     expect(readFileSync(path.join(dir, "a.ts"), "utf8")).toContain("AUTO-GENERATED");
     rmSync(dir, { recursive: true, force: true });
+  });
+});
+
+describe("astraContentRoot", () => {
+  it("prefers $ASTRA_CONTENT_ROOT, else finds the checked-in fixture", () => {
+    const saved = process.env.ASTRA_CONTENT_ROOT;
+    try {
+      process.env.ASTRA_CONTENT_ROOT = "/srv/astra-data";
+      expect(astraContentRoot(import.meta.dirname)).toBe("/srv/astra-data");
+      delete process.env.ASTRA_CONTENT_ROOT;
+      const root = astraContentRoot(import.meta.dirname);
+      expect(root).toBe(fixtureContentRoot(import.meta.dirname));
+      expect(root.endsWith(path.join("fixtures", "astra-data"))).toBe(true);
+    } finally {
+      if (saved === undefined) delete process.env.ASTRA_CONTENT_ROOT;
+      else process.env.ASTRA_CONTENT_ROOT = saved;
+    }
   });
 });

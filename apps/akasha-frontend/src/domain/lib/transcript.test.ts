@@ -7,12 +7,13 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { astraContentRoot } from "@astra/content-build";
 import { describe, expect, it } from "vitest";
 
 import { audioSrc, loadTranscripts } from "./transcript";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.resolve(HERE, "../../../../linguist/data");
+const DATA_DIR = path.join(astraContentRoot(HERE), "linguist/data");
 
 describe("audioSrc", () => {
   it("derives the flat same-origin path from the session date", () => {

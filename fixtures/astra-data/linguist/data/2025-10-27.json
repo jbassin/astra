@@ -1,0 +1,606 @@
+{
+  "date": "2025-10-27",
+  "audio": "https://static-audio.iridi.cc/2025-10-27/audio.mp3",
+  "script": [
+    {
+      "start": "00:00:23",
+      "second": 23.943,
+      "text": "Good evening.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 1.142
+    },
+    {
+      "start": "00:00:26",
+      "second": 26.12,
+      "text": "Good evening, how are you?",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.062
+    },
+    {
+      "start": "00:00:28",
+      "second": 28.329,
+      "text": "I'm doing quite well.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 1.462
+    },
+    {
+      "start": "00:00:30",
+      "second": 30.832,
+      "text": "How are you?",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 0.541
+    },
+    {
+      "start": "00:00:31",
+      "second": 31.393,
+      "text": "I'm mad at everybody who's ever touched a computer, I think.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 10.514
+    },
+    {
+      "start": "00:00:32",
+      "second": 32.191,
+      "text": "Doing well, doing well.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 10.759
+    },
+    {
+      "start": "00:00:43",
+      "second": 43.11,
+      "text": "What they do now.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.681
+    },
+    {
+      "start": "00:00:44",
+      "second": 44.21,
+      "text": "I've decided.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 1.302
+    },
+    {
+      "start": "00:00:45",
+      "second": 45.661,
+      "text": "My coworkers insist on using AI to write stuff, and then it breaks things.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 5.727
+    },
+    {
+      "start": "00:00:52",
+      "second": 52.049,
+      "text": "And then they're all surprised about, like, how could this happen?",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 2.643
+    },
+    {
+      "start": "00:00:56",
+      "second": 56.191,
+      "text": "Yeah.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.421
+    },
+    {
+      "start": "00:00:57",
+      "second": 57.754,
+      "text": "So what's annoying it... Yeah, go ahead.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 5.288
+    },
+    {
+      "start": "00:00:58",
+      "second": 58.336,
+      "text": "So you're familiar with Cursor, right?",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 4.465
+    },
+    {
+      "start": "00:01:03",
+      "second": 63.062,
+      "text": "Yeah.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.201
+    },
+    {
+      "start": "00:01:04",
+      "second": 64.784,
+      "text": "Did you know that Cursor has an enterprise solution that allows your manager to track how many lines of code you've written versus how many lines of code your AI has written?",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 10.192
+    },
+    {
+      "start": "00:01:15",
+      "second": 75.523,
+      "text": "I did not, but that's crazy.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.242
+    },
+    {
+      "start": "00:01:17",
+      "second": 77.386,
+      "text": "Yeah, so my manager, who's always been a metrics-oriented guy in a way that I'm not a huge fan of, in my mid-year, he'll talk about lines of code written as if that's an appreciable metric of how good one is at their job.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 22.481
+    },
+    {
+      "start": "00:01:40",
+      "second": 100.488,
+      "text": "Which is stupid.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 0.742
+    },
+    {
+      "start": "00:01:41",
+      "second": 101.35,
+      "text": "Either way, it's a new data point for him.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 1.844
+    },
+    {
+      "start": "00:01:43",
+      "second": 103.614,
+      "text": "And so we have like a little internal leaderboard thing of how many lines of code each person has written with Claude in Cursor.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 9.079
+    },
+    {
+      "start": "00:01:51",
+      "second": 111.743,
+      "text": "Bye.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.228
+    },
+    {
+      "start": "00:01:52",
+      "second": 112.753,
+      "text": "And I am permanently in last because I refuse to install the program on my computer.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 5.592
+    },
+    {
+      "start": "00:01:58",
+      "second": 118.325,
+      "text": "um but i i swear over the course of the past two to three weeks we've had multiple consumer like customer facing incidents due to like stupid shit",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 13.452
+    },
+    {
+      "start": "00:02:11",
+      "second": 131.858,
+      "text": "that would have never been written by a human because the logic was completely wrong, because the AI just straight-up hallucinated what it was trying to do.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 8.188
+    },
+    {
+      "start": "00:02:20",
+      "second": 140.746,
+      "text": "And then the human is stupid, and they don't look at the code and then think for literally half a second to be like, hmm, yes, I do calculate the percentage of something happening by just multiplying the number by 100.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 12.111
+    },
+    {
+      "start": "00:02:32",
+      "second": 152.877,
+      "text": "That's how percentages work.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 1.622
+    },
+    {
+      "start": "00:02:35",
+      "second": 155.32,
+      "text": "And then it hits prod, and everybody's complaining, and I just...",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 4.824
+    },
+    {
+      "start": "00:02:41",
+      "second": 161.373,
+      "text": "I don't want to have to deal with shitty AI written code.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 3.385
+    },
+    {
+      "start": "00:02:42",
+      "second": 162.993,
+      "text": "Wait, so your manager is pro you just using AI code?",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 12.517
+    },
+    {
+      "start": "00:02:45",
+      "second": 165.859,
+      "text": "But that's the opposite direction of where everyone's moving.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 4.106
+    },
+    {
+      "start": "00:02:46",
+      "second": 166.047,
+      "text": "I feel you.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.501
+    },
+    {
+      "start": "00:02:51",
+      "second": 171.474,
+      "text": "Well, I just... I just re-sent you my company's open job recs in case you want to...",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 19.383
+    },
+    {
+      "start": "00:02:56",
+      "second": 176.274,
+      "text": "Yeah, because you have to think about the velocity.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 3.105
+    },
+    {
+      "start": "00:03:01",
+      "second": 181.718,
+      "text": "Josh, move fast and break things.",
+      "user": {
+        "name": "Noah",
+        "color": "--textNoah"
+      },
+      "duration": 1.562
+    },
+    {
+      "start": "00:03:04",
+      "second": 184.486,
+      "text": "They're very good at the latter.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 1.342
+    },
+    {
+      "start": "00:03:10",
+      "second": 190.432,
+      "text": "I know.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 0.741
+    },
+    {
+      "start": "00:03:11",
+      "second": 191.234,
+      "text": "I'm just complaining.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 2.645
+    },
+    {
+      "start": "00:03:13",
+      "second": 193.899,
+      "text": "I'm very... I don't even want to say risk-adverse.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 3.868
+    },
+    {
+      "start": "00:03:18",
+      "second": 198.548,
+      "text": "I just... You know, economy is scary, and this place pays me more than enough money, so I'm probably going to complain.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 9.62
+    },
+    {
+      "start": "00:03:20",
+      "second": 200.168,
+      "text": "You're free to complain.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 10.951
+    },
+    {
+      "start": "00:03:28",
+      "second": 208.188,
+      "text": "I might apply.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 3.627
+    },
+    {
+      "start": "00:03:31",
+      "second": 211.219,
+      "text": "I'm all for it.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.7
+    },
+    {
+      "start": "00:03:32",
+      "second": 212,
+      "text": "I'm just letting you know in case you want... I think my manager is the biggest idiot in the company, and I think everyone else is pretty smart.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 14.834
+    },
+    {
+      "start": "00:03:34",
+      "second": 214.192,
+      "text": "No, I understand.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 0.841
+    },
+    {
+      "start": "00:03:35",
+      "second": 215.073,
+      "text": "This is very much your, you're like, hey, this is, although, listen, I've heard you complain about your manager being an idiot.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 6.45
+    },
+    {
+      "start": "00:03:42",
+      "second": 222.384,
+      "text": "Oh, that's sad.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 8.433
+    },
+    {
+      "start": "00:03:50",
+      "second": 230.054,
+      "text": "Yeah.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.721
+    },
+    {
+      "start": "00:03:50",
+      "second": 230.795,
+      "text": "What's funny is he will write me comments that are just so wrong that some of them are AI and others are just wrong.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 10.956
+    },
+    {
+      "start": "00:04:01",
+      "second": 241.771,
+      "text": "He reviewed one of my CLs and he's like, hey, can we tidy this up?",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 5.368
+    },
+    {
+      "start": "00:04:07",
+      "second": 247.159,
+      "text": "Can you check this in and tidy this up?",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 2.464
+    },
+    {
+      "start": "00:04:10",
+      "second": 250.144,
+      "text": "And then in parentheses, by tidy this up, I mean remove your do not submit comments.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 6.209
+    },
+    {
+      "start": "00:04:17",
+      "second": 257.635,
+      "text": "Because I usually put that if I'm putting some...",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.582
+    },
+    {
+      "start": "00:04:19",
+      "second": 259.417,
+      "text": "debugging print statement or log so I don't forget it so I can control F it.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 5.727
+    },
+    {
+      "start": "00:04:25",
+      "second": 265.925,
+      "text": "But I was looking at my code and they just weren't in the entire branch.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 5.206
+    },
+    {
+      "start": "00:04:31",
+      "second": 271.151,
+      "text": "So he must have been looking at like something else and it's just like I don't even know how to respond to these comments without being an asshole.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 7.829
+    },
+    {
+      "start": "00:04:39",
+      "second": 279.65,
+      "text": "He just assumed that in the past you've left those comments, so you did that on this one too.",
+      "user": {
+        "name": "Josh",
+        "color": "--textJosh"
+      },
+      "duration": 5.169
+    },
+    {
+      "start": "00:04:45",
+      "second": 285.587,
+      "text": "I've never left it in.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 1.322
+    },
+    {
+      "start": "00:04:47",
+      "second": 287.412,
+      "text": "I've only had it when I was working on something and I showed him, but it's funny.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 3.87
+    },
+    {
+      "start": "00:04:51",
+      "second": 291.422,
+      "text": "And I was just like, ah, you're an idiot.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 2.687
+    },
+    {
+      "start": "00:04:54",
+      "second": 294.53,
+      "text": "Hey.",
+      "user": {
+        "name": "Jorge",
+        "color": "--textJorge"
+      },
+      "duration": 0.08
+    }
+  ]
+}
