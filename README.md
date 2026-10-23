@@ -12,11 +12,13 @@ edge is **Caddy**, and observability is **OTel → SigNoz**.
 ## Quickstart
 
 ```sh
-uv sync                  # resolve the Python (uv) workspace
-bun install              # resolve the TypeScript (bun) workspace
-uv run pytest            # Python tests
-bun --filter '*' test    # TypeScript tests
+mise trust && mise install   # the host toolchain (mise.toml); then activate mise in your shell
+just bootstrap               # both workspaces, the git hooks, the codex guards' Chromium
+just ci                      # everything CI runs
 ```
+
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the rest (`just check`, `just fix`, `just test`,
+`just dev <app>`).
 
 ## Status
 

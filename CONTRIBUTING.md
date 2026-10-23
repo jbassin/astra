@@ -74,16 +74,25 @@ feedback memories ([[verify-before-acting]], [[no-silent-scope-cuts]]).
 Two **disjoint** workspaces over the same tree; **a directory belongs to whichever lane its manifest
 declares** (`pyproject.toml` → uv; `package.json` → pnpm). They never cross-claim.
 
+**Host toolchain:** `mise.toml` declares it (pnpm, uv, just, sops, deno, jq, and the wasm tools for
+`just weal-engine-build`); Python and Node come from `.python-version` (3.12) and `.node-version` (24).
+On a fresh clone run `mise trust && mise install`, activate mise in your shell, then
+**`just bootstrap`** (toolchain, `uv sync`, `pnpm install`, the codex guards' Chromium, the git hooks).
+Rust (rustup reads the crate's `rust-toolchain.toml`) and tectonic (assay's book export) are not in
+`mise.toml`; install them by hand if you need them.
+
 - **Python (uv):** virtual workspace at root `pyproject.toml`; members `apps/*`, `libs/py/*`, `ontology/*`.
-  Lint+format **ruff**, type-check **ty** (Astral, preview, pinned `==0.0.51`), tests **pytest**.
+  Lint+format **ruff**, type-check **ty** (Astral, preview, pinned `==0.0.51`), tests **pytest**
+  (`importlib` import mode). Python **3.12** everywhere: dev and CI via `.python-version`, production
+  via the `python:3.12-slim` Dagster image.
 - **TypeScript (pnpm):** workspace at `pnpm-workspace.yaml`; members `apps/*`, `libs/ts/*`. Lint
   **oxlint** (`--type-aware --deny-warnings`), format **oxfmt** (`sortImports` on) — deliberately two
   tools, both VoidZero/oxc (biome retired 0022 S13). Type-check `tsc --noEmit` against
-  `tsconfig.base.json` (strict) — stays the gate even orchestrated through vp (D8). Root
-  typecheck/test/build fan-out is orchestrated by **`vp` (`vite-plus`, exact-pinned root
-  devDependency)** — `vp run -r <task>` (0022 S15). Pins: Node **24**, pnpm **10.34.4** (root
-  `packageManager` + corepack), oxlint **^1.72.0**, oxfmt **^0.57.0**, oxlint-tsgolint **^0.24.0**,
-  typescript **5.x**, vite-plus **0.2.2**, Python **≥3.12**.
+  `tsconfig.base.json` (strict). typecheck/test/build fan out with
+  `pnpm -r --no-bail --aggregate-output run <task>` (0037 replaced `vp run -r`, which stopped at the
+  first failing package). Pins: Node **24**, pnpm **10.34.4** (root `packageManager` + corepack),
+  oxlint **^1.72.0**, oxfmt **^0.57.0**, oxlint-tsgolint **^0.24.0**, typescript **5.x**.
+  `vite-plus` 0.2.2 is still a root devDependency until it is removed; nothing runs it.
 
 **uv rejects empty members** (a glob-matched dir without a `pyproject.toml` is a hard error) → don't
 pre-create placeholder member dirs; keep glob roots in git with a `.gitkeep` *file*. pnpm ignores
@@ -105,47 +114,32 @@ See `libs/rust/weal-engine/README.md`.
 ## 5. Reproduce CI locally (do this before every push)
 
 ```bash
-# Python lane
-uv sync
-uv run ruff check && uv run ruff format --check && uv run ty check && uv run pytest
-
-# TypeScript lane
-pnpm install
-pnpm -r --no-bail run typecheck && pnpm run lint && pnpm run format:check && pnpm -r --no-bail run test && pnpm -r --no-bail run build
+just ci      # everything CI runs; the pre-push hook runs it too
+just check   # the fast format + lint gate (what pre-commit runs)
+just fix     # apply the formatters and safe autofixes for both lanes
+just test    # both test lanes
 ```
 
-CI (GitHub Actions, `.github/workflows/ci.yml`) is parallel + path-filtered, so scope your local run to
-the lane/app you touched. A **pre-commit gate** (`.githooks/pre-commit`) blocks a commit on any
-**format/lint** issue across both lanes — `oxlint --type-aware --deny-warnings apps libs/ts` + `oxfmt
---check` (TS, the SAME strict commands CI runs — D6) + `ruff check` / `ruff format --check` (Python).
-It's auto-installed by the root `prepare` script on `pnpm install`
-(`git config core.hooksPath .githooks`); to install manually run that command. It's **check-only** (never
-edits files) — fix with `pnpm run format` / `uv run ruff format .`, or bypass in an emergency with
-`git commit --no-verify`. **Typecheck + tests are NOT in the hook** (too slow) — run them locally + in CI.
-Conventional-commit messages are linted by commitlint.
+Each CI job (`.github/workflows/ci.yml`) runs the `just` recipe with the same name (`just py-test`,
+`just ts-lint`, `just codex-row-height-drift-guard`, …), so CI and `just ci` run the same commands.
+Two differences: CI path-filters its jobs while `just ci` always runs them all, and the
+`vellum-visual-regression` job stays CI-only because its goldens are pinned to the node:24-slim
+container's Chromium and fonts. `just ci` also lints your commits with commitlint over
+`origin/main..HEAD` (pass another base with `just ci <base>`).
 
-**`vp` (vite-plus) orchestration (0022 S15):** `vite-plus` is a root devDependency, exact-pinned
-(`0.2.2`) in `package.json`/`pnpm-lock.yaml` — `pnpm install` (or CI's frozen install) is the entire
-install story, no curl script or separate action needed; `pnpm exec vp` always resolves the
-lockfile-pinned binary. `vp run -r <task>` fans a `package.json` script out across every workspace
-member that defines it (task-graph + a local, content-addressed cache — `vp run --cache -r
-<task>`; `vp cache clean` to reset). Two load-bearing gotchas found by running it against this repo:
-(1) a root `package.json` script with the **same name** as the fanned-out task (e.g. a root
-`"typecheck": "pnpm -r typecheck"`) gets matched by `-r <task>` too, so it runs a SECOND, nested,
-racing copy of the whole recursive command — the fix is to not have root-level `typecheck`/`test`/
-`build` scripts at all (this repo has none; call `vp run -r <task>` directly). (2) local caching is
-close to useless for `test` here — vitest writes its own results cache under each package's
-`node_modules/.vite/vitest/**`, and vp's input-tracking treats that self-write as "modified its
-input", so `vp run -r test` cache-misses on **every** run (0% hit, every member, confirmed on repeat
-runs) — `typecheck` (`tsc --noEmit`) has none of this and hit 96% on a warm rerun. `vp env` is not a
-real subcommand in `0.2.2` (the scope doc's assumption was stale) — Node-version pinning is automatic
-instead: every `vp`-spawned child process uses vp's own managed Node runtime matching `.node-version`,
-verified by shadowing a decoy `node` first on `$PATH` and confirming the spawned `tsc` still ran (the
-decoy was never invoked). `vp migrate` was run and reviewed, then **fully reverted** — see
-[[viteplus-cutover-0022]] for why (it silently aliases the real `vite` package to
-`@voidzero-dev/vite-plus-core` via a pnpm `catalog:`/`overrides` pair, which undermines the D9
-exact-pin decision without re-verification, and its own auto-format step failed outright on this
-repo's `--configLoader runner` + extensionless-workspace-import pattern).
+Two hooks in `.githooks/` gate your work; `just bootstrap` (and `pnpm install`'s `prepare` script)
+installs them with `git config core.hooksPath .githooks`:
+
+- **pre-commit** runs `just check`: `oxlint --type-aware --deny-warnings` + `oxfmt --check` (TS, with
+  the globs from the root `package.json` scripts) and `ruff check` + `ruff format --check` (Python),
+  over the whole tree. It's check-only (never edits files); fix with `just fix`.
+- **pre-push** runs `just ci`.
+
+Bypass either in a genuine emergency with `--no-verify` (`git commit --no-verify`,
+`git push --no-verify`).
+
+Run one TS app's dev server with `just dev <app>` (e.g. `just dev codex`). The Python apps have no dev
+server; they run as Dagster assets, so test them with `uv run pytest apps/<app>`.
 
 ---
 
@@ -196,7 +190,8 @@ Four non-overlapping concerns; **SigNoz/OTel is the single pane across all of th
 - **ty** is pinned preview; missing third-party stubs → alias the type to `Any` (don't scatter ignores).
   Its ignore syntax is `# ty: ignore[code]`, **not** `# type: ignore`. Prefer a `cast(...)` over a
   duck-typed attribute ty can't see.
-- **pytest** collides on same-basename test files across packages → use unique basenames.
+- **pytest** runs in `importlib` mode: a test can't import a sibling test module by bare name. Put
+  shared helpers in a package (`tests/__init__.py`) and import them relatively (`from .helpers import x`).
 
 **TypeScript / pnpm / oxlint+oxfmt**
 - **oxlint/oxfmt ignore** generated + fixture files via `.oxlintrc.json`'s `ignorePatterns` /

@@ -13,14 +13,15 @@ the dev process, exact CI commands, working-style expectations, and the load-bea
 ## Version control: plain git + conventional commits (NOT jj)
 
 astra uses **plain git** on GitHub — no jujutsu. Commit
-messages follow **Conventional Commits** (`type(scope): subject`); CI lints them with commitlint. A
-**pre-commit gate** (`.githooks/pre-commit`, auto-installed via the root `package.json` `prepare` script →
-`git config core.hooksPath .githooks`) blocks a commit on any **format/lint** issue across both lanes —
-**oxlint** (`--type-aware --deny-warnings`, so warnings block too) + **oxfmt** (`--check`) for TS and
-**ruff** (check + format) for Python. It's a check-only gate (never modifies files); fix with
-`pnpm run format` / `uv run ruff format .`, or bypass in a genuine emergency with `git commit --no-verify`.
-**Typecheck + tests stay CI-only** (too slow for every commit); the hook is the fast format/lint subset of
-CI.
+messages follow **Conventional Commits** (`type(scope): subject`, lower-case subject start, lines ≤ 100
+chars); CI and `just ci` lint them with commitlint. Two hooks in `.githooks/` (installed by
+`just bootstrap` and the root `package.json` `prepare` script → `git config core.hooksPath .githooks`):
+- **pre-commit** runs `just check`, the fast **format/lint** gate for both lanes — **oxlint**
+  (`--type-aware --deny-warnings`, so warnings block too) + **oxfmt** (`--check`) for TS and **ruff**
+  (check + format) for Python. Check-only (never modifies files); fix with `just fix`.
+- **pre-push** runs `just ci`: everything CI runs, so a red commit never reaches GitHub.
+
+Bypass either in a genuine emergency with `--no-verify`.
 
 ## Memory + thoughts (project-local — astra owns its own)
 
@@ -59,14 +60,14 @@ and don't write scope, spec or research documents or decision IDs by default.
    - No checkout holds runtime data: it all lives under `/ruby/data/astra-state` (`config.kdl`
      `data.root`: recordings, episodes, corpora, audio, the astra-data clone). Point agents at those
      paths, read-only, when they need it.
-   - Review each diff, cherry-pick it onto `main`, then run both CI lanes on the merged result before
+   - Review each diff, cherry-pick it onto `main`, then run `just ci` on the merged result before
      pushing. Each agent proved only its own slice.
    - Run live steps from the main session. The auto-mode classifier blocks subagents from deploying.
 5. **Review where the risk is.** Security and auth changes, data migrations, and anything that replaces
    live content get an independent review before merge. Give the reviewer the code and the goal, not
    your conclusion. Everything else relies on tests and CI.
-6. **Gate every commit and push.** Run the touched CI lanes locally first (the commands are under
-   "Pins" below) and never commit a red lane. Commit each green slice as you go and push when a chunk is
+6. **Gate every commit and push.** Run `just ci` (or at least the touched lanes' `just <job>`
+   recipes) before committing, and never commit a red lane; the pre-push hook runs `just ci`. Commit each green slice as you go and push when a chunk is
    done; don't build up unpushed work. After a push, confirm it and check the CI run once; don't poll.
    The bots (`linguist-commit`, heartwood) commit and push only the separate `astra-data` repo (the
    pipeline's published output and the wiki, live clone `/ruby/data/astra-state/astra-data`); they
@@ -83,8 +84,10 @@ and don't write scope, spec or research documents or decision IDs by default.
 ## Two toolchains, disjoint workspaces
 
 - **Python (uv):** virtual workspace at the root `pyproject.toml`; members `apps/*`, `libs/py/*`,
-  `ontology/*`. Lint+format = **ruff**, type-check = **ty** (Astral; preview, pinned), tests = **pytest**.
-  Run `uv sync`, `uv run pytest`, `uv run ruff check`, `uv run ty check`.
+  `ontology/*`. Lint+format = **ruff**, type-check = **ty** (Astral; preview, pinned), tests = **pytest**
+  in `importlib` import mode (a test can't import a sibling test module by bare name; shared helpers
+  need a `tests/__init__.py` and relative imports). Python is **3.12** everywhere (`.python-version`).
+  `just py-lint` / `py-typecheck` / `py-test`.
 - **TypeScript (pnpm):** workspace at `pnpm-workspace.yaml` (`apps/*`, `libs/ts/*`); root `package.json`
   pins the exact version via `packageManager` + corepack. Lint = **oxlint** (`--type-aware
   --deny-warnings`), format = **oxfmt** (`sortImports` on) — deliberately two tools (both VoidZero/oxc,
@@ -92,8 +95,8 @@ and don't write scope, spec or research documents or decision IDs by default.
   the gate. **typecheck/test/build fan out with `pnpm -r --no-bail --aggregate-output run <task>`**
   (0037: `vp run -r` stopped at the first failing package and hid the rest; `vite-plus` is still a
   devDependency until it is removed). Lint/format stay **direct** oxlint/oxfmt — the explicit globs
-  are what keeps oxfmt off markdown/toml/the SOPS file. Run `pnpm install`,
-  `pnpm -r --no-bail run {typecheck,test,build}` / `pnpm run lint` / `pnpm run format:check`.
+  in the root `package.json` scripts are what keep oxfmt off markdown/toml/the SOPS file.
+  `just ts-typecheck` / `ts-lint` / `ts-test` / `ts-build`.
 - **Disjoint globs, manifest-decided membership.** Both lanes glob `apps/*`; a directory belongs to
   whichever lane its manifest declares (`pyproject.toml` → uv; `package.json` → pnpm). They never
   cross-claim.
@@ -139,27 +142,29 @@ ontology/    # ontology-being, ontology-config (py truth + config stores)
 dagster/     # Dagster definitions (loads each pipeline app's assets; schedules/sensors)
 deploy/      # docker-compose.yml (Dagster + SigNoz + services), otel-collector.yaml, SOPS
 sites.caddyfile  # host-edge config for the shared reverse proxy; `just caddy-reload`
-.github/     # CI workflow + composite setup-{uv,pnpm} actions
+.github/     # CI workflow (each job runs a `just <job>` recipe) + composite setup-{uv,pnpm,just}
 thoughts/    # research + per-subsystem plans + specs + memory
 dist/        # all site-gen output (gitignored), served by Caddy
 ```
 
 ## Pins (set in Phase 0; TS toolchain finalized 0022 S15)
 
-- Python ≥ 3.12; **ty** pinned (`==0.0.51`, preview — bump deliberately).
+- The host toolchain is declared in **`mise.toml`** (pnpm, uv, just, sops, deno, jq, wasm-bindgen,
+  wasm-opt); **`just bootstrap`** installs it and both workspaces on a fresh clone.
+- Python **3.12** (`.python-version`; production runs `python:3.12-slim`; `requires-python` stays
+  `>=3.12`); **ty** pinned (`==0.0.51`, preview — bump deliberately).
 - Node **24** (`.node-version` + root `engines.node`); pnpm **10.34.4** (root `packageManager` +
-  corepack); oxlint **^1.72.0** + oxfmt **^0.57.0** (+ oxlint-tsgolint **^0.24.0** for type-aware
-  lint); typescript **5.x**; **vite-plus (`vp`) `0.2.2`** exact-pinned root devDependency — the
-  orchestrator for typecheck/test/build (task graph + local caching; `tsc --noEmit` stays the
-  actual typecheck gate underneath it, D8).
+  corepack; `mise.toml` repeats it); uv **0.11.19** and just **1.23.0** (`mise.toml`, repeated in
+  `.github/actions/setup-{uv,just}`); oxlint **^1.72.0** + oxfmt **^0.57.0** (+ oxlint-tsgolint
+  **^0.24.0** for type-aware lint); typescript **5.x**; `vite-plus` **0.2.2** is a leftover
+  devDependency (no longer the orchestrator; `pnpm -r` replaced it).
 - Rust **1.96.0** (pinned via `libs/rust/weal-engine/rust-toolchain.toml`) for the weal-engine crate
   ONLY — compiled to the committed `libs/ts/weal-engine/gen/` wasm via `just weal-engine-build`
   (wasm-bindgen-cli **0.2.127** + binaryen wasm-opt **124**, both hard-pinned in the recipe). cargo
   runs only when the engine changes; **no Rust CI lane** — the local gate
   (`cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test`) is recorded per
   slice, and a vitest wasm smoke guards the committed artifact in CI.
-- Reproduce CI locally:
-  `uv run ruff check && uv run ruff format --check && uv run ty check && uv run pytest` and
-  `pnpm -r --no-bail run typecheck && pnpm run lint && pnpm run format:check && pnpm -r --no-bail run
-  test && pnpm -r --no-bail run build` (exactly what `.github/workflows/ci.yml` runs; `ci-ok` is the
-  one job that sums them up).
+- Reproduce CI locally: **`just ci`**. Each CI job runs the `just` recipe of the same name, so this
+  is exactly what `.github/workflows/ci.yml` runs (`ci-ok` sums the jobs up), minus the path filters
+  and the vellum render goldens, which need CI's node:24-slim container. `just check` is the fast
+  lint subset, `just fix` applies the formatters, `just test` runs both test lanes.
