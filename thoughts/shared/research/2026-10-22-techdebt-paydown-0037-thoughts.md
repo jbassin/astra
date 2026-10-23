@@ -66,8 +66,10 @@ product decisions below are applied. Exceptions:
 
 1. **Process redesign.** Josh: "I think agents have effectively grown out of this, I kinda wanna
    rethink this whole setup. I especially don't like octo anymore." On the tiers: "maybe we just don't
-   need all this pomp." A lighter process proposal is pending; octo is out either way.
-2. **RTK.** Josh wants it gone entirely: "Disable the hook everywhere." This is a user-level change
+   need all this pomp." **Resolved 2026-10-22:** no tiers; the process is the "How work gets
+   done" section of `CLAUDE.md` (plan in chat, slices, orchestrator plus worktree agents, CI as the
+   gate, review where the risk is). Octo is out.
+2. **RTK.** (Done in session 1.) Josh wants it gone entirely: "Disable the hook everywhere." This is a user-level change
    outside the repo.
 3. **The data repo's specifics** (name, visibility, whether to carry existing history) are settled in
    the spec.
@@ -144,7 +146,21 @@ Josh gave standing approval for routine live infra steps (memory
    `DefaultErrorComponent`s handle that. Deployed; every site 200, both Discord bots reconnected,
    no ERROR logs.
 
-**Next:** Phase 1 (section 5).
+**Next: Phase 1** (section 5). Done so far: the process section of `CLAUDE.md` ("How work gets
+done", which replaces the three gates and octo). Remaining, in order:
+1. Deploy checkout and one `deploy` command (lock, secret injection, SHA labels, dirty-tree refusal);
+   move the timers and the heartwood runner to it.
+2. One data root, and pipeline output out of git into a separate `astra-data` repo written by a bot
+   (decision table in section 0). This removes the timer's commit-and-push job. Settle the data
+   repo's name, visibility and history with Josh first (open item 3).
+3. Developer entry point: `just bootstrap/check/fix/test/ci/dev`, `mise.toml`, `.python-version`
+   (3.12 everywhere), pytest `importlib` mode.
+4. Gate tightening: `erasableSyntaxOnly`, tsconfigs include scripts and server entries, the
+   immediate ruff and oxlint rule sets, path overrides become inline disables, a staged-files
+   pre-commit hook, `.claude/settings.json` deny rules (e.g. `git stash`).
+5. Docs skeleton: `docs/` tree, ADR seed set (including the accepted risks), backlog seeded from
+   memory, RESUME, specs, section 2 and the follow-ups below, `docs/now.md`, the rest of the
+   `CLAUDE.md` rewrite, a memory size check, and rewritten `load`/`save` skills.
 
 **Follow-ups found in session 2 (fold into the backlog):**
 - The watchdog doesn't check `astra-backup.timer` or snapshot age, and the restore test isn't
@@ -168,14 +184,19 @@ Josh gave standing approval for routine live infra steps (memory
 - The ledger, harrow, strider and akasha SSR smokes read whatever `dist/` exists, so after a
   dependency change they fail locally on a stale build (`matchedRoutes is not iterable`) until
   `build` runs. Give them codex's rebuild-when-stale check. CI is unaffected (no `dist/`).
-- Commit-window hazard, seen again: `git rm` stages a deletion, so a later `git add` naming that
-  path aborts the whole add, and restarting the commit timer before the commit lands lets it
-  sweep the staged files. Keep the timer stopped from the first `git add`/`git rm` until the
-  commit exists (Phase 1 removes the timer's commit job).
+- Correction: the commit timer uses `git commit --only <its paths>`, so it never sweeps other
+  staged files; stopping it around commits (as session 2 did) is unnecessary. What remains true:
+  when it has data to commit it pushes `main`, including any unpushed local commits, so only
+  green commits may sit unpushed on `main`. Phase 1 removes its commit job.
 
 **Context for the next session:** the review page is
 https://claude.ai/artifact/PfwtSxfVtGGKnyFQ54RREH (Josh's verdicts live in its `reviews` store).
 The 13 lane reports with full evidence are in `artifacts/research/techdebt-0037/lanes/`.
+Start a session by reading this section, not `RESUME.md` (235 KB and stale since 2026-08-09; the
+`load` skill still reads it first until the skills are rewritten). Two finished agent worktrees
+under `.claude/worktrees/` were still locked by the agent tool at the end of session 2; their
+commits are on `main`, so remove them with `git worktree remove --force` and delete their
+`worktree-agent-*` branches.
 
 ## 1. Summary
 

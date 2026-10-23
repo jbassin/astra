@@ -12,7 +12,9 @@ names them. Keep planning and documentation proportionate to the change.
 this, I kinda wanna rethink this whole setup. I especially don't like octo anymore." On change tiers:
 "maybe we just don't need all this pomp."
 
-**How to apply:** Until the process is rewritten in 0037, use plain planning in the conversation and
-one short document only for multi-session work. Don't create scope, spec and research docs, or
-decision IDs, by default. Keep what earned its keep: verify claims against the real repo before
-building ([[verify-before-acting]]), and use an independent review pass for risky changes.
+**How to apply:** Follow the "How work gets done" section of `CLAUDE.md` (written and approved
+2026-10-22): plain planning in the conversation, one short plan-plus-checklist document only for
+multi-session work, slices with an orchestrator and worktree agents, CI as the gate, and an
+independent review only for risky changes. Don't create scope, spec and research docs, or decision
+IDs, by default. Some older memory entries and `CONTRIBUTING.md` still describe the old gates; the
+`CLAUDE.md` section wins.

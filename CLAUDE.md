@@ -34,27 +34,49 @@ Project memory and planning docs live **in this repo**, not in the harness defau
 - `thoughts/` is also the home for the migration **plans + specs** (`thoughts/astra/{plans,specs}`) and
   **research** (`thoughts/shared/research/`). astra is the single canonical home for all of these.
 
-## Development process (per subsystem)
+## How work gets done
 
-Each subsystem moves through three gates, leaving a paper trail in `thoughts/`:
+Plan in the conversation, ship in small slices, and let CI be the gate. Don't use `octo:*` skills,
+and don't write scope, spec or research documents or decision IDs by default.
 
-1. **Scope** — a verified pre-implementation research doc at
-   `thoughts/shared/research/<date>-<subsystem>-<NNNN>-thoughts.md`: read the sub-plan + any prior art,
-   **verify claims against the actual repo** (resolve real config/secrets, load real ontology, inspect
-   real fixtures — don't list "open questions" that are checkable now), and call out decisions to revisit
-   before speccing.
-2. **Spec** — author the NLSpec with **`octo:spec`** → `thoughts/astra/specs/<NNNN>-<subsystem>-spec.md`,
-   built on the scoping doc and the sub-plan's settled decisions.
-3. **Implement** — drive the build with **`octo:embrace`** against that spec; wire telemetry from day one,
-   reproduce CI lanes locally before pushing, then update the memory (`thoughts/shared/memory/`) with the
-   load-bearing gotchas. Build the spec's scope **in full** — don't quietly collapse or defer pieces to fit
-   a budget; surface the trade-off and ask (only spec-sanctioned deferrals are OK). And **reuse existing
-   astra patterns** — mirror the nearest already-built subsystem rather than reinventing.
-
-**Version control cadence (not "commit only when asked"):** commit each CI-green slice with a Conventional
-Commit message as you go, and **push when a chunk/subsystem is done** — after reproducing the CI lanes
-locally (don't then watch the GHA run; confirm push + one status check, per the memory). Mirror the git
-log's per-slice rhythm; don't accumulate a large uncommitted/unpushed working tree.
+1. **Plan.** Agree on the plan in the conversation. Check every claim against the real repo before
+   planning on it: read the code, load the config, run the command. Don't list questions you could
+   answer now. Write a document only when the work spans sessions: one file with the plan and a
+   checklist, kept current as slices land (the model is section 0.1 of
+   `thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`).
+2. **Ask only for real decisions.** Product, cost and stakeholder calls belong to Josh. Use the
+   question tool for short choices and plain text when the choice needs context. Everything else, decide
+   and say what you decided.
+3. **Slice.** A slice is one coherent change that leaves `main` green. Build the agreed scope in full;
+   if part of it won't fit, say so and ask rather than dropping it quietly. Copy the nearest existing
+   astra pattern rather than inventing a new one.
+4. **Delegate.** For work with more than one slice, the main session orchestrates and agents implement.
+   - Give each independent slice its own agent in its own git worktree. The pre-commit hook lints the
+     whole tree, so agents that share a tree block each other's commits.
+   - The brief states the goal, what is already ruled out, the files the agent owns, how to verify, and
+     the hard rules: no git outside its worktree, no `git stash`, no push, no deploy. The agent reports
+     its branch, commit, verification evidence and anything surprising.
+   - Worktrees have no gitignored data (`artifacts/`, corpora, recordings). Point agents at the main
+     checkout's paths, read-only, when they need it.
+   - Review each diff, cherry-pick it onto `main`, then run both CI lanes on the merged result before
+     pushing. Each agent proved only its own slice.
+   - Run live steps from the main session. The auto-mode classifier blocks subagents from deploying.
+5. **Review where the risk is.** Security and auth changes, data migrations, and anything that replaces
+   live content get an independent review before merge. Give the reviewer the code and the goal, not
+   your conclusion. Everything else relies on tests and CI.
+6. **Gate every commit and push.** Run the touched CI lanes locally first (the commands are under
+   "Pins" below) and never commit a red lane. Commit each green slice as you go and push when a chunk is
+   done; don't build up unpushed work. After a push, confirm it and check the CI run once; don't poll.
+   The `linguist-commit` timer pushes `main` whenever it has data to commit, taking any unpushed local
+   commits with it, so only green commits may sit unpushed on `main`.
+7. **Live steps.** Routine live infrastructure work that carries out an agreed plan needs no approval:
+   `just up`, edge edits with `just caddy-reload`, installing or removing systemd units, image rebuilds,
+   pruning dangling images and build cache, and pushing green commits. State each step in one line as you
+   run it. Before rebuilding Dagster, check for in-flight runs. Spending money or replacing published
+   content (TTS renders, episodes, snapshots) gets an explicit flag first. Irreversible data loss
+   (dropping a volume or database, `prune -a` on the shared Docker daemon) needs an explicit yes.
+8. **Wrap up.** Tick the plan's checklist, record load-bearing gotchas in memory (edit entries in place:
+   a memory entry describes the current state), then commit and push.
 
 ## Two toolchains, disjoint workspaces
 
