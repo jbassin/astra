@@ -112,7 +112,7 @@ export function createSsrServer(opts: SsrServerOptions): Server {
       for (const mount of staticMounts) {
         if (!url.pathname.startsWith(mount.urlPrefix)) continue;
         const filePath = staticMountPath(mount, url.pathname);
-        if (filePath && (await isFile(filePath))) return serveFile(req, filePath);
+        if (filePath && (await isFile(filePath))) return serveFile(req, filePath, mount.dir);
         return new Response("Not found", { status: 404 });
       }
       // Serve built client assets (hashed bundles, fonts, favicon) directly. The
@@ -120,7 +120,7 @@ export function createSsrServer(opts: SsrServerOptions): Server {
       if (url.pathname !== "/") {
         const filePath = `${clientDir}${url.pathname}`;
         if (filePath.startsWith(clientDir) && (await isFile(filePath))) {
-          return serveFile(req, filePath);
+          return serveFile(req, filePath, clientDir);
         }
       }
       // One SSR span per rendered request (assets above short-circuit).

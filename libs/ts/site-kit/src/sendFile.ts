@@ -10,6 +10,7 @@
 // then mirrors the bytes into a Web `ReadableStream` with basic backpressure (pause the
 // Node stream when the Web stream's queue is full; resume on `pull()`).
 
+import { relative } from "node:path";
 import { PassThrough, type Readable } from "node:stream";
 
 import send from "send";
@@ -97,8 +98,13 @@ class CapturingRes extends PassThrough {
  * conditional-GET (304), HEAD (no body), and `send`'s own 403/404/416/500 error
  * pages — the caller only needs to already know the file exists (or wants `send`'s
  * own not-found handling, which produces an HTML error page rather than a plain 404).
+ *
+ * `root` (optional) is the directory the file was resolved under. `send` refuses any
+ * path with a dot-segment; with a root it checks only the part below the root, so a
+ * checkout under a dot-folder (an agent worktree in `.claude/worktrees/`) still serves
+ * its built assets. Without a root it checks the whole absolute path.
  */
-export function serveFile(req: Request, filePath: string): Promise<Response> {
+export function serveFile(req: Request, filePath: string, root?: string): Promise<Response> {
   const nodeReq = toNodeReq(req);
   return new Promise<Response>((resolve, reject) => {
     let settled = false;
@@ -137,7 +143,10 @@ export function serveFile(req: Request, filePath: string): Promise<Response> {
     // a listener here would silently divert every error path away from `res` and
     // into an emitted event nothing here is designed to translate back to a
     // Response, leaving the promise (and the client) hanging.
-    const stream = send(nodeReq as unknown as Readable, filePath);
+    const stream =
+      root === undefined
+        ? send(nodeReq as unknown as Readable, filePath)
+        : send(nodeReq as unknown as Readable, relative(root, filePath), { root });
     stream.pipe(res);
   });
 }

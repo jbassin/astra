@@ -8,7 +8,7 @@
 // apps/weal-overlay/vitest.config.ts, unchanged pre-/post-0022 S11), so this
 // exercises the real Node srvx adapter, not a Bun stand-in.
 
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -25,11 +25,17 @@ let server: Awaited<ReturnType<typeof createSsrServer>>;
 let base: string;
 
 beforeAll(async () => {
-  const clientDir = mkdtempSync(join(tmpdir(), "site-kit-client-"));
+  // Both dirs sit under a dot-folder, like a checkout in `.claude/worktrees/`: `send`
+  // refuses dot-segments, and must check only the path below each served root.
+  const root = join(mkdtempSync(join(tmpdir(), "site-kit-")), ".worktree");
+  const clientDir = join(root, "client");
+  mkdirSync(clientDir, { recursive: true });
   writeFileSync(join(clientDir, "app.css"), CLIENT_ASSET);
 
-  const audioDir = mkdtempSync(join(tmpdir(), "site-kit-audio-"));
+  const audioDir = join(root, "audio");
+  mkdirSync(audioDir);
   writeFileSync(join(audioDir, "clip.bin"), AUDIO_CLIP);
+  writeFileSync(join(audioDir, ".hidden.bin"), AUDIO_CLIP);
   // Sibling of audioDir, outside the mount — proves a traversal attempt can't reach it.
   writeFileSync(join(audioDir, "..", "secret.txt"), SECRET);
 
@@ -96,6 +102,11 @@ describe("static mount (send-backed: Range/206, conditional-GET, 404)", () => {
     const res = await fetch(`${base}/audio/does-not-exist.bin`);
     expect(res.status).toBe(404);
     expect(await res.text()).not.toContain(SSR_MARKER);
+  });
+
+  test("a dotfile inside the mount is still refused", async () => {
+    const res = await fetch(`${base}/audio/.hidden.bin`);
+    expect(res.status).toBe(404);
   });
 
   test("path traversal never leaks a file outside the mount", async () => {
