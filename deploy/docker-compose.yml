@@ -301,9 +301,10 @@ services:
       dockerfile: apps/akasha-frontend/Dockerfile
       # The published datasets the build bakes in (COPY --from=astra-data), never read
       # from the code repo. deploy.sh exports ASTRA_DATA_CONTEXT = a clean export of the
-      # astra-data clone's HEAD (committed content only); the default is the clone itself.
+      # astra-data clone's HEAD (committed content only); the default fails on purpose, so a
+      # build outside deploy.sh cannot bake the clone's uncommitted files.
       additional_contexts:
-        astra-data: ${ASTRA_DATA_CONTEXT:-/ruby/data/astra-state/astra-data}
+        astra-data: ${ASTRA_DATA_CONTEXT:-/nonexistent/build-only-via-deploy.sh}
       args:
         APP: akasha-frontend # the one knob in the templated frontend Dockerfile
     image: astra-akasha-frontend:local
@@ -394,9 +395,10 @@ services:
       dockerfile: apps/mouthpiece-frontend/Dockerfile
       # The published datasets the build bakes in (COPY --from=astra-data), never read
       # from the code repo. deploy.sh exports ASTRA_DATA_CONTEXT = a clean export of the
-      # astra-data clone's HEAD (committed content only); the default is the clone itself.
+      # astra-data clone's HEAD (committed content only); the default fails on purpose, so a
+      # build outside deploy.sh cannot bake the clone's uncommitted files.
       additional_contexts:
-        astra-data: ${ASTRA_DATA_CONTEXT:-/ruby/data/astra-state/astra-data}
+        astra-data: ${ASTRA_DATA_CONTEXT:-/nonexistent/build-only-via-deploy.sh}
       args:
         APP: mouthpiece-frontend # the one knob in the templated frontend Dockerfile
     image: astra-mouthpiece-frontend:local
