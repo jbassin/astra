@@ -7,10 +7,10 @@ OnFailure=astra-alert@%n.service
 
 [Service]
 Type=oneshot
-WorkingDirectory=/ruby/data/experiments/astra
+WorkingDirectory=/ruby/data/astra-deploy
 # The script refuses to run unless the backup root sits on the sda mount, so an unmounted
 # disk fails the unit (and pages) instead of quietly writing the backup to the nvme.
-ExecStart=/ruby/data/experiments/astra/deploy/systemd/astra-backup.sh run
+ExecStart=/ruby/data/astra-deploy/deploy/systemd/astra-backup.sh run
 # Backstop only: a normal night copies just what changed (minutes); the first run copies
 # ~35 GB. If anything wedges, the unit goes `failed` (visible + paged) instead of hanging.
 TimeoutStartSec=3h

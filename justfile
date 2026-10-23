@@ -15,6 +15,11 @@ sops_file := "deploy/sops/secrets.enc.yaml"
 # source as root). `artifacts-init` (run from `up`) creates the tree; override with ARTIFACTS.
 artifacts := env_var_or_default("ARTIFACTS", "/ruby/data/experiments/astra/artifacts")
 
+# The deploy checkout (0037 OPS-3): the only tree that builds production (`just deploy`) and
+# the tree the non-git timers (craig-sync, watchdog, alerting, backup) run from. The install
+# recipes link those units from here. Mirrors deploy.sh's ASTRA_DEPLOY_ROOT default.
+deploy_root := env_var_or_default("ASTRA_DEPLOY_ROOT", "/ruby/data/astra-deploy")
+
 # Source of the HISTORICAL podcast episodes for the mouthpiece-frontend audio seed
 # (faerrin's caster out/ — the pre-astra back-catalog). Override with MOUTHPIECE_AUDIO_SRC.
 mouthpiece_audio_src := env_var_or_default("MOUTHPIECE_AUDIO_SRC", "/ruby/data/experiments/faerrin/pkg/caster/out")
@@ -141,19 +146,36 @@ craig-sync:
     done <"$listing"
     echo "craig-sync: $synced new, $(ls "$dest"/*.zip 2>/dev/null | wc -l) total in incoming"
 
-# Install + start the systemd USER timer that runs `craig-sync` every 5 min. One-time
-# setup; copies the committed units (deploy/systemd/) → ~/.config/systemd/user/ and
-# enables the timer. Needs lingering (`loginctl enable-linger $USER`) to run without an
-# active login — already on for this deploy.
-craig-timer-install:
+# Install + start the systemd USER timer that runs `craig-sync` every 5 min. Idempotent;
+# links the units from the deploy checkout (see _unit-link) and enables the timer. Needs
+# lingering (`loginctl enable-linger $USER`) to run without an active login — already on.
+craig-timer-install: (_unit-link "craig-sync.service" "craig-sync.timer")
+    #!/usr/bin/env bash
+    set -euo pipefail
+    systemctl --user enable --now craig-sync.timer
+    echo "installed. timer schedule:"; systemctl --user list-timers craig-sync.timer --no-pager
+
+# Link systemd USER units from the deploy checkout into ~/.config/systemd/user (0037 OPS-3),
+# then daemon-reload. Idempotent: a unit already linked to the same file is left alone; a
+# regular-file copy from the old `cp` installs (which `systemctl link` refuses to overwrite)
+# or a link to another tree is removed first. Enablement symlinks point at the
+# ~/.config/systemd/user path, so they keep working. The files change whenever a deploy
+# checks out a new commit: re-run the matching install recipe (or daemon-reload) after a
+# deploy that edits a unit.
+_unit-link +units:
     #!/usr/bin/env bash
     set -euo pipefail
     unit_dir="$HOME/.config/systemd/user"
     mkdir -p "$unit_dir"
-    cp deploy/systemd/craig-sync.service deploy/systemd/craig-sync.timer "$unit_dir/"
+    for name in {{units}}; do
+      src="{{deploy_root}}/deploy/systemd/$name"
+      dst="$unit_dir/$name"
+      [ -f "$src" ] || { echo "unit-link: $src missing — deploy a commit that has it first (just deploy)" >&2; exit 1; }
+      if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then continue; fi
+      if [ -e "$dst" ] || [ -L "$dst" ]; then rm -f "$dst"; echo "unit-link: replaced old $dst"; fi
+      systemctl --user link "$src"
+    done
     systemctl --user daemon-reload
-    systemctl --user enable --now craig-sync.timer
-    echo "installed. timer schedule:"; systemctl --user list-timers craig-sync.timer --no-pager
 
 # Commit + push new linguist transcripts/data (the pipeline's tracked source-of-record).
 # The Dagster run workers write apps/linguist/{transcripts,data} to the host via bind mounts,
@@ -262,26 +284,23 @@ linguist-commit-timer-install:
 # Install the stack-wide Discord alerting (idempotent; re-run after editing any unit).
 # Three pieces: (1) the templated OnFailure handler astra-alert@.service — Class C, pages
 # when a monitored unit FAILS; (2) the astra-watchdog.{service,timer} — Class B liveness
-# (Drive FUSE mount + pipeline timers armed), every 15 min, debounced; (3) RE-copies the
-# craig-sync + linguist-commit services that now carry `OnFailure=astra-alert@%n.service`.
-# alert-notify.sh stays in the repo — the units ExecStart its absolute path (no copy). The
-# webhook is decrypted from SOPS at runtime (Class A — SigNoz's own Discord channel/rules —
-# lives in SigNoz, not here). Needs lingering for the user (already on for this deploy).
-alert-install:
+# (Drive FUSE mount + pipeline timers armed), every 15 min, debounced; (3) re-installs the
+# craig-sync + linguist-commit services that carry `OnFailure=astra-alert@%n.service`.
+# The alerting, watchdog and craig-sync units are LINKED from the deploy checkout (they
+# ExecStart its alert-notify.sh, so each deploy updates the script); linguist-commit.service
+# is still COPIED from this tree (it commits where the pipeline writes; moves in 0037 Phase 1
+# item 2). The webhook is decrypted from SOPS at runtime (Class A — SigNoz's own Discord
+# channel/rules — lives in SigNoz, not here). Needs lingering for the user (already on).
+alert-install: (_unit-link "astra-alert@.service" "astra-watchdog.service" "astra-watchdog.timer" "craig-sync.service")
     #!/usr/bin/env bash
     set -euo pipefail
     cd /ruby/data/experiments/astra
-    chmod +x deploy/systemd/alert-notify.sh
     unit_dir="$HOME/.config/systemd/user"
-    mkdir -p "$unit_dir"
-    # New alerting units + the two edited monitored services (install copies verbatim).
-    cp deploy/systemd/astra-alert@.service \
-       deploy/systemd/astra-watchdog.service deploy/systemd/astra-watchdog.timer \
-       deploy/systemd/craig-sync.service deploy/systemd/linguist-commit.service "$unit_dir/"
+    cp deploy/systemd/linguist-commit.service "$unit_dir/"
     systemctl --user daemon-reload
     systemctl --user enable --now astra-watchdog.timer
     echo "installed. watchdog schedule:"; systemctl --user list-timers astra-watchdog.timer --no-pager
-    echo "smoke-test a Discord page with: deploy/systemd/alert-notify.sh test"
+    echo "smoke-test a Discord page with: {{deploy_root}}/deploy/systemd/alert-notify.sh test"
     echo "one-time root step for vanished-mount auto-remediation: just alert-sudoers-install"
 
 # One-time ROOT step: install the NOPASSWD sudoers drop-ins the watchdog's
@@ -310,18 +329,13 @@ alert-sudoers-install:
 # snapshot), and the SigNoz alert rules. Keeps 14 daily + 8 weekly snapshots. Everything
 # lives in deploy/systemd/astra-backup.sh (header = what, why, retention, manual restore).
 
-# Idempotent; re-run after editing the units. The script stays in the repo (the unit
-# ExecStarts its absolute path), and a failed run pages through astra-alert@ (Class C).
+# Idempotent; re-run after editing the units. The units are linked from the deploy checkout
+# (the service ExecStarts its astra-backup.sh), and a failed run pages through astra-alert@
+# (Class C).
 # Install + enable the nightly backup timer (03:30, Persistent).
-backup-install:
+backup-install: (_unit-link "astra-backup.service" "astra-backup.timer")
     #!/usr/bin/env bash
     set -euo pipefail
-    cd /ruby/data/experiments/astra
-    chmod +x deploy/systemd/astra-backup.sh
-    unit_dir="$HOME/.config/systemd/user"
-    mkdir -p "$unit_dir"
-    cp deploy/systemd/astra-backup.service deploy/systemd/astra-backup.timer "$unit_dir/"
-    systemctl --user daemon-reload
     systemctl --user enable --now astra-backup.timer
     systemctl --user list-timers astra-backup.timer --no-pager
 

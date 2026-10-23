@@ -8,7 +8,7 @@ OnFailure=astra-alert@%n.service
 
 [Service]
 Type=oneshot
-WorkingDirectory=/ruby/data/experiments/astra
+WorkingDirectory=/ruby/data/astra-deploy
 # Probes the Drive FUSE front door (bounded — never wedges) and checks craig-sync.timer +
 # linguist-commit.timer are active AND armed; debounced so it pages only on state changes.
 # A bad reading is re-confirmed over a short window before paging (the watchdog runs on the
@@ -16,5 +16,5 @@ WorkingDirectory=/ruby/data/experiments/astra
 # wedged mount is auto-remediated (abort FUSE conn + lazy unmount + wait for gdrive.service
 # to remount + re-probe) — worst case ~90s confirm + ~80s remediation, so the timeout
 # leaves comfortable margin.
-ExecStart=/ruby/data/experiments/astra/deploy/systemd/alert-notify.sh watchdog
+ExecStart=/ruby/data/astra-deploy/deploy/systemd/alert-notify.sh watchdog
 TimeoutStartSec=360

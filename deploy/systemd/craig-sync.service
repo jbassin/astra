@@ -7,7 +7,9 @@ OnFailure=astra-alert@%n.service
 
 [Service]
 Type=oneshot
-WorkingDirectory=/ruby/data/experiments/astra
+# Runs the recipe from the deploy checkout (0037 OPS-3); the recipe writes to the absolute
+# data path (/ruby/data/experiments/astra/apps/scribe/incoming), not to this checkout.
+WorkingDirectory=/ruby/data/astra-deploy
 # `just` lives in the user's cargo bin; the recipe copies new *.zip from the Drive
 # fuse mount into apps/scribe/incoming, where the containerised craig_drop_sensor sees
 # them (Docker can't bind-mount the FUSE mount, so the host bridges it).

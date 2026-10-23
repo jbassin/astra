@@ -19,7 +19,8 @@
 #   postgres/<svc>.meta.json     image, server version, db, user, table/row totals
 #   signoz/rules/<slug>.json     SigNoz alert rules (rules ONLY — notification channels hold
 #                                the Discord webhook secret and are deliberately skipped)
-#   state/<repo-relative path>   rsync copies of the irreplaceable state dirs (STATE_DIRS),
+#   state/<path>                 rsync copies of the irreplaceable state dirs (STATE_DIRS,
+#                                paths relative to DATA_ROOT, the live data tree),
 #                                hardlinked (--link-dest) against the previous snapshot, so
 #                                an unchanged 14 GB music library costs nothing per night
 #   manifest.json                written last; a snapshot without it is never trusted
@@ -49,7 +50,11 @@
 set -Eeuo pipefail
 shopt -s nullglob
 
-REPO="${ASTRA_REPO:-/ruby/data/experiments/astra}"
+# Two roots: CODE_ROOT is the checkout this script runs from (the deploy checkout,
+# /ruby/data/astra-deploy, when the unit runs it), used only for the committed alert rules;
+# DATA_ROOT is where the live state lives (still the developer tree until 0037 Phase 1 item 2).
+CODE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)"
+DATA_ROOT="${ASTRA_DATA_ROOT:-/ruby/data/experiments/astra}"
 BACKUP_ROOT="${ASTRA_BACKUP_ROOT:-/ruby/data/plex/data/astra-backups}"
 # The mount the backup root must live on. If the sda disk is not mounted, its mountpoint
 # is a plain directory on the nvme — writing there would put the "backup" on the same
@@ -68,8 +73,8 @@ SIGNOZ_CONTAINER="${ASTRA_BACKUP_SIGNOZ_CONTAINER:-signoz}"
 # socket auth inside the container is trust, so no credential is needed or stored here.
 PG_CONTAINERS=(astra-dagster-postgres astra-weal-postgres astra-orator-postgres)
 
-# Irreplaceable state, repo-relative. Default-include: everything under artifacts/ is copied
-# unless excluded below with a reason, so a new state dir is backed up without an edit here.
+# Irreplaceable state, relative to DATA_ROOT. Default-include: everything under artifacts/ is
+# copied unless excluded below with a reason, so a new state dir is backed up without an edit here.
 STATE_DIRS=(
   artifacts                         # bind-mount state for the live stack (see excludes)
   apps/assay/review-ui/state        # scriptorium review decisions + comments (human work)
@@ -258,7 +263,7 @@ backup_state() {
   local -a args excl
   : >"$dest/.state.jsonl"
   for rel in "${STATE_DIRS[@]}"; do
-    src="$REPO/$rel"
+    src="$DATA_ROOT/$rel"
     out="$dest/state/$rel"
     [ -d "$src" ] || die "state dir $src is missing"
     mkdir -p "$out"
@@ -350,7 +355,7 @@ cmd_run() {
 
   rules="$(export_rules "$RUN_TMP/signoz/rules")"
   log "signoz: $rules alert rule(s) exported"
-  repo_rules="$REPO/deploy/signoz/rules"
+  repo_rules="$CODE_ROOT/deploy/signoz/rules"
   if [ -d "$repo_rules" ] && ! diff -rq "$repo_rules" "$RUN_TMP/signoz/rules" >/dev/null 2>&1; then
     log "warning: live SigNoz alert rules differ from deploy/signoz/rules in git — refresh with: just signoz-rules-export"
   fi
@@ -485,7 +490,7 @@ rt_state() {
   want="$(jq -r --arg p "$rel" '.state[] | select(.path == $p) | .files' "$snapdir/manifest.json")"
   mapfile -t ex < <(jq -r --arg p "$rel" '.state[] | select(.path == $p) | .excludes[] | "--exclude=" + .' \
     "$snapdir/manifest.json")
-  src="$REPO/$rel"
+  src="$DATA_ROOT/$rel"
   snap="$snapdir/state/$rel"
   if [ ! -d "$snap" ] || [ ! -d "$src" ]; then
     rt_fail "state $rel: snapshot copy or source directory is missing"
