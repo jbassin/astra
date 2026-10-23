@@ -4,10 +4,9 @@ dist/
 # (the unanchored pattern above silently swallowed it — 0032 S4 merge)
 !libs/rust/weal-engine/src/dist/
 
-# Runtime artifacts — the single bind-mount root for state that used to live in named
-# Docker volumes (audio + Postgres data). Created/owned by the host (uid 1000) so the
-# containers (now run as 1000:1000) write host-owned files; never committed. See the
-# `artifacts-init` justfile recipe and deploy/docker-compose.yml.
+# Developer scratch (research notes, old logs). Runtime state no longer lives here: since
+# 0037 item 2c all of it is under the data root /ruby/data/astra-state (config.kdl
+# data.root), outside every checkout.
 /artifacts/
 
 # Storybook static build (gothic's dev/preview surface; regenerated, not source)
@@ -71,24 +70,16 @@ apps/akasha-backend/migrate/convert-report.json
 /apps/heartwood-backend/agent-runs.jsonl
 /ontology/ontology-entity/entity.kdl
 
-# scribe runtime data — Craig zips (incoming/) + extracted audio.mp3/script.json
-# (data/saved/{date}/); transient pipeline I/O on this deploy, not source.
+# The old in-checkout locations of runtime data (scribe recordings and output, the codex
+# corpus, linguist script state, the mouthpiece episodes). That data now lives under the
+# data root (config.kdl data.root, 0037 item 2c); these stay ignored so a checkout that
+# still holds a leftover copy never stages it.
 apps/scribe/incoming/
 apps/scribe/data/
-
-# codex runtime data — the fetched PF2e corpus (foundryvtt/pf2e packs + AoN ES
-# docs); build-time ingest output, not source, and re-fetchable.
+apps/scribe/tmp/
 apps/codex/data/
-
-# Pipeline output dirs bind-mounted into the Dagster services (deploy/docker-compose).
-# Keep the dir (a .gitkeep so the bind-mount source exists on clone), ignore the live
-# pipeline writes.
-apps/scribe/tmp/*
-!apps/scribe/tmp/.gitkeep
-apps/linguist/script/*
-!apps/linguist/script/.gitkeep
-apps/mouthpiece-backend/episodes/*
-!apps/mouthpiece-backend/episodes/.gitkeep
+apps/linguist/script/
+apps/mouthpiece-backend/episodes/
 
 # Book references — keep the .tex/.md sources, not scratch-rendered PDFs
 # (re-exportable; vol1 was Homebrewery, vol2 is `uv run assay export-book`'s

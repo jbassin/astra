@@ -83,8 +83,9 @@
 
 # ======================= Re-deny inside the re-included trees =======================
 
-# Pipeline runtime data. All of it is bind-mounted into the Dagster services at run time
-# (deploy/docker-compose.yml `x-dagster-volumes`), so an image copy is dead weight.
+# The OLD in-tree locations of the pipeline's runtime data. It lives under the data root
+# now (config.kdl data.root, 0037 item 2c) and is bind-mounted into the Dagster services;
+# kept denied so a leftover copy in a checkout never enters an image.
 apps/scribe/incoming
 apps/scribe/data
 apps/scribe/tmp
