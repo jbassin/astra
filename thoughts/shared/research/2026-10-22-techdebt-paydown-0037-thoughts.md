@@ -253,9 +253,14 @@ done", which replaces the three gates and octo). Remaining, in order:
    | ruff `S603`, `S607`, `RUF001-003`, `TRY003` | off | Subprocess by name; prompt punctuation; inline messages |
    | clippy `-D unwrap_used` | not added | No Rust lane; add to the recorded local gate |
    | Conventions as rules (`getMeter` export, Dagster future import, env reads) | not done | Theme J; needs `no-restricted-imports`/`TID251` |
-5. Docs skeleton: `docs/` tree, ADR seed set (including the accepted risks), backlog seeded from
-   memory, RESUME, specs, section 2 and the follow-ups below, `docs/now.md`, the rest of the
-   `CLAUDE.md` rewrite, a memory size check, and rewritten `load`/`save` skills.
+5. ✅ (session 3, agent branch; awaiting review and merge) Docs skeleton: `docs/` (README,
+   architecture, development, runbook, now, backlog), 43 ADRs in `docs/adr/` (including the
+   accepted risks), the backlog seeded from memory, RESUME, specs and the follow-ups below; RESUME,
+   the built specs and plans, the finished research and 54 memories moved to `thoughts/archive/`;
+   `MEMORY.md` 100,791 bytes / 68 entries to under 2 KB / 14 entries, with subsystem traps moved to
+   app READMEs; `just docs-check` (in `check`, `ci` and a CI job) enforces the index budget and doc
+   links; `CLAUDE.md`, `CONTRIBUTING.md` and the `load`/`save` skills rewritten around `docs/`.
+   The open follow-ups below now live in `docs/backlog.md`.
 
 **Follow-ups found in session 2 (fold into the backlog):**
 - The watchdog doesn't check `astra-backup.timer` or snapshot age, and the restore test isn't
@@ -285,8 +290,7 @@ done", which replaces the three gates and octo). Remaining, in order:
 **Context for the next session:** the review page is
 https://claude.ai/artifact/PfwtSxfVtGGKnyFQ54RREH (Josh's verdicts live in its `reviews` store).
 The 13 lane reports with full evidence are in `artifacts/research/techdebt-0037/lanes/`.
-Start a session by reading this section, not `RESUME.md` (235 KB and stale since 2026-08-09; the
-`load` skill still reads it first until the skills are rewritten). At the end of a session,
+Start a session with `docs/now.md` (the `load` skill reads it). At the end of a session,
 remove finished agent worktrees under `.claude/worktrees/` (`git worktree remove --force --force`,
 since the agent tool leaves them locked) and delete their `worktree-agent-*` branches once their
 commits are on `main`.
@@ -937,7 +941,7 @@ What "gold standard" means here, concretely:
 ## 5. Proposed plan
 
 Phase boundaries follow dependencies, not effort. Phase 2 tracks can run in parallel worktrees using
-the existing parallel-track pattern (`thoughts/shared/memory/parallel-worktree-tracks.md`).
+the existing parallel-track pattern (`thoughts/archive/memory/parallel-worktree-tracks.md`).
 
 ### Phase 0: stop the bleeding (about 3 days)
 

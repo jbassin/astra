@@ -44,7 +44,7 @@
 #             developer-tree layout: state/artifacts/audio/orator/, state/apps/...)
 #   rules     re-create each latest/signoz/rules/*.json with the signoz_create_alert MCP
 #             tool (or POST /api/v1/rules); the discord-ops channel is re-created from the
-#             SOPS webhook (thoughts/shared/memory/astra-alerting-setup.md)
+#             SOPS webhook (docs/runbook.md, "Restore from backup")
 #
 # Failure paging: astra-backup.service has OnFailure=astra-alert@%n.service (Class C,
 # debounced per unit by alert-notify.sh). Unlike the alerter, this script uses `set -e`:
