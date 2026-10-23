@@ -203,9 +203,18 @@ done", which replaces the three gates and octo). Remaining, in order:
      dev code against live data (use `just -f /ruby/data/astra-deploy/justfile …`). Post-move backup
      `2026-10-23T025036Z` (53 GB, full copy) passed its restore test; same-day retention pruned
      the pre-move snapshot. The SMART alert rule fired for all three disks on the exporter
-     restart (one sub-1 sample, `at_least_once`): make it require a sustained window.
-3. Developer entry point: `just bootstrap/check/fix/test/ci/dev`, `mise.toml`, `.python-version`
-   (3.12 everywhere), pytest `importlib` mode.
+     restart (one sub-1 sample, `at_least_once`); fixed in `dd29175a` (`all_the_times` over 15m).
+3. ✅ (session 3, through `9f9590ea`, deployed) Developer entry point: `.python-version` 3.12
+   (the dev venv was 3.14; `requires-python` stays `>=3.12`, lock unchanged); `mise.toml` pins
+   the host tools (not yet activated in Josh's shell; `just bootstrap` runs `mise install`,
+   which installs real tools); `just bootstrap/check/fix/test/ci/dev` (a bare `just` now lists
+   recipes instead of deploying); CI jobs call the same-named `just` recipes; `just ci` = every
+   CI job but vellum visual regression (container-pinned goldens), commitlint included;
+   `.githooks/pre-push` runs `just ci`; pytest importlib mode. Found: git's `GIT_*` hook env
+   leaked into git-using tests (hooks now clear it); site-kit served nothing from under a
+   dot-folder (fixed via `send`'s `root`, independently reviewed safe; symlinks inside a served
+   dir are still followed, as before); pyenv shims now fail on bare `python3` inside the repo
+   until mise is active or pyenv has 3.12.
 4. Gate tightening: `erasableSyntaxOnly`, tsconfigs include scripts and server entries, the
    immediate ruff and oxlint rule sets, path overrides become inline disables, a staged-files
    pre-commit hook, `.claude/settings.json` deny rules (e.g. `git stash`).
@@ -219,15 +228,13 @@ done", which replaces the three gates and octo). Remaining, in order:
 - `.dockerignore` is a new literal registration list: a new COPY path or workspace member
   manifest must be added there, or that build fails with "not found". Retire it with the one
   parameterized Dockerfile (Phase 2 repo track).
-- site-kit's file server refuses any path containing a dot-folder, so the codex guards 404 every
-  asset when run from `.claude/worktrees/` (agents use a symlink).
+- ✅ (item 3) site-kit's file server refused any path containing a dot-folder.
 - Without `CODEX_CORPUS_ROOT`, a worktree reads the main checkout's real corpus, because
   `codex.data-path` in `config.kdl` is absolute (the corpus-root injection item in the codex
   track).
 - weal: skip a bad existing save at load time instead of breaking every roll (weal track); a
   per-row `run` at boot is cheap except for saves with large distributions.
-- `CONTRIBUTING.md`'s vp prose (the toolchain and gotchas sections) still describes vp as the
-  orchestrator; rewrite with the Phase 1 docs.
+- ✅ (item 3) `CONTRIBUTING.md`'s vp prose.
 - Left from the dependency pass: `opentelemetry-api` 1.42.1 (medium, `tracestate` parsing) is
   fixed only in 1.45.1, three minors up across breaking logs-API changes that `astra-observe`'s
   `LoggingHandler` use touches; do it as its own slice with a live SigNoz check. `diskcache`
