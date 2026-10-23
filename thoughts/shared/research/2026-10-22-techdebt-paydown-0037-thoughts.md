@@ -186,9 +186,24 @@ done", which replaces the three gates and octo). Remaining, in order:
      `defs.kdl`/`being.kdl` change in the code repo (run `astra-ontology-entity-seed --check`
      from the watchdog); `heartwood-revert` can't revert sessions published before the snapshot
      commit; a redeploy now ships the clone's local HEAD even when its push failed (pages).
-   - [ ] 2c. Move all runtime data to `/ruby/data/astra-state/` (one downtime window, backup
-     first), point compose, config, justfile, backup/watchdog and the `api.akasha` edge stanza at
-     it, move linguist-commit and heartwood-request units to the deploy checkout.
+   - [x] 2c (`2b626625`, `af0d9e41`; migrated and deployed live 2026-10-23 ~02:50Z). All runtime
+     data lives under `data.root` `/ruby/data/astra-state` (flat per-service dirs; the layout is
+     in the `config.kdl` `data` comment and deploy.sh `init_artifacts`); no container mounts the
+     dev tree; every systemd unit is linked from the deploy checkout; deploy.sh syncs the deploy
+     checkout's venv and vellum-lang node deps (`--host-tooling`); the backup covers every
+     top-level data dir including the astra-data clone. Verified: all sites 200, audio 206, the
+     three public counts unchanged (97/456/26), Postgres row counts ≥ the pre-move snapshot
+     `2026-10-23T023857Z`, codex on the real corpus, each bot run once. The 18 episode manifests'
+     absolute clip paths were rewritten to the new root during the move. Follow-ups (independent
+     review): `publish_snapshot` should refuse a missing corpus dir or a catalog smaller than the
+     committed one; a bot's `just deploy` re-syncs the venv under a running heartwood agent (take
+     the git-publish lock in deploy.sh, or accept); plain `uv run` in the recipes could rewrite a
+     stale `uv.lock` and make the deploy checkout dirty (use `--frozen`); store episode clip
+     paths relative to the session dir; manual `heartwood-agent`/`-revert` from the dev tree run
+     dev code against live data (use `just -f /ruby/data/astra-deploy/justfile …`). Post-move backup
+     `2026-10-23T025036Z` (53 GB, full copy) passed its restore test; same-day retention pruned
+     the pre-move snapshot. The SMART alert rule fired for all three disks on the exporter
+     restart (one sub-1 sample, `at_least_once`): make it require a sustained window.
 3. Developer entry point: `just bootstrap/check/fix/test/ci/dev`, `mise.toml`, `.python-version`
    (3.12 everywhere), pytest `importlib` mode.
 4. Gate tightening: `erasableSyntaxOnly`, tsconfigs include scripts and server entries, the
