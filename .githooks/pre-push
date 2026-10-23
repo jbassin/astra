@@ -12,6 +12,10 @@ if ! command -v just >/dev/null 2>&1; then
   exit 1
 fi
 
+# git runs hooks with GIT_DIR (and friends) exported, which points every `git -C <tmpdir>`
+# a test runs back at this repo. Clear them; git finds the repo from the cwd as usual.
+for var in $(env | sed -n 's/^\(GIT_[A-Z_]*\)=.*/\1/p'); do unset "$var"; done
+
 # git feeds the pushed refs on stdin; `just ci` doesn't read them.
 if ! just ci </dev/null; then
   echo "" >&2
