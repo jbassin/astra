@@ -219,7 +219,7 @@ done", which replaces the three gates and octo). Remaining, in order:
    immediate ruff and oxlint rule sets, path overrides become inline disables, a staged-files
    pre-commit hook, `.claude/settings.json` deny rules (e.g. `git stash`).
 
-   Built (session 3, agent branch; awaiting review and merge). Path exemptions now cover only
+   Built and merged (session 3). Path exemptions now cover only
    whole categories of file: oxlint went from 19 override blocks (49 globs, 3 dead) to 2 (scripts
    may use the console; tests may use `!` and async mocks without await); ruff gained 6
    category globs (tests: assert, fixture args, white-box access, temp paths, fake classes; CLI
