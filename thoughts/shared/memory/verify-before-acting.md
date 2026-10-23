@@ -1,35 +1,24 @@
 ---
 name: verify-before-acting
-description: before acting, check what already exists — prior art in the repo, the skill/command docs, the repo's conventions — don't reinvent or assume
+description: before acting, check what already exists (prior art, the skill or command docs, repo conventions); verify surprising results a second way
 metadata:
   type: feedback
 ---
 
-Before writing code, running a skill, or choosing a workflow, **investigate what
-already exists** instead of acting on a default or an assumption. Three concrete
-failures in one session traced to skipping this:
+Before writing code, running a skill or choosing a workflow, find out what already exists instead of
+acting on a default or an assumption.
 
-- **Reinvented existing logic.** Wrote a bespoke folder-index page-name helper when
-  the predecessor codebase already had one (`folderIndexName`). (Historical — that
-  migration is complete and the faerrin repo deleted; the surviving lesson is: for
-  any derivation/transform/algorithm, look for existing prior art — the nearest
-  already-built astra subsystem or lib — before writing new logic.)
-- **Ran a skill without reading it.** Invoked `octo:embrace` and proposed the wrong
-  execution (implement directly / external providers) because I hadn't read that its
-  **team mode dispatches to Claude subagents** ([[no-silent-scope-cuts]] is the sibling
-  lesson). Read a command/skill's own docs before running it.
-- **Ignored the repo's VC cadence.** Defaulted to "commit only when asked" despite the
-  git log (per-slice commits) and [[no-ci-monitoring]] showing commit-as-you-go +
-  push-on-chunk (now codified in CLAUDE.md "Development process").
+- Look for prior art: the nearest already-built astra app or library usually has the helper,
+  transform or pattern. Mirror it rather than writing a parallel one.
+- Read a skill's or command's own docs before running it.
+- When a convention is checkable in the repo (commit cadence, config single source, telemetry
+  wiring), check it.
+- Verify a surprising result ("identical", "missing", "0 rows") a second way before acting on it,
+  for example `git diff` plus one Python process that reads and compares the bytes itself.
 
-**Why:** astra has strong existing precedent (the per-subsystem patterns in
-scribe/linguist/akasha/strider, settled conventions). Acting before checking produces
-duplicated/divergent logic, wrong workflows, and broken process — and erodes trust
-faster than slow work does.
+**Why:** reinvented helpers drift from the originals, skills run without reading them did the wrong
+thing, and shell output once lied (the RTK hook, now removed). Acting before checking costs more
+trust than slow work.
 
-**How to apply:** before implementing, (1) check for an existing astra implementation
-and mirror the nearest already-built subsystem's structure; (2) read the relevant
-skill/command instructions before invoking; (3) when a convention is checkable in the
-repo (VC cadence, config single-source, telemetry wiring), check it rather than
-assume. Cite what you found. Default to "verify," not "guess." Related:
-[[telemetry-built-in]], [[config-single-source]].
+**How to apply:** cite what you found. Default to verify, not guess. Related:
+[[config-single-source]], [[telemetry-built-in]].

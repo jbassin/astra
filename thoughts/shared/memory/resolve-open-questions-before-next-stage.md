@@ -1,23 +1,17 @@
 ---
 name: resolve-open-questions-before-next-stage
-description: Never advance a dev stage (scope→spec→implement) with open questions; ask them one at a time as they arise while writing the doc
+description: settle Josh's real decisions before building on them; batch short ones in the question tool, ask in plain text when they need context
 metadata:
   type: feedback
 ---
 
-In astra's **Scope → Spec → Implement** process, **never move to the next stage while open questions
-remain** in the current doc. A scope doc must have zero unresolved questions before speccing; a spec
-must have zero before implementing.
+Don't start building on top of an open product, cost or stakeholder decision. Ask as soon as it
+arises, and record the answer in the plan.
 
-**Why:** unresolved decisions that get carried into the next stage become late rework or wrong baked-in
-assumptions. The user wants to make every genuinely-his call *before* it's locked, not discover it
-mid-implementation.
+**Why:** a decision carried forward unresolved becomes rework or a wrong assumption baked in.
+Josh wants to make his calls before they are locked.
 
-**How to apply:** while authoring a scope or spec doc, whenever decision points arise that are genuinely
-the user's to make, **stop and ask — batching up to 4 related decisions per `AskUserQuestion` call** (the
-tool supports up to 4 questions; group related ones, don't drip them one at a time). Record each answer
-in the doc (mark the open question RESOLVED). Only declare a doc ready for the next stage once it has no
-open/unresolved questions. Questions checkable
-against the repo are NOT user questions — verify those yourself first ([[verify-before-acting]]). This
-extends [[no-silent-scope-cuts]] (don't quietly defer scope) to: don't quietly *advance* past an
-unanswered question either. First applied while scoping heartwood (0020).
+**How to apply:** batch related short choices into one question-tool call (up to four). When a
+choice needs context, ask in plain text, because the question tool hides the text written before
+it ([ADR 0013](../../../docs/adr/0013-how-claude-asks-questions.md)). Questions the repo can answer
+are not questions: check them yourself ([[verify-before-acting]]).

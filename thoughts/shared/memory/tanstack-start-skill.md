@@ -1,26 +1,21 @@
 ---
 name: tanstack-start-skill
-description: when working on astra's TanStack Start frontends (strider + 0011-0013), read the package's bundled SKILL.md FIRST — it's authoritative for the pinned version's patterns
+description: before changing a TanStack Start frontend, read the site-kit and gothic READMEs and the TanStack skills bundled with the installed packages
 metadata:
   type: reference
 ---
 
-astra's frontends are **TanStack Start** (`@tanstack/react-start`) apps. The package ships a
-Claude skill doc — read it before adding any server-side behavior:
+astra's SSR frontends (strider, akasha-frontend, mouthpiece-frontend, vellum-frontend, harrow,
+ledger, codex) are TanStack Start apps. Before adding server-side behaviour or a new frontend:
 
-`apps/strider/node_modules/@tanstack/react-start/skills/react-start/SKILL.md`
+1. Read `libs/ts/site-kit/README.md` (resolve hook, `--configLoader runner`, SSR smoke traps) and
+   `libs/ts/gothic/README.md` (theme import, `@layer base` reset, vellum block kinds).
+2. Read the skills shipped with the installed version; they beat online docs and memory:
+   `apps/<app>/node_modules/@tanstack/react-start/skills/react-start/SKILL.md`, and the start-core
+   sub-skills (server-functions, server-routes, middleware, execution-model) under
+   `node_modules/.pnpm/@tanstack+start-client-core@*/node_modules/@tanstack/start-client-core/skills/start-core/`.
 
-It documents the canonical patterns for the **pinned** version (react-start **1.168**), which
-differs from the current online docs — verify against the installed package's exports, not memory.
-
-Load-bearing fact: the server-side primitive is **`createServerFn`** (`.validator().handler()`;
-called via RPC, POSTs to `/_serverFn/*`). This version has **no file-based server/API routes** —
-`createServerFileRoute` / `createAPIFileRoute` are not exported here (a newer-version example
-mentions them), and `createFileRoute` is **page-routes only**. TanStack Start *owns* POST (that's
-how it routes server functions), so a vite/connect middleware never sees a `POST /your-path` —
-don't reach for middleware or a custom server route; use `createServerFn`.
-
-**Why:** porting strider's editor write, I reinvented it as a vite middleware + a `server.ts`
-POST branch before the SKILL.md/exports showed `createServerFn` was the one right answer — a
-wasted detour. **How to apply:** any new server-side endpoint in a frontend → `createServerFn`;
-consult the bundled SKILL.md for the version's idioms first. [[verify-before-acting]].
+Loaders are isomorphic. astra puts server-only work in `createServerFn`, defined in app source (the
+vite plugin does not transform server functions in a workspace lib). Server routes
+(`createFileRoute(...)({ server: { handlers } })`) exist in the installed start-core, but astra has
+not used one yet; read the server-routes skill before adding the first.
