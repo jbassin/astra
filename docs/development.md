@@ -262,8 +262,9 @@ is still hand-maintained:
   `vite build` rewrite it; `just routes-gen` writes the same bytes without a server (run it after
   adding or renaming a route), and `just routes-check` (in `just check` and CI) fails when one is
   stale.
-- The SSR smoke tests of ledger, harrow, strider and akasha read whatever `dist/` exists; after a
-  dependency change run the app's build first.
+- The SSR smoke tests of ledger and harrow read whatever `dist/` exists; after a dependency
+  change run the app's build first. The smokes built on site-kit's `describeSsrSmoke` (strider,
+  akasha, mouthpiece) and codex's rebuild a stale `dist/` themselves.
 - SSR HTML contains UTF-8 glyphs, so plain `grep` may treat it as binary; use `grep -a`.
 - A Postgres schema change is a new numbered file in the app's `migrations/` directory
   (`libs/ts/pg-migrate`). Never edit an applied one: the app then refuses to start. A store

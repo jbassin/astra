@@ -20,7 +20,6 @@
     "@astra/site-kit": "workspace:*",
     "@astra/vellum-lang": "workspace:*",
     "@floating-ui/dom": "catalog:",
-    "@fontsource/ibm-plex-mono": "catalog:",
     "@opentelemetry/api": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",
@@ -35,7 +34,6 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "catalog:",
     "@testing-library/dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/d3-drag": "^3.0.7",
@@ -44,7 +42,6 @@
     "@types/d3-zoom": "^3.0.8",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@vitejs/plugin-react": "catalog:",
     "gray-matter": "catalog:",
     "jsdom": "catalog:",
     "pagefind": "catalog:",

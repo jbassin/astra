@@ -8,9 +8,11 @@ and replacing its domain — not by reinventing the wiring.
 
 The reusable spine lives in two shared libs so it is **not** re-copied per app:
 
-- **`@astra/site-kit`** — `createSsrServer` (the srvx + `send` SSR entry on Node 24), `startRum` (`/web`),
-  the vite plugins `contentWatchPlugin`/`gothicFontsPlugin`/`ssrExternalsPlugin`, `generateRouteTree`, and
-  `loadSiteConfig` (a node-safe config read for `vite.config`).
+- **`@astra/site-kit`** — the frontend preset: the whole `vite.config.ts` (`/vite`) and
+  `vitest.config.ts` (`/vitest`), the router options (`/router`), the root document with RUM
+  (`/document`), the fonts and theme CSS (`/theme`) and the SSR smoke test (`/ssrSmoke`); plus
+  `createSsrServer` (the srvx + `send` SSR entry on Node 24) and `generateRouteTree`. See its
+  README.
 - **`@astra/content-build`** — the generic markdown→generated-modules pipeline
   primitives (`markdownToHtml`, `parseFrontmatter`, `emitModule`, …).
 
@@ -19,14 +21,17 @@ The reusable spine lives in two shared libs so it is **not** re-copied per app:
 ```
 apps/<domain>/web/
   server.ts          SHELL  thin createSsrServer caller (config-driven)
-  vite.config.ts     SHELL  site-kit plugins + dev port from config.kdl
+  vite.config.ts     SHELL  defineSiteConfig({ root, generated }) from @astra/site-kit/vite
+  vitest.config.ts   SHELL  defineSiteVitestConfig({ root }) from @astra/site-kit/vitest
   scripts/
     build-content.ts  DOMAIN  registers this app's content sources
     writeLayer.ts     ~shell  generic guarded fs write (strider's editor uses it)
   src/
-    router.tsx        SHELL  getRouter() + error/not-found boundaries
-    routes/           MIXED  thin route files; bodies wire in domain (replace per app)
-    observe/          SHELL  rum.ts + rumConfig.ts (the per-app RUM seam)
+    router.tsx        SHELL  getRouter(): createRouter + siteRouterOptions({ notFound })
+    ssrSmoke.test.ts  SHELL  describeSsrSmoke({ appRoot, routes })
+    routes/           MIXED  thin route files; bodies wire in domain (replace per app);
+                             __root.tsx renders <SiteDocument> with siteHead()
+    observe/          SHELL  rumConfig.ts (the per-app RUM server function)
     components/        SHELL  ClientOnly, PixiHost, SiteHeader (a pattern — edit branding)
     lib/               SHELL  generic hooks: useIsMobile, useFocusTrap
     styles/, generated/ SHELL / content output (gitignored, regenerated)
@@ -44,9 +49,9 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
 
 1. **Scaffold** `apps/<domain>/web/` by copying strider's shell files: `server.ts`,
    `vite.config.ts`, `vitest.config.ts`, `tsconfig.json`, `scripts/`
-   (`writeLayer.ts` if you need an editor), `src/router.tsx`,
-   `src/observe/`, `src/components/{ClientOnly,PixiHost,SiteHeader}`, `src/lib/`,
-   `src/styles/`. Depend on `@astra/site-kit`, `@astra/content-build`, `@astra/gothic`,
+   (`writeLayer.ts` if you need an editor), `src/router.tsx`, `src/routes/__root.tsx`,
+   `src/ssrSmoke.test.ts`, `src/observe/`, `src/components/{ClientOnly,PixiHost,SiteHeader}`,
+   `src/lib/`, `src/styles/`, then edit their app-specific options. Depend on `@astra/site-kit`, `@astra/content-build`, `@astra/gothic`,
    `@astra/observe`, `@astra/config` (`workspace:*`).
 2. **Delete** `src/domain/` and `content/*`; add your own `src/domain/` + `content/`.
 3. **Register content sources** in `scripts/build-content.ts` via
