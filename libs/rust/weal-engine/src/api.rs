@@ -37,8 +37,11 @@
 use serde::Serialize;
 
 use crate::fuel::Fuel;
-use crate::interp::{Interp, RunError, run, save_scheme};
-use crate::lower::{Span, lower_root_spanned};
+use crate::interp::Interp;
+use crate::lower::Span;
+use crate::pipeline::{
+    CompileError, CompileStage, SaveError, SaveLoad, compile, fuel_for_budget, load_saves, lower,
+};
 use crate::plot::plot_png_base64;
 use crate::render::{
     Goodness, HEADLINE_MAX, RENDER_TEXT_MAX, Sampler, die_repr, dist_with, ellipsize, format_value,
@@ -252,34 +255,27 @@ pub fn evaluate(source: &str, saves_json: &str, seed: &[u8], budget: u32, mode: 
     }
 }
 
-/// Parse + type-check without executing (the boot path). Saves validate in
-/// order, each against the prelude + prior saves.
-fn check_mode(source: &str, saves: &[(String, String)]) -> String {
-    let mut schemes = Vec::new();
-    for (name, src) in saves {
-        match check_one(src, &schemes) {
-            Ok(scheme) => schemes.push((name.clone(), scheme)),
-            Err((message, span)) => {
-                return err_json(Stage::Prelude, message, span, Some(name.clone()));
-            }
-        }
-    }
-    let parsed = crate::parser::parse(source);
-    if let Some(e) = parsed.errors.first() {
-        return err_json(
-            Stage::Parse,
-            format!("parse error: {}", e.message),
-            Some(e.span),
-            None,
-        );
-    }
-    let lowered = lower_root_spanned(&parsed.syntax());
-    let (ast, spans) = match lowered {
-        Ok(x) => x,
-        Err(e) => return err_json(Stage::Parse, e.message, Some((0, source.len())), None),
+fn compile_err_json(e: CompileError) -> String {
+    let stage = match e.stage {
+        CompileStage::Parse => Stage::Parse,
+        CompileStage::Type => Stage::Type,
     };
-    if let Err(e) = crate::infer::check(&ast, &spans, &schemes) {
-        return err_json(Stage::Type, e.message, Some(e.span), None);
+    err_json(stage, e.message, Some(e.span), None)
+}
+
+fn save_err_json(e: SaveError) -> String {
+    err_json(Stage::Prelude, e.message, e.span, Some(e.name))
+}
+
+/// Parse + type-check without executing (the boot path). Saves validate in
+/// order, each against the prelude + prior saves, before the source.
+fn check_mode(source: &str, saves: &[(String, String)]) -> String {
+    let loaded = match load_saves(saves, SaveLoad::CheckOnly) {
+        Ok(loaded) => loaded,
+        Err(e) => return save_err_json(e),
+    };
+    if let Err(e) = compile(source, &loaded.schemes) {
+        return compile_err_json(e);
     }
     let payload = OkJson {
         ok: true,
@@ -291,53 +287,26 @@ fn check_mode(source: &str, saves: &[(String, String)]) -> String {
     serde_json::to_string(&payload).expect("ok payload serializes")
 }
 
-/// Parse+check ONE save source against the accumulated schemes; no
-/// evaluation.
-fn check_one(
-    src: &str,
-    schemes: &[(String, crate::types::Scheme)],
-) -> Result<crate::types::Scheme, (String, Option<Span>)> {
-    let parsed = crate::parser::parse(src);
-    if let Some(e) = parsed.errors.first() {
-        return Err((format!("parse error: {}", e.message), Some(e.span)));
-    }
-    let (ast, spans) =
-        lower_root_spanned(&parsed.syntax()).map_err(|e| (e.message, Some((0usize, src.len()))))?;
-    let (_core, ty) =
-        crate::infer::check(&ast, &spans, schemes).map_err(|e| (e.message, Some(e.span)))?;
-    Ok(save_scheme(&ty))
-}
-
+/// The full pipeline, then the render pass. The source parses and lowers
+/// BEFORE the saves load, so a source parse error wins over a failing save;
+/// it type-checks after them, against their schemes.
 fn run_mode(source: &str, saves: &[(String, String)], seed: &[u8], budget: u32) -> String {
-    // Pre-split the parse stage: `run` folds parse errors into its Check
-    // variant, but D32-11 distinguishes them.
-    let parsed = crate::parser::parse(source);
-    if let Some(e) = parsed.errors.first() {
-        return err_json(
-            Stage::Parse,
-            format!("parse error: {}", e.message),
-            Some(e.span),
-            None,
-        );
-    }
-    if let Err(e) = lower_root_spanned(&parsed.syntax()) {
-        return err_json(Stage::Parse, e.message, Some((0, source.len())), None);
-    }
-
-    let mut fuel = if budget == 0 {
-        Fuel::default()
-    } else {
-        Fuel::new(u64::from(budget))
+    let lowered = match lower(source) {
+        Ok(lowered) => lowered,
+        Err(e) => return compile_err_json(e),
     };
-    let out = match run(source, saves, &mut fuel) {
+    let loaded = match load_saves(saves, SaveLoad::Evaluate) {
+        Ok(loaded) => loaded,
+        Err(e) => return save_err_json(e),
+    };
+    let checked = match lowered.check(&loaded.schemes) {
+        Ok(checked) => checked,
+        Err(e) => return compile_err_json(e),
+    };
+    let mut fuel = fuel_for_budget(budget);
+    let out = match checked.eval(&loaded.env, &mut fuel) {
         Ok(out) => out,
-        Err(RunError::Check(e)) => return err_json(Stage::Type, e.message, Some(e.span), None),
-        Err(RunError::Save {
-            name,
-            message,
-            span,
-        }) => return err_json(Stage::Prelude, message, span, Some(name)),
-        Err(RunError::Eval(e)) => return eval_err_json(&e, None),
+        Err(e) => return eval_err_json(&e, None),
     };
 
     // Render pass: one sampler stream across all displays; a fresh fuel for

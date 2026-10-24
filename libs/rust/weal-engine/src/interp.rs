@@ -43,16 +43,17 @@
 
 use crate::ast::{BinOp, CmpOp, Expr, MatchPat, Pattern};
 use crate::fuel::Fuel;
-use crate::infer::{CoreExpr, TypeError, check};
-use crate::lower::{Span, SpanTree, lower_root_spanned};
+use crate::infer::CoreExpr;
+use crate::lower::{Span, SpanTree};
 use crate::prelude;
-use crate::types::Scheme;
 use crate::value::{
     BuiltinValue, Cmd, DieTree, DisplayItem, EvalError, Keep, PoolTree, Value, dec_from_text,
 };
 use num_bigint::BigInt;
 use std::collections::HashMap;
 use std::rc::Rc;
+
+pub use crate::pipeline::{RunError, RunOutput, run};
 
 // ---------------------------------------------------------------------------
 // Spanned core expressions
@@ -1099,117 +1100,6 @@ pub fn interp(core: &CoreExpr, env: &Env, fuel: &mut Fuel) -> Result<(Value, Cmd
     let mut it = Interp::new(fuel);
     let value = it.eval(&sexpr, env)?;
     Ok((value, it.into_cmd()))
-}
-
-/// The result of [`run`]: the final value plus the effect accumulator with
-/// the D32-7 display rules applied (final displayable value appended last).
-/// Displays carry [`DieTree`]s, never rolled numbers — sampling is S5's.
-#[derive(Debug, Clone, PartialEq)]
-pub struct RunOutput {
-    pub value: Value,
-    pub cmd: Cmd,
-}
-
-/// A [`run`] failure. `Check` covers parse + type errors (the wasm API
-/// splits stages at S5); `Save` is a failing SAVES entry (D32-11
-/// `stage:"prelude"` — `span` points into THAT save's source); `Eval`
-/// carries the eval/fuel kind.
-#[derive(Debug, Clone, PartialEq)]
-pub enum RunError {
-    Check(TypeError),
-    Save {
-        name: String,
-        message: String,
-        span: Option<Span>,
-    },
-    Eval(EvalError),
-}
-
-fn compile(source: &str, saves_env: &[(String, Scheme)]) -> Result<SExpr, TypeError> {
-    let parsed = crate::parser::parse(source);
-    if let Some(e) = parsed.errors.first() {
-        return Err(TypeError {
-            message: format!("parse error: {}", e.message),
-            span: e.span,
-        });
-    }
-    let (ast, spans) = lower_root_spanned(&parsed.syntax()).map_err(|e| TypeError {
-        message: e.message,
-        span: (0, source.len()),
-    })?;
-    let (core, _ty) = check(&ast, &spans, saves_env)?;
-    Ok(attach_spans(&core, &ast, &spans))
-}
-
-pub(crate) fn save_scheme(ty: &crate::types::Type) -> Scheme {
-    // NB: `ty` is the post-check zonked type — any deferred arith constraints
-    // were already solved (defaulted) by then, so quantifying without carrying
-    // `arith` is sound: a save's die-lifting pins at the save boundary.
-    let mut vars = Vec::new();
-    ty.free_vars(&mut vars);
-    Scheme {
-        vars,
-        constraints: Vec::new(),
-        arith: Vec::new(),
-        ty: ty.clone(),
-    }
-}
-
-/// Check + interpret + apply the D32-7 display rules — the API S5 wraps.
-///
-/// `saves` are `(name, source)` pairs applied in order: each is checked
-/// against the prelude + prior saves, then evaluated with a FRESH default
-/// fuel (saves are fuel-exempt per D32-11 — bounded by row count) and a
-/// discarded effect accumulator (a save's own `roll`/`plot` effects don't
-/// replay on every message). A failing save aborts with
-/// [`RunError::Save`].
-pub fn run(
-    source: &str,
-    saves: &[(String, String)],
-    fuel: &mut Fuel,
-) -> Result<RunOutput, RunError> {
-    let mut schemes: Vec<(String, Scheme)> = Vec::new();
-    let mut env = env_nil();
-    for (name, src) in saves {
-        let compiled = {
-            let parsed = crate::parser::parse(src);
-            if let Some(e) = parsed.errors.first() {
-                return Err(RunError::Save {
-                    name: name.clone(),
-                    message: format!("parse error: {}", e.message),
-                    span: Some(e.span),
-                });
-            }
-            let (ast, spans) =
-                lower_root_spanned(&parsed.syntax()).map_err(|e| RunError::Save {
-                    name: name.clone(),
-                    message: e.message,
-                    span: Some((0, src.len())),
-                })?;
-            let (core, ty) = check(&ast, &spans, &schemes).map_err(|e| RunError::Save {
-                name: name.clone(),
-                message: e.message,
-                span: Some(e.span),
-            })?;
-            (attach_spans(&core, &ast, &spans), ty)
-        };
-        let (sexpr, ty) = compiled;
-        let mut save_fuel = Fuel::default();
-        let mut it = Interp::new(&mut save_fuel);
-        let v = it.eval(&sexpr, &env).map_err(|e| RunError::Save {
-            name: name.clone(),
-            message: e.message,
-            span: e.span,
-        })?;
-        env = env_bind(&env, name.clone(), v);
-        schemes.push((name.clone(), save_scheme(&ty)));
-    }
-    let sexpr = compile(source, &schemes).map_err(RunError::Check)?;
-    let mut it = Interp::new(fuel);
-    let value = it.eval(&sexpr, &env).map_err(RunError::Eval)?;
-    let mut cmd = it.into_cmd();
-    append_display(&mut cmd, &value);
-    Ok(RunOutput { value, cmd })
 }
 
 // ---------------------------------------------------------------------------
