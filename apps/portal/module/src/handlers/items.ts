@@ -12,6 +12,7 @@ import {
 } from "@astra/portal-shared";
 
 import {
+  documentOwnership,
   itemAcBonus,
   itemBulk,
   itemDamage,
@@ -20,6 +21,8 @@ import {
   itemPrice,
   itemRarity,
   itemTraits,
+  OBSERVER_LEVEL,
+  packOwnershipLevel,
   partyMemberUuids as partyMemberUuidsOf,
   type Pf2eSource,
   PRICE_DENOMINATIONS,
@@ -27,14 +30,13 @@ import {
   sourceOf,
   sourceSystem,
 } from "../pf2e";
+import { buildCreatePayload, payloadSystem } from "./payloads";
 import { byRankThenName, DEFAULT_SEARCH_LIMIT, matchRank } from "./shared";
 import {
   auditLog,
   collectRuleWarnings,
   createChecked,
   createEmbeddedChecked,
-  resolveBasePayload,
-  withStamp,
   writeGate,
 } from "./writes";
 
@@ -49,25 +51,13 @@ async function handleCreateItem(rawParams: unknown): Promise<CreateItemResult> {
   try {
     writeGate(1);
 
-    const base = await resolveBasePayload(params.baseUuid, {
-      name: params.name,
-      system: params.system,
-      img: params.img,
+    const payload = await buildCreatePayload("create-item", params, {
+      extraFlags:
+        params.rulesSelections !== undefined
+          ? { pf2e: { rulesSelections: params.rulesSelections } }
+          : undefined,
     });
-    const payload: Record<string, unknown> = base ?? {
-      name: params.name,
-      type: params.type,
-      ...(params.system !== undefined ? { system: params.system } : {}),
-      ...(params.img !== undefined ? { img: params.img } : {}),
-    };
-    payload.flags = withStamp(
-      payload.flags,
-      "create-item",
-      params.rulesSelections !== undefined
-        ? { pf2e: { rulesSelections: params.rulesSelections } }
-        : undefined,
-    );
-    const sentSystem = payload.system as Record<string, unknown> | undefined;
+    const sentSystem = payloadSystem(payload);
 
     let created: FoundryDocumentLike;
     let warnings: string[] = [];
@@ -103,28 +93,12 @@ async function handleCreateItem(rawParams: unknown): Promise<CreateItemResult> {
   }
 }
 
-/** `CONST.DOCUMENT_OWNERSHIP_LEVELS` string-key values, verified `common/
- * constants.mjs:372-397`. World/embedded document `ownership` fields already carry
- * the NUMERIC form directly (see `resolveOwnerPlayer`'s `OWNER_LEVEL = 3` in `./party.ts`) —
- * only a compendium PACK's `ownership` config (`CompendiumCollection#CONFIG_FIELD`,
- * `client/documents/collections/compendium-collection.mjs:99-104`) stores these as
- * STRING level names, hence this lookup table. */
-const OWNERSHIP_LEVEL_VALUES: Record<string, number> = {
-  INHERIT: -1,
-  NONE: 0,
-  LIMITED: 1,
-  OBSERVER: 2,
-  OWNER: 3,
-};
-const OBSERVER_LEVEL = 2;
-
 /** D28-5's world/embedded-item visibility rule: `ownership.default >= OBSERVER(2)`
  * — the same numeric ownership field `resolveOwnerPlayer` (query-party) already
  * reads, just checked against a different threshold/purpose here. */
-function ownershipDefaultVisible(raw: Record<string, unknown>): boolean {
-  const ownership = raw.ownership as Record<string, unknown> | undefined;
-  const level = ownership?.default;
-  return typeof level === "number" && level >= OBSERVER_LEVEL;
+function ownershipDefaultVisible(src: Pf2eSource): boolean {
+  const level = documentOwnership(src).get("default");
+  return level !== undefined && level >= OBSERVER_LEVEL;
 }
 
 /** D28-5's compendium pack visibility gate (adversarial B2) — reads the pack's OWN
@@ -139,9 +113,7 @@ function ownershipDefaultVisible(raw: Record<string, unknown>): boolean {
  * harmlessly, but a missing/malformed PACK ownership config must never default to
  * "visible"). */
 function packVisibleToPlayers(pack: FoundryCompendiumCollection): boolean {
-  const level = pack.ownership?.PLAYER;
-  const numeric = typeof level === "string" ? (OWNERSHIP_LEVEL_VALUES[level] ?? -1) : -1;
-  return numeric >= OBSERVER_LEVEL;
+  return packOwnershipLevel(pack.ownership?.PLAYER) >= OBSERVER_LEVEL;
 }
 
 /** The set of every `type==="party"` actor's member uuids, across every party in
@@ -251,7 +223,7 @@ async function resolveItemForFetch(rawUuid: string): Promise<ResolvedItem> {
   // World item.
   const doc = await fromUuid(uuid);
   if (!doc || doc.documentName !== "Item") notFound();
-  if (!ownershipDefaultVisible((doc as FoundryDocumentLike).toObject())) notFound();
+  if (!ownershipDefaultVisible(sourceOf(doc as FoundryDocumentLike))) notFound();
   return { doc: doc as FoundryDocumentLike, provenance: "world" };
 }
 
@@ -302,7 +274,7 @@ async function searchItemsByName(name: string, limit: number | undefined): Promi
   for (const item of game.items.values()) {
     const rank = matchRank(item.name, needle);
     if (rank === undefined) continue;
-    if (!ownershipDefaultVisible(item.toObject())) continue;
+    if (!ownershipDefaultVisible(sourceOf(item))) continue;
     rows.push({
       uuid: item.uuid,
       id: item.id,

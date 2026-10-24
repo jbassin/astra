@@ -20,8 +20,9 @@ import {
 } from "@astra/portal-shared";
 
 import { isDerivedPcPath } from "../pf2e";
+import { portalStamp } from "./payloads";
 import { byRankThenName, DEFAULT_SEARCH_LIMIT, matchRank } from "./shared";
-import { auditLog, portalStamp, resolveFolderId, updateChecked, writeGate } from "./writes";
+import { auditLog, resolveFolderId, updateChecked, writeGate } from "./writes";
 
 /** `get-document` (spec 0023 S4) — `fromUuid` is the one forward-safe resolver that
  * works uniformly across compendium (`Compendium.<pack>.<type>.<id>`) and world

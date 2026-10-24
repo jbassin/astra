@@ -12,7 +12,8 @@ import {
 } from "@astra/portal-shared";
 
 import { MODULE_ID, SETTING_ALLOW_MACRO_EXECUTION } from "../constants";
-import { auditLog, createChecked, portalStamp, writeGate } from "./writes";
+import { portalStamp } from "./payloads";
+import { auditLog, createChecked, writeGate } from "./writes";
 
 /** `create-macro` (spec 0026 S2/D-6/D-9) — creates a script or chat macro; verified
  * (spec Verified footprint) that Foundry NEVER executes a macro on create, only via

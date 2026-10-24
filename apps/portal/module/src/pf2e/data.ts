@@ -43,6 +43,18 @@ export function sourceItems(src: Pf2eSource): Pf2eSource[] {
   return Array.isArray(src.items) ? (src.items as Pf2eSource[]) : [];
 }
 
+/** A document's `flags.pf2e` tree from one side. Flags are stored data that data prep leaves
+ * alone, so both sides agree; the brand still records which one a handler read. */
+export type Pf2eFlags<S extends Side = Side> = Readonly<Record<string, unknown>> & {
+  readonly [SIDE]: S;
+};
+
+/** The `flags.pf2e` tree of a live document (a `game.messages` chat message, say); empty
+ * when the document carries no pf2e flags (a plain `/roll`). */
+export function liveFlags(doc: { readonly flags?: Record<string, unknown> }): Pf2eFlags<"live"> {
+  return record(record(doc.flags).pf2e) as Pf2eFlags<"live">;
+}
+
 // --- shared readers (internal to the layer) ---------------------------------------------
 
 /** `value` when it is an object (arrays included, as a plain property read would), else an

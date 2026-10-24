@@ -13,14 +13,13 @@ import {
   BridgeError,
 } from "@astra/portal-shared";
 
+import { buildCreatePayload, payloadSystem, withStamp } from "./payloads";
 import {
   auditLog,
   collectRuleWarnings,
   createChecked,
   createEmbeddedChecked,
-  resolveBasePayload,
   resolveFolderId,
-  withStamp,
   writeGate,
 } from "./writes";
 
@@ -37,19 +36,7 @@ async function handleCreateActor(rawParams: unknown): Promise<CreateActorResult>
     writeGate(1 + itemCount);
     const folderId = resolveFolderId(params.folder, "Actor");
 
-    const base = await resolveBasePayload(params.baseUuid, {
-      name: params.name,
-      system: params.system,
-      img: params.img,
-    });
-    const payload: Record<string, unknown> = base ?? {
-      name: params.name,
-      type: params.type,
-      ...(params.system !== undefined ? { system: params.system } : {}),
-      ...(params.img !== undefined ? { img: params.img } : {}),
-    };
-    if (folderId !== undefined) payload.folder = folderId;
-    payload.flags = withStamp(payload.flags, "create-actor");
+    const payload = await buildCreatePayload("create-actor", params, { folder: folderId });
 
     const docClass = getDocumentClass("Actor");
     // Narrowing cast, not a lossy one: `getDocumentClass("Actor").create()` always
@@ -69,13 +56,8 @@ async function handleCreateActor(rawParams: unknown): Promise<CreateActorResult>
       itemUuids = createdItems.map((it) => it.uuid);
       createdItems.forEach((it, i) => {
         const source = params.items?.[i];
-        warnings.push(
-          ...collectRuleWarnings(
-            it.name,
-            source?.system as Record<string, unknown> | undefined,
-            it,
-          ),
-        );
+        const sentSystem = source !== undefined ? payloadSystem(source) : undefined;
+        warnings.push(...collectRuleWarnings(it.name, sentSystem, it));
       });
     }
 
