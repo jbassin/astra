@@ -1,0 +1,13 @@
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/")({
+  component: HomeComponent,
+});
+
+function HomeComponent() {
+  return (
+    <main className="wrap">
+      <h1>__title__</h1>
+    </main>
+  );
+}

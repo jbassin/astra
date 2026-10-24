@@ -1,0 +1,37 @@
+{
+  "name": "@astra/__name__",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --configLoader runner",
+    "build": "vite build --configLoader runner",
+    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import @astra/observe/register server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@astra/config": "workspace:*",
+    "@astra/gothic": "workspace:*",
+    "@astra/observe": "workspace:*",
+    "@astra/site-kit": "workspace:*",
+    "@opentelemetry/api": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-start": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "jsdom": "catalog:",
+    "tailwindcss": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "astra": {
+    "config": "__name__"
+  }
+}

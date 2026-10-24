@@ -6,22 +6,22 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
+import { loadKdl } from "@astra/config";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { mergeConfig, type UserConfig } from "vite";
 
-import { loadSiteConfig } from "./config";
+import { siteConfigFile } from "./config";
 import { ssrExternalsPlugin } from "./ssrExternals";
 import { contentWatchPlugin, gothicFontsPlugin } from "./vitePlugins";
 
-function camel(kebab: string): string {
-  return kebab.replaceAll(/-([a-z])/g, (_, c: string) => c.toUpperCase());
-}
-
 /**
  * The config.kdl block the app's `package.json` names in `"astra": { "config": "<namespace>" }`
- * (the same field `@astra/observe/register` reads the service name from).
+ * (the same field `@astra/observe/register` reads the service name from). It reads the block's
+ * two nodes straight from the KDL rather than through the generated schema, so a freshly
+ * scaffolded app builds before `just ontology-gen` adds its namespace (the server's own
+ * `loadConfig()` and the CI config tests still validate the block).
  */
 export function appConfigBlock(root: string): { port: number; serviceName: string } {
   const pkgPath = path.join(root, "package.json");
@@ -30,13 +30,14 @@ export function appConfigBlock(root: string): { port: number; serviceName: strin
   if (typeof namespace !== "string") {
     throw new Error(`${pkgPath} has no "astra": { "config": "<namespace>" } field`);
   }
-  const block = (loadSiteConfig(root) as Record<string, unknown>)[camel(namespace)] as
-    | { port?: unknown; serviceName?: unknown }
-    | undefined;
-  if (typeof block?.port !== "number" || typeof block.serviceName !== "string") {
+  const block = loadKdl(siteConfigFile(root)).children.find((n) => n.name === namespace);
+  const value = (key: string) => block?.children.find((n) => n.name === key)?.args[0];
+  const port = value("port");
+  const serviceName = value("service-name");
+  if (typeof port !== "number" || typeof serviceName !== "string") {
     throw new Error(`config.kdl block ${JSON.stringify(namespace)} has no port or service-name`);
   }
-  return { port: block.port, serviceName: block.serviceName };
+  return { port, serviceName };
 }
 
 export interface SiteConfigOptions {

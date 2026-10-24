@@ -181,6 +181,9 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
 
 ## Adding an app
 
+A new TanStack Start frontend starts from `just new-frontend <name>`: it writes the app and does
+steps 2 and 3 below for it (see `libs/ts/site-kit/README.md`). Everything else starts by hand.
+
 Put the app at `apps/<domain>/<role>/`: `py` for a Python app, `web` for a frontend, or a name
 for what it is (`bot`, `overlay`, `render`, `controller`). Its manifest (`pyproject.toml` or
 `package.json`) makes it a uv or pnpm member; no workspace list needs editing. uv rejects a
