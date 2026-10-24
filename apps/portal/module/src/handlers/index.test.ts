@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { SETTING_BRIDGE_USER_ID } from "../constants";
-import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./index";
+import { BridgeError, dispatchQuery, registerHandlers } from "./index";
 import { stubFoundry, teardownFoundry } from "./testSupport";
 describe("dispatchQuery", () => {
   beforeEach(() => {
@@ -28,8 +28,8 @@ describe("dispatchQuery", () => {
     stubFoundry(false);
     registerHandlers();
     const err = await dispatchQuery("portal.ping", undefined).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("not-gm");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("not-gm");
   });
 
   it("dispatchQuery rejects with a typed not-designated error when bridge-user-id doesn't match this session", async () => {
@@ -39,8 +39,8 @@ describe("dispatchQuery", () => {
     });
     registerHandlers();
     const err = await dispatchQuery("portal.ping", undefined).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("not-designated");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("not-designated");
   });
 
   it("dispatchQuery dispatches normally when bridge-user-id matches this session", async () => {
@@ -59,8 +59,8 @@ describe("dispatchQuery", () => {
   it("dispatchQuery rejects with a typed foundry-error for an unregistered method", async () => {
     // Deliberately skip registerHandlers() — CONFIG.queries stays empty.
     const err = await dispatchQuery("portal.no-such-method", undefined).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("foundry-error");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("foundry-error");
   });
 
   it("propagates a handler's own thrown error unwrapped (bridgeClient.ts wraps it)", async () => {
@@ -82,16 +82,16 @@ describe("a method this module build never registered", () => {
     const err = await dispatchQuery("portal.query-item", { name: "anything" }).catch(
       (e: unknown) => e,
     );
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("foundry-error");
-    expect((err as BridgeHandlerError).message).toContain("portal.query-item");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("foundry-error");
+    expect((err as BridgeError).message).toContain("portal.query-item");
   });
 
   it("same for query-rolls", async () => {
     stubFoundry(true);
     const err = await dispatchQuery("portal.query-rolls", {}).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("foundry-error");
-    expect((err as BridgeHandlerError).message).toContain("portal.query-rolls");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("foundry-error");
+    expect((err as BridgeError).message).toContain("portal.query-rolls");
   });
 });

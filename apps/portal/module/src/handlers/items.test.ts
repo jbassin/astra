@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 
 import { SETTING_ALLOW_WRITES } from "../constants";
-import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./index";
+import { BridgeError, dispatchQuery, registerHandlers } from "./index";
 import {
   fakeDoc,
   fakeDocumentClass,
@@ -138,8 +138,8 @@ describe("create-item", () => {
       type: "equipment",
       actorId: "no-such-actor",
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("not-found");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("not-found");
   });
 
   it("is denied with writes-disabled when the module setting is off", async () => {
@@ -148,8 +148,8 @@ describe("create-item", () => {
     const err = await dispatchQuery("portal.create-item", { name: "X", type: "equipment" }).catch(
       (e: unknown) => e,
     );
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("writes-disabled");
   });
 });
 
@@ -213,8 +213,8 @@ describe("query-item", () => {
       const err = await dispatchQuery("portal.query-item", { uuid: "Item.hidden1" }).catch(
         (e: unknown) => e,
       );
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("not-found");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("not-found");
     });
 
     it("excludes a GM-hidden world item from a name search too", async () => {
@@ -291,8 +291,8 @@ describe("query-item", () => {
       const err = await dispatchQuery("portal.query-item", {
         uuid: "Actor.someNpc.Item.i1",
       }).catch((e: unknown) => e);
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("not-found");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("not-found");
     });
 
     it("name search finds an embedded item and labels its owner", async () => {
@@ -387,8 +387,8 @@ describe("query-item", () => {
       const err = await dispatchQuery("portal.query-item", { uuid: doc.uuid }).catch(
         (e: unknown) => e,
       );
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("not-found");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("not-found");
     });
 
     it("a pack with no ownership config at all (undefined) fails CLOSED, not open", async () => {
@@ -406,8 +406,8 @@ describe("query-item", () => {
       const err = await dispatchQuery("portal.query-item", { uuid: doc.uuid }).catch(
         (e: unknown) => e,
       );
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("not-found");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("not-found");
     });
 
     it("name search excludes hits from a player-restricted pack, includes hits from a visible one", async () => {

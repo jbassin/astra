@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 
-import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./index";
+import { BridgeError, dispatchQuery, registerHandlers } from "./index";
 import { fakeDoc, fakeDocumentClass, fakePack, stubFoundry, teardownFoundry } from "./testSupport";
 describe("list-compendium-packs and search-compendium", () => {
   afterEach(teardownFoundry);
@@ -189,8 +189,8 @@ describe("import-from-compendium", () => {
       uuid: bestiaryGoblin.uuid,
       folder: "No Such Folder",
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("not-found");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("not-found");
   });
 
   it("rejects a bad/unresolvable uuid with a typed not-found error", async () => {
@@ -199,8 +199,8 @@ describe("import-from-compendium", () => {
     const err = await dispatchQuery("portal.import-from-compendium", {
       uuid: "Compendium.pf2e.pathfinder-bestiary.Actor.nope",
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("not-found");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("not-found");
   });
 
   it("rejects a non-compendium uuid (it only clones from compendiums)", async () => {
@@ -209,8 +209,8 @@ describe("import-from-compendium", () => {
     const err = await dispatchQuery("portal.import-from-compendium", {
       uuid: "Actor.a1", // a world uuid, not a compendium one
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("foundry-error");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("foundry-error");
   });
 
   it("rejects params missing the required uuid", async () => {

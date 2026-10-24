@@ -661,7 +661,7 @@ describe("S1 authoring tools (spec 0026 — Foundry-free)", () => {
 
   it("maps a stub bridge's unrecognized-method response to a typed error, not a throw (mid-rollout safety)", async () => {
     // Mirrors the module's own `dispatchQuery` behavior for a method with no
-    // registered handler (module/src/handlers/): a BridgeHandlerError with code
+    // registered handler (module/src/handlers/): a BridgeError with code
     // "foundry-error" and a message naming the unknown method — verified by reading
     // handlers/ directly (S1 is Foundry-free, so this test stubs that exact shape
     // rather than exercising the real module). This proves the server's new S1

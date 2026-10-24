@@ -13,10 +13,10 @@ import {
   ListScenesParams,
   type ListScenesResult,
   type BridgeToolHandlers,
+  BridgeError,
 } from "@astra/portal-shared";
 
 import { cloneFromCompendium } from "./compendium";
-import { BridgeHandlerError } from "./shared";
 import { auditLog, createEmbeddedChecked, portalStamp, withStamp, writeGate } from "./writes";
 
 /** `list-scenes` (spec 0023 S4) — every scene in the world, GM's own `active` flag. */
@@ -59,7 +59,7 @@ async function handleCreateLight(rawParams: unknown): Promise<CreateLightResult>
     const scene =
       params.sceneId !== undefined ? game.scenes.get(params.sceneId) : game.scenes.active;
     if (!scene) {
-      throw new BridgeHandlerError(
+      throw new BridgeError(
         "not-found",
         params.sceneId !== undefined
           ? `scene not found: ${params.sceneId}`
@@ -98,7 +98,7 @@ async function handleCreateLight(rawParams: unknown): Promise<CreateLightResult>
     };
     const [created] = await createEmbeddedChecked(scene, "AmbientLight", [lightData]);
     if (!created) {
-      throw new BridgeHandlerError("foundry-error", "AmbientLight creation returned no document");
+      throw new BridgeError("foundry-error", "AmbientLight creation returned no document");
     }
     const lightUuid = `Scene.${scene.id}.AmbientLight.${created.id}`;
     const result: CreateLightResult = { sceneId: scene.id, lightUuid, warnings: [] };
@@ -121,14 +121,14 @@ async function handleCreateToken(rawParams: unknown): Promise<CreateTokenResult>
     writeGate(params.quantity);
     const scene = game.scenes.active;
     if (!scene) {
-      throw new BridgeHandlerError("not-found", "no active scene — open a scene in Foundry first");
+      throw new BridgeError("not-found", "no active scene — open a scene in Foundry first");
     }
 
     let actor: FoundryActor;
     if (params.actorId !== undefined) {
       const found = game.actors.get(params.actorId);
       if (!found) {
-        throw new BridgeHandlerError("not-found", `actor not found: ${params.actorId}`);
+        throw new BridgeError("not-found", `actor not found: ${params.actorId}`);
       }
       actor = found;
     } else {
@@ -143,7 +143,7 @@ async function handleCreateToken(rawParams: unknown): Promise<CreateTokenResult>
         "create-token",
       );
       if (!imported) {
-        throw new BridgeHandlerError("foundry-error", "import produced no document to tokenize");
+        throw new BridgeError("foundry-error", "import produced no document to tokenize");
       }
       // A pf2e Actor compendium clone always creates a real Actor document, which
       // Foundry always instantiates with getTokenDocument — this narrows the general

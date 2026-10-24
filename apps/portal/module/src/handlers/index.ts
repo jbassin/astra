@@ -10,7 +10,12 @@
  * `./actors`, `./items`, `./macros`, `./party`, `./rolls`); each exports a map of its tools'
  * handlers, and {@link TOOL_HANDLERS} assembles them.
  */
-import { BRIDGE_TOOL_NAMES, bridgeMethod, type BridgeToolHandlers } from "@astra/portal-shared";
+import {
+  BRIDGE_TOOL_NAMES,
+  BridgeError,
+  bridgeMethod,
+  type BridgeToolHandlers,
+} from "@astra/portal-shared";
 
 import { MODULE_ID, SETTING_BRIDGE_USER_ID } from "../constants";
 import { actorHandlers } from "./actors";
@@ -21,9 +26,8 @@ import { macroHandlers } from "./macros";
 import { partyHandlers } from "./party";
 import { rollHandlers } from "./rolls";
 import { sceneHandlers } from "./scenes";
-import { BridgeHandlerError } from "./shared";
 
-export { BridgeHandlerError } from "./shared";
+export { BridgeError } from "@astra/portal-shared";
 
 /** `CONFIG.queries["portal.<method>"]`'s key: the same wire method the server sends
  * (`bridgeMethod` in `@astra/portal-shared`). Its prefix equals {@link MODULE_ID}, which
@@ -97,24 +101,24 @@ export function registerHandlers(): void {
  * designated-dialer setting for the same reason — the GM may repoint `bridge-user-id`
  * on an already-adopted socket without an F5.
  *
- * Throws {@link BridgeHandlerError} (typed `.code`) for both denial paths; any error a
+ * Throws {@link BridgeError} (typed `.code`) for both denial paths; any error a
  * handler itself throws propagates as-is — `bridgeClient.ts` falls back to
- * `foundry-error` for anything that isn't already a `BridgeHandlerError`.
+ * `foundry-error` for anything that isn't already a `BridgeError`.
  */
 export async function dispatchQuery(method: string, params: unknown): Promise<unknown> {
   if (!game.user?.isGM) {
-    throw new BridgeHandlerError("not-gm", "the connected Foundry session isn't a GM");
+    throw new BridgeError("not-gm", "the connected Foundry session isn't a GM");
   }
   const bridgeUserId = normalizeUserId(game.settings.get(MODULE_ID, SETTING_BRIDGE_USER_ID));
   if (bridgeUserId && game.user.id !== bridgeUserId) {
-    throw new BridgeHandlerError(
+    throw new BridgeError(
       "not-designated",
       "this Foundry session is not the designated bridge dialer (bridge-user-id)",
     );
   }
   const handler = CONFIG.queries[method];
   if (!handler) {
-    throw new BridgeHandlerError("foundry-error", `no handler registered for query "${method}"`);
+    throw new BridgeError("foundry-error", `no handler registered for query "${method}"`);
   }
   return await handler(params);
 }

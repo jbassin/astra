@@ -59,7 +59,7 @@ export interface MinimalWebSocket {
 export type WebSocketFactory = (url: string) => MinimalWebSocket;
 
 /** Shape `dispatch` may reject with to control the wire error code precisely (this is
- * what `handlers/shared.ts`'s `BridgeHandlerError` satisfies structurally — `bridgeClient.ts`
+ * what `BridgeError` from `@astra/portal-shared` satisfies structurally — `bridgeClient.ts`
  * deliberately doesn't import that class, so it stays decoupled from any particular
  * handler-registry implementation). Anything else thrown maps to `foundry-error`. */
 export interface DispatchError {

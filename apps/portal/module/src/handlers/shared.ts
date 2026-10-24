@@ -1,8 +1,9 @@
 /**
- * Helpers every handler module shares: the typed handler error, the name-match ranking
- * the search tools use, and name-to-actor resolution.
+ * Helpers every handler module shares: the name-match ranking the search tools use and
+ * name-to-actor resolution. The typed handler error is `BridgeError` from
+ * `@astra/portal-shared`, the same class the server throws.
  */
-import { type BridgeErrorCode } from "@astra/portal-shared";
+import { BridgeError } from "@astra/portal-shared";
 
 /** Default `search-compendium`/`search-world` result cap when the caller doesn't
  * specify one — generous enough for an LLM to scan, small enough not to flood context. */
@@ -23,19 +24,6 @@ export function byRankThenName<T extends { name: string }>(
   return a._rank - b._rank || a.name.localeCompare(b.name);
 }
 
-/** Thrown by {@link dispatchQuery}; `bridgeClient.ts` maps `.code` onto the wire
- * `McpResponse.error.code` verbatim (falling back to `foundry-error` for anything that
- * ISN'T a `BridgeHandlerError` — a handler that throws a bare `Error`, say). */
-export class BridgeHandlerError extends Error {
-  readonly code: BridgeErrorCode;
-
-  constructor(code: BridgeErrorCode, message: string) {
-    super(message);
-    this.name = "BridgeHandlerError";
-    this.code = code;
-  }
-}
-
 /** Case-insensitive exact-then-unambiguous-prefix name resolution (D28-13), shared by
  * `query-player`'s `name` param. Throws typed `ambiguous-name` (additive `BridgeErrorCode`
  * member) naming every candidate when neither pass narrows to exactly one, or `not-found`
@@ -48,12 +36,12 @@ export function resolveByName<T extends { name: string }>(candidates: T[], name:
   const prefixed = candidates.filter((c) => c.name.toLowerCase().startsWith(needle));
   if (prefixed.length === 1) return prefixed[0] as T;
   if (prefixed.length > 1) throw ambiguousNameError(name, prefixed);
-  throw new BridgeHandlerError("not-found", `no actor found matching name: "${name}"`);
+  throw new BridgeError("not-found", `no actor found matching name: "${name}"`);
 }
 
-function ambiguousNameError(name: string, candidates: { name: string }[]): BridgeHandlerError {
+function ambiguousNameError(name: string, candidates: { name: string }[]): BridgeError {
   const list = candidates.map((c) => c.name).join(", ");
-  return new BridgeHandlerError(
+  return new BridgeError(
     "ambiguous-name",
     `"${name}" matches ${candidates.length} actors: ${list} — retry with a uuid instead`,
   );

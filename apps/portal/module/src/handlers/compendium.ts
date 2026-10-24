@@ -13,9 +13,10 @@ import {
   SearchCompendiumParams,
   type SearchCompendiumResult,
   type BridgeToolHandlers,
+  BridgeError,
 } from "@astra/portal-shared";
 
-import { BridgeHandlerError, byRankThenName, DEFAULT_SEARCH_LIMIT, matchRank } from "./shared";
+import { byRankThenName, DEFAULT_SEARCH_LIMIT, matchRank } from "./shared";
 import { auditLog, resolveFolderId, withStamp, writeGate } from "./writes";
 
 /** `list-compendium-packs` (spec 0023 S4) — every `game.packs` entry, so an LLM client
@@ -92,14 +93,14 @@ export async function cloneFromCompendium(
   tool: string,
 ): Promise<FoundryDocumentLike[]> {
   if (!uuid.startsWith("Compendium.")) {
-    throw new BridgeHandlerError(
+    throw new BridgeError(
       "foundry-error",
       `import-from-compendium requires a compendium uuid (starting "Compendium."), got: ${uuid}`,
     );
   }
   const doc = await fromUuid(uuid);
   if (!doc) {
-    throw new BridgeHandlerError("not-found", `not found: ${uuid}`);
+    throw new BridgeError("not-found", `not found: ${uuid}`);
   }
   const folderId = resolveFolderId(folder, doc.documentName);
 

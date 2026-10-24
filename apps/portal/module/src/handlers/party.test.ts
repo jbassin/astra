@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 
-import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./index";
+import { BridgeError, dispatchQuery, registerHandlers } from "./index";
 import { deepMergeObject, fakeDoc, loadFixture, stubFoundry, teardownFoundry } from "./testSupport";
 describe("query-party and query-player", () => {
   afterEach(teardownFoundry);
@@ -160,8 +160,8 @@ describe("query-party and query-player", () => {
       stubFoundry(true, { actors: [] });
       registerHandlers();
       const err = await dispatchQuery("portal.query-party", {}).catch((e: unknown) => e);
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("not-found");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("not-found");
     });
 
     it("unions members across multiple party actors (pf2e allows more than one)", async () => {
@@ -392,10 +392,10 @@ describe("query-party and query-player", () => {
         name: "Arg",
         section: "summary",
       }).catch((e: unknown) => e);
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("ambiguous-name");
-      expect((err as BridgeHandlerError).message).toContain("Argyle");
-      expect((err as BridgeHandlerError).message).toContain("Argyle Twin");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("ambiguous-name");
+      expect((err as BridgeError).message).toContain("Argyle");
+      expect((err as BridgeError).message).toContain("Argyle Twin");
     });
 
     it("rejects a not-found name with a typed not-found error", async () => {
@@ -405,8 +405,8 @@ describe("query-party and query-player", () => {
         name: "Nobody",
         section: "summary",
       }).catch((e: unknown) => e);
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("not-found");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("not-found");
     });
 
     it.each(["npc", "party", "loot"])(
@@ -425,9 +425,9 @@ describe("query-party and query-player", () => {
           uuid: doc.uuid,
           section: "summary",
         }).catch((e: unknown) => e);
-        expect(err).toBeInstanceOf(BridgeHandlerError);
-        expect((err as BridgeHandlerError).code).toBe("not-a-player-character");
-        expect((err as BridgeHandlerError).message).toContain(type);
+        expect(err).toBeInstanceOf(BridgeError);
+        expect((err as BridgeError).code).toBe("not-a-player-character");
+        expect((err as BridgeError).message).toContain(type);
       },
     );
 

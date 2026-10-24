@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 
 import { SETTING_ALLOW_WRITES } from "../constants";
-import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./index";
+import { BridgeError, dispatchQuery, registerHandlers } from "./index";
 import {
   fakeActorDocumentClass,
   fakeCreateEmbeddedDocuments,
@@ -94,8 +94,8 @@ describe("create-actor", () => {
       name: "X",
       baseUuid: "Actor.a1", // a world uuid, not a compendium one
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("foundry-error");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("foundry-error");
   });
 
   it("maps a DataModelValidationError to a typed validation-failed error (hazard)", async () => {
@@ -109,9 +109,9 @@ describe("create-actor", () => {
       name: "Rigged Trap",
       system: { attributes: { hp: { value: -5 } } },
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("validation-failed");
-    expect((err as BridgeHandlerError).message).toBe(
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("validation-failed");
+    expect((err as BridgeError).message).toBe(
       "attributes.hp.value: must be a non-negative integer",
     );
   });
@@ -122,8 +122,8 @@ describe("create-actor", () => {
     const err = await dispatchQuery("portal.create-actor", { type: "npc", name: "X" }).catch(
       (e: unknown) => e,
     );
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("writes-disabled");
   });
 });
 
@@ -243,8 +243,8 @@ describe("apply-condition", () => {
       slug: "prone",
       action: "toggle",
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("not-found");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("not-found");
   });
 
   describe("persistent-damage special case", () => {
@@ -257,9 +257,9 @@ describe("apply-condition", () => {
         slug: "persistent-damage",
         action: "increase",
       }).catch((e: unknown) => e);
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("validation-failed");
-      expect((err as BridgeHandlerError).message).toContain("persistentDamage");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("validation-failed");
+      expect((err as BridgeError).message).toContain("persistentDamage");
       expect(actor.calls.increase).toBe(0);
     });
 
@@ -320,7 +320,7 @@ describe("apply-condition", () => {
       slug: "prone",
       action: "toggle",
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("writes-disabled");
   });
 });

@@ -16,10 +16,11 @@ import {
   type WorldSearchRow,
   type WorldSearchType,
   type BridgeToolHandlers,
+  BridgeError,
 } from "@astra/portal-shared";
 
 import { isDerivedPcPath } from "../pf2e";
-import { BridgeHandlerError, byRankThenName, DEFAULT_SEARCH_LIMIT, matchRank } from "./shared";
+import { byRankThenName, DEFAULT_SEARCH_LIMIT, matchRank } from "./shared";
 import { auditLog, portalStamp, resolveFolderId, updateChecked, writeGate } from "./writes";
 
 /** `get-document` (spec 0023 S4) — `fromUuid` is the one forward-safe resolver that
@@ -29,7 +30,7 @@ async function handleGetDocument(rawParams: unknown): Promise<GetDocumentResult>
   const { uuid } = GetDocumentParams.parse(rawParams);
   const doc = await fromUuid(uuid);
   if (!doc) {
-    throw new BridgeHandlerError("not-found", `not found: ${uuid}`);
+    throw new BridgeError("not-found", `not found: ${uuid}`);
   }
   return { uuid, document: doc.toObject() };
 }
@@ -86,12 +87,12 @@ async function handleUpdateDocument(rawParams: unknown): Promise<UpdateDocumentR
     writeGate(1);
     const doc = await fromUuid(params.uuid);
     if (!doc) {
-      throw new BridgeHandlerError("not-found", `not found: ${params.uuid}`);
+      throw new BridgeError("not-found", `not found: ${params.uuid}`);
     }
     if (doc.documentName === "Actor" && doc.type === "character") {
       const deniedPath = paths.find(isDerivedPcPath);
       if (deniedPath !== undefined) {
-        throw new BridgeHandlerError(
+        throw new BridgeError(
           "validation-failed",
           `"${deniedPath}" is a derived path on a player character — pf2e recomputes it every ` +
             "data-prep cycle, so it can't be hand-set (update-document's description lists the " +
@@ -125,11 +126,11 @@ async function handleDeleteDocument(rawParams: unknown): Promise<DeleteDocumentR
     writeGate(1);
     const doc = await fromUuid(params.uuid);
     if (!doc) {
-      throw new BridgeHandlerError("not-found", `not found: ${params.uuid}`);
+      throw new BridgeError("not-found", `not found: ${params.uuid}`);
     }
     const stamp = doc.flags?.["astra-portal"] as { created?: boolean } | undefined;
     if (stamp?.created !== true) {
-      throw new BridgeHandlerError(
+      throw new BridgeError(
         "not-portal-created",
         `refusing to delete ${params.uuid} — it carries no astra-portal creation stamp; this ` +
           "tool can only delete documents portal itself created (D-4)",
@@ -162,7 +163,7 @@ async function handleCreateJournal(rawParams: unknown): Promise<CreateJournalRes
       flags: portalStamp("create-journal"),
     });
     if (!created) {
-      throw new BridgeHandlerError("foundry-error", "JournalEntry creation returned no document");
+      throw new BridgeError("foundry-error", "JournalEntry creation returned no document");
     }
     const result: CreateJournalResult = { uuid: created.uuid, id: created.id, name: created.name };
     auditLog("create-journal", params, "ok");

@@ -8,10 +8,10 @@ import {
   ExecuteMacroParams,
   type ExecuteMacroResult,
   type BridgeToolHandlers,
+  BridgeError,
 } from "@astra/portal-shared";
 
 import { MODULE_ID, SETTING_ALLOW_MACRO_EXECUTION } from "../constants";
-import { BridgeHandlerError } from "./shared";
 import { auditLog, createChecked, portalStamp, writeGate } from "./writes";
 
 /** `create-macro` (spec 0026 S2/D-6/D-9) — creates a script or chat macro; verified
@@ -79,7 +79,7 @@ async function handleExecuteMacro(rawParams: unknown): Promise<ExecuteMacroResul
   try {
     writeGate(1);
     if (game.settings.get(MODULE_ID, SETTING_ALLOW_MACRO_EXECUTION) === false) {
-      throw new BridgeHandlerError(
+      throw new BridgeError(
         "writes-disabled",
         'macro execution is disabled — enable the "Allow macro execution" module setting ' +
           "(other writes are unaffected by this setting)",
@@ -87,16 +87,13 @@ async function handleExecuteMacro(rawParams: unknown): Promise<ExecuteMacroResul
     }
     const macro = game.macros.get(params.macroId);
     if (!macro) {
-      throw new BridgeHandlerError("not-found", `macro not found: ${params.macroId}`);
+      throw new BridgeError("not-found", `macro not found: ${params.macroId}`);
     }
     let returned: unknown;
     try {
       returned = await macro.execute();
     } catch (err) {
-      throw new BridgeHandlerError(
-        "execution-failed",
-        err instanceof Error ? err.message : String(err),
-      );
+      throw new BridgeError("execution-failed", err instanceof Error ? err.message : String(err));
     }
     const result: ExecuteMacroResult = {
       macroId: params.macroId,

@@ -24,6 +24,7 @@ import {
   QueryPlayerParams,
   type QueryPlayerResult,
   type BridgeToolHandlers,
+  BridgeError,
 } from "@astra/portal-shared";
 
 import { MODULE_ID } from "../constants";
@@ -63,7 +64,7 @@ import {
   spellcastingEntryDc,
   spellLocation,
 } from "../pf2e";
-import { BridgeHandlerError, resolveByName } from "./shared";
+import { resolveByName } from "./shared";
 
 /** `query-party` (0028 S2/D28-4) — resolves the party actor(s) by `type === "party"`
  * AT QUERY TIME (never hardcoded, spec Verified footprint), unions every resolved
@@ -78,7 +79,7 @@ async function handleQueryParty(rawParams: unknown): Promise<QueryPartyResult> {
   QueryPartyParams.parse(rawParams);
   const parties = Array.from(game.actors.values()).filter((a) => a.type === "party");
   if (parties.length === 0) {
-    throw new BridgeHandlerError("not-found", "no party actor found in this world");
+    throw new BridgeError("not-found", "no party actor found in this world");
   }
 
   const memberUuids = new Set<string>();
@@ -169,7 +170,7 @@ async function resolvePlayerActor(params: QueryPlayerParams): Promise<FoundryDoc
   if (params.uuid !== undefined) {
     const uuid = params.uuid.includes(".") ? params.uuid : `Actor.${params.uuid}`;
     const doc = await fromUuid(uuid);
-    if (!doc) throw new BridgeHandlerError("not-found", `not found: ${uuid}`);
+    if (!doc) throw new BridgeError("not-found", `not found: ${uuid}`);
     return doc;
   }
   // The schema refine guarantees `name` is set whenever `uuid` isn't.
@@ -482,7 +483,7 @@ async function handleQueryPlayer(rawParams: unknown): Promise<QueryPlayerResult>
   const params = QueryPlayerParams.parse(rawParams);
   const doc = await resolvePlayerActor(params);
   if (doc.type !== "character" && doc.type !== "familiar") {
-    throw new BridgeHandlerError(
+    throw new BridgeError(
       "not-a-player-character",
       `"${doc.name}" is a ${doc.type ?? "unknown-type"} actor — query-player only serves ` +
         "player characters and familiars",

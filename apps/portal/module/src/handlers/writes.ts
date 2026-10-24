@@ -3,8 +3,9 @@
  * creation stamp, folder lookup, and create/update wrappers that turn Foundry's
  * `DataModelValidationError` into a typed `validation-failed`.
  */
+import { BridgeError } from "@astra/portal-shared";
+
 import { MODULE_ID, SETTING_ALLOW_WRITES } from "../constants";
-import { BridgeHandlerError } from "./shared";
 
 /** Hard, non-configurable defense-in-depth ceiling on any single write handler's
  * create count. The REAL, operator-tunable cap is `cfg.portal.maxCreatesPerRequest`
@@ -38,20 +39,20 @@ export function auditLog(tool: string, params: unknown, outcome: string): void {
  *  (b) the `allow-write-operations` module setting (D8, default true);
  *  (c) `count` against the module's hard ceiling — see {@link MODULE_MAX_CREATES_CEILING}
  *      for why the REAL configured cap lives server-side instead.
- * Throws {@link BridgeHandlerError} on the first failing check.
+ * Throws {@link BridgeError} on the first failing check.
  */
 export function writeGate(count: number): void {
   if (!game.user?.isGM) {
-    throw new BridgeHandlerError("not-gm", "the connected Foundry session isn't a GM");
+    throw new BridgeError("not-gm", "the connected Foundry session isn't a GM");
   }
   if (game.settings.get(MODULE_ID, SETTING_ALLOW_WRITES) === false) {
-    throw new BridgeHandlerError(
+    throw new BridgeError(
       "writes-disabled",
       'write operations are disabled — enable the "Allow write operations" module setting',
     );
   }
   if (count > MODULE_MAX_CREATES_CEILING) {
-    throw new BridgeHandlerError(
+    throw new BridgeError(
       "cap-exceeded",
       `requested ${count} creates, exceeding this module's hard ceiling of ${MODULE_MAX_CREATES_CEILING}`,
     );
@@ -70,10 +71,7 @@ export function resolveFolderId(
     (f) => f.name === folderName && f.type === documentType,
   );
   if (!match) {
-    throw new BridgeHandlerError(
-      "not-found",
-      `folder not found: "${folderName}" (type ${documentType})`,
-    );
+    throw new BridgeError("not-found", `folder not found: "${folderName}" (type ${documentType})`);
   }
   return match.id;
 }
@@ -132,15 +130,12 @@ export async function createChecked(
     created = await docClass.create(data);
   } catch (err) {
     if (isDataModelValidationError(err)) {
-      throw new BridgeHandlerError(
-        "validation-failed",
-        err instanceof Error ? err.message : String(err),
-      );
+      throw new BridgeError("validation-failed", err instanceof Error ? err.message : String(err));
     }
     throw err;
   }
   if (!created) {
-    throw new BridgeHandlerError("foundry-error", "document creation returned no document");
+    throw new BridgeError("foundry-error", "document creation returned no document");
   }
   return created;
 }
@@ -166,10 +161,7 @@ export async function createEmbeddedChecked(
     return await host.createEmbeddedDocuments(embeddedName, data);
   } catch (err) {
     if (isDataModelValidationError(err)) {
-      throw new BridgeHandlerError(
-        "validation-failed",
-        err instanceof Error ? err.message : String(err),
-      );
+      throw new BridgeError("validation-failed", err instanceof Error ? err.message : String(err));
     }
     throw err;
   }
@@ -187,10 +179,7 @@ export async function updateChecked(
     await doc.update(updates);
   } catch (err) {
     if (isDataModelValidationError(err)) {
-      throw new BridgeHandlerError(
-        "validation-failed",
-        err instanceof Error ? err.message : String(err),
-      );
+      throw new BridgeError("validation-failed", err instanceof Error ? err.message : String(err));
     }
     throw err;
   }
@@ -242,14 +231,14 @@ export async function resolveBasePayload(
 ): Promise<Record<string, unknown> | undefined> {
   if (baseUuid === undefined) return undefined;
   if (!baseUuid.startsWith("Compendium.")) {
-    throw new BridgeHandlerError(
+    throw new BridgeError(
       "foundry-error",
       `baseUuid must be a compendium uuid (starting "Compendium."), got: ${baseUuid}`,
     );
   }
   const doc = await fromUuid(baseUuid);
   if (!doc) {
-    throw new BridgeHandlerError("not-found", `not found: ${baseUuid}`);
+    throw new BridgeError("not-found", `not found: ${baseUuid}`);
   }
   const base = doc.toObject();
   delete base._id;
