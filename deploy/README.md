@@ -132,6 +132,28 @@ placeholder, which the edge's systemd drop-in supplies at start and `just caddy-
 reload (`just caddy-validate` dry-runs the merged config). Editor and admin routes are limited to
 the local network with `import local_only`.
 
+### Networks
+
+The containers sit on least-privilege networks, so a compromised frontend cannot reach a
+database, ClickHouse or the Dagster gRPC server. The `networks:` block at the end of
+`docker-compose.yml` says who joins each one and why:
+
+| Network | Members |
+|---|---|
+| `telemetry` | every Node app and the SigNoz collector (OTLP to `signoz-otel-collector:4318`) |
+| `pipeline` | the Dagster code server, webserver and daemon, and the collector |
+| `dagster-db` (internal) | dagster-postgres and the three Dagster services |
+| `weal-db`, `orator-db` | each Postgres and its one app |
+| `weal-feed` | weal-bot and weal-overlay (the roll feed) |
+| `signoz-net` | SigNoz only: ClickHouse, zookeeper, the UI and the collector |
+
+A new service gets `telemetry` from `*astra-app`. If it talks to another service or a store, it
+lists every network it needs, because a YAML merge does not merge lists. Two limits remain. A
+bridge network does not filter by port, so the apps on `telemetry` can reach each other's ports;
+those ports are published on the host anyway. And the host-published ports, including the weal
+and orator Postgres ports, stay reachable from any container through its network gateway until
+they are bound to `127.0.0.1` ([ADR 0040](../docs/adr/0040-accepted-risk-network-exposure.md)).
+
 ## Secrets (SOPS + age)
 
 Encrypted values live in `sops/secrets.enc.yaml`. The deploy and the timers read the private key from
@@ -232,7 +254,10 @@ just down-volumes         # also drop the SigNoz volumes (asks first; fresh onbo
   deltas (NIC CRC errors) are the exception and are read once per tick.
 - In bash under `set -u`, `local a="$1" b="$DIR/$a"` fails: `local` expands every argument before
   assigning. Put the dependent assignment on its own line.
-- A test container must not join `signoz-net`, or its deliberate ERROR logs page Discord.
+- A test container must not join `signoz-net`, `astra_telemetry` or `astra_pipeline` (every
+  network the collector is on), or its deliberate ERROR logs page Discord.
+- The first deploy after a network change must be the whole stack: a scoped `just deploy <svc>`
+  recreates only that service, so the collector would not yet be on a new network.
 - Docker creates a missing bind-mount source as root. `deploy.sh` (`just artifacts-init`) creates the
   data-root dirs as uid 1000 first; Postgres data dirs stay uid 70, mode 0700.
 - `sudo` needs a password on this host. The user is in the `docker` group, so a throwaway root

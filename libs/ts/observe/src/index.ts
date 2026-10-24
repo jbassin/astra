@@ -35,7 +35,7 @@ import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node";
 import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions";
 
-/** In-cluster SigNoz collector OTLP/HTTP (signoz-net; mirrors the config.kdl default). */
+/** In-cluster SigNoz collector OTLP/HTTP (the telemetry net; mirrors the config.kdl default). */
 export const DEFAULT_ENDPOINT = "http://signoz-otel-collector:4318";
 
 /** Handle returned by {@link initTelemetry} — call `shutdown()` to force-flush + tear down. */
