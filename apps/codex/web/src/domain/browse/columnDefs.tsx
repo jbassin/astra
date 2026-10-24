@@ -418,7 +418,7 @@ const SOURCE_COLUMN: ColumnDef = {
   // "measure, don't guess" comment above), and this uppercase-heavy,
   // hyphen-bearing abbreviation renders wider per-character than that. `10ch`
   // (one MORE ch than the original p99+1ch design) absorbs that glyph-width
-  // slop — verified against the real corpus via `rowHeightDriftGuard.ts`'s
+  // slop — verified against the real corpus via `e2e/rowHeight.spec.ts`'s
   // scoped cell-fit assert; still comfortably under this column's own
   // max=18 (the genuine long tail still ellipsis-truncates, by design).
   width: "calc(10ch + 1rem)",

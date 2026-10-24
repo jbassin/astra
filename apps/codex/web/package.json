@@ -10,8 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "regen-goldens": "node --import tsx scripts/regen-goldens.ts",
-    "row-height-drift-guard": "node --import tsx scripts/rowHeightDriftGuard.ts",
-    "virtualization-interaction-guard": "node --import tsx scripts/virtualizationInteractionGuard.ts"
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@astra/codex-corpus": "workspace:*",
@@ -33,12 +32,12 @@
   },
   "devDependencies": {
     "@astra/codex-ingest": "workspace:*",
+    "@playwright/test": "catalog:",
     "@testing-library/dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "jsdom": "catalog:",
-    "playwright": "catalog:",
     "tsdown": "catalog:",
     "tsx": "catalog:",
     "vite": "catalog:",

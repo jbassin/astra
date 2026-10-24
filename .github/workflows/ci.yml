@@ -318,17 +318,13 @@ jobs:
       - run: cd apps/vellum/render && npx playwright install --with-deps chromium
       - run: just vellum-visual-regression
 
-  # P9 S1 (D29-83) — the listing row-pitch drift guard: a real Chromium probe
-  # asserting `getBoundingClientRect().height === 24` on a rendered
-  # `.codex-listing-row`, at both container tiers. Fixed-size windowing has no
-  # self-correction if the live rendered height ever drifts off the token — see
-  # `apps/codex/web/scripts/rowHeightDriftGuard.ts`'s own header for the "proxy-pin
-  # class" this exists to catch. Same pinned-container posture as
-  # vellum-visual-regression above (this repo's established pattern for a real-
-  # Chromium CI check); runs against the generated FIXTURE corpus (CI has no
-  # `apps/codex/web/data/`, D29-23's own fallback) — hermetic, no real-corpus data
-  # asserted on, only CSS-driven row geometry.
-  codex-row-height-drift-guard:
+  # The codex e2e suite (Playwright Test, apps/codex/web/e2e) in real Chromium: listing row
+  # geometry at both container tiers, and the virtualization, keyboard, reload and filter-pane
+  # behavior jsdom can't observe. Same pinned-container posture as vellum-visual-regression
+  # above. The suite's server generates the fixture corpus and pins CODEX_CORPUS_ROOT to it, so
+  # no real corpus is read. A failure uploads each failing test's trace and screenshot, and the
+  # HTML report.
+  codex-e2e:
     needs: changes
     if: needs.changes.outputs.codex == 'true'
     runs-on: ubuntu-latest
@@ -343,39 +339,17 @@ jobs:
       - run: corepack enable && corepack install
       - run: pnpm install --frozen-lockfile
       - run: cd apps/codex/web && npx playwright install --with-deps chromium
-      # The guard script generates the fixture corpus and pins CODEX_CORPUS_ROOT to it
-      # from the working directory. (Inside a container job `${{ github.workspace }}` is the
-      # HOST path, not the container mount, so the workflow must not build that path.)
-      - run: just codex-row-height-drift-guard
-
-  # P9 S2 (D29-84/-85/-90) — the listing-virtualization INTERACTION guard: a
-  # real Chromium probe over gate C (j/k frontier + wheel-unmount-resume +
-  # row-body click/text-drag/modified-click), D (deep-link centering), and E
-  # (scroll-deep-then-reload restoration) — none of these are observable from
-  # `jsdom` (no real scroll/wheel events, no real keyboard-vs-synthetic-click
-  # `detail`, no real pre-hydration scroll-restoration `<script>` timing). Same
-  # pinned-container posture as `codex-row-height-drift-guard` above; runs
-  # against the generated FIXTURE corpus's `ritual` category (grown to 96 rows
-  # SPECIFICALLY so it clears `SSR_WINDOW`=60 — see
-  # `scripts/virtualizationInteractionGuard.ts`'s own header) — hermetic, no
-  # real corpus touched.
-  codex-virtualization-interaction-guard:
-    needs: changes
-    if: needs.changes.outputs.codex == 'true'
-    runs-on: ubuntu-latest
-    container:
-      image: node:24-slim
-    env:
-      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
-    steps:
-      - run: apt-get update && apt-get install -y --no-install-recommends git ca-certificates
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-just
-      - run: corepack enable && corepack install
-      - run: pnpm install --frozen-lockfile
-      - run: cd apps/codex/web && npx playwright install --with-deps chromium
-      # Same fixture handling as codex-row-height-drift-guard (see the note there).
-      - run: just codex-virtualization-interaction-guard
+      # Every path stays relative to the working directory: inside a container job
+      # `${{ github.workspace }}` is the HOST path, not the container mount.
+      - run: just codex-e2e
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-e2e-failures
+          path: |
+            apps/codex/web/test-results/
+            apps/codex/web/playwright-report/
+          retention-days: 14
 
   # The weal-engine crate's own gate (ADR 0027): fmt, clippy and tests. rustup installs the
   # toolchain the crate's rust-toolchain.toml pins (1.96.0 with rustfmt and clippy). It
@@ -467,8 +441,7 @@ jobs:
       - corpus-validate
       - vellum-parity
       - vellum-visual-regression
-      - codex-row-height-drift-guard
-      - codex-virtualization-interaction-guard
+      - codex-e2e
       - weal-engine-rust
       - weal-engine-hash-check
       - assay-store-check

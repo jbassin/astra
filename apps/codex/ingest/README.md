@@ -51,7 +51,7 @@ tests/fixtures/        parser samples for the unit tests
 
 `@astra/codex-ingest/fixture` (`src/fixtureCorpus.ts`) is the one export other packages use:
 `ensureFixtureCorpus()`, `buildFixtureCorpus()` and `FIXTURE_CORPUS_DIR`. The site's vitest
-setup, its two Chromium guards and its golden regeneration call it.
+setup, its e2e server and its golden regeneration call it.
 
 ## Determinism
 

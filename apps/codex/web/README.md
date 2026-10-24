@@ -83,15 +83,15 @@ release ...`); its README lists every command.
 ## Traps
 
 **Fixture and tests**
-- Every test and both Chromium guards read the fixture corpus, which the ingest package
+- Every test, the e2e suite included, reads the fixture corpus, which the ingest package
   generates at `apps/codex/ingest/fixtures/entities/` (`fixtureCorpusRoot()` in
-  `src/server/corpusFs.ts`): `vitest.setup.ts` and the guard scripts default
+  `src/server/corpusFs.ts`): `vitest.setup.ts` and the e2e server (`e2e/server.ts`) default
   `CODEX_CORPUS_ROOT` to it. The real-corpus checks are the opt-in `just codex-real-corpus`
   (`src/realCorpus.test.ts`, gated on `CODEX_REAL_CORPUS=1`). The dev server has no pin and
   reads the real corpus at `codex.data-path`, from any checkout.
 - The fixture corpus is generated and gitignored. `ensureFixtureCorpus()`
   (`@astra/codex-ingest/fixture`, a dev dependency) brings it up to date; vitest's global
-  setup (`vitest.globalSetup.ts`), both guard scripts and `regen-goldens.ts` call it, and
+  setup (`vitest.globalSetup.ts`), `e2e/server.ts` and `regen-goldens.ts` call it, and
   `pnpm --filter @astra/codex-ingest cli fixture` runs it by hand. To change the fixture,
   change an input in the ingest package, never the output; its README describes the inputs.
 - `scripts/regen-goldens.ts` runs under tsx (`node --import tsx`), which follows the `@/*`
@@ -158,7 +158,7 @@ release ...`); its README lists every command.
   hidden }`, which no descendant rule can undo. Override `::details-content`, or use a
   conditional render instead of `<details>`.
 - A higher-specificity `padding` shorthand beats a lower-specificity `padding-inline`. Check
-  column and row geometry in a real browser (`just codex-row-height-drift-guard`), not jsdom.
+  column and row geometry in a real browser (`just codex-e2e e2e/rowHeight.spec.ts`), not jsdom.
 - `dialog:modal` UA centering breaks on tall content; set `position: fixed; inset: 0; margin:
   auto`.
 - Exactly one flex auto-margin owns the header's right push (`.codex-header-nav`).
@@ -166,6 +166,16 @@ release ...`); its README lists every command.
   map); a redeclared copy forks.
 
 **Verification**
+- The e2e suite (`e2e/`, Playwright Test) is `just codex-e2e`: it builds, then
+  `playwright.config.ts` starts `e2e/server.ts` (the built `dist/` on an ephemeral loopback
+  port, port read back from its stdout) and runs Chromium with one worker. Arguments pass
+  through (`just codex-e2e -g "row height"`). Each `test` is one case; each `check()` step in
+  it is one soft assertion, so a case reports every failing check. A failing test keeps a trace
+  and a screenshot under `test-results/` (`pnpm exec playwright show-trace <zip>`), and the
+  HTML report lands in `playwright-report/`; CI uploads both as `codex-e2e-failures`.
+- The e2e suite's `@playwright/test` must stay the release `playwright` resolves to and
+  `deploy/node.Dockerfile` pins (the catalog lists it exactly); `just infra-check` catches a
+  second `playwright` in the lockfile.
 - React SSR puts `<!-- -->` between text nodes, so "145 of 145 shown" doesn't match as plain
   text in served HTML. Virtualized listings prove additions by the toolbar count, not row greps.
 - Playwright's locator `.click()` scrolls the target into view; use
@@ -839,8 +849,8 @@ data split · **S2 `9542d0c`** interaction parity + whole-row click · **S3** th
   unreliability), overscan 20, row `key` = entity slug, `aria-rowcount`/`aria-rowindex` compensate
   Tab-reach narrowing for AT (R5). Row CSS tightened to a real-Chromium-measured **exactly
   24.00px** (P8 had measured 23.94px live vs the token's nominal 24px — fixed-size windowing
-  never self-corrects off that gap) — `scripts/rowHeightDriftGuard.ts` asserts it at both column
-  tiers via real Playwright Chromium, its own CI job. Per-row `content-visibility` deleted
+  never self-corrects off that gap) — `e2e/rowHeight.spec.ts` asserts it at both column
+  tiers in real Chromium (the `codex-e2e` CI job). Per-row `content-visibility` deleted
   (redundant at ≤~110 mounted rows).
 - **SSR window determinism (D29-84, S1):** both the server pass and the client's first pass get
   identical `initialOffset: 0` / `initialRect = { height: 40 × ROW_PITCH_PX }` — first computed
@@ -882,10 +892,10 @@ data split · **S2 `9542d0c`** interaction parity + whole-row click · **S3** th
   the anchor handler (primary-button-only, modifier-key no-op, text-selection-drag no-op, clicks
   inside a nested `<a>`/`<button>` yield to that element's own handler), implemented directly
   (never a synthetic `anchor.click()` — that carries `detail===0`, read as keyboard activation).
-  `scripts/virtualizationInteractionGuard.ts` — 22 real-Chromium Playwright checks (frontier j/k
+  `e2e/virtualization.spec.ts` — real-Chromium Playwright Test cases (frontier j/k
   on a cold load, Enter-opens, preview-follow zero-history-growth, wheel-unmount-then-resume,
   reload-at-depth restoration with no blank-spacer flash, row-click/text-drag/modifier-click) —
-  its own CI job, against a fixture `ritual` category grown 6→96 rows (additive) specifically to
+  in the `codex-e2e` CI job, against a fixture `ritual` category grown 6→96 rows specifically to
   clear `SSR_WINDOW`.
 - **Four real bugs found in-slice (S2):** `resetScroll:false` needed on both entry navigations (a
   latent P8 scroll-snap); a settle-timer cancellation race in `onEntryPreview` (fixed via a ref-

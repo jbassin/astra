@@ -1,5 +1,5 @@
 /**
- * The fixture corpus generator. Every codex test, both Chromium guards and a dev server
+ * The fixture corpus generator. Every codex test, the e2e suite and a dev server
  * without the real corpus read the fixture corpus (`fixtures/entities/`). This module
  * builds it deterministically from committed inputs, with zero network and zero `data/`
  * reads, from three sources:
@@ -20,7 +20,7 @@
  * The output is gitignored and never edited: change an input (a patch or synthetic row
  * here, a raw doc, or a re-pick) instead. `ensureFixtureCorpus()` brings
  * `fixtures/entities/` up to date. The vitest global setups of this package and of the site
- * (`apps/codex/web`), both Chromium guards and the site's `scripts/regen-goldens.ts` call
+ * (`apps/codex/web`), the e2e server and the site's `scripts/regen-goldens.ts` call
  * it through `@astra/codex-ingest/fixture`, and `pnpm --filter @astra/codex-ingest cli
  * fixture` runs it by hand (a dev server without the real corpus needs that once). Like
  * `transform.test.ts` for the corpus, `fixtureCorpus.test.ts` builds it twice and compares
@@ -388,7 +388,7 @@ export const SYNTHETIC_ROWS: readonly SyntheticRowSet[] = [
     // legacy ritual (Core Rulebook, OGL), so the Edition facet has two chips and toggling it
     // narrows the listing. Levels cycle 1..10 and every third row is uncommon.
     neededBy:
-      "scripts/virtualizationInteractionGuard.ts (frontier j/k, deep-link centering, reload restore, facet narrowing)",
+      "apps/codex/web/e2e/virtualization.spec.ts (frontier j/k, deep-link centering, reload restore, facet narrowing)",
     rows: () => Array.from({ length: 90 }, (_, i) => virtRitual(i + 1)),
   },
   {

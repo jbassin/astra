@@ -32,7 +32,7 @@ default:
 
 # Safe to re-run. On a machine without just yet: `mise trust && mise install`, activate
 # mise in your shell (`mise activate`), then run this.
-# Set up a clone: mise.toml's toolchain, both workspaces, the codex guards' Chromium, hooks.
+# Set up a clone: mise.toml's toolchain, both workspaces, the codex e2e suite's Chromium, hooks.
 bootstrap:
     mise trust mise.toml
     mise install
@@ -63,7 +63,7 @@ test: (_each "test" "py-test,ts-test")
 # installs the crate's pinned toolchain on first use).
 # pg-test and infra-check need Docker on the host (a throwaway Postgres; the pinned tool images).
 # Run everything CI runs, locally (all but the container-only vellum render goldens).
-ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-row-height-drift-guard,codex-virtualization-interaction-guard,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test,infra-check"))
+ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-e2e,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test,infra-check"))
 
 # `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
 # they run as Dagster assets; test them with `uv run pytest apps/<domain>/py`.
@@ -245,17 +245,13 @@ commitlint from="origin/main" to="HEAD":
     fi
     exec pnpm exec commitlint --from {{quote(from)}} --to {{quote(to)}} --verbose
 
-# The codex Chromium guards generate the fixture corpus and point CODEX_CORPUS_ROOT at it,
-# so they never read the real corpus. They need the Chromium from `just bootstrap`.
-# CI job codex-row-height-drift-guard: the listing row pitch is exactly 24px.
-codex-row-height-drift-guard:
+# The codex e2e suite (Playwright Test, apps/codex/web/e2e): its server generates the fixture
+# corpus and points CODEX_CORPUS_ROOT at it, so it never reads the real corpus. Needs the
+# Chromium from `just bootstrap`. Arguments go to `playwright test` (a file, `-g <title>`).
+# CI job codex-e2e: listing row geometry, scroll, keys, reload and the filter pane in Chromium.
+codex-e2e *args:
     pnpm --filter @astra/codex build
-    cd apps/codex/web && node --import tsx scripts/rowHeightDriftGuard.ts
-
-# CI job codex-virtualization-interaction-guard: listing scroll, keys and reload in Chromium.
-codex-virtualization-interaction-guard:
-    pnpm --filter @astra/codex build
-    cd apps/codex/web && node --import tsx scripts/virtualizationInteractionGuard.ts
+    cd apps/codex/web && pnpm exec playwright test "$@"
 
 # CI-only (see `ci`): runs inside node:24-slim with the Chromium the playwright lock pins.
 # CI job vellum-visual-regression: each fixture's rendered PNG against its golden.

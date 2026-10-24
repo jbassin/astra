@@ -17,7 +17,7 @@ else lives in one place each:
 
 ```sh
 mise trust && mise install   # host tools; then activate mise in your shell
-just bootstrap               # both workspaces, the git hooks, the codex guards' Chromium
+just bootstrap               # both workspaces, the git hooks, the codex e2e Chromium
 just ci                      # everything CI runs
 ```
 
