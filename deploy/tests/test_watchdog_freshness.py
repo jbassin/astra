@@ -117,3 +117,38 @@ def test_entity_drift_skips_while_a_publisher_holds_the_lock(tmp_path: Path) -> 
         r = _check(tmp_path, "check_entity_drift", WATCHDOG_ENTITY_CHECK_CMD="exit 1")
     assert r.returncode == 2
     assert "holds the git-publish" in r.stdout
+
+
+@pytest.mark.parametrize(
+    ("cmd", "rc", "text"),
+    [
+        ("echo '  same     a'; exit 0", 0, ""),
+        (
+            "printf '  same     a\\n  update   b (id)\\n  live only c (no file)\\n'; exit 1",
+            1,
+            "differ from deploy/signoz/rules in git — update   b (id);live only c (no file).",
+        ),
+        ("echo 'cannot compare: SigNoz down'; exit 2", 2, "could not run (exit 2): cannot compare"),
+        ("exit 124", 2, "could not run (exit 124)"),
+    ],
+)
+def test_signoz_rules_drift(tmp_path: Path, cmd: str, rc: int, text: str) -> None:
+    r = _check(tmp_path, "check_signoz_rules", WATCHDOG_RULES_CHECK_CMD=cmd)
+    assert r.returncode == rc
+    assert text in r.stdout
+
+
+def test_signoz_rules_without_a_key_skip_silently_and_log_once_a_day(tmp_path: Path) -> None:
+    env = {"WATCHDOG_RULES_CHECK_CMD": "exit 3", "WATCHDOG_RULES_UNREACHABLE_TICKS": "2"}
+    runs = [_check(tmp_path, "check_signoz_rules", **env) for _ in range(3)]
+    assert [r.returncode for r in runs] == [3, 3, 3]  # never 1: no page, however long
+    assert all(r.stdout == "" for r in runs)
+    assert ["no signoz_api_key" in r.stderr for r in runs] == [True, False, False]
+
+
+def test_signoz_rules_unreachable_pages_only_when_it_persists(tmp_path: Path) -> None:
+    env = {"WATCHDOG_RULES_CHECK_CMD": "echo down; exit 2", "WATCHDOG_RULES_UNREACHABLE_TICKS": "3"}
+    assert [_check(tmp_path, "check_signoz_rules", **env).returncode for _ in range(3)] == [2, 2, 1]
+    assert "failed 4 ticks in a row" in _check(tmp_path, "check_signoz_rules", **env).stdout
+    assert _check(tmp_path, "check_signoz_rules", WATCHDOG_RULES_CHECK_CMD="exit 0").returncode == 0
+    assert _check(tmp_path, "check_signoz_rules", **env).returncode == 2  # the count restarted

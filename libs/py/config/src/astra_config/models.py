@@ -11,7 +11,7 @@ Each language validates only the namespaces its apps read (0037 LIB-1 interim):
 
 Ownership (who reads each block, from a grep of the apps): both languages read `data`,
 `telemetry` and `codex`. Only Python reads `llm`, `scribe`, `linguist`, `mouthpiece`,
-`heartwood` and `mouthpiece-producer`. Only TS reads `weal`, `weal-overlay`, `orator`,
+`heartwood`, `mouthpiece-producer` and `ops`. Only TS reads `weal`, `weal-overlay`, `orator`,
 `strider`, `akasha-frontend`, `mouthpiece-frontend`, `vellum-frontend`, `vellum-render`,
 `harrow`, `ledger`, `portal`, `portal-headless` and `menhir`. `TS_NAMESPACES` below
 lists the TS-read ones; a TS-only namespace lives here in `WholeConfig`.
@@ -338,6 +338,16 @@ class CodexConfig(_Base):
     data_path: DataPath
 
 
+class OpsConfig(_Base):
+    # The host ops CLI (libs/py/ops). signoz_url is the SigNoz API as the HOST sees it (the
+    # published port); signoz_api_key is a SigNoz service-account key (Viewer for
+    # signoz-rules-check, Editor for signoz-rules-apply). metrics_textfile is the
+    # Prometheus textfile `astra-ops host-metrics` writes into node-exporter's textfile dir.
+    signoz_url: str
+    signoz_api_key: Secret | None = None
+    metrics_textfile: DataPath
+
+
 class MenhirConfig(_Base):
     # menhir (0031) — a Kahoot-style session-opener quiz, on the weal-overlay
     # template (srvx server + SSE fan-out + vite React SPA, no auth per R4). Same
@@ -370,6 +380,7 @@ class Config(_Base):
     heartwood: HeartwoodConfig
     mouthpiece_producer: MouthpieceProducerConfig
     codex: CodexConfig
+    ops: OpsConfig
 
     @model_validator(mode="after")
     def _resolve_data_paths(self) -> Self:

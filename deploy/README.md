@@ -199,8 +199,8 @@ newest). A failed run pages Discord through `astra-alert@` (Class C). Each snaps
 
 - `postgres/` — `pg_dump -Fc` of the dagster, weal and orator databases, with per-table row counts
   taken in the same transaction snapshot as the dump;
-- `signoz/rules/` — the SigNoz alert rules (not the notification channel, which holds the webhook);
-  the same files are committed in `signoz/rules/` (refresh with `just signoz-rules-export`);
+- `signoz/rules/` — the live SigNoz alert rules (not the notification channel, which holds the
+  webhook), a fallback copy of the committed `signoz/rules/`;
 - `state/<dir>/` — every top-level dir of the data root, the `astra-data` clone included (so
   unpushed bot commits are kept), minus live PGDATA, node-exporter output, the re-fetchable
   codex data, scribe's derived output and scratch, and lock files; hardlinked against the
@@ -219,6 +219,18 @@ more, when that stamp is 9 days old or missing, and when `astra-ontology-entity-
 finds the astra-data clone's `entity/entity.kdl` out of date with a fresh seed.
 Manual restore steps are in the header of `systemd/astra-backup.sh`. The SOPS age key
 (`sops/age.key`) is deliberately not in the backup; its second copy lives in the password manager.
+
+## Alert rules
+
+`signoz/rules/*.json` is the source of truth for the SigNoz alert rules, all routed to the
+`discord-ops` channel. Change a rule here, merge, then `just signoz-rules-apply` (prints the
+plan) and `just signoz-rules-apply --yes`; `just signoz-rules-check` compares read-only and the
+watchdog pages on drift (details: `libs/py/ops/README.md`). The rules for certificate expiry,
+container health, the Dagster daemon heartbeat and data freshness read the host metrics that
+`astra-metrics.timer` writes into node-exporter's textfile dir every 2 minutes
+(`just host-metrics`); "astra host metrics stale" fires when that file stops changing. The
+paging rules read nothing from the browser RUM services (`*-rum`), whose telemetry arrives
+through the public OTLP ingest ([ADR 0042](../docs/adr/0042-accepted-risk-open-otlp-ingest.md)).
 
 ## Host check
 

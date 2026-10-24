@@ -298,6 +298,17 @@ heartwood {
     artifacts-path "heartwood" // per-run agent artifacts + the backfill lock
 }
 
+ops {
+    // The host ops CLI (libs/py/ops, `astra-ops`). The SigNoz API as the HOST sees it (the
+    // published port) and a SigNoz service-account key: `just signoz-rules-check` (and the
+    // watchdog) need the Viewer role, `just signoz-rules-apply` needs Editor.
+    signoz-url "http://localhost:10351"
+    signoz-api-key ref="sops:signoz_api_key"
+    // `astra-ops host-metrics` (astra-metrics.timer) writes this Prometheus textfile; the
+    // dir is the one node-exporter serves (deploy/docker-compose.yml, --collector.textfile).
+    metrics-textfile "node-exporter/textfile/astra.prom"
+}
+
 mouthpiece-producer {
     // The mouthpiece producer (0034) — a host-run, read-only dspy.RLM that briefs the
     // recap script (moments, lore, callbacks) in place of the fixed wiki excerpts +

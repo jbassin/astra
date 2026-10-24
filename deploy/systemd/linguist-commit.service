@@ -19,3 +19,10 @@ WorkingDirectory=/ruby/data/astra-deploy
 # unattended unit (without it, no terminal means exit 64). After a deploy that changes this
 # line, re-run `just linguist-commit-timer-install` (daemon-reload) or systemd keeps the old one.
 ExecStart=/home/jbassin/.cargo/bin/just linguist-commit --yes
+# A oneshot has no start timeout by default, and the watchdog treats a timer whose service is
+# still activating as healthy, so a wedged run would look green forever (0037 OPS-10). Runs
+# take 3 s typically, 59 s at most (journal, 2026-10-15 to 10-24), but the worst legitimate
+# run waits up to 30 min for the git-publish lock (a heartwood run holds it), up to 30 min
+# for the deploy lock, then builds and health-checks a frontend (about 10 min). 90 min covers
+# that; past it systemd kills the run and OnFailure pages.
+TimeoutStartSec=90min

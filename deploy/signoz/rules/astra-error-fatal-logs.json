@@ -17,7 +17,7 @@
               }
             ],
             "filter": {
-              "expression": "severity_text IN ['ERROR', 'FATAL']"
+              "expression": "severity_text IN ['ERROR', 'FATAL'] AND service.name NOT LIKE '%-rum'"
             },
             "groupBy": [
               {
@@ -53,7 +53,7 @@
       ]
     }
   },
-  "description": "Class A in-band catch-all: any ERROR or FATAL log emitted by an astra service (pipeline asset failures, LLM errors after retries, service exceptions). Routes to the Discord ops channel.",
+  "description": "Class A in-band catch-all: any ERROR or FATAL log emitted by an astra service (pipeline asset failures, LLM errors after retries, service exceptions). Excludes the browser RUM services (service.name ending in -rum): they post through the public, unauthenticated OTLP ingest (ADR 0042), so anyone could forge one of their ERROR logs and page. Routes to the Discord ops channel.",
   "evaluation": {
     "kind": "rolling",
     "spec": {

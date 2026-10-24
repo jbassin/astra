@@ -16,6 +16,7 @@ WorkingDirectory=/ruby/data/astra-deploy
 # wedged mount is auto-remediated (abort FUSE conn + lazy unmount + wait for gdrive.service
 # to remount + re-probe) — worst case ~90s confirm + ~80s remediation. It also checks backup
 # snapshot age, restore-test age and entity.kdl drift (the seed check waits up to 30s for a
-# lock and runs up to 60s), so the timeout still leaves margin.
+# lock and runs up to 60s), and SigNoz rule drift (capped at 90s; about 3s normally), so the
+# timeout (worst case about 350s) still leaves margin.
 ExecStart=/ruby/data/astra-deploy/deploy/systemd/alert-notify.sh watchdog
 TimeoutStartSec=480

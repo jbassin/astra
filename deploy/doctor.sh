@@ -12,7 +12,9 @@
 #           under the data root would be created as root by Docker)
 #   units   every unit an install recipe links (each `_unit-link` in the justfile) is a symlink
 #           into the deploy checkout, and every such timer and path unit is enabled
-#   host    user lingering is on; the SOPS age key file exists
+#   host    user lingering is on; the SOPS age key file exists; the SOPS file names
+#           signoz_api_key (a grep for the key name, never decrypted; a warning while it is
+#           missing, since the watchdog then skips the SigNoz rules check)
 #   certs   each host in sites.caddyfile serves a certificate valid for DOCTOR_CERT_MIN_DAYS
 #           (a warning under 28 days: Caddy renews at 30, so a cert below that is overdue)
 #   expiry  `astra-expires: YYYY-MM-DD` markers on temporary surfaces (sites.caddyfile and the
@@ -152,6 +154,10 @@ check_host() {
   else fail "host: lingering is ${linger:-unknown} (run: loginctl enable-linger $(id -un))"; fi
   if [ -f "$key" ]; then ok "host: SOPS age key present at $key"
   else fail "host: no SOPS age key at $key (restore it from the password manager)"; fi
+  # The key NAME is plaintext in a SOPS file; the value stays encrypted and unread.
+  if grep -q '^signoz_api_key:' "$CODE_ROOT/deploy/sops/secrets.enc.yaml" 2>/dev/null; then
+    ok "host: SOPS holds signoz_api_key (the watchdog's SigNoz rules check)"
+  else warn "host: SOPS lacks signoz_api_key, so the watchdog skips the SigNoz rules check (see libs/py/ops/README.md)"; fi
 }
 
 days_until() { echo $((($(date -u -d "$1" +%s) - $(date -u -d "$TODAY" +%s)) / 86400)); }

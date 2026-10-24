@@ -14,6 +14,38 @@ each recipe is now a one-line wrapper, so systemd units, docs and bots still run
 | `heartwood-agent <date> [flags]` | `heartwood-agent` | PAID + LIVE (`--dry-run`: PAID) |
 | `_heartwood-push-deploy` | `heartwood-push-deploy` | LIVE |
 | `heartwood-revert <date>` | `heartwood-revert` | LIVE |
+| `signoz-rules-check` | `signoz-rules-check` | none (read-only) |
+| `signoz-rules-apply [--yes]` | `signoz-rules-apply` | dry run unless `--yes` |
+| `host-metrics` | `host-metrics` | none (rewrites one textfile) |
+
+## SigNoz alert rules as code
+
+`deploy/signoz/rules/*.json` is the source of truth for the SigNoz alert rules; each file is one
+rule body as `POST /api/v2/rules` takes it, named after its `alert` (the slug
+`just signoz-rules-export` writes). `signoz-rules-apply` matches live rules by that name,
+creates the missing ones, replaces the changed ones and never deletes; it prints the plan and
+changes nothing without `--yes`. `signoz-rules-check` is the read-only comparison; the watchdog
+runs it every 15 minutes and pages on drift or when it has failed for an hour. Until
+`signoz_api_key` exists in SOPS the check is skipped: the watchdog logs one INFO line a day and
+never pages, `just doctor` and `just signoz-rules-check` warn (the recipe exits 0). Exit codes
+of `astra-ops signoz-rules-check`: 0 in sync, 1 drift, 2 could not compare, 3 no API key. The
+module docstring
+of `signoz.py` says how live and git bodies are compared.
+
+The API key is `ops.signoz-api-key` (`sops:signoz_api_key`; `$SIGNOZ_API_KEY` wins), a SigNoz
+service-account key: Viewer is enough for check, apply needs Editor. Create one in the SigNoz
+UI (Settings, Service accounts) and add it with
+`sops set deploy/sops/secrets.enc.yaml '["signoz_api_key"]' '"<key>"'`.
+
+## Host metrics
+
+`host-metrics` (run every 2 minutes by `astra-metrics.timer`, installed by `just alert-install`)
+writes `ops.metrics-textfile`, which node-exporter serves to SigNoz: TLS certificate expiry
+per site in `sites.caddyfile`, container health and restart counts for the `astra` compose
+project, the Dagster daemons' heartbeat ages, and the age of the newest transcript and
+episode. A probe that cannot run becomes `astra_probe_success 0` and pages through the rule
+"astra host probe failing"; the run itself fails only when the file cannot be written. The
+module docstring of `host_metrics.py` lists every metric.
 
 ## Operations
 

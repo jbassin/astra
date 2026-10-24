@@ -54,6 +54,11 @@ heartwood {
     request-timeout-minutes 180
     artifacts-path "heartwood"
 }
+ops {
+    signoz-url "http://signoz.test:3301"
+    signoz-api-key ref="sops:signoz_api_key"
+    metrics-textfile "exporter/astra.prom"
+}
 mouthpiece-producer {
     model "openrouter/deepseek/deepseek-v4.1-flash"
     sub-model "openrouter/deepseek/deepseek-v4.1-flash"
