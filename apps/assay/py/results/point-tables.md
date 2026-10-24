@@ -190,28 +190,6 @@ Hybrid trainer n=136, R²=0.040, α=-0.288.
 | Unconscious | T4 | 0.780 | 27.16 |
 | Dying | T4 | 0.763 | 26.59 |
 
-
-## Appendix: round-1 tables (superseded — kept for provenance)
-
-Round 1's per-rank-dummy pooled facet fit (V1/V2 FAILED as designed; see
-`README.md` and commit `4285ce8`). Full historical content lives in git
-history at that commit; the headline ladder is reproduced here for a quick
-side-by-side against round 2's pure-anchored ladder above.
-
-| Rank | Round-1 fitted EV | Round-2 pure budget |
-|---|---|---|
-
-| 1 | see `README.md` / git history | 6.04 |
-| 2 | see `README.md` / git history | 12.84 |
-| 3 | see `README.md` / git history | 19.98 |
-| 4 | see `README.md` / git history | 27.33 |
-| 5 | see `README.md` / git history | 34.84 |
-| 6 | see `README.md` / git history | 42.50 |
-| 7 | see `README.md` / git history | 50.27 |
-| 8 | see `README.md` / git history | 58.14 |
-| 9 | see `README.md` / git history | 66.09 |
-| 10 | see `README.md` / git history | 74.13 |
-
 ---
 
 ## Buff prior card (D30-36, round 4)

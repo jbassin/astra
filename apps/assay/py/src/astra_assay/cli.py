@@ -1,24 +1,19 @@
-"""``assay`` console script — extract / fit / price / score / export-codex /
-seed-homebrew / score-homebrew / homebrew-revisions.
+"""``assay`` console script — price / score / export-codex / score-homebrew /
+homebrew-revisions / export-book.
 
-    uv run assay extract [--data-root PATH]   # features table → out/features.json
-    uv run assay fit [--data-root PATH]       # round-1 per-rank-facet fit (superseded diagnostic)
     uv run assay price [--data-root PATH]     # ladder + Stage A/B + comparables + priors → results/
     uv run assay score --spell PATH           # score one spell JSON (round-3 model; also
                                                #   scores a single canonical homebrew store file)
     uv run assay export-codex [--data-root PATH]  # codex artifact (D30-38) → out/spell-power.json
-    uv run assay seed-homebrew [--force]      # ONE-TIME: vendored run_balance 176 -> the
-                                               #   committed canonical store homebrew/spells/
     uv run assay score-homebrew               # score the canonical store -> out/homebrew/
                                                #   scores.json
     uv run assay homebrew-revisions           # diff the store vs. a fresh vendor re-conversion
                                                #   -> homebrew/revisions.md
 
-The last three live in ``homebrew.py`` (registered via
-``homebrew.register_subparsers``) — the adapter for the vendored
-``vendor/run_balance/pf2e_converted_spells`` bespoke-schema conversion set
-plus the canonical, committed, hand-editable homebrew spell store it seeds;
-see that module's docstring.
+The homebrew commands live in ``homebrew.py`` (registered via
+``homebrew.register_subparsers``), next to the adapter for the vendored
+``vendor/run_balance/pf2e_converted_spells`` conversion set the store was seeded from;
+``export-book`` lives in ``book.py``.
 
 Telemetry (standing principle): ``init_telemetry`` wraps every subcommand, a
 root span per invocation, ``shutdown()`` in ``finally`` (the short-lived-process
@@ -46,13 +41,11 @@ from . import (
     ledger,
     pricing,
     priors,
-    report,
     report2,
     summons,
 )
 from .conditions import Tier
 from .extract import (
-    ExtractResult,
     SkipRecord,
     SpellFeatures,
     build_effect_index_from_snapshot,
@@ -60,7 +53,6 @@ from .extract import (
     extract_spell,
     load_spell_json,
 )
-from .model import DesignMatrix, FitResult, build_design_matrix, fit_ols
 from .snapshot import SnapshotNotFoundError, resolve_snapshot
 
 APP_ROOT = Path(__file__).resolve().parents[2]  # src/astra_assay/cli.py -> apps/assay/py
@@ -96,272 +88,6 @@ class Round4Report:
     summon_curve_error: str
     export_report: export.ExportReport
     export_deterministic: bool
-
-
-def _run_extract(data_root: str | None) -> ExtractResult:
-    paths = resolve_snapshot(data_root)
-    return extract_all(paths.spells_dir)
-
-
-def cmd_extract(args: argparse.Namespace) -> None:
-    with _tracer.start_as_current_span("assay.extract") as span:
-        result = _run_extract(args.data_root)
-        OUT_DIR.mkdir(parents=True, exist_ok=True)
-        FEATURES_PATH.write_text(
-            json.dumps(result.model_dump(mode="json"), indent=2, sort_keys=True) + "\n",
-            encoding="utf-8",
-        )
-        span.set_attribute("assay.extract.rows", len(result.rows))
-        span.set_attribute("assay.extract.skipped", len(result.skipped))
-        print(
-            f"assay extract: {len(result.rows)} rows, {len(result.skipped)} skipped "
-            f"-> {FEATURES_PATH}"
-        )
-
-
-def _fit_population(rows: list[SpellFeatures], *, cantrip: bool) -> tuple[DesignMatrix, FitResult]:
-    # Round 1's log-linear rank+facet fit is damage-axis-only (unchanged, per
-    # S1's "no model changes"). Round 2's extraction pass now also emits
-    # condition-only control rows (ev=0.0, no damage at all) into the same
-    # features table — those feed the NEW round-2 pricing pipeline
-    # (pricing.py), never this log(ev) fit, so they're excluded here exactly
-    # as they were implicitly excluded (via a round-1 extract-time skip)
-    # before round 2 existed.
-    pop = [r for r in rows if r.is_cantrip == cantrip and r.ev > 0.0]
-    dm = build_design_matrix(pop, include_rank_ladder=not cantrip)
-    return dm, fit_ols(dm)
-
-
-def _fit_result_to_json(fit: FitResult, *, include_rank_ladder: bool) -> dict:
-    return {
-        "include_rank_ladder": include_rank_ladder,
-        "columns": fit.columns,
-        "coefficients": fit.coefficients,
-        "n_obs": fit.n_obs,
-        "n_params": fit.n_params,
-        "r_squared": fit.r_squared,
-        "rank_slope": fit.rank_slope,
-        # JSON object keys are strings; rank is re-int()'d on load (cmd_score).
-        "rank_slopes": {str(rank): slope for rank, slope in fit.rank_slopes.items()},
-    }
-
-
-def cmd_fit(args: argparse.Namespace) -> None:
-    """Round-1's per-rank-dummy facet fit — SUPERSEDED by ``assay price``
-    (round 2's pure-anchored ladder + Stage A/B) but kept runnable for
-    provenance/diagnostic comparison. Do not run this after ``price`` in a
-    normal workflow: both write ``results/{point-tables,power-ledger,
-    validation}.md`` and this would clobber round 2's content with round-1's."""
-    with _tracer.start_as_current_span("assay.fit") as span:
-        extract_result = _run_extract(args.data_root)
-        OUT_DIR.mkdir(parents=True, exist_ok=True)
-        FEATURES_PATH.write_text(
-            json.dumps(extract_result.model_dump(mode="json"), indent=2, sort_keys=True) + "\n",
-            encoding="utf-8",
-        )
-
-        _main_dm, main_fit = _fit_population(extract_result.rows, cantrip=False)
-        _cantrip_dm, cantrip_fit = _fit_population(extract_result.rows, cantrip=True)
-        span.set_attribute("assay.fit.main.n_obs", main_fit.n_obs)
-        span.set_attribute("assay.fit.cantrip.n_obs", cantrip_fit.n_obs)
-        span.set_attribute("assay.fit.main.r_squared", main_fit.r_squared)
-
-        RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-        params = {
-            "main": _fit_result_to_json(main_fit, include_rank_ladder=True),
-            "cantrip": _fit_result_to_json(cantrip_fit, include_rank_ladder=False),
-        }
-        FITTED_PARAMS_PATH.write_text(
-            json.dumps(params, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-        )
-
-        _write_point_tables(main_fit, cantrip_fit)
-        _write_power_ledger(main_fit, cantrip_fit)
-        main_rows = [r for r in extract_result.rows if not r.is_cantrip]
-        _write_validation(main_rows, main_fit, cantrip_fit, extract_result.skipped)
-
-        print(
-            f"assay fit: main n={main_fit.n_obs} R2={main_fit.r_squared:.3f}  "
-            f"cantrip n={cantrip_fit.n_obs} R2={cantrip_fit.r_squared:.3f} -> {RESULTS_DIR}"
-        )
-
-
-def _write_point_tables(main_fit: FitResult, cantrip_fit: FitResult) -> None:
-    lines = ["# assay — damage-budget point tables (round 1)", ""]
-    lines.append("Generated by `uv run assay fit`. See the design doc for methodology:")
-    lines.append("`thoughts/archive/research/2026-07-19-assay-spell-power-0030-thoughts.md`.")
-    lines.append("")
-    lines.append("## Damage budget by rank (non-cantrip)")
-    lines.append("")
-    lines.append("| Rank | Fitted EV | Rounded budget | Community 7×rank | GM Core anchor |")
-    lines.append("|---|---|---|---|---|")
-    for row in report.rank_ladder_table(main_fit):
-        anchor = f"{row.gm_core_anchor:.0f}" if row.gm_core_anchor is not None else "—"
-        lines.append(
-            f"| {row.rank} | {row.fitted_ev:.2f} | {row.rounded_budget:.1f} | "
-            f"{row.community_7x_rank:.0f} | {anchor} |"
-        )
-    lines.append("")
-    lines.append("## Facet multipliers (non-cantrip fit)")
-    lines.append("")
-    lines.append("| Facet | Multiplier | Rounded (clean fraction) |")
-    lines.append("|---|---|---|")
-    lines.extend(
-        f"| {f.name} | ×{f.multiplier:.3f} | ×{f.rounded:.3f} |"
-        for f in report.facet_multiplier_table(main_fit)
-    )
-    lines.append("")
-    lines.append("## Cantrip fit (separate curve, rank-1-only population)")
-    lines.append("")
-    intercept = math.exp(cantrip_fit.coefficients.get("intercept", 0.0))
-    lines.append(
-        f"Baseline cantrip EV (all riders off): **{intercept:.2f}** "
-        f"(n={cantrip_fit.n_obs}, R²={cantrip_fit.r_squared:.3f})"
-    )
-    lines.append("")
-    lines.append("| Facet | Multiplier | Rounded (clean fraction) |")
-    lines.append("|---|---|---|")
-    lines.extend(
-        f"| {f.name} | ×{f.multiplier:.3f} | ×{f.rounded:.3f} |"
-        for f in report.facet_multiplier_table(cantrip_fit)
-    )
-    lines.append("")
-    POINT_TABLES_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
-
-
-def _write_power_ledger(main_fit: FitResult, cantrip_fit: FitResult) -> None:
-    lines = ["# assay — per-spell power ledger (round 1)", ""]
-    for label, fit, residual_col in (
-        ("Non-cantrip", main_fit, "Residual (rank-equiv)"),
-        ("Cantrip", cantrip_fit, "Residual (log EV — no rank ladder to divide by)"),
-    ):
-        ledger = report.power_ledger(fit)
-        lines.append(f"## {label} (n={len(ledger)}, sorted hottest → coldest)")
-        lines.append("")
-        lines.append(f"| Spell | Rank | EV | Predicted | {residual_col} |")
-        lines.append("|---|---|---|---|---|")
-        top = ledger[:10]
-        bottom = ledger[-10:] if len(ledger) > 10 else []
-        lines.extend(
-            f"| {row.name} | {row.rank} | {row.ev:.1f} | {row.predicted_ev:.1f} | "
-            f"{row.residual_rank_equiv:+.2f} |"
-            for row in top
-        )
-        if bottom:
-            lines.append("| … | | | | |")
-            lines.extend(
-                f"| {row.name} | {row.rank} | {row.ev:.1f} | {row.predicted_ev:.1f} | "
-                f"{row.residual_rank_equiv:+.2f} |"
-                for row in bottom
-            )
-        lines.append("")
-        lines.append(
-            f"<details><summary>Full {label.lower()} ledger ({len(ledger)} spells)</summary>"
-        )
-        lines.append("")
-        lines.append(f"| Spell | Rank | EV | Predicted | {residual_col} |")
-        lines.append("|---|---|---|---|---|")
-        lines.extend(
-            f"| {row.name} | {row.rank} | {row.ev:.1f} | {row.predicted_ev:.1f} | "
-            f"{row.residual_rank_equiv:+.2f} |"
-            for row in ledger
-        )
-        lines.append("")
-        lines.append("</details>")
-        lines.append("")
-    POWER_LEDGER_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
-
-
-def _write_validation(
-    main_rows: list[SpellFeatures],
-    main_fit: FitResult,
-    cantrip_fit: FitResult,
-    skipped: list[SkipRecord],
-) -> None:
-    lines = ["# assay — round-1 validation (V1–V4)", ""]
-
-    v1 = report.validate_v1_clustering(main_fit)
-    lines.append("## V1 — in-rank clustering")
-    lines.append("")
-    lines.append(
-        "Target: the middle 80% of fit-population spells within ±⅓ rank-equivalent of budget."
-    )
-    lines.append("")
-    lines.append(f"- n = {v1.n}")
-    lines.append(f"- share within ±⅓ rank: **{v1.share_within_third_rank:.1%}**")
-    lines.append(
-        f"- p10 / p90 rank-equivalent residual: {v1.p10_rank_equiv:+.2f} / {v1.p90_rank_equiv:+.2f}"
-    )
-    lines.append(f"- **{'PASS' if v1.passed else 'FAIL'}** (target ≥80% within ±⅓ rank)")
-    lines.append("")
-
-    v2 = report.validate_v2_heighten(main_rows, main_fit)
-    lines.append("## V2 — heighten-projection consistency (held out of the fit)")
-    lines.append("")
-    lines.append(f"- projections computed: {len(v2.projections)}")
-    lines.append(f"- mean |residual| (rank-equivalent): {v2.mean_abs_residual_rank_equiv:.2f}")
-    if v2.fireball_projection:
-        p = v2.fireball_projection
-        lines.append(
-            f"- Fireball rank {p.base_rank}→{p.target_rank}: projected EV {p.projected_ev:.1f} "
-            f"(8d6=28 expected) vs. fitted rank-{p.target_rank} budget {p.predicted_ev:.1f} "
-            f"(residual {p.residual_rank_equiv:+.2f} ranks)"
-        )
-    else:
-        lines.append(
-            "- Fireball rank-3→4 projection not available (check fit population / rank coverage)."
-        )
-    lines.append("")
-
-    v3 = report.validate_v3_outliers(main_fit, strong=report.KNOWN_STRONG, weak=report.KNOWN_WEAK)
-    v3_cantrip = report.validate_v3_outliers(
-        cantrip_fit,
-        strong=report.KNOWN_STRONG_CANTRIP,
-        weak=report.KNOWN_WEAK_CANTRIP,
-        use_raw_residual=True,
-    )
-    lines.append("## V3 — known-outlier sanity")
-    lines.append("")
-    lines.append("Non-cantrip rows: residual in rank-equivalents. Cantrip rows (Electric Arc,")
-    lines.append("Acid Splash — no rank ladder to divide by): raw log(EV) residual, sign only.")
-    lines.append("")
-    lines.append("| Spell | Expected | Found | Residual | Correct side |")
-    lines.append("|---|---|---|---|---|")
-    for c in (*v3.checks, *v3_cantrip.checks):
-        r = f"{c.residual_rank_equiv:+.3f}" if c.residual_rank_equiv is not None else "—"
-        side = "—" if c.correct_side is None else ("yes" if c.correct_side else "**NO**")
-        lines.append(f"| {c.name} | {c.expected} | {c.found} | {r} | {side} |")
-    lines.append("")
-    lines.append(f"**{'PASS' if v3.all_correct and v3_cantrip.all_correct else 'FAIL'}**")
-    lines.append("")
-
-    v4 = report.validate_v4_anchors(main_fit)
-    lines.append("## V4 — anchor recovery (fitted ladder vs. community 7×rank / GM Core)")
-    lines.append("")
-    lines.append("| Rank | Fitted EV | Community 7×rank | Δ vs community | GM Core anchor |")
-    lines.append("|---|---|---|---|---|")
-    for row in v4:
-        gm = f"{row.gm_core:.0f}" if row.gm_core is not None else "—"
-        lines.append(
-            f"| {row.rank} | {row.fitted_ev:.2f} | {row.community_7x:.0f} | "
-            f"{row.delta_vs_community_pct:+.1f}% | {gm} |"
-        )
-    lines.append("")
-
-    lines.append("## Skip ledger summary")
-    lines.append("")
-    from collections import Counter
-
-    reasons = Counter(s.reason for s in skipped)
-    lines.append(f"Total skipped (all main-slot spells, any reason): {len(skipped)}")
-    lines.append("")
-    lines.append("| Reason | Count |")
-    lines.append("|---|---|")
-    for reason, count in reasons.most_common():
-        lines.append(f"| {reason} | {count} |")
-    lines.append("")
-
-    VALIDATION_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 # ---------------------------------------------------------------------------
@@ -401,11 +127,18 @@ def _stage_a_to_json(stage_a: pricing.StageAFit) -> dict:
     }
 
 
+def write_fitted_params(params: dict[str, dict], path: Path = FITTED_PARAMS_PATH) -> None:
+    """Write ``fitted-params.json`` from this run's values alone. It never reads the previous
+    file, so ``price`` works on a fresh tree and stale keys cannot survive a re-run."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(params, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
 def cmd_price(args: argparse.Namespace) -> None:
     """Round 2's full pipeline: pure-anchored ladder (D30-1) -> Stage A tier
     discounts (D30-3/D30-5) -> Stage B + full-population scoring (D30-8) ->
     results/ regeneration (D30-10). This is the command whose output is
-    committed; ``assay fit`` (round 1) is a superseded diagnostic only."""
+    committed."""
     with _tracer.start_as_current_span("assay.price") as span:
         paths = resolve_snapshot(args.data_root)
         extract_result = extract_all(paths.spells_dir)
@@ -503,21 +236,21 @@ def cmd_price(args: argparse.Namespace) -> None:
         span.set_attribute("assay.price.export_entries", export_report.entry_count)
 
         RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-        existing = json.loads(FITTED_PARAMS_PATH.read_text(encoding="utf-8"))
-        existing["round2"] = {
+        params: dict[str, dict] = {}
+        params["round2"] = {
             "ladder": _ladder_to_json(ladder),
             "ladder_with_singleton": _ladder_to_json(ladder_with_singleton),
             "cantrip_ladder": _cantrip_ladder_to_json(cantrip_ladder),
             "stage_a": _stage_a_to_json(stage_a),
         }
-        existing["round3"] = {
+        params["round3"] = {
             "comparables_corpus_n": len(corpus),
             "tier_rates": {
                 t.value: {"w_repr": tr.w_repr, "anchor_budget": tr.anchor_budget, "rate": tr.rate}
                 for t, tr in tier_rates.items()
             },
         }
-        existing["round4"] = {
+        params["round4"] = {
             "buff_corpus_n": len(buff_corpus),
             "export_entry_count": export_report.entry_count,
             "export_kind_counts": export_report.kind_counts,
@@ -526,9 +259,7 @@ def cmd_price(args: argparse.Namespace) -> None:
             "export_deterministic": export_deterministic,
             "summon_curve_verified": summon_curve_ok,
         }
-        FITTED_PARAMS_PATH.write_text(
-            json.dumps(existing, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-        )
+        write_fitted_params(params)
 
         _write_point_tables_v2(
             ladder,
@@ -635,19 +366,6 @@ def _collect_summon_rows(spells_dir: Path) -> list[dict]:
         band = summons.summon_band(rank, description)
         out.append({"name": data.get("name", "<unnamed>"), "rank": rank, "band": band})
     return out
-
-
-_ROUND1_APPENDIX = """
-## Appendix: round-1 tables (superseded — kept for provenance)
-
-Round 1's per-rank-dummy pooled facet fit (V1/V2 FAILED as designed; see
-`README.md` and commit `4285ce8`). Full historical content lives in git
-history at that commit; the headline ladder is reproduced here for a quick
-side-by-side against round 2's pure-anchored ladder above.
-
-| Rank | Round-1 fitted EV | Round-2 pure budget |
-|---|---|---|
-"""
 
 
 def _write_point_tables_v2(
@@ -826,12 +544,6 @@ def _write_point_tables_v2(
         for row in report2.condition_price_card(stage_a, ladder)
     )
     lines.append("")
-    lines.append(_ROUND1_APPENDIX)
-    lines.extend(
-        f"| {r} | see `README.md` / git history | {ladder.budget(r):.2f} |" for r in range(1, 11)
-    )
-    lines.append("")
-
     lines.append("---")
     lines.append("")
     lines.append("## Buff prior card (D30-36, round 4)")
@@ -1633,20 +1345,6 @@ def build_parser() -> argparse.ArgumentParser:
         prog="assay", description="PF2e homebrew spell power scoring (0030 round 3)."
     )
     sub = parser.add_subparsers(dest="command", required=True)
-
-    p_extract = sub.add_parser("extract", help="extract the features table -> out/features.json")
-    p_extract.add_argument(
-        "--data-root", default=None, help="override the codex data root (else config.kdl)"
-    )
-    p_extract.set_defaults(func=cmd_extract)
-
-    p_fit = sub.add_parser(
-        "fit", help="round-1 per-rank-facet fit (SUPERSEDED diagnostic — run `price` for results/)"
-    )
-    p_fit.add_argument(
-        "--data-root", default=None, help="override the codex data root (else config.kdl)"
-    )
-    p_fit.set_defaults(func=cmd_fit)
 
     p_price = sub.add_parser(
         "price",

@@ -1,9 +1,8 @@
-"""assay — quantitative spell power scoring for PF2e homebrew (0030 round 1).
+"""assay — PF2e spell power scoring, the canonical homebrew spell store, and the book export.
 
-Reads the codex Foundry spell-pack snapshot (read-only), extracts damage-axis
-features per spell, fits a log-linear rank+facet budget model, and scores a
-homebrew spell against it. See ``thoughts/archive/research/2026-07-19-assay-
-spell-power-0030-thoughts.md`` for the locked design.
+Reads the codex Foundry spell-pack snapshot (read-only), prices damage and hybrid spells
+against a pure-anchored damage ladder, and gives effect spells official comparables and a
+rank range. See ``README.md`` for the commands and the specs behind them.
 """
 
 from __future__ import annotations

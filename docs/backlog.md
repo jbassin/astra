@@ -165,11 +165,8 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## assay
 
-- Archive the workshop (including `review-ui/`), move the books out of codex and the PDF out of git —
-  agent; [ADR 0018](adr/0018-book-binaries-stay-in-history.md), [ADR 0019](adr/0019-assay-scope.md).
-- `assay fit` wipes parameters other commands need; a plain `seed-homebrew` resurrects 9 deleted
-  spells — agent; product bug (ASY-5).
-- Snapshot selection sorts versions as strings — agent; product bug (ASY-21).
+- Move the books out of codex and the PDF out of git — agent;
+  [ADR 0018](adr/0018-book-binaries-stay-in-history.md), [ADR 0019](adr/0019-assay-scope.md).
 
 ## Services
 

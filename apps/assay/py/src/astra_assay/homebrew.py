@@ -9,11 +9,9 @@ adapter output seeds ONE TIME.
 now the single source of truth for the 176 homebrew spells going forward
 (committed; eventual consumers: codex ingest, possibly a Foundry compendium
 module). The vendored bespoke schema is provenance-only from here on —
-nothing downstream of the store reads it. Three subcommands (registered in
+nothing downstream of the store reads it. Two subcommands (registered in
 ``cli.py``, mirroring its subparser pattern):
 
-    uv run assay seed-homebrew        # ONE-TIME: vendor -> the committed store (refuses to
-                                       #   overwrite an existing file without --force)
     uv run assay score-homebrew       # reads the STORE (never converts from vendor) ->
                                        #   out/homebrew/scores.json (gitignored, reproducible)
     uv run assay homebrew-revisions   # diffs the store against a fresh vendor re-conversion ->
@@ -639,8 +637,8 @@ _HEIGHTEN_DAMAGE_RE = re.compile(rf"damage\s+increases?\s+by\s+({_DICE_TOKEN})",
 _FIXED_TRIGGER_RE = re.compile(r"^(\d+)(?:st|nd|rd|th)$", re.IGNORECASE)
 _PLUS_TRIGGER_RE = re.compile(r"^\+(\d+)$")
 
-#: batch-0 scope (2026-07-22 stakeholder decision, `results/homebrew-item7/
-#: INDEX.md`): EXACTLY 10 store docs carry Heightened prose with no
+#: batch-0 scope (2026-07-22 stakeholder decision, `thoughts/archive/assay-workshop/
+#: results/homebrew-item7/INDEX.md`): EXACTLY 10 store docs carry Heightened prose with no
 #: `system.heightening` key at all, because their single "+N" heighten
 #: sentence either (a) states a per-rank damage-dice bump that
 #: `_HEIGHTEN_DAMAGE_RE`'s strict "damage increases by" adjacency can't reach
@@ -1140,9 +1138,7 @@ def convert_spell(spell: dict[str, Any]) -> ConvertedSpell:
 
 def load_vendored_spells() -> list[dict[str, Any]]:
     if not VENDOR_SPELLS_PATH.exists():
-        raise SystemExit(
-            f"assay seed-homebrew: vendored spell set not found at {VENDOR_SPELLS_PATH}"
-        )
+        raise SystemExit(f"assay: vendored spell set not found at {VENDOR_SPELLS_PATH}")
     data = json.loads(VENDOR_SPELLS_PATH.read_text(encoding="utf-8"))
     return data["spell"]
 
@@ -1182,28 +1178,39 @@ def _seed_flags(spell: dict[str, Any], warnings: list[str]) -> dict[str, Any]:
     }
 
 
+class StoreSeedRefusedError(RuntimeError):
+    """`seed_homebrew` was pointed at the canonical store or at a directory that already
+    holds spell files."""
+
+
 @dataclass
 class SeedReport:
     seeded: list[str] = field(default_factory=list)
-    skipped_existing: list[str] = field(default_factory=list)
     total_warnings: int = 0
 
 
-def seed_homebrew(*, force: bool = False, store_dir: Path | None = None) -> SeedReport:
-    """Write every vendored spell's Foundry-shaped conversion into the
-    canonical store, ONE TIME per file — refuses to overwrite an existing
-    file unless `force=True` (the store is hand-editable; a casual re-run
-    must never clobber a stakeholder's edit). `store_dir` is overridable for
-    tests; production code always uses `HOMEBREW_STORE_DIR`."""
-    store_dir = store_dir or HOMEBREW_STORE_DIR
+def seed_homebrew(store_dir: Path) -> SeedReport:
+    """Bake the adapter's baseline conversion of every vendored spell into `store_dir`.
+
+    The canonical store was seeded once (commit `b7b990d4`) and is hand-edited since, so this
+    is no longer a command. It only builds a scratch baseline store (the tests use one). It
+    refuses the canonical store and any directory that already holds `*.json` files: a
+    re-seed would overwrite hand edits and bring back spells the stakeholder deleted or
+    renamed."""
+    if store_dir.resolve() == HOMEBREW_STORE_DIR.resolve():
+        raise StoreSeedRefusedError(
+            f"assay: refusing to seed the canonical store {HOMEBREW_STORE_DIR}; "
+            "edit its files by hand instead."
+        )
+    if store_dir.is_dir() and any(store_dir.glob("*.json")):
+        raise StoreSeedRefusedError(
+            f"assay: refusing to seed {store_dir}: it already holds spell files."
+        )
     store_dir.mkdir(parents=True, exist_ok=True)
     report = SeedReport()
     for spell in load_vendored_spells():
         slug = _slugify(spell["name"])
         path = store_dir / f"{slug}.json"
-        if path.exists() and not force:
-            report.skipped_existing.append(slug)
-            continue
         c = convert_spell(spell)
         doc = dict(c.foundry)
         doc["flags"] = _seed_flags(spell, c.warnings)
@@ -1219,10 +1226,7 @@ def load_homebrew_store(store_dir: Path | None = None) -> list[tuple[str, dict[s
     score time, per the round-3 architecture change)."""
     store_dir = store_dir or HOMEBREW_STORE_DIR
     if not store_dir.is_dir() or not any(store_dir.glob("*.json")):
-        raise SystemExit(
-            f"assay score-homebrew: no canonical store at {store_dir} — "
-            "run `assay seed-homebrew` first."
-        )
+        raise SystemExit(f"assay score-homebrew: no canonical store at {store_dir}.")
     return [
         (path.stem, json.loads(path.read_text(encoding="utf-8")))
         for path in sorted(store_dir.glob("*.json"))
@@ -1330,8 +1334,8 @@ class RevisionsReport:
 def homebrew_revisions(store_dir: Path | None = None) -> RevisionsReport:
     """Diff the canonical store against a fresh in-memory re-conversion of
     the vendored baseline — never regenerates or overwrites the store
-    itself. Right after `seed_homebrew`, this must report 0 deviations
-    (the seed's own determinism proof)."""
+    itself. On a store freshly baked by `seed_homebrew`, this must report 0
+    deviations (the seed's own determinism proof)."""
     store_dir = store_dir or HOMEBREW_STORE_DIR
     baseline_by_slug = {c.slug: c.foundry for c in convert_all()}
     store_by_slug: dict[str, dict[str, Any]] = {}
@@ -1384,7 +1388,7 @@ def _write_revisions_md(report: RevisionsReport, path: Path) -> None:
     )
     lines.append("")
     lines.append(
-        "**Determinism check:** right after `assay seed-homebrew`, this must read **0 "
+        "**Determinism check:** on a store freshly baked from the adapter, this must read **0 "
         "deviations** (the store is byte-faithful to the adapter's own baseline output, "
         "`flags` provenance aside — see `homebrew.diff_spell`)."
     )
@@ -1576,30 +1580,6 @@ def score_all(store_dir: Path | None = None) -> list[dict[str, Any]]:
 # ---------------------------------------------------------------------------
 
 
-def cmd_seed_homebrew(args: argparse.Namespace) -> None:
-    with _tracer.start_as_current_span("assay.seed-homebrew") as span:
-        report = seed_homebrew(force=args.force)
-        span.set_attribute("assay.seed_homebrew.seeded", len(report.seeded))
-        span.set_attribute("assay.seed_homebrew.skipped_existing", len(report.skipped_existing))
-        span.set_attribute("assay.seed_homebrew.warnings", report.total_warnings)
-        print(  # noqa: T201 -- command-line output
-            f"assay seed-homebrew: seeded {len(report.seeded)} spell(s) -> {HOMEBREW_STORE_DIR} "
-            f"({report.total_warnings} adapter warnings recorded into flags.assay)"
-        )
-        if report.skipped_existing:
-            suffix = "" if args.force else " (pass --force to overwrite — DESTROYS hand edits)"
-            preview = ", ".join(report.skipped_existing[:10])
-            more = (
-                f", … +{len(report.skipped_existing) - 10} more"
-                if len(report.skipped_existing) > 10
-                else ""
-            )
-            print(  # noqa: T201 -- command-line output
-                f"  {len(report.skipped_existing)} already present, left untouched{suffix}: "
-                f"{preview}{more}"
-            )
-
-
 def cmd_homebrew_revisions(args: argparse.Namespace) -> None:  # noqa: ARG001 -- argparse dispatch passes args to every command
     with _tracer.start_as_current_span("assay.homebrew-revisions") as span:
         report = homebrew_revisions()
@@ -1659,21 +1639,6 @@ def cmd_score_homebrew(args: argparse.Namespace) -> None:  # noqa: ARG001 -- arg
 
 
 def register_subparsers(sub: argparse._SubParsersAction) -> None:
-    p_seed = sub.add_parser(
-        "seed-homebrew",
-        help=(
-            "ONE-TIME seed: vendored run_balance 176 -> the committed canonical store "
-            "apps/assay/py/homebrew/spells/<slug>.json (never overwrites an existing file "
-            "without --force)"
-        ),
-    )
-    p_seed.add_argument(
-        "--force",
-        action="store_true",
-        help="overwrite existing store files (DESTROYS hand edits) — off by default",
-    )
-    p_seed.set_defaults(func=cmd_seed_homebrew)
-
     p_score = sub.add_parser(
         "score-homebrew",
         help=(

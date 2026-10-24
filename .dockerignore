@@ -119,8 +119,6 @@ apps/mouthpiece/web/public/episodes.json
 # Other gitignored output/scratch inside copied trees (codex/books is the host-only
 # `assay export-book` LaTeX source; no build reads it).
 apps/assay/py/out
-apps/assay/py/review-ui/data.json
-apps/assay/py/review-ui/state
 apps/codex/web/books
 
 # Toolchain output + caches — rebuilt in-image (node_modules via pnpm install, the venv
