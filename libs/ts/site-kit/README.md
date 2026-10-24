@@ -12,7 +12,7 @@ step. How to start a new frontend from these pieces is in `apps/strider/web/READ
 | `contentWatchPlugin` | `vite.config.ts` | runs the app's `scripts/build-content.ts` (as a Node subprocess) at build start and on content edits in dev |
 | `gothicFontsPlugin` | `vite.config.ts` | serves gothic's fonts in dev and copies them to `dist/client/fonts` at build |
 | `loadSiteConfig` | `vite.config.ts`, build scripts | reads `config.kdl` by walking up from `process.cwd()` |
-| `generateRouteTree` | `scripts/generate-routes.ts` | regenerates `src/routeTree.gen.ts` |
+| `generateRouteTree`, `staleRouteTreeFiles` | `scripts/route-tree.ts` (`just routes-gen`, `just routes-check`) | writes each Start frontend's `src/routeTree.gen.ts`, byte for byte what `vite dev` writes; the check regenerates in a scratch copy and names stale files |
 | `startRum` (`@astra/site-kit/web`) | browser | starts browser RUM with the endpoint the app's server function returns |
 | `src/nodeTsResolve.mjs` | every `node` run of workspace TS | resolve hook, loaded with `node --import` |
 | `nodeTsResolveHook` (`@astra/site-kit/nodeTsResolveHook`) | vitest setups, ssrSmoke tests | the hook's absolute path, for code that spawns `node --import`; use it instead of `../../libs/ts/...` |
@@ -51,8 +51,9 @@ step. How to start a new frontend from these pieces is in `apps/strider/web/READ
   blocks the vitest worker until it misses its heartbeat ("Timeout calling onTaskUpdate").
 - **`grep -a` when checking SSR HTML.** Pages contain UTF-8 glyphs, so plain `grep` treats them as
   binary and prints nothing, which looks like a missing marker.
-- **A new TS package needs at least one test.** `vitest run` exits 1 when it finds no test files,
-  which fails the lane, unless the script passes `--passWithNoTests`.
+- **A new TS package needs at least one test.** The root vitest run fails when any project has no
+  test files (`vitest.empty-projects.ts`; a real exception goes in its `ALLOWED_EMPTY` with the
+  reason), and a package run of `vitest run` exits 1 when it finds none.
 - **Config fields have no env override** (only secrets and `ASTRA_DATA_ROOT`/`ASTRA_CONTENT_ROOT`
   do). A path a container writes must be an identical-path bind mount, so the one `config.kdl`
   value is true on the host and in the container.

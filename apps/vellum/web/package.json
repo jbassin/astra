@@ -8,8 +8,7 @@
     "build": "vite build --configLoader runner",
     "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs server.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests",
-    "generate:routes": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/generate-routes.ts"
+    "test": "vitest run"
   },
   "dependencies": {
     "@astra/config": "workspace:*",

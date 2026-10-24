@@ -11,8 +11,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "build": "echo '@astra/codex-corpus: no build step'"
+    "test": "vitest run"
   },
   "dependencies": {
     "zod": "^4.4.3"

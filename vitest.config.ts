@@ -46,5 +46,7 @@ const projects = atRoot
 export default defineConfig({
   test: {
     projects,
+    // A root run fails when any project has no test files (no package passes with none).
+    globalSetup: atRoot ? [path.join(ROOT, "vitest.empty-projects.ts")] : undefined,
   },
 });

@@ -8,7 +8,7 @@
     "build": "vite build --configLoader runner",
     "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs server.ts",
     "typecheck": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/build-content.ts && tsc --noEmit",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "generate:content": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/build-content.ts"
   },
   "dependencies": {

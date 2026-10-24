@@ -88,8 +88,10 @@ COPY --from=content / /content
 COPY apps/${APP} ./apps/${APP}
 WORKDIR /repo/apps/${APP}
 # build-content reads $ASTRA_CONTENT_ROOT; unset, it would build the checked-in fixture.
+# An app that runs unbuilt TS (weal-bot, portal-server, portal-headless) has no build script,
+# so --if-present skips it.
 RUN if [ "$CONTENT" != none ]; then export ASTRA_CONTENT_ROOT=/content; fi \
-    && pnpm run build \
+    && pnpm run --if-present build \
     && rm -rf node_modules
 
 # --- Runtime OS layers (RUNTIME picks one). node:24-slim ships a `node` user at uid/gid
