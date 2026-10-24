@@ -335,6 +335,12 @@ token source keep today's look exactly (no stakeholder sign-off needed); assay t
   to `20e01cbf` for about 3 hours, and was fixed by `0fa05d65` (site-kit `ssrExternalsPlugin`, plus
   `just ssr-externals-check` in `ts-build`). Next: the rest of Wave 3 (pipe-5, cdx-4 R, asy-4,
   ops-8 R), then Wave 4.
+- **Status 2026-10-24 (session 5, later).** Wave 3 is done: pipe-5 `caffe72a`, cdx-4
+  `c478e2a7` (R, reviewed twice; live on release `a98324c9`), asy-4 `9cfcb8cc`,
+  ops-8 `f5762505` (R; least-privilege networks), lib-7a `7b7b719a`, lib-9 (vellum parity). Wave 4 so
+  far: weal-5a `78afc59e`, ops-1a and ops-1b (R; the ops CLI), ops-4 (alert rules as code;
+  applying them waits for Josh's SigNoz API key). Next in Wave 4: kit-1a, kit-2a (R), pipe-8,
+  cdx-5b, ops-7/10; then the parked $ items (lib-5, pipe-4c, pipe-6) and ops-3 (Josh's sudo).
 - Wave 2 list: repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
   `[tool.uv.sources]` (after repo-2); lib-3 dead config and the every-field-has-a-reader check
   (after lib-2, pipe-2); lib-7b Python observe bootstrap; lib-8a typed KDL decoders; lib-9 vellum

@@ -76,6 +76,15 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       `deploy/sops/secrets.enc.yaml`; nothing reads them since pipe-2 and lib-3.
 - [ ] Delete the root-owned `/ruby/data/experiments/faerrin/pkg/wretch/data/saved` (nothing mounts
       it since pipe-1).
+- [ ] Create a SigNoz service-account key (Editor role) and add it:
+      `sops set deploy/sops/secrets.enc.yaml '["signoz_api_key"]' '"<key>"'` (merge in a PR), then
+      `just signoz-rules-apply` (expect 8 new rules, 1 updated), `--yes`, `just signoz-rules-check`.
+      Until then the watchdog skips the rules check (ops-4).
+- [ ] Supply IPA for the campaign names TTS mispronounces: `ipa="…"` on entries in `defs.kdl`
+      (pipe-5 wired it to ElevenLabs; no IPA data exists yet).
+- [ ] Remove the faerrin-era unit files in `~/.config/systemd/user` (`dice-export`, `eerie`, `lark`,
+      `mouth`, `wretch-reconcile`; none enabled; keep `draftr`), and the scratch Docker volume
+      `2f8c8ab2…` an agent could not remove.
 - [ ] Activate mise in your shell (until then pyenv shims fail on bare `python3` in the repo).
 - [ ] orator: the physical Stream Deck test was never run (opened 2026-06-23; low priority).
 - [ ] Check whether the old standalone harrow container still runs unrouted on `localhost:10204`
@@ -123,6 +132,10 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Deploy and ops
 
+- codex: once release-based serving has run a while, delete the old flat
+  `/ruby/data/astra-state/codex/data/{corpus,search}` (kept for a code rollback past cdx-4) — agent.
+- `codex-refresh`/`codex-build` still interpolate `{{flags}}` in bash; move them into astra-ops —
+  agent.
 - weal: the live v1 `funcs` table (11 rows) is orphaned since weal-4 and svc-4; drop it with its own
   `0002_drop_funcs.sql` after exporting the rows — a flagged step (WEAL-14) — agent.
 - pg-migrate: if the database connection dies mid-migration, postgres.js can hang boot instead of
