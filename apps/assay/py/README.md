@@ -280,19 +280,26 @@ commit a probe.
 against official spell names (the Foundry snapshot and codex's full id space, including legacy
 AoN-only spells).
 
-**Build the book.**
+**Build the book.** The book sources live in `books/`: `liturgy_vol2/` (the LaTeX book) and
+`liturgy_vol1/` (the retired Homebrewery source, kept for reference). They moved here from
+`apps/codex/web/books/`; codex never read them.
 
 ```bash
-uv run assay export-book               # .tex + PDF into apps/codex/web/books/liturgy_vol2/
-uv run assay export-book --no-compile  # .tex only
+just book               # .tex + PDF into apps/assay/py/books/liturgy_vol2/
+just book --no-compile  # .tex only
 ```
 
-Needs `tectonic` on `PATH` (not in mise; `~/.cargo/bin/tectonic` on this host) or
-`--tectonic-path`. The compile takes about 20 s with `SOURCE_DATE_EPOCH=0`, and the `.tex` is
-byte-deterministic. The style is the committed `liturgy.sty`. School art goes in
-`apps/codex/web/books/liturgy_vol2/assets/img/processed/<school>.{png,jpg}` (cover: `fm-cover`);
-missing art becomes a placeholder. `preprocessed/` and `*.log` are gitignored. The fonts are
-licensed for personal use only: flag this before distributing the PDF.
+The PDF is a build output and git-ignored ([ADR 0018](../../../docs/adr/0018-book-binaries-stay-in-history.md));
+nothing serves it, so hand a reader the file `just book` writes. Commit the `.tex` diff:
+`test_book.py` fails when the committed `.tex` differs from a fresh build. `just book` needs
+tectonic 0.17.0 on `PATH` (not in mise; `~/.cargo/bin/tectonic` on this host) and refuses any
+other version. The compile takes about 20 s with `SOURCE_DATE_EPOCH=0`, and both the `.tex` and
+the PDF are byte-deterministic. The style is the committed `liturgy.sty`. School art goes in
+`books/liturgy_vol2/assets/img/processed/<school>.{png,jpg}` (cover: `fm-cover`); missing art
+becomes a placeholder. The `processed/` art is committed source: it is the hand-cropped,
+color-graded finish of the raw generations in `preprocessed/`, which is local-only and
+git-ignored, and no script derives one from the other. The fonts are licensed for personal use
+only: flag this before distributing the PDF.
 
 ## Traps
 

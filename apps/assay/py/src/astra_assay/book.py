@@ -3,7 +3,7 @@
 Converts the canonical homebrew spell store (``apps/assay/py/homebrew/spells/``,
 173 Foundry-shaped docs) + the 8 school trait blurbs
 (``apps/assay/py/homebrew/traits/``) into a **LaTeX** book at
-``apps/codex/web/books/liturgy_vol2/liturgy_of_the_iridite_vol2.tex``, compiled
+``apps/assay/py/books/liturgy_vol2/liturgy_of_the_iridite_vol2.tex``, compiled
 with ``tectonic`` into a PDF alongside it. The visual style lives in the
 stakeholder-approved ``liturgy.sty`` (parchment, chapter openers, spell-block
 plumbing, trait pills) — this module emits LaTeX *content* against that
@@ -51,16 +51,14 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
-from astra_config import find_repo_root
 from astra_observe import get_tracer
 
 from . import store
 
 APP_ROOT = Path(__file__).resolve().parents[2]  # src/astra_assay/book.py -> apps/assay/py
-REPO_ROOT = find_repo_root(Path(__file__))
 STORE_DIR = store.STORE_ROOT / store.SPELLS_SUBDIR
 TRAITS_DIR = store.STORE_ROOT / store.TRAITS_SUBDIR
-DEFAULT_OUT_DIR = REPO_ROOT / "apps/codex/web/books/liturgy_vol2"
+DEFAULT_OUT_DIR = APP_ROOT / "books/liturgy_vol2"
 BOOK_TEX_NAME = "liturgy_of_the_iridite_vol2.tex"
 BOOK_PDF_NAME = "liturgy_of_the_iridite_vol2.pdf"
 
@@ -1490,7 +1488,7 @@ _tracer = get_tracer("astra.assay")
 
 def cmd_export_book(args: argparse.Namespace) -> None:
     """Build the Vol.2 LaTeX book from the canonical store, write the
-    ``.tex`` into ``--out`` (default ``apps/codex/web/books/liturgy_vol2``), then
+    ``.tex`` into ``--out`` (default ``apps/assay/py/books/liturgy_vol2``), then
     compile it with ``tectonic`` (skip via ``--no-compile``). Never touches
     ``<out>/content/`` (Track B's directory — read-only input)."""
     with _tracer.start_as_current_span("assay.export-book") as span:
@@ -1544,13 +1542,13 @@ def register_subparsers(sub: argparse._SubParsersAction) -> None:
         "export-book",
         help=(
             "build the Liturgy of the Iridite Vol.2 LaTeX book from the canonical "
-            "homebrew store -> apps/codex/web/books/liturgy_vol2/"
+            "homebrew store -> apps/assay/py/books/liturgy_vol2/"
         ),
     )
     p_book.add_argument(
         "--out",
         default=None,
-        help="output directory (default apps/codex/web/books/liturgy_vol2)",
+        help="output directory (default apps/assay/py/books/liturgy_vol2)",
     )
     p_book.add_argument(
         "--no-compile",
