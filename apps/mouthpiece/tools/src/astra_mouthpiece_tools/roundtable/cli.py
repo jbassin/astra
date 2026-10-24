@@ -13,8 +13,9 @@
         configured TTS provider, assemble ``<id>.episode.mp3``, and touch ``.last-rendered``
         so the linguist-commit path unit publishes it to the mouthpiece site.
 
-The episode id uses the recap form (``…<latest>-recap-of-<first>``) so the catalog sorts
-it right after its last session and every session-scoped reader skips it.
+The episode id uses the recap form (``…<latest>-recap-of-<first>``) so it is unique and
+the catalog sorts it right after its last session. ``render`` stores ``kind: "special"`` in
+the script and digest; that is what every session-scoped reader skips on.
 
 Exit codes: 0 ok; 1 failed; 2 dossier incomplete (iteration cap, still usable).
 """
@@ -34,7 +35,7 @@ from astra_llm.rlm import deno_available
 from astra_mouthpiece.hosts import load_hosts
 from astra_mouthpiece.inputs import episodes_root
 from astra_mouthpiece.lint import score_script
-from astra_mouthpiece.models import Script
+from astra_mouthpiece.models import Script, SessionDigest
 from astra_mouthpiece.producer.tools import permitted_dates
 from astra_mouthpiece.roster import build_roster_block
 from astra_ontology_being import BEING_KDL_PATH, load_being
@@ -129,13 +130,14 @@ def _cmd_render(args: argparse.Namespace) -> int:
 
     run = Path(args.run_dir)
     script = Script.model_validate_json((run / "script.json").read_text(encoding="utf-8"))
+    script = script.model_copy(update={"kind": "special"})
     sid = script.session_id
     out = episodes_root() / sid
     out.mkdir(parents=True, exist_ok=True)
     atomic_write_text(out / "script.json", script.model_dump_json(indent=2))
-    # Not a SessionDigest (no clean pass, no stats): the catalog reads only these two keys,
-    # the same shape as the earlier recap capstones.
-    atomic_write_text(out / "digest.json", json.dumps({"session_id": sid, "synopsis": SYNOPSIS}))
+    # No clean pass, so no stats: a special's digest is its id, synopsis and kind.
+    digest = SessionDigest(session_id=sid, synopsis=SYNOPSIS, kind="special")
+    atomic_write_text(out / "digest.json", digest.model_dump_json(indent=2, exclude_none=True))
     manifest = synthesize_script(
         script, provider=default_tts().build(), voices=_voices(load_hosts()), out_dir=out
     )

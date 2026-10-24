@@ -156,7 +156,7 @@ def session_digest(
             _session_dir(pipeline_paths.episodes, date) / "digest.json",
             digest.model_dump_json(indent=2),
         )
-        stats = digest.stats
+        stats = digest.session_stats()
         span.set_attribute("mouthpiece.lines", stats.lines)
         span.set_attribute("mouthpiece.kept_lines", stats.kept_lines)
         span.set_attribute("mouthpiece.windows", stats.windows)

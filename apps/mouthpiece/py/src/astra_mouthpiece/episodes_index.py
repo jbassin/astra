@@ -38,17 +38,17 @@ import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from astra_sessions import date_sort_key
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_validator
 from pydantic.alias_generators import to_camel
+
+from .models import RECAP_MARKER, EpisodeKind, kind_from_id, stored_kind
 
 EPISODE_SUFFIX = ".episode.mp3"
 TRANSCRIPT_SUFFIX = ".transcript.md"
 INDEX_FILENAME = "episodes-index.json"
-
-#: A recap/mega id embeds this marker (``…<lastDate>-recap-of-<firstDate>``).
-_RECAP_MARKER = "-recap-of-"
 
 #: Inline ElevenLabs v3 audio tag, e.g. "[laughs]" — ported from caster `tags.ts`.
 _TAG_RE = re.compile(r"\[[^\][]*\]")
@@ -85,8 +85,9 @@ def parse_id(session_id: str) -> tuple[int, str, str]:
 
 
 def is_recap(session_id: str) -> bool:
-    """Whether this is a mega/recap capstone (no own linguist transcript)."""
-    return _RECAP_MARKER in session_id
+    """Whether the id has the recap form. Readers decide on the stored ``kind`` instead
+    (`stored_kind`); this is only the fallback for files without one."""
+    return RECAP_MARKER in session_id
 
 
 def episode_title(title: str, arc_title: str) -> str:
@@ -111,15 +112,19 @@ def date_in_range(date: str, start: str, end: str) -> bool:
     return date_sort_key(start) <= k <= date_sort_key(end)
 
 
-def build_episode_numbers(session_ids: list[str]) -> dict[str, int]:
+def build_episode_numbers(
+    session_ids: list[str], kinds: dict[str, EpisodeKind] | None = None
+) -> dict[str, int]:
     """session_id → 1-based episode number, ranked by date within each arc.
 
-    Recaps get 0 (they are capstones, not numbered sessions — matches face's
-    ``episodeNumbers.get(id) ?? 0`` for the synthetic id absent from the corpus).
+    Only ``session`` episodes are numbered; a recap or special gets 0 (matches face's
+    ``episodeNumbers.get(id) ?? 0`` for the synthetic id absent from the corpus). ``kinds``
+    maps an id to its stored kind; an id it lacks gets `kind_from_id`.
     """
+    kinds = kinds or {}
     by_arc: dict[str, list[tuple[int, str]]] = {}
     for sid in session_ids:
-        if is_recap(sid):
+        if kinds.get(sid, kind_from_id(sid)) != "session":
             continue
         _, slug, date = parse_id(sid)
         by_arc.setdefault(slug, []).append((date_sort_key(date), sid))
@@ -162,6 +167,17 @@ class EpisodeEntry(_CamelModel):
     """One episode's catalog row — everything the grid + episode page need."""
 
     id: str
+    #: ``session``, ``recap`` or ``special`` (`models.EpisodeKind`). A snapshot written
+    #: before 0037 pipe-10 has none; it reads as `kind_from_id`.
+    kind: EpisodeKind
+
+    @model_validator(mode="before")
+    @classmethod
+    def default_kind(cls, data: Any) -> Any:
+        if isinstance(data, dict) and "kind" not in data and isinstance(data.get("id"), str):
+            return {**data, "kind": kind_from_id(data["id"])}
+        return data
+
     arc_no: int
     arc_slug: str
     arc_title: str
@@ -208,6 +224,8 @@ class SessionInput:
     #: episodes keep their roster while new two-host ones carry theirs. Falls back to
     #: the shared ontology block when a script omits hosts (faerrin wire fixtures).
     hosts: dict[str, EpisodeHost] | None = None
+    #: The stored kind (`stored_kind`); None means `kind_from_id`.
+    kind: EpisodeKind | None = None
 
 
 def _dedup_by_id(sessions: list[SessionInput]) -> list[SessionInput]:
@@ -241,7 +259,8 @@ def build_index(
     collapse to the most complete entry first.
     """
     sessions = _dedup_by_id(sessions)
-    numbers = build_episode_numbers([s.id for s in sessions])
+    kinds = {s.id: s.kind or kind_from_id(s.id) for s in sessions}
+    numbers = build_episode_numbers([s.id for s in sessions], kinds)
     entries: list[EpisodeEntry] = []
     for s in sessions:
         arc_no, slug, date = parse_id(s.id)
@@ -258,6 +277,7 @@ def build_index(
         entries.append(
             EpisodeEntry(
                 id=s.id,
+                kind=kinds[s.id],
                 arc_no=arc_no,
                 arc_slug=slug,
                 arc_title=arc_title,
@@ -276,7 +296,7 @@ def build_index(
                 transcript=transcript,
             )
         )
-    entries.sort(key=lambda e: (e.arc_no, e.date_sort_key, is_recap(e.id)))
+    entries.sort(key=lambda e: (e.arc_no, e.date_sort_key, e.kind != "session"))
     return EpisodesIndex(episodes=entries)
 
 
@@ -361,6 +381,7 @@ def discover_sessions(out_root: Path) -> list[SessionInput]:
                 audio_version=_audio_version(mp3),
                 turns=_read_turns(script),
                 hosts=_read_hosts(script),
+                kind=stored_kind(script, sid),
             )
         )
     return sessions

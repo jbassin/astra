@@ -6,9 +6,46 @@ returns a `SessionDigest`, the two-pass script returns a `Script`.
 
 from __future__ import annotations
 
-from typing import Literal
+from collections.abc import Mapping
+from typing import Any, Literal, get_args
 
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
+
+#: What an episode is (0037 PIPE-22). ``session`` recaps one recorded session and is
+#: numbered in its arc; ``recap`` (a multi-session capstone) and ``special`` (the
+#: prediction roundtable, say) have no transcript of their own, are not numbered, and are
+#: never read as a prior session.
+EpisodeKind = Literal["session", "recap", "special"]
+EPISODE_KINDS: tuple[str, ...] = get_args(EpisodeKind)
+
+#: A capstone's id embeds this marker (``…<lastDate>-recap-of-<firstDate>``). Before
+#: ``kind`` was stored, the marker was the only sign of a non-session episode.
+RECAP_MARKER = "-recap-of-"
+
+
+def kind_from_id(session_id: str) -> EpisodeKind:
+    """The kind an episode file without a ``kind`` field has: ``recap`` for a recap-form
+    id, else ``session``. Files written before 0037 pipe-10 carry no ``kind``."""
+    return "recap" if RECAP_MARKER in session_id else "session"
+
+
+def stored_kind(raw: Mapping[str, Any], session_id: str) -> EpisodeKind:
+    """The ``kind`` of a raw script or digest dict, or `kind_from_id` when it has none."""
+    kind = raw.get("kind")
+    for known in get_args(EpisodeKind):
+        if kind == known:
+            return known
+    return kind_from_id(session_id)
+
+
+def _fill_kind(data: Any) -> Any:
+    """``mode="before"`` hook: give an old file (no ``kind``) its `kind_from_id`."""
+    if isinstance(data, dict) and "kind" not in data:
+        sid = data.get("session_id")
+        if isinstance(sid, str):
+            return {**data, "kind": kind_from_id(sid)}
+    return data
+
 
 #: Which host is speaking. A=Recapper (Bram), B=the grounded foil (Maeve), C=the
 #: newcomer (Nell, since 2026-09; on pre-2026-06 episodes "C" was the retired Pip).
@@ -46,10 +83,31 @@ class SessionDigest(BaseModel):
 
     session_id: str
     synopsis: str
+    #: Stored since 0037 pipe-10; an older file gets `kind_from_id`.
+    kind: EpisodeKind = "session"
     wiki_refs: list[str] = []
     kept_ranges: list[tuple[int, int]] = []
     dropped: list[DroppedRange] = []
-    stats: DigestStats
+    #: The clean pass's coverage. A ``session`` digest must have it; a recap or special
+    #: had no clean pass, so its digest is just ``session_id``, ``synopsis`` and ``kind``.
+    stats: DigestStats | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def default_kind(cls, data: Any) -> Any:
+        return _fill_kind(data)
+
+    @model_validator(mode="after")
+    def session_has_stats(self) -> SessionDigest:
+        if self.kind == "session" and self.stats is None:
+            raise ValueError("a session digest needs stats")
+        return self
+
+    def session_stats(self) -> DigestStats:
+        """`stats`, which a ``session`` digest always has (the validator ensures it)."""
+        if self.stats is None:
+            raise ValueError(f"digest {self.session_id!r} ({self.kind}) has no clean stats")
+        return self.stats
 
 
 class ScriptTurn(BaseModel):
@@ -96,8 +154,15 @@ class Script(BaseModel):
 
     session_id: str
     title: str
+    #: Stored since 0037 pipe-10; an older file gets `kind_from_id`.
+    kind: EpisodeKind = "session"
     hosts: HostConfig
     turns: list[ScriptTurn]
+
+    @model_validator(mode="before")
+    @classmethod
+    def default_kind(cls, data: Any) -> Any:
+        return _fill_kind(data)
 
 
 class GroundingEntry(BaseModel):
