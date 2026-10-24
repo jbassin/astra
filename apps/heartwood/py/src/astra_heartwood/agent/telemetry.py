@@ -10,7 +10,8 @@ invisible there.
 ``__deepcopy__``: a copied LM keeps reporting into the same accumulator and run span.
 
 Metric instruments are created lazily on first use (after ``init_telemetry``), the repo
-convention from the telemetry-coverage pass.
+convention from the telemetry-coverage pass. LM tokens and cost are not here: every LM call
+reports to the one LLM meter (``astra_llm.meter``) with ``caller="heartwood"``.
 """
 
 from __future__ import annotations
@@ -58,12 +59,6 @@ def instruments() -> dict[str, Any]:
         ),
         "tool_calls": meter.create_counter(
             "astra.heartwood.tool.calls", description="agent tool calls by tool and outcome"
-        ),
-        "llm_tokens": meter.create_counter(
-            "astra.heartwood.llm.tokens", description="LM tokens by model, role, kind"
-        ),
-        "llm_cost": meter.create_counter(
-            "astra.heartwood.llm.cost_usd", description="provider-reported LM cost (USD)"
         ),
     }
 

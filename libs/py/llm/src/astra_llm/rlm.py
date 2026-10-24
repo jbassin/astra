@@ -11,11 +11,12 @@ must keep reporting into the same accumulator and the same run span. Spans are p
 ``ThreadPoolExecutor`` that drops contextvars (``predict/rlm.py:266-267``).
 
 **``MeteringMixin``** — meters ``dspy.LM.forward``: one span per call, the ``LmMeter``,
-and the tokens/cost counters. The hook is ``forward``: it sees the raw provider response,
-the same object ``BaseLM._process_lm_response`` turns into ``history[-1]["usage"]`` /
-``["cost"]`` (``base_lm.py:109-110``); litellm fills ``response_cost`` from OpenRouter's
-reported cost. The tracer, instruments, span name and attribute prefix are overridable
-hooks, so a caller (heartwood) can bind them to its own module-level functions.
+and the one LLM meter (``astra_llm.meter``, under the class's ``caller``). The hook is
+``forward``: it sees the raw provider response, the same object
+``BaseLM._process_lm_response`` turns into ``history[-1]["usage"]`` / ``["cost"]``
+(``base_lm.py:109-110``); litellm fills ``response_cost`` from OpenRouter's reported cost.
+The tracer, span name and attribute prefix are overridable hooks, so a caller (heartwood)
+can bind them to its own module-level functions.
 
 **``HardenedRLM``** — a ``dspy.RLM`` that absorbs one malformed main-LM reply
 (``AdapterParseError`` costs an iteration, not the run), mirrors the REPL history onto
@@ -41,17 +42,18 @@ import threading
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from fractions import Fraction
-from functools import cache
 from pathlib import Path
 from typing import Any
 
 import dspy
-from astra_observe import get_logger, get_meter, get_tracer
+from astra_observe import get_logger, get_tracer
 from dspy.primitives.prediction import Prediction
 from dspy.primitives.repl_types import REPLHistory, REPLVariable
 from dspy.utils.exceptions import AdapterParseError
 from opentelemetry import context as otel_context
 from opentelemetry.trace import Status, StatusCode
+
+from .meter import UNATTRIBUTED, record_attempt
 
 log = get_logger("astra.llm.rlm")
 
@@ -152,21 +154,6 @@ def combined_cost(snapshots: list[dict[str, Any]]) -> float | None:
     return total
 
 
-@cache
-def llm_instruments(scope: str) -> dict[str, Any]:
-    """``{"llm_tokens", "llm_cost"}`` counters named ``<scope>.llm.{tokens,cost_usd}``,
-    created on first use (after ``init_telemetry``)."""
-    meter = get_meter(scope)
-    return {
-        "llm_tokens": meter.create_counter(
-            f"{scope}.llm.tokens", description="LM tokens by model, role, kind"
-        ),
-        "llm_cost": meter.create_counter(
-            f"{scope}.llm.cost_usd", description="provider-reported LM cost (USD)"
-        ),
-    }
-
-
 def _int(value: Any) -> int:
     try:
         return int(value or 0)
@@ -179,11 +166,12 @@ class MeteringMixin:
     ``class MeteredLM(MeteringMixin, dspy.LM)``. The constructor takes ``role``
     ("main" | "sub") plus the LM's own arguments.
 
-    Subclasses set ``scope`` (instrumentation scope + metric prefix), ``span_name`` and
-    ``attr_prefix``, or override ``_tracer`` / ``_instruments`` outright.
+    Subclasses set ``scope`` (the tracer scope), ``caller`` (the meter's ``caller``
+    attribute), ``span_name`` and ``attr_prefix``, or override ``_tracer`` outright.
     """
 
     scope: str = "astra.llm"
+    caller: str = UNATTRIBUTED
     span_name: str = "llm.call"
     attr_prefix: str = "llm"
 
@@ -203,11 +191,7 @@ class MeteringMixin:
     def _tracer(self) -> Any:
         return get_tracer(self.scope)
 
-    def _instruments(self) -> dict[str, Any]:
-        return llm_instruments(self.scope)
-
     def forward(self, prompt: Any = None, messages: Any = None, **kwargs: Any) -> Any:
-        attrs = {"model": self.model, "role": self.role}
         p = self.attr_prefix
         with self._tracer().start_as_current_span(self.span_name, context=self.parent.ctx) as span:
             span.set_attribute(f"{p}.model", self.model)
@@ -216,6 +200,9 @@ class MeteringMixin:
                 response = super().forward(prompt=prompt, messages=messages, **kwargs)  # ty: ignore[unresolved-attribute]  (mixin: the LM base supplies forward)
             except Exception as exc:
                 self.meter.add_error()
+                record_attempt(
+                    model=self.model, caller=self.caller, outcome="error", role=self.role
+                )
                 span.set_status(Status(StatusCode.ERROR, str(exc)[:500]))
                 raise
             # Same reads as BaseLM._process_lm_response (base_lm.py:109-110).
@@ -231,11 +218,15 @@ class MeteringMixin:
             span.set_attribute(f"{p}.cost_known", cost is not None)
             if cost is not None:
                 span.set_attribute(f"{p}.cost_usd", cost)
-            m = self._instruments()
-            m["llm_tokens"].add(prompt_tokens, {**attrs, "kind": "prompt"})
-            m["llm_tokens"].add(completion_tokens, {**attrs, "kind": "completion"})
-            if cost is not None:
-                m["llm_cost"].add(cost, attrs)
+            record_attempt(
+                model=self.model,
+                caller=self.caller,
+                outcome="ok",
+                input_tokens=prompt_tokens,
+                output_tokens=completion_tokens,
+                cost=cost,
+                role=self.role,
+            )
             return response
 
 

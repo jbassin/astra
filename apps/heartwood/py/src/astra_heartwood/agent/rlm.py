@@ -4,10 +4,11 @@ The logic lives in ``astra_llm.rlm``: ``MeteringMixin`` (per-call metering of
 ``dspy.LM.forward``) and ``HardenedRLM`` (absorbs one malformed main-LM reply, mirrors the
 REPL history, flags ``hit_cap``, budget note near the cap). This module binds them to
 heartwood's names: the ``heartwood.llm.call`` span, ``heartwood.llm.*`` attributes, the
-``astra.heartwood.llm.*`` metrics and heartwood's budget-note text.
+``caller="heartwood"`` attribute on the one LLM meter (``astra.llm.*``) and heartwood's
+budget-note text.
 
-The tracer/instruments hooks call this module's ``tracer`` / ``instruments`` at call time,
-so tests can monkeypatch them here.
+The tracer hook calls this module's ``tracer`` at call time, so tests can monkeypatch it
+here.
 """
 
 from __future__ import annotations
@@ -24,7 +25,7 @@ from astra_llm.rlm import (
 )
 from astra_llm.rlm import MeteringMixin as _MeteringMixin
 
-from .telemetry import SCOPE, instruments, tracer
+from .telemetry import SCOPE, tracer
 
 __all__ = [
     "BUDGET_WARN_FRACTION",
@@ -52,14 +53,12 @@ class MeteringMixin(_MeteringMixin):
     """Meters ``forward`` as ``heartwood.llm.call`` (child of the run span)."""
 
     scope = SCOPE
+    caller = "heartwood"
     span_name = "heartwood.llm.call"
     attr_prefix = "heartwood.llm"
 
     def _tracer(self) -> Any:
         return tracer()
-
-    def _instruments(self) -> dict[str, Any]:
-        return instruments()
 
 
 class MeteredLM(MeteringMixin, dspy.LM):

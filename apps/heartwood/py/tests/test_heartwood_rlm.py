@@ -14,7 +14,6 @@ from typing import Any
 
 import dspy
 import pytest
-from astra_heartwood.agent import rlm as rlm_mod
 from astra_heartwood.agent import telemetry
 from astra_heartwood.agent.rlm import (
     PARSE_ERROR_OUTPUT,
@@ -74,9 +73,8 @@ class Recorder:
 
 @pytest.fixture
 def fake_metrics(monkeypatch: pytest.MonkeyPatch) -> dict[str, Recorder]:
-    recs = {k: Recorder() for k in ("runs", "pages", "tool_calls", "llm_tokens", "llm_cost")}
-    for mod in (telemetry, rlm_mod):
-        monkeypatch.setattr(mod, "instruments", lambda: recs)
+    recs = {k: Recorder() for k in ("runs", "pages", "tool_calls")}
+    monkeypatch.setattr(telemetry, "instruments", lambda: recs)
     return recs
 
 
@@ -87,7 +85,7 @@ def spans(telemetry_capture: Captured) -> InMemorySpanExporter:
 
 
 # ── MeteredLM accounting (D33-8) ──
-def test_meter_matches_dspy_history_and_sums_cost(fake_metrics, spans) -> None:
+def test_meter_matches_dspy_history_and_sums_cost(fake_metrics, spans, telemetry_capture) -> None:
     lm = ProviderLM([0.002, 0.003], role="main")
     assert lm("hi") == ["hello"]
     lm("again")
@@ -102,9 +100,15 @@ def test_meter_matches_dspy_history_and_sums_cost(fake_metrics, spans) -> None:
     # the meter reads exactly what dspy writes into history (base_lm.py:109-110)
     assert [h["cost"] for h in lm.history] == [0.002, 0.003]
     assert sum(h["usage"]["prompt_tokens"] for h in lm.history) == snap["prompt_tokens"]
-    assert ("llm_cost", 0.002) in [("llm_cost", v) for v, _ in fake_metrics["llm_cost"].adds]
-    kinds = {(a["role"], a["kind"]) for _, a in fake_metrics["llm_tokens"].adds}
-    assert kinds == {("main", "prompt"), ("main", "completion")}
+    # the one LLM meter, attributed to heartwood
+    m = telemetry_capture
+    assert m.metric_sum("astra.llm.cost_usd", caller="heartwood", role="main") == pytest.approx(
+        0.005
+    )
+    kinds = {
+        (p.attributes["role"], p.attributes["kind"]) for p in m.metric_points("astra.llm.tokens")
+    }
+    assert kinds == {("main", "input"), ("main", "output")}
     assert [s.name for s in spans.get_finished_spans()] == ["heartwood.llm.call"] * 2
 
 

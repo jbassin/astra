@@ -4,9 +4,12 @@
     client = LiteLLMClient()
     data = client.call_tool(ToolCallRequest(system=..., user_content=..., tool=...))
 
-litellm is the transport (uniform call surface, retries, cost hooks); dspy is the program
+litellm is the transport (uniform call surface, transport retries); dspy is the program
 layer used by linguist + mouthpiece in Phase 3 — `make_dspy_lm()` returns a dspy.LM that
 routes through litellm to the same model. No litellm *proxy* in Phase 1 (SDK-first, I6).
+
+One meter (`meter.py`) records every billed attempt from both paths as `astra.llm.*`; one
+retry policy (`retry.py`) bounds billed retries per call and per run.
 """
 
 from __future__ import annotations
@@ -26,7 +29,9 @@ from .client import (
     ToolSpec,
     Usage,
 )
+from .meter import Ledger
 from .pricing import PRICING_USD_PER_1M, ModelPricing, TokenCounts, cost_usd
+from .retry import DEFAULT_RETRY_POLICY, RetryPolicy
 from .transcription import GROQ_WHISPER, Segment, TranscriptionFn, transcribe
 
 #: The env var litellm reads for OpenRouter-routed models (e.g. GLM 5.2).
@@ -35,14 +40,17 @@ OPENROUTER_API_KEY_ENV = "OPENROUTER_API_KEY"
 __all__ = [
     "DEFAULT_MAX_TOKENS",
     "DEFAULT_MODEL",
+    "DEFAULT_RETRY_POLICY",
     "GROQ_WHISPER",
     "OPENROUTER_API_KEY_ENV",
     "PRICING_USD_PER_1M",
+    "Ledger",
     "LiteLLMClient",
     "LlmClient",
     "LlmError",
     "ModelPricing",
     "Result",
+    "RetryPolicy",
     "Segment",
     "TextRequest",
     "TokenCounts",

@@ -25,7 +25,13 @@ from astra_lexicon import load_pronunciations
 from astra_linguist.assets import session_episode_summary, session_transcripts
 from astra_linguist.chronicle import recent_prior_entries, season_for, show_for_date
 from astra_observe import get_logger, get_meter, get_tracer
-from astra_pipeline_resources import AstraConfig, LlmResource, PipelinePaths, default_resources
+from astra_pipeline_resources import (
+    AstraConfig,
+    LlmResource,
+    PipelinePaths,
+    default_resources,
+    llm_failures_final,
+)
 from astra_pipeline_resources.partitions import SessionStage, launch_ready, sessions
 from astra_sessions import atomic_write_text, parse_transcript_name
 
@@ -112,7 +118,9 @@ def _read_script(root: Path, key: str) -> Script:
 # session, so a one-off provider outage would otherwise need a manual re-run. Retry the
 # step a few times with a growing delay to ride through a multi-minute outage (libs/py/llm
 # also retries within each attempt). Applied only to the steps that hit an external API;
-# the local ffmpeg assembly doesn't need it.
+# the local ffmpeg assembly doesn't need it. The LLM steps run inside `llm_failures_final()`:
+# once the client has spent its own retries on a bad reply, the step fails without this
+# rerun (astra_llm.retry), so only transport failures are retried here.
 _EXTERNAL_RETRY = dg.RetryPolicy(max_retries=3, delay=120, backoff=dg.Backoff.EXPONENTIAL)
 
 
@@ -137,9 +145,13 @@ def session_digest(
             raise FileNotFoundError(f"no linguist transcript for session {date}")
         session_id = parse_transcript_name(tpath).session_id
         turns = linguist_io.parse_canonical_transcript(tpath.read_text(encoding="utf-8"))
-        digest = clean.clean_session(
-            llm.client(), session_id, turns, model=_llm_model(astra_config.get())
-        )
+        with llm_failures_final():
+            digest = clean.clean_session(
+                llm.client("mouthpiece.session_digest"),
+                session_id,
+                turns,
+                model=_llm_model(astra_config.get()),
+            )
         atomic_write_text(
             _session_dir(pipeline_paths.episodes, date) / "digest.json",
             digest.model_dump_json(indent=2),
@@ -236,17 +248,18 @@ def session_script(
         brief_block, brief_outcome = script_brief_block(key, hosts, root=root)
         span.set_attribute("mouthpiece.script.brief", "used" if brief_block else "fallback")
         _brief_counter.add(1, {"outcome": brief_outcome})
-        script = build_episode_script(
-            llm.client(),
-            digest,
-            cleaned_turns,
-            pages,
-            hosts,
-            roster_block=roster_block,
-            continuity_block=continuity_block,
-            model=_llm_model(astra_config.get()),
-            brief_block=brief_block,
-        )
+        with llm_failures_final():
+            script = build_episode_script(
+                llm.client("mouthpiece.session_script"),
+                digest,
+                cleaned_turns,
+                pages,
+                hosts,
+                roster_block=roster_block,
+                continuity_block=continuity_block,
+                model=_llm_model(astra_config.get()),
+                brief_block=brief_block,
+            )
         span.set_attribute("mouthpiece.continuity_episodes", len(prior))
         span.set_attribute("mouthpiece.continuity_chars", len(continuity_block))
         span.set_attribute("mouthpiece.cleaned_lines", len(cleaned_turns))

@@ -80,7 +80,7 @@ def main() -> None:
         tracer = get_tracer(SERVICE_NAME)
         with tracer.start_as_current_span("substrate-smoke") as span:
             span.set_attribute("astra.phase", 1)
-            summary = run(LiteLLMClient())
+            summary = run(LiteLLMClient(caller="smoke"))
             span.set_attribute("astra.being.players", summary["players"])
             span.set_attribute("astra.being.parity", summary["being_parity"])
             span.set_attribute("astra.llm.status", summary["status"])

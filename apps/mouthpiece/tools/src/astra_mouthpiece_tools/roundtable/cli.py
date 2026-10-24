@@ -29,7 +29,7 @@ from pathlib import Path
 
 import astra_observe
 from astra_config import load_config
-from astra_llm import ensure_openrouter_env
+from astra_llm import LiteLLMClient, ensure_openrouter_env
 from astra_llm.rlm import deno_available
 from astra_mouthpiece.hosts import load_hosts
 from astra_mouthpiece.inputs import episodes_root
@@ -39,7 +39,7 @@ from astra_mouthpiece.producer.tools import permitted_dates
 from astra_mouthpiece.roster import build_roster_block
 from astra_ontology_being import BEING_KDL_PATH, load_being
 
-from ..producer.experiment import MeteredClient, host_shares, script_words
+from ..producer.experiment import host_shares, script_words
 from .agent import cutoff_after, run_dossier
 from .script import generate_roundtable_script
 
@@ -88,7 +88,7 @@ def _cmd_script(args: argparse.Namespace) -> int:
     show, latest = summary["show"], summary["latest"]
     ensure_openrouter_env()
     model = args.model or load_config().mouthpiece.model
-    client = MeteredClient()
+    client = LiteLLMClient(caller="mouthpiece.roundtable")
     raw, script = generate_roundtable_script(
         client,
         episode_id(show, latest),

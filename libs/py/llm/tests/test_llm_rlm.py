@@ -58,19 +58,15 @@ class _Provider(dspy.BaseLM):
         return _response(self.costs.pop(0))
 
 
-def test_mixin_uses_the_subclass_names(local_tracer, exporter) -> None:
-    recs = {"llm_tokens": Recorder(), "llm_cost": Recorder()}
-
+def test_mixin_uses_the_subclass_names(local_tracer, exporter, telemetry_capture) -> None:
     class ProducerLM(MeteringMixin, _Provider):
         scope = "astra.test"
+        caller = "test.producer"
         span_name = "test.llm.call"
         attr_prefix = "test.llm"
 
         def _tracer(self) -> Any:
             return local_tracer
-
-        def _instruments(self) -> dict[str, Any]:
-            return recs
 
     lm = ProducerLM("openrouter/fake/model", role="sub")
     lm.costs = [0.01, None]
@@ -82,13 +78,14 @@ def test_mixin_uses_the_subclass_names(local_tracer, exporter) -> None:
     assert spans[0].attributes["test.llm.cost_usd"] == pytest.approx(0.01)
     assert spans[1].attributes["test.llm.cost_known"] is False
     assert lm.meter.cost is None and lm.meter.calls == 2
-    assert recs["llm_cost"].adds == [(0.01, {"model": "openrouter/fake/model", "role": "sub"})]
-
-
-def test_llm_instruments_are_named_by_scope_and_cached() -> None:
-    a = rlm_mod.llm_instruments("astra.test-scope")
-    assert a is rlm_mod.llm_instruments("astra.test-scope")
-    assert set(a) == {"llm_tokens", "llm_cost"}
+    # the one meter: the known cost is added once, the unknown one is left out
+    attrs = {"model": "openrouter/fake/model", "provider": "openrouter", "role": "sub"}
+    m = telemetry_capture
+    assert m.metric_sum("astra.llm.cost_usd", **attrs, caller="test.producer") == 0.01
+    assert len(m.metric_points("astra.llm.cost_usd")) == 1
+    assert m.metric_sum("astra.llm.attempts", **attrs, outcome="ok") == 2
+    assert m.metric_sum("astra.llm.tokens", **attrs, kind="input") == 14
+    assert m.metric_sum("astra.llm.tokens", **attrs, kind="output") == 6
 
 
 def test_combined_cost_unknown_wins() -> None:

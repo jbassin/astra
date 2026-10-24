@@ -119,6 +119,7 @@ def test_the_chain_writes_every_output_under_the_injected_paths(
     assert seen["script"] == (stub, "test/mouthpiece-model", 2)
     assert seen["brief_root"] == paths.episodes
     assert llm.clients == 2  # one client per paid LLM stage, as before
+    assert llm.callers == ["mouthpiece.session_digest", "mouthpiece.session_script"]
     clips = result.asset_materializations_for_node("session_audio_clips")[0].metadata
     assert clips["clips"] != dg.IntMetadataValue(0)
 

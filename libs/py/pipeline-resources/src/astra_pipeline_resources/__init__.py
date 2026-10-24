@@ -9,6 +9,10 @@ An asset declares what it needs as a parameter, and Dagster injects it by key:
 - ``pipeline_paths`` (`PipelinePaths`): every runtime data path the assets read or write.
 - ``llm`` (`LlmResource`): builds the `astra_llm` client, with the OpenRouter key in place.
 
+An asset that calls an LLM wraps that work in `llm_failures_final()`, so a step whose LLM
+retries are spent fails once instead of being rerun by the asset's ``RetryPolicy``
+(`astra_llm.retry` explains the two retry levels).
+
 Each app binds `default_resources()` in its ``defs``. The values are cached, so every app
 binds the same objects and ``dg.Definitions.merge`` accepts them (it rejects two different
 objects under one key). Tests pass their own values to ``dg.materialize(resources=...)``:
@@ -19,18 +23,21 @@ The key ``astra_config`` is not ``config`` because Dagster reserves an asset's `
 parameter for run config.
 """
 
+from collections.abc import Iterator
+from contextlib import contextmanager
 from functools import cache
 from pathlib import Path
 
 import dagster as dg
 from astra_config import Config, load_config
-from astra_llm import LiteLLMClient, ensure_openrouter_env
+from astra_llm import LiteLLMClient, LlmError, ensure_openrouter_env
 
 __all__ = [
     "AstraConfig",
     "LlmResource",
     "PipelinePaths",
     "default_resources",
+    "llm_failures_final",
     "loaded_config",
 ]
 
@@ -117,10 +124,30 @@ class PipelinePaths(dg.ConfigurableResource):
 class LlmResource(dg.ConfigurableResource):
     """Builds the `astra_llm` client. All pipeline LLM calls go through it (CLAUDE.md)."""
 
-    def client(self) -> LiteLLMClient:
-        """A fresh client, with the OpenRouter key resolved into litellm's env first."""
+    def client(self, caller: str) -> LiteLLMClient:
+        """A fresh client, with the OpenRouter key resolved into litellm's env first.
+
+        ``caller`` (the asset's name, e.g. ``mouthpiece.session_script``) labels its calls on
+        the LLM meter. Fresh per call, so each asset execution gets a full run retry budget.
+        """
         ensure_openrouter_env()
-        return LiteLLMClient()
+        return LiteLLMClient(caller=caller)
+
+
+@contextmanager
+def llm_failures_final() -> Iterator[None]:
+    """Turn a non-retryable `LlmError` into ``dg.Failure(allow_retries=False)``.
+
+    The client has already spent its retries on the billed content failure, so a step
+    rerun would re-bill the same failure (and every call before it). Other errors, such as
+    a transport error litellm gave up on, pass through for the asset's ``RetryPolicy``.
+    """
+    try:
+        yield
+    except LlmError as err:
+        if err.retryable:
+            raise
+        raise dg.Failure(description=str(err), allow_retries=False) from err
 
 
 @cache

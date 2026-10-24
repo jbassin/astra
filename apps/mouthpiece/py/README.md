@@ -98,7 +98,10 @@ package's private `_provider` and `_voices`, so keep their signatures.
   by `just deploy` has empty keys). There is no silent fallback to mock audio; `mock` runs
   only when `tts-provider` says so.
 - **Retries re-bill.** A deterministic ElevenLabs 4xx raises `TtsClientError`, which the asset
-  turns into a non-retryable failure. Keep new provider errors non-retryable.
+  turns into a non-retryable failure. Keep new provider errors non-retryable. The LLM steps
+  run inside `llm_failures_final()`: when the client has spent its own retries on bad
+  replies (`astra_llm.retry`), the step fails without the asset's `RetryPolicy` rerun; only
+  transport errors get the rerun.
 - **Tag-only turns** such as `[stunned silence]` make ElevenLabs return 400; `speakable_turns`
   skips turns with no speech.
 - **Pronunciations live in `defs.kdl`.** `session_audio_clips` inlines `/ipa/` for the first

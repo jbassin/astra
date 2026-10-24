@@ -167,8 +167,11 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
   stale. Run `just ontology-gen` after editing `being.kdl`, `defs.kdl`, the fixture snapshot or
   `libs/py/config` `models.py`, and commit the output; never edit the generated files by hand.
 - **LLM calls** go through `libs/py/llm`; never call a provider SDK directly. Its client owns the
-  `max_tokens` guard, caching and cost telemetry; `make_dspy_lm` returns a bare `dspy.LM` that
-  skips them.
+  `max_tokens` guard, caching, the one cost meter (`astra.llm.attempts`, `.tokens`, `.cost_usd`,
+  by `model`, `provider` and `caller`; `meter.py`) and the one retry policy (`retry.py`). Give
+  each client a `caller`, and don't wrap calls in your own retry loop; an asset with a Dagster
+  `RetryPolicy` wraps its LLM work in `llm_failures_final()`. `make_dspy_lm` returns a bare
+  `dspy.LM` that skips them; pass `lm_class=` a `MeteringMixin` subclass with a `caller`.
 - **Identity keys.** `player_id` integers are foreign keys; carry them verbatim.
 - **Frontends** follow the strider pattern (build-time content, generated modules, route loaders)
   and run as SSR Compose services ([ADR 0009](adr/0009-ssr-frontends.md)). Before frontend work,

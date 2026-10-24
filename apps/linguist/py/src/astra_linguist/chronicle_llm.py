@@ -14,15 +14,13 @@ dspy judge (wrong task; see the 0019 scope doc).
 
 from __future__ import annotations
 
-import json
 from collections import defaultdict
 from pathlib import Path
 from typing import Protocol, TypeVar
 
 from astra_llm import LiteLLMClient
-from astra_llm.client import LlmError
 from astra_sessions import date_key
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 
 from .chronicle import (
     TRANSCRIPT_DIR,
@@ -85,7 +83,7 @@ def _real_client() -> LiteLLMClient:
     from astra_llm import ensure_openrouter_env
 
     ensure_openrouter_env()
-    return LiteLLMClient()
+    return LiteLLMClient(caller="linguist.chronicle")
 
 
 def _chronicle_model() -> str:
@@ -140,7 +138,6 @@ def build_episode_entry(
 # old approach asked GLM to echo every episode date per season, whose output for the
 # 33-episode main show truncated mid-JSON — boundaries keep it small + robust.
 SEASON_MAX_TOKENS = 8000
-SEASON_ATTEMPTS = 3
 
 SEASON_SYSTEM = (
     "You are a chronicler organizing one tabletop RPG actual-play show into seasons. "
@@ -174,28 +171,23 @@ def group_show_seasons(
     client: _StructuredClient | None = None,
     model: str | None = None,
 ) -> SeasonPlan:
-    """One GLM call (retried): the show's season boundaries (title/summary/start_date).
+    """One GLM call: the show's season boundaries (title/summary/start_date).
 
-    GLM occasionally emits malformed/truncated tool JSON; we retry a few times before
-    giving up rather than failing the whole aggregate on a single bad generation.
+    GLM occasionally emits a missing, malformed or invalid tool reply; the client retries
+    those under its one retry policy (`astra_llm.retry`) and raises `LlmError` when they
+    are spent.
     """
     client = client if client is not None else _real_client()
     model = model if model is not None else _chronicle_model()
-    last: Exception | None = None
-    for _ in range(SEASON_ATTEMPTS):
-        try:
-            return client.call_structured(
-                SeasonPlan,
-                system=SEASON_SYSTEM,
-                user_content=season_user_content(info, episodes),
-                model=model,
-                max_tokens=SEASON_MAX_TOKENS,
-                tool_name="record_seasons",
-                tool_description="Record the show's season boundaries.",
-            )
-        except (LlmError, ValidationError, json.JSONDecodeError, ValueError) as exc:
-            last = exc
-    raise RuntimeError(f"season grouping failed after {SEASON_ATTEMPTS} attempts: {last}")
+    return client.call_structured(
+        SeasonPlan,
+        system=SEASON_SYSTEM,
+        user_content=season_user_content(info, episodes),
+        model=model,
+        max_tokens=SEASON_MAX_TOKENS,
+        tool_name="record_seasons",
+        tool_description="Record the show's season boundaries.",
+    )
 
 
 def _seasons_from_plan(plan: SeasonPlan, episodes: list[EpisodeEntry]) -> list[Season]:
