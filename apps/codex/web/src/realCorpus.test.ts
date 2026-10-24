@@ -13,9 +13,9 @@ import { type ServedCorpus, selectServedCorpus } from "@/server/corpusFs";
 
 /**
  * The opt-in real-corpus suite. Every other codex test reads the generated fixture
- * (the vitest setup pins `CODEX_CORPUS_ROOT`); this file checks the real corpus at
- * `<codex.data-path>/corpus` under the production rules, so it runs only with
- * `CODEX_REAL_CORPUS=1`: `just codex-real-corpus`, which builds first. Its assertions
+ * (the vitest setup pins `CODEX_CORPUS_ROOT`); this file checks the real corpus of the
+ * current release under `<codex.data-path>/releases` by the production rules, so it runs
+ * only with `CODEX_REAL_CORPUS=1`: `just codex-real-corpus`, which builds first. Its assertions
  * are invariants of the real data, not pinned counts, so a refresh doesn't break them.
  */
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
@@ -37,6 +37,7 @@ describe.runIf(process.env.CODEX_REAL_CORPUS === "1")("real corpus (opt-in)", ()
 
   it("passes the production check: the config path, this schema generation, not the fixture", () => {
     expect(corpus.source).toBe("config");
+    expect(corpus.releaseId).toMatch(/^[0-9a-f]{16}$/);
     expect(corpus.schemaVersion).toBe(CORPUS_SCHEMA_VERSION);
     expect(corpus.fixture).toBe(false);
     expect(corpus.totalEntityCount).toBeGreaterThan(10_000);

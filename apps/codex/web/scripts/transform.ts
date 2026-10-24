@@ -22,6 +22,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { parseArgs } from "node:util";
 
 import {
   type CodexEntity,
@@ -348,8 +349,8 @@ export interface TransformPaths {
    * test points this at `apps/codex/web/fixtures/raw/homebrew-traits`. */
   homebrewTraitsDir: string;
   /** Where the deterministic corpus is written (wiped + rewritten wholesale
-   * every call, `emit.ts`'s own contract) — real host path
-   * `<dataPath>/corpus`; the fixture test points this at a fresh temp dir. */
+   * every call, `emit.ts`'s own contract) — on the host, a release staging dir
+   * (`release.ts build`); the fixture test points this at a fresh temp dir. */
   corpusRoot: string;
   aliasesFile: JoinAliasesFile;
   /** The D29-4 pins to copy into `corpus/manifest.json` — read from the
@@ -657,6 +658,14 @@ export function defaultHomebrewDirs(): { homebrewDir: string; homebrewTraitsDir:
 // ---------------------------------------------------------------------------
 
 function main(): void {
+  // The corpus goes to `--out`, a release staging dir (`scripts/release.ts build`; `just
+  // codex-build`); the transform never writes a served corpus in place.
+  const { values } = parseArgs({ options: { out: { type: "string" } } });
+  if (values.out === undefined) {
+    console.error("transform: pass --out <dir>; `just codex-build` runs it into a new release");
+    process.exit(1);
+  }
+  const corpusRoot = values.out;
   const cfg = loadConfig();
   const manifestPath = join(import.meta.dirname, "..", "corpus-manifest.json");
   const manifest = parseManifest(JSON.parse(readFileSync(manifestPath, "utf8")));
@@ -672,7 +681,6 @@ function main(): void {
 
   const foundrySnapshotDir = join(cfg.codex.dataPath, "snapshots", "foundry", manifest.foundry.tag);
   const aonSnapshotDir = join(cfg.codex.dataPath, "snapshots", "aon", manifest.aon.snapshotDate);
-  const corpusRoot = join(cfg.codex.dataPath, "corpus");
   const { homebrewDir, homebrewTraitsDir } = defaultHomebrewDirs();
 
   console.log(`transform: Foundry snapshot ${foundrySnapshotDir}`);

@@ -1,8 +1,8 @@
 /**
  * D29-11: the fixture extractor. Reads the REAL, already-fetched Foundry/AoN
- * snapshots (`apps/codex/web/data/snapshots/`) and the REAL emitted corpus
- * (`apps/codex/web/data/corpus/`, produced by `pnpm --filter @astra/codex
- * transform` — run that FIRST) and writes the fixture's small, deterministic,
+ * snapshots (`<codex.data-path>/snapshots/`) and the REAL emitted corpus
+ * (the current release's, `<codex.data-path>/releases/current/corpus/`, produced
+ * by `just codex-build` — run that FIRST) and writes the fixture's small, deterministic,
  * COMMITTED inputs at `apps/codex/web/fixtures/` (host-only, rare; the fixture
  * corpus itself, `fixtures/entities/`, is built from these inputs by
  * `scripts/fixtureCorpus.ts`, never by this script):
@@ -63,6 +63,7 @@ import { loadConfig } from "@astra/config";
 
 import { canonicalJson } from "../src/ingest/emit";
 import { mergeLocalizeMaps } from "../src/ingest/enrichers";
+import { CURRENT_LINK, releasesDirOf } from "../src/server/releases";
 import {
   buildFixtureCorpus,
   fixturePipelineEntities,
@@ -1539,9 +1540,10 @@ function main(): void {
   const manifestPath = join(APP_ROOT, "corpus-manifest.json");
   const manifest = parseManifest(readJson(manifestPath));
   if (manifest.aon.snapshotDate === null) fail("no AoN snapshot recorded in corpus-manifest.json");
-  const corpusRoot = join(cfg.codex.dataPath, "corpus");
+  // The current release's corpus; `releases/current` is a symlink, so this reads through it.
+  const corpusRoot = join(releasesDirOf(cfg.codex.dataPath), CURRENT_LINK, "corpus");
   if (!statSync(corpusRoot, { throwIfNoEntry: false })) {
-    fail(`no emitted corpus at ${corpusRoot} — run \`pnpm --filter @astra/codex transform\` first`);
+    fail(`no current release corpus at ${corpusRoot} — run \`just codex-build\` first`);
   }
 
   rmSync(FIXTURE_ROOT, { recursive: true, force: true });

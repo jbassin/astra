@@ -55,6 +55,15 @@ beforeAll(async () => {
     ssr,
     clientDir,
     staticMounts: [{ urlPrefix: "/audio/", dir: audioDir }],
+    routes: [
+      {
+        urlPrefix: "/audio/routed/",
+        handle: (_req, url) =>
+          url.pathname.endsWith("/missing")
+            ? new Response("Not found", { status: 404 })
+            : new Response(`route ${url.pathname} ${url.search}`, { status: 299 }),
+      },
+    ],
   });
   await server.ready();
   // srvx's `.url` includes a trailing slash (e.g. "http://0.0.0.0:1234/") — strip it
@@ -128,5 +137,19 @@ describe("static mount (send-backed: Range/206, conditional-GET, 404)", () => {
       headers: { Range: `bytes=${AUDIO_CLIP.length + 100}-${AUDIO_CLIP.length + 200}` },
     });
     expect(res.status).toBe(416);
+  });
+});
+
+describe("routes (prefix handlers ahead of static mounts and SSR)", () => {
+  test("a route answers under its prefix, even where a static mount also matches", async () => {
+    const res = await fetch(`${base}/audio/routed/clip.bin?x=1`);
+    expect(res.status).toBe(299);
+    expect(await res.text()).toBe("route /audio/routed/clip.bin ?x=1");
+  });
+
+  test("a route's own 404 never falls through to SSR", async () => {
+    const res = await fetch(`${base}/audio/routed/missing`);
+    expect(res.status).toBe(404);
+    expect(await res.text()).not.toContain(SSR_MARKER);
   });
 });

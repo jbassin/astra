@@ -23,11 +23,10 @@
 // fixture corpus + a fresh temp dir with zero `data/` reads (D29-12).
 
 import { mkdir, rm } from "node:fs/promises";
-import path from "node:path";
+import { parseArgs } from "node:util";
 
 import { collectText, statsText, type CodexNode } from "@astra/codex-corpus";
 import { createCorpusReader, type CorpusReader } from "@astra/codex-corpus/reader";
-import { loadConfig } from "@astra/config";
 import * as pagefind from "pagefind";
 
 /** Trait case-folding for the search FILTER only (D29-32/D29-34: "trait
@@ -217,9 +216,15 @@ export async function buildSearchIndex(
 // ---------------------------------------------------------------------------
 
 async function main(): Promise<void> {
-  const dataPath = loadConfig().codex.dataPath;
-  const corpusRoot = path.join(dataPath, "corpus");
-  const outDir = path.join(dataPath, "search", "pagefind");
+  // Both dirs belong to a release staging dir (`scripts/release.ts build`; `just
+  // codex-build` / `just codex-search-index`): the index is never rebuilt in place.
+  const { values } = parseArgs({
+    options: { corpus: { type: "string" }, out: { type: "string" } },
+  });
+  const { corpus: corpusRoot, out: outDir } = values;
+  if (corpusRoot === undefined || outDir === undefined) {
+    throw new Error("pass --corpus <dir> --out <dir>; `just codex-search-index` runs it");
+  }
   const reader = createCorpusReader(corpusRoot);
 
   console.log(`build-search: reading corpus from ${corpusRoot}`);

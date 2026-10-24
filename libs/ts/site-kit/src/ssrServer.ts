@@ -31,6 +31,15 @@ export interface StaticMount {
   dir: string;
 }
 
+/** A request handler for a URL prefix whose answer depends on more than a fixed dir
+ * (e.g. codex's Pagefind index, served per corpus release). */
+export interface SsrRoute {
+  /** URL prefix to match, with trailing slash (e.g. "/pagefind/"). */
+  urlPrefix: string;
+  /** Answers every request under the prefix; it never falls through to SSR. */
+  handle: (req: Request, url: URL) => Promise<Response> | Response;
+}
+
 export interface SsrServerOptions {
   /** OTel service name (config.kdl) — names the SSR spans + resource. */
   serviceName: string;
@@ -49,6 +58,8 @@ export interface SsrServerOptions {
    * from the dir or 404s; it never falls through to SSR.
    */
   staticMounts?: StaticMount[];
+  /** Prefix-matched handlers, checked ahead of `staticMounts`, outside the SSR span. */
+  routes?: SsrRoute[];
 }
 
 /**
@@ -80,7 +91,15 @@ async function isFile(p: string): Promise<boolean> {
  * buffered spans on SIGTERM/SIGINT. Returns the srvx server handle.
  */
 export function createSsrServer(opts: SsrServerOptions): Server {
-  const { serviceName, port, hostname = "0.0.0.0", ssr, clientDir, staticMounts = [] } = opts;
+  const {
+    serviceName,
+    port,
+    hostname = "0.0.0.0",
+    ssr,
+    clientDir,
+    staticMounts = [],
+    routes = [],
+  } = opts;
 
   // Guarded so a telemetry misconfig never takes the site down.
   let telemetry: { shutdown: () => Promise<void> } | null = null;
@@ -109,6 +128,9 @@ export function createSsrServer(opts: SsrServerOptions): Server {
     node: { keepAliveTimeout: 30_000 },
     async fetch(req) {
       const url = new URL(req.url);
+      for (const route of routes) {
+        if (url.pathname.startsWith(route.urlPrefix)) return route.handle(req, url);
+      }
       // Static mounts (e.g. the audio volume at /audio/) win ahead of SSR: a path
       // under a mount prefix is served from disk or 404s — never SSR'd. `send`
       // honours Range requests (206 + Content-Range), so audio seeking works.

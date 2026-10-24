@@ -213,17 +213,36 @@ Paid (ElevenLabs) and replaces published audio: flag it first. Full steps in
 
 Details: [`apps/codex/web/README.md`](../apps/codex/web/README.md#operations).
 
-1. Full refresh from upstream sources: `just codex-refresh` (needs a clean `apps/codex/web`; it fetches,
-   transforms, reindexes and restarts codex). Revert a timestamp-only `corpus-manifest.json` diff.
-2. Transform only (ingest code or the assay store changed): `pnpm --filter @astra/codex transform`,
-   then `just codex-search-index` if search rows changed, then `just deploy --restart codex`.
-3. When render code and the corpus both change, `just deploy codex` first, then transform.
-4. Verify: the container log's startup line reads `serving the corpus at
-   "/ruby/data/astra-state/codex/data/corpus" (source config, <n> entities, ...)`, and a real entity
-   page (`/spell/fireball`) returns 200. The server fails closed: with the corpus missing, of another
-   `schemaVersion`, or the fixture, it logs a `CorpusUnservableError` and exits, so compose restarts
-   it in a loop. Fix the mount or run `just codex-refresh`; `just codex-real-corpus` checks the
-   corpus on the host the same way.
+Each build publishes an immutable release under `<codex.data-path>/releases/` and swaps the
+`current` symlink; the running codex follows on its next request, with no restart.
+
+1. Full refresh from upstream sources: `just codex-refresh` (needs a clean `apps/codex/web`; it
+   fetches, then runs `codex-build`). Revert a timestamp-only `corpus-manifest.json` diff.
+2. Transform only (ingest code or the assay store changed): `just codex-build`. Search code only:
+   `just codex-search-index`. A build with fewer entities than the current release is refused;
+   check the report, then rerun with `--allow-shrink` if the drop is expected.
+3. Corpus schema bump (`CORPUS_SCHEMA_VERSION` changes), in this order:
+   1. Merge the code; pull a checkout at that commit.
+   2. `just codex-build` from that checkout. The new release becomes `current`. The running (old)
+      codex refuses it, logs `not switching to release <id>`, and keeps serving its own release.
+      Its `/pagefind/` redirect and `/healthz` keep naming that release, and the prune keeps it.
+   3. `just deploy codex`. The new server starts on the new release.
+   Keep steps 2 and 3 close together: a restart of the old container between them reads the
+   new-schema `current` at startup and crash-loops. Any other render-plus-corpus change works in
+   either order, since both servers read both releases. Deploy the code first.
+4. Bad release: `just codex-rollback` returns to the previous one (`just codex-rollback <id>`
+   for another; `just codex-releases` lists them). It takes effect on the next request. The release
+   it leaves is marked rejected: a rebuild that hashes to it, or a rollback to it, needs `--force`.
+   The rollback checks the target against its checkout's schema generation, so to roll back
+   across a schema bump, run it from a checkout at the code you are deploying back to.
+5. Verify: the container log reads `serving the corpus at
+   "/ruby/data/astra-state/codex/data/releases/<id>/corpus" (release <id>, source config, <n>
+   entities, ...)` at startup and `switched from release <old> to ...` after a publish, and a real
+   entity page (`/spell/fireball`) returns 200. The server fails closed at startup: with no
+   current release, a corpus of another `schemaVersion`, or the fixture, it logs a
+   `CorpusUnservableError` and exits, so compose restarts it in a loop. A running server refuses to
+   switch to such a release, logs `not switching to release <id>`, and keeps serving the old one.
+   `just codex-real-corpus` checks the current release on the host the same way.
 
 ## portal module update and headless GM
 

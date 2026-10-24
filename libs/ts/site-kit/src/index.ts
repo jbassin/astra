@@ -24,6 +24,7 @@ export { ssrExternalsPlugin, undeclaredSsrImports } from "./ssrExternals";
 export {
   createSsrServer,
   type SsrHandler,
+  type SsrRoute,
   type SsrServerOptions,
   type StaticMount,
   staticMountPath,

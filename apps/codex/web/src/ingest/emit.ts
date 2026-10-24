@@ -13,7 +13,7 @@ import {
 /**
  * D29-3: the deterministic corpus writer — S4's `emit.ts` (spec §3/§4 S4, this
  * deliverable). Takes the S4 join's final `CodexEntity[]` and writes
- * `<dataPath>/corpus/`:
+ * a corpus root (on the host, a release staging dir's `corpus/`):
  *
  *   - `corpus/<category>/<slug>.json` — one file per entity (the P2 lazy-load
  *     unit); the file's slug segment is read off the entity's OWN `id` (its
@@ -167,7 +167,8 @@ export interface CorpusOutputManifest {
 export { CORPUS_SCHEMA_VERSION };
 
 export interface EmitCorpusInput {
-  /** `<dataPath>/corpus` — wiped and rewritten wholesale on every call. */
+  /** The corpus root (a release staging dir's `corpus/`) — wiped and rewritten wholesale
+   * on every call. */
   corpusRoot: string;
   entities: readonly CodexEntity[];
   /** The D29-4 pins, read verbatim from the committed `corpus-manifest.json`
