@@ -4,7 +4,8 @@
 #     failures, which emit ZERO telemetry — SigNoz never sees them);
 #   - the astra-watchdog.timer (Class B: liveness — Drive FUSE mount responsive + the
 #     pipeline timers active & armed; a wedged FUSE mount is auto-remediated, see
-#     remediate_mount below).
+#     remediate_mount below; plus freshness — the newest backup snapshot, the last passing
+#     restore test, and the live entity.kdl against a fresh seed).
 # Deliberately curls Discord DIRECTLY (not via SigNoz/the collector) so a paging path
 # survives even when SigNoz itself is down. The webhook is decrypted from SOPS at runtime
 # — never baked into a unit, an image, or the environment.
@@ -34,7 +35,8 @@ DRIVE_MOUNT="${CRAIG_DROP_DIR:-/ruby/data/home/drive/Craig}"
 NIC_IFACE="${WATCHDOG_NIC_IFACE:-enp4s0}"
 # Timers whose health == the pipeline is armed. (The watchdog can't meaningfully check
 # its OWN timer — if that died, this script wouldn't be running.)
-WATCHED_TIMERS=(craig-sync.timer linguist-commit.timer heartwood-request.timer)
+WATCHED_TIMERS=(craig-sync.timer linguist-commit.timer heartwood-request.timer
+  astra-backup.timer astra-restore-test.timer)
 # Event-driven path units (0036): a .path unit has no next-elapse, so check_timer would call
 # it "not armed" — these get check_path_unit (is-active only).
 WATCHED_PATHS=(linguist-commit.path heartwood-request.path)
@@ -52,6 +54,23 @@ BACKFILL_SUPPRESSED=" linguist-commit.timer linguist-commit.path heartwood-reque
 # ('Trigger: n/a') until the triggered run finishes, or momentarily re-arming. Those blips
 # clear in ~1s; a genuine wedge/disarm persists for minutes. We re-probe a bad reading a
 # few times over a short window and only page if it stays bad across ALL of them.
+# Freshness checks (0037 ops-2). The backup runs nightly at 03:30, so a newest snapshot older
+# than 36 h means at least one night was missed. The restore test runs weekly, so its last pass
+# may be 7 days old; 9 days leaves room for one late run. Both read the same BACKUP_ROOT as
+# astra-backup.sh, which writes the restore-test stamp only on a PASS.
+BACKUP_ROOT="${ASTRA_BACKUP_ROOT:-/ruby/data/plex/data/astra-backups}"
+BACKUP_MAX_AGE_H="${WATCHDOG_BACKUP_MAX_AGE_H:-36}"
+RESTORE_TEST_STAMP="$BACKUP_ROOT/.restore-test-pass.json"
+RESTORE_TEST_MAX_AGE_D="${WATCHDOG_RESTORE_TEST_MAX_AGE_D:-9}"
+# Entity drift: `astra-ontology-entity-seed --check` in this checkout, read-only against the
+# astra-data clone's entity/entity.kdl. It runs under a shared git-publish lock (so a publisher
+# is never mid-write) and a shared host-tooling lock (so a deploy never swaps the venv under it).
+UV_BIN="${UV_BIN:-$HOME/.local/bin/uv}"
+GIT_PUBLISH_LOCK="${GIT_PUBLISH_LOCK:-$DATA_ROOT/locks/git-publish.lock}"
+HOST_TOOLING_LOCK="${HOST_TOOLING_LOCK:-$DATA_ROOT/locks/host-tooling.lock}"
+# WATCHDOG_ENTITY_CHECK_CMD replaces the seed command (tests only).
+ENTITY_CHECK_CMD="${WATCHDOG_ENTITY_CHECK_CMD:-}"
+
 CONFIRM_TRIES="${WATCHDOG_CONFIRM_TRIES:-3}"
 CONFIRM_GAP_S="${WATCHDOG_CONFIRM_GAP_S:-5}"
 
@@ -441,6 +460,83 @@ check_timer() {
   return 0
 }
 
+# --- freshness checks (0037 ops-2). Not wrapped in confirm(): files on a local disk and a
+# lock-guarded seed run do not flap, so one reading per tick is the truth. ---
+
+# Seconds since an epoch timestamp, as whole hours.
+age_hours() { echo $((($(date +%s) - $1) / 3600)); }
+
+# The newest complete snapshot (a <UTC stamp> dir holding manifest.json, the same rule as
+# astra-backup.sh list_snapshots) must be younger than BACKUP_MAX_AGE_H. A snapshot exists only
+# after a run succeeded, so this is the backup's last-success age.
+check_backup_age() {
+  local d n newest="" ts h
+  for d in "$BACKUP_ROOT"/*/; do
+    n="$(basename "$d")"
+    if [[ $n =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6}Z$ ]] && [ -f "$d/manifest.json" ] && [ ! -L "${d%/}" ]; then
+      newest="$n"   # the glob sorts by name, which is chronological
+    fi
+  done
+  if [ -z "$newest" ]; then
+    echo "no complete backup snapshot under $BACKUP_ROOT — is the sda disk mounted? (check: systemctl --user status astra-backup.service)"
+    return 1
+  fi
+  ts="$(date -u -d "${newest:0:10} ${newest:11:2}:${newest:13:2}:${newest:15:2}" +%s 2>/dev/null)" || ts=0
+  h="$(age_hours "$ts")"
+  if [ "$h" -ge "$BACKUP_MAX_AGE_H" ]; then
+    echo "newest backup snapshot $newest is ${h}h old (limit ${BACKUP_MAX_AGE_H}h) — the nightly backup has not succeeded since (check: systemctl --user status astra-backup.service)"
+    return 1
+  fi
+  return 0
+}
+
+# The last PASS of `astra-backup.sh restore-test` (timer or manual) must be younger than
+# RESTORE_TEST_MAX_AGE_D days. A missing stamp means it has never passed.
+check_restore_test_age() {
+  local ts snap h
+  if [ ! -f "$RESTORE_TEST_STAMP" ]; then
+    echo "the backup restore test has never passed (no $RESTORE_TEST_STAMP) — run: just backup-restore-test"
+    return 1
+  fi
+  ts="$(jq -r '.finished_epoch // 0' "$RESTORE_TEST_STAMP" 2>/dev/null)" || ts=0
+  [[ $ts =~ ^[0-9]+$ ]] || ts=0
+  snap="$(jq -r '.snapshot // "?"' "$RESTORE_TEST_STAMP" 2>/dev/null)" || snap="?"
+  h="$(age_hours "$ts")"
+  if [ "$h" -ge $((RESTORE_TEST_MAX_AGE_D * 24)) ]; then
+    echo "the last passing backup restore test (snapshot $snap) is $((h / 24)) days old (limit ${RESTORE_TEST_MAX_AGE_D}) — check: systemctl --user status astra-restore-test.service"
+    return 1
+  fi
+  return 0
+}
+
+# Run the entity seed's drift check. Returns 0 = in sync, 1 = drift or the check could not run
+# (both page, with different reasons), 2 = skipped this tick because a publisher holds the
+# git-publish lock (it may be mid-write to the clone; the next tick decides).
+check_entity_drift() {
+  local out rc=0
+  out="$(
+    exec 8>>"$GIT_PUBLISH_LOCK" 9>>"$HOST_TOOLING_LOCK" || exit 91
+    flock -s -n 8 || exit 90
+    flock -s -w 30 9 || exit 90
+    cd "$CODE_ROOT" || exit 91
+    if [ -n "$ENTITY_CHECK_CMD" ]; then
+      bash -c "$ENTITY_CHECK_CMD" 2>&1
+    else
+      OTEL_SDK_DISABLED=true timeout 60 "$UV_BIN" run --frozen --no-sync astra-ontology-entity-seed --check 2>&1
+    fi
+  )" || rc=$?
+  case "$rc" in
+    0) return 0 ;;
+    90) echo "a publisher holds the git-publish or host-tooling lock"; return 2 ;;
+  esac
+  if [ "$rc" -eq 1 ] && [[ $out == *DRIFT:* ]]; then
+    echo "entity.kdl in the astra-data clone has drifted from a fresh seed (defs.kdl, being.kdl or the akasha snapshot changed) — reseed with astra-ontology-entity-seed from $CODE_ROOT, then commit entity/entity.kdl in $DATA_ROOT/astra-data"
+  else
+    echo "the entity drift check could not run (exit $rc): $(printf '%s' "$out" | tail -n 1)"
+  fi
+  return 1
+}
+
 # Re-probe a check until it passes or the confirmation window is exhausted. Returns 0 as
 # soon as ANY probe is healthy (a transient blip); returns 1 echoing the last reason only
 # if EVERY probe stayed bad (a persistent fault worth paging). $@ = check fn + its args.
@@ -484,6 +580,17 @@ run_watchdog() {
     if reason="$(confirm "$check" "$t")"; then transition "timer-$t" ok  "unit $t healthy again"
     else                                       transition "timer-$t" bad "$reason"; fi
   done
+  if reason="$(check_backup_age)"; then transition backup-age ok "a fresh backup snapshot exists again"
+  else                                   transition backup-age bad "$reason"; fi
+  if reason="$(check_restore_test_age)"; then transition restore-test-age ok "the backup restore test passed recently again"
+  else                                         transition restore-test-age bad "$reason"; fi
+  local rc=0
+  reason="$(check_entity_drift)" || rc=$?
+  case "$rc" in
+    0) transition entity-drift ok "entity.kdl matches a fresh seed again" ;;
+    2) log "entity drift check skipped this tick — $reason" ;;
+    *) transition entity-drift bad "$reason" ;;
+  esac
   clear_recovered_failures
 }
 

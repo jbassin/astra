@@ -102,9 +102,10 @@ at build time from the clone's committed HEAD, passed as a Docker build context.
 | `craig-sync` | every 5 min | Copies new Craig zips from the Drive FUSE mount into `scribe/incoming` |
 | `linguist-commit` | every 15 min and on a new episode | Commits and pushes new datasets in astra-data, then redeploys the frontends that bake them |
 | `heartwood-request` | on a Dagster request file, hourly sweep | Runs the heartwood agent for a session and publishes its wiki edits |
-| `astra-watchdog` | every 15 min | Checks the Drive mount, the timers and the NIC; repairs the Drive mount itself |
+| `astra-watchdog` | every 15 min | Checks the Drive mount, the timers, the NIC, backup and restore-test age and entity.kdl drift; repairs the Drive mount itself |
 | `astra-alert@` | `OnFailure=` of the units above | Pages Discord directly, debounced per unit |
 | `astra-backup` | nightly 03:30 | Snapshots Postgres, the data root and the SigNoz rules to the sda disk |
+| `astra-restore-test` | weekly, Sunday 05:30 | Restores the newest snapshot into throwaway containers and verifies it |
 
 Alerting has three paths: a SigNoz rule pages Discord on ERROR or FATAL logs, `astra-alert@` pages
 when a host unit fails, and the watchdog pages when something is silently absent. Recovery steps are

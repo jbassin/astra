@@ -150,6 +150,10 @@ for failed host units, and the watchdog for silent absence.
 4. Turn off the watchdog's self-repair for an investigation: set `WATCHDOG_REMEDIATE=0` in a
    drop-in for `astra-watchdog.service`.
 5. Export the SigNoz rules into git after changing them: `just signoz-rules-export`.
+6. A watchdog page about backup age, restore-test age or entity drift names its fix. For a stale
+   backup, read `systemctl --user status astra-backup.service`; for the restore test, run
+   `just backup-restore-test`; for drift, re-seed `entity.kdl` and commit it in the astra-data clone.
+7. Check the whole host read-only: `just doctor`.
 
 ## Pipeline partition failed
 

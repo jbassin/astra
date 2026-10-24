@@ -9,6 +9,7 @@ and its traps.
 ```sh
 mise trust && mise install   # host tools from mise.toml; then activate mise in your shell
 just bootstrap               # uv sync, pnpm install, the codex guards' Chromium, the git hooks
+just doctor                  # read-only check: tool versions vs mise.toml, binds, units, certs
 ```
 
 `mise.toml` pins pnpm, uv, just, sops, deno, jq and the wasm tools. Python comes from
