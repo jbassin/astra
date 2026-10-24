@@ -9,7 +9,7 @@ and replacing its domain — not by reinventing the wiring.
 The reusable spine lives in two shared libs so it is **not** re-copied per app:
 
 - **`@astra/site-kit`** — `createSsrServer` (the srvx + `send` SSR entry on Node 24), `startRum` (`/web`),
-  the vite plugins `contentWatchPlugin`/`gothicFontsPlugin`, `generateRouteTree`, and
+  the vite plugins `contentWatchPlugin`/`gothicFontsPlugin`/`ssrExternalsPlugin`, `generateRouteTree`, and
   `loadSiteConfig` (a node-safe config read for `vite.config`).
 - **`@astra/content-build`** — the generic markdown→generated-modules pipeline
   primitives (`markdownToHtml`, `parseFrontmatter`, `emitModule`, …).
@@ -96,6 +96,9 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
 - **Fonts self-serve**: `gothicFontsPlugin({ clientOutDir })` copies gothic fonts into
   `dist/client/fonts` at build; the SSR server static-serves them. No Caddy
   `gothic_fonts` import, no vendored copy in git.
+- **SSR bundle imports only the app's own deps**: `ssrExternalsPlugin({ root: ROOT })` inlines
+  everything else, because the image installs only the app's production dependencies.
+  `just ts-build` fails on a bundle that imports anything else (`just ssr-externals-check`).
 - **SSR only** — no `prerender` block. Commit `src/routeTree.gen.ts` (oxlint/oxfmt-ignored).
   Pixi behind `lazy()` + `<ClientOnly>`. `/editor`-style routes use `ssr: false`.
 - **Telemetry** lands only from in-cluster: config `telemetry.otlp-endpoint` is the
