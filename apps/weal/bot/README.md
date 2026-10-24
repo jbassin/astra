@@ -291,7 +291,7 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
   type-checked and evaluated after the valid rows before it); a row that fails is skipped with a
   WARN naming it (`skipping saved weal source: funcs_v2 row <id> (<name>)`), and every other save
   and roll keeps working.
-- **Overlay:** rolls broadcast to weal-overlay/dice-feed with the plain source text as
+- **Overlay:** rolls broadcast to weal-overlay with the plain source text as
   `expression` and the headline as `display` (atom rolls send `total: 0`).
 - **Telemetry:** `astra.weal-bot` — roll spans (`weal.goodness`, `weal.engine_ms`),
   `astra.weal.rolls{goodness}`, `weal.v2.errors{stage}` (incl. `internal`),

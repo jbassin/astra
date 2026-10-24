@@ -101,9 +101,8 @@ package's private `_provider`, `_voices` and `_atomic_write`, so keep their sign
   skips turns with no speech.
 - **GLM reasoning tokens share `max_tokens`.** Clean and enrich use
   `DEFAULT_CLEAN_MAX_TOKENS` (64,000); the script uses `DEFAULT_SCRIPT_MAX_TOKENS`
-  (128,000). OpenRouter refuses to disable reasoning for GLM 5.3. `llm.default-max-tokens` in
-  `config.kdl` is read by nothing; `astra_llm`'s `DEFAULT_MAX_TOKENS` (16,000) applies unless
-  a caller passes `max_tokens`.
+  (128,000). OpenRouter refuses to disable reasoning for GLM 5.3. `astra_llm`'s
+  `DEFAULT_MAX_TOKENS` (16,000) applies unless a caller passes `max_tokens`.
 - **Pass B is the slow part.** One structured call over a 6,000-word transcript stalls, so
   Pass B runs per segment of `PASS_B_CHUNK_WORDS` (2,200) and takes the title from the first
   segment. Pass A can take up to an hour on GLM 5.3, and GLM overshoots its word cap.

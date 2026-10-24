@@ -12,9 +12,12 @@ Ownership (who reads each block, from a grep of the apps): both languages read `
 `telemetry` and `codex`. Only Python reads `llm`, `scribe`, `linguist`, `mouthpiece`,
 `heartwood` and `mouthpiece-producer`. Only TS reads `weal`, `weal-overlay`, `orator`,
 `strider`, `akasha-frontend`, `mouthpiece-frontend`, `vellum-frontend`, `vellum-render`,
-`harrow`, `ledger`, `portal`, `portal-headless` and `menhir`. Nothing reads
-`orator-controller` or `caddy`. A namespace read by both is mirrored in both schemas; a
-TS-only one is mirrored here (in `WholeConfig`) and in Zod.
+`harrow`, `ledger`, `portal`, `portal-headless` and `menhir`. A namespace read by both is
+mirrored in both schemas; a TS-only one is mirrored here (in `WholeConfig`) and in Zod.
+
+Every field has a reader outside the config libraries and tests: the CI test
+`tests/test_config_readers.py` fails on a field nothing reads, so delete a field when its
+last reader goes.
 
 Secret fields are `SecretRef | None` (lazy, Decision E); plaintext fields carry the
 faerrin code-default so a sparse `config.kdl` still validates. `extra="forbid"` inside
@@ -75,7 +78,6 @@ class DataConfig(_Base):
 
 class LlmConfig(_Base):
     default_model: str = "openrouter/z-ai/glm-5.2"
-    default_max_tokens: int = 16000
     openrouter_api_key: SecretRef | None = None
 
 
@@ -93,22 +95,14 @@ class ScribeConfig(_Base):
     data_path: DataPath = ""
     incoming_path: DataPath = ""
     tmp_path: DataPath = ""
-    state_file: str = ""
-    downstream_cmd: str = ""
-    keep_zip: bool = False
-    skip_downstream: bool = False
     model: str = "groq/whisper-large-v3"  # full litellm id (Groq Whisper, Decision G)
-    device: str = "cpu"
-    compute_type: str = "int8"
     groq_api_key: SecretRef | None = None
 
 
 class LinguistConfig(_Base):
-    ingest_source: str = ""
     ingest_saved_dir: DataPath = ""
     # Runtime outputs of session_transcripts that are not published datasets.
     script_path: DataPath = "linguist/script"
-    podcast_episodes_path: str = ""
 
 
 class MouthpieceConfig(_Base):
@@ -128,13 +122,9 @@ class MouthpieceConfig(_Base):
 class WealConfig(_Base):
     database_url: str = ""
     feed_ws_url: str = ""
-    chart_base_url: str = ""
     bind_addr: str = "127.0.0.1:10203"
-    players_path: str = "players.toml"
-    rust_log: str = "info"
     discord_token: SecretRef | None = None
     feed_token: SecretRef | None = None
-    dice_feed_url: SecretRef | None = None  # rotated webhook — resolves at cutover (Phase 6)
 
 
 class WealOverlayConfig(_Base):
@@ -144,7 +134,6 @@ class WealOverlayConfig(_Base):
 
 class OratorConfig(_Base):
     guild_id: str = ""
-    spike_channel_id: str = ""
     database_url: str = ""
     port: int = 10363
     public_origin: str = "https://orator.iridi.cc"
@@ -158,10 +147,6 @@ class OratorConfig(_Base):
     discord_client_id: SecretRef | None = None
     discord_client_secret: SecretRef | None = None
     session_secret: SecretRef | None = None
-
-
-class OratorControllerConfig(_Base):
-    api_key: SecretRef | None = None
 
 
 class StriderConfig(_Base):
@@ -239,7 +224,6 @@ class LedgerConfig(_Base):
     # same config at build time — no hardcoded URLs.
     service_name: str = "astra.ledger"
     port: int = 10370
-    public_origin: str = "https://ledger.iridi.cc"
 
 
 class HeartwoodConfig(_Base):
@@ -334,7 +318,6 @@ class CodexConfig(_Base):
     # dir the ingest pipeline writes to.
     service_name: str = "astra.codex"
     port: int = 10374
-    public_origin: str = "https://codex.iridi.cc"
     data_path: DataPath = "codex/data"
 
 
@@ -348,10 +331,6 @@ class MenhirConfig(_Base):
     port: int = 10375
     public_origin: str = "https://menhir.iridi.cc"
     results_path: DataPath = "menhir/results.jsonl"
-
-
-class CaddyConfig(_Base):
-    cloudflare_dns_token: SecretRef | None = None
 
 
 class Config(_Base):
@@ -401,8 +380,7 @@ class Config(_Base):
 
 
 class WholeConfig(Config):
-    """Every namespace in `config.kdl`: the union of what Python and TS read, plus the two
-    blocks nothing reads yet (`orator-controller`, `caddy`).
+    """Every namespace in `config.kdl`: the union of what Python and TS read.
 
     No process loads this. One CI test validates the real file against it
     (`load_whole_config()`), so a typo in any block, or an unknown block, still fails
@@ -415,7 +393,6 @@ class WholeConfig(Config):
     weal: WealConfig = Field(default_factory=WealConfig)
     weal_overlay: WealOverlayConfig = Field(default_factory=WealOverlayConfig)
     orator: OratorConfig = Field(default_factory=OratorConfig)
-    orator_controller: OratorControllerConfig = Field(default_factory=OratorControllerConfig)
     strider: StriderConfig = Field(default_factory=StriderConfig)
     akasha_frontend: AkashaFrontendConfig = Field(default_factory=AkashaFrontendConfig)
     mouthpiece_frontend: MouthpieceFrontendConfig = Field(default_factory=MouthpieceFrontendConfig)
@@ -426,4 +403,3 @@ class WholeConfig(Config):
     portal: PortalConfig = Field(default_factory=PortalConfig)
     portal_headless: PortalHeadlessConfig = Field(default_factory=PortalHeadlessConfig)
     menhir: MenhirConfig = Field(default_factory=MenhirConfig)
-    caddy: CaddyConfig = Field(default_factory=CaddyConfig)

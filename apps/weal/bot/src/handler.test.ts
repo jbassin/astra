@@ -81,7 +81,7 @@ interface Harness {
   deps: HandlerDeps;
   store: FakeStore;
   sent: OutgoingMessage[];
-  broadcasts: { payload: OverlayPayload; playerName: string }[];
+  broadcasts: OverlayPayload[];
   funcsAdded: [string, string][];
   seed: SeedInfo;
 }
@@ -89,7 +89,7 @@ interface Harness {
 function harness(initFuncs: [string, string][] = []): Harness {
   const store = new FakeStore();
   const sent: OutgoingMessage[] = [];
-  const broadcasts: { payload: OverlayPayload; playerName: string }[] = [];
+  const broadcasts: OverlayPayload[] = [];
   const funcs = [...initFuncs];
   const funcsAdded: [string, string][] = [];
   const state = { seed: { seed: 999, blameId: 1, blame: "Josh" } };
@@ -112,8 +112,8 @@ function harness(initFuncs: [string, string][] = []): Harness {
       sent.push(msg);
       return Promise.resolve();
     },
-    broadcast: (payload, playerName) => {
-      broadcasts.push({ payload, playerName });
+    broadcast: (payload) => {
+      broadcasts.push(payload);
       return Promise.resolve();
     },
   };
@@ -170,17 +170,14 @@ describe("die rolls (real engine, seeded)", () => {
     expect(msg?.footer).toBe("bad • 999 (Josh did this)");
     expect(h.broadcasts).toEqual([
       {
-        payload: {
-          v: 1,
-          user: "Jorge",
-          expression: "d20 + 7",
-          total: 11,
-          value: 11,
-          is_crit: false,
-          is_fumble: false,
-          display: "11",
-        },
-        playerName: "Jorge",
+        v: 1,
+        user: "Jorge",
+        expression: "d20 + 7",
+        total: 11,
+        value: 11,
+        is_crit: false,
+        is_fumble: false,
+        display: "11",
       },
     ]);
   });
@@ -220,7 +217,7 @@ describe("die rolls (real engine, seeded)", () => {
     const h = harness();
     await handleMessage("dl([:fine, :good, :great])", PROFILE, h.deps);
     expect(h.sent[0]?.title).toBe("Argyle: :great [Crit!]");
-    expect(h.broadcasts[0]?.payload).toEqual({
+    expect(h.broadcasts[0]).toEqual({
       v: 1,
       user: "Jorge",
       expression: "dl([:fine, :good, :great])",

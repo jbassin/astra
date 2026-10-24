@@ -11,12 +11,10 @@ telemetry {
 }
 llm {
     default-model "test/model-a"
-    default-max-tokens 1234
     openrouter-api-key ref="sops:fixture_openrouter_key"
 }
 scribe {
     data-path "scribe/data"
-    keep-zip #true
 }
 mouthpiece-producer {
     experiment-models "test/model-b"

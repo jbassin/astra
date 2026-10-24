@@ -55,7 +55,7 @@ def test_real_config_kdl_loads() -> None:
     cfg = load()
     assert isinstance(cfg, Config)
     assert not isinstance(cfg, WholeConfig)  # only the Python-read namespaces
-    assert isinstance(cfg.llm.default_max_tokens, int)
+    assert isinstance(cfg.heartwood.max_iterations, int)
     assert isinstance(cfg.llm.openrouter_api_key, SecretRef)
     assert cfg.llm.openrouter_api_key.config_key == "llm.openrouter-api-key"
 
@@ -82,7 +82,7 @@ def test_config_kdl_path_points_at_the_real_file() -> None:
 
 def test_python_loader_ignores_a_bad_ts_only_block() -> None:
     cfg = load_config(BAD_TS_BLOCK)
-    assert cfg.heartwood.max_iterations == 7
+    assert cfg.heartwood.max_iterations == 7  # int, not str
     assert not hasattr(cfg, "orator")  # a TS block is not loaded at all
     with pytest.raises(KdlDecodeError, match=r"orator > port"):
         load_whole_config(BAD_TS_BLOCK)
@@ -110,14 +110,12 @@ def test_whole_config_rejects_an_unknown_namespace(tmp_path: Path) -> None:
 def test_fixture_loads_with_typed_values() -> None:
     cfg = load_config(FIXTURE)
     assert cfg.llm.default_model == "test/model-a"
-    assert cfg.llm.default_max_tokens == 1234  # int, not str
-    assert cfg.scribe.keep_zip is True  # bool, not str
     assert cfg.telemetry.otlp_endpoint == "http://collector.test:4318"
     assert cfg.codex.port == 20001
-    assert cfg.heartwood.max_iterations == 7
+    assert cfg.heartwood.max_iterations == 7  # int, not str
     whole = load_whole_config(FIXTURE)
     assert whole.orator.target_lufs == -9  # negative int
-    assert whole.orator.measure_loudness is False
+    assert whole.orator.measure_loudness is False  # bool, not str
 
 
 def test_secret_fields_are_lazy_refs_not_plaintext() -> None:

@@ -68,13 +68,9 @@ const Weal = z
   .object({
     databaseUrl: z.string().default(""),
     feedWsUrl: z.string().default(""),
-    chartBaseUrl: z.string().default(""),
     bindAddr: z.string().default("127.0.0.1:10203"),
-    playersPath: z.string().default("players.toml"),
-    rustLog: z.string().default("info"),
     discordToken: secret(),
     feedToken: secret(),
-    diceFeedUrl: secret(), // rotated webhook — resolves at cutover (Phase 6)
   })
   .strict();
 
@@ -88,7 +84,6 @@ const WealOverlay = z
 const Orator = z
   .object({
     guildId: z.string().default(""),
-    spikeChannelId: z.string().default(""),
     databaseUrl: z.string().default(""),
     port: z.number().default(10363),
     publicOrigin: z.string().default("https://orator.iridi.cc"),
@@ -192,7 +187,6 @@ const Ledger = z
   .object({
     serviceName: z.string().default("astra.ledger"),
     port: z.number().default(10370),
-    publicOrigin: z.string().default("https://ledger.iridi.cc"),
   })
   .strict();
 
@@ -250,7 +244,6 @@ const Codex = z
   .object({
     serviceName: z.string().default("astra.codex"),
     port: z.number().default(10374),
-    publicOrigin: z.string().default("https://codex.iridi.cc"),
     dataPath: dataPath("codex/data"),
   })
   .strict();

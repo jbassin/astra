@@ -6,13 +6,15 @@ import { initTelemetry } from "@astra/observe";
 import { loadQuizzes } from "./src/quizzes";
 import { startServer } from "./src/server";
 
-// Telemetry first (server-side traces/metrics/logs → SigNoz) — CLAUDE.md's
-// standing principle, mirroring weal-overlay/orator-backend's entry shape.
-const telemetry = initTelemetry("astra.menhir");
-
-// Entry: serve the built SPA + the game API + the SSE feed. Config (port, public
-// origin, results path) comes from config.kdl via @astra/config — no ad-hoc env reads.
+// Entry: serve the built SPA + the game API + the SSE feed. Config (service name, port,
+// public origin, results path) comes from config.kdl via @astra/config — no ad-hoc env
+// reads.
 const cfg = loadConfig();
+
+// Telemetry next, before anything else runs (server-side traces/metrics/logs → SigNoz) —
+// CLAUDE.md's standing principle, mirroring weal-overlay/orator-backend's entry shape.
+const telemetry = initTelemetry(cfg.menhir.serviceName);
+
 const port = cfg.menhir.port;
 const publicOrigin = cfg.menhir.publicOrigin;
 const resultsPath = cfg.menhir.resultsPath;

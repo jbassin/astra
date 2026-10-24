@@ -39,9 +39,8 @@ async function main(): Promise<void> {
 
   const gateway = new Gateway(
     {
-      // Unset → "" → that feature off (e.g. the rotated-at-cutover dice-feed-url).
+      // Unset → "" → that feature off.
       discordToken: cfg.weal.discordToken?.optional() ?? "",
-      diceFeedUrl: cfg.weal.diceFeedUrl?.optional() ?? "",
       feedWsUrl: cfg.weal.feedWsUrl,
       feedToken: cfg.weal.feedToken?.optional() ?? "",
     },
