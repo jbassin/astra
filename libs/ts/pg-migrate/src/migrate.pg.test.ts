@@ -89,6 +89,24 @@ describe.skipIf(TEST_DATABASE_URL === undefined)("migrate (real Postgres)", () =
     }
   });
 
+  test("a lock held by another session fails after the timeout instead of hanging", async () => {
+    const holder = await sql.reserve();
+    try {
+      await holder.unsafe("select pg_advisory_lock(hashtext('astra.schema_migrations'))");
+      const started = Date.now();
+      await expect(migrate(sql, parseMigrations([m1]), { lockTimeoutMs: 300 })).rejects.toThrow(
+        /could not take the migration lock within 300 ms/,
+      );
+      expect(Date.now() - started).toBeLessThan(5_000);
+      expect(await columns()).toEqual([]); // nothing ran
+      await holder.unsafe("select pg_advisory_unlock(hashtext('astra.schema_migrations'))");
+    } finally {
+      holder.release();
+    }
+    // With the lock free again, the same run succeeds.
+    expect((await migrate(sql, parseMigrations([m1]))).applied).toHaveLength(1);
+  });
+
   test("an `if not exists` migration over an existing schema only records itself", async () => {
     await sql.unsafe("create table t (id int primary key)");
     const adopt = { file: "0001_initial.sql", sql: "create table if not exists t (id int);" };
