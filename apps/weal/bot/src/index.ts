@@ -19,6 +19,7 @@ import { loadValidatedFuncs } from "./engine";
 import { Gateway } from "./gateway";
 import { startHealthServer } from "./health";
 import { Roster } from "./roster";
+import { failStartup } from "./startup";
 
 async function main(): Promise<void> {
   const cfg = loadConfig();
@@ -60,9 +61,14 @@ async function main(): Promise<void> {
   startHealthServer(cfg.weal.bindAddr);
 }
 
-main().catch((e) => {
-  log.emit({ severityText: "FATAL", body: `weal-bot failed to start: ${e}` });
-  process.exit(1);
+main().catch((e: unknown) => {
+  void failStartup(e, {
+    // oxlint-disable-next-line no-console -- OTel logs aren't mirrored locally; docker logs must say why
+    stderr: (line) => console.error(line),
+    emitFatal: (body) => log.emit({ severityText: "FATAL", body }),
+    shutdownTelemetry: () => telemetry.shutdown(),
+    exit: (code) => process.exit(code),
+  }).catch(() => {});
 });
 
 // Flush buffered spans/metrics/logs before the container stops (compose SIGTERM).
