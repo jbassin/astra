@@ -1,0 +1,70 @@
+{
+  "alert": "astra smoke metrics stale",
+  "alertType": "METRIC_BASED_ALERT",
+  "annotations": {
+    "description": "astra-smoke.prom was last written {{$value}} s ago. Check on saffron: systemctl --user status astra-smoke.timer astra-smoke.service.",
+    "summary": "astra smoke metrics are {{$value}} s old"
+  },
+  "condition": {
+    "absentFor": 35,
+    "alertOnAbsent": true,
+    "compositeQuery": {
+      "panelType": "graph",
+      "queries": [
+        {
+          "spec": {
+            "disabled": false,
+            "legend": "astra-smoke.prom",
+            "name": "A",
+            "query": "time() - max(node_textfile_mtime_seconds{\"service.name\"=\"node-exporter\", file=\"/textfile/astra-smoke.prom\"})"
+          },
+          "type": "promql"
+        }
+      ],
+      "queryType": "promql"
+    },
+    "selectedQueryName": "A",
+    "thresholds": {
+      "kind": "basic",
+      "spec": [
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "at_least_once",
+          "name": "error",
+          "op": "above",
+          "recoveryTarget": null,
+          "target": 1800,
+          "targetUnit": ""
+        }
+      ]
+    }
+  },
+  "description": "The astra-ops smoke textfile (astra-smoke.prom, rewritten every 10 minutes by astra-smoke.timer) is over 30 minutes old, or node-exporter stopped serving it for 35 minutes. node-exporter re-serves a stale file on every scrape, so without this rule a dead smoke timer would freeze \"astra smoke check failing\" at its last values.",
+  "evaluation": {
+    "kind": "rolling",
+    "spec": {
+      "evalWindow": "5m",
+      "frequency": "1m"
+    }
+  },
+  "labels": {
+    "host": "saffron",
+    "severity": "error"
+  },
+  "notificationSettings": {
+    "groupBy": [],
+    "renotify": {
+      "alertStates": [
+        "firing",
+        "nodata"
+      ],
+      "enabled": true,
+      "interval": "4h"
+    }
+  },
+  "ruleType": "promql_rule",
+  "schemaVersion": "v2alpha1",
+  "version": "v5"
+}

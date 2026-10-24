@@ -13,6 +13,7 @@
     signoz-rules-check                  compare the live SigNoz alert rules with git (read-only)
     signoz-rules-apply [--yes]          plan (default) or apply deploy/signoz/rules to SigNoz
     host-metrics                        write the host probes' Prometheus textfile
+    smoke                               fetch each public site, write the smoke textfile
     heartwood-backfill [FROM] [--yes]   PAID + LIVE: replay pending sessions, detached
     heartwood-backfill-loop [FROM] [--yes]   PAID + LIVE: the backfill's body (its unit runs it)
     heartwood-backfill-reset            re-arm the bots after a hard-killed backfill
@@ -47,7 +48,7 @@ from astra_config import find_repo_root
 from astra_observe import get_logger, get_tracer
 from astra_ontology_config import load as load_config
 
-from . import backfill, craig, heartwood, host, host_metrics, pipeline, publish, signoz
+from . import backfill, craig, heartwood, host, host_metrics, pipeline, publish, signoz, smoke
 from .context import Ctx, Fail
 
 log = get_logger("astra.ops")
@@ -300,6 +301,12 @@ def _host_metrics(ctx: Ctx, args: list[str]) -> int:
     return host_metrics.host_metrics(host_metrics_targets(ctx))
 
 
+def _smoke(ctx: Ctx, args: list[str]) -> int:
+    _no_args("smoke", args)
+    (textfile,) = ctx.config("ops.smoke-textfile")
+    return smoke.smoke(Path(textfile))
+
+
 COMMANDS: dict[str, Callable[[Ctx, list[str]], int]] = {
     "linguist-commit": _simple("linguist-commit", publish.linguist_commit),
     "astra-data-push": _simple("astra-data-push", publish.astra_data_push),
@@ -312,6 +319,7 @@ COMMANDS: dict[str, Callable[[Ctx, list[str]], int]] = {
     "signoz-rules-check": _signoz_rules_check,
     "signoz-rules-apply": _signoz_rules_apply,
     "host-metrics": _host_metrics,
+    "smoke": _smoke,
     "heartwood-backfill": _backfill("heartwood-backfill", backfill.heartwood_backfill),
     "heartwood-backfill-loop": _backfill("heartwood-backfill-loop", backfill.backfill_loop),
     "heartwood-backfill-reset": _bare("heartwood-backfill-reset", backfill.backfill_reset),

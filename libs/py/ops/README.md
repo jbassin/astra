@@ -19,6 +19,7 @@ backup recipes are one-line wrappers over it), and cdx-4's `codex-refresh` and `
 | `signoz-rules-check` | `signoz-rules-check` | none (read-only) |
 | `signoz-rules-apply [--yes]` | `signoz-rules-apply` | dry run unless `--yes` |
 | `host-metrics` | `host-metrics` | none (rewrites one textfile) |
+| `smoke` | `smoke` | none (GETs only; rewrites one textfile) |
 | `heartwood-backfill [from]` | `heartwood-backfill` | PAID + LIVE |
 | `_heartwood-backfill-loop [from]` | `heartwood-backfill-loop` | PAID + LIVE (its unit passes `--yes`) |
 | `heartwood-backfill-reset` | `heartwood-backfill-reset` | none |
@@ -31,7 +32,7 @@ backup recipes are one-line wrappers over it), and cdx-4's `codex-refresh` and `
 
 Modules: `publish.py` (the astra-data chain), `heartwood.py` (one session, revert),
 `backfill.py` (backfill, reset, the request runner), `craig.py` (craig-sync), `host.py` (the
-installs), `signoz.py` (the alert rules) and `host_metrics.py`. Each module docstring has the
+installs), `signoz.py` (the alert rules), `host_metrics.py` and `smoke.py`. Each module docstring has the
 steps, the lock order and the exit codes.
 
 ## SigNoz alert rules as code
@@ -62,6 +63,21 @@ project, the Dagster daemons' heartbeat ages, and the age of the newest transcri
 episode. A probe that cannot run becomes `astra_probe_success 0` and pages through the rule
 "astra host probe failing"; the run itself fails only when the file cannot be written. The
 module docstring of `host_metrics.py` lists every metric.
+
+## Live smoke check
+
+`smoke` (run every 10 minutes by `astra-smoke.timer`, installed by `just units-install alert`)
+fetches one real page per public site through the edge and checks its status, a content
+marker and, for JSON health endpoints, the fields that mean ready (`CHECKS` in `smoke.py`;
+every host must be a site in `sites.caddyfile`, a test checks). It writes
+`ops.smoke-textfile`, a second file in node-exporter's textfile dir:
+`astra_smoke_success{check,url}` and `astra_smoke_duration_seconds{check}`. The rule
+"astra smoke check failing" pages after three consecutive failed runs (25 minutes), and
+"astra smoke metrics stale" when the file is 30 minutes old. A failed check prints its reason
+to the journal; the run fails only when the file cannot be written. The sites resolve to
+saffron's own address, so the check covers DNS, the edge, TLS and the app, not the path from
+outside the house network. When a marked page moves (a renamed wiki page, a new title),
+change its `Check` in the same pull request.
 
 ## Operations
 

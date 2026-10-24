@@ -219,11 +219,11 @@ def _escape(value: str) -> str:
     return value.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
 
 
-def render(collected: Collected) -> str:
-    """The Prometheus text exposition: one HELP/TYPE header per family, families in
-    ``HELP`` order, samples in collection order."""
+def render(collected: Collected, families: dict[str, str] | None = None) -> str:
+    """The Prometheus text exposition: one HELP/TYPE header per family, families in the
+    order of ``families`` (default ``HELP``), samples in collection order."""
     lines: list[str] = []
-    for name, help_text in HELP.items():
+    for name, help_text in (families or HELP).items():
         samples = [s for s in collected.samples if s.name == name]
         if not samples:
             continue

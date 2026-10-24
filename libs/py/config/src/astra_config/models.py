@@ -345,10 +345,12 @@ class OpsConfig(_Base):
     # The host ops CLI (libs/py/ops). signoz_url is the SigNoz API as the HOST sees it (the
     # published port); signoz_api_key is a SigNoz service-account key (Viewer for
     # signoz-rules-check, Editor for signoz-rules-apply). metrics_textfile is the
-    # Prometheus textfile `astra-ops host-metrics` writes into node-exporter's textfile dir.
+    # Prometheus textfile `astra-ops host-metrics` writes into node-exporter's textfile dir;
+    # smoke_textfile is the one `astra-ops smoke` writes there.
     signoz_url: str
     signoz_api_key: Secret | None = None
     metrics_textfile: DataPath
+    smoke_textfile: DataPath
 
 
 class MenhirConfig(_Base):

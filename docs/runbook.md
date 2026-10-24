@@ -144,6 +144,9 @@ Three paths page the Discord ops channel: the SigNoz rules in `deploy/signoz/rul
 for failed host units, and the watchdog for silent absence. The SigNoz rules for certificates,
 container health, the Dagster daemon and data freshness read the textfile `just host-metrics`
 writes (`astra-metrics.timer`, every 2 minutes); each rule's description says what it means.
+"astra smoke check failing" reads the live smoke check (`just smoke`, `astra-smoke.timer`,
+every 10 minutes): `journalctl --user -u astra-smoke.service -n 30` names each failed check
+and why, and `just smoke` re-runs it by hand.
 
 1. Send a test page: `deploy/systemd/alert-notify.sh test`.
 2. Run the watchdog without paging:

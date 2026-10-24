@@ -1,0 +1,70 @@
+{
+  "alert": "astra smoke check failing",
+  "alertType": "METRIC_BASED_ALERT",
+  "annotations": {
+    "description": "The live smoke check {{$check}} ({{$url}}) has failed on three consecutive runs. Run on saffron: journalctl --user -u astra-smoke.service -n 30 (each failed check prints its reason), then curl -sS {{$url}}.",
+    "summary": "smoke check {{$check}} failing for {{$url}}"
+  },
+  "condition": {
+    "compositeQuery": {
+      "panelType": "graph",
+      "queries": [
+        {
+          "spec": {
+            "disabled": false,
+            "legend": "{{check}}",
+            "name": "A",
+            "query": "min by (check, url) (astra_smoke_success{\"service.name\"=\"node-exporter\"})"
+          },
+          "type": "promql"
+        }
+      ],
+      "queryType": "promql"
+    },
+    "selectedQueryName": "A",
+    "thresholds": {
+      "kind": "basic",
+      "spec": [
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "all_the_times",
+          "name": "error",
+          "op": "below",
+          "recoveryTarget": null,
+          "target": 1,
+          "targetUnit": ""
+        }
+      ]
+    }
+  },
+  "description": "astra-ops smoke (astra-smoke.timer, every 10 minutes) fetches one real page per public site through the edge and checks its status and a content marker. This fires when a check has failed for 25 minutes: three consecutive runs, so one slow or flapping fetch does not page.",
+  "evaluation": {
+    "kind": "rolling",
+    "spec": {
+      "evalWindow": "25m",
+      "frequency": "5m"
+    }
+  },
+  "labels": {
+    "host": "saffron",
+    "severity": "error"
+  },
+  "notificationSettings": {
+    "groupBy": [
+      "check",
+      "url"
+    ],
+    "renotify": {
+      "alertStates": [
+        "firing"
+      ],
+      "enabled": true,
+      "interval": "4h"
+    }
+  },
+  "ruleType": "promql_rule",
+  "schemaVersion": "v2alpha1",
+  "version": "v5"
+}

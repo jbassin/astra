@@ -1,0 +1,20 @@
+[Unit]
+Description=astra live smoke check — one real page per public site, through the edge, for SigNoz
+Documentation=https://github.com/jbassin/astra
+# A failed check is a metric, not a failure: the command fails only when it cannot write its
+# file, so a failure here is worth a page. The SigNoz rule "astra smoke metrics stale" also
+# fires when the file stops changing. OnFailure is a [Unit] key.
+OnFailure=astra-alert@%n.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/ruby/data/astra-deploy
+# Writes ops.smoke-textfile (config.kdl), which node-exporter serves to SigNoz; the rules are
+# deploy/signoz/rules/astra-smoke-*.json. Telemetry is off, as in astra-metrics.service: its
+# output (one journal line, plus one per failed check) is all there is to see.
+Environment=OTEL_SDK_DISABLED=true
+ExecStart=/home/jbassin/.cargo/bin/just smoke
+# A run takes about 1 s (13 fetches); each fetch is capped at 15 s, so the worst case is
+# about 3.5 min. astra-ops first waits for a deploy that is re-syncing the venv (the
+# host-tooling lock, a minute or two); 10 min covers both.
+TimeoutStartSec=10min
