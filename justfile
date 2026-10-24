@@ -205,7 +205,19 @@ akasha_audio_live := env_var_or_default("AKASHA_AUDIO_LIVE", data_root + "/scrib
 
 # uv binary (absolute — the linguist-commit systemd user timer has a minimal PATH without
 # uv, same reason the service hardcodes just's path). Override with UV_BIN on another host.
+# Every `{{uv_bin}} run` passes --frozen --no-sync: these recipes run in the deploy checkout,
+# where a plain `uv run` could rewrite a stale uv.lock (leaving the checkout dirty, so the next
+# deploy refuses it) or re-sync the venv under a running heartwood agent. deploy.sh's locked
+# sync is the only one there; in a dev tree run `uv sync` yourself. The dev-only recipes above
+# use the PATH `uv` and may relock.
 uv_bin := env_var_or_default("UV_BIN", "/home/jbassin/.local/bin/uv")
+
+# The deploy checkout's host tooling (its venv and node deps) is shared: deploy.sh re-syncs it
+# under an exclusive flock on this file, and the heartwood recipes hold a shared flock on it
+# while they use it, so a deploy never swaps packages under a running agent (see deploy.sh
+# step 3b). Mirrors deploy.sh's HOST_TOOLING_LOCK. Lock order: git_publish_lock, then this
+# one; never take git_publish_lock while holding this one (drop it, take git-publish, retake).
+host_tooling_lock := data_root + "/locks/host-tooling.lock"
 
 # --- Docker substrate (deploy/) ---
 
@@ -222,6 +234,11 @@ uv_bin := env_var_or_default("UV_BIN", "/home/jbassin/.local/bin/uv")
 #   just deploy --restart <svc>     restart without a build, under the same lock
 deploy *args:
     ASTRA_DATA_ROOT="{{data_root}}" "{{justfile_directory()}}/deploy/deploy.sh" {{args}}
+
+# Check deploy/wait-healthy.sh (deploy.sh's health wait) against a throwaway compose project of
+# alpine containers; never touches the astra project. Needs Docker; about 20 s. Not in `ci`.
+deploy-health-test:
+    "{{justfile_directory()}}/deploy/tests/wait-healthy-test.sh"
 
 # Alias of `just deploy` (the old name; same args). No args = the whole stack.
 up *services:
@@ -259,7 +276,7 @@ craig-sync:
     src="{{craig_drop_dir}}"
     # scribe.incoming-path from config.kdl (under data.root), through the checkout's venv
     # (deploy.sh keeps the deploy checkout's in sync). Local disk, never the FUSE mount.
-    dest="$({{uv_bin}} run python -m astra_ontology_config scribe.incoming-path)"
+    dest="$({{uv_bin}} run --frozen --no-sync python -m astra_ontology_config scribe.incoming-path)"
     case "$dest" in /?*) ;; *) echo "craig-sync: ERROR — could not read scribe.incoming-path from config" >&2; exit 1 ;; esac
     probe_timeout="${CRAIG_SYNC_PROBE_TIMEOUT:-20}"   # listing the mount is near-instant
     copy_timeout="${CRAIG_SYNC_COPY_TIMEOUT:-900}"    # a real ~1 GB recording: minutes over Drive
@@ -374,10 +391,13 @@ linguist-commit:
     flock -w 1800 9 || { echo "linguist-commit: git-publish lock busy for 30 min — skipping this run" >&2; exit 1; }
     # The astra-data clone + the datasets this recipe commits, from config.kdl (absolute
     # paths inside the clone; git accepts them as pathspecs).
-    mapfile -t cpaths < <({{uv_bin}} run python -m astra_ontology_config data.content-root \
-      data.linguist-transcripts data.linguist-data data.linguist-timeline data.mouthpiece-snapshot)
-    if [ "${#cpaths[@]}" -ne 5 ]; then echo "linguist-commit: could not read data paths from config" >&2; exit 1; fi
+    mapfile -t cpaths < <({{uv_bin}} run --frozen --no-sync python -m astra_ontology_config data.content-root \
+      data.linguist-transcripts data.linguist-data data.linguist-timeline data.mouthpiece-snapshot \
+      data.akasha-content data.akasha-snapshot)
+    if [ "${#cpaths[@]}" -ne 7 ]; then echo "linguist-commit: could not read data paths from config" >&2; exit 1; fi
     repo="${cpaths[0]}"; lpaths=("${cpaths[@]:1:3}"); mp_snapshot="${cpaths[4]}/episodes-index.json"
+    # What akasha-frontend bakes (its Dockerfile COPYs these from the astra-data context).
+    akasha_baked=("${cpaths[2]}" "${cpaths[3]}" "${cpaths[5]}" "${cpaths[6]}")
     dgit() { git -C "$repo" "$@"; }
     if [ ! -d "$repo/.git" ]; then echo "linguist-commit: the astra-data clone $repo is missing" >&2; exit 1; fi
     if [ "$(dgit rev-parse --abbrev-ref HEAD)" != main ]; then
@@ -417,32 +437,50 @@ linguist-commit:
     # (3) Push whatever the clone has that origin lacks (also retries a prior failed push).
     push_rc=0; just_cmd _astra-data-push || push_rc=$?
     # (4) Redeploy what changed. deploy.sh builds from the clone's committed HEAD, and a failed
-    # build leaves the running container untouched (no downtime).
-    if [ -n "$changed" ]; then
+    # build leaves the running container untouched (no downtime). "Changed" is this run's
+    # commits, or any difference between HEAD and the data_sha the frontend was last deployed
+    # with (history.jsonl): a hand wiki edit pushed to astra-data that step 3 pulled in, or a
+    # redeploy that failed on an earlier run. An unknown deployed data_sha counts as unchanged.
+    # --skip-failed: deploy.sh exits 11 without building when this exact code + data already
+    # failed, so a broken build is not rebuilt and re-paged every run. A real failure makes
+    # this recipe exit non-zero (OnFailure pages); a skip does not.
+    deployed_data_sha() {
+      jq -cR 'fromjson? | objects' "{{data_root}}/deploy/history.jsonl" 2>/dev/null \
+        | jq -r --arg s "$1" 'select(.mode == "deploy" and (.result == "ok" or .result == "unhealthy")
+            and .data_sha != "" and (.services == "all" or any(.services[]; . == $s))) | .data_sha' \
+        | tail -n 1
+    }
+    stale() {
+      local d; d="$(deployed_data_sha "$1")"; shift
+      [ -n "$d" ] && ! dgit diff --quiet "$d" HEAD -- "$@" 2>/dev/null
+    }
+    deploy_rc=0
+    redeploy() {
+      local rc=0; just_cmd deploy --skip-failed "$1" || rc=$?
+      case "$rc" in
+        0) echo "linguist-commit: $1 redeployed" ;;
+        11) echo "linguist-commit: $1 not rebuilt — it already failed at this code and data (just deploy $1 retries)" >&2 ;;
+        *) echo "linguist-commit: $1 redeploy FAILED (exit $rc; rerun: just deploy $1)" >&2; deploy_rc=1 ;;
+      esac
+    }
+    if [ -n "$changed" ] || stale akasha-frontend "${akasha_baked[@]}"; then
       echo "linguist-commit: akasha content changed — seeding audio + rebuilding + redeploying akasha-frontend"
       # The new session's combined recording is already on disk (scribe wrote it before
       # linguist produced the transcript); land it in the audio volume before redeploy so
       # the transcript page's /audio/<date>.mp3 resolves. Cheap: it copies only scribe's recordings.
       just_cmd akasha-seed || echo "linguist-commit: akasha-seed FAILED (rerun: just akasha-seed)" >&2
-      if just_cmd deploy akasha-frontend; then
-        echo "linguist-commit: akasha-frontend redeployed"
-      else
-        echo "linguist-commit: akasha-frontend redeploy FAILED (rerun: just deploy akasha-frontend)" >&2
-      fi
+      redeploy akasha-frontend
     fi
-    if [ "$mp_changed" = 1 ]; then
+    if [ "$mp_changed" = 1 ] || stale mouthpiece-frontend "$mp_snapshot"; then
       echo "linguist-commit: mouthpiece snapshot changed — seeding audio + redeploying mouthpiece-frontend"
       just_cmd mouthpiece-seed || echo "linguist-commit: mouthpiece-seed FAILED (rerun: just mouthpiece-seed)" >&2
-      if just_cmd deploy mouthpiece-frontend; then
-        echo "linguist-commit: mouthpiece-frontend redeployed"
-      else
-        echo "linguist-commit: mouthpiece-frontend redeploy FAILED (rerun: just deploy mouthpiece-frontend)" >&2
-      fi
+      redeploy mouthpiece-frontend
     fi
     if [ "$push_rc" -ne 0 ]; then
       echo "linguist-commit: astra-data push FAILED (exit $push_rc) — committed locally; the next run retries" >&2
       exit 1
     fi
+    exit "$deploy_rc"
 
 # Publish the astra-data clone (config.kdl data.content-root): fetch; if origin/main moved,
 # rebase the clone's local commits onto it (the repo is bot-written data, so rebasing them is
@@ -456,7 +494,7 @@ _astra-data-push:
     #!/usr/bin/env bash
     set -euo pipefail
     cd "{{justfile_directory()}}"
-    repo="$({{uv_bin}} run python -m astra_ontology_config data.content-root)"
+    repo="$({{uv_bin}} run --frozen --no-sync python -m astra_ontology_config data.content-root)"
     dgit() { git -C "$repo" "$@"; }
     if [ ! -d "$repo/.git" ]; then echo "astra-data: the clone $repo is missing" >&2; exit 8; fi
     if [ "$(dgit rev-parse --abbrev-ref HEAD)" != main ]; then
@@ -586,11 +624,13 @@ mouthpiece-cartesia-voices q="":
 # so a no-op when nothing new landed. Run on the HOST (needs uv + ffprobe + the repo; the
 # dagster container can't reach the committed snapshot/ dir). Pairs with `mouthpiece-seed`
 # (audio) + a frontend redeploy — all three are wired into the linguist-commit timer.
-mouthpiece-publish:
+mouthpiece-publish *flags:
     #!/usr/bin/env bash
     set -euo pipefail
     cd "{{justfile_directory()}}"
-    {{uv_bin}} run python -m astra_mouthpiece.publish
+    # The publisher refuses a missing episodes dir or a catalog that shrinks;
+    # `just mouthpiece-publish --allow-shrink` publishes a deliberate removal.
+    {{uv_bin}} run --frozen --no-sync python -m astra_mouthpiece.publish {{flags}}
 
 # Seed the mouthpiece-frontend audio volume (D2). Flattens `<id>.episode.mp3` →
 # `<id>.mp3` into the astra-mouthpiece-audio volume (created by `up`), served
@@ -703,7 +743,7 @@ codex-refresh:
     cd "{{justfile_directory()}}"
     # codex.data-path (config.kdl, under data.root): the scripts below write there via
     # @astra/config; this recipe needs it for the report.
-    codex_data="$({{uv_bin}} run python -m astra_ontology_config codex.data-path)"
+    codex_data="$({{uv_bin}} run --frozen --no-sync python -m astra_ontology_config codex.data-path)"
     if [ -n "$(git status --porcelain -- apps/codex/web)" ]; then
       echo "codex-refresh: apps/codex/web has uncommitted changes — commit or stash first" >&2
       echo "(the corpus-manifest.json diff from this refresh must be reviewable alone):" >&2
@@ -828,7 +868,7 @@ heartwood-sandbox-warm:
     set -euo pipefail
     export PATH="$HOME/.deno/bin:$PATH"
     deno --version | head -1
-    {{uv_bin}} run python -c 'from astra_heartwood.agent.run import make_interpreter as mk, sandbox_version as v; i = mk(); print("sandbox:", i.execute("print(1)").strip()); print("pyodide:", v(i)); i.shutdown()'
+    {{uv_bin}} run --frozen --no-sync python -c 'from astra_heartwood.agent.run import make_interpreter as mk, sandbox_version as v; i = mk(); print("sandbox:", i.execute("print(1)").strip()); print("pyodide:", v(i)); i.shutdown()'
 
 # Run the heartwood agent over ONE session and publish its edits to akasha with no human
 # review (0033 §5) — PAID (OpenRouter LLM calls) and LIVE (pushes + redeploys akasha).
@@ -854,8 +894,8 @@ heartwood-sandbox-warm:
 # when it moved, push), then redeploy akasha-frontend.
 # Exit codes: 0 ok · 1 run failed · 2 run incomplete (iteration cap) · 3 publish conflict ·
 # 4 publish refused · 6 dirty corpus/ledger/registry or not on main · 7 validate/snapshot/seed failed
-# (restore printed) · 8 commit/rebase/push failed · 9 redeploy failed · 10 git-publish
-# lock busy for 30 min, nothing written (0036) · 64 bad flag.
+# (restore printed) · 8 commit/rebase/push failed · 9 redeploy failed · 10 git-publish or
+# host-tooling lock busy for 30 min, nothing written (0036) · 64 bad flag.
 # Run + publish one session via the heartwood agent (PAID + LIVE; --dry-run / --no-push).
 heartwood-agent date *flags:
     #!/usr/bin/env bash
@@ -872,14 +912,26 @@ heartwood-agent date *flags:
         *) echo "heartwood-agent: unknown flag '$f' (use --dry-run / --no-push / --model=<id> / --sub-model=<id>)" >&2; exit 64 ;;
       esac
     done
-    hw() { "{{uv_bin}}" run astra-heartwood-agent "$@"; }
+    # Hold the host-tooling lock shared through every venv step, so a deploy never re-syncs the
+    # venv under this run (deploy.sh step 3b). Released before _heartwood-push-deploy, whose
+    # `just deploy` would otherwise wait on this run's own lock. Lock order: git-publish is
+    # never taken while holding host-tooling (linguist-commit holds git-publish and then its
+    # deploy wants host-tooling), so it is dropped before the git-publish flock below and
+    # taken again, shared, once git-publish is held.
+    mkdir -p "$(dirname "{{host_tooling_lock}}")"
+    exec 8>"{{host_tooling_lock}}"
+    if ! flock -s -w 1800 8; then
+      echo "heartwood-agent: host-tooling lock busy for 30 min (a deploy is syncing the venv) — nothing written" >&2
+      exit 10
+    fi
+    hw() { "{{uv_bin}}" run --frozen --no-sync astra-heartwood-agent "$@"; }
     # node for the validate step: PATH, else the newest nvm install (a systemd unit's PATH
     # has no nvm — 0036 review B1). Same order as astra_heartwood.agent.validate.find_node.
     node_bin="$(command -v node || ls -1d "$HOME"/.nvm/versions/node/v*/bin/node 2>/dev/null | sort -V | tail -n 1)"
     if [ -z "$node_bin" ]; then echo "heartwood: node not found (PATH or ~/.nvm) — nothing done" >&2; exit 1; fi
     # The astra-data clone + the wiki datasets in it, from config.kdl (absolute paths; git
     # accepts them as pathspecs). Every git call below targets the clone.
-    mapfile -t dpaths < <("{{uv_bin}}" run python -m astra_ontology_config data.content-root \
+    mapfile -t dpaths < <("{{uv_bin}}" run --frozen --no-sync python -m astra_ontology_config data.content-root \
       data.akasha-content data.akasha-snapshot data.heartwood-ledger data.entity-registry)
     if [ "${#dpaths[@]}" -ne 5 ]; then echo "heartwood: could not read data paths from config" >&2; exit 1; fi
     repo="${dpaths[0]}"; content="${dpaths[1]}"; snapshot="${dpaths[2]}"; ledger="${dpaths[3]}"; entity="${dpaths[4]}"
@@ -918,10 +970,16 @@ heartwood-agent date *flags:
     # linguist-commit never builds akasha from unvalidated content. The agent run above stays
     # outside. The lock is released when this script exits; _heartwood-push-deploy (a child)
     # never takes it itself.
+    exec 8>&-   # lock order: drop host-tooling before waiting for git-publish
     mkdir -p "$(dirname "{{git_publish_lock}}")"
     exec 9>"{{git_publish_lock}}"
     if ! flock -w 1800 9; then
       echo "heartwood-agent: git-publish lock busy for 30 min — nothing written; re-run the date" >&2
+      exit 10
+    fi
+    exec 8>"{{host_tooling_lock}}"
+    if ! flock -s -w 1800 8; then
+      echo "heartwood-agent: host-tooling lock busy for 30 min — nothing written; re-run the date" >&2
       exit 10
     fi
     # (2) apply the change-set to the live corpus (3 = conflict, 4 = refused; nothing written).
@@ -939,8 +997,8 @@ heartwood-agent date *flags:
     # it must follow it) + unresolved-link delta (reported only).
     "$node_bin" --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
       libs/ts/vellum-lang/scripts/validate-corpus.ts --dir "$content" || fail_restore "corpus validation"
-    OTEL_SDK_DISABLED=true "{{uv_bin}}" run akasha-snapshot || fail_restore "akasha-snapshot"
-    OTEL_SDK_DISABLED=true "{{uv_bin}}" run astra-ontology-entity-seed || fail_restore "entity registry seed"
+    OTEL_SDK_DISABLED=true "{{uv_bin}}" run --frozen --no-sync akasha-snapshot || fail_restore "akasha-snapshot"
+    OTEL_SDK_DISABLED=true "{{uv_bin}}" run --frozen --no-sync astra-ontology-entity-seed || fail_restore "entity registry seed"
     hw unresolved-delta "$tmp/snapshot-before.json" || echo "heartwood-agent: (unresolved-delta report failed — not fatal)" >&2
     # (5) ledger line + path-scoped commit. --only: anything else staged stays out of it.
     if dgit ls-files --error-unmatch "$ledger" >/dev/null 2>&1; then undo_ledger="git -C $repo checkout -- $ledger"
@@ -958,6 +1016,7 @@ heartwood-agent date *flags:
     echo "heartwood-agent: committed $(dgit rev-parse --short HEAD) $(head -n 1 "$tmp/msg")"
     # (6) push + redeploy (the backfill passes --no-push and does this once at the end).
     if [ "$push" = 0 ]; then echo "heartwood-agent: --no-push — committed locally only"; exit 0; fi
+    exec 8>&-   # release the host-tooling lock: the redeploy below may re-sync the venv
     "{{just_executable()}}" -f "{{justfile()}}" _heartwood-push-deploy
 
 # Shared tail of the heartwood recipes: `_astra-data-push` (fetch, rebase onto origin/main
@@ -993,7 +1052,7 @@ _heartwood-push-deploy:
 # the same lines) aborts the revert untouched — resolve by hand. Exit codes: 4 not
 # published / no commit found · 6 dirty tree or not on main · 7 snapshot/seed/validate
 # failed · 8 revert/commit/push failed ·
-# 9 redeploy failed.
+# 9 redeploy failed · 10 a lock busy for 30 min.
 # Undo one published heartwood session: revert commit + ledger line + push + redeploy (LIVE).
 heartwood-revert date:
     #!/usr/bin/env bash
@@ -1001,14 +1060,19 @@ heartwood-revert date:
     cd "{{justfile_directory()}}"
     export PATH="$HOME/.deno/bin:$PATH"
     date="{{date}}"
-    hw() { "{{uv_bin}}" run astra-heartwood-agent "$@"; }
+    # The host-tooling lock, shared, as in heartwood-agent (dropped while waiting for
+    # git-publish, released before the redeploy; the same lock order).
+    mkdir -p "$(dirname "{{host_tooling_lock}}")"
+    exec 8>"{{host_tooling_lock}}"
+    flock -s -w 1800 8 || { echo "heartwood-revert: host-tooling lock busy for 30 min — nothing changed" >&2; exit 10; }
+    hw() { "{{uv_bin}}" run --frozen --no-sync astra-heartwood-agent "$@"; }
     # node for the validate step: PATH, else the newest nvm install (a systemd unit's PATH
     # has no nvm — 0036 review B1). Same order as astra_heartwood.agent.validate.find_node.
     node_bin="$(command -v node || ls -1d "$HOME"/.nvm/versions/node/v*/bin/node 2>/dev/null | sort -V | tail -n 1)"
     if [ -z "$node_bin" ]; then echo "heartwood: node not found (PATH or ~/.nvm) — nothing done" >&2; exit 1; fi
     # The astra-data clone + the wiki datasets in it, from config.kdl (absolute paths; git
     # accepts them as pathspecs). Every git call below targets the clone.
-    mapfile -t dpaths < <("{{uv_bin}}" run python -m astra_ontology_config data.content-root \
+    mapfile -t dpaths < <("{{uv_bin}}" run --frozen --no-sync python -m astra_ontology_config data.content-root \
       data.akasha-content data.akasha-snapshot data.heartwood-ledger data.entity-registry)
     if [ "${#dpaths[@]}" -ne 5 ]; then echo "heartwood: could not read data paths from config" >&2; exit 1; fi
     repo="${dpaths[0]}"; content="${dpaths[1]}"; snapshot="${dpaths[2]}"; ledger="${dpaths[3]}"; entity="${dpaths[4]}"
@@ -1030,9 +1094,12 @@ heartwood-revert date:
     undo="git -C $repo revert --abort  (if that refuses: git -C $repo reset --merge HEAD && git -C $repo clean -fd $content)"
     # One git publisher at a time (0036 D36-5): held from the revert's index changes through
     # push + redeploy.
+    exec 8>&-   # lock order: drop host-tooling before waiting for git-publish
     mkdir -p "$(dirname "{{git_publish_lock}}")"
     exec 9>"{{git_publish_lock}}"
     flock -w 1800 9 || { echo "heartwood-revert: git-publish lock busy for 30 min — nothing changed" >&2; exit 10; }
+    exec 8>"{{host_tooling_lock}}"
+    flock -s -w 1800 8 || { echo "heartwood-revert: host-tooling lock busy for 30 min — nothing changed" >&2; exit 10; }
     rc=0; dgit revert --no-commit "$commit" || rc=$?
     if [ "$rc" -ne 0 ] && ! dgit rev-parse -q --verify REVERT_HEAD >/dev/null; then
       echo "heartwood-revert: git revert failed before applying anything (exit $rc)" >&2; exit 8
@@ -1049,8 +1116,8 @@ heartwood-revert date:
     fi
     fail() { echo "heartwood-revert: $1 FAILED — restore with: $undo" >&2; exit "$2"; }
     hw ledger-revert "$date" || fail "ledger-revert" 8
-    OTEL_SDK_DISABLED=true "{{uv_bin}}" run akasha-snapshot || fail "akasha-snapshot" 7
-    OTEL_SDK_DISABLED=true "{{uv_bin}}" run astra-ontology-entity-seed || fail "entity registry seed" 7
+    OTEL_SDK_DISABLED=true "{{uv_bin}}" run --frozen --no-sync akasha-snapshot || fail "akasha-snapshot" 7
+    OTEL_SDK_DISABLED=true "{{uv_bin}}" run --frozen --no-sync astra-ontology-entity-seed || fail "entity registry seed" 7
     "$node_bin" --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
       libs/ts/vellum-lang/scripts/validate-corpus.ts --dir "$content" || fail "corpus validation" 7
     dgit add "$content" "$snapshot" "$ledger" "$entity" || fail "git add" 8
@@ -1058,6 +1125,7 @@ heartwood-revert date:
       -m "revert(akasha): heartwood agent $date" -m "This reverts commit $commit." \
       -- "$content" "$snapshot" "$ledger" "$entity" || fail "git commit" 8
     echo "heartwood-revert: committed $(dgit rev-parse --short HEAD)"
+    exec 8>&-   # release the host-tooling lock before the redeploy
     "{{just_executable()}}" -f "{{justfile()}}" _heartwood-push-deploy
 
 # Replay every pending faerrin session oldest-first (0033 §5) — PAID + LIVE, hours long.
@@ -1104,7 +1172,7 @@ _heartwood-backfill-loop from:
     export PATH="$HOME/.deno/bin:$PATH"
     from="{{from}}"
     lock="{{heartwood_dir}}/backfill.lock"
-    hw() { "{{uv_bin}}" run astra-heartwood-agent "$@"; }
+    hw() { "{{uv_bin}}" run --frozen --no-sync astra-heartwood-agent "$@"; }
     ts() { date -u +%FT%TZ; }
     rearm() {
       rm -f "$lock"
@@ -1161,7 +1229,7 @@ _heartwood-backfill-loop from:
     done
     echo "heartwood-backfill: published $published session(s) this run"
     # Push + redeploy once if the astra-data clone has unpushed commits (never the code repo).
-    repo="$("{{uv_bin}}" run python -m astra_ontology_config data.content-root)"
+    repo="$("{{uv_bin}}" run --frozen --no-sync python -m astra_ontology_config data.content-root)"
     if [ -n "$(git -C "$repo" rev-list origin/main..HEAD 2>/dev/null)" ]; then
       "{{just_executable()}}" -f "{{justfile()}}" _heartwood-push-deploy \
         || echo "heartwood-backfill: push/redeploy FAILED — rerun: just _heartwood-push-deploy" >&2
@@ -1200,7 +1268,7 @@ heartwood-backfill-reset:
 # to run by hand (no-op with nothing pending). The systemd user PATH lacks uv/just/node, so
 # the runner resolves each tool itself (preflight) — never call bare `uv` here.
 heartwood-requests:
-    cd "{{justfile_directory()}}" && JUST="{{just_executable()}}" UV="{{uv_bin}}" "{{uv_bin}}" run astra-heartwood-agent drain-requests
+    cd "{{justfile_directory()}}" && JUST="{{just_executable()}}" UV="{{uv_bin}}" "{{uv_bin}}" run --frozen --no-sync astra-heartwood-agent drain-requests
 
 # Links the units from the deploy checkout (see _unit-link; the service runs the recipe
 # there, with the venv + node deps deploy.sh keeps in sync).
@@ -1220,7 +1288,7 @@ mouthpiece-sandbox-warm:
     set -euo pipefail
     export PATH="$HOME/.deno/bin:$PATH"
     deno --version | head -1
-    {{uv_bin}} run python -c 'from astra_llm.rlm import make_interpreter as mk, sandbox_version as v; i = mk(); print("sandbox:", i.execute("print(1)").strip()); print("pyodide:", v(i)); i.shutdown()'
+    {{uv_bin}} run --frozen --no-sync python -c 'from astra_llm.rlm import make_interpreter as mk, sandbox_version as v; i = mk(); print("sandbox:", i.execute("print(1)").strip()); print("pyodide:", v(i)); i.shutdown()'
 
 # The 0034 comparison for ONE session — PAID (OpenRouter: the producer RLM + one two-pass
 # script per experiment-models arm, ≈ $2–3), never live: writes only under
@@ -1229,7 +1297,7 @@ mouthpiece-sandbox-warm:
 #   just mouthpiece-experiment 2026-10-5 --arm glm-5.3
 #   just mouthpiece-experiment 2026-10-5 --reuse-brief /ruby/data/astra-state/mouthpiece/experiments/2026-10-5/<run>
 mouthpiece-experiment date *flags: mouthpiece-sandbox-warm
-    cd "{{justfile_directory()}}" && {{uv_bin}} run astra-mouthpiece-producer experiment {{date}} {{flags}}
+    cd "{{justfile_directory()}}" && {{uv_bin}} run --frozen --no-sync astra-mouthpiece-producer experiment {{date}} {{flags}}
 
 # The prediction-roundtable special. dossier + script are PAID (OpenRouter) and write only
 # under <data root>/mouthpiece/experiments/roundtable-<latest>/<run>/; render is PAID + LIVE.
@@ -1237,7 +1305,7 @@ mouthpiece-experiment date *flags: mouthpiece-sandbox-warm
 #   just mouthpiece-roundtable script <run-dir>         ~45-min roundtable script from it
 #   just mouthpiece-roundtable render <run-dir>         TTS + assemble into episodes/ + auto-publish
 mouthpiece-roundtable *args: mouthpiece-sandbox-warm
-    cd "{{justfile_directory()}}" && export PATH="$HOME/.deno/bin:$PATH" && {{uv_bin}} run astra-mouthpiece-roundtable {{args}}
+    cd "{{justfile_directory()}}" && export PATH="$HOME/.deno/bin:$PATH" && {{uv_bin}} run --frozen --no-sync astra-mouthpiece-roundtable {{args}}
 
 # --- Host edge (shared reverse proxy) ---
 

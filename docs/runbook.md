@@ -90,13 +90,16 @@ duplex).
 
 `just deploy` prints an exit code; the header of `deploy/deploy.sh` explains each one (3 lock busy,
 4 target not pushed, 5 deploy checkout dirty, 6 SOPS decrypt failed, 7 compose failed, 8 astra-data
-clone missing, 9 host tooling sync failed).
+clone missing, 9 host tooling sync failed or its lock busy, 10 started but not healthy, 11 skipped:
+that build already failed at this code and data).
 
 1. See what is live: `docker inspect -f '{{index .Config.Labels "org.opencontainers.image.revision"}}' astra-codex`
    (any container), or `tail /ruby/data/astra-state/deploy/history.jsonl`.
-2. Roll back to an older pushed commit: `just deploy --sha <sha> [service...]`.
-3. A bot redeploy (linguist-commit, heartwood) moves the deploy checkout back to `origin/main`, which
-   partly undoes a rollback. For a lasting rollback, push a revert to `main` and `just deploy`.
+2. On exit 10 the deploy has printed the failing containers, their last log lines and the rollback
+   command. Nothing was rolled back; the new containers keep running until you act.
+3. Roll back to an older pushed commit: `just deploy --sha <sha> [service...]`. That pins
+   production: later deploys without `--sha`, the bots' included, build the pinned sha and warn.
+   After the fix is on `main`, unpin with `just deploy --sha origin/main`.
 4. Dry-run the checks without building: `just deploy --dry-run`.
 5. Never run a bare `docker compose up`: services start without secrets and the fail-closed ones
    crash-loop. Use `just deploy <service>`; `just deploy --restart <service>` restarts without a

@@ -108,14 +108,8 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - Nothing checks the live `entity.kdl` for drift when `defs.kdl` or `being.kdl` change; run
   `astra-ontology-entity-seed --check` from the watchdog — agent.
 - heartwood's `EXIT_MEANINGS[9]` text still says "or skipped" — agent.
-- A bot's `just deploy` re-syncs the venv under a running heartwood agent; take the git-publish lock
-  in deploy.sh, or accept — agent.
 - Store episode clip paths relative to the session dir (the manifests hold absolute paths) — agent.
-- A pushed hand edit to the wiki waits for the next publish, because linguist-commit redeploys akasha
-  only on linguist changes — agent.
 - `heartwood-revert` cannot revert sessions published before the astra-data snapshot commit — agent.
-- A redeploy ships the astra-data clone's local HEAD even when its push failed — agent.
-- If the mouthpiece snapshot push fails, its redeploy waits for a manual push and deploy — agent.
 - Stale comments: the `config.kdl` `llm` comment (mouthpiece uses its own GLM 5.3 model and a recap
   format), the `mouthpiece-producer` "experiment-only" comment, the akasha `audio-dir` and compose
   "runtime volume" comments, heartwood-backend's pyproject description, the heartwood sensor's
@@ -123,15 +117,8 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Deploy and ops
 
-- `deploy.sh` reports success while containers crash-loop: wait for every healthcheck and fail
-  (and print the rollback command) when one stays unhealthy — agent (ops-11). Caused the
-  2026-10-24 layout-move outage.
 - Compose `command:` lines duplicate each image's `CMD` and drift from it; delete them — agent
   (repo-3).
-- A pipeline redeploy moves the deploy checkout back to `origin/main`, partly undoing a `--sha`
-  rollback — agent; [`deploy/README.md`](../deploy/README.md).
-- Recipes run plain `uv run`, which can rewrite a stale `uv.lock` and dirty the deploy checkout; use
-  `--frozen` — agent.
 - The watchdog does not check `astra-backup.timer` or snapshot age, and the restore test is not
   scheduled — agent.
 - `config.kdl` references a SOPS key that does not exist — agent (paydown OPS-5).

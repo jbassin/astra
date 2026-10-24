@@ -40,6 +40,7 @@ data {
     //   node-exporter/textfile/  smartmon.prom (smart-exporter writes, node-exporter serves)
     //   deploy/                  deploy.lock, history.jsonl, live/<service> (deploy.sh)
     //   locks/                   git-publish.lock (linguist-commit + the heartwood recipes)
+    //                            and host-tooling.lock (deploy.sh venv sync vs. heartwood runs)
     root "/ruby/data/astra-state"
     // The astra-data clone (github jbassin/astra-data): the pipeline's published
     // datasets, committed and pushed by the bots (linguist-commit, heartwood) — the code

@@ -69,7 +69,8 @@ Postgres instances, node-exporter and smart-exporter.
 Production builds only from `/ruby/data/astra-deploy`, a plain clone of the code repo. `just
 deploy` (`deploy/deploy.sh`) moves it to `origin/main` or a pushed `--sha`, decrypts SOPS on the
 host, passes each secret to its container as an upper-cased environment variable, and labels every
-image with the commit. A dirty checkout or an unpushed commit is refused. Every host unit also runs
+image with the commit, then waits for the containers to be healthy. A dirty checkout
+or an unpushed commit is refused. Every host unit also runs
 from this checkout. Details: [`deploy/README.md`](../deploy/README.md) and
 [ADR 0033](adr/0033-deploy-checkout-and-just-deploy.md).
 
