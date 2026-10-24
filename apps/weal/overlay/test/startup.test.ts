@@ -12,7 +12,11 @@ import { requireIngestToken } from "../src/startup";
 // Hermetic — resolution never reaches the real SOPS file or the sops binary.
 const ENV = "WEAL_OVERLAY_TEST_TOKEN";
 const ref = () =>
-  new SecretRef("sops:weal_overlay_test_token", join(tmpdir(), "weal-overlay-absent.enc.yaml"));
+  new SecretRef(
+    "sops:weal_overlay_test_token",
+    join(tmpdir(), "weal-overlay-absent.enc.yaml"),
+    "weal-overlay.token",
+  );
 
 afterEach(() => {
   delete process.env[ENV];
@@ -22,12 +26,12 @@ describe("requireIngestToken (fail closed, 0037 SEC-12)", () => {
   test.each(["", "   ", "\t\n"])("refuses a blank injected token %j", (blank) => {
     process.env[ENV] = blank;
     expect(() => requireIngestToken(ref())).toThrow(
-      /cfg\.wealOverlay\.token .*missing or empty.*\$WEAL_OVERLAY_TEST_TOKEN/,
+      /weal-overlay\.token .*unset, blank.*\$WEAL_OVERLAY_TEST_TOKEN/,
     );
   });
 
   test("refuses an unset token with no SOPS fallback", () => {
-    expect(() => requireIngestToken(ref())).toThrow(/missing or empty/);
+    expect(() => requireIngestToken(ref())).toThrow(/unset, blank or unresolvable/);
   });
 
   test("refuses a config with no ref= at all", () => {

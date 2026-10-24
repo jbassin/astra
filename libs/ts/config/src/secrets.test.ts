@@ -15,7 +15,7 @@ import { delimiter, join } from "node:path";
 
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 
-import { isBlankSecret, resolveSopsRef, SecretRef } from "./index";
+import { isBlankSecret, loadConfig, resolveSopsRef, SecretRef, SecretUnsetError } from "./index";
 
 const REF = "sops:astra_blank_test_secret";
 const ENV = "ASTRA_BLANK_TEST_SECRET";
@@ -119,5 +119,64 @@ describe("resolveSopsRef: blank counts as unset", () => {
     expect(() => ref.resolve()).toThrow();
     process.env[ENV] = "real-value";
     expect(ref.resolve()).toBe("real-value");
+  });
+});
+
+// `require()` / `optional()`: the one way app code reads a secret (same cases as Python).
+describe("SecretRef.require / optional", () => {
+  const ref = (file: string) => new SecretRef(REF, file, "test.blank-secret");
+  const UNSET = [undefined, ...BLANKS];
+
+  test.each(UNSET)("require refuses unset or blank env %j and names the config key", (blank) => {
+    if (blank !== undefined) process.env[ENV] = blank;
+    const r = ref(secretsFile("other_key: x\n"));
+    expect(() => r.require()).toThrow(SecretUnsetError);
+    expect(() => r.require()).toThrow(/test\.blank-secret .*\$ASTRA_BLANK_TEST_SECRET/);
+  });
+
+  test("require refuses when there is no SOPS file", () => {
+    expect(() => ref(join(dir, "absent.enc.yaml")).require()).toThrow(
+      /unset, blank or unresolvable/,
+    );
+  });
+
+  test("require refuses a blank file entry", () => {
+    expect(() => ref(secretsFile('astra_blank_test_secret: "  "\n')).require()).toThrow(
+      SecretUnsetError,
+    );
+  });
+
+  test("require returns a real value verbatim", () => {
+    expect(ref(secretsFile("astra_blank_test_secret: from-file\n")).require()).toBe("from-file");
+    process.env[ENV] = "  padded  ";
+    expect(ref(secretsFile("other_key: x\n")).require()).toBe("  padded  ");
+  });
+
+  test.each(UNSET)("optional reads unset or blank env %j as undefined", (blank) => {
+    if (blank !== undefined) process.env[ENV] = blank;
+    const file = secretsFile('other_key: x\nastra_blank_test_secret: ""\n');
+    expect(ref(file).optional()).toBeUndefined();
+  });
+
+  test("optional reads no SOPS file as undefined", () => {
+    expect(ref(join(dir, "absent.enc.yaml")).optional()).toBeUndefined();
+  });
+
+  test("optional returns a real value", () => {
+    process.env[ENV] = "real-value";
+    expect(ref(secretsFile("other_key: x\n")).optional()).toBe("real-value");
+  });
+
+  test("optional still throws when sops fails (a broken age key is not unset)", () => {
+    writeFileSync(join(dir, "bin", "sops"), "#!/bin/sh\necho boom >&2\nexit 1\n", {
+      mode: 0o755,
+    });
+    expect(() => ref(secretsFile("x: y\n")).optional()).toThrow();
+  });
+
+  test("loaded refs carry their config key", () => {
+    const cfg = loadConfig();
+    expect(cfg.orator.sessionSecret?.configKey).toBe("orator.session-secret");
+    expect(cfg.wealOverlay.token?.configKey).toBe("weal-overlay.token");
   });
 });

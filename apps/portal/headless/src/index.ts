@@ -14,7 +14,6 @@ const telemetry = initTelemetry(SERVICE_NAME);
 const log = getLogger(SERVICE_NAME);
 const tracer = getTracer(SERVICE_NAME);
 
-import type { SecretRef } from "@astra/config";
 import { loadConfig } from "@astra/config";
 
 import { createHealthServer, snapshotFromSupervisor } from "./health";
@@ -44,22 +43,13 @@ const consoleCounter = lazyCounter(SERVICE_NAME, "astra.portal_headless.module_c
     "bridge-user-id diagnosable from SigNoz instead of a devtools console nobody has open)",
 });
 
-/** Resolves a SOPS `ref=` secret; throws with a clear pointer back to config.kdl if
- * unresolved (mirrors portal-server's `requireSecret`). */
-function requireSecret(ref: SecretRef | null | undefined, field: string): string {
-  const value = ref?.resolve();
-  if (!value) {
-    throw new Error(
-      `cfg.portalHeadless.${field} is unresolved — set portal-headless.${field} ref= in ` +
-        "config.kdl's portal-headless {} block (and provision the SOPS key / env override)",
-    );
-  }
-  return value;
-}
-
 async function main(): Promise<void> {
   const cfg = loadConfig();
   const ph = cfg.portalHeadless;
+  const { gmPassword } = ph;
+  if (!gmPassword) {
+    throw new Error("portal-headless.gm-password needs a ref= in config.kdl's portal-headless {}");
+  }
 
   log.emit({
     severityText: "INFO",
@@ -73,7 +63,7 @@ async function main(): Promise<void> {
     username: ph.gmUsername,
     // Resolved fresh at every login call, never cached (D27-14) — this closure is the
     // ONLY place the plaintext password exists outside the page context itself.
-    resolvePassword: () => requireSecret(ph.gmPassword, "gmPassword"),
+    resolvePassword: () => gmPassword.require(),
     reloadIntervalMs: ph.reloadIntervalHours * 60 * 60 * 1000,
     log: (level, message) => {
       log.emit({ severityText: level.toUpperCase(), body: message });

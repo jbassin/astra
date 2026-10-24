@@ -105,7 +105,7 @@ def session_transcript(context: dg.AssetExecutionContext) -> dg.MaterializeResul
     date_key = context.partition_key
     cfg = load_config().scribe
     roster = Roster.from_being(BEING_KDL_PATH)
-    api_key = cfg.groq_api_key.resolve() if cfg.groq_api_key else None
+    api_key = cfg.groq_api_key.require() if cfg.groq_api_key else None
     # Model from config (config-single-source) — not the TrackTranscriber constant default.
     transcriber = TrackTranscriber(api_key=api_key, model=cfg.model)
     tracks = sorted(_tracks_dir(cfg, date_key).glob("*.aac"))

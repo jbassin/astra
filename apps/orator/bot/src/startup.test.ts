@@ -4,46 +4,45 @@ import { join } from "node:path";
 import { SecretRef } from "@astra/config";
 import { afterEach, describe, expect, test } from "vitest";
 
-import {
-  MIN_SESSION_SECRET_BYTES,
-  optionalSecret,
-  requireAllowlist,
-  requireSecret,
-} from "./startup";
+import { MIN_SESSION_SECRET_BYTES, requireAllowlist, requireSessionSecret } from "./startup";
 
 // A real SecretRef whose SOPS fallback points at a missing file: the in-container state,
 // where `just up` was skipped and compose injected `${ORATOR_TEST_SECRET:-}` = "".
 // Hermetic — resolution never reaches the real SOPS file or the sops binary.
 const ENV = "ORATOR_TEST_SECRET";
 const ref = () =>
-  new SecretRef("sops:orator_test_secret", join(tmpdir(), "orator-absent.enc.yaml"));
+  new SecretRef(
+    "sops:orator_test_secret",
+    join(tmpdir(), "orator-absent.enc.yaml"),
+    "orator.session-secret",
+  );
 const STRONG = "x".repeat(MIN_SESSION_SECRET_BYTES);
 
 afterEach(() => {
   delete process.env[ENV];
 });
 
-describe("requireSecret (fail closed, 0037 SVC-2)", () => {
+describe("requireSessionSecret (fail closed, 0037 SVC-2)", () => {
   test.each(["", "   ", "\t\n"])("refuses a blank injected secret %j", (blank) => {
     process.env[ENV] = blank;
-    expect(() => requireSecret(ref(), "sessionSecret", MIN_SESSION_SECRET_BYTES)).toThrow(
-      /cfg\.orator\.sessionSecret .*missing or empty.*\$ORATOR_TEST_SECRET/,
+    expect(() => requireSessionSecret(ref())).toThrow(
+      /orator\.session-secret .*unset, blank.*\$ORATOR_TEST_SECRET/,
     );
   });
 
   test("refuses an unset secret with no SOPS fallback", () => {
-    expect(() => requireSecret(ref(), "sessionSecret")).toThrow(/missing or empty/);
+    expect(() => requireSessionSecret(ref())).toThrow(/unset, blank or unresolvable/);
   });
 
   test("refuses a field with no ref= at all", () => {
-    expect(() => requireSecret(undefined, "sessionSecret")).toThrow(/has no ref=/);
+    expect(() => requireSessionSecret(undefined)).toThrow(/has no ref=/);
   });
 
   test("refuses a short session secret without echoing it", () => {
     process.env[ENV] = "short-secret";
     let message = "";
     try {
-      requireSecret(ref(), "sessionSecret", MIN_SESSION_SECRET_BYTES);
+      requireSessionSecret(ref());
     } catch (err) {
       message = (err as Error).message;
     }
@@ -53,20 +52,7 @@ describe("requireSecret (fail closed, 0037 SVC-2)", () => {
 
   test("returns a real secret", () => {
     process.env[ENV] = STRONG;
-    expect(requireSecret(ref(), "sessionSecret", MIN_SESSION_SECRET_BYTES)).toBe(STRONG);
-  });
-});
-
-describe("optionalSecret", () => {
-  test("a blank or unresolvable secret turns the feature off", () => {
-    process.env[ENV] = "";
-    expect(optionalSecret(ref())).toBe("");
-    expect(optionalSecret(undefined)).toBe("");
-  });
-
-  test("a real secret resolves", () => {
-    process.env[ENV] = "token";
-    expect(optionalSecret(ref())).toBe("token");
+    expect(requireSessionSecret(ref())).toBe(STRONG);
   });
 });
 

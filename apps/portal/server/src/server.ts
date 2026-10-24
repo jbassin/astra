@@ -36,7 +36,7 @@ export interface PortalServerOptions {
   /** `cfg.portal.playerMcpApiKey` (0028 D28-1) — the second static bearer, compared
    * alongside `mcpApiKey` in the `/mcp` auth branch; a match resolves `scope: "player"`
    * (D28-8's read-only tool subset) instead of the admin scope. Load-bearing like
-   * `mcpApiKey`/`bridgeApiKey` (resolved via `requireSecret` in `index.ts`), never
+   * `mcpApiKey`/`bridgeApiKey` (resolved via `SecretRef.require()` in `index.ts`), never
    * logged. */
   playerMcpApiKey: string;
   bridgeApiKey: string;
