@@ -8,9 +8,10 @@ top-level compose; its published ports are remapped into the astra **10350–103
 ## Deploy
 
 ```sh
-just deploy                    # whole stack at origin/main
+just deploy                    # whole stack at origin/main (or at the rollback pin, below)
 just deploy akasha-frontend    # one service
-just deploy --sha <rev>        # a pushed older commit (rollback)
+just deploy --sha <rev>        # a pushed older commit (rollback; pins production there)
+just deploy --sha origin/main  # back to main after a rollback (clears the pin)
 just deploy --dry-run          # checks only; prints the compose command
 ```
 
@@ -28,12 +29,64 @@ runtime images carry production dependencies only. Dagster and smart-exporter ke
 Dockerfiles. The repo-root `.dockerignore` is a short deny-list; keep it free of `!` re-includes
 (its header says why).
 
+**Which deploy tooling runs.** Whatever `deploy.sh` you invoke (the deploy checkout's, which the
+bots' recipes call, or a dev tree's), after `git fetch` it copies **origin/main's**
+`deploy/deploy.sh` and `deploy/wait-healthy.sh` to `/ruby/data/astra-state/deploy/bin/` and
+re-runs that copy under the same deploy lock. So the deploy logic is always main's, even while the
+deploy checkout sits at an older rollback sha. Exceptions: `--restart`, `--init-artifacts` and
+`--host-tooling` run the invoked script as it is (they fetch nothing), and `ASTRA_DEPLOY_STAGED=1`
+skips the copy, the escape hatch when main's `deploy.sh` itself is broken. The rest of the
+checkout (the justfile recipes, the unit scripts, the compose file) is at the deployed sha. A
+deploy checkout rolled back to a sha from before this staging existed runs that sha's old
+`deploy.sh`, which knows no pin, so its next bot redeploy moves back to origin/main.
+
+After `up`, the deploy waits up to 180 s (`DEPLOY_HEALTH_TIMEOUT`) for every container of the deployed
+services to come up: a healthcheck must report `healthy`, a container without one must run 15 s
+without restarting, and a one-shot must exit 0 (`deploy/wait-healthy.sh`). If one does not, the
+deploy prints each failing container with its last log lines and the rollback command
+(`just deploy --sha <the newest earlier healthy sha> [services]`), records `result: "unhealthy"`
+and exits 10. It never rolls back by itself; the new containers keep running. `--restart` waits
+the same way. `just deploy-health-test` checks the wait against throwaway containers. Limits of
+the wait:
+
+- A scoped deploy checks only the named services. Dependencies that `up` recreated for them
+  are not checked.
+- A container without a healthcheck that crashes only after its first 15 s passes. Give a
+  service a healthcheck if that matters.
+- Orphans (containers of services no longer in the compose file) are skipped, so a dead one
+  cannot fail every whole-stack deploy. Clear them with `docker rm` or `up --remove-orphans`.
+
+A `--sha` deploy to anything but origin/main pins production at that sha (`pinned` in
+history.jsonl). Until someone deploys `--sha origin/main` (or another explicit sha), every deploy
+without `--sha`, including the bots' scoped redeploys of akasha-frontend and mouthpiece-frontend,
+builds the pinned sha and logs a warning, so a data publish no longer undoes a rollback. The
+deploy checkout is one sha, so a scoped rollback (`--sha <rev> akasha-frontend`) pins the whole
+stack: the next deploy of any service builds that sha too.
+
+The astra-data build context is the clone's committed HEAD whether or not it is pushed (a failed
+bot push must not hold the site back). When HEAD is ahead of the clone's `origin/main` the deploy
+logs a warning and records the count as `data_unpushed`; push with `just _astra-data-push`.
+history.jsonl is read leniently: a line that is not a JSON object is skipped.
+
 Every host unit (craig-sync, linguist-commit, heartwood-request, the watchdog, alerting and
 backup) runs from the deploy checkout too; the install recipes `systemctl --user link` the unit
 files from it. After each checkout `deploy.sh` brings that checkout's host tooling up to date for
 them (`uv sync --frozen`, and `pnpm install --frozen-lockfile --filter @astra/vellum-lang` for
 heartwood's validator); both are no-ops when nothing changed. `deploy.sh --host-tooling` runs just
-that step.
+that step. The heartwood recipes hold `/ruby/data/astra-state/locks/host-tooling.lock` shared while
+they run. A deploy that will move the checkout or sync the venv takes it exclusively **before**
+`git checkout` (waiting up to 600 s, `HOST_TOOLING_LOCK_TIMEOUT`, then exit 9 with nothing
+changed), so a running agent's source, venv and validator never change under it. Every host recipe
+runs `uv run --frozen --no-sync`, so nothing rewrites `uv.lock` and nothing but that locked step
+syncs the deploy checkout's venv (in a dev tree, run `uv sync` yourself).
+
+`linguist-commit` redeploys akasha-frontend (and mouthpiece-frontend) when its own commits changed
+their data, and also whenever the clone's HEAD differs in that data from the `data_sha` the frontend
+was last deployed with. A hand wiki edit pushed to astra-data therefore goes live on the next run.
+It deploys with `--skip-failed`: a redeploy that failed to build or come up (exit 7 or 10) at the
+same code sha and astra-data HEAD is not rebuilt (exit 11). A real failure makes linguist-commit
+exit non-zero, so its OnFailure alert pages once; the skips that follow do not page. A new code or
+data commit, or a manual `just deploy <service>`, retries.
 
 ## Data root
 
@@ -134,6 +187,11 @@ just down-volumes         # also drop the SigNoz volumes (asks first; fresh onbo
 - Every host unit's script runs from the deploy checkout, so a script edit goes live with the next
   `just deploy` after the push; a changed `.service`, `.timer` or `.path` file needs its install
   recipe (`just alert-install`, `just backup-install`, ...) re-run.
+- A recipe that holds the host-tooling lock must close it (`exec 8>&-`) before it calls
+  `just deploy`, or the deploy waits on its own caller. Lock order: git-publish first, then
+  host-tooling. Never wait for git-publish while holding host-tooling (linguist-commit holds
+  git-publish while its deploy wants host-tooling); the heartwood recipes drop host-tooling,
+  take git-publish, then take host-tooling again.
 - `OnFailure=` belongs in `[Unit]`. In `[Service]` systemd ignores it with only a log warning.
   Check with `systemctl --user show <unit> -p OnFailure`.
 - `craig-sync` cannot be failed by pointing `CRAIG_DROP_DIR` at a missing directory: its nullglob

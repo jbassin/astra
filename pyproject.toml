@@ -15,7 +15,7 @@ dev-dependencies = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["libs/py", "apps", "ontology", "dagster"]
+testpaths = ["libs/py", "apps", "ontology", "dagster", "deploy/tests"]
 # importlib mode: test modules are not put on sys.path, so a test can't import a sibling
 # test module by bare name and same-named test files in different packages don't collide.
 # Shared test helpers live in a package (a tests/__init__.py) and use relative imports.

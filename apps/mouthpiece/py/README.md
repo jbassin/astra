@@ -25,7 +25,7 @@ snapshot. The only digest field read downstream is the top-level `synopsis`.
 
 `mouthpiece-publish` refuses, and writes nothing, when the episodes dir is missing or the new
 catalog has fewer episodes than the snapshot on disk (a wrong path or a half-mounted corpus).
-Publish a deliberate removal with `uv run --frozen python -m astra_mouthpiece.publish --allow-shrink`.
+Publish a deliberate removal with `just mouthpiece-publish --allow-shrink`.
 
 ## Operations
 
