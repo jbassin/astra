@@ -1,28 +1,27 @@
 /**
- * portal-headless entrypoint (spec 0027 S2, D27-5/-6/-9/-10/-11) — wires telemetry
- * first (principle #1 / [[telemetry-built-in]]), then config, then the Playwright page
+ * portal-headless entrypoint (spec 0027 S2, D27-5/-6/-9/-10/-11). Telemetry (traces,
+ * metrics, logs, HTTP spans, the SIGTERM flush) is already installed by
+ * `node --import @astra/observe/register`; this reads config, wires the Playwright page
  * adapter into the `Supervisor` state machine, then binds `/health`. Mirrors
- * vellum-render's "warm the browser before serving" shape and portal-server's
- * SIGTERM + `telemetry.shutdown()` pattern.
+ * vellum-render's "warm the browser before serving" shape.
  */
-import { getLogger, getTracer, initTelemetry, lazyCounter } from "@astra/observe";
+import { loadConfig } from "@astra/config";
+import {
+  exitAfterFlush,
+  getLogger,
+  getTracer,
+  lazyCounter,
+  logger,
+  onShutdown,
+} from "@astra/observe";
 
 import { SERVICE_NAME } from "./constants";
-
-// Telemetry before anything that emits — traces/metrics/logs → SigNoz.
-const telemetry = initTelemetry(SERVICE_NAME);
-const log = getLogger(SERVICE_NAME);
-const tracer = getTracer(SERVICE_NAME);
-
-import { loadConfig } from "@astra/config";
-
 import { createHealthServer, snapshotFromSupervisor } from "./health";
 import { createPlaywrightPageAdapter } from "./playwrightDriver";
 import { Supervisor, type SupervisorEvent } from "./supervisor";
 
-// lazyCounter, NEVER `getMeter().createCounter()` at module scope — the ES-import-
-// hoisting permanent-no-op gotcha ([[telemetry-coverage-pass]]). These bind to the
-// real meter on first `.add()`, by which point `initTelemetry` above has already run.
+const log = logger(SERVICE_NAME);
+const tracer = getTracer(SERVICE_NAME);
 const joinsCounter = lazyCounter(SERVICE_NAME, "astra.portal_headless.joins", {
   description: "Successful /join logins by the headless GM session",
 });
@@ -51,10 +50,9 @@ async function main(): Promise<void> {
     throw new Error("portal-headless.gm-password needs a ref= in config.kdl's portal-headless {}");
   }
 
-  log.emit({
-    severityText: "INFO",
-    body: `portal-headless targeting ${ph.foundryOrigin} (world "${ph.world}") as ${ph.gmUsername}`,
-  });
+  log.info(
+    `portal-headless targeting ${ph.foundryOrigin} (world "${ph.world}") as ${ph.gmUsername}`,
+  );
 
   const page = createPlaywrightPageAdapter({ origin: ph.foundryOrigin });
 
@@ -66,7 +64,8 @@ async function main(): Promise<void> {
     resolvePassword: () => gmPassword.require(),
     reloadIntervalMs: ph.reloadIntervalHours * 60 * 60 * 1000,
     log: (level, message) => {
-      log.emit({ severityText: level.toUpperCase(), body: message });
+      // The supervisor's own level names; the severity number follows from the text.
+      getLogger(SERVICE_NAME).emit({ severityText: level.toUpperCase(), body: message });
     },
     onEvent: (event: SupervisorEvent) => {
       switch (event.type) {
@@ -96,20 +95,15 @@ async function main(): Promise<void> {
   await supervisor.start();
 
   const server = createHealthServer(() => snapshotFromSupervisor(supervisor));
-  server.listen(ph.port, () => {
-    log.emit({ severityText: "INFO", body: `portal-headless /health on :${ph.port}` });
-  });
+  server.listen(ph.port, () => log.info(`portal-headless /health on :${ph.port}`));
 
-  for (const sig of ["SIGINT", "SIGTERM"] as const) {
-    process.once(sig, () => {
-      supervisor.stop();
-      server.close();
-      void telemetry.shutdown().finally(() => process.exit(0));
-    });
-  }
+  onShutdown(() => {
+    supervisor.stop();
+    server.close();
+  });
 }
 
 main().catch((e: unknown) => {
-  log.emit({ severityText: "FATAL", body: `astra.portal-headless failed to start: ${e}` });
-  process.exit(1);
+  log.fatal(`astra.portal-headless failed to start: ${e}`);
+  void exitAfterFlush(1);
 });

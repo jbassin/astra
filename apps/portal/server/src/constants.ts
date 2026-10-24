@@ -5,8 +5,8 @@
  * so both the server entrypoint and its tests reference one literal, not two.
  */
 
-/** Hardcoded, not config-sourced (D3): portal has no browser RUM surface to derive
- * a name from, mirroring orator-backend's `initTelemetry("astra.orator-backend")`. */
+/** The tracer, meter and logger name; it matches config.kdl `portal.service-name`,
+ * which names the process (`@astra/observe/register`). */
 export const SERVICE_NAME = "astra.portal";
 
 /** The path the Foundry module dials (`wss://<public-origin><BRIDGE_WS_PATH>`). */

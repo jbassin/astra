@@ -7,12 +7,17 @@
 // `vite build` emits a bare Web-fetch handler at dist/server/server.js plus the
 // hashed client bundle under dist/client/. This wraps both: static client assets
 // are served straight from disk; everything else falls through to the TanStack
-// Start SSR handler (one span per rendered request). Caddy reverse-proxies the
-// whole service (it does not static-serve the site — Decision I).
+// Start SSR handler. Caddy reverse-proxies the whole service (it does not
+// static-serve the site — Decision I).
+//
+// Telemetry is not wired here: the process runs under `node --import
+// @astra/observe/register`, which installs the providers, an HTTP server span per
+// request and the SIGTERM flush. This adds one `ssr.render` child span per SSR'd
+// request and closes the server on shutdown.
 
 import { stat } from "node:fs/promises";
 
-import { getTracer, initTelemetry } from "@astra/observe";
+import { getTracer, logger, onShutdown } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { type Server, serve } from "srvx";
 
@@ -32,7 +37,7 @@ export interface StaticMount {
 }
 
 export interface SsrServerOptions {
-  /** OTel service name (config.kdl) — names the SSR spans + resource. */
+  /** The service name (config.kdl): names the `ssr.render` tracer and the log lines. */
   serviceName: string;
   /** Bind port (config.kdl); 0 asks the OS for a free one (read it back from `url`). */
   port: number;
@@ -72,35 +77,23 @@ async function isFile(p: string): Promise<boolean> {
 }
 
 /**
- * Start the SSR server (srvx — runs on Node; R3, Decision-per-spec 0022): wire
- * server-side OTel into the runtime (principle #1; the OTLP endpoint comes from
- * config.kdl via @astra/config — no env reads), static-serve built client assets
- * (Range/206-capable via `send`, `./sendFile.ts` — THE property the audio mounts
- * depend on, S6), SSR everything else under one span per request, and force-flush
- * buffered spans on SIGTERM/SIGINT. Returns the srvx server handle.
+ * Start the SSR server (srvx — runs on Node; R3, Decision-per-spec 0022):
+ * static-serve built client assets (Range/206-capable via `send`, `./sendFile.ts` —
+ * THE property the audio mounts depend on, S6), SSR everything else under an
+ * `ssr.render` span, and close the server on shutdown. Returns the srvx server handle.
  */
 export function createSsrServer(opts: SsrServerOptions): Server {
   const { serviceName, port, hostname = "0.0.0.0", ssr, clientDir, staticMounts = [] } = opts;
 
-  // Guarded so a telemetry misconfig never takes the site down.
-  let telemetry: { shutdown: () => Promise<void> } | null = null;
-  try {
-    telemetry = initTelemetry(serviceName);
-  } catch (err) {
-    // oxlint-disable-next-line no-console -- startup line on stdout
-    console.warn(
-      `[${serviceName}] telemetry init skipped: ${err instanceof Error ? err.message : err}`,
-    );
-  }
   const tracer = getTracer(serviceName);
+  const log = logger(serviceName);
 
   const server = serve({
     port,
     hostname,
-    // We own SIGTERM/SIGINT ourselves below (telemetry flush before exit); srvx's
-    // built-in graceful-shutdown plugin would install a second pair of handlers
-    // that race ours (its own stderr progress log + polling close loop) for no
-    // benefit here, so it's off. No srvx `idleTimeout` equivalent exists (B3);
+    // @astra/observe/register owns SIGTERM/SIGINT (our onShutdown hook, then the
+    // telemetry flush); srvx's built-in graceful-shutdown plugin would install a
+    // second pair of handlers that race it, so it's off. No srvx `idleTimeout` equivalent exists (B3);
     // the closest analog for the Node runtime is `node.keepAliveTimeout` (srvx
     // spreads `node` straight into `http.createServer()` — ignored on non-Node
     // adapters), which isn't semantically identical to Bun's idle-connection
@@ -126,14 +119,16 @@ export function createSsrServer(opts: SsrServerOptions): Server {
           return serveFile(req, filePath, clientDir);
         }
       }
-      // One SSR span per rendered request (assets above short-circuit).
+      // One render span per SSR'd request (assets above short-circuit), a child of the
+      // HTTP server span. A fixed name: the raw path is an attribute, never the name
+      // (codex has ~44k entity pages).
       return tracer.startActiveSpan(
-        `SSR ${req.method} ${url.pathname}`,
-        { attributes: { "http.method": req.method, "http.route": url.pathname } },
+        "ssr.render",
+        { attributes: { "url.path": url.pathname } },
         async (span) => {
           try {
             const res = await ssr.fetch(req);
-            span.setAttribute("http.status_code", res.status);
+            span.setAttribute("http.response.status_code", res.status);
             if (res.status >= 500) span.setStatus({ code: SpanStatusCode.ERROR });
             return res;
           } catch (err) {
@@ -147,19 +142,10 @@ export function createSsrServer(opts: SsrServerOptions): Server {
     },
   });
 
-  // srvx prints its own untagged "Listening on" line from `serve()`; ours adds
-  // the serviceName tag once the (possibly async, on Node) listen completes.
-  void server.ready().then((s) => {
-    // oxlint-disable-next-line no-console -- startup line on stdout
-    console.log(`[${serviceName}] SSR listening on ${s.url}`);
-  });
-
-  // Force-flush buffered spans before the container stops (BatchSpanProcessor).
-  for (const sig of ["SIGTERM", "SIGINT"] as const) {
-    process.on(sig, () => {
-      void telemetry?.shutdown().finally(() => process.exit(0));
-    });
-  }
+  // srvx prints its own untagged "Listening on" line from `serve()`; ours is the
+  // log record (mirrored to stdout) once the (possibly async, on Node) listen completes.
+  void server.ready().then((s) => log.info(`SSR listening on ${s.url}`));
+  onShutdown(() => server.close(true));
 
   return server;
 }

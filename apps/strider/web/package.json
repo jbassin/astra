@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite dev --configLoader runner",
     "build": "vite build --configLoader runner",
-    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs server.ts",
+    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import @astra/observe/register server.ts",
     "typecheck": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/build-content.ts && tsc --noEmit",
     "test": "vitest run",
     "generate:content": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/build-content.ts"
@@ -40,5 +40,8 @@
     "tailwindcss": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
+  },
+  "astra": {
+    "config": "strider"
   }
 }

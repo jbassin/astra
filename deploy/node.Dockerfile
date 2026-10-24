@@ -132,15 +132,21 @@ RUN --mount=type=bind,from=prod,source=/repo,target=/repo \
 FROM os-${RUNTIME} AS app
 ARG APP
 ARG ENTRY=server.ts
-ENV NODE_ENV=production APP_ENTRY=${ENTRY}
+# ASTRA_RUNTIME=container tells @astra/observe to export to the in-cluster collector
+# (telemetry.otlp-endpoint) and to label every signal deployment.environment=production.
+ENV NODE_ENV=production APP_ENTRY=${ENTRY} ASTRA_RUNTIME=container
 WORKDIR /repo/apps/${APP}
 COPY --from=prod /repo /repo
 COPY libs/ts /repo/libs/ts
 COPY ontology /repo/ontology
 COPY --from=build /repo/apps/${APP} ./
-# Node runs the TS entry directly (no package manager in the runtime). `exec` makes node
-# PID 1, so it receives the stop signal itself.
-CMD exec node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs "$APP_ENTRY"
+# Node runs the TS entry directly (no package manager in the runtime). The first --import
+# lets Node resolve extensionless TS imports; the second installs telemetry, HTTP and fetch
+# spans and the shutdown flush before the entry loads (the service name comes from the
+# app's package.json `astra.config` block in config.kdl). `exec` makes node PID 1, so it
+# receives the stop signal itself.
+CMD exec node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs \
+    --import @astra/observe/register "$APP_ENTRY"
 
 # portal-server (APP=portal/server) also serves the Foundry module: tsdown bundles it to
 # module/dist/main.js, which portal-server's modulePackage.ts zips with module.json. It

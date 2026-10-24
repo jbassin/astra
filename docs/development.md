@@ -102,20 +102,33 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
   observe does nothing by itself. A Python CLI's `main()` wraps its body in
   `with astra_observe.run("astra.<sub>"):`, which initialises traces, metrics and logs and always
   flushes on exit (return, exception or SIGTERM). A long-lived process (the Dagster code location,
-  `dagster/definitions.py`) calls `init_telemetry("astra.<sub>")`; TS services call
-  `initTelemetry("astra.<sub>")`. Wire spans, metrics and logs.
-- **Where Python telemetry goes.** The process picks the endpoint, never the caller:
-  `ASTRA_RUNTIME=container` (set in `dagster/Dockerfile`) exports to `telemetry.otlp-endpoint`;
-  unset means the host and `telemetry.host-otlp-endpoint`. Every signal carries
-  `deployment.environment`: `test` under pytest (where nothing is exported), `production` in a
-  container or when run from the deploy checkout (`$ASTRA_DEPLOY_ROOT`), else `development`.
+  `dagster/definitions.py`) calls `init_telemetry("astra.<sub>")`. A Node service never inits
+  telemetry itself: it runs under `node --import @astra/observe/register` (the
+  `deploy/node.Dockerfile` CMD and each app's `start` script), which installs traces, metrics and
+  logs before app code loads, adds HTTP server and client spans (`node:http`) and fetch spans
+  (undici), and owns SIGTERM/SIGINT. App cleanup goes in `onShutdown(fn)`; a fatal startup error
+  logs `fatal` and calls `exitAfterFlush(1)`. The service name is the `service-name` of the
+  config.kdl block that the app's `package.json` names in `"astra": { "config": "<namespace>" }`.
+- **Where telemetry goes.** The process picks the endpoint, never the caller, in both languages:
+  `ASTRA_RUNTIME=container` (set in `dagster/Dockerfile` and `deploy/node.Dockerfile`) exports to
+  `telemetry.otlp-endpoint`; unset means the host and `telemetry.host-otlp-endpoint`. Every
+  signal carries `deployment.environment`: `test` under pytest or vitest (where nothing is
+  exported), `production` in a container or when run from the deploy checkout
+  (`$ASTRA_DEPLOY_ROOT`), else `development`.
+- **Logs.** Python logs export only through `logging.getLogger("astra.<sub>")`. In TS use
+  `logger("astra.<sub>").info/warn/error/fatal(msg, attrs)` from `@astra/observe`; every record
+  (also a raw `getLogger().emit`) at INFO or above is mirrored to stdout as one line, so
+  `docker logs` shows it. Don't also `console.*` the same line. TS `console.log` does not export.
+- **Ignored errors.** A `catch` that deliberately swallows an error calls
+  `reportIgnored(site, err)` (TS) or `astra_observe.report_ignored(site, exc)` (Python): one
+  `astra.errors.ignored{site}` count and a DEBUG record, instead of a bare `catch {}`. A catch
+  that is control flow (a stat that answers "not a file") needs neither.
 - **Telemetry in tests.** Take the `telemetry_capture` fixture (or `astra_observe.testing.capture`)
-  to assert on spans, metrics and logs in memory. Don't build ad-hoc providers or monkeypatch
-  tracers.
-- **TS metrics use `lazyCounter` / `lazyHistogram`** from `@astra/observe`. A
-  `getMeter().createCounter()` at module scope runs before `initTelemetry` (import hoisting) and
-  stays a no-op forever. `getTracer` and `getLogger` at module scope are fine. Python logs export
-  only through `logging.getLogger("astra.<sub>")`; TS `console.log` does not export.
+  in Python, or `captureTelemetry()` from `@astra/observe/testing` in TS, to assert on spans,
+  metrics and logs in memory. Don't build ad-hoc providers or monkeypatch tracers.
+- **TS metrics use `lazyCounter` / `lazyHistogram`** from `@astra/observe`. They bind on first
+  use, so a module that also loads in tests or scripts (where no provider is installed) stays
+  correct; under register a module-scope `getMeter()` would work too, but keep one convention.
 - **Config single source.** Every config value, including tuning constants, ports and paths, lives
   in `ontology/ontology-config/config.kdl` and is read through `astra_config` (Python) or
   `@astra/config` (TypeScript). Each language's loader validates only the namespaces its apps read
@@ -167,7 +180,11 @@ for what it is (`bot`, `overlay`, `render`, `controller`). Its manifest (`pyproj
 `apps/*/py` directory without a `pyproject.toml`, so never create an empty one. A TypeScript app's
 `tsconfig.json` extends `../../../tsconfig.base.json`, and its scripts reach the repo root with
 three `../`. Every Node service builds from the one `deploy/node.Dockerfile`, which finds the
-workspace members itself, so a new pnpm member or `libs/ts` package needs no Docker change. What
+workspace members itself, so a new pnpm member or `libs/ts` package needs no Docker change. A Node
+service depends on `@astra/observe`, names its config block in its `package.json`
+(`"astra": { "config": "<namespace>" }`, whose block needs a `service-name`), and its `start`
+script runs `node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import
+@astra/observe/register <entry>`, like the image's CMD. What
 is still hand-maintained:
 
 1. A Dagster asset: register it in its app's `assets.defs`, pin its name in

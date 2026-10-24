@@ -7,7 +7,7 @@ step. How to start a new frontend from these pieces is in `apps/strider/web/READ
 
 | Export | Where it runs | What it does |
 |---|---|---|
-| `createSsrServer` | `server.ts` | srvx server on Node 24: static client assets, optional `staticMounts` (e.g. `/audio/`), then the app's SSR handler; one OTel span per SSR request; flushes telemetry on SIGTERM/SIGINT |
+| `createSsrServer` | `server.ts` | srvx server on Node 24: static client assets, optional `staticMounts` (e.g. `/audio/`), then the app's SSR handler under an `ssr.render` span; closes on shutdown (`@astra/observe/register` owns telemetry and signals) |
 | `serveFile`, `staticMountPath` | servers | `send`-backed file serving with Range/206, 304 and 416; traversal-guarded mount paths |
 | `contentWatchPlugin` | `vite.config.ts` | runs the app's `scripts/build-content.ts` (as a Node subprocess) at build start and on content edits in dev |
 | `gothicFontsPlugin` | `vite.config.ts` | serves gothic's fonts in dev and copies them to `dist/client/fonts` at build |

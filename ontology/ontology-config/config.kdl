@@ -74,16 +74,20 @@ telemetry {
     // collector by its container name (:4318 = the collector's OTLP/HTTP port). The host-published port (10353) is
     // NOT reachable from inside a container, so this MUST be the in-cluster address
     // for server-side spans to land. A host-run/dev process (no container) can't
-    // resolve this name. Python picks between this and host-otlp-endpoint by the
-    // ASTRA_RUNTIME=container marker (astra_observe); TS callers pass `{endpoint}`.
+    // resolve this name. Both observe libraries pick between this and
+    // host-otlp-endpoint by the ASTRA_RUNTIME=container marker (set in dagster/Dockerfile
+    // and deploy/node.Dockerfile); no caller passes an endpoint.
     otlp-endpoint "http://signoz-otel-collector:4318"
     // Public OTLP/HTTP endpoint the *browser* RUM posts spans to directly. The
     // server-side otlp-endpoint above is not browser-reachable in prod; this is
     // the Caddy-exposed collector (otel.iridi.cc → localhost:10353, with CORS).
     rum-endpoint "https://otel.iridi.cc"
     // The same collector as the HOST sees it (its OTLP/HTTP port published on
-    // localhost). Every host-run Python process (no ASTRA_RUNTIME marker) exports here.
+    // localhost). Every host-run process (no ASTRA_RUNTIME marker) exports here.
     host-otlp-endpoint "http://localhost:10353"
+    // A Node service's whole SIGTERM shutdown (@astra/observe/register): its onShutdown
+    // hooks get 60% of this, the telemetry flush the rest. Under Docker's 10 s stop grace.
+    shutdown-timeout-ms 8000
 }
 
 scribe {
@@ -132,6 +136,10 @@ mouthpiece {
 }
 
 weal {
+    // The bot's telemetry name. Every Node service's block has a service-name: the
+    // @astra/observe/register hook names the process from the block its package.json
+    // `astra.config` field points at.
+    service-name "astra.weal-bot"
     // In-cluster addresses (Compose service DNS). The PG creds are the dev defaults
     // (match deploy/ POSTGRES_* defaults); prod overrides them at the Phase-6 cutover.
     database-url "postgres://weal:weal@weal-postgres:5432/weal"
@@ -143,6 +151,7 @@ weal {
 }
 
 weal-overlay {
+    service-name "astra.weal-overlay"
     // The port server.ts binds, in dev and in its container (host port too), and the
     // target of the Vite dev proxy. Its own port, so it never collides with strider's.
     port 10361
@@ -150,6 +159,7 @@ weal-overlay {
 }
 
 orator {
+    service-name "astra.orator-backend"
     guild-id "753007205510545469"
     // In-cluster Postgres (Compose service DNS); creds match deploy/ POSTGRES_*
     // defaults; prod overrides at the Phase-6 cutover. Library store (Decision F).
@@ -310,10 +320,10 @@ mouthpiece-producer {
 portal {
     // portal (0023) — a TypeScript MCP+WS server for the live FoundryVTT "Faerrin"
     // campaign world, on the orator-backend template (D3: no build step, no browser
-    // RUM surface, so — unlike the SSR frontends — there's no service-name field
-    // here; astra.portal is hardcoded in server/src/index.ts, mirroring orator).
+    // RUM surface). service-name names its telemetry (read by @astra/observe/register).
     // Same config-single-source contract otherwise: the server binds this port; no
     // PORT env. Behind Caddy at portal.iridi.cc → host 10372 (S6).
+    service-name "astra.portal"
     port 10372
     public-origin "https://portal.iridi.cc"
     // Two-hop auth (D6): mcp-api-key bearer-gates the Streamable-HTTP /mcp surface
@@ -345,6 +355,7 @@ portal-headless {
     // pf2e "Faerrin" world through the public edge, so portal's MCP tools work with no
     // human browser tab open (spec 0027). A SEPARATE Compose unit from portal-server:
     // health-only, not edge-routed (no Caddy entry).
+    service-name "astra.portal-headless"
     port 10373
     // D27-3: the public edge — the exact path a human browser takes.
     foundry-origin "https://btl.iridi.cc"

@@ -530,7 +530,7 @@ describe("S5 write tools (spec 0023 D8 — Foundry-free)", () => {
 
   // Note: the audit-log line itself (mcp.ts's `auditWrite` -> `log.emit`) isn't
   // cheaply assertable from this test file — `@astra/observe`'s `getLogger` resolves
-  // to a no-op OTel logger unless a real LoggerProvider is installed (`initTelemetry`,
+  // to a no-op OTel logger unless a real LoggerProvider is installed (register,
   // never called in these Foundry-free unit tests), and wiring an in-memory log
   // exporter here would mean adding `@opentelemetry/sdk-logs` as a new portal-server
   // devDependency for one assertion. The write-tool round-trip tests above already

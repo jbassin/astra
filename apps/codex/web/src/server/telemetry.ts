@@ -19,7 +19,7 @@
 // Instead: the browser posts a tiny fire-and-forget serverFn call
 // (`telemetryFns.ts`), which increments the counter on the ALREADY-
 // initialized server meter — `createSsrServer` (`libs/ts/site-kit/ssrServer.ts`)
-// calls `initTelemetry("astra.codex")` at process start, so by the time any
+// runs under `@astra/observe/register` (telemetry before app code), so by the time any
 // request reaches this handler the real `MeterProvider` is installed; no
 // race. This module is the pure, directly-testable core (same "createServerFn
 // wrapper is a thin caller, the real logic lives in a plain sibling module"

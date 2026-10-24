@@ -1,6 +1,6 @@
 // Production SSR entry for the codex Compose service (Decision I, P5 deploy — this
 // slice only runs it via `pnpm run dev`/`pnpm run start` for the S2 gate). Thin
-// caller over @astra/site-kit's createSsrServer: the srvx + OTel + signal-flush
+// caller over @astra/site-kit's createSsrServer: the srvx + static + SSR-span
 // spine lives in the lib; codex supplies only what's app-specific — its built SSR
 // handler, the client-assets dir, and serviceName/port from config.kdl. The corpus
 // itself is still read at request time via server fns (D29-23), not served as

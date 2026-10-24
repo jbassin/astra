@@ -5,7 +5,7 @@
   "type": "module",
   "module": "src/index.ts",
   "scripts": {
-    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs src/index.ts",
+    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import @astra/observe/register src/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "dev:web": "vite",
@@ -42,5 +42,8 @@
   },
   "optionalDependencies": {
     "@snazzah/davey": "^0.1.11"
+  },
+  "astra": {
+    "config": "orator"
   }
 }

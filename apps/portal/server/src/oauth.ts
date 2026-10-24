@@ -28,7 +28,7 @@ import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 
-import { getLogger, getTracer, lazyCounter } from "@astra/observe";
+import { getLogger, getTracer, lazyCounter, reportIgnored } from "@astra/observe";
 import type { OAuthRegisteredClientsStore } from "@modelcontextprotocol/sdk/server/auth/clients.js";
 import {
   InvalidClientMetadataError,
@@ -172,8 +172,9 @@ function loadState(statePath: string): PersistedState {
     const corruptPath = `${statePath}.corrupt-${Date.now()}`;
     try {
       renameSync(statePath, corruptPath);
-    } catch {
-      /* best-effort — even if the rename itself fails we still start empty below */
+    } catch (err) {
+      // Best-effort: even if the rename itself fails we still start empty below.
+      reportIgnored("portal.oauth-state-quarantine", err);
     }
     log.emit({
       severityText: "ERROR",

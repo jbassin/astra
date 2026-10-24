@@ -1,7 +1,8 @@
 /**
  * orator-backend entrypoint — astra's lift of faerrin `lark` (single-process Bun
- * Discord music bot: voice + library + REST + operator SPA). Wires telemetry first
- * (principle #1 / [[telemetry-built-in]]), then config + ontology + the Postgres
+ * Discord music bot: voice + library + REST + operator SPA). Telemetry (traces, metrics,
+ * logs, HTTP/fetch spans and the SIGTERM flush) is already installed by
+ * `node --import @astra/observe/register`; this wires config + ontology + the Postgres
  * store, then optionally the Discord bot, then serves the REST API + the SPA.
  *
  * The bot is **optional**: without a resolved token the web UI + library + REST
@@ -10,16 +11,11 @@
  * or empty stops startup before anything else runs (fail closed, 0037 SVC-2).
  */
 
-import { getLogger, initTelemetry } from "@astra/observe";
-
-// Telemetry before anything that emits — traces/metrics/logs → SigNoz.
-const telemetry = initTelemetry("astra.orator-backend");
-const log = getLogger("astra.orator-backend");
-
 import { mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { loadConfig } from "@astra/config";
+import { exitAfterFlush, logger, onShutdown } from "@astra/observe";
 import { loadBeing } from "@astra/ontology";
 import { describeResult } from "@astra/pg-migrate";
 
@@ -33,6 +29,8 @@ import { type AppConfig, startServer } from "./server/app";
 import { IngestService } from "./server/ingest";
 import { JobHub } from "./server/jobhub";
 import { requireAllowlist, requireSessionSecret } from "./startup";
+
+const log = logger("astra.orator-backend");
 
 async function main(): Promise<void> {
   const cfg = loadConfig();
@@ -56,10 +54,7 @@ async function main(): Promise<void> {
   const store = new PostgresStore(cfg.orator.databaseUrl);
   // Apply pending schema migrations; a refusal (an edited applied migration) stops startup.
   const migrated = await store.migrate();
-  log.emit({
-    severityText: migrated.ahead.length > 0 ? "WARN" : "INFO",
-    body: describeResult(migrated),
-  });
+  (migrated.ahead.length > 0 ? log.warn : log.info)(describeResult(migrated));
 
   // Ingest: yt-dlp + ffmpeg through a bounded pool. Concurrency + loudness-measurement
   // are memory-pressure knobs (each item can spawn yt-dlp + an ffmpeg pass), sourced
@@ -75,8 +70,7 @@ async function main(): Promise<void> {
   });
   // Resume any import interrupted by a crash/restart (dedup skips finished items).
   const resumed = await ingest.resumeInterrupted();
-  if (resumed > 0)
-    log.emit({ severityText: "INFO", body: `resuming ${resumed} interrupted download job(s)` });
+  if (resumed > 0) log.info(`resuming ${resumed} interrupted download job(s)`);
 
   const publicOrigin = cfg.orator.publicOrigin;
   const config: AppConfig = {
@@ -110,18 +104,12 @@ async function main(): Promise<void> {
         targetLufs: config.targetLufs,
       });
       playback = bot.engine;
-      log.emit({ severityText: "INFO", body: "discord bot online (in-process voice)" });
+      log.info("discord bot online (in-process voice)");
     } catch (err) {
-      log.emit({
-        severityText: "ERROR",
-        body: `discord bot failed to start (playback disabled): ${err}`,
-      });
+      log.error(`discord bot failed to start (playback disabled): ${err}`);
     }
   } else {
-    log.emit({
-      severityText: "INFO",
-      body: "no DISCORD_TOKEN/guild — playback disabled (web UI + library still run)",
-    });
+    log.info("no DISCORD_TOKEN/guild — playback disabled (web UI + library still run)");
   }
 
   const { server } = startServer(config, store, {
@@ -129,31 +117,14 @@ async function main(): Promise<void> {
   });
   // srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
   // listening completes (async on the Node runtime), so log from `.ready()`.
-  void server.ready().then((s) => {
-    log.emit({ severityText: "INFO", body: `orator-backend listening on ${s.url}` });
-  });
-  log.emit({
-    severityText: "INFO",
-    body: `operator allowlist: ${allowlist.size} id(s); data dir: ${dataDir}`,
-  });
+  void server.ready().then((s) => log.info(`orator-backend listening on ${s.url}`));
+  onShutdown(() => server.close(true));
+  log.info(`operator allowlist: ${allowlist.size} id(s); data dir: ${dataDir}`);
 }
 
+// A fail-closed refusal: the FATAL record prints to stdout (`docker logs` says why it
+// crash-loops) and is flushed to SigNoz (Class A paging) before the exit.
 main().catch((e) => {
-  const body = `orator-backend failed to start: ${e}`;
-  // stderr too: OTel logs aren't mirrored locally, and `docker logs` must say why a
-  // fail-closed refusal is crash-looping.
-  // oxlint-disable-next-line no-console -- to stdout; orator has no OTel logger yet
-  console.error(body);
-  log.emit({ severityText: "FATAL", body });
-  // Flush first, so a fail-closed refusal reaches SigNoz (and Class A paging) instead of
-  // dying in the batch buffer.
-  void telemetry.shutdown().finally(() => process.exit(1));
+  log.fatal(`orator-backend failed to start: ${e}`);
+  void exitAfterFlush(1);
 });
-
-// Flush buffered spans/metrics/logs before the container stops (compose SIGTERM).
-// Installing our own handler overrides Bun's default terminate, so we exit once flushed.
-for (const sig of ["SIGINT", "SIGTERM"] as const) {
-  process.once(sig, () => {
-    void telemetry.shutdown().finally(() => process.exit(0));
-  });
-}

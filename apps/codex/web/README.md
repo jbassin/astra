@@ -178,8 +178,9 @@ transform and the search build write the **live** dirs the container mounts read
   `evaluate(el => el.click())` in scroll assertions.
 - `codex.port` has no env override (only secrets and the data roots do). A scratch serve needs
   its own `createSsrServer` boot script; never edit `config.kdl` or touch 10374.
-- Local telemetry smoke: call `initTelemetry("astra.codex", { endpoint: "http://localhost:10353" })`
-  before `createSsrServer` (first call wins), then check SigNoz.
+- Local telemetry smoke: `pnpm run start` runs under `@astra/observe/register`, which exports a
+  host-run process to `telemetry.host-otlp-endpoint` (localhost:10353) as
+  `deployment.environment=development`; then check SigNoz.
 
 ## The frontend (P2)
 

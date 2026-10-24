@@ -103,6 +103,8 @@ class TelemetryConfig(_Base):
     # The collector as a HOST-run process reaches it (published port). astra_observe
     # uses it unless ASTRA_RUNTIME=container; containers use otlp_endpoint.
     host_otlp_endpoint: str
+    # A Node service's whole SIGTERM shutdown budget (@astra/observe; TS only).
+    shutdown_timeout_ms: int
 
 
 class ScribeConfig(_Base):
@@ -134,6 +136,7 @@ class MouthpieceConfig(_Base):
 
 
 class WealConfig(_Base):
+    service_name: str
     database_url: str
     feed_ws_url: str
     bind_addr: str
@@ -142,11 +145,13 @@ class WealConfig(_Base):
 
 
 class WealOverlayConfig(_Base):
+    service_name: str
     port: int
     token: Secret | None = None  # shared weal↔overlay secret (=weal.feed_token)
 
 
 class OratorConfig(_Base):
+    service_name: str
     guild_id: str
     database_url: str
     port: int
@@ -285,9 +290,9 @@ class MouthpieceProducerConfig(_Base):
 
 class PortalConfig(_Base):
     # portal (0023) — MCP+WS server for the live FoundryVTT "Faerrin" world, on the
-    # orator-backend template. No service_name field (D3): unlike the SSR frontends
-    # there's no browser RUM surface, so astra.portal is hardcoded in
-    # server/src/index.ts, mirroring OratorConfig.
+    # orator-backend template. service_name names its telemetry (the
+    # @astra/observe/register hook reads it; D3's "no browser RUM surface" still holds).
+    service_name: str
     port: int
     public_origin: str
     # Two-hop auth (D6): mcp_api_key bearer-gates /mcp (MCP client -> server);
@@ -309,10 +314,11 @@ class PortalConfig(_Base):
 
 class PortalHeadlessConfig(_Base):
     # portal-headless (0027 D27-5/-13) — the supervised headless-Chromium GM session, a
-    # SEPARATE Compose unit from portal-server (health-only, not edge-routed). No
-    # service_name field (D27-5, same rationale as PortalConfig — no browser RUM
-    # surface). gm_password is the D27-4 dedicated "Portal" Foundry account's password,
-    # resolved only at login time (D27-14 — never logged).
+    # SEPARATE Compose unit from portal-server (health-only, not edge-routed).
+    # service_name names its telemetry, as in PortalConfig. gm_password is the D27-4
+    # dedicated "Portal" Foundry account's password, resolved only at login time (D27-14 —
+    # never logged).
+    service_name: str
     port: int
     foundry_origin: str  # D27-3: the public edge
     world: str

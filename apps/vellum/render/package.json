@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite --configLoader runner",
     "build": "vite build --configLoader runner",
-    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs src/server.ts",
+    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import @astra/observe/register src/server.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "visual-regression": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts",
@@ -38,5 +38,8 @@
     "tailwindcss": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
+  },
+  "astra": {
+    "config": "vellum-render"
   }
 }
