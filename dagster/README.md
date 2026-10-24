@@ -66,7 +66,7 @@ lineage, and one run can materialize a session across apps.
 | `scribe_output_sensor` | `session_transcripts` → `session_episode_summary` | `session_transcript` is materialized, its `transcript_not_empty` check passed, and `script.json` exists |
 | `linguist_output_sensor` | `session_digest` → `session_brief` → `session_script` → `session_audio_clips` → `session_episode` | `session_episode_summary` is materialized (the chronicle gate) and a canonical transcript exists |
 | `heartwood_sensor` | `session_wiki` (waits for the host agent) | `session_transcripts` is materialized and the transcript is a faerrin campaign |
-| `campaign_timeline_schedule`, hourly | `campaign_timeline` (unpartitioned, after `session_episode_summary`) | always; a no-op until a summary changes |
+| `campaign_timeline_sensor` | `campaign_timeline` (unpartitioned, after `session_episode_summary`) | a `session_episode_summary` materialization newer than its cursor, no `campaign_timeline` run in flight, and the episode files no longer match `seasons.json`'s `inputs_hash` |
 
 The cross-app dependencies are `session_transcripts` on `session_transcript`,
 `session_digest` on `session_transcripts` and `session_episode_summary`, and `session_wiki`
@@ -77,6 +77,13 @@ materialization). Each request carries the run key `<stage asset>:<session>`, an
 sensor's cursor keeps a ledger of the sessions it launched. So a failed or terminated stage
 stays as it is until you re-execute it, and re-running an upstream asset by hand never
 re-launches a paid stage. Eager automation (pipe-4c) is not on yet.
+
+`campaign_timeline_sensor` follows the same rule. Its cursor is the storage id of the
+newest summary materialization it has seen. It checks the episode inputs before it asks
+for a run, so a summary that changed nothing (an unmatched session's skip) starts no run,
+and a failed rebuild stays failed until you re-execute it. A summary written outside
+Dagster (the host chronicle backfill) does not trigger it: materialize `campaign_timeline`
+by hand. There is no schedule since 0037 pipe-10.
 
 ### Blocking checks
 
