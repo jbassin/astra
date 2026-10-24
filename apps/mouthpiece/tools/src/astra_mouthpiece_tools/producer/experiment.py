@@ -23,16 +23,21 @@ from astra_config import load_config
 from astra_config.models import MouthpieceProducerConfig
 from astra_llm import LiteLLMClient, ensure_openrouter_env
 from astra_llm.pricing import PRICING_USD_PER_1M
+from astra_mouthpiece.hosts import load_hosts
+from astra_mouthpiece.inputs import episodes_root
+from astra_mouthpiece.lint import THRESHOLDS, score_script, words
+from astra_mouthpiece.models import HostConfig, Script
+from astra_mouthpiece.producer.brief import ProducerBrief, render_brief
+from astra_mouthpiece.producer.run import (
+    ARTIFACTS_ROOT,
+    ProducerInputs,
+    load_inputs,
+    new_run_id,
+    run_producer,
+)
+from astra_mouthpiece.producer.telemetry import log, tracer
+from astra_mouthpiece.script import generate_script
 from opentelemetry.trace import Status, StatusCode
-
-from ..hosts import load_hosts
-from ..inputs import episodes_root
-from ..lint import THRESHOLDS, score_script, words
-from ..models import HostConfig, Script
-from ..script import generate_script
-from .brief import ProducerBrief, render_brief
-from .run import ARTIFACTS_ROOT, ProducerInputs, load_inputs, new_run_id, run_producer
-from .telemetry import log, tracer
 
 
 class MeteredClient(LiteLLMClient):

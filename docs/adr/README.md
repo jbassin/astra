@@ -28,7 +28,7 @@ To change a decision, add a new ADR and mark the old one `Superseded by NNNN`; n
 | [0020](0020-delete-codex-assay-block.md) | Delete the hidden codex assay block | Accepted (done) |
 | [0021](0021-delete-linguist-correction-loop.md) | Delete the linguist correction loop | Accepted (done 2026-10-23) |
 | [0022](0022-delete-cartesia-and-anthropic-fallbacks.md) | Delete the Cartesia and Anthropic fallbacks | Accepted (done 2026-10-23) |
-| [0023](0023-mouthpiece-tools-package.md) | The mouthpiece experiment harness and roundtable move to a tools package | Accepted, not yet built |
+| [0023](0023-mouthpiece-tools-package.md) | The mouthpiece experiment harness and roundtable move to a tools package | Accepted (done 2026-10-23) |
 | [0024](0024-strider-editor-dev-only.md) | strider's editor is dev-only | Accepted, not yet built |
 | [0025](0025-weal-roll-history-archive.md) | weal roll history is an archive, written after the reply | Accepted, not yet built |
 | [0026](0026-codex-url-alias-removal-date.md) | codex's "forever" URL aliases get a removal date | Accepted, not yet built |

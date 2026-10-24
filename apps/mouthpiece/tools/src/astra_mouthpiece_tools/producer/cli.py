@@ -29,10 +29,10 @@ from pathlib import Path
 
 from astra_config import load_config
 from astra_llm.rlm import deno_available
+from astra_mouthpiece.producer.run import RunStatus, run_producer
 from astra_observe import init_telemetry, shutdown
 
 from .experiment import run_experiment
-from .run import RunStatus, run_producer
 
 EXIT_OK = 0
 EXIT_FAILED = 1

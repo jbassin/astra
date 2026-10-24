@@ -65,8 +65,9 @@ pnpm 10.34.4 (root `packageManager`, repeated in `mise.toml`); Node 24; Python 3
 TypeScript 5; Rust 1.96.0 with wasm-bindgen-cli 0.2.127 and wasm-opt 124 (hard-pinned in
 `just weal-engine-build`). Bump a pin deliberately, in every place that repeats it.
 
-**Python (uv).** Virtual workspace in the root `pyproject.toml`; members `apps/*/py`, `libs/py/*`,
-`ontology/*` and `dagster` (the code location, `astra-pipeline`). ruff (line length 100) lints and formats, ty (pinned `==0.0.51`, preview) type-checks,
+**Python (uv).** Virtual workspace in the root `pyproject.toml`; members `apps/*/py`, `apps/*/tools`
+(hand-run tools the Dagster image does not install), `libs/py/*`, `ontology/*` and `dagster` (the
+code location, `astra-pipeline`). ruff (line length 100) lints and formats, ty (pinned `==0.0.51`, preview) type-checks,
 pytest tests in `importlib` mode.
 
 **TypeScript (pnpm).** Workspace in `pnpm-workspace.yaml`; members `apps/*/*` (a directory without
@@ -157,7 +158,8 @@ is still hand-maintained:
 6. A short `README.md`: what it is, where it runs, operations, traps. Check visual changes
    (CSS, pixi) in a real browser; no unit test sees them.
 7. A new CI path filter only if the app gets its own CI job (like `codex` or `vellumRender` in
-   `.github/workflows/ci.yml`); the `py` and `ts` lanes already watch `apps/*/py/**` and `apps/**`.
+   `.github/workflows/ci.yml`); the `py` and `ts` lanes already watch `apps/*/py/**`,
+   `apps/*/tools/**` and `apps/**`.
 
 ## Traps
 
