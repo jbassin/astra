@@ -76,7 +76,6 @@ class DataConfig(_Base):
 class LlmConfig(_Base):
     default_model: str = "openrouter/z-ai/glm-5.2"
     default_max_tokens: int = 16000
-    anthropic_api_key: SecretRef | None = None
     openrouter_api_key: SecretRef | None = None
 
 
@@ -117,15 +116,13 @@ class MouthpieceConfig(_Base):
     # The LLM for mouthpiece's clean/enrich/script calls — its OWN pin, separate from
     # `llm.default-model` (linguist's compiled judge + heartwood stay on that one).
     model: str = "openrouter/z-ai/glm-5.3"
-    # Which TTS backend renders episodes. "elevenlabs" (dialogue) is the live default;
-    # "cartesia" (Sonic-3, per-turn) is wired but was rejected on voice quality (2026-09);
-    # "mock" is offline silence. The asset layer fails LOUD if the chosen provider's
-    # key/voices are missing — never a silent fallback to another backend.
-    tts_provider: Literal["cartesia", "elevenlabs", "mock"] = "elevenlabs"
+    # Which TTS backend renders episodes: "elevenlabs" (dialogue, live) or "mock" (offline
+    # silence). The asset layer fails LOUD if the ElevenLabs key is missing — never a
+    # silent fallback to the mock.
+    tts_provider: Literal["elevenlabs", "mock"] = "elevenlabs"
     # ElevenLabs model id for the dialogue + single-turn calls (v4 since 2026-09-28).
     elevenlabs_model: str = "eleven_v4"
     elevenlabs_api_key: SecretRef | None = None
-    cartesia_api_key: SecretRef | None = None
 
 
 class WealConfig(_Base):

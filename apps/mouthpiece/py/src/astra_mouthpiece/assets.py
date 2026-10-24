@@ -9,7 +9,7 @@ materialization):
     session_digest → session_script → session_audio_clips → session_episode
 
 The live chain is paid: clean/enrich + the two-pass script spend GLM tokens
-(`mouthpiece.model`), and the audio stage is paid Cartesia (`mouthpiece.tts-provider`).
+(`mouthpiece.model`), and the audio stage is paid ElevenLabs (`mouthpiece.tts-provider`).
 This layer is import-/structure-tested; the per-stage logic is unit-tested via
 injected seams.
 """
@@ -41,7 +41,6 @@ from .models import AudioManifest, HostConfig, Script, SessionDigest, VoiceConfi
 from .producer.stage import produce_brief, script_brief_block
 from .roster import build_roster_block
 from .session import build_episode_script
-from .tts.cartesia import CartesiaTTSProvider
 from .tts.elevenlabs import ElevenLabsTTSProvider
 from .tts.mock import MockTTSProvider
 from .tts.provider import TtsClientError, TTSProvider
@@ -99,14 +98,9 @@ def _atomic_write(path: Path, text: str) -> None:
 
 def _provider() -> TTSProvider:
     """The configured TTS backend (`mouthpiece.tts-provider`): ElevenLabs (live; model =
-    `elevenlabs-model`), Cartesia Sonic-3 (wired; voices rejected 2026-09), or the offline
-    mock. Never a silent cross-provider fallback — a missing key raises so a paid run
-    can't quietly render placeholder audio."""
+    `elevenlabs-model`) or the offline mock. Never a silent fallback to the mock — a
+    missing key raises so a paid run can't quietly render placeholder audio."""
     cfg = _config()
-    if cfg.tts_provider == "cartesia":
-        if cfg.cartesia_api_key is None:
-            raise SecretUnsetError("mouthpiece.cartesia-api-key has no ref= in config.kdl")
-        return CartesiaTTSProvider(cfg.cartesia_api_key.require())
     if cfg.tts_provider == "elevenlabs":
         if cfg.elevenlabs_api_key is None:
             raise SecretUnsetError("mouthpiece.elevenlabs-api-key has no ref= in config.kdl")
@@ -117,24 +111,8 @@ def _provider() -> TTSProvider:
     return MockTTSProvider()
 
 
-def _voices(hosts: HostConfig, provider: str | None = None) -> VoiceConfig:
-    """Per-provider voice ids from ontology-being. Cartesia ids (`cartesia-voice-id`) are
-    required when Cartesia renders — an empty one fails loud here rather than as a
-    Cartesia 4xx mid-episode."""
-    provider = provider or _config().tts_provider
-    if provider == "cartesia":
-        roster = [h for h in (hosts.a, hosts.b, hosts.c) if h is not None]
-        missing = [h.name for h in roster if not h.cartesia_voice_id]
-        if missing:
-            raise RuntimeError(
-                f"podcast-persona cartesia-voice-id unset for {missing} in being.kdl — "
-                "pick voices with `just mouthpiece-cartesia-voices` and fill them in."
-            )
-        return VoiceConfig(
-            a=hosts.a.cartesia_voice_id,
-            b=hosts.b.cartesia_voice_id,
-            c=hosts.c.cartesia_voice_id if hosts.c and hosts.c.cartesia_voice_id else None,
-        )
+def _voices(hosts: HostConfig) -> VoiceConfig:
+    """The ElevenLabs voice ids from ontology-being."""
     return VoiceConfig(
         a=hosts.a.voice_id,
         b=hosts.b.voice_id,
@@ -152,7 +130,7 @@ def _read_script(key: str) -> Script:
 
 # ── the 4-asset per-session graph ────────────────────────────────────────────
 
-# A transient external-API failure (an OpenRouter 5xx, a Cartesia blip)
+# A transient external-API failure (an OpenRouter 5xx, an ElevenLabs blip)
 # shouldn't fail an unattended run — the sensor won't re-fire an already-partitioned
 # session, so a one-off provider outage would otherwise need a manual re-run. Retry the
 # step a few times with a growing delay to ride through a multi-minute outage (libs/py/llm
@@ -278,7 +256,7 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     retry_policy=_EXTERNAL_RETRY,
 )
 def session_audio_clips(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
-    """Script → TTS clips + manifest (Stage 4; Cartesia Sonic-3 / ElevenLabs v3 / mock)."""
+    """Script → TTS clips + manifest (Stage 4; ElevenLabs / mock)."""
     key = context.partition_key
     with _tracer.start_as_current_span("mouthpiece.session_audio_clips") as span:
         span.set_attribute("mouthpiece.key", key)

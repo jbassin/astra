@@ -56,8 +56,8 @@ def test_real_config_kdl_loads() -> None:
     assert isinstance(cfg, Config)
     assert not isinstance(cfg, WholeConfig)  # only the Python-read namespaces
     assert isinstance(cfg.llm.default_max_tokens, int)
-    assert isinstance(cfg.llm.anthropic_api_key, SecretRef)
-    assert cfg.llm.anthropic_api_key.config_key == "llm.anthropic-api-key"
+    assert isinstance(cfg.llm.openrouter_api_key, SecretRef)
+    assert cfg.llm.openrouter_api_key.config_key == "llm.openrouter-api-key"
 
 
 def test_whole_config_kdl_validates() -> None:
@@ -121,12 +121,12 @@ def test_fixture_loads_with_typed_values() -> None:
 
 def test_secret_fields_are_lazy_refs_not_plaintext() -> None:
     cfg = load_config(FIXTURE)
-    ref = cfg.llm.anthropic_api_key
+    ref = cfg.llm.openrouter_api_key
     assert isinstance(ref, SecretRef)
-    assert ref.ref == "sops:fixture_anthropic_key"
-    assert ref.config_key == "llm.anthropic-api-key"
-    assert "sops:fixture_anthropic_key" in repr(ref)  # repr never leaks a value
-    assert cfg.llm.openrouter_api_key is None  # absent → None, not a ref
+    assert ref.ref == "sops:fixture_openrouter_key"
+    assert ref.config_key == "llm.openrouter-api-key"
+    assert "sops:fixture_openrouter_key" in repr(ref)  # repr never leaks a value
+    assert cfg.scribe.groq_api_key is None  # absent → None, not a ref
 
 
 def test_unknown_kdl_key_is_rejected(tmp_path: Path) -> None:
@@ -178,13 +178,13 @@ def test_data_paths_resolve_against_the_root(monkeypatch: pytest.MonkeyPatch) ->
 
 @sops_required
 def test_present_secret_resolves_via_sops() -> None:
-    value = SecretRef("sops:anthropic_api_key").resolve()
-    assert value.startswith("sk-ant-")  # the real key shape
+    value = SecretRef("sops:openrouter_api_key").resolve()
+    assert value.startswith("sk-or-")  # the real key shape
 
 
 def test_env_override_wins_over_sops(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-env-override")
-    assert resolve_sops_ref("sops:anthropic_api_key") == "sk-ant-env-override"
+    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-env-override")
+    assert resolve_sops_ref("sops:openrouter_api_key") == "sk-or-env-override"
 
 
 @sops_required

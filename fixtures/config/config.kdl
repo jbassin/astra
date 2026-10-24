@@ -12,7 +12,7 @@ telemetry {
 llm {
     default-model "test/model-a"
     default-max-tokens 1234
-    anthropic-api-key ref="sops:fixture_anthropic_key"
+    openrouter-api-key ref="sops:fixture_openrouter_key"
 }
 scribe {
     data-path "scribe/data"

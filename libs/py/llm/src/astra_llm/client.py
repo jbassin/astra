@@ -1,10 +1,10 @@
 """litellm-backed LLM client — re-establishes the `@faerrin/llm` contract in Python.
 
 Four load-bearing behaviors carried over (research §3.3):
-1. **Truncation guard** — `finish_reason == "length"` (Anthropic `max_tokens`) → raise,
+1. **Truncation guard** — `finish_reason == "length"` (`max_tokens` hit) → raise,
    so a cut-off tool call or transcript fails loud instead of flowing downstream.
-2. **Prompt caching** — the stable system prefix is sent as an Anthropic
-   `cache_control: ephemeral` block (≥4096-token prefixes cache on Opus 4.8).
+2. **Prompt caching** — the stable system prefix is sent as a
+   `cache_control: ephemeral` block (providers that don't cache ignore it).
 3. **Forced tool → typed output** — force one tool, parse its JSON args into a Pydantic
    model (`call_structured`).
 4. **Cost → OTel** — every call's usage is priced (pricing.py) and emitted as a metric +
@@ -49,7 +49,6 @@ _TOOL_JSON_ATTEMPTS = 3
 #: output model (GLM/OpenRouter: a list field sent as a JSON-encoded string, a required field
 #: dropped — chronicle 2026-10-12). Retry the whole call this many times on ValidationError.
 _STRUCTURED_ATTEMPTS = 3
-_ANTHROPIC_PREFIX = "anthropic/"
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -105,13 +104,8 @@ class LlmClient(Protocol):
 CompletionFn = Callable[..., Any]
 
 
-def _litellm_model(model: str) -> str:
-    """Route a bare Anthropic model id through litellm's anthropic provider."""
-    return model if "/" in model else f"{_ANTHROPIC_PREFIX}{model}"
-
-
 def _cached_system(system: str) -> dict[str, Any]:
-    """A system message whose stable prefix is an Anthropic ephemeral cache block."""
+    """A system message whose stable prefix is an ephemeral cache block."""
     return {
         "role": "system",
         "content": [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}],
@@ -211,7 +205,7 @@ class LiteLLMClient:
         tool: ToolSpec | None,
     ) -> Result:
         kwargs: dict[str, Any] = {
-            "model": _litellm_model(model),
+            "model": model,
             "messages": messages,
             "max_tokens": max_tokens,
         }
@@ -373,7 +367,7 @@ def _default_completion(**kwargs: Any) -> Any:
     # litellm's import cost or require it for offline use.
     import litellm
 
-    # The pipeline runs unattended, so survive transient provider blips — Anthropic 529
+    # The pipeline runs unattended, so survive transient provider blips — a provider 529
     # "Overloaded" (→ litellm InternalServerError), 429s, timeouts — with litellm's built-in
     # exponential backoff instead of failing a whole mouthpiece run. Only the real path
     # retries; a stubbed `completion_fn` never reaches here. Callers can override.

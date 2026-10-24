@@ -9,8 +9,8 @@ now debates the session TRANSCRIPT directly (a cleaned, not-distilled transcript
 byte-identical to any faerrin source. 2026-09 reworked Pass A again, off the DEBATE
 format (which had over-tuned Maeve into a contrarian: propose/object/repeat) into two
 friends reliving the session — build-on-each-other, trade theories, live in the world;
-disagreement is seasoning. Pass B's tag vocabulary is now provider-neutral (the Cartesia
-renderer translates it; ElevenLabs passes it through).
+disagreement is seasoning. Pass B's tag vocabulary is provider-neutral (ElevenLabs passes
+it through).
 
 `CLEAN_FILTER_SYSTEM` and `ENRICH_SYSTEM` (0024 §3) are the clean+enrich Stage-2
 system prompts (net-new, not ported from faerrin).

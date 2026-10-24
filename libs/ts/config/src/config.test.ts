@@ -122,15 +122,15 @@ describe("the loader, against the fixture", () => {
 
 describe("secrets", () => {
   test.skipIf(!SOPS)("present secret resolves via sops", () => {
-    expect(new SecretRef("sops:anthropic_api_key").resolve().startsWith("sk-ant-")).toBe(true);
+    expect(new SecretRef("sops:openrouter_api_key").resolve().startsWith("sk-or-")).toBe(true);
   });
 
   test("env override wins over sops", () => {
-    process.env.ANTHROPIC_API_KEY = "sk-ant-env-override";
+    process.env.OPENROUTER_API_KEY = "sk-or-env-override";
     try {
-      expect(resolveSopsRef("sops:anthropic_api_key")).toBe("sk-ant-env-override");
+      expect(resolveSopsRef("sops:openrouter_api_key")).toBe("sk-or-env-override");
     } finally {
-      delete process.env.ANTHROPIC_API_KEY;
+      delete process.env.OPENROUTER_API_KEY;
     }
   });
 

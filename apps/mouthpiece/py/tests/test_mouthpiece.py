@@ -1,6 +1,6 @@
 """mouthpiece-backend unit tests (NLSpec 0008 gates C-F, reworked by 0024) — hermetic.
 
-No live ElevenLabs/Anthropic call and no ffmpeg-on-PATH: the LLM client is a stub
+No live ElevenLabs/OpenRouter call and no ffmpeg-on-PATH: the LLM client is a stub
 implementing the `LlmClient` protocol (`call_text`/`call_tool`), grounding runs on
 injected pages, and the golden fixtures are the committed faerrin `out/` pairs
 (script-side only — 0024 replaced the beat-driven digest shape, so the `*.digest.json`
@@ -158,7 +158,7 @@ def test_dressing_prompt_forbids_polishing() -> None:
     p = build_dressing_system_prompt(HOSTS)
     assert "You are a careful transcript FORMATTER, not a writer." in p
     assert "DO NOT improve the dialogue." in p
-    # Provider-neutral delivery tags (Cartesia translates, ElevenLabs passes through).
+    # Provider-neutral delivery tags (ElevenLabs passes them through).
     assert "ElevenLabs" not in p and "recapping" in p
     assert "Bram → A, Maeve → B, Nell → C" in p and "3 co-hosts (Bram, Maeve, Nell)" in p
     assert "Pip" not in p

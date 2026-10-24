@@ -42,7 +42,7 @@ def run(client: LiteLLMClient) -> dict[str, Any]:
 
     # Resolve the OpenRouter key through astra_config (config.kdl → SOPS) and expose it to
     # litellm via the single sanctioned bridge — no ad-hoc env handling in app code. The
-    # default model is GLM 5.2 (OpenRouter); the Anthropic key stays wired as a fallback.
+    # default model is GLM 5.2 (OpenRouter).
     ensure_openrouter_env()
 
     # ontology-being round-trips against the committed canonical snapshot.

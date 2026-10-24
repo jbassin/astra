@@ -58,14 +58,12 @@ data {
 }
 
 llm {
-    // mouthpiece runs on GLM 5.2 (open-weight MoE, routed via OpenRouter) — a
-    // debate-format recap podcast; cheaper than Opus and free of the Anthropic
-    // availability limits. `_litellm_model` passes any provider/id straight through.
+    // Every LLM call routes through OpenRouter (GLM, DeepSeek); a model id is a full
+    // litellm `provider/model` string, passed straight through.
     // litellm reads each provider key from its UPPER_CASED env var, injected from SOPS
     // at `just up` (per-service compose `environment:`).
     default-model "openrouter/z-ai/glm-5.2"
     default-max-tokens 16000
-    anthropic-api-key ref="sops:anthropic_api_key"
     openrouter-api-key ref="sops:openrouter_api_key"
 }
 
@@ -131,17 +129,14 @@ mouthpiece {
     // OpenRouter (2026-09). Deliberately separate from llm.default-model: linguist's
     // compiled dspy judge + heartwood were tuned on GLM 5.2 and stay there.
     model "openrouter/z-ai/glm-5.3"
-    // TTS backend for the episode audio: "elevenlabs" (Text-to-Dialogue — the live
-    // backend; Cartesia was tried 2026-09-04 and the stakeholder rejected the voices) |
-    // "cartesia" (Sonic-3, one clip per turn; needs the key AND both podcast-persona
-    // cartesia-voice-ids) | "mock" (offline silence). The asset fails loud on a
-    // missing key/voice for the chosen provider — never a silent fallback.
+    // TTS backend for the episode audio: "elevenlabs" (Text-to-Dialogue, the live
+    // backend) | "mock" (offline silence). The asset fails loud on a missing key —
+    // never a silent fallback.
     tts-provider "elevenlabs"
     // ElevenLabs model for Text-to-Dialogue: "eleven_v4" since 2026-09-28 (was
     // "eleven_v3"; set it back here to roll back). Audio tags + IPA carry over.
     elevenlabs-model "eleven_v4"
     elevenlabs-api-key ref="sops:elevenlabs_api_key"
-    cartesia-api-key ref="sops:cartesia_api_key"
 }
 
 weal {
