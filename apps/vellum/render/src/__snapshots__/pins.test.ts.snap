@@ -1,0 +1,325 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`vellum-render HTTP responses match the pre-migration pins > asset 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "window.vellumRender = () => {};",
+  "contentType": "text/javascript; charset=utf-8",
+  "rendered": [],
+  "status": 200,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > health 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "{"ok":true,"ready":true,"queued":0}",
+  "contentType": "application/json",
+  "rendered": [],
+  "status": 200,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > health POST 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "{"ok":true,"ready":true,"queued":0}",
+  "contentType": "application/json",
+  "rendered": [],
+  "status": 200,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > health from the editor 1`] = `
+{
+  "allowMethods": "POST, GET, OPTIONS",
+  "allowOrigin": "https://vellum.test",
+  "body": "{"ok":true,"ready":true,"queued":0}",
+  "contentType": "application/json",
+  "rendered": [],
+  "status": 200,
+  "vary": "origin",
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > missing 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "not found",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [],
+  "status": 404,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > preflight anywhere 1`] = `
+{
+  "allowMethods": "POST, GET, OPTIONS",
+  "allowOrigin": "https://vellum.test",
+  "body": "",
+  "contentType": null,
+  "rendered": [],
+  "status": 204,
+  "vary": "origin",
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > preflight from elsewhere 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "",
+  "contentType": null,
+  "rendered": [],
+  "status": 204,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > preflight from localhost 1`] = `
+{
+  "allowMethods": "POST, GET, OPTIONS",
+  "allowOrigin": "http://localhost:3000",
+  "body": "",
+  "contentType": null,
+  "rendered": [],
+  "status": 204,
+  "vary": "origin",
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > preflight from the editor 1`] = `
+{
+  "allowMethods": "POST, GET, OPTIONS",
+  "allowOrigin": "https://vellum.test",
+  "body": "",
+  "contentType": null,
+  "rendered": [],
+  "status": 204,
+  "vary": "origin",
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render 1`] = `
+{
+  "allowMethods": "POST, GET, OPTIONS",
+  "allowOrigin": "https://vellum.test",
+  "body": "PNG-BYTES",
+  "contentType": "image/png",
+  "rendered": [
+    {
+      "mode": "mechanical",
+      "scale": 2,
+      "source": "# Hi",
+    },
+  ],
+  "status": 200,
+  "vary": "origin",
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render GET 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "not found",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [],
+  "status": 404,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render array 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "source must be a string",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [],
+  "status": 400,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render bad json 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "invalid JSON",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [],
+  "status": 400,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render bad mode 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "mode must be mechanical|diegetic",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [],
+  "status": 400,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render bad scale 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "scale must be a number",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [],
+  "status": 400,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render capped 1`] = `
+{
+  "allowMethods": "POST, GET, OPTIONS",
+  "allowOrigin": "https://vellum.test",
+  "body": "too big",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [
+    {
+      "mode": "mechanical",
+      "scale": 2,
+      "source": "cap",
+    },
+  ],
+  "status": 422,
+  "vary": "origin",
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render diegetic scale 3 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "PNG-BYTES",
+  "contentType": "image/png",
+  "rendered": [
+    {
+      "mode": "diegetic",
+      "scale": 3,
+      "source": "x",
+    },
+  ],
+  "status": 200,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render fails 1`] = `
+{
+  "allowMethods": "POST, GET, OPTIONS",
+  "allowOrigin": "https://vellum.test",
+  "body": "render failed",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [
+    {
+      "mode": "mechanical",
+      "scale": 2,
+      "source": "boom",
+    },
+  ],
+  "status": 500,
+  "vary": "origin",
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render no source 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "source must be a string",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [],
+  "status": 400,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render page 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "<!doctype html><title>render</title>",
+  "contentType": "text/html; charset=utf-8",
+  "rendered": [],
+  "status": 200,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render rate limited 1`] = `
+{
+  "allowMethods": "POST, GET, OPTIONS",
+  "allowOrigin": "https://vellum.test",
+  "body": "rate limited",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [],
+  "status": 429,
+  "vary": "origin",
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render scale too big 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "scale must be 1–4",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [],
+  "status": 422,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > render source too big 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "source exceeds 65536 bytes",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [],
+  "status": 413,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > root 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "not found",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [],
+  "status": 404,
+  "vary": null,
+}
+`;
+
+exports[`vellum-render HTTP responses match the pre-migration pins > traversal 1`] = `
+{
+  "allowMethods": null,
+  "allowOrigin": null,
+  "body": "not found",
+  "contentType": "text/plain;charset=UTF-8",
+  "rendered": [],
+  "status": 404,
+  "vary": null,
+}
+`;

@@ -1,0 +1,781 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`portal HTTP responses match the pre-migration pins > as metadata 1`] = `
+{
+  "body": "{"issuer":"https://portal.test/","authorization_endpoint":"https://portal.test/authorize","response_types_supported":["code"],"code_challenge_methods_supported":["S256"],"token_endpoint":"https://portal.test/token","token_endpoint_auth_methods_supported":["client_secret_post","none"],"grant_types_supported":["authorization_code","refresh_token"],"scopes_supported":["portal","offline_access"],"revocation_endpoint":"https://portal.test/revoke","revocation_endpoint_auth_methods_supported":["client_secret_post"],"registration_endpoint":"https://portal.test/register"}",
+  "cacheControl": null,
+  "contentType": "application/json; charset=utf-8",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > authorize 1`] = `
+{
+  "body": "<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>astra portal — authorize</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 32rem; margin: 4rem auto; padding: 0 1rem; }
+  .redirect-host { font-weight: bold; }
+  .error { color: #b00020; }
+  input[type="password"] { width: 100%; padding: 0.5rem; margin: 0.5rem 0 1rem; box-sizing: border-box; }
+  button { padding: 0.5rem 1.5rem; }
+</style>
+</head>
+<body>
+  <h1>Authorize <secret></h1>
+  <p>This application is requesting access to the astra portal with scopes:
+     <strong>(none requested)</strong>.</p>
+  <p>You will be redirected to <span class="redirect-host">127.0.0.1:<port></span> after
+     granting access — make sure you recognize this host before entering your key.</p>
+  
+  <form method="post" action="/consent">
+    <input type="hidden" name="pendingId" value="<hex>">
+    <label for="key">Portal key</label>
+    <input type="password" id="key" name="key" autocomplete="off" required>
+    <button type="submit">Authorize</button>
+  </form>
+</body>
+</html>",
+  "cacheControl": "no-store",
+  "contentType": "text/html; charset=utf-8",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > authorize no params 1`] = `
+{
+  "body": "{"error":"invalid_request","error_description":"[\\n  {\\n    \\"expected\\": \\"string\\",\\n    \\"code\\": \\"invalid_type\\",\\n    \\"path\\": [\\n      \\"client_id\\"\\n    ],\\n    \\"message\\": \\"Invalid input: expected string, received undefined\\"\\n  }\\n]"}",
+  "cacheControl": "no-store",
+  "contentType": "application/json; charset=utf-8",
+  "location": null,
+  "status": 400,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > consent GET 1`] = `
+{
+  "body": "<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /consent</pre>
+</body>
+</html>
+",
+  "cacheControl": null,
+  "contentType": "text/html; charset=utf-8",
+  "location": null,
+  "status": 404,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > consent admin key 1`] = `
+{
+  "body": "Found. Redirecting to http://127.0.0.1:<port>/callback?code=<hex>&state=pin-state",
+  "cacheControl": null,
+  "contentType": "text/plain; charset=utf-8",
+  "location": "http://127.0.0.1:<port>/callback?code=<hex>&state=pin-state",
+  "status": 302,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > consent missing pendingId 1`] = `
+{
+  "body": "<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>astra portal — authorize</title></head>
+<body><p class="error">missing pendingId</p></body>
+</html>",
+  "cacheControl": null,
+  "contentType": "text/html; charset=utf-8",
+  "location": null,
+  "status": 400,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > consent player key 1`] = `
+{
+  "body": "<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>astra portal — authorize</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 32rem; margin: 4rem auto; padding: 0 1rem; }
+  .redirect-host { font-weight: bold; }
+  .error { color: #b00020; }
+  input[type="password"] { width: 100%; padding: 0.5rem; margin: 0.5rem 0 1rem; box-sizing: border-box; }
+  button { padding: 0.5rem 1.5rem; }
+</style>
+</head>
+<body>
+  <h1>Authorize <secret></h1>
+  <p>This application is requesting access to the astra portal with scopes:
+     <strong>(none requested)</strong>.</p>
+  <p>You will be redirected to <span class="redirect-host">127.0.0.1:<port></span> after
+     granting access — make sure you recognize this host before entering your key.</p>
+  <p class="error">Wrong key — try again.</p>
+  <form method="post" action="/consent">
+    <input type="hidden" name="pendingId" value="<hex>">
+    <label for="key">Portal key</label>
+    <input type="password" id="key" name="key" autocomplete="off" required>
+    <button type="submit">Authorize</button>
+  </form>
+</body>
+</html>",
+  "cacheControl": null,
+  "contentType": "text/html; charset=utf-8",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > consent unknown pendingId 1`] = `
+{
+  "body": "<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>astra portal — authorize</title></head>
+<body><p class="error">this authorization request has expired or was already used — go back to the app and try connecting again</p></body>
+</html>",
+  "cacheControl": null,
+  "contentType": "text/html; charset=utf-8",
+  "location": null,
+  "status": 400,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > health 1`] = `
+{
+  "body": "{"ok":true}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > health HEAD 1`] = `
+{
+  "body": "",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 404,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > health POST 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 404,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp DELETE no credentials 1`] = `
+{
+  "body": "{"error":"unauthorized"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 401,
+  "wwwAuthenticate": "Bearer resource_metadata="https://portal.test/.well-known/oauth-protected-resource/mcp"",
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp GET no credentials 1`] = `
+{
+  "body": "{"error":"unauthorized"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 401,
+  "wwwAuthenticate": "Bearer resource_metadata="https://portal.test/.well-known/oauth-protected-resource/mcp"",
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp admin GET 1`] = `
+{
+  "body": "{"jsonrpc":"2.0","error":{"code":-32000,"message":"Not Acceptable: Client must accept text/event-stream"},"id":null}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 406,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp admin bad json 1`] = `
+{
+  "body": "{"jsonrpc":"2.0","error":{"code":-32700,"message":"Parse error: Invalid JSON"},"id":null}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 400,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp admin bridge-status 1`] = `
+{
+  "body": [
+    {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "content": [
+          {
+            "text": "{"connected":false}",
+            "type": "text",
+          },
+        ],
+      },
+    },
+  ],
+  "cacheControl": "no-cache, no-transform",
+  "contentType": "text/event-stream",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp admin initialize 1`] = `
+{
+  "body": [
+    {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "tools": {
+            "listChanged": true,
+          },
+        },
+        "protocolVersion": "2025-06-18",
+        "serverInfo": {
+          "name": "astra-portal",
+          "version": "0.5.0",
+        },
+      },
+    },
+  ],
+  "cacheControl": "no-cache, no-transform",
+  "contentType": "text/event-stream",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp admin key plus suffix 1`] = `
+{
+  "body": "{"error":"unauthorized"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 401,
+  "wwwAuthenticate": "Bearer resource_metadata="https://portal.test/.well-known/oauth-protected-resource/mcp"",
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp admin key prefix 1`] = `
+{
+  "body": "{"error":"unauthorized"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 401,
+  "wwwAuthenticate": "Bearer resource_metadata="https://portal.test/.well-known/oauth-protected-resource/mcp"",
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp admin key with trailing part 1`] = `
+{
+  "body": [
+    {
+      "tools": [
+        "bridge-status",
+        "list-compendium-packs",
+        "search-compendium",
+        "get-document",
+        "search-world",
+        "list-scenes",
+        "get-current-scene",
+        "query-party",
+        "query-player",
+        "query-item",
+        "query-rolls",
+        "import-from-compendium",
+        "create-token",
+        "create-journal",
+        "create-actor",
+        "create-item",
+        "create-light",
+        "create-macro",
+        "apply-condition",
+        "update-document",
+        "delete-document",
+        "execute-macro",
+      ],
+    },
+  ],
+  "cacheControl": "no-cache, no-transform",
+  "contentType": "text/event-stream",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp admin tools/list 1`] = `
+{
+  "body": [
+    {
+      "tools": [
+        "bridge-status",
+        "list-compendium-packs",
+        "search-compendium",
+        "get-document",
+        "search-world",
+        "list-scenes",
+        "get-current-scene",
+        "query-party",
+        "query-player",
+        "query-item",
+        "query-rolls",
+        "import-from-compendium",
+        "create-token",
+        "create-journal",
+        "create-actor",
+        "create-item",
+        "create-light",
+        "create-macro",
+        "apply-condition",
+        "update-document",
+        "delete-document",
+        "execute-macro",
+      ],
+    },
+  ],
+  "cacheControl": "no-cache, no-transform",
+  "contentType": "text/event-stream",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp basic scheme 1`] = `
+{
+  "body": "{"error":"unauthorized"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 401,
+  "wwwAuthenticate": "Bearer resource_metadata="https://portal.test/.well-known/oauth-protected-resource/mcp"",
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp bearer without token 1`] = `
+{
+  "body": "{"error":"unauthorized"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 401,
+  "wwwAuthenticate": "Bearer resource_metadata="https://portal.test/.well-known/oauth-protected-resource/mcp"",
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp lower-case scheme 1`] = `
+{
+  "body": "{"error":"unauthorized"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 401,
+  "wwwAuthenticate": "Bearer resource_metadata="https://portal.test/.well-known/oauth-protected-resource/mcp"",
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp no credentials 1`] = `
+{
+  "body": "{"error":"unauthorized"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 401,
+  "wwwAuthenticate": "Bearer resource_metadata="https://portal.test/.well-known/oauth-protected-resource/mcp"",
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp oauth tools/list 1`] = `
+{
+  "body": [
+    {
+      "tools": [
+        "bridge-status",
+        "list-compendium-packs",
+        "search-compendium",
+        "get-document",
+        "search-world",
+        "list-scenes",
+        "get-current-scene",
+        "query-party",
+        "query-player",
+        "query-item",
+        "query-rolls",
+        "import-from-compendium",
+        "create-token",
+        "create-journal",
+        "create-actor",
+        "create-item",
+        "create-light",
+        "create-macro",
+        "apply-condition",
+        "update-document",
+        "delete-document",
+        "execute-macro",
+      ],
+    },
+  ],
+  "cacheControl": "no-cache, no-transform",
+  "contentType": "text/event-stream",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp player admin-only tool 1`] = `
+{
+  "body": [
+    {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "content": [
+          {
+            "text": "MCP error -32602: Tool delete-document not found",
+            "type": "text",
+          },
+        ],
+        "isError": true,
+      },
+    },
+  ],
+  "cacheControl": "no-cache, no-transform",
+  "contentType": "text/event-stream",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp player bridge-status 1`] = `
+{
+  "body": [
+    {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "content": [
+          {
+            "text": "{"connected":false}",
+            "type": "text",
+          },
+        ],
+      },
+    },
+  ],
+  "cacheControl": "no-cache, no-transform",
+  "contentType": "text/event-stream",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp player tools/list 1`] = `
+{
+  "body": [
+    {
+      "tools": [
+        "bridge-status",
+        "query-party",
+        "query-player",
+        "query-item",
+        "query-rolls",
+      ],
+    },
+  ],
+  "cacheControl": "no-cache, no-transform",
+  "contentType": "text/event-stream",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp prefix path 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 404,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp refresh token as bearer 1`] = `
+{
+  "body": "{"error":"unauthorized"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 401,
+  "wwwAuthenticate": "Bearer resource_metadata="https://portal.test/.well-known/oauth-protected-resource/mcp"",
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp revoked oauth token 1`] = `
+{
+  "body": "{"error":"unauthorized"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 401,
+  "wwwAuthenticate": "Bearer resource_metadata="https://portal.test/.well-known/oauth-protected-resource/mcp"",
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp trailing path 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 404,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > mcp wrong key 1`] = `
+{
+  "body": "{"error":"unauthorized"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 401,
+  "wwwAuthenticate": "Bearer resource_metadata="https://portal.test/.well-known/oauth-protected-resource/mcp"",
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > module unknown 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 404,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > module.json 1`] = `
+{
+  "body": "{
+  "id": "portal",
+  "title": "Pin",
+  "version": "0.0.0",
+  "esmodules": [
+    "dist/main.js"
+  ],
+  "manifest": "https://portal.test/module/module.json",
+  "download": "https://portal.test/module/portal.zip"
+}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > module.json POST 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 404,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > portal.zip 1`] = `
+{
+  "body": {
+    "zipBytes": true,
+  },
+  "cacheControl": null,
+  "contentType": "application/zip",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > prm metadata 1`] = `
+{
+  "body": "{"resource":"https://portal.test/mcp","authorization_servers":["https://portal.test/"],"scopes_supported":["portal","offline_access"]}",
+  "cacheControl": null,
+  "contentType": "application/json; charset=utf-8",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > register 1`] = `
+{
+  "body": "{"redirect_uris":["http://127.0.0.1:<port>/callback"],"token_endpoint_auth_method":"none","client_id":"<uuid>","client_id_issued_at":<t>}",
+  "cacheControl": "no-store",
+  "contentType": "application/json; charset=utf-8",
+  "location": null,
+  "status": 201,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > register non-claude redirect 1`] = `
+{
+  "body": "{"error":"invalid_client_metadata","error_description":"redirect_uri \\"https://evil.example/cb\\" is not allowed — only https://claude.ai/api/mcp/auth_callback or an RFC 8252 loopback URI (http://localhost/... or http://127.0.0.1/..., any port) may be registered"}",
+  "cacheControl": "no-store",
+  "contentType": "application/json; charset=utf-8",
+  "location": null,
+  "status": 400,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > revoke 1`] = `
+{
+  "body": "{}",
+  "cacheControl": "no-store",
+  "contentType": "application/json; charset=utf-8",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > root 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 404,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > token 1`] = `
+{
+  "body": "{"access_token":"<hex>","token_type":"bearer","expires_in":3600,"refresh_token":"<hex>","scope":""}",
+  "cacheControl": "no-store",
+  "contentType": "application/json; charset=utf-8",
+  "location": null,
+  "status": 200,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > token GET 1`] = `
+{
+  "body": "{"error":"method_not_allowed","error_description":"The method GET is not allowed for this endpoint"}",
+  "cacheControl": null,
+  "contentType": "application/json; charset=utf-8",
+  "location": null,
+  "status": 405,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > token wrong verifier 1`] = `
+{
+  "body": "{"error":"invalid_grant","error_description":"code_verifier does not match the challenge"}",
+  "cacheControl": "no-store",
+  "contentType": "application/json; charset=utf-8",
+  "location": null,
+  "status": 400,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > unknown 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 404,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > unknown well-known 1`] = `
+{
+  "body": "<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /.well-known/nope</pre>
+</body>
+</html>
+",
+  "cacheControl": null,
+  "contentType": "text/html; charset=utf-8",
+  "location": null,
+  "status": 404,
+  "wwwAuthenticate": null,
+}
+`;
+
+exports[`portal HTTP responses match the pre-migration pins > ws as plain GET 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "location": null,
+  "status": 404,
+  "wwwAuthenticate": null,
+}
+`;
