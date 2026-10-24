@@ -20,7 +20,7 @@ zero-padded). Apps hand off through files on disk and sensors, not Dagster `deps
 | Partitions | Trigger | Assets |
 |---|---|---|
 | `scribe_sessions` | `craig_drop_sensor`: a new Craig zip in `scribe.incoming-path` | `session_tracks` → `session_audio` ∥ `session_transcript` → `session_cleanup` |
-| `linguist_sessions` | `scribe_output_sensor`: a new `scribe/data/saved/<date>/script.json` | `session_transcripts` → `correction_candidates`, `session_episode_summary` |
+| `linguist_sessions` | `scribe_output_sensor`: a new `scribe/data/saved/<date>/script.json` | `session_transcripts` → `session_episode_summary` |
 | (none) | `campaign_timeline_schedule`, hourly | `campaign_timeline` |
 | `mouthpiece_sessions` | `linguist_output_sensor`: a new transcript whose chronicle episode exists | `session_digest` → `session_brief` → `session_script` → `session_audio_clips` → `session_episode` |
 | `heartwood_sessions` | `heartwood_sensor`: a new faerrin-world transcript | `session_wiki` (waits for the host agent) |

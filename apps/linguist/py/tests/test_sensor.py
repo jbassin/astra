@@ -35,11 +35,11 @@ def test_new_sessions_missing_dir() -> None:
     assert new_sessions("/no/such/dir", set()) == []
 
 
-def test_correction_candidates_asset_registered() -> None:
-    # the surfacer is wired as a partitioned asset; `defs` constructing at import validates
-    # that the sensor's targets (session_transcripts + correction_candidates) resolve.
-    asset = assets.correction_candidates
-    assert asset.key.path == ["correction_candidates"]
+def test_session_assets_registered() -> None:
+    # `defs` constructing at import validates that the sensor's targets
+    # (session_transcripts + session_episode_summary) resolve.
+    asset = assets.session_transcripts
+    assert asset.key.path == ["session_transcripts"]
     assert asset.partitions_def is assets.linguist_sessions
     assert assets.defs is not None
 

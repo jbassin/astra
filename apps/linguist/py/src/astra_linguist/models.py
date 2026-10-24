@@ -7,6 +7,9 @@ contract, so the fields are declared in faerrin's object-key order
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from pydantic import BaseModel
 
 
@@ -42,3 +45,8 @@ class Transcript(BaseModel):
     date: str
     audio: str
     script: list[FormattedLine]
+
+
+def load_session(path: Path | str) -> Transcript:
+    """Load a formatted session JSON (`data/{date}.json`) into a `Transcript`."""
+    return Transcript.model_validate(json.loads(Path(path).read_text(encoding="utf-8")))
