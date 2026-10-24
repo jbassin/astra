@@ -1,8 +1,8 @@
 # Written by `just weal-engine-build`; checked by `just weal-engine-hash-check`.
 # Do not edit: rebuild instead.
-source 5a40e2129951ffd309f7d7f03f8d87516cc89d79e2a1c0a2418b4dc2df102115
+source f163017ef3b5c82c2db7d0135efe046d24b6a9c52564f8b4cd6c7369e740885d
 8005a3491db7d92f36ac66369861589f9c47123d3a7c71e643fc2c06168cd45a  package.json
 c6fac299f356099abc2b177d5a968f3a5063ca46396fd0e591bbcafdc5c55e45  weal_engine.d.ts
 080f285bcc1a756f948c6124204b86fbcfc2d9c492567ea35012e86c72f73e7a  weal_engine.js
-701c6675977c4f389410b730164fe0511f391a070970173764c507c8b33b476f  weal_engine_bg.wasm
+a5c35ad6ffe07bf24627aa2590e1a01096e38b77b0a2c8e64af1a8359a676693  weal_engine_bg.wasm
 725ec18cfc50873993637f363d7d253844b9edf9558115b7eb00ae08aa714431  weal_engine_bg.wasm.d.ts

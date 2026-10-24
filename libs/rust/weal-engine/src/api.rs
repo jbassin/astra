@@ -383,4 +383,18 @@ mod tests {
         ));
         assert_eq!(v["stage"], "eval");
     }
+
+    #[test]
+    fn a_paren_bomb_is_a_parse_error_not_a_trap() {
+        let src = format!("{}1{}", "(".repeat(2000), ")".repeat(2000));
+        let v = parsed(&evaluate(&src, "[]", &[0u8; 32], 0, "run"));
+        assert_eq!(v["ok"], false);
+        assert_eq!(v["stage"], "parse");
+        assert!(
+            v["message"]
+                .as_str()
+                .is_some_and(|m| m.contains("expression too deeply nested")),
+            "{v}"
+        );
+    }
 }

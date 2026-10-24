@@ -2251,8 +2251,8 @@ mod tests {
     /// Deep-recursion tests run on a dedicated big-stack thread: reaching
     /// the 256 depth cap needs ~256 debug-build `eval` frames, which
     /// overflows libtest's default 2 MiB thread stack before the cap fires
-    /// (release/wasm frames are far smaller; S5 sizes the wasm stack and
-    /// its wrapper synthesizes `stage:"fuel"` from any residual trap).
+    /// (release/wasm frames are far smaller; S5 sizes the wasm stack, and
+    /// the parser's nesting cap keeps paren bombs out entirely).
     fn on_big_stack<T: Send + 'static>(f: impl FnOnce() -> T + Send + 'static) -> T {
         std::thread::Builder::new()
             .stack_size(32 * 1024 * 1024)
@@ -2270,17 +2270,19 @@ mod tests {
     }
 
     #[test]
-    fn nested_paren_bomb_hits_the_depth_cap() {
-        let e = on_big_stack(|| {
-            let mut src = "1".to_owned();
-            for _ in 0..300 {
-                src = format!("(1+{src})");
+    fn nested_paren_bomb_is_rejected_before_evaluation() {
+        // The parser's nesting cap stops it: every stage recurses on the tree,
+        // so a bomb must never reach one (it would overflow the host stack).
+        let mut src = "1".to_owned();
+        for _ in 0..300 {
+            src = format!("(1+{src})");
+        }
+        match run_src(&src) {
+            Err(RunError::Check(e)) => {
+                assert!(e.message.contains("too deeply nested"), "{e:?}");
             }
-            assert!(src.len() > 1000);
-            eval_err(&src)
-        });
-        assert_eq!(e.kind, ErrorKind::Fuel);
-        assert!(e.message.contains("recursion depth"));
+            other => panic!("expected a nesting rejection, got {other:?}"),
+        }
     }
 
     #[test]

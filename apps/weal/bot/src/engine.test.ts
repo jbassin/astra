@@ -84,9 +84,9 @@ describe("runEngine", () => {
     expect(outcome.error.stage).toBe("type");
   });
 
-  test("a real trap comes back as an internal error, and the next roll works", () => {
+  test("a paren bomb is a parse error (the nesting cap), and the next roll works", () => {
     const outcome = runEngine(`${"(".repeat(2000)}1${")".repeat(2000)}`, [], SEED);
-    expect(outcome.kind === "error" && outcome.error.stage).toBe("internal");
+    expect(outcome.kind === "error" && outcome.error.stage).toBe("parse");
     expect(runEngine("2d6", [], SEED).kind).toBe("ok");
   });
 });
