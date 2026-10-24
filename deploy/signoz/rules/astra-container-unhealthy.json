@@ -1,0 +1,69 @@
+{
+  "alert": "astra container unhealthy",
+  "alertType": "METRIC_BASED_ALERT",
+  "annotations": {
+    "description": "{{$container}} has failed its healthcheck for 10 minutes. Inspect on saffron: docker ps --filter name={{$container}}; docker logs --tail 50 {{$container}}.",
+    "summary": "container {{$container}} is unhealthy"
+  },
+  "condition": {
+    "compositeQuery": {
+      "panelType": "graph",
+      "queries": [
+        {
+          "spec": {
+            "disabled": false,
+            "legend": "{{container}}",
+            "name": "A",
+            "query": "max by (container) (astra_container_unhealthy{\"service.name\"=\"node-exporter\"})"
+          },
+          "type": "promql"
+        }
+      ],
+      "queryType": "promql"
+    },
+    "selectedQueryName": "A",
+    "thresholds": {
+      "kind": "basic",
+      "spec": [
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "all_the_times",
+          "name": "error",
+          "op": "above",
+          "recoveryTarget": null,
+          "target": 0,
+          "targetUnit": ""
+        }
+      ]
+    }
+  },
+  "description": "A container of the astra compose project has reported its healthcheck as unhealthy for 10 minutes (every sample in the window). A container without a healthcheck never fires here; a crash loop is the restart rule's job. Source: astra-ops host-metrics.",
+  "evaluation": {
+    "kind": "rolling",
+    "spec": {
+      "evalWindow": "10m",
+      "frequency": "1m"
+    }
+  },
+  "labels": {
+    "host": "saffron",
+    "severity": "error"
+  },
+  "notificationSettings": {
+    "groupBy": [
+      "container"
+    ],
+    "renotify": {
+      "alertStates": [
+        "firing"
+      ],
+      "enabled": true,
+      "interval": "4h"
+    }
+  },
+  "ruleType": "promql_rule",
+  "schemaVersion": "v2alpha1",
+  "version": "v5"
+}

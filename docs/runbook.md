@@ -132,15 +132,18 @@ Snapshots are under `/ruby/data/plex/data/astra-backups/` (`latest` is the newes
    and `just deploy weal-bot`. The orator and dagster databases work the same way.
 3. State: `rsync -a /ruby/data/plex/data/astra-backups/latest/state/<dir>/ /ruby/data/astra-state/<dir>/`
    (for example `audio/orator`).
-4. Alert rules: re-create each `latest/signoz/rules/*.json` with the `signoz_create_alert` tool, and
-   re-create the `discord-ops` channel from the SOPS key `alert_discord_webhook_url` (Slack type,
-   URL plus `/slack`).
+4. Alert rules: re-create the `discord-ops` channel first, from the SOPS key
+   `alert_discord_webhook_url` (Slack type, URL plus `/slack`), then
+   `just signoz-rules-apply --yes`, which creates every rule in `deploy/signoz/rules/` (git is
+   their source of truth; the snapshot's copy is the fallback).
 5. Take a fresh snapshot: `just backup-now`.
 
 ## Alerting checks
 
-Three paths page the Discord ops channel: the SigNoz rule `astra error/fatal logs`, `astra-alert@`
-for failed host units, and the watchdog for silent absence.
+Three paths page the Discord ops channel: the SigNoz rules in `deploy/signoz/rules/`, `astra-alert@`
+for failed host units, and the watchdog for silent absence. The SigNoz rules for certificates,
+container health, the Dagster daemon and data freshness read the textfile `just host-metrics`
+writes (`astra-metrics.timer`, every 2 minutes); each rule's description says what it means.
 
 1. Send a test page: `deploy/systemd/alert-notify.sh test`.
 2. Run the watchdog without paging:
@@ -149,7 +152,10 @@ for failed host units, and the watchdog for silent absence.
    `just backup-install`.
 4. Turn off the watchdog's self-repair for an investigation: set `WATCHDOG_REMEDIATE=0` in a
    drop-in for `astra-watchdog.service`.
-5. Export the SigNoz rules into git after changing them: `just signoz-rules-export`.
+5. Change a SigNoz rule in git, not in the UI: edit its file in `deploy/signoz/rules/` (named after
+   its `alert`), merge, then `just signoz-rules-apply` (a dry run that prints the plan) and
+   `just signoz-rules-apply --yes`. `just signoz-rules-check` compares read-only; the watchdog
+   pages on drift. To keep a rule made in the UI, `just signoz-rules-export` and commit it.
 6. A watchdog page about backup age, restore-test age or entity drift names its fix. For a stale
    backup, read `systemctl --user status astra-backup.service`; for the restore test, run
    `just backup-restore-test`; for drift, re-seed `entity.kdl` and commit it in the astra-data clone.

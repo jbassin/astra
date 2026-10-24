@@ -10,6 +10,9 @@
     heartwood-agent DATE [FLAGS]        PAID + LIVE: run + publish one session
     heartwood-push-deploy [--yes]       LIVE: push the clone, redeploy akasha-frontend
     heartwood-revert DATE [--yes]       LIVE: undo one published session
+    signoz-rules-check                  compare the live SigNoz alert rules with git (read-only)
+    signoz-rules-apply [--yes]          plan (default) or apply deploy/signoz/rules to SigNoz
+    host-metrics                        write the host probes' Prometheus textfile
 
 PATH OPTIONS (``--data-root``, ``--uv``, ``--mouthpiece-episodes``, ``--akasha-audio``) default
 exactly as the justfile's variables do; the ``just`` wrappers pass the justfile's values.
@@ -32,8 +35,9 @@ from pathlib import Path
 import astra_observe
 from astra_config import find_repo_root
 from astra_observe import get_logger, get_tracer
+from astra_ontology_config import load as load_config
 
-from . import heartwood, publish
+from . import heartwood, host_metrics, publish, signoz
 from .context import Ctx, Fail
 
 log = get_logger("astra.ops")
@@ -151,6 +155,82 @@ def _heartwood_revert(ctx: Ctx, args: list[str]) -> int:
     return heartwood.heartwood_revert(ctx, args[0])
 
 
+def _no_args(command: str, args: list[str]) -> None:
+    if args:
+        Ctx.err(f"{command}: takes no arguments (got {' '.join(args)})")
+        raise Fail(64)
+
+
+def _signoz_api() -> signoz.Api | None:
+    """The SigNoz API from ``ops.signoz-url`` and ``ops.signoz-api-key``; None when the key
+    is unset, which the rules commands report as exit 3. The key is a ``SecretRef``, which
+    only the typed config carries, so this reads it directly."""
+    ops = load_config().ops
+    key = ops.signoz_api_key.optional() if ops.signoz_api_key is not None else None
+    if not key:
+        return None
+    return signoz.Api(signoz.urllib_transport(ops.signoz_url, key))
+
+
+NO_KEY = (
+    "SigNoz API key unset: add signoz_api_key (a SigNoz service-account key) to "
+    "deploy/sops/secrets.enc.yaml, or set $SIGNOZ_API_KEY"
+)
+
+
+#: Swapped in tests for a fake API.
+signoz_api: Callable[[], signoz.Api | None] = _signoz_api
+
+
+def _rules_dir(ctx: Ctx) -> Path:
+    return ctx.repo_root / "deploy" / "signoz" / "rules"
+
+
+def _signoz_rules_check(ctx: Ctx, args: list[str]) -> int:
+    _no_args("signoz-rules-check", args)
+    api = signoz_api()
+    if api is None:
+        # Not configured yet is a warning, not drift: the key comes later (the just recipe
+        # turns exit 3 into 0, and the watchdog skips the check).
+        Ctx.err(f"WARN: signoz-rules-check: {NO_KEY}; nothing compared")
+        return signoz.EXIT_NO_KEY
+    return signoz.check(api, _rules_dir(ctx))
+
+
+def _signoz_rules_apply(ctx: Ctx, args: list[str]) -> int:
+    yes = False
+    for a in args:
+        if a == "--yes":
+            yes = True
+        elif a != "--dry-run":
+            Ctx.err(f"signoz-rules-apply: unknown argument '{a}' (flags: --dry-run, --yes)")
+            return 64
+    api = signoz_api()
+    if api is None:
+        Ctx.err(f"signoz-rules-apply: {NO_KEY}")
+        return signoz.EXIT_NO_KEY
+    return signoz.apply(api, _rules_dir(ctx), yes=yes)
+
+
+def host_metrics_targets(ctx: Ctx) -> host_metrics.Targets:
+    textfile, data_path, episodes = ctx.config(
+        "ops.metrics-textfile", "scribe.data-path", "mouthpiece.episodes-path"
+    )
+    return host_metrics.Targets(
+        textfile=Path(textfile),
+        caddyfile=ctx.repo_root / "sites.caddyfile",
+        datasets={
+            "transcript": (Path(data_path) / "saved", "*/script.json"),
+            "episode": (Path(episodes), "*/*.episode.mp3"),
+        },
+    )
+
+
+def _host_metrics(ctx: Ctx, args: list[str]) -> int:
+    _no_args("host-metrics", args)
+    return host_metrics.host_metrics(host_metrics_targets(ctx))
+
+
 COMMANDS: dict[str, Callable[[Ctx, list[str]], int]] = {
     "linguist-commit": _simple("linguist-commit", publish.linguist_commit),
     "astra-data-push": _simple("astra-data-push", publish.astra_data_push),
@@ -160,6 +240,9 @@ COMMANDS: dict[str, Callable[[Ctx, list[str]], int]] = {
     "heartwood-agent": _heartwood_agent,
     "heartwood-push-deploy": _simple("heartwood-push-deploy", heartwood.push_deploy),
     "heartwood-revert": _heartwood_revert,
+    "signoz-rules-check": _signoz_rules_check,
+    "signoz-rules-apply": _signoz_rules_apply,
+    "host-metrics": _host_metrics,
 }
 
 

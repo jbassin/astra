@@ -494,16 +494,19 @@ linguist-commit-timer-install: (_unit-link "linguist-commit.service" "linguist-c
 # Three pieces: (1) the templated OnFailure handler astra-alert@.service — Class C, pages
 # when a monitored unit FAILS; (2) the astra-watchdog.{service,timer} — Class B liveness
 # (Drive FUSE mount + pipeline timers armed), every 15 min, debounced; (3) re-installs the
-# craig-sync + linguist-commit services that carry `OnFailure=astra-alert@%n.service`.
+# craig-sync + linguist-commit services that carry `OnFailure=astra-alert@%n.service`;
+# (4) astra-metrics.{service,timer}, which writes the host metrics the SigNoz rules in
+# deploy/signoz/rules read (`just host-metrics`, every 2 min).
 # All of these units are LINKED from the deploy checkout (they ExecStart its scripts and
 # recipes, so each deploy updates them). The webhook is decrypted from SOPS at runtime
-# (Class A — SigNoz's own Discord channel/rules — lives in SigNoz, not here). Needs
-# lingering for the user (already on).
-alert-install: (_unit-link "astra-alert@.service" "astra-watchdog.service" "astra-watchdog.timer" "craig-sync.service" "linguist-commit.service")
+# (Class A — SigNoz's own Discord channel/rules — lives in deploy/signoz/rules, applied
+# with `just signoz-rules-apply`). Needs lingering for the user (already on).
+alert-install: (_unit-link "astra-alert@.service" "astra-watchdog.service" "astra-watchdog.timer" "craig-sync.service" "linguist-commit.service" "astra-metrics.service" "astra-metrics.timer")
     #!/usr/bin/env bash
     set -euo pipefail
-    systemctl --user enable --now astra-watchdog.timer
-    echo "installed. watchdog schedule:"; systemctl --user list-timers astra-watchdog.timer --no-pager
+    systemctl --user daemon-reload
+    systemctl --user enable --now astra-watchdog.timer astra-metrics.timer
+    echo "installed. schedules:"; systemctl --user list-timers astra-watchdog.timer astra-metrics.timer --no-pager
     echo "smoke-test a Discord page with: {{deploy_root}}/deploy/systemd/alert-notify.sh test"
     echo "one-time root step for vanished-mount auto-remediation: just alert-sudoers-install"
 
@@ -556,10 +559,34 @@ backup-restore-test snapshot="":
     "{{justfile_directory()}}/deploy/systemd/astra-backup.sh" restore-test {{snapshot}}
 
 # Rules only — never the notification channel, which holds the webhook. The nightly backup
-# logs a warning when the live rules drift from the committed copy.
+# logs a warning when the live rules drift from the committed copy. deploy/signoz/rules is the
+# source of truth: export only to capture a rule someone made in the UI, then commit it.
 # Re-export the live SigNoz alert rules into deploy/signoz/rules/ for git.
 signoz-rules-export:
     "{{justfile_directory()}}/deploy/systemd/astra-backup.sh" export-rules "{{justfile_directory()}}/deploy/signoz/rules"
+
+# Read-only. Exit 0 in sync, 1 drift, 2 could not compare (SigNoz down). No
+# ops.signoz-api-key yet is a WARN and exit 0 (astra-ops itself exits 3). The watchdog runs it
+# every 15 min and pages on drift once the key exists. Details: libs/py/ops README.
+# Compare the live SigNoz alert rules with deploy/signoz/rules.
+signoz-rules-check:
+    #!/usr/bin/env bash
+    rc=0
+    {{ops}} signoz-rules-check || rc=$?
+    [ "$rc" -eq 3 ] && exit 0
+    exit "$rc"
+
+# Matches rules by their `alert` name: creates the missing, replaces the changed, never
+# deletes (a live-only rule is reported). Prints the plan and changes nothing unless --yes.
+# Make SigNoz's alert rules match deploy/signoz/rules (dry run; --yes applies).
+signoz-rules-apply *flags:
+    @{{ops}} signoz-rules-apply "$@"
+
+# astra-metrics.timer runs this every 2 min; by hand it is a safe one-off (it only rewrites
+# the textfile). The metrics and why: libs/py/ops/src/astra_ops/host_metrics.py.
+# Write the host metrics (TLS expiry, container health, Dagster heartbeats, data freshness).
+host-metrics:
+    @{{ops}} host-metrics
 
 # Regenerate the mouthpiece snapshot (config data.mouthpiece-snapshot/episodes-index.json, in
 # the astra-data clone) from the live corpus — the frontend's single build input. Writes only;

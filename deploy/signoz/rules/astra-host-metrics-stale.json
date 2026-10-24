@@ -1,0 +1,70 @@
+{
+  "alert": "astra host metrics stale",
+  "alertType": "METRIC_BASED_ALERT",
+  "annotations": {
+    "description": "astra.prom was last written {{$value}} s ago. Check on saffron: systemctl --user status astra-metrics.timer astra-metrics.service.",
+    "summary": "astra host metrics are {{$value}} s old"
+  },
+  "condition": {
+    "absentFor": 15,
+    "alertOnAbsent": true,
+    "compositeQuery": {
+      "panelType": "graph",
+      "queries": [
+        {
+          "spec": {
+            "disabled": false,
+            "legend": "astra.prom",
+            "name": "A",
+            "query": "time() - max(node_textfile_mtime_seconds{\"service.name\"=\"node-exporter\", file=\"/textfile/astra.prom\"})"
+          },
+          "type": "promql"
+        }
+      ],
+      "queryType": "promql"
+    },
+    "selectedQueryName": "A",
+    "thresholds": {
+      "kind": "basic",
+      "spec": [
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "at_least_once",
+          "name": "error",
+          "op": "above",
+          "recoveryTarget": null,
+          "target": 600,
+          "targetUnit": ""
+        }
+      ]
+    }
+  },
+  "description": "The astra-ops host-metrics textfile (astra.prom, rewritten every 2 minutes by astra-metrics.timer) is over 10 minutes old, or node-exporter stopped serving it for 15 minutes. node-exporter re-serves a stale file on every scrape, so without this rule a dead emitter would freeze the certificate, container, Dagster and freshness rules at their last values.",
+  "evaluation": {
+    "kind": "rolling",
+    "spec": {
+      "evalWindow": "5m",
+      "frequency": "1m"
+    }
+  },
+  "labels": {
+    "host": "saffron",
+    "severity": "error"
+  },
+  "notificationSettings": {
+    "groupBy": [],
+    "renotify": {
+      "alertStates": [
+        "firing",
+        "nodata"
+      ],
+      "enabled": true,
+      "interval": "4h"
+    }
+  },
+  "ruleType": "promql_rule",
+  "schemaVersion": "v2alpha1",
+  "version": "v5"
+}

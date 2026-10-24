@@ -11,6 +11,11 @@ Type=oneshot
 # deps deploy.sh keeps in sync there; the request files and run artifacts live under the
 # data root (config heartwood.requests-path / artifacts-path).
 WorkingDirectory=/ruby/data/astra-deploy
-# One agent run is 15–55 min plus publish; oneshot has no start timeout by default. The
-# runner resolves node/deno/uv/just itself (this unit's PATH has none of them).
+# The runner resolves node/deno/uv/just itself (this unit's PATH has none of them).
 ExecStart=/home/jbassin/.cargo/bin/just heartwood-requests
+# One agent run is 15–55 min plus publish (the 2026-10-21 backfill runs started 51 min apart);
+# an idle drain takes 2 to 7 s. Dagster's session_wiki stops waiting for a result after
+# heartwood.request-timeout-minutes (180), so a run still going at 3 h is wedged and its
+# session has already failed in Dagster: systemd kills it and OnFailure pages. (A oneshot has
+# no start timeout by default, so before this a wedged run looked green forever.)
+TimeoutStartSec=3h

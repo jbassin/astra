@@ -1,0 +1,69 @@
+{
+  "alert": "astra container restart loop",
+  "alertType": "METRIC_BASED_ALERT",
+  "annotations": {
+    "description": "{{$container}} restarted {{$value}} times in 15 minutes. Inspect: docker logs --tail 80 {{$container}}.",
+    "summary": "container {{$container}} is restarting in a loop"
+  },
+  "condition": {
+    "compositeQuery": {
+      "panelType": "graph",
+      "queries": [
+        {
+          "spec": {
+            "disabled": false,
+            "legend": "{{container}}",
+            "name": "A",
+            "query": "max by (container) (increase(astra_container_restart_count{\"service.name\"=\"node-exporter\"}[15m]))"
+          },
+          "type": "promql"
+        }
+      ],
+      "queryType": "promql"
+    },
+    "selectedQueryName": "A",
+    "thresholds": {
+      "kind": "basic",
+      "spec": [
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "at_least_once",
+          "name": "error",
+          "op": "above",
+          "recoveryTarget": null,
+          "target": 2,
+          "targetUnit": ""
+        }
+      ]
+    }
+  },
+  "description": "A container of the astra compose project restarted more than twice in 15 minutes (Docker's restart count; a recreate by a deploy resets the count and does not count). Catches a crash loop in containers with or without a healthcheck. Source: astra-ops host-metrics.",
+  "evaluation": {
+    "kind": "rolling",
+    "spec": {
+      "evalWindow": "5m",
+      "frequency": "1m"
+    }
+  },
+  "labels": {
+    "host": "saffron",
+    "severity": "error"
+  },
+  "notificationSettings": {
+    "groupBy": [
+      "container"
+    ],
+    "renotify": {
+      "alertStates": [
+        "firing"
+      ],
+      "enabled": true,
+      "interval": "4h"
+    }
+  },
+  "ruleType": "promql_rule",
+  "schemaVersion": "v2alpha1",
+  "version": "v5"
+}

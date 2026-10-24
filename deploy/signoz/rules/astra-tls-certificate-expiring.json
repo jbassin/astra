@@ -1,0 +1,79 @@
+{
+  "alert": "astra TLS certificate expiring",
+  "alertType": "METRIC_BASED_ALERT",
+  "annotations": {
+    "description": "The certificate served for {{$host}} expires in {{$value}} days (threshold {{$threshold}}). Caddy should have renewed it at 30 days: check journalctl -u caddy | grep -i renew, then docs/runbook.md, certificates.",
+    "summary": "TLS certificate for {{$host}} expires in {{$value}} days"
+  },
+  "condition": {
+    "compositeQuery": {
+      "panelType": "graph",
+      "queries": [
+        {
+          "spec": {
+            "disabled": false,
+            "legend": "{{host}}",
+            "name": "A",
+            "query": "min by (host) (astra_tls_cert_expiry_seconds{\"service.name\"=\"node-exporter\"}) / 86400"
+          },
+          "type": "promql"
+        }
+      ],
+      "queryType": "promql"
+    },
+    "selectedQueryName": "A",
+    "thresholds": {
+      "kind": "basic",
+      "spec": [
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "at_least_once",
+          "name": "warning",
+          "op": "below",
+          "recoveryTarget": 15,
+          "target": 14,
+          "targetUnit": ""
+        },
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "at_least_once",
+          "name": "critical",
+          "op": "below",
+          "recoveryTarget": 4,
+          "target": 3,
+          "targetUnit": ""
+        }
+      ]
+    }
+  },
+  "description": "The certificate the edge (host Caddy) serves for a site in sites.caddyfile expires in under 14 days (warning) or 3 days (critical). Caddy renews at 30 days left, so either level means renewal has been failing for two weeks or more. Source: astra-ops host-metrics (astra-metrics.timer). Fix: docs/runbook.md, certificates.",
+  "evaluation": {
+    "kind": "rolling",
+    "spec": {
+      "evalWindow": "15m",
+      "frequency": "5m"
+    }
+  },
+  "labels": {
+    "host": "saffron"
+  },
+  "notificationSettings": {
+    "groupBy": [
+      "host"
+    ],
+    "renotify": {
+      "alertStates": [
+        "firing"
+      ],
+      "enabled": true,
+      "interval": "24h"
+    }
+  },
+  "ruleType": "promql_rule",
+  "schemaVersion": "v2alpha1",
+  "version": "v5"
+}

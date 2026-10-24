@@ -1,0 +1,70 @@
+{
+  "alert": "astra host probe failing",
+  "alertType": "METRIC_BASED_ALERT",
+  "annotations": {
+    "description": "The {{$probe}} probe for {{$target}} has failed for 15 minutes. Run on saffron: journalctl --user -u astra-metrics.service -n 20.",
+    "summary": "host probe {{$probe}} failing for {{$target}}"
+  },
+  "condition": {
+    "compositeQuery": {
+      "panelType": "graph",
+      "queries": [
+        {
+          "spec": {
+            "disabled": false,
+            "legend": "{{probe}} {{target}}",
+            "name": "A",
+            "query": "min by (probe, target) (astra_probe_success{\"service.name\"=\"node-exporter\"})"
+          },
+          "type": "promql"
+        }
+      ],
+      "queryType": "promql"
+    },
+    "selectedQueryName": "A",
+    "thresholds": {
+      "kind": "basic",
+      "spec": [
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "all_the_times",
+          "name": "error",
+          "op": "below",
+          "recoveryTarget": null,
+          "target": 1,
+          "targetUnit": ""
+        }
+      ]
+    }
+  },
+  "description": "An astra-ops host-metrics probe could not run for 15 minutes: a site served no certificate (tls), docker did not answer (docker), the Dagster heartbeat query failed (dagster-heartbeat) or a dataset dir is empty or missing (freshness). While a probe fails, the rule that reads its metric cannot fire, so this rule stands in for it.",
+  "evaluation": {
+    "kind": "rolling",
+    "spec": {
+      "evalWindow": "15m",
+      "frequency": "5m"
+    }
+  },
+  "labels": {
+    "host": "saffron",
+    "severity": "error"
+  },
+  "notificationSettings": {
+    "groupBy": [
+      "probe",
+      "target"
+    ],
+    "renotify": {
+      "alertStates": [
+        "firing"
+      ],
+      "enabled": true,
+      "interval": "4h"
+    }
+  },
+  "ruleType": "promql_rule",
+  "schemaVersion": "v2alpha1",
+  "version": "v5"
+}

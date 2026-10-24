@@ -1,0 +1,20 @@
+[Unit]
+Description=astra host metrics — TLS expiry, container health, Dagster heartbeats, data freshness for SigNoz
+Documentation=https://github.com/jbassin/astra
+# The emitter only fails when it cannot write its file (a probe that cannot run is a metric,
+# not a failure), so a failure here is worth a page. The SigNoz rule "astra host metrics
+# stale" also fires when the file stops changing. OnFailure is a [Unit] key.
+OnFailure=astra-alert@%n.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/ruby/data/astra-deploy
+# Writes ops.metrics-textfile (config.kdl), which node-exporter serves to SigNoz; the rules
+# are deploy/signoz/rules/astra-*.json. Telemetry is off: a run every 2 minutes would flood
+# SigNoz with its own spans, and its output (one journal line) is all there is to see.
+Environment=OTEL_SDK_DISABLED=true
+ExecStart=/home/jbassin/.cargo/bin/just host-metrics
+# A run takes 2 to 4 s (17 TLS handshakes, docker inspect, one psql query; each child and
+# handshake is capped at 15 s). astra-ops first waits for a deploy that is re-syncing the
+# venv (the host-tooling lock, a minute or two); 10 min covers that.
+TimeoutStartSec=10min

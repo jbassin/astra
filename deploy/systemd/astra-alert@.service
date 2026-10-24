@@ -9,3 +9,6 @@ WorkingDirectory=/ruby/data/astra-deploy
 # unit's `OnFailure=astra-alert@%n.service`. The script decrypts the Discord webhook from
 # SOPS at runtime and posts the failed unit's journal tail. No OnFailure here (no loops).
 ExecStart=/ruby/data/astra-deploy/deploy/systemd/alert-notify.sh failure %i
+# A page takes 1 to 20 s (journal: decrypt the webhook, read the journal tail, one curl). Two
+# minutes leaves room for a slow Discord without letting a hung page linger.
+TimeoutStartSec=2min

@@ -5,7 +5,8 @@
 #   - the astra-watchdog.timer (Class B: liveness — Drive FUSE mount responsive + the
 #     pipeline timers active & armed; a wedged FUSE mount is auto-remediated, see
 #     remediate_mount below; plus freshness — the newest backup snapshot, the last passing
-#     restore test, and the live entity.kdl against a fresh seed).
+#     restore test, and the live entity.kdl against a fresh seed; and drift between the
+#     live SigNoz alert rules and deploy/signoz/rules).
 # Deliberately curls Discord DIRECTLY (not via SigNoz/the collector) so a paging path
 # survives even when SigNoz itself is down. The webhook is decrypted from SOPS at runtime
 # — never baked into a unit, an image, or the environment.
@@ -36,7 +37,7 @@ NIC_IFACE="${WATCHDOG_NIC_IFACE:-enp4s0}"
 # Timers whose health == the pipeline is armed. (The watchdog can't meaningfully check
 # its OWN timer — if that died, this script wouldn't be running.)
 WATCHED_TIMERS=(craig-sync.timer linguist-commit.timer heartwood-request.timer
-  astra-backup.timer astra-restore-test.timer)
+  astra-backup.timer astra-restore-test.timer astra-metrics.timer)
 # Event-driven path units (0036): a .path unit has no next-elapse, so check_timer would call
 # it "not armed" — these get check_path_unit (is-active only).
 WATCHED_PATHS=(linguist-commit.path heartwood-request.path)
@@ -70,6 +71,9 @@ GIT_PUBLISH_LOCK="${GIT_PUBLISH_LOCK:-$DATA_ROOT/locks/git-publish.lock}"
 HOST_TOOLING_LOCK="${HOST_TOOLING_LOCK:-$DATA_ROOT/locks/host-tooling.lock}"
 # WATCHDOG_ENTITY_CHECK_CMD replaces the seed command (tests only).
 ENTITY_CHECK_CMD="${WATCHDOG_ENTITY_CHECK_CMD:-}"
+# SigNoz rule drift: `astra-ops signoz-rules-check` (0037 ops-4), read-only against the SigNoz
+# API with ops.signoz-api-key from SOPS. WATCHDOG_RULES_CHECK_CMD replaces it (tests only).
+RULES_CHECK_CMD="${WATCHDOG_RULES_CHECK_CMD:-}"
 
 CONFIRM_TRIES="${WATCHDOG_CONFIRM_TRIES:-3}"
 CONFIRM_GAP_S="${WATCHDOG_CONFIRM_GAP_S:-5}"
@@ -537,6 +541,53 @@ check_entity_drift() {
   return 1
 }
 
+# Compare the live SigNoz alert rules with deploy/signoz/rules in this checkout. Returns 0 = in
+# sync; 1 = page: drift (a rule edited, added or deleted in the UI, or a merged rule change never
+# applied) or the comparison failing RULES_UNREACHABLE_TICKS ticks in a row (SigNoz down for an
+# hour pages nothing else); 2 = could not compare this tick (SigNoz restarting in a deploy, a
+# deploy holding the venv): journal only; 3 = no signoz_api_key in SOPS yet: skipped silently
+# (one INFO journal line a day), so nothing pages until the key exists.
+RULES_UNREACHABLE_TICKS="${WATCHDOG_RULES_UNREACHABLE_TICKS:-4}"
+check_signoz_rules() {
+  local out rc=0 f="$STATE_DIR/signoz-rules-unreachable.count" n
+  mkdir -p "$STATE_DIR"
+  out="$(
+    cd "$CODE_ROOT" || exit 91
+    if [ -n "$RULES_CHECK_CMD" ]; then
+      bash -c "$RULES_CHECK_CMD" 2>&1
+    else
+      OTEL_SDK_DISABLED=true SOPS_AGE_KEY_FILE="$AGE_KEY" timeout 90 \
+        "$UV_BIN" run --frozen --no-sync astra-ops signoz-rules-check 2>&1
+    fi
+  )" || rc=$?
+  case "$rc" in 0 | 1 | 3) rm -f "$f" ;; esac
+  case "$rc" in
+    0) return 0 ;;
+    1)
+      echo "SigNoz alert rules differ from deploy/signoz/rules in git — $(printf '%s' "$out" | grep -E '^  (create|update|live only|duplicate)' | sed 's/^ *//' | paste -sd ';' - | cut -c1-600). Fix: just signoz-rules-apply --yes (or export a UI change with just signoz-rules-export and commit it)"
+      return 1 ;;
+    3)
+      # Not configured yet (the key is added later): skip without paging, and say so in the
+      # journal at most once a day. `just doctor` warns about it.
+      local stamp="$STATE_DIR/signoz-rules-nokey.day" today
+      today="$(date -u +%F)"
+      if [ "$(cat "$stamp" 2>/dev/null)" != "$today" ]; then
+        printf '%s' "$today" >"$stamp"
+        log "INFO: SigNoz rules check skipped — no signoz_api_key in SOPS yet (logged once a day)"
+      fi
+      return 3 ;;
+    *)
+      n=$(($(cat "$f" 2>/dev/null || echo 0) + 1))
+      printf '%s' "$n" >"$f"
+      if [ "$n" -ge "$RULES_UNREACHABLE_TICKS" ]; then
+        echo "the SigNoz rules check has failed $n ticks in a row (is SigNoz up? http://saffron:10351): $(printf '%s' "$out" | tail -n 1)"
+        return 1
+      fi ;;
+  esac
+  echo "the SigNoz rules check could not run (exit $rc): $(printf '%s' "$out" | tail -n 1)"
+  return 2
+}
+
 # Re-probe a check until it passes or the confirmation window is exhausted. Returns 0 as
 # soon as ANY probe is healthy (a transient blip); returns 1 echoing the last reason only
 # if EVERY probe stayed bad (a persistent fault worth paging). $@ = check fn + its args.
@@ -590,6 +641,14 @@ run_watchdog() {
     0) transition entity-drift ok "entity.kdl matches a fresh seed again" ;;
     2) log "entity drift check skipped this tick — $reason" ;;
     *) transition entity-drift bad "$reason" ;;
+  esac
+  rc=0
+  reason="$(check_signoz_rules)" || rc=$?
+  case "$rc" in
+    0) transition signoz-rules ok "SigNoz alert rules match deploy/signoz/rules again" ;;
+    1) transition signoz-rules bad "$reason" ;;
+    3) ;;  # no key yet: check_signoz_rules logged it (once a day)
+    *) log "SigNoz rules check skipped this tick — $reason" ;;
   esac
   clear_recovered_failures
 }

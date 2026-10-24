@@ -1,0 +1,66 @@
+{
+  "alert": "astra no new session transcript",
+  "alertType": "METRIC_BASED_ALERT",
+  "annotations": {
+    "description": "The newest session transcript is {{$value}} days old (limit 14). Check craig-sync, the Drive mount and the Dagster craig_drop sensor.",
+    "summary": "no new session transcript for {{$value}} days"
+  },
+  "condition": {
+    "compositeQuery": {
+      "panelType": "graph",
+      "queries": [
+        {
+          "spec": {
+            "disabled": false,
+            "legend": "transcript",
+            "name": "A",
+            "query": "max(astra_data_newest_age_seconds{\"service.name\"=\"node-exporter\", dataset=\"transcript\"}) / 86400"
+          },
+          "type": "promql"
+        }
+      ],
+      "queryType": "promql"
+    },
+    "selectedQueryName": "A",
+    "thresholds": {
+      "kind": "basic",
+      "spec": [
+        {
+          "channels": [
+            "discord-ops"
+          ],
+          "matchType": "at_least_once",
+          "name": "warning",
+          "op": "above",
+          "recoveryTarget": null,
+          "target": 14,
+          "targetUnit": ""
+        }
+      ]
+    }
+  },
+  "description": "No new session transcript (scribe saved/<date>/script.json) for 14 days. Sessions run weekly; between 2026-06-18 and 2026-10-19 the longest gap between sessions was 10 days, so 14 days means two weekly sessions were missed or the pipeline stopped at the front door (craig-sync, the Drive mount, the Craig drop sensor or transcription). A planned break pages once a day; silence it in SigNoz. Source: astra-ops host-metrics.",
+  "evaluation": {
+    "kind": "rolling",
+    "spec": {
+      "evalWindow": "15m",
+      "frequency": "5m"
+    }
+  },
+  "labels": {
+    "host": "saffron"
+  },
+  "notificationSettings": {
+    "groupBy": [],
+    "renotify": {
+      "alertStates": [
+        "firing"
+      ],
+      "enabled": true,
+      "interval": "24h"
+    }
+  },
+  "ruleType": "promql_rule",
+  "schemaVersion": "v2alpha1",
+  "version": "v5"
+}
