@@ -4,9 +4,9 @@
     being = load_being(path)
     {p.slug: p.player_id for p in being.players}     # preserved dice FKs
 
-The shared typed decoder (`astra_config.kdl`) maps the KDL onto the models; their
-markers pin the shape, which matches `libs/ts/ontology` byte-for-byte via
-`canonical_json()`.
+The shared typed decoder (`astra_config.kdl`) maps the KDL onto the models. This is the
+one `being.kdl` parser: `just ontology-gen` writes `canonical_json()` to
+`being.canonical.json`, and TS (`libs/ts/ontology`) reads only that JSON.
 """
 
 from __future__ import annotations
@@ -69,7 +69,7 @@ def load_being(path: str | Path) -> Being:
 
 
 def canonical_json(being: Being) -> str:
-    """Stable JSON (sorted keys, 2-space indent) — the cross-language parity artifact."""
+    """Stable JSON (sorted keys, 2-space indent): `being.canonical.json`, what TS reads."""
     return json.dumps(being.model_dump(), sort_keys=True, ensure_ascii=False, indent=2) + "\n"
 
 

@@ -8,8 +8,8 @@ The real registry lives in the astra-data repo. Its drift gate runs where it is 
 commit there. A defs.kdl or being.kdl change in this repo leaves the real registry stale
 until the next heartwood run or a manual `uv run astra-ontology-entity-seed` (then commit
 in the clone); `astra-ontology-entity-seed --check` reports the drift. When the fixture
-snapshot, defs.kdl or being.kdl change, regenerate the fixture with
-`ASTRA_CONTENT_ROOT=fixtures/astra-data uv run astra-ontology-entity-seed`.
+snapshot, defs.kdl or being.kdl change, regenerate the fixture with `just ontology-gen`
+(`just ontology-check` fails until you do).
 """
 
 from __future__ import annotations

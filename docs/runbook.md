@@ -245,9 +245,8 @@ push, and `just deploy orator-backend`. See [`apps/orator/bot/README.md`](../app
 Exactly one campaign in `ontology/ontology-being/being.kdl` has `main #true`.
 
 1. Flip the flags in `being.kdl`.
-2. Regenerate the canonical JSON: write `astra_ontology.canonical_json(astra_ontology_being.load())`
-   to `astra_ontology_being.CANONICAL_JSON_PATH` (no recipe yet; `libs/py/ontology/tests/test_ontology.py`
-   checks drift).
+2. Regenerate `being.canonical.json` with `just ontology-gen` (`just ontology-check` fails until
+   you do).
 3. Re-pin the main-campaign tests (`apps/linguist/py/tests/test_chronicle.py`,
    `apps/mouthpiece/py/tests/test_episodes_index.py`).
 4. `just ci`, commit, push, `just deploy`.

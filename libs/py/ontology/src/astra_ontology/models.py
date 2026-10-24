@@ -1,6 +1,7 @@
-"""Typed ontology-being schema — the SAME field set + snake_case keys as
-`libs/ts/ontology` (Zod), so `canonical_json()` is byte-identical across languages
-(the Phase-1 parity gate). `player_id` is the preserved dice FK (Decision F).
+"""Typed ontology-being schema, the source of truth for its shape: `canonical_json()`
+dumps it to `being.canonical.json`, which `libs/ts/ontology` (Zod, the same field set +
+snake_case keys) reads and re-checks field for field. `player_id` is the preserved dice
+FK (Decision F).
 
 The `Annotated` markers say where each field sits in `being.kdl` for the shared
 decoder (`astra_config.kdl`); an unmarked field is the child node of its kebab name."""

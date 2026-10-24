@@ -2,17 +2,28 @@ import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { findRepoRoot, KdlDecodeError } from "@astra/config";
 import { describe, expect, test } from "vitest";
 
-import { canonicalJson, loadBeing } from "./index";
+import { defaultBeingFile, loadBeing } from "./index";
 
-const CANONICAL = join(
-  findRepoRoot(import.meta.dirname),
-  "ontology",
-  "ontology-being",
-  "being.canonical.json",
-);
+/** Recursively sort object keys (arrays keep order), as Python's `sort_keys=True` does. */
+function sortKeysDeep(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(sortKeysDeep);
+  if (value && typeof value === "object") {
+    const sorted: Record<string, unknown> = {};
+    for (const key of Object.keys(value).sort()) {
+      sorted[key] = sortKeysDeep((value as Record<string, unknown>)[key]);
+    }
+    return sorted;
+  }
+  return value;
+}
+
+function writeTemp(text: string): string {
+  const file = join(mkdtempSync(join(tmpdir(), "being-")), "being.canonical.json");
+  writeFileSync(file, text);
+  return file;
+}
 
 describe("@astra/ontology", () => {
   test("players preserve player_id + identity", () => {
@@ -45,26 +56,22 @@ describe("@astra/ontology", () => {
     expect(being.campaigns.filter((c) => c.world === "faerrin").length).toBe(5);
   });
 
-  test("canonicalJson matches the committed snapshot (py↔ts parity gate)", () => {
-    const being = loadBeing();
-    expect(canonicalJson(being)).toBe(readFileSync(CANONICAL, "utf8"));
+  test("the schema keeps every field of the generated JSON (py↔ts shape parity)", () => {
+    // Re-serializing the parsed Being must reproduce the file byte for byte: a field the
+    // schema drops, renames or defaults shows up here as a diff.
+    const text = readFileSync(defaultBeingFile(), "utf8");
+    expect(`${JSON.stringify(sortKeysDeep(loadBeing()), null, 2)}\n`).toBe(text);
   });
 
-  test("a player without a name fails naming the node, never as undefined", () => {
-    // The old hand walker read a missing `name` as the string "undefined" and passed it.
-    const kdl = join(mkdtempSync(join(tmpdir(), "being-")), "being.kdl");
-    writeFileSync(kdl, 'player "ghost" {\n  player-id 9\n  color "red"\n}\nguest-color "x"\n');
-    expect(() => loadBeing(kdl)).toThrow(KdlDecodeError);
-    expect(() => loadBeing(kdl)).toThrow(/^being\.kdl: player "ghost" > name: missing/);
+  test("a field Python added but the schema lacks fails loudly", () => {
+    const raw = JSON.parse(readFileSync(defaultBeingFile(), "utf8"));
+    raw.players[0].nickname = "jb";
+    expect(() => loadBeing(writeTemp(JSON.stringify(raw)))).toThrow(/nickname/);
   });
 
-  test("a role without a character fails naming the property", () => {
-    const kdl = join(mkdtempSync(join(tmpdir(), "being-")), "being.kdl");
-    writeFileSync(
-      kdl,
-      'guest-color "x"\ncampaign "c" {\n  name "C"\n  edition "e"\n  world "w"\n' +
-        '  role player="josh"\n}\n',
-    );
-    expect(() => loadBeing(kdl)).toThrow(/campaign "c" > role: property character=/);
+  test("a missing field fails loudly, never as undefined", () => {
+    const raw = JSON.parse(readFileSync(defaultBeingFile(), "utf8"));
+    delete raw.players[0].name;
+    expect(() => loadBeing(writeTemp(JSON.stringify(raw)))).toThrow(/name/);
   });
 });

@@ -62,8 +62,8 @@ const SNAPSHOT = path.join(CONTENT_ROOT, "akasha/snapshot/akasha-snapshot.json")
 const CORPUS_DIR = path.join(CONTENT_ROOT, "akasha/content");
 const DATA_DIR = path.join(CONTENT_ROOT, "linguist/data");
 const TIMELINE_DIR = path.join(CONTENT_ROOT, "linguist/timeline");
-// being.kdl comes from @astra/ontology, which owns it and finds it from the repo root,
-// so this path never depends on how deep this app sits under `apps/`.
+// The roster comes from @astra/ontology, which finds being.canonical.json (generated from
+// being.kdl) from the repo root, so this path never depends on how deep this app sits.
 const BEING = defaultBeingFile();
 
 // astra's brand for the wiki (faerrin shipped "Heart of Hearts"; the rebuild is
