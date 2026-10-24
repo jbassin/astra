@@ -1,12 +1,12 @@
 import type { Delay } from "./throttle";
 import { realDelay } from "./throttle";
 
-export const AON_SEARCH_URL = "https://elasticsearch.aonprd.com/aon/_search";
+const AON_SEARCH_URL = "https://elasticsearch.aonprd.com/aon/_search";
 
 // The endpoint is Origin-allowlisted for the browser client (D29-5) — a plain Node
 // `fetch()` sends no Origin header at all, which is exactly why this works server-side.
 // The descriptive contact UA is fetcher etiquette, not an auth requirement.
-export const AON_USER_AGENT =
+const AON_USER_AGENT =
   "astra-codex-ingest/0.1 (personal reference project; contact: josh.r.bassin@gmail.com)";
 
 export type FetchLike = (url: string, init: RequestInit) => Promise<Response>;

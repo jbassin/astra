@@ -38,23 +38,6 @@ export function nodeKeyFor(book: string, path: readonly string[], node: TreeNode
   return `${book}\u0000${[...path, node.name].join("\u0000")}`;
 }
 
-/** Every node (at any depth) that HAS children — the "folder" set akasha's
- * `folderSlugs` computes, scoped to one book's root list. Only these keys
- * ever need a collapse-state entry (a leaf has nothing to expand). */
-function nodesWithChildren(
-  book: string,
-  nodes: readonly TreeNode[],
-  path: readonly string[],
-  out: string[],
-): void {
-  for (const n of nodes) {
-    if (n.children.length > 0) {
-      out.push(nodeKeyFor(book, path, n));
-      nodesWithChildren(book, n.children, [...path, n.name], out);
-    }
-  }
-}
-
 /**
  * The akasha `computeOpen` port (`explorerState.ts`): per-node open state,
  * default CLOSED (Quartz's `folderDefaultState: "collapsed"`), overridden by
@@ -92,14 +75,6 @@ export function computeOpen(
 
   for (const root of nodes) walk(root, []);
   return open;
-}
-
-/** Every collapsible node's key, book-scoped — exported for a caller that
- * wants to e.g. "expand all" without walking the tree itself. */
-export function collapsibleKeys(book: string, nodes: readonly TreeNode[]): string[] {
-  const out: string[] = [];
-  nodesWithChildren(book, nodes, [], out);
-  return out;
 }
 
 /**

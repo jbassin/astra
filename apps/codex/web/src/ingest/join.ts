@@ -17,7 +17,7 @@ import { sluggify } from "./sluggify";
  * suffixing), crossref/embed-patched.
  *
  * Orchestration is 5 passes, each pure over the previous pass's output (no
- * disk I/O in this module — `dev-join.ts`/a future `transform.ts` own that):
+ * disk I/O in this module — `scripts/transform.ts` owns that):
  *
  *   1. `matchEntities` — exact slug match, THEN qualifier-reorder
  *      normalization, THEN `join-aliases.json` (D29-7's 3-tier match order),
@@ -669,7 +669,7 @@ export interface RunJoinInput {
   aliasesFile: JoinAliasesFile;
   /** Resolves a raw Foundry `@Embed` uuid (the `Compendium.pf2e....` form) to
    * a `UuidResolution` — optional: the caller only has this when it rebuilt
-   * the S2 `UuidIndex` (e.g. `dev-join.ts`); without it, Foundry-origin embed
+   * the S2 `UuidIndex`; without it, Foundry-origin embed
    * nodes are report-counted as unresolved rather than resolved (AoN
    * `<document>` embeds always resolve regardless, via the aonId map this
    * module builds for legacy pairing anyway). */

@@ -298,7 +298,7 @@ function manifestFile(root: string): string {
 /** Reads `<root>/manifest.json` and checks its schema generation. Throws
  * `CorpusUnservableError` when the manifest is absent or unreadable, or when its
  * `schemaVersion` is not this build's `CORPUS_SCHEMA_VERSION`. */
-export function inspectCorpus(root: string): Omit<ServedCorpus, "source"> {
+function inspectCorpus(root: string): Omit<ServedCorpus, "source"> {
   const path = manifestFile(root);
   let header: CorpusManifestHeader;
   try {

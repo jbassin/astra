@@ -354,7 +354,7 @@ describe("parseFoundryHtml: hard-fail posture (D29-9's drift tripwire)", () => {
   });
 });
 
-describe("parseFoundryHtml: real-corpus leniencies found by the full-snapshot dev sweep (139 + 1 real docs — see dev-sweep-foundry.ts)", () => {
+describe("parseFoundryHtml: real-corpus leniencies found by the full-snapshot dev sweep (139 + 1 real docs)", () => {
   it("maps <code> to plain flattened content (found only in criticaldeck/*.json decks, not in any Item/Actor description)", () => {
     const nodes = parseFoundryHtml("<p><code>Melee</code></p>", makeCtx());
     expect(nodes).toEqual([

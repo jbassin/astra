@@ -18,7 +18,7 @@ import { type RenderCtx, rootRenderCtx } from "./nodes";
 
 export const FIXTURE_ROOT = join(import.meta.dirname, "../../../fixtures/entities");
 
-export function loadFixtureEntities(): CodexEntity[] {
+function loadFixtureEntities(): CodexEntity[] {
   const entities: CodexEntity[] = [];
   for (const category of readdirSync(FIXTURE_ROOT).sort()) {
     const categoryDir = join(FIXTURE_ROOT, category);
@@ -32,7 +32,7 @@ export function loadFixtureEntities(): CodexEntity[] {
   return entities;
 }
 
-export function loadTraitIndex(): ReadonlySet<string> {
+function loadTraitIndex(): ReadonlySet<string> {
   const path = join(FIXTURE_ROOT, "trait", "_index.json");
   const rows: IndexRow[] = JSON.parse(readFileSync(path, "utf8")).map((r: unknown) =>
     IndexRowSchema.parse(r),

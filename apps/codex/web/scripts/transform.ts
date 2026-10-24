@@ -17,8 +17,7 @@
  * (`pnpm --filter @astra/codex transform`): resolves the real paths from
  * `@astra/config` + the committed `corpus-manifest.json`, calls
  * `runTransform`, prints the report.md summary, and exits 1 on ANY hard
- * failure (same posture as `parse-foundry.ts`/`parse-aon.ts`'s own gates —
- * the drift tripwire never silently passes here either).
+ * failure (the drift tripwire never silently passes).
  */
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -99,7 +98,7 @@ export interface HardFailure {
 }
 
 // ---------------------------------------------------------------------------
-// Foundry side (parse-foundry.ts's own assembly, generalized over a plain
+// Foundry side (assembly over a plain
 // snapshot-root path instead of a hardcoded config+tag lookup, so a caller —
 // the CLI wrapper OR the fixture test — can point it at any real-shaped
 // snapshot directory)
@@ -278,8 +277,7 @@ function loadFoundrySide(
 }
 
 // ---------------------------------------------------------------------------
-// AoN side (parse-aon.ts's own extraction, generalized over a plain
-// snapshot-dir path)
+// AoN side (extraction over a plain snapshot-dir path)
 // ---------------------------------------------------------------------------
 
 interface AonSide {
@@ -359,8 +357,7 @@ export interface TransformPaths {
 export interface TransformResult {
   hardFailures: HardFailure[];
   /** Present only when `hardFailures` is empty — a hard failure aborts BEFORE
-   * the join/emit/report stages, same posture as `parse-foundry.ts`/
-   * `parse-aon.ts`'s own gates (spec's drift tripwire: never build a report
+   * the join/emit/report stages (the drift tripwire: never build a report
    * over a run that already failed). */
   reportJson?: ReportJson;
   reportMarkdown?: string;

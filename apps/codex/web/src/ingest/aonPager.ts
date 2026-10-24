@@ -26,8 +26,8 @@ export interface EsAggResponse {
 export type SearchFn = (body: unknown) => Promise<EsSearchResponse>;
 export type AggFn = (body: unknown) => Promise<EsAggResponse>;
 
-export const DEFAULT_PAGE_SIZE = 1000;
-export const DEFAULT_CATEGORY_AGG_SIZE = 200;
+const DEFAULT_PAGE_SIZE = 1000;
+const DEFAULT_CATEGORY_AGG_SIZE = 200;
 
 /** Category discovery: a `size:0` terms aggregation on `category` (D29-5 step 1;
  * live-verified — 93 buckets, `equipment` 8,642 / `feat` 8,460 at the top). */
