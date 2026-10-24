@@ -105,7 +105,9 @@ it. A stage's `SessionStage.gates` closes that gap: `scribe_output_sensor` launc
 linguist only for a session whose latest `transcript_not_empty` result passed
 (`blocked_sessions`). A session with no result, from before the checks, is not blocked.
 After you fix the cause, re-execute the run from failure: the check runs again, and a
-pass opens the gate. Partitioned checks are a Dagster preview; `session_check` hides the
+pass opens the gate. The exception is a tracks check fixed by removing or replacing a
+zip: the re-execution keeps the old run's `astra/craig-zip` tag, so launch a fresh run
+instead (scribe README, "Blocking checks"). Partitioned checks are a Dagster preview; `session_check` hides the
 warning.
 
 ## Resources

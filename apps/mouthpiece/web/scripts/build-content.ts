@@ -47,8 +47,12 @@ interface ManifestLine {
   name: string;
   text: string;
 }
+/** What an episode is (mouthpiece-backend `EpisodeKind`); only a "session" is numbered. */
+type EpisodeKind = "session" | "recap" | "special";
+
 interface ManifestEpisode {
   id: string;
+  kind: EpisodeKind;
   arcNo: number;
   arcSlug: string;
   arcTitle: string;
@@ -94,6 +98,8 @@ function emitEpisodes(episodes: ManifestEpisode[]): string {
     "",
     "export interface GeneratedEpisode {",
     "  id: string;",
+    '  /** "session" | "recap" | "special"; only a session has an episode number. */',
+    '  kind: "session" | "recap" | "special";',
     "  arcNo: number;",
     "  arcSlug: string;",
     "  arcTitle: string;",
