@@ -1,0 +1,239 @@
+{
+  "provenance": "source: trimmed from tests/fixtures/argyle.json (a toObject() capture through the live bridge, 2026-07-11, pf2e 7.12.2 data); live: SYNTHESIZED from pf2e 8.4.1 data shapes, not captured. Refresh both sides from the live world (see src/pf2e/index.ts).",
+  "uuid": "Actor.zpeNslKKrnaq07HI.Item.hMP4awQ0DwfFGV06",
+  "source": {
+    "img": "icons/weapons/swords/sword-guard.webp",
+    "name": "Bastard Sword",
+    "system": {
+      "description": {
+        "gm": "",
+        "value": "<p>This broad-bladed sword, sometimes called the hand-and-a-half sword, has a longer grip so it can be held in one hand or used with two hands to provide extra slashing power.</p>"
+      },
+      "rules": [],
+      "slug": "bastard-sword",
+      "_migration": {
+        "version": 0.955,
+        "lastMigration": null,
+        "previous": null
+      },
+      "traits": {
+        "otherTags": [],
+        "value": [
+          "two-hand-d12"
+        ],
+        "rarity": "common"
+      },
+      "publication": {
+        "title": "Pathfinder Player Core",
+        "authors": "",
+        "license": "ORC",
+        "remaster": true
+      },
+      "level": {
+        "value": 0
+      },
+      "quantity": 1,
+      "baseItem": "bastard-sword",
+      "bulk": {
+        "value": 1
+      },
+      "hp": {
+        "value": 0,
+        "max": 0
+      },
+      "hardness": 0,
+      "price": {
+        "value": {
+          "gp": 4
+        }
+      },
+      "equipped": {
+        "carryType": "held",
+        "invested": null,
+        "handsHeld": 1
+      },
+      "containerId": null,
+      "size": "med",
+      "material": {
+        "type": null,
+        "grade": null
+      },
+      "identification": {
+        "status": "identified",
+        "unidentified": {
+          "name": "",
+          "img": "",
+          "data": {
+            "description": {
+              "value": ""
+            }
+          }
+        }
+      },
+      "usage": {
+        "value": "held-in-one-hand"
+      },
+      "category": "martial",
+      "group": "sword",
+      "bonus": {
+        "value": 0
+      },
+      "damage": {
+        "dice": 1,
+        "die": "d8",
+        "damageType": "slashing",
+        "persistent": null
+      },
+      "splashDamage": {
+        "value": 0
+      },
+      "range": null,
+      "expend": null,
+      "ammo": null,
+      "reload": {
+        "value": null
+      },
+      "grade": null,
+      "runes": {
+        "potency": 0,
+        "striking": 0,
+        "property": []
+      },
+      "specific": null,
+      "subitems": [],
+      "bonusDamage": {
+        "value": 0
+      }
+    },
+    "type": "weapon",
+    "_stats": {
+      "compendiumSource": "Compendium.pf2e.equipment-srd.Item.6KWYmeRMxsQfWhhJ",
+      "duplicateSource": null,
+      "exportSource": null,
+      "coreVersion": "13.351",
+      "systemId": "pf2e",
+      "systemVersion": "7.12.2",
+      "createdTime": 1773096819264,
+      "modifiedTime": 1782786059983,
+      "lastModifiedBy": "pS0rW8VPRa3jClOc"
+    },
+    "effects": [],
+    "folder": null,
+    "sort": 0,
+    "ownership": {
+      "default": 0,
+      "orAwNSgJQglrpRkr": 3
+    },
+    "flags": {},
+    "_id": "hMP4awQ0DwfFGV06"
+  },
+  "live": {
+    "system": {
+      "description": {
+        "gm": "",
+        "value": "<p>This broad-bladed sword, sometimes called the hand-and-a-half sword, has a longer grip so it can be held in one hand or used with two hands to provide extra slashing power.</p>"
+      },
+      "rules": [],
+      "slug": "bastard-sword",
+      "_migration": {
+        "version": 0.955,
+        "lastMigration": null,
+        "previous": null
+      },
+      "traits": {
+        "otherTags": [],
+        "value": [
+          "two-hand-d12"
+        ],
+        "rarity": "common"
+      },
+      "publication": {
+        "title": "Pathfinder Player Core",
+        "authors": "",
+        "license": "ORC",
+        "remaster": true
+      },
+      "level": {
+        "value": 0
+      },
+      "quantity": 1,
+      "baseItem": "bastard-sword",
+      "bulk": {
+        "value": 1,
+        "heldOrStowed": 1,
+        "per": 1
+      },
+      "hp": {
+        "value": 0,
+        "max": 0
+      },
+      "hardness": 0,
+      "price": {
+        "value": {
+          "gp": 4,
+          "pp": 0,
+          "sp": 0,
+          "cp": 0
+        },
+        "per": 1
+      },
+      "equipped": {
+        "carryType": "held",
+        "invested": null,
+        "handsHeld": 1
+      },
+      "containerId": null,
+      "size": "med",
+      "material": {
+        "type": null,
+        "grade": null
+      },
+      "identification": {
+        "status": "identified",
+        "unidentified": {
+          "name": "",
+          "img": "",
+          "data": {
+            "description": {
+              "value": ""
+            }
+          }
+        }
+      },
+      "usage": {
+        "value": "held-in-one-hand"
+      },
+      "category": "martial",
+      "group": "sword",
+      "bonus": {
+        "value": 0
+      },
+      "damage": {
+        "dice": 1,
+        "die": "d8",
+        "damageType": "slashing",
+        "persistent": null
+      },
+      "splashDamage": {
+        "value": 0
+      },
+      "range": null,
+      "expend": null,
+      "ammo": null,
+      "reload": {
+        "value": null
+      },
+      "grade": null,
+      "runes": {
+        "potency": 0,
+        "striking": 0,
+        "property": []
+      },
+      "specific": null,
+      "subitems": [],
+      "bonusDamage": {
+        "value": 0
+      }
+    }
+  }
+}

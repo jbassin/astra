@@ -1,0 +1,161 @@
+{
+  "provenance": "source: trimmed from tests/fixtures/argyle.json (a toObject() capture through the live bridge, 2026-07-11, pf2e 7.12.2 data); live: SYNTHESIZED from pf2e 8.4.1 data shapes, not captured. Refresh both sides from the live world (see src/pf2e/index.ts).",
+  "uuid": "Actor.zpeNslKKrnaq07HI.Item.E4rxmPHJN2hEAeEZ",
+  "source": {
+    "_id": "E4rxmPHJN2hEAeEZ",
+    "folder": "J4qk5NbwDuKa9WWz",
+    "img": "icons/sundries/books/book-red-exclamation.webp",
+    "name": "Healing Hands",
+    "system": {
+      "actionType": {
+        "value": "passive"
+      },
+      "actions": {
+        "value": null
+      },
+      "category": "class",
+      "description": {
+        "value": "<p>Your vitality is even more vibrant and restorative. When you cast @UUID[Compendium.pf2e.spells-srd.Item.rfZpqmj0AIIdkVIs]{Heal}, you roll d10s instead of d8s.</p>",
+        "gm": ""
+      },
+      "level": {
+        "value": 1,
+        "taken": 2
+      },
+      "prerequisites": {
+        "value": [
+          {
+            "value": "healing font"
+          }
+        ]
+      },
+      "publication": {
+        "license": "ORC",
+        "remaster": true,
+        "title": "Pathfinder Player Core",
+        "authors": ""
+      },
+      "rules": [
+        {
+          "key": "DamageDice",
+          "override": {
+            "dieSize": "d10"
+          },
+          "predicate": [
+            "item:slug:heal"
+          ],
+          "selector": [
+            "spell-damage",
+            "spell-healing"
+          ]
+        }
+      ],
+      "traits": {
+        "rarity": "common",
+        "value": [
+          "cleric"
+        ],
+        "otherTags": []
+      },
+      "slug": "healing-hands",
+      "_migration": {
+        "version": 0.955,
+        "previous": null
+      },
+      "onlyLevel1": false,
+      "maxTakable": 1,
+      "subfeatures": {
+        "proficiencies": {},
+        "senses": {},
+        "suppressedFeatures": []
+      },
+      "location": "class-2"
+    },
+    "type": "feat",
+    "_stats": {
+      "compendiumSource": "Compendium.pf2e.feats-srd.Item.zYhcEX4JnrZ08HfV",
+      "duplicateSource": null,
+      "exportSource": null,
+      "coreVersion": "13.351",
+      "systemId": "pf2e",
+      "systemVersion": "7.11.2",
+      "createdTime": 1773097995105,
+      "modifiedTime": 1773097995105,
+      "lastModifiedBy": "orAwNSgJQglrpRkr"
+    },
+    "effects": [],
+    "sort": 0,
+    "ownership": {
+      "default": 0,
+      "orAwNSgJQglrpRkr": 3
+    },
+    "flags": {}
+  },
+  "live": {
+    "system": {
+      "actionType": {
+        "value": "passive"
+      },
+      "actions": {
+        "value": null
+      },
+      "category": "class",
+      "description": {
+        "value": "<p>Your vitality is even more vibrant and restorative. When you cast @UUID[Compendium.pf2e.spells-srd.Item.rfZpqmj0AIIdkVIs]{Heal}, you roll d10s instead of d8s.</p>",
+        "gm": ""
+      },
+      "level": {
+        "value": 1,
+        "taken": 2
+      },
+      "prerequisites": {
+        "value": [
+          {
+            "value": "healing font"
+          }
+        ]
+      },
+      "publication": {
+        "license": "ORC",
+        "remaster": true,
+        "title": "Pathfinder Player Core",
+        "authors": ""
+      },
+      "rules": [
+        {
+          "key": "DamageDice",
+          "override": {
+            "dieSize": "d10"
+          },
+          "predicate": [
+            "item:slug:heal"
+          ],
+          "selector": [
+            "spell-damage",
+            "spell-healing"
+          ]
+        }
+      ],
+      "traits": {
+        "rarity": "common",
+        "value": [
+          "cleric"
+        ],
+        "otherTags": []
+      },
+      "slug": "healing-hands",
+      "_migration": {
+        "version": 0.955,
+        "previous": null
+      },
+      "onlyLevel1": false,
+      "maxTakable": 1,
+      "subfeatures": {
+        "proficiencies": {},
+        "senses": {},
+        "suppressedFeatures": []
+      },
+      "location": "class-2"
+    }
+  }
+}
