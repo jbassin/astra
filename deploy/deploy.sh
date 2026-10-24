@@ -94,7 +94,7 @@ init_artifacts() {
   mkdir -p "$r"/scribe/{incoming,data,tmp} "$r"/linguist/script \
     "$r"/mouthpiece/{episodes,experiments} \
     "$r"/heartwood/requests/logs \
-    "$r"/codex/data/{corpus,search,assay} "$r"/menhir \
+    "$r"/codex/data/{corpus,search} "$r"/menhir \
     "$r"/audio/{akasha,mouthpiece,orator} "$r"/postgres "$r"/portal-oauth \
     "$r"/node-exporter/textfile "$r"/deploy/live "$r"/locks
 }

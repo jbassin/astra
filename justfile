@@ -702,7 +702,7 @@ codex-refresh:
     set -euo pipefail
     cd "{{justfile_directory()}}"
     # codex.data-path (config.kdl, under data.root): the scripts below write there via
-    # @astra/config; this recipe needs it for the assay artifact and the report.
+    # @astra/config; this recipe needs it for the report.
     codex_data="$({{uv_bin}} run python -m astra_ontology_config codex.data-path)"
     if [ -n "$(git status --porcelain -- apps/codex/web)" ]; then
       echo "codex-refresh: apps/codex/web has uncommitted changes — commit or stash first" >&2
@@ -719,18 +719,6 @@ codex-refresh:
     echo ""
     echo "codex-refresh: building the search index..."
     just codex-search-index
-    echo ""
-    # D30-41: regenerate the assay spell-power artifact against the fresh corpus
-    # (the container restart below is also what flushes assayFs's per-process
-    # cache). Guarded: a checkout without the assay env still refreshes codex.
-    echo "codex-refresh: regenerating the assay artifact (D30-41)..."
-    if uv run assay export-codex; then
-      mkdir -p "$codex_data/assay"
-      cp apps/assay/py/out/spell-power.json "$codex_data/assay/spell-power.json"
-      echo "codex-refresh: assay artifact regenerated + placed."
-    else
-      echo "codex-refresh: assay export failed or unavailable — keeping the previous artifact." >&2
-    fi
     echo ""
     echo "codex-refresh: done. report.md summary:"
     head -n 40 "$codex_data/corpus/report.md"

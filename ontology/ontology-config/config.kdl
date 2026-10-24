@@ -28,7 +28,7 @@ data {
     //   mouthpiece/experiments/  producer and roundtable runs (0034)
     //   heartwood/               per-run agent artifacts, backfill.log, backfill.lock
     //   heartwood/requests/      the Dagster <-> host request files (0036), logs/ inside
-    //   codex/data/              codex corpus, Pagefind index, AoN + Foundry snapshots, assay
+    //   codex/data/              codex corpus, Pagefind index, AoN + Foundry snapshots
     //   menhir/                  menhir results.jsonl
     //   audio/{akasha,mouthpiece,orator}/  audio the frontends and orator serve
     //   postgres/{dagster,orator,weal}/    PGDATA (uid 70, mode 0700; init makes only postgres/)
