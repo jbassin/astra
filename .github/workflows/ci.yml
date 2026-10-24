@@ -134,7 +134,8 @@ jobs:
       - run: just assay-store-check
 
   # Every generated ontology artifact matches its sources (being.canonical.json from
-  # being.kdl, the fixture entity registry). Takes seconds, so no path filter.
+  # being.kdl, the fixture entity registry, the Zod config schema from the Pydantic models).
+  # Takes seconds, so no path filter.
   ontology-check:
     runs-on: ubuntu-latest
     steps:

@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from astra_config import load_config
 from astra_config.models import HeartwoodConfig
 from astra_heartwood.agent.cli import format_summary
 from astra_heartwood.agent.rlm import PARSE_ERROR_OUTPUT, MeteringMixin
@@ -124,7 +125,11 @@ def spans(telemetry_capture: Captured) -> InMemorySpanExporter:
 
 
 def cfg(**kw: Any) -> HeartwoodConfig:
-    return HeartwoodConfig(model="dummy/main", sub_model="dummy/sub", **kw)
+    """The real heartwood block with dummy models (config.kdl holds every value)."""
+    base = load_config().heartwood.model_dump()
+    return HeartwoodConfig.model_validate(
+        {**base, "model": "dummy/main", "sub_model": "dummy/sub", **kw}
+    )
 
 
 def read_json(path: Path) -> Any:

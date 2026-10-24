@@ -54,8 +54,8 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
    `@astra/content-build` (`defineContentSource`/`buildContent`) — emit your generated
    modules into `src/generated/`.
 4. **Config** (config-single-source): add an `<app> { service-name; port }` namespace
-   to `ontology/ontology-config/config.kdl` **and mirror it in both** `libs/ts/config`
-   (Zod) and `libs/py/config` (Pydantic, in `WholeConfig`) schemas. `server.ts` and `vite.config.ts`
+   to `ontology/ontology-config/config.kdl` and to `libs/py/config` (Pydantic, in `WholeConfig`
+   and `TS_NAMESPACES`), then run `just ontology-gen` to regenerate the TS Zod schema. `server.ts` and `vite.config.ts`
    read it; the RUM service name derives as `${serviceName}-rum`.
 5. **Deploy**: add a Compose service that builds from the shared `deploy/node.Dockerfile`
    (`build.args.APP: <domain>/web`; no `PORT` env, since the port is config-sourced; map the

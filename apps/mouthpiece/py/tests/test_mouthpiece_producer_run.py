@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from astra_config import load_config
 from astra_config.models import MouthpieceProducerConfig
 from astra_llm.rlm import deno_available, make_interpreter
 from astra_mouthpiece.models import DigestStats, SessionDigest
@@ -172,7 +173,11 @@ def _kwargs(tree: dict[str, Any], tmp_path: Path) -> dict[str, Any]:
 
 
 def cfg(**kw: Any) -> MouthpieceProducerConfig:
-    return MouthpieceProducerConfig(model="dummy/main", sub_model="dummy/sub", **kw)
+    """The real producer block with dummy models (config.kdl holds every value)."""
+    base = load_config().mouthpiece_producer.model_dump()
+    return MouthpieceProducerConfig.model_validate(
+        {**base, "model": "dummy/main", "sub_model": "dummy/sub", **kw}
+    )
 
 
 def read_json(path: Path) -> Any:

@@ -116,8 +116,12 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
   and ignores the rest, so a bad value in one language's block cannot stop the other's processes.
   Python's `WholeConfig` holds every namespace, and one CI test (`test_whole_config_kdl_validates`
   in `libs/py/config`) validates the whole file against it. The `libs/py/config` `models.py`
-  docstring records which language reads which namespace. A namespace TS reads is mirrored field
-  for field in Zod and Pydantic. Every field needs a reader outside the config libraries and
+  docstring records which language reads which namespace. Pydantic is the one schema: the TS Zod
+  schema (`libs/ts/config/src/config.gen.ts`) is generated from it for the namespaces in
+  `TS_NAMESPACES` by `just ontology-gen`, and `just ontology-check` (in `just check` and CI) fails
+  when the committed file is stale. Every namespace and every plaintext field is required with no
+  default, so a value lives only in `config.kdl` and a missing key fails the load; a secret field
+  is `Secret | None = None`. Every field needs a reader outside the config libraries and
   tests: `test_config_readers.py` fails on one that nothing names, so delete a field with its last
   reader (a field read only through a computed name goes in its `ALLOWLIST`, with the reason). Loader tests use `fixtures/config/`, not the real file. Only the
   config libraries read the environment (the upper-cased secret override). Find the checkout with
@@ -135,9 +139,10 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
   path. Quote hand-inserted KDL strings with `kdl_quote`/`kdlQuote`.
 - **Generated ontology artifacts.** Python is the one `being.kdl` parser. `just ontology-gen`
   writes `ontology/ontology-being/being.canonical.json` from it, which `@astra/ontology` reads,
-  and regenerates the fixture entity registry; `just ontology-check` (in `just check` and CI)
-  fails when either is stale. Run `just ontology-gen` after editing `being.kdl`, `defs.kdl` or
-  the fixture snapshot, and commit the output; never edit the generated files by hand.
+  regenerates the fixture entity registry, and writes `libs/ts/config/src/config.gen.ts` from
+  the Pydantic config models; `just ontology-check` (in `just check` and CI) fails when one is
+  stale. Run `just ontology-gen` after editing `being.kdl`, `defs.kdl`, the fixture snapshot or
+  `libs/py/config` `models.py`, and commit the output; never edit the generated files by hand.
 - **LLM calls** go through `libs/py/llm`; never call a provider SDK directly. Its client owns the
   `max_tokens` guard, caching and cost telemetry; `make_dspy_lm` returns a bare `dspy.LM` that
   skips them.
@@ -181,7 +186,9 @@ is still hand-maintained:
    `fixtures/astra-data/`.
 3. Its config block in `config.kdl` and in Pydantic (`libs/py/config` `models.py`): in `Config` if
    Python reads it, else in `WholeConfig`, which the whole-file CI test checks. A block TS reads also
-   goes in `libs/ts/config` (Zod). Add the block to the ownership list in the `models.py` docstring.
+   goes in `TS_NAMESPACES`; then run `just ontology-gen` and commit the regenerated Zod schema. Add
+   the block to the ownership list in the `models.py` docstring, and to `fixtures/config/config.kdl`
+   (every field is required, so the fixture sets them all).
 4. A `test` script (`vitest run`) and at least one test. The script is how the root vitest config
    finds the package; `vitest run` with no test files exits 1.
 5. Telemetry in the real entrypoint. TS services get no HTTP auto-instrumentation, so add

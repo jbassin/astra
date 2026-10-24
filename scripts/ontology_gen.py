@@ -9,6 +9,8 @@ The artifacts and their sources:
 - `fixtures/astra-data/entity/entity.kdl`, the test fixture's entity registry, from the
   fixture akasha snapshot, `defs.kdl` and `being.kdl`. The real registry lives in the
   astra-data repo, and heartwood reseeds it there.
+- `libs/ts/config/src/config.gen.ts`, the TS config schema (Zod), from the Pydantic config
+  models (`astra_config.zodgen`). Pydantic is the one config schema.
 
 This is a build tool, like `check_docs.py`: it sends no telemetry (the seed CLI,
 `astra-ontology-entity-seed`, reports heartwood metrics; this does not).
@@ -27,7 +29,8 @@ ROOT = Path(__file__).resolve().parent.parent
 # at the checked-in fixture first. Only the fixture registry is generated in this repo.
 os.environ["ASTRA_CONTENT_ROOT"] = str(ROOT / "fixtures" / "astra-data")
 
-from astra_ontology import canonical_json  # noqa: E402 -- after the content root is set
+from astra_config import zodgen  # noqa: E402 -- after the content root is set
+from astra_ontology import canonical_json  # noqa: E402 -- as above
 from astra_ontology_being import CANONICAL_JSON_PATH, load  # noqa: E402 -- as above
 from astra_ontology_entity import ENTITY_KDL_PATH  # noqa: E402 -- as above
 from astra_ontology_entity.seed import build_registry  # noqa: E402 -- as above
@@ -38,6 +41,7 @@ def artifacts() -> list[tuple[Path, str]]:
     return [
         (CANONICAL_JSON_PATH, canonical_json(load())),
         (ENTITY_KDL_PATH, build_registry()[1]),
+        (ROOT / zodgen.OUTPUT, zodgen.generate()),
     ]
 
 
