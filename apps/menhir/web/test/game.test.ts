@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import { must } from "../src/assert";
 import {
   computeRanks,
+  deadlineOf,
   type GameEvent,
   type PlayerRecord,
   projectHost,
@@ -269,7 +270,8 @@ describe("early close (D31-3)", () => {
 
     const result = reduce(state, { type: "answer", playerId: "p1", option: 0 }, 500);
     expect(result.state.phase).toBe("question"); // still open — no early close
-    expect(result.effects).toEqual([{ kind: "broadcast" }]); // no cancelTimer
+    expect(result.effects).toEqual([{ kind: "broadcast" }]);
+    expect(deadlineOf(result.state)?.at).toBe(deadlineOf(state)?.at); // the deadline stands
   });
 
   test("all connected roster members answering closes the question early", () => {
@@ -284,9 +286,32 @@ describe("early close (D31-3)", () => {
     expect(result.state.phase).toBe("question"); // 1 of 2 answered — not yet
     result = reduce(result.state, { type: "answer", playerId: "p2", option: 1 }, 200);
     expect(result.state.phase).toBe("reveal"); // 2 of 2 — early close
-    expect(result.effects).toEqual(
-      expect.arrayContaining([{ kind: "cancelTimer" }, { kind: "broadcast" }]),
-    );
+    expect(result.effects).toEqual([{ kind: "broadcast" }]);
+    expect(deadlineOf(result.state)).toBeNull(); // the runtime disarms the countdown
+  });
+});
+
+describe("deadlineOf (the one source of the question deadline)", () => {
+  test("only an open question has a deadline: its start plus its time limit", () => {
+    let state = createRoom(0);
+    state = join(state, "p1", "Kit", 0);
+    expect(deadlineOf(state)).toBeNull(); // lobby
+    state = start(state, 1_000);
+    const q = must(state.questions[0], "quiz has a first question");
+    expect(deadlineOf(state)).toEqual({
+      at: 1_000 + q.time * 1000,
+      phase: "question",
+      questionIndex: 0,
+    });
+    // An answer or a connect keeps the same deadline (the S2b disarm bug class).
+    state = connect(state, "p1", 2_000);
+    expect(deadlineOf(state)?.at).toBe(1_000 + q.time * 1000);
+    state = reduce(
+      state,
+      { type: "hostAction", action: "next", fromPhase: "question", fromIndex: 0 },
+      3_000,
+    ).state;
+    expect(deadlineOf(state)).toBeNull(); // reveal
   });
 });
 
@@ -463,11 +488,12 @@ describe("podium (D31-10)", () => {
     expect(result.state.aborted).toBe(true);
     expect(result.effects).toEqual(
       expect.arrayContaining([
-        { kind: "cancelTimer" },
         { kind: "broadcast" },
         expect.objectContaining({ kind: "appendResults" }),
       ]),
     );
+    expect(deadlineOf(state)).not.toBeNull();
+    expect(deadlineOf(result.state)).toBeNull();
   });
 
   test("reaching podium naturally (last scoreboard -> next) is not aborted", () => {

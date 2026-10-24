@@ -68,11 +68,10 @@ schemas whose messages are the API's error strings; `test/pins.test.ts` pins eve
 
 ## Traps
 
-- **Re-arm the question timer after every reduction.** `rooms.ts` clears the room timer before each
-  reduction and only `schedule` effects re-arm it, and only question-open emits one. So after an
-  answer, join or connect mid-question, the runtime must re-arm the outstanding deadline, or the
-  countdown silently stops. The reducer tests can't see this; `test/rooms.test.ts` covers the
-  runtime with an injected test clock.
+- **The question deadline comes only from `deadlineOf(state)`** (`src/game.ts`). The reducer emits
+  no timer effects; after every reduction `rooms.ts` compares the armed timer with
+  `deadlineOf(state)` and keeps, re-arms or clears it. A new phase with a deadline is a change to
+  `deadlineOf`, nothing else. `test/rooms.test.ts` covers the runtime with an injected test clock.
 - **Never answer the SSE endpoint with 404.** Browsers stop reconnecting an `EventSource` for good
   after an HTTP error. An unknown or collected room returns 200 with one `{phase:"gone"}` frame.
 - **Don't simulate many players in one browser.** Six `EventSource`s in one tab hit Chromium's
