@@ -206,6 +206,27 @@ def test_optional_still_raises_when_sops_fails(tmp_path: Path, monkeypatch) -> N
         _ref(path).optional()
 
 
+def test_optional_raises_when_the_sops_binary_is_missing(tmp_path: Path, monkeypatch) -> None:
+    """A missing `sops` binary is not an unset secret (the TS twin throws too)."""
+    monkeypatch.setenv("PATH", str(tmp_path / "empty-bin"))
+    monkeypatch.delenv(ENV, raising=False)
+    path = tmp_path / "present.enc.yaml"
+    path.write_text("x: y\n")
+    with pytest.raises(FileNotFoundError):
+        _ref(path).optional()
+
+
+def test_a_malformed_decrypt_never_echoes_the_plaintext(secrets_file) -> None:
+    import traceback
+
+    path = secrets_file('k: "PLANTED-SECRET-123\n  - [x\n')
+    with pytest.raises(SecretUnsetError) as info:
+        _ref(path).require()
+    text = "".join(traceback.format_exception(info.value))
+    assert "not valid YAML" in text
+    assert "PLANTED" not in text
+
+
 def test_loaded_refs_carry_their_config_key() -> None:
     cfg = load_config()
     assert cfg.orator.session_secret is not None

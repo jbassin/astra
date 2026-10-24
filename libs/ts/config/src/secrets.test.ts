@@ -171,7 +171,21 @@ describe("SecretRef.require / optional", () => {
     writeFileSync(join(dir, "bin", "sops"), "#!/bin/sh\necho boom >&2\nexit 1\n", {
       mode: 0o755,
     });
-    expect(() => ref(secretsFile("x: y\n")).optional()).toThrow();
+    expect(() => ref(secretsFile("x: y\n")).optional()).toThrow(/Command failed: sops/);
+  });
+
+  test("a malformed decrypt never echoes the plaintext", () => {
+    const r = ref(secretsFile('k: "PLANTED-SECRET-123\n  - [x\n'));
+    let err: unknown;
+    try {
+      r.require();
+    } catch (e) {
+      err = e;
+    }
+    expect(err).toBeInstanceOf(SecretUnsetError);
+    const text = `${String(err)} ${String((err as Error).cause)}`;
+    expect(text).toMatch(/not valid YAML/);
+    expect(text).not.toContain("PLANTED");
   });
 
   test("loaded refs carry their config key", () => {
