@@ -242,6 +242,47 @@ therefore dry-runs a new save before keeping it, and refuses it (with a reply sa
 A macro with no inputs works like any function: `save(:adv, || 2d20kh1)`, then `adv() + 7`. A
 saved roll without the `||` (`save(:adv, 2d20kh1)`) also re-rolls on every use, as `adv + 7`.
 
+### Built-ins
+
+Every built-in function, with its type. `a` and `b` stand for any type, and `A -> B -> C` is a
+function of two inputs. Saves share these names, so don't save under one. The list is generated
+from the engine's builtin registry (`libs/rust/weal-engine/src/prelude.rs`); edit it there.
+
+<!-- weal-builtins:start (generated from libs/rust/weal-engine/src/prelude.rs; `just weal-engine-build`) -->
+- `kh` : `Pool[a] -> Num -> Pool[a]` — keep the highest n dice of a pool; the `kh` suffix (`4d6kh3`)
+- `kl` : `Pool[a] -> Num -> Pool[a]` — keep the lowest n dice of a pool; the `kl` suffix (`2d20kl1`)
+- `sum` : `Pool[Num] -> Die[Num]` — total a numeric pool into one die (a pool in a die position sums by itself)
+- `pool` : `Num -> Die[a] -> Pool[a]` — n copies of a die, before summing (`pool(4, d6)` is `4d6`)
+- `dl` : `List[a] -> Die[a]` — an equal-weight die from a list of faces, worst first
+- `dm` : `Dict[a, Num] -> Die[a]` — a weighted die from a `face: weight` dict, worst face first
+- `evaluate` : `Pool[a] -> b -> (b -> a -> Num -> b) -> Die[b]` — fold a pool's rolled faces (highest first, with counts) into a die of states
+- `label` : `Die[a] -> Atom -> Die[a]` — name a die in the trace, like `[word]`
+- `explode` : `Die[Num] -> Num -> Die[Num]` — roll again on the top face, at most n extra rolls; the `e` suffix
+- `e` : `Die[Num] -> Num -> Die[Num]` — `explode`, short
+- `reroll` : `Die[a] -> List[a] -> Die[a]` — reroll any of the listed faces once, keeping the new face
+- `r` : `Die[Num] -> Num -> Die[Num]` — reroll one face once, keeping the new face; the `r` suffix (`4d6r1`)
+- `successes` : `Pool[Num] -> Num -> Die[Num]` — count the dice in a pool that meet a target
+- `repeat` : `a -> Num -> List[a]` — a list of n copies; dice in it roll independently
+- `concat` : `List[a] -> List[a] -> List[a]` — join two lists
+- `map` : `List[a] -> (a -> b) -> List[b]` — apply a function to each element
+- `filter` : `List[a] -> (a -> Bool) -> List[a]` — keep the elements whose predicate is `:true`
+- `fold` : `List[a] -> b -> (b -> a -> b) -> b` — thread an accumulator through a list
+- `reduce` : `List[a] -> (a -> a -> a) -> a` — fold seeded by the first element (needs at least one)
+- `len` : `List[a] -> Num` — count a list's elements
+- `min` : `Num -> Num -> Num` or `Die[Num] -> Die[Num] -> Die[Num]` or `Die[Num] -> Num -> Die[Num]` or `Num -> Die[Num] -> Die[Num]` — the smaller of two numbers or dice
+- `max` : `Num -> Num -> Num` or `Die[Num] -> Die[Num] -> Die[Num]` or `Die[Num] -> Num -> Die[Num]` or `Num -> Die[Num] -> Die[Num]` — the larger of two numbers or dice
+- `dec` : `Num -> Dec` — a Num as an exact decimal
+- `float` : `Num -> Float` or `Dec -> Float` — a Num or Dec as a float
+- `num` : `Dec -> Num` — a Dec as a Num, truncating toward zero
+- `round` : `Dec -> Num` — a Dec to the nearest Num, halves away from zero
+- `floor` : `Dec -> Num` — a Dec down to a Num
+- `ceil` : `Dec -> Num` — a Dec up to a Num
+- `abs` : `Num -> Num` or `Dec -> Dec` — absolute value of a Num or Dec
+- `roll` : `a, … -> Unit` — show each value as its own roll
+- `plot` : `Die[a] -> Unit` — reply with the die's exact probability chart
+- `save` : `Atom -> a -> Unit` — store a value under a name for every later message (a macro)
+<!-- weal-builtins:end -->
+
 ### Fuel — what "too expensive" means
 
 Every distribution is exact, so some expressions are genuinely enormous. The engine meters its
@@ -308,7 +349,8 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
 ## Traps
 
 - **Saves share one namespace with the built-ins.** `save(:kh, 3)` would shadow `kh` and break every
-  `kh` roll. The save guard catches it; keep its everyday-roll list in step with the prelude.
+  `kh` roll. The save guard catches it, and names the clash with `isBuiltin` from
+  `@astra/weal-engine` (the engine's builtin registry); keep its everyday-roll list in step with it.
 - **`check` mode alone cannot validate a save.** It parses and type-checks saves but never evaluates
   them, so a stored source that type-checks but fails to evaluate (`1 / 0`) would pass it and fail
   every roll. That is why the boot load uses `mode:"run"` and the guard runs real rolls and real

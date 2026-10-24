@@ -755,7 +755,7 @@ mod tests {
             },
             init: Box::new(Value::num_i64(0)),
             func: Box::new(Value::Builtin(crate::value::BuiltinValue {
-                name: "sum",
+                builtin: crate::prelude::Builtin::Sum,
                 args: vec![],
             })),
         };

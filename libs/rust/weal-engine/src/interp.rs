@@ -45,7 +45,7 @@ use crate::ast::{BinOp, CmpOp, Expr, MatchPat, Pattern};
 use crate::fuel::Fuel;
 use crate::infer::CoreExpr;
 use crate::lower::{Span, SpanTree};
-use crate::prelude;
+use crate::prelude::{self, Builtin};
 use crate::value::{
     BuiltinValue, Cmd, DieTree, DisplayItem, EvalError, Keep, PoolTree, Value, dec_from_text,
 };
@@ -120,7 +120,7 @@ pub enum SKind {
     Atom(String),
     Unit,
     Ident(String),
-    Prelude(&'static str),
+    Prelude(Builtin),
     List(Vec<SExpr>),
     Dict(Vec<(SExpr, SExpr)>),
     Tuple(Vec<SExpr>),
@@ -363,7 +363,7 @@ fn attach(core: &CoreExpr, ctx: Ctx<'_>, inherited: Option<Span>) -> SExpr {
         CoreExpr::Atom(s) => SKind::Atom(s.clone()),
         CoreExpr::Unit => SKind::Unit,
         CoreExpr::Ident(s) => SKind::Ident(s.clone()),
-        CoreExpr::Prelude(s) => SKind::Prelude(s),
+        CoreExpr::Prelude(s) => SKind::Prelude(*s),
         CoreExpr::List(items) => {
             let ctxs: Vec<Ctx<'_>> = match ctx {
                 Some((Expr::List(aitems), sp))
@@ -653,7 +653,7 @@ impl<'f> Interp<'f> {
                 let f = self.eval(callee, env)?;
                 // Direct `roll(…)` is variadic (D32-19).
                 if let Value::Builtin(b) = &f
-                    && b.name == "roll"
+                    && b.builtin == Builtin::Roll
                     && b.args.is_empty()
                     && !args.is_empty()
                 {
@@ -699,16 +699,16 @@ impl<'f> Interp<'f> {
                     return Ok(v.clone());
                 }
                 // Unshadowed prelude reference (ambient).
-                if let Some(stat) = prelude::static_name(name) {
+                if let Some(builtin) = Builtin::from_name(name) {
                     return Ok(Value::Builtin(BuiltinValue {
-                        name: stat,
+                        builtin,
                         args: Vec::new(),
                     }));
                 }
                 Err(EvalError::internal(format!("unbound identifier `{name}`")))
             }
-            SKind::Prelude(name) => Ok(Value::Builtin(BuiltinValue {
-                name,
+            SKind::Prelude(builtin) => Ok(Value::Builtin(BuiltinValue {
+                builtin: *builtin,
                 args: Vec::new(),
             })),
             SKind::List(items) => {
@@ -795,8 +795,7 @@ impl<'f> Interp<'f> {
                     f = self.eval(&rc.body.clone(), &env)?;
                 }
                 Value::Builtin(b) => {
-                    let arity = prelude::arity_of(b.name)
-                        .ok_or_else(|| EvalError::internal("unknown builtin"))?;
+                    let arity = b.builtin.def().arity;
                     let have = b.args.len();
                     debug_assert!(have < arity, "a saturated builtin is dispatched eagerly");
                     let need = arity - have;
@@ -804,7 +803,7 @@ impl<'f> Interp<'f> {
                     if queue.len() < need {
                         all.extend(queue.drain(..));
                         return Ok(Value::Builtin(BuiltinValue {
-                            name: b.name,
+                            builtin: b.builtin,
                             args: all,
                         }));
                     }
@@ -812,7 +811,7 @@ impl<'f> Interp<'f> {
                         all.push(queue.pop_front().expect("need <= queue.len()"));
                     }
                     let literal = dm_literal && queue.is_empty();
-                    f = prelude::dispatch(self, b.name, all, literal, span)?;
+                    f = prelude::dispatch(self, b.builtin, all, literal, span)?;
                 }
                 other => {
                     return Err(EvalError::eval(
@@ -1175,7 +1174,7 @@ fn value_to_expr(v: &Value, ctx: &mut SerCtx) -> Result<Expr, EvalError> {
         Value::Pool(p) => pool_to_expr(p, ctx),
         Value::Closure(rc) => closure_to_expr(rc, ctx),
         Value::Builtin(b) => {
-            let base = Expr::Ident(b.name.to_owned());
+            let base = Expr::Ident(b.builtin.name().to_owned());
             if b.args.is_empty() {
                 Ok(base)
             } else {
@@ -1199,16 +1198,16 @@ fn num_expr(digits: &str) -> Expr {
     }
 }
 
-fn call1(name: &str, a: Expr) -> Expr {
+fn call1(b: Builtin, a: Expr) -> Expr {
     Expr::Call {
-        callee: Box::new(Expr::Ident(name.to_owned())),
+        callee: Box::new(Expr::Ident(b.name().to_owned())),
         args: vec![a],
     }
 }
 
-fn call2(name: &str, a: Expr, b: Expr) -> Expr {
+fn call2(f: Builtin, a: Expr, b: Expr) -> Expr {
     Expr::Call {
-        callee: Box::new(Expr::Ident(name.to_owned())),
+        callee: Box::new(Expr::Ident(f.name().to_owned())),
         args: vec![a, b],
     }
 }
@@ -1222,7 +1221,7 @@ fn die_tree_to_expr(t: &DieTree, ctx: &mut SerCtx) -> Result<Expr, EvalError> {
         }),
         DieTree::Const(v) => value_to_expr(v, ctx),
         DieTree::Dl { faces } => Ok(call1(
-            "dl",
+            Builtin::Dl,
             Expr::List(
                 faces
                     .iter()
@@ -1231,7 +1230,7 @@ fn die_tree_to_expr(t: &DieTree, ctx: &mut SerCtx) -> Result<Expr, EvalError> {
             ),
         )),
         DieTree::Dm { faces } => Ok(call1(
-            "dm",
+            Builtin::Dm,
             Expr::Dict(
                 faces
                     .iter()
@@ -1251,19 +1250,19 @@ fn die_tree_to_expr(t: &DieTree, ctx: &mut SerCtx) -> Result<Expr, EvalError> {
         DieTree::Neg(inner) => Ok(Expr::Neg(Box::new(die_tree_to_expr(inner, ctx)?))),
         DieTree::MinMax { op, lhs, rhs } => Ok(call2(
             match op {
-                crate::value::MinMaxOp::Min => "min",
-                crate::value::MinMaxOp::Max => "max",
+                crate::value::MinMaxOp::Min => Builtin::Min,
+                crate::value::MinMaxOp::Max => Builtin::Max,
             },
             die_tree_to_expr(lhs, ctx)?,
             die_tree_to_expr(rhs, ctx)?,
         )),
         DieTree::Explode { inner, depth } => Ok(call2(
-            "explode",
+            Builtin::Explode,
             die_tree_to_expr(inner, ctx)?,
             Expr::Num(depth.to_string()),
         )),
         DieTree::Reroll { inner, faces } => Ok(call2(
-            "reroll",
+            Builtin::Reroll,
             die_tree_to_expr(inner, ctx)?,
             Expr::List(
                 faces
@@ -1273,23 +1272,23 @@ fn die_tree_to_expr(t: &DieTree, ctx: &mut SerCtx) -> Result<Expr, EvalError> {
             ),
         )),
         DieTree::RerollFace { inner, face } => Ok(call2(
-            "r",
+            Builtin::R,
             die_tree_to_expr(inner, ctx)?,
             num_expr(&face.to_string()),
         )),
         DieTree::Label { word, inner } => Ok(call2(
-            "label",
+            Builtin::Label,
             die_tree_to_expr(inner, ctx)?,
             Expr::Atom(word.clone()),
         )),
-        DieTree::Sum { pool } => Ok(call1("sum", pool_to_expr(pool, ctx)?)),
+        DieTree::Sum { pool } => Ok(call1(Builtin::Sum, pool_to_expr(pool, ctx)?)),
         DieTree::Successes { pool, target } => Ok(call2(
-            "successes",
+            Builtin::Successes,
             pool_to_expr(pool, ctx)?,
             num_expr(&target.to_string()),
         )),
         DieTree::Evaluate { pool, init, func } => Ok(Expr::Call {
-            callee: Box::new(Expr::Ident("evaluate".to_owned())),
+            callee: Box::new(Expr::Ident(Builtin::Evaluate.name().to_owned())),
             args: vec![
                 pool_to_expr(pool, ctx)?,
                 value_to_expr(init, ctx)?,
@@ -1301,14 +1300,14 @@ fn die_tree_to_expr(t: &DieTree, ctx: &mut SerCtx) -> Result<Expr, EvalError> {
 
 fn pool_to_expr(p: &PoolTree, ctx: &mut SerCtx) -> Result<Expr, EvalError> {
     let mut expr = call2(
-        "pool",
+        Builtin::Pool,
         Expr::Num(p.count.to_string()),
         die_tree_to_expr(&p.die, ctx)?,
     );
     for k in &p.keep {
         expr = match k {
-            Keep::High(n) => call2("kh", expr, Expr::Num(n.to_string())),
-            Keep::Low(n) => call2("kl", expr, Expr::Num(n.to_string())),
+            Keep::High(n) => call2(Builtin::Kh, expr, Expr::Num(n.to_string())),
+            Keep::Low(n) => call2(Builtin::Kl, expr, Expr::Num(n.to_string())),
         };
     }
     Ok(expr)
@@ -1342,7 +1341,7 @@ fn closure_to_expr_inner(rc: &Rc<ClosureValue>, ctx: &mut SerCtx) -> Result<Expr
     for name in &free {
         if let Some(v) = env_lookup(&rc.env, name) {
             captures.push((name.clone(), v.clone()));
-        } else if prelude::static_name(name).is_none() {
+        } else if Builtin::from_name(name).is_none() {
             return Err(EvalError::internal(format!(
                 "unserializable free name `{name}`"
             )));
@@ -1357,13 +1356,13 @@ fn closure_to_expr_inner(rc: &Rc<ClosureValue>, ctx: &mut SerCtx) -> Result<Expr
     taken.extend(captures.iter().map(|(n, _)| n.clone()));
     let mut renames: HashMap<String, String> = HashMap::new();
     let rename_if_prelude = |name: &str, taken: &mut Vec<String>| -> String {
-        if prelude::static_name(name).is_none() {
+        if Builtin::from_name(name).is_none() {
             return name.to_owned();
         }
         let mut i = 1;
         loop {
             let candidate = format!("{name}_{i}");
-            if !taken.contains(&candidate) && prelude::static_name(&candidate).is_none() {
+            if !taken.contains(&candidate) && Builtin::from_name(&candidate).is_none() {
                 taken.push(candidate.clone());
                 return candidate;
             }
@@ -1528,7 +1527,7 @@ fn free_idents(e: &SExpr, bound: &mut Vec<String>, out: &mut Vec<String>) {
 fn all_idents(e: &SExpr, out: &mut Vec<String>) {
     match &e.kind {
         SKind::Ident(n) => out.push(n.clone()),
-        SKind::Prelude(n) => out.push((*n).to_owned()),
+        SKind::Prelude(b) => out.push(b.name().to_owned()),
         SKind::Let {
             pattern,
             value,
@@ -1601,7 +1600,7 @@ fn sexpr_to_expr(e: &SExpr, renames: &HashMap<String, String>, shadow: &mut Vec<
             }
             Expr::Ident(n.clone())
         }
-        SKind::Prelude(n) => Expr::Ident((*n).to_owned()),
+        SKind::Prelude(b) => Expr::Ident(b.name().to_owned()),
         SKind::Let {
             pattern,
             value,

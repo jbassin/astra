@@ -311,7 +311,7 @@ pub enum Value {
 /// arguments (currying over natives).
 #[derive(Debug, Clone)]
 pub struct BuiltinValue {
-    pub name: &'static str,
+    pub builtin: crate::prelude::Builtin,
     pub args: Vec<Value>,
 }
 
@@ -381,7 +381,7 @@ impl PartialEq for Value {
             (Value::Die(a), Value::Die(b)) => a == b,
             (Value::Pool(a), Value::Pool(b)) => a == b,
             (Value::Closure(a), Value::Closure(b)) => Rc::ptr_eq(a, b),
-            (Value::Builtin(a), Value::Builtin(b)) => a.name == b.name && a.args == b.args,
+            (Value::Builtin(a), Value::Builtin(b)) => a.builtin == b.builtin && a.args == b.args,
             _ => false,
         }
     }
@@ -414,7 +414,7 @@ impl Hash for Value {
             Value::Pool(p) => p.hash(state),
             Value::Closure(c) => (Rc::as_ptr(c) as usize).hash(state),
             Value::Builtin(b) => {
-                b.name.hash(state);
+                b.builtin.name().hash(state);
                 b.args.hash(state);
             }
         }
@@ -521,9 +521,11 @@ pub fn total_cmp(a: &Value, b: &Value) -> Ordering {
         (Value::Die(x), Value::Die(y)) => die_cmp(x, y),
         (Value::Pool(x), Value::Pool(y)) => pool_cmp(x, y),
         (Value::Closure(_), Value::Closure(_)) => Ordering::Equal,
-        (Value::Builtin(x), Value::Builtin(y)) => {
-            x.name.cmp(y.name).then_with(|| cmp_seq(&x.args, &y.args))
-        }
+        (Value::Builtin(x), Value::Builtin(y)) => x
+            .builtin
+            .name()
+            .cmp(y.builtin.name())
+            .then_with(|| cmp_seq(&x.args, &y.args)),
         _ => a.rank().cmp(&b.rank()),
     }
 }
@@ -818,7 +820,7 @@ mod tests {
     #[test]
     fn total_cmp_is_panic_free_on_functions() {
         let b = Value::Builtin(BuiltinValue {
-            name: "sum",
+            builtin: crate::prelude::Builtin::Sum,
             args: vec![],
         });
         assert_eq!(total_cmp(&b, &b), Ordering::Equal);

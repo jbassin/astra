@@ -712,8 +712,9 @@ weal-engine-build:
     wasm-bindgen --target nodejs --out-dir "$gen" target/wasm32-unknown-unknown/release/weal_engine.wasm
     wasm-opt -O2 -o "$gen/weal_engine_bg.wasm" "$gen/weal_engine_bg.wasm"
     printf '{\n  "type": "commonjs"\n}\n' > "$gen/package.json"
-    # The JSON contract's TS types (gen/weal_api.d.ts), generated from api.rs by ts-rs.
-    WEAL_WRITE_TS_BINDINGS=1 cargo test --lib --quiet ts_bindings_are_current
+    # The JSON contract's TS types (gen/weal_api.d.ts, from api.rs by ts-rs) and the builtin
+    # reference (gen/weal_builtins.json and the player guide's list, from the prelude registry).
+    WEAL_WRITE_TS_BINDINGS=1 cargo test --lib --quiet -- ts_bindings_are_current builtin_reference_is_current
     if strings -n 8 "$gen/weal_engine_bg.wasm" | grep -qF "$HOME"; then echo "FATAL: the wasm embeds $HOME (path remapping failed)" >&2; exit 1; fi
     tools/gen-stamp.sh write {{quote(weal_stamp)}}
     sha256sum "$gen"/weal_engine_bg.wasm "$gen"/weal_engine.js

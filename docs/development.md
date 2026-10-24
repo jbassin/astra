@@ -95,8 +95,9 @@ committed wasm in `libs/ts/weal-engine/gen/` with `just weal-engine-build`, neve
 jobs guard it ([ADR 0027](adr/0027-rust-ci-lane.md)), both in `just ci`: `weal-engine-rust` (fmt,
 clippy, tests; needs rustup on the host) and `weal-engine-hash-check`, which fails when `gen/` is
 stale against the Rust sources and needs no Rust (it is also in `just check`). The build also
-writes `gen/weal_api.d.ts`, the TS types of the engine's JSON results, generated from the Rust by
-`ts-rs`; a crate test fails when that file lags the Rust.
+writes `gen/weal_api.d.ts`, the TS types of the engine's JSON results (generated from the Rust by
+`ts-rs`), and `gen/weal_builtins.json` plus the weal-bot guide's built-in list (from the builtin
+registry); crate tests fail when they lag the Rust.
 See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
 
 ## Standing conventions

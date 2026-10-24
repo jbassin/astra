@@ -26,7 +26,7 @@
 //!   demanding a die/number-ish type (arithmetic/comparison operands, unary
 //!   negation, a `Die[_]`-demanding call argument, a `[label]`, min/max/roll
 //!   arguments, and the TOP-LEVEL result), the elaborated tree carries
-//!   `Prelude("sum")` applied to the pool. A `Pool[T ≠ Num]` in such a
+//!   `Prelude(Builtin::Sum)` applied to the pool. A `Pool[T ≠ Num]` in such a
 //!   position is the pinned targeted error.
 //! - **dm literal face order** (D32-4): `CoreExpr::Call.dm_literal_order` is
 //!   `true` exactly when the call is to the (unshadowed) prelude `dm` AND its
@@ -71,6 +71,7 @@
 
 use crate::ast::{BinOp, CmpOp, Expr, MatchPat, Pattern};
 use crate::lower::{Span, SpanTree};
+use crate::prelude::{BUILTINS, Builtin, Typing};
 use crate::types::{ArithConstraint, EquatableConstraint, EquatableSite, Scheme, Type};
 use std::collections::{BTreeSet, HashMap};
 
@@ -146,7 +147,7 @@ pub enum CoreExpr {
     /// A user-written identifier (resolved through the runtime env).
     Ident(String),
     /// A checker-inserted prelude reference — immune to user shadowing.
-    Prelude(&'static str),
+    Prelude(Builtin),
     List(Vec<CoreExpr>),
     /// Dict literal entries in SOURCE order (feeds dm face order).
     Dict(Vec<(CoreExpr, CoreExpr)>),
@@ -166,233 +167,13 @@ pub enum PreludeEntry {
     RollVariadic,
 }
 
-/// The D32-19 prelude type signatures.
+/// The D32-19 prelude type signatures, in registry order (derived from
+/// [`crate::prelude::BUILTINS`]).
 pub fn prelude_types() -> Vec<(&'static str, PreludeEntry)> {
-    let t = || Type::Var(0);
-    let s = || Type::Var(1);
-    let poolshape = |ret: Type| Type::arrows(vec![Type::pool(t()), Type::Num], ret);
-    let one = PreludeEntry::One;
-    let dnum = Type::die(Type::Num);
-    let minmax = || {
-        PreludeEntry::Overloaded(vec![
-            Scheme::mono(Type::arrows(vec![Type::Num, Type::Num], Type::Num)),
-            Scheme::mono(Type::arrows(
-                vec![Type::die(Type::Num), Type::die(Type::Num)],
-                Type::die(Type::Num),
-            )),
-            Scheme::mono(Type::arrows(
-                vec![Type::die(Type::Num), Type::Num],
-                Type::die(Type::Num),
-            )),
-            Scheme::mono(Type::arrows(
-                vec![Type::Num, Type::die(Type::Num)],
-                Type::die(Type::Num),
-            )),
-        ])
-    };
-    vec![
-        ("kh", one(Scheme::poly(vec![0], poolshape(Type::pool(t()))))),
-        ("kl", one(Scheme::poly(vec![0], poolshape(Type::pool(t()))))),
-        (
-            "sum",
-            one(Scheme::mono(Type::arrow(
-                Type::pool(Type::Num),
-                dnum.clone(),
-            ))),
-        ),
-        (
-            "pool",
-            one(Scheme::poly(
-                vec![0],
-                Type::arrows(vec![Type::Num, Type::die(t())], Type::pool(t())),
-            )),
-        ),
-        (
-            "dl",
-            one(Scheme::poly(
-                vec![0],
-                Type::arrow(Type::list(t()), Type::die(t())),
-            )),
-        ),
-        (
-            "dm",
-            one(Scheme {
-                vars: vec![0],
-                constraints: vec![EquatableConstraint {
-                    ty: t(),
-                    site: EquatableSite::DictKey,
-                }],
-                arith: Vec::new(),
-                ty: Type::arrow(Type::dict(t(), Type::Num), Type::die(t())),
-            }),
-        ),
-        (
-            "evaluate",
-            one(Scheme {
-                vars: vec![0, 1],
-                constraints: vec![EquatableConstraint {
-                    ty: s(),
-                    site: EquatableSite::EvaluatorState,
-                }],
-                arith: Vec::new(),
-                ty: Type::arrows(
-                    vec![
-                        Type::pool(t()),
-                        s(),
-                        Type::arrows(vec![s(), t(), Type::Num], s()),
-                    ],
-                    Type::die(s()),
-                ),
-            }),
-        ),
-        (
-            "label",
-            one(Scheme::poly(
-                vec![0],
-                Type::arrows(vec![Type::die(t()), Type::Atom], Type::die(t())),
-            )),
-        ),
-        (
-            "explode",
-            one(Scheme::mono(Type::arrows(
-                vec![dnum.clone(), Type::Num],
-                dnum.clone(),
-            ))),
-        ),
-        (
-            "e",
-            one(Scheme::mono(Type::arrows(
-                vec![dnum.clone(), Type::Num],
-                dnum.clone(),
-            ))),
-        ),
-        (
-            "reroll",
-            one(Scheme::poly(
-                vec![0],
-                Type::arrows(vec![Type::die(t()), Type::list(t())], Type::die(t())),
-            )),
-        ),
-        (
-            "r",
-            one(Scheme::mono(Type::arrows(
-                vec![dnum.clone(), Type::Num],
-                dnum.clone(),
-            ))),
-        ),
-        (
-            "successes",
-            one(Scheme::mono(Type::arrows(
-                vec![Type::pool(Type::Num), Type::Num],
-                dnum.clone(),
-            ))),
-        ),
-        // -- the list toolkit (2026-08-10 amendment: repeat/concat/map/filter/fold).
-        // Data-first argument order throughout, mirroring `evaluate(pool, init, fn)`.
-        (
-            "repeat",
-            one(Scheme::poly(
-                vec![0],
-                Type::arrows(vec![t(), Type::Num], Type::list(t())),
-            )),
-        ),
-        (
-            "concat",
-            one(Scheme::poly(
-                vec![0],
-                Type::arrows(vec![Type::list(t()), Type::list(t())], Type::list(t())),
-            )),
-        ),
-        (
-            "map",
-            one(Scheme::poly(
-                vec![0, 1],
-                Type::arrows(
-                    vec![Type::list(t()), Type::arrow(t(), s())],
-                    Type::list(s()),
-                ),
-            )),
-        ),
-        (
-            "filter",
-            one(Scheme::poly(
-                vec![0],
-                Type::arrows(
-                    vec![Type::list(t()), Type::arrow(t(), Type::bool())],
-                    Type::list(t()),
-                ),
-            )),
-        ),
-        (
-            "fold",
-            one(Scheme::poly(
-                vec![0, 1],
-                Type::arrows(
-                    vec![Type::list(t()), s(), Type::arrows(vec![s(), t()], s())],
-                    s(),
-                ),
-            )),
-        ),
-        (
-            "reduce",
-            one(Scheme::poly(
-                vec![0],
-                Type::arrows(
-                    vec![Type::list(t()), Type::arrows(vec![t(), t()], t())],
-                    t(),
-                ),
-            )),
-        ),
-        (
-            "len",
-            one(Scheme::poly(
-                vec![0],
-                Type::arrow(Type::list(t()), Type::Num),
-            )),
-        ),
-        ("min", minmax()),
-        ("max", minmax()),
-        ("dec", one(Scheme::mono(Type::arrow(Type::Num, Type::Dec)))),
-        (
-            "float",
-            PreludeEntry::Overloaded(vec![
-                Scheme::mono(Type::arrow(Type::Num, Type::Float)),
-                Scheme::mono(Type::arrow(Type::Dec, Type::Float)),
-            ]),
-        ),
-        ("num", one(Scheme::mono(Type::arrow(Type::Dec, Type::Num)))),
-        (
-            "round",
-            one(Scheme::mono(Type::arrow(Type::Dec, Type::Num))),
-        ),
-        (
-            "floor",
-            one(Scheme::mono(Type::arrow(Type::Dec, Type::Num))),
-        ),
-        ("ceil", one(Scheme::mono(Type::arrow(Type::Dec, Type::Num)))),
-        (
-            "abs",
-            PreludeEntry::Overloaded(vec![
-                Scheme::mono(Type::arrow(Type::Num, Type::Num)),
-                Scheme::mono(Type::arrow(Type::Dec, Type::Dec)),
-            ]),
-        ),
-        ("roll", PreludeEntry::RollVariadic),
-        (
-            "plot",
-            one(Scheme::poly(
-                vec![0],
-                Type::arrow(Type::die(t()), Type::Unit),
-            )),
-        ),
-        (
-            "save",
-            one(Scheme::poly(
-                vec![0],
-                Type::arrows(vec![Type::Atom, t()], Type::Unit),
-            )),
-        ),
-    ]
+    BUILTINS
+        .iter()
+        .map(|d| (d.name, d.prelude_entry()))
+        .collect()
 }
 
 /// Check + elaborate. `extra_env` = the saves' type schemes (name → scheme);
@@ -428,25 +209,18 @@ pub fn check_source(
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Origin {
-    Prelude,
+    Prelude(Builtin),
     Extra,
     Local,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum SpecialBuiltin {
-    Min,
-    Max,
-    FloatCast,
-    Abs,
-    Roll,
 }
 
 #[derive(Debug, Clone)]
 enum Binding {
     Mono(Type),
     Poly(Scheme),
-    Special(SpecialBuiltin),
+    /// A builtin whose direct calls the checker special-cases (`min`/`max`,
+    /// `float`/`abs`, `roll`: see [`Typing`]).
+    Special(Builtin),
 }
 
 struct Env {
@@ -456,21 +230,12 @@ struct Env {
 impl Env {
     fn base(extra: &[(String, Scheme)]) -> Env {
         let mut entries = Vec::new();
-        for (name, entry) in prelude_types() {
-            let binding = match entry {
-                PreludeEntry::One(s) => Binding::Poly(s),
-                PreludeEntry::Overloaded(_) | PreludeEntry::RollVariadic => {
-                    Binding::Special(match name {
-                        "min" => SpecialBuiltin::Min,
-                        "max" => SpecialBuiltin::Max,
-                        "float" => SpecialBuiltin::FloatCast,
-                        "abs" => SpecialBuiltin::Abs,
-                        "roll" => SpecialBuiltin::Roll,
-                        other => unreachable!("unmapped special builtin {other}"),
-                    })
-                }
+        for d in BUILTINS {
+            let binding = match d.typing {
+                Typing::Scheme(scheme) => Binding::Poly(scheme()),
+                Typing::MinMax(_) | Typing::Cast(_) | Typing::Roll => Binding::Special(d.builtin),
             };
-            entries.push((name.to_owned(), binding, Origin::Prelude));
+            entries.push((d.name.to_owned(), binding, Origin::Prelude(d.builtin)));
         }
         for (name, scheme) in extra {
             entries.push((name.clone(), Binding::Poly(scheme.clone()), Origin::Extra));
@@ -506,48 +271,6 @@ impl Env {
 
     fn truncate(&mut self, mark: usize) {
         self.entries.truncate(mark);
-    }
-}
-
-fn prelude_static_name(name: &str) -> Option<&'static str> {
-    prelude_types()
-        .into_iter()
-        .map(|(n, _)| n)
-        .find(|n| *n == name)
-}
-
-fn primary_scheme(sb: SpecialBuiltin) -> Scheme {
-    match sb {
-        SpecialBuiltin::Min | SpecialBuiltin::Max => {
-            Scheme::mono(Type::arrows(vec![Type::Num, Type::Num], Type::Num))
-        }
-        SpecialBuiltin::FloatCast => Scheme::mono(Type::arrow(Type::Num, Type::Float)),
-        SpecialBuiltin::Abs => Scheme::mono(Type::arrow(Type::Num, Type::Num)),
-        SpecialBuiltin::Roll => Scheme {
-            vars: vec![0],
-            constraints: vec![EquatableConstraint {
-                ty: Type::Var(0),
-                site: EquatableSite::RollArgument,
-            }],
-            arith: Vec::new(),
-            ty: Type::arrow(Type::Var(0), Type::Unit),
-        },
-    }
-}
-
-fn special_schemes(sb: SpecialBuiltin) -> Vec<Scheme> {
-    match sb {
-        SpecialBuiltin::Min | SpecialBuiltin::Max => match prelude_types()
-            .into_iter()
-            .find(|(n, _)| *n == "min")
-            .map(|(_, e)| e)
-        {
-            Some(PreludeEntry::Overloaded(v)) => v,
-            _ => vec![primary_scheme(sb)],
-        },
-        SpecialBuiltin::FloatCast | SpecialBuiltin::Abs | SpecialBuiltin::Roll => {
-            vec![primary_scheme(sb)]
-        }
     }
 }
 
@@ -970,7 +693,7 @@ impl Checker {
 
     fn sum_call(inner: CoreExpr) -> CoreExpr {
         CoreExpr::Call {
-            callee: Box::new(CoreExpr::Prelude("sum")),
+            callee: Box::new(CoreExpr::Prelude(Builtin::Sum)),
             args: vec![inner],
             dm_literal_order: false,
         }
@@ -1021,7 +744,7 @@ impl Checker {
                     Some((Binding::Mono(t), _)) => t,
                     Some((Binding::Poly(s), _)) => self.instantiate(&s, sp.span),
                     Some((Binding::Special(sb), _)) => {
-                        self.instantiate(&primary_scheme(sb), sp.span)
+                        self.instantiate(&sb.def().primary_scheme(), sp.span)
                     }
                     None => {
                         return Err(TypeError {
@@ -1491,12 +1214,12 @@ impl Checker {
         if let Expr::Ident(name) = callee
             && let Some((Binding::Special(sb), _)) = env.lookup(name)
         {
-            match sb {
-                SpecialBuiltin::Roll => return self.call_roll(name, args, sp, env),
-                SpecialBuiltin::Min | SpecialBuiltin::Max if args.len() == 2 => {
+            match sb.def().typing {
+                Typing::Roll => return self.call_roll(name, args, sp, env),
+                Typing::MinMax(_) if args.len() == 2 => {
                     return self.call_min_max(name, args, sp, env);
                 }
-                SpecialBuiltin::FloatCast | SpecialBuiltin::Abs if args.len() == 1 => {
+                Typing::Cast(_) if args.len() == 1 => {
                     return self.call_cast(sb, name, args, sp, env);
                 }
                 _ => {} // wrong arity: fall through to the primary scheme
@@ -1504,7 +1227,7 @@ impl Checker {
         }
         // D32-4 dm literal-order metadata (syntactic rule).
         let dm_literal_order = matches!(callee, Expr::Ident(n) if n == "dm")
-            && matches!(env.lookup("dm"), Some((_, Origin::Prelude)))
+            && matches!(env.lookup("dm"), Some((_, Origin::Prelude(Builtin::Dm))))
             && matches!(args.first(), Some(Expr::Dict(_)));
         let (ccore, mut fty) = self.infer(callee, &sp.children[0], env)?;
         if args.is_empty() {
@@ -1664,7 +1387,7 @@ impl Checker {
 
     fn call_cast(
         &mut self,
-        sb: SpecialBuiltin,
+        sb: Builtin,
         name: &str,
         args: &[Expr],
         sp: &SpanTree,
@@ -1677,9 +1400,9 @@ impl Checker {
             self.subsume(&aty, &Type::Num, asp.span)?;
         }
         let ty = match (sb, is_dec) {
-            (SpecialBuiltin::FloatCast, _) => Type::Float,
-            (SpecialBuiltin::Abs, true) => Type::Dec,
-            (SpecialBuiltin::Abs, false) => Type::Num,
+            (Builtin::Float, _) => Type::Float,
+            (Builtin::Abs, true) => Type::Dec,
+            (Builtin::Abs, false) => Type::Num,
             _ => unreachable!("call_cast is float/abs only"),
         };
         Ok((
@@ -1728,20 +1451,14 @@ impl Checker {
                 span,
             })?;
             let (schemes, callee) = match env.lookup_nonlocal(&sfx.name) {
-                Some((Binding::Poly(s), Origin::Prelude)) => {
+                Some((Binding::Poly(s), Origin::Prelude(b))) => {
                     // Canonicalize the `e` alias to `explode` (D32-19).
-                    let canonical = if sfx.name == "e" {
-                        "explode"
-                    } else {
-                        sfx.name.as_str()
-                    };
-                    let stat = prelude_static_name(canonical)
-                        .expect("prelude binding implies a static name");
-                    (vec![s], CoreExpr::Prelude(stat))
+                    let canonical = b.def().suffix_as.unwrap_or(b);
+                    (vec![s], CoreExpr::Prelude(canonical))
                 }
                 Some((Binding::Poly(s), _)) => (vec![s], CoreExpr::Ident(sfx.name.clone())),
                 Some((Binding::Special(sb), _)) => {
-                    (special_schemes(sb), CoreExpr::Ident(sfx.name.clone()))
+                    (sb.def().suffix_schemes(), CoreExpr::Ident(sfx.name.clone()))
                 }
                 Some((Binding::Mono(t), _)) => {
                     (vec![Scheme::mono(t)], CoreExpr::Ident(sfx.name.clone()))
@@ -1826,7 +1543,7 @@ impl Checker {
         self.merge(&die_ty, &Type::die(elem.clone()), JoinMode::Join, sp.span)?;
         let mut pool_ty = Type::pool(elem);
         let mut pool_core = CoreExpr::Call {
-            callee: Box::new(CoreExpr::Prelude("pool")),
+            callee: Box::new(CoreExpr::Prelude(Builtin::Pool)),
             args: vec![CoreExpr::Num(n), die_core],
             dm_literal_order: false,
         };
