@@ -53,8 +53,9 @@ test: (_each "test" "py-test,ts-test")
 # goldens are pinned to the node:24-slim container's Chromium and fonts (a host browser
 # renders different pixels); it stays CI-only. weal-engine-rust needs rustup on the host (it
 # installs the crate's pinned toolchain on first use).
+# pg-test needs Docker on the host (it starts a throwaway Postgres).
 # Run everything CI runs, locally (all but the container-only vellum render goldens).
-ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard,weal-engine-rust,weal-engine-hash-check,assay-store-check"))
+ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test"))
 
 # `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
 # they run as Dagster assets; test them with `uv run pytest apps/<domain>/py`.
@@ -169,6 +170,30 @@ ts-build:
 # CI job corpus-validate: the akasha corpus gate over the checked-in fixture wiki.
 corpus-validate:
     node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/vellum-lang/scripts/validate-corpus.ts --dir fixtures/astra-data/akasha/content
+
+# The `*.pg.test.ts` suites (the migration runner and the orator and weal stores) against a
+# real Postgres. CI sets ASTRA_TEST_DATABASE_URL to its `services: postgres` container. Without
+# it, this starts a throwaway postgres:16-alpine (the image compose runs) on a free loopback
+# port and removes it afterwards. Never set the variable to a live database: the suites create
+# and drop databases on that server.
+# CI job pg-test: the Postgres stores and the migration runner against a real Postgres.
+pg-test:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ -z "${ASTRA_TEST_DATABASE_URL:-}" ]; then
+      name="astra-pg-test-$$"
+      docker run --rm -d --name "$name" -e POSTGRES_PASSWORD=test \
+        -p 127.0.0.1::5432 postgres:16-alpine >/dev/null
+      trap 'docker rm -f "$name" >/dev/null' EXIT
+      # pg_isready over TCP: the image's init-time server listens on the socket only.
+      for _ in $(seq 60); do
+        docker exec "$name" pg_isready -h 127.0.0.1 -q && break
+        sleep 0.5
+      done
+      port=$(docker port "$name" 5432/tcp | head -n1 | sed 's/.*://')
+      export ASTRA_TEST_DATABASE_URL="postgres://postgres:test@127.0.0.1:$port/postgres"
+    fi
+    pnpm exec vitest run pg.test
 
 # An empty `from` lints only HEAD (CI's fallback when a push has no usable base).
 # CI job commitlint: Conventional Commits over from..to.

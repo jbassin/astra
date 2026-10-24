@@ -1,0 +1,25 @@
+{
+  "name": "@astra/pg-migrate",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "module": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing": "./src/testing.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "echo '@astra/pg-migrate: no build step'"
+  },
+  "dependencies": {
+    "@astra/observe": "workspace:*",
+    "@opentelemetry/api": "catalog:",
+    "postgres": "catalog:"
+  },
+  "devDependencies": {
+    "vitest": "catalog:"
+  }
+}
