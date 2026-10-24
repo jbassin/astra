@@ -1,3 +1,6 @@
+// The browser-safe subpath: this module runs in the editor (client) bundle.
+import { kdlQuote } from "@astra/config/kdl-quote";
+
 import { type Change, CURRENT_FACTION_HEXES, type Layer, type Region } from "./layers";
 
 // The editor authors region ops, three Skein ops, and the claim op. The other
@@ -79,8 +82,8 @@ interface SerializableLayer {
 // the op. parse side lives in scripts/build-content.ts (parseLayer).
 export function serializeLayer(layer: SerializableLayer): string {
   const lines: string[] = [
-    `timestamp ${kdlString(layer.timestamp)}`,
-    `message ${kdlString(layer.message)}`,
+    `timestamp ${kdlQuote(layer.timestamp)}`,
+    `message ${kdlQuote(layer.message)}`,
   ];
   for (const c of layer.changes) {
     lines.push("");
@@ -111,53 +114,53 @@ function serializeChange(c: Change): string[] {
     case "add":
       return kdlNode(
         "add",
-        [kdlString(c.slug)],
+        [kdlQuote(c.slug)],
         [
-          ["name", kdlString(c.name)],
-          ["faction", kdlString(c.faction)],
+          ["name", kdlQuote(c.name)],
+          ["faction", kdlQuote(c.faction)],
         ],
         hexChildren(c.hexes),
       );
     case "update": {
       const props: Array<[string, string]> = [];
-      if (c.name !== undefined) props.push(["name", kdlString(c.name)]);
-      if (c.faction !== undefined) props.push(["faction", kdlString(c.faction)]);
-      return kdlNode("update", [kdlString(c.slug)], props, c.hexes ? hexChildren(c.hexes) : []);
+      if (c.name !== undefined) props.push(["name", kdlQuote(c.name)]);
+      if (c.faction !== undefined) props.push(["faction", kdlQuote(c.faction)]);
+      return kdlNode("update", [kdlQuote(c.slug)], props, c.hexes ? hexChildren(c.hexes) : []);
     }
     case "remove":
-      return kdlNode("remove", [kdlString(c.slug)], []);
+      return kdlNode("remove", [kdlQuote(c.slug)], []);
     case "skein-add":
       return kdlNode(
         "skein-add",
-        [kdlString(c.slug)],
+        [kdlQuote(c.slug)],
         [
-          ["name", kdlString(c.name)],
-          ["faction", kdlString(c.faction)],
-          ["symbol", kdlString(c.symbol)],
+          ["name", kdlQuote(c.name)],
+          ["faction", kdlQuote(c.faction)],
+          ["symbol", kdlQuote(c.symbol)],
         ],
         [`hex ${c.hex[0]} ${c.hex[1]}`],
       );
     case "skein-update": {
       const props: Array<[string, string]> = [];
-      if (c.name !== undefined) props.push(["name", kdlString(c.name)]);
-      if (c.faction !== undefined) props.push(["faction", kdlString(c.faction)]);
-      if (c.symbol !== undefined) props.push(["symbol", kdlString(c.symbol)]);
+      if (c.name !== undefined) props.push(["name", kdlQuote(c.name)]);
+      if (c.faction !== undefined) props.push(["faction", kdlQuote(c.faction)]);
+      if (c.symbol !== undefined) props.push(["symbol", kdlQuote(c.symbol)]);
       return kdlNode(
         "skein-update",
-        [kdlString(c.slug)],
+        [kdlQuote(c.slug)],
         props,
         c.hex ? [`hex ${c.hex[0]} ${c.hex[1]}`] : [],
       );
     }
     case "skein-remove":
-      return kdlNode("skein-remove", [kdlString(c.slug)], []);
+      return kdlNode("skein-remove", [kdlQuote(c.slug)], []);
     case "skein-connect":
       return kdlNode(
         "skein-connect",
         [],
         [
-          ["from", kdlString(c.from)],
-          ["to", kdlString(c.to)],
+          ["from", kdlQuote(c.from)],
+          ["to", kdlQuote(c.to)],
         ],
       );
     case "skein-disconnect":
@@ -165,42 +168,35 @@ function serializeChange(c: Change): string[] {
         "skein-disconnect",
         [],
         [
-          ["from", kdlString(c.from)],
-          ["to", kdlString(c.to)],
+          ["from", kdlQuote(c.from)],
+          ["to", kdlQuote(c.to)],
         ],
       );
     case "claim":
       return kdlNode(
         "claim",
         [],
-        [["faction", c.faction === null ? "#null" : kdlString(c.faction)]],
+        [["faction", c.faction === null ? "#null" : kdlQuote(c.faction)]],
         hexChildren(c.hexes),
       );
     case "banner-form": {
       const props: Array<[string, string]> = [
-        ["name", kdlString(c.name)],
-        ["color", kdlString(c.color)],
+        ["name", kdlQuote(c.name)],
+        ["color", kdlQuote(c.color)],
       ];
-      if (c.symbol !== undefined && c.symbol !== null) props.push(["symbol", kdlString(c.symbol)]);
+      if (c.symbol !== undefined && c.symbol !== null) props.push(["symbol", kdlQuote(c.symbol)]);
       return kdlNode(
         "banner-form",
-        [kdlString(c.slug)],
+        [kdlQuote(c.slug)],
         props,
-        c.members.map((m) => `member ${kdlString(m)}`),
+        c.members.map((m) => `member ${kdlQuote(m)}`),
       );
     }
     case "banner-dissolve":
-      return kdlNode("banner-dissolve", [kdlString(c.slug)], []);
+      return kdlNode("banner-dissolve", [kdlQuote(c.slug)], []);
     case "tithe":
       return kdlNode("tithe", [], []);
   }
-}
-
-// A double-quoted KDL string. Escapes backslash, quote, and newline — the only
-// chars that occur in our values (timestamps, slugs, names, messages, body
-// prose). KDL v2 understands `\n` inside a quoted string.
-function kdlString(s: string): string {
-  return `"${s.replaceAll("\\", "\\\\").replaceAll('"', '\\"').replaceAll("\n", "\\n")}"`;
 }
 
 export type { Layer };
