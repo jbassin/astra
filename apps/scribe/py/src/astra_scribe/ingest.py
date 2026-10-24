@@ -1,9 +1,9 @@
 """Craig zip ingest — integrity gate, extract, roster filter.
 
 A Craig drop is a `.zip` named `<guild>_<channel>_<date>_<id>` holding per-speaker
-`.aac` tracks named `<idx>-<discordid>`. Ingest verifies the archive (`unzip -t`,
-FUSE-safe), extracts it, and keeps only tracks whose user-id is a known player
-(the roster, from ontology-being).
+`.aac` tracks named `<idx>-<discordid>` (both parsed by `astra_sessions.recordings`).
+Ingest verifies the archive (`unzip -t`, FUSE-safe), extracts it, and keeps only tracks
+whose user-id is a known player (the roster, from ontology-being).
 """
 
 from __future__ import annotations
@@ -12,13 +12,7 @@ import subprocess
 from pathlib import Path
 from zipfile import ZipFile
 
-from .naming import session_date
 from .roster import Roster
-
-
-def session_id(zip_path: Path | str) -> str:
-    """The session/date partition key for a Craig zip (its stem's date field)."""
-    return session_date(Path(zip_path).stem)
 
 
 def verify_zip(zip_path: Path | str) -> None:

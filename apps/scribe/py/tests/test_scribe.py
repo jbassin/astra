@@ -15,7 +15,6 @@ from zipfile import ZipFile
 
 import pytest
 from astra_scribe.audio import chunk_args, merge_args, parse_silences, silencedetect_args
-from astra_scribe.naming import session_date, track_index, track_user
 from astra_scribe.roster import Roster
 from astra_scribe.sensor import MIN_ZIP_BYTES, new_sessions
 from astra_scribe.session import extract_session_tracks
@@ -26,17 +25,7 @@ from astra_scribe.vad import chunk_spans, voiced_spans
 FIXTURE = Path(__file__).parent / "fixtures" / "sample-script.json"
 
 
-# ── Craig filename parsing (gate D) ────────────────────────────────────────
-def test_track_and_session_naming() -> None:
-    assert track_user("1-miked6187") == "miked6187"
-    assert track_index("1-miked6187") == "0"
-    assert track_user("5-tanner_kn") == "tanner"
-    assert track_index("5-tanner_kn") == "kn"
-    assert track_user("not-a-track-stem") == ""  # 3 dash-fields → not a track
-    assert session_date("guild_channel_2025-4-17_abc") == "2025-4-17"
-    assert session_date("malformed") == ""
-
-
+# Craig filename parsing (gate D) is tested in libs/py/sessions (astra_sessions.recordings).
 def test_roster_filter() -> None:
     roster = Roster({"miked6187", "tanner"})
     assert roster.is_player("1-miked6187")

@@ -8,6 +8,7 @@ dependencies = [
     "astra-lexicon",
     "astra-llm",
     "astra-observe",
+    "astra-sessions",
     "astra-ontology",
     "astra-ontology-being",
     "dagster",

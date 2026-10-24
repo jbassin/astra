@@ -17,9 +17,9 @@ from astra_heartwood.agent.sessions import (
     read_transcript,
     transcript_path,
 )
-from astra_linguist.chronicle import date_key
 from astra_ontology import faerrin_campaign_slugs, load_being
 from astra_ontology_being import BEING_KDL_PATH
+from astra_sessions import date_key
 
 KEPT = {
     "2026-6-8": "through-a-song-darkly",

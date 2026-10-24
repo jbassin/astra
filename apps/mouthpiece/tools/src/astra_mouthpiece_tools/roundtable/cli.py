@@ -122,24 +122,25 @@ def _cmd_script(args: argparse.Namespace) -> int:
 def _cmd_render(args: argparse.Namespace) -> int:
     # The Dagster module owns the provider/voice resolution; reuse it rather than fork it.
     from astra_mouthpiece.assemble import assemble_episode
-    from astra_mouthpiece.assets import _atomic_write, _provider, _voices
+    from astra_mouthpiece.assets import _provider, _voices
     from astra_mouthpiece.tts.synth import synthesize_script
+    from astra_sessions import atomic_write_text
 
     run = Path(args.run_dir)
     script = Script.model_validate_json((run / "script.json").read_text(encoding="utf-8"))
     sid = script.session_id
     out = episodes_root() / sid
     out.mkdir(parents=True, exist_ok=True)
-    _atomic_write(out / "script.json", script.model_dump_json(indent=2))
+    atomic_write_text(out / "script.json", script.model_dump_json(indent=2))
     # Not a SessionDigest (no clean pass, no stats): the catalog reads only these two keys,
     # the same shape as the earlier recap capstones.
-    _atomic_write(out / "digest.json", json.dumps({"session_id": sid, "synopsis": SYNOPSIS}))
+    atomic_write_text(out / "digest.json", json.dumps({"session_id": sid, "synopsis": SYNOPSIS}))
     manifest = synthesize_script(
         script, provider=_provider(), voices=_voices(load_hosts()), out_dir=out
     )
-    _atomic_write(out / "manifest.json", manifest.model_dump_json(indent=2))
+    atomic_write_text(out / "manifest.json", manifest.model_dump_json(indent=2))
     episode, _transcript = assemble_episode(manifest, script, out_dir=out)
-    _atomic_write(episodes_root() / ".last-rendered", sid)
+    atomic_write_text(episodes_root() / ".last-rendered", sid)
     print(f"rendered {episode} ({len(manifest.clips)} clips, {manifest.mode})")
     return 0
 

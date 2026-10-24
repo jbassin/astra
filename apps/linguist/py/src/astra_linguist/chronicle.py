@@ -24,6 +24,7 @@ from astra_config import load_config
 from astra_ontology import load_being
 from astra_ontology.models import Being
 from astra_ontology_being import BEING_KDL_PATH
+from astra_sessions import date_key, find_transcript, parse_transcript_name
 from pydantic import BaseModel, Field
 
 _DATA = load_config().data
@@ -107,12 +108,6 @@ class Chronicle(BaseModel):
     # asset skip the GLM grouping calls when nothing has changed (C9). Not content;
     # the frontend ignores it.
     inputs_hash: str | None = None
-
-
-def date_key(date: str) -> tuple[int, int, int]:
-    """Sort key for the non-zero-padded `YYYY-M-D` session dates (string sort is wrong)."""
-    year, month, day = (int(part) for part in date.split("-"))
-    return (year, month, day)
 
 
 def load_episode_entries(episodes_dir: Path = EPISODES_DIR) -> list[EpisodeEntry]:
@@ -232,10 +227,11 @@ def show_for_date(
     if date in EXCLUDED_DATES:
         return None
     shows = shows if shows is not None else show_index()
-    matches = sorted(transcript_dir.glob(f"*.{date}.txt"))
-    if not matches:
+    path = find_transcript(date, transcript_dir)
+    if path is None:
         return None
-    suffix = f".{date}.txt"
-    stem = matches[0].name[: -len(suffix)]  # "<prefix>.<slug>"
-    slug = stem.split(".", 1)[1] if "." in stem else stem
+    try:
+        slug = parse_transcript_name(path).slug
+    except ValueError:  # `date` is not a YYYY-M-D session key
+        return None
     return shows.get(slug)

@@ -18,6 +18,7 @@ import dagster as dg
 from astra_config import load_config
 from astra_linguist.chronicle import TRANSCRIPT_DIR
 from astra_observe import get_logger, get_meter, get_tracer
+from astra_sessions import transcript_dates
 
 from . import requests as rq
 from .agent.sessions import faerrin_session
@@ -149,7 +150,7 @@ def faerrin_dates(existing: set[str], transcript_dir: Path | None = None) -> lis
     """Faerrin-world transcript dates not yet partitioned ("new" = not a partition yet, so
     a linguist rewrite of an existing transcript never re-triggers)."""
     transcript_dir = transcript_dir if transcript_dir is not None else TRANSCRIPT_DIR
-    dates = {p.name.rsplit(".", 2)[1] for p in transcript_dir.glob("*.txt")}
+    dates = transcript_dates(transcript_dir)
     return sorted(
         d for d in dates - existing if faerrin_session(d, transcript_dir=transcript_dir) is not None
     )

@@ -43,7 +43,7 @@ reads prior episodes as continuity.
   (`…/s<N>/<date>`). Josh accepted this; do not "fix" it without a new decision.
 - **Season grouping returns boundaries** (`title`, `arc_summary`, `start_date`), not episode
   lists; a 33-episode list truncated mid-JSON. `_seasons_from_plan` derives the partition.
-- **Dates are not zero-padded.** Order episodes with `date_key` (an integer tuple).
+- **Dates are not zero-padded.** Order episodes with `astra_sessions.date_key` (an integer tuple).
 - **Structured output can parse and still fail the schema** (GLM returned a list as a JSON
   string). `call_structured` retries a `ValidationError` three times, then raises.
 - **Old `*.candidates.json` files** from the deleted correction loop (ADR 0021) still sit in

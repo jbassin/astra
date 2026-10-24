@@ -25,8 +25,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
 
-from astra_linguist.chronicle import date_key
 from astra_observe import get_logger
+from astra_sessions import atomic_write_text, date_key
 from pydantic import BaseModel, ConfigDict, Field
 
 from .agent import ledger
@@ -112,12 +112,6 @@ def _now() -> str:
     return datetime.now(UTC).isoformat(timespec="seconds")
 
 
-def _atomic_write(path: Path, text: str) -> None:
-    tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(text, encoding="utf-8")
-    tmp.replace(path)
-
-
 def request_path(root: Path, date: str) -> Path:
     return root / f"{date}{REQUEST_SUFFIX}"
 
@@ -133,7 +127,7 @@ def file_request(root: Path, date: str, *, dagster_run_id: str | None = None) ->
     req = Request(
         request_id=uuid.uuid4().hex, date=date, requested_at=_now(), dagster_run_id=dagster_run_id
     )
-    _atomic_write(request_path(root, date), req.model_dump_json(indent=2, by_alias=True))
+    atomic_write_text(request_path(root, date), req.model_dump_json(indent=2, by_alias=True))
     return req
 
 
@@ -147,7 +141,9 @@ def read_result(root: Path, date: str, request_id: str) -> Result | None:
 
 
 def write_result(root: Path, result: Result) -> None:
-    _atomic_write(result_path(root, result.date), result.model_dump_json(indent=2, by_alias=True))
+    atomic_write_text(
+        result_path(root, result.date), result.model_dump_json(indent=2, by_alias=True)
+    )
 
 
 def pending(root: Path) -> list[Request]:

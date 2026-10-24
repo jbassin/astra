@@ -24,6 +24,7 @@ from astra_config import SecretUnsetError
 from astra_linguist.chronicle import recent_prior_entries, season_for, show_for_date
 from astra_llm import LiteLLMClient
 from astra_observe import get_logger, get_meter, get_tracer
+from astra_sessions import atomic_write_text, parse_transcript_name
 
 from . import clean, linguist_io
 from .assemble import assemble_episode
@@ -89,13 +90,6 @@ def _session_dir(key: str) -> Path:
     return d
 
 
-def _atomic_write(path: Path, text: str) -> None:
-    """Write `.tmp`→rename so an output only appears whole (a partition = done)."""
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(text, encoding="utf-8")
-    tmp.replace(path)
-
-
 def _provider() -> TTSProvider:
     """The configured TTS backend (`mouthpiece.tts-provider`): ElevenLabs (live; model =
     `elevenlabs-model`) or the offline mock. Never a silent fallback to the mock — a
@@ -148,10 +142,10 @@ def session_digest(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
         tpath = linguist_io.transcript_for(date)
         if tpath is None:
             raise FileNotFoundError(f"no linguist transcript for session {date}")
-        session_id, _arc, _ = linguist_io.parse_filename(tpath)
+        session_id = parse_transcript_name(tpath).session_id
         turns = linguist_io.parse_canonical_transcript(tpath.read_text(encoding="utf-8"))
         digest = clean.clean_session(LiteLLMClient(), session_id, turns, model=_llm_model())
-        _atomic_write(_session_dir(date) / "digest.json", digest.model_dump_json(indent=2))
+        atomic_write_text(_session_dir(date) / "digest.json", digest.model_dump_json(indent=2))
         stats = digest.stats
         span.set_attribute("mouthpiece.lines", stats.lines)
         span.set_attribute("mouthpiece.kept_lines", stats.kept_lines)
@@ -243,7 +237,7 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
         span.set_attribute("mouthpiece.continuity_episodes", len(prior))
         span.set_attribute("mouthpiece.continuity_chars", len(continuity_block))
         span.set_attribute("mouthpiece.cleaned_lines", len(cleaned_turns))
-        _atomic_write(_session_dir(key) / "script.json", script.model_dump_json(indent=2))
+        atomic_write_text(_session_dir(key) / "script.json", script.model_dump_json(indent=2))
         span.set_attribute("mouthpiece.turns", len(script.turns))
         _log.info("mouthpiece scripted %s → %d turns (%s)", key, len(script.turns), script.title)
         return dg.MaterializeResult(metadata={"turns": len(script.turns), "title": script.title})
@@ -273,7 +267,7 @@ def session_audio_clips(context: dg.AssetExecutionContext) -> dg.MaterializeResu
             # chunk before the bad one, then hit the same rejection — fail once, loudly.
             span.record_exception(err)
             raise dg.Failure(description=str(err), allow_retries=False) from err
-        _atomic_write(_session_dir(key) / "manifest.json", manifest.model_dump_json(indent=2))
+        atomic_write_text(_session_dir(key) / "manifest.json", manifest.model_dump_json(indent=2))
         span.set_attribute("mouthpiece.clips", len(manifest.clips))
         span.set_attribute("mouthpiece.mode", manifest.mode)
         _log.info(
@@ -296,7 +290,7 @@ def session_episode(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
         # Publish sentinel: a flat, gitignored marker at the episodes root, bind-mounted to
         # the host, where the linguist-commit.path unit watches it (systemd path units are
         # not recursive, so a write inside the session dir can't trigger anything itself).
-        _atomic_write(_out_root() / ".last-rendered", key)
+        atomic_write_text(_out_root() / ".last-rendered", key)
         _episodes_counter.add(1)
         _log.info("mouthpiece produced episode %s: %s", key, episode.name)
         return dg.MaterializeResult(

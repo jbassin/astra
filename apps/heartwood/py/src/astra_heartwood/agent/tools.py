@@ -24,28 +24,23 @@ from typing import Any
 
 from astra_akasha_backend.corpus import Page, load_corpus
 from astra_akasha_backend.crossref import index_pages, resolve_corpus, resolve_target
-from astra_linguist.chronicle import TRANSCRIPT_DIR, date_key
-from astra_llm.rlm import text_matcher as _matcher
+from astra_linguist.chronicle import TRANSCRIPT_DIR
 from astra_ontology import Resolution
 from astra_ontology.models import Being
 from astra_ontology_entity import resolve
+from astra_sessions import date_key, iso_date
+from astra_sessions.tools import SessionToolsMixin
 
-from .dates import iso_date
 from .sessions import faerrin_session, ingestible_dates, read_transcript
 from .validate import Validator
 from .workspace import PAGE_SUFFIX, Workspace, check_path_key
 
-#: Cap on search results (both wiki and transcript searches).
-MAX_RESULTS = 200
-#: How many ``resolve_name`` candidates to surface.
-MAX_CANDIDATES = 5
 #: Pages the agent may read but never write, move or delete. The Timeline is kept by hand
 #: (stakeholder call 2026-10-11, after the first backfill turned it into a session log).
 PROTECTED_PAGES = frozenset({"Timeline"})
 
 _FRONTMATTER = re.compile(r"\A---[ \t]*\n(.*?)^---[ \t]*$\n?", re.S | re.M)
 _DATE_LINE = re.compile(r"^date:[ \t]*(.*?)[ \t]*$", re.M)
-_TRANSCRIPT_LINE = re.compile(r"^(\d+)\t([^:]*):[ \t]?(.*)$")
 #: Naive corpus dates are read in the campaign's zone (matches ``iso_date``'s -04:00).
 _DEFAULT_OFFSET = datetime.fromisoformat("2000-01-01T00:00:00-04:00").tzinfo
 
@@ -132,7 +127,7 @@ def _link_text(target: str, heading: str | None, label: str | None) -> str:
     return f"[[{target}{head}|{label}]]" if label else f"[[{target}{head}]]"
 
 
-class HeartwoodTools:
+class HeartwoodTools(SessionToolsMixin):
     """The tool implementations; ``make_tools`` exposes the bound methods.
 
     ``sessions`` maps each permitted date (≤ target, faerrin, not excluded) to its
@@ -262,16 +257,8 @@ class HeartwoodTools:
         """Case-insensitive search of every page line; regex=False matches `pattern` literally.
         Returns up to 200 [{'path', 'line' (1-based int), 'text'}]. Raises ValueError on an
         empty pattern or invalid regex."""
-        match = _matcher(pattern, regex)
-        hits: list[dict[str, Any]] = []
-        for path in self.ws.pages():
-            text = self.ws.file(path).read_text(encoding="utf-8")
-            for n, line in enumerate(text.splitlines(), start=1):
-                if match(line):
-                    hits.append({"path": path, "line": n, "text": line})
-                    if len(hits) >= MAX_RESULTS:
-                        return hits
-        return hits
+        pages = ((p, self.ws.file(p).read_text(encoding="utf-8")) for p in self.ws.pages())
+        return self._search_pages(pages, pattern, regex)
 
     def write_page(self, path: str, text: str) -> str:
         """Create or replace page `path` with vellum `text` (parent folders are created; the
@@ -362,27 +349,12 @@ class HeartwoodTools:
         first; regex=False matches `pattern` literally. Returns up to 200 [{'date', 'line'
         (int line number), 'speaker', 'text'}]. Raises ValueError on an empty pattern or
         invalid regex."""
-        match = _matcher(pattern, regex)
-        hits: list[dict[str, Any]] = []
-        for date in self.sessions:
-            text = read_transcript(date, transcript_dir=self.transcript_dir)
-            for raw in text.splitlines():
-                m = _TRANSCRIPT_LINE.match(raw)
-                if m is None:
-                    continue
-                spoken = m.group(3).rstrip()
-                if match(spoken):
-                    hits.append(
-                        {
-                            "date": date,
-                            "line": int(m.group(1)),
-                            "speaker": m.group(2).strip(),
-                            "text": spoken,
-                        }
-                    )
-                    if len(hits) >= MAX_RESULTS:
-                        return hits
-        return hits
+        return self._search_transcripts(
+            self.sessions,
+            lambda d: read_transcript(d, transcript_dir=self.transcript_dir),
+            pattern,
+            regex,
+        )
 
     # ── entities ──
     def resolve_name(self, name: str) -> dict[str, Any]:
@@ -390,26 +362,13 @@ class HeartwoodTools:
         'resolved'|'ambiguous'|'unknown', 'canonical', 'kind', 'page' ('' when none),
         'page_exists' (bool, checked against the wiki now), 'confidence' (0-1), 'candidates'
         (up to 5 nearest canonical names)}. Raises ValueError on an empty name."""
-        if not isinstance(name, str) or not name.strip():
-            raise ValueError("name must be a non-empty string")
-        res = self.resolver(name)
-        ent = res.entity
-        page = (ent.page or "") if ent is not None else ""
-        page_exists = False
-        if page:
-            try:
-                page_exists = self.ws.exists(page)
-            except ValueError:
-                page_exists = False
-        return {
-            "status": res.status,
-            "canonical": ent.canonical if ent is not None else "",
-            "kind": (ent.kind or "") if ent is not None else "",
-            "page": page,
-            "page_exists": page_exists,
-            "confidence": round(float(res.confidence), 3),
-            "candidates": [ref.canonical for ref, _ in res.candidates[:MAX_CANDIDATES]],
-        }
+        return self._resolve_name(name, self.resolver, self._page_exists)
+
+    def _page_exists(self, page: str) -> bool:
+        try:
+            return self.ws.exists(page)
+        except ValueError:
+            return False
 
     def tools(self) -> list[Callable[..., Any]]:
         """The bound tool callables, in §3 order."""

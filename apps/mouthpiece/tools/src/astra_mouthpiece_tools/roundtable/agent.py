@@ -15,7 +15,7 @@ from __future__ import annotations
 import contextlib
 import time
 from dataclasses import dataclass
-from datetime import date as Date
+from datetime import timedelta
 from pathlib import Path
 from typing import Any
 
@@ -28,7 +28,6 @@ from astra_linguist.chronicle import (
     SEASONS_PATH,
     TRANSCRIPT_DIR,
     Chronicle,
-    date_key,
 )
 from astra_llm.rlm import (
     HardenedRLM,
@@ -51,6 +50,7 @@ from astra_mouthpiece.producer.run import (
 from astra_mouthpiece.producer.telemetry import instrument_tool, instruments, log, tracer
 from astra_mouthpiece.producer.tools import ProducerTools
 from astra_mouthpiece.roster import build_roster_block
+from astra_sessions import format_date, to_date
 from opentelemetry import trace
 from opentelemetry.trace import Status, StatusCode
 
@@ -118,9 +118,7 @@ class MapMysteries(dspy.Signature):
 # ── inputs ──
 def cutoff_after(latest: str) -> str:
     """A ``YYYY-M-D`` date strictly after ``latest`` (the tools serve dates before it)."""
-    y, m, d = date_key(latest)
-    nxt = Date.fromordinal(Date(y, m, d).toordinal() + 1)
-    return f"{nxt.year}-{nxt.month}-{nxt.day}"
+    return format_date(to_date(latest) + timedelta(days=1))
 
 
 def season_titles(show: str, seasons_path: Path = SEASONS_PATH) -> dict[str, str]:

@@ -6,12 +6,8 @@ from pathlib import Path
 
 from astra_linguist.chronicle import EpisodeEntry, EpisodeSummary, Season
 from astra_mouthpiece.continuity import CONTINUITY_BUDGET, build_continuity_block
-from astra_mouthpiece.episodes_index import date_in_range, date_sort_key
-from astra_mouthpiece.linguist_io import (
-    new_sessions,
-    parse_canonical_transcript,
-    parse_filename,
-)
+from astra_mouthpiece.episodes_index import date_in_range
+from astra_mouthpiece.linguist_io import new_sessions, parse_canonical_transcript
 from astra_mouthpiece.models import (
     DigestStats,
     GroundingEntry,
@@ -28,8 +24,7 @@ HOSTS = HostConfig(
 )
 
 
-def test_date_sort_key_and_range() -> None:
-    assert date_sort_key("2026-5-7") < date_sort_key("2026-5-11")
+def test_date_in_range() -> None:
     assert date_in_range("2026-5-9", "2026-5-7", "2026-5-11")
     assert not date_in_range("2026-6-1", "2026-5-7", "2026-5-11")
 
@@ -112,13 +107,6 @@ def test_script_user_content_byte_identical_when_no_continuity() -> None:
 
 
 # ── linguist I/O ─────────────────────────────────────────────────────────────
-def test_parse_filename() -> None:
-    sid, arc, date = parse_filename("000.through-a-song-darkly.2025-10-20.txt")
-    assert sid == "000.through-a-song-darkly.2025-10-20"
-    assert arc == "through-a-song-darkly"
-    assert date == "2025-10-20"
-
-
 def test_parse_canonical_transcript() -> None:
     text = "000001\tBenny: tests.  \n000002\tGamemaster: Are you recording?  \njunk line\n"
     turns = parse_canonical_transcript(text)

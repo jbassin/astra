@@ -15,7 +15,6 @@ from astra_linguist.chronicle import (
     Season,
     ShowChronicle,
     chronicle_inputs_hash,
-    date_key,
     load_episode_summary,
     recent_prior_entries,
     season_for,
@@ -95,11 +94,6 @@ def test_episode_entry_round_trips() -> None:
         ),
     )
     assert EpisodeEntry.model_validate_json(entry.model_dump_json()) == entry
-
-
-def test_date_key_orders_non_zero_padded_dates() -> None:
-    dates = ["2025-10-20", "2025-8-11", "2025-8-28", "2026-1-6"]
-    assert sorted(dates, key=date_key) == ["2025-8-11", "2025-8-28", "2025-10-20", "2026-1-6"]
 
 
 def test_chronicle_inputs_hash_stable_and_order_independent() -> None:
