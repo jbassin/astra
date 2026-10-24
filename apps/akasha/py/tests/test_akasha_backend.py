@@ -1,7 +1,7 @@
 """akasha-backend tests (NLSpec 0007 gates D/F/G) — pure Python, no bun.
 
 The TS structural validator (gate B) runs in the `corpus-validate` CI job + the
-Dagster asset; these tests exercise the Python runtime side without shelling out.
+host snapshot; these tests exercise the Python runtime side without shelling out.
 
 They run against the checked-in fixture (`fixtures/astra-data/akasha/`), a small slice of
 the real wiki, so they never depend on the live corpus. After editing the fixture pages,

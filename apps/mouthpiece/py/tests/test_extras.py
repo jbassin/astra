@@ -1,13 +1,10 @@
-"""sharpen + linguist I/O tests — hermetic."""
+"""linguist I/O, continuity and prompt tests — hermetic."""
 
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
-import pytest
 from astra_linguist.chronicle import EpisodeEntry, EpisodeSummary, Season
-from astra_llm import ToolCallRequest
 from astra_mouthpiece.continuity import CONTINUITY_BUDGET, build_continuity_block
 from astra_mouthpiece.episodes_index import date_in_range, date_sort_key
 from astra_mouthpiece.linguist_io import (
@@ -20,13 +17,9 @@ from astra_mouthpiece.models import (
     GroundingEntry,
     HostConfig,
     HostPersona,
-    Script,
-    ScriptTurn,
     SessionDigest,
 )
 from astra_mouthpiece.prompts import build_script_user_content
-from astra_mouthpiece.script import ScriptParseError
-from astra_mouthpiece.sharpen import sharpen_voices
 
 HOSTS = HostConfig(
     a=HostPersona(name="Bram", persona="x"),
@@ -39,48 +32,6 @@ def test_date_sort_key_and_range() -> None:
     assert date_sort_key("2026-5-7") < date_sort_key("2026-5-11")
     assert date_in_range("2026-5-9", "2026-5-7", "2026-5-11")
     assert not date_in_range("2026-6-1", "2026-5-7", "2026-5-11")
-
-
-# ── sharpen ─────────────────────────────────────────────────────────────────
-def _script() -> Script:
-    return Script(
-        session_id="s",
-        title="t",
-        hosts=HOSTS,
-        turns=[ScriptTurn(speaker="A", text="one"), ScriptTurn(speaker="B", text="two")],
-    )
-
-
-def test_sharpen_runs_one_pass_per_host() -> None:
-    class Stub:
-        def __init__(self) -> None:
-            self.passes = 0
-
-        def call_tool(self, req: ToolCallRequest) -> dict[str, Any]:
-            self.passes += 1
-            return {
-                "title": "t",
-                "turns": [{"speaker": "A", "text": "1"}, {"speaker": "B", "text": "2"}],
-            }
-
-        def call_text(self, req: Any) -> str:
-            return ""
-
-    stub = Stub()
-    sharpen_voices(stub, _script(), HOSTS)
-    assert stub.passes == 2  # one pass per host (A, B)
-
-
-def test_sharpen_rejects_turn_count_drift() -> None:
-    class Stub:
-        def call_tool(self, req: ToolCallRequest) -> dict[str, Any]:
-            return {"title": "t", "turns": [{"speaker": "A", "text": "only one"}]}
-
-        def call_text(self, req: Any) -> str:
-            return ""
-
-    with pytest.raises(ScriptParseError, match="turn count"):
-        sharpen_voices(Stub(), _script(), HOSTS)
 
 
 # ── 0021 Change B: recap continuity block + script-stage injection ───────────

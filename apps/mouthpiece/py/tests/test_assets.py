@@ -16,14 +16,13 @@ def test_defs_builds() -> None:
     assert isinstance(mp.defs, dg.Definitions)
 
 
-def test_the_four_assets_plus_index_have_expected_keys() -> None:
+def test_the_episode_assets_have_expected_keys() -> None:
     keys = {
         mp.session_digest.key.to_user_string(),
         mp.session_brief.key.to_user_string(),
         mp.session_script.key.to_user_string(),
         mp.session_audio_clips.key.to_user_string(),
         mp.session_episode.key.to_user_string(),
-        mp.episodes_index.key.to_user_string(),
     }
     assert keys == {
         "session_digest",
@@ -31,7 +30,6 @@ def test_the_four_assets_plus_index_have_expected_keys() -> None:
         "session_script",
         "session_audio_clips",
         "session_episode",
-        "episodes_index",
     }
 
 

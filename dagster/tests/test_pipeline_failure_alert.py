@@ -1,16 +1,11 @@
 """The run-failure paging sensor (0037 PIPE-2): one ERROR on ``astra.pipeline`` per failed run.
 
-Telemetry stays network-free: the ``exported`` fixture runs the real ``init_telemetry`` wiring
-with its OTLP exporters swapped for in-memory ones. Nothing here may reach the live collector,
-because an ERROR record in SigNoz pages Discord. The code location (``dagster/definitions.py``)
-is loaded by path after that, so its own ``init_telemetry("astra.pipeline")`` is a no-op.
+Telemetry stays network-free: the ``exported`` fixture (``conftest.py``) runs the real
+``init_telemetry`` wiring with its OTLP exporters swapped for in-memory ones. Nothing here may
+reach the live collector, because an ERROR record in SigNoz pages Discord.
 """
 
-import importlib.util
-import io
 import logging
-from collections.abc import Iterator
-from pathlib import Path
 from types import ModuleType
 
 import astra_observe
@@ -18,37 +13,9 @@ import dagster as dg
 import pytest
 from opentelemetry.sdk._logs import ReadableLogRecord
 from opentelemetry.sdk._logs.export import InMemoryLogRecordExporter
-from opentelemetry.sdk.metrics.export import ConsoleMetricExporter
-from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 
-DEFINITIONS = Path(__file__).resolve().parents[1] / "definitions.py"
 SENSOR = "pipeline_failure_alert"
 PARTITION = "2026-10-19"
-
-
-@pytest.fixture
-def exported(monkeypatch: pytest.MonkeyPatch) -> Iterator[InMemoryLogRecordExporter]:
-    """Install observe's real providers with in-memory exporters; yield the log exporter."""
-    astra_observe.shutdown()  # start un-initialized, so our providers are the ones installed
-    logs = InMemoryLogRecordExporter()
-    monkeypatch.setattr(astra_observe, "OTLPLogExporter", lambda **_: logs)
-    monkeypatch.setattr(astra_observe, "OTLPSpanExporter", lambda **_: InMemorySpanExporter())
-    monkeypatch.setattr(
-        astra_observe, "OTLPMetricExporter", lambda **_: ConsoleMetricExporter(out=io.StringIO())
-    )
-    astra_observe.init_telemetry("astra.pipeline", endpoint="http://127.0.0.1:9")
-    yield logs
-    astra_observe.shutdown()
-
-
-@pytest.fixture
-def definitions(exported: InMemoryLogRecordExporter) -> ModuleType:
-    """The root code location module, loaded by path (it is not an importable package)."""
-    spec = importlib.util.spec_from_file_location("astra_dagster_definitions", DEFINITIONS)
-    assert spec is not None and spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 @dg.asset(

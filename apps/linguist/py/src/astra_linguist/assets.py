@@ -2,7 +2,7 @@
 
 One partition per session/date. The asset reads scribe's `script.json`, runs the
 pipeline, and writes the three outputs (`data/{date}.json`, the campaign-matched
-`script/*.txt`, the canonical `transcripts/*.txt`) + `shibboleth.json`. The live
+`script/*.txt`, the canonical `transcripts/*.txt`). The live
 materialization runs once scribe has emitted a session.
 
 NOTE: the plan models three assets (formatted/context/canonical); v1 ships one
@@ -24,7 +24,7 @@ from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
 
-from .campaigns import campaign_filename, campaign_views, to_shibboleth
+from .campaigns import campaign_filename, campaign_views
 from .chronicle import (
     EPISODES_DIR,
     SEASONS_PATH,
@@ -55,7 +55,6 @@ _episodes_counter = _meter.create_counter(
 _CFG = load_config()
 DATA_DIR = Path(_CFG.data.linguist_data)
 SCRIPT_DIR = Path(_CFG.linguist.script_path)
-SHIBBOLETH_PATH = Path(_CFG.linguist.shibboleth_path)
 # Same-origin base: akasha-frontend serves the combined recording at /audio/<date>.mp3
 # off its audio volume (akasha also build-time-normalizes, so the form is belt-and-
 # suspenders). Replaces the old absolute faerrin static-audio.iridi.cc host.
@@ -86,7 +85,6 @@ def session_transcripts(context: dg.AssetExecutionContext) -> dg.MaterializeResu
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     _atomic_write(DATA_DIR / f"{date}.json", _to_json(artifacts.transcript.model_dump()))
-    _atomic_write(SHIBBOLETH_PATH, _to_json(to_shibboleth(campaign_views(being))))
 
     matched_name = "unmatched"
     if artifacts.matched is not None and artifacts.context is not None:

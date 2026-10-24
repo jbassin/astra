@@ -1,13 +1,12 @@
 [project]
 name = "astra-akasha-backend"
 version = "0.0.0"
-description = "akasha content store — the SSOT setting corpus in full-vellum; Dagster snapshot asset (validate + metadata index + page→page crossref edges) for akasha-frontend + mouthpiece grounding (0007)."
+description = "akasha content store — the SSOT setting corpus in full-vellum; host-run snapshot (validate + metadata index + page→page crossref edges) for akasha-frontend + mouthpiece grounding (0007)."
 requires-python = ">=3.12"
 dependencies = [
     "astra-config",
     "astra-observe",
     "astra-vellum-lang",
-    "dagster",
     "pydantic>=2",
 ]
 

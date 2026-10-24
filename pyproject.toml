@@ -1,8 +1,9 @@
 [tool.uv.workspace]
 # Membership follows location (ADR 0015): a Python app lives at apps/<domain>/py/ and
 # is a member because the glob matches it. uv rejects a glob-matched directory that
-# lacks a `pyproject.toml`, so never create an empty apps/<domain>/py/.
-members = ["apps/*/py", "libs/py/*", "ontology/*"]
+# lacks a `pyproject.toml`, so never create an empty apps/<domain>/py/. `dagster` is the
+# code location (astra-pipeline), so its deps are locked with everything else.
+members = ["apps/*/py", "libs/py/*", "ontology/*", "dagster"]
 
 [tool.uv]
 # Workspace-wide dev tooling — the Astral Python stack.

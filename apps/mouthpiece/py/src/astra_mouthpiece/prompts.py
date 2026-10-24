@@ -18,7 +18,7 @@ system prompts (net-new, not ported from faerrin).
 
 from __future__ import annotations
 
-from .models import GroundingEntry, HostConfig, Script, SessionDigest, SpeakerId
+from .models import GroundingEntry, HostConfig, SessionDigest
 
 # ── user content (cleaned transcript + roster + grounding, 0024 §4.1) ──────────
 
@@ -285,41 +285,6 @@ Call the tool exactly once with the full formatted script."""
 def build_dressing_user_content(transcript: str) -> str:
     """Wrap Pass A's raw transcript as the user content for the Pass B dressing call."""
     return f"RAW TRANSCRIPT (format this as-is; do not improve it):\n\n{transcript}"
-
-
-# ── sharpen (optional voice pass) ────────────────────────────────────────────
-
-
-def build_sharpen_system_prompt(hosts: HostConfig, target: SpeakerId) -> str:
-    """A focused per-host rewrite — sharpen one host's voice, change nothing else."""
-    host = hosts.by_id(target)
-    return f"""You are doing a FOCUSED VOICE PASS on a finished episode script. Sharpen
-exactly ONE host's voice — {host.name} (speaker "{target}") — and change NOTHING else.
-
-{host.name}'s voice, pushed further toward the extreme: {host.persona}.
-
-Rules:
-- Rewrite ONLY {host.name}'s lines. Push their phrasing and delivery further into the
-  voice above — more distinctly themselves, LESS like the other two. If one of their
-  lines reads like it could belong to another host, that's the one to fix.
-- Keep the same CONTENT and intent in each of {host.name}'s lines: say the same thing,
-  just more in their voice. Do NOT add new claims, jokes, facts, or callbacks; do NOT
-  resolve anything that was left open.
-- Copy every OTHER host's turn EXACTLY as given — same words, same speaker, same order.
-  Do not touch them.
-- Keep the EXACT same number of turns, in the same order, with the same speakers. Do
-  not add, remove, merge, or reorder turns. Keep the title unchanged.
-- Keep it spoken text for ElevenLabs v3: inline [audio tags] where delivery shifts,
-  numbers and symbols spelled out, ellipses/em-dashes/CAPS for prosody, and nothing but
-  speakable words outside the tags.
-
-Record the FULL script — every turn, in order — by calling the tool exactly once."""
-
-
-def build_sharpen_user_content(script: Script) -> str:
-    """Render the current script as the input for a voice-sharpening pass."""
-    body = "\n".join(f"{t.speaker}: {t.text}" for t in script.turns)
-    return f"EPISODE TITLE: {script.title}\n\nSCRIPT:\n{body}"
 
 
 # ── clean: filter (0024 §3.1) ─────────────────────────────────────────────────

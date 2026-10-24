@@ -1,4 +1,4 @@
-"""Stage 4 — TTS: script → audio clips (Cartesia Sonic-3 / ElevenLabs v3 / Edge / mock).
+"""Stage 4 — TTS: script → audio clips (Cartesia Sonic-3 / ElevenLabs v3 / mock).
 
 Cartesia (the live backend since 2026-09, `mouthpiece.tts-provider`) renders one clip
 per turn, translating the script's delivery tags into Sonic-3 controls (cartesia.py).

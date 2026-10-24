@@ -48,7 +48,7 @@ x-dagster-volumes: &dagster-pipeline-volumes
   - /ruby/data/astra-state/scribe/incoming:/ruby/data/astra-state/scribe/incoming
   - /ruby/data/astra-state/scribe/data:/ruby/data/astra-state/scribe/data
   - /ruby/data/astra-state/scribe/tmp:/ruby/data/astra-state/scribe/tmp
-  # linguist.script-path (which also holds linguist.shibboleth-path) — operator state.
+  # linguist.script-path — operator state (the campaign-matched context).
   - /ruby/data/astra-state/linguist/script:/ruby/data/astra-state/linguist/script
   # data.linguist-{transcripts,data,timeline} — in the astra-data clone.
   - /ruby/data/astra-state/astra-data/linguist/transcripts:/ruby/data/astra-state/astra-data/linguist/transcripts
@@ -58,8 +58,7 @@ x-dagster-volumes: &dagster-pipeline-volumes
   # The akasha wiki, LIVE and read-only (0035 D35-3): the producer (session_brief) and the
   # script fallback's grounding read it. Before this the container read the copy baked in
   # at the last `just up`, missing everything heartwood published since. Nothing in Dagster
-  # writes here (akasha_corpus_snapshot writes data.akasha-snapshot, which is not mounted:
-  # that asset needs node, which the image lacks, so it cannot run here anyway).
+  # writes here (the akasha snapshot runs on the host, because it needs node).
   - /ruby/data/astra-state/astra-data/akasha/content:/ruby/data/astra-state/astra-data/akasha/content:ro
   # data.entity-registry, read-only: session_brief's producer resolves names against it
   # (astra_ontology_entity.resolve). The directory (not the file) is mounted so a git

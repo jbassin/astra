@@ -1,0 +1,29 @@
+[project]
+name = "astra-pipeline"
+version = "0.0.0"
+description = "The astra Dagster code location (definitions.py): the pipeline apps merged into one graph, plus the Dagster webserver and Postgres storage the image runs."
+requires-python = ">=3.12"
+# The pipeline apps definitions.py merges, plus the server packages the image's webserver,
+# daemon and Postgres run storage need. The three dagster pins move together: the code
+# server's gRPC protocol must match the webserver's and daemon's.
+dependencies = [
+    "astra-heartwood-backend",
+    "astra-linguist",
+    "astra-mouthpiece-backend",
+    "astra-observe",
+    "astra-scribe",
+    "dagster==1.13.10",
+    "dagster-postgres==0.29.10",
+    "dagster-webserver==1.13.10",
+]
+
+[tool.uv]
+# Not a package: definitions.py is loaded by path (`dagster ... -f definitions.py`).
+package = false
+
+[tool.uv.sources]
+astra-heartwood-backend = { workspace = true }
+astra-linguist = { workspace = true }
+astra-mouthpiece-backend = { workspace = true }
+astra-observe = { workspace = true }
+astra-scribe = { workspace = true }

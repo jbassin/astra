@@ -78,6 +78,7 @@
 
 # --- Dagster code location + instance config ---
 !dagster/definitions.py
+!dagster/pyproject.toml
 !dagster/dagster.yaml
 !dagster/workspace.yaml
 

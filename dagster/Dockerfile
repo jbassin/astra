@@ -29,11 +29,12 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 WORKDIR /repo
 
 # Workspace manifests + lock first (cached unless they change), then the member sources.
-# Every py member in uv.lock must be present for `uv sync --frozen`: the 6 pipeline apps
-# + assay (a lock member since 0030 even though Dagster never runs it — `uv sync
+# Every py member in uv.lock must be present for `uv sync --frozen`: dagster/ itself
+# (astra-pipeline, the code location's manifest) + the 6 pipeline apps + assay (a lock member since 0030 even though Dagster never runs it — `uv sync
 # --frozen` refuses a missing member distribution outright) + all libs/py + ontology.
 # (The TS apps are uv-excluded and intentionally absent.)
 COPY pyproject.toml uv.lock ./
+COPY dagster/pyproject.toml dagster/pyproject.toml
 COPY apps/scribe/py apps/scribe/py
 COPY apps/linguist/py apps/linguist/py
 COPY apps/akasha/py apps/akasha/py
@@ -44,15 +45,12 @@ COPY apps/assay/py apps/assay/py
 COPY libs/py libs/py
 COPY ontology ontology
 
-# Reproducible install of every member (editable) + their third-party deps. Editable
-# keeps the source at /repo/libs/py/config/... so astra_config._find_repo_root walks up
-# to /repo/ontology/ontology-config/config.kdl at runtime, independent of cwd.
-RUN uv sync --frozen --no-dev
-
-# The webserver command + the Postgres run/event/schedule storage (dagster.yaml) need
-# these — they are NOT workspace deps. Pin to the resolved dagster line so the code
-# server's gRPC protocol matches the webserver/daemon.
-RUN uv pip install "dagster-webserver==1.13.10" "dagster-postgres==0.29.10"
+# Reproducible install of astra-pipeline's dependency tree: the pipeline members
+# (editable) + their third-party deps + the webserver and Postgres storage packages, all
+# pinned in uv.lock (dagster/pyproject.toml). Editable keeps the source at
+# /repo/libs/py/config/... so astra_config._find_repo_root walks up to
+# /repo/ontology/ontology-config/config.kdl at runtime, independent of cwd.
+RUN uv sync --frozen --no-dev --package astra-pipeline
 
 # Deno for dspy's RLM sandbox (Deno + Pyodide) — the mouthpiece producer's session_brief
 # asset (0035 D35-1). Pinned to the host's 2.5.6. dspy's runner.js imports an UNPINNED
@@ -83,8 +81,7 @@ COPY dagster/dagster.yaml dagster/workspace.yaml "$DAGSTER_HOME"/
 # /opt/dagster/home/storage and needs a writable HOME — chown the whole /opt/dagster tree
 # (home + the app cwd) to 1000 and point HOME there. /opt/venv + the editable /repo
 # sources stay root-owned/world-readable: the runtime only writes data paths from
-# config.kdl, all of which are bind mounts (deploy/docker-compose.yml) — including
-# shibboleth.json, which now lives in the mounted linguist script dir.
+# config.kdl, all of which are bind mounts (deploy/docker-compose.yml).
 ENV HOME=/opt/dagster/home
 RUN mkdir -p "$DAGSTER_HOME/storage" \
     && chown -R 1000:1000 /opt/dagster /opt/deno

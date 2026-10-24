@@ -23,7 +23,7 @@ data {
     //   scribe/incoming/         Craig zips, copied down from Drive by craig-sync
     //   scribe/data/             scribe output; saved/<date>/ is the scribe -> linguist handoff
     //   scribe/tmp/              scribe scratch
-    //   linguist/script/         linguist operator state (shibboleth.json inside)
+    //   linguist/script/         linguist operator state (the campaign-matched context)
     //   mouthpiece/episodes/     the episode corpus: per-session renders + .last-rendered
     //   mouthpiece/experiments/  producer and roundtable runs (0034)
     //   heartwood/               per-run agent artifacts, backfill.log, backfill.lock
@@ -114,11 +114,9 @@ linguist {
     // INVARIANT: must equal scribe's {data-path}/saved — the scribe→linguist handoff
     // (scribe writes saved/{date}/script.json; the linguist sensor + ingest read it).
     ingest-saved-dir "scribe/data/saved"
-    // session_transcripts' non-published outputs, both read by nothing today: the
-    // campaign-matched LLM context and the shibboleth campaign map. The shibboleth lives
-    // in the script dir because that dir is bind-mounted writable into the containers.
+    // session_transcripts' non-published output, read by nothing today: the
+    // campaign-matched LLM context. Bind-mounted writable into the Dagster containers.
     script-path "linguist/script"
-    shibboleth-path "linguist/script/shibboleth.json"
     review-port 10116
     podcast-episodes-path ""
     // Phase-2 judge models + Phase-1 filter / windowing tuning (faerrin `config.ts` `surface`).
@@ -144,7 +142,7 @@ linguist {
 
 mouthpiece {
     // Where the per-session asset graph writes (digest/script/clips/episode.mp3/
-    // transcript.md per session) + the episodes_index asset globs. Bind-mounted
+    // transcript.md per session), which the host publisher globs. Bind-mounted
     // into the Dagster services at the same path (deploy/docker-compose.yml). Empty would resolve to the cwd — set it so a real pipeline
     // run lands here. (NB the mouthpiece-FRONTEND audio volume is separate, D2.)
     episodes-path "mouthpiece/episodes"

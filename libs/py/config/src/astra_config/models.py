@@ -94,7 +94,6 @@ class LinguistConfig(_Base):
     ingest_saved_dir: DataPath = ""
     # Runtime outputs of session_transcripts that are not published datasets.
     script_path: DataPath = "linguist/script"
-    shibboleth_path: DataPath = "linguist/script/shibboleth.json"
     review_port: int = 10116
     podcast_episodes_path: str = ""
     # Phase-2 judge models + Phase-1 filter / windowing tuning (faerrin `config.ts` `surface`).
