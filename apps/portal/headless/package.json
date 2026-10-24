@@ -13,9 +13,9 @@
   "dependencies": {
     "@astra/config": "workspace:*",
     "@astra/observe": "workspace:*",
-    "playwright": "^1.60.0"
+    "playwright": "catalog:"
   },
   "devDependencies": {
-    "vitest": "^4.1.9"
+    "vitest": "catalog:"
   }
 }

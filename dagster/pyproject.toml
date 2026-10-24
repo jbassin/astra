@@ -20,10 +20,3 @@ dependencies = [
 [tool.uv]
 # Not a package: definitions.py is loaded by path (`dagster ... -f definitions.py`).
 package = false
-
-[tool.uv.sources]
-astra-heartwood-backend = { workspace = true }
-astra-linguist = { workspace = true }
-astra-mouthpiece-backend = { workspace = true }
-astra-observe = { workspace = true }
-astra-scribe = { workspace = true }

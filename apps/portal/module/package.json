@@ -13,7 +13,7 @@
     "@astra/portal-shared": "workspace:*"
   },
   "devDependencies": {
-    "tsdown": "^0.22.3",
-    "vitest": "^4.1.9"
+    "tsdown": "catalog:",
+    "vitest": "catalog:"
   }
 }

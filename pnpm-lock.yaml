@@ -4,6 +4,108 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@bgotink/kdl':
+      specifier: ^0.4.0
+      version: 0.4.0
+    '@floating-ui/dom':
+      specifier: ^1.7.6
+      version: 1.7.6
+    '@fontsource/cinzel':
+      specifier: ^5.2.8
+      version: 5.2.8
+    '@fontsource/cormorant-sc':
+      specifier: ^5.2.8
+      version: 5.2.8
+    '@fontsource/eb-garamond':
+      specifier: ^5.2.7
+      version: 5.2.7
+    '@fontsource/ibm-plex-mono':
+      specifier: ^5.2.7
+      version: 5.2.7
+    '@fontsource/oswald':
+      specifier: ^5.2.8
+      version: 5.2.8
+    '@opentelemetry/api':
+      specifier: ^1.9.1
+      version: 1.9.1
+    '@tailwindcss/vite':
+      specifier: ^4.3.2
+      version: 4.3.2
+    '@tanstack/react-router':
+      specifier: ^1.170.42
+      version: 1.170.42
+    '@tanstack/react-start':
+      specifier: ^1.168.61
+      version: 1.168.61
+    '@testing-library/dom':
+      specifier: ^10.4.0
+      version: 10.4.1
+    '@testing-library/react':
+      specifier: ^16.3.2
+      version: 16.3.2
+    '@types/mdast':
+      specifier: ^4.0.4
+      version: 4.0.4
+    '@types/react':
+      specifier: ^19.0.0
+      version: 19.2.17
+    '@types/react-dom':
+      specifier: ^19.0.0
+      version: 19.2.3
+    '@vitejs/plugin-react':
+      specifier: ^5.2.0
+      version: 5.2.0
+    discord.js:
+      specifier: ^14.27.0
+      version: 14.27.0
+    gray-matter:
+      specifier: ^4.0.3
+      version: 4.0.3
+    jsdom:
+      specifier: ^29.1.1
+      version: 29.1.1
+    pagefind:
+      specifier: ^1.5.2
+      version: 1.5.2
+    pixi.js:
+      specifier: ^8.18.1
+      version: 8.19.0
+    playwright:
+      specifier: ^1.60.0
+      version: 1.61.1
+    postgres:
+      specifier: ^3.4.9
+      version: 3.4.9
+    react:
+      specifier: ^19.0.0
+      version: 19.2.7
+    react-dom:
+      specifier: ^19.0.0
+      version: 19.2.7
+    srvx:
+      specifier: 0.11.20
+      version: 0.11.20
+    tailwindcss:
+      specifier: ^4.3.2
+      version: 4.3.2
+    tsdown:
+      specifier: ^0.22.3
+      version: 0.22.3
+    typescript:
+      specifier: ^5
+      version: 5.9.3
+    vite:
+      specifier: 8.1.6
+      version: 8.1.6
+    vitest:
+      specifier: ^4.1.9
+      version: 4.1.9
+    yaml:
+      specifier: ^2.9.0
+      version: 2.9.0
+
 overrides:
   '@types/node': ^24.13.2
 
@@ -30,7 +132,7 @@ importers:
         specifier: ^0.24.0
         version: 0.24.0
       typescript:
-        specifier: ^5
+        specifier: 'catalog:'
         version: 5.9.3
       vite-plus:
         specifier: 0.2.2
@@ -60,19 +162,19 @@ importers:
         specifier: workspace:*
         version: link:../../../libs/ts/vellum-lang
       '@floating-ui/dom':
-        specifier: ^1.7.6
+        specifier: 'catalog:'
         version: 1.7.6
       '@fontsource/ibm-plex-mono':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.2.7
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@tanstack/react-router':
-        specifier: ^1.170.42
+        specifier: 'catalog:'
         version: 1.170.42(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-start':
-        specifier: ^1.168.61
+        specifier: 'catalog:'
         version: 1.168.61(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.5)(rollup@4.62.2)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@tweenjs/tween.js':
         specifier: ^25.0.0
@@ -93,23 +195,23 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       pixi.js:
-        specifier: ^8.18.1
+        specifier: 'catalog:'
         version: 8.19.0
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
     devDependencies:
       '@tailwindcss/vite':
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@testing-library/dom':
-        specifier: ^10.4.0
+        specifier: 'catalog:'
         version: 10.4.1
       '@testing-library/react':
-        specifier: ^16.3.2
+        specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@types/d3-drag':
         specifier: ^3.0.7
@@ -124,31 +226,31 @@ importers:
         specifier: ^3.0.8
         version: 3.0.8
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       gray-matter:
-        specifier: ^4.0.3
+        specifier: 'catalog:'
         version: 4.0.3
       jsdom:
-        specifier: ^29.1.1
+        specifier: 'catalog:'
         version: 29.1.1
       pagefind:
-        specifier: ^1.5.2
+        specifier: 'catalog:'
         version: 1.5.2
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/codex/web:
@@ -163,71 +265,71 @@ importers:
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit
       '@floating-ui/dom':
-        specifier: ^1.7.6
+        specifier: 'catalog:'
         version: 1.7.6
       '@fontsource/cinzel':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.2.8
       '@fontsource/cormorant-sc':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.2.8
       '@fontsource/eb-garamond':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.2.7
       '@fontsource/oswald':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.2.8
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@tanstack/react-router':
-        specifier: ^1.170.42
+        specifier: 'catalog:'
         version: 1.170.42(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-start':
-        specifier: ^1.168.61
+        specifier: 'catalog:'
         version: 1.168.61(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.5)(rollup@4.62.2)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@tanstack/react-virtual':
         specifier: ^3.14.6
         version: 3.14.6(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
       zod:
         specifier: ^4.4.3
         version: 4.6.7
     devDependencies:
       '@testing-library/dom':
-        specifier: ^10.4.0
+        specifier: 'catalog:'
         version: 10.4.1
       '@testing-library/react':
-        specifier: ^16.3.2
+        specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       jsdom:
-        specifier: ^29.1.1
+        specifier: 'catalog:'
         version: 29.1.1
       pagefind:
-        specifier: ^1.5.2
+        specifier: 'catalog:'
         version: 1.5.2
       playwright:
-        specifier: ^1.60.0
+        specifier: 'catalog:'
         version: 1.61.1
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/harrow/web:
@@ -251,53 +353,53 @@ importers:
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit
       '@fontsource/ibm-plex-mono':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.2.7
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@tanstack/react-router':
-        specifier: ^1.170.42
+        specifier: 'catalog:'
         version: 1.170.42(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-start':
-        specifier: ^1.168.61
+        specifier: 'catalog:'
         version: 1.168.61(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.5)(rollup@4.62.2)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
     devDependencies:
       '@tailwindcss/vite':
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@testing-library/dom':
-        specifier: ^10.4.0
+        specifier: 'catalog:'
         version: 10.4.1
       '@testing-library/react':
-        specifier: ^16.3.2
+        specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       jsdom:
-        specifier: ^29.1.1
+        specifier: 'catalog:'
         version: 29.1.1
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/ledger/web:
@@ -321,53 +423,53 @@ importers:
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit
       '@fontsource/ibm-plex-mono':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.2.7
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@tanstack/react-router':
-        specifier: ^1.170.42
+        specifier: 'catalog:'
         version: 1.170.42(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-start':
-        specifier: ^1.168.61
+        specifier: 'catalog:'
         version: 1.168.61(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.5)(rollup@4.62.2)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
     devDependencies:
       '@tailwindcss/vite':
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@testing-library/dom':
-        specifier: ^10.4.0
+        specifier: 'catalog:'
         version: 10.4.1
       '@testing-library/react':
-        specifier: ^16.3.2
+        specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       jsdom:
-        specifier: ^29.1.1
+        specifier: 'catalog:'
         version: 29.1.1
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/menhir/web:
@@ -382,62 +484,62 @@ importers:
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit
       '@bgotink/kdl':
-        specifier: ^0.4.0
+        specifier: 'catalog:'
         version: 0.4.0
       '@fontsource/cinzel':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.2.8
       '@fontsource/cormorant-sc':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.2.8
       '@fontsource/eb-garamond':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.2.7
       '@fontsource/oswald':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.2.8
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
       srvx:
-        specifier: 0.11.20
+        specifier: 'catalog:'
         version: 0.11.20
       zod:
         specifier: ^4.4.3
         version: 4.6.7
     devDependencies:
       '@testing-library/dom':
-        specifier: ^10.4.0
+        specifier: 'catalog:'
         version: 10.4.1
       '@testing-library/react':
-        specifier: ^16.3.2
+        specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@types/qrcode':
         specifier: ^1.5.5
         version: 1.5.6
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       jsdom:
-        specifier: ^29.1.1
+        specifier: 'catalog:'
         version: 29.1.1
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/mouthpiece/web:
@@ -461,53 +563,53 @@ importers:
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit
       '@fontsource/ibm-plex-mono':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.2.7
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@tanstack/react-router':
-        specifier: ^1.170.42
+        specifier: 'catalog:'
         version: 1.170.42(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-start':
-        specifier: ^1.168.61
+        specifier: 'catalog:'
         version: 1.168.61(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.5)(rollup@4.62.2)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
     devDependencies:
       '@tailwindcss/vite':
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@testing-library/dom':
-        specifier: ^10.4.0
+        specifier: 'catalog:'
         version: 10.4.1
       '@testing-library/react':
-        specifier: ^16.3.2
+        specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       jsdom:
-        specifier: ^29.1.1
+        specifier: 'catalog:'
         version: 29.1.1
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/orator/bot:
@@ -531,59 +633,59 @@ importers:
         specifier: ^0.19.2
         version: 0.19.2(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(opusscript@0.1.1)
       '@fontsource/ibm-plex-mono':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.2.7
       '@noble/ciphers':
         specifier: ^1.2.1
         version: 1.3.0
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@tanstack/react-router':
-        specifier: ^1.170.42
+        specifier: 'catalog:'
         version: 1.170.42(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       discord.js:
-        specifier: ^14.27.0
+        specifier: 'catalog:'
         version: 14.27.0
       opusscript:
         specifier: ^0.1.1
         version: 0.1.1
       postgres:
-        specifier: ^3.4.9
+        specifier: 'catalog:'
         version: 3.4.9
       prism-media:
         specifier: ^1.3.5
         version: 1.3.5(opusscript@0.1.1)
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
       srvx:
-        specifier: 0.11.20
+        specifier: 'catalog:'
         version: 0.11.20
     devDependencies:
       '@tailwindcss/vite':
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
     optionalDependencies:
       '@snazzah/davey':
@@ -603,13 +705,13 @@ importers:
         specifier: ^24.13.2
         version: 24.13.2
       tsdown:
-        specifier: ^0.22.3
+        specifier: 'catalog:'
         version: 0.22.3(oxc-resolver@11.23.0)(typescript@5.9.3)
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/portal/headless:
@@ -621,11 +723,11 @@ importers:
         specifier: workspace:*
         version: link:../../../libs/ts/observe
       playwright:
-        specifier: ^1.60.0
+        specifier: 'catalog:'
         version: 1.61.1
     devDependencies:
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/portal/module:
@@ -635,10 +737,10 @@ importers:
         version: link:../shared
     devDependencies:
       tsdown:
-        specifier: ^0.22.3
+        specifier: 'catalog:'
         version: 0.22.3(oxc-resolver@11.23.0)(typescript@5.9.3)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/portal/server:
@@ -656,7 +758,7 @@ importers:
         specifier: ^1.32.1
         version: 1.32.1(zod@4.4.3)
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       express:
         specifier: ^5.3.0
@@ -678,7 +780,7 @@ importers:
         specifier: ^8.18.1
         version: 8.18.1
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/portal/shared:
@@ -688,7 +790,7 @@ importers:
         version: 4.4.3
     devDependencies:
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/strider/web:
@@ -709,68 +811,68 @@ importers:
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit
       '@fontsource/ibm-plex-mono':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.2.7
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@tanstack/react-router':
-        specifier: ^1.170.42
+        specifier: 'catalog:'
         version: 1.170.42(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-start':
-        specifier: ^1.168.61
+        specifier: 'catalog:'
         version: 1.168.61(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.5)(rollup@4.62.2)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       pixi-filters:
         specifier: ^6
         version: 6.1.5(pixi.js@8.19.0)
       pixi.js:
-        specifier: ^8.18.1
+        specifier: 'catalog:'
         version: 8.19.0
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
     devDependencies:
       '@astra/vellum-lang':
         specifier: workspace:*
         version: link:../../../libs/ts/vellum-lang
       '@bgotink/kdl':
-        specifier: ^0.4.0
+        specifier: 'catalog:'
         version: 0.4.0
       '@tailwindcss/vite':
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@testing-library/dom':
-        specifier: ^10.4.0
+        specifier: 'catalog:'
         version: 10.4.1
       '@testing-library/react':
-        specifier: ^16.3.2
+        specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       gray-matter:
-        specifier: ^4.0.3
+        specifier: 'catalog:'
         version: 4.0.3
       jsdom:
-        specifier: ^29.1.1
+        specifier: 'catalog:'
         version: 29.1.1
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/vellum/render:
@@ -791,26 +893,26 @@ importers:
         specifier: workspace:*
         version: link:../../../libs/ts/vellum-lang
       '@fontsource/ibm-plex-mono':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.2.7
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       playwright:
-        specifier: ^1.60.0
+        specifier: 'catalog:'
         version: 1.61.1
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
       srvx:
-        specifier: 0.11.20
+        specifier: 'catalog:'
         version: 0.11.20
     devDependencies:
       '@tailwindcss/vite':
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@types/pixelmatch':
         specifier: ^5.2.6
@@ -819,13 +921,13 @@ importers:
         specifier: ^6.0.5
         version: 6.0.5
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       pixelmatch:
         specifier: ^6.0.0
@@ -834,13 +936,13 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/vellum/web:
@@ -879,7 +981,7 @@ importers:
         specifier: ^6.34.0
         version: 6.43.4
       '@fontsource/ibm-plex-mono':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.2.7
       '@lezer/highlight':
         specifier: ^1.2.3
@@ -888,13 +990,13 @@ importers:
         specifier: ^1.6.4
         version: 1.6.4
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@tanstack/react-router':
-        specifier: ^1.170.42
+        specifier: 'catalog:'
         version: 1.170.42(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-start':
-        specifier: ^1.168.61
+        specifier: 'catalog:'
         version: 1.168.61(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.5)(rollup@4.62.2)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       codemirror:
         specifier: ^6.0.1
@@ -903,44 +1005,44 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
     devDependencies:
       '@tailwindcss/vite':
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@testing-library/dom':
-        specifier: ^10.4.0
+        specifier: 'catalog:'
         version: 10.4.1
       '@testing-library/react':
-        specifier: ^16.3.2
+        specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@types/mdast':
-        specifier: ^4.0.4
+        specifier: 'catalog:'
         version: 4.0.4
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       jsdom:
-        specifier: ^29.1.1
+        specifier: 'catalog:'
         version: 29.1.1
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/weal/bot:
@@ -958,20 +1060,20 @@ importers:
         specifier: workspace:*
         version: link:../../../libs/ts/weal-engine
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       discord.js:
-        specifier: ^14.27.0
+        specifier: 'catalog:'
         version: 14.27.0
       postgres:
-        specifier: ^3.4.9
+        specifier: 'catalog:'
         version: 3.4.9
       srvx:
-        specifier: 0.11.20
+        specifier: 'catalog:'
         version: 0.11.20
     devDependencies:
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/weal/overlay:
@@ -989,85 +1091,85 @@ importers:
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit
       '@fontsource/ibm-plex-mono':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.2.7
       pixi.js:
-        specifier: ^8.18.1
+        specifier: 'catalog:'
         version: 8.19.0
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
       srvx:
-        specifier: 0.11.20
+        specifier: 'catalog:'
         version: 0.11.20
     devDependencies:
       '@tailwindcss/vite':
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   libs/ts/_smoke:
     devDependencies:
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   libs/ts/backdrop:
     dependencies:
       pixi.js:
-        specifier: ^8.18.1
+        specifier: 'catalog:'
         version: 8.19.0
     devDependencies:
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   libs/ts/config:
     dependencies:
       '@bgotink/kdl':
-        specifier: ^0.4.0
+        specifier: 'catalog:'
         version: 0.4.0
       yaml:
-        specifier: ^2.9.0
+        specifier: 'catalog:'
         version: 2.9.0
       zod:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   libs/ts/content-build:
@@ -1076,7 +1178,7 @@ importers:
         specifier: workspace:*
         version: link:../config
       gray-matter:
-        specifier: ^4.0.3
+        specifier: 'catalog:'
         version: 4.0.3
       remark:
         specifier: ^15.0.1
@@ -1086,7 +1188,7 @@ importers:
         version: 16.0.1
     devDependencies:
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   libs/ts/gothic:
@@ -1095,7 +1197,7 @@ importers:
         specifier: workspace:*
         version: link:../vellum-lang
       '@fontsource/ibm-plex-mono':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.2.7
     devDependencies:
       '@storybook/react':
@@ -1105,37 +1207,37 @@ importers:
         specifier: ^10.4.6
         version: 10.4.6(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rollup@4.62.2)(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.9.10)(react@19.2.7)(vite-plus@0.2.2(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(jsdom@29.1.1)(terser@5.48.0)(typescript@5.9.3)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))(yaml@2.9.0)))(typescript@5.9.3)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@tailwindcss/vite':
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@types/mdast':
-        specifier: ^4.0.4
+        specifier: 'catalog:'
         version: 4.0.4
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       react:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
       storybook:
         specifier: ^10.4.6
         version: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.9.10)(react@19.2.7)(vite-plus@0.2.2(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(jsdom@29.1.1)(terser@5.48.0)(typescript@5.9.3)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))(yaml@2.9.0))
       tailwindcss:
-        specifier: ^4.3.2
+        specifier: 'catalog:'
         version: 4.3.2
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   libs/ts/observe:
@@ -1144,7 +1246,7 @@ importers:
         specifier: workspace:*
         version: link:../config
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@opentelemetry/api-logs':
         specifier: ^0.219.0
@@ -1181,7 +1283,7 @@ importers:
         version: 1.41.1
     devDependencies:
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   libs/ts/ontology:
@@ -1190,14 +1292,14 @@ importers:
         specifier: workspace:*
         version: link:../config
       '@bgotink/kdl':
-        specifier: ^0.4.0
+        specifier: 'catalog:'
         version: 0.4.0
       zod:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   libs/ts/site-kit:
@@ -1212,7 +1314,7 @@ importers:
         specifier: workspace:*
         version: link:../observe
       '@opentelemetry/api':
-        specifier: ^1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@tanstack/router-generator':
         specifier: ^1.167.41
@@ -1224,17 +1326,17 @@ importers:
         specifier: 1.2.1
         version: 1.2.1
       srvx:
-        specifier: 0.11.20
+        specifier: 'catalog:'
         version: 0.11.20
     devDependencies:
       '@types/send':
         specifier: 1.2.1
         version: 1.2.1
       vite:
-        specifier: 8.1.6
+        specifier: 'catalog:'
         version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   libs/ts/vellum-lang:
@@ -1255,29 +1357,29 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0
       yaml:
-        specifier: ^2.9.0
+        specifier: 'catalog:'
         version: 2.9.0
     devDependencies:
       '@astra/config':
         specifier: workspace:*
         version: link:../config
       '@types/mdast':
-        specifier: ^4.0.4
+        specifier: 'catalog:'
         version: 4.0.4
       mdast-util-directive:
         specifier: ^3.1.0
         version: 3.1.0
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
   libs/ts/weal-engine:
     devDependencies:
       typescript:
-        specifier: ^5
+        specifier: 'catalog:'
         version: 5.9.3
       vitest:
-        specifier: ^4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
 
 packages:

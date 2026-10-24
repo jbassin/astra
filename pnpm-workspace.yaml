@@ -3,3 +3,45 @@ packages:
   # Directories without one (the Python apps/<domain>/py/) are skipped.
   - "apps/*/*"
   - "libs/ts/*"
+
+# One version per shared dependency: every dependency that two or more workspace packages
+# use is listed here, and each package.json names it as `catalog:`. Bump a version here,
+# then `pnpm install`. A dependency only one package uses keeps its range in that
+# package.json; when a second package adds it, move it here.
+# Off the catalog on purpose: zod. apps/codex/web and apps/menhir/web resolve 4.6.7 while
+# the other four zod users resolve 4.4.3; one catalog entry would upgrade those four.
+catalog:
+  "@bgotink/kdl": "^0.4.0"
+  "@floating-ui/dom": "^1.7.6"
+  "@fontsource/cinzel": "^5.2.8"
+  "@fontsource/cormorant-sc": "^5.2.8"
+  "@fontsource/eb-garamond": "^5.2.7"
+  "@fontsource/ibm-plex-mono": "^5.2.7"
+  "@fontsource/oswald": "^5.2.8"
+  "@opentelemetry/api": "^1.9.1"
+  "@tailwindcss/vite": "^4.3.2"
+  "@tanstack/react-router": "^1.170.42"
+  "@tanstack/react-start": "^1.168.61"
+  "@testing-library/dom": "^10.4.0"
+  "@testing-library/react": "^16.3.2"
+  "@types/mdast": "^4.0.4"
+  "@types/node": "^24.13.2"
+  "@types/react": "^19.0.0"
+  "@types/react-dom": "^19.0.0"
+  "@vitejs/plugin-react": "^5.2.0"
+  discord.js: "^14.27.0"
+  gray-matter: "^4.0.3"
+  jsdom: "^29.1.1"
+  pagefind: "^1.5.2"
+  pixi.js: "^8.18.1"
+  playwright: "^1.60.0"
+  postgres: "^3.4.9"
+  react: "^19.0.0"
+  react-dom: "^19.0.0"
+  srvx: "0.11.20"
+  tailwindcss: "^4.3.2"
+  tsdown: "^0.22.3"
+  typescript: "^5"
+  vite: "8.1.6"
+  vitest: "^4.1.9"
+  yaml: "^2.9.0"

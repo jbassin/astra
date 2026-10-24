@@ -25,14 +25,3 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/astra_heartwood"]
-
-[tool.uv.sources]
-astra-akasha-backend = { workspace = true }
-astra-config = { workspace = true }
-astra-linguist = { workspace = true }
-astra-llm = { workspace = true }
-astra-observe = { workspace = true }
-astra-ontology = { workspace = true }
-astra-ontology-being = { workspace = true }
-astra-ontology-config = { workspace = true }
-astra-ontology-entity = { workspace = true }

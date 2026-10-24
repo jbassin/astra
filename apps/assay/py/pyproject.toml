@@ -19,7 +19,3 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/astra_assay"]
-
-[tool.uv.sources]
-astra-config = { workspace = true }
-astra-observe = { workspace = true }
