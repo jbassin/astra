@@ -1660,7 +1660,7 @@ select:focus-visible,
      rule (it said "5px×2 padding"), and the LIVE rendered row measured
      23.94px, not 24px — fixed-size windowing has no self-correction, so the
      real number now matters EXACTLY, not approximately, proven by a real
-     Chromium pass (`scripts/rowHeightDriftGuard.ts`) rather than re-trusting
+     Chromium pass (`e2e/rowHeight.spec.ts`) rather than re-trusting
      this comment's own arithmetic a second time. Two live-measured facts,
      not guessed:
        1. `line-height: 15px` (an EXPLICIT px value, not the old unitless
@@ -1830,7 +1830,7 @@ select:focus-visible,
    `calc(0.95em + 0.9rem)` fits the glyph (`0.95em`, `EditionIcon.tsx`) plus
    its own two `0.35rem` paddings (`0.7rem`) with a `0.2rem` buffer against
    sub-pixel rounding — verified against the real corpus via
-   `rowHeightDriftGuard.ts`'s scoped cell-fit assert. */
+   `e2e/rowHeight.spec.ts`'s scoped cell-fit assert. */
 .codex-listing-col-icon {
   width: calc(0.95em + 0.9rem);
   text-align: center;
@@ -1845,7 +1845,7 @@ select:focus-visible,
    physical/logical padding properties, CSS Logical Properties' "cascaded
    together" rule) and the real applied padding stayed 0.5rem/side the whole
    time regardless of this rule's own number — caught live by
-   `rowHeightDriftGuard.ts` measuring the real `getComputedStyle` padding as
+   `e2e/rowHeight.spec.ts` measuring the real `getComputedStyle` padding as
    `4px 8px`, not `4px 5.6px`. Qualified on BOTH `th`/`td` (unlike the width
    rule above, this one needs the extra specificity to win at all). */
 .codex-listing-table th.codex-listing-col-icon,

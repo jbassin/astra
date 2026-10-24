@@ -6,7 +6,7 @@
 //
 // The served corpus is picked by `selectServedCorpus()` (not in the root `server.ts`,
 // which has no channel into the built loader closure): `CODEX_CORPUS_ROOT` when set
-// (tests and the Chromium guards pin the fixture there), else the immutable release
+// (tests and the e2e suite pin the fixture there), else the immutable release
 // that `<codex.data-path>/releases/current` names (`@astra/codex-corpus/releases`). A
 // built server fails closed: no current release, a schemaVersion other than
 // `CORPUS_SCHEMA_VERSION`, or the fixture in a release throws `CorpusUnservableError`,
@@ -67,7 +67,7 @@ export function fixtureCorpusRoot(): string {
 /** The inputs that pick the corpus root, passed in so the rules are testable. */
 export interface CorpusRootInputs {
   /** `CODEX_CORPUS_ROOT`, if set: an explicit root, used as given. The vitest setup and
-   * the Chromium guards pin it to the fixture; it may name the fixture in any mode. */
+   * the e2e suite pin it to the fixture; it may name the fixture in any mode. */
   explicitRoot: string | undefined;
   /** `codex.data-path` from config.kdl; the served corpus is the release that
    * `<dataPath>/releases/current` names. */

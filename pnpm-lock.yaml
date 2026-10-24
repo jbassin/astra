@@ -30,6 +30,9 @@ catalogs:
     '@opentelemetry/api':
       specifier: ^1.9.1
       version: 1.9.1
+    '@playwright/test':
+      specifier: 1.61.1
+      version: 1.61.1
     '@tailwindcss/vite':
       specifier: ^4.3.2
       version: 4.3.2
@@ -341,6 +344,9 @@ importers:
       '@astra/codex-ingest':
         specifier: workspace:*
         version: link:../ingest
+      '@playwright/test':
+        specifier: 'catalog:'
+        version: 1.61.1
       '@testing-library/dom':
         specifier: 'catalog:'
         version: 10.4.1
@@ -356,9 +362,6 @@ importers:
       jsdom:
         specifier: 'catalog:'
         version: 29.1.1
-      playwright:
-        specifier: 'catalog:'
-        version: 1.61.1
       tsdown:
         specifier: 'catalog:'
         version: 0.22.3(oxc-resolver@11.23.0)(tsx@4.23.15)(typescript@5.9.3)
@@ -2899,6 +2902,11 @@ packages:
 
   '@pixi/colord@2.9.6':
     resolution: {integrity: sha512-nezytU2pw587fQstUu1AsJZDVEynjskwOL+kibwcdxsMBFqPsFFNA7xl0ii/gXuDi6M0xj3mfRJj8pBSc2jCfA==}
+
+  '@playwright/test@1.61.1':
+    resolution: {integrity: sha512-8nKv6+0RJSL9FE4jYOEGXnPeM/Hg12qZpmqzZjRh3qM0Y7c3z1mrOTfFLids72RDQYVh9WpLEfR5WdpNX4fkig==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
@@ -7383,6 +7391,10 @@ snapshots:
     optional: true
 
   '@pixi/colord@2.9.6': {}
+
+  '@playwright/test@1.61.1':
+    dependencies:
+      playwright: 1.61.1
 
   '@polka/url@1.0.0-next.29':
     optional: true

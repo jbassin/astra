@@ -69,5 +69,9 @@ apps/assay/py/books/**/assets/img/preprocessed/
 apps/codex/ingest/fixtures/entities/
 apps/codex/ingest/fixtures/.entities-build-*/
 
+# The codex e2e suite's failure traces and screenshots, and its HTML report
+apps/codex/web/test-results/
+apps/codex/web/playwright-report/
+
 # Playwright MCP console logs + page snapshots (tool debris)
 .playwright-mcp/

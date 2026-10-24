@@ -1,6 +1,6 @@
 #!/bin/sh
 # astra pre-push gate: `just ci`, everything CI runs (both lanes, the corpus gate, the
-# codex Chromium guards, commitlint over origin/main..HEAD), so a red commit never
+# codex e2e suite, commitlint over origin/main..HEAD), so a red commit never
 # reaches GitHub. Only the vellum render goldens stay CI-only (they need CI's container).
 #
 # Installed with the pre-commit hook (core.hooksPath = .githooks).

@@ -21,6 +21,10 @@ catalog:
   "@fontsource/ibm-plex-mono": "^5.2.7"
   "@fontsource/oswald": "^5.2.8"
   "@opentelemetry/api": "^1.9.1"
+  # Exact, and the same release `playwright` below resolves to (and deploy/node.Dockerfile's
+  # PLAYWRIGHT_VERSION): a newer runner would pull in a second playwright. Only the codex e2e
+  # suite uses it; it sits here so the two playwright entries are bumped together.
+  "@playwright/test": "1.61.1"
   "@tailwindcss/vite": "^4.3.2"
   "@tanstack/react-router": "^1.170.42"
   "@tanstack/react-start": "^1.168.61"

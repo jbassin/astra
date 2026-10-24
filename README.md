@@ -13,7 +13,7 @@ Docker Compose; Caddy is the edge; OpenTelemetry feeds SigNoz.
 
 ```sh
 mise trust && mise install   # the host toolchain (mise.toml); then activate mise in your shell
-just bootstrap               # both workspaces, the git hooks, the codex guards' Chromium
+just bootstrap               # both workspaces, the git hooks, the codex e2e Chromium
 just ci                      # everything CI runs
 ```
 
