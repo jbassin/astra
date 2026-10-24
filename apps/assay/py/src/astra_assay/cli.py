@@ -1,5 +1,5 @@
 """``assay`` console script — price / score / export-codex / score-homebrew /
-homebrew-revisions / export-book.
+homebrew-revisions / export-book / store check / store fmt.
 
     uv run assay price [--data-root PATH]     # ladder + Stage A/B + comparables + priors → results/
     uv run assay score --spell PATH           # score one spell JSON (round-3 model; also
@@ -9,11 +9,13 @@ homebrew-revisions / export-book.
                                                #   scores.json
     uv run assay homebrew-revisions           # diff the store vs. a fresh vendor re-conversion
                                                #   -> homebrew/revisions.md
+    uv run assay store check                  # validate the store against its model + format
+    uv run assay store fmt                    # rewrite the store in its canonical format
 
 The homebrew commands live in ``homebrew.py`` (registered via
 ``homebrew.register_subparsers``), next to the adapter for the vendored
 ``vendor/run_balance/pf2e_converted_spells`` conversion set the store was seeded from;
-``export-book`` lives in ``book.py``.
+``export-book`` lives in ``book.py``; ``store check``/``store fmt`` live in ``store.py``.
 
 Telemetry (standing principle): ``astra_observe.run`` wraps every subcommand and
 flushes on exit (see ``libs/py/observe``). Offline runs (no SigNoz reachable) still
@@ -42,6 +44,7 @@ from . import (
     pricing,
     priors,
     report2,
+    store,
     summons,
 )
 from .conditions import Tier
@@ -1382,6 +1385,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     homebrew.register_subparsers(sub)
     book.register_subparsers(sub)
+    store.register_subparsers(sub)
 
     return parser
 

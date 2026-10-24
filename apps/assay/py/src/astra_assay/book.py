@@ -54,10 +54,12 @@ from typing import Any
 from astra_config import find_repo_root
 from astra_observe import get_tracer
 
+from . import store
+
 APP_ROOT = Path(__file__).resolve().parents[2]  # src/astra_assay/book.py -> apps/assay/py
 REPO_ROOT = find_repo_root(Path(__file__))
-STORE_DIR = APP_ROOT / "homebrew" / "spells"
-TRAITS_DIR = APP_ROOT / "homebrew" / "traits"
+STORE_DIR = store.STORE_ROOT / store.SPELLS_SUBDIR
+TRAITS_DIR = store.STORE_ROOT / store.TRAITS_SUBDIR
 DEFAULT_OUT_DIR = REPO_ROOT / "apps/codex/web/books/liturgy_vol2"
 BOOK_TEX_NAME = "liturgy_of_the_iridite_vol2.tex"
 BOOK_PDF_NAME = "liturgy_of_the_iridite_vol2.pdf"
