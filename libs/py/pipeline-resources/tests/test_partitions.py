@@ -4,10 +4,12 @@ import dagster as dg
 from astra_pipeline_resources.partitions import (
     MIGRATION_MARKER,
     SessionStage,
+    blocked_sessions,
     launch_ready,
     migration_pending,
     read_ledger,
     ready_sessions,
+    session_check,
     sessions,
 )
 from astra_pipeline_resources.testing import (
@@ -87,3 +89,48 @@ def test_launch_ready_skips_while_the_migration_is_pending() -> None:
     mark_materialized(instance, "session_transcripts", "a")
     result = _tick(instance, None)
     assert not result.run_requests and result.skip_reason
+
+
+# ── blocking checks gate the next stage (0037 PIPE-12) ───────────────────────
+@dg.asset(name="session_transcripts", partitions_def=sessions)
+def _upstream() -> None: ...
+
+
+@session_check(asset=_upstream, name="not_empty", description="the session is not 'bad'")
+def _not_empty(context: dg.AssetCheckExecutionContext) -> dg.AssetCheckResult:
+    return dg.AssetCheckResult(passed=context.partition_key != "bad")
+
+
+GATE = dg.AssetCheckKey(UP, "not_empty")
+GATED = SessionStage(upstream=UP, stage=STAGE, keep=lambda _key: True, gates=(GATE,))
+
+
+def _check_run(instance: dg.DagsterInstance, key: str) -> None:
+    dg.materialize(
+        [_upstream, _not_empty], partition_key=key, instance=instance, raise_on_error=False
+    )
+
+
+def test_a_failed_blocking_check_keeps_the_next_stage_from_launching() -> None:
+    """A failed blocking check leaves its asset materialized, so only the gate stops the
+    next stage. A session with no check result (processed before the check) still goes."""
+    instance = sessions_instance("bad", "good", "old")
+    _check_run(instance, "bad")
+    _check_run(instance, "good")
+    mark_materialized(instance, "session_transcripts", "old")
+    assert instance.get_materialized_partitions(UP) == {"bad", "good", "old"}
+    assert blocked_sessions(instance, [GATE]) == {"bad"}
+    assert ready_sessions(instance, upstream=UP, stage=STAGE) == ["bad", "good", "old"]
+    assert ready_sessions(instance, upstream=UP, stage=STAGE, gates=[GATE]) == ["good", "old"]
+    result = launch_ready(dg.build_sensor_context(instance=instance), GATED)
+    assert [r.partition_key for r in result.run_requests or []] == ["good", "old"]
+
+
+def test_a_later_pass_opens_the_gate() -> None:
+    instance = sessions_instance("bad")
+    _check_run(instance, "bad")
+    assert blocked_sessions(instance, [GATE]) == {"bad"}
+    instance.report_runless_asset_event(
+        dg.AssetCheckEvaluation(asset_key=UP, check_name="not_empty", passed=True, partition="bad")
+    )
+    assert blocked_sessions(instance, [GATE]) == set()

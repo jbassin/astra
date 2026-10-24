@@ -17,8 +17,14 @@ Groq Whisper (`scribe.model`, `groq/whisper-large-v3`).
   hung mount makes the unit fail (and page) instead of hanging in `activating`, which would
   stop the timer from re-arming. A process blocked on the mount shows `D request_wait_answer`
   in `ps -o stat,wchan`; `timeout` cannot kill it. The astra watchdog remediates the mount.
+- **Blocking checks.** `single_recording`, `no_undated_recording` (on `session_tracks`) and
+  `transcript_not_empty` (on `session_transcript`, at least `MIN_TRANSCRIPT_SEGMENTS` 100)
+  fail the run and keep linguist from launching; see the dagster README, "Blocking checks".
+  Fix the cause (remove or merge the extra zip, re-transcribe), then re-execute the run.
 - **Undated zip.** A zip name must be `<guild>_<channel>_<date>_<id>` (four `_` fields, date
-  third). Any other name is skipped silently, with no alert. To recover one, hard-link it in
+  third). Any other name never becomes a session. `craig_drop_sensor` logs one WARN per such
+  zip, with the session date from its `info.txt`, and lists it in the tick's skip reason
+  until a dated name covers it. To recover one, hard-link it in
   the incoming dir under a dated name, taking the date from the zip's `info.txt`
   `Start time:` (UTC), for example
   `ln craig-<rec>-<key>_<key>.aac.zip craig_<rec>_2026-10-5_00-00-00.aac.zip`. Keep the
@@ -37,7 +43,9 @@ Groq Whisper (`scribe.model`, `groq/whisper-large-v3`).
 - **Stub zips.** An aborted Craig start leaves a zip of about 900 bytes with the same date.
   Zips under `MIN_ZIP_BYTES` (1 MiB) are ignored by the sensor and by `_find_zip`. A zip with
   only `info.txt` and `raw.dat` is a session nobody recorded; it produces nothing by design.
-- **Two zips for one date:** the first non-stub zip in sorted order wins.
+- **Two zips for one date:** the first non-stub zip in sorted order would win, so the
+  `single_recording` check fails the session instead. Two names of one recording (the
+  hard-link recovery above) share a recording id and count once.
 - **Groq's 25 MB direct-upload cap.** Chunks are 16 kHz mono `s16` flac and at most
   `max_chunk_sec` 480 s, about 14.6 MiB each. Removing `-sample_fmt s16` or raising the chunk
   length brings back 413 errors.

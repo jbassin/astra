@@ -51,6 +51,9 @@ AUDIO_BASE = "/audio"
 #: scribe's transcript asset (`astra_scribe.assets.session_transcript`), by key: linguist
 #: does not import scribe. ``dagster/tests/test_definitions.py`` pins the edge.
 SCRIBE_TRANSCRIPT = dg.AssetKey("session_transcript")
+#: scribe's blocking check on that transcript (`astra_scribe.assets.transcript_not_empty`).
+#: The sensor launches linguist only once it passed; the test pins that it exists.
+SCRIBE_TRANSCRIPT_CHECK = dg.AssetCheckKey(SCRIBE_TRANSCRIPT, "transcript_not_empty")
 
 
 @dg.asset(partitions_def=sessions, group_name="linguist", deps=[SCRIBE_TRANSCRIPT])
@@ -230,7 +233,10 @@ def _has_script(key: str) -> bool:
 
 #: What `scribe_output_sensor` launches, and when (``dagster/migrate_sessions.py`` reads it).
 LINGUIST_STAGE = SessionStage(
-    upstream=SCRIBE_TRANSCRIPT, stage=session_transcripts.key, keep=_has_script
+    upstream=SCRIBE_TRANSCRIPT,
+    stage=session_transcripts.key,
+    keep=_has_script,
+    gates=(SCRIBE_TRANSCRIPT_CHECK,),
 )
 
 
@@ -240,8 +246,9 @@ LINGUIST_STAGE = SessionStage(
     default_status=dg.DefaultSensorStatus.RUNNING,
 )
 def scribe_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
-    """Run linguist for each session whose scribe transcript is materialized and whose
-    `session_transcripts` was never tried — the scribe→linguist trigger.
+    """Run linguist for each session whose scribe transcript is materialized, has passed
+    scribe's `transcript_not_empty` check, and whose `session_transcripts` was never
+    tried — the scribe→linguist trigger.
 
     Each run materializes `session_transcripts` (apply known corrections) then
     `session_episode_summary`, so a session is fully processed. A failed or canceled run is
