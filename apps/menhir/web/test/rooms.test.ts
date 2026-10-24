@@ -1,34 +1,58 @@
-import { describe, expect, test } from "vitest";
+import { existsSync, mkdtempSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
-import { createRoomsRuntime, type Clock } from "../src/rooms";
+import { describe, expect, test, vi } from "vitest";
+
+import { type Clock, createRoomsRuntime, type Timer } from "../src/rooms";
 import type { Quiz } from "../src/schema";
 
-/** Deterministic injected clock: timers fire only via advance(). */
+interface Scheduled {
+  cb: () => void;
+  at: number;
+  id: number;
+}
+
+/** Deterministic injected clock: timers and intervals fire only via advance(). */
 class TestClock implements Clock {
   t = 1_000_000;
-  pending: { cb: () => void; at: number; handle: number }[] = [];
-  #nextHandle = 1;
+  /** One-shot timers (the question deadline). */
+  pending: Scheduled[] = [];
+  /** Repeating timers (the GC sweep, the SSE heartbeat), with their period. */
+  intervals: (Scheduled & { every: number })[] = [];
+  #nextId = 1;
 
   now(): number {
     return this.t;
   }
 
-  setTimer(cb: () => void, ms: number): ReturnType<typeof setTimeout> {
-    const handle = this.#nextHandle++;
-    this.pending.push({ cb, at: this.t + ms, handle });
-    return handle as unknown as ReturnType<typeof setTimeout>;
+  setTimeout(cb: () => void, ms: number): Timer {
+    const id = this.#nextId++;
+    this.pending.push({ cb, at: this.t + ms, id });
+    return { cancel: () => (this.pending = this.pending.filter((p) => p.id !== id)) };
   }
 
-  clearTimer(handle: ReturnType<typeof setTimeout>): void {
-    const h = handle as unknown as number;
-    this.pending = this.pending.filter((p) => p.handle !== h);
+  setInterval(cb: () => void, ms: number): Timer {
+    const id = this.#nextId++;
+    this.intervals.push({ cb, at: this.t + ms, id, every: ms });
+    return { cancel: () => (this.intervals = this.intervals.filter((p) => p.id !== id)) };
   }
 
+  /** Move time forward, firing each due timer in order at its own due time. */
   advance(ms: number): void {
-    this.t += ms;
-    const due = this.pending.filter((p) => p.at <= this.t).sort((a, b) => a.at - b.at);
-    this.pending = this.pending.filter((p) => p.at > this.t);
-    for (const p of due) p.cb();
+    const until = this.t + ms;
+    for (;;) {
+      const next = [...this.pending, ...this.intervals]
+        .filter((p) => p.at <= until)
+        .sort((a, b) => a.at - b.at)[0];
+      if (!next) break;
+      this.t = next.at;
+      const interval = this.intervals.find((p) => p.id === next.id);
+      if (interval) interval.at += interval.every;
+      else this.pending = this.pending.filter((p) => p.id !== next.id);
+      next.cb();
+    }
+    this.t = until;
   }
 }
 
@@ -139,6 +163,64 @@ describe("rooms runtime timer policy (S2b review blocker)", () => {
     expect(clock.pending.map((p) => p.at)).toEqual([clock.t + 20_000]); // question 2's own
     runtime.hostAction(code, { hostToken, action: "end", fromPhase: "question", fromIndex: 1 });
     expect(clock.pending).toEqual([]);
+    runtime.shutdown();
+  });
+});
+
+describe("rooms runtime clock seam", () => {
+  test("the GC sweep runs on the injected clock and collects an idle room", () => {
+    const clock = new TestClock();
+    const runtime = createRoomsRuntime({
+      quizzes: [QUIZ],
+      publicOrigin: "https://menhir.test",
+      resultsPath: join(mkdtempSync(join(tmpdir(), "menhir-gc-")), "results.jsonl"),
+      clock,
+      gcIntervalMs: 60_000,
+      roomTtlMs: 120_000,
+    });
+    const created = runtime.createGame("test-quiz");
+    if (!created.ok) throw new Error("createGame failed");
+    clock.advance(120_000); // idle exactly the TTL: kept
+    expect(runtime.join(created.code, { name: "Ana" }).ok).toBe(true);
+    clock.advance(180_000); // idle past the TTL at the next sweep: collected
+    expect(runtime.join(created.code, { name: "Bo" })).toMatchObject({ ok: false, status: 404 });
+    runtime.shutdown();
+    expect(clock.intervals).toEqual([]); // shutdown cancels the GC sweep and the heartbeat
+  });
+
+  test("the SSE heartbeat runs on the injected clock", async () => {
+    const clock = new TestClock();
+    const { runtime, code } = bootGame(clock);
+    const reader = runtime.openStream(code, "host", undefined).getReader();
+    const decoder = new TextDecoder();
+    const first = decoder.decode((await reader.read()).value);
+    expect(first.startsWith("data: ")).toBe(true);
+    clock.advance(15_000);
+    expect(decoder.decode((await reader.read()).value)).toBe(": ping\n\n");
+    await reader.cancel();
+    runtime.shutdown();
+  });
+
+  test("a results row is stamped with the clock's time, not the wall clock", async () => {
+    const clock = new TestClock();
+    const resultsPath = join(mkdtempSync(join(tmpdir(), "menhir-results-")), "results.jsonl");
+    const runtime = createRoomsRuntime({
+      quizzes: [QUIZ],
+      publicOrigin: "https://menhir.test",
+      resultsPath,
+      clock,
+    });
+    const created = runtime.createGame("test-quiz");
+    if (!created.ok) throw new Error("createGame failed");
+    runtime.hostAction(created.code, {
+      hostToken: created.hostToken,
+      action: "end",
+      fromPhase: "lobby",
+      fromIndex: -1,
+    });
+    await vi.waitFor(() => expect(existsSync(resultsPath)).toBe(true));
+    const row = JSON.parse(readFileSync(resultsPath, "utf8")) as { at: string };
+    expect(row.at).toBe(new Date(clock.t).toISOString());
     runtime.shutdown();
   });
 });

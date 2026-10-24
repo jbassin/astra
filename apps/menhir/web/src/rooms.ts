@@ -9,6 +9,7 @@
  * hand — no real setTimeout waits, no flaky timing assertions.
  */
 import { randomUUID } from "node:crypto";
+import { setInterval as nodeSetInterval, setTimeout as nodeSetTimeout } from "node:timers";
 
 import { lazyCounter, reportIgnored } from "@astra/observe";
 import { safeEqual } from "@astra/service-kit";
@@ -57,7 +58,7 @@ export interface Sink {
 interface Room {
   state: RoomState;
   /** The armed timer and the deadline it was armed for (`deadlineOf` at the time). */
-  armed: { deadline: Deadline; handle: ReturnType<typeof setTimeout> } | null;
+  armed: { deadline: Deadline; timer: Timer } | null;
   hostSinks: Set<Sink>;
   playerSinks: Map<string, Set<Sink>>;
   /** Runtime bookkeeping only (not engine state) — the pure reducer must never
@@ -66,21 +67,33 @@ interface Room {
   lastActivity: number;
 }
 
+/** A scheduled callback; `cancel()` stops it (a no-op once a one-shot timer has fired). */
+export interface Timer {
+  cancel(): void;
+}
+
+/**
+ * Every time source the runtime uses: the current time, the question timer, and the GC sweep and
+ * SSE heartbeat intervals. Tests inject a hand-driven clock, so all of them move only when the
+ * test advances time.
+ */
 export interface Clock {
   now(): number;
-  setTimer(cb: () => void, ms: number): ReturnType<typeof setTimeout>;
-  clearTimer(handle: ReturnType<typeof setTimeout>): void;
+  setTimeout(cb: () => void, ms: number): Timer;
+  setInterval(cb: () => void, ms: number): Timer;
 }
 
-function unrefTimer(h: ReturnType<typeof setTimeout>): ReturnType<typeof setTimeout> {
-  (h as unknown as { unref?: () => void }).unref?.();
-  return h;
-}
-
+/** The process clock. Its timers are unref'd, so a pending one never keeps Node alive. */
 export const REAL_CLOCK: Clock = {
   now: () => Date.now(),
-  setTimer: (cb, ms) => unrefTimer(setTimeout(cb, ms)),
-  clearTimer: (h) => clearTimeout(h),
+  setTimeout: (cb, ms) => {
+    const handle = nodeSetTimeout(cb, ms).unref();
+    return { cancel: () => clearTimeout(handle) };
+  },
+  setInterval: (cb, ms) => {
+    const handle = nodeSetInterval(cb, ms).unref();
+    return { cancel: () => clearInterval(handle) };
+  },
 };
 
 export interface JoinBody {
@@ -198,10 +211,10 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
       armed.deadline.questionIndex === want.questionIndex
     )
       return;
-    if (armed) clock.clearTimer(armed.handle);
+    armed?.timer.cancel();
     room.armed = null;
     if (!want) return;
-    const handle = clock.setTimer(
+    const timer = clock.setTimeout(
       () => {
         room.armed = null;
         dispatch(
@@ -212,7 +225,7 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
       },
       Math.max(0, want.at - clock.now()),
     );
-    room.armed = { deadline: want, handle };
+    room.armed = { deadline: want, timer };
   }
 
   /** The ONE call site that runs an event through the pure reducer; afterwards the room's timer
@@ -243,22 +256,20 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
           sink.close();
         }
       }
-      if (room.armed) clock.clearTimer(room.armed.handle);
+      room.armed?.timer.cancel();
       rooms.delete(code);
     }
   }
 
-  const gcTimer = unrefTimer(setInterval(() => gcSweepOnce(), gcIntervalMs));
+  const gcTimer = clock.setInterval(() => gcSweepOnce(), gcIntervalMs);
 
-  const heartbeatTimer = unrefTimer(
-    setInterval(() => {
-      const frame = ": ping\n\n";
-      for (const room of rooms.values()) {
-        for (const sink of room.hostSinks) sink.send(frame);
-        for (const set of room.playerSinks.values()) for (const sink of set) sink.send(frame);
-      }
-    }, HEARTBEAT_MS),
-  );
+  const heartbeatTimer = clock.setInterval(() => {
+    const frame = ": ping\n\n";
+    for (const room of rooms.values()) {
+      for (const sink of room.hostSinks) sink.send(frame);
+      for (const set of room.playerSinks.values()) for (const sink of set) sink.send(frame);
+    }
+  }, HEARTBEAT_MS);
 
   return {
     listQuizzes() {
@@ -428,8 +439,8 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
     gcSweepOnce,
 
     shutdown() {
-      clearInterval(gcTimer);
-      clearInterval(heartbeatTimer);
+      gcTimer.cancel();
+      heartbeatTimer.cancel();
     },
   };
 }

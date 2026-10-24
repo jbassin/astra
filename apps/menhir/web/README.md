@@ -72,6 +72,10 @@ schemas whose messages are the API's error strings; `test/pins.test.ts` pins eve
   no timer effects; after every reduction `rooms.ts` compares the armed timer with
   `deadlineOf(state)` and keeps, re-arms or clears it. A new phase with a deadline is a change to
   `deadlineOf`, nothing else. `test/rooms.test.ts` covers the runtime with an injected test clock.
+- **Every time source goes through the injected `Clock`** (`src/rooms.ts`): `now`, the question
+  timer, and the GC sweep and SSE heartbeat intervals; the reducer gets `now` as an argument (the
+  results row's `at` too). Don't call `Date.now()`, `setTimeout` or `setInterval` in the runtime or
+  the reducer, or the hand-driven test clock stops covering it.
 - **Never answer the SSE endpoint with 404.** Browsers stop reconnecting an `EventSource` for good
   after an HTTP error. An unknown or collected room returns 200 with one `{phase:"gone"}` frame.
 - **Don't simulate many players in one browser.** Six `EventSource`s in one tab hit Chromium's
