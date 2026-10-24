@@ -6,7 +6,7 @@
  *
  * Two hooks:
  *  - `init` — register the three world-scoped, GM-restricted settings (D8: writes ON
- *    by default) + the `CONFIG.queries` handler registry (`handlers.ts`).
+ *    by default) + the `CONFIG.queries` handler registry (`handlers/index.ts`).
  *  - `ready` — the hard GM gate (non-GM sessions never dial the bridge at all — the
  *    module setting alone isn't a security boundary, this is), then read the settings
  *    and start the {@link BridgeClient} if both are configured.

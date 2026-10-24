@@ -661,9 +661,9 @@ describe("S1 authoring tools (spec 0026 — Foundry-free)", () => {
 
   it("maps a stub bridge's unrecognized-method response to a typed error, not a throw (mid-rollout safety)", async () => {
     // Mirrors the module's own `dispatchQuery` behavior for a method with no
-    // registered handler (module/src/handlers.ts): a BridgeHandlerError with code
+    // registered handler (module/src/handlers/): a BridgeHandlerError with code
     // "foundry-error" and a message naming the unknown method — verified by reading
-    // handlers.ts directly (S1 is Foundry-free, so this test stubs that exact shape
+    // handlers/ directly (S1 is Foundry-free, so this test stubs that exact shape
     // rather than exercising the real module). This proves the server's new S1
     // tools stay safe to register even against an OLD, not-yet-updated module
     // build (D-12's versioning discipline covers the human GM-refresh side).

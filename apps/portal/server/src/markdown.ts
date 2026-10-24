@@ -1,6 +1,6 @@
 /**
  * D28-6 — the four player-facing query tools return markdown, not JSON: the module
- * stays dumb (typed compact JSON over the wire, unchanged — see `handlers.ts`), this
+ * stays dumb (typed compact JSON over the wire, unchanged — see `module/src/handlers/`), this
  * file is where that JSON becomes LLM-friendly prose. Two concerns:
  *
  *  - {@link htmlToMarkdown}: a small, deliberately lossy-but-safe HTML+enricher->

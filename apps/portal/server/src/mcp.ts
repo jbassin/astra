@@ -104,7 +104,7 @@ function checkResult(name: PortalToolName, result: unknown): void {
  *
  * Write tools add two concerns: `creates` rejects an oversized batch with a typed
  * `cap-exceeded` error and NO bridge round-trip at all (D8 — the module's own hard
- * ceiling is a second, independent backstop, see `handlers.ts`'s
+ * ceiling is a second, independent backstop, see `handlers/writes.ts`'s
  * `MODULE_MAX_CREATES_CEILING`), and every call emits the {@link auditWrite} line,
  * allowed or denied.
  */

@@ -31,7 +31,7 @@ function fakeUsersCollection(users: FoundryUser[]): FoundryUsersCollection {
 
 /** Stubs just enough of the ambient Foundry `game` global for the `ready` hook's
  * designated-dialer gate (0027 S1) — `main.ts` never touches packs/actors/items/etc.
- * itself (that's `handlers.ts`'s surface), so those collections stay empty stand-ins. */
+ * itself (that's `handlers/`' surface), so those collections stay empty stand-ins. */
 function stubGame(opts: {
   userId: string;
   userName: string;
@@ -64,7 +64,7 @@ function stubGame(opts: {
     folders: emptyCollection<FoundryFolder>(),
     macros: emptyCollection<FoundryMacro>(),
     // 0028 S3 — `main.ts` never touches `game.messages` itself (that's
-    // `handlers.ts`'s `query-rolls` surface), so an empty stand-in is enough here.
+    // `handlers/rolls.ts`'s `query-rolls` surface), so an empty stand-in is enough here.
     messages: { contents: [], size: 0 },
     users: fakeUsersCollection(opts.users ?? [user]),
     pf2e: { ConditionManager: { getCondition: () => ({ toObject: () => ({}) }) } },

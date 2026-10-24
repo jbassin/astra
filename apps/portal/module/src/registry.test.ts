@@ -13,7 +13,7 @@ import {
 } from "@astra/portal-shared";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { registerHandlers, TOOL_HANDLERS } from "./handlers";
+import { DOMAIN_HANDLERS, registerHandlers, TOOL_HANDLERS } from "./handlers";
 
 describe("the module dispatch table agrees with the tool registry", () => {
   beforeEach(() => {
@@ -30,6 +30,12 @@ describe("the module dispatch table agrees with the tool registry", () => {
     for (const name of PORTAL_TOOL_NAMES) {
       expect(name in TOOL_HANDLERS).toBe(PORTAL_TOOLS[name].runsOn === "bridge");
     }
+  });
+
+  it("assembles the table from domain maps that never claim the same tool twice", () => {
+    const claimed = DOMAIN_HANDLERS.flatMap((map) => Object.keys(map));
+    expect(new Set(claimed).size).toBe(claimed.length);
+    expect(claimed.sort()).toEqual(Object.keys(TOOL_HANDLERS).sort());
   });
 
   it("registers every bridge tool under its wire method, plus the ping diagnostic", () => {

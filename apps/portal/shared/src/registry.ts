@@ -6,7 +6,7 @@
  *   description, input schema), filters by `access` for the player key, forwards
  *   `runsOn: "bridge"` tools as {@link bridgeMethod}, applies the create cap and audit
  *   log for `kind: "write"`, and checks each module result against `result`.
- * - the Foundry module (`handlers.ts`) must supply exactly one handler per bridge tool
+ * - the Foundry module (`handlers/`) must supply exactly one handler per bridge tool
  *   ({@link BridgeToolHandlers}), keyed by the same names and typed by `result`.
  *
  * Adding a tool means one entry here plus its module handler (and a server renderer if
