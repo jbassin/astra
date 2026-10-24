@@ -10,6 +10,9 @@
 import {
   ApplyConditionParams,
   type ApplyConditionResult,
+  BRIDGE_TOOL_NAMES,
+  bridgeMethod,
+  type BridgeToolHandlers,
   type BridgeErrorCode,
   type CompendiumIndexRow,
   type CompendiumPackRow,
@@ -120,10 +123,11 @@ export class BridgeHandlerError extends Error {
   }
 }
 
-/** `CONFIG.queries["portal.<method>"]`'s key, matching how the server addresses a
- * query (`bridge.sendQuery("portal.ping")` on the server side — see `mcp.ts`/`bridge.ts`). */
+/** `CONFIG.queries["portal.<method>"]`'s key: the same wire method the server sends
+ * (`bridgeMethod` in `@astra/portal-shared`). Its prefix equals {@link MODULE_ID}, which
+ * `constants.test.ts` pins. */
 function queryKey(method: string): string {
-  return `${MODULE_ID}.${method}`;
+  return bridgeMethod(method);
 }
 
 /** S3's one handler — proves the bridge end-to-end (spec 0023 S3 acceptance). Every
@@ -2517,33 +2521,43 @@ async function handleQueryRolls(rawParams: unknown): Promise<QueryRollsResult> {
   return { rows, totalMessages, hasMore, nextCursor };
 }
 
-/** Registers every handler this module build knows about into `CONFIG.queries`. Call
- * once, on the `init` hook (Foundry's `CONFIG` global exists by then, before `ready`
- * dials the bridge). S5 adds more `CONFIG.queries[queryKey(...)] = ...` lines here —
- * same registry, same dispatch path, no change to `bridgeClient.ts`. */
+/** The module's dispatch table, one handler per bridge tool in the shared registry
+ * (`PORTAL_TOOLS` in `@astra/portal-shared`). {@link BridgeToolHandlers} makes a
+ * missing, extra or wrongly typed handler a compile error, so the server's tool list and
+ * this table cannot drift. */
+export const TOOL_HANDLERS: BridgeToolHandlers = {
+  "list-compendium-packs": handleListCompendiumPacks,
+  "search-compendium": handleSearchCompendium,
+  "get-document": handleGetDocument,
+  "search-world": handleSearchWorld,
+  "list-scenes": handleListScenes,
+  "get-current-scene": handleGetCurrentScene,
+  "query-party": handleQueryParty,
+  "query-player": handleQueryPlayer,
+  "query-item": handleQueryItem,
+  "query-rolls": handleQueryRolls,
+  "import-from-compendium": handleImportFromCompendium,
+  "create-token": handleCreateToken,
+  "create-journal": handleCreateJournal,
+  "create-actor": handleCreateActor,
+  "create-item": handleCreateItem,
+  "create-light": handleCreateLight,
+  "create-macro": handleCreateMacro,
+  "apply-condition": handleApplyCondition,
+  "update-document": handleUpdateDocument,
+  "delete-document": handleDeleteDocument,
+  "execute-macro": handleExecuteMacro,
+};
+
+/** Registers every handler into `CONFIG.queries` under its wire method: each bridge tool
+ * in {@link TOOL_HANDLERS}, plus the S3 `ping` diagnostic (not an MCP tool; nothing on
+ * the server calls it today). Call once, on the `init` hook (Foundry's `CONFIG` global
+ * exists by then, before `ready` dials the bridge). */
 export function registerHandlers(): void {
   CONFIG.queries[queryKey("ping")] = handlePing;
-  CONFIG.queries[queryKey("list-compendium-packs")] = handleListCompendiumPacks;
-  CONFIG.queries[queryKey("search-compendium")] = handleSearchCompendium;
-  CONFIG.queries[queryKey("get-document")] = handleGetDocument;
-  CONFIG.queries[queryKey("search-world")] = handleSearchWorld;
-  CONFIG.queries[queryKey("list-scenes")] = handleListScenes;
-  CONFIG.queries[queryKey("get-current-scene")] = handleGetCurrentScene;
-  CONFIG.queries[queryKey("import-from-compendium")] = handleImportFromCompendium;
-  CONFIG.queries[queryKey("create-token")] = handleCreateToken;
-  CONFIG.queries[queryKey("create-journal")] = handleCreateJournal;
-  CONFIG.queries[queryKey("create-actor")] = handleCreateActor;
-  CONFIG.queries[queryKey("create-item")] = handleCreateItem;
-  CONFIG.queries[queryKey("create-light")] = handleCreateLight;
-  CONFIG.queries[queryKey("create-macro")] = handleCreateMacro;
-  CONFIG.queries[queryKey("apply-condition")] = handleApplyCondition;
-  CONFIG.queries[queryKey("update-document")] = handleUpdateDocument;
-  CONFIG.queries[queryKey("delete-document")] = handleDeleteDocument;
-  CONFIG.queries[queryKey("execute-macro")] = handleExecuteMacro;
-  CONFIG.queries[queryKey("query-party")] = handleQueryParty;
-  CONFIG.queries[queryKey("query-player")] = handleQueryPlayer;
-  CONFIG.queries[queryKey("query-item")] = handleQueryItem;
-  CONFIG.queries[queryKey("query-rolls")] = handleQueryRolls;
+  for (const name of BRIDGE_TOOL_NAMES) {
+    CONFIG.queries[queryKey(name)] = TOOL_HANDLERS[name];
+  }
 }
 
 /**

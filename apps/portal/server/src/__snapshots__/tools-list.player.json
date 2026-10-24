@@ -1,0 +1,193 @@
+{
+  "tools": [
+    {
+      "name": "bridge-status",
+      "title": "Bridge status",
+      "description": "Liveness of the Foundry module bridge: whether a GM's 'Faerrin' browser tab is currently connected. Every other portal tool depends on this being connected — call it first if a prior call returned a 'bridge-offline' error.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "query-party",
+      "description": "The party roster for the LIVE 'Faerrin' FoundryVTT world — every player character as a full row (name, level, HP, hero points, ancestry/class, owning player) plus every companion/familiar as a labeled minimal row (name, type, master). Resolves the party actor by type, never a hardcoded id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "query-player",
+      "description": "One section of a player character or familiar's sheet in the LIVE 'Faerrin' FoundryVTT world, by name or uuid. Sheets are 166-579 KB — far too large for one call — so this ALWAYS returns exactly one section per call (see the section param's own description for what each one covers). Refuses with a typed not-a-player-character error for an npc/party/loot/vehicle/hazard target, and a typed ambiguous-name error when a name matches more than one actor (retry with a uuid — see query-party's rows).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The player character or familiar's name — case-insensitive exact match preferred, falling back to an unambiguous case-insensitive prefix match. Give exactly one of name or uuid.",
+            "type": "string",
+            "minLength": 1
+          },
+          "uuid": {
+            "description": "A Foundry actor uuid (\"Actor.<id>\", from query-party) or a bare world actor id — either form is accepted. Give exactly one of name or uuid.",
+            "type": "string",
+            "minLength": 1
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "summary",
+              "stats",
+              "skills",
+              "spells",
+              "feats",
+              "inventory",
+              "notes"
+            ],
+            "description": "Which slice of the sheet to fetch — sheets are 166-579 KB, far too large for one call, so always fetch one section at a time. \"summary\": identity, level/XP, HP/resources, ancestry/heritage/background/class/deity, languages. \"stats\": the LIVE derived projection — AC, saving throws, perception, ability modifiers, class/spell DC — computed by pf2e at runtime (never available from stored source data). \"skills\": per-skill proficiency rank + derived total, lore skills included. \"spells\": a group-level summary by default (spell names + counts per spellcasting entry and rank); pass the entry and/or rank params for full details (traits, prepared/slot state) of one group. \"feats\": feats grouped by category. \"inventory\": weapons/armor/equipment/consumables with quantity/bulk/runes. \"notes\": deity and biography prose."
+          },
+          "entry": {
+            "description": "spells section only: restrict to one spellcasting entry, matched by id or a case-insensitive substring of its name (e.g. \"Cleric Spells\"). Passing entry and/or rank switches the spells section from its default summary to full per-spell detail.",
+            "type": "string",
+            "minLength": 1
+          },
+          "rank": {
+            "description": "spells section only: restrict to one spell rank (0 = cantrips).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "section"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "query-item",
+      "description": "Looks up items in the LIVE 'Faerrin' FoundryVTT world — world items, items embedded on party members, and compendium rules content (e.g. 'look up the Grab action') — by uuid/id or by name. A uuid/id lookup returns ONE item's full detail (traits, price, bulk, damage/AC where present, description). A name search returns a provenance-labeled hit LIST (never full detail, even for a single match — a world item and an embedded item can share a name); pass one hit's uuid back in a follow-up call for its detail. GM-hidden world items and player-restricted compendium packs never appear.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "description": "A Foundry item uuid — world (\"Item.<id>\"), party-member-embedded (\"Actor.<id>.Item.<id>\"), or compendium (\"Compendium.<pack>.Item.<id>\") — or a bare world item id. Fetches this ONE item's full detail (description, traits, price, damage/AC where present). Give exactly one of uuid or name.",
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "description": "Case-insensitive substring matched by name across world items, items embedded on party members, and compendium items (visible packs only — a GM-restricted spoiler pack never surfaces a hit). Returns a provenance-labeled hit LIST, not full detail — pass one hit's uuid back in a follow-up call to fetch its description. Give exactly one of uuid or name.",
+            "type": "string",
+            "minLength": 1
+          },
+          "limit": {
+            "description": "Max hits for a name search (default 25); ignored for a uuid lookup.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 200
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "query-rolls",
+      "description": "Paginated chat roll history from the LIVE 'Faerrin' FoundryVTT world — newest first. Only PUBLIC rolls ever appear (whispered/blind/GM-secret rolls are filtered out unconditionally, not a param); filters actor/type/outcome/since/until compose. Each row carries the check name, formula → total, degree of success, DC (only when it was player-visible), per-die results, and — when present — the enabled modifier breakdown (ability/proficiency/item/status/circumstance bonuses). Paginate with the previous call's nextCursor. Set format=\"json\" for the typed rows verbatim instead of a markdown table.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "actor": {
+            "description": "Restrict to rolls from one actor — a world actor uuid/id, or a name (case-insensitive exact match preferred, falling back to an unambiguous prefix match — same resolution as query-player's name param, D28-13). Matches either the roll's speaker or its pf2e origin actor.",
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "description": "Restrict to one roll type — the pf2e taxonomy (e.g. \"skill-check\", \"attack-roll\", \"saving-throw\", \"perception-check\", \"damage-roll\", \"flat-check\", \"spell-cast\", \"initiative\") or \"roll\" for untagged /roll messages.",
+            "type": "string",
+            "minLength": 1
+          },
+          "outcome": {
+            "description": "Restrict to one degree of success.",
+            "type": "string",
+            "enum": [
+              "criticalFailure",
+              "failure",
+              "success",
+              "criticalSuccess"
+            ]
+          },
+          "since": {
+            "description": "Only rolls at or after this time — a ms-epoch number, or an ISO-8601 string (e.g. \"2026-07-01T00:00:00Z\"). A plain numeric STRING is rejected; pass a JSON number for an epoch timestamp.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+              }
+            ]
+          },
+          "until": {
+            "description": "Only rolls at or before this time — same shape as since.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+              }
+            ]
+          },
+          "cursor": {
+            "description": "Opaque pagination cursor from a prior call's nextCursor — omit for the first (most recent) page.",
+            "type": "string",
+            "minLength": 1
+          },
+          "limit": {
+            "description": "Max rows per page (default 20, max 100).",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 100
+          },
+          "format": {
+            "description": "Output shape for the response. \"markdown\" (default) renders a human-readable table for chat/LLM consumption. \"json\" returns the typed rows verbatim (pretty-printed) for data analysis/scripting — a server-side presentation switch only, the module's wire shape is unaffected.",
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ]
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    }
+  ]
+}

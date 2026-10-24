@@ -1397,3 +1397,26 @@ export const QueryRollsResult = z
   })
   .strict();
 export type QueryRollsResult = z.infer<typeof QueryRollsResult>;
+
+// ---------------------------------------------------------------------------
+// bridge-status (answered by portal-server alone, never forwarded to the module)
+// ---------------------------------------------------------------------------
+
+/** Liveness + handshake snapshot for the `bridge-status` tool. Everything but
+ * `connected` comes straight from the module's auth `meta` (`AuthMeta`), so an older
+ * module build that doesn't send a field just leaves it absent. `userId`/`userName`
+ * (0027 D27-8) prove which Foundry session (e.g. the headless "Portal" account) holds
+ * the bridge. */
+export const BridgeStatusResult = z
+  .object({
+    connected: z.boolean(),
+    worldId: z.string().optional(),
+    world: z.string().optional(),
+    system: z.string().optional(),
+    systemVersion: z.string().optional(),
+    foundryVersion: z.string().optional(),
+    userId: z.string().optional(),
+    userName: z.string().optional(),
+  })
+  .strict();
+export type BridgeStatusResult = z.infer<typeof BridgeStatusResult>;
