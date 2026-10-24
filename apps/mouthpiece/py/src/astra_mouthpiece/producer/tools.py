@@ -5,7 +5,7 @@ the akasha wiki, the entity registry, the chronicle, earlier same-show transcrip
 earlier episode scripts. Nothing here writes anywhere.
 
 Boundary (D34-5): transcript, chronicle and script tools serve only sessions of the
-target's show dated **strictly before** the target, ``EXCLUDED_DATES`` honoured (via
+target's show dated **strictly before** the target, `sessions.kdl` skips honoured (via
 ``show_for_date``), ordered by ``date_key``. The target's own cleaned transcript reaches
 the agent as an input, never through a tool.
 
@@ -34,6 +34,7 @@ from astra_linguist.chronicle import (
 )
 from astra_llm.rlm import text_matcher
 from astra_ontology import Resolution
+from astra_ontology_being import session_overrides
 from astra_ontology_entity import resolve
 from astra_sessions import date_key, find_transcript, transcript_dates
 from astra_sessions.tools import MAX_RESULTS, SessionToolsMixin
@@ -78,7 +79,7 @@ def _script_files(scripts_root: Path, show: str, permitted: set[str]) -> dict[st
         sid = raw.get("session_id") or raw.get("sessionId") or file.parent.name
         if not isinstance(sid, str) or is_recap(file.parent.name):
             continue
-        if stored_kind(raw, sid) != "session":
+        if stored_kind(raw, sid, session_overrides()) != "session":
             continue
         _arc, slug, date = parse_id(sid)
         if slug == show and date in permitted:

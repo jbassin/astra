@@ -2,7 +2,7 @@
 
 Reads the committed transcripts + being.kdl: faerrin sessions are kept and resolve to a
 faerrin campaign slug; non-faerrin worlds (sedecium `observatory-slipped`, finnegan's-ring
-`fey-in-the-mists`) and the mislabeled EXCLUDED_DATES session (2025-8-11) are dropped.
+`fey-in-the-mists`) and the mislabeled session `sessions.kdl` skips (2025-8-11) are dropped.
 Absolute counts are NOT asserted (committed transcripts grow as sessions land).
 """
 

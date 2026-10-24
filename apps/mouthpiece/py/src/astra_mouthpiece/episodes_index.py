@@ -40,6 +40,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from astra_ontology.sessions import SessionOverrides
+from astra_ontology_being import session_overrides
 from astra_sessions import date_sort_key
 from pydantic import BaseModel, ConfigDict, model_validator
 from pydantic.alias_generators import to_camel
@@ -351,15 +353,20 @@ def _episode_id(script: dict, fallback: str) -> str:
     return sid if isinstance(sid, str) and sid else fallback
 
 
-def discover_sessions(out_root: Path) -> list[SessionInput]:
+def discover_sessions(
+    out_root: Path, overrides: SessionOverrides | None = None
+) -> list[SessionInput]:
     """Glob `out_root/<dir>/script.json` → SessionInput (skip a script-less dir).
 
     The session id comes from the script (`_episode_id`), NOT the dir name, so a
     date-keyed live dir and an id-keyed golden dir both resolve to the real episode
     id and find their `<id>.episode.mp3`. `title`/`synopsis` are read by their
     format-stable keys (faerrin camelCase and astra snake_case both use
-    `title`/`synopsis`), so no model parsing is needed.
+    `title`/`synopsis`), so no model parsing is needed. A `sessions.kdl` entry for the
+    episode (``overrides``, default ontology-being's file) replaces its ``kind`` and
+    ``title``.
     """
+    overrides = overrides if overrides is not None else session_overrides()
     sessions: list[SessionInput] = []
     for script_path in sorted(out_root.glob("*/script.json")):
         script = _read_json(script_path)
@@ -370,10 +377,11 @@ def discover_sessions(out_root: Path) -> list[SessionInput]:
         synopsis = digest.get("synopsis")
         mp3 = script_path.parent / f"{sid}{EPISODE_SUFFIX}"
         transcript = script_path.parent / f"{sid}{TRANSCRIPT_SUFFIX}"
+        override = overrides.for_episode(sid)
         sessions.append(
             SessionInput(
                 id=sid,
-                title=script["title"],
+                title=override.title if override and override.title else script["title"],
                 synopsis=synopsis if isinstance(synopsis, str) else "",
                 duration_ms=_probe_duration_ms(mp3),
                 has_audio=mp3.is_file(),
@@ -381,7 +389,7 @@ def discover_sessions(out_root: Path) -> list[SessionInput]:
                 audio_version=_audio_version(mp3),
                 turns=_read_turns(script),
                 hosts=_read_hosts(script),
-                kind=stored_kind(script, sid),
+                kind=stored_kind(script, sid, overrides),
             )
         )
     return sessions

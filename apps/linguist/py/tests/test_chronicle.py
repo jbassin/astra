@@ -73,8 +73,20 @@ def test_show_for_date_unknown_returns_none() -> None:
 
 
 def test_show_for_date_excluded_returns_none() -> None:
-    # 2025-8-11 is a mislabeled session (different campaign) — excluded by hand.
+    # 2025-8-11 is a mislabeled session (different campaign): sessions.kdl skips it.
     assert show_for_date("2025-8-11") is None
+
+
+def test_show_for_date_honours_a_sessions_kdl_skip(tmp_path: Path) -> None:
+    from astra_ontology.sessions import parse_session_overrides
+
+    slug = next(iter(show_index()))
+    (tmp_path / f"000.{slug}.2026-9-7.txt").write_text("x")
+    none = parse_session_overrides("")
+    skip = parse_session_overrides('session "2026-9-7" skip=#true')
+    info = show_for_date("2026-9-7", transcript_dir=tmp_path, overrides=none)
+    assert info is not None and info.slug == slug
+    assert show_for_date("2026-9-7", transcript_dir=tmp_path, overrides=skip) is None
 
 
 # ── artifact-model shapes round-trip ────────────────────────────────────────

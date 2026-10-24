@@ -23,7 +23,8 @@ from pathlib import Path
 from astra_config import load_config
 from astra_ontology import load_being
 from astra_ontology.models import Being
-from astra_ontology_being import BEING_KDL_PATH
+from astra_ontology.sessions import SessionOverrides
+from astra_ontology_being import BEING_KDL_PATH, session_overrides
 from astra_sessions import date_key, find_transcript, parse_transcript_name
 from pydantic import BaseModel, Field
 
@@ -32,13 +33,6 @@ TRANSCRIPT_DIR = Path(_DATA.linguist_transcripts)
 TIMELINE_DIR = Path(_DATA.linguist_timeline)
 EPISODES_DIR = TIMELINE_DIR / "episodes"
 SEASONS_PATH = TIMELINE_DIR / "seasons.json"
-
-# Sessions whose transcript filename prefix is WRONG — `match_campaign`'s substring
-# heuristic mis-assigned them (e.g. 2025-8-11 "The Blue Remains" is a different campaign
-# with the same players; it matched only because the word "Argyle" appears 96× as a
-# false positive). The GM knows ground truth, so these are excluded from the chronicle
-# by hand. Add a date here to drop a mislabeled session.
-EXCLUDED_DATES: frozenset[str] = frozenset({"2025-8-11"})
 
 
 # ── GLM outputs ────────────────────────────────────────────────────────────
@@ -232,15 +226,19 @@ def show_for_date(
     *,
     transcript_dir: Path = TRANSCRIPT_DIR,
     shows: dict[str, ShowInfo] | None = None,
+    overrides: SessionOverrides | None = None,
 ) -> ShowInfo | None:
     """Resolve a session date to its show via the committed transcript filename.
 
     Transcripts are named `<prefix>.<slug>.<date>.txt` (e.g.
     `000.through-a-song-darkly.2025-10-20.txt`), so the show slug is the segment
     between the numeric prefix and the date. Returns ``None`` if no transcript for
-    that date exists or its slug is unknown.
+    that date exists, its slug is unknown, or `sessions.kdl` marks the date `skip=#true`
+    (a session the substring campaign match mislabeled, say). ``overrides`` defaults to
+    ontology-being's `sessions.kdl`.
     """
-    if date in EXCLUDED_DATES:
+    overrides = overrides if overrides is not None else session_overrides()
+    if overrides.skipped(date):
         return None
     shows = shows if shows is not None else show_index()
     path = find_transcript(date, transcript_dir)

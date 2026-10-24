@@ -26,6 +26,7 @@ from astra_mouthpiece.models import (
     kind_from_id,
     stored_kind,
 )
+from astra_ontology.sessions import parse_session_overrides
 from pydantic import ValidationError
 
 SHOW = "000.through-a-song-darkly"
@@ -113,3 +114,40 @@ def test_the_catalog_carries_the_kind_and_reads_an_old_snapshot() -> None:
     dumped = index.episodes[0].model_dump(by_alias=True)
     del dumped["kind"]  # a snapshot published before the field existed
     assert EpisodeEntry.model_validate(dumped).kind == "session"
+
+
+# ── sessions.kdl overrides (0037 pipe-10) ────────────────────────────────────
+
+
+def test_the_sidecar_sets_kind_and_title_in_the_catalog(tmp_path: Path) -> None:
+    overrides = parse_session_overrides(
+        'session "2026-10-19-recap-of-2025-8-28" kind="special"\n'
+        'session "2026-10-5" title="A Better Title"\n'
+    )
+    for sid in (f"{SHOW}.2026-10-5", f"{SHOW}.2026-10-19-recap-of-2025-8-28"):
+        (tmp_path / sid).mkdir()
+        (tmp_path / sid / "script.json").write_text(json.dumps(_script(sid)))
+    found = {s.id: s for s in discover_sessions(tmp_path, overrides)}
+    assert found[f"{SHOW}.2026-10-5"].title == "A Better Title"
+    assert found[f"{SHOW}.2026-10-5"].kind == "session"
+    assert found[f"{SHOW}.2026-10-19-recap-of-2025-8-28"].kind == "special"
+    assert found[f"{SHOW}.2026-10-19-recap-of-2025-8-28"].title == "T"
+
+
+def test_the_committed_sidecar_marks_the_roundtable_special(tmp_path: Path) -> None:
+    """The real roundtable dir (2026-10-19, no stored kind) reads as special by default."""
+    sid = f"{SHOW}.2026-10-19-recap-of-2025-8-28"
+    (tmp_path / sid).mkdir()
+    (tmp_path / sid / "script.json").write_text(json.dumps(_script(sid)))
+    (found,) = discover_sessions(tmp_path)
+    assert found.kind == "special"
+
+
+def test_a_skipped_session_gets_no_episode(monkeypatch: pytest.MonkeyPatch) -> None:
+    from astra_mouthpiece import assets
+
+    overrides = parse_session_overrides('session "2026-9-7" skip=#true')
+    monkeypatch.setattr(assets, "session_overrides", lambda: overrides)
+    monkeypatch.setattr(assets.linguist_io, "transcript_for", lambda _key, _dir: Path("t.txt"))
+    assert not assets.MOUTHPIECE_STAGE.keep("2026-9-7")
+    assert assets.MOUTHPIECE_STAGE.keep("2026-9-14")

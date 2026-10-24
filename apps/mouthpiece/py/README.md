@@ -148,6 +148,10 @@ package's private `_provider` and `_voices`, so keep their signatures.
   has none and reads as `recap` for a recap-form id, else `session` (`stored_kind`); no
   file needs rewriting. The catalog snapshot carries `kind` per episode too. Readers decide on
   the kind, never on the id.
+- **`sessions.kdl` overrides** (`ontology/ontology-being/`, see `docs/runbook.md`, "Correct one
+  session"). A `kind` there wins over the files, a `title` replaces the published catalog title
+  (not `script.json`'s), and `skip=#true` keeps `linguist_output_sensor` from launching the
+  session. The 2026-10-19 roundtable is marked `special` there, since its files predate `kind`.
 - **A re-render rewrites its whole snapshot entry** (the transcript is inlined), so large
   snapshot diffs are expected.
 - **dspy RLM output must be typed** (`brief: ProducerBrief`). A `str` output turns a submitted

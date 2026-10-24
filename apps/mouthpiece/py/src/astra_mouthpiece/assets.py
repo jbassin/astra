@@ -25,6 +25,7 @@ from astra_lexicon import load_pronunciations
 from astra_linguist.assets import session_episode_summary, session_transcripts
 from astra_linguist.chronicle import recent_prior_entries, season_for, show_for_date
 from astra_observe import get_logger, get_meter, get_tracer
+from astra_ontology_being import session_overrides
 from astra_pipeline_resources import (
     AstraConfig,
     LlmResource,
@@ -389,6 +390,9 @@ def build_episodes_index(root: Path | None = None) -> EpisodesIndex:
 
 
 def _has_transcript(key: str) -> bool:
+    """A canonical transcript exists and `sessions.kdl` does not mark the session skipped."""
+    if session_overrides().skipped(key):
+        return False
     return linguist_io.transcript_for(key, linguist_io.TRANSCRIPT_DIR) is not None
 
 
