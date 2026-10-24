@@ -35,7 +35,7 @@ data {
     //   codex/data/              codex corpus, Pagefind index, AoN + Foundry snapshots
     //   menhir/                  menhir results.jsonl
     //   audio/{akasha,mouthpiece,orator}/  audio the frontends and orator serve
-    //   postgres/{dagster,orator,weal}/    PGDATA (uid 70, mode 0700; init makes only postgres/)
+    //   postgres/{dagster,orator,weal}/    PGDATA (uid 70, mode 0700, set by the postgres entrypoint)
     //   portal-oauth/            portal's OAuth state
     //   node-exporter/textfile/  smartmon.prom (smart-exporter writes, node-exporter serves)
     //   deploy/                  deploy.lock, history.jsonl, live/<service> (deploy.sh)

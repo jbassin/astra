@@ -3,14 +3,75 @@
 #     vendored under deploy/signoz/ and `include`d so its own relative mounts
 #     (../common/...) resolve correctly. Published ports remapped into 10350-10399.
 #   - Dagster control plane (Postgres + code location + webserver + daemon).
-#   - Caddy edge.
-# SigNoz/OTel is the single pane across all three. Deploy with `just deploy [service...]`
+#   - The Node services (SSR frontends, bots, overlay, render, portal) and host exporters.
+# SigNoz/OTel is the single pane across all of them. Deploy with `just deploy [service...]`
 # (deploy/deploy.sh): it builds from the deploy checkout at a pushed sha and injects the
 # SOPS secrets. A bare `docker compose up` starts services with every secret empty.
+#
+# Shared blocks are `x-*` extension fields merged with `<<:`; a service states only what
+# differs. `docker compose -f deploy/docker-compose.yml config` prints the expanded result.
 name: astra
 
 include:
   - path: signoz/docker/docker-compose.yaml
+
+# Every astra service: restart policy and the one network (node-exporter and smart-exporter
+# set their own network_mode instead).
+x-astra-service: &astra-service
+  networks: [signoz-net]
+  restart: unless-stopped
+
+# The astra app containers run as the host owner (uid 1000): node:24-slim ships a uid-1000
+# `node` user and the Dagster image chowns /opt/dagster to 1000, so writes into the bind
+# mounts land host-owned. Postgres and SigNoz keep their own uid.
+x-astra-app: &astra-app
+  <<: *astra-service
+  user: "1000:1000"
+
+# The Postgres stores: PGDATA is an identical-layout bind mount from the data root. No
+# `user:`, because the postgres entrypoint owns PGDATA as uid 70 (`just pg-migrate` keeps
+# 70:70/0700).
+x-astra-postgres: &astra-postgres
+  <<: *astra-service
+  image: postgres:16-alpine
+
+x-pg-healthcheck: &pg-healthcheck
+  interval: 10s
+  timeout: 5s
+  retries: 5
+
+# The Node services' healthcheck shape; each service adds its `test` (node:24-slim has a
+# global fetch, so the probe needs no extra deps).
+x-node-healthcheck: &node-healthcheck
+  interval: 15s
+  timeout: 5s
+  retries: 5
+
+# Labels on every image built here (0037 OPS-3), so `docker inspect` answers "which commit
+# is this container running". deploy/deploy.sh exports ASTRA_REVISION (the full sha it
+# checked out) and ASTRA_REVISION_DATE (that commit's date — not the wall clock, so
+# redeploying the same sha leaves the image config, and so the containers, unchanged). A
+# build outside deploy.sh is labelled `unknown`.
+x-build-labels: &build-labels
+  org.opencontainers.image.revision: ${ASTRA_REVISION:-unknown}
+  org.opencontainers.image.created: ${ASTRA_REVISION_DATE:-unknown}
+
+# Every Node service builds deploy/node.Dockerfile from the repo root; its `args` (APP,
+# ENTRY, CONTENT, RUNTIME) pick the app, and the image's CMD runs `$APP_ENTRY`. Services
+# set no `command:`, so the entry has one source (the 2026-10-24 outage was a compose
+# command that had drifted from the image).
+x-node-build: &node-build
+  labels: *build-labels
+  context: ..
+  dockerfile: deploy/node.Dockerfile
+
+# Every bind mount uses the long syntax with create_host_path: false, so a missing host dir
+# fails the deploy instead of Docker creating it empty and root-owned. deploy.sh
+# init_artifacts creates the data root's dirs as uid 1000; `just doctor` checks them.
+x-bind: &bind
+  type: bind
+  bind:
+    create_host_path: false
 
 x-dagster-env: &dagster-env
   DAGSTER_PG_USERNAME: ${DAGSTER_PG_USERNAME:-dagster}
@@ -37,91 +98,70 @@ x-dagster-env: &dagster-env
 # mount pairs. The published datasets live in the astra-data clone
 # (data.content-root, /ruby/data/astra-state/astra-data): the run workers write
 # the linguist datasets there and the host linguist-commit timer commits + pushes them.
-# The clone must exist before a deploy (Docker would create a missing source as root);
+# The clone must exist before a deploy (a missing bind source fails the deploy);
 # deploy.sh creates the other source dirs as uid 1000 (init_artifacts).
 x-dagster-volumes: &dagster-pipeline-volumes
   # scribe.incoming-path — the local Craig drop dir (zips copied here from the Drive
   # fuse mount, which Docker can't bind-mount). scribe reads + extracts, never deletes.
-  - /ruby/data/astra-state/scribe/incoming:/ruby/data/astra-state/scribe/incoming
-  - /ruby/data/astra-state/scribe/data:/ruby/data/astra-state/scribe/data
-  - /ruby/data/astra-state/scribe/tmp:/ruby/data/astra-state/scribe/tmp
+  - { <<: *bind, source: /ruby/data/astra-state/scribe/incoming, target: /ruby/data/astra-state/scribe/incoming }
+  - { <<: *bind, source: /ruby/data/astra-state/scribe/data, target: /ruby/data/astra-state/scribe/data }
+  - { <<: *bind, source: /ruby/data/astra-state/scribe/tmp, target: /ruby/data/astra-state/scribe/tmp }
   # linguist.script-path — operator state (the campaign-matched context).
-  - /ruby/data/astra-state/linguist/script:/ruby/data/astra-state/linguist/script
+  - { <<: *bind, source: /ruby/data/astra-state/linguist/script, target: /ruby/data/astra-state/linguist/script }
   # data.linguist-{transcripts,data,timeline} — in the astra-data clone.
-  - /ruby/data/astra-state/astra-data/linguist/transcripts:/ruby/data/astra-state/astra-data/linguist/transcripts
-  - /ruby/data/astra-state/astra-data/linguist/data:/ruby/data/astra-state/astra-data/linguist/data
-  - /ruby/data/astra-state/astra-data/linguist/timeline:/ruby/data/astra-state/astra-data/linguist/timeline
-  - /ruby/data/astra-state/mouthpiece/episodes:/ruby/data/astra-state/mouthpiece/episodes
+  - { <<: *bind, source: /ruby/data/astra-state/astra-data/linguist/transcripts, target: /ruby/data/astra-state/astra-data/linguist/transcripts }
+  - { <<: *bind, source: /ruby/data/astra-state/astra-data/linguist/data, target: /ruby/data/astra-state/astra-data/linguist/data }
+  - { <<: *bind, source: /ruby/data/astra-state/astra-data/linguist/timeline, target: /ruby/data/astra-state/astra-data/linguist/timeline }
+  - { <<: *bind, source: /ruby/data/astra-state/mouthpiece/episodes, target: /ruby/data/astra-state/mouthpiece/episodes }
   # The akasha wiki, LIVE and read-only (0035 D35-3): the producer (session_brief) and the
   # script fallback's grounding read it. Before this the container read the copy baked in
   # at the last `just up`, missing everything heartwood published since. Nothing in Dagster
   # writes here (the akasha snapshot runs on the host, because it needs node).
-  - /ruby/data/astra-state/astra-data/akasha/content:/ruby/data/astra-state/astra-data/akasha/content:ro
+  - { <<: *bind, source: /ruby/data/astra-state/astra-data/akasha/content, target: /ruby/data/astra-state/astra-data/akasha/content, read_only: true }
   # data.entity-registry, read-only: session_brief's producer resolves names against it
   # (astra_ontology_entity.resolve). The directory (not the file) is mounted so a git
   # checkout/rebase in the clone that replaces entity.kdl's inode stays visible.
-  - /ruby/data/astra-state/astra-data/entity:/ruby/data/astra-state/astra-data/entity:ro
+  - { <<: *bind, source: /ruby/data/astra-state/astra-data/entity, target: /ruby/data/astra-state/astra-data/entity, read_only: true }
   # heartwood.requests-path (0036): session_wiki files <date>.request.json here and waits for
   # the host heartwood-request unit's <date>.result.json. Identical path on both sides; the
-  # dir is created by deploy.sh init_artifacts as uid 1000 (Docker would create it as root).
-  - /ruby/data/astra-state/heartwood/requests:/ruby/data/astra-state/heartwood/requests
-
-# Labels on every image built here (0037 OPS-3), so `docker inspect` answers "which commit
-# is this container running". deploy/deploy.sh exports ASTRA_REVISION (the full sha it
-# checked out) and ASTRA_REVISION_DATE (that commit's date — not the wall clock, so
-# redeploying the same sha leaves the image config, and so the containers, unchanged). A
-# build outside deploy.sh is labelled `unknown`.
-x-build-labels: &build-labels
-  org.opencontainers.image.revision: ${ASTRA_REVISION:-unknown}
-  org.opencontainers.image.created: ${ASTRA_REVISION_DATE:-unknown}
+  # dir is created by deploy.sh init_artifacts as uid 1000.
+  - { <<: *bind, source: /ruby/data/astra-state/heartwood/requests, target: /ruby/data/astra-state/heartwood/requests }
 
 services:
   # --- Dagster: the batch-pipeline control plane ---
   dagster-postgres:
-    image: postgres:16-alpine
+    <<: *astra-postgres
     container_name: astra-dagster-postgres
     environment:
       POSTGRES_USER: ${DAGSTER_PG_USERNAME:-dagster}
       POSTGRES_PASSWORD: ${DAGSTER_PG_PASSWORD:-dagster}
       POSTGRES_DB: ${DAGSTER_PG_DB:-dagster}
-    # PGDATA bind-mounted from the data root (was the named volume astra-dagster-pg).
-    # No `user:` — the postgres entrypoint owns PGDATA as uid 70; the one-time
-    # `just pg-migrate dagster` copy preserves 70:70/0700 so it's accepted.
     volumes:
-      - /ruby/data/astra-state/postgres/dagster:/var/lib/postgresql/data
-    networks: [signoz-net]
+      - { <<: *bind, source: /ruby/data/astra-state/postgres/dagster, target: /var/lib/postgresql/data }
     healthcheck:
+      <<: *pg-healthcheck
       test: ["CMD-SHELL", "pg_isready -U ${DAGSTER_PG_USERNAME:-dagster} -d ${DAGSTER_PG_DB:-dagster}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
+  # The three Dagster services share one image (no CMD), so each sets its own command.
   dagster-code:
+    <<: *astra-app
     build:
       labels: *build-labels
-      # Repo root (like the frontend services) — the image `uv sync`s the Python
-      # workspace so definitions.py can import the real pipeline packages.
+      # Repo root (like the Node services): the image `uv sync`s the Python workspace so
+      # definitions.py can import the real pipeline packages.
       context: ..
       dockerfile: dagster/Dockerfile
     image: astra-dagster:local
     container_name: astra-dagster-code
     command: ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000", "-f", "definitions.py"]
-    # Run as the host repo owner (uid 1000) so the run worker's writes into the bind-mounted
-    # pipeline dirs (linguist/data, transcripts, timeline, mouthpiece episodes, scribe data)
-    # land host-owned instead of root:root — the same fix as the frontends below. The image
-    # chowns /opt/dagster to 1000 (compute logs / DAGSTER_HOME) so this works.
-    user: "1000:1000"
     environment: *dagster-env
     volumes: *dagster-pipeline-volumes
-    networks: [signoz-net]
-    restart: unless-stopped
 
   dagster-webserver:
+    <<: *astra-app
     image: astra-dagster:local
     container_name: astra-dagster-webserver
     command: ["dagster-webserver", "-h", "0.0.0.0", "-p", "3000", "-w", "/opt/dagster/home/workspace.yaml"]
-    user: "1000:1000" # see dagster-code
     ports:
       - "10350:3000" # Dagster UI (astra range)
     environment: *dagster-env
@@ -131,14 +171,12 @@ services:
         condition: service_healthy
       dagster-code:
         condition: service_started
-    networks: [signoz-net]
-    restart: unless-stopped
 
   dagster-daemon:
+    <<: *astra-app
     image: astra-dagster:local
     container_name: astra-dagster-daemon
     command: ["dagster-daemon", "run", "-w", "/opt/dagster/home/workspace.yaml"]
-    user: "1000:1000" # see dagster-code
     environment: *dagster-env
     volumes: *dagster-pipeline-volumes
     depends_on:
@@ -146,54 +184,34 @@ services:
         condition: service_healthy
       dagster-code:
         condition: service_started
-    networks: [signoz-net]
-    restart: unless-stopped
-
-  # --- strider: the first SSR frontend (Decision I) — the template for 0011-0013 ---
-  # One SSR process; the editor save runs in it as a TanStack server function
-  # (writes content/layers/*.md). The /editor UI is gated to the local network at
-  # the Caddy edge.
 
   # --- weal: the dice/host bot's roll-history + macro store (0009, Decision F) ---
   weal-postgres:
-    image: postgres:16-alpine
+    <<: *astra-postgres
     container_name: astra-weal-postgres
     environment:
       POSTGRES_USER: ${WEAL_PG_USERNAME:-weal}
       POSTGRES_PASSWORD: ${WEAL_PG_PASSWORD:-weal}
       POSTGRES_DB: ${WEAL_PG_DB:-weal}
-    # PGDATA bind-mounted from the data root (was named volume astra-weal-pg); see dagster-postgres.
     volumes:
-      - /ruby/data/astra-state/postgres/weal:/var/lib/postgresql/data
+      - { <<: *bind, source: /ruby/data/astra-state/postgres/weal, target: /var/lib/postgresql/data }
     ports:
       - "10362:5432" # weal dice/funcs store (astra range) — for the P6 SQLite→PG migration
-    networks: [signoz-net]
     healthcheck:
+      <<: *pg-healthcheck
       test: ["CMD-SHELL", "pg_isready -U ${WEAL_PG_USERNAME:-weal} -d ${WEAL_PG_DB:-weal}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # weal-bot: the dice/host Discord bot (discord.js gateway + internal speak API).
   # No published port — Discord dials outbound; the speak API binds 127.0.0.1 only.
-  # Won't fully run until the SOPS secrets (discord token, weal_token) are provisioned.
   weal-bot:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       args:
         APP: weal/bot
         ENTRY: src/index.ts
     image: astra-weal-bot:local
     container_name: astra-weal-bot
-    # All astra app containers run as the host owner (uid 1000) — node:24-slim (the
-    # build AND runtime base for every app since 0022 S11; built-in `node`=uid 1000)
-    # ships a uid-1000 user, and the app files are world-readable, so the SSR/bot
-    # processes read + serve them fine; writes (where any) land host-owned.
-    # Postgres/SigNoz keep their own uid.
-    user: "1000:1000"
     depends_on:
       weal-postgres:
         condition: service_healthy
@@ -203,42 +221,27 @@ services:
     environment:
       WEAL_DISCORD_KEY: ${WEAL_DISCORD_KEY:-}
       WEAL_TOKEN: ${WEAL_TOKEN:-}
-    networks: [signoz-net]
-    # Node 24 runtime (R3, 0022 S5; D13) — node:24-slim has global fetch, so the
-    # healthcheck below needs no extra deps either.
     healthcheck:
+      <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://127.0.0.1:10203/health').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # weal-overlay: the dice-roll OBS overlay (SSE). Behind Caddy with flush_interval -1.
   weal-overlay:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       args:
         APP: weal/overlay
     image: astra-weal-overlay:local
     container_name: astra-weal-overlay
-    # Node 24 runtime (R3, 0022 S8 — the runtime-exit recipe; D13). node:24-slim
-    # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
-    user: "1000:1000" # see weal-bot
     # Shared weal↔overlay token (Decision E env injection via `just up`).
     environment:
       WEAL_TOKEN: ${WEAL_TOKEN:-}
     ports:
       - "10361:10360" # weal-overlay (astra range); strider holds 10360
-    networks: [signoz-net]
     healthcheck:
+      <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10360/').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # menhir: the Kahoot-style session-opener quiz (0031). SSE behind Caddy with
   # flush_interval -1. No secrets (no auth, D31-9's hostToken is minted per game).
@@ -246,65 +249,50 @@ services:
   # path — plain config fields have no env override, the D29-53 convention);
   # deploy.sh init_artifacts pre-creates the dir as uid 1000.
   menhir:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       args:
         APP: menhir/web
     image: astra-menhir:local
     container_name: astra-menhir
-    # Node 24 runtime (see weal-overlay); node:24-slim global fetch → healthcheck.
-    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
-    user: "1000:1000" # see weal-bot
     ports:
       - "10375:10375"
     volumes:
-      - /ruby/data/astra-state/menhir:/ruby/data/astra-state/menhir
-    networks: [signoz-net]
+      - { <<: *bind, source: /ruby/data/astra-state/menhir, target: /ruby/data/astra-state/menhir }
     healthcheck:
+      <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10375/').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
+  # --- strider: the first SSR frontend (Decision I), the template for 0011-0013. One SSR
+  # process; the editor save runs in it as a TanStack server function (writes
+  # content/layers/*.md). The /editor UI is gated to the local network at the Caddy edge. ---
   strider:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       args:
         APP: strider/web
     image: astra-strider:local
     container_name: astra-strider
-    # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
-    # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
-    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
       - "10360:10360" # strider SSR (astra range) — also reachable directly
-    networks: [signoz-net]
     healthcheck:
+      <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10360/').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # --- akasha-frontend: the wiki read-surface (0011) — SSR Compose service (Decision
   # I), the second 0011-0013 frontend on the strider template. Build-time snapshot +
   # transcripts + Pagefind index baked into the image; no live backend (Decision D).
-  # The combined session audio each transcript plays is a runtime VOLUME (akasha-audio,
-  # ~31 GB), served same-origin at /audio/<date>.mp3 — never in the image (D2). Seed
-  # with `just akasha-seed`; this replaces faerrin's static-audio.iridi.cc. ---
+  # The combined session audio each transcript plays is a runtime bind mount (~31 GB),
+  # served same-origin at /audio/<date>.mp3 — never in the image (D2). Seed with
+  # `just akasha-seed`. ---
   akasha-frontend:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       # The published datasets the build bakes in (COPY --from=astra-data), never read
       # from the code repo. deploy.sh exports ASTRA_DATA_CONTEXT = a clean export of the
       # astra-data clone's HEAD (committed content only); the default fails on purpose, so a
@@ -316,25 +304,17 @@ services:
         CONTENT: akasha
     image: astra-akasha-frontend:local
     container_name: astra-akasha-frontend
-    # Node 24 runtime (R3, 0022 S6 — the audio-mounts Range/206 pilot; D13). node:24-slim
-    # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
-    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
       - "10365:10365" # akasha-frontend SSR (astra range) — also reachable directly
-    # Session audio bind-mounted from the data root (was named volume astra-akasha-audio);
-    # container path /audio unchanged → no config.kdl change. Seed with `just akasha-seed`.
+    # Session audio from the data root at container path /audio (kdl
+    # akasha-frontend.audio-dir), served at /audio/<date>.mp3.
     volumes:
-      - /ruby/data/astra-state/audio/akasha:/audio:ro # kdl akasha-frontend.audio-dir; served at /audio/<date>.mp3
-    networks: [signoz-net]
+      - { <<: *bind, source: /ruby/data/astra-state/audio/akasha, target: /audio, read_only: true }
     healthcheck:
+      <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10365/').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # --- codex (0029): the PF2e compendium/rules browser — SSR Compose service
   # (Decision I), on the runtime-mount model (not akasha's baked one): nothing
@@ -350,18 +330,13 @@ services:
   # container — only the two narrow dirs below. No `environment:` — no secrets, and
   # the OTLP endpoint comes from config's in-cluster default. ---
   codex:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       args:
         APP: codex/web
     image: astra-codex:local
     container_name: astra-codex
-    # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; build stage also Node 24 + pnpm, 0022 S11).
-    # node:24-slim has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
-    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
@@ -372,30 +347,22 @@ services:
     # both dirs as uid 1000. On a fresh host corpus/ is empty, so the server exits at
     # startup (it never serves the fixture) until `codex-refresh` runs once.
     volumes:
-      - /ruby/data/astra-state/codex/data/corpus:/ruby/data/astra-state/codex/data/corpus:ro
-      - /ruby/data/astra-state/codex/data/search:/ruby/data/astra-state/codex/data/search:ro
-    networks: [signoz-net]
+      - { <<: *bind, source: /ruby/data/astra-state/codex/data/corpus, target: /ruby/data/astra-state/codex/data/corpus, read_only: true }
+      - { <<: *bind, source: /ruby/data/astra-state/codex/data/search, target: /ruby/data/astra-state/codex/data/search, read_only: true }
     healthcheck:
+      <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10374/').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # --- mouthpiece-frontend: the podcast read-surface (0012) — SSR Compose service
   # (Decision I), the third 0011-0013 frontend on the strider/akasha template. The
   # episode catalog (snapshot) is baked into the image; the 173 MB of episode audio is
-  # a runtime VOLUME (mouthpiece-audio), served same-origin at /audio/ — never in the
-  # image layer (D2). Seed the volume with `just mouthpiece-seed`. ---
+  # a runtime bind mount, served same-origin at /audio/ — never in the image layer (D2).
+  # Seed it with `just mouthpiece-seed`. ---
   mouthpiece-frontend:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
-      # The published datasets the build bakes in (COPY --from=astra-data), never read
-      # from the code repo. deploy.sh exports ASTRA_DATA_CONTEXT = a clean export of the
-      # astra-data clone's HEAD (committed content only); the default fails on purpose, so a
-      # build outside deploy.sh cannot bake the clone's uncommitted files.
+      <<: *node-build
+      # The published datasets the build bakes in; see akasha-frontend.
       additional_contexts:
         astra-data: ${ASTRA_DATA_CONTEXT:-/nonexistent/build-only-via-deploy.sh}
       args:
@@ -403,209 +370,149 @@ services:
         CONTENT: mouthpiece
     image: astra-mouthpiece-frontend:local
     container_name: astra-mouthpiece-frontend
-    # Node 24 runtime (R3, 0022 S6 — the audio-mounts Range/206 pilot; D13). node:24-slim
-    # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
-    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
       - "10366:10366" # mouthpiece-frontend SSR (astra range) — also reachable directly
-    # Episode audio bind-mounted from the data root (was named volume astra-mouthpiece-audio);
-    # container path /audio unchanged → no config.kdl change. Seed with `just mouthpiece-seed`.
+    # Episode audio from the data root at container path /audio (kdl
+    # mouthpiece-frontend.audio-dir), served at /audio/<id>.mp3.
     volumes:
-      - /ruby/data/astra-state/audio/mouthpiece:/audio:ro # kdl mouthpiece-frontend.audio-dir; served at /audio/<id>.mp3
-    networks: [signoz-net]
+      - { <<: *bind, source: /ruby/data/astra-state/audio/mouthpiece, target: /audio, read_only: true }
     healthcheck:
+      <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10366/').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # --- vellum-frontend: the document-forge editor (0013) — SSR Compose service
   # behind Caddy (Decision I). The editor route is client-only (ssr:false); the PNG
   # export POSTs same-origin /render, which Caddy routes to vellum-render below. ---
   vellum-frontend:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       args:
         APP: vellum/web
     image: astra-vellum-frontend:local
     container_name: astra-vellum-frontend
-    # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
-    # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
-    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
       - "10367:10367" # vellum-frontend SSR (astra range) — also reachable directly
-    networks: [signoz-net]
     healthcheck:
+      <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10367/').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # --- vellum-render: the PNG render service (0013, D2) — a SEPARATE unit, the first
   # browser-in-a-container in astra (warm Chromium, egress-blocked, semaphore-gated).
-  # Caddy routes vellum.iridi.cc/render + /health here. ---
+  # Caddy routes vellum.iridi.cc/render + /health here. The Dockerfile chowns
+  # /ms-playwright so the (non-root) Chromium can read its browser bundle; the profile is
+  # an ephemeral /tmp dir; --no-sandbox. ---
   vellum-render:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       args:
         APP: vellum/render
         ENTRY: src/server.ts
         RUNTIME: chromium
     image: astra-vellum-render:local
     container_name: astra-vellum-render
-    # Node 24 runtime (R3, 0022 S9 — the runtime-exit recipe; D13). node:24-slim
-    # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "src/server.ts"]
-    # Runs as 1000 like the others; the Dockerfile chowns /ms-playwright so the (non-root)
-    # Chromium can read its browser bundle. Profile is an ephemeral /tmp dir; --no-sandbox.
-    user: "1000:1000"
     # No PORT env — serviceName/port come from config.kdl (config-single-source).
     ports:
       - "10368:10368" # vellum-render (astra range) — reached same-origin via Caddy /render
-    networks: [signoz-net]
     healthcheck:
+      <<: *node-healthcheck
       # /health reports the warm-Chromium readiness; start_period covers the launch.
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10368/health').then(r=>r.json()).then(j=>process.exit(j.ready?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
       start_period: 25s
-    restart: unless-stopped
 
   # --- orator: the music bot's library store (0010, Decision F) ---
   orator-postgres:
-    image: postgres:16-alpine
+    <<: *astra-postgres
     container_name: astra-orator-postgres
     environment:
       POSTGRES_USER: ${ORATOR_PG_USERNAME:-orator}
       POSTGRES_PASSWORD: ${ORATOR_PG_PASSWORD:-orator}
       POSTGRES_DB: ${ORATOR_PG_DB:-orator}
-    # PGDATA bind-mounted from the data root (was named volume astra-orator-pg); see dagster-postgres.
     volumes:
-      - /ruby/data/astra-state/postgres/orator:/var/lib/postgresql/data
+      - { <<: *bind, source: /ruby/data/astra-state/postgres/orator, target: /var/lib/postgresql/data }
     ports:
       - "10364:5432" # orator music-library store (astra range)
-    networks: [signoz-net]
     healthcheck:
+      <<: *pg-healthcheck
       test: ["CMD-SHELL", "pg_isready -U ${ORATOR_PG_USERNAME:-orator} -d ${ORATOR_PG_DB:-orator}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # orator-backend: the Discord music service — srvx REST + voice + ingest + the
-  # served operator SPA (Node 24 runtime, R3, 0022 S8 — off Bun.serve/Bun.SQL/
-  # Bun.spawn). Behind Caddy at orator.iridi.cc. ALL runtime config is read from
+  # served operator SPA. Behind Caddy at orator.iridi.cc. ALL runtime config is read from
   # config.kdl via @astra/config (no config env — config-single-source); the only
-  # mount is the audio/data volume (kdl `orator.data-dir = /data`). The bot is
-  # optional: without resolved SOPS secrets it runs web+library, playback → 503.
+  # mount is the audio/data dir (kdl `orator.data-dir = /data`, mounted rw, so ingest
+  # writes land host-owned). The Discord bot is optional: without its SOPS keys it runs
+  # web+library, playback → 503. ORATOR_SESSION_SECRET is required (startup fails without).
   orator-backend:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       args:
         APP: orator/bot
         ENTRY: src/index.ts
         RUNTIME: ffmpeg
     image: astra-orator-backend:local
     container_name: astra-orator-backend
-    # Runs as 1000 so its ingest writes into the bind-mounted /data audio dir land
-    # host-owned (it mounts rw, unlike the read-only frontends). See weal-bot.
-    user: "1000:1000"
     depends_on:
       orator-postgres:
         condition: service_healthy
     # SOPS secrets injected as env by `just up` (Decision E) → config env-override
-    # resolves them in-container. Empty when not run via `just up` (bot off, 503).
+    # resolves them in-container.
     environment:
       ORATOR_DISCORD_KEY: ${ORATOR_DISCORD_KEY:-}
       ORATOR_DISCORD_CLIENT_ID: ${ORATOR_DISCORD_CLIENT_ID:-}
       ORATOR_DISCORD_CLIENT_SECRET: ${ORATOR_DISCORD_CLIENT_SECRET:-}
       ORATOR_SESSION_SECRET: ${ORATOR_SESSION_SECRET:-}
-    # Audio/data dir bind-mounted from the data root (was named volume astra-orator-audio);
-    # container path /data unchanged → no config.kdl change. One-time copy of the existing
-    # library via `just orator-audio-migrate`.
     volumes:
-      - /ruby/data/astra-state/audio/orator:/data # kdl orator.data-dir; audio under /data/audio
+      - { <<: *bind, source: /ruby/data/astra-state/audio/orator, target: /data } # kdl orator.data-dir; audio under /data/audio
     ports:
       - "10363:10363" # orator-backend (astra range) — also reachable directly
-    networks: [signoz-net]
     healthcheck:
+      <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10363/api/v1/health').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # --- harrow: the tarot deck reader (0017) — SSR Compose service behind Caddy
   # (Decision I), a backend-less sibling of strider. No DB, no audio/asset volume
   # (every card glyph is inline SVG). Port/service-name from config.kdl. ---
   harrow:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       args:
         APP: harrow/web
     image: astra-harrow:local
     container_name: astra-harrow
-    # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
-    # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
-    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
       - "10369:10369" # harrow SSR (astra range) — also reachable directly
-    networks: [signoz-net]
     healthcheck:
+      <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10369/').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # --- ledger: the astra landing page (0018) — the simplest SSR frontend, a sibling
   # of harrow. One homepage: a gothic card grid linking the player-facing sites. No
   # backend, no DB, no volume — the linked URLs are baked from each site's config
   # public-origin at build time. Port/service-name from config.kdl. ---
   ledger:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       args:
         APP: ledger/web
     image: astra-ledger:local
     container_name: astra-ledger
-    # Node 24 runtime (R3, 0022 S4 — the pilot; D13). node:24-slim has global
-    # fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
-    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
       - "10370:10370" # ledger SSR (astra range) — also reachable directly
-    networks: [signoz-net]
     healthcheck:
+      <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10370/').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # --- portal (0023): the FoundryVTT MCP+WS bridge server. TS on the orator-backend
   # template (D3, no build step for the server itself — the Dockerfile DOES build the
@@ -616,17 +523,15 @@ services:
   # portal.iridi.cc; nothing works unless the GM has "Faerrin" launched (the liveness
   # constraint — bridge-status surfaces "offline", never a hang). ---
   portal:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       target: portal # adds the built Foundry module
       args:
         APP: portal/server
         ENTRY: src/index.ts
     image: astra-portal:local
     container_name: astra-portal
-    user: "1000:1000"
     # SOPS secrets injected as env by `just up` (Decision E); config's env-override
     # resolves the D6 `ref="sops:..."` keys in-container, plus the 0028 D28-1 player
     # key. All three are load-bearing (index.ts throws at startup if any is
@@ -642,16 +547,12 @@ services:
     # from the data root so connections survive redeploys; container path matches kdl
     # portal.oauth-state-path (/data/oauth/state.json). Writes land 1000:1000.
     volumes:
-      - /ruby/data/astra-state/portal-oauth:/data/oauth
+      - { <<: *bind, source: /ruby/data/astra-state/portal-oauth, target: /data/oauth }
     ports:
       - "10372:10372" # portal (astra range) — also reachable directly
-    networks: [signoz-net]
     healthcheck:
+      <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10372/health').then(r=>process.exit(r.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   # --- portal-headless (0027): the supervised headless-Chromium GM session — a
   # dedicated Foundry account ("Portal", full GM) permanently logged into the live
@@ -663,17 +564,15 @@ services:
   # source for a process-life-long page) and a generous `start_period` (Chromium warm-up
   # + first navigation + `/join`). ---
   portal-headless:
+    <<: *astra-app
     build:
-      labels: *build-labels
-      context: ..
-      dockerfile: deploy/node.Dockerfile
+      <<: *node-build
       args:
         APP: portal/headless
         ENTRY: src/index.ts
         RUNTIME: chromium
     image: astra-portal-headless:local
     container_name: astra-portal-headless
-    user: "1000:1000"
     shm_size: "1gb"
     # SOPS secret injected as env by `just up` (Decision E); config's env-override
     # resolves the D27-13 `ref="sops:foundry_portal_gm_password"` key in-container.
@@ -684,17 +583,13 @@ services:
       FOUNDRY_PORTAL_GM_PASSWORD: ${FOUNDRY_PORTAL_GM_PASSWORD:-}
     ports:
       - "10373:10373" # portal-headless (astra range) — health-only, not edge-routed
-    networks: [signoz-net]
     healthcheck:
+      <<: *node-healthcheck
       # D27-11: process-up + browser-connected ONLY — `world-down` is a reported
       # `state`, never unhealthy (a restart can't launch a world; a restart-loop during
       # the GM's maintenance window would be noise).
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10373/health').then(r=>r.json()).then(j=>process.exit(j.ok?0:1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
       start_period: 30s
-    restart: unless-stopped
 
   # --- node-exporter: host health metrics (CPU/mem/disk/net) + ethtool NIC counters
   # (the enp4s0 rx_crc_errors / collisions that flagged the 2026-08 link flaps).
@@ -714,9 +609,15 @@ services:
     environment:
       DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
     volumes:
-      - /:/host:ro,rslave
+      - type: bind
+        source: /
+        target: /host
+        read_only: true
+        bind:
+          create_host_path: false
+          propagation: rslave
       # smart-exporter (below) writes smartmon.prom here; served via --collector.textfile.
-      - /ruby/data/astra-state/node-exporter/textfile:/textfile:ro
+      - { <<: *bind, source: /ruby/data/astra-state/node-exporter/textfile, target: /textfile, read_only: true }
     command:
       - --path.rootfs=/host
       - --collector.ethtool
@@ -749,7 +650,7 @@ services:
       SMARTMON_INTERVAL: "300"
       SMARTMON_OUT: /textfile
     volumes:
-      - /ruby/data/astra-state/node-exporter/textfile:/textfile
+      - { <<: *bind, source: /ruby/data/astra-state/node-exporter/textfile, target: /textfile }
     restart: unless-stopped
 
 # The production edge is the shared HOST reverse proxy at /ruby/data/reverse-proxy
@@ -757,10 +658,10 @@ services:
 # the substrate runs no Caddy of its own — services are reachable on their
 # published host ports (Dagster 10350, SigNoz 10351, strider 10360).
 
-# The astra Postgres + audio state that used to live in named volumes now lives under the
-# data root /ruby/data/astra-state, bind-mounted into each service (see above). The host owns it
-# (uid 1000; Postgres PGDATA is uid 70 via its entrypoint). SigNoz keeps its own named
-# volumes (declared in the vendored signoz include — clickhouse/sqlite/zookeeper).
+# The astra Postgres + audio state lives under the data root /ruby/data/astra-state,
+# bind-mounted into each service (see above). The host owns it (uid 1000; Postgres PGDATA
+# is uid 70 via its entrypoint). SigNoz keeps its own named volumes (declared in the
+# vendored signoz include — clickhouse/sqlite/zookeeper).
 
 networks:
   signoz-net:

@@ -102,7 +102,7 @@ check_binds() {
     if [ ! -e "$src" ]; then
       missing=$((missing + 1))
       if [[ $src == "$DATA_ROOT"/* ]]; then
-        fail "binds: $src is missing (Docker would create it as root; run: just artifacts-init)"
+        fail "binds: $src is missing (the deploy will fail on it; run: just artifacts-init)"
       else
         fail "binds: $src is missing"
       fi
