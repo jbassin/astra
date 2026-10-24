@@ -54,16 +54,15 @@
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
+import { ensureFixtureCorpus } from "@astra/codex-ingest/fixture";
 import { createSsrServer } from "@astra/site-kit";
 import { chromium } from "playwright";
-
-import { ensureFixtureCorpus } from "./fixtureCorpus";
 
 // Duplicated, not imported: `columnDefs.tsx`/`virtualization.ts` both sit
 // behind this app's `@/*` bundler-path-alias import graph (vite/tsc-only —
 // Node's own resolver, even through the `nodeTsResolve.mjs` extensionless-
 // relative-import hook every other `scripts/*.ts` file here uses, has no
-// equivalent; see `apps/codex/web/scripts/build-search.ts`'s own all-relative
+// equivalent; see `apps/codex/ingest/src/build-search.ts`'s own all-relative
 // import style for the established precedent). Both values are effectively
 // frozen constants (`ROW_PITCH_PX` IS the density token this whole slice
 // tunes CSS to hit exactly; `NARROW_CONTAINER_WIDTH_PX` is D29-78's

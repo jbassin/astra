@@ -87,7 +87,7 @@
     "**/public/**",
     "**/*.sdPlugin/**",
     "**/codex/web/data/**",
-    "**/codex/web/fixtures/**",
+    "**/codex/ingest/fixtures/**",
     "**/weal-engine/gen/**",
     "thoughts/archive/**"
   ],
@@ -95,6 +95,14 @@
     {
       // Build and maintenance scripts are command-line programs: the console is their output.
       "files": ["**/scripts/**"],
+      "rules": { "no-console": "off" }
+    },
+    {
+      // The codex ingest CLI and the command modules it runs print their progress; the
+      // pipeline modules they call stay console-free.
+      "files": [
+        "apps/codex/ingest/src/{cli,transform,build-search,release,releaseStore,fetch-aon,fetch-foundry,extract-fixture}.ts"
+      ],
       "rules": { "no-console": "off" }
     },
     {

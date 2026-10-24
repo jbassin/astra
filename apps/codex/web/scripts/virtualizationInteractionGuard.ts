@@ -42,10 +42,9 @@
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
+import { ensureFixtureCorpus } from "@astra/codex-ingest/fixture";
 import { createSsrServer } from "@astra/site-kit";
 import { chromium, type Page } from "playwright";
-
-import { ensureFixtureCorpus } from "./fixtureCorpus";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const SERVER_BUNDLE = `${ROOT}dist/server/server.js`;

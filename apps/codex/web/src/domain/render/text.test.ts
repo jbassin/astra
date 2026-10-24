@@ -15,7 +15,9 @@ import {
 } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-const FIXTURE_ROOT = join(import.meta.dirname, "../../../fixtures/entities");
+import { fixtureCorpusRoot } from "../../server/corpusFs";
+
+const FIXTURE_ROOT = fixtureCorpusRoot();
 
 function loadEntity(relPath: string) {
   return CodexEntitySchema.parse(JSON.parse(readFileSync(join(FIXTURE_ROOT, relPath), "utf8")));

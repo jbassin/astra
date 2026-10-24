@@ -8,16 +8,17 @@ import {
   type IndexRow,
 } from "@astra/codex-corpus";
 
+import { fixtureCorpusRoot } from "../../server/corpusFs";
 import { type RenderCtx, rootRenderCtx } from "./nodes";
 
 /**
- * Shared, deterministic loader for `apps/codex/web/fixtures/entities/` — used by
+ * Shared, deterministic loader for the fixture corpus (`fixtureCorpusRoot()`) — used by
  * the totality test, the golden-regen script, and the golden byte-exact
  * test, so all three see the exact same entity set / embed resolver / trait
  * index (S1 is frontend-free: no corpus reader yet, D29-23 is S2's job).
  */
 
-export const FIXTURE_ROOT = join(import.meta.dirname, "../../../fixtures/entities");
+export const FIXTURE_ROOT = fixtureCorpusRoot();
 
 function loadFixtureEntities(): CodexEntity[] {
   const entities: CodexEntity[] = [];

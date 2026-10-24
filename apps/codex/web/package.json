@@ -9,12 +9,7 @@
     "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import @astra/observe/register server.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "fetch:aon": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/fetch-aon.ts",
-    "fetch:foundry": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/fetch-foundry.ts",
-    "transform": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/transform.ts",
-    "fixture": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/build-fixture.ts",
-    "search:build": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/build-search.ts",
-    "release": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/release.ts",
+    "regen-goldens": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/regen-goldens.ts",
     "row-height-drift-guard": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts",
     "virtualization-interaction-guard": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts"
   },
@@ -37,13 +32,13 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@astra/codex-ingest": "workspace:*",
     "@testing-library/dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "jsdom": "catalog:",
-    "pagefind": "catalog:",
     "playwright": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"

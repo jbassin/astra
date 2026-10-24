@@ -7,9 +7,10 @@
 // The served corpus is picked by `selectServedCorpus()` (not in the root `server.ts`,
 // which has no channel into the built loader closure): `CODEX_CORPUS_ROOT` when set
 // (tests and the Chromium guards pin the fixture there), else the immutable release
-// that `<codex.data-path>/releases/current` names (`releases.ts`). A built server fails
-// closed: no current release, a schemaVersion other than `CORPUS_SCHEMA_VERSION`, or the
-// fixture in a release throws `CorpusUnservableError`, and the server entry
+// that `<codex.data-path>/releases/current` names (`@astra/codex-corpus/releases`). A
+// built server fails closed: no current release, a schemaVersion other than
+// `CORPUS_SCHEMA_VERSION`, or the fixture in a release throws `CorpusUnservableError`,
+// and the server entry
 // (`src/server.ts`) checks this when the bundle loads, so the process exits instead of
 // serving. Only the Vite dev server falls back to the fixture when there is no release.
 //
@@ -18,56 +19,49 @@
 // alone). `withPinnedCorpus` pins one request to one release.
 
 import { AsyncLocalStorage } from "node:async_hooks";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 
-import { CORPUS_SCHEMA_VERSION } from "@astra/codex-corpus";
 import { createCorpusReader, type CorpusReader } from "@astra/codex-corpus/reader";
+import {
+  CURRENT_LINK,
+  CorpusUnservableError,
+  type InspectedCorpus,
+  inspectCorpus,
+  manifestFile,
+  readCurrentReleaseId,
+  releaseCorpusDir,
+  releasesDirOf,
+} from "@astra/codex-corpus/releases";
 import { loadConfig } from "@astra/config";
 
-import { CURRENT_LINK, readCurrentReleaseId, releaseCorpusDir, releasesDirOf } from "./releases";
+export { CorpusUnservableError, inspectCorpus, type InspectedCorpus };
 
-/** Walk up from `startDir` until a `fixtures/picks/` marker (committed; the generated
- * `fixtures/entities/` may not exist yet) is found (the `@astra/config` `findRepoRoot` idiom). `import.meta.dirname`-based
- * relative paths (`"../../fixtures/entities"`) are a real footgun here: THIS
- * module's physical location differs between dev (`src/server/corpusFs.ts`) and
- * a `vite build` (bundled somewhere under `dist/server/assets/`), so a fixed
- * relative offset resolves to a different, WRONG directory once built (verified
- * — the built server's fallback silently pointed at a nonexistent
- * `dist/fixtures/entities` and every corpus read then threw an uncaught ENOENT
- * instead of a clean 404). Walking up to a stable marker is robust either way. */
-function findAppRoot(startDir: string): string {
+/** Walk up from `startDir` until the ingest package's committed `fixtures/picks/` marker
+ * (the generated `fixtures/entities/` may not exist yet) is found beside this app, at
+ * `<dir>/ingest/fixtures/picks` (the `@astra/config` `findRepoRoot` idiom). An
+ * `import.meta.dirname`-relative path is a footgun here: this module's physical location
+ * differs between dev (`src/server/corpusFs.ts`) and a `vite build` (bundled under
+ * `dist/server/assets/`), so a fixed relative offset resolves to the wrong directory once
+ * built. Walking up to a stable marker works either way. */
+function findCodexDomainRoot(startDir: string): string {
   let dir = resolve(startDir);
   for (;;) {
-    if (existsSync(join(dir, "fixtures", "picks"))) return dir;
+    if (existsSync(join(dir, "ingest", "fixtures", "picks"))) return dir;
     const parent = dirname(dir);
     if (parent === dir) return resolve(startDir); // marker never found — give up gracefully
     dir = parent;
   }
 }
 
-/** `apps/codex/web/fixtures/entities/` — the D29-11 fixture corpus that the tests, the
- * Chromium guards and a dev server without the real corpus read. It is generated and
- * gitignored (`scripts/fixtureCorpus.ts`; `pnpm --filter @astra/codex fixture`). A FUNCTION,
- * not a top-level `const` (the exact same client-bundle-leak class this file's other
- * lazy-singleton comment calls out): a top-level statement that CALLS
- * `findAppRoot`/touches `node:fs` at module-evaluation time runs the instant
- * this module is merely imported/bundled, real corpus or not, client bundle or
- * not — verified by hand (a `const` here reintroduced the exact leak the
- * `getCorpusReader` laziness fix below was written to prevent). The production image
- * does not ship the fixture, so there this path does not exist. */
+/** `apps/codex/ingest/fixtures/entities/`: the fixture corpus that the tests, the Chromium
+ * guards and a dev server without the real corpus read. The ingest package generates it
+ * (`@astra/codex-ingest/fixture`, `pnpm --filter @astra/codex-ingest cli fixture`); it is
+ * gitignored. A function, not a top-level `const`: a top-level call into `node:fs` would
+ * run the moment this module is imported or bundled, including into the client bundle.
+ * The production image does not ship the fixture, so there this path does not exist. */
 export function fixtureCorpusRoot(): string {
-  return join(findAppRoot(import.meta.dirname), "fixtures", "entities");
-}
-
-/** Thrown when the corpus a server would read is missing, was built for another schema
- * generation, or is the fixture outside dev. The server refuses to start or to serve
- * rather than answer 200 from the wrong data. */
-export class CorpusUnservableError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "CorpusUnservableError";
-  }
+  return join(findCodexDomainRoot(import.meta.dirname), "ingest", "fixtures", "entities");
 }
 
 /** The inputs that pick the corpus root, passed in so the rules are testable. */
@@ -84,68 +78,12 @@ export interface CorpusRootInputs {
 }
 
 /** The corpus a server process reads, as checked when it was selected. */
-export interface ServedCorpus {
-  /** The corpus directory, resolved past `current` (`releases/<id>/corpus`), so a reader
-   * built on it keeps reading one release after `current` moves. */
-  root: string;
+export interface ServedCorpus extends InspectedCorpus {
   /** Where `root` came from: `CODEX_CORPUS_ROOT`, the current release under
    * `codex.data-path`, or the dev-only fixture fallback. */
   source: "env" | "config" | "dev-fixture-fallback";
   /** The release id for `source: "config"`; null for an explicit root or the fixture. */
   releaseId: string | null;
-  schemaVersion: number;
-  totalEntityCount: number;
-  /** The fixture corpus: its manifest pins `foundry.tag` to `"fixture"`. */
-  fixture: boolean;
-}
-
-/** What `inspectCorpus` reads from a corpus root. */
-export type InspectedCorpus = Omit<ServedCorpus, "source" | "releaseId">;
-
-interface CorpusManifestHeader {
-  schemaVersion?: unknown;
-  totalEntityCount?: unknown;
-  foundry?: { tag?: unknown };
-}
-
-function manifestFile(root: string): string {
-  return join(root, "manifest.json");
-}
-
-/** Read errors that mean the manifest is not there (as opposed to a transient I/O error). */
-const PERMANENT_READ_ERRORS = new Set(["ENOENT", "ENOTDIR", "EISDIR"]);
-
-/** Reads `<root>/manifest.json` and checks its schema generation. Throws
- * `CorpusUnservableError` when the manifest is absent or unreadable, or when its
- * `schemaVersion` is not this build's `CORPUS_SCHEMA_VERSION`. The release scripts run
- * the same check before they publish or roll back to a release. */
-export function inspectCorpus(root: string): InspectedCorpus {
-  const path = manifestFile(root);
-  let header: CorpusManifestHeader;
-  try {
-    header = JSON.parse(readFileSync(path, "utf8")) as CorpusManifestHeader;
-  } catch (e) {
-    // A missing or malformed manifest is permanent; an I/O error (EMFILE, EIO, ...) is
-    // not, so it propagates as itself and a running server retries it later.
-    const code = (e as NodeJS.ErrnoException).code;
-    if (code !== undefined && !PERMANENT_READ_ERRORS.has(code)) throw e;
-    throw new CorpusUnservableError(
-      `[codex] no readable corpus manifest at "${path}": ${(e as Error).message}`,
-    );
-  }
-  if (header.schemaVersion !== CORPUS_SCHEMA_VERSION) {
-    throw new CorpusUnservableError(
-      `[codex] the corpus at "${root}" has schemaVersion ${JSON.stringify(header.schemaVersion)}, ` +
-        `but this build reads schemaVersion ${CORPUS_SCHEMA_VERSION}. Build a new release ` +
-        "(`just codex-build`) or deploy the matching code.",
-    );
-  }
-  return {
-    root,
-    schemaVersion: CORPUS_SCHEMA_VERSION,
-    totalEntityCount: typeof header.totalEntityCount === "number" ? header.totalEntityCount : 0,
-    fixture: header.foundry?.tag === "fixture",
-  };
 }
 
 /** Picks the corpus root and checks it. An explicit root is used as given. Otherwise the
@@ -177,7 +115,7 @@ export function selectServedCorpus(inputs: CorpusRootInputs): ServedCorpus {
     if (!existsSync(manifestFile(fixtureRoot))) {
       throw new CorpusUnservableError(
         `[codex] dev: no current release at "${where}" and no generated fixture at ` +
-          `"${fixtureRoot}". Run \`pnpm --filter @astra/codex fixture\` for the fixture, or ` +
+          `"${fixtureRoot}". Run \`pnpm --filter @astra/codex-ingest cli fixture\` for the fixture, or ` +
           "`just codex-build` for the real corpus.",
       );
     }

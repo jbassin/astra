@@ -5,7 +5,7 @@
 // handler, the client-assets dir, and serviceName/port from config.kdl. The corpus
 // itself is read at request time via server fns (D29-23), not served as static files.
 //
-// The Pagefind search bundle (D29-34, `scripts/build-search.ts`) is part of each corpus
+// The Pagefind search bundle (D29-34, `apps/codex/ingest/src/build-search.ts`) is part of each corpus
 // release and is served by `pagefindRoute` under release-keyed URLs (see that file). It
 // checks the releases directory per request, so a release published after the server
 // starts comes online with no restart; with no release, `/pagefind/*` 404s and the
@@ -19,13 +19,13 @@
 
 import { fileURLToPath } from "node:url";
 
+import { releasesDirOf } from "@astra/codex-corpus/releases";
 import { loadConfig } from "@astra/config";
 import { createSsrServer } from "@astra/site-kit";
 
 import built from "./dist/server/server.js";
 import type { ServedCorpus } from "./src/server/corpusFs";
 import { PAGEFIND_PREFIX, pagefindRoute } from "./src/server/pagefindRoute";
-import { releasesDirOf } from "./src/server/releases";
 
 // `src/server.ts` attaches `servedCorpus` to the bundle's handler (see there).
 const ssr = built as typeof built & { servedCorpus: () => ServedCorpus };

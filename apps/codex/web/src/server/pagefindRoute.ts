@@ -17,9 +17,8 @@
 import { stat } from "node:fs/promises";
 import { join } from "node:path";
 
+import { RELEASE_ID_RE, releaseSearchDir } from "@astra/codex-corpus/releases";
 import { serveFile } from "@astra/site-kit";
-
-import { RELEASE_ID_RE, releaseSearchDir } from "./releases";
 
 export const PAGEFIND_PREFIX = "/pagefind/";
 const RELEASE_SEGMENT = "r/";

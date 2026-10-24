@@ -1,0 +1,23 @@
+{
+  "name": "@astra/codex-ingest",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./fixture": "./src/fixtureCorpus.ts"
+  },
+  "scripts": {
+    "cli": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@astra/codex-corpus": "workspace:*",
+    "@astra/config": "workspace:*",
+    "pagefind": "catalog:",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "vitest": "catalog:"
+  }
+}

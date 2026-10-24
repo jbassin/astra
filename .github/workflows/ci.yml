@@ -104,6 +104,7 @@ jobs:
             # same "own pinned-container job" posture as vellumRender above.
             codex:
               - 'apps/codex/web/**'
+              - 'apps/codex/ingest/**'
               - 'libs/ts/codex-corpus/**'
               - 'libs/ts/site-kit/**'
               - 'libs/ts/observe/**'

@@ -66,5 +66,5 @@ apps/mouthpiece/web/public/episodes.json
 # builds the book), codex's fixture corpus (tests only; a built server never serves it, it
 # fails closed without the real corpus) and assay's output. ---
 apps/assay/py/books
-apps/codex/web/fixtures
+apps/codex/ingest/fixtures
 apps/assay/py/out

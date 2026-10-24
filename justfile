@@ -556,7 +556,7 @@ host-metrics:
 
 # Refresh the codex corpus (D29-4): re-fetch both snapshots, then build and publish a new
 # release (`codex-build`). A deliberate, diffable event, never implicit in a build —
-# refuses to run if the git index is dirty under apps/codex/web (the
+# refuses to run if the git index is dirty under apps/codex/ingest (the
 # corpus-manifest.json diff must be reviewable alone, the linguist-commit-timer
 # lesson applied here too). Re-downloads ~259 MB (AoN) + the Foundry sparse
 # clone; not cheap, don't run casually. Flags go to codex-build (`--allow-shrink`).
@@ -564,16 +564,16 @@ codex-refresh *flags:
     #!/usr/bin/env bash
     set -euo pipefail
     cd "{{justfile_directory()}}"
-    if [ -n "$(git status --porcelain -- apps/codex/web)" ]; then
-      echo "codex-refresh: apps/codex/web has uncommitted changes — commit or stash first" >&2
+    if [ -n "$(git status --porcelain -- apps/codex/ingest)" ]; then
+      echo "codex-refresh: apps/codex/ingest has uncommitted changes — commit or stash first" >&2
       echo "(the corpus-manifest.json diff from this refresh must be reviewable alone):" >&2
-      git status --porcelain -- apps/codex/web >&2
+      git status --porcelain -- apps/codex/ingest >&2
       exit 1
     fi
     echo "codex-refresh: fetching Foundry snapshot..."
-    pnpm --filter @astra/codex fetch:foundry
+    pnpm --filter @astra/codex-ingest cli fetch-foundry
     echo "codex-refresh: fetching AoN snapshot..."
-    pnpm --filter @astra/codex fetch:aon
+    pnpm --filter @astra/codex-ingest cli fetch-aon
     "{{just_executable()}}" codex-build {{flags}}
 
 # Build a codex release from the snapshots on disk and make it current: transform and
@@ -590,7 +590,7 @@ codex-build *flags:
     set -euo pipefail
     cd "{{justfile_directory()}}"
     codex_data="$({{uv_bin}} run --frozen --no-sync python -m astra_ontology_config codex.data-path)"
-    pnpm --filter @astra/codex release build {{flags}}
+    pnpm --filter @astra/codex-ingest cli release build {{flags}}
     echo ""
     echo "codex-build: report.md summary:"
     head -n 40 "$codex_data/releases/current/corpus/report.md"
@@ -599,7 +599,7 @@ codex-build *flags:
 # publish it as a new release (the corpus is hardlinked, not copied). Same host-only
 # posture as codex-build.
 codex-search-index *flags:
-    pnpm --filter @astra/codex release build --reuse-corpus {{flags}}
+    pnpm --filter @astra/codex-ingest cli release build --reuse-corpus {{flags}}
 
 # Make an older codex release current again: the given id, or by default the newest one
 # before the current release that no rollback rejected. The target must pass the same
@@ -607,18 +607,18 @@ codex-search-index *flags:
 # rollback, or a rebuild that hashes to it) needs --force. Instant; a running codex
 # follows on its next request. `just codex-rollback [<id>] [--force]`.
 codex-rollback *args:
-    pnpm --filter @astra/codex release rollback {{args}}
+    pnpm --filter @astra/codex-ingest cli release rollback {{args}}
 
 # List the codex releases on disk, newest first; `*` marks the current one.
 codex-releases:
-    pnpm --filter @astra/codex release list
+    pnpm --filter @astra/codex-ingest cli release list
 
 # One-time: turn the flat <codex.data-path>/corpus and search/ into the first release and
 # point releases/current at it. Hardlinks, so the flat dirs stay intact for a server that
 # still mounts them; remove them after codex serves from releases/. A no-op once a
 # current release exists.
 codex-migrate-releases:
-    pnpm --filter @astra/codex release migrate
+    pnpm --filter @astra/codex-ingest cli release migrate
 
 # Opt-in, host-only (not in `ci`): check the current release's corpus the
 # way a production server does (this schema generation, not the fixture), spot-check

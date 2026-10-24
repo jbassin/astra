@@ -81,7 +81,7 @@ git history has them.
 (e.g. a host where `codex.data-path` has no `snapshots/` yet), `price` fails soft with a clear
 message. With several `pf2e-<version>` snapshot directories, the highest version wins, compared
 numerically (`pf2e-10.0.0` beats `pf2e-9.0.0`). The test suite never touches the snapshot — it
-runs entirely off the committed fixtures under `tests/fixtures/` (real corpus files, one per extractor trap — see `apps/codex/web/fixtures`
+runs entirely off the committed fixtures under `tests/fixtures/` (real corpus files, one per extractor trap — see `apps/codex/ingest/fixtures`
 for the precedent of committing corpus provenance this way). `assay score` never needs the live
 snapshot either — it reads the committed `results/fitted-params.json` +
 `results/comparables-corpus.json` artifacts, both reproducible via `assay price`.

@@ -18,7 +18,7 @@ import type { BlockNode } from "./nodes";
  *
  * Ambiguities resolved while writing this contract:
  *   - `category` is `z.string()`, not a literal enum — the join owns the authoritative
- *     category list (`apps/codex/web/scripts/categoryMap.ts`, keyed on (Foundry pack, doc
+ *     category list (`apps/codex/ingest/src/categoryMap.ts`, keyed on (Foundry pack, doc
  *     type) per D29-7) and AoN alone ships 93 of them; duplicating that list here as a
  *     zod enum would just be a second place for it to drift out of sync.
  *   - The id regex is deliberately loose (`{category}/{slug}` with an optional
@@ -62,7 +62,7 @@ export type License = z.infer<typeof LicenseSchema>;
 /** D29-13: Foundry-derived entities read this off `system.publication` (Items) /
  * `system.details.publication` (Actors, verified on `monster-core`'s Balor); AoN-only
  * and journal-derived entities have no in-source license field and resolve via the
- * committed `apps/codex/web/scripts/licenseMap.ts` book table instead — `license` still
+ * committed `apps/codex/ingest/src/licenseMap.ts` book table instead — `license` still
  * lands here either way, `"unknown"` is the allowed, report-counted residue. */
 export const SourceSchema = z
   .object({

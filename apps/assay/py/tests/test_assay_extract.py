@@ -1,5 +1,5 @@
 """Extractor-trap tests — one fixture per §1 census trap, real corpus provenance
-(committed copies of real Foundry spell JSONs; see apps/codex/web/fixtures for the
+(committed copies of real Foundry spell JSONs; see apps/codex/ingest/fixtures for the
 precedent of committing corpus provenance). No test in this file reads the
 gitignored snapshot — every fixture is a small file under tests/fixtures/.
 """
