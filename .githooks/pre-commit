@@ -104,6 +104,7 @@ if [ "${#fmt_whole[@]}" -gt 0 ]; then
 fi
 for ((i = 0; i < ${#fmt_part[@]}; i += 2)); do
   f=${fmt_part[i]} blob=${fmt_part[i + 1]}
+  # shellcheck disable=SC2094 # both redirections read the blob; nothing writes it
   if ! pnpm exec oxfmt --stdin-filepath "$f" <"$blob" | cmp -s - "$blob"; then
     echo "oxfmt: the staged version of $f is not formatted" >&2
     failed+=("oxfmt: $f")

@@ -25,8 +25,14 @@ under `/ruby/data/astra-state/deploy/`; the header of `deploy.sh` has the detail
 Every Node service builds from one file, `node.Dockerfile`; its compose `build.args` pick the app
 (`APP`), the entry (`ENTRY`), the baked datasets (`CONTENT`) and the OS layer (`RUNTIME`: ffmpeg for
 orator, Chromium for vellum-render and portal-headless), and portal adds `target: portal`. The
-runtime images carry production dependencies only. Dagster and smart-exporter keep their own
-Dockerfiles. The repo-root `.dockerignore` is a short deny-list; keep it free of `!` re-includes
+runtime images carry production dependencies only. The OS layers sit at the bottom of each image
+and take nothing from the repo, so a source, manifest or lockfile change rebuilds only the app
+layers (about 100 MB at most) and the two Chromium services share one ~1 GB browser layer. Keep it
+that way: an `ARG APP` or a repo mount in an `os-*` stage makes every manifest change reinstall
+Chromium. Dagster and smart-exporter keep their own Dockerfiles. `just infra-check` (CI job
+`infra-check`) lints all of this before a deploy: compose config, `sites.caddyfile` under the
+edge's Caddy build, shellcheck, the systemd units and hadolint; `deploy/tests/infra-check.sh`
+lists the pinned tool versions. The repo-root `.dockerignore` is a short deny-list; keep it free of `!` re-includes
 (its header says why).
 
 **Which deploy tooling runs.** Whatever `deploy.sh` you invoke (the deploy checkout's, which the

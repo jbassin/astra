@@ -420,6 +420,7 @@ if [ "$skip_failed" = 1 ]; then
   if [ "$needs_data" = 1 ]; then
     data_head="$(git -C "$CONTENT_REPO" rev-parse -q --verify 'HEAD^{commit}' 2>/dev/null || true)"
   fi
+  # shellcheck disable=SC2016 # $svcs is a jq variable (--argjson), not a shell one
   last="$(history_last '.mode == "deploy" and .services == $svcs and .result != "skipped"' \
     --argjson svcs "$(services_json)")"
   if [ -n "$last" ] && jq -e --arg sha "$sha" --arg data "$data_head" \
@@ -517,6 +518,7 @@ log "waiting up to ${HEALTH_TIMEOUT}s for ${services[*]:-every service} to be he
 if ! "$WAIT_HEALTHY" --timeout "$HEALTH_TIMEOUT" -- -f "$COMPOSE_FILE" -- "${services[@]}"; then
   result=unhealthy
   # The rollback target: the newest earlier deploy at another sha that came up healthy.
+  # shellcheck disable=SC2016 # $sha is a jq variable (--arg), not a shell one
   prev="$(history_last '.mode == "deploy" and .result == "ok" and .sha != $sha' --arg sha "$sha" |
     jq -r '.sha // empty' || true)"
   if [ -n "$prev" ]; then

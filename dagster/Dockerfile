@@ -12,6 +12,9 @@ FROM python:3.12-slim
 
 # Pipeline runtime binaries the assets shell out to: `unzip` (scribe extracts the Craig
 # zip), `ffmpeg` + `ffprobe` (scribe per-speaker merge + mouthpiece assembly/duration).
+# DL3008: the base image tag fixes the Debian release; the archive keeps only each package's
+# newest build there, so an exact apt pin breaks on the next stable update.
+# hadolint ignore=DL3008
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ffmpeg unzip \
     && rm -rf /var/lib/apt/lists/*
@@ -70,7 +73,7 @@ COPY --from=denoland/deno:bin-2.5.6 /deno /usr/local/bin/deno
 ENV DENO_DIR=/opt/deno \
     DENO_NO_PACKAGE_JSON=1 \
     ASTRA_DENO_CACHED_ONLY=1
-RUN ASTRA_DENO_CACHED_ONLY= python -c 'import sys; from astra_llm.rlm import make_interpreter as mk, sandbox_version as v; i = mk(); i.start(); ver = v(i); print("pyodide:", ver); i.shutdown(); sys.exit(0 if ver else 1)'
+RUN ASTRA_DENO_CACHED_ONLY="" python -c 'import sys; from astra_llm.rlm import make_interpreter as mk, sandbox_version as v; i = mk(); i.start(); ver = v(i); print("pyodide:", ver); i.shutdown(); sys.exit(0 if ver else 1)'
 
 # Code location: definitions.py loads the asset graph (imports the installed packages).
 WORKDIR /opt/dagster/app

@@ -40,7 +40,8 @@ every changed PNG by eye, then commit them.
 - **Goldens drift on any host but the pinned container.** Anti-aliasing and hinting differ across
   machines by more than the 0.5% tolerance. The Chromium build is pinned by the `playwright`
   version in `pnpm-lock.yaml`; the image and the CI job install the same one. Bumping `playwright`
-  means regenerating goldens.
+  means regenerating goldens and setting `ARG PLAYWRIGHT_VERSION` in `deploy/node.Dockerfile` to
+  the new locked version (`just infra-check` fails until they match).
 - **Changing gothic or vellum-lang drifts goldens too**, which is why the CI path filter includes
   both libraries.
 - **All assets must be same-origin.** The render context aborts every request that isn't

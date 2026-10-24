@@ -61,9 +61,9 @@ test: (_each "test" "py-test,ts-test")
 # goldens are pinned to the node:24-slim container's Chromium and fonts (a host browser
 # renders different pixels); it stays CI-only. weal-engine-rust needs rustup on the host (it
 # installs the crate's pinned toolchain on first use).
-# pg-test needs Docker on the host (it starts a throwaway Postgres).
+# pg-test and infra-check need Docker on the host (a throwaway Postgres; the pinned tool images).
 # Run everything CI runs, locally (all but the container-only vellum render goldens).
-ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-row-height-drift-guard,codex-virtualization-interaction-guard,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test"))
+ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-row-height-drift-guard,codex-virtualization-interaction-guard,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test,infra-check"))
 
 # `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
 # they run as Dagster assets; test them with `uv run pytest apps/<domain>/py`.
@@ -266,6 +266,13 @@ weal-engine-rust:
 # CI job weal-engine-hash-check: the committed wasm was built from the committed Rust sources.
 weal-engine-hash-check:
     libs/rust/weal-engine/tools/gen-stamp.sh check {{quote(weal_stamp)}}
+
+# deploy/tests/infra-check.sh's header lists the checks and their pinned tool versions. Needs
+# Docker; the first run builds the edge's Caddy (about a minute), later runs take seconds.
+# INFRA_CHECK_ONLY=caddy,shell runs a subset.
+# CI job infra-check: compose config, Caddy adapt/validate, shellcheck, systemd verify, hadolint.
+infra-check:
+    deploy/tests/infra-check.sh
 
 # ==== host paths: what the ops recipes pass to astra-ops ======================================
 
