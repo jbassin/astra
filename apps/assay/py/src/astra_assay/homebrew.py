@@ -56,7 +56,7 @@ from typing import Any
 
 from astra_observe import get_tracer
 
-from . import comparables, conditions, export, ledger, pricing
+from . import comparables, conditions, export, ledger, pricing, store
 from .extract import (
     LONG_CAST_TIMES,
     ActionBucket,
@@ -74,8 +74,8 @@ VENDOR_SPELLS_PATH = (
 #: out/. `apps/assay/py/homebrew/` is a plain data directory (distinct from
 #: this MODULE's own path, `apps/assay/py/src/astra_assay/homebrew.py` — no
 #: filesystem collision), sibling to `vendor/`/`results/`/`out/`.
-HOMEBREW_DIR = APP_ROOT / "homebrew"
-HOMEBREW_STORE_DIR = HOMEBREW_DIR / "spells"
+HOMEBREW_DIR = store.STORE_ROOT
+HOMEBREW_STORE_DIR = HOMEBREW_DIR / store.SPELLS_SUBDIR
 HOMEBREW_REVISIONS_PATH = HOMEBREW_DIR / "revisions.md"
 OUT_DIR = APP_ROOT / "out"
 HOMEBREW_OUT_DIR = OUT_DIR / "homebrew"
@@ -1214,7 +1214,7 @@ def seed_homebrew(store_dir: Path) -> SeedReport:
         c = convert_spell(spell)
         doc = dict(c.foundry)
         doc["flags"] = _seed_flags(spell, c.warnings)
-        path.write_text(json.dumps(doc, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        path.write_text(store.canonical_json(doc), encoding="utf-8")
         report.seeded.append(slug)
         report.total_warnings += len(c.warnings)
     return report
