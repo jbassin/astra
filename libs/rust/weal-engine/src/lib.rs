@@ -13,8 +13,9 @@
 //!
 //! Slice S3: runtime values + symbolic die trees (`value`), the
 //! tree-walking interpreter with fuel/effects/saves (`interp` + `fuel` +
-//! `prelude`). [`run`] is the top-level check→interp→display driver that
-//! S5's wasm API wraps.
+//! `prelude`). [`run`] (in `pipeline`, which holds the parse → lower → check
+//! → eval stages every entry point shares) is the top-level driver; S5's
+//! wasm API composes the same stages.
 //!
 //! Slice S4: the exact-distribution engine (`dist`, the icepool port) and —
 //! at S4b — the wired seam (`dist_seam`): `dist_of`/`dist_of_with` lower a
@@ -37,6 +38,7 @@ pub mod interp;
 pub mod lexer;
 pub mod lower;
 pub mod parser;
+pub mod pipeline;
 pub mod plot;
 pub mod prelude;
 pub mod printer;
@@ -65,10 +67,12 @@ pub fn parse_to_ast(src: &str) -> Result<Expr, Vec<ParseError>> {
     if !parsed.errors.is_empty() {
         return Err(parsed.errors);
     }
-    lower::lower_root(&parsed.syntax()).map_err(|e| {
-        vec![ParseError {
-            message: e.message,
-            span: (0, src.len()),
-        }]
-    })
+    pipeline::lower_parsed(&parsed, src)
+        .map(|lowered| lowered.ast)
+        .map_err(|e| {
+            vec![ParseError {
+                message: e.message,
+                span: e.span,
+            }]
+        })
 }

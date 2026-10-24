@@ -37,6 +37,13 @@ For the player-facing language guide, see `apps/weal/bot/README.md`.
   (dice stay symbolic until display), the tree-walking interpreter (currying, captures), the
   runtime effect guard (`roll`/`plot`/`save` illegal inside evaluator closures), and
   `serialize_value` (captures emitted as enclosing `let`s).
+- **`pipeline.rs`** — the one parse → lower → check → eval pipeline. Every entry point uses its
+  stages: the api's `check` and `run` modes, save loading for both (`load_saves`, `CheckOnly` or
+  `Evaluate`), the `run` driver, and the `check_source` / `parse_to_ast` helpers. So they share
+  one error staging (`CompileStage::Parse` for parse and lowering errors, `Type` for checker
+  errors; a failing save is a `SaveError`) and one set of limits (the parser's nesting cap,
+  `fuel_for_budget`, a fresh default fuel per save). Add a new entry point by composing these
+  stages, not by calling the parser, lowerer or checker directly.
 - **`fuel.rs`** — interpreter-side fuel: step counter, recursion-depth cap, and the
   before-allocation construction caps (pool count, explode depth). Distribution-side budgets
   live in `dist/`.

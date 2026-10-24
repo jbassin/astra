@@ -418,19 +418,8 @@ pub fn check_source(
     src: &str,
     extra_env: &[(String, Scheme)],
 ) -> Result<(CoreExpr, Type), TypeError> {
-    let parsed = crate::parser::parse(src);
-    if let Some(e) = parsed.errors.first() {
-        return Err(TypeError {
-            message: format!("parse error: {}", e.message),
-            span: e.span,
-        });
-    }
-    let (expr, spans) =
-        crate::lower::lower_root_spanned(&parsed.syntax()).map_err(|e| TypeError {
-            message: e.message,
-            span: (0, src.len()),
-        })?;
-    check(&expr, &spans, extra_env)
+    let checked = crate::pipeline::compile(src, extra_env)?;
+    Ok((checked.core, checked.ty))
 }
 
 // ---------------------------------------------------------------------------
