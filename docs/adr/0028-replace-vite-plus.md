@@ -1,7 +1,7 @@
 # 0028. Replace vite-plus with pnpm -r and root vitest projects
 
 - **Date:** 2026-10-22
-- **Status:** Accepted, partly built
+- **Status:** Accepted (done 2026-10-24)
 - **Source:** [2026-10-22-techdebt-paydown-0037-thoughts.md](../../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md) (section 0, decision table)
 
 ## Context
@@ -14,4 +14,6 @@ typecheck, test and build fan out with `pnpm -r --no-bail --aggregate-output`. T
 
 ## Consequences
 
-The fan-out is done; the vitest projects and the dependency removal are open.
+typecheck and build fan out with `pnpm -r`. Tests run in one process from the root
+`vitest.config.ts`, whose projects are the workspace packages with a `test` script. `vite-plus` is
+gone from the root devDependencies.

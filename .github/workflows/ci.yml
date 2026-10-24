@@ -63,8 +63,8 @@ jobs:
               - 'libs/rust/**'
               # Root fixtures: read by the libs/ts/vellum-lang and libs/ts/config tests.
               - 'fixtures/**'
-              # Root-level files oxfmt checks (package.json, commitlint.config.js).
-              - '*.{js,mjs,cjs,json}'
+              # Root files oxfmt checks (package.json, commitlint.config.js, vitest.config.ts).
+              - '*.{js,mjs,cjs,ts,json}'
               - 'pnpm-lock.yaml'
               - 'pnpm-workspace.yaml'
               - '.oxlintrc.json'
@@ -160,9 +160,8 @@ jobs:
       - uses: ./.github/actions/setup-uv
       - run: just py-test
 
-  # typecheck/test/build fan out with `pnpm -r --no-bail` (see the ts-typecheck recipe):
-  # a failing member no longer hides the ones after it. This replaces `vp run -r`, which
-  # stops at the first failure (0037 decision: replace vite-plus with `pnpm -r`).
+  # typecheck/build fan out with `pnpm -r --no-bail` (see the ts-typecheck recipe), so a failing
+  # member does not hide the ones after it; tests run in one root vitest process (ADR 0028).
   ts-typecheck:
     needs: changes
     if: needs.changes.outputs.ts == 'true'

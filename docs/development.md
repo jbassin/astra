@@ -75,9 +75,11 @@ dependency by name only. A new member gets a line there.
 
 **TypeScript (pnpm).** Workspace in `pnpm-workspace.yaml`; members `apps/*/*` (a directory without
 a `package.json` is skipped) and `libs/ts/*`. Node 24 and pnpm 10.34.4 (root `packageManager`). oxlint and oxfmt lint and format;
-`tsc --noEmit` against `tsconfig.base.json` (strict) type-checks; vitest tests. typecheck, test and
-build fan out with `pnpm -r --no-bail --aggregate-output run <task>`. `vite-plus` is still a root
-devDependency but nothing runs it. A dependency that two or more packages use has one version, in
+`tsc --noEmit` against `tsconfig.base.json` (strict) type-checks; vitest tests. typecheck and build
+fan out with `pnpm -r --no-bail --aggregate-output run <task>`. Tests run in one vitest process from
+the root `vitest.config.ts` (`just ts-test`, or `pnpm vitest run` at the root): every workspace
+package with a `test` script is a project with its own config, globalSetup and environment.
+`pnpm --filter <pkg> test` still runs one package alone. A dependency that two or more packages use has one version, in
 the `catalog:` of `pnpm-workspace.yaml`, and each package.json names it `"catalog:"`; bump it there.
 zod is off the catalog until its users converge (codex and menhir resolve 4.6.7, the rest 4.4.3).
 
@@ -180,7 +182,8 @@ is still hand-maintained:
 3. Its config block in `config.kdl` and in Pydantic (`libs/py/config` `models.py`): in `Config` if
    Python reads it, else in `WholeConfig`, which the whole-file CI test checks. A block TS reads also
    goes in `libs/ts/config` (Zod). Add the block to the ownership list in the `models.py` docstring.
-4. At least one test: `vitest run` with no test files exits 1.
+4. A `test` script (`vitest run`) and at least one test. The script is how the root vitest config
+   finds the package; `vitest run` with no test files exits 1.
 5. Telemetry in the real entrypoint. TS services get no HTTP auto-instrumentation, so add
    `startActiveSpan` spans on request paths, or traces stay empty while metrics flow. Never log ERROR
    for a user-content problem: every ERROR log pages Discord.
