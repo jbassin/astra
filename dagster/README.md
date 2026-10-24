@@ -7,10 +7,51 @@ sensors, schedules and jobs in its `assets.defs`; `definitions.py` merges them
 member `astra-pipeline`: its `pyproject.toml` lists the pipeline apps and the Dagster server
 packages, so all of them are locked in `uv.lock`. The image
 `astra-dagster:local` (`dagster/Dockerfile`) runs as three compose services: `dagster-code`
-(the gRPC code server, which also runs every run worker), `dagster-webserver` (UI at
-http://localhost:10350) and `dagster-daemon` (sensors, schedules, run queue). Run and event
-storage is Postgres (`dagster-postgres`). `dagster.yaml` caps the queue at 3 concurrent runs
-and at 1 run tagged `astra/heartwood`, and fails zombie runs whose worker died.
+(the gRPC code server, which also evaluates sensors and schedules), `dagster-webserver` (UI at
+http://localhost:10350) and `dagster-daemon` (sensor ticks, schedules, run queue). Each run
+gets its own container from the same image (the Docker run launcher, ADR 0030; see "Run
+containers" below). Run and event storage is Postgres (`dagster-postgres`). `dagster.yaml`
+caps the queue at 3 concurrent runs and at 1 run tagged `astra/heartwood`, and fails zombie
+runs whose container died. All three services have compose healthchecks: the code server's
+gRPC health check, the webserver's `/server_info`, and `dagster-daemon liveness-check` (every
+daemon heartbeat in the last 5 minutes).
+
+## Run containers
+
+The daemon launches each run as a container (`dagster.yaml` `run_launcher`,
+`astra_pipeline_resources.run_launcher.InstanceOnlyDockerRunLauncher`), so a redeploy
+of any Dagster service leaves running runs alone. The container runs as uid 1000 on the
+`pipeline` and `dagster-db` networks, with the code server's env keys and data binds; the
+image and network names come from the `DAGSTER_RUN_*` env in the compose `x-dagster-env`.
+`dagster.yaml` repeats the compose env keys and binds, and `tests/test_run_launcher.py`
+fails when they drift: a new data path goes in both files. The container carries the label
+`astra.role=dagster-run` and removes itself when the run ends; list the live ones with
+`docker ps --filter label=astra.role=dagster-run`. Only the daemon mounts the host's Docker
+socket and joins its group (`DOCKER_GID`, exported by deploy.sh): the code server, the run
+containers and the webserver (reachable on the LAN without auth) do not. A run uses the image
+tagged when it launched, so a run launched before a deploy finishes on the old code.
+
+The launcher is Dagster's `DockerRunLauncher` minus its per-run overrides: it ignores the
+`container_context` and `container_image` stored in a run's code origin. The daemon reads
+that origin from Postgres, whose password every run container holds, so honouring it would
+let anyone who can write the run database have the daemon start a privileged container with
+the host mounted. Every run container gets exactly what `dagster.yaml` says
+(`libs/py/pipeline-resources/tests/test_run_launcher.py` launches a crafted run to prove it).
+
+### Terminate a run
+
+The UI's "Terminate" (and the GraphQL `terminateRun`) does not stop a run's container: the
+webserver has no Docker socket, so the run sits at `CANCELING` (the mutation returns HTTP
+500) while the container keeps running, paid steps included. Terminate with:
+
+```sh
+just pipeline-terminate <run-id>         # asks first; --yes skips the question
+```
+
+It runs the cancel inside `astra-dagster-daemon` through the instance's run coordinator: a
+queued run is canceled, a running one (also one already stuck at `CANCELING`) has its
+container stopped and ends `CANCELED`. Exit 0 also covers a run that had already finished;
+2 = no such run, 1 = the launcher could not stop it (`libs/py/ops/src/astra_ops/pipeline.py`).
 
 ## Asset graph
 
@@ -92,10 +133,14 @@ pages Discord.
 ### Deploy pipeline code
 
 The pipeline code is baked into the image, so a change to any pipeline app is live only after
-`just deploy dagster-code dagster-daemon dagster-webserver` (from pushed `main`). Check the UI
-for in-flight runs first: a deploy kills running workers, and a waiting `session_wiki` run
-fails (its host request still publishes). `just deploy --restart dagster-code` restarts
-without a rebuild and keeps the injected secrets.
+`just deploy dagster-code dagster-daemon dagster-webserver` (from pushed `main`). A deploy that
+touches a Dagster service (or the whole stack) refuses with exit 13 while a run is
+`NOT_STARTED`, `STARTING`, `STARTED` or `CANCELING` (from the GraphQL API) or while any run
+container is running (`astra.role=dagster-run`). It always checks both: a run the UI
+terminated is marked `CANCELED` after 180 s while its container keeps going, and the
+containers still answer when the webserver is down. Queued runs do not block it. A redeploy no longer kills
+runs, so `--force` is safe when you need the deploy now. `just deploy --restart dagster-code`
+restarts without a rebuild and keeps the injected secrets (the same check applies).
 
 ### Re-execute a failed run
 
@@ -126,6 +171,8 @@ docker exec astra-dagster-code sh -c 'cd /opt/dagster/app && dagster asset mater
   Killing a client `docker exec` leaves the run alive. The image has no `pkill`; find the PID
   through `/proc/*/cmdline` and `kill` it. Never `pkill -f` from a tool shell: the pattern
   matches the shell's own command line.
+- A CLI materialize runs inside the code server, not in a run container, so a deploy of
+  `dagster-code` kills it.
 - A CLI materialize exports no telemetry. When you need traces, launch from the UI or with
   GraphQL `launchRun` (location `astra-pipeline`, repository `__repository__`, job
   `__ASSET_JOB`).
@@ -134,7 +181,7 @@ docker exec astra-dagster-code sh -c 'cd /opt/dagster/app && dagster asset mater
 
 ### Re-run a session from scratch
 
-1. Deploy any code fix first, and check for in-flight runs: a deploy kills them.
+1. Deploy any code fix first (the deploy waits for no run to be in flight).
 2. Delete the session's outputs: `/ruby/data/astra-state/scribe/data/saved/<date>`,
    `/ruby/data/astra-state/scribe/tmp/<date>` and the astra-data files
    `linguist/data/<date>*.json` (linguist-commit commits the deletion).
@@ -226,7 +273,8 @@ docker exec astra-dagster-code sh -c 'cd /opt/dagster/app && python migrate_sess
   two steps overlapped.
 - **Writable paths.** Containers run as uid 1000 and the image is root-owned. An asset that
   writes anywhere except a bind-mounted data dir fails with EACCES at run time. A new data
-  path needs an identical-path mount in `deploy/docker-compose.yml` and a dir in deploy.sh
+  path needs an identical-path mount in `deploy/docker-compose.yml` (`x-dagster-volumes`), the
+  same bind in `dagster.yaml`'s run launcher `volumes`, and a dir in deploy.sh
   `init_artifacts`.
 - **No `git` in the image.** `subprocess.run(["git", …])` raises `FileNotFoundError` even with
   `check=False`; catch `OSError`.

@@ -32,7 +32,7 @@ flowchart LR
 
 | Concern | Runs as | Defined in |
 |---|---|---|
-| Session pipeline (scribe, linguist, mouthpiece, chronicle, heartwood request) | Dagster assets in the `dagster-code` container; `dagster-daemon` runs sensors and schedules | `dagster/definitions.py`, each app's `assets.py` |
+| Session pipeline (scribe, linguist, mouthpiece, chronicle, heartwood request) | Dagster assets, each run in its own container from the `astra-dagster` image (ADR 0030); `dagster-code` serves the definitions and evaluates sensors and schedules, `dagster-daemon` launches the runs | `dagster/definitions.py`, each app's `assets.py` |
 | Long-running services (SSR frontends, Discord bots, overlay, render, portal, Postgres) | Docker Compose services, `restart: unless-stopped` with healthchecks | `deploy/docker-compose.yml` |
 | Edge (TLS, reverse proxy) | The shared host Caddy at `/ruby/data/reverse-proxy`, which imports this repo's `sites.caddyfile` from the deploy checkout | `sites.caddyfile` |
 | Observability | SigNoz (vendored compose include) and its OTel collector | `deploy/signoz/` |

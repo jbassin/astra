@@ -51,7 +51,9 @@ services to come up: a healthcheck must report `healthy`, a container without on
 without restarting, and a one-shot must exit 0 (`deploy/wait-healthy.sh`). If one does not, the
 deploy prints each failing container with its last log lines and the rollback command
 (`just deploy --sha <the newest earlier healthy sha> [services]`), records `result: "unhealthy"`
-and exits 10. It never rolls back by itself; the new containers keep running. `--restart` waits
+and exits 10. It never rolls back by itself; the new containers keep running. Before any of
+that, a deploy or `--restart` that touches a Dagster service (or the whole stack) exits 13
+while a Dagster run is in flight (`--force` skips the check; `dagster/README.md`). `--restart` waits
 the same way. `just deploy-health-test` checks the wait against throwaway containers. Limits of
 the wait:
 
@@ -147,8 +149,8 @@ database, ClickHouse or the Dagster gRPC server. The `networks:` block at the en
 | Network | Members |
 |---|---|
 | `telemetry` | every Node app and the SigNoz collector (OTLP to `signoz-otel-collector:4318`) |
-| `pipeline` | the Dagster code server, webserver and daemon, and the collector |
-| `dagster-db` (internal) | dagster-postgres and the three Dagster services |
+| `pipeline` | the Dagster code server, webserver and daemon, each run's container, and the collector |
+| `dagster-db` (internal) | dagster-postgres, the three Dagster services and each run's container |
 | `weal-db`, `orator-db` | each Postgres and its one app |
 | `weal-feed` | weal-bot and weal-overlay (the roll feed) |
 | `signoz-net` | SigNoz only: ClickHouse, zookeeper, the UI and the collector |

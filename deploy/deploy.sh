@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # astra deploy (0037 OPS-3) — the ONE way production gets built and started.
 #
-#   deploy.sh [--sha REV] [--dry-run] [--skip-failed] [SERVICE...]
+#   deploy.sh [--sha REV] [--dry-run] [--skip-failed] [--force] [SERVICE...]
 #                                                    build + (re)start SERVICEs (none = all)
-#   deploy.sh --restart SERVICE...                   restart running containers, no build (then 7b)
+#   deploy.sh --restart [--force] SERVICE...         restart running containers, no build (then 7b)
 #   deploy.sh --init-artifacts                       create the data root's dirs only
 #   deploy.sh --host-tooling                         sync the deploy checkout's host tooling only
 #
@@ -12,6 +12,10 @@
 # from a developer working tree, so what runs is always a pushed commit and nobody's
 # half-finished edits can ship. Steps of a deploy:
 #   1. take the deploy lock ($DATA_ROOT/deploy/deploy.lock, waits up to DEPLOY_LOCK_TIMEOUT s)
+#   1b. when a Dagster service is in scope (the whole stack, dagster-code, dagster-daemon,
+#      dagster-webserver or dagster-postgres), refuse with exit 13 while a Dagster run is in
+#      flight (dagster_runs_in_flight below; --force skips the check). --restart and
+#      --dry-run check too.
 #   2. git fetch origin
 #   2a. copy origin/main's deploy/deploy.sh and deploy/wait-healthy.sh to $DATA_ROOT/deploy/bin/
 #      and re-exec that copy (it inherits the deploy lock), so the deploy logic is always
@@ -86,7 +90,8 @@
 # sync failed (nothing built; the checkout is already at the target — fix, then redeploy) ·
 # 10 started, but a container did not become healthy (the new containers keep running) ·
 # 11 --skip-failed: this build already failed at this code and data, nothing done ·
-# 12 codex is in scope but <data root>/codex/data/releases/current is missing (nothing done).
+# 12 codex is in scope but <data root>/codex/data/releases/current is missing (nothing done) ·
+# 13 a Dagster service is in scope and a Dagster run is in flight (nothing done; --force).
 #
 # history.jsonl is read leniently: a line that is not a JSON object is skipped, never fatal.
 #
@@ -108,6 +113,10 @@ LOCK_TIMEOUT="${DEPLOY_LOCK_TIMEOUT:-1800}"
 export SOPS_AGE_KEY_FILE="${SOPS_AGE_KEY_FILE:-$HOME/.config/sops/age/keys.txt}"
 
 HEALTH_TIMEOUT="${DEPLOY_HEALTH_TIMEOUT:-180}"
+# The Dagster webserver's GraphQL API, for the in-flight run check (step 1b).
+DAGSTER_GRAPHQL_URL="${DAGSTER_GRAPHQL_URL:-http://localhost:10350/graphql}"
+# The docker CLI the check falls back to (the tests point it at a fake).
+GUARD_DOCKER="${ASTRA_GUARD_DOCKER:-docker}"
 TOOLING_LOCK_TIMEOUT="${HOST_TOOLING_LOCK_TIMEOUT:-600}"
 # Next to this script: after step 2a that is the staged origin/main copy in
 # $DATA_ROOT/deploy/bin/, never the deploy checkout's (possibly older) one.
@@ -201,8 +210,55 @@ sync_host_tooling() {
 }
 
 usage() {
-  log "usage: deploy.sh [--sha REV] [--dry-run] [--skip-failed] [SERVICE...] | --restart SERVICE... | --init-artifacts | --host-tooling"
+  log "usage: deploy.sh [--sha REV] [--dry-run] [--skip-failed] [--force] [SERVICE...] | --restart [--force] SERVICE... | --init-artifacts | --host-tooling"
   exit 2
+}
+
+# The Dagster runs in flight, one "<run id> <job> <status>" line each (none = no output).
+# Two sources, both always asked, because either can miss a live run:
+#   - the webserver's GraphQL API: runs NOT_STARTED, STARTING, STARTED or CANCELING. A QUEUED
+#     run is only a row in Postgres; the new daemon launches it.
+#   - the running run containers (label astra.role=dagster-run, dagster.yaml run_launcher),
+#     status `container`. They outlive every Dagster service, and one keeps running after
+#     its run is marked CANCELED (a UI "Terminate" cannot stop it; run monitoring marks the
+#     run CANCELED after 180 s).
+# A run both sources report is listed once. Returns 2 when the API answers with something
+# other than a run list, 1 when neither source answers; one answering is enough (the other
+# is logged).
+dagster_runs_in_flight() {
+  local query body out api_ok=0 docker_ok=0 runs="" containers=""
+  query='{ runsOrError(filter: {statuses: [NOT_STARTED, STARTING, STARTED, CANCELING]}) { __typename ... on Runs { results { runId jobName status } } ... on PythonError { message } } }'
+  body="$(jq -nc --arg q "$query" '{query: $q}')"
+  if out="$(curl -fsS --max-time 10 -H 'Content-Type: application/json' -d "$body" "$DAGSTER_GRAPHQL_URL" 2>/dev/null)"; then
+    if ! jq -e '.data.runsOrError.__typename == "Runs"' <<<"$out" >/dev/null 2>&1; then
+      log "the Dagster GraphQL API answered without a run list: $(head -c 300 <<<"$out")"
+      return 2
+    fi
+    runs="$(jq -r '.data.runsOrError.results[] | "\(.runId) \(.jobName) \(.status)"' <<<"$out")"
+    api_ok=1
+  else
+    log "the Dagster GraphQL API ($DAGSTER_GRAPHQL_URL) did not answer; relying on the run containers"
+  fi
+  local ids
+  if ids="$("$GUARD_DOCKER" ps -q --filter label=astra.role=dagster-run 2>/dev/null)"; then
+    docker_ok=1
+    if [ -n "$ids" ]; then
+      local -a id_list
+      mapfile -t id_list <<<"$ids"
+      containers="$("$GUARD_DOCKER" inspect -f \
+        '{{index .Config.Labels "dagster/run_id"}} {{index .Config.Labels "dagster/job_name"}} container' \
+        "${id_list[@]}")" || docker_ok=0
+    fi
+  fi
+  [ "$docker_ok" = 1 ] || log "could not list the Dagster run containers (docker ps failed)"
+  [ "$api_ok" = 1 ] || [ "$docker_ok" = 1 ] || return 1
+  # Each run once: the API's line, then the containers whose run id the API did not list.
+  [ -z "$runs" ] || printf '%s\n' "$runs"
+  local line
+  while IFS= read -r line; do
+    [ -n "$line" ] || continue
+    grep -q "^${line%% *} " <<<"$runs" || printf '%s\n' "$line"
+  done <<<"$containers"
 }
 
 # --- arguments --------------------------------------------------------------------------
@@ -211,6 +267,7 @@ orig_args=("$@")
 mode=deploy
 rev=""
 skip_failed=0
+force=0
 services=()
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -229,6 +286,10 @@ while [ "$#" -gt 0 ]; do
       ;;
     --skip-failed)
       skip_failed=1
+      shift
+      ;;
+    --force)
+      force=1
       shift
       ;;
     --restart)
@@ -346,6 +407,36 @@ else
 fi
 if [ "$codex_in_scope" = 1 ] && ! { [ -L "$codex_current" ] && [ -d "$codex_current/corpus" ]; }; then
   die 12 "no codex release at $codex_current — run \`just codex-migrate-releases\` (a flat corpus) or \`just codex-build\` first, then redeploy"
+fi
+
+# --- 1b. no Dagster redeploy under a running run -------------------------------------------
+# Each run has its own container (ADR 0030), so a redeploy no longer kills it, but the
+# daemon that watches it and the code a re-execution would pick up still change under it.
+# Refuse before touching anything; --force overrides.
+dagster_in_scope=0
+if [ "${#services[@]}" -eq 0 ]; then
+  dagster_in_scope=1
+else
+  for s in "${services[@]}"; do
+    case "$s" in dagster-code | dagster-daemon | dagster-webserver | dagster-postgres) dagster_in_scope=1 ;; esac
+  done
+fi
+if [ "$dagster_in_scope" = 1 ] && [ "$force" = 0 ]; then
+  in_flight_rc=0
+  in_flight="$(dagster_runs_in_flight)" || in_flight_rc=$?
+  case "$in_flight_rc" in
+    0)
+      if [ -n "$in_flight" ]; then
+        log "Dagster runs in flight (run id, job, status):"
+        while IFS= read -r run; do log "  $run"; done <<<"$in_flight"
+        die 13 "refusing to redeploy ${services[*]:-the whole stack} while $(wc -l <<<"$in_flight") Dagster run(s) are in flight — wait for them (http://localhost:10350/runs), or re-run with --force"
+      fi
+      ;;
+    2) die 13 "could not read the in-flight Dagster runs — check the webserver, or re-run with --force" ;;
+    *) log "WARNING: could not ask Dagster for in-flight runs (no GraphQL API at $DAGSTER_GRAPHQL_URL, no docker); deploying anyway" ;;
+  esac
+elif [ "$dagster_in_scope" = 1 ]; then
+  log "--force: not checking for in-flight Dagster runs"
 fi
 
 # --- restart mode: no fetch, no build -----------------------------------------------------
@@ -470,6 +561,10 @@ while IFS='=' read -r k v; do
   export "${k^^}=$v"
 done <<<"$secrets"
 unset secrets
+# The Docker socket's group, which dagster-daemon joins (compose group_add) to launch and
+# stop the run containers.
+DOCKER_GID="$(stat -c %g /var/run/docker.sock)" || die 7 "no Docker socket at /var/run/docker.sock"
+export DOCKER_GID
 
 # --- 5–7. build and start -------------------------------------------------------------------
 

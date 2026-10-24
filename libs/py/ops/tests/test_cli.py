@@ -33,6 +33,7 @@ def test_unattended_without_yes_refuses_64_and_runs_nothing(
         ("heartwood-agent", ["d"]),
         ("heartwood-agent", ["d", "--dry-run"]),
         ("heartwood-agent", ["d", "--no-push"]),
+        ("pipeline-terminate", ["r"]),
     ]:
         assert cli.dispatch(ctx, command, args) == 64, command
     r.assert_done()
@@ -192,6 +193,7 @@ def test_every_cli_command_has_one_wrapper() -> None:
         "heartwood-backfill",
         "_heartwood-backfill-loop",
         "heartwood-requests",
+        "pipeline-terminate",
     }
 
 

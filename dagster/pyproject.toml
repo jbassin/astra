@@ -13,6 +13,7 @@ dependencies = [
     "astra-observe",
     "astra-scribe",
     "dagster==1.13.10",
+    "dagster-docker==0.29.10",
     "dagster-postgres==0.29.10",
     "dagster-webserver==1.13.10",
 ]

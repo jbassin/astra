@@ -168,8 +168,8 @@ Each session is a Dagster partition. The detailed commands (GraphQL calls, conta
 
 1. Find the failed run in the Dagster UI (`dagster.iridi.cc`, local network) or in SigNoz
    (`service.name = astra.pipeline`, ERROR logs from `pipeline_failure_alert`).
-2. Fix the cause, commit, push and `just deploy dagster-code` first if code changed. Check for
-   in-flight runs before redeploying Dagster: a redeploy kills them.
+2. Fix the cause, commit, push and `just deploy dagster-code` first if code changed. The deploy
+   refuses (exit 13) while a Dagster run is in flight; wait for it, or pass `--force`.
 3. Re-execute from failure in the UI, or with `launchRunReexecution` (strategy `FROM_FAILURE`).
    This reuses finished outputs, so paid steps that already succeeded are not repeated.
 4. To re-run a session from scratch, follow "Re-run a session from scratch" in the Dagster README

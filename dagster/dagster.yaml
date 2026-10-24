@@ -27,9 +27,61 @@ run_coordinator:
       - key: "astra/heartwood"
         limit: 1
 
-# Auto-detect + fail "zombie" runs whose worker died (e.g. a container recreated mid-run
-# via `just up`) instead of leaving them STARTED forever, holding queue slots. Without
-# this, a redeploy during a run jams the QueuedRunCoordinator.
+# Every run in its own container (ADR 0030), so a redeploy of dagster-code no longer kills
+# the runs in flight. The daemon launches the container from the code server's image,
+# checks its health and stops it on a terminate, through the host's Docker socket, which
+# only the daemon mounts (deploy/docker-compose.yml). The webserver has no socket, so the
+# UI's "Terminate" cannot stop a container: use `just pipeline-terminate <run-id>`. The
+# container gets what the code server has: the `x-dagster-env` keys (`env_vars`, copied
+# from the launching process) and the `x-dagster-volumes` binds (`volumes`);
+# dagster/tests/test_run_launcher.py fails when either list drifts from the compose file.
+# The run worker loads definitions.py from the image, so it needs no gRPC to the code
+# server: `dagster-db` for run and event storage, `pipeline` for OTLP and the provider APIs.
+# Compose sets the image and network names as env, so a scratch stack can point them
+# elsewhere. The class is Dagster's DockerRunLauncher minus the per-run overrides: it never
+# takes a container_context or image from a run's stored code origin, which anyone who can
+# write the run database could craft (astra_pipeline_resources/run_launcher.py).
+run_launcher:
+  module: astra_pipeline_resources.run_launcher
+  class: InstanceOnlyDockerRunLauncher
+  config:
+    image:
+      env: DAGSTER_RUN_IMAGE
+    networks:
+      - env: DAGSTER_RUN_NETWORK_PIPELINE
+      - env: DAGSTER_RUN_NETWORK_DB
+    env_vars:
+      - DAGSTER_PG_USERNAME
+      - DAGSTER_PG_PASSWORD
+      - DAGSTER_PG_DB
+      - GROQ_API_KEY
+      - ELEVENLABS_API_KEY
+      - OPENROUTER_API_KEY
+    container_kwargs:
+      user: "1000:1000"
+      # A finished run's container goes away; its events and logs are in Postgres and SigNoz.
+      auto_remove: true
+      labels:
+        astra.role: dagster-run
+      # Identical-path binds, as in the compose file (same order, same read-only flags).
+      # Unlike compose's create_host_path: false, Docker creates a missing source here, so
+      # a new data dir still needs deploy.sh init_artifacts.
+      volumes:
+        - /ruby/data/astra-state/scribe/incoming:/ruby/data/astra-state/scribe/incoming:rw
+        - /ruby/data/astra-state/scribe/data:/ruby/data/astra-state/scribe/data:rw
+        - /ruby/data/astra-state/scribe/tmp:/ruby/data/astra-state/scribe/tmp:rw
+        - /ruby/data/astra-state/linguist/script:/ruby/data/astra-state/linguist/script:rw
+        - /ruby/data/astra-state/astra-data/linguist/transcripts:/ruby/data/astra-state/astra-data/linguist/transcripts:rw
+        - /ruby/data/astra-state/astra-data/linguist/data:/ruby/data/astra-state/astra-data/linguist/data:rw
+        - /ruby/data/astra-state/astra-data/linguist/timeline:/ruby/data/astra-state/astra-data/linguist/timeline:rw
+        - /ruby/data/astra-state/mouthpiece/episodes:/ruby/data/astra-state/mouthpiece/episodes:rw
+        - /ruby/data/astra-state/astra-data/akasha/content:/ruby/data/astra-state/astra-data/akasha/content:ro
+        - /ruby/data/astra-state/astra-data/entity:/ruby/data/astra-state/astra-data/entity:ro
+        - /ruby/data/astra-state/heartwood/requests:/ruby/data/astra-state/heartwood/requests:rw
+
+# Auto-detect + fail "zombie" runs whose worker died (a run container that crashed or was
+# removed) instead of leaving them STARTED forever, holding queue slots. The daemon asks
+# the launcher for each run container's state.
 run_monitoring:
   enabled: true
   start_timeout_seconds: 300
