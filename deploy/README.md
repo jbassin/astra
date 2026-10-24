@@ -171,7 +171,10 @@ newest). A failed run pages Discord through `astra-alert@` (Class C). Each snaps
 
 Retention: the newest snapshot of each of the last 14 days plus the newest of each of the last 8
 ISO weeks. `just backup-now` takes a snapshot; `just backup-restore-test` restores every dump into a
-throwaway `--network none` Postgres and checks row counts, then checksums a sample of state files.
+throwaway `--network none` Postgres and checks row counts, then checksums a sample of the state
+files still unchanged at the source. A dir where every file changed fails, except the volatile
+`deploy` dir (`ASTRA_BACKUP_VOLATILE_STATE`), which every deploy rewrites: there every snapshot
+file must read back in full, and the test logs a warning.
 `astra-restore-test.timer` (Sunday 05:30, also installed by `just backup-install`) runs that test
 weekly and pages through `astra-alert@` when it fails. A pass writes
 `<backup root>/.restore-test-pass.json`. The watchdog pages when the newest snapshot is 36 h old or
