@@ -168,8 +168,10 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
   scheduled — agent.
 - `config.kdl` references a SOPS key that does not exist — agent (paydown OPS-5).
 - Split the internal Docker network (the one theme P item kept) — agent; Phase 2.
-- `opentelemetry-api` 1.42.1 has a medium advisory fixed only in 1.45.1, across breaking logs-API
-  changes; upgrade as its own slice with a live SigNoz check — agent. `diskcache` (via dspy) has no fix.
+- `pip-audit` flags `filelock` 3.29.4 (via dagster; three advisories, fixed in 4.2.1, a major bump)
+  — agent; check dagster accepts 4.x. `diskcache` (via dspy) has no fix.
+- After the OpenTelemetry 1.45.1 upgrade deploys, confirm `astra.pipeline` logs still reach
+  SigNoz — main session.
 - Manual `heartwood-agent`/`-revert` from the dev tree run dev code against live data; always use
   `just -f /ruby/data/astra-deploy/justfile ...` — agent; consider making the recipes refuse.
 

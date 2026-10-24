@@ -38,7 +38,8 @@ from typing import Any
 
 from opentelemetry import metrics, trace
 from opentelemetry._logs import set_logger_provider
-from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
+from opentelemetry.instrumentation.logging.handler import LoggingHandler
+from opentelemetry.sdk._logs import LoggerProvider
 from opentelemetry.sdk._logs.export import (
     BatchLogRecordProcessor,
     LogRecordExporter,
@@ -163,7 +164,11 @@ def _install(
     )
     logger_provider.add_log_record_processor(log_processor)
     set_logger_provider(logger_provider)
-    handler = LoggingHandler(level=logging.INFO, logger_provider=logger_provider)
+    # The instrumentation-logging handler (the SDK's own is deprecated). It drops the code.*
+    # attributes unless asked; keep them, as the SDK handler always sent them.
+    handler = LoggingHandler(
+        level=logging.INFO, logger_provider=logger_provider, log_code_attributes=True
+    )
     astra_log = logging.getLogger(LOG_NAMESPACE)
     astra_log.setLevel(logging.INFO)
     astra_log.addHandler(handler)

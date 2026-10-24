@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 import os
 import signal
+import warnings
 from collections.abc import Iterator
 
 import astra_observe
@@ -180,8 +181,32 @@ def test_captures_do_not_leak_into_each_other() -> None:
     assert second.metric_sum("astra.test.n") == 5
 
 
+def test_log_records_keep_extras_code_and_exception_attributes(
+    telemetry_capture: Captured,
+) -> None:
+    log = astra_observe.get_logger("astra.test")
+    try:
+        int("boom")
+    except ValueError:
+        log.exception("failed", extra={"astra.run_id": "r1"})
+    (record,) = telemetry_capture.logs()
+    attributes = record.log_record.attributes or {}
+    assert attributes["astra.run_id"] == "r1"
+    assert attributes["exception.type"] == "ValueError"
+    assert attributes["code.function.name"] == (
+        "test_log_records_keep_extras_code_and_exception_attributes"
+    )
+
+
+def test_installing_the_logs_handler_raises_no_deprecation_warning() -> None:
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", DeprecationWarning)
+        with capture():
+            pass
+
+
 def test_logs_handler_is_detached_after_teardown() -> None:
-    from opentelemetry.sdk._logs import LoggingHandler
+    from opentelemetry.instrumentation.logging.handler import LoggingHandler
 
     astra_log = logging.getLogger(astra_observe.LOG_NAMESPACE)
     with capture():
