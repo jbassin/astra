@@ -217,6 +217,9 @@ just down-volumes         # also drop the SigNoz volumes (asks first; fresh onbo
   and with no terminal and no `--yes` it exits 64. A unit that runs one must pass `--yes`
   (`linguist-commit.service` does; a test checks every unit), and after a deploy that changes such
   a unit line, re-run its install recipe, or systemd keeps running the old line and it exits 64.
+  astra-ops holds the host-tooling lock shared only while it imports, so a deploy's `uv sync`
+  never swaps packages under its imports; `uv run` itself and the console script still start
+  before that lock (a tiny window, as with every other `uv run` from a unit).
 - `OnFailure=` belongs in `[Unit]`. In `[Service]` systemd ignores it with only a log warning.
   Check with `systemctl --user show <unit> -p OnFailure`.
 - `craig-sync` cannot be failed by pointing `CRAIG_DROP_DIR` at a missing directory: its nullglob

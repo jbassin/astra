@@ -18,9 +18,11 @@ Exit-code semantics mirror the bash recipes these commands replaced (``set -euo 
 
 from __future__ import annotations
 
+import contextlib
 import fcntl
 import os
 import shutil
+import signal
 import subprocess
 import sys
 import time
@@ -59,6 +61,34 @@ class Done:
     stdout: bytes = b""
 
 
+#: Seconds an interrupted child gets to exit after SIGINT before it is killed.
+INTERRUPT_GRACE_S = 30.0
+
+
+def _start_failed(argv: Sequence[str], exc: OSError) -> Done:
+    """A child that could not start, reported the way bash reports it: a message on stderr
+    and exit 127 (not found) or 126 (found but not runnable)."""
+    name = argv[0] if argv else "?"
+    _flush()
+    print(f"{name}: {exc.strerror or exc}", file=sys.stderr, flush=True)  # noqa: T201 -- command-line output
+    return Done(127 if isinstance(exc, FileNotFoundError) else 126)
+
+
+def _interrupted(proc: subprocess.Popen[bytes]) -> None:
+    """Ctrl-C: like bash, let the child finish handling SIGINT (a VCS child drops its index
+    lock, deploy.sh records its outcome) instead of killing it. Forward SIGINT (a terminal
+    already sends it to the whole group; a signal sent to us alone does not reach the child),
+    wait up to INTERRUPT_GRACE_S, and only then kill."""
+    if proc.poll() is None:
+        with contextlib.suppress(ProcessLookupError):
+            proc.send_signal(signal.SIGINT)
+    try:
+        proc.wait(timeout=INTERRUPT_GRACE_S)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        proc.wait()
+
+
 class Runner:
     """Starts child processes from argument lists; the real one. Tests use a recorder."""
 
@@ -73,7 +103,11 @@ class Runner:
         stdin_data: bytes | None = None,
     ) -> Done:
         """Run ``argv`` to completion. ``out`` routes stdout: to ours, captured, discarded,
-        into ``out_path`` (``> file``) or both ours and ``out_path`` (``| tee file``)."""
+        into ``out_path`` (``> file``) or both ours and ``out_path`` (``| tee file``).
+
+        A child that cannot start (missing or not executable) or an output file that cannot
+        be opened is a failed step with bash's exit code, never an exception, so the
+        caller's ``|| ...`` handling runs as it did in bash."""
         _flush()
         child_env = None if env is None else {**os.environ, **env}
         stderr = subprocess.DEVNULL if stderr_null else None
@@ -90,23 +124,35 @@ class Runner:
         elif out == "file":
             if out_path is None:
                 raise ValueError("out='file' needs out_path")
-            fh = out_path.open("wb")
+            try:
+                fh = out_path.open("wb")
+            except OSError as exc:  # bash: `cmd > file` fails with 1 when the file can't open
+                print(f"{out_path}: {exc.strerror}", file=sys.stderr, flush=True)  # noqa: T201 -- command-line output
+                return Done(1)
             sink = fh
         else:
             sink = None
         try:
-            proc = subprocess.run(
-                list(argv),
-                env=child_env,
-                stdout=sink,
-                stderr=stderr,
-                input=stdin_data,
-                check=False,
-            )
+            try:
+                proc = subprocess.Popen(
+                    list(argv),
+                    env=child_env,
+                    stdout=sink,
+                    stderr=stderr,
+                    stdin=subprocess.PIPE if stdin_data is not None else None,
+                )
+            except OSError as exc:
+                return _start_failed(argv, exc)
+            with proc:
+                try:
+                    stdout, _ = proc.communicate(stdin_data)
+                except KeyboardInterrupt:
+                    _interrupted(proc)
+                    raise
+            return Done(proc.returncode, stdout or b"")
         finally:
             if fh is not None:
                 fh.close()
-        return Done(proc.returncode, proc.stdout or b"")
 
     def _tee(
         self,
@@ -120,17 +166,23 @@ class Runner:
         if out_path is None:
             raise ValueError("out='tee' needs out_path")
         stdout = sys.stdout.buffer
-        with (
-            out_path.open("wb") as fh,
-            subprocess.Popen(list(argv), env=env, stdout=subprocess.PIPE, stderr=stderr) as proc,
-        ):
+        try:
+            proc = subprocess.Popen(list(argv), env=env, stdout=subprocess.PIPE, stderr=stderr)
+        except OSError as exc:
+            out_path.write_bytes(b"")
+            return _start_failed(argv, exc)
+        with out_path.open("wb") as fh, proc:
             if proc.stdout is None:  # stdout=PIPE always sets it
                 raise RuntimeError("no stdout pipe")
-            for line in proc.stdout:
-                stdout.write(line)
-                stdout.flush()
-                fh.write(line)
-            return Done(proc.wait())
+            try:
+                for line in proc.stdout:
+                    stdout.write(line)
+                    stdout.flush()
+                    fh.write(line)
+                return Done(proc.wait())
+            except KeyboardInterrupt:
+                _interrupted(proc)
+                raise
 
     def note(self, event: tuple[str, ...]) -> None:
         """A lock step; the recorder logs it in the call sequence, the real runner ignores it."""
