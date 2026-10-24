@@ -5,9 +5,10 @@ Writes only into ``run_dir``: the producer artifacts, ``script.<arm>.json`` per 
 ``script.baseline.json`` (a copy of the live ``episodes/<date>/script.json``),
 ``cost.json`` and ``report.md``. No TTS, nothing under ``episodes/``, no commit.
 
-Per-arm cost (D34-10): ``MeteredClient`` adds up ``LiteLLMClient._price`` per arm. The
-static price table now has a DeepSeek row, so the DeepSeek arm is priced, not silently 0;
-``priced`` records whether every model used had a row.
+Per-arm cost (D34-10): each arm gets its own ``LiteLLMClient``, whose ledger adds up every
+billed attempt (``client.snapshot()``, ``astra_llm.meter``). The static price table has a
+DeepSeek row, so the DeepSeek arm is priced, not silently 0; ``priced`` records whether
+every model used had a row.
 """
 
 from __future__ import annotations
@@ -22,7 +23,6 @@ from typing import Any
 from astra_config import load_config
 from astra_config.models import MouthpieceProducerConfig
 from astra_llm import LiteLLMClient, ensure_openrouter_env
-from astra_llm.pricing import PRICING_USD_PER_1M
 from astra_mouthpiece.hosts import load_hosts
 from astra_mouthpiece.inputs import episodes_root
 from astra_mouthpiece.lint import THRESHOLDS, score_script, words
@@ -40,35 +40,9 @@ from astra_mouthpiece.script import generate_script
 from opentelemetry.trace import Status, StatusCode
 
 
-class MeteredClient(LiteLLMClient):
-    """``LiteLLMClient`` that also accumulates its own calls' cost and tokens."""
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
-        self.calls = 0
-        self.cost_usd = 0.0
-        self.input_tokens = 0
-        self.output_tokens = 0
-        self.priced = True
-
-    def _price(self, model: str, usage: Any) -> float:
-        cost = super()._price(model, usage)
-        self.calls += 1
-        self.cost_usd += cost
-        self.input_tokens += usage.input_tokens
-        self.output_tokens += usage.output_tokens
-        if model not in PRICING_USD_PER_1M:
-            self.priced = False
-        return cost
-
-    def snapshot(self) -> dict[str, Any]:
-        return {
-            "calls": self.calls,
-            "cost_usd": round(self.cost_usd, 6),
-            "input_tokens": self.input_tokens,
-            "output_tokens": self.output_tokens,
-            "priced": self.priced,
-        }
+def arm_client() -> LiteLLMClient:
+    """One arm's client; ``snapshot()`` is the arm's cost and tokens."""
+    return LiteLLMClient(caller="mouthpiece.experiment")
 
 
 def arm_slug(model: str) -> str:
@@ -97,7 +71,7 @@ def run_arm(
     brief_block: str,
     hosts: HostConfig,
     *,
-    client_factory: Any = MeteredClient,
+    client_factory: Any = arm_client,
 ) -> ArmResult:
     """One script arm: the unchanged two-pass script, fed the brief instead of
     grounding + continuity. A failure is recorded, never raised."""
@@ -288,7 +262,7 @@ def run_experiment(
     hosts: HostConfig | None = None,
     baseline_root: Path | None = None,
     producer: Any = run_producer,
-    client_factory: Any = MeteredClient,
+    client_factory: Any = arm_client,
 ) -> ExperimentResult:
     """Run the comparison for ``date`` (§5). ``arms`` filters ``experiment-models``.
 

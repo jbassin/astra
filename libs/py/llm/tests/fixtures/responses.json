@@ -1,0 +1,103 @@
+{
+  "_comment": "OpenRouter chat-completion bodies in the wire shape litellm parses (litellm.ModelResponse). Hand-written in that shape, not captured from a paid call. Used by test_llm_retry_meter.py.",
+  "tool_ok": {
+    "id": "gen-tool-ok",
+    "object": "chat.completion",
+    "created": 1760000000,
+    "model": "z-ai/glm-5.2",
+    "choices": [
+      {
+        "index": 0,
+        "finish_reason": "tool_calls",
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_1",
+              "type": "function",
+              "function": {"name": "record", "arguments": "{\"title\": \"The Voidheart\", \"order\": 1}"}
+            }
+          ]
+        }
+      }
+    ],
+    "usage": {"prompt_tokens": 1200, "completion_tokens": 80, "total_tokens": 1280}
+  },
+  "tool_invalid": {
+    "id": "gen-tool-invalid",
+    "object": "chat.completion",
+    "created": 1760000001,
+    "model": "z-ai/glm-5.2",
+    "choices": [
+      {
+        "index": 0,
+        "finish_reason": "tool_calls",
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_2",
+              "type": "function",
+              "function": {"name": "record", "arguments": "{\"title\": \"x\", \"order\": \"first\"}"}
+            }
+          ]
+        }
+      }
+    ],
+    "usage": {"prompt_tokens": 1200, "completion_tokens": 40, "total_tokens": 1240}
+  },
+  "tool_bad_json": {
+    "id": "gen-tool-bad-json",
+    "object": "chat.completion",
+    "created": 1760000002,
+    "model": "z-ai/glm-5.2",
+    "choices": [
+      {
+        "index": 0,
+        "finish_reason": "tool_calls",
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_3",
+              "type": "function",
+              "function": {"name": "record", "arguments": "{\"title\": \"The Void"}
+            }
+          ]
+        }
+      }
+    ],
+    "usage": {"prompt_tokens": 1200, "completion_tokens": 30, "total_tokens": 1230}
+  },
+  "tool_missing": {
+    "id": "gen-tool-missing",
+    "object": "chat.completion",
+    "created": 1760000003,
+    "model": "z-ai/glm-5.2",
+    "choices": [
+      {
+        "index": 0,
+        "finish_reason": "stop",
+        "message": {"role": "assistant", "content": "I recorded it.", "tool_calls": null}
+      }
+    ],
+    "usage": {"prompt_tokens": 1200, "completion_tokens": 10, "total_tokens": 1210}
+  },
+  "text_ok": {
+    "id": "gen-text-ok",
+    "object": "chat.completion",
+    "created": 1760000004,
+    "model": "z-ai/glm-5.2",
+    "choices": [
+      {
+        "index": 0,
+        "finish_reason": "stop",
+        "message": {"role": "assistant", "content": "Bram: uh— Maeve: the Voidheart."}
+      }
+    ],
+    "usage": {"prompt_tokens": 900, "completion_tokens": 300, "total_tokens": 1200}
+  }
+}

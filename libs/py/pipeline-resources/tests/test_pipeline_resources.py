@@ -7,6 +7,7 @@ import astra_pipeline_resources as res
 import dagster as dg
 import pytest
 from astra_config import load_config
+from astra_llm import LlmError
 
 
 def test_paths_come_from_config() -> None:
@@ -48,10 +49,54 @@ def test_llm_client_resolves_the_openrouter_key_first(monkeypatch: pytest.Monkey
     monkeypatch.setattr(res, "ensure_openrouter_env", lambda: calls.append("key") or "k")
 
     class Client:
-        def __init__(self) -> None:
-            calls.append("client")
+        def __init__(self, *, caller: str) -> None:
+            calls.append(f"client:{caller}")
 
     monkeypatch.setattr(res, "LiteLLMClient", Client)
-    client: Any = res.LlmResource().client()
+    client: Any = res.LlmResource().client("mouthpiece.session_script")
     assert isinstance(client, Client)
-    assert calls == ["key", "client"]
+    assert calls == ["key", "client:mouthpiece.session_script"]
+
+
+def test_a_spent_llm_retry_is_final_for_dagster() -> None:
+    """The client's retries are spent: Dagster must not rerun the step (no N x M)."""
+    with pytest.raises(dg.Failure) as exc, res.llm_failures_final():
+        raise LlmError("Forced tool call failed after 3 attempts: no tool call")
+    assert exc.value.allow_retries is False
+    assert "after 3 attempts" in (exc.value.description or "")
+
+
+def test_transport_and_retryable_errors_pass_through_to_dagster() -> None:
+    with pytest.raises(TimeoutError), res.llm_failures_final():
+        raise TimeoutError("read timed out")
+    with pytest.raises(LlmError), res.llm_failures_final():
+        raise LlmError("transient", retryable=True)
+
+
+def test_a_spent_retry_fails_the_asset_once_despite_its_retry_policy() -> None:
+    """End to end in Dagster: a step with RetryPolicy(max_retries=3) runs once."""
+    runs: list[int] = []
+
+    @dg.asset(retry_policy=dg.RetryPolicy(max_retries=3))
+    def paid() -> None:
+        runs.append(1)
+        with res.llm_failures_final():
+            raise LlmError("Structured output for X failed validation after 3 attempts")
+
+    result = dg.materialize([paid], raise_on_error=False)
+    assert not result.success
+    assert runs == [1]
+
+
+def test_a_transport_error_still_gets_the_retry_policy() -> None:
+    runs: list[int] = []
+
+    @dg.asset(retry_policy=dg.RetryPolicy(max_retries=2))
+    def paid() -> None:
+        runs.append(1)
+        with res.llm_failures_final():
+            raise ConnectionError("provider down")
+
+    result = dg.materialize([paid], raise_on_error=False)
+    assert not result.success
+    assert runs == [1, 1, 1]

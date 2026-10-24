@@ -14,7 +14,7 @@ from functools import cache
 from typing import Any
 
 import dspy
-from astra_llm.rlm import MeteringMixin, RunParent, llm_instruments
+from astra_llm.rlm import MeteringMixin, RunParent
 from astra_llm.rlm import instrument_tool as _instrument_tool
 from astra_observe import get_logger, get_meter, get_tracer
 
@@ -29,7 +29,8 @@ def tracer() -> Any:
 
 @cache
 def instruments() -> dict[str, Any]:
-    """Run + tool counters, plus the shared ``llm_tokens`` / ``llm_cost`` pair."""
+    """Run + tool counters. LM tokens and cost go to the one LLM meter (``astra_llm.meter``)
+    with ``caller="mouthpiece.producer"``."""
     meter = get_meter(SCOPE)
     return {
         "runs": meter.create_counter(
@@ -38,7 +39,6 @@ def instruments() -> dict[str, Any]:
         "tool_calls": meter.create_counter(
             "astra.mouthpiece.producer.tool.calls", description="producer tool calls"
         ),
-        **llm_instruments(SCOPE),
     }
 
 
@@ -46,14 +46,12 @@ class ProducerMetering(MeteringMixin):
     """Meters ``forward`` as ``mouthpiece.producer.llm.call``."""
 
     scope = SCOPE
+    caller = "mouthpiece.producer"
     span_name = "mouthpiece.producer.llm.call"
     attr_prefix = "mouthpiece.producer.llm"
 
     def _tracer(self) -> Any:
         return tracer()
-
-    def _instruments(self) -> dict[str, Any]:
-        return instruments()
 
 
 class ProducerLM(ProducerMetering, dspy.LM):

@@ -120,7 +120,7 @@ def session_episode_summary(
     Runs automatically after `session_transcripts` (it reads that asset's
     `data/{date}.json`) and writes `timeline/episodes/{date}.json`. **Live** — spends
     GLM-5.2 tokens per session via `astra_llm` (`call_structured`); the cost is
-    auto-traced (`astra.llm.cost_usd`)."""
+    metered as `astra.llm.cost_usd{caller="linguist.session_episode_summary"}`."""
     from .chronicle import show_for_date
     from .chronicle_llm import build_episode_entry  # lazy: pulls astra_llm/litellm
 
@@ -135,7 +135,7 @@ def session_episode_summary(
     entry = build_episode_entry(
         date,
         transcript,
-        client=llm.client(),
+        client=llm.client("linguist.session_episode_summary"),
         model=astra_config.get().llm.default_model,
         transcript_dir=transcript_dir,
     )
@@ -187,7 +187,9 @@ def campaign_timeline(
     from .chronicle_llm import build_chronicle  # lazy: pulls astra_llm/litellm
 
     chronicle = build_chronicle(
-        entries, client=llm.client(), model=astra_config.get().llm.default_model
+        entries,
+        client=llm.client("linguist.campaign_timeline"),
+        model=astra_config.get().llm.default_model,
     )
     chronicle.inputs_hash = new_hash
     seasons_path.parent.mkdir(parents=True, exist_ok=True)

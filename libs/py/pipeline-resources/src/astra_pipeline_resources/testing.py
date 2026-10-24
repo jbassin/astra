@@ -43,14 +43,18 @@ class FakeConfig:
 
 
 class FakeLlm:
-    """`LlmResource` that hands out one stub client and counts how often it was asked."""
+    """`LlmResource` that hands out one stub client and records each ``caller`` asked for."""
 
     def __init__(self, client: Any) -> None:
         self.stub = client
-        self.clients = 0
+        self.callers: list[str] = []
 
-    def client(self) -> Any:
-        self.clients += 1
+    @property
+    def clients(self) -> int:
+        return len(self.callers)
+
+    def client(self, caller: str) -> Any:
+        self.callers.append(caller)
         return self.stub
 
 
