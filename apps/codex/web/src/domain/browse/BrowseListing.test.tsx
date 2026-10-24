@@ -2,7 +2,7 @@
 //
 // codex's app-wide default is plain "node" (see `vitest.config.ts`'s own
 // comment on why a global widen-to-jsdom broke an unrelated file under
-// `vp run -r test`'s full concurrent run) — this file renders real
+// the full every-package test run) — this file renders real
 // interactive React components via `@testing-library/react` and genuinely
 // needs a DOM, so it opts in per-file instead.
 

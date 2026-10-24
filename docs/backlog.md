@@ -162,8 +162,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - akasha still navigates with full-page links; move to SPA navigation with server functions — agent;
   [ADR 0031](adr/0031-akasha-spa-navigation.md).
 - One design-token source for gothic and the parchment theme — agent; [ADR 0032](adr/0032-one-design-token-source.md).
-- Remove the `vite-plus` root devDependency and move tests to root vitest projects — agent;
-  [ADR 0028](adr/0028-replace-vite-plus.md).
 - Stale comments: the `site-kit` index header ("Bun runtime", a nonexistent `gothicFontsDevPlugin`),
   the gothic `theme.css` font-copy note, the compose strider comment ("content/layers/*.md"), the
   `config.kdl` header's env-override wording, the `sites.caddyfile` "manual DNS record" notes,

@@ -127,7 +127,7 @@ py-typecheck:
 py-test:
     uv run pytest
 
-# typecheck/test/build fan out with `pnpm -r --no-bail`: every member that defines the
+# typecheck and build fan out with `pnpm -r --no-bail`: every member that defines the
 # script runs, a failing member doesn't hide the ones after it, and the command still
 # exits non-zero. `--aggregate-output` prints each member's log as one block.
 # CI job ts-typecheck: tsc --noEmit in every member.
@@ -141,9 +141,10 @@ ts-lint:
     pnpm run lint
     pnpm run format:check
 
+# One vitest process over every member with a `test` script (root vitest.config.ts projects).
 # CI job ts-test: vitest in every member.
 ts-test:
-    pnpm -r --no-bail --aggregate-output run test
+    pnpm exec vitest run
 
 # CI job ts-build: build every member.
 ts-build:

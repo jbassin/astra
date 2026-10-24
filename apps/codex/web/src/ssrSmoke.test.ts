@@ -15,7 +15,7 @@ import { CORPUS_SCHEMA_VERSION } from "@astra/codex-corpus";
 import { createCorpusReader } from "@astra/codex-corpus/reader";
 import { findRepoRoot } from "@astra/config";
 import { nodeTsResolveHook } from "@astra/site-kit/nodeTsResolveHook";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { allNavCategories } from "@/domain/nav/navData";
 import { resolveClassRail } from "@/server/classPageData";
@@ -73,6 +73,12 @@ const RUNNER = path.join(APP_ROOT, "scripts/ssrSmoke.ts");
 const NODE_TS_RESOLVE_HOOK = nodeTsResolveHook;
 
 let ssr: { fetch: (req: Request) => Promise<Response> };
+
+// Every test here renders through the built server bundle or a node subprocess. The first
+// request in a cold bundle has run past vitest's 5 s default when the host is busy (the root
+// vitest run shares one worker pool across every package, and several `just ci` runs can
+// overlap), so this file gets 30 s per test.
+vi.setConfig({ testTimeout: 30_000 });
 
 beforeAll(async () => {
   if (bundleIsStale()) {

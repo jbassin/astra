@@ -13,8 +13,8 @@ import { defineConfig } from "vitest/config";
 // P3 S3: stays "node" as the DEFAULT (reverted an attempted app-wide widen to
 // "jsdom" — the akasha-frontend/strider precedent — after it broke
 // `src/ingest/sluggify.test.ts`'s `fileURLToPath(new URL(...,
-// import.meta.url))` ONLY under `vp run -r test`'s full concurrent
-// 26-package run, never in isolation: reproducible with the global default
+// import.meta.url))` ONLY under the full concurrent
+// every-package test run, never in isolation: reproducible with the global default
 // on jsdom, gone the instant it's reverted. Likely a real jsdom/vite-node
 // `import.meta.url` interaction under heavy parallel load, not a fixable
 // application bug — not worth chasing given the surgical alternative below).
