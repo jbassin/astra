@@ -20,6 +20,7 @@ from typing import Protocol, TypeVar
 
 from astra_llm import LiteLLMClient
 from astra_llm.client import LlmError
+from astra_sessions import date_key
 from pydantic import BaseModel, ValidationError
 
 from .chronicle import (
@@ -30,7 +31,6 @@ from .chronicle import (
     SeasonPlan,
     ShowChronicle,
     ShowInfo,
-    date_key,
     show_for_date,
     show_index,
 )

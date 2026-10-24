@@ -15,29 +15,12 @@ from pathlib import Path
 
 from astra_config import load_config
 from astra_linguist.chronicle import TRANSCRIPT_DIR, load_episode_summary, show_for_date
+from astra_sessions import parse_transcript_name
 
 CONTEXT_DIR = Path(load_config().linguist.script_path)
 
-# "<stem>.<date>.txt", e.g. "000.through-a-song-darkly.2025-10-20.txt".
-_FILENAME_RE = re.compile(r"^(?P<stem>.+)\.(?P<date>\d{4}-\d{1,2}-\d{1,2})\.txt$")
 # "NNNNNN\tSpeaker: text" — speaker is up to the first ": ".
 _LINE_RE = re.compile(r"^(?P<line>\d+)\t(?P<speaker>.+?): ?(?P<text>.*)$")
-
-
-def parse_filename(path: Path | str) -> tuple[str, str, str]:
-    """Return (session_id, arc, date) from a linguist transcript filename.
-
-    session_id = the file stem incl. date (e.g. `000.through-a-song-darkly.2025-10-20`);
-    arc = the slug between the arc number and the date.
-    """
-    name = Path(path).name
-    m = _FILENAME_RE.match(name)
-    if m is None:
-        raise ValueError(f"not a linguist transcript filename: {name}")
-    stem, date = m.group("stem"), m.group("date")
-    session_id = f"{stem}.{date}"
-    arc = stem.split(".", 1)[1] if "." in stem else stem
-    return session_id, arc, date
 
 
 def parse_canonical_transcript(text: str) -> list[tuple[int, str, str]]:
@@ -58,7 +41,7 @@ def transcript_for(date: str, transcript_dir: Path | str = TRANSCRIPT_DIR) -> Pa
         return None
     for path in sorted(root.glob("*.txt")):
         try:
-            _, _, d = parse_filename(path)
+            d = parse_transcript_name(path).date
         except ValueError:
             continue
         if d == date:
@@ -77,7 +60,7 @@ def new_sessions(
     found: dict[str, str] = {}
     for path in sorted(root.glob("*.txt")):
         try:
-            _, _, date = parse_filename(path)
+            date = parse_transcript_name(path).date
         except ValueError:
             continue
         if date not in seen and date not in found:

@@ -11,8 +11,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from astra_ontology import load_being
-
-from .naming import track_user
+from astra_sessions import track_user
 
 
 class Roster:

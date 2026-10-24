@@ -23,6 +23,7 @@ from astra_lexicon import load_corrections
 from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
+from astra_sessions import atomic_write_text
 
 from .campaigns import campaign_filename, campaign_views
 from .chronicle import (
@@ -80,7 +81,7 @@ def session_transcripts(context: dg.AssetExecutionContext) -> dg.MaterializeResu
     )
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    _atomic_write(DATA_DIR / f"{date}.json", _to_json(artifacts.transcript.model_dump()))
+    atomic_write_text(DATA_DIR / f"{date}.json", _to_json(artifacts.transcript.model_dump()))
 
     matched_name = "unmatched"
     if artifacts.matched is not None and artifacts.context is not None:
@@ -88,9 +89,9 @@ def session_transcripts(context: dg.AssetExecutionContext) -> dg.MaterializeResu
         matched_name = stem
         SCRIPT_DIR.mkdir(parents=True, exist_ok=True)
         TRANSCRIPT_DIR.mkdir(parents=True, exist_ok=True)
-        _atomic_write(SCRIPT_DIR / f"{stem}.{date}.txt", artifacts.context)
+        atomic_write_text(SCRIPT_DIR / f"{stem}.{date}.txt", artifacts.context)
         if artifacts.canonical is not None:
-            _atomic_write(TRANSCRIPT_DIR / f"{stem}.{date}.txt", artifacts.canonical)
+            atomic_write_text(TRANSCRIPT_DIR / f"{stem}.{date}.txt", artifacts.canonical)
 
     _sessions_counter.add(1)
     _log.info(
@@ -128,7 +129,7 @@ def session_episode_summary(context: dg.AssetExecutionContext) -> dg.Materialize
     transcript = load_session(DATA_DIR / f"{date}.json")
     entry = build_episode_entry(date, transcript)
     EPISODES_DIR.mkdir(parents=True, exist_ok=True)
-    _atomic_write(EPISODES_DIR / f"{date}.json", entry.model_dump_json(indent=2))
+    atomic_write_text(EPISODES_DIR / f"{date}.json", entry.model_dump_json(indent=2))
     _episodes_counter.add(1, {"show": entry.show})
     _log.info(
         "chronicle summarized episode %s (show=%s): %r, %d beats",
@@ -173,7 +174,7 @@ def campaign_timeline() -> dg.MaterializeResult:
     chronicle = build_chronicle(entries)
     chronicle.inputs_hash = new_hash
     TIMELINE_DIR.mkdir(parents=True, exist_ok=True)
-    _atomic_write(SEASONS_PATH, chronicle.model_dump_json(indent=2))
+    atomic_write_text(SEASONS_PATH, chronicle.model_dump_json(indent=2))
     total_seasons = sum(len(s.seasons) for s in chronicle.shows)
     _log.info(
         "chronicle grouped %d episodes into %d show(s), %d season(s)",
@@ -243,14 +244,6 @@ def _linguist_config():
 
 def _to_json(value: object) -> str:
     return json.dumps(value, indent=2, ensure_ascii=False)
-
-
-def _atomic_write(path: Path, text: str) -> None:
-    """Write `.tmp`→rename so an output only appears whole (a partition = done)."""
-
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(text, encoding="utf-8")
-    tmp.replace(path)
 
 
 defs = dg.Definitions(

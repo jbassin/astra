@@ -15,6 +15,8 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from astra_sessions import temp_sibling
+
 from . import audio
 from .ingest import extract_tracks, player_tracks, verify_zip
 from .roster import Roster
@@ -72,7 +74,7 @@ def merge_audio(
     if not tracks:
         raise ValueError("merge_audio: no input tracks")
     out = Path(out_path)
-    tmp = out.with_suffix(out.suffix + ".tmp")
+    tmp = temp_sibling(out)
     run(audio.merge_args([str(t) for t in tracks], str(tmp)))
     tmp.replace(out)
 

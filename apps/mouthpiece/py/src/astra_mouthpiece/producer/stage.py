@@ -16,6 +16,8 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any, Literal
 
+from astra_sessions import atomic_write_text
+
 from ..inputs import brief_path, episodes_root, read_brief
 from ..models import HostConfig
 from .brief import render_brief
@@ -23,12 +25,6 @@ from .run import new_run_id, run_producer
 from .telemetry import log
 
 BriefOutcome = Literal["used", "fallback", "invalid"]
-
-
-def _atomic_write(path: Path, text: str) -> None:
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(text, encoding="utf-8")
-    tmp.replace(path)
 
 
 def produce_brief(
@@ -59,7 +55,7 @@ def produce_brief(
         "run_dir": str(result.run_dir),
     }
     if result.brief is not None and result.status in ("ok", "incomplete"):
-        _atomic_write(target, result.brief.model_dump_json(indent=2))
+        atomic_write_text(target, result.brief.model_dump_json(indent=2))
         meta.update(
             moments=len(result.brief.moments),
             callbacks=len(result.brief.callbacks),

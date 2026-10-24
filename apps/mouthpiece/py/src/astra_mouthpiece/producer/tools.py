@@ -16,7 +16,6 @@ plain JSON types and never ``None``. Each docstring is the tool's whole contract
 from __future__ import annotations
 
 import json
-import re
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -29,7 +28,6 @@ from astra_linguist.chronicle import (
     TRANSCRIPT_DIR,
     EpisodeEntry,
     ShowInfo,
-    date_key,
     load_episode_entries,
     season_for,
     show_for_date,
@@ -37,15 +35,10 @@ from astra_linguist.chronicle import (
 from astra_llm.rlm import text_matcher
 from astra_ontology import Resolution
 from astra_ontology_entity import resolve
+from astra_sessions import date_key, find_transcript, transcript_dates
+from astra_sessions.tools import MAX_RESULTS, SessionToolsMixin
 
 from ..episodes_index import is_recap, parse_id
-
-#: Cap on search results.
-MAX_RESULTS = 200
-#: How many ``resolve_name`` candidates to surface.
-MAX_CANDIDATES = 5
-
-_TRANSCRIPT_LINE = re.compile(r"^(\d+)\t([^:]*):[ \t]?(.*)$")
 
 
 def permitted_dates(
@@ -57,9 +50,8 @@ def permitted_dates(
 ) -> list[str]:
     """Same-show session dates strictly before ``target_date``, oldest first."""
     limit = date_key(target_date)
-    dates = {p.name.rsplit(".", 2)[1] for p in transcript_dir.glob("*.txt")}
     keep = []
-    for d in dates:
+    for d in transcript_dates(transcript_dir):
         try:
             key = date_key(d)
         except ValueError:
@@ -102,7 +94,7 @@ def _speaker_names(raw: dict[str, Any]) -> dict[str, str]:
     return names
 
 
-class ProducerTools:
+class ProducerTools(SessionToolsMixin):
     """The tool implementations; ``tools()`` exposes the bound methods."""
 
     def __init__(
@@ -147,10 +139,10 @@ class ProducerTools:
             )
 
     def _transcript_text(self, date: str) -> str:
-        matches = sorted(self.transcript_dir.glob(f"*.{date}.txt"))
-        if not matches:
+        path = find_transcript(date, self.transcript_dir)
+        if path is None:
             raise ValueError(f"no transcript for {date!r}")
-        return matches[0].read_text(encoding="utf-8")
+        return path.read_text(encoding="utf-8")
 
     def _script_turns(self, date: str) -> list[tuple[str, str]]:
         raw = json.loads(self.scripts[date].read_text(encoding="utf-8"))
@@ -177,15 +169,8 @@ class ProducerTools:
         """Case-insensitive search of every wiki page line; regex=False matches `pattern`
         literally. Returns up to 200 [{'path', 'line' (1-based int), 'text'}]. Raises
         ValueError on an empty pattern or invalid regex."""
-        match = text_matcher(pattern, regex)
-        hits: list[dict[str, Any]] = []
-        for path in sorted(self.pages):
-            for n, line in enumerate(self.pages[path].source.splitlines(), start=1):
-                if match(line):
-                    hits.append({"path": path, "line": n, "text": line})
-                    if len(hits) >= MAX_RESULTS:
-                        return hits
-        return hits
+        pages = ((path, self.pages[path].source) for path in sorted(self.pages))
+        return self._search_pages(pages, pattern, regex)
 
     def backlinks(self, path: str) -> list[str]:
         """Sorted paths of the wiki pages whose [[links]] resolve to page `path`. Raises
@@ -199,20 +184,7 @@ class ProducerTools:
         'resolved'|'ambiguous'|'unknown', 'canonical', 'kind', 'page' ('' when none),
         'page_exists' (bool), 'confidence' (0-1), 'candidates' (up to 5 nearest canonical
         names)}. Raises ValueError on an empty name."""
-        if not isinstance(name, str) or not name.strip():
-            raise ValueError("name must be a non-empty string")
-        res = self.resolver(name)
-        ent = res.entity
-        page = (ent.page or "") if ent is not None else ""
-        return {
-            "status": res.status,
-            "canonical": ent.canonical if ent is not None else "",
-            "kind": (ent.kind or "") if ent is not None else "",
-            "page": page,
-            "page_exists": page in self.pages,
-            "confidence": round(float(res.confidence), 3),
-            "candidates": [ref.canonical for ref, _ in res.candidates[:MAX_CANDIDATES]],
-        }
+        return self._resolve_name(name, self.resolver, lambda page: page in self.pages)
 
     # ── chronicle ──
     def list_episodes(self) -> list[dict[str, Any]]:
@@ -269,26 +241,7 @@ class ProducerTools:
         oldest first; regex=False matches `pattern` literally. Returns up to 200 [{'date',
         'line' (int), 'speaker', 'text'}]. Raises ValueError on an empty pattern or invalid
         regex."""
-        match = text_matcher(pattern, regex)
-        hits: list[dict[str, Any]] = []
-        for date in self.dates:
-            for raw in self._transcript_text(date).splitlines():
-                m = _TRANSCRIPT_LINE.match(raw)
-                if m is None:
-                    continue
-                spoken = m.group(3).rstrip()
-                if match(spoken):
-                    hits.append(
-                        {
-                            "date": date,
-                            "line": int(m.group(1)),
-                            "speaker": m.group(2).strip(),
-                            "text": spoken,
-                        }
-                    )
-                    if len(hits) >= MAX_RESULTS:
-                        return hits
-        return hits
+        return self._search_transcripts(self.dates, self._transcript_text, pattern, regex)
 
     # ── earlier episode scripts ──
     def read_script(self, date: str) -> str:

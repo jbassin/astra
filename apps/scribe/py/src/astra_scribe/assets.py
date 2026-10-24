@@ -30,8 +30,8 @@ from astra_config import ScribeConfig
 from astra_observe import get_logger, get_meter, get_tracer
 from astra_ontology_being import BEING_KDL_PATH
 from astra_ontology_config import load as load_config
+from astra_sessions import atomic_write_text, recording_key
 
-from .ingest import session_id
 from .roster import Roster
 from .sensor import is_session_zip, new_sessions
 from .session import build_transcript, extract_session_tracks, merge_audio
@@ -52,7 +52,7 @@ _sessions_counter = _meter.create_counter(
 def _find_zip(incoming: str, date_key: str) -> Path:
     """The dropped zip whose stem maps to this session/date partition (stubs skipped)."""
     for zip_path in sorted(Path(incoming).glob("*.zip")):
-        if session_id(zip_path) == date_key and is_session_zip(zip_path):
+        if recording_key(zip_path) == date_key and is_session_zip(zip_path):
             return zip_path
     raise FileNotFoundError(f"no Craig zip for session {date_key} in {incoming}")
 
@@ -117,10 +117,7 @@ def session_transcript(context: dg.AssetExecutionContext) -> dg.MaterializeResul
     ):
         script = build_transcript(tracks, roster, transcriber, Path(work) / "chunks")
         # Atomic appearance for the transcript (N7): write `.tmp` then rename.
-        script_path = out / "script.json"
-        tmp = script_path.with_suffix(".json.tmp")
-        tmp.write_text(json.dumps(script), encoding="utf-8")
-        tmp.replace(script_path)
+        atomic_write_text(out / "script.json", json.dumps(script))
         span.set_attribute("scribe.segments", len(script))
     _sessions_counter.add(1)
     _log.info("scribe transcribed session %s (%d segments)", date_key, len(script))

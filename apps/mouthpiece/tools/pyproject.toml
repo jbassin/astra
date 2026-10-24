@@ -10,6 +10,7 @@ dependencies = [
     "astra-llm",
     "astra-mouthpiece-backend",
     "astra-observe",
+    "astra-sessions",
     "astra-ontology-being",
     "pydantic>=2",
 ]

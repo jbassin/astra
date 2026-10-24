@@ -11,7 +11,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from pathlib import Path
 
-from .ingest import session_id
+from astra_sessions import recording_key
 
 #: Craig drops a ~900 B stub zip when a recording is started and aborted at once; a
 #: real session is hundreds of MB. Anything under this floor is not a session and must
@@ -36,7 +36,7 @@ def new_sessions(zip_paths: Iterable[Path | str], existing_keys: set[str]) -> di
     """
     out: dict[str, str] = {}
     for zip_path in sorted(str(p) for p in zip_paths):
-        key = session_id(zip_path)
+        key = recording_key(zip_path)
         if key and key not in existing_keys and key not in out and is_session_zip(zip_path):
             out[key] = zip_path
     return out

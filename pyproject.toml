@@ -25,6 +25,7 @@ astra-ontology-being = { workspace = true }
 astra-ontology-config = { workspace = true }
 astra-ontology-entity = { workspace = true }
 astra-scribe = { workspace = true }
+astra-sessions = { workspace = true }
 astra-smoke = { workspace = true }
 astra-smoke-substrate = { workspace = true }
 astra-vellum-lang = { workspace = true }

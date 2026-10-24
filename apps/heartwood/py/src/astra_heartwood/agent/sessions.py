@@ -7,20 +7,22 @@ unmatched/unknown slug is simply *not* faerrin — never a crash.
 
 Transcripts are the ``<prefix>.<slug>.<date>.txt`` files under config ``data.linguist-transcripts``
 (``NNNNNN\\tSpeaker: text``, in the astra-data repo). Dates are non-zero-padded, so ordering uses
-chronicle's ``date_key`` (a string sort puts 2025-10-20 before 2025-8-28).
+``astra_sessions.date_key`` (a string sort puts 2025-10-20 before 2025-8-28).
 
-Reuse-don't-reinvent: ``TRANSCRIPT_DIR``, ``show_for_date``/``EXCLUDED_DATES`` and
-``date_key`` all come from ``astra_linguist.chronicle``. No LLM or Dagster imports.
+Reuse-don't-reinvent: ``TRANSCRIPT_DIR`` and ``show_for_date``/``EXCLUDED_DATES`` come from
+``astra_linguist.chronicle``; date keys and transcript file names from ``astra_sessions``.
+No LLM or Dagster imports.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from astra_linguist.chronicle import TRANSCRIPT_DIR, date_key, show_for_date, show_index
+from astra_linguist.chronicle import TRANSCRIPT_DIR, show_for_date, show_index
 from astra_ontology import faerrin_campaign_slugs, load_being
 from astra_ontology.models import Being
 from astra_ontology_being import BEING_KDL_PATH
+from astra_sessions import date_key, find_transcript, transcript_dates
 
 
 def faerrin_session(
@@ -45,7 +47,7 @@ def ingestible_dates(
 ) -> list[str]:
     """Every committed-transcript date the world filter keeps, oldest first."""
     being = being if being is not None else load_being(BEING_KDL_PATH)
-    dates = {p.name.rsplit(".", 2)[1] for p in transcript_dir.glob("*.txt")}
+    dates = transcript_dates(transcript_dir)
     return sorted(
         (
             d
@@ -58,10 +60,10 @@ def ingestible_dates(
 
 def transcript_path(date: str, *, transcript_dir: Path = TRANSCRIPT_DIR) -> Path:
     """The committed ``.txt`` transcript for ``date``; raises ``FileNotFoundError`` if absent."""
-    matches = sorted(transcript_dir.glob(f"*.{date}.txt"))
-    if not matches:
+    path = find_transcript(date, transcript_dir)
+    if path is None:
         raise FileNotFoundError(f"no committed transcript for {date} in {transcript_dir}")
-    return matches[0]
+    return path
 
 
 def read_transcript(date: str, *, transcript_dir: Path = TRANSCRIPT_DIR) -> str:

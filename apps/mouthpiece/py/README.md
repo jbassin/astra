@@ -88,7 +88,7 @@ is LIVE). The special's id must use the recap form `<latest>-recap-of-<first>`, 
 is a plain `{session_id, synopsis}`. Never show the dossier or script to the GM; report stats
 only. Both live in `apps/mouthpiece/tools` (`astra-mouthpiece-tools`, ADR 0023), which runs
 from a host checkout and is not in the Dagster image. Its roundtable `render` imports this
-package's private `_provider`, `_voices` and `_atomic_write`, so keep their signatures.
+package's private `_provider` and `_voices`, so keep their signatures.
 
 ## Traps
 
@@ -131,7 +131,7 @@ package's private `_provider`, `_voices` and `_atomic_write`, so keep their sign
   for real lengths; the frontend reads the audio's own metadata.
 - **Episode dirs come in three shapes:** legacy `000.<slug>.<date>/`, recap dirs and live
   `<date>/`. Enumerate them through `episodes_index.parse_id` and `is_recap`;
-  `date_sort_key` zeroes a non-digit day.
+  `astra_sessions.date_sort_key` zeroes a non-digit day.
 - **A re-render rewrites its whole snapshot entry** (the transcript is inlined), so large
   snapshot diffs are expected.
 - **dspy RLM output must be typed** (`brief: ProducerBrief`). A `str` output turns a submitted

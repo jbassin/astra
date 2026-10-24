@@ -47,7 +47,7 @@ import astra_observe
 from astra_akasha_backend.corpus import CONTENT_DIR
 from astra_akasha_backend.snapshot import SNAPSHOT_PATH
 from astra_config import load_config
-from astra_linguist.chronicle import date_key
+from astra_sessions import date_key
 
 from . import ledger
 from .publish import commit_message, unresolved_delta

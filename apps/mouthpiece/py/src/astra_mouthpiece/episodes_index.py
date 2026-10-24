@@ -8,8 +8,8 @@ session dirs and writes a single sorted **``episodes-index.json``** manifest.
 
 This is the producer half of the producer/consumer split (spec 0012, D6 — revised:
 the **transcript is inlined** so the frontend is a pure single-artifact consumer).
-The **backend owns** everything: id-parse, the sort (``date_sort_key``, local since
-0024 retired :mod:`mega`), the per-arc episode numbering, the arc display title (from
+The **backend owns** everything: id-parse, the sort (``astra_sessions.date_sort_key``),
+the per-arc episode numbering, the arc display title (from
 ontology-being ``campaign.name`` — Python is the ontology truth), the audio duration
 (``ffprobe`` over the seeded mp3s, D5), the cache-bust token, and the displayable
 transcript (``strip_audio_tags`` over each turn + host names from ontology-being).
@@ -39,6 +39,7 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
+from astra_sessions import date_sort_key
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
@@ -102,13 +103,6 @@ def episode_title(title: str, arc_title: str) -> str:
         if rest:
             return rest
     return t
-
-
-def date_sort_key(date: str) -> int:
-    """Numeric key for a "YYYY-M-D" (unpadded) date — ported from `dateSortKey`."""
-    parts = ([*date.split("-"), "0", "0", "0"])[:3]
-    y, m, d = (int(p) if p.isdigit() else 0 for p in parts)
-    return y * 10000 + m * 100 + d
 
 
 def date_in_range(date: str, start: str, end: str) -> bool:
