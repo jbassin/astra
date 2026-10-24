@@ -70,5 +70,6 @@ Node indexing API and writes `dist/client/pagefind/`.
   and old bookmarks fetch the alias URL and expect HTML.
 - **Format dates in UTC** so the server and client render the same string.
 - **The content build is heavy in tests.** `build-content.test.ts` runs it once in `beforeAll` with
-  a long timeout, and `ssrSmoke.test.ts` builds with async `execFile`. A synchronous child build
-  blocks the vitest worker until it misses its heartbeat ("Timeout calling onTaskUpdate").
+  a long timeout, and site-kit's `describeSsrSmoke` builds with async `execFile`. A synchronous
+  child build blocks the vitest worker until it misses its heartbeat ("Timeout calling
+  onTaskUpdate").

@@ -5,6 +5,29 @@ strider, akasha-frontend, mouthpiece-frontend, vellum-frontend, harrow, ledger a
 `serveFile` and the resolve hook in the other Node services). It is plain TS source with no build
 step. How to start a new frontend from these pieces is in `apps/strider/web/README.md`.
 
+## The frontend preset
+
+An app's shell files are a few lines of app-specific options (strider, akasha-frontend and
+mouthpiece-frontend use it; the other frontends still carry their own copies):
+
+| File | Calls | App-specific options |
+|---|---|---|
+| `vite.config.ts` | `defineSiteConfig` (`@astra/site-kit/vite`) | `root`, `generated` (the modules `build-content.ts` writes; dev invalidates them), optional `vite` merged over the preset |
+| `vitest.config.ts` | `defineSiteVitestConfig` (`@astra/site-kit/vitest`) | `root` |
+| `src/router.tsx` | `createRouter({ routeTree, ...siteRouterOptions({ notFound }) })` (`/router`) | `notFound`: `{ heading, message, homeLabel }` or a component |
+| `src/routes/__root.tsx` | `head: () => siteHead({ title, description })`, `<SiteDocument>` (`/document`), `import "@astra/site-kit/theme"` | `rum={() => import("@/observe/rumConfig")}`, `forceDarkTheme`, `head` (extra head nodes), `bodyProps`, the body as children |
+| `src/ssrSmoke.test.ts` | `describeSsrSmoke` (`/ssrSmoke`) | `appRoot`, `routes: [{ path, status?, contains }]`, optional `build` |
+
+`defineSiteConfig` reads the dev port from the config.kdl block that `package.json` names in
+`"astra": { "config": "<namespace>" }`, sets the `@` alias, and wires the plugins in order:
+`contentWatchPlugin`, `gothicFontsPlugin`, `@tailwindcss/vite`, `ssrExternalsPlugin`,
+`tanstackStart()`, plugin-react. `defineSiteVitestConfig` sets jsdom, globals, the alias and a
+global setup that runs `scripts/build-content.ts` when `src/generated/` holds no module.
+`describeSsrSmoke` rebuilds `dist/` when it is missing or older than the app's sources or any
+`libs/ts` file, then renders each route through the built bundle in a plain Node process.
+
+## Exports
+
 | Export | Where it runs | What it does |
 |---|---|---|
 | `createSsrServer` | `server.ts` | srvx server on Node 24: static client assets, optional `staticMounts` (e.g. `/audio/`), then the app's SSR handler under an `ssr.render` span; closes on shutdown (`@astra/observe/register` owns telemetry and signals) |
@@ -51,10 +74,19 @@ step. How to start a new frontend from these pieces is in `apps/strider/web/READ
   the built bundles.
 - **The build stage needs `config.kdl`.** `vite.config.ts` reads the port and service name at
   build time, so `deploy/node.Dockerfile` copies `ontology/` before `pnpm run build`.
-- **SSR smoke tests read whatever `dist/` exists.** The strider, harrow, ledger and akasha smokes
-  build only when `dist/server/server.js` is missing, so after a dependency change they fail on a
-  stale build (for example `matchedRoutes is not iterable`) until you run the app's `build`. CI is
-  unaffected (no `dist/`). codex's smoke rebuilds when stale; copy that check.
+- **The harrow and ledger SSR smokes read whatever `dist/` exists.** They build only when
+  `dist/server/server.js` is missing, so after a dependency change they fail on a stale build
+  (for example `matchedRoutes is not iterable`) until you run the app's `build`. CI is
+  unaffected (no `dist/`). `describeSsrSmoke` and codex's smoke rebuild when stale.
+- **`vitest.config.ts` loads without the resolve hook.** vitest's config loader leaves workspace
+  packages to plain Node, so `src/vitestPreset.ts` may import only packages and Node builtins;
+  a relative import there fails with `ERR_MODULE_NOT_FOUND`. That is why the vitest preset is
+  its own entry, apart from `/vite` (which vite loads with `--configLoader runner`).
+- **Import `@astra/site-kit/theme` where the fonts and theme CSS belong in the cascade.** CSS
+  rules land in import order; in strider the theme import sits after the component imports, so
+  the PixiHost and SiteHeader module rules stay ahead of the theme as before.
+- **`/vite` imports build tools that are site-kit devDependencies.** The runtime image doesn't
+  install them, so only `vite.config.ts` may import `/vite`; the root export never re-exports it.
 - **Build with async `execFile` in tests when the build is heavy.** A synchronous child build
   blocks the vitest worker until it misses its heartbeat ("Timeout calling onTaskUpdate").
 - **`grep -a` when checking SSR HTML.** Pages contain UTF-8 glyphs, so plain `grep` treats them as

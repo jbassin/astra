@@ -1,35 +1,12 @@
-import { execFileSync } from "node:child_process";
-import { existsSync } from "node:fs";
 import path from "node:path";
 
-import { nodeTsResolveHook } from "@astra/site-kit/nodeTsResolveHook";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describeSsrSmoke } from "@astra/site-kit/ssrSmoke";
 
-// SSR render smoke. We chose a build + ssr.fetch('/') assertion over a full
-// Playwright lane (spec 0016 slice 2): it runs in the existing `test` lane with
-// no new CI infra. Build prerequisite: the smoke needs dist/server/server.js, so
-// beforeAll builds once if it's absent (CI's test job starts without a build).
-const APP_ROOT = path.resolve(import.meta.dirname, "..");
-const SERVER_BUNDLE = path.join(APP_ROOT, "dist/server/server.js");
-const RUNNER = path.join(APP_ROOT, "scripts/ssrSmoke.ts");
-// 0022 S11 — off bun: `pnpm run build` for the workspace script, `node --import
-// nodeTsResolve.mjs` for the raw-TS runner subprocess (same hook every server.ts
-// entry uses).
-const NODE_TS_RESOLVE_HOOK = nodeTsResolveHook;
-
-describe("SSR smoke", () => {
-  beforeAll(() => {
-    if (!existsSync(SERVER_BUNDLE)) {
-      execFileSync("pnpm", ["run", "build"], { cwd: APP_ROOT, stdio: "inherit" });
-    }
-  }, 180_000);
-
-  it("renders / (200 + title) and exposes ssr.fetch", () => {
-    const out = execFileSync("node", ["--import", NODE_TS_RESOLVE_HOOK, RUNNER], {
-      cwd: APP_ROOT,
-      encoding: "utf8",
-    });
-    expect(out).toContain("status=200");
-    expect(out).toContain("marker=true");
-  });
+describeSsrSmoke({
+  appRoot: path.resolve(import.meta.dirname, ".."),
+  routes: [
+    { path: "/", contains: ["The Strider"] },
+    { path: "/factions/ternion-heavy-industries", contains: ["Ternion Heavy Industries"] },
+    { path: "/__no-such-page", status: 404, contains: ["Back to the map"] },
+  ],
 });

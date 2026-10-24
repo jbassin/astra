@@ -1,41 +1,17 @@
-import { createRouter, type ErrorComponentProps, Link, useRouter } from "@tanstack/react-router";
+import { siteRouterOptions } from "@astra/site-kit/router";
+import { createRouter } from "@tanstack/react-router";
 
 import { routeTree } from "./routeTree.gen";
-
-// Router-wide error + not-found boundaries (template defaults). Without these a
-// thrown loader error renders the framework's bare fallback and unmatched URLs have
-// no 404. Retry invalidates the router (re-runs loaders) rather than calling
-// `reset()`, which only resets the React error boundary without refetching.
-function DefaultErrorComponent({ error }: ErrorComponentProps) {
-  const router = useRouter();
-  return (
-    <main role="alert" className="route-boundary">
-      <h1>Something went wrong</h1>
-      <p>{error instanceof Error ? error.message : String(error)}</p>
-      <button type="button" onClick={() => router.invalidate()}>
-        Retry
-      </button>
-    </main>
-  );
-}
-
-// Ports faerrin's 404.astro (NotFoundPage): minimal, no sidebars.
-function DefaultNotFoundComponent() {
-  return (
-    <main className="route-boundary">
-      <h1>404</h1>
-      <p>Either this page is private or doesn&rsquo;t exist.</p>
-      <Link to="/">Home</Link>
-    </main>
-  );
-}
 
 export function getRouter() {
   return createRouter({
     routeTree,
-    defaultPreload: "intent",
-    scrollRestoration: true,
-    defaultErrorComponent: DefaultErrorComponent,
-    defaultNotFoundComponent: DefaultNotFoundComponent,
+    ...siteRouterOptions({
+      notFound: {
+        heading: "404",
+        message: "Either this page is private or doesn’t exist.",
+        homeLabel: "Home",
+      },
+    }),
   });
 }
