@@ -85,7 +85,8 @@
 # clone is missing or its HEAD could not be exported (nothing built) · 9 the host tooling
 # sync failed (nothing built; the checkout is already at the target — fix, then redeploy) ·
 # 10 started, but a container did not become healthy (the new containers keep running) ·
-# 11 --skip-failed: this build already failed at this code and data, nothing done.
+# 11 --skip-failed: this build already failed at this code and data, nothing done ·
+# 12 codex is in scope but <data root>/codex/data/releases/current is missing (nothing done).
 #
 # history.jsonl is read leniently: a line that is not a JSON object is skipped, never fatal.
 #
@@ -141,7 +142,7 @@ init_artifacts() {
   mkdir -p "$r"/scribe/{incoming,data,tmp} "$r"/linguist/script \
     "$r"/mouthpiece/{episodes,experiments} \
     "$r"/heartwood/requests/logs \
-    "$r"/codex/data/{corpus,search} "$r"/menhir \
+    "$r"/codex/data/releases "$r"/menhir \
     "$r"/audio/{akasha,mouthpiece,orator} "$r"/postgres/{dagster,orator,weal} "$r"/portal-oauth \
     "$r"/node-exporter/textfile "$r"/deploy/live "$r"/locks
 }
@@ -331,6 +332,21 @@ unset ASTRA_DEPLOY_LOCK_FD
 [ -d "$DEPLOY_ROOT/.git" ] ||
   die 5 "$DEPLOY_ROOT is not a git checkout (create it: git clone git@github.com:jbassin/astra.git $DEPLOY_ROOT)"
 dgit() { git -C "$DEPLOY_ROOT" "$@"; }
+
+# --- codex needs a corpus release -------------------------------------------------------
+# codex serves releases/current under its data dir (config.kdl codex.data-path) and exits at
+# startup without one, so compose would restart it in a loop. Refuse before touching
+# anything when codex is in scope (the whole stack, or named).
+codex_current="$DATA_ROOT/codex/data/releases/current"
+codex_in_scope=0
+if [ "${#services[@]}" -eq 0 ]; then
+  codex_in_scope=1
+else
+  for s in "${services[@]}"; do [ "$s" = codex ] && codex_in_scope=1; done
+fi
+if [ "$codex_in_scope" = 1 ] && ! { [ -L "$codex_current" ] && [ -d "$codex_current/corpus" ]; }; then
+  die 12 "no codex release at $codex_current — run \`just codex-migrate-releases\` (a flat corpus) or \`just codex-build\` first, then redeploy"
+fi
 
 # --- restart mode: no fetch, no build -----------------------------------------------------
 

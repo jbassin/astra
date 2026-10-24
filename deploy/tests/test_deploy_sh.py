@@ -92,7 +92,32 @@ def rig(tmp_path: Path) -> Rig:
     _git(deploy_root, "checkout", "-q", "--detach", old)
     data_root = tmp_path / "data"
     (data_root / "deploy").mkdir(parents=True)
+    releases = data_root / "codex" / "data" / "releases"
+    (releases / CODEX_RELEASE / "corpus").mkdir(parents=True)
+    (releases / "current").symlink_to(CODEX_RELEASE)
     return Rig(deploy_root, data_root, old, main)
+
+
+CODEX_RELEASE = "0123456789abcdef"
+
+
+@pytest.mark.parametrize("args", [("codex",), (), ("menhir", "codex"), ("--restart", "codex")])
+def test_refuses_codex_without_a_current_release(rig: Rig, args: tuple[str, ...]) -> None:
+    current = rig.data_root / "codex" / "data" / "releases" / "current"
+    current.unlink()
+    dry = () if args[:1] == ("--restart",) else ("--dry-run",)
+    r = rig.run(*dry, *args)
+    assert r.returncode == 12, r.stderr
+    assert "codex-migrate-releases" in r.stderr
+    # A dangling link (the release dir is gone) is refused the same way.
+    current.symlink_to("fedcba9876543210")
+    assert rig.run(*dry, *args).returncode == 12
+
+
+def test_deploys_other_services_without_a_codex_release(rig: Rig) -> None:
+    (rig.data_root / "codex" / "data" / "releases" / "current").unlink()
+    r = rig.run("--dry-run", "menhir")
+    assert r.returncode == 0, r.stderr
 
 
 def test_runs_origin_main_tooling_from_an_old_checkout(rig: Rig) -> None:

@@ -650,19 +650,16 @@ portal-module-install: portal-module-build
 
 # --- codex (0029) ---
 
-# Refresh the codex corpus (D29-4): re-fetch both snapshots, re-transform, print
-# the report summary. A deliberate, diffable event, never implicit in a build —
+# Refresh the codex corpus (D29-4): re-fetch both snapshots, then build and publish a new
+# release (`codex-build`). A deliberate, diffable event, never implicit in a build —
 # refuses to run if the git index is dirty under apps/codex/web (the
 # corpus-manifest.json diff must be reviewable alone, the linguist-commit-timer
 # lesson applied here too). Re-downloads ~259 MB (AoN) + the Foundry sparse
-# clone; not cheap, don't run casually.
-codex-refresh:
+# clone; not cheap, don't run casually. Flags go to codex-build (`--allow-shrink`).
+codex-refresh *flags:
     #!/usr/bin/env bash
     set -euo pipefail
     cd "{{justfile_directory()}}"
-    # codex.data-path (config.kdl, under data.root): the scripts below write there via
-    # @astra/config; this recipe needs it for the report.
-    codex_data="$({{uv_bin}} run --frozen --no-sync python -m astra_ontology_config codex.data-path)"
     if [ -n "$(git status --porcelain -- apps/codex/web)" ]; then
       echo "codex-refresh: apps/codex/web has uncommitted changes — commit or stash first" >&2
       echo "(the corpus-manifest.json diff from this refresh must be reviewable alone):" >&2
@@ -673,42 +670,53 @@ codex-refresh:
     pnpm --filter @astra/codex fetch:foundry
     echo "codex-refresh: fetching AoN snapshot..."
     pnpm --filter @astra/codex fetch:aon
-    echo "codex-refresh: running the transform..."
-    pnpm --filter @astra/codex transform
-    echo ""
-    echo "codex-refresh: building the search index..."
-    just codex-search-index
-    echo ""
-    echo "codex-refresh: done. report.md summary:"
-    head -n 40 "$codex_data/corpus/report.md"
-    echo ""
-    # D29-57: corpusFs.ts caches the corpus per category per-process, so a running
-    # container keeps serving stale categories after a host-side refresh until it
-    # restarts — a restart is the cheap, deterministic flush (the Pagefind
-    # staticMount needs no restart, it's per-request fail-soft). Guarded so a fresh
-    # host / no-docker / not-yet-deployed environment never fails this recipe. The restart
-    # goes through `just deploy --restart` (takes the deploy lock, logs to history.jsonl) but
-    # builds nothing: the corpus is a runtime mount, not image content.
-    echo "codex-refresh: checking for a running astra-codex container (D29-57)..."
-    if command -v docker >/dev/null 2>&1 && [ -n "$(docker ps -q -f name='^astra-codex$' 2>/dev/null || true)" ]; then
-      echo "codex-refresh: astra-codex is running — restarting to flush corpus caches..."
-      "{{just_executable()}}" deploy --restart codex
-    else
-      echo "codex-refresh: astra-codex not running (or docker unavailable) — skipping restart."
-    fi
+    "{{just_executable()}}" codex-build {{flags}}
 
-# Build the codex Pagefind search index (D29-34) from the current corpus at
-# <codex.data-path>/corpus/ into <codex.data-path>/search/pagefind/, served at
-# /pagefind/ via server.ts's staticMount. HOST-ONLY — the native Pagefind
-# indexer peaks at ~3.8 GB RSS during writeFiles over the full 46k-entity
-# corpus (measured) — this must NEVER run in CI, a Docker build, or `vite
-# build`; it's a deliberate, standalone, host-run step, same posture as
-# codex-refresh (which calls this after the transform). The server picks up
-# a freshly-built index with no restart (StaticMount fails soft per-request).
-codex-search-index:
-    pnpm --filter @astra/codex search:build
+# Build a codex release from the snapshots on disk and make it current: transform and
+# Pagefind index into <codex.data-path>/releases/.staging-*, validate (schema generation,
+# not the fixture, entity files match the manifest, no fewer entities than the current
+# release unless --allow-shrink, an index exists), rename to releases/<content hash>, then
+# swap the releases/current symlink. A running codex follows `current` per request: no
+# restart. Keeps the 3 newest releases plus the one codex serves (its /healthz; when codex
+# doesn't answer, prunes nothing). A rejected (rolled-back) release needs --force. HOST-ONLY (the indexer peaks at ~3.8 GB RSS):
+# never in CI, a Docker build or `vite build`. Run it from a clean checkout at a pushed
+# commit; the transform reads code and the homebrew store from the checkout.
+codex-build *flags:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{justfile_directory()}}"
+    codex_data="$({{uv_bin}} run --frozen --no-sync python -m astra_ontology_config codex.data-path)"
+    pnpm --filter @astra/codex release build {{flags}}
+    echo ""
+    echo "codex-build: report.md summary:"
+    head -n 40 "$codex_data/releases/current/corpus/report.md"
 
-# Opt-in, host-only (not in `ci`): check the real corpus at <codex.data-path>/corpus/ the
+# Rebuild only the codex Pagefind index (D29-34) over the current release's corpus and
+# publish it as a new release (the corpus is hardlinked, not copied). Same host-only
+# posture as codex-build.
+codex-search-index *flags:
+    pnpm --filter @astra/codex release build --reuse-corpus {{flags}}
+
+# Make an older codex release current again: the given id, or by default the newest one
+# before the current release that no rollback rejected. The target must pass the same
+# checks a build does. The release left behind is marked rejected: returning to it (by a
+# rollback, or a rebuild that hashes to it) needs --force. Instant; a running codex
+# follows on its next request. `just codex-rollback [<id>] [--force]`.
+codex-rollback *args:
+    pnpm --filter @astra/codex release rollback {{args}}
+
+# List the codex releases on disk, newest first; `*` marks the current one.
+codex-releases:
+    pnpm --filter @astra/codex release list
+
+# One-time: turn the flat <codex.data-path>/corpus and search/ into the first release and
+# point releases/current at it. Hardlinks, so the flat dirs stay intact for a server that
+# still mounts them; remove them after codex serves from releases/. A no-op once a
+# current release exists.
+codex-migrate-releases:
+    pnpm --filter @astra/codex release migrate
+
+# Opt-in, host-only (not in `ci`): check the current release's corpus the
 # way a production server does (this schema generation, not the fixture), spot-check
 # it, and render an entity page from it through a fresh build. Every other codex test
 # and guard reads the committed fixture.

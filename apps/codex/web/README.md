@@ -15,34 +15,63 @@ the frontend on top, unmodified corpus contract. See
 ## Operations
 
 The data dir is `codex.data-path` (`codex/data` under `data.root`, so
-`/ruby/data/astra-state/codex/data`): `corpus/`, `search/`, `snapshots/`. The
-transform and the search build write the **live** dirs the container mounts read-only.
+`/ruby/data/astra-state/codex/data`): `releases/` (served) and `snapshots/` (ingest input).
+The corpus and its Pagefind index ship as **immutable releases**; nothing edits served data.
 
-- **Full refresh** (re-fetch both sources, transform, reindex, restart): `just codex-refresh`.
-  It refuses a dirty `apps/codex/web`, because the `corpus-manifest.json` diff it writes must be
-  reviewable alone. If that diff is timestamp-only, revert it.
+```
+releases/
+  <id>/corpus/            the corpus tree (layout below)
+  <id>/search/pagefind/   the Pagefind index built from that corpus
+  <id>/release.json       id, createdAt, entity count, schemaVersion, source pins
+  current -> <id>         relative symlink; the one thing a publish or rollback changes
+  .staging-*/             a build in progress, never served
+```
+
+`<id>` is the first 16 hex digits of a sha256 over every file of `corpus/` and `search/`, so
+an identical build reuses its release. The container mounts `releases/` read-only at the same
+path. The server reads `current` on every request: a new release that passes the startup
+checks gets a fresh reader (its caches belong to that release), a failing one is logged and
+refused while the old release keeps serving (for good when it is unservable; after 30 s again
+when the failure was an I/O error such as EMFILE), and each request stays pinned to the release
+it started on. No restart is needed after a publish or a rollback.
+
+- **Full refresh** (re-fetch both sources, then `codex-build`): `just codex-refresh`. It refuses
+  a dirty `apps/codex/web`, because the `corpus-manifest.json` diff it writes must be reviewable
+  alone. If that diff is timestamp-only, revert it.
 - **Transform-only change** (ingest code or the assay homebrew store changed, sources did not):
-  skip the re-fetch, which can pull in upstream drift.
-
-  ```bash
-  pnpm --filter @astra/codex transform
-  just codex-search-index        # only if search rows changed (names, statsText, meta, entity set)
-  just deploy --restart codex    # corpusFs caches listings per process; restart to flush
-  ```
-
-  The transform reads code and the homebrew store from the checkout it runs in, so run it from
-  a clean checkout at a pushed commit.
+  `just codex-build`. It skips the re-fetch, which can pull in upstream drift. It transforms and
+  indexes into `releases/.staging-*`, validates, renames to `releases/<id>` and swaps `current`.
+  Validation is the server's own check (readable manifest, this `schemaVersion`, not the
+  fixture), plus entity files matching the manifest counts, a valid `rules-tree.json` and
+  `sources-index.json`, a Pagefind index with one page per entity, and **no fewer entities
+  than the current release** (pass `--allow-shrink` when a drop is expected: `just codex-build
+  --allow-shrink`). See pruning below. The transform reads code and the homebrew store from the checkout it
+  runs in, so run it from a clean checkout at a pushed commit.
+- **Search-only change** (`scripts/build-search.ts`): `just codex-search-index` rebuilds the
+  index over the current corpus (hardlinked) and publishes that as a new release.
+- **Roll back:** `just codex-rollback` makes the previous release current; `just
+  codex-rollback <id>` picks one. `just codex-releases` lists them, `*` marking `current`. The
+  release a rollback leaves is marked rejected (`releases/rejected/<id>`): a rebuild that hashes
+  to it, or a rollback to it, needs `--force`, and the default rollback target skips it.
+- **Pruning** keeps the 3 newest releases, the current one, and the one the running codex
+  serves, which `release.ts` reads from its `/healthz` after the switch. When codex does not
+  answer, nothing is pruned.
+- **The release lock** (`releases/.lock/owner.json`) records the holder's pid and start time. A
+  lock whose holder is gone is broken, and leftover `.staging-*` dirs from before it are removed.
 - **Render-only change** (`src/` only, corpus and index untouched): push, then
   `just deploy codex`.
-- **Order when both change:** push and `just deploy codex` first (the image build is slow),
-  then transform, reindex and restart. The transform wipes and rewrites `corpus/` in place, so
-  the site serves errors or partial data until it finishes; keep that window short.
-- **Verify a deploy against the real corpus.** A built server fails closed: when
-  `<codex.data-path>/corpus/` is missing, has another `schemaVersion`, or holds the fixture, it
-  throws `CorpusUnservableError` at startup and exits, and compose restarts it in a loop. A good
-  deploy logs `[codex] serving the corpus at "/ruby/data/astra-state/codex/data/corpus" (source
-  config, <n> entities, schemaVersion 5)`; also check a real entity page such as `/spell/fireball`.
-  `just codex-real-corpus` runs the same check on the host, plus spot checks and an SSR render.
+- **Schema bump order:** merge the code, `just codex-build` from that checkout (the old server
+  refuses the new-schema release and keeps serving its own, search included), then `just
+  deploy codex`. Deploying first would crash-loop: the new server refuses the old `current`
+  at startup. The full procedure is in `docs/runbook.md` ("codex refresh or republish").
+- **Verify a deploy against the real corpus.** A built server fails closed: with no
+  `releases/current`, a corpus of another `schemaVersion`, or the fixture, it throws
+  `CorpusUnservableError` at startup and exits, and compose restarts it in a loop. A good
+  deploy logs `[codex] serving the corpus at
+  "/ruby/data/astra-state/codex/data/releases/<id>/corpus" (release <id>, source config, <n>
+  entities, schemaVersion 5)`, and a switch logs `[codex] switched from release <old> to ...`;
+  also check a real entity page such as `/spell/fireball`. `just codex-real-corpus` runs the
+  same check on the host, plus spot checks and an SSR render.
 
 ## Traps
 
@@ -113,8 +142,14 @@ transform and the search build write the **live** dirs the container mounts read
   `HTMLDialogElement.showModal` (tests polyfill it).
 
 **Search index**
-- The Pagefind build is host-only (~3.8 GB RSS). Run `just codex-search-index`; never in CI or
-  Docker. The server picks up a new index without a restart.
+- The Pagefind build is host-only (~3.8 GB RSS). It runs inside `just codex-build` and `just
+  codex-search-index`; never in CI or Docker.
+- `/pagefind/<path>` answers 302 to `/pagefind/r/<id>/<path>` (`no-store`), where `<id>` is
+  the release this server serves (not always `current`), and release-keyed files are served
+  `immutable` (`src/server/pagefindRoute.ts`). The client imports
+  `/pagefind/pagefind.js`; after the redirect Pagefind derives its base path from
+  `import.meta.url`, so one page reads one release's index even across a switch. Don't
+  rewrite that import to bypass the redirect.
 - Pagefind fragments are gzip; grep decompressed bytes. `meta.title` has no ranking weight and
   weight spans leak into excerpts; exact-name ranking comes from the client-side boost, so don't
   retry index-side weighting.
@@ -666,11 +701,15 @@ The shared Zod contracts (`CodexEntity`, `CodexNode`, `CorpusManifest`) live in 
 ```bash
 pnpm --filter @astra/codex fetch:foundry   # sparse-clones the pinned tag
 pnpm --filter @astra/codex fetch:aon       # snapshots the AoN ES index (~259 MB, ≤4 req/s)
-pnpm --filter @astra/codex transform       # parse -> join -> emit -> report
+pnpm --filter @astra/codex transform --out <dir>   # parse -> join -> emit -> report
 
-# or all three + a report summary in one step:
+# or fetch, transform, index and publish a release in one step:
 just codex-refresh
 ```
+
+The transform and the indexer take explicit output dirs (`--out`; `build-search.ts --corpus
+<dir> --out <dir>`) and never write a served release; `just codex-build`
+(`scripts/release.ts build`) runs both into a staging dir and publishes it.
 
 `just codex-refresh` **refuses to run if `git status --porcelain -- apps/codex/web` is
 non-empty** — a refresh rewrites the committed `corpus-manifest.json` pin, and that diff
@@ -681,7 +720,7 @@ A real run takes well under a minute end to end (~15s for the transform stage al
 produces roughly 46,000 entities / ~625 MB of corpus (gitignored — `data/` never leaves the
 host; see the corpus layout below).
 
-## Corpus layout (`data/corpus/`, gitignored)
+## Corpus layout (`releases/<id>/corpus/`)
 
 ```
 corpus/
@@ -740,9 +779,9 @@ Every file is written through one of two canonical serializers, both key-sorted
 every entity file + `manifest.json` + the reports, and `canonicalJsonCompact` (no
 indentation, D29-33d) for `_index.json` only. Two full transform runs over the same
 snapshots produce a **byte-identical** `corpus/` tree —
-verify with `diff -r` after copying a run aside. `emit.ts` wipes `corpus/` before every
-write, so a stale file from a category/entity that no longer exists can't survive a
-re-transform.
+verify with `diff -r` after copying a run aside. `emit.ts` wipes its output dir (a fresh
+staging dir on the host) before every write, so a stale file from a category/entity that no
+longer exists can't survive a re-transform.
 
 ## The transform report
 
@@ -855,39 +894,37 @@ already request-time-only (D29-31: `vite.config.ts` has no content step, no `src
 so `docker build` needs config.kdl + app source only.
 The ~891 MB of corpus + Pagefind data never enters the image.
 
-**Read-only bind mounts, identical path (D29-53).** `config.kdl`'s `codex.data-path` is a
+**Read-only bind mount, identical path (D29-53).** `config.kdl`'s `codex.data-path` is a
 host-absolute path consumed verbatim both by `pnpm start` on the host and by the container at
 request time, and plain config fields have no env-override mechanism (config-single-source
-forbids a per-environment fork). So the compose unit mounts the two data dirs at the *same*
+forbids a per-environment fork). So the compose unit mounts the releases dir at the *same*
 path inside the container as on the host — the same convention the Dagster pipeline volumes
 already use (`deploy/docker-compose.yml`), applied to a frontend for the first time:
 
 ```
-/ruby/data/astra-state/codex/data/corpus:/ruby/data/astra-state/codex/data/corpus:ro
-/ruby/data/astra-state/codex/data/search:/ruby/data/astra-state/codex/data/search:ro
+/ruby/data/astra-state/codex/data/releases:/ruby/data/astra-state/codex/data/releases:ro
 ```
+
+`current` is a relative symlink, so it resolves the same way inside the container.
 
 Since 0037 item 2c the data dir lives under the one data root (`data.root`
 `/ruby/data/astra-state`, `codex.data-path "codex/data"`), not in a code checkout; the
 `data/` paths below are relative to it.
 
 `data/snapshots/` (601 MB, runtime-unreferenced ingest input) and `data/tmp/` deliberately
-stay off the mount list — only the two dirs the running server actually reads.
+stay off the mount list — only the releases the running server actually reads.
 
 **No fixture in prod.** The runtime image does not contain `fixtures/` (`.dockerignore` denies
-it), and a built server never falls back to it. If a deploy's mounts are missing or a fresh host
-hasn't run `codex-refresh` yet, the container exits at startup with `CorpusUnservableError` and
-compose restarts it until the corpus appears. `CODEX_CORPUS_ROOT` can still point a built server
-at the fixture explicitly; the tests and guards do that, production compose never sets it.
+it), and a built server never falls back to it. If a deploy's mount is missing or a fresh host
+has no release yet, the container exits at startup with `CorpusUnservableError` and compose
+restarts it until `just codex-build` publishes one. `CODEX_CORPUS_ROOT` can still point a built
+server at the fixture explicitly; the tests and guards do that, production compose never sets it.
 
-**Refresh in prod (D29-57).** `just codex-refresh` (host-only, dirty-tree-guarded — see
-above) now ends with a conditional restart: if `astra-codex` is running, it restarts the
-container after the transform + search-index steps complete. `corpusFs.ts` caches the corpus
-per category per-process, so without a restart a live container would keep serving stale
-cached categories alongside freshly-refreshed ones; the Pagefind `/pagefind/*` staticMount
-needs no restart (it fails soft per-request and picks up a freshly-written index
-immediately) but rides along harmlessly. The restart is a no-op (skipped, not an error) when
-`astra-codex` isn't running or Docker isn't available.
+**Refresh in prod.** `just codex-refresh` and `just codex-build` publish a release and swap
+`releases/current`; the running container follows on its next request, with no restart and no
+degraded window. The flat layout (`data/corpus/`, `data/search/`) predates releases;
+`just codex-migrate-releases` turned it into the first release once (hardlinks, so the flat dirs
+stayed intact until they were removed by hand).
 
 **Noindex, three layers (C-1).** (1) SSR HTML always carries `<meta name="robots"
 content="noindex">` (`src/routes/__root.tsx`, ships regardless of deploy). (2)

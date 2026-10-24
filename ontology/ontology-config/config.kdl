@@ -33,7 +33,7 @@ data {
     //   mouthpiece/experiments/  producer and roundtable runs (0034)
     //   heartwood/               per-run agent artifacts, backfill.log, backfill.lock
     //   heartwood/requests/      the Dagster <-> host request files (0036), logs/ inside
-    //   codex/data/              codex corpus, Pagefind index, AoN + Foundry snapshots
+    //   codex/data/              codex releases/ (corpus + Pagefind index), AoN + Foundry snapshots
     //   menhir/                  menhir results.jsonl
     //   audio/{akasha,mouthpiece,orator}/  audio the frontends and orator serve
     //   postgres/{dagster,orator,weal}/    PGDATA (uid 70, mode 0700, set by the postgres entrypoint)
@@ -372,8 +372,9 @@ codex {
     // The PF2e reference site (0029) — a public-but-noindexed build-time ingest +
     // SSR frontend on the strider template (Decision I). Same config-single-source
     // contract: the server binds this port; no PORT env. Behind Caddy at
-    // codex.iridi.cc → host 10374. data-path is the corpus dir the ingest
-    // pipeline (`just codex-refresh`) writes to, under data.root. P2 S3 (D29-30) wired client RUM (src/observe/{rum,
+    // codex.iridi.cc → host 10374. data-path is the dir the ingest pipeline
+    // (`just codex-build`) writes releases/ to, under data.root; the server reads
+    // releases/current. P2 S3 (D29-30) wired client RUM (src/observe/{rum,
     // rumConfig}.ts, startRum in __root's mount effect) — it reads the top-level
     // telemetry.rum-endpoint (above).
     service-name "astra.codex"

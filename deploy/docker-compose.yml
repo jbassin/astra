@@ -335,15 +335,15 @@ services:
   # --- codex (0029): the PF2e compendium/rules browser — SSR Compose service
   # (Decision I), on the runtime-mount model (not akasha's baked one): nothing
   # content-shaped is baked into the image — the corpus + Pagefind search index
-  # arrive via read-only bind mounts, request-time reads (D29-31). D29-53: the two
-  # mounts are IDENTICAL host-path==container-path binds, the Dagster
+  # arrive as immutable releases on a read-only bind mount, request-time reads (D29-31).
+  # D29-53: the mount is an IDENTICAL host-path==container-path bind, the Dagster
   # pipeline-volume convention applied to a frontend for the first time — codex's
   # `codex.data-path` (config.kdl) is a host-absolute path consumed VERBATIM by
   # both `pnpm start` on the host and this container, and plain config fields have
   # no env-override mechanism, so identical-path is the only way to satisfy
   # config-single-source without a per-environment fork. `data/snapshots/` (601 MB,
   # runtime-unreferenced ingest input) and `data/tmp/` deliberately stay OUT of the
-  # container — only the two narrow dirs below. No `environment:` — no secrets, and
+  # container — only the releases dir below. No `environment:` — no secrets, and
   # the OTLP endpoint comes from config's in-cluster default. ---
   codex:
     <<: *astra-app
@@ -357,14 +357,15 @@ services:
     # compose only maps the published host port below.
     ports:
       - "10374:10374" # codex SSR (astra range) — also reachable directly
-    # D29-53: identical-path read-only bind mounts (host path == container path).
-    # codex.data-path (config.kdl) = /ruby/data/astra-state/codex/data; `just
-    # codex-refresh` writes corpus/ and search/ there, and deploy.sh init_artifacts creates
-    # both dirs as uid 1000. On a fresh host corpus/ is empty, so the server exits at
-    # startup (it never serves the fixture) until `codex-refresh` runs once.
+    # D29-53: identical-path read-only bind mount (host path == container path) of the
+    # releases dir under codex.data-path (config.kdl) = /ruby/data/astra-state/codex/data.
+    # `just codex-build` writes each release to releases/<id>/ and swaps the relative
+    # releases/current symlink, which the server follows per request (no restart, no
+    # remount). deploy.sh init_artifacts creates the dir as uid 1000. With no current
+    # release the server exits at startup (it never serves the fixture) until
+    # `codex-build` (or the one-time `codex-migrate-releases`) runs.
     volumes:
-      - { <<: *bind, source: /ruby/data/astra-state/codex/data/corpus, target: /ruby/data/astra-state/codex/data/corpus, read_only: true }
-      - { <<: *bind, source: /ruby/data/astra-state/codex/data/search, target: /ruby/data/astra-state/codex/data/search, read_only: true }
+      - { <<: *bind, source: /ruby/data/astra-state/codex/data/releases, target: /ruby/data/astra-state/codex/data/releases, read_only: true }
     healthcheck:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10374/').then(r=>process.exit(r.ok?0:1))"]

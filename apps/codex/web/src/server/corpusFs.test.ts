@@ -1,4 +1,12 @@
-import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import {
+  cpSync,
+  mkdirSync,
+  mkdtempSync,
+  renameSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -6,7 +14,48 @@ import { CORPUS_SCHEMA_VERSION } from "@astra/codex-corpus";
 import { CorpusNotFoundError, createCorpusReader } from "@astra/codex-corpus/reader";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { CorpusUnservableError, fixtureCorpusRoot, selectServedCorpus } from "./corpusFs";
+import {
+  CorpusUnservableError,
+  createCorpusSource,
+  fixtureCorpusRoot,
+  selectServedCorpus,
+} from "./corpusFs";
+
+// A read of `fsFault.path` throws an errno error with `fsFault.code` (a transient EMFILE in
+// the retry test); every other read is the real one.
+const fsFault = vi.hoisted(() => ({ path: "", code: "" }));
+vi.mock("node:fs", async (importOriginal) => {
+  const real = await importOriginal<typeof import("node:fs")>();
+  const readFileSync = ((path: unknown, ...rest: unknown[]) => {
+    if (fsFault.path !== "" && String(path) === fsFault.path) {
+      throw Object.assign(new Error(`${fsFault.code}: simulated`), { code: fsFault.code });
+    }
+    return (real.readFileSync as (...a: unknown[]) => unknown)(path, ...rest);
+  }) as typeof real.readFileSync;
+  return { ...real, default: { ...real, readFileSync }, readFileSync };
+});
+
+const RELEASE_A = "aaaaaaaaaaaaaaaa";
+const RELEASE_B = "bbbbbbbbbbbbbbbb";
+
+/** Writes `<dataPath>/releases/<id>/corpus/manifest.json` (a real-corpus header unless
+ * overridden) and points `current` at it; returns the corpus root. */
+function writeRelease(dataPath: string, id: string, header: Record<string, unknown> = {}): string {
+  const releases = join(dataPath, "releases");
+  const root = join(releases, id, "corpus");
+  mkdirSync(root, { recursive: true });
+  const manifest = {
+    schemaVersion: CORPUS_SCHEMA_VERSION,
+    foundry: { tag: "pf2e-8.3.0" },
+    totalEntityCount: 44980,
+    categoryCounts: {},
+    ...header,
+  };
+  writeFileSync(join(root, "manifest.json"), JSON.stringify(manifest));
+  symlinkSync(id, join(releases, ".current-tmp"));
+  renameSync(join(releases, ".current-tmp"), join(releases, "current"));
+  return root;
+}
 
 // D29-23: `createCorpusReader(rootDir)` is a pure factory, directly unit-testable
 // against `fixtures/entities/` — no config/mocking involved. Every traversal-guard
@@ -192,18 +241,10 @@ describe("selectServedCorpus", () => {
     vi.restoreAllMocks();
   });
 
-  /** Writes `<dataPath>/corpus/manifest.json` with a real-corpus header unless overridden. */
+  /** Writes a current release with a real-corpus header unless overridden; returns its
+   * corpus root. */
   function writeConfigManifest(header: Record<string, unknown> = {}): string {
-    const root = join(dataPath, "corpus");
-    mkdirSync(root, { recursive: true });
-    const manifest = {
-      schemaVersion: CORPUS_SCHEMA_VERSION,
-      foundry: { tag: "pf2e-8.3.0" },
-      totalEntityCount: 44980,
-      ...header,
-    };
-    writeFileSync(join(root, "manifest.json"), JSON.stringify(manifest));
-    return root;
+    return writeRelease(dataPath, RELEASE_A, header);
   }
 
   it("uses an explicit root as given, even the fixture, in either mode", () => {
@@ -212,11 +253,31 @@ describe("selectServedCorpus", () => {
       expect(corpus).toEqual({
         root: fixtureCorpusRoot(),
         source: "env",
+        releaseId: null,
         schemaVersion: CORPUS_SCHEMA_VERSION,
         totalEntityCount: 235,
         fixture: true,
       });
     }
+  });
+
+  it("refuses a current link that does not name a release id", () => {
+    mkdirSync(join(dataPath, "releases"), { recursive: true });
+    symlinkSync("../elsewhere", join(dataPath, "releases", "current"));
+    expect(() => selectServedCorpus({ explicitRoot: undefined, dataPath, dev: false })).toThrow(
+      /not a release id/,
+    );
+  });
+
+  it("ignores the old flat <dataPath>/corpus layout", () => {
+    mkdirSync(join(dataPath, "corpus"), { recursive: true });
+    writeFileSync(
+      join(dataPath, "corpus", "manifest.json"),
+      JSON.stringify({ schemaVersion: CORPUS_SCHEMA_VERSION, totalEntityCount: 1 }),
+    );
+    expect(() => selectServedCorpus({ explicitRoot: undefined, dataPath, dev: false })).toThrow(
+      /no current release/,
+    );
   });
 
   it("refuses an explicit root with no manifest", () => {
@@ -225,16 +286,22 @@ describe("selectServedCorpus", () => {
     ).toThrow(CorpusUnservableError);
   });
 
-  it("production: serves a real corpus at the config path", () => {
+  it("production: serves the current release, resolved past the current link", () => {
     const root = writeConfigManifest();
     const corpus = selectServedCorpus({ explicitRoot: undefined, dataPath, dev: false });
-    expect(corpus).toMatchObject({ root, source: "config", totalEntityCount: 44980 });
+    expect(corpus).toMatchObject({
+      root,
+      source: "config",
+      releaseId: RELEASE_A,
+      totalEntityCount: 44980,
+    });
+    expect(root).toBe(join(dataPath, "releases", RELEASE_A, "corpus"));
     expect(corpus.fixture).toBe(false);
   });
 
-  it("production: refuses a missing corpus instead of falling back to the fixture", () => {
+  it("production: refuses a missing release instead of falling back to the fixture", () => {
     expect(() => selectServedCorpus({ explicitRoot: undefined, dataPath, dev: false })).toThrow(
-      /no corpus at .* never serves the fixture/,
+      /no current release at .* never serves the fixture/,
     );
   });
 
@@ -256,7 +323,11 @@ describe("selectServedCorpus", () => {
       );
     }
     expect(() =>
-      selectServedCorpus({ explicitRoot: join(dataPath, "corpus"), dataPath, dev: false }),
+      selectServedCorpus({
+        explicitRoot: join(dataPath, "releases", RELEASE_A, "corpus"),
+        dataPath,
+        dev: false,
+      }),
     ).toThrow(CorpusUnservableError);
   });
 
@@ -272,11 +343,139 @@ describe("selectServedCorpus", () => {
     expect(createCorpusReader(corpus.root).categories()).toContain("spell");
   });
 
-  it("dev: serves the real corpus at the config path when it exists", () => {
+  it("dev: serves the current release when there is one", () => {
     const root = writeConfigManifest();
     expect(selectServedCorpus({ explicitRoot: undefined, dataPath, dev: true })).toMatchObject({
       root,
       source: "config",
+      releaseId: RELEASE_A,
     });
+  });
+});
+
+// A running server follows `current`: a valid new release gets a fresh reader, a bad one is
+// refused (the old release keeps serving), and a pinned request keeps its release.
+describe("createCorpusSource (release switching)", () => {
+  let dataPath: string;
+  let info: ReturnType<typeof vi.spyOn>;
+  let error: ReturnType<typeof vi.spyOn>;
+  const inputs = () => ({ explicitRoot: undefined, dataPath, dev: false });
+
+  beforeEach(() => {
+    dataPath = mkdtempSync(join(tmpdir(), "codex-corpus-source-"));
+    info = vi.spyOn(console, "info").mockImplementation(() => {});
+    error = vi.spyOn(console, "error").mockImplementation(() => {});
+  });
+  afterEach(() => {
+    rmSync(dataPath, { recursive: true, force: true });
+    vi.restoreAllMocks();
+  });
+
+  it("switches to a new valid release with a reader of its own", () => {
+    writeRelease(dataPath, RELEASE_A, { totalEntityCount: 1 });
+    const source = createCorpusSource(inputs);
+    const readerA = source.reader();
+    expect(source.served().releaseId).toBe(RELEASE_A);
+    expect(source.reader()).toBe(readerA);
+
+    writeRelease(dataPath, RELEASE_B, { totalEntityCount: 2 });
+    expect(source.served()).toMatchObject({ releaseId: RELEASE_B, totalEntityCount: 2 });
+    expect(source.reader()).not.toBe(readerA);
+    expect(info).toHaveBeenCalledWith(expect.stringContaining(`release ${RELEASE_B}`));
+  });
+
+  it("refuses a release of another schema generation and keeps serving, logging once", () => {
+    writeRelease(dataPath, RELEASE_A);
+    const source = createCorpusSource(inputs);
+    expect(source.served().releaseId).toBe(RELEASE_A);
+    writeRelease(dataPath, RELEASE_B, { schemaVersion: CORPUS_SCHEMA_VERSION - 1 });
+    expect(source.served().releaseId).toBe(RELEASE_A);
+    expect(source.served().releaseId).toBe(RELEASE_A);
+    expect(error).toHaveBeenCalledOnce();
+  });
+
+  it("retries a release that failed with a transient error after the backoff", async () => {
+    // vitest.setup.ts loaded corpusFs before this file's node:fs mock; load a fresh copy.
+    vi.resetModules();
+    const fresh = await import("./corpusFs");
+    writeRelease(dataPath, RELEASE_A);
+    let now = 0;
+    const source = fresh.createCorpusSource(inputs, { clock: () => now, retryMs: 30_000 });
+    expect(source.served().releaseId).toBe(RELEASE_A);
+    const root = writeRelease(dataPath, RELEASE_B);
+    fsFault.path = join(root, "manifest.json");
+    fsFault.code = "EMFILE";
+    try {
+      expect(source.served().releaseId).toBe(RELEASE_A);
+      expect(error).toHaveBeenCalledWith(expect.stringContaining("retrying in 30 s"));
+      fsFault.path = ""; // the fault clears, but the backoff still holds
+      now = 29_999;
+      expect(source.served().releaseId).toBe(RELEASE_A);
+      now = 30_000;
+      expect(source.served().releaseId).toBe(RELEASE_B);
+    } finally {
+      fsFault.path = "";
+    }
+  });
+
+  it("refuses a release whose manifest is missing for good, not as transient", () => {
+    writeRelease(dataPath, RELEASE_A);
+    let now = 0;
+    const source = createCorpusSource(inputs, { clock: () => now });
+    expect(source.served().releaseId).toBe(RELEASE_A);
+    const root = writeRelease(dataPath, RELEASE_B);
+    rmSync(join(root, "manifest.json"));
+    expect(source.served().releaseId).toBe(RELEASE_A);
+    writeFileSync(
+      join(root, "manifest.json"),
+      JSON.stringify({ schemaVersion: CORPUS_SCHEMA_VERSION, totalEntityCount: 1 }),
+    );
+    now = 10 * 60_000;
+    expect(source.served().releaseId).toBe(RELEASE_A);
+  });
+
+  it("never re-checks a refused release on later requests", () => {
+    writeRelease(dataPath, RELEASE_A);
+    const source = createCorpusSource(inputs);
+    expect(source.served().releaseId).toBe(RELEASE_A);
+    writeRelease(dataPath, RELEASE_B, { schemaVersion: CORPUS_SCHEMA_VERSION - 1 });
+    expect(source.served().releaseId).toBe(RELEASE_A);
+    // Were B checked again, this valid manifest would now pass and the source would switch.
+    writeFileSync(
+      join(dataPath, "releases", RELEASE_B, "corpus", "manifest.json"),
+      JSON.stringify({ schemaVersion: CORPUS_SCHEMA_VERSION, totalEntityCount: 1 }),
+    );
+    expect(source.served().releaseId).toBe(RELEASE_A);
+    expect(error).toHaveBeenCalledOnce();
+  });
+
+  it("refuses a release holding the fixture", () => {
+    writeRelease(dataPath, RELEASE_A);
+    const source = createCorpusSource(inputs);
+    expect(source.served().releaseId).toBe(RELEASE_A);
+    writeRelease(dataPath, RELEASE_B, { foundry: { tag: "fixture" } });
+    expect(source.served().releaseId).toBe(RELEASE_A);
+  });
+
+  it("pins a request to the release that was current when it began", async () => {
+    writeRelease(dataPath, RELEASE_A);
+    const source = createCorpusSource(inputs);
+    const readerA = source.reader();
+    const seen = await source.withPinned(async () => {
+      writeRelease(dataPath, RELEASE_B);
+      await new Promise((r) => setTimeout(r, 1));
+      return source.reader();
+    });
+    expect(seen).toBe(readerA);
+    expect(source.reader()).not.toBe(readerA);
+  });
+
+  it("never switches an explicit root", () => {
+    writeRelease(dataPath, RELEASE_A);
+    const source = createCorpusSource(() => ({ ...inputs(), explicitRoot: fixtureCorpusRoot() }));
+    const reader = source.reader();
+    writeRelease(dataPath, RELEASE_B);
+    expect(source.served()).toMatchObject({ source: "env", releaseId: null });
+    expect(source.reader()).toBe(reader);
   });
 });
