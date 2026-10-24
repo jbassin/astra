@@ -112,7 +112,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
   in deploy.sh, or accept — agent.
 - Store episode clip paths relative to the session dir (the manifests hold absolute paths) — agent.
 - `publish_snapshot` should refuse a missing corpus dir or a catalog smaller than the committed one — agent.
-- `convert-wiki.ts --dest` should be required — agent.
 - A pushed hand edit to the wiki waits for the next publish, because linguist-commit redeploys akasha
   only on linguist changes — agent.
 - `heartwood-revert` cannot revert sessions published before the astra-data snapshot commit — agent.
