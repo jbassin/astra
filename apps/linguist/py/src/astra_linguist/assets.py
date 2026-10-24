@@ -1,9 +1,10 @@
-"""Dagster wiring — the per-session partition + the linguist asset.
+"""Dagster wiring — the linguist assets and the scribe→linguist sensor.
 
-One partition per session/date. The asset reads scribe's `script.json`, runs the
-pipeline, and writes the three outputs (`data/{date}.json`, the campaign-matched
-`script/*.txt`, the canonical `transcripts/*.txt`). The live
-materialization runs once scribe has emitted a session.
+One partition per session/date in the pipeline's shared ``sessions`` set.
+`session_transcripts` depends on scribe's `session_transcript`: it reads that asset's
+`script.json`, runs the pipeline, and writes the three outputs (`data/{date}.json`, the
+campaign-matched `script/*.txt`, the canonical `transcripts/*.txt`).
+`scribe_output_sensor` launches it once scribe's transcript is materialized.
 
 NOTE: the plan models three assets (formatted/context/canonical); v1 ships one
 `session_transcripts` asset producing all three files (downstream consumers read
@@ -23,6 +24,7 @@ from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
 from astra_pipeline_resources import AstraConfig, LlmResource, PipelinePaths, default_resources
+from astra_pipeline_resources.partitions import SessionStage, launch_ready, sessions
 from astra_sessions import atomic_write_text
 
 from .campaigns import campaign_filename, campaign_views
@@ -30,7 +32,7 @@ from .chronicle import Chronicle, chronicle_inputs_hash, load_episode_entries
 from .models import RawLine, load_session
 from .pipeline import process_session
 from .roster import SpeakerResolver
-from .sensor import new_sessions
+from .sensor import has_script
 
 _log = get_logger("astra.linguist")
 _meter = get_meter("astra.linguist")
@@ -46,11 +48,12 @@ _episodes_counter = _meter.create_counter(
 # suspenders). Replaces the old absolute faerrin static-audio.iridi.cc host.
 AUDIO_BASE = "/audio"
 
-SESSIONS_NAME = "linguist_sessions"
-linguist_sessions = dg.DynamicPartitionsDefinition(name=SESSIONS_NAME)
+#: scribe's transcript asset (`astra_scribe.assets.session_transcript`), by key: linguist
+#: does not import scribe. ``dagster/tests/test_definitions.py`` pins the edge.
+SCRIBE_TRANSCRIPT = dg.AssetKey("session_transcript")
 
 
-@dg.asset(partitions_def=linguist_sessions, group_name="linguist")
+@dg.asset(partitions_def=sessions, group_name="linguist", deps=[SCRIBE_TRANSCRIPT])
 def session_transcripts(
     context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
@@ -99,7 +102,7 @@ def session_transcripts(
 
 
 @dg.asset(
-    partitions_def=linguist_sessions,
+    partitions_def=sessions,
     deps=[session_transcripts],
     group_name="chronicle",
 )
@@ -220,31 +223,30 @@ def campaign_timeline_schedule() -> dg.RunRequest:
     return dg.RunRequest()
 
 
-# Safe to run by default: the scribe `saved/` dir it scans is seed-free by construction —
-# the migrated-at-rest history was loaded straight into linguist's transcript dir, never
-# through scribe, so `saved/` only ever holds craig-produced sessions. (A session appears
-# here only once scribe writes its `script.json`, so a mid-transcription session won't fire
-# prematurely.) The downstream linguist→mouthpiece sweep is what needed adoption, not this.
+def _has_script(key: str) -> bool:
+    saved = _linguist_config().ingest_saved_dir
+    return bool(saved) and has_script(saved, key)
+
+
+#: What `scribe_output_sensor` launches, and when (``dagster/migrate_sessions.py`` reads it).
+LINGUIST_STAGE = SessionStage(
+    upstream=SCRIBE_TRANSCRIPT, stage=session_transcripts.key, keep=_has_script
+)
+
+
 @dg.sensor(
     target=[session_transcripts, session_episode_summary],
     minimum_interval_seconds=30,
     default_status=dg.DefaultSensorStatus.RUNNING,
 )
 def scribe_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
-    """Register a linguist partition + run request for each scribe session
-    (`{date}/script.json` under `ingest_saved_dir`) not yet processed — the scribe→linguist
-    trigger. Each run materializes `session_transcripts` (apply known corrections) then
-    `session_episode_summary`, so a session is fully processed."""
-    saved = _linguist_config().ingest_saved_dir
-    if not saved or not Path(saved).is_dir():
-        return dg.SensorResult()
-    existing = set(context.instance.get_dynamic_partitions(SESSIONS_NAME))
-    found = new_sessions(saved, existing)
-    adds = [linguist_sessions.build_add_request(found)] if found else []
-    return dg.SensorResult(
-        run_requests=[dg.RunRequest(partition_key=key) for key in found],
-        dynamic_partitions_requests=adds,
-    )
+    """Run linguist for each session whose scribe transcript is materialized and whose
+    `session_transcripts` was never tried — the scribe→linguist trigger.
+
+    Each run materializes `session_transcripts` (apply known corrections) then
+    `session_episode_summary`, so a session is fully processed. A failed or canceled run is
+    not retried here (re-execute it); a session whose `script.json` is gone is skipped."""
+    return launch_ready(context, LINGUIST_STAGE)
 
 
 def _linguist_config():

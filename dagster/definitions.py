@@ -133,7 +133,8 @@ def pipeline_failure_alert(context: dg.RunFailureSensorContext) -> None:
 
 # The pipeline: scribe (Craig zip -> transcript) -> linguist (canonical transcript, summary,
 # timeline) -> mouthpiece (digest -> brief -> script -> clips -> episode), plus heartwood (the
-# wiki). Each app's assets carry their own DynamicPartitionsDefinition; sensors chain them.
+# wiki). Every per-session asset shares the `sessions` partitions and depends on its upstream
+# asset across apps; one sensor per stage launches it (astra_pipeline_resources.partitions).
 defs = dg.Definitions.merge(
     scribe.defs,
     linguist.defs,

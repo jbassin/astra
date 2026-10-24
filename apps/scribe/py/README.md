@@ -3,8 +3,8 @@
 scribe is the head of the session pipeline. Craig drops each recording as a zip on a Google
 Drive FUSE mount; the host `craig-sync` timer copies new zips into `scribe.incoming-path`
 (`/ruby/data/astra-state/scribe/incoming`), because Docker cannot bind-mount the FUSE mount.
-In Dagster, `craig_drop_sensor` registers one `scribe_sessions` partition per session date
-and runs `session_tracks` → `session_audio` ∥ `session_transcript` → `session_cleanup`. The
+In Dagster, `craig_drop_sensor` adds one partition per session date to the pipeline's shared
+`sessions` set (the only code that adds keys) and runs `session_tracks` → `session_audio` ∥ `session_transcript` → `session_cleanup`. The
 outputs `scribe/data/saved/<date>/{audio.mp3,script.json}` are the handoff to linguist
 (`linguist.ingest-saved-dir` must equal this dir) and to `just akasha-seed`. Transcription is
 Groq Whisper (`scribe.model`, `groq/whisper-large-v3`).
@@ -25,10 +25,11 @@ Groq Whisper (`scribe.model`, `groq/whisper-large-v3`).
   original name too, or craig-sync downloads it again.
 - **Re-transcribe a session.** Only the zip in the incoming dir is needed. Materialize all
   four scribe assets for the partition: `session_cleanup` deletes the extracted tracks, so a
-  single tail cannot rerun without `session_tracks`. Then rerun downstream in order: linguist
-  `session_transcripts,session_episode_summary`, mouthpiece `session_digest,session_script`
-  (digest first, or the drift guard fails), then the audio steps. Cost is about $2 of Groq and
-  9 minutes.
+  single tail cannot rerun without `session_tracks`. The sensors do not re-launch downstream
+  stages that already ran, so add the ones to redo to the same run: linguist
+  `session_transcripts,session_episode_summary`, then mouthpiece `session_digest,session_script`
+  (digest before script, or the drift guard fails) and the audio steps. The dependencies
+  order them. Cost is about $2 of Groq and 9 minutes.
 - **Re-run a session from scratch:** see `dagster/README.md`.
 
 ## Traps

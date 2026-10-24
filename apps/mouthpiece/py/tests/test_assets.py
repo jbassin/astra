@@ -10,6 +10,8 @@ from __future__ import annotations
 import dagster as dg
 import pytest
 from astra_mouthpiece import assets as mp
+from astra_pipeline_resources.partitions import sessions
+from astra_pipeline_resources.testing import fail_partition, mark_materialized, sessions_instance
 
 
 def test_defs_builds() -> None:
@@ -34,7 +36,7 @@ def test_the_episode_assets_have_expected_keys() -> None:
 
 
 def test_partition_and_sensor_present() -> None:
-    assert mp.mouthpiece_sessions.name == "mouthpiece_sessions"
+    assert mp.session_digest.partitions_def is sessions
     assert mp.linguist_output_sensor.name == "linguist_output_sensor"
 
 
@@ -112,73 +114,47 @@ def test_external_api_assets_have_a_retry_policy() -> None:
     assert mp.session_episode.op.retry_policy is None
 
 
-def test_linguist_sensor_first_eval_adopts_backlog_without_running(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """First eval (cursor=None) registers the existing transcripts but emits NO runs —
-    so re-enabling never reprocesses the migrated-at-rest seed data."""
-    monkeypatch.setattr(
-        mp.linguist_io, "new_sessions", lambda _existing: {"2025-10-20": "p1", "2025-10-27": "p2"}
-    )
-    result = mp.linguist_output_sensor(
-        dg.build_sensor_context(instance=dg.DagsterInstance.ephemeral(), cursor=None)
-    )
+def _sensor(instance: dg.DagsterInstance) -> dg.SensorResult:
+    result = mp.linguist_output_sensor(dg.build_sensor_context(instance=instance))
     assert isinstance(result, dg.SensorResult)
-    assert not result.run_requests  # adopted, not run
-    assert result.dynamic_partitions_requests  # but registered as known partitions
-    assert result.cursor == "adopted"
+    return result
 
 
-def _added_keys(result: dg.SensorResult) -> list[str]:
-    return sorted(k for r in result.dynamic_partitions_requests or [] for k in r.partition_keys)
-
-
-def test_linguist_sensor_runs_ready_session_after_adoption(
-    monkeypatch: pytest.MonkeyPatch,
+def test_linguist_sensor_runs_chronicled_sessions_never_tried(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Once adopted, a transcript whose chronicle episode is ready IS run + partitioned."""
-    monkeypatch.setattr(mp.linguist_io, "new_sessions", lambda _existing: {"2026-6-22": "p"})
-    monkeypatch.setattr(mp.linguist_io, "chronicle_gate_open", lambda _date: True)
-    result = mp.linguist_output_sensor(
-        dg.build_sensor_context(instance=dg.DagsterInstance.ephemeral(), cursor="adopted")
-    )
-    assert isinstance(result, dg.SensorResult)
+    """The chronicle gate is the dependency: a session runs once its episode summary is
+    materialized, if it has a canonical transcript and mouthpiece never tried it."""
+    for date in ("2026-6-22", "2026-6-29", "2026-7-6", "2026-7-13"):
+        (tmp_path / f"000.show.{date}.txt").write_text("x")
+    monkeypatch.setattr(mp.linguist_io, "TRANSCRIPT_DIR", tmp_path)
+    instance = sessions_instance("2026-6-22", "2026-6-29", "2026-7-6", "2026-7-13", "2026-8-3")
+    # 2026-7-13: summary not yet materialized (gate closed). 2026-8-3: no canonical
+    # transcript (an unmatched campaign). 2026-6-29: already has an episode run.
+    summarized = ("2026-6-22", "2026-6-29", "2026-7-6", "2026-8-3")
+    mark_materialized(instance, "session_episode_summary", *summarized)
+    mark_materialized(instance, "session_digest", "2026-6-29")
+    fail_partition(instance, "session_digest", "2026-7-6")  # failed stays failed
+
+    result = _sensor(instance)
     assert [rr.partition_key for rr in result.run_requests or []] == ["2026-6-22"]
-    assert _added_keys(result) == ["2026-6-22"]
+    assert not result.dynamic_partitions_requests
 
 
-def test_linguist_sensor_defers_session_without_chronicle_episode(
-    monkeypatch: pytest.MonkeyPatch,
+def test_linguist_sensor_waits_for_the_sessions_migration(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """A matched session whose episode hasn't landed is NOT run AND NOT partitioned — it
-    stays re-discoverable and fires the eval its episode appears (0021 Change B gate)."""
-    monkeypatch.setattr(mp.linguist_io, "new_sessions", lambda _existing: {"2026-7-1": "p"})
-    monkeypatch.setattr(mp.linguist_io, "chronicle_gate_open", lambda _date: False)
-    result = mp.linguist_output_sensor(
-        dg.build_sensor_context(instance=dg.DagsterInstance.ephemeral(), cursor="adopted")
-    )
-    assert isinstance(result, dg.SensorResult)
-    assert not result.run_requests  # deferred — waits for chronicle
-    assert not result.dynamic_partitions_requests  # un-partitioned → still "new" next eval
+    (tmp_path / "000.show.2026-6-22.txt").write_text("x")
+    monkeypatch.setattr(mp.linguist_io, "TRANSCRIPT_DIR", tmp_path)
+    instance = sessions_instance()
+    instance.add_dynamic_partitions("mouthpiece_sessions", ["2026-6-22"])
+    result = _sensor(instance)
+    assert not result.run_requests and result.skip_reason
 
 
-def test_linguist_sensor_gate_runs_ready_and_carve_out_defers_rest(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """Mixed eval: a chronicled session + an excluded/unmatched one (carve-out) both run;
-    a matched-but-unchronicled session is deferred (no run, not partitioned)."""
-    monkeypatch.setattr(
-        mp.linguist_io,
-        "new_sessions",
-        lambda _existing: {"2026-6-22": "p1", "2025-8-11": "p2", "2026-7-1": "p3"},
-    )
-    # 2026-6-22 chronicled; 2025-8-11 excluded (carve-out → gate open); 2026-7-1 deferred.
-    ready = {"2026-6-22", "2025-8-11"}
-    monkeypatch.setattr(mp.linguist_io, "chronicle_gate_open", lambda date: date in ready)
-    result = mp.linguist_output_sensor(
-        dg.build_sensor_context(instance=dg.DagsterInstance.ephemeral(), cursor="adopted")
-    )
-    assert isinstance(result, dg.SensorResult)
-    ran = sorted(rr.partition_key for rr in result.run_requests or [])
-    assert ran == ["2025-8-11", "2026-6-22"]  # ready + carve-out run
-    assert _added_keys(result) == ["2025-8-11", "2026-6-22"]  # the deferred one is NOT partitioned
+def test_session_digest_waits_on_the_transcript_and_the_chronicle_summary() -> None:
+    assert mp.session_digest.partitions_def is sessions
+    assert {k.to_user_string() for k in mp.session_digest.dependency_keys} == {
+        "session_transcripts",
+        "session_episode_summary",
+    }

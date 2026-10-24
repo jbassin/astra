@@ -2,7 +2,9 @@
 
 linguist turns scribe's raw `script.json` into the canonical session transcript and builds the
 chronicle (the Show → Season → Episode timeline on `akasha.iridi.cc/chronicle`). It runs as
-Dagster assets on `linguist_sessions` partitions, fired by `scribe_output_sensor`:
+Dagster assets on the shared `sessions` partitions. `session_transcripts` depends on scribe's
+`session_transcript`, and `scribe_output_sensor` launches both assets below once it is
+materialized:
 
 - `session_transcripts` writes `linguist/transcripts/<NNN>.<slug>.<date>.txt` and
   `linguist/data/<date>.json` in the astra-data clone, plus the campaign-matched LLM context
@@ -11,8 +13,8 @@ Dagster assets on `linguist_sessions` partitions, fired by `scribe_output_sensor
   `astra_llm` `call_structured`); the hourly `campaign_timeline` groups each show into seasons
   in `linguist/timeline/seasons.json`.
 
-mouthpiece waits for a session's chronicle episode before it runs (the chronicle gate), and
-reads prior episodes as continuity.
+mouthpiece waits for a session's `session_episode_summary` to be materialized before it runs
+(the chronicle gate, an asset dependency), and reads prior episodes as continuity.
 
 ## Operations
 
@@ -23,7 +25,8 @@ reads prior episodes as continuity.
   Run it by hand with `just -f /ruby/data/astra-deploy/justfile linguist-commit`. A failed
   push is retried by the next run.
 - **A session with no chronicle episode** keeps mouthpiece's gate closed. Materialize
-  `session_episode_summary` for that partition, then `campaign_timeline`.
+  `session_episode_summary` for that partition in Dagster, then `campaign_timeline`. An
+  episode file written outside Dagster (the host backfill below) does not open the gate.
 - **Exclude a mislabeled session** from the chronicle: add its date to `EXCLUDED_DATES` in
   `src/astra_linguist/chronicle.py`, then deploy Dagster.
 - **Chronicle backfill** (resumable; skips episode files that exist):

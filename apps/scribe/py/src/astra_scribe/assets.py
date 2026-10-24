@@ -1,8 +1,9 @@
-"""Dagster wiring — the per-session partition, the Craig-drop sensor, the assets.
+"""Dagster wiring — the Craig-drop sensor and the scribe assets.
 
-One partition per session/date (a `DynamicPartitionsDefinition`); a sensor
-registers a partition + run request for each new Craig zip (Dagster's
-materialization state replaces faerrin's disk ledger, N7).
+One partition per session/date in the pipeline's shared ``sessions`` set
+(`astra_pipeline_resources.partitions`). ``craig_drop_sensor`` is the only code that adds
+keys to it: a partition + run request for each new Craig zip (Dagster's materialization
+state replaces faerrin's disk ledger, N7).
 
 scribe fans out (0021 Change A) so audio merge and transcription run in parallel:
 
@@ -30,16 +31,18 @@ from astra_observe import get_logger, get_meter, get_tracer
 from astra_ontology_being import BEING_KDL_PATH
 from astra_ontology_config import load as load_config
 from astra_pipeline_resources import AstraConfig, PipelinePaths, default_resources
+from astra_pipeline_resources.partitions import (
+    SESSIONS_NAME,
+    SKIP_PENDING,
+    migration_pending,
+    sessions,
+)
 from astra_sessions import atomic_write_text, recording_key
 
 from .roster import Roster
 from .sensor import is_session_zip, new_sessions
 from .session import build_transcript, extract_session_tracks, merge_audio
 from .transcribe import TrackTranscriber
-
-#: One partition per session/date; the sensor adds keys as zips land.
-SESSIONS_NAME = "scribe_sessions"
-scribe_sessions = dg.DynamicPartitionsDefinition(name=SESSIONS_NAME)
 
 _log = get_logger("astra.scribe")
 _tracer = get_tracer("astra.scribe")
@@ -62,7 +65,7 @@ def _tracks_dir(paths: PipelinePaths, date_key: str) -> Path:
     return Path(paths.scribe_tmp) / date_key / "tracks"
 
 
-@dg.asset(partitions_def=scribe_sessions, group_name="scribe")
+@dg.asset(partitions_def=sessions, group_name="scribe")
 def session_tracks(
     context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
@@ -81,7 +84,7 @@ def session_tracks(
     return dg.MaterializeResult(metadata={"tracks": len(tracks)})
 
 
-@dg.asset(partitions_def=scribe_sessions, group_name="scribe", deps=[session_tracks])
+@dg.asset(partitions_def=sessions, group_name="scribe", deps=[session_tracks])
 def session_audio(
     context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
@@ -97,13 +100,13 @@ def session_audio(
     return dg.MaterializeResult(metadata={"tracks": len(tracks)})
 
 
-@dg.asset(partitions_def=scribe_sessions, group_name="scribe", deps=[session_tracks])
+@dg.asset(partitions_def=sessions, group_name="scribe", deps=[session_tracks])
 def session_transcript(
     context: dg.AssetExecutionContext, astra_config: AstraConfig, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
     """Transcribe the persisted tracks → saved/<date>/script.json (parallel to the audio).
 
-    Writes script.json — the surface linguist's `scribe_output_sensor` watches — and
+    Writes script.json, which linguist's `session_transcripts` (its dependent) reads, and
     increments the session-transcribed counter (once per session).
     """
     date_key = context.partition_key
@@ -129,7 +132,7 @@ def session_transcript(
 
 
 @dg.asset(
-    partitions_def=scribe_sessions,
+    partitions_def=sessions,
     group_name="scribe",
     deps=[session_audio, session_transcript],
 )
@@ -158,13 +161,18 @@ SCRIBE_ASSETS = [session_tracks, session_audio, session_transcript, session_clea
     default_status=dg.DefaultSensorStatus.RUNNING,
 )
 def craig_drop_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
-    """Register a partition + run request for each new Craig zip in `incoming_path`."""
+    """Register a ``sessions`` partition + run request for each new Craig zip in `incoming_path`.
+
+    "New" means the zip's date is not a session yet. The sensor skips while the sessions
+    migration is pending: an empty shared set would make every zip on disk look new."""
     incoming = load_config().scribe.incoming_path
     if not incoming or not Path(incoming).is_dir():
         return dg.SensorResult()
+    if migration_pending(context.instance):
+        return dg.SensorResult(skip_reason=SKIP_PENDING)
     existing = set(context.instance.get_dynamic_partitions(SESSIONS_NAME))
     found = new_sessions(Path(incoming).glob("*.zip"), existing)
-    adds = [scribe_sessions.build_add_request(list(found))] if found else []
+    adds = [sessions.build_add_request(list(found))] if found else []
     return dg.SensorResult(
         run_requests=[dg.RunRequest(partition_key=key) for key in found],
         dynamic_partitions_requests=adds,
