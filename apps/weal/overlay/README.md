@@ -3,7 +3,10 @@
 weal-overlay shows live weal dice rolls as an OBS browser source. weal-bot posts each roll to
 `POST /api/v1/roll` with the shared `weal_token` secret in the `x-weal-token` header, and the
 server fans it out to browsers over the SSE stream at `GET /feed`. The page is a Vite-built React
-SPA served by the same srvx process (`server.ts`); it is not a TanStack Start app.
+SPA served by the same process (`server.ts`); it is not a TanStack Start app. The server runs on
+`@astra/service-kit` (`src/server.ts`): ingest and the feed are kit routes, everything else GET is
+the SPA, `/healthz` is the compose healthcheck, and on SIGTERM it drains, closes the feeds and
+stops the heartbeat. `test/pins.test.ts` pins every response, including each token case.
 
 The ingest body is defined once, in `@astra/weal-wire` (`libs/ts/weal-wire`): weal-bot builds each
 roll through that schema and the overlay validates the body with it (`src/schema.ts`), then maps it

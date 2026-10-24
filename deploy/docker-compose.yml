@@ -297,7 +297,7 @@ services:
       - "10361:10361" # weal-overlay (astra range): config weal-overlay.port
     healthcheck:
       <<: *node-healthcheck
-      test: ["CMD", "node", "-e", "await fetch('http://localhost:10361/').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10361/healthz').then(r=>process.exit(r.ok?0:1))"]
 
   # menhir: the Kahoot-style session-opener quiz (0031). SSE behind Caddy with
   # flush_interval -1. No secrets (no auth, D31-9's hostToken is minted per game).

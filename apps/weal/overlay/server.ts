@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
 
 import { loadConfig } from "@astra/config";
-import { exitAfterFlush, logger, onShutdown } from "@astra/observe";
+import { exitAfterFlush, logger } from "@astra/observe";
 
 import { startServer } from "./src/server";
 import { requireIngestToken } from "./src/startup";
@@ -27,8 +27,6 @@ const rumEndpoint = cfg.telemetry.rumEndpoint;
 // standard (Node 20.11+/24, and Bun too) equivalent (R3, 0022 S8).
 const distDir = resolve(import.meta.dirname, "dist");
 
-const { server } = startServer({ port, token, distDir, rumEndpoint });
-// srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
-// listening completes (async on the Node runtime), so log from `.ready()`.
-void server.ready().then((s) => log.info(`weal-overlay listening on ${s.url}`));
-onShutdown(() => server.close(true));
+// The kit logs the listening URL and owns the SIGTERM order: stop accepting, drain,
+// close the SSE feeds, stop the heartbeat, then observe flushes.
+startServer({ port, token, distDir, rumEndpoint, handleShutdown: true });
