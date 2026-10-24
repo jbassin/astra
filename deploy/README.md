@@ -148,11 +148,26 @@ database, ClickHouse or the Dagster gRPC server. The `networks:` block at the en
 | `signoz-net` | SigNoz only: ClickHouse, zookeeper, the UI and the collector |
 
 A new service gets `telemetry` from `*astra-app`. If it talks to another service or a store, it
-lists every network it needs, because a YAML merge does not merge lists. Two limits remain. A
-bridge network does not filter by port, so the apps on `telemetry` can reach each other's ports;
-those ports are published on the host anyway. And the host-published ports, including the weal
-and orator Postgres ports, stay reachable from any container through its network gateway until
-they are bound to `127.0.0.1` ([ADR 0040](../docs/adr/0040-accepted-risk-network-exposure.md)).
+lists every network it needs, because a YAML merge does not merge lists. Every subnet is
+pinned: `signoz-net` to its live `172.27.0.0/16` (the collector scrapes node-exporter at
+`172.27.0.1:9100`) and the astra networks to `10.27.N.0/24`.
+
+Limits that remain:
+
+- Any container with a gateway (every network except `dagster-db`) still reaches every
+  host-published port through that gateway, until the ports are bound to `127.0.0.1`
+  ([ADR 0040](../docs/adr/0040-accepted-risk-network-exposure.md)). That includes the Dagster
+  UI and GraphQL API on 10350, which can launch and delete runs with no auth; the SigNoz UI on
+  10351; the collector's OTLP ports 10352 and 10353; and the weal and orator Postgres ports
+  10362 and 10364.
+- A bridge network does not filter by port. The apps on `telemetry` reach each other's ports,
+  which are published anyway, and the collector's unpublished pprof `:1777` and health
+  `:13133`, as do the Dagster services on `pipeline`.
+- A rollback to a commit from before the split leaves the `astra_*` networks behind, empty;
+  remove them with `docker network rm`.
+- The vendored SigNoz compose (`signoz/docker/docker-compose.yaml`) carries local edits: the
+  remapped ports, the external URL, the collector's networks and the pinned subnets. Carry them
+  forward when upgrading SigNoz.
 
 ## Secrets (SOPS + age)
 
