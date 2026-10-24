@@ -101,6 +101,11 @@ package's private `_provider` and `_voices`, so keep their signatures.
   turns into a non-retryable failure. Keep new provider errors non-retryable.
 - **Tag-only turns** such as `[stunned silence]` make ElevenLabs return 400; `speakable_turns`
   skips turns with no speech.
+- **Pronunciations live in `defs.kdl`.** `session_audio_clips` inlines `/ipa/` for the first
+  use of each name per turn, taken from the `ipa=` property of an `entry` in
+  `libs/py/lexicon/src/astra_lexicon/defs.kdl` (`entry "Faerrin" ipa="ˈfɛrɪn"`). Only the
+  dialogue path (ElevenLabs) applies them; the materialization's `pronunciations` metadata
+  counts the terms. An edit is live after a Dagster deploy, for episodes rendered after it.
 - **GLM reasoning tokens share `max_tokens`.** Clean and enrich use
   `DEFAULT_CLEAN_MAX_TOKENS` (64,000); the script uses `DEFAULT_SCRIPT_MAX_TOKENS`
   (128,000). OpenRouter refuses to disable reasoning for GLM 5.3. `astra_llm`'s

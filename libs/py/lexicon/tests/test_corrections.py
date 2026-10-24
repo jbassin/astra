@@ -13,6 +13,7 @@ from astra_lexicon import (
     escape_regex,
     load_corrections,
     load_defs,
+    load_pronunciations,
     to_fragment,
 )
 
@@ -38,6 +39,22 @@ def test_load_defs_and_replacer_round_trip(tmp_path: Path) -> None:
     assert parsed["Calaria"] == ["Gal.ria"]
     replace = build_replacer(parsed)
     assert replace("we met Anak today") == "we met Anouk today"
+
+
+def test_load_pronunciations_reads_the_ipa_property(tmp_path: Path) -> None:
+    defs = tmp_path / "defs.kdl"
+    defs.write_text(
+        'entry "Faerrin" ipa="ˈfɛrɪn" {\n    variant "Fairin"\n}\n'
+        'entry "Anouk" {\n    variant "Anak"\n}\n'
+        'entry "Blank" ipa="  "\n',
+        encoding="utf-8",
+    )
+    assert load_pronunciations(defs) == {"Faerrin": "ˈfɛrɪn"}
+    assert load_defs(defs)["Faerrin"] == ["Fairin"]  # the variants are unaffected
+
+
+def test_the_shipped_defs_load_their_pronunciations() -> None:
+    assert all(ipa.strip() for ipa in load_pronunciations().values())
 
 
 def test_load_corrections_over_real_defs() -> None:

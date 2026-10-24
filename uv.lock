@@ -425,6 +425,7 @@ source = { editable = "apps/mouthpiece/py" }
 dependencies = [
     { name = "astra-akasha-backend" },
     { name = "astra-config" },
+    { name = "astra-lexicon" },
     { name = "astra-linguist" },
     { name = "astra-llm" },
     { name = "astra-observe" },
@@ -443,6 +444,7 @@ dependencies = [
 requires-dist = [
     { name = "astra-akasha-backend", editable = "apps/akasha/py" },
     { name = "astra-config", editable = "libs/py/config" },
+    { name = "astra-lexicon", editable = "libs/py/lexicon" },
     { name = "astra-linguist", editable = "apps/linguist/py" },
     { name = "astra-llm", editable = "libs/py/llm" },
     { name = "astra-observe", editable = "libs/py/observe" },

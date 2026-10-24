@@ -17,6 +17,7 @@ from .corrections import (
     escape_regex,
     load_corrections,
     load_defs,
+    load_pronunciations,
     to_fragment,
 )
 from .lexicon import (
@@ -58,6 +59,7 @@ __all__ = [
     "load_canonical_forms",
     "load_corrections",
     "load_defs",
+    "load_pronunciations",
     "ngrams",
     "phonetic_codes",
     "phonetic_sim",
