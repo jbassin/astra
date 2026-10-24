@@ -24,6 +24,10 @@ heartwood recipes run it on the host.
    uv run astra-ontology-entity-seed
    ```
 
+   The snapshot reads metadata through the Python vellum-lang, a regex twin of the TS
+   parser. `just vellum-parity-live` checks that the two agree on every page of the real
+   wiki; CI runs the same check (`just vellum-parity`) on the committed vellum files only.
+
 3. Commit and push in the clone, then `just deploy akasha-frontend`. linguist-commit
    redeploys akasha only when linguist data changes, so a hand edit waits otherwise. Commit
    before the next heartwood run: heartwood refuses to start on a dirty corpus (exit 6).
