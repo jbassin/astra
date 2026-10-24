@@ -34,8 +34,10 @@ export interface StaticMount {
 export interface SsrServerOptions {
   /** OTel service name (config.kdl) — names the SSR spans + resource. */
   serviceName: string;
-  /** Bind port (config.kdl). */
+  /** Bind port (config.kdl); 0 asks the OS for a free one (read it back from `url`). */
   port: number;
+  /** Bind address; default `0.0.0.0`. Test harnesses pass `127.0.0.1`. */
+  hostname?: string;
   /** The app's built SSR handler (`import ssr from "./dist/server/server.js"`). */
   ssr: SsrHandler;
   /** Absolute path to the built client assets dir (`<app>/dist/client`). */
@@ -78,7 +80,7 @@ async function isFile(p: string): Promise<boolean> {
  * buffered spans on SIGTERM/SIGINT. Returns the srvx server handle.
  */
 export function createSsrServer(opts: SsrServerOptions): Server {
-  const { serviceName, port, ssr, clientDir, staticMounts = [] } = opts;
+  const { serviceName, port, hostname = "0.0.0.0", ssr, clientDir, staticMounts = [] } = opts;
 
   // Guarded so a telemetry misconfig never takes the site down.
   let telemetry: { shutdown: () => Promise<void> } | null = null;
@@ -94,7 +96,7 @@ export function createSsrServer(opts: SsrServerOptions): Server {
 
   const server = serve({
     port,
-    hostname: "0.0.0.0",
+    hostname,
     // We own SIGTERM/SIGINT ourselves below (telemetry flush before exit); srvx's
     // built-in graceful-shutdown plugin would install a second pair of handlers
     // that race ours (its own stderr progress log + polling close loop) for no

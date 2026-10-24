@@ -72,8 +72,9 @@ const NARROW_CONTAINER_WIDTH_PX = 600;
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const SERVER_BUNDLE = `${ROOT}dist/server/server.js`;
 const CLIENT_DIR = `${ROOT}dist/client`;
-const PORT = Number(process.env.CODEX_ROW_HEIGHT_PORT ?? 5361);
-const BASE = `http://127.0.0.1:${PORT}`;
+// Port 0 by default: the OS picks a free loopback port, so concurrent `just ci` runs on one
+// host never collide. `CODEX_ROW_HEIGHT_PORT` pins one for debugging.
+const PORT = Number(process.env.CODEX_ROW_HEIGHT_PORT ?? 0);
 
 if (!existsSync(SERVER_BUNDLE)) {
   throw new Error(`${SERVER_BUNDLE} not found — run \`pnpm run build\` first`);
@@ -171,10 +172,13 @@ const ssr = (await import(SERVER_BUNDLE)) as {
 const server = createSsrServer({
   serviceName: "codex-row-height-drift-guard",
   port: PORT,
+  hostname: "127.0.0.1",
   ssr: ssr.default,
   clientDir: CLIENT_DIR,
 });
 await server.ready();
+// The bound origin, read back from the server (PORT may be 0).
+const BASE = new URL(server.url ?? "").origin;
 
 const browser = await chromium.launch({ args: ["--no-sandbox"] });
 
