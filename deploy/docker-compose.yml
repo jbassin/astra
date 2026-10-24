@@ -682,32 +682,57 @@ services:
 # is uid 70 via its entrypoint). SigNoz keeps its own named volumes (declared in the
 # vendored signoz include — clickhouse/sqlite/zookeeper).
 
-# Least-privilege networks (0037 OPS-8, SEC-13). A bridge network does not filter by port,
+# Least-privilege networks (0037 OPS-8, SEC-13). Every subnet is pinned: signoz-net to its
+# live 172.27.0.0/16, the astra nets to 10.27.N.0/24 (free on this host), so a `down`/`up`
+# can never hand 172.27/16 to another net. A bridge network does not filter by port,
 # so every member of a net can reach every port of every other member; each net therefore
 # holds only the containers that must talk. Container DNS works per net, so a service that
 # shares no net with another cannot resolve it. The host-published ports are a separate path
 # (ADR 0040): any container with a gateway can still reach them on the host.
 networks:
   # SigNoz's own net (vendored include): ClickHouse (empty default password), zookeeper, the
-  # UI and the collector. No astra service joins it. Its name and 172.27.0.0/16 subnet are
-  # fixed, because the collector scrapes node-exporter at the gateway 172.27.0.1:9100.
+  # UI and the collector. No astra service joins it. Its name and its 172.27.0.0/16 subnet
+  # (pinned in both files) must not change: the collector scrapes node-exporter at the
+  # gateway 172.27.0.1:9100.
   signoz-net:
     name: signoz-net
+    ipam:
+      config:
+        - subnet: 172.27.0.0/16
   # Every Node app plus the collector: the apps export OTLP to signoz-otel-collector:4318.
   # Not internal, because it carries the apps' outbound traffic (Discord, the public edge)
-  # and their published ports. The apps can reach each other here, but every app port is
-  # already published on the host, so that adds no reach.
+  # and their published ports. The apps can reach each other here; every app port is already
+  # published on the host, but the collector's unpublished pprof :1777 and health :13133 are
+  # reachable only from here and `pipeline`. Same subnet as in the vendored SigNoz file.
   telemetry:
+    ipam:
+      config:
+        - subnet: 10.27.1.0/24
   # The Dagster trio plus the collector (their OTLP). The code server's gRPC :4000 has no
   # auth and is not published, so it is reachable only from this net. Not internal: the
   # assets call Groq, ElevenLabs and OpenRouter, and the webserver publishes 10350.
   pipeline:
+    ipam:
+      config:
+        - subnet: 10.27.2.0/24
   # One net per Postgres, joined only by its app. dagster-db is internal (no published port,
   # no outbound traffic). weal-db and orator-db cannot be internal while their Postgres ports
   # 10362/10364 stay published: Docker publishes no port on an internal-only container.
   dagster-db:
     internal: true
+    ipam:
+      config:
+        - subnet: 10.27.3.0/24
   weal-db:
+    ipam:
+      config:
+        - subnet: 10.27.4.0/24
   orator-db:
+    ipam:
+      config:
+        - subnet: 10.27.5.0/24
   # weal-bot -> weal-overlay:10361 (the roll feed, token-gated).
   weal-feed:
+    ipam:
+      config:
+        - subnet: 10.27.6.0/24

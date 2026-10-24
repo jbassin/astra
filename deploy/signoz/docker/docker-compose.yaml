@@ -185,10 +185,22 @@ services:
         /signoz-otel-collector migrate async up
     restart: on-failure
 networks:
+  # astra: the subnet is pinned to the live one, because the collector scrapes node-exporter
+  # at this net's gateway 172.27.0.1 (otel-collector-config.yaml). telemetry and pipeline
+  # must match their declarations in deploy/docker-compose.yml exactly.
   signoz-net:
     name: signoz-net
+    ipam:
+      config:
+        - subnet: 172.27.0.0/16
   telemetry:
+    ipam:
+      config:
+        - subnet: 10.27.1.0/24
   pipeline:
+    ipam:
+      config:
+        - subnet: 10.27.2.0/24
 volumes:
   clickhouse:
     name: signoz-clickhouse
