@@ -47,6 +47,10 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       cap (recent episodes run 6.6k to 6.7k words).
 
 ### Smaller calls (Josh)
+- [ ] **Urgent, before 2026-11-06:** the edge cannot renew TLS certificates (Cloudflare `6003`, the
+      placeholder token per `docs/runbook.md`); vellum.iridi.cc expires 2026-11-06 14:36 UTC and the
+      rest follow at their 30-day windows. Run `sudo systemctl restart caddy`, then
+      `just caddy-reload`; `just doctor` confirms.
 - [ ] Set the removal date for codex's "forever" URL aliases ([ADR 0026](adr/0026-codex-url-alias-removal-date.md)).
 - [ ] Confirm the Ashen Pact index page may stay visible on akasha (it was meant to be hidden; it is now in astra-data).
 - [ ] Portal: delete the pre-stamp Goblin Warrior debris in the world by hand; live-test the
@@ -68,8 +72,8 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       `just deploy --restart portal-headless` and reload open GM tabs. Until then the server takes
       the 0.4.x module on the legacy path with a WARN. Foundry is 14.365; `module.json` is verified
       only for 13.
-- [ ] Remove the SOPS keys `anthropic_api_key` and `cartesia_api_key` from
-      `deploy/sops/secrets.enc.yaml`; nothing reads them since pipe-2.
+- [ ] Remove the SOPS keys `anthropic_api_key`, `cartesia_api_key` and `orator_controller_api_key` from
+      `deploy/sops/secrets.enc.yaml`; nothing reads them since pipe-2 and lib-3.
 - [ ] Delete the root-owned `/ruby/data/experiments/faerrin/pkg/wretch/data/saved` (nothing mounts
       it since pipe-1).
 - [ ] Activate mise in your shell (until then pyenv shims fail on bare `python3` in the repo).
@@ -119,6 +123,19 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Deploy and ops
 
+- weal: the live v1 `funcs` table (11 rows) is orphaned since weal-4 and svc-4; drop it with its own
+  `0002_drop_funcs.sql` after exporting the rows — a flagged step (WEAL-14) — agent.
+- pg-migrate: if the database connection dies mid-migration, postgres.js can hang boot instead of
+  failing (data is safe: the transaction rolls back; the deploy health wait reports it) — agent.
+- pipe-4b follow-ups: `migrate_sessions.py --allow-launch` should take session keys, not a count;
+  `plan_down` ignores the sensor ledgers; dagster/README should name exactly what resets a sensor
+  cursor (`dagster sensor cursor --delete`, a sensor or location rename) — agent.
+- portal: refresh the five pf2e fixtures (`apps/portal/module/tests/fixtures/pf2e/`) from the live
+  world; their live sides are synthesised today — agent.
+- `just vellum-parity-live` (lib-9) is not scheduled; wire it into the watchdog or a timer — agent.
+- `deploy/node.Dockerfile` still mentions compose `command:` lines (repo-3 removed them) — agent.
+- ops-1b: move the remaining bash recipes (codex-refresh, backup helpers, heartwood backfill and
+  requests, craig-sync, installs) into `astra-ops` — agent.
 - Flaky under parallel load (several `just ci` runs at once): codex `ssrSmoke`'s first request times
   out at 5 s, and codex `build-search.test.ts` "page_count matches the fixture manifest" failed
   once — agent.
