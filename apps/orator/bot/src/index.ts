@@ -25,7 +25,7 @@ import { startBot } from "./bot/index";
 import type { PlaybackEngine } from "./bot/playback";
 import { PostgresStore } from "./db/store";
 import { ffmpegProber } from "./media/probe";
-import { realYtDlp } from "./media/ytdlp";
+import { createYtDlp } from "./media/ytdlp";
 import { type AppConfig, startServer } from "./server/app";
 import { IngestService } from "./server/ingest";
 import { JobHub } from "./server/jobhub";
@@ -64,7 +64,10 @@ async function main(): Promise<void> {
   const ingest = new IngestService({
     store,
     dataDir,
-    ytdlp: realYtDlp,
+    ytdlp: createYtDlp({
+      enumerateTimeoutMs: cfg.orator.ytdlpEnumerateTimeoutS * 1000,
+      downloadTimeoutMs: cfg.orator.ytdlpDownloadTimeoutS * 1000,
+    }),
     hub,
     prober: cfg.orator.measureLoudness ? ffmpegProber : undefined,
     concurrency: cfg.orator.ingestConcurrency,

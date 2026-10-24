@@ -97,6 +97,8 @@ orator {
     target-lufs -9
     ingest-concurrency 2
     measure-loudness #false
+    ytdlp-enumerate-timeout-s 120
+    ytdlp-download-timeout-s 1800
     session-secret ref="sops:fixture_session_secret"
 }
 strider {

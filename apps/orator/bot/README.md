@@ -22,6 +22,12 @@ its library in the `orator-postgres` service (host port 10364). Config is the `o
   2. Commit, push, `just deploy orator-backend`.
   3. Test inside the container with the exact flags from `src/media/ytdlp.ts`. The runtime image has
      no `curl`, so to try a newer release first, `docker cp` the binary in.
+
+  A failed item's error (in the SPA's import view and the `download_job_items.error` column) ends
+  with yt-dlp's last stderr lines, so the reason shows without a manual repro.
+- **yt-dlp runs have wall-clock limits:** `orator.ytdlp-enumerate-timeout-s` for a playlist listing
+  and `orator.ytdlp-download-timeout-s` for one download. On expiry orator kills yt-dlp's whole
+  process group (yt-dlp runs ffmpeg as a child) and fails the item with "yt-dlp timed out".
 - **Stream Deck keys:** an operator mints an `orator_…` API key on the SPA's Keys page (needs a
   logged-in session). The controller can only use a key, never mint one.
 

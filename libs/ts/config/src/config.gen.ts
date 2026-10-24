@@ -61,6 +61,8 @@ export const Orator = z
     targetLufs: z.number().int(),
     ingestConcurrency: z.number().int(),
     measureLoudness: z.boolean(),
+    ytdlpEnumerateTimeoutS: z.number().int(),
+    ytdlpDownloadTimeoutS: z.number().int(),
     discordToken: secret(),
     discordClientId: secret(),
     discordClientSecret: secret(),

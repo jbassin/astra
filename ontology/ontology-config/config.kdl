@@ -176,6 +176,10 @@ orator {
     target-lufs -16
     ingest-concurrency 2
     measure-loudness #true
+    // Wall-clock limits on one yt-dlp run (a playlist listing, one download). On expiry orator
+    // kills yt-dlp and its children and fails the item with yt-dlp's last stderr lines.
+    ytdlp-enumerate-timeout-s 120
+    ytdlp-download-timeout-s 1800
     discord-token ref="sops:orator_discord_key"
     discord-client-id ref="sops:orator_discord_client_id"
     discord-client-secret ref="sops:orator_discord_client_secret"

@@ -162,6 +162,9 @@ class OratorConfig(_Base):
     target_lufs: int
     ingest_concurrency: int
     measure_loudness: bool
+    # Wall-clock limits on one yt-dlp run; on expiry orator kills its whole process tree.
+    ytdlp_enumerate_timeout_s: int
+    ytdlp_download_timeout_s: int
     discord_token: Secret | None = None
     discord_client_id: Secret | None = None
     discord_client_secret: Secret | None = None
