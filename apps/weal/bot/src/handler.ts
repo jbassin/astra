@@ -88,8 +88,8 @@ export interface HandlerDeps {
   setSeed: (seed: SeedInfo) => void;
   /** Post an embed as a host (webhook). */
   send: (msg: OutgoingMessage) => Promise<void>;
-  /** Best-effort dice-feed + v1 overlay broadcast (non-fatal on failure). */
-  broadcast: (payload: OverlayPayload, playerName: string) => Promise<void>;
+  /** Best-effort v1 overlay broadcast (non-fatal on failure). */
+  broadcast: (payload: OverlayPayload) => Promise<void>;
   /** Test seam only: swap the engine call (scripted results). */
   engineHooks?: EngineHooks;
 }
@@ -202,7 +202,7 @@ async function handleDie(
     thumbnail: thumbnailFor(profile.edition, profile.characterClass, host.avatar),
     footer: dieFooter(goodness, deps.getSeed().seed, deps.getSeed().blame),
   });
-  await deps.broadcast(overlayPayload(profile.playerName, text, display), profile.playerName);
+  await deps.broadcast(overlayPayload(profile.playerName, text, display));
   // Not awaited: the archive must never hold up the next reply (ADR 0025).
   void recordHistory(display.standardDice, profile, blameId, deps);
 }

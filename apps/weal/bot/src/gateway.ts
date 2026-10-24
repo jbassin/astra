@@ -1,7 +1,7 @@
 /**
  * The discord.js gateway — the I/O shell around the tested core ([[handler.ts]]).
  * Wires a long-running Discord client: per-channel webhook discovery/creation, the
- * host-identity embed send, the best-effort dice-feed + v1 overlay broadcast, and the
+ * host-identity embed send, the best-effort v1 overlay broadcast, and the
  * internal speak API support. Untested glue (needs a live token — the acceptance-I
  * runtime check); the message pipeline it drives is unit-tested via injected deps.
  */
@@ -21,7 +21,6 @@ import {
   type Message,
   type TextChannel,
   type Webhook,
-  WebhookClient,
 } from "discord.js";
 
 import type { WealStore } from "./db";
@@ -34,8 +33,6 @@ const log = getLogger("astra.weal-bot");
 
 export interface GatewayConfig {
   discordToken: string;
-  /** Discord dice-feed webhook URL (rotated secret); empty disables it. */
-  diceFeedUrl: string;
   /** weal-overlay v1 ingest URL; empty disables it. */
   feedWsUrl: string;
   /** Shared overlay token sent as `x-eerie-token`; empty = unauthenticated. */
@@ -54,7 +51,6 @@ export interface SpeakArgs {
 export class Gateway {
   private readonly client: Client;
   private readonly webhooks = new Map<string, Webhook>();
-  private feed: WebhookClient | null = null;
   private readonly funcs: [string, string][];
   private readonly rng = new EntropyRng();
   private seed: SeedInfo = { seed: randomSeed(), blameId: 1, blame: "Josh" };
@@ -128,7 +124,7 @@ export class Gateway {
         this.seed = seed;
       },
       send: (msg) => this.sendEmbed(webhook, msg),
-      broadcast: (payload, playerName) => this.broadcast(payload, playerName),
+      broadcast: (payload) => this.broadcast(payload),
     };
   }
 
@@ -143,14 +139,8 @@ export class Gateway {
   }
 
   /** Best-effort: the roll is already posted+saved, so a down feed must not fail it. */
-  private async broadcast(payload: OverlayPayload, playerName: string): Promise<void> {
+  private async broadcast(payload: OverlayPayload): Promise<void> {
     try {
-      if (this.feed === null && this.cfg.diceFeedUrl !== "") {
-        this.feed = new WebhookClient({ url: this.cfg.diceFeedUrl });
-      }
-      if (this.feed !== null) {
-        await this.feed.send({ username: playerName, content: `rolled a ${payload.display}` });
-      }
       if (this.cfg.feedWsUrl !== "") {
         const headers: Record<string, string> = { "content-type": "application/json" };
         if (this.cfg.feedToken !== "") headers["x-eerie-token"] = this.cfg.feedToken;
@@ -162,7 +152,7 @@ export class Gateway {
         if (!res.ok) throw new Error(`overlay ${res.status}`);
       }
     } catch (e) {
-      log.emit({ severityText: "ERROR", body: `dice-feed broadcast failed (non-fatal): ${e}` });
+      log.emit({ severityText: "ERROR", body: `overlay broadcast failed (non-fatal): ${e}` });
     }
   }
 

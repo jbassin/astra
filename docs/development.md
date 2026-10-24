@@ -115,7 +115,9 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
   Python's `WholeConfig` holds every namespace, and one CI test (`test_whole_config_kdl_validates`
   in `libs/py/config`) validates the whole file against it. The `libs/py/config` `models.py`
   docstring records which language reads which namespace. A namespace TS reads is mirrored field
-  for field in Zod and Pydantic. Loader tests use `fixtures/config/`, not the real file. Only the
+  for field in Zod and Pydantic. Every field needs a reader outside the config libraries and
+  tests: `test_config_readers.py` fails on one that nothing names, so delete a field with its last
+  reader (a field read only through a computed name goes in its `ALLOWLIST`, with the reason). Loader tests use `fixtures/config/`, not the real file. Only the
   config libraries read the environment (the upper-cased secret override). Find the checkout with
   `find_repo_root()` / `findRepoRoot()` from the config libraries; don't write another walk-up.
 - **Secrets** are `ref="sops:KEY"` pointers in `config.kdl`; see

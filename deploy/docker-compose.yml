@@ -217,7 +217,7 @@ services:
         condition: service_healthy
     # SOPS secrets injected as env by `just up` (Decision E); config's env-override
     # resolves the `ref="sops:KEY"`s in-container. Empty when not run via `just up`
-    # (degrades). dice_feed_url is not provisioned yet (lands at cutover) → unset.
+    # (degrades).
     environment:
       WEAL_DISCORD_KEY: ${WEAL_DISCORD_KEY:-}
       WEAL_TOKEN: ${WEAL_TOKEN:-}

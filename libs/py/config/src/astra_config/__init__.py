@@ -19,14 +19,12 @@ from pathlib import Path
 
 from .kdl import KdlDecodeError, decode, load_kdl
 from .models import (
-    CaddyConfig,
     Config,
     DataConfig,
     LinguistConfig,
     LlmConfig,
     MouthpieceConfig,
     OratorConfig,
-    OratorControllerConfig,
     ScribeConfig,
     TelemetryConfig,
     WealConfig,
@@ -43,7 +41,6 @@ from .secrets import (
 )
 
 __all__ = [
-    "CaddyConfig",
     "Config",
     "DataConfig",
     "KdlDecodeError",
@@ -51,7 +48,6 @@ __all__ = [
     "LlmConfig",
     "MouthpieceConfig",
     "OratorConfig",
-    "OratorControllerConfig",
     "ScribeConfig",
     "SecretRef",
     "SecretUnsetError",

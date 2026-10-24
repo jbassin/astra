@@ -64,7 +64,6 @@ llm {
     // litellm reads each provider key from its UPPER_CASED env var, injected from SOPS
     // at `just up` (per-service compose `environment:`).
     default-model "openrouter/z-ai/glm-5.2"
-    default-max-tokens 16000
     openrouter-api-key ref="sops:openrouter_api_key"
 }
 
@@ -92,31 +91,23 @@ scribe {
     // Craig recordings live on a google-drive-ocamlfuse mount, which Docker can't
     // bind-mount (FUSE isn't in the daemon's namespace) — so zips are copied here from
     // Drive by the host `just craig-sync` timer, which reads incoming-path from here. The
-    // craig_drop_sensor globs it for *.zip; keep-zip unused.
+    // craig_drop_sensor globs it for *.zip.
     data-path "scribe/data"
     incoming-path "scribe/incoming"
     tmp-path "scribe/tmp"
-    state-file ""
-    downstream-cmd ""
-    keep-zip #false
-    skip-downstream #false
     // Transcription model — full litellm id (Decision G uses Groq Whisper, not whisperx).
     // scribe reads this and passes it to TrackTranscriber; this value is authoritative.
     model "groq/whisper-large-v3"
-    device "cpu"
-    compute-type "int8"
     groq-api-key ref="sops:groq_api_key"
 }
 
 linguist {
-    ingest-source ""
     // INVARIANT: must equal scribe's {data-path}/saved — the scribe→linguist handoff
     // (scribe writes saved/{date}/script.json; the linguist sensor + ingest read it).
     ingest-saved-dir "scribe/data/saved"
     // session_transcripts' non-published output, read by nothing today: the
     // campaign-matched LLM context. Bind-mounted writable into the Dagster containers.
     script-path "linguist/script"
-    podcast-episodes-path ""
 }
 
 mouthpiece {
@@ -144,13 +135,9 @@ weal {
     // (match deploy/ POSTGRES_* defaults); prod overrides them at the Phase-6 cutover.
     database-url "postgres://weal:weal@weal-postgres:5432/weal"
     feed-ws-url "http://weal-overlay:10360/api/v1/roll"
-    chart-base-url ""
     bind-addr "127.0.0.1:10203"
-    players-path "players.toml"
-    rust-log "info"
     discord-token ref="sops:weal_discord_key"
     feed-token ref="sops:weal_token"
-    dice-feed-url ref="sops:dice_feed_url" // rotated webhook — added + resolved at cutover (Phase 6)
 }
 
 weal-overlay {
@@ -160,7 +147,6 @@ weal-overlay {
 
 orator {
     guild-id "753007205510545469"
-    spike-channel-id "1206675724090609714"
     // In-cluster Postgres (Compose service DNS); creds match deploy/ POSTGRES_*
     // defaults; prod overrides at the Phase-6 cutover. Library store (Decision F).
     database-url "postgres://orator:orator@orator-postgres:5432/orator"
@@ -180,10 +166,6 @@ orator {
     discord-client-id ref="sops:orator_discord_client_id"
     discord-client-secret ref="sops:orator_discord_client_secret"
     session-secret ref="sops:orator_session_secret"
-}
-
-orator-controller {
-    api-key ref="sops:orator_controller_api_key"
 }
 
 strider {
@@ -280,7 +262,6 @@ ledger {
     // own `public-origin` from this same config (single source for every URL).
     service-name "astra.ledger"
     port 10370
-    public-origin "https://ledger.iridi.cc"
 }
 
 heartwood {
@@ -382,7 +363,6 @@ codex {
     // telemetry.rum-endpoint (above).
     service-name "astra.codex"
     port 10374
-    public-origin "https://codex.iridi.cc"
     data-path "codex/data"
 }
 
@@ -397,8 +377,4 @@ menhir {
     port 10375
     public-origin "https://menhir.iridi.cc"
     results-path "menhir/results.jsonl"
-}
-
-caddy {
-    cloudflare-dns-token ref="sops:cloudflare_key"
 }
