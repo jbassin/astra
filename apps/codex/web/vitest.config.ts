@@ -31,6 +31,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    globalSetup: ["./vitest.globalSetup.ts"],
     setupFiles: ["./vitest.setup.ts"],
     globals: true,
     passWithNoTests: true,

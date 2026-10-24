@@ -17,16 +17,21 @@
  * the generator derives the read surface the server expects: a per-category `_index.json`,
  * `manifest.json`, `rules-tree.json` and `sources-index.json`.
  *
- * Nobody edits the output by hand. To change the fixture, change an input (a patch or
- * synthetic row here, a raw doc, or a re-pick) and run `pnpm --filter @astra/codex fixture`.
- * Like `transform.test.ts` for the corpus, `fixtureCorpus.test.ts` builds it twice and
- * compares bytes.
+ * The output is gitignored and never edited: change an input (a patch or synthetic row
+ * here, a raw doc, or a re-pick) instead. `ensureFixtureCorpus()` brings
+ * `fixtures/entities/` up to date; vitest's global setup (`vitest.globalSetup.ts`), both
+ * Chromium guards and `scripts/regen-goldens.ts` call it, and
+ * `pnpm --filter @astra/codex fixture` runs it by hand (a dev server without the real
+ * corpus needs that once). Like `transform.test.ts` for the corpus,
+ * `fixtureCorpus.test.ts` builds it twice and compares bytes.
  */
 import {
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readdirSync,
   readFileSync,
+  renameSync,
   rmSync,
   statSync,
   writeFileSync,
@@ -200,7 +205,7 @@ export const PIPELINE_PATCHES: readonly PipelinePatch[] = [
     // points at witch's own suffixed `class-feature/basic-lesson-2` (a synthetic row below).
     id: "class/witch",
     neededBy:
-      "src/domain/render/ClassPage.test.tsx (Description extension and Lore card suppression, D29-135)",
+      "src/domain/render/ClassPage.test.tsx (Description extension and Lore card suppression, D29-135); src/server/classPageData.test.ts (grant level wins over doc level)",
     apply: (e) => {
       if (e.stats?.kind !== "class") throw new Error("fixture: class/witch has no ClassStats");
       const grants = [
@@ -208,8 +213,10 @@ export const PIPELINE_PATCHES: readonly PipelinePatch[] = [
         { level: 3, name: "Basic Lesson", targetId: "class-feature/basic-lesson-2" },
       ];
       for (const g of grants) {
-        // The grant target the P12 S1 pipeline run produced. The D29-132 fix since resolves
-        // witch's grant to its own `class-feature/weapon-specialization-2`.
+        // A grant whose target doc has another level: witch's level-13 Weapon Specialization
+        // grant points at fighter's level-7 doc, so the class page must show the grant's
+        // level (classPageData.test.ts). The transform itself resolves witch's grant to its
+        // own `class-feature/weapon-specialization-2` (D29-132, transform.test.ts).
         if (g.name === "Weapon Specialization") g.targetId = "class-feature/weapon-specialization";
       }
       grants.sort((a, b) => a.level - b.level);
@@ -527,4 +534,55 @@ export function buildFixtureCorpus(outDir: string): { entityCount: number } {
     canonicalJson(SourcesIndexFileSchema.parse(sourcesIndex)),
   );
   return { entityCount: entries.length };
+}
+
+/** Every regular file under `root`, keyed by its path relative to `root`, in sorted order. */
+export function readTree(root: string): Map<string, Buffer> {
+  const out = new Map<string, Buffer>();
+  function walk(dir: string, prefix: string): void {
+    for (const name of readdirSync(dir).sort()) {
+      const abs = join(dir, name);
+      const rel = prefix ? `${prefix}/${name}` : name;
+      if (statSync(abs).isDirectory()) walk(abs, rel);
+      else out.set(rel, readFileSync(abs));
+    }
+  }
+  walk(root, "");
+  return out;
+}
+
+function sameTree(a: string, b: string): boolean {
+  if (!existsSync(b)) return false;
+  const treeA = readTree(a);
+  const treeB = readTree(b);
+  if (treeA.size !== treeB.size) return false;
+  for (const [rel, content] of treeA) {
+    const other = treeB.get(rel);
+    if (!other || !content.equals(other)) return false;
+  }
+  return true;
+}
+
+/**
+ * Brings `fixtures/entities/` up to date and returns its path. It builds a fresh copy (about
+ * half a second) next to the target and swaps it in only when the bytes differ, so
+ * processes that run it while others read the fixture never disturb them.
+ */
+export function ensureFixtureCorpus(): string {
+  const staging = mkdtempSync(join(FIXTURES_DIR, ".entities-build-"));
+  try {
+    const fresh = join(staging, "entities");
+    buildFixtureCorpus(fresh);
+    if (sameTree(fresh, FIXTURE_CORPUS_DIR)) return FIXTURE_CORPUS_DIR;
+    rmSync(FIXTURE_CORPUS_DIR, { recursive: true, force: true });
+    try {
+      renameSync(fresh, FIXTURE_CORPUS_DIR);
+    } catch (e) {
+      // Another process swapped in its own build first; fine when it is the same build.
+      if (!sameTree(fresh, FIXTURE_CORPUS_DIR)) throw e;
+    }
+    return FIXTURE_CORPUS_DIR;
+  } finally {
+    rmSync(staging, { recursive: true, force: true });
+  }
 }

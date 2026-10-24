@@ -71,5 +71,10 @@ apps/codex/web/books/**/*.log
 # and consumed by book.py's fail-soft art wiring.
 apps/codex/web/books/**/assets/img/preprocessed/
 
+# The codex fixture corpus, generated from fixtures/picks, fixtures/raw and code
+# (scripts/fixtureCorpus.ts), plus its in-progress build dirs.
+apps/codex/web/fixtures/entities/
+apps/codex/web/fixtures/.entities-build-*/
+
 # Playwright MCP console logs + page snapshots (tool debris)
 .playwright-mcp/

@@ -26,6 +26,7 @@ import { loadFixtureRenderEnv, requireEntity } from "../src/domain/render/fixtur
 import { createHeadingIdAssigner } from "../src/domain/render/headingIds";
 import type { RenderCtx } from "../src/domain/render/nodes";
 import type { CodexEntity } from "../src/schema/entity";
+import { ensureFixtureCorpus } from "./fixtureCorpus";
 
 const GOLDENS_ROOT = join(import.meta.dirname, "..", "goldens");
 
@@ -54,6 +55,7 @@ function page(title: string, bodyHtml: string): string {
 }
 
 function main(): void {
+  ensureFixtureCorpus();
   const { byId, ctx } = loadFixtureRenderEnv();
   mkdirSync(GOLDENS_ROOT, { recursive: true });
 

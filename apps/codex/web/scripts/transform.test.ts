@@ -171,12 +171,9 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       } else if (file.endsWith("/manifest.json")) {
         // D29-21: the fixture-scoped corpus manifest — categoryCounts present.
         const manifest = raw as { schemaVersion?: number; categoryCounts?: unknown };
-        // The STATIC committed `fixtures/entities/manifest.json` — pinned at
-        // the schemaVersion active when the fixture was last extracted (P7
-        // S2's fixture regen picked up D29-73's 2->3 bump; P10 S2's fixture
-        // regen picked up D29-93's 3->4 bump (statRow); P12 S1's fixture
-        // regen picked up D29-116's 4->5 bump (ClassStats); the generated
-        // manifest is separately checked at HEAD via `runOnce()` below).
+        // The generated `fixtures/entities/manifest.json` (`fixtureCorpus.ts`
+        // writes `CORPUS_SCHEMA_VERSION`, 5 since D29-116's ClassStats); the
+        // transform's own manifest is separately checked via `runOnce()` below.
         expect(manifest.schemaVersion, file).toBe(5);
         expect(typeof manifest.categoryCounts, file).toBe("object");
       } else if (file.endsWith("/rules-tree.json")) {

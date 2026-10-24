@@ -9,11 +9,11 @@
  * job — see that script's header for why a real browser stays OUT of the
  * hermetic `test` lane) — reusing its server-boot idiom verbatim.
  *
- * Hermetic + fixture-only: runs against the committed FIXTURE corpus
- * (`CODEX_CORPUS_ROOT`, which this script defaults to `fixtures/entities/`). The fixture's `ritual` category was grown (additively
- * — no other fixture file touched, no existing entity file modified) from 6
- * to 96 rows (`fixtures/entities/ritual/virt-{001..090}.json` + the matching
- * `_index.json`/`manifest.json` entries) SPECIFICALLY so this guard has a
+ * Hermetic + fixture-only: runs against the generated FIXTURE corpus
+ * (`CODEX_CORPUS_ROOT`, which this script defaults to `fixtures/entities/`, after
+ * generating it). The fixture's `ritual` category is grown from 6 to 96 rows by 90
+ * synthetic `ritual/virt-{001..090}` rows (`SYNTHETIC_ROWS` in `fixtureCorpus.ts`)
+ * SPECIFICALLY so this guard has a
  * real category comfortably past `SSR_WINDOW` (60, `virtualization.ts`) to
  * drive — every other fixture category tops out at 7 rows, nowhere near
  * enough to exercise "walks past the SSR window" or "deep-link centers a row
@@ -45,6 +45,8 @@ import { fileURLToPath } from "node:url";
 import { createSsrServer } from "@astra/site-kit";
 import { chromium, type Page } from "playwright";
 
+import { ensureFixtureCorpus } from "./fixtureCorpus";
+
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const SERVER_BUNDLE = `${ROOT}dist/server/server.js`;
 const CLIENT_DIR = `${ROOT}dist/client`;
@@ -55,9 +57,9 @@ const PORT = Number(process.env.CODEX_VIRT_INTERACTION_PORT ?? 0);
 if (!existsSync(SERVER_BUNDLE)) {
   throw new Error(`${SERVER_BUNDLE} not found — run \`pnpm run build\` first`);
 }
-// Read the committed fixture corpus unless the caller pins another root. The built
+// Generate the fixture corpus and read it unless the caller pins another root. The built
 // bundle checks this root when it loads, below.
-process.env.CODEX_CORPUS_ROOT ??= `${ROOT}fixtures/entities`;
+process.env.CODEX_CORPUS_ROOT ??= ensureFixtureCorpus();
 
 // Well above `NARROW_CONTAINER_WIDTH_PX` (600) AND `SPLIT_VIEW_MEDIA`
 // (56.0625rem/897px, `BrowseListing.tsx`) — every case below needs desktop

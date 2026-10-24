@@ -32,7 +32,7 @@ describe("R2 (D29-64): a real fixture entity with a literal AoN <br/>-preserved 
   const { byId, ctx } = loadFixtureRenderEnv();
 
   it("creature/adamantine-dragon-adult's body preserves the literal \\n verbatim", () => {
-    // Verified directly against the committed fixture: body[25] is a real
+    // Verified directly against the fixture corpus: body[25] is a real
     // paragraph whose text children include "...DC 30\n" and "...Speeds.\n"
     // (an "Abandon Armor"/"Frightful Presence" degree-of-success-shaped
     // block) — one of the corpus's 16 real \n-bearing bodies this phase's

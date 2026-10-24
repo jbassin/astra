@@ -219,8 +219,8 @@ export function createCorpusReader(rootDir: string): CorpusReader {
   };
 }
 
-/** Walk up from `startDir` until a `fixtures/entities/manifest.json` marker is
- * found (the `@astra/config` `findRepoRoot` idiom). `import.meta.dirname`-based
+/** Walk up from `startDir` until a `fixtures/picks/` marker (committed; the generated
+ * `fixtures/entities/` may not exist yet) is found (the `@astra/config` `findRepoRoot` idiom). `import.meta.dirname`-based
  * relative paths (`"../../fixtures/entities"`) are a real footgun here: THIS
  * module's physical location differs between dev (`src/server/corpusFs.ts`) and
  * a `vite build` (bundled somewhere under `dist/server/assets/`), so a fixed
@@ -231,15 +231,16 @@ export function createCorpusReader(rootDir: string): CorpusReader {
 function findAppRoot(startDir: string): string {
   let dir = resolve(startDir);
   for (;;) {
-    if (existsSync(join(dir, "fixtures", "entities", "manifest.json"))) return dir;
+    if (existsSync(join(dir, "fixtures", "picks"))) return dir;
     const parent = dirname(dir);
     if (parent === dir) return resolve(startDir); // marker never found — give up gracefully
     dir = parent;
   }
 }
 
-/** `apps/codex/web/fixtures/entities/` — the D29-11 committed fixture corpus that the
- * tests, the Chromium guards and a dev server without the real corpus read. A FUNCTION,
+/** `apps/codex/web/fixtures/entities/` — the D29-11 fixture corpus that the tests, the
+ * Chromium guards and a dev server without the real corpus read. It is generated and
+ * gitignored (`scripts/fixtureCorpus.ts`; `pnpm --filter @astra/codex fixture`). A FUNCTION,
  * not a top-level `const` (the exact same client-bundle-leak class this file's other
  * lazy-singleton comment calls out): a top-level statement that CALLS
  * `findAppRoot`/touches `node:fs` at module-evaluation time runs the instant
@@ -281,7 +282,7 @@ export interface ServedCorpus {
   source: "env" | "config" | "dev-fixture-fallback";
   schemaVersion: number;
   totalEntityCount: number;
-  /** The committed fixture corpus: its manifest pins `foundry.tag` to `"fixture"`. */
+  /** The fixture corpus: its manifest pins `foundry.tag` to `"fixture"`. */
   fixture: boolean;
 }
 
@@ -340,6 +341,13 @@ export function selectServedCorpus(inputs: CorpusRootInputs): ServedCorpus {
       );
     }
     const fixtureRoot = fixtureCorpusRoot();
+    if (!existsSync(manifestFile(fixtureRoot))) {
+      throw new CorpusUnservableError(
+        `[codex] dev: no corpus at "${configRoot}" (config.kdl's codex.data-path) and no ` +
+          `generated fixture at "${fixtureRoot}". Run \`pnpm --filter @astra/codex fixture\` ` +
+          "for the fixture, or `just codex-refresh` for the real corpus.",
+      );
+    }
     // oxlint-disable-next-line no-console -- dev-server warning to stdout; codex has no OTel logger yet
     console.warn(
       `[codex] dev: no corpus at "${configRoot}" (config.kdl's codex.data-path), so this dev ` +

@@ -10,7 +10,7 @@ import { RENDER_ERROR_ATTR, renderNodes } from "./nodes";
  * via `renderToStaticMarkup`. Zero `data-render-error` anywhere; every
  * non-empty `body` yields non-empty HTML; every entity name appears. This is
  * the "the renderer is total over the real corpus's node-kind census" gate
- * (spec §6 risk) exercised against the committed fixture — the same corpus
+ * (spec §6 risk) exercised against the fixture corpus — the same corpus
  * P2's real-corpus S2/S3 gates run against, just smaller.
  */
 

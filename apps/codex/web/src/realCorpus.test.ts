@@ -16,7 +16,7 @@ import {
 } from "@/server/corpusFs";
 
 /**
- * The opt-in real-corpus suite. Every other codex test reads the committed fixture
+ * The opt-in real-corpus suite. Every other codex test reads the generated fixture
  * (the vitest setup pins `CODEX_CORPUS_ROOT`); this file checks the real corpus at
  * `<codex.data-path>/corpus` under the production rules, so it runs only with
  * `CODEX_REAL_CORPUS=1`: `just codex-real-corpus`, which builds first. Its assertions

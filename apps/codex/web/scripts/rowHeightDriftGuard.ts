@@ -39,8 +39,9 @@
  * on purpose, run as its OWN CI job the same way vellum-render's
  * `vellum-visual-regression` job is — see `.github/workflows/ci.yml`).
  *
- * Hermetic: runs against the committed FIXTURE corpus (`CODEX_CORPUS_ROOT`, which
- * this script defaults to `fixtures/entities/` — `/feat` has >=1 real row there) —
+ * Hermetic: runs against the generated FIXTURE corpus (`CODEX_CORPUS_ROOT`, which
+ * this script defaults to `fixtures/entities/`, after generating it — `/feat` has >=1 real
+ * row there) —
  * never asserts against real-corpus DATA, only the CSS-driven geometry of
  * whichever row renders, so it also passes with `CODEX_CORPUS_ROOT` set to the
  * real corpus.
@@ -55,6 +56,8 @@ import { fileURLToPath } from "node:url";
 
 import { createSsrServer } from "@astra/site-kit";
 import { chromium } from "playwright";
+
+import { ensureFixtureCorpus } from "./fixtureCorpus";
 
 // Duplicated, not imported: `columnDefs.tsx`/`virtualization.ts` both sit
 // behind this app's `@/*` bundler-path-alias import graph (vite/tsc-only —
@@ -79,9 +82,9 @@ const PORT = Number(process.env.CODEX_ROW_HEIGHT_PORT ?? 0);
 if (!existsSync(SERVER_BUNDLE)) {
   throw new Error(`${SERVER_BUNDLE} not found — run \`pnpm run build\` first`);
 }
-// Read the committed fixture corpus unless the caller pins another root. The built
+// Generate the fixture corpus and read it unless the caller pins another root. The built
 // bundle checks this root when it loads, below.
-process.env.CODEX_CORPUS_ROOT ??= `${ROOT}fixtures/entities`;
+process.env.CODEX_CORPUS_ROOT ??= ensureFixtureCorpus();
 
 /** Well above `NARROW_CONTAINER_WIDTH_PX` (600px) — the FULL column set
  * tier, and (per `.codex-browse-layout`'s own 56rem/896px breakpoint) also

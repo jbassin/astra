@@ -40,7 +40,7 @@ function fixtureEntityCount(): number {
   return Object.values(manifest.categoryCounts).reduce((a, b) => a + b, 0);
 }
 
-describe("buildSearchIndex over the committed fixture corpus (CI-hermetic)", () => {
+describe("buildSearchIndex over the generated fixture corpus (CI-hermetic)", () => {
   it("page_count matches the fixture manifest's total entity count", async () => {
     const outDir = freshOutDir();
     const reader = createCorpusReader(fixtureCorpusRoot());
