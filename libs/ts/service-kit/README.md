@@ -49,6 +49,14 @@ service.onShutdown(() => store.close());
   kit names it after the matched template (`GET /api/v1/tracks/:id`) and sets `http.route`, so the
   raw path is never a span name. `/healthz` makes no span at all.
 - **Secrets:** compare tokens, keys and signatures with `safeEqual(a, b)`, never `===`.
+- **WebSockets:** pass `upgrades: { "/ws": { handle, close } }`. The kit owns the server's
+  `upgrade` event and calls `handle(req, socket, head)` (hand it to `ws`'s
+  `WebSocketServer.handleUpgrade`) only for that exact pathname; any other path is answered 404,
+  and an upgrade during shutdown 503, with the socket closed. Upgrades make no kit span.
+- **Node-only libraries** (an Express sub-app, an SDK's Node transport): a route handler returns
+  `callNode(ctx.req, (req, res) => app(req, res))`. On a real server the handler writes to the
+  socket; under `createHandler` srvx gives it in-memory stand-ins. A throw or rejection before
+  anything is written becomes the kit's 500.
 
 ## Readiness and shutdown
 
@@ -59,7 +67,9 @@ and answers 503 `unready` with the per-probe `checks` when any fails. During shu
 
 observe owns SIGTERM. The kit registers one observe shutdown hook that runs in this order:
 
-1. `/healthz` turns 503 and the server stops accepting connections.
+1. `/healthz` turns 503 and the server stops accepting connections. Each upgrade handler's
+   `close()` runs now, because an upgraded socket never drains on its own (portal's bridge closes
+   with 1001 here, so the Foundry module redials).
 2. In-flight requests drain for up to `drainMs` (default: a quarter of
    `telemetry.shutdown-timeout-ms`); then every connection still open, such as an SSE stream, is
    closed.
