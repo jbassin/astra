@@ -1,0 +1,77 @@
+diff --git a/apps/codex/web/src/listing.ts b/apps/codex/web/src/listing.ts
+index 1111111..2222222 100644
+--- a/apps/codex/web/src/listing.ts
++++ b/apps/codex/web/src/listing.ts
+@@ -10,2 +10,3 @@ export function rowHeight(): number {
+-// P9 S1 (D29-83): the split view is only live at/above this width.
+-const SPLIT = 960;
++// The split view is only live at or above this width (ADR 0015 explains the layout).
++const SPLIT = 960;
++const roll = parse("2d20kh1 + 1d6-1");
+@@ -40 +41 @@ describe("listing", () => {
+-  it("D29-101a (P11 S1): meta.class carries the label", () => {
++  it("meta.class carries the trimmed class label", () => {
+diff --git a/apps/assay/py/src/astra_assay/cells.py b/apps/assay/py/src/astra_assay/cells.py
+index 3333333..4444444 100644
+--- a/apps/assay/py/src/astra_assay/cells.py
++++ b/apps/assay/py/src/astra_assay/cells.py
+@@ -0,0 +1,5 @@
++"""Cell math. Text is UTF-8; see ADR-0018 and ADR 0027 for the binding decisions."""
++value = lookup(A1) + offsets[P9] + S3_BUCKET
++# Priorities P0 and P1 come first; the gate opens at noon. Decisions are final.
++label = "Tier (T1)"  # decision-ids: ignore[code-in-parens] -- T1 is the PF2e tier name
++gate = Gate(open=True)
+diff --git a/docs/adr/0030-decision-ids.md b/docs/adr/0030-decision-ids.md
+new file mode 100644
+index 0000000..5555555
+--- /dev/null
++++ b/docs/adr/0030-decision-ids.md
+@@ -0,0 +1,2 @@
++# ADR 0030: no decision IDs in code
++Supersedes D29-83 and the P9 S1 gate C note (alias: 0037 PROC-8).
+diff --git a/thoughts/shared/plans/plan.md b/thoughts/shared/plans/plan.md
+index 6666666..7777777 100644
+--- a/thoughts/shared/plans/plan.md
++++ b/thoughts/shared/plans/plan.md
+@@ -1 +1,2 @@
++- [x] WEAL-1 and OPS-5 land in slice P3 S1 (D37-2).
+diff --git a/docs/backlog.md b/docs/backlog.md
+index 8888888..9999999 100644
+--- a/docs/backlog.md
++++ b/docs/backlog.md
+@@ -5,0 +6 @@
++- PIPE-12 waits on the parked decision (OPS-5).
+diff --git a/apps/codex/web/README.md b/apps/codex/web/README.md
+index aaaaaaa..bbbbbbb 100644
+--- a/apps/codex/web/README.md
++++ b/apps/codex/web/README.md
+@@ -1 +1,2 @@
++Markdown is not checked by this gate: D29-83.
+diff --git a/fixtures/astra-data/akasha/content/gate.vellum b/fixtures/astra-data/akasha/content/gate.vellum
+index ccccccc..ddddddd 100644
+--- a/fixtures/astra-data/akasha/content/gate.vellum
++++ b/fixtures/astra-data/akasha/content/gate.vellum
+@@ -1 +1,2 @@
++The party passed through gate B (R3) at dusk.
+diff --git a/apps/codex/ingest/src/enrichers.ts b/apps/codex/ingest/src/enrichers.ts
+index 1212121..3434343 100644
+--- a/apps/codex/ingest/src/enrichers.ts
++++ b/apps/codex/ingest/src/enrichers.ts
+@@ -36 +36,2 @@
+-    // support, which rejects that shorthand (D29-9's script runtime).
++    // repo's TS ran under Node's native strip-only TS support (D29-9's script
++    // runtime), which rejects that shorthand.
+diff --git a/apps/codex/ingest/src/moved.ts b/apps/codex/ingest/src/moved.ts
+new file mode 100644
+index 0000000..5656565
+--- /dev/null
++++ b/apps/codex/ingest/src/moved.ts
+@@ -0,0 +1 @@
++// Moved here unchanged from gone.py: D29-1 (P1 S1).
+diff --git a/apps/old/gone.py b/apps/old/gone.py
+deleted file mode 100644
+index eeeeeee..0000000
+--- a/apps/old/gone.py
++++ /dev/null
+@@ -1,1 +0,0 @@
+-# D29-1 (P1 S1): deleted lines never fail.

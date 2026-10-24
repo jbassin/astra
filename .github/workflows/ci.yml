@@ -46,6 +46,8 @@ jobs:
               - 'deploy/**'
               # ruff also lints the standalone scripts under libs/rust/ (gen_oracle.py).
               - 'libs/rust/**/*.py'
+              # The repo scripts (scripts/*.py) and their tests, under ruff, ty and pytest.
+              - 'scripts/**'
               # Root fixtures: read by the libs/py/vellum-lang and libs/py/config tests.
               - 'fixtures/**'
               - 'pyproject.toml'
@@ -445,6 +447,35 @@ jobs:
             just commitlint "$BEFORE" "$AFTER"
           fi
 
+  # Added code, comments and test names cite no spec, decision, slice, gate or finding ID
+  # (scripts/check_decision_ids.py). It reads only the lines added since the merge base, so
+  # the IDs already in the tree never fail it. Same ranges and fallback as commitlint.
+  no-decision-ids:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-uv
+      - name: Check the pull request's added lines
+        if: github.event_name == 'pull_request'
+        env:
+          FROM: ${{ github.event.pull_request.base.sha }}
+          TO: ${{ github.event.pull_request.head.sha }}
+        run: just no-decision-ids "$FROM" "$TO"
+      - name: Check the pushed added lines
+        if: github.event_name == 'push'
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          if [[ "$BEFORE" =~ ^0+$ ]] || ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            echo "No usable base commit (before=$BEFORE); checking $AFTER's commit only."
+            just no-decision-ids "" "$AFTER"
+          else
+            just no-decision-ids "$BEFORE" "$AFTER"
+          fi
+
   # The single status check branch protection will require. It needs every other
   # job: a failed or cancelled job fails it, and a job skipped by the path filter
   # counts as passed. It blocks; it does not notify anyone, by design.
@@ -474,6 +505,7 @@ jobs:
       - assay-store-check
       - infra-check
       - commitlint
+      - no-decision-ids
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

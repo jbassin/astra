@@ -24,7 +24,7 @@ inside the repo; use `uv run python`.
 just check   # format + lint gate over the whole tree (the pre-commit hook runs it on staged files)
 just fix     # apply formatters and safe autofixes for both lanes
 just test    # both test lanes
-just ci      # everything CI runs, plus commitlint over origin/main..HEAD (pre-push runs it)
+just ci      # everything CI runs, incl. commitlint and no-decision-ids over origin/main..HEAD (pre-push runs it)
 just dev <domain>/<role>       # one TS app's dev server, e.g. just dev codex/web
 uv run pytest apps/<domain>/py # one Python app (they run as Dagster assets, no dev server)
 ```
@@ -178,6 +178,14 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
   read the TanStack Start skill bundled with the package
   (`apps/<domain>/web/node_modules/@tanstack/react-start/skills/react-start/SKILL.md`); server
   logic is `createServerFn`.
+- **Comments and test names describe the present.** Say what the code does and why; history
+  lives in git and the ADRs, and an ADR link (`ADR 0015`) is the way to cite a decision that
+  still binds the code. `just no-decision-ids` (in `just ci` and CI) fails when a change adds a
+  spec, decision, phase, slice, gate or tech-debt finding ID (`D29-83`, `P9 S1`, `0037 OPS-3`,
+  `gate C`, `(R3, P6)`) to a source or config file. IDs already in the tree don't fail it; the
+  per-area sweeps remove them. `scripts/check_decision_ids.py` lists the rules and exemptions,
+  takes an inline exception with a reason (`decision-ids: ignore[<rule>] -- <why>`), and with
+  `--all` counts every existing match.
 
 ## Adding an app
 
