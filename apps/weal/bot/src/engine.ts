@@ -16,7 +16,7 @@
  */
 
 import { getLogger } from "@astra/observe";
-import { evaluate, type WealErr, type WealOk } from "@astra/weal-engine";
+import { evaluate, isBuiltin, type WealErr, type WealOk } from "@astra/weal-engine";
 
 import type { FuncV2 } from "./db";
 
@@ -221,7 +221,7 @@ export function checkNewSave(
     kind,
     probe,
     error,
-    shadowsBuiltin: isBuiltinName(name, hooks),
+    shadowsBuiltin: isBuiltin(name),
   });
 
   for (const roll of GUARD_ROLLS) {
@@ -237,9 +237,4 @@ export function checkNewSave(
     }
   }
   return { ok: true };
-}
-
-/** A bare name type-checks with no saves exactly when a builtin owns it. */
-function isBuiltinName(name: string, hooks?: EngineHooks): boolean {
-  return (hooks?.evaluateFn ?? evaluate)(name, [], ZERO_SEED, 0, "check").ok;
 }

@@ -4,6 +4,7 @@
 
 use weal_engine::ast::BinOp;
 use weal_engine::infer::CoreExpr;
+use weal_engine::prelude::Builtin;
 use weal_engine::{Scheme, Type, check_source};
 
 fn core(src: &str) -> CoreExpr {
@@ -32,7 +33,7 @@ fn die(count: Option<&str>, sides: &str) -> CoreExpr {
 }
 
 fn sum(inner: CoreExpr) -> CoreExpr {
-    call(CoreExpr::Prelude("sum"), vec![inner])
+    call(CoreExpr::Prelude(Builtin::Sum), vec![inner])
 }
 
 #[test]
@@ -46,9 +47,12 @@ fn bare_die_and_pool_literals() {
 fn pool_plus_num_inserts_sum() {
     // The pinned case: 2d20kh1 + 7 elaborates with an explicit sum.
     let kh = call(
-        CoreExpr::Prelude("kh"),
+        CoreExpr::Prelude(Builtin::Kh),
         vec![
-            call(CoreExpr::Prelude("pool"), vec![num("2"), die(None, "20")]),
+            call(
+                CoreExpr::Prelude(Builtin::Pool),
+                vec![num("2"), die(None, "20")],
+            ),
             num("1"),
         ],
     );
@@ -66,18 +70,24 @@ fn pool_plus_num_inserts_sum() {
 fn suffix_chain_lowers_keeping_the_pool_open() {
     // The pinned lowering: 4d6e2kh3 = kh(pool(4, explode(d6, 2)), 3),
     // closed by the top-level sum only.
-    let explode = call(CoreExpr::Prelude("explode"), vec![die(None, "6"), num("2")]);
-    let pool = call(CoreExpr::Prelude("pool"), vec![num("4"), explode]);
-    let kh = call(CoreExpr::Prelude("kh"), vec![pool, num("3")]);
+    let explode = call(
+        CoreExpr::Prelude(Builtin::Explode),
+        vec![die(None, "6"), num("2")],
+    );
+    let pool = call(CoreExpr::Prelude(Builtin::Pool), vec![num("4"), explode]);
+    let kh = call(CoreExpr::Prelude(Builtin::Kh), vec![pool, num("3")]);
     assert_eq!(core("4d6e2kh3"), sum(kh));
 }
 
 #[test]
 fn die_shape_suffixes_fold_left_to_right() {
     // 2d6e2r1: r wraps the exploded die, all inside the pool.
-    let explode = call(CoreExpr::Prelude("explode"), vec![die(None, "6"), num("2")]);
-    let r = call(CoreExpr::Prelude("r"), vec![explode, num("1")]);
-    let pool = call(CoreExpr::Prelude("pool"), vec![num("2"), r]);
+    let explode = call(
+        CoreExpr::Prelude(Builtin::Explode),
+        vec![die(None, "6"), num("2")],
+    );
+    let r = call(CoreExpr::Prelude(Builtin::R), vec![explode, num("1")]);
+    let pool = call(CoreExpr::Prelude(Builtin::Pool), vec![num("2"), r]);
     assert_eq!(core("2d6e2r1"), sum(pool));
 }
 
@@ -85,14 +95,20 @@ fn die_shape_suffixes_fold_left_to_right() {
 fn die_shape_on_a_countless_die_needs_no_pool() {
     assert_eq!(
         core("d6e2"),
-        call(CoreExpr::Prelude("explode"), vec![die(None, "6"), num("2")])
+        call(
+            CoreExpr::Prelude(Builtin::Explode),
+            vec![die(None, "6"), num("2")]
+        )
     );
 }
 
 #[test]
 fn pool_shape_on_a_countless_die_wraps_a_one_die_pool() {
-    let pool = call(CoreExpr::Prelude("pool"), vec![num("1"), die(None, "6")]);
-    let kh = call(CoreExpr::Prelude("kh"), vec![pool, num("3")]);
+    let pool = call(
+        CoreExpr::Prelude(Builtin::Pool),
+        vec![num("1"), die(None, "6")],
+    );
+    let kh = call(CoreExpr::Prelude(Builtin::Kh), vec![pool, num("3")]);
     assert_eq!(core("d6kh3"), sum(kh));
 }
 
@@ -110,7 +126,7 @@ fn inserted_sum_is_shadow_proof() {
     let CoreExpr::Call { callee, .. } = *lhs else {
         panic!("expected inserted sum call");
     };
-    assert_eq!(*callee, CoreExpr::Prelude("sum"));
+    assert_eq!(*callee, CoreExpr::Prelude(Builtin::Sum));
     assert_eq!(*rhs, CoreExpr::Ident("sum".to_owned()));
 }
 
@@ -123,7 +139,10 @@ fn pool_wins_ambiguity_applies_to_the_pool() {
     );
     let extra = vec![("zz".to_owned(), zz)];
     let (c, _) = check_source("2d6zz1 + 1", &extra).expect("accepts");
-    let pool = call(CoreExpr::Prelude("pool"), vec![num("2"), die(None, "6")]);
+    let pool = call(
+        CoreExpr::Prelude(Builtin::Pool),
+        vec![num("2"), die(None, "6")],
+    );
     let zz_call = call(CoreExpr::Ident("zz".to_owned()), vec![pool, num("1")]);
     assert_eq!(
         c,
@@ -147,7 +166,7 @@ fn die_shape_extra_env_suffix_maps_the_underlying_die() {
         CoreExpr::Ident("yy".to_owned()),
         vec![die(None, "6"), num("1")],
     );
-    let pool = call(CoreExpr::Prelude("pool"), vec![num("2"), yy_call]);
+    let pool = call(CoreExpr::Prelude(Builtin::Pool), vec![num("2"), yy_call]);
     assert_eq!(c, sum(pool));
 }
 
@@ -184,9 +203,12 @@ fn dm_variable_argument_has_no_face_order_metadata() {
 #[test]
 fn label_on_a_pool_sums_first() {
     let kh = call(
-        CoreExpr::Prelude("kh"),
+        CoreExpr::Prelude(Builtin::Kh),
         vec![
-            call(CoreExpr::Prelude("pool"), vec![num("2"), die(None, "6")]),
+            call(
+                CoreExpr::Prelude(Builtin::Pool),
+                vec![num("2"), die(None, "6")],
+            ),
             num("1"),
         ],
     );
@@ -208,7 +230,7 @@ fn comparison_operands_coerce_pools() {
     let CoreExpr::Call { callee, .. } = *lhs else {
         panic!("expected inserted sum");
     };
-    assert_eq!(*callee, CoreExpr::Prelude("sum"));
+    assert_eq!(*callee, CoreExpr::Prelude(Builtin::Sum));
 }
 
 #[test]
@@ -221,7 +243,7 @@ fn pool_ident_coerces_at_use_site() {
     let CoreExpr::Call { callee, .. } = *value else {
         panic!("expected kh call as the value");
     };
-    assert_eq!(*callee, CoreExpr::Prelude("kh"));
+    assert_eq!(*callee, CoreExpr::Prelude(Builtin::Kh));
     // The use site wraps the ident.
     let CoreExpr::Binary { lhs, .. } = *body else {
         panic!("expected binary body");

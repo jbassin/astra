@@ -59,6 +59,35 @@ export type {
   WealValueKind,
 } from "../gen/weal_api";
 
+/**
+ * One engine builtin, from the crate's builtin registry
+ * (`libs/rust/weal-engine/src/prelude.rs`), generated into
+ * ../gen/weal_builtins.json by `just weal-engine-build`.
+ */
+export interface WealBuiltin {
+  name: string;
+  /** Curried arity (`roll` is variadic when called directly). */
+  arity: number;
+  /** One per overload; `a` and `b` stand for any type. */
+  signatures: string[];
+  /** The player guide's one-line description (markdown). */
+  doc: string;
+}
+
+/** Every engine builtin, in registry order. */
+export const BUILTINS: readonly WealBuiltin[] =
+  require("../gen/weal_builtins.json") as WealBuiltin[];
+
+const BUILTIN_NAMES: ReadonlySet<string> = new Set(BUILTINS.map((b) => b.name));
+
+/**
+ * Whether a builtin owns `name`. Saves share the builtins' namespace, so a
+ * save under such a name shadows the builtin for every later roll.
+ */
+export function isBuiltin(name: string): boolean {
+  return BUILTIN_NAMES.has(name);
+}
+
 /** A rolled-die display. */
 export type WealDieDisplay = Extract<WealDisplay, { kind: "die" }>;
 

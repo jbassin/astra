@@ -47,11 +47,17 @@ For the player-facing language guide, see `apps/weal/bot/README.md`.
 - **`fuel.rs`** — interpreter-side fuel: step counter, recursion-depth cap, and the
   before-allocation construction caps (pool count, explode depth). Distribution-side budgets
   live in `dist/`.
-- **`prelude.rs`** — the D32-19 prelude as a NATIVE builtin table (`kh`/`kl`/`sum`/`pool`/`dl`/
-  `dm`/`evaluate`/`label`/`explode`+`e`/`reroll`/`r`/`successes`/the list toolkit
-  `repeat`/`concat`/`map`/`filter`/`fold`/`reduce`/`len` (2026-08-10 amendment)/`min`/`max`/`dec`/
-  `float`/`num`/`round`/`floor`/`ceil`/`abs`/`roll`/`plot`/`save`), pinned 1:1 against the checker's
-  `prelude_types()` by the `native_table_matches_prelude_types` drift test.
+- **`prelude.rs`** — the D32-19 prelude: the ONE builtin registry. `enum Builtin` plus the
+  `BUILTINS` table, one row per builtin: name, curried arity, `Typing` (a scheme, or the
+  checker's special case for `min`/`max`, `float`/`abs` and variadic `roll`), the native
+  implementation, the suffix alias (`e` elaborates to `explode`) and the player guide's doc line.
+  The checker's environment (`prelude_types()`), the interpreter's dispatch and currying,
+  `Value::Builtin` (it carries the enum), save serialization and `Builtin::from_name` (the one
+  "is this a builtin" lookup) all read it. Add a builtin by adding a row; the
+  `rows_are_coherent` test checks each row's arity against its schemes. The build also writes the
+  registry to `gen/weal_builtins.json` (the TS wrapper's `BUILTINS` / `isBuiltin`, which the bot's
+  save guard uses) and to the built-in list in `apps/weal/bot/README.md`; the
+  `builtin_reference_is_current` test fails when either lags.
 - **`dist/`** (facade **`dist.rs`**) — the exact-distribution engine, generic over any `Ord`
   face: `Weight` (u128 fast path, checked `BigUint` promotion, bit-capped), `Dist`
   (`BTreeMap` + the explicit D32-4 face-order vector), cartesian binary ops, weighted-lcm
@@ -89,8 +95,9 @@ just weal-engine-build
 runs, from the repo root: `cargo build --release --target wasm32-unknown-unknown` →
 `wasm-bindgen --target nodejs` into `libs/ts/weal-engine/gen/` → `wasm-opt -O2` in place →
 rewrites `gen/package.json` to `{"type":"commonjs"}` (wasm-bindgen won't; the CJS marker is what
-lets the ESM wrapper `createRequire` the glue) → regenerates `gen/weal_api.d.ts` (the
-`ts_bindings_are_current` test with `WEAL_WRITE_TS_BINDINGS=1`) → writes the staleness stamp
+lets the ESM wrapper `createRequire` the glue) → regenerates `gen/weal_api.d.ts`, `gen/weal_builtins.json`
+and the player guide's built-in list (the `ts_bindings_are_current` and `builtin_reference_is_current`
+tests with `WEAL_WRITE_TS_BINDINGS=1`) → writes the staleness stamp
 `gen/SOURCE_SHA256` (`tools/gen-stamp.sh write`) → prints sha256s.
 
 - **Pinned tools, hard-required** (committed bytes must be machine-independent; the recipe

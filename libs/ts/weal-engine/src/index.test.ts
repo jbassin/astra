@@ -7,7 +7,9 @@ import { createRequire } from "node:module";
 import { describe, expect, expectTypeOf, it } from "vitest";
 
 import {
+  BUILTINS,
   evaluate,
+  isBuiltin,
   reinstantiate,
   type WealDieDisplay,
   type WealResult,
@@ -73,6 +75,18 @@ describe("@astra/weal-engine wasm smoke", () => {
     expect(result.stage).toBe("prelude");
     expect(result.preludeName).toBe("bad");
     expect(result.span).toEqual({ start: 3, end: 3 });
+  });
+});
+
+describe("the builtin registry", () => {
+  it("lists exactly the names the committed wasm resolves with no saves", () => {
+    expect(BUILTINS.length).toBeGreaterThan(30);
+    for (const b of BUILTINS) {
+      expect(isBuiltin(b.name)).toBe(true);
+      expect(evaluate(b.name, [], seed, 0, "check").ok).toBe(true);
+    }
+    expect(isBuiltin("smite")).toBe(false);
+    expect(evaluate("smite", [], seed, 0, "check").ok).toBe(false);
   });
 });
 

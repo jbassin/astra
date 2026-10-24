@@ -1,0 +1,266 @@
+[
+  {
+    "arity": 2,
+    "doc": "keep the highest n dice of a pool; the `kh` suffix (`4d6kh3`)",
+    "name": "kh",
+    "signatures": [
+      "Pool[a] -> Num -> Pool[a]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "keep the lowest n dice of a pool; the `kl` suffix (`2d20kl1`)",
+    "name": "kl",
+    "signatures": [
+      "Pool[a] -> Num -> Pool[a]"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "total a numeric pool into one die (a pool in a die position sums by itself)",
+    "name": "sum",
+    "signatures": [
+      "Pool[Num] -> Die[Num]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "n copies of a die, before summing (`pool(4, d6)` is `4d6`)",
+    "name": "pool",
+    "signatures": [
+      "Num -> Die[a] -> Pool[a]"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "an equal-weight die from a list of faces, worst first",
+    "name": "dl",
+    "signatures": [
+      "List[a] -> Die[a]"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "a weighted die from a `face: weight` dict, worst face first",
+    "name": "dm",
+    "signatures": [
+      "Dict[a, Num] -> Die[a]"
+    ]
+  },
+  {
+    "arity": 3,
+    "doc": "fold a pool's rolled faces (highest first, with counts) into a die of states",
+    "name": "evaluate",
+    "signatures": [
+      "Pool[a] -> b -> (b -> a -> Num -> b) -> Die[b]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "name a die in the trace, like `[word]`",
+    "name": "label",
+    "signatures": [
+      "Die[a] -> Atom -> Die[a]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "roll again on the top face, at most n extra rolls; the `e` suffix",
+    "name": "explode",
+    "signatures": [
+      "Die[Num] -> Num -> Die[Num]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "`explode`, short",
+    "name": "e",
+    "signatures": [
+      "Die[Num] -> Num -> Die[Num]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "reroll any of the listed faces once, keeping the new face",
+    "name": "reroll",
+    "signatures": [
+      "Die[a] -> List[a] -> Die[a]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "reroll one face once, keeping the new face; the `r` suffix (`4d6r1`)",
+    "name": "r",
+    "signatures": [
+      "Die[Num] -> Num -> Die[Num]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "count the dice in a pool that meet a target",
+    "name": "successes",
+    "signatures": [
+      "Pool[Num] -> Num -> Die[Num]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "a list of n copies; dice in it roll independently",
+    "name": "repeat",
+    "signatures": [
+      "a -> Num -> List[a]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "join two lists",
+    "name": "concat",
+    "signatures": [
+      "List[a] -> List[a] -> List[a]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "apply a function to each element",
+    "name": "map",
+    "signatures": [
+      "List[a] -> (a -> b) -> List[b]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "keep the elements whose predicate is `:true`",
+    "name": "filter",
+    "signatures": [
+      "List[a] -> (a -> Bool) -> List[a]"
+    ]
+  },
+  {
+    "arity": 3,
+    "doc": "thread an accumulator through a list",
+    "name": "fold",
+    "signatures": [
+      "List[a] -> b -> (b -> a -> b) -> b"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "fold seeded by the first element (needs at least one)",
+    "name": "reduce",
+    "signatures": [
+      "List[a] -> (a -> a -> a) -> a"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "count a list's elements",
+    "name": "len",
+    "signatures": [
+      "List[a] -> Num"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "the smaller of two numbers or dice",
+    "name": "min",
+    "signatures": [
+      "Num -> Num -> Num",
+      "Die[Num] -> Die[Num] -> Die[Num]",
+      "Die[Num] -> Num -> Die[Num]",
+      "Num -> Die[Num] -> Die[Num]"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "the larger of two numbers or dice",
+    "name": "max",
+    "signatures": [
+      "Num -> Num -> Num",
+      "Die[Num] -> Die[Num] -> Die[Num]",
+      "Die[Num] -> Num -> Die[Num]",
+      "Num -> Die[Num] -> Die[Num]"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "a Num as an exact decimal",
+    "name": "dec",
+    "signatures": [
+      "Num -> Dec"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "a Num or Dec as a float",
+    "name": "float",
+    "signatures": [
+      "Num -> Float",
+      "Dec -> Float"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "a Dec as a Num, truncating toward zero",
+    "name": "num",
+    "signatures": [
+      "Dec -> Num"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "a Dec to the nearest Num, halves away from zero",
+    "name": "round",
+    "signatures": [
+      "Dec -> Num"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "a Dec down to a Num",
+    "name": "floor",
+    "signatures": [
+      "Dec -> Num"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "a Dec up to a Num",
+    "name": "ceil",
+    "signatures": [
+      "Dec -> Num"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "absolute value of a Num or Dec",
+    "name": "abs",
+    "signatures": [
+      "Num -> Num",
+      "Dec -> Dec"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "show each value as its own roll",
+    "name": "roll",
+    "signatures": [
+      "a, … -> Unit"
+    ]
+  },
+  {
+    "arity": 1,
+    "doc": "reply with the die's exact probability chart",
+    "name": "plot",
+    "signatures": [
+      "Die[a] -> Unit"
+    ]
+  },
+  {
+    "arity": 2,
+    "doc": "store a value under a name for every later message (a macro)",
+    "name": "save",
+    "signatures": [
+      "Atom -> a -> Unit"
+    ]
+  }
+]
