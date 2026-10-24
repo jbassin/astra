@@ -8,6 +8,9 @@ defined arg" semantics), and the whole result is stripped.
 
 `defs.kdl` is the corrections SSOT (was `defs.yaml`, converted in 0020 S2b), edited by
 hand. Loading goes through `astra_config.kdl`.
+
+An entry may also carry how the name is said, `entry "Faerrin" ipa="ˈfɛrɪn"`. mouthpiece
+reads these (`load_pronunciations`) and inlines the IPA in its ElevenLabs dialogue text.
 """
 
 from __future__ import annotations
@@ -17,7 +20,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Annotated
 
-from astra_config.kdl import Arg, Children, decode, load_kdl
+from astra_config.kdl import Arg, Children, Prop, decode, load_kdl
 from pydantic import BaseModel, ConfigDict
 
 Replacer = Callable[[str], str]
@@ -28,11 +31,13 @@ _REGEX_META = re.compile(r"[.*+?^${}()|[\]\\]")
 
 
 class _Entry(BaseModel):
-    """One `entry "Canonical" { variant "fragment" ... }` node."""
+    """One `entry "Canonical" ipa="…" { variant "fragment" ... }` node."""
 
     model_config = ConfigDict(extra="forbid")
 
     canonical: Annotated[str, Arg()]
+    #: How the name is pronounced, in IPA without slashes (optional).
+    ipa: Annotated[str | None, Prop()] = None
     variants: Annotated[list[str], Children("variant")] = []
 
 
@@ -53,9 +58,18 @@ def to_fragment(span: str) -> str:
     return r"\s*".join(escape_regex(w) for w in span.split() if w)
 
 
+def _entries(defs_path: Path | str) -> list[_Entry]:
+    return decode(_Defs, load_kdl(defs_path)).entries
+
+
 def load_defs(defs_path: Path | str = DEFS_PATH) -> dict[str, list[str]]:
     """Parse `defs.kdl` → `{canonical: [variant, ...]}` (order-stable)."""
-    return {e.canonical: e.variants for e in decode(_Defs, load_kdl(defs_path)).entries}
+    return {e.canonical: e.variants for e in _entries(defs_path)}
+
+
+def load_pronunciations(defs_path: Path | str = DEFS_PATH) -> dict[str, str]:
+    """`defs.kdl` → `{canonical: ipa}` for the entries that carry a non-blank `ipa`."""
+    return {e.canonical: e.ipa.strip() for e in _entries(defs_path) if e.ipa and e.ipa.strip()}
 
 
 def build_replacer(defs: dict[str, list[str]]) -> Replacer:

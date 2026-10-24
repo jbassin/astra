@@ -13,11 +13,13 @@ from typing import Any
 
 import dagster as dg
 import pytest
+from astra_lexicon import load_pronunciations
 from astra_linguist.chronicle import show_index
 from astra_mouthpiece import assets as mp
 from astra_mouthpiece.assemble import assemble_episode
 from astra_mouthpiece.models import DigestStats, Script, ScriptTurn, SessionDigest
 from astra_mouthpiece.resources import TtsResource
+from astra_mouthpiece.tts.provider import DialogueRequest, SynthesisResult
 from astra_pipeline_resources.partitions import SESSIONS_NAME
 from astra_pipeline_resources.testing import FakeConfig, FakeLlm, paths_under
 
@@ -119,6 +121,74 @@ def test_the_chain_writes_every_output_under_the_injected_paths(
     assert llm.clients == 2  # one client per paid LLM stage, as before
     clips = result.asset_materializations_for_node("session_audio_clips")[0].metadata
     assert clips["clips"] != dg.IntMetadataValue(0)
+
+
+class _DialogueTts:
+    """A `TtsResource` stand-in whose provider takes the dialogue path, like ElevenLabs,
+    and records the text it was asked to speak."""
+
+    provider = "fake-dialogue"
+
+    def __init__(self) -> None:
+        self.spoken: list[str] = []
+
+    def build(self) -> Any:
+        tts = self
+
+        class _Provider:
+            format = "mp3"
+            dialogue = True
+            dialogue_budget = 5000
+
+            def synthesize(self, req: Any) -> SynthesisResult:
+                raise AssertionError("the dialogue path must be used")
+
+            def synthesize_dialogue(self, req: DialogueRequest) -> SynthesisResult:
+                tts.spoken.extend(i.text for i in req.inputs)
+                return SynthesisResult(audio=b"\x00", duration_ms=1000)
+
+        return _Provider()
+
+
+def test_audio_clips_inline_the_defs_kdl_pronunciations(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0037 PIPE-14: the IPA wrap runs in the asset, with the terms from `defs.kdl`."""
+    defs = tmp_path / "defs.kdl"
+    defs.write_text('entry "Faerrin" ipa="ˈfɛrɪn" {\n    variant "Fairin"\n}\n', encoding="utf-8")
+    monkeypatch.setattr(mp, "load_pronunciations", functools.partial(load_pronunciations, defs))
+    paths = paths_under(tmp_path)
+    hosts = mp.load_hosts()
+    script = Script(
+        session_id=DATE,
+        title="t",
+        hosts=hosts,
+        turns=[
+            ScriptTurn(speaker="A", text="Back in Faerrin again."),
+            ScriptTurn(speaker="B", text="Faerrin, twice [laughs] in Faerrin."),
+        ],
+    )
+    (paths.episodes / DATE).mkdir(parents=True)
+    (paths.episodes / DATE / "script.json").write_text(script.model_dump_json())
+    instance = dg.DagsterInstance.ephemeral()
+    instance.add_dynamic_partitions(SESSIONS_NAME, [DATE])
+    tts = _DialogueTts()
+
+    result = dg.materialize(
+        [mp.session_audio_clips],
+        partition_key=DATE,
+        instance=instance,
+        resources={"pipeline_paths": paths, "tts": tts},
+    )
+
+    assert result.success
+    first, second = tts.spoken
+    assert "in /ˈfɛrɪn/ again" in first and "Faerrin" not in first
+    # Once per turn, the first time; the [laughs] tag passes through untouched.
+    assert second.count("/ˈfɛrɪn/") == 1 and "[laughs] in Faerrin" in second
+    metadata = result.asset_materializations_for_node("session_audio_clips")[0].metadata
+    assert metadata["pronunciations"] == dg.IntMetadataValue(1)
+    assert metadata["mode"] == dg.TextMetadataValue("dialogue")
 
 
 def test_defs_bind_the_shared_resources_and_tts() -> None:

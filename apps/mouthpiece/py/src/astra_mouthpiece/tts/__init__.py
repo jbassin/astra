@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from .dialogue import DEFAULT_DIALOGUE_BUDGET, chunk_turns
 from .mock import MockTTSProvider
-from .pronunciation import Lexicon, apply_pronunciations, load_lexicon
+from .pronunciation import Lexicon, apply_pronunciations
 from .provider import (
     DialogueInput,
     DialogueRequest,
@@ -32,7 +32,6 @@ __all__ = [
     "TTSProvider",
     "apply_pronunciations",
     "chunk_turns",
-    "load_lexicon",
     "render_delivery",
     "strip_audio_tags",
     "synthesize_script",

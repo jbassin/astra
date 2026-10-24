@@ -21,6 +21,7 @@ from pathlib import Path
 import dagster as dg
 from astra_akasha_backend.corpus import load_corpus
 from astra_config import Config
+from astra_lexicon import load_pronunciations
 from astra_linguist.assets import session_episode_summary, session_transcripts
 from astra_linguist.chronicle import recent_prior_entries, season_for, show_for_date
 from astra_observe import get_logger, get_meter, get_tracer
@@ -264,18 +265,26 @@ def session_script(
 def session_audio_clips(
     context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths, tts: TtsResource
 ) -> dg.MaterializeResult:
-    """Script → TTS clips + manifest (Stage 4; ElevenLabs / mock)."""
+    """Script → TTS clips + manifest (Stage 4; ElevenLabs / mock).
+
+    The dialogue path inlines the IPA of every `defs.kdl` entry that has one (M6)."""
     key = context.partition_key
     root = pipeline_paths.episodes
     with _tracer.start_as_current_span("mouthpiece.session_audio_clips") as span:
         span.set_attribute("mouthpiece.key", key)
         script = _read_script(root, key)
         hosts = load_hosts()
+        pronunciations = load_pronunciations()
+        span.set_attribute("mouthpiece.pronunciations", len(pronunciations))
         provider = tts.build()
         span.set_attribute("mouthpiece.tts_provider", tts.provider)
         try:
             manifest = synthesize_script(
-                script, provider=provider, voices=_voices(hosts), out_dir=_session_dir(root, key)
+                script,
+                provider=provider,
+                voices=_voices(hosts),
+                out_dir=_session_dir(root, key),
+                pronunciations=pronunciations,
             )
         except TtsClientError as err:
             # A 4xx is deterministic: the RetryPolicy would re-render (and re-bill) every
@@ -290,7 +299,13 @@ def session_audio_clips(
         _log.info(
             "mouthpiece synthesized %s → %d clips (%s)", key, len(manifest.clips), manifest.mode
         )
-        return dg.MaterializeResult(metadata={"clips": len(manifest.clips), "mode": manifest.mode})
+        return dg.MaterializeResult(
+            metadata={
+                "clips": len(manifest.clips),
+                "mode": manifest.mode,
+                "pronunciations": len(pronunciations),
+            }
+        )
 
 
 @dg.asset(partitions_def=sessions, deps=[session_audio_clips], group_name="mouthpiece")

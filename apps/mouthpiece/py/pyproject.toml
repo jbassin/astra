@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 dependencies = [
     "astra-akasha-backend",
     "astra-config",
+    "astra-lexicon",
     "astra-linguist",
     "astra-llm",
     "astra-observe",
