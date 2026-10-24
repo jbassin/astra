@@ -2,9 +2,10 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+import type postgres from "postgres";
 import { describe, expect, test } from "vitest";
 
-import { checksum, loadMigrations, MigrationError, parseMigrations, plan } from "./index";
+import { checksum, loadMigrations, migrate, MigrationError, parseMigrations, plan } from "./index";
 
 const files = (...names: string[]) => names.map((file) => ({ file, sql: `-- ${file}` }));
 
@@ -88,5 +89,57 @@ describe("plan", () => {
     const { pending, ahead } = plan(ms.slice(0, 2), [row(0), row(1), row(2)]);
     expect(pending).toEqual([]);
     expect(ahead.map((r) => r.version)).toEqual([3]);
+  });
+});
+
+// A scripted connection: each statement answers no rows or throws, so the cleanup paths a dead
+// connection would take run without one. (postgres.js hangs on a reserved connection whose
+// backend was terminated, so a real-Postgres version of these tests is not practical.)
+function fakeSql(fail: (stmt: string) => boolean) {
+  const ran: string[] = [];
+  let released = false;
+  const conn = {
+    unsafe: (stmt: string) => {
+      ran.push(stmt);
+      if (fail(stmt)) return Promise.reject(new Error(`failed: ${stmt}`));
+      return Promise.resolve([]);
+    },
+    release: () => {
+      released = true;
+    },
+  };
+  const sql = { reserve: () => Promise.resolve(conn) } as unknown as postgres.Sql;
+  return { sql, ran, released: () => released };
+}
+
+describe("migrate cleanup", () => {
+  const ms = parseMigrations([{ file: "0001_boom.sql", sql: "boom" }]);
+
+  test("a failed rollback and unlock don't replace the migration's error", async () => {
+    const f = fakeSql((s) => s === "boom" || s === "rollback" || s.includes("advisory_unlock"));
+    const err = await migrate(f.sql, ms).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(MigrationError);
+    expect((err as MigrationError).message).toMatch(/^0001_boom.sql failed and was rolled back/);
+    expect((err as MigrationError).suppressed.map(String)).toEqual([
+      "Error: failed: rollback",
+      expect.stringContaining("advisory_unlock"),
+    ]);
+    expect(f.released()).toBe(true);
+  });
+
+  test("a lock timeout fails with a lock message and skips the unlock", async () => {
+    const f = fakeSql((s) => s.includes("advisory_lock("));
+    await expect(migrate(f.sql, ms, { lockTimeoutMs: 50 })).rejects.toThrow(
+      /could not take the migration lock within 50 ms/,
+    );
+    expect(f.ran).toContain("set lock_timeout = 50");
+    expect(f.ran.some((s) => s.includes("advisory_unlock"))).toBe(false);
+  });
+
+  test("after a clean run, a failed unlock still fails the run", async () => {
+    const f = fakeSql((s) => s.includes("advisory_unlock"));
+    await expect(
+      migrate(f.sql, parseMigrations([{ file: "0001_ok.sql", sql: "ok" }])),
+    ).rejects.toThrow(/cleanup after migrating failed/);
   });
 });
