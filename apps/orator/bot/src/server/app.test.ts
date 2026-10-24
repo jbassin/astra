@@ -145,3 +145,30 @@ describe("fail closed (0037 SVC-2)", () => {
     expect(() => makeApp(testConfig({ sessionSecret: blank }))).toThrow(/sessionSecret is blank/);
   });
 });
+
+describe("body validation (zod schemas; the codes are the handlers' own)", () => {
+  const cookie = `orator_session=${signSession("allowed-uid", SECRET)}`;
+  function send(method: string, path: string, body: unknown) {
+    return makeApp().handle(
+      new Request(`https://orator.test${path}`, {
+        method,
+        headers: { cookie, "content-type": "application/json" },
+        body: JSON.stringify(body),
+      }),
+    );
+  }
+
+  test.each([
+    ["POST", "/api/v1/collections", { name: 5 }, "name_required"],
+    ["POST", "/api/v1/collections", null, "name_required"],
+    ["POST", "/api/v1/tracks/bulk-delete", { ids: ["1"] }, "ids_required"],
+    ["POST", "/api/v1/tracks/bulk-move", { ids: [1.5] }, "ids_required"],
+    ["POST", "/api/v1/tracks/bulk-rename", { ids: [1], ops: "x" }, "ids_and_ops_required"],
+    ["POST", "/api/v1/tracks/bulk-tag", { ids: [1], addTags: [3] }, "invalid_body"],
+    ["POST", "/api/v1/keys", { name: ["deck"] }, "invalid_body"],
+  ])("%s %s %j answers 400 %s", async (method, path, body, code) => {
+    const res = await send(method, path, body);
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: code });
+  });
+});

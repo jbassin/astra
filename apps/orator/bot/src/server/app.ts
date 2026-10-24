@@ -1,51 +1,53 @@
 /**
- * The orator HTTP app (lark §7). `createApp()` returns a pure `handle(req)` that
- * can be unit-tested without binding a port, opening a Discord connection, or
- * hitting the network. `startServer()` binds it on srvx (R3, 0022 S8 — off
- * `Bun.serve`).
+ * The orator HTTP app (lark §7), served by `@astra/service-kit`. `createApp()`
+ * returns a pure `handle(req)` that can be unit-tested without binding a port,
+ * opening a Discord connection, or hitting the network. `startServer()` binds it.
  *
- * Layering: auth routes (login/callback/logout) + an open health check are
- * special-cased; everything under `/api/` is dispatched through the router, which
- * resolves the actor from a **web session** (Discord OAuth → signed cookie) OR a
- * Bearer **API key** (same `uid` either way). The operator allowlist is derived
- * from the ontology (M1) and threaded in as `config.allowlist`.
+ * Layering: the auth routes (login/callback/logout), the open health check and the
+ * RUM config are public kit routes; everything else under `/api/` is one kit route
+ * group whose `authenticate` resolves the actor from a **web session** (Discord OAuth
+ * → signed cookie) OR a Bearer **API key** (same `uid` either way) and answers 401
+ * before any route lookup. The operator allowlist is derived from the ontology (M1)
+ * and threaded in as `config.allowlist`.
  *
  * astra port: the sync `bun:sqlite` `db` → the async `LibraryStore`; cookie
  * `lark_session`→`orator_session`; logs `[lark]`→`[orator]`. The HMAC OAuth
  * `state` (stateless CSRF) and the "Add to Server" callback branch are preserved
  * verbatim; `idleTimeout:60` has no srvx equivalent — see `startServer()`'s note.
+ * Every response is pinned in `pins.test.ts`.
  */
 import { randomBytes } from "node:crypto";
 import { stat } from "node:fs/promises";
-import type * as NodeHttp from "node:http";
 import { resolve } from "node:path";
 
 import { isBlankSecret } from "@astra/config";
-import { getLogger, getTracer, lazyCounter } from "@astra/observe";
+import { lazyCounter } from "@astra/observe";
+import {
+  createHandler,
+  createService,
+  type Route,
+  type RouteGroup,
+  route,
+  type Service,
+  type ServiceDefinition,
+} from "@astra/service-kit";
 import { serveFile } from "@astra/site-kit";
-import { SpanStatusCode } from "@opentelemetry/api";
-import { type Server, serve } from "srvx";
+import type { Server } from "srvx";
 
 import type { LibraryStore } from "../db/store";
 import { extractApiKey, hashKey } from "./apikeys";
 import { buildAuthorizeUrl, exchangeCodeForUser, type OAuthConfig } from "./oauth";
-import {
-  type ApiRoute,
-  type ApiServices,
-  HttpError,
-  json,
-  matchRoute,
-  type Session,
-} from "./router";
+import { type ApiRoute, type ApiServices, json, type Session } from "./router";
 import { ingestRoutes } from "./routes/ingest";
 import { keyRoutes } from "./routes/keys";
 import { libraryRoutes } from "./routes/library";
 import { playbackRoutes } from "./routes/playback";
 import { clearCookie, parseCookies, sessionCookie, signSession, verifySession } from "./sessions";
 
-// API observability: one span per authenticated API call + a request counter by outcome.
-const tracer = getTracer("astra.orator-backend");
-const log = getLogger("astra.orator-backend");
+const SERVICE_NAME = "astra.orator-backend";
+
+// API observability: the kit names each request's HTTP span after its route template
+// (`GET /api/v1/tracks/:id`); this counts API requests by outcome.
 const apiCounter = lazyCounter("astra.orator-backend", "astra.orator.api.requests", {
   description: "Authenticated API requests, by outcome",
 });
@@ -61,7 +63,12 @@ async function isFile(p: string): Promise<boolean> {
 }
 
 /** API routes that require a valid session or API key. Extended per slice. */
-const API_ROUTES: ApiRoute[] = [...libraryRoutes, ...playbackRoutes, ...ingestRoutes, ...keyRoutes];
+export const API_ROUTES: ApiRoute[] = [
+  ...libraryRoutes,
+  ...playbackRoutes,
+  ...ingestRoutes,
+  ...keyRoutes,
+];
 
 /** The full runtime config the app needs (built in the entrypoint from cfg.orator). */
 export interface AppConfig {
@@ -97,7 +104,14 @@ export interface App {
   handle(req: Request): Promise<Response>;
 }
 
-export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps = {}): App {
+/** The actor of an authenticated API request. */
+interface Actor {
+  session: Session;
+  method: "session" | "apikey";
+}
+
+/** The service definition: everything `createApp` and `startServer` serve. */
+function defineApp(config: AppConfig, store: LibraryStore, deps: AppDeps): ServiceDefinition {
   // Defence in depth behind the entrypoint's startup guards (0037 SVC-2): HMAC with a
   // blank key would let anyone mint a valid session cookie.
   if (isBlankSecret(config.sessionSecret)) {
@@ -117,9 +131,7 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
   }
 
   /** Resolve the actor from a web session OR a Stream Deck API key (B26/D4). */
-  async function authenticate(
-    req: Request,
-  ): Promise<{ session: Session; method: "session" | "apikey" } | null> {
+  async function authenticate(req: Request): Promise<Actor | null> {
     const session = getSession(req);
     if (session) return { session, method: "session" };
 
@@ -190,61 +202,25 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
     });
   }
 
-  // oxlint-disable-next-line require-await -- an async request handler: a throw becomes a rejected response promise
-  async function dispatchApi(req: Request, url: URL): Promise<Response> {
-    return tracer.startActiveSpan(
-      "orator.api",
-      { attributes: { "http.method": req.method, "url.path": url.pathname } },
-      async (span) => {
-        try {
-          const auth = await authenticate(req);
-          if (!auth) {
-            apiCounter.add(1, { outcome: "unauthenticated" });
-            return json({ error: "unauthenticated" }, 401);
-          }
-          const matched = matchRoute(API_ROUTES, req.method, url.pathname);
-          if (!matched) {
-            apiCounter.add(1, { outcome: "not_found" });
-            return json({ error: "not_found" }, 404);
-          }
-          try {
-            const res = await matched.route.handler({
-              req,
-              url,
-              params: matched.params,
-              session: auth.session,
-              authMethod: auth.method,
-              store,
-              config: { guildId: config.guildId, dataDir: config.dataDir },
-              services,
-            });
-            span.setAttribute("http.status_code", res.status);
-            apiCounter.add(1, { outcome: "ok" });
-            return res;
-          } catch (err) {
-            if (err instanceof HttpError) {
-              apiCounter.add(1, { outcome: "client_error" });
-              return json({ error: err.message }, err.status);
-            }
-            // PlaybackError and similar carry a numeric `status`.
-            const status = (err as { status?: unknown }).status;
-            if (typeof status === "number") {
-              apiCounter.add(1, { outcome: "client_error" });
-              return json({ error: (err as Error).message ?? "error" }, status);
-            }
-            apiCounter.add(1, { outcome: "error" });
-            span.setStatus({ code: SpanStatusCode.ERROR, message: String(err) });
-            log.emit({
-              severityText: "ERROR",
-              body: `api error on ${req.method} ${url.pathname}: ${err instanceof Error ? err.message : String(err)}`,
-            });
-            return json({ error: "internal" }, 500);
-          }
-        } finally {
-          span.end();
-        }
-      },
-    );
+  /** An orator API route as a kit route: the handler gets the actor, store and services. */
+  function apiRouteOf(api: ApiRoute): Route<Actor> {
+    return route<unknown, Actor>({
+      method: api.method,
+      path: api.path,
+      body: api.body,
+      handler: (ctx) =>
+        api.handler({
+          req: ctx.req,
+          url: ctx.url,
+          params: ctx.params,
+          body: ctx.body,
+          session: ctx.auth.session,
+          authMethod: ctx.auth.method,
+          store,
+          config: { guildId: config.guildId, dataDir: config.dataDir },
+          services,
+        }),
+    });
   }
 
   // Bun.file(...) → @astra/site-kit's `serveFile` (the `send`-backed Range/206
@@ -263,32 +239,56 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
     return new Response("not found\n", { status: 404 });
   }
 
-  // oxlint-disable-next-line require-await -- an async request handler: a throw becomes a rejected response promise
-  async function handle(req: Request): Promise<Response> {
-    const url = new URL(req.url);
-    const { pathname } = url;
+  const api: RouteGroup<Actor> = {
+    prefix: "/api/",
+    // Runs before the route lookup: an unauthenticated caller gets 401 for every
+    // /api/ path, real or not.
+    authenticate,
+    routes: API_ROUTES.map(apiRouteOf),
+    onOutcome: (outcome) => apiCounter.add(1, { outcome }),
+  };
 
-    if (req.method === "GET" && pathname === "/auth/login") return login();
-    if (req.method === "GET" && pathname === "/auth/callback") return callback(url);
-    if (req.method === "POST" && pathname === "/auth/logout") return logout();
+  return {
+    serviceName: SERVICE_NAME,
+    routes: [
+      route({ method: "GET", path: "/auth/login", handler: () => login() }),
+      route({ method: "GET", path: "/auth/callback", handler: (ctx) => callback(ctx.url) }),
+      route({ method: "POST", path: "/auth/logout", handler: () => logout() }),
+      // The legacy open health check (any method); the compose healthcheck uses /healthz.
+      route({ method: "*", path: "/api/v1/health", handler: () => json({ ok: true }) }),
+      // Public, unauthenticated: the static operator SPA fetches this at startup to
+      // configure browser RUM (it can't read config.kdl itself — see web/observe).
+      route({
+        method: "*",
+        path: "/api/v1/rum-config",
+        handler: () => json({ endpoint: config.rumEndpoint }),
+      }),
+    ],
+    groups: [api],
+    fallback: (req) => {
+      if (req.method === "GET" || req.method === "HEAD") return serveStatic(req);
+      return json({ error: "method_not_allowed" }, 405);
+    },
+    // /healthz is ready only while Postgres answers.
+    probes: {
+      postgres: async () => {
+        await store.ping();
+        return true;
+      },
+    },
+  };
+}
 
-    if (pathname === "/api/v1/health") return json({ ok: true });
-    // Public, unauthenticated: the static operator SPA fetches this at startup to
-    // configure browser RUM (it can't read config.kdl itself — see web/observe).
-    if (pathname === "/api/v1/rum-config") return json({ endpoint: config.rumEndpoint });
-    if (pathname.startsWith("/api/")) return dispatchApi(req, url);
-
-    if (req.method === "GET" || req.method === "HEAD") return serveStatic(req);
-    return json({ error: "method_not_allowed" }, 405);
-  }
-
+export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps = {}): App {
+  const { handle } = createHandler(defineApp(config, store, deps));
   return { store, config, handle };
 }
 
 export interface RunningServer {
   server: Server;
+  service: Service;
   app: App;
-  stop(): void;
+  stop(): Promise<void>;
 }
 
 export function startServer(
@@ -296,27 +296,15 @@ export function startServer(
   store: LibraryStore,
   deps: AppDeps = {},
 ): RunningServer {
-  const app = createApp(config, store, deps);
-  // Bun.serve → srvx (R3, 0022 S8 — B3). Voice join can take a few seconds; Bun's
-  // `idleTimeout: 60` (seconds) would cut a /playback/play request off mid-join at
-  // the default 10s — srvx has NO idleTimeout option, so this is not dropped
-  // silently: once the server is listening, reach the underlying Node
-  // `http.Server` via the `.node.server` escape hatch and set the closest Node
-  // analogs — `keepAliveTimeout` (idle time on an already-served keep-alive
-  // connection) and `headersTimeout` (which Node requires to exceed it).
-  const server = serve({ port: config.port, hostname: "0.0.0.0", fetch: app.handle });
-  void server.ready().then((s) => {
-    const nodeServer = s.node?.server as NodeHttp.Server | undefined;
-    if (nodeServer) {
-      nodeServer.keepAliveTimeout = 60_000; // the idleTimeout: 60 mapping
-      nodeServer.headersTimeout = 61_000; // must exceed keepAliveTimeout (Node requirement)
-    }
+  const service = createService({
+    ...defineApp(config, store, deps),
+    port: config.port,
+    // Bun.serve → srvx (R3, 0022 S8 — B3). Bun's `idleTimeout: 60` (seconds) has no
+    // srvx option; these are the closest Node analogs — `keepAliveTimeout` (idle time
+    // on an already-served keep-alive connection) and `headersTimeout` (which Node
+    // requires to exceed it).
+    node: { keepAliveTimeout: 60_000, headersTimeout: 61_000 },
   });
-  return {
-    server,
-    app,
-    stop: () => {
-      void server.close(true);
-    },
-  };
+  const app: App = { store, config, handle: service.handle };
+  return { server: service.server, service, app, stop: () => service.close() };
 }

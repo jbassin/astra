@@ -639,6 +639,9 @@ importers:
       '@astra/pg-migrate':
         specifier: workspace:*
         version: link:../../../libs/ts/pg-migrate
+      '@astra/service-kit':
+        specifier: workspace:*
+        version: link:../../../libs/ts/service-kit
       '@astra/site-kit':
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit
@@ -678,6 +681,9 @@ importers:
       srvx:
         specifier: 'catalog:'
         version: 0.11.20
+      zod:
+        specifier: ^4.4.3
+        version: 4.6.7
     devDependencies:
       '@tailwindcss/vite':
         specifier: 'catalog:'

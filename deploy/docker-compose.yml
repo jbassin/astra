@@ -532,7 +532,7 @@ services:
       - "10363:10363" # orator-backend (astra range) — also reachable directly
     healthcheck:
       <<: *node-healthcheck
-      test: ["CMD", "node", "-e", "await fetch('http://localhost:10363/api/v1/health').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10363/healthz').then(r=>process.exit(r.ok?0:1))"]
 
   # --- harrow: the tarot deck reader (0017) — SSR Compose service behind Caddy
   # (Decision I), a backend-less sibling of strider. No DB, no audio/asset volume

@@ -50,6 +50,10 @@ describe.skipIf(TEST_DATABASE_URL === undefined)("PostgresStore (real Postgres)"
     await db.drop();
   });
 
+  test("ping answers while the database is up (the /healthz probe)", async () => {
+    await expect(store.ping()).resolves.toBeUndefined();
+  });
+
   test("the migrations create the library tables with by-default identity ids", async () => {
     const tables = await sql`
       select table_name from information_schema.tables

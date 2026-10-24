@@ -7,7 +7,9 @@
  * `x-orator-key`. The stored credential is a SHA-256 of the raw key, so the
  * prefix is cosmetic — keys migrated from lark keep verifying.
  */
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
+
+import { safeEqual } from "@astra/service-kit";
 
 export interface GeneratedKey {
   /** The raw secret — returned to the user exactly once, never stored. */
@@ -32,10 +34,7 @@ export function generateKey(): GeneratedKey {
 
 /** Constant-time comparison of a presented key against a stored hash. */
 export function verifyKey(rawPresented: string, storedHash: string): boolean {
-  const a = Buffer.from(hashKey(rawPresented), "hex");
-  const b = Buffer.from(storedHash, "hex");
-  if (a.length !== b.length) return false;
-  return timingSafeEqual(a, b);
+  return safeEqual(hashKey(rawPresented), storedHash);
 }
 
 /** Extract a bearer/X-Orator-Key credential from request headers. */

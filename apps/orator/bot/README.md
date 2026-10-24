@@ -34,7 +34,7 @@ its library in the `orator-postgres` service (host port 10364). Config is the `o
   but every playback route answers 503.
 - **A new `orator` config key goes in two places, then `just ontology-gen`:** `config.kdl` and
   `OratorConfig` in `libs/py/config/src/astra_config/models.py` (required, no default). `just
-  ontology-gen` regenerates the TS Zod schema (`libs/ts/config/src/config.gen.ts`) from it; commit
+ontology-gen` regenerates the TS Zod schema (`libs/ts/config/src/config.gen.ts`) from it; commit
   both. Python never loads `orator`, but the whole-file CI test (`test_whole_config_kdl_validates`)
   validates it against `OratorConfig`, and `ontology-check` fails CI on a stale Zod schema.
 - **The schema is the numbered files in `migrations/`** (`libs/ts/pg-migrate`), applied at boot.
@@ -52,5 +52,12 @@ its library in the `orator-postgres` service (host port 10364). Config is the `o
   `dist/fonts/` at build, because Caddy does not inject them for orator. The SPA reads its RUM
   endpoint from the public `/api/v1/rum-config` route, since a Router-only app has no server
   functions.
+- **The HTTP layer is `@astra/service-kit`** (`src/server/app.ts`). Everything under `/api/` except
+  `/api/v1/health` and `/api/v1/rum-config` is one authenticated route group: a request with no valid
+  session or API key gets 401 before any route lookup, real path or not. Route bodies are zod schemas
+  in the route modules (`src/server/bodies.ts`); their messages are the API error codes, and
+  `src/server/pins.test.ts` pins every response. The compose healthcheck probes `/healthz`, which
+  answers 503 while Postgres does not; on SIGTERM the server drains, then the bot leaves Discord, then
+  the store closes.
 - **Ingest progress is SSE.** The Caddy stanza disables buffering (`flush_interval -1`) on the job
   events path only; keep that if you touch the edge config.

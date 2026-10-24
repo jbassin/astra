@@ -5,8 +5,11 @@
  *
  * astra port: `resolveTrackIds` reads the async `ctx.store` (was sync `repo`).
  */
+import { z } from "zod";
+
 import type { PlaybackEngine } from "../../bot/playback";
-import { type ApiCtx, type ApiRoute, HttpError, json, readJson } from "../router";
+import { ids, int, jsonBody, text } from "../bodies";
+import { type ApiCtx, type ApiRoute, apiRoute, HttpError, json } from "../router";
 
 function engineOf(ctx: ApiCtx): PlaybackEngine {
   const e = ctx.services.playback;
@@ -54,25 +57,26 @@ export const playbackRoutes: ApiRoute[] = [
     },
   },
 
-  {
+  apiRoute({
     method: "POST",
     path: "/api/v1/playback/play",
+    body: jsonBody({
+      trackIds: ids().optional(),
+      trackId: int().optional(),
+      collectionId: int().optional(),
+      playlistId: int().optional(),
+      channelId: text(),
+    }),
     handler: async (ctx) => {
       const engine = engineOf(ctx);
-      const body = await readJson<{
-        trackIds?: number[];
-        trackId?: number;
-        collectionId?: number;
-        playlistId?: number;
-        channelId?: string;
-      }>(ctx.req);
+      const body = await ctx.body();
       const trackIds = await resolveTrackIds(ctx, body);
       if (trackIds.length === 0) throw new HttpError(404, "no_tracks");
       return json(
         await engine.play({ trackIds, userId: ctx.session.uid, channelId: body.channelId }),
       );
     },
-  },
+  }),
 
   {
     method: "POST",
@@ -100,29 +104,31 @@ export const playbackRoutes: ApiRoute[] = [
     handler: async (ctx) => json(await engineOf(ctx).prev()),
   },
 
-  {
+  apiRoute({
     method: "POST",
     path: "/api/v1/playback/loop",
+    body: jsonBody({
+      mode: z.enum(["none", "track", "playlist"], { error: "invalid_mode" }).optional(),
+    }),
     handler: async (ctx) => {
-      const body = await readJson<{ mode?: "none" | "track" | "playlist" }>(ctx.req);
+      const body = await ctx.body();
       if (!body.mode || !["none", "track", "playlist"].includes(body.mode))
         throw new HttpError(400, "invalid_mode");
       return json(await engineOf(ctx).setLoop(body.mode));
     },
-  },
+  }),
 
-  {
+  apiRoute({
     method: "POST",
     path: "/api/v1/voice/join",
+    body: jsonBody({ channelId: text() }),
     handler: async (ctx) => {
-      const body = await readJson<{ channelId?: string }>(ctx.req).catch(
-        // oxlint-disable-next-line typescript/no-unnecessary-type-assertion -- tsc needs it, or body.channelId doesn't typecheck
-        () => ({}) as { channelId?: string },
-      );
+      // The body is optional here: none (or a bad one) means "follow the operator".
+      const body = await ctx.body().catch(() => ({ channelId: undefined }));
       await engineOf(ctx).join({ userId: ctx.session.uid, channelId: body.channelId });
       return json(engineOf(ctx).nowPlaying());
     },
-  },
+  }),
   {
     method: "POST",
     path: "/api/v1/voice/leave",

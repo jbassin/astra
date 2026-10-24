@@ -3,7 +3,8 @@
  * Discord music bot: voice + library + REST + operator SPA). Telemetry (traces, metrics,
  * logs, HTTP/fetch spans and the SIGTERM flush) is already installed by
  * `node --import @astra/observe/register`; this wires config + ontology + the Postgres
- * store, then optionally the Discord bot, then serves the REST API + the SPA.
+ * store, then optionally the Discord bot, then serves the REST API + the SPA through
+ * `@astra/service-kit` (`/healthz`, route-named spans, the ordered shutdown).
  *
  * The bot is **optional**: without a resolved token the web UI + library + REST
  * still run, and playback routes return 503 (the deferred live-Discord seam).
@@ -15,7 +16,7 @@ import { mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { loadConfig } from "@astra/config";
-import { exitAfterFlush, logger, onShutdown } from "@astra/observe";
+import { exitAfterFlush, logger } from "@astra/observe";
 import { loadBeing } from "@astra/ontology";
 import { describeResult } from "@astra/pg-migrate";
 
@@ -94,6 +95,7 @@ async function main(): Promise<void> {
   // The Discord bot (voice/playback) is optional: without a token the web UI +
   // library still run, and playback routes return 503.
   let playback: PlaybackEngine | undefined;
+  let stopBot: (() => void) | undefined;
   const token = cfg.orator.discordToken?.optional();
   if (token && config.guildId) {
     try {
@@ -104,6 +106,7 @@ async function main(): Promise<void> {
         targetLufs: config.targetLufs,
       });
       playback = bot.engine;
+      stopBot = bot.stop;
       log.info("discord bot online (in-process voice)");
     } catch (err) {
       log.error(`discord bot failed to start (playback disabled): ${err}`);
@@ -112,13 +115,13 @@ async function main(): Promise<void> {
     log.info("no DISCORD_TOKEN/guild — playback disabled (web UI + library still run)");
   }
 
-  const { server } = startServer(config, store, {
+  const { service } = startServer(config, store, {
     services: { playback, ingest, hub, prober: ffmpegProber },
   });
-  // srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
-  // listening completes (async on the Node runtime), so log from `.ready()`.
-  void server.ready().then((s) => log.info(`orator-backend listening on ${s.url}`));
-  onShutdown(() => server.close(true));
+  // On SIGTERM the kit drains the server first; then these run, last registered first:
+  // the bot leaves Discord, then the store closes its Postgres pool.
+  service.onShutdown(() => store.close());
+  if (stopBot) service.onShutdown(stopBot);
   log.info(`operator allowlist: ${allowlist.size} id(s); data dir: ${dataDir}`);
 }
 
