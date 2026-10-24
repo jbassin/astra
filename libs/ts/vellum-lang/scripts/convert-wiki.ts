@@ -3,10 +3,11 @@
  * One-shot faerrin-wiki → full-vellum converter (astra 0007, decision E3/F2).
  *
  *   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
- *     libs/ts/vellum-lang/scripts/convert-wiki.ts [--src <wiki>] [--dest <corpus>]
+ *     libs/ts/vellum-lang/scripts/convert-wiki.ts --dest <corpus> [--src <wiki>]
  *
  * Reads faerrin's Obsidian wiki and writes the akasha SSOT corpus (full-vellum)
- * under apps/akasha/py/content/. Idempotent. Emits a per-page conversion
+ * under <corpus>. --dest is required: the corpus lives in the astra-data clone
+ * (config.kdl data.akasha-content), never in a code checkout. Idempotent. Emits a per-page conversion
  * report (convert-report.json) flagging any page that still needs a human eye.
  * The TS validator (validate-corpus.ts) is the zero-error-chips gate that follows.
  *
@@ -26,13 +27,21 @@ import { dirname, join, relative, resolve } from "node:path";
 
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
-const REPO = resolve(import.meta.dirname, "../../../..");
 const SRC = argValue("--src") ?? "/ruby/data/experiments/faerrin/pkg/content/wiki";
-const DEST = argValue("--dest") ?? join(REPO, "apps/akasha/py/content");
+const DEST = requiredArg("--dest", "the akasha corpus dir, config.kdl data.akasha-content");
 
 function argValue(flag: string): string | undefined {
   const i = process.argv.indexOf(flag);
   return i >= 0 ? process.argv[i + 1] : undefined;
+}
+
+function requiredArg(flag: string, what: string): string {
+  const v = argValue(flag);
+  if (!v || v.startsWith("--")) {
+    console.error(`convert-wiki: ${flag} <dir> is required (${what})`);
+    process.exit(2);
+  }
+  return resolve(v);
 }
 
 interface PageReport {
@@ -294,7 +303,7 @@ function main(): void {
   const reportPath = join(DEST, "..", "migrate", "convert-report.json");
   mkdirSync(dirname(reportPath), { recursive: true });
   writeFileSync(reportPath, `${JSON.stringify({ count: reports.length, reports }, null, 2)}\n`);
-  console.log(`converted ${reports.length} pages → ${relative(REPO, DEST)}`);
+  console.log(`converted ${reports.length} pages → ${DEST}`);
   console.log(`flagged for hand-review: ${flagged.length}`);
   for (const r of flagged) console.log(`  ${r.rel}  [${r.flags.join(", ")}]`);
 }
