@@ -223,6 +223,7 @@ check_mount() {
     echo "no FUSE mount above '$DRIVE_MOUNT' — Drive is unmounted, pipeline ingest is blind (fix: sudo systemctl restart gdrive.service)"
     return 1
   fi
+  # shellcheck disable=SC2016 # $1 expands in the inner bash, which gets the mount as its arg
   if run_bounded 20 bash -c 'ls "$1" >/dev/null 2>&1' _ "$DRIVE_MOUNT"; then return 0; fi
   echo "Drive mount '$DRIVE_MOUNT' unresponsive (>20s) — FUSE front door may be wedged (pipeline ingest stalled)"
   return 1
@@ -299,6 +300,7 @@ remediate_mount() {
       echo "$how, but no FUSE mount reappeared above '$DRIVE_MOUNT' in ${REMOUNT_WAIT_S}s — check $GDRIVE_UNIT"
       return 1
     fi
+    # shellcheck disable=SC2016 # $1 expands in the inner bash, which gets the mount as its arg
     if run_bounded 20 bash -c 'ls "$1" >/dev/null 2>&1' _ "$DRIVE_MOUNT"; then
       echo "Drive mount had vanished (daemon alive, Restart= never fired); $how; remounted and '$DRIVE_MOUNT' answers again"
       return 0
@@ -329,6 +331,7 @@ remediate_mount() {
     echo "aborted stale FUSE conn $minor + lazy-unmounted '$mp', but no fresh mount appeared in ${REMOUNT_WAIT_S}s — check gdrive.service (sudo systemctl restart gdrive.service)"
     return 1
   fi
+  # shellcheck disable=SC2016 # $1 expands in the inner bash, which gets the mount as its arg
   if run_bounded 20 bash -c 'ls "$1" >/dev/null 2>&1' _ "$DRIVE_MOUNT"; then
     echo "aborted stale FUSE conn $minor (freed D-state waiters), lazy-unmounted '$mp'; gdrive.service remounted (conn ${newdev#*:}) and '$DRIVE_MOUNT' answers again"
     return 0

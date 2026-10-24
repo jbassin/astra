@@ -103,4 +103,8 @@ EOF
 expect 0 "dead orphans are ignored" --timeout 15 --settle 3 -- -p "$project" -f "$dir/compose-good.yml"
 expect 2 "no containers" --timeout 5 -- -p "$project-missing" -f "$dir/compose.yml"
 
-[ "$fails" -eq 0 ] && echo "wait-healthy: all checks passed" || { echo "wait-healthy: $fails check(s) failed"; exit 1; }
+if [ "$fails" -ne 0 ]; then
+  echo "wait-healthy: $fails check(s) failed"
+  exit 1
+fi
+echo "wait-healthy: all checks passed"

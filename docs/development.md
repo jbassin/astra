@@ -35,7 +35,10 @@ runs the same commands. Differences: CI path-filters its jobs while `just ci` ru
 container's Chromium and fonts. `just ci` also runs the weal-engine crate's cargo gate, so the host
 needs rustup. `pg-test` runs the `*.pg.test.ts` suites against a real Postgres: CI gives it a
 `services: postgres` container, and locally the recipe starts a throwaway one, so `just ci` needs
-Docker. `ci-ok` is the one CI job that sums up the others; a new job must be added to its `needs`.
+Docker. `infra-check` needs it too: it runs shellcheck, hadolint, the edge's Caddy and
+`systemd-analyze` from pinned images (deploy/README.md says what it checks). Shell-script
+findings are fixed or disabled inline with a reason (`# shellcheck disable=SCxxxx # why`), and
+Dockerfile ones the same way (`# hadolint ignore=DLxxxx` under a comment that says why). `ci-ok` is the one CI job that sums up the others; a new job must be added to its `needs`.
 
 ## Hooks
 

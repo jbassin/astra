@@ -29,6 +29,7 @@ jobs:
       vellumRender: ${{ steps.filter.outputs.vellumRender }}
       codex: ${{ steps.filter.outputs.codex }}
       wealEngine: ${{ steps.filter.outputs.wealEngine }}
+      infra: ${{ steps.filter.outputs.infra }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -115,6 +116,19 @@ jobs:
             wealEngine:
               - 'libs/rust/**'
               - 'libs/ts/weal-engine/gen/**'
+              - 'justfile'
+              - '.github/**'
+            # The deploy artifacts infra-check reads: compose, the edge sites, the systemd
+            # units, every shell script and Dockerfile, and the lockfile (the Playwright pin).
+            infra:
+              - 'deploy/**'
+              - 'sites.caddyfile'
+              - '**/*.sh'
+              - '**/*.bash'
+              - '.githooks/**'
+              - '**/Dockerfile'
+              - '**/*.Dockerfile'
+              - 'pnpm-lock.yaml'
               - 'justfile'
               - '.github/**'
 
@@ -385,6 +399,19 @@ jobs:
       - uses: ./.github/actions/setup-just
       - run: just weal-engine-hash-check
 
+  # Static checks of the deploy artifacts (deploy/tests/infra-check.sh): compose config, Caddy
+  # adapt/validate with the edge's Caddy build, shellcheck, systemd-analyze verify, hadolint,
+  # and the Chromium image's Playwright pin. The tools run from pinned images on the runner's
+  # Docker; the compose check uses the runner's docker compose.
+  infra-check:
+    needs: changes
+    if: needs.changes.outputs.infra == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-just
+      - run: just infra-check
+
   # Conventional Commits (commitlint.config.js extends @commitlint/config-conventional).
   # Pull requests lint base..head; pushes to main lint only the pushed range, so
   # commits that predate this job can never fail it.
@@ -444,6 +471,7 @@ jobs:
       - weal-engine-rust
       - weal-engine-hash-check
       - assay-store-check
+      - infra-check
       - commitlint
     runs-on: ubuntu-latest
     steps:

@@ -1,0 +1,9 @@
+# A stand-in for the shared reverse proxy's parent Caddyfile, for `just infra-check` only: it
+# defines what sites.caddyfile expects the parent to provide (the `local_only` snippet, copied
+# from the parent) and imports it the way the parent does. The check mounts the repo at /src.
+(local_only) {
+	@not-local not client_ip private_ranges 100.64.0.0/10
+	respond @not-local "Access Denied"
+}
+
+import /src/sites.caddyfile

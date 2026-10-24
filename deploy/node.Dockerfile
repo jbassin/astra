@@ -27,6 +27,41 @@ ARG APP
 ARG CONTENT=none
 ARG RUNTIME=plain
 
+# --- Runtime OS layers (RUNTIME picks one). They are the bottom of every runtime image, so
+# they take nothing from the repo: no APP, no lockfile, no manifests. A source, manifest or
+# lockfile change then rebuilds only the app layers above them, and vellum-render and
+# portal-headless share one Chromium layer. Bump a version ARG to rebuild one. node:24-slim
+# ships a `node` user at uid/gid 1000, so compose's `user: "1000:1000"` carries over. ---
+FROM node:24-slim AS os-plain
+
+FROM node:24-slim AS os-ffmpeg
+# ffmpeg (loudness and encode) and yt-dlp (a python zipapp, so python3) on PATH. yt-dlp is
+# PINNED, not `latest`: YouTube breaks old releases every few weeks (2026-09-07: 2026.07.04
+# got 403 on every download) and a `latest` URL behind a cached layer never refreshes.
+ARG YT_DLP_VERSION=2026.08.19
+# DL3008: the base image tag fixes the Debian release; the archive keeps only each package's
+# newest build there, so an exact apt pin breaks on the next stable update.
+# hadolint ignore=DL3008
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ffmpeg python3 ca-certificates curl \
+    && curl -fsSL "https://github.com/yt-dlp/yt-dlp/releases/download/${YT_DLP_VERSION}/yt-dlp" \
+         -o /usr/local/bin/yt-dlp \
+    && chmod a+rx /usr/local/bin/yt-dlp \
+    && apt-get purge -y curl && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM node:24-slim AS os-chromium
+# Chromium and its system libraries, from the `playwright` release pnpm-lock.yaml locks (the
+# app's own install drives the browser at runtime). `just infra-check` fails when this ARG
+# and the lock disagree, so bump them together. The services launch it with --no-sandbox,
+# since a container has no user-namespace sandbox. The chown is in the same layer so the
+# browser bundle is not stored twice; the runtime user (1000) must read and execute it.
+ARG PLAYWRIGHT_VERSION=1.61.1
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+RUN npx --yes "playwright@${PLAYWRIGHT_VERSION}" install --with-deps chromium \
+    && rm -rf /var/lib/apt/lists/* /root/.npm \
+    && chown -R 1000:1000 /ms-playwright
+
 FROM node:24-slim AS base
 WORKDIR /repo
 # CI=true: pnpm may then replace the modules dir that `pnpm fetch` left (no TTY prompt).
@@ -59,17 +94,26 @@ RUN pnpm install --offline --frozen-lockfile --prod --filter "{./apps/${APP}}...
 
 # The published datasets a content build reads, in the astra-data layout. Only the stage
 # CONTENT names is built, so services with CONTENT=none need no astra-data context.
+# hadolint's DL3022 wants every `COPY --from` to name an earlier stage; `astra-data` is a named
+# build context (compose additional_contexts), not a stage.
 FROM scratch AS content-none
 FROM scratch AS content-akasha
 # The akasha snapshot and corpus, the linguist session JSONs and the chronicle timeline.
+# hadolint ignore=DL3022
 COPY --from=astra-data akasha/snapshot /akasha/snapshot
+# hadolint ignore=DL3022
 COPY --from=astra-data akasha/content /akasha/content
+# hadolint ignore=DL3022
 COPY --from=astra-data linguist/data /linguist/data
+# hadolint ignore=DL3022
 COPY --from=astra-data linguist/timeline /linguist/timeline
 FROM scratch AS content-mouthpiece
 # The episode catalog (episodes-index.json and per-session script.json). The audio is a
 # runtime volume, never baked in.
+# hadolint ignore=DL3022
 COPY --from=astra-data mouthpiece/snapshot /mouthpiece/snapshot
+# The base is one of the stages above, picked by an ARG; DL3006 reads it as an untagged image.
+# hadolint ignore=DL3006
 FROM content-${CONTENT} AS content
 
 # Build the app with all of its dependencies. config.kdl must be present (vite.config.ts
@@ -94,41 +138,10 @@ RUN if [ "$CONTENT" != none ]; then export ASTRA_CONTENT_ROOT=/content; fi \
     && pnpm run --if-present build \
     && rm -rf node_modules
 
-# --- Runtime OS layers (RUNTIME picks one). node:24-slim ships a `node` user at uid/gid
-# 1000, so compose's `user: "1000:1000"` carries over. ---
-FROM node:24-slim AS os-plain
-
-FROM node:24-slim AS os-ffmpeg
-# ffmpeg (loudness and encode) and yt-dlp (a python zipapp, so python3) on PATH. yt-dlp is
-# PINNED, not `latest`: YouTube breaks old releases every few weeks (2026-09-07: 2026.07.04
-# got 403 on every download) and a `latest` URL behind a cached layer never refreshes. Bump
-# the ARG to rebuild the layer.
-ARG YT_DLP_VERSION=2026.08.19
-RUN apt-get update && apt-get install -y --no-install-recommends \
-      ffmpeg python3 ca-certificates curl \
-    && curl -fsSL "https://github.com/yt-dlp/yt-dlp/releases/download/${YT_DLP_VERSION}/yt-dlp" \
-         -o /usr/local/bin/yt-dlp \
-    && chmod a+rx /usr/local/bin/yt-dlp \
-    && apt-get purge -y curl && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
-
-FROM node:24-slim AS os-chromium
-ARG APP
-# Chromium and its system libraries, at the version the lockfile pins for `playwright`
-# (the app's own install, mounted read-only, provides the CLI). The services launch it
-# with --no-sandbox, since a container has no user-namespace sandbox. The chown is in the
-# same layer so the browser bundle is not stored twice; the runtime user (1000) must
-# read and execute it.
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-RUN --mount=type=bind,from=prod,source=/repo,target=/repo \
-    cd "/repo/apps/${APP}" \
-    && npx playwright install --with-deps chromium \
-    && rm -rf /var/lib/apt/lists/* \
-    && chown -R 1000:1000 /ms-playwright
-
 # --- The runtime: production node_modules, the library sources the @astra/* links point
 # at, the ontology (config.kdl is read at runtime by walking up to
 # /repo/ontology/ontology-config; ontology-being by @astra/ontology) and the built app.
+# hadolint ignore=DL3006
 FROM os-${RUNTIME} AS app
 ARG APP
 ARG ENTRY=server.ts
@@ -144,7 +157,8 @@ COPY --from=build /repo/apps/${APP} ./
 # lets Node resolve extensionless TS imports; the second installs telemetry, HTTP and fetch
 # spans and the shutdown flush before the entry loads (the service name comes from the
 # app's package.json `astra.config` block in config.kdl). `exec` makes node PID 1, so it
-# receives the stop signal itself.
+# receives the stop signal itself. The shell form is what expands $APP_ENTRY (DL3025).
+# hadolint ignore=DL3025
 CMD exec node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs \
     --import @astra/observe/register "$APP_ENTRY"
 
