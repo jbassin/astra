@@ -1,10 +1,13 @@
 /**
- * S4's real pipeline orchestrator (spec §3/§4 S4, this deliverable): parses
- * the Foundry snapshot (S2 assembly, incl. journals) → parses the AoN
- * snapshot (S3 extraction) → runs the join (S4, `join.ts`) → emits the
- * deterministic corpus (`emit.ts`) + the transform report (`report.ts`).
+ * The transform: parses the Foundry snapshot (incl. journals) and the AoN snapshot, runs
+ * the join (`join.ts`), the drop and the post-join passes, then emits the deterministic
+ * corpus (`emit.ts`) and the transform report (`report.ts`).
  *
- * The whole orchestration lives in the exported `runTransform` — a PURE
+ * Each step is one entry in `TRANSFORM_PASSES`, which names the state slots it reads and
+ * writes; `passRegistry.ts` validates that registry and runs it. To add a pass, add an
+ * entry (and a slot in `TransformSlots`) at the point in the order where its reads exist.
+ *
+ * `runTransform` is a PURE
  * function of its input paths (no module-scope mutable state: every counter/
  * map is created fresh inside the call), so the CI-hermetic fixture pipeline
  * test (`transform.test.ts`) can call the EXACT SAME code
@@ -32,15 +35,21 @@ import {
   SourcesIndexFileSchema,
 } from "@astra/codex-corpus";
 import { findRepoRoot, loadConfig } from "@astra/config";
+import { exitAfterFlush, getTracer, initTelemetry } from "@astra/observe";
 
 import { dedupeAonMetas } from "./aonDedup";
 import { type AonDocMeta, aonSkipReason, extractAonMeta } from "./aonFacets";
-import { buildAonLinkTable, normalizeUrlKey, type LinkTableDoc } from "./aonLinkTable";
-import { augmentClassStats } from "./augmentClassStats";
-import { normalizeBookNames } from "./bookNormalize";
+import {
+  type AonLinkTable,
+  buildAonLinkTable,
+  normalizeUrlKey,
+  type LinkTableDoc,
+} from "./aonLinkTable";
+import { type AugmentClassStatsResult, augmentClassStats } from "./augmentClassStats";
+import { type BookNormalizeResult, normalizeBookNames } from "./bookNormalize";
 import { isKnownPack } from "./categoryMap";
-import { collapseAdjacentCrossrefs } from "./dedupeCrossrefs";
-import { applyAonPrimaryDrop } from "./drop";
+import { type CollapseCrossrefsResult, collapseAdjacentCrossrefs } from "./dedupeCrossrefs";
+import { type DropResult, applyAonPrimaryDrop } from "./drop";
 import { emitCorpus, writeCanonicalJson, writeCanonicalText, type EmitCorpusResult } from "./emit";
 import {
   EnricherGrammarError,
@@ -58,12 +67,14 @@ import { FoundryHtmlError, parseFoundryHtml } from "./foundryHtml";
 import { walkFiles } from "./fsWalk";
 import { hashDirectory } from "./hash";
 import {
+  type HomebrewSide,
+  type HomebrewTraitsSide,
   assertNoHomebrewCollisions,
   countHomebrewUuidRefs,
   loadHomebrewSide,
   loadHomebrewTraits,
 } from "./homebrew";
-import { type JoinAliasesFile, runJoin } from "./join";
+import { type JoinAliasesFile, type JoinResult, runJoin } from "./join";
 import {
   type JournalDoc,
   type RemasterRedirectEntry,
@@ -75,11 +86,23 @@ import {
   parseRemasterChanges,
   registerExcludedJournal,
 } from "./journals";
-import { applyLevelDefault } from "./levelDefault";
+import { type LevelDefaultResult, applyLevelDefault } from "./levelDefault";
+import {
+  type PassContext,
+  type PassRun,
+  definePass,
+  passClosure,
+  runPasses,
+  validatePasses,
+} from "./passRegistry";
 import { buildReportJson, buildReportMarkdown, type ReportJson } from "./report";
-import { type RulesDocInput, buildRulesTree } from "./rulesTree";
-import { attachSidebars } from "./sidebarAttach";
-import { type AonBookCitation, buildSourcesIndex } from "./sourcesIndexBuild";
+import { type RulesDocInput, type RulesTreeStats, buildRulesTree } from "./rulesTree";
+import { type SidebarAttachResult, attachSidebars } from "./sidebarAttach";
+import {
+  type AonBookCitation,
+  type SourcesIndexStats,
+  buildSourcesIndex,
+} from "./sourcesIndexBuild";
 import {
   type ContainingDoc,
   type PackRegistryEntry,
@@ -317,7 +340,7 @@ function loadAonSide(snapshotDir: string, report: ReportFn, hardFailures: HardFa
 }
 
 // ---------------------------------------------------------------------------
-// runTransform — the exported orchestrator (parse -> join -> emit -> report)
+// The pass registry (passRegistry.ts runs it): parse -> join -> drop -> emit -> report
 // ---------------------------------------------------------------------------
 
 export interface TransformPaths {
@@ -353,6 +376,527 @@ export interface TransformPaths {
   pins: { foundry: CorpusManifest["foundry"]; aon: CorpusManifest["aon"] };
 }
 
+/** The state slots the passes read and write. Each slot has exactly one writer. */
+export interface TransformSlots {
+  foundry: FoundrySide;
+  homebrew: HomebrewSide;
+  homebrewTraits: HomebrewTraitsSide;
+  /** The raw AoN extraction, before the D29-18 dedupe. */
+  aon: AonSide;
+  /** The deduped AoN docs every later pass uses. */
+  aonMetas: readonly AonDocMeta[];
+  aonMarkdownById: Map<string, string>;
+  linkTable: AonLinkTable;
+  joined: JoinResult;
+  finalIdToAonId: Map<string, string>;
+  /** Homebrew spells, rituals and traits as one list. */
+  homebrewEntities: CodexEntity[];
+  drop: DropResult;
+  crossrefDedupe: CollapseCrossrefsResult;
+  levelDefault: LevelDefaultResult;
+  bookNorm: BookNormalizeResult;
+  sidebars: SidebarAttachResult;
+  classStats: AugmentClassStatsResult;
+  /** The entity set that lands in the corpus. */
+  finalEntities: CodexEntity[];
+  emit: EmitCorpusResult;
+  bookSources: { license: Map<string, License>; entityRef: Map<string, string> };
+  rulesTree: RulesTreeStats;
+  sourcesIndex: SourcesIndexStats;
+  report: { json: ReportJson; markdown: string };
+}
+
+export interface TransformContext extends PassContext {
+  paths: TransformPaths;
+  report: ReportFn;
+  /** What `report` has recorded: per class, the count and the first five details. */
+  reportCounts: ReadonlyMap<string, number>;
+  reportExamples: ReadonlyMap<string, string[]>;
+  hardFailures: HardFailure[];
+}
+
+const pass = definePass<TransformSlots, TransformContext>();
+
+/**
+ * Every transform pass, in run order. `validatePasses` checks the order against the
+ * declared reads and writes on every run. The order of passes that call `report` is also
+ * the order of each report class's examples in `report.json`, so moving a pass can change
+ * the report even when every read is still satisfied.
+ */
+export const TRANSFORM_PASSES = [
+  pass({
+    name: "load-foundry",
+    phase: "parse",
+    summary: "Parse the Foundry packs and journals into entities and the uuid index.",
+    reads: [],
+    writes: ["foundry"],
+    run: (_, ctx) => ({
+      foundry: loadFoundrySide(ctx.paths.foundrySnapshotDir, ctx.report, ctx.hardFailures),
+    }),
+    counts: ({ foundry }) => ({
+      entities: foundry.entities.size,
+      redirects: foundry.redirects.length,
+      classGrants: foundry.classGrantedFeatures.size,
+    }),
+  }),
+  pass({
+    name: "load-homebrew",
+    phase: "parse",
+    summary: "Parse the homebrew spell store against the official uuid index.",
+    // D30-42 (0030 S1): its ctx resolves `@UUID[...conditionitems...]` refs against
+    // the OFFICIAL `foundry.index` (an empty index would downgrade all 70 ref-bearing
+    // homebrew docs to brokenRef).
+    reads: ["foundry"],
+    writes: ["homebrew"],
+    run: ({ foundry }, ctx) => ({
+      homebrew: loadHomebrewSide(
+        ctx.paths.homebrewDir,
+        foundry.index,
+        ctx.report,
+        ctx.hardFailures,
+      ),
+    }),
+    counts: ({ homebrew }) => ({
+      entities: homebrew.entities.length,
+      slugMismatches: homebrew.slugMismatchCount,
+    }),
+  }),
+  pass({
+    name: "load-homebrew-traits",
+    phase: "parse",
+    summary: "Parse the homebrew school-trait store against the official uuid index.",
+    // D30-44 (0030 S2): a separate loader, because the trait store's
+    // `{name,description}` shape isn't a Foundry pack doc.
+    reads: ["foundry"],
+    writes: ["homebrewTraits"],
+    run: ({ foundry }, ctx) => ({
+      homebrewTraits: loadHomebrewTraits(
+        ctx.paths.homebrewTraitsDir,
+        foundry.index,
+        ctx.report,
+        ctx.hardFailures,
+      ),
+    }),
+    counts: ({ homebrewTraits }) => ({ entities: homebrewTraits.entities.length }),
+  }),
+  pass({
+    name: "load-aon",
+    phase: "parse",
+    summary: "Extract the AoN snapshot's docs and their markdown.",
+    reads: [],
+    writes: ["aon"],
+    run: (_, ctx) => ({ aon: loadAonSide(ctx.paths.aonSnapshotDir, ctx.report, ctx.hardFailures) }),
+    counts: ({ aon }) => ({ docs: aon.metas.length, withMarkdown: aon.markdownById.size }),
+  }),
+  pass({
+    name: "dedupe-aon",
+    phase: "build",
+    summary: "Collapse duplicate AoN docs to one deterministic winner (D29-18).",
+    // Before the link table and the join see them: duplicate ES entries would
+    // otherwise mint phantom `-N` residual collisions (aonDedup.ts's header).
+    reads: ["aon"],
+    writes: ["aonMetas", "aonMarkdownById"],
+    run: ({ aon }, ctx) => {
+      const aonMetas = dedupeAonMetas(aon.metas, ctx.report);
+      const kept = new Set(aonMetas.map((m) => m.aonId));
+      const aonMarkdownById = new Map([...aon.markdownById].filter(([id]) => kept.has(id)));
+      return { aonMetas, aonMarkdownById };
+    },
+    counts: ({ aonMetas }) => ({ docs: aonMetas.length }),
+  }),
+  pass({
+    name: "aon-link-table",
+    phase: "build",
+    summary: "Build the AoN-url to codex-id link table.",
+    reads: ["aonMetas"],
+    writes: ["linkTable"],
+    run: ({ aonMetas }, ctx) => {
+      const docs: LinkTableDoc[] = aonMetas.map((m) => ({
+        aonId: m.aonId,
+        category: m.category,
+        slug: m.slug,
+        aonUrl: m.aonUrl,
+        name: m.name,
+      }));
+      return { linkTable: buildAonLinkTable(docs, ctx.report) };
+    },
+    counts: ({ linkTable }) => ({ urls: linkTable.byUrl.size }),
+  }),
+  pass({
+    name: "join",
+    phase: "build",
+    summary: "Join Foundry and AoN into one entity per game element (join.ts).",
+    reads: ["foundry", "aonMetas", "aonMarkdownById", "linkTable"],
+    writes: ["joined", "finalIdToAonId"],
+    run: ({ foundry, aonMetas, aonMarkdownById, linkTable }, ctx) => {
+      const joined = runJoin({
+        foundryEntities: foundry.entities,
+        aonMetas,
+        aonMarkdownById,
+        linkTable,
+        remasterRedirects: foundry.redirects,
+        aliasesFile: ctx.paths.aliasesFile,
+        // Absolute uuids only, so no containing-doc context.
+        resolveForeignEmbed: createResolveUuid(foundry.index),
+        report: ctx.report,
+      });
+      const finalIdToAonId = new Map<string, string>();
+      for (const [aonId, finalId] of joined.aonIdToFinalId) finalIdToAonId.set(finalId, aonId);
+      return { joined, finalIdToAonId };
+    },
+    counts: ({ joined }) => ({ entities: joined.entities.length, pairings: joined.pairingCount }),
+  }),
+  pass({
+    name: "merge-homebrew",
+    phase: "build",
+    summary: "Combine the homebrew spells, rituals and traits into one entity list.",
+    // D30-43 (0030 S1): homebrew never enters the AoN join (no aonUrl, no legacyOf/
+    // remasteredAs, so superseded:false by construction); it merges in at the drop.
+    reads: ["homebrew", "homebrewTraits"],
+    writes: ["homebrewEntities"],
+    run: ({ homebrew, homebrewTraits }) => ({
+      homebrewEntities: [...homebrew.entities, ...homebrewTraits.entities],
+    }),
+    counts: ({ homebrewEntities }) => ({ entities: homebrewEntities.length }),
+  }),
+  pass({
+    name: "aon-primary-drop",
+    phase: "build",
+    summary: "Drop Foundry-only entities and AoN-only activation debris (D29-14/-17/-98).",
+    // Keeps the creature/hazard carve-out and, through its `homebrewIds` arm, every
+    // homebrew entity. Then the M3-widened hard guard: never a silent overwrite (see
+    // `assertNoHomebrewCollisions` for the two id spaces it checks and why).
+    reads: ["joined", "homebrewEntities", "foundry"],
+    writes: ["drop"],
+    run: ({ joined, homebrewEntities, foundry }, ctx) => {
+      const homebrewIds = new Set(homebrewEntities.map((e) => e.id));
+      const drop = applyAonPrimaryDrop(
+        [...joined.entities, ...homebrewEntities],
+        ctx.report,
+        homebrewIds,
+      );
+      assertNoHomebrewCollisions(homebrewIds, foundry.entities, drop.keptEntities);
+      return { drop };
+    },
+    counts: ({ drop }) => ({ kept: drop.keptEntities.length }),
+  }),
+  pass({
+    name: "dedupe-crossrefs",
+    phase: "build",
+    summary: "Collapse adjacent duplicate crossrefs over the kept set (D29-100).",
+    // Right after the drop, on its kept set: the drop's own `reconcileCrossrefs` has
+    // already downgraded any now-dangling crossref to `brokenRef`.
+    reads: ["drop"],
+    writes: ["crossrefDedupe"],
+    run: ({ drop }, ctx) => ({
+      crossrefDedupe: collapseAdjacentCrossrefs(drop.keptEntities, ctx.report),
+    }),
+    counts: ({ crossrefDedupe }) => ({
+      occurrences: crossrefDedupe.totalOccurrences,
+      entitiesTouched: crossrefDedupe.entitiesTouched,
+    }),
+  }),
+  pass({
+    name: "level-default",
+    phase: "build",
+    summary: "Default a missing level to 0 on the final entity set (D29-61(a)).",
+    // Every entity's final `category` is settled by now (R4's ritual move).
+    reads: ["crossrefDedupe"],
+    writes: ["levelDefault"],
+    run: ({ crossrefDedupe }, ctx) => ({
+      levelDefault: applyLevelDefault(crossrefDedupe.entities, ctx.report),
+    }),
+    counts: ({ levelDefault }) => ({ defaulted: levelDefault.defaultedCount }),
+  }),
+  pass({
+    name: "normalize-books",
+    phase: "build",
+    summary: "Normalize book names across Foundry and AoN (D29-39).",
+    // Before emit: the entity files and `_index.json` must carry the normalized names.
+    reads: ["levelDefault", "aonMetas"],
+    writes: ["bookNorm"],
+    run: ({ levelDefault, aonMetas }) => ({
+      bookNorm: normalizeBookNames(
+        levelDefault.entities,
+        new Set(aonMetas.map((m) => m.primarySource.book)),
+      ),
+    }),
+    counts: ({ bookNorm }) => ({ mergedNames: bookNorm.bookNameMap.size }),
+  }),
+  pass({
+    name: "attach-sidebars",
+    phase: "build",
+    summary: "Reverse-join sidebars onto their host entities (D29-39).",
+    reads: ["bookNorm", "linkTable", "joined", "finalIdToAonId"],
+    writes: ["sidebars"],
+    run: ({ bookNorm, linkTable, joined, finalIdToAonId }, ctx) => ({
+      sidebars: attachSidebars(
+        bookNorm.entities,
+        linkTable,
+        joined.aonIdToFinalId,
+        finalIdToAonId,
+        ctx.report,
+      ),
+    }),
+    counts: ({ sidebars }) => ({
+      sidebars: sidebars.sidebarsTotal,
+      resolved: sidebars.sidebarsResolved,
+      hosts: sidebars.hostsWithSidebars,
+    }),
+  }),
+  pass({
+    name: "augment-class-stats",
+    phase: "build",
+    summary: "Add granted features and subclass options to class stats (D29-114/-115).",
+    // Over the FINAL kept set (grantedFeatures' targetId nulling checks final-set
+    // membership; subclassOptions reads final `remasteredAs`), and before emit.
+    reads: ["sidebars", "foundry"],
+    writes: ["classStats", "finalEntities"],
+    run: ({ sidebars, foundry }, ctx) => {
+      const classStats = augmentClassStats({
+        entities: sidebars.entities,
+        classGrantedFeatures: foundry.classGrantedFeatures,
+        resolveUuid: createResolveUuid(foundry.index),
+        report: ctx.report,
+      });
+      return { classStats, finalEntities: classStats.entities };
+    },
+    counts: ({ classStats, finalEntities }) => ({
+      classStats: classStats.classStatsEmitted,
+      finalEntities: finalEntities.length,
+    }),
+  }),
+  pass({
+    name: "emit-corpus",
+    phase: "build",
+    summary: "Wipe the corpus root and write every entity, _index.json and manifest.json.",
+    reads: ["finalEntities"],
+    writes: ["emit"],
+    run: ({ finalEntities }, ctx) => ({
+      emit: emitCorpus({
+        corpusRoot: ctx.paths.corpusRoot,
+        entities: finalEntities,
+        pins: ctx.paths.pins,
+      }),
+    }),
+    counts: ({ emit }) => ({ entityFiles: emit.entityFileCount, bytes: emit.corpusBytes }),
+  }),
+  pass({
+    name: "book-sources",
+    phase: "build",
+    summary: "Map each book to its `source` entity's license and id.",
+    reads: ["finalEntities"],
+    writes: ["bookSources"],
+    run: ({ finalEntities }) => {
+      const license = new Map<string, License>();
+      const entityRef = new Map<string, string>();
+      for (const e of finalEntities) {
+        if (e.category !== "source") continue;
+        license.set(e.source.book, e.source.license);
+        entityRef.set(e.source.book, e.id);
+      }
+      return { bookSources: { license, entityRef } };
+    },
+    counts: ({ bookSources }) => ({ books: bookSources.license.size }),
+  }),
+  pass({
+    name: "rules-tree",
+    phase: "build",
+    summary: "Build and write rules-tree.json (D29-39).",
+    // Reads `emit` only for order: emit wipes the corpus root first.
+    reads: ["finalEntities", "finalIdToAonId", "aonMetas", "linkTable", "bookSources", "emit"],
+    writes: ["rulesTree"],
+    run: ({ finalEntities, finalIdToAonId, aonMetas, linkTable, bookSources }, ctx) => {
+      const aonMetaByAonId = new Map(aonMetas.map((m) => [m.aonId, m] as const));
+      const rulesDocs: RulesDocInput[] = [];
+      for (const entity of finalEntities) {
+        if (entity.category !== "rules") continue;
+        const aonId = finalIdToAonId.get(entity.id);
+        const meta = aonId !== undefined ? aonMetaByAonId.get(aonId) : undefined;
+        if (aonId === undefined || meta === undefined) {
+          ctx.report("rulesTreeMissingAonMeta", entity.id);
+          continue;
+        }
+        const nextAonId =
+          meta.nextUrl !== undefined
+            ? linkTable.byUrl.get(normalizeUrlKey(meta.nextUrl))?.aonId
+            : undefined;
+        rulesDocs.push({
+          aonId,
+          finalId: entity.id,
+          name: entity.name,
+          book: entity.source.book,
+          edition: entity.edition,
+          breadcrumbs: entity.breadcrumbs ?? [],
+          superseded: (entity.remasteredAs?.length ?? 0) > 0,
+          ...(nextAonId !== undefined ? { nextAonId } : {}),
+        });
+      }
+      const { file, stats } = buildRulesTree(rulesDocs, bookSources.license, ctx.report);
+      writeCanonicalJson(
+        join(ctx.paths.corpusRoot, "rules-tree.json"),
+        RulesTreeFileSchema.parse(file),
+      );
+      return { rulesTree: stats };
+    },
+    counts: ({ rulesTree }) => ({ docs: rulesTree.totalDocs, books: rulesTree.bookCount }),
+  }),
+  pass({
+    name: "sources-index",
+    phase: "build",
+    summary: "Build and write sources-index.json (D29-43).",
+    // Reads `emit` only for order: emit wipes the corpus root first.
+    reads: ["finalEntities", "aonMetas", "bookNorm", "bookSources", "emit"],
+    writes: ["sourcesIndex"],
+    run: ({ finalEntities, aonMetas, bookNorm, bookSources }, ctx) => {
+      const { file, stats } = buildSourcesIndex({
+        finalEntities,
+        aonCitations: aonMetas.map(toAonCitation),
+        bookNameMap: bookNorm.bookNameMap,
+        bookSourceLicense: bookSources.license,
+        sourceEntityRefByBook: bookSources.entityRef,
+      });
+      writeCanonicalJson(
+        join(ctx.paths.corpusRoot, "sources-index.json"),
+        SourcesIndexFileSchema.parse(file),
+      );
+      return { sourcesIndex: stats };
+    },
+    counts: ({ sourcesIndex }) => ({
+      books: sourcesIndex.totalBooks,
+      classifiedBooks: sourcesIndex.classifiedBooks,
+    }),
+  }),
+  pass({
+    name: "report",
+    phase: "build",
+    summary: "Build and write report.json and report.md.",
+    reads: [
+      "foundry",
+      "aon",
+      "homebrew",
+      "homebrewTraits",
+      "homebrewEntities",
+      "joined",
+      "drop",
+      "crossrefDedupe",
+      "bookNorm",
+      "sidebars",
+      "classStats",
+      "finalEntities",
+      "emit",
+      "rulesTree",
+      "sourcesIndex",
+    ],
+    writes: ["report"],
+    run: (slots, ctx) => {
+      const json = buildTransformReport(slots, ctx);
+      const markdown = buildReportMarkdown(json);
+      writeCanonicalJson(join(ctx.paths.corpusRoot, "report.json"), json);
+      writeCanonicalText(join(ctx.paths.corpusRoot, "report.md"), markdown);
+      return { report: { json, markdown } };
+    },
+  }),
+];
+
+/** A plain function, not inlined in `.map()`: no object spread inside a map callback
+ * (oxlint `no-map-spread`, `aonFacets.ts`'s `makeCitation` precedent). */
+function toAonCitation(m: AonDocMeta): AonBookCitation {
+  return m.productLine !== undefined
+    ? { book: m.primarySource.book, productLine: m.productLine }
+    : { book: m.primarySource.book };
+}
+
+type ReportSlots =
+  | "foundry"
+  | "aon"
+  | "homebrew"
+  | "homebrewTraits"
+  | "homebrewEntities"
+  | "joined"
+  | "drop"
+  | "crossrefDedupe"
+  | "bookNorm"
+  | "sidebars"
+  | "classStats"
+  | "finalEntities"
+  | "emit"
+  | "rulesTree"
+  | "sourcesIndex";
+
+function buildTransformReport(
+  slots: Pick<TransformSlots, ReportSlots>,
+  ctx: TransformContext,
+): ReportJson {
+  const { homebrew, homebrewTraits, homebrewEntities } = slots;
+  // D30-46 (0030 S1, review blocker B2): the homebrew provenance pin lives in
+  // report.json/report.md, NOT `corpus/manifest.json` (`.strict()` — an added key
+  // throws at `parseManifest` before the transform even starts). D30-44 (0030 S2):
+  // `emittedByCategory`/`uuidRefs*` cover the COMBINED spells+rituals+traits set;
+  // `dir`/`docsIn`/`sha256` stay scoped to the spells STORE, with the traits store's
+  // own provenance in the `traits*` fields rather than one dir/hash pair spanning two
+  // directories.
+  const homebrewCategoryCounts: Record<string, number> = {};
+  for (const e of homebrewEntities) {
+    homebrewCategoryCounts[e.category] = (homebrewCategoryCounts[e.category] ?? 0) + 1;
+  }
+  const homebrewUuidRefs = countHomebrewUuidRefs(homebrewEntities);
+
+  return buildReportJson({
+    reportCounts: ctx.reportCounts,
+    reportExamples: ctx.reportExamples,
+    hardFailureCount: ctx.hardFailures.length,
+    join: slots.joined,
+    finalEntities: slots.finalEntities,
+    dropAccounting: slots.drop.accounting,
+    homebrew: {
+      dir: ctx.paths.homebrewDir,
+      docsIn: homebrew.entities.length,
+      emittedByCategory: Object.fromEntries(
+        Object.entries(homebrewCategoryCounts).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
+      ),
+      uuidRefsResolved: homebrewUuidRefs.resolved,
+      uuidRefsBroken: homebrewUuidRefs.broken,
+      slugMismatchCount: homebrew.slugMismatchCount,
+      // Reaching this pass means `assertNoHomebrewCollisions` (aon-primary-drop) didn't
+      // throw: a throw aborts the whole run before report.json is ever built.
+      collisionGuardOk: true,
+      sha256: hashDirectory(ctx.paths.homebrewDir),
+      traitsDir: ctx.paths.homebrewTraitsDir,
+      traitsDocsIn: homebrewTraits.entities.length,
+      traitsSha256: hashDirectory(ctx.paths.homebrewTraitsDir),
+    },
+    adjacentCrossrefDedupe: {
+      totalOccurrences: slots.crossrefDedupe.totalOccurrences,
+      entitiesTouched: slots.crossrefDedupe.entitiesTouched,
+    },
+    foundrySnapshotDocCount: slots.foundry.entities.size,
+    // Deliberately the RAW extracted count (pre-D29-18-dedup), matching
+    // `foundrySnapshotDocCount`'s "how big was the snapshot" framing; the dedup's own
+    // removal count is the `aonUrlDuplicateCollapsed` report class.
+    aonSnapshotDocCount: slots.aon.metas.length,
+    sizeTotals: {
+      corpusBytes: slots.emit.corpusBytes,
+      entityFileCount: slots.emit.entityFileCount,
+    },
+    bookNormalization: slots.bookNorm,
+    sidebarAttachment: slots.sidebars,
+    rulesTree: slots.rulesTree,
+    sourcesIndex: slots.sourcesIndex,
+    classStatsAugment: slots.classStats,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// runTransform — validate the registry, then run it
+// ---------------------------------------------------------------------------
+
+export interface TransformOptions {
+  /** Run only this pass and the passes it reads from (debugging). The result then has
+   * no report unless the pass is `report`; a pass that writes files still writes them. */
+  only?: string;
+}
+
 export interface TransformResult {
   hardFailures: HardFailure[];
   /** Present only when `hardFailures` is empty — a hard failure aborts BEFORE
@@ -361,21 +905,29 @@ export interface TransformResult {
   reportJson?: ReportJson;
   reportMarkdown?: string;
   emit?: EmitCorpusResult;
+  /** One entry per pass that ran, in order: timing and counts. */
+  passes: PassRun[];
+  /** Every slot the run wrote (for `only` runs and tests). */
+  slots: Partial<TransformSlots>;
 }
 
 /**
- * The full S4 pipeline, callable identically from the real CLI (`main()`
- * below) and the CI-hermetic fixture test. Every counter/map is created FRESH
- * in this call (no module-scope mutable state) so two calls in the same
- * process — exactly what the fixture test's determinism check does — never
- * leak state into each other.
+ * The full pipeline, callable identically from the real CLI and the CI-hermetic fixture
+ * test. Every counter and map is created FRESH in this call (no module-scope mutable
+ * state), so two calls in the same process — exactly what the fixture test's determinism
+ * check does — never leak state into each other.
  */
-export function runTransform(paths: TransformPaths): TransformResult {
+export function runTransform(paths: TransformPaths, opts: TransformOptions = {}): TransformResult {
+  validatePasses(TRANSFORM_PASSES);
+  const passes =
+    opts.only === undefined ? TRANSFORM_PASSES : passClosure(TRANSFORM_PASSES, opts.only);
+
   const reportCounts = new Map<string, number>();
   const reportExamples = new Map<string, string[]>();
   const hardFailures: HardFailure[] = [];
-
+  let reportEvents = 0;
   function report(cls: string, detail: string): void {
+    reportEvents += 1;
     reportCounts.set(cls, (reportCounts.get(cls) ?? 0) + 1);
     const examples = reportExamples.get(cls) ?? [];
     if (examples.length < 5) {
@@ -383,257 +935,27 @@ export function runTransform(paths: TransformPaths): TransformResult {
       reportExamples.set(cls, examples);
     }
   }
-
-  const foundry = loadFoundrySide(paths.foundrySnapshotDir, report, hardFailures);
-  // D30-42 (0030 S1): runs AFTER loadFoundrySide — its ctx resolves
-  // `@UUID[...conditionitems...]` refs against the OFFICIAL `foundry.index`
-  // (B3, the review blocker: an empty index would downgrade all 70
-  // ref-bearing homebrew docs to brokenRef).
-  const homebrew = loadHomebrewSide(paths.homebrewDir, foundry.index, report, hardFailures);
-  // D30-44 (0030 S2): the 8 school-trait docs — a separate loader (the trait
-  // store's `{name,description}` shape isn't a Foundry pack doc), same
-  // official-`UuidIndex` ctx posture as `loadHomebrewSide` above.
-  const homebrewTraits = loadHomebrewTraits(
-    paths.homebrewTraitsDir,
-    foundry.index,
+  const ctx: TransformContext = {
+    paths,
     report,
     hardFailures,
-  );
-  const aon = loadAonSide(paths.aonSnapshotDir, report, hardFailures);
-
-  if (hardFailures.length > 0) return { hardFailures };
-
-  // D29-18: collapse same-(category,slug,aonUrl,edition) duplicate AoN docs
-  // to one deterministic winner BEFORE the link table / join ever see them —
-  // see aonDedup.ts's file header for why (kills the phantom `-N` residual
-  // collisions duplicate ES entries would otherwise mint).
-  const dedupedMetas = dedupeAonMetas(aon.metas, report);
-  const keptAonIds = new Set(dedupedMetas.map((m) => m.aonId));
-  const dedupedMarkdownById = new Map(
-    [...aon.markdownById].filter(([aonId]) => keptAonIds.has(aonId)),
-  );
-
-  const linkTableDocs: LinkTableDoc[] = dedupedMetas.map((m) => ({
-    aonId: m.aonId,
-    category: m.category,
-    slug: m.slug,
-    aonUrl: m.aonUrl,
-    name: m.name,
-  }));
-  const linkTable = buildAonLinkTable(linkTableDocs, report);
-
-  // Shared across the join's `@Embed` resolution AND the D29-114
-  // `augmentClassStats` pass below — same `foundry.index`, no containing-doc
-  // context needed for either (both resolve absolute uuids only).
-  const resolveForeignUuid = createResolveUuid(foundry.index);
-
-  const joinResult = runJoin({
-    foundryEntities: foundry.entities,
-    aonMetas: dedupedMetas,
-    aonMarkdownById: dedupedMarkdownById,
-    linkTable,
-    remasterRedirects: foundry.redirects,
-    aliasesFile: paths.aliasesFile,
-    resolveForeignEmbed: resolveForeignUuid,
-    report,
-  });
-
-  // D29-14/-17/-98: drop every Foundry-only entity except the creature/
-  // hazard carve-out, PLUS (D29-98, P11 S1) the widened AoN-only activation-
-  // debris families — S5c, the last P1.5 pass before emit. D30-43 (0030 S1):
-  // homebrew never enters the AoN join (no aonUrl, no legacyOf/
-  // remasteredAs — superseded:false by construction); its entities merge in
-  // right here, alongside the official set, so the SAME drop pass's
-  // `homebrewIds` keep-arm is what keeps them alive. D30-44 (0030 S2): the 8
-  // trait entities ride the exact same arm — one combined entity list.
-  const homebrewEntities = [...homebrew.entities, ...homebrewTraits.entities];
-  const homebrewIds = new Set(homebrewEntities.map((e) => e.id));
-  const dropResult = applyAonPrimaryDrop(
-    [...joinResult.entities, ...homebrewEntities],
-    report,
-    homebrewIds,
-  );
-  // M3-widened hard guard: never a silent overwrite — see
-  // `assertNoHomebrewCollisions`'s own doc comment for the two id spaces
-  // checked and why both are needed.
-  assertNoHomebrewCollisions(homebrewIds, foundry.entities, dropResult.keptEntities);
-
-  // D29-100 (P11 S1): whole-document adjacent-crossref dedupe — drop.ts-
-  // adjacent (same pipeline stage, right after the drop pass, on its kept
-  // set) so a dedupe target that itself got dropped this run never needs
-  // separate reconciliation (the drop pass's own `reconcileCrossrefs` already
-  // downgraded any now-dangling crossref to `brokenRef` before this runs).
-  const dedupeResult = collapseAdjacentCrossrefs(dropResult.keptEntities, report);
-
-  // D29-61(a) (R9, P6): the ingest-time "missing level -> 0" default — runs
-  // on the FINAL (post-drop) entity set, since R4's ritual move has already
-  // settled every entity's final `category` by this point in the pipeline.
-  const levelDefaultResult = applyLevelDefault(dedupeResult.entities, report);
-
-  // ---- P4 (D29-39) S1: book-name normalize -> sidebar reverse-join ----
-  // Both passes run BEFORE emit — the corpus on disk (entity files +
-  // `_index.json`) must reflect the normalized book strings and the
-  // `attachedSidebars` field, not just the two new standalone artifacts.
-  const aonBookNames = new Set(dedupedMetas.map((m) => m.primarySource.book));
-  const bookNorm = normalizeBookNames(levelDefaultResult.entities, aonBookNames);
-
-  const finalIdToAonId = new Map<string, string>();
-  for (const [aonId, finalId] of joinResult.aonIdToFinalId) finalIdToAonId.set(finalId, aonId);
-
-  const sidebarResult = attachSidebars(
-    bookNorm.entities,
-    linkTable,
-    joinResult.aonIdToFinalId,
-    finalIdToAonId,
-    report,
-  );
-  // D29-114/-115 (P12 S1): the post-drop class-stats augment pass — MUST run
-  // over the FINAL kept entity set (grantedFeatures' targetId nulling checks
-  // final-set membership; subclassOptions' current-edition union reads
-  // final `remasteredAs`) and MUST run before `emitCorpus` (its mutations
-  // are what actually lands in the corpus).
-  const augmentResult = augmentClassStats({
-    entities: sidebarResult.entities,
-    classGrantedFeatures: foundry.classGrantedFeatures,
-    resolveUuid: resolveForeignUuid,
-    report,
-  });
-  const finalEntities = augmentResult.entities;
-
-  const emitResult = emitCorpus({
-    corpusRoot: paths.corpusRoot,
-    entities: finalEntities,
-    pins: paths.pins,
-  });
-
-  // ---- P4 (D29-39) S1: rules-tree.json ----
-  const aonMetaByAonId = new Map(dedupedMetas.map((m) => [m.aonId, m] as const));
-  const rulesDocs: RulesDocInput[] = [];
-  for (const entity of finalEntities) {
-    if (entity.category !== "rules") continue;
-    const aonId = finalIdToAonId.get(entity.id);
-    const meta = aonId !== undefined ? aonMetaByAonId.get(aonId) : undefined;
-    if (aonId === undefined || meta === undefined) {
-      report("rulesTreeMissingAonMeta", entity.id);
-      continue;
-    }
-    const nextAonId =
-      meta.nextUrl !== undefined
-        ? linkTable.byUrl.get(normalizeUrlKey(meta.nextUrl))?.aonId
-        : undefined;
-    rulesDocs.push({
-      aonId,
-      finalId: entity.id,
-      name: entity.name,
-      book: entity.source.book,
-      edition: entity.edition,
-      breadcrumbs: entity.breadcrumbs ?? [],
-      superseded: (entity.remasteredAs?.length ?? 0) > 0,
-      ...(nextAonId !== undefined ? { nextAonId } : {}),
-    });
-  }
-  const bookSourceLicense = new Map<string, License>();
-  const sourceEntityRefByBook = new Map<string, string>();
-  for (const e of finalEntities) {
-    if (e.category !== "source") continue;
-    bookSourceLicense.set(e.source.book, e.source.license);
-    sourceEntityRefByBook.set(e.source.book, e.id);
-  }
-  const { file: rulesTreeFile, stats: rulesTreeStats } = buildRulesTree(
-    rulesDocs,
-    bookSourceLicense,
-    report,
-  );
-  const validatedRulesTree = RulesTreeFileSchema.parse(rulesTreeFile);
-  writeCanonicalJson(join(paths.corpusRoot, "rules-tree.json"), validatedRulesTree);
-
-  // ---- P4 (D29-43) S1: sources-index.json ----
-  // A plain function (not inlined in `.map()`) — no object-spread appears
-  // inside a map callback (oxlint `no-map-spread`, `aonFacets.ts`'s
-  // `makeCitation` precedent).
-  function toAonCitation(m: AonDocMeta): AonBookCitation {
-    return m.productLine !== undefined
-      ? { book: m.primarySource.book, productLine: m.productLine }
-      : { book: m.primarySource.book };
-  }
-  const aonCitations: AonBookCitation[] = dedupedMetas.map(toAonCitation);
-  const { file: sourcesIndexFile, stats: sourcesIndexStats } = buildSourcesIndex({
-    finalEntities,
-    aonCitations,
-    bookNameMap: bookNorm.bookNameMap,
-    bookSourceLicense,
-    sourceEntityRefByBook,
-  });
-  const validatedSourcesIndex = SourcesIndexFileSchema.parse(sourcesIndexFile);
-  writeCanonicalJson(join(paths.corpusRoot, "sources-index.json"), validatedSourcesIndex);
-
-  // D30-46 (0030 S1, review blocker B2): the homebrew provenance pin lives
-  // in report.json/report.md, NOT `corpus/manifest.json` (`.strict()` —
-  // an added key throws at `parseManifest` before the transform even
-  // starts). D30-44 (0030 S2): `emittedByCategory`/`uuidRefs*` cover the
-  // COMBINED spells+rituals+traits set (a single "what did homebrew emit"
-  // view — `trait: 8` now shows up here); `dir`/`docsIn`/`sha256` stay
-  // scoped to the spells STORE specifically (its own provenance hash), with
-  // the traits store's own provenance split into the `traits*` fields below
-  // rather than conflated into one dir/hash pair spanning two directories.
-  const homebrewCategoryCounts: Record<string, number> = {};
-  for (const e of homebrewEntities) {
-    homebrewCategoryCounts[e.category] = (homebrewCategoryCounts[e.category] ?? 0) + 1;
-  }
-  const homebrewUuidRefs = countHomebrewUuidRefs(homebrewEntities);
-
-  const reportJson = buildReportJson({
     reportCounts,
     reportExamples,
-    hardFailureCount: hardFailures.length,
-    join: joinResult,
-    finalEntities,
-    dropAccounting: dropResult.accounting,
-    homebrew: {
-      dir: paths.homebrewDir,
-      docsIn: homebrew.entities.length,
-      emittedByCategory: Object.fromEntries(
-        Object.entries(homebrewCategoryCounts).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
-      ),
-      uuidRefsResolved: homebrewUuidRefs.resolved,
-      uuidRefsBroken: homebrewUuidRefs.broken,
-      slugMismatchCount: homebrew.slugMismatchCount,
-      // Reaching this line means `assertNoHomebrewCollisions` above didn't
-      // throw — the guard result IS this field (a throw aborts the whole
-      // run before report.json is ever built, same posture the report's own
-      // `hardFailureCount` doc comment documents for hard failures).
-      collisionGuardOk: true,
-      sha256: hashDirectory(paths.homebrewDir),
-      traitsDir: paths.homebrewTraitsDir,
-      traitsDocsIn: homebrewTraits.entities.length,
-      traitsSha256: hashDirectory(paths.homebrewTraitsDir),
-    },
-    adjacentCrossrefDedupe: {
-      totalOccurrences: dedupeResult.totalOccurrences,
-      entitiesTouched: dedupeResult.entitiesTouched,
-    },
-    foundrySnapshotDocCount: foundry.entities.size,
-    // Deliberately the RAW extracted count (pre-D29-18-dedup) — matches
-    // `foundrySnapshotDocCount`'s own "how big was the snapshot" framing;
-    // the dedup's own removal count is separately visible via the
-    // `aonUrlDuplicateCollapsed` report class (Report-class counts table).
-    aonSnapshotDocCount: aon.metas.length,
-    sizeTotals: {
-      corpusBytes: emitResult.corpusBytes,
-      entityFileCount: emitResult.entityFileCount,
-    },
-    bookNormalization: bookNorm,
-    sidebarAttachment: sidebarResult,
-    rulesTree: rulesTreeStats,
-    sourcesIndex: sourcesIndexStats,
-    classStatsAugment: augmentResult,
-  });
-  const reportMarkdown = buildReportMarkdown(reportJson);
+    reportEventCount: () => reportEvents,
+    hardFailureCount: () => hardFailures.length,
+  };
 
-  writeCanonicalJson(join(paths.corpusRoot, "report.json"), reportJson);
-  writeCanonicalText(join(paths.corpusRoot, "report.md"), reportMarkdown);
-
-  return { hardFailures, reportJson, reportMarkdown, emit: emitResult };
+  const { state, runs, halted } = runPasses(passes, ctx);
+  if (halted) return { hardFailures, passes: runs, slots: state };
+  return {
+    hardFailures,
+    ...(state.report
+      ? { reportJson: state.report.json, reportMarkdown: state.report.markdown }
+      : {}),
+    ...(state.emit ? { emit: state.emit } : {}),
+    passes: runs,
+    slots: state,
+  };
 }
 
 /** The real homebrew stores (D30-42 spells, D30-44 school traits): versioned repo
@@ -651,12 +973,34 @@ export function defaultHomebrewDirs(): { homebrewDir: string; homebrewTraitsDir:
 // CLI wrapper (the real host run: `codex-ingest transform --out <dir>`)
 // ---------------------------------------------------------------------------
 
-export function transformMain(args: string[]): void {
+const TRANSFORM_USAGE =
+  "usage: transform --out <dir> [--pass <name>] | transform --list-passes\n" +
+  "  --pass <name>   run only that pass and the passes it reads from (debugging)";
+
+/** `codex-ingest transform`. Sends one span and one log line per pass to SigNoz (the log
+ * lines also print), and exits through `exitAfterFlush` so they are flushed first. */
+export async function transformMain(args: string[]): Promise<void> {
+  const { values } = parseArgs({
+    args,
+    options: {
+      out: { type: "string" },
+      pass: { type: "string" },
+      "list-passes": { type: "boolean" },
+    },
+  });
+  if (values["list-passes"] === true) {
+    validatePasses(TRANSFORM_PASSES);
+    for (const p of TRANSFORM_PASSES) {
+      console.log(`${p.name.padEnd(22)} ${p.phase.padEnd(5)} ${p.summary}`);
+      console.log(`${"".padEnd(28)} reads [${p.reads.join(", ")}] writes [${p.writes.join(", ")}]`);
+    }
+    return;
+  }
   // The corpus goes to `--out`, a release staging dir (`release.ts build`; `just
   // codex-build`); the transform never writes a served corpus in place.
-  const { values } = parseArgs({ args, options: { out: { type: "string" } } });
   if (values.out === undefined) {
     console.error("transform: pass --out <dir>; `just codex-build` runs it into a new release");
+    console.error(TRANSFORM_USAGE);
     process.exit(1);
   }
   const corpusRoot = values.out;
@@ -683,15 +1027,25 @@ export function transformMain(args: string[]): void {
   console.log(`transform: homebrew traits ${homebrewTraitsDir}`);
   console.log(`transform: writing corpus to ${corpusRoot}`);
 
+  initTelemetry("astra.codex-ingest");
   const started = Date.now();
-  const result = runTransform({
-    foundrySnapshotDir,
-    aonSnapshotDir,
-    homebrewDir,
-    homebrewTraitsDir,
-    corpusRoot,
-    aliasesFile,
-    pins: { foundry: manifest.foundry, aon: manifest.aon },
+  const result = getTracer("astra.codex-ingest").startActiveSpan("codex.transform", (span) => {
+    try {
+      return runTransform(
+        {
+          foundrySnapshotDir,
+          aonSnapshotDir,
+          homebrewDir,
+          homebrewTraitsDir,
+          corpusRoot,
+          aliasesFile,
+          pins: { foundry: manifest.foundry, aon: manifest.aon },
+        },
+        values.pass === undefined ? {} : { only: values.pass },
+      );
+    } finally {
+      span.end();
+    }
   });
   const elapsedS = ((Date.now() - started) / 1000).toFixed(1);
 
@@ -700,14 +1054,22 @@ export function transformMain(args: string[]): void {
       `\n${result.hardFailures.length} HARD FAILURES — transform aborted before join/emit:`,
     );
     for (const f of result.hardFailures.slice(0, 20)) console.error(`  ${f.path}: ${f.message}`);
-    process.exit(1);
+    await exitAfterFlush(1);
   }
 
   console.log(`\ntransform: completed in ${elapsedS}s`);
+  if (values.pass !== undefined) {
+    const ran = result.passes.map((p) => p.name).join(", ");
+    console.log(`transform: ran ${result.passes.length} passes for --pass ${values.pass}: ${ran}`);
+    const target = result.passes.at(-1);
+    if (target) console.log(`transform: ${target.name} counts ${JSON.stringify(target.counts)}`);
+    await exitAfterFlush(0);
+  }
   console.log(
     `transform: ${result.emit?.entityFileCount ?? 0} entity files, ${result.emit?.corpusBytes ?? 0} corpus bytes`,
   );
   console.log("\n########## report.md (head) ##########\n");
   console.log((result.reportMarkdown ?? "").split("\n").slice(0, 60).join("\n"));
   console.log(`\n(full report at ${join(corpusRoot, "report.md")})`);
+  await exitAfterFlush(0);
 }

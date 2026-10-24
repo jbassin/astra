@@ -19,7 +19,8 @@ recipes call it; prefer them for anything that touches the real releases.
 | --- | --- | --- |
 | `fetch-foundry` | Sparse-clones the pinned pf2e tag into `<codex.data-path>/snapshots/foundry/`; updates `corpus-manifest.json`. | `just codex-refresh` |
 | `fetch-aon` | Snapshots the AoN index (~259 MB, at most 4 req/s) into `snapshots/aon/<date>/`; updates `corpus-manifest.json`. | `just codex-refresh` |
-| `transform --out <dir>` | Snapshots + homebrew store → a corpus tree at `<dir>`, with `report.json`/`report.md`. | (inside `release build`) |
+| `transform --out <dir> [--pass <name>]` | Snapshots + homebrew store → a corpus tree at `<dir>`, with `report.json`/`report.md`. `--pass` runs one pass and the passes it reads from. | (inside `release build`) |
+| `transform --list-passes` | Prints the pass registry: each pass's phase, summary, reads and writes. | |
 | `search-index --corpus <dir> --out <dir>` | A Pagefind index over a corpus tree. Host-only, ~3.8 GB RSS. | (inside `release build`) |
 | `release build [--allow-shrink] [--reuse-corpus] [--force]` | Transform and index into `releases/.staging-*`, validate, publish as `releases/<id>`, swap `current`, prune. | `just codex-build`, `just codex-search-index` |
 | `release rollback [<id>] [--force]` | Make an older release current; mark the one it leaves rejected. | `just codex-rollback` |
@@ -145,10 +146,28 @@ one canonical entity per real game element, and written as a deterministic corpu
 | Report | `src/report.ts` | Pure builders for `report.json`/`report.md` — the P1 acceptance artifact. |
 | Search | `src/build-search.ts` | The Pagefind index over a corpus tree. |
 | Release | `src/releaseStore.ts`, `src/release.ts` | Staging, validation, content-hash ids, the `current` swap, rollback, pruning. |
-| Orchestrate | `src/transform.ts`, `src/cli.ts` | `runTransform()` wires parse, join and emit; the CLI wraps each step. |
+| Orchestrate | `src/transform.ts`, `src/passRegistry.ts`, `src/cli.ts` | `TRANSFORM_PASSES` lists every pass; `runTransform()` validates and runs it; the CLI wraps each step. |
 
 The shared Zod contracts (`CodexEntity`, `CodexNode`, `CorpusManifest`) live in the
 `@astra/codex-corpus` package (`libs/ts/codex-corpus`), which the site and the ingest both import.
+
+### The pass registry
+
+`runTransform` runs `TRANSFORM_PASSES` (`src/transform.ts`), an array of passes in run order.
+Each pass names the state slots it reads and writes (`TransformSlots`) and a phase. Before a
+run, `validatePasses` (`src/passRegistry.ts`) fails on a duplicate name, a slot with two
+writers, a read nobody writes, a dependency cycle, a pass placed before a pass it reads from,
+or a parse pass after a build pass. After the parse phase, any hard failure stops the run.
+
+Each pass gets one span (`codex.transform.<pass>`) and one log line with its time and counts;
+the CLI sends both to SigNoz as `astra.codex-ingest`. Timings and counts never go into the
+corpus or the report, so the output stays byte-identical. `transform --pass <name>` runs one
+pass with only the passes it reads from (a pass that writes files still writes them).
+
+To add a pass, add a slot to `TransformSlots` and an entry at the point where its reads exist.
+A pass that only needs to run after another (a file written after `emit-corpus` wipes the
+root) reads that pass's slot. Moving a pass that calls `report` changes the order of that
+class's examples in `report.json`, so check the output diff after any reorder.
 
 ## Running it
 

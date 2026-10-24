@@ -14,7 +14,12 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { loadHomebrewSide, loadHomebrewTraits } from "./homebrew";
 import type { JoinAliasesFile } from "./join";
-import { defaultHomebrewDirs, runTransform, type TransformResult } from "./transform";
+import {
+  defaultHomebrewDirs,
+  runTransform,
+  TRANSFORM_PASSES,
+  type TransformResult,
+} from "./transform";
 import { UuidIndex } from "./uuidResolve";
 
 /**
@@ -638,6 +643,34 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
         }),
       ).toThrow(/homebrew id "spell\/fireball" collides with/);
     });
+  });
+});
+
+describe("runTransform's pass registry over the fixture", () => {
+  it("records every pass once, in registry order", () => {
+    const result = runOnce(freshCorpusDir());
+    expect(result.passes.map((p) => p.name)).toEqual(TRANSFORM_PASSES.map((p) => p.name));
+    expect(result.passes.find((p) => p.name === "emit-corpus")?.counts["entityFiles"]).toBe(
+      result.emit?.entityFileCount,
+    );
+  });
+
+  it("runs one pass alone with only the passes it reads from", () => {
+    const result = runTransform(
+      {
+        foundrySnapshotDir: RAW_FOUNDRY,
+        aonSnapshotDir: RAW_AON,
+        homebrewDir: RAW_HOMEBREW,
+        homebrewTraitsDir: RAW_HOMEBREW_TRAITS,
+        corpusRoot: freshCorpusDir(),
+        aliasesFile: readAliasesFile(),
+        pins: FIXTURE_PINS,
+      },
+      { only: "aon-link-table" },
+    );
+    expect(result.passes.map((p) => p.name)).toEqual(["load-aon", "dedupe-aon", "aon-link-table"]);
+    expect(result.slots.linkTable?.byUrl.size).toBeGreaterThan(0);
+    expect(result.reportJson).toBeUndefined();
   });
 });
 
