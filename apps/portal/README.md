@@ -114,11 +114,15 @@ Every tool is one entry in `PORTAL_TOOLS` (`shared/src/registry.ts`): name, desc
 result schemas, `access` (player or admin), `runsOn` (server or bridge), `kind` (read or write; writes
 are audit-logged) and, for creates, the `creates` count the cap checks. The server registers one MCP
 tool per entry in that order. The module's handlers live in one file per domain under
-`module/src/handlers/` (compendium, documents, scenes, actors, items, macros, party, rolls), each
-exporting a handler map; `handlers/index.ts` spreads them into `TOOL_HANDLERS`, which must have
-exactly one handler per bridge tool or the module fails to typecheck. Write tools go through
-`handlers/writes.ts` (write gate, audit line, creation stamp). A tool that returns markdown also
-needs a renderer in `RENDERERS` (`server/src/mcp.ts`).
+`module/src/handlers/` (compendium, documents, scenes, actors, items, macros, party, player,
+rolls), each exporting a handler map; `handlers/index.ts` spreads them into `TOOL_HANDLERS`, which
+must have exactly one handler per bridge tool or the module fails to typecheck. A large domain
+keeps its sub-concerns in files beside it (`player*.ts` per sheet section, `item*.ts` for
+visibility, detail and search, `roll*.ts` for rows and the cursor). Write tools go through
+`handlers/writes.ts` (write gate, audit line, rule read-back) and build their payloads with
+`handlers/payloads.ts` (creation stamp, clone-or-author create payload). Handlers throw
+`BridgeError` from `@astra/portal-shared`, the same class the server throws. A tool that returns
+markdown also needs a renderer in `RENDERERS` (`server/src/mcp.ts`).
 
 - `server/src/__snapshots__/tools-list.{admin,player}.json` pin what MCP clients see. Any diff there
   is a client-visible change: review it, then update with `pnpm --filter @astra/portal-server exec
@@ -175,13 +179,13 @@ needs a renderer in `RENDERERS` (`server/src/mcp.ts`).
 - **pf2e data lives on different sides of the document.** Live `game.messages` rolls are Roll
   objects, not JSON strings (normalize with `JSON.parse(JSON.stringify(x))`); `hp.max` exists only on
   the live actor; hero points exist only in source data (pf2e zeroes the live value); a spellcasting
-  DC is reliable only at the actor's `system.attributes.spellDC.value`. Handlers read `system.*`
-  only through `module/src/pf2e/`, whose accessors name the side they read in their types
-  (`Pf2eSystem<"source">` or `<"live">`); its `index.ts` has the field-by-field table. Add an
-  accessor there rather than walking `system` in a handler. The fixtures in
-  `module/tests/fixtures/pf2e/` hold both sides, but their live sides are synthesized, not
-  captured, so a wrong guess about pf2e's prepared data still shows up only against the live
-  world. Chat-message `flags.pf2e` reads (query-rolls) are not in the layer yet.
+  DC is reliable only at the actor's `system.attributes.spellDC.value`. Handlers read `system.*`,
+  chat-message `flags.pf2e` and document `ownership` only through `module/src/pf2e/`, whose
+  accessors name the side they read in their types (`Pf2eSystem<"source">` or `<"live">`,
+  `Pf2eFlags<"live">`); its `index.ts` has the field-by-field table. Add an accessor there rather
+  than walking `system` in a handler. The fixtures in `module/tests/fixtures/pf2e/` hold both
+  sides, but their live sides are synthesized, not captured, so a wrong guess about pf2e's
+  prepared data still shows up only against the live world.
 - **pf2e authoring recipes:** clone and patch a compendium document where one exists; hand-author
   only where there is no base. A spell is castable only when `system.location.value` is the
   spellcasting entry's id. Apply persistent damage through the non-dialog path; a bare

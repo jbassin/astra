@@ -7,8 +7,10 @@
  * and error wrapping.
  *
  * The handlers live in one module per domain (`./compendium`, `./documents`, `./scenes`,
- * `./actors`, `./items`, `./macros`, `./party`, `./rolls`); each exports a map of its tools'
- * handlers, and {@link TOOL_HANDLERS} assembles them.
+ * `./actors`, `./items`, `./macros`, `./party`, `./player`, `./rolls`); each exports a map
+ * of its tools' handlers, and {@link TOOL_HANDLERS} assembles them. A large domain keeps
+ * its handlers in that module and its sub-concerns beside it (`./player*`, `./item*`,
+ * `./roll*`); write payloads are built in `./payloads`.
  */
 import {
   BRIDGE_TOOL_NAMES,
@@ -24,6 +26,7 @@ import { documentHandlers } from "./documents";
 import { itemHandlers } from "./items";
 import { macroHandlers } from "./macros";
 import { partyHandlers } from "./party";
+import { playerHandlers } from "./player";
 import { rollHandlers } from "./rolls";
 import { sceneHandlers } from "./scenes";
 
@@ -51,6 +54,7 @@ export const DOMAIN_HANDLERS = [
   itemHandlers,
   macroHandlers,
   partyHandlers,
+  playerHandlers,
   rollHandlers,
 ] as const;
 
@@ -68,6 +72,7 @@ export const TOOL_HANDLERS: BridgeToolHandlers = {
   ...itemHandlers,
   ...macroHandlers,
   ...partyHandlers,
+  ...playerHandlers,
   ...rollHandlers,
 };
 
