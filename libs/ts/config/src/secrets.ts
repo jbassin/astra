@@ -17,9 +17,11 @@
  */
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join } from "node:path";
 
 import { parse as parseYaml } from "yaml";
+
+import { findRepoRoot } from "./root";
 
 const SOPS_SCHEME = "sops:";
 
@@ -41,22 +43,30 @@ export function isBlankSecret(value: string | null | undefined): boolean {
   return value == null || BLANK_SECRET.test(value);
 }
 
-/** Walk up from a directory to the first ancestor containing `deploy/sops`. */
-function findRepoRoot(startDir: string): string {
-  let dir = resolve(startDir);
-  for (;;) {
-    if (existsSync(join(dir, "deploy", "sops"))) return dir;
-    const parent = dirname(dir);
-    if (parent === dir) return resolve(startDir);
-    dir = parent;
-  }
-}
-
-/** `$ASTRA_SOPS_FILE` or `<repo-root>/deploy/sops/secrets.enc.yaml`. */
+/** `$ASTRA_SOPS_FILE` or `<repo-root>/deploy/sops/secrets.enc.yaml`. Outside a checkout
+ * there is no default file: that throws the "missing" error `optional()` reads as unset,
+ * exactly like an absent file. */
 export function defaultSecretsFile(): string {
   const override = process.env.ASTRA_SOPS_FILE;
   if (override) return override;
-  return join(findRepoRoot(import.meta.dirname), "deploy", "sops", "secrets.enc.yaml");
+  let root: string;
+  try {
+    root = findRepoRoot();
+  } catch (err) {
+    throw new MissingSecretError(`no SOPS secrets file: ${(err as Error).message}`);
+  }
+  return join(root, "deploy", "sops", "secrets.enc.yaml");
+}
+
+/** The checkout holding the SOPS file, else this library's own checkout. */
+function ageKeyFile(secretsFile: string): string {
+  let root: string;
+  try {
+    root = findRepoRoot(dirname(secretsFile));
+  } catch {
+    root = findRepoRoot();
+  }
+  return join(root, "deploy", "sops", "age.key");
 }
 
 const decryptCache = new Map<string, Record<string, string>>();
@@ -68,7 +78,7 @@ function decrypt(file: string): Record<string, string> {
 
   const env = { ...process.env };
   if (!env.SOPS_AGE_KEY_FILE) {
-    env.SOPS_AGE_KEY_FILE = join(findRepoRoot(dirname(file)), "deploy", "sops", "age.key");
+    env.SOPS_AGE_KEY_FILE = ageKeyFile(file);
   }
   const out = execFileSync("sops", ["-d", file], { env, encoding: "utf8" });
   let parsed: unknown;

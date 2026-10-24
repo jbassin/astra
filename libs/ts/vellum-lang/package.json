@@ -21,6 +21,7 @@
     "yaml": "^2.9.0"
   },
   "devDependencies": {
+    "@astra/config": "workspace:*",
     "@types/mdast": "^4.0.4",
     "mdast-util-directive": "^3.1.0",
     "vitest": "^4.1.9"

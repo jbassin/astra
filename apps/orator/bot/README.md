@@ -33,8 +33,9 @@ its library in the `orator-postgres` service (host port 10364). Config is the `o
 - **The Discord bot is optional.** Without a resolved Discord token the web UI and library still run,
   but every playback route answers 503.
 - **A new `orator` config key must be mirrored three times:** `config.kdl`, the TS Zod schema in
-  `libs/ts/config`, and `OratorConfig` in `libs/py/config/src/astra_config/models.py`. The Python model
-  uses `extra="forbid"`, so a key missing there fails every Python test that loads config.
+  `libs/ts/config`, and `OratorConfig` in `libs/py/config/src/astra_config/models.py`. Python never
+  loads `orator`, but the whole-file CI test (`test_whole_config_kdl_validates`) validates it against
+  `OratorConfig`, which forbids unknown keys, so a key missing there fails CI.
 - **CI never talks to Postgres.** Tests use `src/db/fake-store.ts`, an in-memory double. Wire-level
   SQL bugs (parameter types, array params) show up only against the real database, so check a store
   change against `orator-postgres` before you deploy it.

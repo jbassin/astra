@@ -13,6 +13,7 @@
     "build": "echo '@astra/ontology: no build step'"
   },
   "dependencies": {
+    "@astra/config": "workspace:*",
     "@bgotink/kdl": "^0.4.0",
     "zod": "^4.4.3"
   },

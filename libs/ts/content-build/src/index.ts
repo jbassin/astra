@@ -11,6 +11,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
+import { findRepoRoot } from "@astra/config";
 import matter from "gray-matter";
 import { remark } from "remark";
 import remarkHtml from "remark-html";
@@ -118,17 +119,12 @@ export async function buildContent(
 /** Names the astra-data root that site builds read their content from. */
 export const ASTRA_CONTENT_ROOT_ENV = "ASTRA_CONTENT_ROOT";
 
-/** The checked-in astra-data fixture: `<repo>/fixtures/astra-data`, found by walking up
- * from `fromDir` (throws if there is none). */
+/** The checked-in astra-data fixture: `<repo>/fixtures/astra-data`, in the checkout that
+ * holds `fromDir` (throws if there is none). */
 export function fixtureContentRoot(fromDir: string): string {
-  let dir = path.resolve(fromDir);
-  for (;;) {
-    const candidate = path.join(dir, "fixtures", "astra-data");
-    if (fs.existsSync(candidate)) return candidate;
-    const parent = path.dirname(dir);
-    if (parent === dir) throw new Error(`no fixtures/astra-data above ${fromDir}`);
-    dir = parent;
-  }
+  const fixture = path.join(findRepoRoot(fromDir), "fixtures", "astra-data");
+  if (!fs.existsSync(fixture)) throw new Error(`no fixtures/astra-data above ${fromDir}`);
+  return fixture;
 }
 
 /**

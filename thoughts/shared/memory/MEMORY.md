@@ -9,7 +9,7 @@ Start with `docs/now.md` and `docs/backlog.md`; app facts are in each app's READ
 - [Live infra authorized](live-infra-changes-authorized.md) — read before a live step: routine deploys and units need a one-line note, not a yes.
 - [Flag paid/live actions](flag-paid-live-actions.md) — read before spending money or replacing published content: flag it first.
 - [Deploy with just](deploy-apply-with-just.md) — read after changing deploy, edge or app code: commit, push, `just deploy`, verify.
-- [Config single source](config-single-source.md) — read when touching any config value: config.kdl plus both schema mirrors.
+- [Config single source](config-single-source.md) — read when touching any config value: config.kdl plus the schemas that read it.
 - [Telemetry built in](telemetry-built-in.md) — read when adding an app, asset or metric: wire it where it runs; TS uses lazyCounter.
 - [SigNoz MCP](signoz-mcp.md) — read for any observability question: use the signoz_* tools, not curl.
 - [Verify rules against corpus](verify-rules-against-corpus.md) — read before any PF2e rules claim: grep the codex corpus and quote it.

@@ -7,8 +7,10 @@ metadata:
 
 Every config value lives in `ontology/ontology-config/config.kdl` and is read through
 `astra_config` (`libs/py/config`) or `@astra/config` (`libs/ts/config`). That includes tuning
-constants: model ids, thresholds, chunk sizes, ports, paths. Both schema mirrors carry the same
-fields.
+constants: model ids, thresholds, chunk sizes, ports, paths. Each language's loader validates only
+the namespaces its apps read; Pydantic's `WholeConfig` holds every namespace and one CI test
+validates the whole file against it. A namespace TS reads is mirrored field for field in both
+schemas.
 
 Only the config libraries resolve config and secrets. Their env override (the upper-cased SOPS key
 wins over the file) is the sanctioned mechanism. Any other `os.environ`/`process.env` read of a
@@ -19,5 +21,6 @@ transport (for example set in the environment so litellm can read it).
 TypeScript parity.
 
 **How to apply:** when you touch or notice a config value, make sure it flows from `config.kdl`
-through the config library to the code; if not, move it there and mirror it in both schemas.
+through the config library to the code; if not, move it there: always in Pydantic (`Config` if
+Python reads it, else `WholeConfig`), and in Zod too if TS reads it.
 Details: [`docs/development.md`](../../../docs/development.md).

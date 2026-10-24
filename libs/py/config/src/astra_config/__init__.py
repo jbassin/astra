@@ -7,11 +7,16 @@
 
 Parse-at-edge (Decision E): KDL is read here and validated straight into the typed
 `Config`; secrets stay as `SecretRef` until `.require()` / `.optional()`.
+
+`load_config()` validates only the namespaces Python reads; `load_whole_config()`
+validates every namespace and exists for the one CI test that guards the whole file.
+`models.py` records which language reads which namespace.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 from .kdl import load_document, top_level_namespaces
 from .models import (
@@ -27,7 +32,9 @@ from .models import (
     TelemetryConfig,
     WealConfig,
     WealOverlayConfig,
+    WholeConfig,
 )
+from .root import find_repo_root
 from .secrets import (
     SecretRef,
     SecretUnsetError,
@@ -51,46 +58,34 @@ __all__ = [
     "TelemetryConfig",
     "WealConfig",
     "WealOverlayConfig",
+    "WholeConfig",
     "default_config_file",
     "default_secrets_file",
     "find_repo_root",
     "is_blank_secret",
     "load_config",
+    "load_whole_config",
     "resolve_sops_ref",
 ]
 
 
-def find_repo_root(start: Path | None = None) -> Path:
-    """The checkout root: the nearest ancestor of `start` holding `ontology/ontology-config`.
-
-    `start` defaults to this module's own file, which sits inside the checkout because
-    workspace members install editable (`/repo` in the Dagster image). Code calls this
-    instead of counting `Path.parents`, so no path depends on how deep an app sits under
-    `apps/`. Raises `FileNotFoundError` when no ancestor matches.
-    """
-    origin = (start if start is not None else Path(__file__)).resolve()
-    for parent in [origin, *origin.parents]:
-        if (parent / "ontology" / "ontology-config").is_dir():
-            return parent
-    raise FileNotFoundError(f"no ancestor of {origin} holds ontology/ontology-config")
-
-
-def _find_repo_root(start: Path) -> Path:
-    try:
-        return find_repo_root(start)
-    except FileNotFoundError:
-        return start
-
-
 def default_config_file() -> Path:
-    """`<repo-root>/ontology/ontology-config/config.kdl`."""
-    root = _find_repo_root(Path(__file__).resolve())
-    return root / "ontology" / "ontology-config" / "config.kdl"
+    """`<repo-root>/ontology/ontology-config/config.kdl` (raises outside a checkout)."""
+    return find_repo_root() / "ontology" / "ontology-config" / "config.kdl"
+
+
+def _read(path: str | Path | None, secrets_file: Path | None) -> dict[str, dict[str, Any]]:
+    config_path = Path(path) if path is not None else default_config_file()
+    return top_level_namespaces(load_document(config_path), secrets_file=secrets_file)
 
 
 def load_config(path: str | Path | None = None, *, secrets_file: Path | None = None) -> Config:
-    """Parse `config.kdl` → validated `Config` (secrets stay lazy)."""
-    config_path = Path(path) if path is not None else default_config_file()
-    doc = load_document(config_path)
-    namespaces = top_level_namespaces(doc, secrets_file=secrets_file)
-    return Config.model_validate(namespaces)
+    """Parse `config.kdl` → validated `Config`: the Python-read namespaces (secrets lazy)."""
+    return Config.model_validate(_read(path, secrets_file))
+
+
+def load_whole_config(
+    path: str | Path | None = None, *, secrets_file: Path | None = None
+) -> WholeConfig:
+    """Parse `config.kdl` → `WholeConfig`, validating every namespace (the CI guard)."""
+    return WholeConfig.model_validate(_read(path, secrets_file))

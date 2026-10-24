@@ -7,7 +7,8 @@
  *   cfg.weal.bindAddr;                  // plaintext
  *   cfg.orator.sessionSecret?.require(); // SOPS-decrypted on demand; throws if unset
  */
-export { type Config, ConfigSchema, defaultConfigFile, findRepoRoot, loadConfig } from "./config";
+export { type Config, ConfigSchema, defaultConfigFile, loadConfig } from "./config";
+export { findRepoRoot } from "./root";
 export {
   defaultSecretsFile,
   isBlankSecret,
