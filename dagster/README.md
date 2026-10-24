@@ -22,7 +22,7 @@ lineage, and one run can materialize a session across apps.
 | Sensor | Launches | When |
 |---|---|---|
 | `craig_drop_sensor` | `session_tracks` → `session_audio` ∥ `session_transcript` → `session_cleanup` | a Craig zip in `scribe.incoming-path` whose date is not a session yet; it adds the key to `sessions` (the only code that does) |
-| `scribe_output_sensor` | `session_transcripts` → `session_episode_summary` | `session_transcript` is materialized and `script.json` exists |
+| `scribe_output_sensor` | `session_transcripts` → `session_episode_summary` | `session_transcript` is materialized, its `transcript_not_empty` check passed, and `script.json` exists |
 | `linguist_output_sensor` | `session_digest` → `session_brief` → `session_script` → `session_audio_clips` → `session_episode` | `session_episode_summary` is materialized (the chronicle gate) and a canonical transcript exists |
 | `heartwood_sensor` | `session_wiki` (waits for the host agent) | `session_transcripts` is materialized and the transcript is a faerrin campaign |
 | `campaign_timeline_schedule`, hourly | `campaign_timeline` (unpartitioned, after `session_episode_summary`) | always; a no-op until a summary changes |
@@ -36,6 +36,29 @@ materialization). Each request carries the run key `<stage asset>:<session>`, an
 sensor's cursor keeps a ledger of the sessions it launched. So a failed or terminated stage
 stays as it is until you re-execute it, and re-running an upstream asset by hand never
 re-launches a paid stage. Eager automation (pipe-4c) is not on yet.
+
+### Blocking checks
+
+scribe's assets carry blocking, per-session asset checks (0037 PIPE-12), built with
+`session_check` (`astra_pipeline_resources.partitions`). Each shows per session on the
+asset's Checks tab.
+
+| Check | On | Fails when |
+|---|---|---|
+| `single_recording` | `session_tracks` | two real Craig zips (different recording ids) carry the session date |
+| `no_undated_recording` | `session_tracks` | an undated zip whose `info.txt` start date is the session is not the recording in use |
+| `transcript_not_empty` | `session_transcript` | `script.json` has fewer than 100 segments |
+
+A failed check fails the run, so `pipeline_failure_alert` pages with the session key and
+the check's step name, and it skips the rest of that run: the tracks checks stop the Groq
+transcription, and the transcript check stops `session_cleanup` (the tracks stay). The
+checked asset still counts as materialized, so a sensor would launch the next stage on
+it. A stage's `SessionStage.gates` closes that gap: `scribe_output_sensor` launches
+linguist only for a session whose latest `transcript_not_empty` result passed
+(`blocked_sessions`). A session with no result, from before the checks, is not blocked.
+After you fix the cause, re-execute the run from failure: the check runs again, and a
+pass opens the gate. Partitioned checks are a Dagster preview; `session_check` hides the
+warning.
 
 ## Resources
 

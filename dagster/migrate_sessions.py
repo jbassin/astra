@@ -178,7 +178,11 @@ def sensor_preview(instance: dg.DagsterInstance) -> dict[str, list[str]]:
         sensor = stage.sensor
         assert sensor is not None  # noqa: S101 -- every downstream stage has one
         out[stage.root] = ready_sessions(
-            instance, upstream=sensor.upstream, stage=sensor.stage, keep=sensor.keep
+            instance,
+            upstream=sensor.upstream,
+            stage=sensor.stage,
+            keep=sensor.keep,
+            gates=sensor.gates,
         )
     return out
 

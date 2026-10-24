@@ -35,12 +35,20 @@ from astra_pipeline_resources.partitions import (
     SESSIONS_NAME,
     SKIP_PENDING,
     migration_pending,
+    session_check,
     sessions,
 )
 from astra_sessions import atomic_write_text, recording_key
 
 from .roster import Roster
-from .sensor import is_session_zip, new_sessions
+from .sensor import (
+    Recording,
+    is_session_zip,
+    new_sessions,
+    real_recordings,
+    session_recordings,
+    stray_recordings,
+)
 from .session import build_transcript, extract_session_tracks, merge_audio
 from .transcribe import TrackTranscriber
 
@@ -155,6 +163,117 @@ def session_cleanup(
 SCRIBE_ASSETS = [session_tracks, session_audio, session_transcript, session_cleanup]
 
 
+# ── blocking checks (0037 PIPE-12) ───────────────────────────────────────────
+# A failed check fails the run, so `pipeline_failure_alert` pages with the session key, and
+# skips the rest of the run: the tracks checks stop the Groq transcription, and the
+# transcript check stops `session_cleanup` (the tracks stay for a rerun). linguist's sensor
+# gates on the transcript check (`LINGUIST_STAGE.gates`), so no paid LLM stage launches.
+
+#: A real session has thousands of segments (3635 was the fewest by 2026-10); one under
+#: this floor is an empty or broken transcript, never a short session.
+MIN_TRANSCRIPT_SEGMENTS = 100
+
+
+def _recordings(pipeline_paths: PipelinePaths, key: str) -> list[Recording]:
+    return session_recordings(Path(pipeline_paths.scribe_incoming).glob("*.zip"), key)
+
+
+def _names(recordings: list[Recording]) -> list[str]:
+    return [r.path.name for r in recordings]
+
+
+@session_check(
+    asset=session_tracks,
+    name="single_recording",
+    description=(
+        "The session date has one Craig recording. With two, only the first zip in name "
+        "order is transcribed and the other is lost."
+    ),
+)
+def single_recording(
+    context: dg.AssetCheckExecutionContext, pipeline_paths: PipelinePaths
+) -> dg.AssetCheckResult:
+    key = context.partition_key
+    dated = [r for r in _recordings(pipeline_paths, key) if r.dated]
+    ids = sorted({r.recording_id for r in dated})
+    passed = len(ids) <= 1
+    if not passed:
+        _log.warning("scribe session %s has %d Craig recordings: %s", key, len(ids), _names(dated))
+    return dg.AssetCheckResult(
+        passed=passed,
+        description=None
+        if passed
+        else (
+            f"session {key} has {len(ids)} Craig recordings ({', '.join(_names(dated))}); "
+            "only the first would be transcribed. Remove or merge the extra one, then "
+            "re-execute the run."
+        ),
+        metadata={"session": key, "recordings": ids, "zips": _names(dated)},
+    )
+
+
+@session_check(
+    asset=session_tracks,
+    name="no_undated_recording",
+    description=(
+        "No undated Craig zip belongs to this session. An undated name is invisible to "
+        "the pipeline, so its recording would be lost."
+    ),
+)
+def no_undated_recording(
+    context: dg.AssetCheckExecutionContext, pipeline_paths: PipelinePaths
+) -> dg.AssetCheckResult:
+    key = context.partition_key
+    strays = stray_recordings(_recordings(pipeline_paths, key))
+    if strays:
+        _log.warning("scribe session %s has undated Craig zips: %s", key, _names(strays))
+    return dg.AssetCheckResult(
+        passed=not strays,
+        description=None
+        if not strays
+        else (
+            f"session {key} has an undated Craig zip ({', '.join(_names(strays))}) that is "
+            "not the recording being processed. See the scribe README, 'Undated zip'."
+        ),
+        metadata={"session": key, "undated_zips": _names(strays)},
+    )
+
+
+@session_check(
+    asset=session_transcript,
+    name="transcript_not_empty",
+    description=(
+        f"script.json has at least {MIN_TRANSCRIPT_SEGMENTS} segments. Fewer means an empty "
+        "or broken transcript, which linguist must not summarize."
+    ),
+)
+def transcript_not_empty(
+    context: dg.AssetCheckExecutionContext, pipeline_paths: PipelinePaths
+) -> dg.AssetCheckResult:
+    key = context.partition_key
+    path = Path(pipeline_paths.scribe_data) / "saved" / key / "script.json"
+    try:
+        segments = len(json.loads(path.read_text(encoding="utf-8")))
+    except (OSError, ValueError, TypeError):
+        segments = 0
+    passed = segments >= MIN_TRANSCRIPT_SEGMENTS
+    if not passed:
+        _log.warning("scribe session %s transcript has %d segments", key, segments)
+    return dg.AssetCheckResult(
+        passed=passed,
+        description=None
+        if passed
+        else (
+            f"session {key} transcript has {segments} segments "
+            f"(the floor is {MIN_TRANSCRIPT_SEGMENTS}): check the recording's tracks."
+        ),
+        metadata={"session": key, "segments": segments, "floor": MIN_TRANSCRIPT_SEGMENTS},
+    )
+
+
+SCRIBE_CHECKS = [single_recording, no_undated_recording, transcript_not_empty]
+
+
 @dg.sensor(
     target=SCRIBE_ASSETS,
     minimum_interval_seconds=30,
@@ -164,21 +283,56 @@ def craig_drop_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     """Register a ``sessions`` partition + run request for each new Craig zip in `incoming_path`.
 
     "New" means the zip's date is not a session yet. The sensor skips while the sessions
-    migration is pending: an empty shared set would make every zip on disk look new."""
+    migration is pending: an empty shared set would make every zip on disk look new.
+
+    An undated zip that no dated name covers can't become a session. The sensor logs one
+    WARN per such zip (the cursor remembers which) and names them in the skip reason."""
     incoming = load_config().scribe.incoming_path
     if not incoming or not Path(incoming).is_dir():
         return dg.SensorResult()
     if migration_pending(context.instance):
         return dg.SensorResult(skip_reason=SKIP_PENDING)
+    zips = list(Path(incoming).glob("*.zip"))
     existing = set(context.instance.get_dynamic_partitions(SESSIONS_NAME))
-    found = new_sessions(Path(incoming).glob("*.zip"), existing)
+    found = new_sessions(zips, existing)
     adds = [sessions.build_add_request(list(found))] if found else []
+    strays = stray_recordings(real_recordings(zips))
+    warned = _read_warned(context.cursor)
+    for stray in strays:
+        if stray.path.name not in warned:
+            _log.warning(
+                "scribe skips undated Craig zip %s (session %s per info.txt); hard-link it "
+                "under a dated name (scribe README, 'Undated zip')",
+                stray.path.name,
+                stray.key or "unknown",
+            )
+    skip = (
+        "undated Craig zips, not sessions: "
+        + ", ".join(f"{s.path.name} ({s.key or 'no start time'})" for s in strays)
+        if strays and not found
+        else None
+    )
     return dg.SensorResult(
         run_requests=[dg.RunRequest(partition_key=key) for key in found],
         dynamic_partitions_requests=adds,
+        skip_reason=skip,
+        cursor=json.dumps({"warned": sorted(s.path.name for s in strays)}),
     )
 
 
+def _read_warned(cursor: str | None) -> set[str]:
+    """The undated zips already logged, from the cursor (an old or empty cursor: none)."""
+    try:
+        data = json.loads(cursor or "")
+    except ValueError:
+        return set()
+    warned = data.get("warned") if isinstance(data, dict) else None
+    return {str(name) for name in warned} if isinstance(warned, list) else set()
+
+
 defs = dg.Definitions(
-    assets=SCRIBE_ASSETS, sensors=[craig_drop_sensor], resources=default_resources()
+    assets=SCRIBE_ASSETS,
+    asset_checks=SCRIBE_CHECKS,
+    sensors=[craig_drop_sensor],
+    resources=default_resources(),
 )

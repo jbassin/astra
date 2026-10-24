@@ -3,16 +3,19 @@
 One partition per session, keyed by the session date (``YYYY-M-D``, not zero-padded).
 ``craig_drop_sensor`` is the only code that adds keys. Each downstream stage has one sensor
 (`launch_ready`) that launches the stage for a session once its upstream asset is
-materialized and the stage was never tried for it (`ready_sessions`). Until 2026-10 each
+materialized, its blocking checks passed (`session_check`, `blocked_sessions`), and the
+stage was never tried for it (`ready_sessions`). Until 2026-10 each
 app had its own set (`LEGACY_SESSIONS_NAMES`); ``dagster/migrate_sessions.py`` folds them
 into this one, and every sensor waits until it has (`migration_pending`).
 """
 
 import json
+import warnings
 from collections.abc import Callable, Collection, Iterable, Mapping
 from dataclasses import dataclass
 
 import dagster as dg
+from dagster._core.storage.asset_check_execution_record import AssetCheckExecutionRecordStatus
 
 __all__ = [
     "LEGACY_SESSIONS_NAMES",
@@ -20,12 +23,14 @@ __all__ = [
     "SESSIONS_NAME",
     "SKIP_PENDING",
     "SessionStage",
+    "blocked_sessions",
     "launch_ready",
     "launchable",
     "migration_done",
     "migration_pending",
     "read_ledger",
     "ready_sessions",
+    "session_check",
     "sessions",
     "tried_sessions",
     "write_ledger",
@@ -85,6 +90,51 @@ def tried_sessions(instance: dg.DagsterInstance, asset: dg.AssetKey) -> set[str]
     return instance.get_materialized_partitions(asset) | set(planned)
 
 
+def session_check(
+    *, asset: dg.AssetKey | dg.AssetsDefinition | str, name: str, description: str
+) -> Callable[[Callable[..., dg.AssetCheckResult]], dg.AssetChecksDefinition]:
+    """A blocking, per-session asset check on ``asset`` (0037 PIPE-12).
+
+    Blocking: a failed result fails the run (so ``pipeline_failure_alert`` pages with the
+    session key) and skips the assets after ``asset`` in that run. Per-session: the result
+    is stored for the session's partition, so the UI shows it per session and a stage
+    sensor can gate on it (`SessionStage.gates`). A failed blocking check does not undo the
+    materialization, which is why the sensors need the gate. Partitioned checks are a
+    Dagster preview; the warning is silenced here, in one place.
+    """
+
+    def wrap(fn: Callable[..., dg.AssetCheckResult]) -> dg.AssetChecksDefinition:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", dg.PreviewWarning)
+            return dg.asset_check(
+                asset=asset,
+                name=name,
+                description=description,
+                blocking=True,
+                partitions_def=sessions,
+            )(fn)
+
+    return wrap
+
+
+def blocked_sessions(instance: dg.DagsterInstance, gates: Collection[dg.AssetCheckKey]) -> set[str]:
+    """Session keys where a check in ``gates`` has a latest result that is not a pass.
+
+    That is a failed check, or one planned in a run but not run yet (the run is still
+    going, or died before the check). A session with no result at all is not blocked:
+    the sessions processed before the check existed never had one.
+    """
+    if not gates:
+        return set()
+    infos = instance.event_log_storage.get_asset_check_partition_info(list(gates))
+    return {
+        info.partition_key
+        for info in infos
+        if info.partition_key is not None
+        and info.latest_execution_status != AssetCheckExecutionRecordStatus.SUCCEEDED
+    }
+
+
 def launchable(
     keys: Iterable[str],
     *,
@@ -105,8 +155,10 @@ def ready_sessions(
     stage: dg.AssetKey,
     keep: Callable[[str], bool] = lambda _key: True,
     launched: Collection[str] = (),
+    gates: Collection[dg.AssetCheckKey] = (),
 ) -> list[str]:
-    """Sessions whose ``upstream`` asset is materialized and whose ``stage`` was never tried.
+    """Sessions whose ``upstream`` asset is materialized with every check in ``gates``
+    passed (`blocked_sessions`), and whose ``stage`` was never tried.
 
     "Tried" means materialized, or planned in any run (`tried_sessions`), or already in
     ``launched``, the sensor's own ledger. So a failed or canceled stage stays as it is
@@ -116,7 +168,8 @@ def ready_sessions(
     """
     return launchable(
         instance.get_dynamic_partitions(SESSIONS_NAME),
-        upstream_done=instance.get_materialized_partitions(upstream),
+        upstream_done=instance.get_materialized_partitions(upstream)
+        - blocked_sessions(instance, gates),
         stage_tried=tried_sessions(instance, stage) | set(launched),
         keep=keep,
     )
@@ -124,11 +177,13 @@ def ready_sessions(
 
 @dataclass(frozen=True)
 class SessionStage:
-    """One sensor-launched stage: the asset that triggers it, its first asset, a file check."""
+    """One sensor-launched stage: the asset that triggers it, its first asset, a file check,
+    and the blocking checks on ``upstream`` that must have passed (`blocked_sessions`)."""
 
     upstream: dg.AssetKey
     stage: dg.AssetKey
     keep: Callable[[str], bool]
+    gates: tuple[dg.AssetCheckKey, ...] = ()
 
     def run_key(self, key: str) -> str:
         """Deterministic per stage and session, so Dagster never launches a request twice."""
@@ -170,6 +225,7 @@ def launch_ready(
         stage=stage.stage,
         keep=stage.keep,
         launched=launched,
+        gates=stage.gates,
     )
     if not ready:
         return dg.SensorResult()

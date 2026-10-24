@@ -51,6 +51,12 @@ CROSS_APP_DEPS = {
 }
 #: The resources the assets declare as parameters (0037 PIPE-16); a key is a parameter name.
 RESOURCES = {"astra_config", "llm", "pipeline_paths", "tts"}
+#: The blocking per-session checks (0037 PIPE-12), as ``asset:check``.
+CHECKS = {
+    "session_tracks:no_undated_recording",
+    "session_tracks:single_recording",
+    "session_transcript:transcript_not_empty",
+}
 
 
 def _repo(definitions: ModuleType) -> dg.RepositoryDefinition:
@@ -115,3 +121,29 @@ def test_every_partitioned_asset_shares_the_sessions_set(definitions: ModuleType
 
     defs = [a.partitions_def for a in _repo(definitions).assets_defs_by_key.values()]
     assert {id(d) for d in defs if d is not None} == {id(sessions)}
+
+
+def test_asset_checks_are_pinned_blocking_and_per_session(definitions: ModuleType) -> None:
+    from astra_pipeline_resources.partitions import sessions
+
+    graph = _repo(definitions).asset_graph
+    keys = graph.asset_check_keys
+    assert {f"{k.asset_key.to_user_string()}:{k.name}" for k in keys} == CHECKS
+    for key in keys:
+        spec = graph.get_check_spec(key)
+        assert spec.blocking
+        assert spec.partitions_def is sessions
+
+
+def test_stage_gates_name_real_checks_on_their_upstream(definitions: ModuleType) -> None:
+    """A gate with a typo would never block: it must be a check of this code location."""
+    from astra_heartwood.assets import HEARTWOOD_STAGE
+    from astra_linguist.assets import LINGUIST_STAGE
+    from astra_mouthpiece.assets import MOUTHPIECE_STAGE
+
+    keys = _repo(definitions).asset_graph.asset_check_keys
+    for stage in (LINGUIST_STAGE, MOUTHPIECE_STAGE, HEARTWOOD_STAGE):
+        for gate in stage.gates:
+            assert gate in keys
+            assert gate.asset_key == stage.upstream
+    assert [g.name for g in LINGUIST_STAGE.gates] == ["transcript_not_empty"]
