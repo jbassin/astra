@@ -2,14 +2,15 @@
  * TranscriptPlayer — React port of faerrin's Solid island (itself a verbatim port of
  * quartz transcript.inline.ts). Progressive-enhancement: it renders NO markup of its
  * own and attaches behaviour to the server-emitted `.transcript-line` /
- * `audio[data-transcript]` markup (baked by transcriptBuild.ts, slice 7). On a
+ * `audio[data-transcript]` markup (baked by transcriptBuild.ts). On a
  * non-transcript page `initTranscriptPlayer()` returns null (no audio) and nothing
  * binds.
  *
  * Only the shell changed Solid→React: `onMount`→`useEffect([])`, `onCleanup`→the
- * effect's cleanup return (N5). DO NOT rewrite reactively: transcripts render to
- * 1.2–1.6 MB pages, so the delegated-click + precomputed-seconds[] binary-search +
- * single-root-class filtering design is mandatory (Risk 2). getElementById is kept
+ * effect's cleanup return (astra is an SPA, so every listener must go on unmount).
+ * DO NOT rewrite reactively: transcripts render to 1.2–1.6 MB pages, so the
+ * delegated-click + precomputed-seconds[] binary-search + single-root-class filtering
+ * design is mandatory for performance. getElementById is kept
  * for `${second}-${user}` ids (digit-leading / dotted → invalid CSS selectors).
  */
 import { useEffect } from "react";
@@ -418,7 +419,7 @@ function initTranscriptPlayer(): (() => void) | null {
 
   // Teardown — listeners + timer. (faerrin dropped the SPA DOM-restore as an MPA;
   // astra is an SPA, but navigation unmounts the article + the injected player with
-  // it, so removing the document/window-scoped listeners here is the N5 requirement.)
+  // it, so the document/window-scoped listeners must be removed here or they leak.)
   return () => {
     window.clearTimeout(searchTimer);
     audio.removeEventListener("timeupdate", onTimeUpdate);

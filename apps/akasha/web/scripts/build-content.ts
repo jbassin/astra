@@ -1,5 +1,5 @@
-// Pre-build content pipeline (slices 2–4 — the akasha snapshot → generated modules
-// + static endpoints).
+// Pre-build content pipeline: the akasha snapshot becomes generated modules and static
+// endpoints.
 //
 // Reads the committed akasha-backend snapshot, lifts faerrin's slug.ts/site.ts to
 // derive the URL slugs + the page graph (backlinks/folders/tags/Explorer/aliases),
@@ -7,12 +7,15 @@
 //   - src/generated/site.ts — the page index (the runtime imports it, never the
 //     snapshot/fs — so the production bundle has no build-time data dependency);
 //   - src/generated/bodies.ts — each page's vellum body rendered through gothic
-//     (DocumentView + the N3 resolveCrossref seam) to static HTML (slice 4);
+//     (DocumentView + the resolveCrossref seam) to static HTML;
+//   - src/generated/transcripts*, speakers.ts and chronicle.ts — the session
+//     transcript pages, the speaker colours and the campaign chronicle;
 //   - the static endpoints into public/ (RSS index.xml, sitemap.xml,
-//     static/contentIndex.json) at the exact faerrin paths (N2) — vite copies
-//     public/ into dist/client, where the Bun server static-serves them.
+//     static/contentIndex.json) at the exact paths faerrin served, so old links and
+//     feed readers keep working — vite copies public/ into dist/client, where the SSR
+//     server static-serves them.
 //
-// Transcript pages + Pagefind land in later slices.
+// The Pagefind search index is built after `vite build`, by scripts/build-search.ts.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -164,7 +167,7 @@ function emitGeneratedModule(site: SiteData, extraTree: TreeNode[] = []): string
 }
 
 /**
- * Render every page's `.vellum` body through gothic (DocumentView + the N3
+ * Render every page's `.vellum` body through gothic (DocumentView + the
  * resolveCrossref seam) to a static HTML string, baked by FullSlug. The route
  * injects it (dangerouslySetInnerHTML) — build-only render keeps react-dom/server +
  * gothic's renderer + vellum-lang out of the client bundle. Covers content pages AND
@@ -244,7 +247,7 @@ function emitTranscriptBodies(bodies: Record<string, { html: string; minutes: nu
 }
 
 /**
- * Emit the speaker-color module (I5): `--text<Name>` CSS vars + the per-speaker
+ * Emit the speaker-color module: `--text<Name>` CSS vars + the per-speaker
  * `.transcript-name`/`.tp-chip`/`hide-` rules from ontology-being. faerrin keyed
  * these off a hardcoded SCSS `$speakers` list + `theme.scss` vars; astra derives
  * them from being.kdl (the single source of truth). Injected as a <style> in __root.
@@ -269,7 +272,7 @@ function emitSpeakers(being: Being): string {
     "speakers.ts",
     [
       "/** Speaker colors + per-speaker transcript rules, derived from ontology-being",
-      " *  (I5). Injected as a <style> in __root.tsx. */",
+      " *  (the identity colours). Injected as a <style> in __root.tsx. */",
       `export const SPEAKER_CSS = ${JSON.stringify(css)};`,
       "",
     ].join("\n"),
@@ -290,7 +293,7 @@ function emitStatic(site: SiteData, meta: SiteMeta): string {
   return `static: index.xml, sitemap.xml, static/contentIndex.json @ ${meta.baseUrl}`;
 }
 
-// ── chronicle (0019): the Show → Season → Episode campaign timeline ──────────
+// ── chronicle: the Show → Season → Episode campaign timeline ──────────
 // Reads linguist's committed timeline artifacts (the GLM-5.2 episode summaries +
 // season grouping) and emits a single typed module the /chronicle routes import.
 // Each episode links to its existing transcript page (by date). Degrades to an empty
@@ -417,7 +420,7 @@ function emitChronicle(shows: ChronicleShowData[]): string {
     OUT_DIR,
     "chronicle.ts",
     [
-      "/** The campaign chronicle (0019): Show → Season → Episode, structured by GLM-5.2",
+      "/** The campaign chronicle: Show → Season → Episode, structured by GLM-5.2",
       " *  in linguist and read here at build time. Episodes link to transcript pages. */",
       "",
       ...CHRONICLE_TYPES,
@@ -487,17 +490,17 @@ const siteSource = defineContentSource({
     const snapshot = loadSnapshot(SNAPSHOT);
     const wiki = buildSite(snapshot);
     const being = loadBeing(BEING);
-    // Reconstitute transcript pages (D4/N7) and merge them into the same graph as
-    // the snapshot pages — routing/edges/backlinks/Explorer/contentIndex all follow.
+    // Reconstitute transcript pages from linguist's sessions and merge them into the same
+    // graph as the snapshot pages — routing/edges/backlinks/Explorer/contentIndex all follow.
     const transcripts = buildTranscripts(DATA_DIR, wiki.docs, being);
     const site = indexDocs([...wiki.docs, ...transcripts.docs]);
     const transcriptSlugs = new Set(transcripts.docs.map((d) => d.slug));
-    // Node-safe config locator (works under bun-run, vite, and vitest — unlike
-    // @astra/config's Bun-only default path resolution).
+    // loadSiteConfig finds config.kdl by walking up from the working directory, the
+    // same way under the build script, vite and vitest.
     const baseUrl = loadSiteConfig().akashaFrontend.publicOrigin.replace(/\/$/, "");
     const meta: SiteMeta = { title: SITE_TITLE, baseUrl };
     // Episode → transcript-page href, keyed by session date (the transcript doc's
-    // title IS its date), formed the same way as the static endpoints (N2).
+    // title IS its date), formed the same way as the static endpoints' URLs.
     const hrefByDate = new Map(
       transcripts.docs.map((d) => [d.title, `/${encodeURI(simplifySlug(d.slug))}`]),
     );

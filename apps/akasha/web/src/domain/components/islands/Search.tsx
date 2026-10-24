@@ -5,8 +5,9 @@
  * client output) is lazy-imported on first open so reading pages ship zero search JS.
  *
  * Solid→React: createSignal→useState, refs→useRef, onMount/onCleanup→useEffect +
- * cleanup (N5). NOTE: Pagefind indexes the built corpus, so search is empty under
- * `vite dev` until a `build` produces `/pagefind/` (same caveat faerrin carried).
+ * cleanup (astra is an SPA, so every listener must go on unmount). NOTE: Pagefind
+ * indexes the built corpus, so search is empty under `vite dev` until a `build`
+ * produces `/pagefind/` (same caveat faerrin carried).
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 

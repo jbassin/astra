@@ -43,7 +43,7 @@ function CatchAll() {
   return <AliasRedirect redirUrl={data.redirUrl} ogSlug={data.ogSlug} />;
 }
 
-// Alias redirect stub (N2): a `<meta http-equiv="refresh">` page, NOT a server 301
+// Alias redirect stub: a `<meta http-equiv="refresh">` page, NOT a server 301
 // (Popover fetchCanonical + bookmarks rely on the meta-refresh HTML). React 19 hoists
 // the title/link/meta into <head>; the meta-refresh fires before the body shows.
 function AliasRedirect({ redirUrl, ogSlug }: { redirUrl: string; ogSlug: string }) {

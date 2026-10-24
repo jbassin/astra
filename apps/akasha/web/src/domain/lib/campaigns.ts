@@ -9,7 +9,7 @@
  *
  * Behaviour is byte-faithful: count non-GM character-name string hits across the
  * transcript; the FIRST campaign — in being.kdl order — whose total clears
- * `MATCH_THRESHOLD` wins; else null → Unsorted. This is URL-parity-critical (N7):
+ * `MATCH_THRESHOLD` wins; else null → Unsorted. Page URLs must match faerrin's, and
  * a wrong match misfiles the session's page. Guarded by the slug-parity fixture.
  */
 import type { Campaign, Role } from "@astra/ontology";

@@ -1,7 +1,7 @@
 /**
  * Build-time static endpoints — ports faerrin aether's `pages/index.xml.ts`,
- * `pages/sitemap.xml.ts`, and `pages/static/contentIndex.json.ts` (N2). Astro
- * generated these as SSG endpoints; under astra's SSR (Decision I) there are no
+ * `pages/sitemap.xml.ts`, and `pages/static/contentIndex.json.ts`. Astro
+ * generated these as SSG endpoints; under astra's SSR there are no
  * file server routes (the pinned react-start has none), so build-content emits
  * them as static files into the client output dir at the exact faerrin paths
  * (`/index.xml`, `/sitemap.xml`, `/static/contentIndex.json`); the Bun server
@@ -114,7 +114,7 @@ export interface ContentIndexEntry {
  * `/static/contentIndex.json` — the slim link-graph the Graph island fetches
  * (ports contentIndex.json.ts): the `{title, links, tags}` subset keyed by
  * FullSlug, NOT the full-text blob. The links are the snapshot's parity-gated
- * edges (N6), so the graph data is parity-guaranteed.
+ * edges, so the graph data is parity-guaranteed.
  */
 export function buildContentIndex(site: SiteData): Record<string, ContentIndexEntry> {
   const index: Record<string, ContentIndexEntry> = {};
