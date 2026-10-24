@@ -47,6 +47,9 @@ class PinStore extends FakeStore {
   override tagsForTrack(): Promise<Tag[]> {
     return Promise.resolve([]);
   }
+  override tagsForTracks(trackIds: number[]): Promise<Map<number, Tag[]>> {
+    return Promise.resolve(new Map(trackIds.map((id) => [id, []])));
+  }
   override addTagsToTracks(trackIds: number[], tagIds: number[]): Promise<number> {
     return Promise.resolve(trackIds.length * tagIds.length);
   }

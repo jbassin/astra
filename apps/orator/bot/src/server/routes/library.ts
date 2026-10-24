@@ -86,7 +86,12 @@ export const libraryRoutes: ApiRoute[] = [
         limit,
         offset: (page - 1) * limit,
       });
-      return json(await Promise.all(tracks.map((t) => trackWithTags(ctx, t))));
+      // One tags query for the whole page, not one per track.
+      const tags = await ctx.store.tagsForTracks(tracks.map((t) => t.id));
+      const body: TrackWithTags[] = tracks.map((t) =>
+        Object.assign(t, { tags: tags.get(t.id) ?? [] }),
+      );
+      return json(body);
     },
   },
   {

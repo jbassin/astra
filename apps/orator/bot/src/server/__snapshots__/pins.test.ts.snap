@@ -1668,12 +1668,11 @@ exports[`orator HTTP responses match the pre-migration pins > tracks list 1`] = 
       },
     ],
     [
-      "tagsForTrack",
-      4,
-    ],
-    [
-      "tagsForTrack",
-      5,
+      "tagsForTracks",
+      [
+        4,
+        5,
+      ],
     ],
   ],
   "headers": {
@@ -1697,8 +1696,10 @@ exports[`orator HTTP responses match the pre-migration pins > tracks list filter
       },
     ],
     [
-      "tagsForTrack",
-      5,
+      "tagsForTracks",
+      [
+        5,
+      ],
     ],
   ],
   "headers": {

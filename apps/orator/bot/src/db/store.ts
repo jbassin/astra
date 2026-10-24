@@ -125,6 +125,8 @@ export interface LibraryStore extends PlaybackStore {
   upsertTag(name: string, category?: string | null): Promise<Tag>;
   listTags(): Promise<TagWithCount[]>;
   tagsForTrack(trackId: number): Promise<Tag[]>;
+  /** Every listed track's tags in one query; a track with none maps to []. */
+  tagsForTracks(trackIds: number[]): Promise<Map<number, Tag[]>>;
   addTagsToTracks(trackIds: number[], tagIds: number[]): Promise<number>;
   removeTagsFromTracks(trackIds: number[], tagIds: number[]): Promise<number>;
   deleteTag(id: number): Promise<boolean>;
@@ -228,8 +230,10 @@ export function listJobsByStatusQuery(statuses: DownloadJob["status"][]): {
 export class PostgresStore implements LibraryStore {
   readonly #sql: postgres.Sql;
 
-  constructor(databaseUrl: string) {
-    this.#sql = postgres(databaseUrl);
+  /** `onQuery` sees every statement sent (tests count queries with it). */
+  constructor(databaseUrl: string, opts: { onQuery?: (query: string) => void } = {}) {
+    const { onQuery } = opts;
+    this.#sql = postgres(databaseUrl, onQuery ? { debug: (_conn, query) => onQuery(query) } : {});
   }
 
   /** Apply pending migrations from {@link MIGRATIONS_DIR} (@astra/pg-migrate). */
@@ -448,34 +452,40 @@ export class PostgresStore implements LibraryStore {
     );
   }
 
+  async tagsForTracks(trackIds: number[]): Promise<Map<number, Tag[]>> {
+    const byTrack = new Map<number, Tag[]>(trackIds.map((id) => [id, []]));
+    if (trackIds.length === 0) return byTrack;
+    const rows = await this.#all<Tag & { track_id: number }>(
+      `select tt.track_id, tags.id, tags.name, tags.category, tags.color, tags.created_at::text
+       from tags join track_tags tt on tt.tag_id = tags.id
+       where tt.track_id = any($1::int[]) order by tags.name`,
+      [trackIds],
+    );
+    for (const { track_id, ...tag } of rows) byTrack.get(track_id)?.push(tag);
+    return byTrack;
+  }
+
   async addTagsToTracks(trackIds: number[], tagIds: number[]): Promise<number> {
-    let n = 0;
-    await this.#sql.begin(async (tx) => {
-      for (const trackId of trackIds)
-        for (const tagId of tagIds) {
-          const rows = (await tx.unsafe(
-            "insert into track_tags (track_id, tag_id) values ($1, $2) on conflict do nothing returning track_id",
-            [trackId, tagId],
-          )) as unknown[];
-          n += rows.length;
-        }
-    });
-    return n;
+    if (trackIds.length === 0 || tagIds.length === 0) return 0;
+    // One statement for every track × tag pair; `distinct` keeps a repeated id from
+    // conflicting with itself inside the insert.
+    const rows = await this.#all(
+      `insert into track_tags (track_id, tag_id)
+       select distinct t.id, g.id from unnest($1::int[]) as t(id) cross join unnest($2::int[]) as g(id)
+       on conflict do nothing returning track_id`,
+      [trackIds, tagIds],
+    );
+    return rows.length;
   }
 
   async removeTagsFromTracks(trackIds: number[], tagIds: number[]): Promise<number> {
-    let n = 0;
-    await this.#sql.begin(async (tx) => {
-      for (const trackId of trackIds)
-        for (const tagId of tagIds) {
-          const rows = (await tx.unsafe(
-            "delete from track_tags where track_id = $1 and tag_id = $2 returning track_id",
-            [trackId, tagId],
-          )) as unknown[];
-          n += rows.length;
-        }
-    });
-    return n;
+    if (trackIds.length === 0 || tagIds.length === 0) return 0;
+    const rows = await this.#all(
+      `delete from track_tags where track_id = any($1::int[]) and tag_id = any($2::int[])
+       returning track_id`,
+      [trackIds, tagIds],
+    );
+    return rows.length;
   }
 
   async deleteTag(id: number): Promise<boolean> {
@@ -556,12 +566,13 @@ export class PostgresStore implements LibraryStore {
   async setPlaylistItems(playlistId: number, trackIds: number[]): Promise<void> {
     await this.#sql.begin(async (tx) => {
       await tx.unsafe("delete from playlist_items where playlist_id = $1", [playlistId]);
-      for (const [i, trackId] of trackIds.entries()) {
+      // One insert for the whole list; `with ordinality` numbers the ids from 1 in list order.
+      if (trackIds.length > 0)
         await tx.unsafe(
-          "insert into playlist_items (playlist_id, track_id, position) values ($1, $2, $3)",
-          [playlistId, trackId, i],
+          `insert into playlist_items (playlist_id, track_id, position)
+           select $1, u.track_id, u.n - 1 from unnest($2::int[]) with ordinality as u(track_id, n)`,
+          [playlistId, trackIds] as never[],
         );
-      }
       await tx.unsafe("update playlists set updated_at = now() where id = $1", [playlistId]);
     });
   }
