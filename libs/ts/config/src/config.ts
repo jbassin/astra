@@ -1,15 +1,21 @@
 /**
- * Typed config schema — the same field set as `libs/py/config` (Pydantic), in
- * idiomatic camelCase. Secret fields are `SecretRef | null` (lazy, Decision E);
- * plaintext fields carry the faerrin code-default. `.strict()` mirrors Pydantic's
- * `extra="forbid"` — a mistyped KDL key throws instead of being dropped.
+ * Typed config schema for the `config.kdl` namespaces TS apps read, in idiomatic
+ * camelCase (0037 LIB-1 interim). `loadConfig()` drops every other top-level namespace
+ * unvalidated, so a bad value in a Python-only block cannot stop a TS process. Python's
+ * `WholeConfig` (`libs/py/config` `models.py`) holds every namespace, and one CI test
+ * validates the real file against it; that docstring records who reads which block.
+ *
+ * Each namespace here is mirrored field for field in Pydantic. Secret fields are
+ * `SecretRef | null` (lazy, Decision E); plaintext fields carry the faerrin code-default.
+ * `.strict()` inside each namespace mirrors Pydantic's `extra="forbid"`: a mistyped KDL
+ * key throws instead of being dropped.
  */
-import { existsSync } from "node:fs";
-import { dirname, isAbsolute, join, resolve } from "node:path";
+import { isAbsolute, join } from "node:path";
 
 import { z } from "zod";
 
 import { loadDocument, topLevelNamespaces } from "./kdl";
+import { findRepoRoot } from "./root";
 import { SecretRef } from "./secrets";
 
 // `.nullish()` (nullable + optional) keeps secret fields input-optional so a sparse
@@ -58,71 +64,6 @@ const Data = z
   })
   .strict();
 
-const Llm = z
-  .object({
-    defaultModel: z.string().default("openrouter/z-ai/glm-5.2"),
-    defaultMaxTokens: z.number().default(16000),
-    anthropicApiKey: secret(),
-    openrouterApiKey: secret(),
-  })
-  .strict();
-
-const Scribe = z
-  .object({
-    dataPath: dataPath(""),
-    incomingPath: dataPath(""),
-    tmpPath: dataPath(""),
-    stateFile: z.string().default(""),
-    downstreamCmd: z.string().default(""),
-    keepZip: z.boolean().default(false),
-    skipDownstream: z.boolean().default(false),
-    model: z.string().default("groq/whisper-large-v3"), // full litellm id (Groq Whisper)
-    device: z.string().default("cpu"),
-    computeType: z.string().default("int8"),
-    groqApiKey: secret(),
-  })
-  .strict();
-
-const Linguist = z
-  .object({
-    ingestSource: z.string().default(""),
-    ingestSavedDir: dataPath(""),
-    // session_transcripts' runtime outputs that are not published datasets.
-    scriptPath: dataPath("linguist/script"),
-    shibbolethPath: dataPath("linguist/script/shibboleth.json"),
-    reviewPort: z.number().default(10116),
-    podcastEpisodesPath: z.string().default(""),
-    surfaceModelJudge: z.string().default("openrouter/z-ai/glm-5.2"),
-    surfaceModelEscalate: z.string().default("openrouter/z-ai/glm-5.2"),
-    surfaceMaxNgram: z.number().default(3),
-    surfaceMinTokenLen: z.number().default(3),
-    surfaceKnownFloorUnigram: z.number().default(0.78),
-    surfaceKnownFloorMulti: z.number().default(0.8),
-    surfaceStrongScore: z.number().default(0.88),
-    surfaceKnownNearFloor: z.number().default(0.6),
-    surfaceJudgeChunkSize: z.number().default(150),
-    surfaceJudgeOverlap: z.number().default(10),
-    surfaceEscalateLow: z.number().default(0.4),
-    surfaceEscalateHigh: z.number().default(0.75),
-    surfaceConfidenceFloor: z.number().default(0.6),
-    surfaceJudgeMaxTokens: z.number().default(4096),
-  })
-  .strict();
-
-const Mouthpiece = z
-  .object({
-    episodesPath: dataPath(""),
-    // mouthpiece's own LLM pin (clean/enrich/script), separate from llm.defaultModel.
-    model: z.string().default("openrouter/z-ai/glm-5.3"),
-    // TTS backend: elevenlabs (live default) | cartesia (Sonic-3, wired) | mock (offline).
-    ttsProvider: z.enum(["cartesia", "elevenlabs", "mock"]).default("elevenlabs"),
-    // ElevenLabs model id (v4 since 2026-09-28).
-    elevenlabsModel: z.string().default("eleven_v4"),
-    elevenlabsApiKey: secret(),
-    cartesiaApiKey: secret(),
-  })
-  .strict();
-
 const Weal = z
   .object({
     databaseUrl: z.string().default(""),
@@ -163,8 +104,6 @@ const Orator = z
     sessionSecret: secret(),
   })
   .strict();
-
-const OratorController = z.object({ apiKey: secret() }).strict();
 
 // The SSR frontend service (Decision I). serviceName + port are the single source
 // for server.ts (bind + telemetry name) and vite's dev port; serviceName also
@@ -257,49 +196,6 @@ const Ledger = z
   })
   .strict();
 
-// The heartwood wiki-maintainer agent (0033 D33-7) — a host-run dspy.RLM (Python
-// only; mirrored here so the two schemas keep the same field set). model drives the
-// main loop, subModel serves llm_query; maxIterations bounds main-LM calls,
-// maxLlmCalls sub-LM calls; backfillBudgetUsd is the cumulative backfill ceiling.
-const Heartwood = z
-  .object({
-    model: z.string().default("openrouter/deepseek/deepseek-v4.1-flash"),
-    subModel: z.string().default("openrouter/deepseek/deepseek-v4.1-flash"),
-    maxIterations: z.number().default(60),
-    maxLlmCalls: z.number().default(100),
-    maxTokens: z.number().default(64000),
-    maxOutputChars: z.number().default(10000),
-    backfillBudgetUsd: z.number().default(100),
-    // 0036 (Python-only consumers): the Dagster↔host request dir + the asset's wait.
-    requestsPath: dataPath("heartwood/requests"),
-    requestTimeoutMinutes: z.number().default(180),
-    // Per-run agent artifacts (staging, diff, summary) + the backfill lock.
-    artifactsPath: dataPath("heartwood"),
-  })
-  .strict();
-
-// The mouthpiece producer (0034 D34-3) — a host-run, read-only dspy.RLM (Python only;
-// mirrored here so the two schemas keep the same field set). experimentModels[i] pairs
-// with experimentMaxTokens[i]; a one-argument KDL node loads as a scalar, so both lists
-// accept a bare value.
-const toList = (value: unknown): unknown => (Array.isArray(value) ? value : [value]);
-const MouthpieceProducer = z
-  .object({
-    model: z.string().default("openrouter/deepseek/deepseek-v4.1-flash"),
-    subModel: z.string().default("openrouter/deepseek/deepseek-v4.1-flash"),
-    maxIterations: z.number().default(30),
-    maxLlmCalls: z.number().default(60),
-    maxTokens: z.number().default(64000),
-    maxOutputChars: z.number().default(10000),
-    experimentModels: z
-      .preprocess(toList, z.array(z.string()))
-      .default(["openrouter/z-ai/glm-5.3", "openrouter/deepseek/deepseek-v4.1-flash"]),
-    experimentMaxTokens: z.preprocess(toList, z.array(z.number())).default([128000, 64000]),
-    // Per-run producer/experiment/roundtable artifacts.
-    artifactsPath: dataPath("mouthpiece/experiments"),
-  })
-  .strict();
-
 // portal (0023) — MCP+WS server for the live FoundryVTT "Faerrin" world, on the
 // orator-backend template. No serviceName field (D3): unlike the SSR frontends
 // there's no browser RUM surface, so `astra.portal` is hardcoded in
@@ -371,8 +267,6 @@ const Menhir = z
   })
   .strict();
 
-const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
-
 const Telemetry = z
   .object({
     // In-cluster SigNoz collector (services run on signoz-net; :4318 = OTLP/HTTP).
@@ -388,61 +282,30 @@ const Telemetry = z
 // A missing namespace falls back to its all-defaults form (matches the py
 // default_factory leniency). Zod v4 types `.default()` against the *output* shape,
 // so we hand it the parsed all-defaults object rather than `{}`.
-export const ConfigSchema = z
-  .object({
-    data: Data.default(() => Data.parse({})),
-    llm: Llm.default(() => Llm.parse({})),
-    telemetry: Telemetry.default(() => Telemetry.parse({})),
-    scribe: Scribe.default(() => Scribe.parse({})),
-    linguist: Linguist.default(() => Linguist.parse({})),
-    mouthpiece: Mouthpiece.default(() => Mouthpiece.parse({})),
-    weal: Weal.default(() => Weal.parse({})),
-    wealOverlay: WealOverlay.default(() => WealOverlay.parse({})),
-    orator: Orator.default(() => Orator.parse({})),
-    oratorController: OratorController.default(() => OratorController.parse({})),
-    strider: Strider.default(() => Strider.parse({})),
-    akashaFrontend: AkashaFrontend.default(() => AkashaFrontend.parse({})),
-    mouthpieceFrontend: MouthpieceFrontend.default(() => MouthpieceFrontend.parse({})),
-    vellumFrontend: VellumFrontend.default(() => VellumFrontend.parse({})),
-    vellumRender: VellumRender.default(() => VellumRender.parse({})),
-    harrow: Harrow.default(() => Harrow.parse({})),
-    ledger: Ledger.default(() => Ledger.parse({})),
-    heartwood: Heartwood.default(() => Heartwood.parse({})),
-    mouthpieceProducer: MouthpieceProducer.default(() => MouthpieceProducer.parse({})),
-    portal: Portal.default(() => Portal.parse({})),
-    portalHeadless: PortalHeadless.default(() => PortalHeadless.parse({})),
-    codex: Codex.default(() => Codex.parse({})),
-    menhir: Menhir.default(() => Menhir.parse({})),
-    caddy: Caddy.default(() => Caddy.parse({})),
-  })
-  .strict();
+export const ConfigSchema = z.object({
+  data: Data.default(() => Data.parse({})),
+  telemetry: Telemetry.default(() => Telemetry.parse({})),
+  weal: Weal.default(() => Weal.parse({})),
+  wealOverlay: WealOverlay.default(() => WealOverlay.parse({})),
+  orator: Orator.default(() => Orator.parse({})),
+  strider: Strider.default(() => Strider.parse({})),
+  akashaFrontend: AkashaFrontend.default(() => AkashaFrontend.parse({})),
+  mouthpieceFrontend: MouthpieceFrontend.default(() => MouthpieceFrontend.parse({})),
+  vellumFrontend: VellumFrontend.default(() => VellumFrontend.parse({})),
+  vellumRender: VellumRender.default(() => VellumRender.parse({})),
+  harrow: Harrow.default(() => Harrow.parse({})),
+  ledger: Ledger.default(() => Ledger.parse({})),
+  portal: Portal.default(() => Portal.parse({})),
+  portalHeadless: PortalHeadless.default(() => PortalHeadless.parse({})),
+  codex: Codex.default(() => Codex.parse({})),
+  menhir: Menhir.default(() => Menhir.parse({})),
+}); // Not `.strict()`: Zod's default strip drops the namespaces only Python reads.
 
 export type Config = z.infer<typeof ConfigSchema>;
 
-/** The checkout root: the nearest ancestor of `startDir` holding
- * `ontology/ontology-config` (the py `astra_config.find_repo_root` twin). Code calls
- * this instead of climbing `../../`, so no path depends on how deep an app sits under
- * `apps/`. Throws when no ancestor matches. */
-export function findRepoRoot(startDir: string = import.meta.dirname): string {
-  let dir = resolve(startDir);
-  for (;;) {
-    if (existsSync(join(dir, "ontology", "ontology-config"))) return dir;
-    const parent = dirname(dir);
-    if (parent === dir)
-      throw new Error(`no ancestor of ${startDir} holds ontology/ontology-config`);
-    dir = parent;
-  }
-}
-
-/** `<repo-root>/ontology/ontology-config/config.kdl`. */
+/** `<repo-root>/ontology/ontology-config/config.kdl` (throws outside a checkout). */
 export function defaultConfigFile(): string {
-  let root: string;
-  try {
-    root = findRepoRoot(import.meta.dirname);
-  } catch {
-    root = resolve(import.meta.dirname);
-  }
-  return join(root, "ontology", "ontology-config", "config.kdl");
+  return join(findRepoRoot(), "ontology", "ontology-config", "config.kdl");
 }
 
 /** Resolve relative data-path fields against `data.root` and relative content-path

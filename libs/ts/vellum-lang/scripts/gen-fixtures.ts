@@ -8,22 +8,14 @@
  * The TS test asserts both; the Python test asserts the `.meta.json` (the parity gate).
  * Run this after an intentional grammar/AST change, then review the diff.
  */
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+
+import { findRepoRoot } from "@astra/config";
 
 import { canonicalAstJson, canonicalMetaJson, parseDocument } from "../src/index";
 
-function repoRoot(): string {
-  let dir = resolve(import.meta.dirname);
-  for (;;) {
-    if (existsSync(join(dir, "fixtures", "vellum"))) return dir;
-    const parent = dirname(dir);
-    if (parent === dir) throw new Error("fixtures/vellum not found");
-    dir = parent;
-  }
-}
-
-const dir = join(repoRoot(), "fixtures", "vellum");
+const dir = join(findRepoRoot(import.meta.dirname), "fixtures", "vellum");
 for (const file of readdirSync(dir).sort()) {
   if (!file.endsWith(".vellum")) continue;
   const base = file.slice(0, -".vellum".length);

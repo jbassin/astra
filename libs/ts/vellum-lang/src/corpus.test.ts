@@ -1,21 +1,12 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
+import { findRepoRoot } from "@astra/config";
 import { describe, expect, test } from "vitest";
 
 import { canonicalAstJson, canonicalMetaJson, parseDocument } from "./index";
 
-function repoRoot(): string {
-  let dir = resolve(import.meta.dirname);
-  for (;;) {
-    if (existsSync(join(dir, "fixtures", "vellum"))) return dir;
-    const parent = dirname(dir);
-    if (parent === dir) throw new Error("fixtures/vellum not found");
-    dir = parent;
-  }
-}
-
-const DIR = join(repoRoot(), "fixtures", "vellum");
+const DIR = join(findRepoRoot(import.meta.dirname), "fixtures", "vellum");
 const fixtures = readdirSync(DIR)
   .filter((f) => f.endsWith(".vellum"))
   .sort();

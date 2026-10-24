@@ -15,7 +15,14 @@ import { delimiter, join } from "node:path";
 
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 
-import { isBlankSecret, loadConfig, resolveSopsRef, SecretRef, SecretUnsetError } from "./index";
+import {
+  findRepoRoot,
+  isBlankSecret,
+  loadConfig,
+  resolveSopsRef,
+  SecretRef,
+  SecretUnsetError,
+} from "./index";
 
 const REF = "sops:astra_blank_test_secret";
 const ENV = "ASTRA_BLANK_TEST_SECRET";
@@ -189,7 +196,7 @@ describe("SecretRef.require / optional", () => {
   });
 
   test("loaded refs carry their config key", () => {
-    const cfg = loadConfig();
+    const cfg = loadConfig(join(findRepoRoot(), "fixtures", "config", "config.kdl"));
     expect(cfg.orator.sessionSecret?.configKey).toBe("orator.session-secret");
     expect(cfg.wealOverlay.token?.configKey).toBe("weal-overlay.token");
   });

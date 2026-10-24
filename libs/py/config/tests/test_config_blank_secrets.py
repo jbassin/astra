@@ -15,7 +15,14 @@ import os
 from pathlib import Path
 
 import pytest
-from astra_config import SecretRef, SecretUnsetError, is_blank_secret, load_config
+from astra_config import (
+    SecretRef,
+    SecretUnsetError,
+    find_repo_root,
+    is_blank_secret,
+    load_config,
+    load_whole_config,
+)
 from astra_config.secrets import resolve_sops_ref
 
 REF = "sops:astra_blank_test_secret"
@@ -228,8 +235,12 @@ def test_a_malformed_decrypt_never_echoes_the_plaintext(secrets_file) -> None:
 
 
 def test_loaded_refs_carry_their_config_key() -> None:
-    cfg = load_config()
-    assert cfg.orator.session_secret is not None
-    assert cfg.orator.session_secret.config_key == "orator.session-secret"
-    assert cfg.weal_overlay.token is not None
-    assert cfg.weal_overlay.token.config_key == "weal-overlay.token"
+    fixture = find_repo_root() / "fixtures" / "config" / "config.kdl"
+    cfg = load_config(fixture)
+    assert cfg.llm.anthropic_api_key is not None
+    assert cfg.llm.anthropic_api_key.config_key == "llm.anthropic-api-key"
+    whole = load_whole_config(fixture)
+    assert whole.orator.session_secret is not None
+    assert whole.orator.session_secret.config_key == "orator.session-secret"
+    assert whole.weal_overlay.token is not None
+    assert whole.weal_overlay.token.config_key == "weal-overlay.token"

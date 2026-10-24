@@ -1072,6 +1072,9 @@ importers:
 
   libs/ts/content-build:
     dependencies:
+      '@astra/config':
+        specifier: workspace:*
+        version: link:../config
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -1183,6 +1186,9 @@ importers:
 
   libs/ts/ontology:
     dependencies:
+      '@astra/config':
+        specifier: workspace:*
+        version: link:../config
       '@bgotink/kdl':
         specifier: ^0.4.0
         version: 0.4.0
@@ -1252,6 +1258,9 @@ importers:
         specifier: ^2.9.0
         version: 2.9.0
     devDependencies:
+      '@astra/config':
+        specifier: workspace:*
+        version: link:../config
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4

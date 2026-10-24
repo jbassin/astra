@@ -35,6 +35,8 @@ from pathlib import Path
 
 import yaml
 
+from .root import find_repo_root
+
 SOPS_SCHEME = "sops:"
 
 # The characters a blank secret may consist of. An explicit ASCII set rather than bare
@@ -56,21 +58,19 @@ class SecretsFileMissingError(FileNotFoundError):
     """
 
 
-def _find_repo_root(start: Path) -> Path:
-    """Walk up from `start` to the first dir containing `deploy/sops`."""
-    for parent in [start, *start.parents]:
-        if (parent / "deploy" / "sops").is_dir():
-            return parent
-    # Fall back to the original dir rather than guessing wildly.
-    return start
-
-
 def default_secrets_file() -> Path:
-    """`$ASTRA_SOPS_FILE` or `<repo-root>/deploy/sops/secrets.enc.yaml`."""
+    """`$ASTRA_SOPS_FILE` or `<repo-root>/deploy/sops/secrets.enc.yaml`.
+
+    Outside a checkout there is no default file: that raises `SecretsFileMissingError`,
+    which `optional()` reads as unset, exactly like an absent file.
+    """
     override = os.environ.get("ASTRA_SOPS_FILE")
     if override:
         return Path(override)
-    root = _find_repo_root(Path(__file__).resolve())
+    try:
+        root = find_repo_root()
+    except FileNotFoundError as exc:
+        raise SecretsFileMissingError(f"no SOPS secrets file: {exc}") from exc
     return root / "deploy" / "sops" / "secrets.enc.yaml"
 
 
@@ -83,7 +83,12 @@ def _decrypt(secrets_file: str) -> dict[str, str]:
 
     env = dict(os.environ)
     if "SOPS_AGE_KEY_FILE" not in env:
-        age_key = _find_repo_root(path) / "deploy" / "sops" / "age.key"
+        # The checkout holding the SOPS file, else this library's own checkout.
+        try:
+            root = find_repo_root(path)
+        except FileNotFoundError:
+            root = find_repo_root()
+        age_key = root / "deploy" / "sops" / "age.key"
         env["SOPS_AGE_KEY_FILE"] = str(age_key)
 
     proc = subprocess.run(

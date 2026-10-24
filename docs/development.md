@@ -95,8 +95,14 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
   only through `logging.getLogger("astra.<sub>")`; TS `console.log` does not export.
 - **Config single source.** Every config value, including tuning constants, ports and paths, lives
   in `ontology/ontology-config/config.kdl` and is read through `astra_config` (Python) or
-  `@astra/config` (TypeScript). Both schema mirrors must stay in step. Only the config libraries
-  read the environment (the upper-cased secret override).
+  `@astra/config` (TypeScript). Each language's loader validates only the namespaces its apps read
+  and ignores the rest, so a bad value in one language's block cannot stop the other's processes.
+  Python's `WholeConfig` holds every namespace, and one CI test (`test_whole_config_kdl_validates`
+  in `libs/py/config`) validates the whole file against it. The `libs/py/config` `models.py`
+  docstring records which language reads which namespace. A namespace TS reads is mirrored field
+  for field in Zod and Pydantic. Loader tests use `fixtures/config/`, not the real file. Only the
+  config libraries read the environment (the upper-cased secret override). Find the checkout with
+  `find_repo_root()` / `findRepoRoot()` from the config libraries; don't write another walk-up.
 - **Secrets** are `ref="sops:KEY"` pointers in `config.kdl`; see
   [ADR 0005](adr/0005-sops-secrets-injected-at-deploy.md). Read one with `SecretRef.require()`
   (raises, naming the config key, when it is unset or blank) or `SecretRef.optional()` (unset or
@@ -138,8 +144,9 @@ three `../`. What is still hand-maintained:
    `*.iridi.cc` wildcard needs no DNS step, and the certificate is issued on the first request.
    A frontend that bakes astra-data also needs `COPY --from=astra-data` in its Dockerfile,
    `additional_contexts` in compose, and matching data under `fixtures/astra-data/`.
-4. Its config block in `config.kdl` and in both schema mirrors (`libs/py/config`, `libs/ts/config`;
-   the Python mirror forbids unknown top-level keys, so even a TS-only app needs it).
+4. Its config block in `config.kdl` and in Pydantic (`libs/py/config` `models.py`): in `Config` if
+   Python reads it, else in `WholeConfig`, which the whole-file CI test checks. A block TS reads also
+   goes in `libs/ts/config` (Zod). Add the block to the ownership list in the `models.py` docstring.
 5. At least one test: `vitest run` with no test files exits 1.
 6. Telemetry in the real entrypoint. TS services get no HTTP auto-instrumentation, so add
    `startActiveSpan` spans on request paths, or traces stay empty while metrics flow. Never log ERROR

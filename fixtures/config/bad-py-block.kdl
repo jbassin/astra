@@ -1,0 +1,13 @@
+// The fixture config with one invalid value in a block only Python reads:
+// `heartwood.max-iterations` is a string. The TS loader must still load it; the Python
+// loader and the whole-file check (Python `load_whole_config`) must reject it.
+
+data {
+    root "/srv/state"
+}
+heartwood {
+    max-iterations "many"
+}
+orator {
+    port 20002
+}
