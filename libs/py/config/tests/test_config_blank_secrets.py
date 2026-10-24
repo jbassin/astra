@@ -237,8 +237,8 @@ def test_a_malformed_decrypt_never_echoes_the_plaintext(secrets_file) -> None:
 def test_loaded_refs_carry_their_config_key() -> None:
     fixture = find_repo_root() / "fixtures" / "config" / "config.kdl"
     cfg = load_config(fixture)
-    assert cfg.llm.anthropic_api_key is not None
-    assert cfg.llm.anthropic_api_key.config_key == "llm.anthropic-api-key"
+    assert cfg.llm.openrouter_api_key is not None
+    assert cfg.llm.openrouter_api_key.config_key == "llm.openrouter-api-key"
     whole = load_whole_config(fixture)
     assert whole.orator.session_secret is not None
     assert whole.orator.session_secret.config_key == "orator.session-secret"

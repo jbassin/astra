@@ -3,7 +3,7 @@
     from astra_config import load_config
     cfg = load_config()
     model = cfg.llm.default_model                 # plaintext
-    key = cfg.llm.anthropic_api_key.require()     # SOPS-decrypted on demand; raises if unset
+    key = cfg.llm.openrouter_api_key.require()    # SOPS-decrypted on demand; raises if unset
 
 Parse-at-edge (Decision E): KDL is read here and validated straight into the typed
 `Config`; secrets stay as `SecretRef` until `.require()` / `.optional()`.

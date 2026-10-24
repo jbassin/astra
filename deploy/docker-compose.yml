@@ -19,13 +19,10 @@ x-dagster-env: &dagster-env
   # Pipeline secrets injected as env by `just up` (Decision E) so the assets'
   # LLM/transcription calls resolve their `ref="sops:KEY"`s in-container (the code
   # server, daemon, and run workers all inherit this anchor).
-  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
   GROQ_API_KEY: ${GROQ_API_KEY:-}
   ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
-  # Cartesia Sonic-3 — wired as an alternate mouthpiece TTS backend (tts-provider), not live.
-  CARTESIA_API_KEY: ${CARTESIA_API_KEY:-}
   # mouthpiece's clean/enrich/script calls run on GLM 5.3 via OpenRouter
-  # (mouthpiece.model); linguist's judges use GLM 5.2 (llm.default-model). litellm
+  # (mouthpiece.model); linguist's chronicle uses GLM 5.2 (llm.default-model). litellm
   # reads this key from env.
   OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
 

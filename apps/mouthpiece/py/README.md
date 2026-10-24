@@ -139,5 +139,3 @@ only. The experiment harness and the roundtable are scheduled to move to a tools
   the version.
 - **Pricing is a static table** (`astra_llm.pricing`). An unknown model costs $0 silently, and
   table rows drift from OpenRouter's prices.
-- **Vestigial code:** the Cartesia provider (`tts-provider "cartesia"`) is wired but was
-  rejected on voice quality and is scheduled for deletion.
