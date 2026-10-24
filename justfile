@@ -192,21 +192,14 @@ heartwood_dir := data_root + "/heartwood"
 # deploy.sh's ASTRA_DEPLOY_ROOT default.
 deploy_root := env_var_or_default("ASTRA_DEPLOY_ROOT", "/ruby/data/astra-deploy")
 
-# Source of the HISTORICAL podcast episodes for the mouthpiece-frontend audio seed
-# (faerrin's caster out/ — the pre-astra back-catalog). Override with MOUTHPIECE_AUDIO_SRC.
-mouthpiece_audio_src := env_var_or_default("MOUTHPIECE_AUDIO_SRC", "/ruby/data/experiments/faerrin/pkg/caster/out")
-
 # astra's own episodes corpus (the live Dagster pipeline's renders + migrated catalog).
 # Mirrors config.kdl mouthpiece.episodes-path; override with MOUTHPIECE_EPISODES.
 mouthpiece_episodes := env_var_or_default("MOUTHPIECE_EPISODES", data_root + "/mouthpiece/episodes")
 
-# Sources for the akasha-frontend session-audio seed (the combined Craig recordings the
-# transcript pages play, served same-origin at /audio/<date>.mp3). HIST = faerrin's
-# frozen back-catalog (~31 GB, the old static-audio.iridi.cc store); LIVE = astra
-# scribe's saved dir (mirrors config.kdl scribe ingest-saved-dir, the scribe→linguist
-# handoff). Both are `<date>/audio.mp3`; live wins for any date in both. Override with
-# AKASHA_AUDIO_HIST / AKASHA_AUDIO_LIVE.
-akasha_audio_hist := env_var_or_default("AKASHA_AUDIO_HIST", "/ruby/data/experiments/faerrin/pkg/wretch/data/saved")
+# Source for the akasha-frontend session-audio seed (the combined Craig recordings the
+# transcript pages play, served same-origin at /audio/<date>.mp3): astra scribe's saved
+# dir (mirrors config.kdl scribe ingest-saved-dir, the scribe→linguist handoff), laid out
+# as `<date>/audio.mp3`. Override with AKASHA_AUDIO_LIVE.
 akasha_audio_live := env_var_or_default("AKASHA_AUDIO_LIVE", data_root + "/scribe/data/saved")
 
 # uv binary (absolute — the linguist-commit systemd user timer has a minimal PATH without
@@ -428,7 +421,7 @@ linguist-commit:
       echo "linguist-commit: akasha content changed — seeding audio + rebuilding + redeploying akasha-frontend"
       # The new session's combined recording is already on disk (scribe wrote it before
       # linguist produced the transcript); land it in the audio volume before redeploy so
-      # the transcript page's /audio/<date>.mp3 resolves. Incremental → cheap (see akasha-seed).
+      # the transcript page's /audio/<date>.mp3 resolves. Cheap: it copies only scribe's recordings.
       just_cmd akasha-seed || echo "linguist-commit: akasha-seed FAILED (rerun: just akasha-seed)" >&2
       if just_cmd deploy akasha-frontend; then
         echo "linguist-commit: akasha-frontend redeployed"
@@ -585,18 +578,10 @@ mouthpiece-cartesia-voices q="":
       --data-urlencode "limit=100" --data-urlencode "language=en" ${q:+--data-urlencode "q=$q"} \
     | python3 -c 'import json,sys; d=json.load(sys.stdin); [print(f"{v[\"id\"]}  {v[\"name\"]:<28} {v.get(\"gender\",\"\"):<15} {v.get(\"language\",\"\"):<6} {v.get(\"tagline\") or v.get(\"description\",\"\")}") for v in d["data"]]; print(f"-- {len(d[\"data\"])} voices, has_more={d.get(\"has_more\")}", file=sys.stderr)'
 
-# Migrate faerrin's historical episode CATALOG (script + digest) into astra's
-# episodes corpus (step 2 — catalog union), so episodes_index + the snapshot include
-# the back-catalog alongside live pipeline renders. Idempotent; live renders win for
-# any date both produced; audio is separate (`mouthpiece-seed`). Source override:
-# MOUTHPIECE_AUDIO_SRC (same store the audio seed uses → catalog + audio stay aligned).
-mouthpiece-migrate-history:
-    MOUTHPIECE_AUDIO_SRC="{{mouthpiece_audio_src}}" {{uv_bin}} run python -m astra_mouthpiece.migrate
-
 # Regenerate the mouthpiece snapshot (config data.mouthpiece-snapshot/episodes-index.json,
 # in the astra-data clone) from the live corpus — the frontend's single build input
-# (step 4/5). Writes only; linguist-commit commits it to astra-data. Ensures the historical back-catalog is present (idempotent migrate),
-# then rebuilds the catalog over the full corpus (migrated ∪ live renders). Deterministic,
+# (step 4/5). Writes only; linguist-commit commits it to astra-data. Rebuilds the catalog
+# over the full corpus (the back-catalog already in it ∪ live renders). Deterministic,
 # so a no-op when nothing new landed. Run on the HOST (needs uv + ffprobe + the repo; the
 # dagster container can't reach the committed snapshot/ dir). Pairs with `mouthpiece-seed`
 # (audio) + a frontend redeploy — all three are wired into the linguist-commit timer.
@@ -604,60 +589,40 @@ mouthpiece-publish:
     #!/usr/bin/env bash
     set -euo pipefail
     cd "{{justfile_directory()}}"
-    MOUTHPIECE_AUDIO_SRC="{{mouthpiece_audio_src}}" {{uv_bin}} run python -m astra_mouthpiece.migrate
     {{uv_bin}} run python -m astra_mouthpiece.publish
 
 # Seed the mouthpiece-frontend audio volume (D2). Flattens `<id>.episode.mp3` →
 # `<id>.mp3` into the astra-mouthpiece-audio volume (created by `up`), served
-# same-origin at /audio/<id>.mp3. Two sources, in order: the faerrin historical
-# back-catalog (flat) first, then astra's own live pipeline renders (nested
-# `<date>/<id>.episode.mp3`) which OVERWRITE for any date both produced (live wins —
-# matches the catalog dedup). Re-run to refresh; idempotent.
+# same-origin at /audio/<id>.mp3, from astra's own pipeline renders (nested
+# `<date>/<id>.episode.mp3`). The pre-astra back-catalog's mp3s are already in the
+# volume from earlier seeds; their source was decommissioned 2026-07-04. Re-run to
+# refresh; idempotent.
 mouthpiece-seed:
     #!/usr/bin/env bash
     set -euo pipefail
     mkdir -p "{{data_root}}"/audio/mouthpiece
-    # The faerrin historical back-catalog was decommissioned 2026-07-04; its mp3s already
-    # live in the persistent {{data_root}}/audio/mouthpiece volume from earlier seeds. Only
-    # mount /hist if the source still exists — otherwise Docker would recreate the deleted
-    # path as an empty root-owned dir. Live renders are seeded regardless.
-    hist_mount=()
-    if [ -d "{{mouthpiece_audio_src}}" ]; then hist_mount=(-v "{{mouthpiece_audio_src}}":/hist:ro); fi
     docker run --rm \
       -v "{{data_root}}"/audio/mouthpiece:/audio \
-      "${hist_mount[@]}" \
       -v "{{mouthpiece_episodes}}":/live:ro \
       alpine sh -c '
         set -e
-        for f in /hist/*.episode.mp3; do [ -e "$f" ] || continue; cp "$f" "/audio/$(basename "$f" .episode.mp3).mp3"; done
         find /live -name "*.episode.mp3" -exec sh -c "cp \"\$1\" \"/audio/\$(basename \"\$1\" .episode.mp3).mp3\"" _ {} \;
         n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n episode(s) into {{data_root}}/audio/mouthpiece"; ls -1 /audio'
 
 # Seed the akasha-frontend session-audio volume (the combined Craig recordings the
 # transcript pages play, served same-origin at /audio/<date>.mp3 — replaces faerrin's
-# static-audio.iridi.cc). Flattens `<date>/audio.mp3` → `<date>.mp3` from two sources:
-# HIST (faerrin's frozen back-catalog) is INCREMENTAL — only copied when absent, so the
-# one-time seed isn't re-copied on every timer redeploy; LIVE (astra scribe's saved dir)
-# is always overwritten (small, grows with new sessions, and live wins for any date in
-# both). HIST is scanned at ANY depth (faerrin mislocated a few recent sessions under a
-# nested `saved/saved/<date>/` — the reason faerrin's own static-audio 404s them); the
-# session date is the parent dir of each audio.mp3, guarded to YYYY-M-D so stray files
-# can't seed junk. Re-run to refresh; idempotent + cheap in steady state.
+# static-audio.iridi.cc). Flattens astra scribe's `<date>/audio.mp3` → `<date>.mp3`,
+# overwriting. The pre-astra back-catalog's recordings are already in the volume from
+# earlier seeds; their source was decommissioned. Re-run to refresh; idempotent.
 akasha-seed:
     #!/usr/bin/env bash
     set -euo pipefail
     mkdir -p "{{data_root}}"/audio/akasha
     docker run --rm \
       -v "{{data_root}}"/audio/akasha:/audio \
-      -v "{{akasha_audio_hist}}":/hist:ro \
       -v "{{akasha_audio_live}}":/live:ro \
       alpine sh -c '
         set -e
-        find /hist -name audio.mp3 | while IFS= read -r f; do
-          date=$(basename "$(dirname "$f")")
-          echo "$date" | grep -qE "^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$" || continue
-          dest="/audio/${date}.mp3"; [ -e "$dest" ] || cp "$f" "$dest"
-        done
         for d in /live/*/; do f="${d}audio.mp3"; [ -e "$f" ] || continue; cp "$f" "/audio/$(basename "$d").mp3"; done
         n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n session(s) into {{data_root}}/audio/akasha"'
 

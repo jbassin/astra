@@ -9,10 +9,17 @@ on a developer host as in CI and never the live data:
   like astra-data. The code repo tracks none of the real datasets.
 
 Set either variable yourself to test against other data.
+
+It also imports the `dagster` library before collection. The code location directory
+`dagster/` has no `__init__.py`, so pytest's importlib mode names its tests `dagster.tests.*`;
+if the library is not imported yet, pytest imports that directory as a namespace package named
+`dagster`, and every `dg.*` lookup in those tests fails (as `pytest dagster` alone did).
 """
 
 import os
 from pathlib import Path
+
+import dagster  # noqa: F401 -- see the docstring: claims the name before pytest does
 
 _ROOT = Path(__file__).resolve().parent
 os.environ.setdefault("ASTRA_DATA_ROOT", str(_ROOT))

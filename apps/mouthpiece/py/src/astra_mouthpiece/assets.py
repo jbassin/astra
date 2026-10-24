@@ -29,7 +29,6 @@ from . import clean, linguist_io
 from .assemble import assemble_episode
 from .continuity import build_continuity_block
 from .episodes_index import (
-    INDEX_FILENAME,
     EpisodeHost,
     EpisodesIndex,
     build_index,
@@ -362,7 +361,7 @@ def _episode_hosts() -> dict[str, EpisodeHost]:
 
 def _arc_maps() -> tuple[dict[str, str], dict[str, bool]]:
     """arc slug → (campaign.name, campaign.main) from ontology-being (the arc title
-    truth — replaces faerrin's shibboleth.json)."""
+    truth)."""
     from astra_ontology_being import load as load_being
 
     being = load_being()
@@ -373,29 +372,12 @@ def _arc_maps() -> tuple[dict[str, str], dict[str, bool]]:
 
 
 def build_episodes_index(root: Path | None = None) -> EpisodesIndex:
-    """The cross-episode catalog over a corpus dir (shared by the Dagster asset and
-    the snapshot publisher — config-single-source for the build): discover sessions
-    + ontology arc/host maps → sorted, deduped index. Defaults to the configured
-    episodes path."""
+    """The cross-episode catalog over a corpus dir, built on the host by the snapshot
+    publisher (``publish.py``): discover sessions + ontology arc/host maps → sorted,
+    deduped index. Defaults to the configured episodes path."""
     sessions = discover_sessions(root or _out_root())
     arc_titles, arc_main = _arc_maps()
     return build_index(sessions, arc_titles=arc_titles, arc_main=arc_main, hosts=_episode_hosts())
-
-
-@dg.asset(group_name="mouthpiece")
-def episodes_index() -> dg.MaterializeResult:
-    """Glob the session dirs → one sorted ``episodes-index.json`` catalog that
-    mouthpiece-frontend (0012) reads at build. Owns id-parse, the arc-then-date
-    sort, per-arc episode numbering, arc titles (campaign.name), ffprobe duration
-    + the audio cache-bust token (episodes_index.py)."""
-    index = build_episodes_index()
-    _atomic_write(_out_root() / INDEX_FILENAME, index.model_dump_json(indent=2, by_alias=True))
-    return dg.MaterializeResult(
-        metadata={
-            "episodes": len(index.episodes),
-            "with_audio": sum(1 for e in index.episodes if e.has_audio),
-        }
-    )
 
 
 # ── sensor: linguist → mouthpiece ────────────────────────────────────────────
@@ -459,7 +441,6 @@ defs = dg.Definitions(
         session_script,
         session_audio_clips,
         session_episode,
-        episodes_index,
     ],
     sensors=[linguist_output_sensor],
 )

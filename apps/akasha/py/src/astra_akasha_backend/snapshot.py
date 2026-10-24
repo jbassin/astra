@@ -6,8 +6,9 @@ resolved page→page ``edges`` and the ``unresolved`` report. akasha-frontend
 (0011) builds slugs/backlinks/graph from it via the lifted ``slug.ts``/``site.ts``;
 mouthpiece-backend reads the corpus for grounding.
 
-The JSON is **committed** (the ``being.canonical.json`` pattern): the Dagster
-asset regenerates it and CI diffs a fresh build against the committed copy.
+The JSON is **committed** (the ``being.canonical.json`` pattern): ``uv run
+akasha-snapshot`` regenerates it on the host and CI diffs a fresh build against the
+committed copy.
 """
 
 from __future__ import annotations
@@ -30,7 +31,7 @@ _tracer = get_tracer("astra.akasha-backend")
 REPO_ROOT = find_repo_root(Path(__file__))
 #: The committed snapshot JSON (config `data.akasha-snapshot`).
 SNAPSHOT_PATH = Path(load_config().data.akasha_snapshot) / "akasha-snapshot.json"
-#: The TS structural validator (F3) — the Dagster asset shells out to it.
+#: The TS structural validator (F3) — `validate_corpus` shells out to it.
 VALIDATOR = REPO_ROOT / "libs/ts/vellum-lang/scripts/validate-corpus.ts"
 #: Node ESM resolve hook (0022 S11 — off bun): lets Node walk the workspace's
 #: extensionless relative imports the same way Vite/bun did (see the hook's own

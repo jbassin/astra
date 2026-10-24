@@ -34,7 +34,6 @@ def build_episode_script(
     model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     continuity_block: str = "",
-    sharpen: bool = False,
     brief_block: str = "",
 ) -> Script:
     """Ground the digest against the akasha pages, then run the two-pass script
@@ -50,7 +49,6 @@ def build_episode_script(
         model=model,
         max_tokens=max_tokens,
         continuity_block=continuity_block,
-        sharpen=sharpen,
         brief_block=brief_block,
     )
 
@@ -86,7 +84,6 @@ def produce_episode(
     roster_block: str = "",
     model: str | None = None,
     continuity_block: str = "",
-    sharpen: bool = False,
     bed: BedOptions | None = None,
     run: FfmpegRunner = run_ffmpeg,
 ) -> dict[str, str]:
@@ -102,7 +99,6 @@ def produce_episode(
             roster_block=roster_block,
             model=model,
             continuity_block=continuity_block,
-            sharpen=sharpen,
         )
         episode, transcript = render_episode_audio(
             script,

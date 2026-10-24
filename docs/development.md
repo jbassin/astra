@@ -65,7 +65,7 @@ TypeScript 5; Rust 1.96.0 with wasm-bindgen-cli 0.2.127 and wasm-opt 124 (hard-p
 `just weal-engine-build`). Bump a pin deliberately, in every place that repeats it.
 
 **Python (uv).** Virtual workspace in the root `pyproject.toml`; members `apps/*/py`, `libs/py/*`,
-`ontology/*`. ruff (line length 100) lints and formats, ty (pinned `==0.0.51`, preview) type-checks,
+`ontology/*` and `dagster` (the code location, `astra-pipeline`). ruff (line length 100) lints and formats, ty (pinned `==0.0.51`, preview) type-checks,
 pytest tests in `importlib` mode.
 
 **TypeScript (pnpm).** Workspace in `pnpm-workspace.yaml`; members `apps/*/*` (a directory without
@@ -123,8 +123,10 @@ three `../`. What is still hand-maintained:
    `grep -rl "COPY apps/ledger/web/package.json" --include=Dockerfile`), or `--frozen-lockfile`
    fails. Add its paths to the `.dockerignore` allowlist (literal paths only, no wildcards). A new
    `libs/ts` package needs neither.
-2. A Dagster asset: the asset list in `dagster/definitions.py`, and `COPY apps/<domain>/py` in
-   `dagster/Dockerfile` (plus its `.dockerignore` line).
+2. A Dagster asset: register it in its app's `assets.defs`, pin its name in
+   `dagster/tests/test_definitions.py`, and, for a new pipeline app, add the app to
+   `merge(...)` in `dagster/definitions.py` and the dependencies in `dagster/pyproject.toml`,
+   plus `COPY apps/<domain>/py` in `dagster/Dockerfile` (and its `.dockerignore` line).
 3. A service: a compose service in `deploy/docker-compose.yml` (port in 10350 to 10399, `user:
    "1000:1000"`, healthcheck, `restart: unless-stopped`, its secrets in `environment:`). A templated
    frontend Dockerfile takes `APP: <domain>/web`. Paths the container writes are identical-path bind

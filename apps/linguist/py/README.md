@@ -5,8 +5,8 @@ chronicle (the Show → Season → Episode timeline on `akasha.iridi.cc/chronicl
 Dagster assets on `linguist_sessions` partitions, fired by `scribe_output_sensor`:
 
 - `session_transcripts` writes `linguist/transcripts/<NNN>.<slug>.<date>.txt` and
-  `linguist/data/<date>.json` in the astra-data clone, plus `shibboleth.json` under
-  `linguist.script-path`.
+  `linguist/data/<date>.json` in the astra-data clone, plus the campaign-matched LLM context
+  `<NNN>.<slug>.<date>.txt` under `linguist.script-path`.
 - `correction_candidates` runs the compiled dspy judge and writes
   `linguist/data/<date>.candidates.json` for human triage (the clone's `.gitignore` keeps it
   out of git).

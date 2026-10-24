@@ -89,7 +89,6 @@ const Linguist = z
     ingestSavedDir: dataPath(""),
     // session_transcripts' runtime outputs that are not published datasets.
     scriptPath: dataPath("linguist/script"),
-    shibbolethPath: dataPath("linguist/script/shibboleth.json"),
     reviewPort: z.number().default(10116),
     podcastEpisodesPath: z.string().default(""),
     surfaceModelJudge: z.string().default("openrouter/z-ai/glm-5.2"),

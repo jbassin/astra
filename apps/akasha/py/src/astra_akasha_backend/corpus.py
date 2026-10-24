@@ -2,7 +2,7 @@
 
 Walks the SSOT vellum corpus under ``content/`` and returns each page with its
 extracted metadata (frontmatter + crossref targets, via ``astra-vellum-lang``,
-metadata-only — D2). This is the single read path: the Dagster snapshot asset
+metadata-only — D2). This is the single read path: the snapshot
 builds on it, and **mouthpiece-backend imports ``load_corpus`` for grounding**
 (replacing caster's ``loadWiki("../content/wiki")`` filesystem read).
 """

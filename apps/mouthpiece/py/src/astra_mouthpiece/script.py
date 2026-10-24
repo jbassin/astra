@@ -166,7 +166,6 @@ def generate_script(
     model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     continuity_block: str = "",
-    sharpen: bool = False,
     brief_block: str = "",
 ) -> Script:
     """Pass A (free-text debate transcript) → Pass B (structured dressing, no
@@ -176,8 +175,7 @@ def generate_script(
     GLM's structured tool output stalls typesetting a full long-episode transcript at once,
     so each segment gets its own Pass B call and the turns are concatenated (the title
     comes from the first segment). A short transcript is one segment — a single Pass B call,
-    unchanged. With `sharpen`, run a focused per-host voice pass afterward (one call per
-    host). A `brief_block` (0034 producer notes) replaces grounding + continuity."""
+    unchanged. A `brief_block` (0034 producer notes) replaces grounding + continuity."""
     user_content = build_script_user_content(
         digest, cleaned_turns, roster_block, grounding, continuity_block, brief_block
     )
@@ -185,14 +183,9 @@ def generate_script(
     transcript = client.call_text(
         _text_req(build_improv_system_prompt(hosts), user_content, model, max_tokens)
     )
-    script = dress_transcript(
+    return dress_transcript(
         client, transcript, digest.session_id, hosts, model=model, max_tokens=max_tokens
     )
-    if sharpen:
-        from .sharpen import sharpen_voices  # lazy: sharpen imports parse_script from here
-
-        script = sharpen_voices(client, script, hosts, model=model, max_tokens=max_tokens)
-    return script
 
 
 # Speaker ids in the current (three-host) roster, for callers that need to iterate them.

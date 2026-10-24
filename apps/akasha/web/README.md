@@ -28,7 +28,7 @@ Node indexing API and writes `dist/client/pagefind/`.
 - Redeploy after content changes: `just deploy akasha-frontend`. linguist-commit and the heartwood
   recipes already do this after they push to astra-data. The deploy bakes the clone's committed
   HEAD, so uncommitted edits in the clone don't ship.
-- Refresh session audio: `just akasha-seed` (incremental; linguist-commit runs it too).
+- Refresh session audio: `just akasha-seed` (copies scribe's recordings; linguist-commit runs it too).
 - Local dev: `just dev akasha/web`. Without `ASTRA_CONTENT_ROOT` it builds the checked-in
   `fixtures/astra-data/`. Search is empty under `vite dev`, because `/pagefind/` only exists after
   `pnpm --filter @astra/akasha-frontend build`.

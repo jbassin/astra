@@ -26,7 +26,6 @@ from .models import (
 from .roster import build_roster_block
 from .script import generate_script, parse_script
 from .session import build_episode_script, produce_episode, render_episode_audio
-from .sharpen import sharpen_voices
 
 __all__ = [
     "AudioManifest",
@@ -50,5 +49,4 @@ __all__ = [
     "produce_episode",
     "render_episode_audio",
     "score_script",
-    "sharpen_voices",
 ]

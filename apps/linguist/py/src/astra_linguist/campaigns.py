@@ -9,7 +9,6 @@ billing/context text bills players by display name, so the slug→name map matte
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 
 from astra_ontology.models import Being
 
@@ -113,7 +112,7 @@ def campaign_filename(matched: MatchedCampaign) -> str:
 
 
 def _render_desc(desc: list[str]) -> str:
-    """Single fact inline; multiple facts as an indented dash list (faerrin shibboleth)."""
+    """Single fact inline; multiple facts as an indented dash list (the faerrin context format)."""
     if len(desc) == 1:
         return desc[0]
     return "".join(f"\n    - {fact}" for fact in desc)
@@ -157,17 +156,3 @@ def make_context(matched: MatchedCampaign, date: str) -> str:
         "Note: transcription is machine-recorded, with an "
         f"{TRANSCRIPTION_CONFIDENCE} confidence rate.\n"
     )
-
-
-def to_shibboleth(campaigns: list[CampaignView]) -> dict[str, dict[str, Any]]:
-    """Serialize to the shibboleth.json shape (object keyed by campaign name)."""
-    return {
-        campaign.name: {
-            "isMain": campaign.is_main,
-            "roles": {
-                player: [{"name": role.name, "desc": role.desc} for role in roles]
-                for player, roles in campaign.roles.items()
-            },
-        }
-        for campaign in campaigns
-    }

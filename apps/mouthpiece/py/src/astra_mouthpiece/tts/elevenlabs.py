@@ -4,7 +4,7 @@ The model is `mouthpiece.elevenlabs-model` (eleven_v4 since 2026-09-28).
 The credential resolves via `astra_config` (verified), but the live dialogue
 call is paid/tier-gated, so it is NOT exercised in CI (hermetic, M11). The HTTP
 seam is injectable (`post`) so the request-building is unit-testable without a
-network; the default `post` uses httpx. Edge/mock are the offline fallbacks.
+network; the default `post` uses httpx. mock is the offline fallback.
 """
 
 from __future__ import annotations

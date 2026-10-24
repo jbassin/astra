@@ -4,7 +4,7 @@ No live ElevenLabs/Anthropic call and no ffmpeg-on-PATH: the LLM client is a stu
 implementing the `LlmClient` protocol (`call_text`/`call_tool`), grounding runs on
 injected pages, and the golden fixtures are the committed faerrin `out/` pairs
 (script-side only — 0024 replaced the beat-driven digest shape, so the `*.digest.json`
-fixtures are read raw by episodes_index/snapshot/migrate tests, never parsed into a
+fixtures are read raw by episodes_index/snapshot tests, never parsed into a
 `SessionDigest` here).
 """
 

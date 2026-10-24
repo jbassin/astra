@@ -1,7 +1,11 @@
 # dagster — the astra pipeline's Dagster code location
 
 `definitions.py` loads the whole session pipeline (scribe → linguist → mouthpiece, plus
-heartwood and the akasha snapshot) as one code location, `astra-pipeline`. The image
+heartwood) as one code location, `astra-pipeline`. Each app registers its own assets,
+sensors, schedules and jobs in its `assets.defs`; `definitions.py` merges them
+(`dg.Definitions.merge`) and adds `pipeline_failure_alert`. `dagster/` is the uv workspace
+member `astra-pipeline`: its `pyproject.toml` lists the pipeline apps and the Dagster server
+packages, so all of them are locked in `uv.lock`. The image
 `astra-dagster:local` (`dagster/Dockerfile`) runs as three compose services: `dagster-code`
 (the gRPC code server, which also runs every run worker), `dagster-webserver` (UI at
 http://localhost:10350) and `dagster-daemon` (sensors, schedules, run queue). Run and event
@@ -21,9 +25,9 @@ zero-padded). Apps hand off through files on disk and sensors, not Dagster `deps
 | `mouthpiece_sessions` | `linguist_output_sensor`: a new transcript whose chronicle episode exists | `session_digest` → `session_brief` → `session_script` → `session_audio_clips` → `session_episode` |
 | `heartwood_sessions` | `heartwood_sensor`: a new faerrin-world transcript | `session_wiki` (waits for the host agent) |
 
-`episodes_index` and `akasha_corpus_snapshot` are unpartitioned. The host recipes
-`just mouthpiece-publish` and `uv run akasha-snapshot` do their real work; the snapshot asset
-cannot run in the container because it needs node. `pipeline_failure_alert` logs one ERROR
+The episode catalog and the akasha snapshot are not assets: the host recipes
+`just mouthpiece-publish` and `uv run akasha-snapshot` build them (the snapshot needs node,
+which the image lacks). `pipeline_failure_alert` logs one ERROR
 per failed run on `service.name=astra.pipeline`, and the SigNoz rule "astra error/fatal logs"
 pages Discord.
 
@@ -89,6 +93,14 @@ docker exec astra-dagster-code sh -c 'cd /opt/dagster/app && dagster asset mater
 
 4. `craig_drop_sensor` registers the session again within about 30 s and the cascade runs.
    Leave old runs in place; deleting runs is not needed.
+
+### Add or rename a stage
+
+Register a new asset, sensor, schedule or job in its app's `assets.defs`, then add its name
+to the pinned sets in `tests/test_definitions.py`. Never rename an existing one: Dagster keys
+runs, partitions and sensor cursors on the names. A rename orphans that history, and a
+renamed partitions definition starts empty, so its sensor treats every session on disk as
+new and can launch paid runs.
 
 ## Traps
 

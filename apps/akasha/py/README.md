@@ -5,9 +5,9 @@ The akasha wiki is a corpus of vellum pages in the astra-data clone, at `data.ak
 (`astra_akasha_backend.corpus.load_corpus`), validates it with the TypeScript validator,
 resolves crossrefs, and writes `akasha/snapshot/akasha-snapshot.json`
 (`uv run akasha-snapshot`). akasha-frontend bakes the content and snapshot at build time;
-mouthpiece's producer and grounding read the content live; heartwood edits it. The Dagster
-asset `akasha_corpus_snapshot` exists, but it cannot run in the Dagster container because the
-validator needs node; the heartwood recipes run the snapshot on the host.
+mouthpiece's producer and grounding read the content live; heartwood edits it. The snapshot
+is not a Dagster asset: the validator needs node, which the Dagster image lacks, so the
+heartwood recipes run it on the host.
 
 ## Operations
 
@@ -45,6 +45,3 @@ delete it.
 - **The entity registry can drift.** `entity/entity.kdl` is reseeded from the snapshot by the
   heartwood recipes, but nothing checks it when `defs.kdl` or `being.kdl` change in the code
   repo. `uv run python -m astra_ontology_entity.seed --check` reports drift.
-- **The historical audio source is gone.** `akasha-seed`'s `AKASHA_AUDIO_HIST` default points
-  at the deleted faerrin tree, so that half of the seed copies nothing; the historical files
-  are already in the audio dir.

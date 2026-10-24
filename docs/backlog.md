@@ -101,9 +101,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - A second recording on the same date is ignored — agent; product bug (paydown PIPE-12).
 - Empty transcripts are committed as successes — agent; product bug (PIPE-12).
 - The pronunciation lexicon is never loaded, so the IPA step never runs — agent; product bug (PIPE-14).
-- Remove dead faerrin paths: `AKASHA_AUDIO_HIST` (akasha-seed mounts it and Docker recreated the
-  deleted tree as root), `MOUTHPIECE_AUDIO_SRC`, `mouthpiece-migrate-history` and the migrate step in
-  `mouthpiece-publish` — agent; [`justfile`](../justfile) (paydown OPS-14).
 - `llm.default-max-tokens` is read by nothing: wire it or delete it — agent.
 - The GLM 5.3 row in the LLM price table has drifted from OpenRouter's price — agent; cost metering.
 - Common-word entity aliases (`war`, `giant`, `herald`) can make heartwood link wrongly — Josh/agent; curate `entity.kdl`.

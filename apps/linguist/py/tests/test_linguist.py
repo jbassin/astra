@@ -74,7 +74,6 @@ from astra_linguist.campaigns import (  # noqa: E402
     campaign_filename,
     make_context,
     match_campaign,
-    to_shibboleth,
 )
 from astra_linguist.canonical import to_canonical  # noqa: E402
 from astra_linguist.context import build_context  # noqa: E402
@@ -158,12 +157,6 @@ def test_build_context_and_canonical() -> None:
 def test_to_canonical_blank_numbered_and_no_body() -> None:
     assert to_canonical("header\nno body here") == ""
     assert to_canonical("> a\n> \n> b\n") == "000001\ta\n      \t\n000002\tb\n"
-
-
-def test_to_shibboleth_shape() -> None:
-    shib = to_shibboleth([_CAMPAIGN])
-    assert shib["Test Quest, Darkly"]["isMain"] is True
-    assert shib["Test Quest, Darkly"]["roles"]["Bob"] == [{"name": "Gandolf", "desc": ["a wizard"]}]
 
 
 # ── pipeline orchestration end-to-end (pure) ───────────────────────────────
