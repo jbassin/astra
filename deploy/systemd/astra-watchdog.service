@@ -14,7 +14,8 @@ WorkingDirectory=/ruby/data/astra-deploy
 # A bad reading is re-confirmed over a short window before paging (the watchdog runs on the
 # same wall-clock ticks the watched timers fire on, so a single sample flaps). A confirmed
 # wedged mount is auto-remediated (abort FUSE conn + lazy unmount + wait for gdrive.service
-# to remount + re-probe) — worst case ~90s confirm + ~80s remediation, so the timeout
-# leaves comfortable margin.
+# to remount + re-probe) — worst case ~90s confirm + ~80s remediation. It also checks backup
+# snapshot age, restore-test age and entity.kdl drift (the seed check waits up to 30s for a
+# lock and runs up to 60s), so the timeout still leaves margin.
 ExecStart=/ruby/data/astra-deploy/deploy/systemd/alert-notify.sh watchdog
-TimeoutStartSec=360
+TimeoutStartSec=480

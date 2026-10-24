@@ -172,8 +172,23 @@ newest). A failed run pages Discord through `astra-alert@` (Class C). Each snaps
 Retention: the newest snapshot of each of the last 14 days plus the newest of each of the last 8
 ISO weeks. `just backup-now` takes a snapshot; `just backup-restore-test` restores every dump into a
 throwaway `--network none` Postgres and checks row counts, then checksums a sample of state files.
+`astra-restore-test.timer` (Sunday 05:30, also installed by `just backup-install`) runs that test
+weekly and pages through `astra-alert@` when it fails. A pass writes
+`<backup root>/.restore-test-pass.json`. The watchdog pages when the newest snapshot is 36 h old or
+more, when that stamp is 9 days old or missing, and when `astra-ontology-entity-seed --check`
+finds the astra-data clone's `entity/entity.kdl` out of date with a fresh seed.
 Manual restore steps are in the header of `systemd/astra-backup.sh`. The SOPS age key
 (`sops/age.key`) is deliberately not in the backup; its second copy lives in the password manager.
+
+## Host check
+
+`just doctor` (`deploy/doctor.sh`) checks this host read-only and exits 1 on any failure: each
+`mise.toml` pin against the binary on `PATH`, every compose bind-mount source, every unit an install
+recipe links (a symlink into `/ruby/data/astra-deploy`, timers and path units enabled), lingering
+and the SOPS age key, each edge certificate (fails under 14 days, warns under 28) and
+`astra-expires: YYYY-MM-DD` markers in `sites.caddyfile` and the compose file. Mark any temporary
+surface (a review host, a demo route) with such a comment so the doctor flags it once it is due.
+`DOCTOR_SKIP=certs,binds` skips checks.
 
 ## Tear down
 

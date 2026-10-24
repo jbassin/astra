@@ -3,6 +3,7 @@
 #
 #   astra-backup.sh run                    take one snapshot, then prune (astra-backup.timer)
 #   astra-backup.sh restore-test [SNAP]    prove the newest (or named) snapshot restores
+#                                          (weekly via astra-restore-test.timer)
 #   astra-backup.sh export-rules DIR       write the SigNoz alert rules as JSON into DIR
 #   astra-backup.sh prune [--dry-run]      apply the retention rule (run does this itself)
 #
@@ -67,6 +68,8 @@ KEEP_DAILY="${ASTRA_BACKUP_KEEP_DAILY:-14}"
 KEEP_WEEKLY="${ASTRA_BACKUP_KEEP_WEEKLY:-8}"
 MIN_FREE_GB="${ASTRA_BACKUP_MIN_FREE_GB:-100}"
 SAMPLE_FILES="${ASTRA_BACKUP_SAMPLE_FILES:-20}"
+# Last restore-test PASS (snapshot, time); the watchdog pages when it gets older than 9 days.
+RESTORE_STAMP="$BACKUP_ROOT/.restore-test-pass.json"
 # Small image with python's sqlite3 module, used --network none to read the SigNoz DB.
 HELPER_IMAGE="${ASTRA_BACKUP_HELPER_IMAGE:-python:3.12-alpine}"
 SIGNOZ_CONTAINER="${ASTRA_BACKUP_SIGNOZ_CONTAINER:-signoz}"
@@ -600,6 +603,11 @@ cmd_restore_test() {
   if [ "$RT_FAILS" -gt 0 ]; then
     die "restore-test of $snap: $RT_FAILS check(s) FAILED"
   fi
+  # The pass stamp the watchdog reads (alert-notify.sh check_restore_test_age). Written only on
+  # a PASS, atomically, so a failed or killed run leaves the previous pass in place.
+  jq -n --arg snapshot "$snap" --arg finished "$(date -u +%FT%TZ)" --argjson epoch "$(date +%s)" \
+    '{snapshot: $snapshot, finished: $finished, finished_epoch: $epoch}' >"$RESTORE_STAMP.new"
+  mv -f "$RESTORE_STAMP.new" "$RESTORE_STAMP"
   log "restore-test of $snap: PASS"
 }
 

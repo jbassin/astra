@@ -235,6 +235,13 @@ host_tooling_lock := data_root + "/locks/host-tooling.lock"
 deploy *args:
     ASTRA_DATA_ROOT="{{data_root}}" "{{justfile_directory()}}/deploy/deploy.sh" {{args}}
 
+# Read-only host check (deploy/doctor.sh; its header lists the checks): tool versions against
+# mise.toml, compose bind-mount sources, the linked systemd units, lingering and the age key,
+# edge certificate expiry and `astra-expires:` markers. Exits 1 on any failure.
+# DOCTOR_SKIP=certs,binds skips checks.
+doctor:
+    ASTRA_DATA_ROOT="{{data_root}}" ASTRA_DEPLOY_ROOT="{{deploy_root}}" "{{justfile_directory()}}/deploy/doctor.sh"
+
 # Check deploy/wait-healthy.sh (deploy.sh's health wait) against a throwaway compose project of
 # alpine containers; never touches the astra project. Needs Docker; about 20 s. Not in `ci`.
 deploy-health-test:
@@ -578,12 +585,12 @@ alert-sudoers-install:
 # Idempotent; re-run after editing the units. The units are linked from the deploy checkout
 # (the service ExecStarts its astra-backup.sh), and a failed run pages through astra-alert@
 # (Class C).
-# Install + enable the nightly backup timer (03:30, Persistent).
-backup-install: (_unit-link "astra-backup.service" "astra-backup.timer")
+# Install + enable the nightly backup timer (03:30) and the weekly restore test (Sun 05:30).
+backup-install: (_unit-link "astra-backup.service" "astra-backup.timer" "astra-restore-test.service" "astra-restore-test.timer")
     #!/usr/bin/env bash
     set -euo pipefail
-    systemctl --user enable --now astra-backup.timer
-    systemctl --user list-timers astra-backup.timer --no-pager
+    systemctl --user enable --now astra-backup.timer astra-restore-test.timer
+    systemctl --user list-timers astra-backup.timer astra-restore-test.timer --no-pager
 
 # Take one snapshot now, in the foreground (waits if the nightly run holds the lock).
 backup-now:
@@ -591,7 +598,8 @@ backup-now:
 
 # Each Postgres dump goes into a throwaway --network none container and its row counts are
 # compared with dump time and live; state dirs get file counts + a sha256 sample vs the
-# source; rule files must parse. Read-only against the live stack.
+# source; rule files must parse. Read-only against the live stack. A pass writes the stamp the
+# watchdog checks; astra-restore-test.timer runs this weekly.
 # Prove the newest snapshot (or the named one) restores.
 backup-restore-test snapshot="":
     "{{justfile_directory()}}/deploy/systemd/astra-backup.sh" restore-test {{snapshot}}

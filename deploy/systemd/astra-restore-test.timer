@@ -1,0 +1,12 @@
+[Unit]
+Description=Run the astra backup restore test weekly, Sunday 05:30
+
+[Timer]
+# Two hours after the 03:30 nightly backup, so it tests that night's snapshot (the script's
+# lock makes it wait if the backup is still running). Persistent catches up a run missed
+# while the host was off.
+OnCalendar=Sun *-*-* 05:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

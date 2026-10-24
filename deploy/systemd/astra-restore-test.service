@@ -1,0 +1,22 @@
+[Unit]
+Description=astra weekly backup restore test — restore the newest snapshot into throwaway containers and verify it
+Documentation=https://github.com/jbassin/astra
+# Class C alerting: page Discord when the restore test fails (alert-notify.sh debounces repeat
+# failures of the same unit). OnFailure is a [Unit] key — systemd ignores it under [Service].
+OnFailure=astra-alert@%n.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/ruby/data/astra-deploy
+# Restores into scratch only: each Postgres dump goes into a --network none container with
+# PGDATA on tmpfs, state files are compared in place, and the working dir is a dot dir under
+# the backup root that the script removes. Live databases are only read (row counts). A pass
+# writes the stamp the watchdog checks (<backup root>/.restore-test-pass.json).
+ExecStart=/ruby/data/astra-deploy/deploy/systemd/astra-backup.sh restore-test
+# The script waits up to 2 h for a running backup's lock, then restores (minutes).
+TimeoutStartSec=3h
+# Same low priority as the backup: stay out of the live stack's way.
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+UMask=0077
