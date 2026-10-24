@@ -4,17 +4,16 @@ Updated 2026-10-23.
 
 ## In flight
 
-- **Tech-debt paydown 0037, Phase 2:** Waves 1 and 2 are done; Wave 3 is mostly done. The status
-  line and checklist are section 0.1 of
-  [`thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`](../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md).
+- **Tech-debt paydown 0037: Phase 2 is done** apart from slices that wait on Josh or heartwood
+  gate E; **Phase 3 has started** (p3-0 is live). The status lines and checklist are section 0.1
+  of [`thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`](../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md).
 
 ## Next action
 
-The rest of Wave 3 (pipe-5, cdx-4, asy-4, ops-8), then Wave 4. `main` merges only through pull
-requests behind `ci-ok`; `just deploy` waits for health and prints the rollback command. A
-`--sha` rollback pins the whole stack until `just deploy --sha origin/main`. Calls parked for
-Josh are in the backlog under "Paydown decisions (Josh)"; steps only he can do are under
-"Smaller calls" (the vellum.iridi.cc certificate renewal is urgent: it expires 2026-11-06).
+Phase 3: per-area comment sweeps (remove the existing decision IDs that `just no-decision-ids
+--all` counts), behaviour-named tests, per-domain READMEs and `CLAUDE.md` files, dead code, the
+frontend items (fe-c and fe-d keep today's look) and the CI ratchets. Calls parked for Josh are
+under "Paydown decisions (Josh)" in the backlog; steps only he can do are under "Smaller calls".
 
 ## Blocked or waiting
 

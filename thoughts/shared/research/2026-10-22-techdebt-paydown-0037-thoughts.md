@@ -346,6 +346,14 @@ token source keep today's look exactly (no stakeholder sign-off needed); assay t
   their own containers, only the daemon holds the Docker socket) and kit-2a `bb35a928` (R; orator and
   menhir on the service kit). Next: kit-1b, kit-1c, kit-2b, kit-3, lib-6, lib-7c, cdx-6, cdx-7, svc-3c,
   svc-5, weal-5b, weal-5c, ops-5, ops-9.
+- **Status 2026-10-24 (session 5, night): Phase 2 is done** except slices that wait on Josh or an
+  event. Landed since the evening line: kit-1b+1c `c2d5aaaf`, kit-2b `fbc2fc3d` (R), kit-3
+  `012d1c94` (every Node service runs a tsdown bundle; `nodeTsResolve.mjs` deleted), lib-6
+  `24b2340d`, lib-7c (OpenTelemetry 1.45.1), weal-5b `b60777f5`, weal-5c `2d1c3c01`, svc-3c,
+  svc-5, cdx-6 `940e5949`, cdx-7 `45341be7`, ops-5 (live smoke, 13/13), pipe-10 `e1368aa5` (R).
+  Phase 3 started: p3-0 `87f16f93` (CI rejects new decision IDs; ~4,600 existing ones are left
+  for the sweeps). Waiting on Josh: lib-5, pipe-4c, pipe-6 ($), pipe-9 and ops-9 (rclone OAuth),
+  ops-3 (sudo), ops-6 (Renovate install); on heartwood gate E: pipe-7a, pipe-7b.
 - Wave 2 list: repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
   `[tool.uv.sources]` (after repo-2); lib-3 dead config and the every-field-has-a-reader check
   (after lib-2, pipe-2); lib-7b Python observe bootstrap; lib-8a typed KDL decoders; lib-9 vellum
