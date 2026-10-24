@@ -752,6 +752,9 @@ importers:
       '@astra/portal-shared':
         specifier: workspace:*
         version: link:../shared
+      '@astra/service-kit':
+        specifier: workspace:*
+        version: link:../../../libs/ts/service-kit
       '@modelcontextprotocol/sdk':
         specifier: ^1.32.1
         version: 1.32.1(zod@4.4.3)

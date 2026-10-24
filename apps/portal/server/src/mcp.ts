@@ -13,7 +13,6 @@
  * Claude Desktop (D10) both speak plain request/response Streamable-HTTP fine without
  * a server-held session.
  */
-import type { IncomingMessage, ServerResponse } from "node:http";
 
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import {
@@ -25,9 +24,10 @@ import {
   type PortalToolName,
   type ToolResult,
 } from "@astra/portal-shared";
+import { json, safeEqual } from "@astra/service-kit";
 import { getOAuthProtectedResourceMetadataUrl } from "@modelcontextprotocol/sdk/server/auth/router.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { SpanStatusCode } from "@opentelemetry/api";
 
 import { BridgeError, type Bridge } from "./bridge";
@@ -261,65 +261,73 @@ export function createMcpRequestHandler(
   maxCreatesPerRequest: number,
   oauth: OAuthTokenVerifier,
   publicOrigin: string,
-): (req: IncomingMessage, res: ServerResponse) => Promise<void> {
+): (req: Request) => Promise<Response> {
   const resourceMetadataUrl = getOAuthProtectedResourceMetadataUrl(
     new URL(`${publicOrigin}${MCP_HTTP_PATH}`),
   );
   const wwwAuthenticateHeader = `Bearer resource_metadata="${resourceMetadataUrl}"`;
 
-  function reject(res: ServerResponse, reason: string): void {
+  function reject(reason: string): Response {
     mcpAuthRejections.add(1, { reason });
     log.emit({ severityText: "WARN", body: `rejected /mcp request: ${reason}` });
-    res
-      .writeHead(401, {
-        "content-type": "application/json",
-        "www-authenticate": wwwAuthenticateHeader,
-      })
-      .end(JSON.stringify({ error: "unauthorized" }));
+    return json({ error: "unauthorized" }, 401, { "www-authenticate": wwwAuthenticateHeader });
   }
 
-  return async function handleMcpRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
-    const [scheme, token] = (req.headers.authorization ?? "").split(" ");
-    if (scheme !== "Bearer" || !token) {
-      reject(res, "missing-or-malformed-bearer");
-      return;
+  /** The caller's {@link AuthContext}, or the reason it is refused. Both static keys are
+   * compared in constant time, and both are always compared. */
+  async function authenticate(req: Request): Promise<AuthContext | string> {
+    const [scheme, token] = (req.headers.get("authorization") ?? "").split(" ");
+    if (scheme !== "Bearer" || !token) return "missing-or-malformed-bearer";
+    const admin = safeEqual(token, mcpApiKey);
+    const player = safeEqual(token, playerMcpApiKey);
+    if (admin) return { scope: "admin", method: "admin-key" };
+    if (player) return { scope: "player", method: "player-key" };
+    try {
+      await oauth.verifyAccessToken(token);
+    } catch {
+      return "invalid-oauth-token";
     }
-    let auth: AuthContext;
-    if (token === mcpApiKey) {
-      auth = { scope: "admin", method: "admin-key" };
-    } else if (token === playerMcpApiKey) {
-      auth = { scope: "player", method: "player-key" };
-    } else {
-      try {
-        await oauth.verifyAccessToken(token);
-      } catch {
-        reject(res, "invalid-oauth-token");
-        return;
-      }
-      auth = { scope: "admin", method: "oauth" };
-    }
+    return { scope: "admin", method: "oauth" };
+  }
+
+  return async function handleMcpRequest(req: Request): Promise<Response> {
+    const auth = await authenticate(req);
+    if (typeof auth === "string") return reject(auth);
 
     const server = buildMcpServer(bridge, maxCreatesPerRequest, auth);
-    const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
-    res.on("close", () => {
+    const transport = new WebStandardStreamableHTTPServerTransport({
+      sessionIdGenerator: undefined,
+    });
+    let closed = false;
+    const close = () => {
+      if (closed) return;
+      closed = true;
       void transport.close();
       void server.close();
-    });
+    };
     try {
       await server.connect(transport);
-      await transport.handleRequest(req, res);
+      const res = await transport.handleRequest(req);
+      if (!res.body) {
+        close();
+        return res;
+      }
+      // Stateless: one server and transport per request, closed once the answer has been
+      // sent or the client has gone away.
+      req.signal.addEventListener("abort", close, { once: true });
+      const body = res.body.pipeThrough(new TransformStream({ flush: close }));
+      return new Response(body, {
+        status: res.status,
+        statusText: res.statusText,
+        headers: res.headers,
+      });
     } catch (err) {
+      close();
       log.emit({
         severityText: "ERROR",
         body: `mcp request failed: ${err instanceof Error ? err.message : err}`,
       });
-      if (!res.headersSent) {
-        res
-          .writeHead(500, { "content-type": "application/json" })
-          .end(JSON.stringify({ error: "internal" }));
-      } else {
-        res.end();
-      }
+      return json({ error: "internal" }, 500);
     }
   };
 }

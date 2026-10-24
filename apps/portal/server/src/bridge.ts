@@ -38,11 +38,11 @@ import {
   type McpQuery,
   type McpResponse,
 } from "@astra/portal-shared";
+import { safeEqual } from "@astra/service-kit";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { WebSocket, WebSocketServer } from "ws";
 
 import { BRIDGE_WS_PATH, SERVICE_NAME } from "./constants";
-import { constantTimeEquals } from "./oauth";
 
 const log = getLogger(SERVICE_NAME);
 const tracer = getTracer(SERVICE_NAME);
@@ -200,13 +200,19 @@ export class Bridge {
     this.#wss = new WebSocketServer({ noServer: true, maxPayload: MAX_BRIDGE_PAYLOAD_BYTES });
   }
 
-  /** Wire the bridge's WS upgrade onto an HTTP server at {@link BRIDGE_WS_PATH}; upgrade
-   * requests for any other path are left alone (not ours to handle). */
+  /** Take over one upgrade request for {@link BRIDGE_WS_PATH}: the service kit calls this
+   * (portal's `upgrades`), so it never sees another path. */
+  handleUpgrade(req: IncomingMessage, socket: Duplex, head: Buffer): void {
+    this.#wss.handleUpgrade(req, socket, head, (ws) => this.#onConnection(ws));
+  }
+
+  /** Wire the bridge onto a bare HTTP server at {@link BRIDGE_WS_PATH} (the bridge unit
+   * tests); upgrade requests for any other path are left alone. */
   attach(server: HttpServer): void {
     server.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
       const { pathname } = new URL(req.url ?? "/", "http://localhost");
       if (pathname !== BRIDGE_WS_PATH) return;
-      this.#wss.handleUpgrade(req, socket, head, (ws) => this.#onConnection(ws));
+      this.handleUpgrade(req, socket, head);
     });
   }
 
@@ -278,7 +284,7 @@ export class Bridge {
       return;
     }
     const auth = parsed.data;
-    if (!constantTimeEquals(auth.apiKey, this.#opts.bridgeApiKey)) {
+    if (!safeEqual(auth.apiKey, this.#opts.bridgeApiKey)) {
       this.#reject(ws, BridgeCloseCode.unauthorized, "bad-key", "wrong bridge api key");
       return;
     }

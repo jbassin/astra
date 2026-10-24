@@ -16,9 +16,9 @@
  * typed 503 rather than crashing.
  */
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import type { ServerResponse } from "node:http";
 import { join } from "node:path";
 
+import { json } from "@astra/service-kit";
 import { strToU8, zipSync, type Zippable } from "fflate";
 
 export interface ModulePackageOptions {
@@ -77,26 +77,18 @@ function buildZip(opts: ModulePackageOptions): Uint8Array | null {
   return zip;
 }
 
-function jsonError(res: ServerResponse, status: number, error: string): void {
-  res.writeHead(status, { "content-type": "application/json" }).end(JSON.stringify({ error }));
-}
+const NOT_BUILT = (): Response => json({ error: "module_not_built" }, 503);
 
 /** `GET /module/module.json` handler. */
-export function handleModuleJson(res: ServerResponse, opts: ModulePackageOptions): void {
+export function moduleJsonResponse(opts: ModulePackageOptions): Response {
   const rendered = renderManifest(opts);
-  if (!rendered) {
-    jsonError(res, 503, "module_not_built");
-    return;
-  }
-  res.writeHead(200, { "content-type": "application/json" }).end(rendered.text);
+  if (!rendered) return NOT_BUILT();
+  return new Response(rendered.text, { headers: { "content-type": "application/json" } });
 }
 
 /** `GET /module/portal.zip` handler. */
-export function handlePortalZip(res: ServerResponse, opts: ModulePackageOptions): void {
+export function portalZipResponse(opts: ModulePackageOptions): Response {
   const zip = buildZip(opts);
-  if (!zip) {
-    jsonError(res, 503, "module_not_built");
-    return;
-  }
-  res.writeHead(200, { "content-type": "application/zip" }).end(Buffer.from(zip));
+  if (!zip) return NOT_BUILT();
+  return new Response(new Uint8Array(zip), { headers: { "content-type": "application/zip" } });
 }

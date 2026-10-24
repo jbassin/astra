@@ -1,34 +1,38 @@
 /**
- * The portal HTTP server: `/health`, the Streamable-HTTP MCP surface at
- * {@link MCP_HTTP_PATH}, and the bridge WS upgrade at `BRIDGE_WS_PATH` (via
- * `Bridge.attach`). Split `createPortalServer` (build, don't bind) from `listen` (bind)
- * so tests can construct the whole stack against an **injected** config object — no
- * `loadConfig()`/SOPS involved — and bind an ephemeral port (`port: 0`).
+ * The portal HTTP server on `@astra/service-kit`: `/health`, the Streamable-HTTP MCP
+ * surface at {@link MCP_HTTP_PATH}, the OAuth endpoints, the module package, and the
+ * bridge WS upgrade at {@link BRIDGE_WS_PATH}. `createPortalServer` builds the service
+ * definition without binding; `listen` binds it. Tests construct the whole stack against
+ * an injected config object (no `loadConfig()`/SOPS) and bind an ephemeral port
+ * (`port: 0`).
  *
- * Plain `node:http`, not srvx: the MCP SDK's `StreamableHTTPServerTransport.handleRequest`
- * takes raw `IncomingMessage`/`ServerResponse` (it reads/writes the Node HTTP objects
- * directly), and portal has no static-file/Range-serving need srvx exists for elsewhere
- * in this repo (orator-backend's SPA) — so there's nothing srvx would add here.
+ * Auth is per route, not a kit route group: `/mcp` checks its own bearer (`mcp.ts`), the
+ * bridge checks its handshake key (`bridge.ts`), and the OAuth endpoints are the SDK's
+ * Express router, reached through `callNode`.
  */
-import { createServer, type Server as HttpServer, type ServerResponse } from "node:http";
-
-import { getLogger } from "@astra/observe";
+import {
+  callNode,
+  createService,
+  json,
+  route,
+  type Service,
+  type ServiceDefinition,
+  type UpgradeHandler,
+} from "@astra/service-kit";
 
 import { Bridge } from "./bridge";
-import { MCP_HTTP_PATH, OAUTH_CONSENT_PATH, SERVICE_NAME } from "./constants";
+import { BRIDGE_WS_PATH, MCP_HTTP_PATH, OAUTH_CONSENT_PATH, SERVICE_NAME } from "./constants";
 import { createMcpRequestHandler } from "./mcp";
-import { handleModuleJson, handlePortalZip } from "./modulePackage";
+import { moduleJsonResponse, portalZipResponse } from "./modulePackage";
 import { createOAuthSubApp, type PortalOAuthProvider } from "./oauth";
-
-const log = getLogger(SERVICE_NAME);
 
 const MODULE_JSON_PATH = "/module/module.json";
 const MODULE_ZIP_PATH = "/module/portal.zip";
 
 // The SDK's own OAuth endpoints (spec 0025 D-5/D-6) — everything `mcpAuthRouter`
-// mounts itself. `OAUTH_CONSENT_PATH` (astra-owned, checked separately below) is
-// the one OAuth-flow path the SDK doesn't provide.
-const OAUTH_SDK_PATHS = new Set(["/authorize", "/token", "/register", "/revoke"]);
+// mounts itself, plus `/.well-known/*` (the fallback below). `OAUTH_CONSENT_PATH` is
+// astra-owned but lives on the same Express sub-app.
+const OAUTH_PATHS = ["/authorize", "/token", "/register", "/revoke", OAUTH_CONSENT_PATH];
 
 export interface PortalServerOptions {
   port: number;
@@ -65,23 +69,30 @@ export interface PortalServerOptions {
    * D-7 default (3600s) baked into `PortalOAuthProvider`; tests shorten this to
    * exercise expiry without a 1h sleep. Not config-sourced (no prod knob needed). */
   accessTokenTtlS?: number;
+  /** Register the kit's ordered shutdown with observe's SIGTERM handling. Only the
+   * entrypoint sets it; tests close the server themselves. */
+  handleShutdown?: boolean;
 }
 
 export interface PortalServerHandle {
-  httpServer: HttpServer;
   bridge: Bridge;
-  /** Spec 0025 S1 — exposed so S2's `/mcp` dual-auth check and tests can call
-   * `verifyAccessToken` directly without re-parsing the OAuth state file. */
+  /** Spec 0025 S1 — exposed so tests can call `verifyAccessToken` directly without
+   * re-parsing the OAuth state file. */
   oauthProvider: PortalOAuthProvider;
+  /** The kit's ordered shutdown: stop accepting, close the bridge (1001), drain. */
   close(): Promise<void>;
 }
 
-function jsonResponse(res: ServerResponse, status: number, body: unknown): void {
-  res.writeHead(status, { "content-type": "application/json" }).end(JSON.stringify(body));
+/** The unbound server: its kit definition and the bridge's upgrade endpoint. */
+export interface PortalServer {
+  bridge: Bridge;
+  oauthProvider: PortalOAuthProvider;
+  definition: ServiceDefinition;
+  upgrades: Record<string, UpgradeHandler>;
 }
 
-/** Builds (but does not bind) the portal HTTP server + its `Bridge`. */
-export function createPortalServer(opts: PortalServerOptions): PortalServerHandle {
+/** Builds (but does not bind) the portal service definition + its `Bridge`. */
+export function createPortalServer(opts: PortalServerOptions): PortalServer {
   const bridge = new Bridge({
     bridgeApiKey: opts.bridgeApiKey,
     queryTimeoutMs: opts.bridgeTimeoutMs,
@@ -89,16 +100,16 @@ export function createPortalServer(opts: PortalServerOptions): PortalServerHandl
     minProtocol: opts.minBridgeProtocol,
   });
   // Spec 0025 D-6: portal does NOT become an Express app — `authApp` is only ever
-  // invoked as a bare `(req, res)` function from the one new dispatch arm below,
-  // for the handful of OAuth paths. `/mcp`, `/module/*`, `/health`, `/ws` are
-  // untouched raw-node handlers. Built before `handleMcp` (S2) so its `provider`
-  // is available for the `/mcp` dual-auth check (D-3).
+  // invoked as a bare `(req, res)` function, for the handful of OAuth paths. Built
+  // before `handleMcp` (S2) so its `provider` is available for the `/mcp` dual-auth
+  // check (D-3).
   const { app: authApp, provider: oauthProvider } = createOAuthSubApp({
     statePath: opts.oauthStatePath,
     consentKey: opts.mcpApiKey, // D-1: reuse the existing /mcp key as the consent password
     publicOrigin: opts.publicOrigin,
     accessTokenTtlS: opts.accessTokenTtlS,
   });
+  const oauth = (req: Request) => callNode(req, (nodeReq, nodeRes) => authApp(nodeReq, nodeRes));
 
   const handleMcp = createMcpRequestHandler(
     bridge,
@@ -108,62 +119,59 @@ export function createPortalServer(opts: PortalServerOptions): PortalServerHandl
     oauthProvider,
     opts.publicOrigin,
   );
+  const modulePackage = { publicOrigin: opts.publicOrigin, moduleDir: opts.moduleDir };
 
-  const httpServer = createServer((req, res) => {
-    const url = new URL(req.url ?? "/", "http://localhost");
-
-    if (req.method === "GET" && url.pathname === "/health") {
-      jsonResponse(res, 200, { ok: true });
-      return;
-    }
-    if (url.pathname === MCP_HTTP_PATH) {
-      void handleMcp(req, res);
-      return;
-    }
-    if (
-      OAUTH_SDK_PATHS.has(url.pathname) ||
-      url.pathname === OAUTH_CONSENT_PATH ||
-      url.pathname.startsWith("/.well-known/")
-    ) {
-      authApp(req, res);
-      return;
-    }
-    const modulePackageOpts = { publicOrigin: opts.publicOrigin, moduleDir: opts.moduleDir };
-    if (req.method === "GET" && url.pathname === MODULE_JSON_PATH) {
-      handleModuleJson(res, modulePackageOpts);
-      return;
-    }
-    if (req.method === "GET" && url.pathname === MODULE_ZIP_PATH) {
-      handlePortalZip(res, modulePackageOpts);
-      return;
-    }
-    jsonResponse(res, 404, { error: "not_found" });
-  });
-
-  bridge.attach(httpServer);
-
-  return {
-    httpServer,
-    bridge,
-    oauthProvider,
-    close: () =>
-      new Promise((resolve) => {
-        bridge.close();
-        httpServer.close(() => resolve());
+  const definition: ServiceDefinition = {
+    serviceName: SERVICE_NAME,
+    routes: [
+      route({ method: "GET", path: "/health", handler: () => json({ ok: true }) }),
+      route({ method: "*", path: MCP_HTTP_PATH, handler: (ctx) => handleMcp(ctx.req) }),
+      ...OAUTH_PATHS.map((path) => route({ method: "*", path, handler: (ctx) => oauth(ctx.req) })),
+      route({
+        method: "GET",
+        path: MODULE_JSON_PATH,
+        handler: () => moduleJsonResponse(modulePackage),
       }),
+      route({
+        method: "GET",
+        path: MODULE_ZIP_PATH,
+        handler: () => portalZipResponse(modulePackage),
+      }),
+    ],
+    fallback: (req, url) =>
+      url.pathname.startsWith("/.well-known/") ? oauth(req) : json({ error: "not_found" }, 404),
   };
+
+  const upgrades: Record<string, UpgradeHandler> = {
+    [BRIDGE_WS_PATH]: {
+      handle: (req, socket, head) => bridge.handleUpgrade(req, socket, head),
+      // On shutdown the bridge closes with `serverShutdown` (1001), so the module redials
+      // normally instead of guessing.
+      close: () => bridge.close(),
+    },
+  };
+
+  return { bridge, oauthProvider, definition, upgrades };
 }
 
 /** `createPortalServer` + bind on `opts.port` (`0` for an OS-assigned ephemeral port, as
  * tests do). Resolves once listening, with the actual bound port. */
-export function listen(opts: PortalServerOptions): Promise<PortalServerHandle & { port: number }> {
-  const handle = createPortalServer(opts);
-  return new Promise((resolve) => {
-    handle.httpServer.listen(opts.port, "0.0.0.0", () => {
-      const address = handle.httpServer.address();
-      const port = typeof address === "object" && address ? address.port : opts.port;
-      log.emit({ severityText: "INFO", body: `astra.portal listening on :${port}` });
-      resolve({ ...handle, port });
-    });
+export async function listen(
+  opts: PortalServerOptions,
+): Promise<PortalServerHandle & { port: number; service: Service }> {
+  const { bridge, oauthProvider, definition, upgrades } = createPortalServer(opts);
+  const service = createService({
+    ...definition,
+    port: opts.port,
+    upgrades,
+    handleShutdown: opts.handleShutdown ?? false,
   });
+  const url = new URL(await service.ready());
+  return {
+    bridge,
+    oauthProvider,
+    service,
+    port: Number(url.port),
+    close: () => service.close(),
+  };
 }

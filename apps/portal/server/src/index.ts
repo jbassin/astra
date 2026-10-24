@@ -2,18 +2,18 @@
  * portal-server entrypoint (spec 0023 S2) — the MCP+WS server for the live FoundryVTT
  * "Faerrin" world. Telemetry (traces, metrics, logs, HTTP spans, the SIGTERM flush) is
  * already installed by `node --import @astra/observe/register`; this reads config, then
- * binds the HTTP server (`/health`, the Streamable-HTTP `/mcp`, the bridge
- * WS at `/ws`). No Discord-style "optional" degraded mode (contrast orator-backend):
- * both SOPS keys are load-bearing per D6, so a missing key fails startup loudly rather
- * than serving with auth effectively disabled.
+ * binds the service (`/health`, `/healthz`, the Streamable-HTTP `/mcp`, the bridge WS at
+ * `/ws`). No Discord-style "optional" degraded mode (contrast orator-backend): both SOPS
+ * keys are load-bearing per D6, so a missing key fails startup loudly rather than serving
+ * with auth effectively disabled.
  */
 import { fileURLToPath } from "node:url";
 
 import { loadConfig } from "@astra/config";
-import { exitAfterFlush, logger, onShutdown } from "@astra/observe";
+import { exitAfterFlush, logger } from "@astra/observe";
 
 import { SERVICE_NAME } from "./constants";
-import { listen, type PortalServerHandle } from "./server";
+import { listen } from "./server";
 
 const log = logger(SERVICE_NAME);
 
@@ -27,8 +27,6 @@ const log = logger(SERVICE_NAME);
 // resolves there too — no container-vs-local branch needed.
 const MODULE_DIR = fileURLToPath(new URL("../../module", import.meta.url));
 
-let server: PortalServerHandle | undefined;
-
 async function main(): Promise<void> {
   const cfg = loadConfig();
   // Portal's keys are load-bearing (no world dial-out / no MCP client can authenticate
@@ -41,7 +39,10 @@ async function main(): Promise<void> {
     );
   }
 
-  server = await listen({
+  // On compose SIGTERM the kit's shutdown stops accepting, closes the bridge socket with
+  // the shutdown close code (the module then redials normally), and drains; register then
+  // flushes telemetry and exits.
+  await listen({
     port: cfg.portal.port,
     mcpApiKey: mcpApiKey.require(),
     playerMcpApiKey: playerMcpApiKey.require(),
@@ -55,6 +56,7 @@ async function main(): Promise<void> {
     // hashed tokens); D-1 reuses the mcpApiKey resolved above as the consent
     // password, threaded through inside `createPortalServer` (no new SOPS key).
     oauthStatePath: cfg.portal.oauthStatePath,
+    handleShutdown: true,
   });
 }
 
@@ -62,7 +64,3 @@ main().catch((e) => {
   log.fatal(`astra.portal failed to start: ${e}`);
   void exitAfterFlush(1);
 });
-
-// On compose SIGTERM: close the bridge socket with the shutdown close code (the module
-// then redials normally instead of guessing); register then flushes telemetry and exits.
-onShutdown(() => server?.bridge.close());

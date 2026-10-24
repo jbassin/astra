@@ -10,8 +10,11 @@ Four pnpm members live here (the `apps/*/*` glob in `pnpm-workspace.yaml` finds 
 
 - **`server/`** — the MCP and bridge server. Compose service `portal`, port 10372, Caddy at
   `portal.iridi.cc`. Routes: `/mcp` (Streamable HTTP), `/ws` (the module's bridge socket),
-  `/module/module.json` and `/module/portal.zip` (install by manifest URL), `/health`, and the OAuth
-  endpoints (`/.well-known/…`, `/authorize`, `/token`, `/register`, `/revoke`, `/consent`).
+  `/module/module.json` and `/module/portal.zip` (install by manifest URL), `/health`, `/healthz`
+  (the compose healthcheck), and the OAuth endpoints (`/.well-known/…`, `/authorize`, `/token`,
+  `/register`, `/revoke`, `/consent`). It runs on `@astra/service-kit` (`src/server.ts`); the bridge
+  is the kit's `/ws` upgrade endpoint and the OAuth endpoints are the SDK's Express router reached
+  through `callNode`. `src/pins.test.ts` pins every route's response for each credential.
 - **`module/`** — the Foundry module (id `portal`), bundled by tsdown into `dist/main.js`. The server
   image builds it and serves the zip.
 - **`shared/`** — what both sides use: the tool registry (`src/registry.ts`), each tool's param and
@@ -149,6 +152,11 @@ needs a renderer in `RENDERERS` (`server/src/mcp.ts`).
   so recreate only with `just deploy`.
 - **Negative-path tool calls (cap exceeded, not found) record error spans by design.** Filter them
   out before reading a SigNoz error count.
+- **`/mcp` auth is in `mcp.ts`, not a kit route group.** Its 401 carries the `WWW-Authenticate`
+  header claude.ai discovers OAuth from, and both static keys compare with `safeEqual`. A
+  `Bearer <key> <anything>` header still authenticates as `<key>` (pinned, as before the kit).
+- **An upgrade to any path but `/ws` gets a 404 and a closed socket** (before the kit it hung).
+  On shutdown the kit closes the bridge with 1001 first, then drains HTTP.
 
 ### module
 
