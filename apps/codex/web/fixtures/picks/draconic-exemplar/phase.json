@@ -1,0 +1,144 @@
+{
+  "aonUrl": "/Bloodlines.aspx?ID=23",
+  "body": [
+    {
+      "items": [
+        [
+          {
+            "content": "2nd",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Blur",
+            "kind": "crossref",
+            "targetId": "spell/blur"
+          }
+        ],
+        [
+          {
+            "content": "5th",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Banishment",
+            "kind": "crossref",
+            "targetId": "spell/banishment"
+          }
+        ],
+        [
+          {
+            "content": "8th",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Disappearance",
+            "kind": "crossref",
+            "targetId": "spell/disappearance"
+          }
+        ]
+      ],
+      "kind": "list",
+      "ordered": false
+    }
+  ],
+  "category": "draconic-exemplar",
+  "edition": "remaster",
+  "facets": {},
+  "id": "draconic-exemplar/phase",
+  "mastheadExtra": [
+    {
+      "label": "Tradition",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Arcane",
+          "kind": "crossref",
+          "targetId": "tradition/arcane"
+        }
+      ]
+    },
+    {
+      "label": "Bloodline Skill",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Arcana",
+          "kind": "crossref",
+          "targetId": "skill/arcana"
+        }
+      ]
+    },
+    {
+      "label": "Sorcerous Gifts",
+      "value": []
+    }
+  ],
+  "name": "Phase",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "phase",
+  "source": {
+    "book": "Draconic Codex",
+    "license": "ORC",
+    "page": 206
+  },
+  "traits": []
+}

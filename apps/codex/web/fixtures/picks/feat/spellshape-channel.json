@@ -1,0 +1,45 @@
+{
+  "aonUrl": "/Feats.aspx?ID=4707",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "Deep understanding of divine revelations into the nature of vital essence allows you to freely manipulate the energy of life and death. Use one spellshape action you can perform that normally takes 1 action and can be applied to the harm or heal spell. If you use it in this way, its effects apply only to a harm or heal spell.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "feat",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "free",
+    "featLevel": 20,
+    "itemCategory": "class",
+    "prerequisites": [],
+    "rank": 20
+  },
+  "id": "feat/spellshape-channel",
+  "legacyOf": [
+    "feat/metamagic-channel"
+  ],
+  "level": 20,
+  "name": "Spellshape Channel",
+  "rarity": "common",
+  "slug": "spellshape-channel",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 121
+  },
+  "traits": [
+    "cleric",
+    "concentrate"
+  ]
+}

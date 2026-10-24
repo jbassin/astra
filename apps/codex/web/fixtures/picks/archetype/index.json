@@ -1,0 +1,3445 @@
+{
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Rules",
+          "kind": "crossref",
+          "targetId": "archetype/rules"
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Additional Feats",
+                    "kind": "crossref",
+                    "targetId": "archetype/additional-feats"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Alchemical Archetypes",
+                    "kind": "crossref",
+                    "targetId": "archetype/alchemical-archetypes"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Bounded Spellcasting Archetypes",
+                    "kind": "crossref",
+                    "targetId": "archetype/bounded-spellcasting-archetypes"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Dedication Details",
+                    "kind": "crossref",
+                    "targetId": "archetype/dedication-details"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Feats that Grant Feats",
+                    "kind": "crossref",
+                    "targetId": "archetype/feats-that-grant-feats"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Special Archetypes",
+                    "kind": "crossref",
+                    "targetId": "archetype/special-archetypes"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Spellcasting Archetypes",
+                    "kind": "crossref",
+                    "targetId": "archetype/spellcasting-archetypes"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Temporary Items",
+                    "kind": "crossref",
+                    "targetId": "archetype/temporary-items"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        }
+      ]
+    },
+    {
+      "children": [
+        {
+          "display": "Multiclass Archetypes",
+          "kind": "crossref",
+          "targetId": "archetype/multiclass-archetypes"
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Alchemist",
+                    "kind": "crossref",
+                    "targetId": "archetype/alchemist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Animist",
+                    "kind": "crossref",
+                    "targetId": "archetype/animist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Barbarian",
+                    "kind": "crossref",
+                    "targetId": "archetype/barbarian"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Bard",
+                    "kind": "crossref",
+                    "targetId": "archetype/bard"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Champion",
+                    "kind": "crossref",
+                    "targetId": "archetype/champion"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Cleric",
+                    "kind": "crossref",
+                    "targetId": "archetype/cleric"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Commander",
+                    "kind": "crossref",
+                    "targetId": "archetype/commander"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Druid",
+                    "kind": "crossref",
+                    "targetId": "archetype/druid"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Exemplar",
+                    "kind": "crossref",
+                    "targetId": "archetype/exemplar"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Fighter",
+                    "kind": "crossref",
+                    "targetId": "archetype/fighter"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Guardian",
+                    "kind": "crossref",
+                    "targetId": "archetype/guardian"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Gunslinger",
+                    "kind": "crossref",
+                    "targetId": "archetype/gunslinger"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Inventor",
+                    "kind": "crossref",
+                    "targetId": "archetype/inventor"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Investigator",
+                    "kind": "crossref",
+                    "targetId": "archetype/investigator"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Kineticist",
+                    "kind": "crossref",
+                    "targetId": "archetype/kineticist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Magus",
+                    "kind": "crossref",
+                    "targetId": "archetype/magus"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Monk",
+                    "kind": "crossref",
+                    "targetId": "archetype/monk"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Oracle",
+                    "kind": "crossref",
+                    "targetId": "archetype/oracle"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Psychic",
+                    "kind": "crossref",
+                    "targetId": "archetype/psychic"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Ranger",
+                    "kind": "crossref",
+                    "targetId": "archetype/ranger"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Rogue",
+                    "kind": "crossref",
+                    "targetId": "archetype/rogue"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Sorcerer",
+                    "kind": "crossref",
+                    "targetId": "archetype/sorcerer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Summoner",
+                    "kind": "crossref",
+                    "targetId": "archetype/summoner"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Swashbuckler",
+                    "kind": "crossref",
+                    "targetId": "archetype/swashbuckler"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Thaumaturge",
+                    "kind": "crossref",
+                    "targetId": "archetype/thaumaturge"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Witch",
+                    "kind": "crossref",
+                    "targetId": "archetype/witch"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Wizard",
+                    "kind": "crossref",
+                    "targetId": "archetype/wizard"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        }
+      ]
+    },
+    {
+      "children": [
+        {
+          "display": "Class Archetypes",
+          "kind": "crossref",
+          "targetId": "archetype/class-archetypes"
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Avenger (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/avenger-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Battle Harbinger (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/battle-harbinger-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Bloodrager (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/bloodrager-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Elementalist (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/elementalist-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Flexible Spellcaster (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/flexible-spellcaster-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Munitions Master (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/munitions-master-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Palatine Detective (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/palatine-detective-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Runelord (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/runelord-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Seneschal (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/seneschal-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Spellshot (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/spellshot-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Vindicator (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/vindicator-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "War Mage (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/war-mage-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Warrior of Legend (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/warrior-of-legend-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Wellspring Mage (Class Archetype)",
+                    "kind": "crossref",
+                    "targetId": "archetype/wellspring-mage-class-archetype"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        }
+      ]
+    },
+    {
+      "children": [
+        {
+          "display": "Archetype Artifacts",
+          "kind": "crossref",
+          "targetId": "archetype/archetype-artifacts"
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Gelid Shard",
+                    "kind": "crossref",
+                    "targetId": "archetype/gelid-shard"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Splinter of Finality",
+                    "kind": "crossref",
+                    "targetId": "archetype/splinter-of-finality"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Ursine Avenger Hood",
+                    "kind": "crossref",
+                    "targetId": "archetype/ursine-avenger-hood"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        }
+      ]
+    },
+    {
+      "children": [
+        {
+          "display": "Undead Archetypes",
+          "kind": "crossref",
+          "targetId": "archetype/undead-archetypes"
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Ghost",
+                    "kind": "crossref",
+                    "targetId": "archetype/ghost"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Ghoul",
+                    "kind": "crossref",
+                    "targetId": "archetype/ghoul"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Lich",
+                    "kind": "crossref",
+                    "targetId": "archetype/lich"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Mummy",
+                    "kind": "crossref",
+                    "targetId": "archetype/mummy"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Vampire",
+                    "kind": "crossref",
+                    "targetId": "archetype/vampire"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Zombie",
+                    "kind": "crossref",
+                    "targetId": "archetype/zombie"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        }
+      ]
+    },
+    {
+      "children": [
+        {
+          "display": "Mythic Destinies",
+          "kind": "crossref",
+          "targetId": "archetype/mythic-destinies"
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Apocalypse Rider (Uncommon)",
+                    "kind": "crossref",
+                    "targetId": "archetype/apocalypse-rider-uncommon"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Archfiend (Uncommon)",
+                    "kind": "crossref",
+                    "targetId": "archetype/archfiend-uncommon"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Ascended Celestial (Uncommon)",
+                    "kind": "crossref",
+                    "targetId": "archetype/ascended-celestial-uncommon"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Avenging Runelord (Rare)",
+                    "kind": "crossref",
+                    "targetId": "archetype/avenging-runelord-rare"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Beast Lord (Uncommon)",
+                    "kind": "crossref",
+                    "targetId": "archetype/beast-lord-uncommon"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Broken Chain (Uncommon)",
+                    "kind": "crossref",
+                    "targetId": "archetype/broken-chain-uncommon"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Eternal Legend (Uncommon)",
+                    "kind": "crossref",
+                    "targetId": "archetype/eternal-legend-uncommon"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Godling (Rare)",
+                    "kind": "crossref",
+                    "targetId": "archetype/godling-rare"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Heroic Scion (Rare)",
+                    "kind": "crossref",
+                    "targetId": "archetype/heroic-scion-rare"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Mortal Herald",
+                    "kind": "crossref",
+                    "targetId": "archetype/mortal-herald"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Prophesied Monarch (Uncommon)",
+                    "kind": "crossref",
+                    "targetId": "archetype/prophesied-monarch-uncommon"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Timewracked (Rare)",
+                    "kind": "crossref",
+                    "targetId": "archetype/timewracked-rare"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Warshard Warrior (Rare)",
+                    "kind": "crossref",
+                    "targetId": "archetype/warshard-warrior-rare"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Wildspell (Uncommon)",
+                    "kind": "crossref",
+                    "targetId": "archetype/wildspell-uncommon"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        }
+      ]
+    },
+    {
+      "children": [
+        {
+          "content": "Archetypes",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Acrobat",
+                    "kind": "crossref",
+                    "targetId": "archetype/acrobat"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Aldori Duelist",
+                    "kind": "crossref",
+                    "targetId": "archetype/aldori-duelist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Alkenstar Agent",
+                    "kind": "crossref",
+                    "targetId": "archetype/alkenstar-agent"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Alter Ego",
+                    "kind": "crossref",
+                    "targetId": "archetype/alter-ego"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Animal Trainer",
+                    "kind": "crossref",
+                    "targetId": "archetype/animal-trainer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Archaeologist",
+                    "kind": "crossref",
+                    "targetId": "archetype/archaeologist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Archer",
+                    "kind": "crossref",
+                    "targetId": "archetype/archer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Artillerist",
+                    "kind": "crossref",
+                    "targetId": "archetype/artillerist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Assassin",
+                    "kind": "crossref",
+                    "targetId": "archetype/assassin"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Bastion",
+                    "kind": "crossref",
+                    "targetId": "archetype/bastion"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Beast Gunner",
+                    "kind": "crossref",
+                    "targetId": "archetype/beast-gunner"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Beastmaster",
+                    "kind": "crossref",
+                    "targetId": "archetype/beastmaster"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Bellflower Tiller",
+                    "kind": "crossref",
+                    "targetId": "archetype/bellflower-tiller"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Blackjacket",
+                    "kind": "crossref",
+                    "targetId": "archetype/blackjacket"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Blessed One",
+                    "kind": "crossref",
+                    "targetId": "archetype/blessed-one"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Bounty Hunter",
+                    "kind": "crossref",
+                    "targetId": "archetype/bounty-hunter"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Bright Lion",
+                    "kind": "crossref",
+                    "targetId": "archetype/bright-lion"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Bullet Dancer",
+                    "kind": "crossref",
+                    "targetId": "archetype/bullet-dancer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Butterfly Blade",
+                    "kind": "crossref",
+                    "targetId": "archetype/butterfly-blade"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Campfire Chronicler",
+                    "kind": "crossref",
+                    "targetId": "archetype/campfire-chronicler"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Captain",
+                    "kind": "crossref",
+                    "targetId": "archetype/captain"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Captivator",
+                    "kind": "crossref",
+                    "targetId": "archetype/captivator"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Cathartic Mage",
+                    "kind": "crossref",
+                    "targetId": "archetype/cathartic-mage"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Cavalier",
+                    "kind": "crossref",
+                    "targetId": "archetype/cavalier"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Celebrity",
+                    "kind": "crossref",
+                    "targetId": "archetype/celebrity"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Chelaxian Scion",
+                    "kind": "crossref",
+                    "targetId": "archetype/chelaxian-scion"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Chronoskimmer",
+                    "kind": "crossref",
+                    "targetId": "archetype/chronoskimmer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Clawdancer",
+                    "kind": "crossref",
+                    "targetId": "archetype/clawdancer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Clockwork Reanimator",
+                    "kind": "crossref",
+                    "targetId": "archetype/clockwork-reanimator"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Corpse Tender",
+                    "kind": "crossref",
+                    "targetId": "archetype/corpse-tender"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Crossbow Infiltrator",
+                    "kind": "crossref",
+                    "targetId": "archetype/crossbow-infiltrator"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Crystal Keeper",
+                    "kind": "crossref",
+                    "targetId": "archetype/crystal-keeper"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Cultivator",
+                    "kind": "crossref",
+                    "targetId": "archetype/cultivator"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Curse Maelstrom",
+                    "kind": "crossref",
+                    "targetId": "archetype/curse-maelstrom"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Dandy",
+                    "kind": "crossref",
+                    "targetId": "archetype/dandy"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Demolitionist",
+                    "kind": "crossref",
+                    "targetId": "archetype/demolitionist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Draconic Acolyte",
+                    "kind": "crossref",
+                    "targetId": "archetype/draconic-acolyte"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Dragon Disciple",
+                    "kind": "crossref",
+                    "targetId": "archetype/dragon-disciple"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Drake Rider",
+                    "kind": "crossref",
+                    "targetId": "archetype/drake-rider"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Dual-Weapon Warrior",
+                    "kind": "crossref",
+                    "targetId": "archetype/dual-weapon-warrior"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Duelist",
+                    "kind": "crossref",
+                    "targetId": "archetype/duelist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Eagle Knight",
+                    "kind": "crossref",
+                    "targetId": "archetype/eagle-knight"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Edgewatch Detective",
+                    "kind": "crossref",
+                    "targetId": "archetype/edgewatch-detective"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Eldritch Archer",
+                    "kind": "crossref",
+                    "targetId": "archetype/eldritch-archer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Eldritch Researcher",
+                    "kind": "crossref",
+                    "targetId": "archetype/eldritch-researcher"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Exorcist",
+                    "kind": "crossref",
+                    "targetId": "archetype/exorcist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Familiar Master",
+                    "kind": "crossref",
+                    "targetId": "archetype/familiar-master"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Familiar Sage",
+                    "kind": "crossref",
+                    "targetId": "archetype/familiar-sage"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Fan Dancer",
+                    "kind": "crossref",
+                    "targetId": "archetype/fan-dancer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Field Propagandist",
+                    "kind": "crossref",
+                    "targetId": "archetype/field-propagandist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Firebrand Braggart",
+                    "kind": "crossref",
+                    "targetId": "archetype/firebrand-braggart"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Firework Technician",
+                    "kind": "crossref",
+                    "targetId": "archetype/firework-technician"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Five-Breath Vanguard",
+                    "kind": "crossref",
+                    "targetId": "archetype/five-breath-vanguard"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Folklorist",
+                    "kind": "crossref",
+                    "targetId": "archetype/folklorist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Game Hunter",
+                    "kind": "crossref",
+                    "targetId": "archetype/game-hunter"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Geomancer",
+                    "kind": "crossref",
+                    "targetId": "archetype/geomancer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Ghost Eater",
+                    "kind": "crossref",
+                    "targetId": "archetype/ghost-eater"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Ghost Hunter",
+                    "kind": "crossref",
+                    "targetId": "archetype/ghost-hunter"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Gladiator",
+                    "kind": "crossref",
+                    "targetId": "archetype/gladiator"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Golden League Xun",
+                    "kind": "crossref",
+                    "targetId": "archetype/golden-league-xun"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Golden Legionnaire",
+                    "kind": "crossref",
+                    "targetId": "archetype/golden-legionnaire"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Golem Grafter",
+                    "kind": "crossref",
+                    "targetId": "archetype/golem-grafter"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Gray Gardener",
+                    "kind": "crossref",
+                    "targetId": "archetype/gray-gardener"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Guerrilla",
+                    "kind": "crossref",
+                    "targetId": "archetype/guerrilla"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Halcyon Speaker",
+                    "kind": "crossref",
+                    "targetId": "archetype/halcyon-speaker"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Hallowed Necromancer",
+                    "kind": "crossref",
+                    "targetId": "archetype/hallowed-necromancer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Harrower",
+                    "kind": "crossref",
+                    "targetId": "archetype/harrower"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Hellknight",
+                    "kind": "crossref",
+                    "targetId": "archetype/hellknight"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Herbalist",
+                    "kind": "crossref",
+                    "targetId": "archetype/herbalist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Horizon Walker",
+                    "kind": "crossref",
+                    "targetId": "archetype/horizon-walker"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Iridian Choirmaster",
+                    "kind": "crossref",
+                    "targetId": "archetype/iridian-choirmaster"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Jalmeri Heavenseeker",
+                    "kind": "crossref",
+                    "targetId": "archetype/jalmeri-heavenseeker"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Juggler",
+                    "kind": "crossref",
+                    "targetId": "archetype/juggler"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Kitharodian Actor",
+                    "kind": "crossref",
+                    "targetId": "archetype/kitharodian-actor"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Knight Reclaimant",
+                    "kind": "crossref",
+                    "targetId": "archetype/knight-reclaimant"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Knight Vigilant",
+                    "kind": "crossref",
+                    "targetId": "archetype/knight-vigilant"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Lastwall Sentry",
+                    "kind": "crossref",
+                    "targetId": "archetype/lastwall-sentry"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Lepidstadt Surgeon",
+                    "kind": "crossref",
+                    "targetId": "archetype/lepidstadt-surgeon"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Linguist",
+                    "kind": "crossref",
+                    "targetId": "archetype/linguist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Lion Blade",
+                    "kind": "crossref",
+                    "targetId": "archetype/lion-blade"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Living Monolith",
+                    "kind": "crossref",
+                    "targetId": "archetype/living-monolith"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Living Vessel",
+                    "kind": "crossref",
+                    "targetId": "archetype/living-vessel"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Loremaster",
+                    "kind": "crossref",
+                    "targetId": "archetype/loremaster"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Magaambyan Attendant",
+                    "kind": "crossref",
+                    "targetId": "archetype/magaambyan-attendant"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Magic Warrior",
+                    "kind": "crossref",
+                    "targetId": "archetype/magic-warrior"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Mammoth Lord",
+                    "kind": "crossref",
+                    "targetId": "archetype/mammoth-lord"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Marine Marauder",
+                    "kind": "crossref",
+                    "targetId": "archetype/marine-marauder"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Marshal",
+                    "kind": "crossref",
+                    "targetId": "archetype/marshal"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Martial Artist",
+                    "kind": "crossref",
+                    "targetId": "archetype/martial-artist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Mauler",
+                    "kind": "crossref",
+                    "targetId": "archetype/mauler"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Medic",
+                    "kind": "crossref",
+                    "targetId": "archetype/medic"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Mind Smith",
+                    "kind": "crossref",
+                    "targetId": "archetype/mind-smith"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Nantambu Chime-Ringer",
+                    "kind": "crossref",
+                    "targetId": "archetype/nantambu-chime-ringer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Necrologist",
+                    "kind": "crossref",
+                    "targetId": "archetype/necrologist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Nidalese Horselord",
+                    "kind": "crossref",
+                    "targetId": "archetype/nidalese-horselord"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Oatia Skysage",
+                    "kind": "crossref",
+                    "targetId": "archetype/oatia-skysage"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Oozemorph",
+                    "kind": "crossref",
+                    "targetId": "archetype/oozemorph"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Ostilli Host",
+                    "kind": "crossref",
+                    "targetId": "archetype/ostilli-host"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Overwatch",
+                    "kind": "crossref",
+                    "targetId": "archetype/overwatch"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Pactbinder",
+                    "kind": "crossref",
+                    "targetId": "archetype/pactbinder"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Pactbound Initiate",
+                    "kind": "crossref",
+                    "targetId": "archetype/pactbound-initiate"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Pathfinder Agent",
+                    "kind": "crossref",
+                    "targetId": "archetype/pathfinder-agent"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Pirate",
+                    "kind": "crossref",
+                    "targetId": "archetype/pirate"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Pistol Phenom",
+                    "kind": "crossref",
+                    "targetId": "archetype/pistol-phenom"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Poisoner",
+                    "kind": "crossref",
+                    "targetId": "archetype/poisoner"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Prophet of Kalistrade",
+                    "kind": "crossref",
+                    "targetId": "archetype/prophet-of-kalistrade"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Provocator",
+                    "kind": "crossref",
+                    "targetId": "archetype/provocator"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Psychic Duelist",
+                    "kind": "crossref",
+                    "targetId": "archetype/psychic-duelist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Pure Legion Enforcer",
+                    "kind": "crossref",
+                    "targetId": "archetype/pure-legion-enforcer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Razmiran Priest",
+                    "kind": "crossref",
+                    "targetId": "archetype/razmiran-priest"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Reanimator",
+                    "kind": "crossref",
+                    "targetId": "archetype/reanimator"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Red Mantis Assassin",
+                    "kind": "crossref",
+                    "targetId": "archetype/red-mantis-assassin"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Ritualist",
+                    "kind": "crossref",
+                    "targetId": "archetype/ritualist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Rivethun Emissary",
+                    "kind": "crossref",
+                    "targetId": "archetype/rivethun-emissary"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Rivethun Invoker",
+                    "kind": "crossref",
+                    "targetId": "archetype/rivethun-invoker"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Rivethun Involutionist",
+                    "kind": "crossref",
+                    "targetId": "archetype/rivethun-involutionist"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Rose Warden",
+                    "kind": "crossref",
+                    "targetId": "archetype/rose-warden"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Runescarred",
+                    "kind": "crossref",
+                    "targetId": "archetype/runescarred"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Sanguimancer",
+                    "kind": "crossref",
+                    "targetId": "archetype/sanguimancer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Scion of Domora",
+                    "kind": "crossref",
+                    "targetId": "archetype/scion-of-domora"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Scout",
+                    "kind": "crossref",
+                    "targetId": "archetype/scout"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Scroll Trickster",
+                    "kind": "crossref",
+                    "targetId": "archetype/scroll-trickster"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Scrollmaster",
+                    "kind": "crossref",
+                    "targetId": "archetype/scrollmaster"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Scrounger",
+                    "kind": "crossref",
+                    "targetId": "archetype/scrounger"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Sentinel",
+                    "kind": "crossref",
+                    "targetId": "archetype/sentinel"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Shadowcaster",
+                    "kind": "crossref",
+                    "targetId": "archetype/shadowcaster"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Shadowdancer",
+                    "kind": "crossref",
+                    "targetId": "archetype/shadowdancer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Shieldmarshal",
+                    "kind": "crossref",
+                    "targetId": "archetype/shieldmarshal"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Sister of the Golden Erinys",
+                    "kind": "crossref",
+                    "targetId": "archetype/sister-of-the-golden-erinys"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Sixth Pillar",
+                    "kind": "crossref",
+                    "targetId": "archetype/sixth-pillar"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Sleepwalker",
+                    "kind": "crossref",
+                    "targetId": "archetype/sleepwalker"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Snarecrafter",
+                    "kind": "crossref",
+                    "targetId": "archetype/snarecrafter"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Sniping Duo",
+                    "kind": "crossref",
+                    "targetId": "archetype/sniping-duo"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Soul Warden",
+                    "kind": "crossref",
+                    "targetId": "archetype/soul-warden"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Soulforger",
+                    "kind": "crossref",
+                    "targetId": "archetype/soulforger"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Spell Trickster",
+                    "kind": "crossref",
+                    "targetId": "archetype/spell-trickster"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Spellmaster",
+                    "kind": "crossref",
+                    "targetId": "archetype/spellmaster"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Spirit Warrior",
+                    "kind": "crossref",
+                    "targetId": "archetype/spirit-warrior"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Staff Acrobat",
+                    "kind": "crossref",
+                    "targetId": "archetype/staff-acrobat"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Stalwart Defender",
+                    "kind": "crossref",
+                    "targetId": "archetype/stalwart-defender"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Starlit Sentinel",
+                    "kind": "crossref",
+                    "targetId": "archetype/starlit-sentinel"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Starstone Aspirant",
+                    "kind": "crossref",
+                    "targetId": "archetype/starstone-aspirant"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Steel Falcon",
+                    "kind": "crossref",
+                    "targetId": "archetype/steel-falcon"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Sterling Dynamo",
+                    "kind": "crossref",
+                    "targetId": "archetype/sterling-dynamo"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Stone Brawler",
+                    "kind": "crossref",
+                    "targetId": "archetype/stone-brawler"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Stonebound",
+                    "kind": "crossref",
+                    "targetId": "archetype/stonebound"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Student of Perfection",
+                    "kind": "crossref",
+                    "targetId": "archetype/student-of-perfection"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Swarmkeeper",
+                    "kind": "crossref",
+                    "targetId": "archetype/swarmkeeper"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Swordmaster",
+                    "kind": "crossref",
+                    "targetId": "archetype/swordmaster"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Talisman Dabbler",
+                    "kind": "crossref",
+                    "targetId": "archetype/talisman-dabbler"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Tattooed Historian",
+                    "kind": "crossref",
+                    "targetId": "archetype/tattooed-historian"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Thlipit Contestant",
+                    "kind": "crossref",
+                    "targetId": "archetype/thlipit-contestant"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Time Mage",
+                    "kind": "crossref",
+                    "targetId": "archetype/time-mage"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Trapsmith",
+                    "kind": "crossref",
+                    "targetId": "archetype/trapsmith"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Trick Driver",
+                    "kind": "crossref",
+                    "targetId": "archetype/trick-driver"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Turpin Rowe Lumberjack",
+                    "kind": "crossref",
+                    "targetId": "archetype/turpin-rowe-lumberjack"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Twilight Speaker",
+                    "kind": "crossref",
+                    "targetId": "archetype/twilight-speaker"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Twilight Talon",
+                    "kind": "crossref",
+                    "targetId": "archetype/twilight-talon"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Ulfen Guard",
+                    "kind": "crossref",
+                    "targetId": "archetype/ulfen-guard"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Undead Master",
+                    "kind": "crossref",
+                    "targetId": "archetype/undead-master"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Undead Slayer",
+                    "kind": "crossref",
+                    "targetId": "archetype/undead-slayer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Undersea Privateer",
+                    "kind": "crossref",
+                    "targetId": "archetype/undersea-privateer"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Unexpected Sharpshooter",
+                    "kind": "crossref",
+                    "targetId": "archetype/unexpected-sharpshooter"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Vehicle Mechanic",
+                    "kind": "crossref",
+                    "targetId": "archetype/vehicle-mechanic"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Venture-Gossip",
+                    "kind": "crossref",
+                    "targetId": "archetype/venture-gossip"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Verduran Shadow",
+                    "kind": "crossref",
+                    "targetId": "archetype/verduran-shadow"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Vigilante",
+                    "kind": "crossref",
+                    "targetId": "archetype/vigilante"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Viking",
+                    "kind": "crossref",
+                    "targetId": "archetype/viking"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Wandering Chef",
+                    "kind": "crossref",
+                    "targetId": "archetype/wandering-chef"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Weapon Improviser",
+                    "kind": "crossref",
+                    "targetId": "archetype/weapon-improviser"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Werecreature",
+                    "kind": "crossref",
+                    "targetId": "archetype/werecreature"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Wild Mimic",
+                    "kind": "crossref",
+                    "targetId": "archetype/wild-mimic"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Winged Warrior",
+                    "kind": "crossref",
+                    "targetId": "archetype/winged-warrior"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Worm Caller",
+                    "kind": "crossref",
+                    "targetId": "archetype/worm-caller"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Wrestler",
+                    "kind": "crossref",
+                    "targetId": "archetype/wrestler"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Wylderheart",
+                    "kind": "crossref",
+                    "targetId": "archetype/wylderheart"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Zephyr Guard",
+                    "kind": "crossref",
+                    "targetId": "archetype/zephyr-guard"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        }
+      ]
+    }
+  ],
+  "category": "archetype",
+  "edition": "legacy",
+  "facets": {},
+  "id": "archetype/index",
+  "name": "Index",
+  "proseOnly": true,
+  "slug": "index",
+  "source": {
+    "book": "Foundry Journal: Archetypes",
+    "license": "unknown"
+  },
+  "traits": []
+}

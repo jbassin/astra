@@ -1,0 +1,83 @@
+{
+  "aonUrl": "/Familiars.aspx?ID=39&Specific=true",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "Endlessly modifiable, poppet familiars made of wood and wicker are among the most basic construct familiars available to Pathfinder agents across the globe.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "familiar-ability/flammable"
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "familiar-specific",
+  "edition": "remaster",
+  "facets": {},
+  "id": "familiar-specific/poppet",
+  "legacyOf": [
+    "familiar-specific/poppet@legacy"
+  ],
+  "mastheadExtra": [
+    {
+      "label": "Required Number of Abilities",
+      "value": [
+        {
+          "content": " 1",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Granted Abilities",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Construct",
+          "kind": "crossref",
+          "targetId": "familiar-ability/construct"
+        }
+      ]
+    }
+  ],
+  "name": "Poppet",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "poppet",
+  "source": {
+    "book": "Player Core 2",
+    "license": "ORC",
+    "page": 171
+  },
+  "traits": [
+    "Construct"
+  ]
+}

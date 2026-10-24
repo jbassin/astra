@@ -1,0 +1,33 @@
+{
+  "aonUrl": "/WeaponGroups.aspx?ID=10",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "The weapon viciously pierces the target, who takes 2 additional damage per weapon damage die.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "weapon-group",
+  "edition": "remaster",
+  "facets": {},
+  "id": "weapon-group/pick",
+  "name": "Pick",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "pick",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 283
+  },
+  "traits": []
+}

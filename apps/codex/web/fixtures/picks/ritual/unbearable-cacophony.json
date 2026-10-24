@@ -1,0 +1,344 @@
+{
+  "aonUrl": "/MythicRituals.aspx?ID=197",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "You amplify the sound of every item and creature to impossible levels. ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Deaf",
+          "kind": "crossref",
+          "targetId": "condition/deafened"
+        },
+        {
+          "content": " creatures and creatures ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "immune",
+          "kind": "crossref",
+          "targetId": "rules/immunity-weakness-and-resistance"
+        },
+        {
+          "content": " to ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "sonic",
+          "kind": "crossref",
+          "targetId": "trait/sonic"
+        },
+        {
+          "content": " damage remain unaffected in most cases.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Critical Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " As success, and you and the secondary casters gain sonic resistance equal to your level for the duration.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Any sound produced by a creature or object (such as a cricket, a ringing anvil, or a lion’s roar) deals sonic damage equal to the level of the creature or item (minimum 1) to every creature within 15 feet (basic Fortitude save with a DC equal to the ritual’s casting DC). For every size category over Tiny of the item or creature making noise, this damage increases by 2. Organized groups of creatures, such as a singing quartet or a swarm of insects, count as the next size category larger for this effect. Effects that normally deal sonic damage to creatures and objects ignore half the creature or object’s sonic ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "resistance",
+          "kind": "crossref",
+          "targetId": "rules/resistance"
+        },
+        {
+          "content": " or ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Hardness",
+          "kind": "crossref",
+          "targetId": "rules/hardness"
+        },
+        {
+          "content": ".\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The ritual has no effect.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Critical Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " An intense sound of ringing echoes in each caster’s ears, imparting a ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "weakness",
+          "kind": "crossref",
+          "targetId": "rules/weakness"
+        },
+        {
+          "content": " to sonic damage equal to their level for 1 day.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Heightened (+2)",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The increase in damage made by creatures larger than Tiny increases to 6 per size category.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "ritual",
+  "edition": "remaster",
+  "facets": {
+    "castTime": "1 day",
+    "duration": "3 days",
+    "featLevel": 7,
+    "range": "1-mile radius circle centered on you",
+    "rank": 7,
+    "traditions": []
+  },
+  "id": "ritual/unbearable-cacophony",
+  "level": 7,
+  "mastheadExtra": [
+    {
+      "label": "Cast",
+      "value": [
+        {
+          "content": " 1 day",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Cost",
+      "value": [
+        {
+          "content": " valuable crystals and tuning forks worth 300 gp",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Secondary Casters",
+      "value": [
+        {
+          "content": " 2",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Primary Check",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Performance",
+          "kind": "crossref",
+          "targetId": "skill/performance"
+        },
+        {
+          "content": " (mythic)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Secondary Checks",
+      "value": [
+        {
+          "content": "  Arcana ,  Nature ,",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Area",
+      "value": [
+        {
+          "content": " 1-mile radius circle centered on you",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Duration",
+      "value": [
+        {
+          "content": " 3 days",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Unbearable Cacophony",
+  "rarity": "uncommon",
+  "slug": "unbearable-cacophony",
+  "source": {
+    "book": "War of Immortals",
+    "license": "ORC",
+    "page": 162
+  },
+  "traits": [
+    "curse",
+    "mythic"
+  ]
+}

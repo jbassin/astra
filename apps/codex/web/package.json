@@ -13,6 +13,7 @@
     "fetch:aon": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/fetch-aon.ts",
     "fetch:foundry": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/fetch-foundry.ts",
     "transform": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/transform.ts",
+    "fixture": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/build-fixture.ts",
     "search:build": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/build-search.ts",
     "row-height-drift-guard": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts",
     "virtualization-interaction-guard": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts"

@@ -1,0 +1,101 @@
+{
+  "aonUrl": "/Feats.aspx?ID=5337",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "You've learned to use your natural camouflage to your advantage, enhancing your ability to blend with your surroundings through careful movements and additional markings or attire. In your selected terrain, you can ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Hide",
+          "kind": "crossref",
+          "targetId": "action/hide"
+        },
+        {
+          "content": " or ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Sneak",
+          "kind": "crossref",
+          "targetId": "action/sneak"
+        },
+        {
+          "content": " without cover or being concealed.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "feat",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 13,
+    "itemCategory": "ancestry",
+    "prerequisites": [
+      "mottle-coat centaur heritage"
+    ],
+    "rank": 13
+  },
+  "id": "feat/camouflage-coat",
+  "level": 13,
+  "mastheadExtra": [
+    {
+      "label": "Prerequisites",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Mottle-Coat Centaur",
+          "kind": "crossref",
+          "targetId": "heritage/mottle-coat-centaur"
+        },
+        {
+          "content": " heritage",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Camouflage Coat",
+  "rarity": "common",
+  "slug": "camouflage-coat",
+  "source": {
+    "book": "Howl of the Wild",
+    "license": "ORC",
+    "page": 33
+  },
+  "traits": [
+    "centaur"
+  ]
+}

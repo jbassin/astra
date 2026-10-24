@@ -2,8 +2,10 @@
  * D29-11: the fixture extractor. Reads the REAL, already-fetched Foundry/AoN
  * snapshots (`apps/codex/web/data/snapshots/`) and the REAL emitted corpus
  * (`apps/codex/web/data/corpus/`, produced by `pnpm --filter @astra/codex
- * transform` — run that FIRST) and writes a small, deterministic,
- * COMMITTED fixture at `apps/codex/web/fixtures/`:
+ * transform` — run that FIRST) and writes the fixture's small, deterministic,
+ * COMMITTED inputs at `apps/codex/web/fixtures/` (host-only, rare; the fixture
+ * corpus itself, `fixtures/entities/`, is built from these inputs by
+ * `scripts/fixtureCorpus.ts`, never by this script):
  *
  *   - `fixtures/raw/foundry/` + `fixtures/raw/aon/` — a real-shaped MINI
  *     snapshot (same directory layout the real fetchers produce) covering a
@@ -20,7 +22,7 @@
  *     the `creature`/`hazard` carve-out. `fixtures/join-aliases.json`
  *     is the matching trimmed alias file. `runTransform` (`transform.ts`) runs
  *     UNCHANGED against this subset in the CI-hermetic pipeline test.
- *   - `fixtures/entities/<category>/<slug>.json` — canonical-form-ONLY
+ *   - `fixtures/picks/<category>/<slug>.json` — canonical-form-ONLY
  *     entities (no raw source), copied VERBATIM from the real emitted
  *     corpus: one representative per codex category (the smallest file in
  *     that category, to stay lean) plus whatever additional entities are
@@ -28,16 +30,12 @@
  *     fixture. These are NOT reprocessed by the pipeline test — only
  *     zod-validated as a schema-drift guard (D29-11's "coverage-matrix
  *     canonical entities all parse through CodexEntitySchema").
- *   - `fixtures/entities/<category>/_index.json` + `fixtures/entities/
- *     manifest.json` (D29-21, P1.6) — fixture-scoped per-category IndexRows
- *     and a fixture-scoped corpus manifest (categoryCounts over exactly the
- *     selected entities), mirroring the real corpus's read surface so P2's
- *     corpus reader / route tests / ssrSmoke run hermetically against
- *     `fixtures/entities/` with zero `data/` reads.
  *
- * ASSERTS the full coverage matrix before writing anything (fails loudly,
- * listing exactly what's missing) — this is the mechanism D29-11 requires,
- * not a best-effort sampler.
+ * It then builds the fixture corpus from the new inputs into a temp dir and
+ * ASSERTS the full coverage matrix over it (fails loudly, listing exactly
+ * what's missing) — this is the mechanism D29-11 requires, not a best-effort
+ * sampler. Synthetic rows and test-only patches live in code
+ * (`fixtureCorpus.ts`), so a re-extract never loses them.
  *
  * Run via:
  *   pnpm --filter @astra/codex exec node \
@@ -53,26 +51,21 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 
 import { loadConfig } from "@astra/config";
 
-import { CORPUS_SCHEMA_VERSION, canonicalJson, canonicalJsonCompact } from "../src/ingest/emit";
+import { canonicalJson } from "../src/ingest/emit";
 import { mergeLocalizeMaps } from "../src/ingest/enrichers";
-import { buildRulesTree } from "../src/ingest/rulesTree";
-import { buildSourcesIndex } from "../src/ingest/sourcesIndexBuild";
-import {
-  CodexEntitySchema,
-  IndexRowSchema,
-  toIndexRow,
-  type CodexEntity,
-} from "../src/schema/entity";
-import { facetKeysFor } from "../src/schema/facetKeys";
+import { CodexEntitySchema, type CodexEntity } from "../src/schema/entity";
 import { parseManifest } from "../src/schema/manifest";
-import type { BlockNode, CodexNode } from "../src/schema/nodes";
-import { RulesTreeFileSchema } from "../src/schema/rulesTree";
-import { SourcesIndexFileSchema } from "../src/schema/sourcesIndex";
-import { runTransform } from "./transform";
+import type { CodexNode } from "../src/schema/nodes";
+import {
+  buildFixtureCorpus,
+  fixturePipelineEntities,
+  PICKS_DIR,
+  readEntityTree,
+} from "./fixtureCorpus";
 
 const APP_ROOT = join(import.meta.dirname, "..");
 const FIXTURE_ROOT = join(APP_ROOT, "fixtures");
@@ -1171,131 +1164,23 @@ const REQUIRED_CANONICAL_IDS: readonly string[] = [
   "feat/fledgling-flight",
 ];
 
-/**
- * P12 S1 (D29-113..116/D29-120): ids that must be sourced from the FIXTURE'S
- * OWN trimmed pipeline rerun (`buildFixturePipelineCorpus` below), never the
- * real emitted corpus. `class/fighter`/`class/cleric`/`class/witch` and
- * everything their `stats.grantedFeatures`/`subclassOptions` reference are
- * shaped by exactly the curated raw-pick subset in `CLASS_STATS_FOUNDRY_PICKS`/
- * the matching `REQUIRED_AON_PICKS` entries above (fighter clean 16/16
- * grants, cleric's 2-item stub with the First Doctrine `targetId:null`
- * case, witch's curated lesson/patron pair-set) — the REAL corpus's
- * same-named entities carry the FULL real (much larger — e.g. witch's real
- * 44-row subclassOptions) population instead, which is a different corpus
- * entirely from what this fixture's own raw picks reproduce
- * (`transform.test.ts`'s whole point). Verified exhaustively against a
- * throwaway rerun before being pinned here — see the D29-120 build record.
- */
-const FIXTURE_PIPELINE_REQUIRED_IDS: readonly string[] = [
-  "class/fighter",
-  "class/cleric",
-  "class/witch",
-  // fighter's clean 16/16 granted-feature targets.
-  "class-feature/reactive-strike",
-  "class-feature/shield-block",
-  "class-feature/bravery",
-  "class-feature/fighter-weapon-mastery",
-  "class-feature/battlefield-surveyor",
-  "class-feature/weapon-specialization",
-  "class-feature/battle-hardened",
-  "class-feature/combat-flexibility",
-  "class-feature/armor-expertise",
-  "class-feature/fighter-expertise",
-  "class-feature/weapon-legend",
-  "class-feature/greater-weapon-specialization",
-  "class-feature/improved-flexibility",
-  "class-feature/tempered-reflexes",
-  "class-feature/armor-mastery",
-  "class-feature/versatile-legend",
-  // cleric's ONE resolved grant ("First Doctrine" nulls — no target to
-  // require) + the doctrine subclass pair (both shapes: legacy husks stay
-  // standalone `doctrine/*`, remaster halves absorb into `class-feature/*`).
-  "class-feature/doctrine",
-  "class-feature/cloistered-cleric",
-  "class-feature/warpriest",
-  "doctrine/cloistered-cleric",
-  "doctrine/warpriest",
-  // witch's lesson/patron pair-set (each category: one absorbed pair, one
-  // intra-category legacy/remaster pair that stays unabsorbed).
-  "class-feature/lesson-of-bargains",
-  "lesson/lesson-of-the-elements",
-  "lesson/lesson-of-the-elements@legacy",
-  "lesson/lesson-of-bargains",
-  "class-feature/baba-yaga",
-  "patron/the-unseen-broker",
-  "patron/baba-yaga",
-  "patron/pacts",
-];
-const FIXTURE_PIPELINE_REQUIRED_ID_SET = new Set(FIXTURE_PIPELINE_REQUIRED_IDS);
-
-/** A short stand-in paragraph, replacing `body`/`loreBody` when writing a
- * FIXTURE_PIPELINE_REQUIRED_IDS entity (below) — real class-page/
- * class-feature prose runs into the hundreds of KB (3 full class bodies
- * alone blew the D29-11 2MB budget), and this fixture's whole point is the
- * `stats`/`facets`/id shape, not prose depth (the same trade-off the
- * `ritual/virt-*` synthetic fixtures already make). Zod-valid, schema-shape
- * unaffected. */
-function trimmedBodyPlaceholder(id: string): BlockNode[] {
-  return [
-    {
-      kind: "paragraph",
-      children: [
-        {
-          kind: "text",
-          content: `P12 S1 (D29-113..120) fixture stub — "${id}"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.`,
-          marks: { bold: false, italic: false, superscript: false },
-        },
-      ],
-    },
-  ];
-}
-
-/**
- * Runs the fixture's OWN raw picks (`fixtures/raw/`, already written to disk
- * by `buildRawFixture`) through the REAL `runTransform` — the exact same
- * code path `transform.test.ts`'s `runOnce()` uses — to a throwaway temp
- * dir, so `FIXTURE_PIPELINE_REQUIRED_IDS` above can be sourced from THIS
- * run's output rather than the real emitted corpus (see that const's own
- * doc comment for why). Hard-fails on any hard failure (this raw subset is
- * already proven clean by the CI-hermetic pipeline test; a failure here
- * means the two have drifted out of sync).
- */
-function buildFixturePipelineCorpus(): string {
-  const outDir = mkdtempSync(join(tmpdir(), "codex-fixture-pipeline-"));
-  const result = runTransform({
-    foundrySnapshotDir: join(FIXTURE_ROOT, "raw", "foundry"),
-    aonSnapshotDir: join(FIXTURE_ROOT, "raw", "aon"),
-    homebrewDir: join(FIXTURE_ROOT, "raw", "homebrew"),
-    homebrewTraitsDir: join(FIXTURE_ROOT, "raw", "homebrew-traits"),
-    corpusRoot: outDir,
-    aliasesFile: FIXTURE_ALIASES,
-    pins: {
-      foundry: { tag: "fixture", docCount: 0, sha256: null, fetchedAt: null },
-      aon: {
-        snapshotDate: "fixture",
-        docCount: 0,
-        categoryCounts: {},
-        sha256: null,
-        fetchedAt: null,
-      },
-    },
-  });
-  if (result.hardFailures.length > 0) {
-    fail(
-      `the fixture's own raw picks hard-failed when re-run through runTransform: ${result.hardFailures.map((f) => `${f.path}: ${f.message}`).join("; ")}`,
-    );
+/** Bytes of every regular file under `root`. */
+function treeBytes(root: string): number {
+  let total = 0;
+  for (const name of readdirSync(root)) {
+    const path = join(root, name);
+    total += statSync(path).isDirectory() ? treeBytes(path) : statSync(path).size;
   }
-  return outDir;
+  return total;
 }
 
-function buildCanonicalCoverage(
-  corpusRoot: string,
-  fixturePipelineCorpusRoot: string,
-  remainingBudget: number,
-): number {
-  const entitiesDestRoot = join(FIXTURE_ROOT, "entities");
-  rmSync(entitiesDestRoot, { recursive: true, force: true });
-  mkdirSync(entitiesDestRoot, { recursive: true });
+/** Selects the real picks, writes them to `fixtures/picks/`, builds the fixture corpus
+ * from them into a temp dir (`fixtureCorpus.ts`) and asserts the coverage matrix over
+ * that built corpus. Returns the picks' committed byte size. */
+function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): number {
+  const picksDestRoot = PICKS_DIR;
+  rmSync(picksDestRoot, { recursive: true, force: true });
+  mkdirSync(picksDestRoot, { recursive: true });
 
   const all = listCorpusEntities(corpusRoot);
   const byId = new Map<string, CorpusEntityRef>();
@@ -1304,16 +1189,10 @@ function buildCanonicalCoverage(
     byId.set(raw.id, ref);
   }
 
-  // P12 S1: the SEPARATE fixture-pipeline source (`FIXTURE_PIPELINE_REQUIRED_IDS`'
-  // own doc comment) — kept as its own map, never merged into `all`/`byId`
-  // above, so the category-smallest sweep and the CodexNode kind-coverage
-  // scan below stay scoped to the real corpus exactly as before.
-  const fixturePipelineRefs = listCorpusEntities(fixturePipelineCorpusRoot);
-  const byIdFixturePipeline = new Map<string, CorpusEntityRef>();
-  for (const ref of fixturePipelineRefs) {
-    const raw = readJson(ref.path) as { id: string };
-    byIdFixturePipeline.set(raw.id, ref);
-  }
+  // The fixture's own pipeline entities (`FIXTURE_PIPELINE_IDS`, from `fixtures/raw/`, which
+  // `buildRawFixture` just wrote). They claim their categories' coverage slots and count
+  // toward node-kind coverage, but they are never picks.
+  const pipelineEntities = fixturePipelineEntities();
 
   const selected = new Map<string, CorpusEntityRef>(); // id -> ref
 
@@ -1323,25 +1202,19 @@ function buildCanonicalCoverage(
     if (!ref) fail(`required canonical entity "${id}" not found in the real emitted corpus`);
     selected.set(id, ref);
   }
-  for (const id of FIXTURE_PIPELINE_REQUIRED_IDS) {
-    const ref = byIdFixturePipeline.get(id);
-    if (!ref) {
-      fail(
-        `required fixture-pipeline canonical entity "${id}" not found in the fixture's own trimmed pipeline rerun`,
-      );
-    }
-    selected.set(id, ref);
-  }
 
   // one representative per category — the SMALLEST file, to stay lean
-  // (required picks above already claim their own category's slot when
-  // applicable; every other category gets its own smallest entity).
+  // (required picks and pipeline entities already claim their own category's slot
+  // when applicable; every other category gets its own smallest entity).
   const byCategorySmallest = new Map<string, CorpusEntityRef>();
   for (const ref of all) {
     const current = byCategorySmallest.get(ref.category);
     if (!current || ref.size < current.size) byCategorySmallest.set(ref.category, ref);
   }
-  const categoriesAlreadyCovered = new Set([...selected.values()].map((r) => r.category));
+  const categoriesAlreadyCovered = new Set([
+    ...[...selected.values()].map((r) => r.category),
+    ...pipelineEntities.map((e) => e.category),
+  ]);
   for (const [category, ref] of byCategorySmallest) {
     if (categoriesAlreadyCovered.has(category)) continue;
     const raw = readJson(ref.path) as { id: string };
@@ -1352,26 +1225,17 @@ function buildCanonicalCoverage(
   // the smallest entity anywhere in the corpus containing each still-missing
   // kind (linear scan over the full corpus, sorted by size ascending so the
   // FIRST hit for a kind is also the cheapest one to add).
-  //
-  // `readSelectedEntity` (not a bare `readJson`) — a FIXTURE_PIPELINE_
-  // REQUIRED_IDS entity's body gets trimmed (byte-budget, see
-  // `trimmedBodyPlaceholder`'s doc comment) at EVERY read site, including
-  // this kind-coverage scan, so the coverage matrix never credits a
-  // CodexNode kind that the trim then removes from the actually-written file.
-  function readSelectedEntity(ref: CorpusEntityRef): CodexEntity {
-    const entity = CodexEntitySchema.parse(readJson(ref.path));
-    if (!FIXTURE_PIPELINE_REQUIRED_ID_SET.has(entity.id)) return entity;
-    return { ...entity, body: trimmedBodyPlaceholder(entity.id) };
+  function readPick(ref: CorpusEntityRef): CodexEntity {
+    return CodexEntitySchema.parse(readJson(ref.path));
   }
-
-  function kindsCoveredBy(refs: Iterable<CorpusEntityRef>): Set<string> {
+  function kindsCovered(): Set<string> {
     const kinds = new Set<string>();
-    for (const ref of refs) {
-      for (const k of collectEntityKinds(readSelectedEntity(ref))) kinds.add(k);
-    }
+    for (const ref of selected.values())
+      for (const k of collectEntityKinds(readPick(ref))) kinds.add(k);
+    for (const e of pipelineEntities) for (const k of collectEntityKinds(e)) kinds.add(k);
     return kinds;
   }
-  let covered = kindsCoveredBy(selected.values());
+  let covered = kindsCovered();
   let missingKinds = ALL_NODE_KINDS.filter((k) => !covered.has(k));
   /** Kinds that stayed missing AND are allowlisted as corpus-extinct AND whose
    * extinction the full-corpus scan below actually re-proved (no hit found) —
@@ -1383,10 +1247,7 @@ function buildCanonicalCoverage(
       // This `find` scans the ENTIRE corpus when there's no hit — so a miss
       // here IS the extinction proof for an allowlisted kind, and a HIT for
       // an allowlisted kind means the allowlist is stale (asserted below).
-      const hit = bySize.find((ref) => {
-        const entity = CodexEntitySchema.parse(readJson(ref.path));
-        return collectEntityKinds(entity).has(kind);
-      });
+      const hit = bySize.find((ref) => collectEntityKinds(readPick(ref)).has(kind));
       if (hit) {
         const raw = readJson(hit.path) as { id: string };
         selected.set(raw.id, hit);
@@ -1394,117 +1255,37 @@ function buildCanonicalCoverage(
         provenExtinctKinds.add(kind);
       }
     }
-    covered = kindsCoveredBy(selected.values());
+    covered = kindsCovered();
     missingKinds = ALL_NODE_KINDS.filter((k) => !covered.has(k) && !provenExtinctKinds.has(k));
   }
 
-  // write the selected set, tracking budget as we go
+  // write the picks, tracking budget as we go
   let bytesUsed = 0;
-  const selectedByCategory = new Map<string, CodexEntity[]>();
   for (const [, ref] of selected) {
-    const entity = readSelectedEntity(ref);
-    const destDir = join(entitiesDestRoot, ref.category);
+    const destDir = join(picksDestRoot, ref.category);
     mkdirSync(destDir, { recursive: true });
-    const content = canonicalJson(entity);
+    const content = canonicalJson(readPick(ref));
     writeFileSync(join(destDir, ref.file), content);
     bytesUsed += Buffer.byteLength(content);
-    const arr = selectedByCategory.get(ref.category) ?? [];
-    arr.push(entity);
-    selectedByCategory.set(ref.category, arr);
   }
-
-  // D29-21 (P1.6): the fixture corpus mirrors the real one's read surface —
-  // a fixture-scoped `_index.json` per category (IndexRows over exactly the
-  // fixture-selected entities, sorted by id, same shape `emit.ts` writes) and
-  // a fixture-scoped `manifest.json` (fixture categoryCounts) — so P2's
-  // corpus reader / route tests / ssrSmoke run against `fixtures/entities/`
-  // with zero `data/` reads.
-  const fixtureCategoryCounts: Record<string, number> = {};
-  for (const category of [...selectedByCategory.keys()].sort((a, b) =>
-    a < b ? -1 : a > b ? 1 : 0,
-  )) {
-    const entities = selectedByCategory.get(category);
-    if (!entities) continue; // unreachable — key came from the map itself
-    fixtureCategoryCounts[category] = entities.length;
-    const rows = [...entities]
-      .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
-      .map((e) => IndexRowSchema.parse(toIndexRow(e, facetKeysFor(category))));
-    const content = canonicalJsonCompact(rows);
-    writeFileSync(join(entitiesDestRoot, category, "_index.json"), content);
-    bytesUsed += Buffer.byteLength(content);
-  }
-  const fixtureManifest = {
-    schemaVersion: CORPUS_SCHEMA_VERSION,
-    foundry: { tag: "fixture", docCount: 0, sha256: null, fetchedAt: null },
-    aon: {
-      snapshotDate: "fixture",
-      docCount: 0,
-      categoryCounts: {},
-      sha256: null,
-      fetchedAt: null,
-    },
-    categoryCounts: fixtureCategoryCounts,
-    totalEntityCount: selected.size,
-    totalSizeBytes: bytesUsed,
-  };
-  const fixtureManifestContent = canonicalJson(fixtureManifest);
-  writeFileSync(join(entitiesDestRoot, "manifest.json"), fixtureManifestContent);
-  bytesUsed += Buffer.byteLength(fixtureManifestContent);
-
-  // P4 (D29-39/D29-44): regenerate `rules-tree.json`/`sources-index.json`
-  // INTO the fixture, built from exactly the selected canonical entities —
-  // so CI route/ssrSmoke tests exercise real shapes hermetically. Degenerate
-  // vs. the real transform in one respect: no raw AoN aonId/next-link side
-  // channel survives into `fixtures/entities/` (only canonical CodexEntity
-  // JSON does), so sibling ordering here falls back to alphabetical (never
-  // asserted chain-order-correct by this fixture — that's `rulesTree.test.ts`'s
-  // job, over hand-crafted fixtures with real chain data). Entity `id` doubles
-  // as a stand-in `aonId` (both unique/deterministic — tie-breaks stay stable).
-  const allSelectedEntities = [...selectedByCategory.values()].flat();
-  const rulesDocs = allSelectedEntities
-    .filter((e) => e.category === "rules")
-    .map((e) => ({
-      aonId: e.id,
-      finalId: e.id,
-      name: e.name,
-      book: e.source.book,
-      edition: e.edition,
-      breadcrumbs: e.breadcrumbs ?? [],
-      superseded: (e.remasteredAs?.length ?? 0) > 0,
-    }));
-  const bookSourceLicense = new Map<string, CodexEntity["source"]["license"]>();
-  const sourceEntityRefByBook = new Map<string, string>();
-  for (const e of allSelectedEntities) {
-    if (e.category !== "source") continue;
-    bookSourceLicense.set(e.source.book, e.source.license);
-    sourceEntityRefByBook.set(e.source.book, e.id);
-  }
-  const noopReport = (): void => {};
-  const { file: fixtureRulesTree } = buildRulesTree(rulesDocs, bookSourceLicense, noopReport);
-  const rulesTreeContent = canonicalJson(RulesTreeFileSchema.parse(fixtureRulesTree));
-  writeFileSync(join(entitiesDestRoot, "rules-tree.json"), rulesTreeContent);
-  bytesUsed += Buffer.byteLength(rulesTreeContent);
-
-  const { file: fixtureSourcesIndex } = buildSourcesIndex({
-    finalEntities: allSelectedEntities,
-    aonCitations: [],
-    bookNameMap: new Map(),
-    bookSourceLicense,
-    sourceEntityRefByBook,
-  });
-  const sourcesIndexContent = canonicalJson(SourcesIndexFileSchema.parse(fixtureSourcesIndex));
-  writeFileSync(join(entitiesDestRoot, "sources-index.json"), sourcesIndexContent);
-  bytesUsed += Buffer.byteLength(sourcesIndexContent);
-
   if (bytesUsed > remainingBudget) {
     fail(
-      `canonical-form coverage set is ${bytesUsed} bytes, exceeding the remaining budget of ${remainingBudget} bytes (raw subset already used the rest of the ${BUDGET_BYTES}-byte total)`,
+      `the picks are ${bytesUsed} bytes, exceeding the remaining budget of ${remainingBudget} bytes (raw subset already used the rest of the ${BUDGET_BYTES}-byte total)`,
     );
   }
 
+  // Build the fixture corpus exactly as the tests will, and assert over it.
+  const builtRoot = join(mkdtempSync(join(tmpdir(), "codex-extract-fixture-")), "entities");
+  buildFixtureCorpus(builtRoot);
+  const builtEntities = readEntityTree(builtRoot);
+  console.log(
+    `  built fixture corpus: ${builtEntities.length} entities, ${treeBytes(builtRoot)} bytes (generated, not committed)`,
+  );
+  rmSync(dirname(builtRoot), { recursive: true, force: true });
+
   // ---- assert the full coverage matrix ----
   const problems: string[] = [];
-  const categoriesCovered = new Set([...selected.values()].map((r) => r.category));
+  const categoriesCovered = new Set(builtEntities.map((e) => e.category));
   const allRealCategories = new Set(all.map((r) => r.category));
   for (const category of allRealCategories) {
     if (!categoriesCovered.has(category)) problems.push(`category "${category}" not covered`);
@@ -1522,8 +1303,7 @@ function buildCanonicalCoverage(
     }
   }
 
-  const selectedEntities = [...selected.values()].map(readSelectedEntity);
-  const byIdSelected = new Map(selectedEntities.map((e) => [e.id, e] as const));
+  const byIdSelected = new Map(builtEntities.map((e) => [e.id, e] as const));
 
   function requireEntity(id: string, label: string): CodexEntity | undefined {
     const e = byIdSelected.get(id);
@@ -1666,8 +1446,8 @@ function buildCanonicalCoverage(
   requireEntity("source/core-rulebook", "P4 source entity");
 
   // P12 S1 (D29-113..116/D29-120): the augmentClassStats fixture coverage —
-  // sourced from FIXTURE_PIPELINE_REQUIRED_IDS (the fixture's OWN trimmed
-  // pipeline rerun), not the real corpus.
+  // sourced from `FIXTURE_PIPELINE_IDS` (the fixture's OWN trimmed pipeline
+  // rerun, `fixtureCorpus.ts`), not the real corpus.
   const fighterClass = requireEntity("class/fighter", "P12 clean 16/16 grants");
   if (fighterClass) {
     if (fighterClass.stats?.kind !== "class") {
@@ -1742,7 +1522,7 @@ function buildCanonicalCoverage(
   console.log(
     `  CodexNode kinds covered: ${ALL_NODE_KINDS.length - provenExtinctKinds.size}/${ALL_NODE_KINDS.length}${extinctNote}`,
   );
-  console.log(`  entities selected: ${selected.size}`);
+  console.log(`  picks selected: ${selected.size}`);
 
   return bytesUsed;
 }
@@ -1774,19 +1554,12 @@ function main(): void {
   const homebrewBytes = buildHomebrewFixture();
   console.log(`  homebrew subset: ${homebrewBytes} bytes`);
 
-  console.log(
-    "\nRunning the fixture's own trimmed pipeline (P12 S1 class-stats coverage source)...",
-  );
-  const fixturePipelineCorpusRoot = buildFixturePipelineCorpus();
-
-  console.log("\nSelecting canonical-form-only category/kind coverage from the real corpus...");
+  console.log("\nSelecting canonical-form picks (category/kind coverage) from the real corpus...");
   const canonicalBytes = buildCanonicalCoverage(
     corpusRoot,
-    fixturePipelineCorpusRoot,
     BUDGET_BYTES - rawBytes - homebrewBytes,
   );
-  console.log(`  canonical subset: ${canonicalBytes} bytes`);
-  rmSync(fixturePipelineCorpusRoot, { recursive: true, force: true });
+  console.log(`  picks: ${canonicalBytes} bytes`);
 
   const total = rawBytes + homebrewBytes + canonicalBytes;
   console.log(`\nTotal fixture size: ${total} bytes (budget ${BUDGET_BYTES} bytes)`);
