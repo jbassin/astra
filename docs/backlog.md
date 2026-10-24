@@ -128,6 +128,14 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Deploy and ops
 
+- vellum `/render` (public) reads its JSON body with no size cap; add a Caddy `request_body`
+  limit — agent.
+- portal `/mcp`: register the abort listener before `handleRequest` resolves (or check
+  `req.signal.aborted`) so an early disconnect can't leak a request's McpServer — agent.
+- weal: the old-vs-new harness found 5 inputs that already end in stage `internal` (they page);
+  turn each into a user error — agent.
+- scribe incoming holds two zips for 2026-10-12; resolve per the scribe README's
+  "Blocking checks" (fresh run, not a re-execute) when that session is processed — Josh.
 - The edge cannot renew the non-astra hosts it also serves (plex, ntfy, qbit, annex, apex, news):
   DNS-01 times out waiting for propagation (not the old token error). astra's hosts renewed fine —
   Josh (shared edge).
