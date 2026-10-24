@@ -496,6 +496,9 @@ importers:
       '@astra/observe':
         specifier: workspace:*
         version: link:../../../libs/ts/observe
+      '@astra/service-kit':
+        specifier: workspace:*
+        version: link:../../../libs/ts/service-kit
       '@astra/site-kit':
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit
@@ -511,6 +514,9 @@ importers:
       '@fontsource/oswald':
         specifier: 'catalog:'
         version: 5.2.8
+      '@opentelemetry/api':
+        specifier: 'catalog:'
+        version: 1.9.1
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4

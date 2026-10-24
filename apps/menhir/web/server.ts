@@ -1,13 +1,14 @@
 import { resolve } from "node:path";
 
 import { loadConfig } from "@astra/config";
-import { logger, onShutdown } from "@astra/observe";
+import { logger } from "@astra/observe";
 
 import { loadQuizzes } from "./src/quizzes";
 import { startServer } from "./src/server";
 
-// Entry: serve the built SPA + the game API + the SSE feed. Telemetry (traces, metrics,
-// logs, HTTP spans, the SIGTERM flush) is already installed by
+// Entry: serve the built SPA + the game API + the SSE feed through @astra/service-kit
+// (/healthz, route-named spans, the ordered shutdown). Telemetry (traces, metrics, logs,
+// HTTP spans, the SIGTERM flush) is already installed by
 // `node --import @astra/observe/register`. Config (service name, port, public origin,
 // results path) comes from config.kdl via @astra/config — no ad-hoc env reads.
 const cfg = loadConfig();
@@ -25,12 +26,6 @@ const quizzesDir = resolve(import.meta.dirname, "quizzes");
 const { quizzes, summary } = loadQuizzes(quizzesDir);
 log.info(summary);
 
-const { server } = startServer({
-  port,
-  distDir,
-  runtimeOptions: { quizzes, publicOrigin, resultsPath },
-});
-// srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
-// listening completes (async on the Node runtime), so log from `.ready()`.
-void server.ready().then((s) => log.info(`menhir listening on ${s.url}`));
-onShutdown(() => server.close(true));
+// The kit logs "listening" once bound, and on SIGTERM drains the server, then stops the
+// rooms runtime, before observe flushes.
+startServer({ port, distDir, runtimeOptions: { quizzes, publicOrigin, resultsPath } });

@@ -59,9 +59,12 @@ pnpm --filter @astra/menhir build       # vite build → dist/
 cd apps/menhir/web && node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs server.ts
 ```
 
-Server entry wires telemetry first (`astra.menhir`: manual spans on the mutating API routes —
-@astra/observe registers no HTTP auto-instrumentation — plus lazyCounter metrics
-`menhir.{games.started,games.finished,players.joined,answers.received}`).
+The server runs on `@astra/service-kit` (`src/server.ts`): one HTTP span per request named after
+the route (`POST /api/game/:code/join`, tagged `menhir.room`), `/healthz` for the compose
+healthcheck (unspanned), and on SIGTERM it drains, closes the SSE streams, then stops the rooms
+runtime. Metrics are lazyCounters
+`menhir.{games.started,games.finished,players.joined,answers.received}`. Request bodies are zod
+schemas whose messages are the API's error strings; `test/pins.test.ts` pins every response.
 
 ## Traps
 
