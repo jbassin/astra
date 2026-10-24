@@ -1,6 +1,5 @@
 /**
- * @astra/service-kit: the shared spine of astra's Node HTTP services (orator-backend,
- * menhir). See README.md.
+ * @astra/service-kit: the shared spine of astra's Node HTTP services. See README.md.
  */
 
 export {
@@ -16,6 +15,7 @@ export {
   type SchemaResult,
 } from "./routes";
 export { HEALTHZ_PATH } from "@astra/observe";
+export { callNode, type NodeHandler } from "./node";
 export { safeEqual } from "./safeEqual";
 export {
   createHandler,
@@ -25,6 +25,7 @@ export {
   type Probe,
   type RouteGroup,
   type Service,
+  type UpgradeHandler,
   type ServiceDefinition,
   type ServiceOptions,
   type ServiceState,

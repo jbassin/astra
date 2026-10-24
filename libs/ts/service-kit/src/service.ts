@@ -11,6 +11,9 @@
  * shutdown in order before observe flushes telemetry.
  */
 
+import type { IncomingMessage } from "node:http";
+import type { Duplex } from "node:stream";
+
 import { loadConfig } from "@astra/config";
 import { HEALTHZ_PATH, logger, onShutdown as onProcessShutdown } from "@astra/observe";
 import { context, SpanStatusCode, trace } from "@opentelemetry/api";
@@ -248,6 +251,21 @@ export function createHandler(def: ServiceDefinition): Handler {
   return handler;
 }
 
+/**
+ * A WebSocket (or other protocol-upgrade) endpoint at one exact path. The kit owns the
+ * server's `upgrade` event: a request for a path with no handler, or one that arrives while
+ * the service drains, is answered 404 or 503 and its socket closed.
+ */
+export interface UpgradeHandler {
+  /** Take over the socket (e.g. `ws`'s `WebSocketServer.handleUpgrade`). */
+  handle(req: IncomingMessage, socket: Duplex, head: Buffer): void;
+  /**
+   * Close every upgraded connection. Shutdown calls it as soon as the server stops
+   * accepting, because an upgraded socket never drains on its own.
+   */
+  close?(): unknown;
+}
+
 export interface ServiceOptions extends ServiceDefinition {
   /** Bind port (config.kdl); 0 asks the OS for a free one (read it back from `url`). */
   readonly port: number;
@@ -262,6 +280,8 @@ export interface ServiceOptions extends ServiceDefinition {
   readonly drainMs?: number;
   /** Register the ordered shutdown with observe's process shutdown (default true). */
   readonly handleShutdown?: boolean;
+  /** Upgrade endpoints by exact pathname, e.g. `{ "/ws": bridge }`. */
+  readonly upgrades?: Readonly<Record<string, UpgradeHandler>>;
 }
 
 /** A running service. */
@@ -284,6 +304,15 @@ function drainBudget(): number {
   return Math.floor(loadConfig().telemetry.shutdownTimeoutMs / 4);
 }
 
+/** Answer an upgrade request the service will not take, and close its socket. */
+function refuseUpgrade(socket: Duplex, status: 404 | 503): void {
+  const reason = status === 404 ? "Not Found" : "Service Unavailable";
+  socket.on("error", () => {
+    // The peer went away first; nothing is left to answer.
+  });
+  socket.end(`HTTP/1.1 ${status} ${reason}\r\nConnection: close\r\nContent-Length: 0\r\n\r\n`);
+}
+
 function within(promise: Promise<unknown>, ms: number): Promise<void> {
   const { promise: timeout, resolve } = Promise.withResolvers<void>();
   const timer = setTimeout(resolve, Math.max(ms, 0));
@@ -296,8 +325,8 @@ function within(promise: Promise<unknown>, ms: number): Promise<void> {
 
 /**
  * Start the service: bind the handler on srvx, mark it ready once it listens, and register
- * the ordered shutdown: (1) `/healthz` turns 503 and the server stops accepting connections,
- * (2) in-flight requests drain for up to `drainMs`, then every connection still open (SSE
+ * the ordered shutdown: (1) `/healthz` turns 503, the server stops accepting connections and
+ * the upgrade handlers close their sockets, (2) in-flight requests drain for up to `drainMs`, then every connection still open (SSE
  * streams) is closed, (3) the service's `onShutdown` hooks run one at a time, last first,
  * (4) observe flushes telemetry and exits.
  */
@@ -317,6 +346,22 @@ export function createService(opts: ServiceOptions): Service {
     fetch: handler.handle,
   });
 
+  const upgrades = new Map(Object.entries(opts.upgrades ?? {}));
+  if (upgrades.size > 0) {
+    server.node?.server?.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
+      const { pathname } = new URL(req.url ?? "/", "http://localhost");
+      const upgrade = upgrades.get(pathname);
+      if (!upgrade) return refuseUpgrade(socket, 404);
+      if (handler.state === "draining") return refuseUpgrade(socket, 503);
+      try {
+        upgrade.handle(req, socket, head);
+      } catch (err) {
+        log.warn(`upgrade on ${pathname} failed: ${err instanceof Error ? err.message : err}`);
+        socket.destroy();
+      }
+    });
+  }
+
   const listening = server.ready().then((s) => {
     if (handler.state === "starting") handler.state = "ready";
     const url = s.url ?? "";
@@ -329,6 +374,13 @@ export function createService(opts: ServiceOptions): Service {
     handler.state = "draining";
     // close() stops accepting and resolves once every connection has ended.
     const drained = server.close(false);
+    for (const upgrade of upgrades.values()) {
+      try {
+        await upgrade.close?.();
+      } catch (err) {
+        log.warn(`upgrade close failed: ${err instanceof Error ? err.message : String(err)}`);
+      }
+    }
     await within(drained, opts.drainMs ?? drainBudget());
     // Whatever is still open (SSE streams, a hung request) is closed, and we wait for
     // those sockets to finish closing, so the hooks below never race a live request.
