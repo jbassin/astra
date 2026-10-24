@@ -47,10 +47,6 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       cap (recent episodes run 6.6k to 6.7k words).
 
 ### Smaller calls (Josh)
-- [ ] **Urgent, before 2026-11-06:** the edge cannot renew TLS certificates (Cloudflare `6003`, the
-      placeholder token per `docs/runbook.md`); vellum.iridi.cc expires 2026-11-06 14:36 UTC and the
-      rest follow at their 30-day windows. Run `sudo systemctl restart caddy`, then
-      `just caddy-reload`; `just doctor` confirms.
 - [ ] Set the removal date for codex's "forever" URL aliases ([ADR 0026](adr/0026-codex-url-alias-removal-date.md)).
 - [ ] Confirm the Ashen Pact index page may stay visible on akasha (it was meant to be hidden; it is now in astra-data).
 - [ ] Portal: delete the pre-stamp Goblin Warrior debris in the world by hand; live-test the
@@ -132,6 +128,14 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Deploy and ops
 
+- The edge cannot renew the non-astra hosts it also serves (plex, ntfy, qbit, annex, apex, news):
+  DNS-01 times out waiting for propagation (not the old token error). astra's hosts renewed fine —
+  Josh (shared edge).
+- `/healthz` is reachable from the internet through the Caddy catch-alls; on orator each hit runs a
+  Postgres ping. Block `/healthz` at the edge (cheap) — agent.
+- orator shutdown now closes the store while YouTube ingest jobs may still write; confirm startup
+  resume (`listJobsByStatus`) recovers them, with a test — agent.
+- Dashboards using orator's old `orator.api` span should switch to the route-named server spans — agent.
 - codex: once release-based serving has run a while, delete the old flat
   `/ruby/data/astra-state/codex/data/{corpus,search}` (kept for a code rollback past cdx-4) — agent.
 - `codex-refresh`/`codex-build` still interpolate `{{flags}}` in bash; move them into astra-ops —
