@@ -21,6 +21,7 @@ import {
   McpResponseErrUnknownCode,
   type AuthMeta,
   type BridgeErrorCode,
+  type BridgeStatusResult,
   type McpQuery,
   type McpResponse,
 } from "@astra/portal-shared";
@@ -60,22 +61,9 @@ export class BridgeError extends Error {
   }
 }
 
-/** Liveness + handshake snapshot for the `bridge-status` tool. `worldId`/`world`/
- * `system`/`systemVersion`/`foundryVersion`/`userId`/`userName` come straight from the
- * module's auth `meta` (optional — an older module build that doesn't send them yet
- * just leaves these absent, same as pre-S3). `userId`/`userName` (0027 D27-8) are what
- * lets `bridge-status` prove which Foundry session — e.g. the headless "Portal"
- * account — currently holds the bridge. */
-export interface BridgeStatus {
-  connected: boolean;
-  worldId?: string;
-  world?: string;
-  system?: string;
-  systemVersion?: string;
-  foundryVersion?: string;
-  userId?: string;
-  userName?: string;
-}
+/** Liveness + handshake snapshot for the `bridge-status` tool; the schema lives in the
+ * tool registry (`BridgeStatusResult` in `@astra/portal-shared`). */
+export type BridgeStatus = BridgeStatusResult;
 
 export interface BridgeOptions {
   /** `cfg.portal.bridgeApiKey.resolve()` — the module's handshake secret (D6). */

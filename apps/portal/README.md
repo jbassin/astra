@@ -14,7 +14,8 @@ Four pnpm members live here (the `apps/*/*` glob in `pnpm-workspace.yaml` finds 
   endpoints (`/.well-known/…`, `/authorize`, `/token`, `/register`, `/revoke`, `/consent`).
 - **`module/`** — the Foundry module (id `portal`), bundled by tsdown into `dist/main.js`. The server
   image builds it and serves the zip.
-- **`shared/`** — the tool contracts (`src/tools.ts`) and the wire envelope both sides use.
+- **`shared/`** — what both sides use: the tool registry (`src/registry.ts`), each tool's param and
+  result schemas (`src/tools.ts`), and the wire envelope (`src/envelope.ts`).
 - **`headless/`** — `portal-headless`, a supervised headless Chromium that keeps the dedicated
   "Portal" GM account logged into the world, so the tools work with no human tab open. Compose
   service `portal-headless`, port 10373, health only (no Caddy route).
@@ -27,7 +28,7 @@ Config is the `portal` and `portal-headless` blocks in `config.kdl`. Secrets: `p
 
 - **Admin key** (Claude Code): all tools, including creates, edits, deletes and `execute-macro`.
 - **Player key**: exactly five read-only tools (`bridge-status`, `query-party`, `query-player`,
-  `query-item`, `query-rolls`), filtered by `PLAYER_TOOL_NAMES` in `server/src/mcp.ts`. Player tools
+  `query-item`, `query-rolls`), the registry entries with `access: "player"`. Player tools
   respect Foundry ownership, so GM-only documents and LIMITED compendium packs stay hidden.
 - **OAuth 2.1** (claude.ai custom connectors, which support nothing else): a single-user
   authorization server with dynamic client registration limited to claude.ai's callback and loopback
@@ -67,6 +68,23 @@ Config is the `portal` and `portal-headless` blocks in `config.kdl`. Secrets: `p
 - **Designate the dialer before starting a second GM session.** Set the world setting
   `bridge-user-id` to the Portal user's id first, then start `portal-headless`. Otherwise two GM
   sessions take turns replacing each other's socket forever.
+
+## Adding or changing a tool
+
+Every tool is one entry in `PORTAL_TOOLS` (`shared/src/registry.ts`): name, description, param and
+result schemas, `access` (player or admin), `runsOn` (server or bridge), `kind` (read or write; writes
+are audit-logged) and, for creates, the `creates` count the cap checks. The server registers one MCP
+tool per entry in that order; the module's `TOOL_HANDLERS` (`module/src/handlers.ts`) must have
+exactly one handler per bridge tool, or the module fails to typecheck. A tool that returns markdown
+also needs a renderer in `RENDERERS` (`server/src/mcp.ts`).
+
+- `server/src/__snapshots__/tools-list.{admin,player}.json` pin what MCP clients see. Any diff there
+  is a client-visible change: review it, then update with `pnpm --filter @astra/portal-server exec
+  vitest run -u`.
+- The server checks each module result against the entry's `result` schema but only reports a
+  mismatch (WARN log `portal result mismatch`, counter `astra.portal.mcp.result_mismatches{tool}`);
+  the client still gets the result unchanged. A nonzero counter means module/server skew or a
+  schema that is wrong about live data.
 
 ## Traps
 

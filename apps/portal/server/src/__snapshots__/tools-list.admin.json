@@ -1,0 +1,871 @@
+{
+  "tools": [
+    {
+      "name": "bridge-status",
+      "title": "Bridge status",
+      "description": "Liveness of the Foundry module bridge: whether a GM's 'Faerrin' browser tab is currently connected. Every other portal tool depends on this being connected — call it first if a prior call returned a 'bridge-offline' error.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "list-compendium-packs",
+      "description": "List every compendium pack available in the LIVE pf2e 'Faerrin' FoundryVTT world (bestiaries, equipment, spells, feats, ancestries, etc.), with each pack's collection id, document type, and label. Use this to discover which pack ids to pass as search-compendium's packIds filter, or just to see what source content is installed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search-compendium",
+      "description": "Search the pf2e compendium (bestiaries, equipment, spells, feats, etc.) in the LIVE 'Faerrin' FoundryVTT world for entries whose name matches a query (e.g. 'goblin' finds Monster Core goblin statblocks). Use this to find source material to inspect or import — results are compact index rows (uuid/name/type/pack), ranked by match quality; pass a row's uuid to get-document for the full statblock. Optionally filter by document type or a specific set of pack ids (see list-compendium-packs).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Case-insensitive substring matched against entry names."
+          },
+          "type": {
+            "description": "Restrict to packs of one document class — the pack's metadata.type, e.g. \"Actor\" (statblocks/NPCs), \"Item\", \"JournalEntry\", \"Scene\". NOT the pf2e subtype: \"npc\" matches nothing (result rows report the subtype in their own type field).",
+            "type": "string"
+          },
+          "packIds": {
+            "description": "Restrict to specific pack collection keys, e.g. \"pf2e.pathfinder-monster-core\" (browse them with list-compendium-packs).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "limit": {
+            "description": "Max results (default 25).",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 200
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get-document",
+      "description": "Fetch the full data of one document (an actor, item, journal entry, or scene) from the LIVE 'Faerrin' FoundryVTT world or its compendia, by Foundry uuid (as returned by search-compendium/search-world/get-current-scene). Returns the complete document as opaque JSON — this tool never interprets pf2e's system.* schema, so treat the result as raw data to read, not a fixed shape to rely on. Returns a 'not-found' error for an unresolvable uuid.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The uuid field of a search/list result row — a compendium uuid (\"Compendium.<pack>.<type>.<id>\") or a world uuid (\"Actor.<id>\", \"Scene.<id>\", …)."
+          }
+        },
+        "required": [
+          "uuid"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search-world",
+      "description": "Search actors, items, journal entries, and/or scenes already imported INTO the LIVE 'Faerrin' FoundryVTT world (not the compendia) for a name match. Use this to find existing world content — a player character, an already-imported NPC, a journal page — as opposed to compendium source material (use search-compendium for that). Restrict to a subset of collections via `types`; defaults to searching all four.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Case-insensitive substring matched against entry names."
+          },
+          "types": {
+            "description": "World collections to search; defaults to all four when omitted.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "actors",
+                "items",
+                "journal",
+                "scenes"
+              ]
+            }
+          },
+          "limit": {
+            "description": "Max results (default 25).",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 200
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "list-scenes",
+      "description": "List every scene in the LIVE 'Faerrin' FoundryVTT world, noting which one (if any) is currently active. Use this to see what scenes exist, or to find a scene's id before targeting it with another tool.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get-current-scene",
+      "description": "Get the scene currently active/displayed in the LIVE 'Faerrin' FoundryVTT world — grid, dimensions, and token count — or `scene: null` if the GM has no scene open. Use this before reasoning about the current in-game location or placing something on the map; an idle world (no active scene) is a normal result, not an error.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "query-party",
+      "description": "The party roster for the LIVE 'Faerrin' FoundryVTT world — every player character as a full row (name, level, HP, hero points, ancestry/class, owning player) plus every companion/familiar as a labeled minimal row (name, type, master). Resolves the party actor by type, never a hardcoded id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "query-player",
+      "description": "One section of a player character or familiar's sheet in the LIVE 'Faerrin' FoundryVTT world, by name or uuid. Sheets are 166-579 KB — far too large for one call — so this ALWAYS returns exactly one section per call (see the section param's own description for what each one covers). Refuses with a typed not-a-player-character error for an npc/party/loot/vehicle/hazard target, and a typed ambiguous-name error when a name matches more than one actor (retry with a uuid — see query-party's rows).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The player character or familiar's name — case-insensitive exact match preferred, falling back to an unambiguous case-insensitive prefix match. Give exactly one of name or uuid.",
+            "type": "string",
+            "minLength": 1
+          },
+          "uuid": {
+            "description": "A Foundry actor uuid (\"Actor.<id>\", from query-party) or a bare world actor id — either form is accepted. Give exactly one of name or uuid.",
+            "type": "string",
+            "minLength": 1
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "summary",
+              "stats",
+              "skills",
+              "spells",
+              "feats",
+              "inventory",
+              "notes"
+            ],
+            "description": "Which slice of the sheet to fetch — sheets are 166-579 KB, far too large for one call, so always fetch one section at a time. \"summary\": identity, level/XP, HP/resources, ancestry/heritage/background/class/deity, languages. \"stats\": the LIVE derived projection — AC, saving throws, perception, ability modifiers, class/spell DC — computed by pf2e at runtime (never available from stored source data). \"skills\": per-skill proficiency rank + derived total, lore skills included. \"spells\": a group-level summary by default (spell names + counts per spellcasting entry and rank); pass the entry and/or rank params for full details (traits, prepared/slot state) of one group. \"feats\": feats grouped by category. \"inventory\": weapons/armor/equipment/consumables with quantity/bulk/runes. \"notes\": deity and biography prose."
+          },
+          "entry": {
+            "description": "spells section only: restrict to one spellcasting entry, matched by id or a case-insensitive substring of its name (e.g. \"Cleric Spells\"). Passing entry and/or rank switches the spells section from its default summary to full per-spell detail.",
+            "type": "string",
+            "minLength": 1
+          },
+          "rank": {
+            "description": "spells section only: restrict to one spell rank (0 = cantrips).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "section"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "query-item",
+      "description": "Looks up items in the LIVE 'Faerrin' FoundryVTT world — world items, items embedded on party members, and compendium rules content (e.g. 'look up the Grab action') — by uuid/id or by name. A uuid/id lookup returns ONE item's full detail (traits, price, bulk, damage/AC where present, description). A name search returns a provenance-labeled hit LIST (never full detail, even for a single match — a world item and an embedded item can share a name); pass one hit's uuid back in a follow-up call for its detail. GM-hidden world items and player-restricted compendium packs never appear.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "description": "A Foundry item uuid — world (\"Item.<id>\"), party-member-embedded (\"Actor.<id>.Item.<id>\"), or compendium (\"Compendium.<pack>.Item.<id>\") — or a bare world item id. Fetches this ONE item's full detail (description, traits, price, damage/AC where present). Give exactly one of uuid or name.",
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "description": "Case-insensitive substring matched by name across world items, items embedded on party members, and compendium items (visible packs only — a GM-restricted spoiler pack never surfaces a hit). Returns a provenance-labeled hit LIST, not full detail — pass one hit's uuid back in a follow-up call to fetch its description. Give exactly one of uuid or name.",
+            "type": "string",
+            "minLength": 1
+          },
+          "limit": {
+            "description": "Max hits for a name search (default 25); ignored for a uuid lookup.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 200
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "query-rolls",
+      "description": "Paginated chat roll history from the LIVE 'Faerrin' FoundryVTT world — newest first. Only PUBLIC rolls ever appear (whispered/blind/GM-secret rolls are filtered out unconditionally, not a param); filters actor/type/outcome/since/until compose. Each row carries the check name, formula → total, degree of success, DC (only when it was player-visible), per-die results, and — when present — the enabled modifier breakdown (ability/proficiency/item/status/circumstance bonuses). Paginate with the previous call's nextCursor. Set format=\"json\" for the typed rows verbatim instead of a markdown table.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "actor": {
+            "description": "Restrict to rolls from one actor — a world actor uuid/id, or a name (case-insensitive exact match preferred, falling back to an unambiguous prefix match — same resolution as query-player's name param, D28-13). Matches either the roll's speaker or its pf2e origin actor.",
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "description": "Restrict to one roll type — the pf2e taxonomy (e.g. \"skill-check\", \"attack-roll\", \"saving-throw\", \"perception-check\", \"damage-roll\", \"flat-check\", \"spell-cast\", \"initiative\") or \"roll\" for untagged /roll messages.",
+            "type": "string",
+            "minLength": 1
+          },
+          "outcome": {
+            "description": "Restrict to one degree of success.",
+            "type": "string",
+            "enum": [
+              "criticalFailure",
+              "failure",
+              "success",
+              "criticalSuccess"
+            ]
+          },
+          "since": {
+            "description": "Only rolls at or after this time — a ms-epoch number, or an ISO-8601 string (e.g. \"2026-07-01T00:00:00Z\"). A plain numeric STRING is rejected; pass a JSON number for an epoch timestamp.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+              }
+            ]
+          },
+          "until": {
+            "description": "Only rolls at or before this time — same shape as since.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+              }
+            ]
+          },
+          "cursor": {
+            "description": "Opaque pagination cursor from a prior call's nextCursor — omit for the first (most recent) page.",
+            "type": "string",
+            "minLength": 1
+          },
+          "limit": {
+            "description": "Max rows per page (default 20, max 100).",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 100
+          },
+          "format": {
+            "description": "Output shape for the response. \"markdown\" (default) renders a human-readable table for chat/LLM consumption. \"json\" returns the typed rows verbatim (pretty-printed) for data analysis/scripting — a server-side presentation switch only, the module's wire shape is unaffected.",
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ]
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "import-from-compendium",
+      "description": "WRITES to the live 'Faerrin' FoundryVTT world: clones a compendium document (an actor, item, etc. — found via search-compendium/get-document) into the world as a new document, verbatim except for a freshly assigned id and (optionally) a folder. Never invents or edits pf2e system data — this is a clone, not a hand-authored creation (D5). Creates 1 copy by default; pass `quantity` for more. Rejected if write operations are disabled in Foundry, the connected session isn't a GM, or the request exceeds the configured per-request create cap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A compendium document's uuid (\"Compendium.<pack>.<type>.<id>\", from search-compendium) — never a world uuid; this tool only clones from a compendium."
+          },
+          "quantity": {
+            "default": 1,
+            "description": "How many copies to create in one call (the server's per-request cap applies).",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 1000
+          },
+          "folder": {
+            "description": "Name of an EXISTING world folder (of the matching document type) to file the new document(s) under — looked up, never created; a missing folder is a typed \"not-found\" error, not a silent skip.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "uuid"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "create-token",
+      "description": "WRITES to the live 'Faerrin' FoundryVTT world: drops a token onto the currently active scene at (x, y), visible to everyone in the game immediately. Either tokenizes an actor that already exists in the world (`actorId`) or imports a compendium document first and then tokenizes it (`uuid`, D13) — give exactly one of the two. `quantity` drops multiple tokens, each offset by one grid square so they don't stack exactly. Fails with a typed 'not-found' error if there's no active scene. Same write-gate/cap/audit rules as import-from-compendium.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "description": "A compendium document uuid to import first, then tokenize. Exactly one of uuid or actorId must be given.",
+            "type": "string",
+            "minLength": 1
+          },
+          "actorId": {
+            "description": "Id of an actor already in the world to tokenize. Exactly one of uuid or actorId must be given.",
+            "type": "string",
+            "minLength": 1
+          },
+          "x": {
+            "type": "number",
+            "description": "Scene pixel x coordinate for the drop (see get-current-scene)."
+          },
+          "y": {
+            "type": "number",
+            "description": "Scene pixel y coordinate for the drop (see get-current-scene)."
+          },
+          "quantity": {
+            "default": 1,
+            "description": "How many tokens to drop (each offset by one grid square so they don't stack exactly); when uuid is given, also how many copies of the actor to import.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 1000
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "create-journal",
+      "description": "WRITES to the live 'Faerrin' FoundryVTT world: creates a new journal entry with the given name and one HTML text page. Use this to record session notes, NPC dossiers, or lore for the GM/players to read in Foundry. Same write-gate/audit rules as import-from-compendium (always creates exactly one document, so it never trips the per-request cap on its own).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The journal entry's title."
+          },
+          "content": {
+            "type": "string",
+            "description": "HTML body for the journal's single text page."
+          },
+          "folder": {
+            "description": "Name of an EXISTING \"JournalEntry\"-type world folder — looked up, never created; a missing folder is a typed \"not-found\" error.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "content"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "create-actor",
+      "description": "WRITES to the live 'Faerrin' FoundryVTT world: hand-authors a new NPC or hazard actor (type), either from scratch via a `system` JSON payload and embedded `items` (strikes, actions, spellcasting), or by cloning an existing compendium statblock (`baseUuid`) and patching it (D-1 hybrid — prefer this when a close base exists). NPC actors get NO schema validation from Foundry — garbage system data is stored silently; hazards ARE strictly validated. The result's `warnings` array reports anything that looked wrong after creation (e.g. an ignored rule element) — always check it, a clean-looking result can still carry warnings. Counts 1 + items.length against the per-request create cap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "npc",
+              "hazard"
+            ],
+            "description": "pf2e actor subtype. \"npc\" is a template.json type — NO schema validation, garbage is stored silently (verified against pf2e-7.12.2); prefer a baseUuid clone when a reasonably close statblock exists. \"hazard\" is a DataModel — strictly validated, so a bad field throws a typed validation-failed error naming the problem instead of quietly storing junk."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The actor's display name."
+          },
+          "system": {
+            "description": "Opaque pf2e system data, deep-merged over Foundry's actor-type defaults (never modeled or validated at this layer — D-7). NPCs take ability MODIFIERS directly at abilities.<key>.mod (not scores), plus attributes.{ac.value, hp.value, hp.max, speed}, saves.<key>.value, perception.mod, skills.<slug>.base, traits.{value, rarity, size.value}, details.level.value. Omit entirely to accept Foundry's bare defaults (a valid, if blank, actor).",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "items": {
+            "description": "Embedded item source documents to create alongside the actor in the same call — e.g. melee strikes (type \"melee\": bonus.value + damageRolls), special-ability \"action\" items (mechanics often live as @Damage/@Check enrichers in the HTML description, not structured fields), or a spellcastingEntry plus its spells (set each spell's system.location.value to the entry's id to make it castable — see create-item). Each element is a full, structurally opaque item-source object (name/type/system/...), the same opaque-payload posture as this tool's own `system`. Counts against the per-request create cap alongside the actor itself: 1 + items.length.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            }
+          },
+          "baseUuid": {
+            "description": "A compendium document's uuid (from search-compendium) to clone as the starting point, then patch with `system`/`items` on top (D-1 hybrid) — the safest path when a reasonably close statblock already exists; the source compendium document is never modified.",
+            "type": "string",
+            "minLength": 1
+          },
+          "folder": {
+            "description": "Name of an EXISTING \"Actor\"-type world folder to file the new actor under — looked up, never created; a missing folder is a typed \"not-found\" error.",
+            "type": "string"
+          },
+          "img": {
+            "description": "Portrait/token image path or URL.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "create-item",
+      "description": "WRITES to the live 'Faerrin' FoundryVTT world: hand-authors a new item — an effect, spell, spellcastingEntry, weapon, armor, feat, action, melee strike, condition, or other pf2e item type — as a standalone world item or embedded directly on an actor (`actorId`). Supports the same hybrid model as create-actor (`baseUuid` clone+patch, strongly preferred for spells). Carries pf2e rule elements via `system.rules`, including the two-item aura pattern and TokenLight for a glowing creature — see the `system` field description for the exact recipes. Pass `rulesSelections` when granting an item with a ChoiceSet rule element, or the call wedges on a GM-browser dialog. Result `warnings` reports any rule element Foundry ignored at creation. Counts 1 against the create cap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The item's display name."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "effect",
+              "spell",
+              "spellcastingEntry",
+              "equipment",
+              "weapon",
+              "armor",
+              "consumable",
+              "feat",
+              "action",
+              "melee",
+              "lore",
+              "condition",
+              "treasure",
+              "backpack",
+              "kit"
+            ],
+            "description": "\"effect\"/\"condition\"/\"melee\"/\"feat\"/\"action\" are DataModels — strictly validated, a bad field throws a typed validation-failed error. The rest are template.json types — no schema validation, garbage stored silently (D-7)."
+          },
+          "system": {
+            "description": "Opaque pf2e system data, deep-merged over the type's defaults (D-7). Rule elements ride system.rules — an unvalidated array; a bad RE is silently marked ignored:true at actor data-prep and surfaced here as warnings[] when this item is created embedded on an actor. AURAS ARE A TWO-ITEM PATTERN: this item carries {key:\"Aura\", radius, effects:[{uuid, affects, events, save, removeOnExit}]} pointing at a SEPARATE companion effect item (create it first, world or compendium uuid) that carries the actual modifier rule elements — the aura carrier alone does nothing. A spell is castable only once system.location.value equals a spellcastingEntry item's id — create the entry first. For a creature that should visibly glow, put a TokenLight rule element here (it moves with the token); create-light instead places static, unattached scene furniture (a torch, a room's ambient glow) — the two tools are not interchangeable.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "actorId": {
+            "description": "Id of a world actor to create this item embedded ON, instead of as a standalone world item. Required for strikes/spells/effects that should belong to a specific NPC or PC.",
+            "type": "string"
+          },
+          "baseUuid": {
+            "description": "A compendium document's uuid (from search-compendium) to clone as the starting point, then patch with `system` on top (D-1 hybrid) — strongly preferred for spells (keeps pf2e's math sane) and for anything with a close-enough existing source.",
+            "type": "string",
+            "minLength": 1
+          },
+          "rulesSelections": {
+            "description": "Pre-seeds flags.pf2e.rulesSelections for this item's rule elements. REQUIRED when creating/granting an item whose rules carry a ChoiceSet without one — otherwise Foundry opens an interactive picker dialog in the GM's own browser and the call wedges until the bridge query times out with a typed error.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "img": {
+            "description": "Item icon path or URL.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "create-light",
+      "description": "WRITES to the live 'Faerrin' FoundryVTT world: places a new ambient light on a scene (defaults to the active scene) at (x, y) — static scene furniture such as a torch or a room's magical glow, visible to every connected player immediately. NOT for a light that should move with a creature — that's create-item with a TokenLight rule element. Returns only the created light's embedded uuid (there is no full-scene-read tool — a scene's document also includes walls/tiles and is deliberately not exposed); use update-document/delete-document on that uuid to change or remove it later. Counts 1 against the create cap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sceneId": {
+            "description": "Target scene id (see list-scenes/get-current-scene); defaults to the active scene.",
+            "type": "string"
+          },
+          "x": {
+            "type": "number",
+            "description": "Scene pixel x coordinate."
+          },
+          "y": {
+            "type": "number",
+            "description": "Scene pixel y coordinate."
+          },
+          "hidden": {
+            "description": "Create the light hidden from players, visible only to the GM (default false).",
+            "type": "boolean"
+          },
+          "config": {
+            "description": "Light appearance/behavior. This tool places static SCENE FURNITURE — a torch, a room's ambient glow — for a light that MOVES WITH A CREATURE (\"this monster glows\"), use create-item with a TokenLight rule element instead; the two are not interchangeable.",
+            "type": "object",
+            "properties": {
+              "bright": {
+                "description": "Bright radius, in scene units (feet).",
+                "type": "number",
+                "minimum": 0
+              },
+              "dim": {
+                "description": "Dim radius, in scene units (feet).",
+                "type": "number",
+                "minimum": 0
+              },
+              "color": {
+                "description": "Light tint, e.g. \"#ff8800\".",
+                "type": "string"
+              },
+              "alpha": {
+                "description": "Color intensity, 0-1.",
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "angle": {
+                "description": "Cone angle in degrees; 360 (default) is a full circle.",
+                "type": "number",
+                "minimum": 0,
+                "maximum": 360
+              },
+              "negative": {
+                "description": "True makes this a DARKNESS source (light-absorbing) instead of a light source.",
+                "type": "boolean"
+              },
+              "animation": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "description": "Foundry core animation type — common ones are \"torch\", \"pulse\", \"chroma\", \"fog\", \"sunburst\", \"dome\", \"emanation\", \"hexa\", \"ghost\", \"energy\", \"roiling\", \"hole\". Prefer one of these; an unrecognized string just renders the light unanimated (harmless — passed through unvalidated).",
+                    "type": "string"
+                  },
+                  "speed": {
+                    "description": "Animation speed, 0-10 (Foundry default 5).",
+                    "type": "number"
+                  },
+                  "intensity": {
+                    "description": "Animation intensity, 0-10 (Foundry default 5).",
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "darkness": {
+                "description": "Restricts this light to only be active within a scene darkness-level range.",
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "description": "Scene darkness-level floor for this light to be active.",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "max": {
+                    "description": "Scene darkness-level ceiling for this light to be active.",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "create-macro",
+      "description": "WRITES to the live 'Faerrin' FoundryVTT world: creates a new script or chat macro. Creating a macro NEVER runs it — the full command text is captured in this write's audit trail as the payload of record. To actually run a script macro (arbitrary JavaScript, GM-privileged) or post a chat macro, use execute-macro afterward. Counts 1 against the create cap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The macro's display name."
+          },
+          "macroType": {
+            "type": "string",
+            "enum": [
+              "script",
+              "chat"
+            ],
+            "description": "\"script\" runs arbitrary JavaScript with the executing user's privileges — through this bridge that is always the GM (see execute-macro, D-9). \"chat\" posts `command` as a chat message when run. Named macroType, not type, to avoid colliding with the document-type conventions used by create-actor/create-item."
+          },
+          "command": {
+            "type": "string",
+            "description": "The macro body: JavaScript source for a script macro, or chat message text for chat."
+          },
+          "img": {
+            "description": "Macro icon path or URL.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "macroType",
+          "command"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "apply-condition",
+      "description": "WRITES to the live 'Faerrin' FoundryVTT world: increases, decreases, or toggles a pf2e condition on a world actor via Foundry's own condition manager (never a hand-built condition item). `persistent-damage` requires explicit formula/damageType params — the bare path for that condition would otherwise pop an interactive editor dialog in the GM's browser, which this tool never triggers. This is a mutation, not a create — it does not count against the per-request create cap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "actorId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Id of the world actor to apply the condition to."
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "description": "pf2e condition slug, e.g. \"frightened\", \"prone\", \"persistent-damage\" — never a hand-built condition item; this tool always goes through game.pf2e.ConditionManager, pf2e's own condition machinery."
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "increase",
+              "decrease",
+              "toggle"
+            ],
+            "description": "\"increase\"/\"decrease\" step a valued condition (e.g. frightened) by `value` (default 1); \"toggle\" turns a valueless condition (e.g. prone) on or off."
+          },
+          "value": {
+            "description": "Amount to increase/decrease by (default 1). Ignored for toggle.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "persistentDamage": {
+            "description": "REQUIRED when slug is \"persistent-damage\" — the bare ConditionManager path for this condition opens an interactive editor dialog in the GM's browser; this tool always takes the explicit-params path instead, so the bridge never triggers UI.",
+            "type": "object",
+            "properties": {
+              "formula": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Damage formula, e.g. \"2d6\"."
+              },
+              "damageType": {
+                "type": "string",
+                "minLength": 1,
+                "description": "pf2e damage type slug, e.g. \"fire\", \"bleed\"."
+              },
+              "dc": {
+                "description": "Flat check DC to end the persistent damage; omit to use pf2e's default (15).",
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "formula",
+              "damageType"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "actorId",
+          "slug",
+          "action"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "update-document",
+      "description": "WRITES to the live 'Faerrin' FoundryVTT world: applies a dot-path diff-merge update to ANY world or embedded document by uuid — including PLAYER CHARACTER sheets (full source edit access; HP, level, skill ranks, resources, details, ...), scene lights, and macros. Arrays are REPLACED WHOLESALE, not spliced; a `\"path.-=key\": null` entry deletes a key. Known-derived PC paths (saves/perception/traits/AC/class DC on characters) are refused with a typed validation-failed error naming the path, since pf2e recomputes them and a write would just be silently discarded or corrupt data prep. Every path touched is audited. Not a create — doesn't count against the create cap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A world or embedded document uuid — e.g. Actor.<id>, Actor.<id>.Item.<id>, Scene.<id>.AmbientLight.<id>, Macro.<id> (from a prior tool result or search-world)."
+          },
+          "updates": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Dot-path keys to new values, e.g. {\"system.attributes.hp.value\": 20} — diff-merged onto the document (Foundry's native update semantics), NOT a wholesale replace. Gotchas: ARRAYS ARE REPLACED WHOLESALE (no array splice — send the full array back); a key like \"system.foo.-=bar\": null DELETES system.foo.bar; on player characters (actor type character) the DERIVED paths system.saves.*, system.perception.*, system.traits.*, system.attributes.ac.*, and system.attributes.classDC.* are REFUSED with a typed validation-failed error naming the path — pf2e recomputes these every prep cycle, they cannot be hand-set. Mechanics can also hide inside description HTML (@Damage/@Check enrichers) — a plain string update on a description field is how those get changed."
+          }
+        },
+        "required": [
+          "uuid",
+          "updates"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "delete-document",
+      "description": "WRITES to the live 'Faerrin' FoundryVTT world: PERMANENTLY DELETES a world or embedded document by uuid. Refuses with a typed not-portal-created error unless the document is stamped as something a portal tool created — portal can only clean up after itself and can never destroy hand-authored campaign content, no matter what the caller asks for. Not a create — doesn't count against the create cap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A world or embedded document uuid to permanently delete. REFUSED with a typed not-portal-created error unless the document is stamped flags[\"astra-portal\"].created — portal can only clean up documents it made itself; hand-authored content can never be destroyed through this tool (D-4)."
+          }
+        },
+        "required": [
+          "uuid"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "execute-macro",
+      "description": "WRITES to (acts on) the live 'Faerrin' FoundryVTT world: runs an existing world macro IMMEDIATELY, AS THE GM. A script macro is arbitrary JavaScript executed with full GM privileges the instant this call succeeds — there is no confirmation step. Independently gated by the module's allow-macro-execution setting on top of the normal write gate, so execution can be switched off without disabling other writes. Captures the macro's return value best-effort; a thrown error maps to a typed execution-failed result. Not a create — doesn't count against the create cap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "macroId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Id of a world macro (from create-macro or search-world) to run IMMEDIATELY, AS THE GM — a script macro executes arbitrary JavaScript with full GM privileges the instant this call succeeds; there is no confirmation step and no undo. Gated by the module's own allow-macro-execution setting (independently switchable off without disabling other writes) in addition to the normal write gate."
+          }
+        },
+        "required": [
+          "macroId"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    }
+  ]
+}
