@@ -47,7 +47,9 @@ beforeAll(async () => {
   base = (ready.url ?? "").replace(/\/$/, "");
 });
 
-afterAll(() => running.stop());
+afterAll(async () => {
+  await running.stop();
+});
 
 function postJson(path: string, body: unknown) {
   return fetch(`${base}${path}`, {
@@ -56,6 +58,12 @@ function postJson(path: string, body: unknown) {
     body: JSON.stringify(body),
   });
 }
+
+test("/healthz answers ready once the server listens (the compose healthcheck)", async () => {
+  const res = await fetch(`${base}/healthz`);
+  expect(res.status).toBe(200);
+  expect(await res.json()).toEqual({ status: "ready" });
+});
 
 test("GET /api/quizzes lists the loaded quiz", async () => {
   const res = await fetch(`${base}/api/quizzes`);

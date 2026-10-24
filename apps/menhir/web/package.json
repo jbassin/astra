@@ -16,11 +16,13 @@
   "dependencies": {
     "@astra/config": "workspace:*",
     "@astra/observe": "workspace:*",
+    "@astra/service-kit": "workspace:*",
     "@astra/site-kit": "workspace:*",
     "@fontsource/cinzel": "catalog:",
     "@fontsource/cormorant-sc": "catalog:",
     "@fontsource/eb-garamond": "catalog:",
     "@fontsource/oswald": "catalog:",
+    "@opentelemetry/api": "catalog:",
     "qrcode": "^1.5.4",
     "react": "catalog:",
     "react-dom": "catalog:",

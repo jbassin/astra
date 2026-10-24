@@ -1,15 +1,24 @@
 import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { getTracer } from "@astra/observe";
+import {
+  createHandler,
+  createService,
+  json,
+  route,
+  type Service,
+  type ServiceDefinition,
+} from "@astra/service-kit";
 import { serveFile } from "@astra/site-kit";
-import { type Server, serve } from "srvx";
+import { trace } from "@opentelemetry/api";
+import type { Server } from "srvx";
+import { z } from "zod";
 
 import { must } from "./assert";
 import type { Phase } from "./game";
 import { createRoomsRuntime, type RoomsRuntime, type RoomsRuntimeOptions } from "./rooms";
 
-const tracer = getTracer("astra.menhir");
+const SERVICE_NAME = "astra.menhir";
 
 const SSE_HEADERS = {
   "content-type": "text/event-stream",
@@ -30,20 +39,53 @@ export interface AppOptions {
 
 export interface RunningServer {
   server: Server;
+  service: Service;
   runtime: RoomsRuntime;
-  stop(): void;
+  stop(): Promise<void>;
 }
 
-function isRecord(x: unknown): x is Record<string, unknown> {
-  return typeof x === "object" && x !== null;
-}
+// Request bodies. Each schema's messages are the exact error strings the API has always
+// answered with (the response pins in test/pins.test.ts hold them), so a bad body still
+// reads `{ "error": "<message>" }`.
+const CREATE_REQUIRED = "quizId (string) is required";
+const CreateBody = z.object(
+  { quizId: z.string({ error: CREATE_REQUIRED }) },
+  { error: CREATE_REQUIRED },
+);
 
-function json(status: number, body: unknown): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "content-type": "application/json" },
-  });
-}
+const JOIN_REQUIRED = "name (non-empty string) is required";
+const JoinBody = z.object(
+  {
+    name: z
+      .string({ error: JOIN_REQUIRED })
+      .refine((name) => name.trim() !== "", { error: JOIN_REQUIRED }),
+    // Optional and lenient: anything but a string means "not given".
+    playerId: z.string().optional().catch(undefined),
+    roomNonce: z.string().optional().catch(undefined),
+  },
+  { error: JOIN_REQUIRED },
+);
+
+const ANSWER_REQUIRED = "playerId (string) and option (number) are required";
+const AnswerBody = z.object(
+  {
+    playerId: z.string({ error: ANSWER_REQUIRED }),
+    option: z.number({ error: ANSWER_REQUIRED }),
+  },
+  { error: ANSWER_REQUIRED },
+);
+
+const HOST_REQUIRED = "hostToken/action/fromPhase/fromIndex are required";
+const HostBody = z.object(
+  {
+    hostToken: z.string({ error: HOST_REQUIRED }),
+    action: z.enum(["start", "next", "end"], { error: HOST_REQUIRED }),
+    fromPhase: z.string({ error: HOST_REQUIRED }),
+    fromIndex: z.number({ error: HOST_REQUIRED }),
+  },
+  // A JSON array is an object to the old hand check, so it gets the field message.
+  { error: (issue) => (Array.isArray(issue.input) ? HOST_REQUIRED : "invalid body") },
+);
 
 async function isFile(p: string): Promise<boolean> {
   try {
@@ -53,110 +95,13 @@ async function isFile(p: string): Promise<boolean> {
   }
 }
 
-/** Build the request handler + its runtime without binding a port (unit-testable). */
-export function createApp(opts: AppOptions): {
-  runtime: RoomsRuntime;
-  handle: (req: Request) => Promise<Response>;
-} {
-  const runtime =
-    opts.runtime ??
-    createRoomsRuntime(
-      must(opts.runtimeOptions, "createApp needs either `runtime` or `runtimeOptions`"),
-    );
-  const { distDir } = opts;
+/** Tag the request span with the room it acts on. */
+function roomSpan(code: string): void {
+  trace.getActiveSpan()?.setAttribute("menhir.room", code);
+}
 
-  function handleQuizzes(): Response {
-    return json(200, runtime.listQuizzes());
-  }
-
-  async function handleCreateGame(req: Request): Promise<Response> {
-    let body: unknown;
-    try {
-      body = await req.json();
-    } catch {
-      return json(400, { error: "invalid json" });
-    }
-    if (!isRecord(body) || typeof body.quizId !== "string") {
-      return json(400, { error: "quizId (string) is required" });
-    }
-    const result = runtime.createGame(body.quizId);
-    if (!result.ok) return json(404, { error: result.error });
-    return json(200, { code: result.code, hostToken: result.hostToken });
-  }
-
-  async function handleJoin(req: Request, code: string): Promise<Response> {
-    let body: unknown;
-    try {
-      body = await req.json();
-    } catch {
-      return json(400, { error: "invalid json" });
-    }
-    if (!isRecord(body) || typeof body.name !== "string" || body.name.trim() === "") {
-      return json(400, { error: "name (non-empty string) is required" });
-    }
-    const playerId = typeof body.playerId === "string" ? body.playerId : undefined;
-    const roomNonce = typeof body.roomNonce === "string" ? body.roomNonce : undefined;
-    const result = runtime.join(code, { name: body.name, playerId, roomNonce });
-    if (!result.ok) return json(result.status, { error: result.error });
-    return json(200, { playerId: result.playerId, roomNonce: result.roomNonce });
-  }
-
-  async function handleAnswer(req: Request, code: string): Promise<Response> {
-    let body: unknown;
-    try {
-      body = await req.json();
-    } catch {
-      return json(400, { error: "invalid json" });
-    }
-    if (!isRecord(body) || typeof body.playerId !== "string" || typeof body.option !== "number") {
-      return json(400, { error: "playerId (string) and option (number) are required" });
-    }
-    const result = runtime.answer(code, { playerId: body.playerId, option: body.option });
-    if (!result.ok) return json(result.status, { error: result.error });
-    return json(200, {});
-  }
-
-  async function handleHostAction(req: Request, code: string): Promise<Response> {
-    let body: unknown;
-    try {
-      body = await req.json();
-    } catch {
-      return json(400, { error: "invalid json" });
-    }
-    if (!isRecord(body)) return json(400, { error: "invalid body" });
-    const { hostToken, action, fromPhase, fromIndex } = body;
-    if (
-      typeof hostToken !== "string" ||
-      (action !== "start" && action !== "next" && action !== "end") ||
-      typeof fromPhase !== "string" ||
-      typeof fromIndex !== "number"
-    ) {
-      return json(400, { error: "hostToken/action/fromPhase/fromIndex are required" });
-    }
-    const result = runtime.hostAction(code, {
-      hostToken,
-      action,
-      fromPhase: fromPhase as Phase,
-      fromIndex,
-    });
-    if (!result.ok) return json(result.status, { error: result.error });
-    return json(200, { snapshot: result.snapshot });
-  }
-
-  function handleEvents(req: Request, code: string): Response {
-    const url = new URL(req.url);
-    const role = url.searchParams.get("role");
-    const playerId = url.searchParams.get("playerId") ?? undefined;
-    if (role !== "host" && role !== "player") {
-      return json(400, { error: "role must be 'host' or 'player'" });
-    }
-    if (role === "player" && !playerId) {
-      return json(400, { error: "playerId is required for role=player" });
-    }
-    const stream = runtime.openStream(code, role, playerId);
-    return new Response(stream, { headers: SSE_HEADERS });
-  }
-
+/** The service definition: the game API under `/api/` and the SPA for everything else. */
+function definition(runtime: RoomsRuntime, distDir: string): ServiceDefinition {
   async function serveIndex(): Promise<Response> {
     let html: string;
     try {
@@ -184,71 +129,123 @@ export function createApp(opts: AppOptions): {
     return serveFile(req, target);
   }
 
-  /** Manual span per mutating API call (the weal-overlay `overlay.ingest` idiom —
-   * @astra/observe registers no HTTP auto-instrumentation, so unwrapped routes
-   * emit no traces at all). Static/SSE paths stay unspanned (long-lived streams
-   * make useless spans). */
-  function traced(name: string, code: string, fn: () => Promise<Response>): Promise<Response> {
-    return tracer.startActiveSpan(name, async (span) => {
-      span.setAttribute("menhir.room", code);
-      try {
-        const res = await fn();
-        span.setAttribute("http.status_code", res.status);
-        return res;
-      } finally {
-        span.end();
-      }
-    });
-  }
-
-  // oxlint-disable-next-line require-await -- an async request handler: a throw becomes a rejected response promise
-  async function handle(req: Request): Promise<Response> {
-    const { pathname } = new URL(req.url);
-    const method = req.method;
-
-    if (method === "GET" && pathname === "/api/quizzes") return handleQuizzes();
-    if (method === "POST" && pathname === "/api/game") {
-      return traced("menhir.create", "", () => handleCreateGame(req));
-    }
-
-    const gameMatch = /^\/api\/game\/([^/]+)\/(join|answer|host)$/.exec(pathname);
-    if (method === "POST" && gameMatch) {
-      const code = must(gameMatch[1], "gameMatch[1] (the route regex has 2 capture groups)");
-      const action = must(gameMatch[2], "gameMatch[2] (the route regex has 2 capture groups)");
-      if (action === "join") return traced("menhir.join", code, () => handleJoin(req, code));
-      if (action === "answer") return traced("menhir.answer", code, () => handleAnswer(req, code));
-      return traced("menhir.host_action", code, () => handleHostAction(req, code));
-    }
-
-    const eventsMatch = /^\/api\/events\/([^/]+)$/.exec(pathname);
-    if (method === "GET" && eventsMatch) {
-      return handleEvents(
-        req,
-        must(eventsMatch[1], "eventsMatch[1] (the route regex has 1 capture group)"),
-      );
-    }
-
-    // Explicit 404 for any other /api/* path BEFORE the static/SPA fallback (a
-    // typo'd API path must not 200-HTML as if it were a client route).
-    if (pathname.startsWith("/api/")) return json(404, { error: "not found" });
-
-    if (method === "GET" || method === "HEAD") return serveStatic(req);
-    return new Response("method not allowed\n", { status: 405 });
-  }
-
-  return { runtime, handle };
-}
-
-/** Bind the app to a port. Returns a stop() for teardown. */
-export function startServer(opts: AppOptions & { port: number }): RunningServer {
-  const { runtime, handle } = createApp(opts);
-  const server = serve({ port: opts.port, hostname: "0.0.0.0", fetch: handle });
   return {
-    server,
-    runtime,
-    stop() {
-      runtime.shutdown();
-      void server.close(true);
+    serviceName: SERVICE_NAME,
+    invalidJson: "invalid json",
+    groups: [
+      {
+        // An unmatched /api/* path answers an explicit JSON 404 before the SPA fallback (a
+        // typo'd API path must not 200-HTML as if it were a client route).
+        prefix: "/api/",
+        notFound: "not found",
+        routes: [
+          route({
+            method: "GET",
+            path: "/api/quizzes",
+            handler: () => json(runtime.listQuizzes()),
+          }),
+          route({
+            method: "POST",
+            path: "/api/game",
+            body: CreateBody,
+            handler: async (ctx) => {
+              const body = await ctx.body();
+              const result = runtime.createGame(body.quizId);
+              if (!result.ok) return json({ error: result.error }, 404);
+              return json({ code: result.code, hostToken: result.hostToken });
+            },
+          }),
+          route({
+            method: "POST",
+            path: "/api/game/:code/join",
+            body: JoinBody,
+            handler: async (ctx) => {
+              const code = must(ctx.params.code, "the route has a :code");
+              roomSpan(code);
+              const body = await ctx.body();
+              const result = runtime.join(code, body);
+              if (!result.ok) return json({ error: result.error }, result.status);
+              return json({ playerId: result.playerId, roomNonce: result.roomNonce });
+            },
+          }),
+          route({
+            method: "POST",
+            path: "/api/game/:code/answer",
+            body: AnswerBody,
+            handler: async (ctx) => {
+              const code = must(ctx.params.code, "the route has a :code");
+              roomSpan(code);
+              const body = await ctx.body();
+              const result = runtime.answer(code, body);
+              if (!result.ok) return json({ error: result.error }, result.status);
+              return json({});
+            },
+          }),
+          route({
+            method: "POST",
+            path: "/api/game/:code/host",
+            body: HostBody,
+            handler: async (ctx) => {
+              const code = must(ctx.params.code, "the route has a :code");
+              roomSpan(code);
+              const body = await ctx.body();
+              const result = runtime.hostAction(code, {
+                ...body,
+                fromPhase: body.fromPhase as Phase,
+              });
+              if (!result.ok) return json({ error: result.error }, result.status);
+              return json({ snapshot: result.snapshot });
+            },
+          }),
+          route({
+            method: "GET",
+            path: "/api/events/:code",
+            handler: (ctx) => {
+              const code = must(ctx.params.code, "the route has a :code");
+              const role = ctx.url.searchParams.get("role");
+              const playerId = ctx.url.searchParams.get("playerId") ?? undefined;
+              if (role !== "host" && role !== "player") {
+                return json({ error: "role must be 'host' or 'player'" }, 400);
+              }
+              if (role === "player" && !playerId) {
+                return json({ error: "playerId is required for role=player" }, 400);
+              }
+              const stream = runtime.openStream(code, role, playerId);
+              return new Response(stream, { headers: SSE_HEADERS });
+            },
+          }),
+        ],
+      },
+    ],
+    fallback: (req) => {
+      if (req.method === "GET" || req.method === "HEAD") return serveStatic(req);
+      return new Response("method not allowed\n", { status: 405 });
     },
   };
+}
+
+function runtimeOf(opts: AppOptions): RoomsRuntime {
+  return (
+    opts.runtime ??
+    createRoomsRuntime(
+      must(opts.runtimeOptions, "createApp needs either `runtime` or `runtimeOptions`"),
+    )
+  );
+}
+
+/** Build the request handler + its runtime without binding a port (unit-testable). */
+export function createApp(opts: AppOptions): {
+  runtime: RoomsRuntime;
+  handle: (req: Request) => Promise<Response>;
+} {
+  const runtime = runtimeOf(opts);
+  return { runtime, handle: createHandler(definition(runtime, opts.distDir)).handle };
+}
+
+/** Bind the app to a port. On shutdown the server drains, then the runtime stops. */
+export function startServer(opts: AppOptions & { port: number }): RunningServer {
+  const runtime = runtimeOf(opts);
+  const service = createService({ ...definition(runtime, opts.distDir), port: opts.port });
+  service.onShutdown(() => runtime.shutdown());
+  return { server: service.server, service, runtime, stop: () => service.close() };
 }

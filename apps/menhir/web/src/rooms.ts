@@ -11,6 +11,7 @@
 import { randomUUID } from "node:crypto";
 
 import { lazyCounter, reportIgnored } from "@astra/observe";
+import { safeEqual } from "@astra/service-kit";
 
 import {
   type Effect,
@@ -335,7 +336,7 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
     hostAction(code, body) {
       const room = rooms.get(code);
       if (!room) return { ok: false, status: 404, error: "unknown room code" };
-      if (body.hostToken !== room.state.hostToken) {
+      if (!safeEqual(body.hostToken, room.state.hostToken)) {
         return { ok: false, status: 403, error: "bad host token" };
       }
       const now = clock.now();
