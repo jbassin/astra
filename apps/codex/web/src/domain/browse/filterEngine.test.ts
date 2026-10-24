@@ -1,7 +1,7 @@
+import type { IndexRow } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
 import { abbreviateBook } from "@/domain/sources/abbreviations";
-import type { IndexRow } from "@/schema/entity";
 
 import {
   ambientRows,

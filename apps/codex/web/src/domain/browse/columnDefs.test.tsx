@@ -1,9 +1,10 @@
+import type { IndexRow } from "@astra/codex-corpus";
+import { createCorpusReader } from "@astra/codex-corpus/reader";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import type { IndexRow } from "@/schema/entity";
-import { createCorpusReader, fixtureCorpusRoot } from "@/server/corpusFs";
+import { fixtureCorpusRoot } from "@/server/corpusFs";
 
 import { columnsFor, comparatorForSort, type ColumnDef } from "./columnDefs";
 import { sortRows } from "./filterEngine";

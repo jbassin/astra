@@ -22,16 +22,16 @@ import {
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { loadConfig } from "@astra/config";
-
-import { copyTree, countFoundryDocs } from "../src/ingest/foundrySnapshot";
-import { hashDirectory } from "../src/ingest/hash";
 import {
   type CorpusManifest,
   emptyManifest,
   parseManifest,
   serializeManifest,
-} from "../src/schema/manifest";
+} from "@astra/codex-corpus";
+import { loadConfig } from "@astra/config";
+
+import { copyTree, countFoundryDocs } from "../src/ingest/foundrySnapshot";
+import { hashDirectory } from "../src/ingest/hash";
 
 const REPO_URL = "https://github.com/foundryvtt/pf2e.git";
 

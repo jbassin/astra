@@ -2,10 +2,9 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+import type { CodexEntity, BlockNode, CodexNode } from "@astra/codex-corpus";
 import { afterEach, describe, expect, it } from "vitest";
 
-import type { CodexEntity } from "../schema/entity";
-import type { BlockNode, CodexNode } from "../schema/nodes";
 import {
   assertNoHomebrewCollisions,
   countHomebrewUuidRefs,

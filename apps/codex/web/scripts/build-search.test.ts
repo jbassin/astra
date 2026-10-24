@@ -3,9 +3,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
 
+import { createCorpusReader } from "@astra/codex-corpus/reader";
 import { afterEach, describe, expect, it } from "vitest";
 
-import { createCorpusReader, fixtureCorpusRoot } from "../src/server/corpusFs";
+import { fixtureCorpusRoot } from "../src/server/corpusFs";
 import { buildSearchIndex } from "./build-search";
 
 /**

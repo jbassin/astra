@@ -1,7 +1,8 @@
+import { facetKeysFor } from "@astra/codex-corpus";
+import { createCorpusReader } from "@astra/codex-corpus/reader";
 import { describe, expect, it } from "vitest";
 
-import { facetKeysFor } from "@/schema/facetKeys";
-import { createCorpusReader, fixtureCorpusRoot } from "@/server/corpusFs";
+import { fixtureCorpusRoot } from "@/server/corpusFs";
 
 import { enumTagsFor, facetDefFor, humanizedLabelFor } from "./facetDefs";
 import { formatFacetValue } from "./formatFacetValue";

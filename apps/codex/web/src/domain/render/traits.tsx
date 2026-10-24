@@ -1,7 +1,7 @@
+import { humanizeSlug } from "@astra/codex-corpus";
 import type { ReactElement } from "react";
 
 import { traitBucket, type TraitBucket } from "../../ui/traitBucket";
-import { humanizeSlug } from "./text";
 
 const BUCKET_CLASS: Record<TraitBucket, string> = {
   purple: "codex-ui-pill-purple",

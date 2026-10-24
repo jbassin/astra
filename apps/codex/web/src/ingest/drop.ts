@@ -1,5 +1,11 @@
-import type { CodexEntity, EmbeddedItem } from "../schema/entity";
-import type { BlockNode, CodexNode, InlineNode } from "../schema/nodes";
+import type {
+  CodexEntity,
+  EmbeddedItem,
+  BlockNode,
+  CodexNode,
+  InlineNode,
+} from "@astra/codex-corpus";
+
 import { SUPPRESSED_EMBED_NODE, lookupEmbedOverride } from "./embedOverrides";
 
 /**

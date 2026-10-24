@@ -7,10 +7,10 @@
 // access during SSR) and re-derived from the real saved state in a mount
 // effect, the same SSR-safe two-phase pattern akasha's `Explorer.tsx` uses.
 
+import type { RulesTreeBook, TreeNode } from "@astra/codex-corpus";
 import { useEffect, useMemo, useState, type ReactElement } from "react";
 
 import { abbreviateBook } from "@/domain/sources/abbreviations";
-import type { RulesTreeBook, TreeNode } from "@/schema/rulesTree";
 import { EditionIcon, Input } from "@/ui";
 
 import {

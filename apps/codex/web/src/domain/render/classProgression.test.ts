@@ -1,7 +1,6 @@
+import type { ClassStats, CodexNode, InlineNode } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import type { ClassStats } from "../../schema/entity";
-import type { CodexNode, InlineNode } from "../../schema/nodes";
 import {
   buildProgressionRows,
   cadenceLabelsAtLevel,

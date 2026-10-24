@@ -1,12 +1,11 @@
+import { type CodexEntity, capitalize } from "@astra/codex-corpus";
 import type { ReactElement } from "react";
 
-import type { CodexEntity } from "../../schema/entity";
 import { SIZE_LABELS } from "../browse/facetDefs";
 import { Citation } from "./citation";
 import { displayCategoryName } from "./displayCategoryName";
 import { EditionBanner, EditionPill } from "./editionBanner";
 import type { RenderCtx } from "./nodes";
-import { capitalize } from "./text";
 import { CodexTraitPills } from "./traits";
 
 /**

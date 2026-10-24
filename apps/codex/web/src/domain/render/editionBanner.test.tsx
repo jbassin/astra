@@ -1,7 +1,7 @@
+import type { CodexEntity } from "@astra/codex-corpus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import type { CodexEntity } from "../../schema/entity";
 import { EditionBanner, EditionPill } from "./editionBanner";
 import { rootRenderCtx } from "./nodes";
 

@@ -1,4 +1,4 @@
-import type { CodexEntity } from "../schema/entity";
+import type { CodexEntity } from "@astra/codex-corpus";
 
 export type ReportFn = (cls: string, detail: string) => void;
 

@@ -1,4 +1,4 @@
-import { humanizeSlug } from "./text";
+import { humanizeSlug } from "@astra/codex-corpus";
 
 /**
  * D29-109(d) (#19) — category display names, seam created early by P11 S4

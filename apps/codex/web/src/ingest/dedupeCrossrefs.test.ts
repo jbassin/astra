@@ -1,7 +1,6 @@
+import type { CodexEntity, BlockNode, InlineNode } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import type { CodexEntity } from "../schema/entity";
-import type { BlockNode, InlineNode } from "../schema/nodes";
 import { collapseAdjacentCrossrefs } from "./dedupeCrossrefs";
 
 function entity(

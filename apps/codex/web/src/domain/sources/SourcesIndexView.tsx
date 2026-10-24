@@ -1,8 +1,7 @@
+import { humanizeSlug, type SourceIndexEntry } from "@astra/codex-corpus";
 import type { ReactElement } from "react";
 
 import { joinCsv } from "@/domain/browse/urlState";
-import { humanizeSlug } from "@/domain/render/text";
-import type { SourceIndexEntry } from "@/schema/sourcesIndex";
 import { EditionIcon } from "@/ui";
 
 import { groupSourcesByProductLine, OTHER_GROUP_LABEL } from "./sourcesModel";

@@ -1,9 +1,14 @@
+import {
+  type CodexEntity,
+  type EmbeddedItem,
+  type Facets,
+  capitalize,
+  humanizeSlug,
+} from "@astra/codex-corpus";
 import type { ReactElement, ReactNode } from "react";
 
-import type { CodexEntity, EmbeddedItem, Facets } from "../../schema/entity";
 import { CodexActionGlyph } from "./actionGlyph";
 import { type RenderCtx, renderNodes } from "./nodes";
-import { capitalize, humanizeSlug } from "./text";
 import { CodexTraitPills } from "./traits";
 
 /**

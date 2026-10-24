@@ -1,10 +1,10 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
+import { CodexEntitySchema, type EmbeddedItem } from "@astra/codex-corpus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { CodexEntitySchema, type EmbeddedItem } from "../../schema/entity";
 import { noEmbeds, rootRenderCtx } from "./nodes";
 import { CreatureStatblock, EmbeddedItemSections, HazardStatblock } from "./statblock";
 

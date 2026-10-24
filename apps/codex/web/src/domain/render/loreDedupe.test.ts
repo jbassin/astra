@@ -1,6 +1,6 @@
+import type { BlockNode, CodexNode, HeadingNode, InlineNode, TextMarks } from "@astra/codex-corpus";
 import { describe, expect, it, vi } from "vitest";
 
-import type { BlockNode, CodexNode, HeadingNode, InlineNode, TextMarks } from "../../schema/nodes";
 import {
   collisionBaseSlug,
   LORE_SUPPRESSION_THRESHOLD,

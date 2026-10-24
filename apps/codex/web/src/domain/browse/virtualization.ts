@@ -7,9 +7,8 @@
 // client first pass" claim gate A needs, rather than two hand-maintained
 // arithmetic copies that could drift apart.
 
+import type { IndexRow } from "@astra/codex-corpus";
 import { Virtualizer } from "@tanstack/react-virtual";
-
-import type { IndexRow } from "@/schema/entity";
 
 import { columnsFor, comparatorForSort } from "./columnDefs";
 import { applyFilters, sortRows } from "./filterEngine";

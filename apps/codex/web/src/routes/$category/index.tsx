@@ -1,3 +1,4 @@
+import type { IndexRow } from "@astra/codex-corpus";
 import {
   createFileRoute,
   notFound,
@@ -16,7 +17,6 @@ import {
 } from "@/domain/browse/urlState";
 import { computeWindowedListing } from "@/domain/browse/virtualization";
 import { displayCategoryName } from "@/domain/render/displayCategoryName";
-import type { IndexRow } from "@/schema/entity";
 
 /**
  * D29-35 — the faceted `/{category}` listing that replaced P2's D29-27

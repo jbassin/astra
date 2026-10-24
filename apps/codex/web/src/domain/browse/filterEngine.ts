@@ -23,7 +23,7 @@
 // hide a value-less row, per the rule above) and only ever stay visible
 // against a range facet when that facet carries no bound at all.
 
-import type { IndexRow } from "@/schema/entity";
+import type { IndexRow } from "@astra/codex-corpus";
 
 import { enumTagsFor, facetDefFor, numericValueFor, type RawFacetValue } from "./facetDefs";
 

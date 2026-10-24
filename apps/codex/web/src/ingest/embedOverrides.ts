@@ -1,4 +1,4 @@
-import type { InlineNode } from "../schema/nodes";
+import type { InlineNode } from "@astra/codex-corpus";
 
 /**
  * D29-134 (P14 S1): a hand-curated dead-embed-target → real-id override

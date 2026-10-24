@@ -1,6 +1,5 @@
+import type { TreeNode } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
-
-import type { TreeNode } from "@/schema/rulesTree";
 
 import {
   computeOpen,

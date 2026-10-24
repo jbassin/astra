@@ -6,8 +6,8 @@
 // logic — product-line ordering, "Other" last) operates directly on
 // `SourcesIndexFile.books`.
 
-import type { SourcesIndexFile } from "../schema/sourcesIndex";
-import type { CorpusReader } from "./corpusFs";
+import type { SourcesIndexFile } from "@astra/codex-corpus";
+import type { CorpusReader } from "@astra/codex-corpus/reader";
 
 export type SourcesIndexData = SourcesIndexFile;
 

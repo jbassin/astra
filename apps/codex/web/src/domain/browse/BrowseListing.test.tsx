@@ -6,12 +6,12 @@
 // interactive React components via `@testing-library/react` and genuinely
 // needs a DOM, so it opts in per-file instead.
 
+import type { IndexRow } from "@astra/codex-corpus";
 import { createRootRoute, createRouter, RouterProvider } from "@tanstack/react-router";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { useLayoutEffect, useState, type ReactElement } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { IndexRow } from "@/schema/entity";
 import type { EntityPageData } from "@/server/entityPageData";
 
 import { BrowseListing } from "./BrowseListing";

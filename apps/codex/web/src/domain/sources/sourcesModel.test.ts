@@ -1,6 +1,5 @@
+import type { SourceIndexEntry } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
-
-import type { SourceIndexEntry } from "@/schema/sourcesIndex";
 
 import { groupSourcesByProductLine, OTHER_GROUP_LABEL } from "./sourcesModel";
 

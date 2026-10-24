@@ -4,9 +4,12 @@
 // `collectEmbedTargetIds` already uses) so the level-grouping/cadence/
 // suppression logic is unit-testable without a React render.
 
-import type { ClassStats, GrantedFeature } from "../../schema/entity";
-import type { CodexNode } from "../../schema/nodes";
-import { collectText } from "./text";
+import {
+  type ClassStats,
+  type GrantedFeature,
+  type CodexNode,
+  collectText,
+} from "@astra/codex-corpus";
 
 /** D29-119 — proficiency ranks are numeric 0..4 everywhere in `ClassStats`
  * (perception/savingThrows/attacks/defenses); this is the ONE render-side

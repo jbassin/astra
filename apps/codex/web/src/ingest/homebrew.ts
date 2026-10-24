@@ -1,12 +1,18 @@
 import { readFileSync } from "node:fs";
 
-import type { CodexEntity } from "../schema/entity";
-import type { BlockNode, CodexNode, InlineNode, StatRowNode } from "../schema/nodes";
+import {
+  type CodexEntity,
+  type BlockNode,
+  type CodexNode,
+  type InlineNode,
+  type StatRowNode,
+  sluggify,
+} from "@astra/codex-corpus";
+
 import { EnricherGrammarError, type EnricherContext } from "./enrichers";
 import { assembleFoundryEntity, type RawFoundryDoc } from "./foundryEntities";
 import { FoundryHtmlError, parseFoundryHtml } from "./foundryHtml";
 import { walkFiles } from "./fsWalk";
-import { sluggify } from "./sluggify";
 import { createResolveUuid, type UuidIndex } from "./uuidResolve";
 
 /**

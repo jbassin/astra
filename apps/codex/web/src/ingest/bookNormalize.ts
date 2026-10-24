@@ -1,4 +1,4 @@
-import type { CodexEntity } from "../schema/entity";
+import type { CodexEntity } from "@astra/codex-corpus";
 
 /**
  * P4 (D29-39): the mechanical book-name normalization pass — stakeholder:

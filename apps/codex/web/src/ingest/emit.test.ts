@@ -2,9 +2,9 @@ import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+import type { CodexEntity } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import type { CodexEntity } from "../schema/entity";
 import { canonicalJson, canonicalJsonCompact, emitCorpus, writeCanonicalJsonCompact } from "./emit";
 
 const SAMPLE = { b: 2, a: 1, nested: { z: 9, y: [3, 2, 1] } };

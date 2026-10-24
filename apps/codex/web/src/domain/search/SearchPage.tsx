@@ -48,6 +48,7 @@
 // DELIBERATE pin changes, not oversights (see the S3 build record's own
 // enumerated pin list).
 
+import { capitalize } from "@astra/codex-corpus";
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactElement } from "react";
 
 import { BrowseEmptyState } from "@/domain/browse/EmptyState";
@@ -60,7 +61,6 @@ import {
 } from "@/domain/browse/facetControls";
 import { collidingNames, sortOptionsFor, type OptionCount } from "@/domain/browse/filterEngine";
 import { displayCategoryName } from "@/domain/render/displayCategoryName";
-import { capitalize } from "@/domain/render/text";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import { recordSearch } from "@/server/telemetryFns";
 import { EditionIcon } from "@/ui";

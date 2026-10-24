@@ -23,6 +23,14 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
+import {
+  type CodexEntity,
+  type License,
+  parseManifest,
+  type CorpusManifest,
+  RulesTreeFileSchema,
+  SourcesIndexFileSchema,
+} from "@astra/codex-corpus";
 import { findRepoRoot, loadConfig } from "@astra/config";
 
 import { dedupeAonMetas } from "../src/ingest/aonDedup";
@@ -85,10 +93,6 @@ import {
   buildPackRegistry,
   createResolveUuid,
 } from "../src/ingest/uuidResolve";
-import type { CodexEntity, License } from "../src/schema/entity";
-import { parseManifest, type CorpusManifest } from "../src/schema/manifest";
-import { RulesTreeFileSchema } from "../src/schema/rulesTree";
-import { SourcesIndexFileSchema } from "../src/schema/sourcesIndex";
 import { isKnownPack } from "./categoryMap";
 
 export type ReportFn = (cls: string, detail: string) => void;

@@ -1,3 +1,9 @@
+import {
+  type CodexEntity,
+  type SubclassOption,
+  collectText,
+  humanizeSlug,
+} from "@astra/codex-corpus";
 // P12 S3 (D29-119/-120) — the bespoke `class` page composition, swapping in
 // for the S2 placeholder (`routes/class/$slug.tsx`'s `ClassMainPane`) when
 // `entity.stats?.kind === "class"`. This is a FULL composition root (mirrors
@@ -16,7 +22,6 @@
 // step exists to protect).
 import { Fragment, useEffect, useMemo, useState, type ReactElement, type ReactNode } from "react";
 
-import type { CodexEntity, SubclassOption } from "../../schema/entity";
 import type { ClassPageData, SlimFeatureDoc } from "../../server/classPageData";
 import type { EntityPageData } from "../../server/entityPageData";
 import { EditionIcon } from "../../ui";
@@ -39,7 +44,6 @@ import {
   suppressLoreSections,
 } from "./loreDedupe";
 import { type RenderCtx, renderNodes, rootRenderCtx } from "./nodes";
-import { collectText, humanizeSlug } from "./text";
 
 /** A codex id (`{category}/{slug}`) split client-side, WITHOUT importing
  * `server/entityPageData.ts`'s own `splitCodexId` (that module pulls in

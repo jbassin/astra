@@ -1,11 +1,20 @@
-import type { CodexEntity, EmbeddedItem, Edition, Facets, Source } from "../schema/entity";
-import type { BlockNode, CodexNode, InlineNode } from "../schema/nodes";
+import {
+  type CodexEntity,
+  type EmbeddedItem,
+  type Edition,
+  type Facets,
+  type Source,
+  type BlockNode,
+  type CodexNode,
+  type InlineNode,
+  sluggify,
+} from "@astra/codex-corpus";
+
 import type { AonDocMeta } from "./aonFacets";
 import { createLinkResolver, type AonLinkTable, type ResolveLinkFn } from "./aonLinkTable";
 import { parseAonMarkdown, stripMasthead } from "./aonMarkup";
 import type { UuidResolution } from "./enrichers";
 import type { RemasterRedirectEntry } from "./journals";
-import { sluggify } from "./sluggify";
 
 /**
  * D29-7/-1/-8: the cross-corpus join + identity finalization (spec §4 S4,

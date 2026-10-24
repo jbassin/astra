@@ -18,6 +18,7 @@
 // helper, the same one `/search` wires against its own live `superseded`
 // state.
 
+import { capitalize } from "@astra/codex-corpus";
 import { useNavigate } from "@tanstack/react-router";
 import {
   useCallback,
@@ -32,7 +33,6 @@ import {
 
 import { collidingNames } from "@/domain/browse/filterEngine";
 import { displayCategoryName } from "@/domain/render/displayCategoryName";
-import { capitalize } from "@/domain/render/text";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import { recordSearch } from "@/server/telemetryFns";
 import { EditionIcon } from "@/ui";

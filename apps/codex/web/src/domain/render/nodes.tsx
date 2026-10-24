@@ -1,10 +1,14 @@
+import {
+  type CodexEntity,
+  type CodexNode,
+  type InlineNode,
+  capitalize,
+  collectText,
+} from "@astra/codex-corpus";
 import { Fragment, type ReactElement, type ReactNode } from "react";
 
-import type { CodexEntity } from "../../schema/entity";
-import type { CodexNode, InlineNode } from "../../schema/nodes";
 import { ErrorChip } from "../../ui";
 import { type ActionCost, CodexActionGlyph } from "./actionGlyph";
-import { capitalize, collectText } from "./text";
 
 /**
  * D29-24 — the ONE total `CodexNode -> React` renderer, mirroring gothic's
@@ -539,62 +543,6 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
 /** Render a list of `CodexNode`s to React. Pure, total (never throws). */
 export function renderNodes(nodes: readonly CodexNode[], ctx: RenderCtx): ReactNode {
   return nodes.map((node, i) => renderNode(node, i, ctx));
-}
-
-// ---------------------------------------------------------------------------
-// S2: collectEmbedTargetIds — the loader-side embed-inlining companion to
-// renderEmbed above. Walks a node list the SAME way `renderNodes` structurally
-// would (mirrors `paragraphCarriesBlockContent`'s traversal shape) and collects
-// every RESOLVED embed's target id, WITHOUT recursing into another embed's own
-// (not-yet-fetched) body — exactly the depth-0 target set D29-25's inlining pass
-// needs prefetched. Pure — no fs/server dependency, so it's unit-testable here
-// alongside the renderer, even though only the S2 corpus-reading server fn calls
-// it in production.
-// ---------------------------------------------------------------------------
-
-function walkEmbedTargets(node: CodexNode, into: Set<string>): void {
-  switch (node.kind) {
-    case "embed":
-      if (node.resolved) into.add(node.target);
-      return;
-    case "paragraph":
-    case "heading":
-      for (const c of node.children) walkEmbedTargets(c, into);
-      return;
-    case "list":
-      for (const item of node.items) for (const c of item) walkEmbedTargets(c, into);
-      return;
-    case "table":
-      for (const row of node.rows) {
-        for (const cell of row.cells) for (const c of cell) walkEmbedTargets(c, into);
-      }
-      if (node.caption) for (const c of node.caption) walkEmbedTargets(c, into);
-      return;
-    case "blockquote":
-    case "aside":
-      for (const c of node.children) walkEmbedTargets(c, into);
-      return;
-    case "localizedBoilerplate":
-      for (const c of node.children) walkEmbedTargets(c, into);
-      return;
-    case "statRow":
-      // P10 (D29-94): cells are InlineNode[][] — embed prefetch must still see
-      // them (a resolved embed inside a cell needs the same depth-0 prefetch
-      // as one inside a paragraph).
-      for (const cell of node.cells) for (const c of cell) walkEmbedTargets(c, into);
-      return;
-    default:
-      return; // divider + every other leaf inline kind carries no embeds
-  }
-}
-
-/** Every distinct RESOLVED embed target id reachable at depth 0 in `nodes`
- * (an entity's own `body`/`loreBody`, or one `EmbeddedItem.body`) — the set the
- * S2 loader prefetches via the corpus reader before rendering, per D29-25. */
-export function collectEmbedTargetIds(nodes: readonly CodexNode[]): Set<string> {
-  const ids = new Set<string>();
-  for (const node of nodes) walkEmbedTargets(node, ids);
-  return ids;
 }
 
 // Exported so tests asserting the totality gate share the attribute name.

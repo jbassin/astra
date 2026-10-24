@@ -1,4 +1,4 @@
-import { sluggify } from "../../ingest/sluggify";
+import { sluggify } from "@astra/codex-corpus";
 
 /**
  * D29-109b (P11 S5, #15) — GitHub-slugger-style heading anchor ids. Reuses

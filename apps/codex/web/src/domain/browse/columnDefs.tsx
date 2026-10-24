@@ -1,10 +1,9 @@
+import { type Facets, type IndexRow, capitalize } from "@astra/codex-corpus";
 import type { ReactNode } from "react";
 
 import { ActionGlyph, normalizeActionCost } from "@/domain/render/actionGlyph";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
-import type { Facets, IndexRow } from "@/schema/entity";
 
-import { capitalize } from "../render/text";
 import { facetDefFor, numericValueFor, type RawFacetValue } from "./facetDefs";
 import {
   categoryHasLevelCoverage,

@@ -1,4 +1,4 @@
-import type { BlockNode, CodexNode, InlineNode } from "../schema/nodes";
+import type { BlockNode, CodexNode, InlineNode } from "@astra/codex-corpus";
 
 /**
  * The Foundry enricher grammar (D29-6, spec §2/§3): `@UUID[...]`, `@Check[...]`,

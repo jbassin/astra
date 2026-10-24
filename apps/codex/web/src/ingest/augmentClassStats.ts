@@ -1,5 +1,5 @@
-import type { CodexEntity, GrantedFeature, SubclassOption } from "../schema/entity";
-import type { InlineNode } from "../schema/nodes";
+import type { CodexEntity, GrantedFeature, SubclassOption, InlineNode } from "@astra/codex-corpus";
+
 import type { UuidResolution } from "./enrichers";
 import type { RawGrantedFeatureEntry } from "./foundryEntities";
 

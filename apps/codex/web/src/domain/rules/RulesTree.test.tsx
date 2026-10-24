@@ -5,10 +5,9 @@
 // `@testing-library/react` and genuinely needs a DOM, so it opts in
 // per-file, same as `BrowseListing.test.tsx`.
 
+import type { RulesTreeBook, TreeNode } from "@astra/codex-corpus";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
-
-import type { RulesTreeBook, TreeNode } from "@/schema/rulesTree";
 
 import { RulesTree } from "./RulesTree";
 

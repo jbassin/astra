@@ -1,7 +1,6 @@
+import type { CodexEntity, BlockNode, CodexNode } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import type { CodexEntity } from "../schema/entity";
-import type { BlockNode, CodexNode } from "../schema/nodes";
 import {
   activationDropFamily,
   applyAonPrimaryDrop,

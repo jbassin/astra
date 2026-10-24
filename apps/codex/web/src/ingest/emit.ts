@@ -1,10 +1,14 @@
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { CORPUS_SCHEMA_VERSION } from "../schema/corpusVersion";
-import { CodexEntitySchema, IndexRowSchema, toIndexRow } from "../schema/entity";
-import type { CodexEntity } from "../schema/entity";
-import { facetKeysFor } from "../schema/facetKeys";
+import {
+  CORPUS_SCHEMA_VERSION,
+  CodexEntitySchema,
+  IndexRowSchema,
+  toIndexRow,
+  type CodexEntity,
+  facetKeysFor,
+} from "@astra/codex-corpus";
 
 /**
  * D29-3: the deterministic corpus writer — S4's `emit.ts` (spec §3/§4 S4, this

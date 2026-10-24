@@ -1,5 +1,11 @@
-import type { CodexEntity, HazardStats, Stats } from "../schema/entity";
-import type { BlockNode, CodexNode, InlineNode } from "../schema/nodes";
+import type {
+  CodexEntity,
+  HazardStats,
+  Stats,
+  BlockNode,
+  CodexNode,
+  InlineNode,
+} from "@astra/codex-corpus";
 
 /**
  * D29-100 (P11 S1): whole-document adjacent-crossref dedupe — ONE post-join,

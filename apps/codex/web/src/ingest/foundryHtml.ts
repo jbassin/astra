@@ -1,4 +1,5 @@
-import type { BlockNode, CodexNode, InlineNode, TableRow } from "../schema/nodes";
+import type { BlockNode, CodexNode, InlineNode, TableRow } from "@astra/codex-corpus";
+
 import { type EnricherContext, EnricherGrammarError, parseEnrichedText } from "./enrichers";
 
 /**

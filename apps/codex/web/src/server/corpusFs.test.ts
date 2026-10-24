@@ -2,16 +2,11 @@ import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+import { CORPUS_SCHEMA_VERSION } from "@astra/codex-corpus";
+import { CorpusNotFoundError, createCorpusReader } from "@astra/codex-corpus/reader";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { CORPUS_SCHEMA_VERSION } from "../schema/corpusVersion";
-import {
-  CorpusNotFoundError,
-  CorpusUnservableError,
-  createCorpusReader,
-  fixtureCorpusRoot,
-  selectServedCorpus,
-} from "./corpusFs";
+import { CorpusUnservableError, fixtureCorpusRoot, selectServedCorpus } from "./corpusFs";
 
 // D29-23: `createCorpusReader(rootDir)` is a pure factory, directly unit-testable
 // against `fixtures/entities/` — no config/mocking involved. Every traversal-guard

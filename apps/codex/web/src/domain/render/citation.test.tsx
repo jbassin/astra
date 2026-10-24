@@ -1,7 +1,7 @@
+import type { Source } from "@astra/codex-corpus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import type { Source } from "../../schema/entity";
 import { Citation } from "./citation";
 
 function html(source: Source): string {
