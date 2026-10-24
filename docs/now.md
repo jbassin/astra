@@ -4,17 +4,17 @@ Updated 2026-10-23.
 
 ## In flight
 
-- **Tech-debt paydown 0037, Phase 2 is under way** (repo-1 live). Phases 0 and 1 are
-  live. The plan and its checklist are section 0.1 of
+- **Tech-debt paydown 0037, Phase 2:** Waves 1 and 2 are done; Wave 3 is mostly done. The status
+  line and checklist are section 0.1 of
   [`thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`](../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md).
 
 ## Next action
 
-**Phase 2, Wave 2** of the slice checklist in section 0.1 of the paydown plan. Wave 1 is done
-except ops-2; the checklist marks what is live. `main` takes changes only
-through pull requests with auto-merge ([ADR 0016](adr/0016-merge-model-auto-merge.md)), and
-`just deploy` now waits for every container to be healthy. Calls parked for Josh are in the
-backlog under "Paydown decisions (Josh)"; steps only he can do are under "Smaller calls".
+The rest of Wave 3 (pipe-5, cdx-4, asy-4, ops-8), then Wave 4. `main` merges only through pull
+requests behind `ci-ok`; `just deploy` waits for health and prints the rollback command. A
+`--sha` rollback pins the whole stack until `just deploy --sha origin/main`. Calls parked for
+Josh are in the backlog under "Paydown decisions (Josh)"; steps only he can do are under
+"Smaller calls" (the vellum.iridi.cc certificate renewal is urgent: it expires 2026-11-06).
 
 ## Blocked or waiting
 

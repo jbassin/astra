@@ -321,10 +321,21 @@ token source keep today's look exactly (no stakeholder sign-off needed); assay t
   - [x] svc-1 one typed portal tool registry. **live `db6e4561`; `tools/list` byte-identical; handlers stay in CONFIG.queries (ADR 0038).**
   - [x] weal-1 Rust CI lane, `gen/` source-hash check, WEAL-4, WEAL-23. **live `43ed244f`.**
   - [x] weal-2 nullary functions re-evaluate (WEAL-1); generative test; rebuild wasm. **live `927dc47c`; 3/3 saves load.**
-  - [ ] ops-2 `just doctor`; watchdog checks backup age and entity drift; scheduled restore test. **in progress (restarted after the session limit).**
-- Wave 2 (done so far: repo-4 merged `8d0192a3`, no resolved version changed; ops-11 live
-  `6e17d1bd`, deploys now wait for health; svc-2 live `5a9bbe72`, waits on the module update in
-  the backlog. In progress: lib-7b, lib-8a, weal-3, asy-2, cdx-2, svc-3a): repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
+  - [x] ops-2 `just doctor`; watchdog checks backup age and entity drift; scheduled restore test. **live; the restore test passes (follow-up `1985530b`).**
+- **Status 2026-10-24 (session 5).** Wave 1 is done. Done in Wave 2: repo-3 `38484a78`, repo-4
+  `8d0192a3`, lib-3 `c2513b1b`, lib-7b `2f258448`, lib-8a `f6a70762`, lib-9 (merging), pipe-3
+  `4fd869c9`, pipe-4a `3f624dea`, cdx-2 `863c8f9e`, asy-2 `716d9750` (R), svc-2 `5a9bbe72` (R; the
+  0.5.0 module update is Josh's), weal-3 `c167cad1`, ops-11 `6e17d1bd` (R). Done in Wave 3: repo-5
+  `7daf18ea`, lib-4 `794f6169`, lib-8b `beeeca30`, pipe-4b `488de6b8` (R, reviewed twice; sessions
+  migration applied live, 0 launches), cdx-5a `20e01cbf`, svc-3a `5e2492b1`, svc-4 `91bd798b` (R;
+  0001 recorded on both live databases), weal-4 `3f724d84`, ops-1a `ba70259f` (R). Done in Wave 4:
+  repo-6 `aac7e17a`, svc-3b `54cbf004`. **Incident:** repo-5 (`7daf18ea`) added a root `yaml`
+  devDependency, so vite left `yaml` external in every TanStack Start SSR bundle while the `--prod`
+  runtime lacked it; codex crash-looped on the lib-4 deploy (the health wait caught it), was pinned
+  to `20e01cbf` for about 3 hours, and was fixed by `0fa05d65` (site-kit `ssrExternalsPlugin`, plus
+  `just ssr-externals-check` in `ts-build`). Next: the rest of Wave 3 (pipe-5, cdx-4 R, asy-4,
+  ops-8 R), then Wave 4.
+- Wave 2 list: repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
   `[tool.uv.sources]` (after repo-2); lib-3 dead config and the every-field-has-a-reader check
   (after lib-2, pipe-2); lib-7b Python observe bootstrap; lib-8a typed KDL decoders; lib-9 vellum
   parity over the corpus; pipe-3 sessions library; pipe-4a Dagster resources; cdx-2 regenerated
