@@ -2,7 +2,7 @@
  * Regenerate the conformance corpus artifacts from the TS reference parser:
  *   fixtures/vellum/<name>.vellum  →  <name>.ast.json (full AST) + <name>.meta.json (parity).
  *
- *   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+ *   node --import tsx \
  *     libs/ts/vellum-lang/scripts/gen-fixtures.ts
  *
  * The TS test asserts both; the Python test asserts the `.meta.json` (the parity gate).

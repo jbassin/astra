@@ -2,8 +2,8 @@
 
 site-kit holds the parts every TanStack Start frontend shares, so apps don't copy them. Consumers:
 strider, akasha-frontend, mouthpiece-frontend, vellum-frontend, harrow, ledger and codex (plus
-`serveFile` and the resolve hook in the other Node services). It is plain TS source with no build
-step. How to start a new frontend from these pieces is in `apps/strider/web/README.md`.
+`serveFile` and the server-bundle preset in the other Node services). It is plain TS source with
+no build step. How to start a new frontend from these pieces is in `apps/strider/web/README.md`.
 
 ## The frontend preset
 
@@ -80,8 +80,7 @@ scaffolded app in a scratch dir.
 | `generateRouteTree`, `staleRouteTreeFiles` | `scripts/route-tree.ts` (`just routes-gen`, `just routes-check`) | writes each Start frontend's `src/routeTree.gen.ts`, byte for byte what `vite dev` writes; the check regenerates in a scratch copy and names stale files |
 | `scaffoldFrontend` and the stub editors (`src/scaffold.ts`) | `scripts/new-frontend.ts` (`just new-frontend`) | writes an app from `template/` and adds its stubs to the shared files; each edit is a pure function of the file's text |
 | `startRum` (`@astra/site-kit/web`) | browser | starts browser RUM with the endpoint the app's server function returns |
-| `src/nodeTsResolve.mjs` | every `node` run of workspace TS | resolve hook, loaded with `node --import` |
-| `nodeTsResolveHook` (`@astra/site-kit/nodeTsResolveHook`) | vitest setups, ssrSmoke tests | the hook's absolute path, for code that spawns `node --import`; use it instead of `../../libs/ts/...` |
+| `tsxLoader()` (`@astra/site-kit/tsxLoader`) | vitest setups, ssrSmoke tests, the content plugin | tsx's loader, resolved from site-kit, for code that spawns `node --import <loader> file.ts` from any cwd |
 
 ## Traps
 
@@ -96,13 +95,22 @@ scaffolded app in a scratch dir.
 - **Use `vite --configLoader runner`** in every `dev`/`build` script whose `vite.config.ts`
   imports a workspace package. vite's default loader bundles the config and leaves workspace
   packages to Node, which can't run their raw `.ts`.
-- **Every `node` run of workspace TS needs the resolve hook:**
-  `node --import <repo>/libs/ts/site-kit/src/nodeTsResolve.mjs file.ts`. The workspace writes
-  extensionless and directory imports, which Node's ESM resolver rejects. The hook retries with
-  `.ts`/`.tsx` before `/index.*` (a sibling file wins over a same-named directory, as in a
-  bundler), and it compiles JSX with esbuild, because Node's type stripping doesn't do JSX.
-- **Node type stripping rejects non-erasable TS** (parameter properties, enums, namespaces). Only
-  running the file finds them reliably; `erasableSyntaxOnly` in the tsconfigs now catches most.
+- **Every `node` run of workspace TS goes through tsx:** `node --import tsx file.ts` in a shell or
+  package script (Node resolves `tsx` from the working directory, so the root devDependency
+  covers the checkout), or `tsxLoader()` from code that spawns node. The workspace writes
+  extensionless and directory imports and JSX, which plain Node rejects. tsx reads the tsconfig
+  of the working directory, so the frontends' `@/*` alias works only when run from the app dir.
+  Production never runs TypeScript: it runs the server bundles.
+- **A library `.tsx` that a script renders declares its JSX runtime.** tsx applies the
+  working directory's tsconfig only to the files it includes, so in an app's
+  `build-content.ts` run, gothic's render tree would compile to `React.createElement` and fail
+  with `React is not defined`. Those files start with
+  `/** @jsxRuntime automatic @jsxImportSource react */`; add it to any library `.tsx` a script
+  reaches.
+- **A server must not locate files from `import.meta.dirname` plus `../`.** In the bundle every
+  module's `import.meta` is the bundle's. Use `findPackageRoot(import.meta.dirname)`
+  (`@astra/config`) and join from the app root; load a file by package name
+  (`@astra/weal-engine/gen/...`) when it lives in a library.
 - **Keep `createServerFn` in app source.** The TanStack Start vite plugin only transforms server
   functions inside the app, so `startRum` takes the app's own `src/observe/rumConfig.ts`.
 - **Read the TanStack Start skill docs before adding server-side behaviour.** They ship with the
@@ -124,7 +132,7 @@ scaffolded app in a scratch dir.
   the built bundles.
 - **The build stage needs `config.kdl`.** `vite.config.ts` reads the port and service name at
   build time, so `deploy/node.Dockerfile` copies `ontology/` before `pnpm run build`.
-- **`vitest.config.ts` loads without the resolve hook.** vitest's config loader leaves workspace
+- **`vitest.config.ts` loads without tsx.** vitest's config loader leaves workspace
   packages to plain Node, so `src/vitestPreset.ts` may import only packages and Node builtins;
   a relative import there fails with `ERR_MODULE_NOT_FOUND`. That is why the vitest preset is
   its own entry, apart from `/vite` (which vite loads with `--configLoader runner`).

@@ -1,3 +1,4 @@
+/** @jsxRuntime automatic @jsxImportSource react */
 import type { ReactElement } from "react";
 
 /** PF2e action-economy costs. Purely visual — no rules meaning attached. */

@@ -1,3 +1,4 @@
+/** @jsxRuntime automatic @jsxImportSource react */
 import type { VellumTimeline } from "@astra/vellum-lang";
 import type { ReactElement } from "react";
 

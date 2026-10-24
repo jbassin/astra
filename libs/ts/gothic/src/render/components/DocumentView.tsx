@@ -1,3 +1,4 @@
+/** @jsxRuntime automatic @jsxImportSource react */
 import type { VellumBlock, VellumDocument, VellumNode } from "@astra/vellum-lang";
 import type { CSSProperties, ReactElement, ReactNode } from "react";
 

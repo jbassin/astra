@@ -160,7 +160,7 @@ init_artifacts() {
 # host-side tooling those recipes use: the uv workspace venv (every `uv run` — the
 # config lookups, mouthpiece-publish, akasha-snapshot, the entity seed, the heartwood
 # agent) and the node deps of the vellum validator (heartwood-agent's validate-corpus.ts
-# and the agent's write_page check; nodeTsResolve.mjs needs only node builtins). Nothing
+# and the agent's write_page check, which run under that package's own tsx). Nothing
 # else on the host runs node from this checkout, so pnpm installs that one package only.
 # --frozen / --frozen-lockfile never touch the lockfiles (a changed lockfile would make the
 # checkout dirty and refuse the next deploy); --ignore-scripts runs no package scripts.

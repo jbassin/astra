@@ -27,7 +27,7 @@ _ROOT = find_repo_root(Path(__file__))
 _NODE = [
     "node",
     "--import",
-    str(_ROOT / "libs/ts/site-kit/src/nodeTsResolve.mjs"),
+    str(_ROOT / "libs/ts/vellum-lang/node_modules/tsx/dist/loader.mjs"),
     str(_ROOT / "libs/ts/vellum-lang/scripts/dump-meta.ts"),
 ]
 _MAX_DIFF_LINES = 40

@@ -2,7 +2,7 @@
 //
 // vitest loads `vitest.config.ts` with its default loader, under which Node runs this file as
 // raw TS: it may import only packages and Node builtins, never a relative or workspace module
-// (their extensionless imports fail outside the resolve hook). The global setup it names is
+// (their extensionless imports fail under plain Node). The global setup it names is
 // loaded later through vite, so that file can import freely.
 
 import path from "node:path";

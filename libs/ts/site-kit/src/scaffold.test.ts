@@ -16,7 +16,6 @@ import { promisify } from "node:util";
 import { findRepoRoot, parseKdl } from "@astra/config";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 
-import { nodeTsResolveHook } from "./nodeTsResolveHook";
 import {
   addCaddyStanza,
   addComposeService,
@@ -28,6 +27,7 @@ import {
   writeFrontendApp,
 } from "./scaffold";
 import type { SmokeResult } from "./ssrSmokeRunner";
+import { tsxLoader } from "./tsxLoader";
 
 const execFileAsync = promisify(execFile);
 const REPO = findRepoRoot();
@@ -151,7 +151,7 @@ describe("a scaffolded app builds and renders", () => {
       "node",
       [
         "--import",
-        nodeTsResolveHook,
+        tsxLoader(),
         path.join(import.meta.dirname, "ssrSmokeRunner.ts"),
         path.join(appDir, "dist", "server", "server.js"),
         JSON.stringify(["/", "/__no-such-page"]),

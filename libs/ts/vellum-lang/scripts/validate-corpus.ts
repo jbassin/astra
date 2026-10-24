@@ -3,7 +3,7 @@
  * Corpus structural validator (astra 0007, decision F3 — the TS Node step that
  * makes TS the structural authority, D2).
  *
- *   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+ *   node --import tsx \
  *     libs/ts/vellum-lang/scripts/validate-corpus.ts --dir <corpus>
  *
  * Parses every `.vellum` page with the reference parser and reports two things,

@@ -15,8 +15,8 @@ import { promisify } from "node:util";
 import { findRepoRoot } from "@astra/config";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { nodeTsResolveHook } from "./nodeTsResolveHook";
 import type { SmokeResult } from "./ssrSmokeRunner";
+import { tsxLoader } from "./tsxLoader";
 
 const execFileAsync = promisify(execFile);
 const RUNNER = path.join(import.meta.dirname, "ssrSmokeRunner.ts");
@@ -91,7 +91,7 @@ export function describeSsrSmoke(opts: SsrSmokeOptions): void {
       const paths = routes.map((r) => r.path);
       const { stdout } = await execFileAsync(
         "node",
-        ["--import", nodeTsResolveHook, RUNNER, bundle, JSON.stringify(paths)],
+        ["--import", tsxLoader(), RUNNER, bundle, JSON.stringify(paths)],
         { cwd: appRoot, encoding: "utf8", maxBuffer: 256 * 1024 * 1024 },
       );
       const parsed = JSON.parse(stdout) as SmokeResult[];

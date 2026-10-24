@@ -1,3 +1,4 @@
+/** @jsxRuntime automatic @jsxImportSource react */
 import { type DocumentKind, parseFieldItems, type VellumBlock } from "@astra/vellum-lang";
 import type { RootContent } from "mdast";
 import type { ReactElement, ReactNode } from "react";

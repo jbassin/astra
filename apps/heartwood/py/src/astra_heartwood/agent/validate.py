@@ -15,7 +15,7 @@ import subprocess
 from collections.abc import Callable
 from pathlib import Path
 
-from astra_akasha_backend.snapshot import NODE_TS_RESOLVE_HOOK, VALIDATOR
+from astra_akasha_backend.snapshot import TSX_LOADER, VALIDATOR
 
 #: ``validator(dir) -> None`` when clean, else the validator's report text.
 Validator = Callable[[str], str | None]
@@ -49,7 +49,7 @@ def node_validator(directory: str) -> str | None:
         [
             find_node(),
             "--import",
-            str(NODE_TS_RESOLVE_HOOK),
+            str(TSX_LOADER),
             str(VALIDATOR),
             "--dir",
             directory,

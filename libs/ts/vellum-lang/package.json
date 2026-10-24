@@ -23,6 +23,7 @@
     "@astra/config": "workspace:*",
     "@types/mdast": "catalog:",
     "mdast-util-directive": "^3.1.0",
+    "tsx": "catalog:",
     "vitest": "catalog:"
   }
 }

@@ -13,8 +13,8 @@
     "./document": "./src/document.tsx",
     "./theme": "./src/theme.ts",
     "./ssrSmoke": "./src/ssrSmoke.ts",
-    "./nodeTsResolveHook": "./src/nodeTsResolveHook.ts",
-    "./bundle": "./src/serverBundle.ts"
+    "./bundle": "./src/serverBundle.ts",
+    "./tsxLoader": "./src/tsxLoader.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -27,9 +27,9 @@
     "@fontsource/ibm-plex-mono": "catalog:",
     "@opentelemetry/api": "catalog:",
     "@tanstack/router-generator": "^1.167.41",
-    "esbuild": "^0.28.1",
     "send": "1.2.1",
-    "srvx": "catalog:"
+    "srvx": "catalog:",
+    "tsx": "catalog:"
   },
   "devDependencies": {
     "@tailwindcss/vite": "catalog:",

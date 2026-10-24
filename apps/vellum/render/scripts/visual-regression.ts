@@ -12,8 +12,8 @@
  * the pinned `node:24-slim` CI container (0022 S11 — the bun-container CI job is
  * gone; the golden contract is pinned to this Node image now).
  *
- *   node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts            # compare (exit 1 on drift)
- *   node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts --update   # (re)write goldens
+ *   node --import tsx scripts/visual-regression.ts            # compare (exit 1 on drift)
+ *   node --import tsx scripts/visual-regression.ts --update   # (re)write goldens
  *
  * Requires a prior `pnpm run build` (the render service serves dist/).
  */

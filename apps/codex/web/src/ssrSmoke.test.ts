@@ -5,8 +5,8 @@ import path from "node:path";
 
 import { CORPUS_SCHEMA_VERSION } from "@astra/codex-corpus";
 import { createCorpusReader } from "@astra/codex-corpus/reader";
-import { nodeTsResolveHook } from "@astra/site-kit/nodeTsResolveHook";
 import { bundleIsStale } from "@astra/site-kit/ssrSmoke";
+import { tsxLoader } from "@astra/site-kit/tsxLoader";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { allNavCategories } from "@/domain/nav/navData";
@@ -32,10 +32,8 @@ import { fixtureCorpusRoot } from "@/server/corpusFs";
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
 const SERVER_BUNDLE = path.join(APP_ROOT, "dist/server/server.js");
 const RUNNER = path.join(APP_ROOT, "scripts/ssrSmoke.ts");
-// 0022 S11 — off bun: `pnpm run build` for the workspace script, `node --import
-// nodeTsResolve.mjs` for the raw-TS runner subprocess (same hook every server.ts
-// entry uses).
-const NODE_TS_RESOLVE_HOOK = nodeTsResolveHook;
+// `pnpm run build` for the workspace script, `node --import <tsx>` for the TS runner
+// subprocess.
 
 let ssr: { fetch: (req: Request) => Promise<Response> };
 
@@ -57,7 +55,7 @@ beforeAll(async () => {
 
 describe("SSR smoke", () => {
   it("SSRs an entity page (spell/heal, off the pinned fixture corpus)", () => {
-    const out = execFileSync("node", ["--import", NODE_TS_RESOLVE_HOOK, RUNNER], {
+    const out = execFileSync("node", ["--import", tsxLoader(), RUNNER], {
       cwd: APP_ROOT,
       encoding: "utf8",
     });

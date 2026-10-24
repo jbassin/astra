@@ -2,7 +2,7 @@
 // production image won't have
 // (`just ssr-externals-check`, run by `just ts-build` after the builds).
 //
-//   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+//   node --import tsx \
 //     libs/ts/site-kit/scripts/ssr-externals-check.ts
 //
 // It covers every apps/<domain>/<role> with a dist/server or dist-server dir, so run it after

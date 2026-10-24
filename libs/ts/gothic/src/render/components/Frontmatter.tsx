@@ -1,3 +1,4 @@
+/** @jsxRuntime automatic @jsxImportSource react */
 import type { Frontmatter as FrontmatterData } from "@astra/vellum-lang";
 import type { ReactElement } from "react";
 

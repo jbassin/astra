@@ -118,7 +118,7 @@ ontology-gen *flags:
 # <domain>/<role> names to limit it to those apps. Run it after adding or renaming a route.
 # Regenerate the frontends' route trees; `--check` writes nothing and fails if one is stale.
 routes-gen *flags:
-    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/site-kit/scripts/route-tree.ts "$@"
+    node --import tsx libs/ts/site-kit/scripts/route-tree.ts "$@"
 
 # Writes apps/<name>/web from libs/ts/site-kit/template/ (the next free port in 10350 to 10399
 # unless --port is given), adds the app's block to config.kdl and the fixture, its Pydantic
@@ -127,7 +127,7 @@ routes-gen *flags:
 # `just caddy-reload` put it live.
 # Scaffold a TanStack Start frontend on the site-kit preset: `just new-frontend <name> [--port <n>]`.
 new-frontend name *flags:
-    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/site-kit/scripts/new-frontend.ts "$@"
+    node --import tsx libs/ts/site-kit/scripts/new-frontend.ts "$@"
     "{{just_executable()}}" -f "{{justfile()}}" ontology-gen
     pnpm install
 
@@ -198,12 +198,12 @@ ts-build:
 # production dependencies, since the image installs nothing else (site-kit src/ssrExternals.ts).
 # Check the built SSR bundles import only builtins and the app's own production dependencies.
 ssr-externals-check:
-    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/site-kit/scripts/ssr-externals-check.ts
+    node --import tsx libs/ts/site-kit/scripts/ssr-externals-check.ts
 
 # The real wiki lives in astra-data, where heartwood validates it before every commit.
 # CI job corpus-validate: the akasha corpus gate over the checked-in fixture wiki.
 corpus-validate:
-    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/vellum-lang/scripts/validate-corpus.ts --dir fixtures/astra-data/akasha/content
+    node --import tsx libs/ts/vellum-lang/scripts/validate-corpus.ts --dir fixtures/astra-data/akasha/content
 
 # The `*.pg.test.ts` suites (the migration runner and the orator and weal stores) against a
 # real Postgres. CI sets ASTRA_TEST_DATABASE_URL to its `services: postgres` container. Without
@@ -250,18 +250,18 @@ commitlint from="origin/main" to="HEAD":
 # CI job codex-row-height-drift-guard: the listing row pitch is exactly 24px.
 codex-row-height-drift-guard:
     pnpm --filter @astra/codex build
-    cd apps/codex/web && node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts
+    cd apps/codex/web && node --import tsx scripts/rowHeightDriftGuard.ts
 
 # CI job codex-virtualization-interaction-guard: listing scroll, keys and reload in Chromium.
 codex-virtualization-interaction-guard:
     pnpm --filter @astra/codex build
-    cd apps/codex/web && node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts
+    cd apps/codex/web && node --import tsx scripts/virtualizationInteractionGuard.ts
 
 # CI-only (see `ci`): runs inside node:24-slim with the Chromium the playwright lock pins.
 # CI job vellum-visual-regression: each fixture's rendered PNG against its golden.
 vellum-visual-regression:
     pnpm --filter @astra/vellum-render build
-    cd apps/vellum/render && node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts
+    cd apps/vellum/render && node --import tsx scripts/visual-regression.ts
 
 # Needs only the toolchain rustup installs from the crate's rust-toolchain.toml (1.96.0 with
 # rustfmt and clippy), not the wasm tools. The second clippy pass bans unwrap in library code;

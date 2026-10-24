@@ -102,7 +102,7 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
 - **Telemetry** lands only from in-cluster: config `telemetry.otlp-endpoint` is the
   collector's name on the `telemetry` network (`http://signoz-otel-collector:4318`), not `localhost`.
 
-The cross-app frontend traps (TanStack Start, the Node resolve hook, SSR smoke tests, CSS
+The cross-app frontend traps (TanStack Start, running TS under tsx, SSR smoke tests, CSS
 layering, the gothic theme import) are in `libs/ts/site-kit/README.md` and
 `libs/ts/gothic/README.md`. Background (archived): `thoughts/archive/specs/0014-strider-spec.md`
 (original lift) and `0016-strider-hardening-spec.md` (template hardening).
