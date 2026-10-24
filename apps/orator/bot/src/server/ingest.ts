@@ -6,20 +6,22 @@
  * yt-dlp + prober are injected, so the whole lifecycle is unit-tested with stubs
  * and no binaries (CI-safe). `start()` returns a `done` promise tests await.
  *
- * astra port: the sync `bun:sqlite` `db` → the async `LibraryStore` (every repo
- * call awaited); `resumeInterrupted` is now async (`listJobsByStatus`).
+ * Shutdown and restart: `stop()` (a service-kit shutdown hook, run before the store closes) kills
+ * the running yt-dlp processes and waits for the jobs to let go, writing nothing about the
+ * interruption. A job a shutdown cut off therefore stays `queued` or `running` in the database,
+ * and `resumeInterrupted()` at the next boot picks it up from `listJobsByStatus`.
  */
 import { mkdir, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { getLogger, getTracer, lazyCounter, lazyHistogram } from "@astra/observe";
+import { getLogger, getTracer, lazyCounter, lazyHistogram, reportIgnored } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 
 import type { JobSnapshot } from "../api/types";
 import type { DownloadJob, DownloadJobItem, LibraryStore } from "../db/store";
 import { runPool } from "../lib/pool";
 import type { AudioProbe, AudioProber } from "../media/probe";
-import { extractVideoId, isPlaylistUrl, type YtDlp } from "../media/ytdlp";
+import { type DownloadTarget, extractVideoId, isPlaylistUrl, type YtDlp } from "../media/ytdlp";
 import type { JobHub } from "./jobhub";
 
 // One ingest item = one yt-dlp download (+ optional loudness probe), the service's
@@ -33,6 +35,9 @@ const ingestDuration = lazyHistogram("astra.orator-backend", "astra.orator.inges
   description: "Per-item ingest wall-clock (yt-dlp download + loudness probe)",
   unit: "ms",
 });
+
+/** How long `stop()` waits for in-flight jobs once their downloads are killed. */
+const STOP_WAIT_MS = 5_000;
 
 export interface IngestDeps {
   store: LibraryStore;
@@ -48,11 +53,44 @@ export interface StartResult {
   done: Promise<void>;
 }
 
+type Work = { item: DownloadJobItem; target: DownloadTarget };
+
 export class IngestService {
   private readonly deps: IngestDeps;
+  readonly #stopper = new AbortController();
+  readonly #inFlight = new Set<Promise<void>>();
 
   constructor(deps: IngestDeps) {
     this.deps = deps;
+  }
+
+  get #stopping(): boolean {
+    return this.#stopper.signal.aborted;
+  }
+
+  /** Keeps `stop()` aware of a background job until it settles. */
+  #track(job: Promise<void>): Promise<void> {
+    this.#inFlight.add(job);
+    void job.then(
+      () => this.#inFlight.delete(job),
+      () => this.#inFlight.delete(job),
+    );
+    return job;
+  }
+
+  /**
+   * Kill every running yt-dlp and wait (up to {@link STOP_WAIT_MS}) for the jobs to return,
+   * leaving their rows as they were so the next boot resumes them. After this the service starts
+   * no new work.
+   */
+  async stop(): Promise<void> {
+    this.#stopper.abort();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const waited = new Promise<void>((r) => {
+      timer = setTimeout(r, STOP_WAIT_MS);
+    });
+    await Promise.race([Promise.allSettled(this.#inFlight), waited]);
+    clearTimeout(timer);
   }
 
   /**
@@ -88,76 +126,103 @@ export class IngestService {
       sourceUrl: url,
       collectionId: collectionId ?? null,
     });
-    const videoId = extractVideoId(url) ?? url;
-    const item = await store.addJobItem({ jobId: job.id, videoId, title: videoId, position: 0 });
+    const item = await this.addSingleItem(job.id, url);
     await store.updateDownloadJob(job.id, { totalItems: 1, status: "running" });
-    const done = this.runItems(job.id, [{ item, target: { url } }]);
+    const done = this.#track(this.runItems(job.id, [{ item, target: { url } }]));
     return { job: (await store.getDownloadJob(job.id)) ?? job, done };
   }
 
+  private addSingleItem(jobId: number, url: string): Promise<DownloadJobItem> {
+    const videoId = extractVideoId(url) ?? url;
+    return this.deps.store.addJobItem({ jobId, videoId, title: videoId, position: 0 });
+  }
+
   private async startPlaylist(url: string, collectionId?: number): Promise<StartResult> {
-    const { store } = this.deps;
-    const job = await store.createDownloadJob({ type: "playlist", sourceUrl: url });
-    const done = (async () => {
-      let info: Awaited<ReturnType<YtDlp["enumerate"]>>;
-      try {
-        info = await this.deps.ytdlp.enumerate(url);
-      } catch (err) {
-        await store.updateDownloadJob(job.id, { status: "error", error: (err as Error).message });
-        await this.publish(job.id);
-        return;
-      }
-      // Target an existing collection if given, else create one from the playlist.
-      const targetId =
-        collectionId ??
-        (
-          await store.createCollection({
-            name: info.title,
-            sourceType: "youtube_playlist",
-            sourceUrl: url,
-          })
-        ).id;
-      await store.updateDownloadJob(job.id, {
-        title: info.title,
-        collectionId: targetId,
-        totalItems: info.entries.length,
-        status: "running",
-      });
-      const work = await Promise.all(
-        info.entries.map(async (entry, i) => ({
-          item: await store.addJobItem({
-            jobId: job.id,
-            videoId: entry.videoId,
-            title: entry.title,
-            position: i,
-          }),
-          target: { videoId: entry.videoId },
-        })),
-      );
-      await this.publish(job.id);
-      await this.runItems(job.id, work);
-    })();
+    // The target collection goes on the job row now, so a resume after an interrupted listing
+    // still imports into it.
+    const job = await this.deps.store.createDownloadJob({
+      type: "playlist",
+      sourceUrl: url,
+      collectionId: collectionId ?? null,
+    });
+    const done = this.#track(this.listAndRun(job, []));
     return { job, done };
   }
 
-  private async runItems(
-    jobId: number,
-    work: { item: DownloadJobItem; target: { url?: string; videoId?: string } }[],
-  ): Promise<void> {
+  /**
+   * List the playlist, record an item per entry not already in `existing` (matched by position),
+   * then download every item not yet done. A resume calls this too when the job's items were
+   * never all recorded.
+   */
+  private async listAndRun(job: DownloadJob, existing: DownloadJobItem[]): Promise<void> {
+    const { store } = this.deps;
+    let info: Awaited<ReturnType<YtDlp["enumerate"]>>;
+    try {
+      info = await this.deps.ytdlp.enumerate(job.source_url, this.#stopper.signal);
+    } catch (err) {
+      if (this.#stopping) return; // shutdown: the next boot lists it again
+      await store.updateDownloadJob(job.id, { status: "error", error: (err as Error).message });
+      await this.publish(job.id);
+      return;
+    }
+    // Target the job's collection if it has one, else create one from the playlist.
+    const targetId =
+      job.collection_id ??
+      (
+        await store.createCollection({
+          name: info.title,
+          sourceType: "youtube_playlist",
+          sourceUrl: job.source_url,
+        })
+      ).id;
+    await store.updateDownloadJob(job.id, {
+      title: info.title,
+      collectionId: targetId,
+      totalItems: info.entries.length,
+      status: "running",
+    });
+    const have = new Set(existing.map((i) => i.position));
+    const added = await Promise.all(
+      info.entries.flatMap((entry, i) =>
+        have.has(i)
+          ? []
+          : [
+              store.addJobItem({
+                jobId: job.id,
+                videoId: entry.videoId,
+                title: entry.title,
+                position: i,
+              }),
+            ],
+      ),
+    );
+    const work = [...existing.filter((i) => i.status !== "done"), ...added].map((item) => ({
+      item,
+      target: { videoId: item.video_id },
+    }));
+    await this.publish(job.id);
+    await this.runItems(job.id, work);
+  }
+
+  private async runItems(jobId: number, work: Work[]): Promise<void> {
     const { store } = this.deps;
     await mkdir(this.audioDir(), { recursive: true }).catch(() => {});
     const doneCount = async () =>
       (await store.listJobItems(jobId)).filter((i) => i.status === "done").length;
 
     await runPool(work, this.deps.concurrency ?? 3, async ({ item, target }) => {
+      if (this.#stopping) return; // shutdown: the item stays queued for the next boot
       try {
         await this.processItem(jobId, item, target);
       } catch (err) {
+        // A download killed by shutdown is not a failure: leave the row for the resume.
+        if (this.#stopping) return;
         await store.updateJobItem(item.id, { status: "error", error: (err as Error).message });
       }
       await store.updateDownloadJob(jobId, { completedItems: await doneCount() });
       await this.publish(jobId);
     });
+    if (this.#stopping) return; // the job stays running; the next boot resumes it
 
     // Compute final status from the DB so it's correct for resumed jobs too.
     const items = await store.listJobItems(jobId);
@@ -171,41 +236,52 @@ export class IngestService {
   }
 
   /**
-   * Resume jobs left mid-flight by a crash/restart (status still queued/running):
-   * re-queue their non-done items and download them. Dedup makes already-finished
-   * items instant. Returns the number of jobs resumed.
+   * Resume jobs left mid-flight by a crash, restart or shutdown (status still queued/running):
+   * re-queue their non-done items and download them. Dedup makes already-finished items instant.
+   * A playlist whose items were not all recorded is listed again; a single-video job cut off
+   * before its item was recorded gets the item now. Returns the number of jobs resumed.
    */
   async resumeInterrupted(): Promise<number> {
     const { store } = this.deps;
     const jobs = await store.listJobsByStatus(["queued", "running"]);
     for (const job of jobs) {
-      const pending = (await store.listJobItems(job.id)).filter((i) => i.status !== "done");
+      let items = await store.listJobItems(job.id);
+      for (const it of items.filter((i) => i.status !== "done"))
+        await store.updateJobItem(it.id, { status: "queued", progressPct: 0, error: null });
+      items = await store.listJobItems(job.id);
+      if (job.type === "playlist" && (items.length === 0 || items.length < job.total_items)) {
+        await store.updateDownloadJob(job.id, { status: "running" });
+        this.#resumeInBackground(job.id, this.listAndRun(job, items));
+        continue;
+      }
+      if (job.type === "single" && items.length === 0)
+        items = [await this.addSingleItem(job.id, job.source_url)];
+      const pending = items.filter((i) => i.status !== "done");
       if (pending.length === 0) {
         await store.updateDownloadJob(job.id, { status: "done" });
         continue;
       }
       await store.updateDownloadJob(job.id, { status: "running" });
-      for (const it of pending)
-        await store.updateJobItem(it.id, { status: "queued", progressPct: 0, error: null });
       const work = pending.map((item) => ({
         item,
         target: job.type === "single" ? { url: job.source_url } : { videoId: item.video_id },
       }));
-      void this.runItems(job.id, work).catch((err) =>
-        log.emit({
-          severityText: "ERROR",
-          body: `resume of job ${job.id} failed: ${err instanceof Error ? err.message : String(err)}`,
-        }),
-      );
+      this.#resumeInBackground(job.id, this.runItems(job.id, work));
     }
     return jobs.length;
   }
 
-  private async processItem(
-    jobId: number,
-    item: DownloadJobItem,
-    target: { url?: string; videoId?: string },
-  ): Promise<void> {
+  #resumeInBackground(jobId: number, run: Promise<void>): void {
+    void this.#track(run).catch((err: unknown) => {
+      if (this.#stopping) return;
+      log.emit({
+        severityText: "ERROR",
+        body: `resume of job ${jobId} failed: ${err instanceof Error ? err.message : String(err)}`,
+      });
+    });
+  }
+
+  private async processItem(jobId: number, item: DownloadJobItem, target: DownloadTarget) {
     await tracer.startActiveSpan(
       "orator.ingest.item",
       { attributes: { "orator.job_id": jobId, "orator.video_id": item.video_id ?? "" } },
@@ -217,13 +293,18 @@ export class IngestService {
           ingestCounter.add(1, { outcome });
           ingestDuration.record(Date.now() - startedAt, { outcome });
         } catch (err) {
-          span.setStatus({ code: SpanStatusCode.ERROR, message: String(err) });
-          ingestCounter.add(1, { outcome: "error" });
-          ingestDuration.record(Date.now() - startedAt, { outcome: "error" });
-          log.emit({
-            severityText: "ERROR",
-            body: `ingest item failed (job ${jobId}, item ${item.id}): ${err instanceof Error ? err.message : String(err)}`,
-          });
+          // A shutdown interrupts the item; it is not an error (and must not page).
+          const outcome = this.#stopping ? "interrupted" : "error";
+          span.setAttribute("orator.outcome", outcome);
+          ingestCounter.add(1, { outcome });
+          ingestDuration.record(Date.now() - startedAt, { outcome });
+          if (!this.#stopping) {
+            span.setStatus({ code: SpanStatusCode.ERROR, message: String(err) });
+            log.emit({
+              severityText: "ERROR",
+              body: `ingest item failed (job ${jobId}, item ${item.id}): ${err instanceof Error ? err.message : String(err)}`,
+            });
+          }
           throw err;
         } finally {
           span.end();
@@ -235,7 +316,7 @@ export class IngestService {
   private async _ingestItem(
     jobId: number,
     item: DownloadJobItem,
-    target: { url?: string; videoId?: string },
+    target: DownloadTarget,
   ): Promise<"ok" | "duplicate"> {
     const { store } = this.deps;
     const job = await store.getDownloadJob(jobId);
@@ -257,12 +338,19 @@ export class IngestService {
     }
 
     let lastPct = 0;
-    const result = await this.deps.ytdlp.download(target, this.audioDir(), (pct) => {
-      if (pct - lastPct >= 5 || pct >= 100) {
+    const result = await this.deps.ytdlp.download(
+      target,
+      this.audioDir(),
+      (pct) => {
+        if (this.#stopping || !(pct - lastPct >= 5 || pct >= 100)) return;
         lastPct = pct;
-        void store.updateJobItem(item.id, { progressPct: pct }).then(() => this.publish(jobId));
-      }
-    });
+        void store
+          .updateJobItem(item.id, { progressPct: pct })
+          .then(() => this.publish(jobId))
+          .catch((err: unknown) => reportIgnored("orator.ingest-progress", err));
+      },
+      this.#stopper.signal,
+    );
 
     // Loudness on ingest (B25), best-effort.
     let loudnessLufs: number | null = null;

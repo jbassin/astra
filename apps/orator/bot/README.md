@@ -63,8 +63,13 @@ ontology-gen` regenerates the TS Zod schema (`libs/ts/config/src/config.gen.ts`)
   session or API key gets 401 before any route lookup, real path or not. Route bodies are zod schemas
   in the route modules (`src/server/bodies.ts`); their messages are the API error codes, and
   `src/server/pins.test.ts` pins every response. The compose healthcheck probes `/healthz`, which
-  answers 503 while Postgres does not; on SIGTERM the server drains, then the bot leaves Discord, then
-  the store closes.
+  answers 503 while Postgres does not; on SIGTERM the server drains, then ingest stops, then the bot
+  leaves Discord, then the store closes.
+- **A shutdown never fails an import.** Ingest's stop hook kills the running yt-dlp processes and
+  writes nothing about the interruption, so the job stays `queued` or `running`, and the next boot's
+  `resumeInterrupted()` finishes it (a playlist cut off before its listing finished is listed
+  again). `src/server/ingest.pg.test.ts` covers this against a real Postgres, including a store
+  that closes under running downloads.
 - **The API's shapes live once, in `src/api/types.ts`.** The store's row types, the now-playing
   state and the response bodies are defined there, and the SPA imports them, so a server change
   that alters a response fails the SPA's typecheck. Keep that file type-only and import-free: the

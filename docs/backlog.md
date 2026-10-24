@@ -133,8 +133,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
   Josh (shared edge).
 - `/healthz` is reachable from the internet through the Caddy catch-alls; on orator each hit runs a
   Postgres ping. Block `/healthz` at the edge (cheap) — agent.
-- orator shutdown now closes the store while YouTube ingest jobs may still write; confirm startup
-  resume (`listJobsByStatus`) recovers them, with a test — agent.
 - Dashboards using orator's old `orator.api` span should switch to the route-named server spans — agent.
 - codex: once release-based serving has run a while, delete the old flat
   `/ruby/data/astra-state/codex/data/{corpus,search}` (kept for a code rollback past cdx-4) — agent.
