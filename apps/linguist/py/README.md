@@ -1,4 +1,4 @@
-# linguist — session transcripts, correction surfacing and the chronicle
+# linguist — session transcripts and the chronicle
 
 linguist turns scribe's raw `script.json` into the canonical session transcript and builds the
 chronicle (the Show → Season → Episode timeline on `akasha.iridi.cc/chronicle`). It runs as
@@ -7,9 +7,6 @@ Dagster assets on `linguist_sessions` partitions, fired by `scribe_output_sensor
 - `session_transcripts` writes `linguist/transcripts/<NNN>.<slug>.<date>.txt` and
   `linguist/data/<date>.json` in the astra-data clone, plus the campaign-matched LLM context
   `<NNN>.<slug>.<date>.txt` under `linguist.script-path`.
-- `correction_candidates` runs the compiled dspy judge and writes
-  `linguist/data/<date>.candidates.json` for human triage (the clone's `.gitignore` keeps it
-  out of git).
 - `session_episode_summary` writes `linguist/timeline/episodes/<date>.json` (GLM via
   `astra_llm` `call_structured`); the hourly `campaign_timeline` groups each show into seasons
   in `linguist/timeline/seasons.json`.
@@ -31,21 +28,9 @@ reads prior episodes as continuity.
   `src/astra_linguist/chronicle.py`, then deploy Dagster.
 - **Chronicle backfill** (resumable; skips episode files that exist):
   `uv run python apps/linguist/py/scripts/backfill_chronicle.py` on the host.
-- **Triage correction candidates** (interactive), then append accepted fixes to `defs.yaml`:
-
-  ```sh
-  uv run python -m astra_linguist.surface.review_tui --candidates <date>.candidates.json
-  uv run python -m astra_linguist.surface.apply --candidates <date>.candidates.json
-  ```
-
-- **Recompile the judge** (paid, about $7; without `--live` it prints a spend estimate;
-  `--eval-only` re-scores the committed artifact):
-  `uv run python -m astra_linguist.surface.optimize --live`. The compiled
-  `surface/judge.compiled.json` is specific to its model, so changing
-  `linguist.surface-model-judge` needs a recompile.
-
-The correction loop (`correction_candidates` and `surface/`) is scheduled for deletion in the
-0037 paydown.
+- **Fix a recurring mistranscription:** add a `variant` (a regex fragment) under the right
+  `entry` in `libs/py/lexicon/src/astra_lexicon/defs.kdl`, then deploy Dagster. The next
+  `session_transcripts` run applies it.
 
 ## Traps
 
@@ -61,7 +46,6 @@ The correction loop (`correction_candidates` and `surface/`) is scheduled for de
 - **Dates are not zero-padded.** Order episodes with `date_key` (an integer tuple).
 - **Structured output can parse and still fail the schema** (GLM returned a list as a JSON
   string). `call_structured` retries a `ValidationError` three times, then raises.
-- **GLM reasoning tokens share `max_tokens`.** `surface-judge-max-tokens` is 16384 because
-  4096 truncated the judge mid-reasoning.
-- **Escalation is inert** while `surface-model-judge` equals `surface-model-escalate`; point
-  escalate at a different model to re-enable it.
+- **Old `*.candidates.json` files** from the deleted correction loop (ADR 0021) still sit in
+  `linguist/data/` in the clone. Its `.gitignore` keeps them out of commits, and
+  `backfill_chronicle.py` skips them.

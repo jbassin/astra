@@ -1,7 +1,7 @@
 [project]
 name = "astra-linguist"
 version = "0.0.0"
-description = "linguist — transcript processing (0006): scribe script.json → formatted/canonical transcript + mouthpiece context, with a dspy LLM correction surfacer. Python Dagster assets. The largest pipeline subsystem."
+description = "linguist — transcript processing (0006): scribe script.json → formatted/canonical transcript + mouthpiece context, and the chronicle. Python Dagster assets. The largest pipeline subsystem."
 requires-python = ">=3.12"
 dependencies = [
     "astra-config",
@@ -11,9 +11,7 @@ dependencies = [
     "astra-ontology",
     "astra-ontology-being",
     "dagster",
-    "dspy[optuna]>=2.5",  # optuna powers the MIPROv2 judge optimizer (gate J)
     "pydantic>=2",
-    "wordfreq>=3",
 ]
 
 [build-system]

@@ -109,23 +109,7 @@ class LinguistConfig(_Base):
     ingest_saved_dir: DataPath = ""
     # Runtime outputs of session_transcripts that are not published datasets.
     script_path: DataPath = "linguist/script"
-    review_port: int = 10116
     podcast_episodes_path: str = ""
-    # Phase-2 judge models + Phase-1 filter / windowing tuning (faerrin `config.ts` `surface`).
-    surface_model_judge: str = "openrouter/z-ai/glm-5.2"
-    surface_model_escalate: str = "openrouter/z-ai/glm-5.2"
-    surface_max_ngram: int = 3
-    surface_min_token_len: int = 3
-    surface_known_floor_unigram: float = 0.78
-    surface_known_floor_multi: float = 0.8
-    surface_strong_score: float = 0.88
-    surface_known_near_floor: float = 0.6
-    surface_judge_chunk_size: int = 150
-    surface_judge_overlap: int = 10
-    surface_escalate_low: float = 0.4
-    surface_escalate_high: float = 0.75
-    surface_confidence_floor: float = 0.6
-    surface_judge_max_tokens: int = 4096
 
 
 class MouthpieceConfig(_Base):

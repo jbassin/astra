@@ -27,7 +27,7 @@ from astra_linguist.chronicle import (
     show_for_date,
 )
 from astra_linguist.chronicle_llm import build_chronicle, build_episode_entry
-from astra_linguist.surface.surface import load_session
+from astra_linguist.models import load_session
 
 DATA_DIR = Path(load_config().data.linguist_data)
 WORKERS = 5

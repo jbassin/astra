@@ -11,7 +11,6 @@ import dagster as dg
 
 ASSETS = {
     "campaign_timeline",
-    "correction_candidates",
     "session_audio",
     "session_audio_clips",
     "session_brief",

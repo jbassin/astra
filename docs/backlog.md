@@ -92,8 +92,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Pipeline
 
-- Delete the linguist correction loop (`correction_candidates`, `surface/`, `judge.compiled.json`,
-  `linguist.surface-*` config) — agent; decided, [ADR 0021](adr/0021-delete-linguist-correction-loop.md).
 - Delete Cartesia (provider, recipe `mouthpiece-cartesia-voices`, compose key, config, persona voice
   ids) and the Anthropic fallback (`ensure_anthropic_env`, config key, compose key, `claude-*` price
   rows) — agent; decided, [ADR 0022](adr/0022-delete-cartesia-and-anthropic-fallbacks.md).

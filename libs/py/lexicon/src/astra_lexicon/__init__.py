@@ -12,9 +12,7 @@ from __future__ import annotations
 
 from .corrections import (
     DEFS_PATH,
-    AddResult,
     Replacer,
-    add_correction,
     build_replacer,
     escape_regex,
     load_corrections,
@@ -43,13 +41,11 @@ from .phonetics import (
 __all__ = [
     "DEFS_PATH",
     "WEIGHTS",
-    "AddResult",
     "Hypothesis",
     "LexEntry",
     "Lexicon",
     "Replacer",
     "Tok",
-    "add_correction",
     "build_lexicon",
     "build_lexicon_from",
     "build_replacer",

@@ -19,7 +19,7 @@ from pathlib import Path
 
 import dagster as dg
 from astra_config import load_config
-from astra_lexicon import DEFS_PATH, build_lexicon, load_corrections
+from astra_lexicon import load_corrections
 from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
@@ -34,19 +34,15 @@ from .chronicle import (
     chronicle_inputs_hash,
     load_episode_entries,
 )
-from .models import RawLine
+from .models import RawLine, load_session
 from .pipeline import process_session
 from .roster import SpeakerResolver
 from .sensor import new_sessions
-from .surface.surface import load_session, surface_session_payload, write_candidates
 
 _log = get_logger("astra.linguist")
 _meter = get_meter("astra.linguist")
 _sessions_counter = _meter.create_counter(
     "astra.linguist.sessions", description="sessions ingested"
-)
-_candidates_counter = _meter.create_counter(
-    "astra.linguist.candidates", description="surfaced correction candidates"
 )
 _episodes_counter = _meter.create_counter(
     "astra.chronicle.episodes", description="chronicle episode summaries generated"
@@ -105,43 +101,6 @@ def session_transcripts(context: dg.AssetExecutionContext) -> dg.MaterializeResu
     )
     return dg.MaterializeResult(
         metadata={"lines": len(artifacts.transcript.script), "campaign": matched_name}
-    )
-
-
-@dg.asset(partitions_def=linguist_sessions, deps=[session_transcripts], group_name="linguist")
-def correction_candidates(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
-    """Surface NEW correction candidates for a session: the Phase-1 phonetic filter + the
-    compiled dspy judge → a reviewable `{date}.candidates.json` (triage with `review_tui
-    --candidates`, then `apply.py` appends the accepted ones to `defs.yaml`).
-
-    Runs automatically after `session_transcripts` (it reads that asset's `data/{date}.json`).
-    **Live** — spends LLM tokens per session (GLM 5.2 judge; the borderline-escalation
-    tier is inert while judge == escalate); the judge is skipped when nothing is flagged.
-    *Discovery* is automatic; *applying* accepted corrections to `defs.yaml` stays a
-    human-gated CLI step (we never auto-edit the SSOT)."""
-    from .surface.judge import make_dspy_complete_fn  # lazy: pulls dspy + resolves the key
-
-    date = context.partition_key
-    transcript = load_session(DATA_DIR / f"{date}.json")
-    lex = build_lexicon(DEFS_PATH)
-    payload = surface_session_payload(
-        transcript, lex, complete_fn=make_dspy_complete_fn(), date=date
-    )
-    write_candidates(payload, DATA_DIR / f"{date}.candidates.json")
-    for verdict, n in payload["counts"].items():
-        _candidates_counter.add(n, {"verdict": verdict})
-    _log.info(
-        "linguist surfaced %d candidate(s) for %s: flagged=%d %s",
-        sum(payload["counts"].values()),
-        date,
-        payload["flagged_spans"],
-        payload["counts"],
-    )
-    return dg.MaterializeResult(
-        metadata={
-            "flagged": payload["flagged_spans"],
-            **{k: v for k, v in payload["counts"].items()},
-        }
     )
 
 
@@ -255,7 +214,7 @@ def campaign_timeline_schedule() -> dg.RunRequest:
 # here only once scribe writes its `script.json`, so a mid-transcription session won't fire
 # prematurely.) The downstream linguist→mouthpiece sweep is what needed adoption, not this.
 @dg.sensor(
-    target=[session_transcripts, correction_candidates, session_episode_summary],
+    target=[session_transcripts, session_episode_summary],
     minimum_interval_seconds=30,
     default_status=dg.DefaultSensorStatus.RUNNING,
 )
@@ -263,7 +222,7 @@ def scribe_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult
     """Register a linguist partition + run request for each scribe session
     (`{date}/script.json` under `ingest_saved_dir`) not yet processed — the scribe→linguist
     trigger. Each run materializes `session_transcripts` (apply known corrections) then
-    `correction_candidates` (surface new ones for review), so a session is fully processed."""
+    `session_episode_summary`, so a session is fully processed."""
     saved = _linguist_config().ingest_saved_dir
     if not saved or not Path(saved).is_dir():
         return dg.SensorResult()
@@ -297,7 +256,6 @@ def _atomic_write(path: Path, text: str) -> None:
 defs = dg.Definitions(
     assets=[
         session_transcripts,
-        correction_candidates,
         session_episode_summary,
         campaign_timeline,
     ],
