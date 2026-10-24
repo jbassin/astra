@@ -1,18 +1,9 @@
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vitest/config";
+import { defineSiteVitestConfig } from "@astra/site-kit/vitest";
 
-// Standalone vitest config (S2 addition — S1 shipped with no config file at
-// all, vitest fell back to vite.config.ts's plugins + the plain "node"
-// default). Stays "node" as the default here too — S1's engine/server/quiz
-// tests are plain Node (real fs, real HTTP) and must keep passing unchanged —
-// only the new S2 component tests need a DOM, and they opt in per-file via a
-// `// @vitest-environment jsdom` docblock (the codex precedent, `apps/codex/web
-// /vitest.config.ts`: "only the files that actually need a DOM pay for one").
-export default defineConfig({
-  plugins: [react()],
-  test: {
-    environment: "node",
-    globals: true,
-    exclude: ["**/node_modules/**", "**/e2e/**"],
-  },
+// The default environment is "node": the engine, server and quiz tests use real fs and real
+// HTTP. The component tests opt into a DOM with a `// @vitest-environment jsdom` docblock.
+export default defineSiteVitestConfig({
+  root: import.meta.dirname,
+  environment: "node",
+  generatedContent: false,
 });

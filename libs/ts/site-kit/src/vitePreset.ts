@@ -44,9 +44,16 @@ export interface SiteConfigOptions {
   root: string;
   /**
    * The modules `scripts/build-content.ts` writes into `src/generated/`, by basename. A content
-   * edit in dev invalidates them.
+   * edit in dev invalidates them. Omit it for an app with no build-time content step (codex
+   * reads its corpus at request time; vellum's documents are authored live): the preset then
+   * leaves out `contentWatchPlugin`.
    */
-  generated: ReadonlyArray<string>;
+  generated?: ReadonlyArray<string>;
+  /**
+   * Whether the app uses gothic's theme (`@astra/site-kit/theme`). Default true. False leaves
+   * out `gothicFontsPlugin` and `@tailwindcss/vite`, for an app that styles itself (codex).
+   */
+  theme?: boolean;
   /** App-specific vite settings (a dev proxy, say), merged over the preset with `mergeConfig`. */
   vite?: UserConfig;
 }
@@ -56,10 +63,12 @@ export interface SiteConfigOptions {
  * block, the `@` → `src/` alias, and the plugins in their required order. Run vite with
  * `--configLoader runner` (see the README).
  *
- * - `contentWatchPlugin` runs `scripts/build-content.ts` at build start and on content edits in
- *   dev, so the content pipeline never reaches the client bundle.
- * - `gothicFontsPlugin` serves gothic's fonts in dev and copies them to `dist/client/fonts`.
- * - `@tailwindcss/vite` compiles gothic's theme.css; without it the theme ships raw.
+ * - `contentWatchPlugin` (when `generated` is set) runs `scripts/build-content.ts` at build
+ *   start and on content edits in dev, so the content pipeline never reaches the client bundle.
+ * - `gothicFontsPlugin` (unless `theme: false`) serves gothic's fonts in dev and copies them to
+ *   `dist/client/fonts`.
+ * - `@tailwindcss/vite` (unless `theme: false`) compiles gothic's theme.css; without it the
+ *   theme ships raw.
  * - `ssrExternalsPlugin` keeps the SSR bundle to the app's own dependencies.
  * - `tanstackStart()` must come before `viteReact()`. No `prerender` block: the apps run as
  *   SSR servers (ADR 0009).
@@ -73,15 +82,20 @@ export function defineSiteConfig(opts: SiteConfigOptions): UserConfig {
       alias: { "@": path.resolve(root, "./src") },
     },
     plugins: [
-      contentWatchPlugin({
-        root,
-        script: path.join(root, "scripts", "build-content.ts"),
-        contentDir: path.join(root, "content"),
-        generatedDir: path.join(root, "src", "generated"),
-        invalidate: opts.generated,
-      }),
-      gothicFontsPlugin({ clientOutDir: path.join(root, "dist", "client") }),
-      tailwindcss(),
+      ...(opts.generated
+        ? [
+            contentWatchPlugin({
+              root,
+              script: path.join(root, "scripts", "build-content.ts"),
+              contentDir: path.join(root, "content"),
+              generatedDir: path.join(root, "src", "generated"),
+              invalidate: opts.generated,
+            }),
+          ]
+        : []),
+      ...(opts.theme === false
+        ? []
+        : [gothicFontsPlugin({ clientOutDir: path.join(root, "dist", "client") }), tailwindcss()]),
       ssrExternalsPlugin({ root }),
       tanstackStart(),
       viteReact(),

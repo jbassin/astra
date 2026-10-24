@@ -7,15 +7,17 @@ step. How to start a new frontend from these pieces is in `apps/strider/web/READ
 
 ## The frontend preset
 
-An app's shell files are a few lines of app-specific options (strider, akasha-frontend and
-mouthpiece-frontend use it; the other frontends still carry their own copies):
+An app's shell files are a few lines of app-specific options. Every TanStack Start frontend uses
+it: strider, akasha-frontend, mouthpiece-frontend, harrow, ledger, vellum-frontend and codex.
+menhir is a plain vite SPA served by its own service-kit server, so it uses only the vitest
+preset.
 
 | File | Calls | App-specific options |
 |---|---|---|
-| `vite.config.ts` | `defineSiteConfig` (`@astra/site-kit/vite`) | `root`, `generated` (the modules `build-content.ts` writes; dev invalidates them), optional `vite` merged over the preset |
-| `vitest.config.ts` | `defineSiteVitestConfig` (`@astra/site-kit/vitest`) | `root` |
-| `src/router.tsx` | `createRouter({ routeTree, ...siteRouterOptions({ notFound }) })` (`/router`) | `notFound`: `{ heading, message, homeLabel }` or a component |
-| `src/routes/__root.tsx` | `head: () => siteHead({ title, description })`, `<SiteDocument>` (`/document`), `import "@astra/site-kit/theme"` | `rum={() => import("@/observe/rumConfig")}`, `forceDarkTheme`, `head` (extra head nodes), `bodyProps`, the body as children |
+| `vite.config.ts` | `defineSiteConfig` (`@astra/site-kit/vite`) | `root`; `generated` (the modules `build-content.ts` writes; dev invalidates them; omit it when the app has no content step); `theme: false` for an app that doesn't use gothic; optional `vite` merged over the preset |
+| `vitest.config.ts` | `defineSiteVitestConfig` (`@astra/site-kit/vitest`) | `root`; `environment: "node"`; `generatedContent: false` when there is no `build-content.ts`; extra `globalSetup` and `setupFiles` |
+| `src/router.tsx` | `createRouter({ routeTree, ...siteRouterOptions({ notFound }) })` (`/router`) | `notFound`: `{ heading, message, homeLabel }` or a component; other router options go after the spread (codex's `pathParamsAllowedCharacters`) |
+| `src/routes/__root.tsx` | `head: () => siteHead({ title, description, meta? })`, `<SiteDocument>` (`/document`), `import "@astra/site-kit/theme"` | `rum={() => import("@/observe/rumConfig")}`, `forceDarkTheme`, `head` (extra head nodes), `bodyProps`, the body as children |
 | `src/ssrSmoke.test.ts` | `describeSsrSmoke` (`/ssrSmoke`) | `appRoot`, `routes: [{ path, status?, contains }]`, optional `build` |
 
 `defineSiteConfig` reads the dev port from the config.kdl block that `package.json` names in
@@ -23,6 +25,12 @@ mouthpiece-frontend use it; the other frontends still carry their own copies):
 `contentWatchPlugin`, `gothicFontsPlugin`, `@tailwindcss/vite`, `ssrExternalsPlugin`,
 `tanstackStart()`, plugin-react. `defineSiteVitestConfig` sets jsdom, globals, the alias and a
 global setup that runs `scripts/build-content.ts` when `src/generated/` holds no module.
+
+The preset leaves the server alone. `server.ts` stays a `createSsrServer` call of the app's own,
+with any `routes` or `staticMounts` it needs, and a `src/server.ts` that wraps TanStack's handler
+(codex pins each request to one corpus release there) is found by TanStack Start by name.
+codex keeps its own smoke file: its route tests share one build with the smoke, and it imports
+`bundleIsStale` from `/ssrSmoke` for the rebuild check.
 `describeSsrSmoke` rebuilds `dist/` when it is missing or older than the app's sources or any
 `libs/ts` file, then renders each route through the built bundle in a plain Node process.
 
@@ -74,10 +82,6 @@ global setup that runs `scripts/build-content.ts` when `src/generated/` holds no
   the built bundles.
 - **The build stage needs `config.kdl`.** `vite.config.ts` reads the port and service name at
   build time, so `deploy/node.Dockerfile` copies `ontology/` before `pnpm run build`.
-- **The harrow and ledger SSR smokes read whatever `dist/` exists.** They build only when
-  `dist/server/server.js` is missing, so after a dependency change they fail on a stale build
-  (for example `matchedRoutes is not iterable`) until you run the app's `build`. CI is
-  unaffected (no `dist/`). `describeSsrSmoke` and codex's smoke rebuild when stale.
 - **`vitest.config.ts` loads without the resolve hook.** vitest's config loader leaves workspace
   packages to plain Node, so `src/vitestPreset.ts` may import only packages and Node builtins;
   a relative import there fails with `ERR_MODULE_NOT_FOUND`. That is why the vitest preset is

@@ -22,7 +22,6 @@
     "@codemirror/language": "^6.12.3",
     "@codemirror/state": "^6.4.1",
     "@codemirror/view": "^6.34.0",
-    "@fontsource/ibm-plex-mono": "catalog:",
     "@lezer/highlight": "^1.2.3",
     "@lezer/markdown": "^1.6.4",
     "@opentelemetry/api": "catalog:",
@@ -34,13 +33,11 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "catalog:",
     "@testing-library/dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/mdast": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@vitejs/plugin-react": "catalog:",
     "jsdom": "catalog:",
     "tailwindcss": "catalog:",
     "vite": "catalog:",

@@ -1,39 +1,13 @@
-import path from "node:path";
+import { defineSiteVitestConfig } from "@astra/site-kit/vitest";
 
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vitest/config";
-
-// Standalone vitest config: separate from vite.config so the TanStack Start server
-// plugin doesn't load under the test runner. ESM — `import.meta.dirname`, not
-// `__dirname` (the workspace is `"type": "module"`).
-//
-// P2 S2: gains the `@` alias for the new routes/server/observe layer (S1's render
-// layer stayed on relative imports and still does — untouched).
-//
-// P3 S3: stays "node" as the DEFAULT (reverted an attempted app-wide widen to
-// "jsdom" — the akasha-frontend/strider precedent — after it broke
-// `src/ingest/sluggify.test.ts`'s `fileURLToPath(new URL(...,
-// import.meta.url))` ONLY under the full concurrent
-// every-package test run, never in isolation: reproducible with the global default
-// on jsdom, gone the instant it's reverted. Likely a real jsdom/vite-node
-// `import.meta.url` interaction under heavy parallel load, not a fixable
-// application bug — not worth chasing given the surgical alternative below).
-// `FacetPanel.tsx`/`BrowseListing.tsx`/`legacyToggle.ts` ARE real interactive
-// islands that need a DOM to test-render against via `@testing-library/react`
-// — those 2 test files carry their own `// @vitest-environment jsdom`
-// docblock instead (same per-file-override mechanism `ssrSmoke.test.ts` uses
-// in the opposite direction), so only the files that actually need a DOM pay
-// for one; everything else (incl. `sluggify.test.ts`) stays on plain "node".
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: { "@": path.resolve(import.meta.dirname, "./src") },
-  },
-  test: {
-    environment: "node",
-    globalSetup: ["./vitest.globalSetup.ts"],
-    setupFiles: ["./vitest.setup.ts"],
-    globals: true,
-    exclude: ["**/node_modules/**", "**/e2e/**"],
-  },
+// The default environment stays "node" (P3 S3): a jsdom default broke
+// `fileURLToPath(new URL(..., import.meta.url))` only under the full concurrent test run. The
+// interactive islands' tests opt into a DOM with a `// @vitest-environment jsdom` docblock.
+// The global setup builds the fixture corpus; the setup file points every test at it.
+export default defineSiteVitestConfig({
+  root: import.meta.dirname,
+  environment: "node",
+  generatedContent: false,
+  globalSetup: ["./vitest.globalSetup.ts"],
+  setupFiles: ["./vitest.setup.ts"],
 });

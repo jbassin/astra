@@ -1,25 +1,9 @@
-import { createRouter, type ErrorComponentProps, Link, useRouter } from "@tanstack/react-router";
+import { siteRouterOptions } from "@astra/site-kit/router";
+import { createRouter, Link } from "@tanstack/react-router";
 
 import { routeTree } from "./routeTree.gen";
 
-// Router-wide error + not-found boundaries (template defaults). Without these a
-// thrown loader error renders the framework's bare fallback and unmatched URLs have
-// no 404. Retry invalidates the router (re-runs loaders) rather than calling
-// `reset()`, which only resets the React error boundary without refetching.
-function DefaultErrorComponent({ error }: ErrorComponentProps) {
-  const router = useRouter();
-  return (
-    <main role="alert" className="route-boundary">
-      <h1>Something went wrong</h1>
-      <p>{error instanceof Error ? error.message : String(error)}</p>
-      <button type="button" onClick={() => router.invalidate()}>
-        Retry
-      </button>
-    </main>
-  );
-}
-
-function DefaultNotFoundComponent() {
+function NotFound() {
   return (
     <main className="center">
       <article className="popover-hint">
@@ -32,11 +16,5 @@ function DefaultNotFoundComponent() {
 }
 
 export function getRouter() {
-  return createRouter({
-    routeTree,
-    defaultPreload: "intent",
-    scrollRestoration: true,
-    defaultErrorComponent: DefaultErrorComponent,
-    defaultNotFoundComponent: DefaultNotFoundComponent,
-  });
+  return createRouter({ routeTree, ...siteRouterOptions({ notFound: NotFound }) });
 }
