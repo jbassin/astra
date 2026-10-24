@@ -164,8 +164,13 @@ also needs a renderer in `RENDERERS` (`server/src/mcp.ts`).
 - **pf2e data lives on different sides of the document.** Live `game.messages` rolls are Roll
   objects, not JSON strings (normalize with `JSON.parse(JSON.stringify(x))`); `hp.max` exists only on
   the live actor; hero points exist only in source data (pf2e zeroes the live value); a spellcasting
-  DC is reliable only at the actor's `system.attributes.spellDC.value`. Fixtures are source-shaped,
-  so this class of bug shows up only against the live world.
+  DC is reliable only at the actor's `system.attributes.spellDC.value`. Handlers read `system.*`
+  only through `module/src/pf2e/`, whose accessors name the side they read in their types
+  (`Pf2eSystem<"source">` or `<"live">`); its `index.ts` has the field-by-field table. Add an
+  accessor there rather than walking `system` in a handler. The fixtures in
+  `module/tests/fixtures/pf2e/` hold both sides, but their live sides are synthesized, not
+  captured, so a wrong guess about pf2e's prepared data still shows up only against the live
+  world. Chat-message `flags.pf2e` reads (query-rolls) are not in the layer yet.
 - **pf2e authoring recipes:** clone and patch a compendium document where one exists; hand-author
   only where there is no base. A spell is castable only when `system.location.value` is the
   spellcasting entry's id. Apply persistent damage through the non-dialog path; a bare

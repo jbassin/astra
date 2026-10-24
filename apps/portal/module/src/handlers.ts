@@ -90,6 +90,49 @@ import {
   SETTING_ALLOW_WRITES,
   SETTING_BRIDGE_USER_ID,
 } from "./constants";
+import {
+  actorAlliance,
+  actorBiography,
+  actorHeroPoints,
+  actorHp,
+  actorLanguages,
+  actorLevel,
+  actorXp,
+  type BiographySection,
+  entryPreparedType,
+  entrySlot,
+  entrySlots,
+  entryTradition,
+  familiarMasterId,
+  featCategory,
+  isDerivedPcPath,
+  firstItemName,
+  itemAcBonus,
+  itemBulk,
+  itemDamage,
+  itemDescription,
+  itemEquipped,
+  itemLevel,
+  itemPrice,
+  itemQuantity,
+  itemRarity,
+  itemRunes,
+  itemTraits,
+  liveNumberAt,
+  liveSkills,
+  liveSystem,
+  type Pf2eSlot,
+  type Pf2eSource,
+  type Pf2eSystem,
+  partyMemberUuids as partyMemberUuidsOf,
+  PRICE_DENOMINATIONS,
+  sourceItems,
+  sourceOf,
+  sourceSystem,
+  spellBaseRank,
+  spellcastingEntryDc,
+  spellLocation,
+} from "./pf2e";
 
 /** Default `search-compendium`/`search-world` result cap when the caller doesn't
  * specify one — generous enough for an LLM to scan, small enough not to flood context. */
@@ -932,26 +975,6 @@ async function handleApplyCondition(rawParams: unknown): Promise<ApplyConditionR
   }
 }
 
-/** The known-derived PC source paths (0026 D-10) — `CharacterSystemSource` types
- * `perception`/`saves`/`traits` as `never` and AC/class DC are computed every prep
- * cycle, so hand-setting any of these on a `type: "character"` actor would either be
- * silently discarded or corrupt data-prep. Segment-boundary matched (`key === prefix
- * || key.startsWith(prefix + ".")`) so e.g. "system.perceptionFoo" — NOT an actual
- * derived path — is never falsely caught. */
-const PC_DERIVED_PATH_PREFIXES = [
-  "system.saves",
-  "system.perception",
-  "system.traits",
-  "system.attributes.ac",
-  "system.attributes.classDC",
-];
-
-function isDerivedPcPath(path: string): boolean {
-  return PC_DERIVED_PATH_PREFIXES.some(
-    (prefix) => path === prefix || path.startsWith(`${prefix}.`),
-  );
-}
-
 /** `update-document` (spec 0026 S3/D-10) — generic dot-path diff-merge update by
  * uuid, resolved the same forward-safe way `get-document` already does. The D-10
  * deny-list ONLY applies to `type: "character"` actors (NPCs/hazards/items/scenes/
@@ -1318,14 +1341,7 @@ async function handleQueryParty(rawParams: unknown): Promise<QueryPartyResult> {
   let partyName: string | undefined;
   for (const party of parties) {
     partyName ??= party.name;
-    const raw = party.toObject();
-    const system = (raw.system ?? {}) as Record<string, unknown>;
-    const details = (system.details ?? {}) as Record<string, unknown>;
-    const members = Array.isArray(details.members) ? (details.members as unknown[]) : [];
-    for (const member of members) {
-      const uuid = (member as { uuid?: unknown } | null)?.uuid;
-      if (typeof uuid === "string") memberUuids.add(uuid);
-    }
+    for (const uuid of partyMemberUuidsOf(sourceSystem(sourceOf(party)))) memberUuids.add(uuid);
   }
 
   const pcs: PartyPcRow[] = [];
@@ -1357,48 +1373,38 @@ function resolveOwnerPlayer(ownership: unknown): string | undefined {
   return undefined;
 }
 
-function buildPartyPcRow(doc: FoundryDocumentLike): PartyPcRow {
-  const raw = doc.toObject();
-  const system = (raw.system ?? {}) as Record<string, unknown>;
-  const details = (system.details ?? {}) as Record<string, unknown>;
-  const attributes = (system.attributes ?? {}) as Record<string, unknown>;
-  const resources = (system.resources ?? {}) as Record<string, unknown>;
-  const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
-  const ancestry = items.find((i) => i.type === "ancestry")?.name;
-  const className = items.find((i) => i.type === "class")?.name;
-  // The live doc's own `system` (not toObject()'s stored source) carries hp.max —
-  // pf2e derives it at prepareDerivedData; source only ever stores {value, temp}.
-  const liveHp = (doc.system?.attributes as Record<string, unknown> | undefined)?.hp as
-    | Record<string, unknown>
-    | undefined;
-  const hp = liveHp ?? (attributes.hp as Record<string, unknown> | undefined);
-  const heroPoints = resources.heroPoints as Record<string, unknown> | undefined;
-  const level = (details.level as Record<string, unknown> | undefined)?.value;
+/** `{value, max}` when both are numbers, else `undefined` (the wire's pool shape). */
+function fullPool(
+  pool: { value?: number; max?: number } | undefined,
+): { value: number; max: number } | undefined {
+  return pool?.value !== undefined && pool.max !== undefined
+    ? { value: pool.value, max: pool.max }
+    : undefined;
+}
 
+function buildPartyPcRow(doc: FoundryDocumentLike): PartyPcRow {
+  const src = sourceOf(doc);
+  const source = sourceSystem(src);
+  // A PC's hp.max exists only on the live side; the source fallback covers a test double
+  // or a document with no prepared `system`. Hero points and level come from the source.
+  const live = liveSystem(doc);
+  const hp = (live && actorHp(live)) ?? actorHp(source);
   return {
     uuid: doc.uuid,
     id: doc.id,
     name: doc.name,
-    level: typeof level === "number" ? level : undefined,
-    hp:
-      hp && typeof hp.value === "number" && typeof hp.max === "number"
-        ? { value: hp.value, max: hp.max }
-        : undefined,
-    heroPoints:
-      heroPoints && typeof heroPoints.value === "number" && typeof heroPoints.max === "number"
-        ? { value: heroPoints.value, max: heroPoints.max }
-        : undefined,
-    ancestry: typeof ancestry === "string" ? ancestry : undefined,
-    className: typeof className === "string" ? className : undefined,
-    ownerPlayer: resolveOwnerPlayer(raw.ownership),
+    level: actorLevel(source),
+    hp: fullPool(hp),
+    heroPoints: fullPool(actorHeroPoints(source)),
+    ancestry: firstItemName(src, "ancestry"),
+    className: firstItemName(src, "class"),
+    ownerPlayer: resolveOwnerPlayer(src.ownership),
   };
 }
 
 function buildPartyCompanionRow(doc: FoundryDocumentLike): PartyCompanionRow {
-  const raw = doc.toObject();
-  const system = (raw.system ?? {}) as Record<string, unknown>;
-  const master = (system.master as Record<string, unknown> | undefined)?.id;
-  const masterActor = typeof master === "string" ? game.actors.get(master) : undefined;
+  const master = familiarMasterId(sourceSystem(sourceOf(doc)));
+  const masterActor = master !== undefined ? game.actors.get(master) : undefined;
   return {
     uuid: doc.uuid,
     id: doc.id,
@@ -1434,19 +1440,12 @@ async function resolvePlayerActor(params: QueryPlayerParams): Promise<FoundryDoc
  * console gets, so `query-player`'s `stats` result carries a machine-readable record
  * of what came back missing alongside the human-readable console line. */
 function readDerivedNumber(
-  system: Record<string, unknown>,
+  live: Pf2eSystem<"live"> | undefined,
   path: string,
   warnings: string[],
 ): number | undefined {
-  let cur: unknown = system;
-  for (const segment of path.split(".")) {
-    if (cur === null || typeof cur !== "object") {
-      cur = undefined;
-      break;
-    }
-    cur = (cur as Record<string, unknown>)[segment];
-  }
-  if (typeof cur === "number") return cur;
+  const value = liveNumberAt(live, path);
+  if (value !== undefined) return value;
   const message = `query-player stats: missing/invalid derived path "system.${path}"`;
   warnings.push(message);
   // oxlint-disable-next-line no-console -- Foundry module: the browser console is the GM's log
@@ -1462,9 +1461,9 @@ const ABILITY_SLUGS = ["str", "dex", "con", "int", "wis", "cha"];
  * AC, saves, perception, ability modifiers, class DC, spell DC. Every individual
  * field is read via {@link readDerivedNumber} — fail-soft per field, never throws. */
 function buildStats(doc: FoundryDocumentLike): PlayerStatsSection {
-  const system = doc.system ?? {};
+  const live = liveSystem(doc);
   const warnings: string[] = [];
-  const read = (path: string): number | undefined => readDerivedNumber(system, path, warnings);
+  const read = (path: string): number | undefined => readDerivedNumber(live, path, warnings);
 
   const saves: PlayerSaveRow[] = SAVE_SLUGS.map((type) => ({
     type,
@@ -1493,57 +1492,28 @@ function buildStats(doc: FoundryDocumentLike): PlayerStatsSection {
  * (unlike stored source) carries a total `value`/`dc` per skill AND every lore skill
  * (added by `prepareSkills()`'s loreItems merge, verified in pf2e.mjs). */
 function buildSkills(doc: FoundryDocumentLike): PlayerSkillsSection {
-  const skillsObj = (doc.system?.skills ?? {}) as Record<string, unknown>;
-  const skills: PlayerSkillRow[] = [];
-  for (const [slug, raw] of Object.entries(skillsObj)) {
-    if (!raw || typeof raw !== "object") continue;
-    const s = raw as Record<string, unknown>;
-    skills.push({
-      slug,
-      label: typeof s.label === "string" ? s.label : undefined,
-      rank: typeof s.rank === "number" ? s.rank : undefined,
-      value: typeof s.value === "number" ? s.value : undefined,
-      dc: typeof s.dc === "number" ? s.dc : undefined,
-      lore: s.lore === true,
-    });
-  }
+  const skills: PlayerSkillRow[] = liveSkills(liveSystem(doc)).map((s) => ({
+    slug: s.slug,
+    label: s.label,
+    rank: s.rank,
+    value: s.value,
+    dc: s.dc,
+    lore: s.lore,
+  }));
   skills.sort((a, b) => a.slug.localeCompare(b.slug));
   return { section: "skills", skills };
 }
 
-function buildSummary(
-  doc: FoundryDocumentLike,
-  raw: Record<string, unknown>,
-): PlayerSummarySection {
+function buildSummary(doc: FoundryDocumentLike, src: Pf2eSource): PlayerSummarySection {
+  const source = sourceSystem(src);
   // Prefer the live `system` (has derived hp.max) but fall back to the stored source
   // (familiars/edge cases where the live surface isn't stubbed, e.g. in tests).
-  const system = (doc.system ?? raw.system ?? {}) as Record<string, unknown>;
-  const details = (system.details ?? {}) as Record<string, unknown>;
-  const attributes = (system.attributes ?? {}) as Record<string, unknown>;
-  const resources = (system.resources ?? {}) as Record<string, unknown>;
-  const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
-  const findName = (type: string): string | undefined => {
-    const name = items.find((i) => i.type === type)?.name;
-    return typeof name === "string" ? name : undefined;
-  };
-
-  const level = (details.level as Record<string, unknown> | undefined)?.value;
-  const xp = details.xp as Record<string, unknown> | undefined;
-  const hp = attributes.hp as Record<string, unknown> | undefined;
-  // Hero points come from the STORED source, never the live prepared actor — they
-  // are GM-awarded meta-currency persisted in source data ({value, max} both stored,
-  // verified in the live fixture), and pf2e's data preparation leaves the live
-  // `system.resources.heroPoints` zeroed (0/0 rendered at the 0028 S4 live gate while
-  // the source said 1/3). The exact mirror image of hp.max (derived-only, live-only).
-  const sourceResources = ((raw.system as Record<string, unknown> | undefined)?.resources ??
-    resources) as Record<string, unknown>;
-  const heroPoints = sourceResources.heroPoints as Record<string, unknown> | undefined;
-  const languages = (details.languages as Record<string, unknown> | undefined)?.value;
-  const masterId = (system.master as Record<string, unknown> | undefined)?.id;
+  const system: Pf2eSystem = liveSystem(doc) ?? source;
+  const hp = actorHp(system);
+  const masterId = familiarMasterId(system);
   // Resolve the master's NAME like the party companion row does — an id is useless
   // to a player-facing render (S4 live-gate find).
-  const master =
-    typeof masterId === "string" ? (game.actors.get(masterId)?.name ?? masterId) : undefined;
+  const master = masterId !== undefined ? (game.actors.get(masterId)?.name ?? masterId) : undefined;
 
   return {
     section: "summary",
@@ -1551,33 +1521,20 @@ function buildSummary(
     id: doc.id,
     name: doc.name,
     actorType: doc.type ?? "unknown",
-    level: typeof level === "number" ? level : undefined,
-    xp:
-      typeof xp?.value === "number" && typeof xp.max === "number"
-        ? { value: xp.value, max: xp.max }
-        : undefined,
-    hp:
-      hp && typeof hp.value === "number"
-        ? {
-            value: hp.value,
-            max: typeof hp.max === "number" ? hp.max : undefined,
-            temp: typeof hp.temp === "number" ? hp.temp : undefined,
-          }
-        : undefined,
-    heroPoints:
-      heroPoints && typeof heroPoints.value === "number" && typeof heroPoints.max === "number"
-        ? { value: heroPoints.value, max: heroPoints.max }
-        : undefined,
-    ancestry: findName("ancestry"),
-    heritage: findName("heritage"),
-    background: findName("background"),
-    className: findName("class"),
-    deity: findName("deity"),
-    languages: Array.isArray(languages)
-      ? languages.filter((l): l is string => typeof l === "string")
-      : undefined,
-    alliance: typeof details.alliance === "string" ? details.alliance : undefined,
-    master: typeof master === "string" ? master : undefined,
+    level: actorLevel(system),
+    xp: fullPool(actorXp(system)),
+    hp: hp?.value !== undefined ? { value: hp.value, max: hp.max, temp: hp.temp } : undefined,
+    // Hero points come from the stored source (pf2e zeroes the live value; 0/0 rendered at
+    // the 0028 S4 live gate while the source said 1/3).
+    heroPoints: fullPool(actorHeroPoints(source, system)),
+    ancestry: firstItemName(src, "ancestry"),
+    heritage: firstItemName(src, "heritage"),
+    background: firstItemName(src, "background"),
+    className: firstItemName(src, "class"),
+    deity: firstItemName(src, "deity"),
+    languages: actorLanguages(system),
+    alliance: actorAlliance(system),
+    master,
   };
 }
 
@@ -1592,19 +1549,10 @@ interface SpellSlotState {
  * item id — this is how a PREPARED caster's spell gets its cast-at rank (which can
  * differ from the spell's own innate rank via heightening into a higher slot); a
  * spontaneous/innate/focus spell simply never appears in any slot's `prepared[]`. */
-function findSlotState(
-  slotsObj: Record<string, unknown>,
-  spellId: string,
-): SpellSlotState | undefined {
-  for (const [slotKey, slotVal] of Object.entries(slotsObj)) {
-    const match = /^slot(\d+)$/.exec(slotKey);
-    if (!match?.[1]) continue;
-    const slot = slotVal as Record<string, unknown>;
-    const preparedList = Array.isArray(slot.prepared)
-      ? (slot.prepared as Record<string, unknown>[])
-      : [];
-    const hit = preparedList.find((p) => p.id === spellId);
-    if (hit) return { rank: Number(match[1]), prepared: true, expended: hit.expended === true };
+function findSlotState(slots: readonly Pf2eSlot[], spellId: string): SpellSlotState | undefined {
+  for (const slot of slots) {
+    const hit = slot.prepared.find((p) => p.id === spellId);
+    if (hit) return { rank: slot.rank, prepared: true, expended: hit.expended };
   }
   return undefined;
 }
@@ -1618,14 +1566,15 @@ function findSlotState(
  * module stays dumb, it never measures or truncates markdown). */
 function buildSpells(
   doc: FoundryDocumentLike,
-  raw: Record<string, unknown>,
+  src: Pf2eSource,
   entryFilter: string | undefined,
   rankFilter: number | undefined,
 ): PlayerSpellsSection {
-  const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
+  const items = sourceItems(src);
   const entryItems = items.filter((i) => i.type === "spellcastingEntry");
   const spellItems = items.filter((i) => i.type === "spell");
   const needle = entryFilter?.toLowerCase();
+  const liveActor = liveSystem(doc);
 
   const entries: PlayerSpellcastingEntryGroup[] = [];
   for (const entry of entryItems) {
@@ -1638,48 +1587,24 @@ function buildSpells(
     ) {
       continue;
     }
-    const esys = (entry.system ?? {}) as Record<string, unknown>;
-    const tradition = (esys.tradition as Record<string, unknown> | undefined)?.value;
-    const preparedType = (esys.prepared as Record<string, unknown> | undefined)?.value;
-    // The entry DC is DERIVED — the stored source's `spelldc.dc` is 0 for a prepared
-    // caster ("DC 0" rendered at the 0028 S4 live gate), and so is the LIVE embedded
-    // entry's own system tree (pf2e derives the real value onto the entry's
-    // `statistic` class instance, not its system data — second S4 live find). The
-    // reliable live home is the ACTOR-level `system.attributes.spellDC.value` (the
-    // D28-2 verified path, pf2e.mjs ~:58730). Preference: live embedded entry (in
-    // case a future pf2e writes it back) → live actor spellDC → stored source.
-    const liveEsys = doc.items?.get(String(entry._id ?? ""))?.system;
-    const liveEntryDc = (liveEsys?.spelldc as Record<string, unknown> | undefined)?.dc;
-    const actorAttributes = (doc.system?.attributes ?? {}) as Record<string, unknown>;
-    const actorSpellDc = (actorAttributes.spellDC as Record<string, unknown> | undefined)?.value;
-    const sourceDc = (esys.spelldc as Record<string, unknown> | undefined)?.dc;
-    const dc =
-      typeof liveEntryDc === "number" && liveEntryDc > 0
-        ? liveEntryDc
-        : typeof actorSpellDc === "number" && actorSpellDc > 0
-          ? actorSpellDc
-          : sourceDc;
-    const slotsObj = (esys.slots ?? {}) as Record<string, unknown>;
+    // The entry DC is derived: 0 in the stored source for a prepared caster and on the
+    // live entry's own system (0028 S4 live finds), so `spellcastingEntryDc` falls back to
+    // the live actor's `attributes.spellDC.value`.
+    const dc = spellcastingEntryDc(entry, liveSystem(doc.items?.get(entryId)), liveActor);
+    const slots = entrySlots(entry);
 
     const rankGroups = new Map<number, PlayerSpellRow[]>();
     for (const spell of spellItems) {
-      const ssys = (spell.system ?? {}) as Record<string, unknown>;
-      const location = (ssys.location as Record<string, unknown> | undefined)?.value;
-      if (location !== entryId) continue;
+      if (spellLocation(spell) !== entryId) continue;
       const spellId = String(spell._id ?? "");
-      const slotState = findSlotState(slotsObj, spellId);
-      const ownRank = Number((ssys.level as Record<string, unknown> | undefined)?.value ?? 0);
-      const rank = slotState?.rank ?? ownRank;
+      const slotState = findSlotState(slots, spellId);
+      const rank = slotState?.rank ?? spellBaseRank(spell);
       if (rankFilter !== undefined && rank !== rankFilter) continue;
-      const traitsValue = (ssys.traits as Record<string, unknown> | undefined)?.value;
-      const traits = Array.isArray(traitsValue)
-        ? traitsValue.filter((t): t is string => typeof t === "string")
-        : [];
       const row: PlayerSpellRow = {
         id: spellId,
         name: typeof spell.name === "string" ? spell.name : "Unnamed",
         rank,
-        traits,
+        traits: itemTraits(spell) ?? [],
         prepared: slotState?.prepared,
         expended: slotState?.expended,
       };
@@ -1691,21 +1616,19 @@ function buildSpells(
     const ranks: PlayerSpellRankGroup[] = Array.from(rankGroups.entries())
       .sort(([a], [b]) => a - b)
       .map(([rank, spellsAtRank]) => {
-        const slot = slotsObj[`slot${rank}`] as Record<string, unknown> | undefined;
-        const slots =
-          slot && typeof slot.max === "number"
-            ? { value: typeof slot.value === "number" ? slot.value : 0, max: slot.max }
-            : undefined;
+        const slot = entrySlot(entry, rank);
+        const slotCounts =
+          slot?.max !== undefined ? { value: slot.value ?? 0, max: slot.max } : undefined;
         spellsAtRank.sort((a, b) => a.name.localeCompare(b.name));
-        return { rank, slots, spells: spellsAtRank };
+        return { rank, slots: slotCounts, spells: spellsAtRank };
       });
 
     entries.push({
       entryId,
       entryName,
-      tradition: typeof tradition === "string" ? tradition : undefined,
-      preparedType: typeof preparedType === "string" ? preparedType : undefined,
-      dc: typeof dc === "number" ? dc : undefined,
+      tradition: entryTradition(entry),
+      preparedType: entryPreparedType(entry),
+      dc,
       ranks,
     });
   }
@@ -1717,20 +1640,15 @@ const FEAT_CATEGORY_FALLBACK = "other";
 
 /** `query-player`'s `feats` section (0028 S2) — grouped by category (`system.category`,
  * e.g. "ancestry"/"class"/"skill"/"general"/"classfeature") with the feat's own level. */
-function buildFeats(raw: Record<string, unknown>): PlayerFeatsSection {
-  const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
-  const feats: PlayerFeatRow[] = items
+function buildFeats(src: Pf2eSource): PlayerFeatsSection {
+  const feats: PlayerFeatRow[] = sourceItems(src)
     .filter((i) => i.type === "feat")
-    .map((f) => {
-      const fsys = (f.system ?? {}) as Record<string, unknown>;
-      const level = (fsys.level as Record<string, unknown> | undefined)?.value;
-      return {
-        id: String(f._id ?? ""),
-        name: typeof f.name === "string" ? f.name : "Unnamed",
-        category: typeof fsys.category === "string" ? fsys.category : FEAT_CATEGORY_FALLBACK,
-        level: typeof level === "number" ? level : undefined,
-      };
-    });
+    .map((f) => ({
+      id: String(f._id ?? ""),
+      name: typeof f.name === "string" ? f.name : "Unnamed",
+      category: featCategory(f) ?? FEAT_CATEGORY_FALLBACK,
+      level: itemLevel(f),
+    }));
   feats.sort(
     (a, b) =>
       a.category.localeCompare(b.category) ||
@@ -1756,38 +1674,28 @@ const INVENTORY_ITEM_TYPES = new Set([
  * physical gear, with quantity/bulk/carry-state/runes. Fusion/property runes are
  * summarized as short labels (e.g. "+1 potency", "striking 2") rather than the raw
  * rune source objects. */
-function buildInventory(raw: Record<string, unknown>): PlayerInventorySection {
-  const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
-  const rows: PlayerInventoryRow[] = items
+function buildInventory(src: Pf2eSource): PlayerInventorySection {
+  const rows: PlayerInventoryRow[] = sourceItems(src)
     .filter((i) => typeof i.type === "string" && INVENTORY_ITEM_TYPES.has(i.type))
     .map((it) => {
-      const isys = (it.system ?? {}) as Record<string, unknown>;
-      const bulk = (isys.bulk as Record<string, unknown> | undefined)?.value;
-      const equipped = isys.equipped as Record<string, unknown> | undefined;
-      const runesObj = isys.runes as Record<string, unknown> | undefined;
+      const equipped = itemEquipped(it);
+      const runeData = itemRunes(it);
       const runes: string[] = [];
-      if (runesObj) {
-        if (typeof runesObj.potency === "number" && runesObj.potency > 0) {
-          runes.push(`+${runesObj.potency} potency`);
-        }
-        if (typeof runesObj.striking === "number" && runesObj.striking > 0) {
-          runes.push(`striking ${runesObj.striking}`);
-        }
-        if (typeof runesObj.resilient === "number" && runesObj.resilient > 0) {
-          runes.push(`resilient ${runesObj.resilient}`);
-        }
-        if (Array.isArray(runesObj.property)) {
-          for (const p of runesObj.property) if (typeof p === "string") runes.push(p);
-        }
+      if (runeData) {
+        const { potency, striking, resilient } = runeData;
+        if (potency !== undefined && potency > 0) runes.push(`+${potency} potency`);
+        if (striking !== undefined && striking > 0) runes.push(`striking ${striking}`);
+        if (resilient !== undefined && resilient > 0) runes.push(`resilient ${resilient}`);
+        runes.push(...runeData.property);
       }
       return {
         id: String(it._id ?? ""),
         name: typeof it.name === "string" ? it.name : "Unnamed",
         type: String(it.type),
-        quantity: typeof isys.quantity === "number" ? isys.quantity : undefined,
-        bulk: typeof bulk === "number" ? bulk : undefined,
-        carryType: typeof equipped?.carryType === "string" ? equipped.carryType : undefined,
-        invested: typeof equipped?.invested === "boolean" ? equipped.invested : undefined,
+        quantity: itemQuantity(it),
+        bulk: itemBulk(it),
+        carryType: equipped?.carryType,
+        invested: equipped?.invested,
         runes: runes.length > 0 ? runes : undefined,
       };
     });
@@ -1795,63 +1703,26 @@ function buildInventory(raw: Record<string, unknown>): PlayerInventorySection {
   return { section: "inventory", items: rows };
 }
 
-/** pf2e's own per-subsection biography GM-visibility toggles (verified against the
- * live `foundry_faerrin` container 2026-07-11 — see the scope doc's dated S3
- * appendix for the exact evidence): the character sheet's `biography.hbs` gates
- * each subsection's header+body behind `{{#if (or document.isOwner biography.
- * visibility.<section>)}}`, toggled by a GM-only "eye" icon that writes `system.
- * details.biography.visibility.<section>` (`pf2e.mjs:29881-29882`,
- * `toggle-bio-visibility`). `template.json:65-70` gives the stored defaults:
- * `appearance` starts VISIBLE, everything else starts HIDDEN. Two of this
- * section's four prose fields (`likes`/`dislikes` under `personality`;
- * `campaignNotes` under `campaign`) share a visibility flag with sibling fields
- * this section doesn't surface (attitude/beliefs/edicts/anathema/catchphrases;
- * allies/enemies/organizations) — gating by the SAME shared flag is still correct,
- * it's the section pf2e itself groups them under. `deity` is a separate embedded
- * item, not part of the biography visibility system at all — never gated. */
-const BIOGRAPHY_VISIBILITY_DEFAULTS: Record<string, boolean> = {
-  appearance: true,
-  backstory: false,
-  personality: false,
-  campaign: false,
-};
-
-/** Fail-soft per the same posture as {@link readDerivedNumber}: an absent/wrong-
- * shaped `visibility` object (a familiar, a pre-this-field legacy actor, ...) falls
- * back to pf2e's own stored template.json default for that subsection rather than
- * assuming visible — the safer failure direction for a GM-visibility gate. */
-function biographySectionVisible(visibility: unknown, section: string): boolean {
-  const value =
-    visibility && typeof visibility === "object"
-      ? (visibility as Record<string, unknown>)[section]
-      : undefined;
-  if (typeof value === "boolean") return value;
-  return BIOGRAPHY_VISIBILITY_DEFAULTS[section] ?? false;
-}
-
 /** `query-player`'s `notes` section (0028 S2, S3-amended) — deity (an embedded
  * `deity`-type item's name, never gated) plus non-empty biography prose fields,
  * EXCLUDING any subsection the GM has left/set GM-only via pf2e's own biography
- * visibility toggles ({@link biographySectionVisible}). D28-5's uniform rationale
+ * visibility toggles (`actorBiography(...).visible`, `pf2e/actor.ts`). Two of the
+ * four prose fields (`likes`/`dislikes` under `personality`; `campaignNotes` under
+ * `campaign`) share a flag with sibling fields this section doesn't surface; gating by
+ * that shared flag is correct, it's the section pf2e itself groups them under.
+ * D28-5's uniform rationale
  * — the bridge runs as GM and must not leak GM-hidden content in ANY scope —
  * applies here too (the S2-amendment gap this fixes): the shared player key having
  * no per-player identity (D28-1) means "hide this from players" always means
  * "hide from every holder of this key", the same posture as a GM-hidden world item
  * or a spoiler compendium pack. */
-function buildNotes(raw: Record<string, unknown>): PlayerNotesSection {
-  const system = (raw.system ?? {}) as Record<string, unknown>;
-  const details = (system.details ?? {}) as Record<string, unknown>;
-  const bio = (details.biography ?? {}) as Record<string, unknown>;
-  const visibility = bio.visibility;
-  const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
-  const deity = items.find((i) => i.type === "deity")?.name;
-  const visibleProse = (v: unknown, section: string): string | undefined =>
-    typeof v === "string" && v.length > 0 && biographySectionVisible(visibility, section)
-      ? v
-      : undefined;
+function buildNotes(src: Pf2eSource): PlayerNotesSection {
+  const bio = actorBiography(sourceSystem(src));
+  const visibleProse = (v: string | undefined, section: BiographySection): string | undefined =>
+    v !== undefined && v.length > 0 && bio.visible(section) ? v : undefined;
   return {
     section: "notes",
-    deity: typeof deity === "string" ? deity : undefined,
+    deity: firstItemName(src, "deity"),
     appearance: visibleProse(bio.appearance, "appearance"),
     backstory: visibleProse(bio.backstory, "backstory"),
     likes: visibleProse(bio.likes, "personality"),
@@ -1873,22 +1744,22 @@ async function handleQueryPlayer(rawParams: unknown): Promise<QueryPlayerResult>
         "player characters and familiars",
     );
   }
-  const raw = doc.toObject();
+  const src = sourceOf(doc);
   switch (params.section) {
     case "summary":
-      return buildSummary(doc, raw);
+      return buildSummary(doc, src);
     case "stats":
       return buildStats(doc);
     case "skills":
       return buildSkills(doc);
     case "spells":
-      return buildSpells(doc, raw, params.entry, params.rank);
+      return buildSpells(doc, src, params.entry, params.rank);
     case "feats":
-      return buildFeats(raw);
+      return buildFeats(src);
     case "inventory":
-      return buildInventory(raw);
+      return buildInventory(src);
     case "notes":
-      return buildNotes(raw);
+      return buildNotes(src);
   }
 }
 
@@ -1947,14 +1818,7 @@ function packVisibleToPlayers(pack: FoundryCompendiumCollection): boolean {
 function partyMemberUuids(): Set<string> {
   const memberUuids = new Set<string>();
   for (const party of Array.from(game.actors.values()).filter((a) => a.type === "party")) {
-    const raw = party.toObject();
-    const system = (raw.system ?? {}) as Record<string, unknown>;
-    const details = (system.details ?? {}) as Record<string, unknown>;
-    const members = Array.isArray(details.members) ? (details.members as unknown[]) : [];
-    for (const member of members) {
-      const uuid = (member as { uuid?: unknown } | null)?.uuid;
-      if (typeof uuid === "string") memberUuids.add(uuid);
-    }
+    for (const uuid of partyMemberUuidsOf(sourceSystem(sourceOf(party)))) memberUuids.add(uuid);
   }
   return memberUuids;
 }
@@ -1963,7 +1827,7 @@ function partyMemberUuids(): Set<string> {
  * fetch — a hand-picked list of display fields (the same narrow read-side
  * exception posture as D28-2), never a modeled write schema. Every field is
  * fail-soft (a missing/wrong-shaped source path is simply omitted). */
-function extractItemDetailFields(raw: Record<string, unknown>): {
+function extractItemDetailFields(src: Pf2eSource): {
   level?: number;
   traits?: string[];
   rarity?: string;
@@ -1973,53 +1837,38 @@ function extractItemDetailFields(raw: Record<string, unknown>): {
   ac?: number;
   description?: string;
 } {
-  const system = (raw.system ?? {}) as Record<string, unknown>;
-  const traitsObj = (system.traits ?? {}) as Record<string, unknown>;
-  const traitsValue = traitsObj.value;
-  const traits = Array.isArray(traitsValue)
-    ? traitsValue.filter((t): t is string => typeof t === "string")
-    : undefined;
-  const level = (system.level as Record<string, unknown> | undefined)?.value;
-  const bulk = (system.bulk as Record<string, unknown> | undefined)?.value;
-  const description = (system.description as Record<string, unknown> | undefined)?.value;
-  const damage = formatItemDamage(system.damage);
-  const ac = system.acBonus;
+  const traits = itemTraits(src);
+  const description = itemDescription(src);
   return {
-    level: typeof level === "number" ? level : undefined,
+    level: itemLevel(src),
     traits: traits && traits.length > 0 ? traits : undefined,
-    rarity: typeof traitsObj.rarity === "string" ? traitsObj.rarity : undefined,
-    price: formatItemPrice(system.price),
-    bulk: typeof bulk === "number" ? bulk : undefined,
-    damage,
-    ac: typeof ac === "number" ? ac : undefined,
-    description:
-      typeof description === "string" && description.length > 0 ? description : undefined,
+    rarity: itemRarity(src),
+    price: formatItemPrice(src),
+    bulk: itemBulk(src),
+    damage: formatItemDamage(src),
+    ac: itemAcBonus(src),
+    description: description !== undefined && description.length > 0 ? description : undefined,
   };
 }
 
-const PRICE_DENOMINATIONS = ["pp", "gp", "sp", "cp"] as const;
-
-/** `system.price.value` is `{pp?,gp?,sp?,cp?}` (verified against the Argyle
- * fixture's "Bastard Sword": `{"value":{"gp":4}}`) — formats every non-zero
- * denomination, highest first, e.g. "4 gp" or "1 pp, 5 gp". */
-function formatItemPrice(priceField: unknown): string | undefined {
-  const value = (priceField as Record<string, unknown> | undefined)?.value;
-  if (!value || typeof value !== "object") return undefined;
+/** Formats every non-zero denomination of the stored price, highest first, e.g. "4 gp"
+ * or "1 pp, 5 gp" (the Argyle fixture's "Bastard Sword" stores `{"value":{"gp":4}}`). */
+function formatItemPrice(src: Pf2eSource): string | undefined {
+  const coins = itemPrice(src);
+  if (!coins) return undefined;
   const parts: string[] = [];
   for (const denom of PRICE_DENOMINATIONS) {
-    const n = (value as Record<string, unknown>)[denom];
-    if (typeof n === "number" && n > 0) parts.push(`${n} ${denom}`);
+    const n = coins[denom];
+    if (n !== undefined && n > 0) parts.push(`${n} ${denom}`);
   }
   return parts.length > 0 ? parts.join(", ") : undefined;
 }
 
-/** `system.damage` is `{dice,die,damageType}` (verified against the Argyle
- * fixture's "Bastard Sword": `{"dice":1,"die":"d8","damageType":"slashing"}`) —
- * a strike's/weapon's base damage formula, e.g. "1d8 slashing". */
-function formatItemDamage(damageField: unknown): string | undefined {
-  const d = damageField as Record<string, unknown> | undefined;
-  if (!d || typeof d.dice !== "number" || typeof d.die !== "string") return undefined;
-  const type = typeof d.damageType === "string" ? ` ${d.damageType}` : "";
+/** A weapon's base damage formula, e.g. "1d8 slashing". */
+function formatItemDamage(src: Pf2eSource): string | undefined {
+  const d = itemDamage(src);
+  if (!d) return undefined;
+  const type = d.damageType !== undefined ? ` ${d.damageType}` : "";
   return `${d.dice}${d.die}${type}`;
 }
 
@@ -2081,7 +1930,7 @@ function buildItemDetail(resolved: ResolvedItem): {
   pack?: string;
   packLabel?: string;
 } & ReturnType<typeof extractItemDetailFields> {
-  const raw = resolved.doc.toObject();
+  const src = sourceOf(resolved.doc);
   return {
     uuid: resolved.doc.uuid,
     id: resolved.doc.id,
@@ -2091,7 +1940,7 @@ function buildItemDetail(resolved: ResolvedItem): {
     ownerActor: resolved.ownerActor,
     pack: resolved.pack?.collection,
     packLabel: resolved.pack?.metadata.label,
-    ...extractItemDetailFields(raw),
+    ...extractItemDetailFields(src),
   };
 }
 
@@ -2135,9 +1984,7 @@ async function searchItemsByName(name: string, limit: number | undefined): Promi
   for (const memberUuid of partyMemberUuids()) {
     const memberDoc = await fromUuid(memberUuid);
     if (!memberDoc) continue;
-    const raw = memberDoc.toObject();
-    const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
-    for (const it of items) {
+    for (const it of sourceItems(sourceOf(memberDoc))) {
       const itemName = typeof it.name === "string" ? it.name : "";
       const rank = matchRank(itemName, needle);
       if (rank === undefined) continue;
