@@ -120,35 +120,36 @@ for what it is (`bot`, `overlay`, `render`, `controller`). Its manifest (`pyproj
 `package.json`) makes it a uv or pnpm member; no workspace list needs editing. uv rejects a
 `apps/*/py` directory without a `pyproject.toml`, so never create an empty one. A TypeScript app's
 `tsconfig.json` extends `../../../tsconfig.base.json`, and its scripts reach the repo root with
-three `../`. What is still hand-maintained:
+three `../`. Every Node service builds from the one `deploy/node.Dockerfile`, which finds the
+workspace members itself, so a new pnpm member or `libs/ts` package needs no Docker change. What
+is still hand-maintained:
 
-1. A pnpm member: `COPY apps/<domain>/<role>/package.json apps/<domain>/<role>/` in every
-   Dockerfile that lists workspace manifests (find them with
-   `grep -rl "COPY apps/ledger/web/package.json" --include=Dockerfile`), or `--frozen-lockfile`
-   fails. Add its paths to the `.dockerignore` allowlist (literal paths only, no wildcards). A new
-   `libs/ts` package needs neither.
-2. A Dagster asset: register it in its app's `assets.defs`, pin its name in
+1. A Dagster asset: register it in its app's `assets.defs`, pin its name in
    `dagster/tests/test_definitions.py`, and, for a new pipeline app, add the app to
    `merge(...)` in `dagster/definitions.py` and the dependencies in `dagster/pyproject.toml`,
-   plus `COPY apps/<domain>/py` in `dagster/Dockerfile` (and its `.dockerignore` line).
-3. A service: a compose service in `deploy/docker-compose.yml` (port in 10350 to 10399, `user:
-   "1000:1000"`, healthcheck, `restart: unless-stopped`, its secrets in `environment:`). A templated
-   frontend Dockerfile takes `APP: <domain>/web`. Paths the container writes are identical-path bind
-   mounts under `/ruby/data/astra-state`; add the dir to `deploy.sh` `init_artifacts` and to the
-   `config.kdl` `data` comment. A public host is a
+   plus `COPY apps/<domain>/py` in `dagster/Dockerfile`.
+2. A service: a compose service in `deploy/docker-compose.yml` (port in 10350 to 10399, `user:
+   "1000:1000"`, healthcheck, `restart: unless-stopped`, its secrets in `environment:`). A Node
+   service's `build:` block uses `dockerfile: deploy/node.Dockerfile` with `APP: <domain>/<role>`,
+   plus `ENTRY` when the server is not `server.ts`, and `RUNTIME` when it needs ffmpeg or Chromium
+   (the file's header lists the knobs). The runtime image holds the whole built app dir, so a new
+   data dir such as menhir's `quizzes/` needs no COPY. Paths the container writes are
+   identical-path bind mounts under `/ruby/data/astra-state`; add the dir to `deploy.sh`
+   `init_artifacts` and to the `config.kdl` `data` comment. A public host is a
    `sites.caddyfile` block with `import astra_site` (plus `import local_only` for private paths); the
    `*.iridi.cc` wildcard needs no DNS step, and the certificate is issued on the first request.
-   A frontend that bakes astra-data also needs `COPY --from=astra-data` in its Dockerfile,
-   `additional_contexts` in compose, and matching data under `fixtures/astra-data/`.
-4. Its config block in `config.kdl` and in both schema mirrors (`libs/py/config`, `libs/ts/config`;
+   A frontend that bakes astra-data also needs a `content-<app>` stage in `deploy/node.Dockerfile`
+   (`CONTENT: <app>` in compose), `additional_contexts` in compose, and matching data under
+   `fixtures/astra-data/`.
+3. Its config block in `config.kdl` and in both schema mirrors (`libs/py/config`, `libs/ts/config`;
    the Python mirror forbids unknown top-level keys, so even a TS-only app needs it).
-5. At least one test: `vitest run` with no test files exits 1.
-6. Telemetry in the real entrypoint. TS services get no HTTP auto-instrumentation, so add
+4. At least one test: `vitest run` with no test files exits 1.
+5. Telemetry in the real entrypoint. TS services get no HTTP auto-instrumentation, so add
    `startActiveSpan` spans on request paths, or traces stay empty while metrics flow. Never log ERROR
    for a user-content problem: every ERROR log pages Discord.
-7. A short `README.md`: what it is, where it runs, operations, traps. Check visual changes
+6. A short `README.md`: what it is, where it runs, operations, traps. Check visual changes
    (CSS, pixi) in a real browser; no unit test sees them.
-8. A new CI path filter only if the app gets its own CI job (like `codex` or `vellumRender` in
+7. A new CI path filter only if the app gets its own CI job (like `codex` or `vellumRender` in
    `.github/workflows/ci.yml`); the `py` and `ts` lanes already watch `apps/*/py/**` and `apps/**`.
 
 ## Traps

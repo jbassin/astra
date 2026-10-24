@@ -21,6 +21,13 @@ image with the commit (`org.opencontainers.image.revision`). History and the per
 under `/ruby/data/astra-state/deploy/`; the header of `deploy.sh` has the details. Do not run a bare
 `docker compose up`: it starts every service with empty secrets.
 
+Every Node service builds from one file, `node.Dockerfile`; its compose `build.args` pick the app
+(`APP`), the entry (`ENTRY`), the baked datasets (`CONTENT`) and the OS layer (`RUNTIME`: ffmpeg for
+orator, Chromium for vellum-render and portal-headless), and portal adds `target: portal`. The
+runtime images carry production dependencies only. Dagster and smart-exporter keep their own
+Dockerfiles. The repo-root `.dockerignore` is a short deny-list; keep it free of `!` re-includes
+(its header says why).
+
 Every host unit (craig-sync, linguist-commit, heartwood-request, the watchdog, alerting and
 backup) runs from the deploy checkout too; the install recipes `systemctl --user link` the unit
 files from it. After each checkout `deploy.sh` brings that checkout's host tooling up to date for

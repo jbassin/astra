@@ -216,8 +216,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # `playwright` is a devDependency of vellum-render only (pnpm's strict layout
       # doesn't hoist it to the root node_modules `npx` would search from root) — run
-      # from the app dir, matching apps/vellum/render/Dockerfile's `npx playwright
-      # install` (also run from WORKDIR /repo/apps/vellum/render).
+      # from the app dir, matching deploy/node.Dockerfile's `npx playwright install`
+      # (its os-chromium stage also runs it from /repo/apps/<app>).
       - run: cd apps/vellum/render && npx playwright install --with-deps chromium
       - run: just vellum-visual-regression
 

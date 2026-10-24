@@ -18,7 +18,7 @@ its library in the `orator-postgres` service (host port 10364). Config is the `o
   at runtime and cannot be re-seeded; the nightly backup is the only other copy.
 - **yt-dlp imports fail with HTTP 403 or "unable to download video data":** YouTube broke the pinned
   yt-dlp. Expect this every month or two.
-  1. Set `ARG YT_DLP_VERSION` in `apps/orator/bot/Dockerfile` to the current yt-dlp release.
+  1. Set `ARG YT_DLP_VERSION` in `deploy/node.Dockerfile` (the `os-ffmpeg` stage) to the current yt-dlp release.
   2. Commit, push, `just deploy orator-backend`.
   3. Test inside the container with the exact flags from `src/media/ytdlp.ts`. The runtime image has
      no `curl`, so to try a newer release first, `docker cp` the binary in.

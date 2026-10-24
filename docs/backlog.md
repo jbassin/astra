@@ -130,16 +130,12 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
   2026-10-24 layout-move outage.
 - Compose `command:` lines duplicate each image's `CMD` and drift from it; delete them — agent
   (repo-3).
-- Leftover `.gitignore` and `.dockerignore` lines name data dirs that left the tree in Phase 1
-  (`apps/linguist/py/transcripts/` and the like); delete them — agent (repo-2).
 - A pipeline redeploy moves the deploy checkout back to `origin/main`, partly undoing a `--sha`
   rollback — agent; [`deploy/README.md`](../deploy/README.md).
 - Recipes run plain `uv run`, which can rewrite a stale `uv.lock` and dirty the deploy checkout; use
   `--frozen` — agent.
 - The watchdog does not check `astra-backup.timer` or snapshot age, and the restore test is not
   scheduled — agent.
-- `.dockerignore` is a literal registration list; retire it with the one parameterized Dockerfile —
-  agent; Phase 2 repo track.
 - `config.kdl` references a SOPS key that does not exist — agent (paydown OPS-5).
 - Split the internal Docker network (the one theme P item kept) — agent; Phase 2.
 - `opentelemetry-api` 1.42.1 has a medium advisory fixed only in 1.45.1, across breaking logs-API

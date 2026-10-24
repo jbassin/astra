@@ -32,5 +32,5 @@ unused alternative. akasha-frontend and strider don't use it (see Traps).
   checks launch Chromium with `--use-gl=angle --use-angle=swiftshader --enable-unsafe-swiftshader`,
   set `reducedMotion: "no-preference"`, wait about 5 s (headless throttles animation frames), then
   screenshot. SwiftShader under-renders brightness; allow for that when tuning `uIntensity`.
-- **A new TS lib needs no Dockerfile change** (the images copy `libs/ts` whole); a new app's
-  `package.json` does.
+- **A new TS lib or app needs no Dockerfile change**: `deploy/node.Dockerfile` copies `libs/ts`
+  whole and finds every workspace `package.json` itself.

@@ -20,7 +20,6 @@ The reusable spine lives in two shared libs so it is **not** re-copied per app:
 apps/<domain>/web/
   server.ts          SHELL  thin createSsrServer caller (config-driven)
   vite.config.ts     SHELL  site-kit plugins + dev port from config.kdl
-  Dockerfile         SHELL  templated (ARG APP); copies content + src/generated
   scripts/
     build-content.ts  DOMAIN  registers this app's content sources
     writeLayer.ts     ~shell  generic guarded fs write (strider's editor uses it)
@@ -45,7 +44,7 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
 ## Port recipe (new frontend `apps/<domain>/web`)
 
 1. **Scaffold** `apps/<domain>/web/` by copying strider's shell files: `server.ts`,
-   `vite.config.ts`, `vitest.config.ts`, `tsconfig.json`, `Dockerfile`, `scripts/`
+   `vite.config.ts`, `vitest.config.ts`, `tsconfig.json`, `scripts/`
    (`generate-routes.ts`, `writeLayer.ts` if you need an editor), `src/router.tsx`,
    `src/observe/`, `src/components/{ClientOnly,PixiHost,SiteHeader}`, `src/lib/`,
    `src/styles/`. Depend on `@astra/site-kit`, `@astra/content-build`, `@astra/gothic`,
@@ -58,13 +57,12 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
    to `ontology/ontology-config/config.kdl` **and mirror it in both** `libs/ts/config`
    (Zod) and `libs/py/config` (Pydantic) schemas. `server.ts` and `vite.config.ts`
    read it; the RUM service name derives as `${serviceName}-rum`.
-5. **Deploy**: add a Compose service (`build.args.APP: <domain>/web`, no `PORT` env — port is
-   config-sourced; map the published host port) and a Caddy block in `sites.caddyfile`
-   (`import astra_site` + reverse_proxy; fonts self-serve from the container).
-6. **Docker manifests**: add `COPY apps/<domain>/web/package.json apps/<domain>/web/` to
-   every Dockerfile that lists workspace manifests, and the app dir to the `.dockerignore`
-   allowlist (see `docs/development.md`, "Adding an app"). pnpm and uv pick the app up by
-   its location; no workspace list needs editing.
+5. **Deploy**: add a Compose service that builds from the shared `deploy/node.Dockerfile`
+   (`build.args.APP: <domain>/web`; no `PORT` env, since the port is config-sourced; map the
+   published host port) and a Caddy block in `sites.caddyfile` (`import astra_site` +
+   reverse_proxy; fonts self-serve from the container). No Docker file lists workspace
+   members, so the new app needs no other Docker change (see `docs/development.md`, "Adding
+   an app").
 
 ## Load-bearing gotchas (inherit these)
 

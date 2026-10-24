@@ -824,9 +824,9 @@ spot-checks (the Heal pair's cross-links, Magic Missile's license + pairing).
 ## Deploy (P5, D29-53..57)
 
 Codex ships as an SSR Compose service on the **heartwood-frontend model, not akasha's**:
-`apps/codex/web/Dockerfile` is corpus-free (D29-54) — the build is already request-time-only
-(D29-31: `vite.config.ts` has no content step, no `src/generated/`), so `docker build` needs
-config.kdl + app source only, and the resulting image is ~3 MB of `dist/` plus the runtime.
+its build (`deploy/node.Dockerfile`, `CONTENT=none`) is corpus-free (D29-54) — the build is
+already request-time-only (D29-31: `vite.config.ts` has no content step, no `src/generated/`),
+so `docker build` needs config.kdl + app source only.
 The ~891 MB of corpus + Pagefind data never enters the image.
 
 **Read-only bind mounts, identical path (D29-53).** `config.kdl`'s `codex.data-path` is a

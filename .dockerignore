@@ -1,131 +1,42 @@
-# Build-context ALLOWLIST for every repo-root build — every compose service with
-# `context: ..` (all of them except smart-exporter, which builds from its own
-# deploy/smart-exporter context). No per-Dockerfile `<Dockerfile>.dockerignore` exists;
-# adding one would REPLACE this file for that build, not merge with it.
+# Build-context DENY-LIST for every repo-root build: every compose service with
+# `context: ..` (all of them except smart-exporter, which builds from deploy/smart-exporter).
+# BuildKit sends only the paths a Dockerfile COPYs, so this file is defence in depth: it
+# keeps secrets, scratch and toolchain output out of any COPY that names a whole tree. A new
+# app or COPY path needs no line here.
 #
-# Rule: deny everything, re-include exactly the paths some Dockerfile COPYs, then re-deny
-# the runtime data and toolchain junk that sits inside those trees (last match wins).
-# A COPY source this file does not re-include fails the build with "not found", so when
-# a Dockerfile gains a COPY — or a new workspace member joins the manifest ripple — add
-# its path here too.
-#
-# ⚠ Every `!` re-include must be a LITERAL path — no `*`/`**`/`?`. A single wildcard
-# exception stops the BuildKit client from pruning ANY excluded directory: it then walks
-# all of artifacts/ (and fails outright on the uid-70 0700 Postgres data dir —
-# "error from sender: open …/artifacts/postgres/dagster: permission denied"), plus
-# .claude/worktrees and every node_modules. Verified with buildx 0.13 / Docker 25.
-# Wildcards are fine in plain (deny) lines.
-#
-# Why an allowlist (0037 OPS-1/OPS-22/PIPE-5): the old deny-list let dagster/Dockerfile's
-# `COPY apps/scribe/py` + `COPY apps/mouthpiece/py` bake ~23 GB of Craig zips, session
-# audio and rendered episodes into the Dagster image (25.7 GB). BuildKit only transfers
-# the paths a Dockerfile names, so the rest of the 30 GB context (libs/rust target/,
-# .claude/worktrees, deploy/sops/age.key) was never sent — but nothing kept it out of a
-# future `COPY .` or whole-dir COPY either. Now the context is ~111 MB.
-*
+# ⚠ Keep it a pure deny-list: no `!` re-includes. A wildcard re-include stops the BuildKit
+# client from pruning excluded directories, so it walks all of them (.git, .claude/worktrees,
+# every node_modules) and fails on any it cannot read. The old allowlist (0037 OPS-1) had to
+# stay literal for that reason; it existed because the deny-list before it let
+# dagster/Dockerfile bake ~23 GB of in-tree runtime data. That data now lives under the data
+# root (config.kdl data.root), outside every checkout, and the published datasets live in
+# astra-data, so neither can enter an image.
 
-# --- Workspace roots: pnpm + uv manifests/lockfiles, the base tsconfig ---
-!package.json
-!pnpm-lock.yaml
-!pnpm-workspace.yaml
-!tsconfig.base.json
-!pyproject.toml
-!uv.lock
+# --- Never a build input: VCS, agent worktrees, developer scratch, docs, host tooling. ---
+.git
+.claude
+.claude-plugin
+.github
+.githooks
+.playwright-mcp
+artifacts
+thoughts
+docs
+sheets
+scripts
+fixtures
+# deploy/ holds the SOPS file and possibly age.key; smart-exporter builds from its own
+# context, so no repo-root build reads deploy/.
+deploy
 
-# --- Shared libraries + ontology (copied wholesale; libs/ts carries the committed
-# weal-engine wasm under libs/ts/weal-engine/gen) ---
-!libs/ts
-!libs/py
-!ontology
+# --- Secrets anywhere else. ---
+**/.env
+**/.env.*
+**/*.agekey
+**/age.key
 
-# --- TS apps copied wholesale (`COPY apps/<app>`, incl. the templated ARG APP builds) ---
-!apps/akasha/web
-!apps/codex/web
-!apps/harrow/web
-!apps/ledger/web
-!apps/menhir/web
-!apps/mouthpiece/web
-!apps/orator/bot
-!apps/portal/module
-!apps/portal/shared
-!apps/strider/web
-!apps/vellum/web
-!apps/vellum/render
-!apps/weal/overlay
-
-# --- TS apps copied in part (manifest + src/) ---
-!apps/portal/headless/package.json
-!apps/portal/headless/src
-!apps/portal/server/package.json
-!apps/portal/server/src
-!apps/weal/bot/package.json
-!apps/weal/bot/src
-
-# --- Manifest-only member. Every TS Dockerfile copies EVERY pnpm member's package.json
-# (the manifest ripple) so `pnpm install --frozen-lockfile` reconciles; the members
-# above are covered by their own lines, orator-controller is copied for nothing else. ---
-!apps/orator/controller/package.json
-
-# --- Python workspace members (dagster/Dockerfile: `uv sync --frozen` needs every
-# uv.lock member present). ---
-!apps/_smoke/py
-!apps/akasha/py
-!apps/assay/py
-!apps/heartwood/py
-!apps/linguist/py
-!apps/mouthpiece/py
-!apps/scribe/py
-
-# --- Dagster code location + instance config ---
-!dagster/definitions.py
-!dagster/pyproject.toml
-!dagster/dagster.yaml
-!dagster/workspace.yaml
-
-# ======================= Re-deny inside the re-included trees =======================
-
-# The OLD in-tree locations of the pipeline's runtime data. It lives under the data root
-# now (config.kdl data.root, 0037 item 2c) and is bind-mounted into the Dagster services;
-# kept denied so a leftover copy in a checkout never enters an image.
-apps/scribe/py/incoming
-apps/scribe/py/data
-apps/scribe/py/tmp
-apps/mouthpiece/py/episodes
-apps/linguist/py/script
-
-# The published datasets' OLD in-tree paths (0037 Phase 1 item 2): they live in the
-# astra-data repo now and the frontends bake them from the `astra-data` build context
-# (compose additional_contexts), so no image may read a stale copy from this tree.
-apps/linguist/py/transcripts
-apps/linguist/py/data
-apps/linguist/py/timeline
-apps/mouthpiece/py/snapshot
-apps/akasha/py/content
-apps/akasha/py/snapshot
-apps/heartwood/py/agent-runs.jsonl
-ontology/ontology-entity/entity.kdl
-
-# codex's fetched corpus + Pagefind index (~1.5 GB) — mounted read-only at run time
-# (D29-53/54); the build is corpus-free. The committed fixture corpus stays out too: a
-# built server never serves it (corpusFs.ts fails closed without the real corpus).
-apps/codex/web/data
-apps/codex/web/fixtures
-
-# Regenerated by each frontend's own build (build-content in the vite buildStart hook),
-# so the host's copies are stale by definition.
-apps/*/*/src/generated/*
-apps/akasha/web/public/static
-apps/akasha/web/public/index.xml
-apps/akasha/web/public/sitemap.xml
-apps/mouthpiece/web/public/episodes.json
-
-# Other gitignored output/scratch inside copied trees (codex/books is the host-only
-# `assay export-book` LaTeX source; no build reads it).
-apps/assay/py/out
-apps/codex/web/books
-
-# Toolchain output + caches — rebuilt in-image (node_modules via pnpm install, the venv
-# via uv sync, dist/ via the app build) or irrelevant to any build.
+# --- Toolchain output and caches: rebuilt in-image (node_modules by pnpm install, the venv
+# by uv sync, dist/ by the app build) or irrelevant to any build. ---
 **/node_modules
 **/.venv
 **/dist
@@ -143,9 +54,17 @@ apps/codex/web/books
 **/.mypy_cache
 **/.DS_Store
 
-# Secrets never enter a build context. deploy/ (SOPS file + age.key) is never
-# re-included; these catch strays inside the re-included trees.
-**/.env
-**/.env.*
-**/*.agekey
-**/age.key
+# --- Regenerated by each frontend's own build (build-content in the vite buildStart hook),
+# so a host copy is stale by definition. ---
+apps/*/*/src/generated/*
+apps/akasha/web/public/static
+apps/akasha/web/public/index.xml
+apps/akasha/web/public/sitemap.xml
+apps/mouthpiece/web/public/episodes.json
+
+# --- Host-only material inside source trees: codex's book sources and art (37 MB; no build
+# reads them), codex's fixture corpus (tests only; a built server never serves it, it fails
+# closed without the real corpus) and assay's output. ---
+apps/codex/web/books
+apps/codex/web/fixtures
+apps/assay/py/out

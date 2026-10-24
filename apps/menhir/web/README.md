@@ -83,5 +83,5 @@ Server entry wires telemetry first (`astra.menhir`: manual spans on the mutating
 - **Draw icons as SVG, not emoji.** Emoji render as empty boxes on hosts without an emoji font
   (`src/marks.tsx`). Kahoot yellow behind white text is about 2:1 contrast: keep tiles dark and put
   the hue on the glyph.
-- **The runtime image ships only what its Dockerfile copies.** `quizzes/` has an explicit COPY in
-  the runtime stage; a new data dir needs one too.
+- **The runtime image ships the whole built app dir** (`deploy/node.Dockerfile`), so `quizzes/`
+  and any new data dir inside the app reach the container with no Dockerfile change.

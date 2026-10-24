@@ -230,7 +230,7 @@ Details: [`apps/portal/README.md`](../apps/portal/README.md#operations).
 
 ## orator YouTube imports fail
 
-yt-dlp breaks when YouTube changes. Bump `ARG YT_DLP_VERSION` in `apps/orator/bot/Dockerfile`,
+yt-dlp breaks when YouTube changes. Bump `ARG YT_DLP_VERSION` in `deploy/node.Dockerfile` (the `os-ffmpeg` stage),
 push, and `just deploy orator-backend`. See [`apps/orator/bot/README.md`](../apps/orator/bot/README.md).
 
 ## Switch the main campaign
