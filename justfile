@@ -162,9 +162,15 @@ ts-lint:
 ts-test:
     pnpm exec vitest run
 
-# CI job ts-build: build every member.
+# CI job ts-build: build every member, then check the SSR bundles' imports.
 ts-build:
     pnpm -r --no-bail --aggregate-output run build
+    just ssr-externals-check
+
+# Each built SSR bundle (apps/*/*/dist/server) may import only Node builtins and the app's own
+# production dependencies, since the image installs nothing else (site-kit src/ssrExternals.ts).
+ssr-externals-check:
+    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/site-kit/scripts/ssr-externals-check.ts
 
 # The real wiki lives in astra-data, where heartwood validates it before every commit.
 # CI job corpus-validate: the akasha corpus gate over the checked-in fixture wiki.

@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { loadSiteConfig } from "@astra/site-kit";
+import { loadSiteConfig, ssrExternalsPlugin } from "@astra/site-kit";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
@@ -37,5 +37,6 @@ export default defineConfig({
   resolve: {
     alias: { "@": path.resolve(ROOT, "./src") },
   },
-  plugins: [tanstackStart(), viteReact()],
+  // The SSR bundle imports only the app's own dependencies (what the image installs).
+  plugins: [ssrExternalsPlugin({ root: ROOT }), tanstackStart(), viteReact()],
 });

@@ -11,6 +11,7 @@ step. How to start a new frontend from these pieces is in `apps/strider/web/READ
 | `serveFile`, `staticMountPath` | servers | `send`-backed file serving with Range/206, 304 and 416; traversal-guarded mount paths |
 | `contentWatchPlugin` | `vite.config.ts` | runs the app's `scripts/build-content.ts` (as a Node subprocess) at build start and on content edits in dev |
 | `gothicFontsPlugin` | `vite.config.ts` | serves gothic's fonts in dev and copies them to `dist/client/fonts` at build |
+| `ssrExternalsPlugin` | `vite.config.ts` | at build, inlines into the SSR bundle every package that isn't one of the app's own `dependencies`; `just ssr-externals-check` (run by `just ts-build`) fails on a bundle that imports anything else |
 | `loadSiteConfig` | `vite.config.ts`, build scripts | reads `config.kdl` by walking up from `process.cwd()` |
 | `generateRouteTree`, `staleRouteTreeFiles` | `scripts/route-tree.ts` (`just routes-gen`, `just routes-check`) | writes each Start frontend's `src/routeTree.gen.ts`, byte for byte what `vite dev` writes; the check regenerates in a scratch copy and names stale files |
 | `startRum` (`@astra/site-kit/web`) | browser | starts browser RUM with the endpoint the app's server function returns |
@@ -41,6 +42,13 @@ step. How to start a new frontend from these pieces is in `apps/strider/web/READ
   `loadSiteConfig` finds `config.kdl` from the working directory, which is the app dir under vite.
 - **Never hand-roll static file serving.** A bare `node:fs` read sends no content type, and
   Chromium then refuses module scripts. Use `serveFile`.
+- **An SSR bundle may import only the app's own `dependencies`.** The image installs nothing
+  else (`pnpm install --prod --filter ./apps/<app>...`). vite externalises any bare import it can
+  resolve from the app dir, and in a checkout or the build stage that includes the root
+  `node_modules` (devDependencies such as `yaml`). 2026-10-24: codex crash-looped on
+  `Cannot find package 'yaml'` after the root gained a `yaml` devDependency. Every Start
+  frontend's `vite.config.ts` uses `ssrExternalsPlugin`, and `just ssr-externals-check` checks
+  the built bundles.
 - **The build stage needs `config.kdl`.** `vite.config.ts` reads the port and service name at
   build time, so `deploy/node.Dockerfile` copies `ontology/` before `pnpm run build`.
 - **SSR smoke tests read whatever `dist/` exists.** The strider, harrow, ledger and akasha smokes

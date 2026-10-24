@@ -1,6 +1,11 @@
 import path from "node:path";
 
-import { contentWatchPlugin, gothicFontsPlugin, loadSiteConfig } from "@astra/site-kit";
+import {
+  contentWatchPlugin,
+  gothicFontsPlugin,
+  loadSiteConfig,
+  ssrExternalsPlugin,
+} from "@astra/site-kit";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
@@ -42,6 +47,8 @@ export default defineConfig({
     }),
     gothicFontsPlugin({ clientOutDir: path.join(ROOT, "dist", "client") }),
     tailwindcss(),
+    // The SSR bundle imports only the app's own dependencies (what the image installs).
+    ssrExternalsPlugin({ root: ROOT }),
     tanstackStart(),
     viteReact(),
   ],
