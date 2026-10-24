@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 dependencies = [
     "astra-config",
     "metaphone>=0.6",
+    "pydantic>=2",
     "rapidfuzz>=3",
 ]
 

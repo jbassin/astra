@@ -3,66 +3,72 @@
  * `libs/py/ontology` (Pydantic), so `canonicalJson()` is byte-identical across
  * languages (the Phase-1 parity gate). Keys are snake_case here (not the usual TS
  * camelCase) on purpose: the canonical JSON must match Python's `model_dump()`.
+ *
+ * The `kdl.*` markers say where each field sits in `being.kdl` for the shared decoder
+ * (`@astra/config` `decodeKdl`); an unmarked field is the child node of its kebab name.
  */
+import { kdl } from "@astra/config";
 import { z } from "zod";
 
 export const PlayerSchema = z
   .object({
-    slug: z.string(),
+    slug: kdl.arg(z.string()),
     name: z.string(),
     player_id: z.number(), // load-bearing dice FK — preserve verbatim
-    snowflakes: z.array(z.string()),
-    aliases: z.array(z.string()),
-    is_dm: z.boolean(),
-    is_admin: z.boolean(),
+    snowflakes: z.array(z.string()).default([]),
+    aliases: z.array(z.string()).default([]),
+    is_dm: z.boolean().default(false),
+    is_admin: z.boolean().default(false),
     color: z.string(),
   })
   .strict();
 
 export const RoleSchema = z
   .object({
-    player: z.string(),
-    character: z.string(),
-    character_class: z.string().nullable(),
-    descriptions: z.array(z.string()),
+    player: kdl.prop(z.string()),
+    character: kdl.prop(z.string()),
+    character_class: kdl.prop(z.string().nullable().default(null), "class"),
+    descriptions: kdl.children(z.array(z.string()), "desc"),
   })
   .strict();
 
 export const CampaignSchema = z
   .object({
-    slug: z.string(),
+    slug: kdl.arg(z.string()),
     name: z.string(),
     edition: z.string(),
-    main: z.boolean(),
+    main: z.boolean().default(false),
     world: z.string(),
-    roles: z.array(RoleSchema),
+    roles: kdl.children(z.array(RoleSchema), "role"),
   })
   .strict();
 
 export const HostLinesSchema = z
   .object({
-    crit: z.array(z.string()),
-    good: z.array(z.string()),
-    okay: z.array(z.string()),
-    bad: z.array(z.string()),
-    fumble: z.array(z.string()),
+    crit: kdl.children(z.array(z.string()), "crit"),
+    good: kdl.children(z.array(z.string()), "good"),
+    okay: kdl.children(z.array(z.string()), "okay"),
+    bad: kdl.children(z.array(z.string()), "bad"),
+    fumble: kdl.children(z.array(z.string()), "fumble"),
   })
   .strict();
 
+const NO_LINES = { crit: [], good: [], okay: [], bad: [], fumble: [] };
+
 export const WealHostSchema = z
   .object({
-    slug: z.string(),
+    slug: kdl.arg(z.string()),
     name: z.string(),
     color: z.string(),
     avatar: z.string(),
     // goodness → flavor lines (host_says); empty for bankless hosts (knife/master).
-    lines: HostLinesSchema,
+    lines: HostLinesSchema.default(() => ({ ...NO_LINES })),
   })
   .strict();
 
 export const PodcastPersonaSchema = z
   .object({
-    slug: z.string(),
+    slug: kdl.arg(z.string()),
     name: z.string(),
     voice_id: z.string(),
     voice_name: z.string(),
@@ -72,11 +78,11 @@ export const PodcastPersonaSchema = z
 
 export const BeingSchema = z
   .object({
-    players: z.array(PlayerSchema),
+    players: kdl.children(z.array(PlayerSchema), "player"),
     guest_color: z.string(),
-    campaigns: z.array(CampaignSchema),
-    weal_hosts: z.array(WealHostSchema),
-    podcast_personas: z.array(PodcastPersonaSchema),
+    campaigns: kdl.children(z.array(CampaignSchema), "campaign"),
+    weal_hosts: kdl.children(z.array(WealHostSchema), "weal-host"),
+    podcast_personas: kdl.children(z.array(PodcastPersonaSchema), "podcast-persona"),
   })
   .strict();
 

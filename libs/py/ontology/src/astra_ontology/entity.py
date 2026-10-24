@@ -17,9 +17,9 @@ round-trip test guards stability instead).
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
-from astra_config.kdl import load_document
+from astra_config.kdl import Arg, Children, Prop, decode, kdl_quote, load_kdl
 from astra_lexicon import fold_for_match
 from pydantic import BaseModel, ConfigDict
 
@@ -44,59 +44,43 @@ class Entity(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    canonical: str  # the canonical display name; the entity's identity
-    kind: EntityKind | None = None
-    page: str | None = None  # akasha path-key if a page exists, else None
-    being: str | None = None  # ontology-being player slug if this is a PC (boundary marker)
-    aliases: list[str] = []  # alternate names + known ASR garbles
-    sources: list[str] = []  # provenance: akasha | defs | being | manual
+    canonical: Annotated[str, Arg()]  # the canonical display name; the entity's identity
+    kind: Annotated[EntityKind | None, Prop()] = None
+    page: Annotated[str | None, Prop()] = None  # akasha path-key if a page exists, else None
+    #: ontology-being player slug if this is a PC (boundary marker)
+    being: Annotated[str | None, Prop()] = None
+    #: alternate names + known ASR garbles
+    aliases: Annotated[list[str], Children("alias")] = []
+    #: provenance: akasha | defs | being | manual
+    sources: Annotated[list[str], Children("source")] = []
+
+
+class _EntityFile(BaseModel):
+    """`entity.kdl`: a list of `entity` nodes (other top-level nodes are ignored)."""
+
+    entities: Annotated[list[Entity], Children("entity")] = []
 
 
 # ── KDL serialization (Python-only; no cross-language parity) ────────────────
-def _kdl_str(s: str) -> str:
-    """KDL v2 quoted string: escape backslash and double-quote (others literal)."""
-    return '"' + s.replace("\\", "\\\\").replace('"', '\\"') + '"'
-
-
 def parse_entities(path: str | Path) -> list[Entity]:
     """Parse `entity.kdl` → the validated entity list."""
-    doc = load_document(path)
-    out: list[Entity] = []
-    for node in doc.nodes:
-        if node.name != "entity" or not list(node.args):
-            continue
-        props: dict[str, Any] = dict(node.properties)
-        out.append(
-            Entity(
-                canonical=str(node.args[0]),
-                kind=props.get("kind"),
-                page=str(props["page"]) if props.get("page") is not None else None,
-                being=str(props["being"]) if props.get("being") is not None else None,
-                aliases=[
-                    str(c.args[0]) for c in node.children if c.name == "alias" and list(c.args)
-                ],
-                sources=[
-                    str(c.args[0]) for c in node.children if c.name == "source" and list(c.args)
-                ],
-            )
-        )
-    return out
+    return decode(_EntityFile, load_kdl(path)).entities
 
 
 def serialize_entities(entities: list[Entity]) -> str:
     """Serialize entities to deterministic KDL (sorted by canonical) — stable commit."""
     lines: list[str] = []
     for e in sorted(entities, key=lambda x: (x.canonical.casefold(), x.canonical)):
-        head = f"entity {_kdl_str(e.canonical)}"
+        head = f"entity {kdl_quote(e.canonical)}"
         if e.kind is not None:
-            head += f" kind={_kdl_str(e.kind)}"
+            head += f" kind={kdl_quote(e.kind)}"
         if e.page is not None:
-            head += f" page={_kdl_str(e.page)}"
+            head += f" page={kdl_quote(e.page)}"
         if e.being is not None:
-            head += f" being={_kdl_str(e.being)}"
+            head += f" being={kdl_quote(e.being)}"
         lines.append(head + " {")
-        lines.extend(f"    alias {_kdl_str(a)}" for a in e.aliases)
-        lines.extend(f"    source {_kdl_str(s)}" for s in e.sources)
+        lines.extend(f"    alias {kdl_quote(a)}" for a in e.aliases)
+        lines.extend(f"    source {kdl_quote(s)}" for s in e.sources)
         lines.append("}")
     return "\n".join(lines) + "\n"
 

@@ -17,7 +17,6 @@
     "@astra/config": "workspace:*",
     "@astra/observe": "workspace:*",
     "@astra/site-kit": "workspace:*",
-    "@bgotink/kdl": "catalog:",
     "@fontsource/cinzel": "catalog:",
     "@fontsource/cormorant-sc": "catalog:",
     "@fontsource/eb-garamond": "catalog:",

@@ -14,7 +14,7 @@ import { isAbsolute, join } from "node:path";
 
 import { z } from "zod";
 
-import { loadDocument, topLevelNamespaces } from "./kdl";
+import { decodeKdl, loadKdl } from "./kdl";
 import { findRepoRoot } from "./root";
 import { SecretRef } from "./secrets";
 
@@ -337,6 +337,5 @@ function resolveDataPaths(cfg: Config): Config {
 /** Parse `config.kdl` → validated `Config` (secrets stay lazy; data paths absolute). */
 export function loadConfig(path?: string, secretsFile?: string): Config {
   const configPath = path ?? defaultConfigFile();
-  const namespaces = topLevelNamespaces(loadDocument(configPath), secretsFile);
-  return resolveDataPaths(ConfigSchema.parse(namespaces));
+  return resolveDataPaths(decodeKdl(ConfigSchema, loadKdl(configPath), { secretsFile }));
 }

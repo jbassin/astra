@@ -123,7 +123,12 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
   (raises, naming the config key, when it is unset or blank) or `SecretRef.optional()` (unset or
   blank gives `None`/`undefined`). Don't wrap `resolve()` in app code.
 - **KDL at the edges.** Parse KDL and validate into Pydantic or Zod immediately; never pass raw KDL
-  nodes around.
+  nodes around. Don't hand-walk nodes: declare the shape as a model and decode it with
+  `astra_config.kdl` `decode(Model, load_kdl(path))` or `@astra/config`
+  `decodeKdl(schema, loadKdl(path))`. Fields are child nodes by default; mark the rest with
+  `Arg`/`Prop`/`Children` (Python `Annotated[...]`) or `kdl.arg`/`kdl.prop`/`kdl.children` (TS,
+  wrapping the outermost schema). A missing required field raises `KdlDecodeError` naming the node
+  path. Quote hand-inserted KDL strings with `kdl_quote`/`kdlQuote`.
 - **LLM calls** go through `libs/py/llm`; never call a provider SDK directly. Its client owns the
   `max_tokens` guard, caching and cost telemetry; `make_dspy_lm` returns a bare `dspy.LM` that
   skips them.

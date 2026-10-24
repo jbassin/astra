@@ -483,9 +483,6 @@ importers:
       '@astra/site-kit':
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit
-      '@bgotink/kdl':
-        specifier: 'catalog:'
-        version: 0.4.0
       '@fontsource/cinzel':
         specifier: 'catalog:'
         version: 5.2.8
@@ -1291,9 +1288,6 @@ importers:
       '@astra/config':
         specifier: workspace:*
         version: link:../config
-      '@bgotink/kdl':
-        specifier: 'catalog:'
-        version: 0.4.0
       zod:
         specifier: ^4.4.3
         version: 4.4.3
@@ -8879,7 +8873,7 @@ snapshots:
   h3@2.0.1-rc.20:
     dependencies:
       rou3: 0.8.1
-      srvx: 0.11.20
+      srvx: 0.11.22
 
   has-symbols@1.1.0: {}
 

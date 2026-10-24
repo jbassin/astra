@@ -70,7 +70,7 @@ describe("per-language validation", () => {
 
   test("a bad value in a TS block fails the TS loader", () => {
     // libs/py/config's loader loads this file; its whole-file check rejects it.
-    expect(() => loadConfig(BAD_TS_BLOCK)).toThrow(/port/);
+    expect(() => loadConfig(BAD_TS_BLOCK)).toThrow(/orator > port/);
   });
 });
 
@@ -98,7 +98,7 @@ describe("the loader, against the fixture", () => {
   test("unknown KDL key is rejected", async () => {
     const tmp = join(tmpdir(), `astra-config-bad-${Date.now()}.kdl`);
     await writeFile(tmp, 'orator {\n  port 1\n  bogus-field "nope"\n}\n');
-    expect(() => loadConfig(tmp)).toThrow(/bogusField/);
+    expect(() => loadConfig(tmp)).toThrow(/orator > bogus-field "nope": unknown node/);
   });
 
   test("data paths: relative → under root, absolute as-is, empty stays unset", () => {
