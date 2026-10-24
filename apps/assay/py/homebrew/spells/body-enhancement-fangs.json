@@ -41,11 +41,11 @@
       "value": ""
     },
     "heightening": {
-      "type": "interval",
-      "interval": 1,
       "damage": {
         "0": "1d6"
-      }
+      },
+      "interval": 1,
+      "type": "interval"
     },
     "level": {
       "value": 1

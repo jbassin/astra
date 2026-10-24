@@ -36,6 +36,11 @@
     },
     "heightening": {
       "levels": {
+        "10": {
+          "target": {
+            "value": "9 creatures"
+          }
+        },
         "4": {
           "target": {
             "value": "3 creatures"
@@ -49,11 +54,6 @@
         "8": {
           "target": {
             "value": "7 creatures"
-          }
-        },
-        "10": {
-          "target": {
-            "value": "9 creatures"
           }
         }
       },

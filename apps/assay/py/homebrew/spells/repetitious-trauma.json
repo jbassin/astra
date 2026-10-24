@@ -46,6 +46,13 @@
       "sustained": true,
       "value": "1 minute"
     },
+    "heightening": {
+      "damage": {
+        "0": "2d6"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
     "level": {
       "value": 5
     },
@@ -78,13 +85,6 @@
         "manipulate",
         "mental"
       ]
-    },
-    "heightening": {
-      "damage": {
-        "0": "2d6"
-      },
-      "interval": 1,
-      "type": "interval"
     }
   },
   "type": "spell"

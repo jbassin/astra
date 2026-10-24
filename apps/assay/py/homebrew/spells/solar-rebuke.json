@@ -45,6 +45,13 @@
       "sustained": false,
       "value": ""
     },
+    "heightening": {
+      "damage": {
+        "0": "1d10"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
     "level": {
       "value": 6
     },
@@ -76,13 +83,6 @@
         "light",
         "planara"
       ]
-    },
-    "heightening": {
-      "damage": {
-        "0": "1d10"
-      },
-      "interval": 1,
-      "type": "interval"
     }
   },
   "type": "spell"
