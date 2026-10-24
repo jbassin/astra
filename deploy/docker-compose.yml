@@ -15,25 +15,33 @@ name: astra
 include:
   - path: signoz/docker/docker-compose.yaml
 
-# Every astra service: restart policy and the one network (node-exporter and smart-exporter
-# set their own network_mode instead).
+# Every astra service: the restart policy. Networks are least-privilege (0037 OPS-8, SEC-13);
+# the `networks:` block at the end of this file maps who joins which net and why. A YAML
+# merge does not merge lists, so a service that needs more than its anchor's networks lists
+# all of them. node-exporter and smart-exporter set their own network_mode instead.
 x-astra-service: &astra-service
-  networks: [signoz-net]
   restart: unless-stopped
 
 # The astra app containers run as the host owner (uid 1000): node:24-slim ships a uid-1000
 # `node` user and the Dagster image chowns /opt/dagster to 1000, so writes into the bind
-# mounts land host-owned. Postgres and SigNoz keep their own uid.
+# mounts land host-owned. Postgres and SigNoz keep their own uid. Every Node app exports
+# OTLP to the collector, so `telemetry` is its default network.
 x-astra-app: &astra-app
   <<: *astra-service
   user: "1000:1000"
+  networks: [telemetry]
 
 # The Postgres stores: PGDATA is an identical-layout bind mount from the data root. No
 # `user:`, because the postgres entrypoint owns PGDATA as uid 70 (`just pg-migrate` keeps
-# 70:70/0700).
+# 70:70/0700). Each store sets its own `<app>-db` network, shared only with its app.
 x-astra-postgres: &astra-postgres
   <<: *astra-service
   image: postgres:16-alpine
+
+# The Dagster trio: `pipeline` carries webserver/daemon -> code-server gRPC (:4000) and their
+# OTLP to the collector; `dagster-db` reaches dagster-postgres (run workers are subprocesses
+# of dagster-code, so it writes runs and events too).
+x-dagster-networks: &dagster-networks [pipeline, dagster-db]
 
 x-pg-healthcheck: &pg-healthcheck
   interval: 10s
@@ -132,6 +140,7 @@ services:
   dagster-postgres:
     <<: *astra-postgres
     container_name: astra-dagster-postgres
+    networks: [dagster-db]
     environment:
       POSTGRES_USER: ${DAGSTER_PG_USERNAME:-dagster}
       POSTGRES_PASSWORD: ${DAGSTER_PG_PASSWORD:-dagster}
@@ -154,6 +163,7 @@ services:
     image: astra-dagster:local
     container_name: astra-dagster-code
     command: ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000", "-f", "definitions.py"]
+    networks: *dagster-networks
     environment: *dagster-env
     volumes: *dagster-pipeline-volumes
 
@@ -164,6 +174,7 @@ services:
     command: ["dagster-webserver", "-h", "0.0.0.0", "-p", "3000", "-w", "/opt/dagster/home/workspace.yaml"]
     ports:
       - "10350:3000" # Dagster UI (astra range)
+    networks: *dagster-networks
     environment: *dagster-env
     volumes: *dagster-pipeline-volumes
     depends_on:
@@ -177,6 +188,7 @@ services:
     image: astra-dagster:local
     container_name: astra-dagster-daemon
     command: ["dagster-daemon", "run", "-w", "/opt/dagster/home/workspace.yaml"]
+    networks: *dagster-networks
     environment: *dagster-env
     volumes: *dagster-pipeline-volumes
     depends_on:
@@ -189,6 +201,7 @@ services:
   weal-postgres:
     <<: *astra-postgres
     container_name: astra-weal-postgres
+    networks: [weal-db]
     environment:
       POSTGRES_USER: ${WEAL_PG_USERNAME:-weal}
       POSTGRES_PASSWORD: ${WEAL_PG_PASSWORD:-weal}
@@ -212,6 +225,8 @@ services:
         ENTRY: src/index.ts
     image: astra-weal-bot:local
     container_name: astra-weal-bot
+    # weal-db: its store; weal-feed: it POSTs rolls to weal-overlay (weal.feed-ws-url).
+    networks: [telemetry, weal-db, weal-feed]
     depends_on:
       weal-postgres:
         condition: service_healthy
@@ -234,6 +249,7 @@ services:
         APP: weal/overlay
     image: astra-weal-overlay:local
     container_name: astra-weal-overlay
+    networks: [telemetry, weal-feed]
     # Shared weal↔overlay token (Decision E env injection via `just up`).
     environment:
       WEAL_TOKEN: ${WEAL_TOKEN:-}
@@ -429,6 +445,7 @@ services:
   orator-postgres:
     <<: *astra-postgres
     container_name: astra-orator-postgres
+    networks: [orator-db]
     environment:
       POSTGRES_USER: ${ORATOR_PG_USERNAME:-orator}
       POSTGRES_PASSWORD: ${ORATOR_PG_PASSWORD:-orator}
@@ -457,6 +474,7 @@ services:
         RUNTIME: ffmpeg
     image: astra-orator-backend:local
     container_name: astra-orator-backend
+    networks: [telemetry, orator-db]
     depends_on:
       orator-postgres:
         condition: service_healthy
@@ -558,7 +576,8 @@ services:
   # dedicated Foundry account ("Portal", full GM) permanently logged into the live
   # pf2e "Faerrin" world through the public edge, so portal's MCP tools work with no
   # human browser tab open. A SEPARATE unit from portal-server (D27-5): health-only,
-  # not edge-routed (no Caddy entry), `signoz-net` alone (D27-3). Follows
+  # not edge-routed (no Caddy entry), on `telemetry` alone; it reaches Foundry through the
+  # public edge (D27-3), not a compose network. Follows
   # vellum-render's browser-in-a-container lifecycle with D27-10's long-lived-tab
   # deltas: `shm_size` (Docker's 64MB `/dev/shm` default is the known Chromium OOM
   # source for a process-life-long page) and a generous `start_period` (Chromium warm-up
@@ -594,7 +613,7 @@ services:
   # --- node-exporter: host health metrics (CPU/mem/disk/net) + ethtool NIC counters
   # (the enp4s0 rx_crc_errors / collisions that flagged the 2026-08 link flaps).
   # `network_mode: host` is required — ethtool + netdev stats only exist in the host
-  # netns, so this service is NOT on signoz-net; the otel-collector scrapes it across
+  # netns, so this service is on no compose network; the otel-collector scrapes it across
   # the bridge at the signoz-net gateway (172.27.0.1:9100, see the vendored
   # otel-collector-config.yaml's node-exporter job). Listens on :9100 (LAN-visible,
   # read-only metrics). Scrape interval is the receiver's global 60s. ---
@@ -663,6 +682,32 @@ services:
 # is uid 70 via its entrypoint). SigNoz keeps its own named volumes (declared in the
 # vendored signoz include — clickhouse/sqlite/zookeeper).
 
+# Least-privilege networks (0037 OPS-8, SEC-13). A bridge network does not filter by port,
+# so every member of a net can reach every port of every other member; each net therefore
+# holds only the containers that must talk. Container DNS works per net, so a service that
+# shares no net with another cannot resolve it. The host-published ports are a separate path
+# (ADR 0040): any container with a gateway can still reach them on the host.
 networks:
+  # SigNoz's own net (vendored include): ClickHouse (empty default password), zookeeper, the
+  # UI and the collector. No astra service joins it. Its name and 172.27.0.0/16 subnet are
+  # fixed, because the collector scrapes node-exporter at the gateway 172.27.0.1:9100.
   signoz-net:
     name: signoz-net
+  # Every Node app plus the collector: the apps export OTLP to signoz-otel-collector:4318.
+  # Not internal, because it carries the apps' outbound traffic (Discord, the public edge)
+  # and their published ports. The apps can reach each other here, but every app port is
+  # already published on the host, so that adds no reach.
+  telemetry:
+  # The Dagster trio plus the collector (their OTLP). The code server's gRPC :4000 has no
+  # auth and is not published, so it is reachable only from this net. Not internal: the
+  # assets call Groq, ElevenLabs and OpenRouter, and the webserver publishes 10350.
+  pipeline:
+  # One net per Postgres, joined only by its app. dagster-db is internal (no published port,
+  # no outbound traffic). weal-db and orator-db cannot be internal while their Postgres ports
+  # 10362/10364 stay published: Docker publishes no port on an internal-only container.
+  dagster-db:
+    internal: true
+  weal-db:
+  orator-db:
+  # weal-bot -> weal-overlay:10361 (the roll feed, token-gated).
+  weal-feed:

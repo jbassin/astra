@@ -102,7 +102,7 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
 - **SSR only** — no `prerender` block. Commit `src/routeTree.gen.ts` (oxlint/oxfmt-ignored).
   Pixi behind `lazy()` + `<ClientOnly>`. `/editor`-style routes use `ssr: false`.
 - **Telemetry** lands only from in-cluster: config `telemetry.otlp-endpoint` is the
-  collector's signoz-net name (`http://signoz-otel-collector:4318`), not `localhost`.
+  collector's name on the `telemetry` network (`http://signoz-otel-collector:4318`), not `localhost`.
 
 The cross-app frontend traps (TanStack Start, the Node resolve hook, SSR smoke tests, CSS
 layering, the gothic theme import) are in `libs/ts/site-kit/README.md` and

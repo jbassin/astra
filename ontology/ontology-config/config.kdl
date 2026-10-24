@@ -70,8 +70,8 @@ llm {
 
 telemetry {
     // In-cluster OTLP/HTTP receiver of the SigNoz collector. Astra services run as
-    // Compose units on signoz-net and reach the collector by its container name
-    // (:4318 = the collector's OTLP/HTTP port). The host-published port (10353) is
+    // Compose units on the `telemetry` network (Dagster: `pipeline`) and reach the
+    // collector by its container name (:4318 = the collector's OTLP/HTTP port). The host-published port (10353) is
     // NOT reachable from inside a container, so this MUST be the in-cluster address
     // for server-side spans to land. A host-run/dev process (no container) can't
     // resolve this name. Python picks between this and host-otlp-endpoint by the
