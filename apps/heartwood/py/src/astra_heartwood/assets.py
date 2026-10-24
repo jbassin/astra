@@ -1,5 +1,6 @@
-"""Dagster wiring for heartwood (0036): one partition per faerrin session, a sensor on
-linguist's canonical transcripts, and ``session_wiki``.
+"""Dagster wiring for heartwood (0036): ``session_wiki`` on the shared ``sessions``
+partitions, after linguist's ``session_transcripts``, and the sensor that launches it for
+each faerrin session.
 
 ``session_wiki`` does not run the agent (the dagster-code image has no node, git, push key
 or docker — 0036 D3). It files ``<requests-path>/<date>.request.json`` and waits for the
@@ -15,16 +16,14 @@ from pathlib import Path
 from typing import Any
 
 import dagster as dg
+from astra_linguist.assets import session_transcripts
 from astra_linguist.chronicle import TRANSCRIPT_DIR
 from astra_observe import get_logger, get_meter, get_tracer
 from astra_pipeline_resources import AstraConfig, PipelinePaths, default_resources
-from astra_sessions import transcript_dates
+from astra_pipeline_resources.partitions import SessionStage, launch_ready, sessions
 
 from . import requests as rq
 from .agent.sessions import faerrin_session
-
-SESSIONS_NAME = "heartwood_sessions"
-heartwood_sessions = dg.DynamicPartitionsDefinition(name=SESSIONS_NAME)
 
 #: Run tag capped at 1 concurrent run in dagster/dagster.yaml (0036 D36-9): a waiting
 #: session_wiki holds a run slot, so two of them must never starve the pipeline.
@@ -124,7 +123,7 @@ def run_session_wiki(
     return meta
 
 
-@dg.asset(partitions_def=heartwood_sessions, group_name="heartwood")
+@dg.asset(partitions_def=sessions, deps=[session_transcripts], group_name="heartwood")
 def session_wiki(
     context: dg.AssetExecutionContext, astra_config: AstraConfig, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
@@ -143,14 +142,16 @@ def session_wiki(
     return dg.MaterializeResult(metadata=meta)
 
 
-def faerrin_dates(existing: set[str], transcript_dir: Path | None = None) -> list[str]:
-    """Faerrin-world transcript dates not yet partitioned ("new" = not a partition yet, so
-    a linguist rewrite of an existing transcript never re-triggers)."""
+def is_faerrin(date: str, transcript_dir: Path | None = None) -> bool:
+    """True when this session's canonical transcript is a faerrin-world campaign."""
     transcript_dir = transcript_dir if transcript_dir is not None else TRANSCRIPT_DIR
-    dates = transcript_dates(transcript_dir)
-    return sorted(
-        d for d in dates - existing if faerrin_session(d, transcript_dir=transcript_dir) is not None
-    )
+    return faerrin_session(date, transcript_dir=transcript_dir) is not None
+
+
+#: What `heartwood_sensor` launches, and when (``dagster/migrate_sessions.py`` reads it).
+HEARTWOOD_STAGE = SessionStage(
+    upstream=session_transcripts.key, stage=session_wiki.key, keep=is_faerrin
+)
 
 
 @dg.sensor(
@@ -159,20 +160,16 @@ def faerrin_dates(existing: set[str], transcript_dir: Path | None = None) -> lis
     default_status=dg.DefaultSensorStatus.RUNNING,
 )
 def heartwood_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
-    """Register + run ``session_wiki`` for each new faerrin session.
+    """Run ``session_wiki`` for each faerrin session whose ``session_transcripts`` is
+    materialized and whose wiki was never tried.
 
-    First eval ADOPTS: every existing faerrin transcript becomes a partition with no run
-    (the paid-replay guard; the ledger had no gaps at enable). The ledger is never read
-    here — the container's copy is image-baked; the host runner owns the published check."""
-    existing = set(context.instance.get_dynamic_partitions(SESSIONS_NAME))
-    found = faerrin_dates(existing)
-    adds = [heartwood_sessions.build_add_request(found)] if found else []
-    if context.cursor is None:
-        return dg.SensorResult(dynamic_partitions_requests=adds, cursor="adopted")
-    return dg.SensorResult(
-        run_requests=[dg.RunRequest(partition_key=d, tags=CONCURRENCY_TAG) for d in found],
-        dynamic_partitions_requests=adds,
-    )
+    A linguist rewrite of a session that already has a wiki run never re-triggers, and a
+    failed or canceled run is not retried (re-execute it). The sessions the old sensor
+    adopted without running are marked materialized by the sessions migration (the
+    paid-replay guard).
+    The ledger is never read here: the container's copy is image-baked, and the host runner
+    owns the published check."""
+    return launch_ready(context, HEARTWOOD_STAGE, tags=CONCURRENCY_TAG)
 
 
 defs = dg.Definitions(

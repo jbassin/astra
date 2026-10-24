@@ -1,5 +1,5 @@
 """The 0036 Dagster wiring (D36-7, D36-8): session_wiki's request/wait/outcome handling and
-the sensor's adoption. No host runner — a fake one writes results."""
+the sensor on the shared sessions set. No host runner — a fake one writes results."""
 
 from __future__ import annotations
 
@@ -11,6 +11,8 @@ import dagster as dg
 import pytest
 from astra_heartwood import assets
 from astra_heartwood import requests as rq
+from astra_pipeline_resources.partitions import SESSIONS_NAME, sessions
+from astra_pipeline_resources.testing import fail_partition, mark_materialized, sessions_instance
 
 
 def answer(root: Path, outcome: rq.Outcome, code: int, **kw: Any):
@@ -132,30 +134,43 @@ def _transcripts(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, dates: dict[st
     return tdir
 
 
-def _evaluate(instance: dg.DagsterInstance, cursor: str | None) -> dg.SensorResult:
-    result = assets.heartwood_sensor(dg.build_sensor_context(instance=instance, cursor=cursor))
+def _evaluate(instance: dg.DagsterInstance) -> dg.SensorResult:
+    result = assets.heartwood_sensor(dg.build_sensor_context(instance=instance))
     assert isinstance(result, dg.SensorResult)
     return result
 
 
-def test_sensor_adopts_then_runs_only_new_faerrin_sessions(
+def test_sensor_runs_faerrin_sessions_whose_wiki_was_never_tried(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    dates = {"2026-10-12": True, "2026-10-19": True, "2026-10-20": False}
-    tdir = _transcripts(tmp_path, monkeypatch, dates)
-    with dg.DagsterInstance.ephemeral() as instance:
-        first = _evaluate(instance, None)
-        assert first.run_requests == [] and first.cursor == "adopted"
-        (adds,) = first.dynamic_partitions_requests or []
-        assert sorted(adds.partition_keys or []) == ["2026-10-12", "2026-10-19"]
-        instance.add_dynamic_partitions(assets.SESSIONS_NAME, list(adds.partition_keys or []))
+    dates = {"2026-10-12": True, "2026-10-19": True, "2026-10-20": False, "2026-10-26": True}
+    _transcripts(tmp_path, monkeypatch, dates)
+    instance = sessions_instance(*dates, "2026-11-2")
+    # linguist finished all four; 2026-11-2 has no transcript yet. 2026-10-12 has a wiki
+    # (or was adopted by the migration); 2026-10-19 failed; 2026-10-20 is not faerrin.
+    mark_materialized(instance, "session_transcripts", *dates)
+    mark_materialized(instance, "session_wiki", "2026-10-12")
+    fail_partition(instance, "session_wiki", "2026-10-19")
 
-        dates["2026-10-26"] = True
-        (tdir / "000.show.2026-10-26.txt").write_text("x")
-        later = _evaluate(instance, "adopted")
-        reqs = later.run_requests or []
-        assert [r.partition_key for r in reqs] == ["2026-10-26"]
-        assert reqs[0].tags == assets.CONCURRENCY_TAG
+    reqs = _evaluate(instance).run_requests or []
+    assert [r.partition_key for r in reqs] == ["2026-10-26"]
+    assert reqs[0].tags == assets.CONCURRENCY_TAG
+
+
+def test_sensor_waits_for_the_sessions_migration(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _transcripts(tmp_path, monkeypatch, {"2026-10-26": True})
+    instance = sessions_instance("2026-10-26")
+    instance.add_dynamic_partitions("heartwood_sessions", ["2026-10-12"])
+    mark_materialized(instance, "session_transcripts", "2026-10-26")
+    result = _evaluate(instance)
+    assert not result.run_requests and result.skip_reason
+
+
+def test_session_wiki_follows_the_transcript_on_the_shared_set() -> None:
+    assert assets.session_wiki.partitions_def is sessions
+    assert assets.session_wiki.dependency_keys == {dg.AssetKey("session_transcripts")}
 
 
 def test_definitions_and_no_retry_policy() -> None:
@@ -172,7 +187,7 @@ def _materialize_wiki(tmp_path: Path, timeout_min: int) -> dg.ExecuteInProcessRe
     config = FakeConfig()
     config.cfg.heartwood.request_timeout_minutes = timeout_min
     instance = dg.DagsterInstance.ephemeral()
-    instance.add_dynamic_partitions(assets.SESSIONS_NAME, ["2026-10-26"])
+    instance.add_dynamic_partitions(SESSIONS_NAME, ["2026-10-26"])
     return dg.materialize(
         [assets.session_wiki],
         partition_key="2026-10-26",

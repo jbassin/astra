@@ -41,7 +41,14 @@ SENSORS = {
     "pipeline_failure_alert",
     "scribe_output_sensor",
 }
-PARTITIONS = {"heartwood_sessions", "linguist_sessions", "mouthpiece_sessions", "scribe_sessions"}
+#: One shared set since 0037 pipe-4b (``astra_pipeline_resources.partitions``).
+PARTITIONS = {"sessions"}
+#: The cross-app dependencies (0037 pipe-4b): downstream asset -> its upstream assets.
+CROSS_APP_DEPS = {
+    "session_transcripts": {"session_transcript"},
+    "session_digest": {"session_transcripts", "session_episode_summary"},
+    "session_wiki": {"session_transcripts"},
+}
 #: The resources the assets declare as parameters (0037 PIPE-16); a key is a parameter name.
 RESOURCES = {"astra_config", "llm", "pipeline_paths", "tts"}
 
@@ -90,3 +97,21 @@ def test_dynamic_partition_names_are_pinned(definitions: ModuleType) -> None:
         if isinstance(a.partitions_def, dg.DynamicPartitionsDefinition)
     }
     assert names == PARTITIONS
+
+
+def test_cross_app_dependencies_are_real_edges(definitions: ModuleType) -> None:
+    """The apps hand off through asset dependencies, and every upstream is a real asset of
+    this code location (not an external stub left by a typo in a key)."""
+    graph = _repo(definitions).asset_graph
+    for asset, upstream in CROSS_APP_DEPS.items():
+        node = graph.get(dg.AssetKey(asset))
+        assert {k.to_user_string() for k in node.parent_keys} == upstream
+        for key in node.parent_keys:
+            assert graph.get(key).is_materializable
+
+
+def test_every_partitioned_asset_shares_the_sessions_set(definitions: ModuleType) -> None:
+    from astra_pipeline_resources.partitions import sessions
+
+    defs = [a.partitions_def for a in _repo(definitions).assets_defs_by_key.values()]
+    assert {id(d) for d in defs if d is not None} == {id(sessions)}

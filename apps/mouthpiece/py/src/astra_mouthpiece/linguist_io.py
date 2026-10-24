@@ -10,11 +10,10 @@ parsing is pure + unit-tested.
 from __future__ import annotations
 
 import re
-from collections.abc import Iterable
 from pathlib import Path
 
 from astra_config import load_config
-from astra_linguist.chronicle import TRANSCRIPT_DIR, load_episode_summary, show_for_date
+from astra_linguist.chronicle import TRANSCRIPT_DIR
 from astra_sessions import parse_transcript_name
 
 CONTEXT_DIR = Path(load_config().linguist.script_path)
@@ -47,34 +46,3 @@ def transcript_for(date: str, transcript_dir: Path | str = TRANSCRIPT_DIR) -> Pa
         if d == date:
             return path
     return None
-
-
-def new_sessions(
-    existing: Iterable[str], transcript_dir: Path | str = TRANSCRIPT_DIR
-) -> dict[str, str]:
-    """date → transcript path, for each linguist transcript not yet partitioned."""
-    root = Path(transcript_dir)
-    if not root.is_dir():
-        return {}
-    seen = set(existing)
-    found: dict[str, str] = {}
-    for path in sorted(root.glob("*.txt")):
-        try:
-            date = parse_transcript_name(path).date
-        except ValueError:
-            continue
-        if date not in seen and date not in found:
-            found[date] = str(path)
-    return found
-
-
-def chronicle_gate_open(date: str) -> bool:
-    """May this session run yet? (0021 Change B ordering gate.)
-
-    `True` once chronicle has written this session's `episodes/<date>.json` (the hard
-    gate) OR will never write one — `show_for_date(date) is None` carves out excluded
-    (`EXCLUDED_DATES`) / unmatched sessions, which must proceed ungated or mouthpiece
-    stalls on them forever. The caller only asks this for transcript-present sessions, so
-    `None` here means excluded/unknown-slug, not "no transcript".
-    """
-    return load_episode_summary(date) is not None or show_for_date(date) is None

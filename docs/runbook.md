@@ -167,7 +167,10 @@ Each session is a Dagster partition. The detailed commands (GraphQL calls, conta
 3. Re-execute from failure in the UI, or with `launchRunReexecution` (strategy `FROM_FAILURE`).
    This reuses finished outputs, so paid steps that already succeeded are not repeated.
 4. To re-run a session from scratch, follow "Re-run a session from scratch" in the Dagster README
-   (delete the session's outputs and its dynamic partitions; the sensor re-registers it).
+   (delete the session's outputs, then materialize the stages to redo in one run; the sensors
+   never re-launch a stage that was already tried for a session). Don't delete runs: a run is
+   Dagster's record that a paid stage was tried, and deleting it can make the sensor relaunch
+   the stage.
 5. A Craig zip whose name has no date is skipped silently: hard-link it under a dated name in
    `/ruby/data/astra-state/scribe/incoming` (date from the zip's `info.txt`), keeping the original
    name. See [`apps/scribe/py/README.md`](../apps/scribe/py/README.md#operations).

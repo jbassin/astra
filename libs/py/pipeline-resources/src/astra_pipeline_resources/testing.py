@@ -8,9 +8,11 @@ resources from their fields and drops private state.)
 from pathlib import Path
 from typing import Any
 
+import dagster as dg
 from astra_config import Config
 
 from . import PipelinePaths, loaded_config
+from .partitions import SESSIONS_NAME, sessions
 
 
 def paths_under(root: Path) -> PipelinePaths:
@@ -50,3 +52,49 @@ class FakeLlm:
     def client(self) -> Any:
         self.clients += 1
         return self.stub
+
+
+def sessions_instance(*keys: str) -> dg.DagsterInstance:
+    """An ephemeral instance whose shared ``sessions`` set holds ``keys``."""
+    instance = dg.DagsterInstance.ephemeral()
+    instance.add_dynamic_partitions(SESSIONS_NAME, list(keys))
+    return instance
+
+
+def mark_materialized(instance: dg.DagsterInstance, asset: str, *keys: str) -> None:
+    """Record a runless materialization of ``asset`` for each session key."""
+    for key in keys:
+        instance.report_runless_asset_event(dg.AssetMaterialization(asset, partition=key))
+
+
+def fail_partition(
+    instance: dg.DagsterInstance, asset: str, key: str, partitions: str = SESSIONS_NAME
+) -> None:
+    """Record a failed run of ``asset`` for session ``key`` (a stand-in with the same key),
+    partitioned by the dynamic set named ``partitions``."""
+    partitions_def = (
+        sessions if partitions == SESSIONS_NAME else dg.DynamicPartitionsDefinition(name=partitions)
+    )
+
+    @dg.asset(name=asset, partitions_def=partitions_def)
+    def _fails() -> None:
+        raise RuntimeError("failed on purpose")
+
+    dg.materialize([_fails], partition_key=key, instance=instance, raise_on_error=False)
+
+
+def cancel_partition(instance: dg.DagsterInstance, asset: str, key: str) -> str:
+    """Create a run of ``asset`` for session ``key`` and cancel it; return its run id.
+
+    Dagster's partition status reports a canceled run as neither failed nor materialized,
+    the case that would make a sensor relaunch a terminated paid run."""
+
+    @dg.asset(name=asset, partitions_def=sessions)
+    def _never_runs() -> None: ...
+
+    job = dg.Definitions(assets=[_never_runs]).resolve_implicit_global_asset_job_def()
+    run = instance.create_run_for_job(
+        job_def=job, asset_selection=frozenset({_never_runs.key}), tags={"dagster/partition": key}
+    )
+    instance.report_run_canceled(run)
+    return run.run_id

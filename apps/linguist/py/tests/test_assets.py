@@ -21,6 +21,7 @@ from astra_linguist.chronicle import (
 )
 from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
+from astra_pipeline_resources.partitions import SESSIONS_NAME
 from astra_pipeline_resources.testing import FakeConfig, FakeLlm, paths_under
 
 DATE = "2025-1-6"
@@ -61,7 +62,7 @@ def _resources(tmp_path: Path, client: _Client) -> tuple[dict[str, Any], FakeLlm
 
 def _instance(*dates: str) -> dg.DagsterInstance:
     instance = dg.DagsterInstance.ephemeral()
-    instance.add_dynamic_partitions(assets.SESSIONS_NAME, list(dates))
+    instance.add_dynamic_partitions(SESSIONS_NAME, list(dates))
     return instance
 
 

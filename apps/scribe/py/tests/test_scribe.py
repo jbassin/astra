@@ -517,3 +517,42 @@ def test_hallucination_gate_text_prong_drops_the_you_family() -> None:
     )
     segs = tx.transcribe_track("x.aac", "/tmp/scribe-test-work-text-prong")
     assert [s["text"] for s in segs] == ["I attack the spider.", "Okay."]
+
+
+# ── craig_drop_sensor on the shared sessions set (0037 pipe-4b) ──────────────
+def _craig_sensor(monkeypatch: Any, tmp_path: Path, instance: Any) -> Any:
+    import dagster as dg
+    from astra_scribe import assets
+
+    monkeypatch.setattr(
+        assets,
+        "load_config",
+        lambda: SimpleNamespace(scribe=SimpleNamespace(incoming_path=str(tmp_path))),
+    )
+    for name in ("g_c_2026-9-7_a.zip", "g_c_2026-9-14_b.zip"):
+        (tmp_path / name).write_bytes(b"\0" * MIN_ZIP_BYTES)
+    result = assets.craig_drop_sensor(dg.build_sensor_context(instance=instance))
+    assert isinstance(result, dg.SensorResult)
+    return result
+
+
+def test_craig_sensor_adds_only_dates_that_are_not_sessions(
+    monkeypatch: Any, tmp_path: Path
+) -> None:
+    from astra_pipeline_resources.testing import sessions_instance
+
+    result = _craig_sensor(monkeypatch, tmp_path, sessions_instance("2026-9-7"))
+    assert [rr.partition_key for rr in result.run_requests or []] == ["2026-9-14"]
+    (add,) = result.dynamic_partitions_requests or []
+    assert add.partitions_def_name == "sessions" and list(add.partition_keys) == ["2026-9-14"]
+
+
+def test_craig_sensor_waits_for_the_sessions_migration(monkeypatch: Any, tmp_path: Path) -> None:
+    """Before the migration the shared set is empty, so every zip on disk would look new."""
+    from astra_pipeline_resources.testing import sessions_instance
+
+    instance = sessions_instance()
+    instance.add_dynamic_partitions("scribe_sessions", ["2026-9-7"])
+    result = _craig_sensor(monkeypatch, tmp_path, instance)
+    assert not result.run_requests and not result.dynamic_partitions_requests
+    assert result.skip_reason

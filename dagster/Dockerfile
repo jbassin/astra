@@ -75,6 +75,8 @@ RUN ASTRA_DENO_CACHED_ONLY= python -c 'import sys; from astra_llm.rlm import mak
 # Code location: definitions.py loads the asset graph (imports the installed packages).
 WORKDIR /opt/dagster/app
 COPY dagster/definitions.py ./
+# The one-time sessions partition migration (0037 pipe-4b): `python migrate_sessions.py`.
+COPY dagster/migrate_sessions.py ./
 
 # DAGSTER_HOME holds the instance config (dagster.yaml) + the workspace file.
 ENV DAGSTER_HOME=/opt/dagster/home

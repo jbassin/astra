@@ -1,12 +1,12 @@
-"""Dagster wiring — the per-session partition, the 4-asset episode graph.
+"""Dagster wiring — the episode graph and the linguist→mouthpiece sensor.
 
-One partition per session/date (a `DynamicPartitionsDefinition`); a sensor
-registers a partition + run request for each new linguist canonical transcript
-(the linguist→mouthpiece trigger). The four assets chain on disk under
-``episodes_path/<key>/`` (faerrin's `out/` disk-cache seams → asset
-materialization):
+One partition per session/date in the pipeline's shared ``sessions`` set.
+`session_digest` depends on linguist's `session_transcripts` and on
+`session_episode_summary` (the chronicle gate, 0021 Change B), and the sensor launches
+the graph once that summary is materialized. The five assets chain on disk under
+``episodes_path/<key>/`` (faerrin's `out/` disk-cache seams → asset materialization):
 
-    session_digest → session_script → session_audio_clips → session_episode
+    session_digest → session_brief → session_script → session_audio_clips → session_episode
 
 The live chain is paid: clean/enrich + the two-pass script spend GLM tokens
 (`mouthpiece.model`), and the audio stage is paid ElevenLabs (`mouthpiece.tts-provider`).
@@ -21,9 +21,11 @@ from pathlib import Path
 import dagster as dg
 from astra_akasha_backend.corpus import load_corpus
 from astra_config import Config
+from astra_linguist.assets import session_episode_summary, session_transcripts
 from astra_linguist.chronicle import recent_prior_entries, season_for, show_for_date
 from astra_observe import get_logger, get_meter, get_tracer
 from astra_pipeline_resources import AstraConfig, LlmResource, PipelinePaths, default_resources
+from astra_pipeline_resources.partitions import SessionStage, launch_ready, sessions
 from astra_sessions import atomic_write_text, parse_transcript_name
 
 from . import clean, linguist_io
@@ -45,9 +47,6 @@ from .roster import build_roster_block
 from .session import build_episode_script
 from .tts.provider import TtsClientError
 from .tts.synth import synthesize_script
-
-SESSIONS_NAME = "mouthpiece_sessions"
-mouthpiece_sessions = dg.DynamicPartitionsDefinition(name=SESSIONS_NAME)
 
 _log = get_logger("astra.mouthpiece")
 _meter = get_meter("astra.mouthpiece")
@@ -116,7 +115,12 @@ def _read_script(root: Path, key: str) -> Script:
 _EXTERNAL_RETRY = dg.RetryPolicy(max_retries=3, delay=120, backoff=dg.Backoff.EXPONENTIAL)
 
 
-@dg.asset(partitions_def=mouthpiece_sessions, group_name="mouthpiece", retry_policy=_EXTERNAL_RETRY)
+@dg.asset(
+    partitions_def=sessions,
+    deps=[session_transcripts, session_episode_summary],
+    group_name="mouthpiece",
+    retry_policy=_EXTERNAL_RETRY,
+)
 def session_digest(
     context: dg.AssetExecutionContext,
     astra_config: AstraConfig,
@@ -163,7 +167,7 @@ def session_digest(
         )
 
 
-@dg.asset(partitions_def=mouthpiece_sessions, deps=[session_digest], group_name="mouthpiece")
+@dg.asset(partitions_def=sessions, deps=[session_digest], group_name="mouthpiece")
 def session_brief(
     context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
@@ -187,7 +191,7 @@ def session_brief(
 
 
 @dg.asset(
-    partitions_def=mouthpiece_sessions,
+    partitions_def=sessions,
     deps=[session_digest, session_brief],
     group_name="mouthpiece",
     retry_policy=_EXTERNAL_RETRY,
@@ -252,7 +256,7 @@ def session_script(
 
 
 @dg.asset(
-    partitions_def=mouthpiece_sessions,
+    partitions_def=sessions,
     deps=[session_script],
     group_name="mouthpiece",
     retry_policy=_EXTERNAL_RETRY,
@@ -289,7 +293,7 @@ def session_audio_clips(
         return dg.MaterializeResult(metadata={"clips": len(manifest.clips), "mode": manifest.mode})
 
 
-@dg.asset(partitions_def=mouthpiece_sessions, deps=[session_audio_clips], group_name="mouthpiece")
+@dg.asset(partitions_def=sessions, deps=[session_audio_clips], group_name="mouthpiece")
 def session_episode(
     context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
@@ -356,55 +360,32 @@ def build_episodes_index(root: Path | None = None) -> EpisodesIndex:
 # ── sensor: linguist → mouthpiece ────────────────────────────────────────────
 
 
-# Safe to run by default because of the one-time backlog ADOPTION below: the input dir
-# holds the migrated-at-rest history (incl. the 42 committed historical transcripts), and
-# without adoption, enabling this sensor would treat all of them as "new" → 42 PAID
-# mouthpiece runs (clean+enrich + two-pass script + ElevenLabs TTS). The incident on 2026-06-23
-# was exactly that. Adoption registers the existing transcripts as done-at-rest partitions
-# without running them, so only sessions that appear AFTER enable trigger the paid chain.
+def _has_transcript(key: str) -> bool:
+    return linguist_io.transcript_for(key, linguist_io.TRANSCRIPT_DIR) is not None
+
+
+#: What `linguist_output_sensor` launches, and when (``dagster/migrate_sessions.py`` reads it).
+MOUTHPIECE_STAGE = SessionStage(
+    upstream=session_episode_summary.key, stage=session_digest.key, keep=_has_transcript
+)
+
+
 @dg.sensor(
     target=[session_digest, session_brief, session_script, session_audio_clips, session_episode],
     minimum_interval_seconds=30,
     default_status=dg.DefaultSensorStatus.RUNNING,
 )
 def linguist_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
-    """Register a partition + run for each new linguist canonical transcript.
+    """Run the episode graph for each session whose chronicle summary is materialized and
+    whose `session_digest` was never tried, if it has a canonical transcript.
 
-    First eval after enable ADOPTS the migrated-at-rest backlog: register every existing
-    transcript as a partition but emit NO run requests, then stamp the cursor. Thereafter
-    only transcripts that appear after adoption are "new" and trigger the (paid) chain — so
-    re-enabling the sensor never reprocesses seed data. Reset the cursor (Dagit / the CLI)
-    to re-adopt; deliberately reprocessing history is a manual backfill, not a sensor sweep.
-
-    CHRONICLE GATE (0021 Change B): in the normal branch a "new" session only runs once
-    `chronicle_gate_open(date)` — its `episodes/<date>.json` exists, or its show is
-    excluded/unmatched (carve-out). A gate-closed session is deliberately left
-    un-partitioned so it stays re-discoverable and fires the eval its episode lands.
-    """
-    existing = set(context.instance.get_dynamic_partitions(SESSIONS_NAME))
-    found = linguist_io.new_sessions(existing)
-    if context.cursor is None:
-        # One-time adoption: register the ENTIRE transcript backlog as known, NO runs
-        # (the 2026-06-23 paid-replay guard). The chronicle gate only filters the normal
-        # branch below — adoption must still cover every transcript at rest.
-        adds = [mouthpiece_sessions.build_add_request(list(found))] if found else []
-        return dg.SensorResult(dynamic_partitions_requests=adds, cursor="adopted")
-    # Normal eval: a session is registered + run ONLY once chronicle is ready for it
-    # (0021 Change B gate). A gate-closed session is left UN-partitioned so it stays
-    # "found" and is re-checked next eval — registering it would hide it from
-    # new_sessions forever, so it could never run once its episode lands. It fires
-    # exactly once, in the eval it becomes ready.
-    ready = {date: path for date, path in found.items() if linguist_io.chronicle_gate_open(date)}
-    deferred = sorted(found.keys() - ready.keys())
-    if deferred:
-        _log.info(
-            "mouthpiece deferring %d session(s) awaiting chronicle: %s", len(deferred), deferred
-        )
-    adds = [mouthpiece_sessions.build_add_request(list(ready))] if ready else []
-    return dg.SensorResult(
-        run_requests=[dg.RunRequest(partition_key=key) for key in ready],
-        dynamic_partitions_requests=adds,
-    )
+    The chronicle gate (0021 Change B) is the dependency on `session_episode_summary`, which
+    also materializes (as skipped) for an excluded or unmatched show. A session that has
+    no canonical transcript (an unmatched campaign) never runs. A failed or canceled run
+    is not retried here; re-execute it. The sessions the old sensor adopted without running are
+    marked materialized by the sessions migration, so the paid chain never replays them
+    (the 2026-06-23 incident)."""
+    return launch_ready(context, MOUTHPIECE_STAGE)
 
 
 defs = dg.Definitions(

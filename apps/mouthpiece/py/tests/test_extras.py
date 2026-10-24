@@ -7,7 +7,7 @@ from pathlib import Path
 from astra_linguist.chronicle import EpisodeEntry, EpisodeSummary, Season
 from astra_mouthpiece.continuity import CONTINUITY_BUDGET, build_continuity_block
 from astra_mouthpiece.episodes_index import date_in_range
-from astra_mouthpiece.linguist_io import new_sessions, parse_canonical_transcript
+from astra_mouthpiece.linguist_io import parse_canonical_transcript, transcript_for
 from astra_mouthpiece.models import (
     DigestStats,
     GroundingEntry,
@@ -113,8 +113,8 @@ def test_parse_canonical_transcript() -> None:
     assert turns == [(1, "Benny", "tests."), (2, "Gamemaster", "Are you recording?")]
 
 
-def test_new_sessions_skips_known(tmp_path: Path) -> None:
+def test_transcript_for_finds_the_dated_file(tmp_path: Path) -> None:
     (tmp_path / "000.arc.2025-1-1.txt").write_text("x")
     (tmp_path / "000.arc.2025-2-2.txt").write_text("x")
-    found = new_sessions({"2025-1-1"}, transcript_dir=tmp_path)
-    assert set(found) == {"2025-2-2"}
+    assert transcript_for("2025-2-2", tmp_path) == tmp_path / "000.arc.2025-2-2.txt"
+    assert transcript_for("2025-3-3", tmp_path) is None

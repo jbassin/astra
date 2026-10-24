@@ -2,8 +2,10 @@
 
 mouthpiece turns each session transcript into a recap podcast episode with three hosts
 (seats A = Bram, B = Maeve, C = Nell; `podcast-persona` entries in `being.kdl`). It runs as a
-Dagster graph on `mouthpiece_sessions` partitions, fired by `linguist_output_sensor` once the
-session's chronicle episode exists:
+Dagster graph on the shared `sessions` partitions. `session_digest` depends on linguist's
+`session_transcripts` and `session_episode_summary`, and `linguist_output_sensor` launches the
+graph once that summary is materialized, for a session with a canonical transcript that
+mouthpiece never tried:
 
 1. `session_digest`: clean (windowed keep/drop of off-table talk) and enrich (synopsis and
    `wiki_refs`) into `digest.json`.

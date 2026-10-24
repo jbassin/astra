@@ -18,6 +18,7 @@ from astra_mouthpiece import assets as mp
 from astra_mouthpiece.assemble import assemble_episode
 from astra_mouthpiece.models import DigestStats, Script, ScriptTurn, SessionDigest
 from astra_mouthpiece.resources import TtsResource
+from astra_pipeline_resources.partitions import SESSIONS_NAME
 from astra_pipeline_resources.testing import FakeConfig, FakeLlm, paths_under
 
 DATE = "2026-7-6"
@@ -92,7 +93,7 @@ def test_the_chain_writes_every_output_under_the_injected_paths(
     seen: dict[str, Any] = {}
     _stub_stages(monkeypatch, seen)
     instance = dg.DagsterInstance.ephemeral()
-    instance.add_dynamic_partitions(mp.SESSIONS_NAME, [DATE])
+    instance.add_dynamic_partitions(SESSIONS_NAME, [DATE])
 
     result = dg.materialize(
         CHAIN,
