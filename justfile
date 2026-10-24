@@ -56,14 +56,14 @@ fix:
 # Run both test lanes.
 test: (_each "test" "py-test,ts-test")
 
-# The pre-push hook runs this; commitlint covers base..HEAD. Unlike CI, which path-filters
+# The pre-push hook runs this; commitlint and no-decision-ids cover base..HEAD. Unlike CI, which path-filters
 # its jobs, this always runs every step. Not run here: vellum-visual-regression, because its
 # goldens are pinned to the node:24-slim container's Chromium and fonts (a host browser
 # renders different pixels); it stays CI-only. weal-engine-rust needs rustup on the host (it
 # installs the crate's pinned toolchain on first use).
 # pg-test and infra-check need Docker on the host (a throwaway Postgres; the pinned tool images).
 # Run everything CI runs, locally (all but the container-only vellum render goldens).
-ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-e2e,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test,infra-check"))
+ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,no-decision-ids " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-e2e,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test,infra-check"))
 
 # `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
 # they run as Dagster assets; test them with `uv run pytest apps/<domain>/py`.
@@ -244,6 +244,14 @@ commitlint from="origin/main" to="HEAD":
       exec pnpm exec commitlint --last --verbose
     fi
     exec pnpm exec commitlint --from {{quote(from)}} --to {{quote(to)}} --verbose
+
+# Checks the lines added since the merge base of `base` and `head`, so existing IDs never fail
+# it; an empty `base` checks HEAD's commit alone (the same push fallback as commitlint). The
+# rules, the exemptions and the inline exception are in scripts/check_decision_ids.py; `--all`
+# instead counts every existing match.
+# CI job no-decision-ids: added code, comments and test names cite no spec, slice or finding ID.
+no-decision-ids base="origin/main" head="HEAD":
+    uv run python scripts/check_decision_ids.py "$@"
 
 # The codex e2e suite (Playwright Test, apps/codex/web/e2e): its server generates the fixture
 # corpus and points CODEX_CORPUS_ROOT at it, so it never reads the real corpus. Needs the
