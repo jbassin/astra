@@ -23,7 +23,6 @@ apps/<domain>/web/
   scripts/
     build-content.ts  DOMAIN  registers this app's content sources
     writeLayer.ts     ~shell  generic guarded fs write (strider's editor uses it)
-    generate-routes.ts SHELL  thin generateRouteTree caller
   src/
     router.tsx        SHELL  getRouter() + error/not-found boundaries
     routes/           MIXED  thin route files; bodies wire in domain (replace per app)
@@ -45,7 +44,7 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
 
 1. **Scaffold** `apps/<domain>/web/` by copying strider's shell files: `server.ts`,
    `vite.config.ts`, `vitest.config.ts`, `tsconfig.json`, `scripts/`
-   (`generate-routes.ts`, `writeLayer.ts` if you need an editor), `src/router.tsx`,
+   (`writeLayer.ts` if you need an editor), `src/router.tsx`,
    `src/observe/`, `src/components/{ClientOnly,PixiHost,SiteHeader}`, `src/lib/`,
    `src/styles/`. Depend on `@astra/site-kit`, `@astra/content-build`, `@astra/gothic`,
    `@astra/observe`, `@astra/config` (`workspace:*`).

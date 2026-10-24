@@ -9,8 +9,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "build": "echo '@astra/ontology: no build step'"
+    "test": "vitest run"
   },
   "dependencies": {
     "@astra/config": "workspace:*",

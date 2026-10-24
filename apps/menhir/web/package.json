@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs server.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run"
   },
   "dependencies": {
     "@astra/config": "workspace:*",

@@ -16,7 +16,6 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build": "echo '@astra/gothic: no build step'",
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build"
   },

@@ -7,8 +7,7 @@
   "scripts": {
     "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs src/index.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "build": "echo '@astra/portal-server: no build step (D3, runs unbuilt TS)'"
+    "test": "vitest run"
   },
   "dependencies": {
     "@astra/config": "workspace:*",

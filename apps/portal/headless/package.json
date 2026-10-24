@@ -7,8 +7,7 @@
   "scripts": {
     "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs src/index.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "build": "echo '@astra/portal-headless: no build step (runs unbuilt TS, mirrors portal-server)'"
+    "test": "vitest run"
   },
   "dependencies": {
     "@astra/config": "workspace:*",

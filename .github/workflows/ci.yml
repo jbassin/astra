@@ -200,6 +200,16 @@ jobs:
       - uses: ./.github/actions/setup-pnpm
       - run: just ts-build
 
+  # Every committed routeTree.gen.ts matches a fresh generation from its routes.
+  routes-check:
+    needs: changes
+    if: needs.changes.outputs.ts == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm
+      - run: just routes-check
+
   # The akasha corpus structural gate (0007/F3): the TS reference parser asserts
   # zero error chips + zero sigil collisions over every converted vellum page. The real
   # wiki lives in the astra-data repo (heartwood validates the whole corpus before every
@@ -372,6 +382,7 @@ jobs:
       - ts-lint
       - ts-test
       - ts-build
+      - routes-check
       - corpus-validate
       - vellum-visual-regression
       - codex-row-height-drift-guard

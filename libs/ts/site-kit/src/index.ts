@@ -14,7 +14,7 @@
  *   import { startRum } from "@astra/site-kit/web";
  */
 export { loadSiteConfig, siteConfigFile } from "./config";
-export { generateRouteTree, type RouteTreeOptions } from "./routeTree";
+export { generateRouteTree, staleRouteTreeFiles, type RouteTreeOptions } from "./routeTree";
 // `serveFile` is the `send`-backed Range/206 bridge `createSsrServer` uses
 // internally; exported too so the repo's other hand-rolled Node servers
 // (weal-overlay, orator-backend — R3, 0022 S8) reuse the same tested bridge

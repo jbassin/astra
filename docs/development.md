@@ -78,7 +78,10 @@ a `package.json` is skipped) and `libs/ts/*`. Node 24 and pnpm 10.34.4 (root `pa
 `tsc --noEmit` against `tsconfig.base.json` (strict) type-checks; vitest tests. typecheck and build
 fan out with `pnpm -r --no-bail --aggregate-output run <task>`. Tests run in one vitest process from
 the root `vitest.config.ts` (`just ts-test`, or `pnpm vitest run` at the root): every workspace
-package with a `test` script is a project with its own config, globalSetup and environment.
+package with a `test` script is a project with its own config, globalSetup and environment, and
+the run fails when a project has no test files (`vitest.empty-projects.ts`). A package with nothing
+to build has no `build` script; `pnpm -r run build` skips it, and `deploy/node.Dockerfile` runs
+`pnpm run --if-present build`.
 `pnpm --filter <pkg> test` still runs one package alone. A dependency that two or more packages use has one version, in
 the `catalog:` of `pnpm-workspace.yaml`, and each package.json names it `"catalog:"`; bump it there.
 zod is off the catalog until its users converge (codex and menhir resolve 4.6.7, the rest 4.4.3).
@@ -183,7 +186,7 @@ is still hand-maintained:
    Python reads it, else in `WholeConfig`, which the whole-file CI test checks. A block TS reads also
    goes in `libs/ts/config` (Zod). Add the block to the ownership list in the `models.py` docstring.
 4. A `test` script (`vitest run`) and at least one test. The script is how the root vitest config
-   finds the package; `vitest run` with no test files exits 1.
+   finds the package, and the root run fails on a project with no test files.
 5. Telemetry in the real entrypoint. TS services get no HTTP auto-instrumentation, so add
    `startActiveSpan` spans on request paths, or traces stay empty while metrics flow. Never log ERROR
    for a user-content problem: every ERROR log pages Discord.
@@ -223,7 +226,10 @@ is still hand-maintained:
   package.
 - pnpm blocks dependency install scripts unless they are listed in `pnpm.onlyBuiltDependencies` in
   the root `package.json`.
-- `routeTree.gen.ts` is committed so CI typechecks without a generate step; a build regenerates it.
+- `routeTree.gen.ts` is committed so CI typechecks without a generate step. `vite dev` and
+  `vite build` rewrite it; `just routes-gen` writes the same bytes without a server (run it after
+  adding or renaming a route), and `just routes-check` (in `just check` and CI) fails when one is
+  stale.
 - The SSR smoke tests of ledger, harrow, strider and akasha read whatever `dist/` exists; after a
   dependency change run the app's build first.
 - SSR HTML contains UTF-8 glyphs, so plain `grep` may treat it as binary; use `grep -a`.
