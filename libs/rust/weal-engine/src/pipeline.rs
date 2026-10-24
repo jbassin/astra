@@ -30,7 +30,7 @@
 use crate::ast::Expr;
 use crate::fuel::Fuel;
 use crate::infer::{CoreExpr, TypeError};
-use crate::interp::{Env, Interp, SExpr, append_display, attach_spans, env_bind, env_nil};
+use crate::interp::{Env, Interp, append_display, env_bind, env_nil};
 use crate::lower::{Span, SpanTree, lower_root_spanned};
 use crate::parser::Parse;
 use crate::types::{Scheme, Type};
@@ -95,11 +95,9 @@ pub fn lower(src: &str) -> Result<Lowered, CompileError> {
     lower_parsed(&parse(src)?, src)
 }
 
-/// A source that type-checked: its AST, span tree, elaborated core and type.
+/// A source that type-checked: its elaborated core (spans included) and type.
 #[derive(Debug, Clone)]
 pub struct Checked {
-    pub ast: Expr,
-    pub spans: SpanTree,
     pub core: CoreExpr,
     pub ty: Type,
 }
@@ -113,12 +111,7 @@ impl Lowered {
                 message: e.message,
                 span: e.span,
             })?;
-        Ok(Checked {
-            ast: self.ast,
-            spans: self.spans,
-            core,
-            ty,
-        })
+        Ok(Checked { core, ty })
     }
 }
 
@@ -128,11 +121,6 @@ pub fn compile(src: &str, env: &[(String, Scheme)]) -> Result<Checked, CompileEr
 }
 
 impl Checked {
-    /// The core tree with source spans attached, ready to interpret.
-    pub fn spanned(&self) -> SExpr {
-        attach_spans(&self.core, &self.ast, &self.spans)
-    }
-
     /// The scheme a save of this program binds (see [`save_scheme`]).
     pub fn save_scheme(&self) -> Scheme {
         save_scheme(&self.ty)
@@ -142,7 +130,7 @@ impl Checked {
     /// rules (the final displayable value is appended last).
     pub fn eval(&self, env: &Env, fuel: &mut Fuel) -> Result<RunOutput, EvalError> {
         let mut it = Interp::new(fuel);
-        let value = it.eval(&self.spanned(), env)?;
+        let value = it.eval(&self.core, env)?;
         let mut cmd = it.into_cmd();
         append_display(&mut cmd, &value);
         Ok(RunOutput { value, cmd })
@@ -219,7 +207,7 @@ pub fn load_saves(saves: &[(String, String)], mode: SaveLoad) -> Result<Saves, S
         if mode == SaveLoad::Evaluate {
             let mut save_fuel = Fuel::default();
             let mut it = Interp::new(&mut save_fuel);
-            let v = it.eval(&checked.spanned(), &env).map_err(|e| SaveError {
+            let v = it.eval(&checked.core, &env).map_err(|e| SaveError {
                 name: name.clone(),
                 message: e.message,
                 span: e.span,

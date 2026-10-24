@@ -31,8 +31,13 @@ For the player-facing language guide, see `apps/weal/bot/README.md`.
   die-demanding positions), both-shape die-suffix resolution (pool-shape wins), monomorphic
   recursion for `let f(x) = …` sugar, deferred equatable checks, and nullary functions as
   `Unit -> T` (`|| e` and `let f() = e` take an implicit `()`, and `f()` elaborates to
-  `f(())`, so the body re-runs on every call). Elaborates into `CoreExpr`, the interpreter's
-  input contract.
+  `f(())`, so the body re-runs on every call). Elaborates into `CoreExpr`, the ONE
+  post-lowering tree: the interpreter walks it, closures store it, and the save serializer prints
+  it back to source. The checker stamps every node with its source span (a checker-inserted node,
+  such as a `sum` wrapper or a suffix's `pool` call, takes the span of the source node it
+  elaborates), so there is no separate span-attaching pass. Add a construct by adding a
+  `CoreKind` variant and handling it in the checker, `eval_inner`, `free_idents`, `all_idents`
+  and `core_to_expr`.
 - **`value.rs`** / **`interp.rs`** — runtime values (structural eq/hash), the symbolic `DieTree`
   (dice stay symbolic until display), the tree-walking interpreter (currying, captures), the
   runtime effect guard (`roll`/`plot`/`save` illegal inside evaluator closures), and
@@ -156,7 +161,10 @@ may not unwrap; tests may) and `cargo test`. `cargo test` runs
 the unit suites plus `tests/`: parser/lexer goldens, parse recovery, printer round-trip
 properties, the typechecker accept/reject suite, elaboration, the dist property tests
 (denominator invariants, keep-1 ≡ pool recursion), the oracle, seam end-to-end, the §3 seeded
-render goldens, the api JSON contract (incl. the plot label-pixel golden), and the generative
+render goldens, the api JSON contract (incl. the plot label-pixel golden), the stored-saves
+fixture `tests/saves_fixture.rs` (saves are `[name, source]` rows of weal source text;
+`fixtures/saves_v1.json`, recorded from the pre-weal-5c engine, pins what `save(...)` prints and
+how those rows load and behave, byte for byte; never regenerate it to make the test pass), and the generative
 suite `tests/generative.rs`. That suite builds random well-typed programs (rich in nullary and
 one-parameter functions, closures and folds) from a seeded generator, and checks each one: the
 printer round trip, acceptance at the predicted type, `ok:true` with no `internal error:` and no

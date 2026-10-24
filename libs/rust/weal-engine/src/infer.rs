@@ -9,7 +9,7 @@
 //! `check(&Expr, &SpanTree, extra_env)` elaborates the S1 AST into a
 //! [`CoreExpr`], which is what the S3 interpreter consumes:
 //!
-//! - **No [`crate::ast::DieSuffix`] remains.** `CoreExpr::Die` is a bare
+//! - **No [`crate::ast::DieSuffix`] remains.** `CoreKind::Die` is a bare
 //!   `(count, sides)` literal: `count: None` = a single die (`Die[Num]`),
 //!   `count: Some(n)` = an OPEN `Pool[Num]` of n dice (D32-5). Every die
 //!   suffix has been elaborated into explicit calls: die-shape suffixes wrap
@@ -18,9 +18,9 @@
 //!   The suffix alias `e` is canonicalized to `explode`; `r` is its own
 //!   prelude function. A pool-shape suffix on a count-less die wraps it as a
 //!   1-die pool (`d6kh3` → `kh(pool(1, d6), 3)`).
-//! - **Checker-inserted prelude references use [`CoreExpr::Prelude`]**, which
+//! - **Checker-inserted prelude references use [`CoreKind::Prelude`]**, which
 //!   is immune to user shadowing (`let sum = 5; 2d6kh1 + sum` still sums the
-//!   pool). User-written identifiers stay [`CoreExpr::Ident`] and resolve
+//!   pool). User-written identifiers stay [`CoreKind::Ident`] and resolve
 //!   through the runtime environment (which includes the prelude).
 //! - **Explicit `sum` calls** (D32-4): wherever a `Pool[Num]` met a position
 //!   demanding a die/number-ish type (arithmetic/comparison operands, unary
@@ -28,10 +28,10 @@
 //!   arguments, and the TOP-LEVEL result), the elaborated tree carries
 //!   `Prelude(Builtin::Sum)` applied to the pool. A `Pool[T ≠ Num]` in such a
 //!   position is the pinned targeted error.
-//! - **dm literal face order** (D32-4): `CoreExpr::Call.dm_literal_order` is
+//! - **dm literal face order** (D32-4): `CoreKind::Call.dm_literal_order` is
 //!   `true` exactly when the call is to the (unshadowed) prelude `dm` AND its
 //!   first argument is syntactically a dict literal — the interpreter then
-//!   takes face order from that literal's entry order (which `CoreExpr::Dict`
+//!   takes face order from that literal's entry order (which `CoreKind::Dict`
 //!   preserves). It is `false` for every other call, including `dm` applied
 //!   to a non-literal dict value (face sort order fallback).
 //! - Type annotations are dropped (already checked); patterns and match arms
@@ -43,6 +43,16 @@
 //! parallel [`SpanTree`] produced by `lower_root_spanned` and every
 //! [`TypeError`] carries a byte-accurate span into the original source
 //! (D32-11).
+//!
+//! The checker also stamps a span on every [`CoreExpr`] node it emits, so the
+//! interpreter walks this one tree and runtime errors point into the source.
+//! A node elaborated from a source node takes that node's span. A node the
+//! checker INSERTS takes the span of the source node it elaborates: the D32-4
+//! `sum` wrapper (and its `sum` callee) the span of the expression it closes,
+//! every node of a D32-5 suffix elaboration (`pool`, the suffix calls, their
+//! numeric arguments) the die literal's span, and the implicit `()` of a
+//! WEAL-1 `f()` call the call's span. Closure bodies keep their spans, so an
+//! error inside a closure applied later still points into its defining source.
 //!
 //! # Documented decisions within the pinned envelope
 //!
@@ -86,10 +96,98 @@ pub struct TypeError {
     pub span: Span,
 }
 
-/// The elaborated expression tree — the S3 interpreter's input. See the
-/// module docs for the full contract.
+/// The elaborated expression tree — the S3 interpreter's input, the closure
+/// body a [`crate::interp::ClosureValue`] stores, and what the R21 save
+/// serializer prints back to source. Every node carries its byte span into
+/// the source it was checked from (module docs, "Spans").
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum CoreExpr {
+pub struct CoreExpr {
+    pub span: Span,
+    pub kind: CoreKind,
+}
+
+impl CoreExpr {
+    /// This tree with every span set to `(0, 0)`: compare elaboration shapes
+    /// without spans (tests).
+    pub fn without_spans(&self) -> CoreExpr {
+        let b = |e: &CoreExpr| Box::new(e.without_spans());
+        let kind = match &self.kind {
+            CoreKind::Let {
+                pattern,
+                value,
+                body,
+            } => CoreKind::Let {
+                pattern: pattern.clone(),
+                value: b(value),
+                body: b(body),
+            },
+            CoreKind::LetFn {
+                name,
+                params,
+                value,
+                body,
+            } => CoreKind::LetFn {
+                name: name.clone(),
+                params: params.clone(),
+                value: b(value),
+                body: b(body),
+            },
+            CoreKind::Match { scrutinee, arms } => CoreKind::Match {
+                scrutinee: b(scrutinee),
+                arms: arms
+                    .iter()
+                    .map(|(p, e)| (p.clone(), e.without_spans()))
+                    .collect(),
+            },
+            CoreKind::Lambda { params, body } => CoreKind::Lambda {
+                params: params.clone(),
+                body: b(body),
+            },
+            CoreKind::Cmp { op, lhs, rhs } => CoreKind::Cmp {
+                op: *op,
+                lhs: b(lhs),
+                rhs: b(rhs),
+            },
+            CoreKind::Binary { op, lhs, rhs } => CoreKind::Binary {
+                op: *op,
+                lhs: b(lhs),
+                rhs: b(rhs),
+            },
+            CoreKind::Neg(inner) => CoreKind::Neg(b(inner)),
+            CoreKind::Call {
+                callee,
+                args,
+                dm_literal_order,
+            } => CoreKind::Call {
+                callee: b(callee),
+                args: args.iter().map(CoreExpr::without_spans).collect(),
+                dm_literal_order: *dm_literal_order,
+            },
+            CoreKind::Label { expr, word } => CoreKind::Label {
+                expr: b(expr),
+                word: word.clone(),
+            },
+            CoreKind::List(items) => {
+                CoreKind::List(items.iter().map(CoreExpr::without_spans).collect())
+            }
+            CoreKind::Tuple(items) => {
+                CoreKind::Tuple(items.iter().map(CoreExpr::without_spans).collect())
+            }
+            CoreKind::Dict(entries) => CoreKind::Dict(
+                entries
+                    .iter()
+                    .map(|(k, v)| (k.without_spans(), v.without_spans()))
+                    .collect(),
+            ),
+            leaf => leaf.clone(),
+        };
+        kind.at((0, 0))
+    }
+}
+
+/// The node kinds of a [`CoreExpr`]. See the module docs for the contract.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CoreKind {
     Let {
         pattern: Pattern,
         value: Box<CoreExpr>,
@@ -152,6 +250,13 @@ pub enum CoreExpr {
     /// Dict literal entries in SOURCE order (feeds dm face order).
     Dict(Vec<(CoreExpr, CoreExpr)>),
     Tuple(Vec<CoreExpr>),
+}
+
+impl CoreKind {
+    /// This node with its source span.
+    pub fn at(self, span: Span) -> CoreExpr {
+        CoreExpr { span, kind: self }
+    }
 }
 
 /// How a prelude name types (D32-19).
@@ -691,12 +796,14 @@ impl Checker {
 
     // -- D32-4 sum coercion -------------------------------------------------
 
-    fn sum_call(inner: CoreExpr) -> CoreExpr {
-        CoreExpr::Call {
-            callee: Box::new(CoreExpr::Prelude(Builtin::Sum)),
+    /// The inserted `sum` takes the span of the source node it closes.
+    fn sum_call(inner: CoreExpr, span: Span) -> CoreExpr {
+        CoreKind::Call {
+            callee: Box::new(CoreKind::Prelude(Builtin::Sum).at(span)),
             args: vec![inner],
             dm_literal_order: false,
         }
+        .at(span)
     }
 
     /// If `ty` is a pool, close it with an inserted `sum` (D32-4). A pool of
@@ -710,10 +817,10 @@ impl Checker {
     ) -> Result<(CoreExpr, Type), TypeError> {
         match self.resolve(&ty) {
             Type::Pool(elem) => match self.resolve(&elem) {
-                Type::Num => Ok((Self::sum_call(core), Type::die(Type::Num))),
+                Type::Num => Ok((Self::sum_call(core, span), Type::die(Type::Num))),
                 Type::Var(v) => {
                     self.bind(v, &Type::Num, span)?;
-                    Ok((Self::sum_call(core), Type::die(Type::Num)))
+                    Ok((Self::sum_call(core, span), Type::die(Type::Num)))
                 }
                 _ => Err(TypeError {
                     message: "this pool's faces aren't summable — use evaluate()".to_owned(),
@@ -733,12 +840,12 @@ impl Checker {
         env: &mut Env,
     ) -> Result<(CoreExpr, Type), TypeError> {
         match e {
-            Expr::Num(d) => Ok((CoreExpr::Num(d.clone()), Type::Num)),
-            Expr::Dec(d) => Ok((CoreExpr::Dec(d.clone()), Type::Dec)),
-            Expr::Float(d) => Ok((CoreExpr::Float(d.clone()), Type::Float)),
-            Expr::Str(s) => Ok((CoreExpr::Str(s.clone()), Type::Str)),
-            Expr::Atom(a) => Ok((CoreExpr::Atom(a.clone()), Type::atom(a))),
-            Expr::Unit => Ok((CoreExpr::Unit, Type::Unit)),
+            Expr::Num(d) => Ok((CoreKind::Num(d.clone()).at(sp.span), Type::Num)),
+            Expr::Dec(d) => Ok((CoreKind::Dec(d.clone()).at(sp.span), Type::Dec)),
+            Expr::Float(d) => Ok((CoreKind::Float(d.clone()).at(sp.span), Type::Float)),
+            Expr::Str(s) => Ok((CoreKind::Str(s.clone()).at(sp.span), Type::Str)),
+            Expr::Atom(a) => Ok((CoreKind::Atom(a.clone()).at(sp.span), Type::atom(a))),
+            Expr::Unit => Ok((CoreKind::Unit.at(sp.span), Type::Unit)),
             Expr::Ident(name) => {
                 let ty = match env.lookup(name) {
                     Some((Binding::Mono(t), _)) => t,
@@ -753,7 +860,7 @@ impl Checker {
                         });
                     }
                 };
-                Ok((CoreExpr::Ident(name.clone()), ty))
+                Ok((CoreKind::Ident(name.clone()).at(sp.span), ty))
             }
             Expr::List(items) => {
                 let mut cores = Vec::new();
@@ -764,7 +871,7 @@ impl Checker {
                     elem = self.merge(&elem, &t, JoinMode::Join, isp.span)?;
                     cores.push(c);
                 }
-                Ok((CoreExpr::List(cores), Type::list(elem)))
+                Ok((CoreKind::List(cores).at(sp.span), Type::list(elem)))
             }
             Expr::Dict(entries) => {
                 let mut cores = Vec::new();
@@ -786,7 +893,7 @@ impl Checker {
                     span: sp.span,
                     site: EquatableSite::DictKey,
                 });
-                Ok((CoreExpr::Dict(cores), Type::dict(kt, vt)))
+                Ok((CoreKind::Dict(cores).at(sp.span), Type::dict(kt, vt)))
             }
             Expr::Tuple(items) => {
                 let mut cores = Vec::new();
@@ -796,7 +903,7 @@ impl Checker {
                     cores.push(c);
                     tys.push(t);
                 }
-                Ok((CoreExpr::Tuple(cores), Type::Tuple(tys)))
+                Ok((CoreKind::Tuple(cores).at(sp.span), Type::Tuple(tys)))
             }
             Expr::Lambda { params, body } => {
                 let mark = env.mark();
@@ -809,10 +916,11 @@ impl Checker {
                 let (bc, bty) = self.infer(body, &sp.children[0], env)?;
                 env.truncate(mark);
                 Ok((
-                    CoreExpr::Lambda {
+                    CoreKind::Lambda {
                         params: params.clone(),
                         body: Box::new(bc),
-                    },
+                    }
+                    .at(sp.span),
                     fn_type(ptys, bty),
                 ))
             }
@@ -847,7 +955,7 @@ impl Checker {
                         });
                     }
                 };
-                Ok((CoreExpr::Neg(Box::new(c)), ty))
+                Ok((CoreKind::Neg(Box::new(c)).at(sp.span), ty))
             }
             Expr::Binary { op, lhs, rhs } => self.infer_binary(*op, lhs, rhs, sp, env),
             Expr::Cmp { first, rest } => self.infer_cmp(first, rest, sp, env),
@@ -873,10 +981,11 @@ impl Checker {
                     }
                 };
                 Ok((
-                    CoreExpr::Label {
+                    CoreKind::Label {
                         expr: Box::new(c),
                         word: word.clone(),
-                    },
+                    }
+                    .at(sp.span),
                     ty,
                 ))
             }
@@ -907,11 +1016,12 @@ impl Checker {
                 let (bc, bty) = self.infer(body, &sp.children[1], env)?;
                 env.truncate(mark);
                 Ok((
-                    CoreExpr::Let {
+                    CoreKind::Let {
                         pattern: pattern.clone(),
                         value: Box::new(vc),
                         body: Box::new(bc),
-                    },
+                    }
+                    .at(sp.span),
                     bty,
                 ))
             }
@@ -948,12 +1058,13 @@ impl Checker {
                 let (bc, bty) = self.infer(body, &sp.children[1], env)?;
                 env.truncate(mark);
                 Ok((
-                    CoreExpr::LetFn {
+                    CoreKind::LetFn {
                         name: name.clone(),
                         params: params.clone(),
                         value: Box::new(vc),
                         body: Box::new(bc),
-                    },
+                    }
+                    .at(sp.span),
                     bty,
                 ))
             }
@@ -1023,11 +1134,12 @@ impl Checker {
                 span: sp.span,
             });
             return Ok((
-                CoreExpr::Binary {
+                CoreKind::Binary {
                     op,
                     lhs: Box::new(lc),
                     rhs: Box::new(rc),
-                },
+                }
+                .at(sp.span),
                 ret,
             ));
         }
@@ -1076,11 +1188,12 @@ impl Checker {
             }
         };
         Ok((
-            CoreExpr::Binary {
+            CoreKind::Binary {
                 op,
                 lhs: Box::new(lc),
                 rhs: Box::new(rc),
-            },
+            }
+            .at(sp.span),
             ty,
         ))
     }
@@ -1191,11 +1304,12 @@ impl Checker {
             Type::bool()
         };
         Ok((
-            CoreExpr::Cmp {
+            CoreKind::Cmp {
                 op: *op,
                 lhs: Box::new(lc),
                 rhs: Box::new(rc),
-            },
+            }
+            .at(sp.span),
             ty,
         ))
     }
@@ -1253,11 +1367,12 @@ impl Checker {
                 }
             };
             return Ok((
-                CoreExpr::Call {
+                CoreKind::Call {
                     callee: Box::new(ccore),
-                    args: vec![CoreExpr::Unit],
+                    args: vec![CoreKind::Unit.at(sp.span)],
                     dm_literal_order,
-                },
+                }
+                .at(sp.span),
                 ret,
             ));
         }
@@ -1299,11 +1414,12 @@ impl Checker {
             }
         }
         Ok((
-            CoreExpr::Call {
+            CoreKind::Call {
                 callee: Box::new(ccore),
                 args: cargs,
                 dm_literal_order,
-            },
+            }
+            .at(sp.span),
             fty,
         ))
     }
@@ -1334,11 +1450,12 @@ impl Checker {
             cargs.push(ac);
         }
         Ok((
-            CoreExpr::Call {
-                callee: Box::new(CoreExpr::Ident(name.to_owned())),
+            CoreKind::Call {
+                callee: Box::new(CoreKind::Ident(name.to_owned()).at(sp.children[0].span)),
                 args: cargs,
                 dm_literal_order: false,
-            },
+            }
+            .at(sp.span),
             Type::Unit,
         ))
     }
@@ -1376,11 +1493,12 @@ impl Checker {
             Type::Num
         };
         Ok((
-            CoreExpr::Call {
-                callee: Box::new(CoreExpr::Ident(name.to_owned())),
+            CoreKind::Call {
+                callee: Box::new(CoreKind::Ident(name.to_owned()).at(sp.children[0].span)),
                 args: cargs,
                 dm_literal_order: false,
-            },
+            }
+            .at(sp.span),
             ty,
         ))
     }
@@ -1406,11 +1524,12 @@ impl Checker {
             _ => unreachable!("call_cast is float/abs only"),
         };
         Ok((
-            CoreExpr::Call {
-                callee: Box::new(CoreExpr::Ident(name.to_owned())),
+            CoreKind::Call {
+                callee: Box::new(CoreKind::Ident(name.to_owned()).at(sp.children[0].span)),
                 args: vec![ac],
                 dm_literal_order: false,
-            },
+            }
+            .at(sp.span),
             ty,
         ))
     }
@@ -1426,10 +1545,11 @@ impl Checker {
         env: &mut Env,
     ) -> Result<(CoreExpr, Type), TypeError> {
         if suffixes.is_empty() {
-            let core = CoreExpr::Die {
+            let core = CoreKind::Die {
                 count: count.clone(),
                 sides: sides.to_owned(),
-            };
+            }
+            .at(sp.span);
             let ty = if count.is_some() {
                 Type::pool(Type::Num) // open pool (D32-5)
             } else {
@@ -1454,15 +1574,19 @@ impl Checker {
                 Some((Binding::Poly(s), Origin::Prelude(b))) => {
                     // Canonicalize the `e` alias to `explode` (D32-19).
                     let canonical = b.def().suffix_as.unwrap_or(b);
-                    (vec![s], CoreExpr::Prelude(canonical))
+                    (vec![s], CoreKind::Prelude(canonical).at(sp.span))
                 }
-                Some((Binding::Poly(s), _)) => (vec![s], CoreExpr::Ident(sfx.name.clone())),
-                Some((Binding::Special(sb), _)) => {
-                    (sb.def().suffix_schemes(), CoreExpr::Ident(sfx.name.clone()))
+                Some((Binding::Poly(s), _)) => {
+                    (vec![s], CoreKind::Ident(sfx.name.clone()).at(sp.span))
                 }
-                Some((Binding::Mono(t), _)) => {
-                    (vec![Scheme::mono(t)], CoreExpr::Ident(sfx.name.clone()))
-                }
+                Some((Binding::Special(sb), _)) => (
+                    sb.def().suffix_schemes(),
+                    CoreKind::Ident(sfx.name.clone()).at(sp.span),
+                ),
+                Some((Binding::Mono(t), _)) => (
+                    vec![Scheme::mono(t)],
+                    CoreKind::Ident(sfx.name.clone()).at(sp.span),
+                ),
                 None => {
                     return Err(TypeError {
                         message: format!("unknown die suffix `{}`", sfx.name),
@@ -1513,10 +1637,11 @@ impl Checker {
         // wrap the (materialized) pool. The two classes commute in the
         // engine's (count, die, keep-tuple) pool representation, so a
         // die-shape suffix after a pool-shape one still reaches the die.
-        let mut die_core = CoreExpr::Die {
+        let mut die_core = CoreKind::Die {
             count: None,
             sides: sides.to_owned(),
-        };
+        }
+        .at(sp.span);
         let mut die_ty = Type::die(Type::Num);
         for (shape, scheme, callee, arg, span) in &resolved {
             if *shape == Shape::DieShape {
@@ -1526,11 +1651,12 @@ impl Checker {
                 let elem = self.fresh();
                 self.merge(&t2, &Type::die(elem), JoinMode::Join, *span)?;
                 die_ty = self.resolve(&t2);
-                die_core = CoreExpr::Call {
+                die_core = CoreKind::Call {
                     callee: Box::new(callee.clone()),
-                    args: vec![die_core, CoreExpr::Num(arg.clone())],
+                    args: vec![die_core, CoreKind::Num(arg.clone()).at(sp.span)],
                     dm_literal_order: false,
-                };
+                }
+                .at(sp.span);
             }
         }
         let has_pool_shape = resolved.iter().any(|(s, ..)| *s == Shape::PoolShape);
@@ -1542,11 +1668,12 @@ impl Checker {
         let elem = self.fresh();
         self.merge(&die_ty, &Type::die(elem.clone()), JoinMode::Join, sp.span)?;
         let mut pool_ty = Type::pool(elem);
-        let mut pool_core = CoreExpr::Call {
-            callee: Box::new(CoreExpr::Prelude(Builtin::Pool)),
-            args: vec![CoreExpr::Num(n), die_core],
+        let mut pool_core = CoreKind::Call {
+            callee: Box::new(CoreKind::Prelude(Builtin::Pool).at(sp.span)),
+            args: vec![CoreKind::Num(n).at(sp.span), die_core],
             dm_literal_order: false,
-        };
+        }
+        .at(sp.span);
         for (shape, scheme, callee, arg, span) in &resolved {
             if *shape == Shape::PoolShape {
                 let fty = self.instantiate(scheme, *span);
@@ -1555,11 +1682,12 @@ impl Checker {
                 let elem = self.fresh();
                 self.merge(&t2, &Type::pool(elem), JoinMode::Join, *span)?;
                 pool_ty = self.resolve(&t2);
-                pool_core = CoreExpr::Call {
+                pool_core = CoreKind::Call {
                     callee: Box::new(callee.clone()),
-                    args: vec![pool_core, CoreExpr::Num(arg.clone())],
+                    args: vec![pool_core, CoreKind::Num(arg.clone()).at(sp.span)],
                     dm_literal_order: false,
-                };
+                }
+                .at(sp.span);
             }
         }
         Ok((pool_core, pool_ty))
@@ -1624,10 +1752,11 @@ impl Checker {
         let rsty = self.zonk(&rsty);
         self.check_arms(arms, &rsty, sp)?;
         Ok((
-            CoreExpr::Match {
+            CoreKind::Match {
                 scrutinee: Box::new(score),
                 arms: core_arms,
-            },
+            }
+            .at(sp.span),
             result.expect("parser guarantees at least one arm"),
         ))
     }
