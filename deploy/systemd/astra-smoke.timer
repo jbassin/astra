@@ -1,0 +1,12 @@
+[Unit]
+Description=Run the astra live smoke check every 10 minutes
+
+[Timer]
+# Wall-clock every 10 minutes, offset from the 2-minute host metrics so the two never start
+# together. The rule "astra smoke check failing" assumes this cadence: 25 minutes of failure
+# is three consecutive failed runs; the textfile counts as stale after 30 minutes.
+OnCalendar=*:01/10
+Persistent=true
+
+[Install]
+WantedBy=timers.target

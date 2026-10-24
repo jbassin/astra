@@ -237,6 +237,9 @@ watchdog pages on drift (details: `libs/py/ops/README.md`). The rules for certif
 container health, the Dagster daemon heartbeat and data freshness read the host metrics that
 `astra-metrics.timer` writes into node-exporter's textfile dir every 2 minutes
 (`just host-metrics`); "astra host metrics stale" fires when that file stops changing. The
+live smoke check (`just smoke`, `astra-smoke.timer` every 10 minutes) writes a second textfile
+there: "astra smoke check failing" pages after three consecutive failed fetches of a public
+page, and "astra smoke metrics stale" when that file stops changing. The
 paging rules read nothing from the browser RUM services (`*-rum`), whose telemetry arrives
 through the public OTLP ingest ([ADR 0042](../docs/adr/0042-accepted-risk-open-otlp-ingest.md)).
 

@@ -58,6 +58,7 @@ ops {
     signoz-url "http://signoz.test:3301"
     signoz-api-key ref="sops:signoz_api_key"
     metrics-textfile "exporter/astra.prom"
+    smoke-textfile "exporter/astra-smoke.prom"
 }
 mouthpiece-producer {
     model "openrouter/deepseek/deepseek-v4.1-flash"

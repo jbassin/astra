@@ -311,6 +311,9 @@ ops {
     // `astra-ops host-metrics` (astra-metrics.timer) writes this Prometheus textfile; the
     // dir is the one node-exporter serves (deploy/docker-compose.yml, --collector.textfile).
     metrics-textfile "node-exporter/textfile/astra.prom"
+    // `astra-ops smoke` (astra-smoke.timer) writes this one into the same dir: a second file,
+    // so the two timers never race on one.
+    smoke-textfile "node-exporter/textfile/astra-smoke.prom"
 }
 
 mouthpiece-producer {

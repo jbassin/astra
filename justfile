@@ -570,6 +570,12 @@ signoz-rules-apply *flags:
 host-metrics:
     @{{ops}} host-metrics "$@"
 
+# astra-smoke.timer runs this every 10 min; by hand it is a safe one-off (GETs only, and it
+# rewrites one textfile). The checks and their markers: libs/py/ops/src/astra_ops/smoke.py.
+# Fetch one real page per public site through the edge and write the smoke metrics.
+smoke:
+    @{{ops}} smoke "$@"
+
 # ==== codex (0029): corpus releases ===========================================================
 
 # Refresh the codex corpus (D29-4): re-fetch both snapshots, then build and publish a new

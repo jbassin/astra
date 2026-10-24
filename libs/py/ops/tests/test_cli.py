@@ -241,4 +241,10 @@ def test_every_unit_runs_a_recipe_that_exists() -> None:
             if m:
                 ran.append(m.group(1))
                 assert m.group(1) in recipes, f"{unit.name}: {line}"
-    assert sorted(ran) == ["craig-sync", "heartwood-requests", "host-metrics", "linguist-commit"]
+    assert sorted(ran) == [
+        "craig-sync",
+        "heartwood-requests",
+        "host-metrics",
+        "linguist-commit",
+        "smoke",
+    ]
