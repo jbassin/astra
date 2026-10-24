@@ -51,6 +51,16 @@ describe("defineSiteConfig", () => {
     expect(cfg.server?.proxy).toEqual({ "/api": "http://localhost:1" });
   });
 
+  test("leaves out content watching without `generated`, and the theme with `theme: false`", () => {
+    const noContent = pluginNames(defineSiteConfig({ root: STRIDER }).plugins);
+    expect(noContent.some((n) => n.startsWith("site-kit:content-watch"))).toBe(false);
+    expect(noContent[0]).toBe("site-kit:gothic-fonts");
+    const own = pluginNames(defineSiteConfig({ root: STRIDER, theme: false }).plugins);
+    expect(own.some((n) => n.startsWith("site-kit:gothic-fonts"))).toBe(false);
+    expect(own.some((n) => n.startsWith("@tailwindcss/vite"))).toBe(false);
+    expect(own[0]).toBe("site-kit:ssr-externals");
+  });
+
   test("names the missing package.json field", () => {
     const dir = mkdtempSync(path.join(tmpdir(), "site-kit-preset-"));
     try {
@@ -71,6 +81,23 @@ describe("defineSiteVitestConfig", () => {
       path.join(import.meta.dirname, "generatedContentSetup.ts"),
     ]);
     expect(cfg.resolve?.alias).toEqual({ "@": path.join(STRIDER, "src") });
+    expect(cfg.test?.setupFiles).toBeUndefined();
+  });
+
+  test("node environment, no content step, the app's own setup files", () => {
+    const cfg = defineSiteVitestConfig({
+      root: STRIDER,
+      environment: "node",
+      generatedContent: false,
+      globalSetup: ["./g.ts"],
+      setupFiles: ["./s.ts"],
+    });
+    expect(cfg.test?.environment).toBe("node");
+    expect(cfg.test?.globalSetup).toEqual(["./g.ts"]);
+    expect(cfg.test?.setupFiles).toEqual(["./s.ts"]);
+    expect(
+      defineSiteVitestConfig({ root: STRIDER, generatedContent: false }).test,
+    ).not.toHaveProperty("globalSetup");
   });
 });
 
@@ -123,6 +150,12 @@ describe("root document and router options", () => {
       ],
       links: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
     });
+    const extra = siteHead({
+      title: "T",
+      description: "D",
+      meta: [{ name: "robots", content: "noindex" }],
+    });
+    expect(extra.meta.at(-1)).toEqual({ name: "robots", content: "noindex" });
   });
 
   test("siteRouterOptions takes 404 text or the app's own component", () => {

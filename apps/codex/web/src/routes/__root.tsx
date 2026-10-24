@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
-import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { SiteDocument, siteHead } from "@astra/site-kit/document";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
 
 import { HeaderNav } from "@/domain/nav/HeaderNav";
 import { HeaderTitle } from "@/domain/nav/HeaderTitle";
@@ -27,66 +27,45 @@ import "@/styles/globals.css";
 // P5). This is the ROOT head, so it's present unconditionally regardless of which
 // route matched.
 export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "codex — a Pathfinder 2e reference" },
-      {
-        name: "description",
-        content: "A Pathfinder Second Edition rules & compendium reference.",
-      },
-      { name: "robots", content: "noindex" },
-    ],
-    links: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
-  }),
+  head: () =>
+    siteHead({
+      title: "codex — a Pathfinder 2e reference",
+      description: "A Pathfinder Second Edition rules & compendium reference.",
+      meta: [{ name: "robots", content: "noindex" }],
+    }),
   component: RootComponent,
 });
 
 function RootComponent() {
-  // Client RUM: browser OTel → SigNoz. Effects never run during SSR, and the
-  // dynamic import keeps the web SDK out of the SSR bundle.
-  useEffect(() => {
-    void import("@/observe/rum").then((m) => {
-      void m.startRum();
-    });
-  }, []);
-
   return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {/* SVG `<symbol>`/`<use>` dedupe (P8 follow-up) — the 5 distinct
-            action/edition glyph shapes, mounted ONCE here so every
-            `ActionGlyph`/`EditionIcon` instance on the page can `<use
-            href="#...">` against it instead of re-emitting its own path
-            data. Must precede any `<use>` that references it (progressive
-            HTML streaming) — first thing in `<body>`, before the header. */}
-        <GlyphDefs />
-        <header className="site-head">
-          {/* D29-112 (P11 S4) — the wordmark is now conditional: listing/
-              entity/rules routes show the RESOLVED page title (+ a home
-              glyph carrying the same `Link to="/"` the wordmark always
-              did) instead; landing/`/search`/`/categories`/`/sources` keep
-              the plain wordmark, unchanged. SSR-clean (`useMatches`-driven,
-              no effect) — see `HeaderTitle.tsx`. */}
-          <HeaderTitle />
-          {/* P4.5 S2 (D29-47), curated P11 S4 (D29-110) — the global
-              category nav (5 dropdowns + the bare Rules/Sources/All
-              categories links), replacing the old brand+tagline header.
-              Spans the curated 28-category set; `navData.ts` owns the
-              grouping. */}
-          <HeaderNav />
-          {/* D29-36 — the header search omnibar, present on every page. */}
-          <Omnibar />
-        </header>
-        <Outlet />
-        {/* R6 (D29-66) — the global footer is deleted outright, no
-            replacement (stakeholder-accepted zero-global-disclaimer risk). */}
-        <Scripts />
-      </body>
-    </html>
+    <SiteDocument rum={() => import("@/observe/rumConfig")}>
+      {/* SVG `<symbol>`/`<use>` dedupe (P8 follow-up) — the 5 distinct
+        action/edition glyph shapes, mounted ONCE here so every
+        `ActionGlyph`/`EditionIcon` instance on the page can `<use
+        href="#...">` against it instead of re-emitting its own path
+        data. Must precede any `<use>` that references it (progressive
+        HTML streaming) — first thing in `<body>`, before the header. */}
+      <GlyphDefs />
+      <header className="site-head">
+        {/* D29-112 (P11 S4) — the wordmark is now conditional: listing/
+          entity/rules routes show the RESOLVED page title (+ a home
+          glyph carrying the same `Link to="/"` the wordmark always
+          did) instead; landing/`/search`/`/categories`/`/sources` keep
+          the plain wordmark, unchanged. SSR-clean (`useMatches`-driven,
+          no effect) — see `HeaderTitle.tsx`. */}
+        <HeaderTitle />
+        {/* P4.5 S2 (D29-47), curated P11 S4 (D29-110) — the global
+          category nav (5 dropdowns + the bare Rules/Sources/All
+          categories links), replacing the old brand+tagline header.
+          Spans the curated 28-category set; `navData.ts` owns the
+          grouping. */}
+        <HeaderNav />
+        {/* D29-36 — the header search omnibar, present on every page. */}
+        <Omnibar />
+      </header>
+      <Outlet />
+      {/* R6 (D29-66) — the global footer is deleted outright, no
+        replacement (stakeholder-accepted zero-global-disclaimer risk). */}
+    </SiteDocument>
   );
 }

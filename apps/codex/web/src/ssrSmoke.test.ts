@@ -1,20 +1,12 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import {
-  existsSync,
-  mkdirSync,
-  mkdtempSync,
-  readdirSync,
-  rmSync,
-  statSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
 import { CORPUS_SCHEMA_VERSION } from "@astra/codex-corpus";
 import { createCorpusReader } from "@astra/codex-corpus/reader";
-import { findRepoRoot } from "@astra/config";
 import { nodeTsResolveHook } from "@astra/site-kit/nodeTsResolveHook";
+import { bundleIsStale } from "@astra/site-kit/ssrSmoke";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { allNavCategories } from "@/domain/nav/navData";
@@ -39,33 +31,6 @@ import { fixtureCorpusRoot } from "@/server/corpusFs";
  */
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
 const SERVER_BUNDLE = path.join(APP_ROOT, "dist/server/server.js");
-// The libs the server bundle inlines, found from the repo root (not `../../`) so the
-// staleness check still sees them however deep this app sits under `apps/`.
-const BUNDLE_INPUTS = [
-  ...["src", "server.ts", "vite.config.ts"].map((p) => path.join(APP_ROOT, p)),
-  path.join(findRepoRoot(APP_ROOT), "libs", "ts"),
-];
-
-/** Newest mtime of the non-test source files under `p` (0 when `p` is absent). */
-function newestSourceMtime(p: string): number {
-  if (!existsSync(p)) return 0;
-  const st = statSync(p);
-  if (!st.isDirectory()) return /\.test\.tsx?$/.test(p) ? 0 : st.mtimeMs;
-  let newest = 0;
-  for (const entry of readdirSync(p, { withFileTypes: true })) {
-    if (entry.name === "node_modules" || entry.name === "dist" || entry.name.startsWith(".")) {
-      continue;
-    }
-    newest = Math.max(newest, newestSourceMtime(path.join(p, entry.name)));
-  }
-  return newest;
-}
-
-function bundleIsStale(): boolean {
-  if (!existsSync(SERVER_BUNDLE)) return true;
-  const built = statSync(SERVER_BUNDLE).mtimeMs;
-  return BUNDLE_INPUTS.some((p) => newestSourceMtime(p) > built);
-}
 const RUNNER = path.join(APP_ROOT, "scripts/ssrSmoke.ts");
 // 0022 S11 — off bun: `pnpm run build` for the workspace script, `node --import
 // nodeTsResolve.mjs` for the raw-TS runner subprocess (same hook every server.ts
@@ -81,7 +46,7 @@ let ssr: { fetch: (req: Request) => Promise<Response> };
 vi.setConfig({ testTimeout: 30_000 });
 
 beforeAll(async () => {
-  if (bundleIsStale()) {
+  if (bundleIsStale(APP_ROOT)) {
     execFileSync("pnpm", ["run", "build"], { cwd: APP_ROOT, stdio: "inherit" });
   }
   const mod = (await import(SERVER_BUNDLE)) as {

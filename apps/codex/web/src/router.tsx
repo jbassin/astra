@@ -1,29 +1,7 @@
-import {
-  createRouter,
-  type ErrorComponentProps,
-  Link,
-  useRouter,
-  useRouterState,
-} from "@tanstack/react-router";
+import { siteRouterOptions } from "@astra/site-kit/router";
+import { createRouter, Link, useRouterState } from "@tanstack/react-router";
 
 import { routeTree } from "./routeTree.gen";
-
-// Router-wide error + not-found boundaries (template defaults). Without these a
-// thrown loader error renders the framework's bare fallback and unmatched URLs have
-// no 404. Retry invalidates the router (re-runs loaders) rather than calling
-// `reset()`, which only resets the React error boundary without refetching.
-function DefaultErrorComponent({ error }: ErrorComponentProps) {
-  const router = useRouter();
-  return (
-    <main role="alert" className="route-boundary">
-      <h1>Something went wrong</h1>
-      <p>{error instanceof Error ? error.message : String(error)}</p>
-      <button type="button" onClick={() => router.invalidate()}>
-        Retry
-      </button>
-    </main>
-  );
-}
 
 /** D29-109e (P11 S5, #20) — pure slug derivation from an attempted pathname,
  * decoupled from `useRouterState()`'s own hook (same "pure fn + thin
@@ -76,10 +54,7 @@ export function DefaultNotFoundComponent() {
 export function getRouter() {
   return createRouter({
     routeTree,
-    defaultPreload: "intent",
-    scrollRestoration: true,
-    defaultErrorComponent: DefaultErrorComponent,
-    defaultNotFoundComponent: DefaultNotFoundComponent,
+    ...siteRouterOptions({ notFound: DefaultNotFoundComponent }),
     // D29-22/M9: `@legacy`-suffixed ids (`spell/heal@legacy`) are real, verbatim
     // corpus ids in the `$slug` param. The router's OWN param decode already
     // round-trips `@` fine either way, but `<Link params={...}>` INTERPOLATION

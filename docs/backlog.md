@@ -213,8 +213,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - Hashed assets revalidate on every load (FE-15) — agent.
 - Dev mode does not regenerate content when its real inputs change (FE-10) — agent.
 - Animated backdrops ignore reduced motion (FE-17) — agent.
-- The ledger and harrow SSR smokes read a stale `dist/`; kit-1b moves them onto site-kit's
-  `describeSsrSmoke`, which rebuilds when stale — agent.
 
 ## Docs
 

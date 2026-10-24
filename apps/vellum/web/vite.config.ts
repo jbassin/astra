@@ -1,51 +1,24 @@
-import path from "node:path";
+import { loadSiteConfig } from "@astra/site-kit";
+import { defineSiteConfig } from "@astra/site-kit/vite";
 
-import { gothicFontsPlugin, loadSiteConfig, ssrExternalsPlugin } from "@astra/site-kit";
-import tailwindcss from "@tailwindcss/vite";
-import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import viteReact from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
-
-// NB: importing @astra/site-kit (a workspace TS package) from this config REQUIRES
-// vite's `--configLoader runner` (set in package.json dev/build) — vite's default
-// loader Node-externalizes workspace packages and the vite bin runs under Node,
-// which can't execute their raw `.ts`. (The "vite.config can't import @astra/config"
-// gotcha — see strider/README + the migration guide.)
+// The shared frontend preset (plugins, `@` alias, dev port from config.kdl). Importing a
+// workspace package here needs `vite --configLoader runner` (package.json dev/build). No
+// `generated`: vellum's documents are authored live in CodeMirror, so there is no build-time
+// content step.
 const ROOT = import.meta.dirname;
-// Dev port + render-service port from config.kdl via site-kit's node-safe locator
-// (same source as server.ts's runtime read — config-single-source).
-const siteConfig = loadSiteConfig(ROOT);
-const { port } = siteConfig.vellumFrontend;
-const renderTarget = `http://localhost:${siteConfig.vellumRender.port}`;
+const renderTarget = `http://localhost:${loadSiteConfig(ROOT).vellumRender.port}`;
 
-// SSR — no `prerender` block (Decision I): vellum-frontend runs as a TanStack Start
-// server, a Compose service behind Caddy, not prerendered to static `dist/`. Unlike
-// the read-surfaces (akasha/mouthpiece) there is NO contentWatchPlugin — vellum's
-// "content" is authored live in CodeMirror, not a committed markdown corpus.
-// @tailwindcss/vite compiles gothic's theme.css (`@theme` tokens + `@apply`); without
-// it the gothic stylesheet ships raw and every var(--color-*) is undefined.
-export default defineConfig({
-  // Dev only: proxy the editor's same-origin PNG export (`POST /render`) + /health to
-  // the vellum-render service (D2). The editor's exportClient posts to `/render` with
-  // an empty base (same-origin); in prod Caddy routes /render+/health → vellum-render,
-  // so this proxy gives dev the same same-origin contract without an env var.
-  server: {
-    port,
-    host: true,
-    proxy: {
-      "/render": { target: renderTarget, changeOrigin: true },
-      "/health": { target: renderTarget, changeOrigin: true },
+export default defineSiteConfig({
+  root: ROOT,
+  vite: {
+    // Dev only: proxy the editor's same-origin PNG export (`POST /render`) and /health to the
+    // vellum-render service (D2). In production Caddy routes them, so dev keeps the same
+    // same-origin contract without an env var.
+    server: {
+      proxy: {
+        "/render": { target: renderTarget, changeOrigin: true },
+        "/health": { target: renderTarget, changeOrigin: true },
+      },
     },
   },
-  resolve: {
-    alias: { "@": path.resolve(ROOT, "./src") },
-  },
-  plugins: [
-    gothicFontsPlugin({ clientOutDir: path.join(ROOT, "dist", "client") }),
-    tailwindcss(),
-    // The SSR bundle imports only the app's own dependencies (what the image installs).
-    ssrExternalsPlugin({ root: ROOT }),
-    tanstackStart(),
-    viteReact(),
-  ],
 });

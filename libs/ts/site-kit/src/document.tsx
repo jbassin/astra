@@ -9,14 +9,22 @@ import { type ComponentProps, type ReactNode, useEffect, useRef } from "react";
 
 import type { RumConfig } from "./web";
 
-/** The root route's `head`: charset, viewport, title, description and the SVG favicon. */
-export function siteHead(opts: { title: string; description: string }) {
+/**
+ * The root route's `head`: charset, viewport, title, description and the SVG favicon, plus any
+ * extra `meta` entries after the description (codex's `robots: noindex`).
+ */
+export function siteHead(opts: {
+  title: string;
+  description: string;
+  meta?: ReadonlyArray<{ name: string; content: string }>;
+}) {
   return {
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: opts.title },
       { name: "description", content: opts.description },
+      ...(opts.meta ?? []),
     ],
     links: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
   };
