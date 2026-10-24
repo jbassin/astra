@@ -30,7 +30,7 @@ bootstrap:
     git config core.hooksPath .githooks
 
 # The fast format + lint gate for both lanes over the whole tree (pre-commit runs it on staged files).
-check: (_each "check" "ts-lint,py-lint,docs-check,weal-engine-hash-check,assay-store-check")
+check: (_each "check" "ts-lint,py-lint,docs-check,ontology-check,weal-engine-hash-check,assay-store-check")
 
 # Lint findings the tools can't fix are printed and don't stop the formatters; `just check`
 # shows what is left.
@@ -50,7 +50,7 @@ test: (_each "test" "py-test,ts-test")
 # renders different pixels); it stays CI-only. weal-engine-rust needs rustup on the host (it
 # installs the crate's pinned toolchain on first use).
 # Run everything CI runs, locally (all but the container-only vellum render goldens).
-ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard,weal-engine-rust,weal-engine-hash-check,assay-store-check"))
+ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard,weal-engine-rust,weal-engine-hash-check,assay-store-check"))
 
 # `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
 # they run as Dagster assets; test them with `uv run pytest apps/<domain>/py`.
@@ -108,6 +108,16 @@ docs-check:
 # CI job assay-store-check: every homebrew store file fits the model and is canonically formatted.
 assay-store-check:
     OTEL_SDK_DISABLED=true uv run assay store check
+
+# scripts/ontology_gen.py lists the artifacts and their sources: being.canonical.json from
+# being.kdl (Python is the one being.kdl parser; @astra/ontology reads the JSON), and the
+# fixture entity registry. Run it after editing being.kdl, defs.kdl or the fixture snapshot.
+# Regenerate the generated ontology artifacts; `--check` writes nothing and fails if one is stale.
+ontology-gen *flags:
+    uv run python scripts/ontology_gen.py {{flags}}
+
+# CI job ontology-check: no generated ontology artifact is stale (`just ontology-gen` fixes it).
+ontology-check: (ontology-gen "--check")
 
 # CI job py-typecheck: ty.
 py-typecheck:

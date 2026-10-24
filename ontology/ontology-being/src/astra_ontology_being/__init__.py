@@ -1,10 +1,13 @@
-"""astra-ontology-being — owns `being.kdl` + the cross-language canonical JSON.
+"""astra-ontology-being — owns `being.kdl` + the generated `being.canonical.json`.
 
 The data file is the source of truth; this package pins its path and delegates the
 typed read to `astra_ontology`:
 
     from astra_ontology_being import load
     being = load()
+
+`just ontology-gen` writes the JSON that TS (`@astra/ontology`) reads, and
+`just ontology-check` fails when it is stale.
 """
 
 from __future__ import annotations

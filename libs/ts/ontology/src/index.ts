@@ -1,18 +1,19 @@
 /**
- * @astra/ontology — typed reader over ontology-being's KDL (TS twin of astra-ontology).
+ * @astra/ontology — the typed `Being` (players, campaigns, hosts) for TS consumers.
  *
  *   import { loadBeing } from "@astra/ontology";
  *   const being = loadBeing();
  *   new Map(being.players.map((p) => [p.slug, p.player_id])); // preserved dice FKs
  *
- * The shared typed decoder (`@astra/config` `decodeKdl`) maps the KDL onto the schemas;
- * their markers pin the shape, so `canonicalJson()` matches Python's `canonical_json()`
- * byte-for-byte.
+ * Python (`astra_ontology`) is the one `being.kdl` parser: `just ontology-gen` writes
+ * `being.canonical.json` from it, and `just ontology-check` fails when the JSON is stale.
+ * This package reads only that JSON and validates it with the strict `BeingSchema`.
  */
 
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { decodeKdl, findRepoRoot, loadKdl } from "@astra/config";
+import { findRepoRoot } from "@astra/config";
 
 import { type Being, BeingSchema } from "./models";
 
@@ -27,31 +28,17 @@ export {
   type WealHost,
 } from "./models";
 
-/** `<repo-root>/ontology/ontology-being/being.kdl` (throws outside a checkout). */
+/** `<repo-root>/ontology/ontology-being/being.canonical.json` (throws outside a checkout). */
 export function defaultBeingFile(): string {
-  return join(findRepoRoot(import.meta.dirname), "ontology", "ontology-being", "being.kdl");
+  return join(
+    findRepoRoot(import.meta.dirname),
+    "ontology",
+    "ontology-being",
+    "being.canonical.json",
+  );
 }
 
-/** Parse `being.kdl` → the validated `Being` truth store (`KdlDecodeError` names the node
- * when a required field is missing). */
+/** Read the generated `being.canonical.json` → the validated `Being` truth store. */
 export function loadBeing(path?: string): Being {
-  return decodeKdl(BeingSchema, loadKdl(path ?? defaultBeingFile()));
-}
-
-/** Recursively sort object keys (arrays keep order) — matches Python's sort_keys. */
-function sortKeysDeep(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(sortKeysDeep);
-  if (value && typeof value === "object") {
-    const sorted: Record<string, unknown> = {};
-    for (const key of Object.keys(value).sort()) {
-      sorted[key] = sortKeysDeep((value as Record<string, unknown>)[key]);
-    }
-    return sorted;
-  }
-  return value;
-}
-
-/** Stable JSON (sorted keys, 2-space indent, trailing newline) — matches Python exactly. */
-export function canonicalJson(being: Being): string {
-  return `${JSON.stringify(sortKeysDeep(being), null, 2)}\n`;
+  return BeingSchema.parse(JSON.parse(readFileSync(path ?? defaultBeingFile(), "utf8")));
 }

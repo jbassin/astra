@@ -131,6 +131,11 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
   `Arg`/`Prop`/`Children` (Python `Annotated[...]`) or `kdl.arg`/`kdl.prop`/`kdl.children` (TS,
   wrapping the outermost schema). A missing required field raises `KdlDecodeError` naming the node
   path. Quote hand-inserted KDL strings with `kdl_quote`/`kdlQuote`.
+- **Generated ontology artifacts.** Python is the one `being.kdl` parser. `just ontology-gen`
+  writes `ontology/ontology-being/being.canonical.json` from it, which `@astra/ontology` reads,
+  and regenerates the fixture entity registry; `just ontology-check` (in `just check` and CI)
+  fails when either is stale. Run `just ontology-gen` after editing `being.kdl`, `defs.kdl` or
+  the fixture snapshot, and commit the output; never edit the generated files by hand.
 - **LLM calls** go through `libs/py/llm`; never call a provider SDK directly. Its client owns the
   `max_tokens` guard, caching and cost telemetry; `make_dspy_lm` returns a bare `dspy.LM` that
   skips them.
