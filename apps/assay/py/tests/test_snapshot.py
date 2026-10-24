@@ -3,7 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from astra_assay.snapshot import SnapshotNotFoundError, resolve_snapshot
+from astra_assay.snapshot import (
+    SnapshotNotFoundError,
+    newest_version_dir,
+    resolve_snapshot,
+    version_key,
+)
 
 
 def test_missing_data_root_raises_clear_error(tmp_path: Path) -> None:
@@ -40,3 +45,27 @@ def test_resolves_newest_version_and_globs_files(tmp_path: Path) -> None:
     files = iter_spell_files(paths.spells_dir)
     assert len(files) == 1
     assert files[0].name == "test-spell.json"
+
+
+def test_newest_version_compares_numbers_not_strings(tmp_path: Path) -> None:
+    """ASY-21: as strings, pf2e-10.0.0 sorts before pf2e-9.0.0 and pf2e-8.10.0 before
+    pf2e-8.9.0; the snapshot picked must be the highest version."""
+    foundry = tmp_path / "snapshots" / "foundry"
+    for version in ("pf2e-9.0.0", "pf2e-10.0.0", "pf2e-8.10.0", "pf2e-8.9.0"):
+        (foundry / version / "packs" / "pf2e" / "spells" / "spells").mkdir(parents=True)
+    assert sorted(p.name for p in foundry.iterdir())[-1] == "pf2e-9.0.0"  # the old bug
+
+    assert resolve_snapshot(tmp_path).version_dir.name == "pf2e-10.0.0"
+
+
+def test_newest_version_dir_minor_and_patch_and_non_versions() -> None:
+    names = ["pf2e-8.9.0", "pf2e-8.10.0", "pf2e-8.10.2", "pf2e-latest", "pf2e-8.10.10"]
+    assert newest_version_dir([Path(n) for n in names]) == Path("pf2e-8.10.10")
+    assert version_key("pf2e-latest") is None
+    assert newest_version_dir([Path("pf2e-latest")]) is None
+
+
+def test_non_version_dirs_alone_raise(tmp_path: Path) -> None:
+    (tmp_path / "snapshots" / "foundry" / "pf2e-latest").mkdir(parents=True)
+    with pytest.raises(SnapshotNotFoundError, match="pf2e-\\* version directory"):
+        resolve_snapshot(tmp_path)

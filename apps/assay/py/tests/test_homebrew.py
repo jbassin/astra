@@ -971,37 +971,33 @@ def test_scores_json_is_valid_json_after_cli_write(seeded_store: Path) -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_seed_refuses_to_overwrite_without_force(tmp_path: Path) -> None:
-    store_dir = tmp_path / "spells"
-    report1 = homebrew.seed_homebrew(store_dir=store_dir)
-    assert len(report1.seeded) == 176
-    assert report1.skipped_existing == []
-
-    # Simulate a hand edit on one file, then re-seed without --force.
-    one = next(store_dir.glob("*.json"))
-    original_text = one.read_text(encoding="utf-8")
-    hand_edited = original_text.replace('"rules": []', '"rules": ["hand-edited-marker"]')
-    assert hand_edited != original_text
-    one.write_text(hand_edited, encoding="utf-8")
-
-    report2 = homebrew.seed_homebrew(store_dir=store_dir)
-    assert report2.seeded == []
-    assert len(report2.skipped_existing) == 176
-    # the hand edit must survive an unforced re-seed untouched.
-    assert one.read_text(encoding="utf-8") == hand_edited
-
-
-def test_seed_force_overwrites_existing_files(tmp_path: Path) -> None:
-    store_dir = tmp_path / "spells"
-    homebrew.seed_homebrew(store_dir=store_dir)
-    one = next(store_dir.glob("*.json"))
-    one.write_text('{"name": "clobber me"}', encoding="utf-8")
-
-    report = homebrew.seed_homebrew(store_dir=store_dir, force=True)
+def test_seed_bakes_every_vendored_spell_into_an_empty_dir(tmp_path: Path) -> None:
+    report = homebrew.seed_homebrew(store_dir=tmp_path / "spells")
     assert len(report.seeded) == 176
-    assert report.skipped_existing == []
-    # every file, including the hand-edited one, is back to the fresh bake.
-    assert '"clobber me"' not in one.read_text(encoding="utf-8")
+
+
+def test_seed_refuses_a_dir_that_already_holds_spells(tmp_path: Path) -> None:
+    """ASY-5: a re-seed over a hand-edited store would overwrite edits and bring back spells
+    the stakeholder deleted or renamed, so a non-empty dir is refused and left untouched."""
+    store_dir = tmp_path / "spells"
+    store_dir.mkdir()
+    hand_edited = store_dir / "kept.json"
+    hand_edited.write_text('{"name": "hand edit"}', encoding="utf-8")
+
+    with pytest.raises(homebrew.StoreSeedRefusedError, match="already holds spell files"):
+        homebrew.seed_homebrew(store_dir=store_dir)
+    assert sorted(f.name for f in store_dir.iterdir()) == ["kept.json"]
+    assert hand_edited.read_text(encoding="utf-8") == '{"name": "hand edit"}'
+
+
+def test_seed_refuses_the_canonical_store(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """ASY-5: the canonical store is refused even when it is empty. The constant is pointed at
+    a temp dir so the test never touches the committed store."""
+    canonical = tmp_path / "canonical"
+    monkeypatch.setattr(homebrew, "HOMEBREW_STORE_DIR", canonical)
+    with pytest.raises(homebrew.StoreSeedRefusedError, match="canonical store"):
+        homebrew.seed_homebrew(store_dir=tmp_path / "x" / ".." / "canonical")
+    assert not canonical.exists()
 
 
 def test_seed_writes_provenance_flags(tmp_path: Path) -> None:

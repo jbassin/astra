@@ -27,4 +27,5 @@ python-version = "3.12"
 [tool.ty.src]
 # libs/rust/ holds standalone PEP 723 scripts whose dependencies (e.g. icepool)
 # live in their own inline environments, not in the workspace venv.
-exclude = ["libs/rust/"]
+# thoughts/archive holds archived source that is never edited or run.
+exclude = ["libs/rust/", "thoughts/archive/"]

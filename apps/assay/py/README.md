@@ -66,18 +66,22 @@ comparables corpus does not cover cantrips (too thin to be useful).
 ## Running it
 
 ```bash
-uv run assay extract              # -> out/features.json (gitignored, reproducible)
 uv run assay price                # -> results/{fitted-params.json,point-tables.md,power-ledger.md,
                                    #    validation.md,comparables-corpus.json,comparables-spot.md}
+                                   #    and out/{features.json,spell-power.json} (gitignored)
 uv run assay score --spell <path> # score one Foundry-shaped spell JSON against the committed fit
-uv run assay fit                  # round-1 per-rank-facet fit — SUPERSEDED diagnostic, do not run after `price`
 ```
+
+`price` writes `results/fitted-params.json` from scratch on every run (keys `round2`..`round4`),
+so it works on a fresh tree. The round-1 model and its `fit` and `extract` commands are gone;
+git history has them.
 
 `--data-root` overrides the codex data path (default: `codex.data-path` from `config.kdl` via
 `astra_config` — config-single-source, never hardcoded). If the Foundry snapshot isn't present
-(e.g. a host where `codex.data-path` has no `snapshots/` yet), `extract`/`price` fail soft with a clear
-message; the test suite never touches the snapshot — it runs entirely off the committed fixtures
-under `tests/fixtures/` (real corpus files, one per extractor trap — see `apps/codex/web/fixtures`
+(e.g. a host where `codex.data-path` has no `snapshots/` yet), `price` fails soft with a clear
+message. With several `pf2e-<version>` snapshot directories, the highest version wins, compared
+numerically (`pf2e-10.0.0` beats `pf2e-9.0.0`). The test suite never touches the snapshot — it
+runs entirely off the committed fixtures under `tests/fixtures/` (real corpus files, one per extractor trap — see `apps/codex/web/fixtures`
 for the precedent of committing corpus provenance this way). `assay score` never needs the live
 snapshot either — it reads the committed `results/fitted-params.json` +
 `results/comparables-corpus.json` artifacts, both reproducible via `assay price`.
@@ -139,22 +143,23 @@ decides). It was seeded once from the vendored `run_balance` conversion set
 **provenance-only** from here on — nothing downstream reads it.
 
 ```bash
-uv run assay seed-homebrew            # ONE-TIME: vendor -> the store. Refuses to overwrite an
-                                       #   existing file (--force to intentionally re-bake one/all)
 uv run assay score-homebrew           # scores every spell IN THE STORE (never touches vendor/) ->
                                        #   out/homebrew/scores.json (gitignored, reproducible)
 uv run assay homebrew-revisions       # diffs the store against a FRESH vendor re-conversion ->
                                        #   homebrew/revisions.md (committed) — field-level summary
                                        #   of every hand edit (formula/range/cast time/description
-                                       #   length/…); reads "0 deviations" right after a fresh seed
+                                       #   length/…)
 uv run assay score --spell homebrew/spells/<slug>.json   # score one store file directly
 ```
 
-**The loop:** seed once → hand-edit spells in the store as balance decisions land → `assay
+**The loop:** hand-edit spells in the store as balance decisions land → `assay
 score-homebrew` to see the current scoring picture → `assay homebrew-revisions` to see exactly
 which spells deviate from the original conversion and how, before those edits go live anywhere
-downstream (codex ingest, a possible Foundry compendium module). `seed-homebrew --force` re-bakes
-from vendor and **destroys any hand edits** — it exists for a genuine "start over" only.
+downstream (codex ingest, a possible Foundry compendium module). There is no seed command any
+more: the store was seeded once (commit `b7b990d4`), and a re-seed would overwrite hand edits and
+bring back spells the stakeholder deleted or renamed. `homebrew.seed_homebrew(store_dir)` only
+bakes a scratch baseline store for tests, and refuses the canonical store and any non-empty
+directory.
 
 Every store file carries a `flags.assay` block: `seededFrom` (`repo`/`commit`/`originalName`/
 `convertedName` — provenance back to the exact vendored commit) and `adapterWarnings` (recorded
@@ -238,10 +243,15 @@ band comparison, ritual scoring, legacy-spell scoring. The codex RENDER surface
 assay has three products: the **scorer** (everything above), the **homebrew store**
 (`homebrew/spells/`, 173 spells, plus `homebrew/traits/` for the 8 school traits), and the
 **book** *Liturgy of the Iridite Vol.2*, a LaTeX build of the store. codex ingests the store
-as the source "Liturgy of the Iridite Vol.2" (abbreviation LotI2). The review UI under
-`review-ui/` is torn down; its state is archived in
-`thoughts/archive/scriptorium-review-state/`. That `comments.jsonl` is an append log: drop the
-ids that later `op: delete` lines retract before reading it.
+as the source "Liturgy of the Iridite Vol.2" (abbreviation LotI2).
+
+The review workshop is archived ([ADR 0019](../../../docs/adr/0019-assay-scope.md)). Its files
+live under `thoughts/archive/assay-workshop/`: the scriptorium review UI source (`review-ui/`)
+and the one-off review paperwork that sat in `results/` (`homebrew-triage.md`,
+`sweep-brief-v3.md`, `homebrew-item7/`, `homebrew-fleet/`, `final-review/`). The scriptorium's
+state is archived in `thoughts/archive/scriptorium-review-state/`. That `comments.jsonl` is an
+append log: drop the ids that later `op: delete` lines retract before reading it. The vendor
+adapter in `homebrew.py` stays, because `homebrew-revisions` needs it.
 
 **Edit a store spell.**
 
@@ -279,8 +289,6 @@ licensed for personal use only: flag this before distributing the PDF.
 - The generative effect-value fit is dead: effect-spell power lives in unmodeled quality
   (DCs, riders, scaling text), not in which conditions a spell names. Effect spells get
   comparables and a rank range, never a point score.
-- `assay fit` overwrites the parameters other commands read, and `seed-homebrew --force`
-  destroys every hand edit. Don't run either casually.
 - Derive any population count by running the real scorer, never from description grep
   counts or an earlier doc.
 - Known lens artifacts, to record rather than "fix" in dice: conditional or probabilistic
