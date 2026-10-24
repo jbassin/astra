@@ -2,71 +2,42 @@
  * The engine seam (spec 0032 D32-14/D32-17) — everything between the bot and
  * `@astra/weal-engine`:
  *
- * - {@link runEngine}: one evaluate call with **panic containment** — a thrown
- *   error (wasm trap the wrapper's own catch didn't synthesize, glue corruption,
- *   …) becomes a `fault` result, a WARN log (NEVER an ERROR — the Class-A SigNoz
- *   rule pages Discord on ERROR), a `weal.v2.errors{stage:"panic"}` count, and a
- *   wasm **re-instantiation** (post-panic engine state is undefined).
+ * - {@link runEngine}: one evaluate call. Trap containment is the wrapper's
+ *   job: a wasm trap comes back as an ordinary `stage:"internal"` error, and
+ *   the wrapper has already re-instantiated the wasm.
  * - {@link passesNoiseGate}: D32-14's error-visibility gate, so ordinary chat
  *   can never trigger a visible error reply.
  * - {@link loadValidatedFuncs}: the D32-17 boot algorithm — `funcs_v2` rows in
- *   id order, each `mode:"check"`-validated against the prior valid rows; a
- *   failing row is skipped with a WARN naming it (never pages, never crashes).
+ *   id order, each loaded (parsed, type-checked AND evaluated) after the prior
+ *   valid rows; a failing row is skipped with a WARN naming it, so one bad
+ *   save never breaks the other rolls.
  * - {@link checkNewSave}: the save guard — dry-runs a new save against the
  *   runtime saves list before anything persists it.
  */
 
-import { getLogger, lazyCounter } from "@astra/observe";
-import {
-  evaluate,
-  reinstantiate,
-  type WealErr,
-  type WealOk,
-  type WealResult,
-} from "@astra/weal-engine";
+import { getLogger } from "@astra/observe";
+import { evaluate, type WealErr, type WealOk } from "@astra/weal-engine";
 
 import type { FuncV2 } from "./db";
 
 const log = getLogger("astra.weal-bot");
-const errorsCounter = lazyCounter("astra.weal-bot", "weal.v2.errors", {
-  description: "weal v2 engine errors, by stage (incl. panic)",
-});
 
-/** Injectable engine internals — tests swap in a throwing evaluate (D32-14). */
+/** Injectable engine internals — tests swap in a scripted evaluate. */
 export interface EngineHooks {
   evaluateFn?: typeof evaluate;
-  reinstantiateFn?: () => void;
 }
 
-/** A run's outcome: ok / an engine-reported error / a contained panic. */
-export type EngineOutcome =
-  | { kind: "ok"; value: WealOk }
-  | { kind: "error"; error: WealErr }
-  | { kind: "fault" };
+/** A run's outcome: ok, or an engine-reported error (incl. a contained trap). */
+export type EngineOutcome = { kind: "ok"; value: WealOk } | { kind: "error"; error: WealErr };
 
-/**
- * Evaluate one source against the saves list, containing any throw (panic).
- * Never throws.
- */
+/** Evaluate one source against the saves list. */
 export function runEngine(
   source: string,
   saves: [string, string][],
   seed: Uint8Array,
   hooks?: EngineHooks,
 ): EngineOutcome {
-  const evaluateFn = hooks?.evaluateFn ?? evaluate;
-  let result: WealResult;
-  try {
-    result = evaluateFn(source, saves, seed, 0, "run");
-  } catch (err) {
-    errorsCounter.add(1, { stage: "panic" });
-    log.emit({
-      severityText: "WARN",
-      body: `weal engine panic (contained, re-instantiating): ${err instanceof Error ? err.message : String(err)}`,
-    });
-    (hooks?.reinstantiateFn ?? reinstantiate)();
-    return { kind: "fault" };
-  }
+  const result = (hooks?.evaluateFn ?? evaluate)(source, saves, seed, 0, "run");
   if (result.ok) return { kind: "ok", value: result };
   return { kind: "error", error: result };
 }
@@ -111,26 +82,37 @@ export function isBareAtom(source: string): boolean {
 
 const ZERO_SEED = new Uint8Array(32);
 
+/** What loading a save runs: nothing of its own, so only the saves list is evaluated. */
+const LOAD_PROBE = "()";
+
 /**
- * Validate `funcs_v2` rows (already in id order) via `mode:"check"`, each
- * against the prior valid rows. Failing rows are skipped with a WARN naming
- * them. Returns the runtime save list (latest-per-name wins downstream, by map
- * overwrite at consumption — the engine consumes `[name, source]` in order).
+ * Load `funcs_v2` rows (already in id order), each appended after the prior
+ * valid rows and loaded exactly the way every roll loads it: a `mode:"run"` of
+ * a do-nothing source, so the engine parses, type-checks AND evaluates the
+ * saves list. (`mode:"check"` never evaluates a save, so a source like `1 / 0`
+ * would pass it and then fail every roll.) Failing rows are skipped with a
+ * WARN naming them. Returns the runtime save list; the engine consumes it in
+ * order, so a later row of the same name wins.
+ *
+ * Cost: row k re-loads the k-1 valid rows before it, so boot is quadratic in
+ * the row count; each load is a fuel-bounded evaluation, cheap at campaign
+ * scale.
  */
 export function loadValidatedFuncs(
   rows: readonly FuncV2[],
   hooks?: EngineHooks,
 ): [string, string][] {
-  const evaluateFn = hooks?.evaluateFn ?? evaluate;
   const valid: [string, string][] = [];
   for (const row of rows) {
-    const res = evaluateFn(row.source, valid, ZERO_SEED, 0, "check");
-    if (res.ok) {
+    const outcome = runEngine(LOAD_PROBE, [...valid, [row.name, row.source]], ZERO_SEED, hooks);
+    if (outcome.kind === "ok") {
       valid.push([row.name, row.source]);
     } else {
+      const { stage, message } = outcome.error;
       log.emit({
         severityText: "WARN",
-        body: `skipping stale funcs_v2 row ${row.id} (${row.name}): ${res.stage}: ${res.message}`,
+        body: `skipping saved weal source: funcs_v2 row ${row.id} (${row.name}): ${stage}: ${message}`,
+        attributes: { "weal.save": row.name, "weal.stage": stage },
       });
     }
   }
@@ -144,10 +126,8 @@ export function loadValidatedFuncs(
  * roll runs against the whole runtime saves list, and the engine re-loads that
  * list (parse, type-check AND evaluate each save, in order) on every message.
  * So the first, trivial roll reproduces exactly what any later roll does first
- * — a save that fails to evaluate breaks it. That is the case the boot check
- * misses: `mode:"check"` never evaluates a save, so a source that type-checks
- * but fails to evaluate passes boot and then fails every `run` (before the
- * WEAL-1 fix, `|| 2d20kh1` did exactly this). The rest cover builtins a save can shadow:
+ * — a save that fails to evaluate breaks it (before the WEAL-1 fix,
+ * `|| 2d20kh1` did exactly this). The rest cover builtins a save can shadow:
  * saves and builtins share one namespace (a saved function can act as a die
  * suffix), so `save(:kh, 3)` breaks every `kh` roll and `save(:save, 3)` breaks
  * saving itself — including the re-save that would fix it.
@@ -178,13 +158,12 @@ function guardUses(name: string): [string, string][] {
 }
 
 /**
- * An engine "internal error": a well-typed program reached a state the checker
- * should have ruled out (the engine prefixes these messages; `stage` is
- * `"eval"`). Never the player's own mistake, unlike an ordinary type, eval or
- * fuel error.
+ * An engine fault (`stage:"internal"`): a well-typed program reached a state
+ * the checker should have ruled out, or the wasm trapped. Never the player's
+ * own mistake, unlike an ordinary type, eval or fuel error.
  */
 export function isInternalError(err: WealErr): boolean {
-  return err.stage === "eval" && err.message.startsWith("internal error:");
+  return err.stage === "internal";
 }
 
 /** Why {@link checkNewSave} refused a save. */
@@ -196,8 +175,8 @@ export interface SaveRefusal {
   kind: "rolls" | "use";
   /** The roll or use that failed, as a player would type it. */
   probe: string;
-  /** The engine's error; null when the engine faulted (a contained panic). */
-  error: WealErr | null;
+  /** The engine's error (`stage:"internal"` for a `"use"` refusal). */
+  error: WealErr;
   /** The name is a builtin's, so the save shadows it. */
   shadowsBuiltin: boolean;
 }
@@ -214,15 +193,15 @@ export type SaveCheck = { ok: true } | ({ ok: false } & SaveRefusal);
  * 1. a {@link GUARD_ROLLS} roll fails with the save added but passes without
  *    it. A roll that already fails without it is not this save's fault, so it
  *    does not block the save.
- * 2. a {@link guardUses} use of the new name hits an engine internal error or
- *    fault: a macro that loads fine but trips an engine bug whenever it is
- *    used (a checker/interpreter disagreement, the class WEAL-1 was). Type,
- *    eval and fuel errors don't count: they say
- *    the use doesn't fit (`f + 1` on a function) or reflect the player's own
- *    logic (`|x| x / 0`).
+ * 2. a {@link guardUses} use of the new name hits an engine fault
+ *    (`stage:"internal"`): a macro that loads fine but trips an engine bug
+ *    whenever it is used (a checker/interpreter disagreement, the class WEAL-1
+ *    was). Type, eval and fuel errors don't count: they say the use doesn't
+ *    fit (`f + 1` on a function) or reflect the player's own logic
+ *    (`|x| x / 0`).
  *
- * Passing (1) also means the save survives a restart: the boot check
- * re-type-checks the same list in the same order, which `run` already did.
+ * Passing (1) also means the save survives a restart: the boot load evaluates
+ * the same list in the same order, which `run` already did.
  *
  * Cost: every probe runs under the engine's default fuel, like any message,
  * with a fixed seed. The guard rolls are fixed and cheap, so they cost what
@@ -237,11 +216,11 @@ export function checkNewSave(
 ): SaveCheck {
   const before: [string, string][] = [...saves];
   const after: [string, string][] = [...saves, [name, source]];
-  const refuse = (kind: SaveRefusal["kind"], probe: string, outcome: EngineOutcome): SaveCheck => ({
+  const refuse = (kind: SaveRefusal["kind"], probe: string, error: WealErr): SaveCheck => ({
     ok: false,
     kind,
     probe,
-    error: outcome.kind === "error" ? outcome.error : null,
+    error,
     shadowsBuiltin: isBuiltinName(name, hooks),
   });
 
@@ -249,13 +228,12 @@ export function checkNewSave(
     const outcome = runEngine(roll, after, ZERO_SEED, hooks);
     if (outcome.kind === "ok") continue;
     if (runEngine(roll, before, ZERO_SEED, hooks).kind !== "ok") continue;
-    return refuse("rolls", roll, outcome);
+    return refuse("rolls", roll, outcome.error);
   }
   for (const [shown, probe] of guardUses(name)) {
     const outcome = runEngine(probe, after, ZERO_SEED, hooks);
-    if (outcome.kind === "fault") return refuse("use", shown, outcome);
     if (outcome.kind === "error" && isInternalError(outcome.error)) {
-      return refuse("use", shown, outcome);
+      return refuse("use", shown, outcome.error);
     }
   }
   return { ok: true };
@@ -263,9 +241,5 @@ export function checkNewSave(
 
 /** A bare name type-checks with no saves exactly when a builtin owns it. */
 function isBuiltinName(name: string, hooks?: EngineHooks): boolean {
-  try {
-    return (hooks?.evaluateFn ?? evaluate)(name, [], ZERO_SEED, 0, "check").ok;
-  } catch {
-    return false;
-  }
+  return (hooks?.evaluateFn ?? evaluate)(name, [], ZERO_SEED, 0, "check").ok;
 }

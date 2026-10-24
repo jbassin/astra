@@ -56,9 +56,11 @@ class FakeStore implements WealStore {
   ensureSchema(): Promise<void> {
     return Promise.resolve();
   }
-  insertDie(base: number, value: number, playerId: number, blameId: number): Promise<void> {
-    this.inserts.push([base, value, playerId, blameId]);
-    return Promise.resolve();
+  /** What insertDice returns; tests swap in a slow or failing write. */
+  insertResult: () => Promise<void> = () => Promise.resolve();
+  insertDice(dice: readonly [number, number][], playerId: number, blameId: number): Promise<void> {
+    for (const [base, value] of dice) this.inserts.push([base, value, playerId, blameId]);
+    return this.insertResult();
   }
   getAllFuncs(): Promise<Func[]> {
     return Promise.resolve([]);
@@ -302,25 +304,79 @@ describe("error visibility + the noise gate (D32-14)", () => {
   });
 });
 
-describe("panic containment (injected throwing engine — D32-14)", () => {
-  test("a thrown engine error → fault reply + reinstantiate called", async () => {
+describe("engine faults (stage internal)", () => {
+  /** The wrapper's report of a contained trap. */
+  const trapped = {
+    ok: false,
+    stage: "internal",
+    message: "engine trap: unreachable",
+    span: null,
+    preludeName: null,
+  } as const;
+
+  test("a trap gets the generic fault reply, never the engine's detail", async () => {
     const h = harness();
-    let reinstantiated = 0;
-    h.deps.engineHooks = {
-      evaluateFn: () => {
-        throw new Error("wasm trap: unreachable");
-      },
-      reinstantiateFn: () => {
-        reinstantiated += 1;
-      },
-    };
+    h.deps.engineHooks = { evaluateFn: () => trapped };
     await handleMessage("d20 + 7", PROFILE, h.deps);
-    expect(reinstantiated).toBe(1);
     expect(h.sent).toHaveLength(1);
     expect(h.sent[0]?.host.slug).toBe("knife");
     expect(h.sent[0]?.title).toBe("engine fault");
+    expect(h.sent[0]?.contents).toBe(
+      "something broke deep in the dice machinery — it's been reported",
+    );
     expect(h.store.inserts).toEqual([]);
     expect(h.broadcasts).toEqual([]);
+  });
+
+  test("a fault replies even when the source would not pass the noise gate", async () => {
+    const h = harness();
+    h.deps.engineHooks = { evaluateFn: () => trapped };
+    await handleMessage("lol", PROFILE, h.deps);
+    expect(h.sent[0]?.title).toBe("engine fault");
+  });
+
+  test("a real stack-overflow trap is contained and the next roll works", async () => {
+    const h = harness();
+    await handleMessage(`${"(".repeat(2000)}1${")".repeat(2000)}`, PROFILE, h.deps);
+    expect(h.sent[0]?.title).toBe("engine fault");
+    await handleMessage("d20 + 7", PROFILE, h.deps);
+    expect(h.sent[1]?.title).toBe("Argyle: 11");
+  });
+});
+
+describe("roll history is written after the reply (ADR 0025)", () => {
+  test("a write that never finishes doesn't hold up the reply or the overlay", async () => {
+    const h = harness();
+    h.store.insertResult = () => new Promise<void>(() => {});
+    await handleMessage("d20 + 7", PROFILE, h.deps);
+    expect(h.sent).toHaveLength(1);
+    expect(h.broadcasts).toHaveLength(1);
+    expect(h.store.inserts).toEqual([[20, 4, 42, 1]]);
+  });
+
+  test("the write starts only after the reply went out", async () => {
+    const h = harness();
+    const order: string[] = [];
+    const send = h.deps.send;
+    h.deps.send = (msg) => {
+      order.push("send");
+      return send(msg);
+    };
+    h.store.insertResult = () => {
+      order.push("history");
+      return Promise.resolve();
+    };
+    await handleMessage("d20 + 7", PROFILE, h.deps);
+    expect(order).toEqual(["send", "history"]);
+  });
+
+  test("a failed write leaves the reply intact and the next roll working", async () => {
+    const h = harness();
+    h.store.insertResult = () => Promise.reject(new Error("connection refused"));
+    await handleMessage("d20 + 7", PROFILE, h.deps);
+    await handleMessage("d20 + 7", PROFILE, h.deps);
+    await new Promise((resolve) => setImmediate(resolve)); // let the rejections settle
+    expect(h.sent.map((m) => m.title)).toEqual(["Argyle: 11", "Argyle: 11"]);
   });
 });
 
@@ -411,7 +467,7 @@ describe("the save guard (WEAL-2)", () => {
     h.deps.engineHooks = {
       evaluateFn: (source, list, seed, budget, mode) =>
         source === "let _ = atk(); ()"
-          ? { ok: false, stage: "eval", message: internal, span: null, preludeName: null }
+          ? { ok: false, stage: "internal", message: internal, span: null, preludeName: null }
           : evaluate(source, list, seed, budget, mode),
     };
     await handleMessage("save(:atk, || d20 + 7)", PROFILE, h.deps);
@@ -420,7 +476,7 @@ describe("the save guard (WEAL-2)", () => {
     expect(h.sent[0]?.contents).toBe(
       [
         "nope jorge, i won't remember `atk` — using it (`atk()`) trips a bug in the dice engine:",
-        internal,
+        "something broke deep in the dice machinery — it's been reported",
       ].join("\n"),
     );
   });

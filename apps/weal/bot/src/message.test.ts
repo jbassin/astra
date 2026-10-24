@@ -9,6 +9,7 @@ import { describe, expect, test } from "vitest";
 import {
   DESCRIPTION_LIMIT,
   dieFooter,
+  ENGINE_FAULT_LINE,
   dieTitle,
   errorDescription,
   FIELD_LIMIT,
@@ -18,6 +19,7 @@ import {
   saveRefusal,
   spanExcerpt,
   TITLE_LIMIT,
+  trimContent,
   truncate,
 } from "./message";
 
@@ -122,18 +124,24 @@ describe("error-reply helpers (D32-14)", () => {
 });
 
 describe("saveRefusal (the save guard's reply)", () => {
-  test("an engine fault says so", () => {
+  test("an engine fault says so, without the engine's detail", () => {
     const reply = saveRefusal("Jorge", "atk", "let f() = d20; f", {
       kind: "use",
       probe: "atk + 1",
-      error: null,
+      error: {
+        ok: false,
+        stage: "internal",
+        message: "engine trap: unreachable",
+        span: null,
+        preludeName: null,
+      },
       shadowsBuiltin: false,
     });
     expect(reply.title).toBe("atk not saved");
     expect(reply.contents).toBe(
       [
         "nope jorge, i won't remember `atk` — using it (`atk + 1`) trips a bug in the dice engine:",
-        "the dice engine crashed while i was checking it",
+        ENGINE_FAULT_LINE,
       ].join("\n"),
     );
   });
@@ -201,5 +209,27 @@ describe("overlayPayload (D32-18)", () => {
       is_fumble: false,
       display: ":great",
     });
+  });
+});
+
+describe("trimContent (fence stripping)", () => {
+  test("a pasted save confirmation (a ```weal fence) becomes its source (WEAL-29)", () => {
+    expect(trimContent("```weal\n|| kh(pool(2, d20), 1)\n```")).toBe("|| kh(pool(2, d20), 1)");
+  });
+
+  test("any one-word language tag is stripped; ocaml still is", () => {
+    expect(trimContent("```ocaml\nd20 + 7\n```")).toBe("d20 + 7");
+    expect(trimContent("```js\r\nd20\n```")).toBe("d20");
+    expect(trimContent("```ocaml d20```")).toBe("d20");
+  });
+
+  test("fenced code without a tag keeps its first line", () => {
+    expect(trimContent("```\nd20\n```")).toBe("d20");
+    expect(trimContent("```d20 + 1```")).toBe("d20 + 1");
+    expect(trimContent("```let x = 1;\nx```")).toBe("let x = 1;\nx");
+  });
+
+  test("an unfenced first word on its own line is not a tag", () => {
+    expect(trimContent("adv\n+ 1")).toBe("adv\n+ 1");
   });
 });

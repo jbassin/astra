@@ -1,8 +1,8 @@
 /**
- * The engine seam (spec 0032 D32-14/D32-17): noise gate, panic containment,
- * and the funcs_v2 boot-validation algorithm — real wasm where possible, an
- * injected throwing evaluate for the panic path (the real engine can't be made
- * to panic on demand).
+ * The engine seam (spec 0032 D32-14/D32-17): noise gate, the funcs_v2 boot
+ * load and the save guard — real wasm where possible, a scripted evaluate for
+ * engine faults (no real input reaches an internal error). Trap containment
+ * itself is the wrapper's, tested in libs/ts/weal-engine.
  */
 
 import { evaluate } from "@astra/weal-engine";
@@ -19,6 +19,13 @@ import {
 } from "./engine";
 
 const SEED = new Uint8Array(32).fill(77);
+
+/**
+ * A saved source that type-checks but fails to evaluate. The engine never
+ * serializes one (a save stores a value it already computed), but a stored
+ * row can still hold one, and it is the shape that would break every roll.
+ */
+const EVAL_FAILS = "1 / 0";
 
 describe("passesNoiseGate (D32-14)", () => {
   test("die tokens pass", () => {
@@ -77,22 +84,14 @@ describe("runEngine", () => {
     expect(outcome.error.stage).toBe("type");
   });
 
-  test("contains a throw: fault outcome + re-instantiation, never a rethrow", () => {
-    let reinstantiated = 0;
-    const outcome = runEngine("d20", [], SEED, {
-      evaluateFn: () => {
-        throw new Error("wasm trap: unreachable");
-      },
-      reinstantiateFn: () => {
-        reinstantiated += 1;
-      },
-    });
-    expect(outcome).toEqual({ kind: "fault" });
-    expect(reinstantiated).toBe(1);
+  test("a real trap comes back as an internal error, and the next roll works", () => {
+    const outcome = runEngine(`${"(".repeat(2000)}1${")".repeat(2000)}`, [], SEED);
+    expect(outcome.kind === "error" && outcome.error.stage).toBe("internal");
+    expect(runEngine("2d6", [], SEED).kind).toBe("ok");
   });
 });
 
-describe("loadValidatedFuncs (the D32-17 boot algorithm, real wasm)", () => {
+describe("loadValidatedFuncs (the D32-17 boot load, real wasm)", () => {
   test("valid rows are kept in id order; later rows see earlier saves", () => {
     const rows = [
       { id: 1, name: "bonus", source: "3" },
@@ -128,17 +127,61 @@ describe("loadValidatedFuncs (the D32-17 boot algorithm, real wasm)", () => {
   test("no rows → empty list", () => {
     expect(loadValidatedFuncs([])).toEqual([]);
   });
+
+  test("a save that type-checks but fails to evaluate is skipped; every roll keeps working", () => {
+    // Before the boot load evaluated saves, `1 / 0` passed it and then failed
+    // every roll with a prelude error naming it.
+    const rows = [
+      { id: 1, name: "bonus", source: "3" },
+      { id: 2, name: "zero", source: EVAL_FAILS },
+      { id: 3, name: "smite", source: "|x| x + bonus" },
+    ];
+    const funcs = loadValidatedFuncs(rows);
+    expect(funcs).toEqual([
+      ["bonus", "3"],
+      ["smite", "|x| x + bonus"],
+    ]);
+    expect(runEngine("d20 + bonus", funcs, SEED).kind).toBe("ok");
+    expect(runEngine("smite(1)", funcs, SEED).kind).toBe("ok");
+  });
+
+  test("a bad later row of a saved name leaves the earlier good one in place", () => {
+    const rows = [
+      { id: 1, name: "bonus", source: "3" },
+      { id: 2, name: "bonus", source: EVAL_FAILS },
+    ];
+    expect(loadValidatedFuncs(rows)).toEqual([["bonus", "3"]]);
+  });
+
+  test("each row is loaded by a run, after the valid rows before it", () => {
+    const calls: { source: string; list: [string, string][]; mode: string }[] = [];
+    const spy: typeof evaluate = (source, list, seed, budget, mode) => {
+      calls.push({ source, list, mode });
+      return evaluate(source, list, seed, budget, mode);
+    };
+    loadValidatedFuncs(
+      [
+        { id: 1, name: "a", source: "1" },
+        { id: 2, name: "b", source: "2" },
+      ],
+      { evaluateFn: spy },
+    );
+    expect(calls).toEqual([
+      { source: "()", list: [["a", "1"]], mode: "run" },
+      {
+        source: "()",
+        list: [
+          ["a", "1"],
+          ["b", "2"],
+        ],
+        mode: "run",
+      },
+    ]);
+  });
 });
 
 /** `save(:adv, || 2d20kh1)` as the engine serializes it (WEAL-2's reported macro). */
 const NULLARY_ADV = "|| kh(pool(2, d20), 1)";
-
-/**
- * A saved source that type-checks but fails to evaluate. The engine never
- * serializes one (a save stores a value it already computed), but a stored
- * row can still hold one, and it is the shape that breaks every roll.
- */
-const EVAL_FAILS = "1 / 0";
 
 /**
  * The real engine, except that the guard's wrapped use `use` reports an
@@ -150,7 +193,7 @@ function internalErrorOn(use: string): typeof evaluate {
     source === `let _ = ${use}; ()`
       ? {
           ok: false,
-          stage: "eval",
+          stage: "internal",
           message: "internal error: boom — the checker should have rejected this",
           span: null,
           preludeName: null,
@@ -159,13 +202,10 @@ function internalErrorOn(use: string): typeof evaluate {
 }
 
 describe("checkNewSave (the save guard, real wasm)", () => {
-  test("a save that fails to evaluate passes the boot check but fails every run", () => {
-    // The blind spot the guard closes: boot validation never evaluates saves.
-    expect(loadValidatedFuncs([{ id: 1, name: "bad", source: EVAL_FAILS }])).toEqual([
-      ["bad", EVAL_FAILS],
-    ]);
+  test("a save that fails to evaluate fails every run it is part of", () => {
+    // What the guard keeps out of the list (and the boot load skips).
     const outcome = runEngine("d6", [["bad", EVAL_FAILS]], SEED);
-    expect(outcome.kind).toBe("error");
+    expect(outcome.kind === "error" && outcome.error.stage).toBe("prelude");
   });
 
   test("such a save is refused at the trivial roll, naming itself", () => {
@@ -291,35 +331,34 @@ describe("checkNewSave (the save guard, real wasm)", () => {
     expect(checkNewSave("bonus", "3", [["kh", "3"]])).toEqual({ ok: true });
   });
 
-  test("a contained engine fault refuses the save (error null) and re-instantiates", () => {
-    let reinstantiated = 0;
-    const check = checkNewSave("bonus", "3", [], {
-      evaluateFn: () => {
-        throw new Error("wasm trap: unreachable");
-      },
-      reinstantiateFn: () => {
-        reinstantiated += 1;
-      },
-    });
+  test("an engine fault on every probe refuses the save at the first use", () => {
+    const trapped = {
+      ok: false,
+      stage: "internal",
+      message: "engine trap: unreachable",
+      span: null,
+      preludeName: null,
+    } as const;
+    const check = checkNewSave("bonus", "3", [], { evaluateFn: () => trapped });
+    // Every guard roll fails with and without the save, so only the uses decide.
     expect(check).toEqual({
       ok: false,
       kind: "use",
       probe: "bonus + 1",
-      error: null,
+      error: trapped,
       shadowsBuiltin: false,
     });
-    expect(reinstantiated).toBeGreaterThan(0);
   });
 });
 
 describe("isInternalError", () => {
-  test("the engine's `internal error:` eval prefix is internal; ordinary errors aren't", () => {
-    // No real input reaches an internal error since the WEAL-1 fix; the prefix
-    // is the engine's contract (`api.rs`), pinned by its own tests.
+  test("stage internal is internal; ordinary errors aren't", () => {
+    // No real input reaches an engine internal error since the WEAL-1 fix; the
+    // stage is the engine's contract (`api.rs`), pinned by its own tests.
     expect(
       isInternalError({
         ok: false,
-        stage: "eval",
+        stage: "internal",
         message: "internal error: boom",
         span: null,
         preludeName: null,

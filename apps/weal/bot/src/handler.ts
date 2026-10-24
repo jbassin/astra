@@ -4,10 +4,13 @@
  * {@link HandlerDeps} so the whole pipeline unit-tests dry (spec 0032 S6).
  *
  * Rolls are evaluated by `@astra/weal-engine` (D32-14): parse failures stay
- * silent (chat noise); other engine errors reply visibly only past the noise
- * gate; a contained panic replies with an engine-fault notice. Persistence
- * writes only for roll-resolving results; plot-only results skip persistence
- * AND the overlay broadcast (D32-16/17). A save persists only after the save
+ * silent (chat noise); player errors (type/eval/fuel/prelude) reply visibly
+ * only past the noise gate; an engine fault (`stage:"internal"`, incl. a wasm
+ * trap the wrapper contained) always gets a short generic reply and an ERROR
+ * log with the detail. Roll history is an archive written after the reply
+ * (ADR 0025): a slow or failed write never delays or breaks a reply. Only
+ * roll-resolving results write history; plot-only results skip it AND the
+ * overlay broadcast (D32-16/17). A save persists only after the save
  * guard ({@link checkNewSave}) dry-runs it against the current saves; a
  * refused save gets a reply and is neither stored nor added to the list.
  */
@@ -37,6 +40,8 @@ import {
   classify,
   dieFooter,
   dieTitle,
+  ENGINE_FAULT_LINE,
+  ENGINE_FAULT_TITLE,
   errorDescription,
   FIELD_LIMIT,
   NUMBER_LINES,
@@ -85,7 +90,7 @@ export interface HandlerDeps {
   send: (msg: OutgoingMessage) => Promise<void>;
   /** Best-effort dice-feed + v1 overlay broadcast (non-fatal on failure). */
   broadcast: (payload: OverlayPayload, playerName: string) => Promise<void>;
-  /** Test seam only: swap the engine call / re-instantiation (panic fixture). */
+  /** Test seam only: swap the engine call (scripted results). */
   engineHooks?: EngineHooks;
 }
 
@@ -97,10 +102,13 @@ const rollsCounter = lazyCounter("astra.weal-bot", "astra.weal.rolls", {
   description: "Dice rolls evaluated, by goodness",
 });
 const errorsCounter = lazyCounter("astra.weal-bot", "weal.v2.errors", {
-  description: "weal v2 engine errors, by stage (incl. panic)",
+  description: "weal v2 engine errors, by stage (incl. internal)",
 });
 const fuelAbortsCounter = lazyCounter("astra.weal-bot", "weal.v2.fuel_aborts", {
   description: "weal v2 fuel-budget aborts",
+});
+const persistFailuresCounter = lazyCounter("astra.weal-bot", "weal.dice.persist_failures", {
+  description: "roll-history writes that failed (the reply already went out)",
 });
 const savesRefusedCounter = lazyCounter("astra.weal-bot", "weal.v2.saves_refused", {
   description: "weal v2 saves the save guard refused, by kind (rolls / use)",
@@ -153,12 +161,8 @@ async function doRoll(
   const outcome = runEngine(text, saves, deps.seed(), deps.engineHooks);
   span.setAttribute("weal.engine_ms", performance.now() - started);
 
-  if (outcome.kind === "fault") {
-    await sendEngineFault(deps);
-    return;
-  }
   if (outcome.kind === "error") {
-    await handleError(text, outcome.error, saves, deps);
+    await handleError(text, outcome.error, saves, profile, deps, span);
     return;
   }
 
@@ -181,7 +185,7 @@ async function handleDie(
   deps: HandlerDeps,
   span: Span,
 ): Promise<void> {
-  await saveDice(deps.store, display.standardDice, profile.playerId, deps.getSeed().blameId);
+  const { blameId } = deps.getSeed();
   const goodness = display.goodness;
   span.setAttribute("weal.goodness", String(goodness));
   rollsCounter.add(1, { goodness: String(goodness) });
@@ -199,6 +203,26 @@ async function handleDie(
     footer: dieFooter(goodness, deps.getSeed().seed, deps.getSeed().blame),
   });
   await deps.broadcast(overlayPayload(profile.playerName, text, display), profile.playerName);
+  // Not awaited: the archive must never hold up the next reply (ADR 0025).
+  void recordHistory(display.standardDice, profile, blameId, deps);
+}
+
+/** Write a roll's dice to the history archive. Never rejects: a failure logs and counts. */
+async function recordHistory(
+  standardDice: readonly [number, number][],
+  profile: Profile,
+  blameId: number,
+  deps: HandlerDeps,
+): Promise<void> {
+  try {
+    await saveDice(deps.store, standardDice, profile.playerId, blameId);
+  } catch (err) {
+    persistFailuresCounter.add(1);
+    log.emit({
+      severityText: "WARN",
+      body: `roll history write failed for ${profile.playerName} (reply already sent): ${String(err)}`,
+    });
+  }
 }
 
 async function sendValue(
@@ -261,11 +285,11 @@ async function refuseSave(
 ): Promise<void> {
   savesRefusedCounter.add(1, { kind: refusal.kind });
   span.setAttribute("weal.save_refused", refusal.kind);
-  const reason =
-    refusal.error === null ? "engine fault" : `${refusal.error.stage}: ${refusal.error.message}`;
-  // WARN, never ERROR: a refused save is handled, and ERROR pages Discord (Class A).
+  const reason = `${refusal.error.stage}: ${refusal.error.message}`;
+  // A refused save is handled, so WARN; but an engine fault is an engine bug,
+  // and ERROR is how an operator hears of one (it pages Discord, Class A).
   log.emit({
-    severityText: "WARN",
+    severityText: refusal.error.stage === "internal" ? "ERROR" : "WARN",
     body: `refused save ${save.name} from ${profile.playerName} (${refusal.kind}, \`${refusal.probe}\`): ${reason}`,
   });
   const { title, contents } = saveRefusal(profile.playerName, save.name, save.source, refusal);
@@ -276,10 +300,16 @@ async function handleError(
   text: string,
   err: WealErr,
   saves: [string, string][],
+  profile: Profile,
   deps: HandlerDeps,
+  span: Span,
 ): Promise<void> {
   if (err.stage === "parse") return; // chat noise — silent, uncounted (D32-14)
   errorsCounter.add(1, { stage: err.stage });
+  if (err.stage === "internal") {
+    await sendEngineFault(text, err, profile, deps, span);
+    return;
+  }
   if (err.stage === "fuel") fuelAbortsCounter.add(1);
   if (!passesNoiseGate(text, deps.savedNames())) return;
   await deps.send({
@@ -290,11 +320,32 @@ async function handleError(
   });
 }
 
-async function sendEngineFault(deps: HandlerDeps): Promise<void> {
+/**
+ * An engine fault: never the player's mistake, so the operator gets the whole
+ * story at ERROR (which pages, Class A) and the player gets a generic line.
+ */
+async function sendEngineFault(
+  text: string,
+  err: WealErr,
+  profile: Profile,
+  deps: HandlerDeps,
+  span: Span,
+): Promise<void> {
+  span.setAttribute("weal.stage", err.stage);
+  log.emit({
+    severityText: "ERROR",
+    body: `weal engine fault (stage ${err.stage}) for ${profile.playerName}: ${err.message} — source: ${text}`,
+    attributes: {
+      "weal.stage": err.stage,
+      "weal.player": profile.playerName,
+      "weal.source": text,
+      ...(err.span === null ? {} : { "weal.span": `${err.span.start}..${err.span.end}` }),
+    },
+  });
   await deps.send({
     host: deps.host("knife"),
-    title: "engine fault",
-    contents: "something broke deep in the dice machinery — i reset it, try that again",
+    title: ENGINE_FAULT_TITLE,
+    contents: ENGINE_FAULT_LINE,
     fields: [],
   });
 }
