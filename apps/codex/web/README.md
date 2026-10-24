@@ -1,16 +1,20 @@
-# codex — a PF2e reference-site: ingest + SSR frontend
+# codex — a PF2e reference site: the SSR frontend
 
 codex is a public-but-noindexed Pathfinder 2e reference site (`codex.iridi.cc`, port 10374).
-The member is now **app + ingest**: an **ingest pipeline** (below) that builds a canonical,
-Zod-typed, license-labeled corpus by combining two independently maintained Pathfinder 2e
-sources — the **foundryvtt/pf2e** compendium packs (structured mechanics, per-doc license
-data) and the **Archives of Nethys** Elasticsearch index (prose, citations, page numbers) —
-plus a **TanStack Start SSR frontend** (`src/routes/`, `src/server/`, `src/domain/render/`)
-that reads the emitted corpus from disk at request time and renders it. P1 (the ingest) was
-deliberately frontend-free — it ends with a validated, deterministic, sharded corpus + a
-transform report on disk. P2 (`thoughts/archive/specs/0029-codex-p2-entity-pages-spec.md`) adds
-the frontend on top, unmodified corpus contract. See
-`thoughts/archive/specs/0029-codex-p1-ingest-spec.md` for the ingest spec.
+This package (`@astra/codex`) is the **TanStack Start SSR frontend** (`src/routes/`,
+`src/server/`, `src/domain/render/`): it reads the current corpus release from disk at
+request time and renders it. Two sibling units make up the rest of codex:
+
+- [`@astra/codex-ingest`](../ingest/README.md) (`apps/codex/ingest`): the ingest pipeline and
+  its CLI. It builds the canonical, Zod-typed, license-labeled corpus from the
+  **foundryvtt/pf2e** compendium packs and the **Archives of Nethys** index, plus assay's
+  homebrew store, indexes it with Pagefind, and publishes releases. It also owns the fixture
+  corpus this package's tests read.
+- [`@astra/codex-corpus`](../../../libs/ts/codex-corpus/README.md): the corpus contract both
+  share (schemas, the reader, the release layout and its servability check).
+
+The specs are `thoughts/archive/specs/0029-codex-p1-ingest-spec.md` (ingest) and
+`thoughts/archive/specs/0029-codex-p2-entity-pages-spec.md` (frontend).
 
 ## Operations
 
@@ -20,7 +24,7 @@ The corpus and its Pagefind index ship as **immutable releases**; nothing edits 
 
 ```
 releases/
-  <id>/corpus/            the corpus tree (layout below)
+  <id>/corpus/            the corpus tree (layout in the ingest README)
   <id>/search/pagefind/   the Pagefind index built from that corpus
   <id>/release.json       id, createdAt, entity count, schemaVersion, source pins
   current -> <id>         relative symlink; the one thing a publish or rollback changes
@@ -35,9 +39,12 @@ refused while the old release keeps serving (for good when it is unservable; aft
 when the failure was an I/O error such as EMFILE), and each request stays pinned to the release
 it started on. No restart is needed after a publish or a rollback.
 
+The `just codex-*` recipes below call the ingest CLI (`pnpm --filter @astra/codex-ingest cli
+release ...`); its README lists every command.
+
 - **Full refresh** (re-fetch both sources, then `codex-build`): `just codex-refresh`. It refuses
-  a dirty `apps/codex/web`, because the `corpus-manifest.json` diff it writes must be reviewable
-  alone. If that diff is timestamp-only, revert it.
+  a dirty `apps/codex/ingest`, because the `corpus-manifest.json` diff it writes must be
+  reviewable alone. If that diff is timestamp-only, revert it.
 - **Transform-only change** (ingest code or the assay homebrew store changed, sources did not):
   `just codex-build`. It skips the re-fetch, which can pull in upstream drift. It transforms and
   indexes into `releases/.staging-*`, validates, renames to `releases/<id>` and swaps `current`.
@@ -47,14 +54,14 @@ it started on. No restart is needed after a publish or a rollback.
   than the current release** (pass `--allow-shrink` when a drop is expected: `just codex-build
   --allow-shrink`). See pruning below. The transform reads code and the homebrew store from the checkout it
   runs in, so run it from a clean checkout at a pushed commit.
-- **Search-only change** (`scripts/build-search.ts`): `just codex-search-index` rebuilds the
-  index over the current corpus (hardlinked) and publishes that as a new release.
+- **Search-only change** (`apps/codex/ingest/src/build-search.ts`): `just codex-search-index`
+  rebuilds the index over the current corpus (hardlinked) and publishes that as a new release.
 - **Roll back:** `just codex-rollback` makes the previous release current; `just
   codex-rollback <id>` picks one. `just codex-releases` lists them, `*` marking `current`. The
   release a rollback leaves is marked rejected (`releases/rejected/<id>`): a rebuild that hashes
   to it, or a rollback to it, needs `--force`, and the default rollback target skips it.
 - **Pruning** keeps the 3 newest releases, the current one, and the one the running codex
-  serves, which `release.ts` reads from its `/healthz` after the switch. When codex does not
+  serves, which the release builder reads from its `/healthz` after the switch. When codex does not
   answer, nothing is pruned.
 - **The release lock** (`releases/.lock/owner.json`) records the holder's pid and start time. A
   lock whose holder is gone is broken, and leftover `.staging-*` dirs from before it are removed.
@@ -75,66 +82,18 @@ it started on. No restart is needed after a publish or a rollback.
 
 ## Traps
 
-**Corpus and ingest**
-- Run the real transform before trusting any count in a spec, test or golden. Counts derived
-  from a proxy (grepping one field, raw AoN doc counts) have been wrong in both directions.
-- Foundry packs have no `system.slug`; the pack file basename is the slug. AoN URLs are not
-  unique (tiered items, class/class-feature twins), so join by `pickCanonical`, never by URL.
-- A plain crossref (`{category}/{slug}`) carries no provenance. Repoint links at
-  link-resolution time (url → aonId → final id), not by patching strings afterwards.
-- Any pass that drops entities needs its own crossref/embed reconciliation afterwards. Emit-time
-  Zod checks shape only, not referential integrity.
-- Embed overrides apply only in `reconcileInline` (post-drop); applied earlier they are a silent
-  no-op. Ids from the parse-time repoint seam are pre-collision; use `aonIdToFinalId` for any
-  url-keyed join.
-- The crossref/embed patcher must walk every `BlockNode[]` field, including the hazard
-  `stats` fields (`disable`, `routine`, `reset`).
-- Class grants resolve by the corpus's masthead "Class" label, then `legacyOf`, then level.
-  Twelve classes share one Foundry item uuid, so a uuid map links the wrong class.
-- Drop predicates must be scoped with `proseOnly === true`; Foundry adventure actions also
-  start with "(".
-- Facets exist only on Foundry-merged entities. Trait casing differs by edition (fold it);
-  `usage`/`itemCategory` mean different things per category (never share facet defs by key
-  name); `facets.size` is the Foundry token default, not an ancestry's size.
-- `statsText` is gated to creature/hazard; on other categories it indexes junk like "HP 8".
-- Never write raw control bytes (NUL, SOH) in template literals: git then treats the source as
-  binary and the Read tool hides them. Use `\u0000` escapes. Sweep with
-  `perl -ne 'print "$ARGV\n" if /[\x00-\x08\x0b\x0c\x0e-\x1f]/' <files>`.
-
-**Homebrew (assay store) ingest**
-- Homebrew names can collide with legacy AoN-only spells. Check a new name against the full
-  emitted id space, not just the Foundry packs.
-- `CodexEntitySchema` and `parseManifest` are `.strict()`: keep homebrew provenance in
-  `report.json` and the `homebrewIds` parameter, never as an entity field or manifest key.
-- Homebrew assembly must reuse the Foundry `UuidIndex`, or every `@UUID` ref in the store
-  silently becomes a broken ref.
-- Store basenames are the ids. Basenames hyphenate apostrophes where `sluggify` strips them, so a
-  fixed set of `slugMismatch` reports is expected; a change in that count is a real problem.
-- Trait source docs carry `{name, description}` only. A stray `level` adds a Lvl column to every
-  `/trait` row.
-- A book with no AoN presence gets "License unknown" on `/sources`; set it in
-  `BOOK_LICENSE_OVERRIDE` (`sourcesIndexBuild.ts`).
-
 **Fixture and tests**
-- Every test and both Chromium guards read the fixture corpus `fixtures/entities/`:
-  `vitest.setup.ts` and the guard scripts default `CODEX_CORPUS_ROOT` to it. The real-corpus
-  checks are the opt-in `just codex-real-corpus` (`src/realCorpus.test.ts`, gated on
-  `CODEX_REAL_CORPUS=1`). The dev server has no pin and reads the real corpus at
-  `codex.data-path`, from any checkout.
-- `fixtures/entities/` is generated and gitignored. `scripts/fixtureCorpus.ts` builds it in
-  about half a second from the committed real picks (`fixtures/picks/`), a `runTransform` run
-  over `fixtures/raw/`, and patches and synthetic rows defined in code (each names the test
-  that needs it). `ensureFixtureCorpus()` brings it up to date; vitest's global setup
-  (`vitest.globalSetup.ts`), both guard scripts and `regen-goldens.ts` call it, and
-  `pnpm --filter @astra/codex fixture` runs it by hand. To change the fixture, change an input,
-  never the output. `scripts/fixtureCorpus.test.ts` builds it twice and compares bytes.
-- Synthetic rows and patches stay out of `rules-tree.json` and `sources-index.json` (those
-  describe the real books). A new entity shape needs a raw pick, a pick or a synthetic row.
-- `scripts/extract-fixture.ts` (host-only) re-picks `fixtures/raw/` and `fixtures/picks/` from
-  the real snapshots and corpus, then checks the coverage matrix over a fresh fixture build.
-  A re-extract drops the one hand-made raw doc, `class-feature-9001` in
-  `fixtures/raw/aon/class-feature.json` (witch's Weapon Specialization, the D29-132 case in
-  `transform.test.ts`): restore that hit from git afterwards.
+- Every test and both Chromium guards read the fixture corpus, which the ingest package
+  generates at `apps/codex/ingest/fixtures/entities/` (`fixtureCorpusRoot()` in
+  `src/server/corpusFs.ts`): `vitest.setup.ts` and the guard scripts default
+  `CODEX_CORPUS_ROOT` to it. The real-corpus checks are the opt-in `just codex-real-corpus`
+  (`src/realCorpus.test.ts`, gated on `CODEX_REAL_CORPUS=1`). The dev server has no pin and
+  reads the real corpus at `codex.data-path`, from any checkout.
+- The fixture corpus is generated and gitignored. `ensureFixtureCorpus()`
+  (`@astra/codex-ingest/fixture`, a dev dependency) brings it up to date; vitest's global
+  setup (`vitest.globalSetup.ts`), both guard scripts and `regen-goldens.ts` call it, and
+  `pnpm --filter @astra/codex-ingest cli fixture` runs it by hand. To change the fixture,
+  change an input in the ingest package, never the output; its README describes the inputs.
 - `scripts/regen-goldens.ts` runs under `nodeTsResolve.mjs`, which resolves only relative
   specifiers. An `@/*` import in anything EntityPage reaches breaks golden regen while tsc,
   vite and vitest pass.
@@ -142,8 +101,8 @@ it started on. No restart is needed after a publish or a rollback.
   `HTMLDialogElement.showModal` (tests polyfill it).
 
 **Search index**
-- The Pagefind build is host-only (~3.8 GB RSS). It runs inside `just codex-build` and `just
-  codex-search-index`; never in CI or Docker.
+- The Pagefind build (the ingest package) is host-only (~3.8 GB RSS). It runs inside `just
+  codex-build` and `just codex-search-index`; never in CI or Docker.
 - `/pagefind/<path>` answers 302 to `/pagefind/r/<id>/<path>` (`no-store`), where `<id>` is
   the release this server serves (not always `current`), and release-keyed files are served
   `immutable` (`src/server/pagefindRoute.ts`). The client imports
@@ -263,7 +222,7 @@ P3 S5 full-corpus Playwright pass. Fixed by asking the SAME question `renderEmbe
   generation, or the fixture at the config path; the server entry `src/server.ts` runs the check
   when the bundle loads, so the process exits instead of serving. Only the Vite dev server falls
   back to `fixtures/entities/` (with a WARN) when the config corpus is missing; it fails if that
-  fixture was never generated (`pnpm --filter @astra/codex fixture`). `corpusFns.ts` wraps the pure resolvers (`entityPageData`/`directoryData`/
+  fixture was never generated (`pnpm --filter @astra/codex-ingest cli fixture`). `corpusFns.ts` wraps the pure resolvers (`entityPageData`/`directoryData`/
   `listingData`) as `createServerFn`s the route loaders call.
 - **`src/domain/render/`** — the total node renderer, statblock/facet headers, edition
   banners, trait pills, and the listing/directory presentation components.
@@ -328,7 +287,7 @@ rows already carry everything needed).
 
 ## Search (P3 S2/S4, D29-34/36)
 
-`apps/codex/web/scripts/build-search.ts` builds a [Pagefind](https://pagefind.app) index offline from
+`apps/codex/ingest/src/build-search.ts` builds a [Pagefind](https://pagefind.app) index offline from
 the corpus and writes it to `data/search/pagefind/` (sibling of `data/corpus/`, gitignored). It
 walks every entity via the same `createCorpusReader` fs layer the frontend reads through, extracts
 plain text (`collectText`/`statsText`, `@astra/codex-corpus`) from `body` + `loreBody` +
@@ -390,7 +349,7 @@ visit that already warmed one surface doesn't re-fetch the runtime) and the same
 > correctly — that's the acceptance-gate query class this repo tests against; do not re-attempt
 > weight tuning without a new decision.
 
-CI's own coverage is hermetic: `scripts/build-search.test.ts` runs the exact same
+CI's own coverage is hermetic: `apps/codex/ingest/src/build-search.test.ts` runs the exact same
 `buildSearchIndex()` against the generated fixture corpus into a fresh `os.tmpdir()` dir (never
 `fixtures/` or `data/`) — `pagefind` is a plain npm devDependency, so this needs zero network and
 none of the host-only memory profile above (that only shows up at real-corpus scale).
@@ -413,7 +372,7 @@ subtree, 780 targets are claimed by 2–4 docs at once (always an ancestor/desce
 986 `next`/`prev` pairs are asymmetric, and 106 hops cross book boundaries entirely. Walking
 them naively would resurrect all of that noise into the UI. Instead:
 
-- **Parent resolution** (`src/ingest/rulesTree.ts`): a node's parent = the doc in the SAME
+- **Parent resolution** (`apps/codex/ingest/src/rulesTree.ts`): a node's parent = the doc in the SAME
   book whose `name` matches the parent breadcrumb element AND whose own breadcrumb path is
   the child's path minus its last element (the path-prefix rule — a single index lookup,
   since every doc's `breadcrumbs` already IS its full ancestor chain). Where that fails, a
@@ -466,7 +425,7 @@ Every breadcrumb element is trimmed, stripped of embedded `\r`/`\n`/`\t`, and wh
 collapsed BEFORE any grouping (the real corpus has 192 docs — all Gamemastery Guide
 "Chapter 2: Tools" descendants — carrying a literal `\r\n` inside the raw string; left
 unnormalized, this would fork one tree into two). Book names go through the same mechanical
-normalization (`src/ingest/bookNormalize.ts`): trim/CRLF/whitespace-collapse, case-fold
+normalization (`apps/codex/ingest/src/bookNormalize.ts`): trim/CRLF/whitespace-collapse, case-fold
 dedup (a no-op today, 0 collisions, kept for future-proofing), and a conservative prefix
 rule (`"Pathfinder " + <existing AoN book name>` merges into that name — 23 of 519 raw
 strings, 408 entities). This is **mechanical only, no hand-curated alias map** — residual
@@ -494,7 +453,7 @@ attachment and aren't depth-limited by this rule).
 ### The host-only search-index rebuild note — unchanged by P4
 
 `attachedSidebars` and `breadcrumbs`/the tree/sources artifacts are **not** inputs to
-`scripts/build-search.ts` (it only ever reads `body`/`loreBody`/`stats`/`facets` text off
+`apps/codex/ingest/src/build-search.ts` (it only ever reads `body`/`loreBody`/`stats`/`facets` text off
 each entity) — a P4-only corpus refresh needs no Pagefind rebuild. The host-only,
 ~3.8 GB-RSS `just codex-search-index` posture from P3 is untouched.
 
@@ -669,222 +628,12 @@ TypeScript (`vp run -r typecheck`, `oxlint --type-aware --deny-warnings`, `forma
 (46,192) and a `find`-based recount reconciled exact post-restore; codex's own suite re-run
 once more against the real corpus, still 73 files/1,435 tests green.
 
-## Pipeline shape
+## The ingest pipeline
 
-```
-snapshots/foundry/<tag>/    ─┐
-                              ├─► parse ─► join ─► emit ─► corpus/ + report
-snapshots/aon/<date>/       ─┘
-```
-
-Two ONE-SHOT snapshots (`data/snapshots/`, gitignored — fetched once, never queried again at
-transform/build time), parsed by two independent grammars, joined into one canonical entity
-per real game element, and written as a deterministic corpus tree.
-
-### Module map
-
-| Stage | Module(s) | What it does |
-| --- | --- | --- |
-| Fetch | `scripts/fetch-foundry.ts`, `scripts/fetch-aon.ts` | Snapshot the two sources to `data/snapshots/`; update the committed `corpus-manifest.json` pin. |
-| Parse (Foundry) | `src/ingest/{enrichers,foundryHtml,journals,foundryEntities,uuidResolve}.ts` | `@UUID`/`@Check`/`@Damage`/`@Localize`/`@Template`/`@Embed` + inline-roll grammar → `CodexNode`s; JournalEntry `pages[]` assembly; per-doc license/edition. |
-| Parse (AoN) | `src/ingest/{aonFacets,aonMarkup,aonLinkTable}.ts` | Facet extraction + the `markdown` field's custom-tag grammar → `CodexNode`s; the AoN-URL→codex-id link table. |
-| Join | `src/ingest/join.ts` | Slug match → qualifier-reorder normalization → `join-aliases.json`; field ownership (Foundry wins mechanics, AoN wins prose/citations); identity finalization (`@legacy`/`-2` suffixing); crossref/embed patching. |
-| Emit | `src/ingest/emit.ts` | Deterministic corpus writer — sorted keys, sorted file order, zod-validates every entity. |
-| Report | `src/ingest/report.ts` | Pure builders for `report.json`/`report.md` — the P1 acceptance artifact. |
-| Orchestrate | `scripts/transform.ts` | `runTransform()` wires all of the above; CLI wrapper for the real host run. |
-
-The shared Zod contracts (`CodexEntity`, `CodexNode`, `CorpusManifest`) live in the
-`@astra/codex-corpus` package (`libs/ts/codex-corpus`), which the site and the ingest both import.
-
-## Running it
-
-```bash
-pnpm --filter @astra/codex fetch:foundry   # sparse-clones the pinned tag
-pnpm --filter @astra/codex fetch:aon       # snapshots the AoN ES index (~259 MB, ≤4 req/s)
-pnpm --filter @astra/codex transform --out <dir>   # parse -> join -> emit -> report
-
-# or fetch, transform, index and publish a release in one step:
-just codex-refresh
-```
-
-The transform and the indexer take explicit output dirs (`--out`; `build-search.ts --corpus
-<dir> --out <dir>`) and never write a served release; `just codex-build`
-(`scripts/release.ts build`) runs both into a staging dir and publishes it.
-
-`just codex-refresh` **refuses to run if `git status --porcelain -- apps/codex/web` is
-non-empty** — a refresh rewrites the committed `corpus-manifest.json` pin, and that diff
-must be reviewable on its own (the linguist-commit-timer lesson: never let a generated-file
-change ride in on top of unrelated in-progress edits). Commit or stash first.
-
-A real run takes well under a minute end to end (~15s for the transform stage alone) and
-produces roughly 46,000 entities / ~625 MB of corpus (gitignored — `data/` never leaves the
-host; see the corpus layout below).
-
-## Corpus layout (`releases/<id>/corpus/`)
-
-```
-corpus/
-  <category>/
-    <slug>.json          one file per entity (the P2 lazy-load unit)
-    <slug>@legacy.json    the legacy half of a shared-slug remaster pair (D29-1)
-    _index.json          slim facet rows for the whole category (id/name/level/traits/
-                          rarity/source/edition/superseded + a per-category-allowlisted
-                          `facets` subset, D29-33c — NO body), sorted by id, COMPACT
-                          JSON (no indentation, D29-33d — ~31% smaller; still key-sorted
-                          + trailing LF, same determinism guarantee as every other
-                          corpus file). The leading underscore is load-bearing (D29-21):
-                          sluggify() can never emit one, so this file can never clobber
-                          a real entity slug (the old plain index.json ate the two real
-                          `index`-slug entities, ancestry/index + archetype/index)
-  manifest.json           schemaVersion + the D29-4 source pins + final per-category
-                          counts + total size (NOT the same file as the committed
-                          apps/codex/web/corpus-manifest.json one level up — that one pins
-                          what to FETCH; this one summarizes what got EMITTED).
-                          totalEntityCount reconciles EXACTLY against a find|wc over
-                          the entity files (D29-21)
-  report.json / report.md the transform report (see below)
-```
-
-### schemaVersion 2 (P1.6, D29-19/-20/-21)
-
-- **npc-only creature import (D29-19):** `type: "character"` Actors (iconics pregens,
-  paizo-pregens, Kingmaker companions — 150 docs) are excluded before assembly; their
-  AC/HP/saves are runtime-derived by the pf2e system, not statable from source. The
-  ~16 AoN-indexed pregen twins still ship as AoN-only pages (D29-14(a)). Report field:
-  `excludedActorsCount`.
-- **`stats` (D29-20):** `creature`/`hazard` entities carry a typed, discriminated
-  statblock projection — CreatureStats (speeds/abilityMods/senses/languages/
-  immunities/resistances/weaknesses/skills) or HazardStats (hardness/stealth/
-  isComplex + disable/routine/reset as parsed `BlockNode[]`). `EmbeddedItem` gains
-  `attackBonus`/`damage[]` on `melee` strikes and `dc`/`attack`/`tradition` on
-  `spellcastingEntry` items. Extraction is deterministic field mapping; absent source
-  fields are omitted. The report carries per-field extraction coverage tables.
-- **P7 additions (D29-73/D29-74, schemaVersion 2→3):** `melee` strikes additionally
-  carry an optional `range` display string baked from `system.range.{increment,max}`
-  ("range 10 feet" max-only / "range increment 120 feet"; increment wins if both —
-  0 real docs carry both). And `type:"lore"` embedded items' `system.mod.value`
-  merges into the creature's `stats.skills` as `sluggify(name) → mod`
-  (`mergeLoreSkills` — core-skill collisions guarded + reported as
-  `loreSkillCoreCollision` (0 real), same-slug duplicates last-write-wins +
-  reported as `loreSkillDuplicateSlug` (3 real)); hazards have no `skills` field —
-  a future hazard lore item needs deliberate schema work (guard comment at
-  `extractStats`).
-- One upstream pack typo (`pfs-season-6-bestiary/.../historys-repetition-7-8`, an
-  unterminated `@Check[` in its hazard `disable` field) is handled fail-soft: the one
-  broken field is omitted and counted as `hazardStatsHtmlFailed` — entity `body`
-  parsing keeps its hard-fail posture.
-
-Every file is written through one of two canonical serializers, both key-sorted
-(codepoint order, recursively) with a trailing LF: `canonicalJson` (2-space indent) for
-every entity file + `manifest.json` + the reports, and `canonicalJsonCompact` (no
-indentation, D29-33d) for `_index.json` only. Two full transform runs over the same
-snapshots produce a **byte-identical** `corpus/` tree —
-verify with `diff -r` after copying a run aside. `emit.ts` wipes its output dir (a fresh
-staging dir on the host) before every write, so a stale file from a category/entity that no
-longer exists can't survive a re-transform.
-
-## The transform report
-
-`report.md`/`report.json` are the P1 acceptance artifact — read `report.md` first. It
-covers, per category: Foundry-in/AoN-in/final-out counts, join rate (exact / qualifier-
-normalized / alias), unjoined residues (capped lists); slug collisions (legacy-pair vs.
-residual); legacy/remaster pairing + the Foundry `remaster-changes` cross-check;
-crossref/embed patch stats; license/edition breakdowns; and non-fatal report-class
-counts (broken refs, mismatches, dropped images, ...). **Join rates are a judgment
-call, not a threshold** — a category sitting under 50% joined with both sources present
-gets a `⚠ STOP-condition` callout at the top of the report; per spec §6, that's a signal
-to re-decide the join key with a human before P2, not something this pipeline
-auto-corrects.
-
-## Adding a join alias
-
-`join-aliases.json` (committed, hand-curated) is reserved for **true one-offs** — a
-name divergence between the two corpora for the exact same real-world game element
-(a typo, a pluralization difference) that neither exact-slug matching nor the
-qualifier-reorder normalization catches. It is NOT for systematic patterns (those need
-a normalization rule in `join.ts` instead — see `qualifierCandidates`).
-
-To add one:
-
-1. Find a real unjoined pair in the report's per-category `unjoinedForeign`/`unjoinedAon`
-   lists.
-2. Verify it's genuinely the same thing (same level, same source book) before adding it —
-   never guess.
-3. Append `{ "foundryId": "<category>/<slug>", "aonId": "<the AoN _id>", "note": "..." }`
-   to `join-aliases.json`, documenting the divergence in the note.
-4. Re-run the transform; the entry should show up in `report.md`'s "Aliases applied" table.
-
-## What a hard-fail means
-
-Every parser here (`enrichers.ts`, `foundryHtml.ts`, `aonMarkup.ts`) is hand-rolled and
-**hard-fails on an unrecognized grammar form** — an unmapped `@Tag[...]` enricher, an
-unmapped HTML tag, an unmapped AoN custom tag — rather than silently passing it through
-or stripping it. This is the drift tripwire: a lenient parser would corrupt the corpus
-quietly; a hard fail turns corpus drift (a Foundry/AoN refresh that introduces a genuinely
-new markup form) into a loud, specific, fixable worklist entry instead. `emit.ts`'s
-`CodexEntitySchema.parse` on every entity is the same posture applied one level up — a
-schema violation (a field that slipped through parsing in a shape the corpus contract
-doesn't allow) aborts the whole transform rather than emitting a malformed entity.
-`categoryMap.ts`'s `(pack, docType)` map is the same idea again, one level up from that:
-an unrecognized pack/type pair is a hard fail, not a silent default category.
-
-If a real transform run ever hard-fails, the error names the exact document (path or
-entity id) and the offending text — that's the intended workflow: fix the parser (or, for
-a `CodexEntitySchema` violation specifically, the raw-field extraction feeding it — see
-`src/ingest/foundryEntities.ts`'s `present()` helper for the `null`-vs-`undefined`
-landmines the real corpus has already turned up), re-run, confirm zero failures.
-
-## The fixture (`fixtures/`: committed inputs, generated corpus)
-
-CI needs the transform and every test to run with **zero network and zero `data/` reads**.
-`fixtures/` holds a small (~1.8 MB) committed set of inputs taken from the real data, and a
-fixture corpus generated from them:
-
-```
-fixtures/
-  raw/
-    foundry/    a real-shaped mini Foundry snapshot (packs/pf2e/<pack>/..., static/lang/,
-                system.pf2e.json) — ~30 hand-picked real docs, enough to reproduce the
-                Heal legacy/remaster pair, Magic Missile -> Force Barrage, the Adamantine
-                Dragon qualifier-reorder + 1:N variant, the Camouflage Coat alias, and the
-                Anadi journal-page merge from scratch when re-parsed
-    aon/        the matching real AoN doc hits (spell/creature/ancestry/feat), same
-                {category, hits:[...]} shape the real fetcher produces
-    homebrew*/  the homebrew mini store (inline docs in extract-fixture.ts)
-  join-aliases.json   trimmed to the one alias entry this fixture's raw docs exercise
-  picks/        111 canonical-form-ONLY entities (no raw source) copied verbatim from a real
-                emitted corpus — one representative per codex category (the smallest
-                entity in that category) plus whatever else is needed to cover every
-                CodexNode kind at least once (`blockquote` is allowlisted as
-                corpus-extinct post-D29-19 — the only blockquotes lived in the excluded
-                pregen docs — and the extractor re-proves that extinction on every run)
-  entities/     GENERATED, gitignored: the fixture corpus (235 entities) that tests, guards
-                and goldens read
-```
-
-`scripts/fixtureCorpus.ts` generates `entities/` from three sources: the picks; 32 entities
-(class stats, doctrine/lesson/patron subclasses) from a `runTransform` run over `raw/`, prose
-trimmed to a stub; and patches and synthetic rows defined in code (the 90 `ritual/virt-*`
-rows, the basic-lesson collision pair, and test-only additions to `class/witch` and
-`class-feature/reactive-strike`), each naming the test that needs it. It derives the D29-21
-read surface the server expects: a per-category `_index.json`, `manifest.json`,
-`rules-tree.json` and `sources-index.json`. The output is deterministic; nothing edits it by
-hand.
-
-`scripts/extract-fixture.ts` refreshes `raw/` and `picks/` from a real emitted corpus (run
-`pnpm --filter @astra/codex transform` first; host-only, rare). It then builds the fixture
-corpus into a temp dir and **asserts the full coverage matrix** over it — every category,
-every `CodexNode` kind, the legacy pair, the alias join, the qualifier-reorder + variantOf
-pair, a journal-merged entity, a residual `-2` collision, a Foundry-only / AoN-only entity,
-and the class-stats cases. It fails loudly (listing exactly what's missing) rather than
-silently shipping a gap. The 2 MB budget covers the committed inputs.
-
-`scripts/transform.test.ts` is the CI-hermetic pipeline test: it calls the exact same
-`runTransform()` the real CLI uses, twice, over `fixtures/raw/`, into two fresh temp
-dirs, and asserts zero hard failures, byte-identical output between the two runs, 100%
-Zod-valid entities, the `entities/` coverage set still parsing, and a couple of content
-spot-checks (the Heal pair's cross-links, Magic Missile's license + pairing).
-`scripts/fixtureCorpus.test.ts` does the same for the fixture generator.
+The pipeline that builds the corpus (fetch, parse, join, emit, the transform report, the
+fixture generator, the Pagefind index and the release builder) is its own package,
+[`@astra/codex-ingest`](../ingest/README.md). Its README holds the pipeline shape, the
+corpus layout, the transform report, join aliases, hard fails and the fixture.
 
 ## Deploy (P5, D29-53..57)
 
@@ -1173,7 +922,7 @@ routes · **S3 `93fa2e2`** render · **S4** this sweep.
   entry, defenses, trained skills, spellcasting flag, the five `featLevels` cadence arrays
   verbatim, no assumed shape). `grantedFeatures`/`subclassOptions` can't be built at extract
   (subclass docs don't exist yet; droppedness is unknowable) — a NEW `augmentClassStats` pass
-  (`src/ingest/augmentClassStats.ts`, mirrors the `drop.ts`/`sidebarAttach.ts` post-drop
+  (`apps/codex/ingest/src/augmentClassStats.ts`, mirrors the `drop.ts`/`sidebarAttach.ts` post-drop
   precedent) runs over the FINAL kept entity set: `grantedFeatures` uuid-resolves each class's
   raw `system.items` manifest through the EXISTING `uuidResolve` seam, nulling `targetId` when
   the resolved id isn't in the kept set (520 grants, 503 resolve / 17 null — this nulling IS the
@@ -1231,7 +980,7 @@ routes · **S3 `93fa2e2`** render · **S4** this sweep.
   `class/` docs render the EXISTING generic `EntityRenderPane` inside the same `ClassBrowse`
   shell — no dead ends. `loaderDeps` on both routes (`subclass`+`superseded` on `$slug`,
   `superseded` on `index`) is the codified P4.5 lesson; `routeTree.gen.ts` regen rode S2.
-- **No-reindex deploy note (D29-116).** `stats` is never read by `scripts/build-search.ts` for
+- **No-reindex deploy note (D29-116).** `stats` is never read by `apps/codex/ingest/src/build-search.ts` for
   `class` (its category-gated `statsText` call is creature/hazard only) and `toIndexRow` excludes
   `stats` from `_index.json` entirely — a class doc's search record and its `_index.json` row are
   byte-identical before/after the augment pass, proven directly (not just re-read from the

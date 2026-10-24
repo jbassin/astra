@@ -164,7 +164,7 @@ export function filterTreeByQuery(nodes: readonly TreeNode[], query: string): Tr
  * P11 S2 (D29-108b) — the `/rules` book display order: the four remaster
  * core books first, in this fixed reading order, then every other book
  * alphabetical by its own full title. `books.sort` at ingest
- * (`src/ingest/rulesTree.ts`) already orders remaster-edition books before
+ * (`apps/codex/ingest/src/rulesTree.ts`) already orders remaster-edition books before
  * legacy ones — this is a RENDER-lane re-sort on top of that (no ingest/
  * corpus-regen ripple; `RulesTree.tsx` applies it to whatever `books` array
  * its route loader hands it), hardcoding ONLY the four core names per the

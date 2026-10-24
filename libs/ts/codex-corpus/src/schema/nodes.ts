@@ -42,7 +42,7 @@ import { z } from "zod";
  *     flattening — see `aonMarkup.ts`'s own file header for the full candidacy
  *     rule. A single-cell or nested-wrapper row still flattens exactly as before.
  *
- * S2 widenings (`apps/codex/web/src/ingest/enrichers.ts`, verified against the real
+ * S2 widenings (`apps/codex/ingest/src/enrichers.ts`, verified against the real
  * Foundry snapshot — see the codex-0029 memory for the full census):
  *   - `check`/`template`/`damage` gained an optional `label` — the enricher's
  *     trailing `{label}` suffix (a Foundry chat-display override, distinct from any

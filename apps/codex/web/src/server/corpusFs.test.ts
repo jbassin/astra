@@ -12,6 +12,7 @@ import { join } from "node:path";
 
 import { CORPUS_SCHEMA_VERSION } from "@astra/codex-corpus";
 import { CorpusNotFoundError, createCorpusReader } from "@astra/codex-corpus/reader";
+import { FIXTURE_CORPUS_DIR } from "@astra/codex-ingest/fixture";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -61,6 +62,12 @@ function writeRelease(dataPath: string, id: string, header: Record<string, unkno
 // against `fixtures/entities/` — no config/mocking involved. Every traversal-guard
 // branch gets its own case here (the guard IS the auth story for the
 // HTTP-reachable serverFn endpoints).
+describe("fixtureCorpusRoot", () => {
+  it("is the directory the ingest package generates the fixture into", () => {
+    expect(fixtureCorpusRoot()).toBe(FIXTURE_CORPUS_DIR);
+  });
+});
+
 describe("createCorpusReader (D29-23)", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
 

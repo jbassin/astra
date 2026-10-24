@@ -143,7 +143,7 @@ export function firstParagraphSummary(body: readonly CodexNode[], maxLen = 200):
 
 // ---------------------------------------------------------------------------
 // S2 (D29-34, adversarial N9): full-document plain-text extraction for the
-// Pagefind index build (`scripts/build-search.ts`) — no `collectText`/
+// Pagefind index build (`apps/codex/ingest/src/build-search.ts`) — no `collectText`/
 // `statsText` symbol existed before this slice.
 // ---------------------------------------------------------------------------
 
@@ -182,7 +182,7 @@ const ABILITY_ORDER = ["str", "dex", "con", "int", "wis", "cha"] as const;
  * only. NOT safe to call unconditionally across categories: since P3 S1's
  * gap extractors, `hp`/`size` (ancestry), `hp` (class), and `hp`/`ac`/
  * `fortitudeSave`/`size` (vehicle, warfare-army) appear on non-statblock
- * categories too — the caller (`scripts/build-search.ts`) gates on
+ * categories too — the caller (`apps/codex/ingest/src/build-search.ts`) gates on
  * `category === "creature" || "hazard"` per D29-34's own scoping.
  */
 export function statsText(facets: Facets, stats: Stats | undefined): string {

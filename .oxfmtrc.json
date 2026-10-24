@@ -24,7 +24,7 @@
     "**/public/**",
     "**/*.sdPlugin/**",
     "**/codex/web/data/**",
-    "**/codex/web/fixtures/**",
+    "**/codex/ingest/fixtures/**",
     "**/assay/py/books/**",
     "**/assay/py/vendor/**",
     "**/assay/py/homebrew/**",

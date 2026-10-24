@@ -222,7 +222,7 @@ Details: [`apps/codex/web/README.md`](../apps/codex/web/README.md#operations).
 Each build publishes an immutable release under `<codex.data-path>/releases/` and swaps the
 `current` symlink; the running codex follows on its next request, with no restart.
 
-1. Full refresh from upstream sources: `just codex-refresh` (needs a clean `apps/codex/web`; it
+1. Full refresh from upstream sources: `just codex-refresh` (needs a clean `apps/codex/ingest`; it
    fetches, then runs `codex-build`). Revert a timestamp-only `corpus-manifest.json` diff.
 2. Transform only (ingest code or the assay store changed): `just codex-build`. Search code only:
    `just codex-search-index`. A build with fewer entities than the current release is refused;

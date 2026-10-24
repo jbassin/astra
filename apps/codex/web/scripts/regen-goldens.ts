@@ -9,8 +9,7 @@
  * naming) — `createElement` calls instead.
  *
  * Run via:
- *   pnpm --filter @astra/codex exec node \
- *     --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/regen-goldens.ts
+ *   pnpm --filter @astra/codex regen-goldens
  *
  * Hand-check the 7 files after any intentional renderer change (D29-29's
  * "vs hand-checked output" gate) before committing the regenerated goldens.
@@ -19,6 +18,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import type { CodexEntity } from "@astra/codex-corpus";
+import { ensureFixtureCorpus } from "@astra/codex-ingest/fixture";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
@@ -26,7 +26,6 @@ import { EntityPage } from "../src/domain/render/entityPage";
 import { loadFixtureRenderEnv, requireEntity } from "../src/domain/render/fixtureLoader";
 import { createHeadingIdAssigner } from "../src/domain/render/headingIds";
 import type { RenderCtx } from "../src/domain/render/nodes";
-import { ensureFixtureCorpus } from "./fixtureCorpus";
 
 const GOLDENS_ROOT = join(import.meta.dirname, "..", "goldens");
 

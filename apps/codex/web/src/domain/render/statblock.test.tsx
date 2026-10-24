@@ -5,10 +5,11 @@ import { CodexEntitySchema, type EmbeddedItem } from "@astra/codex-corpus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
+import { fixtureCorpusRoot } from "../../server/corpusFs";
 import { noEmbeds, rootRenderCtx } from "./nodes";
 import { CreatureStatblock, EmbeddedItemSections, HazardStatblock } from "./statblock";
 
-const FIXTURE_ROOT = join(import.meta.dirname, "../../../fixtures/entities");
+const FIXTURE_ROOT = fixtureCorpusRoot();
 
 function loadEntity(relPath: string) {
   return CodexEntitySchema.parse(JSON.parse(readFileSync(join(FIXTURE_ROOT, relPath), "utf8")));
