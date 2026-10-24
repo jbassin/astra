@@ -55,32 +55,6 @@ target/
 .DS_Store
 apps/akasha/py/migrate/convert-report.json
 
-# The pipeline's published datasets live in the astra-data repo (github jbassin/astra-data,
-# live clone = config.kdl data.content-root), committed by the bots, not here (0037 Phase 1
-# item 2). Ignore their old in-tree paths so a stale working copy can't be re-added. The
-# checked-in stand-in for tests, CI and dev builds is fixtures/astra-data/. The rules this
-# file applied inside them (e.g. linguist/data/*.candidates.json) moved to astra-data's own
-# .gitignore (seed: deploy/astra-data/.gitignore).
-/apps/linguist/py/transcripts/
-/apps/linguist/py/data/
-/apps/linguist/py/timeline/
-/apps/mouthpiece/py/snapshot/
-/apps/akasha/py/content/
-/apps/akasha/py/snapshot/
-/apps/heartwood/py/agent-runs.jsonl
-/ontology/ontology-entity/entity.kdl
-
-# The old in-checkout locations of runtime data (scribe recordings and output, the codex
-# corpus, linguist script state, the mouthpiece episodes). That data now lives under the
-# data root (config.kdl data.root, 0037 item 2c); these stay ignored so a checkout that
-# still holds a leftover copy never stages it.
-apps/scribe/py/incoming/
-apps/scribe/py/data/
-apps/scribe/py/tmp/
-apps/codex/web/data/
-apps/linguist/py/script/
-apps/mouthpiece/py/episodes/
-
 # Book references — keep the .tex/.md sources, not scratch-rendered PDFs
 # (re-exportable; vol1 was Homebrewery, vol2 is `uv run assay export-book`'s
 # tectonic compile). vol2's OWN compiled PDF is the committed book artifact

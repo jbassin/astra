@@ -42,7 +42,7 @@ step. How to start a new frontend from these pieces is in `apps/strider/web/READ
 - **Never hand-roll static file serving.** A bare `node:fs` read sends no content type, and
   Chromium then refuses module scripts. Use `serveFile`.
 - **The build stage needs `config.kdl`.** `vite.config.ts` reads the port and service name at
-  build time, so a frontend Dockerfile must COPY `ontology/ontology-config` before `pnpm run build`.
+  build time, so `deploy/node.Dockerfile` copies `ontology/` before `pnpm run build`.
 - **SSR smoke tests read whatever `dist/` exists.** The strider, harrow, ledger and akasha smokes
   build only when `dist/server/server.js` is missing, so after a dependency change they fail on a
   stale build (for example `matchedRoutes is not iterable`) until you run the app's `build`. CI is
