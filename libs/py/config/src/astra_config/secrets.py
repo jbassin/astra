@@ -48,6 +48,14 @@ def is_blank_secret(value: str | None) -> bool:
     return value is None or value.strip(_BLANK_CHARS) == ""
 
 
+class SecretsFileMissingError(FileNotFoundError):
+    """The SOPS file itself is absent (the in-container case): `optional()` reads it as unset.
+
+    A distinct type because `subprocess.run` raises a plain `FileNotFoundError` when the
+    `sops` binary is missing, and that must still raise (as it does in the TS twin).
+    """
+
+
 def _find_repo_root(start: Path) -> Path:
     """Walk up from `start` to the first dir containing `deploy/sops`."""
     for parent in [start, *start.parents]:
@@ -71,7 +79,7 @@ def _decrypt(secrets_file: str) -> dict[str, str]:
     """Decrypt a SOPS file once (cached by path); returns the flat key→value map."""
     path = Path(secrets_file)
     if not path.is_file():
-        raise FileNotFoundError(f"SOPS secrets file not found: {path}")
+        raise SecretsFileMissingError(f"SOPS secrets file not found: {path}")
 
     env = dict(os.environ)
     if "SOPS_AGE_KEY_FILE" not in env:
@@ -87,7 +95,15 @@ def _decrypt(secrets_file: str) -> dict[str, str]:
     )
     if proc.returncode != 0:
         raise RuntimeError(f"sops -d failed for {path}: {proc.stderr.strip()}")
-    data = yaml.safe_load(proc.stdout) or {}
+    try:
+        data = yaml.safe_load(proc.stdout) or {}
+        parsed = True
+    except yaml.YAMLError:
+        parsed = False
+    if not parsed:
+        # Raised outside the `except` so no context chains on: a YAML error's message quotes
+        # the decrypted plaintext, which must never reach a log.
+        raise RuntimeError(f"sops -d output for {path} is not valid YAML")
     # The SOPS metadata block (`sops:`) is not a real secret.
     data.pop("sops", None)
     # A YAML null (`key:` with no value) is an empty secret, not the string "None".
@@ -168,7 +184,7 @@ class SecretRef:
         """
         try:
             return self.resolve()
-        except (KeyError, FileNotFoundError):
+        except (KeyError, SecretsFileMissingError):
             return None
 
     def __repr__(self) -> str:

@@ -71,7 +71,14 @@ function decrypt(file: string): Record<string, string> {
     env.SOPS_AGE_KEY_FILE = join(findRepoRoot(dirname(file)), "deploy", "sops", "age.key");
   }
   const out = execFileSync("sops", ["-d", file], { env, encoding: "utf8" });
-  const data = (parseYaml(out) ?? {}) as Record<string, unknown>;
+  let parsed: unknown;
+  try {
+    parsed = parseYaml(out);
+  } catch {
+    // No cause and no message from the YAML error: its code frame quotes the plaintext.
+    throw new Error(`sops -d output for ${file} is not valid YAML`);
+  }
+  const data = (parsed ?? {}) as Record<string, unknown>;
   delete data.sops; // SOPS metadata block is not a real secret
   const flat: Record<string, string> = {};
   // A YAML null (`key:` with no value) is an empty secret, not the string "null".
