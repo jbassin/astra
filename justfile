@@ -30,7 +30,7 @@ bootstrap:
     git config core.hooksPath .githooks
 
 # The fast format + lint gate for both lanes over the whole tree (pre-commit runs it on staged files).
-check: (_each "check" "ts-lint,py-lint,docs-check,weal-engine-hash-check")
+check: (_each "check" "ts-lint,py-lint,docs-check,weal-engine-hash-check,assay-store-check")
 
 # Lint findings the tools can't fix are printed and don't stop the formatters; `just check`
 # shows what is left.
@@ -50,7 +50,7 @@ test: (_each "test" "py-test,ts-test")
 # renders different pixels); it stays CI-only. weal-engine-rust needs rustup on the host (it
 # installs the crate's pinned toolchain on first use).
 # Run everything CI runs, locally (all but the container-only vellum render goldens).
-ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard,weal-engine-rust,weal-engine-hash-check"))
+ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard,weal-engine-rust,weal-engine-hash-check,assay-store-check"))
 
 # `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
 # they run as Dagster assets; test them with `uv run pytest apps/<domain>/py`.
@@ -103,6 +103,11 @@ py-lint:
 # in the living docs (docs/, root docs, READMEs, memory, skills) resolves.
 docs-check:
     uv run python scripts/check_docs.py
+
+# Telemetry is off: a sub-second check shouldn't wait on a collector it can't reach.
+# CI job assay-store-check: every homebrew store file fits the model and is canonically formatted.
+assay-store-check:
+    OTEL_SDK_DISABLED=true uv run assay store check
 
 # CI job py-typecheck: ty.
 py-typecheck:

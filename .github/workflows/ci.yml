@@ -122,6 +122,16 @@ jobs:
       - uses: ./.github/actions/setup-uv
       - run: just docs-check
 
+  # The homebrew store (apps/assay/py/homebrew) against its Pydantic model and canonical format.
+  assay-store-check:
+    needs: changes
+    if: needs.changes.outputs.py == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-uv
+      - run: just assay-store-check
+
   py-typecheck:
     needs: changes
     if: needs.changes.outputs.py == 'true'
@@ -358,6 +368,7 @@ jobs:
       - codex-virtualization-interaction-guard
       - weal-engine-rust
       - weal-engine-hash-check
+      - assay-store-check
       - commitlint
     runs-on: ubuntu-latest
     steps:
