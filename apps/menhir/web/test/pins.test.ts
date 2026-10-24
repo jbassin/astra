@@ -31,8 +31,8 @@ const QUIZ: Quiz = {
 
 const CLOCK: Clock = {
   now: () => 1_000_000,
-  setTimer: () => 0 as unknown as ReturnType<typeof setTimeout>,
-  clearTimer: () => {},
+  setTimeout: () => ({ cancel: () => {} }),
+  setInterval: () => ({ cancel: () => {} }),
 };
 
 test("menhir HTTP responses match the pre-migration pins", async () => {

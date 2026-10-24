@@ -212,13 +212,17 @@ function openQuestion(state: RoomState, index: number, now: number): ReduceResul
   };
 }
 
-function buildResultRow(state: RoomState, aborted: boolean): import("./schema").ResultRow {
+function buildResultRow(
+  state: RoomState,
+  aborted: boolean,
+  now: number,
+): import("./schema").ResultRow {
   const ranked = [...state.players.values()].sort((a, b) => {
     if (a.score !== b.score) return b.score - a.score;
     return a.totalTime - b.totalTime;
   });
   return {
-    at: new Date().toISOString(),
+    at: new Date(now).toISOString(),
     quizId: state.quizId,
     quizTitle: state.quizTitle,
     questionCount: state.questions.length,
@@ -228,11 +232,14 @@ function buildResultRow(state: RoomState, aborted: boolean): import("./schema").
 }
 
 /** any → podium: append the results row (D31-10), including aborted games. */
-function toPodium(state: RoomState, aborted: boolean): ReduceResult {
+function toPodium(state: RoomState, aborted: boolean, now: number): ReduceResult {
   const next: RoomState = { ...state, phase: "podium", aborted, questionStartedAt: null };
   return {
     state: next,
-    effects: [{ kind: "appendResults", row: buildResultRow(next, aborted) }, { kind: "broadcast" }],
+    effects: [
+      { kind: "appendResults", row: buildResultRow(next, aborted, now) },
+      { kind: "broadcast" },
+    ],
   };
 }
 
@@ -405,7 +412,7 @@ function handleHostAction(
       if (state.phase === "scoreboard") {
         const nextIndex = state.questionIndex + 1;
         if (nextIndex < state.questions.length) return openQuestion(state, nextIndex, now);
-        return toPodium(state, false);
+        return toPodium(state, false, now);
       }
       // lobby / podium: `next` doesn't apply.
       return { state, effects: [] };
@@ -414,7 +421,7 @@ function handleHostAction(
       if (state.phase === "podium") return { state, effects: [] };
       const wasQuestion = state.phase === "question";
       const finalState = wasQuestion ? applyTimeouts(state) : state;
-      return toPodium(finalState, true);
+      return toPodium(finalState, true, now);
     }
   }
 }
