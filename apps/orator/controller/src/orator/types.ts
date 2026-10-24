@@ -1,8 +1,7 @@
 /**
  * Shapes mirrored from @astra/orator-backend's HTTP API. orator does not publish an importable type
  * surface (no `exports`), so these are duplicated. Canonical sources:
- *   - NowPlaying:  apps/orator/bot/src/bot/playback.ts
- *   - Tag/Collection/Track: apps/orator/bot/src/web/types.ts
+ *   - NowPlaying, Tag, Collection, Track: apps/orator/bot/src/api/types.ts
  * Keep in sync if orator's API changes.
  */
 

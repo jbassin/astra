@@ -1,10 +1,10 @@
 import { type CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
 
+import type { Collection, Tag, TagWithCount, TrackWithTags } from "../api/types";
 import type { RenameOp } from "../lib/rename";
 import { apiGet, apiSend } from "./api";
 import { groupByColor, rowTintStyle } from "./grouping";
 import { usePlayback } from "./playbackState";
-import type { Collection, Tag, Track } from "./types";
 import { useDialog } from "./ui/Dialog";
 import { Menu } from "./ui/Menu";
 import { TagEditModal } from "./ui/TagEditModal";
@@ -23,8 +23,8 @@ export function Library() {
   const { confirm, promptText } = useDialog();
   const playback = usePlayback();
   const [collections, setCollections] = useState<Collection[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [tracks, setTracks] = useState<Track[]>([]);
+  const [tags, setTags] = useState<TagWithCount[]>([]);
+  const [tracks, setTracks] = useState<TrackWithTags[]>([]);
   const [collectionId, setCollectionId] = useState<number | null>(null);
   const [tagId, setTagId] = useState<number | null>(null);
   const [q, setQ] = useState("");
@@ -34,7 +34,7 @@ export function Library() {
 
   const loadFacets = useCallback(async () => {
     setCollections(await apiGet<Collection[]>("/api/v1/collections"));
-    setTags(await apiGet<Tag[]>("/api/v1/tags"));
+    setTags(await apiGet<TagWithCount[]>("/api/v1/tags"));
   }, []);
 
   const loadTracks = useCallback(async () => {
@@ -42,7 +42,7 @@ export function Library() {
     if (collectionId) params.set("collection", String(collectionId));
     if (tagId) params.set("tag", String(tagId));
     if (q.trim()) params.set("q", q.trim());
-    setTracks(await apiGet<Track[]>(`/api/v1/tracks?${params.toString()}`));
+    setTracks(await apiGet<TrackWithTags[]>(`/api/v1/tracks?${params.toString()}`));
   }, [collectionId, tagId, q]);
 
   useEffect(() => {
@@ -96,7 +96,7 @@ export function Library() {
     }
   }
 
-  async function renameOne(track: Track) {
+  async function renameOne(track: TrackWithTags) {
     const title = await promptText({ title: "Rename track", defaultValue: track.title });
     if (title && title !== track.title) {
       await withBusy(async () => {
@@ -282,7 +282,7 @@ export function Library() {
   }
 
   /** Row button: pause/resume if this track is the current one, otherwise start it. */
-  function togglePlay(t: Track) {
+  function togglePlay(t: TrackWithTags) {
     const np = playback.np;
     if (np?.current?.trackId === t.id) {
       if (np.status === "playing") return void playback.cmd("/api/v1/playback/pause");

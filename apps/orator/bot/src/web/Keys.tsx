@@ -1,17 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 
+import type { CreatedApiKey, PublicApiKey as KeyRow } from "../api/types";
 import { apiGet, apiSend } from "./api";
 import { useDialog } from "./ui/Dialog";
 import { useToast } from "./ui/Toast";
-
-interface KeyRow {
-  id: number;
-  name: string;
-  prefix: string;
-  created_at: string;
-  last_used_at: string | null;
-  revoked: boolean;
-}
 
 /** Stream Deck API-key management (B26): generate (shown once), list, revoke. */
 export function Keys() {
@@ -34,7 +26,7 @@ export function Keys() {
     });
     if (name === null) return;
     try {
-      const created = await apiSend<KeyRow & { key: string }>("POST", "/api/v1/keys", { name });
+      const created = await apiSend<CreatedApiKey>("POST", "/api/v1/keys", { name });
       setFresh(created.key);
       await load();
     } catch (err) {

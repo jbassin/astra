@@ -6,7 +6,7 @@
  */
 import type { CSSProperties } from "react";
 
-import type { Tag, Track } from "./types";
+import type { Tag, TrackWithTags } from "../api/types";
 
 /** Curated, dark-theme-safe swatches offered in the tag-color picker. */
 export const TAG_PALETTE: { name: string; value: string }[] = [
@@ -24,7 +24,7 @@ export const TAG_PALETTE: { name: string; value: string }[] = [
 const TINT_ALPHA = 0.13;
 
 /** The colored tag that "owns" a track: the alphabetically-first one with a color. */
-export function homeColoredTag(track: Track): Tag | null {
+export function homeColoredTag(track: TrackWithTags): Tag | null {
   const colored = track.tags.filter((t) => t.color).sort((a, b) => a.name.localeCompare(b.name));
   return colored[0] ?? null;
 }
@@ -34,7 +34,7 @@ export interface TrackSection {
   key: string;
   label: string;
   color: string | null;
-  tracks: Track[];
+  tracks: TrackWithTags[];
 }
 
 /**
@@ -42,7 +42,7 @@ export interface TrackSection {
  * (ordered by tag name); the uncolored "Other" bucket is always last. Empty
  * sections are dropped; track order within a section follows the input.
  */
-export function groupByColor(tracks: Track[]): TrackSection[] {
+export function groupByColor(tracks: TrackWithTags[]): TrackSection[] {
   const sections = new Map<string, TrackSection>();
   for (const t of tracks) {
     const home = homeColoredTag(t);

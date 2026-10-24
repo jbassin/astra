@@ -13,6 +13,7 @@
  */
 import { lazyCounter, reportIgnored } from "@astra/observe";
 
+import type { LoopMode, NowPlaying, PlaybackStatus } from "../api/types";
 import type { PlaybackStore } from "../db/store";
 import { buildAudioFilter, computeGainDb } from "./gain";
 import type { TrackEndReason, VoiceAdapter, VoiceStateResolver } from "./voice";
@@ -22,18 +23,8 @@ const tracksPlayed = lazyCounter("astra.orator-backend", "astra.orator.tracks.pl
   description: "Tracks started by the playback engine",
 });
 
-export type LoopMode = "none" | "track" | "playlist";
-export type PlaybackStatus = "idle" | "playing" | "paused";
-
-export interface NowPlaying {
-  connected: boolean;
-  channelId: string | null;
-  status: PlaybackStatus;
-  loopMode: LoopMode;
-  current: { trackId: number; title: string; positionMs: number; durationMs: number | null } | null;
-  queueLength: number;
-  queueIndex: number;
-}
+// The now-playing shape is an API response, so it is defined with the others in ../api/types.ts.
+export type { LoopMode, NowPlaying, PlaybackStatus };
 
 export class PlaybackError extends Error {
   readonly status: number;

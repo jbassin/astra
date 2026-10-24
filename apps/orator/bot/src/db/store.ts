@@ -20,87 +20,24 @@ import { resolve } from "node:path";
 import { loadMigrations, migrate, type MigrateResult } from "@astra/pg-migrate";
 import postgres from "postgres";
 
+import type {
+  Collection,
+  DownloadJob,
+  DownloadJobItem,
+  Playlist,
+  Tag,
+  TagWithCount,
+  Track,
+} from "../api/types";
 import { normalizeTag, slugify, uniqueSlug } from "../lib/text";
 
 /** The numbered schema migrations (`NNNN_name.sql`), applied at boot by {@link PostgresStore.migrate}. */
 export const MIGRATIONS_DIR = resolve(import.meta.dirname, "../../migrations");
 
-// --- row types (mirror lark's repo interfaces; timestamps are ::text strings) ---
+// --- row types: the API sends these rows as they are, so they live with the other API shapes in
+// ../api/types.ts, which the SPA imports too. ApiKey stays here: its hash never leaves the server.
 
-export interface Collection {
-  id: number;
-  name: string;
-  slug: string;
-  ip_or_game: string | null;
-  source_type: "manual" | "youtube_playlist";
-  source_url: string | null;
-  cover_url: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Track {
-  id: number;
-  collection_id: number | null;
-  title: string;
-  original_title: string;
-  source_type: "upload" | "youtube";
-  source_url: string | null;
-  source_video_id: string | null;
-  file_path: string | null;
-  format: string | null;
-  duration_ms: number | null;
-  file_size: number | null;
-  loudness_lufs: number | null;
-  status: "ready" | "downloading" | "error";
-  error: string | null;
-  added_at: string;
-  updated_at: string;
-}
-
-export interface Tag {
-  id: number;
-  name: string;
-  category: string | null;
-  /** Optional #rrggbb; drives web row tint + section grouping. NULL = uncolored. */
-  color: string | null;
-  created_at: string;
-}
-
-export interface Playlist {
-  id: number;
-  name: string;
-  loop_mode: "none" | "track" | "playlist";
-  shuffle: number;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface DownloadJob {
-  id: number;
-  type: "single" | "playlist";
-  source_url: string;
-  title: string | null;
-  collection_id: number | null;
-  status: "queued" | "running" | "done" | "error" | "partial";
-  total_items: number;
-  completed_items: number;
-  error: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface DownloadJobItem {
-  id: number;
-  job_id: number;
-  video_id: string;
-  title: string;
-  position: number;
-  status: "queued" | "downloading" | "done" | "error";
-  progress_pct: number;
-  error: string | null;
-  track_id: number | null;
-}
+export type { Collection, DownloadJob, DownloadJobItem, Playlist, Tag, Track } from "../api/types";
 
 export interface ApiKey {
   id: number;
@@ -186,7 +123,7 @@ export interface LibraryStore extends PlaybackStore {
 
   // tags
   upsertTag(name: string, category?: string | null): Promise<Tag>;
-  listTags(): Promise<(Tag & { track_count: number })[]>;
+  listTags(): Promise<TagWithCount[]>;
   tagsForTrack(trackId: number): Promise<Tag[]>;
   addTagsToTracks(trackIds: number[], tagIds: number[]): Promise<number>;
   removeTagsFromTracks(trackIds: number[], tagIds: number[]): Promise<number>;
@@ -494,8 +431,8 @@ export class PostgresStore implements LibraryStore {
     );
   }
 
-  listTags(): Promise<(Tag & { track_count: number })[]> {
-    return this.#all<Tag & { track_count: number }>(
+  listTags(): Promise<TagWithCount[]> {
+    return this.#all<TagWithCount>(
       `select tags.id, tags.name, tags.category, tags.color, tags.created_at::text,
               count(track_tags.track_id)::int as track_count
        from tags left join track_tags on track_tags.tag_id = tags.id
