@@ -67,7 +67,7 @@ def ensure_anthropic_env() -> str:
 
     Config/secret resolution (the override→SOPS order, Decision E) lives entirely in
     `astra_config`: this reads `cfg.llm.anthropic_api_key` (a `SecretRef` declared in
-    `config.kdl`) and `.resolve()`s it — no ad-hoc env reads, no hardcoded `sops:`
+    `config.kdl`) and `.require()`s it — no ad-hoc env reads, no hardcoded `sops:`
     ref here. The resolved value is then placed in `ANTHROPIC_API_KEY` purely as the
     transport litellm reads. Idempotent, lazy (`astra_config`/`dspy` imported on
     call), never logs the value. Without this bridge litellm sees no key and fails.
@@ -77,7 +77,7 @@ def ensure_anthropic_env() -> str:
     ref = load_config().llm.anthropic_api_key
     if ref is None:
         raise LlmError("llm.anthropic-api-key is not set in config.kdl")
-    key = ref.resolve()
+    key = ref.require()
     os.environ[ANTHROPIC_API_KEY_ENV] = key
     return key
 
@@ -96,7 +96,7 @@ def ensure_openrouter_env() -> str:
     ref = load_config().llm.openrouter_api_key
     if ref is None:
         raise LlmError("llm.openrouter-api-key is not set in config.kdl")
-    key = ref.resolve()
+    key = ref.require()
     os.environ[OPENROUTER_API_KEY_ENV] = key
     return key
 

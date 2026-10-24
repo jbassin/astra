@@ -15,7 +15,7 @@ import os
 from pathlib import Path
 
 import pytest
-from astra_config import SecretRef, is_blank_secret
+from astra_config import SecretRef, SecretUnsetError, is_blank_secret, load_config
 from astra_config.secrets import resolve_sops_ref
 
 REF = "sops:astra_blank_test_secret"
@@ -134,3 +134,81 @@ def test_secret_ref_resolve_applies_the_same_rule(
         ref.resolve()
     monkeypatch.setenv(ENV, "real-value")
     assert ref.resolve() == "real-value"
+
+
+# --- `require()` / `optional()`: the one way app code reads a secret ---------------------
+
+
+def _ref(path: Path) -> SecretRef:
+    return SecretRef(REF, secrets_file=path, config_key="test.blank-secret")
+
+
+@pytest.mark.parametrize("blank", [None, *BLANKS])
+def test_require_refuses_unset_or_blank_and_names_the_config_key(
+    secrets_file, monkeypatch: pytest.MonkeyPatch, blank: str | None
+) -> None:
+    path = secrets_file("other_key: x\n")
+    if blank is not None:
+        monkeypatch.setenv(ENV, blank)
+    with pytest.raises(SecretUnsetError, match=r"test\.blank-secret .*\$ASTRA_BLANK_TEST_SECRET"):
+        _ref(path).require()
+
+
+def test_require_refuses_when_there_is_no_sops_file(tmp_path: Path) -> None:
+    with pytest.raises(SecretUnsetError, match="unset, blank or unresolvable"):
+        _ref(tmp_path / "absent.enc.yaml").require()
+
+
+def test_require_refuses_a_blank_file_entry(secrets_file) -> None:
+    path = secrets_file('astra_blank_test_secret: "  "\n')
+    with pytest.raises(SecretUnsetError):
+        _ref(path).require()
+
+
+def test_require_returns_a_real_value_verbatim(
+    secrets_file, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    assert _ref(secrets_file("astra_blank_test_secret: from-file\n")).require() == "from-file"
+    monkeypatch.setenv(ENV, "  padded  ")
+    assert _ref(secrets_file("other_key: x\n")).require() == "  padded  "
+
+
+@pytest.mark.parametrize("blank", [None, *BLANKS])
+def test_optional_reads_unset_or_blank_as_none(
+    secrets_file, monkeypatch: pytest.MonkeyPatch, blank: str | None
+) -> None:
+    path = secrets_file('other_key: x\nastra_blank_test_secret: ""\n')
+    if blank is not None:
+        monkeypatch.setenv(ENV, blank)
+    assert _ref(path).optional() is None
+
+
+def test_optional_reads_no_sops_file_as_none(tmp_path: Path) -> None:
+    assert _ref(tmp_path / "absent.enc.yaml").optional() is None
+
+
+def test_optional_returns_a_real_value(secrets_file, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv(ENV, "real-value")
+    assert _ref(secrets_file("other_key: x\n")).optional() == "real-value"
+
+
+def test_optional_still_raises_when_sops_fails(tmp_path: Path, monkeypatch) -> None:
+    """A broken age key is not an unset secret: it must not silently turn a feature off."""
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    (bin_dir / "sops").write_text("#!/bin/sh\necho boom >&2\nexit 1\n")
+    (bin_dir / "sops").chmod(0o755)
+    monkeypatch.setenv("PATH", f"{bin_dir}{os.pathsep}{os.environ.get('PATH', '')}")
+    monkeypatch.delenv(ENV, raising=False)
+    path = tmp_path / "broken.enc.yaml"
+    path.write_text("x: y\n")
+    with pytest.raises(RuntimeError, match="sops -d failed"):
+        _ref(path).optional()
+
+
+def test_loaded_refs_carry_their_config_key() -> None:
+    cfg = load_config()
+    assert cfg.orator.session_secret is not None
+    assert cfg.orator.session_secret.config_key == "orator.session-secret"
+    assert cfg.weal_overlay.token is not None
+    assert cfg.weal_overlay.token.config_key == "weal-overlay.token"

@@ -3,10 +3,10 @@
     from astra_config import load_config
     cfg = load_config()
     model = cfg.llm.default_model                 # plaintext
-    key = cfg.llm.anthropic_api_key.resolve()     # SOPS-decrypted on demand
+    key = cfg.llm.anthropic_api_key.require()     # SOPS-decrypted on demand; raises if unset
 
 Parse-at-edge (Decision E): KDL is read here and validated straight into the typed
-`Config`; secrets stay as `SecretRef` until `.resolve()`.
+`Config`; secrets stay as `SecretRef` until `.require()` / `.optional()`.
 """
 
 from __future__ import annotations
@@ -28,7 +28,13 @@ from .models import (
     WealConfig,
     WealOverlayConfig,
 )
-from .secrets import SecretRef, default_secrets_file, is_blank_secret, resolve_sops_ref
+from .secrets import (
+    SecretRef,
+    SecretUnsetError,
+    default_secrets_file,
+    is_blank_secret,
+    resolve_sops_ref,
+)
 
 __all__ = [
     "CaddyConfig",
@@ -41,6 +47,7 @@ __all__ = [
     "OratorControllerConfig",
     "ScribeConfig",
     "SecretRef",
+    "SecretUnsetError",
     "TelemetryConfig",
     "WealConfig",
     "WealOverlayConfig",

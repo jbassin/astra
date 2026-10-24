@@ -19,14 +19,6 @@ import { Gateway } from "./gateway";
 import { Roster } from "./roster";
 import { startSpeakServer } from "./speak";
 
-function resolveSecret(ref: { resolve: () => string } | null | undefined): string {
-  try {
-    return ref?.resolve() ?? "";
-  } catch {
-    return ""; // unresolved (e.g. rotated-at-cutover dice-feed-url) → feature disabled
-  }
-}
-
 async function main(): Promise<void> {
   const cfg = loadConfig();
   const being = loadBeing();
@@ -47,10 +39,11 @@ async function main(): Promise<void> {
 
   const gateway = new Gateway(
     {
-      discordToken: resolveSecret(cfg.weal.discordToken),
-      diceFeedUrl: resolveSecret(cfg.weal.diceFeedUrl),
+      // Unset → "" → that feature off (e.g. the rotated-at-cutover dice-feed-url).
+      discordToken: cfg.weal.discordToken?.optional() ?? "",
+      diceFeedUrl: cfg.weal.diceFeedUrl?.optional() ?? "",
       feedWsUrl: cfg.weal.feedWsUrl,
-      feedToken: resolveSecret(cfg.weal.feedToken),
+      feedToken: cfg.weal.feedToken?.optional() ?? "",
     },
     roster,
     hosts,

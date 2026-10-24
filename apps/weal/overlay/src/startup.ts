@@ -5,32 +5,18 @@
  * cause is a container recreated with a plain `docker compose up -d` instead of
  * `just up`, which injects `${WEAL_TOKEN:-}` = "".
  */
-import { isBlankSecret, type SecretRef } from "@astra/config";
+import type { SecretRef } from "@astra/config";
 
-type Ref = Pick<SecretRef, "ref" | "resolve"> | null | undefined;
-
-/** Resolve the ingest token or throw. The error names the ref and env var, never the value. */
-export function requireIngestToken(ref: Ref): string {
+/**
+ * Resolve the ingest token or throw: `require()` refuses an unset or blank value. The error
+ * names the config key and env var, never the value.
+ */
+export function requireIngestToken(ref: SecretRef | null | undefined): string {
   if (!ref) {
     throw new Error(
-      "cfg.wealOverlay.token has no ref= in config.kdl's weal-overlay {} block — " +
+      "weal-overlay.token has no ref= in config.kdl's weal-overlay {} block — " +
         "weal-overlay refuses to start with an unauthenticated ingest",
     );
   }
-  let value: string | undefined;
-  let reason = "";
-  try {
-    value = ref.resolve();
-  } catch (err) {
-    reason = ` (${err instanceof Error ? err.message : String(err)})`;
-  }
-  if (value === undefined || isBlankSecret(value)) {
-    const env = ref.ref.replace(/^sops:/, "").toUpperCase();
-    throw new Error(
-      `cfg.wealOverlay.token (${ref.ref}) is missing or empty — weal-overlay refuses to ` +
-        `start with an unauthenticated ingest. Deploy with \`just up\` so $${env} is ` +
-        `injected from SOPS${reason}`,
-    );
-  }
-  return value;
+  return ref.require();
 }

@@ -37,7 +37,7 @@ def snake(name: str) -> str:
     return name.replace("-", "_")
 
 
-def leaf_value(node: KdlNode, *, secrets_file: Path | None = None) -> Any:
+def leaf_value(node: KdlNode, *, secrets_file: Path | None = None, path: str = "") -> Any:
     """Resolve a leaf KDL node to a scalar, a `SecretRef`, a list, or None.
 
     * `name ref="sops:KEY"` → `SecretRef`
@@ -47,7 +47,7 @@ def leaf_value(node: KdlNode, *, secrets_file: Path | None = None) -> Any:
     """
     props = node_props(node)
     if "ref" in props:
-        return SecretRef(str(props["ref"]), secrets_file=secrets_file)
+        return SecretRef(str(props["ref"]), secrets_file=secrets_file, config_key=path or node.name)
     args = list(node.args)
     if len(args) == 1:
         return args[0]
@@ -56,15 +56,23 @@ def leaf_value(node: KdlNode, *, secrets_file: Path | None = None) -> Any:
     return args
 
 
-def children_as_dict(node: KdlNode, *, secrets_file: Path | None = None) -> dict[str, Any]:
-    """A node's child nodes as `{snake_name: leaf_value | nested dict}`."""
+def children_as_dict(
+    node: KdlNode, *, secrets_file: Path | None = None, path: str = ""
+) -> dict[str, Any]:
+    """A node's child nodes as `{snake_name: leaf_value | nested dict}`.
+
+    `path` is the node's dotted KDL key (`orator`), recorded on each `SecretRef` as its
+    `config_key` (`orator.session-secret`) so a missing secret names where it is declared.
+    """
+    path = path or node.name
     out: dict[str, Any] = {}
     for child in node.children:
         key = snake(child.name)
+        child_path = f"{path}.{child.name}"
         if list(child.children) and not list(child.args) and "ref" not in node_props(child):
-            out[key] = children_as_dict(child, secrets_file=secrets_file)
+            out[key] = children_as_dict(child, secrets_file=secrets_file, path=child_path)
         else:
-            out[key] = leaf_value(child, secrets_file=secrets_file)
+            out[key] = leaf_value(child, secrets_file=secrets_file, path=child_path)
     return out
 
 

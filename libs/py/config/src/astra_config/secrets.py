@@ -18,6 +18,10 @@ SOPS entry raises exactly like a missing one — so `resolve()` returns a non-bl
 or raises, never `""`. The TS twin (`libs/ts/config/src/secrets.ts`) applies the same
 rule with the same character set.
 
+Read a secret through `SecretRef.require()` (load-bearing: raises a `SecretUnsetError`
+naming the config key) or `SecretRef.optional()` (feature switch: unset → `None`). App
+code doesn't wrap `resolve()` itself (0037 LIB-2).
+
 `sops -d` reads the age key from `SOPS_AGE_KEY_FILE`; we default that to the in-repo
 `deploy/sops/age.key` if it isn't already set in the environment.
 """
@@ -115,22 +119,57 @@ def resolve_sops_ref(ref: str, *, secrets_file: Path | None = None) -> str:
     return value
 
 
+class SecretUnsetError(RuntimeError):
+    """A required secret is unset, blank or unresolvable. The message never holds a value."""
+
+
 class SecretRef:
     """A deferred secret pointer parsed from KDL (`ref="sops:KEY"`).
 
-    Holds only the ref string; `.resolve()` decrypts on demand. `repr`/`str` never
-    leak the value, so a secret can't be logged by accident.
+    Holds only the ref string (and the config key it was read from, e.g.
+    `orator.session-secret`); `.require()` / `.optional()` decrypt on demand.
+    `repr`/`str` never leak the value, so a secret can't be logged by accident.
     """
 
-    __slots__ = ("_secrets_file", "ref")
+    __slots__ = ("_secrets_file", "config_key", "ref")
 
-    def __init__(self, ref: str, *, secrets_file: Path | None = None) -> None:
+    def __init__(
+        self, ref: str, *, secrets_file: Path | None = None, config_key: str | None = None
+    ) -> None:
         self.ref = ref
         self._secrets_file = secrets_file
+        self.config_key = config_key
 
     def resolve(self) -> str:
         """Decrypt + return the secret value (raises loud if absent or blank)."""
         return resolve_sops_ref(self.ref, secrets_file=self._secrets_file)
+
+    def require(self) -> str:
+        """The secret's value, or `SecretUnsetError` naming the config key and env var.
+
+        Every resolution failure (unset, blank, no SOPS file, `sops -d` failed) raises,
+        so a caller can never proceed with an empty secret.
+        """
+        try:
+            return self.resolve()
+        except (KeyError, OSError, RuntimeError) as exc:
+            key = self.ref.removeprefix(SOPS_SCHEME)
+            name = f"config key {self.config_key} ({self.ref})" if self.config_key else self.ref
+            raise SecretUnsetError(
+                f"{name} is unset, blank or unresolvable: add {key!r} to "
+                f"deploy/sops/secrets.enc.yaml and deploy with `just up` (which injects "
+                f"${key.upper()}), or set ${key.upper()} for a host run ({exc})"
+            ) from exc
+
+    def optional(self) -> str | None:
+        """The secret's value, or `None` when it is unset or blank (no SOPS file counts).
+
+        A `sops -d` failure still raises: a broken age key is not an unset secret.
+        """
+        try:
+            return self.resolve()
+        except (KeyError, FileNotFoundError):
+            return None
 
     def __repr__(self) -> str:
         return f"SecretRef({self.ref!r})"

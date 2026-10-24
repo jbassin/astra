@@ -5,7 +5,13 @@
  *   import { loadConfig } from "@astra/config";
  *   const cfg = loadConfig();
  *   cfg.weal.bindAddr;                  // plaintext
- *   cfg.orator.sessionSecret?.resolve(); // SOPS-decrypted on demand
+ *   cfg.orator.sessionSecret?.require(); // SOPS-decrypted on demand; throws if unset
  */
 export { type Config, ConfigSchema, defaultConfigFile, findRepoRoot, loadConfig } from "./config";
-export { defaultSecretsFile, isBlankSecret, resolveSopsRef, SecretRef } from "./secrets";
+export {
+  defaultSecretsFile,
+  isBlankSecret,
+  resolveSopsRef,
+  SecretRef,
+  SecretUnsetError,
+} from "./secrets";

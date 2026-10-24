@@ -36,10 +36,15 @@ function childNodes(node: Node): Node[] {
   return node.children?.nodes ?? [];
 }
 
-/** Resolve a leaf KDL node to a scalar, a `SecretRef`, an array, or null. */
-export function leafValue(node: Node, secretsFile?: string): LeafValue {
+/**
+ * Resolve a leaf KDL node to a scalar, a `SecretRef`, an array, or null. `path` is the
+ * node's dotted KDL key (`orator.session-secret`), recorded as the ref's `configKey`.
+ */
+export function leafValue(node: Node, secretsFile?: string, path?: string): LeafValue {
   const props = nodeProps(node);
-  if ("ref" in props) return new SecretRef(String(props.ref), secretsFile);
+  if ("ref" in props) {
+    return new SecretRef(String(props.ref), secretsFile, path ?? node.name.name);
+  }
   const a = args(node);
   if (a.length === 1) return a[0] as LeafValue;
   if (a.length === 0) return null;
@@ -47,16 +52,21 @@ export function leafValue(node: Node, secretsFile?: string): LeafValue {
 }
 
 /** A node's children as `{ camelName: leafValue | nested object }`. */
-export function childrenAsObject(node: Node, secretsFile?: string): Record<string, unknown> {
+export function childrenAsObject(
+  node: Node,
+  secretsFile?: string,
+  path: string = node.name.name,
+): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const child of childNodes(node)) {
     const key = camel(child.name.name);
+    const childPath = `${path}.${child.name.name}`;
     const hasChildren = childNodes(child).length > 0;
     const hasArgs = child.getArgumentEntries().length > 0;
     if (hasChildren && !hasArgs && !("ref" in nodeProps(child))) {
-      out[key] = childrenAsObject(child, secretsFile);
+      out[key] = childrenAsObject(child, secretsFile, childPath);
     } else {
-      out[key] = leafValue(child, secretsFile);
+      out[key] = leafValue(child, secretsFile, childPath);
     }
   }
   return out;

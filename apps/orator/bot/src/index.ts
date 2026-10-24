@@ -31,12 +31,7 @@ import { realYtDlp } from "./media/ytdlp";
 import { type AppConfig, startServer } from "./server/app";
 import { IngestService } from "./server/ingest";
 import { JobHub } from "./server/jobhub";
-import {
-  MIN_SESSION_SECRET_BYTES,
-  optionalSecret,
-  requireAllowlist,
-  requireSecret,
-} from "./startup";
+import { requireAllowlist, requireSessionSecret } from "./startup";
 
 async function main(): Promise<void> {
   const cfg = loadConfig();
@@ -46,11 +41,7 @@ async function main(): Promise<void> {
   // Fail closed before touching the DB: no operators, or a blank session secret (which
   // would sign forgeable cookies), stops startup (0037 SVC-2).
   const allowlist = requireAllowlist(buildAllowlist(being, cfg.orator.allowedUserIds));
-  const sessionSecret = requireSecret(
-    cfg.orator.sessionSecret,
-    "sessionSecret",
-    MIN_SESSION_SECRET_BYTES,
-  );
+  const sessionSecret = requireSessionSecret(cfg.orator.sessionSecret);
 
   // All runtime config comes from config.kdl via @astra/config (config-single-source)
   // — no env overrides. The data dir is the Compose audio-volume mount; the dist dir
@@ -87,8 +78,8 @@ async function main(): Promise<void> {
     sessionSecret,
     allowlist,
     oauth: {
-      clientId: optionalSecret(cfg.orator.discordClientId),
-      clientSecret: optionalSecret(cfg.orator.discordClientSecret),
+      clientId: cfg.orator.discordClientId?.optional() ?? "",
+      clientSecret: cfg.orator.discordClientSecret?.optional() ?? "",
       redirectUri: `${publicOrigin}/auth/callback`,
     },
     publicOrigin,
@@ -103,7 +94,7 @@ async function main(): Promise<void> {
   // The Discord bot (voice/playback) is optional: without a token the web UI +
   // library still run, and playback routes return 503.
   let playback: PlaybackEngine | undefined;
-  const token = optionalSecret(cfg.orator.discordToken);
+  const token = cfg.orator.discordToken?.optional();
   if (token && config.guildId) {
     try {
       const bot = await startBot({

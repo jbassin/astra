@@ -16,7 +16,6 @@ const log = getLogger(SERVICE_NAME);
 
 import { fileURLToPath } from "node:url";
 
-import type { SecretRef } from "@astra/config";
 import { loadConfig } from "@astra/config";
 
 import { listen } from "./server";
@@ -31,28 +30,23 @@ import { listen } from "./server";
 // resolves there too — no container-vs-local branch needed.
 const MODULE_DIR = fileURLToPath(new URL("../../module", import.meta.url));
 
-/** Resolve a SOPS `ref=` secret; throws with a clear pointer back to config.kdl if
- * unresolved — unlike orator's optional Discord token, portal's two D6 keys are
- * load-bearing (no world dial-out / no MCP client can authenticate without them). */
-function requireSecret(ref: SecretRef | null | undefined, field: string): string {
-  const value = ref?.resolve();
-  if (!value) {
-    throw new Error(
-      `cfg.portal.${field} is unresolved — set portal.${field} ref= in config.kdl's ` +
-        "portal {} block (and provision the SOPS key / env override)",
-    );
-  }
-  return value;
-}
-
 async function main(): Promise<void> {
   const cfg = loadConfig();
+  // Portal's keys are load-bearing (no world dial-out / no MCP client can authenticate
+  // without them): `require()` refuses to start on an unset or blank one.
+  const { mcpApiKey, playerMcpApiKey, bridgeApiKey } = cfg.portal;
+  if (!mcpApiKey || !playerMcpApiKey || !bridgeApiKey) {
+    throw new Error(
+      "portal.mcp-api-key, player-mcp-api-key and bridge-api-key each need a ref= in " +
+        "config.kdl's portal {} block",
+    );
+  }
 
   await listen({
     port: cfg.portal.port,
-    mcpApiKey: requireSecret(cfg.portal.mcpApiKey, "mcpApiKey"),
-    playerMcpApiKey: requireSecret(cfg.portal.playerMcpApiKey, "playerMcpApiKey"),
-    bridgeApiKey: requireSecret(cfg.portal.bridgeApiKey, "bridgeApiKey"),
+    mcpApiKey: mcpApiKey.require(),
+    playerMcpApiKey: playerMcpApiKey.require(),
+    bridgeApiKey: bridgeApiKey.require(),
     bridgeTimeoutMs: cfg.portal.bridgeTimeoutMs,
     maxCreatesPerRequest: cfg.portal.maxCreatesPerRequest,
     publicOrigin: cfg.portal.publicOrigin,

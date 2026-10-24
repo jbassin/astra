@@ -98,7 +98,9 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
   `@astra/config` (TypeScript). Both schema mirrors must stay in step. Only the config libraries
   read the environment (the upper-cased secret override).
 - **Secrets** are `ref="sops:KEY"` pointers in `config.kdl`; see
-  [ADR 0005](adr/0005-sops-secrets-injected-at-deploy.md).
+  [ADR 0005](adr/0005-sops-secrets-injected-at-deploy.md). Read one with `SecretRef.require()`
+  (raises, naming the config key, when it is unset or blank) or `SecretRef.optional()` (unset or
+  blank gives `None`/`undefined`). Don't wrap `resolve()` in app code.
 - **KDL at the edges.** Parse KDL and validate into Pydantic or Zod immediately; never pass raw KDL
   nodes around.
 - **LLM calls** go through `libs/py/llm`; never call a provider SDK directly. Its client owns the

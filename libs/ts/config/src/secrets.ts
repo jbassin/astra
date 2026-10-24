@@ -10,6 +10,10 @@
  * blank env var falls through to the SOPS file exactly like an absent one, and a blank
  * SOPS entry throws exactly like a missing one — so `resolve()` returns a non-blank value
  * or throws, never `""`. Same rule and same character set as the Python twin.
+ *
+ * Read a secret through `SecretRef.require()` (load-bearing: throws a `SecretUnsetError`
+ * naming the config key) or `SecretRef.optional()` (feature switch: unset → undefined).
+ * App code doesn't wrap `resolve()` itself (0037 LIB-2).
  */
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
@@ -23,6 +27,14 @@ const SOPS_SCHEME = "sops:";
 // `String.prototype.trim()`: JS's and Python's Unicode whitespace sets differ, and the
 // Python twin must classify every value identically. A real value is returned verbatim.
 const BLANK_SECRET = /^[ \t\n\r\f\v]*$/;
+
+/** A required secret is unset, blank or unresolvable. The message never holds a value. */
+export class SecretUnsetError extends Error {
+  override name = "SecretUnsetError";
+}
+
+/** Thrown when a secret is absent or blank; `optional()` reads it as "unset". */
+class MissingSecretError extends Error {}
 
 /** True when a secret value is absent, empty, or only ASCII whitespace (= unset). */
 export function isBlankSecret(value: string | null | undefined): boolean {
@@ -52,7 +64,7 @@ const decryptCache = new Map<string, Record<string, string>>();
 function decrypt(file: string): Record<string, string> {
   const cached = decryptCache.get(file);
   if (cached) return cached;
-  if (!existsSync(file)) throw new Error(`SOPS secrets file not found: ${file}`);
+  if (!existsSync(file)) throw new MissingSecretError(`SOPS secrets file not found: ${file}`);
 
   const env = { ...process.env };
   if (!env.SOPS_AGE_KEY_FILE) {
@@ -86,7 +98,7 @@ export function resolveSopsRef(ref: string, secretsFile?: string): string {
   const decrypted = decrypt(file);
   const value = decrypted[key];
   if (value === undefined || isBlankSecret(value)) {
-    throw new Error(
+    throw new MissingSecretError(
       `secret ${JSON.stringify(key)} is missing or blank in ${file} (and ` +
         `$${key.toUpperCase()} is unset or blank). ` +
         "Add it to deploy/sops/secrets.enc.yaml or inject the env var.",
@@ -96,21 +108,59 @@ export function resolveSopsRef(ref: string, secretsFile?: string): string {
 }
 
 /**
- * A deferred secret pointer parsed from KDL (`ref="sops:KEY"`). Holds only the ref;
- * `resolve()` decrypts on demand. `toJSON`/`toString` never leak the value.
+ * A deferred secret pointer parsed from KDL (`ref="sops:KEY"`). Holds only the ref (and
+ * the config key it was read from, e.g. `orator.session-secret`); `require()` /
+ * `optional()` decrypt on demand. `toJSON`/`toString` never leak the value.
  */
 export class SecretRef {
   readonly ref: string;
+  readonly configKey?: string;
   readonly #secretsFile?: string;
 
-  constructor(ref: string, secretsFile?: string) {
+  constructor(ref: string, secretsFile?: string, configKey?: string) {
     this.ref = ref;
+    this.configKey = configKey;
     this.#secretsFile = secretsFile;
   }
 
   /** Decrypt + return the secret value (throws if absent or blank). */
   resolve(): string {
     return resolveSopsRef(this.ref, this.#secretsFile);
+  }
+
+  /**
+   * The secret's value, or a `SecretUnsetError` naming the config key and env var. Every
+   * resolution failure (unset, blank, no SOPS file, `sops -d` failed) throws, so a caller
+   * can never proceed with an empty secret.
+   */
+  require(): string {
+    try {
+      return this.resolve();
+    } catch (err) {
+      const key = this.ref.slice(SOPS_SCHEME.length);
+      const env = key.toUpperCase();
+      const name = this.configKey ? `config key ${this.configKey} (${this.ref})` : this.ref;
+      const cause = err instanceof Error ? err.message : String(err);
+      throw new SecretUnsetError(
+        `${name} is unset, blank or unresolvable: add ${JSON.stringify(key)} to ` +
+          `deploy/sops/secrets.enc.yaml and deploy with \`just up\` (which injects $${env}), ` +
+          `or set $${env} for a host run (${cause})`,
+        { cause: err },
+      );
+    }
+  }
+
+  /**
+   * The secret's value, or undefined when it is unset or blank (no SOPS file counts).
+   * A `sops -d` failure still throws: a broken age key is not an unset secret.
+   */
+  optional(): string | undefined {
+    try {
+      return this.resolve();
+    } catch (err) {
+      if (err instanceof MissingSecretError) return undefined;
+      throw err;
+    }
   }
 
   toJSON(): string {

@@ -20,7 +20,7 @@ from pathlib import Path
 
 import dagster as dg
 from astra_akasha_backend.corpus import load_corpus
-from astra_config import SecretRef
+from astra_config import SecretUnsetError
 from astra_linguist.chronicle import recent_prior_entries, season_for, show_for_date
 from astra_llm import LiteLLMClient
 from astra_observe import get_logger, get_meter, get_tracer
@@ -98,25 +98,6 @@ def _atomic_write(path: Path, text: str) -> None:
     tmp.replace(path)
 
 
-def _required_key(ref: SecretRef | None, name: str) -> str:
-    """Resolve a provider key or fail LOUD. `just up` injects `${KEY:-}` so an absent
-    SOPS entry arrives as an EMPTY env var; `resolve()` treats that as unset (0037) and
-    raises when nothing else supplies the key. Re-raise every such failure as one clear
-    error, else the run would 401 (or worse, silently pick another backend)."""
-    message = (
-        f"mouthpiece.tts-provider needs the {name!r} secret: add it to "
-        "deploy/sops/secrets.enc.yaml (then `just up` re-injects it), or set "
-        f"${name.upper()} for a host run."
-    )
-    try:
-        value = ref.resolve() if ref is not None else ""
-    except (KeyError, OSError, RuntimeError) as exc:  # missing key / no SOPS file / sops failed
-        raise RuntimeError(message) from exc
-    if not value:
-        raise RuntimeError(message)
-    return value
-
-
 def _provider() -> TTSProvider:
     """The configured TTS backend (`mouthpiece.tts-provider`): ElevenLabs (live; model =
     `elevenlabs-model`), Cartesia Sonic-3 (wired; voices rejected 2026-09), or the offline
@@ -124,10 +105,14 @@ def _provider() -> TTSProvider:
     can't quietly render placeholder audio."""
     cfg = _config()
     if cfg.tts_provider == "cartesia":
-        return CartesiaTTSProvider(_required_key(cfg.cartesia_api_key, "cartesia_api_key"))
+        if cfg.cartesia_api_key is None:
+            raise SecretUnsetError("mouthpiece.cartesia-api-key has no ref= in config.kdl")
+        return CartesiaTTSProvider(cfg.cartesia_api_key.require())
     if cfg.tts_provider == "elevenlabs":
+        if cfg.elevenlabs_api_key is None:
+            raise SecretUnsetError("mouthpiece.elevenlabs-api-key has no ref= in config.kdl")
         return ElevenLabsTTSProvider(
-            _required_key(cfg.elevenlabs_api_key, "elevenlabs_api_key"),
+            cfg.elevenlabs_api_key.require(),
             model_id=cfg.elevenlabs_model,
         )
     return MockTTSProvider()
