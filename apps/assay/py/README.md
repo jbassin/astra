@@ -166,6 +166,15 @@ Every store file carries a `flags.assay` block: `seededFrom` (`repo`/`commit`/`o
 once at seed time, since `score-homebrew` no longer re-runs the adapter — see below). Both are
 inert to `extract_spell`, which never reads `data["flags"]` at all.
 
+**Model and format.** `store.py` holds a strict Pydantic model for a spell file and a trait file
+(`homebrew/traits/`), fitted to the data as stored: unknown keys and type coercion fail. Every file
+is canonical JSON: sorted keys, 2-space indent, non-ASCII text as-is, one trailing newline (the
+same rule as `being.canonical.json`). `just assay-store-check` (in `just check` and CI) runs
+`assay store check`, which fails on a model or format problem; after a hand edit, run
+`uv run assay store fmt`, which rewrites each file from its own parsed value and so cannot change
+content. Sorted keys put heightening rank `"10"` before `"4"`; the consumers ignore key order (the
+reformat left the codex transform, `price`, `score-homebrew` and `export-book` output identical).
+
 ## Validation verdicts (see `results/validation.md` for the real numbers)
 
 **Round 2 gates (V1′–V4′, damage/hybrid axis, carried unchanged):** all report honest misses with
