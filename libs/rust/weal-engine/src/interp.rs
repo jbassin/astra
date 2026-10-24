@@ -316,6 +316,17 @@ fn attach(core: &CoreExpr, ctx: Ctx<'_>, inherited: Option<Span>) -> SExpr {
                         .collect();
                     (cc, ac)
                 }
+                // WEAL-1: `f()` elaborates to `f(())`; the inserted unit has
+                // no source node and takes the call's span.
+                Some((
+                    Expr::Call {
+                        callee,
+                        args: aargs,
+                    },
+                    sp,
+                )) if aargs.is_empty() && sp.children.len() == 1 && args.len() == 1 => {
+                    (Some((&**callee, &sp.children[0])), vec![None])
+                }
                 _ => (None, vec![None; args.len()]),
             };
             SKind::Call {
@@ -756,6 +767,18 @@ impl<'f> Interp<'f> {
                     for name in rc.params.iter().take(take) {
                         let v = queue.pop_front().expect("take <= queue.len()");
                         env = env_bind(&env, name.clone(), v);
+                    }
+                    if rc.params.is_empty() {
+                        // WEAL-1: a nullary closure is `Unit -> T`. It consumes
+                        // the implicit `()` and runs its body on every call.
+                        match queue.pop_front() {
+                            Some(Value::Unit) => {}
+                            _ => {
+                                return Err(EvalError::internal(
+                                    "a nullary function was applied to a non-unit argument",
+                                ));
+                            }
+                        }
                     }
                     if take < rc.params.len() {
                         // Partial application: the remaining params close

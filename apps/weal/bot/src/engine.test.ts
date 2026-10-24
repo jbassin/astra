@@ -133,25 +133,64 @@ describe("loadValidatedFuncs (the D32-17 boot algorithm, real wasm)", () => {
 /** `save(:adv, || 2d20kh1)` as the engine serializes it (WEAL-2's reported macro). */
 const NULLARY_ADV = "|| kh(pool(2, d20), 1)";
 
+/**
+ * A saved source that type-checks but fails to evaluate. The engine never
+ * serializes one (a save stores a value it already computed), but a stored
+ * row can still hold one, and it is the shape that breaks every roll.
+ */
+const EVAL_FAILS = "1 / 0";
+
+/**
+ * The real engine, except that the guard's wrapped use `use` reports an
+ * internal error. No real input reaches one since the WEAL-1 fix, so this
+ * stands in for the next checker/interpreter disagreement.
+ */
+function internalErrorOn(use: string): typeof evaluate {
+  return (source, list, seed, budget, mode) =>
+    source === `let _ = ${use}; ()`
+      ? {
+          ok: false,
+          stage: "eval",
+          message: "internal error: boom — the checker should have rejected this",
+          span: null,
+          preludeName: null,
+        }
+      : evaluate(source, list, seed, budget, mode);
+}
+
 describe("checkNewSave (the save guard, real wasm)", () => {
-  test("the reported macro passes the boot check but fails every run", () => {
+  test("a save that fails to evaluate passes the boot check but fails every run", () => {
     // The blind spot the guard closes: boot validation never evaluates saves.
-    expect(loadValidatedFuncs([{ id: 1, name: "adv", source: NULLARY_ADV }])).toEqual([
-      ["adv", NULLARY_ADV],
+    expect(loadValidatedFuncs([{ id: 1, name: "bad", source: EVAL_FAILS }])).toEqual([
+      ["bad", EVAL_FAILS],
     ]);
-    const outcome = runEngine("d6", [["adv", NULLARY_ADV]], SEED);
+    const outcome = runEngine("d6", [["bad", EVAL_FAILS]], SEED);
     expect(outcome.kind).toBe("error");
   });
 
-  test("the reported macro is refused at the trivial roll, naming itself", () => {
-    const check = checkNewSave("adv", NULLARY_ADV, []);
+  test("such a save is refused at the trivial roll, naming itself", () => {
+    const check = checkNewSave("bad", EVAL_FAILS, []);
     expect(check.ok).toBe(false);
     if (check.ok) return;
     expect(check.kind).toBe("rolls");
     expect(check.probe).toBe("d20");
     expect(check.error?.stage).toBe("prelude");
-    expect(check.error?.preludeName).toBe("adv");
+    expect(check.error?.preludeName).toBe("bad");
     expect(check.shadowsBuiltin).toBe(false);
+  });
+
+  test("the reported nullary macro loads, rolls and is accepted (WEAL-1)", () => {
+    expect(loadValidatedFuncs([{ id: 1, name: "adv", source: NULLARY_ADV }])).toEqual([
+      ["adv", NULLARY_ADV],
+    ]);
+    expect(runEngine("d6", [["adv", NULLARY_ADV]], SEED).kind).toBe("ok");
+    const outcome = runEngine("adv() + adv()", [["adv", NULLARY_ADV]], SEED);
+    expect(outcome.kind).toBe("ok");
+    if (outcome.kind !== "ok") return;
+    // Each call rolls its own 2d20: four standard dice.
+    const display = outcome.value.displays[0];
+    expect(display?.kind === "die" ? display.standardDice : []).toHaveLength(4);
+    expect(checkNewSave("adv", NULLARY_ADV, [])).toEqual({ ok: true });
   });
 
   test("ordinary saves pass: values, dice, functions, die suffixes", () => {
@@ -198,23 +237,31 @@ describe("checkNewSave (the save guard, real wasm)", () => {
     expect(checkNewSave("kh", "|p, n| kh(p, n)", [])).toEqual({ ok: true });
   });
 
-  test("nullary macros that load but fail on use are refused (kind `use`)", () => {
+  test("nullary macros pass, and the guard calls them with `()`", () => {
     for (const source of ["|| 3", "|| d20 + 7", "let f() = explode(d6, 1); f"]) {
-      const check = checkNewSave("atk", source, []);
-      expect(check.ok).toBe(false);
-      if (check.ok) return;
-      expect(check.kind).toBe("use");
-      expect(check.probe).toBe("atk + 1");
-      expect(check.error !== null && isInternalError(check.error)).toBe(true);
+      const probes: string[] = [];
+      const spy: typeof evaluate = (src, list, seed, budget, mode) => {
+        probes.push(src);
+        return evaluate(src, list, seed, budget, mode);
+      };
+      expect(checkNewSave("atk", source, [], { evaluateFn: spy })).toEqual({ ok: true });
+      expect(probes).toContain("let _ = atk(); ()");
     }
   });
 
-  test("a function whose body hits an internal error is refused on call", () => {
-    const check = checkNewSave("hit", "let g() = 3; |y| g() + y", []);
-    expect(check.ok).toBe(false);
-    if (check.ok) return;
-    expect(check.kind).toBe("use");
-    expect(check.probe).toBe("hit(1)");
+  test("a macro whose use hits an internal error is refused (kind `use`)", () => {
+    for (const [source, use] of [
+      ["|| d20 + 7", "atk()"],
+      ["|y| y + 1", "atk(1)"],
+      ["d20 + 7", "atk + 1"],
+    ] as const) {
+      const check = checkNewSave("atk", source, [], { evaluateFn: internalErrorOn(use) });
+      expect(check.ok).toBe(false);
+      if (check.ok) return;
+      expect(check.kind).toBe("use");
+      expect(check.probe).toBe(use);
+      expect(check.error !== null && isInternalError(check.error)).toBe(true);
+    }
   });
 
   test("a replacement is checked against every other save, appended last", () => {
@@ -233,7 +280,7 @@ describe("checkNewSave (the save guard, real wasm)", () => {
     expect(runs.length).toBeGreaterThanOrEqual(GUARD_ROLLS.length);
     for (const list of runs) expect(list).toEqual([...saves, ["bonus", "5"]]);
     // And a bad replacement is refused even though the old one was fine.
-    const bad = checkNewSave("bonus", NULLARY_ADV, saves);
+    const bad = checkNewSave("bonus", EVAL_FAILS, saves);
     expect(bad.ok).toBe(false);
     if (bad.ok) return;
     expect(bad.error?.preludeName).toBe("bonus");
@@ -265,10 +312,22 @@ describe("checkNewSave (the save guard, real wasm)", () => {
   });
 });
 
-describe("isInternalError (pinned against the real wasm)", () => {
-  test("a checker/interpreter disagreement is internal; ordinary errors aren't", () => {
-    const internal = runEngine("x + 1", [["x", "|| 3"]], SEED);
-    expect(internal.kind === "error" && isInternalError(internal.error)).toBe(true);
+describe("isInternalError", () => {
+  test("the engine's `internal error:` eval prefix is internal; ordinary errors aren't", () => {
+    // No real input reaches an internal error since the WEAL-1 fix; the prefix
+    // is the engine's contract (`api.rs`), pinned by its own tests.
+    expect(
+      isInternalError({
+        ok: false,
+        stage: "eval",
+        message: "internal error: boom",
+        span: null,
+        preludeName: null,
+      }),
+    ).toBe(true);
+    // The pre-fix WEAL-1 input is now an ordinary type error.
+    const nullary = runEngine("x + 1", [["x", "|| 3"]], SEED);
+    expect(nullary.kind === "error" && nullary.error.stage).toBe("type");
     for (const source of ["xyzzy + 1", "1 / 0", "10000d10000"]) {
       const outcome = runEngine(source, [], SEED);
       expect(outcome.kind === "error" && isInternalError(outcome.error)).toBe(false);

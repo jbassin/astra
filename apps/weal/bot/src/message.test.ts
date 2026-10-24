@@ -122,7 +122,7 @@ describe("error-reply helpers (D32-14)", () => {
 });
 
 describe("saveRefusal (the save guard's reply)", () => {
-  test("an engine fault says so; a nested nullary gets the generic hint", () => {
+  test("an engine fault says so", () => {
     const reply = saveRefusal("Jorge", "atk", "let f() = d20; f", {
       kind: "use",
       probe: "atk + 1",
@@ -134,7 +134,6 @@ describe("saveRefusal (the save guard's reply)", () => {
       [
         "nope jorge, i won't remember `atk` — using it (`atk + 1`) trips a bug in the dice engine:",
         "the dice engine crashed while i was checking it",
-        "macros with no inputs (`|| …`, `let f() = …`) don't work yet — save the roll itself instead",
       ].join("\n"),
     );
   });
@@ -159,11 +158,11 @@ describe("saveRefusal (the save guard's reply)", () => {
     );
   });
 
-  test("a huge name or source is clamped to Discord's title/description limits", () => {
-    const reply = saveRefusal("Jorge", "x".repeat(300), `|| ${"y".repeat(5000)}`, {
+  test("a huge name or error is clamped to Discord's title/description limits", () => {
+    const reply = saveRefusal("Jorge", "x".repeat(300), "3", {
       kind: "use",
       probe: "x + 1",
-      error: typeError,
+      error: { ...typeError, message: "y".repeat(5000) },
       shadowsBuiltin: false,
     });
     expect(reply.title).toHaveLength(TITLE_LIMIT);

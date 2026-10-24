@@ -186,16 +186,9 @@ export function errorDescription(
 
 // --- save refusal (the save guard) ---------------------------------------------------
 
-/** A zero-parameter lambda (`|| e`) or `let f() = …` anywhere in a saved source. */
-const NULLARY_RE = /\|\s*\||\blet\s+[a-z][a-zA-Z0-9_]*\s*\(\s*\)/;
-/** A saved source that is one zero-parameter lambda; captures its body. */
-const NULLARY_LAMBDA_RE = /^\|\s*\|\s*([\s\S]+)$/;
-
 /**
  * The Knife's reply when the save guard refuses a save: what was refused and
- * why, the engine's error, and a hint when the fix is known. Zero-parameter
- * macros are a known engine bug (they load but never run their body), and the
- * workaround is to save the roll itself, which re-rolls on every use.
+ * why, the engine's error, and a hint when the fix is known.
  */
 export function saveRefusal(
   playerName: string,
@@ -218,14 +211,6 @@ export function saveRefusal(
   } else {
     // The use ran wrapped, so its span points into source the player never typed.
     lines.push(refusal.error.message);
-  }
-  if (NULLARY_RE.test(source)) {
-    const body = NULLARY_LAMBDA_RE.exec(source)?.[1];
-    lines.push(
-      body === undefined
-        ? "macros with no inputs (`|| …`, `let f() = …`) don't work yet — save the roll itself instead"
-        : `macros with no inputs (\`|| …\`) don't work yet — save the roll itself instead: \`save(:${name}, ${body})\``,
-    );
   }
   if (refusal.shadowsBuiltin) lines.push(`\`${name}\` is a built-in — save under another name`);
   return {

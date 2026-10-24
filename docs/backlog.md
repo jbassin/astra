@@ -173,8 +173,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Services
 
-- weal: nullary functions never run their body (`let f() = 2d20kh1; f()`), so the bot refuses saves
-  with no inputs — agent; product bug (WEAL-1), [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
 - weal: skip a bad existing save at load time instead of breaking every roll — agent; weal track.
 - weal: write roll history after the reply ([ADR 0025](adr/0025-weal-roll-history-archive.md)); parse
   depth is limited only by message length (WEAL-21); pasting the bot's own save confirmation fails
