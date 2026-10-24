@@ -1,0 +1,36 @@
+{
+  "aonUrl": "/MonsterAbilities.aspx?ID=4",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "The monster can cast its at-will spells any number of times without using up spell slots.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "creature-ability",
+  "edition": "legacy",
+  "facets": {},
+  "id": "creature-ability/at-will-spells@legacy",
+  "name": "At-Will Spells",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "creature-ability/at-will-spells"
+  ],
+  "slug": "at-will-spells",
+  "source": {
+    "book": "Bestiary",
+    "license": "OGL",
+    "page": 342
+  },
+  "traits": []
+}

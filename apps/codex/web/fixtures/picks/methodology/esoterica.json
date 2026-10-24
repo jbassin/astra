@@ -1,0 +1,66 @@
+{
+  "aonUrl": "/Methodologies.aspx?ID=9",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "This methodology can be taken by ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Palatine Detectives",
+          "kind": "crossref",
+          "targetId": "archetype/palatine-detective-class-archetype"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "You become trained in Occultism or Religion, and you gain the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Quick Identification",
+          "kind": "crossref",
+          "targetId": "feat/quick-identification"
+        },
+        {
+          "content": " skill feat. In addition, choose one common cantrip from the divine spell list and one common cantrip from the occult spell list. You can cast those spells as innate spells at will. You become trained in the spell attack modifier and spell DCs statistics. Intelligence is your spellcasting attribute.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "methodology",
+  "edition": "remaster",
+  "facets": {},
+  "id": "methodology/esoterica",
+  "name": "Esoterica",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "esoterica",
+  "source": {
+    "book": "Divine Mysteries",
+    "license": "ORC",
+    "page": 288
+  },
+  "traits": []
+}

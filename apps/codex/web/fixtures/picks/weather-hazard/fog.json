@@ -1,0 +1,85 @@
+{
+  "aonUrl": "/WeatherHazards.aspx?ID=4",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "Thick fog rolls in to obscure the landscape.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Survival",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " DC 16",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Routine",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " (2+ hours) As long as the dense fog persists, visual Perception checks have a –2 circumstance penalty. Fog causes creatures that are further than 15 feet away to be concealed, and it limits maximum visibility to 500 feet.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "weather-hazard",
+  "edition": "legacy",
+  "facets": {},
+  "id": "weather-hazard/fog",
+  "level": 0,
+  "name": "Fog",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "fog",
+  "source": {
+    "book": "Kingmaker Companion Guide",
+    "license": "OGL",
+    "page": 123
+  },
+  "traits": [
+    "Weather"
+  ]
+}

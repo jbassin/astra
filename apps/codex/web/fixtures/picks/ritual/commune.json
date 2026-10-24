@@ -1,0 +1,331 @@
+{
+  "aonUrl": "/Rituals.aspx?ID=114",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "You call upon an unknown, powerful being to answer questions. The being varies depending on the skill used for the primary check. ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "items": [
+        [
+          {
+            "content": "Nature",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " Primal spirits of nature, which know about animals, beasts, fey, fungi, plants, topography, and natural resources within a 3-mile radius.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "Occultism",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " Planar and other mysterious entities such as elementals, forgotten spirits, and monitors, which know about forgotten knowledge, the planes, obscure secrets, and other esoterica.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "Religion",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " Divine beings like celestials and fiends that know about the gods they serve and the god's respective purview; these are typically a servitor of your deity if you have one.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ]
+      ],
+      "kind": "list",
+      "ordered": false
+    },
+    {
+      "children": [
+        {
+          "content": " You can ask up to seven questions that could be answered with “Yes” or “No.” The entity answers with one-word answers such as “Yes,” “No,” “Likely,” and “Unknown,” though its answers always reflect its own agenda and could be deceptive.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Critical Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " You contact a more powerful entity aligned strongly with your interests, possibly even your deity. The entity won't attempt to deceive you, though it still might not know the answers. When it's important to provide clarity, the entity will answer your questions with up to five words, such as “If you leave immediately” or “That was true once.”\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " You can ask your questions and receive answers.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " You fail to contact an appropriate being.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Critical Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " You are exposed to the enormity of the cosmos and are stupefied 4 for 1 week (can't remove by any means).",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "ritual",
+  "edition": "remaster",
+  "facets": {
+    "castTime": "1 day",
+    "duration": "up to 10 minutes",
+    "featLevel": 6,
+    "range": "",
+    "rank": 6,
+    "traditions": []
+  },
+  "id": "ritual/commune",
+  "legacyOf": [
+    "ritual/commune@legacy",
+    "ritual/commune-with-nature"
+  ],
+  "level": 6,
+  "mastheadExtra": [
+    {
+      "label": "Cast",
+      "value": [
+        {
+          "content": " 1 day",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Cost",
+      "value": [
+        {
+          "content": " rare incense worth a total value of 150 gp",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Secondary Casters",
+      "value": [
+        {
+          "content": " 1",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Primary Check",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Nature",
+          "kind": "crossref",
+          "targetId": "skill/nature"
+        },
+        {
+          "content": " (master), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Occultism",
+          "kind": "crossref",
+          "targetId": "skill/occultism"
+        },
+        {
+          "content": " (master), or ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Religion",
+          "kind": "crossref",
+          "targetId": "skill/religion"
+        },
+        {
+          "content": " (master)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Secondary Checks",
+      "value": [
+        {
+          "content": " Nature, Occultism, or Religion (whichever is used for the primary check)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Duration",
+      "value": [
+        {
+          "content": " up to 10 minutes",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Commune",
+  "rarity": "uncommon",
+  "slug": "commune",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 301
+  },
+  "traits": [
+    "prediction"
+  ]
+}

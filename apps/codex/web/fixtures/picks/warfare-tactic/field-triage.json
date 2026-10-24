@@ -1,0 +1,37 @@
+{
+  "aonUrl": "/KMWarTactics.aspx?ID=7",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "The army's soldiers are adept at using emergency methods to treat wounds. The army gains the Battlefield Medicine tactical war action.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "warfare-tactic",
+  "edition": "legacy",
+  "facets": {},
+  "id": "warfare-tactic/field-triage",
+  "level": 6,
+  "name": "Field Triage",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "field-triage",
+  "source": {
+    "book": "Kingmaker Adventure Path",
+    "license": "OGL",
+    "page": 576
+  },
+  "traits": [
+    "Infantry",
+    "Skirmisher"
+  ]
+}

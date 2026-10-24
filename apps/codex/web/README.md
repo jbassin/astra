@@ -91,11 +91,16 @@ transform and the search build write the **live** dirs the container mounts read
   scripts default `CODEX_CORPUS_ROOT` to it. The real-corpus checks are the opt-in
   `just codex-real-corpus` (`src/realCorpus.test.ts`, gated on `CODEX_REAL_CORPUS=1`). The dev
   server has no pin and reads the real corpus at `codex.data-path`, from any checkout.
-- `scripts/extract-fixture.ts` wipes `fixtures/entities/` and rebuilds it from the real corpus.
-  The 90 `ritual/virt-*` rows the virtualization guard needs have no generator: restore them
-  from git and re-add them to `ritual/_index.json`. Never restore the whole `entities/` tree.
-- Fixtures for a new entity shape need a second source in the fixture pipeline, because the
-  canonical sweep only picks from the real emitted corpus.
+- `fixtures/entities/` is generated: `scripts/fixtureCorpus.ts` builds it from the committed
+  real picks (`fixtures/picks/`), the `runTransform` run over `fixtures/raw/`, and patches and
+  synthetic rows defined in code (each names the test that needs it). Never edit it by hand:
+  change an input and run `pnpm --filter @astra/codex fixture`. `scripts/fixtureCorpus.test.ts`
+  fails when the committed copy differs from a fresh build.
+- `scripts/extract-fixture.ts` (host-only) re-picks `fixtures/raw/` and `fixtures/picks/` from
+  the real snapshots and corpus, then checks the coverage matrix over a fresh fixture build.
+  A re-extract drops the one hand-made raw doc, `class-feature-9001` in
+  `fixtures/raw/aon/class-feature.json` (witch's Weapon Specialization, the D29-132 case in
+  `transform.test.ts`): restore that hit from git afterwards.
 - `scripts/regen-goldens.ts` runs under `nodeTsResolve.mjs`, which resolves only relative
   specifiers. An `@/*` import in anything EntityPage reaches breaks golden regen while tsc,
   vite and vitest pass.
