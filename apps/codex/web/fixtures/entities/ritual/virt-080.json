@@ -1,34 +1,34 @@
 {
-  "id": "ritual/virt-080",
-  "slug": "virt-080",
-  "category": "ritual",
-  "name": "Virt Synth Ritual 080",
-  "edition": "legacy",
-  "source": {
-    "book": "Core Rulebook",
-    "license": "OGL",
-    "page": 480
-  },
-  "level": 1,
-  "traits": [
-    "virt-fixture"
-  ],
-  "rarity": "common",
   "body": [
     {
-      "kind": "paragraph",
       "children": [
         {
-          "kind": "text",
           "content": "P9 S2 (D29-89/-85) synthetic fixture row #080, generated only to grow the committed fixture corpus's ritual category past the SSR_WINDOW=60 threshold for real-browser interaction coverage (frontier j/k, deep-link centering, scroll restoration) — never asserted on for content, only for its position in the sorted listing.",
+          "kind": "text",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
         }
-      ]
+      ],
+      "kind": "paragraph"
     }
   ],
-  "facets": {}
+  "category": "ritual",
+  "edition": "legacy",
+  "facets": {},
+  "id": "ritual/virt-080",
+  "level": 1,
+  "name": "Virt Synth Ritual 080",
+  "rarity": "common",
+  "slug": "virt-080",
+  "source": {
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 480
+  },
+  "traits": [
+    "virt-fixture"
+  ]
 }

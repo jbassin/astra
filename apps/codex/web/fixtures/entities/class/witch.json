@@ -88,98 +88,97 @@
   "id": "class/witch",
   "loreBody": [
     {
-      "kind": "paragraph",
       "children": [
         {
-          "kind": "text",
           "content": "P12 S1 (D29-113..120) fixture stub — \"class/witch\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
         }
-      ]
+      ],
+      "kind": "paragraph"
     },
     {
-      "kind": "heading",
-      "level": 2,
       "children": [
         {
-          "kind": "text",
           "content": "Basic Lesson",
+          "kind": "text",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
         }
-      ]
+      ],
+      "kind": "heading",
+      "level": 2
     },
     {
-      "kind": "paragraph",
       "children": [
         {
           "kind": "embed",
-          "target": "class-feature/basic-lesson",
-          "resolved": true
+          "resolved": true,
+          "target": "class-feature/basic-lesson"
         }
-      ]
+      ],
+      "kind": "paragraph"
     },
     {
-      "kind": "heading",
-      "level": 2,
       "children": [
         {
-          "kind": "text",
           "content": "Witch Basics",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ]
-    },
-    {
-      "kind": "paragraph",
-      "children": [
-        {
           "kind": "text",
-          "content": "P12 S1 (D29-113..120) fixture stub — \"class/witch\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
         }
-      ]
-    },
-    {
+      ],
       "kind": "heading",
-      "level": 2,
+      "level": 2
+    },
+    {
       "children": [
         {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class/witch\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
           "kind": "text",
-          "content": "Witch's Patron Bond",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
         }
-      ]
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Witch's Patron Bond",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
     },
     {
       "kind": "table",
       "rows": [
         {
-          "header": true,
           "cells": [
             [
               {
-                "kind": "text",
                 "content": "Bond Tier",
+                "kind": "text",
                 "marks": {
                   "bold": false,
                   "italic": false,
@@ -189,8 +188,8 @@
             ],
             [
               {
-                "kind": "text",
                 "content": "Effect",
+                "kind": "text",
                 "marks": {
                   "bold": false,
                   "italic": false,
@@ -198,15 +197,15 @@
                 }
               }
             ]
-          ]
+          ],
+          "header": true
         },
         {
-          "header": false,
           "cells": [
             [
               {
-                "kind": "text",
                 "content": "Minor Bond",
+                "kind": "text",
                 "marks": {
                   "bold": false,
                   "italic": false,
@@ -216,8 +215,8 @@
             ],
             [
               {
-                "kind": "text",
                 "content": "You gain a +1 circumstance bonus to Deception checks made against your patron's chosen rivals.",
+                "kind": "text",
                 "marks": {
                   "bold": false,
                   "italic": false,
@@ -225,15 +224,15 @@
                 }
               }
             ]
-          ]
+          ],
+          "header": false
         },
         {
-          "header": false,
           "cells": [
             [
               {
-                "kind": "text",
                 "content": "Greater Bond",
+                "kind": "text",
                 "marks": {
                   "bold": false,
                   "italic": false,
@@ -243,8 +242,8 @@
             ],
             [
               {
-                "kind": "text",
                 "content": "Once per week, you may commune with your patron for a single cryptic sentence of guidance.",
+                "kind": "text",
                 "marks": {
                   "bold": false,
                   "italic": false,
@@ -252,7 +251,8 @@
                 }
               }
             ]
-          ]
+          ],
+          "header": false
         }
       ]
     }
