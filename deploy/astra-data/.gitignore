@@ -1,8 +1,8 @@
 # Seeded from the astra code repo (deploy/astra-data/.gitignore): the rules it applied
 # under these datasets' old paths.
 
-# linguist surfacer review state — per-session candidate triage files (surface.py output,
-# reviewed in review_tui, applied to defs.yaml via apply.py); operator state, not data.
+# Leftover triage files from the deleted linguist correction loop (ADR 0021); operator
+# state, not data. Kept ignored so linguist-commit never publishes the old ones.
 linguist/data/*.candidates.json
 
 # OS / editor cruft

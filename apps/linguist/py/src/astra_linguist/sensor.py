@@ -2,7 +2,7 @@
 
 scribe writes each session to `{date}/script.json` under `ingest_saved_dir`; a session
 whose date isn't yet a linguist partition becomes a new partition + run request, so
-`session_transcripts` materializes (applying `defs.yaml` corrections) right after scribe
+`session_transcripts` materializes (applying `defs.kdl` corrections) right after scribe
 emits it. The matching is pure so it unit-tests without Dagster (mirrors `astra_scribe`).
 """
 
