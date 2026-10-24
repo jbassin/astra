@@ -123,6 +123,15 @@ describe("serializeLayer", () => {
     });
     expect(out).toMatch(/\ntithe\n?$/);
   });
+
+  it("escapes backslash, quote and newline exactly as the layers on disk do", () => {
+    const out = serializeLayer({
+      timestamp: "2026-05-22T14:30:00Z",
+      message: 'A "quoted" C:\\path\nsecond line',
+      changes: [{ op: "tithe" }],
+    });
+    expect(out).toContain('message "A \\"quoted\\" C:\\\\path\\nsecond line"');
+  });
 });
 
 describe("hexFactionMap", () => {

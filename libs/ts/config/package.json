@@ -5,7 +5,8 @@
   "type": "module",
   "module": "src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./kdl-quote": "./src/kdlQuote.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

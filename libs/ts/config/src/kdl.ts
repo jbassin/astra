@@ -94,27 +94,7 @@ export function kebab(name: string): string {
   return name.replaceAll("_", "-").replaceAll(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
 }
 
-const ESCAPES: Record<string, string> = {
-  "\\": "\\\\",
-  '"': '\\"',
-  "\n": "\\n",
-  "\r": "\\r",
-  "\t": "\\t",
-};
-
-/** A KDL v2 quoted string. Escapes `\`, `"` and every control character, since a
- * single-line KDL string may not hold a literal newline. */
-export function kdlQuote(s: string): string {
-  let out = "";
-  for (const ch of s) {
-    const code = ch.codePointAt(0) ?? 0;
-    const escaped = ESCAPES[ch];
-    if (escaped !== undefined) out += escaped;
-    else if (code < 0x20 || code === 0x7f) out += `\\u{${code.toString(16)}}`;
-    else out += ch;
-  }
-  return `"${out}"`;
-}
+export { kdlQuote } from "./kdlQuote";
 
 // ── schemas, read structurally ───────────────────────────────────────────────
 
