@@ -210,7 +210,7 @@ interface FoundryConditionLike {
  * `ConditionManager`-backed condition mutators + the `itemTypes.condition` read-back
  * surface — required, not optional: every actor in a pf2e world carries them (this
  * module targets pf2e exclusively), so a handler that can't find them at runtime
- * (`apply-condition`'s `requireActorMethod` in `handlers.ts`) treats it as a genuine
+ * (`apply-condition`'s `requireActorMethod` in `handlers/actors.ts`) treats it as a genuine
  * `foundry-error`, not a type-level maybe. */
 interface FoundryActor extends FoundryDocumentLike {
   getTokenDocument(pos: { x: number; y: number }): Promise<FoundryTokenDocumentLike>;
@@ -460,9 +460,9 @@ declare var foundry: FoundryNamespace;
 
 // Note (0026 S2, D-7): Foundry's `DataModelValidationError` class is deliberately NOT
 // part of this ambient surface — importing/declaring the real class would pull in far
-// more of Foundry's DataModel machinery than this module otherwise touches. handlers.ts
+// more of Foundry's DataModel machinery than this module otherwise touches. handlers/writes.ts
 // detects it defensively at the call site instead, by checking the thrown error's own
 // `.name`/`.constructor.name` string against `"DataModelValidationError"` rather than
-// an `instanceof` check (see `isDataModelValidationError` in `handlers.ts`) — this is
+// an `instanceof` check (see `isDataModelValidationError` in `handlers/writes.ts`) — this is
 // also what lets a plain `Error({name: "DataModelValidationError"})` fake stand in for
 // the real thing in tests without any Foundry runtime present.

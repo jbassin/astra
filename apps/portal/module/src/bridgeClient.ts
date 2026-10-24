@@ -12,7 +12,7 @@
  * instead of a direct reference to the real Foundry/browser globals — so the whole
  * wire-parsing/dispatch/reconnect state machine is unit-testable with a fake
  * `WebSocket` and fake timers, with zero Foundry runtime involved (S3's Foundry-free
- * constraint). `main.ts` supplies the real `WebSocket` global + `handlers.ts`'s
+ * constraint). `main.ts` supplies the real `WebSocket` global + `handlers/index.ts`'s
  * `dispatchQuery` (which DOES touch `game`/`CONFIG`) on the `ready` hook.
  */
 import {
@@ -59,7 +59,7 @@ export interface MinimalWebSocket {
 export type WebSocketFactory = (url: string) => MinimalWebSocket;
 
 /** Shape `dispatch` may reject with to control the wire error code precisely (this is
- * what `handlers.ts`'s `BridgeHandlerError` satisfies structurally — `bridgeClient.ts`
+ * what `handlers/shared.ts`'s `BridgeHandlerError` satisfies structurally — `bridgeClient.ts`
  * deliberately doesn't import that class, so it stays decoupled from any particular
  * handler-registry implementation). Anything else thrown maps to `foundry-error`. */
 export interface DispatchError {

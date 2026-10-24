@@ -1,6 +1,6 @@
 /**
  * Param + result contracts for portal's six S4 read tools (spec 0023 slice S4). Both
- * sides (the Foundry module's `handlers.ts` and portal-server's `mcp.ts`) import these
+ * sides (the Foundry module's `handlers/` and portal-server's `mcp.ts`) import these
  * so the wire shape can't drift between them — the module parses incoming params with
  * these schemas at the edge (KDL-at-the-edges' sibling rule for the bridge wire), and
  * the server uses the same param schemas as each MCP tool's `inputSchema`.

@@ -31,7 +31,7 @@ import {
  * here too so this file can (a) pull REAL HTML samples for the golden
  * `htmlToMarkdown` tests and (b) measure a REAL rendered-markdown size for the D28-11
  * cap, as the spec requires — portal-server has no dependency on portal-module (the
- * two packages are deliberately disjoint), so this mirrors `handlers.ts`'s
+ * two packages are deliberately disjoint), so this mirrors `handlers/party.ts`'s
  * `buildSpells`/`buildFeats` grouping logic locally rather than importing it. */
 function loadArgyleFixture(): { uuid: string; document: Record<string, unknown> } {
   const path = fileURLToPath(new URL("../../module/tests/fixtures/argyle.json", import.meta.url));
@@ -41,7 +41,7 @@ function loadArgyleFixture(): { uuid: string; document: Record<string, unknown> 
   };
 }
 
-/** Mirrors `handlers.ts`'s `buildSpells` (module-side, Foundry-ambient, not
+/** Mirrors `handlers/party.ts`'s `buildSpells` (module-side, Foundry-ambient, not
  * importable here) closely enough to drive a REAL D28-11 size measurement against
  * Argyle's actual 196 spells — not synthetic data. */
 function buildSpellsSectionFromFixture(document: Record<string, unknown>): PlayerSpellsSection {

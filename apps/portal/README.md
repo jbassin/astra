@@ -110,9 +110,12 @@ from then on a 0.4.x module is closed as `module-stale`.
 Every tool is one entry in `PORTAL_TOOLS` (`shared/src/registry.ts`): name, description, param and
 result schemas, `access` (player or admin), `runsOn` (server or bridge), `kind` (read or write; writes
 are audit-logged) and, for creates, the `creates` count the cap checks. The server registers one MCP
-tool per entry in that order; the module's `TOOL_HANDLERS` (`module/src/handlers.ts`) must have
-exactly one handler per bridge tool, or the module fails to typecheck. A tool that returns markdown
-also needs a renderer in `RENDERERS` (`server/src/mcp.ts`).
+tool per entry in that order. The module's handlers live in one file per domain under
+`module/src/handlers/` (compendium, documents, scenes, actors, items, macros, party, rolls), each
+exporting a handler map; `handlers/index.ts` spreads them into `TOOL_HANDLERS`, which must have
+exactly one handler per bridge tool or the module fails to typecheck. Write tools go through
+`handlers/writes.ts` (write gate, audit line, creation stamp). A tool that returns markdown also
+needs a renderer in `RENDERERS` (`server/src/mcp.ts`).
 
 - `server/src/__snapshots__/tools-list.{admin,player}.json` pin what MCP clients see. Any diff there
   is a client-visible change: review it, then update with `pnpm --filter @astra/portal-server exec
