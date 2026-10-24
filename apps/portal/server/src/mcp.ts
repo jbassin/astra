@@ -16,6 +16,7 @@
 
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import {
+  BridgeError,
   bridgeMethod,
   PLAYER_TOOL_NAMES as REGISTRY_PLAYER_TOOL_NAMES,
   PORTAL_TOOL_NAMES,
@@ -30,7 +31,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { SpanStatusCode } from "@opentelemetry/api";
 
-import { BridgeError, type Bridge } from "./bridge";
+import { type Bridge } from "./bridge";
 import { MCP_HTTP_PATH, SERVICE_NAME } from "./constants";
 import { renderQueryItem, renderQueryParty, renderQueryPlayer, renderQueryRolls } from "./markdown";
 

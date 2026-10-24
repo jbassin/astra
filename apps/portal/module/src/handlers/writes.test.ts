@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 
 import { SETTING_ALLOW_WRITES } from "../constants";
-import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./index";
+import { BridgeError, dispatchQuery, registerHandlers } from "./index";
 import { fakeDoc, fakeDocumentClass, stubFoundry, teardownFoundry } from "./testSupport";
 describe("the write gate", () => {
   afterEach(teardownFoundry);
@@ -23,8 +23,8 @@ describe("the write gate", () => {
     const err = await dispatchQuery("portal.import-from-compendium", {
       uuid: bestiaryGoblin.uuid,
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("writes-disabled");
   });
 
   it("create-token is denied with cap-exceeded above the module's hard creates ceiling", async () => {
@@ -36,8 +36,8 @@ describe("the write gate", () => {
       y: 0,
       quantity: 51, // MODULE_MAX_CREATES_CEILING is 50 — this must be denied module-side
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("cap-exceeded");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("cap-exceeded");
   });
 
   it("writes are allowed by default (the setting is unset)", async () => {

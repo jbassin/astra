@@ -43,6 +43,20 @@ export const BridgeErrorCode = z.enum([
 ]);
 export type BridgeErrorCode = z.infer<typeof BridgeErrorCode>;
 
+/** A typed bridge failure, thrown on both sides of the bridge. The module's handlers throw
+ * it with the code the wire response carries (`bridgeClient.ts` reads only `.code` and
+ * `.message`; anything else thrown maps to `foundry-error`). The server throws it for every
+ * failed bridge query: the module's code, or its own `bridge-offline`, `timeout`, ... */
+export class BridgeError extends Error {
+  readonly code: BridgeErrorCode;
+
+  constructor(code: BridgeErrorCode, message?: string) {
+    super(message ?? code);
+    this.name = "BridgeError";
+    this.code = code;
+  }
+}
+
 /**
  * World/system identity the module already knows at handshake time — sent so
  * `bridge-status` (the S3 acceptance) can report world/system/version with no extra

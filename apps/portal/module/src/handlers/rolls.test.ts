@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 
-import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./index";
+import { BridgeError, dispatchQuery, registerHandlers } from "./index";
 import { fakeDoc, stubFoundry, teardownFoundry } from "./testSupport";
 describe("query-rolls", () => {
   afterEach(teardownFoundry);
@@ -501,8 +501,8 @@ describe("query-rolls", () => {
       const err = await dispatchQuery("portal.query-rolls", { actor: "Arg" }).catch(
         (e: unknown) => e,
       );
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("ambiguous-name");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("ambiguous-name");
     });
 
     it("type + outcome + time window compose with actor", async () => {

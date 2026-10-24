@@ -8,6 +8,7 @@ import {
   QueryItemParams,
   type QueryItemResult,
   type BridgeToolHandlers,
+  BridgeError,
 } from "@astra/portal-shared";
 
 import {
@@ -26,7 +27,7 @@ import {
   sourceOf,
   sourceSystem,
 } from "../pf2e";
-import { BridgeHandlerError, byRankThenName, DEFAULT_SEARCH_LIMIT, matchRank } from "./shared";
+import { byRankThenName, DEFAULT_SEARCH_LIMIT, matchRank } from "./shared";
 import {
   auditLog,
   collectRuleWarnings,
@@ -73,11 +74,11 @@ async function handleCreateItem(rawParams: unknown): Promise<CreateItemResult> {
     if (params.actorId !== undefined) {
       const actor = game.actors.get(params.actorId);
       if (!actor) {
-        throw new BridgeHandlerError("not-found", `actor not found: ${params.actorId}`);
+        throw new BridgeError("not-found", `actor not found: ${params.actorId}`);
       }
       const [item] = await createEmbeddedChecked(actor, "Item", [payload]);
       if (!item) {
-        throw new BridgeHandlerError("foundry-error", "item creation returned no document");
+        throw new BridgeError("foundry-error", "item creation returned no document");
       }
       created = item;
       warnings = collectRuleWarnings(item.name, sentSystem, item);
@@ -222,7 +223,7 @@ interface ResolvedItem {
 async function resolveItemForFetch(rawUuid: string): Promise<ResolvedItem> {
   const uuid = rawUuid.includes(".") ? rawUuid : `Item.${rawUuid}`;
   const notFound = (): never => {
-    throw new BridgeHandlerError("not-found", `not found: ${uuid}`);
+    throw new BridgeError("not-found", `not found: ${uuid}`);
   };
 
   if (uuid.startsWith("Compendium.")) {

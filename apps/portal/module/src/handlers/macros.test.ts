@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { SETTING_ALLOW_MACRO_EXECUTION, SETTING_ALLOW_WRITES } from "../constants";
-import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./index";
+import { BridgeError, dispatchQuery, registerHandlers } from "./index";
 import { fakeDoc, fakeDocumentClass, stubFoundry, teardownFoundry } from "./testSupport";
 describe("create-macro", () => {
   afterEach(teardownFoundry);
@@ -71,8 +71,8 @@ describe("create-macro", () => {
       macroType: "chat",
       command: "hi",
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("writes-disabled");
   });
 });
 
@@ -117,9 +117,9 @@ describe("execute-macro", () => {
     const err = await dispatchQuery("portal.execute-macro", { macroId: "m1" }).catch(
       (e: unknown) => e,
     );
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("execution-failed");
-    expect((err as BridgeHandlerError).message).toBe("ReferenceError: foo is not defined");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("execution-failed");
+    expect((err as BridgeError).message).toBe("ReferenceError: foo is not defined");
   });
 
   it("rejects an unknown macroId with a typed not-found error", async () => {
@@ -128,8 +128,8 @@ describe("execute-macro", () => {
     const err = await dispatchQuery("portal.execute-macro", { macroId: "no-such-macro" }).catch(
       (e: unknown) => e,
     );
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("not-found");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("not-found");
   });
 
   it("is refused via writes-disabled when JUST allow-macro-execution is off, naming that setting", async () => {
@@ -142,9 +142,9 @@ describe("execute-macro", () => {
     const err = await dispatchQuery("portal.execute-macro", { macroId: "m1" }).catch(
       (e: unknown) => e,
     );
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("writes-disabled");
-    expect((err as BridgeHandlerError).message).toContain("Allow macro execution");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("writes-disabled");
+    expect((err as BridgeError).message).toContain("Allow macro execution");
   });
 
   it("leaves other writes unaffected when allow-macro-execution is off (update-document still works)", async () => {
@@ -173,7 +173,7 @@ describe("execute-macro", () => {
     const err = await dispatchQuery("portal.execute-macro", { macroId: "m1" }).catch(
       (e: unknown) => e,
     );
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("writes-disabled");
   });
 });

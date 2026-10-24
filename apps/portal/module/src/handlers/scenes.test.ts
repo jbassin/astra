@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 
 import { SETTING_ALLOW_WRITES } from "../constants";
-import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./index";
+import { BridgeError, dispatchQuery, registerHandlers } from "./index";
 import {
   fakeDoc,
   fakeDocumentClass,
@@ -139,8 +139,8 @@ describe("create-token", () => {
       x: 0,
       y: 0,
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("not-found");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("not-found");
   });
 
   it("rejects an unknown actorId with a typed not-found error", async () => {
@@ -151,8 +151,8 @@ describe("create-token", () => {
       x: 0,
       y: 0,
     }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("not-found");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("not-found");
   });
 
   it("rejects params carrying both uuid and actorId, or neither", async () => {
@@ -223,8 +223,8 @@ describe("create-light", () => {
     stubFoundry(true, { scenes: [] });
     registerHandlers();
     const err = await dispatchQuery("portal.create-light", { x: 0, y: 0 }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("not-found");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("not-found");
   });
 
   it("rejects an unknown explicit sceneId with a typed not-found error", async () => {
@@ -233,8 +233,8 @@ describe("create-light", () => {
     const err = await dispatchQuery("portal.create-light", { sceneId: "nope", x: 0, y: 0 }).catch(
       (e: unknown) => e,
     );
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("not-found");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("not-found");
   });
 
   it("is denied with writes-disabled when the module setting is off", async () => {
@@ -244,7 +244,7 @@ describe("create-light", () => {
     });
     registerHandlers();
     const err = await dispatchQuery("portal.create-light", { x: 0, y: 0 }).catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("writes-disabled");
   });
 });

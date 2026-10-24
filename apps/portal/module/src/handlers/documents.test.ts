@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { SETTING_ALLOW_WRITES } from "../constants";
-import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./index";
+import { BridgeError, dispatchQuery, registerHandlers } from "./index";
 import {
   fakeDataModelValidationError,
   fakeDoc,
@@ -32,8 +32,8 @@ describe("get-document and search-world", () => {
     const err = await dispatchQuery("portal.get-document", { uuid: "Actor.nope" }).catch(
       (e: unknown) => e,
     );
-    expect(err).toBeInstanceOf(BridgeHandlerError);
-    expect((err as BridgeHandlerError).code).toBe("not-found");
+    expect(err).toBeInstanceOf(BridgeError);
+    expect((err as BridgeError).code).toBe("not-found");
   });
 
   it("get-document rejects params missing the required uuid", async () => {
@@ -197,9 +197,9 @@ describe("update-document and delete-document", () => {
         uuid: "Actor.p1",
         updates: { "system.saves.fortitude.value": 99 },
       }).catch((e: unknown) => e);
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("validation-failed");
-      expect((err as BridgeHandlerError).message).toContain("system.saves.fortitude.value");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("validation-failed");
+      expect((err as BridgeError).message).toContain("system.saves.fortitude.value");
       expect(updateSpy).not.toHaveBeenCalled();
     });
 
@@ -256,9 +256,9 @@ describe("update-document and delete-document", () => {
         uuid: "Actor.h1",
         updates: { "system.attributes.hp.value": -1 },
       }).catch((e: unknown) => e);
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("validation-failed");
-      expect((err as BridgeHandlerError).message).toBe("attributes.hp.value: invalid");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("validation-failed");
+      expect((err as BridgeError).message).toBe("attributes.hp.value: invalid");
     });
 
     it("rejects an unresolvable uuid with a typed not-found error", async () => {
@@ -268,8 +268,8 @@ describe("update-document and delete-document", () => {
         uuid: "Actor.nope",
         updates: { "system.attributes.hp.value": 1 },
       }).catch((e: unknown) => e);
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("not-found");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("not-found");
     });
 
     it("is denied with writes-disabled when the module setting is off", async () => {
@@ -279,8 +279,8 @@ describe("update-document and delete-document", () => {
         uuid: "Actor.a1",
         updates: { "system.attributes.hp.value": 1 },
       }).catch((e: unknown) => e);
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("writes-disabled");
     });
   });
 
@@ -296,8 +296,8 @@ describe("update-document and delete-document", () => {
       const err = await dispatchQuery("portal.delete-document", { uuid: "Actor.a1" }).catch(
         (e: unknown) => e,
       );
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("not-portal-created");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("not-portal-created");
       expect(deleteSpy).not.toHaveBeenCalled();
     });
 
@@ -351,8 +351,8 @@ describe("update-document and delete-document", () => {
       const err = await dispatchQuery("portal.delete-document", { uuid: "Actor.nope" }).catch(
         (e: unknown) => e,
       );
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("not-found");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("not-found");
     });
 
     it("is denied with writes-disabled when the module setting is off", async () => {
@@ -361,8 +361,8 @@ describe("update-document and delete-document", () => {
       const err = await dispatchQuery("portal.delete-document", { uuid: "Actor.a1" }).catch(
         (e: unknown) => e,
       );
-      expect(err).toBeInstanceOf(BridgeHandlerError);
-      expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+      expect(err).toBeInstanceOf(BridgeError);
+      expect((err as BridgeError).code).toBe("writes-disabled");
     });
   });
 });

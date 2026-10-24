@@ -33,7 +33,7 @@ import {
   PORTAL_VERSION,
   PROTOCOL_MISMATCH_MODULE_STALE,
   PROTOCOL_MISMATCH_SERVER_STALE,
-  type BridgeErrorCode,
+  BridgeError,
   type BridgeStatusResult,
   type McpQuery,
   type McpResponse,
@@ -65,17 +65,6 @@ const queryDuration = lazyHistogram(SERVICE_NAME, "astra.portal.bridge.query_dur
     "Round-trip duration of a bridge query, by outcome (ok, error, timeout, offline, replaced)",
   unit: "ms",
 });
-
-/** Typed bridge failure — see {@link BridgeErrorCode} for the full reason set. */
-export class BridgeError extends Error {
-  readonly code: BridgeErrorCode;
-
-  constructor(code: BridgeErrorCode, message?: string) {
-    super(message ?? code);
-    this.name = "BridgeError";
-    this.code = code;
-  }
-}
 
 /** Liveness + handshake snapshot for the `bridge-status` tool; the schema lives in the
  * tool registry (`BridgeStatusResult` in `@astra/portal-shared`). */

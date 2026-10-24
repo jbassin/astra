@@ -10,9 +10,9 @@ import {
   type CreateActorResult,
   type PersistentDamageParams,
   type BridgeToolHandlers,
+  BridgeError,
 } from "@astra/portal-shared";
 
-import { BridgeHandlerError } from "./shared";
 import {
   auditLog,
   collectRuleWarnings,
@@ -108,7 +108,7 @@ function requireActorMethod<
 >(actor: FoundryActor, method: K): FoundryActor[K] {
   const fn = actor[method];
   if (typeof fn !== "function") {
-    throw new BridgeHandlerError(
+    throw new BridgeError(
       "foundry-error",
       `actor does not support ${method} — is this world running the pf2e system?`,
     );
@@ -145,7 +145,7 @@ async function createPersistentDamage(
   persistentDamage: PersistentDamageParams | undefined,
 ): Promise<void> {
   if (!persistentDamage) {
-    throw new BridgeHandlerError(
+    throw new BridgeError(
       "validation-failed",
       "persistent-damage requires persistentDamage: {formula, damageType, dc?} — increasing " +
         "this condition without them would otherwise open an editor dialog in the GM's own " +
@@ -153,7 +153,7 @@ async function createPersistentDamage(
     );
   }
   if (typeof game.pf2e?.ConditionManager?.getCondition !== "function") {
-    throw new BridgeHandlerError(
+    throw new BridgeError(
       "foundry-error",
       "game.pf2e.ConditionManager is not available — is this world running the pf2e system?",
     );
@@ -236,7 +236,7 @@ async function handleApplyCondition(rawParams: unknown): Promise<ApplyConditionR
     writeGate(1);
     const actor = game.actors.get(params.actorId);
     if (!actor) {
-      throw new BridgeHandlerError("not-found", `actor not found: ${params.actorId}`);
+      throw new BridgeError("not-found", `actor not found: ${params.actorId}`);
     }
 
     if (params.slug === "persistent-damage") {
