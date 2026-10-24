@@ -10,7 +10,7 @@
 #           found on PATH, which is what the recipes and scripts run
 #   binds   every bind-mount source in the resolved compose config exists (a missing source
 #           under the data root would be created as root by Docker)
-#   units   every unit an install recipe links (each `_unit-link` in the justfile) is a symlink
+#   units   every unit `just units-install` links (deploy/systemd/units.txt) is a symlink
 #           into the deploy checkout, and every such timer and path unit is enabled
 #   host    user lingering is on; the SOPS age key file exists; the SOPS file names
 #           signoz_api_key (a grep for the key name, never decrypted; a warning while it is
@@ -113,17 +113,20 @@ check_binds() {
   [ "$missing" -eq 0 ] && ok "binds: all $n bind-mount sources exist"
 }
 
-# "<recipe> <unit>" for every unit an install recipe links, from the justfile (first recipe wins).
+# "<group> <unit>" for every unit `just units-install` links, from deploy/systemd/units.txt
+# (one "<group> <unit>..." line per group; the first group that lists a unit wins).
 linked_units() {
-  sed -nE 's/^([a-z0-9-]+):.*\(_unit-link ([^)]*)\).*/\1 \2/p' "$CODE_ROOT/justfile" |
-    while read -r recipe units; do
-      for u in $units; do printf '%s %s\n' "$recipe" "${u//\"/}"; done
-    done | awk '!seen[$2]++'   # a unit two recipes link is checked once
+  local group units
+  while read -r group units; do
+    case "$group" in '' | '#'*) continue ;; esac
+    for u in $units; do printf '%s %s\n' "$group" "$u"; done
+  done <"$CODE_ROOT/deploy/systemd/units.txt" | awk '!seen[$2]++'   # a unit two groups link is checked once
 }
 
 check_units() {
-  local recipe unit want dst have state bad=0 n=0
-  while read -r recipe unit; do
+  local group recipe unit want dst have state bad=0 n=0
+  while read -r group unit; do
+    recipe="units-install $group"
     n=$((n + 1))
     want="$DEPLOY_ROOT/deploy/systemd/$unit"
     dst="$UNIT_DIR/$unit"

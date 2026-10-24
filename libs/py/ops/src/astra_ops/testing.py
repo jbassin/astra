@@ -24,9 +24,10 @@ def _expect(ok: bool, message: str) -> None:
 class Call:
     """One expected child: its argv and what it returns.
 
-    ``env`` / ``stdin`` / ``out``, when given, are checked too. ``stdout`` is what a captured,
-    ``> file`` or ``| tee file`` child printed. ``effect`` runs when the call happens (a fake
-    child's side effect, e.g. writing a file)."""
+    ``env`` / ``stdin`` / ``out`` / ``limit``, when given, are checked too (``limit`` also
+    marks a ``Runner.bounded`` call). ``stdout`` is what a captured, ``> file`` or
+    ``| tee file`` child printed. ``effect`` runs when the call happens (a fake child's side
+    effect, e.g. writing a file)."""
 
     argv: list[str]
     rc: int = 0
@@ -35,6 +36,7 @@ class Call:
     stdin: bytes | None = None
     out: Out | None = None
     effect: Callable[[], None] | None = None
+    limit: float | None = None
 
 
 Step = Call | tuple[str, ...]
@@ -93,6 +95,22 @@ class Scripted(Runner):
             out_path.write_bytes(data)
         return Done(step.rc, data if out == "capture" else b"")
 
+    def bounded(self, argv: Sequence[str], *, limit: float, out_path: Path | None = None) -> Done:
+        argv = list(argv)
+        _expect(bool(self.steps), f"unexpected bounded call {argv} (script exhausted)")
+        step = self.steps.pop(0)
+        if not isinstance(step, Call):
+            raise AssertionError(f"expected {step}, got bounded call {argv}")  # noqa: TRY004 -- a failed expectation, not a type error
+        _expect(argv == step.argv, f"argv mismatch:\n  want {step.argv}\n  got  {argv}")
+        _expect(step.limit == limit, f"limit mismatch for {argv}: want {step.limit}, got {limit}")
+        self.seen.append(step)
+        if step.effect is not None:
+            step.effect()
+        if out_path is not None:
+            data = step.stdout.encode() if isinstance(step.stdout, str) else step.stdout
+            out_path.write_bytes(data)
+        return Done(step.rc)
+
     def note(self, event: tuple[str, ...]) -> None:
         _expect(bool(self.steps), f"unexpected lock step {event} (script exhausted)")
         step = self.steps.pop(0)
@@ -113,8 +131,10 @@ def make_ctx(
     answer: str = "",
     node: str | None = "/usr/bin/node",
 ) -> tuple[Ctx, Scripted]:
-    """A ``Ctx`` over ``tmp`` (repo ``tmp/repo``, data root ``tmp/state``, uv ``/uv``) whose
-    runner is ``Scripted(steps)``, config is ``config``, and terminal answer is ``answer``."""
+    """A ``Ctx`` over ``tmp`` (repo ``tmp/repo``, data root ``tmp/state``, deploy checkout
+    ``tmp/deploy``, uv ``/uv``, just ``/just``, Drive mount ``tmp/drive``) whose runner is
+    ``Scripted(steps)``, config is ``config``, and terminal answer is ``answer``. A sleep is
+    the step ``("sleep", "<seconds>")``; the clock always reads ``T``."""
     runner = Scripted(list(steps), passthrough=passthrough)
     cfg = dict(config or {})
 
@@ -127,6 +147,9 @@ def make_ctx(
         uv_bin="/uv",
         mouthpiece_episodes=tmp / "state" / "mouthpiece" / "episodes",
         akasha_audio_live=tmp / "state" / "scribe" / "data" / "saved",
+        deploy_root=tmp / "deploy",
+        just_bin="/just",
+        craig_drop_dir=tmp / "drive",
         home=tmp / "home",
         runner=runner,
         config_reader=lambda keys: [cfg[k] for k in keys],
@@ -134,6 +157,8 @@ def make_ctx(
         stdin_isatty=lambda: tty,
         prompt=lambda _q: answer,
         lock_timeout=0.3,
+        sleep=lambda s: runner.note(("sleep", f"{s:g}")),
+        now=lambda: "T",
     )
     return ctx, runner
 

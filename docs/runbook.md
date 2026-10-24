@@ -148,8 +148,8 @@ writes (`astra-metrics.timer`, every 2 minutes); each rule's description says wh
 1. Send a test page: `deploy/systemd/alert-notify.sh test`.
 2. Run the watchdog without paging:
    `XDG_STATE_HOME=$(mktemp -d) ALERT_DRY_RUN=1 deploy/systemd/alert-notify.sh watchdog`.
-3. After editing a unit file, reinstall: `just alert-install` (watchdog and alert units) or
-   `just backup-install`.
+3. After editing a unit file, reinstall: `just units-install alert` (watchdog and alert
+   units) or `just units-install backup` (`just units-install` with no group does all of them).
 4. Turn off the watchdog's self-repair for an investigation: set `WATCHDOG_REMEDIATE=0` in a
    drop-in for `astra-watchdog.service`.
 5. Change a SigNoz rule in git, not in the UI: edit its file in `deploy/signoz/rules/` (named after

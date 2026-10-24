@@ -17,7 +17,7 @@ WorkingDirectory=/ruby/data/astra-deploy
 # container) so it has git, the git identity and the SSH push key; the Dagster containers
 # have none of those. The recipe is LIVE, so it asks first: --yes answers for this
 # unattended unit (without it, no terminal means exit 64). After a deploy that changes this
-# line, re-run `just linguist-commit-timer-install` (daemon-reload) or systemd keeps the old one.
+# line, re-run `just units-install linguist-commit` (daemon-reload) or systemd keeps the old one.
 ExecStart=/home/jbassin/.cargo/bin/just linguist-commit --yes
 # A oneshot has no start timeout by default, and the watchdog treats a timer whose service is
 # still activating as healthy, so a wedged run would look green forever (0037 OPS-10). Runs

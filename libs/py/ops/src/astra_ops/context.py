@@ -63,6 +63,8 @@ class Done:
 
 #: Seconds an interrupted child gets to exit after SIGINT before it is killed.
 INTERRUPT_GRACE_S = 30.0
+#: How often ``Runner.bounded`` polls its child.
+BOUNDED_POLL_S = 0.1
 
 
 def _start_failed(argv: Sequence[str], exc: OSError) -> Done:
@@ -184,6 +186,44 @@ class Runner:
                 _interrupted(proc)
                 raise
 
+    def bounded(self, argv: Sequence[str], *, limit: float, out_path: Path | None = None) -> Done:
+        """Run ``argv`` with a time limit, never blocking on it (craig-sync's FUSE watchdog).
+
+        A process stuck on a wedged FUSE mount sits in uninterruptible D state: no signal
+        reaps it, so waiting for it after a kill would hang us too. So the child is polled
+        (``waitpid`` with WNOHANG, which never touches the mount) and, past ``limit`` seconds,
+        sent SIGKILL and abandoned (it clears once the mount recovers): exit 124, like
+        ``timeout(1)``. ``out_path`` takes the child's stdout (``> file``)."""
+        _flush()
+        fh: IO[bytes] | None = None
+        if out_path is not None:
+            try:
+                fh = out_path.open("wb")
+            except OSError as exc:
+                print(f"{out_path}: {exc.strerror}", file=sys.stderr, flush=True)  # noqa: T201 -- command-line output
+                return Done(1)
+        try:
+            try:
+                proc = subprocess.Popen(list(argv), stdout=fh)
+            except OSError as exc:
+                return _start_failed(argv, exc)
+            deadline = time.monotonic() + limit
+            try:
+                while (rc := proc.poll()) is None:
+                    if time.monotonic() >= deadline:
+                        with contextlib.suppress(ProcessLookupError):
+                            proc.kill()  # best effort: a D-state child ignores it, fine
+                        return Done(124)
+                    time.sleep(BOUNDED_POLL_S)
+            except KeyboardInterrupt:
+                with contextlib.suppress(ProcessLookupError):
+                    proc.kill()
+                raise
+            return Done(rc)
+        finally:
+            if fh is not None:
+                fh.close()
+
     def note(self, event: tuple[str, ...]) -> None:
         """A lock step; the recorder logs it in the call sequence, the real runner ignores it."""
 
@@ -260,6 +300,11 @@ def _ask(question: str) -> str:
     return line
 
 
+def _utc_stamp() -> str:
+    """``date -u +%FT%TZ``."""
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+
 def _isatty() -> bool:
     try:
         return os.isatty(sys.stdin.fileno())
@@ -280,6 +325,9 @@ class Ctx:
     uv_bin: str
     mouthpiece_episodes: Path
     akasha_audio_live: Path
+    deploy_root: Path = Path("/ruby/data/astra-deploy")
+    just_bin: str = "just"
+    craig_drop_dir: Path = Path("/ruby/data/home/drive/Craig")
     home: Path = field(default_factory=Path.home)
     runner: Runner = field(default_factory=Runner)
     config_reader: Callable[[Sequence[str]], list[str]] = _default_config_reader
@@ -287,6 +335,8 @@ class Ctx:
     stdin_isatty: Callable[[], bool] = _isatty
     prompt: Callable[[str], str] = _ask
     lock_timeout: float = LOCK_TIMEOUT_S
+    sleep: Callable[[float], None] = time.sleep
+    now: Callable[[], str] = _utc_stamp
 
     # --- paths derived from the data root (the justfile's git_publish_lock etc.) ---
 
@@ -346,6 +396,11 @@ class Ctx:
         rc = self.run(argv, env=env, stdin_data=stdin_data)
         if rc != 0:
             raise Fail(rc)
+
+    def bounded(self, argv: Sequence[str], *, limit: float, out_path: Path | None = None) -> int:
+        """Run with a time limit, never blocking on the child (``Runner.bounded``); 124 on
+        timeout."""
+        return self.runner.bounded(argv, limit=limit, out_path=out_path).returncode
 
     def output(self, argv: Sequence[str], *, stderr_null: bool = False) -> str:
         """Stdout minus trailing newlines, whatever the exit code (``"$(cmd)"`` in a test)."""

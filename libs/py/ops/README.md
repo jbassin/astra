@@ -1,8 +1,10 @@
 # astra-ops
 
-The host ops CLI (0037 ops-1a). It holds the logic of the justfile's data-publishing recipes;
-each recipe is now a one-line wrapper, so systemd units, docs and bots still run `just <recipe>`.
-`deploy/deploy.sh` stays bash (it is staged and re-executed by design); astra-ops calls it.
+The host ops CLI (0037 ops-1a, ops-1b). It holds the logic of the justfile's ops recipes; each
+recipe is a one-line wrapper, so systemd units, docs and bots still run `just <recipe>`.
+`deploy/deploy.sh` stays bash (it is staged and re-executed by design); astra-ops calls it. Also
+still bash: `deploy/doctor.sh`, `deploy/systemd/alert-notify.sh` and `astra-backup.sh` (the
+backup recipes are one-line wrappers over it), and cdx-4's `codex-refresh` and `codex-build`.
 
 | just recipe | astra-ops command | confirmation |
 | --- | --- | --- |
@@ -17,6 +19,19 @@ each recipe is now a one-line wrapper, so systemd units, docs and bots still run
 | `signoz-rules-check` | `signoz-rules-check` | none (read-only) |
 | `signoz-rules-apply [--yes]` | `signoz-rules-apply` | dry run unless `--yes` |
 | `host-metrics` | `host-metrics` | none (rewrites one textfile) |
+| `heartwood-backfill [from]` | `heartwood-backfill` | PAID + LIVE |
+| `_heartwood-backfill-loop [from]` | `heartwood-backfill-loop` | PAID + LIVE (its unit passes `--yes`) |
+| `heartwood-backfill-reset` | `heartwood-backfill-reset` | none |
+| `heartwood-requests` | `heartwood-requests` | PAID + LIVE |
+| `craig-sync` | `craig-sync` | none |
+| `units-install [group...]` | `units-install` | none |
+| `alert-sudoers-install` | `alert-sudoers-install` | none (sudo asks for the password) |
+| `portal-module-install` | `portal-module-install` | none |
+
+Modules: `publish.py` (the astra-data chain), `heartwood.py` (one session, revert),
+`backfill.py` (backfill, reset, the request runner), `craig.py` (craig-sync), `host.py` (the
+installs), `signoz.py` (the alert rules) and `host_metrics.py`. Each module docstring has the
+steps, the lock order and the exit codes.
 
 ## SigNoz alert rules as code
 
@@ -39,7 +54,7 @@ UI (Settings, Service accounts) and add it with
 
 ## Host metrics
 
-`host-metrics` (run every 2 minutes by `astra-metrics.timer`, installed by `just alert-install`)
+`host-metrics` (run every 2 minutes by `astra-metrics.timer`, installed by `just units-install alert`)
 writes `ops.metrics-textfile`, which node-exporter serves to SigNoz: TLS certificate expiry
 per site in `sites.caddyfile`, container health and restart counts for the `astra` compose
 project, the Dagster daemons' heartbeat ages, and the age of the newest transcript and
@@ -51,11 +66,17 @@ module docstring of `host_metrics.py` lists every metric.
 
 - **Confirmation.** A paid or live command asks first and proceeds only on y or yes (else
   exit 1). `--yes` skips the question. With no terminal and no `--yes` it exits 64 rather than
-  hang. `linguist-commit.service`, the heartwood request runner and the backfill loop pass
-  `--yes`.
-- **Paths.** `--data-root`, `--uv`, `--mouthpiece-episodes` and `--akasha-audio` default the
-  way the justfile's variables do; the wrappers pass the justfile's values. Data paths come from
-  `config.kdl`, read in-process (the same lookup as `python -m astra_ontology_config`).
+  hang. `linguist-commit.service`, `heartwood-request.service`, the heartwood request runner
+  and the backfill launch (for its loop) pass `--yes`.
+- **Paths.** `--data-root`, `--uv`, `--mouthpiece-episodes`, `--akasha-audio`,
+  `--deploy-root`, `--just` and `--craig-drop-dir` default the way the justfile's variables do;
+  the wrappers pass the justfile's values. A new global option that takes a value must also go
+  in `boot.VALUE_OPTIONS` (a test checks). Data paths come from `config.kdl`, read in-process
+  (the same lookup as `python -m astra_ontology_config`).
+- **Units.** `deploy/systemd/units.txt` lists the unit groups `units-install` links; `just doctor`
+  checks the same list. While a heartwood backfill runs, `units-install` refuses the
+  `linguist-commit` and `heartwood-request` groups (and the no-group default), which would
+  re-arm what the backfill paused.
 - **Locks.** `<data root>/locks/git-publish.lock` and `host-tooling.lock`, taken with flock(2),
   the same kernel lock `flock(1)` takes in deploy.sh. Order and release points: the module
   docstrings of `publish.py` and `heartwood.py`.
@@ -69,7 +90,11 @@ module docstring of `host_metrics.py` lists every metric.
   output file that cannot open exits 1, and a seed dir that cannot be made fails that seed:
   the same codes and the same "continue the chain" handling as bash.
 - **Ctrl-C.** The running child gets SIGINT and up to 30 s to clean up (git's `index.lock`,
-  deploy.sh's history record) before it is killed; then the command stops.
+  deploy.sh's history record) before it is killed; then the command stops. The backfill loop
+  treats SIGTERM and SIGHUP (`systemctl --user stop heartwood-backfill`) the same way, then
+  re-arms the bots and exits 143.
+- **FUSE.** craig-sync's mount accesses run through `Runner.bounded`: polled, never waited on,
+  abandoned past their limit (a child stuck in D state cannot be reaped).
 
 ## Traps
 
@@ -77,5 +102,9 @@ module docstring of `host_metrics.py` lists every metric.
   strings that receive the host dir as `$1`.
 - The tests (`tests/`) script every child argv and lock step in order and fail on any other call;
   a changed step needs its test changed with it. One test runs real git against a bare origin.
+- The backfill loop runs `heartwood-agent` in-process for every date, so a deploy during a
+  backfill takes effect at the next backfill, not the next date.
+- A changed `ExecStart=` (like heartwood-request.service gaining `--yes`) takes effect only after
+  `just units-install <group>` or a daemon-reload; until then systemd runs the old line.
 - `set positional-arguments` in the justfile forwards each wrapper's arguments verbatim as
   `"$@"` (just 1.23 has no per-recipe attribute for it).

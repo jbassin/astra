@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 from astra_config import find_repo_root
-from astra_ops import cli
+from astra_ops import boot, cli
 from astra_ops.context import Ctx, Lock, Runner
 from astra_ops.testing import Call, Step, clone, make_ctx, push_steps, uv
 
@@ -161,53 +161,82 @@ def test_ctx_lock_paths_match_the_justfile(tmp_path: Path) -> None:
 
 # --- callers ---------------------------------------------------------------------------------
 
-#: Recipes whose astra-ops command asks for confirmation.
-CONFIRMED = {
-    "linguist-commit",
-    "_astra-data-push",
-    "mouthpiece-seed",
-    "akasha-seed",
-    "_heartwood-push-deploy",
-    "heartwood-agent",
-    "heartwood-revert",
-}
+WRAPPER = re.compile(r'^([a-z_-]+)(?: [^\n]*)?:\n    @\{\{ops\}\} (\S+) "\$@"$', re.MULTILINE)
+
+
+def wrappers() -> dict[str, str]:
+    """just recipe -> the astra-ops command its one-line wrapper runs."""
+    return dict(WRAPPER.findall((REPO / "justfile").read_text()))
+
+
+def confirmed_recipes() -> set[str]:
+    return {r for r, c in wrappers().items() if c in cli.CONFIRMED}
+
+
+#: Commands whose recipe is more than a one-line wrapper: signoz-rules-check maps astra-ops's
+#: "no API key" exit 3 to 0.
+NOT_ONE_LINE = {"signoz-rules-check"}
+
+
+def test_every_cli_command_has_one_wrapper() -> None:
+    commands = sorted(wrappers().values())
+    assert commands == sorted(set(cli.COMMANDS) - NOT_ONE_LINE), commands
+    assert confirmed_recipes() == {
+        "linguist-commit",
+        "_astra-data-push",
+        "mouthpiece-seed",
+        "akasha-seed",
+        "heartwood-agent",
+        "_heartwood-push-deploy",
+        "heartwood-revert",
+        "heartwood-backfill",
+        "_heartwood-backfill-loop",
+        "heartwood-requests",
+    }
 
 
 def test_every_unit_that_runs_a_confirmed_recipe_passes_yes() -> None:
+    confirmed, seen = confirmed_recipes(), set()
     for unit in sorted((REPO / "deploy" / "systemd").glob("*.service")):
         for line in unit.read_text().splitlines():
             m = re.match(r"ExecStart=\S*/just (\S+)(.*)", line)
-            if m and m.group(1) in CONFIRMED:
+            if m and m.group(1) in confirmed:
+                seen.add(m.group(1))
                 assert "--yes" in m.group(2).split(), f"{unit.name}: {line}"
+    assert seen == {"linguist-commit", "heartwood-requests"}
 
 
 def test_unattended_callers_pass_yes() -> None:
-    """The request runner, and every remaining bash recipe that calls a confirmed recipe (the
-    backfill loop runs detached under systemd-run, with no terminal)."""
+    """The request runner; the backfill launch passes --yes to its loop (test_backfill). No
+    recipe calls another confirmed recipe through just any more."""
     requests = (REPO / "apps/heartwood/py/src/astra_heartwood/requests.py").read_text()
     assert '"heartwood-agent", req.date, "--yes"]' in requests
-    nested = re.compile(r'\{\{just_executable\(\)\}\}" -f "\{\{justfile\(\)\}\}" (\S+)(.*)')
-    calls = []
+    nested = re.compile(r'\{\{just_executable\(\)\}\}" -f "\{\{justfile\(\)\}\}" (\S+)')
+    confirmed = confirmed_recipes()
     for line in (REPO / "justfile").read_text().splitlines():
         m = nested.search(line)
-        if m and m.group(1) in CONFIRMED:
-            calls.append(m.group(1))
-            assert "--yes" in m.group(2).split(), line
-    assert sorted(calls) == ["_heartwood-push-deploy", "heartwood-agent"]
+        assert not (m and m.group(1) in confirmed), line
 
 
-def test_justfile_wrappers_call_the_cli() -> None:
-    justfile = (REPO / "justfile").read_text()
-    for recipe, command in [
-        ("linguist-commit", "linguist-commit"),
-        ("_astra-data-push", "astra-data-push"),
-        ("mouthpiece-publish", "mouthpiece-publish"),
-        ("mouthpiece-seed", "mouthpiece-seed"),
-        ("akasha-seed", "akasha-seed"),
-        ("heartwood-agent", "heartwood-agent"),
-        ("_heartwood-push-deploy", "heartwood-push-deploy"),
-        ("heartwood-revert", "heartwood-revert"),
-    ]:
-        m = re.search(rf"^{re.escape(recipe)} [^\n]*:\n    ([^\n]+)", justfile, re.MULTILINE)
-        assert m, recipe
-        assert m.group(1).endswith(f'{{{{ops}}}} {command} "$@"'), (recipe, m.group(1))
+def test_boot_knows_every_option_that_takes_a_value() -> None:
+    """boot.py skips global options to find the data root; a new one must be listed there."""
+    parser = cli.build_parser()
+    valued = {
+        opt
+        for action in parser._actions
+        if action.option_strings and action.nargs is None and action.dest != "help"
+        for opt in action.option_strings
+    }
+    assert valued == {*boot.VALUE_OPTIONS, "--data-root"}
+
+
+def test_every_unit_runs_a_recipe_that_exists() -> None:
+    recipes = set(re.findall(r"^([a-z_-]+)(?: [^\n]*)?:", (REPO / "justfile").read_text(), re.M))
+    ran = []
+    for unit in sorted((REPO / "deploy" / "systemd").glob("*.service")):
+        for line in unit.read_text().splitlines():
+            m = re.match(r"ExecStart=\S*/just (\S+)", line)
+            if m:
+                ran.append(m.group(1))
+                assert m.group(1) in recipes, f"{unit.name}: {line}"
+    assert sorted(ran) == ["craig-sync", "heartwood-requests", "host-metrics", "linguist-commit"]

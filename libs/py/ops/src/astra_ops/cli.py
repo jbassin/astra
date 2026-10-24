@@ -1,4 +1,4 @@
-"""``astra-ops`` — the host ops CLI behind the justfile's data-publishing recipes (0037 ops-1a).
+"""``astra-ops`` — the host ops CLI behind the justfile's ops recipes (0037 ops-1a, ops-1b).
 
     astra-ops [PATH OPTIONS] COMMAND [ARGS]
 
@@ -13,9 +13,18 @@
     signoz-rules-check                  compare the live SigNoz alert rules with git (read-only)
     signoz-rules-apply [--yes]          plan (default) or apply deploy/signoz/rules to SigNoz
     host-metrics                        write the host probes' Prometheus textfile
+    heartwood-backfill [FROM] [--yes]   PAID + LIVE: replay pending sessions, detached
+    heartwood-backfill-loop [FROM] [--yes]   PAID + LIVE: the backfill's body (its unit runs it)
+    heartwood-backfill-reset            re-arm the bots after a hard-killed backfill
+    heartwood-requests [--yes]          PAID + LIVE: drain Dagster's session_wiki requests
+    craig-sync                          copy new Craig zips from the Drive mount into incoming
+    units-install [GROUP...]            link + enable the systemd user units (no group = all)
+    alert-sudoers-install               one-time ROOT step: the watchdog's sudoers drop-ins
+    portal-module-install               build the Foundry module and drop it into Foundry
 
-PATH OPTIONS (``--data-root``, ``--uv``, ``--mouthpiece-episodes``, ``--akasha-audio``) default
-exactly as the justfile's variables do; the ``just`` wrappers pass the justfile's values.
+PATH OPTIONS (``--data-root``, ``--uv``, ``--mouthpiece-episodes``, ``--akasha-audio``,
+``--deploy-root``, ``--just``, ``--craig-drop-dir``) default exactly as the justfile's
+variables do; the ``just`` wrappers pass the justfile's values.
 
 Confirmation: every paid or live command asks first, like just's ``[confirm]``, and only y or
 yes proceeds (else exit 1). ``--yes`` skips the question; the systemd units and the heartwood
@@ -37,13 +46,15 @@ from astra_config import find_repo_root
 from astra_observe import get_logger, get_tracer
 from astra_ontology_config import load as load_config
 
-from . import heartwood, host_metrics, publish, signoz
+from . import backfill, craig, heartwood, host, host_metrics, publish, signoz
 from .context import Ctx, Fail
 
 log = get_logger("astra.ops")
 
 DEFAULT_DATA_ROOT = "/ruby/data/astra-state"
 DEFAULT_UV_BIN = "/home/jbassin/.local/bin/uv"
+DEFAULT_DEPLOY_ROOT = "/ruby/data/astra-deploy"
+DEFAULT_CRAIG_DROP_DIR = "/ruby/data/home/drive/Craig"
 
 #: What each confirmation names (the start of the question; "Type y to continue:" follows).
 LIVE = {
@@ -58,6 +69,12 @@ LIVE = {
     "akasha-frontend.",
     "heartwood-revert": "this is LIVE: it reverts the session's wiki commit, pushes and "
     "redeploys akasha-frontend.",
+    "heartwood-backfill": "this is PAID (OpenRouter LLM calls for every pending session, hours "
+    "long) and LIVE (commits, pushes and redeploys akasha).",
+    "heartwood-backfill-loop": "this is PAID (OpenRouter LLM calls for every pending session) "
+    "and LIVE (commits, pushes and redeploys akasha).",
+    "heartwood-requests": "this is PAID (one heartwood agent run per pending request) and LIVE "
+    "(each publishes, pushes and redeploys akasha).",
 }
 AGENT_PAID_LIVE = (
     "this is PAID (OpenRouter LLM calls) and LIVE (publishes, pushes and redeploys akasha)."
@@ -91,6 +108,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--akasha-audio",
         default=_env_default("AKASHA_AUDIO_LIVE", f"{data_root}/scribe/data/saved"),
     )
+    p.add_argument("--deploy-root", default=_env_default("ASTRA_DEPLOY_ROOT", DEFAULT_DEPLOY_ROOT))
+    p.add_argument("--just", default="just", help="the just binary the wrappers run under")
+    p.add_argument(
+        "--craig-drop-dir", default=_env_default("CRAIG_DROP_DIR", DEFAULT_CRAIG_DROP_DIR)
+    )
     p.add_argument("command", choices=sorted(COMMANDS))
     p.add_argument("args", nargs=argparse.REMAINDER)
     return p
@@ -103,6 +125,9 @@ def make_ctx(ns: argparse.Namespace) -> Ctx:
         uv_bin=ns.uv,
         mouthpiece_episodes=Path(ns.mouthpiece_episodes),
         akasha_audio_live=Path(ns.akasha_audio),
+        deploy_root=Path(ns.deploy_root),
+        just_bin=ns.just,
+        craig_drop_dir=Path(ns.craig_drop_dir),
     )
 
 
@@ -119,6 +144,38 @@ def _only_yes(command: str, args: list[str]) -> bool:
             Ctx.err(f"{command}: unknown argument '{a}' (the only flag is --yes)")
             raise Fail(64)
     return yes
+
+
+def _bare(command: str, fn: Callable[[Ctx], int]) -> Callable[[Ctx, list[str]], int]:
+    """Commands that take no arguments and ask nothing (``_no_args`` checks)."""
+
+    def run(ctx: Ctx, args: list[str]) -> int:
+        _no_args(command, args)
+        return fn(ctx)
+
+    return run
+
+
+def _from_and_yes(command: str, args: list[str]) -> tuple[str, bool]:
+    """``[FROM] [--yes]``: an optional first date (empty = from the first session)."""
+    rest = [a for a in args if a != "--yes"]
+    if len(rest) > 1 or any(a.startswith("-") for a in rest):
+        Ctx.err(f"{command}: usage: {command} [FROM] [--yes]")
+        raise Fail(64)
+    return (rest[0] if rest else ""), len(rest) < len(args)
+
+
+def _backfill(command: str, fn: Callable[[Ctx, str], int]) -> Callable[[Ctx, list[str]], int]:
+    def run(ctx: Ctx, args: list[str]) -> int:
+        from_date, yes = _from_and_yes(command, args)
+        ctx.confirm(command, LIVE[command], yes=yes)
+        return fn(ctx, from_date)
+
+    return run
+
+
+def _units_install(ctx: Ctx, args: list[str]) -> int:
+    return host.units_install(ctx, args)
 
 
 def _simple(command: str, fn: Callable[[Ctx], int]) -> Callable[[Ctx, list[str]], int]:
@@ -243,7 +300,18 @@ COMMANDS: dict[str, Callable[[Ctx, list[str]], int]] = {
     "signoz-rules-check": _signoz_rules_check,
     "signoz-rules-apply": _signoz_rules_apply,
     "host-metrics": _host_metrics,
+    "heartwood-backfill": _backfill("heartwood-backfill", backfill.heartwood_backfill),
+    "heartwood-backfill-loop": _backfill("heartwood-backfill-loop", backfill.backfill_loop),
+    "heartwood-backfill-reset": _bare("heartwood-backfill-reset", backfill.backfill_reset),
+    "heartwood-requests": _simple("heartwood-requests", backfill.heartwood_requests),
+    "craig-sync": _bare("craig-sync", craig.craig_sync),
+    "units-install": _units_install,
+    "alert-sudoers-install": _bare("alert-sudoers-install", host.alert_sudoers_install),
+    "portal-module-install": _bare("portal-module-install", host.portal_module_install),
 }
+
+#: Commands that ask before they run (``--yes`` skips the question).
+CONFIRMED = frozenset({*LIVE, "heartwood-agent"})
 
 
 def dispatch(ctx: Ctx, command: str, args: list[str]) -> int:

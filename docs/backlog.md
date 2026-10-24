@@ -134,8 +134,10 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
   world; their live sides are synthesised today — agent.
 - `just vellum-parity-live` (lib-9) is not scheduled; wire it into the watchdog or a timer — agent.
 - `deploy/node.Dockerfile` still mentions compose `command:` lines (repo-3 removed them) — agent.
-- ops-1b: move the remaining bash recipes (codex-refresh, backup helpers, heartwood backfill and
-  requests, craig-sync, installs) into `astra-ops` — agent.
+- ops-1b follow-ups: `codex-refresh` and `codex-build` (cdx-4's release recipes) still have
+  bash bodies that interpolate `{{flags}}`; make them one-line wrappers; delete the faerrin-era user unit files in `~/.config/systemd/user` (`dice-export`,
+  `eerie`, `lark`, `mouth`, `wretch-reconcile`: none enabled, all point into the deleted
+  `/ruby/data/experiments/faerrin` tree) — agent.
 - Flaky under parallel load (several `just ci` runs at once): codex `ssrSmoke`'s first request times
   out at 5 s, and codex `build-search.test.ts` "page_count matches the fixture manifest" failed
   once — agent.
