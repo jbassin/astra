@@ -1,0 +1,13 @@
+import { loadConfig } from "@astra/config";
+import { createServerFn } from "@tanstack/react-start";
+
+// The browser RUM endpoint and service name from config.kdl, as a server function so the config
+// read stays out of the client bundle. It must stay in app source: TanStack Start's vite plugin
+// transforms server functions only inside the app. `<SiteDocument rum>` loads it.
+export const getRumConfig = createServerFn({ method: "GET" }).handler(() => {
+  const cfg = loadConfig();
+  return {
+    endpoint: cfg.telemetry.rumEndpoint,
+    serviceName: `${cfg.__camel__.serviceName}-rum`,
+  };
+});

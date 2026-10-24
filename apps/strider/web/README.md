@@ -47,26 +47,19 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
 
 ## Port recipe (new frontend `apps/<domain>/web`)
 
-1. **Scaffold** `apps/<domain>/web/` by copying strider's shell files: `server.ts`,
-   `vite.config.ts`, `vitest.config.ts`, `tsconfig.json`, `scripts/`
-   (`writeLayer.ts` if you need an editor), `src/router.tsx`, `src/routes/__root.tsx`,
-   `src/ssrSmoke.test.ts`, `src/observe/`, `src/components/{ClientOnly,PixiHost,SiteHeader}`,
-   `src/lib/`, `src/styles/`, then edit their app-specific options. Depend on `@astra/site-kit`, `@astra/content-build`, `@astra/gothic`,
-   `@astra/observe`, `@astra/config` (`workspace:*`).
-2. **Delete** `src/domain/` and `content/*`; add your own `src/domain/` + `content/`.
-3. **Register content sources** in `scripts/build-content.ts` via
-   `@astra/content-build` (`defineContentSource`/`buildContent`) — emit your generated
-   modules into `src/generated/`.
-4. **Config** (config-single-source): add an `<app> { service-name; port }` namespace
-   to `ontology/ontology-config/config.kdl` and to `libs/py/config` (Pydantic, in `WholeConfig`
-   and `TS_NAMESPACES`), then run `just ontology-gen` to regenerate the TS Zod schema. `server.ts` and `vite.config.ts`
-   read it; the RUM service name derives as `${serviceName}-rum`.
-5. **Deploy**: add a Compose service that builds from the shared `deploy/node.Dockerfile`
-   (`build.args.APP: <domain>/web`; no `PORT` env, since the port is config-sourced; map the
-   published host port) and a Caddy block in `sites.caddyfile` (`import astra_site` +
-   reverse_proxy; fonts self-serve from the container). No Docker file lists workspace
-   members, so the new app needs no other Docker change (see `docs/development.md`, "Adding
-   an app").
+1. **Scaffold** with `just new-frontend <domain>`: it writes `apps/<domain>/web/` on the
+   site-kit preset and adds the config block (config.kdl, the fixture, Pydantic, the Zod
+   schema), the compose service and the Caddy stanza (see `libs/ts/site-kit/README.md`).
+2. **Add your domain**: `src/domain/`, the routes, and from strider whatever shell pieces you
+   need (`src/components/{ClientOnly,PixiHost,SiteHeader}`, `src/lib/`, `scripts/writeLayer.ts`
+   for an editor).
+3. **Register content sources**, if the app has build-time content: `scripts/build-content.ts`
+   via `@astra/content-build` (`defineContentSource`/`buildContent`) emits the generated modules
+   into `src/generated/`; name them in `vite.config.ts`'s `generated`, drop `generatedContent:
+   false` from `vitest.config.ts`, and depend on `@astra/content-build`.
+4. **Deploy**: commit, merge, `just deploy <domain>` and `just caddy-reload`. No Docker file
+   lists workspace members, so the new app needs no other Docker change (see
+   `docs/development.md`, "Adding an app").
 
 ## Load-bearing gotchas (inherit these)
 

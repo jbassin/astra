@@ -120,6 +120,17 @@ ontology-gen *flags:
 routes-gen *flags:
     node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/site-kit/scripts/route-tree.ts "$@"
 
+# Writes apps/<name>/web from libs/ts/site-kit/template/ (the next free port in 10350 to 10399
+# unless --port is given), adds the app's block to config.kdl and the fixture, its Pydantic
+# model, its compose service and its Caddy stanza, then regenerates the Zod schema and links the
+# new workspace member. Review the stubs, then commit; `just deploy <name>` and
+# `just caddy-reload` put it live.
+# Scaffold a TanStack Start frontend on the site-kit preset: `just new-frontend <name> [--port <n>]`.
+new-frontend name *flags:
+    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/site-kit/scripts/new-frontend.ts "$@"
+    "{{just_executable()}}" -f "{{justfile()}}" ontology-gen
+    pnpm install
+
 # Not in CI (CI has no astra-data clone). Reads only; the path is config's data.akasha-content.
 # Run the vellum parity check over the real wiki in the astra-data clone.
 vellum-parity-live:

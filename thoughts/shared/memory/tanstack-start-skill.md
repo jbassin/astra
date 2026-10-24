@@ -6,7 +6,8 @@ metadata:
 ---
 
 astra's SSR frontends (strider, akasha-frontend, mouthpiece-frontend, vellum-frontend, harrow,
-ledger, codex) are TanStack Start apps. Before adding server-side behaviour or a new frontend:
+ledger, codex) are TanStack Start apps on the site-kit preset; a new one starts from
+`just new-frontend <name>`. Before adding server-side behaviour or a new frontend:
 
 1. Read `libs/ts/site-kit/README.md` (resolve hook, `--configLoader runner`, SSR smoke traps) and
    `libs/ts/gothic/README.md` (theme import, `@layer base` reset, vellum block kinds).

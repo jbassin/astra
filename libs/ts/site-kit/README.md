@@ -25,14 +25,30 @@ preset.
 `contentWatchPlugin`, `gothicFontsPlugin`, `@tailwindcss/vite`, `ssrExternalsPlugin`,
 `tanstackStart()`, plugin-react. `defineSiteVitestConfig` sets jsdom, globals, the alias and a
 global setup that runs `scripts/build-content.ts` when `src/generated/` holds no module.
+`describeSsrSmoke` rebuilds `dist/` when it is missing or older than the app's sources or any
+`libs/ts` file, then renders each route through the built bundle in a plain Node process.
 
 The preset leaves the server alone. `server.ts` stays a `createSsrServer` call of the app's own,
 with any `routes` or `staticMounts` it needs, and a `src/server.ts` that wraps TanStack's handler
 (codex pins each request to one corpus release there) is found by TanStack Start by name.
 codex keeps its own smoke file: its route tests share one build with the smoke, and it imports
 `bundleIsStale` from `/ssrSmoke` for the rebuild check.
-`describeSsrSmoke` rebuilds `dist/` when it is missing or older than the app's sources or any
-`libs/ts` file, then renders each route through the built bundle in a plain Node process.
+
+## A new frontend: `just new-frontend <name>`
+
+`just new-frontend <name> [--port <n>]` scaffolds `apps/<name>/web` on the preset from
+`template/`: the shell files above, a home route, `rumConfig.ts`, `globals.css`, a favicon, a
+README stub, the `package.json` with `"astra": { "config": "<name>" }`, and its route tree. It
+also adds the app's stubs to the shared files: a `<name>` block in `config.kdl` and
+`fixtures/config/config.kdl` (`service-name "astra.<name>"`, `port`), a `<Name>Config` model in
+`models.py` (in `WholeConfig` and `TS_NAMESPACES`, and the docstring's owner list), a compose
+service and a `<name>.iridi.cc` Caddy stanza. The port defaults to one above the highest port
+`config.kdl` and compose name in 10350 to 10399. The recipe then runs `just ontology-gen` and
+`pnpm install`. Review the stubs, replace the home route, then `just ci`, commit, and after the
+merge `just deploy <name>` and `just caddy-reload`. The app starts with no content step and on
+gothic; add `generated` and `scripts/build-content.ts` (strider's README) when it needs one.
+`scaffold.test.ts` applies the stubs to the real shared files in memory and builds and renders a
+scaffolded app in a scratch dir.
 
 ## Exports
 
@@ -45,11 +61,20 @@ codex keeps its own smoke file: its route tests share one build with the smoke, 
 | `ssrExternalsPlugin` | `vite.config.ts` | at build, inlines into the SSR bundle every package that isn't one of the app's own `dependencies`; `just ssr-externals-check` (run by `just ts-build`) fails on a bundle that imports anything else |
 | `loadSiteConfig` | `vite.config.ts`, build scripts | reads `config.kdl` by walking up from `process.cwd()` |
 | `generateRouteTree`, `staleRouteTreeFiles` | `scripts/route-tree.ts` (`just routes-gen`, `just routes-check`) | writes each Start frontend's `src/routeTree.gen.ts`, byte for byte what `vite dev` writes; the check regenerates in a scratch copy and names stale files |
+| `scaffoldFrontend` and the stub editors (`src/scaffold.ts`) | `scripts/new-frontend.ts` (`just new-frontend`) | writes an app from `template/` and adds its stubs to the shared files; each edit is a pure function of the file's text |
 | `startRum` (`@astra/site-kit/web`) | browser | starts browser RUM with the endpoint the app's server function returns |
 | `src/nodeTsResolve.mjs` | every `node` run of workspace TS | resolve hook, loaded with `node --import` |
 | `nodeTsResolveHook` (`@astra/site-kit/nodeTsResolveHook`) | vitest setups, ssrSmoke tests | the hook's absolute path, for code that spawns `node --import`; use it instead of `../../libs/ts/...` |
 
 ## Traps
+
+- **Template files end in `.tmpl`,** so no linter, type checker, formatter or test runner reads
+  them; tokens are `__name__`, `__camel__`, `__title__` and `__port__`. Only `scaffold.test.ts`
+  checks them (it builds and renders a scaffolded app). Change a template like the shell file it
+  copies in a real app.
+- **`defineSiteConfig` reads the port straight from the KDL block,** not through the generated
+  schema, so a scaffolded app builds before `just ontology-gen`. The server's `loadConfig()` and
+  the CI config tests still validate the block.
 
 - **Use `vite --configLoader runner`** in every `dev`/`build` script whose `vite.config.ts`
   imports a workspace package. vite's default loader bundles the config and leaves workspace

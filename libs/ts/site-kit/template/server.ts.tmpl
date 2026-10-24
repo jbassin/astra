@@ -1,0 +1,20 @@
+// Production SSR entry for the __name__ Compose service: site-kit's createSsrServer serves the
+// built client assets and the SSR handler. Service name and port come from config.kdl.
+// Run after `pnpm run build`: pnpm run start
+
+import { fileURLToPath } from "node:url";
+
+import { loadConfig } from "@astra/config";
+import { createSsrServer } from "@astra/site-kit";
+
+import ssr from "./dist/server/server.js";
+
+const HERE = fileURLToPath(new URL(".", import.meta.url));
+const { serviceName, port } = loadConfig().__camel__;
+
+createSsrServer({
+  serviceName,
+  port,
+  ssr,
+  clientDir: `${HERE}dist/client`,
+});
