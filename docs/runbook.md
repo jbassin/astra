@@ -258,7 +258,8 @@ The `linguist-commit` timer normally does this every 15 minutes and on each new 
 
 1. Run it now: `just -f /ruby/data/astra-deploy/justfile linguist-commit`. It commits and pushes new
    datasets in the astra-data clone, refreshes the mouthpiece catalog, seeds audio and redeploys
-   akasha-frontend or mouthpiece-frontend as needed.
+   akasha-frontend or mouthpiece-frontend as needed. It asks first (type y; `--yes` skips the
+   question, and the unit passes it).
 2. The parts, if needed: `just mouthpiece-publish`, `just mouthpiece-seed`, `just akasha-seed`, then
    `just deploy mouthpiece-frontend` or `just deploy akasha-frontend`. A deploy bakes the clone's
    committed HEAD, so commit in the clone first.

@@ -1,0 +1,20 @@
+[project]
+name = "astra-ops"
+version = "0.0.0"
+description = "astra-ops — the host ops CLI behind the justfile's data-publishing recipes (linguist-commit, the astra-data push, the audio seeds, heartwood-agent and heartwood-revert). Argument-list subprocesses only; deploy/deploy.sh stays bash and is called, not replaced."
+requires-python = ">=3.12"
+dependencies = [
+    "astra-config",
+    "astra-observe",
+    "astra-ontology-config",
+]
+
+[project.scripts]
+astra-ops = "astra_ops.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/astra_ops"]

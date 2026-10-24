@@ -15,5 +15,7 @@ WorkingDirectory=/ruby/data/astra-deploy
 # run workers write into the astra-data clone (via bind mounts), refreshes the mouthpiece
 # snapshot, pushes the clone and redeploys the frontends. Runs as the user (not in a
 # container) so it has git, the git identity and the SSH push key; the Dagster containers
-# have none of those.
-ExecStart=/home/jbassin/.cargo/bin/just linguist-commit
+# have none of those. The recipe is LIVE, so it asks first: --yes answers for this
+# unattended unit (without it, no terminal means exit 64). After a deploy that changes this
+# line, re-run `just linguist-commit-timer-install` (daemon-reload) or systemd keeps the old one.
+ExecStart=/home/jbassin/.cargo/bin/just linguist-commit --yes

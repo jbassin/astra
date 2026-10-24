@@ -205,11 +205,18 @@ just down-volumes         # also drop the SigNoz volumes (asks first; fresh onbo
 - Every host unit's script runs from the deploy checkout, so a script edit goes live with the next
   `just deploy` after the push; a changed `.service`, `.timer` or `.path` file needs its install
   recipe (`just alert-install`, `just backup-install`, ...) re-run.
-- A recipe that holds the host-tooling lock must close it (`exec 8>&-`) before it calls
-  `just deploy`, or the deploy waits on its own caller. Lock order: git-publish first, then
-  host-tooling. Never wait for git-publish while holding host-tooling (linguist-commit holds
-  git-publish while its deploy wants host-tooling); the heartwood recipes drop host-tooling,
-  take git-publish, then take host-tooling again.
+- A command that holds the host-tooling lock must release it (`Lock.release()` in astra-ops,
+  `exec 8>&-` in bash) before it calls `deploy.sh`, or the deploy waits on its own caller. Lock
+  order: git-publish first, then host-tooling. Never wait for git-publish while holding
+  host-tooling (linguist-commit holds git-publish while its deploy wants host-tooling); the
+  heartwood commands drop host-tooling, take git-publish, then take host-tooling again. astra-ops
+  takes the same flock(2) locks as `flock(1)`, so it and the bash scripts exclude each other.
+- The data-publishing recipes (linguist-commit, `_astra-data-push`, mouthpiece-publish and -seed,
+  akasha-seed, heartwood-agent, `_heartwood-push-deploy`, heartwood-revert) are thin wrappers over
+  the astra-ops CLI (`libs/py/ops`). Each paid or live one asks first; `--yes` skips the question,
+  and with no terminal and no `--yes` it exits 64. A unit that runs one must pass `--yes`
+  (`linguist-commit.service` does; a test checks every unit), and after a deploy that changes such
+  a unit line, re-run its install recipe, or systemd keeps running the old line and it exits 64.
 - `OnFailure=` belongs in `[Unit]`. In `[Service]` systemd ignores it with only a log warning.
   Check with `systemctl --user show <unit> -p OnFailure`.
 - `craig-sync` cannot be failed by pointing `CRAIG_DROP_DIR` at a missing directory: its nullglob

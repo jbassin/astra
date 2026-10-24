@@ -22,6 +22,7 @@ members = [
     "astra-ontology-being",
     "astra-ontology-config",
     "astra-ontology-entity",
+    "astra-ops",
     "astra-pipeline",
     "astra-pipeline-resources",
     "astra-scribe",
@@ -562,6 +563,23 @@ requires-dist = [
     { name = "astra-observe", editable = "libs/py/observe" },
     { name = "astra-ontology", editable = "libs/py/ontology" },
     { name = "astra-ontology-being", editable = "ontology/ontology-being" },
+]
+
+[[package]]
+name = "astra-ops"
+version = "0.0.0"
+source = { editable = "libs/py/ops" }
+dependencies = [
+    { name = "astra-config" },
+    { name = "astra-observe" },
+    { name = "astra-ontology-config" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "astra-config", editable = "libs/py/config" },
+    { name = "astra-observe", editable = "libs/py/observe" },
+    { name = "astra-ontology-config", editable = "ontology/ontology-config" },
 ]
 
 [[package]]

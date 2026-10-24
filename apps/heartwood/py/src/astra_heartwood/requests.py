@@ -3,7 +3,7 @@
 Dagster's ``session_wiki`` asset cannot run the agent (the dagster-code image has no node
 for the vellum validator, no git, no push key, no docker — 0036 D3), so it files
 ``<requests-path>/<date>.request.json`` and waits. The host ``heartwood-request`` unit runs
-``drain_requests``, which runs the unchanged ``just heartwood-agent <date>`` per pending
+``drain_requests``, which runs ``just heartwood-agent <date> --yes`` (unattended) per pending
 request and writes ``<date>.result.json``. Both sides import this module; nothing here
 imports Dagster.
 
@@ -40,7 +40,8 @@ REQUEST_SUFFIX = ".request.json"
 RESULT_SUFFIX = ".result.json"
 BACKFILL_LOCK = ARTIFACTS_ROOT / "backfill.lock"
 
-#: The ``heartwood-agent`` recipe's exit codes (justfile header), plus the runner's own.
+#: ``heartwood-agent``'s exit codes (the ``astra_ops.heartwood`` docstring), plus the runner's
+#: own.
 EXIT_MEANINGS: dict[int, str] = {
     0: "ok",
     1: "run failed",
@@ -52,7 +53,7 @@ EXIT_MEANINGS: dict[int, str] = {
     8: "commit/rebase/push failed",
     9: "redeploy failed or skipped",
     10: "publish lock timeout, nothing written",
-    64: "bad flag",
+    64: "bad flag, or not confirmed (no --yes)",
     -1: "preflight: missing tool",
     -2: "runner error",
 }
@@ -309,7 +310,7 @@ def _handle(
             )
             log.info("heartwood %s already published — skipped", req.date)
         else:
-            code = runner([str(tools["just"]), "heartwood-agent", req.date], env, log_path)
+            code = runner([str(tools["just"]), "heartwood-agent", req.date, "--yes"], env, log_path)
             run_dir, commit = _from_log(log_path.read_text(encoding="utf-8", errors="replace"))
             s = _summary(run_dir)
             res = Result(
