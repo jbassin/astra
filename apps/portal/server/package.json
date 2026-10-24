@@ -5,7 +5,8 @@
   "type": "module",
   "module": "src/index.ts",
   "scripts": {
-    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import @astra/observe/register src/index.ts",
+    "build": "tsdown --config-loader tsx",
+    "start": "node --import ./dist-server/register.mjs dist-server/main.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
@@ -22,8 +23,11 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@astra/site-kit": "workspace:*",
     "@types/express": "^5",
     "@types/ws": "^8.18.1",
+    "tsdown": "catalog:",
+    "tsx": "catalog:",
     "vitest": "catalog:"
   },
   "astra": {

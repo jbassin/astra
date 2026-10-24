@@ -192,10 +192,14 @@ for what it is (`bot`, `overlay`, `render`, `controller`). Its manifest (`pyproj
 three `../`. Every Node service builds from the one `deploy/node.Dockerfile`, which finds the
 workspace members itself, so a new pnpm member or `libs/ts` package needs no Docker change. A Node
 service depends on `@astra/observe`, names its config block in its `package.json`
-(`"astra": { "config": "<namespace>" }`, whose block needs a `service-name`), and its `start`
-script runs `node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import
-@astra/observe/register <entry>`, like the image's CMD. What
-is still hand-maintained:
+(`"astra": { "config": "<namespace>" }`, whose block needs a `service-name`), and has a
+`tsdown.config.ts` that names its server entry (`defineServerBundle` from
+`@astra/site-kit/bundle`). Its `build` script ends with `tsdown --config-loader tsx`, which
+bundles the entry and the workspace packages it imports into `dist-server/`, and its `start`
+script runs `node --import ./dist-server/register.mjs dist-server/main.mjs`, like the image's
+CMD. A server finds its own files from `findPackageRoot(import.meta.dirname)`
+(`@astra/config`), never from `import.meta.dirname` plus `../`, because the bundle sits in a
+different directory than the source. What is still hand-maintained:
 
 1. A Dagster asset: register it in its app's `assets.defs`, pin its name in
    `dagster/tests/test_definitions.py`, and, for a new pipeline app, add the app to
@@ -206,10 +210,9 @@ is still hand-maintained:
    that talks to a store or another service lists every network it needs, see
    [`deploy/README.md`](../deploy/README.md) "Networks"; a healthcheck merging
    `*node-healthcheck` with its own `test`, its secrets in `environment:`). A Node service's
-   `build:` merges `*node-build` and sets `args`: `APP: <domain>/<role>`, plus `ENTRY` when the
-   server is not `server.ts`, and `RUNTIME` when it needs ffmpeg or Chromium (the
-   `node.Dockerfile` header lists the knobs). It sets no `command:`; the image's CMD runs the
-   entry. Bind mounts use the long form `{ <<: *bind, source: ..., target: ... }`, whose
+   `build:` merges `*node-build` and sets `args`: `APP: <domain>/<role>`, plus `RUNTIME` when
+   it needs ffmpeg or Chromium (the `node.Dockerfile` header lists the knobs). It sets no
+   `command:`; the image's CMD runs the server bundle. Bind mounts use the long form `{ <<: *bind, source: ..., target: ... }`, whose
    `create_host_path: false` fails the deploy when the host dir is missing. The runtime image holds the whole built app dir, so a new
    data dir such as menhir's `quizzes/` needs no COPY. Paths the container writes are
    identical-path bind mounts under `/ruby/data/astra-state`; add the dir to `deploy.sh`

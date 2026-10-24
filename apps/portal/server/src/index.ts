@@ -7,9 +7,9 @@
  * keys are load-bearing per D6, so a missing key fails startup loudly rather than serving
  * with auth effectively disabled.
  */
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
-import { loadConfig } from "@astra/config";
+import { findPackageRoot, loadConfig } from "@astra/config";
 import { exitAfterFlush, logger } from "@astra/observe";
 
 import { SERVICE_NAME } from "./constants";
@@ -18,14 +18,12 @@ import { listen } from "./server";
 const log = logger(SERVICE_NAME);
 
 // The Foundry module's build output (S6/D11) — `apps/portal/module/{module.json,
-// dist/main.js}`, a sibling of `apps/portal/server`. Resolved relative to THIS
-// file's own location (not `process.cwd()`), so it works identically in both
-// environments: locally `src/index.ts` lives at `apps/portal/server/src/`, so
-// `../../module` walks up to `apps/portal/` then into `module/`; the S6 Dockerfile
-// copies `apps/portal/module` (module.json + the built dist/) to the same relative
-// path alongside `apps/portal/server` in the image, so the same relative walk
-// resolves there too — no container-vs-local branch needed.
-const MODULE_DIR = fileURLToPath(new URL("../../module", import.meta.url));
+// dist/main.js}`, a sibling of `apps/portal/server`. Resolved from this package's root
+// (not `process.cwd()`, and not `import.meta.dirname`, which is `src/` under vitest and
+// `dist-server/` in the image), so it works the same in both: the Dockerfile's `portal`
+// target copies `apps/portal/module` (module.json + the built dist/) beside
+// `apps/portal/server` in the image.
+const MODULE_DIR = join(findPackageRoot(import.meta.dirname), "..", "module");
 
 async function main(): Promise<void> {
   const cfg = loadConfig();

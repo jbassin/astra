@@ -43,6 +43,7 @@ catalog:
   srvx: "0.11.20"
   tailwindcss: "^4.3.2"
   tsdown: "^0.22.3"
+  tsx: "^4.23.15"
   typescript: "^5"
   vite: "8.1.6"
   vitest: "^4.1.9"

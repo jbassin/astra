@@ -40,6 +40,7 @@ deploy
 **/node_modules
 **/.venv
 **/dist
+**/dist-server
 **/.output
 **/.nitro
 **/.tanstack

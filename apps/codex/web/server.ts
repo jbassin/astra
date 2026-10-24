@@ -11,32 +11,28 @@
 // starts comes online with no restart; with no release, `/pagefind/*` 404s and the
 // omnibar/`/search` render their "index not built" fail-soft notice (S4).
 //
-// Runs on Node 24 (R3, 0022 S4 — the pilot). `--import .../nodeTsResolve.mjs` is a
-// resolve hook that lets Node walk the workspace's extensionless relative imports
-// (`from "./config"`) the same way Vite/Bun already do — see that file for why.
-//
-// Run after `pnpm run build`:  pnpm run start
+// `pnpm run build` bundles this file into `dist-server/main.mjs` (tsdown.config.ts), and
+// the image runs that bundle. Run after `pnpm run build`:  pnpm run start
 
-import { fileURLToPath } from "node:url";
+import path from "node:path";
 
 import { releasesDirOf } from "@astra/codex-corpus/releases";
-import { loadConfig } from "@astra/config";
-import { createSsrServer } from "@astra/site-kit";
+import { findPackageRoot, loadConfig } from "@astra/config";
+import { createSsrServer, loadSsrBuild, type SsrHandler } from "@astra/site-kit";
 
-import built from "./dist/server/server.js";
 import type { ServedCorpus } from "./src/server/corpusFs";
 import { PAGEFIND_PREFIX, pagefindRoute } from "./src/server/pagefindRoute";
 
+const APP = findPackageRoot(import.meta.dirname);
 // `src/server.ts` attaches `servedCorpus` to the bundle's handler (see there).
-const ssr = built as typeof built & { servedCorpus: () => ServedCorpus };
-const HERE = fileURLToPath(new URL(".", import.meta.url));
+const ssr = await loadSsrBuild<SsrHandler & { servedCorpus: () => ServedCorpus }>(APP);
 const { serviceName, port, dataPath } = loadConfig().codex;
 
 createSsrServer({
   serviceName,
   port,
   ssr,
-  clientDir: `${HERE}dist/client`,
+  clientDir: path.join(APP, "dist", "client"),
   routes: [
     {
       urlPrefix: PAGEFIND_PREFIX,

@@ -6,8 +6,8 @@
   "module": "src/server.ts",
   "scripts": {
     "dev": "vite --configLoader runner",
-    "build": "vite build --configLoader runner",
-    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import @astra/observe/register src/server.ts",
+    "build": "vite build --configLoader runner && tsdown --config-loader tsx",
+    "start": "node --import ./dist-server/register.mjs dist-server/main.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "visual-regression": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts",
@@ -37,6 +37,8 @@
     "pixelmatch": "^6.0.0",
     "pngjs": "^7.0.0",
     "tailwindcss": "catalog:",
+    "tsdown": "catalog:",
+    "tsx": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
   },

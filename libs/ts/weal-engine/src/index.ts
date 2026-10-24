@@ -20,7 +20,10 @@ type GenModule = {
   ): string;
 };
 
-const GLUE_SPECIFIER = "../gen/weal_engine.js";
+// By package name (the `./gen/*` export), not `../gen/`: bundled into an app's
+// dist-server/, this module no longer sits beside gen/, but the app's node_modules link
+// still resolves the package.
+const GLUE_SPECIFIER = "@astra/weal-engine/gen/weal_engine.js";
 
 let gen = require(GLUE_SPECIFIER) as GenModule;
 
@@ -76,7 +79,7 @@ export interface WealBuiltin {
 
 /** Every engine builtin, in registry order. */
 export const BUILTINS: readonly WealBuiltin[] =
-  require("../gen/weal_builtins.json") as WealBuiltin[];
+  require("@astra/weal-engine/gen/weal_builtins.json") as WealBuiltin[];
 
 const BUILTIN_NAMES: ReadonlySet<string> = new Set(BUILTINS.map((b) => b.name));
 

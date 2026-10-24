@@ -19,7 +19,7 @@ export {
   loadKdl,
   parseKdl,
 } from "./kdl";
-export { findRepoRoot } from "./root";
+export { findPackageRoot, findRepoRoot } from "./root";
 export {
   defaultSecretsFile,
   isBlankSecret,

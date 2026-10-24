@@ -5,7 +5,6 @@
 #
 # Build args (compose `build.args`):
 #   APP      the app dir under apps/, e.g. codex/web. Required.
-#   ENTRY    the TS entry the server runs, relative to the app dir (default server.ts).
 #   CONTENT  which published datasets the build bakes from the `astra-data` build context
 #            (compose additional_contexts): none (default), akasha or mouthpiece.
 #   RUNTIME  the OS layer under the runtime: plain (default), ffmpeg (orator: ffmpeg +
@@ -13,16 +12,15 @@
 # Targets: the last stage (`runtime`) serves every app; `portal` adds the built Foundry
 # module that portal-server packages into its install zip.
 #
-# Nothing here lists workspace members. pnpm fetch needs only the lockfile, the
-# `manifests` stage finds every package.json, and the filtered installs (`./apps/$APP...`)
-# take the app plus its workspace dependencies. The runtime gets production
-# dependencies only.
+# pnpm fetch needs only the lockfile, the `manifests` stage finds every package.json, and
+# the build's filtered install (`./apps/$APP...`) takes the app plus its workspace
+# dependencies. The only member listed by name is apps/portal/shared (see the build stage).
 #
-# Runtime layout (the compose `command:` lines and package.json `start` scripts rely on
-# it): the app runs from /repo/apps/<domain>/<role>, so ../../../libs/ts/site-kit/src/
-# nodeTsResolve.mjs is /repo/libs/ts/site-kit/src/nodeTsResolve.mjs. The @astra/* links in
-# node_modules point at /repo/libs/ts sources, outside node_modules, which is what lets
-# Node strip their types (it refuses to for files under node_modules).
+# Production runs JavaScript, never TypeScript: the app's `build` script ends with tsdown,
+# which bundles the server entry and every workspace package it imports into
+# `dist-server/` (libs/ts/site-kit/src/serverBundle.ts). The bundle leaves only the app's
+# own third-party `dependencies` external, so the runtime installs just those
+# (`--prod --filter ./apps/$APP`) and none of the workspace libraries' dependencies.
 ARG APP
 ARG CONTENT=none
 ARG RUNTIME=plain
@@ -86,11 +84,12 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm fetch && rm -rf node_modules
 COPY --from=manifests /repo ./
 
-# Production dependencies of the app and its workspace dependencies: the runtime's
-# node_modules.
+# The app's own production dependencies: the runtime's node_modules. The server bundle
+# inlines the workspace libraries, so their dependencies are not installed; the @astra/*
+# links stay (weal-engine's wasm glue loads through its link).
 FROM deps AS prod
 ARG APP
-RUN pnpm install --offline --frozen-lockfile --prod --filter "{./apps/${APP}}..."
+RUN pnpm install --offline --frozen-lockfile --prod --filter "./apps/${APP}"
 
 # The published datasets a content build reads, in the astra-data layout. Only the stage
 # CONTENT names is built, so services with CONTENT=none need no astra-data context.
@@ -121,6 +120,8 @@ FROM content-${CONTENT} AS content
 # campaign roster akasha's transcript build needs; vite's esbuild follows each member's
 # `extends` to tsconfig.base.json. The app's node_modules is dropped afterwards so the
 # runtime can take the whole built app dir and pair it with the production install.
+# apps/portal/shared is the one workspace library outside libs/ts (portal-server's bundle
+# inlines it); it is small, so every build copies it rather than naming the app.
 FROM deps AS build
 ARG APP
 ARG CONTENT
@@ -128,39 +129,35 @@ RUN pnpm install --offline --frozen-lockfile --filter "{./apps/${APP}}..."
 COPY tsconfig.base.json ./
 COPY ontology ./ontology
 COPY libs/ts ./libs/ts
+COPY apps/portal/shared ./apps/portal/shared
 COPY --from=content / /content
 COPY apps/${APP} ./apps/${APP}
 WORKDIR /repo/apps/${APP}
 # build-content reads $ASTRA_CONTENT_ROOT; unset, it would build the checked-in fixture.
-# An app that runs unbuilt TS (weal-bot, portal-server, portal-headless) has no build script,
-# so --if-present skips it.
 RUN if [ "$CONTENT" != none ]; then export ASTRA_CONTENT_ROOT=/content; fi \
-    && pnpm run --if-present build \
+    && pnpm run build \
     && rm -rf node_modules
 
-# --- The runtime: production node_modules, the library sources the @astra/* links point
-# at, the ontology (config.kdl is read at runtime by walking up to
+# --- The runtime: the app's production node_modules, the libs/ts tree its @astra/* links
+# point at, the ontology (config.kdl is read at runtime by walking up to
 # /repo/ontology/ontology-config; ontology-being by @astra/ontology) and the built app.
 # hadolint ignore=DL3006
 FROM os-${RUNTIME} AS app
 ARG APP
-ARG ENTRY=server.ts
 # ASTRA_RUNTIME=container tells @astra/observe to export to the in-cluster collector
 # (telemetry.otlp-endpoint) and to label every signal deployment.environment=production.
-ENV NODE_ENV=production APP_ENTRY=${ENTRY} ASTRA_RUNTIME=container
+ENV NODE_ENV=production ASTRA_RUNTIME=container
 WORKDIR /repo/apps/${APP}
 COPY --from=prod /repo /repo
 COPY libs/ts /repo/libs/ts
 COPY ontology /repo/ontology
 COPY --from=build /repo/apps/${APP} ./
-# Node runs the TS entry directly (no package manager in the runtime). The first --import
-# lets Node resolve extensionless TS imports; the second installs telemetry, HTTP and fetch
-# spans and the shutdown flush before the entry loads (the service name comes from the
-# app's package.json `astra.config` block in config.kdl). `exec` makes node PID 1, so it
-# receives the stop signal itself. The shell form is what expands $APP_ENTRY (DL3025).
-# hadolint ignore=DL3025
-CMD exec node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs \
-    --import @astra/observe/register "$APP_ENTRY"
+# Node runs the bundle (no package manager or TypeScript in the runtime). register.mjs is
+# @astra/observe/register, built into the same bundle: --import runs it before the entry
+# loads, so telemetry, the HTTP and fetch spans and the shutdown flush are installed first
+# (the service name comes from the app's package.json `astra.config` block in config.kdl).
+# The exec form makes node PID 1, so it receives the stop signal itself.
+CMD ["node", "--import", "./dist-server/register.mjs", "dist-server/main.mjs"]
 
 # portal-server (APP=portal/server) also serves the Foundry module: tsdown bundles it to
 # module/dist/main.js, which portal-server's modulePackage.ts zips with module.json. It
@@ -173,7 +170,6 @@ COPY apps/portal/module ./apps/portal/module
 RUN pnpm --filter @astra/portal-module build
 
 FROM app AS portal
-COPY apps/portal/shared /repo/apps/portal/shared
 COPY --from=portal-module /repo/apps/portal/module/module.json /repo/apps/portal/module/module.json
 COPY --from=portal-module /repo/apps/portal/module/dist /repo/apps/portal/module/dist
 

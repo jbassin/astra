@@ -1,8 +1,9 @@
 /**
  * `node --import @astra/observe/register <entry>`: telemetry before any app code runs.
  *
- * Every astra Node service starts this way (`deploy/node.Dockerfile` CMD and each app's
- * `start` script, after the `nodeTsResolve.mjs` hook). Because it runs before the entry
+ * Every astra Node service starts this way: the app's server bundle builds this module as
+ * `dist-server/register.mjs` (`@astra/site-kit/bundle`), and the `deploy/node.Dockerfile` CMD
+ * and each app's `start` script pass it to `--import`. Because it runs before the entry
  * module is even loaded, the tracer, meter and logger providers exist when app modules
  * evaluate, and `node:http` is patched before any server is created. It installs:
  *

@@ -13,7 +13,8 @@
     "./document": "./src/document.tsx",
     "./theme": "./src/theme.ts",
     "./ssrSmoke": "./src/ssrSmoke.ts",
-    "./nodeTsResolveHook": "./src/nodeTsResolveHook.ts"
+    "./nodeTsResolveHook": "./src/nodeTsResolveHook.ts",
+    "./bundle": "./src/serverBundle.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -40,6 +41,7 @@
     "@vitejs/plugin-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "tsdown": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
   },

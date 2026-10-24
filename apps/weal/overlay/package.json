@@ -7,9 +7,9 @@
   "scripts": {
     "dev": "vite dev --configLoader runner",
     "dev:server": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --watch server.ts",
-    "build": "vite build --configLoader runner",
+    "build": "vite build --configLoader runner && tsdown --config-loader tsx",
     "preview": "vite preview",
-    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import @astra/observe/register server.ts",
+    "start": "node --import ./dist-server/register.mjs dist-server/main.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
@@ -32,6 +32,8 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "tailwindcss": "catalog:",
+    "tsdown": "catalog:",
+    "tsx": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
   },

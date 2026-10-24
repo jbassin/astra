@@ -14,11 +14,12 @@
 
 import { resolve } from "node:path";
 
+import { findPackageRoot } from "@astra/config";
 import { loadMigrations, migrate, type MigrateResult } from "@astra/pg-migrate";
 import postgres from "postgres";
 
 /** The numbered schema migrations (`NNNN_name.sql`). */
-export const MIGRATIONS_DIR = resolve(import.meta.dirname, "../migrations");
+export const MIGRATIONS_DIR = resolve(findPackageRoot(import.meta.dirname), "migrations");
 
 /** Skip pools larger than this many dice (each die is one row). */
 export const MAX_POOL = 30;

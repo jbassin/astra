@@ -15,7 +15,7 @@
 import { mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { loadConfig } from "@astra/config";
+import { findPackageRoot, loadConfig } from "@astra/config";
 import { exitAfterFlush, logger } from "@astra/observe";
 import { loadBeing } from "@astra/ontology";
 import { describeResult } from "@astra/pg-migrate";
@@ -47,9 +47,9 @@ async function main(): Promise<void> {
   // — no env overrides. The data dir is the Compose audio-volume mount; the dist dir
   // is a fixed structural path (the SPA Vite-built next to the app), not config.
   const dataDir = resolve(cfg.orator.dataDir);
-  // `import.meta.dir` is a Bun-only extension — `import.meta.dirname` is the
-  // standard (Node 20.11+/24, and Bun too) equivalent (R3, 0022 S8).
-  const distDir = resolve(import.meta.dirname, "../dist");
+  // From the package root, not `import.meta.dirname`: the same code runs from src/ and from
+  // the dist-server/ bundle.
+  const distDir = resolve(findPackageRoot(import.meta.dirname), "dist");
   mkdirSync(dataDir, { recursive: true });
 
   const store = new PostgresStore(cfg.orator.databaseUrl);

@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 
-import { loadConfig } from "@astra/config";
+import { findPackageRoot, loadConfig } from "@astra/config";
 import { logger } from "@astra/observe";
 
 import { loadQuizzes } from "./src/quizzes";
@@ -18,10 +18,10 @@ const port = cfg.menhir.port;
 const publicOrigin = cfg.menhir.publicOrigin;
 const resultsPath = cfg.menhir.resultsPath;
 
-// `import.meta.dirname` (Node 20.11+/24) — the weal-overlay idiom; never cwd, so
-// the quizzes dir + dist resolve correctly regardless of the process's launch dir.
-const distDir = resolve(import.meta.dirname, "dist");
-const quizzesDir = resolve(import.meta.dirname, "quizzes");
+// From the package root, never cwd or `import.meta.dirname` (the app dir or dist-server/), so
+// the quizzes dir and dist resolve the same from source and from the bundle.
+const distDir = resolve(findPackageRoot(import.meta.dirname), "dist");
+const quizzesDir = resolve(findPackageRoot(import.meta.dirname), "quizzes");
 
 const { quizzes, summary } = loadQuizzes(quizzesDir);
 log.info(summary);
