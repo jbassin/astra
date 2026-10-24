@@ -23,6 +23,10 @@ in the astra-data clone), commits and pushes it, runs `just mouthpiece-seed` (co
 `/ruby/data/astra-state/audio/mouthpiece`) and redeploys mouthpiece-frontend, which bakes the
 snapshot. The only digest field read downstream is the top-level `synopsis`.
 
+`mouthpiece-publish` refuses, and writes nothing, when the episodes dir is missing or the new
+catalog has fewer episodes than the snapshot on disk (a wrong path or a half-mounted corpus).
+Publish a deliberate removal with `uv run --frozen python -m astra_mouthpiece.publish --allow-shrink`.
+
 ## Operations
 
 Renders are PAID (OpenRouter, ElevenLabs) and replace published content: flag them first.
