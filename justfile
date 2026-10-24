@@ -50,7 +50,7 @@ test: (_each "test" "py-test,ts-test")
 # renders different pixels); it stays CI-only. weal-engine-rust needs rustup on the host (it
 # installs the crate's pinned toolchain on first use).
 # Run everything CI runs, locally (all but the container-only vellum render goldens).
-ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard,weal-engine-rust,weal-engine-hash-check"))
+ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-row-height-drift-guard,codex-virtualization-interaction-guard,weal-engine-rust,weal-engine-hash-check"))
 
 # `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
 # they run as Dagster assets; test them with `uv run pytest apps/<domain>/py`.
@@ -138,6 +138,20 @@ ts-build:
 # CI job corpus-validate: the akasha corpus gate over the checked-in fixture wiki.
 corpus-validate:
     node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs libs/ts/vellum-lang/scripts/validate-corpus.ts --dir fixtures/astra-data/akasha/content
+
+# The conformance corpus (fixtures/vellum) pins each parser to committed .meta.json files;
+# this runs both on every committed .vellum document and compares their metadata JSON.
+# CI job vellum-parity: Python and TS vellum-lang agree on every checked-in vellum document.
+vellum-parity:
+    uv run python libs/py/vellum-lang/scripts/corpus_parity.py --dir fixtures/vellum --dir fixtures/astra-data/akasha/content --dir apps/strider/web/content
+
+# Not in CI (CI has no astra-data clone). Reads only; the path is config's data.akasha-content.
+# Run the vellum parity check over the real wiki in the astra-data clone.
+vellum-parity-live:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    dir="$(uv run --frozen --no-sync python -m astra_ontology_config data.akasha-content)"
+    exec uv run python libs/py/vellum-lang/scripts/corpus_parity.py --dir "$dir"
 
 # An empty `from` lints only HEAD (CI's fallback when a push has no usable base).
 # CI job commitlint: Conventional Commits over from..to.
