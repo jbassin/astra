@@ -20,10 +20,3 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/astra_ontology_entity"]
-
-[tool.uv.sources]
-astra-config = { workspace = true }
-astra-lexicon = { workspace = true }
-astra-observe = { workspace = true }
-astra-ontology = { workspace = true }
-astra-ontology-being = { workspace = true }

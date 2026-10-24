@@ -13,7 +13,7 @@
     "build": "echo '@astra/weal-engine: no build step (gen/ is committed; rebuild via just weal-engine-build)'"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "vitest": "^4.1.9"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

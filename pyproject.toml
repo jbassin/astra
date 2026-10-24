@@ -5,6 +5,28 @@
 # code location (astra-pipeline), so its deps are locked with everything else.
 members = ["apps/*/py", "libs/py/*", "ontology/*", "dagster"]
 
+[tool.uv.sources]
+# The one sources table: every member inherits it, so a member's pyproject.toml lists an
+# astra-* dependency by name only and never repeats this. It names every member that is a
+# package (all but astra-pipeline, which is `package = false`); a new member goes here.
+astra-akasha-backend = { workspace = true }
+astra-assay = { workspace = true }
+astra-config = { workspace = true }
+astra-heartwood-backend = { workspace = true }
+astra-lexicon = { workspace = true }
+astra-linguist = { workspace = true }
+astra-llm = { workspace = true }
+astra-mouthpiece-backend = { workspace = true }
+astra-observe = { workspace = true }
+astra-ontology = { workspace = true }
+astra-ontology-being = { workspace = true }
+astra-ontology-config = { workspace = true }
+astra-ontology-entity = { workspace = true }
+astra-scribe = { workspace = true }
+astra-smoke = { workspace = true }
+astra-smoke-substrate = { workspace = true }
+astra-vellum-lang = { workspace = true }
+
 [tool.uv]
 # Workspace-wide dev tooling — the Astral Python stack.
 #   ruff = lint + format, ty = type check (preview; pinned), pytest = tests.

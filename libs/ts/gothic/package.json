@@ -22,25 +22,25 @@
   },
   "dependencies": {
     "@astra/vellum-lang": "workspace:*",
-    "@fontsource/ibm-plex-mono": "^5.2.7"
+    "@fontsource/ibm-plex-mono": "catalog:"
   },
   "devDependencies": {
     "@storybook/react": "^10.4.6",
     "@storybook/react-vite": "^10.4.6",
-    "@tailwindcss/vite": "^4.3.2",
-    "@types/mdast": "^4.0.4",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^5.2.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "@tailwindcss/vite": "catalog:",
+    "@types/mdast": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "storybook": "^10.4.6",
-    "tailwindcss": "^4.3.2",
-    "vite": "8.1.6",
-    "vitest": "^4.1.9"
+    "tailwindcss": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "catalog:",
+    "react-dom": "catalog:"
   }
 }

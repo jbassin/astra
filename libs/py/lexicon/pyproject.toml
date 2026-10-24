@@ -18,6 +18,3 @@ packages = ["src/astra_lexicon"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "src/astra_lexicon/defs.kdl" = "astra_lexicon/defs.kdl"
-
-[tool.uv.sources]
-astra-config = { workspace = true }

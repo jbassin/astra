@@ -15,12 +15,12 @@
     "@astra/observe": "workspace:*",
     "@astra/ontology": "workspace:*",
     "@astra/weal-engine": "workspace:*",
-    "@opentelemetry/api": "^1.9.1",
-    "discord.js": "^14.27.0",
-    "postgres": "^3.4.9",
-    "srvx": "0.11.20"
+    "@opentelemetry/api": "catalog:",
+    "discord.js": "catalog:",
+    "postgres": "catalog:",
+    "srvx": "catalog:"
   },
   "devDependencies": {
-    "vitest": "^4.1.9"
+    "vitest": "catalog:"
   }
 }

@@ -18,12 +18,12 @@
     "remark-parse": "^11.0.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
-    "yaml": "^2.9.0"
+    "yaml": "catalog:"
   },
   "devDependencies": {
     "@astra/config": "workspace:*",
-    "@types/mdast": "^4.0.4",
+    "@types/mdast": "catalog:",
     "mdast-util-directive": "^3.1.0",
-    "vitest": "^4.1.9"
+    "vitest": "catalog:"
   }
 }

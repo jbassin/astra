@@ -20,11 +20,3 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/astra_scribe"]
-
-[tool.uv.sources]
-astra-config = { workspace = true }
-astra-llm = { workspace = true }
-astra-observe = { workspace = true }
-astra-ontology = { workspace = true }
-astra-ontology-being = { workspace = true }
-astra-ontology-config = { workspace = true }

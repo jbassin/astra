@@ -10,6 +10,6 @@
     "build": "echo '@astra/smoke: no build step'"
   },
   "devDependencies": {
-    "vitest": "^4.1.9"
+    "vitest": "catalog:"
   }
 }

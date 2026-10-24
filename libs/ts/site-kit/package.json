@@ -18,15 +18,15 @@
     "@astra/config": "workspace:*",
     "@astra/gothic": "workspace:*",
     "@astra/observe": "workspace:*",
-    "@opentelemetry/api": "^1.9.1",
+    "@opentelemetry/api": "catalog:",
     "@tanstack/router-generator": "^1.167.41",
     "esbuild": "^0.28.1",
     "send": "1.2.1",
-    "srvx": "0.11.20"
+    "srvx": "catalog:"
   },
   "devDependencies": {
     "@types/send": "1.2.1",
-    "vite": "8.1.6",
-    "vitest": "^4.1.9"
+    "vite": "catalog:",
+    "vitest": "catalog:"
   }
 }

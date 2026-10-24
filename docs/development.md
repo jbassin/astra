@@ -67,13 +67,17 @@ TypeScript 5; Rust 1.96.0 with wasm-bindgen-cli 0.2.127 and wasm-opt 124 (hard-p
 
 **Python (uv).** Virtual workspace in the root `pyproject.toml`; members `apps/*/py`, `libs/py/*`,
 `ontology/*` and `dagster` (the code location, `astra-pipeline`). ruff (line length 100) lints and formats, ty (pinned `==0.0.51`, preview) type-checks,
-pytest tests in `importlib` mode.
+pytest tests in `importlib` mode. The root `[tool.uv.sources]` is the only sources table: it marks
+every member package `{ workspace = true }` and members inherit it, so a member lists an `astra-*`
+dependency by name only. A new member gets a line there.
 
 **TypeScript (pnpm).** Workspace in `pnpm-workspace.yaml`; members `apps/*/*` (a directory without
 a `package.json` is skipped) and `libs/ts/*`. Node 24 and pnpm 10.34.4 (root `packageManager`). oxlint and oxfmt lint and format;
 `tsc --noEmit` against `tsconfig.base.json` (strict) type-checks; vitest tests. typecheck, test and
 build fan out with `pnpm -r --no-bail --aggregate-output run <task>`. `vite-plus` is still a root
-devDependency but nothing runs it.
+devDependency but nothing runs it. A dependency that two or more packages use has one version, in
+the `catalog:` of `pnpm-workspace.yaml`, and each package.json names it `"catalog:"`; bump it there.
+zod is off the catalog until its users converge (codex and menhir resolve 4.6.7, the rest 4.4.3).
 
 **Rust.** Only `libs/rust/weal-engine` (toolchain 1.96.0 via its `rust-toolchain.toml`). Rebuild the
 committed wasm in `libs/ts/weal-engine/gen/` with `just weal-engine-build`, never by hand. Two CI

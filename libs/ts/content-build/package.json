@@ -14,11 +14,11 @@
   },
   "dependencies": {
     "@astra/config": "workspace:*",
-    "gray-matter": "^4.0.3",
+    "gray-matter": "catalog:",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1"
   },
   "devDependencies": {
-    "vitest": "^4.1.9"
+    "vitest": "catalog:"
   }
 }

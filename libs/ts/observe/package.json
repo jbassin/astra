@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@astra/config": "workspace:*",
-    "@opentelemetry/api": "^1.9.1",
+    "@opentelemetry/api": "catalog:",
     "@opentelemetry/api-logs": "^0.219.0",
     "@opentelemetry/exporter-logs-otlp-http": "^0.219.0",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.219.0",
@@ -30,6 +30,6 @@
     "@opentelemetry/semantic-conventions": "^1.41.1"
   },
   "devDependencies": {
-    "vitest": "^4.1.9"
+    "vitest": "catalog:"
   }
 }
