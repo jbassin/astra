@@ -33,7 +33,7 @@ import { createCorpusReader, fixtureCorpusRoot } from "@/server/corpusFs";
  * runs in the existing `test` lane with no new CI infra. `beforeAll` rebuilds
  * `dist/server/server.js` whenever it is missing or older than its sources, so
  * the smoke never passes against code that no longer exists. The vitest setup
- * file pins `CODEX_CORPUS_ROOT` to the committed fixture corpus, so every route
+ * file pins `CODEX_CORPUS_ROOT` to the generated fixture corpus, so every route
  * test below sees the same data locally and in CI.
  */
 const APP_ROOT = path.resolve(import.meta.dirname, "..");

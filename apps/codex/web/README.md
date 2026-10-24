@@ -87,15 +87,20 @@ transform and the search build write the **live** dirs the container mounts read
   `BOOK_LICENSE_OVERRIDE` (`sourcesIndexBuild.ts`).
 
 **Fixture and tests**
-- Every test and both Chromium guards read `fixtures/entities/`: `vitest.setup.ts` and the guard
-  scripts default `CODEX_CORPUS_ROOT` to it. The real-corpus checks are the opt-in
-  `just codex-real-corpus` (`src/realCorpus.test.ts`, gated on `CODEX_REAL_CORPUS=1`). The dev
-  server has no pin and reads the real corpus at `codex.data-path`, from any checkout.
-- `fixtures/entities/` is generated: `scripts/fixtureCorpus.ts` builds it from the committed
-  real picks (`fixtures/picks/`), the `runTransform` run over `fixtures/raw/`, and patches and
-  synthetic rows defined in code (each names the test that needs it). Never edit it by hand:
-  change an input and run `pnpm --filter @astra/codex fixture`. `scripts/fixtureCorpus.test.ts`
-  fails when the committed copy differs from a fresh build.
+- Every test and both Chromium guards read the fixture corpus `fixtures/entities/`:
+  `vitest.setup.ts` and the guard scripts default `CODEX_CORPUS_ROOT` to it. The real-corpus
+  checks are the opt-in `just codex-real-corpus` (`src/realCorpus.test.ts`, gated on
+  `CODEX_REAL_CORPUS=1`). The dev server has no pin and reads the real corpus at
+  `codex.data-path`, from any checkout.
+- `fixtures/entities/` is generated and gitignored. `scripts/fixtureCorpus.ts` builds it in
+  about half a second from the committed real picks (`fixtures/picks/`), a `runTransform` run
+  over `fixtures/raw/`, and patches and synthetic rows defined in code (each names the test
+  that needs it). `ensureFixtureCorpus()` brings it up to date; vitest's global setup
+  (`vitest.globalSetup.ts`), both guard scripts and `regen-goldens.ts` call it, and
+  `pnpm --filter @astra/codex fixture` runs it by hand. To change the fixture, change an input,
+  never the output. `scripts/fixtureCorpus.test.ts` builds it twice and compares bytes.
+- Synthetic rows and patches stay out of `rules-tree.json` and `sources-index.json` (those
+  describe the real books). A new entity shape needs a raw pick, a pick or a synthetic row.
 - `scripts/extract-fixture.ts` (host-only) re-picks `fixtures/raw/` and `fixtures/picks/` from
   the real snapshots and corpus, then checks the coverage matrix over a fresh fixture build.
   A re-extract drops the one hand-made raw doc, `class-feature-9001` in
@@ -215,7 +220,8 @@ P3 S5 full-corpus Playwright pass. Fixed by asking the SAME question `renderEmbe
   (`src/schema/corpusVersion.ts`). A built server refuses a missing corpus, another schema
   generation, or the fixture at the config path; the server entry `src/server.ts` runs the check
   when the bundle loads, so the process exits instead of serving. Only the Vite dev server falls
-  back to `fixtures/entities/` (with a WARN) when the config corpus is missing. `corpusFns.ts` wraps the pure resolvers (`entityPageData`/`directoryData`/
+  back to `fixtures/entities/` (with a WARN) when the config corpus is missing; it fails if that
+  fixture was never generated (`pnpm --filter @astra/codex fixture`). `corpusFns.ts` wraps the pure resolvers (`entityPageData`/`directoryData`/
   `listingData`) as `createServerFn`s the route loaders call.
 - **`src/domain/render/`** — the total node renderer, statblock/facet headers, edition
   banners, trait pills, and the listing/directory presentation components.
@@ -343,7 +349,7 @@ visit that already warmed one surface doesn't re-fetch the runtime) and the same
 > weight tuning without a new decision.
 
 CI's own coverage is hermetic: `scripts/build-search.test.ts` runs the exact same
-`buildSearchIndex()` against the committed fixture corpus into a fresh `os.tmpdir()` dir (never
+`buildSearchIndex()` against the generated fixture corpus into a fresh `os.tmpdir()` dir (never
 `fixtures/` or `data/`) — `pagefind` is a plain npm devDependency, so this needs zero network and
 none of the host-only memory profile above (that only shows up at real-corpus scale).
 
@@ -782,11 +788,11 @@ a `CodexEntitySchema` violation specifically, the raw-field extraction feeding i
 `src/ingest/foundryEntities.ts`'s `present()` helper for the `null`-vs-`undefined`
 landmines the real corpus has already turned up), re-run, confirm zero failures.
 
-## The fixture (`fixtures/`, committed)
+## The fixture (`fixtures/`: committed inputs, generated corpus)
 
-CI needs the transform to run with **zero network and zero `data/` reads** — `fixtures/`
-is a small (~1 MB), deterministic, committed subset of the real corpus that makes that
-possible:
+CI needs the transform and every test to run with **zero network and zero `data/` reads**.
+`fixtures/` holds a small (~1.8 MB) committed set of inputs taken from the real data, and a
+fixture corpus generated from them:
 
 ```
 fixtures/
@@ -798,31 +804,41 @@ fixtures/
                 Anadi journal-page merge from scratch when re-parsed
     aon/        the matching real AoN doc hits (spell/creature/ancestry/feat), same
                 {category, hits:[...]} shape the real fetcher produces
+    homebrew*/  the homebrew mini store (inline docs in extract-fixture.ts)
   join-aliases.json   trimmed to the one alias entry this fixture's raw docs exercise
-  entities/     canonical-form-ONLY entities (no raw source) copied verbatim from a real
+  picks/        111 canonical-form-ONLY entities (no raw source) copied verbatim from a real
                 emitted corpus — one representative per codex category (the smallest
                 entity in that category) plus whatever else is needed to cover every
                 CodexNode kind at least once (`blockquote` is allowlisted as
                 corpus-extinct post-D29-19 — the only blockquotes lived in the excluded
-                pregen docs — and the extractor re-proves that extinction on every run).
-                Also carries the D29-21 fixture read surface: a per-category
-                `_index.json` (fixture-scoped IndexRows) and a fixture-scoped
-                `manifest.json` (fixture categoryCounts), so P2's corpus reader/route
-                tests/ssrSmoke run hermetically with zero `data/` reads
+                pregen docs — and the extractor re-proves that extinction on every run)
+  entities/     GENERATED, gitignored: the fixture corpus (235 entities) that tests, guards
+                and goldens read
 ```
 
-`scripts/extract-fixture.ts` builds this from a real emitted corpus (run
-`pnpm --filter @astra/codex transform` first) and **asserts the full coverage matrix**
-before writing anything — every category, every `CodexNode` kind, the legacy pair, the
-alias join, the qualifier-reorder + variantOf pair, a journal-merged entity, a residual
-`-2` collision, and a Foundry-only / AoN-only entity. It fails loudly (listing exactly
-what's missing) rather than silently shipping a gap.
+`scripts/fixtureCorpus.ts` generates `entities/` from three sources: the picks; 32 entities
+(class stats, doctrine/lesson/patron subclasses) from a `runTransform` run over `raw/`, prose
+trimmed to a stub; and patches and synthetic rows defined in code (the 90 `ritual/virt-*`
+rows, the basic-lesson collision pair, and test-only additions to `class/witch` and
+`class-feature/reactive-strike`), each naming the test that needs it. It derives the D29-21
+read surface the server expects: a per-category `_index.json`, `manifest.json`,
+`rules-tree.json` and `sources-index.json`. The output is deterministic; nothing edits it by
+hand.
+
+`scripts/extract-fixture.ts` refreshes `raw/` and `picks/` from a real emitted corpus (run
+`pnpm --filter @astra/codex transform` first; host-only, rare). It then builds the fixture
+corpus into a temp dir and **asserts the full coverage matrix** over it — every category,
+every `CodexNode` kind, the legacy pair, the alias join, the qualifier-reorder + variantOf
+pair, a journal-merged entity, a residual `-2` collision, a Foundry-only / AoN-only entity,
+and the class-stats cases. It fails loudly (listing exactly what's missing) rather than
+silently shipping a gap. The 2 MB budget covers the committed inputs.
 
 `scripts/transform.test.ts` is the CI-hermetic pipeline test: it calls the exact same
 `runTransform()` the real CLI uses, twice, over `fixtures/raw/`, into two fresh temp
 dirs, and asserts zero hard failures, byte-identical output between the two runs, 100%
 Zod-valid entities, the `entities/` coverage set still parsing, and a couple of content
 spot-checks (the Heal pair's cross-links, Magic Missile's license + pairing).
+`scripts/fixtureCorpus.test.ts` does the same for the fixture generator.
 
 ## Deploy (P5, D29-53..57)
 

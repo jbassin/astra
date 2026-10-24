@@ -149,17 +149,17 @@ commitlint from="origin/main" to="HEAD":
     fi
     exec pnpm exec commitlint --from {{quote(from)}} --to {{quote(to)}} --verbose
 
-# The codex Chromium guards run against the committed fixture corpus (CODEX_CORPUS_ROOT),
+# The codex Chromium guards generate the fixture corpus and point CODEX_CORPUS_ROOT at it,
 # so they never read the real corpus. They need the Chromium from `just bootstrap`.
 # CI job codex-row-height-drift-guard: the listing row pitch is exactly 24px.
 codex-row-height-drift-guard:
     pnpm --filter @astra/codex build
-    cd apps/codex/web && CODEX_CORPUS_ROOT="$PWD/fixtures/entities" node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts
+    cd apps/codex/web && node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts
 
 # CI job codex-virtualization-interaction-guard: listing scroll, keys and reload in Chromium.
 codex-virtualization-interaction-guard:
     pnpm --filter @astra/codex build
-    cd apps/codex/web && CODEX_CORPUS_ROOT="$PWD/fixtures/entities" node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts
+    cd apps/codex/web && node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts
 
 # CI-only (see `ci`): runs inside node:24-slim with the Chromium the playwright lock pins.
 # CI job vellum-visual-regression: each fixture's rendered PNG against its golden.

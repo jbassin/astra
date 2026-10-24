@@ -1,11 +1,9 @@
 /**
- * Rebuilds the fixture corpus at `fixtures/entities/` from its committed inputs
- * (`scripts/fixtureCorpus.ts`). Run via `pnpm --filter @astra/codex fixture`.
+ * Brings the generated fixture corpus at `fixtures/entities/` up to date from its committed
+ * inputs (`scripts/fixtureCorpus.ts`). Run via `pnpm --filter @astra/codex fixture`. Tests
+ * and the Chromium guards do this themselves; a dev server without the real corpus needs it
+ * once.
  */
-import { rmSync } from "node:fs";
+import { ensureFixtureCorpus } from "./fixtureCorpus";
 
-import { buildFixtureCorpus, FIXTURE_CORPUS_DIR } from "./fixtureCorpus";
-
-rmSync(FIXTURE_CORPUS_DIR, { recursive: true, force: true });
-const { entityCount } = buildFixtureCorpus(FIXTURE_CORPUS_DIR);
-console.log(`fixture: wrote ${entityCount} entities to ${FIXTURE_CORPUS_DIR}`);
+console.log(`fixture: ${ensureFixtureCorpus()} is up to date`);
