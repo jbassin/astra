@@ -88,8 +88,6 @@ export type GameEvent =
 // --- effects --------------------------------------------------------------------
 
 export type Effect =
-  | { kind: "schedule"; at: number }
-  | { kind: "cancelTimer" }
   | { kind: "broadcast" }
   | { kind: "appendResults"; row: import("./schema").ResultRow };
 
@@ -177,7 +175,28 @@ function closeQuestion(state: RoomState): RoomState {
   return { ...applyTimeouts(state), phase: "reveal", questionStartedAt: null };
 }
 
-/** lobby|scoreboard → question(index): fresh countdown, `schedule` effect. */
+/**
+ * The one outstanding deadline a state implies: an open question closes at its start plus its
+ * time limit. The runtime arms its timer from this after every reduction, so no transition has to
+ * remember to schedule or cancel anything.
+ */
+export interface Deadline {
+  at: number;
+  phase: Phase;
+  questionIndex: number;
+}
+
+export function deadlineOf(state: RoomState): Deadline | null {
+  if (state.phase !== "question" || state.questionStartedAt === null) return null;
+  const q = currentQuestion(state);
+  return {
+    at: state.questionStartedAt + q.time * 1000,
+    phase: state.phase,
+    questionIndex: state.questionIndex,
+  };
+}
+
+/** lobby|scoreboard → question(index): a fresh countdown (`deadlineOf` now returns its close). */
 function openQuestion(state: RoomState, index: number, now: number): ReduceResult {
   const q = state.questions[index];
   if (!q) throw new Error(`menhir: openQuestion out of range (index ${index})`);
@@ -189,7 +208,7 @@ function openQuestion(state: RoomState, index: number, now: number): ReduceResul
   };
   return {
     state: next,
-    effects: [{ kind: "schedule", at: now + q.time * 1000 }, { kind: "broadcast" }],
+    effects: [{ kind: "broadcast" }],
   };
 }
 
@@ -209,15 +228,12 @@ function buildResultRow(state: RoomState, aborted: boolean): import("./schema").
 }
 
 /** any → podium: append the results row (D31-10), including aborted games. */
-function toPodium(state: RoomState, aborted: boolean, hadTimer: boolean): ReduceResult {
+function toPodium(state: RoomState, aborted: boolean): ReduceResult {
   const next: RoomState = { ...state, phase: "podium", aborted, questionStartedAt: null };
-  const effects: Effect[] = [];
-  if (hadTimer) effects.push({ kind: "cancelTimer" });
-  effects.push(
-    { kind: "appendResults", row: buildResultRow(next, aborted) },
-    { kind: "broadcast" },
-  );
-  return { state: next, effects };
+  return {
+    state: next,
+    effects: [{ kind: "appendResults", row: buildResultRow(next, aborted) }, { kind: "broadcast" }],
+  };
 }
 
 /** Re-check the early-close predicate (D31-3) after an answer/connect/disconnect.
@@ -352,14 +368,10 @@ function handleAnswer(
   players.set(event.playerId, updatedPlayer);
   let next: RoomState = { ...state, players };
 
-  const effects: Effect[] = [{ kind: "broadcast" }];
   const { state: maybeClosed, closed } = maybeEarlyClose(next);
-  if (closed) {
-    next = maybeClosed;
-    effects.unshift({ kind: "cancelTimer" });
-  }
+  if (closed) next = maybeClosed;
 
-  return { state: next, effects, result: { kind: "accepted" } };
+  return { state: next, effects: [{ kind: "broadcast" }], result: { kind: "accepted" } };
 }
 
 // --- hostAction (D31-3 absolute actions) -----------------------------------------
@@ -385,7 +397,7 @@ function handleHostAction(
       if (state.phase === "question") {
         // Host escape hatch: force-close, scoring whoever answered.
         const closed = closeQuestion(state);
-        return { state: closed, effects: [{ kind: "cancelTimer" }, { kind: "broadcast" }] };
+        return { state: closed, effects: [{ kind: "broadcast" }] };
       }
       if (state.phase === "reveal") {
         return { state: { ...state, phase: "scoreboard" }, effects: [{ kind: "broadcast" }] };
@@ -393,7 +405,7 @@ function handleHostAction(
       if (state.phase === "scoreboard") {
         const nextIndex = state.questionIndex + 1;
         if (nextIndex < state.questions.length) return openQuestion(state, nextIndex, now);
-        return toPodium(state, false, false);
+        return toPodium(state, false);
       }
       // lobby / podium: `next` doesn't apply.
       return { state, effects: [] };
@@ -402,7 +414,7 @@ function handleHostAction(
       if (state.phase === "podium") return { state, effects: [] };
       const wasQuestion = state.phase === "question";
       const finalState = wasQuestion ? applyTimeouts(state) : state;
-      return toPodium(finalState, true, wasQuestion);
+      return toPodium(finalState, true);
     }
   }
 }
@@ -438,13 +450,9 @@ function setConnected(
   players.set(event.playerId, { ...player, connected });
   let next: RoomState = { ...state, players };
 
-  const effects: Effect[] = [{ kind: "broadcast" }];
   const { state: maybeClosed, closed } = maybeEarlyClose(next);
-  if (closed) {
-    next = maybeClosed;
-    effects.unshift({ kind: "cancelTimer" });
-  }
-  return { state: next, effects };
+  if (closed) next = maybeClosed;
+  return { state: next, effects: [{ kind: "broadcast" }] };
 }
 
 // --- the reducer --------------------------------------------------------------------

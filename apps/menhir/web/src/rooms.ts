@@ -1,8 +1,8 @@
 /**
  * The room runtime (D31-3/D31-8/D31-9) — the imperative shell around the pure
  * `game.ts` reducer. Owns `Map<code, Room>` (in-memory, ephemeral), ONE timer
- * handle per room (cleared before every reduction, re-armed only from a
- * `schedule` effect), the per-room SSE sink registry (host sinks + a refcounted
+ * per room (after every reduction it is reconciled with `deadlineOf(state)`, so it
+ * matches the state by construction), the per-room SSE sink registry (host sinks + a refcounted
  * `Map<playerId, Set<sink>>` — two tabs = one player), and the 2h GC sweep.
  *
  * The clock + scheduler are injected (`Clock`) so tests drive time entirely by
@@ -14,6 +14,8 @@ import { lazyCounter, reportIgnored } from "@astra/observe";
 import { safeEqual } from "@astra/service-kit";
 
 import {
+  type Deadline,
+  deadlineOf,
   type Effect,
   type GameEvent,
   type Phase,
@@ -54,7 +56,8 @@ export interface Sink {
 
 interface Room {
   state: RoomState;
-  timer: ReturnType<typeof setTimeout> | null;
+  /** The armed timer and the deadline it was armed for (`deadlineOf` at the time). */
+  armed: { deadline: Deadline; handle: ReturnType<typeof setTimeout> } | null;
   hostSinks: Set<Sink>;
   playerSinks: Map<string, Set<Sink>>;
   /** Runtime bookkeeping only (not engine state) — the pure reducer must never
@@ -167,27 +170,9 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
     }
   }
 
-  function applyEffects(code: string, room: Room, effects: Effect[], now: number): void {
+  function applyEffects(room: Room, effects: Effect[], now: number): void {
     for (const effect of effects) {
       switch (effect.kind) {
-        case "schedule": {
-          const delay = Math.max(0, effect.at - now);
-          const armedPhase = room.state.phase;
-          const armedIndex = room.state.questionIndex;
-          room.timer = clock.setTimer(() => {
-            room.timer = null;
-            dispatch(
-              code,
-              { type: "timerFired", phase: armedPhase, questionIndex: armedIndex },
-              clock.now(),
-            );
-          }, delay);
-          break;
-        }
-        case "cancelTimer":
-          // Already cleared unconditionally at the top of dispatch() below —
-          // this branch documents transition intent, nothing more to do.
-          break;
         case "broadcast":
           broadcastRoom(room, now);
           break;
@@ -199,35 +184,47 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
     }
   }
 
-  /** The ONE call site that runs an event through the pure reducer. Clears the
-   * room's outstanding timer handle FIRST (spec discipline: "cleared before every
-   * reduction"), then re-arms only if a `schedule` effect comes back. */
+  /** Make the room's one timer match `deadlineOf(state)`: keep it when the deadline is unchanged,
+   * otherwise clear it and arm the new one (or none). The timer's `timerFired` names the phase and
+   * question it was armed for, so a timer that outlives its question is a reducer no-op. */
+  function reconcileTimer(code: string, room: Room): void {
+    const want = deadlineOf(room.state);
+    const armed = room.armed;
+    if (
+      armed &&
+      want &&
+      armed.deadline.at === want.at &&
+      armed.deadline.phase === want.phase &&
+      armed.deadline.questionIndex === want.questionIndex
+    )
+      return;
+    if (armed) clock.clearTimer(armed.handle);
+    room.armed = null;
+    if (!want) return;
+    const handle = clock.setTimer(
+      () => {
+        room.armed = null;
+        dispatch(
+          code,
+          { type: "timerFired", phase: want.phase, questionIndex: want.questionIndex },
+          clock.now(),
+        );
+      },
+      Math.max(0, want.at - clock.now()),
+    );
+    room.armed = { deadline: want, handle };
+  }
+
+  /** The ONE call site that runs an event through the pure reducer; afterwards the room's timer
+   * is reconciled with the deadline the new state implies. */
   function dispatch(code: string, event: GameEvent, now: number) {
     const room = rooms.get(code);
     if (!room) return null;
-    if (room.timer !== null) {
-      clock.clearTimer(room.timer);
-      room.timer = null;
-    }
     const result = reduce(room.state, event, now);
     room.state = result.state;
     room.lastActivity = now;
-    applyEffects(code, room, result.effects, now);
-    // Re-arm the outstanding question deadline when a reduction consumed the
-    // timer without scheduling a new one — only openQuestion emits `schedule`,
-    // so without this an answer/join/connect during a live question would
-    // permanently disarm the countdown (S2b review blocker).
-    if (
-      room.timer === null &&
-      room.state.phase === "question" &&
-      room.state.questionStartedAt !== null
-    ) {
-      const q = room.state.questions[room.state.questionIndex];
-      if (q) {
-        const at = room.state.questionStartedAt + q.time * 1000;
-        applyEffects(code, room, [{ kind: "schedule", at }], now);
-      }
-    }
+    applyEffects(room, result.effects, now);
+    reconcileTimer(code, room);
     return result;
   }
 
@@ -246,7 +243,7 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
           sink.close();
         }
       }
-      if (room.timer !== null) clock.clearTimer(room.timer);
+      if (room.armed) clock.clearTimer(room.armed.handle);
       rooms.delete(code);
     }
   }
@@ -287,7 +284,7 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
       );
       rooms.set(code, {
         state: result.state,
-        timer: null,
+        armed: null,
         hostSinks: new Set(),
         playerSinks: new Map(),
         lastActivity: now,

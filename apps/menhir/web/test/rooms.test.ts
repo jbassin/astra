@@ -122,4 +122,23 @@ describe("rooms runtime timer policy (S2b review blocker)", () => {
     expect(phaseOf(runtime, code, hostToken)).toBe("reveal");
     runtime.shutdown();
   });
+
+  test("an unchanged deadline keeps its timer; leaving the question clears it", () => {
+    const clock = new TestClock();
+    const { runtime, code, hostToken, p1 } = bootGame(clock);
+
+    runtime.hostAction(code, { hostToken, action: "start", fromPhase: "lobby", fromIndex: -1 });
+    const [armed] = clock.pending;
+    runtime.answer(code, { playerId: p1, option: 0 });
+    expect(clock.pending).toEqual([armed]); // same handle, same due time: not re-armed
+
+    runtime.hostAction(code, { hostToken, action: "next", fromPhase: "question", fromIndex: 0 });
+    expect(clock.pending).toEqual([]); // reveal has no deadline
+    runtime.hostAction(code, { hostToken, action: "next", fromPhase: "reveal", fromIndex: 0 });
+    runtime.hostAction(code, { hostToken, action: "next", fromPhase: "scoreboard", fromIndex: 0 });
+    expect(clock.pending.map((p) => p.at)).toEqual([clock.t + 20_000]); // question 2's own
+    runtime.hostAction(code, { hostToken, action: "end", fromPhase: "question", fromIndex: 1 });
+    expect(clock.pending).toEqual([]);
+    runtime.shutdown();
+  });
 });
