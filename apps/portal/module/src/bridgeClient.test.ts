@@ -429,7 +429,7 @@ describe("BridgeClient (spec 0023 S3 — Foundry-free)", () => {
     client.stop();
   });
 
-  it("stops dialing when a newer session for the same user replaced this socket", () => {
+  it("keeps redialing at the 30s cap after being replaced, and takes the bridge back", () => {
     vi.useFakeTimers();
     const { factory, sockets } = fakeFactory();
     const log = vi.fn();
@@ -439,9 +439,18 @@ describe("BridgeClient (spec 0023 S3 — Foundry-free)", () => {
     socketAt(sockets, 0).open();
     socketAt(sockets, 0).receive(AUTH_OK);
     socketAt(sockets, 0).remoteClose(4004, "replaced");
-    vi.advanceTimersByTime(120_000);
-    expect(sockets).toHaveLength(1);
     expect(log).toHaveBeenCalledWith("warn", expect.stringContaining("newer session"));
+    vi.advanceTimersByTime(29_999);
+    expect(sockets).toHaveLength(1);
+    vi.advanceTimersByTime(1);
+    expect(sockets).toHaveLength(2);
+
+    // The replacer has left: this redial gets auth-ok and the backoff is back at base.
+    socketAt(sockets, 1).open();
+    socketAt(sockets, 1).receive(AUTH_OK);
+    socketAt(sockets, 1).remoteClose();
+    vi.advanceTimersByTime(1000);
+    expect(sockets).toHaveLength(3);
     client.stop();
   });
 

@@ -8,10 +8,17 @@ import {
   type AuthMeta,
   type McpQuery,
 } from "@astra/portal-shared";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { WebSocket } from "ws";
 
-import { Bridge } from "./bridge";
+// Capture the bridge's log records so a test can assert on what was (not) logged.
+const { emitted } = vi.hoisted(() => ({ emitted: [] as Array<{ body?: unknown }> }));
+vi.mock("@astra/observe", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@astra/observe")>()),
+  getLogger: () => ({ emit: (record: { body?: unknown }) => emitted.push(record) }),
+}));
+
+import { Bridge, MAX_BRIDGE_PAYLOAD_BYTES } from "./bridge";
 
 const BRIDGE_API_KEY = "test-bridge-key";
 
@@ -404,6 +411,80 @@ describe("Bridge versioned handshake, designation and replacement (svc-2)", () =
     fresh.onQuery((q) => fresh.respond(q.id, { from: "fresh" }));
     await expect(bridge.sendQuery("portal.ping")).resolves.toEqual({ from: "fresh" });
     fresh.close();
+  });
+
+  it("a replaced client that redials regains the bridge once the replacer has left", async () => {
+    const { bridge, url } = await start({ bridgeUserId: "portal-user" });
+    const headless = new FakeModule(url, BRIDGE_API_KEY, { userId: "portal-user" });
+    await headless.ready();
+    const headlessClosed = waitForClose(headless.ws);
+    const tab = new FakeModule(url, BRIDGE_API_KEY, { userId: "portal-user" });
+    await tab.ready();
+    expect(await headlessClosed).toBe(BridgeCloseCode.replaced);
+
+    tab.close(); // the briefly opened tab goes away
+    await sleep(50);
+    expect(bridge.getStatus()).toEqual({ connected: false });
+
+    const redial = new FakeModule(url, BRIDGE_API_KEY, { userId: "portal-user" });
+    await redial.ready();
+    expect(redial.received).toContainEqual(expect.objectContaining({ type: "auth-ok" }));
+    redial.onQuery((q) => redial.respond(q.id, { from: "headless" }));
+    await expect(bridge.sendQuery("portal.ping")).resolves.toEqual({ from: "headless" });
+    redial.close();
+  });
+
+  it("a wrong-key dial claiming the designated user is refused 4001 and leaves the holder alone", async () => {
+    const { bridge, url } = await start({ bridgeUserId: "portal-user" });
+    const holder = new FakeModule(url, BRIDGE_API_KEY, { userId: "portal-user" });
+    await holder.ready();
+    let holderClosed = false;
+    holder.ws.once("close", () => {
+      holderClosed = true;
+    });
+
+    const impostor = new FakeModule(url, "wrong-key", { userId: "portal-user" });
+    expect(await waitForCloseWithReason(impostor.ws)).toEqual({
+      code: BridgeCloseCode.unauthorized,
+      reason: "bad-key",
+    });
+    await sleep(50);
+    expect(holderClosed).toBe(false);
+    holder.onQuery((q) => holder.respond(q.id, { from: "holder" }));
+    await expect(bridge.sendQuery("portal.ping")).resolves.toEqual({ from: "holder" });
+    holder.close();
+  });
+
+  it("logs no auth timeout for a socket that closes before sending anything", async () => {
+    const { url } = await start(); // authWindowMs 250
+    emitted.length = 0;
+    const ws = new WebSocket(url);
+    await new Promise((resolve) => ws.once("open", resolve));
+    ws.close();
+    await sleep(400);
+    expect(emitted.filter((r) => String(r.body).includes("timeout"))).toEqual([]);
+  });
+
+  it("truncates the logged parse error of a malformed handshake", async () => {
+    const { url } = await start();
+    emitted.length = 0;
+    const ws = new WebSocket(url);
+    ws.once("open", () => {
+      // Valid protocol, but hundreds of unknown keys: a long zod error.
+      const junk = Object.fromEntries(Array.from({ length: 300 }, (_, i) => [`k${i}`, i]));
+      ws.send(JSON.stringify({ type: "auth", apiKey: "x", protocol: BRIDGE_PROTOCOL, ...junk }));
+    });
+    expect((await waitForCloseWithReason(ws)).reason).toBe("malformed");
+    const refusal = emitted.find((r) => String(r.body).includes("malformed"));
+    expect(refusal).toBeDefined();
+    expect(String(refusal?.body).length).toBeLessThan(400);
+  });
+
+  it("closes a frame larger than the payload cap with 1009", async () => {
+    const { url } = await start();
+    const ws = new WebSocket(url);
+    ws.once("open", () => ws.send("x".repeat(MAX_BRIDGE_PAYLOAD_BYTES + 1)));
+    expect(await waitForClose(ws)).toBe(1009);
   });
 
   it("closes the module with 1001 server-shutdown and fails its in-flight queries as bridge-offline", async () => {
