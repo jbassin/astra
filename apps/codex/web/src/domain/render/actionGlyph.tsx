@@ -1,28 +1,37 @@
 import type { ReactElement } from "react";
 
-import { ActionGlyph, type ActionCost, normalizeActionCost } from "../../ui";
-
 /**
- * D29-24 adversarial B1 — the actionGlyph shim. gothic's `normalizeActionCost`
- * only understands a handful of short aliases ("1"/"one"/"single", "r"/
- * "reaction"/"react", "0"/"f"/"free", ...) — the REAL corpus speaks AoN/Foundry
- * long-form vocabulary ("Single Action", "Two Actions", ...) plus composite
- * forms ("Single Action to Three Actions", "... or ..."). This module sits IN
- * FRONT of gothic's normalizer (spec D29-24) and is the ONLY place that
- * vocabulary is taught.
+ * Action-cost glyphs: the one module that knows the corpus's action-cost vocabulary and how
+ * each cost renders.
  *
- * Verified exhaustively against the real emitted corpus (all `actionGlyph.cost`
- * values across all ~46k entities + embedded items, 25 distinct tokens): every
- * token maps cleanly through the rules below EXCEPT two ("T" ×1, "Two Actions
- * to 2 rounds" ×3 — the spec's own named "genuinely unknown" residue), which
- * fall back to plain text (`{ kind: "unknown" }`).
+ * The corpus speaks two vocabularies. Index facets (`castTime`, `actionCost`) and embedded
+ * items use short tokens ("1"/"2"/"3"/"reaction"/"free", plus "r"/"f" in either case); node
+ * bodies use AoN/Foundry long forms ("Single Action", "Two Actions", ...), the one-letter
+ * Foundry font token "A"/"a", and composites ("Single Action to Three Actions", "... or ...").
+ * `normalizeActionCost` handles the short tokens; `normalizeCodexActionGlyph` adds the long
+ * forms and composites on top. Verified against the real corpus: every token maps except
+ * "T", "d" and "Two Actions to 2 rounds", which fall back to plain text.
  */
 
-/** AoN/Foundry long forms gothic's own alias table doesn't know (its keys are
- * short letters/digits/"one"/"two"/"three"/"reaction"/"free" — none of these
- * exact phrases). "One Action" (distinct from "Single Action") only appears as
- * the right-hand side of a few composite tokens in the real corpus, never
- * bare — kept here regardless for that case. */
+/** PF2e action-economy costs. Purely visual — no rules meaning attached. */
+export type ActionCost = "1" | "2" | "3" | "reaction" | "free";
+
+const SHORT_FORM_TO_COST: Readonly<Record<string, ActionCost>> = {
+  "1": "1",
+  "2": "2",
+  "3": "3",
+  r: "reaction",
+  reaction: "reaction",
+  f: "free",
+  free: "free",
+};
+
+/** A short action-cost token (case-insensitive, trimmed) to a cost, or null. */
+export function normalizeActionCost(raw: string): ActionCost | null {
+  return SHORT_FORM_TO_COST[raw.trim().toLowerCase()] ?? null;
+}
+
+/** AoN/Foundry long forms. "One Action" appears only as the right-hand side of a composite. */
 const LONG_FORM_TO_COST: Readonly<Record<string, ActionCost>> = {
   "Single Action": "1",
   "Two Actions": "2",
@@ -34,8 +43,7 @@ const LONG_FORM_TO_COST: Readonly<Record<string, ActionCost>> = {
   a: "1",
 };
 
-/** One side of a token (a bare form OR one half of a composite): codex's own
- * long-form map first, then gothic's short-alias table as the fallback. */
+/** One side of a token (a bare form or one half of a composite). */
 function parseActionSide(token: string): ActionCost | null {
   return LONG_FORM_TO_COST[token] ?? normalizeActionCost(token);
 }
@@ -45,10 +53,7 @@ const CONNECTIVES: ReadonlyArray<{ token: string; label: "to" | "or" }> = [
   { token: " or ", label: "or" },
 ];
 
-/** The literal right-hand phrase in the one real "open-ended" composite
- * ("Single Action or more Actions", 8 real uses) — not a parseable single
- * side (there's no "more Actions" cost), so it gets its own branch instead of
- * falling to "unknown" like a genuine miss (D29-24). */
+/** The right-hand phrase of the one open-ended composite ("Single Action or more Actions"). */
 const OPEN_ENDED_SUFFIX = "more Actions";
 
 export type NormalizedActionGlyph =
@@ -57,7 +62,7 @@ export type NormalizedActionGlyph =
   | { kind: "openEnded"; left: ActionCost; connective: "to" | "or" }
   | { kind: "unknown"; raw: string };
 
-/** Pure, total — never throws. The B1 shim's entry point. */
+/** Pure, total — never throws. */
 export function normalizeCodexActionGlyph(raw: string): NormalizedActionGlyph {
   const trimmed = raw.trim();
 
@@ -80,13 +85,47 @@ export function normalizeCodexActionGlyph(raw: string): NormalizedActionGlyph {
   return { kind: "unknown", raw };
 }
 
+const LABELS: Record<ActionCost, string> = {
+  "1": "one action",
+  "2": "two actions",
+  "3": "three actions",
+  reaction: "reaction",
+  free: "free action",
+};
+
 /**
- * Renders a raw `actionGlyph.cost` (or any other action-cost-shaped string,
- * e.g. an `EmbeddedItem.actionCost`/feat `facets.actionCost`) to React.
- * Composites render as glyph–connective–glyph (the PF2e "◆ to ◆◆◆" idiom,
- * spec D29-24); genuinely unknown tokens fall back to visible plain text
- * (golden-visible, per spec — NOT the `data-render-error` chip, which is
- * reserved for the node-kind switch's own totality guarantee).
+ * The Private-Use-Area codepoints of `public/pathfinder-icons.ttf`, one pre-composed glyph per
+ * cost (`src/ui/ACTIONS-GLYPH-SOURCE.md`). A literal character rather than `liga` substitution,
+ * so `renderToStaticMarkup` and plain-text extraction need no font-shaping engine.
+ */
+const GLYPH_CHARS: Record<ActionCost, string> = {
+  "1": "", // [one-action]
+  "2": "", // [two-actions]
+  "3": "", // [three-actions]
+  reaction: "", // [reaction]
+  free: "", // [free-action]
+};
+
+/**
+ * One action-font glyph inside a `.codex-action-glyph` span (`globals.css` holds the
+ * `@font-face`). `role`/`aria-label` come from an object spread, which sidesteps oxlint's
+ * `jsx-a11y/prefer-tag-over-role` false positive on a literal `role="img"`; `title` gives the
+ * hover tooltip.
+ */
+export function ActionGlyph({ cost }: { cost: ActionCost }): ReactElement {
+  const label = LABELS[cost];
+  const common = { role: "img" as const, "aria-label": label, title: label };
+  return (
+    <span {...common} className="codex-action-glyph">
+      {GLYPH_CHARS[cost]}
+    </span>
+  );
+}
+
+/**
+ * Renders a raw action-cost string (`actionGlyph.cost`, `EmbeddedItem.actionCost`, a feat's
+ * `facets.actionCost`). Composites render as glyph, connective, glyph (the PF2e "◆ to ◆◆◆"
+ * idiom); unknown tokens fall back to visible plain text, not the `data-render-error` chip.
  */
 export function CodexActionGlyph({ raw }: { raw: string }): ReactElement {
   const normalized = normalizeCodexActionGlyph(raw);

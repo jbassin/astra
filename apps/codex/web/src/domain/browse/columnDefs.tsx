@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
+import { ActionGlyph, normalizeActionCost } from "@/domain/render/actionGlyph";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { Facets, IndexRow } from "@/schema/entity";
-import { ActionGlyph, normalizeActionCost } from "@/ui";
 
 import { capitalize } from "../render/text";
 import { facetDefFor, numericValueFor, type RawFacetValue } from "./facetDefs";
@@ -250,12 +250,8 @@ function renderRarity(row: IndexRow): ReactNode {
   return row.rarity === undefined ? EM_DASH : capitalize(row.rarity);
 }
 
-/** Splits one side of a composite castTime token ("1 or 2" / "1 to 3") via
- * `@/ui`'s short-alias `normalizeActionCost` — deliberately NOT
- * `domain/render/actionGlyph.tsx`'s AoN/Foundry long-form shim (D29-78: "NOT
- * the domain/render shim of the same filename") — `facets.castTime` is
- * already short-form (`"1"`/`"2"`/`"reaction"`/...), so the shim's long-form
- * vocabulary (`"Single Action"`, ...) is dead weight here. */
+/** Splits a composite castTime token ("1 or 2" / "1 to 3"). `facets.castTime` is
+ * short-form only, so each side goes through `normalizeActionCost`. */
 const COMPOSITE_CONNECTIVES: ReadonlyArray<{ token: string; label: string }> = [
   { token: " to ", label: "to" },
   { token: " or ", label: "or" },

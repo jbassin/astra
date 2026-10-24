@@ -22,7 +22,7 @@
    own default) — a brief flash of a missing-glyph box before the font
    loads is consistent with how the rest of the site already handles
    webfont load timing, and `ActionGlyph`'s `aria-label`/`title` keep the
-   cost meaningful even in that brief window. `src/ui/actionGlyph.tsx` is
+   cost meaningful even in that brief window. `src/domain/render/actionGlyph.tsx` is
    its only consumer (`.codex-action-glyph`, below). */
 @font-face {
   font-family: "Pathfinder Icons";
@@ -609,7 +609,7 @@ select:focus-visible,
 .codex-edition-remaster {
   color: var(--color-accent-amber);
 }
-/* `ActionGlyph` (`src/ui/actionGlyph.tsx`) — the real action-cost icon-font
+/* `ActionGlyph` (`src/domain/render/actionGlyph.tsx`) — the real action-cost icon-font
    character, dropped into running text. `font-size: 1em`/`line-height: 1`
    keep it sized off the surrounding text exactly like the prior inline-SVG
    implementation did (`height: 1em`); the glyphs' own natural advance

@@ -460,9 +460,9 @@ codex no longer imports `@astra/gothic` — the dependency and its `theme.css` i
 gone from `package.json`/`__root.tsx` entirely, replaced by a codex-owned `src/styles/
 tokens.css` (the style-tokens doc's palette, resolved under the SAME `--color-*`/`--font-*`
 names `globals.css` already consumed, now pointing at parchment values instead of
-gothic's dark-void ones) and a new `src/ui/` module (`Input`, `Button`, `TraitPill` +
-`traitBucket.ts`, `ErrorChip`, `ActionGlyph`/`normalizeActionCost` — exact prop-signature
-drop-ins for the five gothic imports they replace). Four self-hosted font families via
+gothic's dark-void ones) and a `src/ui/` module (`Input`, `Button`, `traitBucket.ts`,
+`ErrorChip`, `EditionIcon`, `GlyphDefs`). Trait pills live in `domain/render/traits.tsx` and
+action glyphs, with the corpus's action-cost vocabulary, in `domain/render/actionGlyph.tsx`. Four self-hosted font families via
 `@fontsource` per-weight CSS imports in `__root.tsx` (mirroring the pre-existing
 `ibm-plex-mono` two-file pattern): Cinzel 700 (`--font-display`, H1 chapter titles),
 Cormorant SC 600 (`--font-heading`, H2/H3), EB Garamond 400/400-italic/600/700
@@ -750,9 +750,7 @@ a normalization rule in `join.ts` instead — see `qualifierCandidates`).
 To add one:
 
 1. Find a real unjoined pair in the report's per-category `unjoinedForeign`/`unjoinedAon`
-   lists (or `pnpm --filter @astra/codex exec node --import
-   ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/dev-join.ts` for the live
-   category/dragon-family breakdown).
+   lists.
 2. Verify it's genuinely the same thing (same level, same source book) before adding it —
    never guess.
 3. Append `{ "foundryId": "<category>/<slug>", "aonId": "<the AoN _id>", "note": "..." }`

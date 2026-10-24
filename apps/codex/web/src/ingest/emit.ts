@@ -126,7 +126,7 @@ export function writeCanonicalText(path: string, content: string): number {
  * here is a structural bug upstream, not corpus drift, so it throws rather
  * than silently falling back to `entity.slug` (which is the PRE-suffix value
  * for a collision member, `join.ts`'s `Draft` doc comment). */
-export function entityFileSlug(entity: Pick<CodexEntity, "id" | "category">): string {
+function entityFileSlug(entity: Pick<CodexEntity, "id" | "category">): string {
   const prefix = `${entity.category}/`;
   if (!entity.id.startsWith(prefix)) {
     throw new Error(

@@ -259,8 +259,8 @@ export type AonDocMeta = z.infer<typeof AonDocMetaSchema>;
  * (`name`/`url`/`release_date`/`primary_source` — universal across the real
  * snapshot EXCEPT the 53 empty-name fragments `aonSkipReason` identifies
  * below, so a miss on a doc the caller didn't pre-skip is corpus drift, not
- * expected residue) — carries the doc id so the caller (a future
- * `transform.ts`/dev-sweep) can report it precisely, matching
+ * expected residue) — carries the doc id so the caller (`transform.ts`) can
+ * report it precisely, matching
  * `CategoryMapError`/`EnricherGrammarError`'s "hard-fail loudly, never guess"
  * posture (D29-6). */
 export class AonFacetError extends Error {

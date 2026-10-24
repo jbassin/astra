@@ -19,8 +19,8 @@ import type { SourcesIndexStats } from "./sourcesIndexBuild";
  * gate: "report reviewed BY THE STAKEHOLDER — join rates + residues are a
  * judgment call, not a threshold"). Pure builders only: `buildReportJson`/
  * `buildReportMarkdown` return the `report.json` object / `report.md` string;
- * writing either to disk is the transform orchestrator's job (`dev-join.ts`/a
- * future `transform.ts`), same division of labor as `emit.ts` owns writing the
+ * writing either to disk is the transform orchestrator's job
+ * (`scripts/transform.ts`), same division of labor as `emit.ts` owns writing the
  * corpus itself.
  *
  * Per spec §3, the report covers: per-category in/out counts (both sources),
@@ -293,7 +293,7 @@ export interface StatsCoverage {
   embeddedItems: FieldCoverageRow[];
 }
 
-export function computeStatsCoverage(entities: readonly CodexEntity[]): StatsCoverage {
+function computeStatsCoverage(entities: readonly CodexEntity[]): StatsCoverage {
   return {
     creature: computeCreatureStatsCoverage(entities),
     hazard: computeHazardStatsCoverage(entities),

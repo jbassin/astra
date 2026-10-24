@@ -2,10 +2,9 @@ import { Fragment, type ReactElement, type ReactNode } from "react";
 
 import type { CodexEntity } from "../../schema/entity";
 import type { CodexNode, InlineNode } from "../../schema/nodes";
-import { type ActionCost, ErrorChip } from "../../ui";
-import { CodexActionGlyph } from "./actionGlyph";
+import { ErrorChip } from "../../ui";
+import { type ActionCost, CodexActionGlyph } from "./actionGlyph";
 import { capitalize, collectText } from "./text";
-import { CodexTraitPills } from "./traits";
 
 /**
  * D29-24 — the ONE total `CodexNode -> React` renderer, mirroring gothic's
@@ -598,14 +597,8 @@ export function collectEmbedTargetIds(nodes: readonly CodexNode[]): Set<string> 
   return ids;
 }
 
-/** Also exported for reuse by page-shape components (statblock/facetHeader)
- * that need trait pills wired to the same injected membership set. */
-export { CodexTraitPills };
-
-// re-exported so a bare `data-render-error` never needs a separate import
-// path for tests asserting the totality gate.
+// Exported so tests asserting the totality gate share the attribute name.
 export const RENDER_ERROR_ATTR = "data-render-error";
-export { ErrorChip };
 
 // D29-139 — exported for direct unit testing (nodes.test.tsx); the heading
 // case above is the one production call site.

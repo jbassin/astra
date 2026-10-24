@@ -1,7 +1,18 @@
 import type { ReactElement } from "react";
 
-import { TraitPill } from "../../ui";
+import { traitBucket, type TraitBucket } from "../../ui/traitBucket";
 import { humanizeSlug } from "./text";
+
+const BUCKET_CLASS: Record<TraitBucket, string> = {
+  purple: "codex-ui-pill-purple",
+  umber: "codex-ui-pill-umber",
+  amber: "codex-ui-pill-amber",
+};
+
+/** One trait pill. The name renders verbatim; the fill comes from `traitBucket`. */
+function TraitPill({ name }: { name: string }): ReactElement {
+  return <span className={`codex-ui-pill ${BUCKET_CLASS[traitBucket(name)]}`}>{name}</span>;
+}
 
 /**
  * D29-24: trait pills link to `/trait/{slug}` ONLY when that trait exists in
@@ -17,7 +28,7 @@ import { humanizeSlug } from "./text";
  * input as an injected set" instruction) — S2 wires it from the real
  * `trait/_index.json` rows.
  */
-export function traitHref(token: string): string {
+function traitHref(token: string): string {
   return `/trait/${token}`;
 }
 
@@ -32,7 +43,7 @@ export function humanizeTraitToken(token: string): string {
   return humanizeSlug(token);
 }
 
-export function CodexTraitPill({
+function CodexTraitPill({
   token,
   knownTraitIds,
 }: {

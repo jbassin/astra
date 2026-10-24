@@ -24,8 +24,8 @@ import type { BlockNode, CodexNode, InlineNode } from "../schema/nodes";
 /** Thrown for anything the grammar can't account for: an unrecognized `@Tag[`/
  * `[[/x` form, an unresolvable `@Localize` key (a fetch/merge bug, not content
  * drift — D29-5 guarantees all 200 real keys resolve), or malformed/unterminated
- * bracket nesting. `source`/`start`/`end` carry the exact span so a caller (the
- * dev-sweep script, `transform.ts`) can report `doc id + snippet`, not just a
+ * bracket nesting. `source`/`start`/`end` carry the exact span so a caller
+ * (`transform.ts`) can report `doc id + snippet`, not just a
  * message. */
 export class EnricherGrammarError extends Error {
   readonly source: string;
@@ -750,8 +750,7 @@ function buildNode(match: EnricherMatch, ctx: EnricherContext): InlineNode {
  * in source order. Throws `EnricherGrammarError` on the FIRST unrecognized
  * enricher form or malformed bracket nesting encountered (D29-6's hard-fail
  * posture) — callers that need to enumerate every failure across a large corpus
- * catch per-document and continue to the next document (see
- * `scripts/dev-sweep-foundry.ts`); collecting every failure within a single
+ * catch per-document and continue to the next document; collecting every failure within a single
  * string isn't attempted here, since a hard-fail is meant to stop and be fixed,
  * not be exhaustively cataloged inline.
  */

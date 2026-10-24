@@ -55,7 +55,7 @@ function eidolonEntries(): EmbedOverrideEntry[] {
   }));
 }
 
-export const EMBED_OVERRIDES: readonly EmbedOverrideEntry[] = [
+const EMBED_OVERRIDES: readonly EmbedOverrideEntry[] = [
   ...eidolonEntries(),
   {
     from: "class-feature/armor-innovation",

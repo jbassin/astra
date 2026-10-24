@@ -89,7 +89,7 @@ export const EXCLUDED_PACKS: ReadonlySet<string> = new Set([
 
 /** Every Actor-type pack directory in the pinned `pf2e-8.3.0` snapshot (verified
  * against `system.pf2e.json`'s `packs[].type === "Actor"`, 66 entries). */
-export const ACTOR_PACKS: ReadonlySet<string> = new Set([
+const ACTOR_PACKS: ReadonlySet<string> = new Set([
   "abomination-vaults-bestiary",
   "age-of-ashes-bestiary",
   "agents-of-edgewatch-bestiary",
@@ -160,7 +160,7 @@ export const ACTOR_PACKS: ReadonlySet<string> = new Set([
 
 /** Doc `type` → codex category, shared by every pack in `ACTOR_PACKS` (verified:
  * these six doc types are the complete set across all 66 Actor packs). */
-export const ACTOR_TYPE_CATEGORY: Readonly<Record<string, string>> = {
+const ACTOR_TYPE_CATEGORY: Readonly<Record<string, string>> = {
   npc: "creature",
   // D29-19 (P1.6): `character`-typed Actors (iconics/pregens/Kingmaker PC
   // builds) are EXCLUDED upstream in `foundryEntities.ts`'s

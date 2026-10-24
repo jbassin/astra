@@ -98,7 +98,7 @@ export const OPTION_SEARCH_THRESHOLD = 20;
 /** ≥ this many options -> the input renders EXPANDED by default (the
  * stakeholder's own sanctioned latitude on very large lists — `creature
  * .family`'s 467 options, Traits' 380-on-feat, are the motivating cases). */
-export const OPTION_SEARCH_AUTO_EXPAND_THRESHOLD = 100;
+const OPTION_SEARCH_AUTO_EXPAND_THRESHOLD = 100;
 
 function MagnifierGlyph(): ReactElement {
   // A plain hand-rolled inline SVG (no icon-font/new dependency, matching

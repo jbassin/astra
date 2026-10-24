@@ -318,7 +318,7 @@ const NAMED_ENTITIES: ReadonlyMap<string, string> = new Map([
 
 const ENTITY_RE = /&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g;
 
-export function decodeAonEntities(text: string): string {
+function decodeAonEntities(text: string): string {
   return text.replace(ENTITY_RE, (whole, body: string) => {
     if (body.startsWith("#x") || body.startsWith("#X")) {
       return String.fromCodePoint(Number.parseInt(body.slice(2), 16));
