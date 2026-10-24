@@ -478,8 +478,8 @@ services:
       - "10368:10368" # vellum-render (astra range) — reached same-origin via Caddy /render
     healthcheck:
       <<: *node-healthcheck
-      # /health reports the warm-Chromium readiness; start_period covers the launch.
-      test: ["CMD", "node", "-e", "await fetch('http://localhost:10368/health').then(r=>r.json()).then(j=>process.exit(j.ready?0:1))"]
+      # /healthz turns ready once Chromium is warm; start_period covers the launch.
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10368/healthz').then(r=>process.exit(r.ok?0:1))"]
       start_period: 25s
 
   # --- orator: the music bot's library store (0010, Decision F) ---
