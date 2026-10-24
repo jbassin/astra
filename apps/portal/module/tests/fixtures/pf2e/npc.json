@@ -1,0 +1,267 @@
+{
+  "provenance": "source: HAND-BUILT from pf2e 8.4.1 template.json's npc shape (no NPC capture exists in the repo); live: SYNTHESIZED. Refresh both sides from a real world NPC.",
+  "uuid": "Actor.fxNpcGoblinWar01",
+  "source": {
+    "_id": "fxNpcGoblinWar01",
+    "name": "Goblin Warrior",
+    "type": "npc",
+    "img": "systems/pf2e/icons/default-icons/npc.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "mod": 0
+        },
+        "dex": {
+          "mod": 3
+        },
+        "con": {
+          "mod": 1
+        },
+        "int": {
+          "mod": 0
+        },
+        "wis": {
+          "mod": -1
+        },
+        "cha": {
+          "mod": 1
+        }
+      },
+      "attributes": {
+        "ac": {
+          "value": 16,
+          "details": ""
+        },
+        "hp": {
+          "value": 6,
+          "max": 6,
+          "temp": 0,
+          "details": ""
+        },
+        "allSaves": {
+          "value": ""
+        },
+        "speed": {
+          "value": 25,
+          "otherSpeeds": [],
+          "details": ""
+        }
+      },
+      "perception": {
+        "details": "",
+        "mod": 2,
+        "senses": [
+          {
+            "type": "darkvision"
+          }
+        ],
+        "vision": true
+      },
+      "saves": {
+        "fortitude": {
+          "value": 5,
+          "saveDetail": ""
+        },
+        "reflex": {
+          "value": 7,
+          "saveDetail": ""
+        },
+        "will": {
+          "value": 3,
+          "saveDetail": ""
+        }
+      },
+      "skills": {
+        "acrobatics": {
+          "base": 5
+        },
+        "athletics": {
+          "base": 2
+        },
+        "stealth": {
+          "base": 5
+        }
+      },
+      "traits": {
+        "value": [
+          "goblin",
+          "humanoid"
+        ],
+        "rarity": "common",
+        "size": {
+          "value": "sm"
+        }
+      },
+      "details": {
+        "level": {
+          "value": -1
+        },
+        "blurb": "",
+        "publicNotes": "",
+        "privateNotes": "",
+        "publication": {
+          "title": "Pathfinder Monster Core",
+          "authors": "",
+          "license": "ORC",
+          "remaster": true
+        }
+      },
+      "initiative": {
+        "statistic": "perception"
+      },
+      "resources": {}
+    },
+    "items": [
+      {
+        "_id": "fxNpcMeleeDogsl1",
+        "name": "Dogslicer",
+        "type": "melee",
+        "img": "systems/pf2e/icons/default-icons/melee.svg",
+        "system": {
+          "bonus": {
+            "value": 8
+          },
+          "damageRolls": {
+            "fxDmg0000000001": {
+              "damage": "1d6",
+              "damageType": "slashing"
+            }
+          },
+          "traits": {
+            "value": [
+              "agile",
+              "backstabber",
+              "finesse"
+            ]
+          },
+          "description": {
+            "value": ""
+          },
+          "rules": []
+        },
+        "flags": {},
+        "ownership": {
+          "default": 0
+        }
+      }
+    ],
+    "effects": [],
+    "folder": null,
+    "flags": {},
+    "ownership": {
+      "default": 0
+    }
+  },
+  "live": {
+    "system": {
+      "abilities": {
+        "str": {
+          "mod": 0
+        },
+        "dex": {
+          "mod": 3
+        },
+        "con": {
+          "mod": 1
+        },
+        "int": {
+          "mod": 0
+        },
+        "wis": {
+          "mod": -1
+        },
+        "cha": {
+          "mod": 1
+        }
+      },
+      "attributes": {
+        "ac": {
+          "value": 16,
+          "details": ""
+        },
+        "hp": {
+          "value": 6,
+          "max": 6,
+          "temp": 0,
+          "details": ""
+        },
+        "allSaves": {
+          "value": ""
+        },
+        "speed": {
+          "value": 25,
+          "otherSpeeds": [],
+          "details": ""
+        }
+      },
+      "perception": {
+        "details": "",
+        "mod": 2,
+        "senses": [
+          {
+            "type": "darkvision"
+          }
+        ],
+        "vision": true,
+        "value": 2,
+        "dc": 12
+      },
+      "saves": {
+        "fortitude": {
+          "value": 5,
+          "saveDetail": "",
+          "dc": 15
+        },
+        "reflex": {
+          "value": 7,
+          "saveDetail": "",
+          "dc": 17
+        },
+        "will": {
+          "value": 3,
+          "saveDetail": "",
+          "dc": 13
+        }
+      },
+      "skills": {
+        "acrobatics": {
+          "base": 5
+        },
+        "athletics": {
+          "base": 2
+        },
+        "stealth": {
+          "base": 5
+        }
+      },
+      "traits": {
+        "value": [
+          "goblin",
+          "humanoid"
+        ],
+        "rarity": "common",
+        "size": {
+          "value": "sm"
+        }
+      },
+      "details": {
+        "level": {
+          "value": -1
+        },
+        "blurb": "",
+        "publicNotes": "",
+        "privateNotes": "",
+        "publication": {
+          "title": "Pathfinder Monster Core",
+          "authors": "",
+          "license": "ORC",
+          "remaster": true
+        }
+      },
+      "initiative": {
+        "statistic": "perception"
+      },
+      "resources": {}
+    }
+  }
+}

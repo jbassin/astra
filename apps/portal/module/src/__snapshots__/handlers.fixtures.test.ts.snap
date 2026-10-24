@@ -1,0 +1,511 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`pf2e fixture output pins — query-item > renders the embedded feat fixture's detail 1`] = `
+{
+  "item": {
+    "ac": undefined,
+    "bulk": undefined,
+    "damage": undefined,
+    "description": "<p>Your vitality is even more vibrant and restorative. When you cast @UUID[Compendium.pf2e.spells-srd.Item.rfZpqmj0AIIdkVIs]{Heal}, you roll d10s instead of d8s.</p>",
+    "id": "E4rxmPHJN2hEAeEZ",
+    "level": 1,
+    "name": "Healing Hands",
+    "ownerActor": "Argyle",
+    "pack": undefined,
+    "packLabel": undefined,
+    "price": undefined,
+    "provenance": "embedded",
+    "rarity": "common",
+    "traits": [
+      "cleric",
+    ],
+    "type": "feat",
+    "uuid": "Actor.zpeNslKKrnaq07HI.Item.E4rxmPHJN2hEAeEZ",
+  },
+  "kind": "item",
+}
+`;
+
+exports[`pf2e fixture output pins — query-item > renders the embedded item fixture's detail 1`] = `
+{
+  "item": {
+    "ac": undefined,
+    "bulk": 1,
+    "damage": "1d8 slashing",
+    "description": "<p>This broad-bladed sword, sometimes called the hand-and-a-half sword, has a longer grip so it can be held in one hand or used with two hands to provide extra slashing power.</p>",
+    "id": "hMP4awQ0DwfFGV06",
+    "level": 0,
+    "name": "Bastard Sword",
+    "ownerActor": "Argyle",
+    "pack": undefined,
+    "packLabel": undefined,
+    "price": "4 gp",
+    "provenance": "embedded",
+    "rarity": "common",
+    "traits": [
+      "two-hand-d12",
+    ],
+    "type": "weapon",
+    "uuid": "Actor.zpeNslKKrnaq07HI.Item.hMP4awQ0DwfFGV06",
+  },
+  "kind": "item",
+}
+`;
+
+exports[`pf2e fixture output pins — query-item > renders the embedded spell fixture's detail 1`] = `
+{
+  "item": {
+    "ac": undefined,
+    "bulk": undefined,
+    "damage": undefined,
+    "description": "<p>You channel vital energy to heal the living or damage the undead. If the target is a willing living creature, you restore 1d8 Hit Points. If the target is undead, you deal that amount of vitality damage to it, and it gets a basic Fortitude save. The number of actions you spend when Casting this Spell determines its targets, range, area, and other parameters.</p>
+<p><span class="action-glyph">1</span> The spell has a range of touch.</p>
+<p><span class="action-glyph">2</span> <strong>(concentrate)</strong> The spell has a range of 30 feet. If you're healing a living creature, increase the Hit Points restored by 8.</p>
+<p><span class="action-glyph">3</span> <strong>(concentrate)</strong> You disperse vital energy in a @Template[emanation|distance:30]. This targets all living and undead creatures in the burst.</p>
+<hr />
+<p><strong>Heightened (+1)</strong> The amount of healing or damage increases by 1d8, and the extra healing for the 2-action version increases by 8.</p>",
+    "id": "CZdJqf1YtUKF6Vi8",
+    "level": 1,
+    "name": "Heal",
+    "ownerActor": "Argyle",
+    "pack": undefined,
+    "packLabel": undefined,
+    "price": undefined,
+    "provenance": "embedded",
+    "rarity": "common",
+    "traits": [
+      "healing",
+      "manipulate",
+      "vitality",
+    ],
+    "type": "spell",
+    "uuid": "Actor.zpeNslKKrnaq07HI.Item.CZdJqf1YtUKF6Vi8",
+  },
+  "kind": "item",
+}
+`;
+
+exports[`pf2e fixture output pins — query-player > pins the feats section 1`] = `
+{
+  "feats": [
+    {
+      "category": "ancestry",
+      "id": "gkHsMwpMjfF2eItO",
+      "level": 1,
+      "name": "Irrepressible (Nephilim)",
+    },
+    {
+      "category": "class",
+      "id": "E4rxmPHJN2hEAeEZ",
+      "level": 1,
+      "name": "Healing Hands",
+    },
+    {
+      "category": "classfeature",
+      "id": "V6kS8RM8F5Lp7oKC",
+      "level": 1,
+      "name": "Doctrine",
+    },
+    {
+      "category": "general",
+      "id": "fYK54fMv3JyfWdNm",
+      "level": 1,
+      "name": "Shield Block",
+    },
+  ],
+  "section": "feats",
+}
+`;
+
+exports[`pf2e fixture output pins — query-player > pins the inventory section 1`] = `
+{
+  "items": [
+    {
+      "bulk": 1,
+      "carryType": "held",
+      "id": "hMP4awQ0DwfFGV06",
+      "invested": undefined,
+      "name": "Bastard Sword",
+      "quantity": 1,
+      "runes": undefined,
+      "type": "weapon",
+    },
+    {
+      "bulk": 2,
+      "carryType": "worn",
+      "id": "SlPwPMN7EegB4q4L",
+      "invested": true,
+      "name": "Breastplate",
+      "quantity": 1,
+      "runes": undefined,
+      "type": "armor",
+    },
+    {
+      "bulk": 0.1,
+      "carryType": "worn",
+      "id": "geJVQu8pnJRCTSOr",
+      "invested": true,
+      "name": "Healer's Gloves",
+      "quantity": 1,
+      "runes": undefined,
+      "type": "equipment",
+    },
+    {
+      "bulk": 0.1,
+      "carryType": "worn",
+      "id": "ChtRPd5HIBvAeE1L",
+      "invested": undefined,
+      "name": "Healing Potion (Lesser)",
+      "quantity": 4,
+      "runes": undefined,
+      "type": "consumable",
+    },
+    {
+      "bulk": 0.1,
+      "carryType": "worn",
+      "id": "TBaQ2BjXpL1AWkgr",
+      "invested": undefined,
+      "name": "Rounds (Slide Pistol)",
+      "quantity": 20,
+      "runes": undefined,
+      "type": "ammo",
+    },
+    {
+      "bulk": 1,
+      "carryType": "held",
+      "id": "BtwGP1SzOCzCh6oj",
+      "invested": undefined,
+      "name": "Steel Shield",
+      "quantity": 1,
+      "runes": undefined,
+      "type": "shield",
+    },
+  ],
+  "section": "inventory",
+}
+`;
+
+exports[`pf2e fixture output pins — query-player > pins the notes section 1`] = `
+{
+  "appearance": undefined,
+  "backstory": undefined,
+  "campaignNotes": undefined,
+  "deity": "The Judge of Ages",
+  "dislikes": undefined,
+  "likes": undefined,
+  "section": "notes",
+}
+`;
+
+exports[`pf2e fixture output pins — query-player > pins the skills section 1`] = `
+{
+  "section": "skills",
+  "skills": [
+    {
+      "dc": 11,
+      "label": "Acrobatics",
+      "lore": false,
+      "rank": 0,
+      "slug": "acrobatics",
+      "value": 1,
+    },
+    {
+      "dc": 26,
+      "label": "Athletics",
+      "lore": false,
+      "rank": 2,
+      "slug": "athletics",
+      "value": 16,
+    },
+    {
+      "dc": 26,
+      "label": "Medicine",
+      "lore": false,
+      "rank": 2,
+      "slug": "medicine",
+      "value": 16,
+    },
+    {
+      "dc": 28,
+      "label": "Religion",
+      "lore": false,
+      "rank": 3,
+      "slug": "religion",
+      "value": 18,
+    },
+    {
+      "dc": 21,
+      "label": "Scribing",
+      "lore": true,
+      "rank": 2,
+      "slug": "scribing",
+      "value": 11,
+    },
+    {
+      "dc": 21,
+      "label": "Society",
+      "lore": false,
+      "rank": 1,
+      "slug": "society",
+      "value": 11,
+    },
+    {
+      "dc": 21,
+      "label": "Stealth",
+      "lore": false,
+      "rank": 1,
+      "slug": "stealth",
+      "value": 11,
+    },
+    {
+      "dc": 24,
+      "label": "Survival",
+      "lore": false,
+      "rank": 1,
+      "slug": "survival",
+      "value": 14,
+    },
+  ],
+}
+`;
+
+exports[`pf2e fixture output pins — query-player > pins the spells section 1`] = `
+{
+  "entries": [
+    {
+      "dc": 26,
+      "entryId": "IurrECIEo4RFGgVB",
+      "entryName": "Cleric Spells",
+      "preparedType": "prepared",
+      "ranks": [
+        {
+          "rank": 0,
+          "slots": {
+            "max": 5,
+            "value": 0,
+          },
+          "spells": [
+            {
+              "expended": false,
+              "id": "tJXuyvigjP9rNZkZ",
+              "name": "Light",
+              "prepared": true,
+              "rank": 0,
+              "traits": [
+                "cantrip",
+                "concentrate",
+                "light",
+                "manipulate",
+              ],
+            },
+            {
+              "expended": false,
+              "id": "MjW0Dvzfk4g6TeZn",
+              "name": "Vitality Lash",
+              "prepared": true,
+              "rank": 0,
+              "traits": [
+                "cantrip",
+                "concentrate",
+                "manipulate",
+                "vitality",
+              ],
+            },
+          ],
+        },
+        {
+          "rank": 1,
+          "slots": {
+            "max": 3,
+            "value": 0,
+          },
+          "spells": [
+            {
+              "expended": true,
+              "id": "18FED90kACi38JNN",
+              "name": "Bane",
+              "prepared": true,
+              "rank": 1,
+              "traits": [
+                "aura",
+                "concentrate",
+                "manipulate",
+                "mental",
+              ],
+            },
+            {
+              "expended": undefined,
+              "id": "0kp5XkjHkLY07JbP",
+              "name": "Bless",
+              "prepared": undefined,
+              "rank": 1,
+              "traits": [
+                "aura",
+                "concentrate",
+                "manipulate",
+                "mental",
+              ],
+            },
+          ],
+        },
+        {
+          "rank": 3,
+          "slots": {
+            "max": 3,
+            "value": 0,
+          },
+          "spells": [
+            {
+              "expended": true,
+              "id": "G3FjGFAgfLELIRgr",
+              "name": "Holy Light",
+              "prepared": true,
+              "rank": 3,
+              "traits": [
+                "attack",
+                "concentrate",
+                "fire",
+                "holy",
+                "light",
+                "manipulate",
+              ],
+            },
+          ],
+        },
+        {
+          "rank": 4,
+          "slots": {
+            "max": 3,
+            "value": 0,
+          },
+          "spells": [
+            {
+              "expended": true,
+              "id": "lMG29pLMxjluoZNO",
+              "name": "Divine Wrath",
+              "prepared": true,
+              "rank": 4,
+              "traits": [
+                "concentrate",
+                "manipulate",
+                "sanctified",
+                "spirit",
+              ],
+            },
+          ],
+        },
+      ],
+      "tradition": "divine",
+    },
+    {
+      "dc": 26,
+      "entryId": "x5lFsoMiPepDzIix",
+      "entryName": "Cleric Font",
+      "preparedType": "innate",
+      "ranks": [
+        {
+          "rank": 1,
+          "slots": {
+            "max": 0,
+            "value": 0,
+          },
+          "spells": [
+            {
+              "expended": undefined,
+              "id": "CZdJqf1YtUKF6Vi8",
+              "name": "Heal",
+              "prepared": undefined,
+              "rank": 1,
+              "traits": [
+                "healing",
+                "manipulate",
+                "vitality",
+              ],
+            },
+          ],
+        },
+      ],
+      "tradition": "divine",
+    },
+  ],
+  "section": "spells",
+}
+`;
+
+exports[`pf2e fixture output pins — query-player > pins the stats section 1`] = `
+{
+  "abilityMods": {
+    "cha": 2,
+    "con": 3,
+    "dex": 1,
+    "int": 1,
+    "str": 4,
+    "wis": 4,
+  },
+  "ac": 25,
+  "classDC": {
+    "rank": 2,
+    "value": 26,
+  },
+  "perception": {
+    "dc": 25,
+    "value": 15,
+  },
+  "saves": [
+    {
+      "dc": 26,
+      "type": "fortitude",
+      "value": 16,
+    },
+    {
+      "dc": 23,
+      "type": "reflex",
+      "value": 13,
+    },
+    {
+      "dc": 27,
+      "type": "will",
+      "value": 17,
+    },
+  ],
+  "section": "stats",
+  "spellDC": {
+    "value": 26,
+  },
+  "warnings": [],
+}
+`;
+
+exports[`pf2e fixture output pins — query-player > pins the summary section 1`] = `
+{
+  "actorType": "character",
+  "alliance": "party",
+  "ancestry": "Elf",
+  "background": "Cathedral Child",
+  "className": "Cleric",
+  "deity": "The Judge of Ages",
+  "heritage": "Nephilim",
+  "heroPoints": {
+    "max": 3,
+    "value": 1,
+  },
+  "hp": {
+    "max": 118,
+    "temp": 0,
+    "value": 100,
+  },
+  "id": "zpeNslKKrnaq07HI",
+  "languages": [
+    "chthonian",
+  ],
+  "level": 8,
+  "master": undefined,
+  "name": "Argyle",
+  "section": "summary",
+  "uuid": "Actor.zpeNslKKrnaq07HI",
+  "xp": {
+    "max": 1000,
+    "value": 0,
+  },
+}
+`;
