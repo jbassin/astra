@@ -36,70 +36,34 @@ export function reinstantiate(): void {
   gen = require(GLUE_SPECIFIER) as GenModule;
 }
 
-/**
- * The D32-11 error stages. `parse`/`type`/`eval`/`fuel`/`prelude` are the
- * player's (their source, their saves, their budget); `internal` is the
- * engine's own fault — an invariant violation the engine reports, or a wasm
- * trap this wrapper caught (message prefix `engine trap:`).
- */
-export type WealStage = "parse" | "type" | "eval" | "fuel" | "prelude" | "internal";
+// The JSON contract's types are generated from the Rust response shapes
+// (`libs/rust/weal-engine/src/api.rs`, via ts-rs) into ../gen/weal_api.d.ts by
+// `just weal-engine-build`; the crate's `ts_bindings_are_current` test fails
+// when that file lags the Rust. The D32-11 error stages: `parse`/`type`/`eval`/
+// `fuel`/`prelude` are the player's (their source, their saves, their budget);
+// `internal` is the engine's own fault — an invariant violation the engine
+// reports, or a wasm trap this wrapper caught (message prefix `engine trap:`).
+import type { WealDisplay, WealResult } from "../gen/weal_api";
 
-/** The D32-11 goodness bands (null = one-face support / non-die display). */
-export type WealGoodness = "crit" | "good" | "okay" | "bad" | "fumble";
+export type {
+  WealDisplay,
+  WealErr,
+  WealGoodness,
+  WealOk,
+  WealPlot,
+  WealResult,
+  WealSave,
+  WealSpan,
+  WealStage,
+  WealValue,
+  WealValueKind,
+} from "../gen/weal_api";
 
-export type WealSpan = { start: number; end: number };
+/** A rolled-die display. */
+export type WealDieDisplay = Extract<WealDisplay, { kind: "die" }>;
 
-/** The sampled top-level value of a die display. */
-export type WealValue = {
-  t: "num" | "dec" | "float" | "str" | "atom" | "unit" | "text";
-  v: string;
-};
-
-export type WealDieDisplay = {
-  kind: "die";
-  renderText: string;
-  headline: string;
-  value: WealValue;
-  goodness: WealGoodness | null;
-  /** EVERY sampled NdM face — kept, dropped, and chain draws: [sides, face]. */
-  standardDice: [number, number][];
-};
-
-export type WealValueDisplay = {
-  kind: "value";
-  renderText: string;
-  headline: string;
-};
-
-export type WealDisplay = WealDieDisplay | WealValueDisplay;
-
-export type WealPlot = {
-  pngBase64: string;
-  title: string;
-  /** Null for non-numeric (atom/str) faces. */
-  mean: string | null;
-  std: string | null;
-};
-
-export type WealSave = { name: string; source: string };
-
-export type WealOk = {
-  ok: true;
-  displays: WealDisplay[];
-  plots: WealPlot[];
-  saves: WealSave[];
-  warnings: string[];
-};
-
-export type WealErr = {
-  ok: false;
-  stage: WealStage;
-  message: string;
-  span: WealSpan | null;
-  preludeName: string | null;
-};
-
-export type WealResult = WealOk | WealErr;
+/** A plain-value display. */
+export type WealValueDisplay = Extract<WealDisplay, { kind: "value" }>;
 
 /**
  * Run (or `mode:"check"`-validate) one weal v2 source against the saves

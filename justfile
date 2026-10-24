@@ -814,7 +814,8 @@ codex-real-corpus:
 # the crate's .cargo/config.toml, target-scoped) → wasm-bindgen --target
 # nodejs into libs/ts/weal-engine/gen → wasm-opt -O2 in place → re-write
 # gen/package.json {"type":"commonjs"} (wasm-bindgen won't; the CJS marker is
-# what lets the ESM wrapper createRequire the glue) → write gen/SOURCE_SHA256,
+# what lets the ESM wrapper createRequire the glue) → regenerate gen/weal_api.d.ts
+# (the JSON contract's TS types, from api.rs via ts-rs) → write gen/SOURCE_SHA256,
 # the staleness stamp weal-engine-hash-check verifies. BOTH tools are
 # HARD-REQUIRED at pinned versions (committed bytes must be
 # machine-independent): wasm-bindgen-cli 0.2.127 (== the crate's wasm-bindgen
@@ -844,6 +845,8 @@ weal-engine-build:
     wasm-bindgen --target nodejs --out-dir "$gen" target/wasm32-unknown-unknown/release/weal_engine.wasm
     wasm-opt -O2 -o "$gen/weal_engine_bg.wasm" "$gen/weal_engine_bg.wasm"
     printf '{\n  "type": "commonjs"\n}\n' > "$gen/package.json"
+    # The JSON contract's TS types (gen/weal_api.d.ts), generated from api.rs by ts-rs.
+    WEAL_WRITE_TS_BINDINGS=1 cargo test --lib --quiet ts_bindings_are_current
     if strings -n 8 "$gen/weal_engine_bg.wasm" | grep -qF "$HOME"; then echo "FATAL: the wasm embeds $HOME (path remapping failed)" >&2; exit 1; fi
     tools/gen-stamp.sh write {{quote(weal_stamp)}}
     sha256sum "$gen"/weal_engine_bg.wasm "$gen"/weal_engine.js
