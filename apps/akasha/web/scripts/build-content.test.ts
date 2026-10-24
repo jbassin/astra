@@ -49,7 +49,7 @@ describe("build-content", () => {
     expect(out).toContain('"href": "/Script/');
   });
 
-  it("emits the static endpoints into public/ at the faerrin paths (N2)", () => {
+  it("emits the static endpoints into public/ at the faerrin paths", () => {
     expect(existsSync(path.join(PUBLIC, "index.xml"))).toBe(true);
     expect(existsSync(path.join(PUBLIC, "sitemap.xml"))).toBe(true);
     const idx = JSON.parse(readFileSync(path.join(PUBLIC, "static/contentIndex.json"), "utf8"));

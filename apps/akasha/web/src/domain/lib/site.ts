@@ -1,13 +1,15 @@
 /**
  * Build-time site index — lifted from faerrin `aether/src/lib/site.ts`, adapted to the
- * akasha snapshot (Decision D / 0011). The index logic (slugs, backlinks, folder/tag/
+ * akasha snapshot that akasha-backend publishes. The index logic (slugs, backlinks, folder/tag/
  * breadcrumb/Explorer derivation) is faithful to Quartz via the shared `slug.ts`; only
  * the INPUT changed:
  *   - source = the akasha snapshot (`{pages, edges}`), not an Astro content collection;
- *   - outgoing edges are CONSUMED from the snapshot's parity-gated `edges` (N6), not
- *     re-extracted from page bodies (the snapshot resolution is the SSOT);
- *   - `gitModifiedDates()` is gone — dates are pre-baked into the snapshot (0007 M3, N4);
- *   - the Astro `entry`/`render()` coupling is dropped (vellum renders via gothic later).
+ *   - outgoing edges are CONSUMED from the snapshot's parity-gated `edges`, not
+ *     re-extracted from page bodies (the snapshot resolution is the single source);
+ *   - `gitModifiedDates()` is gone — akasha-backend pre-bakes each page's committer
+ *     date into the snapshot;
+ *   - the Astro `entry`/`render()` coupling is dropped (bodies render through gothic in
+ *     renderBody.tsx).
  *
  * Pure (no fs): `buildSite(snapshot)` is total + unit-testable; the build-content script
  * loads the snapshot and feeds it here.
@@ -35,7 +37,7 @@ export interface SiteDoc {
   img?: string;
   /** resolved outgoing internal edges (deduped, normalized SimpleSlugs) — from the snapshot */
   links: SimpleSlug[];
-  /** baked git "modified" date (snapshot frontmatter, committer date — N4), if any */
+  /** baked git "modified" date (snapshot frontmatter, committer date), if any */
   date?: Date;
 }
 
@@ -70,7 +72,7 @@ export function buildSite(snapshot: Snapshot): SiteData {
   // pass 1: slugs (the allSlugs set, kept for parity with the lifted resolvers)
   const allSlugs = pages.map((p) => slugifyFilePath(relOf(p) as FilePath));
 
-  // edges (N6): group the snapshot's resolved page→page edges by source, mapped to the
+  // edges: group the snapshot's resolved page→page edges by source, mapped to the
   // SimpleSlug form faerrin's `links` used (simplifySlug∘slugifyFilePath of the dest).
   const edgesBySource = new Map<string, Set<SimpleSlug>>();
   for (const e of snapshot.edges) {

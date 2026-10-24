@@ -1,8 +1,8 @@
 /**
- * Build-time vellum → HTML render (0011 slice 4). Parses a `.vellum` source and
- * renders it through gothic's `DocumentView` to a static HTML string, with the N3
- * `resolveCrossref` seam turning `[[crossref]]` placeholders into real `<a href>`
- * links (still carrying `data-crossref-*` for the slice-5 Popover island).
+ * Build-time vellum → HTML render. Parses a `.vellum` source and renders it through
+ * gothic's `DocumentView` to a static HTML string, with the `resolveCrossref` seam
+ * turning `[[crossref]]` placeholders into real `<a href>` links (still carrying
+ * `data-crossref-*` for the Popover island).
  *
  * BUILD-ONLY: imported solely by `scripts/build-content.ts`, never by route/runtime
  * code — so react-dom/server + gothic's renderer + vellum-lang's parser stay out of
@@ -25,7 +25,7 @@ export function renderBody(source: string, resolveCrossref: CrossRefResolver): s
 /**
  * Approximate reading time in minutes (ports faerrin ContentMeta's `reading-time`
  * use: ~200 wpm, min 1). Computed from the raw source minus frontmatter/markup —
- * displayed-value parity isn't required (N4).
+ * the displayed value need not match faerrin's exactly.
  */
 export function readingMinutes(source: string): number {
   const text = source.replace(/^---[\s\S]*?---/, "").replaceAll(/[#>*_`[\]()!]/g, " ");

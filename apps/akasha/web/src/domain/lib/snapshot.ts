@@ -1,8 +1,8 @@
 /**
- * The akasha-backend build-time snapshot — the data contract akasha-frontend consumes
- * (Decision D). Shape mirrors `apps/akasha/py/src/astra_akasha_backend/snapshot.py`
+ * The akasha-backend build-time snapshot — the data contract akasha-frontend consumes.
+ * Shape mirrors `apps/akasha/py/src/astra_akasha_backend/snapshot.py`
  * (`build_snapshot`): the metadata JSON `{pages, edges, unresolved}`. The vellum bodies
- * live in the `.vellum` corpus (rendered in a later slice), NOT here.
+ * live in the `.vellum` corpus (rendered separately), NOT here.
  *
  * Parse → validate at the edge (KDL-at-the-edges principle, applied to JSON): we read
  * the committed `akasha-snapshot.json` and hand typed records to site.ts.

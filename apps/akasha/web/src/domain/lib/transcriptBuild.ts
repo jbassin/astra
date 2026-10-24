@@ -1,6 +1,7 @@
 /**
- * Build-time transcript reconstitution (Decision D4 / N7). Turns linguist session
- * JSON into wiki pages: matchCampaign routes each session into `Script/<campaign>/`
+ * Build-time transcript reconstitution, done here rather than in linguist. Turns
+ * linguist session JSON into wiki pages: matchCampaign routes each session into
+ * `Script/<campaign>/`
  * (or `Script/Unsorted/`), the markup mirrors faerrin's `remark-transcript.mjs`
  * OUTPUT shape (`audio[data-transcript]` + `.transcript-line` rows the verbatim
  * TranscriptPlayer attaches to), and the proper-noun linker auto-links mentions of

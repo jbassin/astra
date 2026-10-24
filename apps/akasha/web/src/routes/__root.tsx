@@ -30,7 +30,7 @@ function RootComponent() {
       rum={() => import("@/observe/rumConfig")}
       forceDarkTheme
       head={
-        // Speaker colors (I5): `--text<Name>` vars + per-speaker transcript rules, generated
+        // Speaker colors: `--text<Name>` vars + per-speaker transcript rules, generated
         // from ontology-being at build (see scripts/build-content.ts).
         // oxlint-disable-next-line react/no-danger -- an inline pre-paint script or CSS built from constants
         <style dangerouslySetInnerHTML={{ __html: SPEAKER_CSS }} />

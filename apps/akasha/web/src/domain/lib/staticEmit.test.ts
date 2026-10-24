@@ -33,7 +33,7 @@ describe("staticEmit — string hygiene (ports faerrin desc/esc)", () => {
   });
 });
 
-describe("staticEmit — endpoints (N2)", () => {
+describe("staticEmit — RSS, sitemap and content-index endpoints", () => {
   it("RSS lists ≤10 newest content pages with absolute URLs", () => {
     const xml = renderRss(site, meta, () => "body text");
     expect(xml).toContain('<rss version="2.0">');

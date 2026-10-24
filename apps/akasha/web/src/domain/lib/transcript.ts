@@ -1,7 +1,7 @@
 /**
  * Transcript types + loader. The linguist pipeline emits one JSON per session at
  * `apps/linguist/py/data/<date>.json`; akasha-frontend reconstitutes those into wiki
- * pages at build time (Decision D4 — rendered here, not in linguist). Shapes match
+ * pages at build time (rendered here, not in linguist). Shapes match
  * the real linguist artifact verbatim (see apps/linguist/py/data/*.json).
  */
 import fs from "node:fs";
@@ -34,7 +34,7 @@ const TRANSCRIPT_FILE = /^\d{4}-\d{1,2}-\d{1,2}\.json$/;
  * Same-origin path to a session's combined Craig recording, served by akasha off the
  * audio volume at `/audio/<date>.mp3` (deploy `akasha-audio` + `just akasha-seed`).
  *
- * Decision A: we NORMALIZE the audio URL at build time rather than re-generating the
+ * We NORMALIZE the audio URL at build time rather than re-generating the
  * 78 committed linguist transcript JSONs (which bake faerrin's absolute
  * `static-audio.iridi.cc/<date>/audio.mp3`). The served filename is flat (`<date>.mp3`,
  * mirroring mouthpiece's `<id>.mp3`), and `date` is the unique session key the rest of

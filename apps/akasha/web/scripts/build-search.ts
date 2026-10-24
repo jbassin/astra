@@ -1,8 +1,9 @@
-// Pagefind search index (slice 8, N1). Runs AFTER `vite build` (so dist/client
+// Pagefind search index. Runs AFTER `vite build` (so dist/client
 // exists and the generated modules are present): builds the full `/pagefind/` bundle
 // from in-memory rendered HTML via Pagefind's NodeJS Indexing API and writes it into
-// dist/client/pagefind, where the SSR server static-serves it. No prerendered static
-// HTML to index (Decision I) — we feed addHTMLFile({url, content}) per page.
+// dist/client/pagefind, where the SSR server static-serves it. The site is rendered
+// on request, so there is no prerendered HTML on disk to index; we feed
+// addHTMLFile({url, content}) per page instead.
 //
 // Build-time only (the `build` script); never the typecheck/test lanes, so the
 // pagefind binary + the ~115 MB of transcript HTML never load under vitest.

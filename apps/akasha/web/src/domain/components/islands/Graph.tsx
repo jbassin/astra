@@ -13,8 +13,8 @@
  * __root). Node/link/label colors read Quartz CSS vars via getComputedStyle — those
  * names are shimmed to the gothic void palette in globals.css. The `themechange`
  * listener re-renders the local graph; it's now dormant (astra is dark-only and the
- * theme toggle was removed) but kept harmless for the N5 teardown contract — every
- * listener / pixi app is torn down on unmount.
+ * theme toggle was removed) but kept harmless because it follows the SPA teardown
+ * rule: every listener / pixi app is torn down on unmount.
  */
 import { Tween as Tweened, Group as TweenGroup } from "@tweenjs/tween.js";
 import { drag } from "d3-drag";
@@ -141,7 +141,7 @@ async function renderGraph(
 
   // No edges → skip pixi entirely and show an intentional placeholder. Otherwise a
   // connection-less page (home, the tags index) renders an empty canvas that reads
-  // as a broken widget (F8). The global-graph icon stays — the full graph is still
+  // as a broken widget. The global-graph icon stays — the full graph is still
   // worth opening. No pixi app is created here, so there's nothing to tear down.
   if (graphData.links.length === 0) {
     const note = document.createElement("p");
