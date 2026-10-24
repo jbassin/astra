@@ -68,6 +68,11 @@ KEEP_DAILY="${ASTRA_BACKUP_KEEP_DAILY:-14}"
 KEEP_WEEKLY="${ASTRA_BACKUP_KEEP_WEEKLY:-8}"
 MIN_FREE_GB="${ASTRA_BACKUP_MIN_FREE_GB:-100}"
 SAMPLE_FILES="${ASTRA_BACKUP_SAMPLE_FILES:-20}"
+# State dirs whose every file may legitimately change between a snapshot and its restore test:
+# deploy rewrites history.jsonl and each live/<service> stamp on every deploy. When none of a
+# volatile dir's files is unchanged at the source, the restore test reads every snapshot file in
+# full and logs a warning instead of failing. Any other dir in that state still fails.
+VOLATILE_STATE="${ASTRA_BACKUP_VOLATILE_STATE:-deploy}"
 # Last restore-test PASS (snapshot, time); the watchdog pages when it gets older than 9 days.
 RESTORE_STAMP="$BACKUP_ROOT/.restore-test-pass.json"
 # Small image with python's sqlite3 module, used --network none to read the SigNoz DB.
@@ -522,11 +527,17 @@ rt_postgres() {
   docker rm -f "$name" >/dev/null 2>&1 || true
 }
 
+# "<path>\t<size> <mtime>" for every file under $1, sorted by path.
+file_stats() { find "$1" -type f -printf '%P\t%s %Ts\n' | LC_ALL=C sort; }
+
 # A copied state dir must still hold the files the manifest recorded, and a random sample
-# of files unchanged at the source (same size + mtime) must have identical sha256 sums.
+# of the files unchanged at the source (same size + mtime) must have identical sha256 sums.
+# The sample is drawn only from unchanged files, so a dir where most files churn is still
+# checked. A dir where every file changed has nothing to compare: that fails, unless the dir is
+# in VOLATILE_STATE, where every snapshot file must read back in full and a warning is logged.
 rt_state() {
-  local snapdir="$1" rel="$2" want src snap files src_files changed p a b sumsrc sumsnap
-  local checked=0 skipped=0 bad=0
+  local snapdir="$1" rel="$2" want src snap files src_files changed p sumsrc sumsnap unchanged
+  local checked=0 bad=0
   local -a ex
   want="$(jq -r --arg p "$rel" '.state[] | select(.path == $p) | .files' "$snapdir/manifest.json")"
   mapfile -t ex < <(jq -r --arg p "$rel" '.state[] | select(.path == $p) | .excludes[] | "--exclude=" + .' \
@@ -544,10 +555,10 @@ rt_state() {
   src_files="$(rsync -r --list-only "${ex[@]}" "$src/" | grep -c '^-' || true)"
   changed="$(rsync -a --dry-run --delete --out-format='%i %n' "${ex[@]}" "$src/" "$snap/" |
     grep -cv '^\.d' || true)"
+  # Files whose size and mtime match at the source (both lists are sorted, so comm joins them).
+  unchanged="$(LC_ALL=C comm -12 <(file_stats "$snap") <(file_stats "$src") | cut -f1)"
   while IFS= read -r p; do
-    a="$(stat -c '%s %Y' "$src/$p" 2>/dev/null || true)"
-    b="$(stat -c '%s %Y' "$snap/$p")"
-    if [ "$a" != "$b" ]; then skipped=$((skipped + 1)); continue; fi
+    [ -n "$p" ] || continue
     sumsrc="$(sha256sum <"$src/$p" | cut -d' ' -f1)"
     sumsnap="$(sha256sum <"$snap/$p" | cut -d' ' -f1)"
     checked=$((checked + 1))
@@ -555,13 +566,19 @@ rt_state() {
       bad=$((bad + 1))
       log "checksum mismatch: $rel/$p"
     fi
-  done < <(find "$snap" -type f -printf '%P\n' | shuf -n "$SAMPLE_FILES")
+  done < <(printf '%s\n' "$unchanged" | shuf -n "$SAMPLE_FILES")
   if [ "$bad" -gt 0 ]; then
     rt_fail "state $rel: $bad of $checked sampled files differ from the source"
   elif [ "$checked" -eq 0 ] && [ "$files" -gt 0 ]; then
-    rt_fail "state $rel: no sampled file was unchanged at the source, so nothing could be verified"
+    if [[ " $VOLATILE_STATE " != *" $rel "* ]]; then
+      rt_fail "state $rel: none of its $files files is unchanged at the source, so nothing could be verified"
+    elif find "$snap" -type f -exec cat -- {} + >/dev/null; then
+      log "warn: state $rel: all $files files changed at the source since the snapshot (a volatile dir); each one reads back in full"
+    else
+      rt_fail "state $rel: a snapshot file could not be read back"
+    fi
   else
-    rt_ok "state $rel: $files files (source now $src_files; $changed path(s) changed since), sha256 sample $checked matched, $skipped skipped as changed"
+    rt_ok "state $rel: $files files (source now $src_files; $changed path(s) changed since), sha256 sample $checked of $(grep -c . <<<"$unchanged" || true) unchanged matched"
   fi
 }
 
@@ -612,6 +629,9 @@ cmd_restore_test() {
 }
 
 # --- dispatch ---------------------------------------------------------------------------
+
+# Sourced (deploy/tests/test_backup_restore_state.py): define the functions, run nothing.
+[[ ${BASH_SOURCE[0]} != "$0" ]] && return 0
 
 cmd="${1:-}"
 [ "$#" -gt 0 ] && shift
