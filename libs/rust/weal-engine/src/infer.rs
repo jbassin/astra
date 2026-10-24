@@ -61,6 +61,13 @@
 //! - `min`/`max` are `Num`/`Die[Num]` only (D32-19) — no Dec/Float overloads.
 //! - A `LetFn` return annotation is a CHECK on the inferred type, not a
 //!   widening.
+//! - **A nullary function is `Unit -> T`** (WEAL-1). A zero-parameter lambda
+//!   (`|| e`) or `let f() = e` takes one implicit `Unit` parameter, and a
+//!   call with no arguments (`f()`) elaborates to `Call{f, [Unit]}`, so the
+//!   interpreter runs the body on EVERY call (its dice and effects re-run).
+//!   The core `Lambda`/`LetFn` keep `params: []`, so a saved nullary closure
+//!   still serializes as `|| e`. Calling a non-function with `()` is a type
+//!   error.
 
 use crate::ast::{BinOp, CmpOp, Expr, MatchPat, Pattern};
 use crate::lower::{Span, SpanTree};
@@ -1094,7 +1101,7 @@ impl Checker {
                         params: params.clone(),
                         body: Box::new(bc),
                     },
-                    Type::arrows(ptys, bty),
+                    fn_type(ptys, bty),
                 ))
             }
             Expr::Neg(inner) => {
@@ -1211,7 +1218,7 @@ impl Checker {
                     ptys.push(self.fresh());
                 }
                 let ret = self.fresh();
-                let fn_ty = Type::arrows(ptys.clone(), ret.clone());
+                let fn_ty = fn_type(ptys.clone(), ret.clone());
                 let mark = env.mark();
                 env.push(name.clone(), Binding::Mono(fn_ty.clone()));
                 for (p, t) in params.iter().zip(&ptys) {
@@ -1511,6 +1518,37 @@ impl Checker {
             && matches!(env.lookup("dm"), Some((_, Origin::Prelude)))
             && matches!(args.first(), Some(Expr::Dict(_)));
         let (ccore, mut fty) = self.infer(callee, &sp.children[0], env)?;
+        if args.is_empty() {
+            // WEAL-1: `f()` applies `f` to `()`, so the callee must be `Unit -> T`.
+            let ret = match self.resolve(&fty) {
+                Type::Arrow(dom, cod) => {
+                    self.subsume(&Type::Unit, &dom, sp.span)?;
+                    *cod
+                }
+                Type::Var(v) => {
+                    let ret = self.fresh();
+                    self.bind(v, &Type::arrow(Type::Unit, ret.clone()), sp.span)?;
+                    ret
+                }
+                other => {
+                    return Err(TypeError {
+                        message: format!(
+                            "this isn't a function (it has type `{}`), so it can't be called",
+                            self.zonk(&other)
+                        ),
+                        span: sp.span,
+                    });
+                }
+            };
+            return Ok((
+                CoreExpr::Call {
+                    callee: Box::new(ccore),
+                    args: vec![CoreExpr::Unit],
+                    dm_literal_order,
+                },
+                ret,
+            ));
+        }
         let mut cargs = Vec::new();
         for (i, arg) in args.iter().enumerate() {
             let asp = &sp.children[i + 1];
@@ -2097,6 +2135,17 @@ impl Checker {
             });
         }
         Ok(())
+    }
+}
+
+/// The type of a user function with these parameter types: the curried arrow
+/// chain, except that zero parameters mean `Unit -> ret` (WEAL-1), never a
+/// bare `ret`.
+fn fn_type(params: Vec<Type>, ret: Type) -> Type {
+    if params.is_empty() {
+        Type::arrow(Type::Unit, ret)
+    } else {
+        Type::arrows(params, ret)
     }
 }
 

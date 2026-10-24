@@ -160,13 +160,13 @@ describe("boot validation logging (D32-17)", () => {
 
 describe("save guard telemetry", () => {
   test("a refused save counts weal.v2.saves_refused{kind}, sets the span attr, logs WARN", async () => {
-    await handleMessage("save(:adv, || 2d20kh1)", PROFILE, deps());
+    await handleMessage("save(:kh, 3)", PROFILE, deps());
     expect(counted).toContainEqual({ name: "weal.v2.saves_refused", attrs: { kind: "rolls" } });
     expect(spanAttrs["weal.save_refused"]).toBe("rolls");
-    const warns = logged.filter((l) => String(l.body).includes("refused save adv"));
+    const warns = logged.filter((l) => String(l.body).includes("refused save kh"));
     expect(warns).toHaveLength(1);
     expect(warns[0]?.severityText).toBe("WARN");
-    expect(String(warns[0]?.body)).toContain("from Jorge (rolls, `d20`): prelude:");
+    expect(String(warns[0]?.body)).toContain("from Jorge (rolls, `2d20kh1 + 1`): type:");
     expect(logged.some((l) => l.severityText === "ERROR")).toBe(false);
   });
 

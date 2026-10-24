@@ -29,8 +29,10 @@ For the player-facing language guide, see `apps/weal/bot/README.md`.
   lattice (`Bool = :true | :false`, contravariant function domains take set intersection),
   exhaustiveness/redundancy via Maranget usefulness, the D32-4 `sum` coercion (pools auto-sum in
   die-demanding positions), both-shape die-suffix resolution (pool-shape wins), monomorphic
-  recursion for `let f(x) = …` sugar, deferred equatable checks. Elaborates into `CoreExpr`,
-  the interpreter's input contract.
+  recursion for `let f(x) = …` sugar, deferred equatable checks, and nullary functions as
+  `Unit -> T` (`|| e` and `let f() = e` take an implicit `()`, and `f()` elaborates to
+  `f(())`, so the body re-runs on every call). Elaborates into `CoreExpr`, the interpreter's
+  input contract.
 - **`value.rs`** / **`interp.rs`** — runtime values (structural eq/hash), the symbolic `DieTree`
   (dice stay symbolic until display), the tree-walking interpreter (currying, captures), the
   runtime effect guard (`roll`/`plot`/`save` illegal inside evaluator closures), and
@@ -134,7 +136,15 @@ may not unwrap; tests may) and `cargo test`. `cargo test` runs
 the unit suites plus `tests/`: parser/lexer goldens, parse recovery, printer round-trip
 properties, the typechecker accept/reject suite, elaboration, the dist property tests
 (denominator invariants, keep-1 ≡ pool recursion), the oracle, seam end-to-end, the §3 seeded
-render goldens, and the api JSON contract (incl. the plot label-pixel golden).
+render goldens, the api JSON contract (incl. the plot label-pixel golden), and the generative
+suite `tests/generative.rs`. That suite builds random well-typed programs (rich in nullary and
+one-parameter functions, closures and folds) from a seeded generator, and checks each one: the
+printer round trip, acceptance at the predicted type, `ok:true` with no `internal error:` and no
+panic, the exact value for `Num` programs, a rolled total inside the generator's bounds for die
+programs, and a nullary save that round-trips through `save(…)`. It runs 400 cases per property
+in about two seconds. A failure prints the program and its seed; rerun one case with
+`WEAL_GEN_SEED=<seed> WEAL_GEN_CASES=1 cargo test --test generative`, or search wider with a
+larger `WEAL_GEN_CASES` (20,000 run clean in release mode on 2026-10-23).
 `cargo run --example dump` prints token streams + lowered ASTs for the golden inputs. The TS
 side: `pnpm --filter @astra/weal-engine test` (wasm smoke) and the weal-bot suites run the real
 committed wasm.
@@ -161,10 +171,6 @@ bounded by the ≤900-char collapse policy instead.)
 
 ## Traps
 
-- **Nullary functions are broken (open bug).** Applying a zero-parameter function never runs its body
-  correctly: `let f() = 2d20kh1; f()` fails at eval with "sum's argument must be a pool", and
-  `let f() = d6e1; f()` returns nothing. The `sum` auto-coercion misplaces on unit-argument
-  application. weal-bot's save guard refuses such saves until this is fixed.
 - **The root `.gitignore` ignores every `dist/`.** A negation entry re-includes this crate's
   `src/dist/`; any new source directory named `dist` needs its own negation.
 - **plotters cannot render text on wasm32.** Its `ab_glyph` font backend is compiled out on

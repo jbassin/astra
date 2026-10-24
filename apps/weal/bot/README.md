@@ -137,6 +137,10 @@ let twice(f, x) = f(f(x)); twice(_ * 2, 3)   →  12
 
 Each `_` becomes a parameter of the smallest enclosing argument expression.
 
+A function with no inputs, `|| body` or `let f() = body`, runs its body on every call `f()`, so
+its dice roll afresh each time: `let atk() = d20 + 7; atk() + atk()` rolls two d20s. Its type is
+`Unit -> T` (the call passes `()`), so `f + 1` is a type error; write `f() + 1`.
+
 ### Custom dice: `dl` and `dm`
 
 ```
@@ -227,11 +231,11 @@ therefore dry-runs a new save before keeping it, and refuses it (with a reply sa
 - with it saved, one of a few everyday rolls would fail where it worked before: `d20`,
   `2d20kh1 + 1`, `2d20kl1`, `d6e1`, `d6r1`, `plot(d6)`, `save(:x, 1)`. This catches a save that
   fails to load, and one that reuses a built-in's name with the wrong shape (`save(:kh, 3)`).
-- using it (`name + 1` or `name(1)`) hits an engine internal error. This catches macros that load
-  but never work.
+- using it (`name + 1`, `name(1)` or `name()`) hits an engine internal error. This catches macros
+  that load but trip an engine bug whenever they are used.
 
-Macros with no inputs (`save(:adv, || 2d20kh1)`) are refused this way until the engine supports
-them; save the roll itself instead (`save(:adv, 2d20kh1)` re-rolls on every use).
+A macro with no inputs works like any function: `save(:adv, || 2d20kh1)`, then `adv() + 7`. A
+saved roll without the `||` (`save(:adv, 2d20kh1)`) also re-rolls on every use, as `adv + 7`.
 
 ### Fuel — what "too expensive" means
 
@@ -286,14 +290,12 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
 
 ## Traps
 
-- **Macros with no inputs don't work yet.** An engine bug makes a nullary function fail or return
-  nothing (`let f() = 2d20kh1; f()` errors with "sum's argument must be a pool"). The save guard
-  refuses such saves; players should save the bare roll (`save(:adv, 2d20kh1)`), which re-rolls on
-  every use.
 - **Saves share one namespace with the built-ins.** `save(:kh, 3)` would shadow `kh` and break every
   `kh` roll. The save guard catches it; keep its everyday-roll list in step with the prelude.
-- **`check` mode alone cannot validate a save.** It type-checks `|| e` as `e`, so a nullary macro
-  passes the boot check and fails only when used. That is why the guard also tries two real uses.
+- **`check` mode alone cannot validate a save.** It parses and type-checks saves but never evaluates
+  them, so a stored source that type-checks but fails to evaluate passes the boot check and fails
+  every roll. That is why the guard runs real rolls and real uses. (Before the WEAL-1 engine fix,
+  every `|| e` save was such a source.)
 - **The v2 counters appear in SigNoz only after their first increment.** `weal.v2.errors` and
   `weal.v2.fuel_aborts` missing from the metric list is not a wiring bug while no engine error or
   fuel abort has happened.

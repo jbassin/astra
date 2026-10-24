@@ -710,3 +710,33 @@ fn reduce_types() {
     err("reduce([1], |a, b| :x)"); // closure must return the element type
     err("reduce([1], 0)"); // second argument is a function
 }
+
+// -- nullary functions (WEAL-1): `Unit -> T` ---------------------------------
+
+#[test]
+fn nullary_functions_are_unit_arrows() {
+    assert_eq!(ty("|| 3"), "Unit -> Num");
+    assert_eq!(ty("let f() = 3; f"), "Unit -> Num");
+    assert_eq!(ty("let f() = 3; f()"), "Num");
+    assert_eq!(ty("let f() = 3; f() + 1"), "Num");
+    assert_eq!(ty("(|| d6)()"), "Die[Num]");
+    assert_eq!(ty("let g = || 2d20kh1; g()"), ty("2d20kh1"));
+    // `()` is the implicit argument, so passing it explicitly is the same call.
+    assert_eq!(ty("let f() = 3; f(())"), "Num");
+    // Monomorphic recursion still works through the implicit parameter.
+    assert_eq!(ty("let f() = f(); 1"), "Num");
+    // A nullary function is a value like any other function.
+    assert_eq!(ty("map([(), ()], || d6)"), "List[Die[Num]]");
+}
+
+#[test]
+fn calling_with_no_arguments_needs_a_unit_parameter() {
+    // Not a function at all.
+    assert!(err("let x = 3; x()").message.contains("isn't a function"));
+    // A function whose first parameter isn't `Unit`.
+    err("let f(n) = n + 1; f()");
+    err("sum()");
+    // A nullary function is not its own result.
+    err("let f() = 3; f + 1");
+    err("let f() = 3; f(1)");
+}

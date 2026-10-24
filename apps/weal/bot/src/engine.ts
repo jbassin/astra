@@ -145,8 +145,9 @@ export function loadValidatedFuncs(
  * list (parse, type-check AND evaluate each save, in order) on every message.
  * So the first, trivial roll reproduces exactly what any later roll does first
  * — a save that fails to evaluate breaks it. That is the case the boot check
- * misses: `mode:"check"` never evaluates a save, so `|| 2d20kh1` passes boot
- * and then fails every `run`. The rest cover builtins a save can shadow:
+ * misses: `mode:"check"` never evaluates a save, so a source that type-checks
+ * but fails to evaluate passes boot and then fails every `run` (before the
+ * WEAL-1 fix, `|| 2d20kh1` did exactly this). The rest cover builtins a save can shadow:
  * saves and builtins share one namespace (a saved function can act as a die
  * suffix), so `save(:kh, 3)` breaks every `kh` roll and `save(:save, 3)` breaks
  * saving itself — including the re-save that would fix it.
@@ -166,11 +167,13 @@ export const GUARD_ROLLS: readonly string[] = [
  * guard evaluates]`. The `let _ = …; ()` wrapper evaluates the use but
  * displays nothing, so the engine never computes a distribution for it (that
  * is what makes showing a huge die slow); a heavy save stays cheap to check.
+ * `name()` is how a macro with no inputs (`|| …`) is used; it runs the body.
  */
 function guardUses(name: string): [string, string][] {
   return [
     [`${name} + 1`, `let _ = ${name} + 1; ()`],
     [`${name}(1)`, `let _ = ${name}(1); ()`],
+    [`${name}()`, `let _ = ${name}(); ()`],
   ];
 }
 
@@ -212,8 +215,9 @@ export type SaveCheck = { ok: true } | ({ ok: false } & SaveRefusal);
  *    it. A roll that already fails without it is not this save's fault, so it
  *    does not block the save.
  * 2. a {@link guardUses} use of the new name hits an engine internal error or
- *    fault. This catches nullary macros such as `|| d20 + 7`, which load fine
- *    but fail on every use. Type, eval and fuel errors don't count: they say
+ *    fault: a macro that loads fine but trips an engine bug whenever it is
+ *    used (a checker/interpreter disagreement, the class WEAL-1 was). Type,
+ *    eval and fuel errors don't count: they say
  *    the use doesn't fit (`f + 1` on a function) or reflect the player's own
  *    logic (`|x| x / 0`).
  *
@@ -222,7 +226,7 @@ export type SaveCheck = { ok: true } | ({ ok: false } & SaveRefusal);
  *
  * Cost: every probe runs under the engine's default fuel, like any message,
  * with a fixed seed. The guard rolls are fixed and cheap, so they cost what
- * loading the saves costs; only the two uses run player code, and they skip
+ * loading the saves costs; only the three uses run player code, and they skip
  * the distribution work. A check costs about one ordinary roll per probe.
  */
 export function checkNewSave(

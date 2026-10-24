@@ -356,3 +356,120 @@ fn reduce_empty_is_eval_error() {
             .contains("at least one element")
     );
 }
+
+// -- nullary functions (WEAL-1) ---------------------------------------------
+
+/// `save(:adv, || 2d20kh1)` as the engine serializes it.
+const NULLARY_ADV_SAVES: &str = "[[\"adv\", \"|| kh(pool(2, d20), 1)\"]]";
+
+fn headlines(v: &Json) -> Vec<String> {
+    v["displays"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|d| d["headline"].as_str().unwrap().to_owned())
+        .collect()
+}
+
+#[test]
+fn nullary_function_calls_run_the_body() {
+    // Every case from the WEAL-1 finding: each used to fail with an internal
+    // error or return no display at all.
+    for (src, want) in [
+        ("let f() = 3; f()", "3"),
+        ("let f() = 3; f() + 1", "4"),
+        ("let f() = 5; let x = f(); x * 2", "10"),
+        ("let f() = 3; f(())", "3"),
+    ] {
+        let v = parse(&eval(src, "[]", 0, "run"));
+        assert_eq!(v["ok"], Json::Bool(true), "{src}: {v}");
+        assert_eq!(headlines(&v), vec![want.to_owned()], "{src}");
+    }
+    for src in [
+        "let f() = 2d20kh1; f()",
+        "(|| 2d20kh1)()",
+        "let g = || 2d20kh1; g()",
+        "let f() = d6e1; f()",
+    ] {
+        let v = parse(&eval(src, "[]", 0, "run"));
+        assert_eq!(v["ok"], Json::Bool(true), "{src}: {v}");
+        assert_eq!(v["displays"].as_array().unwrap().len(), 1, "{src}");
+        assert_eq!(v["displays"][0]["kind"], "die", "{src}");
+    }
+    // A bare nullary function is a closure, which is silent.
+    let v = parse(&eval("|| 3", "[]", 0, "run"));
+    assert_eq!(v["displays"].as_array().unwrap().len(), 0);
+}
+
+#[test]
+fn nullary_function_rerolls_on_every_call() {
+    // The regression: each call re-runs the body, so its die is rolled anew.
+    // Twelve d1000 calls under a fixed seed are not all the same face.
+    let src = format!("let f() = d1000; roll({})", ["f()"; 12].join(", "));
+    let v = parse(&eval(&src, "[]", 0, "run"));
+    assert_eq!(v["ok"], Json::Bool(true), "{v}");
+    let faces = headlines(&v);
+    assert_eq!(faces.len(), 12);
+    let distinct: std::collections::BTreeSet<_> = faces.iter().collect();
+    assert!(distinct.len() > 6, "calls look reused: {faces:?}");
+    // Effects inside the body run once per call too.
+    let v = parse(&eval(
+        "let f() = roll(d20); let _ = f(); let _ = f(); ()",
+        "[]",
+        0,
+        "run",
+    ));
+    assert_eq!(v["displays"].as_array().unwrap().len(), 2, "{v}");
+}
+
+#[test]
+fn saved_nullary_macro_works_and_rerolls() {
+    // The macro players asked for: it saves, every other roll still works,
+    // and each use rolls its own 2d20.
+    let v = parse(&eval("save(:adv, || 2d20kh1)", "[]", 0, "run"));
+    assert_eq!(
+        v["saves"],
+        serde_json::json!([{"name": "adv", "source": "|| kh(pool(2, d20), 1)"}])
+    );
+    let v = parse(&eval("d6", NULLARY_ADV_SAVES, 0, "run"));
+    assert_eq!(v["ok"], Json::Bool(true), "{v}");
+    let v = parse(&eval("d6", NULLARY_ADV_SAVES, 0, "check"));
+    assert_eq!(v["ok"], Json::Bool(true), "{v}");
+    let v = parse(&eval("adv() + adv()", NULLARY_ADV_SAVES, 0, "run"));
+    assert_eq!(v["ok"], Json::Bool(true), "{v}");
+    // Two calls, two independent 2d20 pools: four standard dice.
+    assert_eq!(
+        v["displays"][0]["standardDice"].as_array().unwrap().len(),
+        4
+    );
+    // Using the macro as a value is a type error, not an internal one.
+    let v = parse(&eval("adv + 1", NULLARY_ADV_SAVES, 0, "run"));
+    assert_eq!(v["stage"], "type", "{v}");
+}
+
+#[test]
+fn saved_functions_with_arguments_are_unaffected() {
+    let saves = "[[\"smite\", \"|n| sum(pool(n, d8)) + 5\"], [\"bonus\", \"3\"]]";
+    let v = parse(&eval("smite(2) + bonus", saves, 0, "run"));
+    assert_eq!(v["ok"], Json::Bool(true), "{v}");
+    assert_eq!(
+        v["displays"][0]["standardDice"].as_array().unwrap().len(),
+        2
+    );
+    // Partial application still returns a smaller closure.
+    let v = parse(&eval(
+        "let f(a, b) = a + b; let g = f(1); g(2)",
+        "[]",
+        0,
+        "run",
+    ));
+    assert_eq!(headlines(&v), vec!["3".to_owned()]);
+}
+
+#[test]
+fn calling_a_non_function_with_no_arguments_is_a_type_error() {
+    for src in ["let x = 3; x()", "sum()", "let f(n) = n + 1; f()"] {
+        let v = parse(&eval(src, "[]", 0, "run"));
+        assert_eq!(v["stage"], "type", "{src}: {v}");
+    }
+}
