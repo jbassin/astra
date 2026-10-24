@@ -341,6 +341,11 @@ token source keep today's look exactly (no stakeholder sign-off needed); assay t
   far: weal-5a `78afc59e`, ops-1a and ops-1b (R; the ops CLI), ops-4 (alert rules as code;
   applying them waits for Josh's SigNoz API key). Next in Wave 4: kit-1a, kit-2a (R), pipe-8,
   cdx-5b, ops-7/10; then the parked $ items (lib-5, pipe-4c, pipe-6) and ops-3 (Josh's sudo).
+- **Status 2026-10-24 (session 5, evening).** Wave 4 done so far adds ops-7/10 `0a76378f`, cdx-5b
+  `199b7690`, kit-1a `bdf30e63`, pipe-8 `2bc010e2` (R, security-reviewed; runs in
+  their own containers, only the daemon holds the Docker socket) and kit-2a `bb35a928` (R; orator and
+  menhir on the service kit). Next: kit-1b, kit-1c, kit-2b, kit-3, lib-6, lib-7c, cdx-6, cdx-7, svc-3c,
+  svc-5, weal-5b, weal-5c, ops-5, ops-9.
 - Wave 2 list: repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
   `[tool.uv.sources]` (after repo-2); lib-3 dead config and the every-field-has-a-reader check
   (after lib-2, pipe-2); lib-7b Python observe bootstrap; lib-8a typed KDL decoders; lib-9 vellum
