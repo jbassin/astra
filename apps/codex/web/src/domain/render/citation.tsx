@@ -1,6 +1,5 @@
+import type { Source } from "@astra/codex-corpus";
 import type { ReactElement } from "react";
-
-import type { Source } from "../../schema/entity";
 
 /**
  * D29-26 — the source citation line: book + page + a license badge. License

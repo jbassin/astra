@@ -25,12 +25,10 @@
 import { mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 
+import { collectText, statsText, type CodexNode } from "@astra/codex-corpus";
+import { createCorpusReader, type CorpusReader } from "@astra/codex-corpus/reader";
 import { loadConfig } from "@astra/config";
 import * as pagefind from "pagefind";
-
-import { collectText, statsText } from "../src/domain/render/text";
-import type { CodexNode } from "../src/schema/nodes";
-import { createCorpusReader, type CorpusReader } from "../src/server/corpusFs";
 
 /** Trait case-folding for the search FILTER only (D29-32/D29-34: "trait
  * case-folding lives at the UI layer" / "traits (case-folded)") — lowercase

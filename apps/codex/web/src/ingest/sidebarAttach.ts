@@ -1,4 +1,5 @@
-import type { CodexEntity } from "../schema/entity";
+import type { CodexEntity } from "@astra/codex-corpus";
+
 import { normalizeUrlKey, type AonLinkTable } from "./aonLinkTable";
 
 /**

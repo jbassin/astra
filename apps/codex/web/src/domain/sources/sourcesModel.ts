@@ -6,7 +6,7 @@
 // server-rendered page — NO island"), but the grouping logic still earns its
 // own file/tests rather than living inline in a route component.
 
-import type { SourceIndexEntry } from "@/schema/sourcesIndex";
+import type { SourceIndexEntry } from "@astra/codex-corpus";
 
 /** The sentinel group label for books with no `productLine` (the ~253-book
  * "Other" bucket, D29-43 — Foundry-only book strings with zero AoN

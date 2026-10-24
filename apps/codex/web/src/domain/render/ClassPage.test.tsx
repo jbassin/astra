@@ -4,12 +4,13 @@
 // reads `useRouterState` (D29-28) — needs a real router context to mount at
 // all, `EntityRenderPane.test.tsx`'s own established convention.
 
+import { createCorpusReader } from "@astra/codex-corpus/reader";
 import { createRootRoute, createRouter, RouterProvider } from "@tanstack/react-router";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { resolveClassPageData, type ClassPageData } from "../../server/classPageData";
-import { createCorpusReader, fixtureCorpusRoot } from "../../server/corpusFs";
+import { fixtureCorpusRoot } from "../../server/corpusFs";
 import { ClassPage } from "./ClassPage";
 
 /**

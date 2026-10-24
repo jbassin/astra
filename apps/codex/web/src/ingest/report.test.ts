@@ -1,6 +1,6 @@
+import type { CodexEntity } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import type { CodexEntity } from "../schema/entity";
 import type { AugmentClassStatsResult } from "./augmentClassStats";
 import type { BookNormalizeResult } from "./bookNormalize";
 import type { DropAccounting } from "./drop";

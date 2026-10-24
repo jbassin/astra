@@ -1,4 +1,5 @@
-import type { InlineNode } from "../schema/nodes";
+import type { InlineNode } from "@astra/codex-corpus";
+
 import type { AonDocMeta } from "./aonFacets";
 
 /**

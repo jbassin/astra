@@ -1,5 +1,5 @@
-import type { Facets, Stats } from "../../schema/entity";
-import type { CodexNode } from "../../schema/nodes";
+import type { Facets, Stats } from "./schema/entity";
+import type { CodexNode } from "./schema/nodes";
 
 /** Shared tiny text helpers for the render layer (kept dependency-free/pure so
  * every render module — nodes/statblock/facetHeader/traits — can share one

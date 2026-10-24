@@ -53,13 +53,16 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
+import {
+  CodexEntitySchema,
+  type CodexEntity,
+  parseManifest,
+  type CodexNode,
+} from "@astra/codex-corpus";
 import { loadConfig } from "@astra/config";
 
 import { canonicalJson } from "../src/ingest/emit";
 import { mergeLocalizeMaps } from "../src/ingest/enrichers";
-import { CodexEntitySchema, type CodexEntity } from "../src/schema/entity";
-import { parseManifest } from "../src/schema/manifest";
-import type { CodexNode } from "../src/schema/nodes";
 import {
   buildFixtureCorpus,
   fixturePipelineEntities,

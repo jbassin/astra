@@ -2,9 +2,9 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import type { BlockNode } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import type { BlockNode } from "../schema/nodes";
 import { type EnricherContext, type UuidResolution, EnricherGrammarError } from "./enrichers";
 import { FoundryHtmlError, parseFoundryHtml } from "./foundryHtml";
 

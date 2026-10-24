@@ -1,18 +1,19 @@
+import {
+  type ClassStats,
+  type CodexEntity,
+  type CreatureStats,
+  type EmbeddedItem,
+  type Facets,
+  type HazardStats,
+  type Source,
+  type Stats,
+  type BlockNode,
+  sluggify,
+} from "@astra/codex-corpus";
+
 import { mapCategory } from "../../scripts/categoryMap";
-import type {
-  ClassStats,
-  CodexEntity,
-  CreatureStats,
-  EmbeddedItem,
-  Facets,
-  HazardStats,
-  Source,
-  Stats,
-} from "../schema/entity";
-import type { BlockNode } from "../schema/nodes";
 import type { EnricherContext } from "./enrichers";
 import { parseFoundryHtml } from "./foundryHtml";
-import { sluggify } from "./sluggify";
 
 /**
  * Foundry pack doc → `CodexEntity` (D29-1/-3/-7/-8/-13, spec §2/§3, Deliverable

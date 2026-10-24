@@ -1,9 +1,7 @@
+import { EditionSchema, LicenseSchema, type Edition, sluggify } from "@astra/codex-corpus";
 import { z } from "zod";
 
 import { REMASTER_CUTOVER_DATE, licenseForBook, normalizeBookName } from "../../scripts/licenseMap";
-import { EditionSchema, LicenseSchema } from "../schema/entity";
-import type { Edition } from "../schema/entity";
-import { sluggify } from "./sluggify";
 
 /**
  * AoN doc → `AonDocMeta` field extraction (D29-3/-7/-13, spec §2/§3,

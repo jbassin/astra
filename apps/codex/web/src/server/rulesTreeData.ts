@@ -10,8 +10,8 @@
 // client-side tree logic — legacy pruning, quick-filter, collapse state, DFS
 // walk) operates directly on `RulesTreeBook.nodes`.
 
-import type { RulesTreeFile } from "../schema/rulesTree";
-import type { CorpusReader } from "./corpusFs";
+import type { RulesTreeFile } from "@astra/codex-corpus";
+import type { CorpusReader } from "@astra/codex-corpus/reader";
 
 export type RulesTreeData = RulesTreeFile;
 

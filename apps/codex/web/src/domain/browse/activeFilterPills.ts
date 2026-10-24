@@ -13,10 +13,10 @@
 // as ordinary, always-on controls in the listing header (`Input`/`select`),
 // never hidden behind the drawer, so they need no separate pill reminder.
 
-import { abbreviateBook } from "@/domain/sources/abbreviations";
-import { facetKeysFor } from "@/schema/facetKeys";
+import { facetKeysFor, humanizeFacetKey } from "@astra/codex-corpus";
 
-import { humanizeFacetKey } from "../render/text";
+import { abbreviateBook } from "@/domain/sources/abbreviations";
+
 import { facetDefFor, humanizedLabelFor } from "./facetDefs";
 import {
   isRangeFilterActive,

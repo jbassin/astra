@@ -42,11 +42,11 @@
 //     passes `MANY_SOURCE_LINES` (two real pinned groups) or exercises the
 //     default/fail-soft shape explicitly.
 
+import type { IndexRow } from "@astra/codex-corpus";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { OTHER_GROUP_LABEL, PINNED_PRODUCT_LINE_ORDER } from "@/domain/sources/sourcesModel";
-import type { IndexRow } from "@/schema/entity";
 
 import { FacetPanel, TRAITS_INITIAL_RENDER_COUNT } from "./FacetPanel";
 import { emptyFilterState, type BrowseFilterState } from "./filterEngine";

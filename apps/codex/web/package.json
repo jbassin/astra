@@ -19,6 +19,7 @@
     "virtualization-interaction-guard": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts"
   },
   "dependencies": {
+    "@astra/codex-corpus": "workspace:*",
     "@astra/config": "workspace:*",
     "@astra/observe": "workspace:*",
     "@astra/site-kit": "workspace:*",

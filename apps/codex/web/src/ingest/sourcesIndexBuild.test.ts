@@ -1,6 +1,6 @@
+import type { CodexEntity } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import type { CodexEntity } from "../schema/entity";
 import { normalizeBookNames } from "./bookNormalize";
 import { buildSourcesIndex, PRODUCT_LINE_OVERRIDE } from "./sourcesIndexBuild";
 

@@ -1,7 +1,6 @@
+import type { SourceIndexEntry } from "@astra/codex-corpus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-
-import type { SourceIndexEntry } from "@/schema/sourcesIndex";
 
 import { SourcesIndexView } from "./SourcesIndexView";
 

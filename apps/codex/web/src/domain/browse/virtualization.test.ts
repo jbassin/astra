@@ -1,6 +1,5 @@
+import type { IndexRow } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
-
-import type { IndexRow } from "@/schema/entity";
 
 import { computeWindowedListing, initialWindowRange, ROW_PITCH_PX } from "./virtualization";
 

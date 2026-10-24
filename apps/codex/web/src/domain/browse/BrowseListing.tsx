@@ -1,3 +1,4 @@
+import type { IndexRow } from "@astra/codex-corpus";
 import { useWindowVirtualizer, type VirtualItem } from "@tanstack/react-virtual";
 import {
   useCallback,
@@ -15,7 +16,6 @@ import {
 import { displayCategoryName } from "@/domain/render/displayCategoryName";
 import { EntityRenderPane } from "@/domain/render/EntityRenderPane";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
-import type { IndexRow } from "@/schema/entity";
 import type { EntityPageData } from "@/server/entityPageData";
 import { Button, EditionIcon, Input } from "@/ui";
 import { cx } from "@/ui/cx";

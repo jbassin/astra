@@ -1,10 +1,9 @@
+import { type CodexEntity, humanizeFacetKey } from "@astra/codex-corpus";
 import type { ReactElement, ReactNode } from "react";
 
-import type { CodexEntity } from "../../schema/entity";
 import { formatFacetValue } from "../browse/formatFacetValue";
 import { CodexActionGlyph } from "./actionGlyph";
 import { type RenderCtx, renderNodes } from "./nodes";
-import { humanizeFacetKey } from "./text";
 
 /**
  * D29-26 — the spell/equipment-family/feat facet headers, plus the generic

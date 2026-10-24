@@ -1,8 +1,8 @@
+import { FacetsSchema, FACET_KEYS, SPILLOVER_FACET_KEYS, facetKeysFor } from "@astra/codex-corpus";
+import { createCorpusReader } from "@astra/codex-corpus/reader";
 import { describe, expect, it } from "vitest";
 
-import { FacetsSchema } from "@/schema/entity";
-import { FACET_KEYS, SPILLOVER_FACET_KEYS, facetKeysFor } from "@/schema/facetKeys";
-import { createCorpusReader, fixtureCorpusRoot } from "@/server/corpusFs";
+import { fixtureCorpusRoot } from "@/server/corpusFs";
 
 import {
   FACET_DEFS,

@@ -1,5 +1,9 @@
-import type { CodexNode, HeadingNode, InlineNode } from "../../schema/nodes";
-import { collectText } from "./text";
+import {
+  type CodexNode,
+  type HeadingNode,
+  type InlineNode,
+  collectText,
+} from "@astra/codex-corpus";
 
 /**
  * P14 S2 (D29-135) — render-time lore/body deduplication. Two entry points,

@@ -1,6 +1,7 @@
+import { createCorpusReader } from "@astra/codex-corpus/reader";
 import { describe, expect, it } from "vitest";
 
-import { createCorpusReader, fixtureCorpusRoot } from "./corpusFs";
+import { fixtureCorpusRoot } from "./corpusFs";
 import { resolveSourcesIndex } from "./sourcesIndexData";
 
 /**

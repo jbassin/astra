@@ -1,6 +1,6 @@
+import type { CodexEntity } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import type { CodexEntity } from "../schema/entity";
 import { normalizeBookNames } from "./bookNormalize";
 
 function entity(id: string, book: string): CodexEntity {

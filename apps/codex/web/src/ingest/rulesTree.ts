@@ -1,5 +1,5 @@
-import type { Edition, License } from "../schema/entity";
-import type { RulesTreeBook, RulesTreeFile, TreeNode } from "../schema/rulesTree";
+import type { Edition, License, RulesTreeBook, RulesTreeFile, TreeNode } from "@astra/codex-corpus";
+
 import { deriveBookEdition, deriveBookLicense } from "./bookMeta";
 
 /**

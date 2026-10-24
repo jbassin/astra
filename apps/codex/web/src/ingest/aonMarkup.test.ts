@@ -1,10 +1,14 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
+import {
+  type BlockNode,
+  type CodexNode,
+  type InlineNode,
+  BlockNodeSchema,
+} from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import type { BlockNode, CodexNode, InlineNode } from "../schema/nodes";
-import { BlockNodeSchema } from "../schema/nodes";
 import { type AonParseCtx, AonMarkupError, parseAonMarkdown, stripMasthead } from "./aonMarkup";
 
 // ---------------------------------------------------------------------------

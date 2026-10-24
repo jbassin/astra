@@ -9,11 +9,16 @@
 // OTHER export sharing that file (even one nothing client-side imports) still
 // drags its own imports along for the ride. A dedicated, route-unreachable file
 // is what actually keeps `node:fs`/`@astra/config` out.
-import { collectEmbedTargetIds } from "../domain/render/nodes";
+import {
+  collectEmbedTargetIds,
+  type CodexEntity,
+  type RulesTreeBook,
+  type RulesTreeFile,
+  type TreeNode,
+} from "@astra/codex-corpus";
+import { CorpusNotFoundError, type CorpusReader } from "@astra/codex-corpus/reader";
+
 import { dfsPreOrder } from "../domain/rules/treeModel";
-import type { CodexEntity } from "../schema/entity";
-import type { RulesTreeBook, RulesTreeFile, TreeNode } from "../schema/rulesTree";
-import { CorpusNotFoundError, type CorpusReader } from "./corpusFs";
 
 /** Spec §6 risk: "the loader caps inlined targets (e.g. 100/page, report-logged in
  * dev)" — a pathological page (or a future corpus regen) can't make a single

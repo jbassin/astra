@@ -11,14 +11,15 @@ import {
 import { tmpdir } from "node:os";
 import path from "node:path";
 
+import { CORPUS_SCHEMA_VERSION } from "@astra/codex-corpus";
+import { createCorpusReader } from "@astra/codex-corpus/reader";
 import { findRepoRoot } from "@astra/config";
 import { nodeTsResolveHook } from "@astra/site-kit/nodeTsResolveHook";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { allNavCategories } from "@/domain/nav/navData";
-import { CORPUS_SCHEMA_VERSION } from "@/schema/corpusVersion";
 import { resolveClassRail } from "@/server/classPageData";
-import { createCorpusReader, fixtureCorpusRoot } from "@/server/corpusFs";
+import { fixtureCorpusRoot } from "@/server/corpusFs";
 
 /**
  * SSR render smoke + D29-29 tier 3 route tests, in ONE file sharing ONE

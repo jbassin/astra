@@ -1,12 +1,10 @@
+import { type IndexRow, facetKeysFor, humanizeFacetKey } from "@astra/codex-corpus";
 import { useState, type ReactElement, type ReactNode } from "react";
 
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import { OTHER_GROUP_LABEL, orderProductLines } from "@/domain/sources/sourcesModel";
-import type { IndexRow } from "@/schema/entity";
-import { facetKeysFor } from "@/schema/facetKeys";
 import { Button, Input } from "@/ui";
 
-import { humanizeFacetKey } from "../render/text";
 import {
   CHIP_MAX_OPTIONS,
   editionOptionLabel,

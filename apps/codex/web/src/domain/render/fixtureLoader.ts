@@ -6,7 +6,8 @@ import {
   IndexRowSchema,
   type CodexEntity,
   type IndexRow,
-} from "../../schema/entity";
+} from "@astra/codex-corpus";
+
 import { type RenderCtx, rootRenderCtx } from "./nodes";
 
 /**

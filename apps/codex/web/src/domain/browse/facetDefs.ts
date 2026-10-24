@@ -20,8 +20,13 @@
 // `nodeTsResolve.mjs` loader that script runs under can't follow `@/*`
 // aliases (a standing gotcha — see the codex-0029 memory), so this stays
 // relative rather than reintroducing that failure mode.
-import { FACET_KEYS, SPILLOVER_FACET_KEYS } from "../../schema/facetKeys";
-import { humanizeFacetKey, humanizeSlug } from "../render/text";
+import {
+  FACET_KEYS,
+  SPILLOVER_FACET_KEYS,
+  humanizeFacetKey,
+  humanizeSlug,
+} from "@astra/codex-corpus";
+
 import { formatFacetValue } from "./formatFacetValue";
 
 export type FacetWidget = "enum" | "tristate" | "range";

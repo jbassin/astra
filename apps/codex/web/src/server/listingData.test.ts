@@ -1,15 +1,14 @@
-import { describe, expect, it, vi } from "vitest";
-
-import { OTHER_GROUP_LABEL } from "@/domain/sources/sourcesModel";
-import type { IndexRow } from "@/schema/entity";
-import type { SourcesIndexFile } from "@/schema/sourcesIndex";
-
+import type { IndexRow, SourcesIndexFile } from "@astra/codex-corpus";
 import {
   CorpusNotFoundError,
   createCorpusReader,
-  fixtureCorpusRoot,
   type CorpusReader,
-} from "./corpusFs";
+} from "@astra/codex-corpus/reader";
+import { describe, expect, it, vi } from "vitest";
+
+import { OTHER_GROUP_LABEL } from "@/domain/sources/sourcesModel";
+
+import { fixtureCorpusRoot } from "./corpusFs";
 import { resolveCategoryListing } from "./listingData";
 
 /** P13 S3 (D29-121) — a minimal in-memory `CorpusReader` double, for the

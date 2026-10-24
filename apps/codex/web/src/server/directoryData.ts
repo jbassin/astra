@@ -8,8 +8,9 @@
 // grouping reuses the render layer's own `categoryGroupOf` (S1) rather than
 // inventing a second taxonomy just for this page.
 
+import type { CorpusReader } from "@astra/codex-corpus/reader";
+
 import { categoryGroupOf, type CategoryGroup } from "../domain/render/categoryGroup";
-import type { CorpusReader } from "./corpusFs";
 
 export interface DirectoryCategoryRow {
   category: string;

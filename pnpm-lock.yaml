@@ -255,6 +255,9 @@ importers:
 
   apps/codex/web:
     dependencies:
+      '@astra/codex-corpus':
+        specifier: workspace:*
+        version: link:../../../libs/ts/codex-corpus
       '@astra/config':
         specifier: workspace:*
         version: link:../../../libs/ts/config
@@ -1149,6 +1152,16 @@ importers:
       react-dom:
         specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+
+  libs/ts/codex-corpus:
+    dependencies:
+      zod:
+        specifier: ^4.4.3
+        version: 4.6.7
+    devDependencies:
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))

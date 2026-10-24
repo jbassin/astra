@@ -125,6 +125,11 @@ transform and the search build write the **live** dirs the container mounts read
   any module-scope call into `node:fs` or `loadConfig`. Keep fs in `corpusFs.ts` behind the lazy
   `getCorpusReader()`, server fns alone in `corpusFns.ts`. Verify by grepping the client bundle
   for `readFileSync`/`loadConfig`.
+- The corpus contract (Zod schemas, `collectText`, `sluggify`, `collectEmbedTargetIds`) is
+  `@astra/codex-corpus` (`libs/ts/codex-corpus`); its `node:fs` reader is the separate
+  `/reader` subpath, so client code imports only the root entry. The package's
+  `"sideEffects": false` keeps unused Zod schemas out of the client bundle (about 100 KB
+  without it); check with `grep -c ZodObject dist/client/assets/*.js` after a build.
 - `import.meta.dirname` paths break after `vite build` relocates modules; use `findAppRoot`.
 - A loader driven by search params needs `loaderDeps`, or it silently never re-runs.
 - The router's search parser decodes `+` to a space, coerces bare numbers, and round-trips
@@ -214,10 +219,11 @@ P3 S5 full-corpus Playwright pass. Fixed by asking the SAME question `renderEmbe
 (resolved ∧ depth 0 ∧ not-yet-visited → block) via a shared `embedRendersAsBlock` predicate.
 
 - **`src/server/{corpusFs,corpusFns,entityPageData,directoryData,listingData}.ts`** — the
-  corpus read layer: `corpusFs.ts` is the only `node:fs` seam (a `createCorpusReader(rootDir)`
-  factory). `servedCorpus()` picks the root once per process: `CODEX_CORPUS_ROOT` if set, else
+  corpus read layer. The reader is `createCorpusReader(rootDir)` from
+  `@astra/codex-corpus/reader`, the only `node:fs` seam; `corpusFs.ts` decides which root it
+  reads. `servedCorpus()` picks the root once per process: `CODEX_CORPUS_ROOT` if set, else
   `<codex.data-path>/corpus`, and checks its `manifest.json` against `CORPUS_SCHEMA_VERSION`
-  (`src/schema/corpusVersion.ts`). A built server refuses a missing corpus, another schema
+  (`@astra/codex-corpus`). A built server refuses a missing corpus, another schema
   generation, or the fixture at the config path; the server entry `src/server.ts` runs the check
   when the bundle loads, so the process exits instead of serving. Only the Vite dev server falls
   back to `fixtures/entities/` (with a WARN) when the config corpus is missing; it fails if that
@@ -240,7 +246,7 @@ P3 S5 full-corpus Playwright pass. Fixed by asking the SAME question `renderEmbe
 (client-side filtering, no server round-trip per interaction — the corpus's own `_index.json`
 rows already carry everything needed).
 
-- **Facet model, two committed modules.** `src/schema/facetKeys.ts` (S1, transform-owned) is the
+- **Facet model, two committed modules.** `libs/ts/codex-corpus/src/schema/facetKeys.ts` (S1, transform-owned) is the
   per-category facet-KEY allowlist — the classifier's verdict on the real corpus baked into a
   plain data table, imported unchanged by `emit.ts` (which per-category-trims `IndexRow.facets`
   to exactly this allowlist) and by `src/domain/browse/facetDefs.ts` (S3, UI-owned), which pairs
@@ -289,7 +295,7 @@ rows already carry everything needed).
 `apps/codex/web/scripts/build-search.ts` builds a [Pagefind](https://pagefind.app) index offline from
 the corpus and writes it to `data/search/pagefind/` (sibling of `data/corpus/`, gitignored). It
 walks every entity via the same `createCorpusReader` fs layer the frontend reads through, extracts
-plain text (`collectText`/`statsText`, `src/domain/render/text.ts`) from `body` + `loreBody` +
+plain text (`collectText`/`statsText`, `@astra/codex-corpus`) from `body` + `loreBody` +
 the creature/hazard `stats`/`facets` statblock — `statsText`'s skills line includes the D29-74
 merged lore skills, humanized (`gambling-lore` indexes as "Gambling Lore"), so lore skill names
 are searchable after a reindex — and calls Pagefind's `addCustomRecord` directly
@@ -400,7 +406,7 @@ them naively would resurrect all of that noise into the UI. Instead:
 
 ### Two new corpus artifacts
 
-- **`data/corpus/rules-tree.json`** (`src/schema/rulesTree.ts`) — `{books: [{book, edition,
+- **`data/corpus/rules-tree.json`** (`libs/ts/codex-corpus/src/schema/rulesTree.ts`) — `{books: [{book, edition,
   license, hiddenWhenLegacyOff, nodes: TreeNode[]}]}`. `TreeNode = {name, id?, superseded?,
   children}`; `id` (a `CodexId`) is present for every node backed by a real rules doc, absent
   for a synthetic node. `hiddenWhenLegacyOff` precomputes the D29-40 "N hidden" legacy-toggle
@@ -409,7 +415,7 @@ them naively would resurrect all of that noise into the UI. Instead:
   collapsed "all N hidden" header, never a silently-dropped section). Node arrays are
   emitted in FINAL order (DFS-ready) — array order is meaningful data here and untouched by
   `canonicalJson`'s object-key sort.
-- **`data/corpus/sources-index.json`** (`src/schema/sourcesIndex.ts`) — one row per
+- **`data/corpus/sources-index.json`** (`libs/ts/codex-corpus/src/schema/sourcesIndex.ts`) — one row per
   normalized `source.book` string across the WHOLE corpus (not just rules), grouped by AoN
   `primary_source_category` ("product line"). `productLine` is absent for the ~253-book
   "Other" bucket (Foundry-only book strings with zero AoN citations — expected, not a gap;
@@ -651,8 +657,8 @@ per real game element, and written as a deterministic corpus tree.
 | Report | `src/ingest/report.ts` | Pure builders for `report.json`/`report.md` — the P1 acceptance artifact. |
 | Orchestrate | `scripts/transform.ts` | `runTransform()` wires all of the above; CLI wrapper for the real host run. |
 
-`src/schema/{entity,nodes,manifest}.ts` are the shared Zod contracts (`CodexEntity`,
-`CodexNode`, `CorpusManifest`) — read by P2+ verbatim, same package.
+The shared Zod contracts (`CodexEntity`, `CodexNode`, `CorpusManifest`) live in the
+`@astra/codex-corpus` package (`libs/ts/codex-corpus`), which the site and the ingest both import.
 
 ## Running it
 

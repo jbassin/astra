@@ -1,7 +1,8 @@
+import { createCorpusReader } from "@astra/codex-corpus/reader";
 import { describe, expect, it } from "vitest";
 
 import { resolveClassPageData, resolveClassRail } from "./classPageData";
-import { createCorpusReader, fixtureCorpusRoot } from "./corpusFs";
+import { fixtureCorpusRoot } from "./corpusFs";
 
 /**
  * P12 S2 (D29-117) tier 2 — `resolveClassPageData`/`resolveClassRail` over

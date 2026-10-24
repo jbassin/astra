@@ -1,18 +1,19 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { describe, expect, it } from "vitest";
-
-import { CodexEntitySchema } from "../../schema/entity";
-import type { BlockNode, InlineNode, TextMarks } from "../../schema/nodes";
 import {
+  CodexEntitySchema,
+  type BlockNode,
+  type InlineNode,
+  type TextMarks,
   capitalize,
   collectText,
   firstParagraphSummary,
   humanizeFacetKey,
   humanizeSlug,
   statsText,
-} from "./text";
+} from "@astra/codex-corpus";
+import { describe, expect, it } from "vitest";
 
 const FIXTURE_ROOT = join(import.meta.dirname, "../../../fixtures/entities");
 

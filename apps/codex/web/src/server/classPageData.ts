@@ -29,9 +29,15 @@
 // `rulesNav`/`attachedSidebars` "optional, set only when applicable" fields
 // `resolveEntityPageData` already carries.
 
-import { collectEmbedTargetIds } from "../domain/render/nodes";
-import type { CodexEntity, GrantedFeature, IndexRow, SubclassOption } from "../schema/entity";
-import { CorpusNotFoundError, type CorpusReader } from "./corpusFs";
+import {
+  collectEmbedTargetIds,
+  type CodexEntity,
+  type GrantedFeature,
+  type IndexRow,
+  type SubclassOption,
+} from "@astra/codex-corpus";
+import { CorpusNotFoundError, type CorpusReader } from "@astra/codex-corpus/reader";
+
 import {
   EMBED_INLINE_CAP,
   entityEmbedTargetIds,

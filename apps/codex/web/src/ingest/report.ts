@@ -1,5 +1,10 @@
-import type { CodexEntity, CreatureStats, HazardStats } from "../schema/entity";
-import { facetKeysFor } from "../schema/facetKeys";
+import {
+  type CodexEntity,
+  type CreatureStats,
+  type HazardStats,
+  facetKeysFor,
+} from "@astra/codex-corpus";
+
 import type { AugmentClassStatsResult, SubclassOptionCount } from "./augmentClassStats";
 import type { BookMergeRow, BookNormalizeResult } from "./bookNormalize";
 import type { DropAccounting } from "./drop";

@@ -1,8 +1,8 @@
+import { firstParagraphSummary } from "@astra/codex-corpus";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
 import { memoizedEntity } from "@/domain/browse/listingClient";
 import { EntityRenderPane } from "@/domain/render/EntityRenderPane";
-import { firstParagraphSummary } from "@/domain/render/text";
 import { RulesLayout } from "@/domain/rules/RulesLayout";
 
 /**

@@ -39,20 +39,23 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { CORPUS_SCHEMA_VERSION, canonicalJson, canonicalJsonCompact } from "../src/ingest/emit";
-import type { JoinAliasesFile } from "../src/ingest/join";
-import { buildRulesTree } from "../src/ingest/rulesTree";
-import { buildSourcesIndex } from "../src/ingest/sourcesIndexBuild";
 import {
   CodexEntitySchema,
   IndexRowSchema,
   toIndexRow,
   type CodexEntity,
-} from "../src/schema/entity";
-import { facetKeysFor } from "../src/schema/facetKeys";
-import type { BlockNode, InlineNode, TableRow } from "../src/schema/nodes";
-import { RulesTreeFileSchema } from "../src/schema/rulesTree";
-import { SourcesIndexFileSchema } from "../src/schema/sourcesIndex";
+  facetKeysFor,
+  type BlockNode,
+  type InlineNode,
+  type TableRow,
+  RulesTreeFileSchema,
+  SourcesIndexFileSchema,
+} from "@astra/codex-corpus";
+
+import { CORPUS_SCHEMA_VERSION, canonicalJson, canonicalJsonCompact } from "../src/ingest/emit";
+import type { JoinAliasesFile } from "../src/ingest/join";
+import { buildRulesTree } from "../src/ingest/rulesTree";
+import { buildSourcesIndex } from "../src/ingest/sourcesIndexBuild";
 import { runTransform } from "./transform";
 
 const APP_ROOT = join(import.meta.dirname, "..");

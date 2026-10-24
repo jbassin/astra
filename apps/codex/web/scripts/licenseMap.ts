@@ -61,7 +61,7 @@
  * new entries, mirroring the process above — don't just guess.
  */
 
-import type { License } from "../src/schema/entity";
+import type { License } from "@astra/codex-corpus";
 
 /** Player Core / GM Core's real release date — the remaster line's first
  * release. Also reused by `aonFacets.ts` for its own edition-derivation

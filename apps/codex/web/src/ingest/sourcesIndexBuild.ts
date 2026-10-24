@@ -1,5 +1,11 @@
-import type { CodexEntity, Edition, License } from "../schema/entity";
-import type { SourceIndexEntry, SourcesIndexFile } from "../schema/sourcesIndex";
+import type {
+  CodexEntity,
+  Edition,
+  License,
+  SourceIndexEntry,
+  SourcesIndexFile,
+} from "@astra/codex-corpus";
+
 import { deriveBookEdition, deriveBookLicense } from "./bookMeta";
 
 /**

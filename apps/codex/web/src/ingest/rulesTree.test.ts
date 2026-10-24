@@ -1,7 +1,6 @@
+import type { License, TreeNode } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import type { License } from "../schema/entity";
-import type { TreeNode } from "../schema/rulesTree";
 import { buildRulesTree, type RulesDocInput } from "./rulesTree";
 
 function doc(

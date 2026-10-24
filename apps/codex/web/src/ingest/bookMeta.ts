@@ -1,5 +1,6 @@
+import type { Edition, License } from "@astra/codex-corpus";
+
 import { licenseForBook } from "../../scripts/licenseMap";
-import type { Edition, License } from "../schema/entity";
 
 /**
  * P4 (D29-39): book-LEVEL `edition`/`license` derivation — shared by the

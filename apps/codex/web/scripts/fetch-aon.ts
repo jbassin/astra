@@ -14,6 +14,12 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+  type CorpusManifest,
+  emptyManifest,
+  parseManifest,
+  serializeManifest,
+} from "@astra/codex-corpus";
 import { loadConfig } from "@astra/config";
 
 import { createAonClient } from "../src/ingest/aonClient";
@@ -25,12 +31,6 @@ import {
 } from "../src/ingest/aonPager";
 import { hashDirectory } from "../src/ingest/hash";
 import { createThrottle } from "../src/ingest/throttle";
-import {
-  type CorpusManifest,
-  emptyManifest,
-  parseManifest,
-  serializeManifest,
-} from "../src/schema/manifest";
 
 const MANIFEST_PATH = join(dirname(fileURLToPath(import.meta.url)), "..", "corpus-manifest.json");
 

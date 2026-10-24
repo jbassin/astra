@@ -1,3 +1,4 @@
+import { firstParagraphSummary } from "@astra/codex-corpus";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import type { ReactElement } from "react";
 
@@ -5,7 +6,6 @@ import { ClassBrowse } from "@/domain/browse/ClassBrowse";
 import { splitCsv } from "@/domain/browse/urlState";
 import { ClassPage } from "@/domain/render/ClassPage";
 import { EntityRenderPane } from "@/domain/render/EntityRenderPane";
-import { firstParagraphSummary } from "@/domain/render/text";
 import type { ClassPageData } from "@/server/classPageData";
 import { getClassPage } from "@/server/corpusFns";
 

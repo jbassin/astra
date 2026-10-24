@@ -1,7 +1,6 @@
+import type { IndexRow } from "@astra/codex-corpus";
 import { defaultParseSearch } from "@tanstack/react-router";
 import { describe, expect, it } from "vitest";
-
-import type { IndexRow } from "@/schema/entity";
 
 import { FACET_DEFS } from "./facetDefs";
 import {

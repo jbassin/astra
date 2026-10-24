@@ -1,11 +1,11 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
+import type { CodexEntity } from "@astra/codex-corpus";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import type { CodexEntity } from "../../schema/entity";
 import { EntityPage } from "./entityPage";
 import { loadFixtureRenderEnv, requireEntity } from "./fixtureLoader";
 import { createHeadingIdAssigner } from "./headingIds";

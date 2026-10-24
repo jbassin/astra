@@ -18,6 +18,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
+import type { CodexEntity } from "@astra/codex-corpus";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
@@ -25,7 +26,6 @@ import { EntityPage } from "../src/domain/render/entityPage";
 import { loadFixtureRenderEnv, requireEntity } from "../src/domain/render/fixtureLoader";
 import { createHeadingIdAssigner } from "../src/domain/render/headingIds";
 import type { RenderCtx } from "../src/domain/render/nodes";
-import type { CodexEntity } from "../src/schema/entity";
 import { ensureFixtureCorpus } from "./fixtureCorpus";
 
 const GOLDENS_ROOT = join(import.meta.dirname, "..", "goldens");

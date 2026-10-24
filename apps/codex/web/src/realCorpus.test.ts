@@ -2,18 +2,14 @@ import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
+import { CORPUS_SCHEMA_VERSION } from "@astra/codex-corpus";
+import { type CorpusReader, createCorpusReader } from "@astra/codex-corpus/reader";
 import { loadConfig } from "@astra/config";
 import { nodeTsResolveHook } from "@astra/site-kit/nodeTsResolveHook";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { CORPUS_SCHEMA_VERSION } from "@/schema/corpusVersion";
 import { resolveClassRail } from "@/server/classPageData";
-import {
-  type CorpusReader,
-  createCorpusReader,
-  type ServedCorpus,
-  selectServedCorpus,
-} from "@/server/corpusFs";
+import { type ServedCorpus, selectServedCorpus } from "@/server/corpusFs";
 
 /**
  * The opt-in real-corpus suite. Every other codex test reads the generated fixture

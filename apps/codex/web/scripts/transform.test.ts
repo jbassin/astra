@@ -3,15 +3,18 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+  CodexEntitySchema,
+  IndexRowSchema,
+  type CorpusManifest,
+  RulesTreeFileSchema,
+  SourcesIndexFileSchema,
+} from "@astra/codex-corpus";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { loadHomebrewSide, loadHomebrewTraits } from "../src/ingest/homebrew";
 import type { JoinAliasesFile } from "../src/ingest/join";
 import { UuidIndex } from "../src/ingest/uuidResolve";
-import { CodexEntitySchema, IndexRowSchema } from "../src/schema/entity";
-import type { CorpusManifest } from "../src/schema/manifest";
-import { RulesTreeFileSchema } from "../src/schema/rulesTree";
-import { SourcesIndexFileSchema } from "../src/schema/sourcesIndex";
 import { defaultHomebrewDirs, runTransform, type TransformResult } from "./transform";
 
 /**

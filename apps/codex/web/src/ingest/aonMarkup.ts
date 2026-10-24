@@ -1,4 +1,4 @@
-import type { BlockNode, CodexNode, InlineNode, TableRow, TextMarks } from "../schema/nodes";
+import type { BlockNode, CodexNode, InlineNode, TableRow, TextMarks } from "@astra/codex-corpus";
 
 /**
  * AoN `markdown` field → `BlockNode[]` (D29-2, spec §4 S3). The field mixes real

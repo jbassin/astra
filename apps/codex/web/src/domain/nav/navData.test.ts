@@ -1,6 +1,7 @@
+import { createCorpusReader } from "@astra/codex-corpus/reader";
 import { describe, expect, it } from "vitest";
 
-import { createCorpusReader, fixtureCorpusRoot } from "@/server/corpusFs";
+import { fixtureCorpusRoot } from "@/server/corpusFs";
 
 import { allNavCategories, NAV_ITEMS } from "./navData";
 

@@ -20,7 +20,7 @@
 // book's `dfsPreOrder(book.nodes)` (never merge across books — D29-41 "never
 // crosses a book boundary").
 
-import type { TreeNode } from "@/schema/rulesTree";
+import type { TreeNode } from "@astra/codex-corpus";
 
 /**
  * A stable, book-scoped key for a tree node — the collapse-state map's/React

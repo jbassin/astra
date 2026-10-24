@@ -1,6 +1,6 @@
+import type { CodexEntity } from "@astra/codex-corpus";
 import type { ReactElement } from "react";
 
-import type { CodexEntity } from "../../schema/entity";
 import { categoryGroupOf } from "./categoryGroup";
 import { EntityHeader } from "./EntityHeader";
 import {

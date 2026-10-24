@@ -12,9 +12,10 @@
 // module is now a thin sort-and-shape-null wrapper over `reader.index()`
 // rather than a field-dropping projection.
 
+import type { IndexRow } from "@astra/codex-corpus";
+import { CorpusNotFoundError, type CorpusReader } from "@astra/codex-corpus/reader";
+
 import { OTHER_GROUP_LABEL } from "../domain/sources/sourcesModel";
-import type { IndexRow } from "../schema/entity";
-import { CorpusNotFoundError, type CorpusReader } from "./corpusFs";
 
 export interface CategoryListingData {
   category: string;

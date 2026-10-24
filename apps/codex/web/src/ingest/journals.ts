@@ -1,8 +1,7 @@
-import type { CodexEntity } from "../schema/entity";
-import type { BlockNode, CodexNode } from "../schema/nodes";
+import { type CodexEntity, type BlockNode, type CodexNode, sluggify } from "@astra/codex-corpus";
+
 import type { EnricherContext, ReportClass as EnricherReportClass } from "./enrichers";
 import { parseFoundryHtml } from "./foundryHtml";
-import { sluggify } from "./sluggify";
 import type { UuidIndex } from "./uuidResolve";
 
 /**
