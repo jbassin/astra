@@ -37,6 +37,7 @@ import {
   actorLevel,
   actorXp,
   type BiographySection,
+  documentOwnership,
   entryPreparedType,
   entrySlot,
   entrySlots,
@@ -53,6 +54,7 @@ import {
   liveNumberAt,
   liveSkills,
   liveSystem,
+  OWNER_LEVEL,
   partyMemberUuids as partyMemberUuidsOf,
   type Pf2eSlot,
   type Pf2eSource,
@@ -107,10 +109,8 @@ async function handleQueryParty(rawParams: unknown): Promise<QueryPartyResult> {
  * (3) `ownership` entry (excluding the special `"default"` key) resolved against
  * `game.users`, skipping the GM's own OWNER grant (every document carries one). Omits
  * the field entirely rather than guessing when nothing resolves. */
-function resolveOwnerPlayer(ownership: unknown): string | undefined {
-  const OWNER_LEVEL = 3;
-  if (!ownership || typeof ownership !== "object") return undefined;
-  for (const [userId, level] of Object.entries(ownership as Record<string, unknown>)) {
+function resolveOwnerPlayer(src: Pf2eSource): string | undefined {
+  for (const [userId, level] of documentOwnership(src)) {
     if (userId === "default" || level !== OWNER_LEVEL) continue;
     const user = game.users.get(userId);
     if (user && !user.isGM) return user.name;
@@ -143,7 +143,7 @@ function buildPartyPcRow(doc: FoundryDocumentLike): PartyPcRow {
     heroPoints: fullPool(actorHeroPoints(source)),
     ancestry: firstItemName(src, "ancestry"),
     className: firstItemName(src, "class"),
-    ownerPlayer: resolveOwnerPlayer(src.ownership),
+    ownerPlayer: resolveOwnerPlayer(src),
   };
 }
 

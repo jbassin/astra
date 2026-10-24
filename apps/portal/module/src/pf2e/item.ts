@@ -53,7 +53,7 @@ export function itemPrice(item: Pf2eSource): Partial<Record<Denomination, number
   if (!value || typeof value !== "object") return undefined;
   const coins: Partial<Record<Denomination, number>> = {};
   for (const denom of PRICE_DENOMINATIONS) {
-    const n = (value as Record<string, unknown>)[denom];
+    const n = record(value)[denom];
     if (typeof n === "number") coins[denom] = n;
   }
   return coins;

@@ -16,8 +16,9 @@ import {
   BridgeError,
 } from "@astra/portal-shared";
 
+import { withStamp } from "./payloads";
 import { byRankThenName, DEFAULT_SEARCH_LIMIT, matchRank } from "./shared";
-import { auditLog, resolveFolderId, withStamp, writeGate } from "./writes";
+import { auditLog, resolveFolderId, writeGate } from "./writes";
 
 /** `list-compendium-packs` (spec 0023 S4) — every `game.packs` entry, so an LLM client
  * can pick pack ids for `search-compendium`'s `packIds` filter or just browse what's on

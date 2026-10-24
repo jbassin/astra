@@ -1,6 +1,6 @@
 /**
- * The write path every write tool goes through: the write gate, the audit line, the portal
- * creation stamp, folder lookup, and create/update wrappers that turn Foundry's
+ * The write path every write tool goes through: the write gate, the audit line,
+ * folder lookup, the D-7 rule read-back, and create/update wrappers that turn Foundry's
  * `DataModelValidationError` into a typed `validation-failed`.
  */
 import { BridgeError } from "@astra/portal-shared";
@@ -74,34 +74,6 @@ export function resolveFolderId(
     throw new BridgeError("not-found", `folder not found: "${folderName}" (type ${documentType})`);
   }
   return match.id;
-}
-
-/** D-6 — every document any portal tool creates gets this stamped into its `flags`,
- * additively merged alongside whatever flags the payload already carries. `delete-
- * document` (0026 S3) reads `flags["astra-portal"].created` back to refuse deleting
- * anything portal didn't make itself — so this must land on every create path (this
- * S2 slice's four new handlers AND the three 0023 write handlers, retrofitted).
- * Never applied to an update — only to a document at the moment it's created. */
-export function portalStamp(tool: string): {
-  "astra-portal": { created: true; tool: string; ts: string };
-} {
-  return { "astra-portal": { created: true, tool, ts: new Date().toISOString() } };
-}
-
-/** Merges a portal stamp (optionally plus more flag data) onto an existing `flags`
- * object without disturbing whatever the caller/base document already put there —
- * the additive-only half of D-6 (a hand-authored document's OWN flags, e.g. a cloned
- * compendium item's existing `flags.pf2e`, must survive untouched). */
-export function withStamp(
-  existingFlags: unknown,
-  tool: string,
-  extra?: Record<string, unknown>,
-): Record<string, unknown> {
-  const base = (existingFlags && typeof existingFlags === "object" ? existingFlags : {}) as Record<
-    string,
-    unknown
-  >;
-  return foundry.utils.mergeObject(base, { ...portalStamp(tool), ...extra }, { inplace: false });
 }
 
 /** Detects Foundry's `DataModelValidationError` (D-7) without importing the class —
@@ -216,34 +188,4 @@ export function collectRuleWarnings(
     );
   }
   return warnings;
-}
-
-/** D-1 hybrid clone+patch core, shared by `create-actor`/`create-item`: resolve a
- * compendium `baseUuid` (never a world uuid — mirrors `cloneFromCompendium`'s own
- * guard), take its `toObject()` verbatim, strip the id, then deep-merge the caller's
- * `name`/`system`/`img` on top via `foundry.utils.mergeObject` (never mutates the
- * source compendium document — `toObject()` already handed back a fresh plain
- * object). Returns `undefined` when no `baseUuid` was given, so callers build a
- * from-scratch payload instead (D-1's other branch). */
-export async function resolveBasePayload(
-  baseUuid: string | undefined,
-  patch: { name: string; system?: Record<string, unknown>; img?: string },
-): Promise<Record<string, unknown> | undefined> {
-  if (baseUuid === undefined) return undefined;
-  if (!baseUuid.startsWith("Compendium.")) {
-    throw new BridgeError(
-      "foundry-error",
-      `baseUuid must be a compendium uuid (starting "Compendium."), got: ${baseUuid}`,
-    );
-  }
-  const doc = await fromUuid(baseUuid);
-  if (!doc) {
-    throw new BridgeError("not-found", `not found: ${baseUuid}`);
-  }
-  const base = doc.toObject();
-  delete base._id;
-  const patchData: Record<string, unknown> = { name: patch.name };
-  if (patch.system !== undefined) patchData.system = patch.system;
-  if (patch.img !== undefined) patchData.img = patch.img;
-  return foundry.utils.mergeObject(base, patchData, { inplace: false });
 }

@@ -11,6 +11,15 @@ import {
   type BridgeToolHandlers,
 } from "@astra/portal-shared";
 
+import {
+  liveFlags,
+  type Pf2eFlags,
+  type Pf2eRollContext,
+  rollContext,
+  rollModifierName,
+  rollModifiers,
+  rollOriginUuid,
+} from "../pf2e";
 import { resolveByName } from "./shared";
 
 /** D28-3's non-negotiable public-only privacy filter, baked in module-side — never
@@ -26,39 +35,6 @@ function isPublicRollMessage(
   context: Pf2eRollContext | undefined,
 ): boolean {
   return msg.whisper.length === 0 && msg.blind !== true && context?.secret !== true;
-}
-
-interface Pf2eRollContext {
-  type?: string;
-  outcome?: string;
-  actor?: string;
-  secret?: boolean;
-  dc?: { value?: number; visible?: boolean };
-}
-
-/** Reads `flags.pf2e.context` (pf2e's own check/damage-roll taxonomy — verified
- * `pf2e.mjs` ~:23931/:23028/:383) off a chat message — `undefined` for a message
- * with no `flags.pf2e.context` at all (a plain `/roll`, verified to have no
- * `flags.pf2e`), which `handleQueryRolls` treats as the untagged `"roll"` bucket. */
-function extractPf2eRollContext(
-  flags: Record<string, unknown> | undefined,
-): Pf2eRollContext | undefined {
-  const pf2e = flags?.pf2e as Record<string, unknown> | undefined;
-  const context = pf2e?.context as Record<string, unknown> | undefined;
-  if (!context || typeof context !== "object") return undefined;
-  const dcRaw = context.dc as Record<string, unknown> | undefined;
-  return {
-    type: typeof context.type === "string" ? context.type : undefined,
-    outcome: typeof context.outcome === "string" ? context.outcome : undefined,
-    actor: typeof context.actor === "string" ? context.actor : undefined,
-    secret: context.secret === true,
-    dc: dcRaw
-      ? {
-          value: typeof dcRaw.value === "number" ? dcRaw.value : undefined,
-          visible: dcRaw.visible === true,
-        }
-      : undefined,
-  };
 }
 
 interface ParsedRollDieResult {
@@ -153,23 +129,17 @@ const MAX_ROLL_MODIFIERS = 12;
  * `ignored` prong since `applyAdjustments` can independently set `ignored: true`
  * on an otherwise-enabled modifier, e.g. a suppressed adjustment). Fail-soft:
  * skips any entry missing a string `label`/numeric `modifier`, never throws;
- * `undefined` (not `[]`) when the message carries no modifiers flag at all — a
- * plain `/roll` or an older pf2e message shape. */
-function buildRollModifiers(pf2e: Record<string, unknown>): RollModifierRow[] | undefined {
-  const raw = pf2e.modifiers;
-  if (!Array.isArray(raw)) return undefined;
+ * `undefined` (not `[]`) when no entry qualifies, including a message with no
+ * modifiers flag at all (a plain `/roll` or an older pf2e message shape). */
+function buildRollModifiers(flags: Pf2eFlags): RollModifierRow[] | undefined {
+  const modifiers = rollModifiers(flags);
+  if (!modifiers) return undefined;
   const rows: RollModifierRow[] = [];
-  for (const entry of raw) {
+  for (const m of modifiers) {
     if (rows.length >= MAX_ROLL_MODIFIERS) break;
-    if (!entry || typeof entry !== "object") continue;
-    const m = entry as Record<string, unknown>;
-    if (m.enabled !== true || m.ignored === true) continue;
-    if (typeof m.label !== "string" || typeof m.modifier !== "number") continue;
-    rows.push({
-      label: m.label,
-      value: m.modifier,
-      type: typeof m.type === "string" ? m.type : undefined,
-    });
+    if (!m.enabled || m.ignored) continue;
+    if (m.label === undefined || m.modifier === undefined) continue;
+    rows.push({ label: m.label, value: m.modifier, type: m.type });
   }
   return rows.length > 0 ? rows : undefined;
 }
@@ -189,11 +159,9 @@ async function buildRollRow(
   const parsedRoll = parseRollJson(rollJson);
   if (!parsedRoll) return undefined;
 
-  const pf2e = (msg.flags?.pf2e ?? {}) as Record<string, unknown>;
-  const modifierName = typeof pf2e.modifierName === "string" ? pf2e.modifierName : undefined;
-  const checkName = modifierName ?? deriveCheckNameFromFlavor(msg.flavor);
-  const origin = pf2e.origin as Record<string, unknown> | undefined;
-  const originUuid = typeof origin?.uuid === "string" ? origin.uuid : undefined;
+  const flags = liveFlags(msg);
+  const checkName = rollModifierName(flags) ?? deriveCheckNameFromFlavor(msg.flavor);
+  const originUuid = rollOriginUuid(flags);
   let originItemName: string | undefined;
   if (originUuid) {
     const originDoc = await fromUuid(originUuid).catch(() => null);
@@ -221,7 +189,7 @@ async function buildRollRow(
     total: parsedRoll.total ?? 0,
     dice: parsedRoll.dice,
     originItemName,
-    modifiers: buildRollModifiers(pf2e),
+    modifiers: buildRollModifiers(flags),
   };
 }
 
@@ -302,7 +270,7 @@ async function handleQueryRolls(rawParams: unknown): Promise<QueryRollsResult> {
   const qualifying: Array<{ msg: FoundryChatMessage; context: Pf2eRollContext | undefined }> = [];
   for (const msg of messages.contents) {
     if (!Array.isArray(msg.rolls) || msg.rolls.length === 0) continue;
-    const context = extractPf2eRollContext(msg.flags);
+    const context = rollContext(liveFlags(msg));
     if (!isPublicRollMessage(msg, context)) continue;
     if (sinceMs !== undefined && msg.timestamp < sinceMs) continue;
     if (untilMs !== undefined && msg.timestamp > untilMs) continue;

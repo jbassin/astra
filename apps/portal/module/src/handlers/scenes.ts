@@ -17,7 +17,8 @@ import {
 } from "@astra/portal-shared";
 
 import { cloneFromCompendium } from "./compendium";
-import { auditLog, createEmbeddedChecked, portalStamp, withStamp, writeGate } from "./writes";
+import { portalStamp, withStamp } from "./payloads";
+import { auditLog, createEmbeddedChecked, writeGate } from "./writes";
 
 /** `list-scenes` (spec 0023 S4) — every scene in the world, GM's own `active` flag. */
 function handleListScenes(rawParams: unknown): ListScenesResult {

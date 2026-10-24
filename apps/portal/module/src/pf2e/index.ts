@@ -18,6 +18,8 @@
  * | party members, biography and its visibility        | source          | stored                                                |
  * | item level, traits, rarity, price, bulk, damage... | source          | the live price/bulk are normalized class instances    |
  * | spell location and base rank, entry slots          | source          | stored                                                |
+ * | document `ownership` (Foundry core)                | source          | stored; `ownership.ts` covers its two level forms     |
+ * | chat-message `flags.pf2e` (roll context, mods)     | live            | stored, untouched by prep; read off `game.messages`   |
  *
  * Writes: `isDerivedPcPath` lists the PC paths `update-document` refuses because data prep
  * recomputes them (saves, perception, traits, AC, class DC).
@@ -30,7 +32,9 @@
  */
 export * from "./actor";
 export {
+  liveFlags,
   liveSystem,
+  type Pf2eFlags,
   type Pf2eSource,
   type Pf2eSystem,
   type Side,
@@ -39,3 +43,5 @@ export {
   sourceSystem,
 } from "./data";
 export * from "./item";
+export * from "./message";
+export * from "./ownership";
