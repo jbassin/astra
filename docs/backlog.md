@@ -52,6 +52,17 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 - [ ] Portal: delete the pre-stamp Goblin Warrior debris in the world by hand; live-test the
       unstamped-delete refusal and the `allow-macro-execution` off switch (opened 2026-07-08).
 - [ ] Remove the stale `iridi.cc` AAAA record (old ISP IPv6 prefix; opened 2026-08-10).
+- [ ] Delete the pre-move app dirs the agent may not remove (`rm -rf` is blocked for it); they hold
+      only ignored build output and caches, and the state in them was copied to the new paths.
+      In the dev tree: `apps/{akasha,mouthpiece}-{backend,frontend}`, `apps/heartwood-backend`,
+      `apps/orator-{backend,controller}`, `apps/weal-{bot,overlay}`, `apps/vellum-{frontend,render}`,
+      `apps/_smoke-substrate`, `apps/assay/{out,review-ui,src,tests}`,
+      `apps/{linguist,scribe}/{src,tests}`, `apps/codex/{books,dist,node_modules}`, and
+      `apps/{harrow,ledger,menhir,strider}/{dist,node_modules,src}`. In
+      `/ruby/data/astra-deploy`: `apps/{akasha,heartwood,mouthpiece}-backend`, `apps/linguist/src`.
+      Until then the dev tree's pre-push `just ci` fails on `apps/orator-controller/.tsbuild`.
+- [ ] Optional: delete or rebase `origin/review/loti2-parentheticals` (closed pull request #1 from
+      July; the layout move makes it conflict).
 - [ ] Activate mise in your shell (until then pyenv shims fail on bare `python3` in the repo).
 - [ ] orator: the physical Stream Deck test was never run (opened 2026-06-23; low priority).
 - [ ] Check whether the old standalone harrow container still runs unrouted on `localhost:10204`
@@ -117,6 +128,13 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Deploy and ops
 
+- `deploy.sh` reports success while containers crash-loop: wait for every healthcheck and fail
+  (and print the rollback command) when one stays unhealthy — agent (ops-11). Caused the
+  2026-10-24 layout-move outage.
+- Compose `command:` lines duplicate each image's `CMD` and drift from it; delete them — agent
+  (repo-3).
+- Leftover `.gitignore` and `.dockerignore` lines name data dirs that left the tree in Phase 1
+  (`apps/linguist/py/transcripts/` and the like); delete them — agent (repo-2).
 - A pipeline redeploy moves the deploy checkout back to `origin/main`, partly undoing a `--sha`
   rollback — agent; [`deploy/README.md`](../deploy/README.md).
 - Recipes run plain `uv run`, which can rewrite a stale `uv.lock` and dirty the deploy checkout; use

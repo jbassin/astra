@@ -4,17 +4,17 @@ Updated 2026-10-23.
 
 ## In flight
 
-- **Tech-debt paydown 0037, Phase 1 is done** with item 5 (this docs skeleton). Phases 0 and 1 are
+- **Tech-debt paydown 0037, Phase 2 is under way** (repo-1 live). Phases 0 and 1 are
   live. The plan and its checklist are section 0.1 of
   [`thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`](../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md).
 
 ## Next action
 
-Start **Phase 2** (section 5 of the paydown plan): structural refactors as parallel worktree tracks
-(repo, libraries, kits, pipeline, codex, assay, services, weal, ops). The repo layout move
-([ADR 0015](adr/0015-repo-layout-by-domain.md)) is first in the repo track; land it alone before
-the other tracks start, because it moves nearly every path. `main` now takes changes only through
-pull requests with auto-merge ([ADR 0016](adr/0016-merge-model-auto-merge.md)).
+**Phase 2, Wave 1** of the slice checklist in section 0.1 of the paydown plan. The layout move
+(repo-1, [ADR 0015](adr/0015-repo-layout-by-domain.md)) is live; apps sit at
+`apps/<domain>/<role>/`. `main` takes changes only through pull requests with auto-merge
+([ADR 0016](adr/0016-merge-model-auto-merge.md)). Calls parked for Josh are in the backlog under
+"Paydown decisions (Josh)".
 
 ## Blocked or waiting
 
