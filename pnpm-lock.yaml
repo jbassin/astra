@@ -255,6 +255,12 @@ importers:
       '@astra/config':
         specifier: workspace:*
         version: link:../../../libs/ts/config
+      '@astra/observe':
+        specifier: workspace:*
+        version: link:../../../libs/ts/observe
+      '@opentelemetry/api':
+        specifier: 'catalog:'
+        version: 1.9.1
       pagefind:
         specifier: 'catalog:'
         version: 1.5.2

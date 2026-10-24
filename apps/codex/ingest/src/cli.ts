@@ -4,7 +4,8 @@
 //
 //   fetch-foundry                       sparse-clone the pinned pf2e tag into snapshots/
 //   fetch-aon                           snapshot the AoN index into snapshots/ (~259 MB)
-//   transform --out <dir>               snapshots + homebrew store -> a corpus tree
+//   transform --out <dir> [--pass <n>]  snapshots + homebrew store -> a corpus tree
+//   transform --list-passes             print the transform's pass registry
 //   search-index --corpus <dir> --out <dir>   a Pagefind index over a corpus tree
 //   release build|rollback|list|migrate [...]  publish and manage releases (release.ts)
 //   fixture                             bring the generated fixture corpus up to date
