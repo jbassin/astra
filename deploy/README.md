@@ -69,8 +69,8 @@ logs a warning and records the count as `data_unpushed`; push with `just _astra-
 history.jsonl is read leniently: a line that is not a JSON object is skipped.
 
 Every host unit (craig-sync, linguist-commit, heartwood-request, the watchdog, alerting and
-backup) runs from the deploy checkout too; the install recipes `systemctl --user link` the unit
-files from it. After each checkout `deploy.sh` brings that checkout's host tooling up to date for
+backup) runs from the deploy checkout too; `just units-install` runs `systemctl --user link` on the
+unit files there (`deploy/systemd/units.txt` lists them by group). After each checkout `deploy.sh` brings that checkout's host tooling up to date for
 them (`uv sync --frozen`, and `pnpm install --frozen-lockfile --filter @astra/vellum-lang` for
 heartwood's validator); both are no-ops when nothing changed. `deploy.sh --host-tooling` runs just
 that step. The heartwood recipes hold `/ruby/data/astra-state/locks/host-tooling.lock` shared while
@@ -193,7 +193,7 @@ docker exec signoz-clickhouse clickhouse-client -q \
 
 ## Backups
 
-A nightly user timer (`astra-backup.timer`, 03:30, `just backup-install`) writes one snapshot to
+A nightly user timer (`astra-backup.timer`, 03:30, `just units-install backup`) writes one snapshot to
 the sda data disk at `/ruby/data/plex/data/astra-backups/<UTC timestamp>/` (`latest` points at the
 newest). A failed run pages Discord through `astra-alert@` (Class C). Each snapshot holds:
 
@@ -212,7 +212,7 @@ throwaway `--network none` Postgres and checks row counts, then checksums a samp
 files still unchanged at the source. A dir where every file changed fails, except the volatile
 `deploy` dir (`ASTRA_BACKUP_VOLATILE_STATE`), which every deploy rewrites: there every snapshot
 file must read back in full, and the test logs a warning.
-`astra-restore-test.timer` (Sunday 05:30, also installed by `just backup-install`) runs that test
+`astra-restore-test.timer` (Sunday 05:30, also installed by `just units-install backup`) runs that test
 weekly and pages through `astra-alert@` when it fails. A pass writes
 `<backup root>/.restore-test-pass.json`. The watchdog pages when the newest snapshot is 36 h old or
 more, when that stamp is 9 days old or missing, and when `astra-ontology-entity-seed --check`
@@ -252,8 +252,9 @@ just down-volumes         # also drop the SigNoz volumes (asks first; fresh onbo
 ## Traps
 
 - Every host unit's script runs from the deploy checkout, so a script edit goes live with the next
-  `just deploy` after the push; a changed `.service`, `.timer` or `.path` file needs its install
-  recipe (`just alert-install`, `just backup-install`, ...) re-run.
+  `just deploy` after the push; a changed `.service`, `.timer` or `.path` file needs
+  `just units-install <group>` re-run (the groups are in `deploy/systemd/units.txt`), or
+  systemd keeps running the old file.
 - A command that holds the host-tooling lock must release it (`Lock.release()` in astra-ops,
   `exec 8>&-` in bash) before it calls `deploy.sh`, or the deploy waits on its own caller. Lock
   order: git-publish first, then host-tooling. Never wait for git-publish while holding

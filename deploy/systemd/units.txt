@@ -1,0 +1,10 @@
+# The systemd user units each `just units-install <group>` links from the deploy checkout
+# (0037 OPS-3, OPS-17): one group per line, the group name first, then its units. Installing a
+# group links every unit, runs daemon-reload, then enables (--now) its timer and path units.
+# deploy/doctor.sh reads this file too: it checks each unit is linked and each timer and path
+# unit enabled, and names `just units-install <group>` (the first group that lists the unit).
+craig craig-sync.service craig-sync.timer
+linguist-commit linguist-commit.service linguist-commit.timer linguist-commit.path
+alert astra-alert@.service astra-watchdog.service astra-watchdog.timer craig-sync.service linguist-commit.service astra-metrics.service astra-metrics.timer
+backup astra-backup.service astra-backup.timer astra-restore-test.service astra-restore-test.timer
+heartwood-request heartwood-request.service heartwood-request.path heartwood-request.timer

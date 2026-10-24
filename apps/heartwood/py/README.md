@@ -53,12 +53,15 @@ astra-ops CLI; the steps, lock order and exit codes are in `libs/py/ops/src/astr
 - **Exit 6:** the clone has uncommitted wiki, ledger or registry changes, or is not on `main`.
   **Exit 10:** the git-publish lock was busy for 30 minutes; nothing was written.
 - **Backfill** of pending sessions, detached and budget-capped: `just heartwood-backfill
-  [from]`. It stops linguist-commit while it runs and the request runner leaves requests
-  pending. Stop it with `systemctl --user stop heartwood-backfill`; after a hard kill run
+  [from]`. It asks first (PAID + LIVE; `--yes` skips the question). It stops linguist-commit
+  while it runs and the request runner leaves requests pending. Stop it with
+  `systemctl --user stop heartwood-backfill`; after a hard kill run
   `just heartwood-backfill-reset`. The budget check sums the whole ledger, including
-  automated runs, against `heartwood.backfill-budget-usd`.
-- **Install the request units:** `just heartwood-request-install`. Warm the sandbox after a
-  Deno or Pyodide change: `just heartwood-sandbox-warm`.
+  automated runs, against `heartwood.backfill-budget-usd`. Steps and exit codes:
+  `libs/py/ops/src/astra_ops/backfill.py`.
+- **Install the request units:** `just units-install heartwood-request`. The runner recipe
+  `just heartwood-requests` asks first; `heartwood-request.service` passes `--yes`. Warm the
+  sandbox after a Deno or Pyodide change: `just heartwood-sandbox-warm`.
 
 ## Traps
 

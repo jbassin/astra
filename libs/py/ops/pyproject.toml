@@ -1,7 +1,7 @@
 [project]
 name = "astra-ops"
 version = "0.0.0"
-description = "astra-ops — the host ops CLI behind the justfile's data-publishing recipes (linguist-commit, the astra-data push, the audio seeds, heartwood-agent and heartwood-revert). Argument-list subprocesses only; deploy/deploy.sh stays bash and is called, not replaced."
+description = "astra-ops — the host ops CLI behind the justfile's ops recipes (the astra-data publish chain, the heartwood commands and backfill, craig-sync, the host installs). Argument-list subprocesses only; deploy/deploy.sh stays bash and is called, not replaced."
 requires-python = ">=3.12"
 dependencies = [
     "astra-config",

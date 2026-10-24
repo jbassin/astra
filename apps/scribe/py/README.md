@@ -12,7 +12,7 @@ Groq Whisper (`scribe.model`, `groq/whisper-large-v3`).
 ## Operations
 
 - **Sync by hand:** `just craig-sync`. Install the 5-minute timer with
-  `just craig-timer-install`.
+  `just units-install craig`.
 - **Wedged Drive mount:** craig-sync bounds every mount access without waiting on it, so a
   hung mount makes the unit fail (and page) instead of hanging in `activating`, which would
   stop the timer from re-arming. A process blocked on the mount shows `D request_wait_answer`

@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import subprocess
 from pathlib import Path
 
@@ -17,13 +16,21 @@ SCRIPT = REPO / "deploy" / "doctor.sh"
 
 
 def _linked_units() -> list[tuple[str, str]]:
+    """(group, unit) for every unit `just units-install` links; the first group wins."""
     out = []
-    for line in (REPO / "justfile").read_text().splitlines():
-        m = re.match(r"^([a-z0-9-]+):.*\(_unit-link ([^)]*)\)", line)
-        if m:
-            out += [(m[1], u.strip('"')) for u in m[2].split()]
+    for line in (REPO / "deploy" / "systemd" / "units.txt").read_text().splitlines():
+        words = line.split()
+        if words and not words[0].startswith("#"):
+            out += [(words[0], u) for u in words[1:]]
     seen: set[str] = set()
-    return [(r, u) for r, u in out if not (u in seen or seen.add(u))]
+    return [(g, u) for g, u in out if not (u in seen or seen.add(u))]
+
+
+def test_the_manifest_names_only_unit_files_that_exist() -> None:
+    units = _linked_units()
+    assert len(units) == 17
+    for _, unit in units:
+        assert (REPO / "deploy" / "systemd" / unit).is_file(), unit
 
 
 def _run(tmp_path: Path, skip: str, **env: str) -> subprocess.CompletedProcess[str]:
@@ -101,7 +108,7 @@ def test_units_report_a_copy_a_foreign_link_and_a_disabled_timer(tmp_path: Path)
     assert r.returncode == 1
     assert f"[FAIL] units: {copy} is a copy" in r.stdout
     assert f"[FAIL] units: {foreign} links to {tmp_path / 'elsewhere'}" in r.stdout
-    assert "astra-restore-test.timer is disabled (run: just backup-install)" in r.stdout
+    assert "astra-restore-test.timer is disabled (run: just units-install backup)" in r.stdout
 
 
 def test_expiry_markers(tmp_path: Path) -> None:

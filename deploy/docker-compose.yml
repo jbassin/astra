@@ -32,8 +32,8 @@ x-astra-app: &astra-app
   networks: [telemetry]
 
 # The Postgres stores: PGDATA is an identical-layout bind mount from the data root. No
-# `user:`, because the postgres entrypoint owns PGDATA as uid 70 (`just pg-migrate` keeps
-# 70:70/0700). Each store sets its own `<app>-db` network, shared only with its app.
+# `user:`, because the postgres entrypoint owns PGDATA as uid 70 (the dirs stay 70:70, mode
+# 0700). Each store sets its own `<app>-db` network, shared only with its app.
 x-astra-postgres: &astra-postgres
   <<: *astra-service
   image: postgres:16-alpine

@@ -24,7 +24,16 @@ from pathlib import Path
 DEFAULT_DATA_ROOT = "/ruby/data/astra-state"
 WAIT_S = 1800.0
 #: The CLI's global options that take a separate value (cli.build_parser).
-VALUE_OPTIONS = frozenset({"--uv", "--mouthpiece-episodes", "--akasha-audio"})
+VALUE_OPTIONS = frozenset(
+    {
+        "--uv",
+        "--mouthpiece-episodes",
+        "--akasha-audio",
+        "--deploy-root",
+        "--just",
+        "--craig-drop-dir",
+    }
+)
 
 
 def data_root_from(argv: Sequence[str]) -> Path:
