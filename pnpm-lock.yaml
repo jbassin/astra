@@ -878,6 +878,9 @@ importers:
       '@astra/observe':
         specifier: workspace:*
         version: link:../../../libs/ts/observe
+      '@astra/service-kit':
+        specifier: workspace:*
+        version: link:../../../libs/ts/service-kit
       '@astra/site-kit':
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit

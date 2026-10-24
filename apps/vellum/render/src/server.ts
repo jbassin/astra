@@ -4,7 +4,7 @@
  * render assets from dist/ on the same origin so the render page + fonts load
  * locally (and the SEC-3 egress block can allow only same-origin). A SEPARATE
  * Compose unit from vellum-frontend; the editor reaches it same-origin via Caddy
- * (vellum.iridi.cc/render → this service). The request handler is `app.ts`.
+ * (vellum.iridi.cc/render → this service). The service definition is `app.ts`.
  *
  * Telemetry (traces, metrics, logs, HTTP spans, the SIGTERM flush) is installed by
  * `node --import @astra/observe/register` before this module loads.
@@ -14,8 +14,8 @@
 import { fileURLToPath } from "node:url";
 
 import { loadConfig } from "@astra/config";
-import { logger, onShutdown } from "@astra/observe";
-import { serve } from "srvx";
+import { logger } from "@astra/observe";
+import { createService } from "@astra/service-kit";
 
 import { createRenderApp } from "./app";
 import { RenderService } from "./renderService";
@@ -27,31 +27,24 @@ const DIST = fileURLToPath(new URL("../dist", import.meta.url));
 
 const log = logger(serviceName);
 
-const service = new RenderService(BASE_URL);
+const renderer = new RenderService(BASE_URL);
 log.info("warming Chromium…");
-await service.start();
+await renderer.start();
 
-const app = createRenderApp({
+const { definition } = createRenderApp({
   serviceName,
   publicOrigin: cfg.vellumFrontend.publicOrigin,
   distDir: DIST,
-  renderer: service,
+  renderer,
 });
 
-const server = serve({
+const service = createService({
+  ...definition,
   port: PORT,
-  hostname: "0.0.0.0",
   // No srvx `idleTimeout` equivalent (R3, 0022 S8 — B3); the closest analog for
   // the Node runtime is `node.keepAliveTimeout` (mirrors ssrServer.ts / weal-overlay).
   node: { keepAliveTimeout: 30_000 },
-  fetch: app.fetch,
 });
-
-// srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
-// listening completes (async on the Node runtime), so log from `.ready()`.
-void server.ready().then(() => {
-  log.info(`render service on ${BASE_URL} (ready=${service.isReady()})`);
-});
-
-// On SIGTERM: close Chromium and the server, then register flushes telemetry and exits.
-onShutdown(() => Promise.all([service.close(), server.close(true)]));
+// On SIGTERM the kit stops accepting and drains in-flight renders; then Chromium closes
+// and observe flushes telemetry.
+service.onShutdown(() => renderer.close());

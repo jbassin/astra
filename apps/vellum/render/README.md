@@ -4,7 +4,10 @@ vellum-render turns a vellum document into a PNG. It keeps one warm headless Chr
 and renders each request in a fresh browser context. Compose service `vellum-render`, port 10368,
 `service.name=astra.vellum-render`; Caddy routes `vellum.iridi.cc/render` and `/health` here
 (the editor in `apps/vellum/web` calls it same-origin). Endpoints: `POST /render` →
-`image/png`, `GET /health` → `{ready}`. The server is `src/server.ts` (srvx on Node 24).
+`image/png`, `GET /health` → `{ready}`, and `/healthz` (the compose healthcheck). The service is
+defined in `src/app.ts` on `@astra/service-kit` and started by `src/server.ts`; on SIGTERM it
+drains in-flight renders, then closes Chromium. `src/pins.test.ts` pins every response against a
+fake renderer.
 
 ## How a render works
 
@@ -51,5 +54,6 @@ every changed PNG by eye, then commit them.
   content type makes Chromium refuse the module script (`window.vellumRender is not a function`).
 - **Playwright isn't hoisted under pnpm.** Run `npx playwright install` from `apps/vellum/render`,
   not the repo root.
-- **Healthcheck waits for Chromium.** `/health` reports `ready` only after the browser is warm;
-  compose gives it a 25 s `start_period`.
+- **Healthcheck waits for Chromium.** `/healthz` answers 200 only while the browser is connected
+  (its `chromium` probe), and `/health` reports the same as `ready`; compose gives it a 25 s
+  `start_period`.
