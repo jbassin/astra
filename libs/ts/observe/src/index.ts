@@ -69,6 +69,10 @@ export const DEFAULT_DEPLOY_ROOT = "/ruby/data/astra-deploy";
 /** The resource attribute SigNoz filters environments on. */
 export const DEPLOYMENT_ENVIRONMENT = "deployment.environment";
 
+/** The health-check path every service answers (`@astra/service-kit`). The HTTP
+ * instrumentation never traces it, so a 15-second compose probe makes no spans. */
+export const HEALTHZ_PATH = "/healthz";
+
 /** Whether this process runs inside an astra container (`ASTRA_RUNTIME=container`). */
 export function inContainer(): boolean {
   const runtime = process.env[RUNTIME_VAR] ?? "host";

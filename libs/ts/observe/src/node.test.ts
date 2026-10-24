@@ -52,6 +52,34 @@ describe("installNodeTelemetry", () => {
     expect(serverSpan?.resource.attributes["service.name"]).toBe("astra.register-test");
   });
 
+  test("/healthz makes no span; other paths still do", async () => {
+    const before = cap.spans().length;
+    const server = serve({
+      port: 0,
+      hostname: "127.0.0.1",
+      silent: true,
+      gracefulShutdown: false,
+      fetch: () => new Response("ok"),
+    });
+    await server.ready();
+    await (await fetch(new URL("/healthz", server.url))).text();
+    await (await fetch(new URL("/healthz?probe=1", server.url))).text();
+    await (await fetch(new URL("/healthzz", server.url))).text();
+    await server.close(true);
+    await until(() =>
+      cap
+        .spans()
+        .slice(before)
+        .some((s) => s.kind === SpanKind.SERVER),
+    );
+    const paths = cap
+      .spans()
+      .slice(before)
+      .filter((s) => s.kind === SpanKind.SERVER)
+      .map((s) => s.attributes["url.path"]);
+    expect(paths).toEqual(["/healthzz"]);
+  });
+
   test("a named `createServer` import (ESM) is instrumented too", async () => {
     const before = cap.spans().length;
     const server = createServer((_req, res) => res.end("named"));
