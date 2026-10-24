@@ -43,3 +43,27 @@ describe("R6 (D29-66): the orphaned .site-foot rule is gone, no dangling referen
     expect(CSS).not.toMatch(/\.site-foot\b/);
   });
 });
+
+/**
+ * A closed `<details>` hides its content through `::details-content { content-visibility:
+ * hidden }`, which no descendant `display` rule can undo. Each sidebar that is always open on
+ * desktop must force that pseudo-element visible, and re-hide it when closed on mobile.
+ */
+describe.each([".codex-rules-sidebar-disclosure", ".codex-class-rail-disclosure"])(
+  "%s: always-open desktop disclosure",
+  (cls) => {
+    const escaped = cls.replaceAll(".", "\\.");
+    it("forces ::details-content visible on desktop", () => {
+      expect(CSS).toMatch(
+        new RegExp(`${escaped}::details-content\\s*\\{[^}]*content-visibility:\\s*visible`),
+      );
+    });
+    it("re-hides ::details-content when closed on mobile", () => {
+      expect(CSS).toMatch(
+        new RegExp(
+          `${escaped}:not\\(\\[open\\]\\)::details-content\\s*\\{[^}]*content-visibility:\\s*hidden`,
+        ),
+      );
+    });
+  },
+);

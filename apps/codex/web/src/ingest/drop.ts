@@ -158,16 +158,28 @@ function isParenFamily(name: string): boolean {
 }
 
 const DIGIT_LEADING_RE = /^\d/;
-const HAS_PARENTHESIZED_RE = /\([^)]*\)/;
+const HAS_OPEN_PAREN_RE = /\(/;
+const BARE_DURATION_RE = /^\d+\s+(?:minute|hour|day|round)s?$/i;
 
-/** Family (ii): a name starting with a digit AND containing a parenthesized
- * activation string — the "1 hour (envision, Interact)" / "10 minutes
- * (concentrate, manipulate)" shape (stakeholder-widened amendment, D29-98). */
+/** Family (ii): a name starting with a digit that is an activation string — the
+ * "1 hour (envision, Interact)" / "10 minutes (concentrate, manipulate)" shape
+ * (stakeholder-widened amendment, D29-98), including the truncated form with no
+ * closing paren ("1 minute (manipulate") and a bare duration ("1 minute"). */
 function isDigitFamily(name: string): boolean {
-  return DIGIT_LEADING_RE.test(name) && HAS_PARENTHESIZED_RE.test(name);
+  if (!DIGIT_LEADING_RE.test(name)) return false;
+  return HAS_OPEN_PAREN_RE.test(name) || BARE_DURATION_RE.test(name.trim());
 }
 
-export type ActivationDropFamily = "paren" | "digit";
+const MARKUP_TAG_RE = /<[^>]*>/g;
+const ALPHANUMERIC_RE = /[\p{L}\p{N}]/u;
+
+/** Family (iii): a name that is only markup debris — nothing alphanumeric once tags
+ * are stripped (the real `action/u`, named "</u>"). */
+function isMarkupFamily(name: string): boolean {
+  return !ALPHANUMERIC_RE.test(name.replaceAll(MARKUP_TAG_RE, ""));
+}
+
+export type ActivationDropFamily = "paren" | "digit" | "markup";
 
 /** Which family (if any) `entity` matches — `undefined` for anything not a
  * drop candidate (wrong category, not AoN-only, on the keep-list, or
@@ -189,6 +201,7 @@ export function activationDropFamily(
   if (ACTIVATION_KEEP_LIST.has(entity.id)) return undefined;
   if (isParenFamily(entity.name)) return "paren";
   if (isDigitFamily(entity.name)) return "digit";
+  if (isMarkupFamily(entity.name)) return "markup";
   return undefined;
 }
 
@@ -196,6 +209,8 @@ export interface ActivationDropAccounting {
   total: number;
   parenFamily: number;
   digitFamily: number;
+  /** Family (iii): markup-only names. */
+  markupFamily: number;
   /** Every family-(ii) (digit-leading) dropped NAME — NOT capped (D29-98's
    * own explicit "the report must list every family-(ii) name dropped"
    * requirement, for orchestrator eyeball review before the S1 commit), one
@@ -450,6 +465,7 @@ export function applyAonPrimaryDrop(
   const droppedIds = new Set<string>();
   let parenFamilyDropped = 0;
   let digitFamilyDropped = 0;
+  let markupFamilyDropped = 0;
   const digitFamilyNames: string[] = [];
   let journalSectionHeaderDropped = 0;
   let unknownBookHuskDropped = 0;
@@ -460,6 +476,8 @@ export function applyAonPrimaryDrop(
       droppedIds.add(e.id);
       if (activationFamily === "paren") {
         parenFamilyDropped++;
+      } else if (activationFamily === "markup") {
+        markupFamilyDropped++;
       } else {
         digitFamilyDropped++;
         digitFamilyNames.push(`${e.id}: ${e.name}`);
@@ -524,9 +542,10 @@ export function applyAonPrimaryDrop(
       byCategory,
       carveOut,
       activationDrop: {
-        total: parenFamilyDropped + digitFamilyDropped,
+        total: parenFamilyDropped + digitFamilyDropped + markupFamilyDropped,
         parenFamily: parenFamilyDropped,
         digitFamily: digitFamilyDropped,
+        markupFamily: markupFamilyDropped,
         digitFamilyNames: [...digitFamilyNames].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)),
       },
       editionPointersStripped: editionPointersStripped.length,

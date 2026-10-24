@@ -23,6 +23,20 @@ import type { CategoryListingData } from "@/server/listingData";
 
 const listingCache = new Map<string, Promise<CategoryListingData | null>>();
 
+/** Drop `key` from `cache` if `promise` rejects, so one failed fetch is retried on the next
+ * call rather than replayed for the rest of the page load. The identity check keeps a late
+ * rejection from evicting a newer entry for the same key. The caller still sees the
+ * rejection through the promise it returned. */
+function evictOnRejection<T>(
+  cache: Map<string, Promise<T>>,
+  key: string,
+  promise: Promise<T>,
+): void {
+  promise.catch(() => {
+    if (cache.get(key) === promise) cache.delete(key);
+  });
+}
+
 /** Fetch `category`'s listing, memoized per-category for the lifetime of the
  * current page load (client only — see the file header). SSR always calls
  * `getCategoryListing` fresh, never touching this map. */
@@ -34,6 +48,7 @@ export function memoizedListing(category: string): Promise<CategoryListingData |
   if (!promise) {
     promise = getCategoryListing({ data: { category } });
     listingCache.set(category, promise);
+    evictOnRejection(listingCache, category, promise);
   }
   return promise;
 }
@@ -80,6 +95,7 @@ export function memoizedEntity(category: string, slug: string): Promise<EntityPa
   }
   const promise = getEntityPage({ data: { category, slug } });
   entityCache.set(key, promise);
+  evictOnRejection(entityCache, key, promise);
   if (entityCache.size > ENTITY_CACHE_MAX) {
     const oldestKey = entityCache.keys().next().value;
     if (oldestKey !== undefined) entityCache.delete(oldestKey);

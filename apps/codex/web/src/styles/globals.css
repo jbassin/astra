@@ -860,7 +860,8 @@ select:focus-visible,
   font-size: 0.78rem;
   color: var(--color-ink-faint);
 }
-.codex-broken-ref {
+/* nodes.tsx renders a broken reference as a plain `<span data-broken-ref>`, never a link. */
+[data-broken-ref] {
   color: var(--color-ink-faint);
   font-style: italic;
 }
@@ -1476,14 +1477,6 @@ select:focus-visible,
 .codex-facet-range-sep {
   color: var(--color-ink-faint);
   font-size: 0.8rem;
-}
-.codex-facet-has-value {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.78rem;
-  color: var(--color-ink-dim);
-  margin-top: 0.4rem;
 }
 
 /* --- P13 S2 (D29-129 consolidation), completed P13 S3 (D29-130):
@@ -2258,6 +2251,12 @@ select:focus-visible,
 .codex-rules-sidebar-body {
   display: block;
 }
+/* A closed `<details>` hides its content through `::details-content` with
+   `content-visibility: hidden`, which no descendant rule can undo. Force it
+   visible on desktop; the mobile query below re-hides it when closed. */
+.codex-rules-sidebar-disclosure::details-content {
+  content-visibility: visible !important;
+}
 
 @media (max-width: 56rem) {
   .codex-rules-layout {
@@ -2283,6 +2282,9 @@ select:focus-visible,
      server-rendered markup) — the summary click toggles it natively, no JS. */
   .codex-rules-sidebar-disclosure:not([open]) .codex-rules-sidebar-body {
     display: none;
+  }
+  .codex-rules-sidebar-disclosure:not([open])::details-content {
+    content-visibility: hidden !important;
   }
 }
 
@@ -2614,9 +2616,8 @@ html::-webkit-scrollbar-thumb:hover {
    undo this (content-visibility:hidden on an ancestor box skips rendering
    the WHOLE subtree by spec, regardless of descendant styles), so the rail
    was present in the DOM (real `getBoundingClientRect()`, unaffected) but
-   literally unpainted/un-hit-testable on desktop. `.codex-rules-sidebar-
-   disclosure` (P4's own `/rules` sidebar) carries the identical latent
-   defect — out of this slice's scope, flagged separately. Force it visible
+   literally unpainted/un-hit-testable on desktop (`.codex-rules-sidebar-
+   disclosure` carries the same override). Force it visible
    unconditionally here (the desktop "always open regardless of `[open]`"
    contract); the mobile query below re-applies the hidden state. */
 .codex-class-rail-disclosure::details-content {

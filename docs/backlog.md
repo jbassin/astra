@@ -143,16 +143,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - Manual `heartwood-agent`/`-revert` from the dev tree run dev code against live data; always use
   `just -f /ruby/data/astra-deploy/justfile ...` — agent; consider making the recipes refuse.
 
-## codex
-
-- Four malformed action entities escape the drop rules (`action/1-minute`, `1-minute-manipulate-6`,
-  `1-minute-command-interact`, `action/u`) — agent; flagged 2026-07-19.
-- The /rules sidebar `<details>` has no `::details-content` override, so content can go unpainted on
-  desktop — agent; `apps/codex/web/src/styles/globals.css`.
-- `useState` after early returns in `FacetPanel.tsx` — agent; product bug (SMELL-4).
-- The client cache keeps rejected promises forever — agent; product bug (CDX-12).
-- Broken references were never styled; the CSS selector never matches — agent; product bug (CDX-23).
-
 ## assay
 
 - Move the books out of codex and the PDF out of git — agent;

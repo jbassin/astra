@@ -1151,8 +1151,7 @@ routes · **S3 `93fa2e2`** render · **S4** this sweep.
   non-summary content through an internal `::details-content` pseudo-element that carries
   `content-visibility: hidden` — no descendant `display` override can undo it (the whole subtree
   skips painting by spec) — so the class rail was in the DOM but unpainted on desktop until
-  forced visible unconditionally; `/rules`' own sidebar disclosure carries the identical latent
-  defect, flagged separately, out of this slice's scope.
+  forced visible unconditionally. The `/rules` sidebar disclosure now carries the same override.
 - **Fixture pipeline as its own corpus source (S1):** `class/fighter`/`cleric`/`witch`'s
   `grantedFeatures`/`subclassOptions` can't be lifted from the real emitted corpus (a different
   corpus state — e.g. sorcerer's real 18-row bloodline population vs. the fixture's tiny raw-only
