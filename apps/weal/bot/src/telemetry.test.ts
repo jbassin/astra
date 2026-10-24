@@ -1,6 +1,6 @@
 /**
  * Telemetry adds (spec 0032 D32-20), asserted through a mocked `@astra/observe`
- * (the real module's instruments are no-ops without initTelemetry): the
+ * (the real module's instruments are no-ops without installed telemetry): the
  * `weal.v2.errors{stage}` / `weal.v2.fuel_aborts` counters, the engine-fault
  * ERROR (a Class-A rule pages Discord on ERROR, so only engine faults use it),
  * the history-failure and stale-row WARNs, and the `weal.goodness` /

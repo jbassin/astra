@@ -214,6 +214,32 @@ def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(name)
 
 
+#: The counter ``report_ignored`` adds to, by ``site`` (the same name in ``@astra/observe``).
+IGNORED_ERRORS_METRIC = "astra.errors.ignored"
+_OBSERVE_SCOPE = "astra.observe"
+
+
+def report_ignored(site: str, exc: BaseException) -> None:
+    """Record an exception the code deliberately ignores, instead of a bare ``except: pass``.
+
+    Adds one to ``astra.errors.ignored{site}`` and logs at DEBUG on ``astra.observe`` (the
+    ``astra`` logger exports from INFO, so the record stays local unless DEBUG is enabled).
+    ``site`` is a short, stable name for the handler (``assay.cache-cleanup``), never a value
+    with unbounded cardinality.
+    """
+    # Taken at call time, so the count lands in whichever provider is installed now.
+    metrics.get_meter(_OBSERVE_SCOPE).create_counter(
+        IGNORED_ERRORS_METRIC,
+        description="Errors the code caught and deliberately ignored, by site",
+    ).add(1, {"site": site})
+    logging.getLogger(_OBSERVE_SCOPE).debug(
+        "ignored error at %s: %s",
+        site,
+        exc,
+        extra={"site": site, "exception.type": type(exc).__name__},
+    )
+
+
 def _teardown() -> None:
     global _state  # noqa: PLW0603 -- the process-wide telemetry singleton
     if _state is None:

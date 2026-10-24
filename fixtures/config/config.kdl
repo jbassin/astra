@@ -24,6 +24,7 @@ telemetry {
     otlp-endpoint "http://collector.test:4318"
     rum-endpoint "http://localhost:10353"
     host-otlp-endpoint "http://localhost:10353"
+    shutdown-timeout-ms 8000
 }
 scribe {
     data-path "scribe/data"
@@ -70,15 +71,18 @@ codex {
     data-path "codex/data"
 }
 weal {
+    service-name "astra.weal-bot"
     database-url ""
     feed-ws-url ""
     bind-addr "127.0.0.1:10203"
 }
 weal-overlay {
+    service-name "astra.weal-overlay"
     port 10360
     token ref="sops:fixture_overlay_token"
 }
 orator {
+    service-name "astra.orator-backend"
     guild-id ""
     database-url ""
     port 20002
@@ -126,6 +130,7 @@ ledger {
     port 10370
 }
 portal {
+    service-name "astra.portal"
     port 10372
     public-origin "https://portal.iridi.cc"
     bridge-timeout-ms 15000
@@ -134,6 +139,7 @@ portal {
     oauth-state-path "/data/oauth/state.json"
 }
 portal-headless {
+    service-name "astra.portal-headless"
     port 10373
     foundry-origin "https://btl.iridi.cc"
     world "faerrin"

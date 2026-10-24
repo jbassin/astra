@@ -1,24 +1,21 @@
 /**
  * portal-server entrypoint (spec 0023 S2) — the MCP+WS server for the live FoundryVTT
- * "Faerrin" world. Wires telemetry first (principle #1 / [[telemetry-built-in]]), then
- * config, then binds the HTTP server (`/health`, the Streamable-HTTP `/mcp`, the bridge
+ * "Faerrin" world. Telemetry (traces, metrics, logs, HTTP spans, the SIGTERM flush) is
+ * already installed by `node --import @astra/observe/register`; this reads config, then
+ * binds the HTTP server (`/health`, the Streamable-HTTP `/mcp`, the bridge
  * WS at `/ws`). No Discord-style "optional" degraded mode (contrast orator-backend):
  * both SOPS keys are load-bearing per D6, so a missing key fails startup loudly rather
  * than serving with auth effectively disabled.
  */
-import { getLogger, initTelemetry } from "@astra/observe";
-
-import { SERVICE_NAME } from "./constants";
-
-// Telemetry before anything that emits — traces/metrics/logs → SigNoz.
-const telemetry = initTelemetry(SERVICE_NAME);
-const log = getLogger(SERVICE_NAME);
-
 import { fileURLToPath } from "node:url";
 
 import { loadConfig } from "@astra/config";
+import { exitAfterFlush, logger, onShutdown } from "@astra/observe";
 
+import { SERVICE_NAME } from "./constants";
 import { listen, type PortalServerHandle } from "./server";
+
+const log = logger(SERVICE_NAME);
 
 // The Foundry module's build output (S6/D11) — `apps/portal/module/{module.json,
 // dist/main.js}`, a sibling of `apps/portal/server`. Resolved relative to THIS
@@ -62,15 +59,10 @@ async function main(): Promise<void> {
 }
 
 main().catch((e) => {
-  log.emit({ severityText: "FATAL", body: `astra.portal failed to start: ${e}` });
-  process.exit(1);
+  log.fatal(`astra.portal failed to start: ${e}`);
+  void exitAfterFlush(1);
 });
 
 // On compose SIGTERM: close the bridge socket with the shutdown close code (the module
-// then redials normally instead of guessing), then flush buffered spans/metrics/logs.
-for (const sig of ["SIGINT", "SIGTERM"] as const) {
-  process.once(sig, () => {
-    server?.bridge.close();
-    void telemetry.shutdown().finally(() => process.exit(0));
-  });
-}
+// then redials normally instead of guessing); register then flushes telemetry and exits.
+onShutdown(() => server?.bridge.close());

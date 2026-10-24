@@ -47,9 +47,8 @@ import { constantTimeEquals } from "./oauth";
 const log = getLogger(SERVICE_NAME);
 const tracer = getTracer(SERVICE_NAME);
 
-// Metrics via lazyCounter/lazyHistogram ONLY — a module-scope `getMeter().createCounter()`
-// call is a PERMANENT no-op if it runs before `initTelemetry` (it does, under ESM import
-// hoisting — see [[telemetry-coverage-pass]]); these defer instrument creation to first use.
+// Metrics via lazyCounter/lazyHistogram (the TS convention): they bind on first use, so
+// the module is safe to import with or without installed telemetry.
 const bridgeConnects = lazyCounter(SERVICE_NAME, "astra.portal.bridge.connects", {
   description: "Foundry module bridge WS handshakes that authenticated, by protocol",
 });

@@ -1,16 +1,12 @@
 /**
- * weal-bot entrypoint — astra's first long-running TS/Bun service. Wires telemetry
- * first (principle #1 / [[telemetry-built-in]]), then config + ontology + the Postgres
+ * weal-bot entrypoint — astra's first long-running TS service. Telemetry (traces,
+ * metrics, logs, HTTP/fetch spans and the SIGTERM flush) is already installed by
+ * `node --import @astra/observe/register`; this wires config + ontology + the Postgres
  * store, and starts the Discord gateway + the healthcheck endpoint.
  */
 
-import { getLogger, initTelemetry } from "@astra/observe";
-
-// Telemetry before anything that emits — traces/metrics/logs → SigNoz.
-const telemetry = initTelemetry("astra.weal-bot");
-const log = getLogger("astra.weal-bot");
-
 import { loadConfig } from "@astra/config";
+import { exitAfterFlush, logger } from "@astra/observe";
 import { loadBeing } from "@astra/ontology";
 import { describeResult } from "@astra/pg-migrate";
 
@@ -19,7 +15,8 @@ import { loadValidatedFuncs } from "./engine";
 import { Gateway } from "./gateway";
 import { startHealthServer } from "./health";
 import { Roster } from "./roster";
-import { failStartup } from "./startup";
+
+const log = logger("astra.weal-bot");
 
 async function main(): Promise<void> {
   const cfg = loadConfig();
@@ -31,18 +28,12 @@ async function main(): Promise<void> {
   const store = new PostgresStore(cfg.weal.databaseUrl);
   // Apply pending schema migrations; a refusal (an edited applied migration) stops startup.
   const migrated = await store.migrate();
-  log.emit({
-    severityText: migrated.ahead.length > 0 ? "WARN" : "INFO",
-    body: describeResult(migrated),
-  });
+  (migrated.ahead.length > 0 ? log.warn : log.info)(describeResult(migrated));
   // D32-17 boot: funcs_v2 in id order, each mode:"check"-validated against the
   // prior valid rows; stale rows are WARN-skipped inside loadValidatedFuncs.
   const rows = await store.getAllFuncsV2();
   const funcs = loadValidatedFuncs(rows);
-  log.emit({
-    severityText: "INFO",
-    body: `loaded ${funcs.length}/${rows.length} saved weal v2 sources`,
-  });
+  log.info(`loaded ${funcs.length}/${rows.length} saved weal v2 sources`);
 
   const gateway = new Gateway(
     {
@@ -61,20 +52,10 @@ async function main(): Promise<void> {
   startHealthServer(cfg.weal.bindAddr);
 }
 
+// A startup failure (a migration refusal, a bad config, Discord down at boot): the FATAL
+// record prints to stdout (so `docker logs` says why it crash-loops) and is flushed to
+// SigNoz (Class A paging) before the exit.
 main().catch((e: unknown) => {
-  void failStartup(e, {
-    // oxlint-disable-next-line no-console -- OTel logs aren't mirrored locally; docker logs must say why
-    stderr: (line) => console.error(line),
-    emitFatal: (body) => log.emit({ severityText: "FATAL", body }),
-    shutdownTelemetry: () => telemetry.shutdown(),
-    exit: (code) => process.exit(code),
-  }).catch(() => {});
+  log.fatal(`weal-bot failed to start: ${String(e)}`);
+  void exitAfterFlush(1);
 });
-
-// Flush buffered spans/metrics/logs before the container stops (compose SIGTERM).
-// Installing our own handler overrides Bun's default terminate, so we exit once flushed.
-for (const sig of ["SIGINT", "SIGTERM"] as const) {
-  process.once(sig, () => {
-    void telemetry.shutdown().finally(() => process.exit(0));
-  });
-}

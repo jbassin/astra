@@ -9,7 +9,7 @@
     "dev:server": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --watch server.ts",
     "build": "vite build --configLoader runner",
     "preview": "vite preview",
-    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs server.ts",
+    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import @astra/observe/register server.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
@@ -33,5 +33,8 @@
     "tailwindcss": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
+  },
+  "astra": {
+    "config": "weal-overlay"
   }
 }

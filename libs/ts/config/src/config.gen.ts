@@ -26,11 +26,13 @@ export const Telemetry = z
     otlpEndpoint: z.string(),
     rumEndpoint: z.string(),
     hostOtlpEndpoint: z.string(),
+    shutdownTimeoutMs: z.number().int(),
   })
   .strict();
 
 export const Weal = z
   .object({
+    serviceName: z.string(),
     databaseUrl: z.string(),
     feedWsUrl: z.string(),
     bindAddr: z.string(),
@@ -41,6 +43,7 @@ export const Weal = z
 
 export const WealOverlay = z
   .object({
+    serviceName: z.string(),
     port: z.number().int(),
     token: secret(),
   })
@@ -48,6 +51,7 @@ export const WealOverlay = z
 
 export const Orator = z
   .object({
+    serviceName: z.string(),
     guildId: z.string(),
     databaseUrl: z.string(),
     port: z.number().int(),
@@ -122,6 +126,7 @@ export const Ledger = z
 
 export const Portal = z
   .object({
+    serviceName: z.string(),
     port: z.number().int(),
     publicOrigin: z.string(),
     bridgeTimeoutMs: z.number().int(),
@@ -136,6 +141,7 @@ export const Portal = z
 
 export const PortalHeadless = z
   .object({
+    serviceName: z.string(),
     port: z.number().int(),
     foundryOrigin: z.string(),
     world: z.string(),

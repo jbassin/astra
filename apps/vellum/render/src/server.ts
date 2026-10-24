@@ -8,14 +8,17 @@
  * pkg/vellum scripts/render-server.ts, with config-single-source + telemetry added;
  * off Bun onto srvx (R3, 0022 S9).
  *
- *   node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs src/server.ts   # after `pnpm run build`
+ * Telemetry (traces, metrics, logs, HTTP spans, the SIGTERM flush) is installed by
+ * `node --import @astra/observe/register` before this module loads.
+ *
+ *   pnpm run start   # after `pnpm run build`
  */
 import { stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { loadConfig } from "@astra/config";
-import { getLogger, getTracer, initTelemetry, lazyCounter, lazyHistogram } from "@astra/observe";
+import { getTracer, lazyCounter, lazyHistogram, logger, onShutdown } from "@astra/observe";
 import { serveFile } from "@astra/site-kit";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { serve } from "srvx";
@@ -28,22 +31,10 @@ const { serviceName, port: PORT } = cfg.vellumRender;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
 const DIST = fileURLToPath(new URL("../dist", import.meta.url));
 
-// Telemetry from day one (principle #1) — OTLP endpoint from config.kdl. Guarded
-// so a telemetry misconfig never takes the service down.
-let telemetry: { shutdown: () => Promise<void> } | null = null;
-try {
-  telemetry = initTelemetry(serviceName);
-} catch (err) {
-  // oxlint-disable-next-line no-console -- startup line on stdout
-  console.warn(
-    `[${serviceName}] telemetry init skipped: ${err instanceof Error ? err.message : err}`,
-  );
-}
 const tracer = getTracer(serviceName);
-const log = getLogger(serviceName);
+const log = logger(serviceName);
 // One render = one PNG; outcome distinguishes ok / cap-rejected / rate-limited / error,
-// and the histogram makes render latency alertable without parsing spans. Lazy-bound so the
-// instruments connect to the real meter even if grabbed before initTelemetry.
+// and the histogram makes render latency alertable without parsing spans.
 const renderCounter = lazyCounter(serviceName, "astra.vellum.render.requests", {
   description: "PNG render requests by outcome",
 });
@@ -106,8 +97,7 @@ async function serveStatic(req: Request, pathname: string): Promise<Response> {
 }
 
 const service = new RenderService(BASE_URL);
-// oxlint-disable-next-line no-console -- startup line on stdout
-console.log(`[${serviceName}] warming Chromium…`);
+log.info("warming Chromium…");
 await service.start();
 
 const server = serve({
@@ -179,10 +169,8 @@ const server = serve({
               return new Response(err.message, { status: err.status, headers: cors });
             }
             span.setStatus({ code: SpanStatusCode.ERROR, message: String(err) });
-            log.emit({
-              severityText: "ERROR",
-              body: `render failed: ${err instanceof Error ? err.message : String(err)}`,
-              attributes: { "vellum.mode": mode },
+            log.error(`render failed: ${err instanceof Error ? err.message : String(err)}`, {
+              "vellum.mode": mode,
             });
             return new Response("render failed", { status: 500, headers: cors });
           } finally {
@@ -200,18 +188,8 @@ const server = serve({
 // srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
 // listening completes (async on the Node runtime), so log from `.ready()`.
 void server.ready().then(() => {
-  // oxlint-disable-next-line no-console -- startup line on stdout
-  console.log(`[${serviceName}] render service on ${BASE_URL} (ready=${service.isReady()})`);
+  log.info(`render service on ${BASE_URL} (ready=${service.isReady()})`);
 });
 
-for (const sig of ["SIGINT", "SIGTERM"] as const) {
-  process.on(sig, () => {
-    void service
-      .close()
-      .then(() => telemetry?.shutdown())
-      .finally(() => {
-        void server.close(true);
-        process.exit(0);
-      });
-  });
-}
+// On SIGTERM: close Chromium and the server, then register flushes telemetry and exits.
+onShutdown(() => Promise.all([service.close(), server.close(true)]));

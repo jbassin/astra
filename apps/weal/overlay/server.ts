@@ -1,30 +1,26 @@
 import { resolve } from "node:path";
 
 import { loadConfig } from "@astra/config";
-import { getLogger, initTelemetry } from "@astra/observe";
+import { exitAfterFlush, logger, onShutdown } from "@astra/observe";
 
 import { startServer } from "./src/server";
 import { requireIngestToken } from "./src/startup";
 
-// Telemetry first (server-side traces/metrics/logs → SigNoz).
-const telemetry = initTelemetry("astra.weal-overlay");
-
-// Entry: serve the built overlay + the v1 ingest + the SSE feed. Config (port, the
-// shared ingest token, the browser RUM endpoint) comes from config.kdl via @astra/config.
+// Entry: serve the built overlay + the v1 ingest + the SSE feed. Telemetry (traces,
+// metrics, logs, HTTP spans, the SIGTERM flush) is already installed by
+// `node --import @astra/observe/register`. Config (port, the shared ingest token, the
+// browser RUM endpoint) comes from config.kdl via @astra/config.
 const cfg = loadConfig();
+const log = logger(cfg.wealOverlay.serviceName);
 const port = cfg.wealOverlay.port;
 // Fail closed (0037 SEC-12): no token = refuse to start, never an open public ingest.
-let token: string;
+let token = "";
 try {
   token = requireIngestToken(cfg.wealOverlay.token);
 } catch (err) {
-  const body = `weal-overlay failed to start: ${err instanceof Error ? err.message : err}`;
-  // oxlint-disable-next-line no-console -- startup and fatal lines on stdout
-  console.error(body);
-  getLogger("astra.weal-overlay").emit({ severityText: "FATAL", body });
-  // Flush first, so the refusal reaches SigNoz (and Class A paging).
-  await telemetry.shutdown().catch(() => {});
-  process.exit(1);
+  // FATAL is mirrored to stdout; the flush gets it to SigNoz (and Class A paging).
+  log.fatal(`weal-overlay failed to start: ${err instanceof Error ? err.message : err}`);
+  await exitAfterFlush(1); // never returns
 }
 const rumEndpoint = cfg.telemetry.rumEndpoint;
 // `import.meta.dir` is a Bun-only extension — `import.meta.dirname` is the
@@ -34,18 +30,5 @@ const distDir = resolve(import.meta.dirname, "dist");
 const { server } = startServer({ port, token, distDir, rumEndpoint });
 // srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
 // listening completes (async on the Node runtime), so log from `.ready()`.
-void server.ready().then((s) => {
-  // oxlint-disable-next-line no-console -- startup and fatal lines on stdout
-  console.log(`weal-overlay listening on ${s.url}`);
-});
-
-// Flush buffered spans/metrics/logs before the container stops (compose SIGTERM).
-// Installing our own handler overrides Bun's default terminate, so we exit once flushed.
-for (const sig of ["SIGINT", "SIGTERM"] as const) {
-  process.once(sig, () => {
-    void telemetry.shutdown().finally(() => {
-      void server.close(true);
-      process.exit(0);
-    });
-  });
-}
+void server.ready().then((s) => log.info(`weal-overlay listening on ${s.url}`));
+onShutdown(() => server.close(true));

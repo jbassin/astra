@@ -10,7 +10,7 @@
  */
 import { randomUUID } from "node:crypto";
 
-import { lazyCounter } from "@astra/observe";
+import { lazyCounter, reportIgnored } from "@astra/observe";
 
 import {
   type Effect,
@@ -31,9 +31,8 @@ const HEARTBEAT_MS = 15_000;
 const DEFAULT_GC_INTERVAL_MS = 5 * 60_000;
 const DEFAULT_ROOM_TTL_MS = 2 * 60 * 60_000;
 
-// D31-11 — lazyCounter defers real-instrument creation to first add(), so these
-// (unlike a raw getMeter().createCounter()) are safe at module scope even though
-// initTelemetry runs later in the entry (see libs/ts/observe's lazyCounter doc).
+// D31-11 — lazyCounter defers real-instrument creation to first add(), so these are
+// safe at module scope wherever the module is imported (see libs/ts/observe's doc).
 const gamesStartedCounter = lazyCounter("astra.menhir", "menhir.games.started", {
   description: "Games created via POST /api/game",
 });
@@ -377,8 +376,9 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
               closed = true;
               try {
                 controller.close();
-              } catch {
-                // already closed by the client side
+              } catch (err) {
+                // Already closed by the client side.
+                reportIgnored("menhir.sse-close", err);
               }
             },
           };

@@ -31,7 +31,13 @@ from pydantic import BaseModel
 #: Fields read only through a computed name, which the grep cannot see:
 #: ``(namespace, field)`` in Python spelling, mapped to why the field is still live.
 #: An entry whose field is gone, or that the grep now finds a reader for, fails the test.
-ALLOWLIST: dict[tuple[str, str], str] = {}
+_REGISTER = (
+    "@astra/observe/register (libs/ts/observe/src/node.ts serviceNameFor) reads every Node "
+    "service's service-name from the block its package.json `astra.config` names"
+)
+ALLOWLIST: dict[tuple[str, str], str] = {
+    ("portal_headless", "service_name"): _REGISTER,
+}
 
 #: Tracked paths that are not readers: the config libraries themselves (the schemas, the
 #: KDL file and its `python -m astra_ontology_config` CLI), tests, fixtures, prose and the

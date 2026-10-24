@@ -187,3 +187,22 @@ def test_logs_handler_is_detached_after_teardown() -> None:
     with capture():
         assert any(isinstance(h, LoggingHandler) for h in astra_log.handlers)
     assert not any(isinstance(h, LoggingHandler) for h in astra_log.handlers)
+
+
+def test_report_ignored_counts_by_site(telemetry_capture: Captured) -> None:
+    astra_observe.report_ignored("test.cleanup", OSError("already closed"))
+    astra_observe.report_ignored("test.cleanup", ValueError("bad"))
+    astra_observe.report_ignored("test.other", ValueError("bad"))
+    metric = astra_observe.IGNORED_ERRORS_METRIC
+    assert telemetry_capture.metric_sum(metric, site="test.cleanup") == 2
+    assert telemetry_capture.metric_sum(metric, site="test.other") == 1
+    # DEBUG stays local: the `astra` namespace exports from INFO.
+    assert telemetry_capture.logs() == []
+
+
+def test_report_ignored_logs_at_debug(caplog: pytest.LogCaptureFixture) -> None:
+    with caplog.at_level(logging.DEBUG, logger="astra.observe"):
+        astra_observe.report_ignored("test.cleanup", OSError("already closed"))
+    (record,) = caplog.records
+    assert record.levelno == logging.DEBUG
+    assert record.getMessage() == "ignored error at test.cleanup: already closed"

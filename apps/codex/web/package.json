@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite dev --configLoader runner",
     "build": "vite build --configLoader runner",
-    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs server.ts",
+    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import @astra/observe/register server.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "fetch:aon": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/fetch-aon.ts",
@@ -46,5 +46,8 @@
     "playwright": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
+  },
+  "astra": {
+    "config": "codex"
   }
 }

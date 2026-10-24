@@ -584,7 +584,7 @@ describe("token-material log hygiene (spec 0025 Scope-6 hard rule)", () => {
     expect(JSON.stringify(replay.body)).not.toContain(refreshToken);
   });
   // Note: as with mcp.test.ts, `@astra/observe`'s getLogger resolves to a no-op
-  // OTel logger unless initTelemetry has installed a real LoggerProvider (never
+  // OTel logger unless a real LoggerProvider is installed (never
   // called in these Foundry-free unit tests), so the emitted audit-log BODIES
   // aren't cheaply capturable here. The `oauth.ts` audit log-lines are written by
   // construction to carry only client_id + a fixed literal (grepped by inspection,

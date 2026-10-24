@@ -94,7 +94,7 @@ export interface HandlerDeps {
   engineHooks?: EngineHooks;
 }
 
-// Module-scope instruments (no-ops until initTelemetry runs in index.ts; safe in the dry
+// Module-scope instruments (live under @astra/observe/register; no-ops in the dry
 // unit tests). One span per non-empty message wraps the whole roll/save/reseed pipeline.
 const tracer = getTracer("astra.weal-bot");
 const log = getLogger("astra.weal-bot");

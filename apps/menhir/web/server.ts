@@ -1,19 +1,17 @@
 import { resolve } from "node:path";
 
 import { loadConfig } from "@astra/config";
-import { initTelemetry } from "@astra/observe";
+import { logger, onShutdown } from "@astra/observe";
 
 import { loadQuizzes } from "./src/quizzes";
 import { startServer } from "./src/server";
 
-// Entry: serve the built SPA + the game API + the SSE feed. Config (service name, port,
-// public origin, results path) comes from config.kdl via @astra/config — no ad-hoc env
-// reads.
+// Entry: serve the built SPA + the game API + the SSE feed. Telemetry (traces, metrics,
+// logs, HTTP spans, the SIGTERM flush) is already installed by
+// `node --import @astra/observe/register`. Config (service name, port, public origin,
+// results path) comes from config.kdl via @astra/config — no ad-hoc env reads.
 const cfg = loadConfig();
-
-// Telemetry next, before anything else runs (server-side traces/metrics/logs → SigNoz) —
-// CLAUDE.md's standing principle, mirroring weal-overlay/orator-backend's entry shape.
-const telemetry = initTelemetry(cfg.menhir.serviceName);
+const log = logger(cfg.menhir.serviceName);
 
 const port = cfg.menhir.port;
 const publicOrigin = cfg.menhir.publicOrigin;
@@ -25,8 +23,7 @@ const distDir = resolve(import.meta.dirname, "dist");
 const quizzesDir = resolve(import.meta.dirname, "quizzes");
 
 const { quizzes, summary } = loadQuizzes(quizzesDir);
-// oxlint-disable-next-line no-console -- startup line on stdout
-console.log(summary);
+log.info(summary);
 
 const { server } = startServer({
   port,
@@ -35,17 +32,5 @@ const { server } = startServer({
 });
 // srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
 // listening completes (async on the Node runtime), so log from `.ready()`.
-void server.ready().then((s) => {
-  // oxlint-disable-next-line no-console -- startup line on stdout
-  console.log(`menhir listening on ${s.url}`);
-});
-
-// Flush buffered spans/metrics/logs before the container stops (compose SIGTERM).
-for (const sig of ["SIGINT", "SIGTERM"] as const) {
-  process.once(sig, () => {
-    void telemetry.shutdown().finally(() => {
-      void server.close(true);
-      process.exit(0);
-    });
-  });
-}
+void server.ready().then((s) => log.info(`menhir listening on ${s.url}`));
+onShutdown(() => server.close(true));

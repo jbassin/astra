@@ -11,7 +11,7 @@ import { type Server, serve } from "srvx";
 import { RollHub } from "./hub";
 import { parseRollEvent } from "./schema";
 
-// Module-scope instruments (no-ops until initTelemetry runs in the entrypoint; safe in
+// Module-scope instruments (live under @astra/observe/register, no-ops in
 // unit tests). The overlay's only write path is ingest — count it by outcome + trace it.
 const log = getLogger("astra.weal-overlay");
 const tracer = getTracer("astra.weal-overlay");
