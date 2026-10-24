@@ -3,9 +3,9 @@
 // runner never re-bundles dist/server/server.js. Prints one result line and
 // exits non-zero on any failure.
 //
-// D29-23/D29-31: CI has zero `data/` by construction, so this always exercises
-// the fixture-fallback corpus root (`fixtures/entities/`) — `spell/heal` exists in
-// BOTH the fixture and the real corpus, so this same smoke also works unmodified
+// D29-23/D29-31: the test inherits the vitest setup's `CODEX_CORPUS_ROOT`, so this
+// exercises the fixture corpus (`fixtures/entities/`) — `spell/heal` exists in BOTH
+// the fixture and the real corpus, so this same smoke also works unmodified
 // against a real dev/prod deploy.
 import path from "node:path";
 import { fileURLToPath } from "node:url";

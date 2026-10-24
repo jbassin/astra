@@ -1,10 +1,16 @@
-import { describe, expect, it } from "vitest";
+import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { CORPUS_SCHEMA_VERSION } from "../schema/corpusVersion";
 import {
   CorpusNotFoundError,
+  CorpusUnservableError,
   createCorpusReader,
   fixtureCorpusRoot,
-  resolveCorpusRoot,
+  selectServedCorpus,
 } from "./corpusFs";
 
 // D29-23: `createCorpusReader(rootDir)` is a pure factory, directly unit-testable
@@ -178,13 +184,104 @@ describe("createCorpusReader.sourcesIndex() failure modes (D29-23 idiom)", () =>
   });
 });
 
-describe("resolveCorpusRoot (D29-23 fail-soft)", () => {
-  it("resolves to a corpus root that actually has a manifest.json (real or fixture)", () => {
-    const root = resolveCorpusRoot();
-    // Either the real corpus (if `apps/codex/web/data/corpus` happens to be present in
-    // this environment) or the committed fixture — both are valid D29-23 outcomes;
-    // the one invariant is that SOME readable corpus root came back.
-    const reader = createCorpusReader(root);
-    expect(reader.categories().length).toBeGreaterThan(0);
+// The corpus-root rules: an explicit root is used as given, a built server (dev: false)
+// fails closed, and only the dev server falls back to the fixture.
+describe("selectServedCorpus", () => {
+  let dataPath: string;
+
+  beforeEach(() => {
+    dataPath = mkdtempSync(join(tmpdir(), "codex-corpus-root-"));
+  });
+  afterEach(() => {
+    rmSync(dataPath, { recursive: true, force: true });
+    vi.restoreAllMocks();
+  });
+
+  /** Writes `<dataPath>/corpus/manifest.json` with a real-corpus header unless overridden. */
+  function writeConfigManifest(header: Record<string, unknown> = {}): string {
+    const root = join(dataPath, "corpus");
+    mkdirSync(root, { recursive: true });
+    const manifest = {
+      schemaVersion: CORPUS_SCHEMA_VERSION,
+      foundry: { tag: "pf2e-8.3.0" },
+      totalEntityCount: 44980,
+      ...header,
+    };
+    writeFileSync(join(root, "manifest.json"), JSON.stringify(manifest));
+    return root;
+  }
+
+  it("uses an explicit root as given, even the fixture, in either mode", () => {
+    for (const dev of [false, true]) {
+      const corpus = selectServedCorpus({ explicitRoot: fixtureCorpusRoot(), dataPath, dev });
+      expect(corpus).toEqual({
+        root: fixtureCorpusRoot(),
+        source: "env",
+        schemaVersion: CORPUS_SCHEMA_VERSION,
+        totalEntityCount: 235,
+        fixture: true,
+      });
+    }
+  });
+
+  it("refuses an explicit root with no manifest", () => {
+    expect(() =>
+      selectServedCorpus({ explicitRoot: join(dataPath, "nope"), dataPath, dev: true }),
+    ).toThrow(CorpusUnservableError);
+  });
+
+  it("production: serves a real corpus at the config path", () => {
+    const root = writeConfigManifest();
+    const corpus = selectServedCorpus({ explicitRoot: undefined, dataPath, dev: false });
+    expect(corpus).toMatchObject({ root, source: "config", totalEntityCount: 44980 });
+    expect(corpus.fixture).toBe(false);
+  });
+
+  it("production: refuses a missing corpus instead of falling back to the fixture", () => {
+    expect(() => selectServedCorpus({ explicitRoot: undefined, dataPath, dev: false })).toThrow(
+      /no corpus at .* never serves the fixture/,
+    );
+  });
+
+  it("production: refuses the fixture copied to the config path", () => {
+    cpSync(
+      join(fixtureCorpusRoot(), "manifest.json"),
+      join(writeConfigManifest(), "manifest.json"),
+    );
+    expect(() => selectServedCorpus({ explicitRoot: undefined, dataPath, dev: false })).toThrow(
+      /is the fixture corpus/,
+    );
+  });
+
+  it("refuses a corpus of another schema generation, in either mode", () => {
+    writeConfigManifest({ schemaVersion: CORPUS_SCHEMA_VERSION - 1 });
+    for (const dev of [false, true]) {
+      expect(() => selectServedCorpus({ explicitRoot: undefined, dataPath, dev })).toThrow(
+        /schemaVersion/,
+      );
+    }
+    expect(() =>
+      selectServedCorpus({ explicitRoot: join(dataPath, "corpus"), dataPath, dev: false }),
+    ).toThrow(CorpusUnservableError);
+  });
+
+  it("dev: falls back to the fixture, with a warning, when the config corpus is missing", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const corpus = selectServedCorpus({ explicitRoot: undefined, dataPath, dev: true });
+    expect(corpus).toMatchObject({
+      root: fixtureCorpusRoot(),
+      source: "dev-fixture-fallback",
+      fixture: true,
+    });
+    expect(warn).toHaveBeenCalledOnce();
+    expect(createCorpusReader(corpus.root).categories()).toContain("spell");
+  });
+
+  it("dev: serves the real corpus at the config path when it exists", () => {
+    const root = writeConfigManifest();
+    expect(selectServedCorpus({ explicitRoot: undefined, dataPath, dev: true })).toMatchObject({
+      root,
+      source: "config",
+    });
   });
 });

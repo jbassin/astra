@@ -10,8 +10,7 @@
  * hermetic `test` lane) — reusing its server-boot idiom verbatim.
  *
  * Hermetic + fixture-only: runs against the committed FIXTURE corpus
- * (`resolveCorpusRoot()`'s D29-23 fallback — CI/a fresh clone has no
- * `apps/codex/web/data/`). The fixture's `ritual` category was grown (additively
+ * (`CODEX_CORPUS_ROOT`, which this script defaults to `fixtures/entities/`). The fixture's `ritual` category was grown (additively
  * — no other fixture file touched, no existing entity file modified) from 6
  * to 96 rows (`fixtures/entities/ritual/virt-{001..090}.json` + the matching
  * `_index.json`/`manifest.json` entries) SPECIFICALLY so this guard has a
@@ -28,9 +27,9 @@
  * specific slug): `TOTAL_ROWS` below is read live off the rendered table's
  * own `aria-rowcount` (D29-83/R5), and the deep-link target is discovered by
  * j-scanning to ~85% depth and reading back whichever slug landed there —
- * the same mechanism that lets this script ALSO run correctly against a real
- * `codex.data-path` mount (a dev box with the genuine corpus, where `ritual`
- * has 201 rows, not 96) without a single assertion changing shape. Fails
+ * the same mechanism that lets this script ALSO run correctly against the real
+ * corpus when `CODEX_CORPUS_ROOT` names it (where `ritual` has 201 rows, not 96)
+ * without a single assertion changing shape. Fails
  * loudly up front if `TOTAL_ROWS <= 60` — that would mean the fixture
  * growth this script depends on is missing/reverted, not that these cases
  * don't apply.
@@ -55,6 +54,9 @@ const BASE = `http://127.0.0.1:${PORT}`;
 if (!existsSync(SERVER_BUNDLE)) {
   throw new Error(`${SERVER_BUNDLE} not found — run \`pnpm run build\` first`);
 }
+// Read the committed fixture corpus unless the caller pins another root. The built
+// bundle checks this root when it loads, below.
+process.env.CODEX_CORPUS_ROOT ??= `${ROOT}fixtures/entities`;
 
 // Well above `NARROW_CONTAINER_WIDTH_PX` (600) AND `SPLIT_VIEW_MEDIA`
 // (56.0625rem/897px, `BrowseListing.tsx`) — every case below needs desktop

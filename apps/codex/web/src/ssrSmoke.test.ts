@@ -1,14 +1,24 @@
-import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, statSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 
 import { findRepoRoot } from "@astra/config";
 import { nodeTsResolveHook } from "@astra/site-kit/nodeTsResolveHook";
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { allNavCategories } from "@/domain/nav/navData";
+import { CORPUS_SCHEMA_VERSION } from "@/schema/corpusVersion";
 import { resolveClassRail } from "@/server/classPageData";
-import { createCorpusReader, fixtureCorpusRoot, resolveCorpusRoot } from "@/server/corpusFs";
+import { createCorpusReader, fixtureCorpusRoot } from "@/server/corpusFs";
 
 /**
  * SSR render smoke + D29-29 tier 3 route tests, in ONE file sharing ONE
@@ -74,7 +84,7 @@ beforeAll(async () => {
 }, 180_000);
 
 describe("SSR smoke", () => {
-  it("SSRs an entity page (spell/heal, off the fixture-fallback corpus in CI)", () => {
+  it("SSRs an entity page (spell/heal, off the pinned fixture corpus)", () => {
     const out = execFileSync("node", ["--import", NODE_TS_RESOLVE_HOOK, RUNNER], {
       cwd: APP_ROOT,
       encoding: "utf8",
@@ -83,6 +93,48 @@ describe("SSR smoke", () => {
     expect(out).toContain("marker=true");
     expect(out).toContain("noindex=true");
     expect(out).toContain("noRenderError=true");
+  });
+
+  // The built bundle is production code: loading it checks the corpus, and a bad one
+  // stops the process. (The config-path rules, including the fixture refusal, are unit
+  // tests in `corpusFs.test.ts`; config.kdl's data-path can't be redirected from here.)
+  describe("refuses to start on a corpus it can't serve", () => {
+    let scratch: string;
+    beforeAll(() => {
+      scratch = mkdtempSync(path.join(tmpdir(), "codex-bad-corpus-"));
+      mkdirSync(path.join(scratch, "stale"));
+      writeFileSync(
+        path.join(scratch, "stale", "manifest.json"),
+        JSON.stringify({ schemaVersion: CORPUS_SCHEMA_VERSION + 1, foundry: { tag: "pf2e-9" } }),
+      );
+    });
+    afterAll(() => rmSync(scratch, { recursive: true, force: true }));
+
+    /** Imports the built bundle in a fresh process with `CODEX_CORPUS_ROOT=root`. */
+    function loadBundle(root: string): { status: number | null; stderr: string } {
+      const res = spawnSync(
+        "node",
+        ["--input-type=module", "-e", `await import(${JSON.stringify(SERVER_BUNDLE)});`],
+        { cwd: APP_ROOT, encoding: "utf8", env: { ...process.env, CODEX_CORPUS_ROOT: root } },
+      );
+      return { status: res.status, stderr: res.stderr };
+    }
+
+    it("a missing corpus", () => {
+      const { status, stderr } = loadBundle(path.join(scratch, "missing"));
+      expect(status).not.toBe(0);
+      expect(stderr).toContain("CorpusUnservableError");
+    });
+
+    it("a corpus of another schema generation", () => {
+      const { status, stderr } = loadBundle(path.join(scratch, "stale"));
+      expect(status).not.toBe(0);
+      expect(stderr).toMatch(/CorpusUnservableError.*schemaVersion/);
+    });
+
+    it("loads with the pinned fixture corpus", () => {
+      expect(loadBundle(fixtureCorpusRoot()).status).toBe(0);
+    });
   });
 });
 
@@ -211,23 +263,10 @@ describe("$category/$slug route (D29-22/-23/-25/-29 tier 3)", () => {
 });
 
 /**
- * D29-37 — the faceted `/{category}` browse route, over the same
- * fixture-fallback corpus. Small, hand-countable fixture rows (spell: 4 rows,
- * 2 superseded; feat: 1 row) let every fixture entity be checked by NAME/
- * PRESENCE rather than a total-row count — this environment happens to have
- * a real corpus checked out too (`data/corpus/`, `corpusFs.ts`'s own
- * "real root when present" precedence), and the fixture rows are themselves
- * a verbatim sample OF that real corpus (`feat/camouflage-coat`,
- * `creature/grick`, `spell/magic-missile`, ... all cross-checked identical
- * in both), so a presence/absence assertion holds true whichever root is
- * actually being served — CI (fixture-only) and this environment (real
- * corpus, real data present) alike. The REAL-corpus spot-set proper (feat
- * actionCost=reaction, creature family+level+humanized size, equipment
- * per-10 price, spell tradition+rank, hazard-reuses-creature-panel, a
- * facet-less long-tail category, real click-to-settled-DOM latency) is
- * proven separately against the live 44,808-entity corpus via a headless
- * browser (see the P3 S3 session report) — this suite is CI's hermetic,
- * deterministic, corpus-size-agnostic gate.
+ * D29-37 — the faceted `/{category}` browse route, over the pinned fixture
+ * corpus. Small, hand-countable fixture rows (spell: 4 rows, 2 superseded; feat:
+ * 1 row) let every fixture entity be checked by NAME/PRESENCE. The real-corpus
+ * spot checks are the opt-in suite (`just codex-real-corpus`, `realCorpus.test.ts`).
  */
 /** Whether `id` was actually SSR-RENDERED as a visible listing row (its
  * `<a href="/{id}" class="codex-listing-name">` anchor is present) —
@@ -488,21 +527,12 @@ describe("/class + /class/{slug} route precedence + shell (D29-117/-118 tier 3)"
     expect(html).toContain("codex-class-rail");
   });
 
-  // The next two cases are written to hold whether this process resolved
-  // the FIXTURE corpus (CI, a fresh clone) or a REAL corpus checked out at
-  // `apps/codex/web/data` (this dev environment) — same cross-environment
-  // discipline as the `$category/`/`/rules` suites above (their own
-  // comments): the fixture has exactly 3 visible/2 hidden rail rows, the
-  // real corpus has 27/20 (D29-113's own pin), and the real corpus's
-  // `class/investigator` is ITSELF a real, current, stats-bearing doc
-  // (unlike the fixture, which only carries `investigator@legacy`) — so a
-  // hardcoded "Investigator must be absent by default" assertion is
-  // fixture-only, not a structural truth. `resolveClassRail` over
-  // WHICHEVER root `resolveCorpusRoot()` actually resolved is the
-  // corpus-agnostic oracle both cases check the SSR HTML against.
+  // The vitest setup pins the fixture corpus, which has exactly 3 visible and 2 hidden
+  // rail rows; `resolveClassRail` over that same root is the oracle both cases check.
   it("the rail shows every visible (non-superseded, stats-bearing) class row by default, current slug highlighted, hidden rows absent", async () => {
-    const reader = createCorpusReader(resolveCorpusRoot());
-    const rail = resolveClassRail(reader);
+    const rail = resolveClassRail(createCorpusReader(fixtureCorpusRoot()));
+    expect(rail.visible).toHaveLength(3);
+    expect(rail.hidden).toHaveLength(2);
     const { html } = await get("/class/fighter");
     for (const row of rail.visible) {
       expect(html, `rail is missing visible row ${row.id}`).toContain(
@@ -518,9 +548,8 @@ describe("/class + /class/{slug} route precedence + shell (D29-117/-118 tier 3)"
   });
 
   it("?superseded=1 reveals every hidden (superseded) rail row, edition-marked", async () => {
-    const reader = createCorpusReader(resolveCorpusRoot());
-    const rail = resolveClassRail(reader);
-    expect(rail.hidden.length).toBeGreaterThan(0); // both corpora carry at least the `@legacy` rows
+    const rail = resolveClassRail(createCorpusReader(fixtureCorpusRoot()));
+    expect(rail.hidden).toHaveLength(2);
     // `getFollow`, not `get` — same `?superseded=1` canonicalization redirect
     // the `/rules` suite's own toggle test already follows (raw `"1"` ->
     // validated `true` is itself a canonicalization, not just the `legacy=`

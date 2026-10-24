@@ -208,8 +208,12 @@ Details: [`apps/codex/web/README.md`](../apps/codex/web/README.md#operations).
 2. Transform only (ingest code or the assay store changed): `pnpm --filter @astra/codex transform`,
    then `just codex-search-index` if search rows changed, then `just deploy --restart codex`.
 3. When render code and the corpus both change, `just deploy codex` first, then transform.
-4. Verify against the real corpus (a listing count in the thousands), and grep the container log for
-   `falling back to the fixture corpus`: a mis-mounted deploy still answers 200 everywhere.
+4. Verify: the container log's startup line reads `serving the corpus at
+   "/ruby/data/astra-state/codex/data/corpus" (source config, <n> entities, ...)`, and a real entity
+   page (`/spell/fireball`) returns 200. The server fails closed: with the corpus missing, of another
+   `schemaVersion`, or the fixture, it logs a `CorpusUnservableError` and exits, so compose restarts
+   it in a loop. Fix the mount or run `just codex-refresh`; `just codex-real-corpus` checks the
+   corpus on the host the same way.
 
 ## portal module update and headless GM
 
