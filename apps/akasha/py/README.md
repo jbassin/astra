@@ -18,7 +18,7 @@ heartwood recipes run it on the host.
    registry:
 
    ```sh
-   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+   node --import tsx \
      libs/ts/vellum-lang/scripts/validate-corpus.ts --dir /ruby/data/astra-state/astra-data/akasha/content
    uv run akasha-snapshot
    uv run astra-ontology-entity-seed

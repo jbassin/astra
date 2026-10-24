@@ -7,7 +7,7 @@
     "./fixture": "./src/fixtureCorpus.ts"
   },
   "scripts": {
-    "cli": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs src/cli.ts",
+    "cli": "node --import tsx src/cli.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
@@ -20,6 +20,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "tsx": "catalog:",
     "vitest": "catalog:"
   }
 }

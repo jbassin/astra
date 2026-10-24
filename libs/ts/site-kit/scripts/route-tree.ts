@@ -1,6 +1,6 @@
 // The one route-tree generator for every TanStack Start frontend (`just routes-gen`).
 //
-//   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+//   node --import tsx \
 //     libs/ts/site-kit/scripts/route-tree.ts [--check] [<domain>/<role> ...]
 //
 // With no apps it covers every apps/<domain>/<role> whose package.json depends on

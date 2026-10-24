@@ -5,7 +5,7 @@ import path from "node:path";
 import { CORPUS_SCHEMA_VERSION } from "@astra/codex-corpus";
 import { type CorpusReader, createCorpusReader } from "@astra/codex-corpus/reader";
 import { loadConfig } from "@astra/config";
-import { nodeTsResolveHook } from "@astra/site-kit/nodeTsResolveHook";
+import { tsxLoader } from "@astra/site-kit/tsxLoader";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { resolveClassRail } from "@/server/classPageData";
@@ -61,7 +61,7 @@ describe.runIf(process.env.CODEX_REAL_CORPUS === "1")("real corpus (opt-in)", ()
 
   it("the built server renders an entity page from it", () => {
     expect(existsSync(SERVER_BUNDLE), "run `pnpm run build` first").toBe(true);
-    const out = execFileSync("node", ["--import", nodeTsResolveHook, RUNNER], {
+    const out = execFileSync("node", ["--import", tsxLoader(), RUNNER], {
       cwd: APP_ROOT,
       encoding: "utf8",
       env: { ...process.env, CODEX_CORPUS_ROOT: corpus.root },

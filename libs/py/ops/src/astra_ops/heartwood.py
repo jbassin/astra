@@ -87,7 +87,7 @@ def validate_argv(node: str, content: str) -> list[str]:
     return [
         node,
         "--import",
-        "./libs/ts/site-kit/src/nodeTsResolve.mjs",
+        "./libs/ts/vellum-lang/node_modules/tsx/dist/loader.mjs",
         "libs/ts/vellum-lang/scripts/validate-corpus.ts",
         "--dir",
         content,

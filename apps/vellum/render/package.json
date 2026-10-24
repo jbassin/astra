@@ -10,8 +10,8 @@
     "start": "node --import ./dist-server/register.mjs dist-server/main.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "visual-regression": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts",
-    "visual-regression:update": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts --update"
+    "visual-regression": "node --import tsx scripts/visual-regression.ts",
+    "visual-regression:update": "node --import tsx scripts/visual-regression.ts --update"
   },
   "dependencies": {
     "@astra/config": "workspace:*",

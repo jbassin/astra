@@ -9,9 +9,9 @@
     "start": "node --import ./dist-server/register.mjs dist-server/main.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "regen-goldens": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/regen-goldens.ts",
-    "row-height-drift-guard": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts",
-    "virtualization-interaction-guard": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts"
+    "regen-goldens": "node --import tsx scripts/regen-goldens.ts",
+    "row-height-drift-guard": "node --import tsx scripts/rowHeightDriftGuard.ts",
+    "virtualization-interaction-guard": "node --import tsx scripts/virtualizationInteractionGuard.ts"
   },
   "dependencies": {
     "@astra/codex-corpus": "workspace:*",

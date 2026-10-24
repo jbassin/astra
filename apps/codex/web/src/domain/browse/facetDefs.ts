@@ -16,10 +16,9 @@
 
 // P10 (D29-95): a relative import, not the `@/*` alias — this module is now
 // reachable from `entityPage.tsx` (the header size chip's `SIZE_LABELS`
-// reuse), which sits in `regen-goldens.ts`'s import graph; the plain
-// `nodeTsResolve.mjs` loader that script runs under can't follow `@/*`
-// aliases (a standing gotcha — see the codex-0029 memory), so this stays
-// relative rather than reintroducing that failure mode.
+// reuse), which sits in `regen-goldens.ts`'s import graph; that script runs under
+// tsx, which follows `@/*` only through the tsconfig of its working directory, so
+// this stays relative and works from any directory.
 import {
   FACET_KEYS,
   SPILLOVER_FACET_KEYS,

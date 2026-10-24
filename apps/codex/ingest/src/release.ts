@@ -19,11 +19,12 @@
 
 import { spawnSync } from "node:child_process";
 import { rmSync } from "node:fs";
+import { createRequire } from "node:module";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
 
 import { releaseCorpusDir, releasesDirOf } from "@astra/codex-corpus/releases";
-import { findRepoRoot, loadConfig } from "@astra/config";
+import { loadConfig } from "@astra/config";
 
 import {
   DEFAULT_KEEP,
@@ -40,19 +41,13 @@ import {
 } from "./releaseStore";
 
 const CLI = join(import.meta.dirname, "cli.ts");
-const NODE_TS_RESOLVE = join(
-  findRepoRoot(import.meta.dirname),
-  "libs",
-  "ts",
-  "site-kit",
-  "src",
-  "nodeTsResolve.mjs",
-);
+// The CLI is TypeScript, so each command runs under tsx, resolved from this package.
+const TSX_LOADER = createRequire(import.meta.url).resolve("tsx");
 
 /** Runs one CLI command in its own process (the indexer alone peaks at about 3.8 GB RSS,
  * so the two steps don't share a heap). */
 function runCommand(command: string, args: string[]): void {
-  const result = spawnSync(process.execPath, ["--import", NODE_TS_RESOLVE, CLI, command, ...args], {
+  const result = spawnSync(process.execPath, ["--import", TSX_LOADER, CLI, command, ...args], {
     stdio: "inherit",
   });
   if (result.status !== 0) {

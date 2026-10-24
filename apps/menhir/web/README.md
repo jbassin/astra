@@ -56,7 +56,7 @@ relative to `data.root`; identical-path bind mount, host-owned).
 ```
 pnpm --filter @astra/menhir test        # engine + runtime + component tests
 pnpm --filter @astra/menhir build       # vite build → dist/
-cd apps/menhir/web && node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs server.ts
+cd apps/menhir/web && node --import tsx server.ts
 ```
 
 The server runs on `@astra/service-kit` (`src/server.ts`): one HTTP span per request named after

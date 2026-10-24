@@ -2,7 +2,7 @@
 /**
  * The TS half of the whole-corpus parity check (`just vellum-parity`).
  *
- *   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+ *   node --import tsx \
  *     libs/ts/vellum-lang/scripts/dump-meta.ts < paths.json
  *
  * Reads a JSON array of `.vellum` file paths on stdin and prints one JSON object that maps

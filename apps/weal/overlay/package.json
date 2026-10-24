@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev --configLoader runner",
-    "dev:server": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --watch server.ts",
+    "dev:server": "node --import tsx --watch server.ts",
     "build": "vite build --configLoader runner && tsdown --config-loader tsx",
     "preview": "vite preview",
     "start": "node --import ./dist-server/register.mjs dist-server/main.mjs",

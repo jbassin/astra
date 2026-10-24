@@ -36,8 +36,8 @@ export class EnricherGrammarError extends Error {
     super(message);
     this.name = "EnricherGrammarError";
     // Plain field assignment, not a TS constructor parameter property — the
-    // repo's `nodeTsResolve` scripts run under Node's native strip-only TS
-    // support, which rejects that shorthand (D29-9's script runtime).
+    // repo's TS ran under Node's native strip-only TS support (D29-9's script
+    // runtime), which rejects that shorthand; `erasableSyntaxOnly` still does.
     this.source = source;
     this.start = start;
     this.end = end;

@@ -94,9 +94,9 @@ release ...`); its README lists every command.
   setup (`vitest.globalSetup.ts`), both guard scripts and `regen-goldens.ts` call it, and
   `pnpm --filter @astra/codex-ingest cli fixture` runs it by hand. To change the fixture,
   change an input in the ingest package, never the output; its README describes the inputs.
-- `scripts/regen-goldens.ts` runs under `nodeTsResolve.mjs`, which resolves only relative
-  specifiers. An `@/*` import in anything EntityPage reaches breaks golden regen while tsc,
-  vite and vitest pass.
+- `scripts/regen-goldens.ts` runs under tsx (`node --import tsx`), which follows the `@/*`
+  alias only through the tsconfig of the directory it runs from. Run it from this app dir
+  (`pnpm regen-goldens`); EntityPage's import graph stays relative so it works from anywhere.
 - DOM tests carry a per-file `// @vitest-environment jsdom` docblock. jsdom lacks
   `HTMLDialogElement.showModal` (tests polyfill it).
 

@@ -8,7 +8,7 @@ import path from "node:path";
 
 import type { TestProject } from "vitest/node";
 
-import { nodeTsResolveHook } from "./nodeTsResolveHook";
+import { tsxLoader } from "./tsxLoader";
 
 /** Whether `<root>/src/generated` holds at least one generated module. */
 export function hasGeneratedContent(root: string): boolean {
@@ -19,7 +19,7 @@ export function hasGeneratedContent(root: string): boolean {
 export default function setup(project: TestProject): void {
   const { root } = project.config;
   if (hasGeneratedContent(root)) return;
-  execFileSync("node", ["--import", nodeTsResolveHook, "scripts/build-content.ts"], {
+  execFileSync("node", ["--import", tsxLoader(), "scripts/build-content.ts"], {
     cwd: root,
     stdio: "inherit",
   });

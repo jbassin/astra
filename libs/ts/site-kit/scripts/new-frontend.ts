@@ -1,6 +1,6 @@
 // Scaffold a TanStack Start frontend on the site-kit preset (`just new-frontend <name>`).
 //
-//   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+//   node --import tsx \
 //     libs/ts/site-kit/scripts/new-frontend.ts <name> [--port <n>]
 //
 // Writes apps/<name>/web and adds the app's block to config.kdl (and the fixture), its model to

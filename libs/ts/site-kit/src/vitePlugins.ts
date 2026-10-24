@@ -10,14 +10,11 @@ import path from "node:path";
 import { fontsDir } from "@astra/gothic/fontsDir";
 import type { Plugin, ViteDevServer } from "vite";
 
-// The resolve/JSX-transform hook (sibling file — see nodeTsResolve.mjs's own header
-// comment). `build-content.ts` scripts run as a Node subprocess (not `bun run` —
-// 0022 S11 found this hardcoded `bun` was the FOURTH bare call site, missed by every
-// grep because it's a `spawnSync` inside TS source, not a package.json script; it
-// silently failed in the node:24-slim Docker build stage — no bun on PATH — masked
-// on a dev host where a stale `src/generated/*` from an earlier bun-era build was
-// already sitting in the (gitignored, un-dockerignored) working tree).
-const NODE_TS_RESOLVE_HOOK = path.join(import.meta.dirname, "nodeTsResolve.mjs");
+import { tsxLoader } from "./tsxLoader";
+
+// `build-content.ts` scripts run as a Node subprocess under tsx (`./tsxLoader.ts`), never a
+// binary looked up on PATH: 0022 S11 found a hardcoded `bun` here that failed silently in
+// the node:24-slim Docker build stage, masked on a dev host by a stale `src/generated/*`.
 
 export interface ContentWatchOptions {
   /** App root (cwd for the build-content subprocess). */
@@ -41,7 +38,7 @@ export function contentWatchPlugin(opts: ContentWatchOptions): Plugin {
   const { root, script, contentDir, generatedDir, invalidate } = opts;
 
   function rebuild(): void {
-    const result = spawnSync("node", ["--import", NODE_TS_RESOLVE_HOOK, script], {
+    const result = spawnSync("node", ["--import", tsxLoader(), script], {
       cwd: root,
       stdio: "inherit",
     });

@@ -1,3 +1,4 @@
+/** @jsxRuntime automatic @jsxImportSource react */
 import type { CrossRef as CrossRefNode } from "@astra/vellum-lang";
 import { type ReactElement, useContext } from "react";
 

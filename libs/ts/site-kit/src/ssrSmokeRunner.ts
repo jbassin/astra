@@ -1,6 +1,6 @@
 // SSR smoke runner (`ssrSmoke.ts` spawns it): imports a built server bundle in a plain Node
 // process, which is how production runs it, renders each path, and prints one JSON array of
-// `{ path, status, html }`. Usage: node --import <resolve hook> ssrSmokeRunner.ts <bundle> <paths>
+// `{ path, status, html }`. Usage: node --import tsx ssrSmokeRunner.ts <bundle> <paths>
 
 export interface SmokeResult {
   path: string;

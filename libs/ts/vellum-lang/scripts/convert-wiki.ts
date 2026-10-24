@@ -2,7 +2,7 @@
 /**
  * One-shot faerrin-wiki → full-vellum converter (astra 0007, decision E3/F2).
  *
- *   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+ *   node --import tsx \
  *     libs/ts/vellum-lang/scripts/convert-wiki.ts --dest <corpus> [--src <wiki>]
  *
  * Reads faerrin's Obsidian wiki and writes the akasha SSOT corpus (full-vellum)

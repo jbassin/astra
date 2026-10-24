@@ -37,7 +37,7 @@
  * Requires a prior `pnpm run build` (serves the real built dist/, same
  * requirement as `rowHeightDriftGuard.ts`/`visual-regression.ts`).
  *
- *   node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts
+ *   node --import tsx scripts/virtualizationInteractionGuard.ts
  */
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";

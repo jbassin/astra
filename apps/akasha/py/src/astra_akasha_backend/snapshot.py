@@ -34,10 +34,10 @@ REPO_ROOT = find_repo_root(Path(__file__))
 SNAPSHOT_PATH = Path(load_config().data.akasha_snapshot) / "akasha-snapshot.json"
 #: The TS structural validator (F3) — `validate_corpus` shells out to it.
 VALIDATOR = REPO_ROOT / "libs/ts/vellum-lang/scripts/validate-corpus.ts"
-#: Node ESM resolve hook (0022 S11 — off bun): lets Node walk the workspace's
-#: extensionless relative imports the same way Vite/bun did (see the hook's own
-#: header comment for the two failure shapes it patches over).
-NODE_TS_RESOLVE_HOOK = REPO_ROOT / "libs/ts/site-kit/src/nodeTsResolve.mjs"
+#: tsx's Node loader (``node --import <it> file.ts``), from vellum-lang's own install: the
+#: deploy checkout installs only that package's node deps, so the root has no tsx there.
+#: The path is the ``"."`` export of tsx's package.json.
+TSX_LOADER = REPO_ROOT / "libs/ts/vellum-lang/node_modules/tsx/dist/loader.mjs"
 
 
 def build_snapshot(pages: list[Page], edges: list[Edge]) -> dict[str, Any]:
@@ -89,7 +89,7 @@ def validate_corpus(content_dir: Path | str = CONTENT_DIR) -> None:
         [
             "node",
             "--import",
-            str(NODE_TS_RESOLVE_HOOK),
+            str(TSX_LOADER),
             str(VALIDATOR),
             "--dir",
             str(content_dir),
