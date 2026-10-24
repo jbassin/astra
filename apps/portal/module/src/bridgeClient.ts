@@ -244,10 +244,13 @@ export class BridgeClient {
       case BridgeCloseCode.replaced:
         this.#refused(
           "warn",
-          "a newer session for this Foundry user took over the portal bridge; this tab " +
-            "stops dialing. Reload (F5) to take it back.",
+          "a newer session for this Foundry user took over the portal bridge; retrying " +
+            "every 30 s, so this tab takes it back if that session leaves.",
         );
-        return "stop";
+        // Not "stop": the replacer may close (a tab opened briefly), and nothing else
+        // would bring the headless session back. Two live sessions of one user then
+        // trade the bridge at most every 30 s (last writer wins).
+        return "slow";
       default:
         this.#lastRefusal = null;
         return "redial";

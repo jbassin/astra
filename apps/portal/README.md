@@ -86,13 +86,15 @@ the reason; the module's console line starts `[portal] bridge client:`.
 | 4002 | `module-stale` | notifies the GM "module is stale, update and reload", stops dialing |
 | 4002 | `server-stale` (module newer than server) | notifies the GM, retries every 30 s |
 | 4003 | `not-designated` | retries every 30 s |
-| 4004 | `replaced` (a newer socket for the same user) | stops dialing |
+| 4004 | `replaced` (a newer socket for the same user) | retries every 30 s; regains the bridge once the replacer leaves |
 | 4005 | `timeout` (no auth message within 5 s) | redials with backoff |
 | 4006 | `busy` (no designation, another user connected) | retries every 30 s |
 | 1001 | `server-shutdown` | redials with backoff |
 
 The backoff resets to 1 s on `auth-ok`. Queries in flight on a replaced socket fail at once with
 the typed error `bridge-replaced`; on a dropped socket or a shutdown, with `bridge-offline`.
+A bridge frame larger than 8 MiB (`MAX_BRIDGE_PAYLOAD_BYTES`) closes the socket with 1009; a tool
+result that big (a huge `get-document`) would need that cap raised.
 
 `PORTAL_VERSION` and `BRIDGE_PROTOCOL` in `shared/src/envelope.ts` are the one source for the
 release and protocol versions; a module test pins `module/module.json`'s `version` to

@@ -120,6 +120,14 @@ interface Pending {
 
 const DEFAULT_AUTH_WINDOW_MS = 5_000;
 const DEFAULT_HEARTBEAT_INTERVAL_MS = 30_000;
+/** The largest bridge frame accepted (ws closes a bigger one with 1009). The biggest
+ * legitimate messages are module results: `get-document` returns a whole document's
+ * source, and a large pf2e NPC or PC with its embedded items and spells runs to about
+ * 1-2 MB of JSON. 8 MiB leaves 4x headroom over that, against the ws default of 100 MiB
+ * on a public endpoint. */
+export const MAX_BRIDGE_PAYLOAD_BYTES = 8 * 1024 * 1024;
+/** How much of an unauthenticated peer's parse error reaches the log. */
+const MAX_LOGGED_DETAIL_CHARS = 200;
 
 function safeJsonParse(text: string): unknown {
   try {
@@ -190,7 +198,7 @@ export class Bridge {
       authWindowMs: opts.authWindowMs ?? DEFAULT_AUTH_WINDOW_MS,
       heartbeatIntervalMs: opts.heartbeatIntervalMs ?? DEFAULT_HEARTBEAT_INTERVAL_MS,
     };
-    this.#wss = new WebSocketServer({ noServer: true });
+    this.#wss = new WebSocketServer({ noServer: true, maxPayload: MAX_BRIDGE_PAYLOAD_BYTES });
   }
 
   /** Wire the bridge's WS upgrade onto an HTTP server at {@link BRIDGE_WS_PATH}; upgrade
@@ -223,6 +231,8 @@ export class Bridge {
       if (authed) return;
       this.#reject(ws, BridgeCloseCode.authTimeout, "timeout", "no auth message in time");
     }, this.#opts.authWindowMs);
+    // A socket that closes before authenticating is not an auth timeout.
+    ws.once("close", () => clearTimeout(authTimer));
 
     ws.once("message", (data: WebSocket.RawData) => {
       authed = true;
@@ -263,7 +273,9 @@ export class Bridge {
     // 2. The key, against the full handshake schema of a protocol this build knows.
     const parsed = AuthMsg.safeParse(raw);
     if (!parsed.success) {
-      this.#reject(ws, BridgeCloseCode.unauthorized, "malformed", parsed.error.message);
+      // Unauthenticated input: log only a bounded prefix of the parse error.
+      const detail = parsed.error.message.slice(0, MAX_LOGGED_DETAIL_CHARS);
+      this.#reject(ws, BridgeCloseCode.unauthorized, "malformed", detail);
       return;
     }
     const auth = parsed.data;
