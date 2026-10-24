@@ -40,9 +40,15 @@ Groq Whisper (`scribe.model`, `groq/whisper-large-v3`).
 
 ## Traps
 
+- **The run names its zip.** `craig_drop_sensor` tags each run with the zip it chose
+  (`astra/craig-zip`, a file name in the incoming dir), and `session_tracks` extracts that
+  zip and records it as `zip` metadata. A re-execution keeps the tag. If the tagged zip is
+  gone or carries another date, the run fails rather than picking another zip. A run with no
+  tag (a hand materialize) picks the zip by the sensor's own rule (`new_sessions`).
 - **Stub zips.** An aborted Craig start leaves a zip of about 900 bytes with the same date.
-  Zips under `MIN_ZIP_BYTES` (1 MiB) are ignored by the sensor and by `_find_zip`. A zip with
-  only `info.txt` and `raw.dat` is a session nobody recorded; it produces nothing by design.
+  Zips under `MIN_ZIP_BYTES` (1 MiB) are ignored by the sensor and by `session_tracks`. A zip
+  with only `info.txt` and `raw.dat` is a session nobody recorded; it produces nothing by
+  design.
 - **Two zips for one date:** the first non-stub zip in sorted order would win, so the
   `single_recording` check fails the session instead. Two names of one recording (the
   hard-link recovery above) share a recording id and count once.

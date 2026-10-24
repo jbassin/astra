@@ -540,9 +540,14 @@ def test_craig_sensor_adds_only_dates_that_are_not_sessions(
     monkeypatch: Any, tmp_path: Path
 ) -> None:
     from astra_pipeline_resources.testing import sessions_instance
+    from astra_scribe import assets
 
     result = _craig_sensor(monkeypatch, tmp_path, sessions_instance("2026-9-7"))
     assert [rr.partition_key for rr in result.run_requests or []] == ["2026-9-14"]
+    # The run carries the zip the sensor chose, so session_tracks never re-picks it.
+    assert [rr.tags for rr in result.run_requests or []] == [
+        {assets.ZIP_TAG: "g_c_2026-9-14_b.zip"}
+    ]
     (add,) = result.dynamic_partitions_requests or []
     assert add.partitions_def_name == "sessions" and list(add.partition_keys) == ["2026-9-14"]
 
@@ -556,3 +561,68 @@ def test_craig_sensor_waits_for_the_sessions_migration(monkeypatch: Any, tmp_pat
     result = _craig_sensor(monkeypatch, tmp_path, instance)
     assert not result.run_requests and not result.dynamic_partitions_requests
     assert result.skip_reason
+
+
+# ── session_tracks takes the zip the sensor chose (0037 PIPE-23) ─────────────
+def _tracks_run(monkeypatch: Any, tmp_path: Path, tags: dict[str, str]) -> tuple[Any, list[Path]]:
+    """Materialize session_tracks for 2026-9-7 with ``tags``; return the result and the zips
+    the extract step was handed. Two real zips carry the date, so the choice is visible."""
+    import dagster as dg
+    from astra_pipeline_resources.testing import paths_under, sessions_instance
+    from astra_scribe import assets
+
+    paths = paths_under(tmp_path)
+    incoming = Path(paths.scribe_incoming)
+    incoming.mkdir(parents=True, exist_ok=True)
+    for name in ("craig_A_2026-9-7_20-00-00.aac.zip", "craig_B_2026-9-7_21-00-00.aac.zip"):
+        (incoming / name).write_bytes(bytes(MIN_ZIP_BYTES))
+    handed: list[Path] = []
+
+    def fake_extract(zip_path: Path, dest: Path | str, _roster: Any, **_kw: Any) -> list[Path]:
+        handed.append(Path(zip_path))
+        return []
+
+    monkeypatch.setattr(assets.Roster, "from_being", classmethod(lambda cls, _p: cls(set())))
+    monkeypatch.setattr(assets, "extract_session_tracks", fake_extract)
+    result = dg.materialize(
+        [assets.session_tracks],
+        partition_key="2026-9-7",
+        instance=sessions_instance("2026-9-7"),
+        resources={"pipeline_paths": paths},
+        tags=tags,
+        raise_on_error=False,
+    )
+    return result, handed
+
+
+def test_session_tracks_extracts_the_zip_named_by_the_run_tag(
+    monkeypatch: Any, tmp_path: Path
+) -> None:
+    from astra_scribe import assets
+
+    result, handed = _tracks_run(
+        monkeypatch, tmp_path, {assets.ZIP_TAG: "craig_B_2026-9-7_21-00-00.aac.zip"}
+    )
+    assert result.success
+    assert [p.name for p in handed] == ["craig_B_2026-9-7_21-00-00.aac.zip"]
+    (mat,) = result.asset_materializations_for_node("session_tracks")
+    assert mat.metadata["zip"].value == "craig_B_2026-9-7_21-00-00.aac.zip"
+
+
+def test_session_tracks_without_a_tag_uses_the_sensor_rule(
+    monkeypatch: Any, tmp_path: Path
+) -> None:
+    """A hand materialize has no tag: the asset picks what new_sessions would (the first)."""
+    result, handed = _tracks_run(monkeypatch, tmp_path, {})
+    assert result.success
+    assert [p.name for p in handed] == ["craig_A_2026-9-7_20-00-00.aac.zip"]
+
+
+def test_session_tracks_fails_when_the_tagged_zip_is_gone(monkeypatch: Any, tmp_path: Path) -> None:
+    """A tag naming a missing zip (or another date's) fails; it never falls back."""
+    from astra_scribe import assets
+
+    for name in ("craig_C_2026-9-7_22-00-00.aac.zip", "g_c_2026-9-14_b.zip"):
+        result, handed = _tracks_run(monkeypatch, tmp_path, {assets.ZIP_TAG: name})
+        assert not result.success
+        assert handed == []

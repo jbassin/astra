@@ -60,12 +60,34 @@ _sessions_counter = _meter.create_counter(
 )
 
 
+#: Run tag naming the Craig zip (its file name in ``scribe.incoming-path``) that
+#: ``craig_drop_sensor`` chose for the session. ``session_tracks`` reads it, so the asset
+#: processes the zip the sensor registered. A re-execution copies the tag.
+ZIP_TAG = "astra/craig-zip"
+
+
 def _find_zip(incoming: str, date_key: str) -> Path:
-    """The dropped zip whose stem maps to this session/date partition (stubs skipped)."""
-    for zip_path in sorted(Path(incoming).glob("*.zip")):
-        if recording_key(zip_path) == date_key and is_session_zip(zip_path):
-            return zip_path
-    raise FileNotFoundError(f"no Craig zip for session {date_key} in {incoming}")
+    """The zip the sensor's rule (`new_sessions`) picks for this session, for a run that
+    carries no `ZIP_TAG` (a hand materialize or a run launched before the tag existed)."""
+    found = new_sessions(Path(incoming).glob("*.zip"), set()).get(date_key)
+    if found is None:
+        raise FileNotFoundError(f"no Craig zip for session {date_key} in {incoming}")
+    return Path(found)
+
+
+def _session_zip(context: dg.AssetExecutionContext, incoming: str, date_key: str) -> Path:
+    """The run's `ZIP_TAG` zip, or `_find_zip` when the run has no tag. A tagged zip that
+    is gone or belongs to another date fails the run rather than picking another zip."""
+    name = context.run.tags.get(ZIP_TAG)
+    if not name:
+        return _find_zip(incoming, date_key)
+    zip_path = Path(incoming) / Path(name).name
+    if recording_key(zip_path) != date_key or not is_session_zip(zip_path):
+        raise FileNotFoundError(
+            f"the Craig zip {name} that craig_drop_sensor chose for session {date_key} is "
+            f"not a recording of that date in {incoming}"
+        )
+    return zip_path
 
 
 def _tracks_dir(paths: PipelinePaths, date_key: str) -> Path:
@@ -79,17 +101,20 @@ def session_tracks(
 ) -> dg.MaterializeResult:
     """Root: verify + extract the Craig zip once → persist player tracks for both tails.
 
+    The zip is the one `craig_drop_sensor` chose (the run's `ZIP_TAG`); the materialization
+    records its name.
+
     C8 (re-run caveat): `session_cleanup` deletes these tracks, so to re-run a single
     tail (`session_audio`/`session_transcript`) materialize FROM this asset.
     """
     date_key = context.partition_key
     roster = Roster.from_being(BEING_KDL_PATH)
-    zip_path = _find_zip(pipeline_paths.scribe_incoming, date_key)
+    zip_path = _session_zip(context, pipeline_paths.scribe_incoming, date_key)
     with _tracer.start_as_current_span("scribe.extract") as span:
         tracks = extract_session_tracks(zip_path, _tracks_dir(pipeline_paths, date_key), roster)
         span.set_attribute("scribe.tracks", len(tracks))
-    _log.info("scribe extracted %d player tracks for %s", len(tracks), date_key)
-    return dg.MaterializeResult(metadata={"tracks": len(tracks)})
+    _log.info("scribe extracted %d player tracks for %s from %s", len(tracks), date_key, zip_path)
+    return dg.MaterializeResult(metadata={"tracks": len(tracks), "zip": zip_path.name})
 
 
 @dg.asset(partitions_def=sessions, group_name="scribe", deps=[session_tracks])
@@ -313,7 +338,10 @@ def craig_drop_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
         else None
     )
     return dg.SensorResult(
-        run_requests=[dg.RunRequest(partition_key=key) for key in found],
+        run_requests=[
+            dg.RunRequest(partition_key=key, tags={ZIP_TAG: Path(zip_path).name})
+            for key, zip_path in found.items()
+        ],
         dynamic_partitions_requests=adds,
         skip_reason=skip,
         cursor=json.dumps({"warned": sorted(s.path.name for s in strays)}),
