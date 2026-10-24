@@ -10,6 +10,7 @@ dependencies = [
     "astra-linguist",
     "astra-llm",
     "astra-observe",
+    "astra-pipeline-resources",
     "astra-sessions",
     "astra-ontology",
     "astra-ontology-being",

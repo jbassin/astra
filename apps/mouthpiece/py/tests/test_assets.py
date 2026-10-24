@@ -54,30 +54,42 @@ def test_session_brief_sits_between_digest_and_script_and_has_no_retry() -> None
     assert "session_brief" in targets and "session_script" in targets
 
 
-def test_llm_model_comes_from_config_not_the_client_constant() -> None:
-    """clean/enrich/script use mouthpiece's OWN `mouthpiece.model` pin (GLM 5.3), not the
-    shared `llm.default-model` (linguist's judge stays on 5.2) and not the client constant."""
-    from astra_llm import DEFAULT_MODEL
+def test_llm_model_is_mouthpieces_own_pin_with_the_shared_default_as_fallback() -> None:
+    """clean/enrich/script use mouthpiece's OWN `mouthpiece.model` pin, not the shared
+    `llm.default-model` (linguist's judge) and not the client constant; an empty pin falls
+    back to the shared default."""
+    from astra_pipeline_resources.testing import FakeConfig
+
+    cfg = FakeConfig().cfg
+    cfg.mouthpiece.model = "test/mouthpiece-pin"
+    cfg.llm.default_model = "test/shared-default"
+    assert mp._llm_model(cfg) == "test/mouthpiece-pin"
+    cfg.mouthpiece.model = ""
+    assert mp._llm_model(cfg) == "test/shared-default"
+
+
+def test_tts_resource_reads_the_configured_provider_and_model() -> None:
+    from astra_mouthpiece.resources import TtsResource, default_tts
     from astra_ontology_config import load
 
-    cfg = load()
-    assert mp._llm_model() == cfg.mouthpiece.model == "openrouter/z-ai/glm-5.3"
-    assert mp._llm_model() != cfg.llm.default_model
-    assert mp._llm_model() != DEFAULT_MODEL
+    cfg = load().mouthpiece
+    tts = default_tts()
+    assert (tts.provider, tts.elevenlabs_model) == (cfg.tts_provider, cfg.elevenlabs_model)
+    mock = TtsResource(provider="mock", elevenlabs_model="unused").build()
+    assert type(mock).__name__ == "MockTTSProvider"
 
 
-def test_tts_provider_is_elevenlabs_and_fails_loud_without_key(monkeypatch, tmp_path) -> None:
-    """The live backend is ElevenLabs; a missing/empty key (what `${KEY:-}` injects when
-    the SOPS entry is absent) raises instead of silently falling back to the mock."""
-    from astra_ontology_config import load
+def test_elevenlabs_tts_fails_loud_without_key(monkeypatch, tmp_path) -> None:
+    """A missing/empty key (what `${KEY:-}` injects when the SOPS entry is absent) raises
+    instead of silently falling back to the mock."""
+    from astra_mouthpiece.resources import TtsResource
 
-    assert load().mouthpiece.tts_provider == "elevenlabs"
     # An empty env var now counts as unset and falls through to SOPS (0037); point that at
     # a missing file — the in-container state — so a host with the age key can't decrypt.
     monkeypatch.setenv("ELEVENLABS_API_KEY", "")
     monkeypatch.setenv("ASTRA_SOPS_FILE", str(tmp_path / "absent.enc.yaml"))
     with pytest.raises(RuntimeError, match="elevenlabs_api_key"):
-        mp._provider()
+        TtsResource(provider="elevenlabs", elevenlabs_model="eleven_v4").build()
 
 
 def test_voices_read_the_elevenlabs_ids() -> None:

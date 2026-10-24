@@ -23,6 +23,7 @@ members = [
     "astra-ontology-config",
     "astra-ontology-entity",
     "astra-pipeline",
+    "astra-pipeline-resources",
     "astra-scribe",
     "astra-sessions",
     "astra-smoke",
@@ -324,6 +325,7 @@ dependencies = [
     { name = "astra-ontology-being" },
     { name = "astra-ontology-config" },
     { name = "astra-ontology-entity" },
+    { name = "astra-pipeline-resources" },
     { name = "astra-sessions" },
     { name = "dagster" },
 ]
@@ -339,6 +341,7 @@ requires-dist = [
     { name = "astra-ontology-being", editable = "ontology/ontology-being" },
     { name = "astra-ontology-config", editable = "ontology/ontology-config" },
     { name = "astra-ontology-entity", editable = "ontology/ontology-entity" },
+    { name = "astra-pipeline-resources", editable = "libs/py/pipeline-resources" },
     { name = "astra-sessions", editable = "libs/py/sessions" },
     { name = "dagster" },
 ]
@@ -373,6 +376,7 @@ dependencies = [
     { name = "astra-observe" },
     { name = "astra-ontology" },
     { name = "astra-ontology-being" },
+    { name = "astra-pipeline-resources" },
     { name = "astra-sessions" },
     { name = "dagster" },
     { name = "pydantic" },
@@ -386,6 +390,7 @@ requires-dist = [
     { name = "astra-observe", editable = "libs/py/observe" },
     { name = "astra-ontology", editable = "libs/py/ontology" },
     { name = "astra-ontology-being", editable = "ontology/ontology-being" },
+    { name = "astra-pipeline-resources", editable = "libs/py/pipeline-resources" },
     { name = "astra-sessions", editable = "libs/py/sessions" },
     { name = "dagster" },
     { name = "pydantic", specifier = ">=2" },
@@ -426,6 +431,7 @@ dependencies = [
     { name = "astra-ontology-being" },
     { name = "astra-ontology-config" },
     { name = "astra-ontology-entity" },
+    { name = "astra-pipeline-resources" },
     { name = "astra-sessions" },
     { name = "dagster" },
     { name = "httpx" },
@@ -443,6 +449,7 @@ requires-dist = [
     { name = "astra-ontology-being", editable = "ontology/ontology-being" },
     { name = "astra-ontology-config", editable = "ontology/ontology-config" },
     { name = "astra-ontology-entity", editable = "ontology/ontology-entity" },
+    { name = "astra-pipeline-resources", editable = "libs/py/pipeline-resources" },
     { name = "astra-sessions", editable = "libs/py/sessions" },
     { name = "dagster" },
     { name = "httpx" },
@@ -585,6 +592,23 @@ requires-dist = [
 ]
 
 [[package]]
+name = "astra-pipeline-resources"
+version = "0.0.0"
+source = { editable = "libs/py/pipeline-resources" }
+dependencies = [
+    { name = "astra-config" },
+    { name = "astra-llm" },
+    { name = "dagster" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "astra-config", editable = "libs/py/config" },
+    { name = "astra-llm", editable = "libs/py/llm" },
+    { name = "dagster" },
+]
+
+[[package]]
 name = "astra-scribe"
 version = "0.0.0"
 source = { editable = "apps/scribe/py" }
@@ -595,6 +619,7 @@ dependencies = [
     { name = "astra-ontology" },
     { name = "astra-ontology-being" },
     { name = "astra-ontology-config" },
+    { name = "astra-pipeline-resources" },
     { name = "astra-sessions" },
     { name = "dagster" },
     { name = "pydantic" },
@@ -608,6 +633,7 @@ requires-dist = [
     { name = "astra-ontology", editable = "libs/py/ontology" },
     { name = "astra-ontology-being", editable = "ontology/ontology-being" },
     { name = "astra-ontology-config", editable = "ontology/ontology-config" },
+    { name = "astra-pipeline-resources", editable = "libs/py/pipeline-resources" },
     { name = "astra-sessions", editable = "libs/py/sessions" },
     { name = "dagster" },
     { name = "pydantic", specifier = ">=2" },

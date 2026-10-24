@@ -24,6 +24,7 @@ astra-ontology = { workspace = true }
 astra-ontology-being = { workspace = true }
 astra-ontology-config = { workspace = true }
 astra-ontology-entity = { workspace = true }
+astra-pipeline-resources = { workspace = true }
 astra-scribe = { workspace = true }
 astra-sessions = { workspace = true }
 astra-smoke = { workspace = true }

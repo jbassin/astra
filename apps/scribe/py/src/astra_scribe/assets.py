@@ -26,10 +26,10 @@ from pathlib import Path
 # No `from __future__ import annotations` here: Dagster introspects the `context`
 # annotation at definition time and needs the real type, not a string.
 import dagster as dg
-from astra_config import ScribeConfig
 from astra_observe import get_logger, get_meter, get_tracer
 from astra_ontology_being import BEING_KDL_PATH
 from astra_ontology_config import load as load_config
+from astra_pipeline_resources import AstraConfig, PipelinePaths, default_resources
 from astra_sessions import atomic_write_text, recording_key
 
 from .roster import Roster
@@ -57,36 +57,38 @@ def _find_zip(incoming: str, date_key: str) -> Path:
     raise FileNotFoundError(f"no Craig zip for session {date_key} in {incoming}")
 
 
-def _tracks_dir(cfg: ScribeConfig, date_key: str) -> Path:
+def _tracks_dir(paths: PipelinePaths, date_key: str) -> Path:
     """The per-partition persisted-tracks dir (shared by the audio + transcript tails)."""
-    return Path(cfg.tmp_path) / date_key / "tracks"
+    return Path(paths.scribe_tmp) / date_key / "tracks"
 
 
 @dg.asset(partitions_def=scribe_sessions, group_name="scribe")
-def session_tracks(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+def session_tracks(
+    context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
+) -> dg.MaterializeResult:
     """Root: verify + extract the Craig zip once → persist player tracks for both tails.
 
     C8 (re-run caveat): `session_cleanup` deletes these tracks, so to re-run a single
     tail (`session_audio`/`session_transcript`) materialize FROM this asset.
     """
     date_key = context.partition_key
-    cfg = load_config().scribe
     roster = Roster.from_being(BEING_KDL_PATH)
-    zip_path = _find_zip(cfg.incoming_path, date_key)
+    zip_path = _find_zip(pipeline_paths.scribe_incoming, date_key)
     with _tracer.start_as_current_span("scribe.extract") as span:
-        tracks = extract_session_tracks(zip_path, _tracks_dir(cfg, date_key), roster)
+        tracks = extract_session_tracks(zip_path, _tracks_dir(pipeline_paths, date_key), roster)
         span.set_attribute("scribe.tracks", len(tracks))
     _log.info("scribe extracted %d player tracks for %s", len(tracks), date_key)
     return dg.MaterializeResult(metadata={"tracks": len(tracks)})
 
 
 @dg.asset(partitions_def=scribe_sessions, group_name="scribe", deps=[session_tracks])
-def session_audio(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+def session_audio(
+    context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
+) -> dg.MaterializeResult:
     """Merge the persisted tracks → saved/<date>/audio.mp3 (parallel to the transcript)."""
     date_key = context.partition_key
-    cfg = load_config().scribe
-    tracks = sorted(_tracks_dir(cfg, date_key).glob("*.aac"))
-    out = Path(cfg.data_path) / "saved" / date_key
+    tracks = sorted(_tracks_dir(pipeline_paths, date_key).glob("*.aac"))
+    out = Path(pipeline_paths.scribe_data) / "saved" / date_key
     out.mkdir(parents=True, exist_ok=True)
     with _tracer.start_as_current_span("scribe.merge") as span:
         merge_audio(tracks, out / "audio.mp3")
@@ -96,20 +98,22 @@ def session_audio(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
 
 
 @dg.asset(partitions_def=scribe_sessions, group_name="scribe", deps=[session_tracks])
-def session_transcript(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+def session_transcript(
+    context: dg.AssetExecutionContext, astra_config: AstraConfig, pipeline_paths: PipelinePaths
+) -> dg.MaterializeResult:
     """Transcribe the persisted tracks → saved/<date>/script.json (parallel to the audio).
 
     Writes script.json — the surface linguist's `scribe_output_sensor` watches — and
     increments the session-transcribed counter (once per session).
     """
     date_key = context.partition_key
-    cfg = load_config().scribe
+    cfg = astra_config.get().scribe
     roster = Roster.from_being(BEING_KDL_PATH)
     api_key = cfg.groq_api_key.require() if cfg.groq_api_key else None
     # Model from config (config-single-source) — not the TrackTranscriber constant default.
     transcriber = TrackTranscriber(api_key=api_key, model=cfg.model)
-    tracks = sorted(_tracks_dir(cfg, date_key).glob("*.aac"))
-    out = Path(cfg.data_path) / "saved" / date_key
+    tracks = sorted(_tracks_dir(pipeline_paths, date_key).glob("*.aac"))
+    out = Path(pipeline_paths.scribe_data) / "saved" / date_key
     out.mkdir(parents=True, exist_ok=True)
     with (
         _tracer.start_as_current_span("scribe.transcribe") as span,
@@ -129,16 +133,17 @@ def session_transcript(context: dg.AssetExecutionContext) -> dg.MaterializeResul
     group_name="scribe",
     deps=[session_audio, session_transcript],
 )
-def session_cleanup(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+def session_cleanup(
+    context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
+) -> dg.MaterializeResult:
     """Fan-in: rm -rf {tmp_path}/<date>/ once BOTH audio + transcript succeed.
 
     If either tail fails the run fails and the tracks dir is retained (a re-run
     reuses it / aids debugging). C8: re-run a tail by materializing `session_tracks`.
     """
     date_key = context.partition_key
-    cfg = load_config().scribe
     with _tracer.start_as_current_span("scribe.cleanup"):
-        shutil.rmtree(Path(cfg.tmp_path) / date_key, ignore_errors=True)
+        shutil.rmtree(Path(pipeline_paths.scribe_tmp) / date_key, ignore_errors=True)
     _log.info("scribe cleaned up tmp tracks for %s", date_key)
     return dg.MaterializeResult(metadata={"removed": True})
 
@@ -166,4 +171,6 @@ def craig_drop_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     )
 
 
-defs = dg.Definitions(assets=SCRIBE_ASSETS, sensors=[craig_drop_sensor])
+defs = dg.Definitions(
+    assets=SCRIBE_ASSETS, sensors=[craig_drop_sensor], resources=default_resources()
+)

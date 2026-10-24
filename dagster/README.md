@@ -25,6 +25,27 @@ zero-padded). Apps hand off through files on disk and sensors, not Dagster `deps
 | `mouthpiece_sessions` | `linguist_output_sensor`: a new transcript whose chronicle episode exists | `session_digest` → `session_brief` → `session_script` → `session_audio_clips` → `session_episode` |
 | `heartwood_sessions` | `heartwood_sensor`: a new faerrin-world transcript | `session_wiki` (waits for the host agent) |
 
+## Resources
+
+Assets get their dependencies as Dagster resources, declared as parameters, never by
+reading config or building clients in the body. The shared ones live in
+`libs/py/pipeline-resources` (`astra_pipeline_resources`); each app binds
+`default_resources()` in its `defs`, and the values are cached so `Definitions.merge`
+sees one object per key.
+
+| Key | Class | Gives |
+|---|---|---|
+| `astra_config` | `AstraConfig` | `get()`: config.kdl, loaded once per process (model pins, secrets, limits) |
+| `pipeline_paths` | `PipelinePaths` | every runtime data path, built from config.kdl (`from_config`) |
+| `llm` | `LlmResource` | `client()`: an `astra_llm` client with the OpenRouter key in place |
+| `tts` | `astra_mouthpiece.resources.TtsResource` | `build()`: ElevenLabs or the mock, per `mouthpiece.tts-provider` |
+
+A new asset parameter named after a key gets that resource. Don't name one `config`:
+Dagster reserves it for run config. Tests materialize with `dg.materialize(...,
+resources=...)`, using `astra_pipeline_resources.testing` (`paths_under(tmp_path)`,
+`FakeConfig`, `FakeLlm`); the four apps' `tests/` hold an example each. Sensors still
+read config directly.
+
 The episode catalog and the akasha snapshot are not assets: the host recipes
 `just mouthpiece-publish` and `uv run akasha-snapshot` build them (the snapshot needs node,
 which the image lacks). `pipeline_failure_alert` logs one ERROR

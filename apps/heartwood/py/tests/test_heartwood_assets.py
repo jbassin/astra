@@ -163,3 +163,54 @@ def test_definitions_and_no_retry_policy() -> None:
     repo = assets.defs.get_repository_def()
     assert repo.has_sensor_def("heartwood_sensor")
     assert dg.AssetKey("session_wiki") in {a.key for a in repo.asset_graph.asset_nodes}
+
+
+# ── session_wiki through dg.materialize, with fake resources (0037 PIPE-16) ──
+def _materialize_wiki(tmp_path: Path, timeout_min: int) -> dg.ExecuteInProcessResult:
+    from astra_pipeline_resources.testing import FakeConfig, paths_under
+
+    config = FakeConfig()
+    config.cfg.heartwood.request_timeout_minutes = timeout_min
+    instance = dg.DagsterInstance.ephemeral()
+    instance.add_dynamic_partitions(assets.SESSIONS_NAME, ["2026-10-26"])
+    return dg.materialize(
+        [assets.session_wiki],
+        partition_key="2026-10-26",
+        instance=instance,
+        resources={"astra_config": config, "pipeline_paths": paths_under(tmp_path)},
+        raise_on_error=False,
+    )
+
+
+def test_session_wiki_files_its_request_under_the_configured_dir(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The host answers on the first poll: the run materializes with the result's metadata."""
+
+    def read_result(root: Path, date: str, request_id: str) -> rq.Result:
+        return rq.Result(
+            request_id=request_id,
+            date=date,
+            outcome="published",
+            exit_code=0,
+            meaning=rq.meaning(0),
+            started_at="t",
+            finished_at="t",
+            commit="abc",
+        )
+
+    monkeypatch.setattr(rq, "read_result", read_result)
+    result = _materialize_wiki(tmp_path, timeout_min=1)
+    assert result.success
+    requests = tmp_path / "heartwood" / "requests"
+    assert rq.request_path(requests, "2026-10-26").is_file()
+    meta = result.asset_materializations_for_node("session_wiki")[0].metadata
+    assert meta["commit"] == dg.TextMetadataValue("abc")
+
+
+def test_session_wiki_times_out_after_the_configured_minutes(tmp_path: Path) -> None:
+    """A zero-minute timeout from config: no host answer → the run fails once, no retry."""
+    result = _materialize_wiki(tmp_path, timeout_min=0)
+    assert not result.success
+    (failure,) = [e for e in result.all_events if e.is_step_failure]
+    assert "no result in 0 min" in str(failure.event_specific_data)

@@ -13,15 +13,17 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from .assets import DATA_DIR
+from astra_pipeline_resources import loaded_config
 
 if TYPE_CHECKING:  # pragma: no cover
     import dagster as dg
 
 
-def historical_dates(data_dir: Path | str = DATA_DIR) -> list[str]:
-    """The committed historical session dates (from `data/*.json`), sorted."""
-    return sorted(path.stem for path in Path(data_dir).glob("*.json"))
+def historical_dates(data_dir: Path | str | None = None) -> list[str]:
+    """The committed historical session dates (from `data/*.json`), sorted. The default is
+    config `data.linguist-data`."""
+    root = Path(data_dir) if data_dir is not None else Path(loaded_config().data.linguist_data)
+    return sorted(path.stem for path in root.glob("*.json"))
 
 
 def pre_satisfy(instance: dg.DagsterInstance) -> int:  # pragma: no cover - live deploy step
