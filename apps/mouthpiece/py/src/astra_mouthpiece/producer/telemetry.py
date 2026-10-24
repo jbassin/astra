@@ -1,9 +1,10 @@
 """The producer's telemetry seams (0034 D34-9), on the shared ``astra_llm.rlm`` pieces.
 
 Spans: ``mouthpiece.producer.run`` (run.py), ``mouthpiece.producer.llm.call`` (``ProducerLM``),
-``mouthpiece.producer.tool.<name>`` (``instrument_tool``), ``mouthpiece.experiment.arm``
-(experiment.py). Every span is parented explicitly through a ``RunParent`` (sub-LM calls
-run on threads that drop contextvars). Instruments are created lazily on first use.
+``mouthpiece.producer.tool.<name>`` (``instrument_tool``), and
+``mouthpiece.experiment.arm`` (``astra_mouthpiece_tools.producer.experiment``). Every span
+is parented explicitly through a ``RunParent`` (sub-LM calls run on threads that drop
+contextvars). Instruments are created lazily on first use.
 """
 
 from __future__ import annotations

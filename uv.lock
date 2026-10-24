@@ -16,6 +16,7 @@ members = [
     "astra-linguist",
     "astra-llm",
     "astra-mouthpiece-backend",
+    "astra-mouthpiece-tools",
     "astra-observe",
     "astra-ontology",
     "astra-ontology-being",
@@ -436,6 +437,33 @@ requires-dist = [
     { name = "astra-ontology-entity", editable = "ontology/ontology-entity" },
     { name = "dagster" },
     { name = "httpx" },
+    { name = "pydantic", specifier = ">=2" },
+]
+
+[[package]]
+name = "astra-mouthpiece-tools"
+version = "0.0.0"
+source = { editable = "apps/mouthpiece/tools" }
+dependencies = [
+    { name = "astra-akasha-backend" },
+    { name = "astra-config" },
+    { name = "astra-linguist" },
+    { name = "astra-llm" },
+    { name = "astra-mouthpiece-backend" },
+    { name = "astra-observe" },
+    { name = "astra-ontology-being" },
+    { name = "pydantic" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "astra-akasha-backend", editable = "apps/akasha/py" },
+    { name = "astra-config", editable = "libs/py/config" },
+    { name = "astra-linguist", editable = "apps/linguist/py" },
+    { name = "astra-llm", editable = "libs/py/llm" },
+    { name = "astra-mouthpiece-backend", editable = "apps/mouthpiece/py" },
+    { name = "astra-observe", editable = "libs/py/observe" },
+    { name = "astra-ontology-being", editable = "ontology/ontology-being" },
     { name = "pydantic", specifier = ">=2" },
 ]
 

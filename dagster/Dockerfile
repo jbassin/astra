@@ -32,6 +32,8 @@ WORKDIR /repo
 # Every py member in uv.lock must be present for `uv sync --frozen`: dagster/ itself
 # (astra-pipeline, the code location's manifest) + the 6 pipeline apps + assay (a lock member since 0030 even though Dagster never runs it — `uv sync
 # --frozen` refuses a missing member distribution outright) + all libs/py + ontology.
+# mouthpiece's hand-run tools (ADR 0023) are a lock member outside astra-pipeline's tree:
+# only their manifest is copied, so their code never enters the image.
 # (The TS apps are uv-excluded and intentionally absent.)
 COPY pyproject.toml uv.lock ./
 COPY dagster/pyproject.toml dagster/pyproject.toml
@@ -39,6 +41,7 @@ COPY apps/scribe/py apps/scribe/py
 COPY apps/linguist/py apps/linguist/py
 COPY apps/akasha/py apps/akasha/py
 COPY apps/mouthpiece/py apps/mouthpiece/py
+COPY apps/mouthpiece/tools/pyproject.toml apps/mouthpiece/tools/pyproject.toml
 COPY apps/heartwood/py apps/heartwood/py
 COPY apps/_smoke/py apps/_smoke/py
 COPY apps/assay/py apps/assay/py

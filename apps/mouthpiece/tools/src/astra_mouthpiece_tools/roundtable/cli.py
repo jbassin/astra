@@ -30,16 +30,16 @@ from pathlib import Path
 from astra_config import load_config
 from astra_llm import ensure_openrouter_env
 from astra_llm.rlm import deno_available
+from astra_mouthpiece.hosts import load_hosts
+from astra_mouthpiece.inputs import episodes_root
+from astra_mouthpiece.lint import score_script
+from astra_mouthpiece.models import Script
+from astra_mouthpiece.producer.tools import permitted_dates
+from astra_mouthpiece.roster import build_roster_block
 from astra_observe import init_telemetry, shutdown
 from astra_ontology_being import BEING_KDL_PATH, load_being
 
-from ..hosts import load_hosts
-from ..inputs import episodes_root
-from ..lint import score_script
-from ..models import Script
 from ..producer.experiment import MeteredClient, host_shares, script_words
-from ..producer.tools import permitted_dates
-from ..roster import build_roster_block
 from .agent import cutoff_after, run_dossier
 from .script import generate_roundtable_script
 
@@ -121,9 +121,9 @@ def _cmd_script(args: argparse.Namespace) -> int:
 
 def _cmd_render(args: argparse.Namespace) -> int:
     # The Dagster module owns the provider/voice resolution; reuse it rather than fork it.
-    from ..assemble import assemble_episode
-    from ..assets import _atomic_write, _provider, _voices
-    from ..tts.synth import synthesize_script
+    from astra_mouthpiece.assemble import assemble_episode
+    from astra_mouthpiece.assets import _atomic_write, _provider, _voices
+    from astra_mouthpiece.tts.synth import synthesize_script
 
     run = Path(args.run_dir)
     script = Script.model_validate_json((run / "script.json").read_text(encoding="utf-8"))

@@ -8,14 +8,52 @@ from typing import Any
 
 import pytest
 from astra_config.models import MouthpieceProducerConfig
+from astra_linguist.chronicle import ShowInfo
 from astra_mouthpiece.hosts import load_hosts
-from astra_mouthpiece.models import Script, ScriptTurn
-from astra_mouthpiece.producer import experiment as exp_mod
+from astra_mouthpiece.models import DigestStats, Script, ScriptTurn, SessionDigest
 from astra_mouthpiece.producer.brief import ProducerBrief, render_brief
-from astra_mouthpiece.producer.experiment import arm_slug, host_shares, run_experiment
-from astra_mouthpiece.producer.run import ProducerResult, RunStatus
+from astra_mouthpiece.producer.run import ProducerInputs, ProducerResult, RunStatus
+from astra_mouthpiece_tools.producer import experiment as exp_mod
+from astra_mouthpiece_tools.producer.experiment import arm_slug, host_shares, run_experiment
 
-from .test_mouthpiece_producer_run import _inputs, brief_dict
+# Fixtures copied from the backend's producer tests (a test package can't import another
+# member's tests).
+TARGET = "2026-1-8"
+SHOWS = {"show-a": ShowInfo(slug="show-a", name="Show A", is_main=True, order=0)}
+TURNS = [(10, "Gamemaster", "Galzu flees."), (11, "Ada", "After her!")]
+
+
+def brief_dict(**over: Any) -> dict[str, Any]:
+    base = {
+        "moments": [
+            {
+                "title": "The chase",
+                "line_ids": [10, 11],
+                "anchor": "Galzu flees",
+                "why_it_matters": "She escapes.",
+                "feel": "Tense.",
+            }
+        ],
+        "lore": [{"name": "Galzu", "note": "Anzu's sister.", "page": "People/Galzu"}],
+        "callbacks": [{"date": "2026-1-1", "note": "She fled into the mist before."}],
+        "open_threads": ["Where is she going?"],
+        "newcomer_questions": ["Who is Galzu?"],
+    }
+    base.update(over)
+    return base
+
+
+def _inputs() -> ProducerInputs:
+    digest = SessionDigest(
+        session_id=f"000.show-a.{TARGET}",
+        synopsis="Galzu flees.",
+        kept_ranges=[(10, 11)],
+        stats=DigestStats(lines=2, kept_lines=2, windows=1, dropped_windows=0),
+    )
+    return ProducerInputs(
+        date=TARGET, show=SHOWS["show-a"], digest=digest, cleaned_turns=TURNS, roster="ROSTER"
+    )
+
 
 HOSTS = load_hosts()
 CFG = MouthpieceProducerConfig(

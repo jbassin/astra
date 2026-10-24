@@ -36,6 +36,7 @@ jobs:
           filters: |
             py:
               - 'apps/*/py/**'
+              - 'apps/*/tools/**'
               - 'libs/py/**'
               - 'ontology/**'
               # dagster/ and deploy/ are under ruff and ty.
