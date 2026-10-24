@@ -1,0 +1,265 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > asset 1`] = `
+{
+  "body": "console.log('pinned')",
+  "broadcast": [],
+  "cacheControl": "public, max-age=0",
+  "contentType": "text/javascript; charset=utf-8",
+  "status": 200,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > delete elsewhere 1`] = `
+{
+  "body": "method not allowed
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 405,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > directory 1`] = `
+{
+  "body": "<!doctype html><head><script>window.__RUM_ENDPOINT__="https://rum.test"</script></head><title>pins</title>",
+  "broadcast": [],
+  "cacheControl": "no-cache",
+  "contentType": "text/html;charset=utf-8",
+  "status": 200,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > feed 1`] = `
+{
+  "body": ": connected
+
+",
+  "broadcast": [],
+  "cacheControl": "no-cache, no-transform",
+  "contentType": "text/event-stream",
+  "status": 200,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > feed HEAD 1`] = `
+{
+  "body": "<!doctype html><head><script>window.__RUM_ENDPOINT__="https://rum.test"</script></head><title>pins</title>",
+  "broadcast": [],
+  "cacheControl": "no-cache",
+  "contentType": "text/html;charset=utf-8",
+  "status": 200,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > feed POST 1`] = `
+{
+  "body": "method not allowed
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 405,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest GET 1`] = `
+{
+  "body": "<!doctype html><head><script>window.__RUM_ENDPOINT__="https://rum.test"</script></head><title>pins</title>",
+  "broadcast": [],
+  "cacheControl": "no-cache",
+  "contentType": "text/html;charset=utf-8",
+  "status": 200,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest PUT 1`] = `
+{
+  "body": "method not allowed
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 405,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest bad json 1`] = `
+{
+  "body": "invalid json
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 400,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest bad payload 1`] = `
+{
+  "body": "invalid roll payload
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 400,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest empty token 1`] = `
+{
+  "body": "unauthorized
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 401,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest no token 1`] = `
+{
+  "body": "unauthorized
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 401,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest old header 1`] = `
+{
+  "body": "",
+  "broadcast": [
+    "data: {"v":1,"user":"Kethra","expression":"d20","total":20,"display":"20","isCrit":true,"isFumble":false,"ts":"<ts>"}
+
+",
+  ],
+  "cacheControl": null,
+  "contentType": null,
+  "status": 204,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest right token 1`] = `
+{
+  "body": "",
+  "broadcast": [
+    "data: {"v":1,"user":"Kethra","expression":"d20","total":20,"display":"20","isCrit":true,"isFumble":false,"ts":"<ts>"}
+
+",
+  ],
+  "cacheControl": null,
+  "contentType": null,
+  "status": 204,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest token as bearer 1`] = `
+{
+  "body": "unauthorized
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 401,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest token plus suffix 1`] = `
+{
+  "body": "unauthorized
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 401,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest token prefix 1`] = `
+{
+  "body": "unauthorized
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 401,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest wrong new header, right old header 1`] = `
+{
+  "body": "unauthorized
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 401,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest wrong token 1`] = `
+{
+  "body": "unauthorized
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 401,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > ingest wrong token, bad json 1`] = `
+{
+  "body": "unauthorized
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 401,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > missing asset 1`] = `
+{
+  "body": "<!doctype html><head><script>window.__RUM_ENDPOINT__="https://rum.test"</script></head><title>pins</title>",
+  "broadcast": [],
+  "cacheControl": "no-cache",
+  "contentType": "text/html;charset=utf-8",
+  "status": 200,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > root 1`] = `
+{
+  "body": "<!doctype html><head><script>window.__RUM_ENDPOINT__="https://rum.test"</script></head><title>pins</title>",
+  "broadcast": [],
+  "cacheControl": "no-cache",
+  "contentType": "text/html;charset=utf-8",
+  "status": 200,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > root HEAD 1`] = `
+{
+  "body": "<!doctype html><head><script>window.__RUM_ENDPOINT__="https://rum.test"</script></head><title>pins</title>",
+  "broadcast": [],
+  "cacheControl": "no-cache",
+  "contentType": "text/html;charset=utf-8",
+  "status": 200,
+}
+`;
+
+exports[`weal-overlay HTTP responses match the pre-migration pins > traversal 1`] = `
+{
+  "body": "forbidden
+",
+  "broadcast": [],
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 403,
+}
+`;
