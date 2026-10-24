@@ -17,6 +17,7 @@
     "@astra/config": "workspace:*",
     "@astra/gothic": "workspace:*",
     "@astra/observe": "workspace:*",
+    "@astra/service-kit": "workspace:*",
     "@astra/site-kit": "workspace:*",
     "@astra/weal-wire": "workspace:*",
     "@fontsource/ibm-plex-mono": "catalog:",

@@ -1,21 +1,31 @@
-import { timingSafeEqual } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 
 import { isBlankSecret } from "@astra/config";
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
+import {
+  createHandler,
+  createService,
+  route,
+  safeEqual,
+  type Service,
+  type ServiceDefinition,
+} from "@astra/service-kit";
 import { serveFile } from "@astra/site-kit";
 import { INGEST_PATH, requestToken } from "@astra/weal-wire";
-import { type Server, serve } from "srvx";
+import type { Server } from "srvx";
 
 import { RollHub } from "./hub";
 import { parseRollEvent } from "./schema";
 
+// config.kdl `weal-overlay.service-name`.
+const SERVICE_NAME = "astra.weal-overlay";
+
 // Module-scope instruments (live under @astra/observe/register, no-ops in
 // unit tests). The overlay's only write path is ingest — count it by outcome + trace it.
-const log = getLogger("astra.weal-overlay");
-const tracer = getTracer("astra.weal-overlay");
-const rollsCounter = lazyCounter("astra.weal-overlay", "astra.weal.overlay.rolls_ingested", {
+const log = getLogger(SERVICE_NAME);
+const tracer = getTracer(SERVICE_NAME);
+const rollsCounter = lazyCounter(SERVICE_NAME, "astra.weal.overlay.rolls_ingested", {
   description: "Roll events POSTed to the overlay ingest, by outcome",
 });
 
@@ -39,16 +49,15 @@ export interface AppOptions {
 
 export interface RunningServer {
   server: Server;
+  service: Service;
   hub: RollHub;
-  stop(): void;
+  /** The kit's ordered shutdown: stop accepting, drain, close the feeds, stop the heartbeat. */
+  stop(): Promise<void>;
 }
 
-/** Constant-time token comparison (a plain `!==` leaks the matching prefix length). */
+/** Constant-time token comparison: neither the matching prefix nor the length leaks. */
 function tokenMatches(given: string | null, want: string): boolean {
-  if (given === null) return false;
-  const a = Buffer.from(given);
-  const b = Buffer.from(want);
-  return a.length === b.length && timingSafeEqual(a, b);
+  return given !== null && safeEqual(given, want);
 }
 
 async function isFile(p: string): Promise<boolean> {
@@ -59,10 +68,10 @@ async function isFile(p: string): Promise<boolean> {
   }
 }
 
-/** Build the request handler + its hub without binding a port (unit-testable). */
-export function createApp(opts: AppOptions): {
+/** Build the service definition + its hub without binding a port. */
+export function createDefinition(opts: AppOptions): {
   hub: RollHub;
-  handle: (req: Request) => Promise<Response>;
+  definition: ServiceDefinition;
 } {
   const hub = opts.hub ?? new RollHub();
   const { token, distDir, rumEndpoint = "" } = opts;
@@ -155,33 +164,48 @@ export function createApp(opts: AppOptions): {
     return serveFile(req, target);
   }
 
-  // oxlint-disable-next-line require-await -- an async request handler: a throw becomes a rejected response promise
-  async function handle(req: Request): Promise<Response> {
-    const { pathname } = new URL(req.url);
-    if (req.method === "POST" && pathname === INGEST_PATH) return ingest(req);
-    if (req.method === "GET" && pathname === "/feed") return feed();
-    if (req.method === "GET" || req.method === "HEAD") return serveStatic(req);
-    return new Response("method not allowed\n", { status: 405 });
-  }
+  const definition: ServiceDefinition = {
+    serviceName: SERVICE_NAME,
+    routes: [
+      route({ method: "POST", path: INGEST_PATH, handler: (ctx) => ingest(ctx.req) }),
+      route({ method: "GET", path: "/feed", handler: () => feed() }),
+    ],
+    fallback: (req) =>
+      req.method === "GET" || req.method === "HEAD"
+        ? serveStatic(req)
+        : new Response("method not allowed\n", { status: 405 }),
+  };
 
-  return { hub, handle };
+  return { hub, definition };
+}
+
+/** Build the request handler + its hub without binding a port (unit tests). */
+export function createApp(opts: AppOptions): {
+  hub: RollHub;
+  handle: (req: Request) => Promise<Response>;
+} {
+  const { hub, definition } = createDefinition(opts);
+  return { hub, handle: createHandler(definition).handle };
 }
 
 /** Bind the app to a port and start the heartbeat. Returns a stop() for teardown. */
-export function startServer(opts: AppOptions & { port: number }): RunningServer {
-  const { hub, handle } = createApp(opts);
-  // Bun.serve → srvx (R3, 0022 S8 — B3): `server.port` doesn't exist on srvx's
-  // Server, callers read `server.url` instead; `.stop(true)` → `.close(true)`.
-  const server = serve({ port: opts.port, hostname: "0.0.0.0", fetch: handle });
+export function startServer(
+  opts: AppOptions & { port: number; handleShutdown?: boolean },
+): RunningServer {
+  const { hub, definition } = createDefinition(opts);
+  const service = createService({
+    ...definition,
+    port: opts.port,
+    handleShutdown: opts.handleShutdown ?? false,
+  });
   const heartbeat = setInterval(() => hub.heartbeat(), 15_000);
   // Don't keep the event loop alive on the heartbeat alone (matters in tests).
   (heartbeat as { unref?: () => void }).unref?.();
+  service.onShutdown(() => clearInterval(heartbeat));
   return {
-    server,
+    server: service.server,
+    service,
     hub,
-    stop() {
-      clearInterval(heartbeat);
-      void server.close(true);
-    },
+    stop: () => service.close(),
   };
 }
