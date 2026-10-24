@@ -154,11 +154,14 @@ is still hand-maintained:
    `dagster/tests/test_definitions.py`, and, for a new pipeline app, add the app to
    `merge(...)` in `dagster/definitions.py` and the dependencies in `dagster/pyproject.toml`,
    plus `COPY apps/<domain>/py` in `dagster/Dockerfile`.
-2. A service: a compose service in `deploy/docker-compose.yml` (port in 10350 to 10399, `user:
-   "1000:1000"`, healthcheck, `restart: unless-stopped`, its secrets in `environment:`). A Node
-   service's `build:` block uses `dockerfile: deploy/node.Dockerfile` with `APP: <domain>/<role>`,
-   plus `ENTRY` when the server is not `server.ts`, and `RUNTIME` when it needs ffmpeg or Chromium
-   (the file's header lists the knobs). The runtime image holds the whole built app dir, so a new
+2. A service: a compose service in `deploy/docker-compose.yml` (port in 10350 to 10399, `<<:
+   *astra-app` for the uid-1000 user, network and restart policy, a healthcheck merging
+   `*node-healthcheck` with its own `test`, its secrets in `environment:`). A Node service's
+   `build:` merges `*node-build` and sets `args`: `APP: <domain>/<role>`, plus `ENTRY` when the
+   server is not `server.ts`, and `RUNTIME` when it needs ffmpeg or Chromium (the
+   `node.Dockerfile` header lists the knobs). It sets no `command:`; the image's CMD runs the
+   entry. Bind mounts use the long form `{ <<: *bind, source: ..., target: ... }`, whose
+   `create_host_path: false` fails the deploy when the host dir is missing. The runtime image holds the whole built app dir, so a new
    data dir such as menhir's `quizzes/` needs no COPY. Paths the container writes are
    identical-path bind mounts under `/ruby/data/astra-state`; add the dir to `deploy.sh`
    `init_artifacts` and to the `config.kdl` `data` comment. A public host is a

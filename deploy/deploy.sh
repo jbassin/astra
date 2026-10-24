@@ -39,7 +39,7 @@
 #   4. decrypt SOPS on the host and export each secret UPPER_CASED (roadmap Decision E: the
 #      compose `environment:` blocks pass the keys each service needs, and @astra/config's
 #      env-override path resolves them in-container — no sops/age key/secrets in any image)
-#   5. create the data root's dirs as uid 1000 (Docker would create a missing bind source as root)
+#   5. create the data root's dirs as uid 1000 (the compose binds refuse a missing source)
 #   6. export the astra-data clone's HEAD ($ASTRA_CONTENT_ROOT, default
 #      $DATA_ROOT/astra-data = config.kdl data.content-root) into a temp dir and
 #      pass it as ASTRA_DATA_CONTEXT: akasha-frontend and mouthpiece-frontend bake the
@@ -128,19 +128,21 @@ die() {
 }
 
 # The data root's dirs (the layout in config.kdl's `data` comment), created as the host
-# user (uid 1000) before any container starts, so no bind source is ever created as root.
-# Only the postgres/ parent is made here: the one-time migration or the postgres
-# entrypoint owns each PGDATA subdir as uid 70 (0700). The astra-data clone is not made
-# here (it is a git clone; step 6 refuses a missing one). `just artifacts-init` calls this
-# too, so the list lives in one place. Add a dir here (and to the config.kdl comment)
-# when the compose file or config gains a data path.
+# user (uid 1000) before any container starts. Every compose bind mount sets
+# create_host_path: false, so a source missing from this list fails the deploy instead of
+# Docker creating it as root. On a fresh host the PGDATA dirs start empty here and the
+# postgres entrypoint (root) chowns them to uid 70, mode 0700; on an existing host mkdir -p
+# leaves them alone. The astra-data clone is not made here (it is a git clone; step 6
+# refuses a missing one). `just artifacts-init` calls this too, so the list lives in one
+# place. Add a dir here (and to the config.kdl comment) when the compose file or config
+# gains a data path.
 init_artifacts() {
   local r="$DATA_ROOT"
   mkdir -p "$r"/scribe/{incoming,data,tmp} "$r"/linguist/script \
     "$r"/mouthpiece/{episodes,experiments} \
     "$r"/heartwood/requests/logs \
     "$r"/codex/data/{corpus,search} "$r"/menhir \
-    "$r"/audio/{akasha,mouthpiece,orator} "$r"/postgres "$r"/portal-oauth \
+    "$r"/audio/{akasha,mouthpiece,orator} "$r"/postgres/{dagster,orator,weal} "$r"/portal-oauth \
     "$r"/node-exporter/textfile "$r"/deploy/live "$r"/locks
 }
 
