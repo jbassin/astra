@@ -8,10 +8,10 @@ from typing import Any
 import pytest
 from astra_mouthpiece.episodes_index import is_recap, parse_id
 from astra_mouthpiece.hosts import load_hosts
-from astra_mouthpiece.roundtable import cli
-from astra_mouthpiece.roundtable.agent import cutoff_after
-from astra_mouthpiece.roundtable.dossier import Dossier, render_dossier
-from astra_mouthpiece.roundtable.script import (
+from astra_mouthpiece_tools.roundtable import cli
+from astra_mouthpiece_tools.roundtable.agent import cutoff_after
+from astra_mouthpiece_tools.roundtable.dossier import Dossier, render_dossier
+from astra_mouthpiece_tools.roundtable.script import (
     build_roundtable_system_prompt,
     build_roundtable_user_content,
 )

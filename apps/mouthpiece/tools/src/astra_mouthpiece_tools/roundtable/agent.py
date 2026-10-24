@@ -38,11 +38,8 @@ from astra_llm.rlm import (
     make_interpreter,
     sandbox_version,
 )
-from opentelemetry import trace
-from opentelemetry.trace import Status, StatusCode
-
-from ..inputs import episodes_root
-from ..producer.run import (
+from astra_mouthpiece.inputs import episodes_root
+from astra_mouthpiece.producer.run import (
     ARTIFACTS_ROOT,
     _write_json,
     budget_note,
@@ -51,9 +48,12 @@ from ..producer.run import (
     new_run_id,
     wiki_head,
 )
-from ..producer.telemetry import instrument_tool, instruments, log, tracer
-from ..producer.tools import ProducerTools
-from ..roster import build_roster_block
+from astra_mouthpiece.producer.telemetry import instrument_tool, instruments, log, tracer
+from astra_mouthpiece.producer.tools import ProducerTools
+from astra_mouthpiece.roster import build_roster_block
+from opentelemetry import trace
+from opentelemetry.trace import Status, StatusCode
+
 from .dossier import Dossier, render_dossier
 
 #: A campaign-wide survey reads far more than one session's brief: triple the producer's caps.

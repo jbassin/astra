@@ -5,9 +5,8 @@ dossier (no session transcript), then the unchanged Pass B dressing
 from __future__ import annotations
 
 from astra_llm import LlmClient, TextRequest
-
-from ..models import HostConfig, Script
-from ..script import DEFAULT_SCRIPT_MAX_TOKENS, dress_transcript
+from astra_mouthpiece.models import HostConfig, Script
+from astra_mouthpiece.script import DEFAULT_SCRIPT_MAX_TOKENS, dress_transcript
 
 
 def build_roundtable_system_prompt(hosts: HostConfig) -> str:

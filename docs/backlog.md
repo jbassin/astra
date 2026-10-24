@@ -92,7 +92,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Pipeline
 
-- Move the mouthpiece experiment harness and roundtable to a tools package — agent; [ADR 0023](adr/0023-mouthpiece-tools-package.md).
 - A second recording on the same date is ignored — agent; product bug (paydown PIPE-12).
 - Empty transcripts are committed as successes — agent; product bug (PIPE-12).
 - The pronunciation lexicon is never loaded, so the IPA step never runs — agent; product bug (PIPE-14).

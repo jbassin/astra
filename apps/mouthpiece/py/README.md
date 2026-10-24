@@ -86,7 +86,9 @@ producer went live.
 `just mouthpiece-roundtable dossier`, then `script <run-dir>`, then `render <run-dir>` (render
 is LIVE). The special's id must use the recap form `<latest>-recap-of-<first>`, and its digest
 is a plain `{session_id, synopsis}`. Never show the dossier or script to the GM; report stats
-only. The experiment harness and the roundtable are scheduled to move to a tools package.
+only. Both live in `apps/mouthpiece/tools` (`astra-mouthpiece-tools`, ADR 0023), which runs
+from a host checkout and is not in the Dagster image. Its roundtable `render` imports this
+package's private `_provider`, `_voices` and `_atomic_write`, so keep their signatures.
 
 ## Traps
 
