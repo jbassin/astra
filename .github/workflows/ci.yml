@@ -25,6 +25,7 @@ jobs:
       py: ${{ steps.filter.outputs.py }}
       ts: ${{ steps.filter.outputs.ts }}
       corpus: ${{ steps.filter.outputs.corpus }}
+      vellumParity: ${{ steps.filter.outputs.vellumParity }}
       vellumRender: ${{ steps.filter.outputs.vellumRender }}
       codex: ${{ steps.filter.outputs.codex }}
       wealEngine: ${{ steps.filter.outputs.wealEngine }}
@@ -76,6 +77,17 @@ jobs:
             corpus:
               - 'fixtures/astra-data/akasha/content/**'
               - 'libs/ts/vellum-lang/**'
+              - 'justfile'
+              - '.github/**'
+            # Both vellum-lang parsers and every committed .vellum document.
+            vellumParity:
+              - 'libs/py/vellum-lang/**'
+              - 'libs/ts/vellum-lang/**'
+              - 'fixtures/vellum/**'
+              - 'fixtures/astra-data/akasha/content/**'
+              - 'apps/strider/web/content/**'
+              - 'uv.lock'
+              - 'pnpm-lock.yaml'
               - 'justfile'
               - '.github/**'
             # The render output depends on the service + the renderer (gothic) + the
@@ -250,6 +262,19 @@ jobs:
       - uses: ./.github/actions/setup-pnpm
       - run: just corpus-validate
 
+  # Whole-corpus parser parity: the Python and TS vellum-lang produce the same metadata JSON
+  # for every committed .vellum document (the conformance corpus, the fixture wiki and the
+  # strider content). `just vellum-parity-live` runs the same check on the real wiki.
+  vellum-parity:
+    needs: changes
+    if: needs.changes.outputs.vellumParity == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-uv
+      - uses: ./.github/actions/setup-pnpm
+      - run: just vellum-parity
+
   # The vellum-render golden-image gate (0013 D4). Runs in the PINNED container
   # node:24-slim with the Chromium the `playwright` lock pins (same env the
   # vellum-render image uses, so goldens don't drift — the golden contract is
@@ -412,6 +437,7 @@ jobs:
       - routes-check
       - pg-test
       - corpus-validate
+      - vellum-parity
       - vellum-visual-regression
       - codex-row-height-drift-guard
       - codex-virtualization-interaction-guard
