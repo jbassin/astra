@@ -17,6 +17,7 @@
  */
 import { resolve } from "node:path";
 
+import { findPackageRoot } from "@astra/config";
 import { loadMigrations, migrate, type MigrateResult } from "@astra/pg-migrate";
 import postgres from "postgres";
 
@@ -32,7 +33,7 @@ import type {
 import { normalizeTag, slugify, uniqueSlug } from "../lib/text";
 
 /** The numbered schema migrations (`NNNN_name.sql`), applied at boot by {@link PostgresStore.migrate}. */
-export const MIGRATIONS_DIR = resolve(import.meta.dirname, "../../migrations");
+export const MIGRATIONS_DIR = resolve(findPackageRoot(import.meta.dirname), "migrations");
 
 // --- row types: the API sends these rows as they are, so they live with the other API shapes in
 // ../api/types.ts, which the SPA imports too. ApiKey stays here: its hash never leaves the server.

@@ -11,9 +11,9 @@
  *
  *   pnpm run start   # after `pnpm run build`
  */
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
-import { loadConfig } from "@astra/config";
+import { findPackageRoot, loadConfig } from "@astra/config";
 import { logger } from "@astra/observe";
 import { createService } from "@astra/service-kit";
 
@@ -23,7 +23,7 @@ import { RenderService } from "./renderService";
 const cfg = loadConfig();
 const { serviceName, port: PORT } = cfg.vellumRender;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
-const DIST = fileURLToPath(new URL("../dist", import.meta.url));
+const DIST = join(findPackageRoot(import.meta.dirname), "dist");
 
 const log = logger(serviceName);
 

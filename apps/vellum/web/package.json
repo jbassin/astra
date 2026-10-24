@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev --configLoader runner",
-    "build": "vite build --configLoader runner",
-    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs --import @astra/observe/register server.ts",
+    "build": "vite build --configLoader runner && tsdown --config-loader tsx",
+    "start": "node --import ./dist-server/register.mjs dist-server/main.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
@@ -40,6 +40,8 @@
     "@types/react-dom": "catalog:",
     "jsdom": "catalog:",
     "tailwindcss": "catalog:",
+    "tsdown": "catalog:",
+    "tsx": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
   },

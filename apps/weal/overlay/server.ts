@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 
-import { loadConfig } from "@astra/config";
+import { findPackageRoot, loadConfig } from "@astra/config";
 import { exitAfterFlush, logger } from "@astra/observe";
 
 import { startServer } from "./src/server";
@@ -23,9 +23,9 @@ try {
   await exitAfterFlush(1); // never returns
 }
 const rumEndpoint = cfg.telemetry.rumEndpoint;
-// `import.meta.dir` is a Bun-only extension — `import.meta.dirname` is the
-// standard (Node 20.11+/24, and Bun too) equivalent (R3, 0022 S8).
-const distDir = resolve(import.meta.dirname, "dist");
+// From the package root, not `import.meta.dirname`: the same code runs from the app dir
+// and from the dist-server/ bundle.
+const distDir = resolve(findPackageRoot(import.meta.dirname), "dist");
 
 // The kit logs the listening URL and owns the SIGTERM order: stop accepting, drain,
 // close the SSE feeds, stop the heartbeat, then observe flushes.

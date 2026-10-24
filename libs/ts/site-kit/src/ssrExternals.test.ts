@@ -38,8 +38,14 @@ describe("ssrExternals", () => {
       'import f from "./local.js";',
       'import g from "node:fs";',
       "* @typedef {import('unified').Processor} Processor",
+      'const h = __require("cjs-dep");',
+      "const i = require('cjs-other/sub');",
+      "debug(\"processing module require('%s')\", id);",
+      'const j = this.require("not-a-require");',
     ].join("\n");
     expect(bareImports(src).toSorted()).toEqual([
+      "cjs-dep",
+      "cjs-other/sub",
       "lazy",
       "multi-line",
       "re-export",
@@ -67,7 +73,15 @@ describe("ssrExternals", () => {
       path.join(root, "dist", "server", "assets", "chunk.js"),
       'import { parse } from "yaml";\nimport { x } from "@astra/config";\n',
     );
+    // The tsdown server bundle; supports-color is an optional probe inside a try/catch.
+    mkdirSync(path.join(root, "dist-server"));
+    writeFileSync(
+      path.join(root, "dist-server", "main.mjs"),
+      'import { jsx } from "react/jsx-runtime";\nconst c = __require("supports-color");\n' +
+        'const d = __require("ms");\nconst e = require("@astra/config/gen/data.json");\n',
+    );
     expect(undeclaredSsrImports(root)).toEqual([
+      `${path.join("dist-server", "main.mjs")}: ms`,
       `${path.join("dist", "server", "assets", "chunk.js")}: @astra/config`,
       `${path.join("dist", "server", "assets", "chunk.js")}: yaml`,
     ]);

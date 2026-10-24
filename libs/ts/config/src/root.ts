@@ -27,3 +27,14 @@ export function findRepoRoot(startDir: string = import.meta.dirname): string {
   memo.set(startDir, dir);
   return dir;
 }
+
+/** The package an app's code sits in: the nearest ancestor of `startDir` (itself included)
+ * holding a `package.json`. A server finds its own files (`dist/`, `migrations/`) from here,
+ * not from `import.meta.dirname` plus `../`, because the same code runs from its source dir
+ * under vitest and from `dist-server/` in production. Throws when no ancestor matches. */
+export function findPackageRoot(startDir: string): string {
+  for (let dir = resolve(startDir); ; dir = dirname(dir)) {
+    if (existsSync(join(dir, "package.json"))) return dir;
+    if (dirname(dir) === dir) throw new Error(`no ancestor of ${startDir} holds package.json`);
+  }
+}

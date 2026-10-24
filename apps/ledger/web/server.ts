@@ -4,25 +4,20 @@
 // client-assets dir, and serviceName/port from config.kdl. No staticMounts: ledger
 // has no asset volume (it's a single static landing page).
 //
-// Runs on Node 24 (R3, 0022 S4 — the pilot). `--import .../nodeTsResolve.mjs` is a
-// resolve hook that lets Node walk the workspace's extensionless relative imports
-// (`from "./config"`) the same way Vite/Bun already do — see that file for why.
-//
-// Run after `pnpm run build`:  pnpm run start
+// `pnpm run build` bundles this file into `dist-server/main.mjs` (tsdown.config.ts), and
+// the image runs that bundle. Run after `pnpm run build`:  pnpm run start
 
-import { fileURLToPath } from "node:url";
+import path from "node:path";
 
-import { loadConfig } from "@astra/config";
-import { createSsrServer } from "@astra/site-kit";
+import { findPackageRoot, loadConfig } from "@astra/config";
+import { createSsrServer, loadSsrBuild } from "@astra/site-kit";
 
-import ssr from "./dist/server/server.js";
-
-const HERE = fileURLToPath(new URL(".", import.meta.url));
+const APP = findPackageRoot(import.meta.dirname);
 const { serviceName, port } = loadConfig().ledger;
 
 createSsrServer({
   serviceName,
   port,
-  ssr,
-  clientDir: `${HERE}dist/client`,
+  ssr: await loadSsrBuild(APP),
+  clientDir: path.join(APP, "dist", "client"),
 });

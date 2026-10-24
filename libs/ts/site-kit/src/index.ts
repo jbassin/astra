@@ -23,6 +23,7 @@ export { serveFile } from "./sendFile";
 export { ssrExternalsPlugin, undeclaredSsrImports } from "./ssrExternals";
 export {
   createSsrServer,
+  loadSsrBuild,
   type SsrHandler,
   type SsrRoute,
   type SsrServerOptions,

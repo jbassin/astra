@@ -75,7 +75,7 @@ x-build-labels: &build-labels
   org.opencontainers.image.created: ${ASTRA_REVISION_DATE:-unknown}
 
 # Every Node service builds deploy/node.Dockerfile from the repo root; its `args` (APP,
-# ENTRY, CONTENT, RUNTIME) pick the app, and the image's CMD runs `$APP_ENTRY`. Services
+# CONTENT, RUNTIME) pick the app, and the image's CMD runs its server bundle. Services
 # set no `command:`, so the entry has one source (the 2026-10-24 outage was a compose
 # command that had drifted from the image).
 x-node-build: &node-build
@@ -262,7 +262,6 @@ services:
       <<: *node-build
       args:
         APP: weal/bot
-        ENTRY: src/index.ts
     image: astra-weal-bot:local
     container_name: astra-weal-bot
     # weal-db: its store; weal-feed: it POSTs rolls to weal-overlay (weal.feed-ws-url).
@@ -469,7 +468,6 @@ services:
       <<: *node-build
       args:
         APP: vellum/render
-        ENTRY: src/server.ts
         RUNTIME: chromium
     image: astra-vellum-render:local
     container_name: astra-vellum-render
@@ -511,7 +509,6 @@ services:
       <<: *node-build
       args:
         APP: orator/bot
-        ENTRY: src/index.ts
         RUNTIME: ffmpeg
     image: astra-orator-backend:local
     container_name: astra-orator-backend
@@ -588,7 +585,6 @@ services:
       target: portal # adds the built Foundry module
       args:
         APP: portal/server
-        ENTRY: src/index.ts
     image: astra-portal:local
     container_name: astra-portal
     # SOPS secrets injected as env by `just up` (Decision E); config's env-override
@@ -629,7 +625,6 @@ services:
       <<: *node-build
       args:
         APP: portal/headless
-        ENTRY: src/index.ts
         RUNTIME: chromium
     image: astra-portal-headless:local
     container_name: astra-portal-headless

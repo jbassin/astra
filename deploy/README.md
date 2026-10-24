@@ -23,9 +23,11 @@ under `/ruby/data/astra-state/deploy/`; the header of `deploy.sh` has the detail
 `docker compose up`: it starts every service with empty secrets.
 
 Every Node service builds from one file, `node.Dockerfile`; its compose `build.args` pick the app
-(`APP`), the entry (`ENTRY`), the baked datasets (`CONTENT`) and the OS layer (`RUNTIME`: ffmpeg for
-orator, Chromium for vellum-render and portal-headless), and portal adds `target: portal`. The
-runtime images carry production dependencies only. The OS layers sit at the bottom of each image
+(`APP`), the baked datasets (`CONTENT`) and the OS layer (`RUNTIME`: ffmpeg for orator, Chromium
+for vellum-render and portal-headless), and portal adds `target: portal`. Each image runs its
+server bundle, `node --import ./dist-server/register.mjs dist-server/main.mjs`: the app's build
+bundles its server entry and the workspace packages with tsdown, so no TypeScript runs in
+production. The runtime images carry only the app's own production dependencies. The OS layers sit at the bottom of each image
 and take nothing from the repo, so a source, manifest or lockfile change rebuilds only the app
 layers (about 100 MB at most) and the two Chromium services share one ~1 GB browser layer. Keep it
 that way: an `ARG APP` or a repo mount in an `os-*` stage makes every manifest change reinstall

@@ -6,7 +6,14 @@ import { join } from "node:path";
 
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 
-import { defaultConfigFile, findRepoRoot, loadConfig, resolveSopsRef, SecretRef } from "./index";
+import {
+  defaultConfigFile,
+  findPackageRoot,
+  findRepoRoot,
+  loadConfig,
+  resolveSopsRef,
+  SecretRef,
+} from "./index";
 import { defaultSecretsFile } from "./secrets";
 
 const ROOT = findRepoRoot();
@@ -160,6 +167,15 @@ describe("secrets", () => {
   test.skipIf(!SOPS)("absent secret raises only on resolve (lazy)", () => {
     const ref = new SecretRef("sops:astra_test_absent_key");
     expect(() => ref.resolve()).toThrow();
+  });
+});
+
+describe("findPackageRoot", () => {
+  test("finds the nearest package.json at or above the start dir", () => {
+    const pkg = join(ROOT, "libs", "ts", "config");
+    expect(findPackageRoot(pkg)).toBe(pkg);
+    expect(findPackageRoot(join(pkg, "src", "no", "such", "dir"))).toBe(pkg);
+    expect(findPackageRoot(join(ROOT, "ontology", "ontology-config"))).toBe(ROOT);
   });
 });
 

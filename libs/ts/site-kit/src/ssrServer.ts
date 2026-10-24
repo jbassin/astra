@@ -16,6 +16,8 @@
 // request and closes the server on shutdown.
 
 import { stat } from "node:fs/promises";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 import { getTracer, logger, onShutdown } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
@@ -65,6 +67,18 @@ export interface SsrServerOptions {
   staticMounts?: StaticMount[];
   /** Prefix-matched handlers, checked ahead of `staticMounts`, outside the SSR span. */
   routes?: SsrRoute[];
+}
+
+/**
+ * The app's built SSR handler, `<appRoot>/dist/server/server.js`, loaded by path at startup.
+ * server.ts must not `import` it: the server bundle (`dist-server/`, ./serverBundle.ts)
+ * would inline vite's whole SSR build a second time. `appRoot` is the app's package dir
+ * (`findPackageRoot(import.meta.dirname)` from `@astra/config`).
+ */
+export async function loadSsrBuild<T extends SsrHandler = SsrHandler>(appRoot: string): Promise<T> {
+  const url = pathToFileURL(path.join(appRoot, "dist", "server", "server.js")).href;
+  const built = (await import(/* @vite-ignore */ url)) as { default: T };
+  return built.default;
 }
 
 /**
