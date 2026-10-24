@@ -318,6 +318,8 @@ class PortalConfig(_Base):
     # bridge_api_key gates the Foundry module's WS handshake (module -> server).
     bridge_timeout_ms: int = 15000
     max_creates_per_request: int = 10  # the D8 write-gate cap
+    # The Foundry user id the server lets hold the bridge socket; "" = no designation.
+    bridge_user_id: str = ""
     mcp_api_key: SecretRef | None = None
     # 0028 D28-1: the player-facing static key, a second bearer compared alongside
     # mcp_api_key in the /mcp auth branch — resolves the read-only D28-8 tool subset.

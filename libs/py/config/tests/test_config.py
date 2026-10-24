@@ -69,6 +69,7 @@ def test_whole_config_kdl_validates() -> None:
     whole = load_whole_config(CONFIG_KDL_PATH)
     assert isinstance(whole.orator.measure_loudness, bool)
     assert isinstance(whole.portal.mcp_api_key, SecretRef)
+    assert whole.portal.bridge_user_id == "xlC6LfQ7godJVVFf"
 
 
 def test_config_kdl_path_points_at_the_real_file() -> None:

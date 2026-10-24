@@ -2549,6 +2549,15 @@ export const TOOL_HANDLERS: BridgeToolHandlers = {
   "execute-macro": handleExecuteMacro,
 };
 
+/** Reads the `bridge-user-id` setting forgivingly: trims whitespace and strips the
+ * quotes Foundry's console prints around ids, which a GM copying an id tends to paste. */
+export function normalizeUserId(raw: unknown): string {
+  return String(raw ?? "")
+    .trim()
+    .replaceAll(/^["'`]+|["'`]+$/g, "")
+    .trim();
+}
+
 /** Registers every handler into `CONFIG.queries` under its wire method: each bridge tool
  * in {@link TOOL_HANDLERS}, plus the S3 `ping` diagnostic (not an MCP tool; nothing on
  * the server calls it today). Call once, on the `init` hook (Foundry's `CONFIG` global
@@ -2578,7 +2587,7 @@ export async function dispatchQuery(method: string, params: unknown): Promise<un
   if (!game.user?.isGM) {
     throw new BridgeHandlerError("not-gm", "the connected Foundry session isn't a GM");
   }
-  const bridgeUserId = String(game.settings.get(MODULE_ID, SETTING_BRIDGE_USER_ID) ?? "");
+  const bridgeUserId = normalizeUserId(game.settings.get(MODULE_ID, SETTING_BRIDGE_USER_ID));
   if (bridgeUserId && game.user.id !== bridgeUserId) {
     throw new BridgeHandlerError(
       "not-designated",

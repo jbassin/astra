@@ -1,7 +1,13 @@
 import { createServer, type Server as HttpServer } from "node:http";
 import type { AddressInfo } from "node:net";
 
-import type { AuthMeta, McpQuery } from "@astra/portal-shared";
+import {
+  BRIDGE_PROTOCOL,
+  BridgeCloseCode,
+  PORTAL_VERSION,
+  type AuthMeta,
+  type McpQuery,
+} from "@astra/portal-shared";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { WebSocket } from "ws";
 
@@ -30,23 +36,40 @@ function waitForClose(ws: WebSocket): Promise<number> {
   });
 }
 
+function waitForCloseWithReason(ws: WebSocket): Promise<{ code: number; reason: string }> {
+  return new Promise((resolve) => {
+    ws.once("close", (code: number, reason: Buffer) =>
+      resolve({ code, reason: reason.toString() }),
+    );
+  });
+}
+
 /** A fake Foundry module: dials the bridge, completes the D6 handshake, and answers
  * whatever `query` messages a test tells it to (or none, to exercise the timeout path). */
 class FakeModule {
   readonly ws: WebSocket;
+  readonly received: unknown[] = [];
   readonly #opened: Promise<void>;
   #onQuery?: (msg: McpQuery) => void;
 
-  constructor(url: string, apiKey = BRIDGE_API_KEY, meta?: AuthMeta) {
+  /** `protocol: null` sends the legacy (0.4.x) handshake with no protocol fields. */
+  constructor(
+    url: string,
+    apiKey = BRIDGE_API_KEY,
+    meta?: AuthMeta,
+    protocol: number | null = BRIDGE_PROTOCOL,
+  ) {
     this.ws = new WebSocket(url);
+    const versioned = protocol === null ? {} : { protocol, moduleVersion: PORTAL_VERSION };
     this.#opened = new Promise((resolve) => {
       this.ws.once("open", () => {
-        this.ws.send(JSON.stringify({ type: "auth", apiKey, meta }));
+        this.ws.send(JSON.stringify({ type: "auth", apiKey, ...versioned, meta }));
         resolve();
       });
     });
     this.ws.on("message", (data) => {
       const msg: unknown = JSON.parse(data.toString());
+      this.received.push(msg);
       if ((msg as { type?: string }).type === "query") this.#onQuery?.(msg as McpQuery);
     });
   }
@@ -160,10 +183,10 @@ describe("Bridge (spec 0023 S2 — Foundry-free)", () => {
     mod.close();
   });
 
-  it("rejects the wrong bridge key with a policy-violation close, never adopting the socket", async () => {
+  it("rejects the wrong bridge key with the unauthorized close, never adopting the socket", async () => {
     const mod = new FakeModule(url, "wrong-key");
     const code = await waitForClose(mod.ws);
-    expect(code).toBe(1008);
+    expect(code).toBe(BridgeCloseCode.unauthorized);
     expect(bridge.getStatus()).toEqual({ connected: false });
   });
 
@@ -171,7 +194,7 @@ describe("Bridge (spec 0023 S2 — Foundry-free)", () => {
     const ws = new WebSocket(url);
     await new Promise((resolve) => ws.once("open", resolve));
     const code = await waitForClose(ws);
-    expect(code).toBe(1008);
+    expect(code).toBe(BridgeCloseCode.authTimeout);
     expect(bridge.getStatus()).toEqual({ connected: false });
   });
 
@@ -240,5 +263,162 @@ describe("Bridge (spec 0023 S2 — Foundry-free)", () => {
     // it via a real pending query that still times out normally afterward.
     await expect(bridge.sendQuery("portal.ping")).rejects.toMatchObject({ code: "timeout" });
     mod.close();
+  });
+});
+
+describe("Bridge versioned handshake, designation and replacement (svc-2)", () => {
+  const started: Array<{ bridge: Bridge; server: HttpServer }> = [];
+
+  async function start(
+    opts: { bridgeUserId?: string; minProtocol?: number } = {},
+  ): Promise<{ bridge: Bridge; url: string }> {
+    const bridge = new Bridge({
+      bridgeApiKey: BRIDGE_API_KEY,
+      queryTimeoutMs: 5_000, // long, so a prompt rejection proves it wasn't the timeout
+      authWindowMs: 250,
+      heartbeatIntervalMs: 60_000,
+      ...opts,
+    });
+    const { server, url } = await startServer(bridge);
+    started.push({ bridge, server });
+    return { bridge, url };
+  }
+
+  afterEach(async () => {
+    for (const { bridge, server } of started.splice(0)) {
+      bridge.close();
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  });
+
+  it("acknowledges a versioned handshake with auth-ok carrying the server's protocol and version", async () => {
+    const { url } = await start();
+    const mod = new FakeModule(url);
+    await mod.ready();
+    expect(mod.received).toContainEqual({
+      type: "auth-ok",
+      protocol: BRIDGE_PROTOCOL,
+      serverVersion: PORTAL_VERSION,
+    });
+    mod.close();
+  });
+
+  it("accepts a legacy (0.4.x, no protocol) handshake during the rollout and sends it no auth-ok", async () => {
+    const { bridge, url } = await start();
+    const mod = new FakeModule(url, BRIDGE_API_KEY, undefined, null);
+    await mod.ready();
+    expect(bridge.getStatus()).toEqual({ connected: true });
+    expect(mod.received).toEqual([]);
+    mod.onQuery((q) => mod.respond(q.id, { legacy: true }));
+    await expect(bridge.sendQuery("portal.ping")).resolves.toEqual({ legacy: true });
+    mod.close();
+  });
+
+  it("closes a module older than the minimum protocol as module-stale and never adopts it", async () => {
+    const { bridge, url } = await start({ minProtocol: 1 });
+    const mod = new FakeModule(url, BRIDGE_API_KEY, undefined, null);
+    const closed = await waitForCloseWithReason(mod.ws);
+    expect(closed).toEqual({ code: BridgeCloseCode.protocolMismatch, reason: "module-stale" });
+    expect(bridge.getStatus()).toEqual({ connected: false });
+    await expect(bridge.sendQuery("portal.ping")).rejects.toMatchObject({ code: "bridge-offline" });
+  });
+
+  it("reports a newer protocol as server-stale even when the rest of the handshake is unparseable", async () => {
+    const { url } = await start();
+    const ws = new WebSocket(url);
+    ws.once("open", () => {
+      // A future handshake shape: no apiKey field this build knows.
+      ws.send(JSON.stringify({ type: "auth", protocol: BRIDGE_PROTOCOL + 1, credential: "x" }));
+    });
+    const closed = await waitForCloseWithReason(ws);
+    expect(closed).toEqual({ code: BridgeCloseCode.protocolMismatch, reason: "server-stale" });
+  });
+
+  it("closes a message that isn't an auth handshake with the unauthorized code", async () => {
+    const { url } = await start();
+    const ws = new WebSocket(url);
+    ws.once("open", () => ws.send(JSON.stringify({ type: "ping" })));
+    const closed = await waitForCloseWithReason(ws);
+    expect(closed).toEqual({ code: BridgeCloseCode.unauthorized, reason: "malformed" });
+  });
+
+  it("refuses a session that isn't the configured bridge user with not-designated", async () => {
+    const { bridge, url } = await start({ bridgeUserId: "portal-user" });
+    const human = new FakeModule(url, BRIDGE_API_KEY, { userId: "josh", userName: "Josh" });
+    const closed = await waitForCloseWithReason(human.ws);
+    expect(closed).toEqual({ code: BridgeCloseCode.notDesignated, reason: "not-designated" });
+    expect(bridge.getStatus()).toEqual({ connected: false });
+
+    const anonymous = new FakeModule(url); // no userId at all: can't be the designated one
+    expect((await waitForCloseWithReason(anonymous.ws)).code).toBe(BridgeCloseCode.notDesignated);
+
+    const portal = new FakeModule(url, BRIDGE_API_KEY, {
+      userId: "portal-user",
+      userName: "Portal",
+    });
+    await portal.ready();
+    expect(bridge.getStatus()).toMatchObject({ connected: true, userId: "portal-user" });
+    portal.close();
+  });
+
+  it("a non-designated dial never disturbs the designated socket", async () => {
+    const { bridge, url } = await start({ bridgeUserId: "portal-user" });
+    const portal = new FakeModule(url, BRIDGE_API_KEY, { userId: "portal-user" });
+    await portal.ready();
+    const human = new FakeModule(url, BRIDGE_API_KEY, { userId: "josh" });
+    expect(await waitForClose(human.ws)).toBe(BridgeCloseCode.notDesignated);
+
+    portal.onQuery((q) => portal.respond(q.id, { from: "portal" }));
+    await expect(bridge.sendQuery("portal.ping")).resolves.toEqual({ from: "portal" });
+    portal.close();
+  });
+
+  it("without a designation, keeps the first user and refuses a second user as busy", async () => {
+    const { bridge, url } = await start();
+    const first = new FakeModule(url, BRIDGE_API_KEY, { userId: "gm-a" });
+    await first.ready();
+    const second = new FakeModule(url, BRIDGE_API_KEY, { userId: "gm-b" });
+    const closed = await waitForCloseWithReason(second.ws);
+    expect(closed).toEqual({ code: BridgeCloseCode.busy, reason: "busy" });
+    expect(bridge.getStatus()).toMatchObject({ userId: "gm-a" });
+    first.close();
+  });
+
+  it("SVC-18: a same-user reconnect replaces the old socket and fails its in-flight query at once with bridge-replaced", async () => {
+    const { bridge, url } = await start({ bridgeUserId: "portal-user" });
+    const old = new FakeModule(url, BRIDGE_API_KEY, { userId: "portal-user" });
+    await old.ready();
+    const oldClosed = waitForCloseWithReason(old.ws);
+    // The old socket never answers, so only the replacement can settle this.
+    const stranded = bridge.sendQuery("portal.list-scenes").catch((err: unknown) => err);
+    await sleep(20);
+
+    const t0 = Date.now();
+    const fresh = new FakeModule(url, BRIDGE_API_KEY, { userId: "portal-user" });
+    await fresh.ready();
+    await expect(stranded).resolves.toMatchObject({ code: "bridge-replaced" });
+    expect(Date.now() - t0).toBeLessThan(1_000); // not the 5 s query timeout
+    expect(await oldClosed).toEqual({ code: BridgeCloseCode.replaced, reason: "replaced" });
+
+    // The replacement serves new queries normally.
+    fresh.onQuery((q) => fresh.respond(q.id, { from: "fresh" }));
+    await expect(bridge.sendQuery("portal.ping")).resolves.toEqual({ from: "fresh" });
+    fresh.close();
+  });
+
+  it("closes the module with 1001 server-shutdown and fails its in-flight queries as bridge-offline", async () => {
+    const { bridge, url } = await start();
+    const mod = new FakeModule(url);
+    await mod.ready();
+    const closed = waitForCloseWithReason(mod.ws);
+    const pending = bridge.sendQuery("portal.ping").catch((err: unknown) => err);
+    await sleep(20);
+    bridge.close();
+    await expect(pending).resolves.toMatchObject({ code: "bridge-offline" });
+    expect(await closed).toEqual({
+      code: BridgeCloseCode.serverShutdown,
+      reason: "server-shutdown",
+    });
+    expect(bridge.getStatus()).toEqual({ connected: false });
   });
 });

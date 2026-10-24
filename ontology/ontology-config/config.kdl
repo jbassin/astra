@@ -367,6 +367,10 @@ portal {
     // constraint). max-creates-per-request is the D8 write-gate cap.
     bridge-timeout-ms 15000
     max-creates-per-request 10
+    // The one Foundry user allowed to hold the bridge socket: the dedicated "Portal"
+    // GM account that portal-headless logs in. Any other GM session's dial is refused
+    // (close code 4003). "" = no designation: the first user keeps the bridge.
+    bridge-user-id "xlC6LfQ7godJVVFf"
     mcp-api-key ref="sops:portal_mcp_api_key"
     // 0028 D28-1 — the player-facing static key: a second bearer compared alongside
     // mcp-api-key in the /mcp auth branch, resolving to the read-only D28-8 tool

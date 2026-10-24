@@ -21,6 +21,7 @@ import {
   PLAYER_TOOL_NAMES as REGISTRY_PLAYER_TOOL_NAMES,
   PORTAL_TOOL_NAMES,
   PORTAL_TOOLS,
+  PORTAL_VERSION,
   type PortalToolName,
   type ToolResult,
 } from "@astra/portal-shared";
@@ -212,15 +213,10 @@ export function buildMcpServer(
   maxCreatesPerRequest: number,
   auth: AuthContext,
 ): McpServer {
-  // 0026 D-12: bump this version on every portal release. Foundry's module
-  // update-check compares module.json's version string (bumped in lockstep,
-  // module.json), and this server-side McpServer version travels with a real MCP
-  // client's own connection/capability negotiation. 0028 D28-7: 0.3.0 -> 0.4.0
-  // alongside module.json, landing in that S3 code slice. 0028 player-feedback
-  // fast-follow (roll-modifier breakdown touches the module): 0.4.2 -> 0.4.3,
-  // module.json in lockstep. svc-1 (dispatch table from the shared tool registry, no
-  // behaviour change): 0.4.3 -> 0.4.4.
-  const server = new McpServer({ name: "astra-portal", version: "0.4.4" });
+  // One version for the whole portal release (`PORTAL_VERSION` in portal-shared; a
+  // module test pins module.json to it), so MCP clients see the same number Foundry's
+  // update check compares.
+  const server = new McpServer({ name: "astra-portal", version: PORTAL_VERSION });
 
   for (const name of PORTAL_TOOL_NAMES) {
     // Skipping registration entirely (not just hiding it) means the SDK rejects a

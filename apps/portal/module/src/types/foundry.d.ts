@@ -417,6 +417,18 @@ interface FoundryHooks {
 declare var game: FoundryGame;
 declare var CONFIG: FoundryConfig;
 declare var Hooks: FoundryHooks;
+
+/** Foundry's toast area. Absent before the `ready` hook and in the Foundry-free tests,
+ * so callers reach it through `globalThis.ui?.notifications`. */
+interface FoundryNotifications {
+  info(message: string): void;
+  warn(message: string): void;
+  error(message: string): void;
+}
+interface FoundryUi {
+  notifications?: FoundryNotifications;
+}
+declare var ui: FoundryUi | undefined;
 /** Foundry's global UUID resolver (`Compendium.<pack>.<type>.<id>` or a bare world
  * document id) — `get-document` (S4) is its one caller. Same `var` reasoning as above:
  * `handlers.test.ts` stubs it per-test (S4 is Foundry-free too). */

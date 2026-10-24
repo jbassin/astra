@@ -1,8 +1,12 @@
 /**
  * The Foundry-side half of the bridge (spec 0023 D1/D6/S3): dials portal-server's WS,
- * sends the `{type:"auth",apiKey,meta}` handshake, answers heartbeat pings, and routes
- * `query` messages to an injected `dispatch` function, wrapping the result/error into a
- * `McpResponse`.
+ * sends the versioned `{type:"auth",apiKey,protocol,moduleVersion,meta}` handshake,
+ * waits for `auth-ok`, answers heartbeat pings, and routes `query` messages to an
+ * injected `dispatch` function, wrapping the result/error into a `McpResponse`.
+ *
+ * The server refuses a handshake with a distinct close code ({@link BridgeCloseCode});
+ * the close handler maps each code to what this client should do next (redial, back
+ * off to the cap, or stop) and says why in the GM's console.
  *
  * Every environment touchpoint is an injected dependency (`BridgeClientOptions`)
  * instead of a direct reference to the real Foundry/browser globals — so the whole
@@ -11,7 +15,15 @@
  * constraint). `main.ts` supplies the real `WebSocket` global + `handlers.ts`'s
  * `dispatchQuery` (which DOES touch `game`/`CONFIG`) on the `ready` hook.
  */
-import { BridgeMessage, type AuthMsg, type BridgeErrorCode } from "@astra/portal-shared";
+import {
+  BRIDGE_PROTOCOL,
+  BridgeCloseCode,
+  BridgeErrorCode,
+  BridgeMessage,
+  PORTAL_VERSION,
+  PROTOCOL_MISMATCH_MODULE_STALE,
+  type AuthMsg,
+} from "@astra/portal-shared";
 
 /** First reconnect delay. */
 const BASE_BACKOFF_MS = 1_000;
@@ -19,15 +31,15 @@ const BASE_BACKOFF_MS = 1_000;
  * hours — no point retrying every 30s+ faster once it's clearly not coming right back,
  * but no point ever giving up either). */
 const MAX_BACKOFF_MS = 30_000;
-/** A socket that stayed open at least this long counts as "was healthy" — its close is
- * a fresh outage (portal restart, network flap), so the next retry starts from base.
- * A shorter-lived socket (wrong key → the server's near-instant policy close; an
- * unreachable host) keeps climbing instead — without this, a misconfigured key would
- * reconnect-hammer the server at ~1/s forever (open resets, close follows instantly). */
-const HEALTHY_HOLD_MS = 10_000;
 
 export type LogLevel = "info" | "warn" | "error";
 export type LogFn = (level: LogLevel, message: string) => void;
+
+/** The close event fields this client reads (the DOM `CloseEvent` has both). */
+export interface CloseInfo {
+  code: number;
+  reason: string;
+}
 
 /** The slice of the real `WebSocket` instance API `BridgeClient` needs — the browser
  * global satisfies this directly (`main.ts` passes `(url) => new WebSocket(url)` with
@@ -39,7 +51,8 @@ export type LogFn = (level: LogLevel, message: string) => void;
 export interface MinimalWebSocket {
   send(data: string): void;
   close(): void;
-  addEventListener(type: "open" | "close" | "error", listener: () => void): void;
+  addEventListener(type: "open" | "error", listener: () => void): void;
+  addEventListener(type: "close", listener: (ev: CloseInfo) => void): void;
   addEventListener(type: "message", listener: (ev: { data: string }) => void): void;
 }
 
@@ -54,11 +67,14 @@ export interface DispatchError {
   message: string;
 }
 
+/** True only for a thrown value whose `code` is one of the wire's {@link BridgeErrorCode}
+ * members: a Foundry or browser error carrying its own `code` (e.g. `"ENOENT"`) must map
+ * to `foundry-error`, not reach the server as an unknown code. */
 function isDispatchError(err: unknown): err is DispatchError {
   return (
     typeof err === "object" &&
     err !== null &&
-    typeof (err as { code?: unknown }).code === "string" &&
+    BridgeErrorCode.safeParse((err as { code?: unknown }).code).success &&
     typeof (err as { message?: unknown }).message === "string"
   );
 }
@@ -92,21 +108,26 @@ export interface BridgeClientOptions {
   /** The real `WebSocket` constructor in production; a fake in tests. */
   createWebSocket: WebSocketFactory;
   log?: LogFn;
+  /** Shows a message to the GM (Foundry's `ui.notifications`) for refusals a human has
+   * to act on: a wrong key, a stale module or server. */
+  notify?: LogFn;
   /** Injectable timer functions — production uses the real globals; tests use
    * `vi.useFakeTimers()` (which patches the same globals, so these defaults suffice
    * there too — the params exist for tests that want an isolated fake instead). */
   setTimeoutFn?: (fn: () => void, ms: number) => unknown;
   clearTimeoutFn?: (handle: unknown) => void;
-  /** Injectable clock (for the healthy-hold backoff reset); defaults to `Date.now`. */
-  nowFn?: () => number;
 }
 
+/** What the close handler does after a given close. */
+type CloseAction = "redial" | "slow" | "stop";
+
 /**
- * Dials `wsUrl` forever, reconnecting with capped exponential backoff on every close
- * (a real `WebSocket` always follows an `error` with a `close`, so hooking only `close`
- * to schedule the reconnect is sufficient and avoids double-scheduling). Call
- * {@link start} once; {@link stop} tears down the live socket and cancels any pending
- * reconnect timer.
+ * Dials `wsUrl`, reconnecting with capped exponential backoff after each close (a real
+ * `WebSocket` always follows an `error` with a `close`, so hooking only `close` to
+ * schedule the reconnect is sufficient and avoids double-scheduling). The backoff
+ * resets to base on `auth-ok`, so a refused handshake keeps climbing instead of
+ * hammering the server. Call {@link start} once; {@link stop} tears down the live
+ * socket and cancels any pending reconnect timer.
  */
 export class BridgeClient {
   readonly #opts: BridgeClientOptions;
@@ -114,7 +135,8 @@ export class BridgeClient {
   #backoffMs = BASE_BACKOFF_MS;
   #reconnectHandle: unknown = null;
   #stopped = true;
-  #openedAt: number | null = null;
+  /** The last refusal reported, so a refusal repeated every 30 s logs only once. */
+  #lastRefusal: string | null = null;
 
   constructor(opts: BridgeClientOptions) {
     this.#opts = opts;
@@ -147,14 +169,11 @@ export class BridgeClient {
     this.#ws = ws;
 
     ws.addEventListener("open", () => {
-      // The bridge sends no ack for `auth` (bridge.ts adopts the socket silently), so
-      // there is no direct "handshake succeeded" signal client-side. Instead the close
-      // handler resets the backoff only if the socket survived HEALTHY_HOLD_MS — see
-      // that constant for why open-resets would let a wrong key hammer the server.
-      this.#openedAt = this.#now();
       const auth: AuthMsg = {
         type: "auth",
         apiKey: this.#opts.apiKey,
+        protocol: BRIDGE_PROTOCOL,
+        moduleVersion: PORTAL_VERSION,
         meta: this.#opts.meta(),
       };
       ws.send(JSON.stringify(auth));
@@ -168,19 +187,78 @@ export class BridgeClient {
       this.#log("warn", "socket error (the ensuing close drives reconnect)");
     });
 
-    ws.addEventListener("close", () => {
+    ws.addEventListener("close", (ev) => {
       if (this.#ws === ws) this.#ws = null;
-      // Healthy-hold backoff reset — see HEALTHY_HOLD_MS.
-      if (this.#openedAt !== null && this.#now() - this.#openedAt >= HEALTHY_HOLD_MS) {
-        this.#backoffMs = BASE_BACKOFF_MS;
-      }
-      this.#openedAt = null;
-      this.#scheduleReconnect();
+      this.#onClose(ev);
     });
   }
 
-  #now(): number {
-    return (this.#opts.nowFn ?? Date.now)();
+  /** Maps a close code to the next step and reports a refusal once per distinct cause. */
+  #onClose({ code, reason }: CloseInfo): void {
+    const action = this.#classifyClose(code, reason);
+    if (action === "stop") {
+      this.#stopped = true;
+      return;
+    }
+    if (action === "slow") this.#backoffMs = MAX_BACKOFF_MS;
+    this.#scheduleReconnect();
+  }
+
+  #classifyClose(code: number, reason: string): CloseAction {
+    switch (code) {
+      case BridgeCloseCode.unauthorized:
+        this.#refused(
+          "error",
+          `the portal server rejected the bridge key (${reason}). Check the "Portal bridge ` +
+            'API key" module setting.',
+          true,
+        );
+        return "slow";
+      case BridgeCloseCode.protocolMismatch:
+        if (reason === PROTOCOL_MISMATCH_MODULE_STALE) {
+          this.#refused(
+            "error",
+            `the portal module (${PORTAL_VERSION}) is stale for this portal server. Update ` +
+              "the module in Foundry, then reload (F5).",
+            true,
+          );
+          return "stop";
+        }
+        this.#refused(
+          "error",
+          `the portal server is older than this module (${PORTAL_VERSION}, protocol ` +
+            `${BRIDGE_PROTOCOL}). Deploy the matching server; retrying every 30 s.`,
+          true,
+        );
+        return "slow";
+      case BridgeCloseCode.notDesignated:
+        this.#refused(
+          "info",
+          "the portal server designates a different Foundry user to hold the bridge " +
+            "(portal.bridge-user-id); this session stays off it and retries every 30 s.",
+        );
+        return "slow";
+      case BridgeCloseCode.busy:
+        this.#refused("info", "another Foundry user holds the portal bridge; retrying every 30 s.");
+        return "slow";
+      case BridgeCloseCode.replaced:
+        this.#refused(
+          "warn",
+          "a newer session for this Foundry user took over the portal bridge; this tab " +
+            "stops dialing. Reload (F5) to take it back.",
+        );
+        return "stop";
+      default:
+        this.#lastRefusal = null;
+        return "redial";
+    }
+  }
+
+  #refused(level: LogLevel, message: string, notify = false): void {
+    if (this.#lastRefusal === message) return;
+    this.#lastRefusal = message;
+    this.#log(level, message);
+    if (notify) this.#opts.notify?.(level, `Portal: ${message}`);
   }
 
   #scheduleReconnect(): void {
@@ -210,6 +288,14 @@ export class BridgeClient {
     }
     const msg = parsed.data;
     switch (msg.type) {
+      case "auth-ok":
+        this.#backoffMs = BASE_BACKOFF_MS;
+        this.#lastRefusal = null;
+        this.#log(
+          "info",
+          `connected (protocol ${msg.protocol}, portal server ${msg.serverVersion})`,
+        );
+        return;
       case "ping":
         this.#send({ type: "pong" });
         return;

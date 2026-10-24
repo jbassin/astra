@@ -1,9 +1,16 @@
-import type { AuthMsg } from "@astra/portal-shared";
+import { BRIDGE_PROTOCOL, PORTAL_VERSION, type AuthMsg } from "@astra/portal-shared";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { BridgeClient, type MinimalWebSocket, type WebSocketFactory } from "./bridgeClient";
+import {
+  BridgeClient,
+  type BridgeClientOptions,
+  type CloseInfo,
+  type MinimalWebSocket,
+  type WebSocketFactory,
+} from "./bridgeClient";
 
 type Listener = () => void;
+type CloseListener = (ev: CloseInfo) => void;
 type MessageListener = (ev: { data: string }) => void;
 
 /** A fake `WebSocket` — just enough of the `MinimalWebSocket` surface to drive
@@ -12,7 +19,7 @@ type MessageListener = (ev: { data: string }) => void;
 class FakeSocket implements MinimalWebSocket {
   readonly sent: string[] = [];
   #openListener: Listener | null = null;
-  #closeListener: Listener | null = null;
+  #closeListener: CloseListener | null = null;
   #errorListener: Listener | null = null;
   #messageListener: MessageListener | null = null;
 
@@ -24,13 +31,14 @@ class FakeSocket implements MinimalWebSocket {
     // Nothing to simulate here — tests drive disconnects via remoteClose().
   }
 
-  addEventListener(type: "open" | "close" | "error", listener: Listener): void;
+  addEventListener(type: "open" | "error", listener: Listener): void;
+  addEventListener(type: "close", listener: CloseListener): void;
   addEventListener(type: "message", listener: MessageListener): void;
-  addEventListener(type: string, listener: Listener | MessageListener): void {
+  addEventListener(type: string, listener: Listener | CloseListener | MessageListener): void {
     if (type === "open") this.#openListener = listener as Listener;
-    else if (type === "close") this.#closeListener = listener as Listener;
+    else if (type === "close") this.#closeListener = listener as CloseListener;
     else if (type === "error") this.#errorListener = listener as Listener;
-    else if (type === "message") this.#messageListener = listener;
+    else if (type === "message") this.#messageListener = listener as MessageListener;
   }
 
   /** Test helper: simulate the socket finishing its opening handshake. */
@@ -48,9 +56,10 @@ class FakeSocket implements MinimalWebSocket {
     this.#messageListener?.({ data: raw });
   }
 
-  /** Test helper: simulate the server (or the network) dropping the connection. */
-  remoteClose(): void {
-    this.#closeListener?.();
+  /** Test helper: simulate the server (or the network) dropping the connection; the
+   * default 1006 is an abnormal close with no close frame. */
+  remoteClose(code = 1006, reason = ""): void {
+    this.#closeListener?.({ code, reason });
   }
 
   /** Test helper: simulate a socket error (the ensuing close still drives reconnect). */
@@ -89,6 +98,22 @@ function socketAt(sockets: FakeSocket[], index: number): FakeSocket {
   return socket;
 }
 
+const AUTH_OK = { type: "auth-ok", protocol: BRIDGE_PROTOCOL, serverVersion: PORTAL_VERSION };
+
+function newClient(
+  factory: WebSocketFactory,
+  overrides: Partial<BridgeClientOptions> = {},
+): BridgeClient {
+  return new BridgeClient({
+    wsUrl: "wss://portal.iridi.cc/ws",
+    apiKey: "k",
+    meta: () => undefined,
+    dispatch: async () => ({}),
+    createWebSocket: factory,
+    ...overrides,
+  });
+}
+
 const META: AuthMsg["meta"] = {
   worldId: "faerrin",
   world: "Faerrin",
@@ -118,7 +143,13 @@ describe("BridgeClient (spec 0023 S3 — Foundry-free)", () => {
     socket.open();
 
     expect(socket.sent).toHaveLength(1);
-    expect(socket.lastSent()).toEqual({ type: "auth", apiKey: "bridge-key", meta: META });
+    expect(socket.lastSent()).toEqual({
+      type: "auth",
+      apiKey: "bridge-key",
+      protocol: BRIDGE_PROTOCOL,
+      moduleVersion: PORTAL_VERSION,
+      meta: META,
+    });
     client.stop();
   });
 
@@ -309,26 +340,18 @@ describe("BridgeClient (spec 0023 S3 — Foundry-free)", () => {
     client.stop();
   });
 
-  it("resets the backoff to base after a healthy hold (≥10s open), not on open alone", () => {
-    vi.useFakeTimers(); // fakes Date too, so the healthy-hold clock advances with the timers
+  it("resets the backoff to base on auth-ok, not on open alone", () => {
+    vi.useFakeTimers();
     const { factory, sockets } = fakeFactory();
-    const client = new BridgeClient({
-      wsUrl: "wss://portal.iridi.cc/ws",
-      apiKey: "k",
-      meta: () => undefined,
-      dispatch: async () => ({}),
-      createWebSocket: factory,
-    });
+    const client = newClient(factory);
 
     client.start();
-    socketAt(sockets, 0).remoteClose(); // schedules the 1st reconnect at 1000ms; next backoff = 2000ms
+    socketAt(sockets, 0).remoteClose(); // 1st reconnect at 1000ms; next backoff = 2000ms
     vi.advanceTimersByTime(1000);
-    expect(sockets).toHaveLength(2);
-
     const reopened = socketAt(sockets, 1);
     reopened.open();
-    vi.advanceTimersByTime(10_000); // survives the healthy hold → this close is a fresh outage
-    reopened.remoteClose();
+    reopened.receive(AUTH_OK);
+    reopened.remoteClose(); // a fresh outage after a good handshake
     vi.advanceTimersByTime(999);
     expect(sockets).toHaveLength(2);
     vi.advanceTimersByTime(1);
@@ -337,30 +360,137 @@ describe("BridgeClient (spec 0023 S3 — Foundry-free)", () => {
     client.stop();
   });
 
-  it("keeps climbing when the socket dies young (wrong key must not hammer at ~1/s)", () => {
+  it("keeps climbing when a socket closes before auth-ok (open alone never resets)", () => {
     vi.useFakeTimers();
     const { factory, sockets } = fakeFactory();
-    const client = new BridgeClient({
-      wsUrl: "wss://portal.iridi.cc/ws",
-      apiKey: "wrong-key",
-      meta: () => undefined,
-      dispatch: async () => ({}),
-      createWebSocket: factory,
-    });
+    const client = newClient(factory);
 
     client.start();
     socketAt(sockets, 0).remoteClose(); // next backoff = 2000ms
     vi.advanceTimersByTime(1000);
-    expect(sockets).toHaveLength(2);
-
     const reopened = socketAt(sockets, 1);
-    reopened.open(); // the server's policy close lands almost immediately (bad key)
-    reopened.remoteClose(); // held < HEALTHY_HOLD_MS → NO reset
+    reopened.open();
+    reopened.remoteClose(); // no auth-ok → no reset
     vi.advanceTimersByTime(1999);
-    expect(sockets).toHaveLength(2); // still waiting — 2000ms, not a reset 1000ms
+    expect(sockets).toHaveLength(2);
     vi.advanceTimersByTime(1);
     expect(sockets).toHaveLength(3);
 
+    client.stop();
+  });
+
+  it.each([
+    ["a wrong key", 4001, "bad-key", "error"],
+    ["a server older than the module", 4002, "server-stale", "error"],
+    ["a different designated user", 4003, "not-designated", "info"],
+    ["another user holding the bridge", 4006, "busy", "info"],
+  ] as const)(
+    "backs off straight to the 30s cap after %s (close %i)",
+    (_label, code, reason, level) => {
+      vi.useFakeTimers();
+      const { factory, sockets } = fakeFactory();
+      const log = vi.fn();
+      const client = newClient(factory, { log });
+
+      client.start();
+      const socket = socketAt(sockets, 0);
+      socket.open();
+      socket.remoteClose(code, reason);
+      vi.advanceTimersByTime(29_999);
+      expect(sockets).toHaveLength(1);
+      vi.advanceTimersByTime(1);
+      expect(sockets).toHaveLength(2);
+      expect(log).toHaveBeenCalledWith(level, expect.stringContaining("bridge client:"));
+
+      // The same refusal again logs nothing new: a 30 s retry loop must not spam.
+      const isRefusal = ([, m]: unknown[]) => typeof m === "string" && !m.includes("reconnecting");
+      const refusals = log.mock.calls.filter(isRefusal).length;
+      socketAt(sockets, 1).remoteClose(code, reason);
+      expect(log.mock.calls.filter(isRefusal)).toHaveLength(refusals);
+
+      client.stop();
+    },
+  );
+
+  it("tells the GM the module is stale and stops dialing on a module-stale close", () => {
+    vi.useFakeTimers();
+    const { factory, sockets } = fakeFactory();
+    const log = vi.fn();
+    const notify = vi.fn();
+    const client = newClient(factory, { log, notify });
+
+    client.start();
+    socketAt(sockets, 0).open();
+    socketAt(sockets, 0).remoteClose(4002, "module-stale");
+    vi.advanceTimersByTime(120_000);
+    expect(sockets).toHaveLength(1);
+    expect(notify).toHaveBeenCalledWith("error", expect.stringMatching(/stale.*reload/is));
+    expect(log).toHaveBeenCalledWith("error", expect.stringContaining("stale"));
+    client.stop();
+  });
+
+  it("stops dialing when a newer session for the same user replaced this socket", () => {
+    vi.useFakeTimers();
+    const { factory, sockets } = fakeFactory();
+    const log = vi.fn();
+    const client = newClient(factory, { log });
+
+    client.start();
+    socketAt(sockets, 0).open();
+    socketAt(sockets, 0).receive(AUTH_OK);
+    socketAt(sockets, 0).remoteClose(4004, "replaced");
+    vi.advanceTimersByTime(120_000);
+    expect(sockets).toHaveLength(1);
+    expect(log).toHaveBeenCalledWith("warn", expect.stringContaining("newer session"));
+    client.stop();
+  });
+
+  it("notifies the GM about a wrong key", () => {
+    vi.useFakeTimers();
+    const { factory, sockets } = fakeFactory();
+    const notify = vi.fn();
+    const client = newClient(factory, { notify });
+
+    client.start();
+    socketAt(sockets, 0).open();
+    socketAt(sockets, 0).remoteClose(4001, "bad-key");
+    expect(notify).toHaveBeenCalledWith("error", expect.stringContaining("bridge key"));
+    client.stop();
+  });
+
+  it("redials from base after a server shutdown (1001) that followed a good handshake", () => {
+    vi.useFakeTimers();
+    const { factory, sockets } = fakeFactory();
+    const client = newClient(factory);
+
+    client.start();
+    socketAt(sockets, 0).open();
+    socketAt(sockets, 0).receive(AUTH_OK);
+    socketAt(sockets, 0).remoteClose(1001, "server-shutdown");
+    vi.advanceTimersByTime(1000);
+    expect(sockets).toHaveLength(2);
+    client.stop();
+  });
+
+  it("maps a thrown error whose code isn't a bridge error code to foundry-error", async () => {
+    const { factory, sockets } = fakeFactory();
+    const dispatch = vi
+      .fn()
+      .mockRejectedValue(Object.assign(new Error("no such file"), { code: "ENOENT" }));
+    const client = newClient(factory, { dispatch });
+
+    client.start();
+    const socket = socketAt(sockets, 0);
+    socket.open();
+    socket.receive({ type: "query", id: "q-4", method: "portal.ping" });
+    await flush();
+
+    expect(socket.lastSent()).toEqual({
+      type: "response",
+      id: "q-4",
+      ok: false,
+      error: { code: "foundry-error", message: "no such file" },
+    });
     client.stop();
   });
 

@@ -20,7 +20,7 @@ import {
   SETTING_BRIDGE_USER_ID,
   SETTING_WS_URL,
 } from "./constants";
-import { dispatchQuery, registerHandlers } from "./handlers";
+import { dispatchQuery, normalizeUserId, registerHandlers } from "./handlers";
 
 function registerSettings(): void {
   game.settings.register(MODULE_ID, SETTING_WS_URL, {
@@ -44,8 +44,9 @@ function registerSettings(): void {
   game.settings.register(MODULE_ID, SETTING_BRIDGE_USER_ID, {
     name: "Portal bridge designated dialer",
     hint:
-      "Only the Foundry user with this id dials the portal bridge; empty = any GM. " +
-      "Changes take effect on your next reload (F5).",
+      "Optional local opt-out: when set, only the Foundry user with this id dials the " +
+      "portal bridge. The portal server decides which user may hold the bridge " +
+      "(portal.bridge-user-id) regardless. Changes take effect on your next reload (F5).",
     scope: "world",
     config: true,
     type: String,
@@ -77,6 +78,10 @@ function registerSettings(): void {
   });
 }
 
+function notify(level: "info" | "warn" | "error", message: string): void {
+  globalThis.ui?.notifications?.[level](message);
+}
+
 function consoleLog(level: "info" | "warn" | "error", message: string): void {
   const line = `[${MODULE_ID}] ${message}`;
   // oxlint-disable-next-line no-console -- Foundry module: the browser console is the GM's log
@@ -104,7 +109,7 @@ Hooks.once("ready", () => {
   // 0027 D27-2/D27-9: the designated-dialer gate, right after the isGM gate above —
   // empty (default) is purely additive (today's any-GM behavior), so this whole block
   // is a no-op until the GM sets the setting.
-  const bridgeUserId = String(game.settings.get(MODULE_ID, SETTING_BRIDGE_USER_ID) ?? "");
+  const bridgeUserId = normalizeUserId(game.settings.get(MODULE_ID, SETTING_BRIDGE_USER_ID));
   if (bridgeUserId) {
     const designated = game.users.get(bridgeUserId);
     if (!designated) {
@@ -150,6 +155,7 @@ Hooks.once("ready", () => {
     dispatch: dispatchQuery,
     createWebSocket: (url) => new WebSocket(url),
     log: consoleLog,
+    notify,
   });
   client.start();
 });

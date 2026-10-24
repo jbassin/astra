@@ -55,6 +55,7 @@ describe("the real config.kdl", () => {
     expect(typeof cfg.orator.measureLoudness).toBe("boolean");
     expect(cfg.portal.mcpApiKey).toBeInstanceOf(SecretRef);
     expect(cfg.portal.mcpApiKey?.configKey).toBe("portal.mcp-api-key");
+    expect(cfg.portal.bridgeUserId).toBe("xlC6LfQ7godJVVFf"); // the headless Portal user
     expect("heartwood" in cfg).toBe(false); // a Python-only block is dropped
   });
 });

@@ -110,6 +110,18 @@ describe("portal-module main — ready hook designated-dialer gate (0027 S1, Fou
     expect(opts?.meta()).toMatchObject({ userId: "portal-bot", userName: "Portal" });
   });
 
+  it("bridge-user-id pasted with console quotes and spaces still matches", () => {
+    stubGame({ userId: "portal-bot", userName: "Portal", bridgeUserId: ' "portal-bot" ' });
+    readyHook();
+    expect(BridgeClientMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("passes a GM notifier to the client", () => {
+    stubGame({ userId: "josh", userName: "Josh" });
+    readyHook();
+    expect(BridgeClientMock.mock.calls[0]?.[0].notify).toBeTypeOf("function");
+  });
+
   it("bridge-user-id set + non-matching id: never constructs a BridgeClient, logs info", () => {
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     stubGame({

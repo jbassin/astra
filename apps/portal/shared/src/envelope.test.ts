@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import {
   AuthMsg,
+  AuthProbe,
+  BridgeCloseCode,
   BridgeErrorCode,
   BridgeMessage,
   McpQuery,
@@ -113,8 +115,29 @@ describe("portal-shared bridge envelope", () => {
         // 0028 S2 D28-4/D28-13 — additive, wire shape untouched.
         "not-a-player-character",
         "ambiguous-name",
+        // svc-2 SVC-18 — server-side only (a replaced socket's in-flight queries).
+        "bridge-replaced",
       ].sort(),
     );
+  });
+
+  it("round-trips a versioned auth handshake and the server's auth-ok", () => {
+    const auth = { type: "auth", apiKey: "k", protocol: 1, moduleVersion: "0.5.0" };
+    expect(BridgeMessage.parse(auth)).toEqual(auth);
+    const ok = { type: "auth-ok", protocol: 1, serverVersion: "0.5.0" };
+    expect(BridgeMessage.parse(ok)).toEqual(ok);
+  });
+
+  it("probes the protocol of a handshake whose other fields this build can't parse", () => {
+    const future = { type: "auth", protocol: 7, credential: { kind: "new" } };
+    expect(AuthMsg.safeParse(future).success).toBe(false);
+    expect(AuthProbe.parse(future)).toMatchObject({ protocol: 7 });
+    expect(AuthProbe.parse({ type: "auth", apiKey: "k" }).protocol).toBeUndefined();
+  });
+
+  it("keeps every bridge close code distinct", () => {
+    const codes = Object.values(BridgeCloseCode);
+    expect(new Set(codes).size).toBe(codes.length);
   });
 
   it("rejects an unknown discriminator", () => {

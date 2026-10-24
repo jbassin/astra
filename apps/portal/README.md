@@ -51,7 +51,8 @@ Config is the `portal` and `portal-headless` blocks in `config.kdl`. Secrets: `p
      reload module code.
   2. Human GM tabs must reload (F5); the module dials only on Foundry's `ready` hook.
   3. MCP clients must reconnect (`/mcp` in Claude Code) to see a changed tool list.
-  A server-only redeploy needs none of this: the module redials within about a minute.
+  A server-only redeploy needs none of this: the module redials on its own (a 0.5.0+ module within
+  seconds, since the server closes with 1001 on shutdown).
 - **Fallback install** (file drop): `just portal-module-install` builds the module and copies it
   into the Foundry data dir. It fails with EACCES today because Foundry's own installer leaves that
   directory owned by root (open follow-up); copy as root instead.
@@ -65,9 +66,42 @@ Config is the `portal` and `portal-headless` blocks in `config.kdl`. Secrets: `p
   key, also paste the new value into the module setting and reload the GM sessions.
 - **Connect claude.ai:** Add custom connector, URL `https://portal.iridi.cc/mcp`, no client id or
   secret; consent with the admin key.
-- **Designate the dialer before starting a second GM session.** Set the world setting
-  `bridge-user-id` to the Portal user's id first, then start `portal-headless`. Otherwise two GM
-  sessions take turns replacing each other's socket forever.
+- **The server decides which Foundry user holds the bridge:** `portal.bridge-user-id` in
+  `config.kdl` (today the dedicated "Portal" account that `portal-headless` logs in). Any other GM
+  session's dial is refused with close code 4003 and retries every 30 s, so a human GM tab can
+  stay open without a fight. With the value empty, the first user to connect keeps the bridge and
+  a second user gets 4006 (busy). A same-user reconnect (a tab reload) replaces the old socket.
+  The module's own `bridge-user-id` world setting is now only a local opt-out.
+
+## Bridge handshake
+
+The module sends `{type:"auth", apiKey, protocol, moduleVersion, meta}` on connect. The server
+checks the protocol first, then the key, then designation, and either replies `auth-ok` (with
+its protocol and `serverVersion`) or closes the socket with one of these codes. Both sides log
+the reason; the module's console line starts `[portal] bridge client:`.
+
+| Code | Reason | Module then |
+|---|---|---|
+| 4001 | `bad-key` or `malformed` handshake | notifies the GM, retries every 30 s |
+| 4002 | `module-stale` | notifies the GM "module is stale, update and reload", stops dialing |
+| 4002 | `server-stale` (module newer than server) | notifies the GM, retries every 30 s |
+| 4003 | `not-designated` | retries every 30 s |
+| 4004 | `replaced` (a newer socket for the same user) | stops dialing |
+| 4005 | `timeout` (no auth message within 5 s) | redials with backoff |
+| 4006 | `busy` (no designation, another user connected) | retries every 30 s |
+| 1001 | `server-shutdown` | redials with backoff |
+
+The backoff resets to 1 s on `auth-ok`. Queries in flight on a replaced socket fail at once with
+the typed error `bridge-replaced`; on a dropped socket or a shutdown, with `bridge-offline`.
+
+`PORTAL_VERSION` and `BRIDGE_PROTOCOL` in `shared/src/envelope.ts` are the one source for the
+release and protocol versions; a module test pins `module/module.json`'s `version` to
+`PORTAL_VERSION`. Bump `BRIDGE_PROTOCOL` on any envelope change an older peer cannot parse.
+
+**Legacy window (0.5.0 only):** the server still accepts the unversioned 0.4.x handshake as
+protocol 0 (WARN log `legacy (protocol 0) portal module connected`), so the server can deploy
+before the 0.5.0 module is installed. The next portal release sets `MIN_BRIDGE_PROTOCOL` to 1;
+from then on a 0.4.x module is closed as `module-stale`.
 
 ## Adding or changing a tool
 
@@ -116,16 +150,15 @@ also needs a renderer in `RENDERERS` (`server/src/mcp.ts`).
 - **The module dials only on Foundry's `ready` hook.** After changing the WebSocket URL or bridge key
   setting, the GM must reload; until then `bridge-status` reports disconnected and portal logs no
   connection attempts.
-- **Backoff resets only after the socket survives 10 s** (`HEALTHY_HOLD_MS`), never on open. The
-  bridge sends no auth acknowledgement, so a reset on open would let a wrong key reconnect once a
-  second forever.
-- **`not-designated` while `bridge-status` looks connected means a mistyped `bridge-user-id`.** The
-  Foundry console shows ids with quotes; pasting those or a stray space breaks the exact match.
-  Check with `game.settings.get("portal", "bridge-user-id")`. The setting is read per query, so a
-  fix needs no reload.
-- **Roll back server and module together.** The handshake is strict, so an old server rejects a newer
-  module's handshake, and the rejection is reported as `bad-key` (it looks like a leaked key but is
-  version skew). Recover by installing the matching module zip and reloading.
+- **A tool error `not-designated` while `bridge-status` looks connected means the module's local
+  `bridge-user-id` setting names another user.** The module trims spaces and quotes from it. Check
+  with `game.settings.get("portal", "bridge-user-id")`, or clear it: the server's
+  `portal.bridge-user-id` already decides who holds the bridge. The setting is read per query, so
+  a fix needs no reload.
+- **A 0.5.0+ module needs a 0.5.0+ server.** A pre-0.5.0 server parses the handshake strictly and
+  reports the new `protocol` field as `bad-key` (it looks like a leaked key but is version skew).
+  So deploy the server first, and roll back server and module together. From 0.5.0 on, skew in
+  either direction closes with 4002 and says which side is stale.
 - **pf2e data lives on different sides of the document.** Live `game.messages` rolls are Roll
   objects, not JSON strings (normalize with `JSON.parse(JSON.stringify(x))`); `hp.max` exists only on
   the live actor; hero points exist only in source data (pf2e zeroes the live value); a spellcasting
