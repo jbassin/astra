@@ -25,7 +25,7 @@
     "**/*.sdPlugin/**",
     "**/codex/web/data/**",
     "**/codex/web/fixtures/**",
-    "**/codex/web/books/**",
+    "**/assay/py/books/**",
     "**/assay/py/vendor/**",
     "**/assay/py/homebrew/**",
     "**/weal-engine/gen/**",

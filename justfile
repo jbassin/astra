@@ -716,6 +716,31 @@ codex-real-corpus:
     pnpm --filter @astra/codex build
     cd apps/codex/web && CODEX_REAL_CORPUS=1 pnpm exec vitest run src/realCorpus.test.ts
 
+# --- assay books (ADR 0018) ---
+
+# Build the Liturgy Vol.2 book: regenerate the committed .tex from the homebrew store, then
+# compile the PDF with tectonic into apps/assay/py/books/liturgy_vol2/. The PDF is a build
+# output and git-ignored (ADR 0018); commit the .tex diff. tectonic is a host tool, not in
+# mise.toml; the recipe refuses any version but the one the committed .tex was proven with.
+# `just book --no-compile` writes only the .tex.
+book *flags:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{justfile_directory()}}"
+    want="0.17.0"
+    if [[ " {{flags}} " != *" --no-compile "* ]]; then
+      if ! command -v tectonic >/dev/null; then
+        echo "book: tectonic is not on PATH (want $want; cargo install tectonic --version $want)" >&2
+        exit 1
+      fi
+      have="$(tectonic --version | awk '{print $2}')"
+      if [ "$have" != "$want" ]; then
+        echo "book: tectonic $have found, want $want" >&2
+        exit 1
+      fi
+    fi
+    OTEL_SDK_DISABLED=true {{uv_bin}} run --frozen assay export-book {{flags}}
+
 # --- weal engine (0032 D32-13) ---
 
 # Rebuild the committed @astra/weal-engine wasm artifact from

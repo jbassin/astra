@@ -14,9 +14,9 @@ just doctor                  # read-only check: tool versions vs mise.toml, bind
 
 `mise.toml` pins pnpm, uv, just, sops, deno, jq and the wasm tools. Python comes from
 `.python-version` (3.12) and Node from `.node-version` (24). Rust (rustup reads the crate's
-`rust-toolchain.toml`) and tectonic (assay's book export) are not in `mise.toml`; install them by hand
-when you need them. Until mise is active in your shell, pyenv shims fail on a bare `python3` inside
-the repo; use `uv run python`.
+`rust-toolchain.toml`) and tectonic 0.17.0 (`just book`) are not in `mise.toml`; install them by
+hand when you need them. Until mise is active in your shell, pyenv shims fail on a bare `python3`
+inside the repo; use `uv run python`.
 
 ## Everyday commands
 

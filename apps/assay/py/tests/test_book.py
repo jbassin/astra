@@ -5,7 +5,7 @@ Converter tests load REAL docs from the committed canonical store
 ``apps/assay/py/homebrew/spells/`` (read-only, same convention as
 ``test_homebrew.py`` reading committed ``results/``); assembly tests build
 the whole book with a temporary (empty or seeded) Track-B ``content/`` dir
-so the real ``apps/codex/web/books/liturgy_vol2/content/`` is never touched.
+so the real ``apps/assay/py/books/liturgy_vol2/content/`` is never touched.
 
 These tests never invoke ``tectonic`` — the emitter is tested standalone;
 compiling the ``.tex`` happens only via the CLI (or manually).
@@ -543,3 +543,15 @@ def test_frontmatter_art_fail_soft(tmp_path: Path) -> None:
     assert "\\readingartimage{assets/img/processed/fm-reading.jpg}" in with_art.tex
     assert with_art.report.art_real == ["fm-cover", "fm-reading"]
     assert with_art.report.art_placeholder == []
+
+
+# ---------------------------------------------------------------------------
+# Freshness gate — the committed .tex is what the store and content build to.
+# ---------------------------------------------------------------------------
+
+
+def test_committed_tex_matches_a_fresh_build() -> None:
+    # The PDF is a git-ignored build output (ADR 0018), so the committed .tex is the
+    # reviewable record of the book. A store or content edit without `just book` fails here.
+    committed = (book.DEFAULT_OUT_DIR / book.BOOK_TEX_NAME).read_text(encoding="utf-8")
+    assert book.build_book().tex == committed, "stale book .tex: run `just book --no-compile`"

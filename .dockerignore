@@ -62,9 +62,9 @@ apps/akasha/web/public/index.xml
 apps/akasha/web/public/sitemap.xml
 apps/mouthpiece/web/public/episodes.json
 
-# --- Host-only material inside source trees: codex's book sources and art (37 MB; no build
-# reads them), codex's fixture corpus (tests only; a built server never serves it, it fails
-# closed without the real corpus) and assay's output. ---
-apps/codex/web/books
+# --- Host-only material inside source trees: assay's book sources and art (37 MB; no image
+# builds the book), codex's fixture corpus (tests only; a built server never serves it, it
+# fails closed without the real corpus) and assay's output. ---
+apps/assay/py/books
 apps/codex/web/fixtures
 apps/assay/py/out
