@@ -11,8 +11,8 @@
  * surface of its own. */
 export const SERVICE_NAME = "astra.portal-headless";
 
-/** First backoff delay for the classify/login probe loop. Mirrors the module's
- * `bridgeClient` constants exactly (`apps/portal/module/src/bridgeClient.ts`) — same
+/** First backoff delay for the classify/login probe loop. Same values as the module's
+ * `bridgeClient` backoff (`apps/portal/module/src/bridgeClient.ts`) — same
  * "never give up, but don't hammer" shape, applied here to Foundry `/join` instead of
  * the bridge WS. */
 export const BASE_BACKOFF_MS = 1_000;

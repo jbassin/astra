@@ -95,7 +95,7 @@ function sha256Hex(value: string): string {
  * `crypto.timingSafeEqual` throws on) without leaking timing information beyond
  * "same length or not" — an attacker who can only observe candidate-length
  * mismatches learns nothing about the actual key. */
-function constantTimeEquals(candidate: string, expected: string): boolean {
+export function constantTimeEquals(candidate: string, expected: string): boolean {
   const a = Buffer.from(candidate);
   const b = Buffer.from(expected);
   if (a.length !== b.length) return false;

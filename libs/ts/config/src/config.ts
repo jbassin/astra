@@ -208,6 +208,8 @@ const Portal = z
     // bridgeApiKey gates the Foundry module's WS handshake (module -> server).
     bridgeTimeoutMs: z.number().default(15000),
     maxCreatesPerRequest: z.number().default(10), // the D8 write-gate cap
+    // The Foundry user id the server lets hold the bridge socket; "" = no designation.
+    bridgeUserId: z.string().default(""),
     mcpApiKey: secret(),
     // 0028 D28-1: the player-facing static key, a second bearer compared alongside
     // mcpApiKey in the /mcp auth branch — resolves the read-only D28-8 tool subset.

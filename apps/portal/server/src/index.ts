@@ -18,7 +18,7 @@ import { fileURLToPath } from "node:url";
 
 import { loadConfig } from "@astra/config";
 
-import { listen } from "./server";
+import { listen, type PortalServerHandle } from "./server";
 
 // The Foundry module's build output (S6/D11) — `apps/portal/module/{module.json,
 // dist/main.js}`, a sibling of `apps/portal/server`. Resolved relative to THIS
@@ -29,6 +29,8 @@ import { listen } from "./server";
 // path alongside `apps/portal/server` in the image, so the same relative walk
 // resolves there too — no container-vs-local branch needed.
 const MODULE_DIR = fileURLToPath(new URL("../../module", import.meta.url));
+
+let server: PortalServerHandle | undefined;
 
 async function main(): Promise<void> {
   const cfg = loadConfig();
@@ -42,12 +44,13 @@ async function main(): Promise<void> {
     );
   }
 
-  await listen({
+  server = await listen({
     port: cfg.portal.port,
     mcpApiKey: mcpApiKey.require(),
     playerMcpApiKey: playerMcpApiKey.require(),
     bridgeApiKey: bridgeApiKey.require(),
     bridgeTimeoutMs: cfg.portal.bridgeTimeoutMs,
+    bridgeUserId: cfg.portal.bridgeUserId,
     maxCreatesPerRequest: cfg.portal.maxCreatesPerRequest,
     publicOrigin: cfg.portal.publicOrigin,
     moduleDir: MODULE_DIR,
@@ -63,9 +66,11 @@ main().catch((e) => {
   process.exit(1);
 });
 
-// Flush buffered spans/metrics/logs before the container stops (compose SIGTERM).
+// On compose SIGTERM: close the bridge socket with the shutdown close code (the module
+// then redials normally instead of guessing), then flush buffered spans/metrics/logs.
 for (const sig of ["SIGINT", "SIGTERM"] as const) {
   process.once(sig, () => {
+    server?.bridge.close();
     void telemetry.shutdown().finally(() => process.exit(0));
   });
 }

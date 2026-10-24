@@ -38,6 +38,8 @@ export const BridgeErrorCode = z.enum([
   "ambiguous-name", // query-player's D28-13 name resolution matched more than one
   // candidate (neither an exact nor an unambiguous-prefix match) — the error message
   // lists the candidates so the caller can retry with a uuid instead
+  "bridge-replaced", // the query was in flight on a bridge socket that a newer socket
+  // for the same Foundry user replaced (a GM tab reload mid-call); retry it (SVC-18)
 ]);
 export type BridgeErrorCode = z.infer<typeof BridgeErrorCode>;
 
@@ -64,15 +66,94 @@ export const AuthMeta = z
   .strict();
 export type AuthMeta = z.infer<typeof AuthMeta>;
 
-/** The module's handshake immediately after dialing the bridge WS (D6). */
+/**
+ * The portal release version: the module's `module.json` `version` (a test pins the two
+ * together), the `McpServer` version, and the `serverVersion` in `auth-ok`. Bump it on
+ * every portal release; Foundry's update check compares `module.json`'s copy.
+ */
+export const PORTAL_VERSION = "0.5.0";
+
+/**
+ * The bridge protocol version this build speaks. The module sends it in `auth`; the
+ * server accepts `[MIN_BRIDGE_PROTOCOL, BRIDGE_PROTOCOL]` and closes anything else with
+ * {@link BridgeCloseCode.protocolMismatch}. Bump it on any envelope change an older peer
+ * cannot parse. Protocol 0 is the unversioned handshake of module 0.4.x and earlier (no
+ * `protocol` field).
+ */
+export const BRIDGE_PROTOCOL = 1;
+
+/**
+ * The oldest protocol the server still accepts. 0 keeps the installed 0.4.x module
+ * working through the 0.5.0 rollout (a WARN on every legacy handshake); the next release
+ * raises it to 1, after which the server closes a 0.4.x module as stale.
+ */
+export const MIN_BRIDGE_PROTOCOL = 0;
+
+/**
+ * WebSocket close codes the server uses for every bridge refusal, so the module (and a
+ * human reading its console) can tell a wrong key from version skew from a lost
+ * designation race. 4000-4999 is the RFC 6455 application range; shutdown uses the
+ * standard 1001 "going away".
+ */
+export const BridgeCloseCode = {
+  /** Wrong bridge key, or a handshake that isn't a well-formed `auth` message. */
+  unauthorized: 4001,
+  /** Protocol outside the server's accepted range; the reason says which side is stale. */
+  protocolMismatch: 4002,
+  /** The server's `portal.bridge-user-id` names a different Foundry user. */
+  notDesignated: 4003,
+  /** A newer socket for the same Foundry user took over (tab reload); don't redial. */
+  replaced: 4004,
+  /** No `auth` message arrived within the auth window. */
+  authTimeout: 4005,
+  /** No designation is configured and another user already holds the bridge. */
+  busy: 4006,
+  /** The server is shutting down; redial normally. */
+  serverShutdown: 1001,
+} as const;
+export type BridgeCloseCode = (typeof BridgeCloseCode)[keyof typeof BridgeCloseCode];
+
+/** The close reasons that go with {@link BridgeCloseCode.protocolMismatch}. */
+export const PROTOCOL_MISMATCH_MODULE_STALE = "module-stale";
+export const PROTOCOL_MISMATCH_SERVER_STALE = "server-stale";
+
+/**
+ * The module's handshake immediately after dialing the bridge WS (D6). `protocol` and
+ * `moduleVersion` are absent only from a legacy (protocol 0, module 0.4.x) build.
+ */
 export const AuthMsg = z
   .object({
     type: z.literal("auth"),
     apiKey: z.string().min(1),
+    protocol: z.number().int().nonnegative().optional(),
+    moduleVersion: z.string().min(1).optional(),
     meta: AuthMeta.optional(),
   })
   .strict();
 export type AuthMsg = z.infer<typeof AuthMsg>;
+
+/**
+ * The server reads only these two fields first, so version skew is reported as
+ * {@link BridgeCloseCode.protocolMismatch} even when the rest of the message has a shape
+ * this build cannot parse (the old "skew looks like a bad key" bug). Not strict on
+ * purpose.
+ */
+export const AuthProbe = z.object({
+  type: z.literal("auth"),
+  protocol: z.number().int().nonnegative().optional(),
+});
+export type AuthProbe = z.infer<typeof AuthProbe>;
+
+/** Server -> module: the handshake succeeded and this socket is now the bridge. Sent
+ * only to a versioned module (a legacy one would log it as an invalid message). */
+export const AuthOkMsg = z
+  .object({
+    type: z.literal("auth-ok"),
+    protocol: z.number().int().nonnegative(),
+    serverVersion: z.string().min(1),
+  })
+  .strict();
+export type AuthOkMsg = z.infer<typeof AuthOkMsg>;
 
 /** Heartbeat, either direction. */
 export const PingMsg = z.object({ type: z.literal("ping") }).strict();
@@ -148,6 +229,7 @@ export type McpResponseErrUnknownCode = z.infer<typeof McpResponseErrUnknownCode
  */
 export const BridgeMessage = z.discriminatedUnion("type", [
   AuthMsg,
+  AuthOkMsg,
   PingMsg,
   PongMsg,
   McpQuery,

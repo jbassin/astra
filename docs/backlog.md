@@ -156,7 +156,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
   silently (WEAL-29) — agent.
 - `just portal-module-install` fails with EACCES because Foundry leaves the module dir root-owned;
   copy as root — agent; [`apps/portal/README.md`](../apps/portal/README.md).
-- portal: replacing a bridge socket strands in-flight queries for 15 seconds (SVC-18) — agent.
 - orator: yt-dlp errors are discarded and child processes have no timeout (SVC-15); a non-numeric
   query parameter sends `NaN` to Postgres (SVC-19) — agent.
 - weal-overlay's dev proxy defaults to port 10360, which is strider's (FE-26) — agent.

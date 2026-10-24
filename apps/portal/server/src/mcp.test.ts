@@ -2,7 +2,12 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import type { AuthMeta, McpQuery } from "@astra/portal-shared";
+import {
+  BRIDGE_PROTOCOL,
+  PORTAL_VERSION,
+  type AuthMeta,
+  type McpQuery,
+} from "@astra/portal-shared";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -42,7 +47,8 @@ class FakeModule {
     this.ws = new WebSocket(url);
     this.#opened = new Promise((resolve) => {
       this.ws.once("open", () => {
-        this.ws.send(JSON.stringify({ type: "auth", apiKey: BRIDGE_API_KEY, meta }));
+        const versioned = { protocol: BRIDGE_PROTOCOL, moduleVersion: PORTAL_VERSION };
+        this.ws.send(JSON.stringify({ type: "auth", apiKey: BRIDGE_API_KEY, ...versioned, meta }));
         resolve();
       });
     });

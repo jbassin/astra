@@ -41,6 +41,11 @@ export interface PortalServerOptions {
   playerMcpApiKey: string;
   bridgeApiKey: string;
   bridgeTimeoutMs: number;
+  /** `cfg.portal.bridgeUserId` — the Foundry user id the server lets hold the bridge;
+   * empty means no designation (see `Bridge`). */
+  bridgeUserId?: string;
+  /** Test-only override of the oldest accepted bridge protocol (see `BridgeOptions`). */
+  minBridgeProtocol?: number;
   /** `cfg.portal.maxCreatesPerRequest` (D8) — the S5 write tools' per-request create
    * cap, enforced in `mcp.ts` BEFORE a write query reaches the bridge at all. */
   maxCreatesPerRequest: number;
@@ -80,6 +85,8 @@ export function createPortalServer(opts: PortalServerOptions): PortalServerHandl
   const bridge = new Bridge({
     bridgeApiKey: opts.bridgeApiKey,
     queryTimeoutMs: opts.bridgeTimeoutMs,
+    bridgeUserId: opts.bridgeUserId,
+    minProtocol: opts.minBridgeProtocol,
   });
   // Spec 0025 D-6: portal does NOT become an Express app — `authApp` is only ever
   // invoked as a bare `(req, res)` function from the one new dispatch arm below,
