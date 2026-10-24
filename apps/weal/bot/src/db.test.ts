@@ -1,19 +1,16 @@
 /**
  * Store logic — the save-guards over engine `standardDice` pairs (spec 0032
- * D32-17) and the schema, unit-tested with a fake store (no live Postgres).
- * The PostgresStore wire layer is exercised at the S7 live gate.
+ * D32-17), unit-tested with a fake store. db.pg.test.ts runs the real
+ * PostgresStore and its migrations against a throwaway Postgres.
  */
 
 import { describe, expect, test } from "vitest";
 
-import { diceToPersist, type FuncV2, MAX_POOL, SCHEMA, saveDice, type WealStore } from "./db";
+import { diceToPersist, type FuncV2, MAX_POOL, saveDice, type WealStore } from "./db";
 
 class FakeStore implements WealStore {
   readonly inserts: [number, number, number, number][] = [];
   statements = 0;
-  ensureSchema(): Promise<void> {
-    return Promise.resolve();
-  }
   insertDice(dice: readonly [number, number][], playerId: number, blameId: number): Promise<void> {
     this.statements += 1;
     for (const [base, value] of dice) this.inserts.push([base, value, playerId, blameId]);
@@ -86,22 +83,5 @@ describe("saveDice", () => {
     const tooBig = Array.from({ length: MAX_POOL + 1 }, () => [6, 1] as [number, number]);
     await saveDice(store, tooBig, 1, 1);
     expect(store.statements).toBe(0);
-  });
-});
-
-describe("SCHEMA", () => {
-  test("creates the dice table and its index", () => {
-    expect(SCHEMA).toContain("create table if not exists dice");
-    expect(SCHEMA).toContain("dice_base_timestamp");
-    expect(SCHEMA).toContain("player_id integer");
-  });
-
-  test("creates the D32-17 funcs_v2 table", () => {
-    expect(SCHEMA).toContain("create table if not exists funcs_v2");
-    expect(SCHEMA).toContain("source text not null");
-  });
-
-  test("no longer creates the v1 funcs archive (the live table is left alone)", () => {
-    expect(SCHEMA).not.toMatch(/create table if not exists funcs\s*\(/);
   });
 });

@@ -12,6 +12,7 @@ const log = getLogger("astra.weal-bot");
 
 import { loadConfig } from "@astra/config";
 import { loadBeing } from "@astra/ontology";
+import { describeResult } from "@astra/pg-migrate";
 
 import { PostgresStore } from "./db";
 import { loadValidatedFuncs } from "./engine";
@@ -27,7 +28,12 @@ async function main(): Promise<void> {
   const hosts = new Map(being.weal_hosts.map((h) => [h.slug, h]));
 
   const store = new PostgresStore(cfg.weal.databaseUrl);
-  await store.ensureSchema();
+  // Apply pending schema migrations; a refusal (an edited applied migration) stops startup.
+  const migrated = await store.migrate();
+  log.emit({
+    severityText: migrated.ahead.length > 0 ? "WARN" : "INFO",
+    body: describeResult(migrated),
+  });
   // D32-17 boot: funcs_v2 in id order, each mode:"check"-validated against the
   // prior valid rows; stale rows are WARN-skipped inside loadValidatedFuncs.
   const rows = await store.getAllFuncsV2();

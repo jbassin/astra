@@ -629,6 +629,9 @@ importers:
       '@astra/ontology':
         specifier: workspace:*
         version: link:../../../libs/ts/ontology
+      '@astra/pg-migrate':
+        specifier: workspace:*
+        version: link:../../../libs/ts/pg-migrate
       '@astra/site-kit':
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit
@@ -1059,6 +1062,9 @@ importers:
       '@astra/ontology':
         specifier: workspace:*
         version: link:../../../libs/ts/ontology
+      '@astra/pg-migrate':
+        specifier: workspace:*
+        version: link:../../../libs/ts/pg-migrate
       '@astra/weal-engine':
         specifier: workspace:*
         version: link:../../../libs/ts/weal-engine

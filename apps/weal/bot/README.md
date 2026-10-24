@@ -323,9 +323,14 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
   fuel abort has happened.
 - **An empty `funcs_v2` is normal on a fresh database.** v1 saves did not migrate, so the boot log
   "loaded 0/0 saved weal v2 sources" is correct.
-- **CI never talks to Postgres.** `src/db.pg.test.ts` runs the real store against a throwaway
-  Postgres only when `WEAL_TEST_DATABASE_URL` is set (its header has the `docker run` line); run it
-  for any SQL change. Never point it at the live `weal-postgres`.
+- **The schema is the numbered files in `migrations/`** (`libs/ts/pg-migrate`), applied at boot.
+  Change it with a new file, never by editing an applied one: weal-bot then refuses to start.
+  `0001_initial.sql` does not touch the dead v1 `funcs` table, so on the live database that table
+  stays as an orphan. Dropping it is its own migration (`0002_drop_funcs.sql`), and it deletes 11
+  live rows, so flag it first and export them before you ship it (backlog WEAL-14).
+- **`src/db.pg.test.ts` runs the real store against a throwaway Postgres** (`just pg-test`, the CI
+  `pg-test` job); add a case there for any SQL change. Never point `ASTRA_TEST_DATABASE_URL` at the
+  live `weal-postgres`.
 
 ## Dev
 

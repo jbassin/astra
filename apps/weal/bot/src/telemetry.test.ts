@@ -79,7 +79,6 @@ function deps(over: Partial<HandlerDeps> = {}): HandlerDeps {
   return {
     rng: { choose: <T>(xs: readonly T[]) => xs[0] as T },
     store: {
-      ensureSchema: () => Promise.resolve(),
       insertDice: () => Promise.resolve(),
       getAllFuncsV2: () => Promise.resolve([]),
       insertFuncV2: () => Promise.resolve(),

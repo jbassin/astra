@@ -21,6 +21,7 @@ import { resolve } from "node:path";
 
 import { loadConfig } from "@astra/config";
 import { loadBeing } from "@astra/ontology";
+import { describeResult } from "@astra/pg-migrate";
 
 import { buildAllowlist } from "./allowlist";
 import { startBot } from "./bot/index";
@@ -53,7 +54,12 @@ async function main(): Promise<void> {
   mkdirSync(dataDir, { recursive: true });
 
   const store = new PostgresStore(cfg.orator.databaseUrl);
-  await store.ensureSchema();
+  // Apply pending schema migrations; a refusal (an edited applied migration) stops startup.
+  const migrated = await store.migrate();
+  log.emit({
+    severityText: migrated.ahead.length > 0 ? "WARN" : "INFO",
+    body: describeResult(migrated),
+  });
 
   // Ingest: yt-dlp + ffmpeg through a bounded pool. Concurrency + loudness-measurement
   // are memory-pressure knobs (each item can spawn yt-dlp + an ffmpeg pass), sourced
