@@ -795,6 +795,14 @@ codex-refresh:
 codex-search-index:
     pnpm --filter @astra/codex search:build
 
+# Opt-in, host-only (not in `ci`): check the real corpus at <codex.data-path>/corpus/ the
+# way a production server does (this schema generation, not the fixture), spot-check
+# it, and render an entity page from it through a fresh build. Every other codex test
+# and guard reads the committed fixture.
+codex-real-corpus:
+    pnpm --filter @astra/codex build
+    cd apps/codex/web && CODEX_REAL_CORPUS=1 pnpm exec vitest run src/realCorpus.test.ts
+
 # --- weal engine (0032 D32-13) ---
 
 # Rebuild the committed @astra/weal-engine wasm artifact from

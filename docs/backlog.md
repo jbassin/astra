@@ -160,8 +160,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - `useState` after early returns in `FacetPanel.tsx` — agent; product bug (SMELL-4).
 - The client cache keeps rejected promises forever — agent; product bug (CDX-12).
 - Broken references were never styled; the CSS selector never matches — agent; product bug (CDX-23).
-- Without `CODEX_CORPUS_ROOT`, a worktree reads the main checkout's real corpus, because
-  `codex.data-path` is absolute — agent; codex track (corpus-root injection).
 
 ## assay
 

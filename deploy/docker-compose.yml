@@ -365,8 +365,8 @@ services:
     # D29-53: identical-path read-only bind mounts (host path == container path).
     # codex.data-path (config.kdl) = /ruby/data/astra-state/codex/data; `just
     # codex-refresh` writes corpus/ and search/ there, and deploy.sh init_artifacts creates
-    # the three dirs as uid 1000 (empty on a fresh host, so the server serves the
-    # fixture corpus until `codex-refresh` runs once).
+    # the three dirs as uid 1000. On a fresh host corpus/ is empty, so the server exits at
+    # startup (it never serves the fixture) until `codex-refresh` runs once.
     # D30-41 (0030 round 4): a THIRD identical-path `:ro` bind for the
     # `apps/assay/py` verdict artifact (`assay/spell-power.json`) — same
     # D29-53 convention as the two below. NO fixture fallback on the codex

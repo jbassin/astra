@@ -39,13 +39,11 @@
  * on purpose, run as its OWN CI job the same way vellum-render's
  * `vellum-visual-regression` job is — see `.github/workflows/ci.yml`).
  *
- * Hermetic: runs against whatever corpus `resolveCorpusRoot()` resolves
- * (the committed FIXTURE corpus in CI/a fresh clone, D29-23's own
- * fallback — `/feat` still has >=1 real row there) — never asserts against
- * real-corpus DATA, only the CSS-driven geometry of whichever row renders.
- * This slice's own build report additionally records a LOCAL run against
- * the real corpus (present on this dev host) proving the new asserts pass
- * there too, not just against the thin fixture.
+ * Hermetic: runs against the committed FIXTURE corpus (`CODEX_CORPUS_ROOT`, which
+ * this script defaults to `fixtures/entities/` — `/feat` has >=1 real row there) —
+ * never asserts against real-corpus DATA, only the CSS-driven geometry of
+ * whichever row renders, so it also passes with `CODEX_CORPUS_ROOT` set to the
+ * real corpus.
  *
  * Requires a prior `pnpm run build` (serves the real built dist/, same
  * requirement as `visual-regression.ts`).
@@ -80,6 +78,9 @@ const BASE = `http://127.0.0.1:${PORT}`;
 if (!existsSync(SERVER_BUNDLE)) {
   throw new Error(`${SERVER_BUNDLE} not found — run \`pnpm run build\` first`);
 }
+// Read the committed fixture corpus unless the caller pins another root. The built
+// bundle checks this root when it loads, below.
+process.env.CODEX_CORPUS_ROOT ??= `${ROOT}fixtures/entities`;
 
 /** Well above `NARROW_CONTAINER_WIDTH_PX` (600px) — the FULL column set
  * tier, and (per `.codex-browse-layout`'s own 56rem/896px breakpoint) also

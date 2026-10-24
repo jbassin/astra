@@ -79,18 +79,6 @@ COPY --from=build /repo/apps/${APP}/package.json ./package.json
 # config.kdl is the single source for serviceName/port + the OTLP endpoint.
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
-# DEPARTURE from the heartwood-frontend template (D29-54): corpusFs.ts's
-# resolveCorpusRoot() falls back to the committed fixture corpus (fixtures/entities/)
-# with a loud console.warn when the real corpus isn't mounted at codex.data-path —
-# this is the fail-soft that keeps a mis-mounted deploy serving a small working site
-# instead of an error page. findAppRoot() locates it by walking UP from the running
-# module's directory for a `fixtures/entities/manifest.json` marker (NOT a fixed
-# relative offset — that breaks once bundled under dist/server/assets/), so the
-# fixture tree must be reachable above dist/ in the runtime image. This is the ONLY
-# content-shaped thing this Dockerfile ever COPYs — 2.1 MB, committed, not the real
-# corpus.
-COPY apps/${APP}/fixtures ./fixtures
-
 # Invoke node directly (not `npm run start`) — one less process layer, and the
 # runtime image needs no package-manager story at all (D13).
 CMD ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]

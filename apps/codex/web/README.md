@@ -37,10 +37,12 @@ transform and the search build write the **live** dirs the container mounts read
 - **Order when both change:** push and `just deploy codex` first (the image build is slow),
   then transform, reindex and restart. The transform wipes and rewrites `corpus/` in place, so
   the site serves errors or partial data until it finishes; keep that window short.
-- **Verify a deploy against the real corpus, never by status codes.** A missing mount falls back
-  to the committed fixture and still returns 200 everywhere. Check a real-corpus marker (a
-  listing count in the thousands, a dragon page) and the startup log for
-  `falling back to the fixture corpus`.
+- **Verify a deploy against the real corpus.** A built server fails closed: when
+  `<codex.data-path>/corpus/` is missing, has another `schemaVersion`, or holds the fixture, it
+  throws `CorpusUnservableError` at startup and exits, and compose restarts it in a loop. A good
+  deploy logs `[codex] serving the corpus at "/ruby/data/astra-state/codex/data/corpus" (source
+  config, <n> entities, schemaVersion 5)`; also check a real entity page such as `/spell/fireball`.
+  `just codex-real-corpus` runs the same check on the host, plus spot checks and an SSR render.
 
 ## Traps
 
@@ -85,8 +87,10 @@ transform and the search build write the **live** dirs the container mounts read
   `BOOK_LICENSE_OVERRIDE` (`sourcesIndexBuild.ts`).
 
 **Fixture and tests**
-- `vitest.setup.ts` pins `CODEX_CORPUS_ROOT` to `fixtures/entities/`. The dev server and
-  scripts have no such pin and read the real corpus at `codex.data-path`, from any checkout.
+- Every test and both Chromium guards read `fixtures/entities/`: `vitest.setup.ts` and the guard
+  scripts default `CODEX_CORPUS_ROOT` to it. The real-corpus checks are the opt-in
+  `just codex-real-corpus` (`src/realCorpus.test.ts`, gated on `CODEX_REAL_CORPUS=1`). The dev
+  server has no pin and reads the real corpus at `codex.data-path`, from any checkout.
 - `scripts/extract-fixture.ts` wipes `fixtures/entities/` and rebuilds it from the real corpus.
   The 90 `ritual/virt-*` rows the virtualization guard needs have no generator: restore them
   from git and re-add them to `ritual/_index.json`. Never restore the whole `entities/` tree.
@@ -201,10 +205,12 @@ P3 S5 full-corpus Playwright pass. Fixed by asking the SAME question `renderEmbe
 
 - **`src/server/{corpusFs,corpusFns,entityPageData,directoryData,listingData}.ts`** — the
   corpus read layer: `corpusFs.ts` is the only `node:fs` seam (a `createCorpusReader(rootDir)`
-  factory), root-resolved from `config.kdl`'s `codex.data-path` with a **fail-soft to the
-  committed `fixtures/entities/` corpus** (loud startup WARN) when the real corpus isn't
-  mounted — this is what makes `pnpm dev`/`pnpm test`/CI hermetic on a fresh clone with zero
-  `data/`. `corpusFns.ts` wraps the pure resolvers (`entityPageData`/`directoryData`/
+  factory). `servedCorpus()` picks the root once per process: `CODEX_CORPUS_ROOT` if set, else
+  `<codex.data-path>/corpus`, and checks its `manifest.json` against `CORPUS_SCHEMA_VERSION`
+  (`src/schema/corpusVersion.ts`). A built server refuses a missing corpus, another schema
+  generation, or the fixture at the config path; the server entry `src/server.ts` runs the check
+  when the bundle loads, so the process exits instead of serving. Only the Vite dev server falls
+  back to `fixtures/entities/` (with a WARN) when the config corpus is missing. `corpusFns.ts` wraps the pure resolvers (`entityPageData`/`directoryData`/
   `listingData`) as `createServerFn`s the route loaders call.
 - **`src/domain/render/`** — the total node renderer, statblock/facet headers, edition
   banners, trait pills, and the listing/directory presentation components.
@@ -212,7 +218,7 @@ P3 S5 full-corpus Playwright pass. Fixed by asking the SAME question `renderEmbe
   (category directory), `$category/index.tsx` (P3 faceted listing), `$category/$slug.tsx` (entity
   page), `search.tsx` (P3 `/search`, below).
 - **Run it:** `pnpm --filter @astra/codex dev` (`CODEX_CORPUS_ROOT` if set, else the real
-  corpus if `<codex.data-path>/corpus/` exists, else the fixture) / `pnpm --filter @astra/codex build && pnpm --filter @astra/codex start` (production
+  corpus if `<codex.data-path>/corpus/` exists, else the fixture; `start` has no fixture fallback) / `pnpm --filter @astra/codex build && pnpm --filter @astra/codex start` (production
   parity, wires `astra.codex` OTel spans via `@astra/site-kit`'s `createSsrServer`). **Note:**
   `staticMounts` (below) is a `createSsrServer`-only mechanism — `/pagefind/*` only serves under
   `build && start`, not under plain `vite dev`.
@@ -843,15 +849,11 @@ Since 0037 item 2c the data dir lives under the one data root (`data.root`
 `data/snapshots/` (601 MB, runtime-unreferenced ingest input) and `data/tmp/` deliberately
 stay off the mount list — only the two dirs the running server actually reads.
 
-**The fixture fail-soft, in prod.** If a deploy's mounts are ever missing or a fresh host
-hasn't run `codex-refresh` yet, `corpusFs.ts`'s `resolveCorpusRoot()` falls back to the
-committed 2.1 MB `fixtures/entities/` corpus with a loud one-time `console.warn` — the site
-still serves (small, but correct-shaped), never an error page. A mis-mounted deploy looks
-like: the container is healthy, `/` and category pages 200, but listing counts are tiny (the
-fixture's handful of entities per category, not the real corpus's thousands) and the startup
-logs carry `[codex] no corpus at "..." — falling back to the fixture corpus`. The runtime
-image carries `fixtures/entities/` for exactly this reason (the one content-shaped COPY in
-the Dockerfile) — `findAppRoot()`'s marker-walk needs it reachable above `dist/`.
+**No fixture in prod.** The runtime image does not contain `fixtures/` (`.dockerignore` denies
+it), and a built server never falls back to it. If a deploy's mounts are missing or a fresh host
+hasn't run `codex-refresh` yet, the container exits at startup with `CorpusUnservableError` and
+compose restarts it until the corpus appears. `CODEX_CORPUS_ROOT` can still point a built server
+at the fixture explicitly; the tests and guards do that, production compose never sets it.
 
 **Refresh in prod (D29-57).** `just codex-refresh` (host-only, dirty-tree-guarded — see
 above) now ends with a conditional restart: if `astra-codex` is running, it restarts the

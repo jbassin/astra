@@ -1,6 +1,7 @@
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
+import { CORPUS_SCHEMA_VERSION } from "../schema/corpusVersion";
 import { CodexEntitySchema, IndexRowSchema, toIndexRow } from "../schema/entity";
 import type { CodexEntity } from "../schema/entity";
 import { facetKeysFor } from "../schema/facetKeys";
@@ -157,43 +158,9 @@ export interface CorpusOutputManifest {
 // the writer
 // ---------------------------------------------------------------------------
 
-/** The CodexEntity/CodexNode schema generation — bump alongside
- * `entity.ts`/`nodes.ts`'s own schemaVersion doc comments on a breaking
- * change (D29-3/D29-4). Kept here (not re-read from `corpus-manifest.json`,
- * whose own `schemaVersion` is the FETCH-manifest's own, a different concept)
- * since `corpus/manifest.json` describes the EMITTED corpus's shape.
- *
- * Bumped 1->2 for P1.6 (D29-19/-20/-21, slice S6): the new optional
- * `CodexEntity.stats` field + `EmbeddedItem`'s new optional strike/
- * spellcasting fields, the `creature` category's npc-only narrowing, and the
- * `index.json` -> `_index.json` rename are all corpus-shape changes a P2+
- * consumer must be able to detect a regen against.
- *
- * Bumped 2->3 for P7 S1 (D29-73): `EmbeddedItem` gains a new optional
- * `range` field (strike range, transform-baked display string). This is the
- * SAME D29-20 EmbeddedItem-fields precedent above, not `entity.ts:92`'s
- * facets additive-no-bump rule — a new field a P2+ consumer must be able to
- * detect a regen against, per that spec decision (deliberately not treated
- * as a silent additive-only change). D29-74's lore-into-`stats.skills` merge
- * changes VALUES within the existing `skills` record shape, not the schema
- * itself — no separate bump needed for it.
- *
- * Bumped 3->4 for P10 S1 (D29-91/-93): `nodes.ts` gains a new `BlockNode`
- * kind, `statRow` (an AoN statblock `<row>` collapsed at ingest instead of
- * flattened, D29-2's original mapping amended). A brand-new node kind is a
- * corpus-shape change by the same posture as every prior bump above — a P2+
- * consumer walking `CodexNode` unions must be able to detect a regen that can
- * now hand it a kind it didn't understand before.
- *
- * Bumped 4->5 for P12 S1 (D29-113/-114/-115/-116): `StatsSchema`'s
- * discriminated union gains a new member, `ClassStatsSchema` (`kind:
- * "class"`) — the `class` category's scalar statblock (keyAbility/hp/
- * perception/savingThrows/attacks/defenses/trainedSkills/spellcasting/
- * featLevels) plus, once the post-drop `augmentClassStats` pass runs,
- * `grantedFeatures`/`subclassOptions`. Same posture as the P10 `statRow`
- * bump above — a brand-new discriminated-union member is a corpus-shape
- * change a P2+ consumer's `stats.kind` switch must be able to detect. */
-export const CORPUS_SCHEMA_VERSION = 5;
+// `CORPUS_SCHEMA_VERSION` lives in `src/schema/corpusVersion.ts`, so the server can check it
+// without importing the ingest code; re-exported for the ingest scripts.
+export { CORPUS_SCHEMA_VERSION };
 
 export interface EmitCorpusInput {
   /** `<dataPath>/corpus` — wiped and rewritten wholesale on every call. */
