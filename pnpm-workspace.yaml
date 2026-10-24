@@ -8,8 +8,8 @@ packages:
 # use is listed here, and each package.json names it as `catalog:`. Bump a version here,
 # then `pnpm install`. A dependency only one package uses keeps its range in that
 # package.json; when a second package adds it, move it here.
-# Off the catalog on purpose: zod. apps/codex/web, libs/ts/codex-corpus and apps/menhir/web
-# resolve 4.6.7 while the other four zod users resolve 4.4.3; one catalog entry would upgrade
+# Off the catalog on purpose: zod. apps/codex/web, libs/ts/codex-corpus, apps/menhir/web and
+# libs/ts/weal-wire resolve 4.6.7 while the other four zod users resolve 4.4.3; one catalog entry would upgrade
 # those four. codex and codex-corpus must resolve the same zod.
 catalog:
   "@bgotink/kdl": "^0.4.0"

@@ -2,6 +2,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+import { INGEST_PATH, type RollMessage, tokenHeaders } from "@astra/weal-wire";
 import { afterAll, beforeAll, expect, test } from "vitest";
 
 import { type RunningServer, startServer } from "../src/server";
@@ -22,25 +23,42 @@ beforeAll(async () => {
 
 afterAll(() => running.stop());
 
-function postRoll(body: unknown, token?: string) {
-  const headers: Record<string, string> = { "content-type": "application/json" };
-  if (token) headers["x-eerie-token"] = token;
-  return fetch(`${base}/api/v1/roll`, { method: "POST", headers, body: JSON.stringify(body) });
+function roll(user: string, total: number, isCrit = false): RollMessage {
+  return {
+    v: 1,
+    user,
+    expression: "d20",
+    total,
+    is_crit: isCrit,
+    is_fumble: false,
+    display: String(total),
+  };
 }
 
-test("rejects ingest without the shared secret", async () => {
-  const res = await postRoll({ v: 1, user: "A", total: 5, is_crit: false, is_fumble: false });
-  expect(res.status).toBe(401);
+function postRoll(body: unknown, headers: Record<string, string> = {}) {
+  return fetch(`${base}${INGEST_PATH}`, {
+    method: "POST",
+    headers: { "content-type": "application/json", ...headers },
+    body: JSON.stringify(body),
+  });
+}
+
+test("rejects ingest without the shared secret, or with a wrong one", async () => {
+  expect((await postRoll(roll("A", 5))).status).toBe(401);
+  expect((await postRoll(roll("A", 5), tokenHeaders("nope"))).status).toBe(401);
+  expect((await postRoll(roll("A", 5), tokenHeaders("s3cre"))).status).toBe(401);
+});
+
+test("accepts the token under either header name", async () => {
+  expect((await postRoll(roll("A", 5), { "x-weal-token": "s3cret" })).status).toBe(204);
+  expect((await postRoll(roll("A", 5), { "x-eerie-token": "s3cret" })).status).toBe(204);
 });
 
 test("accepts an authed valid roll (204) and rejects garbage (400)", async () => {
-  const ok = await postRoll(
-    { v: 1, user: "A", total: 5, is_crit: false, is_fumble: false },
-    "s3cret",
-  );
+  const ok = await postRoll(roll("A", 5), tokenHeaders("s3cret"));
   expect(ok.status).toBe(204);
 
-  const bad = await postRoll({ nope: true }, "s3cret");
+  const bad = await postRoll({ nope: true }, tokenHeaders("s3cret"));
   expect(bad.status).toBe(400);
 });
 
@@ -65,10 +83,7 @@ test("delivers a published roll over SSE", async () => {
   // Drain the initial `: connected` frame so we know the client is registered.
   await reader.read();
 
-  await postRoll(
-    { v: 1, user: "Kethra", expression: "d20", total: 20, is_crit: true, is_fumble: false },
-    "s3cret",
-  );
+  await postRoll(roll("Kethra", 20, true), tokenHeaders("s3cret"));
 
   let buf = "";
   while (!buf.includes("Kethra")) {

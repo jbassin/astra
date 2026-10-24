@@ -134,14 +134,17 @@ weal {
     // In-cluster addresses (Compose service DNS). The PG creds are the dev defaults
     // (match deploy/ POSTGRES_* defaults); prod overrides them at the Phase-6 cutover.
     database-url "postgres://weal:weal@weal-postgres:5432/weal"
-    feed-ws-url "http://weal-overlay:10360/api/v1/roll"
+    feed-ws-url "http://weal-overlay:10361/api/v1/roll"
+    // The healthcheck endpoint (in-container only; the compose healthcheck calls it).
     bind-addr "127.0.0.1:10203"
     discord-token ref="sops:weal_discord_key"
     feed-token ref="sops:weal_token"
 }
 
 weal-overlay {
-    port 10360
+    // The port server.ts binds, in dev and in its container (host port too), and the
+    // target of the Vite dev proxy. Its own port, so it never collides with strider's.
+    port 10361
     token ref="sops:weal_token" // shared weal↔overlay secret
 }
 

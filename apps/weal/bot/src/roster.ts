@@ -22,20 +22,16 @@ export interface Profile {
 
 export class Roster {
   readonly #bySnowflake: Map<string, Profile>;
-  readonly #names: Map<number, string>;
 
-  private constructor(bySnowflake: Map<string, Profile>, names: Map<number, string>) {
+  private constructor(bySnowflake: Map<string, Profile>) {
     this.#bySnowflake = bySnowflake;
-    this.#names = names;
   }
 
   /** Build from the ontology: snowflake → profile, resolving the main-campaign role. */
   static fromBeing(being: Being): Roster {
     const main = being.campaigns.find((c) => c.main);
     const bySnowflake = new Map<string, Profile>();
-    const names = new Map<number, string>();
     for (const p of being.players) {
-      names.set(p.player_id, p.name);
       const role = main?.roles.find((r) => r.player === p.slug);
       const profile: Profile = {
         playerId: p.player_id,
@@ -46,16 +42,11 @@ export class Roster {
       };
       for (const sf of p.snowflakes) bySnowflake.set(sf, profile);
     }
-    return new Roster(bySnowflake, names);
+    return new Roster(bySnowflake);
   }
 
   /** Resolve a Discord author snowflake to their profile, if known. */
   get(snowflake: string): Profile | undefined {
     return this.#bySnowflake.get(snowflake);
-  }
-
-  /** Display name for a `player_id` (dice-plot labels). */
-  nameFor(playerId: number): string | undefined {
-    return this.#names.get(playerId);
   }
 }

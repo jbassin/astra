@@ -291,8 +291,13 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
   type-checked and evaluated after the valid rows before it); a row that fails is skipped with a
   WARN naming it (`skipping saved weal source: funcs_v2 row <id> (<name>)`), and every other save
   and roll keeps working.
-- **Overlay:** rolls broadcast to weal-overlay with the plain source text as
-  `expression` and the headline as `display` (atom rolls send `total: 0`).
+- **Overlay:** rolls broadcast to weal-overlay (`weal.feed-ws-url`) with the plain source text as
+  `expression` and the headline as `display` (atom rolls send `total: 0`). The message is built
+  through the shared schema in `@astra/weal-wire`, which the overlay validates with too; a change
+  there needs `just deploy weal-bot weal-overlay` together.
+- **Health:** `GET /health` on `weal.bind-addr` (127.0.0.1:10203, inside the container) answers
+  `ok` while the process is up; the compose healthcheck is its only caller. It does not reflect the
+  Discord connection.
 - **Telemetry:** `astra.weal-bot` — roll spans (`weal.goodness`, `weal.engine_ms`),
   `astra.weal.rolls{goodness}`, `weal.v2.errors{stage}` (incl. `internal`),
   `weal.v2.fuel_aborts`, `weal.v2.saves_refused{kind}` (the save guard; each refusal also logs a

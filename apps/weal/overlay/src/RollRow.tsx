@@ -11,9 +11,6 @@ export function RollRow({ roll, ttlMs }: { roll: TickerRoll; ttlMs: number }) {
     <li className={`eerie-row eerie-row--${tone}`} style={{ animationDuration: `${ttlMs}ms` }}>
       <span className="eerie-row__user">{roll.user}</span>
       {roll.expression && <span className="eerie-row__expr">{roll.expression}</span>}
-      {roll.dice && roll.dice.length > 0 && (
-        <span className="eerie-row__dice">{roll.dice.join(" · ")}</span>
-      )}
       <span className="eerie-row__total">{roll.display ?? roll.total}</span>
       {tone !== "normal" && (
         <span className="eerie-row__badge">{roll.isCrit ? "CRIT" : "FUMBLE"}</span>

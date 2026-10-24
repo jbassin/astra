@@ -7,11 +7,12 @@
 
 import type { WealHost } from "@astra/ontology";
 import { evaluate } from "@astra/weal-engine";
+import type { RollMessage } from "@astra/weal-wire";
 import { describe, expect, test } from "vitest";
 
-import type { Func, FuncV2, WealStore } from "./db";
+import type { FuncV2, WealStore } from "./db";
 import { type HandlerDeps, handleMessage, type OutgoingMessage } from "./handler";
-import type { OverlayPayload, SeedInfo } from "./message";
+import type { SeedInfo } from "./message";
 import type { Profile } from "./roster";
 
 function host(slug: string, lines?: Partial<WealHost["lines"]>): WealHost {
@@ -62,12 +63,6 @@ class FakeStore implements WealStore {
     for (const [base, value] of dice) this.inserts.push([base, value, playerId, blameId]);
     return this.insertResult();
   }
-  getAllFuncs(): Promise<Func[]> {
-    return Promise.resolve([]);
-  }
-  insertFunc(): Promise<void> {
-    return Promise.resolve();
-  }
   getAllFuncsV2(): Promise<FuncV2[]> {
     return Promise.resolve(this.funcsV2);
   }
@@ -81,7 +76,7 @@ interface Harness {
   deps: HandlerDeps;
   store: FakeStore;
   sent: OutgoingMessage[];
-  broadcasts: OverlayPayload[];
+  broadcasts: RollMessage[];
   funcsAdded: [string, string][];
   seed: SeedInfo;
 }
@@ -89,7 +84,7 @@ interface Harness {
 function harness(initFuncs: [string, string][] = []): Harness {
   const store = new FakeStore();
   const sent: OutgoingMessage[] = [];
-  const broadcasts: OverlayPayload[] = [];
+  const broadcasts: RollMessage[] = [];
   const funcs = [...initFuncs];
   const funcsAdded: [string, string][] = [];
   const state = { seed: { seed: 999, blameId: 1, blame: "Josh" } };
@@ -174,7 +169,6 @@ describe("die rolls (real engine, seeded)", () => {
         user: "Jorge",
         expression: "d20 + 7",
         total: 11,
-        value: 11,
         is_crit: false,
         is_fumble: false,
         display: "11",
@@ -222,7 +216,6 @@ describe("die rolls (real engine, seeded)", () => {
       user: "Jorge",
       expression: "dl([:fine, :good, :great])",
       total: 0,
-      value: 0,
       is_crit: true,
       is_fumble: false,
       display: ":great",

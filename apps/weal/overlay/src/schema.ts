@@ -1,71 +1,45 @@
-// The wire contract from @astra/weal-bot — v1 only (0009 K7/W7: the v0 legacy shape
-// is dropped, since weal-bot ships v1 from day one). parseRollEvent() validates +
-// normalizes an untrusted ingest body into the internal RollEvent (camelCase). Crit/
-// fumble are mirrored verbatim from weal-bot's RollGoodness — the overlay does no rule
-// logic. Tolerant by design: a missing timestamp/expression is filled, never rejected.
+// The overlay's two shapes. The ingest body is weal-bot's roll message, validated with the
+// shared wire schema (`@astra/weal-wire`), so the overlay accepts exactly what the bot builds.
+// parseRollEvent() maps it to RollEvent, the camelCase event the SSE feed sends the browser.
+// Crit/fumble are mirrored verbatim from the engine's goodness — the overlay does no rule logic.
+
+import { RollMessageSchema } from "@astra/weal-wire";
 
 export interface RollEvent {
-  /** schema version weal-bot claimed (defaults to 1). */
+  /** The wire version weal-bot sent. */
   v: number;
-  /** player display name. */
+  /** Player display name. */
   user: string;
-  /** rendered dice expression (e.g. "2d6+3"), or null. */
-  expression: string | null;
-  /** the roll total. */
+  /** The roll's plain source text (e.g. "2d6+3"). */
+  expression: string;
+  /** The roll total (0 for an atom roll). */
   total: number;
-  /** individual die faces, or null when not provided. */
-  dice: number[] | null;
-  /** flat modifier, or null when not provided. */
-  modifier: number | null;
-  /** weal v2 display headline (e.g. ":great") — preferred over total when present. */
+  /** The engine's headline (e.g. ":great"), shown over `total`; null when blank. */
   display: string | null;
-  /** mirrored from weal-bot's RollGoodness::Crit. */
+  /** The engine graded the roll a crit. */
   isCrit: boolean;
-  /** mirrored from weal-bot's RollGoodness::Fumble. */
+  /** The engine graded the roll a fumble. */
   isFumble: boolean;
-  /** ISO-8601 timestamp; stamped on ingest if weal-bot didn't send one. */
+  /** ISO-8601 time the overlay received the roll. */
   ts: string;
 }
 
-function isRecord(x: unknown): x is Record<string, unknown> {
-  return typeof x === "object" && x !== null;
-}
-
-function asFiniteNumber(x: unknown): number | null {
-  return typeof x === "number" && Number.isFinite(x) ? x : null;
-}
-
 /**
- * Validate + normalize an untrusted ingest body. Returns null for anything that isn't a
- * usable roll (caller answers 400). The v1 contract requires `user` + a finite `total`.
+ * Validate an untrusted ingest body and map it to the feed event. Returns null for anything
+ * the wire schema rejects (the caller answers 400).
  */
-export function parseRollEvent(input: unknown): RollEvent | null {
-  if (!isRecord(input)) return null;
-
-  const user = typeof input.user === "string" ? input.user.trim() : "";
-  if (!user) return null;
-
-  const total = asFiniteNumber(input.total);
-  if (total === null) return null;
-
-  const expression = typeof input.expression === "string" ? input.expression : null;
-
-  const display = typeof input.display === "string" && input.display !== "" ? input.display : null;
-
-  const dice = Array.isArray(input.dice)
-    ? input.dice.filter((d): d is number => asFiniteNumber(d) !== null)
-    : null;
-
-  const modifier = asFiniteNumber(input.modifier);
-
-  // Accept both snake_case (the wire) and camelCase (defensive).
-  const isCrit = input.is_crit === true || input.isCrit === true;
-  const isFumble = input.is_fumble === true || input.isFumble === true;
-
-  const ts =
-    typeof input.ts === "string" && input.ts.length > 0 ? input.ts : new Date().toISOString();
-
-  const v = asFiniteNumber(input.v) ?? 1;
-
-  return { v, user, expression, display, total, dice, modifier, isCrit, isFumble, ts };
+export function parseRollEvent(input: unknown, now: Date = new Date()): RollEvent | null {
+  const parsed = RollMessageSchema.safeParse(input);
+  if (!parsed.success) return null;
+  const msg = parsed.data;
+  return {
+    v: msg.v,
+    user: msg.user,
+    expression: msg.expression,
+    total: msg.total,
+    display: msg.display === "" ? null : msg.display,
+    isCrit: msg.is_crit,
+    isFumble: msg.is_fumble,
+    ts: now.toISOString(),
+  };
 }

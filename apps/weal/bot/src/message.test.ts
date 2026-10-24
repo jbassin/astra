@@ -179,20 +179,19 @@ describe("saveRefusal (the save guard's reply)", () => {
 });
 
 describe("overlayPayload (D32-18)", () => {
-  test("numeric rolls keep the v1 shape + display; expression = plain source", () => {
+  test("numeric rolls keep the wire shape; expression = plain source", () => {
     expect(overlayPayload("Jorge", "d20 + 7", dieDisplay())).toEqual({
       v: 1,
       user: "Jorge",
       expression: "d20 + 7",
       total: 21,
-      value: 21,
       is_crit: false,
       is_fumble: false,
       display: "21",
     });
   });
 
-  test("atom rolls send total/value 0 with goodness-derived flags", () => {
+  test("atom rolls send total 0 with goodness-derived flags", () => {
     const display = dieDisplay({
       headline: ":great",
       value: { t: "atom", v: "great" },
@@ -204,7 +203,6 @@ describe("overlayPayload (D32-18)", () => {
       user: "Jorge",
       expression: "dl([:great])",
       total: 0,
-      value: 0,
       is_crit: true,
       is_fumble: false,
       display: ":great",

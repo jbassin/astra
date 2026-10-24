@@ -9,8 +9,6 @@ const evt: RollEvent = {
   expression: "1d20+7",
   display: "27",
   total: 27,
-  dice: [20],
-  modifier: 7,
   isCrit: true,
   isFumble: false,
   ts: "2026-06-09T21:48:01Z",

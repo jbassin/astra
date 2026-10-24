@@ -24,6 +24,7 @@ import type {
   WealSave,
   WealValueDisplay,
 } from "@astra/weal-engine";
+import type { RollMessage } from "@astra/weal-wire";
 import { type Span, SpanStatusCode } from "@opentelemetry/api";
 
 import { saveDice, type WealStore } from "./db";
@@ -46,7 +47,6 @@ import {
   FIELD_LIMIT,
   NUMBER_LINES,
   newSeedInfo,
-  type OverlayPayload,
   overlayPayload,
   RESEED_LINES,
   resultsField,
@@ -89,7 +89,7 @@ export interface HandlerDeps {
   /** Post an embed as a host (webhook). */
   send: (msg: OutgoingMessage) => Promise<void>;
   /** Best-effort v1 overlay broadcast (non-fatal on failure). */
-  broadcast: (payload: OverlayPayload) => Promise<void>;
+  broadcast: (payload: RollMessage) => Promise<void>;
   /** Test seam only: swap the engine call (scripted results). */
   engineHooks?: EngineHooks;
 }
