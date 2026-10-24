@@ -1,7 +1,7 @@
 """Hosts — load the three podcast personas (A=Bram/B=Maeve/C=Nell) from ontology-being.
 
-H5: the personas + provider voice ids (ElevenLabs `voice-id`, Cartesia
-`cartesia-voice-id`) are a distinct ontology-being entity type (`PodcastPersona`,
+H5: the personas + their ElevenLabs `voice-id`s are a distinct ontology-being entity
+type (`PodcastPersona`,
 separate from weal `WealHost`); mouthpiece carries no local host config — it reads
 name+persona+voice ids from ontology-being. Roster history: three (Bram/Maeve/Pip) →
 two in 2026-06 (Pip retired into Maeve) → three again in 2026-09 (Nell, the newcomer
@@ -31,7 +31,6 @@ def load_hosts(path: Path | str = BEING_KDL_PATH) -> HostConfig:
             name=p.name,
             persona=p.persona,
             voice_id=p.voice_id,
-            cartesia_voice_id=p.cartesia_voice_id,
         )
 
     return HostConfig(

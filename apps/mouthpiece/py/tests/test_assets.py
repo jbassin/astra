@@ -67,9 +67,8 @@ def test_llm_model_comes_from_config_not_the_client_constant() -> None:
 
 
 def test_tts_provider_is_elevenlabs_and_fails_loud_without_key(monkeypatch, tmp_path) -> None:
-    """The live backend is ElevenLabs (Cartesia is wired but was rejected on voice quality);
-    a missing/empty key (what `${KEY:-}` injects when the SOPS entry is absent) raises
-    instead of silently falling back to another provider."""
+    """The live backend is ElevenLabs; a missing/empty key (what `${KEY:-}` injects when
+    the SOPS entry is absent) raises instead of silently falling back to the mock."""
     from astra_ontology_config import load
 
     assert load().mouthpiece.tts_provider == "elevenlabs"
@@ -81,24 +80,19 @@ def test_tts_provider_is_elevenlabs_and_fails_loud_without_key(monkeypatch, tmp_
         mp._provider()
 
 
-def test_voices_require_cartesia_ids_when_cartesia_renders() -> None:
+def test_voices_read_the_elevenlabs_ids() -> None:
     from astra_mouthpiece.models import HostConfig, HostPersona
 
     hosts = HostConfig(
-        a=HostPersona(name="Bram", persona="x", voice_id="ea", cartesia_voice_id="ca"),
+        a=HostPersona(name="Bram", persona="x", voice_id="ea"),
         b=HostPersona(name="Maeve", persona="x", voice_id="eb"),
     )
-    with pytest.raises(RuntimeError, match="Maeve"):
-        mp._voices(hosts, "cartesia")
-    hosts.b.cartesia_voice_id = "cb"
-    assert mp._voices(hosts, "cartesia").a == "ca"
-    assert mp._voices(hosts, "cartesia").b == "cb"
-    # The ElevenLabs path still reads the ElevenLabs ids.
-    assert mp._voices(hosts, "elevenlabs").a == "ea"
+    voices = mp._voices(hosts)
+    assert (voices.a, voices.b, voices.c) == ("ea", "eb", None)
 
 
 def test_external_api_assets_have_a_retry_policy() -> None:
-    """distill/script/clips hit Anthropic/ElevenLabs → must retry transient outages;
+    """distill/script/clips hit OpenRouter/ElevenLabs → must retry transient outages;
     the local ffmpeg episode assembly needs no retry."""
     for asset in (mp.session_digest, mp.session_script, mp.session_audio_clips):
         policy = asset.op.retry_policy

@@ -92,9 +92,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Pipeline
 
-- Delete Cartesia (provider, recipe `mouthpiece-cartesia-voices`, compose key, config, persona voice
-  ids) and the Anthropic fallback (`ensure_anthropic_env`, config key, compose key, `claude-*` price
-  rows) — agent; decided, [ADR 0022](adr/0022-delete-cartesia-and-anthropic-fallbacks.md).
 - Move the mouthpiece experiment harness and roundtable to a tools package — agent; [ADR 0023](adr/0023-mouthpiece-tools-package.md).
 - A second recording on the same date is ignored — agent; product bug (paydown PIPE-12).
 - Empty transcripts are committed as successes — agent; product bug (PIPE-12).

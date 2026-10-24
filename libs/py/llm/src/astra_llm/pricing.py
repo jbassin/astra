@@ -1,8 +1,8 @@
 """USD per 1,000,000 tokens — the cost table behind cost→OTel (retires faerrin's pricing.ts).
 
-Rates from the claude-api skill (verified, not guessed). Cache-write is the 5-minute-TTL
-rate (1.25× input); cache-read is 0.1× input. Only cost-tracked models need a row; an
-unknown model costs 0 (graceful — surfaced in summaries rather than throwing).
+Rates from each model's OpenRouter listing. Cache-write is kept at 1.25× input and
+cache-read at 0.1× input. Only cost-tracked models need a row; an unknown model costs 0
+(graceful — surfaced in summaries rather than throwing).
 """
 
 from __future__ import annotations
@@ -18,14 +18,9 @@ class ModelPricing(NamedTuple):
 
 
 PRICING_USD_PER_1M: dict[str, ModelPricing] = {
-    "claude-opus-4-8": ModelPricing(input=5.0, cache_read=0.5, cache_write=6.25, output=25.0),
-    "claude-sonnet-4-6": ModelPricing(input=3.0, cache_read=0.3, cache_write=3.75, output=15.0),
-    "claude-haiku-4-5-20251001": ModelPricing(
-        input=1.0, cache_read=0.1, cache_write=1.25, output=5.0
-    ),
     # GLM 5.2 (open-weight) routed via OpenRouter — mouthpiece's default model. Rate from
     # OpenRouter's listing (~$0.95/$3.00 per 1M; can drift as OpenRouter routes to
-    # different upstream providers). OpenRouter doesn't surface Anthropic-style cache
+    # different upstream providers). OpenRouter doesn't surface separate cache
     # buckets, so cache_* tokens are ~always 0; kept at the usual 0.1x/1.25x ratios.
     "openrouter/z-ai/glm-5.2": ModelPricing(
         input=0.95, cache_read=0.095, cache_write=1.19, output=3.0

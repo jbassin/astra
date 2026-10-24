@@ -32,7 +32,7 @@ def _fake_completion(**_: Any) -> Any:
 def test_smoke_runs_offline(monkeypatch: pytest.MonkeyPatch) -> None:
     # run() bridges the OpenRouter key via ensure_openrouter_env() (the default model is
     # GLM 5.2); set THAT env override so the offline smoke resolves it directly and never
-    # shells out to `sops` (absent in CI). The Anthropic key stays wired as a fallback.
+    # shells out to `sops` (absent in CI).
     monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-test-offline")
     summary = run(LiteLLMClient(completion_fn=_fake_completion))
     assert summary["model"] == "openrouter/z-ai/glm-5.2"
