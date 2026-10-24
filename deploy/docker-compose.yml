@@ -224,7 +224,7 @@ services:
     container_name: astra-weal-overlay
     # Node 24 runtime (R3, 0022 S8 — the runtime-exit recipe; D13). node:24-slim
     # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
+    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # Shared weal↔overlay token (Decision E env injection via `just up`).
     environment:
@@ -252,7 +252,7 @@ services:
     image: astra-menhir:local
     container_name: astra-menhir
     # Node 24 runtime (see weal-overlay); node:24-slim global fetch → healthcheck.
-    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
+    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     ports:
       - "10375:10375"
@@ -277,7 +277,7 @@ services:
     container_name: astra-strider
     # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
     # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
+    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
@@ -314,7 +314,7 @@ services:
     container_name: astra-akasha-frontend
     # Node 24 runtime (R3, 0022 S6 — the audio-mounts Range/206 pilot; D13). node:24-slim
     # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
+    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
@@ -356,7 +356,7 @@ services:
     container_name: astra-codex
     # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; build stage also Node 24 + pnpm, 0022 S11).
     # node:24-slim has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
+    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
@@ -408,7 +408,7 @@ services:
     container_name: astra-mouthpiece-frontend
     # Node 24 runtime (R3, 0022 S6 — the audio-mounts Range/206 pilot; D13). node:24-slim
     # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
+    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
@@ -440,7 +440,7 @@ services:
     container_name: astra-vellum-frontend
     # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
     # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
+    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
@@ -468,7 +468,7 @@ services:
     container_name: astra-vellum-render
     # Node 24 runtime (R3, 0022 S9 — the runtime-exit recipe; D13). node:24-slim
     # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "src/server.ts"]
+    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "src/server.ts"]
     # Runs as 1000 like the others; the Dockerfile chowns /ms-playwright so the (non-root)
     # Chromium can read its browser bundle. Profile is an ephemeral /tmp dir; --no-sandbox.
     user: "1000:1000"
@@ -561,7 +561,7 @@ services:
     container_name: astra-harrow
     # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
     # has global fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
+    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
@@ -590,7 +590,7 @@ services:
     container_name: astra-ledger
     # Node 24 runtime (R3, 0022 S4 — the pilot; D13). node:24-slim has global
     # fetch, so the healthcheck below needs no extra deps either.
-    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
+    command: ["node", "--import", "../../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
