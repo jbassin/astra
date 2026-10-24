@@ -24,11 +24,12 @@
  * error message — every `log.emit`/error-message call site below was written
  * with this in mind (client ids and typed outcomes only).
  */
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 
 import { getLogger, getTracer, lazyCounter, reportIgnored } from "@astra/observe";
+import { safeEqual } from "@astra/service-kit";
 import type { OAuthRegisteredClientsStore } from "@modelcontextprotocol/sdk/server/auth/clients.js";
 import {
   InvalidClientMetadataError,
@@ -89,17 +90,6 @@ const DEFAULT_ACCESS_TOKEN_TTL_S = 3600;
 
 function sha256Hex(value: string): string {
   return createHash("sha256").update(value).digest("hex");
-}
-
-/** Timing-safe compare that tolerates a length mismatch (the naive case
- * `crypto.timingSafeEqual` throws on) without leaking timing information beyond
- * "same length or not" — an attacker who can only observe candidate-length
- * mismatches learns nothing about the actual key. */
-export function constantTimeEquals(candidate: string, expected: string): boolean {
-  const a = Buffer.from(candidate);
-  const b = Buffer.from(expected);
-  if (a.length !== b.length) return false;
-  return timingSafeEqual(a, b);
 }
 
 // --- persisted state (D-2) --------------------------------------------------------
@@ -359,9 +349,9 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
   }
 
   /** Constant-time check of a submitted consent-form key against the configured
-   * `portal_mcp_api_key` (D-1) — never throws on a length mismatch. */
+   * `portal_mcp_api_key` (D-1); neither the contents nor the length leak. */
   verifyConsentKey(candidate: string): boolean {
-    return constantTimeEquals(candidate, this.#consentKey);
+    return safeEqual(candidate, this.#consentKey);
   }
 
   /** Approved-consent path: mints a single-use 256-bit authorization code (10-min
