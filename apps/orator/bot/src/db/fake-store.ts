@@ -283,6 +283,9 @@ export class FakeStore implements LibraryStore {
   tagsForTrack(_trackId: number): Promise<Tag[]> {
     return notImpl("tagsForTrack");
   }
+  tagsForTracks(_trackIds: number[]): Promise<Map<number, Tag[]>> {
+    return notImpl("tagsForTracks");
+  }
   addTagsToTracks(_trackIds: number[], _tagIds: number[]): Promise<number> {
     return notImpl("addTagsToTracks");
   }
