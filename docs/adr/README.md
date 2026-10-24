@@ -32,7 +32,7 @@ To change a decision, add a new ADR and mark the old one `Superseded by NNNN`; n
 | [0024](0024-strider-editor-dev-only.md) | strider's editor is dev-only | Accepted, not yet built |
 | [0025](0025-weal-roll-history-archive.md) | weal roll history is an archive, written after the reply | Accepted, not yet built |
 | [0026](0026-codex-url-alias-removal-date.md) | codex's "forever" URL aliases get a removal date | Accepted, not yet built |
-| [0027](0027-rust-ci-lane.md) | Rust gets a path-filtered CI lane and a source-hash check | Accepted, not yet built |
+| [0027](0027-rust-ci-lane.md) | Rust gets a path-filtered CI lane and a source-hash check | Accepted (done) |
 | [0028](0028-replace-vite-plus.md) | Replace vite-plus with pnpm -r and root vitest projects | Accepted, partly built |
 | [0029](0029-python-312-mise-just.md) | Python 3.12, mise-pinned host tools, and one just entry point | Accepted (done) |
 | [0030](0030-dagster-docker-run-launcher.md) | Dagster adopts the Docker run launcher | Accepted, not yet built |

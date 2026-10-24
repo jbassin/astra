@@ -31,7 +31,8 @@ uv run pytest apps/<domain>/py # one Python app (they run as Dagster assets, no 
 Each CI job in `.github/workflows/ci.yml` runs the `just` recipe of the same name, so `just ci`
 runs the same commands. Differences: CI path-filters its jobs while `just ci` runs them all, and
 `vellum-visual-regression` stays CI-only because its goldens are pinned to the `node:24-slim`
-container's Chromium and fonts. `ci-ok` is the one CI job that sums up the others; a new job must be
+container's Chromium and fonts. `just ci` also runs the weal-engine crate's cargo gate, so the host
+needs rustup. `ci-ok` is the one CI job that sums up the others; a new job must be
 added to its `needs`.
 
 ## Hooks
@@ -75,9 +76,10 @@ build fan out with `pnpm -r --no-bail --aggregate-output run <task>`. `vite-plus
 devDependency but nothing runs it.
 
 **Rust.** Only `libs/rust/weal-engine` (toolchain 1.96.0 via its `rust-toolchain.toml`). Rebuild the
-committed wasm in `libs/ts/weal-engine/gen/` with `just weal-engine-build`, never by hand. There is
-no Rust CI lane yet; before committing an engine change run, in the crate dir:
-`cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test`.
+committed wasm in `libs/ts/weal-engine/gen/` with `just weal-engine-build`, never by hand. Two CI
+jobs guard it ([ADR 0027](adr/0027-rust-ci-lane.md)), both in `just ci`: `weal-engine-rust` (fmt,
+clippy, tests; needs rustup on the host) and `weal-engine-hash-check`, which fails when `gen/` is
+stale against the Rust sources and needs no Rust (it is also in `just check`).
 See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
 
 ## Standing conventions
