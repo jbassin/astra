@@ -145,7 +145,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## codex
 
-- Delete the hidden assay block, its refresh step and bind mount — agent; [ADR 0020](adr/0020-delete-codex-assay-block.md).
 - Four malformed action entities escape the drop rules (`action/1-minute`, `1-minute-manipulate-6`,
   `1-minute-command-interact`, `action/u`) — agent; flagged 2026-07-19.
 - The /rules sidebar `<details>` has no `::details-content` override, so content can go unpainted on

@@ -15,7 +15,7 @@ the frontend on top, unmodified corpus contract. See
 ## Operations
 
 The data dir is `codex.data-path` (`codex/data` under `data.root`, so
-`/ruby/data/astra-state/codex/data`): `corpus/`, `search/`, `snapshots/`, `assay/`. The
+`/ruby/data/astra-state/codex/data`): `corpus/`, `search/`, `snapshots/`. The
 transform and the search build write the **live** dirs the container mounts read-only.
 
 - **Full refresh** (re-fetch both sources, transform, reindex, restart): `just codex-refresh`.
@@ -839,7 +839,6 @@ already use (`deploy/docker-compose.yml`), applied to a frontend for the first t
 ```
 /ruby/data/astra-state/codex/data/corpus:/ruby/data/astra-state/codex/data/corpus:ro
 /ruby/data/astra-state/codex/data/search:/ruby/data/astra-state/codex/data/search:ro
-/ruby/data/astra-state/codex/data/assay:/ruby/data/astra-state/codex/data/assay:ro
 ```
 
 Since 0037 item 2c the data dir lives under the one data root (`data.root`

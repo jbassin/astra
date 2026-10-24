@@ -1,8 +1,6 @@
 import type { ReactElement } from "react";
 
-import type { AssayEntry } from "../../schema/assay";
 import type { CodexEntity } from "../../schema/entity";
-import { AssayBlock } from "./assayBlock";
 import { categoryGroupOf } from "./categoryGroup";
 import { EntityHeader } from "./EntityHeader";
 import {
@@ -51,22 +49,7 @@ function TraitCrossNav({ trait }: { trait: string }): ReactElement {
  * at all — see `EntityHeader.tsx`'s own updated comment for the full
  * history.
  */
-export function EntityPage({
-  entity,
-  ctx,
-  assay,
-}: {
-  entity: CodexEntity;
-  ctx: RenderCtx;
-  /** D30-39/40 — optional, defaults to `undefined`: every EXISTING caller
-   * (the 7 flagship goldens' bare construction in `goldens.test.tsx`,
-   * `scripts/regen-goldens.ts`, this file's own `entityPage.test.tsx`
-   * suite) passes no third field at all, so this stays `undefined` and
-   * `AssayBlock` below renders nothing — the D30-40 "goldens/fixtures
-   * byte-identical untouched" contract, satisfied by never threading the
-   * prop rather than by asserting every call site stayed in sync. */
-  assay?: AssayEntry;
-}): ReactElement {
+export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCtx }): ReactElement {
   const group = categoryGroupOf(entity.category);
 
   // P14 S2 (D29-135) — the Lore card's own duplicate-section suppression:
@@ -143,13 +126,6 @@ export function EntityPage({
           <div className="codex-content">{renderNodes(loreResult.nodes, ctx)}</div>
         </section>
       ) : null}
-
-      {/* D30-40 — the assay round-4 experimental verdict card, spell-only,
-          rides an OPTIONAL `assay` prop: absent (every existing caller,
-          see this component's own prop doc comment above) renders nothing,
-          which is exactly what keeps every pre-existing golden/fixture
-          byte-identical without touching them. */}
-      <AssayBlock entity={entity} assay={assay} ctx={ctx} />
     </article>
   );
 }
