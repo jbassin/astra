@@ -75,20 +75,31 @@ just weal-engine-build
 runs, from the repo root: `cargo build --release --target wasm32-unknown-unknown` →
 `wasm-bindgen --target nodejs` into `libs/ts/weal-engine/gen/` → `wasm-opt -O2` in place →
 rewrites `gen/package.json` to `{"type":"commonjs"}` (wasm-bindgen won't; the CJS marker is what
-lets the ESM wrapper `createRequire` the glue) → prints sha256s.
+lets the ESM wrapper `createRequire` the glue) → writes the staleness stamp
+`gen/SOURCE_SHA256` (`tools/gen-stamp.sh write`) → prints sha256s.
 
 - **Pinned tools, hard-required** (committed bytes must be machine-independent; the recipe
   fails fast on a missing or wrong-version tool):
   - Rust **1.96.0** via `rust-toolchain.toml` (rustfmt + clippy components).
   - **wasm-bindgen-cli 0.2.127** — must equal the crate's `wasm-bindgen = "=0.2.127"` pin
-    (`cargo install wasm-bindgen-cli --version 0.2.127 --locked`).
-  - **binaryen wasm-opt version 124** (GitHub release binary → `~/.local/bin`).
-- **Determinism:** two runs produce a byte-identical `gen/` (recorded at S5). If your rebuild
+    (`mise.toml` installs it).
+  - **binaryen wasm-opt version 124** (`mise.toml` installs it).
+- **Determinism and machine independence:** two runs produce a byte-identical `gen/`, and so
+  does a build with a different `CARGO_HOME` (checked 2026-10-23). The recipe passes
+  `--remap-path-prefix=$CARGO_HOME=/cargo` through `cargo --config`, so the dependency panic
+  locations read `/cargo/registry/...` instead of the builder's home directory, and it fails if
+  `$HOME` still appears in the wasm. Use `--config`, not `RUSTFLAGS`: the env var replaces the
+  `.cargo/config.toml` rustflags (dropping the stack flag), while `--config` appends to them. The
+  crate's own paths are already relative and std's already read `/rustc/<hash>`. If your rebuild
   diffs without a source change, suspect tool versions.
 - **Committed-artifact policy:** `gen/` is a build product that lives in git — never hand-edit
-  it, always regenerate via the recipe. CI never runs cargo; a vitest smoke in
-  `libs/ts/weal-engine` loads the real wasm and rolls a seeded `2d6`, guarding a stale/corrupt
-  artifact.
+  it, always regenerate via the recipe. `just weal-engine-hash-check` (in `just check`, `just ci`
+  and CI, no Rust needed) fails when `gen/` is stale: it recomputes the hash of `src/**`,
+  `fonts/**`, `Cargo.toml`, `Cargo.lock`, `.cargo/config.toml`, `rust-toolchain.toml` and the
+  recipe's tool pins, and the sha256 of every `gen/` file, and compares both with
+  `gen/SOURCE_SHA256`. A new build input outside that list (a `build.rs`, say) must be added to
+  `tools/gen-stamp.sh`. A vitest smoke in `libs/ts/weal-engine` also loads the real wasm and
+  rolls a seeded `2d6`, guarding a corrupt artifact.
 - **wasm stack sizing:** the 256-frame recursion cap needs an 8 MiB stack under wasm32
   (`-C link-arg=-zstack-size=8388608`), target-scoped in `.cargo/config.toml` so it applies no
   matter who invokes cargo and native builds are untouched.
@@ -113,11 +124,13 @@ a semantics change in `dist/` should make the existing fixtures FAIL, not prompt
 ## Running the tests
 
 ```
-cd libs/rust/weal-engine
-cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test
+just weal-engine-rust
 ```
 
-That triple is the local gate (recorded per slice — there is no Rust CI lane). `cargo test` runs
+This is the CI job of the same name (path-filtered on `libs/rust/**` and `gen/`; ADR 0027), and
+`just ci` runs it too. It runs, in the crate dir, `cargo fmt --check`, `cargo clippy
+--all-targets -- -D warnings`, `cargo clippy -- -D warnings -D clippy::unwrap_used` (library code
+may not unwrap; tests may) and `cargo test`. `cargo test` runs
 the unit suites plus `tests/`: parser/lexer goldens, parse recovery, printer round-trip
 properties, the typechecker accept/reject suite, elaboration, the dist property tests
 (denominator invariants, keep-1 ≡ pool recursion), the oracle, seam end-to-end, the §3 seeded

@@ -14,4 +14,4 @@ weal v2 needed an exact-distribution dice engine; the reference implementation p
 
 ## Consequences
 
-cargo is needed only when the engine changes. A CI lane for the crate is planned ([0027](0027-rust-ci-lane.md)); until then the local gate is `cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test`.
+cargo is needed only when the engine changes. The crate now has a CI lane ([0027](0027-rust-ci-lane.md)): `just weal-engine-rust` and `just weal-engine-hash-check`.

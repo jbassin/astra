@@ -27,6 +27,7 @@ jobs:
       corpus: ${{ steps.filter.outputs.corpus }}
       vellumRender: ${{ steps.filter.outputs.vellumRender }}
       codex: ${{ steps.filter.outputs.codex }}
+      wealEngine: ${{ steps.filter.outputs.wealEngine }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -93,6 +94,13 @@ jobs:
               - 'libs/ts/observe/**'
               - 'libs/ts/config/**'
               - 'pnpm-lock.yaml'
+              - 'justfile'
+              - '.github/**'
+            # The weal-engine crate (ADR 0027). Its committed wasm output is watched too, so
+            # a hand edit there reruns the crate's tests alongside the always-on hash check.
+            wealEngine:
+              - 'libs/rust/**'
+              - 'libs/ts/weal-engine/gen/**'
               - 'justfile'
               - '.github/**'
 
@@ -272,6 +280,29 @@ jobs:
       # Same CODEX_CORPUS_ROOT pin as codex-row-height-drift-guard (see the note there).
       - run: just codex-virtualization-interaction-guard
 
+  # The weal-engine crate's own gate (ADR 0027): fmt, clippy and tests. rustup installs the
+  # toolchain the crate's rust-toolchain.toml pins (1.96.0 with rustfmt and clippy). It
+  # doesn't rebuild the wasm; weal-engine-hash-check below catches a stale gen/.
+  weal-engine-rust:
+    needs: changes
+    if: needs.changes.outputs.wealEngine == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-just
+      - run: cd libs/rust/weal-engine && rustup toolchain install
+      - run: just weal-engine-rust
+
+  # The committed wasm in libs/ts/weal-engine/gen matches the crate's sources: the
+  # sha256 stamp gen/SOURCE_SHA256 that `just weal-engine-build` writes. Needs no Rust
+  # toolchain and takes a second, so no path filter.
+  weal-engine-hash-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-just
+      - run: just weal-engine-hash-check
+
   # Conventional Commits (commitlint.config.js extends @commitlint/config-conventional).
   # Pull requests lint base..head; pushes to main lint only the pushed range, so
   # commits that predate this job can never fail it.
@@ -324,6 +355,8 @@ jobs:
       - vellum-visual-regression
       - codex-row-height-drift-guard
       - codex-virtualization-interaction-guard
+      - weal-engine-rust
+      - weal-engine-hash-check
       - commitlint
     runs-on: ubuntu-latest
     steps:

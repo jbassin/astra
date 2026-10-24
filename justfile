@@ -30,7 +30,7 @@ bootstrap:
     git config core.hooksPath .githooks
 
 # The fast format + lint gate for both lanes over the whole tree (pre-commit runs it on staged files).
-check: (_each "check" "ts-lint,py-lint,docs-check")
+check: (_each "check" "ts-lint,py-lint,docs-check,weal-engine-hash-check")
 
 # Lint findings the tools can't fix are printed and don't stop the formatters; `just check`
 # shows what is left.
@@ -47,9 +47,10 @@ test: (_each "test" "py-test,ts-test")
 # The pre-push hook runs this; commitlint covers base..HEAD. Unlike CI, which path-filters
 # its jobs, this always runs every step. Not run here: vellum-visual-regression, because its
 # goldens are pinned to the node:24-slim container's Chromium and fonts (a host browser
-# renders different pixels); it stays CI-only.
+# renders different pixels); it stays CI-only. weal-engine-rust needs rustup on the host (it
+# installs the crate's pinned toolchain on first use).
 # Run everything CI runs, locally (all but the container-only vellum render goldens).
-ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard"))
+ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,codex-row-height-drift-guard,codex-virtualization-interaction-guard,weal-engine-rust,weal-engine-hash-check"))
 
 # `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
 # they run as Dagster assets; test them with `uv run pytest apps/<domain>/py`.
@@ -802,14 +803,19 @@ codex-search-index:
 # the crate's .cargo/config.toml, target-scoped) → wasm-bindgen --target
 # nodejs into libs/ts/weal-engine/gen → wasm-opt -O2 in place → re-write
 # gen/package.json {"type":"commonjs"} (wasm-bindgen won't; the CJS marker is
-# what lets the ESM wrapper createRequire the glue). BOTH tools are
+# what lets the ESM wrapper createRequire the glue) → write gen/SOURCE_SHA256,
+# the staleness stamp weal-engine-hash-check verifies. BOTH tools are
 # HARD-REQUIRED at pinned versions (committed bytes must be
 # machine-independent): wasm-bindgen-cli 0.2.127 (== the crate's wasm-bindgen
-# pin; `cargo install wasm-bindgen-cli --version 0.2.127 --locked`) and
-# binaryen wasm-opt version 124 (GitHub release binary → ~/.local/bin).
+# pin) and binaryen wasm-opt version 124; mise.toml installs both.
+# Machine-independent bytes (WEAL-4): --remap-path-prefix rewrites $CARGO_HOME,
+# which the dependency panic locations name, to /cargo. It goes in via
+# --config, which cargo appends to the config file's rustflags array; a
+# RUSTFLAGS env var would REPLACE that array and drop the stack flag.
 # Deterministic: two runs → byte-identical gen/ (recorded at S5).
 weal_bindgen_version := "0.2.127"
 weal_wasm_opt_version := "124"
+weal_stamp := "wasm-bindgen=" + weal_bindgen_version + " wasm-opt=" + weal_wasm_opt_version
 weal-engine-build:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -821,11 +827,30 @@ weal-engine-build:
     [ "$bg_v" = "{{weal_bindgen_version}}" ] || { echo "FATAL: wasm-bindgen $bg_v != pinned {{weal_bindgen_version}}" >&2; exit 1; }
     wo_v="$(wasm-opt --version | awk '{print $3}')"
     [ "$wo_v" = "{{weal_wasm_opt_version}}" ] || { echo "FATAL: wasm-opt $wo_v != pinned {{weal_wasm_opt_version}}" >&2; exit 1; }
-    cargo build --release --target wasm32-unknown-unknown
+    cargo_home="${CARGO_HOME:-$HOME/.cargo}"
+    cargo build --release --target wasm32-unknown-unknown \
+      --config "target.wasm32-unknown-unknown.rustflags = [\"--remap-path-prefix=$cargo_home=/cargo\"]"
     wasm-bindgen --target nodejs --out-dir "$gen" target/wasm32-unknown-unknown/release/weal_engine.wasm
     wasm-opt -O2 -o "$gen/weal_engine_bg.wasm" "$gen/weal_engine_bg.wasm"
     printf '{\n  "type": "commonjs"\n}\n' > "$gen/package.json"
+    if strings -n 8 "$gen/weal_engine_bg.wasm" | grep -qF "$HOME"; then echo "FATAL: the wasm embeds $HOME (path remapping failed)" >&2; exit 1; fi
+    tools/gen-stamp.sh write {{quote(weal_stamp)}}
     sha256sum "$gen"/weal_engine_bg.wasm "$gen"/weal_engine.js
+
+# Needs only the toolchain rustup installs from the crate's rust-toolchain.toml (1.96.0 with
+# rustfmt and clippy), not the wasm tools. The second clippy pass bans unwrap in library code;
+# tests may unwrap.
+# CI job weal-engine-rust: the weal-engine crate's fmt, clippy and tests.
+weal-engine-rust:
+    cd libs/rust/weal-engine && cargo fmt --check
+    cd libs/rust/weal-engine && cargo clippy --all-targets -- -D warnings
+    cd libs/rust/weal-engine && cargo clippy -- -D warnings -D clippy::unwrap_used
+    cd libs/rust/weal-engine && cargo test
+
+# Needs no Rust toolchain: it hashes the crate's sources against gen/SOURCE_SHA256.
+# CI job weal-engine-hash-check: the committed wasm was built from the committed Rust sources.
+weal-engine-hash-check:
+    libs/rust/weal-engine/tools/gen-stamp.sh check {{quote(weal_stamp)}}
 
 # --- heartwood (0033) ---
 
