@@ -122,9 +122,11 @@ async function main(): Promise<void> {
     services: { playback, ingest, hub, prober: ffmpegProber },
   });
   // On SIGTERM the kit drains the server first; then these run, last registered first:
-  // the bot leaves Discord, then the store closes its Postgres pool.
+  // ingest kills its yt-dlp runs (their jobs stay queued/running, so the next boot's
+  // resumeInterrupted picks them up), the bot leaves Discord, then the store closes its pool.
   service.onShutdown(() => store.close());
   if (stopBot) service.onShutdown(stopBot);
+  service.onShutdown(() => ingest.stop());
   log.info(`operator allowlist: ${allowlist.size} id(s); data dir: ${dataDir}`);
 }
 

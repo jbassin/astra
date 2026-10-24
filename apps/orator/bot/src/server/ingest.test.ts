@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { FakeStore } from "../db/fake-store";
 import { extractVideoId, type YtDlp } from "../media/ytdlp";
@@ -177,6 +177,113 @@ describe("resumeInterrupted (restart recovery)", () => {
     const job = await store.createDownloadJob({ type: "single", sourceUrl: "u" });
     await store.updateDownloadJob(job.id, { status: "done" });
     expect(await service(stubYtDlp()).resumeInterrupted()).toBe(0);
+  });
+
+  test("a playlist cut off before its listing finished is listed again", async () => {
+    const dest = await store.createCollection({ name: "My Mix" });
+    const job = await store.createDownloadJob({
+      type: "playlist",
+      sourceUrl: "https://youtube.com/playlist?list=PL1",
+      collectionId: dest.id,
+    });
+    const entries = [
+      { videoId: "a", title: "A" },
+      { videoId: "b", title: "B" },
+    ];
+    expect(await service(stubYtDlp({ entries })).resumeInterrupted()).toBe(1);
+    await vi.waitFor(async () => expect((await store.getDownloadJob(job.id))?.status).toBe("done"));
+    expect(await store.listTracks({ collectionId: dest.id })).toHaveLength(2);
+    expect(await store.listCollections()).toHaveLength(1);
+  });
+
+  test("a playlist cut off while recording its items adds only the missing ones", async () => {
+    const job = await store.createDownloadJob({ type: "playlist", sourceUrl: "https://y/l" });
+    await store.updateDownloadJob(job.id, { status: "running", totalItems: 3 });
+    await store.addJobItem({ jobId: job.id, videoId: "a", title: "A", position: 0 });
+    const entries = ["a", "b", "c"].map((videoId) => ({ videoId, title: videoId }));
+    await service(stubYtDlp({ entries })).resumeInterrupted();
+    await vi.waitFor(async () => expect((await store.getDownloadJob(job.id))?.status).toBe("done"));
+    const items = await store.listJobItems(job.id);
+    expect(items.map((i) => [i.position, i.video_id, i.status])).toEqual([
+      [0, "a", "done"],
+      [1, "b", "done"],
+      [2, "c", "done"],
+    ]);
+  });
+
+  test("a single-video job cut off before its item was recorded still downloads", async () => {
+    const job = await store.createDownloadJob({ type: "single", sourceUrl: "https://youtu.be/s1" });
+    await service(stubYtDlp()).resumeInterrupted();
+    await vi.waitFor(async () => expect((await store.getDownloadJob(job.id))?.status).toBe("done"));
+    expect((await store.listTracks()).map((t) => t.source_video_id)).toEqual(["s1"]);
+  });
+});
+
+/** A yt-dlp whose downloads of `hang` ids never finish until their signal aborts. */
+function hangingYtDlp(entries: { videoId: string; title: string }[], hang: Set<string>): YtDlp {
+  const quick = stubYtDlp({ entries });
+  return {
+    enumerate: quick.enumerate,
+    download(target, destDir, onProgress, signal) {
+      const videoId = target.videoId ?? extractVideoId(target.url ?? "") ?? "single";
+      if (!hang.has(videoId)) return quick.download(target, destDir, onProgress);
+      return new Promise((_, reject) =>
+        signal?.addEventListener("abort", () => reject(new Error("yt-dlp was stopped"))),
+      );
+    },
+  };
+}
+
+describe("stop (shutdown) then resume", () => {
+  test("a shutdown mid-download leaves the job resumable, and the next boot finishes it", async () => {
+    const entries = ["a", "b", "c"].map((videoId) => ({ videoId, title: videoId }));
+    const first = service(hangingYtDlp(entries, new Set(["b", "c"])));
+    const { job, done } = await first.start("https://youtube.com/playlist?list=PL1");
+    await vi.waitFor(async () => {
+      const items = await store.listJobItems(job.id);
+      expect(items.map((i) => i.status)).toEqual(["done", "downloading", "downloading"]);
+    });
+
+    await first.stop();
+    await done;
+    // Nothing recorded the interruption as a failure.
+    expect((await store.getDownloadJob(job.id))?.status).toBe("running");
+    expect((await store.listJobItems(job.id)).map((i) => [i.status, i.error])).toEqual([
+      ["done", null],
+      ["downloading", null],
+      ["downloading", null],
+    ]);
+    expect((await store.listJobsByStatus(["queued", "running"])).map((j) => j.id)).toEqual([
+      job.id,
+    ]);
+
+    // The next boot: a fresh service over the same store.
+    expect(await service(stubYtDlp({ entries })).resumeInterrupted()).toBe(1);
+    await vi.waitFor(async () => expect((await store.getDownloadJob(job.id))?.status).toBe("done"));
+    expect((await store.getDownloadJob(job.id))?.completed_items).toBe(3);
+    expect(await store.listTracks()).toHaveLength(3);
+  });
+
+  test("a stopped service starts no queued item", async () => {
+    const entries = ["a", "b", "c"].map((videoId) => ({ videoId, title: videoId }));
+    const svc = new IngestService({
+      store,
+      dataDir,
+      ytdlp: hangingYtDlp(entries, new Set(["a"])),
+      hub,
+      concurrency: 1,
+    });
+    const { job, done } = await svc.start("https://youtube.com/playlist?list=PL1");
+    await vi.waitFor(async () =>
+      expect((await store.listJobItems(job.id))[0]?.status).toBe("downloading"),
+    );
+    await svc.stop();
+    await done;
+    expect((await store.listJobItems(job.id)).map((i) => i.status)).toEqual([
+      "downloading",
+      "queued",
+      "queued",
+    ]);
   });
 });
 
