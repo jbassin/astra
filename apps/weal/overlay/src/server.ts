@@ -1,9 +1,11 @@
+import { timingSafeEqual } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 
 import { isBlankSecret } from "@astra/config";
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import { serveFile } from "@astra/site-kit";
+import { INGEST_PATH, requestToken } from "@astra/weal-wire";
 import { type Server, serve } from "srvx";
 
 import { RollHub } from "./hub";
@@ -24,7 +26,7 @@ const SSE_HEADERS = {
 } as const;
 
 export interface AppOptions {
-  /** Shared secret required as the `x-eerie-token` header on ingest. Must be non-blank:
+  /** Shared secret required in the `@astra/weal-wire` token header on ingest. Must be non-blank:
    * there is no open mode (fail closed, 0037 SEC-12) — createApp throws on a blank token. */
   token: string;
   /** Absolute path to the built overlay (vite `dist/`). */
@@ -39,6 +41,14 @@ export interface RunningServer {
   server: Server;
   hub: RollHub;
   stop(): void;
+}
+
+/** Constant-time token comparison (a plain `!==` leaks the matching prefix length). */
+function tokenMatches(given: string | null, want: string): boolean {
+  if (given === null) return false;
+  const a = Buffer.from(given);
+  const b = Buffer.from(want);
+  return a.length === b.length && timingSafeEqual(a, b);
 }
 
 async function isFile(p: string): Promise<boolean> {
@@ -64,7 +74,7 @@ export function createApp(opts: AppOptions): {
   async function ingest(req: Request): Promise<Response> {
     return tracer.startActiveSpan("overlay.ingest", async (span) => {
       try {
-        if (req.headers.get("x-eerie-token") !== token) {
+        if (!tokenMatches(requestToken(req.headers), token)) {
           rollsCounter.add(1, { outcome: "unauthorized" });
           return new Response("unauthorized\n", { status: 401 });
         }
@@ -148,7 +158,7 @@ export function createApp(opts: AppOptions): {
   // oxlint-disable-next-line require-await -- an async request handler: a throw becomes a rejected response promise
   async function handle(req: Request): Promise<Response> {
     const { pathname } = new URL(req.url);
-    if (req.method === "POST" && pathname === "/api/v1/roll") return ingest(req);
+    if (req.method === "POST" && pathname === INGEST_PATH) return ingest(req);
     if (req.method === "GET" && pathname === "/feed") return feed();
     if (req.method === "GET" || req.method === "HEAD") return serveStatic(req);
     return new Response("method not allowed\n", { status: 405 });

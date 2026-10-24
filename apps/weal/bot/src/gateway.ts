@@ -1,15 +1,16 @@
 /**
  * The discord.js gateway — the I/O shell around the tested core ([[handler.ts]]).
  * Wires a long-running Discord client: per-channel webhook discovery/creation, the
- * host-identity embed send, the best-effort v1 overlay broadcast, and the
- * internal speak API support. Untested glue (needs a live token — the acceptance-I
- * runtime check); the message pipeline it drives is unit-tested via injected deps.
+ * host-identity embed send, and the best-effort overlay broadcast. Untested glue
+ * (needs a live token — the acceptance-I runtime check); the message pipeline it
+ * drives is unit-tested via injected deps.
  */
 
 import { randomBytes } from "node:crypto";
 
 import { getLogger } from "@astra/observe";
 import type { WealHost } from "@astra/ontology";
+import { type RollMessage, tokenHeaders } from "@astra/weal-wire";
 import {
   AttachmentBuilder,
   ChannelType,
@@ -25,7 +26,7 @@ import {
 
 import type { WealStore } from "./db";
 import { type HandlerDeps, handleMessage, type OutgoingMessage } from "./handler";
-import { type OverlayPayload, randomSeed, type SeedInfo } from "./message";
+import { randomSeed, type SeedInfo } from "./message";
 import { EntropyRng } from "./rng";
 import type { Roster } from "./roster";
 
@@ -33,19 +34,10 @@ const log = getLogger("astra.weal-bot");
 
 export interface GatewayConfig {
   discordToken: string;
-  /** weal-overlay v1 ingest URL; empty disables it. */
+  /** weal-overlay's ingest URL; empty disables the broadcast. */
   feedWsUrl: string;
-  /** Shared overlay token sent as `x-eerie-token`; empty = unauthenticated. */
+  /** Shared overlay token (`@astra/weal-wire` token headers); empty = unauthenticated. */
   feedToken: string;
-}
-
-/** Internal speak-API request body (port of http.rs `SpeakArgs`). */
-export interface SpeakArgs {
-  host: string;
-  guild: string;
-  channel: string;
-  message: string;
-  img?: boolean;
 }
 
 export class Gateway {
@@ -139,11 +131,11 @@ export class Gateway {
   }
 
   /** Best-effort: the roll is already posted+saved, so a down feed must not fail it. */
-  private async broadcast(payload: OverlayPayload): Promise<void> {
+  private async broadcast(payload: RollMessage): Promise<void> {
     try {
       if (this.cfg.feedWsUrl !== "") {
         const headers: Record<string, string> = { "content-type": "application/json" };
-        if (this.cfg.feedToken !== "") headers["x-eerie-token"] = this.cfg.feedToken;
+        if (this.cfg.feedToken !== "") Object.assign(headers, tokenHeaders(this.cfg.feedToken));
         const res = await fetch(this.cfg.feedWsUrl, {
           method: "POST",
           headers,
@@ -156,28 +148,6 @@ export class Gateway {
     }
   }
 
-  /** Internal speak API (http.rs `speak`): post a one-off message as a host. */
-  async speak(args: SpeakArgs): Promise<void> {
-    const channel = await this.client.channels.fetch(args.channel);
-    if (channel === null || channel.type !== ChannelType.GuildText) {
-      throw new Error("no known channel");
-    }
-    const webhook = await this.channelWebhook(channel);
-    const host = this.hosts.get(args.host) ?? customHost(args.host);
-    await webhook.send({
-      username: host.name,
-      avatarURL: host.avatar || undefined,
-      embeds: [
-        buildEmbed({
-          host,
-          contents: args.message,
-          fields: [],
-          thumbnail: args.img === false ? undefined : host.avatar || undefined,
-        }),
-      ],
-    });
-  }
-
   private async channelWebhook(channel: TextChannel): Promise<Webhook> {
     const cached = this.webhooks.get(channel.id);
     if (cached !== undefined) return cached;
@@ -188,16 +158,6 @@ export class Gateway {
     this.webhooks.set(channel.id, webhook);
     return webhook;
   }
-}
-
-function customHost(slug: string): WealHost {
-  return {
-    slug,
-    name: slug,
-    color: "#CFBDDE",
-    avatar: "",
-    lines: { crit: [], good: [], okay: [], bad: [], fumble: [] },
-  };
 }
 
 function buildEmbed(msg: OutgoingMessage): EmbedBuilder {

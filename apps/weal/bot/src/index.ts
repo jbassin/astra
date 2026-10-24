@@ -1,7 +1,7 @@
 /**
  * weal-bot entrypoint — astra's first long-running TS/Bun service. Wires telemetry
  * first (principle #1 / [[telemetry-built-in]]), then config + ontology + the Postgres
- * store, and starts the Discord gateway + the internal speak API.
+ * store, and starts the Discord gateway + the healthcheck endpoint.
  */
 
 import { getLogger, initTelemetry } from "@astra/observe";
@@ -16,8 +16,8 @@ import { loadBeing } from "@astra/ontology";
 import { PostgresStore } from "./db";
 import { loadValidatedFuncs } from "./engine";
 import { Gateway } from "./gateway";
+import { startHealthServer } from "./health";
 import { Roster } from "./roster";
-import { startSpeakServer } from "./speak";
 
 async function main(): Promise<void> {
   const cfg = loadConfig();
@@ -51,7 +51,7 @@ async function main(): Promise<void> {
   );
 
   await gateway.start();
-  startSpeakServer(cfg.weal.bindAddr, gateway);
+  startHealthServer(cfg.weal.bindAddr);
 }
 
 main().catch((e) => {

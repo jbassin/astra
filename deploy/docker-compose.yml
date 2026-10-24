@@ -201,8 +201,8 @@ services:
       <<: *pg-healthcheck
       test: ["CMD-SHELL", "pg_isready -U ${WEAL_PG_USERNAME:-weal} -d ${WEAL_PG_DB:-weal}"]
 
-  # weal-bot: the dice/host Discord bot (discord.js gateway + internal speak API).
-  # No published port — Discord dials outbound; the speak API binds 127.0.0.1 only.
+  # weal-bot: the dice/host Discord bot (discord.js gateway). No published port: Discord
+  # dials outbound, and the healthcheck endpoint binds 127.0.0.1 inside the container.
   weal-bot:
     <<: *astra-app
     build:
@@ -238,10 +238,10 @@ services:
     environment:
       WEAL_TOKEN: ${WEAL_TOKEN:-}
     ports:
-      - "10361:10360" # weal-overlay (astra range); strider holds 10360
+      - "10361:10361" # weal-overlay (astra range): config weal-overlay.port
     healthcheck:
       <<: *node-healthcheck
-      test: ["CMD", "node", "-e", "await fetch('http://localhost:10360/').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10361/').then(r=>process.exit(r.ok?0:1))"]
 
   # menhir: the Kahoot-style session-opener quiz (0031). SSE behind Caddy with
   # flush_interval -1. No secrets (no auth, D31-9's hostToken is minted per game).

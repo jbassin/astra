@@ -13,6 +13,7 @@
  */
 
 import type { WealDieDisplay, WealGoodness, WealSpan } from "@astra/weal-engine";
+import { type RollMessage, RollMessageSchema } from "@astra/weal-wire";
 
 import type { SaveRefusal } from "./engine";
 import type { Profile } from "./roster";
@@ -226,42 +227,31 @@ export function saveRefusal(
 
 // --- overlay payload (D32-18) --------------------------------------------------------
 
-/** v1 overlay payload + the v2 `display` headline (the weal → weal-overlay wire). */
-export interface OverlayPayload {
-  v: 1;
-  user: string;
-  expression: string;
-  total: number;
-  value: number;
-  is_crit: boolean;
-  is_fumble: boolean;
-  display: string;
-}
-
 /**
- * Numeric rolls keep the v1 shape + `display`; atom (non-numeric) rolls send
- * `total: 0` / `value: 0` with goodness-derived flags. `expression` is the
- * PLAIN SOURCE TEXT, never renderText (OBS would show raw `~~`/`⟪⟫`).
+ * The roll message weal-overlay shows, built through the shared wire schema
+ * (`@astra/weal-wire`), so a shape the overlay would reject fails here first.
+ * Atom (non-numeric) rolls send `total: 0` with goodness-derived flags.
+ * `expression` is the PLAIN SOURCE TEXT, never renderText (OBS would show raw
+ * `~~`/`⟪⟫`).
  */
 export function overlayPayload(
   playerName: string,
   source: string,
   display: WealDieDisplay,
-): OverlayPayload {
+): RollMessage {
   const numeric =
     display.value.t === "num" || display.value.t === "dec" || display.value.t === "float";
   const parsed = numeric ? Number(display.value.v) : 0;
   const total = Number.isFinite(parsed) ? parsed : 0;
-  return {
+  return RollMessageSchema.parse({
     v: 1,
     user: playerName,
     expression: source,
     total,
-    value: total,
     is_crit: display.goodness === "crit",
     is_fumble: display.goodness === "fumble",
     display: display.headline,
-  };
+  });
 }
 
 // --- classification (port of handler.rs trim + parse_func; plot dropped per K4) ------

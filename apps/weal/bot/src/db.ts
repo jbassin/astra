@@ -1,9 +1,9 @@
 /**
  * The weal roll-history + macro store — Postgres via postgres.js (Decision F,
- * 0022 S5). Three tables: `dice` (one row per sampled NdM die, keyed by the
- * load-bearing `player_id`), `funcs_v2` (weal v2 saved sources, spec 0032
- * D32-17), and v1 `funcs` — kept as a **dead archive** (v1 payloads don't
- * migrate; no loader call sites remain).
+ * 0022 S5). Two tables: `dice` (one row per sampled NdM die, keyed by the
+ * load-bearing `player_id`) and `funcs_v2` (weal v2 saved sources, spec 0032
+ * D32-17). The live database also still holds the v1 `funcs` table, a dead
+ * archive the bot neither creates nor reads.
  *
  * The pathological-pool **save-guards** live here, in the bot, not the DB — a
  * novelty roll like `10000d10000` is still rolled & shown, just not persisted.
@@ -16,7 +16,7 @@ export const MAX_POOL = 30;
 /** Skip any die whose base exceeds this (no real polyhedral die is bigger). */
 export const MAX_BASE = 100;
 
-/** Idempotent schema — v1 tables verbatim + the D32-17 `funcs_v2` appended. */
+/** Idempotent schema — the v1 `dice` table verbatim + the D32-17 `funcs_v2`. */
 export const SCHEMA = `
 create table if not exists dice (
   id        bigserial   primary key,
@@ -29,24 +29,12 @@ create table if not exists dice (
 );
 create index if not exists dice_base_timestamp on dice (base, timestamp);
 
-create table if not exists funcs (
-  id      bigserial primary key,
-  name    text not null,
-  payload text not null
-);
-
 create table if not exists funcs_v2 (
   id     bigserial primary key,
   name   text not null,
   source text not null
 );
 `;
-
-/** A v1 saved macro (dead archive — kept for the table's sake). */
-export interface Func {
-  name: string;
-  payload: string;
-}
 
 /** A weal v2 saved source (`funcs_v2` row; id drives the boot-load order). */
 export interface FuncV2 {
@@ -60,9 +48,6 @@ export interface WealStore {
   ensureSchema(): Promise<void>;
   /** One roll's dice (`[base, face]` pairs) as one multi-row insert. */
   insertDice(dice: readonly [number, number][], playerId: number, blameId: number): Promise<void>;
-  /** v1 archive reads (no loader call sites — kept for tooling/migration use). */
-  getAllFuncs(): Promise<Func[]>;
-  insertFunc(name: string, payload: string): Promise<void>;
   /** `funcs_v2` in id order — the D32-17 boot-load. */
   getAllFuncsV2(): Promise<FuncV2[]>;
   insertFuncV2(name: string, source: string): Promise<void>;
@@ -116,15 +101,6 @@ export class PostgresStore implements WealStore {
       blame_id: blameId,
     }));
     await this.#sql`insert into dice ${this.#sql(rows, "base", "value", "source", "player_id", "blame_id")}`;
-  }
-
-  async getAllFuncs(): Promise<Func[]> {
-    const rows = await this.#sql`select name, payload from funcs`;
-    return rows as unknown as Func[];
-  }
-
-  async insertFunc(name: string, payload: string): Promise<void> {
-    await this.#sql`insert into funcs (name, payload) values (${name}, ${payload})`;
   }
 
   async getAllFuncsV2(): Promise<FuncV2[]> {

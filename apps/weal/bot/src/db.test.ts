@@ -6,15 +6,7 @@
 
 import { describe, expect, test } from "vitest";
 
-import {
-  diceToPersist,
-  type Func,
-  type FuncV2,
-  MAX_POOL,
-  SCHEMA,
-  saveDice,
-  type WealStore,
-} from "./db";
+import { diceToPersist, type FuncV2, MAX_POOL, SCHEMA, saveDice, type WealStore } from "./db";
 
 class FakeStore implements WealStore {
   readonly inserts: [number, number, number, number][] = [];
@@ -25,12 +17,6 @@ class FakeStore implements WealStore {
   insertDice(dice: readonly [number, number][], playerId: number, blameId: number): Promise<void> {
     this.statements += 1;
     for (const [base, value] of dice) this.inserts.push([base, value, playerId, blameId]);
-    return Promise.resolve();
-  }
-  getAllFuncs(): Promise<Func[]> {
-    return Promise.resolve([]);
-  }
-  insertFunc(): Promise<void> {
     return Promise.resolve();
   }
   getAllFuncsV2(): Promise<FuncV2[]> {
@@ -104,15 +90,18 @@ describe("saveDice", () => {
 });
 
 describe("SCHEMA", () => {
-  test("creates the dice + funcs tables and the index", () => {
+  test("creates the dice table and its index", () => {
     expect(SCHEMA).toContain("create table if not exists dice");
-    expect(SCHEMA).toContain("create table if not exists funcs");
     expect(SCHEMA).toContain("dice_base_timestamp");
     expect(SCHEMA).toContain("player_id integer");
   });
 
-  test("appends the D32-17 funcs_v2 table (v1 funcs untouched)", () => {
+  test("creates the D32-17 funcs_v2 table", () => {
     expect(SCHEMA).toContain("create table if not exists funcs_v2");
     expect(SCHEMA).toContain("source text not null");
+  });
+
+  test("no longer creates the v1 funcs archive (the live table is left alone)", () => {
+    expect(SCHEMA).not.toMatch(/create table if not exists funcs\s*\(/);
   });
 });

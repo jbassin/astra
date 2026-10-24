@@ -81,8 +81,6 @@ function deps(over: Partial<HandlerDeps> = {}): HandlerDeps {
     store: {
       ensureSchema: () => Promise.resolve(),
       insertDice: () => Promise.resolve(),
-      getAllFuncs: () => Promise.resolve([]),
-      insertFunc: () => Promise.resolve(),
       getAllFuncsV2: () => Promise.resolve([]),
       insertFuncV2: () => Promise.resolve(),
     },
