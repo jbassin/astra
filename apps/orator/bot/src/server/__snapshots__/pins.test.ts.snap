@@ -1,0 +1,1883 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`orator HTTP responses match the pre-migration pins > callback bot install 1`] = `
+{
+  "body": "<!doctype html><meta charset="utf-8"><title>orator</title><body style="font-family:system-ui;max-width:36rem;margin:4rem auto;padding:0 1rem;background:#0e0f13;color:#e7e9ee"><h1>orator</h1><p>✅ orator is added to your server. To control playback, <a style="color:#c8a24a" href="/">open the app</a> and click <b>Sign in with Discord</b>.</p></body>",
+  "calls": [],
+  "headers": {
+    "content-type": "text/html; charset=utf-8",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > callback forged state 1`] = `
+{
+  "body": "{"error":"invalid_oauth_state"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > callback no code 1`] = `
+{
+  "body": "{"error":"invalid_oauth_state"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > callback not allowlisted 1`] = `
+{
+  "body": "{"error":"not_allowlisted"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 403,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > callback ok 1`] = `
+{
+  "body": "",
+  "calls": [],
+  "headers": {
+    "location": "/",
+    "set-cookie": "orator_<key>=op-1.1795435200.3RXuc_uIRyQ0pVyPdXYVg486OsbWqHdnBhqd53reSfw; Path=/; HttpOnly; SameSite=Lax; Secure; Max-Age=2592000",
+  },
+  "status": 302,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > collections create 1`] = `
+{
+  "body": "{"id":3,"name":"Boss Fights","slug":"boss-fights","ip_or_game":"PF2e","source_type":"manual","source_url":null,"cover_url":null,"created_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00"}",
+  "calls": [
+    [
+      "createCollection",
+      {
+        "ipOrGame": "PF2e",
+        "name": "Boss Fights",
+      },
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 201,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > collections create blank 1`] = `
+{
+  "body": "{"error":"name_required"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > collections create missing 1`] = `
+{
+  "body": "{"error":"name_required"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > collections delete 1`] = `
+{
+  "body": "",
+  "calls": [
+    [
+      "deleteCollection",
+      3,
+    ],
+  ],
+  "headers": {},
+  "status": 204,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > collections delete missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "deleteCollection",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > collections list 1`] = `
+{
+  "body": "[{"id":3,"name":"Boss Fights","slug":"boss-fights","ip_or_game":"PF2e","source_type":"manual","source_url":null,"cover_url":null,"created_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00"}]",
+  "calls": [
+    [
+      "listCollections",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > collections rename 1`] = `
+{
+  "body": "{"id":3,"name":"Bosses","slug":"boss-fights","ip_or_game":"PF2e","source_type":"manual","source_url":null,"cover_url":null,"created_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00"}",
+  "calls": [
+    [
+      "renameCollection",
+      3,
+      "Bosses",
+    ],
+    [
+      "getCollection",
+      3,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > collections rename bad id 1`] = `
+{
+  "body": "{"error":"invalid_id"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > collections rename blank 1`] = `
+{
+  "body": "{"error":"name_required"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > collections rename missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "renameCollection",
+      9999,
+      "x",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > health 1`] = `
+{
+  "body": "{"ok":true}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > health POST 1`] = `
+{
+  "body": "{"ok":true}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > ingest job 1`] = `
+{
+  "body": "{"id":6,"type":"single","source_url":"https://youtu.be/y","title":null,"collection_id":null,"status":"queued","total_items":0,"completed_items":0,"error":null,"created_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00","items":[]}",
+  "calls": [
+    [
+      "getDownloadJob",
+      6,
+    ],
+    [
+      "listJobItems",
+      6,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > ingest job events 1`] = `
+{
+  "body": "data: {"job":{"id":6,"type":"single","source_url":"https://youtu.be/y","title":null,"collection_id":null,"status":"queued","total_items":0,"completed_items":0,"error":null,"created_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00"},"items":[]}
+
+",
+  "calls": [
+    [
+      "getDownloadJob",
+      6,
+    ],
+    [
+      "getDownloadJob",
+      6,
+    ],
+    [
+      "listJobItems",
+      6,
+    ],
+  ],
+  "headers": {
+    "cache-control": "no-cache, no-transform",
+    "content-type": "text/event-stream",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > ingest job events missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "getDownloadJob",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > ingest job events unavailable 1`] = `
+{
+  "body": "{"error":"events_unavailable"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 503,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > ingest job missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "getDownloadJob",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > ingest jobs 1`] = `
+{
+  "body": "[{"id":6,"type":"single","source_url":"https://youtu.be/y","title":null,"collection_id":null,"status":"queued","total_items":0,"completed_items":0,"error":null,"created_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00"}]",
+  "calls": [
+    [
+      "listDownloadJobs",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > ingest upload no files 1`] = `
+{
+  "body": "{"error":"no_files"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > ingest upload not multipart 1`] = `
+{
+  "body": "{"error":"expected_multipart"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > ingest youtube 1`] = `
+{
+  "body": "{"id":55,"status":"queued","source_url":"https://youtu.be/x"}",
+  "calls": [
+    [
+      "ingest.start",
+      "https://youtu.be/x",
+      2,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 202,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > ingest youtube blank 1`] = `
+{
+  "body": "{"error":"url_required"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > ingest youtube unavailable 1`] = `
+{
+  "body": "{"error":"ingest_unavailable"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 503,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > keys create 1`] = `
+{
+  "body": "{"id":1,"name":"Deck","prefix":"orator_<key>","created_at":"2026-01-01T00:00:00","last_used_at":null,"revoked":false,"key":"orator_<key>"}",
+  "calls": [
+    [
+      "createApiKey",
+      {
+        "keyHash": "<hash>",
+        "keyPrefix": "orator_<key>",
+        "name": "Deck",
+        "userId": "op-1",
+      },
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 201,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > keys create bad json 1`] = `
+{
+  "body": "{"error":"invalid_json"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > keys create by api key 1`] = `
+{
+  "body": "{"error":"key_management_requires_login"}",
+  "calls": [
+    [
+      "getApiKeyByHash",
+      "<hash>",
+    ],
+    [
+      "touchApiKey",
+      1,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 403,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > keys create default name 1`] = `
+{
+  "body": "{"id":2,"name":"Stream Deck","prefix":"orator_<key>","created_at":"2026-01-01T00:00:00","last_used_at":null,"revoked":false,"key":"orator_<key>"}",
+  "calls": [
+    [
+      "createApiKey",
+      {
+        "keyHash": "<hash>",
+        "keyPrefix": "orator_<key>",
+        "name": "Stream Deck",
+        "userId": "op-1",
+      },
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 201,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > keys list 1`] = `
+{
+  "body": "[{"id":2,"name":"Stream Deck","prefix":"orator_<key>","created_at":"2026-01-01T00:00:00","last_used_at":null,"revoked":false},{"id":1,"name":"Deck","prefix":"orator_<key>","created_at":"2026-01-01T00:00:00","last_used_at":null,"revoked":false}]",
+  "calls": [
+    [
+      "listApiKeys",
+      "op-1",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > keys list by api key 1`] = `
+{
+  "body": "{"error":"key_management_requires_login"}",
+  "calls": [
+    [
+      "getApiKeyByHash",
+      "<hash>",
+    ],
+    [
+      "touchApiKey",
+      1,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 403,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > keys list empty 1`] = `
+{
+  "body": "[]",
+  "calls": [
+    [
+      "listApiKeys",
+      "op-1",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > keys revoke 1`] = `
+{
+  "body": "",
+  "calls": [
+    [
+      "revokeApiKey",
+      1,
+      "op-1",
+    ],
+  ],
+  "headers": {},
+  "status": 204,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > keys revoke bad id 1`] = `
+{
+  "body": "{"error":"invalid_id"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > keys revoke missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "revokeApiKey",
+      9999,
+      "op-1",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > login 1`] = `
+{
+  "body": "",
+  "calls": [],
+  "headers": {
+    "location": "https://discord.com/api/oauth2/authorize?client_id=cid&redirect_uri=https%3A%2F%2Forator.test%2Fauth%2Fcallback&response_type=code&scope=identify&state=state-nonce.1792843800.Mv0mdtgrPZpnRB4eWHRfIq4K5WXt8BZxpdkku-BTHdY",
+  },
+  "status": 302,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > logout 1`] = `
+{
+  "body": "",
+  "calls": [],
+  "headers": {
+    "location": "/",
+    "set-cookie": "orator_<key>=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0",
+  },
+  "status": 302,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > logout GET falls to the SPA 1`] = `
+{
+  "body": "<!doctype html><title>orator pins</title>",
+  "calls": [],
+  "headers": {
+    "cache-control": "public, max-age=0",
+    "content-type": "text/html; charset=utf-8",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > me 1`] = `
+{
+  "body": "{"uid":"op-1"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > me by api key 1`] = `
+{
+  "body": "{"uid":"op-1"}",
+  "calls": [
+    [
+      "getApiKeyByHash",
+      "<hash>",
+    ],
+    [
+      "touchApiKey",
+      1,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > me by x-orator-key 1`] = `
+{
+  "body": "{"uid":"op-1"}",
+  "calls": [
+    [
+      "getApiKeyByHash",
+      "<hash>",
+    ],
+    [
+      "touchApiKey",
+      1,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > me empty bearer 1`] = `
+{
+  "body": "{"error":"unauthenticated"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 401,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > me expired cookie 1`] = `
+{
+  "body": "{"error":"unauthenticated"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 401,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > me forged cookie 1`] = `
+{
+  "body": "{"error":"unauthenticated"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 401,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > me not allowlisted 1`] = `
+{
+  "body": "{"error":"unauthenticated"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 401,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > me other secret 1`] = `
+{
+  "body": "{"error":"unauthenticated"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 401,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > me revoked api key 1`] = `
+{
+  "body": "{"error":"unauthenticated"}",
+  "calls": [
+    [
+      "getApiKeyByHash",
+      "<hash>",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 401,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > me unauthenticated 1`] = `
+{
+  "body": "{"error":"unauthenticated"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 401,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > me wrong api key 1`] = `
+{
+  "body": "{"error":"unauthenticated"}",
+  "calls": [
+    [
+      "getApiKeyByHash",
+      "<hash>",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 401,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > non-GET outside the api 1`] = `
+{
+  "body": "{"error":"method_not_allowed"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 405,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playback by api key after revoke 1`] = `
+{
+  "body": "{"error":"unauthenticated"}",
+  "calls": [
+    [
+      "getApiKeyByHash",
+      "<hash>",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 401,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playback loop 1`] = `
+{
+  "body": "{"connected":true,"channelId":"chan-1","status":"playing","loopMode":"none","current":{"trackId":1,"title":"pinned","positionMs":0,"durationMs":1000},"queueLength":1,"queueIndex":0}",
+  "calls": [
+    [
+      "engine.setLoop",
+      "track",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playback loop invalid 1`] = `
+{
+  "body": "{"error":"invalid_mode"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playback now 1`] = `
+{
+  "body": "{"connected":true,"channelId":"chan-1","status":"playing","loopMode":"none","current":{"trackId":1,"title":"pinned","positionMs":0,"durationMs":1000},"queueLength":1,"queueIndex":0}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playback play bad json 1`] = `
+{
+  "body": "{"error":"invalid_json"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playback play ids 1`] = `
+{
+  "body": "{"connected":true,"channelId":"chan-1","status":"playing","loopMode":"none","current":{"trackId":1,"title":"pinned","positionMs":0,"durationMs":1000},"queueLength":1,"queueIndex":0}",
+  "calls": [
+    [
+      "engine.play",
+      {
+        "channelId": "chan-9",
+        "trackIds": [
+          4,
+          5,
+        ],
+        "userId": "op-1",
+      },
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playback play nothing 1`] = `
+{
+  "body": "{"error":"trackIds_trackId_collectionId_or_playlistId_required"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playback play one 1`] = `
+{
+  "body": "{"connected":true,"channelId":"chan-1","status":"playing","loopMode":"none","current":{"trackId":1,"title":"pinned","positionMs":0,"durationMs":1000},"queueLength":1,"queueIndex":0}",
+  "calls": [
+    [
+      "engine.play",
+      {
+        "trackIds": [
+          4,
+        ],
+        "userId": "op-1",
+      },
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playback play playlist 1`] = `
+{
+  "body": "{"error":"no_tracks"}",
+  "calls": [
+    [
+      "playlistTrackIds",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playback prev error status 1`] = `
+{
+  "body": "{"error":"nothing_before"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 409,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playback stop 1`] = `
+{
+  "body": "{"connected":true,"channelId":"chan-1","status":"playing","loopMode":"none","current":{"trackId":1,"title":"pinned","positionMs":0,"durationMs":1000},"queueLength":1,"queueIndex":0}",
+  "calls": [
+    [
+      "engine.stop",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playback unavailable 1`] = `
+{
+  "body": "{"error":"playback_unavailable"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 503,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playlists create 1`] = `
+{
+  "body": "{"id":700,"name":"Combat","loop_mode":"none","shuffle":0,"created_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00"}",
+  "calls": [
+    [
+      "createPlaylist",
+      "Combat",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 201,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playlists create blank 1`] = `
+{
+  "body": "{"error":"name_required"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playlists delete 1`] = `
+{
+  "body": "",
+  "calls": [
+    [
+      "deletePlaylist",
+      700,
+    ],
+  ],
+  "headers": {},
+  "status": 204,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playlists delete missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "deletePlaylist",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playlists get 1`] = `
+{
+  "body": "{"id":700,"name":"Combat","loop_mode":"none","shuffle":0,"created_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00","trackIds":[3,1,2]}",
+  "calls": [
+    [
+      "getPlaylist",
+      700,
+    ],
+    [
+      "playlistTrackIds",
+      700,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playlists get missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "getPlaylist",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playlists items 1`] = `
+{
+  "body": "{"trackIds":[3,1,2]}",
+  "calls": [
+    [
+      "getPlaylist",
+      700,
+    ],
+    [
+      "setPlaylistItems",
+      700,
+      [
+        3,
+        1,
+        2,
+      ],
+    ],
+    [
+      "playlistTrackIds",
+      700,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playlists items missing ids 1`] = `
+{
+  "body": "{"error":"trackIds_required"}",
+  "calls": [
+    [
+      "getPlaylist",
+      700,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playlists items missing playlist 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "getPlaylist",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playlists list 1`] = `
+{
+  "body": "[{"id":700,"name":"Combat","loop_mode":"none","shuffle":0,"created_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00"}]",
+  "calls": [
+    [
+      "listPlaylists",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playlists patch 1`] = `
+{
+  "body": "{"id":700,"name":"Combat","loop_mode":"none","shuffle":0,"created_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00"}",
+  "calls": [
+    [
+      "updatePlaylist",
+      700,
+      {
+        "loopMode": "playlist",
+        "name": "Combat II",
+        "shuffle": true,
+      },
+    ],
+    [
+      "getPlaylist",
+      700,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > playlists patch missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "updatePlaylist",
+      9999,
+      {},
+    ],
+    [
+      "getPlaylist",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > rum-config 1`] = `
+{
+  "body": "{"endpoint":"https://rum.test"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > spa HEAD 1`] = `
+{
+  "body": "",
+  "calls": [],
+  "headers": {
+    "cache-control": "public, max-age=0",
+    "content-type": "text/html; charset=utf-8",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > spa asset 1`] = `
+{
+  "body": "console.log('pinned')",
+  "calls": [],
+  "headers": {
+    "cache-control": "public, max-age=0",
+    "content-type": "text/javascript; charset=utf-8",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > spa client route 1`] = `
+{
+  "body": "<!doctype html><title>orator pins</title>",
+  "calls": [],
+  "headers": {
+    "cache-control": "public, max-age=0",
+    "content-type": "text/html; charset=utf-8",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > spa root 1`] = `
+{
+  "body": "<!doctype html><title>orator pins</title>",
+  "calls": [],
+  "headers": {
+    "cache-control": "public, max-age=0",
+    "content-type": "text/html; charset=utf-8",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > spa traversal 1`] = `
+{
+  "body": "forbidden
+",
+  "calls": [],
+  "headers": {
+    "content-type": "text/plain;charset=UTF-8",
+  },
+  "status": 403,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tags create 1`] = `
+{
+  "body": "{"id":902,"name":"ambient ","category":"mood","color":null,"created_at":"2026-01-01T00:00:00"}",
+  "calls": [
+    [
+      "upsertTag",
+      "ambient ",
+      "mood",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 201,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tags create blank 1`] = `
+{
+  "body": "{"error":"name_required"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tags delete 1`] = `
+{
+  "body": "",
+  "calls": [
+    [
+      "deleteTag",
+      900,
+    ],
+  ],
+  "headers": {},
+  "status": 204,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tags delete missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "deleteTag",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tags list 1`] = `
+{
+  "body": "[{"id":900,"name":"calm","category":null,"color":null,"created_at":"2026-01-01T00:00:00","track_count":0},{"id":901,"name":"boss","category":null,"color":null,"created_at":"2026-01-01T00:00:00","track_count":0},{"id":902,"name":"ambient ","category":"mood","color":null,"created_at":"2026-01-01T00:00:00","track_count":0}]",
+  "calls": [
+    [
+      "listTags",
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tags patch 1`] = `
+{
+  "body": "{"id":900,"name":"Ambient","category":null,"color":"#aabbcc","created_at":"2026-01-01T00:00:00"}",
+  "calls": [
+    [
+      "updateTag",
+      900,
+      {
+        "color": "#aabbcc",
+        "name": "Ambient",
+      },
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tags patch bad color 1`] = `
+{
+  "body": "{"error":"invalid_color"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tags patch blank name 1`] = `
+{
+  "body": "{"error":"name_required"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tags patch clear color 1`] = `
+{
+  "body": "{"id":900,"name":"Ambient","category":null,"color":null,"created_at":"2026-01-01T00:00:00"}",
+  "calls": [
+    [
+      "updateTag",
+      900,
+      {
+        "color": null,
+      },
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tags patch missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "updateTag",
+      9999,
+      {},
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks bulk-delete 1`] = `
+{
+  "body": "{"deleted":1}",
+  "calls": [
+    [
+      "deleteTrack",
+      4,
+    ],
+    [
+      "deleteTrack",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks bulk-delete no ids 1`] = `
+{
+  "body": "{"error":"ids_required"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks bulk-move 1`] = `
+{
+  "body": "{"moved":2}",
+  "calls": [
+    [
+      "setTrackCollection",
+      4,
+      null,
+    ],
+    [
+      "setTrackCollection",
+      5,
+      null,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks bulk-move missing collection 1`] = `
+{
+  "body": "{"error":"collection_not_found"}",
+  "calls": [
+    [
+      "getCollection",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks bulk-move no ids 1`] = `
+{
+  "body": "{"error":"ids_required"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks bulk-rename apply 1`] = `
+{
+  "body": "{"applied":1}",
+  "calls": [
+    [
+      "getTrack",
+      5,
+    ],
+    [
+      "bulkUpdateTitles",
+      [
+        {
+          "id": 5,
+          "title": "ta",
+        },
+      ],
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks bulk-rename bad op 1`] = `
+{
+  "body": "{"applied":1}",
+  "calls": [
+    [
+      "getTrack",
+      5,
+    ],
+    [
+      "bulkUpdateTitles",
+      [
+        {
+          "id": 5,
+        },
+      ],
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks bulk-rename missing ops 1`] = `
+{
+  "body": "{"error":"ids_and_ops_required"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks bulk-rename preview 1`] = `
+{
+  "body": "{"preview":[{"id":4,"from":"Alpha Prime","to":"BGM","changed":true},{"id":5,"from":"Beta","to":"BGM","changed":true}]}",
+  "calls": [
+    [
+      "getTrack",
+      4,
+    ],
+    [
+      "getTrack",
+      5,
+    ],
+    [
+      "getTrack",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks bulk-tag 1`] = `
+{
+  "body": "{"added":4,"removed":2}",
+  "calls": [
+    [
+      "upsertTag",
+      "calm",
+    ],
+    [
+      "upsertTag",
+      "boss",
+    ],
+    [
+      "addTagsToTracks",
+      [
+        4,
+        5,
+      ],
+      [
+        900,
+        901,
+      ],
+    ],
+    [
+      "removeTagsFromTracks",
+      [
+        4,
+        5,
+      ],
+      [
+        3,
+      ],
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks bulk-tag no ids 1`] = `
+{
+  "body": "{"error":"ids_required"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks delete 1`] = `
+{
+  "body": "",
+  "calls": [
+    [
+      "deleteTrack",
+      5,
+    ],
+  ],
+  "headers": {},
+  "status": 204,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks delete missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "deleteTrack",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks get 1`] = `
+{
+  "body": "{"id":4,"collection_id":null,"title":"Alpha","original_title":"Alpha","source_type":"upload","source_url":null,"source_video_id":null,"file_path":null,"format":null,"duration_ms":null,"file_size":null,"loudness_lufs":null,"status":"ready","error":null,"added_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00","tags":[]}",
+  "calls": [
+    [
+      "getTrack",
+      4,
+    ],
+    [
+      "tagsForTrack",
+      4,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks get bad id 1`] = `
+{
+  "body": "{"error":"invalid_id"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks get missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "getTrack",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks list 1`] = `
+{
+  "body": "[{"id":4,"collection_id":null,"title":"Alpha","original_title":"Alpha","source_type":"upload","source_url":null,"source_video_id":null,"file_path":null,"format":null,"duration_ms":null,"file_size":null,"loudness_lufs":null,"status":"ready","error":null,"added_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00","tags":[]},{"id":5,"collection_id":3,"title":"Beta","original_title":"Beta","source_type":"youtube","source_url":null,"source_video_id":null,"file_path":null,"format":null,"duration_ms":null,"file_size":null,"loudness_lufs":null,"status":"ready","error":null,"added_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00","tags":[]}]",
+  "calls": [
+    [
+      "listTracks",
+      {
+        "limit": 200,
+        "offset": 0,
+      },
+    ],
+    [
+      "tagsForTrack",
+      4,
+    ],
+    [
+      "tagsForTrack",
+      5,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks list filtered 1`] = `
+{
+  "body": "[{"id":5,"collection_id":3,"title":"Beta","original_title":"Beta","source_type":"youtube","source_url":null,"source_video_id":null,"file_path":null,"format":null,"duration_ms":null,"file_size":null,"loudness_lufs":null,"status":"ready","error":null,"added_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00","tags":[]}]",
+  "calls": [
+    [
+      "listTracks",
+      {
+        "collectionId": 3,
+        "limit": 10,
+        "offset": 0,
+        "q": "bet",
+      },
+    ],
+    [
+      "tagsForTrack",
+      5,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks patch 1`] = `
+{
+  "body": "{"id":4,"collection_id":null,"title":"Alpha Prime","original_title":"Alpha","source_type":"upload","source_url":null,"source_video_id":null,"file_path":null,"format":null,"duration_ms":null,"file_size":null,"loudness_lufs":null,"status":"ready","error":null,"added_at":"2026-01-01T00:00:00","updated_at":"2026-01-01T00:00:00","tags":[]}",
+  "calls": [
+    [
+      "getTrack",
+      4,
+    ],
+    [
+      "updateTrackTitle",
+      4,
+      "Alpha Prime",
+    ],
+    [
+      "setTrackCollection",
+      4,
+      null,
+    ],
+    [
+      "getTrack",
+      4,
+    ],
+    [
+      "tagsForTrack",
+      4,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks patch bad json 1`] = `
+{
+  "body": "{"error":"invalid_json"}",
+  "calls": [
+    [
+      "getTrack",
+      4,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks patch blank title 1`] = `
+{
+  "body": "{"error":"title_required"}",
+  "calls": [
+    [
+      "getTrack",
+      4,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 400,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > tracks patch missing 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [
+    [
+      "getTrack",
+      9999,
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > unknown api path 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > unknown api path unauthenticated 1`] = `
+{
+  "body": "{"error":"unauthenticated"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 401,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > voice debug 1`] = `
+{
+  "body": "{"uid":"op-1","guildId":"guild-1","playbackAvailable":true,"resolvedChannelId":"chan-1","now":{"connected":true,"channelId":"chan-1","status":"playing","loopMode":"none","current":{"trackId":1,"title":"pinned","positionMs":0,"durationMs":1000},"queueLength":1,"queueIndex":0}}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > voice debug unavailable 1`] = `
+{
+  "body": "{"uid":"op-1","guildId":"guild-1","playbackAvailable":false,"resolvedChannelId":null,"now":null}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > voice join channel 1`] = `
+{
+  "body": "{"connected":true,"channelId":"chan-1","status":"playing","loopMode":"none","current":{"trackId":1,"title":"pinned","positionMs":0,"durationMs":1000},"queueLength":1,"queueIndex":0}",
+  "calls": [
+    [
+      "engine.join",
+      {
+        "channelId": "chan-3",
+        "userId": "op-1",
+      },
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > voice join no body 1`] = `
+{
+  "body": "{"connected":true,"channelId":"chan-1","status":"playing","loopMode":"none","current":{"trackId":1,"title":"pinned","positionMs":0,"durationMs":1000},"queueLength":1,"queueIndex":0}",
+  "calls": [
+    [
+      "engine.join",
+      {
+        "userId": "op-1",
+      },
+    ],
+  ],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 200,
+}
+`;
+
+exports[`orator HTTP responses match the pre-migration pins > wrong method 1`] = `
+{
+  "body": "{"error":"not_found"}",
+  "calls": [],
+  "headers": {
+    "content-type": "application/json",
+  },
+  "status": 404,
+}
+`;
