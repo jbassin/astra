@@ -21,7 +21,10 @@ COPY --from=ghcr.io/astral-sh/uv:0.11.19 /uv /bin/uv
 
 # One shared venv for the workspace sync + the extra dagster server pkgs; on PATH for
 # the three CMDs. VIRTUAL_ENV makes `uv pip install` target the same venv as `uv sync`.
-ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
+# ASTRA_RUNTIME=container tells astra_observe to export to the in-cluster collector
+# (telemetry.otlp-endpoint) and to label every signal deployment.environment=production.
+ENV ASTRA_RUNTIME=container \
+    UV_PROJECT_ENVIRONMENT=/opt/venv \
     VIRTUAL_ENV=/opt/venv \
     UV_LINK_MODE=copy \
     PATH="/opt/venv/bin:$PATH"

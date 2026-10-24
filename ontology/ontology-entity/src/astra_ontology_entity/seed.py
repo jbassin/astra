@@ -16,8 +16,9 @@ import json
 import sys
 from collections import Counter
 
+import astra_observe
 from astra_lexicon import load_defs
-from astra_observe import get_logger, get_meter, init_telemetry, shutdown
+from astra_observe import get_logger, get_meter
 from astra_ontology import (
     Entity,
     merge_seed,
@@ -47,8 +48,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--check", action="store_true", help="drift check only (exit 1 if stale)")
     args = ap.parse_args(argv)
 
-    init_telemetry("astra.heartwood")
-    try:
+    with astra_observe.run("astra.heartwood"):
         log = get_logger("astra.heartwood")
         meter = get_meter("astra.heartwood")
 
@@ -94,8 +94,6 @@ def main(argv: list[str] | None = None) -> int:
         ENTITY_KDL_PATH.write_text(text, encoding="utf-8")
         print(f"wrote {ENTITY_KDL_PATH}")  # noqa: T201 -- command-line output
         return 0
-    finally:
-        shutdown()  # console_script exit → flush the run's spans/metrics/logs
 
 
 if __name__ == "__main__":

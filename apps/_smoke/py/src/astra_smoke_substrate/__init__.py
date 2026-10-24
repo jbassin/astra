@@ -15,8 +15,9 @@ from __future__ import annotations
 
 from typing import Any
 
+import astra_observe
 from astra_llm import LiteLLMClient, ensure_openrouter_env
-from astra_observe import get_tracer, init_telemetry, shutdown
+from astra_observe import get_tracer
 from astra_ontology_being import CANONICAL_JSON_PATH
 from astra_ontology_being import load as load_being
 from astra_ontology_config import load as load_config
@@ -75,9 +76,8 @@ def run(client: LiteLLMClient) -> dict[str, Any]:
 
 
 def main() -> None:
-    init_telemetry(SERVICE_NAME)
-    tracer = get_tracer(SERVICE_NAME)
-    try:
+    with astra_observe.run(SERVICE_NAME):
+        tracer = get_tracer(SERVICE_NAME)
         with tracer.start_as_current_span("substrate-smoke") as span:
             span.set_attribute("astra.phase", 1)
             summary = run(LiteLLMClient())
@@ -85,5 +85,3 @@ def main() -> None:
             span.set_attribute("astra.being.parity", summary["being_parity"])
             span.set_attribute("astra.llm.status", summary["status"])
         print("substrate smoke OK:", summary)  # noqa: T201 -- command-line output
-    finally:
-        shutdown()  # force-flush spans + metrics before exit

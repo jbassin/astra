@@ -1,7 +1,7 @@
 [project]
 name = "astra-observe"
 version = "0.0.0"
-description = "OTel init shim — wires traces + metrics to the SigNoz collector. Every astra py app calls init_telemetry() first."
+description = "OTel init shim — wires traces, metrics and logs to the SigNoz collector. CLIs wrap main() in astra_observe.run(); long-lived processes call init_telemetry()."
 requires-python = ">=3.12"
 dependencies = [
     "opentelemetry-api>=1.27",

@@ -1,18 +1,17 @@
 """The run-failure paging sensor (0037 PIPE-2): one ERROR on ``astra.pipeline`` per failed run.
 
-Telemetry stays network-free: the ``exported`` fixture (``conftest.py``) runs the real
-``init_telemetry`` wiring with its OTLP exporters swapped for in-memory ones. Nothing here may
+Telemetry stays network-free: the ``exported`` fixture (``conftest.py``) runs observe's real
+provider wiring with in-memory exporters (``astra_observe.testing.capture``). Nothing here may
 reach the live collector, because an ERROR record in SigNoz pages Discord.
 """
 
 import logging
 from types import ModuleType
 
-import astra_observe
 import dagster as dg
 import pytest
+from astra_observe.testing import Captured
 from opentelemetry.sdk._logs import ReadableLogRecord
-from opentelemetry.sdk._logs.export import InMemoryLogRecordExporter
 
 SENSOR = "pipeline_failure_alert"
 PARTITION = "2026-10-19"
@@ -30,12 +29,8 @@ def _alerts(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
     return [r for r in caplog.records if r.name == "astra.pipeline"]
 
 
-def _exported_alerts(exporter: InMemoryLogRecordExporter) -> list[ReadableLogRecord]:
-    return [
-        r
-        for r in exporter.get_finished_logs()
-        if str(r.log_record.body).startswith("Dagster run failed")
-    ]
+def _exported_alerts(exported: Captured) -> list[ReadableLogRecord]:
+    return [r for r in exported.logs() if str(r.log_record.body).startswith("Dagster run failed")]
 
 
 def _ticker(module: ModuleType, instance: dg.DagsterInstance):
@@ -56,7 +51,7 @@ def test_sensor_is_registered_and_on_by_default(definitions: ModuleType) -> None
 
 def test_one_error_per_failed_run_across_ticks(
     definitions: ModuleType,
-    exported: InMemoryLogRecordExporter,
+    exported: Captured,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     instance = dg.DagsterInstance.ephemeral()
@@ -90,10 +85,10 @@ def test_one_error_per_failed_run_across_ticks(
 
     # The same record leaves through observe's OTel pipeline with the attributes the
     # SigNoz rule needs: severity ERROR on service.name astra.pipeline.
-    astra_observe.shutdown()  # flush the batch processor
     (otel,) = _exported_alerts(exported)
     assert otel.log_record.severity_text == "ERROR"
     assert otel.resource.attributes["service.name"] == "astra.pipeline"
+    assert otel.resource.attributes["deployment.environment"] == "test"
     attributes = dict(otel.log_record.attributes or {})
     assert attributes["dagster.run_id"] == result.run_id
     assert attributes["dagster.partition"] == PARTITION

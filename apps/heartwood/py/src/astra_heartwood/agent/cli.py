@@ -31,9 +31,9 @@ Exit codes (stable — the recipes branch on them):
        double ledger append, or reverting a date that is not published
     5  budget-check stop: spent >= ``backfill-budget-usd``, or a ledger cost is unknown
 
-Telemetry exports from the host (D33-10): ``main`` calls ``init_telemetry`` with
-``telemetry.host-otlp-endpoint`` (the in-cluster default doesn't resolve here) and
-``shutdown()`` flushes in ``finally``. ``cli()`` is the telemetry-free core tests drive.
+Telemetry exports from the host (D33-10): ``main`` runs inside ``astra_observe.run``, which
+picks the host collector endpoint and flushes on exit. ``cli()`` is the telemetry-free core
+tests drive.
 """
 
 from __future__ import annotations
@@ -43,11 +43,11 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+import astra_observe
 from astra_akasha_backend.corpus import CONTENT_DIR
 from astra_akasha_backend.snapshot import SNAPSHOT_PATH
 from astra_config import load_config
 from astra_linguist.chronicle import date_key
-from astra_observe import init_telemetry, shutdown
 
 from . import ledger
 from .publish import commit_message, unresolved_delta
@@ -283,11 +283,8 @@ def cli(argv: Sequence[str] | None = None) -> int:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    init_telemetry("astra.heartwood", endpoint=load_config().telemetry.host_otlp_endpoint)
-    try:
+    with astra_observe.run("astra.heartwood"):
         return args.func(args)
-    finally:
-        shutdown()  # console_script exit → flush the run's spans/metrics/logs
 
 
 if __name__ == "__main__":

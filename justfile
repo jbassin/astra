@@ -990,8 +990,8 @@ heartwood-agent date *flags:
     # it must follow it) + unresolved-link delta (reported only).
     "$node_bin" --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
       libs/ts/vellum-lang/scripts/validate-corpus.ts --dir "$content" || fail_restore "corpus validation"
-    OTEL_SDK_DISABLED=true "{{uv_bin}}" run --frozen --no-sync akasha-snapshot || fail_restore "akasha-snapshot"
-    OTEL_SDK_DISABLED=true "{{uv_bin}}" run --frozen --no-sync astra-ontology-entity-seed || fail_restore "entity registry seed"
+    "{{uv_bin}}" run --frozen --no-sync akasha-snapshot || fail_restore "akasha-snapshot"
+    "{{uv_bin}}" run --frozen --no-sync astra-ontology-entity-seed || fail_restore "entity registry seed"
     hw unresolved-delta "$tmp/snapshot-before.json" || echo "heartwood-agent: (unresolved-delta report failed — not fatal)" >&2
     # (5) ledger line + path-scoped commit. --only: anything else staged stays out of it.
     if dgit ls-files --error-unmatch "$ledger" >/dev/null 2>&1; then undo_ledger="git -C $repo checkout -- $ledger"
@@ -1109,8 +1109,8 @@ heartwood-revert date:
     fi
     fail() { echo "heartwood-revert: $1 FAILED — restore with: $undo" >&2; exit "$2"; }
     hw ledger-revert "$date" || fail "ledger-revert" 8
-    OTEL_SDK_DISABLED=true "{{uv_bin}}" run --frozen --no-sync akasha-snapshot || fail "akasha-snapshot" 7
-    OTEL_SDK_DISABLED=true "{{uv_bin}}" run --frozen --no-sync astra-ontology-entity-seed || fail "entity registry seed" 7
+    "{{uv_bin}}" run --frozen --no-sync akasha-snapshot || fail "akasha-snapshot" 7
+    "{{uv_bin}}" run --frozen --no-sync astra-ontology-entity-seed || fail "entity registry seed" 7
     "$node_bin" --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
       libs/ts/vellum-lang/scripts/validate-corpus.ts --dir "$content" || fail "corpus validation" 7
     dgit add "$content" "$snapshot" "$ledger" "$entity" || fail "git add" 8

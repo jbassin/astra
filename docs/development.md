@@ -90,11 +90,20 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
 
 ## Standing conventions
 
-- **Telemetry in the running process.** Call `init_telemetry("astra.<sub>")` /
-  `initTelemetry("astra.<sub>")` in the process that runs the code: the service entrypoint, the
-  Dagster code location (`dagster/definitions.py`), a CLI's `main()`. Importing observe does nothing
-  by itself. Wire spans, metrics and logs. Short-lived processes must call `shutdown()` or buffered
-  exports are lost.
+- **Telemetry in the running process.** Wire it in the process that runs the code; importing
+  observe does nothing by itself. A Python CLI's `main()` wraps its body in
+  `with astra_observe.run("astra.<sub>"):`, which initialises traces, metrics and logs and always
+  flushes on exit (return, exception or SIGTERM). A long-lived process (the Dagster code location,
+  `dagster/definitions.py`) calls `init_telemetry("astra.<sub>")`; TS services call
+  `initTelemetry("astra.<sub>")`. Wire spans, metrics and logs.
+- **Where Python telemetry goes.** The process picks the endpoint, never the caller:
+  `ASTRA_RUNTIME=container` (set in `dagster/Dockerfile`) exports to `telemetry.otlp-endpoint`;
+  unset means the host and `telemetry.host-otlp-endpoint`. Every signal carries
+  `deployment.environment`: `test` under pytest (where nothing is exported), `production` in a
+  container or when run from the deploy checkout (`$ASTRA_DEPLOY_ROOT`), else `development`.
+- **Telemetry in tests.** Take the `telemetry_capture` fixture (or `astra_observe.testing.capture`)
+  to assert on spans, metrics and logs in memory. Don't build ad-hoc providers or monkeypatch
+  tracers.
 - **TS metrics use `lazyCounter` / `lazyHistogram`** from `@astra/observe`. A
   `getMeter().createCounter()` at module scope runs before `initTelemetry` (import hoisting) and
   stays a no-op forever. `getTracer` and `getLogger` at module scope are fine. Python logs export

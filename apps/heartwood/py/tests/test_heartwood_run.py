@@ -19,16 +19,14 @@ from typing import Any
 
 import pytest
 from astra_config.models import HeartwoodConfig
-from astra_heartwood.agent import rlm as rlm_mod
-from astra_heartwood.agent import telemetry
 from astra_heartwood.agent.cli import format_summary
 from astra_heartwood.agent.rlm import PARSE_ERROR_OUTPUT, MeteringMixin
 from astra_heartwood.agent.run import deno_available, make_interpreter, run_session
+from astra_heartwood.agent.telemetry import SCOPE
+from astra_observe.testing import Captured
 from astra_ontology import Resolution
 from astra_ontology.models import Being, Campaign
 from dspy.utils.dummies import DummyLM
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 
 TARGET = "2025-8-28"
@@ -120,17 +118,9 @@ def env(tmp_path: Path) -> dict[str, Any]:
 
 
 @pytest.fixture
-def spans(monkeypatch: pytest.MonkeyPatch) -> InMemorySpanExporter:
-    exporter = InMemorySpanExporter()
-    provider = TracerProvider()
-    provider.add_span_processor(SimpleSpanProcessor(exporter))
-    local = provider.get_tracer("test")
-    for mod in (telemetry, rlm_mod):
-        monkeypatch.setattr(mod, "tracer", lambda: local)
-    from astra_heartwood.agent import run as run_mod
-
-    monkeypatch.setattr(run_mod, "tracer", lambda: local)
-    return exporter
+def spans(telemetry_capture: Captured) -> InMemorySpanExporter:
+    """The global provider's in-memory span exporter (``astra_observe.testing``)."""
+    return telemetry_capture.span_exporter
 
 
 def cfg(**kw: Any) -> HeartwoodConfig:
@@ -317,7 +307,10 @@ def test_scripted_run_through_real_deno(env, spans) -> None:
     finished = spans.get_finished_spans()
     run_span = next(x for x in finished if x.name == "heartwood.agent.run")
     run_id = run_span.get_span_context().span_id
-    children = [x for x in finished if x is not run_span]
+    # the agent's own spans sit directly under the run; library spans (vellum parsing) nest
+    # under the tool span that called them, so the whole run is one trace
+    children = [x for x in finished if x is not run_span and x.instrumentation_scope.name == SCOPE]
+    assert {x.context.trace_id for x in finished} == {run_span.context.trace_id}
     assert children and all(x.parent is not None and x.parent.span_id == run_id for x in children)
     sub_spans = [x for x in children if x.attributes.get("heartwood.llm.role") == "sub"]
     assert len(sub_spans) == 3
