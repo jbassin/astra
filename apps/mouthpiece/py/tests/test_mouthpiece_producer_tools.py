@@ -161,6 +161,15 @@ def test_scripts_skip_recaps_find_legacy_dirs_and_name_hosts(tree) -> None:
     assert hits == [{"date": "2026-1-1", "speaker": "Bram", "text": "Galzu ran"}]
 
 
+def test_scripts_skip_a_special_by_its_stored_kind(tree) -> None:
+    """A special whose id has no recap marker is still not a prior session (0037 PIPE-22)."""
+    raw = _script("session_id", "000.show-a.2026-1-1", "lower", "special Galzu")
+    special = tree["scripts_root"] / "special"  # sorts after 2026-1-1, so it would win
+    special.mkdir()
+    (special / "script.json").write_text(json.dumps({**raw, "kind": "special"}))
+    assert make(tree).read_script("2026-1-1").startswith("Bram: Galzu ran")
+
+
 def test_chronicle_tools(tree) -> None:
     t = make(tree)
     eps = t.list_episodes()

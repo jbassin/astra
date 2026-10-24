@@ -323,15 +323,15 @@ def test_healthy_transcript_passes_the_floor() -> None:
     turns = _turns(400)  # everything kept by default (keep-when-in-doubt / all-keep)
     client = FakeClient()
     digest = clean_session(client, "sid", turns)
-    assert digest.stats.kept_lines == 400
-    assert digest.stats.lines == 400
+    assert digest.session_stats().kept_lines == 400
+    assert digest.session_stats().lines == 400
 
 
 def test_floor_boundary_exactly_at_floor_passes() -> None:
     turns = _turns(KEPT_LINES_FLOOR)
     client = FakeClient()
     digest = clean_session(client, "sid", turns)
-    assert digest.stats.kept_lines == KEPT_LINES_FLOOR
+    assert digest.session_stats().kept_lines == KEPT_LINES_FLOOR
 
 
 def test_floor_boundary_one_under_floor_raises() -> None:
@@ -422,10 +422,10 @@ def test_clean_session_end_to_end_mixed_verdicts() -> None:
     assert digest.session_id == "sid.2026-1-1"
     assert digest.synopsis == "A session happened."
     assert digest.wiki_refs == ["Wrenford"]
-    assert digest.stats.lines == 400
-    assert digest.stats.windows == 20
-    assert digest.stats.dropped_windows == 1
-    assert digest.stats.kept_lines == 380  # everything except window 2's 20 turns
+    assert digest.session_stats().lines == 400
+    assert digest.session_stats().windows == 20
+    assert digest.session_stats().dropped_windows == 1
+    assert digest.session_stats().kept_lines == 380  # everything except window 2's 20 turns
     assert digest.kept_ranges == [(1, 20), (41, 400)]
     assert digest.dropped == [DroppedRange(range=(21, 40), category="life")]
     # filter ran once per batch (all 20 windows fit under the word budget -> one call),
@@ -439,7 +439,7 @@ def test_clean_session_all_kept_single_range() -> None:
     digest = clean_session(client, "sid", turns)
     assert digest.kept_ranges == [(1, 200)]
     assert digest.dropped == []
-    assert digest.stats.kept_lines == 200
+    assert digest.session_stats().kept_lines == 200
 
 
 def test_window_verdict_rejects_bad_category() -> None:

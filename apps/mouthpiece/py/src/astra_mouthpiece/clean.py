@@ -287,10 +287,11 @@ def assert_no_drift(turns: list[Turn], digest: SessionDigest) -> None:
     recorded at Stage 2. Call this BEFORE `apply_kept_ranges` on a re-read
     transcript — a silently-stale `kept_ranges` would keep/drop the wrong lines.
     """
-    if len(turns) != digest.stats.lines:
+    lines = digest.session_stats().lines
+    if len(turns) != lines:
         raise TranscriptDriftError(
             f"session {digest.session_id!r}: the canonical transcript now has "
-            f"{len(turns)} line(s) but digest.json recorded {digest.stats.lines} at "
+            f"{len(turns)} line(s) but digest.json recorded {lines} at "
             "Stage 2 — it changed since session_digest ran (e.g. a FROM_FAILURE "
             "re-execution); refusing to apply stale kept_ranges to a different "
             "transcript."

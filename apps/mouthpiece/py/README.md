@@ -86,8 +86,9 @@ producer went live.
 **Producer experiment** (paid; writes only under `mouthpiece/experiments/`):
 `just mouthpiece-experiment <date>`. **Prediction roundtable special:**
 `just mouthpiece-roundtable dossier`, then `script <run-dir>`, then `render <run-dir>` (render
-is LIVE). The special's id must use the recap form `<latest>-recap-of-<first>`, and its digest
-is a plain `{session_id, synopsis}`. Never show the dossier or script to the GM; report stats
+is LIVE). The special's script and digest carry `kind: "special"`; its id keeps the recap form
+`<latest>-recap-of-<first>` so it stays unique and sorts as its arc's capstone, and its digest
+is `{session_id, synopsis, kind}` with no `stats`. Never show the dossier or script to the GM; report stats
 only. Both live in `apps/mouthpiece/tools` (`astra-mouthpiece-tools`, ADR 0023), which runs
 from a host checkout and is not in the Dagster image. Its roundtable `render` imports this
 package's private `_provider` and `_voices`, so keep their signatures.
@@ -139,8 +140,14 @@ package's private `_provider` and `_voices`, so keep their signatures.
 - **Clip `duration_ms` is a placeholder** (about 60,000) for dialogue clips. ffprobe the files
   for real lengths; the frontend reads the audio's own metadata.
 - **Episode dirs come in three shapes:** legacy `000.<slug>.<date>/`, recap dirs and live
-  `<date>/`. Enumerate them through `episodes_index.parse_id` and `is_recap`;
-  `astra_sessions.date_sort_key` zeroes a non-digit day.
+  `<date>/`. Enumerate them through `episodes_index.parse_id`; `astra_sessions.date_sort_key`
+  zeroes a non-digit day.
+- **Episode kind.** `script.json` and `digest.json` carry `kind`: `session`, `recap` or
+  `special` (`models.EpisodeKind`, since 0037 pipe-10). Only a `session` is numbered in the
+  catalog, read as a prior episode, or needs digest `stats`. A file written before the field
+  has none and reads as `recap` for a recap-form id, else `session` (`stored_kind`); no
+  file needs rewriting. The catalog snapshot carries `kind` per episode too. Readers decide on
+  the kind, never on the id.
 - **A re-render rewrites its whole snapshot entry** (the transcript is inlined), so large
   snapshot diffs are expected.
 - **dspy RLM output must be typed** (`brief: ProducerBrief`). A `str` output turns a submitted

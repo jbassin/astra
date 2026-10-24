@@ -39,6 +39,7 @@ from astra_sessions import date_key, find_transcript, transcript_dates
 from astra_sessions.tools import MAX_RESULTS, SessionToolsMixin
 
 from ..episodes_index import is_recap, parse_id
+from ..models import stored_kind
 
 
 def permitted_dates(
@@ -75,7 +76,9 @@ def _script_files(scripts_root: Path, show: str, permitted: set[str]) -> dict[st
         except (OSError, json.JSONDecodeError):
             continue
         sid = raw.get("session_id") or raw.get("sessionId") or file.parent.name
-        if not isinstance(sid, str) or is_recap(sid) or is_recap(file.parent.name):
+        if not isinstance(sid, str) or is_recap(file.parent.name):
+            continue
+        if stored_kind(raw, sid) != "session":
             continue
         _arc, slug, date = parse_id(sid)
         if slug == show and date in permitted:
