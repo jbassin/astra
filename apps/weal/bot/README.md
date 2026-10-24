@@ -310,15 +310,17 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
   uses. (Before the WEAL-1 engine fix, every `|| e` save was such a source.)
 - **A wasm trap reaches the bot as an ordinary `internal` error.** `@astra/weal-engine` catches the
   trap, re-instantiates the wasm and returns `{ok:false, stage:"internal"}` with a message starting
-  `engine trap:`; the bot never sees a throw. Deep nesting such as 2,000 nested parentheses
-  overflows the stack this way, so it pages as an engine fault.
+  `engine trap:`; the bot never sees a throw. Input can't cause one on purpose: the parser
+  rejects a source nested more than 256 levels deep (a paren bomb, a 300-term sum) as a silent
+  parse error, before any stage that could overflow the stack.
 - **The v2 counters appear in SigNoz only after their first increment.** `weal.v2.errors` and
   `weal.v2.fuel_aborts` missing from the metric list is not a wiring bug while no engine error or
   fuel abort has happened.
 - **An empty `funcs_v2` is normal on a fresh database.** v1 saves did not migrate, so the boot log
   "loaded 0/0 saved weal v2 sources" is correct.
-- **CI never talks to Postgres.** The store runs only against the live `weal-postgres`; check a SQL
-  change there before you deploy it.
+- **CI never talks to Postgres.** `src/db.pg.test.ts` runs the real store against a throwaway
+  Postgres only when `WEAL_TEST_DATABASE_URL` is set (its header has the `docker run` line); run it
+  for any SQL change. Never point it at the live `weal-postgres`.
 
 ## Dev
 

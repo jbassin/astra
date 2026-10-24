@@ -158,7 +158,7 @@ wasm `budget` argument scales interpreter steps ONLY (non-zero = the absolute st
 | Counter | Default | Where |
 |---|---|---|
 | interpreter steps | 2,000,000 | `fuel.rs` (`INTERP_STEPS`) |
-| recursion depth | 256 | `fuel.rs` — the interpreter's `eval` frames; counts expression nesting AND closure applications, so it catches both paren bombs and `let f(x) = f(x)` |
+| recursion depth | 256 | `fuel.rs` — the interpreter's `eval` frames; counts expression nesting AND closure applications, so it catches `let f(x) = f(x)` |
 | pool count (construction cap) | 10,000 | `fuel.rs`, checked before allocation |
 | `repeat` list length (construction cap) | 10,000 | `fuel.rs` (`check_list_len`, the pool-cap constant), checked before allocation |
 | explode depth (construction cap) | 8 | `fuel.rs`, checked before allocation |
@@ -166,6 +166,12 @@ wasm `budget` argument scales interpreter steps ONLY (non-zero = the absolute st
 | concurrent DP state-map entries | 200,000 | `dist/budget.rs` |
 | support size per die | 50,000 | `dist/budget.rs` |
 | bigint bits per weight | 16,384 | `dist/budget.rs` |
+
+Source nesting is capped before any of these, in the parser (`MAX_NESTING_DEPTH` = 256 syntax-tree
+levels, counting left-associative chains such as `1 + 1 + …`). A deeper source is a single
+`stage:"parse"` error, `expression too deeply nested (more than 256 levels)`. Every later stage
+recurses on the tree, so without the cap a paren bomb overflows the host's stack (V8's, under Node)
+and traps before fuel can stop it.
 
 (The spec's ninth counter — render nodes 10,000 — was not shipped as a counter; render size is
 bounded by the ≤900-char collapse policy instead.)

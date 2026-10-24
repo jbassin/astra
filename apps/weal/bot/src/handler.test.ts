@@ -335,12 +335,12 @@ describe("engine faults (stage internal)", () => {
     expect(h.sent[0]?.title).toBe("engine fault");
   });
 
-  test("a real stack-overflow trap is contained and the next roll works", async () => {
+  test("a paren bomb is a player's parse error (silent), not a fault; the next roll works", async () => {
     const h = harness();
-    await handleMessage(`${"(".repeat(2000)}1${")".repeat(2000)}`, PROFILE, h.deps);
-    expect(h.sent[0]?.title).toBe("engine fault");
+    await handleMessage(`${"(".repeat(2000)}d20${")".repeat(2000)}`, PROFILE, h.deps);
+    expect(h.sent).toEqual([]);
     await handleMessage("d20 + 7", PROFILE, h.deps);
-    expect(h.sent[1]?.title).toBe("Argyle: 11");
+    expect(h.sent[0]?.title).toBe("Argyle: 11");
   });
 });
 

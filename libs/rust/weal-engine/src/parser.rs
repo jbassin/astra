@@ -16,12 +16,26 @@
 //!
 //! Errors never panic: they are recorded with byte spans and the parser skips
 //! or wraps the offending tokens in `ERROR_NODE`s.
+//!
+//! Nesting is capped ([`MAX_NESTING_DEPTH`]): a tree deeper than the cap is
+//! a parse error, the only one reported. Every later stage (lowering, the
+//! checker, the interpreter) recurses on the tree, so without the cap a paren
+//! bomb overflows the host's stack and traps the wasm before fuel can stop it.
 
 use crate::cst::{SyntaxKind, SyntaxNode};
 use crate::lexer::{Token, lex};
 use rowan::{GreenNode, GreenNodeBuilder};
 
 use SyntaxKind::*;
+
+/// The deepest syntax tree a source may parse to (CST node levels, counting
+/// both nested constructs and long left-associative chains like `1 + 1 + …`).
+pub const MAX_NESTING_DEPTH: usize = 256;
+
+/// The parse error a too-deep source reports (it replaces every other error).
+pub fn too_deep_message() -> String {
+    format!("expression too deeply nested (more than {MAX_NESTING_DEPTH} levels)")
+}
 
 /// A parse error with a byte span into the source.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -53,12 +67,43 @@ pub fn parse(src: &str) -> Parse {
         builder: GreenNodeBuilder::new(),
         errors: Vec::new(),
         arg_depth: 0,
+        open: 0,
+        nest: 0,
+        too_deep: None,
     };
     parser.parse_root();
-    Parse {
-        green: parser.builder.finish(),
-        errors: parser.errors,
+    let green = parser.builder.finish();
+    // The open-node guard bounds the parser's own recursion; a left-assoc
+    // chain wraps finished nodes, so its depth shows only in the whole tree.
+    let too_deep = parser.too_deep.or_else(|| deepest_past_cap(&green));
+    let errors = match too_deep {
+        Some(span) => vec![ParseError {
+            message: too_deep_message(),
+            span,
+        }],
+        None => parser.errors,
+    };
+    Parse { green, errors }
+}
+
+/// The span of the first node deeper than [`MAX_NESTING_DEPTH`], if any.
+/// Iterative, so it is safe on any depth.
+fn deepest_past_cap(green: &GreenNode) -> Option<(usize, usize)> {
+    let root = SyntaxNode::new_root(green.clone());
+    let mut depth = 0usize;
+    for event in root.preorder() {
+        match event {
+            rowan::WalkEvent::Enter(node) => {
+                depth += 1;
+                if depth > MAX_NESTING_DEPTH {
+                    let r = node.text_range();
+                    return Some((r.start().into(), r.end().into()));
+                }
+            }
+            rowan::WalkEvent::Leave(_) => depth -= 1,
+        }
     }
+    None
 }
 
 struct Parser<'s> {
@@ -68,6 +113,12 @@ struct Parser<'s> {
     builder: GreenNodeBuilder<'static>,
     errors: Vec<ParseError>,
     arg_depth: u32,
+    /// Nodes currently open in the builder (the path depth being built).
+    open: usize,
+    /// Recursive rules currently active (see [`Parser::descend`]).
+    nest: usize,
+    /// Where nesting first passed the cap; once set, the rest is skipped.
+    too_deep: Option<(usize, usize)>,
 }
 
 impl Parser<'_> {
@@ -127,9 +178,14 @@ impl Parser<'_> {
     }
 
     /// Emit trivia, then the next token. Panics only on internal misuse
-    /// (callers always check `peek()` first).
+    /// (callers always check `peek()` first). Once the nesting cap has
+    /// swallowed the input, the token a caller peeked is gone, so a bump is a
+    /// no-op.
     fn bump(&mut self) {
         self.eat_trivia();
+        if self.too_deep.is_some() && self.pos >= self.tokens.len() {
+            return;
+        }
         assert!(self.pos < self.tokens.len(), "bump at end of input");
         self.emit_current();
     }
@@ -137,10 +193,60 @@ impl Parser<'_> {
     fn start_node(&mut self, kind: SyntaxKind) {
         self.eat_trivia();
         self.builder.start_node(kind.into());
+        self.opened();
+    }
+
+    /// Retroactively wrap everything since `cp` in a `kind` node.
+    fn start_node_at(&mut self, cp: rowan::Checkpoint, kind: SyntaxKind) {
+        self.builder.start_node_at(cp, kind.into());
+        self.opened();
+    }
+
+    /// Count a newly opened node. Past the nesting cap, record where and
+    /// swallow the rest of the input into this node, so every open construct
+    /// sees end of input and unwinds without recursing further.
+    fn opened(&mut self) {
+        self.open += 1;
+        if self.open > MAX_NESTING_DEPTH {
+            self.trip_too_deep();
+        }
+    }
+
+    /// Record where nesting passed the cap (first time only) and swallow the
+    /// rest of the input.
+    fn trip_too_deep(&mut self) {
+        if self.too_deep.is_none() {
+            self.too_deep = Some(self.peek_span());
+            while self.pos < self.tokens.len() {
+                self.emit_current();
+            }
+        }
+    }
+
+    /// Enter one level of parser recursion (every recursive rule calls this
+    /// first and [`Self::ascend`] last). Some rules recurse before they open a
+    /// node (`[[[…` parses its first element before wrapping it), so open
+    /// nodes alone do not bound the parser's stack. Returns false, having
+    /// entered nothing, once the cap has tripped.
+    fn descend(&mut self) -> bool {
+        if self.too_deep.is_some() {
+            return false;
+        }
+        if self.nest >= MAX_NESTING_DEPTH {
+            self.trip_too_deep();
+            return false;
+        }
+        self.nest += 1;
+        true
+    }
+
+    fn ascend(&mut self) {
+        self.nest -= 1;
     }
 
     fn finish_node(&mut self) {
         self.builder.finish_node();
+        self.open -= 1;
     }
 
     /// Checkpoint for retroactive wrapping (leading trivia stays outside).
@@ -182,6 +288,7 @@ impl Parser<'_> {
 
     fn parse_root(&mut self) {
         self.builder.start_node(ROOT.into());
+        self.open += 1;
         if self.peek().is_none() {
             self.error_here("expected an expression");
         } else {
@@ -202,12 +309,16 @@ impl Parser<'_> {
     // --- expressions ---
 
     fn parse_expr(&mut self) {
+        if !self.descend() {
+            return;
+        }
         match self.peek() {
             Some(LET_KW) => self.parse_let(),
             Some(MATCH_KW) => self.parse_match(),
             Some(PIPE) => self.parse_lambda(),
             _ => self.parse_cmp(),
         }
+        self.ascend();
     }
 
     fn parse_let(&mut self) {
@@ -247,6 +358,13 @@ impl Parser<'_> {
     }
 
     fn parse_let_pattern(&mut self) {
+        if self.descend() {
+            self.parse_let_pattern_inner();
+            self.ascend();
+        }
+    }
+
+    fn parse_let_pattern_inner(&mut self) {
         match self.peek() {
             Some(IDENT) => {
                 self.start_node(IDENT_PAT);
@@ -322,6 +440,13 @@ impl Parser<'_> {
     }
 
     fn parse_arm_pat(&mut self) {
+        if self.descend() {
+            self.parse_arm_pat_inner();
+            self.ascend();
+        }
+    }
+
+    fn parse_arm_pat_inner(&mut self) {
         self.start_node(ARM_PAT);
         match self.peek() {
             Some(MINUS) => {
@@ -388,7 +513,7 @@ impl Parser<'_> {
         if matches!(self.peek(), Some(LT | LE | GT | GE | EQ_EQ | NOT_EQ)) {
             // Non-assoc level, but chains PARSE into one flat node (D32-2);
             // the type stage rejects chains of length > 1.
-            self.builder.start_node_at(cp, CMP_CHAIN.into());
+            self.start_node_at(cp, CMP_CHAIN);
             while matches!(self.peek(), Some(LT | LE | GT | GE | EQ_EQ | NOT_EQ)) {
                 self.bump();
                 self.parse_add();
@@ -401,7 +526,7 @@ impl Parser<'_> {
         let cp = self.checkpoint();
         self.parse_mul();
         while matches!(self.peek(), Some(PLUS | MINUS)) {
-            self.builder.start_node_at(cp, BIN_EXPR.into());
+            self.start_node_at(cp, BIN_EXPR);
             self.bump();
             self.parse_mul();
             self.finish_node();
@@ -412,7 +537,7 @@ impl Parser<'_> {
         let cp = self.checkpoint();
         self.parse_unary();
         while matches!(self.peek(), Some(STAR | SLASH)) {
-            self.builder.start_node_at(cp, BIN_EXPR.into());
+            self.start_node_at(cp, BIN_EXPR);
             self.bump();
             self.parse_unary();
             self.finish_node();
@@ -420,6 +545,13 @@ impl Parser<'_> {
     }
 
     fn parse_unary(&mut self) {
+        if self.descend() {
+            self.parse_unary_inner();
+            self.ascend();
+        }
+    }
+
+    fn parse_unary_inner(&mut self) {
         if self.at(MINUS) {
             self.start_node(UNARY_EXPR);
             self.bump();
@@ -436,12 +568,12 @@ impl Parser<'_> {
         loop {
             match self.peek() {
                 Some(L_PAREN) => {
-                    self.builder.start_node_at(cp, CALL_EXPR.into());
+                    self.start_node_at(cp, CALL_EXPR);
                     self.parse_arg_list();
                     self.finish_node();
                 }
                 Some(L_BRACKET) => {
-                    self.builder.start_node_at(cp, LABEL_EXPR.into());
+                    self.start_node_at(cp, LABEL_EXPR);
                     self.bump(); // [
                     self.parse_label_word();
                     self.expect(R_BRACKET, "`]` closing the label");
@@ -585,13 +717,13 @@ impl Parser<'_> {
         if self.at(COLON) {
             self.bump();
             self.expect(R_BRACKET, "`]` closing the empty dict `[:]`");
-            self.builder.start_node_at(cp, DICT_EXPR.into());
+            self.start_node_at(cp, DICT_EXPR);
             self.finish_node();
             return;
         }
         if self.at(R_BRACKET) {
             self.bump();
-            self.builder.start_node_at(cp, LIST_EXPR.into());
+            self.start_node_at(cp, LIST_EXPR);
             self.finish_node();
             return;
         }
@@ -599,7 +731,7 @@ impl Parser<'_> {
         self.parse_expr();
         if self.at(COLON) {
             // Dict literal.
-            self.builder.start_node_at(ecp, DICT_ENTRY.into());
+            self.start_node_at(ecp, DICT_ENTRY);
             self.bump(); // :
             self.parse_expr();
             self.finish_node();
@@ -615,7 +747,7 @@ impl Parser<'_> {
                 self.finish_node();
             }
             self.expect(R_BRACKET, "`]` closing the dict");
-            self.builder.start_node_at(cp, DICT_EXPR.into());
+            self.start_node_at(cp, DICT_EXPR);
             self.finish_node();
         } else {
             // List literal.
@@ -627,7 +759,7 @@ impl Parser<'_> {
                 self.parse_expr();
             }
             self.expect(R_BRACKET, "`]` closing the list");
-            self.builder.start_node_at(cp, LIST_EXPR.into());
+            self.start_node_at(cp, LIST_EXPR);
             self.finish_node();
         }
     }
@@ -677,5 +809,70 @@ impl Parser<'_> {
                 i += 1;
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn only_error(src: &str) -> Vec<ParseError> {
+        parse(src).errors
+    }
+
+    fn assert_too_deep(src: &str) {
+        let errors = only_error(src);
+        assert_eq!(errors.len(), 1, "{errors:?}");
+        assert_eq!(errors[0].message, too_deep_message());
+    }
+
+    /// Every shape that nests: brackets, prefix chains, binders, and
+    /// left-associative chains (which nest the tree without recursing the
+    /// parser). Each is one nesting error, parsed on a 2 MiB thread so the
+    /// capped recursion has to fit a small debug-build stack.
+    #[test]
+    fn deep_sources_are_one_nesting_error_and_never_overflow() {
+        let n = 3_000;
+        let sources = [
+            format!("{}1{}", "(".repeat(n), ")".repeat(n)),
+            format!("{}1{}", "[".repeat(n), "]".repeat(n)),
+            format!("{}1{}", "{".repeat(n), "}".repeat(n)),
+            format!("{}1{}", "abs(".repeat(n), ")".repeat(n)),
+            format!("{}1", "-".repeat(n)),
+            format!("{}1", "|x| ".repeat(n)),
+            format!("{}1", "let x = 1; ".repeat(n)),
+            vec!["1"; n].join(" + "),
+            vec!["d6"; n].join(" * "),
+            format!("f{}", "(1)".repeat(n)),
+            format!("{}1", "(".repeat(n)),
+        ];
+        std::thread::Builder::new()
+            .stack_size(2 * 1024 * 1024)
+            .spawn(move || {
+                for src in &sources {
+                    assert_too_deep(src);
+                }
+            })
+            .expect("spawn")
+            .join()
+            .expect("a deep source overflowed the parser's stack");
+    }
+
+    #[test]
+    fn nesting_up_to_the_cap_parses() {
+        // 100 levels of parens, or a 200-term sum, is far past any real macro.
+        let src = format!("{}1{}", "(".repeat(100), ")".repeat(100));
+        assert!(only_error(&src).is_empty());
+        let chain = vec!["1"; 200].join(" + ");
+        assert!(only_error(&chain).is_empty());
+    }
+
+    #[test]
+    fn the_cap_is_exact_for_a_left_chain() {
+        // ROOT, then one BIN_EXPR per `+`, then the innermost LITERAL.
+        let fits = vec!["1"; MAX_NESTING_DEPTH - 1].join(" + ");
+        assert!(only_error(&fits).is_empty());
+        let over = vec!["1"; MAX_NESTING_DEPTH].join(" + ");
+        assert_too_deep(&over);
     }
 }
