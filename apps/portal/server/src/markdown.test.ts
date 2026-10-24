@@ -25,7 +25,7 @@ import {
   renderQueryRolls,
 } from "./markdown";
 
-/** The same committed, live-derived Argyle fixture the module's `handlers.test.ts`
+/** The same committed, live-derived Argyle fixture the module's `handlers/party.test.ts`
  * uses (0028 S2 provenance: a real `Actor.toObject()` pulled read-only through the
  * live bridge 2026-07-11 — the worst-case-scale PC, 196 spells / 39 feats). Loaded
  * here too so this file can (a) pull REAL HTML samples for the golden

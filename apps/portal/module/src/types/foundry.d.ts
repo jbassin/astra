@@ -431,7 +431,7 @@ interface FoundryUi {
 declare var ui: FoundryUi | undefined;
 /** Foundry's global UUID resolver (`Compendium.<pack>.<type>.<id>` or a bare world
  * document id) — `get-document` (S4) is its one caller. Same `var` reasoning as above:
- * `handlers.test.ts` stubs it per-test (S4 is Foundry-free too). */
+ * `handlers/testSupport.ts` stubs it per-test (S4 is Foundry-free too). */
 declare var fromUuid: (uuid: string) => Promise<FoundryDocumentLike | null>;
 /** Foundry's forward-safe document-class resolver (avoids a hardcoded `Actor`/`Item`/
  * `JournalEntry` global reference — the v13->v15 deprecation cliff, spec Risks). S5's
@@ -454,7 +454,7 @@ interface FoundryNamespace {
   readonly utils: FoundryUtils;
 }
 
-/** Same `var` reasoning as `fromUuid`/`getDocumentClass`: `handlers.test.ts` stubs
+/** Same `var` reasoning as `fromUuid`/`getDocumentClass`: `handlers/testSupport.ts` stubs
  * this per-test, never the real Foundry-injected global. */
 declare var foundry: FoundryNamespace;
 
