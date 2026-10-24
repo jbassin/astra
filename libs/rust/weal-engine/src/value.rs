@@ -106,10 +106,10 @@ pub enum ErrorKind {
 }
 
 /// A runtime error with an optional byte span into the original source.
-/// Spans are best-effort: the interpreter runs on a span-annotated core tree
-/// (see `interp::attach_spans`); nodes the checker synthesized inherit the
-/// span of the source node they elaborate, and values that outlive their
-/// source (e.g. a save applied from a later message) may carry `None`.
+/// The span is the core node that failed: every [`crate::infer::CoreExpr`]
+/// node carries one, and nodes the checker synthesized take the span of the
+/// source node they elaborate. Synthesized applications and the
+/// distribution engine report `None`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EvalError {
     pub message: String,

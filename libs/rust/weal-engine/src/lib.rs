@@ -49,7 +49,7 @@ pub mod value;
 pub use api::evaluate;
 pub use ast::Expr;
 pub use fuel::Fuel;
-pub use infer::{CoreExpr, PreludeEntry, TypeError, check, check_source, prelude_types};
+pub use infer::{CoreExpr, CoreKind, PreludeEntry, TypeError, check, check_source, prelude_types};
 pub use interp::{
     Env, Interp, RunError, RunOutput, env_bind, env_lookup, env_nil, interp, run, serialize_value,
 };

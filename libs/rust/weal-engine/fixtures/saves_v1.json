@@ -1,0 +1,502 @@
+{
+  "about": "Recorded from the weal engine before weal-5c (commit b60777f5). Saves are the stored [name, source] rows the bot passes as saves_json. Never regenerate this to make a failing test pass: a diff means the save format or its behaviour changed.",
+  "seed": "32 zero bytes",
+  "saves": [
+    ["bonus", "3"],
+    ["half", "1.5"],
+    ["ratio", "0.25f"],
+    ["greeting", "\"hi \\\"you\\\"\""],
+    ["flag", ":true"],
+    ["nothing", "()"],
+    ["stats", "{1, :a, \"s\"}"],
+    ["list", "[1, 2, 3]"],
+    ["weights", "[:a: 1, :b: 2]"],
+    ["attack", "sum(kh(pool(2, d20), 1)) + 7"],
+    ["fire", "label(sum(kh(pool(4, explode(d6, 2)), 3)), :fire)"],
+    ["open", "pool(3, d8)"],
+    ["faces", "dm([:hit: 3, :miss: 1])"],
+    ["adv", "|| kh(pool(2, d20), 1)"],
+    ["smite", "|n| sum(pool(n, d8)) + 5"],
+    ["scaled", "let sum_1 = 2; |x| x + sum_1"],
+    ["nested", "let add = let k = 3; |x| x + k; |y| add(y) * 2"],
+    ["tri", "let f(n) = match n | 0 -> 0 | _ -> n + f(n - 1); f"],
+    ["keep2", "|p| kh(p, 2)"],
+    ["kh4", "kh(pool(4, d6))"],
+    ["total", "sum"],
+    ["sq", "|xs| map(xs, |x| x * x)"],
+    ["pick", "|x| match x | :a -> 1 | :b -> 2 | _ -> 3"],
+    ["boom", "|| 1 / 0"],
+    ["zz", "|p, n| kh(p, n)"],
+    ["double_bonus", "bonus * 2"]
+  ],
+  "producers": [
+    {
+      "source": "save(:bonus, 3)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"bonus\",\"source\":\"3\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:half, 1.5)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"half\",\"source\":\"1.5\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:ratio, 0.25f)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"ratio\",\"source\":\"0.25f\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:greeting, \"hi \\\"you\\\"\")",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"greeting\",\"source\":\"\\\"hi \\\\\\\"you\\\\\\\"\\\"\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:flag, :true)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"flag\",\"source\":\":true\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:nothing, ())",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"nothing\",\"source\":\"()\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:stats, {1, :a, \"s\"})",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"stats\",\"source\":\"{1, :a, \\\"s\\\"}\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:list, [1, 2, 3])",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"list\",\"source\":\"[1, 2, 3]\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:weights, [:a: 1, :b: 2])",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"weights\",\"source\":\"[:a: 1, :b: 2]\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:attack, 2d20kh1 + 7)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"attack\",\"source\":\"sum(kh(pool(2, d20), 1)) + 7\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:fire, 4d6e2kh3[fire])",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"fire\",\"source\":\"label(sum(kh(pool(4, explode(d6, 2)), 3)), :fire)\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:open, pool(3, d8))",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"open\",\"source\":\"pool(3, d8)\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:faces, dm([:hit: 3, :miss: 1]))",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"faces\",\"source\":\"dm([:hit: 3, :miss: 1])\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:adv, || 2d20kh1)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"adv\",\"source\":\"|| kh(pool(2, d20), 1)\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:smite, |n| sum(pool(n, d8)) + 5)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"smite\",\"source\":\"|n| sum(pool(n, d8)) + 5\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:scaled, let sum = 2; |x| x + sum)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"scaled\",\"source\":\"let sum_1 = 2; |x| x + sum_1\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:nested, let k = 3; let add = |x| x + k; |y| add(y) * 2)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"nested\",\"source\":\"let add = let k = 3; |x| x + k; |y| add(y) * 2\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:tri, let f(n) = match n | 0 -> 0 | _ -> n + f(n - 1); f)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"tri\",\"source\":\"let f(n) = match n | 0 -> 0 | _ -> n + f(n - 1); f\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:keep2, |p| kh(p, 2))",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"keep2\",\"source\":\"|p| kh(p, 2)\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:kh4, kh(4d6))",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"kh4\",\"source\":\"kh(pool(4, d6))\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:total, sum)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"total\",\"source\":\"sum\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:sq, |xs| map(xs, |x| x * x))",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"sq\",\"source\":\"|xs| map(xs, |x| x * x)\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:pick, |x| match x | :a -> 1 | :b -> 2 | _ -> 3)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"pick\",\"source\":\"|x| match x | :a -> 1 | :b -> 2 | _ -> 3\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:boom, || 1 / 0)",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"boom\",\"source\":\"|| 1 / 0\"}],\"warnings\":[]}"
+    }
+  ],
+  "cases": [
+    {
+      "source": "bonus + double_bonus",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"value\",\"renderText\":\"9\",\"headline\":\"9\"}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "bonus + double_bonus",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "half",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"value\",\"renderText\":\"1.5\",\"headline\":\"1.5\"}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "half",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "ratio",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"value\",\"renderText\":\"0.25f\",\"headline\":\"0.25f\"}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "ratio",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "greeting",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"value\",\"renderText\":\"\\\"hi \\\\\\\"you\\\\\\\"\\\"\",\"headline\":\"\\\"hi \\\\\\\"you\\\\\\\"\\\"\"}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "greeting",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "flag",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"value\",\"renderText\":\":true\",\"headline\":\":true\"}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "flag",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "nothing",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "nothing",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "stats",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"value\",\"renderText\":\"1\",\"headline\":\"1\"},{\"kind\":\"value\",\"renderText\":\":a\",\"headline\":\":a\"},{\"kind\":\"value\",\"renderText\":\"\\\"s\\\"\",\"headline\":\"\\\"s\\\"\"}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "stats",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "list",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"value\",\"renderText\":\"1\",\"headline\":\"1\"},{\"kind\":\"value\",\"renderText\":\"2\",\"headline\":\"2\"},{\"kind\":\"value\",\"renderText\":\"3\",\"headline\":\"3\"}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "list",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "weights",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "weights",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "attack",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"2d20 ⟪11,~~9~~⟫kh1 + 7 = 18\",\"headline\":\"18\",\"value\":{\"t\":\"num\",\"v\":\"18\"},\"goodness\":\"okay\",\"standardDice\":[[20,11],[20,9]]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "attack",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "fire",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"4d6e2 ⟪~~1~~,3,6→5,5⟫kh3[fire] = 19\",\"headline\":\"19\",\"value\":{\"t\":\"num\",\"v\":\"19\"},\"goodness\":\"bad\",\"standardDice\":[[6,1],[6,3],[6,6],[6,5],[6,5]]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "fire",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "open",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"3d8 ⟪7,1,6⟫ = 14\",\"headline\":\"14\",\"value\":{\"t\":\"num\",\"v\":\"14\"},\"goodness\":\"okay\",\"standardDice\":[[8,7],[8,1],[8,6]]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "open",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "faces",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"dm(:hit:3,:miss:1) ⟪:hit⟫ = :hit\",\"headline\":\":hit\",\"value\":{\"t\":\"atom\",\"v\":\"hit\"},\"goodness\":\"fumble\",\"standardDice\":[]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "faces",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "adv()",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"2d20 ⟪11,~~9~~⟫kh1 = 11\",\"headline\":\"11\",\"value\":{\"t\":\"num\",\"v\":\"11\"},\"goodness\":\"okay\",\"standardDice\":[[20,11],[20,9]]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "adv()",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "adv() + adv()",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"2d20 ⟪11,~~9~~⟫kh1 + 2d20 ⟪18,~~1~~⟫kh1 = 29\",\"headline\":\"29\",\"value\":{\"t\":\"num\",\"v\":\"29\"},\"goodness\":\"good\",\"standardDice\":[[20,11],[20,9],[20,18],[20,1]]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "adv() + adv()",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "smite(2)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"2d8 ⟪7,1⟫ + 5 = 13\",\"headline\":\"13\",\"value\":{\"t\":\"num\",\"v\":\"13\"},\"goodness\":\"okay\",\"standardDice\":[[8,7],[8,1]]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "smite(2)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "scaled(1)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"value\",\"renderText\":\"3\",\"headline\":\"3\"}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "scaled(1)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "nested(4)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"value\",\"renderText\":\"14\",\"headline\":\"14\"}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "nested(4)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "tri(10)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"value\",\"renderText\":\"55\",\"headline\":\"55\"}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "tri(10)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "keep2(4d6)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"4d6 ⟪~~1~~,~~3~~,6,5⟫kh2 = 11\",\"headline\":\"11\",\"value\":{\"t\":\"num\",\"v\":\"11\"},\"goodness\":\"good\",\"standardDice\":[[6,1],[6,3],[6,6],[6,5]]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "keep2(4d6)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "kh4(3)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"4d6 ⟪~~1~~,3,6,5⟫kh3 = 14\",\"headline\":\"14\",\"value\":{\"t\":\"num\",\"v\":\"14\"},\"goodness\":\"good\",\"standardDice\":[[6,1],[6,3],[6,6],[6,5]]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "kh4(3)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "total(3d6)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"3d6 ⟪1,3,6⟫ = 10\",\"headline\":\"10\",\"value\":{\"t\":\"num\",\"v\":\"10\"},\"goodness\":\"okay\",\"standardDice\":[[6,1],[6,3],[6,6]]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "total(3d6)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "sq([1, 2, 3])",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"value\",\"renderText\":\"1\",\"headline\":\"1\"},{\"kind\":\"value\",\"renderText\":\"4\",\"headline\":\"4\"},{\"kind\":\"value\",\"renderText\":\"9\",\"headline\":\"9\"}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "sq([1, 2, 3])",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "pick(:b)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"value\",\"renderText\":\"2\",\"headline\":\"2\"}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "pick(:b)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "boom()",
+      "mode": "run",
+      "output": "{\"ok\":false,\"stage\":\"eval\",\"message\":\"division by zero\",\"span\":{\"start\":3,\"end\":8},\"preludeName\":null}"
+    },
+    {
+      "source": "boom()",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "boom",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "boom",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "2d6zz1 + bonus",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"2d6 ⟪~~1~~,3⟫kh1 + 3 = 6\",\"headline\":\"6\",\"value\":{\"t\":\"num\",\"v\":\"6\"},\"goodness\":\"okay\",\"standardDice\":[[6,1],[6,3]]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "2d6zz1 + bonus",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "evaluate(attack, |x| x > 15)",
+      "mode": "run",
+      "output": "{\"ok\":false,\"stage\":\"type\",\"message\":\"expected `Pool[t16]`, found `Die[Num]`\",\"span\":{\"start\":9,\"end\":15},\"preludeName\":null}"
+    },
+    {
+      "source": "evaluate(attack, |x| x > 15)",
+      "mode": "check",
+      "output": "{\"ok\":false,\"stage\":\"type\",\"message\":\"expected `Pool[t16]`, found `Die[Num]`\",\"span\":{\"start\":9,\"end\":15},\"preludeName\":null}"
+    },
+    {
+      "source": "roll(smite(1), adv())",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"d8 ⟪7⟫ + 5 = 12\",\"headline\":\"12\",\"value\":{\"t\":\"num\",\"v\":\"12\"},\"goodness\":\"good\",\"standardDice\":[[8,7]]},{\"kind\":\"die\",\"renderText\":\"2d20 ⟪~~9~~,18⟫kh1 = 18\",\"headline\":\"18\",\"value\":{\"t\":\"num\",\"v\":\"18\"},\"goodness\":\"good\",\"standardDice\":[[20,9],[20,18]]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "roll(smite(1), adv())",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:again, scaled)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"again\",\"source\":\"let sum_1 = 2; |x| x + sum_1\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:again, scaled)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:again, nested)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"again\",\"source\":\"let add = let k = 3; |x| x + k; |y| add(y) * 2\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:again, nested)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:again, tri)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"again\",\"source\":\"let f(n) = match n | 0 -> 0 | _ -> n + f(n - 1); f\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:again, tri)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:again, keep2)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"again\",\"source\":\"|p| kh(p, 2)\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:again, keep2)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:again, attack)",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[{\"name\":\"again\",\"source\":\"sum(kh(pool(2, d20), 1)) + 7\"}],\"warnings\":[]}"
+    },
+    {
+      "source": "save(:again, attack)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "let sum = 1; smite(1) + sum",
+      "mode": "run",
+      "output": "{\"ok\":true,\"displays\":[{\"kind\":\"die\",\"renderText\":\"d8 ⟪7⟫ + 5 + 1 = 13\",\"headline\":\"13\",\"value\":{\"t\":\"num\",\"v\":\"13\"},\"goodness\":\"good\",\"standardDice\":[[8,7]]}],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "let sum = 1; smite(1) + sum",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "tri(300)",
+      "mode": "run",
+      "output": "{\"ok\":false,\"stage\":\"fuel\",\"message\":\"fuel exhausted: recursion depth\",\"span\":{\"start\":39,\"end\":40},\"preludeName\":null}"
+    },
+    {
+      "source": "tri(300)",
+      "mode": "check",
+      "output": "{\"ok\":true,\"displays\":[],\"plots\":[],\"saves\":[],\"warnings\":[]}"
+    },
+    {
+      "source": "unknown + 1",
+      "mode": "run",
+      "output": "{\"ok\":false,\"stage\":\"type\",\"message\":\"unbound identifier `unknown`\",\"span\":{\"start\":0,\"end\":7},\"preludeName\":null}"
+    },
+    {
+      "source": "unknown + 1",
+      "mode": "check",
+      "output": "{\"ok\":false,\"stage\":\"type\",\"message\":\"unbound identifier `unknown`\",\"span\":{\"start\":0,\"end\":7},\"preludeName\":null}"
+    }
+  ]
+}

@@ -4,15 +4,12 @@
 //!
 //! # Spans
 //!
-//! [`CoreExpr`] is span-free (like the AST), so before interpreting we
-//! attach spans: [`attach_spans`] walks the core tree in lockstep with the
-//! S1 AST + [`SpanTree`] and produces an [`SExpr`] whose nodes carry
-//! best-effort byte spans. Checker-INSERTED nodes (the D32-4 `sum` calls,
-//! the D32-5 suffix elaboration) inherit the span of the source node they
-//! elaborate. Closure bodies keep their spans, so an error inside a closure
-//! applied later still points into the defining source. Span-less cases:
-//! values interpreted through the bare [`interp`] entry point (no AST), and
-//! synthesized applications (the S4 evaluator callback).
+//! The interpreter walks the checker's [`CoreExpr`] directly. Every node
+//! already carries its source span (see `infer`'s "Spans" docs, including
+//! the spans of checker-inserted nodes), and closures store their core body,
+//! so an error inside a closure applied later still points into the defining
+//! source. Errors without a span come from synthesized applications (the S4
+//! evaluator callback), the distribution engine and save serialization.
 //!
 //! # Environments and recursion
 //!
@@ -43,8 +40,8 @@
 
 use crate::ast::{BinOp, CmpOp, Expr, MatchPat, Pattern};
 use crate::fuel::Fuel;
-use crate::infer::CoreExpr;
-use crate::lower::{Span, SpanTree};
+use crate::infer::{CoreExpr, CoreKind};
+use crate::lower::Span;
 use crate::prelude::{self, Builtin};
 use crate::value::{
     BuiltinValue, Cmd, DieTree, DisplayItem, EvalError, Keep, PoolTree, Value, dec_from_text,
@@ -54,388 +51,6 @@ use std::collections::HashMap;
 use std::rc::Rc;
 
 pub use crate::pipeline::{RunError, RunOutput, run};
-
-// ---------------------------------------------------------------------------
-// Spanned core expressions
-// ---------------------------------------------------------------------------
-
-/// A span-annotated mirror of [`CoreExpr`] — what the interpreter actually
-/// walks (and what closure bodies store).
-#[derive(Debug, Clone, PartialEq)]
-pub struct SExpr {
-    pub span: Option<Span>,
-    pub kind: SKind,
-}
-
-/// See [`SExpr`]. Variants mirror [`CoreExpr`] one-for-one.
-#[derive(Debug, Clone, PartialEq)]
-pub enum SKind {
-    Let {
-        pattern: Pattern,
-        value: Box<SExpr>,
-        body: Box<SExpr>,
-    },
-    LetFn {
-        name: String,
-        params: Vec<String>,
-        value: Box<SExpr>,
-        body: Box<SExpr>,
-    },
-    Match {
-        scrutinee: Box<SExpr>,
-        arms: Vec<(MatchPat, SExpr)>,
-    },
-    Lambda {
-        params: Vec<String>,
-        body: Box<SExpr>,
-    },
-    Cmp {
-        op: CmpOp,
-        lhs: Box<SExpr>,
-        rhs: Box<SExpr>,
-    },
-    Binary {
-        op: BinOp,
-        lhs: Box<SExpr>,
-        rhs: Box<SExpr>,
-    },
-    Neg(Box<SExpr>),
-    Call {
-        callee: Box<SExpr>,
-        args: Vec<SExpr>,
-        dm_literal_order: bool,
-    },
-    Label {
-        expr: Box<SExpr>,
-        word: String,
-    },
-    Die {
-        count: Option<String>,
-        sides: String,
-    },
-    Num(String),
-    Dec(String),
-    Float(String),
-    Str(String),
-    Atom(String),
-    Unit,
-    Ident(String),
-    Prelude(Builtin),
-    List(Vec<SExpr>),
-    Dict(Vec<(SExpr, SExpr)>),
-    Tuple(Vec<SExpr>),
-}
-
-/// Attach best-effort spans to an elaborated core tree by walking it in
-/// lockstep with the S1 AST + span tree (module docs). Never fails: any
-/// structural mismatch falls back to the nearest enclosing source span.
-pub fn attach_spans(core: &CoreExpr, ast: &Expr, spans: &SpanTree) -> SExpr {
-    attach(core, Some((ast, spans)), None)
-}
-
-/// Span-annotate a core tree with NO source counterpart (all spans =
-/// `inherited`).
-fn paint(core: &CoreExpr, inherited: Option<Span>) -> SExpr {
-    attach(core, None, inherited)
-}
-
-type Ctx<'a> = Option<(&'a Expr, &'a SpanTree)>;
-
-fn attach(core: &CoreExpr, ctx: Ctx<'_>, inherited: Option<Span>) -> SExpr {
-    let span = ctx.map(|(_, sp)| sp.span).or(inherited);
-    // D32-5 suffix elaboration: a die literal's whole call chain carries the
-    // die token's span.
-    if let Some((Expr::Die { .. }, sp)) = ctx
-        && !matches!(core, CoreExpr::Die { .. })
-    {
-        return paint(core, Some(sp.span));
-    }
-    // Checker-inserted prelude wrappers (`sum`, and the pool materialization
-    // when it escapes the Die rule above): user-written idents never
-    // elaborate to `CoreExpr::Prelude`, so a Prelude callee here is always
-    // synthetic. A single-argument wrapper recurses its argument against the
-    // SAME source node (that's the node the pool came from).
-    if let CoreExpr::Call {
-        callee,
-        args,
-        dm_literal_order,
-    } = core
-        && matches!(**callee, CoreExpr::Prelude(_))
-    {
-        let args = if args.len() == 1 {
-            vec![attach(&args[0], ctx, span)]
-        } else {
-            args.iter().map(|a| paint(a, span)).collect()
-        };
-        return SExpr {
-            span,
-            kind: SKind::Call {
-                callee: Box::new(paint(callee, span)),
-                args,
-                dm_literal_order: *dm_literal_order,
-            },
-        };
-    }
-    let kind = match core {
-        CoreExpr::Let {
-            pattern,
-            value,
-            body,
-        } => {
-            let (vc, bc) = match ctx {
-                Some((Expr::Let { value, body, .. }, sp)) if sp.children.len() == 2 => (
-                    Some((&**value, &sp.children[0])),
-                    Some((&**body, &sp.children[1])),
-                ),
-                _ => (None, None),
-            };
-            SKind::Let {
-                pattern: pattern.clone(),
-                value: Box::new(attach(value, vc, span)),
-                body: Box::new(attach(body, bc, span)),
-            }
-        }
-        CoreExpr::LetFn {
-            name,
-            params,
-            value,
-            body,
-        } => {
-            let (vc, bc) = match ctx {
-                Some((Expr::LetFn { value, body, .. }, sp)) if sp.children.len() == 2 => (
-                    Some((&**value, &sp.children[0])),
-                    Some((&**body, &sp.children[1])),
-                ),
-                _ => (None, None),
-            };
-            SKind::LetFn {
-                name: name.clone(),
-                params: params.clone(),
-                value: Box::new(attach(value, vc, span)),
-                body: Box::new(attach(body, bc, span)),
-            }
-        }
-        CoreExpr::Match { scrutinee, arms } => {
-            let (sc, arm_ctxs) = match ctx {
-                Some((
-                    Expr::Match {
-                        scrutinee,
-                        arms: aarms,
-                    },
-                    sp,
-                )) if sp.children.len() == aarms.len() + 1 && aarms.len() == arms.len() => {
-                    let sc = Some((&**scrutinee, &sp.children[0]));
-                    let ac: Vec<Ctx<'_>> = aarms
-                        .iter()
-                        .enumerate()
-                        .map(|(i, (_, body))| Some((body, &sp.children[i + 1])))
-                        .collect();
-                    (sc, ac)
-                }
-                _ => (None, vec![None; arms.len()]),
-            };
-            SKind::Match {
-                scrutinee: Box::new(attach(scrutinee, sc, span)),
-                arms: arms
-                    .iter()
-                    .zip(arm_ctxs)
-                    .map(|((pat, body), c)| (pat.clone(), attach(body, c, span)))
-                    .collect(),
-            }
-        }
-        CoreExpr::Lambda { params, body } => {
-            let bc = match ctx {
-                Some((Expr::Lambda { body, .. }, sp)) if sp.children.len() == 1 => {
-                    Some((&**body, &sp.children[0]))
-                }
-                _ => None,
-            };
-            SKind::Lambda {
-                params: params.clone(),
-                body: Box::new(attach(body, bc, span)),
-            }
-        }
-        CoreExpr::Cmp { op, lhs, rhs } => {
-            let (lc, rc) = match ctx {
-                Some((Expr::Cmp { first, rest }, sp))
-                    if sp.children.len() >= 2 && rest.len() == 1 =>
-                {
-                    (
-                        Some((&**first, &sp.children[0])),
-                        Some((&rest[0].1, &sp.children[1])),
-                    )
-                }
-                _ => (None, None),
-            };
-            SKind::Cmp {
-                op: *op,
-                lhs: Box::new(attach(lhs, lc, span)),
-                rhs: Box::new(attach(rhs, rc, span)),
-            }
-        }
-        CoreExpr::Binary { op, lhs, rhs } => {
-            let (lc, rc) = match ctx {
-                Some((Expr::Binary { lhs, rhs, .. }, sp)) if sp.children.len() == 2 => (
-                    Some((&**lhs, &sp.children[0])),
-                    Some((&**rhs, &sp.children[1])),
-                ),
-                _ => (None, None),
-            };
-            SKind::Binary {
-                op: *op,
-                lhs: Box::new(attach(lhs, lc, span)),
-                rhs: Box::new(attach(rhs, rc, span)),
-            }
-        }
-        CoreExpr::Neg(inner) => {
-            let ic = match ctx {
-                Some((Expr::Neg(inner), sp)) if sp.children.len() == 1 => {
-                    Some((&**inner, &sp.children[0]))
-                }
-                _ => None,
-            };
-            SKind::Neg(Box::new(attach(inner, ic, span)))
-        }
-        CoreExpr::Call {
-            callee,
-            args,
-            dm_literal_order,
-        } => {
-            let (cc, arg_ctxs) = match ctx {
-                Some((
-                    Expr::Call {
-                        callee,
-                        args: aargs,
-                    },
-                    sp,
-                )) if sp.children.len() == aargs.len() + 1 && aargs.len() == args.len() => {
-                    let cc = Some((&**callee, &sp.children[0]));
-                    let ac: Vec<Ctx<'_>> = aargs
-                        .iter()
-                        .enumerate()
-                        .map(|(i, a)| Some((a, &sp.children[i + 1])))
-                        .collect();
-                    (cc, ac)
-                }
-                // WEAL-1: `f()` elaborates to `f(())`; the inserted unit has
-                // no source node and takes the call's span.
-                Some((
-                    Expr::Call {
-                        callee,
-                        args: aargs,
-                    },
-                    sp,
-                )) if aargs.is_empty() && sp.children.len() == 1 && args.len() == 1 => {
-                    (Some((&**callee, &sp.children[0])), vec![None])
-                }
-                _ => (None, vec![None; args.len()]),
-            };
-            SKind::Call {
-                callee: Box::new(attach(callee, cc, span)),
-                args: args
-                    .iter()
-                    .zip(arg_ctxs)
-                    .map(|(a, c)| attach(a, c, span))
-                    .collect(),
-                dm_literal_order: *dm_literal_order,
-            }
-        }
-        CoreExpr::Label { expr, word } => {
-            let ic = match ctx {
-                Some((Expr::Label { expr, .. }, sp)) if sp.children.len() == 1 => {
-                    Some((&**expr, &sp.children[0]))
-                }
-                _ => None,
-            };
-            SKind::Label {
-                expr: Box::new(attach(expr, ic, span)),
-                word: word.clone(),
-            }
-        }
-        CoreExpr::Die { count, sides } => SKind::Die {
-            count: count.clone(),
-            sides: sides.clone(),
-        },
-        CoreExpr::Num(s) => SKind::Num(s.clone()),
-        CoreExpr::Dec(s) => SKind::Dec(s.clone()),
-        CoreExpr::Float(s) => SKind::Float(s.clone()),
-        CoreExpr::Str(s) => SKind::Str(s.clone()),
-        CoreExpr::Atom(s) => SKind::Atom(s.clone()),
-        CoreExpr::Unit => SKind::Unit,
-        CoreExpr::Ident(s) => SKind::Ident(s.clone()),
-        CoreExpr::Prelude(s) => SKind::Prelude(*s),
-        CoreExpr::List(items) => {
-            let ctxs: Vec<Ctx<'_>> = match ctx {
-                Some((Expr::List(aitems), sp))
-                    if sp.children.len() == aitems.len() && aitems.len() == items.len() =>
-                {
-                    aitems
-                        .iter()
-                        .zip(&sp.children)
-                        .map(|(a, s)| Some((a, s)))
-                        .collect()
-                }
-                _ => vec![None; items.len()],
-            };
-            SKind::List(
-                items
-                    .iter()
-                    .zip(ctxs)
-                    .map(|(e, c)| attach(e, c, span))
-                    .collect(),
-            )
-        }
-        CoreExpr::Tuple(items) => {
-            let ctxs: Vec<Ctx<'_>> = match ctx {
-                Some((Expr::Tuple(aitems), sp))
-                    if sp.children.len() == aitems.len() && aitems.len() == items.len() =>
-                {
-                    aitems
-                        .iter()
-                        .zip(&sp.children)
-                        .map(|(a, s)| Some((a, s)))
-                        .collect()
-                }
-                _ => vec![None; items.len()],
-            };
-            SKind::Tuple(
-                items
-                    .iter()
-                    .zip(ctxs)
-                    .map(|(e, c)| attach(e, c, span))
-                    .collect(),
-            )
-        }
-        CoreExpr::Dict(entries) => {
-            let ctxs: Vec<(Ctx<'_>, Ctx<'_>)> = match ctx {
-                Some((Expr::Dict(aentries), sp))
-                    if sp.children.len() == aentries.len() * 2
-                        && aentries.len() == entries.len() =>
-                {
-                    aentries
-                        .iter()
-                        .enumerate()
-                        .map(|(i, (k, v))| {
-                            (
-                                Some((k, &sp.children[2 * i])),
-                                Some((v, &sp.children[2 * i + 1])),
-                            )
-                        })
-                        .collect()
-                }
-                _ => vec![(None, None); entries.len()],
-            };
-            SKind::Dict(
-                entries
-                    .iter()
-                    .zip(ctxs)
-                    .map(|((k, v), (kc, vc))| (attach(k, kc, span), attach(v, vc, span)))
-                    .collect(),
-            )
-        }
-    };
-    SExpr { span, kind }
-}
 
 // ---------------------------------------------------------------------------
 // Environment + closures
@@ -489,7 +104,7 @@ pub fn env_lookup<'a>(env: &'a Env, name: &str) -> Option<&'a Value> {
 /// application time (module docs).
 pub struct ClosureValue {
     pub params: Vec<String>,
-    pub body: Rc<SExpr>,
+    pub body: Rc<CoreExpr>,
     pub env: Env,
     pub self_name: Option<String>,
 }
@@ -569,18 +184,18 @@ impl<'f> Interp<'f> {
     }
 
     /// Evaluate one node. Burns one fuel step and one recursion frame.
-    pub fn eval(&mut self, e: &SExpr, env: &Env) -> Result<Value, EvalError> {
-        self.fuel.step(e.span)?;
-        self.fuel.enter(e.span)?;
+    pub fn eval(&mut self, e: &CoreExpr, env: &Env) -> Result<Value, EvalError> {
+        self.fuel.step(Some(e.span))?;
+        self.fuel.enter(Some(e.span))?;
         let result = self.eval_inner(e, env);
         self.fuel.exit();
         result
     }
 
-    fn eval_inner(&mut self, e: &SExpr, env: &Env) -> Result<Value, EvalError> {
-        let span = e.span;
+    fn eval_inner(&mut self, e: &CoreExpr, env: &Env) -> Result<Value, EvalError> {
+        let span = Some(e.span);
         match &e.kind {
-            SKind::Let {
+            CoreKind::Let {
                 pattern,
                 value,
                 body,
@@ -589,7 +204,7 @@ impl<'f> Interp<'f> {
                 let env = bind_pattern(pattern, v, env)?;
                 self.eval(body, &env)
             }
-            SKind::LetFn {
+            CoreKind::LetFn {
                 name,
                 params,
                 value,
@@ -604,7 +219,7 @@ impl<'f> Interp<'f> {
                 let env = env_bind(env, name.clone(), closure);
                 self.eval(body, &env)
             }
-            SKind::Match { scrutinee, arms } => {
+            CoreKind::Match { scrutinee, arms } => {
                 let v = self.eval(scrutinee, env)?;
                 for (pat, body) in arms {
                     let mut binds = Vec::new();
@@ -619,23 +234,23 @@ impl<'f> Interp<'f> {
                 // The checker proves exhaustiveness — defensive only.
                 Err(EvalError::eval("no match arm matched", span))
             }
-            SKind::Lambda { params, body } => Ok(Value::Closure(Rc::new(ClosureValue {
+            CoreKind::Lambda { params, body } => Ok(Value::Closure(Rc::new(ClosureValue {
                 params: params.clone(),
                 body: Rc::new((**body).clone()),
                 env: env.clone(),
                 self_name: None,
             }))),
-            SKind::Cmp { op, lhs, rhs } => {
+            CoreKind::Cmp { op, lhs, rhs } => {
                 let l = self.eval(lhs, env)?;
                 let r = self.eval(rhs, env)?;
                 cmp_values(*op, l, r, span)
             }
-            SKind::Binary { op, lhs, rhs } => {
+            CoreKind::Binary { op, lhs, rhs } => {
                 let l = self.eval(lhs, env)?;
                 let r = self.eval(rhs, env)?;
                 arith(*op, l, r, span)
             }
-            SKind::Neg(inner) => {
+            CoreKind::Neg(inner) => {
                 let v = self.eval(inner, env)?;
                 match v {
                     Value::Num(n) => Ok(Value::Num(-n)),
@@ -645,7 +260,7 @@ impl<'f> Interp<'f> {
                     other => Err(internal_shape("negate", &other)),
                 }
             }
-            SKind::Call {
+            CoreKind::Call {
                 callee,
                 args,
                 dm_literal_order,
@@ -670,7 +285,7 @@ impl<'f> Interp<'f> {
                 }
                 self.apply(f, argv, *dm_literal_order, span)
             }
-            SKind::Label { expr, word } => {
+            CoreKind::Label { expr, word } => {
                 let v = self.eval(expr, env)?;
                 match v {
                     Value::Die(t) => Ok(Value::Die(DieTree::Label {
@@ -680,21 +295,21 @@ impl<'f> Interp<'f> {
                     other => Err(internal_shape("label", &other)),
                 }
             }
-            SKind::Die { count, sides } => eval_die(count.as_deref(), sides, span),
-            SKind::Num(digits) => Ok(Value::Num(
+            CoreKind::Die { count, sides } => eval_die(count.as_deref(), sides, span),
+            CoreKind::Num(digits) => Ok(Value::Num(
                 digits
                     .parse()
                     .map_err(|_| EvalError::internal("bad Num literal"))?,
             )),
-            SKind::Dec(text) => Ok(Value::Dec(dec_from_text(text, span)?)),
-            SKind::Float(text) => Ok(Value::Float(
+            CoreKind::Dec(text) => Ok(Value::Dec(dec_from_text(text, span)?)),
+            CoreKind::Float(text) => Ok(Value::Float(
                 text.parse()
                     .map_err(|_| EvalError::internal("bad Float literal"))?,
             )),
-            SKind::Str(s) => Ok(Value::Str(s.clone())),
-            SKind::Atom(s) => Ok(Value::Atom(s.clone())),
-            SKind::Unit => Ok(Value::Unit),
-            SKind::Ident(name) => {
+            CoreKind::Str(s) => Ok(Value::Str(s.clone())),
+            CoreKind::Atom(s) => Ok(Value::Atom(s.clone())),
+            CoreKind::Unit => Ok(Value::Unit),
+            CoreKind::Ident(name) => {
                 if let Some(v) = env_lookup(env, name) {
                     return Ok(v.clone());
                 }
@@ -707,25 +322,25 @@ impl<'f> Interp<'f> {
                 }
                 Err(EvalError::internal(format!("unbound identifier `{name}`")))
             }
-            SKind::Prelude(builtin) => Ok(Value::Builtin(BuiltinValue {
+            CoreKind::Prelude(builtin) => Ok(Value::Builtin(BuiltinValue {
                 builtin: *builtin,
                 args: Vec::new(),
             })),
-            SKind::List(items) => {
+            CoreKind::List(items) => {
                 let mut out = Vec::with_capacity(items.len());
                 for item in items {
                     out.push(self.eval(item, env)?);
                 }
                 Ok(Value::List(out))
             }
-            SKind::Tuple(items) => {
+            CoreKind::Tuple(items) => {
                 let mut out = Vec::with_capacity(items.len());
                 for item in items {
                     out.push(self.eval(item, env)?);
                 }
                 Ok(Value::Tuple(out))
             }
-            SKind::Dict(entries) => {
+            CoreKind::Dict(entries) => {
                 let mut out: Vec<(Value, Value)> = Vec::with_capacity(entries.len());
                 for (k, v) in entries {
                     let key = self.eval(k, env)?;
@@ -1091,13 +706,12 @@ pub fn append_display(cmd: &mut Cmd, v: &Value) {
 // Top-level drivers
 // ---------------------------------------------------------------------------
 
-/// Interpret an elaborated core tree (the pinned S3 entry point). Spans are
-/// unavailable through this path (no AST) — errors carry `span: None`;
-/// [`run`] is the span-carrying driver.
+/// Interpret an elaborated core tree (the pinned S3 entry point). Errors
+/// carry the core's own spans; [`run`] is the full driver (saves, display
+/// rules).
 pub fn interp(core: &CoreExpr, env: &Env, fuel: &mut Fuel) -> Result<(Value, Cmd), EvalError> {
-    let sexpr = paint(core, None);
     let mut it = Interp::new(fuel);
-    let value = it.eval(&sexpr, env)?;
+    let value = it.eval(core, env)?;
     Ok((value, it.into_cmd()))
 }
 
@@ -1399,7 +1013,7 @@ fn closure_to_expr_inner(rc: &Rc<ClosureValue>, ctx: &mut SerCtx) -> Result<Expr
         .collect();
     // Convert the body, applying renames to free occurrences only.
     let mut shadow: Vec<String> = Vec::new();
-    let body = sexpr_to_expr(&rc.body, &renames, &mut shadow);
+    let body = core_to_expr(&rc.body, &renames, &mut shadow);
     // Assemble: enclosing lets for captures (first-use order), then the
     // lambda — or the LetFn + name form for a recursive function.
     let inner = match self_name {
@@ -1446,14 +1060,14 @@ fn match_pat_names(p: &MatchPat, out: &mut Vec<String>) {
 
 /// Free identifiers of a body, in first-occurrence order. `bound` is the
 /// initial binder set (mutated as a stack, restored on return).
-fn free_idents(e: &SExpr, bound: &mut Vec<String>, out: &mut Vec<String>) {
+fn free_idents(e: &CoreExpr, bound: &mut Vec<String>, out: &mut Vec<String>) {
     match &e.kind {
-        SKind::Ident(n) => {
+        CoreKind::Ident(n) => {
             if !bound.contains(n) && !out.contains(n) {
                 out.push(n.clone());
             }
         }
-        SKind::Let {
+        CoreKind::Let {
             pattern,
             value,
             body,
@@ -1464,7 +1078,7 @@ fn free_idents(e: &SExpr, bound: &mut Vec<String>, out: &mut Vec<String>) {
             free_idents(body, bound, out);
             bound.truncate(mark);
         }
-        SKind::LetFn {
+        CoreKind::LetFn {
             name,
             params,
             value,
@@ -1478,7 +1092,7 @@ fn free_idents(e: &SExpr, bound: &mut Vec<String>, out: &mut Vec<String>) {
             free_idents(body, bound, out);
             bound.truncate(mark);
         }
-        SKind::Match { scrutinee, arms } => {
+        CoreKind::Match { scrutinee, arms } => {
             free_idents(scrutinee, bound, out);
             for (pat, body) in arms {
                 let mark = bound.len();
@@ -1487,48 +1101,50 @@ fn free_idents(e: &SExpr, bound: &mut Vec<String>, out: &mut Vec<String>) {
                 bound.truncate(mark);
             }
         }
-        SKind::Lambda { params, body } => {
+        CoreKind::Lambda { params, body } => {
             let mark = bound.len();
             bound.extend(params.iter().cloned());
             free_idents(body, bound, out);
             bound.truncate(mark);
         }
-        SKind::Cmp { lhs, rhs, .. } | SKind::Binary { lhs, rhs, .. } => {
+        CoreKind::Cmp { lhs, rhs, .. } | CoreKind::Binary { lhs, rhs, .. } => {
             free_idents(lhs, bound, out);
             free_idents(rhs, bound, out);
         }
-        SKind::Neg(inner) | SKind::Label { expr: inner, .. } => free_idents(inner, bound, out),
-        SKind::Call { callee, args, .. } => {
+        CoreKind::Neg(inner) | CoreKind::Label { expr: inner, .. } => {
+            free_idents(inner, bound, out)
+        }
+        CoreKind::Call { callee, args, .. } => {
             free_idents(callee, bound, out);
             args.iter().for_each(|a| free_idents(a, bound, out));
         }
-        SKind::List(items) | SKind::Tuple(items) => {
+        CoreKind::List(items) | CoreKind::Tuple(items) => {
             items.iter().for_each(|x| free_idents(x, bound, out));
         }
-        SKind::Dict(entries) => {
+        CoreKind::Dict(entries) => {
             for (k, v) in entries {
                 free_idents(k, bound, out);
                 free_idents(v, bound, out);
             }
         }
-        SKind::Die { .. }
-        | SKind::Num(_)
-        | SKind::Dec(_)
-        | SKind::Float(_)
-        | SKind::Str(_)
-        | SKind::Atom(_)
-        | SKind::Unit
-        | SKind::Prelude(_) => {}
+        CoreKind::Die { .. }
+        | CoreKind::Num(_)
+        | CoreKind::Dec(_)
+        | CoreKind::Float(_)
+        | CoreKind::Str(_)
+        | CoreKind::Atom(_)
+        | CoreKind::Unit
+        | CoreKind::Prelude(_) => {}
     }
 }
 
 /// Every identifier appearing anywhere (referenced or bound) — the
 /// freshness pool for capture renames (conservative superset).
-fn all_idents(e: &SExpr, out: &mut Vec<String>) {
+fn all_idents(e: &CoreExpr, out: &mut Vec<String>) {
     match &e.kind {
-        SKind::Ident(n) => out.push(n.clone()),
-        SKind::Prelude(b) => out.push(b.name().to_owned()),
-        SKind::Let {
+        CoreKind::Ident(n) => out.push(n.clone()),
+        CoreKind::Prelude(b) => out.push(b.name().to_owned()),
+        CoreKind::Let {
             pattern,
             value,
             body,
@@ -1537,7 +1153,7 @@ fn all_idents(e: &SExpr, out: &mut Vec<String>) {
             all_idents(value, out);
             all_idents(body, out);
         }
-        SKind::LetFn {
+        CoreKind::LetFn {
             name,
             params,
             value,
@@ -1548,51 +1164,51 @@ fn all_idents(e: &SExpr, out: &mut Vec<String>) {
             all_idents(value, out);
             all_idents(body, out);
         }
-        SKind::Match { scrutinee, arms } => {
+        CoreKind::Match { scrutinee, arms } => {
             all_idents(scrutinee, out);
             for (pat, body) in arms {
                 match_pat_names(pat, out);
                 all_idents(body, out);
             }
         }
-        SKind::Lambda { params, body } => {
+        CoreKind::Lambda { params, body } => {
             out.extend(params.iter().cloned());
             all_idents(body, out);
         }
-        SKind::Cmp { lhs, rhs, .. } | SKind::Binary { lhs, rhs, .. } => {
+        CoreKind::Cmp { lhs, rhs, .. } | CoreKind::Binary { lhs, rhs, .. } => {
             all_idents(lhs, out);
             all_idents(rhs, out);
         }
-        SKind::Neg(inner) | SKind::Label { expr: inner, .. } => all_idents(inner, out),
-        SKind::Call { callee, args, .. } => {
+        CoreKind::Neg(inner) | CoreKind::Label { expr: inner, .. } => all_idents(inner, out),
+        CoreKind::Call { callee, args, .. } => {
             all_idents(callee, out);
             args.iter().for_each(|a| all_idents(a, out));
         }
-        SKind::List(items) | SKind::Tuple(items) => {
+        CoreKind::List(items) | CoreKind::Tuple(items) => {
             items.iter().for_each(|x| all_idents(x, out));
         }
-        SKind::Dict(entries) => {
+        CoreKind::Dict(entries) => {
             for (k, v) in entries {
                 all_idents(k, out);
                 all_idents(v, out);
             }
         }
-        SKind::Die { .. }
-        | SKind::Num(_)
-        | SKind::Dec(_)
-        | SKind::Float(_)
-        | SKind::Str(_)
-        | SKind::Atom(_)
-        | SKind::Unit => {}
+        CoreKind::Die { .. }
+        | CoreKind::Num(_)
+        | CoreKind::Dec(_)
+        | CoreKind::Float(_)
+        | CoreKind::Str(_)
+        | CoreKind::Atom(_)
+        | CoreKind::Unit => {}
     }
 }
 
 /// Convert a spanned core body back to a printable AST, applying `renames`
 /// to FREE occurrences only (`shadow` tracks binders of the ORIGINAL names
 /// so shadowed occurrences stay untouched).
-fn sexpr_to_expr(e: &SExpr, renames: &HashMap<String, String>, shadow: &mut Vec<String>) -> Expr {
+fn core_to_expr(e: &CoreExpr, renames: &HashMap<String, String>, shadow: &mut Vec<String>) -> Expr {
     match &e.kind {
-        SKind::Ident(n) => {
+        CoreKind::Ident(n) => {
             if !shadow.contains(n)
                 && let Some(new) = renames.get(n)
             {
@@ -1600,16 +1216,16 @@ fn sexpr_to_expr(e: &SExpr, renames: &HashMap<String, String>, shadow: &mut Vec<
             }
             Expr::Ident(n.clone())
         }
-        SKind::Prelude(b) => Expr::Ident(b.name().to_owned()),
-        SKind::Let {
+        CoreKind::Prelude(b) => Expr::Ident(b.name().to_owned()),
+        CoreKind::Let {
             pattern,
             value,
             body,
         } => {
-            let value = sexpr_to_expr(value, renames, shadow);
+            let value = core_to_expr(value, renames, shadow);
             let mark = shadow.len();
             pattern_names(pattern, shadow);
-            let body = sexpr_to_expr(body, renames, shadow);
+            let body = core_to_expr(body, renames, shadow);
             shadow.truncate(mark);
             Expr::Let {
                 pattern: pattern.clone(),
@@ -1618,7 +1234,7 @@ fn sexpr_to_expr(e: &SExpr, renames: &HashMap<String, String>, shadow: &mut Vec<
                 body: Box::new(body),
             }
         }
-        SKind::LetFn {
+        CoreKind::LetFn {
             name,
             params,
             value,
@@ -1627,9 +1243,9 @@ fn sexpr_to_expr(e: &SExpr, renames: &HashMap<String, String>, shadow: &mut Vec<
             let mark = shadow.len();
             shadow.push(name.clone());
             shadow.extend(params.iter().cloned());
-            let value = sexpr_to_expr(value, renames, shadow);
+            let value = core_to_expr(value, renames, shadow);
             shadow.truncate(mark + 1);
-            let body = sexpr_to_expr(body, renames, shadow);
+            let body = core_to_expr(body, renames, shadow);
             shadow.truncate(mark);
             Expr::LetFn {
                 name: name.clone(),
@@ -1639,80 +1255,80 @@ fn sexpr_to_expr(e: &SExpr, renames: &HashMap<String, String>, shadow: &mut Vec<
                 body: Box::new(body),
             }
         }
-        SKind::Match { scrutinee, arms } => Expr::Match {
-            scrutinee: Box::new(sexpr_to_expr(scrutinee, renames, shadow)),
+        CoreKind::Match { scrutinee, arms } => Expr::Match {
+            scrutinee: Box::new(core_to_expr(scrutinee, renames, shadow)),
             arms: arms
                 .iter()
                 .map(|(pat, body)| {
                     let mark = shadow.len();
                     match_pat_names(pat, shadow);
-                    let body = sexpr_to_expr(body, renames, shadow);
+                    let body = core_to_expr(body, renames, shadow);
                     shadow.truncate(mark);
                     (pat.clone(), body)
                 })
                 .collect(),
         },
-        SKind::Lambda { params, body } => {
+        CoreKind::Lambda { params, body } => {
             let mark = shadow.len();
             shadow.extend(params.iter().cloned());
-            let body = sexpr_to_expr(body, renames, shadow);
+            let body = core_to_expr(body, renames, shadow);
             shadow.truncate(mark);
             Expr::Lambda {
                 params: params.clone(),
                 body: Box::new(body),
             }
         }
-        SKind::Cmp { op, lhs, rhs } => Expr::Cmp {
-            first: Box::new(sexpr_to_expr(lhs, renames, shadow)),
-            rest: vec![(*op, sexpr_to_expr(rhs, renames, shadow))],
+        CoreKind::Cmp { op, lhs, rhs } => Expr::Cmp {
+            first: Box::new(core_to_expr(lhs, renames, shadow)),
+            rest: vec![(*op, core_to_expr(rhs, renames, shadow))],
         },
-        SKind::Binary { op, lhs, rhs } => Expr::Binary {
+        CoreKind::Binary { op, lhs, rhs } => Expr::Binary {
             op: *op,
-            lhs: Box::new(sexpr_to_expr(lhs, renames, shadow)),
-            rhs: Box::new(sexpr_to_expr(rhs, renames, shadow)),
+            lhs: Box::new(core_to_expr(lhs, renames, shadow)),
+            rhs: Box::new(core_to_expr(rhs, renames, shadow)),
         },
-        SKind::Neg(inner) => Expr::Neg(Box::new(sexpr_to_expr(inner, renames, shadow))),
-        SKind::Call { callee, args, .. } => Expr::Call {
-            callee: Box::new(sexpr_to_expr(callee, renames, shadow)),
+        CoreKind::Neg(inner) => Expr::Neg(Box::new(core_to_expr(inner, renames, shadow))),
+        CoreKind::Call { callee, args, .. } => Expr::Call {
+            callee: Box::new(core_to_expr(callee, renames, shadow)),
             args: args
                 .iter()
-                .map(|a| sexpr_to_expr(a, renames, shadow))
+                .map(|a| core_to_expr(a, renames, shadow))
                 .collect(),
         },
-        SKind::Label { expr, word } => Expr::Label {
-            expr: Box::new(sexpr_to_expr(expr, renames, shadow)),
+        CoreKind::Label { expr, word } => Expr::Label {
+            expr: Box::new(core_to_expr(expr, renames, shadow)),
             word: word.clone(),
         },
-        SKind::Die { count, sides } => Expr::Die {
+        CoreKind::Die { count, sides } => Expr::Die {
             count: count.clone(),
             sides: sides.clone(),
             suffixes: Vec::new(),
         },
-        SKind::Num(s) => Expr::Num(s.clone()),
-        SKind::Dec(s) => Expr::Dec(s.clone()),
-        SKind::Float(s) => Expr::Float(s.clone()),
-        SKind::Str(s) => Expr::Str(s.clone()),
-        SKind::Atom(s) => Expr::Atom(s.clone()),
-        SKind::Unit => Expr::Unit,
-        SKind::List(items) => Expr::List(
+        CoreKind::Num(s) => Expr::Num(s.clone()),
+        CoreKind::Dec(s) => Expr::Dec(s.clone()),
+        CoreKind::Float(s) => Expr::Float(s.clone()),
+        CoreKind::Str(s) => Expr::Str(s.clone()),
+        CoreKind::Atom(s) => Expr::Atom(s.clone()),
+        CoreKind::Unit => Expr::Unit,
+        CoreKind::List(items) => Expr::List(
             items
                 .iter()
-                .map(|x| sexpr_to_expr(x, renames, shadow))
+                .map(|x| core_to_expr(x, renames, shadow))
                 .collect(),
         ),
-        SKind::Tuple(items) => Expr::Tuple(
+        CoreKind::Tuple(items) => Expr::Tuple(
             items
                 .iter()
-                .map(|x| sexpr_to_expr(x, renames, shadow))
+                .map(|x| core_to_expr(x, renames, shadow))
                 .collect(),
         ),
-        SKind::Dict(entries) => Expr::Dict(
+        CoreKind::Dict(entries) => Expr::Dict(
             entries
                 .iter()
                 .map(|(k, v)| {
                     (
-                        sexpr_to_expr(k, renames, shadow),
-                        sexpr_to_expr(v, renames, shadow),
+                        core_to_expr(k, renames, shadow),
+                        core_to_expr(v, renames, shadow),
                     )
                 })
                 .collect(),
@@ -2483,11 +2099,11 @@ mod tests {
     }
 
     #[test]
-    fn interp_without_ast_reports_spanless_errors() {
+    fn interp_errors_carry_the_core_spans() {
         let (core, _ty) = crate::infer::check_source("1 / 0", &[]).unwrap();
         let mut fuel = Fuel::default();
         let e = interp(&core, &env_nil(), &mut fuel).unwrap_err();
-        assert_eq!(e.span, None);
+        assert_eq!(e.span, Some((0, 5)));
         assert_eq!(e.kind, ErrorKind::Eval);
     }
 
