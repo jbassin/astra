@@ -5,7 +5,9 @@
  * Discord OAuth dance is login-only (`oauth.ts`); after that this cookie is the
  * whole session. Ported verbatim from faerrin `pkg/lark/src/server/sessions.ts`.
  */
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHmac } from "node:crypto";
+
+import { safeEqual } from "@astra/service-kit";
 
 import type { Session } from "./router";
 
@@ -42,10 +44,8 @@ export function verifySession(
   if (parts.length !== 3) return null;
   const [uid, expStr, sig] = parts as [string, string, string];
   const expected = sign(`${uid}.${expStr}`, secret);
-  // Constant-time compare; bail if lengths differ (timingSafeEqual throws then).
-  const a = Buffer.from(sig);
-  const b = Buffer.from(expected);
-  if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
+  // Constant-time compare, whatever the lengths.
+  if (!safeEqual(sig, expected)) return null;
   const exp = Number(expStr);
   if (!Number.isFinite(exp) || exp <= 0) return null;
   if (Math.floor(now / 1000) >= exp) return null;

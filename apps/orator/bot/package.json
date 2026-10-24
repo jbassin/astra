@@ -17,6 +17,7 @@
     "@astra/observe": "workspace:*",
     "@astra/ontology": "workspace:*",
     "@astra/pg-migrate": "workspace:*",
+    "@astra/service-kit": "workspace:*",
     "@astra/site-kit": "workspace:*",
     "@discordjs/voice": "^0.19.2",
     "@fontsource/ibm-plex-mono": "catalog:",
@@ -29,7 +30,8 @@
     "prism-media": "^1.3.5",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "srvx": "catalog:"
+    "srvx": "catalog:",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/vite": "catalog:",

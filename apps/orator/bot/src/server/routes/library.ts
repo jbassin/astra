@@ -8,9 +8,12 @@
  */
 import { unlink } from "node:fs/promises";
 
+import { z } from "zod";
+
 import type { Track } from "../../db/store";
 import { previewBulkRename, RenameError, type RenameOp } from "../../lib/rename";
-import { type ApiCtx, type ApiRoute, HttpError, intParam, json, readJson } from "../router";
+import { ids, INVALID_BODY, int, jsonBody, text } from "../bodies";
+import { type ApiCtx, type ApiRoute, apiRoute, HttpError, intParam, json } from "../router";
 
 async function trackWithTags(ctx: ApiCtx, track: Track) {
   return { ...track, tags: await ctx.store.tagsForTrack(track.id) };
@@ -25,11 +28,15 @@ export const libraryRoutes: ApiRoute[] = [
     path: "/api/v1/collections",
     handler: async (ctx) => json(await ctx.store.listCollections()),
   },
-  {
+  apiRoute({
     method: "POST",
     path: "/api/v1/collections",
+    body: jsonBody(
+      { name: text("name_required"), ipOrGame: z.string({ error: INVALID_BODY }).nullish() },
+      "name_required",
+    ),
     handler: async (ctx) => {
-      const body = await readJson<{ name?: string; ipOrGame?: string }>(ctx.req);
+      const body = await ctx.body();
       if (!body.name?.trim()) throw new HttpError(400, "name_required");
       return json(
         await ctx.store.createCollection({
@@ -39,19 +46,20 @@ export const libraryRoutes: ApiRoute[] = [
         201,
       );
     },
-  },
-  {
+  }),
+  apiRoute({
     method: "PATCH",
     path: "/api/v1/collections/:id",
+    body: jsonBody({ name: text("name_required") }, "name_required"),
     handler: async (ctx) => {
       const id = intParam(ctx.params, "id");
-      const body = await readJson<{ name?: string }>(ctx.req);
+      const body = await ctx.body();
       if (!body.name?.trim()) throw new HttpError(400, "name_required");
       if (!(await ctx.store.renameCollection(id, body.name.trim())))
         throw new HttpError(404, "not_found");
       return json(await ctx.store.getCollection(id));
     },
-  },
+  }),
   {
     method: "DELETE",
     path: "/api/v1/collections/:id",
@@ -89,14 +97,15 @@ export const libraryRoutes: ApiRoute[] = [
       return json(await trackWithTags(ctx, track));
     },
   },
-  {
+  apiRoute({
     method: "PATCH",
     path: "/api/v1/tracks/:id",
+    body: jsonBody({ title: text("title_required"), collectionId: int().nullable().optional() }),
     handler: async (ctx) => {
       const id = intParam(ctx.params, "id");
       const track = await ctx.store.getTrack(id);
       if (!track) throw new HttpError(404, "not_found");
-      const body = await readJson<{ title?: string; collectionId?: number | null }>(ctx.req);
+      const body = await ctx.body();
       if (body.title !== undefined) {
         if (!body.title.trim()) throw new HttpError(400, "title_required");
         await ctx.store.updateTrackTitle(id, body.title.trim());
@@ -107,7 +116,7 @@ export const libraryRoutes: ApiRoute[] = [
       if (!updated) throw new HttpError(404, "not_found");
       return json(await trackWithTags(ctx, updated));
     },
-  },
+  }),
   {
     method: "DELETE",
     path: "/api/v1/tracks/:id",
@@ -120,11 +129,15 @@ export const libraryRoutes: ApiRoute[] = [
   },
 
   // Move selected tracks into a collection (or out, with collectionId: null), B15.
-  {
+  apiRoute({
     method: "POST",
     path: "/api/v1/tracks/bulk-move",
+    body: jsonBody(
+      { ids: ids("ids_required").optional(), collectionId: int().nullish() },
+      "ids_required",
+    ),
     handler: async (ctx) => {
-      const body = await readJson<{ ids?: number[]; collectionId?: number | null }>(ctx.req);
+      const body = await ctx.body();
       if (!Array.isArray(body.ids) || body.ids.length === 0)
         throw new HttpError(400, "ids_required");
       const collectionId = body.collectionId ?? null;
@@ -135,14 +148,15 @@ export const libraryRoutes: ApiRoute[] = [
         moved += (await ctx.store.setTrackCollection(id, collectionId)) ? 1 : 0;
       return json({ moved });
     },
-  },
+  }),
 
   // Bulk delete (rows + underlying files), B18.
-  {
+  apiRoute({
     method: "POST",
     path: "/api/v1/tracks/bulk-delete",
+    body: jsonBody({ ids: ids("ids_required").optional() }, "ids_required"),
     handler: async (ctx) => {
-      const body = await readJson<{ ids?: number[] }>(ctx.req);
+      const body = await ctx.body();
       if (!Array.isArray(body.ids) || body.ids.length === 0)
         throw new HttpError(400, "ids_required");
       let deleted = 0;
@@ -155,14 +169,23 @@ export const libraryRoutes: ApiRoute[] = [
       }
       return json({ deleted });
     },
-  },
+  }),
 
   // --- Bulk rename (B13): preview or apply ---
-  {
+  apiRoute({
     method: "POST",
     path: "/api/v1/tracks/bulk-rename",
+    body: jsonBody(
+      {
+        ids: ids("ids_and_ops_required").optional(),
+        // Each op is checked by previewBulkRename, which answers its own 400.
+        ops: z.array(z.custom<RenameOp>(), { error: "ids_and_ops_required" }).optional(),
+        preview: z.boolean({ error: INVALID_BODY }).optional(),
+      },
+      "ids_and_ops_required",
+    ),
     handler: async (ctx) => {
-      const body = await readJson<{ ids?: number[]; ops?: RenameOp[]; preview?: boolean }>(ctx.req);
+      const body = await ctx.body();
       if (!Array.isArray(body.ids) || !Array.isArray(body.ops))
         throw new HttpError(400, "ids_and_ops_required");
       const fetched = await Promise.all(body.ids.map((id) => ctx.store.getTrack(id)));
@@ -182,16 +205,22 @@ export const libraryRoutes: ApiRoute[] = [
       );
       return json({ applied });
     },
-  },
+  }),
 
   // --- Bulk tag / untag (B14) ---
-  {
+  apiRoute({
     method: "POST",
     path: "/api/v1/tracks/bulk-tag",
+    body: jsonBody(
+      {
+        ids: ids("ids_required").optional(),
+        addTags: z.array(z.string({ error: INVALID_BODY }), { error: INVALID_BODY }).optional(),
+        removeTagIds: ids().optional(),
+      },
+      "ids_required",
+    ),
     handler: async (ctx) => {
-      const body = await readJson<{ ids?: number[]; addTags?: string[]; removeTagIds?: number[] }>(
-        ctx.req,
-      );
+      const body = await ctx.body();
       if (!Array.isArray(body.ids) || body.ids.length === 0)
         throw new HttpError(400, "ids_required");
       let added = 0;
@@ -206,24 +235,32 @@ export const libraryRoutes: ApiRoute[] = [
         removed = await ctx.store.removeTagsFromTracks(body.ids, body.removeTagIds);
       return json({ added, removed });
     },
-  },
+  }),
 
   // --- Tags ---
   { method: "GET", path: "/api/v1/tags", handler: async (ctx) => json(await ctx.store.listTags()) },
-  {
+  apiRoute({
     method: "POST",
     path: "/api/v1/tags",
+    body: jsonBody(
+      { name: text("name_required"), category: z.string({ error: INVALID_BODY }).nullish() },
+      "name_required",
+    ),
     handler: async (ctx) => {
-      const body = await readJson<{ name?: string; category?: string }>(ctx.req);
+      const body = await ctx.body();
       if (!body.name?.trim()) throw new HttpError(400, "name_required");
       return json(await ctx.store.upsertTag(body.name, body.category ?? null), 201);
     },
-  },
-  {
+  }),
+  apiRoute({
     method: "PATCH",
     path: "/api/v1/tags/:id",
+    body: jsonBody({
+      name: text("name_required"),
+      color: z.string({ error: "invalid_color" }).nullable().optional(),
+    }),
     handler: async (ctx) => {
-      const body = await readJson<{ name?: string; color?: string | null }>(ctx.req);
+      const body = await ctx.body();
       if (body.name !== undefined && !body.name.trim()) throw new HttpError(400, "name_required");
       // color: null clears it; a string must be #rrggbb.
       if (
@@ -240,7 +277,7 @@ export const libraryRoutes: ApiRoute[] = [
       if (!updated) throw new HttpError(404, "not_found");
       return json(updated);
     },
-  },
+  }),
   {
     method: "DELETE",
     path: "/api/v1/tags/:id",
@@ -257,15 +294,16 @@ export const libraryRoutes: ApiRoute[] = [
     path: "/api/v1/playlists",
     handler: async (ctx) => json(await ctx.store.listPlaylists()),
   },
-  {
+  apiRoute({
     method: "POST",
     path: "/api/v1/playlists",
+    body: jsonBody({ name: text("name_required") }, "name_required"),
     handler: async (ctx) => {
-      const body = await readJson<{ name?: string }>(ctx.req);
+      const body = await ctx.body();
       if (!body.name?.trim()) throw new HttpError(400, "name_required");
       return json(await ctx.store.createPlaylist(body.name.trim()), 201);
     },
-  },
+  }),
   {
     method: "GET",
     path: "/api/v1/playlists/:id",
@@ -277,33 +315,35 @@ export const libraryRoutes: ApiRoute[] = [
       return json({ ...playlist, trackIds });
     },
   },
-  {
+  apiRoute({
     method: "PATCH",
     path: "/api/v1/playlists/:id",
+    body: jsonBody({
+      name: text(),
+      loopMode: z.enum(["none", "track", "playlist"], { error: INVALID_BODY }).optional(),
+      shuffle: z.boolean({ error: INVALID_BODY }).optional(),
+    }),
     handler: async (ctx) => {
       const id = intParam(ctx.params, "id");
-      const body = await readJson<{
-        name?: string;
-        loopMode?: "none" | "track" | "playlist";
-        shuffle?: boolean;
-      }>(ctx.req);
+      const body = await ctx.body();
       if (!(await ctx.store.updatePlaylist(id, body)) && !(await ctx.store.getPlaylist(id)))
         throw new HttpError(404, "not_found");
       return json(await ctx.store.getPlaylist(id));
     },
-  },
-  {
+  }),
+  apiRoute({
     method: "PUT",
     path: "/api/v1/playlists/:id/items",
+    body: jsonBody({ trackIds: ids("trackIds_required").optional() }, "trackIds_required"),
     handler: async (ctx) => {
       const id = intParam(ctx.params, "id");
       if (!(await ctx.store.getPlaylist(id))) throw new HttpError(404, "not_found");
-      const body = await readJson<{ trackIds?: number[] }>(ctx.req);
+      const body = await ctx.body();
       if (!Array.isArray(body.trackIds)) throw new HttpError(400, "trackIds_required");
       await ctx.store.setPlaylistItems(id, body.trackIds);
       return json({ trackIds: await ctx.store.playlistTrackIds(id) });
     },
-  },
+  }),
   {
     method: "DELETE",
     path: "/api/v1/playlists/:id",

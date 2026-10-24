@@ -8,7 +8,8 @@
  */
 import type { ApiKey } from "../../db/store";
 import { generateKey } from "../apikeys";
-import { type ApiCtx, type ApiRoute, HttpError, intParam, json, readJson } from "../router";
+import { jsonBody, text } from "../bodies";
+import { type ApiCtx, type ApiRoute, apiRoute, HttpError, intParam, json } from "../router";
 
 function requireSession(ctx: ApiCtx): void {
   if (ctx.authMethod !== "session") throw new HttpError(403, "key_management_requires_login");
@@ -35,12 +36,13 @@ export const keyRoutes: ApiRoute[] = [
       return json((await ctx.store.listApiKeys(ctx.session.uid)).map(publicKey));
     },
   },
-  {
+  apiRoute({
     method: "POST",
     path: "/api/v1/keys",
+    body: jsonBody({ name: text() }),
     handler: async (ctx) => {
       requireSession(ctx);
-      const body = await readJson<{ name?: string }>(ctx.req);
+      const body = await ctx.body();
       const name = body.name?.trim() || "Stream Deck";
       const gen = generateKey();
       const stored = await ctx.store.createApiKey({
@@ -52,7 +54,7 @@ export const keyRoutes: ApiRoute[] = [
       // The raw key is shown exactly once here and never retrievable again (B26).
       return json({ ...publicKey(stored), key: gen.raw }, 201);
     },
-  },
+  }),
   {
     method: "DELETE",
     path: "/api/v1/keys/:id",

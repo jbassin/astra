@@ -5,7 +5,8 @@
  * now async. The `/ingest/upload` route (lark had it in libraryRoutes) lives here.
  */
 
-import { type ApiRoute, HttpError, intParam, json, readJson } from "../router";
+import { int, jsonBody, text } from "../bodies";
+import { type ApiRoute, apiRoute, HttpError, intParam, json } from "../router";
 import { handleUpload } from "../uploads";
 
 const SSE_HEADERS = {
@@ -43,13 +44,14 @@ export const ingestRoutes: ApiRoute[] = [
 
   // Kick off an import (single video or whole playlist). Returns immediately;
   // progress is observed via the job + its SSE stream (B22).
-  {
+  apiRoute({
     method: "POST",
     path: "/api/v1/ingest/youtube",
+    body: jsonBody({ url: text("url_required"), collectionId: int().nullish() }),
     handler: async (ctx) => {
       const ingest = ctx.services.ingest;
       if (!ingest) throw new HttpError(503, "ingest_unavailable");
-      const body = await readJson<{ url?: string; collectionId?: number }>(ctx.req);
+      const body = await ctx.body();
       if (!body.url?.trim()) throw new HttpError(400, "url_required");
       const { job, done } = await ingest.start(body.url.trim(), body.collectionId ?? undefined);
       // Run in the background; never block the request on the download.
@@ -57,7 +59,7 @@ export const ingestRoutes: ApiRoute[] = [
       void done.catch((err) => console.error("[orator] ingest job failed", err));
       return json(job, 202);
     },
-  },
+  }),
 
   {
     method: "GET",

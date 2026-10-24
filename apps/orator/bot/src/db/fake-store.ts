@@ -42,6 +42,10 @@ export class FakeStore implements LibraryStore {
     return ++this.#seq;
   }
 
+  ping(): Promise<void> {
+    return Promise.resolve();
+  }
+
   // --- collections ---
   createCollection(input: NewCollection): Promise<Collection> {
     const taken = new Set(this.collections.map((c) => c.slug));

@@ -164,6 +164,9 @@ export interface PlaybackStore {
 
 /** The async persistence surface (the routes/playback/ingest inject this). */
 export interface LibraryStore extends PlaybackStore {
+  /** Resolves when the database answers a trivial query (the `/healthz` readiness probe). */
+  ping(): Promise<void>;
+
   // collections
   createCollection(input: NewCollection): Promise<Collection>;
   getCollection(id: number): Promise<Collection | null>;
@@ -299,6 +302,10 @@ export class PostgresStore implements LibraryStore {
 
   async close(): Promise<void> {
     await this.#sql.end();
+  }
+
+  async ping(): Promise<void> {
+    await this.#sql`select 1`;
   }
 
   #all<R>(query: string, params: unknown[] = []): Promise<R[]> {
