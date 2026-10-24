@@ -135,6 +135,25 @@ def test_unparseable_file_is_reported_and_left_untouched(tmp_store: Path) -> Non
     assert path.read_text(encoding="utf-8") == '{"name": '
 
 
+def test_a_duplicate_key_fails_check_and_fmt_leaves_the_file_alone(tmp_store: Path) -> None:
+    path = tmp_store / "spells" / "time-loop.json"
+    text = path.read_text(encoding="utf-8")
+    # A repeated top-level key: plain json.loads would keep the second value silently.
+    dup = text.replace("{\n", '{\n  "type": "spell",\n', 1)
+    assert dup != text
+    path.write_text(dup, encoding="utf-8")
+    assert any("duplicate key 'type'" in m for m in _messages(tmp_store))
+    rewritten, unparseable = store.format_store(tmp_store)
+    assert rewritten == []
+    assert [(p.path, p.message) for p in unparseable] == [(path, "duplicate key 'type'")]
+    assert path.read_text(encoding="utf-8") == dup
+
+
+def test_a_nested_duplicate_key_is_rejected() -> None:
+    with pytest.raises(store.DuplicateKeyError, match="duplicate key 'a'"):
+        store.parse_store_json('{"x": {"a": 1, "a": 2}}')
+
+
 def test_an_empty_store_directory_is_an_error(tmp_store: Path) -> None:
     for p in (tmp_store / "traits").glob("*.json"):
         p.unlink()
