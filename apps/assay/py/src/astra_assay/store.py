@@ -237,6 +237,25 @@ _MODELS: dict[str, type[_StoreModel]] = {SPELLS_SUBDIR: SpellDoc, TRAITS_SUBDIR:
 # ---------------------------------------------------------------------------
 
 
+class DuplicateKeyError(ValueError):
+    """A JSON object repeats a key. Plain `json.loads` keeps the last value silently, so
+    `fmt` would drop the first one; the store refuses the file instead."""
+
+
+def _reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    doc: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in doc:
+            raise DuplicateKeyError(f"duplicate key {key!r}")
+        doc[key] = value
+    return doc
+
+
+def parse_store_json(text: str) -> Any:
+    """Parse a store file's text, raising `DuplicateKeyError` on a repeated key."""
+    return json.loads(text, object_pairs_hook=_reject_duplicate_keys)
+
+
 def canonical_json(doc: Any) -> str:
     """The canonical text of a store file: sorted keys, 2-space indent, non-ASCII text
     as-is, one trailing newline (the same rule as `astra_ontology.canonical_json`)."""
@@ -277,9 +296,11 @@ def _validation_messages(err: ValidationError) -> list[str]:
 def check_file(path: Path, model: type[_StoreModel]) -> list[Problem]:
     try:
         text = path.read_text(encoding="utf-8")
-        doc = json.loads(text)
+        doc = parse_store_json(text)
     except (UnicodeDecodeError, json.JSONDecodeError) as e:
         return [Problem(path, f"not valid UTF-8 JSON: {e}")]
+    except DuplicateKeyError as e:
+        return [Problem(path, f"{e} (fix it by hand: `fmt` won't pick a value)")]
     problems: list[Problem] = []
     try:
         model.model_validate(doc)
@@ -306,9 +327,12 @@ def format_store(root: Path = STORE_ROOT) -> tuple[list[Path], list[Problem]]:
     for path, _model in store_files(root):
         try:
             text = path.read_text(encoding="utf-8")
-            doc = json.loads(text)
+            doc = parse_store_json(text)
         except (UnicodeDecodeError, json.JSONDecodeError) as e:
             unparseable.append(Problem(path, f"not valid UTF-8 JSON: {e}"))
+            continue
+        except DuplicateKeyError as e:
+            unparseable.append(Problem(path, str(e)))
             continue
         canonical = canonical_json(doc)
         if text != canonical:

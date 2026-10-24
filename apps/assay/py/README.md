@@ -172,8 +172,10 @@ is canonical JSON: sorted keys, 2-space indent, non-ASCII text as-is, one traili
 same rule as `being.canonical.json`). `just assay-store-check` (in `just check` and CI) runs
 `assay store check`, which fails on a model or format problem; after a hand edit, run
 `uv run assay store fmt`, which rewrites each file from its own parsed value and so cannot change
-content. Sorted keys put heightening rank `"10"` before `"4"`; the consumers ignore key order (the
-reformat left the codex transform, `price`, `score-homebrew` and `export-book` output identical).
+content. A repeated key in any object fails `check`, and `fmt` leaves that file alone rather than
+keep one value. Sorted keys put heightening rank `"10"` before `"4"`; the consumers ignore key
+order (the reformat left the codex transform, `price`, `score-homebrew` and `export-book` output
+identical).
 
 ## Validation verdicts (see `results/validation.md` for the real numbers)
 
