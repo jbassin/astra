@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.scripts]
-astra-ops = "astra_ops.cli:main"
+astra-ops = "astra_ops.boot:main"
 
 [build-system]
 requires = ["hatchling"]

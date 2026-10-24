@@ -117,11 +117,22 @@ def mouthpiece_publish(ctx: Ctx, flags: list[str]) -> int:
     return ctx.run(ctx.uv_run("python", "-m", "astra_mouthpiece.publish", *flags))
 
 
+def _mkdir_p(ctx: Ctx, path: str) -> bool:
+    """``mkdir -p`` under ``set -e``: on failure report it; the seed then exits 1."""
+    try:
+        Path(path).mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        ctx.err(f"mkdir: cannot create directory '{path}': {exc.strerror}")
+        return False
+    return True
+
+
 def mouthpiece_seed(ctx: Ctx) -> int:
     """Copy each live ``<date>/<id>.episode.mp3`` to ``<data root>/audio/mouthpiece/<id>.mp3``
     (served at /audio/<id>.mp3), through a throwaway alpine container. Idempotent."""
     audio = f"{ctx.data_root}/audio/mouthpiece"
-    Path(audio).mkdir(parents=True, exist_ok=True)
+    if not _mkdir_p(ctx, audio):
+        return 1
     return ctx.run(
         [
             "docker", "run", "--rm",
@@ -136,7 +147,8 @@ def akasha_seed(ctx: Ctx) -> int:
     """Copy scribe's ``<date>/audio.mp3`` to ``<data root>/audio/akasha/<date>.mp3`` (served at
     /audio/<date>.mp3), overwriting, through a throwaway alpine container. Idempotent."""
     audio = f"{ctx.data_root}/audio/akasha"
-    Path(audio).mkdir(parents=True, exist_ok=True)
+    if not _mkdir_p(ctx, audio):
+        return 1
     return ctx.run(
         [
             "docker", "run", "--rm",

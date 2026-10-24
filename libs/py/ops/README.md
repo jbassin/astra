@@ -30,6 +30,15 @@ each recipe is now a one-line wrapper, so systemd units, docs and bots still run
 - **Telemetry.** `main` runs in `astra_observe.run("astra.ops")`, one `ops.<command>` span with
   the exit code.
 
+- **Startup.** The entry point (`boot.py`, standard library only) takes the host-tooling lock
+  shared while it imports the CLI, so it never imports from a venv a deploy is re-syncing; it
+  releases the lock before the command runs. Busy for 30 min: it warns and imports anyway.
+- **Failures outside a child.** A child that cannot start exits 127 (not found) or 126, an
+  output file that cannot open exits 1, and a seed dir that cannot be made fails that seed:
+  the same codes and the same "continue the chain" handling as bash.
+- **Ctrl-C.** The running child gets SIGINT and up to 30 s to clean up (git's `index.lock`,
+  deploy.sh's history record) before it is killed; then the command stops.
+
 ## Traps
 
 - No shell: every child is an argument list. The audio seeds' container scripts are fixed
