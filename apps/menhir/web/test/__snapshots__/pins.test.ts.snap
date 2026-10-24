@@ -1,0 +1,331 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`menhir HTTP responses match the pre-migration pins > answer 1`] = `
+{
+  "body": "{}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 200,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > answer bad json 1`] = `
+{
+  "body": "{"error":"invalid json"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > answer missing option 1`] = `
+{
+  "body": "{"error":"playerId (string) and option (number) are required"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > answer twice 1`] = `
+{
+  "body": "{"error":"already-answered"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > answer unknown player 1`] = `
+{
+  "body": "{"error":"unknown-player"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > api GET on a POST route 1`] = `
+{
+  "body": "{"error":"not found"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 404,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > api unknown 1`] = `
+{
+  "body": "{"error":"not found"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 404,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > api unknown POST 1`] = `
+{
+  "body": "{"error":"not found"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 404,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > create 1`] = `
+{
+  "body": "{"code":"<code>","hostToken":"<uuid>"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 200,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > create bad json 1`] = `
+{
+  "body": "{"error":"invalid json"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > create no quiz id 1`] = `
+{
+  "body": "{"error":"quizId (string) is required"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > create null body 1`] = `
+{
+  "body": "{"error":"quizId (string) is required"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > create unknown quiz 1`] = `
+{
+  "body": "{"error":"unknown quiz"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 404,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > events bad role 1`] = `
+{
+  "body": "{"error":"role must be 'host' or 'player'"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > events gone 1`] = `
+{
+  "body": "data: {"phase":"gone"}
+
+",
+  "cacheControl": "no-cache, no-transform",
+  "contentType": "text/event-stream",
+  "status": 200,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > events host 1`] = `
+{
+  "body": "data: {"type":"state","code":"<code>","quizTitle":"Pin Quiz","questionIndex":0,"questionCount":1,"serverNow":1000000,"phase":"question","questionText":"Q1?","options":[{"label":"A","shape":"triangle"},{"label":"B","shape":"diamond"}],"endsAt":1020000,"answeredCount":1,"connectedCount":0}
+
+",
+  "cacheControl": "no-cache, no-transform",
+  "contentType": "text/event-stream",
+  "status": 200,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > events player without id 1`] = `
+{
+  "body": "{"error":"playerId is required for role=player"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > host array body 1`] = `
+{
+  "body": "{"error":"hostToken/action/fromPhase/fromIndex are required"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > host bad action 1`] = `
+{
+  "body": "{"error":"hostToken/action/fromPhase/fromIndex are required"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > host bad json 1`] = `
+{
+  "body": "{"error":"invalid json"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > host missing fields 1`] = `
+{
+  "body": "{"error":"hostToken/action/fromPhase/fromIndex are required"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > host stale phase 1`] = `
+{
+  "body": "{"snapshot":{"type":"state","code":"<code>","quizTitle":"Pin Quiz","questionIndex":0,"questionCount":1,"serverNow":1000000,"phase":"question","questionText":"Q1?","options":[{"label":"A","shape":"triangle"},{"label":"B","shape":"diamond"}],"endsAt":1020000,"answeredCount":0,"connectedCount":0}}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 200,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > host start 1`] = `
+{
+  "body": "{"snapshot":{"type":"state","code":"<code>","quizTitle":"Pin Quiz","questionIndex":0,"questionCount":1,"serverNow":1000000,"phase":"question","questionText":"Q1?","options":[{"label":"A","shape":"triangle"},{"label":"B","shape":"diamond"}],"endsAt":1020000,"answeredCount":0,"connectedCount":0}}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 200,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > host unknown room 1`] = `
+{
+  "body": "{"error":"unknown room code"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 404,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > host wrong token 1`] = `
+{
+  "body": "{"error":"bad host token"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 403,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > join 1`] = `
+{
+  "body": "{"playerId":"<uuid>","roomNonce":"<uuid>"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 200,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > join again 1`] = `
+{
+  "body": "{"playerId":"<uuid>","roomNonce":"<uuid>"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 200,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > join bad json 1`] = `
+{
+  "body": "{"error":"invalid json"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > join blank name 1`] = `
+{
+  "body": "{"error":"name (non-empty string) is required"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 400,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > join unknown room 1`] = `
+{
+  "body": "{"error":"unknown room code"}",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 404,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > non-GET outside the api 1`] = `
+{
+  "body": "method not allowed
+",
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 405,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > quizzes 1`] = `
+{
+  "body": "[{"id":"pin-quiz","title":"Pin Quiz","questionCount":1}]",
+  "cacheControl": null,
+  "contentType": "application/json",
+  "status": 200,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > spa asset 1`] = `
+{
+  "body": "console.log('pinned')",
+  "cacheControl": "public, max-age=0",
+  "contentType": "text/javascript; charset=utf-8",
+  "status": 200,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > spa host route 1`] = `
+{
+  "body": "<!doctype html><title>menhir pins</title>",
+  "cacheControl": "no-cache",
+  "contentType": "text/html;charset=utf-8",
+  "status": 200,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > spa root 1`] = `
+{
+  "body": "<!doctype html><title>menhir pins</title>",
+  "cacheControl": "no-cache",
+  "contentType": "text/html;charset=utf-8",
+  "status": 200,
+}
+`;
+
+exports[`menhir HTTP responses match the pre-migration pins > spa traversal 1`] = `
+{
+  "body": "forbidden
+",
+  "cacheControl": null,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 403,
+}
+`;
