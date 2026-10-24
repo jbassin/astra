@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
-from astra_ontology import canonical_json, faerrin_campaign_slugs
+from pathlib import Path
+
+import pytest
+from astra_config.kdl import KdlDecodeError
+from astra_ontology import canonical_json, faerrin_campaign_slugs, load_being
 from astra_ontology_being import CANONICAL_JSON_PATH, load
 
 
@@ -77,3 +81,21 @@ def test_host_types_are_distinct_and_populated() -> None:
 def test_canonical_json_matches_committed_snapshot() -> None:
     being = load()
     assert canonical_json(being) == CANONICAL_JSON_PATH.read_text(encoding="utf-8")
+
+
+def test_a_player_without_a_name_fails_naming_the_node(tmp_path: Path) -> None:
+    # The old hand walker read a missing `name` as the string "None" and passed it.
+    kdl = tmp_path / "being.kdl"
+    kdl.write_text('player "ghost" {\n    player-id 9\n    color "red"\n}\nguest-color "x"\n')
+    with pytest.raises(KdlDecodeError, match=r'being\.kdl: player "ghost" > name: missing'):
+        load_being(kdl)
+
+
+def test_a_role_without_a_character_fails_naming_the_node(tmp_path: Path) -> None:
+    kdl = tmp_path / "being.kdl"
+    kdl.write_text(
+        'guest-color "x"\ncampaign "c" {\n    name "C"\n    edition "e"\n    world "w"\n'
+        '    role player="josh"\n}\n'
+    )
+    with pytest.raises(KdlDecodeError, match=r'campaign "c" > role: property character='):
+        load_being(kdl)

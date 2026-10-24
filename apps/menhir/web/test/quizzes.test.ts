@@ -82,3 +82,14 @@ test("the shipped starter quiz (D31-4) loads cleanly with 5 questions", () => {
     expect(q.options.filter((o) => o.correct)).toHaveLength(1);
   }
 });
+
+test("an option without a label fails naming the node path", () => {
+  const dir = tmpQuizzesDir();
+  writeFileSync(
+    join(dir, "nolabel.kdl"),
+    'quiz "Q" {\n    question "Pick" {\n        option correct=#true\n        option "B"\n    }\n}\n',
+  );
+  expect(() => parseQuizFile(join(dir, "nolabel.kdl"))).toThrow(
+    /^nolabel\.kdl: quiz "Q" > question "Pick" > option: argument 0: missing/,
+  );
+});

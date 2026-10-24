@@ -15,6 +15,7 @@ from pathlib import Path
 import pytest
 from astra_config import (
     Config,
+    KdlDecodeError,
     SecretRef,
     WholeConfig,
     find_repo_root,
@@ -23,7 +24,6 @@ from astra_config import (
 )
 from astra_config.secrets import default_secrets_file, resolve_sops_ref
 from astra_ontology_config import CONFIG_KDL_PATH, load
-from pydantic import ValidationError
 
 FIXTURES = find_repo_root() / "fixtures" / "config"
 FIXTURE = FIXTURES / "config.kdl"
@@ -84,15 +84,15 @@ def test_python_loader_ignores_a_bad_ts_only_block() -> None:
     cfg = load_config(BAD_TS_BLOCK)
     assert cfg.heartwood.max_iterations == 7
     assert not hasattr(cfg, "orator")  # a TS block is not loaded at all
-    with pytest.raises(ValidationError, match=r"orator\.port"):
+    with pytest.raises(KdlDecodeError, match=r"orator > port"):
         load_whole_config(BAD_TS_BLOCK)
 
 
 def test_python_loader_rejects_a_bad_python_block() -> None:
     # The TS loader loads this file (libs/ts/config/src/config.test.ts).
-    with pytest.raises(ValidationError, match=r"heartwood\.max_iterations"):
+    with pytest.raises(KdlDecodeError, match=r"heartwood > max-iterations"):
         load_config(BAD_PY_BLOCK)
-    with pytest.raises(ValidationError, match=r"heartwood\.max_iterations"):
+    with pytest.raises(KdlDecodeError, match=r"heartwood > max-iterations"):
         load_whole_config(BAD_PY_BLOCK)
 
 
@@ -100,7 +100,7 @@ def test_whole_config_rejects_an_unknown_namespace(tmp_path: Path) -> None:
     kdl = tmp_path / "config.kdl"
     kdl.write_text('heartwod {\n    model "x"\n}\n')
     assert load_config(kdl).heartwood.model  # the Python loader ignores the stray block
-    with pytest.raises(ValidationError, match="heartwod"):
+    with pytest.raises(KdlDecodeError, match="heartwod"):
         load_whole_config(kdl)
 
 
@@ -140,7 +140,7 @@ def test_unknown_kdl_key_is_rejected(tmp_path: Path) -> None:
         }
     """)
     )
-    with pytest.raises(ValidationError, match=r"bogus_field"):
+    with pytest.raises(KdlDecodeError, match=r"llm > bogus-field"):
         load_config(bad)
 
 

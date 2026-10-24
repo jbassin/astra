@@ -8,6 +8,17 @@
  *   cfg.orator.sessionSecret?.require(); // SOPS-decrypted on demand; throws if unset
  */
 export { type Config, ConfigSchema, defaultConfigFile, loadConfig } from "./config";
+export {
+  decodeKdl,
+  type KdlSchema,
+  type KdlValue,
+  KdlDecodeError,
+  kdl,
+  kdlQuote,
+  type KNode,
+  loadKdl,
+  parseKdl,
+} from "./kdl";
 export { findRepoRoot } from "./root";
 export {
   defaultSecretsFile,

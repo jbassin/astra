@@ -1,5 +1,5 @@
 /**
- * KDL → Zod quiz loader (D31-4). Parsed with @bgotink/kdl, resolved off
+ * KDL → Zod quiz loader (D31-4). Decoded by `@astra/config` `decodeKdl`, resolved off
  * import.meta.dirname (never cwd — the weal-overlay distDir idiom), Zod-validated
  * at server start. A malformed file is EXCLUDED from the listing and logged at
  * WARN — not ERROR (a quiz typo must not page ops via the live SigNoz Class-A
@@ -13,66 +13,47 @@
  *       }
  *   }
  */
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import { basename, extname, join } from "node:path";
 
-import { type Node, parse } from "@bgotink/kdl";
+import { decodeKdl, kdl, loadKdl } from "@astra/config";
+import { z } from "zod";
 
 import { QuizSchema, type Quiz } from "./schema";
 
-function args(node: Node): unknown[] {
-  return node.getArgumentEntries().map((e) => e.getValue());
-}
+// Where each quiz field sits in the KDL, for the shared decoder. Values are checked by
+// `QuizSchema` (the wire contract, which stays free of KDL so the SPA can import it).
+const OptionNode = z
+  .object({
+    label: kdl.arg(z.string()),
+    correct: kdl.prop(z.boolean().default(false)),
+  })
+  .strict();
 
-function props(node: Node): Record<string, unknown> {
-  const out: Record<string, unknown> = {};
-  for (const [key, entry] of node.getPropertyEntryMap()) out[key] = entry.getValue();
-  return out;
-}
+const QuestionNode = z
+  .object({
+    text: kdl.arg(z.string()),
+    time: kdl.prop(z.number().default(20)),
+    options: kdl.children(z.array(OptionNode), "option"),
+  })
+  .strict();
 
-function children(node: Node): Node[] {
-  return node.children?.nodes ?? [];
-}
+const QuizNode = z
+  .object({
+    title: kdl.arg(z.string()),
+    questions: kdl.children(z.array(QuestionNode), "question"),
+  })
+  .strict();
 
-function parseOption(node: Node, ctx: string): { label: string; correct: boolean } {
-  const label = args(node)[0];
-  if (typeof label !== "string" || label.length === 0) {
-    throw new Error(`${ctx}: option is missing a string label`);
-  }
-  const p = props(node);
-  return { label, correct: p.correct === true };
-}
+const QuizFile = z.object({ quiz: QuizNode });
 
-function parseQuestion(node: Node, ctx: string): Quiz["questions"][number] {
-  const text = args(node)[0];
-  if (typeof text !== "string" || text.length === 0) {
-    throw new Error(`${ctx}: question is missing its text`);
-  }
-  const p = props(node);
-  const time = typeof p.time === "number" ? p.time : 20;
-  const options = children(node)
-    .filter((n) => n.name.name === "option")
-    .map((n) => parseOption(n, `${ctx} "${text}"`));
-  return { text, time, options };
-}
-
-/** Parse + Zod-validate a single quiz file. Throws on any malformed content —
- * callers catch this per-file so one bad quiz doesn't sink the whole listing. */
+/** Parse + Zod-validate a single quiz file. Throws on any malformed content (a
+ * `KdlDecodeError` names the node) — callers catch this per-file so one bad quiz
+ * doesn't sink the whole listing. */
 export function parseQuizFile(filePath: string): Quiz {
   const id = basename(filePath, extname(filePath));
-  const doc = parse(readFileSync(filePath, "utf8"));
-  const quizNode = doc.nodes.find((n) => n.name.name === "quiz");
-  if (!quizNode) throw new Error(`${id}: no top-level "quiz" node`);
-
-  const title = args(quizNode)[0];
-  if (typeof title !== "string" || title.length === 0) {
-    throw new Error(`${id}: quiz is missing a string title`);
-  }
-  const questions = children(quizNode)
-    .filter((n) => n.name.name === "question")
-    .map((n) => parseQuestion(n, id));
-
-  return QuizSchema.parse({ id, title, questions });
+  const { quiz } = decodeKdl(QuizFile, loadKdl(filePath));
+  return QuizSchema.parse({ id, ...quiz });
 }
 
 export interface QuizLoadResult {

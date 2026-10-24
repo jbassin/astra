@@ -15,14 +15,31 @@ from __future__ import annotations
 import re
 from collections.abc import Callable
 from pathlib import Path
+from typing import Annotated
 
-from astra_config.kdl import load_document
+from astra_config.kdl import Arg, Children, decode, load_kdl
+from pydantic import BaseModel, ConfigDict
 
 Replacer = Callable[[str], str]
 
 DEFS_PATH = Path(__file__).resolve().parent / "defs.kdl"
 
 _REGEX_META = re.compile(r"[.*+?^${}()|[\]\\]")
+
+
+class _Entry(BaseModel):
+    """One `entry "Canonical" { variant "fragment" ... }` node."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    canonical: Annotated[str, Arg()]
+    variants: Annotated[list[str], Children("variant")] = []
+
+
+class _Defs(BaseModel):
+    """`defs.kdl`: a list of `entry` nodes (other top-level nodes are ignored)."""
+
+    entries: Annotated[list[_Entry], Children("entry")] = []
 
 
 def escape_regex(s: str) -> str:
@@ -38,16 +55,7 @@ def to_fragment(span: str) -> str:
 
 def load_defs(defs_path: Path | str = DEFS_PATH) -> dict[str, list[str]]:
     """Parse `defs.kdl` → `{canonical: [variant, ...]}` (order-stable)."""
-    doc = load_document(defs_path)
-    out: dict[str, list[str]] = {}
-    for node in doc.nodes:
-        if node.name != "entry" or not list(node.args):
-            continue
-        canonical = str(node.args[0])
-        out[canonical] = [
-            str(c.args[0]) for c in node.children if c.name == "variant" and list(c.args)
-        ]
-    return out
+    return {e.canonical: e.variants for e in decode(_Defs, load_kdl(defs_path)).entries}
 
 
 def build_replacer(defs: dict[str, list[str]]) -> Replacer:

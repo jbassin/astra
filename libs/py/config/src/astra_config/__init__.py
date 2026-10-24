@@ -16,9 +16,8 @@ validates every namespace and exists for the one CI test that guards the whole f
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
-from .kdl import load_document, top_level_namespaces
+from .kdl import KdlDecodeError, decode, load_kdl
 from .models import (
     CaddyConfig,
     Config,
@@ -47,6 +46,7 @@ __all__ = [
     "CaddyConfig",
     "Config",
     "DataConfig",
+    "KdlDecodeError",
     "LinguistConfig",
     "LlmConfig",
     "MouthpieceConfig",
@@ -74,18 +74,15 @@ def default_config_file() -> Path:
     return find_repo_root() / "ontology" / "ontology-config" / "config.kdl"
 
 
-def _read(path: str | Path | None, secrets_file: Path | None) -> dict[str, dict[str, Any]]:
-    config_path = Path(path) if path is not None else default_config_file()
-    return top_level_namespaces(load_document(config_path), secrets_file=secrets_file)
-
-
 def load_config(path: str | Path | None = None, *, secrets_file: Path | None = None) -> Config:
     """Parse `config.kdl` → validated `Config`: the Python-read namespaces (secrets lazy)."""
-    return Config.model_validate(_read(path, secrets_file))
+    config_path = Path(path) if path is not None else default_config_file()
+    return decode(Config, load_kdl(config_path), secrets_file=secrets_file)
 
 
 def load_whole_config(
     path: str | Path | None = None, *, secrets_file: Path | None = None
 ) -> WholeConfig:
     """Parse `config.kdl` → `WholeConfig`, validating every namespace (the CI guard)."""
-    return WholeConfig.model_validate(_read(path, secrets_file))
+    config_path = Path(path) if path is not None else default_config_file()
+    return decode(WholeConfig, load_kdl(config_path), secrets_file=secrets_file)

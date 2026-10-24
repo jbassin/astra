@@ -1,7 +1,8 @@
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { findRepoRoot } from "@astra/config";
+import { findRepoRoot, KdlDecodeError } from "@astra/config";
 import { describe, expect, test } from "vitest";
 
 import { canonicalJson, loadBeing } from "./index";
@@ -47,5 +48,23 @@ describe("@astra/ontology", () => {
   test("canonicalJson matches the committed snapshot (py↔ts parity gate)", () => {
     const being = loadBeing();
     expect(canonicalJson(being)).toBe(readFileSync(CANONICAL, "utf8"));
+  });
+
+  test("a player without a name fails naming the node, never as undefined", () => {
+    // The old hand walker read a missing `name` as the string "undefined" and passed it.
+    const kdl = join(mkdtempSync(join(tmpdir(), "being-")), "being.kdl");
+    writeFileSync(kdl, 'player "ghost" {\n  player-id 9\n  color "red"\n}\nguest-color "x"\n');
+    expect(() => loadBeing(kdl)).toThrow(KdlDecodeError);
+    expect(() => loadBeing(kdl)).toThrow(/^being\.kdl: player "ghost" > name: missing/);
+  });
+
+  test("a role without a character fails naming the property", () => {
+    const kdl = join(mkdtempSync(join(tmpdir(), "being-")), "being.kdl");
+    writeFileSync(
+      kdl,
+      'guest-color "x"\ncampaign "c" {\n  name "C"\n  edition "e"\n  world "w"\n' +
+        '  role player="josh"\n}\n',
+    );
+    expect(() => loadBeing(kdl)).toThrow(/campaign "c" > role: property character=/);
   });
 });
