@@ -309,20 +309,22 @@ token source keep today's look exactly (no stakeholder sign-off needed); assay t
   back to `241974a6`, fixed in `5cab2255`, redeployed: all containers healthy, sites 200, no ERROR
   logs, bots ran clean (26 episodes).
 - Wave 1:
-  - [ ] repo-2 one Node Dockerfile (`ARG APP`, `pnpm fetch`/`deploy --prod`); retire the
-    `.dockerignore` allowlist. D(all).
-  - [ ] lib-1 `SecretRef.require()/optional()` in both languages; delete app wrappers. R.
-  - [ ] lib-2 per-language namespace validation; one whole-file CI test; fixture KDL; one root finder.
-  - [ ] pipe-1 `Definitions.merge` + load test; `dagster/` a uv member; delete the dead assets.
-  - [ ] pipe-2 decided deletions (ADR 0021, 0022, 0023).
-  - [ ] cdx-1 corpus-root injection; production fails closed; real-corpus suite opt-in.
-  - [ ] cdx-3 codex dead code (ADR 0020) and the small bug list.
-  - [ ] asy-1 archive the workshop and `review-ui/`; ASY-5, ASY-21.
-  - [ ] svc-1 one typed portal tool registry.
-  - [ ] weal-1 Rust CI lane, `gen/` source-hash check, WEAL-4, WEAL-23.
-  - [ ] weal-2 nullary functions re-evaluate (WEAL-1); generative test; rebuild wasm.
-  - [ ] ops-2 `just doctor`; watchdog checks backup age and entity drift; scheduled restore test.
-- Wave 2: repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
+  - [x] repo-2 one Node Dockerfile (`ARG APP`, `pnpm fetch`/`deploy --prod`); retire the
+    `.dockerignore` allowlist. D(all). **live `adf33ea9`; the 14 Node images went from 15.4 GB to 7.7 GB.**
+  - [x] lib-1 `SecretRef.require()/optional()` in both languages; delete app wrappers. R. **live `67ff3b76`; reviewed, three low findings fixed.**
+  - [x] lib-2 per-language namespace validation; one whole-file CI test; fixture KDL; one root finder. **live `16850b0c` (whole-stack deploy).**
+  - [x] pipe-1 `Definitions.merge` + load test; `dagster/` a uv member; delete the dead assets. **live `e5f4920f`; 17 → 14 assets.**
+  - [x] pipe-2 decided deletions (ADR 0021, 0022, 0023). **live `e5b36df3`; 13 assets; the tools package is in the root uv sources.**
+  - [x] cdx-1 corpus-root injection; production fails closed; real-corpus suite opt-in. **live `b020f3da`; codex refuses to start without the real corpus.**
+  - [x] cdx-3 codex dead code (ADR 0020) and the small bug list. **live `5eb48ad5`; the four malformed actions go on the next corpus transform.**
+  - [x] asy-1 archive the workshop and `review-ui/`; ASY-5, ASY-21. **merged (no live step).**
+  - [x] svc-1 one typed portal tool registry. **live `db6e4561`; `tools/list` byte-identical; handlers stay in CONFIG.queries (ADR 0038).**
+  - [x] weal-1 Rust CI lane, `gen/` source-hash check, WEAL-4, WEAL-23. **live `43ed244f`.**
+  - [x] weal-2 nullary functions re-evaluate (WEAL-1); generative test; rebuild wasm. **live `927dc47c`; 3/3 saves load.**
+  - [ ] ops-2 `just doctor`; watchdog checks backup age and entity drift; scheduled restore test. **in progress (restarted after the session limit).**
+- Wave 2 (done so far: repo-4 merged `8d0192a3`, no resolved version changed; ops-11 live
+  `6e17d1bd`, deploys now wait for health; svc-2 live `5a9bbe72`, waits on the module update in
+  the backlog. In progress: lib-7b, lib-8a, weal-3, asy-2, cdx-2, svc-3a): repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
   `[tool.uv.sources]` (after repo-2); lib-3 dead config and the every-field-has-a-reader check
   (after lib-2, pipe-2); lib-7b Python observe bootstrap; lib-8a typed KDL decoders; lib-9 vellum
   parity over the corpus; pipe-3 sessions library; pipe-4a Dagster resources; cdx-2 regenerated
