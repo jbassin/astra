@@ -18,8 +18,9 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
+import astra_observe
 from astra_config import find_repo_root, load_config
-from astra_observe import get_tracer, init_telemetry, shutdown
+from astra_observe import get_tracer
 
 from .corpus import CONTENT_DIR, Page, load_corpus
 from .crossref import Edge, resolve_corpus
@@ -109,8 +110,7 @@ def write_snapshot(
 
 def main() -> None:
     """``akasha-snapshot`` entry point — regenerate the committed snapshot."""
-    init_telemetry("astra.akasha-backend")
-    try:
+    with astra_observe.run("astra.akasha-backend"):
         snapshot = write_snapshot()
         pages = snapshot["pages"]
         edges = snapshot["edges"]
@@ -119,5 +119,3 @@ def main() -> None:
             f"snapshot: {len(pages)} pages, {len(edges)} crossref edges, "
             f"{len(unresolved)} unresolved → {SNAPSHOT_PATH}"
         )
-    finally:
-        shutdown()  # console_script exit → flush the run's spans/metrics/logs

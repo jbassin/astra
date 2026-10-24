@@ -84,8 +84,8 @@ class TelemetryConfig(_Base):
     # localhost:10353 is only host-reachable; a container needs this name.
     otlp_endpoint: str = "http://signoz-otel-collector:4318"
     rum_endpoint: str = "http://localhost:10353"
-    # The collector as a HOST-run process reaches it (published port). For host CLIs
-    # that export (the heartwood agent, 0033 D33-10); containers use otlp_endpoint.
+    # The collector as a HOST-run process reaches it (published port). astra_observe
+    # uses it unless ASTRA_RUNTIME=container; containers use otlp_endpoint.
     host_otlp_endpoint: str = "http://localhost:10353"
 
 

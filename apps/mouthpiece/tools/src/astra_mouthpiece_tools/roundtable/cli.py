@@ -27,6 +27,7 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+import astra_observe
 from astra_config import load_config
 from astra_llm import ensure_openrouter_env
 from astra_llm.rlm import deno_available
@@ -36,7 +37,6 @@ from astra_mouthpiece.lint import score_script
 from astra_mouthpiece.models import Script
 from astra_mouthpiece.producer.tools import permitted_dates
 from astra_mouthpiece.roster import build_roster_block
-from astra_observe import init_telemetry, shutdown
 from astra_ontology_being import BEING_KDL_PATH, load_being
 
 from ..producer.experiment import MeteredClient, host_shares, script_words
@@ -167,13 +167,8 @@ def cli(argv: Sequence[str] | None = None) -> int:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    init_telemetry(
-        "astra.mouthpiece-roundtable", endpoint=load_config().telemetry.host_otlp_endpoint
-    )
-    try:
+    with astra_observe.run("astra.mouthpiece-roundtable"):
         return cli(argv)
-    finally:
-        shutdown()
 
 
 if __name__ == "__main__":

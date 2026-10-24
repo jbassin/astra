@@ -8,12 +8,13 @@ metadata:
 Telemetry (traces, metrics, logs to SigNoz) is built into every app, service and Dagster asset from
 the start.
 
-- Call `init_telemetry("astra.<sub>")` / `initTelemetry(...)` in the process that runs the code:
-  the service entrypoint, `dagster/definitions.py`, a CLI's `main()`. Until then every span is a
-  no-op.
+- Wire it in the process that runs the code: a Python CLI's `main()` uses
+  `with astra_observe.run("astra.<sub>"):`, `dagster/definitions.py` calls `init_telemetry`, a TS
+  service calls `initTelemetry(...)`. Until then every span is a no-op.
 - TS metrics use `lazyCounter`/`lazyHistogram` from `@astra/observe`, never a module-scope
   `getMeter().createCounter()`, which stays a no-op forever.
-- Short-lived processes call `shutdown()` before exit.
+- Python never passes an endpoint: `ASTRA_RUNTIME=container` picks the in-cluster collector.
+- Tests assert on telemetry with the `telemetry_capture` fixture, never a hand-built provider.
 - Meter cost wherever a paid call happens.
 
 **Why:** an app instrumented only at import time sent nothing for weeks, twice, and nobody noticed

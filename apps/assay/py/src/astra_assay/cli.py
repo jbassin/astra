@@ -15,9 +15,8 @@ The homebrew commands live in ``homebrew.py`` (registered via
 ``vendor/run_balance/pf2e_converted_spells`` conversion set the store was seeded from;
 ``export-book`` lives in ``book.py``.
 
-Telemetry (standing principle): ``init_telemetry`` wraps every subcommand, a
-root span per invocation, ``shutdown()`` in ``finally`` (the short-lived-process
-pattern — see ``libs/py/observe``). Offline runs (no SigNoz reachable) still
+Telemetry (standing principle): ``astra_observe.run`` wraps every subcommand and
+flushes on exit (see ``libs/py/observe``). Offline runs (no SigNoz reachable) still
 work: OTLP export failures are swallowed by the exporter, never fatal here.
 """
 
@@ -30,7 +29,8 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from astra_observe import get_tracer, init_telemetry, shutdown
+import astra_observe
+from astra_observe import get_tracer
 
 from . import (
     book,
@@ -1387,13 +1387,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
-    init_telemetry("astra.assay")
-    try:
+    with astra_observe.run("astra.assay"):
         parser = build_parser()
         args = parser.parse_args()
         try:
             args.func(args)
         except SnapshotNotFoundError as e:
             raise SystemExit(str(e)) from e
-    finally:
-        shutdown()

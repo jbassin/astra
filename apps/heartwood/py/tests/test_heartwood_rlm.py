@@ -27,12 +27,11 @@ from astra_heartwood.agent.rlm import (
 from astra_heartwood.agent.run import determine_status
 from astra_heartwood.agent.telemetry import LmMeter, RunParent, instrument_tool, tool_outcome
 from astra_llm import make_dspy_lm
+from astra_observe.testing import Captured
 from dspy.dsp.utils.utils import dotdict
 from dspy.primitives.python_interpreter import PythonInterpreter
 from dspy.utils.dummies import DummyLM
 from opentelemetry import trace
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 
 
@@ -82,14 +81,9 @@ def fake_metrics(monkeypatch: pytest.MonkeyPatch) -> dict[str, Recorder]:
 
 
 @pytest.fixture
-def spans(monkeypatch: pytest.MonkeyPatch) -> InMemorySpanExporter:
-    exporter = InMemorySpanExporter()
-    provider = TracerProvider()
-    provider.add_span_processor(SimpleSpanProcessor(exporter))
-    local = provider.get_tracer("test")
-    for mod in (telemetry, rlm_mod):
-        monkeypatch.setattr(mod, "tracer", lambda: local)
-    return exporter
+def spans(telemetry_capture: Captured) -> InMemorySpanExporter:
+    """The global provider's in-memory span exporter (``astra_observe.testing``)."""
+    return telemetry_capture.span_exporter
 
 
 # ── MeteredLM accounting (D33-8) ──

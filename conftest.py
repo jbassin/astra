@@ -14,12 +14,17 @@ It also imports the `dagster` library before collection. The code location direc
 `dagster/` has no `__init__.py`, so pytest's importlib mode names its tests `dagster.tests.*`;
 if the library is not imported yet, pytest imports that directory as a namespace package named
 `dagster`, and every `dg.*` lookup in those tests fails (as `pytest dagster` alone did).
+
+It loads observe's pytest plugin, so every test can take the `telemetry_capture` fixture
+(in-memory spans, metrics and logs; see `astra_observe.testing`).
 """
 
 import os
 from pathlib import Path
 
 import dagster  # noqa: F401 -- see the docstring: claims the name before pytest does
+
+pytest_plugins = ["astra_observe.pytest_plugin"]
 
 _ROOT = Path(__file__).resolve().parent
 os.environ.setdefault("ASTRA_DATA_ROOT", str(_ROOT))

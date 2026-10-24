@@ -16,7 +16,6 @@ import pytest
 from astra_config.models import MouthpieceProducerConfig
 from astra_llm.rlm import deno_available, make_interpreter
 from astra_mouthpiece.models import DigestStats, SessionDigest
-from astra_mouthpiece.producer import telemetry
 from astra_mouthpiece.producer.brief import (
     Callback,
     LoreNote,
@@ -27,9 +26,8 @@ from astra_mouthpiece.producer.brief import (
 )
 from astra_mouthpiece.producer.run import ProducerInputs, render_transcript, run_producer
 from astra_mouthpiece.producer.telemetry import ProducerMetering
+from astra_observe.testing import Captured
 from dspy.utils.dummies import DummyLM
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 
 from .test_mouthpiece_producer_tools import SHOWS, TARGET, fake_resolver
@@ -145,16 +143,9 @@ class FakeInterpreter:
 
 
 @pytest.fixture
-def spans(monkeypatch: pytest.MonkeyPatch) -> InMemorySpanExporter:
-    exporter = InMemorySpanExporter()
-    provider = TracerProvider()
-    provider.add_span_processor(SimpleSpanProcessor(exporter))
-    local = provider.get_tracer("test")
-    monkeypatch.setattr(telemetry, "tracer", lambda: local)
-    from astra_mouthpiece.producer import run as run_mod
-
-    monkeypatch.setattr(run_mod, "tracer", lambda: local)
-    return exporter
+def spans(telemetry_capture: Captured) -> InMemorySpanExporter:
+    """The global provider's in-memory span exporter (``astra_observe.testing``)."""
+    return telemetry_capture.span_exporter
 
 
 def _inputs() -> ProducerInputs:

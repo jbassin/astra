@@ -15,9 +15,8 @@ is committed, no TTS. The ``just mouthpiece-*`` recipes wrap these.
 Exit codes: 0 ``ok``; 1 ``failed`` or an unexpected error; 2 ``incomplete`` (iteration cap,
 brief still usable). ``experiment`` exits 1 if the producer failed or every arm failed.
 
-Telemetry exports from the host: ``main`` calls ``init_telemetry`` with
-``telemetry.host-otlp-endpoint`` and ``shutdown()`` flushes in ``finally``. ``cli()`` is
-the telemetry-free core tests drive.
+Telemetry exports from the host: ``main`` runs inside ``astra_observe.run``, which picks the
+host collector endpoint and flushes on exit. ``cli()`` is the telemetry-free core tests drive.
 """
 
 from __future__ import annotations
@@ -27,10 +26,10 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+import astra_observe
 from astra_config import load_config
 from astra_llm.rlm import deno_available
 from astra_mouthpiece.producer.run import RunStatus, run_producer
-from astra_observe import init_telemetry, shutdown
 
 from .experiment import run_experiment
 
@@ -95,11 +94,8 @@ def cli(argv: Sequence[str] | None = None) -> int:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    init_telemetry("astra.mouthpiece-producer", endpoint=load_config().telemetry.host_otlp_endpoint)
-    try:
+    with astra_observe.run("astra.mouthpiece-producer"):
         return cli(argv)
-    finally:
-        shutdown()  # console_script exit → flush the run's spans/metrics/logs
 
 
 if __name__ == "__main__":

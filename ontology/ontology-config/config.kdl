@@ -74,16 +74,15 @@ telemetry {
     // (:4318 = the collector's OTLP/HTTP port). The host-published port (10353) is
     // NOT reachable from inside a container, so this MUST be the in-cluster address
     // for server-side spans to land. A host-run/dev process (no container) can't
-    // resolve this name — pass `endpoint=`/`{endpoint}` explicitly, or run in-cluster.
+    // resolve this name. Python picks between this and host-otlp-endpoint by the
+    // ASTRA_RUNTIME=container marker (astra_observe); TS callers pass `{endpoint}`.
     otlp-endpoint "http://signoz-otel-collector:4318"
     // Public OTLP/HTTP endpoint the *browser* RUM posts spans to directly. The
     // server-side otlp-endpoint above is not browser-reachable in prod; this is
     // the Caddy-exposed collector (otel.iridi.cc → localhost:10353, with CORS).
     rum-endpoint "https://otel.iridi.cc"
     // The same collector as the HOST sees it (its OTLP/HTTP port published on
-    // localhost). For host-run CLIs that export telemetry — the heartwood agent
-    // (0033 D33-10) is the first; every earlier host recipe ran with
-    // OTEL_SDK_DISABLED=true because otlp-endpoint above doesn't resolve here.
+    // localhost). Every host-run Python process (no ASTRA_RUNTIME marker) exports here.
     host-otlp-endpoint "http://localhost:10353"
 }
 

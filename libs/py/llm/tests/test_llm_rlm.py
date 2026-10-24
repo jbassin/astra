@@ -17,9 +17,9 @@ from astra_llm.rlm import (
     default_budget_note,
     instrument_tool,
 )
+from astra_observe import get_tracer
+from astra_observe.testing import Captured
 from dspy.dsp.utils.utils import dotdict
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 
 
@@ -32,15 +32,13 @@ class Recorder:
 
 
 @pytest.fixture
-def exporter() -> InMemorySpanExporter:
-    return InMemorySpanExporter()
+def exporter(telemetry_capture: Captured) -> InMemorySpanExporter:
+    return telemetry_capture.span_exporter
 
 
 @pytest.fixture
-def local_tracer(exporter: InMemorySpanExporter) -> Any:
-    provider = TracerProvider()
-    provider.add_span_processor(SimpleSpanProcessor(exporter))
-    return provider.get_tracer("test")
+def local_tracer(telemetry_capture: Captured) -> Any:
+    return get_tracer("test")
 
 
 def _response(cost: float | None) -> dotdict:
