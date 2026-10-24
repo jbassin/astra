@@ -7,34 +7,23 @@
  *
  * The pathological-pool **save-guards** live here, in the bot, not the DB — a
  * novelty roll like `10000d10000` is still rolled & shown, just not persisted.
+ *
+ * The schema is the numbered files in `migrations/`, applied at boot by
+ * {@link PostgresStore.migrate} (@astra/pg-migrate).
  */
 
+import { resolve } from "node:path";
+
+import { loadMigrations, migrate, type MigrateResult } from "@astra/pg-migrate";
 import postgres from "postgres";
+
+/** The numbered schema migrations (`NNNN_name.sql`). */
+export const MIGRATIONS_DIR = resolve(import.meta.dirname, "../migrations");
 
 /** Skip pools larger than this many dice (each die is one row). */
 export const MAX_POOL = 30;
 /** Skip any die whose base exceeds this (no real polyhedral die is bigger). */
 export const MAX_BASE = 100;
-
-/** Idempotent schema — the v1 `dice` table verbatim + the D32-17 `funcs_v2`. */
-export const SCHEMA = `
-create table if not exists dice (
-  id        bigserial   primary key,
-  base      integer     not null,
-  value     integer     not null,
-  source    text        not null default 'discord',
-  timestamp timestamptz not null default now(),
-  player_id integer     not null,
-  blame_id  integer     not null
-);
-create index if not exists dice_base_timestamp on dice (base, timestamp);
-
-create table if not exists funcs_v2 (
-  id     bigserial primary key,
-  name   text not null,
-  source text not null
-);
-`;
 
 /** A weal v2 saved source (`funcs_v2` row; id drives the boot-load order). */
 export interface FuncV2 {
@@ -45,7 +34,6 @@ export interface FuncV2 {
 
 /** The persistence surface the bot needs — injectable so the logic unit-tests dry. */
 export interface WealStore {
-  ensureSchema(): Promise<void>;
   /** One roll's dice (`[base, face]` pairs) as one multi-row insert. */
   insertDice(dice: readonly [number, number][], playerId: number, blameId: number): Promise<void>;
   /** `funcs_v2` in id order — the D32-17 boot-load. */
@@ -84,8 +72,9 @@ export class PostgresStore implements WealStore {
     this.#sql = postgres(databaseUrl);
   }
 
-  async ensureSchema(): Promise<void> {
-    await this.#sql.unsafe(SCHEMA);
+  /** Apply pending migrations from {@link MIGRATIONS_DIR}. */
+  migrate(): Promise<MigrateResult> {
+    return migrate(this.#sql, loadMigrations(MIGRATIONS_DIR));
   }
 
   async insertDice(

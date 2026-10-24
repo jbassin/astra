@@ -6,19 +6,24 @@
  *  - `LibraryStore` — the async surface the routes / playback / ingest code against;
  *    injectable so their logic unit-tests with a fake (weal-bot's precedent).
  *  - `PostgresStore` — the postgres.js (porsager) wire implementation (R3, 0022 S8
- *    — off Bun's built-in `SQL`, which required a live Bun runtime; D11). Per
- *    weal-bot, the live-PG wire layer is exercised at slice-6 integration (the
- *    data migration) + deploy, not against a live Postgres in CI (CI has no PG).
+ *    — off Bun's built-in `SQL`, which required a live Bun runtime; D11). Its schema
+ *    is the numbered files in `migrations/`, and `store.pg.test.ts` runs it against a
+ *    throwaway Postgres (`just pg-test`, the CI pg-test job).
  *
  * Port notes: every `bun:sqlite` call became `async`; `lastInsertRowid` → `RETURNING`;
  * `changes > 0` → `RETURNING id` then `rows.length > 0`; `INSERT OR IGNORE` →
  * `ON CONFLICT DO NOTHING`; `COLLATE NOCASE` → `lower(...)`; `db.transaction(fn)()` →
  * `sql.begin(async tx => …)`; timestamps cast `::text` so row shapes stay strings.
  */
+import { resolve } from "node:path";
+
+import { loadMigrations, migrate, type MigrateResult } from "@astra/pg-migrate";
 import postgres from "postgres";
 
 import { normalizeTag, slugify, uniqueSlug } from "../lib/text";
-import { SCHEMA } from "./schema";
+
+/** The numbered schema migrations (`NNNN_name.sql`), applied at boot by {@link PostgresStore.migrate}. */
+export const MIGRATIONS_DIR = resolve(import.meta.dirname, "../../migrations");
 
 // --- row types (mirror lark's repo interfaces; timestamps are ::text strings) ---
 
@@ -159,8 +164,6 @@ export interface PlaybackStore {
 
 /** The async persistence surface (the routes/playback/ingest inject this). */
 export interface LibraryStore extends PlaybackStore {
-  ensureSchema(): Promise<void>;
-
   // collections
   createCollection(input: NewCollection): Promise<Collection>;
   getCollection(id: number): Promise<Collection | null>;
@@ -289,8 +292,9 @@ export class PostgresStore implements LibraryStore {
     this.#sql = postgres(databaseUrl);
   }
 
-  async ensureSchema(): Promise<void> {
-    await this.#sql.unsafe(SCHEMA);
+  /** Apply pending migrations from {@link MIGRATIONS_DIR} (@astra/pg-migrate). */
+  migrate(): Promise<MigrateResult> {
+    return migrate(this.#sql, loadMigrations(MIGRATIONS_DIR));
   }
 
   async close(): Promise<void> {

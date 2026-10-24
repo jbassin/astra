@@ -54,9 +54,6 @@ const SEED = new Uint8Array(32).fill(77);
 class FakeStore implements WealStore {
   readonly inserts: [number, number, number, number][] = [];
   readonly funcsV2: FuncV2[] = [];
-  ensureSchema(): Promise<void> {
-    return Promise.resolve();
-  }
   /** What insertDice returns; tests swap in a slow or failing write. */
   insertResult: () => Promise<void> = () => Promise.resolve();
   insertDice(dice: readonly [number, number][], playerId: number, blameId: number): Promise<void> {

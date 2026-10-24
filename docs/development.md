@@ -33,8 +33,9 @@ Each CI job in `.github/workflows/ci.yml` runs the `just` recipe of the same nam
 runs the same commands. Differences: CI path-filters its jobs while `just ci` runs them all, and
 `vellum-visual-regression` stays CI-only because its goldens are pinned to the `node:24-slim`
 container's Chromium and fonts. `just ci` also runs the weal-engine crate's cargo gate, so the host
-needs rustup. `ci-ok` is the one CI job that sums up the others; a new job must be
-added to its `needs`.
+needs rustup. `pg-test` runs the `*.pg.test.ts` suites against a real Postgres: CI gives it a
+`services: postgres` container, and locally the recipe starts a throwaway one, so `just ci` needs
+Docker. `ci-ok` is the one CI job that sums up the others; a new job must be added to its `needs`.
 
 ## Hooks
 
@@ -242,6 +243,9 @@ is still hand-maintained:
 - The SSR smoke tests of ledger, harrow, strider and akasha read whatever `dist/` exists; after a
   dependency change run the app's build first.
 - SSR HTML contains UTF-8 glyphs, so plain `grep` may treat it as binary; use `grep -a`.
+- A Postgres schema change is a new numbered file in the app's `migrations/` directory
+  (`libs/ts/pg-migrate`). Never edit an applied one: the app then refuses to start. A store
+  change needs a `*.pg.test.ts` case; they run in `just pg-test`.
 
 **Deploy and data**
 - A secret's environment variable is its SOPS key upper-cased (`portal_mcp_api_key` becomes
