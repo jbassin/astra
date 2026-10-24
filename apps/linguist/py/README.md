@@ -10,8 +10,9 @@ materialized:
   `linguist/data/<date>.json` in the astra-data clone, plus the campaign-matched LLM context
   `<NNN>.<slug>.<date>.txt` under `linguist.script-path`.
 - `session_episode_summary` writes `linguist/timeline/episodes/<date>.json` (GLM via
-  `astra_llm` `call_structured`); the hourly `campaign_timeline` groups each show into seasons
-  in `linguist/timeline/seasons.json`.
+  `astra_llm` `call_structured`). `campaign_timeline` groups each show into seasons in
+  `linguist/timeline/seasons.json`; `campaign_timeline_sensor` runs it after a new summary
+  materialization, only when the episode inputs changed (`timeline_is_current`).
 
 mouthpiece waits for a session's `session_episode_summary` to be materialized before it runs
 (the chronicle gate, an asset dependency), and reads prior episodes as continuity.
@@ -25,12 +26,14 @@ mouthpiece waits for a session's `session_episode_summary` to be materialized be
   Run it by hand with `just -f /ruby/data/astra-deploy/justfile linguist-commit`. A failed
   push is retried by the next run.
 - **A session with no chronicle episode** keeps mouthpiece's gate closed. Materialize
-  `session_episode_summary` for that partition in Dagster, then `campaign_timeline`. An
-  episode file written outside Dagster (the host backfill below) does not open the gate.
+  `session_episode_summary` for that partition in Dagster; `campaign_timeline_sensor` then
+  regroups the seasons. An episode file written outside Dagster (the host backfill below)
+  neither opens the gate nor triggers the sensor.
 - **Exclude a mislabeled session** from the chronicle: add its date to `EXCLUDED_DATES` in
   `src/astra_linguist/chronicle.py`, then deploy Dagster.
 - **Chronicle backfill** (resumable; skips episode files that exist):
-  `uv run python apps/linguist/py/scripts/backfill_chronicle.py` on the host.
+  `uv run python apps/linguist/py/scripts/backfill_chronicle.py` on the host, then
+  materialize `campaign_timeline` by hand.
 - **Fix a recurring mistranscription:** add a `variant` (a regex fragment) under the right
   `entry` in `libs/py/lexicon/src/astra_lexicon/defs.kdl`, then deploy Dagster. The next
   `session_transcripts` run applies it.

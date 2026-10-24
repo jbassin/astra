@@ -24,17 +24,19 @@ ASSETS = {
     "session_transcripts",
     "session_wiki",
 }
-#: The explicit job, the implicit all-assets job, and one anonymous job per asset sensor.
+#: The implicit all-assets job and one anonymous job per asset sensor.
 JOBS = {
     "__ASSET_JOB",
+    "__anonymous_asset_job_campaign_timeline_sensor",
     "__anonymous_asset_job_craig_drop_sensor",
     "__anonymous_asset_job_heartwood_sensor",
     "__anonymous_asset_job_linguist_output_sensor",
     "__anonymous_asset_job_scribe_output_sensor",
-    "campaign_timeline_job",
 }
-SCHEDULES = {"campaign_timeline_schedule"}
+#: None since 0037 pipe-10: `campaign_timeline_sensor` replaced the hourly schedule.
+SCHEDULES: set[str] = set()
 SENSORS = {
+    "campaign_timeline_sensor",
     "craig_drop_sensor",
     "heartwood_sensor",
     "linguist_output_sensor",

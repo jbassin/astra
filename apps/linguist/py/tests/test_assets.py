@@ -159,6 +159,82 @@ def test_campaign_timeline_with_no_episodes_is_a_no_op(tmp_path: Path) -> None:
     assert not (tmp_path / "linguist" / "timeline" / "seasons.json").exists()
 
 
+# ── campaign_timeline_sensor: runs when a summary lands and the inputs changed (PIPE-20) ──
+
+
+def _summary_done(instance: dg.DagsterInstance, date: str) -> None:
+    """Record a `session_episode_summary` materialization for ``date``, as a run would."""
+    instance.report_runless_asset_event(
+        dg.AssetMaterialization(asset_key="session_episode_summary", partition=date)
+    )
+
+
+def _tick(
+    monkeypatch: Any, tmp_path: Path, instance: dg.DagsterInstance, cursor: str | None = None
+) -> dg.SensorResult:
+    monkeypatch.setattr(assets, "_timeline_paths", lambda: paths_under(tmp_path))
+    result = assets.campaign_timeline_sensor(
+        dg.build_sensor_context(instance=instance, cursor=cursor)
+    )
+    assert isinstance(result, dg.SensorResult)
+    return result
+
+
+def test_timeline_sensor_waits_for_a_summary(monkeypatch: Any, tmp_path: Path) -> None:
+    _write_entry(tmp_path / "linguist" / "timeline" / "episodes", DATE, next(iter(show_index())))
+    result = _tick(monkeypatch, tmp_path, _instance(DATE))
+    assert not result.run_requests and result.cursor is None
+
+
+def test_timeline_sensor_runs_once_per_new_summary_when_inputs_changed(
+    monkeypatch: Any, tmp_path: Path
+) -> None:
+    _write_entry(tmp_path / "linguist" / "timeline" / "episodes", DATE, next(iter(show_index())))
+    instance = _instance(DATE)
+    _summary_done(instance, DATE)
+
+    first = _tick(monkeypatch, tmp_path, instance)
+    assert len(first.run_requests or []) == 1
+    assert first.cursor is not None
+    # The same summary again: nothing new, so no second request.
+    again = _tick(monkeypatch, tmp_path, instance, cursor=first.cursor)
+    assert not again.run_requests
+
+
+def test_timeline_sensor_starts_no_run_for_unchanged_inputs(
+    monkeypatch: Any, tmp_path: Path
+) -> None:
+    """A summary that changes no episode (an unmatched session's skip) starts no paid run."""
+    slug = next(iter(show_index()))
+    _write_entry(tmp_path / "linguist" / "timeline" / "episodes", DATE, slug)
+    resources, _llm, _config = _resources(tmp_path, _Client())
+    assert dg.materialize([assets.campaign_timeline], resources=resources).success
+    instance = _instance(DATE, "2025-1-13")
+    _summary_done(instance, "2025-1-13")
+
+    result = _tick(monkeypatch, tmp_path, instance)
+    assert not result.run_requests
+    assert result.cursor is not None  # seen, so the next tick does not re-check it
+
+
+def test_timeline_sensor_waits_while_a_timeline_run_is_in_flight(
+    monkeypatch: Any, tmp_path: Path
+) -> None:
+    _write_entry(tmp_path / "linguist" / "timeline" / "episodes", DATE, next(iter(show_index())))
+    instance = _instance(DATE)
+    _summary_done(instance, DATE)
+    job = assets.defs.get_repository_def().get_job("__anonymous_asset_job_campaign_timeline_sensor")
+    instance.create_run_for_job(
+        job_def=job,
+        asset_selection=frozenset({assets.campaign_timeline.key}),
+        status=dg.DagsterRunStatus.STARTED,
+    )
+
+    result = _tick(monkeypatch, tmp_path, instance)
+    assert not result.run_requests
+    assert result.cursor is None  # not consumed: the next tick looks again
+
+
 def test_defs_bind_the_shared_resources() -> None:
     repo = assets.defs.get_repository_def()
     assert {"astra_config", "pipeline_paths", "llm"} <= set(repo.get_top_level_resources())

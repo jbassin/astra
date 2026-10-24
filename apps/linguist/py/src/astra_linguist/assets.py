@@ -23,12 +23,23 @@ from astra_lexicon import load_corrections
 from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
-from astra_pipeline_resources import AstraConfig, LlmResource, PipelinePaths, default_resources
+from astra_pipeline_resources import (
+    AstraConfig,
+    LlmResource,
+    PipelinePaths,
+    default_resources,
+    loaded_config,
+)
 from astra_pipeline_resources.partitions import SessionStage, launch_ready, sessions
 from astra_sessions import atomic_write_text
 
 from .campaigns import campaign_filename, campaign_views
-from .chronicle import Chronicle, chronicle_inputs_hash, load_episode_entries
+from .chronicle import (
+    Chronicle,
+    chronicle_inputs_hash,
+    load_episode_entries,
+    timeline_is_current,
+)
 from .models import RawLine, load_session
 from .pipeline import process_session
 from .roster import SpeakerResolver
@@ -167,9 +178,9 @@ def campaign_timeline(
 
     Reads all `timeline/episodes/*.json`, groups by show, orders shows main-first then
     by first-session date, and (per show) calls GLM-5.2 to assign contiguous seasons,
-    writing `timeline/seasons.json`. **Skips the GLM calls when the episode inputs are
-    unchanged** (C9) so the linguist-commit timer / schedule is a no-op until a new
-    summary lands."""
+    writing `timeline/seasons.json`. `campaign_timeline_sensor` launches it after a new
+    episode summary, and only when the inputs changed. **Skips the GLM calls when the
+    episode inputs are unchanged** (C9), so a hand materialize is a no-op too."""
     entries = load_episode_entries(pipeline_paths.chronicle_episodes)
     if not entries:
         return dg.MaterializeResult(metadata={"shows": 0, "status": "no episodes yet"})
@@ -211,21 +222,62 @@ def campaign_timeline(
     )
 
 
-# The aggregate runs cheaply on a schedule (it skips the GLM calls when the episode
-# inputs are unchanged), so a new session's seasons get regenerated automatically within
-# the hour; the linguist-commit timer then commits + redeploys. Also materialized
-# directly during the backfill.
-campaign_timeline_job = dg.define_asset_job("campaign_timeline_job", selection=[campaign_timeline])
-
-
-@dg.schedule(
-    job=campaign_timeline_job,
-    cron_schedule="0 * * * *",
-    default_status=dg.DefaultScheduleStatus.RUNNING,
+#: Run statuses that count as "a campaign_timeline run is already going".
+_IN_FLIGHT = (
+    dg.DagsterRunStatus.QUEUED,
+    dg.DagsterRunStatus.NOT_STARTED,
+    dg.DagsterRunStatus.STARTING,
+    dg.DagsterRunStatus.STARTED,
+    dg.DagsterRunStatus.CANCELING,
 )
-def campaign_timeline_schedule() -> dg.RunRequest:
-    """Hourly regen of the chronicle seasons (a no-op until a new episode summary lands)."""
-    return dg.RunRequest()
+
+
+def _latest_summary_id(instance: dg.DagsterInstance) -> int | None:
+    """Storage id of the newest `session_episode_summary` materialization, any session."""
+    records = instance.fetch_materializations(session_episode_summary.key, limit=1).records
+    return records[0].storage_id if records else None
+
+
+def _timeline_in_flight(instance: dg.DagsterInstance) -> bool:
+    """True while any run that materializes `campaign_timeline` is queued or running
+    (the sensor's own runs and hand-launched ones alike)."""
+    runs = instance.get_runs(filters=dg.RunsFilter(statuses=list(_IN_FLIGHT)))
+    return any(campaign_timeline.key in (run.asset_selection or set()) for run in runs)
+
+
+def _timeline_paths() -> PipelinePaths:
+    """Sensors read config directly (they get no resources)."""
+    return PipelinePaths.from_config(loaded_config())
+
+
+@dg.sensor(
+    target=[campaign_timeline],
+    minimum_interval_seconds=60,
+    default_status=dg.DefaultSensorStatus.RUNNING,
+)
+def campaign_timeline_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
+    """Rebuild the seasons after a new `session_episode_summary` materialization, and only
+    when the episode inputs changed (0037 PIPE-20).
+
+    The cursor is the storage id of the newest summary materialization seen. A newer one
+    requests one run if `timeline_is_current` says `seasons.json` is stale, so an unchanged
+    input set (a skipped, unmatched session) never starts a run. While a run that
+    materializes `campaign_timeline` is in flight the sensor waits without moving its
+    cursor. A failed rebuild is not retried: re-execute it, or materialize by hand."""
+    latest = _latest_summary_id(context.instance)
+    cursor = context.cursor or ""
+    seen = int(cursor) if cursor.isdigit() else 0
+    if latest is None or latest <= seen:
+        return dg.SensorResult()
+    if _timeline_in_flight(context.instance):
+        return dg.SensorResult(skip_reason="a campaign_timeline run is in flight")
+    paths = _timeline_paths()
+    if timeline_is_current(paths.chronicle_episodes, paths.seasons):
+        return dg.SensorResult(skip_reason="chronicle episode inputs unchanged", cursor=str(latest))
+    return dg.SensorResult(
+        run_requests=[dg.RunRequest(run_key=f"campaign_timeline:{latest}")],
+        cursor=str(latest),
+    )
 
 
 def _has_script(key: str) -> bool:
@@ -274,8 +326,6 @@ defs = dg.Definitions(
         session_episode_summary,
         campaign_timeline,
     ],
-    sensors=[scribe_output_sensor],
-    schedules=[campaign_timeline_schedule],
-    jobs=[campaign_timeline_job],
+    sensors=[scribe_output_sensor, campaign_timeline_sensor],
     resources=default_resources(),
 )

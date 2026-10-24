@@ -154,7 +154,8 @@ def season_for(date: str, show: str, *, seasons_path: Path = SEASONS_PATH) -> Se
 
     Reads the committed `seasons.json` (`Chronicle`). Returns `None` when the file is
     absent, the show isn't present, or `date` isn't placed in a season yet — the
-    `campaign_timeline` aggregate is hourly, so it lags a freshly-added episode. Never
+    `campaign_timeline` aggregate runs after the summary, so it can lag a freshly-added
+    episode by a sensor tick and a grouping call. Never
     raises: callers treat season framing as optional and never gate on it (0021 Change B).
     """
     path = Path(seasons_path)
@@ -190,6 +191,21 @@ def chronicle_inputs_hash(entries: list[EpisodeEntry]) -> str:
         ensure_ascii=False,
     )
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def timeline_is_current(episodes_dir: Path, seasons_path: Path) -> bool:
+    """True when `seasons.json` was built from exactly the episodes now in `episodes_dir`
+    (its `inputs_hash` matches), or there are no episodes yet: grouping would change nothing.
+
+    An unreadable `seasons.json` counts as stale."""
+    entries = load_episode_entries(episodes_dir)
+    if not entries:
+        return True
+    try:
+        existing = Chronicle.model_validate_json(seasons_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+    return existing.inputs_hash == chronicle_inputs_hash(entries)
 
 
 # ── show resolution (date → show) ──────────────────────────────────────────
