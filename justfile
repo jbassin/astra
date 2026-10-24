@@ -110,8 +110,9 @@ assay-store-check:
     OTEL_SDK_DISABLED=true uv run assay store check
 
 # scripts/ontology_gen.py lists the artifacts and their sources: being.canonical.json from
-# being.kdl (Python is the one being.kdl parser; @astra/ontology reads the JSON), and the
-# fixture entity registry. Run it after editing being.kdl, defs.kdl or the fixture snapshot.
+# being.kdl (Python is the one being.kdl parser; @astra/ontology reads the JSON), the
+# fixture entity registry, and libs/ts/config's Zod schema from the Pydantic config models.
+# Run it after editing being.kdl, defs.kdl, the fixture snapshot or libs/py/config models.py.
 # Regenerate the generated ontology artifacts; `--check` writes nothing and fails if one is stale.
 ontology-gen *flags:
     uv run python scripts/ontology_gen.py {{flags}}

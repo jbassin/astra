@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -10,13 +10,23 @@ import { defaultConfigFile, findRepoRoot, loadConfig, resolveSopsRef, SecretRef 
 import { defaultSecretsFile } from "./secrets";
 
 const ROOT = findRepoRoot();
-// The loader tests read this small fixture, so a value change in the real config.kdl never
-// touches them (the same files libs/py/config's tests read).
-const FIXTURES = join(ROOT, "fixtures", "config");
-const FIXTURE = join(FIXTURES, "config.kdl");
-// The fixture with a bad value in a block only TS reads, and one only Python reads.
-const BAD_TS_BLOCK = join(FIXTURES, "bad-ts-block.kdl");
-const BAD_PY_BLOCK = join(FIXTURES, "bad-py-block.kdl");
+// The loader tests read this fixture, so a value change in the real config.kdl never
+// touches them (the same file libs/py/config's tests read).
+const FIXTURE = join(ROOT, "fixtures", "config", "config.kdl");
+
+/** `text` in a temp KDL file. */
+async function writeTmp(text: string): Promise<string> {
+  const tmp = join(tmpdir(), `astra-config-${process.pid}-${Math.random()}.kdl`);
+  await writeFile(tmp, text);
+  return tmp;
+}
+
+/** The fixture with its one `line` replaced, in a temp file. */
+async function fixtureWith(line: string, replacement: string): Promise<string> {
+  const text = readFileSync(FIXTURE, "utf8");
+  if (text.split(line).length !== 2) throw new Error(`fixture lacks one ${JSON.stringify(line)}`);
+  return writeTmp(text.replace(line, replacement));
+}
 
 // Actually decrypting needs the `sops` binary + the gitignored age key — host only.
 // CI has neither, so the decrypt-backed check skips there (the env-override test still
@@ -61,16 +71,18 @@ describe("the real config.kdl", () => {
 });
 
 describe("per-language validation", () => {
-  test("a bad value in a Python-only block does not break the TS loader", () => {
+  test("a bad value in a Python-only block does not break the TS loader", async () => {
     // libs/py/config rejects this file, in both its loader and the whole-file check.
-    const cfg = loadConfig(BAD_PY_BLOCK);
+    const bad = await fixtureWith("max-iterations 7", 'max-iterations "many"');
+    const cfg = loadConfig(bad);
     expect(cfg.orator.port).toBe(20002);
     expect("heartwood" in cfg).toBe(false);
   });
 
-  test("a bad value in a TS block fails the TS loader", () => {
+  test("a bad value in a TS block fails the TS loader", async () => {
     // libs/py/config's loader loads this file; its whole-file check rejects it.
-    expect(() => loadConfig(BAD_TS_BLOCK)).toThrow(/orator > port/);
+    const bad = await fixtureWith("port 20002", 'port "not-a-port"');
+    expect(() => loadConfig(bad)).toThrow(/orator > port/);
   });
 });
 
@@ -82,7 +94,18 @@ describe("the loader, against the fixture", () => {
     expect(cfg.orator.port).toBe(20002);
     expect(cfg.orator.targetLufs).toBe(-9); // negative number
     expect(cfg.orator.measureLoudness).toBe(false); // boolean
-    expect(cfg.weal.bindAddr).toBe("127.0.0.1:10203"); // an absent block → its defaults
+  });
+
+  test("a missing field or namespace fails the load: values live only in config.kdl", async () => {
+    const noField = await fixtureWith('    bind-addr "127.0.0.1:10203"\n', "");
+    expect(() => loadConfig(noField)).toThrow(/weal > bind-addr: missing \(required\)/);
+    const noBlock = await writeTmp('data {\n  root "/srv/state"\n}\n');
+    expect(() => loadConfig(noBlock)).toThrow(/missing \(required\)/);
+  });
+
+  test("an integer field rejects a fraction (py `int`)", async () => {
+    const bad = await fixtureWith("port 20002", "port 20002.5");
+    expect(() => loadConfig(bad)).toThrow(/orator > port/);
   });
 
   test("secret fields are lazy refs, not plaintext", () => {
@@ -96,20 +119,19 @@ describe("the loader, against the fixture", () => {
   });
 
   test("unknown KDL key is rejected", async () => {
-    const tmp = join(tmpdir(), `astra-config-bad-${Date.now()}.kdl`);
-    await writeFile(tmp, 'orator {\n  port 1\n  bogus-field "nope"\n}\n');
-    expect(() => loadConfig(tmp)).toThrow(/orator > bogus-field "nope": unknown node/);
+    const bad = await fixtureWith("port 20002", 'port 20002\n    bogus-field "nope"');
+    expect(() => loadConfig(bad)).toThrow(/orator > bogus-field "nope": unknown node/);
   });
 
   test("data paths: relative → under root, absolute as-is, empty stays unset", () => {
     const cfg = loadConfig(FIXTURE);
     expect(cfg.data.root).toBe("/srv/state");
-    expect(cfg.data.contentRoot).toBe("/srv/state/astra-data"); // the default, under root
+    expect(cfg.data.contentRoot).toBe("/srv/state/astra-data"); // relative, so under root
     expect(cfg.codex.dataPath).toBe("/srv/state/codex/data");
     expect(cfg.menhir.resultsPath).toBe("/srv/state/menhir/results.jsonl");
     expect(cfg.data.akashaContent).toBe("/elsewhere/content");
     expect(cfg.orator.dataDir).toBe("/data"); // a container path, not a data path
-    // A dataset's default resolves under the default content root (`astra-data` under root).
+    // A relative dataset resolves under the content root (`astra-data` under root).
     expect(cfg.data.linguistData).toBe("/srv/state/astra-data/linguist/data");
     process.env.ASTRA_DATA_ROOT = "/override";
     process.env.ASTRA_CONTENT_ROOT = "/clone";

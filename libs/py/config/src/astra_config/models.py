@@ -4,7 +4,8 @@ Each language validates only the namespaces its apps read (0037 LIB-1 interim):
 
 * `Config` holds the Python-read namespaces; `load_config()` returns it and ignores the
   rest, so a bad value in a TS-only block cannot stop a Python process.
-* `libs/ts/config` (Zod) holds the TS-read namespaces the same way.
+* `libs/ts/config` (Zod, generated from these models) holds the TS-read namespaces
+  the same way.
 * `WholeConfig` is the union, every namespace in the file. Only the CI test
   `test_whole_config_kdl_validates` loads it, so nothing in the file goes unvalidated.
 
@@ -12,16 +13,23 @@ Ownership (who reads each block, from a grep of the apps): both languages read `
 `telemetry` and `codex`. Only Python reads `llm`, `scribe`, `linguist`, `mouthpiece`,
 `heartwood` and `mouthpiece-producer`. Only TS reads `weal`, `weal-overlay`, `orator`,
 `strider`, `akasha-frontend`, `mouthpiece-frontend`, `vellum-frontend`, `vellum-render`,
-`harrow`, `ledger`, `portal`, `portal-headless` and `menhir`. A namespace read by both is
-mirrored in both schemas; a TS-only one is mirrored here (in `WholeConfig`) and in Zod.
+`harrow`, `ledger`, `portal`, `portal-headless` and `menhir`. `TS_NAMESPACES` below
+lists the TS-read ones; a TS-only namespace lives here in `WholeConfig`.
 
 Every field has a reader outside the config libraries and tests: the CI test
 `tests/test_config_readers.py` fails on a field nothing reads, so delete a field when its
 last reader goes.
 
-Secret fields are `SecretRef | None` (lazy, Decision E); plaintext fields carry the
-faerrin code-default so a sparse `config.kdl` still validates. `extra="forbid"` inside
-each namespace turns a mistyped KDL key into a loud error instead of a silent drop.
+Values live only in `config.kdl` (0037 LIB-1): every namespace and every plaintext field
+is required and has no default, so a missing key fails the load instead of falling back to
+a code value. A secret field is `SecretRef | None` (lazy, Decision E); an absent ref reads
+as `None`, which `SecretRef.require()` callers treat as unset. `extra="forbid"` inside each
+namespace turns a mistyped KDL key into a loud error instead of a silent drop.
+
+The TS schema is generated from this file: `just ontology-gen` writes
+`libs/ts/config/src/config.gen.ts` (Zod, camelCase) for the `TS_NAMESPACES` from
+`WholeConfig.model_json_schema()`, and `just ontology-check` fails CI when it is stale.
+Edit a TS-read namespace here, then run `just ontology-gen`.
 """
 
 from __future__ import annotations
@@ -29,7 +37,7 @@ from __future__ import annotations
 import os
 from typing import Annotated, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, WithJsonSchema, field_validator, model_validator
 
 from .secrets import SecretRef
 
@@ -37,12 +45,18 @@ from .secrets import SecretRef
 #: when the config loads, so code always sees an absolute path. An absolute value
 #: (e.g. a container-only path) and an empty value (unset) pass through unchanged.
 DATA_PATH = "astra:data-path"
-DataPath = Annotated[str, DATA_PATH]
+DataPath = Annotated[str, DATA_PATH, WithJsonSchema({"type": "string", "x-astra-path": "data"})]
 
 #: Marks a field as a published dataset: a relative value is resolved against
 #: ``data.content-root`` (the astra-data clone), not ``data.root``.
 CONTENT_PATH = "astra:content-path"
-ContentPath = Annotated[str, CONTENT_PATH]
+ContentPath = Annotated[
+    str, CONTENT_PATH, WithJsonSchema({"type": "string", "x-astra-path": "content"})
+]
+
+#: A secret: a lazy `SecretRef` (a `ref="sops:KEY"` node in the KDL). Its JSON Schema is
+#: the `x-astra-secret` keyword, which the Zod generator turns into a `SecretRef` field.
+Secret = Annotated[SecretRef, WithJsonSchema({"x-astra-secret": True})]
 
 #: Overrides ``data.root``. A test and dev seam only: the repo's root conftest points it
 #: at the checkout so pytest never resolves a path into the live data root.
@@ -61,116 +75,116 @@ class DataConfig(_Base):
     # The one root every data path in this config is relative to: the pipeline's
     # published datasets below, and each service's own state paths (scribe.data-path,
     # mouthpiece.episodes-path, ...). Moving the data is a change of these values.
-    root: str = ""
+    root: str
     # The astra-data clone: the pipeline's published datasets, written and committed by
     # the bots (linguist-commit, heartwood), never by the code repo. Relative → under
     # `root`. The datasets below are relative to it, in the astra-data layout.
-    content_root: str = "astra-data"
-    linguist_transcripts: ContentPath = "linguist/transcripts"
-    linguist_data: ContentPath = "linguist/data"
-    linguist_timeline: ContentPath = "linguist/timeline"
-    mouthpiece_snapshot: ContentPath = "mouthpiece/snapshot"
-    akasha_content: ContentPath = "akasha/content"
-    akasha_snapshot: ContentPath = "akasha/snapshot"
-    heartwood_ledger: ContentPath = "heartwood/agent-runs.jsonl"
-    entity_registry: ContentPath = "entity/entity.kdl"
+    content_root: str
+    linguist_transcripts: ContentPath
+    linguist_data: ContentPath
+    linguist_timeline: ContentPath
+    mouthpiece_snapshot: ContentPath
+    akasha_content: ContentPath
+    akasha_snapshot: ContentPath
+    heartwood_ledger: ContentPath
+    entity_registry: ContentPath
 
 
 class LlmConfig(_Base):
-    default_model: str = "openrouter/z-ai/glm-5.2"
-    openrouter_api_key: SecretRef | None = None
+    default_model: str
+    openrouter_api_key: Secret | None = None
 
 
 class TelemetryConfig(_Base):
     # In-cluster SigNoz collector (services run on signoz-net; :4318 = OTLP/HTTP).
     # localhost:10353 is only host-reachable; a container needs this name.
-    otlp_endpoint: str = "http://signoz-otel-collector:4318"
-    rum_endpoint: str = "http://localhost:10353"
+    otlp_endpoint: str
+    rum_endpoint: str
     # The collector as a HOST-run process reaches it (published port). astra_observe
     # uses it unless ASTRA_RUNTIME=container; containers use otlp_endpoint.
-    host_otlp_endpoint: str = "http://localhost:10353"
+    host_otlp_endpoint: str
 
 
 class ScribeConfig(_Base):
-    data_path: DataPath = ""
-    incoming_path: DataPath = ""
-    tmp_path: DataPath = ""
-    model: str = "groq/whisper-large-v3"  # full litellm id (Groq Whisper, Decision G)
-    groq_api_key: SecretRef | None = None
+    data_path: DataPath
+    incoming_path: DataPath
+    tmp_path: DataPath
+    model: str  # full litellm id (Groq Whisper, Decision G)
+    groq_api_key: Secret | None = None
 
 
 class LinguistConfig(_Base):
-    ingest_saved_dir: DataPath = ""
+    ingest_saved_dir: DataPath
     # Runtime outputs of session_transcripts that are not published datasets.
-    script_path: DataPath = "linguist/script"
+    script_path: DataPath
 
 
 class MouthpieceConfig(_Base):
-    episodes_path: DataPath = ""
+    episodes_path: DataPath
     # The LLM for mouthpiece's clean/enrich/script calls — its OWN pin, separate from
     # `llm.default-model` (linguist's compiled judge + heartwood stay on that one).
-    model: str = "openrouter/z-ai/glm-5.3"
+    model: str
     # Which TTS backend renders episodes: "elevenlabs" (dialogue, live) or "mock" (offline
     # silence). The asset layer fails LOUD if the ElevenLabs key is missing — never a
     # silent fallback to the mock.
-    tts_provider: Literal["elevenlabs", "mock"] = "elevenlabs"
+    tts_provider: Literal["elevenlabs", "mock"]
     # ElevenLabs model id for the dialogue + single-turn calls (v4 since 2026-09-28).
-    elevenlabs_model: str = "eleven_v4"
-    elevenlabs_api_key: SecretRef | None = None
+    elevenlabs_model: str
+    elevenlabs_api_key: Secret | None = None
 
 
 class WealConfig(_Base):
-    database_url: str = ""
-    feed_ws_url: str = ""
-    bind_addr: str = "127.0.0.1:10203"
-    discord_token: SecretRef | None = None
-    feed_token: SecretRef | None = None
+    database_url: str
+    feed_ws_url: str
+    bind_addr: str
+    discord_token: Secret | None = None
+    feed_token: Secret | None = None
 
 
 class WealOverlayConfig(_Base):
-    port: int = 10360
-    token: SecretRef | None = None  # shared weal↔overlay secret (=weal.feed_token)
+    port: int
+    token: Secret | None = None  # shared weal↔overlay secret (=weal.feed_token)
 
 
 class OratorConfig(_Base):
-    guild_id: str = ""
-    database_url: str = ""
-    port: int = 10363
-    public_origin: str = "https://orator.iridi.cc"
+    guild_id: str
+    database_url: str
+    port: int
+    public_origin: str
     # Audio + data dir (the Compose volume mount); single source for the service + migrator.
-    data_dir: str = "/data"
-    allowed_user_ids: str = ""
-    target_lufs: int = -16
-    ingest_concurrency: int = 2
-    measure_loudness: bool = True
-    discord_token: SecretRef | None = None
-    discord_client_id: SecretRef | None = None
-    discord_client_secret: SecretRef | None = None
-    session_secret: SecretRef | None = None
+    data_dir: str
+    allowed_user_ids: str
+    target_lufs: int
+    ingest_concurrency: int
+    measure_loudness: bool
+    discord_token: Secret | None = None
+    discord_client_id: Secret | None = None
+    discord_client_secret: Secret | None = None
+    session_secret: Secret | None = None
 
 
 class StriderConfig(_Base):
     # The SSR frontend service (Decision I). service_name + port are the single
     # source for server.ts (bind + telemetry name) and vite's dev port; service_name
     # also derives the browser RUM name (``{service_name}-rum``).
-    service_name: str = "astra.strider"
-    port: int = 10360
+    service_name: str
+    port: int
     # Absolute base URL — the canonical entry the ledger landing page links to.
-    public_origin: str = "https://strider.iridi.cc"
+    public_origin: str
 
 
 class AkashaFrontendConfig(_Base):
     # The akasha wiki read-surface (0011) — same SSR-frontend contract as Strider
     # (Decision I). service_name + port are the single source for server.ts +
     # vite's dev port; service_name also derives the browser RUM name.
-    service_name: str = "astra.akasha-frontend"
-    port: int = 10365
+    service_name: str
+    port: int
     # Absolute base URL baked into the build-emitted RSS/sitemap/og links.
-    public_origin: str = "https://akasha.iridi.cc"
+    public_origin: str
     # In-container dir the session-audio volume mounts at; the combined Craig recording
     # each transcript plays is served same-origin at /audio/<date>.mp3 (replaces the
     # surviving faerrin static-audio.iridi.cc dependency).
-    audio_dir: str = "/audio"
+    audio_dir: str
 
 
 class MouthpieceFrontendConfig(_Base):
@@ -178,12 +192,12 @@ class MouthpieceFrontendConfig(_Base):
     # (Decision I). service_name + port are the single source for server.ts +
     # vite's dev port; service_name also derives the browser RUM name. Distinct
     # from MouthpieceConfig (the backend).
-    service_name: str = "astra.mouthpiece-frontend"
-    port: int = 10366
+    service_name: str
+    port: int
     # Absolute base URL baked into the build-emitted /episodes.json deep-link map.
-    public_origin: str = "https://mouthpiece.iridi.cc"
+    public_origin: str
     # In-container dir the audio volume mounts at; served same-origin at /audio/ (D2).
-    audio_dir: str = "/audio"
+    audio_dir: str
 
 
 class VellumFrontendConfig(_Base):
@@ -191,18 +205,18 @@ class VellumFrontendConfig(_Base):
     # other frontends (Decision I). service_name + port are the single source for
     # server.ts + vite's dev port; service_name also derives the browser RUM name.
     # The PNG export POSTs same-origin to /render (Caddy routes it to vellum-render).
-    service_name: str = "astra.vellum-frontend"
-    port: int = 10367
+    service_name: str
+    port: int
     # Absolute base URL — the share-link origin + the same-origin host for /render.
-    public_origin: str = "https://vellum.iridi.cc"
+    public_origin: str
 
 
 class VellumRenderConfig(_Base):
     # The PNG render service (0013) — a Bun.serve + Playwright sidecar, a SEPARATE
     # Compose unit from vellum-frontend (D2). service_name names its telemetry; port
     # is the bind port (the editor reaches it same-origin via Caddy).
-    service_name: str = "astra.vellum-render"
-    port: int = 10368
+    service_name: str
+    port: int
 
 
 class HarrowConfig(_Base):
@@ -211,9 +225,9 @@ class HarrowConfig(_Base):
     # service_name + port are the single source for server.ts + vite's dev port;
     # service_name also derives the browser RUM name. No backend/audio — every card
     # glyph is inline SVG.
-    service_name: str = "astra.harrow"
-    port: int = 10369
-    public_origin: str = "https://harrow.iridi.cc"
+    service_name: str
+    port: int
+    public_origin: str
 
 
 class LedgerConfig(_Base):
@@ -222,8 +236,8 @@ class LedgerConfig(_Base):
     # source for server.ts + vite's dev port; service_name also derives the browser
     # RUM name. It links to the other sites by reading their public_origin from this
     # same config at build time — no hardcoded URLs.
-    service_name: str = "astra.ledger"
-    port: int = 10370
+    service_name: str
+    port: int
 
 
 class HeartwoodConfig(_Base):
@@ -232,19 +246,19 @@ class HeartwoodConfig(_Base):
     # LM instances even when equal). max_iterations bounds main-LM calls, max_llm_calls
     # sub-LM calls; max_tokens is per call (reasoning shares it). backfill_budget_usd
     # is the cumulative ceiling `just heartwood-backfill` enforces from the run ledger.
-    model: str = "openrouter/deepseek/deepseek-v4.1-flash"
-    sub_model: str = "openrouter/deepseek/deepseek-v4.1-flash"
-    max_iterations: int = 60
-    max_llm_calls: int = 100
-    max_tokens: int = 64000
-    max_output_chars: int = 10000
-    backfill_budget_usd: float = 100.0
+    model: str
+    sub_model: str
+    max_iterations: int
+    max_llm_calls: int
+    max_tokens: int
+    max_output_chars: int
+    backfill_budget_usd: float
     # 0036: the Dagster↔host request dir (same path in the containers) and how long the
     # session_wiki asset waits for the host runner's result before failing.
-    requests_path: DataPath = "heartwood/requests"
-    request_timeout_minutes: int = 180
+    requests_path: DataPath
+    request_timeout_minutes: int
     # Per-run agent artifacts (staging, diff, summary) + the backfill lock.
-    artifacts_path: DataPath = "heartwood"
+    artifacts_path: DataPath
 
 
 class MouthpieceProducerConfig(_Base):
@@ -252,19 +266,16 @@ class MouthpieceProducerConfig(_Base):
     # the recap script's brief. model/sub_model/max_* mirror HeartwoodConfig. The
     # experiment's script arms pair experiment_models[i] with experiment_max_tokens[i].
     # A one-argument KDL node loads as a scalar, so both lists accept a bare value.
-    model: str = "openrouter/deepseek/deepseek-v4.1-flash"
-    sub_model: str = "openrouter/deepseek/deepseek-v4.1-flash"
-    max_iterations: int = 30
-    max_llm_calls: int = 60
-    max_tokens: int = 64000
-    max_output_chars: int = 10000
-    experiment_models: list[str] = [
-        "openrouter/z-ai/glm-5.3",
-        "openrouter/deepseek/deepseek-v4.1-flash",
-    ]
-    experiment_max_tokens: list[int] = [128000, 64000]
+    model: str
+    sub_model: str
+    max_iterations: int
+    max_llm_calls: int
+    max_tokens: int
+    max_output_chars: int
+    experiment_models: list[str]
+    experiment_max_tokens: list[int]
     # Per-run producer/experiment/roundtable artifacts.
-    artifacts_path: DataPath = "mouthpiece/experiments"
+    artifacts_path: DataPath
 
     @field_validator("experiment_models", "experiment_max_tokens", mode="before")
     @classmethod
@@ -277,23 +288,23 @@ class PortalConfig(_Base):
     # orator-backend template. No service_name field (D3): unlike the SSR frontends
     # there's no browser RUM surface, so astra.portal is hardcoded in
     # server/src/index.ts, mirroring OratorConfig.
-    port: int = 10372
-    public_origin: str = "https://portal.iridi.cc"
+    port: int
+    public_origin: str
     # Two-hop auth (D6): mcp_api_key bearer-gates /mcp (MCP client -> server);
     # bridge_api_key gates the Foundry module's WS handshake (module -> server).
-    bridge_timeout_ms: int = 15000
-    max_creates_per_request: int = 10  # the D8 write-gate cap
+    bridge_timeout_ms: int
+    max_creates_per_request: int  # the D8 write-gate cap
     # The Foundry user id the server lets hold the bridge socket; "" = no designation.
-    bridge_user_id: str = ""
-    mcp_api_key: SecretRef | None = None
+    bridge_user_id: str
+    mcp_api_key: Secret | None = None
     # 0028 D28-1: the player-facing static key, a second bearer compared alongside
     # mcp_api_key in the /mcp auth branch — resolves the read-only D28-8 tool subset.
-    player_mcp_api_key: SecretRef | None = None
-    bridge_api_key: SecretRef | None = None
+    player_mcp_api_key: Secret | None = None
+    bridge_api_key: Secret | None = None
     # 0025 D-2: the bind-mounted JSON file holding OAuth-registered clients +
     # hashed tokens, on the new portal-oauth bind mount — survives `just up`
     # redeploys (unlike the in-memory pending-consent/auth-code state).
-    oauth_state_path: str = "/data/oauth/state.json"
+    oauth_state_path: str
 
 
 class PortalHeadlessConfig(_Base):
@@ -302,12 +313,12 @@ class PortalHeadlessConfig(_Base):
     # service_name field (D27-5, same rationale as PortalConfig — no browser RUM
     # surface). gm_password is the D27-4 dedicated "Portal" Foundry account's password,
     # resolved only at login time (D27-14 — never logged).
-    port: int = 10373
-    foundry_origin: str = "https://btl.iridi.cc"  # D27-3: the public edge
-    world: str = "faerrin"
-    gm_username: str = "Portal"
-    gm_password: SecretRef | None = None
-    reload_interval_hours: int = 24  # D27-10 slow-leak insurance knob; 0 disables it
+    port: int
+    foundry_origin: str  # D27-3: the public edge
+    world: str
+    gm_username: str
+    gm_password: Secret | None = None
+    reload_interval_hours: int  # D27-10 slow-leak insurance knob; 0 disables it
 
 
 class CodexConfig(_Base):
@@ -316,9 +327,9 @@ class CodexConfig(_Base):
     # (flat package, no browser RUM surface yet). service_name + port are the single
     # source for the server bind; no PORT env. data_path is the gitignored corpus
     # dir the ingest pipeline writes to.
-    service_name: str = "astra.codex"
-    port: int = 10374
-    data_path: DataPath = "codex/data"
+    service_name: str
+    port: int
+    data_path: DataPath
 
 
 class MenhirConfig(_Base):
@@ -327,10 +338,10 @@ class MenhirConfig(_Base):
     # config-single-source contract: server.ts binds this port + names telemetry;
     # no PORT env. results_path is the JSONL append target (a data path; the
     # container mounts it at the same absolute path, D29-53 convention).
-    service_name: str = "astra.menhir"
-    port: int = 10375
-    public_origin: str = "https://menhir.iridi.cc"
-    results_path: DataPath = "menhir/results.jsonl"
+    service_name: str
+    port: int
+    public_origin: str
+    results_path: DataPath
 
 
 class Config(_Base):
@@ -344,15 +355,15 @@ class Config(_Base):
 
     model_config = ConfigDict(arbitrary_types_allowed=True, extra="ignore")
 
-    data: DataConfig = Field(default_factory=DataConfig)
-    llm: LlmConfig = Field(default_factory=LlmConfig)
-    telemetry: TelemetryConfig = Field(default_factory=TelemetryConfig)
-    scribe: ScribeConfig = Field(default_factory=ScribeConfig)
-    linguist: LinguistConfig = Field(default_factory=LinguistConfig)
-    mouthpiece: MouthpieceConfig = Field(default_factory=MouthpieceConfig)
-    heartwood: HeartwoodConfig = Field(default_factory=HeartwoodConfig)
-    mouthpiece_producer: MouthpieceProducerConfig = Field(default_factory=MouthpieceProducerConfig)
-    codex: CodexConfig = Field(default_factory=CodexConfig)
+    data: DataConfig
+    llm: LlmConfig
+    telemetry: TelemetryConfig
+    scribe: ScribeConfig
+    linguist: LinguistConfig
+    mouthpiece: MouthpieceConfig
+    heartwood: HeartwoodConfig
+    mouthpiece_producer: MouthpieceProducerConfig
+    codex: CodexConfig
 
     @model_validator(mode="after")
     def _resolve_data_paths(self) -> Self:
@@ -385,21 +396,43 @@ class WholeConfig(Config):
     No process loads this. One CI test validates the real file against it
     (`load_whole_config()`), so a typo in any block, or an unknown block, still fails
     somewhere. The namespaces added here are read only by TS (`libs/ts/config`), whose Zod
-    schema mirrors them field for field.
+    schema `just ontology-gen` generates from them.
     """
 
     model_config = ConfigDict(arbitrary_types_allowed=True, extra="forbid")
 
-    weal: WealConfig = Field(default_factory=WealConfig)
-    weal_overlay: WealOverlayConfig = Field(default_factory=WealOverlayConfig)
-    orator: OratorConfig = Field(default_factory=OratorConfig)
-    strider: StriderConfig = Field(default_factory=StriderConfig)
-    akasha_frontend: AkashaFrontendConfig = Field(default_factory=AkashaFrontendConfig)
-    mouthpiece_frontend: MouthpieceFrontendConfig = Field(default_factory=MouthpieceFrontendConfig)
-    vellum_frontend: VellumFrontendConfig = Field(default_factory=VellumFrontendConfig)
-    vellum_render: VellumRenderConfig = Field(default_factory=VellumRenderConfig)
-    harrow: HarrowConfig = Field(default_factory=HarrowConfig)
-    ledger: LedgerConfig = Field(default_factory=LedgerConfig)
-    portal: PortalConfig = Field(default_factory=PortalConfig)
-    portal_headless: PortalHeadlessConfig = Field(default_factory=PortalHeadlessConfig)
-    menhir: MenhirConfig = Field(default_factory=MenhirConfig)
+    weal: WealConfig
+    weal_overlay: WealOverlayConfig
+    orator: OratorConfig
+    strider: StriderConfig
+    akasha_frontend: AkashaFrontendConfig
+    mouthpiece_frontend: MouthpieceFrontendConfig
+    vellum_frontend: VellumFrontendConfig
+    vellum_render: VellumRenderConfig
+    harrow: HarrowConfig
+    ledger: LedgerConfig
+    portal: PortalConfig
+    portal_headless: PortalHeadlessConfig
+    menhir: MenhirConfig
+
+
+#: The namespaces TS reads, in the order `libs/ts/config/src/config.gen.ts` declares them:
+#: the Zod schema `just ontology-gen` generates holds exactly these (Python spelling).
+TS_NAMESPACES: tuple[str, ...] = (
+    "data",
+    "telemetry",
+    "weal",
+    "weal_overlay",
+    "orator",
+    "strider",
+    "akasha_frontend",
+    "mouthpiece_frontend",
+    "vellum_frontend",
+    "vellum_render",
+    "harrow",
+    "ledger",
+    "portal",
+    "portal_headless",
+    "codex",
+    "menhir",
+)

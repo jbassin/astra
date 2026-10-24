@@ -1,6 +1,6 @@
 """Config loader + lazy SOPS resolution.
 
-The loader tests read the small fixture `fixtures/config/config.kdl`, so a value change in
+The loader tests read the fixture `fixtures/config/config.kdl`, so a value change in
 the real `config.kdl` never touches them. Two tests read the real file: one loads it the way
 every Python process does, and `test_whole_config_kdl_validates` is the CI guard that
 validates every namespace in it (the union of what Python and TS read).
@@ -9,7 +9,7 @@ validates every namespace in it (the union of what Python and TS read).
 from __future__ import annotations
 
 import shutil
-import textwrap
+from collections.abc import Callable
 from pathlib import Path
 
 import pytest
@@ -25,11 +25,24 @@ from astra_config import (
 from astra_config.secrets import default_secrets_file, resolve_sops_ref
 from astra_ontology_config import CONFIG_KDL_PATH, load
 
-FIXTURES = find_repo_root() / "fixtures" / "config"
-FIXTURE = FIXTURES / "config.kdl"
-# The fixture with a bad value in a block only TS reads, and one only Python reads.
-BAD_TS_BLOCK = FIXTURES / "bad-ts-block.kdl"
-BAD_PY_BLOCK = FIXTURES / "bad-py-block.kdl"
+FIXTURE = find_repo_root() / "fixtures" / "config" / "config.kdl"
+#: Writes the fixture with one line replaced to a temp file (the `fixture_with` fixture).
+type FixtureWith = Callable[[str, str], Path]
+
+
+@pytest.fixture
+def fixture_with(tmp_path: Path) -> FixtureWith:
+    """Write the fixture with its one ``line`` replaced to a temp file, and return it."""
+
+    def write(line: str, replacement: str) -> Path:
+        text = FIXTURE.read_text(encoding="utf-8")
+        assert text.count(line) == 1, f"the fixture lacks one {line!r}"
+        out = tmp_path / f"config-{len(list(tmp_path.iterdir()))}.kdl"
+        out.write_text(text.replace(line, replacement), encoding="utf-8")
+        return out
+
+    return write
+
 
 # Actually decrypting needs both the `sops` binary and the (gitignored) age key — host
 # only. CI has neither, so the decrypt-backed checks skip there; the env-override path
@@ -80,28 +93,42 @@ def test_config_kdl_path_points_at_the_real_file() -> None:
 # --- per-language validation ---------------------------------------------------------
 
 
-def test_python_loader_ignores_a_bad_ts_only_block() -> None:
-    cfg = load_config(BAD_TS_BLOCK)
+def test_python_loader_ignores_a_bad_ts_only_block(fixture_with: FixtureWith) -> None:
+    bad = fixture_with("port 20002", 'port "not-a-port"')
+    cfg = load_config(bad)
     assert cfg.heartwood.max_iterations == 7  # int, not str
     assert not hasattr(cfg, "orator")  # a TS block is not loaded at all
     with pytest.raises(KdlDecodeError, match=r"orator > port"):
-        load_whole_config(BAD_TS_BLOCK)
+        load_whole_config(bad)
 
 
-def test_python_loader_rejects_a_bad_python_block() -> None:
+def test_python_loader_rejects_a_bad_python_block(fixture_with: FixtureWith) -> None:
     # The TS loader loads this file (libs/ts/config/src/config.test.ts).
+    bad = fixture_with("max-iterations 7", 'max-iterations "many"')
     with pytest.raises(KdlDecodeError, match=r"heartwood > max-iterations"):
-        load_config(BAD_PY_BLOCK)
+        load_config(bad)
     with pytest.raises(KdlDecodeError, match=r"heartwood > max-iterations"):
-        load_whole_config(BAD_PY_BLOCK)
+        load_whole_config(bad)
 
 
-def test_whole_config_rejects_an_unknown_namespace(tmp_path: Path) -> None:
-    kdl = tmp_path / "config.kdl"
-    kdl.write_text('heartwod {\n    model "x"\n}\n')
+def test_whole_config_rejects_an_unknown_namespace(fixture_with: FixtureWith) -> None:
+    kdl = fixture_with("menhir {", 'heartwod {\n    model "x"\n}\nmenhir {')
     assert load_config(kdl).heartwood.model  # the Python loader ignores the stray block
     with pytest.raises(KdlDecodeError, match="heartwod"):
         load_whole_config(kdl)
+
+
+def test_a_missing_field_or_namespace_fails_the_load(
+    fixture_with: FixtureWith, tmp_path: Path
+) -> None:
+    """Values live only in config.kdl: no field or namespace falls back to a code default."""
+    no_field = fixture_with('    script-path "linguist/script"\n', "")
+    with pytest.raises(KdlDecodeError, match=r"linguist > script-path: missing \(required\)"):
+        load_config(no_field)
+    no_block = tmp_path / "sparse.kdl"
+    no_block.write_text('data {\n    root "/srv/state"\n}\n')
+    with pytest.raises(KdlDecodeError, match=r"missing \(required\)"):
+        load_config(no_block)
 
 
 # --- the loader, against the fixture --------------------------------------------------
@@ -128,16 +155,8 @@ def test_secret_fields_are_lazy_refs_not_plaintext() -> None:
     assert cfg.scribe.groq_api_key is None  # absent → None, not a ref
 
 
-def test_unknown_kdl_key_is_rejected(tmp_path: Path) -> None:
-    bad = tmp_path / "config.kdl"
-    bad.write_text(
-        textwrap.dedent("""
-        llm {
-            default-model "x"
-            bogus-field "nope"
-        }
-    """)
-    )
+def test_unknown_kdl_key_is_rejected(fixture_with: FixtureWith) -> None:
+    bad = fixture_with('default-model "test/model-a"', 'default-model "x"\n    bogus-field "nope"')
     with pytest.raises(KdlDecodeError, match=r"llm > bogus-field"):
         load_config(bad)
 
@@ -152,12 +171,12 @@ def test_single_value_producer_lists_load_as_lists() -> None:
 def test_data_paths_resolve_against_the_root(monkeypatch: pytest.MonkeyPatch) -> None:
     cfg = load_config(FIXTURE)
     assert cfg.data.root == "/srv/state"
-    assert cfg.data.content_root == "/srv/state/astra-data"  # the default, under root
+    assert cfg.data.content_root == "/srv/state/astra-data"  # relative, so under root
     assert cfg.scribe.data_path == "/srv/state/scribe/data"  # relative → under root
     assert cfg.codex.data_path == "/srv/state/codex/data"
     assert cfg.data.akasha_content == "/elsewhere/content"  # absolute → as-is
     assert cfg.scribe.incoming_path == ""  # empty → unset, not the root
-    # A dataset's default resolves under the default content root (`astra-data` under root).
+    # A relative dataset resolves under the content root (`astra-data` under root).
     assert cfg.data.linguist_data == "/srv/state/astra-data/linguist/data"
     whole = load_whole_config(FIXTURE)
     assert whole.menhir.results_path == "/srv/state/menhir/results.jsonl"

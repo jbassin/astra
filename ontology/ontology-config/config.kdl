@@ -2,9 +2,10 @@
 //
 // Plaintext config lives here as node args. Secrets are NEVER plaintext: a secret
 // is a `ref="sops:KEY"` pointer whose value lives in deploy/sops/secrets.enc.yaml
-// and is decrypted on demand by libs/{py,ts}/config. Defaults below are the faerrin
-// code-defaults; deployment-specific values (URLs, paths) are set per-deploy via the
-// env override (an env var named like the KEY, upper-cased) or by editing this file.
+// and is decrypted on demand by libs/{py,ts}/config (a secret's env override is an env var
+// named like the KEY, upper-cased). This file is the only place a value lives: the schemas
+// have no defaults, so every key below except a secret is required, and removing one fails
+// the load.
 //
 // Each language's loader validates only the blocks its apps read and ignores the rest;
 // one CI test validates every block (libs/py/config `WholeConfig`). The models.py

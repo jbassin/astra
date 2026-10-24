@@ -1,42 +1,148 @@
-// A small config.kdl for the libs/{py,ts}/config loader tests. Values are made up and
-// differ from the real file on purpose, so a passing test proves the loader, not today's
-// deployment. It holds blocks that Python reads, blocks that TS reads, and shared ones.
+// A complete config.kdl for the libs/{py,ts}/config loader tests. Every field but a secret
+// is required, so this file sets every namespace and field, like the real one. The values
+// the tests assert are made up and differ from the real file on purpose, so a passing test
+// proves the loader, not today's deployment. The tests derive their bad-value variants
+// from this file.
 
 data {
     root "/srv/state"
+    content-root "astra-data"
+    linguist-transcripts "linguist/transcripts"
+    linguist-data "linguist/data"
+    linguist-timeline "linguist/timeline"
+    mouthpiece-snapshot "mouthpiece/snapshot"
     akasha-content "/elsewhere/content"
-}
-telemetry {
-    otlp-endpoint "http://collector.test:4318"
+    akasha-snapshot "akasha/snapshot"
+    heartwood-ledger "heartwood/agent-runs.jsonl"
+    entity-registry "entity/entity.kdl"
 }
 llm {
     default-model "test/model-a"
     openrouter-api-key ref="sops:fixture_openrouter_key"
 }
+telemetry {
+    otlp-endpoint "http://collector.test:4318"
+    rum-endpoint "http://localhost:10353"
+    host-otlp-endpoint "http://localhost:10353"
+}
 scribe {
     data-path "scribe/data"
+    incoming-path ""
+    tmp-path ""
+    model "groq/whisper-large-v3"
 }
-mouthpiece-producer {
-    experiment-models "test/model-b"
-    experiment-max-tokens 4321
+linguist {
+    ingest-saved-dir ""
+    script-path "linguist/script"
+}
+mouthpiece {
+    episodes-path ""
+    model "openrouter/z-ai/glm-5.3"
+    tts-provider "elevenlabs"
+    elevenlabs-model "eleven_v4"
 }
 heartwood {
+    model "openrouter/deepseek/deepseek-v4.1-flash"
+    sub-model "openrouter/deepseek/deepseek-v4.1-flash"
     max-iterations 7
+    max-llm-calls 100
+    max-tokens 64000
+    max-output-chars 10000
+    backfill-budget-usd 100.0
+    requests-path "heartwood/requests"
+    request-timeout-minutes 180
+    artifacts-path "heartwood"
+}
+mouthpiece-producer {
+    model "openrouter/deepseek/deepseek-v4.1-flash"
+    sub-model "openrouter/deepseek/deepseek-v4.1-flash"
+    max-iterations 30
+    max-llm-calls 60
+    max-tokens 64000
+    max-output-chars 10000
+    experiment-models "test/model-b"
+    experiment-max-tokens 4321
+    artifacts-path "mouthpiece/experiments"
 }
 codex {
+    service-name "astra.codex"
     port 20001
     data-path "codex/data"
 }
-orator {
-    port 20002
-    target-lufs -9
-    measure-loudness #false
-    data-dir "/data"
-    session-secret ref="sops:fixture_session_secret"
+weal {
+    database-url ""
+    feed-ws-url ""
+    bind-addr "127.0.0.1:10203"
 }
 weal-overlay {
+    port 10360
     token ref="sops:fixture_overlay_token"
 }
+orator {
+    guild-id ""
+    database-url ""
+    port 20002
+    public-origin "https://orator.iridi.cc"
+    data-dir "/data"
+    allowed-user-ids ""
+    target-lufs -9
+    ingest-concurrency 2
+    measure-loudness #false
+    session-secret ref="sops:fixture_session_secret"
+}
+strider {
+    service-name "astra.strider"
+    port 10360
+    public-origin "https://strider.iridi.cc"
+}
+akasha-frontend {
+    service-name "astra.akasha-frontend"
+    port 10365
+    public-origin "https://akasha.iridi.cc"
+    audio-dir "/audio"
+}
+mouthpiece-frontend {
+    service-name "astra.mouthpiece-frontend"
+    port 10366
+    public-origin "https://mouthpiece.iridi.cc"
+    audio-dir "/audio"
+}
+vellum-frontend {
+    service-name "astra.vellum-frontend"
+    port 10367
+    public-origin "https://vellum.iridi.cc"
+}
+vellum-render {
+    service-name "astra.vellum-render"
+    port 10368
+}
+harrow {
+    service-name "astra.harrow"
+    port 10369
+    public-origin "https://harrow.iridi.cc"
+}
+ledger {
+    service-name "astra.ledger"
+    port 10370
+}
+portal {
+    port 10372
+    public-origin "https://portal.iridi.cc"
+    bridge-timeout-ms 15000
+    max-creates-per-request 10
+    bridge-user-id ""
+    oauth-state-path "/data/oauth/state.json"
+}
+portal-headless {
+    port 10373
+    foundry-origin "https://btl.iridi.cc"
+    world "faerrin"
+    gm-username "Portal"
+    reload-interval-hours 24
+}
 menhir {
+    service-name "astra.menhir"
+    port 10375
+    public-origin "https://menhir.iridi.cc"
     results-path "menhir/results.jsonl"
 }

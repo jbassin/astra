@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from astra_config import load_config
 from astra_config.models import MouthpieceProducerConfig
 from astra_linguist.chronicle import ShowInfo
 from astra_mouthpiece.hosts import load_hosts
@@ -56,9 +57,12 @@ def _inputs() -> ProducerInputs:
 
 
 HOSTS = load_hosts()
-CFG = MouthpieceProducerConfig(
-    experiment_models=["openrouter/z-ai/glm-5.3", "openrouter/deepseek/deepseek-v4.1-flash"],
-    experiment_max_tokens=[128000, 64000],
+CFG = MouthpieceProducerConfig.model_validate(
+    {
+        **load_config().mouthpiece_producer.model_dump(),  # config.kdl holds every value
+        "experiment_models": ["openrouter/z-ai/glm-5.3", "openrouter/deepseek/deepseek-v4.1-flash"],
+        "experiment_max_tokens": [128000, 64000],
+    }
 )
 
 
