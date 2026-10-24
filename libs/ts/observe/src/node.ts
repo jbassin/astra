@@ -15,6 +15,7 @@ import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { UndiciInstrumentation } from "@opentelemetry/instrumentation-undici";
 
 import {
+  HEALTHZ_PATH,
   type InitOptions,
   initTelemetry,
   inContainer,
@@ -72,6 +73,11 @@ export function isLoopback(address: string | undefined): boolean {
   return address === "::1" || address.startsWith("127.") || address.startsWith("::ffff:127.");
 }
 
+/** Whether an inbound request URL (path and query) is the health check. */
+export function isHealthCheck(url: string | undefined): boolean {
+  return url === HEALTHZ_PATH || url?.startsWith(`${HEALTHZ_PATH}?`) === true;
+}
+
 let instrumented = false;
 
 /**
@@ -93,12 +99,14 @@ export function instrumentHttp(): void {
   process.env.OTEL_SEMCONV_STABILITY_OPT_IN ??= "http";
   // Inside a container only the compose healthcheck (`node -e "fetch(localhost…)"`, run by
   // `docker exec`) connects over loopback; real traffic arrives over a Docker network.
-  // Leave those probes untraced, or every service makes a span every 15 s.
+  // Leave those probes untraced, or every service makes a span every 15 s. `/healthz` is
+  // never traced, wherever the probe comes from.
   const container = inContainer();
   registerInstrumentations({
     instrumentations: [
       new HttpInstrumentation({
-        ignoreIncomingRequestHook: (req) => container && isLoopback(req.socket.remoteAddress),
+        ignoreIncomingRequestHook: (req) =>
+          isHealthCheck(req.url) || (container && isLoopback(req.socket.remoteAddress)),
       }),
       new UndiciInstrumentation(),
     ],
