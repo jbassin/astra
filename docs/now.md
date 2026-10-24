@@ -10,11 +10,11 @@ Updated 2026-10-23.
 
 ## Next action
 
-**Phase 2, Wave 1** of the slice checklist in section 0.1 of the paydown plan. The layout move
-(repo-1, [ADR 0015](adr/0015-repo-layout-by-domain.md)) is live; apps sit at
-`apps/<domain>/<role>/`. `main` takes changes only through pull requests with auto-merge
-([ADR 0016](adr/0016-merge-model-auto-merge.md)). Calls parked for Josh are in the backlog under
-"Paydown decisions (Josh)".
+**Phase 2, Wave 2** of the slice checklist in section 0.1 of the paydown plan. Wave 1 is done
+except ops-2; the checklist marks what is live. `main` takes changes only
+through pull requests with auto-merge ([ADR 0016](adr/0016-merge-model-auto-merge.md)), and
+`just deploy` now waits for every container to be healthy. Calls parked for Josh are in the
+backlog under "Paydown decisions (Josh)"; steps only he can do are under "Smaller calls".
 
 ## Blocked or waiting
 

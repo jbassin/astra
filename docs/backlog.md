@@ -63,6 +63,15 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       Until then the dev tree's pre-push `just ci` fails on `apps/orator-controller/.tsbuild`.
 - [ ] Optional: delete or rebase `origin/review/loti2-parentheticals` (closed pull request #1 from
       July; the layout move makes it conflict).
+- [ ] Update the portal Foundry module to 0.5.0 (svc-2): in Foundry's module list choose Update
+      (the server serves the manifest at `https://portal.iridi.cc/module/module.json`), then
+      `just deploy --restart portal-headless` and reload open GM tabs. Until then the server takes
+      the 0.4.x module on the legacy path with a WARN. Foundry is 14.365; `module.json` is verified
+      only for 13.
+- [ ] Remove the SOPS keys `anthropic_api_key` and `cartesia_api_key` from
+      `deploy/sops/secrets.enc.yaml`; nothing reads them since pipe-2.
+- [ ] Delete the root-owned `/ruby/data/experiments/faerrin/pkg/wretch/data/saved` (nothing mounts
+      it since pipe-1).
 - [ ] Activate mise in your shell (until then pyenv shims fail on bare `python3` in the repo).
 - [ ] orator: the physical Stream Deck test was never run (opened 2026-06-23; low priority).
 - [ ] Check whether the old standalone harrow container still runs unrouted on `localhost:10204`
@@ -111,6 +120,13 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Deploy and ops
 
+- Flaky under parallel load (several `just ci` runs at once): codex `ssrSmoke`'s first request times
+  out at 5 s, and codex `build-search.test.ts` "page_count matches the fixture manifest" failed
+  once — agent.
+- App-level repo-root walk-ups remain in `apps/akasha/py` `snapshot.py` and `apps/assay/py`
+  `book.py` (lib-2 covered the libraries) — agent.
+- vellum visual regression still binds the fixed port 5350 (it runs only in its CI container) —
+  agent.
 - Compose `command:` lines duplicate each image's `CMD` and drift from it; delete them — agent
   (repo-3).
 - The watchdog does not check `astra-backup.timer` or snapshot age, and the restore test is not
