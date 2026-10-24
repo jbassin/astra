@@ -21,6 +21,7 @@
     units-install [GROUP...]            link + enable the systemd user units (no group = all)
     alert-sudoers-install               one-time ROOT step: the watchdog's sudoers drop-ins
     portal-module-install               build the Foundry module and drop it into Foundry
+    pipeline-terminate RUN_ID [--yes]   LIVE: stop a Dagster run and its run container
 
 PATH OPTIONS (``--data-root``, ``--uv``, ``--mouthpiece-episodes``, ``--akasha-audio``,
 ``--deploy-root``, ``--just``, ``--craig-drop-dir``) default exactly as the justfile's
@@ -46,7 +47,7 @@ from astra_config import find_repo_root
 from astra_observe import get_logger, get_tracer
 from astra_ontology_config import load as load_config
 
-from . import backfill, craig, heartwood, host, host_metrics, publish, signoz
+from . import backfill, craig, heartwood, host, host_metrics, pipeline, publish, signoz
 from .context import Ctx, Fail
 
 log = get_logger("astra.ops")
@@ -75,6 +76,8 @@ LIVE = {
     "and LIVE (commits, pushes and redeploys akasha).",
     "heartwood-requests": "this is PAID (one heartwood agent run per pending request) and LIVE "
     "(each publishes, pushes and redeploys akasha).",
+    "pipeline-terminate": "this is LIVE: it terminates the Dagster run and stops its container "
+    "(a paid step in it is lost; re-execute from failure to resume).",
 }
 AGENT_PAID_LIVE = (
     "this is PAID (OpenRouter LLM calls) and LIVE (publishes, pushes and redeploys akasha)."
@@ -212,6 +215,15 @@ def _heartwood_revert(ctx: Ctx, args: list[str]) -> int:
     return heartwood.heartwood_revert(ctx, args[0])
 
 
+def _pipeline_terminate(ctx: Ctx, args: list[str]) -> int:
+    if not args or args[0].startswith("-"):
+        Ctx.err("pipeline-terminate: usage: pipeline-terminate RUN_ID [--yes]")
+        return 64
+    yes = _only_yes("pipeline-terminate", args[1:])
+    ctx.confirm("pipeline-terminate", LIVE["pipeline-terminate"], yes=yes)
+    return pipeline.pipeline_terminate(ctx, args[0])
+
+
 def _no_args(command: str, args: list[str]) -> None:
     if args:
         Ctx.err(f"{command}: takes no arguments (got {' '.join(args)})")
@@ -308,6 +320,7 @@ COMMANDS: dict[str, Callable[[Ctx, list[str]], int]] = {
     "units-install": _units_install,
     "alert-sudoers-install": _bare("alert-sudoers-install", host.alert_sudoers_install),
     "portal-module-install": _bare("portal-module-install", host.portal_module_install),
+    "pipeline-terminate": _pipeline_terminate,
 }
 
 #: Commands that ask before they run (``--yes`` skips the question).

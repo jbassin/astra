@@ -39,8 +39,9 @@ x-astra-postgres: &astra-postgres
   image: postgres:16-alpine
 
 # The Dagster trio: `pipeline` carries webserver/daemon -> code-server gRPC (:4000) and their
-# OTLP to the collector; `dagster-db` reaches dagster-postgres (run workers are subprocesses
-# of dagster-code, so it writes runs and events too).
+# OTLP to the collector; `dagster-db` reaches dagster-postgres. Each run's container
+# (dagster.yaml run_launcher, ADR 0030) joins the same two nets: it writes runs and events
+# to Postgres and calls the provider APIs.
 x-dagster-networks: &dagster-networks [pipeline, dagster-db]
 
 x-pg-healthcheck: &pg-healthcheck
@@ -54,6 +55,15 @@ x-node-healthcheck: &node-healthcheck
   interval: 15s
   timeout: 5s
   retries: 5
+
+# The Dagster services' healthcheck shape; each service adds its `test`. Every probe starts
+# a Python process that imports Dagster (a few seconds), and the code server loads the
+# whole asset graph before it answers, hence the timeout and the start period.
+x-dagster-healthcheck: &dagster-healthcheck
+  interval: 15s
+  timeout: 20s
+  retries: 5
+  start_period: 90s
 
 # Labels on every image built here (0037 OPS-3), so `docker inspect` answers "which commit
 # is this container running". deploy/deploy.sh exports ASTRA_REVISION (the full sha it
@@ -94,10 +104,16 @@ x-dagster-env: &dagster-env
   # (mouthpiece.model); linguist's chronicle uses GLM 5.2 (llm.default-model). litellm
   # reads this key from env.
   OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+  # The run launcher's image and networks (dagster.yaml run_launcher): the image this file
+  # builds and the two nets the trio is on, by their Docker names (project `astra`).
+  DAGSTER_RUN_IMAGE: astra-dagster:local
+  DAGSTER_RUN_NETWORK_PIPELINE: astra_pipeline
+  DAGSTER_RUN_NETWORK_DB: astra_dagster-db
 
-# Pipeline data dirs bind-mounted into every Dagster service (code/webserver/daemon)
-# so the assets' disk-cache seams persist + are shared across the control plane (and
-# with host-dev `uv run dagster dev`, which uses the same host dirs). Every mount is
+# Pipeline data dirs bind-mounted into dagster-code (sensors and schedules read them) and,
+# through dagster.yaml's run_launcher `volumes` (the same list), into every run's container
+# (the assets write them), so the assets' disk-cache seams persist (and are shared with
+# host-dev `uv run dagster dev`, which uses the same host dirs). Every mount is
 # IDENTICAL-PATH (container path == host path): the code reads each path from the baked
 # config.kdl (data.root / data.content-root + the relative data paths), so the same
 # resolved path must exist inside the container. Every host path in this file is under
@@ -135,6 +151,18 @@ x-dagster-volumes: &dagster-pipeline-volumes
   # dir is created by deploy.sh init_artifacts as uid 1000.
   - { <<: *bind, source: /ruby/data/astra-state/heartwood/requests, target: /ruby/data/astra-state/heartwood/requests }
 
+# The daemon mounts only the host's Docker socket: it launches each run's container, checks
+# its health and stops it on a terminate (dagster.yaml run_launcher, ADR 0030). The socket is
+# root on the host, so only the daemon mounts it: never dagster-code, a run container or the
+# webserver, which anyone on the LAN reaches without auth. The UI's "Terminate" therefore
+# cannot stop a run's container; `just pipeline-terminate <run-id>` runs the cancel inside
+# the daemon. Neither the daemon nor the webserver runs asset code (sensors and schedules
+# run in dagster-code, assets in the run containers), so neither needs the pipeline binds.
+# The daemon runs as uid 1000 and joins the socket's group: deploy.sh exports its gid as
+# DOCKER_GID (the default is this host's `docker` group).
+x-dagster-daemon-volumes: &dagster-daemon-volumes
+  - { <<: *bind, source: /var/run/docker.sock, target: /var/run/docker.sock }
+
 services:
   # --- Dagster: the batch-pipeline control plane ---
   dagster-postgres:
@@ -166,6 +194,9 @@ services:
     networks: *dagster-networks
     environment: *dagster-env
     volumes: *dagster-pipeline-volumes
+    healthcheck:
+      <<: *dagster-healthcheck
+      test: ["CMD", "dagster", "api", "grpc-health-check", "-p", "4000"]
 
   dagster-webserver:
     <<: *astra-app
@@ -176,12 +207,14 @@ services:
       - "10350:3000" # Dagster UI (astra range)
     networks: *dagster-networks
     environment: *dagster-env
-    volumes: *dagster-pipeline-volumes
+    healthcheck:
+      <<: *dagster-healthcheck
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:3000/server_info', timeout=5)"]
     depends_on:
       dagster-postgres:
         condition: service_healthy
       dagster-code:
-        condition: service_started
+        condition: service_healthy
 
   dagster-daemon:
     <<: *astra-app
@@ -190,12 +223,19 @@ services:
     command: ["dagster-daemon", "run", "-w", "/opt/dagster/home/workspace.yaml"]
     networks: *dagster-networks
     environment: *dagster-env
-    volumes: *dagster-pipeline-volumes
+    volumes: *dagster-daemon-volumes
+    group_add: ["${DOCKER_GID:-999}"]
+    # Every daemon (sensors, schedules, run queue, run monitoring) heartbeat in the last
+    # 5 minutes. The daemon's own tolerance stays at the 30-minute default, so a slow tick
+    # does not restart it. A fresh daemon passes on its predecessor's heartbeats at first.
+    healthcheck:
+      <<: *dagster-healthcheck
+      test: ["CMD-SHELL", "DAGSTER_DAEMON_HEARTBEAT_TOLERANCE=300 dagster-daemon liveness-check"]
     depends_on:
       dagster-postgres:
         condition: service_healthy
       dagster-code:
-        condition: service_started
+        condition: service_healthy
 
   # --- weal: the dice/host bot's roll-history + macro store (0009, Decision F) ---
   weal-postgres:

@@ -351,6 +351,13 @@ artifacts-init:
 doctor:
     ASTRA_DATA_ROOT="{{data_root}}" ASTRA_DEPLOY_ROOT="{{deploy_root}}" "{{justfile_directory()}}/deploy/doctor.sh"
 
+# The UI's "Terminate" cannot stop a run's container (only dagster-daemon mounts the Docker
+# socket; ADR 0030), so this runs the cancel inside the daemon. Exit codes: libs/py/ops
+# pipeline.py. `--yes` skips the question.
+# Terminate a Dagster run and stop its run container (LIVE).
+pipeline-terminate run_id *flags:
+    @{{ops}} pipeline-terminate "$@"
+
 # Never touches the astra project. Needs Docker; about 20 s. Not in `ci`.
 # Check deploy/wait-healthy.sh (deploy.sh's health wait) against throwaway alpine containers.
 deploy-health-test:

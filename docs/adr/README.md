@@ -35,7 +35,7 @@ To change a decision, add a new ADR and mark the old one `Superseded by NNNN`; n
 | [0027](0027-rust-ci-lane.md) | Rust gets a path-filtered CI lane and a source-hash check | Accepted (done) |
 | [0028](0028-replace-vite-plus.md) | Replace vite-plus with pnpm -r and root vitest projects | Accepted (done 2026-10-24) |
 | [0029](0029-python-312-mise-just.md) | Python 3.12, mise-pinned host tools, and one just entry point | Accepted (done) |
-| [0030](0030-dagster-docker-run-launcher.md) | Dagster adopts the Docker run launcher | Accepted, not yet built |
+| [0030](0030-dagster-docker-run-launcher.md) | Dagster adopts the Docker run launcher | Accepted |
 | [0031](0031-akasha-spa-navigation.md) | akasha uses SPA navigation with server functions | Accepted, not yet built |
 | [0032](0032-one-design-token-source.md) | One design-token source generates two themes | Accepted, not yet built |
 | [0033](0033-deploy-checkout-and-just-deploy.md) | Production builds from a deploy checkout with one deploy command | Accepted (done) |
