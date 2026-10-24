@@ -99,6 +99,7 @@ describe.skipIf(TEST_DATABASE_URL === undefined)("PostgresStore (real Postgres)"
       original_title: "Dirtmouth",
       status: "ready",
       duration_ms: 120_000,
+      file_size: 5_000_000,
       loudness_lufs: -14.5,
     });
     await store.createTrack({ title: "City of Tears", sourceType: "upload", collectionId: c.id });

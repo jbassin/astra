@@ -254,7 +254,7 @@ export interface LibraryStore extends PlaybackStore {
 const C =
   "id, name, slug, ip_or_game, source_type, source_url, cover_url, created_at::text, updated_at::text";
 const T =
-  "id, collection_id, title, original_title, source_type, source_url, source_video_id, file_path, format, duration_ms, file_size, loudness_lufs, status, error, added_at::text, updated_at::text";
+  "id, collection_id, title, original_title, source_type, source_url, source_video_id, file_path, format, duration_ms, file_size::float8 as file_size, loudness_lufs, status, error, added_at::text, updated_at::text";
 const TAG = "id, name, category, color, created_at::text";
 const PL = "id, name, loop_mode, shuffle, created_at::text, updated_at::text";
 const JOB =
