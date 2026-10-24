@@ -65,7 +65,9 @@ const RENDER_DEPTH_MAX: usize = 4;
 // ---------------------------------------------------------------------------
 
 /// The five goodness bands (D32-11).
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "lowercase")]
+#[cfg_attr(test, derive(ts_rs::TS), ts(rename = "WealGoodness"))]
 pub enum Goodness {
     Fumble,
     Bad,

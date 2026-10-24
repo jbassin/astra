@@ -4,9 +4,22 @@
 
 import { createRequire } from "node:module";
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, expectTypeOf, it } from "vitest";
 
-import { evaluate, reinstantiate } from "./index.js";
+import {
+  evaluate,
+  reinstantiate,
+  type WealDieDisplay,
+  type WealResult,
+  type WealStage,
+} from "./index.js";
+
+// tsc checks these: the generated gen/weal_api.d.ts resolves to the real contract, not `any`.
+expectTypeOf<WealStage>().toEqualTypeOf<
+  "parse" | "type" | "eval" | "fuel" | "prelude" | "internal"
+>();
+expectTypeOf<WealResult["ok"]>().toEqualTypeOf<boolean>();
+expectTypeOf<WealDieDisplay["standardDice"]>().toEqualTypeOf<Array<[number, number]>>();
 
 // The S5 golden seed (libs/rust/weal-engine/tests/render_goldens.rs).
 const seed = new Uint8Array(32).fill(77);

@@ -67,7 +67,11 @@ For the player-facing language guide, see `apps/weal/bot/README.md`.
   parse+type-check only; errors carry `stage: parse|type|eval|fuel|prelude|internal`, span,
   and `preludeName` for failing saves. `internal` is an `Internal` engine error (an invariant a
   well-typed program should never break; message prefix `internal error:`), never a player error. The pure
-  function is native-tested; the wasm-bindgen wrapper is a one-liner.
+  function is native-tested; the wasm-bindgen wrapper is a one-liner. The response shapes are the
+  JSON contract's single source: under `cfg(test)` each derives `ts_rs::TS` (`ts-rs` is a
+  dev-dependency only, so it never reaches the wasm), and the `ts_bindings_are_current` test
+  compares the declarations with the committed `libs/ts/weal-engine/gen/weal_api.d.ts`, which the
+  TS wrapper re-exports. Change a shape, then rebuild; the test fails until you do.
 
 ## Build pipeline (the committed artifact)
 
@@ -78,7 +82,8 @@ just weal-engine-build
 runs, from the repo root: `cargo build --release --target wasm32-unknown-unknown` →
 `wasm-bindgen --target nodejs` into `libs/ts/weal-engine/gen/` → `wasm-opt -O2` in place →
 rewrites `gen/package.json` to `{"type":"commonjs"}` (wasm-bindgen won't; the CJS marker is what
-lets the ESM wrapper `createRequire` the glue) → writes the staleness stamp
+lets the ESM wrapper `createRequire` the glue) → regenerates `gen/weal_api.d.ts` (the
+`ts_bindings_are_current` test with `WEAL_WRITE_TS_BINDINGS=1`) → writes the staleness stamp
 `gen/SOURCE_SHA256` (`tools/gen-stamp.sh write`) → prints sha256s.
 
 - **Pinned tools, hard-required** (committed bytes must be machine-independent; the recipe

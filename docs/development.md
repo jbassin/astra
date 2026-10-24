@@ -87,7 +87,9 @@ zod is off the catalog until its users converge (codex and menhir resolve 4.6.7,
 committed wasm in `libs/ts/weal-engine/gen/` with `just weal-engine-build`, never by hand. Two CI
 jobs guard it ([ADR 0027](adr/0027-rust-ci-lane.md)), both in `just ci`: `weal-engine-rust` (fmt,
 clippy, tests; needs rustup on the host) and `weal-engine-hash-check`, which fails when `gen/` is
-stale against the Rust sources and needs no Rust (it is also in `just check`).
+stale against the Rust sources and needs no Rust (it is also in `just check`). The build also
+writes `gen/weal_api.d.ts`, the TS types of the engine's JSON results, generated from the Rust by
+`ts-rs`; a crate test fails when that file lags the Rust.
 See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
 
 ## Standing conventions
