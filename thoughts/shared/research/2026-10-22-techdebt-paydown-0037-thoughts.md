@@ -301,7 +301,13 @@ backfills off; a nullary weal function re-runs its body each call; akasha SPA na
 token source keep today's look exactly (no stakeholder sign-off needed); assay theme P stays out
 (ADR 0043).
 
-- [ ] **repo-1** layout move to `apps/<domain>/{py,web}` (ADR 0015); lands alone first. D(all).
+- [x] **repo-1** layout move (ADR 0015), live 2026-10-24 ~00:10Z at `5cab2255`. Prep repo-1a
+  (`a6a84211`) made code resolve the repo root by marker, not depth; the move (`e68a8d97`) is one
+  commit (2015 files; test counts, member lists and image sizes unchanged). **Incident:** its first
+  deploy crash-looped all ten site-kit servers for about 10 minutes, because ten compose
+  `command:` overrides still used the old depth and `deploy.sh` reported success anyway. Rolled
+  back to `241974a6`, fixed in `5cab2255`, redeployed: all containers healthy, sites 200, no ERROR
+  logs, bots ran clean (26 episodes).
 - Wave 1:
   - [ ] repo-2 one Node Dockerfile (`ARG APP`, `pnpm fetch`/`deploy --prod`); retire the
     `.dockerignore` allowlist. D(all).
