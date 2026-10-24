@@ -88,6 +88,13 @@ export const FIELD_LIMIT = 1024;
 /** Discord's embed-description limit. */
 export const DESCRIPTION_LIMIT = 4096;
 
+/**
+ * What players see for an engine fault (`stage:"internal"`). It is generic on
+ * purpose: the detail is logged at ERROR for the operator, not posted.
+ */
+export const ENGINE_FAULT_TITLE = "engine fault";
+export const ENGINE_FAULT_LINE = "something broke deep in the dice machinery — it's been reported";
+
 /** Clamp to `max` chars INCLUSIVE, replacing the tail with an ellipsis. */
 export function truncate(s: string, max: number): string {
   return s.length <= max ? s : `${s.slice(0, max - 1)}…`;
@@ -202,15 +209,13 @@ export function saveRefusal(
       ? `${lead} — with it saved, \`${refusal.probe}\` would break for everyone:`
       : `${lead} — using it (\`${refusal.probe}\`) trips a bug in the dice engine:`,
   ];
-  if (refusal.error === null) {
-    lines.push("the dice engine crashed while i was checking it");
-  } else if (refusal.kind === "rolls") {
+  if (refusal.error.stage === "internal") {
+    // An engine fault: the detail goes to the operator log, not the channel.
+    lines.push(ENGINE_FAULT_LINE);
+  } else {
     // A prelude error here can only be the new save (every other save loads
     // the same with or without it), so its span points into `source`.
     lines.push(errorDescription(refusal.probe, refusal.error, [[name, source]]));
-  } else {
-    // The use ran wrapped, so its span points into source the player never typed.
-    lines.push(refusal.error.message);
   }
   if (refusal.shadowsBuiltin) lines.push(`\`${name}\` is a built-in — save under another name`);
   return {
@@ -272,10 +277,19 @@ function trimEndMatches(s: string, pat: string): string {
   return t;
 }
 
-/** `Handler::trim` — strip code-fence / ocaml wrappers (repeatedly), then whitespace. */
+/** A code fence's language tag: one lowercase word alone on the fence's first line. */
+const FENCE_LANG_RE = /^[a-z]+[ \t]*\r?\n/;
+
+/**
+ * `Handler::trim` — strip code-fence wrappers (repeatedly), the fence's
+ * language tag (any one word, so a pasted ```` ```weal ```` save confirmation
+ * rolls), a leading `ocaml` (v1 habit), then whitespace.
+ */
 export function trimContent(s: string): string {
   let t = s.trim();
+  const isFenced = t.startsWith("```");
   t = trimStartMatches(t, "```");
+  if (isFenced) t = t.replace(FENCE_LANG_RE, "");
   t = trimStartMatches(t, "ocaml");
   t = trimEndMatches(t, "```");
   return t.trim();

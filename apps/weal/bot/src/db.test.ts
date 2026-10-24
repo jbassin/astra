@@ -18,11 +18,13 @@ import {
 
 class FakeStore implements WealStore {
   readonly inserts: [number, number, number, number][] = [];
+  statements = 0;
   ensureSchema(): Promise<void> {
     return Promise.resolve();
   }
-  insertDie(base: number, value: number, playerId: number, blameId: number): Promise<void> {
-    this.inserts.push([base, value, playerId, blameId]);
+  insertDice(dice: readonly [number, number][], playerId: number, blameId: number): Promise<void> {
+    this.statements += 1;
+    for (const [base, value] of dice) this.inserts.push([base, value, playerId, blameId]);
     return Promise.resolve();
   }
   getAllFuncs(): Promise<Func[]> {
@@ -74,7 +76,7 @@ describe("diceToPersist — save-guards over standardDice", () => {
 });
 
 describe("saveDice", () => {
-  test("inserts exactly the persisted dice with player/blame ids", async () => {
+  test("inserts exactly the persisted dice with player/blame ids, in one statement", async () => {
     const store = new FakeStore();
     await saveDice(
       store,
@@ -90,13 +92,14 @@ describe("saveDice", () => {
       [20, 5, 42, 7],
       [6, 2, 42, 7],
     ]);
+    expect(store.statements).toBe(1);
   });
 
-  test("a junk pool inserts nothing", async () => {
+  test("a junk pool sends no statement at all", async () => {
     const store = new FakeStore();
     const tooBig = Array.from({ length: MAX_POOL + 1 }, () => [6, 1] as [number, number]);
     await saveDice(store, tooBig, 1, 1);
-    expect(store.inserts).toEqual([]);
+    expect(store.statements).toBe(0);
   });
 });
 

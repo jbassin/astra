@@ -15,8 +15,9 @@
 //! - `mode:"run"` = the full pipeline. Error stages: `parse` (source fails
 //!   to parse/lower), `type`, `eval`, `fuel` (any exhausted counter — fuel,
 //!   caps, or dist budget), `prelude` (a SAVES entry failed — carries
-//!   `preludeName` + a span into THAT save's source). An `Internal` engine
-//!   error reports as `eval` with an `internal error:` prefix.
+//!   `preludeName` + a span into THAT save's source), and `internal` (an
+//!   `Internal` engine error: an invariant a well-typed program should never
+//!   break; the message keeps its `internal error:` prefix).
 //! - `budget` scales interpreter steps ONLY (D32-12): non-zero = the
 //!   absolute interpreter-step budget for the run (0 = the 2,000,000
 //!   default). Depth/construction caps and the distribution budget are
@@ -149,7 +150,7 @@ fn eval_err_json(e: &EvalError, prelude_name: Option<String>) -> String {
         ErrorKind::Fuel => err_json("fuel", e.message.clone(), e.span, prelude_name),
         ErrorKind::Eval => err_json("eval", e.message.clone(), e.span, prelude_name),
         ErrorKind::Internal => err_json(
-            "eval",
+            "internal",
             format!("internal error: {}", e.message),
             e.span,
             prelude_name,
@@ -355,5 +356,31 @@ mod wasm {
         mode: &str,
     ) -> String {
         super::evaluate(source, saves_json, seed, budget, mode)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn parsed(json: &str) -> serde_json::Value {
+        serde_json::from_str(json).expect("error payload is JSON")
+    }
+
+    #[test]
+    fn an_internal_error_reports_its_own_stage() {
+        let v = parsed(&eval_err_json(&EvalError::internal("boom"), None));
+        assert_eq!(v["stage"], "internal");
+        assert_eq!(v["message"], "internal error: boom");
+        assert!(v["preludeName"].is_null());
+    }
+
+    #[test]
+    fn an_ordinary_eval_error_stays_eval() {
+        let v = parsed(&eval_err_json(
+            &EvalError::eval("division by zero", None),
+            None,
+        ));
+        assert_eq!(v["stage"], "eval");
     }
 }

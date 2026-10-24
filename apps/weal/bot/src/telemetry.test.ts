@@ -1,21 +1,27 @@
 /**
  * Telemetry adds (spec 0032 D32-20), asserted through a mocked `@astra/observe`
  * (the real module's instruments are no-ops without initTelemetry): the
- * `weal.v2.errors{stage}` / `weal.v2.fuel_aborts` counters, the panic WARN (a
- * Class-A rule pages Discord on ERROR — WARN is load-bearing), the stale-row
- * boot WARN, and the `weal.goodness` / `weal.engine_ms` span attributes.
+ * `weal.v2.errors{stage}` / `weal.v2.fuel_aborts` counters, the engine-fault
+ * ERROR (a Class-A rule pages Discord on ERROR, so only engine faults use it),
+ * the history-failure and stale-row WARNs, and the `weal.goodness` /
+ * `weal.engine_ms` span attributes.
  */
 
 import type { WealHost } from "@astra/ontology";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 const counted: { name: string; attrs?: Record<string, unknown> }[] = [];
-const logged: { severityText?: string; body?: unknown }[] = [];
+const logged: { severityText?: string; body?: unknown; attributes?: Record<string, unknown> }[] =
+  [];
 const spanAttrs: Record<string, unknown> = {};
 
 vi.mock("@astra/observe", () => ({
   getLogger: () => ({
-    emit: (rec: { severityText?: string; body?: unknown }) => {
+    emit: (rec: {
+      severityText?: string;
+      body?: unknown;
+      attributes?: Record<string, unknown>;
+    }) => {
       logged.push(rec);
     },
   }),
@@ -74,7 +80,7 @@ function deps(over: Partial<HandlerDeps> = {}): HandlerDeps {
     rng: { choose: <T>(xs: readonly T[]) => xs[0] as T },
     store: {
       ensureSchema: () => Promise.resolve(),
-      insertDie: () => Promise.resolve(),
+      insertDice: () => Promise.resolve(),
       getAllFuncs: () => Promise.resolve([]),
       insertFunc: () => Promise.resolve(),
       getAllFuncsV2: () => Promise.resolve([]),
@@ -122,25 +128,57 @@ describe("counters (D32-20)", () => {
   });
 });
 
-describe("panic containment logging (D32-14)", () => {
-  test("panic → weal.v2.errors{stage:panic} + a WARN (never ERROR) log", async () => {
+describe("engine fault logging (stage internal)", () => {
+  test("a fault counts weal.v2.errors{stage:internal} and logs one ERROR with the detail", async () => {
     await handleMessage(
-      "d20",
+      "d20 + 1",
       PROFILE,
       deps({
         engineHooks: {
-          evaluateFn: () => {
-            throw new Error("wasm trap: unreachable");
-          },
-          reinstantiateFn: () => {},
+          evaluateFn: () => ({
+            ok: false,
+            stage: "internal",
+            message: "internal error: boom",
+            span: { start: 0, end: 3 },
+            preludeName: null,
+          }),
         },
       }),
     );
-    expect(counted).toContainEqual({ name: "weal.v2.errors", attrs: { stage: "panic" } });
-    const panicLogs = logged.filter((l) => String(l.body).includes("weal engine panic"));
-    expect(panicLogs).toHaveLength(1);
-    expect(panicLogs[0]?.severityText).toBe("WARN");
+    expect(counted).toContainEqual({ name: "weal.v2.errors", attrs: { stage: "internal" } });
+    const errors = logged.filter((l) => l.severityText === "ERROR");
+    expect(errors).toHaveLength(1);
+    expect(String(errors[0]?.body)).toBe(
+      "weal engine fault (stage internal) for Jorge: internal error: boom — source: d20 + 1",
+    );
+    expect(errors[0]?.attributes).toEqual({
+      "weal.stage": "internal",
+      "weal.player": "Jorge",
+      "weal.source": "d20 + 1",
+      "weal.span": "0..3",
+    });
+    expect(spanAttrs["weal.stage"]).toBe("internal");
+  });
+
+  test("a player's own error logs nothing at ERROR", async () => {
+    await handleMessage('1 + "a"', PROFILE, deps());
     expect(logged.some((l) => l.severityText === "ERROR")).toBe(false);
+  });
+});
+
+describe("roll history failures", () => {
+  test("a failed write counts weal.dice.persist_failures and logs a WARN", async () => {
+    const store = {
+      ...deps().store,
+      insertDice: () => Promise.reject(new Error("connection refused")),
+    };
+    await handleMessage("d20", PROFILE, deps({ store }));
+    await new Promise((resolve) => setImmediate(resolve));
+    expect(counted).toContainEqual({ name: "weal.dice.persist_failures", attrs: undefined });
+    const warns = logged.filter((l) => String(l.body).includes("roll history write failed"));
+    expect(warns).toHaveLength(1);
+    expect(warns[0]?.severityText).toBe("WARN");
+    expect(String(warns[0]?.body)).toContain("connection refused");
   });
 });
 
@@ -149,11 +187,16 @@ describe("boot validation logging (D32-17)", () => {
     const rows = [
       { id: 1, name: "bonus", source: "3" },
       { id: 2, name: "bad", source: "1 +" },
+      { id: 3, name: "zero", source: "1 / 0" },
     ];
     expect(loadValidatedFuncs(rows)).toEqual([["bonus", "3"]]);
     const warns = logged.filter((l) => l.severityText === "WARN");
-    expect(warns).toHaveLength(1);
+    expect(warns).toHaveLength(2);
     expect(String(warns[0]?.body)).toContain("funcs_v2 row 2 (bad)");
+    expect(String(warns[1]?.body)).toBe(
+      "skipping saved weal source: funcs_v2 row 3 (zero): prelude: division by zero",
+    );
+    expect(warns[1]?.attributes).toEqual({ "weal.save": "zero", "weal.stage": "prelude" });
     expect(logged.some((l) => l.severityText === "ERROR")).toBe(false);
   });
 });

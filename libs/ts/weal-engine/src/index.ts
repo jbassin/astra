@@ -26,17 +26,23 @@ let gen = require(GLUE_SPECIFIER) as GenModule;
 
 /**
  * Drop and re-require the CommonJS glue, re-instantiating the wasm module from
- * the committed bytes (the glue reads + instantiates at require time). The bot
- * calls this after a caught wasm trap/panic — post-panic engine state is
- * undefined (spec D32-14) — and it doubles as the memory high-water release.
+ * the committed bytes (the glue reads + instantiates at require time).
+ * {@link evaluate} calls this itself after a caught wasm trap — post-trap
+ * engine state is undefined (spec D32-14) — so callers never need to; it also
+ * serves as the memory high-water release.
  */
 export function reinstantiate(): void {
   delete require.cache[require.resolve(GLUE_SPECIFIER)];
   gen = require(GLUE_SPECIFIER) as GenModule;
 }
 
-/** The D32-11 error stages. */
-export type WealStage = "parse" | "type" | "eval" | "fuel" | "prelude";
+/**
+ * The D32-11 error stages. `parse`/`type`/`eval`/`fuel`/`prelude` are the
+ * player's (their source, their saves, their budget); `internal` is the
+ * engine's own fault — an invariant violation the engine reports, or a wasm
+ * trap this wrapper caught (message prefix `engine trap:`).
+ */
+export type WealStage = "parse" | "type" | "eval" | "fuel" | "prelude" | "internal";
 
 /** The D32-11 goodness bands (null = one-face support / non-die display). */
 export type WealGoodness = "crit" | "good" | "okay" | "bad" | "fumble";
@@ -105,9 +111,12 @@ export type WealResult = WealOk | WealErr;
  * @param budget  interpreter-step budget; 0 = the engine default (D32-12)
  * @param mode    `"run"` = full pipeline; `"check"` = parse+type only
  *
- * A wasm trap (post-`stage:"fuel"` residue — e.g. a stack overflow the
- * in-engine depth cap could not intercept) is caught here and synthesized
- * into `{ok:false, stage:"fuel"}` per the D32-11 wrapper pin.
+ * A wasm trap (a Rust panic, or a stack overflow the in-engine
+ * depth cap could not intercept) is contained here: the wrapper drops the
+ * possibly poisoned instance, re-instantiates the wasm, and returns
+ * `{ok:false, stage:"internal"}` with a message starting `engine trap:`. The
+ * next call runs on the fresh instance. It throws only if re-instantiation
+ * itself fails (the committed glue cannot load).
  */
 export function evaluate(
   source: string,
@@ -122,9 +131,10 @@ export function evaluate(
     ) as WealResult;
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
+    reinstantiate();
     return {
       ok: false,
-      stage: "fuel",
+      stage: "internal",
       message: `engine trap: ${message}`,
       span: null,
       preludeName: null,

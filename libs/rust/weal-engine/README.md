@@ -64,8 +64,9 @@ For the player-facing language guide, see `apps/weal/bot/README.md`.
   DejaVuSans font (`fonts/`; no system fonts under wasm32) → 800×450 PNG, base64.
 - **`api.rs`** — the D32-11 seam: ONE export,
   `evaluate(source, saves_json, seed, budget, mode) -> String` (JSON). `mode:"check"` =
-  parse+type-check only (the bot's boot validation); errors carry
-  `stage: parse|type|eval|fuel|prelude`, span, and `preludeName` for failing saves. The pure
+  parse+type-check only; errors carry `stage: parse|type|eval|fuel|prelude|internal`, span,
+  and `preludeName` for failing saves. `internal` is an `Internal` engine error (an invariant a
+  well-typed program should never break; message prefix `internal error:`), never a player error. The pure
   function is native-tested; the wasm-bindgen wrapper is a one-liner.
 
 ## Build pipeline (the committed artifact)
@@ -180,10 +181,11 @@ bounded by the ≤900-char collapse policy instead.)
 - **Deep recursion needs the sized wasm stack.** Without the 8 MiB `-zstack-size` flag in
   `.cargo/config.toml`, the 256-frame recursion cap overflows the default stack before fuel can stop
   it.
-- **The TS wrapper turns a wasm trap into a fuel error.** `libs/ts/weal-engine/src/index.ts` loads the
-  CommonJS glue with `createRequire` and reports a trap (for example a stack overflow) as
-  `{ok:false, stage:"fuel"}` with a message starting `engine trap:`. A "fuel" error on a small input
-  can be a trap, not a budget.
+- **The TS wrapper owns trap containment.** `libs/ts/weal-engine/src/index.ts` loads the CommonJS
+  glue with `createRequire`. When a call traps (a Rust panic, or a stack overflow), it drops the
+  possibly poisoned instance, re-instantiates the wasm and returns `{ok:false, stage:"internal"}`
+  with a message starting `engine trap:`, so the next call runs on a fresh instance. Callers never
+  re-instantiate themselves.
 - **Some adversarial inputs are slow before fuel stops them.** Realistic macros run in 15 ms or less,
   but `1000d1000` takes about 1.7 s to exhaust the `states` counter. Retuning a budget means a
   rebuild of the committed wasm.

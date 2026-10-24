@@ -58,7 +58,8 @@ export interface FuncV2 {
 /** The persistence surface the bot needs — injectable so the logic unit-tests dry. */
 export interface WealStore {
   ensureSchema(): Promise<void>;
-  insertDie(base: number, value: number, playerId: number, blameId: number): Promise<void>;
+  /** One roll's dice (`[base, face]` pairs) as one multi-row insert. */
+  insertDice(dice: readonly [number, number][], playerId: number, blameId: number): Promise<void>;
   /** v1 archive reads (no loader call sites — kept for tooling/migration use). */
   getAllFuncs(): Promise<Func[]>;
   insertFunc(name: string, payload: string): Promise<void>;
@@ -78,16 +79,16 @@ export function diceToPersist(standardDice: readonly [number, number][]): [numbe
   return standardDice.filter(([base]) => base <= MAX_BASE);
 }
 
-/** Persist a die display's sampled dice under the save-guards. */
+/** Persist a die display's sampled dice under the save-guards, in one statement. */
 export async function saveDice(
   store: WealStore,
   standardDice: readonly [number, number][],
   playerId: number,
   blameId: number,
 ): Promise<void> {
-  for (const [base, value] of diceToPersist(standardDice)) {
-    await store.insertDie(base, value, playerId, blameId);
-  }
+  const dice = diceToPersist(standardDice);
+  if (dice.length === 0) return;
+  await store.insertDice(dice, playerId, blameId);
 }
 
 /** postgres.js-backed Postgres implementation of {@link WealStore} (R3, 0022 S5 — off Bun.SQL onto the Node-runtime-portable postgres.js; tagged-template call sites are unchanged). */
@@ -102,8 +103,19 @@ export class PostgresStore implements WealStore {
     await this.#sql.unsafe(SCHEMA);
   }
 
-  async insertDie(base: number, value: number, playerId: number, blameId: number): Promise<void> {
-    await this.#sql`insert into dice (base, value, source, player_id, blame_id) values (${base}, ${value}, 'discord', ${playerId}, ${blameId})`;
+  async insertDice(
+    dice: readonly [number, number][],
+    playerId: number,
+    blameId: number,
+  ): Promise<void> {
+    const rows = dice.map(([base, value]) => ({
+      base,
+      value,
+      source: "discord",
+      player_id: playerId,
+      blame_id: blameId,
+    }));
+    await this.#sql`insert into dice ${this.#sql(rows, "base", "value", "source", "player_id", "blame_id")}`;
   }
 
   async getAllFuncs(): Promise<Func[]> {

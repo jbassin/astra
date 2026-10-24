@@ -11,8 +11,9 @@ Spec: `thoughts/archive/specs/0032-weal-v2-spec.md` (D32-1..20). Engine internal
 
 ## How the bot listens
 
-Every message from a rostered player is a roll candidate. Code fences (and a leading `ocaml`
-language tag) are trimmed first, so pasting a macro in a fence works. Then:
+Every message from a rostered player is a roll candidate. Code fences and their one-word language
+tag (```` ```weal ````, ```` ```ocaml ````) are trimmed first, so pasting a macro in a fence works,
+including the bot's own save confirmation. Then:
 
 - **Messages that don't parse are silently ignored** — ordinary chat is not an error.
 - **Messages that parse but fail type-check or evaluation get a visible error reply** (a
@@ -20,6 +21,10 @@ language tag) are trimmed first, so pasting a macro in a fence works. Then:
   span) — but only if the message looks like it was *meant* as code: it contains a die token,
   `let`/`match`, an operator, or a saved-macro name. A bare `lol` or `:p` stays silent even
   though the engine rejects it.
+- **An engine fault gets a short generic reply** ("something broke deep in the dice machinery —
+  it's been reported"), whatever the message looks like. An engine fault is error stage
+  `internal`: an engine invariant broke, or the wasm trapped. It is never the player's mistake, so
+  the detail goes to an ERROR log, not the channel.
 - `reseed()` re-rolls the **cosmetic** seed shown in embed footers. It never affects actual
   rolls — the engine takes fresh entropy every time.
 - A lone atom (`:ready`) evaluates fine but is suppressed as chat noise.
@@ -278,24 +283,35 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
   running `just weal-engine-build` first (see that crate's README); the bot image just copies
   `libs/ts` wholesale.
 - **Persistence:** standard `NdM` faces (kept, dropped, and explosion draws alike) write `dice`
-  rows (guards: ≤30 dice per roll, faces ≤ d100); `dl`/`dm`/atom dice write none. Saves live in
-  `funcs_v2` (append-only; latest per name wins). At boot every row is re-type-checked in order —
-  a stale row is skipped with a WARN, never a crash.
+  rows (guards: ≤30 dice per roll, faces ≤ d100) in one insert; `dl`/`dm`/atom dice write none.
+  The `dice` table is a write-only archive written after the reply (ADR 0025): the bot does not
+  wait for it, and a failed write only logs a WARN and counts `weal.dice.persist_failures`, so a
+  database outage never blocks rolls. Saves live in `funcs_v2` (append-only; latest per name
+  wins). At boot every row is loaded in id order, exactly as a roll loads it (parsed,
+  type-checked and evaluated after the valid rows before it); a row that fails is skipped with a
+  WARN naming it (`skipping saved weal source: funcs_v2 row <id> (<name>)`), and every other save
+  and roll keeps working.
 - **Overlay:** rolls broadcast to weal-overlay/dice-feed with the plain source text as
   `expression` and the headline as `display` (atom rolls send `total: 0`).
 - **Telemetry:** `astra.weal-bot` — roll spans (`weal.goodness`, `weal.engine_ms`),
-  `astra.weal.rolls{goodness}`, `weal.v2.errors{stage}` (incl. contained `panic`, which also
-  re-instantiates the wasm), `weal.v2.fuel_aborts`, `weal.v2.saves_refused{kind}` (the save
-  guard; each refusal also logs a WARN naming the save). Engine faults log WARN, never ERROR.
+  `astra.weal.rolls{goodness}`, `weal.v2.errors{stage}` (incl. `internal`),
+  `weal.v2.fuel_aborts`, `weal.v2.saves_refused{kind}` (the save guard; each refusal also logs a
+  WARN naming the save), `weal.dice.persist_failures`. An engine fault (`stage:"internal"`) logs
+  one ERROR with the player, source, span and `weal.stage` attribute; ERROR pages Discord (Class
+  A), so player errors and handled refusals stay at WARN or below.
 
 ## Traps
 
 - **Saves share one namespace with the built-ins.** `save(:kh, 3)` would shadow `kh` and break every
   `kh` roll. The save guard catches it; keep its everyday-roll list in step with the prelude.
 - **`check` mode alone cannot validate a save.** It parses and type-checks saves but never evaluates
-  them, so a stored source that type-checks but fails to evaluate passes the boot check and fails
-  every roll. That is why the guard runs real rolls and real uses. (Before the WEAL-1 engine fix,
-  every `|| e` save was such a source.)
+  them, so a stored source that type-checks but fails to evaluate (`1 / 0`) would pass it and fail
+  every roll. That is why the boot load uses `mode:"run"` and the guard runs real rolls and real
+  uses. (Before the WEAL-1 engine fix, every `|| e` save was such a source.)
+- **A wasm trap reaches the bot as an ordinary `internal` error.** `@astra/weal-engine` catches the
+  trap, re-instantiates the wasm and returns `{ok:false, stage:"internal"}` with a message starting
+  `engine trap:`; the bot never sees a throw. Deep nesting such as 2,000 nested parentheses
+  overflows the stack this way, so it pages as an engine fault.
 - **The v2 counters appear in SigNoz only after their first increment.** `weal.v2.errors` and
   `weal.v2.fuel_aborts` missing from the metric list is not a wiring bug while no engine error or
   fuel abort has happened.

@@ -2,6 +2,8 @@
 // proves the seam end-to-end — a stale/corrupt artifact reds CI here
 // without cargo in the loop.
 
+import { createRequire } from "node:module";
+
 import { describe, expect, it } from "vitest";
 
 import { evaluate, reinstantiate } from "./index.js";
@@ -58,5 +60,41 @@ describe("@astra/weal-engine wasm smoke", () => {
     expect(result.stage).toBe("prelude");
     expect(result.preludeName).toBe("bad");
     expect(result.span).toEqual({ start: 3, end: 3 });
+  });
+});
+
+describe("trap containment", () => {
+  const glue = (): { evaluate: (...args: unknown[]) => string } =>
+    createRequire(import.meta.url)("../gen/weal_engine.js");
+
+  it("an injected trap is reported as internal and the next roll runs on a fresh instance", () => {
+    const poisoned = glue();
+    const before = evaluate("2d6", [], seed, 0, "run");
+    // Simulate a Rust panic: the loaded instance's export traps from now on.
+    poisoned.evaluate = () => {
+      throw new WebAssembly.RuntimeError("unreachable");
+    };
+    const trapped = evaluate("2d6", [], seed, 0, "run");
+    expect(trapped).toEqual({
+      ok: false,
+      stage: "internal",
+      message: "engine trap: unreachable",
+      span: null,
+      preludeName: null,
+    });
+    // The wrapper dropped the poisoned module: the cache holds a new one, and
+    // rolls work again without the caller doing anything.
+    expect(glue()).not.toBe(poisoned);
+    expect(evaluate("2d6", [], seed, 0, "run")).toEqual(before);
+  });
+
+  it("a real stack-overflow trap is contained the same way", () => {
+    const deep = `${"(".repeat(2000)}1${")".repeat(2000)}`;
+    const trapped = evaluate(deep, [], seed, 0, "run");
+    expect(trapped.ok).toBe(false);
+    if (trapped.ok) return;
+    expect(trapped.stage).toBe("internal");
+    expect(trapped.message).toMatch(/^engine trap: /);
+    expect(evaluate("2d6", [], seed, 0, "run").ok).toBe(true);
   });
 });
