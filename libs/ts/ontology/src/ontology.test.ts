@@ -1,21 +1,17 @@
-import { existsSync, readFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
+import { findRepoRoot } from "@astra/config";
 import { describe, expect, test } from "vitest";
 
 import { canonicalJson, loadBeing } from "./index";
 
-function repoRoot(): string {
-  let dir = resolve(import.meta.dirname);
-  for (;;) {
-    if (existsSync(join(dir, "ontology", "ontology-being"))) return dir;
-    const parent = dirname(dir);
-    if (parent === dir) throw new Error("repo root not found");
-    dir = parent;
-  }
-}
-
-const CANONICAL = join(repoRoot(), "ontology", "ontology-being", "being.canonical.json");
+const CANONICAL = join(
+  findRepoRoot(import.meta.dirname),
+  "ontology",
+  "ontology-being",
+  "being.canonical.json",
+);
 
 describe("@astra/ontology", () => {
   test("players preserve player_id + identity", () => {

@@ -1,15 +1,30 @@
-"""Typed config schema — the same field set as `libs/ts/config` (Zod).
+"""Typed config schema: every namespace of `ontology/ontology-config/config.kdl`.
 
-Every namespace mirrors a top-level node in `ontology/ontology-config/config.kdl`.
+Each language validates only the namespaces its apps read (0037 LIB-1 interim):
+
+* `Config` holds the Python-read namespaces; `load_config()` returns it and ignores the
+  rest, so a bad value in a TS-only block cannot stop a Python process.
+* `libs/ts/config` (Zod) holds the TS-read namespaces the same way.
+* `WholeConfig` is the union, every namespace in the file. Only the CI test
+  `test_whole_config_kdl_validates` loads it, so nothing in the file goes unvalidated.
+
+Ownership (who reads each block, from a grep of the apps): both languages read `data`,
+`telemetry` and `codex`. Only Python reads `llm`, `scribe`, `linguist`, `mouthpiece`,
+`heartwood` and `mouthpiece-producer`. Only TS reads `weal`, `weal-overlay`, `orator`,
+`strider`, `akasha-frontend`, `mouthpiece-frontend`, `vellum-frontend`, `vellum-render`,
+`harrow`, `ledger`, `portal`, `portal-headless` and `menhir`. Nothing reads
+`orator-controller` or `caddy`. A namespace read by both is mirrored in both schemas; a
+TS-only one is mirrored here (in `WholeConfig`) and in Zod.
+
 Secret fields are `SecretRef | None` (lazy, Decision E); plaintext fields carry the
-faerrin code-default so a sparse `config.kdl` still validates. `extra="forbid"`
-turns a mistyped KDL key into a loud error instead of a silent drop.
+faerrin code-default so a sparse `config.kdl` still validates. `extra="forbid"` inside
+each namespace turns a mistyped KDL key into a loud error instead of a silent drop.
 """
 
 from __future__ import annotations
 
 import os
-from typing import Annotated, Literal
+from typing import Annotated, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -357,33 +372,28 @@ class CaddyConfig(_Base):
 
 
 class Config(_Base):
+    """The namespaces Python code reads: what `load_config()` validates and returns.
+
+    Unknown top-level namespaces are ignored here (they belong to the TS apps, see
+    `WholeConfig`), so a bad value in a TS-only block cannot stop a Python process. Each
+    namespace below still forbids unknown keys. `data` and `telemetry` and `codex` are
+    read by both languages; the rest only by Python.
+    """
+
+    model_config = ConfigDict(arbitrary_types_allowed=True, extra="ignore")
+
     data: DataConfig = Field(default_factory=DataConfig)
     llm: LlmConfig = Field(default_factory=LlmConfig)
     telemetry: TelemetryConfig = Field(default_factory=TelemetryConfig)
     scribe: ScribeConfig = Field(default_factory=ScribeConfig)
     linguist: LinguistConfig = Field(default_factory=LinguistConfig)
     mouthpiece: MouthpieceConfig = Field(default_factory=MouthpieceConfig)
-    weal: WealConfig = Field(default_factory=WealConfig)
-    weal_overlay: WealOverlayConfig = Field(default_factory=WealOverlayConfig)
-    orator: OratorConfig = Field(default_factory=OratorConfig)
-    orator_controller: OratorControllerConfig = Field(default_factory=OratorControllerConfig)
-    strider: StriderConfig = Field(default_factory=StriderConfig)
-    akasha_frontend: AkashaFrontendConfig = Field(default_factory=AkashaFrontendConfig)
-    mouthpiece_frontend: MouthpieceFrontendConfig = Field(default_factory=MouthpieceFrontendConfig)
-    vellum_frontend: VellumFrontendConfig = Field(default_factory=VellumFrontendConfig)
-    vellum_render: VellumRenderConfig = Field(default_factory=VellumRenderConfig)
-    harrow: HarrowConfig = Field(default_factory=HarrowConfig)
-    ledger: LedgerConfig = Field(default_factory=LedgerConfig)
     heartwood: HeartwoodConfig = Field(default_factory=HeartwoodConfig)
     mouthpiece_producer: MouthpieceProducerConfig = Field(default_factory=MouthpieceProducerConfig)
-    portal: PortalConfig = Field(default_factory=PortalConfig)
-    portal_headless: PortalHeadlessConfig = Field(default_factory=PortalHeadlessConfig)
     codex: CodexConfig = Field(default_factory=CodexConfig)
-    menhir: MenhirConfig = Field(default_factory=MenhirConfig)
-    caddy: CaddyConfig = Field(default_factory=CaddyConfig)
 
     @model_validator(mode="after")
-    def _resolve_data_paths(self) -> Config:
+    def _resolve_data_paths(self) -> Self:
         """Resolve relative ``DataPath`` fields against ``data.root`` and relative
         ``ContentPath`` fields against ``data.content-root`` (itself under the root)."""
         # The config fields are str paths, joined as strings like the TS loader does;
@@ -405,3 +415,32 @@ class Config(_Base):
                         joined = os.path.join(base, value)  # noqa: PTH118 -- str paths, see above
                         setattr(namespace, field, joined)
         return self
+
+
+class WholeConfig(Config):
+    """Every namespace in `config.kdl`: the union of what Python and TS read, plus the two
+    blocks nothing reads yet (`orator-controller`, `caddy`).
+
+    No process loads this. One CI test validates the real file against it
+    (`load_whole_config()`), so a typo in any block, or an unknown block, still fails
+    somewhere. The namespaces added here are read only by TS (`libs/ts/config`), whose Zod
+    schema mirrors them field for field.
+    """
+
+    model_config = ConfigDict(arbitrary_types_allowed=True, extra="forbid")
+
+    weal: WealConfig = Field(default_factory=WealConfig)
+    weal_overlay: WealOverlayConfig = Field(default_factory=WealOverlayConfig)
+    orator: OratorConfig = Field(default_factory=OratorConfig)
+    orator_controller: OratorControllerConfig = Field(default_factory=OratorControllerConfig)
+    strider: StriderConfig = Field(default_factory=StriderConfig)
+    akasha_frontend: AkashaFrontendConfig = Field(default_factory=AkashaFrontendConfig)
+    mouthpiece_frontend: MouthpieceFrontendConfig = Field(default_factory=MouthpieceFrontendConfig)
+    vellum_frontend: VellumFrontendConfig = Field(default_factory=VellumFrontendConfig)
+    vellum_render: VellumRenderConfig = Field(default_factory=VellumRenderConfig)
+    harrow: HarrowConfig = Field(default_factory=HarrowConfig)
+    ledger: LedgerConfig = Field(default_factory=LedgerConfig)
+    portal: PortalConfig = Field(default_factory=PortalConfig)
+    portal_headless: PortalHeadlessConfig = Field(default_factory=PortalHeadlessConfig)
+    menhir: MenhirConfig = Field(default_factory=MenhirConfig)
+    caddy: CaddyConfig = Field(default_factory=CaddyConfig)

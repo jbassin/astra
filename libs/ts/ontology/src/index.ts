@@ -9,9 +9,10 @@
  * matches Python's `canonical_json()` byte-for-byte.
  */
 
-import { existsSync, readFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
+import { findRepoRoot } from "@astra/config";
 import { type Node, parse } from "@bgotink/kdl";
 
 import { type Being, BeingSchema, type Campaign, type HostLines, type Role } from "./models";
@@ -90,17 +91,7 @@ function toCampaign(node: Node): Campaign {
   };
 }
 
-function findRepoRoot(startDir: string): string {
-  let dir = resolve(startDir);
-  for (;;) {
-    if (existsSync(join(dir, "ontology", "ontology-being"))) return dir;
-    const parent = dirname(dir);
-    if (parent === dir) return resolve(startDir);
-    dir = parent;
-  }
-}
-
-/** `<repo-root>/ontology/ontology-being/being.kdl`. */
+/** `<repo-root>/ontology/ontology-being/being.kdl` (throws outside a checkout). */
 export function defaultBeingFile(): string {
   return join(findRepoRoot(import.meta.dirname), "ontology", "ontology-being", "being.kdl");
 }

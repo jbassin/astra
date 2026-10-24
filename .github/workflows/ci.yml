@@ -43,7 +43,7 @@ jobs:
               - 'deploy/**'
               # ruff also lints the standalone scripts under libs/rust/ (gen_oracle.py).
               - 'libs/rust/**/*.py'
-              # Root fixtures: read by libs/py/vellum-lang's corpus test.
+              # Root fixtures: read by the libs/py/vellum-lang and libs/py/config tests.
               - 'fixtures/**'
               - 'pyproject.toml'
               - 'uv.lock'
@@ -60,7 +60,7 @@ jobs:
               # The weal-engine crate; the committed wasm is smoke-tested by
               # libs/ts/weal-engine's vitest suite.
               - 'libs/rust/**'
-              # Root fixtures: read by libs/ts/vellum-lang's corpus test.
+              # Root fixtures: read by the libs/ts/vellum-lang and libs/ts/config tests.
               - 'fixtures/**'
               # Root-level files oxfmt checks (package.json, commitlint.config.js).
               - '*.{js,mjs,cjs,json}'

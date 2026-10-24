@@ -13,6 +13,7 @@
     "build": "echo '@astra/content-build: no build step'"
   },
   "dependencies": {
+    "@astra/config": "workspace:*",
     "gray-matter": "^4.0.3",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1"

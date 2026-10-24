@@ -1,0 +1,44 @@
+// A small config.kdl for the libs/{py,ts}/config loader tests. Values are made up and
+// differ from the real file on purpose, so a passing test proves the loader, not today's
+// deployment. It holds blocks that Python reads, blocks that TS reads, and shared ones.
+
+data {
+    root "/srv/state"
+    akasha-content "/elsewhere/content"
+}
+telemetry {
+    otlp-endpoint "http://collector.test:4318"
+}
+llm {
+    default-model "test/model-a"
+    default-max-tokens 1234
+    anthropic-api-key ref="sops:fixture_anthropic_key"
+}
+scribe {
+    data-path "scribe/data"
+    keep-zip #true
+}
+mouthpiece-producer {
+    experiment-models "test/model-b"
+    experiment-max-tokens 4321
+}
+heartwood {
+    max-iterations 7
+}
+codex {
+    port 20001
+    data-path "codex/data"
+}
+orator {
+    port 20002
+    target-lufs -9
+    measure-loudness #false
+    data-dir "/data"
+    session-secret ref="sops:fixture_session_secret"
+}
+weal-overlay {
+    token ref="sops:fixture_overlay_token"
+}
+menhir {
+    results-path "menhir/results.jsonl"
+}

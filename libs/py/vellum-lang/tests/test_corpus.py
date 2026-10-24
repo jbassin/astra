@@ -6,17 +6,10 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+from astra_config import find_repo_root
 from astra_vellum_lang import canonical_meta_json
 
-
-def _repo_root() -> Path:
-    for parent in [Path(__file__).resolve(), *Path(__file__).resolve().parents]:
-        if (parent / "fixtures" / "vellum").is_dir():
-            return parent
-    raise RuntimeError("fixtures/vellum not found")
-
-
-_DIR = _repo_root() / "fixtures" / "vellum"
+_DIR = find_repo_root(Path(__file__)) / "fixtures" / "vellum"
 _FIXTURES = sorted(_DIR.glob("*.vellum"))
 
 
