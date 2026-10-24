@@ -29,8 +29,9 @@ mouthpiece waits for a session's `session_episode_summary` to be materialized be
   `session_episode_summary` for that partition in Dagster; `campaign_timeline_sensor` then
   regroups the seasons. An episode file written outside Dagster (the host backfill below)
   neither opens the gate nor triggers the sensor.
-- **Exclude a mislabeled session** from the chronicle: add its date to `EXCLUDED_DATES` in
-  `src/astra_linguist/chronicle.py`, then deploy Dagster.
+- **Exclude a mislabeled session** from the chronicle: add `session "<date>" skip=#true` with
+  a `note` to `ontology/ontology-being/sessions.kdl`, then deploy Dagster (see
+  `docs/runbook.md`, "Correct one session"). `show_for_date` returns no show for it.
 - **Chronicle backfill** (resumable; skips episode files that exist):
   `uv run python apps/linguist/py/scripts/backfill_chronicle.py` on the host, then
   materialize `campaign_timeline` by hand.
@@ -43,7 +44,7 @@ mouthpiece waits for a session's `session_episode_summary` to be materialized be
 - **Show = the transcript's filename slug.** `show_for_date` reads `<slug>` from
   `<NNN>.<slug>.<date>.txt`; the slug matches a `being.kdl` campaign. Sessions that match no
   campaign are left out of the chronicle and pass mouthpiece's gate ungated. The campaign
-  match is a substring heuristic and can false-match; `EXCLUDED_DATES` is the fix.
+  match is a substring heuristic and can false-match; a `sessions.kdl` skip is the fix.
 - **Seasons regroup from scratch.** `campaign_timeline` sees only the episode list, so any new
   episode can re-partition a show's seasons and renumber season-nested URLs
   (`…/s<N>/<date>`). Josh accepted this; do not "fix" it without a new decision.

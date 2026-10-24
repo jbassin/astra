@@ -9,7 +9,7 @@ Rules every tool follows: errors **raise** ``ValueError`` (the sandbox bridge tu
 into a catchable ``RuntimeError``); only ``read_page`` / ``write_page`` / ``read_transcript``
 return strings; returns are plain JSON types and never ``None`` (``None`` crosses the
 bridge as ``""``). Wiki tools touch staging only. Transcript tools serve only the
-permitted sessions: faerrin-world, ``EXCLUDED_DATES`` honored, dated ≤ the target (D6).
+permitted sessions: faerrin-world, `sessions.kdl` skips honored, dated ≤ the target (D6).
 """
 
 from __future__ import annotations

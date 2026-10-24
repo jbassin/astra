@@ -9,14 +9,8 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any, Literal, get_args
 
+from astra_ontology.sessions import EpisodeKind, SessionOverrides
 from pydantic import BaseModel, model_validator
-
-#: What an episode is (0037 PIPE-22). ``session`` recaps one recorded session and is
-#: numbered in its arc; ``recap`` (a multi-session capstone) and ``special`` (the
-#: prediction roundtable, say) have no transcript of their own, are not numbered, and are
-#: never read as a prior session.
-EpisodeKind = Literal["session", "recap", "special"]
-EPISODE_KINDS: tuple[str, ...] = get_args(EpisodeKind)
 
 #: A capstone's id embeds this marker (``…<lastDate>-recap-of-<firstDate>``). Before
 #: ``kind`` was stored, the marker was the only sign of a non-session episode.
@@ -29,8 +23,14 @@ def kind_from_id(session_id: str) -> EpisodeKind:
     return "recap" if RECAP_MARKER in session_id else "session"
 
 
-def stored_kind(raw: Mapping[str, Any], session_id: str) -> EpisodeKind:
-    """The ``kind`` of a raw script or digest dict, or `kind_from_id` when it has none."""
+def stored_kind(
+    raw: Mapping[str, Any], session_id: str, overrides: SessionOverrides | None = None
+) -> EpisodeKind:
+    """An episode's kind: the `sessions.kdl` ``kind`` for its id if ``overrides`` has one,
+    else the ``kind`` of its raw script or digest dict, else `kind_from_id`."""
+    entry = overrides.for_episode(session_id) if overrides is not None else None
+    if entry is not None and entry.kind is not None:
+        return entry.kind
     kind = raw.get("kind")
     for known in get_args(EpisodeKind):
         if kind == known:

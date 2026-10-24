@@ -1,0 +1,23 @@
+// astra ontology-being — per-session overrides (0037 pipe-10), next to being.kdl.
+//
+// The GM's corrections for single sessions, which the pipeline reads instead of guessing.
+// Schema: `astra_ontology.sessions` (`SessionOverride`). One node per session:
+//
+//   session "<key>" [skip=#true] [kind="session"|"recap"|"special"] [title="…"] { note "why" }
+//
+// <key> is the session date (YYYY-M-D, not zero-padded) or, for a recap or special episode,
+// the date token of its id (<last>-recap-of-<first>).
+//   skip   the session belongs to no show: no chronicle episode or season, no heartwood
+//          ingest, no mouthpiece episode. Its transcripts are still written.
+//   kind   the episode's kind, over what its script.json and digest.json say.
+//   title  the podcast episode title the mouthpiece catalog publishes.
+// An unknown property, a malformed key or a repeated key fails the load. The file is baked
+// into the Dagster image: an edit is live after `just deploy dagster-code dagster-daemon`.
+
+session "2025-8-11" skip=#true {
+    note "The Blue Remains, a different campaign with the same players. It matched Through a Song, Darkly only because \"Argyle\" appears 96 times."
+}
+
+session "2026-10-19-recap-of-2025-8-28" kind="special" {
+    note "The prediction roundtable, rendered before episode files stored their kind."
+}

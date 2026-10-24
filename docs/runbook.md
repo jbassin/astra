@@ -283,6 +283,33 @@ Exactly one campaign in `ontology/ontology-being/being.kdl` has `main #true`.
 4. `just ci`, commit, push, `just deploy`.
 5. If episodes were published while flipped, run `just mouthpiece-publish` to recompute `is_main`.
 
+## Correct one session (skip, kind, title)
+
+The GM's per-session corrections live in `ontology/ontology-being/sessions.kdl`, beside
+`being.kdl`; the schema and the full rules are in `astra_ontology.sessions`. One node per
+session, keyed by its date (or a recap or special episode's `<last>-recap-of-<first>` token),
+with a `note` that says why:
+
+```kdl
+session "2025-8-11" skip=#true { note "a different campaign; the campaign match got it wrong" }
+session "2026-10-19-recap-of-2025-8-28" kind="special" { note "the prediction roundtable" }
+session "2026-9-7" title="The Night the Bell Rang Twice" { note "the generated title was wrong" }
+```
+
+- `skip=#true` takes the session out of every show: no chronicle episode or season, no heartwood
+  ingest, no mouthpiece episode for a session not yet tried. It does not delete anything already
+  written; remove an existing chronicle episode file by hand, then rerun `campaign_timeline`.
+- `kind` overrides the episode kind the catalog and the producer see (`session`, `recap`,
+  `special`). `title` replaces the podcast title the catalog publishes; `script.json` keeps the
+  generated one. Neither needs a re-render.
+
+1. Edit the file. `uv run pytest libs/py/ontology/tests/test_sessions.py` loads it; a typo'd
+   property or key fails there.
+2. `just ci`, then merge through a pull request.
+3. Deploy Dagster (the file is baked into the image): `just deploy dagster-code dagster-daemon
+   dagster-webserver`.
+4. For `kind` or `title`, run `just mouthpiece-publish` to rebuild the catalog.
+
 ## Republish pipeline output by hand
 
 The `linguist-commit` timer normally does this every 15 minutes and on each new episode.
