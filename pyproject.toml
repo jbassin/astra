@@ -20,6 +20,7 @@ astra-llm = { workspace = true }
 astra-mouthpiece-backend = { workspace = true }
 astra-mouthpiece-tools = { workspace = true }
 astra-observe = { workspace = true }
+astra-ops = { workspace = true }
 astra-ontology = { workspace = true }
 astra-ontology-being = { workspace = true }
 astra-ontology-config = { workspace = true }

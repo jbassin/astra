@@ -34,7 +34,7 @@ def fake_run(tmp_path: Path, code: int, *, calls: list[list[str]] | None = None)
     def runner(argv: list[str], env: dict[str, str], log_path: Path) -> int:
         if calls is not None:
             calls.append(argv)
-        date = argv[-1]
+        date = argv[2]
         run_dir = tmp_path / "runs" / date
         run_dir.mkdir(parents=True, exist_ok=True)
         (run_dir / "summary.json").write_text(
@@ -120,8 +120,9 @@ def test_runs_pending_oldest_first_and_records_results(
     rq.file_request(root, "2026-10-26")
     calls: list[list[str]] = []
     report = drain(root, tmp_path, ledger_path, runner=fake_run(tmp_path, 0, calls=calls))
-    assert [c[-1] for c in calls] == ["2026-10-26", "2026-11-2"]
-    assert calls[0][:2] == ["/opt/just/bin/just", "heartwood-agent"]
+    assert [c[2] for c in calls] == ["2026-10-26", "2026-11-2"]
+    # unattended: --yes answers heartwood-agent's PAID + LIVE confirmation
+    assert calls[0] == ["/opt/just/bin/just", "heartwood-agent", "2026-10-26", "--yes"]
     res = report.results[0]
     assert (res.outcome, res.exit_code, res.commit, res.cost_usd) == (
         "published",
@@ -188,7 +189,7 @@ def test_request_filed_mid_run_is_picked_up_by_the_rescan(
     inner = fake_run(tmp_path, 0)
 
     def runner(argv: list[str], env: dict[str, str], log_path: Path) -> int:
-        if argv[-1] == "2026-10-26":
+        if argv[2] == "2026-10-26":
             rq.file_request(root, "2026-11-2")
         return inner(argv, env, log_path)
 
@@ -204,7 +205,7 @@ def test_runner_exception_fails_that_request_and_continues(
     inner = fake_run(tmp_path, 0)
 
     def runner(argv: list[str], env: dict[str, str], log_path: Path) -> int:
-        if argv[-1] == "2026-10-26":
+        if argv[2] == "2026-10-26":
             raise OSError("boom")
         return inner(argv, env, log_path)
 

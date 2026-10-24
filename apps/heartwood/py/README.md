@@ -33,6 +33,10 @@ just -f /ruby/data/astra-deploy/justfile heartwood-agent <date> --dry-run  # art
 just -f /ruby/data/astra-deploy/justfile heartwood-revert <date>           # LIVE
 ```
 
+Each asks before it starts (type y); `--yes` skips the question, and with no terminal and no
+`--yes` they exit 64. The request runner passes `--yes`. The recipes are thin wrappers over the
+astra-ops CLI; the steps, lock order and exit codes are in `libs/py/ops/src/astra_ops/heartwood.py`.
+
 - **Redo a published session:** `heartwood-revert <date>` first. Re-requesting a published
   date is a no-op that reports `already-published`. `heartwood-revert` cannot undo a session
   published before the astra-data clone's first (snapshot) commit; it exits 4, so undo those
@@ -62,8 +66,8 @@ just -f /ruby/data/astra-deploy/justfile heartwood-revert <date>           # LIV
   `uv` from a unit.
 - **One git publisher at a time.** `/ruby/data/astra-state/locks/git-publish.lock` is held by
   linguist-commit, by `heartwood-agent` from publish-sync through redeploy, and by
-  `heartwood-revert`. Never take it inside `_heartwood-push-deploy` or `_astra-data-push`: a
-  nested `flock` on a fresh fd deadlocks.
+  `heartwood-revert`. Never take it inside `_heartwood-push-deploy` or `_astra-data-push` (in
+  astra-ops, `push_deploy` and `astra_data_push`): a nested `flock` on a fresh fd deadlocks.
 - **Deploying Dagster while `session_wiki` waits** fails that run, but the request survives
   and still publishes.
 - **The deploy checkout needs host tooling.** deploy.sh `sync_host_tooling` runs
