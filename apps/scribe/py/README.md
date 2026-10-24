@@ -20,7 +20,24 @@ Groq Whisper (`scribe.model`, `groq/whisper-large-v3`).
 - **Blocking checks.** `single_recording`, `no_undated_recording` (on `session_tracks`) and
   `transcript_not_empty` (on `session_transcript`, at least `MIN_TRANSCRIPT_SEGMENTS` 100)
   fail the run and keep linguist from launching; see the dagster README, "Blocking checks".
-  Fix the cause (remove or merge the extra zip, re-transcribe), then re-execute the run.
+  - `transcript_not_empty` failed: fix the tracks' cause, then re-execute the run from failure.
+  - A tracks check failed (two recordings, or an undated one): remove or merge the extra zip
+    in the incoming dir, then launch a **fresh** scribe run for the partition. Do not
+    re-execute: a re-execution copies the old run's `astra/craig-zip` tag and fails if that
+    zip was the one you removed or replaced. A fresh run has no tag, so `session_tracks`
+    picks the zip by the sensor's rule. In the UI, open Assets, select `session_tracks`,
+    `session_audio`, `session_transcript` and `session_cleanup`, choose "Materialize
+    selected" and pick the session's partition (checks run with them). From the CLI:
+
+    ```sh
+    docker exec -d astra-dagster-code sh -c 'cd /opt/dagster/app && dagster asset \
+      materialize -f definitions.py --partition <date> \
+      --select session_tracks,session_audio,session_transcript,session_cleanup \
+      > /ruby/data/astra-state/scribe/tmp/.rescribe-<date>.log 2>&1'
+    ```
+
+    The run costs about $2 of Groq. Once `transcript_not_empty` passes, the linguist
+    sensor launches as usual, since linguist was never tried for the session.
 - **Undated zip.** A zip name must be `<guild>_<channel>_<date>_<id>` (four `_` fields, date
   third). Any other name never becomes a session. `craig_drop_sensor` logs one WARN per such
   zip, with the session date from its `info.txt`, and lists it in the tick's skip reason

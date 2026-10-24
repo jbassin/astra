@@ -2,6 +2,7 @@
   "episodes": [
     {
       "id": "000.through-a-song-darkly.2026-5-7",
+      "kind": "session",
       "arcNo": 0,
       "arcSlug": "through-a-song-darkly",
       "arcTitle": "Through a Song, Darkly",
@@ -60,6 +61,7 @@
     },
     {
       "id": "000.through-a-song-darkly.2026-5-11",
+      "kind": "session",
       "arcNo": 0,
       "arcSlug": "through-a-song-darkly",
       "arcTitle": "Through a Song, Darkly",
@@ -118,6 +120,7 @@
     },
     {
       "id": "000.through-a-song-darkly.2026-5-21",
+      "kind": "session",
       "arcNo": 0,
       "arcSlug": "through-a-song-darkly",
       "arcTitle": "Through a Song, Darkly",
@@ -176,6 +179,7 @@
     },
     {
       "id": "000.through-a-song-darkly.2026-5-25",
+      "kind": "session",
       "arcNo": 0,
       "arcSlug": "through-a-song-darkly",
       "arcTitle": "Through a Song, Darkly",
@@ -234,6 +238,7 @@
     },
     {
       "id": "000.through-a-song-darkly.2026-6-1",
+      "kind": "session",
       "arcNo": 0,
       "arcSlug": "through-a-song-darkly",
       "arcTitle": "Through a Song, Darkly",
@@ -292,6 +297,7 @@
     },
     {
       "id": "000.through-a-song-darkly.2026-6-8",
+      "kind": "session",
       "arcNo": 0,
       "arcSlug": "through-a-song-darkly",
       "arcTitle": "Through a Song, Darkly",
@@ -350,6 +356,7 @@
     },
     {
       "id": "000.through-a-song-darkly.2026-6-8-recap-of-2026-5-7",
+      "kind": "recap",
       "arcNo": 0,
       "arcSlug": "through-a-song-darkly",
       "arcTitle": "Through a Song, Darkly",
@@ -408,6 +415,7 @@
     },
     {
       "id": "000.through-a-song-darkly.2026-6-18",
+      "kind": "session",
       "arcNo": 0,
       "arcSlug": "through-a-song-darkly",
       "arcTitle": "Through a Song, Darkly",
