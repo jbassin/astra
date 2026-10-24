@@ -99,11 +99,6 @@ describe("FacetPanel range widgets — no 'Must have a value' checkbox anywhere 
     expect(screen.queryByText(/must have a value/i)).toBeNull();
   });
 
-  it("never renders the deleted checkbox's CSS hook class", () => {
-    const { container } = renderPanel();
-    expect(container.querySelectorAll(".codex-facet-has-value")).toHaveLength(0);
-  });
-
   it("min/max inputs stay present and editable with no separate gate control", () => {
     renderPanel();
     expect(screen.getByLabelText("minimum")).toBeInstanceOf(HTMLInputElement);

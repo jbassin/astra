@@ -194,6 +194,7 @@ const EMPTY_ACTIVATION_DROP = {
   total: 0,
   parenFamily: 0,
   digitFamily: 0,
+  markupFamily: 0,
   digitFamilyNames: [],
 };
 
@@ -493,6 +494,7 @@ describe("buildReportMarkdown", () => {
         total: 1387,
         parenFamily: 1224,
         digitFamily: 163,
+        markupFamily: 0,
         digitFamilyNames: [
           "action/envision-interact-70: 1 minute (envision, Interact)",
           "action/ten-min-99: 10 minutes (concentrate, manipulate)",

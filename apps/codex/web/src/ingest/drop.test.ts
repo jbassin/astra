@@ -484,6 +484,26 @@ describe("activationDropFamily (D29-98, P11 S1 — widened activation drop)", ()
     ).toBeUndefined();
   });
 
+  it.each([
+    ["action/1-minute", "1 minute", "digit"],
+    ["action/1-minute-command-interact", "1 minute (command, Interact", "digit"],
+    ["action/1-minute-manipulate-6", "1 minute (manipulate", "digit"],
+    ["action/u", "</u>", "markup"],
+  ] as const)("the real malformed activation %s (%s) is family %s", (id, name, family) => {
+    expect(activationDropFamily({ id, category: "action", name, proseOnly: true })).toBe(family);
+  });
+
+  it("a digit-leading name that is neither a duration nor an activation fragment is untouched", () => {
+    expect(
+      activationDropFamily({
+        id: "action/3rd-eye",
+        category: "action",
+        name: "3rd Eye Gaze",
+        proseOnly: true,
+      }),
+    ).toBeUndefined();
+  });
+
   it("an ordinary action name (neither family) is untouched", () => {
     expect(
       activationDropFamily({

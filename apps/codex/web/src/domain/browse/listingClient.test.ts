@@ -13,16 +13,24 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const getEntityPage = vi.fn();
+const getCategoryListing = vi.fn();
 vi.mock("@/server/corpusFns", () => ({
   getEntityPage: (...args: unknown[]) => getEntityPage(...args),
-  getCategoryListing: vi.fn(),
+  getCategoryListing: (...args: unknown[]) => getCategoryListing(...args),
 }));
 
-import { _resetEntityClientForTests, memoizedEntity } from "./listingClient";
+import {
+  _resetEntityClientForTests,
+  _resetListingClientForTests,
+  memoizedEntity,
+  memoizedListing,
+} from "./listingClient";
 
 afterEach(() => {
   _resetEntityClientForTests();
+  _resetListingClientForTests();
   getEntityPage.mockReset();
+  getCategoryListing.mockReset();
 });
 
 describe("memoizedEntity (P8 S3, D29-82)", () => {
@@ -84,5 +92,49 @@ describe("memoizedEntity (P8 S3, D29-82)", () => {
     getEntityPage.mockClear();
     await memoizedEntity("spell", "50"); // still cached (most recent) -> no fetch
     expect(getEntityPage).toHaveBeenCalledTimes(0);
+  });
+});
+
+describe("memoizedListing", () => {
+  it("fetches a category once and serves the cached promise after that", async () => {
+    getCategoryListing.mockResolvedValue({ rows: [] });
+    await memoizedListing("feat");
+    await memoizedListing("feat");
+    expect(getCategoryListing).toHaveBeenCalledTimes(1);
+  });
+
+  it("a rejected fetch is evicted, so the next call retries instead of replaying the failure", async () => {
+    getCategoryListing.mockRejectedValueOnce(new Error("network down"));
+    getCategoryListing.mockResolvedValueOnce({ rows: [] });
+    await expect(memoizedListing("feat")).rejects.toThrow("network down");
+    await expect(memoizedListing("feat")).resolves.toEqual({ rows: [] });
+    expect(getCategoryListing).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("memoizedEntity: failure handling", () => {
+  it("a rejected fetch is evicted, so the next call retries instead of replaying the failure", async () => {
+    getEntityPage.mockRejectedValueOnce(new Error("network down"));
+    getEntityPage.mockResolvedValueOnce({ entity: { name: "Heal" } });
+    await expect(memoizedEntity("spell", "heal")).rejects.toThrow("network down");
+    await expect(memoizedEntity("spell", "heal")).resolves.toEqual({ entity: { name: "Heal" } });
+    expect(getEntityPage).toHaveBeenCalledTimes(2);
+  });
+
+  it("a stale rejection never evicts a newer entry for the same key", async () => {
+    let rejectFirst: (err: Error) => void = () => undefined;
+    getEntityPage.mockReturnValueOnce(
+      new Promise((_resolve, reject) => {
+        rejectFirst = reject;
+      }),
+    );
+    const first = memoizedEntity("spell", "heal");
+    _resetEntityClientForTests();
+    getEntityPage.mockResolvedValueOnce({ entity: { name: "Heal" } });
+    await memoizedEntity("spell", "heal");
+    rejectFirst(new Error("late failure"));
+    await expect(first).rejects.toThrow("late failure");
+    await memoizedEntity("spell", "heal");
+    expect(getEntityPage).toHaveBeenCalledTimes(2);
   });
 });
