@@ -205,7 +205,7 @@ pg-test:
 # this runs both on every committed .vellum document and compares their metadata JSON.
 # CI job vellum-parity: Python and TS vellum-lang agree on every checked-in vellum document.
 vellum-parity:
-    {{uv_bin}} run --frozen --no-sync python libs/py/vellum-lang/scripts/corpus_parity.py --dir fixtures/vellum --dir fixtures/astra-data/akasha/content --dir apps/strider/web/content
+    uv run python libs/py/vellum-lang/scripts/corpus_parity.py --dir fixtures/vellum --dir fixtures/astra-data/akasha/content --dir apps/strider/web/content
 
 # Not in CI (CI has no astra-data clone). Reads only; the path is config's data.akasha-content.
 # Run the vellum parity check over the real wiki in the astra-data clone.
