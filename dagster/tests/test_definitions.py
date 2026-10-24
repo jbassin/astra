@@ -42,6 +42,8 @@ SENSORS = {
     "scribe_output_sensor",
 }
 PARTITIONS = {"heartwood_sessions", "linguist_sessions", "mouthpiece_sessions", "scribe_sessions"}
+#: The resources the assets declare as parameters (0037 PIPE-16); a key is a parameter name.
+RESOURCES = {"astra_config", "llm", "pipeline_paths", "tts"}
 
 
 def _repo(definitions: ModuleType) -> dg.RepositoryDefinition:
@@ -62,6 +64,10 @@ def test_jobs_schedules_and_sensors_are_pinned(definitions: ModuleType) -> None:
     assert set(repo.job_names) == JOBS
     assert {s.name for s in repo.schedule_defs} == SCHEDULES
     assert {s.name for s in repo.sensor_defs} == SENSORS
+
+
+def test_resource_keys_are_pinned(definitions: ModuleType) -> None:
+    assert set(_repo(definitions).get_top_level_resources()) == RESOURCES
 
 
 def test_schedules_and_sensors_start_running(definitions: ModuleType) -> None:

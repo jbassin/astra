@@ -15,9 +15,9 @@ from pathlib import Path
 from typing import Any
 
 import dagster as dg
-from astra_config import load_config
 from astra_linguist.chronicle import TRANSCRIPT_DIR
 from astra_observe import get_logger, get_meter, get_tracer
+from astra_pipeline_resources import AstraConfig, PipelinePaths, default_resources
 from astra_sessions import transcript_dates
 
 from . import requests as rq
@@ -41,10 +41,6 @@ _runs = _meter.create_counter(
 
 class WikiFailure(Exception):
     """A non-published outcome or a timeout; the message is the page text."""
-
-
-def _requests_root() -> Path:
-    return Path(load_config().heartwood.requests_path)
 
 
 def wait_for_result(
@@ -129,16 +125,17 @@ def run_session_wiki(
 
 
 @dg.asset(partitions_def=heartwood_sessions, group_name="heartwood")
-def session_wiki(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+def session_wiki(
+    context: dg.AssetExecutionContext, astra_config: AstraConfig, pipeline_paths: PipelinePaths
+) -> dg.MaterializeResult:
     """Request a heartwood run for this session from the host and wait for it (0036 D36-8).
 
     NO retry policy: the agent is a paid 15–55 min run."""
-    cfg = load_config().heartwood
     try:
         meta = run_session_wiki(
             context.partition_key,
-            root=_requests_root(),
-            timeout_min=cfg.request_timeout_minutes,
+            root=Path(pipeline_paths.heartwood_requests),
+            timeout_min=astra_config.get().heartwood.request_timeout_minutes,
             dagster_run_id=context.run_id,
         )
     except WikiFailure as exc:
@@ -178,4 +175,6 @@ def heartwood_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     )
 
 
-defs = dg.Definitions(assets=[session_wiki], sensors=[heartwood_sensor])
+defs = dg.Definitions(
+    assets=[session_wiki], sensors=[heartwood_sensor], resources=default_resources()
+)

@@ -122,7 +122,8 @@ def _cmd_script(args: argparse.Namespace) -> int:
 def _cmd_render(args: argparse.Namespace) -> int:
     # The Dagster module owns the provider/voice resolution; reuse it rather than fork it.
     from astra_mouthpiece.assemble import assemble_episode
-    from astra_mouthpiece.assets import _provider, _voices
+    from astra_mouthpiece.assets import _voices
+    from astra_mouthpiece.resources import default_tts
     from astra_mouthpiece.tts.synth import synthesize_script
     from astra_sessions import atomic_write_text
 
@@ -136,7 +137,7 @@ def _cmd_render(args: argparse.Namespace) -> int:
     # the same shape as the earlier recap capstones.
     atomic_write_text(out / "digest.json", json.dumps({"session_id": sid, "synopsis": SYNOPSIS}))
     manifest = synthesize_script(
-        script, provider=_provider(), voices=_voices(load_hosts()), out_dir=out
+        script, provider=default_tts().build(), voices=_voices(load_hosts()), out_dir=out
     )
     atomic_write_text(out / "manifest.json", manifest.model_dump_json(indent=2))
     episode, _transcript = assemble_episode(manifest, script, out_dir=out)

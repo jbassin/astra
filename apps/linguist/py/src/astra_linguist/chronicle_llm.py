@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 from collections import defaultdict
+from pathlib import Path
 from typing import Protocol, TypeVar
 
 from astra_llm import LiteLLMClient
@@ -24,6 +25,7 @@ from astra_sessions import date_key
 from pydantic import BaseModel, ValidationError
 
 from .chronicle import (
+    TRANSCRIPT_DIR,
     Chronicle,
     EpisodeEntry,
     EpisodeSummary,
@@ -120,10 +122,11 @@ def build_episode_entry(
     client: _StructuredClient | None = None,
     model: str | None = None,
     shows: dict[str, ShowInfo] | None = None,
+    transcript_dir: Path = TRANSCRIPT_DIR,
 ) -> EpisodeEntry:
     """Resolve the session's show and summarize it into a committed `EpisodeEntry`."""
     shows = shows if shows is not None else show_index()
-    show = show_for_date(date, shows=shows)
+    show = show_for_date(date, shows=shows, transcript_dir=transcript_dir)
     summary = summarize_episode(transcript, client=client, model=model)
     return EpisodeEntry(
         date=date,

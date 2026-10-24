@@ -18,23 +18,15 @@ import json
 from pathlib import Path
 
 import dagster as dg
-from astra_config import load_config
 from astra_lexicon import load_corrections
 from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
+from astra_pipeline_resources import AstraConfig, LlmResource, PipelinePaths, default_resources
 from astra_sessions import atomic_write_text
 
 from .campaigns import campaign_filename, campaign_views
-from .chronicle import (
-    EPISODES_DIR,
-    SEASONS_PATH,
-    TIMELINE_DIR,
-    TRANSCRIPT_DIR,
-    Chronicle,
-    chronicle_inputs_hash,
-    load_episode_entries,
-)
+from .chronicle import Chronicle, chronicle_inputs_hash, load_episode_entries
 from .models import RawLine, load_session
 from .pipeline import process_session
 from .roster import SpeakerResolver
@@ -49,9 +41,6 @@ _episodes_counter = _meter.create_counter(
     "astra.chronicle.episodes", description="chronicle episode summaries generated"
 )
 
-_CFG = load_config()
-DATA_DIR = Path(_CFG.data.linguist_data)
-SCRIPT_DIR = Path(_CFG.linguist.script_path)
 # Same-origin base: akasha-frontend serves the combined recording at /audio/<date>.mp3
 # off its audio volume (akasha also build-time-normalizes, so the form is belt-and-
 # suspenders). Replaces the old absolute faerrin static-audio.iridi.cc host.
@@ -62,13 +51,17 @@ linguist_sessions = dg.DynamicPartitionsDefinition(name=SESSIONS_NAME)
 
 
 @dg.asset(partitions_def=linguist_sessions, group_name="linguist")
-def session_transcripts(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+def session_transcripts(
+    context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
+) -> dg.MaterializeResult:
     """Process one session: scribe script.json → formatted + context + canonical."""
     date = context.partition_key
-    cfg = _linguist_config()
     being = load_being(BEING_KDL_PATH)
+    data_dir = Path(pipeline_paths.linguist_data)
+    script_dir = Path(pipeline_paths.linguist_script)
+    transcript_dir = pipeline_paths.transcripts
 
-    raw_path = Path(cfg.ingest_saved_dir) / date / "script.json"
+    raw_path = Path(pipeline_paths.linguist_saved) / date / "script.json"
     raw = [RawLine(**line) for line in json.loads(raw_path.read_text(encoding="utf-8"))]
 
     artifacts = process_session(
@@ -80,18 +73,18 @@ def session_transcripts(context: dg.AssetExecutionContext) -> dg.MaterializeResu
         campaigns=campaign_views(being),
     )
 
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    atomic_write_text(DATA_DIR / f"{date}.json", _to_json(artifacts.transcript.model_dump()))
+    data_dir.mkdir(parents=True, exist_ok=True)
+    atomic_write_text(data_dir / f"{date}.json", _to_json(artifacts.transcript.model_dump()))
 
     matched_name = "unmatched"
     if artifacts.matched is not None and artifacts.context is not None:
         stem = campaign_filename(artifacts.matched)
         matched_name = stem
-        SCRIPT_DIR.mkdir(parents=True, exist_ok=True)
-        TRANSCRIPT_DIR.mkdir(parents=True, exist_ok=True)
-        atomic_write_text(SCRIPT_DIR / f"{stem}.{date}.txt", artifacts.context)
+        script_dir.mkdir(parents=True, exist_ok=True)
+        transcript_dir.mkdir(parents=True, exist_ok=True)
+        atomic_write_text(script_dir / f"{stem}.{date}.txt", artifacts.context)
         if artifacts.canonical is not None:
-            atomic_write_text(TRANSCRIPT_DIR / f"{stem}.{date}.txt", artifacts.canonical)
+            atomic_write_text(transcript_dir / f"{stem}.{date}.txt", artifacts.canonical)
 
     _sessions_counter.add(1)
     _log.info(
@@ -110,7 +103,12 @@ def session_transcripts(context: dg.AssetExecutionContext) -> dg.MaterializeResu
     deps=[session_transcripts],
     group_name="chronicle",
 )
-def session_episode_summary(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+def session_episode_summary(
+    context: dg.AssetExecutionContext,
+    astra_config: AstraConfig,
+    pipeline_paths: PipelinePaths,
+    llm: LlmResource,
+) -> dg.MaterializeResult:
     """Summarize one session into a Rich chronicle `EpisodeEntry` (NLSpec 0019).
 
     Runs automatically after `session_transcripts` (it reads that asset's
@@ -121,15 +119,23 @@ def session_episode_summary(context: dg.AssetExecutionContext) -> dg.Materialize
     from .chronicle_llm import build_episode_entry  # lazy: pulls astra_llm/litellm
 
     date = context.partition_key
-    if show_for_date(date) is None:
+    transcript_dir = pipeline_paths.transcripts
+    if show_for_date(date, transcript_dir=transcript_dir) is None:
         # Not one of the chronicle shows (unmatched/excluded) — no episode summary.
         _log.info("chronicle skipping %s: not a chronicle show", date)
         return dg.MaterializeResult(metadata={"status": "skipped (unmatched)"})
 
-    transcript = load_session(DATA_DIR / f"{date}.json")
-    entry = build_episode_entry(date, transcript)
-    EPISODES_DIR.mkdir(parents=True, exist_ok=True)
-    atomic_write_text(EPISODES_DIR / f"{date}.json", entry.model_dump_json(indent=2))
+    transcript = load_session(Path(pipeline_paths.linguist_data) / f"{date}.json")
+    entry = build_episode_entry(
+        date,
+        transcript,
+        client=llm.client(),
+        model=astra_config.get().llm.default_model,
+        transcript_dir=transcript_dir,
+    )
+    episodes_dir = pipeline_paths.chronicle_episodes
+    episodes_dir.mkdir(parents=True, exist_ok=True)
+    atomic_write_text(episodes_dir / f"{date}.json", entry.model_dump_json(indent=2))
     _episodes_counter.add(1, {"show": entry.show})
     _log.info(
         "chronicle summarized episode %s (show=%s): %r, %d beats",
@@ -148,7 +154,9 @@ def session_episode_summary(context: dg.AssetExecutionContext) -> dg.Materialize
 
 
 @dg.asset(deps=[session_episode_summary], group_name="chronicle")
-def campaign_timeline() -> dg.MaterializeResult:
+def campaign_timeline(
+    astra_config: AstraConfig, pipeline_paths: PipelinePaths, llm: LlmResource
+) -> dg.MaterializeResult:
     """Group every episode summary into the Show → Season → Episode `Chronicle`.
 
     Reads all `timeline/episodes/*.json`, groups by show, orders shows main-first then
@@ -156,13 +164,14 @@ def campaign_timeline() -> dg.MaterializeResult:
     writing `timeline/seasons.json`. **Skips the GLM calls when the episode inputs are
     unchanged** (C9) so the linguist-commit timer / schedule is a no-op until a new
     summary lands."""
-    entries = load_episode_entries(EPISODES_DIR)
+    entries = load_episode_entries(pipeline_paths.chronicle_episodes)
     if not entries:
         return dg.MaterializeResult(metadata={"shows": 0, "status": "no episodes yet"})
 
     new_hash = chronicle_inputs_hash(entries)
-    if SEASONS_PATH.exists():
-        existing = Chronicle.model_validate_json(SEASONS_PATH.read_text(encoding="utf-8"))
+    seasons_path = pipeline_paths.seasons
+    if seasons_path.exists():
+        existing = Chronicle.model_validate_json(seasons_path.read_text(encoding="utf-8"))
         if existing.inputs_hash == new_hash:
             _log.info("chronicle seasons unchanged (%d episodes) — skipping", len(entries))
             return dg.MaterializeResult(
@@ -171,10 +180,12 @@ def campaign_timeline() -> dg.MaterializeResult:
 
     from .chronicle_llm import build_chronicle  # lazy: pulls astra_llm/litellm
 
-    chronicle = build_chronicle(entries)
+    chronicle = build_chronicle(
+        entries, client=llm.client(), model=astra_config.get().llm.default_model
+    )
     chronicle.inputs_hash = new_hash
-    TIMELINE_DIR.mkdir(parents=True, exist_ok=True)
-    atomic_write_text(SEASONS_PATH, chronicle.model_dump_json(indent=2))
+    seasons_path.parent.mkdir(parents=True, exist_ok=True)
+    atomic_write_text(seasons_path, chronicle.model_dump_json(indent=2))
     total_seasons = sum(len(s.seasons) for s in chronicle.shows)
     _log.info(
         "chronicle grouped %d episodes into %d show(s), %d season(s)",
@@ -255,4 +266,5 @@ defs = dg.Definitions(
     sensors=[scribe_output_sensor],
     schedules=[campaign_timeline_schedule],
     jobs=[campaign_timeline_job],
+    resources=default_resources(),
 )
