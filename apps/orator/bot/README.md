@@ -65,5 +65,10 @@ ontology-gen` regenerates the TS Zod schema (`libs/ts/config/src/config.gen.ts`)
   `src/server/pins.test.ts` pins every response. The compose healthcheck probes `/healthz`, which
   answers 503 while Postgres does not; on SIGTERM the server drains, then the bot leaves Discord, then
   the store closes.
+- **The API's shapes live once, in `src/api/types.ts`.** The store's row types, the now-playing
+  state and the response bodies are defined there, and the SPA imports them, so a server change
+  that alters a response fails the SPA's typecheck. Keep that file type-only and import-free: the
+  browser bundle imports it. The Stream Deck controller (`apps/orator/controller`) still keeps its
+  own copy in `src/orator/types.ts`.
 - **Ingest progress is SSE.** The Caddy stanza disables buffering (`flush_interval -1`) on the job
   events path only; keep that if you touch the edge config.

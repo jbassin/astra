@@ -6,16 +6,13 @@
  */
 import { useEffect, useState } from "react";
 
+import type { Me } from "../api/types";
 import { apiGet } from "./api";
 import { Import } from "./Import";
 import { Keys } from "./Keys";
 import { Library } from "./Library";
 import { Playback } from "./Playback";
 import { PlaybackProvider } from "./playbackState";
-
-interface Me {
-  uid: string;
-}
 
 type AuthState = { status: "loading" } | { status: "anon" } | { status: "authed"; me: Me };
 

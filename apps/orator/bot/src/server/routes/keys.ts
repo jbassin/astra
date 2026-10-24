@@ -6,6 +6,7 @@
  *
  * astra port: `repo.X(ctx.db, …)` → `await ctx.store.X(…)` (async LibraryStore).
  */
+import type { PublicApiKey } from "../../api/types";
 import type { ApiKey } from "../../db/store";
 import { generateKey } from "../apikeys";
 import { jsonBody, text } from "../bodies";
@@ -16,7 +17,7 @@ function requireSession(ctx: ApiCtx): void {
 }
 
 /** Public view of a key — never includes the hash. */
-function publicKey(k: ApiKey) {
+function publicKey(k: ApiKey): PublicApiKey {
   return {
     id: k.id,
     name: k.name,

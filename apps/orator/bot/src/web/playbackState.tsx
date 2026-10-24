@@ -14,17 +14,8 @@ import {
   useState,
 } from "react";
 
+import type { NowPlaying } from "../api/types";
 import { ApiError, apiGet, apiSend } from "./api";
-
-export interface NowPlaying {
-  connected: boolean;
-  channelId: string | null;
-  status: "idle" | "playing" | "paused";
-  loopMode: "none" | "track" | "playlist";
-  current: { trackId: number; title: string; positionMs: number; durationMs: number | null } | null;
-  queueLength: number;
-  queueIndex: number;
-}
 
 interface PlaybackApi {
   np: NowPlaying | null;

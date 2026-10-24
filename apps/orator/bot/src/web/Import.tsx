@@ -1,28 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import type { Collection, DownloadJob as Job, JobSnapshot as Snapshot } from "../api/types";
 import { apiGet, apiSend } from "./api";
 import { Menu } from "./ui/Menu";
-
-interface JobItem {
-  id: number;
-  video_id: string;
-  title: string;
-  status: "queued" | "downloading" | "done" | "error";
-  progress_pct: number;
-  error: string | null;
-}
-interface Job {
-  id: number;
-  type: "single" | "playlist";
-  title: string | null;
-  status: "queued" | "running" | "done" | "error" | "partial";
-  total_items: number;
-  completed_items: number;
-}
-interface Snapshot {
-  job: Job;
-  items: JobItem[];
-}
 
 const TERMINAL = new Set(["done", "error", "partial"]);
 
@@ -31,12 +11,12 @@ export function Import({ onImported }: { onImported: () => void }) {
   const [url, setUrl] = useState("");
   const [snap, setSnap] = useState<Snapshot | null>(null);
   const [busy, setBusy] = useState(false);
-  const [collections, setCollections] = useState<{ id: number; name: string }[]>([]);
+  const [collections, setCollections] = useState<Collection[]>([]);
   const [target, setTarget] = useState(""); // "" = new collection (playlist) / none (single)
   const esRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
-    apiGet<{ id: number; name: string }[]>("/api/v1/collections")
+    apiGet<Collection[]>("/api/v1/collections")
       .then(setCollections)
       .catch(() => {});
   }, []);
@@ -130,7 +110,7 @@ export function Import({ onImported }: { onImported: () => void }) {
         </button>
       </form>
 
-      {snap && (
+      {snap?.job && (
         <div className="import__progress">
           <div className="muted">
             {snap.job.title ?? "Importing"} — {snap.job.completed_items}/{snap.job.total_items} ·{" "}

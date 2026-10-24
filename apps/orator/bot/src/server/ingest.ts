@@ -15,6 +15,7 @@ import { resolve } from "node:path";
 import { getLogger, getTracer, lazyCounter, lazyHistogram } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 
+import type { JobSnapshot } from "../api/types";
 import type { DownloadJob, DownloadJobItem, LibraryStore } from "../db/store";
 import { runPool } from "../lib/pool";
 import type { AudioProbe, AudioProber } from "../media/probe";
@@ -73,10 +74,11 @@ export class IngestService {
   }
 
   private async publish(jobId: number): Promise<void> {
-    this.deps.hub.publish(jobId, {
+    const snapshot: JobSnapshot = {
       job: await this.deps.store.getDownloadJob(jobId),
       items: await this.deps.store.listJobItems(jobId),
-    });
+    };
+    this.deps.hub.publish(jobId, snapshot);
   }
 
   private async startSingle(url: string, collectionId?: number): Promise<StartResult> {

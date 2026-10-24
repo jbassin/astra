@@ -10,12 +10,13 @@ import { unlink } from "node:fs/promises";
 
 import { z } from "zod";
 
+import type { PlaylistWithItems, TrackWithTags } from "../../api/types";
 import type { Track } from "../../db/store";
 import { previewBulkRename, RenameError, type RenameOp } from "../../lib/rename";
 import { ids, INVALID_BODY, int, jsonBody, text } from "../bodies";
 import { type ApiCtx, type ApiRoute, apiRoute, HttpError, intParam, json } from "../router";
 
-async function trackWithTags(ctx: ApiCtx, track: Track) {
+async function trackWithTags(ctx: ApiCtx, track: Track): Promise<TrackWithTags> {
   return { ...track, tags: await ctx.store.tagsForTrack(track.id) };
 }
 
@@ -311,8 +312,11 @@ export const libraryRoutes: ApiRoute[] = [
       const id = intParam(ctx.params, "id");
       const playlist = await ctx.store.getPlaylist(id);
       if (!playlist) throw new HttpError(404, "not_found");
-      const trackIds = await ctx.store.playlistTrackIds(id);
-      return json({ ...playlist, trackIds });
+      const body: PlaylistWithItems = {
+        ...playlist,
+        trackIds: await ctx.store.playlistTrackIds(id),
+      };
+      return json(body);
     },
   },
   apiRoute({

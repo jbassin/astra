@@ -6,8 +6,8 @@
  */
 import { useEffect, useRef, useState } from "react";
 
+import type { Tag } from "../../api/types";
 import { TAG_PALETTE } from "../grouping";
-import type { Tag } from "../types";
 
 export function TagEditModal({
   tag,

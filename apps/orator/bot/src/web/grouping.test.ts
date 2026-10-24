@@ -1,21 +1,32 @@
 import { describe, expect, test } from "vitest";
 
+import type { Tag, TrackWithTags } from "../api/types";
 import { groupByColor, hexToRgba, homeColoredTag } from "./grouping";
-import type { Tag, Track } from "./types";
+
+const TS = "2026-01-01T00:00:00";
 
 function tag(id: number, name: string, color: string | null = null): Tag {
-  return { id, name, category: null, color };
+  return { id, name, category: null, color, created_at: TS };
 }
 
-function track(id: number, title: string, tags: Tag[]): Track {
+function track(id: number, title: string, tags: Tag[]): TrackWithTags {
   return {
     id,
     collection_id: null,
     title,
     original_title: title,
-    status: "ready",
+    source_type: "upload",
+    source_url: null,
+    source_video_id: null,
+    file_path: null,
+    format: null,
     duration_ms: null,
+    file_size: null,
     loudness_lufs: null,
+    status: "ready",
+    error: null,
+    added_at: TS,
+    updated_at: TS,
     tags,
   };
 }

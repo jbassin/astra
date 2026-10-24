@@ -1,4 +1,5 @@
-import { type NowPlaying, usePlayback } from "./playbackState";
+import type { NowPlaying } from "../api/types";
+import { usePlayback } from "./playbackState";
 
 const LOOP_NEXT: Record<NowPlaying["loopMode"], NowPlaying["loopMode"]> = {
   none: "playlist",
