@@ -1,6 +1,6 @@
 /**
- * Library CRUD + bulk ops API (lark B11–B19, §7 web superset). All routes are
- * session-guarded (mounted behind the auth check in the app, slice 4).
+ * Library CRUD + bulk ops API (a superset of lark's web API). All routes are
+ * session-guarded (mounted behind the auth check in the app).
  *
  * astra port: every `repo.X(ctx.db, …)` became `await ctx.store.X(…)` (sync
  * `bun:sqlite` → async `LibraryStore`). The `/ingest/upload` route lives in the
@@ -134,7 +134,7 @@ export const libraryRoutes: ApiRoute[] = [
     },
   },
 
-  // Move selected tracks into a collection (or out, with collectionId: null), B15.
+  // Move selected tracks into a collection (or out, with collectionId: null).
   apiRoute({
     method: "POST",
     path: "/api/v1/tracks/bulk-move",
@@ -156,7 +156,7 @@ export const libraryRoutes: ApiRoute[] = [
     },
   }),
 
-  // Bulk delete (rows + underlying files), B18.
+  // Bulk delete (rows + underlying files).
   apiRoute({
     method: "POST",
     path: "/api/v1/tracks/bulk-delete",
@@ -177,7 +177,7 @@ export const libraryRoutes: ApiRoute[] = [
     },
   }),
 
-  // --- Bulk rename (B13): preview or apply ---
+  // --- Bulk rename: preview or apply ---
   apiRoute({
     method: "POST",
     path: "/api/v1/tracks/bulk-rename",
@@ -213,7 +213,7 @@ export const libraryRoutes: ApiRoute[] = [
     },
   }),
 
-  // --- Bulk tag / untag (B14) ---
+  // --- Bulk tag / untag ---
   apiRoute({
     method: "POST",
     path: "/api/v1/tracks/bulk-tag",

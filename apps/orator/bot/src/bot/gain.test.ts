@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { buildAudioFilter, computeGainDb, dbToLinear } from "./gain";
 
-describe("computeGainDb (D5/B25)", () => {
+describe("computeGainDb", () => {
   test("boosts quiet tracks toward target", () => {
     expect(computeGainDb(-20, { targetLufs: -16 })).toBe(4);
   });

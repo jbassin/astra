@@ -191,7 +191,7 @@ describe.skipIf(TEST_DATABASE_URL === undefined)("PostgresStore (real Postgres)"
     await store.updateDownloadJob(j2.id, { status: "running", title: "One" });
     await store.updateDownloadJob(j2.id, {}); // no-op
 
-    // `status = any($1)` with a real array param (the wire bug D11 fixed).
+    // `status = any($1)` with a real array param (the old Bun wire bug).
     const byStatus = await store.listJobsByStatus(["queued", "running"]);
     expect(byStatus.map((j) => j.id)).toEqual([j1.id, j2.id]);
     expect((await store.listJobsByStatus(["running"])).map((j) => j.id)).toEqual([j2.id]);

@@ -1,5 +1,5 @@
 /**
- * Startup guards — orator fails CLOSED (0037 SVC-2). A missing or blank session secret
+ * Startup guards — orator fails CLOSED. A missing or blank session secret
  * would sign forgeable admin cookies, and an empty operator allowlist used to admit every
  * Discord account (the app now admits no one with an empty set). Either one stops the
  * process at boot, so the misconfiguration is loud instead of running (and reporting

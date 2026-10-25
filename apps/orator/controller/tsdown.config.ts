@@ -5,7 +5,7 @@ import { defineConfig } from "tsdown";
  * runtime loads directly (`CodePath` in manifest.json) — no `node_modules`
  * ships alongside it, so every non-builtin dependency must be inlined.
  *
- * Ported from the former `rollup.config.mjs` (rollup → tsdown, D5): same
+ * Ported from the former `rollup.config.mjs` (rollup → tsdown): same
  * entry/output path, same ESM+minified-in-production contract, same
  * `package.json` sidecar so Node treats `bin/plugin.js` as a module despite
  * living outside this workspace member's own `"type": "module"` scope.

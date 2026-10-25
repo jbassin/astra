@@ -6,7 +6,7 @@ import { defineConfig } from "vite";
 
 import { gothicFontsPlugin } from "./scripts/gothicFontsPlugin";
 
-// The operator UI is a @tanstack/react-router CLIENT SPA (M3 — not react-start/
+// The operator UI is a @tanstack/react-router CLIENT SPA (not react-start/
 // SSR). `vite build` emits `dist/`, which orator-backend's Bun server serves via
 // `serveStatic`. @tailwindcss/vite compiles gothic's theme.css (`@import
 // "tailwindcss"` + `@theme` tokens); without it the gothic stylesheet ships raw

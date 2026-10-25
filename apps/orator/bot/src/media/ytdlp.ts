@@ -1,5 +1,5 @@
 /**
- * yt-dlp wrappers (plan B20/B21). The `YtDlp` interface is injected so the ingest service can be
+ * yt-dlp wrappers. The `YtDlp` interface is injected so the ingest service can be
  * unit-tested with a stub; the real implementation shells out to the `yt-dlp` binary.
  *
  * Every run goes through `runProcess` (`./process.ts`): a wall-clock limit from config kills
@@ -45,9 +45,9 @@ export interface YtDlp {
 }
 
 /**
- * Whether a URL should be treated as a playlist import (B21) vs a single video
- * (B20). A `list=` param means playlist — EXCEPT auto-generated radio/mix lists
- * (`RD…`, `UL…`), which are effectively infinite and treated as a single video.
+ * Whether a URL should be treated as a playlist import vs a single video. A `list=`
+ * param means playlist — EXCEPT auto-generated radio/mix lists (`RD…`, `UL…`), which
+ * are effectively infinite and treated as a single video.
  */
 export function isPlaylistUrl(url: string): boolean {
   let list: string | null;

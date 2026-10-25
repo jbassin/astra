@@ -1,7 +1,7 @@
 /**
- * Playback control API (lark §7). The same routes are reachable via a web session
+ * Playback control API. The same routes are reachable via a web session
  * or a Stream Deck API key; `ctx.session.uid` is the actor used for follow-the-
- * operator (D8) regardless of which auth path set it.
+ * operator regardless of which auth path set it.
  *
  * astra port: `resolveTrackIds` reads the async `ctx.store` (was sync `repo`).
  */

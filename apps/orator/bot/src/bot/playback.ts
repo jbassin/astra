@@ -1,7 +1,7 @@
 /**
- * Single-session playback engine (lark §6 / B1/B2). One voice session at a time
- * (D3); all mutating commands are **serialized** through an internal lock so web
- * + Stream Deck can never desync the now-playing state (B9).
+ * Single-session playback engine. One voice session at a time; all mutating
+ * commands are **serialized** through an internal lock so web + Stream Deck can
+ * never desync the now-playing state.
  *
  * Discord voice is injected (VoiceAdapter), so queue advancement, loop modes,
  * resilient skip-on-error, loudness gain, and the 60s auto-leave are all
@@ -47,9 +47,9 @@ export interface PlaybackDeps {
 
 export interface PlayRequest {
   trackIds: number[];
-  /** Discord user to follow into a voice channel (D8). */
+  /** Discord user to follow into a voice channel. */
   userId?: string;
-  /** Explicit channel override (D8). */
+  /** Explicit channel override. */
   channelId?: string;
 }
 
@@ -72,7 +72,7 @@ export class PlaybackEngine {
     this.deps = deps;
   }
 
-  // --- serialization (B9) ---
+  // --- serialization ---
   private run<T>(fn: () => Promise<T> | T): Promise<T> {
     const result = this.lock.then(() => fn());
     this.lock = result.then(
@@ -82,7 +82,7 @@ export class PlaybackEngine {
     return result;
   }
 
-  // --- channel resolution (B1/D8) ---
+  // --- channel resolution ---
   private async resolveChannel(req: { userId?: string; channelId?: string }): Promise<string> {
     if (req.channelId) return req.channelId;
     if (req.userId) {
@@ -92,7 +92,7 @@ export class PlaybackEngine {
     throw new PlaybackError(409, "join a voice channel first");
   }
 
-  /** Connect to voice, turning adapter failures into a clear 503 (B1/§11.1). */
+  /** Connect to voice, turning adapter failures into a clear 503. */
   private async connect(channelId: string): Promise<void> {
     try {
       await this.deps.voice.join(channelId);
@@ -113,7 +113,7 @@ export class PlaybackEngine {
       if (!this.deps.voice.isConnected()) {
         await this.connect(await this.resolveChannel(req));
       } else if (req.channelId && req.channelId !== this.deps.voice.currentChannelId()) {
-        await this.connect(req.channelId); // move (one session, D3)
+        await this.connect(req.channelId); // move (one session)
       }
       this.queue = [...req.trackIds];
       this.index = 0;
@@ -123,7 +123,7 @@ export class PlaybackEngine {
   }
 
   stop(): Promise<NowPlaying> {
-    // Stop = halt + clear queue, STAY connected (D6).
+    // Stop = halt + clear queue, STAY connected.
     return this.run(() => {
       this.deps.voice.stopAudio();
       this.queue = [];
@@ -197,7 +197,7 @@ export class PlaybackEngine {
     }
   }
 
-  /** Gateway tells us how many non-bot members remain; drives 60s auto-leave (B2). */
+  /** Gateway tells us how many non-bot members remain; drives 60s auto-leave. */
   notifyPopulation(nonBotCount: number): void {
     if (!this.deps.voice.isConnected()) return;
     if (nonBotCount <= 0) {
@@ -246,7 +246,7 @@ export class PlaybackEngine {
     };
   }
 
-  /** Play the track at `this.index`, skipping broken tracks (B10). */
+  /** Play the track at `this.index`, skipping broken tracks. */
   private async startCurrent(skipBudget = this.queue.length + 1): Promise<void> {
     if (this.queue.length === 0 || skipBudget <= 0) {
       this.status = "idle";
@@ -259,7 +259,7 @@ export class PlaybackEngine {
     }
     const track = await this.deps.store.getTrack(trackId);
     if (!track?.file_path) {
-      if (track) await this.deps.store.markTrackError(track.id); // file missing → mark + skip (B10)
+      if (track) await this.deps.store.markTrackError(track.id); // file missing → mark + skip
       return this.skipBroken(skipBudget);
     }
     const filter = buildAudioFilter(

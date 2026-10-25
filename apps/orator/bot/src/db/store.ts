@@ -1,12 +1,12 @@
 /**
  * The orator music-library store — the **async Postgres** port of faerrin
- * `pkg/lark/src/db/repo.ts` (which was synchronous `bun:sqlite`). Decision F.
+ * `pkg/lark/src/db/repo.ts` (which was synchronous `bun:sqlite`).
  *
  * Two layers:
  *  - `LibraryStore` — the async surface the routes / playback / ingest code against;
  *    injectable so their logic unit-tests with a fake (weal-bot's precedent).
- *  - `PostgresStore` — the postgres.js (porsager) wire implementation (R3, 0022 S8
- *    — off Bun's built-in `SQL`, which required a live Bun runtime; D11). Its schema
+ *  - `PostgresStore` — the postgres.js (porsager) wire implementation (off Bun's
+ *    built-in `SQL`, which required a live Bun runtime). Its schema
  *    is the numbered files in `migrations/`, and `store.pg.test.ts` runs it against a
  *    throwaway Postgres (`just pg-test`, the CI pg-test job).
  *
@@ -210,7 +210,7 @@ const KEY =
  * Pure query-builder for {@link PostgresStore.listJobsByStatus} — extracted so its
  * SQL shape is unit-testable without a live PG connection (store.test.ts).
  *
- * D11 (0022 S8): postgres.js serializes an array param as a real Postgres array,
+ * postgres.js serializes an array param as a real Postgres array,
  * so the natural `status = any($1)` form works directly — restoring it and
  * DELETING the `in ($1, $2, …)` scalar-expansion this used to need. That
  * expansion was a Bun `SQL.unsafe`-only workaround (2c2fd10): Bun's `SQL.unsafe`
@@ -227,7 +227,10 @@ export function listJobsByStatusQuery(statuses: DownloadJob["status"][]): {
   };
 }
 
-/** postgres.js-backed Postgres implementation of {@link LibraryStore} (R3, 0022 S8 — off Bun.SQL onto the Node-runtime-portable postgres.js; tagged-template/`.unsafe` call sites are unchanged). */
+/**
+ * postgres.js-backed Postgres implementation of {@link LibraryStore} (off Bun.SQL onto the
+ * Node-runtime-portable postgres.js; tagged-template/`.unsafe` call sites are unchanged).
+ */
 export class PostgresStore implements LibraryStore {
   readonly #sql: postgres.Sql;
 
@@ -253,7 +256,7 @@ export class PostgresStore implements LibraryStore {
   #all<R>(query: string, params: unknown[] = []): Promise<R[]> {
     // postgres.js's `.unsafe` types params as `ParameterOrJSON<never>[]` (no plain
     // `unknown`); this store passes genuinely heterogeneous SQL params (numbers,
-    // strings, nulls, and now — D11, R3 0022 S8 — arrays for `= any($1)`).
+    // strings, nulls, and arrays for `= any($1)`).
     return this.#sql.unsafe(query, params as never[]) as Promise<R[]>;
   }
 
@@ -306,7 +309,7 @@ export class PostgresStore implements LibraryStore {
   }
 
   async deleteCollection(id: number): Promise<boolean> {
-    // tracks.collection_id is ON DELETE SET NULL — tracks/files survive (B15).
+    // tracks.collection_id is ON DELETE SET NULL — tracks/files survive.
     const rows = await this.#all("delete from collections where id = $1 returning id", [id]);
     return rows.length > 0;
   }

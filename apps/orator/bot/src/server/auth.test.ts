@@ -1,6 +1,6 @@
 /**
- * orator's auth, end to end through the service kit: every way in that must stay shut
- * (0037 SVC-2). The session-secret floor itself is in `../startup.test.ts`; this file
+ * orator's auth, end to end through the service kit: every way in that must stay shut.
+ * The session-secret floor itself is in `../startup.test.ts`; this file
  * checks what the running app does with each credential.
  */
 import { describe, expect, test } from "vitest";

@@ -17,7 +17,7 @@ describe("titleFromFilename", () => {
   });
 });
 
-describe("handleUpload (B19)", () => {
+describe("handleUpload", () => {
   let store: FakeStore;
   let dataDir: string;
   beforeEach(() => {

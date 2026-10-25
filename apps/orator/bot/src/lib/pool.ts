@@ -1,5 +1,5 @@
 /**
- * Bounded worker pool (plan B24). Runs `worker` over `items` with at most
+ * Bounded worker pool. Runs `worker` over `items` with at most
  * `concurrency` in flight, so a big playlist download never blocks playback or
  * the HTTP server and never spawns hundreds of yt-dlp processes at once.
  * Pure + dependency-free → unit-testable.

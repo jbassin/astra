@@ -5,7 +5,7 @@ import { apiGet, apiSend } from "./api";
 import { useDialog } from "./ui/Dialog";
 import { useToast } from "./ui/Toast";
 
-/** Stream Deck API-key management (B26): generate (shown once), list, revoke. */
+/** Stream Deck API-key management: generate (shown once), list, revoke. */
 export function Keys() {
   const toast = useToast();
   const { confirm, promptText } = useDialog();

@@ -22,7 +22,7 @@ afterEach(() => {
   delete process.env[ENV];
 });
 
-describe("requireSessionSecret (fail closed, 0037 SVC-2)", () => {
+describe("requireSessionSecret (fail closed)", () => {
   test.each(["", "   ", "\t\n"])("refuses a blank injected secret %j", (blank) => {
     process.env[ENV] = blank;
     expect(() => requireSessionSecret(ref())).toThrow(

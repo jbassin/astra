@@ -1,5 +1,5 @@
 /**
- * Discord bot bootstrap (lark §4/B1/B2) — all in-process under Bun. Builds the
+ * Discord bot bootstrap — all in-process under Bun. Builds the
  * client, the follow-the-operator resolver, the in-process voice adapter, and the
  * playback engine, and wires voice-state changes to the 60s auto-leave. Started
  * from the entrypoint only when a token is configured. Not unit-tested.
@@ -69,7 +69,7 @@ export async function startBot(opts: {
     targetLufs: opts.targetLufs,
   });
 
-  // Auto-leave (B2): recount non-bot members in the active channel on any voice
+  // Auto-leave: recount non-bot members in the active channel on any voice
   // change and let the engine arm/cancel its 60s timer.
   client.on("voiceStateUpdate", () => {
     const channelId = adapter.currentChannelId();

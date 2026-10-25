@@ -6,7 +6,7 @@ import { Menu } from "./ui/Menu";
 
 const TERMINAL = new Set(["done", "error", "partial"]);
 
-/** Submit a YouTube URL and watch per-video download progress over SSE (B22). */
+/** Submit a YouTube URL and watch per-video download progress over SSE. */
 export function Import({ onImported }: { onImported: () => void }) {
   const [url, setUrl] = useState("");
   const [snap, setSnap] = useState<Snapshot | null>(null);
@@ -50,7 +50,7 @@ export function Import({ onImported }: { onImported: () => void }) {
   watchRef.current = watch;
 
   // On (re)load, resume watching any still-running import (server-side downloads
-  // outlive the page, so a returning operator sees live progress again). B22.
+  // outlive the page, so a returning operator sees live progress again).
   useEffect(() => {
     let cancelled = false;
     apiGet<Job[]>("/api/v1/ingest/jobs")

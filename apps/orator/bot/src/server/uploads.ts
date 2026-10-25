@@ -1,5 +1,5 @@
 /**
- * Multipart upload ingest (lark B19). Stores each uploaded audio file under the
+ * Multipart upload ingest. Stores each uploaded audio file under the
  * data dir, probes it (injected prober), and creates a `ready` track. The store
  * + DB logic is testable with a stub prober and a temp dir (no ffmpeg).
  *
@@ -45,8 +45,7 @@ export async function handleUpload(opts: {
       const id = crypto.randomUUID();
       const dest = resolve(audioDir, `${id}${ext}`);
       // node:fs, not Bun.write (vitest workers are Node — no `Bun` global; the
-      // production write-target is unchanged, R3/S8 does the rest of this file's
-      // Bun-runtime exit — Bun.serve, ytdlp Bun.spawn).
+      // production write-target is unchanged).
       await writeFile(dest, Buffer.from(await file.arrayBuffer()));
       const probe: AudioProbe = opts.prober
         ? await opts.prober(dest).catch((): AudioProbe => ({}))

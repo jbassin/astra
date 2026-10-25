@@ -35,7 +35,7 @@ const sreq = (m: string, p: string, b?: unknown) =>
     body: b ? JSON.stringify(b) : undefined,
   });
 
-describe("key management (session-only, B26)", () => {
+describe("key management (session-only)", () => {
   test("create returns the raw key once; list never exposes it", async () => {
     const app = makeApp();
     const created = await (await app.handle(sreq("POST", "/api/v1/keys", { name: "Deck" }))).json();

@@ -1,5 +1,5 @@
 /**
- * Tag + slug normalization (lark B16). Pure helpers so `Calm` and `calm`
+ * Tag + slug normalization. Pure helpers so `Calm` and `calm`
  * collapse to one tag and collections get stable URL-safe slugs. Ported verbatim
  * from faerrin `pkg/lark/src/lib/text.ts` (dialect-independent — no DB).
  */

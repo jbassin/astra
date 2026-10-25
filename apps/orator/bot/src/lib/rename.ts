@@ -1,5 +1,5 @@
 /**
- * Bulk-rename engine (lark B13). Pure + dependency-free so it is fully
+ * Bulk-rename engine. Pure + dependency-free so it is fully
  * unit-tested and can also run client-side for live preview. YouTube titles are
  * long and noisy; these ops let the operator clean many at once with a preview
  * before committing. Ported verbatim from faerrin `pkg/lark/src/lib/rename.ts`.

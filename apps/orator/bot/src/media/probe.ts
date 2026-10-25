@@ -1,7 +1,7 @@
 /**
- * Audio probing via ffprobe/ffmpeg (plan B19/B25). Shells out to host binaries,
+ * Audio probing via ffprobe/ffmpeg. Shells out to host binaries,
  * so it is **injected** into routes (the default real prober vs a test stub) and
- * never imported by unit tests — keeping the CI lane binary-free (§11.2).
+ * never imported by unit tests — keeping the CI lane binary-free.
  * Both run through `runProcess` (`./process.ts`), which reads stdout and stderr together.
  */
 import { runProcess } from "./process";
@@ -9,7 +9,7 @@ import { runProcess } from "./process";
 export interface AudioProbe {
   durationMs?: number;
   format?: string;
-  /** EBU R128 integrated loudness (LUFS), for playback gain (D5). */
+  /** EBU R128 integrated loudness (LUFS), for playback gain. */
   loudnessLufs?: number;
 }
 

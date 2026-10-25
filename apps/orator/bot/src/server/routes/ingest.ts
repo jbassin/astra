@@ -1,5 +1,5 @@
 /**
- * YouTube ingest + upload API + SSE progress (lark B19–B22). Session-guarded.
+ * YouTube ingest + upload API + SSE progress. Session-guarded.
  *
  * astra port: `repo.X(ctx.db, …)` → `await ctx.store.X(…)`; `ingest.start(…)` is
  * now async. The `/ingest/upload` route (lark had it in libraryRoutes) lives here.
@@ -16,7 +16,7 @@ const SSE_HEADERS = {
 } as const;
 
 export const ingestRoutes: ApiRoute[] = [
-  // Multipart upload ingest (B19).
+  // Multipart upload ingest.
   {
     method: "POST",
     path: "/api/v1/ingest/upload",
@@ -43,7 +43,7 @@ export const ingestRoutes: ApiRoute[] = [
   },
 
   // Kick off an import (single video or whole playlist). Returns immediately;
-  // progress is observed via the job + its SSE stream (B22).
+  // progress is observed via the job + its SSE stream.
   apiRoute({
     method: "POST",
     path: "/api/v1/ingest/youtube",
@@ -100,7 +100,7 @@ export const ingestRoutes: ApiRoute[] = [
             }
           };
           off = hub.subscribe(id, send);
-          // Prime with the current snapshot so a late subscriber is in sync (B22).
+          // Prime with the current snapshot so a late subscriber is in sync.
           const snapshot = {
             job: await store.getDownloadJob(id),
             items: await store.listJobItems(id),

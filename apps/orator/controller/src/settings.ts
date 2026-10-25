@@ -2,7 +2,7 @@
  * Plugin-wide settings, set via the Property Inspector and stored in Stream Deck
  * global settings.
  *
- * Lifted from faerrin `birdfeed`, with the key astra change (M4/slice 8): the
+ * Lifted from faerrin `birdfeed`, with the key astra change: the
  * orator-backend **origin is configurable** (birdfeed hardcoded `lark.iridi.cc`).
  * The operator mints an API key in orator-backend's web UI (minting is session-
  * gated server-side — the plugin can't mint) and pastes it here alongside the

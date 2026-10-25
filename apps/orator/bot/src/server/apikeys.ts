@@ -1,5 +1,5 @@
 /**
- * Stream Deck API-key primitives (lark B26). Keys are minted in the web UI,
+ * Stream Deck API-key primitives. Keys are minted in the web UI,
  * shown once, and stored only as a SHA-256 hash + a non-secret prefix. The raw
  * key is `orator_<base64url(32 random bytes)>`.
  *

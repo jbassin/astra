@@ -1,5 +1,5 @@
 /**
- * Ingest orchestration (lark B20–B25). Detects single vs playlist, builds the
+ * Ingest orchestration. Detects single vs playlist, builds the
  * download-job + items, runs downloads through a bounded pool, dedups by video
  * id, measures R128 loudness, creates tracks, and streams progress via the hub.
  *
@@ -323,7 +323,7 @@ export class IngestService {
     await store.updateJobItem(item.id, { status: "downloading", progressPct: 0 });
     await this.publish(jobId);
 
-    // Dedup (B23): if this video already has a ready track, link to it and skip.
+    // Dedup: if this video already has a ready track, link to it and skip.
     if (item.video_id) {
       const existing = await store.findTrackByVideoId(item.video_id);
       if (existing) {
@@ -352,7 +352,7 @@ export class IngestService {
       this.#stopper.signal,
     );
 
-    // Loudness on ingest (B25), best-effort.
+    // Loudness on ingest, best-effort.
     let loudnessLufs: number | null = null;
     if (this.deps.prober) {
       const probe: AudioProbe = await this.deps

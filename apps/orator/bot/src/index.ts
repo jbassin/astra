@@ -9,7 +9,7 @@
  * The bot is **optional**: without a resolved token the web UI + library + REST
  * still run, and playback routes return 503 (the deferred live-Discord seam).
  * The session secret and the operator allowlist are NOT optional: either one missing
- * or empty stops startup before anything else runs (fail closed, 0037 SVC-2).
+ * or empty stops startup before anything else runs (fail closed).
  */
 
 import { mkdirSync } from "node:fs";
@@ -37,9 +37,9 @@ async function main(): Promise<void> {
   const cfg = loadConfig();
   const being = loadBeing();
 
-  // Operators = ontology admin snowflakes ∪ the optional config override (M1).
+  // Operators = ontology admin snowflakes ∪ the optional config override.
   // Fail closed before touching the DB: no operators, or a blank session secret (which
-  // would sign forgeable cookies), stops startup (0037 SVC-2).
+  // would sign forgeable cookies), stops startup.
   const allowlist = requireAllowlist(buildAllowlist(being, cfg.orator.allowedUserIds));
   const sessionSecret = requireSessionSecret(cfg.orator.sessionSecret);
 
