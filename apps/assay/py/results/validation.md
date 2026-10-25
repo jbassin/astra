@@ -9,7 +9,7 @@
 | control | 156 | 5.1% | -6.44 | -0.81 |
 | all-non-cantrip | 525 | 23.6% | -4.34 | +0.59 |
 
-Diagnosis: the 'pure'/'hybrid' labels here are the BROAD damage-row split (has vs. lacks a condition ref), not the strict `pricing.is_pure` ladder-fit subset (n=28) — round 2 deliberately narrowed the structural axis to effective-target + range + action (D30-3's identifiability fix for round 1's collinear area/targeting terms), so facets round 1 modeled (area type, damage-type class, passive defense, sustained, rarity) now show up as unmodeled spread here. A real, expected trade-off for a smaller, better-identified structural model, not a metric artifact.
+Diagnosis: the 'pure'/'hybrid' labels here are the BROAD damage-row split (has vs. lacks a condition ref), not the strict `pricing.is_pure` ladder-fit subset (n=28) — round 2 deliberately narrowed the structural axis to effective-target + range + action (the identifiability fix for round 1's collinear area/targeting terms), so facets round 1 modeled (area type, damage-type class, passive defense, sustained, rarity) now show up as unmodeled spread here. A real, expected trade-off for a smaller, better-identified structural model, not a metric artifact.
 
 ## V2′ — heighten-projection consistency (tolerance ≤0.75 mean |resid|, fireball ±0.6)
 
@@ -40,8 +40,8 @@ Diagnosis: the 'pure'/'hybrid' labels here are the BROAD damage-row split (has v
 
 **Diagnosis of the misses (no silent tuning — the honest read, round-1 precedent):**
 
-1. **Fear/Slow/Synesthesia score cold — an out-of-sample extrapolation mismatch, not a broken extraction.** Their condition attribution is verified correct by `test_conditions.py`/`test_assay_extract.py` (Fear's 4-degree Frightened escalation, Slow's duration-promoted Slowed, Synesthesia's preamble-payload rules all extract exactly as the fixtures assert). The gap is architectural: Stage A's β_T2/β_T3 are fit on HYBRID trainers, where a condition only needs to explain a PARTIAL discount on top of an already-real damage floor. Stage B then reuses those same β's via `p = 1-exp(-Σβw)` to justify the ENTIRE rank budget for a pure control spell with zero damage — a linear extrapolation the hybrid-trained coefficients were never asked to support at that scale. This is inherent to D30-3's two-stage architecture as specified, not a bug in this build.
-2. **Disintegrate scores hot because its double-gate (attack roll, THEN a Fortitude save) isn't structurally modeled** — D30-3's structural axis is effective-target + range + action only; a spell needing to clear two independent rolls has no discount applied, so its nominal EV reads as simply 'above budget'. The spec's own V3′ text names this exact nuance ('disintegrate (double-gate)') as expected diagnosis territory, not a silent-pass case.
+1. **Fear/Slow/Synesthesia score cold — an out-of-sample extrapolation mismatch, not a broken extraction.** Their condition attribution is verified correct by `test_conditions.py`/`test_assay_extract.py` (Fear's 4-degree Frightened escalation, Slow's duration-promoted Slowed, Synesthesia's preamble-payload rules all extract exactly as the fixtures assert). The gap is architectural: Stage A's β_T2/β_T3 are fit on HYBRID trainers, where a condition only needs to explain a PARTIAL discount on top of an already-real damage floor. Stage B then reuses those same β's via `p = 1-exp(-Σβw)` to justify the ENTIRE rank budget for a pure control spell with zero damage — a linear extrapolation the hybrid-trained coefficients were never asked to support at that scale. This is inherent to the two-stage architecture as specified, not a bug in this build.
+2. **Disintegrate scores hot because its double-gate (attack roll, THEN a Fortitude save) isn't structurally modeled** — the structural axis is effective-target + range + action only; a spell needing to clear two independent rolls has no discount applied, so its nominal EV reads as simply 'above budget'. The spec's own V3′ text names this exact nuance ('disintegrate (double-gate)') as expected diagnosis territory, not a silent-pass case.
 3. **Flense (+0.146) is a marginal, likely-noise miss** given Stage A's weak identification (R²=0.040 on n=136) — its residual sits close to zero, well inside the kind of spread V1′ already reports as real heterogeneity.
 
 ## V4′ — anchor recovery
@@ -59,11 +59,11 @@ Diagnosis: the 'pure'/'hybrid' labels here are the BROAD damage-row split (has v
 | 9 | 66.09 | 63 | +4.9% | — |
 | 10 | 74.13 | 70 | +5.9% | — |
 
-Fitted condition-price reproduction of the -1-rank rider exchange rate: see the Stage A residual spread in `power-ledger.md`'s hybrid rows and the condition price card in `point-tables.md` — mid-tier (T2/T3) budget fractions land in the 0.37-0.14 β range, consistent with the ~0.5-0.75-of-budget mid-rank hybrid observation (see the S2 build record for the numeric walk-through).
+Fitted condition-price reproduction of the -1-rank rider exchange rate: see the Stage A residual spread in `power-ledger.md`'s hybrid rows and the condition price card in `point-tables.md` — mid-tier T2/T3 budget fractions land in the 0.37-0.14 β range, consistent with the ~0.5-0.75-of-budget mid-rank hybrid observation (see the S2 build record for the numeric walk-through).
 
 ---
 
-# Round 3 gates (spec `0030-assay-round3-spec.md`, D30-25)
+# Round 3 gates (spec `0030-assay-round3-spec.md`)
 
 ## V-A — comparables leave-one-out (target ≥70% median-rank within ±1)
 
@@ -81,14 +81,14 @@ Fitted condition-price reproduction of the -1-rank rider exchange rate: see the 
 | Stupefy | 2 | Befuddle:1, Sculpt Sound:3, Spiritual Epidemic:8, Schadenfreude:1, Summon Archmage:8 | 3 | yes |
 
 - 4/10 within ±1 (40.0%) — **FAIL** (target ≥70%)
-- **Qualitative neighbor-spot check (D30-25's separate requirement — 'fear's neighbors should be fear-family, not random'): PASSES convincingly.** Every roster spell's top-5 shares its EXACT condition atoms (see the `shared_atoms` field in `results/comparables-corpus.json`/`comparables-spot.md`) — Fear's neighbors (Horrifying Blood Loss, Cutting Insult, Agonizing Despair, Fallen Soldier's Lament) are all literally fear-themed spells sharing its Frightened@1/@2/@3 atoms; Paralyze's neighbors (Dominate, Possession, Hypnopompic Terrors) are all mind-control/status-lock themed; Slow/Synaptic Pulse/Stupefy pass BOTH the qualitative AND quantitative checks.
+- **Qualitative neighbor-spot check (the spec's separate requirement — 'fear's neighbors should be fear-family, not random'): PASSES convincingly.** Every roster spell's top-5 shares its EXACT condition atoms (see the `shared_atoms` field in `results/comparables-corpus.json`/`comparables-spot.md`) — Fear's neighbors (Horrifying Blood Loss, Cutting Insult, Agonizing Despair, Fallen Soldier's Lament) are all literally fear-themed spells sharing its Frightened@1/@2/@3 atoms; Paralyze's neighbors (Dominate, Possession, Hypnopompic Terrors) are all mind-control/status-lock themed; Slow/Synaptic Pulse/Stupefy pass BOTH the qualitative AND quantitative checks.
 - **Diagnosis of the quantitative miss (honest-fail discipline, no silent tuning):** the median-rank-within-±1 gate fails for 6/10 roster spells NOT because the neighbors are mechanically wrong, but because two spells can share an IDENTICAL condition-atom profile while differing enormously in overall rank — the rank gap comes from unmodeled quality (bigger area, more targets, extra non-condition riders, tighter save DCs) exactly the dimension the round-3 stakeholder fork's own review killed the generative fit over ('High-rank control-spell power lives in unmodeled quality... not in more/bigger extractable atoms'). A comparables tool that can ONLY see extractable atoms will, correctly and by design, surface a WIDE range in these cases rather than hide the uncertainty behind a false-precision point score — the wide range IS the honest answer, not a bug. Paralyze is the clearest case: its neighbors (Dominate r6, Possession r7, Astral Labyrinth r9, Hypnopompic Terrors r8) are all much HIGHER-rank spells that bundle a similar incapacitation-family atom alongside substantially more mechanical payload than Paralyze's own single clean Paralyzed rider.
 
-## V-B — extraction-fix proof (D30-21)
+## V-B — extraction-fix proof
 
 See the S1 commit (`3783473`, `feat(assay): S1 payload fixes + hostility routing`) for the full numeric derivation. Summary: Sleep extracts its Unconscious payload at Failure/Critical Failure (was silently dropped — case-sensitive rule (iii)) AND its Success-row en-dash '–1 status penalty to Perception checks' modifier (was silently dropped — ASCII-only sign class), both fixed on the SAME real file. En-dash restoration: **exactly 28 files** (verified independently via a raw corpus grep, `[–−]\d+\s*[-–− ](status|circumstance)`, matching the spec's ~28 pin exactly). Case-fold restoration: **84 spells'** condition-instance count changes under the fix (spec estimated ~50 — same order of magnitude; 7 of those flip from SkipRecord to a scored/ledgered row entirely: Sleep, Bane, Web, Levitate, Malediction, Hypnotize, Ring of Truth). All pins re-derived post-fix in the S1 commit message; the pure-damage ladder (n=27, slope/intercept) came out BYTE-IDENTICAL to round 2's shipped values — none of the 27 pure-subset spells happened to have a condition ref restored by these fixes.
 
-## V-C — routing proof (D30-22)
+## V-C — routing proof
 
 The four mandated routing fixtures (real corpus, `tests/fixtures/`) all land correctly — proven end-to-end in `test_assay_extract.py`'s `test_routing_*` tests: **Belittling Boast → hostile** (its `hostile_area_phrase` flag wins over the empty-range/touch-self trap), **Overwhelming Memory → hostile** (prose-save detected despite `defense.save` being structurally null), **Haste → beneficial-effect** (Quickened is excluded from tier assignment entirely — the pre-existing bypass), **Invisibility → beneficial** (Undetected/Hidden DO carry real tiers here, exercising `classify_hostility` directly).
 
@@ -136,7 +136,7 @@ Damage-side non-regression: Fireball's V2′ spot-check above is unchanged from 
 
 ## V-D — carry (ladder untouched; round-2 damage gates not regressed)
 
-Pure-damage ladder: n=27, slope=1.0892, intercept=1.7979 — byte-identical to round 2's shipped values (slope 1.0892, intercept 1.7979, R²=0.967). V1′/V2′/V3′/V4′ above are unchanged in mechanism (only the underlying population shifted per V-C's routing counts, which is the EXPECTED consequence of D30-22, not a regression).
+Pure-damage ladder: n=27, slope=1.0892, intercept=1.7979 — byte-identical to round 2's shipped values (slope 1.0892, intercept 1.7979, R²=0.967). V1′/V2′/V3′/V4′ above are unchanged in mechanism (only the underlying population shifted per V-C's routing counts, which is the EXPECTED consequence of the hostility routing, not a regression).
 
 ## Ledger summary
 
@@ -144,17 +144,17 @@ Scored: 558 — Ledgered: 657
 
 ---
 
-# Round 4 gates (spec `0030-assay-round4-spec.md`, D30-35..38)
+# Round 4 gates (spec `0030-assay-round4-spec.md`)
 
-## W-A — join + rule extraction (D30-35)
+## W-A — join + rule extraction
 
-Re-derived, real corpus: rows carrying a joined effect_profile: **206** (non-variant rows only — variants of the same file share their effect_profile fields, so this is NOT the raw 222/263 ref-bearing/ref-count pin, which counts refs at the RAW-FILE level before variant expansion; see the join self-test below for that exact figure). Distinct joined effect items resolved: **209**. Atom-level `expr-unresolved` tags: **29**; `conditional` (non-level predicate) tags: **134**. Effect-ref-bearing SkipRecords PROMOTED to real rows (D30-36's `recovery_path=="effect-join"`): **77**.
+Re-derived, real corpus: rows carrying a joined effect_profile: **206** (non-variant rows only — variants of the same file share their effect_profile fields, so this is NOT the raw 222/263 ref-bearing/ref-count pin, which counts refs at the RAW-FILE level before variant expansion; see the join self-test below for that exact figure). Distinct joined effect items resolved: **209**. Atom-level `expr-unresolved` tags: **29**; `conditional` (non-level predicate) tags: **134**. Effect-ref-bearing SkipRecords PROMOTED to real rows (`recovery_path=="effect-join"`): **77**.
 
 Independent join self-test (ref discovery + resolution, run directly against the spell-effects pack, bypassing extraction entirely — see the build record for the reproduction script): **222 ref-bearing main-list spells / 263 refs / 0 unresolved / 20 multi-ref spells** — matches the spec's own review-verified pins EXACTLY. `@item.level`/`@spell.rank` evaluated at base rank (never the effect item's own `system.level.value`): 29/263 real joined pairs disagree between the two — also an exact match to the spec's pin. Evaluator coverage among the 28 distinct joined str-expr FlatModifiers: 9 ternary, 8 closed-form-arithmetic (match/when/btwn + floor/ceil/clamped), 11 runtime-only (`@actor.*`/`rulesSelections`/mustache) — matches the spec's "32/79 ternary [globally]; +8 closed-form; 11 runtime-only [among joined]" breakdown exactly once re-scoped to the joined subset.
 
 Predicate/selector-array handling, proven on the two named fixtures: Heroism's `FlatModifier` carries an ARRAY selector (`[attack, saving-throw, skill-check, perception]`) — fans out to 4 atoms, each `ternary(gte(@item.level,9),3,ternary(gte(@item.level,6),2,1))` evaluated at Heroism's own base rank (3) = **1**, matching the card's own +1/+2/+3 @ r3/6/9 curve at the r3 point. Mystic Armor's saving-throw `FlatModifier` carries `predicate: [{gte: [parent:level, 4]}]` — a level-family predicate, evaluated at Mystic Armor's own base rank (1): **False** — NO saving-throw atom at rank 1 (only the AC atom), exactly the spec's named "mystic armor has NO saves atom at rank 1" fixture claim.
 
-## W-B — buff comparables (D30-36, roster LOO — REPORTED not gated)
+## W-B — buff comparables (roster LOO — REPORTED not gated)
 
 Buff comparables corpus n=**145**. All 10 W-B roster spells present (the draft's stoneskin/false life miss corrected to Mountain Resilience/False Vitality).
 
@@ -171,7 +171,7 @@ Buff comparables corpus n=**145**. All 10 W-B roster spells present (the draft's
 | Blur | 2 | Ethereal Jaunt:7, Whirling Scarves:3, Elemental Sense:4, Illusory Shroud:2, Sure Strike:1 |
 | Protection | 1 | Daemon Form:6, Dawnflower's Light:4, Hidden Mind:8, Spirit Sense:2, Spirit Ward:1 |
 
-## W-C — summon band check (D30-37)
+## W-C — summon band check
 
 GM Screen journal curve verification (`gm-screen.json` entry `S55aqwWIzpQRFhcq` / page `8gcp880pEWZ9VPnF`): **PASS**.
 
@@ -196,7 +196,7 @@ n=14 summon-trait main-list spells (trait-membership fixed — the round-2/3 `_S
 
 Declared curve table: `{1: -1, 2: 1, 3: 2, 4: 3, 5: 5, 6: 7, 7: 9, 8: 11, 9: 13, 10: 15}`.
 
-## W-D — export (D30-38)
+## W-D — export
 
 Double-run byte-identity: **PASS**. Entries: **1144**. Unmatched ids: **0** (expect 0). Variant-collapsed slugs: **34**.
 

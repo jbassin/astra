@@ -1,23 +1,23 @@
-"""Round-2 effect extraction (design doc / spec 0030 D30-2, D30-4, D30-5, D30-8b).
+"""Round-2 effect extraction.
 
 This module is the new core of round 2: turning spell `description` prose into
 priced condition instances. It owns:
 
-- the condition vocabulary + severity **tier table** (D30-5) — an implementation
+- the condition vocabulary + severity **tier table** — an implementation
   artifact, hand-curated from the PF2e Core Rulebook condition list against the
   real corpus census (``conditions_census.py``-style counts, see the S1 build
   record for per-condition n);
 - **degree-section splitting** + the **four explicit attribution rules**
-  (D30-2b, review-mandated: positional splitting alone mis-handles synesthesia/
+  (review-mandated: positional splitting alone mis-handles synesthesia/
   command/paralyze);
-- **duration classification** (D30-2c / D30-8b) — prose first, `duration` field
+- **duration classification** — prose first, `duration` field
   fallback;
-- the **coverage arithmetic** (D30-4) — fixed outcome-probability weights, not
+- the **coverage arithmetic** — fixed outcome-probability weights, not
   fitted.
 
 Everything here is prose-heuristic by nature (natural-language extraction from
 HTML). Every instance/spell carries a ``Confidence`` — low confidence diverts a
-spell to the unscored ledger (D30-2e) rather than silently mis-pricing.
+spell to the unscored ledger rather than silently mis-pricing.
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ from dataclasses import dataclass, field
 from enum import StrEnum
 
 # ---------------------------------------------------------------------------
-# Condition vocabulary + tier table (D30-5)
+# Condition vocabulary + tier table
 # ---------------------------------------------------------------------------
 
 
@@ -85,7 +85,7 @@ _FLAT_TIER: dict[str, Tier] = {
 
 #: Valued conditions — value threshold -> Tier (a value at/above the threshold
 #: gets that tier; thresholds checked highest-first). Unvalued refs to a
-#: valued-typed condition default to value 1 (D30-2a).
+#: valued-typed condition default to value 1.
 _VALUED_TIER: dict[str, list[tuple[int, Tier]]] = {
     "Frightened": [(2, Tier.T3), (1, Tier.T2)],
     "Sickened": [(3, Tier.T3), (2, Tier.T2), (1, Tier.T1)],
@@ -98,7 +98,7 @@ _VALUED_TIER: dict[str, list[tuple[int, Tier]]] = {
     "Doomed": [(2, Tier.T3), (1, Tier.T2)],
 }
 
-#: Within-tier prior offsets (D30-5: "a within-tier prior offset") — a modest
+#: Within-tier prior offsets — a modest
 #: relative-severity multiplier applied on top of the tier base weight. 1.0 =
 #: tier-typical; hand-judged, reviewed in the build record.
 _WITHIN_TIER_OFFSET: dict[str, float] = {
@@ -152,7 +152,7 @@ VALUED_CONDITION_NAMES: frozenset[str] = frozenset(_VALUED_TIER)
 
 def condition_tier(name: str, value: int | None, duration: DurationClass) -> Tier | None:
     """Condition name (+ value, + owning duration class) -> Tier, or ``None``
-    for a condition excluded from hostile pricing (D30-5/D30-8i)."""
+    for a condition excluded from hostile pricing."""
     if name in BENEFICIAL_OR_NON_CONTROL:
         return None
     if name in _VALUED_TIER:
@@ -177,7 +177,7 @@ def within_tier_offset(name: str) -> float:
 
 
 def atom_key(condition: str, value: int | None) -> str:
-    """D30-23's "condition×value" atom identity — a stable string key for
+    """The "condition×value" atom identity — a stable string key for
     the comparables engine's atom vector. Valued-typed conditions
     (`_VALUED_TIER`) key on their effective value (unvalued refs default to
     1, matching `condition_tier`'s own default); flat conditions key on the
@@ -189,7 +189,7 @@ def atom_key(condition: str, value: int | None) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Duration classification (D30-2c / D30-8b)
+# Duration classification
 # ---------------------------------------------------------------------------
 
 
@@ -200,7 +200,7 @@ class DurationClass(StrEnum):
     LONG = "long"  # hours+
 
 
-#: D30-8b — declared constants, not fitted.
+#: Declared constants, not fitted.
 DURATION_FACTOR: dict[DurationClass, float] = {
     DurationClass.INSTANT: 0.5,
     DurationClass.ROUND: 0.6,
@@ -219,7 +219,7 @@ _UNAFFECTED_RE = re.compile(r"\bunaffected\b", re.IGNORECASE)
 
 def classify_duration(section_text: str, spell_duration_value: str) -> DurationClass:
     """Prose first (the owning degree section's own text), `duration` field
-    fallback (D30-2c) — per-degree durations legitimately differ within one
+    fallback — per-degree durations legitimately differ within one
     spell, so this is always evaluated per condition-instance, never once per
     spell."""
     text = section_text or ""
@@ -239,7 +239,7 @@ def classify_duration(section_text: str, spell_duration_value: str) -> DurationC
     if "sustained" in text.lower():
         return DurationClass.MINUTE
     # No prose duration in this instance's own section — fall back to the
-    # spell-level `duration.value` field (D30-2c).
+    # spell-level `duration.value` field.
     dv = (spell_duration_value or "").strip().lower()
     if not dv:
         return DurationClass.INSTANT
@@ -253,7 +253,7 @@ def classify_duration(section_text: str, spell_duration_value: str) -> DurationC
 
 
 # ---------------------------------------------------------------------------
-# Coverage arithmetic (D30-4) — fixed, not fitted.
+# Coverage arithmetic — fixed, not fitted.
 # ---------------------------------------------------------------------------
 
 #: Nominal outcome distribution vs an on-level moderate save.
@@ -276,7 +276,7 @@ _SEVERITY_SCALE = {
 
 def coverage_weight(degrees_present: frozenset[str], *, crit_fail_doubled: bool = False) -> float:
     """Σ P(outcome) × severity-scale(outcome) over the degrees at which the
-    condition instance is actually applied (per D30-2's per-degree
+    condition instance is actually applied (per the per-degree
     attribution — an instance only "covers" the degrees it was attributed to).
     fail-only ≈ 0.55 with the default crit-fail=1.5 severity."""
     scale = dict(_SEVERITY_SCALE)
@@ -289,7 +289,7 @@ def coverage_weight(degrees_present: frozenset[str], *, crit_fail_doubled: bool 
 
 
 # ---------------------------------------------------------------------------
-# Degree-section splitting + the four attribution rules (D30-2b)
+# Degree-section splitting + the four attribution rules
 # ---------------------------------------------------------------------------
 
 _COND_UUID_RE = re.compile(
@@ -304,12 +304,12 @@ _HEIGHTENED_SPLIT_RE = re.compile(r"<hr\s*/?>\s*<p>\s*<strong>\s*Heightened", re
 #: dosing, e.g. Swarming Wasp Stings) are NOT degree-of-success text — the
 #: degree splitter's last section (Critical Failure) otherwise swallows every
 #: stage's conditions as if they all applied simultaneously at one degree.
-#: Not one of the four attribution rules (D30-2e uncovered shape) — truncate
+#: Not one of the four attribution rules (an uncovered shape) — truncate
 #: before it and flag low confidence rather than mis-attribute.
 _AFFLICTION_STAGE_RE = re.compile(r"<strong>\s*Stage\s+\d+\s*</strong>", re.IGNORECASE)
 _AS_FAILURE_RE = re.compile(r"^\s*(?:<p>)?\s*As\s+failure\b", re.IGNORECASE)
 _AFFECTED_RE = re.compile(r"\bis\s+affected\b|\baffected\s+for\b", re.IGNORECASE)
-#: D30-21b — the sign character class now accepts en-dash (–, common in
+#: The sign character class now accepts en-dash (–, common in
 #: the corpus's copy-edited prose, e.g. Sleep's "–1 status penalty") and
 #: the unicode minus sign (−), not just ASCII hyphen-minus. ~28 spells
 #: were silently missed under the ASCII-only class (S1 re-derived pin, see
@@ -322,7 +322,7 @@ _STATUS_MOD_RE = re.compile(
 _PROSE_SAVE_RE = re.compile(
     r"must\s+(?:attempt|succeed at|make)\s+an?\s+([A-Za-z]+)\s+save", re.IGNORECASE
 )
-#: D30-21d — a hostile-area phrasing signal ("each creature"/"each enemy"):
+#: A hostile-area phrasing signal ("each creature"/"each enemy"):
 #: an area (or linked-check) spell whose target framing is plainly
 #: adversarial even with no structured `defense.save` at all (Belittling
 #: Boast's Demoralize-linked emanation is the named fixture).
@@ -330,7 +330,7 @@ _HOSTILE_AREA_RE = re.compile(r"\beach\s+(?:creature|enemy|enemies|target)\b", r
 
 
 def detect_prose_save(text: str) -> str | None:
-    """D30-21d: the "must attempt a &lt;save&gt; save" family — a save that
+    """The "must attempt a &lt;save&gt; save" family — a save that
     never populates the structured ``defense.save`` field (Overwhelming
     Memory's shape: `defense: null`, but "The target must attempt a Will
     save." sits right in the prose)."""
@@ -339,7 +339,7 @@ def detect_prose_save(text: str) -> str | None:
 
 
 def detect_hostile_area_phrase(text: str) -> bool:
-    """D30-21d: "each creature"/"each enemy" phrasing (see `_HOSTILE_AREA_RE`)."""
+    """Detects "each creature"/"each enemy" phrasing (see `_HOSTILE_AREA_RE`)."""
     return bool(_HOSTILE_AREA_RE.search(text or ""))
 
 
@@ -361,7 +361,7 @@ _LABEL_TO_KEY = {
 
 
 def strip_heightened(description_html: str) -> str:
-    """Base-text-only (D30-2e / the S1 hygiene rule) — the Heightened block is
+    """Base-text-only: the Heightened block is
     always excluded from extraction."""
     m = _HEIGHTENED_SPLIT_RE.search(description_html)
     return description_html[: m.start()] if m else description_html
@@ -414,15 +414,15 @@ class StatusModifier:
     kind: str  # "status" | "circumstance"
     direction: str  # "penalty" | "bonus"
     target_stat: str
-    #: D30-21c — which degree-of-success section this modifier's own text
+    #: Which degree-of-success section this modifier's own text
     #: sits in ("preamble" when found outside any degree section; one of
     #: `_DEGREE_ORDER` otherwise; "unconditional"/"failure"/"on-hit" when the
     #: spell has no degree markup at all, mirroring `ConditionInstance`'s
     #: no-markup default rule). Previously always "unknown" and dropped at
-    #: serialization — modifier pricing stays prior-only territory (D30-24),
+    #: serialization — modifier pricing stays prior-only territory,
     #: but the attribution is now real, not a placeholder.
     degree: str
-    #: D30-21c — duration class from the OWNING section's own prose first,
+    #: Duration class from the OWNING section's own prose first,
     #: the spell-level `duration.value` fallback (same rule as
     #: `ConditionInstance.duration`).
     duration: DurationClass
@@ -456,7 +456,7 @@ def _plain_mentions(text: str, name: str) -> bool:
     """A bare condition name in prose, NOT inside an @UUID tag (those are
     already captured by `_find_direct_refs`) — rule (iii).
 
-    D30-21a: case-INSENSITIVE (the S1 payload-restoring fix — the corpus
+    Case-INSENSITIVE (the S1 payload-restoring fix — the corpus
     routinely spells a repeated condition name lowercase mid-sentence, e.g.
     Sleep's Failure/Critical Failure "The creature falls unconscious.",
     while the @UUID tag it repeats is title-cased "Unconscious". The
@@ -480,7 +480,7 @@ def extract_condition_instances(  # noqa: C901 -- over the complexity limit; rat
     has_save: bool,
     has_attack_trait: bool,
 ) -> ExtractionResult:
-    """The D30-2b extraction pass — four explicit attribution rules over the
+    """The extraction pass — four explicit attribution rules over the
     degree-split base text (Heightened already excluded by the caller)."""
     result = ExtractionResult()
     base_text = description_html
@@ -490,13 +490,13 @@ def extract_condition_instances(  # noqa: C901 -- over the complexity limit; rat
         result.low_confidence = True
         result.notes.append(
             "affliction stage-progression block excluded — not covered by the "
-            "four rules (D30-2e); the spell's true severity lives in the "
+            "four attribution rules; the spell's true severity lives in the "
             "stage doses, unpriced by this pipeline"
         )
     ds = split_degree_sections(base_text)
 
     def _scan_modifiers(text: str, degree: str) -> None:
-        """D30-21c — status/circumstance modifiers now carry the DEGREE of
+        """Status/circumstance modifiers now carry the DEGREE of
         the section they were found in (was always "unknown", dropped at
         serialization) and a real DURATION classified from that same
         section's own prose (prose-first, spell-level `duration.value`
@@ -519,7 +519,7 @@ def extract_condition_instances(  # noqa: C901 -- over the complexity limit; rat
     if not ds.sections:
         # No degree markup: default-failure (save exists) / default-on-hit
         # (attack-roll spell) over refs found anywhere in the base text.
-        # Modifiers share the same no-markup default degree (D30-21c) —
+        # Modifiers share the same no-markup default degree —
         # scanned over the whole base text, same as the condition refs.
         if has_save:
             degree, rule = "failure", AttributionRule.DEFAULT_FAILURE
@@ -654,7 +654,7 @@ def extract_condition_instances(  # noqa: C901 -- over the complexity limit; rat
             "applied effects, per the review's command precedent"
         )
 
-    # D30-2e: a condition ref exists SOMEWHERE in the text but the four rules
+    # A condition ref exists SOMEWHERE in the text but the four rules
     # produced zero instances AND no explanatory note (the command precedent
     # above always leaves a note when it deliberately declines to attribute a
     # preamble ref) — genuinely unhandled shape, not a deliberate exclusion.

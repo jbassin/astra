@@ -1,13 +1,13 @@
-"""Codex export artifact (spec 0030 D30-38, round 4).
+"""Codex export artifact (round 4).
 
 ``assay export-codex`` builds the cross-track CONTRACT JSON consumed by
-codex's `EntityPage` Assay block (Track B, D30-39/40) —
+codex's `EntityPage` Assay block (Track B) —
 ``apps/codex/web/data/assay/spell-power.json`` in the real deploy, but this
 Track (A) writes it ONLY to ``apps/assay/py/out/spell-power.json``; the
 orchestrator places it into codex's data dir at integration time (never
 write into ``apps/codex/web`` from this side).
 
-**Determinism** (D30-38): ``json.dumps(..., sort_keys=True)``, no
+**Determinism**: ``json.dumps(..., sort_keys=True)``, no
 timestamps, ``schemaVersion: 1``; comparables in the engine's own
 ``(-similarity, name)`` order (`comparables.top_comparables`'s existing
 sort — nothing extra needed here).
@@ -15,7 +15,7 @@ sort — nothing extra needed here).
 **Entries keyed by codex id** (``spell/<slug>``), one per FILE (never
 ``remaster==true`` filtering — every main-list spell file gets an entry,
 including the 389 never-remastered ones; "non-@legacy" is a codex-side id
-concern the orchestrator reconciles at integration, D30-41). **Variant
+concern the orchestrator reconciles at integration). **Variant
 collapse** (34 real multi-row slugs): a file that produced more than one
 ``SpellFeatures`` row (an overlay/manual-scaling variant family) collapses
 to ONE entry — primary = the non-variant row if one exists, else the
@@ -37,7 +37,7 @@ from .extract import ExtractResult, SkipRecord, SpellFeatures, load_spell_json
 
 SCHEMA_VERSION = 1
 
-#: D30-38's curated reason-code map (the P13 `formatFacetValue` lesson — raw
+#: The curated reason-code map (the P13 `formatFacetValue` lesson — raw
 #: internal ledger prose NEVER crosses to Track B; a stable typed code does).
 #: Anything not listed here (dynamic formula-rejection strings, unforeseen
 #: shapes) buckets to `FALLBACK_REASON_CODE`, never leaks verbatim.
@@ -51,7 +51,7 @@ REASON_CODE_MAP: dict[str, str] = {
     "utility/no-mechanical-payload": "utility",
     "low-confidence extraction": "low-confidence",
     "routing-ambiguous": "ambiguous",
-    "raw-modifier-only (not priced — D30-5 restricts severity to condition tiers)": (
+    "raw-modifier-only (not priced — severity is priced only from condition tiers)": (
         "unpriced-modifier"
     ),
     "no-priceable-effect": "no-mechanical-payload",
@@ -69,7 +69,7 @@ def reason_code_for(raw_reason: str) -> str:
 
 
 def _slug_for(file: str) -> str:
-    """D30-38: `ComparableProfile` gains `file`->slug — a pack file's
+    """`ComparableProfile` gains `file`->slug — a pack file's
     basename IS `sluggify(name)` (the codex P1 finding, 0 disagreements over
     28,636 real docs), so the slug is simply the file stem."""
     return Path(file).stem
@@ -168,7 +168,7 @@ def build_entry_for_row(
         if has_hostile_condition:
             _attach_hostile_comparables(entry, row, ladder, hostile_corpus)
     elif reason is None:
-        # A hostile condition-control row (Stage-B scored, ev==0) — D30-23's
+        # A hostile condition-control row (Stage-B scored, ev==0) — the
         # recommended tool is comparables, not the superseded fitted score.
         entry = {"rank": row.rank, "population": "hostile"}
         if row.is_cantrip:

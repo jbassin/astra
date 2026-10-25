@@ -1,4 +1,4 @@
-"""Unit tests for the D30-37 summon band check (spec 0030 round 4)."""
+"""Unit tests for the summon band check (round 4)."""
 
 from __future__ import annotations
 

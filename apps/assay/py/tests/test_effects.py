@@ -1,7 +1,6 @@
-"""Unit tests for the D30-35 spell-effect join + rule extraction (spec 0030
-round 4) — real corpus fixture provenance for the two mandated cases
-(heroism array-selector fanout, mystic-armor predicate gate) plus synthetic
-coverage for the evaluator families and the multi-effect merge rules."""
+"""Unit tests for the spell-effect join + rule extraction (round 4) — real corpus fixture
+provenance for the two mandated cases (heroism array-selector fanout, mystic-armor predicate
+gate) plus synthetic coverage for the evaluator families and the multi-effect merge rules."""
 
 from __future__ import annotations
 
@@ -24,7 +23,7 @@ def _load_effect(name: str) -> dict:
 
 
 def test_heroism_array_selector_fans_out_at_base_rank() -> None:
-    """D30-35 mandated fixture: Heroism's single FlatModifier rule carries
+    """Mandated fixture: Heroism's single FlatModifier rule carries
     an ARRAY selector (`[attack, saving-throw, skill-check, perception]`) —
     fans out to 4 distinct atoms, each evaluated at the SPELL's base rank
     (3), not the effect item's own `system.level.value`."""
@@ -46,7 +45,7 @@ def test_heroism_heightened_tiers_at_higher_ranks() -> None:
 
 
 def test_mystic_armor_predicate_gates_saves_atom_off_at_rank_1() -> None:
-    """D30-35 mandated fixture: Mystic Armor's saving-throw `FlatModifier`
+    """Mandated fixture: Mystic Armor's saving-throw `FlatModifier`
     carries a level-family predicate (`gte(parent:level, 4)`) — evaluated at
     the spell's OWN base rank (1), this is False, so there is NO
     saving-throw atom at rank 1 (only the AC atom); at rank 4+ it appears."""
@@ -97,7 +96,7 @@ def test_join_effects_unresolved_ref_flags_a_tag() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Multi-effect merge (D30-35: "base-variant only") — 20 real corpus shapes.
+# Multi-effect merge ("base-variant only") — 20 real corpus shapes.
 # ---------------------------------------------------------------------------
 
 
@@ -129,7 +128,7 @@ def test_select_effect_name_unqualified_base_wins_over_success_variant() -> None
 
 def test_select_effect_name_duration_variant_excluded() -> None:
     """Tailwind's real shape: base + "(8 hours)" heightened-duration variant
-    — the base (shorter-duration) row is kept, per D30-35's explicit
+    — the base (shorter-duration) row is kept, per the explicit
     "heightened-duration variant items excluded from base profiles" rule."""
     sel = effects.select_effect_name(["Spell Effect: Tailwind", "Spell Effect: Tailwind (8 hours)"])
     assert sel.chosen_name == "Spell Effect: Tailwind"
@@ -168,7 +167,7 @@ def test_join_effects_choice_fan_produces_a_tag_only_profile() -> None:
 
 # ---------------------------------------------------------------------------
 # `@item.level`/`@spell.rank` expression evaluation — ternary / closed-form
-# arithmetic / runtime-only families (D30-35).
+# arithmetic / runtime-only families.
 # ---------------------------------------------------------------------------
 
 

@@ -60,10 +60,10 @@ def test_random_id_single_key_dragon_turret() -> None:
 
 def test_dual_kind_and_overlay_heal() -> None:
     """Heal's single BASE damage entry carries kinds=[damage,healing], but
-    round 2 no longer wholesale-excludes overlay spells (D30-6a) — each
+    round 2 no longer wholesale-excludes overlay spells — each
     non-empty-system overlay is deep-merged onto the base and scored per
     variant. The 1-action/touch variant carries NO damage override in its own
-    overlay and must inherit the base 1d8 (the D30-6a flagship case)."""
+    overlay and must inherit the base 1d8 (the flagship overlay case)."""
     from astra_assay.extract import extract_spell_variants
 
     data = load("heal.json")
@@ -138,7 +138,7 @@ def test_overlay_present_even_with_flat_formula_execute() -> None:
 def test_no_damage_kind_entries_enervation() -> None:
     """Enervation's structured damage dict is empty and its @Damage inline
     tokens are all @item.rank arithmetic — non-literal, stays unscored
-    (D30-6c: 11 such cases repo-wide)."""
+    (11 such cases repo-wide)."""
     r = extract("enervation.json")
     assert isinstance(r, SkipRecord)
     assert r.reason == "non-literal-inline-formula (@item.rank arithmetic)"
@@ -283,7 +283,7 @@ def test_parse_range(raw, expected_feet, expected_bucket, expected_flagged) -> N
 
 
 # ---------------------------------------------------------------------------
-# Round-2 effect extraction (D30-2/D30-6) — one fixture per D30-11 trap.
+# Round-2 effect extraction — one fixture per known extraction trap.
 # ---------------------------------------------------------------------------
 
 
@@ -363,8 +363,8 @@ def test_preamble_options_not_attributed_command() -> None:
 
 
 def test_valued_condition_and_duration_tier_promotion_slow() -> None:
-    """Slow — Slowed 1 for 1 round (T2) vs Slowed 1 for 1 minute (T3, the
-    spec's duration-promotion rule) vs Slowed 2 (T3 on value alone)."""
+    """Slow — Slowed 1 for 1 round (tier T2) vs Slowed 1 for 1 minute (tier T3, by
+    the duration-promotion rule) vs Slowed 2 (T3 on value alone)."""
     r = extract("slow.json")
     assert isinstance(r, SpellFeatures)
     by_degree = {i.degree: i for i in r.condition_instances}
@@ -393,9 +393,9 @@ def test_partial_degree_markup_and_persistent_hybrid_dehydrate() -> None:
 
 
 def test_status_modifier_and_unvalued_default_belittling_boast() -> None:
-    """Belittling Boast — a raw status/circumstance-modifier capture (D30-2d)
+    """Belittling Boast — a raw status/circumstance-modifier capture
     alongside an UNVALUED Frightened ref on a valued-typed condition
-    (defaults to value=1, D30-2a) attributed unconditionally (no save, no
+    (defaults to value=1) attributed unconditionally (no save, no
     attack-roll trait — this spell's check is a linked Intimidation macro)."""
     r = extract("belittling-boast.json")
     assert isinstance(r, SpellFeatures)
@@ -411,7 +411,7 @@ def test_status_modifier_and_unvalued_default_belittling_boast() -> None:
 def test_heightened_block_excluded_from_condition_extraction() -> None:
     """Slow's Heightened(6th) note carries no conditions of its own, but more
     to the point: a condition ref living ONLY in a Heightened block must never
-    surface as a base-rank instance (D30-2e, base-text-only pin hygiene)."""
+    surface as a base-rank instance (base-text-only pin hygiene)."""
     data = load("slow.json")
     desc = data["system"]["description"]["value"]
     assert "Heightened" in desc  # the fixture genuinely has a heightened block
@@ -424,7 +424,7 @@ def test_heightened_block_excluded_from_condition_extraction() -> None:
 
 def test_inline_damage_literal_recovery_blazing_armory() -> None:
     """Blazing Armory — no structured damage entry at all, but a literal
-    ``@Damage[1d6[fire]]`` inline roll recovers EV 3.5 (D30-6c)."""
+    ``@Damage[1d6[fire]]`` inline roll recovers EV 3.5."""
     r = extract("blazing-armory.json")
     assert isinstance(r, SpellFeatures)
     assert r.has_structured_damage is False
@@ -434,14 +434,14 @@ def test_inline_damage_literal_recovery_blazing_armory() -> None:
 
 def test_non_literal_inline_damage_stays_unscored_enervation() -> None:
     """Enervation's inline tokens are ``@item.rank`` arithmetic — the
-    non-literal 11-of-58 D30-6c carve-out, still unscored."""
+    non-literal 11-of-58 carve-out, still unscored."""
     r = extract("enervation.json")
     assert isinstance(r, SkipRecord)
     assert "non-literal" in r.reason
 
 
 def test_manual_scaling_family_force_barrage() -> None:
-    """Force Barrage — the mechanically-derived scaling family (D30-6b): the
+    """Force Barrage — the mechanically-derived scaling family: the
     round-1 wrong-sign outlier (base extraction reads a single 1d4+1 shard at
     the contaminated 2-action bucket) is replaced by three per-action-count
     variants from the hand table."""
@@ -460,8 +460,8 @@ def test_manual_scaling_family_force_barrage() -> None:
 
 
 def test_overlay_variant_count_excludes_empty_system_ignition() -> None:
-    """Ignition has 2 overlays, 1 with an empty ``system`` (flavor-only,
-    D30-6a) — exactly 1 variant row should be produced, not 2."""
+    """Ignition has 2 overlays, 1 with an empty ``system`` (flavor-only) —
+    exactly 1 variant row should be produced, not 2."""
     from astra_assay.extract import extract_spell_variants
 
     data = load("ignition.json")
@@ -480,13 +480,13 @@ def test_overlay_variant_count_excludes_empty_system_execute() -> None:
 
 
 # ---------------------------------------------------------------------------
-# S1 (round 3) — D30-21 payload-restoring fixes + D30-22 routing fixtures,
+# Round 3 — payload-restoring extraction fixes + hostility-routing fixtures,
 # real corpus provenance (pf2e-8.3.0 snapshot, committed verbatim).
 # ---------------------------------------------------------------------------
 
 
 def test_sleep_case_fold_and_en_dash_restore_the_full_payload() -> None:
-    """Sleep is the flagship D30-21 fixture: its entire Unconscious payload
+    """Sleep is the flagship payload-restoration fixture: its entire Unconscious payload
     (plain-text 'falls unconscious' repeats at Failure/Critical Failure) was
     silently dropped by the case-sensitive rule (iii), AND its Success-row
     '–1 status penalty to Perception checks' used an en-dash the old regex
@@ -509,8 +509,8 @@ def test_sleep_case_fold_and_en_dash_restore_the_full_payload() -> None:
 def test_overwhelming_memory_prose_save_detected() -> None:
     """Overwhelming Memory: `defense.save` is structurally null, but the
     description literally reads 'The target must attempt a Will save.' —
-    D30-21d's prose-save detection (review F2/F10: this spell must route
-    hostile despite the missing structured save)."""
+    the prose-save detection (this spell must route hostile despite the
+    missing structured save)."""
     r = extract("overwhelming-memory.json")
     assert isinstance(r, SpellFeatures)
     assert r.has_save is False
@@ -520,7 +520,7 @@ def test_overwhelming_memory_prose_save_detected() -> None:
 
 def test_belittling_boast_hostile_area_phrase_detected() -> None:
     """Belittling Boast: no structured save, empty `range.value` (parses to
-    touch-self — the D30-22 trap), but its Demoralize-linked emanation reads
+    touch-self — the hostility-routing trap), but its Demoralize-linked emanation reads
     'Each creature that becomes Frightened...' — the hostile-area-phrase
     flag that must win over the touch-self signal."""
     r = extract("belittling-boast.json")
@@ -537,7 +537,7 @@ def test_target_raw_extracted_from_system_target() -> None:
 
 
 # ---------------------------------------------------------------------------
-# D30-22 — the four mandated routing fixtures, real corpus, end-to-end
+# The four mandated routing fixtures, real corpus, end-to-end
 # through ledger.classify_row / classify_hostility.
 # ---------------------------------------------------------------------------
 
@@ -585,8 +585,8 @@ def test_routing_invisibility_beneficial() -> None:
 
 
 def test_homebrew_effect_spell_end_to_end_through_comparables() -> None:
-    """D30-27's mandated hermetic test: a homebrew effect spell scored
-    end-to-end (extract -> D30-22 routing -> D30-23 comparables), against a
+    """The hermetic end-to-end test: a homebrew effect spell scored
+    end-to-end (extract -> hostility routing -> comparables), against a
     small synthetic corpus built from the ALREADY-COMMITTED real-corpus
     fixtures (fear.json/paralyze.json/slow.json) — no snapshot access."""
     from astra_assay import comparables, ledger, pricing
@@ -625,7 +625,7 @@ def test_homebrew_effect_spell_end_to_end_through_comparables() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Round 4 (D30-35/36) — spell-effect join wired into extraction, promoted
+# Round 4 — spell-effect join wired into extraction, promoted
 # SkipRecords, hostile-shaped promotion.
 # ---------------------------------------------------------------------------
 
@@ -646,7 +646,7 @@ def test_heroism_join_promotes_raw_modifier_row_with_authoritative_atoms() -> No
     prose line) — round 1-3 routed it 'raw-modifier-only' off a partial
     regex match. With the effect join wired in, it carries an authoritative
     effect_profile (Heroism's own FlatModifier, array-selector fanout) and
-    still lands 'beneficial-effect' (D30-22 routing, unchanged mechanism)."""
+    still lands 'beneficial-effect' (hostility routing, unchanged mechanism)."""
     from astra_assay import ledger
     from astra_assay.extract import extract_spell
 
@@ -659,12 +659,12 @@ def test_heroism_join_promotes_raw_modifier_row_with_authoritative_atoms() -> No
 
 
 def test_blood_vendetta_promoted_skip_lands_hostile() -> None:
-    """D30-36's promoted-SkipRecord routing, exercised on a REAL corpus
+    """The promoted-SkipRecord routing, exercised on a REAL corpus
     hostile-shaped example: Blood Vendetta carries only PERSISTENT damage
     (ev stays 0, round 1-3's `plain`-only EV rule) and a real structured
     `defense.save` — round 1-3 skipped it entirely ('no-priceable-effect');
     with the effect join wired in it becomes a real row and, because
-    `has_save=True`, D30-22 routes it hostile — NEVER into the buff
+    `has_save=True`, hostility routing sends it hostile — NEVER into the buff
     population, even though the join gave it its first-ever priceable
     signal."""
     from astra_assay import ledger
@@ -680,7 +680,7 @@ def test_blood_vendetta_promoted_skip_lands_hostile() -> None:
     assert r.has_save is True
     assert ledger.classify_hostility(r) == "hostile"
     assert ledger.classify_row(r) == (
-        "raw-modifier-only (not priced — D30-5 restricts severity to condition tiers)"
+        "raw-modifier-only (not priced — severity is priced only from condition tiers)"
     )
 
 
@@ -695,7 +695,7 @@ def test_blood_vendetta_skipped_without_the_join() -> None:
 
 
 def test_summon_fey_trait_membership_not_name_prefix() -> None:
-    """D30-37's fixed `_SUMMON_TRAIT_RE` — Summon Fey carries the trait
+    """The fixed `_SUMMON_TRAIT_RE` — Summon Fey carries the trait
     'summon' (not '^summon '-prefixed, which was the round-2/3 dead-code
     regex's actual test) and has no priceable damage/conditions of its own,
     so it's still a SkipRecord — but `ledger.classify_unpriced_skip` must

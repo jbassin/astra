@@ -1,7 +1,7 @@
-"""Buff-spell comparables + prior anchors (spec 0030 D30-36, round 4).
+"""Buff-spell comparables + prior anchors (round 4).
 
 Round 3 shipped comparables for HOSTILE effect spells only ("beneficial-buff
-comparables/pricing" was explicitly out of scope, §3). D30-36 builds the
+comparables/pricing" was explicitly out of scope). This module builds the
 mirror-image population for BENEFICIAL spells — reusing `comparables.py`'s
 generic similarity engine wholesale (it was already atom-vector + structural-
 coordinate generic, never condition-specific) rather than duplicating it.
@@ -14,11 +14,11 @@ classify_row` routes to `"beneficial-effect"` — which, after this round's
 1. round-3's own beneficial-condition rows (a real `condition_ref`, every
    instance non-priceable/non-graduated — Invisible, Quickened, …);
 2. raw-modifier-only rows (`status_modifiers` present, no condition ref at
-   all) that pass D30-22's hostility routing beneficial — Heroism,
+   all) that the hostility routing in `ledger.py` calls beneficial — Heroism,
    Protection;
-3. effect-ref-bearing rows PROMOTED out of the round 1-3 skip ledger (D30-35's
-   join gave `extract.py` a real priceable signal it never had before),
-   routed through the SAME D30-22 test — Mystic Armor, Invisibility's own
+3. effect-ref-bearing rows PROMOTED out of the round 1-3 skip ledger (the
+   effect-item join gave `extract.py` a real priceable signal it never had before),
+   routed through the SAME hostility test — Mystic Armor, Invisibility's own
    effect item, Mountain Resilience, False Vitality, Sure Strike, Resist
    Energy, Blur, and 8 hostile-shaped promoted rows that correctly stay OUT
    of this bucket (Blood Vendetta, Fungal Infestation, …).
@@ -75,7 +75,7 @@ def _normalize_modifier_stat(target_stat: str) -> str:
 
 
 def build_buff_atom_vector(row: SpellFeatures) -> dict[str, float]:
-    """D30-36's buff atom vector: the joined effect's atoms (already
+    """The buff atom vector: the joined effect's atoms (already
     selector-namespaced by `effects.py`) + the row's own raw status
     modifiers (normalized into the same namespace) + a unit tag atom per
     beneficial/non-priceable condition instance (Invisible, Quickened, …) —
@@ -102,12 +102,12 @@ def build_buff_atom_vector(row: SpellFeatures) -> dict[str, float]:
         key = _normalize_modifier_stat(m.target_stat)
         atoms[key] = atoms.get(key, 0.0) + delta
     for ci in row.condition_instances:
-        # D30-36 — EVERY condition instance on a buff-population row becomes
+        # EVERY condition instance on a buff-population row becomes
         # a tag atom, not just the tier=None (non-priceable) ones: the
         # condition-tier table doesn't distinguish "this condition applies
         # to the CASTER as a beneficial side effect" (Sure Strike's own
         # Concealed/Hidden, tier=T1) from a real hostile rider — a beneficial
-        # row reaching this point already passed D30-22's hostility routing,
+        # row reaching this point already passed the hostility routing,
         # so any condition instance it carries is, by construction, part of
         # its OWN buff shape, priceable-tier or not.
         key = f"{_TAG_PREFIX}{ci.condition}"
@@ -116,8 +116,8 @@ def build_buff_atom_vector(row: SpellFeatures) -> dict[str, float]:
 
 
 def build_buff_profile(row: SpellFeatures) -> comparables_mod.ComparableProfile:
-    """Buffs never carry a damage EV band (D30-36: "no pricing — the
-    tombstone stands") — `ev_band` is always `None`, so the hostile engine's
+    """Buffs never carry a damage EV band (buffs are compared, never
+    priced) — `ev_band` is always `None`, so the hostile engine's
     band-mismatch structural coordinate degenerates to "both sides bandless,
     skip the coordinate" for every buff-vs-buff comparison (never a
     mismatch, since the population is buff-only by the firewall below)."""
@@ -140,7 +140,7 @@ def is_buff_population_row(row: SpellFeatures) -> bool:
 
 
 def is_buff_comparable_candidate(row: SpellFeatures) -> bool:
-    """D30-36's comparables-corpus gate: population membership AND a
+    """The buff comparables-corpus gate: population membership AND a
     non-empty atom vector (some rows — e.g. a promoted effect-join row whose
     only rule content is tag-only, like a bare `RollOption`/`Note` effect —
     carry zero comparable signal; they stay in the buff CATALOG/ledger but
@@ -149,15 +149,15 @@ def is_buff_comparable_candidate(row: SpellFeatures) -> bool:
 
 
 def build_buff_corpus(rows: list[SpellFeatures]) -> list[comparables_mod.ComparableProfile]:
-    """The beneficial-vs-beneficial comparables population — a hard firewall
-    (D30-36): this corpus NEVER mixes with the hostile-effect corpus, and
+    """The beneficial-vs-beneficial comparables population — a hard firewall:
+    this corpus NEVER mixes with the hostile-effect corpus, and
     `top_comparables`/`comparables_for` are called with ONLY this list, never
     the combined one."""
     return [build_buff_profile(r) for r in rows if is_buff_comparable_candidate(r)]
 
 
 # ---------------------------------------------------------------------------
-# Prior-card buff section (D30-36: "pack-curve anchors ... labeled priors")
+# Prior-card buff section: pack-curve anchors, shown as labeled priors
 # ---------------------------------------------------------------------------
 
 
@@ -176,14 +176,14 @@ class PackCurveAnchor:
     note: str
 
 
-#: D30-36's three named pack-curve anchors — real spell-effect items, real
+#: The three named pack-curve anchors — real spell-effect items, real
 #: FlatModifier/Resistance rule expressions, re-evaluated at a handful of
 #: illustrative ranks (the spell's own heightened tiers where known). This is
 #: DOCUMENTATION, not a fit: every value is the SAME `effects.
 #: build_effect_profile` evaluation the join itself uses, just run at more
 #: than one rank to show the curve. Heroism's base-rank profile carries +1
-#: (the D30-1..3 damage-ladder-style "evaluate once, at base rank" rule,
-#: unchanged) — the +2/+3 heightened tiers live ONLY in this card, by design.
+#: (the damage ladder's "evaluate once, at base rank" rule, unchanged) — the
+#: +2/+3 heightened tiers live ONLY in this card, by design.
 _PACK_CURVE_SPECS: tuple[tuple[str, str, tuple[int, ...]], ...] = (
     ("Spell Effect: Heroism", "modifier:attack", (3, 6, 9)),
     ("Spell Effect: Mystic Armor", "modifier:ac", (1, 4, 6, 10)),
@@ -221,7 +221,7 @@ def build_pack_curve_anchors(
                     points=points,
                     note=(
                         "the base-rank row above carries only the FIRST point below — "
-                        "heightened tiers live in this card only, by design (D30-36)"
+                        "heightened tiers live in this card only, by design"
                     ),
                 )
             )

@@ -1,4 +1,4 @@
-"""Unit tests for round-2 population routing (spec 0030 D30-8) — the
+"""Unit tests for round-2 population routing — the
 scored-vs-ledgered split and the unpriced-skip sub-classifier."""
 
 from __future__ import annotations
@@ -117,7 +117,7 @@ def test_classify_row_raw_modifier_only() -> None:
     row = _base_row("modifier-spell", 0.0).model_copy(update={"status_modifiers": mods})
     assert (
         ledger.classify_row(row)
-        == "raw-modifier-only (not priced — D30-5 restricts severity to condition tiers)"
+        == "raw-modifier-only (not priced — severity is priced only from condition tiers)"
     )
 
 
@@ -163,7 +163,7 @@ def test_classify_unpriced_skip_long_cast_passthrough() -> None:
 
 
 # ---------------------------------------------------------------------------
-# D30-22 — classify_hostility (synthetic rows; real fixtures live in
+# classify_hostility (synthetic rows; real fixtures live in
 # test_assay_extract.py's routing-fixture tests).
 # ---------------------------------------------------------------------------
 
@@ -252,8 +252,8 @@ def test_classify_hostility_ambiguous_bucket_falls_through() -> None:
 
 def test_classify_hostility_ambiguous_resolves_hostile_with_graduated_degree() -> None:
     """Same no-signal shape, but the tiered condition sits at a REAL
-    graduated degree ("failure") — resolved toward hostile per the D30-22
-    ambiguous-bucket fallback rule."""
+    graduated degree ("failure") — resolved toward hostile per the hostility
+    routing's ambiguous-bucket fallback rule."""
     row = _base_row("graduated-no-save", 0.0).model_copy(
         update={
             "has_save": False,

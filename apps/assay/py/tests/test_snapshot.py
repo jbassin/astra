@@ -48,7 +48,7 @@ def test_resolves_newest_version_and_globs_files(tmp_path: Path) -> None:
 
 
 def test_newest_version_compares_numbers_not_strings(tmp_path: Path) -> None:
-    """ASY-21: as strings, pf2e-10.0.0 sorts before pf2e-9.0.0 and pf2e-8.10.0 before
+    """As strings, pf2e-10.0.0 sorts before pf2e-9.0.0 and pf2e-8.10.0 before
     pf2e-8.9.0; the snapshot picked must be the highest version."""
     foundry = tmp_path / "snapshots" / "foundry"
     for version in ("pf2e-9.0.0", "pf2e-10.0.0", "pf2e-8.10.0", "pf2e-8.9.0"):

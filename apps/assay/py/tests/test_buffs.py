@@ -1,7 +1,6 @@
-"""Unit tests for the D30-36 buff-spell comparables engine (spec 0030 round
-4) — synthetic profiles/rows (no real corpus reads; real-corpus behavior is
-exercised via `test_assay_extract.py`'s promoted-skip routing tests and
-manual verification in the build record)."""
+"""Unit tests for the buff-spell comparables engine (round 4) — synthetic profiles/rows (no real
+corpus reads; real-corpus behavior is exercised via `test_assay_extract.py`'s promoted-skip
+routing tests and manual verification in the build record)."""
 
 from __future__ import annotations
 
@@ -99,8 +98,8 @@ def test_build_buff_atom_vector_from_status_modifiers() -> None:
 
 
 def test_build_buff_atom_vector_condition_with_tier_still_counts() -> None:
-    """Sure Strike's real shape: Concealed/Hidden carry a real tier (T1) —
-    still a buff-atom tag, not excluded (D30-36: any condition on an
+    """Sure Strike's real shape: Concealed/Hidden carry a real tier (tier T1) —
+    still a buff-atom tag, not excluded (any condition on an
     already-beneficial-routed row is part of its OWN shape)."""
     ci = ConditionInstanceOut(
         condition="Concealed",

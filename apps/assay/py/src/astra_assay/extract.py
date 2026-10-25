@@ -1,4 +1,4 @@
-"""Per-spell feature extraction (design doc §1/§3, spec 0030 D30-2/D30-6) —
+"""Per-spell feature extraction (design doc §1/§3) —
 every extractor trap handled, round 1 AND round 2.
 
 Reads one Foundry spell JSON (``system.*``) and produces either a
@@ -7,20 +7,20 @@ or both) or a ``SkipRecord`` (a genuine extraction dead-end, with a reason for
 the report's skip ledger). Round-1 traps (damage-dict random-ID keys, dual
 damage/healing ``kinds``, variable cast times, range-string parsing, flat
 formulas, persistent/splash categories) are all still handled — see the
-per-function docstrings. Round-2 additions (D30-2/D30-6):
+per-function docstrings. Round-2 additions:
 
-- **Effect extraction** (D30-2): every spell's ``description`` is run through
+- **Effect extraction**: every spell's ``description`` is run through
   ``conditions.extract_condition_instances`` regardless of whether it has
   damage — a condition-only control spell now produces a ``SpellFeatures`` row
   with ``ev=0.0`` rather than a round-1 skip.
-- **Overlay recovery** (D30-6a): ``system.overlays`` spells are no longer
+- **Overlay recovery**: ``system.overlays`` spells are no longer
   wholesale-excluded — each non-empty-``system`` overlay is deep-merged onto
   the base ``system`` and scored as its own variant row (``is_variant=True``).
   Overlay precedence beats every other recovery path.
-- **Manual scaling family** (D30-6b): the mechanically-derived set of
+- **Manual scaling family**: the mechanically-derived set of
   variable-cast-time + damage + no-overlay spells gets a hand-maintained
   per-action-count EV table, again expanded into variant rows.
-- **Inline-@Damage recovery** (D30-6c): spells with no structured
+- **Inline-@Damage recovery**: spells with no structured
   ``kinds: [damage]`` entry but literal ``@Damage[...]`` markup recover an EV
   from the inline tokens; ``@item.rank``-arithmetic tokens stay unscored.
 """
@@ -135,7 +135,7 @@ class ConditionInstanceOut(BaseModel):
 
 
 class EffectProfileOut(BaseModel):
-    """D30-35 join result, serialized — see `effects.EffectProfile`."""
+    """Spell-effect join result, serialized — see `effects.EffectProfile`."""
 
     effect_name: str
     base_rank: int
@@ -167,9 +167,9 @@ class StatusModifierOut(BaseModel):
     kind: str
     direction: str
     target_stat: str
-    #: D30-21c — was dropped at serialization entirely (the source dataclass
+    #: Once dropped at serialization entirely (the source dataclass
     #: field existed but was always "unknown"); now a real per-section degree
-    #: / duration pair. Modifier pricing stays prior-only territory (D30-24)
+    #: / duration pair. Modifier pricing stays prior-only territory
     #: — these fields feed the build record's "hostile penalty-modifier
     #: rows" pin and the prior card's narrative, not the Stage A/B fit.
     degree: str = "unknown"
@@ -185,10 +185,10 @@ class SpellFeatures(BaseModel):
 
     ev: float
     has_structured_damage: bool = False
-    #: D30-8(ii) — this row's `ev` is a healing total, priced 1:1 against the
+    #: This row's `ev` is a healing total, priced 1:1 against the
     #: damage budget (a declared assumption, always flagged downstream).
     is_healing: bool = False
-    #: D30-1 pure-subset contamination guard — an inline @Damage[...] token
+    #: Pure-subset contamination guard — an inline @Damage[...] token
     #: present ALONGSIDE structured damage (Holy Cascade's spirit-damage rider
     #: against unholy creatures is the named round-1 contaminant: its
     #: structured `ev` understates the spell's real output, so it must never
@@ -213,17 +213,17 @@ class SpellFeatures(BaseModel):
     area_value_ft: float
     effective_target: EffectiveTarget = EffectiveTarget.SINGLE
 
-    #: D30-21d — `system.target.value` prose verbatim (e.g. "1 creature",
-    #: "" for area-only spells like Belittling Boast) — a D30-22 routing
+    #: `system.target.value` prose verbatim (e.g. "1 creature",
+    #: "" for area-only spells like Belittling Boast) — a hostility-routing
     #: input, never read before round 3.
     target_raw: str = ""
-    #: D30-21d — a save described only in prose ("must attempt a Will
+    #: A save described only in prose ("must attempt a Will
     #: save") when `defense.save` is structurally null (Overwhelming
-    #: Memory's shape). `has_prose_save` feeds D30-22's hostile disjunct.
+    #: Memory's shape). `has_prose_save` feeds the hostility routing's hostile disjunct.
     has_prose_save: bool = False
     prose_save_statistic: str | None = None
-    #: D30-21d — "each creature"/"each enemy" phrasing (Belittling Boast's
-    #: Demoralize-linked emanation) — the other D30-22 hostile disjunct for
+    #: "each creature"/"each enemy" phrasing (Belittling Boast's
+    #: Demoralize-linked emanation) — the routing's other hostile disjunct for
     #: rows with no structured or prose save at all.
     hostile_area_phrase: bool = False
 
@@ -243,7 +243,7 @@ class SpellFeatures(BaseModel):
     condition_ref: bool
     condition_instances: list[ConditionInstanceOut] = []
     status_modifiers: list[StatusModifierOut] = []
-    #: "high" | "low" — D30-2e: an extraction the four attribution rules
+    #: "high" | "low" — an extraction the four attribution rules
     #: couldn't confidently resolve diverts the spell to the ledger rather
     #: than silently mis-pricing.
     confidence: str = "high"
@@ -256,17 +256,17 @@ class SpellFeatures(BaseModel):
     rarity_flag: bool
     traditions: list[str]
 
-    #: D30-35 (round 4) — the joined `Spell Effect: X` item's rule-derived
+    #: The joined `Spell Effect: X` item's rule-derived
     #: profile (atoms + tags), or ``None`` when the description carries no
     #: effect ref (or no effect index was supplied — every round-1..3 test
     #: fixture, which never called this). `@item.level` expressions inside
     #: are always evaluated at THIS row's own base rank.
     effect_profile: EffectProfileOut | None = None
 
-    #: D30-6 recovery-path tag — None (plain structured damage / condition-only),
+    #: Recovery-path tag — None (plain structured damage / condition-only),
     #: "inline-damage", "manual-scaling", or (round 4) "effect-join" — a row
     #: with NO own damage/conditions/modifiers whose only priceable content is
-    #: the joined effect's atoms (D30-36's promoted SkipRecords).
+    #: the joined effect's atoms (a promoted SkipRecord).
     recovery_path: str | None = None
     is_variant: bool = False
     variant_label: str | None = None
@@ -361,7 +361,7 @@ def _classify_damage_types(entries: list[tuple[float, str]]) -> DamageTypeClass:
 def _classify_effective_target(
     area_type: str | None, area_value_ft: float, description: str
 ) -> EffectiveTarget:
-    """D30-3's effective-target axis: {single, small-multi (small area / 2-3
+    """The effective-target axis: {single, small-multi (small area / 2-3
     targets), party-scale (large area)}. Area-bearing spells split on a 15-ft
     radius/width heuristic (a 10-15ft burst hits a handful; 20ft+ hits a
     room); non-area spells split on an explicit "target up to N" count."""
@@ -398,7 +398,7 @@ def _is_summon(name: str, traits: list[str], description: str = "") -> bool:
 
 
 def _deep_merge(base: Any, overlay: Any) -> Any:
-    """D30-6a deep-merge-onto-base: overlay's dict-valued keys recurse into
+    """Deep-merge an overlay onto its base: overlay's dict-valued keys recurse into
     base's dict values; any other overlay value (incl. explicit ``null`` —
     e.g. Heal-vs-Living's ``defense: null``, a real override, distinct from
     key ABSENCE which means "inherit unchanged") replaces base's value
@@ -416,7 +416,7 @@ def _deep_merge(base: Any, overlay: Any) -> Any:
 
 def _overlay_variant_data(data: dict[str, Any]) -> list[tuple[dict[str, Any], str]]:
     """Every non-empty-``system`` overlay → (merged spell dict, variant label).
-    Empty-``system`` overlays are flavor-only and skipped (D30-6a: 6 such)."""
+    Empty-``system`` overlays are flavor-only and skipped (6 such)."""
     sysd = data.get("system", {})
     overlays = sysd.get("overlays") or {}
     base_name = data.get("name", "<unnamed>")
@@ -434,7 +434,7 @@ def _overlay_variant_data(data: dict[str, Any]) -> list[tuple[dict[str, Any], st
     return out
 
 
-#: D30-6b — the mechanically-derived scaling family (variable cast time +
+#: The mechanically-derived scaling family (variable cast time +
 #: damage + no overlays; re-derived at build, see the S1 report), keyed by
 #: file stem (lowercase, no extension), value = {action count -> hand-verified
 #: EV}. Zero-EV action counts (pure-buff casts, e.g. Ibex's Harvest at 1/2
@@ -529,7 +529,7 @@ def extract_single(  # noqa: C901 -- over the complexity limit; ratchet, split i
             # A dual-kind entry (["damage","healing"], §1 trap 2) is an
             # UNRESOLVED base-template ambiguity — round 1's rule (count as
             # damage) still applies here; overlay variants resolve it to one
-            # kind or the other before this loop ever runs (D30-6a).
+            # kind or the other before this loop ever runs.
             if category == "persistent":
                 persistent.append((ev, dtype))
             elif category == "splash":
@@ -538,9 +538,9 @@ def extract_single(  # noqa: C901 -- over the complexity limit; ratchet, split i
                 plain.append((ev, dtype))
                 plain_keys.add(key)
         elif is_heal:
-            # A pure-healing entry (round-2 recovery, D30-8ii: healing prices
+            # A pure-healing entry (round-2 recovery: healing prices
             # 1:1 against the damage budget) — heal/harm's per-variant
-            # overlay resolution (D30-6a) is what makes this reachable; a raw
+            # overlay resolution is what makes this reachable; a raw
             # dual-kind entry never falls here (is_dmg already claimed it).
             healing.append((ev, dtype))
             healing_keys.add(key)
@@ -558,7 +558,7 @@ def extract_single(  # noqa: C901 -- over the complexity limit; ratchet, split i
 
     level = (sysd.get("level") or {}).get("value", 0)  # trust level.value over folder path
 
-    # D30-35 (round 4) — the spell-effect join. Ref discovery scans the FULL
+    # The spell-effect join (round 4). Ref discovery scans the FULL
     # (non-heightened-stripped) description — re-derived, real corpus: 222
     # ref-bearing main-list spells / 263 refs / 0 unresolved / 20 multi-ref
     # spells, matching the spec's own pins exactly; stripping Heightened
@@ -595,11 +595,11 @@ def extract_single(  # noqa: C901 -- over the complexity limit; ratchet, split i
     if plain:
         ev = sum(v for v, _ in plain)
     elif healing:
-        # D30-8(ii): healing EV prices 1:1 against the damage budget (a
+        # Healing EV prices 1:1 against the damage budget (a
         # declared assumption, flagged on every such row in the ledger).
         ev = healing_ev
     elif not is_long_cast and not _is_summon(name, traits, base_text):
-        # Inline-@Damage recovery (D30-6c) — only when there's no structured
+        # Inline-@Damage recovery — only when there's no structured
         # plain-damage entry, and only for genuinely literal formulas.
         # Degree-aware (Undertaker's 40/success · 80/failure · 160/crit-fail
         # is the SAME basic-save-style scaling structured damage already
@@ -644,7 +644,7 @@ def extract_single(  # noqa: C901 -- over the complexity limit; ratchet, split i
 
     has_priceable_damage = ev > 0.0
     has_conditions = bool(cres.instances)
-    #: D30-36 — a joined effect carrying ANY signal (a valued atom, or even
+    #: A joined effect carrying ANY signal (a valued atom, or even
     #: just a tag) is a genuine mechanical payload the round-1..3 pipeline
     #: never saw; promoting these out of the skip ledger (`recovery_path=
     #: "effect-join"` below) is what makes the buff-population fix possible —
@@ -827,7 +827,7 @@ def extract_spell_variants(
     *,
     effect_index: dict[str, dict[str, Any]] | None = None,
 ) -> list[SpellFeatures | SkipRecord]:
-    """Full population-aware dispatch (D30-6a/b): overlay spells expand to
+    """Full population-aware dispatch: overlay spells expand to
     one row per non-empty variant (overlay precedence beats every other
     recovery path); manual-scaling-family spells expand to one row per
     hand-tabled action count; everything else is a single row/skip."""
@@ -887,7 +887,7 @@ def extract_spell_variants(
                     # the point of the table), not an uncertain extraction —
                     # `recovery_path` already flags it as an override for
                     # anyone auditing the ledger. `confidence="low"` is
-                    # reserved for D30-2e's "the four rules couldn't resolve
+                    # reserved for the "the four rules couldn't resolve
                     # this" case, which must still route to the ledger even
                     # when a spell also happens to have real damage EV.
                 }
@@ -936,7 +936,7 @@ def _extract_heightening(
 
 
 def build_effect_index_from_snapshot(spells_dir: Path) -> dict[str, dict[str, Any]]:
-    """D30-35 — the spell-effects pack sits at a sibling path of
+    """The spell-effects pack sits at a sibling path of
     ``spells_dir`` (``.../packs/pf2e/spells/spells`` -> ``.../packs/pf2e/
     spell-effects``, both under the same version-dir snapshot). Missing
     entirely (a stale/partial snapshot) -> an empty index, fail-soft (no
@@ -951,7 +951,7 @@ def build_effect_index_from_snapshot(spells_dir: Path) -> dict[str, dict[str, An
 def extract_all(spells_dir: Path) -> ExtractResult:
     """Extract every main-slot spell JSON under ``spells_dir`` (population
     pass — uses ``extract_spell_variants``, so overlay/manual-scaling spells
-    contribute multiple rows). D30-35 (round 4): also loads the spell-effects
+    contribute multiple rows). Also loads the spell-effects
     pack ONCE and joins it into every row."""
     from .snapshot import iter_spell_files
 

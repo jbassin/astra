@@ -1,4 +1,4 @@
-"""Summon-trait band check (spec 0030 D30-37, round 4).
+"""Summon-trait band check (round 4).
 
 Population = every main-list spell carrying the **trait** ``summon`` (not a
 name-prefix match — the round-2/3 `ledger._SUMMON_TRAIT_RE` was DEAD CODE,
@@ -20,7 +20,7 @@ base (non-heightened) prose ("... whose level is N to fight for you" /
 tolerant — the corpus uses both). Phantasmal Minion is the one miss: a
 FIXED-creature summon (a specific bestiary Actor, not a level-scaled trait
 choice) with no such prose at all — it still carries `population="summon"`
-in the export, just with no `summonBand` (D30-38's kind-precedence note)."""
+in the export, just with no `summonBand` (the export's kind precedence decides)."""
 
 from __future__ import annotations
 
@@ -65,7 +65,7 @@ class SummonBand:
 
 def summon_band(rank: int, description_html: str) -> SummonBand | None:
     """`None` when the base-level prose doesn't match (Phantasmal Minion) —
-    the caller decides what to render for those (D30-38's kind precedence)."""
+    the caller decides what to render for those (the export's kind precedence)."""
     base_level = extract_base_level(description_html)
     if base_level is None:
         return None
@@ -83,7 +83,7 @@ class SummonCurveDisagreementError(RuntimeError):
 
 
 def verify_curve_against_journal(journal_doc: dict, *, entry_id: str, page_id: str) -> None:
-    """D30-37: verify the declared curve against the NAMED journal page at
+    """Verify the declared curve against the NAMED journal page at
     build time — raises `SummonCurveDisagreementError` on ANY mismatch."""
     if journal_doc.get("_id") != entry_id:
         raise SummonCurveDisagreementError(

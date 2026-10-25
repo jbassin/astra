@@ -1,4 +1,4 @@
-"""The prior-anchored condition price card (spec 0030 D30-24) — replaces
+"""The prior-anchored condition price card — replaces
 every FITTED per-condition price with a labeled PRIOR.
 
 Review F3/F4 killed round 2's Stage-B condition price card as a primary
@@ -6,7 +6,7 @@ tool: its per-condition entries were the hybrid-trained β's applied to a
 single instance, useful as an internal Stage-A/B diagnostic but never
 validated as a standalone design price (round-2's own build record already
 flags this — the per-condition table is "the per-instance rate, not the
-whole-spell aggregate"). D30-24 replaces it with explicit, unit-coherent
+whole-spell aggregate"). This module replaces it with explicit, unit-coherent
 PRIORS anchored on four named real spells/rules, never fitted:
 
 - **T4** (Paralyzed/failure/round — the same representative point round-2's
@@ -23,7 +23,7 @@ PRIORS anchored on four named real spells/rules, never fitted:
 - **T1** ("cantrip-adjacent" — no fixed spell-rank anchor at all; anchored
   on the cantrip ladder's own budget instead of the main ladder).
 
-**The formula, unit-coherent (D30-24's own text): V ≈ Budget/w_repr, with
+**The formula, unit-coherent (the spec's own text): V ≈ Budget/w_repr, with
 w_repr printed alongside every rate.** For tier T with anchor rank R_T and
 representative weight w_repr_T (the named anchor condition's own real
 coverage×duration shape, via `pricing.instance_weight` — the SAME weight
@@ -54,7 +54,7 @@ from .conditions import (  # module-private tier tables, source of truth
 )
 
 
-#: D30-24 declared anchors — see the module docstring for the derivation of
+#: Declared anchors — see the module docstring for the derivation of
 #: each. `anchor_rank=0` is T1's "no fixed rank, cantrip-adjacent" case.
 @dataclass(frozen=True)
 class TierAnchor:
@@ -64,7 +64,7 @@ class TierAnchor:
     anchor_degree: str
     anchor_duration: DurationClass
     anchor_note: str
-    proportional: bool  # True = "scales with whatever rank you design at" (T4)
+    proportional: bool  # True = "scales with whatever rank you design at" (tier T4)
 
 
 TIER_ANCHORS: dict[Tier, TierAnchor] = {
@@ -112,7 +112,7 @@ TIER_ANCHORS: dict[Tier, TierAnchor] = {
     ),
 }
 
-#: D30-24's marginal-rider guidance — GM Core's -1-rank rule, the round-1
+#: Marginal-rider guidance — GM Core's -1-rank rule, the round-1
 #: probe's empirical range. A flat, non-per-condition statement (adding a
 #: significant condition rider to an otherwise-priced damage spell).
 MARGINAL_RIDER_LOW = 0.5
@@ -186,8 +186,8 @@ def build_prior_card(
 
 
 def coverage_duration_multiplier_guidance() -> tuple[dict[str, float], dict[str, float]]:
-    """D30-24's "coverage/duration adjustment guidance" — the SAME declared
-    constants D30-4/8b already use, surfaced here as design-time multiplier
+    """The "coverage/duration adjustment guidance" — the SAME declared
+    constants the coverage and duration weights already use, surfaced here as design-time multiplier
     tables rather than internal fit machinery."""
     from .conditions import DURATION_FACTOR, OUTCOME_PROBABILITY  # lazy: avoids an import cycle
 
