@@ -21,7 +21,7 @@ const RADIUS = 45;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const URGENT_THRESHOLD_MS = 5000;
 
-export interface CountdownProps {
+interface CountdownProps {
   endsAt: number;
   serverNow: number;
   receivedAt: number;
@@ -69,7 +69,7 @@ export function Countdown(props: CountdownProps) {
   );
 }
 
-export interface TimeBarProps extends CountdownProps {
+interface TimeBarProps extends CountdownProps {
   /** Adds the seconds readout beside the line — the phone's only clock, since
    * it doesn't render the ring. */
   withNumber?: boolean;

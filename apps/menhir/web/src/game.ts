@@ -91,18 +91,18 @@ export type Effect =
   | { kind: "broadcast" }
   | { kind: "appendResults"; row: import("./schema").ResultRow };
 
-export type JoinResult =
+type JoinResult =
   | { kind: "joined"; playerId: string; roomNonce: string; reattached: boolean }
   | { kind: "rejected"; reason: "lobby-only" | "name-taken" };
 
-export type AnswerResult =
+type AnswerResult =
   | { kind: "accepted" }
   | {
       kind: "rejected";
       reason: "not-question-phase" | "already-answered" | "unknown-player" | "invalid-option";
     };
 
-export interface ReduceResult {
+interface ReduceResult {
   state: RoomState;
   effects: Effect[];
   result?: JoinResult | AnswerResult;

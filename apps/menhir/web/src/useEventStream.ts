@@ -13,7 +13,7 @@ import type { z } from "zod";
 
 const RESUBSCRIBE_DELAY_MS = 1000;
 
-export interface EventStreamState<S> {
+interface EventStreamState<S> {
   /** The last frame that parsed clean, or `null` before the first one arrives. */
   snapshot: S | null;
   /** `performance.now()` at the moment `snapshot` was received — the anchor

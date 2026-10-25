@@ -9,7 +9,7 @@ import { z } from "zod";
 
 import { type HostSnapshot, HostSnapshotSchema } from "./schema";
 
-export type ApiResult<T> = { ok: true; data: T } | { ok: false; status: number; error: string };
+type ApiResult<T> = { ok: true; data: T } | { ok: false; status: number; error: string };
 
 function isRecord(x: unknown): x is Record<string, unknown> {
   return typeof x === "object" && x !== null;
@@ -75,7 +75,7 @@ export function listQuizzes(): Promise<ApiResult<QuizListItem[]>> {
 // --- POST /api/game ------------------------------------------------------------
 
 const CreateGameSchema = z.object({ code: z.string(), hostToken: z.string() }).strict();
-export type CreateGameResult = z.infer<typeof CreateGameSchema>;
+type CreateGameResult = z.infer<typeof CreateGameSchema>;
 
 export function createGame(quizId: string): Promise<ApiResult<CreateGameResult>> {
   return postJSON("/api/game", { quizId }, CreateGameSchema);
@@ -84,9 +84,9 @@ export function createGame(quizId: string): Promise<ApiResult<CreateGameResult>>
 // --- POST /api/game/:code/join --------------------------------------------------
 
 const JoinSchema = z.object({ playerId: z.string(), roomNonce: z.string() }).strict();
-export type JoinResult = z.infer<typeof JoinSchema>;
+type JoinResult = z.infer<typeof JoinSchema>;
 
-export interface JoinBody {
+interface JoinBody {
   name: string;
   playerId?: string;
   roomNonce?: string;
@@ -111,7 +111,7 @@ export function sendAnswer(
 
 const HostActionResponseSchema = z.object({ snapshot: HostSnapshotSchema }).strict();
 
-export interface HostActionBody {
+interface HostActionBody {
   hostToken: string;
   action: "start" | "next" | "end";
   fromPhase: string;
