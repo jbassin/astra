@@ -8,14 +8,14 @@ import { z } from "zod";
 
 // --- quiz files ----------------------------------------------------------------
 
-export const QuizOptionSchema = z
+const QuizOptionSchema = z
   .object({
     label: z.string().min(1),
     correct: z.boolean(),
   })
   .strict();
 
-export const QuizQuestionSchema = z
+const QuizQuestionSchema = z
   .object({
     text: z.string().min(1),
     time: z.number().int().min(5).max(120).default(20),
@@ -35,14 +35,12 @@ export const QuizSchema = z
   })
   .strict();
 
-export type QuizOption = z.infer<typeof QuizOptionSchema>;
-export type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
 export type Quiz = z.infer<typeof QuizSchema>;
 
 /** The four Kahoot answer identities — shape+color double encoding, index-mapped. */
 export const SHAPES = ["triangle", "diamond", "circle", "square"] as const;
 export type Shape = (typeof SHAPES)[number];
-export const ShapeSchema = z.enum(SHAPES);
+const ShapeSchema = z.enum(SHAPES);
 
 // --- the snapshot union ----------------------------------------------------------
 //
@@ -132,7 +130,7 @@ const PlayerPodiumSchema = PodiumBase.extend({
   you: z.object({ rank: z.number(), score: z.number() }),
 }).strict();
 
-export const GoneSchema = z.object({ phase: z.literal("gone") }).strict();
+const GoneSchema = z.object({ phase: z.literal("gone") }).strict();
 
 export const HostSnapshotSchema = z.discriminatedUnion("phase", [
   HostLobbySchema,
@@ -154,7 +152,7 @@ export const PlayerSnapshotSchema = z.discriminatedUnion("phase", [
 
 export type HostSnapshot = z.infer<typeof HostSnapshotSchema>;
 export type PlayerSnapshot = z.infer<typeof PlayerSnapshotSchema>;
-export type GoneSnapshot = z.infer<typeof GoneSchema>;
+type GoneSnapshot = z.infer<typeof GoneSchema>;
 
 /** The single terminal frame for an unknown/GC'd room — never a 404. */
 export const GONE_SNAPSHOT: GoneSnapshot = { phase: "gone" };

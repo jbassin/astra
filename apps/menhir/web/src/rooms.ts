@@ -50,7 +50,7 @@ const answersReceivedCounter = lazyCounter("astra.menhir", "menhir.answers.recei
   description: "Accepted (first-answer-wins) player answers",
 });
 
-export interface Sink {
+interface Sink {
   send(frame: string): void;
   close(): void;
 }
@@ -84,7 +84,7 @@ export interface Clock {
 }
 
 /** The process clock. Its timers are unref'd, so a pending one never keeps Node alive. */
-export const REAL_CLOCK: Clock = {
+const REAL_CLOCK: Clock = {
   now: () => Date.now(),
   setTimeout: (cb, ms) => {
     const handle = nodeSetTimeout(cb, ms).unref();

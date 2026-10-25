@@ -7,7 +7,7 @@ import QRCode from "qrcode";
  */
 import { useEffect, useState } from "react";
 
-export interface QRCodeImageProps {
+interface QRCodeImageProps {
   value: string;
   size?: number;
 }

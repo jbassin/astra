@@ -10,7 +10,7 @@ import { useState } from "react";
 
 import { MenhirMark } from "../marks";
 
-export interface JoinCardProps {
+interface JoinCardProps {
   initialCode: string;
   pending: boolean;
   error: string | null;

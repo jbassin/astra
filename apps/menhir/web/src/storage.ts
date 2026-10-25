@@ -87,7 +87,3 @@ export function loadStoredHost(): StoredHost | null {
 export function saveStoredHost(host: StoredHost): void {
   safeSet(HOST_KEY, host);
 }
-
-export function clearStoredHost(): void {
-  safeRemove(HOST_KEY);
-}

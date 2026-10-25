@@ -14,7 +14,7 @@
 import { CheckMark } from "../marks";
 import { ShapeGlyph, type Shape } from "../shapes";
 
-export interface AnswerTileProps {
+interface AnswerTileProps {
   shape: Shape;
   /** Host cards show the option text; the player projection never carries it
    * (no answer-leaking full state to devtools). */

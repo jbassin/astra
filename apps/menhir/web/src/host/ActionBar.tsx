@@ -6,7 +6,7 @@
  */
 import type { Phase } from "../game";
 
-export interface ActionBarProps {
+interface ActionBarProps {
   phase: Phase;
   isLastQuestion: boolean;
   onStart: () => void;

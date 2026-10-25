@@ -18,7 +18,7 @@ import { CrownMark } from "../marks";
 import type { HostSnapshot } from "../schema";
 import { ActionBar } from "./ActionBar";
 
-export interface HostViewProps {
+interface HostViewProps {
   snapshot: HostSnapshot;
   receivedAt: number;
   hasHostToken: boolean;
