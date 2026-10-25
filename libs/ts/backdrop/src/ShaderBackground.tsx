@@ -1,6 +1,7 @@
 import type { Application } from "pixi.js";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 
+import { followMotionPreference, reducedMotionMedia } from "./motion";
 import type { BackdropSpec } from "./types";
 
 // A fixed, full-viewport animated shader background (z-index: -1, behind all page
@@ -12,6 +13,9 @@ import type { BackdropSpec } from "./types";
 // hydration mismatch; pixi + the factory are dynamic-imported in the effect, so
 // neither evaluates during SSR. Mount ONE per page (one Application = one WebGL
 // context — don't stack a second pixi Application on the same page).
+//
+// A viewer who prefers reduced motion gets one still frame of the shader: the ticker
+// stops, and a resize redraws the still frame at the new size (`./motion.ts`).
 const CANVAS_STYLE: CSSProperties = {
   position: "fixed",
   inset: 0,
@@ -37,6 +41,7 @@ export function ShaderBackground({ spec }: { spec: BackdropSpec }) {
     let app: Application | null = null;
     let destroy: (() => void) | null = null;
     let tick: (() => void) | null = null;
+    let stopFollowing: (() => void) | null = null;
 
     void (async () => {
       const [{ Application: PixiApp }, { createShaderBackground }] = await Promise.all([
@@ -68,6 +73,24 @@ export function ShaderBackground({ spec }: { spec: BackdropSpec }) {
       tick = () => bg.update(performance.now() - start);
       a.ticker.add(tick);
       destroy = bg.destroy;
+
+      const media = reducedMotionMedia();
+      // The resize plugin renders right after the renderer emits `resize`; with the ticker
+      // stopped, rescale the still frame first so it fills the new size.
+      a.renderer.on("resize", () => {
+        if (media?.matches) bg.update(0);
+      });
+      stopFollowing = followMotionPreference(
+        {
+          start: () => a.ticker.start(),
+          stop: () => a.ticker.stop(),
+          renderStill: () => {
+            bg.update(0);
+            a.render();
+          },
+        },
+        media,
+      );
     })().catch((err: unknown) => {
       // oxlint-disable-next-line no-console -- WebGL init failure, shown in the browser console
       console.error("ShaderBackground: init failed", err);
@@ -75,6 +98,7 @@ export function ShaderBackground({ spec }: { spec: BackdropSpec }) {
 
     return () => {
       cancelled = true;
+      stopFollowing?.();
       if (app) {
         if (tick) app.ticker.remove(tick);
         destroy?.();

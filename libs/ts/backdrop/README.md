@@ -15,6 +15,10 @@ unused alternative. akasha-frontend and strider don't use it (see Traps).
   spec's fragment shader, resizes it to the renderer each frame and advances `uTime`. Uniforms
   bind as one group named `${name}Uniforms`; inner keys must match the GLSL `uniform` names.
 - Every catalog shader has a `uIntensity` uniform: the one knob for how strong it looks.
+- A viewer with `prefers-reduced-motion: reduce` gets one still frame (the shader at `uTime` 0):
+  the ticker stops, and a resize redraws the still frame. `followMotionPreference`
+  (`src/motion.ts`) follows the preference live, so toggling it needs no reload. Keep every
+  shader's time-0 frame presentable (no fade-in from black).
 - Shared noise code and the gothic palette (as RGB floats) are in `src/shaders/common.ts`. Keep the
   palette in step with `libs/ts/gothic/src/theme.css`.
 - `backdrop.test.ts` checks that every declared uniform appears in its fragment shader. Nothing
