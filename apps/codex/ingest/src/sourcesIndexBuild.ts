@@ -24,7 +24,7 @@ export interface AonBookCitation {
   productLine?: string;
 }
 
-export interface SourcesIndexBuildInput {
+interface SourcesIndexBuildInput {
   /** Final (post book-normalize, post-drop) entities — every one's
    * `source.book` is already the FINAL normalized key. */
   finalEntities: readonly CodexEntity[];
@@ -78,7 +78,7 @@ export const PRODUCT_LINE_OVERRIDE: Readonly<Record<string, string>> = {
  * on `/sources` despite every one of its entities carrying `OGL` from
  * `system.publication`. Same committed-override posture (and key contract) as
  * `PRODUCT_LINE_OVERRIDE` above. */
-export const BOOK_LICENSE_OVERRIDE: Readonly<Record<string, License>> = {
+const BOOK_LICENSE_OVERRIDE: Readonly<Record<string, License>> = {
   "Liturgy of the Iridite Vol.2": "OGL",
 };
 

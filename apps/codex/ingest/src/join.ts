@@ -159,7 +159,7 @@ export function domainCandidates(name: string): string[] {
  * tactic/relic name collisions are a real, systematic risk: a feat and the
  * action it grants are commonly given the exact same name).
  */
-export interface EquivalenceRule {
+interface EquivalenceRule {
   readonly category: string;
   readonly requireLevelAgreement?: boolean;
 }
@@ -228,7 +228,7 @@ const CLASS_SUBSYSTEM_CATEGORIES: readonly string[] = [
  *   - action ↔ relic/tactic/feat, WITH the level-agreement guard.
  *   - spell ↔ ritual — Foundry files rituals inside its `spells` pack.
  */
-export const CATEGORY_EQUIVALENCE: ReadonlyMap<string, readonly EquivalenceRule[]> = new Map([
+const CATEGORY_EQUIVALENCE: ReadonlyMap<string, readonly EquivalenceRule[]> = new Map([
   ["weapon", [{ category: "equipment" }]],
   ["armor", [{ category: "equipment" }]],
   ["shield", [{ category: "equipment" }]],
@@ -274,9 +274,9 @@ function isRitualMove(foundryCategory: string, aonCategory: string): boolean {
 // matching
 // ---------------------------------------------------------------------------
 
-export type MatchVia = "exact" | "normalized" | "alias";
+type MatchVia = "exact" | "normalized" | "alias";
 
-export interface MatchResult {
+interface MatchResult {
   aonId: string;
   via: MatchVia;
 }
@@ -372,7 +372,7 @@ function traitSetsDiffer(a: readonly string[], b: readonly string[]): boolean {
   return false;
 }
 
-export interface JoinDeps {
+interface JoinDeps {
   aonMarkdownById: ReadonlyMap<string, string>;
   resolveLink: ResolveLinkFn;
   report: ReportFn;

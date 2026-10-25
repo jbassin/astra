@@ -12,7 +12,7 @@ import { test as base, type Browser, type Page } from "@playwright/test";
 export const DESKTOP_VIEWPORT = { width: 1600, height: 900 };
 
 /** What the worker-scoped discovery visit read off a plain `/ritual` load. */
-export interface RitualDiscovery {
+interface RitualDiscovery {
   /** The live `aria-rowcount`: the true row count, however many rows are mounted. */
   totalRows: number;
   /** The slug of the row at ~85% depth, for the deep-link case. */
@@ -125,7 +125,7 @@ export async function poll<T>(
  * focus (on row 1, so callers press one fewer afterwards), then waits for that press's own
  * `?entry=` settle-commit and scroll reconcile, so they can't land in the middle of the
  * caller's case. */
-export async function waitInteractiveViaProbe(page: Page): Promise<void> {
+async function waitInteractiveViaProbe(page: Page): Promise<void> {
   for (let attempt = 0; attempt < 20; attempt++) {
     await page.keyboard.press("j");
     const { slug } = await poll(

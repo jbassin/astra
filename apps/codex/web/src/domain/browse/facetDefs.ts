@@ -19,12 +19,7 @@
 // reuse), which sits in `regen-goldens.ts`'s import graph; that script runs under
 // tsx, which follows `@/*` only through the tsconfig of its working directory, so
 // this stays relative and works from any directory.
-import {
-  FACET_KEYS,
-  SPILLOVER_FACET_KEYS,
-  humanizeFacetKey,
-  humanizeSlug,
-} from "@astra/codex-corpus";
+import { FACET_KEYS, humanizeFacetKey, humanizeSlug } from "@astra/codex-corpus";
 
 import { formatFacetValue } from "./formatFacetValue";
 
@@ -322,15 +317,10 @@ export function numericValueFor(def: FacetDef, value: RawFacetValue | undefined)
   return asNumber(value);
 }
 
-/** enum widget display label for one tag value. */
-export function labelFor(def: FacetDef, value: string): string {
-  return def.labelMap?.[value] ?? value;
-}
-
 /**
  * The precedence-respecting label a facet option should
  * actually DISPLAY: `def`'s own `labelMap` entry wins outright (checked
- * directly against the map, never via `labelFor`'s raw-value fallback,
+ * directly against the map, never via a raw-value fallback,
  * which would be indistinguishable from "no entry" once returned);
  * `formatFacetValue` runs ONLY when there's no entry for `value` at all —
  * never both, so a labelMap's own carefully-written string (e.g. "1 Action")
@@ -346,7 +336,3 @@ export function humanizedLabelFor(def: FacetDef | undefined, value: string): str
   if (mapped !== undefined) return mapped;
   return formatFacetValue(value);
 }
-
-// re-exported so a conformance test / the panel can cross-check against the
-// allowlist's own banned-keys list without importing facetKeys.ts twice.
-export { SPILLOVER_FACET_KEYS };

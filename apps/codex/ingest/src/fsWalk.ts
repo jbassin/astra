@@ -1,7 +1,7 @@
 import { readdirSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 
-export interface WalkedFile {
+interface WalkedFile {
   /** POSIX-separated path relative to the walk root — stable across OSes. */
   relPath: string;
   absPath: string;

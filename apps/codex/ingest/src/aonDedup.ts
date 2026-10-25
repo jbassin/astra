@@ -72,7 +72,7 @@ import { normalizeUrlKey, urlQueryId } from "./aonLinkTable";
  * spurious residual collisions for entities that DO join correctly.
  */
 
-export type ReportFn = (cls: string, detail: string) => void;
+type ReportFn = (cls: string, detail: string) => void;
 
 function dedupKey(m: AonDocMeta): string {
   return `${m.category}\u0000${m.slug}\u0000${normalizeUrlKey(m.aonUrl)}\u0000${m.edition}`;

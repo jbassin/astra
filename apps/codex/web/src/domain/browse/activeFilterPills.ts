@@ -31,9 +31,9 @@ import { formatFacetValue } from "./formatFacetValue";
  * `FacetPanel.tsx`'s `StateUpdater` — named locally rather than imported
  * from either (this module sits BELOW both in the dependency graph, same
  * posture as `filterEngine.ts` itself). */
-export type PillStateUpdater = (updater: (prev: BrowseFilterState) => BrowseFilterState) => void;
+type PillStateUpdater = (updater: (prev: BrowseFilterState) => BrowseFilterState) => void;
 
-export interface ActiveFilterPill {
+interface ActiveFilterPill {
   /** Stable React key + (for `f.*` dimensions) the facet key itself. */
   key: string;
   label: string;
@@ -146,7 +146,7 @@ export function activeFilterPills(
   for (const facetKey of facetKeysFor(category)) {
     const def = facetDefFor(facetKey);
     const title = def?.label ?? humanizeFacetKey(facetKey);
-    // The precedence-respecting humanizer, not the raw-fallback `labelFor`: a
+    // The precedence-respecting humanizer, not a raw-value fallback: a
     // pill showing "classfeature" instead of "Class Feature" is the same
     // raw-data leak the facet panel itself fixes, just on a different surface.
     const labelOf = (v: string) => humanizedLabelFor(def, v);

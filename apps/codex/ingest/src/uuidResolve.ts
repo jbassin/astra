@@ -144,7 +144,7 @@ export class UuidIndex {
  * of the real Foundry JSON shape (Actor/Item docs, plus the excluded
  * JournalEntry packs' `pages` for symmetry with `journals.ts`'s per-page
  * registration). */
-export interface IndexableDoc {
+interface IndexableDoc {
   _id: string;
   name: string;
   type?: string;
@@ -275,7 +275,7 @@ const TYPE_TOKENS: ReadonlySet<string> = new Set([
   "JournalEntry",
 ]);
 
-export type ParsedUuid =
+type ParsedUuid =
   | { shape: "relative"; docId: string }
   | { shape: "journalPage"; pack: string; entryId: string; pageId: string }
   | { shape: "doc"; pack: string; idOrName: string };

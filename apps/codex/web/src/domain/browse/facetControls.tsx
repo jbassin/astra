@@ -91,7 +91,7 @@ export function FacetSection({
  * `OptionSearch` renders nothing (the option list is short enough to scan by
  * eye — Rarity/Edition/actionCost's real cardinalities all sit well under
  * this). */
-export const OPTION_SEARCH_THRESHOLD = 20;
+const OPTION_SEARCH_THRESHOLD = 20;
 
 /** ≥ this many options -> the input renders EXPANDED by default (the
  * stakeholder's own sanctioned latitude on very large lists — `creature

@@ -46,7 +46,7 @@ import {
 } from "./filterEngine";
 import { formatFacetValue } from "./formatFacetValue";
 
-export type StateUpdater = (updater: (prev: BrowseFilterState) => BrowseFilterState) => void;
+type StateUpdater = (updater: (prev: BrowseFilterState) => BrowseFilterState) => void;
 
 // ---------------------------------------------------------------------------
 // range widget (plain min/max inputs, no stepper or slider)

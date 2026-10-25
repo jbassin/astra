@@ -144,7 +144,7 @@ export interface HomebrewSectionJson {
 // derived computations
 // ---------------------------------------------------------------------------
 
-export interface CappedList<T> {
+interface CappedList<T> {
   shown: T[];
   totalCount: number;
 }
@@ -192,7 +192,7 @@ export function computeVariantCount(entities: readonly CodexEntity[]): number {
 // (per-field extraction coverage %), not a pass/fail gate.
 // ---------------------------------------------------------------------------
 
-export interface FieldCoverageRow {
+interface FieldCoverageRow {
   field: string;
   count: number;
   ofTotal: number;

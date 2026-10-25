@@ -78,7 +78,7 @@ export function initialWindowRange(count: number): { startIndex: number; endInde
   return { startIndex: first?.index ?? 0, endIndex: (last?.index ?? -1) + 1 };
 }
 
-export interface WindowedCategoryListing {
+interface WindowedCategoryListing {
   category: string;
   rows: IndexRow[];
   /** `visible.length` under `search`'s filter/sort state — the count line's

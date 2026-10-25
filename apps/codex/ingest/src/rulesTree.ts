@@ -37,7 +37,7 @@ import { deriveBookEdition, deriveBookLicense } from "./bookMeta";
  * the CURRENT sibling group's own aonId set.
  */
 
-export type ReportFn = (cls: string, detail: string) => void;
+type ReportFn = (cls: string, detail: string) => void;
 
 export interface RulesDocInput {
   aonId: string;
@@ -357,7 +357,7 @@ function countChildlessReal(nodes: readonly BuildNode[]): number {
   return count;
 }
 
-export interface BuildRulesTreeResult {
+interface BuildRulesTreeResult {
   file: RulesTreeFile;
   stats: RulesTreeStats;
 }

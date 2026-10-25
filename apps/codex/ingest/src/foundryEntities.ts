@@ -287,7 +287,7 @@ export interface RawFoundryDoc {
   items?: RawFoundryDoc[];
 }
 
-export type ReportFn = (cls: string, detail: string) => void;
+type ReportFn = (cls: string, detail: string) => void;
 
 // ---------------------------------------------------------------------------
 // source/edition
@@ -1005,7 +1005,7 @@ function assembleEmbeddedItem(item: RawFoundryDoc, ctx: EnricherContext): Embedd
 // the assembly entry point
 // ---------------------------------------------------------------------------
 
-export interface AssembleFoundryEntityParams {
+interface AssembleFoundryEntityParams {
   packDir: string;
   docClass: "Actor" | "Item";
   /** The pack file's own basename (no `.json`) — the identity source; also

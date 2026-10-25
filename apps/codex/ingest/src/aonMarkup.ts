@@ -1349,12 +1349,12 @@ export function parseAonMarkdown(markdown: string, ctx: AonParseCtx): BlockNode[
 
 /** One collected masthead line: `label` = the bold lead text (trimmed),
  * `value` = the rest of that paragraph's inline children. */
-export interface MastheadPair {
+interface MastheadPair {
   label: string;
   value: InlineNode[];
 }
 
-export interface MastheadStripResult {
+interface MastheadStripResult {
   /** `body` with the masthead's H1 title + every collected bold-label line
    * (Source included) + its own trailing divider (when one immediately
    * follows) removed — everything else untouched, in order. */
