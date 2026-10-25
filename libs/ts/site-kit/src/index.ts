@@ -2,23 +2,24 @@
 /// <reference path="./ssrBuild.d.ts" />
 /**
  * @astra/site-kit — the reusable SSR-frontend spine (the strider template, lifted
- * for 0011-0013). Server + build-time pieces live on the root export; the
+ * for the later frontends). Server + build-time pieces live on the root export; the
  * browser-only RUM glue is on the `./web` subpath (so importing the SSR/vite
- * helpers never pulls the OTel web SDK into the client bundle).
+ * helpers never pulls the OTel web SDK into the client bundle). package.json
+ * `exports` lists the other subpaths (`./vite`, `./document`, `./theme`, ...).
  *
- *   // server.ts (Bun runtime)
- *   import { createSsrServer } from "@astra/site-kit";
- *   // vite.config.ts (build-time)
- *   import { contentWatchPlugin, gothicFontsDevPlugin, loadSiteConfig } from "@astra/site-kit";
- *   // __root.tsx (browser, dynamic import)
- *   import { startRum } from "@astra/site-kit/web";
+ *   // server.ts (Node runtime; tsdown bundles it into dist-server/main.mjs)
+ *   import { createSsrServer, loadSsrBuild } from "@astra/site-kit";
+ *   // vite.config.ts (build-time; the preset adds contentWatchPlugin + gothicFontsPlugin)
+ *   import { defineSiteConfig } from "@astra/site-kit/vite";
+ *   // __root.tsx (SiteDocument dynamic-imports `./web` and calls startRum in the browser)
+ *   import { SiteDocument, siteHead } from "@astra/site-kit/document";
  */
 export { loadSiteConfig, siteConfigFile } from "./config";
 export { generateRouteTree, staleRouteTreeFiles, type RouteTreeOptions } from "./routeTree";
 // `serveFile` is the `send`-backed Range/206 bridge `createSsrServer` uses
 // internally; exported too so the repo's other hand-rolled Node servers
 // (weal-overlay, orator-backend) reuse the same tested bridge
-// instead of re-implementing the Bun.file → Node static-serving seam.
+// instead of re-implementing Node static serving.
 export { type ServeFileOptions, serveFile } from "./sendFile";
 export { ssrExternalsPlugin, undeclaredSsrImports } from "./ssrExternals";
 export {

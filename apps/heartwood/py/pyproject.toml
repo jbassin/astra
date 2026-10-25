@@ -1,7 +1,7 @@
 [project]
 name = "astra-heartwood-backend"
 version = "0.0.0"
-description = "heartwood-backend — the akasha setting-wiki maintainer (0033). A dspy.RLM agent reads one faerrin-world session transcript, browses the wiki + earlier transcripts through host-side tools, and edits apps/akasha/py/content/ in a staging copy that publishes with no human review. Host-run CLI; LLM via libs/py/llm."
+description = "heartwood-backend — the akasha setting-wiki maintainer. A dspy.RLM agent reads one faerrin-world session transcript, browses the wiki + earlier transcripts through host-side tools, and edits a staging copy of the wiki (the astra-data clone's akasha/content) that publishes with no human review. Host-run CLI, started from the Dagster session_wiki asset through request files; LLM via libs/py/llm."
 requires-python = ">=3.12"
 dependencies = [
     "astra-akasha-backend",
