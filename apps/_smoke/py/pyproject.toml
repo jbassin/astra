@@ -1,7 +1,7 @@
 [project]
 name = "astra-smoke-substrate"
 version = "0.0.0"
-description = "Phase-1 exit-gate smoke: config+SOPS → OTel trace → litellm→Claude with cost, + being parity."
+description = "End-to-end substrate smoke: config and SOPS, an OTel trace, one metered litellm call to the default GLM model, and ontology-being parity."
 requires-python = ">=3.12"
 dependencies = [
     "astra-config",

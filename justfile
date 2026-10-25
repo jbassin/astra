@@ -497,7 +497,7 @@ heartwood-backfill-reset:
 heartwood-requests *flags:
     @{{ops}} heartwood-requests "$@"
 
-# ==== mouthpiece: the producer experiments (0034) =============================================
+# ==== mouthpiece: the producer experiments ====================================================
 
 # Idempotent; the first run fetches Pyodide into DENO_DIR (network), later runs are offline.
 # Warm the dspy sandbox (Deno + Pyodide) the producer runs in.
@@ -513,7 +513,7 @@ mouthpiece-sandbox-warm:
 #   just mouthpiece-experiment 2026-10-5
 #   just mouthpiece-experiment 2026-10-5 --arm glm-5.3
 #   just mouthpiece-experiment 2026-10-5 --reuse-brief /ruby/data/astra-state/mouthpiece/experiments/2026-10-5/<run>
-# The 0034 producer comparison for one session (PAID).
+# Compare the producer arms for one session (PAID).
 mouthpiece-experiment date *flags: mouthpiece-sandbox-warm
     cd "{{justfile_directory()}}" && {{uv_bin}} run --frozen --no-sync astra-mouthpiece-producer experiment "$@"
 

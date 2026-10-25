@@ -1,8 +1,10 @@
 """USD per 1,000,000 tokens — the cost table behind cost→OTel (retires faerrin's pricing.ts).
 
 Rates from each model's OpenRouter listing. Cache-write is kept at 1.25× input and
-cache-read at 0.1× input. Only cost-tracked models need a row; an unknown model costs 0
-(graceful — surfaced in summaries rather than throwing).
+cache-read at 0.1× input. Only cost-tracked models need a row. `cost_usd()` returns 0.0 for
+a model with no row and never throws, so it cannot tell "unknown" from "free". A caller that
+must keep that difference checks `PRICING_USD_PER_1M` first, as `LiteLLMClient._price` does: it
+records an unpriced model's cost as unknown (`None`), never as 0.
 """
 
 from __future__ import annotations
@@ -47,7 +49,7 @@ class TokenCounts(NamedTuple):
 
 
 def cost_usd(model: str, tokens: TokenCounts) -> float:
-    """USD for a call's token usage; unknown model → 0.0 (never throws)."""
+    """USD for a call's token usage; a model with no row returns 0.0 (never throws)."""
     p = PRICING_USD_PER_1M.get(model)
     if p is None:
         return 0.0
