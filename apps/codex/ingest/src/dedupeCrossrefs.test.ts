@@ -1,28 +1,8 @@
-import type { CodexEntity, BlockNode, InlineNode } from "@astra/codex-corpus";
+import type { BlockNode, InlineNode } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
 import { collapseAdjacentCrossrefs } from "./dedupeCrossrefs";
-
-function entity(
-  overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "category" | "slug" | "name">,
-): CodexEntity {
-  return {
-    edition: "remaster",
-    source: { book: "unknown", license: "unknown" },
-    traits: [],
-    body: [],
-    facets: {},
-    ...overrides,
-  };
-}
-
-function collector(): {
-  reports: Array<{ cls: string; detail: string }>;
-  report: (cls: string, detail: string) => void;
-} {
-  const reports: Array<{ cls: string; detail: string }> = [];
-  return { reports, report: (cls, detail) => reports.push({ cls, detail }) };
-}
+import { entity, collector } from "./testSupport";
 
 function text(content: string): InlineNode {
   return { kind: "text", content, marks: { bold: false, italic: false, superscript: false } };

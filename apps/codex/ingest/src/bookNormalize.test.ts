@@ -1,21 +1,7 @@
-import type { CodexEntity } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
 import { normalizeBookNames } from "./bookNormalize";
-
-function entity(id: string, book: string): CodexEntity {
-  return {
-    id,
-    slug: id.split("/")[1] ?? id,
-    category: id.split("/")[0] ?? "test",
-    name: id,
-    edition: "remaster",
-    source: { book, license: "unknown" },
-    traits: [],
-    body: [],
-    facets: {},
-  };
-}
+import { entityInBook as entity } from "./testSupport";
 
 describe("normalizeBookNames", () => {
   it("rule 1: strips CRLF/tab garbage and collapses internal whitespace", () => {

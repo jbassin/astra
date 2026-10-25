@@ -26,19 +26,7 @@ import {
 import type { RulesTreeStats } from "./rulesTree";
 import type { SidebarAttachResult } from "./sidebarAttach";
 import type { SourcesIndexStats } from "./sourcesIndexBuild";
-
-function entity(
-  overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "category" | "slug" | "name">,
-): CodexEntity {
-  return {
-    edition: "remaster",
-    source: { book: "unknown", license: "unknown" },
-    traits: [],
-    body: [],
-    facets: {},
-    ...overrides,
-  };
-}
+import { entity } from "./testSupport";
 
 function joinResult(overrides: Partial<JoinResult>): JoinResult {
   return {

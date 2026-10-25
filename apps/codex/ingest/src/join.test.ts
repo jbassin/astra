@@ -1,11 +1,6 @@
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
-
 import type { CodexEntity, BlockNode, CodexNode } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import type { AonHit, AonDocMeta } from "./aonFacets";
 import { extractAonMeta } from "./aonFacets";
 import { buildAonLinkTable, type AonLinkTable } from "./aonLinkTable";
 import { applyAonPrimaryDrop } from "./drop";
@@ -20,65 +15,12 @@ import {
   type JoinAliasesFile,
   type RunJoinInput,
 } from "./join";
-
-const FIXTURES = join(
-  dirname(fileURLToPath(import.meta.url)),
-  "..",
-  "tests",
-  "fixtures",
-  "aon-data",
-);
-
-function readFixture(name: string): AonHit {
-  return JSON.parse(readFileSync(join(FIXTURES, `${name}.json`), "utf8")) as AonHit;
-}
+import { entity, collector, meta, readAonHit } from "./testSupport";
 
 const EMPTY_LINK_TABLE: AonLinkTable = { byUrl: new Map() };
 
 function noopReport(): void {
   // no-op — most tests collect reports explicitly where they matter
-}
-
-function collector(): {
-  reports: Array<{ cls: string; detail: string }>;
-  report: (cls: string, detail: string) => void;
-} {
-  const reports: Array<{ cls: string; detail: string }> = [];
-  return { reports, report: (cls, detail) => reports.push({ cls, detail }) };
-}
-
-/** Minimal, fully-typed `CodexEntity` factory — every field defaults to the
- * "boring" shape, override only what a test cares about. */
-function entity(
-  overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "category" | "slug" | "name">,
-): CodexEntity {
-  return {
-    edition: "remaster",
-    source: { book: "unknown", license: "unknown" },
-    traits: [],
-    body: [],
-    facets: {},
-    ...overrides,
-  };
-}
-
-/** Minimal, fully-typed `AonDocMeta` factory for synthetic (non-fixture) test
- * docs. */
-function meta(
-  overrides: Partial<AonDocMeta> & Pick<AonDocMeta, "aonId" | "category" | "name" | "slug">,
-): AonDocMeta {
-  return {
-    aonUrl: `/Test.aspx?ID=${overrides.aonId}`,
-    traits: [],
-    primarySource: { book: "Test Book" },
-    allSources: [{ book: "Test Book" }],
-    license: "ORC",
-    edition: "remaster",
-    remasterId: [],
-    legacyId: [],
-    hasMarkdown: false,
-    ...overrides,
-  };
 }
 
 function runInput(overrides: Partial<RunJoinInput>): RunJoinInput {
@@ -573,8 +515,8 @@ describe("runJoin: Heal shared-slug legacy/remaster pair (acceptance F)", () => 
     rarity: "common",
   });
 
-  const legacyMeta = extractAonMeta("spell", readFixture("spell-heal-legacy")); // spell-148
-  const remasterMeta = extractAonMeta("spell", readFixture("spell-heal-remaster")); // spell-1554
+  const legacyMeta = extractAonMeta("spell", readAonHit("spell-heal-legacy")); // spell-148
+  const remasterMeta = extractAonMeta("spell", readAonHit("spell-heal-remaster")); // spell-1554
 
   const result = runJoin(
     runInput({
@@ -636,7 +578,7 @@ describe("runJoin: Magic Missile (AoN-only legacy) -> Force Barrage (renamed pai
     rarity: "common",
   });
 
-  const magicMissileMeta = extractAonMeta("spell", readFixture("spell-magic-missile")); // spell-180
+  const magicMissileMeta = extractAonMeta("spell", readAonHit("spell-magic-missile")); // spell-180
   const forceBarrageMeta = meta({
     aonId: "spell-1536",
     category: "spell",
@@ -863,8 +805,8 @@ describe("runJoin: crossref/embed patching", () => {
       body: [{ kind: "paragraph", children: [embedNode as never] }] as unknown as BlockNode[],
     });
 
-    const legacyMeta = extractAonMeta("spell", readFixture("spell-heal-legacy")); // spell-148
-    const remasterMeta = extractAonMeta("spell", readFixture("spell-heal-remaster")); // spell-1554
+    const legacyMeta = extractAonMeta("spell", readAonHit("spell-heal-legacy")); // spell-148
+    const remasterMeta = extractAonMeta("spell", readAonHit("spell-heal-remaster")); // spell-1554
 
     const result = runJoin(
       runInput({

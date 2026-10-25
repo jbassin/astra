@@ -4,19 +4,7 @@ import { describe, expect, it } from "vitest";
 import { augmentClassStats, type AugmentClassStatsInput } from "./augmentClassStats";
 import type { UuidResolution } from "./enrichers";
 import type { RawGrantedFeatureEntry } from "./foundryEntities";
-
-function entity(
-  overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "category" | "slug" | "name">,
-): CodexEntity {
-  return {
-    edition: "remaster",
-    source: { book: "Test Book", license: "unknown" },
-    traits: [],
-    body: [],
-    facets: {},
-    ...overrides,
-  };
-}
+import { testBookEntity as entity } from "./testSupport";
 
 function classStats(): Extract<NonNullable<CodexEntity["stats"]>, { kind: "class" }> {
   return {

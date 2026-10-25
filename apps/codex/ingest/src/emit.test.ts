@@ -2,10 +2,10 @@ import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import type { CodexEntity } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
 import { canonicalJson, canonicalJsonCompact, emitCorpus, writeCanonicalJsonCompact } from "./emit";
+import { testBookEntity as entity } from "./testSupport";
 
 const SAMPLE = { b: 2, a: 1, nested: { z: 9, y: [3, 2, 1] } };
 
@@ -53,19 +53,6 @@ describe("writeCanonicalJsonCompact", () => {
 // emitCorpus: _index.json uses the compact serializer; entity files stay
 // pretty; facets are trimmed per-category (facetKeys.ts); superseded is set.
 // ---------------------------------------------------------------------------
-
-function entity(
-  overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "category" | "slug" | "name">,
-): CodexEntity {
-  return {
-    edition: "remaster",
-    source: { book: "Test Book", license: "unknown" },
-    traits: [],
-    body: [],
-    facets: {},
-    ...overrides,
-  };
-}
 
 describe("emitCorpus: _index.json compact + facets/superseded rows", () => {
   function withTmpDir(fn: (corpusRoot: string) => void): void {

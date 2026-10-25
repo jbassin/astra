@@ -1,7 +1,3 @@
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
-
 import { describe, expect, it } from "vitest";
 
 import {
@@ -12,22 +8,11 @@ import {
   normalizeBreadcrumbElement,
 } from "./aonFacets";
 import type { AonHit } from "./aonFacets";
-
-const FIXTURES = join(
-  dirname(fileURLToPath(import.meta.url)),
-  "..",
-  "tests",
-  "fixtures",
-  "aon-data",
-);
-
-function readFixture(name: string): AonHit {
-  return JSON.parse(readFileSync(join(FIXTURES, `${name}.json`), "utf8")) as AonHit;
-}
+import { readAonHit } from "./testSupport";
 
 describe("extractAonMeta: real fixture — spell family with remaster pairing", () => {
   it("extracts the legacy half (Heal, spell-148) — remaster_id populated, license OGL, edition legacy", () => {
-    const meta = extractAonMeta("spell", readFixture("spell-heal-legacy"));
+    const meta = extractAonMeta("spell", readAonHit("spell-heal-legacy"));
     expect(AonDocMetaSchema.safeParse(meta).success).toBe(true);
     expect(meta.aonId).toBe("spell-148");
     expect(meta.slug).toBe("heal");
@@ -43,7 +28,7 @@ describe("extractAonMeta: real fixture — spell family with remaster pairing", 
   });
 
   it("extracts the remaster half (Heal, spell-1554) — legacy_id populated, license ORC, edition remaster", () => {
-    const meta = extractAonMeta("spell", readFixture("spell-heal-remaster"));
+    const meta = extractAonMeta("spell", readAonHit("spell-heal-remaster"));
     expect(meta.aonId).toBe("spell-1554");
     expect(meta.slug).toBe("heal");
     expect(meta.primarySource).toEqual({ book: "Player Core", page: 335 });
@@ -54,7 +39,7 @@ describe("extractAonMeta: real fixture — spell family with remaster pairing", 
   });
 
   it("resolves Magic Missile (AoN-only legacy spell, no Foundry pack file) to OGL via the book table", () => {
-    const meta = extractAonMeta("spell", readFixture("spell-magic-missile"));
+    const meta = extractAonMeta("spell", readAonHit("spell-magic-missile"));
     expect(meta.name).toBe("Magic Missile");
     expect(meta.primarySource.book).toBe("Core Rulebook");
     expect(meta.license).toBe("OGL");
@@ -65,7 +50,7 @@ describe("extractAonMeta: real fixture — spell family with remaster pairing", 
 
 describe("extractAonMeta: real fixture — creature family with level + traits", () => {
   it("extracts level, traits, and a size/alignment-flavored trait list", () => {
-    const meta = extractAonMeta("creature", readFixture("creature-sample"));
+    const meta = extractAonMeta("creature", readAonHit("creature-sample"));
     expect(meta.name).toBe("Aasimar Redeemer");
     expect(meta.level).toBe(5);
     expect(meta.traits).toEqual(["Aasimar", "Human", "Humanoid", "NG", "Medium"]);
@@ -139,7 +124,7 @@ describe("extractAonMeta: creature family (creature_family_markdown)", () => {
 
 describe("extractAonMeta: real fixture — rules family with breadcrumbs", () => {
   it("carries breadcrumbs (the rules-tree input) and no level/traits", () => {
-    const meta = extractAonMeta("rules", readFixture("rules-sample"));
+    const meta = extractAonMeta("rules", readAonHit("rules-sample"));
     expect(meta.breadcrumbs).toEqual(["Mythic Rules", "Designing Mythic Encounters"]);
     expect(meta.level).toBeUndefined();
     expect(meta.traits).toEqual([]);
@@ -216,7 +201,7 @@ describe("extractAonMeta: next/previous link + product-line extraction", () => {
 
 describe("extractAonMeta: real fixture — sidebar (no rarity, no level/traits)", () => {
   it("round-trips with rarity/level/traits absent", () => {
-    const meta = extractAonMeta("sidebar", readFixture("sidebar-sample"));
+    const meta = extractAonMeta("sidebar", readAonHit("sidebar-sample"));
     expect(meta.rarity).toBeUndefined();
     expect(meta.level).toBeUndefined();
     expect(meta.traits).toEqual([]);
@@ -226,7 +211,7 @@ describe("extractAonMeta: real fixture — sidebar (no rarity, no level/traits)"
 
 describe("extractAonMeta: real fixture — source (no page number in primary_source_raw)", () => {
   it("leaves primarySource.page undefined when the raw string has no 'pg.'", () => {
-    const meta = extractAonMeta("source", readFixture("source-sample"));
+    const meta = extractAonMeta("source", readAonHit("source-sample"));
     expect(meta.primarySource).toEqual({ book: "A Caroling Horse (Of Course. Of Course.)" });
     expect(meta.primarySource.page).toBeUndefined();
   });
@@ -234,7 +219,7 @@ describe("extractAonMeta: real fixture — source (no page number in primary_sou
 
 describe("extractAonMeta: real fixture — article stub", () => {
   it("extracts a citation-stub doc same as any other category", () => {
-    const meta = extractAonMeta("article", readFixture("article-sample"));
+    const meta = extractAonMeta("article", readAonHit("article-sample"));
     expect(meta.name).toBe("A History of Secrets");
     expect(meta.primarySource).toEqual({ book: "Pathfinder #206: Bring the House Down", page: 74 });
     expect(meta.license).toBe("ORC"); // 2024-09-15, post-cutover
@@ -377,7 +362,7 @@ describe("aonSkipReason: the empty-name fragment class (53 real docs)", () => {
   });
 
   it("returns undefined for a normally-named doc", () => {
-    expect(aonSkipReason(readFixture("spell-heal-legacy"))).toBeUndefined();
+    expect(aonSkipReason(readAonHit("spell-heal-legacy"))).toBeUndefined();
   });
 });
 

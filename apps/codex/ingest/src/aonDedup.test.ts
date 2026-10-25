@@ -1,29 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { dedupeAonMetas } from "./aonDedup";
-import type { AonDocMeta } from "./aonFacets";
-
-function meta(
-  overrides: Partial<AonDocMeta> & Pick<AonDocMeta, "aonId" | "category" | "name" | "slug">,
-): AonDocMeta {
-  return {
-    aonUrl: `/Test.aspx?ID=${overrides.aonId}`,
-    traits: [],
-    primarySource: { book: "Test Book" },
-    allSources: [{ book: "Test Book" }],
-    license: "ORC",
-    edition: "remaster",
-    remasterId: [],
-    legacyId: [],
-    hasMarkdown: false,
-    ...overrides,
-  };
-}
-
-function collector(): { reports: string[]; report: (cls: string, detail: string) => void } {
-  const reports: string[] = [];
-  return { reports, report: (cls, detail) => reports.push(`${cls}: ${detail}`) };
-}
+import { meta, lineCollector as collector } from "./testSupport";
 
 describe("dedupeAonMetas", () => {
   it("passes non-duplicate metas through unchanged", () => {

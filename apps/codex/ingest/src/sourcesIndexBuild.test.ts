@@ -1,26 +1,8 @@
-import type { CodexEntity } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
 import { normalizeBookNames } from "./bookNormalize";
 import { buildSourcesIndex, PRODUCT_LINE_OVERRIDE } from "./sourcesIndexBuild";
-
-function entity(
-  id: string,
-  book: string,
-  edition: "legacy" | "remaster" = "remaster",
-): CodexEntity {
-  return {
-    id,
-    slug: id.split("/")[1] ?? id,
-    category: id.split("/")[0] ?? "test",
-    name: id,
-    edition,
-    source: { book, license: "unknown" },
-    traits: [],
-    body: [],
-    facets: {},
-  };
-}
+import { entityInBook as entity } from "./testSupport";
 
 describe("buildSourcesIndex", () => {
   it("classifies a book by the majority AoN primary_source_category among its citing docs", () => {
