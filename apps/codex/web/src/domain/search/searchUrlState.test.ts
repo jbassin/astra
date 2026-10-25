@@ -37,11 +37,11 @@ describe("validateSearchPageSearch", () => {
     });
   });
 
-  it("a `legacy` param is simply dropped — `/search` never carried a `legacy` alias (D29-67: no prior shared-link shape to stay compatible with)", () => {
+  it("a `legacy` param is simply dropped — `/search` never carried a `legacy` alias (no prior shared-link shape to stay compatible with)", () => {
     expect(validateSearchPageSearch(parseQuery("?legacy=1"))).toEqual({});
   });
 
-  it("P6 R11 (D29-67): `?superseded=1` decodes to `{ superseded: true }`", () => {
+  it("`?superseded=1` decodes to `{ superseded: true }`", () => {
     expect(validateSearchPageSearch(parseQuery("?superseded=1"))).toEqual({ superseded: true });
     expect(validateSearchPageSearch(parseQuery("?superseded=true"))).toEqual({ superseded: true });
   });
@@ -85,7 +85,7 @@ describe("searchToFilterState / filterStateToSearch round trip", () => {
     expect(back).toEqual(state);
   });
 
-  it("P6 R11 (D29-67): `?superseded=` round-trips both directions", () => {
+  it("`?superseded=` round-trips both directions", () => {
     const revealed: SearchFilterState = { ...emptySearchFilterState(), superseded: true };
     const search = filterStateToSearch(revealed);
     expect(search).toEqual({ superseded: true });
@@ -126,7 +126,7 @@ describe("hasAnyCriteria", () => {
   });
 });
 
-describe("pagefindFilters (P6 R11/D29-67 — search hides superseded by default, amending P4.5 D29-48)", () => {
+describe("pagefindFilters (search hides superseded by default)", () => {
   it("the default (empty) state pins the superseded filter to ['false'] — the Pagefind filter-object shape the supersededFilter merge produces", () => {
     expect(pagefindFilters(emptySearchFilterState())).toEqual({ superseded: ["false"] });
   });

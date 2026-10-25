@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 
 import { BreadcrumbTrail } from "./BreadcrumbTrail";
 
-describe("BreadcrumbTrail (P4 S3, D29-41)", () => {
+describe("BreadcrumbTrail", () => {
   it("renders book -> ancestors -> self, in order", () => {
     render(
       <BreadcrumbTrail

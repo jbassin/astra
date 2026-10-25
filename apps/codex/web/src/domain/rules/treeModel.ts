@@ -1,4 +1,4 @@
-// P4 S2 (D29-40) — the rules tree's pure client-side logic: a book-scoped
+// The rules tree's pure client-side logic: a book-scoped
 // stable node key, the akasha `computeOpen` collapse-state port, the legacy
 // (superseded) predicate applied AS A TREE PRUNE, the name quick-filter, and
 // a DFS pre-order walk. Everything here is a plain function over `TreeNode[]`
@@ -7,18 +7,14 @@
 // `explorerState.ts` split: the ISLAND, `RulesTree.tsx`, owns
 // localStorage/router/React state, this module owns the algorithm).
 //
-// **`dfsPreOrder` is built here, in S2, even though the PAGER that consumes
-// it is S3 territory (D29-41)** — the spec's own §3 "Deliverables" lists
-// `treeModel.ts`'s scope as "build/filter/computeOpen port/DFS walk" as ONE
-// S2 file, and S1's build record explicitly flagged the DFS helper as
-// deliberately deferred past S1 into "frontend slice territory". S3's
-// `ReadingOrderPager` should import `dfsPreOrder` from here rather than
-// re-deriving it — the spec's own DFS pager semantics ("next from a
-// chaptered node descends INTO its subtree, symmetric by construction,
-// one-sided at book ends") fall directly out of pre-order array adjacency:
-// `arr[i-1]`/`arr[i+1]` around the current node's index, scoped to one
-// book's `dfsPreOrder(book.nodes)` (never merge across books — D29-41 "never
-// crosses a book boundary").
+// **`dfsPreOrder` lives here even though its consumer is the rules pager**
+// (`entityPageData.ts`'s `resolveRulesNav`, rendered by `ReadingOrderPager`):
+// the pager imports it rather than re-deriving it. The pager semantics
+// ("next from a chaptered node descends INTO its subtree, symmetric by
+// construction, one-sided at book ends") fall directly out of pre-order
+// array adjacency: `arr[i-1]`/`arr[i+1]` around the current node's index,
+// scoped to one book's `dfsPreOrder(book.nodes)` (never merge across books —
+// the pager never crosses a book boundary).
 
 import type { TreeNode } from "@astra/codex-corpus";
 
@@ -26,7 +22,7 @@ import type { TreeNode } from "@astra/codex-corpus";
  * A stable, book-scoped key for a tree node — the collapse-state map's/React
  * `key`'s identity. Real (`id`-bearing) nodes use their `CodexId` verbatim
  * (globally unique already, no book prefix needed). Synthetic nodes (no
- * `id` — pinned at exactly 2 in the real corpus, D29-39) key on
+ * `id` — pinned at exactly 2 in the real corpus) key on
  * `book + the full ancestor-name path down to and including this node` —
  * the SAME `(name, path)` identity `rulesTree.ts`'s own `nodeKey` uses to
  * resolve/memoize a synthetic placeholder at transform time, so two
@@ -42,13 +38,13 @@ export function nodeKeyFor(book: string, path: readonly string[], node: TreeNode
  * The akasha `computeOpen` port (`explorerState.ts`): per-node open state,
  * default CLOSED (Quartz's `folderDefaultState: "collapsed"`), overridden by
  * `saved` (the caller's localStorage-derived map — pass an EMPTY map for the
- * SSR-safe first-render seed, D29-40's own "initial render from an empty
- * saved-map" text), force-OPEN when the node is an ancestor of (or is
+ * SSR-safe first-render seed: the initial render comes from an empty saved
+ * map), force-OPEN when the node is an ancestor of (or is
  * itself) `currentId` — akasha's `isPrefixOfCurrent` re-expressed as tree
  * ancestry (id-containment) instead of a slug-string prefix, since this tree
  * has no flat slug namespace to prefix-match against. `currentId` is
- * `undefined` on the plain `/rules` browse page (S2 — no "current doc") and
- * a real entity id on the S3 sidebar (scoped to the book the current doc
+ * `undefined` on the plain `/rules` browse page (no "current doc") and
+ * a real entity id on the rules sidebar (scoped to the book the current doc
  * lives in, path auto-expanded to it).
  */
 export function computeOpen(
@@ -78,11 +74,10 @@ export function computeOpen(
 }
 
 /**
- * The superseded-visibility predicate, applied as a TREE PRUNE (D29-40's "a
+ * The superseded-visibility predicate, applied as a TREE PRUNE (a
  * branch whose descendants are all hidden collapses to nothing; parents with
- * `id` stay if their own doc is visible"). P4.5 D29-48 renamed this from
- * `pruneForLegacy` (a plain per-page URL read now, no site-wide toggle) —
- * same signature shape, same semantics. `supersededOn === true` is a no-op
+ * `id` stay if their own doc is visible). The caller reads `supersededOn`
+ * from a plain per-page URL param; there is no site-wide toggle. `supersededOn === true` is a no-op
  * (returns `nodes` unchanged — everything is visible). `supersededOn ===
  * false`: a node's OWN doc is visible iff it has an `id` and is NOT
  * `superseded`; a node survives iff its own doc is visible OR at least one
@@ -93,17 +88,17 @@ export function computeOpen(
  * visible child, never silently swallowing it. A book whose ENTIRE tree is
  * superseded (Dark Archive, Guns & Gears) prunes to `[]` — the caller
  * (`RulesTree.tsx`) renders that as the "all N hidden" collapsed header,
- * D29-40's own pinned behavior.
+ * a pinned behavior.
  *
- * `currentId` (S3, D29-41's tree sidebar) — when given, the node bearing
+ * `currentId` (the rules sidebar) — when given, the node bearing
  * this id is treated as ALWAYS self-visible, regardless of its own
  * `superseded` flag. Without this, a sidebar rendered while standing on a
  * superseded rules page could prune the very node the reader is looking
  * at out of its own sidebar (the entity page itself always renders
  * regardless of the superseded-visibility param — only listings/sidebars
  * hide superseded content — so the sidebar must never lose track of "you
- * are here"). Omitted (the `/rules` browse page's own call, S2) is exactly
- * the old behavior — this parameter is purely additive.
+ * are here"). Omitted (the `/rules` browse page's own call), no node gets
+ * that exemption.
  */
 export function pruneForSuperseded(
   nodes: readonly TreeNode[],
@@ -123,8 +118,8 @@ export function pruneForSuperseded(
 }
 
 /**
- * The name quick-filter (D29-40: "matching nodes shown with their ancestor
- * chain force-open"). `null` when `query` is blank (no filter active — the
+ * The name quick-filter (matching nodes shown with their ancestor chain
+ * force-open). `null` when `query` is blank (no filter active — the
  * caller renders `nodes` as-is, governed by the normal collapse-state map).
  * A non-null result is a NEW, pruned tree containing only matches and the
  * ancestor path down to each match — the caller renders every node in it
@@ -132,7 +127,7 @@ export function pruneForSuperseded(
  * active), which is what "force-open" means operationally: the pruned tree
  * IS the force-open view. Case-insensitive substring match on `name`,
  * matching `BrowseListing`'s own quick-filter posture (no fuzzy/typo
- * tolerance — D29-40 has no facet panel, this is the one text control).
+ * tolerance — the rules tree has no facet panel, this is its one text control).
  */
 export function filterTreeByQuery(nodes: readonly TreeNode[], query: string): TreeNode[] | null {
   const q = query.trim().toLowerCase();
@@ -161,16 +156,16 @@ export function filterTreeByQuery(nodes: readonly TreeNode[], query: string): Tr
 }
 
 /**
- * P11 S2 (D29-108b) — the `/rules` book display order: the four remaster
- * core books first, in this fixed reading order, then every other book
- * alphabetical by its own full title. `books.sort` at ingest
- * (`apps/codex/ingest/src/rulesTree.ts`) already orders remaster-edition books before
- * legacy ones — this is a RENDER-lane re-sort on top of that (no ingest/
- * corpus-regen ripple; `RulesTree.tsx` applies it to whatever `books` array
- * its route loader hands it), hardcoding ONLY the four core names per the
- * spec's own instruction — every other book (including every other remaster
- * book) falls through to the alphabetical branch untouched. Generic over
- * `{ book: string }` so it's usable without a `RulesTreeBook` fixture. */
+ * The `/rules` book display order: the four remaster core books first, in
+ * this fixed reading order, then every other book alphabetical by its own
+ * full title. `books.sort` at ingest (`apps/codex/ingest/src/rulesTree.ts`)
+ * already orders remaster-edition books before legacy ones — this is a
+ * RENDER-lane re-sort on top of that (no ingest/corpus-regen ripple;
+ * `RulesTree.tsx` applies it to whatever `books` array its route loader
+ * hands it), hardcoding ONLY the four core names — every other book
+ * (including every other remaster book) falls through to the alphabetical
+ * branch untouched. Generic over `{ book: string }` so it's usable without a
+ * `RulesTreeBook` fixture. */
 const CORE_BOOK_ORDER: readonly string[] = [
   "Player Core",
   "Player Core 2",
@@ -192,9 +187,9 @@ export function sortBooksForDisplay<T extends { book: string }>(books: readonly 
 /**
  * A flat DFS pre-order walk of a book's tree (root, then its children
  * depth-first, left to right — the array order the builder already emits
- * `children` in, D29-39's "Node arrays … emitted in FINAL order (DFS-ready)"
- * — this is a straight flatten, no re-sort). See this file's header comment
- * for why it's built here (S2) for S3's pager to reuse.
+ * `children` in: node arrays are emitted in FINAL order, DFS-ready — this is a
+ * straight flatten, no re-sort). See this file's header comment for why it
+ * lives here for the rules pager to reuse.
  */
 export function dfsPreOrder(nodes: readonly TreeNode[]): TreeNode[] {
   const out: TreeNode[] = [];

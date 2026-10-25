@@ -1,17 +1,14 @@
-// P3 S4 (D29-38) — the ONE search RUM event: `codex.search`, `{surface}`.
+// The ONE search RUM event: `codex.search`, `{surface}`.
 //
-// **Why this is a SERVER counter, not a browser one (a deliberate deviation
-// from a literal "client RUM metric" reading of D29-38 — flagged in the
-// session report):** every `lazyCounter` call site in the repo today
-// (weal-bot, weal-overlay, strider's `writeLayerFn.ts`, vellum-render,
+// **Why this is a SERVER counter, not a browser one:** every `lazyCounter`
+// call site in the repo today (weal-bot, weal-overlay, strider's `writeLayerFn.ts`, vellum-render,
 // orator-backend, heartwood-frontend, portal) is SERVER-side, because
 // there's no browser `MeterProvider` anywhere in astra — `@astra/observe/web`
 // (`initRum`) wires only a `WebTracerProvider` (traces); metrics were never
 // stood up client-side. Building one here would mean either new
 // `@opentelemetry/sdk-metrics`/`exporter-metrics-otlp-http` dependencies in
-// codex's OWN `package.json` (this slice's "no new dependencies" rule) or
-// editing `libs/ts/observe`'s `web.ts` (outside this slice's allowed-files
-// scope, `apps/codex/web/**` only) — and it would race the async `getRumConfig`
+// codex's OWN `package.json` or browser metrics support in `libs/ts/observe`'s
+// `web.ts` — and it would race the async `getRumConfig`
 // server-fn round-trip `rum.ts` already does for traces (a search fired
 // before that resolves would permanently bind to a no-op meter, the exact
 // module-scope-instrument gotcha `lazyCounter` exists to avoid).

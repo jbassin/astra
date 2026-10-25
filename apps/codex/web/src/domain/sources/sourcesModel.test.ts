@@ -14,7 +14,7 @@ function book(overrides: Partial<SourceIndexEntry> = {}): SourceIndexEntry {
   };
 }
 
-describe("groupSourcesByProductLine (D29-43)", () => {
+describe("groupSourcesByProductLine", () => {
   it("groups books with no productLine into the Other bucket", () => {
     const groups = groupSourcesByProductLine([book({ book: "X" }), book({ book: "Y" })]);
     expect(groups).toHaveLength(1);
@@ -79,7 +79,7 @@ describe("groupSourcesByProductLine (D29-43)", () => {
     expect(groupSourcesByProductLine([])).toEqual([]);
   });
 
-  it("'Homebrew' is pinned LAST among the real product lines, still before Other (D30-45)", () => {
+  it("'Homebrew' is pinned LAST among the real product lines, still before Other", () => {
     const groups = groupSourcesByProductLine([
       book({ book: "H1", productLine: "Homebrew" }),
       book({ book: "AF1", productLine: "April Fools" }),

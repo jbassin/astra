@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { traitBucket } from "./traitBucket";
 
-describe("traitBucket (D29-46's 3-bucket trait-pill color scheme)", () => {
+describe("traitBucket (the 3-bucket trait-pill color scheme)", () => {
   it.each(["common", "uncommon", "rare", "unique"])("rarity %s -> amber", (name) => {
     expect(traitBucket(name)).toBe("amber");
   });

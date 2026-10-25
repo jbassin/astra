@@ -9,17 +9,15 @@ const VARIANT_CLASS = {
 } as const;
 
 /**
- * D29-46 — codex's own parchment-system button, EXACT prop-signature parity
+ * Codex's own parchment-system button, EXACT prop-signature parity
  * with the gothic lib's `Button`. `variant="solid"` is the maroon
  * call-to-action fill; `ghost` (the default) is the quiet tan/transparent
  * outline. Always sets an explicit `type`.
  *
- * P13 S2 (D29-123) — widened to `forwardRef`, same additive-only posture as
- * `Input`'s own P13 S1 widening (`Input.tsx`'s own doc comment): the
- * "Filters" toggle button needs a real DOM node so open/close can move
+ * A `forwardRef` component, like `Input` (`Input.tsx`'s own doc comment):
+ * the "Filters" toggle button needs a real DOM node so open/close can move
  * focus back onto it (`BrowseListing.tsx`'s own focus-management effect).
- * Every existing prop-only call site is byte-identical; `ref` was simply
- * inaccessible before.
+ * Prop-only call sites don't need the ref.
  */
 export const Button = forwardRef<
   HTMLButtonElement,

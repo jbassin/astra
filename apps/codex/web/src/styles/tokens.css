@@ -1,21 +1,19 @@
 /**
  * codex's own design tokens — the "Liturgy of the Iridite" print-sourcebook
- * parchment system (D29-46, P4.5 S1). Replaces the gothic theme's
- * void-palette tokens entirely (R6 — codex drops gothic outright; the other
- * astra frontends are untouched).
+ * parchment system. Replaces the gothic theme's void-palette tokens
+ * entirely (codex drops gothic outright; the other astra frontends keep
+ * it).
  *
  * Hex values are the style-tokens doc's own extraction from the 36 reference
  * pages (`thoughts/archive/research/2026-07-14-codex-0029-p45-style-tokens.md`
  * §1) — treat them as a strong starting palette, not laser-measured swatches.
  *
- * KEPT NAMES, repointed values (the spec's own binding constraint — every
- * `--color-*`/`--font-*` custom property `globals.css` already consumed
- * resolves here too, now to parchment values instead of gothic's dark void
- * ones): `--color-void`, `--color-ink`, `--color-ink-dim`, `--color-ink-faint`,
- * `--color-accent`, `--color-accent-amber`, `--color-rule`,
+ * KEPT NAMES, parchment values (every gothic-era `--color-*`/`--font-*`
+ * custom property `globals.css` consumes resolves here, to parchment values
+ * instead of gothic's dark void ones): `--color-void`, `--color-ink`,
+ * `--color-ink-dim`, `--color-ink-faint`, `--color-accent`, `--color-accent-amber`, `--color-rule`,
  * `--color-rule-bright`, `--color-elevated`, `--color-hover`, `--font-display`,
- * `--font-body`. `--font-mono` is RENAMED `--font-condensed` (D29-46 — all 10
- * `globals.css` call sites repointed in the same rewrite).
+ * `--font-body`. Gothic's `--font-mono` is `--font-condensed` here.
  *
  * NEW tokens (no gothic equivalent): `--font-heading` (a second display face
  * for H2/H3 — Cinzel reads too heavy at smaller sizes, style doc §2a), the
@@ -38,7 +36,7 @@
   --color-callout-blue-bg: #dce7ec;
   --color-callout-blue-dot: #8fb4c9;
 
-  /* Trait pills — D29-46's disclosed 3-bucket simplification of the style
+  /* Trait pills — a 3-bucket simplification of the style
      doc's 4-bucket scheme (the doc's 4th "maroon" bucket had no clean PF2e
      equivalent and is dropped; src/ui/traitBucket.ts is the lookup). */
   --pill-purple-bg: #552c63;
@@ -69,37 +67,29 @@
   --font-display: "Cinzel", serif; /* H1 chapter titles only — rare, ceremonial */
   --font-heading: "Cormorant SC", serif; /* H2/H3 — Cinzel reads too heavy at this size */
   --font-body: "EB Garamond", serif;
-  --font-condensed: "Oswald", sans-serif; /* renamed from --font-mono (D29-46) — the
+  --font-condensed: "Oswald", sans-serif; /* gothic's --font-mono — the
     statblock/omnibar/rules-tree/citation "mechanical voice" slot */
   --font-action-icons: "Pathfinder Icons", sans-serif; /* the real Paizo action-cost
     icon font (`public/pathfinder-icons.ttf`), self-hosted via the plain @font-face
     in globals.css (not @fontsource — it's a local repo asset, not an npm package);
     ActionGlyph (`src/domain/render/actionGlyph.tsx`) is its only consumer */
 
-  /* --- P8 S1 (D29-77): row-density tokens, LISTING register only — the
-     site-wide density pass (body font/pane padding/header) is S2's job and
-     will extend this same block, not start a new one. Single-line ~24px
+  /* --- row-density tokens, LISTING register. Single-line ~24px
      pitch (a 23px row box + the 1px hairline `border-bottom` already on
      `.codex-listing-row`), 13px condensed data cells, the row NAME staying
      at 14px in the serif link voice so rows read codex-flavored (5e.tools'
-     RHYTHM, not its Arial — D29-77's own text). */
+     RHYTHM, not its Arial). */
   --density-row-pitch: 24px;
   --density-row-data-size: 13px;
   --density-row-name-size: 14px;
 
-  /* --- P8 S2 (D29-77): the rest of the site-wide density pass, promised
-     above. `--density-page-pad` is the ONE var `.codex-entity-page` AND
-     `.wrap-wide` both consume (they hardcoded the identical 3-value
-     top/horizontal/bottom clamp before this — adversarial M7's "tokenize
-     BOTH, move them in lockstep"), half-scale off the pre-P8 values (top
-     clamp(1.5rem,5vw,3rem)/horizontal clamp(1rem,4vw,3rem)/bottom
-     clamp(3rem,8vw,5rem) → each bound halved, ≈48px→24px at desktop for the
-     top/horizontal channels). `--density-content-margin` replaces the
-     `.codex-content p`/`ul`/`ol` 0.75rem vertical margin (both move
-     together — they shared one value before this, splitting the rhythm was
-     the one thing D29-77 explicitly ruled out). `--density-header-pad-y`
-     is `.site-head`'s own vertical padding, 20px→10px (desktop-only target
-     — the ≤1024px nav-wrap band is untouched, adversarial M8). */
+  /* --- the site-wide density tokens. `--density-page-pad` is the ONE var
+     `.codex-entity-page` AND `.wrap-wide` both consume, so the two move in
+     lockstep (≈24px at desktop for the top/horizontal channels).
+     `--density-content-margin` is the `.codex-content p`/`ul`/`ol` vertical
+     margin (one shared value, so the rhythm never splits).
+     `--density-header-pad-y` is `.site-head`'s own vertical padding, 10px
+     (a desktop-only target — the ≤1024px nav-wrap band is wrap-dominated). */
   --density-page-pad: clamp(0.75rem, 2.5vw, 1.5rem) clamp(0.5rem, 2vw, 1.5rem)
     clamp(1.5rem, 4vw, 2.5rem);
   --density-content-margin: 0.375rem;

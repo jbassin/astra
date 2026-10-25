@@ -16,7 +16,7 @@ import { describe, expect, it } from "vitest";
 
 import { deriveHeaderTitle, HeaderTitle } from "./HeaderTitle";
 
-describe("deriveHeaderTitle (D29-112, pure — decoupled from useMatches' own big union type)", () => {
+describe("deriveHeaderTitle (pure — decoupled from useMatches' own big union type)", () => {
   it("an empty match list -> wordmark (null)", () => {
     expect(deriveHeaderTitle([])).toBeNull();
   });
@@ -50,7 +50,7 @@ describe("deriveHeaderTitle (D29-112, pure — decoupled from useMatches' own bi
     expect(title).toBeNull();
   });
 
-  it("the bespoke /class/$slug route (P12) -> wordmark (null), same as /$category/$slug", () => {
+  it("the bespoke /class/$slug route -> wordmark (null), same as /$category/$slug", () => {
     // A class page's own h1 is visible again too (ClassPage.tsx) — no
     // longer sr-only on the premise the header carries the title.
     const title = deriveHeaderTitle([
@@ -94,7 +94,7 @@ describe("deriveHeaderTitle (D29-112, pure — decoupled from useMatches' own bi
   });
 });
 
-describe("HeaderTitle (D29-112) — mounted against a real router", () => {
+describe("HeaderTitle — mounted against a real router", () => {
   it("renders the wordmark + its home Link on an ordinary route (e.g. landing)", async () => {
     const rootRoute = createRootRoute({ component: () => <Outlet /> });
     const indexRoute = createRoute({

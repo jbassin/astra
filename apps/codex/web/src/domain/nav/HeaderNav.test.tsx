@@ -8,8 +8,8 @@
 //
 // This is the render/keyboard UNIT coverage; the full production-build
 // Playwright sweep (real click/hover, no-JS fetch, the Ctrl+K singleton
-// across BOTH the header Omnibar and the landing hero search) is the S2
-// acceptance gate proper — see the session report.
+// across BOTH the header Omnibar and the landing hero search) lives in the
+// e2e suite.
 
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
@@ -17,7 +17,7 @@ import { describe, expect, it } from "vitest";
 import { HeaderNav } from "./HeaderNav";
 import { allNavCategories } from "./navData";
 
-describe("HeaderNav (D29-47, curated P11 S4 D29-110)", () => {
+describe("HeaderNav (curated 28-category nav)", () => {
   it("renders every one of the 28 curated categories as a real <a href>", () => {
     render(<HeaderNav />);
     expect(allNavCategories().length).toBe(28);
@@ -33,7 +33,7 @@ describe("HeaderNav (D29-47, curated P11 S4 D29-110)", () => {
     }
   });
 
-  it("Rules renders as a bare direct link, no caret/dropdown (D29-110: the split control is gone)", () => {
+  it("Rules renders as a bare direct link, no caret/dropdown", () => {
     render(<HeaderNav />);
     const link = screen.getByRole("link", { name: "Rules" });
     expect(link.getAttribute("href")).toBe("/rules");
@@ -82,9 +82,8 @@ describe("HeaderNav (D29-47, curated P11 S4 D29-110)", () => {
     const first = screen.getByRole("menuitem", { name: "Deity" });
     expect(document.activeElement).toBe(first);
     fireEvent.keyDown(first, { key: "ArrowDown" });
-    // D29-110: Setting's curated tail is [deity, plane, language] — "Deity
-    // Category" is no longer in the curated set, so the second item is now
-    // "Plane".
+    // Setting's curated tail is [deity, plane, language] — "Deity Category"
+    // is not in the curated set, so the second item is "Plane".
     const second = screen.getByRole("menuitem", { name: "Plane" });
     expect(document.activeElement).toBe(second);
   });

@@ -1,5 +1,5 @@
 /**
- * D29-46 — the trait-pill color-bucket lookup. `TraitPill` only ever
+ * The trait-pill color-bucket lookup. `TraitPill` only ever
  * receives `{name: string}` (no category), so the bucket must be derivable
  * from the name alone. This is codex's disclosed 3-bucket SIMPLIFICATION of
  * the style-tokens doc's 4-bucket scheme (the doc's own purple/oxblood-maroon

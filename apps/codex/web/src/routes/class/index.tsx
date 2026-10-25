@@ -4,8 +4,7 @@ import { ClassBrowse } from "@/domain/browse/ClassBrowse";
 import { getClassRail } from "@/server/corpusFns";
 
 /**
- * P12 S2 (D29-118), amended post-P12 (stakeholder): the bare `/class` index
- * now REDIRECTS to the first visible rail class (alphabetical — Alchemist on
+ * The bare `/class` index REDIRECTS to the first visible rail class (alphabetical — Alchemist on
  * the real corpus, Cleric on the fixture corpus) instead of rendering an
  * empty "pick a class" pane — landing on nothing felt bad. The redirect is
  * loader-thrown (works identically for SSR — a 3xx with Location — and an
@@ -19,17 +18,16 @@ import { getClassRail } from "@/server/corpusFns";
  * Router ranks a literal path segment ("class") above the `$category`
  * parameter route for this exact path, the SAME static-over-dynamic
  * precedence `/rules` already proves (`routes/rules.tsx`'s own doc comment);
- * see `ssrSmoke.test.ts`'s new "out-ranks the $category/ route" case for
+ * see `ssrSmoke.test.ts`'s "out-ranks the $category/ route" case for
  * `/class` specifically.
  *
  * `loaderDeps`/`superseded`: mirrors `/rules`'s own URL-only read (no facet
- * panel, no tree state) — required per the spec's own D29-118 text (the
- * codified P4.5 "declare loaderDeps for every search param a route reads"
- * lesson), even though this route's OWN loader output doesn't vary with it
+ * panel, no tree state) — declared because every search param a route reads
+ * goes in `loaderDeps`, even though this route's OWN loader output doesn't vary with it
  * (the rail ships BOTH tiers always; `superseded` only gates which tier
  * `ClassBrowse` renders, isomorphically off `Route.useSearch()` — same
- * "state derived from search alone" posture P4.5 D29-48 already settled for
- * `/rules`/`$category/`, so there's no SSR-flash risk either way).
+ * "state derived from search alone" posture as `/rules`/`$category/`, so
+ * there's no SSR-flash risk either way).
  */
 interface ClassIndexSearch {
   superseded?: boolean;

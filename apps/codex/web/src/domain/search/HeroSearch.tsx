@@ -4,8 +4,7 @@ import { useCallback, useRef, useState, type FormEvent, type ReactElement } from
 import { loadPagefind } from "./pagefindClient";
 
 /**
- * P4.5 S2 (D29-47, adversarial M3) — the landing page's DISTINCT hero search
- * box. This is deliberately NOT a second `<Omnibar>` mount: `Omnibar.tsx`
+ * The landing page's DISTINCT hero search box. This is deliberately NOT a second `<Omnibar>` mount: `Omnibar.tsx`
  * registers a global `document` Ctrl/Cmd-K keydown listener in a per-instance
  * `useEffect` (~L159-171) — a second instance would double-register and the
  * two would race for focus. `HeroSearch` shares the SAME memoized
@@ -13,8 +12,8 @@ import { loadPagefind } from "./pagefindClient";
  * most once per page load regardless of which search surface warms it
  * first — first focus here just as eagerly as the header Omnibar's own
  * `onFocus`) but owns no `document`-level listener at all: Ctrl/Cmd-K stays
- * the header Omnibar's alone (the S2 gate proves exactly one such listener
- * is registered on `/`).
+ * the header Omnibar's alone (exactly one such listener is registered on
+ * `/`).
  *
  * It also renders no live type-ahead dropdown of its own — that full
  * ranked-result UI (grouping/collision/edition pills) has exactly one real

@@ -5,14 +5,14 @@ import { resolveClassPageData, resolveClassRail } from "./classPageData";
 import { fixtureCorpusRoot } from "./corpusFs";
 
 /**
- * P12 S2 (D29-117) tier 2 — `resolveClassPageData`/`resolveClassRail` over
- * the fixture corpus (S1's `class/{fighter,cleric,witch,investigator@legacy,
- * witch@legacy}` fixtures, D29-113..116). Mirrors `entityPageData.test.ts`'s
+ * `resolveClassPageData`/`resolveClassRail` over the fixture corpus (the
+ * `class/{fighter,cleric,witch,investigator@legacy,witch@legacy}` fixtures).
+ * Mirrors `entityPageData.test.ts`'s
  * own posture: a plain function, directly unit-testable with
  * `createCorpusReader(fixtureCorpusRoot())`, no config/Start-runtime
  * involved.
  */
-describe("resolveClassRail (D29-118)", () => {
+describe("resolveClassRail", () => {
   it("splits the fixture's 5 class docs into exactly 3 visible (stats-bearing, non-superseded) and 2 hidden (superseded)", () => {
     const reader = createCorpusReader(fixtureCorpusRoot());
     const rail = resolveClassRail(reader);
@@ -32,7 +32,7 @@ describe("resolveClassRail (D29-118)", () => {
   });
 });
 
-describe("resolveClassPageData (D29-117)", () => {
+describe("resolveClassPageData", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
 
   it("returns null for an unknown slug in the class category (loader 404 input)", () => {
@@ -45,7 +45,7 @@ describe("resolveClassPageData (D29-117)", () => {
     expect(data?.entity.id).toBe("class/fighter");
     expect(data?.grantedFeatures?.length).toBe(16);
     // Every projected feature is SLIM — no `facets`/`traits`/`source` leak
-    // through (the P9 dehydration-size reasoning, D29-117's own text).
+    // through, keeping the router's dehydration payload small.
     for (const feature of data?.grantedFeatures ?? []) {
       expect(Object.keys(feature).sort()).toEqual(["body", "id", "level", "name"]);
     }
@@ -72,16 +72,16 @@ describe("resolveClassPageData (D29-117)", () => {
     expect(weaponSpec?.level).toBe(7);
   });
 
-  it("embed-map coverage: a granted feature's OWN body embed is prefetched into the merged map (the D29-117 blocker)", () => {
+  it("embed-map coverage: a granted feature's OWN body embed is prefetched into the merged map", () => {
     // `class-feature/reactive-strike`'s body carries one resolved `embed`
-    // node targeting `action/pursue-a-lead-2` (added for this slice — the
-    // fixture pre-S2 had no embed inside any granted-feature body at all;
-    // reused rather than minted a brand-new action fixture, since
+    // node targeting `action/pursue-a-lead-2` (the only embed inside any
+    // granted-feature body in the fixture; reused rather than minting a
+    // brand-new action fixture, since
     // `action/pursue-a-lead-2` already exists for `investigator@legacy`'s
     // own embed-prefetch case in `entityPageData.test.ts`). Fighter's own
     // class body carries ZERO embeds/pointers itself (verified: no
     // `remasteredAs`/`legacyOf`, no body embed) — this key can ONLY be
-    // present via the D29-117 wider embed-collection pass, proving the
+    // present via the wider embed-collection pass, proving the
     // "class body AND every granted-feature body" merge actually runs.
     const data = resolveClassPageData(reader, { slug: "fighter" });
     expect(data?.embeds["action/pursue-a-lead-2"]?.id).toBe("action/pursue-a-lead-2");
@@ -91,9 +91,9 @@ describe("resolveClassPageData (D29-117)", () => {
   it("cleric: the null-stub grant ('First Doctrine') passes through stats untouched and is simply absent from the slim projection", () => {
     const data = resolveClassPageData(reader, { slug: "cleric" });
     expect(data).not.toBeNull();
-    // The raw stats still carry BOTH grants, null targetId included (S3's
-    // progression table reads this directly — D29-114's own "still appear
-    // ... as plain text" text) — this resolver must not mutate it.
+    // The raw stats still carry BOTH grants, null targetId included (the
+    // progression table reads this directly and renders the null grant as
+    // plain text) — this resolver must not mutate it.
     expect(data?.entity.stats?.kind).toBe("class");
     if (data?.entity.stats?.kind === "class") {
       expect(data.entity.stats.grantedFeatures).toEqual([

@@ -5,16 +5,16 @@ import { fixtureCorpusRoot } from "./corpusFs";
 import { resolveRulesTree } from "./rulesTreeData";
 
 /**
- * D29-40/D29-44 tier 3 — the `/rules` loader's pure core, over the fixture
+ * The `/rules` loader's pure core, over the fixture
  * corpus (same "plain function, no Start-runtime" pattern as
  * `directoryData.test.ts`/`entityPageData.test.ts`). The fixture's own
- * `rules-tree.json` (regenerated at S1, D29-44's composition) carries the
+ * `rules-tree.json` carries the
  * CRLF-healed "Chapter 2: Tools" root, the Counteracting path-shift pair,
  * and a childless-adjacent shape — this suite proves the resolver hands
  * every one of those through UNCHANGED (S1 already did all the shaping;
  * this module is a passthrough, not a second transform).
  */
-describe("resolveRulesTree (D29-40)", () => {
+describe("resolveRulesTree", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
   const data = resolveRulesTree(reader);
 
@@ -57,7 +57,7 @@ describe("resolveRulesTree (D29-40)", () => {
     expect(coreRulebook?.license).toBe("OGL");
   });
 
-  it("hiddenWhenLegacyOff is present per book (the D29-40 'N hidden' precompute)", () => {
+  it("hiddenWhenLegacyOff is present per book (the precomputed 'N hidden' count)", () => {
     for (const book of data.books) {
       expect(typeof book.hiddenWhenLegacyOff).toBe("number");
       expect(book.hiddenWhenLegacyOff).toBeGreaterThanOrEqual(0);

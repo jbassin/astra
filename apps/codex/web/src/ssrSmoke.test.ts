@@ -14,7 +14,7 @@ import { resolveClassRail } from "@/server/classPageData";
 import { fixtureCorpusRoot } from "@/server/corpusFs";
 
 /**
- * SSR render smoke + D29-29 tier 3 route tests, in ONE file sharing ONE
+ * SSR render smoke + route tests, in ONE file sharing ONE
  * `beforeAll` build. (Deliberately not split across two test files: vitest runs
  * files in parallel by default, and two independent "build dist/ if absent"
  * `beforeAll`s racing the SAME `vite build` output directory produced a real,
@@ -114,10 +114,9 @@ async function get(pathAndQuery: string): Promise<{ status: number; html: string
 }
 
 /**
- * P4.5 D29-48 finding: the pinned router's own search-canonicalization pass
- * (the SAME pre-existing mechanism the `legacy=1`->`legacy=true` numeric
- * coercion case already 307-redirected through, before this phase) now ALSO
- * fires for a `legacy=`-keyed request once `validateBrowseSearch`/
+ * The pinned router's own search-canonicalization pass (the SAME mechanism
+ * the `legacy=1`->`legacy=true` numeric coercion case 307-redirects through)
+ * also fires for a `legacy=`-keyed request once `validateBrowseSearch`/
  * `validateRulesSearch`/`validateEntitySearch` decode it into a
  * DIFFERENTLY-keyed `superseded` field — the raw `legacy` key has no
  * matching output key to compare against, so the router redirects to a
@@ -145,21 +144,20 @@ async function getFollow(pathAndQuery: string): Promise<{ status: number; html: 
  * per-request `u:<epoch-ms>` ("updatedAt") timestamp for every matched
  * route — real, harmless request-time noise, not a content difference. Any
  * byte-identical comparison across two separately-fetched requests must
- * normalize this first (found while proving the acceptance-C alias-decode
- * checks; confirmed nothing else in the dehydration payload varies). */
+ * normalize this first (nothing else in the dehydration payload varies). */
 function stripVolatile(html: string): string {
   return html.replaceAll(/u:\d+/g, "u:0");
 }
 
 /**
- * D29-29 tier 3 — route tests over the fixture corpus, run as real HTTP-shaped
+ * Route tests over the fixture corpus, run as real HTTP-shaped
  * requests against the same built SSR server the smoke above uses.
  * `resolveEntityPageData`'s own unit tests (`corpusFns.test.ts`) already cover
  * the loader's data-shaping in isolation; this proves the actual route wiring —
  * `notFound()`, the `$category/$slug` param decode, and the head/meta noindex
  * tag — end to end.
  */
-describe("$category/$slug route (D29-22/-23/-25/-29 tier 3)", () => {
+describe("$category/$slug route", () => {
   it("renders a plain entity", async () => {
     const { status, html } = await get("/spell/heal");
     expect(status).toBe(200);
@@ -190,7 +188,7 @@ describe("$category/$slug route (D29-22/-23/-25/-29 tier 3)", () => {
     expect(html).toContain("Ixam");
   });
 
-  it("resolves the D29-21 rescued index-slug entities", async () => {
+  it("resolves the rescued `index`-slug entities", async () => {
     const ancestry = await get("/ancestry/index");
     expect(ancestry.status).toBe(200);
     const archetype = await get("/archetype/index");
@@ -233,7 +231,7 @@ describe("$category/$slug route (D29-22/-23/-25/-29 tier 3)", () => {
 });
 
 /**
- * D29-37 — the faceted `/{category}` browse route, over the pinned fixture
+ * The faceted `/{category}` browse route, over the pinned fixture
  * corpus. Small, hand-countable fixture rows (spell: 4 rows, 2 superseded; feat:
  * 1 row) let every fixture entity be checked by NAME/PRESENCE. The real-corpus
  * spot checks are the opt-in suite (`just codex-real-corpus`, `realCorpus.test.ts`).
@@ -241,7 +239,7 @@ describe("$category/$slug route (D29-22/-23/-25/-29 tier 3)", () => {
 /** Whether `id` was actually SSR-RENDERED as a visible listing row (its
  * `<a href="/{id}" class="codex-listing-name">` anchor is present) —
  * distinct from a plain `html.includes(name)`, which is nearly VACUOUS for
- * a browse page: the loader ships the FULL row set (D29-35), so TanStack
+ * a browse page: the loader ships the FULL row set, so TanStack
  * Start's `window.$_TSR` dehydration payload embeds EVERY row's name
  * regardless of which rows a facet filter actually narrowed to (verified —
  * `Camouflage Coat` appears in `/feat?f.actionCost=reaction`'s raw HTML via
@@ -249,38 +247,35 @@ describe("$category/$slug route (D29-22/-23/-25/-29 tier 3)", () => {
  * it's genuinely filtered OUT of the rendered `<ul>`). The href-anchor
  * pattern only exists for a row React actually rendered.
  *
- * P4.5 S4 (D29-49): scoped to the `codex-listing-name` class specifically
- * (not just a bare `href="/{id}"` substring) — the split view's right pane
- * now ALSO emits a same-shaped `href="/{id}"` "Open full page" link
- * (`canonicalHref`, `BrowseListing.tsx`), so an unscoped check would
- * false-positive on a row that's genuinely filtered OUT of the listing but
- * still resolves as the selected `?entry=`. Also tolerates an optional
- * trailing `?superseded=1` (M7 — every row's own href carries it once the
- * view is widened, `rowHref`'s own comment). */
+ * Scoped to the `codex-listing-name` class specifically (not just a bare
+ * `href="/{id}"` substring) — the split view's right pane ALSO emits a
+ * same-shaped `href="/{id}"` "Open full page" link (`canonicalHref`,
+ * `BrowseListing.tsx`), so an unscoped check would false-positive on a row
+ * that's genuinely filtered OUT of the listing but still resolves as the
+ * selected `?entry=`. Also tolerates an optional trailing `?superseded=1`
+ * (every row's own href carries it once the view is widened, `rowHref`'s
+ * own comment). */
 function rendersRow(html: string, id: string): boolean {
   const escaped = id.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const re = new RegExp(`href="/${escaped}(?:\\?superseded=1)?" class="codex-listing-name"`);
   return re.test(html);
 }
 
-describe("$category/ browse route (D29-35 tier 3)", () => {
-  it("renders the FULL enriched row set (facets/traits survive the loader — the dead P2 trim)", async () => {
+describe("$category/ browse route", () => {
+  it("renders the FULL enriched row set (facets/traits survive the loader, untrimmed)", async () => {
     const { status, html } = await get("/feat");
     expect(status).toBe(200);
     expect(rendersRow(html, "feat/camouflage-coat")).toBe(true);
     expect(html).toContain("codex-facet-panel");
-    // P13 S1 (D29-122/126) — DELIBERATELY CHANGED PIN: the old literal
-    // `class="codex-facet-option-label">ancestry<` no longer appears, for
-    // TWO stacked reasons, not just the text-casing one the spec
-    // anticipated: `itemCategory` has no `facetDefs` labelMap so it still
-    // routes through `formatFacetValue`'s generic pass ("ancestry" ->
-    // "Ancestry", Title Case, D29-122) — AND `feat`'s `itemCategory` has
-    // only 7 distinct real values (`facetKeys.ts`'s own provenance comment),
-    // <= `CHIP_MAX_OPTIONS` (8), so it renders as a `ToggleChipRow` chip
-    // (bare text + a sibling count `<span>`, D29-126) rather than an
-    // `EnumOptionList` checkbox row — the `.codex-facet-option-label` class
-    // never appears on THIS facet's markup at all anymore. The chip's own
-    // literal HTML is asserted instead (unselected by default on a bare
+    // `itemCategory` renders as a Title Case toggle chip, for TWO stacked
+    // reasons: it has no `facetDefs` labelMap so it routes through
+    // `formatFacetValue`'s generic pass ("ancestry" -> "Ancestry", Title
+    // Case) — AND `feat`'s `itemCategory` has only 7 distinct real values
+    // (`facetKeys.ts`'s own provenance comment), <= `CHIP_MAX_OPTIONS` (8),
+    // so it renders as a `ToggleChipRow` chip (bare text + a sibling count
+    // `<span>`) rather than an `EnumOptionList` checkbox row — the
+    // `.codex-facet-option-label` class never appears on THIS facet's
+    // markup. The chip's own literal HTML is asserted (unselected by default on a bare
     // `/feat` request, so `aria-pressed="false"`).
     expect(html).toContain("codex-toggle-chip");
     expect(html).toContain('class="codex-toggle-chip" aria-pressed="false">Ancestry<');
@@ -301,8 +296,8 @@ describe("$category/ browse route (D29-35 tier 3)", () => {
     // (still present in the dehydration blob, hence the href-anchor check).
     expect(rendersRow(off.html, "spell/magic-missile")).toBe(false);
 
-    // legacy=1/legacy=true both alias-decode to `?superseded=1` (P4.5
-    // D29-48) — the pinned router's own search-canonicalization pass 307s
+    // legacy=1/legacy=true both alias-decode to `?superseded=1` — the
+    // pinned router's own search-canonicalization pass 307s
     // either raw form to a URL carrying the new `superseded` key (see
     // `getFollow`'s own comment), so this asserts the FINAL landed page.
     const rawRes = await get("/spell?legacy=1");
@@ -312,7 +307,7 @@ describe("$category/ browse route (D29-35 tier 3)", () => {
     expect(rendersRow(on.html, "spell/magic-missile")).toBe(true);
   });
 
-  it("P4.5 D29-48: legacy=true and superseded=1 are the alias-decode pair — byte-identical HTML once redirects settle", async () => {
+  it("legacy=true and superseded=1 are the alias-decode pair — byte-identical HTML once redirects settle", async () => {
     const viaLegacy = await getFollow("/spell?legacy=true");
     const viaSuperseded = await getFollow("/spell?superseded=1");
     expect(viaLegacy.status).toBe(200);
@@ -376,15 +371,13 @@ describe("$category/ browse route (D29-35 tier 3)", () => {
 });
 
 /**
- * P4.5 S4 (D29-49) — the split-column browse's `?entry=` deep link, over the
+ * The split-column browse's `?entry=` deep link, over the
  * fixture's single `feat` row (`feat/camouflage-coat`, `actionCost: passive`
  * — the same fixture the `f.actionCost` narrowing case above already
- * exercises). This is the acceptance-D curl-provable gate: a fresh,
- * no-storage-state request must SSR the FULL entity render in the right
- * pane, not just the listing (the standing SSR-flash class P3's memory
- * already caught for the legacy toggle).
+ * exercises). A fresh, no-storage-state request must SSR the FULL entity
+ * render in the right pane, not just the listing (no SSR flash).
  */
-describe("$category/ split-view browse: ?entry= deep link (P4.5 S4, D29-49 tier 3)", () => {
+describe("$category/ split-view browse: ?entry= deep link", () => {
   it("a fresh deep link SSRs the selected entity's full render server-side, not just the listing row", async () => {
     const { status, html } = await get("/feat?entry=camouflage-coat");
     expect(status).toBe(200);
@@ -412,7 +405,7 @@ describe("$category/ split-view browse: ?entry= deep link (P4.5 S4, D29-49 tier 
     expect(rendersRow(html, "feat/camouflage-coat")).toBe(true); // listing unaffected
   });
 
-  it("an `entry` filtered out by the current facet selection shows the fail-soft message, not a 404 (N3)", async () => {
+  it("an `entry` filtered out by the current facet selection shows the fail-soft message, not a 404", async () => {
     // camouflage-coat is `actionCost: passive` (fixture + real corpus,
     // proven by the derived-facet-narrows case above) — `f.actionCost=
     // reaction` filters it OUT of the visible list while it still resolves
@@ -443,20 +436,18 @@ describe("$category/ split-view browse: ?entry= deep link (P4.5 S4, D29-49 tier 
 });
 
 /**
- * P12 S2 (D29-117/-118) — `/class` + `/class/{slug}`, over the S1 fixture
- * corpus (`class/{fighter,cleric,witch}` stats-bearing + `class/
- * investigator@legacy` fail-soft + `class/witch@legacy` superseded, D29-113
- * ..116). This slice ships the shell + dispatch seam only — the bespoke
- * `ClassPage` composition is S3, so every case here still renders through
- * the EXISTING `EntityRenderPane` (asserted via `codex-entity-page`), inside
- * the new `ClassBrowse` shell (asserted via `codex-class-rail`/
- * `codex-class-pane`). `resolveClassPageData`'s own data-shaping is
+ * `/class` + `/class/{slug}`, over the fixture corpus
+ * (`class/{fighter,cleric,witch}` stats-bearing + `class/
+ * investigator@legacy` fail-soft + `class/witch@legacy` superseded). Every
+ * case renders inside the `ClassBrowse` shell (asserted via
+ * `codex-class-rail`/`codex-class-pane`). `resolveClassPageData`'s own
+ * data-shaping is
  * exhaustively covered in `classPageData.test.ts`; this proves the ROUTE
  * wiring end to end — static-over-dynamic precedence over `$category`, the
  * rail's default/reveal split, the fail-soft-in-shell posture, 404s, and the
  * `?subclass=` loaderDeps rerun.
  */
-describe("/class + /class/{slug} route precedence + shell (D29-117/-118 tier 3)", () => {
+describe("/class + /class/{slug} route precedence + shell", () => {
   it("/class/fighter out-ranks the $category/$slug route for the literal 'class' category (static-over-dynamic precedence)", async () => {
     const { status, html } = await get("/class/fighter");
     expect(status).toBe(200);
@@ -469,9 +460,8 @@ describe("/class + /class/{slug} route precedence + shell (D29-117/-118 tier 3)"
   });
 
   it("bare /class redirects to the first visible class, still out-ranking the $category/ route", async () => {
-    // Post-P12 stakeholder amendment (`routes/class/index.tsx`): the bare
-    // `/class` index no longer renders an empty "pick a class" pane — its
-    // loader redirects to the alphabetically-first VISIBLE rail class
+    // `routes/class/index.tsx`: the bare `/class` index renders no empty
+    // "pick a class" pane — its loader redirects to the alphabetically-first VISIBLE rail class
     // (Cleric on the fixture corpus, Alchemist on the real one — asserted
     // shape-wise so this holds in both environments, this suite's own
     // cross-environment discipline).
@@ -533,7 +523,7 @@ describe("/class + /class/{slug} route precedence + shell (D29-117/-118 tier 3)"
     expect(on.html).toContain("codex-class-rail-edition"); // the Legacy marker
   });
 
-  it("a stats-bearing class (fighter) still renders through the EXISTING generic pane this slice (S3 owns the bespoke ClassPage)", async () => {
+  it("a stats-bearing class (fighter) renders an entity page with no render errors", async () => {
     const { html } = await get("/class/fighter");
     expect(html).toContain("codex-entity-page");
     expect(html).not.toContain("data-render-error");
@@ -574,7 +564,7 @@ describe("/class + /class/{slug} route precedence + shell (D29-117/-118 tier 3)"
 
   it("zero hydration/render errors across the class route family", async () => {
     for (const routePath of [
-      "/class", // follows its post-P12 first-class redirect (getFollow, not get)
+      "/class", // follows its first-class redirect (getFollow, not get)
       "/class/fighter",
       "/class/cleric",
       "/class/witch",
@@ -588,19 +578,19 @@ describe("/class + /class/{slug} route precedence + shell (D29-117/-118 tier 3)"
 });
 
 /**
- * P4 S2 (D29-40) — the `/rules` tree browser, over the fixture corpus's own
- * `rules-tree.json` (S1's D29-44 composition: the CRLF-healed GMG
+ * The `/rules` tree browser, over the fixture corpus's own
+ * `rules-tree.json` (its composition: the CRLF-healed GMG
  * "Chapter 2: Tools" root, the Counteracting path-shift pair, a
  * breadcrumb-less synthetic root). A static route smoke, same posture as
  * the `$category/` suite above — the FULL real-corpus interaction gates
  * (INTERIOR-level ordering, click-to-expand, latency) are proven separately
- * against the live 44,808-entity corpus (see the session report); this
+ * against the live 44,808-entity corpus; this
  * proves the route itself: static-route precedence over `$category`, the
  * loader wiring, and root-level SSR content (roots always render — only
  * their CHILDREN default-collapse, so a deep node's link isn't asserted
  * here without a real click).
  */
-describe("/rules tree browser (D29-40 tier 3)", () => {
+describe("/rules tree browser", () => {
   it("200s and out-ranks the $category/ route for the literal 'rules' category", async () => {
     const { status, html } = await get("/rules");
     expect(status).toBe(200);
@@ -620,15 +610,15 @@ describe("/rules tree browser (D29-40 tier 3)", () => {
   it("a root doc with an id renders as a link (the CRLF-healed GMG 'Chapter 2: Tools' root)", async () => {
     // `?legacy=true` — the fixture's GMG "Chapter 2: Tools" root is itself
     // `superseded`, so under the default legacy-off view it's pruned
-    // entirely (S4 hermeticity find: the bare-`/rules` form of this assert
-    // only ever passed when the REAL corpus — whose GMG root is not
-    // superseded — masked the fixture-fallback path).
+    // entirely (a bare-`/rules` form of this assert would only pass when the
+    // REAL corpus — whose GMG root is not superseded — masked the
+    // fixture-fallback path).
     const { html } = await getFollow("/rules?legacy=true");
     expect(html).toContain('href="/rules/chapter-2-tools"');
   });
 
   // The next two assertions are written to hold whether this process
-  // resolved the FIXTURE corpus (CI, a fresh clone — D29-23) or a REAL
+  // resolved the FIXTURE corpus (CI, a fresh clone) or a REAL
   // corpus checked out at `apps/codex/web/data` (this dev environment,
   // `corpusFs.test.ts`'s own "either root is a valid outcome" precedent):
   // the FIXTURE's own synthetic/all-hidden shapes differ in specifics from
@@ -656,7 +646,7 @@ describe("/rules tree browser (D29-40 tier 3)", () => {
     expect(on.html).not.toContain("codex-rules-hidden-note");
   });
 
-  it("P4.5 D29-48: legacy=true and superseded=1 are the alias-decode pair on /rules — byte-identical HTML once redirects settle", async () => {
+  it("legacy=true and superseded=1 are the alias-decode pair on /rules — byte-identical HTML once redirects settle", async () => {
     const viaLegacy = await getFollow("/rules?legacy=true");
     const viaSuperseded = await getFollow("/rules?superseded=1");
     expect(viaLegacy.status).toBe(200);
@@ -689,29 +679,26 @@ describe("/rules tree browser (D29-40 tier 3)", () => {
     expect(html).toContain("Tools of Play");
     // Proves this is the ENTITY route, not the `/rules` browse page itself —
     // the browse page's own listing chrome (title + book count) is absent
-    // here even though S3 (below) now ALSO renders a `codex-rules-tree`
-    // (the sidebar reuses that same island, so its class alone no longer
-    // distinguishes the two routes post-S3).
+    // here even though the rules entity page ALSO renders a
+    // `codex-rules-tree` (the sidebar reuses that same island, so its class
+    // alone doesn't distinguish the two routes).
     //
-    // P11 S4 (D29-112) re-word: `codex-listing-title` is no longer proof of
-    // "this page has NO listing chrome anywhere in the corpus" — the class
-    // stays in the SSR DOM on LISTING routes now too (sr-only, not
-    // `display:none`, so the root header's own visible title has a
+    // `codex-listing-title` stays in the SSR DOM on LISTING routes (sr-only,
+    // not `display:none`, so the root header's own visible title has a
     // corresponding a11y-tree/document-outline heading). This assert is
     // narrower than it reads: it only proves the ENTITY route specifically
-    // carries no listing title (which was always true, sr-only or not — a
-    // `$category/$slug` render never mounted `BrowseListing` in the first
-    // place), not that the class is absent from the whole app.
+    // carries no listing title (a `$category/$slug` render never mounts
+    // `BrowseListing`), not that the class is absent from the whole app.
     expect(html).not.toContain("codex-listing-title");
     expect(html).toContain("codex-entity-page");
   });
 });
 
 /**
- * P4 S3 (D29-41) — the rules entity page's hierarchy navigation: breadcrumb
+ * The rules entity page's hierarchy navigation: breadcrumb
  * trail, tree sidebar (`RulesLayout`), and DFS previous/next pager. Over the
  * fixture `rules-tree.json` the `/rules` suite above already exercises
- * (S1's D29-44 composition — the CRLF-healed 3-deep GMG chain
+ * (its composition — the CRLF-healed 3-deep GMG chain
  * `chapter-2-tools` -> `building-creatures@legacy` -> `ability-modifiers-2`,
  * ALL superseded; the path-shifted Counteracting legacy/remaster pair).
  *
@@ -728,12 +715,12 @@ describe("/rules tree browser (D29-40 tier 3)", () => {
  * after it) — those two facts anchor this suite; the exhaustive prev/next
  * one-sidedness/round-trip/synthetic-ancestor claims are proven precisely,
  * hermetically, and corpus-root-independently against the fixture reader
- * directly in `entityPageData.test.ts` (D29-23's own "pure derivation
- * tested against the fixture reader" idiom) — this suite's job is proving
+ * directly in `entityPageData.test.ts` (the "pure derivation tested against
+ * the fixture reader" idiom) — this suite's job is proving
  * the ROUTE WIRING renders the right markup at all, not re-deriving exact
  * chain shape.
  */
-describe("rules entity-page hierarchy nav (D29-41 tier 3)", () => {
+describe("rules entity-page hierarchy nav", () => {
   it("a root doc (no ancestors) renders its own trail head: book -> self, no ancestor links", async () => {
     const { html } = await get("/rules/chapter-2-tools");
     expect(html).toContain("codex-rules-breadcrumb");
@@ -747,7 +734,7 @@ describe("rules entity-page hierarchy nav (D29-41 tier 3)", () => {
     expect(html).toContain('href="/rules/building-creatures@legacy"');
   });
 
-  it("a single deep rules page renders trail + sidebar + pager together (D29-44's own text)", async () => {
+  it("a single deep rules page renders trail + sidebar + pager together", async () => {
     const { status, html } = await get("/rules/ability-modifiers-2");
     expect(status).toBe(200);
     expect(html).toContain("codex-rules-breadcrumb"); // trail
@@ -767,7 +754,7 @@ describe("rules entity-page hierarchy nav (D29-41 tier 3)", () => {
       'href="/rules/building-creatures@legacy"',
     );
     // that next target is itself superseded -> renders its own Legacy edition
-    // icon (the legacy toggle does NOT re-chain the pager, D29-41).
+    // icon (the legacy toggle does NOT re-chain the pager).
     expect(html.slice(nextSlotIdx, nextSlotIdx + 400)).toContain('aria-label="Legacy"');
   });
 
@@ -812,7 +799,7 @@ describe("rules entity-page hierarchy nav (D29-41 tier 3)", () => {
     }
   });
 
-  it("P4.5 acceptance C spot check: rules/building-creatures@legacy?legacy=true and ?superseded=1 are byte-identical once redirects settle (the P4 acceptance's own fixture)", async () => {
+  it("rules/building-creatures@legacy?legacy=true and ?superseded=1 are byte-identical once redirects settle", async () => {
     const viaLegacy = await getFollow("/rules/building-creatures@legacy?legacy=true");
     const viaSuperseded = await getFollow("/rules/building-creatures@legacy?superseded=1");
     expect(viaLegacy.status).toBe(200);
@@ -822,10 +809,10 @@ describe("rules entity-page hierarchy nav (D29-41 tier 3)", () => {
 });
 
 /**
- * P4 S4 (D29-42) — attached sidebars on a host entity page, over the
- * fixture's own D29-44 shapes (`rules/tools-of-play` -> `sidebar/dice`).
+ * Attached sidebars on a host entity page, over the fixture's own shapes
+ * (`rules/tools-of-play` -> `sidebar/dice`).
  */
-describe("attached sidebars on a host entity page (D29-42 tier 3)", () => {
+describe("attached sidebars on a host entity page", () => {
   it("a host page renders its attached sidebar as a titled aside with a standalone-page link", async () => {
     const { status, html } = await get("/rules/tools-of-play");
     expect(status).toBe(200);
@@ -835,7 +822,7 @@ describe("attached sidebars on a host entity page (D29-42 tier 3)", () => {
     expect(html).not.toContain("data-render-error");
   });
 
-  it("the M8 shared-url class-feature does NOT render an attached-sidebar section (only the class page owns it)", async () => {
+  it("the shared-url class-feature does NOT render an attached-sidebar section (only the class page owns it)", async () => {
     const { status, html } = await get("/class-feature/ability-boosts-15");
     expect(status).toBe(200);
     expect(html).not.toContain("codex-attached-sidebars");
@@ -854,11 +841,11 @@ describe("attached sidebars on a host entity page (D29-42 tier 3)", () => {
 });
 
 /**
- * P4 S4 (D29-43) — `/sources`, over the fixture's own `sources-index.json`
- * (regenerated with the `categoryCounts` field, S4's additive schema
- * change — see `sourcesIndexBuild.test.ts` for the pure-function proof).
+ * `/sources`, over the fixture's own `sources-index.json` (with its
+ * `categoryCounts` field — see `sourcesIndexBuild.test.ts` for the
+ * pure-function proof).
  */
-describe("/sources aggregate book index (D29-43 tier 3)", () => {
+describe("/sources aggregate book index", () => {
   it("200s and renders a group heading + a book row", async () => {
     const { status, html } = await get("/sources");
     expect(status).toBe(200);
@@ -900,19 +887,18 @@ describe("/sources aggregate book index (D29-43 tier 3)", () => {
 });
 
 /**
- * P4 S4 (D29-43) — the `/categories` directory (moved off `/` at P4.5 S2,
- * D29-47) keeps its `source` category row AND its distinct "Sources index"
- * entry linking `/sources`.
+ * The `/categories` directory keeps its `source` category row AND its
+ * distinct "Sources index" entry linking `/sources`.
  */
-describe("/categories directory gains the Sources index entry (D29-43 tier 3)", () => {
+describe("/categories directory carries the Sources index entry", () => {
   it("both the source category row and the Sources index link are present", async () => {
     const { status, html } = await get("/categories");
     expect(status).toBe(200);
-    expect(html).toContain('href="/source"'); // the existing P3 category row
-    expect(html).toContain('href="/sources"'); // the new aggregate index entry
+    expect(html).toContain('href="/source"'); // the `source` category row
+    expect(html).toContain('href="/sources"'); // the aggregate index entry
   });
 
-  it("lists every one of the 88 real corpus categories (D29-47 B)", async () => {
+  it("lists every one of the 88 real corpus categories", async () => {
     const { html } = await get("/categories");
     const reader = createCorpusReader(fixtureCorpusRoot());
     const categories = reader.categories();
@@ -924,22 +910,22 @@ describe("/categories directory gains the Sources index entry (D29-43 tier 3)", 
 });
 
 /**
- * P4.5 S2 (D29-47) — the R4 landing page: hero brand, the distinct hero
- * search box, the 8 tiles, and the "browse all categories" link. The old
- * P2 throwaway "every entity lives at `/{category}/{slug}`" blurb is gone.
+ * The landing page: hero brand, the distinct hero search box, the 8 tiles,
+ * and the "browse all categories" link (no "every entity lives at
+ * `/{category}/{slug}`" blurb).
  */
-describe("/ the R4 landing page (D29-47 tier 3)", () => {
+describe("/ the landing page", () => {
   it("renders the hero search box and NOT the header Omnibar's own input twice", async () => {
     const { status, html } = await get("/");
     expect(status).toBe(200);
     expect(html).toContain("codex-hero-search");
     // Exactly one `codex-omnibar-input` (the header's) and one distinct hero
-    // input — never two omnibar-classed inputs (adversarial M3).
+    // input — never two omnibar-classed inputs.
     expect(html.split('class="codex-omnibar-input"').length - 1).toBe(1);
     expect(html).toContain("codex-hero-search-input");
   });
 
-  it("renders all 8 R4 tiles, linking the right categories", async () => {
+  it("renders all 8 landing tiles, linking the right categories", async () => {
     const { html } = await get("/");
     for (const href of [
       "/creature",
@@ -955,25 +941,24 @@ describe("/ the R4 landing page (D29-47 tier 3)", () => {
     }
   });
 
-  it("links to the demoted /categories directory, not the old throwaway blurb", async () => {
+  it("links to the /categories directory, with no 'every entity lives at' blurb", async () => {
     const { html } = await get("/");
     expect(html).toContain('href="/categories"');
     expect(html).not.toContain("Every entity lives at");
   });
 
-  it("the header nav renders on the landing page: every one of the curated 28 nav categories resolves to a real anchor (no-JS reachability, D29-47/D29-110)", async () => {
+  it("the header nav renders on the landing page: every one of the curated 28 nav categories resolves to a real anchor (no-JS reachability)", async () => {
     const { html } = await get("/");
     expect(html).toContain("codex-header-nav");
-    // D29-110 (P11 S4): the nav no longer spans all 88 real corpus
-    // categories — it's curated down to 28 (`navData.ts`'s own union); the
-    // full 88 is what `/categories` surfaces now (the test right above this
-    // describe block's own "lists every one of the 88" assert, unchanged).
+    // The nav doesn't span all 88 real corpus categories — it's curated to
+    // 28 (`navData.ts`'s own union); the full 88 is what `/categories`
+    // surfaces (the "/categories directory" suite's "lists every one of the
+    // 88" assert).
     expect(allNavCategories().length).toBe(28);
     for (const category of allNavCategories()) {
       expect(html, `nav is missing href="/${category}"`).toContain(`href="/${category}"`);
     }
-    // Rules/Sources/All categories are all bare direct links now (D29-110:
-    // the old Rules split control/dropdown tail is gone).
+    // Rules/Sources/All categories are all bare direct links.
     expect(html).toContain('href="/rules"');
     expect(html).toContain('href="/sources"');
     expect(html).toContain('href="/categories"');

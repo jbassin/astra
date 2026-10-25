@@ -1,4 +1,4 @@
-// D29-23's other half: the `createServerFn` wrapper the route loader calls.
+// The other half of `corpusFs.ts`: the `createServerFn` wrapper the route loader calls.
 // Client navigations fetch this over RPC; SSR runs it inline (the akasha `$.tsx`
 // precedent). This module is the ONLY place `corpusFs.ts` (the `node:fs` seam)
 // gets imported outside its own file — routes/components never touch it
@@ -26,20 +26,18 @@ import { resolveSourcesIndex, type SourcesIndexData } from "./sourcesIndexData";
 /**
  * The one entity-page server fn the route loader calls. `null` (an unknown
  * category/slug/traversal attempt) crosses the serverFn RPC boundary as a plain
- * value rather than a thrown error; the ROUTE loader turns it into `notFound()`
- * (D29-22).
+ * value rather than a thrown error; the ROUTE loader turns it into `notFound()`.
  */
 export const getEntityPage = createServerFn({ method: "GET" })
   .validator((input: { category: string; slug: string }) => input)
   .handler(({ data }): EntityPageData | null => resolveEntityPageData(getCorpusReader(), data));
 
-/** S3 (D29-27) — the category directory, served at `/categories` since
- * P4.5 S2 (D29-47). */
+/** The category directory, served at `/categories`. */
 export const getCategoryDirectory = createServerFn({ method: "GET" }).handler(
   (): CategoryDirectoryData => resolveCategoryDirectory(getCorpusReader()),
 );
 
-/** S3 (D29-27) — the `/{category}` A–Z listing; `null` (unknown category) ->
+/** The `/{category}` A–Z listing; `null` (unknown category) ->
  * the route loader's `notFound()`, same convention as `getEntityPage`. */
 export const getCategoryListing = createServerFn({ method: "GET" })
   .validator((input: { category: string }) => input)
@@ -47,7 +45,7 @@ export const getCategoryListing = createServerFn({ method: "GET" })
     resolveCategoryListing(getCorpusReader(), data.category),
   );
 
-/** P4 S2 (D29-40) — the `/rules` tree browser's loader. No `null` case (the
+/** The `/rules` tree browser's loader. No `null` case (the
  * artifact is always present in a valid corpus, real or fixture) — a
  * missing/malformed `rules-tree.json` is a genuine server error, not a
  * "this page doesn't exist" 404. */
@@ -55,14 +53,14 @@ export const getRulesTree = createServerFn({ method: "GET" }).handler(
   (): RulesTreeData => resolveRulesTree(getCorpusReader()),
 );
 
-/** P4 S4 (D29-43) — the `/sources` aggregate index's loader. No `null` case,
+/** The `/sources` aggregate index's loader. No `null` case,
  * same reasoning as `getRulesTree` above (the artifact is always present in
  * a valid corpus, real or fixture). */
 export const getSourcesIndex = createServerFn({ method: "GET" }).handler(
   (): SourcesIndexData => resolveSourcesIndex(getCorpusReader()),
 );
 
-/** P12 S2 (D29-117) — the `/class/{slug}` bespoke page's one loader server
+/** The `/class/{slug}` bespoke page's one loader server
  * fn. `subclassTargetIds` is the URL's `?subclass=` CSV, already split by
  * the route's own `urlState.ts` codec — this fn takes the decoded array,
  * never the raw query string. `null` (unknown slug in the `class` category)
@@ -71,7 +69,7 @@ export const getClassPage = createServerFn({ method: "GET" })
   .validator((input: { slug: string; subclassTargetIds?: readonly string[] }) => input)
   .handler(({ data }): ClassPageData | null => resolveClassPageData(getCorpusReader(), data));
 
-/** P12 S2 (D29-118) — the bare `/class` index route's own loader: just the
+/** The bare `/class` index route's own loader: just the
  * rail (no entity, no `?subclass=` to decode). `/class/{slug}` computes the
  * SAME rail data as part of its own `getClassPage` call above (one corpus
  * read either way — `resolveClassRail` is a cheap `_index.json`-only pass,

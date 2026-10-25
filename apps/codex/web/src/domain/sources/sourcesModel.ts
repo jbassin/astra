@@ -1,15 +1,15 @@
-// P4 S4 (D29-43) — the `/sources` aggregate index's pure grouping logic. A
+// The `/sources` aggregate index's pure grouping logic. A
 // plain function over `SourceIndexEntry[]` — no React, no router, no fs — so
 // it's directly unit-testable, mirroring `src/domain/rules/treeModel.ts`'s
 // own split (the ISLAND/route owns rendering, this module owns the
-// algorithm). `/sources` itself has NO island (D29-43: "a plain
-// server-rendered page — NO island"), but the grouping logic still earns its
+// algorithm). `/sources` itself has NO island (a plain server-rendered
+// page), but the grouping logic still earns its
 // own file/tests rather than living inline in a route component.
 
 import type { SourceIndexEntry } from "@astra/codex-corpus";
 
 /** The sentinel group label for books with no `productLine` (the ~253-book
- * "Other" bucket, D29-43 — Foundry-only book strings with zero AoN
+ * "Other" bucket — Foundry-only book strings with zero AoN
  * citations, EXPECTED not a gap). Exported so the presentational component
  * can special-case its rendering (a `<details>` disclosure, collapsed by
  * default) without re-deriving the sentinel string. */
@@ -28,20 +28,18 @@ export const OTHER_GROUP_LABEL = "Other";
  * rule) — `Other` itself is NEVER pinned here; it is always forced last by
  * the grouping function regardless of this list.
  *
- * P13 S3 (D29-128) — EXPORTED (was module-private through P4): the review's
- * own blocker on the filter-panel redesign's draft was that its Source
- * facet's group order FORKED this one ("Adventures before Society, Comics
- * before Blog Posts") — `FacetPanel.tsx`'s grouped Source section
- * (`orderProductLines`, below) imports this list directly rather than
- * re-declaring it, so the panel and `/sources` can never disagree again.
+ * EXPORTED so `FacetPanel.tsx`'s grouped Source section (via
+ * `orderProductLines`, below) uses this list directly rather than
+ * re-declaring it, so the panel's Source group order and `/sources` can
+ * never disagree.
  *
- * 0030 S3 (D30-45): "Homebrew" appended LAST — after every real AoN-observed
- * line, still before the trailing `OTHER_GROUP_LABEL` bucket (which is never
- * pinned here; `orderProductLines` always forces it last regardless of this
- * list). Appending (not inserting alphabetically) is required: an unpinned
- * line sorts alphabetically among itself, and "Homebrew" would otherwise
- * land ahead of "Lost Omens"/"Rulebooks" — the stakeholder wants it reading
- * as an addendum to the official product lines, not competing with them.
+ * "Homebrew" is appended LAST — after every real AoN-observed line, still
+ * before the trailing `OTHER_GROUP_LABEL` bucket (which is never pinned here;
+ * `orderProductLines` always forces it last regardless of this list). Appending
+ * (not inserting alphabetically) is required: an unpinned line sorts
+ * alphabetically among itself, and "Homebrew" would otherwise land ahead of
+ * "Lost Omens"/"Rulebooks" — the stakeholder wants it reading as an addendum to
+ * the official product lines, not competing with them.
  */
 export const PINNED_PRODUCT_LINE_ORDER: readonly string[] = [
   "Rulebooks",
@@ -59,7 +57,7 @@ export const PINNED_PRODUCT_LINE_ORDER: readonly string[] = [
  * The pinned-then-alphabetical-then-Other GROUP ORDER, given the distinct
  * product-line strings actually present (`OTHER_GROUP_LABEL` may or may not
  * be among them) — the ordering half of `groupSourcesByProductLine` below,
- * extracted (P13 S3, D29-128) so `FacetPanel.tsx`'s Source-section grouping
+ * extracted so `FacetPanel.tsx`'s Source-section grouping
  * can reuse the EXACT SAME order over a different member shape (option
  * counts, not `SourceIndexEntry` rows) without re-deriving or re-declaring
  * it a second time.
@@ -88,12 +86,11 @@ export interface SourcesGroup {
 }
 
 /**
- * Groups by `productLine` (undefined -> `OTHER_GROUP_LABEL`), orders groups
- * by `PINNED_PRODUCT_LINE_ORDER` first, any other REAL product line
- * alphabetically next, and `OTHER_GROUP_LABEL` unconditionally LAST — D29-43's
- * "groups in a sensible fixed order with 'Other' LAST" — regardless of its
- * size (it is very often the single largest group by book count, ~253/496
- * measured, and must still sort last, not by size).
+ * Groups by `productLine` (undefined -> `OTHER_GROUP_LABEL`), orders groups by
+ * `PINNED_PRODUCT_LINE_ORDER` first, any other REAL product line alphabetically
+ * next, and `OTHER_GROUP_LABEL` unconditionally LAST, regardless of its size
+ * (it is very often the single largest group by book count, ~253/496 measured,
+ * and must still sort last, not by size).
  */
 export function groupSourcesByProductLine(books: readonly SourceIndexEntry[]): SourcesGroup[] {
   const byLine = new Map<string, SourceIndexEntry[]>();
@@ -105,12 +102,8 @@ export function groupSourcesByProductLine(books: readonly SourceIndexEntry[]): S
   }
   for (const arr of byLine.values()) arr.sort((a, b) => a.book.localeCompare(b.book));
 
-  // P13 S3 (D29-128): the order derivation itself now lives in
-  // `orderProductLines` (above), shared verbatim with `FacetPanel.tsx`'s
-  // grouped Source section — this call is byte-for-byte the same
-  // pinned-then-alphabetical-then-Other computation the inline version used
-  // to do here directly (`sourcesModel.test.ts`'s existing order pins are
-  // unchanged by this refactor).
+  // The order derivation lives in `orderProductLines` (above), shared
+  // verbatim with `FacetPanel.tsx`'s grouped Source section.
   const order = orderProductLines([...byLine.keys()]);
 
   return order.map((productLine) => {

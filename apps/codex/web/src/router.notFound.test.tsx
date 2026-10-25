@@ -29,7 +29,7 @@ function renderNotFoundAt(pathname: string) {
   return render(<RouterProvider router={router} />);
 }
 
-describe("slugFromPathname (D29-109e, pure — decoupled from useRouterState)", () => {
+describe("slugFromPathname (pure — decoupled from useRouterState)", () => {
   it("strips the leading slash", () => {
     expect(slugFromPathname("/hunters-edge")).toBe("hunters-edge");
   });
@@ -60,7 +60,7 @@ describe("slugFromPathname (D29-109e, pure — decoupled from useRouterState)", 
   });
 });
 
-describe("DefaultNotFoundComponent (D29-109e) — mounted against a SYNTHETIC router", () => {
+describe("DefaultNotFoundComponent — mounted against a SYNTHETIC router", () => {
   // A bare-vitest mount of the REAL `getRouter()` route tree can only prove
   // pure ROUTER-level not-found (no route matches at all, no loader
   // involved) — this app's `/$category/` and `/$category/$slug` routes are

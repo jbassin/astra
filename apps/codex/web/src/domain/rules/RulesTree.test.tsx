@@ -64,7 +64,7 @@ const SYNTHETIC_ROOT_BOOK: RulesTreeBook = book({
   ],
 });
 
-describe("RulesTree (D29-40)", () => {
+describe("RulesTree", () => {
   // Collapse state persists to REAL localStorage, keyed only on node id/path
   // (no per-test namespacing) — clear it before every test so one test's
   // expand/collapse click can't leak into the next's initial render.
@@ -72,7 +72,7 @@ describe("RulesTree (D29-40)", () => {
     localStorage.clear();
   });
 
-  it("renders every book name as full title + abbreviation (D29-108b), full name also on title", () => {
+  it("renders every book name as full title + abbreviation, full name also on title", () => {
     render(<RulesTree books={[GMG_LIKE]} superseded={false} />);
     // "Gamemastery Guide" curates to "GMG" — the heading shows BOTH the
     // full title and the abbreviation ("Gamemastery Guide (GMG)"), never
@@ -134,7 +134,7 @@ describe("RulesTree (D29-40)", () => {
 
   it("a fully-superseded book renders as a collapsed 'all N hidden' header, never silently dropped", () => {
     render(<RulesTree books={[FULLY_HIDDEN_BOOK]} superseded={false} />);
-    // "Dark Archive" curates to "DA" (R10/D29-68); heading is full+abbrev.
+    // "Dark Archive" curates to "DA"; heading is full+abbrev.
     expect(screen.getByText("Dark Archive (DA)")).not.toBeNull();
     expect(screen.getByText("all 2 hidden")).not.toBeNull();
     expect(screen.queryByText("Root A")).toBeNull();
@@ -160,7 +160,7 @@ describe("RulesTree (D29-40)", () => {
     expect(screen.queryByText("Building Creatures")).toBeNull(); // non-matching sibling pruned
   });
 
-  it("D29-108a: a book with zero matches under an active text-query filter renders nothing at all, not an empty header", () => {
+  it("a book with zero matches under an active text-query filter renders nothing at all, not an empty header", () => {
     render(<RulesTree books={[GMG_LIKE]} superseded={true} />);
     const input = screen.getByPlaceholderText("Filter rules by name…");
     fireEvent.change(input, { target: { value: "no such node anywhere" } });
@@ -170,7 +170,7 @@ describe("RulesTree (D29-40)", () => {
     expect(screen.queryByText("OGL")).toBeNull();
   });
 
-  it("D29-108b: book display order is the four remaster cores (in order), then alphabetical by full title", () => {
+  it("book display order is the four remaster cores (in order), then alphabetical by full title", () => {
     const zBook = book({ book: "Zoo of Zeals" });
     const aBook = book({ book: "Ancestry Guide" });
     const gmCore = book({ book: "GM Core" });
@@ -184,7 +184,7 @@ describe("RulesTree (D29-40)", () => {
       />,
     );
     const headings = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
-    // Book headings are full-title(+abbreviation) per D29-108b; "Zoo of
+    // Book headings are full-title(+abbreviation); "Zoo of
     // Zeals" is a fictional title with no curated abbreviation -> title
     // alone (never a literal "(undefined)").
     expect(headings).toEqual([

@@ -6,16 +6,14 @@ import { EntityPage } from "../domain/render/entityPage";
 import { loadFixtureRenderEnv, requireEntity } from "../domain/render/fixtureLoader";
 
 /**
- * R1/R2 (D29-63/D29-64) — the render-level half of the CSS gate
- * (`globals.test.ts` covers the stylesheet content itself). This file
- * imports Track A's already-existing, unmodified `EntityPage`/fixture
- * loader read-only (no edits to any Track-A-owned file) purely to prove
- * real fixture markup actually lands inside the `.codex-content` selectors
- * R1/R2 style — no renderer change was needed or made for either fix
- * (nodes.tsx's classless `<table>` emission and the ingest-preserved
- * literal "\n" text both predate this phase, D29-63/D29-64).
+ * The render-level half of the CSS gate (`globals.test.ts` covers the
+ * stylesheet content itself). This file renders the real `EntityPage` over
+ * the fixture corpus purely to prove real fixture markup lands inside the
+ * `.codex-content` table and paragraph selectors — the styling is CSS-only
+ * (nodes.tsx's `<table>` emission is classless and the ingest-preserved
+ * literal "\n" text reaches the DOM as-is).
  */
-describe("R1 (D29-63): a real fixture table-bearing entity", () => {
+describe("table skin: a real fixture table-bearing entity", () => {
   const { byId, ctx } = loadFixtureRenderEnv();
 
   it("class/investigator@legacy renders a <table> inside .codex-content", () => {
@@ -28,15 +26,14 @@ describe("R1 (D29-63): a real fixture table-bearing entity", () => {
   });
 });
 
-describe("R2 (D29-64): a real fixture entity with a literal AoN <br/>-preserved \\n", () => {
+describe("literal breaks: a real fixture entity with a literal AoN <br/>-preserved \\n", () => {
   const { byId, ctx } = loadFixtureRenderEnv();
 
   it("creature/adamantine-dragon-adult's body preserves the literal \\n verbatim", () => {
     // Verified directly against the fixture corpus: body[25] is a real
     // paragraph whose text children include "...DC 30\n" and "...Speeds.\n"
     // (an "Abandon Armor"/"Frightful Presence" degree-of-success-shaped
-    // block) — one of the corpus's 16 real \n-bearing bodies this phase's
-    // scope doc names.
+    // block) — one of the corpus's 16 real \n-bearing bodies.
     const html = renderToStaticMarkup(
       createElement(EntityPage, {
         entity: requireEntity(byId, "creature/adamantine-dragon-adult"),
@@ -55,7 +52,7 @@ describe("R2 (D29-64): a real fixture entity with a literal AoN <br/>-preserved 
   it("an ordinary \\n-free paragraph is unaffected (no collateral whitespace change)", () => {
     // spell/heal is \n-free in the fixture aside from its @legacy sibling's
     // own degree-of-success block — spot-check the base entity's ordinary
-    // prose renders as one contiguous run, same as before this phase.
+    // prose renders as one contiguous run.
     const html = renderToStaticMarkup(
       createElement(EntityPage, { entity: requireEntity(byId, "spell/heal"), ctx }),
     );

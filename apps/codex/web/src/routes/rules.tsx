@@ -4,26 +4,24 @@ import { RulesTree } from "@/domain/rules/RulesTree";
 import { getRulesTree } from "@/server/corpusFns";
 
 /**
- * D29-40 — `/rules`: the tree browser that replaces P3's faceted flat
- * listing for the `rules` category. A FLAT top-level route file (matching
+ * `/rules`: the tree browser that stands in for the faceted flat listing
+ * for the `rules` category. A FLAT top-level route file (matching
  * `search.tsx`'s own pattern) — TanStack Router ranks a static path segment
- * above the `$category` param route for an exact `/rules` match (verified
- * safe both ways, spec §1: `/rules/{slug}` still falls through to the
+ * above the `$category` param route for an exact `/rules` match (safe both
+ * ways: `/rules/{slug}` still falls through to the
  * existing `$category/$slug` route since this file has no children of its
  * own). The `/` directory's `rules` row is untouched — it just links to
  * `/${category}`, which is `/rules` either way, count unchanged.
  *
- * `superseded` is the ONLY url param this route reads — the D29-40 "no facet
- * panel, no tree state in the URL beyond the current-doc auto-expansion"
- * scope (§7 out of scope) means the quick-filter/collapse state stay plain
- * component state in `RulesTree.tsx`, not URL-synced.
+ * `superseded` is the ONLY url param this route reads — no facet panel and
+ * no tree state in the URL beyond the current-doc auto-expansion, so the
+ * quick-filter/collapse state stay plain component state in `RulesTree.tsx`,
+ * not URL-synced.
  *
- * P4.5 D29-48: collapsed to a bare URL read — no live-toggle/hydration-phase/
- * resync effect at all (there is no second, live, cross-page source of
- * truth left to reconcile SSR against, since the site-wide toggle mechanism
- * is deleted outright). `legacy=1`/`legacy=true` still decodes as a
- * `superseded` alias (every shared link that predates this rename, forever,
- * not a deprecation window).
+ * A bare URL read — no live-toggle/hydration-phase/resync effect at all
+ * (there is no second, live, cross-page source of truth to reconcile SSR
+ * against). `legacy=1`/`legacy=true` still decodes as a `superseded` alias
+ * (old shared links keep working, forever, not a deprecation window).
  */
 interface RulesSearch {
   superseded?: boolean;
@@ -61,15 +59,15 @@ function RulesRouteComponent() {
       <header className="codex-listing-header">
         <h1 className="codex-listing-title">Rules</h1>
         <p className="codex-listing-count">{data.books.length} books</p>
-        {/* D29-48's own `/rules` visible control — no facet panel on this
-            page (D29-40 unchanged), so a small inline link toggles the
+        {/* The `/rules` visible superseded control — no facet panel on
+            this page, so a small inline link toggles the
             same `?superseded=1` param the drawer's Edition section writes
             elsewhere. The "Show N hidden" (off) state reuses the per-book
             "N hidden" note's own CSS class/microcopy convention; once
             widened, nothing is actually hidden anymore, so the reverse
             "Hide superseded" link deliberately does NOT carry that class
-            (P4's own acceptance gate asserts zero `codex-rules-hidden-note`
-            elements once every book renders unhidden). */}
+            (the route tests assert zero `codex-rules-hidden-note` elements
+            once every book renders unhidden). */}
         {totalHidden > 0 ? (
           superseded ? (
             <button

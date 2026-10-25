@@ -1,13 +1,13 @@
-/* codex's page shell — the "Liturgy of the Iridite" parchment system
- * (D29-46, P4.5 S1). `tokens.css` (imported below) provides the tokens
+/* codex's page shell — the "Liturgy of the Iridite" parchment system.
+ * `tokens.css` (imported below) provides the tokens
  * (--color-void/ink/accent/…, --font-display/heading/body/condensed); this
- * file owns codex's structure (masthead/wrap/hero — R6/D29-66 deleted the
- * global footer, no replacement) + the render
+ * file owns codex's structure (masthead/wrap/hero; there is no global
+ * footer) + the render
  * layer's OWN classnames (`entityPage.tsx`/`statblock.tsx`/`facetHeader.tsx`/
  * `nodes.tsx` emit `codex-*` classes) + the `src/ui/` component styles.
  *
  * codex is the FIRST astra frontend to drop the shared gothic design system
- * outright (R6) — every other frontend keeps gothic's void theme as-is.
+ * outright — every other frontend keeps gothic's void theme as-is.
  * There is no more competing Tailwind `@layer components` to out-rank (the
  * historical reason the reset below was wrapped in `@layer base`), so this
  * file is plain CSS, no layers, no Tailwind.
@@ -50,15 +50,13 @@ html {
     radial-gradient(ellipse at center, transparent 55%, var(--color-page-vignette) 100%),
     linear-gradient(var(--color-void), var(--color-page-bg-alt));
   background-attachment: fixed;
-  /* D29-106 (#13d): themed scrollbar for the DOCUMENT scroll — the listing
-     pane is NOT an inner scroll region (P9 windows via the document
-     scrollbar itself), so `:root`/`html` is one of the 6 regions the spec
-     measured, not an oversight. Full-width (no `scrollbar-width: thin` —
-     that's reserved for the 5 compact INNER regions below), Firefox via
-     `scrollbar-color`; the `::-webkit-scrollbar*` fallback for Chromium/
-     Safari is consolidated with the inner regions further down (zero
-     pre-existing scrollbar rules anywhere in this file before this pass —
-     verified). */
+  /* Themed scrollbar for the DOCUMENT scroll — the listing pane is NOT an
+     inner scroll region (the listing windows via the document scrollbar
+     itself), so `:root`/`html` is one of the 6 themed scrollbar regions.
+     Full-width (no `scrollbar-width: thin` — that's reserved for the 5
+     compact INNER regions below), Firefox via `scrollbar-color`; the
+     `::-webkit-scrollbar*` fallback for Chromium/Safari is consolidated with
+     the inner regions further down. */
   scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
 body {
@@ -67,15 +65,14 @@ body {
   min-height: 100%;
   color: var(--color-ink);
   font-family: var(--font-body), serif;
-  /* P8 S2 (D29-77, adversarial M7 — "entity-page body font" is actually this
-     GLOBAL rule): 18px/1.6 → 16px/1.5, site-wide by intent (every rem-based
-     rule rides along, error/404 pages included). */
+  /* The body font size is this GLOBAL rule: 16px/1.5, site-wide by intent
+     (every rem-based rule rides along, error/404 pages included). */
   font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
-/* --- links + focus (D29-46 style doc §4 — maroon at rest, gold-rule
+/* --- links + focus (style doc §4 — maroon at rest, gold-rule
    underline on hover, a gold-frame focus-visible ring in place of the
    generic browser default so keyboard nav stays in-voice) --- */
 a {
@@ -97,7 +94,7 @@ select:focus-visible,
   outline-offset: 2px;
 }
 
-/* --- src/ui/ component styles (D29-46) — codex's own drop-in replacements
+/* --- src/ui/ component styles — codex's own drop-in replacements
    for gothic's Input/Button/TraitPill/ErrorChip, exact prop-signature parity,
    all-new classnames (no `gothic-*`/Tailwind-utility class ever emitted). --- */
 .codex-ui-input {
@@ -146,7 +143,7 @@ select:focus-visible,
   background-color: var(--color-hover);
 }
 
-/* trait pills — the D29-46 3-bucket color scheme (src/ui/traitBucket.ts):
+/* trait pills — the 3-bucket color scheme (src/ui/traitBucket.ts):
    rarity -> amber, tradition/alignment -> purple, everything else -> umber. */
 .codex-ui-pill {
   display: inline-block;
@@ -182,8 +179,7 @@ select:focus-visible,
   color: var(--color-heading-maroon);
 }
 
-/* --- codex-card* (S1 — renamed from the old gothic card classnames, all 5
-   emit sites re-pointed): a plain parchment-elevated panel, used for
+/* --- codex-card*: a plain parchment-elevated panel, used for
    statblocks/prose-asides/embedded-sidebar cards. codex-card-inset
    (the in-body "aside" node) gets the style doc §3.4 gold double-line
    notched-corner art-frame treatment — a self-contained CSS-only
@@ -240,11 +236,11 @@ select:focus-visible,
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
-  /* P8 S2 (D29-77): vertical padding 20px → 10px (`--density-header-pad-y`)
-     — 77px → ~56px at desktop, a desktop-only target (below 1024px the nav
-     already wraps to its own rows and height goes wrap-dominated,
-     adversarial M8 — this rule is untouched by viewport, only its content
-     changes shape below the `.codex-header-nav` breakpoint). */
+  /* Vertical padding 10px (`--density-header-pad-y`) — ~56px tall at
+     desktop, a desktop-only target (below 1024px the nav already wraps to
+     its own rows and height goes wrap-dominated — this rule is untouched by
+     viewport, only its content changes shape below the `.codex-header-nav`
+     breakpoint). */
   padding: var(--density-header-pad-y) clamp(1rem, 4vw, 3rem);
   border-bottom: 1px solid var(--color-rule);
 }
@@ -260,16 +256,16 @@ select:focus-visible,
   color: var(--color-gold-rule);
   text-decoration: none;
 }
-/* D29-112 (P11 S4) — replaces `.site-brand` on listing/entity/rules routes
+/* Replaces `.site-brand` on listing/entity/rules routes
    (`HeaderTitle.tsx`): a small home glyph (the site's own `favicon.svg`
    mark — no new SVG asset) + the resolved title text. `min-width: 0` on
    both this and the text span below is what lets the text actually SHRINK
    below its own intrinsic width inside the `.site-head` flex row (a flex
    item's default `min-width: auto` would otherwise floor it at the full
    text's width, defeating the ellipsis and pushing the row wider instead —
-   "ellipsizes, never wraps the bar taller," D29-112's own mobile
-   requirement). `flex: 1 1 auto` lets it claim the row's remaining space
-   (after the nav/Omnibar) while still being free to shrink to 0 basis. */
+   the title ellipsizes and never wraps the bar taller on mobile).
+   `flex: 1 1 auto` lets it claim the row's remaining space (after the
+   nav/Omnibar) while still being free to shrink to 0 basis. */
 .site-header-title {
   display: flex;
   align-items: center;
@@ -298,7 +294,7 @@ select:focus-visible,
   font-size: 1.2rem;
   font-weight: 600;
 }
-/* --- P4.5 S2 (D29-47), curated P11 S4 (D29-110): the global header nav —
+/* --- the global header nav —
    5 category dropdowns + the bare Rules/Sources/All categories links.
    Every dropdown panel is
    ALWAYS rendered (never conditionally mounted) — `:hover` is the no-JS
@@ -310,13 +306,12 @@ select:focus-visible,
   align-items: center;
   gap: 0.1rem;
   flex-wrap: wrap;
-  /* Post-P12 stakeholder fix: the nav (+ the Omnibar after it) sits at the
+  /* The nav (+ the Omnibar after it) sits at the
      row's RIGHT edge on EVERY page. On title routes `.site-header-title`'s
      `flex: 1` already ate the free space (so this margin resolves to 0);
      on wordmark routes (`.site-brand`, no grow) nothing did — the nav sat
-     hugging the wordmark on the left while the Omnibar's own old
-     `margin-left: auto` floated it right alone. ONE auto margin lives here
-     now (two would split the free space and center the nav); the Omnibar
+     hugging the wordmark on the left. ONE auto margin lives here
+     (two would split the free space and center the nav); the Omnibar
      keeps its own only inside the <64rem block below, where the nav has
      wrapped onto its own full-width row. */
   margin-left: auto;
@@ -346,12 +341,10 @@ select:focus-visible,
   color: var(--color-heading-maroon);
   text-decoration: none;
 }
-/* P8 S2 (D29-80b): the `▾` affordance on every dropdown trigger
-   (`NavDropdown`'s `.codex-nav-trigger`, `HeaderNav.tsx`) — an aria-hidden
-   glyph span INSIDE the existing trigger button (D29-110: the old Rules
-   split control's OWN separate caret button/`.codex-nav-caret` is gone —
-   Rules is a bare link now, same as Sources/All categories — so this is
-   the only caret voice left). */
+/* The `▾` affordance on every dropdown trigger (`NavDropdown`'s
+   `.codex-nav-trigger`, `HeaderNav.tsx`) — an aria-hidden glyph span INSIDE
+   the trigger button. Rules is a bare link, same as Sources/All categories,
+   so this is the only caret on the nav. */
 .codex-nav-trigger-caret {
   margin-left: 0.3rem;
   font-size: 0.65rem;
@@ -363,12 +356,11 @@ select:focus-visible,
   left: 0;
   z-index: 30;
   min-width: 13rem;
-  /* D29-110 (#10): was a flat `24rem` — on a ~900px-tall viewport that alone
-     already exceeds the available room below the header, clipping a
-     dropdown's tail items; `min(70vh, 24rem)` caps by BOTH the viewport
-     (so it never overruns a short window) and the prior flat ceiling (so it
-     never grows past the original design size on a tall one), reaching
-     beyond the first 12 items on a 900px-tall viewport per gate E. */
+  /* A flat `24rem` alone exceeds the room below the header on a ~900px-tall
+     viewport, clipping a dropdown's tail items; `min(70vh, 24rem)` caps by
+     BOTH the viewport (so it never overruns a short window) and the design
+     ceiling (so it never grows past the design size on a tall one), and
+     still shows more than the first 12 items on a 900px-tall viewport. */
   max-height: min(70vh, 24rem);
   overflow-y: auto;
   list-style: none;
@@ -377,7 +369,7 @@ select:focus-visible,
   border: 1px solid var(--color-gold-rule);
   border-radius: 0.2rem;
   box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
-  /* D29-106 (#13d): themed scrollbar — one of the 6 regions. */
+  /* Themed scrollbar — one of the 6 regions. */
   scrollbar-width: thin;
   scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
@@ -434,7 +426,7 @@ select:focus-visible,
   font-size: 0.9em;
 }
 
-/* --- P4.5 S2 (D29-47): the R4 landing page — hero brand + the distinct
+/* --- the landing page — hero brand + the distinct
    hero search box + the 8 tiles + the quieter "browse all" link. --- */
 .codex-landing {
   text-align: center;
@@ -525,23 +517,22 @@ select:focus-visible,
   text-align: center;
 }
 
-/* --- the entity page (S1's render-layer classnames, first styled here) --- */
+/* --- the entity page (the render layer's classnames) --- */
 .codex-entity-page {
   width: 100%;
   max-width: 52rem;
   margin: 0 auto;
-  /* P8 S2 (D29-77, adversarial M7): half-scale, ≈48px → 24px at desktop —
-     `.wrap-wide` hardcodes the IDENTICAL clamp (below), so both consume
+  /* ≈24px at desktop — `.wrap-wide` uses the IDENTICAL clamp (below), so both consume
      `--density-page-pad` (`tokens.css`) in lockstep rather than drifting. */
   padding: var(--density-page-pad);
 }
 .codex-entity-header {
   margin-bottom: 1.25rem;
 }
-/* --- P4.5 S5 (D29-50): the statblock/feat header row grammar, style doc
+/* --- the statblock/feat header row grammar, style doc
    §3.5 — "Name (left) + type/level tag (right)... full-width thin hairline
    rule beneath the whole row (not just under the name)." The tag is in
-   `--font-condensed` (the doc's Oswald "mechanical voice" slot, D29-46);
+   `--font-condensed` (the doc's Oswald "mechanical voice" slot);
    the name keeps codex's own established `--font-heading` small-caps voice
    (used identically for every other H1/H2 in the app) rather than also
    switching to condensed — restyling the tag alone satisfies the section's
@@ -563,13 +554,9 @@ select:focus-visible,
   font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 600;
 }
-/* D29-112 (P11 S4) once pulled this h1 sr-only via a `standalone` modifier
-   class on the standalone entity/class routes (the root header carried the
-   visible title instead) — a later stakeholder redirect scoped
-   header-carries-title back down to parent/listing surfaces only, so the
-   modifier class + its popover re-show override are REMOVED outright (not
-   just unused): this h1 is unconditionally visible everywhere now, same as
-   the split-view entry pane always rendered it. */
+/* The entity h1 is unconditionally visible everywhere (standalone page,
+   split-view entry pane, popover): the root header carries the title only
+   on parent/listing surfaces, never on a standalone entity/class page. */
 .codex-entity-type-tag {
   flex: none;
   color: var(--color-ink-dim);
@@ -634,7 +621,7 @@ select:focus-visible,
   color: var(--color-ink-dim);
   text-transform: capitalize;
 }
-/* P10 (D29-95): the header size chip — a plain facet chip (styled identically
+/* The header size chip — a plain facet chip (styled identically
    to `.codex-rarity` above), never a linked `TraitPill`; positioned
    immediately before it in the meta row (size · rarity, echoing AoN's own
    "Rare · Large · traits" strip). */
@@ -642,10 +629,9 @@ select:focus-visible,
   font-size: 0.85rem;
   color: var(--color-ink-dim);
 }
-/* --- P4.5 S5 (D29-50): the per-entity citation-line treatment — font-condensed
-   (the "mechanical voice" slot, D29-46), same voice as the statblock header
-   tag/pill row, no structural change to what it renders (D29-24/citation
-   logic untouched). --- */
+/* --- the per-entity citation-line treatment — font-condensed (the
+   "mechanical voice" slot), same voice as the statblock header tag/pill
+   row. Styling only; the citation logic lives in `citation.tsx`. --- */
 .codex-citation {
   font-size: 0.8rem;
   color: var(--color-ink-faint);
@@ -671,9 +657,9 @@ select:focus-visible,
 .codex-aon-link {
   font-size: 0.8rem;
 }
-/* --- P4.5 S5 (D29-50) mapping note: the corpus's `CodexNode` taxonomy has
+/* --- mapping note: the corpus's `CodexNode` taxonomy has
    no flavor-vs-mechanical aside distinction (a plain `aside` kind covers
-   both), so per the spec's own fallback the TAN callout family (below,
+   both), so the TAN callout family (below,
    nodes.tsx) covers asides/embeds and the BLUE family covers this banner
    plus the facet drawer's superseded explainer (`FacetPanel.tsx`) — both
    "informational notice" surfaces, style doc §3.3: a soft blue-gray field,
@@ -720,12 +706,11 @@ select:focus-visible,
   color: var(--color-accent-amber);
 }
 
-/* --- P4.5 S5 (D29-50): the spell/equipment/feat/generic facet-header line
+/* --- the spell/equipment/feat/generic facet-header line
    (facetHeader.tsx) — the SAME bold-label/regular-value grammar as the
    statblock's own `.codex-stat-label` (style doc §3.8: "bold = mechanical
    label"), one line above the statblock/body, " | "-separated parts. This
-   is the "Feat 13 passive Prerequisites..." line the spec calls out by
-   name — previously plain unlabeled text. */
+   is the "Feat 13 passive Prerequisites..." line, labeled. */
 .codex-facet-row {
   padding: 0.35rem 0 0.75rem;
   font-size: 0.95rem;
@@ -752,10 +737,10 @@ select:focus-visible,
 }
 
 .codex-content p {
-  /* P8 S2 (D29-77): 0.75rem → `--density-content-margin` (0.375rem) —
-     `ul`/`ol` below move in lockstep, same shared value as before this. */
+  /* `--density-content-margin` (0.375rem) — `ul`/`ol` below share the
+     same value. */
   margin: var(--density-content-margin) 0;
-  /* R2 (D29-64): AoN marks each degree-of-success block with `<br/>`, which
+  /* AoN marks each degree-of-success block with `<br/>`, which
      ingest deliberately preserves as a literal "\n" inside one `text` node
      within a single `paragraph` (aonMarkup.ts:69-71) rather than opening a
      new block — `pre-line` honors that break while still collapsing
@@ -767,7 +752,7 @@ select:focus-visible,
 .codex-content ol {
   margin: var(--density-content-margin) 0 var(--density-content-margin) 1.5rem;
 }
-/* P10 (D29-94): a collapsed AoN statblock row (`Str +7 Dex +5 ...`). Mirrors
+/* A collapsed AoN statblock row (`Str +7 Dex +5 ...`). Mirrors
    the `.codex-entity-meta-row` flex idiom above (flex row, wraps, medium
    column-gap/small row-gap — AoN's own `gap="medium"`) plus the row's own
    equivalent of `.codex-content p`'s block margin (that rule is p-scoped, so
@@ -784,10 +769,10 @@ select:focus-visible,
      letting incidental whitespace runs affect layout. */
   white-space: pre-line;
 }
-/* R1 (D29-63) — gothic's GFM table skin (theme.css:208-219), re-tokenized
+/* Gothic's GFM table skin (theme.css:208-219), re-tokenized
    onto codex's own parchment tokens: hairline borders off `--color-rule`,
    a header row in the `.codex-heading` small-caps grammar, and the
-   `/sources` zebra-table precedent (D29-50) for alternating rows. The
+   `/sources` zebra-table precedent for alternating rows. The
    renderer's `<table>` emission (nodes.tsx:384-402) stays classless — this
    is CSS-only, scoped entirely by the `.codex-content` ancestor. */
 .codex-content table {
@@ -825,8 +810,8 @@ select:focus-visible,
 .codex-aside {
   margin: 1rem 0;
 }
-/* --- P4.5 S5 (D29-50): the tan "in-world artifact" callout family (style
-   doc §3.2) — `codex-card-inset` (the `aside` node) already carries S1's
+/* --- the tan "in-world artifact" callout family (style
+   doc §3.2) — `codex-card-inset` (the `aside` node) already carries the
    gold double-line notched-corner ART FRAME (style doc §3.4, kept as-is);
    `codex-embed-card` is the lighter sibling (no outer frame, same tan field
    + chevron-rule bracketing) since an inlined embed is a nested reference,
@@ -869,8 +854,8 @@ select:focus-visible,
   margin-top: 1.5rem;
 }
 
-/* --- P2 S3: the category directory (`/`, unchanged by P3) --- */
-/* P4 S4 (D29-43): the "Sources index" entry, beside the category groups. */
+/* --- the category directory --- */
+/* The "Sources index" entry, beside the category groups. */
 .codex-directory-extra {
   margin: 1rem 0 1.5rem;
 }
@@ -901,17 +886,16 @@ select:focus-visible,
   font-size: 0.78rem;
 }
 
-/* --- P3 S3: the faceted `/{category}` browse listing (replaces the P2
-   throwaway A-Z page — D29-35) --- */
+/* --- the faceted `/{category}` browse listing --- */
 .wrap-wide {
   width: 100%;
   max-width: 72rem;
   margin: 0 auto;
-  /* P8 S2 (D29-77, adversarial M7): the identical clamp `.codex-entity-page`
+  /* The identical clamp `.codex-entity-page`
      carries — same `--density-page-pad` token, lockstep (see its comment). */
   padding: var(--density-page-pad);
 }
-/* P11 S2 (D29-103) — `routes/$category/index.tsx` (the `/{category}` browse
+/* `routes/$category/index.tsx` (the `/{category}` browse
    listing) ONLY swaps `.wrap-wide` for this wider variant: the listing
    table's emergent width was capped at ≈617px (58fr of `.wrap-wide`'s
    72rem, `.codex-browse-layout`'s own comment) regardless of viewport —
@@ -919,34 +903,29 @@ select:focus-visible,
    of 72rem) so a genuinely wide viewport can render more of the table
    uncramped. Scoped to this ONE route file on purpose (never `.codex-
    browse-layout` itself, and never a bare rename of `.wrap-wide`) — /search,
-   /rules, /sources all still import `.wrap-wide` directly (verified via a
-   repo-wide grep before this change) and must keep their own narrower
-   measure; leaking this class onto them would be the P8 `.codex-browse-
-   layout`-reuse gotcha's cousin (0029 spec's own framing). */
+   /rules, /sources all still use `.wrap-wide` directly and must keep their
+   own narrower measure. */
 .wrap-browse {
   width: 100%;
   max-width: 96rem;
   margin: 0 auto;
   padding: var(--density-page-pad);
 }
-/* P8 S2 (D29-77): the title block + controls row consolidate to one line
-   each — spacing tightened so the total lead-in above the first table row
-   lands ≤ 300px at 1600×900 (measured 440px pre-P8; S1 already brought it
-   to ~297px via the row-register swap alone, this tightens further). */
+/* The title block + controls row take one line each — spacing tightened so
+   the total lead-in above the first table row lands ≤ 300px at 1600×900. */
 .codex-listing-header {
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--color-rule);
   margin-bottom: 0.5rem;
 }
-/* D29-112 (P11 S4) — the in-content h1 stays in the SSR DOM (document
-   outline + a11y tree intact) but renders sr-only, unconditionally: the
-   root header now carries the VISIBLE listing title (`HeaderTitle.tsx`,
+/* The in-content h1 stays in the SSR DOM (document outline + a11y tree
+   intact) but renders sr-only, unconditionally: the root header carries
+   the VISIBLE listing title (`HeaderTitle.tsx`,
    `displayCategoryName(params.category)`) on every `/{category}` listing —
    there's no "embedded" listing context that still needs this h1 visible
    (`BrowseListing` has exactly one production call site, the listing
-   route) — UNCHANGED by the later stakeholder redirect that made the
-   entity h1 (`.codex-entity-name`, above) visible again: listings are a
-   parent/listing surface, still in scope for header-carries-title. The
+   route). Unlike the entity h1 (`.codex-entity-name`, above), a listing is
+   a parent/listing surface, where the header carries the title. The
    standard sr-only clip-box technique, kept as its own rule rather than a
    shared utility class (this selector needs no `:has()` layout companion —
    the row below was never `space-between`-keyed on two items the way the
@@ -962,12 +941,10 @@ select:focus-visible,
   white-space: nowrap;
   border: 0;
 }
-/* P8 S3 (D29-82), P11 S4 (D29-112) — the count line, the D29-111
-   superseded-reveal control, the desktop-only keyboard hint, the
-   quick-filter search input, and the Filters button all fold into this ONE
-   slim row now (`.codex-listing-controls` — the old second stacked block —
-   is DELETED, folded in here) — the sr-only h1 above no longer needs a
-   `space-between` partner, so this switches to a plain wrapping flex row;
+/* The count line, the superseded-reveal control, the desktop-only keyboard
+   hint, the quick-filter search input, and the Filters button all share
+   this ONE slim row — the sr-only h1 above needs no `space-between`
+   partner, so this is a plain wrapping flex row;
    the Filters button keeps its own `margin-left: auto` to stay pinned to
    the row's right edge regardless of how many optional pieces (hint/reveal
    note) render before it. `.codex-listing-hint` isn't rendered at all under
@@ -997,7 +974,7 @@ select:focus-visible,
   margin-left: auto;
 }
 
-/* --- P4.5 S4 (D29-49): the active-filter pill summary row, the drawer's
+/* --- the active-filter pill summary row, the drawer's
    own contents' only always-visible trace now that `FacetPanel` lives
    inside a dismissible `<dialog>` (below). One pill per active FACET
    DIMENSION (not per value) plus a bulk "Clear all". --- */
@@ -1006,15 +983,14 @@ select:focus-visible,
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
-  /* P8 S2 (D29-77): tightened with the rest of the listing lead-in — only
+  /* Tightened with the rest of the listing lead-in — only
      rendered when ≥1 filter is active, so it isn't part of the baseline
      ≤300px measurement, but stays consistent with it. */
   margin-bottom: 0.75rem;
 }
-/* P13 S1 (D29-129): restyled to the refreshed chip language — same
-   parchment neutral treatment as `.codex-toggle-chip`/`.codex-trait-chip`
-   (transparent field, gold-rule outline) rather than the old blue-callout
-   tint, so the pill row reads as ONE consistent chip vocabulary with the
+/* The same parchment neutral chip treatment as
+   `.codex-toggle-chip`/`.codex-trait-chip` (transparent field, gold-rule
+   outline), so the pill row reads as ONE consistent chip vocabulary with the
    panel it summarizes. */
 .codex-active-pill {
   display: inline-flex;
@@ -1048,17 +1024,16 @@ select:focus-visible,
   text-decoration: underline;
 }
 
-/* --- P4.5 S4 (D29-49): the split-column browse layout. Left = the
+/* --- the split-column browse layout. Left = the
    (narrower) listing pane; right = the full entity-render pane for
    `?entry=`. Below the shared breakpoint the entry pane is CSS-hidden
    (never React-conditional — see `BrowseListing.tsx`'s own comment on why:
    an SSR deep link must still contain the full body in the raw HTML
    regardless of viewport) and row taps fully navigate instead of
    selecting. --- */
-/* P8 S2 (D29-78 S1-build amendment): the LIST track widens at desktop — S1
-   proved the pre-P8 `minmax(0, 26rem)` cap (416px at ANY viewport ≥ 897px)
-   makes the FULL column set unreachable on desktop, contradicting the
-   "full table register" preview stakeholders chose. The entry pane is
+/* The LIST track is wide at desktop — a `minmax(0, 26rem)` cap (416px at
+   ANY viewport ≥ 897px) would make the FULL column set unreachable on
+   desktop, against the "full table register" design. The entry pane is
    ALWAYS the second grid column at this width (placeholder copy when no
    `?entry=` is set — `BrowseListing.tsx`'s own comment on why it's
    CSS-hidden, not React-conditional, below the breakpoint), so the ratio
@@ -1067,8 +1042,8 @@ select:focus-visible,
    ~15px short of 600 at 1600px once `.wrap-wide`'s own max-width/padding/
    gap are subtracted (1,064px left for both columns + the 40px gap) — 58/42
    is the closest round ratio that clears it with margin (~617px/~447px),
-   still reading as "≈55/45" (5e.tools' own split). Gate B's "full set at
-   1600px" reads against this rule. */
+   still reading as "≈55/45" (5e.tools' own split). The full column set
+   at 1600px depends on this rule. */
 .codex-browse-layout {
   display: grid;
   grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
@@ -1082,7 +1057,7 @@ select:focus-visible,
   .codex-entry-pane {
     display: none;
   }
-  /* P13 S2 (D29-123) — belt-and-suspenders: `isTwoColumnFilterTier`
+  /* Belt-and-suspenders: `isTwoColumnFilterTier`
      (`BrowseListing.tsx`) already tracks this SAME breakpoint reactively
      and stops rendering `.codex-filter-pane` here once it flips (the sheet
      takes over instead), but this mirrors `.codex-entry-pane`'s own
@@ -1093,19 +1068,17 @@ select:focus-visible,
   }
 }
 
-/* P8 S2 — `/search` (`SearchPage.tsx`) reuses this SAME class for an
+/* `/search` (`SearchPage.tsx`) reuses this SAME class for an
    unrelated split: a narrow facet-checkbox aside + a wide results column,
-   not the browse listing's list/entry-preview pair. Left un-rebalanced
-   above, the 58/42 desktop split would blow the facet aside out to over
-   half the page — scoped back to the pre-P8 narrow-aside ratio here rather
-   than widening `SearchPage`'s own facet column (out of this slice's scope
-   — D29-77/78 name the browse listing, not `/search`'s layout). The 2-class
+   not the browse listing's list/entry-preview pair. The 58/42 desktop
+   split above would blow the facet aside out to over half the page, so
+   `/search` gets its own narrow-aside ratio here. The 2-class
    selector here is MORE specific than the bare `.codex-browse-layout`
    narrow-collapse rule above (both are un-scoped by media query otherwise),
    so the ≤56rem collapse needs its own equally-scoped restatement below —
    without it this override would keep the two-column split alive under the
-   26rem floor at every viewport, including 390px (caught live: 34px of
-   forced horizontal page scroll on `/search` before this fix). */
+   26rem floor at every viewport, including 390px (34px of forced
+   horizontal page scroll on `/search`). */
 .codex-search-shell .codex-browse-layout {
   grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
 }
@@ -1127,7 +1100,7 @@ select:focus-visible,
   overflow-y: auto;
   padding: 0.25rem clamp(0.5rem, 2vw, 1.5rem);
   border-left: 1px solid var(--color-rule);
-  /* D29-106 (#13d): themed scrollbar — one of the 6 regions (the split-view
+  /* Themed scrollbar — one of the 6 regions (the split-view
      entry pane IS an inner scroll region, unlike the listing pane itself). */
   scrollbar-width: thin;
   scrollbar-color: var(--color-gold-frame) var(--color-void);
@@ -1151,14 +1124,13 @@ select:focus-visible,
   color: var(--color-link-hover);
 }
 
-/* --- P4.5 S4 (D29-49), restyled P13 S2 (D29-123/124) — the narrow-tier
-   filter SHEET: a native `<dialog>` wrapping the UNMODIFIED `FacetPanel`
-   (still renders its own `<aside>` inside). The two-column tier no longer
-   uses this element for VISIBLE chrome at all (the pane below owns that
-   instead — the dialog stays mounted-but-empty there, `BrowseListing.tsx`'s
-   own doc comment), so this is now purely the MOBILE bottom-sheet look:
-   full width, anchored to the viewport bottom (`inset-block-end`), slides
-   up rather than the old centered-modal treatment. --- */
+/* --- the narrow-tier filter SHEET: a native `<dialog>` wrapping the
+   UNMODIFIED `FacetPanel` (still renders its own `<aside>` inside). The
+   two-column tier doesn't use this element for VISIBLE chrome at all (the
+   pane below owns that instead — the dialog stays mounted-but-empty there,
+   `BrowseListing.tsx`'s own doc comment), so this is purely the MOBILE
+   bottom-sheet look: full width, anchored to the viewport bottom
+   (`inset-block-end`), sliding up. --- */
 .codex-filter-drawer {
   position: fixed;
   inset-inline: 0;
@@ -1179,7 +1151,7 @@ select:focus-visible,
 .codex-filter-drawer::backdrop {
   background-color: rgb(35 31 26 / 55%);
 }
-/* P13 S2 (D29-124) — the sheet's own flex-column wrapper (header/body/
+/* The sheet's own flex-column wrapper (header/body/
    footer, `.codex-filter-pane-*` below — SHARED with the desktop pane's own
    wrapper, `.codex-filter-pane`): NOT `display:flex` on the `<dialog>`
    element itself (a real cascade trap — an unconditional author `display`
@@ -1194,17 +1166,16 @@ select:focus-visible,
   overflow: hidden;
 }
 
-/* P13 S2 (D29-124) — the dead `position: sticky` (this panel's own body no
-   longer scrolls independently; its HOST — `.codex-filter-pane`/the sheet
-   body below — owns the ONE scroll region) + the drawer-scoped
-   `position: static` override it needed both die together. */
+/* No `position: sticky` here: this panel's own body doesn't scroll
+   independently; its HOST — `.codex-filter-pane`/the sheet body below —
+   owns the ONE scroll region. */
 .codex-facet-panel {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-/* P13 S2 (D29-123) — the two-column-tier pane-swap occupant: renders in the
+/* The two-column-tier pane-swap occupant: renders in the
    SAME grid cell `.codex-entry-pane` normally occupies (mutually exclusive,
    `BrowseListing.tsx`'s own ternary — never both at once). Own header/body
    scroll region (below) rather than the entry pane's sticky/overflow
@@ -1225,7 +1196,7 @@ select:focus-visible,
   overflow: hidden;
 }
 
-/* P13 S2 (D29-124) — shared pane/sheet chrome: sticky-FEELING header (Clear
+/* Shared pane/sheet chrome: sticky-FEELING header (Clear
    all + ✕ ONLY — no count, the toolbar row is canonical) via plain flex
    (`flex: none` on header/footer, `flex: 1` + its own scroll on the body —
    no actual `position: sticky` needed inside an already-non-scrolling flex
@@ -1277,8 +1248,8 @@ select:focus-visible,
   border-color: var(--color-gold-frame-dark);
   color: var(--color-ink);
 }
-/* P13 S2 (D29-124) — the ONE scroll region: replaces the per-section
-   `.codex-facet-options` 14rem scrollboxes (below) entirely. */
+/* The ONE scroll region: the per-section `.codex-facet-options` lists
+   (below) don't scroll on their own. */
 .codex-filter-pane-body {
   flex: 1;
   overflow-y: auto;
@@ -1290,7 +1261,7 @@ select:focus-visible,
   scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
 /* Sheet-only (the desktop pane has no footer — its own ✕/Filters-toggle
-   already close it, D29-123). */
+   already close it). */
 .codex-filter-pane-footer {
   flex: none;
   padding: 0.75rem 1.1rem;
@@ -1311,7 +1282,7 @@ select:focus-visible,
   color: var(--color-accent-amber);
   margin-bottom: 0.5rem;
 }
-/* P13 S1 (D29-125/-130): the title-row wrapper `FacetSection` now renders
+/* The title-row wrapper `FacetSection` renders
    around every title — carries `OptionSearch`'s magnifier button alongside
    the heading text. The row itself owns the bottom margin/gap (a two-class
    selector, MORE specific than the bare `.codex-facet-title` rule above —
@@ -1330,7 +1301,7 @@ select:focus-visible,
 .codex-facet-title-row .codex-facet-title {
   margin-bottom: 0;
 }
-/* P13 S2 (D29-124) — the active-section value-count badge + per-section
+/* The active-section value-count badge + per-section
    clear × (`FacetSection`, `facetControls.tsx`): a small pill inline with
    the title text, and a quiet ghost × sharing the title row's flex line. */
 .codex-facet-title-badge {
@@ -1365,15 +1336,15 @@ select:focus-visible,
 .codex-facet-section-clear:hover {
   color: var(--color-heading-maroon);
 }
-/* P13 S2 (D29-124) — the per-section `max-height: 14rem` inner scrollbox
-   DIES: the pane/sheet body (`.codex-filter-pane-body` above) is now the
-   ONE scroll region, so every option list just flows. */
+/* No per-section inner scrollbox: the pane/sheet body
+   (`.codex-filter-pane-body` above) is the ONE scroll region, so every
+   option list just flows. */
 .codex-facet-options {
   list-style: none;
   display: flex;
   flex-direction: column;
-  /* P8 S2 (D29-77): 0 gap — the option row's own vertical padding (below)
-     now carries the spacing, mirroring `.codex-listing-row`'s "0 gap, row
+  /* 0 gap — the option row's own vertical padding (below) carries the
+     spacing, mirroring `.codex-listing-row`'s "0 gap, row
      owns its own padding" convention rather than compounding both. */
   gap: 0;
 }
@@ -1385,7 +1356,7 @@ select:focus-visible,
   font-size: 0.85rem;
   cursor: pointer;
 }
-/* P13 S1 (D29-126): custom-styled treatment — the real `<input
+/* Custom-styled treatment — the real `<input
    type="checkbox">` stays in the DOM (never a hand-rolled div), just given
    the parchment accent color + a touch more size than the UA default. */
 .codex-facet-option input[type="checkbox"] {
@@ -1393,14 +1364,12 @@ select:focus-visible,
   width: 1rem;
   height: 1rem;
 }
-/* P13 S1 (D29-122): `text-transform: capitalize` DELETED — this is the very
-   mechanism that produced "Ancestryfeature"/"Classfeature" (the scope doc's
-   own named symptom): a CSS capitalize blindly title-cases every
-   space-separated word with NO stopword awareness, fighting
-   `formatFacetValue`'s deliberate "held-in-one-hand" -> "Held in One Hand"
-   (lowercase "in") the moment any label reaches this class. Labels now
-   arrive pre-formatted from JS (`humanizedLabelFor`/`formatFacetValue`) and
-   render verbatim. */
+/* No `text-transform: capitalize`: a CSS capitalize blindly title-cases
+   every space-separated word with NO stopword awareness (it produced
+   "Ancestryfeature"/"Classfeature"), fighting `formatFacetValue`'s
+   deliberate "held-in-one-hand" -> "Held in One Hand" (lowercase "in").
+   Labels arrive pre-formatted from JS (`humanizedLabelFor`/
+   `formatFacetValue`) and render verbatim. */
 .codex-facet-option-label {
   flex: 1;
 }
@@ -1415,10 +1384,9 @@ select:focus-visible,
   margin-top: 0.15rem;
 }
 
-/* P13 S3 (D29-128) — the grouped Source section's product-line disclosures:
-   an explicit conditional-render toggle, NEVER a `<details>` element (the
-   P12 `::details-content` trap this spec's own review named as a hard
-   ban) — mirrors `.codex-rules-toggle`'s own button-plus-glyph idiom
+/* The grouped Source section's product-line disclosures: an explicit
+   conditional-render toggle, NEVER a `<details>` element (the
+   `::details-content` styling trap) — mirrors `.codex-rules-toggle`'s own button-plus-glyph idiom
    (`RulesTree.tsx`) rather than inventing a second one. */
 .codex-source-groups {
   list-style: none;
@@ -1479,18 +1447,10 @@ select:focus-visible,
   font-size: 0.8rem;
 }
 
-/* --- P13 S2 (D29-129 consolidation), completed P13 S3 (D29-130):
-   `FacetPanel.tsx`'s `SupersededSection` (browse) went to a plain toggle
-   row + a one-line muted caption at S2 — the loud BLUE explainer callout
-   died from THAT panel specifically then. `SearchPage.tsx`'s own copy held
-   onto `.codex-facet-superseded-explainer`/`.codex-callout-blue` through S2
-   (deliberately — deleting the shared rule then would have silently
-   unstyled its still-live markup before S3 landed); S3's own consumption of
-   the shared primitives dropped that callout too (its `SupersededSection`
-   now uses the SAME muted-caption treatment), so
-   `.codex-facet-superseded-explainer` has no remaining consumer and is
-   DELETED here — `.codex-callout-blue` itself stays (`editionBanner.tsx`
-   still uses it). --- */
+/* --- the superseded-visibility control: both `SupersededSection`s
+   (`FacetPanel.tsx` on browse, `SearchPage.tsx` on /search) render a plain
+   toggle row + a one-line muted caption, no blue explainer callout
+   (`.codex-callout-blue` stays for `editionBanner.tsx`). --- */
 .codex-facet-superseded {
   display: flex;
   flex-direction: column;
@@ -1503,23 +1463,22 @@ select:focus-visible,
   font-style: italic;
 }
 
-/* P13 S1 (D29-127): the inner `max-height`/`overflow-y` scrollbox DIES — the
-   list now flows (bounded to `TRAITS_INITIAL_RENDER_COUNT` = 40 + a "Show
-   all N" expander keeps the default render from becoming enormous; the
-   pane's own single scroll region is S2's job, D29-124). */
+/* No inner `max-height`/`overflow-y` scrollbox — the list flows (bounded
+   to `TRAITS_INITIAL_RENDER_COUNT` = 40 + a "Show all N" expander keeps the
+   default render from becoming enormous; the pane owns the single scroll
+   region). */
 .codex-trait-chips {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
 }
-/* P13 S1 (D29-127): restyled to the token palette — neutral = a gold-rule
-   outline on parchment (`--color-gold-rule`, not the diluted `--color-rule`
-   hairline); include = FILLED maroon (was outline-only — "kill the current
-   dark boxes"); exclude = amber outline + strikethrough (unchanged
-   treatment, already token-correct). `text-transform: capitalize` DELETED
-   here too (same D29-122 reasoning as `.codex-facet-option-label` above —
-   trait tokens are already lowercase by design/convention, never CSS-cased). */
+/* The token palette — neutral = a gold-rule outline on parchment
+   (`--color-gold-rule`, not the diluted `--color-rule` hairline); include =
+   FILLED maroon; exclude = amber outline + strikethrough. No
+   `text-transform: capitalize` (same reasoning as
+   `.codex-facet-option-label` above — trait tokens are lowercase by
+   convention, never CSS-cased). */
 .codex-trait-chip {
   display: inline-flex;
   align-items: center;
@@ -1547,9 +1506,8 @@ select:focus-visible,
   color: var(--color-accent-amber);
   text-decoration: line-through;
 }
-/* P13 S1 (D29-127): the muted tri-state gesture hint under the Traits
-   title ("click to require · again to exclude · again to reset") —
-   previously undiscoverable. */
+/* The muted tri-state gesture hint under the Traits title ("click to
+   require · again to exclude · again to reset"). */
 .codex-facet-hint {
   font-size: 0.72rem;
   font-style: italic;
@@ -1557,7 +1515,7 @@ select:focus-visible,
   margin: -0.2rem 0 0.5rem;
 }
 
-/* P13 S1 (D29-125): `OptionSearch` — the magnifier toggle sits in the
+/* `OptionSearch` — the magnifier toggle sits in the
    section title row (`.codex-facet-title-row`'s own flex layout); the
    expanded input drops to its own full-width line beneath the title via
    `flex-basis: 100%` regardless of available row width. */
@@ -1585,10 +1543,10 @@ select:focus-visible,
   margin-top: 0.3rem;
 }
 
-/* P13 S1 (D29-126): the parchment toggle-chip row (≤8-option enum sections
-   — Rarity/Edition/actionCost/feat itemCategory) — real `<button>`s,
-   multi-select `aria-pressed` semantics, wraps at any width (two-word
-   chips sanctioned, D29-126). */
+/* The parchment toggle-chip row (≤8-option enum sections —
+   Rarity/Edition/actionCost/feat itemCategory) — real `<button>`s,
+   multi-select `aria-pressed` semantics, wraps at any width (two-word chips
+   are fine). */
 .codex-toggle-chip-row {
   list-style: none;
   display: flex;
@@ -1623,25 +1581,19 @@ select:focus-visible,
   opacity: 0.8;
 }
 
-/* P13 S1 (D29-126): Edition's option label — icon + VISIBLE text ("Remaster"
-   / "Legacy"), replacing the old icon-only rendering. */
+/* Edition's option label — icon + VISIBLE text ("Remaster" / "Legacy"). */
 .codex-edition-option-label {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
 }
 
-/* --- P8 S1 (D29-77/D29-78): the listing TABLE register — replaces the old
-   letter-grouped/level-ordered `<ul>` (`.codex-listing-alpha`/
-   `.codex-listing-letter`/`.codex-listing-rows*`, deleted along with the
-   jump strip + section headers themselves, R2/N11) with a real
-   `<table>`/`<thead>`/`<tbody>`. `--density-row-*` (`tokens.css`) are the
-   ONLY new tokens this slice adds — the rest of D29-77's site-wide density
-   pass (body font, pane padding, header) is S2. --- */
+/* --- the listing TABLE register — a real `<table>`/`<thead>`/`<tbody>`,
+   sized by the `--density-row-*` tokens (`tokens.css`). --- */
 .codex-listing-table {
   width: 100%;
   border-collapse: collapse;
-  /* P9 S1 (D29-86) — windowing prerequisite: under AUTO layout, only the
+  /* Windowing prerequisite: under AUTO layout, only the
      currently-MOUNTED rows feed column-width auto-sizing, so column widths
      would visibly jitter as the virtualized window scrolls (a column
      narrower/wider than the header once a wide/narrow value scrolls out of
@@ -1650,36 +1602,25 @@ select:focus-visible,
      column's width a function of the CURRENT CATEGORY alone, never the
      scroll position. */
   table-layout: fixed;
-  /* Live-measured gotcha: `body` sets a site-wide `line-height: 1.6` (the
+  /* Live-measured gotcha: `body` sets a site-wide `line-height` (the
      entity-page prose voice) that every cell here would otherwise INHERIT,
-     ballooning the row box to ~32px regardless of the values below
-     (measured via a real headless-Chromium pass against `/spell` before
-     this fix).
-     P9 S1 (D29-83, adversarial M4 — "the proxy-pin class"): P8's own
-     "≈24px" arithmetic here never matched its actual `padding: 4px 0.5rem`
-     rule (it said "5px×2 padding"), and the LIVE rendered row measured
-     23.94px, not 24px — fixed-size windowing has no self-correction, so the
-     real number now matters EXACTLY, not approximately, proven by a real
-     Chromium pass (`e2e/rowHeight.spec.ts`) rather than re-trusting
-     this comment's own arithmetic a second time. Two live-measured facts,
-     not guessed:
-       1. `line-height: 15px` (an EXPLICIT px value, not the old unitless
-          `1.15` multiplier — which recomputed PER CELL's own font-size,
-          13px data / 14px name, the actual source of the prior sub-pixel
-          drift) gives every cell an identical 15px content line box
-          regardless of its own font-size.
+     ballooning the row box to ~32px regardless of the values below.
+     Fixed-size windowing has no self-correction, so the row pitch must be
+     EXACT, not approximate; a real Chromium pass (`e2e/rowHeight.spec.ts`)
+     proves it rather than this comment's arithmetic. Two live-measured
+     facts, not guessed:
+       1. `line-height: 15px` (an EXPLICIT px value, not a unitless
+          multiplier — which recomputes PER CELL's own font-size, 13px data /
+          14px name, and drifts by sub-pixels) gives every cell an identical
+          15px content line box regardless of its own font-size.
        2. Under `border-collapse: collapse`, ONE shared hairline (not two)
           contributes to each row's OWN measured border-box — confirmed by
           diffing consecutive rows' `getBoundingClientRect().top` (the
           per-row PITCH, not just one row's own height): `15 (line-height) +
           2×4px (padding) + 1 (the collapsed hairline) = 24.00px`, exactly,
           at both container tiers.
-     (A SEPARATE bug surfaced while live-measuring this, now also fixed —
-     see `.codex-listing-table td.codex-listing-col-name`, below: the name
-     cell's own `font-size: var(--density-row-name-size)` (14px) was losing
-     the cascade to this same file's `.codex-listing-table tbody td` rule —
-     1 class vs. 1 class + 2 elements — so the name column had ALWAYS
-     rendered at the 13px data size in practice, never its intended 14px.)
+     (See also `.codex-listing-table td.codex-listing-col-name`, below, for
+     the name cell's font-size specificity trap.)
      Set ONCE at the table root so no cell needs a per-font-size override. */
   line-height: 15px;
 }
@@ -1689,14 +1630,12 @@ select:focus-visible,
   text-align: left;
   white-space: nowrap;
 }
-/* P9 S1 (D29-86) — "Fixed cells: overflow: hidden; text-overflow: ellipsis,
-   nowrap stays" (nowrap already set above): a data cell that overflows its
-   OWN fixed `ch` width now clips + ellipsizes at the CELL boundary itself
-   rather than the pre-fixed-layout convention of a bespoke inner
-   `.codex-col-truncate` span per renderer — those inner spans (Cast/Range)
-   keep their own `title` attribute (still useful for a hover tooltip) but
-   their `max-width: 14rem` is now redundant/inert once the outer `<td>` is
-   the narrower real boundary; harmless left in place. `<th>` is excluded —
+/* Fixed cells: `overflow: hidden; text-overflow: ellipsis`, nowrap (already
+   set above): a data cell that overflows its OWN fixed `ch` width clips +
+   ellipsizes at the CELL boundary itself. The inner `.codex-col-truncate`
+   spans (Cast/Range) keep their own `title` attribute (a hover tooltip);
+   their `max-width: 14rem` is inert once the outer `<td>` is the narrower
+   real boundary. `<th>` is excluded —
    header labels are short, fixed English words that never need ellipsis,
    and clipping `aria-sort`'s own visible caret glyph would be a visible
    regression. */
@@ -1737,25 +1676,21 @@ select:focus-visible,
   font-size: var(--density-row-data-size);
   color: var(--color-ink-dim);
 }
-/* P8 S1 (D29-77/D29-78) — style-tokens doc §4 "Faceted list / data-dense
-   view", re-tuned to the single-line ~24px-pitch table register: hairline
-   row separators, a hover wash + gold hairline top/bottom, a solid
-   selected-row fill with a maroon "bookmark ribbon" left-edge bar (now on
-   the row's first `<td>` — a `border-left` on the `<tr>` itself is
-   unreliable across engines once `border-collapse: collapse` is in play).
-   P9 S1 (D29-83, R2) — `content-visibility: auto`/`contain-intrinsic-size`
-   DELETED: that per-row perf guard was a stand-in chunking boundary for a
-   flat sorted table with NO other one — `ListingTable`'s own windowing
-   (spacer `<tr>`s, `BrowseListing.tsx`) is the real one now, and having
-   BOTH is redundant at the ≤ ~110-row mounted-window scale (it also half-
-   broke native find-in-page, the exact "half-working middle state" this
-   round's own R2 retires outright — windowing already makes unmounted rows
-   categorically unfindable, so the redundant mechanism buys nothing). */
+/* Style-tokens doc §4 "Faceted list / data-dense view", tuned to the
+   single-line ~24px-pitch table register: hairline row separators, a hover
+   wash + gold hairline top/bottom, a solid selected-row fill with a maroon
+   "bookmark ribbon" left-edge bar (on the row's first `<td>` — a
+   `border-left` on the `<tr>` itself is unreliable across engines once
+   `border-collapse: collapse` is in play).
+   No `content-visibility: auto`/`contain-intrinsic-size` per-row guard:
+   `ListingTable`'s own windowing (spacer `<tr>`s, `BrowseListing.tsx`) is
+   the chunking boundary, so a second one is redundant at the ≤ ~110-row
+   mounted-window scale (and it half-breaks native find-in-page). */
 .codex-listing-row {
   position: relative;
   border-bottom: 1px solid var(--color-rule);
   border-top: 1px solid transparent;
-  /* P9 S2 (D29-90) — the whole row is now a click target (see
+  /* The whole row is a click target (see
      `BrowseListing.tsx`'s `handleRowBodyClick`), not just the name anchor. */
   cursor: pointer;
   transition:
@@ -1775,31 +1710,27 @@ select:focus-visible,
   border-left: 3px solid var(--color-heading-maroon);
   padding-left: calc(0.5rem - 3px);
 }
-/* P9 S1 (D29-86, adversarial M5) — `width: 100%` DELETED: under
-   `table-layout: fixed` (below) an explicit 100% next to explicit `ch`
-   siblings over-constrains the algorithm (engine-inconsistent proportional
-   scaling, NOT "Name takes the remainder") — Name gets NO declared width at
-   all, so the fixed-layout remainder rule does that job for free (still
-   "every OTHER coverage-dropped column widens Name," D29-78's own text —
-   just via the algorithm's default instead of an explicit percentage).
-   R6 (stakeholder-resolved) — single-line now, not `white-space: normal`
-   two-line wrap: a wrapped name would break the constant-pitch invariant
-   fixed-size windowing depends on (every spacer/scroll-offset computation
-   assumes EVERY row is exactly `ROW_PITCH_PX` tall). `overflow`/
-   `text-overflow` here (not just the general `.codex-listing-table td`
-   rule below) because `codex-listing-name` — the inner anchor, not this
+/* No `width: 100%`: under `table-layout: fixed` an explicit 100% next to
+   explicit `ch` siblings over-constrains the algorithm (engine-inconsistent
+   proportional scaling, NOT "Name takes the remainder") — Name gets NO
+   declared width at all, so the fixed-layout remainder rule does that job
+   (every OTHER coverage-dropped column widens Name).
+   Single-line, not a `white-space: normal` two-line wrap: a wrapped name
+   would break the constant-pitch invariant fixed-size windowing depends on
+   (every spacer/scroll-offset computation assumes EVERY row is exactly
+   `ROW_PITCH_PX` tall). `overflow`/`text-overflow` here (not just the
+   general `.codex-listing-table td` rule below) because `codex-listing-name` — the inner anchor, not this
    `<td>` — is the flex/inline-block-shaped element that actually needs the
    ellipsis treatment; `title` on that same anchor carries the full name
    (`displayName()`, `BrowseListing.tsx`) for hover/AT.
    Keeps the serif link voice at `--density-row-name-size` (14px) so rows
-   stay codex-flavored next to the 13px condensed data cells (D29-77's own
-   "5e.tools' rhythm, not its Arial") — qualified as `.codex-listing-table
+   stay codex-flavored next to the 13px condensed data cells ("5e.tools'
+   rhythm, not its Arial") — qualified as `.codex-listing-table
    td.codex-listing-col-name` (not the bare class) because the PLAIN
    `.codex-listing-col-name` selector is LESS specific than
    `.codex-listing-table tbody td` above (1 class vs. 1 class + 2 elements)
-   and was silently losing that cascade fight — found live via the P9 S1
-   row-height drift-guard measurement: the name cell was rendering at the
-   13px data size, not its own 14px, the whole time. */
+   and silently loses that cascade fight — the name cell would render at
+   the 13px data size, not its own 14px. */
 .codex-listing-table td.codex-listing-col-name {
   font-family: var(--font-body), serif;
   font-size: var(--density-row-name-size);
@@ -1817,20 +1748,19 @@ select:focus-visible,
   color: var(--color-ink-faint);
   font-size: 0.85em;
 }
-/* The edition icon: a fixed narrow END cell, never a labeled column
-   (D29-78) — no `<button>`/sort affordance, just the glyph, centered. `width`
-   stays on the BARE class (matches both `<th>` and `<td>`, both carrying
+/* The edition icon: a fixed narrow END cell, never a labeled column — no
+   `<button>`/sort affordance, just the glyph, centered. `width` stays on the
+   BARE class (matches both `<th>` and `<td>`, both carrying
    this class) — `table-layout: fixed` sizes the whole column off the
    `<thead>` cell alone, so the `<th>` MUST keep an explicit width here too.
-   P11 S2 (D29-102) — widened: the icon itself (`.codex-edition-icon`,
-   `globals.css` above) is `0.95em` square, but this column's OLD `1.4em`
-   width minus its own `0.35rem`-per-side `padding-inline` left a content
-   box of a fraction of a pixel under border-box sizing (measured ≈0.125px
-   live) — strictly narrower than the glyph it holds, clipping it outright.
-   `calc(0.95em + 0.9rem)` fits the glyph (`0.95em`, `EditionIcon.tsx`) plus
-   its own two `0.35rem` paddings (`0.7rem`) with a `0.2rem` buffer against
-   sub-pixel rounding — verified against the real corpus via
-   `e2e/rowHeight.spec.ts`'s scoped cell-fit assert. */
+   The icon itself (`.codex-edition-icon`, above) is `0.95em` square; a
+   narrower width (e.g. `1.4em`) minus the `0.35rem`-per-side
+   `padding-inline` leaves a content box under a pixel wide under
+   border-box sizing, clipping the glyph. `calc(0.95em + 0.9rem)` fits the
+   glyph (`0.95em`, `EditionIcon.tsx`) plus its own two `0.35rem` paddings
+   (`0.7rem`) with a `0.2rem` buffer against sub-pixel rounding — verified
+   against the real corpus via `e2e/rowHeight.spec.ts`'s scoped cell-fit
+   assert. */
 .codex-listing-col-icon {
   width: calc(0.95em + 0.9rem);
   text-align: center;
@@ -1852,7 +1782,7 @@ select:focus-visible,
 .codex-listing-table td.codex-listing-col-icon {
   padding-inline: 0.35rem;
 }
-/* Condensed-truncate treatment (D29-78): spell Cast's time-string/
+/* Condensed-truncate treatment: spell Cast's time-string/
    unenumerated-composite fallback + Range's abbreviated-but-still-long
    value (worst real case 47 chars) — both truncate with an ellipsis, full
    text on hover/focus via the renderer's own `title`. */
@@ -1879,7 +1809,7 @@ select:focus-visible,
   padding: 2rem 0;
 }
 
-/* --- D29-35/M6: the shared filtered-to-zero empty state (browse + /search) --- */
+/* --- the shared filtered-to-zero empty state (browse + /search) --- */
 .codex-empty-state {
   display: flex;
   flex-direction: column;
@@ -1889,7 +1819,7 @@ select:focus-visible,
   color: var(--color-ink-dim);
 }
 
-/* --- P3 S4 (D29-36): the header omnibar --- */
+/* --- the header omnibar --- */
 .codex-omnibar {
   position: relative;
   /* No auto margin at desktop — `.codex-header-nav`'s `margin-left: auto`
@@ -1939,7 +1869,7 @@ select:focus-visible,
 .codex-omnibar-group {
   padding: 0.35rem 0;
 }
-/* P8 S3 (D29-81) — the pinned "Name matches" group renders with the SAME
+/* The pinned "Name matches" group renders with the SAME
    `.codex-omnibar-group`/`.codex-omnibar-group-title`/row markup as a
    category group (this modifier only adds a hairline separating it from
    the category groups below, since it's always first when present). */
@@ -1992,34 +1922,29 @@ select:focus-visible,
   background-color: var(--color-hover);
 }
 
-/* --- P3 S4 (D29-36): the `/search` page --- */
+/* --- the `/search` page --- */
 .codex-search-shell {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
-/* P13 S2 (D29-124) — the base `.codex-facet-panel` rule dropped its
-   `position: sticky` (dead weight in the browse pane/sheet, which now wraps
-   it in their OWN dedicated scroll region — a sticky element as the sole
-   content of a scrolling container has nowhere left to stick past). `/search`
-   is a DIFFERENT layout (a narrow facet aside beside a taller results
-   column, `SearchPage.tsx`, out of this slice's scope — D29-130's
-   consumption lands S3) that still wants the aside to follow the page
-   scroll — scoped back here rather than touching the shared rule/
-   `SearchPage.tsx` itself, same "scope the override, don't touch the
-   other route" convention `.codex-search-shell .codex-browse-layout`
-   (above) already documents. */
+/* The base `.codex-facet-panel` rule has no `position: sticky` (the browse
+   pane/sheet wraps it in their OWN dedicated scroll region — a sticky
+   element as the sole content of a scrolling container has nowhere to
+   stick past). `/search` is a DIFFERENT layout (a narrow facet aside beside
+   a taller results column, `SearchPage.tsx`) that still wants the aside to
+   follow the page scroll — scoped here rather than in the shared rule, the
+   same "scope the override, don't touch the other route" convention
+   `.codex-search-shell .codex-browse-layout` (above) documents. */
 .codex-search-shell .codex-facet-panel {
   position: sticky;
   top: 1rem;
 }
-/* Same reasoning as the sticky override above, for the OTHER half of
-   D29-124's browse-only cleanup: the per-section `max-height: 14rem`
-   scrollbox on `.codex-facet-options` (below) also dies at the shared-rule
-   level (the browse pane/sheet's own single scroll region replaces it) —
-   `/search`'s aside has no such single-scroll-region wrapper of its own
-   (out of S2 scope), so it keeps the original bounded-per-section
-   treatment, scoped back here. */
+/* Same reasoning as the sticky override above: the shared
+   `.codex-facet-options` rule has no per-section scrollbox (the browse
+   pane/sheet's own single scroll region replaces it), but `/search`'s
+   aside has no such single-scroll-region wrapper, so it keeps a bounded
+   `max-height: 14rem` per section, scoped here. */
 .codex-search-shell .codex-facet-options {
   max-height: 14rem;
   overflow-y: auto;
@@ -2050,8 +1975,8 @@ select:focus-visible,
   color: var(--color-ink-dim);
   padding: 1.5rem 0;
 }
-/* P8 S2 (D29-77): tightened onto the same density register as the listing
-   table rows (0.9rem → ~a quarter of that) — a result row still carries a
+/* Tightened onto the same density register as the listing table rows — a
+   result row still carries a
    name + source line + optional excerpt (not a single table line), so it
    keeps its own `padding-bottom` rather than adopting the table's exact
    24px pitch verbatim. */
@@ -2061,7 +1986,7 @@ select:focus-visible,
   flex-direction: column;
   gap: 0.35rem;
 }
-/* P8 S3 (D29-81) — the pinned "Name matches" group on `/search`: its own
+/* The pinned "Name matches" group on `/search`: its own
    `.codex-facet-title` heading (the SAME small-caps amber label the facet
    sections use) sitting above its own `.codex-search-results` list, then a
    rule separating it from the plain results below. */
@@ -2102,7 +2027,7 @@ select:focus-visible,
   background-color: var(--color-hover);
 }
 
-/* --- P4 S2 (D29-40): the `/rules` tree browser --- */
+/* --- the `/rules` tree browser --- */
 .codex-rules-tree {
   display: flex;
   flex-direction: column;
@@ -2115,8 +2040,7 @@ select:focus-visible,
   gap: 2rem;
 }
 .codex-rules-book {
-  /* D29-35's `content-visibility: auto` idiom, per-book instead of
-     per-letter — a book section (up to ~600 nodes, Gamemastery Guide) is
+  /* `content-visibility: auto`, per book — a book section (up to ~600 nodes, Gamemastery Guide) is
      skipped from layout/paint while off-screen, no virtualization dep. */
   content-visibility: auto;
   contain-intrinsic-size: auto 400px;
@@ -2140,12 +2064,11 @@ select:focus-visible,
   font-size: 0.78rem;
   font-style: italic;
 }
-/* --- P4.5 S5 (D29-50): the `/rules` inline superseded toggle
-   (`routes/rules.tsx`) — previously an unstyled bare `<button>`. Reset to a
-   plain link-in-voice control (maroon, gold-rule underline on hover, same
+/* --- the `/rules` inline superseded toggle (`routes/rules.tsx`) — a
+   `<button>` reset to a plain link-in-voice control (maroon, gold-rule underline on hover, same
    `a`/`a:hover` convention `globals.css` already uses site-wide); the "hide"
    (widened) state carries no italic/faint styling of its own (it isn't
-   describing hidden content anymore, D29-48's own text). */
+   describing hidden content). */
 .codex-rules-superseded-toggle {
   background: none;
   border: none;
@@ -2219,12 +2142,12 @@ select:focus-visible,
   color: var(--color-accent-amber);
 }
 
-/* --- P4 S3 (D29-41): rules entity-page hierarchy nav (RulesLayout/
-   BreadcrumbTrail/ReadingOrderPager) --- */
+/* --- rules entity-page hierarchy nav (RulesLayout/BreadcrumbTrail/
+   ReadingOrderPager) --- */
 
 /* Two-column layout: the tree sidebar + the (breadcrumb + entity + pager)
-   main column. Reuses `.codex-browse-layout`'s own 56rem breakpoint (D29-41
-   "no new breakpoint system") rather than inventing a second one. */
+   main column. Reuses `.codex-browse-layout`'s own 56rem breakpoint rather
+   than inventing a second one. */
 .codex-rules-layout {
   display: grid;
   grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
@@ -2288,7 +2211,7 @@ select:focus-visible,
   }
 }
 
-/* --- P4.5 S5 (D29-50): the breadcrumb trail reuses the style doc §3.9
+/* --- the breadcrumb trail reuses the style doc §3.9
    "chapter footer" typographic treatment ("CHAPTER N | SECTION TITLE",
    small-caps maroon) repurposed as a "you are here" trail — position kept
    (top of the entity, book -> ancestors -> current), literal page numbers
@@ -2363,7 +2286,7 @@ select:focus-visible,
   font-size: 1rem;
 }
 
-/* --- P4 S4 (D29-42): attached sidebars on a host entity page --- */
+/* --- attached sidebars on a host entity page --- */
 .codex-attached-sidebars {
   margin-top: 2rem;
   padding-top: 1rem;
@@ -2372,10 +2295,9 @@ select:focus-visible,
   flex-direction: column;
   gap: 1rem;
 }
-/* P8 S2 (D29-77): vertical padding halved with the rest of the density pass
-   — this is a card (rendered sub-entity body), not a bare table row, so it
-   keeps meaningfully more than a listing row's 0.15–0.25rem; horizontal
-   padding is untouched (not a "vertical pad" concern). */
+/* Tight vertical padding on the density register — this is a card
+   (rendered sub-entity body), not a bare table row, so it keeps
+   meaningfully more than a listing row's 0.15–0.25rem. */
 .codex-attached-sidebar {
   padding: 0.45rem 1.1rem;
 }
@@ -2396,15 +2318,15 @@ select:focus-visible,
   color: var(--color-ink-faint);
 }
 
-/* --- P4 S4 (D29-43): the `/sources` aggregate book index --- */
+/* --- the `/sources` aggregate book index --- */
 .codex-sources-group {
   margin-top: 2rem;
-  /* D29-35's `content-visibility: auto` idiom (the RulesTree book-section
-     precedent) — ~500 book rows total across every group. */
+  /* `content-visibility: auto` (as on the RulesTree book sections) — ~500
+     book rows total across every group. */
   content-visibility: auto;
   contain-intrinsic-size: auto 400px;
 }
-/* P4.5 S5 (D29-50): the style doc §3.10 table convention's "header row" —
+/* The style doc §3.10 table convention's "header row" —
    applied to BOTH the plain `<h2>` group header and the "Other" bucket's
    `<summary>` disclosure (the two group-header variants
    `SourcesIndexView.tsx` renders), a bold gold rule directly UNDER the
@@ -2432,12 +2354,10 @@ select:focus-visible,
   flex-direction: column;
   margin-top: 0.75rem;
 }
-/* P4.5 S5 (D29-50): style doc §3.10 — no cell borders, zebra tint on
-   alternating rows using the callout-blue hue at low opacity, left column
-   (book name) bold (kept from P4). P8 S2 (D29-77): the "generous vertical
-   padding" this comment used to call for is the density pass's own target
-   — tightened onto the same secondary-surface register as the other row
-   listings (0.15–0.25rem-class), horizontal padding untouched. */
+/* Style doc §3.10 — no cell borders, zebra tint on alternating rows using
+   the callout-blue hue at low opacity, left column (book name) bold.
+   Vertical padding sits on the same tight secondary-surface register as the
+   other row listings (0.15–0.25rem-class). */
 .codex-sources-book {
   padding: 0.2rem 0.9rem;
   border: none;
@@ -2470,7 +2390,7 @@ select:focus-visible,
   font-size: 0.8rem;
 }
 
-/* --- Popover hover-preview card (D29-28, ported from akasha-frontend) --- */
+/* --- Popover hover-preview card (ported from akasha-frontend) --- */
 .popover {
   position: fixed;
   top: 0;
@@ -2484,8 +2404,7 @@ select:focus-visible,
 .popover.active-popover {
   visibility: visible;
   opacity: 1;
-  /* D29-105a: the whole point of the interaction fix — while inactive the
-     popover stays `pointer-events: none` (never intercepts clicks/wheel on
+  /* While inactive the popover stays `pointer-events: none` (never intercepts clicks/wheel on
      whatever's underneath before it's shown); once active it must accept
      pointer events itself, else the mouse can never reach `.popover-inner`
      to scroll it or the panel-hover bridge (Popover.tsx) never fires. */
@@ -2497,16 +2416,13 @@ select:focus-visible,
   overflow-y: auto;
   padding: 1rem 1.25rem;
   background: var(--color-elevated);
-  /* D29-105c: was `--color-rule` (translucent hairline) — unify with the
-     Filters dialog's solid gold-frame border (`.codex-filter-drawer`,
-     above); the background already shared `--color-elevated`, so this is
-     the one remaining inconsistency the spec's review isolated. No sitewide
-     `--color-elevated` retune (explicitly out of scope). */
+  /* The same solid gold-frame border and `--color-elevated` background as
+     the Filters dialog (`.codex-filter-drawer`, above). */
   border: 1px solid var(--color-gold-frame);
   border-radius: 0.4rem;
   box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
   font-size: 0.85rem;
-  /* D29-106: themed scrollbar for this inner scroll region (one of the 6). */
+  /* Themed scrollbar for this inner scroll region (one of the 6). */
   scrollbar-width: thin;
   scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
@@ -2514,25 +2430,23 @@ select:focus-visible,
   max-width: 100%;
   height: auto;
 }
-/* D29-105b: the popover clones the STANDALONE page's SSR HTML wholesale (no
+/* The popover clones the STANDALONE page's SSR HTML wholesale (no
    render-from-nodes path exists — `.popover-hint` is the whole
    `.codex-entity-page` article, see `entityPage.tsx`), so the cloned page's
    h1 lands inside `.popover-inner` at its full standalone size unless
-   re-scaled here. Scoped to the plain `.codex-entity-name` selector — this
-   rule alone was always unconditional (the h1 is visible everywhere now,
-   see that class's own comment above — the old `-standalone` sr-only
-   modifier + this override's B1 re-show counterpart are both gone). */
+   re-scaled here. Scoped to the plain `.codex-entity-name` selector (the h1
+   is visible everywhere, see that class's own comment above). */
 .popover-inner .codex-entity-name {
   font-size: 1.1rem;
 }
-/* D29-105b: the edition banner ("This page has a newer/older edition...")
+/* The edition banner ("This page has a newer/older edition...")
    is page-level chrome, not summary content — hide it inside the compact
    popover clone (the standalone page keeps it, untouched). */
 .popover-inner .codex-edition-banner {
   display: none;
 }
 
-/* --- D29-106 (#13d): scrollbar theming, WebKit/Blink fallback --- Firefox
+/* --- scrollbar theming, WebKit/Blink fallback --- Firefox
    reads `scrollbar-color`/`scrollbar-width` (set per-region above, right
    alongside each region's own rules); Chromium/Safari instead need the
    `::-webkit-scrollbar*` pseudo-elements, which don't compose with a bare
@@ -2540,9 +2454,7 @@ select:focus-visible,
    across all 6 regions rather than repeated 6×. Palette: track
    `--color-void`, thumb the gold-frame family, hover the maroon accent
    (`--color-accent`, aliased to `--color-heading-maroon` in tokens.css) —
-   matches the Firefox declarations above exactly. Verified zero
-   pre-existing `::-webkit-scrollbar` rules anywhere in this file before
-   this pass. --- */
+   matches the Firefox declarations above exactly. --- */
 html::-webkit-scrollbar {
   width: 14px;
   height: 14px;
@@ -2559,9 +2471,8 @@ html::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-accent);
 }
 
-/* P13 S1 (D29-127): `.codex-trait-chips` dropped from this group — its own
-   scrollbox is gone (the list flows now), so it no longer has a scroll
-   region to theme. */
+/* `.codex-trait-chips` is not in this group — the list flows, so it has
+   no scroll region to theme. */
 .codex-facet-options::-webkit-scrollbar,
 .codex-nav-panel::-webkit-scrollbar,
 .popover-inner::-webkit-scrollbar,
@@ -2589,12 +2500,12 @@ html::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-accent);
 }
 
-/* --- P12 S2 (D29-118)/S3 (D29-119/-120): `/class` + `/class/{slug}` shell
-   (`ClassBrowse.tsx`). The rail disclosure mirrors `RulesLayout.tsx`'s own
+/* --- `/class` + `/class/{slug}` shell (`ClassBrowse.tsx`). The rail
+   disclosure mirrors `RulesLayout.tsx`'s own
    `.codex-rules-sidebar-disclosure` mechanism exactly (same "no `open`
    attribute, desktop always shows it via unconditional CSS, only the mobile
-   query gates on `[open]`" convention, `globals.css`'s own "no new
-   breakpoint system" rule) — reusing the identical 56rem breakpoint. --- */
+   query gates on `[open]`" convention) — reusing the identical 56rem
+   breakpoint. --- */
 .codex-class-browse {
   display: grid;
   grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
@@ -2608,15 +2519,15 @@ html::-webkit-scrollbar-thumb:hover {
   position: sticky;
   top: 1rem;
 }
-/* Live-Chromium finding (P12 S3, verified via a real headless-Chromium pass,
-   `HeadlessChrome/149`): a `<details>` without `[open]` now renders its own
+/* Live-Chromium finding (verified in a real headless-Chromium pass,
+   `HeadlessChrome/149`): a `<details>` without `[open]` renders its own
    non-summary content through an internal `::details-content` pseudo-element
    carrying `content-visibility: hidden` — an ordinary descendant's own
    `display` override (`.codex-class-rail { display: flex }`, below) CANNOT
    undo this (content-visibility:hidden on an ancestor box skips rendering
    the WHOLE subtree by spec, regardless of descendant styles), so the rail
-   was present in the DOM (real `getBoundingClientRect()`, unaffected) but
-   literally unpainted/un-hit-testable on desktop (`.codex-rules-sidebar-
+   would be present in the DOM (real `getBoundingClientRect()`, unaffected)
+   but unpainted/un-hit-testable on desktop (`.codex-rules-sidebar-
    disclosure` carries the same override). Force it visible
    unconditionally here (the desktop "always open regardless of `[open]`"
    contract); the mobile query below re-applies the hidden state. */
@@ -2684,7 +2595,7 @@ html::-webkit-scrollbar-thumb:hover {
     grid-template-columns: minmax(0, 1fr);
   }
   /* Content first — the reader opened this page for the class, not the
-     rail (mirrors `.codex-rules-main`'s own P4 S3 "content first" order). */
+     rail (mirrors `.codex-rules-main`'s own "content first" order). */
   .codex-class-pane {
     order: 1;
   }
@@ -2708,7 +2619,7 @@ html::-webkit-scrollbar-thumb:hover {
   }
 }
 
-/* --- P12 S3 (D29-119/-120): the bespoke `ClassPage` composition
+/* --- the bespoke `ClassPage` composition
    (`ClassPage.tsx`) — Core Traits box, progression table, subclass pills,
    feature stream, description. Section headings reuse the site's own
    `.codex-heading` grammar (small-caps maroon, `nodes.tsx`'s heading case)

@@ -1,11 +1,10 @@
-// P6 (D29-68 — R10: source-name abbreviations, delivered as the reviewed
-// CLIENT-SAFE PURE-MODULE mechanism, not the original `sources-index.json`
-// schema-field design). The original build-time-field draft had no data path
-// to 6 of the 7 display sites (the index is server-only, loaded at
-// `corpusFs.ts:202-215`, consumed exclusively by `/sources`) — this module is
-// a pure function of the book-name STRING instead, imported directly by every
-// display component, zero server/scripts/index plumbing.
-// `sourcesIndex.ts`/`sourcesIndexBuild.ts` are UNTOUCHED by this phase.
+// Source-name abbreviations as a CLIENT-SAFE PURE MODULE, not a
+// `sources-index.json` schema field: a build-time field would have no data
+// path to most display sites (the index is server-only, loaded in
+// `corpusFs.ts`, consumed exclusively by `/sources`). This module is a pure
+// function of the book-name STRING instead, imported directly by every
+// display component, zero server/scripts/index plumbing; `sourcesIndex.ts`/
+// `sourcesIndexBuild.ts` carry no abbreviation data.
 //
 // Two tiers, matching the community's own two shapes of source book:
 //
@@ -61,23 +60,23 @@
 //     get the same treatment via `OTHER_OVERRIDES`' own `AP<n>x` suffix.
 //
 // The `"unknown"` sentinel (the corpus's own placeholder for entities with no
-// resolvable source book, D29-15) is explicitly excluded from both tiers —
+// resolvable source book) is explicitly excluded from both tiers —
 // `abbreviateBook("unknown")` always returns `undefined`, the same as any
 // book neither tier covers; it is not a real citable title.
 //
 // `citation.tsx` (the entity-page citation line) and `SourcesIndexView.tsx`'s
-// book headings are DELIBERATELY NOT wired to this module — the spec's own
-// pin keeps those two surfaces on the full name always (D29-68).
+// book headings are DELIBERATELY NOT wired to this module — those two
+// surfaces always show the full name.
 //
 // Accepted cost: this module ships in the client bundle (~tens of KB for 496
-// curated/overridden entries + the generator) — recorded as an accepted
-// trade for zero server/index plumbing (D29-68).
+// curated/overridden entries + the generator) — an accepted trade for zero
+// server/index plumbing.
 
 // ---------------------------------------------------------------------------
 // tier 1 — the 243 AoN-known (productLine-carrying) books, hand-curated
 // ---------------------------------------------------------------------------
 
-// Exported for `abbreviations.test.ts` only (0030 S3, D30-45): the
+// Exported for `abbreviations.test.ts` only: the
 // zero-collision test below is fixture-driven (the fixture is a *measured*
 // superset of every key in both maps, not a structural guarantee) — a
 // direct test over these two maps' own values is the backstop that can't go
@@ -147,7 +146,7 @@ export const CURATED_MAP: Record<string, string> = {
   "Knights of Lastwall": "LOKL",
   Legends: "LOL",
   "Little Trouble in Big Absalom": "LTiBA",
-  "Liturgy of the Iridite Vol.2": "LotI2", // D30-45: the assay homebrew store's product line
+  "Liturgy of the Iridite Vol.2": "LotI2", // the assay homebrew store's product line
   Malevolence: "Mal", // UNCERTAIN: short generic code, single-word title
   "Monster Core": "MC",
   "Monster Core 2": "MC2",

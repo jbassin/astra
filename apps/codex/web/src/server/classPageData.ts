@@ -1,4 +1,4 @@
-// P12 S2 (D29-117) — the `/class`/`/class/{slug}` bespoke surface's own
+// The `/class`/`/class/{slug}` bespoke surface's own
 // server-side projection, living beside `entityPageData.ts` and split the
 // SAME way (nothing under `src/routes/` imports this directly, only
 // `corpusFns.ts` and this app's own tests do — see that file's header
@@ -6,17 +6,14 @@
 // of the client bundle).
 //
 // `ClassPageData` is a STRUCTURAL SUPERSET of `EntityPageData` (extends it)
-// rather than a parallel, unrelated shape: this slice (S2) renders the
-// EXISTING `EntityRenderPane` for every `/class/{slug}` page — stats-bearing
-// classes included, the bespoke `ClassPage` composition is S3 — so the
-// payload must already satisfy exactly what `EntityRenderPane` destructures
-// (`entity`/`embeds`/`knownTraitIds`/`attachedSidebars`). The class-specific
-// fields (`rail`/`grantedFeatures`/`selectedSubclasses`) ride alongside,
-// ignored by `EntityRenderPane` today and consumed by S3's `ClassPage`
-// tomorrow — a single server fn / single round trip serves both slices
-// without a reshape in between.
+// rather than a parallel, unrelated shape: the payload satisfies exactly what
+// `EntityRenderPane` destructures (`entity`/`embeds`/`knownTraitIds`/
+// `attachedSidebars`), so a `/class/{slug}` doc without class stats renders
+// through the generic pane unchanged. The class-specific fields (`rail`/
+// `grantedFeatures`/`selectedSubclasses`) ride alongside for `ClassPage` —
+// a single server fn / single round trip serves both renderings.
 //
-// Fail-soft design choice (spec's own open question, D29-117): rather than
+// Fail-soft design choice: rather than
 // have the ROUTE branch between `getEntityPage` (generic) and a class-only
 // server fn depending on whether the doc turns out to be stats-bearing —
 // which would need a first round trip just to find that out, doubling
@@ -46,10 +43,10 @@ import {
   splitCodexId,
 } from "./entityPageData";
 
-/** D29-117 — one granted feature's resolved doc, projected SLIM (`{id, name,
- * level, body}`, the spec's own literal shape) to keep the router's
- * dehydration payload down (P9 memory: the FULL `CodexEntity` carries
- * `facets`/`traits`/`source`/... a feature-stream render never touches).
+/** One granted feature's resolved doc, projected SLIM (`{id, name, level,
+ * body}`) to keep the router's dehydration payload down (the FULL
+ * `CodexEntity` carries `facets`/`traits`/`source`/... a feature-stream
+ * render never touches).
  * `level` is the GRANT's own level (`GrantedFeature.level`), NOT the
  * resolved doc's own `entity.level` field — measured on the real fixture:
  * witch grants the shared `class-feature/weapon-specialization` doc at
@@ -58,7 +55,7 @@ import {
  * progression table's placement is a per-class GRANT fact, not a property
  * of the feature doc itself. `name` is the resolved doc's own canonical
  * `name` (not the grant's `name` string) — the two are identical in every
- * measured case (D29-114: "0 renamed/suffixed"), but the doc's name is the
+ * measured case (0 renamed or suffixed), but the doc's name is the
  * one a reader actually lands on. */
 export interface SlimFeatureDoc {
   id: string;
@@ -67,9 +64,9 @@ export interface SlimFeatureDoc {
   body: CodexEntity["body"];
 }
 
-/** D29-118 — one `/class` rail row. Deliberately NOT the full `IndexRow` —
+/** One `/class` rail row. Deliberately NOT the full `IndexRow` —
  * the rail only ever renders a name + edition marker + current-slug
- * highlight (spec's own text), so this trims to exactly that rather than
+ * highlight, so this trims to exactly that rather than
  * shipping `traits`/`source`/`rarity`/`facets` down the wire for a ≤49-row
  * list that's identical on every `/class*` request. */
 export interface ClassRailRow {
@@ -78,11 +75,11 @@ export interface ClassRailRow {
   edition: CodexEntity["edition"];
 }
 
-/** D29-118 — the rail's two tiers: `visible` (non-superseded, stats-bearing
+/** The rail's two tiers: `visible` (non-superseded, stats-bearing
  * — exactly 27 in the real corpus) always renders; `hidden` (the 20
  * `@legacy` rows) renders only under `?superseded=1`. The 2 miscategorized
  * `class/` docs (non-superseded, NOT stats-bearing) are deliberately in
- * NEITHER list — spec's own "reachable-but-unlisted" scope note, same
+ * NEITHER list — reachable by URL but unlisted, same
  * posture as `draconic-exemplar` — so `visible`'s predicate is
  * `!superseded && facets?.keyAbility !== undefined`, not a bare
  * `!superseded`. */
@@ -102,7 +99,7 @@ export interface ClassPageData extends EntityPageData {
    * `CodexEntity` docs, in `subclassOptions` order) — absent when no
    * `?subclass=` targets were requested/resolved. Unselected pills fetch
    * on demand client-side via the existing `memoizedEntity` seam
-   * (`listingClient.ts`) — S3's concern, this payload never carries more
+   * (`listingClient.ts`) — `ClassPage`'s concern; this payload never carries more
    * than what SSR needs to render. */
   selectedSubclasses?: CodexEntity[];
 }
@@ -112,7 +109,7 @@ function toRailRow(row: IndexRow): ClassRailRow {
 }
 
 /**
- * D29-118 — the `/class` rail, from `class/_index.json` alone (no per-doc
+ * The `/class` rail, from `class/_index.json` alone (no per-doc
  * reads). Shared by both the bare `/class` index route and every
  * `/class/{slug}` detail page (identical payload either way — the current
  * slug's highlight is a pure render-time comparison against `entity.id`,
@@ -132,14 +129,14 @@ export function resolveClassRail(reader: CorpusReader): ClassRailData {
   return { visible, hidden };
 }
 
-/** D29-114/-117 — resolves each non-null `targetId` grant to its slim
+/** Resolves each non-null `targetId` grant to its slim
  * feature doc, fail-soft per grant (an unresolvable target is skipped with a
  * `console.warn`, same posture as `resolveAttachedSidebars` — this should
  * never actually miss on a real corpus doc post-`augmentClassStats`, but a
  * genuinely stale/hand-edited fixture shouldn't 500 the page over it). The
- * 17 real `targetId: null` grants (D29-114) are NOT represented here at
+ * 17 real `targetId: null` grants are NOT represented here at
  * all — they render as plain, non-linked text directly off
- * `entity.stats.grantedFeatures` in the progression table (S3), never
+ * `entity.stats.grantedFeatures` in the progression table, never
  * synthesized into a fake slim doc. */
 function resolveGrantedFeatures(
   reader: CorpusReader,
@@ -161,7 +158,7 @@ function resolveGrantedFeatures(
   return out.length > 0 ? out : undefined;
 }
 
-/** D29-115/-117 — resolves the URL-requested subclass targetIds against
+/** Resolves the URL-requested subclass targetIds against
  * `entity.stats.subclassOptions` (never an arbitrary corpus id — a
  * `?subclass=` token that doesn't match any of THIS class's own options is
  * silently ignored, not a general-purpose entity fetch). Iterates
@@ -196,11 +193,11 @@ function resolveSelectedSubclasses(
 /**
  * The pure core `corpusFns.ts`'s `getClassPage` server fn wraps (same split
  * as `resolveEntityPageData` — see that file's header for why). `null` for
- * an unknown slug in the `class` category (`CorpusNotFoundError`, D29-23's
+ * an unknown slug in the `class` category (the reader's `CorpusNotFoundError`
  * guard) — the route loader's `notFound()`, identical convention to every
  * other resolver in this directory.
  *
- * Embed-prefetch scope (D29-117, the review's own blocker): ONE merged,
+ * Embed-prefetch scope: ONE merged,
  * deduplicated, first-encountered-order target set — the class entity's own
  * body/loreBody/embeddedItems/remasteredAs/legacyOf targets
  * (`entityEmbedTargetIds`, unchanged from `resolveEntityPageData`) FIRST,
@@ -259,7 +256,7 @@ export function resolveClassPageData(
     console.warn(
       `[codex] ${entity.id} references ${allTargetIds.length} depth-0 embed targets across ` +
         `its class body, granted features, and selected subclasses — capping inlining to the ` +
-        `first ${EMBED_INLINE_CAP} (D29-117).`,
+        `first ${EMBED_INLINE_CAP}.`,
     );
   }
 

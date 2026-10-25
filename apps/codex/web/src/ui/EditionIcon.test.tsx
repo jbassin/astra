@@ -10,10 +10,10 @@ import { GLYPH_IDS } from "./GlyphDefs";
  * .test.tsx`'s style: renders both editions via the public `edition` prop
  * and pins the accessibility contract as a regression gate.
  *
- * P8-follow-up dedupe: `EditionIcon` no longer carries its own path data —
+ * SVG dedupe: `EditionIcon` carries no path data of its own —
  * every instance emits `<use href="#codex-glyph-...">` against the shared
  * `<symbol>` defs in `GlyphDefs.tsx`. The traced path-data regression pin
- * now lives in `GlyphDefs.test.tsx`; this file pins the per-instance
+ * lives in `GlyphDefs.test.tsx`; this file pins the per-instance
  * contract — accessibility + exactly which shared symbol each edition
  * resolves to, with no inline `<path>` at all.
  */
@@ -21,7 +21,7 @@ function renderIcon(edition: Edition): string {
   return renderToStaticMarkup(createElement(EditionIcon, { edition }));
 }
 
-describe("EditionIcon — P8-dedupe use/symbol contract", () => {
+describe("EditionIcon — the use/symbol dedupe contract", () => {
   it.each<[Edition, string]>([
     ["remaster", "Remaster"],
     ["legacy", "Legacy"],

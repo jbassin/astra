@@ -1,7 +1,7 @@
 /**
  * Popover hover-previews — ported VERBATIM from akasha-frontend's React island
- * (D29-28: "the component itself has no akasha-specific data deps; its
- * `fetchCanonical` alias hop is harmless here" — adversarial M10). Progressive
+ * (the component itself has no akasha-specific data deps; its
+ * `fetchCanonical` alias hop is harmless here). Progressive
  * enhancement: renders nothing, binds mouseenter/leave to every resolved
  * internal link on mount. On hover it fetches the target page, extracts its
  * `.popover-hint`, prefixes inner ids to avoid dupes, and floats a card
@@ -11,15 +11,14 @@
  * `nodes.tsx`/`traits.tsx`) AND `a.internal` (unused in codex today, kept for
  * parity with the source — costs nothing, matches zero links). Re-runs on
  * route change so the new page's links get bound and the old ones torn down.
- * Mounted ONLY on the entity route (`$category/$slug.tsx`) per D29-28 —
+ * Mounted ONLY on the entity route (`$category/$slug.tsx`) —
  * listing rows navigate, they don't get hover cards.
  *
- * D29-105a (S3): interaction was dead — the popover clipped pointer events
- * (`.popover { pointer-events: none }`, `globals.css`) and closed INSTANTLY on
- * trigger `mouseleave` (no timer at all), so a user could never move the
- * mouse from the trigger link into the panel itself (wheel-scroll, clicking
- * an inner crossref). Fix = `pointer-events: auto` on `.active-popover`
- * (CSS-only, `globals.css`) + a short GRACE_DELAY_MS close timer here, paired
+ * The panel is interactive: a user can move the mouse from the trigger link
+ * into the panel itself (wheel-scroll, clicking an inner crossref). That
+ * takes `pointer-events: auto` on `.active-popover` (`globals.css`; a plain
+ * `.popover` keeps `pointer-events: none`) + a short GRACE_DELAY_MS close
+ * timer here instead of closing INSTANTLY on trigger `mouseleave`, paired
  * with a hover bridge bound on the popover element itself: entering the
  * panel cancels the pending close, leaving it re-schedules one. Switching
  * directly between two DIFFERENT trigger links stays instant (`showPopover`
@@ -30,11 +29,11 @@ import { computePosition, flip, inline, shift } from "@floating-ui/dom";
 import { useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 
-/** D29-105a: long enough for a deliberate trigger→panel mouse move (the
+/** Long enough for a deliberate trigger→panel mouse move (the
  * panel typically opens a few px from the cursor), short enough that an
  * accidental miss doesn't leave a stale card lingering. 200ms matches the
  * feel of the akasha-frontend source's own (absent) affordance — chosen, not
- * measured; tune at gate H if it reads too snappy/sluggish live. */
+ * measured; tune it if it reads too snappy/sluggish live. */
 const GRACE_DELAY_MS = 200;
 
 const canonicalRegex = /<link rel="canonical" href="([^"]*)">/;
@@ -76,7 +75,7 @@ export function initPopovers(): () => void {
     closeTimer = null;
   };
 
-  // D29-105a: the grace-delay close — mouseleave (trigger OR panel) starts
+  // The grace-delay close — mouseleave (trigger OR panel) starts
   // this instead of closing synchronously, so a mouse move from one to the
   // other (either direction) lands inside the window and cancels it via
   // `cancelScheduledClose`.
@@ -88,7 +87,7 @@ export function initPopovers(): () => void {
     }, GRACE_DELAY_MS);
   };
 
-  // D29-105a: bound once per popover element, at creation (elements are
+  // Bound once per popover element, at creation (elements are
   // reused across repeat hovers of the same target via the `prev` lookup
   // below — binding here, not per-onEnter-call, avoids piling up duplicate
   // listeners on reuse).
@@ -184,9 +183,9 @@ export function initPopovers(): () => void {
   for (const link of links) {
     const enter = (ev: MouseEvent) => void onEnter(link, ev);
     link.addEventListener("mouseenter", enter);
-    // D29-105a: was `clearActivePopover` directly (instant close, no window
-    // for the mouse to reach the panel) — now the grace-delay schedule, with
-    // the panel-hover bridge above cancelling it on re-entry.
+    // The grace-delay schedule, not an instant `clearActivePopover`, so the
+    // mouse has time to reach the panel; the panel-hover bridge above
+    // cancels it on re-entry.
     link.addEventListener("mouseleave", scheduleClose);
     bound.push([link, enter]);
   }

@@ -5,11 +5,11 @@ import { fixtureCorpusRoot } from "./corpusFs";
 import { resolveSourcesIndex } from "./sourcesIndexData";
 
 /**
- * D29-43 tier 3 — the `/sources` loader's pure core, over the fixture
+ * The `/sources` loader's pure core, over the fixture
  * corpus (same "plain function, no Start-runtime" pattern as
  * `rulesTreeData.test.ts`).
  */
-describe("resolveSourcesIndex (D29-43)", () => {
+describe("resolveSourcesIndex", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
   const data = resolveSourcesIndex(reader);
 
@@ -24,7 +24,7 @@ describe("resolveSourcesIndex (D29-43)", () => {
     }
   });
 
-  it("the Core Rulebook fixture book carries a sourceEntityRef (the D29-44 source entity)", () => {
+  it("the Core Rulebook fixture book carries a sourceEntityRef to its source entity", () => {
     const coreRulebook = data.books.find((b) => b.book === "Core Rulebook");
     expect(coreRulebook?.sourceEntityRef).toBe("source/core-rulebook");
   });

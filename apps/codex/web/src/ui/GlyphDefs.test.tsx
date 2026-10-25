@@ -5,13 +5,10 @@ import { describe, expect, it } from "vitest";
 import { GLYPH_IDS, GlyphDefs } from "./GlyphDefs";
 
 /**
- * P8-follow-up SVG `<symbol>`/`<use>` dedupe — `GlyphDefs` is the ONE place
- * the traced glyph shapes' path data lives. Originally 5 shapes
- * (`actionGlyph.tsx`'s pip chevron/reaction hook/free-action diamond +
- * `EditionIcon.tsx`'s Four-Point Spark/History Ring); the 3 action-glyph
- * shapes are GONE now — a stakeholder directive switched `actionGlyph.tsx`
- * to the real Paizo icon font instead (`ACTIONS-GLYPH-SOURCE.md`), so only
- * `EditionIcon.tsx`'s 2 shapes remain here. This test proves the structural
+ * SVG `<symbol>`/`<use>` dedupe — `GlyphDefs` is the ONE place the traced
+ * glyph shapes' path data lives: `EditionIcon.tsx`'s 2 shapes (Four-Point
+ * Spark/History Ring). Action glyphs use the real Paizo icon font instead
+ * (`actionGlyph.tsx`, `ACTIONS-GLYPH-SOURCE.md`). This test proves the structural
  * dedupe contract (exactly 2 symbols, each id present exactly once, hidden
  * from layout/AT) and pins the traced-path regression pin for those 2 (a
  * silent revert to a placeholder shape fails this test) — the `d=` strings
@@ -26,7 +23,7 @@ function render(): string {
   return renderToStaticMarkup(createElement(GlyphDefs));
 }
 
-describe("GlyphDefs — the shared <symbol> defs (P8-follow-up dedupe)", () => {
+describe("GlyphDefs — the shared <symbol> defs (SVG dedupe)", () => {
   it("renders exactly 2 <symbol> elements (EditionIcon only, post action-glyph-font switch), each present exactly once", () => {
     const html = render();
     expect((html.match(/<symbol/g) ?? []).length).toBe(2);

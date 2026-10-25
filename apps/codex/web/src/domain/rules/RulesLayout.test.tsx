@@ -8,7 +8,7 @@ import type { RulesNavData } from "@/server/entityPageData";
 import { RulesLayout } from "./RulesLayout";
 
 // Mirrors the real GMG "Chapter 2: Tools" -> "Building Creatures" ->
-// "Ability Modifiers" fully-superseded chain (the same D29-44 fixture
+// "Ability Modifiers" fully-superseded chain (the same fixture
 // composition `entityPageData.test.ts`'s `resolveRulesNav` suite exercises)
 // — the deliberately awkward case for the sidebar: every node on the path
 // to `currentId` is itself `superseded: true`.
@@ -48,7 +48,7 @@ const GMG_NAV: RulesNavData = {
   prev: { id: "rules/building-creatures@legacy", name: "Building Creatures", superseded: true },
 };
 
-describe("RulesLayout (P4 S3, D29-41)", () => {
+describe("RulesLayout", () => {
   beforeEach(() => {
     localStorage.clear();
   });
@@ -79,7 +79,7 @@ describe("RulesLayout (P4 S3, D29-41)", () => {
       </RulesLayout>,
     );
     const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
-    // R10 (D29-68) — the book crumb shows the abbreviation-with-fallback
+    // The book crumb shows the abbreviation-with-fallback
     // (RulesLayout passes `abbreviateBook(nav.book.book) ?? nav.book.book`
     // into `BreadcrumbTrail`'s `book` prop); "Gamemastery Guide" curates to
     // "GMG".
@@ -143,7 +143,7 @@ describe("RulesLayout (P4 S3, D29-41)", () => {
     const details = container.querySelector("details.codex-rules-sidebar-disclosure");
     expect(details).not.toBeNull();
     expect(details?.hasAttribute("open")).toBe(false);
-    // R10 (D29-68) — the summary shows the abbreviation, the full name
+    // The summary shows the abbreviation, the full name
     // stays available via `title`.
     expect(details?.querySelector("summary")?.textContent).toBe("GMG contents");
     expect(details?.querySelector("summary")?.getAttribute("title")).toBe("Gamemastery Guide");

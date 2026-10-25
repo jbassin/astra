@@ -1,22 +1,15 @@
 /**
- * P4.5 S2 (D29-47), CURATED P11 S4 (D29-110, R5, #13f) — the global header
- * nav's information architecture. D29-47 originally assigned every one of
- * the 88 real corpus categories to a dropdown group; D29-110 curates that
- * down to a 28-category AoN-mirroring set — the long tail (bloodline,
- * doctrine, muse, the class-subsystem categories, the 10 default-empty/thin
- * categories, …) demotes to `/categories` + the omnibar + in-context links
+ * The global header nav's information architecture: a curated 28-category
+ * AoN-mirroring subset of the 88 real corpus categories — the long tail
+ * (bloodline, doctrine, muse, the class-subsystem categories, the 10
+ * default-empty/thin categories, …) demotes to `/categories` + the omnibar + in-context links
  * (stakeholder-sanctioned: link/search-only reachability is fine for them).
  *
- * "Rules"/"Sources"/"All categories" are now all bare `kind: "link"` items
- * carrying NO `categories` of their own — the old Rules split control (a
- * `<summary>`-adjacent caret trigger disclosing an 8-category dropdown
- * tail) is GONE, since Rules no longer has a dropdown at all
- * (`HeaderNav.tsx`'s old `RulesNavItem`/this file's old `tailCategoriesFor`
- * are deleted with it — dead code once no `kind: "link"` item carries
- * `categories`). "Everything" (the `article`/`sidebar`/`source` structural
- * catch-all) is replaced by "All categories", a bare link to `/categories`
- * — the full 88-category directory, which is what now surfaces the whole
- * corpus (this module's own union no longer does).
+ * "Rules"/"Sources"/"All categories" are all bare `kind: "link"` items
+ * carrying NO `categories` of their own — Rules has no dropdown. "All
+ * categories" is a bare link to `/categories` — the full 88-category
+ * directory, which is what surfaces the whole corpus (this module's own
+ * union does not).
  *
  * `NAV_ITEMS` is the SINGLE source of the curated grouping — imported by
  * `HeaderNav.tsx` (the header island) and its own conformance test.
@@ -96,9 +89,9 @@ export const NAV_ITEMS: readonly NavItem[] = [
   },
 ];
 
-/** The category union across every nav item's `categories` — the curated 28
- * (D29-110), a strict subset of the real 88-category corpus. Every
- * `kind: "link"` item (Rules/Sources/All categories) now carries no
+/** The category union across every nav item's `categories` — the curated 28,
+ * a strict subset of the real 88-category corpus. Every
+ * `kind: "link"` item (Rules/Sources/All categories) carries no
  * `categories` at all, so this is exactly the 5 dropdown groups' own
  * category lists concatenated. */
 export function allNavCategories(): readonly string[] {

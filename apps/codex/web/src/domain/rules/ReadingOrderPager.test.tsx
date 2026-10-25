@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import { ReadingOrderPager } from "./ReadingOrderPager";
 
-describe("ReadingOrderPager (P4 S3, D29-41)", () => {
+describe("ReadingOrderPager", () => {
   it("renders nothing at all when both ends are absent (a single-doc book, one-sided at BOTH ends)", () => {
     const { container } = render(<ReadingOrderPager />);
     expect(container.firstChild).toBeNull();

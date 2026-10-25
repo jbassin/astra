@@ -38,7 +38,7 @@ function renderHeroSearch() {
   return { ...render(<RouterProvider router={router} />), router };
 }
 
-describe("HeroSearch (D29-47, adversarial M3)", () => {
+describe("HeroSearch", () => {
   it("renders a search box distinct from the Omnibar (no codex-omnibar-input class)", async () => {
     _resetPagefindClientForTests();
     renderHeroSearch();

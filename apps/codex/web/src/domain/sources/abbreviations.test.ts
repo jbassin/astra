@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import { abbreviateBook, CURATED_MAP, OTHER_OVERRIDES } from "./abbreviations";
 
-/** The committed 496-book-name fixture (D29-68) — book NAMES are not
+/** The committed 496-book-name fixture — book NAMES are not
  * gitignored, only the built `sources-index.json` is (its own
  * `entityCount`/`categoryCounts`/etc. are corpus-derived and DO belong in the
  * gitignored tree; the bare name list is a small, stable test asset).
@@ -19,7 +19,7 @@ function loadBookNames(): string[] {
   return JSON.parse(readFileSync(FIXTURE_PATH, "utf8")) as string[];
 }
 
-describe("abbreviateBook (D29-68)", () => {
+describe("abbreviateBook", () => {
   it("the committed fixture has exactly 497 distinct book names", () => {
     const names = loadBookNames();
     expect(names).toHaveLength(497);
@@ -98,9 +98,9 @@ describe("abbreviateBook (D29-68)", () => {
     ).toBe("PS:IYII");
   });
 
-  // 0030 S3 (D30-45): the fixture proves nothing about a NEW book on its
-  // own (the 496-book fixture never regenerates) — these are the automated
-  // backstops the spec calls for, independent of any future fixture drift.
+  // The fixture proves nothing about a NEW book on its own (the 496-book
+  // fixture never regenerates) — these are automated backstops, independent
+  // of any future fixture drift.
   it("abbreviates the LotI2 homebrew store's book title directly", () => {
     expect(abbreviateBook("Liturgy of the Iridite Vol.2")).toBe("LotI2");
   });

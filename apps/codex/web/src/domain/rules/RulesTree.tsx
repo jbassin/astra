@@ -1,7 +1,7 @@
-// P4 S2 (D29-40) — the `/rules` tree browser island. Purely a function of
+// The `/rules` tree browser island. Purely a function of
 // `books`/`superseded` (no router/URL awareness of its own — the ROUTE FILE,
-// `routes/rules.tsx`, owns the `superseded` URL codec, P4.5 D29-48's plain
-// per-page read, same split `BrowseListing.tsx` uses for its own `superseded`
+// `routes/rules.tsx`, owns the `superseded` URL codec as a plain per-page
+// read, same split `BrowseListing.tsx` uses for its own `superseded`
 // prop). Collapse state is local: a `Map<key, boolean>` seeded EMPTY on first
 // render (server AND the matching first client render — no localStorage
 // access during SSR) and re-derived from the real saved state in a mount
@@ -48,9 +48,9 @@ export function RulesTree({
 }: {
   books: readonly RulesTreeBook[];
   superseded: boolean;
-  /** S3's own use: the entity page currently being viewed, so its book's
-   * sidebar auto-expands to it (D29-41). `undefined` on the plain `/rules`
-   * browse page (S2) — no node is "current". */
+  /** The entity page currently being viewed (rules sidebar only), so its
+   * book's sidebar auto-expands to it. `undefined` on the plain `/rules`
+   * browse page — no node is "current". */
   currentId?: string;
 }): ReactElement {
   const [queryText, setQueryText] = useState("");
@@ -128,27 +128,26 @@ function RulesBookSection({
     [book.book, supersededPruned, currentId, savedOpen],
   );
 
-  // D29-40 pinned behavior: a book that's 100% superseded (Dark Archive
+  // Pinned behavior: a book that's 100% superseded (Dark Archive
   // 29/29, Guns & Gears 65/65) prunes to an EMPTY root list when superseded
   // content is hidden — render it as a collapsed "all N hidden" header,
   // never silently drop the section.
   const allHidden = !superseded && supersededPruned.length === 0 && book.hiddenWhenLegacyOff > 0;
 
-  // P11 S2 (D29-108a) — mirrors the `allHidden` case above: a book whose
-  // filtered tree comes back EMPTY under an active text-query filter (no
-  // node anywhere in this book matches) renders NOTHING at all — the whole
-  // component returns `null`, not just an empty `<ul>` under a lingering
-  // header (`RulesTree.test.tsx`'s new "zero matches" case). Placed after
+  // Mirrors the `allHidden` case above: a book whose filtered tree comes back
+  // EMPTY under an active text-query filter (no node anywhere in this book
+  // matches) renders NOTHING at all — the whole component returns `null`,
+  // not just an empty `<ul>` under a lingering header (`RulesTree.test.tsx`'s
+  // "zero matches" case). Placed after
   // every hook call above (React's rules-of-hooks — an early return may
   // never precede a hook in the same render).
   if (filterActive && visibleNodes.length === 0) return null;
 
-  // P11 S2 (D29-108b) — full title + abbreviation when one exists
-  // ("Battlecry! (BC)"), else the title alone (never the abbreviation ALONE
-  // — the abbreviation-only heading was the actual gap; `title=` still
-  // carries the full name too, now redundant with the visible text but
-  // harmless, kept for the hover-tooltip convention every other abbreviated
-  // surface in this file already uses).
+  // Full title + abbreviation when one exists ("Battlecry! (BC)"), else the
+  // title alone (never the abbreviation ALONE; `title=` still carries the
+  // full name too, redundant with the visible text but harmless, kept for
+  // the hover-tooltip convention every other abbreviated surface in this
+  // file already uses).
   const abbrev = abbreviateBook(book.book);
   const bookHeading = abbrev !== undefined ? `${book.book} (${abbrev})` : book.book;
 

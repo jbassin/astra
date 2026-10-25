@@ -1,5 +1,5 @@
-// P3 S4 (D29-36) — the `/search` URL codec. Same LOW-LEVEL conventions as
-// `domain/browse/urlState.ts` (D29-35): bare-string CSV multi-select,
+// The `/search` URL codec. Same LOW-LEVEL conventions as
+// `domain/browse/urlState.ts`: bare-string CSV multi-select,
 // backslash-escaped commas (`splitCsv`/`joinCsv`, re-exported from that
 // module rather than re-implemented, so a future comma-bearing filter value
 // — the real-corpus `creature.family`/`source.book` bug that codec's own
@@ -9,7 +9,7 @@
 // Deliberately its OWN, smaller shape though — NOT a reuse of
 // `BrowseSearch`/`validateBrowseSearch` — because `/search`'s filter
 // dimensions are Pagefind's own (category/rarity/edition/level/traits,
-// D29-36's explicit list, sourced from `pagefind.filters()`), not
+// sourced from `pagefind.filters()`), not
 // `facetKeys.ts`'s per-category derived-facet allowlist (`f.<key>`, browse's
 // territory — those only exist over the full client-side `IndexRow` set,
 // which `/search` never has). `traits` here is a plain multi-select (OR),
@@ -17,20 +17,16 @@
 // OR-within-a-key/AND-across-keys only (no native "exclude a value"
 // primitive), so a tri-state UI would need to fetch-then-client-filter,
 // defeating the whole "only fetch the shown page of fragments" perf posture
-// (D29-34's own "one fragment fetch per shown result"). A deliberate,
+// (one fragment fetch per shown result). A deliberate,
 // narrower surface than browse's, not an oversight.
 //
-// P4.5 D29-48 (R3's original carve-out, now AMENDED by P6 R11/D29-67):
-// search used to NEVER hide superseded content by default — "search always
-// covers both editions and badges results" — so this module carried no
-// `legacy`/`superseded` field at all. D29-67 amends that: `/search` now
-// hides superseded content by default too, matching every other surface
-// (browse/rules/sidebars) — a plain `superseded?: boolean` field is back,
+// `/search` hides superseded content by default, matching every other
+// surface (browse/rules/sidebars), via a plain `superseded?: boolean` field
 // decoded the same tolerant way every other route's own `?superseded=`
 // param is (a local `toBool`, same shape as `browse/urlState.ts`'s and
 // `routes/rules.tsx`'s own). The ordinary `edition` enum facet
 // (remaster/legacy CONTENT values, sourced from `pagefind.filters()`
-// counts) is unrelated and unchanged.
+// counts) is unrelated.
 
 import { joinCsv, splitCsv } from "../browse/urlState";
 import { supersededFilter } from "./pagefindClient";
@@ -42,10 +38,9 @@ export type SearchPageSearch = {
   edition?: string;
   level?: string;
   traits?: string;
-  /** P6 R11 (D29-67) — the hide-by-default reveal param, `/search`'s own
-   * (there is no `legacy=` back-compat alias to carry here: this field
-   * never existed on `/search` before this amendment, so there is no prior
-   * shared-link shape to stay compatible with — unlike browse/rules's
+  /** The hide-by-default reveal param, `/search`'s own (no `legacy=`
+   * back-compat alias: `/search` never had a `legacy` param, so there is no
+   * prior shared-link shape to stay compatible with — unlike browse/rules's
    * `legacy`->`superseded` rename). */
   superseded?: boolean;
 };
@@ -87,7 +82,7 @@ export function validateSearchPageSearch(raw: Record<string, unknown>): SearchPa
     const v = str(raw.traits);
     if (v !== "") out.traits = v;
   }
-  // P6 R11 (D29-67): `?superseded=` decode, tolerant like every other route's
+  // `?superseded=` decode, tolerant like every other route's
   // own reader (`toBool` above) — absent/falsy -> omitted (the default-hide
   // state), never thrown on a malformed value.
   if ("superseded" in raw && toBool(raw.superseded)) out.superseded = true;
@@ -95,7 +90,7 @@ export function validateSearchPageSearch(raw: Record<string, unknown>): SearchPa
 }
 
 /** The panel/query island's live state — plain sets (no tri-state, see the
- * file header). `superseded` (P6 R11/D29-67) is a plain boolean, default
+ * file header). `superseded` is a plain boolean, default
  * `false` (hide by default), the direct `/search` counterpart of
  * `BrowseFilterState.superseded`. */
 export interface SearchFilterState {
@@ -171,7 +166,7 @@ export function isCleanSearchPageSearch(search: SearchPageSearch): boolean {
 
 /** `true` iff the state carries ANY real search criteria — a query string or
  * at least one filter selection. `/search` uses this to distinguish "nothing
- * to search yet" (a bare page load) from "searched, zero results" (M6's
+ * to search yet" (a bare page load) from "searched, zero results" (the
  * empty state only applies to the latter — see `SearchPage.tsx`).
  * Deliberately does NOT count `superseded` — it's a visibility toggle on an
  * existing search, not a search criterion of its own; toggling it with no
@@ -189,10 +184,8 @@ export function hasAnyCriteria(state: SearchFilterState): boolean {
 
 /** The Pagefind `search(term, {filters})` filter object for the current
  * state — one entry per non-empty dimension (OR within the array), PLUS the
- * `superseded` visibility filter (P6 R11/D29-67 amends P4.5 D29-48's "search
- * always covers both editions" carve-out — `/search` now hides superseded
- * content by default too, via the same `supersededFilter()` helper every
- * other surface's wiring already used). */
+ * `superseded` visibility filter (`/search` hides superseded content by
+ * default, via the same `supersededFilter()` helper the Omnibar uses). */
 export function pagefindFilters(state: SearchFilterState): Record<string, string[]> {
   const out: Record<string, string[]> = {};
   if (state.category.size > 0) out.category = [...state.category];
