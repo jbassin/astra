@@ -10,7 +10,6 @@ describe("backdrop catalog", () => {
     expect(Object.keys(BACKDROPS).sort()).toEqual([
       "ledgerAurora",
       "mouthpieceInterference",
-      "mouthpieceResonance",
       "starfield",
     ]);
   });
