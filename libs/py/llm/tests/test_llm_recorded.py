@@ -1,8 +1,8 @@
-"""Successful calls behave exactly as before the one retry policy (0037 lib-6).
+"""Successful calls behave exactly as before the one retry policy.
 
 Each case replays litellm ``ModelResponse`` objects built from ``fixtures/responses.json``
 and pins the output and the number of completions made. The table holds the values the
-client produced before lib-6 (the pre-change client passes this file unchanged), so a
+client produced before that policy (the pre-change client passes this file unchanged), so a
 change to either is a behaviour change for a call that succeeds.
 """
 

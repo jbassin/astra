@@ -1,5 +1,5 @@
 """heartwood-backfill, its loop, the reset and the request runner replay the old recipes'
-children in order (0037 ops-1b). The loop's ``just heartwood-agent <date> --no-push --yes`` and
+children in order. The loop's ``just heartwood-agent <date> --no-push --yes`` and
 ``just _heartwood-push-deploy --yes`` hops now run in-process; the agent is faked here (its own
 sequence is test_heartwood's) except in one test that runs the real one to its first refusal."""
 

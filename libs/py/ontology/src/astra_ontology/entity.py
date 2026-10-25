@@ -169,7 +169,7 @@ def seed_entities(
 
     akasha is added first, so its `page`+`kind` are authoritative; defs and being
     contribute alias/source unions (and the `being` PC marker). Unification is by
-    *exact fold* — the strictest reading of the strict seed-dedup threshold (§5.3.4):
+    *exact fold* — the strictest reading of the strict seed-dedup threshold:
     distinct entities are never merged; only case/diacritic/ligature variants collapse.
     """
     pages = snapshot.get("pages", []) if isinstance(snapshot, dict) else snapshot

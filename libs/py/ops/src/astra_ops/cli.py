@@ -1,4 +1,4 @@
-"""``astra-ops`` — the host ops CLI behind the justfile's ops recipes (0037 ops-1a, ops-1b).
+"""``astra-ops`` — the host ops CLI behind the justfile's ops recipes.
 
     astra-ops [PATH OPTIONS] COMMAND [ARGS]
 

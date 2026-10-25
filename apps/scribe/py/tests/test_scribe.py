@@ -519,7 +519,7 @@ def test_hallucination_gate_text_prong_drops_the_you_family() -> None:
     assert [s["text"] for s in segs] == ["I attack the spider.", "Okay."]
 
 
-# ── craig_drop_sensor on the shared sessions set (0037 pipe-4b) ──────────────
+# ── craig_drop_sensor on the shared sessions set ─────────────────────────────
 def _craig_sensor(monkeypatch: Any, tmp_path: Path, instance: Any) -> Any:
     import dagster as dg
     from astra_scribe import assets

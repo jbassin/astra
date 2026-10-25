@@ -1,4 +1,4 @@
-"""`sessions.kdl`, the per-session overrides (0037 pipe-10): its schema and the real file."""
+"""`sessions.kdl`, the per-session overrides: its schema and the real file."""
 
 from __future__ import annotations
 

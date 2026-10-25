@@ -1,8 +1,8 @@
 """heartwood-backfill (the launcher and its loop), heartwood-backfill-reset and
-heartwood-requests (moved from the justfile, 0037 ops-1b; same steps, children and exit
+heartwood-requests (moved from the justfile; same steps, children and exit
 codes).
 
-**heartwood-backfill [FROM]** replays every pending faerrin session oldest-first (0033 §5):
+**heartwood-backfill [FROM]** replays every pending faerrin session oldest-first:
 PAID and LIVE, hours long. It always runs DETACHED, as the transient user unit
 ``heartwood-backfill`` (``systemd-run``), which runs the deploy checkout's
 ``_heartwood-backfill-loop`` (production code at a pushed sha, whichever checkout launched it)

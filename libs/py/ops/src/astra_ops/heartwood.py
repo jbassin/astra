@@ -1,11 +1,11 @@
 """heartwood-agent, heartwood-revert and their shared push + redeploy tail (moved from the
-justfile, 0037 ops-1a; same steps, argv, lock order and exit codes).
+justfile; same steps, argv, lock order and exit codes).
 
 Every git step runs in the astra-data clone (config ``data.content-root``), which holds the
 wiki content, its snapshot, the ledger and the entity registry — never the code repo.
 
 **heartwood-agent** runs the agent over ONE session and publishes its edits with no human
-review (0033 §5) — PAID (OpenRouter) and LIVE (pushes and redeploys akasha):
+review — PAID (OpenRouter) and LIVE (pushes and redeploys akasha):
 
 - ``heartwood-agent <date>``: run, publish, commit, push, redeploy;
 - ``--dry-run``: run and write artifacts only (still PAID); prints the diff and summary paths;

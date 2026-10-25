@@ -1,4 +1,4 @@
-"""craig-sync replays the old recipe's children and exit codes (0037 ops-1b): every Drive mount
+"""craig-sync replays the old recipe's children and exit codes: every Drive mount
 access is a bounded child (the listing ``bash -c`` and each ``cp``); the rest (mkdir, the
 atomic rename, the count) happens in-process."""
 
