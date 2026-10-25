@@ -3,7 +3,7 @@ import type { ThemeMode } from "@astra/vellum-lang";
 /** Golden-image fixtures. Cover both skins + a multi-kind layout + the
  *  full-vellum fields/timeline constructs. Ported from faerrin
  *  pkg/vellum, ThemeMode now from @astra/vellum-lang. */
-export interface VisualFixture {
+interface VisualFixture {
   name: string;
   source: string;
   mode: ThemeMode;
