@@ -104,7 +104,7 @@ export function renderSitemap(site: SiteData, meta: SiteMeta): string {
 }
 
 /** One content-graph entry — the `{title, links, tags}` subset the Graph fetches. */
-export interface ContentIndexEntry {
+interface ContentIndexEntry {
   title: string;
   links: string[];
   tags: string[];

@@ -17,7 +17,6 @@
  * public/static/contentIndex.json — see migration/parity-slugs.ts and
  * migration/parity-graph.ts).
  */
-import { slug as slugAnchor } from "github-slugger";
 
 // Branded slug types, mirrored from Quartz for parity with its call sites.
 type SlugLike<T> = string & { __brand: T };
@@ -30,12 +29,7 @@ export type SimpleSlug = SlugLike<"simple">;
 /** Found on hrefs or constructed for client-side navigation. */
 export type RelativeURL = SlugLike<"relative">;
 
-export interface TransformOptions {
-  strategy: "absolute" | "relative" | "shortest";
-  allSlugs: FullSlug[];
-}
-
-export function sluggify(s: string): string {
+function sluggify(s: string): string {
   return s
     .split("/")
     .map((segment) =>
@@ -73,22 +67,22 @@ export function simplifySlug(fp: FullSlug): SimpleSlug {
   return (res.length === 0 ? "/" : res) as SimpleSlug;
 }
 
-export function endsWith(s: string, suffix: string): boolean {
+function endsWith(s: string, suffix: string): boolean {
   return s === suffix || s.endsWith(`/${suffix}`);
 }
 
-export function trimSuffix(s: string, suffix: string): string {
+function trimSuffix(s: string, suffix: string): string {
   if (endsWith(s, suffix)) {
     s = s.slice(0, -suffix.length);
   }
   return s;
 }
 
-export function getFileExtension(s: string): string | undefined {
+function getFileExtension(s: string): string | undefined {
   return s.match(/\.[A-Za-z0-9]+$/)?.[0];
 }
 
-export function stripSlashes(s: string, onlyStripPrefix?: boolean): string {
+function stripSlashes(s: string, onlyStripPrefix?: boolean): string {
   if (s.startsWith("/")) {
     s = s.substring(1);
   }
@@ -101,32 +95,11 @@ export function stripSlashes(s: string, onlyStripPrefix?: boolean): string {
 }
 
 // ---------------------------------------------------------------------------
-// Link resolution — ported verbatim from quartz/util/path.ts so the wikilink
-// "shortest" strategy and edge normalization match Quartz exactly. This is the
-// hardest correctness surface in the migration (see the debate synthesis,
-// docs/refactor-plan.md §10). Anchors use github-slugger (as Quartz does), but
-// ONLY for the `#fragment` half of a link — never for page paths.
+// Relative-path helpers — ported verbatim from quartz/util/path.ts so relative
+// links match Quartz exactly.
 // ---------------------------------------------------------------------------
 
-export function splitAnchor(link: string): [string, string] {
-  // split() always yields ≥1 segment, so fp is a string (astra's strict
-  // noUncheckedIndexedAccess needs this asserted; runtime logic unchanged).
-  let [fp, anchor] = link.split("#", 2) as [string, string | undefined];
-  if (fp.endsWith(".pdf")) {
-    return [fp, anchor === undefined ? "" : `#${anchor}`];
-  }
-  anchor = anchor === undefined ? "" : `#${slugAnchor(anchor)}`;
-  return [fp, anchor];
-}
-
-export function slugTag(tag: string): string {
-  return tag
-    .split("/")
-    .map((tagSegment) => sluggify(tagSegment))
-    .join("/");
-}
-
-export function joinSegments(...args: string[]): string {
+function joinSegments(...args: string[]): string {
   if (args.length === 0) {
     return "";
   }
@@ -151,7 +124,7 @@ export function joinSegments(...args: string[]): string {
 }
 
 // resolve /a/b/c to ../..
-export function pathToRoot(slug: FullSlug): RelativeURL {
+function pathToRoot(slug: FullSlug): RelativeURL {
   let rootPath = slug
     .split("/")
     .filter((x) => x !== "")
@@ -169,64 +142,6 @@ export function pathToRoot(slug: FullSlug): RelativeURL {
 export function resolveRelative(current: FullSlug, target: FullSlug | SimpleSlug): RelativeURL {
   const res = joinSegments(pathToRoot(current), simplifySlug(target as FullSlug)) as RelativeURL;
   return res;
-}
-
-export function transformInternalLink(link: string): RelativeURL {
-  const [fplike, anchor] = splitAnchor(decodeURI(link));
-
-  const folderPath = isFolderPath(fplike);
-  const segments = fplike.split("/").filter((x) => x.length > 0);
-  const prefix = segments.filter(isRelativeSegment).join("/");
-  const fp = segments.filter((seg) => !isRelativeSegment(seg) && seg !== "").join("/");
-
-  // manually add ext here as we want to not strip 'index' if it has an extension
-  const simpleSlug = simplifySlug(slugifyFilePath(fp as FilePath));
-  const joined = joinSegments(stripSlashes(prefix), stripSlashes(simpleSlug));
-  const trail = folderPath ? "/" : "";
-  const res = (_addRelativeToStart(joined) + trail + anchor) as RelativeURL;
-  return res;
-}
-
-export function transformLink(src: FullSlug, target: string, opts: TransformOptions): RelativeURL {
-  const targetSlug = transformInternalLink(target);
-
-  if (opts.strategy === "relative") {
-    return targetSlug;
-  }
-  const folderTail = isFolderPath(targetSlug) ? "/" : "";
-  const canonicalSlug = stripSlashes(targetSlug.slice(".".length));
-  const [targetCanonical, targetAnchor] = splitAnchor(canonicalSlug);
-
-  if (opts.strategy === "shortest") {
-    // if the file name is unique, then it's just the filename
-    const matchingFileNames = opts.allSlugs.filter((slug) => {
-      const parts = slug.split("/");
-      const fileName = parts.at(-1);
-      return targetCanonical === fileName;
-    });
-
-    // only match, just use it (length===1 guarantees [0]; assert for strict index access)
-    if (matchingFileNames.length === 1) {
-      const uniqueSlug = matchingFileNames[0] as FullSlug;
-      return (resolveRelative(src, uniqueSlug) + targetAnchor) as RelativeURL;
-    }
-  }
-
-  // if it's not unique, then it's the absolute path from the vault root
-  return (joinSegments(pathToRoot(src), canonicalSlug) + folderTail) as RelativeURL;
-}
-
-export function isFolderPath(fplike: string): boolean {
-  return (
-    fplike.endsWith("/") ||
-    endsWith(fplike, "index") ||
-    endsWith(fplike, "index.md") ||
-    endsWith(fplike, "index.html")
-  );
-}
-
-function isRelativeSegment(s: string): boolean {
-  return /^\.{0,2}$/.test(s);
 }
 
 function _addRelativeToStart(s: string): string {

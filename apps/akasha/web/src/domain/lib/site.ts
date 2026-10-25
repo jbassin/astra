@@ -274,7 +274,7 @@ export function listFolderChildren(site: SiteData, folderSlug: string): PageEntr
 }
 
 /** Ports PageList byDateAndAlphabeticalFolderFirst: folders first, then date desc, then title. */
-export function sortEntries(entries: PageEntry[]): PageEntry[] {
+function sortEntries(entries: PageEntry[]): PageEntry[] {
   return [...entries].sort((a, b) => {
     if (a.isFolder && !b.isFolder) return -1;
     if (!a.isFolder && b.isFolder) return 1;
@@ -286,7 +286,7 @@ export function sortEntries(entries: PageEntry[]): PageEntry[] {
 }
 
 /** ["a/b/c"] -> ["a","a/b","a/b/c"] (Quartz getAllSegmentPrefixes). */
-export function getAllSegmentPrefixes(tag: string): string[] {
+function getAllSegmentPrefixes(tag: string): string[] {
   const segments = tag.split("/");
   return segments.map((_, i) => segments.slice(0, i + 1).join("/"));
 }
