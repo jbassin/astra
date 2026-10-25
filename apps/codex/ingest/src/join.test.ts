@@ -83,6 +83,28 @@ describe("domainCandidates", () => {
 });
 
 // ---------------------------------------------------------------------------
+// pickVariantBase
+// ---------------------------------------------------------------------------
+
+describe("pickVariantBase", () => {
+  it("picks the shortest name, then alphabetical", () => {
+    const a = entity({
+      id: "creature/a",
+      category: "creature",
+      slug: "a",
+      name: "Zeta Longer Name",
+    });
+    const b = entity({ id: "creature/b", category: "creature", slug: "b", name: "Short" });
+    expect(pickVariantBase([a, b]).id).toBe("creature/b");
+
+    // Same-length names -> alphabetical tiebreak.
+    const c = entity({ id: "creature/c", category: "creature", slug: "c", name: "Beta" });
+    const d = entity({ id: "creature/d", category: "creature", slug: "d", name: "Alfa" });
+    expect(pickVariantBase([c, d]).id).toBe("creature/d");
+  });
+});
+
+// ---------------------------------------------------------------------------
 // category equivalence
 // ---------------------------------------------------------------------------
 
@@ -1545,27 +1567,5 @@ describe("runJoin: breadcrumbs threading", () => {
     const result = runJoin(runInput({ aonMetas: [legacy, remaster] }));
     expect(result.aonIdToFinalId.get("spell-1")).toBe("spell/heal@legacy");
     expect(result.aonIdToFinalId.get("spell-2")).toBe("spell/heal");
-  });
-});
-
-// ---------------------------------------------------------------------------
-// pickVariantBase
-// ---------------------------------------------------------------------------
-
-describe("pickVariantBase", () => {
-  it("picks the shortest name, then alphabetical", () => {
-    const a = entity({
-      id: "creature/a",
-      category: "creature",
-      slug: "a",
-      name: "Zeta Longer Name",
-    });
-    const b = entity({ id: "creature/b", category: "creature", slug: "b", name: "Short" });
-    expect(pickVariantBase([a, b]).id).toBe("creature/b");
-
-    // Same-length names -> alphabetical tiebreak.
-    const c = entity({ id: "creature/c", category: "creature", slug: "c", name: "Beta" });
-    const d = entity({ id: "creature/d", category: "creature", slug: "d", name: "Alfa" });
-    expect(pickVariantBase([c, d]).id).toBe("creature/d");
   });
 });
