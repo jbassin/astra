@@ -9,7 +9,7 @@ import { generateCombinedFortune } from "./fortune";
 import { CROSS_SPREAD } from "./spreads";
 import type { DrawnCard, Reading, Spread, TarotCard } from "./types";
 
-export function drawCards(
+function drawCards(
   deck: TarotCard[],
   count: number,
   spread: Spread,
@@ -35,7 +35,7 @@ export function drawCards(
   }));
 }
 
-export function generateReadingId(): string {
+function generateReadingId(): string {
   return `reading-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
