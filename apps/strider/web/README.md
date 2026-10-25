@@ -99,6 +99,10 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
   `just ts-build` fails on a bundle that imports anything else (`just ssr-externals-check`).
 - **SSR only** — no `prerender` block. Commit `src/routeTree.gen.ts` (oxlint/oxfmt-ignored).
   Pixi behind `lazy()` + `<ClientOnly>`. `/editor`-style routes use `ssr: false`.
+- **The editor is dev-only.** `src/routes/editor.tsx` loads the editor through a dynamic import
+  behind `import.meta.env.DEV`, so a production build drops the editor and its write server
+  function and answers `/editor` with a 404 (the SSR smoke checks it). The route file stays, so
+  the committed route tree is the same in dev and build.
 - **Telemetry** lands only from in-cluster: config `telemetry.otlp-endpoint` is the
   collector's name on the `telemetry` network (`http://signoz-otel-collector:4318`), not `localhost`.
 
@@ -117,8 +121,8 @@ and `content/layers/*.kdl` (one timestamped change set per file, folded in `time
 ### Operations
 
 - **Author layers in dev:** `just dev strider/web`, open `/editor`, save, then commit the new `.kdl`
-  and `just deploy strider`. The production container has no mount for `content/layers`, so an
-  editor save there never reaches git.
+  and `just deploy strider`. The editor exists only under `vite dev`; production answers
+  `/editor` with a 404.
 - Layer format (`scripts/build-content.ts` parses it, `serializeLayer` in
   `src/domain/lib/editorHelpers.ts` writes it; they are exact inverses): `timestamp` and
   `message` are top-level nodes; every other top-level node is a change whose node name is the op;

@@ -1,26 +1,31 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
 
-import EditorView from "@/domain/components/Editor/EditorView";
-import { FACTIONS } from "@/generated/factions";
-import { CURRENT_BANNERS, CURRENT_REGIONS, CURRENT_SKEIN } from "@/generated/layers";
+// The editor writes layer files into the checkout, so it runs only under `vite dev`; a
+// production container has no mount for content/layers and would lose every save. A
+// production build replaces `import.meta.env.DEV` with false, so the dynamic import below is
+// dead code: neither the editor nor its write server function reaches either bundle, and
+// /editor renders the not-found page with a 404.
+//
+// In dev the route stays `ssr: false`: the editor is a client-only Pixi/WebGL canvas, and
+// Selective SSR keeps it off the server render path.
+const EditorPage = import.meta.env.DEV
+  ? lazy(() => import("@/domain/components/Editor/EditorPage"))
+  : null;
 
-// ssr: false — the editor is a client-only authoring canvas (Pixi/WebGL); the
-// deployment skill's Selective SSR keeps its tree off the server render path
-// entirely, so it needs no in-component <ClientOnly> gate.
 export const Route = createFileRoute("/editor")({
-  ssr: false,
-  component: EditorPage,
+  ssr: !import.meta.env.DEV,
+  beforeLoad: () => {
+    if (!EditorPage) throw notFound();
+  },
+  component: EditorRoute,
 });
 
-function EditorPage() {
+function EditorRoute() {
+  if (!EditorPage) return null;
   return (
-    <main style={{ pointerEvents: "auto" }}>
-      <EditorView
-        factions={[...FACTIONS]}
-        regions={[...CURRENT_REGIONS]}
-        skein={CURRENT_SKEIN}
-        banners={[...CURRENT_BANNERS]}
-      />
-    </main>
+    <Suspense>
+      <EditorPage />
+    </Suspense>
   );
 }

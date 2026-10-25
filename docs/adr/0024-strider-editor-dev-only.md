@@ -1,7 +1,7 @@
 # 0024. strider's editor is dev-only
 
 - **Date:** 2026-10-22
-- **Status:** Accepted, not yet built
+- **Status:** Accepted (done 2026-10-25)
 - **Source:** [2026-10-22-techdebt-paydown-0037-thoughts.md](../../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md) (section 0, decision table)
 
 ## Context
