@@ -1,5 +1,4 @@
 import { ledgerAurora, ShaderBackground } from "@astra/backdrop";
-/// <reference types="vite/client" />
 import { SiteDocument, siteHead } from "@astra/site-kit/document";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import "@astra/site-kit/theme";

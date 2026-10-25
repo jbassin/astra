@@ -11,10 +11,8 @@
  * Data comes from `/static/contentIndex.json` (the slim {title,links,tags} index
  * build-emitted by build-content); the current slug from `body[data-slug]` (set in
  * __root). Node/link/label colors read Quartz CSS vars via getComputedStyle — those
- * names are shimmed to the gothic void palette in globals.css. The `themechange`
- * listener re-renders the local graph; it's now dormant (astra is dark-only and the
- * theme toggle was removed) but kept harmless because it follows the SPA teardown
- * rule: every listener / pixi app is torn down on unmount.
+ * names are shimmed to the gothic void palette in globals.css. Every listener and pixi
+ * app is torn down on unmount (the SPA teardown rule).
  */
 import { Tween as Tweened, Group as TweenGroup } from "@tweenjs/tween.js";
 import { drag } from "d3-drag";
@@ -512,9 +510,6 @@ export default function Graph() {
     };
     void renderLocal();
 
-    const onThemeChange = () => void renderLocal();
-    document.addEventListener("themechange", onThemeChange);
-
     const hideGlobal = () => {
       for (const c of globalCleanups.splice(0)) c();
       escCleanup?.();
@@ -551,7 +546,6 @@ export default function Graph() {
 
     return () => {
       disposed = true;
-      document.removeEventListener("themechange", onThemeChange);
       document.removeEventListener("keydown", onShortcut);
       iconEl?.removeEventListener("click", onIconClick);
       localCleanup?.();
