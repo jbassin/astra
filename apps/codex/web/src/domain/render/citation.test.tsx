@@ -8,7 +8,7 @@ function html(source: Source): string {
   return renderToStaticMarkup(<Citation source={source} />);
 }
 
-describe("Citation (D29-26): book + page + license badge, fail-soft", () => {
+describe("Citation: book + page + license badge, fail-soft", () => {
   it("book + page + a known license all render", () => {
     const out = html({ book: "Treasure Vault", page: 164, license: "OGL" });
     expect(out).toContain("Treasure Vault");

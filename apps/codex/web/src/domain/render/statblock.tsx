@@ -12,12 +12,12 @@ import { type RenderCtx, renderNodes } from "./nodes";
 import { CodexTraitPills } from "./traits";
 
 /**
- * D29-26 — the creature/hazard statblock header (P1.6 `stats` + `facets`) and
+ * The creature/hazard statblock header (`stats` + `facets`) and
  * the embedded-item sections (strikes/spellcasting/actions) shared by any
- * Actor-derived entity, not just creature/hazard (spec: "embeddedItems on
- * non-creature actors (vehicle etc.) render via the same grouped sections").
+ * Actor-derived entity, not just creature/hazard (embeddedItems on
+ * non-creature actors, such as vehicle, render via the same grouped sections).
  * Every row is read from a NAMED field explicitly and omitted when absent —
- * fail-soft, never "undefined" text (D29-26).
+ * fail-soft, never "undefined" text.
  */
 
 function fmtMod(n: number): string {
@@ -66,10 +66,10 @@ function LanguagesRow({ entity }: { entity: CodexEntity }): ReactElement | null 
 function SkillsRow({ entity }: { entity: CodexEntity }): ReactElement | null {
   const skills = entity.stats?.kind === "creature" ? entity.stats.skills : undefined;
   if (!skills || Object.keys(skills).length === 0) return null;
-  // D29-74 (P7): `humanizeSlug`, not first-char `capitalize` — since the lore
-  // merge, `skills` keys include multi-word lore slugs ("gambling-lore"),
+  // `humanizeSlug`, not first-char `capitalize` — since the lore merge,
+  // `skills` keys include multi-word lore slugs ("gambling-lore"),
   // which must render "Gambling Lore", never "Gambling-lore". Single-word
-  // core skills ("stealth" -> "Stealth") render identically to before.
+  // core skills ("stealth" -> "Stealth") are unaffected.
   const parts = Object.entries(skills).map(([name, mod]) => `${humanizeSlug(name)} ${fmtMod(mod)}`);
   return <Row label="Skills">{parts.join(", ")}</Row>;
 }
@@ -184,7 +184,7 @@ export function HazardStatblock({
 }
 
 // ---------------------------------------------------------------------------
-// embedded-item sections (D29-26: shared by creature/hazard AND any other
+// embedded-item sections (shared by creature/hazard AND any other
 // Actor-derived entity carrying `embeddedItems`, e.g. vehicle)
 // ---------------------------------------------------------------------------
 
@@ -194,8 +194,8 @@ function StrikeRow({ item, ctx }: { item: EmbeddedItem; ctx: RenderCtx }): React
       <CodexActionGlyph raw="1" /> <strong>{item.name}</strong>{" "}
       {item.attackBonus !== undefined ? fmtMod(item.attackBonus) : null}{" "}
       <CodexTraitPills traits={item.traits} knownTraitIds={ctx.knownTraitIds} />
-      {/* D29-73 (P7): the transform-baked AoN-format range string ("range 10
-          feet" / "range increment 120 feet") — a parenthetical after the
+      {/* The transform-baked AoN-format range string ("range 10 feet"
+          / "range increment 120 feet") — a parenthetical after the
           trait pills, same slot AoN's own strike line uses. Absent on most
           melee strikes (thrown-N TRAITS already render as pills above). */}
       {item.range !== undefined ? (
@@ -262,7 +262,7 @@ function AbilityRow({ item, ctx }: { item: EmbeddedItem; ctx: RenderCtx }): Reac
   );
 }
 
-/** D29-76 (P7, I2): an `other`-bucket item with no body, no traits, and no
+/** An `other`-bucket item with no body, no traits, and no
  * action cost renders as nothing but a bare heading ("Bottle") — 7,907 such
  * stubs corpus-wide, upstream Foundry data verified genuinely empty
  * (388/388 sampled). Skipped from the abilities bucket entirely. Strikes and
@@ -272,15 +272,15 @@ function isEmptyStub(item: EmbeddedItem): boolean {
   return item.body.length === 0 && item.traits.length === 0 && item.actionCost === undefined;
 }
 
-/** D29-26 — grouped embedded-item sections: strikes, spellcasting entries
- * (with their spells nested under them), then actions/abilities. P7 narrows
- * the old "any other `type` renders in the abilities bucket" posture two
- * ways, both applied BEFORE the section-emptiness checks below (so a bucket
- * emptied by the filters renders no section shell at all):
- *   - D29-75 (I3): `type === "lore"` items are EXCLUDED — the lore bonus
- *     now lives in the Skills row (D29-74's transform-side merge into
- *     `stats.skills`, landed at S1, so the bonus is never invisible);
- *   - D29-76 (I2): empty stubs are skipped (`isEmptyStub` above).
+/** Grouped embedded-item sections: strikes, spellcasting entries (with their
+ * spells nested under them), then actions/abilities. Every other `type` renders
+ * in the abilities bucket, with two filters, both applied BEFORE the
+ * section-emptiness checks below (so a bucket emptied by the filters renders no
+ * section shell at all):
+ *   - `type === "lore"` items are EXCLUDED — the lore bonus lives in the
+ *     Skills row (the transform merges it into `stats.skills`, so the bonus
+ *     is never invisible);
+ *   - empty stubs are skipped (`isEmptyStub` above).
  * Review-verified: zero Foundry-only entities lose ALL their items to these
  * two filters (no empty shells appear). */
 export function EmbeddedItemSections({

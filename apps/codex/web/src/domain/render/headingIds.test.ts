@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { createHeadingIdAssigner, slugifyHeading } from "./headingIds";
 
-describe("slugifyHeading (D29-109b, GitHub-slugger-style)", () => {
+describe("slugifyHeading (GitHub-slugger-style)", () => {
   it("lowercases and hyphenates a plain multi-word heading", () => {
     expect(slugifyHeading("Cast a Spell")).toBe("cast-a-spell");
   });
@@ -31,7 +31,7 @@ describe("slugifyHeading (D29-109b, GitHub-slugger-style)", () => {
   });
 });
 
-describe("createHeadingIdAssigner (D29-109b, per-page collision suffixes)", () => {
+describe("createHeadingIdAssigner (per-page collision suffixes)", () => {
   it("the first occurrence of a heading text gets the bare slug", () => {
     const assign = createHeadingIdAssigner();
     expect(assign("Description")).toBe("description");

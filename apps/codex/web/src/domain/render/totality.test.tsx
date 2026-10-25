@@ -6,12 +6,11 @@ import { loadFixtureRenderEnv } from "./fixtureLoader";
 import { RENDER_ERROR_ATTR, renderNodes } from "./nodes";
 
 /**
- * D29-29 tier 1 — totality: render EVERY fixture entity (all 88 categories)
+ * Totality: render EVERY fixture entity (all 88 categories)
  * via `renderToStaticMarkup`. Zero `data-render-error` anywhere; every
  * non-empty `body` yields non-empty HTML; every entity name appears. This is
  * the "the renderer is total over the real corpus's node-kind census" gate
- * (spec §6 risk) exercised against the fixture corpus — the same corpus
- * P2's real-corpus S2/S3 gates run against, just smaller.
+ * exercised against the fixture corpus — a smaller copy of the real corpus.
  */
 
 /** React's SSR text-escaping (apostrophes -> `&#x27;`, etc.) — entity names
@@ -27,7 +26,7 @@ function reactEscape(s: string): string {
     .replaceAll("'", "&#x27;");
 }
 
-describe("D29-29 tier 1: totality over the full fixture matrix (88 categories)", () => {
+describe("renderer totality over the full fixture matrix (88 categories)", () => {
   const { entities, ctx } = loadFixtureRenderEnv();
 
   it("loaded every category (sanity check on the fixture itself)", () => {

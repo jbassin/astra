@@ -11,7 +11,7 @@ describe("humanizeTraitToken", () => {
   });
 });
 
-describe("CodexTraitPills (D29-24): links only for known traits", () => {
+describe("CodexTraitPills: links only for known traits", () => {
   it("a trait present in the injected known-set renders as a link", () => {
     const out = renderToStaticMarkup(
       <CodexTraitPills traits={["satyr"]} knownTraitIds={new Set(["trait/satyr"])} />,

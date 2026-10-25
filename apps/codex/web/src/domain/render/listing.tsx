@@ -4,15 +4,12 @@ import type { CategoryDirectoryData } from "../../server/directoryData";
 import { displayCategoryName } from "./displayCategoryName";
 
 /**
- * D29-27 — the category directory's presentation, now living at the demoted
- * `/categories` route (P4.5 S2, D29-47 — moved off `/`, which is the new R4
- * landing page). Grouping is S1's own `categoryGroupOf`/`CategoryGroup`, not
- * a second taxonomy. The sibling `/{category}` listing (originally a
- * throwaway A–Z page here too) was REPLACED by P3's faceted `BrowseListing`
- * (`src/domain/browse/BrowseListing.tsx`) — this file now owns only the
- * directory page, which stays as-is otherwise (D29-35: "the directory page
- * stays the grouped category list — counts from manifest — gains nothing
- * else").
+ * The category directory's presentation, at the `/categories` route (`/` is
+ * the landing page). Grouping is `categoryGroupOf`/`CategoryGroup`, not a
+ * second taxonomy. The sibling `/{category}` listing is the faceted
+ * `BrowseListing` (`src/domain/browse/BrowseListing.tsx`); this file owns
+ * only the directory page: the grouped category list, with counts from the
+ * manifest, and nothing else.
  *
  * Only `import type` from the `server/` modules above — this is a pure
  * presentational component over already-fetched data, same posture as

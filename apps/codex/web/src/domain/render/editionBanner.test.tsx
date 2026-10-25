@@ -20,15 +20,15 @@ function baseEntity(overrides: Partial<CodexEntity> = {}): CodexEntity {
   };
 }
 
-/** D29-109a (P11 S5, #14) — a ctx whose `resolveEmbed` resolves ONLY the
- * ids explicitly given here, everything else fail-softs to the raw id
- * (the belt-and-braces path — post-D29-98 stripping keeps genuine cases
- * near-zero, but the render layer must never assume that). */
+/** A ctx whose `resolveEmbed` resolves ONLY the ids explicitly given here;
+ * everything else fail-softs to the raw id (the belt-and-braces path —
+ * ingest's edition-pointer stripping keeps genuine cases near-zero, but the
+ * render layer must never assume that). */
 function ctxWithTargets(targets: Record<string, CodexEntity>) {
   return rootRenderCtx({ resolveEmbed: (id) => targets[id], knownTraitIds: new Set() });
 }
 
-describe("EditionPill (D29-22/-26): every page shows one", () => {
+describe("EditionPill: every page shows one", () => {
   it("remaster", () => {
     const out = renderToStaticMarkup(<EditionPill entity={baseEntity({ edition: "remaster" })} />);
     expect(out).toContain('aria-label="Remaster"');
@@ -75,7 +75,7 @@ describe("EditionBanner: paired-page cross-links", () => {
   });
 });
 
-describe("EditionBanner: D29-109a pointer-box names — 'Name (Book)' via resolveEmbed", () => {
+describe("EditionBanner: pointer-box names — 'Name (Book)' via resolveEmbed", () => {
   it("a resolved remasteredAs target renders 'Name (Book)', not the bare id", () => {
     const target = baseEntity({
       id: "spell/heal",
@@ -103,7 +103,7 @@ describe("EditionBanner: D29-109a pointer-box names — 'Name (Book)' via resolv
     expect(out).toContain("Heal (Core Rulebook)");
   });
 
-  it("an UNRESOLVABLE pointer (belt-and-braces, post-D29-98 stripping keeps this near-zero) fail-softs to the bare id", () => {
+  it("an UNRESOLVABLE pointer (belt-and-braces, ingest stripping keeps this near-zero) fail-softs to the bare id", () => {
     const entity = baseEntity({ remasteredAs: ["class/investigator"] });
     const out = renderToStaticMarkup(<EditionBanner entity={entity} ctx={ctxWithTargets({})} />);
     expect(out).toContain(">class/investigator<");

@@ -35,7 +35,7 @@ function html(sidebars: readonly AttachedSidebarView[], superseded: boolean): st
   );
 }
 
-describe("AttachedSidebars (D29-42)", () => {
+describe("AttachedSidebars", () => {
   it("renders nothing for an empty list", () => {
     expect(html([], true)).toBe("");
   });

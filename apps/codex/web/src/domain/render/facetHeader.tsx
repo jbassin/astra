@@ -6,10 +6,10 @@ import { CodexActionGlyph } from "./actionGlyph";
 import { type RenderCtx, renderNodes } from "./nodes";
 
 /**
- * D29-26 — the spell/equipment-family/feat facet headers, plus the generic
+ * The spell/equipment-family/feat facet headers, plus the generic
  * scalar-facet key→value line for the other ~80 categories. Every group
  * reads NAMED fields explicitly (never a wholesale `facets` dump) — the
- * "Facet-spillover quirk" (spec) means `featLevel`/`rank` mirror `level` on
+ * facet-spillover quirk means `featLevel`/`rank` mirror `level` on
  * every Foundry-merged entity, so a header outside its home group must not
  * accidentally pick those up.
  */
@@ -19,15 +19,14 @@ function Row({ children }: { children: ReactNode }): ReactElement {
 }
 
 /**
- * D29-50 (P4.5 S5) — the style doc §3.8 discipline: "bold = mechanical
+ * The style doc's discipline: "bold = mechanical
  * label, italic = narrative emphasis." Every populated facet on these
  * headers is a mechanical label/value pair (Traditions, Cast, Price,
  * Prerequisites, ...), so each part renders as a bold body-serif label
  * (`<strong>`) followed by its plain-weight value — the SAME grammar
  * `statblock.tsx`'s `Row`/`codex-stat-label` already uses, extended here to
- * the facet-header lines that used to be un-labeled joined strings (the
- * plain "Feat 13 passive Prerequisites..." line the spec calls out by
- * name). A bare value with no natural label (e.g. a spell's trait-tradition
+ * the facet-header lines (rather than a plain joined "Feat 13 passive
+ * Prerequisites..." string). A bare value with no natural label (e.g. a spell's trait-tradition
  * list has no separate label word beyond its own header) still renders
  * plain, unlabeled — not every part needs a `label`.
  */
@@ -62,30 +61,29 @@ function PartsRow({ parts }: { parts: readonly ReactNode[] }): ReactElement {
 }
 
 // ---------------------------------------------------------------------------
-// D29-62 (R3, P6): mastheadExtra — the AoN masthead's non-"Source" bold-label
-// lines the ingest-time structural strip pulled out of `body`, re-surfaced
-// here. Shared by every one of the 5 category-group render sites below
-// (D29-62's own "written total, not category-gated" instruction) rather than
-// duplicated per component — `value`'s rich inline content (crossrefs, ...)
-// renders via the SAME `renderNodes`-family renderer the body already uses.
+// mastheadExtra — the AoN masthead's non-"Source" bold-label lines the
+// ingest-time structural strip pulled out of `body`, re-surfaced here. Shared
+// by every one of the 5 category-group render sites below (written total, not
+// category-gated) rather than duplicated per component — `value`'s rich inline
+// content (crossrefs, ...) renders via the SAME `renderNodes`-family renderer
+// the body already uses.
 //
-// IMPLEMENTATION-TIME FIX (P6 Track A): D29-62's own worked examples name
-// fields — spell's Traditions/Range, armor's Bulk/Price — that are ALSO
-// already-typed `Facets` fields these same headers render directly. A naive
-// "always append every collected pair" (D29-62's literal wording) produces a
-// visible duplicate label for any entity where both are populated (verified
+// Some masthead fields — spell's Traditions/Range, armor's Bulk/Price — are
+// ALSO already-typed `Facets` fields these same headers render directly. A
+// naive "always append every collected pair" produces a visible duplicate
+// label for any entity where both are populated (verified
 // live: `spell/heal` shows "Traditions" and "Range" TWICE — once from the
 // typed facet with the plain Foundry string, once from `mastheadExtra` with
 // the richer AoN crossref-bearing version; `armor/breastplate` shows "Price"
 // and "Bulk" twice; `feat/camouflage-coat` shows "Prerequisites" twice — a
-// real, common case, not a rare edge). Each header now tracks the
+// real, common case, not a rare edge). So each header tracks the
 // (normalized) labels its OWN typed parts already used and filters
 // `mastheadExtra` against that set before appending — de-duplicated by
 // LABEL, not by field name, so it needs no per-category field-name mapping
 // and generalizes to every header uniformly. Fields with no typed-facet
 // counterpart at all (Bloodline/Target/AC Bonus/Category/Group/Cost/Primary
 // Check/...) are entirely unaffected — they were never in a header's own
-// label set, so they still render as the new information D29-62 intends.
+// label set, so they still render as new information.
 // ---------------------------------------------------------------------------
 
 const EMPTY_LABELS: ReadonlySet<string> = new Set();
@@ -116,10 +114,10 @@ function mastheadExtraParts(
     ));
 }
 
-/** The fifth D29-62 call site: `creature`/`hazard` groups render their own
- * `Statblock` component instead of one of the 4 typed facet headers below —
- * this renders `mastheadExtra` for them (not expected per R3's own scope,
- * but written total so nothing silently drops if it ever happens). Neither
+/** The fifth mastheadExtra call site: `creature`/`hazard` groups render their
+ * own `Statblock` component instead of one of the 4 typed facet headers
+ * below — this renders `mastheadExtra` for them (not expected, but written
+ * total so nothing silently drops if it ever happens). Neither
  * statblock names a "label" the way the 4 headers below do, so there's no
  * typed-label set to de-dup against here. */
 export function MastheadExtraFallback({
@@ -319,32 +317,31 @@ export function FeatFacetHeader({
 // outside its home group").
 // ---------------------------------------------------------------------------
 
-// P11 S2 (D29-104) — `itemCategory` joins the spillover set: `GenericFacetLine`
-// was dumping the raw internal-taxonomy facet key ("Item Category: …") on
-// every one of the ~80 other categories' pages (measured leak: 1,594
-// entities/5 categories — class-feature/deity/action/familiar-ability/
-// creature-ability; equipment's OWN itemCategory is unaffected, it routes to
-// the bespoke `EquipmentFacetHeader` above, a separate render path this
-// component never touches). `featLevel`/`rank` are the pre-existing D29-26
-// spillover pair (facet-mirroring quirk on Foundry-merged entities); never a
-// second set — this is the one render-side exclusion list.
+// `itemCategory` is in the spillover set: otherwise `GenericFacetLine` dumps
+// the raw internal-taxonomy facet key ("Item Category: …") on every one of the
+// ~80 other categories' pages (measured: 1,594 entities/5 categories —
+// class-feature/deity/action/familiar-ability/creature-ability; equipment's
+// OWN itemCategory is unaffected, it routes to the bespoke
+// `EquipmentFacetHeader` above, a separate render path this component never
+// touches). `featLevel`/`rank` are the other spillover pair (facet-mirroring
+// quirk on Foundry-merged entities); never a second set — this is the one
+// render-side exclusion list.
 const SPILLOVER_KEYS: ReadonlySet<string> = new Set(["featLevel", "rank", "itemCategory"]);
 
 /**
- * P14 S2 (D29-138) — routes every generic-group facet VALUE through the P13
- * humanizer (`formatFacetValue`) instead of a bare `String(v)`: fixes raw
- * Foundry/enum codes like ancestry/vehicle/warfare-army's `size: "med"`
- * showing as "Size: med" instead of "Size: Medium", plus the
- * stringified-list leak ("['arcane', 'divine']") on any array-typed facet.
- * `formatFacetValue` is zero-import/pure (its own file header); imported
- * directly rather than `facetDefs.ts`'s heavier `humanizedLabelFor` (spec's
- * own layering note — `domain/render` already imports from `domain/browse`
- * elsewhere, `EntityHeader.tsx`/`ClassPage.tsx`, an established seam, not a
- * new one). An array humanizes EACH element independently (then joins with
- * ", ") rather than the whole array as one blob — the same shape
- * `formatFacetValue`'s own internal stringified-list handling produces for
- * the string-typed case just below it. Facet KEYS/structure/styling are
- * unchanged — only the rendered VALUE text differs. */
+ * Routes every generic-group facet VALUE through the facet-value humanizer
+ * (`formatFacetValue`) instead of a bare `String(v)`, so raw Foundry/enum codes
+ * like ancestry/vehicle/warfare-army's `size: "med"` show as "Size: Medium",
+ * not "Size: med", and array-typed facets never leak a stringified list
+ * ("['arcane', 'divine']"). `formatFacetValue` is zero-import/pure (its own
+ * file header); imported directly rather than `facetDefs.ts`'s heavier
+ * `humanizedLabelFor` (`domain/render` already imports from `domain/browse`
+ * elsewhere, `EntityHeader.tsx`/`ClassPage.tsx`, an established seam, not a new
+ * one). An array humanizes EACH element independently (then joins with ", ")
+ * rather than the whole array as one blob — the same shape `formatFacetValue`'s
+ * own internal stringified-list handling produces for the string-typed case
+ * just below it. Only the rendered VALUE text is humanized; facet KEYS,
+ * structure and styling are left as-is. */
 function fmtFacetValue(v: unknown): string | null {
   if (Array.isArray(v)) {
     const parts = v
@@ -357,7 +354,7 @@ function fmtFacetValue(v: unknown): string | null {
 }
 
 /**
- * P11 S2 (D29-104) — two more generic-group facet keys need bespoke
+ * Two more generic-group facet keys need bespoke
  * (non-"Key: value") rendering rather than `fmtFacetValue`'s plain-text
  * grammar:
  *   - `valued` (condition, 42/98 carry it, `Facets.valued: boolean`) is a
@@ -368,7 +365,7 @@ function fmtFacetValue(v: unknown): string | null {
  *     `FeatFacetHeader` already special-cases, e.g. creature-ability's
  *     generic-group members) renders via `CodexActionGlyph` — the
  *     `FeatFacetHeader` idiom — instead of "Action Cost: passive" text.
- *     Recorded + accepted: the majority generic-group value is `passive`
+ *     Accepted trade-off: the majority generic-group value is `passive`
  *     (762/1,131), which renders as the bare unlabeled glyph-span, matching
  *     `FeatFacetHeader`'s own golden-pinned rendering of the same value.
  * Returns `undefined` for any OTHER key — the caller falls through to the

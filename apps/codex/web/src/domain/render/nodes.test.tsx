@@ -25,8 +25,8 @@ function html(nodes: CodexNode[], ctx = baseCtx()): string {
   return renderToStaticMarkup(<>{renderNodes(nodes, ctx)}</>);
 }
 
-/** A minimal `CodexEntity` for embed-resolution fixtures — shared by the B2
- * paragraph-wrapper guard tests and the D29-25 embed-inlining tests below. */
+/** A minimal `CodexEntity` for embed-resolution fixtures — shared by the
+ * paragraph-wrapper guard tests and the embed-inlining tests below. */
 function makeEntity(id: string, body: BlockNode[]): CodexEntity {
   const [category, slug] = id.split("/") as [string, string];
   return {
@@ -42,7 +42,7 @@ function makeEntity(id: string, body: BlockNode[]): CodexEntity {
   };
 }
 
-describe("nodes.tsx: per-kind totality (D29-24)", () => {
+describe("nodes.tsx: per-kind totality", () => {
   it("text: plain / bold / italic / superscript / combined", () => {
     expect(html([text("plain")])).toBe("plain");
     expect(html([text("b", { bold: true })])).toBe("<strong>b</strong>");
@@ -76,7 +76,7 @@ describe("nodes.tsx: per-kind totality (D29-24)", () => {
     expect(out).not.toContain(" id=");
   });
 
-  it("heading: D29-109b — an `id` is assigned via ctx.headingId when wired, from the heading's PLAIN text", () => {
+  it("heading: an `id` is assigned via ctx.headingId when wired, from the heading's PLAIN text", () => {
     const ctx = { ...baseCtx(), headingId: createHeadingIdAssigner() };
     const out = html([{ kind: "heading", level: 2, children: [text("Cast a Spell!")] }], ctx);
     expect(out).toContain('id="cast-a-spell"');
@@ -122,7 +122,7 @@ describe("nodes.tsx: per-kind totality (D29-24)", () => {
     expect(html([{ kind: "divider" }])).toBe("<hr/>");
   });
 
-  it("aside: inset codex-card (renamed from the gothic card class, P4.5 S1)", () => {
+  it("aside: inset codex-card (not the gothic card class)", () => {
     const out = html([{ kind: "aside", children: [text("note")] }]);
     expect(out).toContain("codex-card");
     expect(out).toContain("codex-card-inset");
@@ -136,7 +136,7 @@ describe("nodes.tsx: per-kind totality (D29-24)", () => {
     );
   });
 
-  it("brokenRef: plain span, NEVER a link (D29-2)", () => {
+  it("brokenRef: plain span, NEVER a link", () => {
     const out = html([{ kind: "brokenRef", target: "spell/gone", display: "Gone Spell" }]);
     expect(out).not.toContain("<a ");
     expect(out).toContain("Gone Spell");
@@ -261,7 +261,7 @@ describe("nodes.tsx: B2 adversarial — paragraph-carrying-block-children guard"
   it("a paragraph carrying a RESOLVED depth-0 embed renders <div>, not <p><div>...</div></p> (S5 real-corpus find, `creature/red-dragon-adult`)", () => {
     // The exact real shape: a paragraph of prose text with an inline `embed`
     // to a `creature-family` entry — the embed resolves and inlines a block
-    // `codex-embed-card` div (D29-25), which a naive `<p>` wrapper cannot
+    // `codex-embed-card` div, which a naive `<p>` wrapper cannot
     // legally contain (a hydration mismatch: the browser silently closes the
     // `<p>` early, diverging from React's expected tree).
     const family = makeEntity("creature-family/dragon-red", [para(text("Family lore"))]);
@@ -300,7 +300,7 @@ describe("nodes.tsx: B2 adversarial — paragraph-carrying-block-children guard"
     expect(out1.startsWith("<p")).toBe(true);
 
     // depth > 0: an embed's own body paragraph references another embed —
-    // that inner embed always degrades to an inline link (D29-25 depth cap),
+    // that inner embed always degrades to an inline link (the depth cap),
     // so its containing paragraph must stay <p>.
     const c = makeEntity("action/c", [para(text("C body"))]);
     const b = makeEntity("action/b", [
@@ -325,7 +325,7 @@ describe("nodes.tsx: B2 adversarial — paragraph-carrying-block-children guard"
   });
 });
 
-describe("nodes.tsx: statRow (P10, D29-91/-93/-94)", () => {
+describe("nodes.tsx: statRow", () => {
   it("renders one codex-stat-line div wrapping one codex-stat-line-cell span per cell", () => {
     const node: CodexNode = {
       kind: "statRow",
@@ -390,7 +390,7 @@ describe("nodes.tsx: statRow (P10, D29-91/-93/-94)", () => {
   });
 });
 
-describe("nodes.tsx: D29-25 embed inlining, depth 1, cycle-guarded", () => {
+describe("nodes.tsx: embed inlining, depth 1, cycle-guarded", () => {
   it("a resolved top-level embed inlines the target's body, framed with a source link", () => {
     const target = makeEntity("action/pursue-a-lead", [para(text("Pursue body"))]);
     const resolver = (id: string) => (id === target.id ? target : undefined);
@@ -404,7 +404,7 @@ describe("nodes.tsx: D29-25 embed inlining, depth 1, cycle-guarded", () => {
     expect(out).toContain(`href="/${target.id}"`);
   });
 
-  it("an embed inside an ALREADY-inlined body renders as a link, not a second inline expansion (M7)", () => {
+  it("an embed inside an ALREADY-inlined body renders as a link, not a second inline expansion", () => {
     // A -> embeds B; B's own body -> embeds C. Rendering A's page should
     // inline B (depth 1) but the B->C embed must degrade to a link only.
     const c = makeEntity("action/c", [para(text("C body"))]);
@@ -417,7 +417,7 @@ describe("nodes.tsx: D29-25 embed inlining, depth 1, cycle-guarded", () => {
     expect(out).toContain("B body");
     // C's body text must NOT have been inlined a second level deep:
     expect(out).not.toContain("C body");
-    // ...but a link to C is present (crossref-style, per D29-25):
+    // ...but a link to C is present (crossref-style):
     expect(out).toContain(`href="/${c.id}"`);
     expect(out).toContain("See C");
   });
@@ -458,7 +458,7 @@ describe("nodes.tsx: D29-25 embed inlining, depth 1, cycle-guarded", () => {
   });
 });
 
-describe("nodes.tsx: D29-136 (P14 S2) — embed fail-soft NEVER renders node.target", () => {
+describe("nodes.tsx: embed fail-soft NEVER renders node.target", () => {
   it("unresolved with NO display renders nothing at all (not the raw target)", () => {
     const out = html([
       { kind: "embed", target: "class-feature/advanced-alchemy", resolved: false },
@@ -499,14 +499,14 @@ describe("nodes.tsx: D29-136 (P14 S2) — embed fail-soft NEVER renders node.tar
   });
 });
 
-/** Strips HTML tags, for the D29-139 tests below that want plain heading
+/** Strips HTML tags, for the heading-whitespace tests below that want plain heading
  * TEXT content — distinct from `text()` above (the InlineNode builder); a
  * differently-named local helper avoids shadowing it. */
 function plainText(markup: string): string {
   return markup.replaceAll(/<[^>]+>/g, "");
 }
 
-describe("nodes.tsx: D29-139 (P14 S2) — heading inline-run whitespace normalization", () => {
+describe("nodes.tsx: heading inline-run whitespace normalization", () => {
   it('["Chemical Hardiness","Level 11"] (no boundary space) -> "Chemical Hardiness Level 11"', () => {
     const out = plainText(
       html([

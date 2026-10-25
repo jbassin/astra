@@ -64,7 +64,7 @@ describe("firstParagraphSummary (unchanged posture — regression pin for the co
   });
 });
 
-describe("collectText (S2, D29-34, adversarial N9)", () => {
+describe("collectText", () => {
   it("walks paragraphs/headings/lists and joins text nodes", () => {
     const body: BlockNode[] = [
       para(text("Hello"), text(" world.")),
@@ -149,7 +149,7 @@ describe("collectText (S2, D29-34, adversarial N9)", () => {
   });
 });
 
-describe("statsText (S2, D29-34) — against the real fixture corpus", () => {
+describe("statsText — against the real fixture corpus", () => {
   it("creature: renders facets + full Stats coverage (adamantine-dragon-adult)", () => {
     const dragon = loadEntity("creature/adamantine-dragon-adult.json");
     const out = statsText(dragon.facets, dragon.stats);
@@ -190,7 +190,7 @@ describe("statsText (S2, D29-34) — against the real fixture corpus", () => {
     expect(statsText({}, undefined)).toBe("");
   });
 
-  it("D29-74 (P7): merged lore-skill slugs are HUMANIZED in the indexed text — 'Mining Lore +24', never 'Mining-lore' (the spellcaster fixture)", () => {
+  it("merged lore-skill slugs are HUMANIZED in the indexed text — 'Mining Lore +24', never 'Mining-lore' (the spellcaster fixture)", () => {
     const spellcaster = loadEntity("creature/adamantine-dragon-adult-spellcaster.json");
     const out = statsText(spellcaster.facets, spellcaster.stats);
     expect(out).toContain("Mining Lore +24");
@@ -198,7 +198,7 @@ describe("statsText (S2, D29-34) — against the real fixture corpus", () => {
     expect(out).toContain("Athletics +27"); // single-word core skills unchanged
   });
 
-  it("D29-74 (P7, synthetic): a multi-word lore slug humanizes word-by-word", () => {
+  it("synthetic: a multi-word lore slug humanizes word-by-word", () => {
     const out = statsText({}, { kind: "creature", skills: { "gambling-lore": 1, stealth: 12 } });
     expect(out).toContain("Gambling Lore +1");
     expect(out).toContain("Stealth +12");

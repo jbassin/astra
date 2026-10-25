@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 //
 // `Popover` (mounted unconditionally by `ClassPage`, same as `EntityRenderPane`)
-// reads `useRouterState` (D29-28) — needs a real router context to mount at
+// reads `useRouterState` — needs a real router context to mount at
 // all, `EntityRenderPane.test.tsx`'s own established convention.
 
 import { createCorpusReader } from "@astra/codex-corpus/reader";
@@ -14,8 +14,8 @@ import { fixtureCorpusRoot } from "../../server/corpusFs";
 import { ClassPage } from "./ClassPage";
 
 /**
- * P12 S3 (D29-119/-120) — `ClassPage` over the S1 fixture corpus's own
- * `class/{fighter,cleric,witch}` docs (D29-113..116). Every case here only
+ * `ClassPage` over the fixture corpus's own `class/{fighter,cleric,witch}`
+ * docs. Every case here only
  * exercises SSR-equivalent (already-resolved) state — the client-side pill
  * toggle + on-demand `memoizedEntity` fetch is Playwright's own concern
  * (real-browser verification), not meaningfully reproducible against a mock
@@ -53,7 +53,7 @@ async function renderClassPage(
   return { html: container.innerHTML };
 }
 
-describe("ClassPage: root + header (D29-119)", () => {
+describe("ClassPage: root + header", () => {
   it("root article carries codex-entity-page, codex-class-page, AND popover-hint (the popover contract)", async () => {
     const { html } = await renderClassPage(loadClass("fighter"));
     expect(html).toContain('class="codex-entity-page codex-class-page popover-hint"');
@@ -74,7 +74,7 @@ describe("ClassPage: root + header (D29-119)", () => {
   });
 });
 
-describe("ClassPage: Core Traits box (D29-119)", () => {
+describe("ClassPage: Core Traits box", () => {
   it("fighter: key ability 'or'-joined, HP per level, perception/attack ranks humanized", async () => {
     const { html } = await renderClassPage(loadClass("fighter"));
     expect(html).toContain("Dexterity or Strength");
@@ -108,7 +108,7 @@ describe("ClassPage: Core Traits box (D29-119)", () => {
   });
 });
 
-describe("ClassPage: progression table (D29-119)", () => {
+describe("ClassPage: progression table", () => {
   it("fighter: exactly 20 data rows (levels 1-20); a populated level anchor-links to its feature heading", async () => {
     const { html } = await renderClassPage(loadClass("fighter"));
     expect(html).toMatch(/<a href="#level-1-reactive-strike">Reactive Strike<\/a>/);
@@ -134,7 +134,7 @@ describe("ClassPage: progression table (D29-119)", () => {
   });
 });
 
-describe("ClassPage: subclass section (D29-119)", () => {
+describe("ClassPage: subclass section", () => {
   it("fighter (mapped to zero subclass categories) renders NO subclass section at all", async () => {
     const { html } = await renderClassPage(loadClass("fighter"));
     expect(html).not.toContain("codex-class-subclass-section");
@@ -178,7 +178,7 @@ describe("ClassPage: subclass section (D29-119)", () => {
   });
 });
 
-describe("ClassPage: feature stream (D29-119)", () => {
+describe("ClassPage: feature stream", () => {
   it("fighter: 16 'Level N: Name' h2 headings, in level order, each with a real id", async () => {
     const { html } = await renderClassPage(loadClass("fighter"));
     const headings = [
@@ -196,7 +196,7 @@ describe("ClassPage: feature stream (D29-119)", () => {
   });
 });
 
-describe("ClassPage: description suppression (D29-119)", () => {
+describe("ClassPage: description suppression", () => {
   it("renders a Description heading with the AoN prose body", async () => {
     const { html } = await renderClassPage(loadClass("fighter"));
     expect(html).toContain(">Description<");
@@ -205,7 +205,7 @@ describe("ClassPage: description suppression (D29-119)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// P14 S2 (D29-135) — the loreBody-bearing class fixture (witch, extended):
+// The loreBody-bearing class fixture (witch, extended):
 // preamble + a base-slug feature embed whose SUFFIXED sibling is witch's own
 // grant + a nested unique table, all proving the mechanisms end-to-end
 // through the real `resolveClassPageData` -> `ClassPage` pipeline (not just
@@ -218,7 +218,7 @@ function loreCardHtml(html: string): string | undefined {
   return LORE_CARD_RE.exec(html)?.[0];
 }
 
-describe("ClassPage: Description extension — stream-covered feature-heading sections (D29-135)", () => {
+describe("ClassPage: Description extension — stream-covered feature-heading sections", () => {
   it("witch: the body's 'Basic Lesson' section (name-matches the grant AND covered by its stream body) is stripped from the Description", async () => {
     const { html } = await renderClassPage(loadClass("witch"));
     // The prose survives ONCE, in the feature stream (the granted-feature
@@ -233,7 +233,7 @@ describe("ClassPage: Description extension — stream-covered feature-heading se
   });
 });
 
-describe("ClassPage: Lore card suppression + base-slug embed matching (D29-135)", () => {
+describe("ClassPage: Lore card suppression + base-slug embed matching", () => {
   it("witch: the loreBody preamble (duplicating the body's own fixture-stub sentence) does not survive into the Lore card", async () => {
     const { html } = await renderClassPage(loadClass("witch"));
     const lore = loreCardHtml(html);
@@ -266,7 +266,7 @@ describe("ClassPage: Lore card suppression + base-slug embed matching (D29-135)"
   });
 });
 
-describe("ClassPage: attached sidebars (D29-119 item 6)", () => {
+describe("ClassPage: attached sidebars", () => {
   it("witch's attached sidebar section renders after the description (hidden by default — the sidebar itself is a legacy doc)", async () => {
     const { html } = await renderClassPage(loadClass("witch"));
     expect(html).toContain("codex-attached-sidebars");

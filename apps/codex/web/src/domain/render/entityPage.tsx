@@ -15,20 +15,19 @@ import { type RenderCtx, renderNodes } from "./nodes";
 import { CreatureStatblock, EmbeddedItemSections, HazardStatblock } from "./statblock";
 
 /**
- * D29-26 — the assembled entity page: the universal header (name + level,
+ * The assembled entity page: the universal header (name + level,
  * traits, edition pill, rarity, citation, aonUrl link, edition banner), the
  * category-group's own facet/statblock header, embedded-item sections (any
  * Actor-derived entity, not just creature/hazard), then body/loreBody.
  *
- * This is the render-layer's own composition root (S1, frontend-free) — S2
- * wires it into an actual route/loader; nothing here touches the filesystem
- * or a server.
+ * This is the render layer's own composition root — the routes wire it to a
+ * loader; nothing here touches the filesystem or a server.
  */
 
-/** D29-109c (P11 S5, #16) — the trait-page dead-end fix: "Find everything
- * with this trait" links to the filter-only `/search?traits=<trait>` view
- * (S1's null-query fix, D29-101c, is what makes that a real, non-empty
- * result set). */
+/** Keeps trait pages from being a dead end: "Find everything with this
+ * trait" links to the filter-only `/search?traits=<trait>` view (a real,
+ * non-empty result set, because search runs filter-only queries with no
+ * search term). */
 function TraitCrossNav({ trait }: { trait: string }): ReactElement {
   return (
     <p className="codex-trait-cross-nav">
@@ -40,19 +39,13 @@ function TraitCrossNav({ trait }: { trait: string }): ReactElement {
 }
 
 /**
- * D29-112 (P11 S4) introduced a `standalone` prop that pulled the h1 inside
- * `EntityHeader` sr-only on the standalone `/{category}/{slug}` route (the
- * root header carried the visible title instead, `HeaderTitle.tsx`). A
- * later stakeholder redirect scoped header-carries-title back down to
- * parent/listing surfaces only, so `EntityHeader`'s h1 is unconditionally
- * visible again and this component no longer threads a `standalone` prop
- * at all — see `EntityHeader.tsx`'s own updated comment for the full
- * history.
+ * `EntityHeader`'s h1 is always visible, on every route; see
+ * `EntityHeader.tsx`'s own comment.
  */
 export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCtx }): ReactElement {
   const group = categoryGroupOf(entity.category);
 
-  // P14 S2 (D29-135) — the Lore card's own duplicate-section suppression:
+  // The Lore card's own duplicate-section suppression:
   // `loreBody` restates near-total chunks of `body` (76/77 real loreBody
   // docs measured >50% doc-level overlap); this keeps only the genuinely
   // unique delta (a shisk-shaped "Heritages" section, "You Might..."/
@@ -72,22 +65,21 @@ export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCt
     >
       <EntityHeader entity={entity} ctx={ctx} />
 
-      {/* D29-72 (P7): when an AoN body is present, the AoN prose is the
-          statblock of record — the structured statblock cards AND the
-          embedded-item sections are suppressed (dedup, keep-the-AoN-side;
-          stakeholder R1+R2). The predicate is BODY-PRESENCE, deliberately
-          NOT `aonUrl` (a no-markdown join can set `aonUrl` with a
+      {/* When an AoN body is present, the AoN prose is the statblock of
+          record — the structured statblock cards AND the embedded-item
+          sections are suppressed (dedup, keep the AoN side, by stakeholder
+          decision). The predicate is BODY-PRESENCE, deliberately NOT
+          `aonUrl` (a no-markdown join can set `aonUrl` with a
           Foundry-fallback body — join.ts's mergeJoined; body-presence is
-          the honest signal) and deliberately NOT a category list (the
-          uniform rule R2 chose: a future category gaining both struct+body
-          flips behavior by design, spec §5). Foundry-only entities
-          (`body: []`) keep the full structured render. Bonus fix riding the
-          same gate: AoN-only prose creatures used to render an EMPTY
-          `codex-statblock` shell (CreatureStatblock has no null guard) —
-          suppressed now too. `MastheadExtraFallback` is NOT suppressed: it
-          renders masthead pairs STRIPPED FROM the body by D29-62's ingest
-          mechanism (545 hazard "Complexity" lines live only there) — it is
-          complementary, never duplicative, and self-nulls when absent. */}
+          the honest signal) and deliberately NOT a category list (a uniform
+          rule: a future category gaining both struct+body flips behavior by
+          design). Foundry-only entities (`body: []`) keep the full
+          structured render. The same gate keeps AoN-only prose creatures
+          from rendering an EMPTY `codex-statblock` shell (CreatureStatblock
+          has no null guard). `MastheadExtraFallback` is NOT suppressed: it
+          renders masthead pairs that ingest STRIPS FROM the body (545 hazard
+          "Complexity" lines live only there) — it is complementary, never
+          duplicative, and self-nulls when absent. */}
       {entity.body.length === 0 ? (
         <>
           {group === "creature" ? <CreatureStatblock entity={entity} /> : null}
@@ -101,15 +93,13 @@ export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCt
       {group === "equipment" ? <EquipmentFacetHeader entity={entity} ctx={ctx} /> : null}
       {group === "feat" ? <FeatFacetHeader entity={entity} ctx={ctx} /> : null}
       {group === "generic" ? <GenericFacetLine entity={entity} ctx={ctx} /> : null}
-      {/* D29-109c (P11 S5, #16) — trait pages only; the lowest-risk
-          dead-end fix (per-category links are OUT, future memo). Links to
-          `/search?traits=<slug>`, which the S1 null-query fix
-          (`SearchPage.tsx`'s D29-101c) makes a genuinely non-empty
-          filter-only result set. `entity.slug` (not `entity.id`) is the
+      {/* Trait pages only (no per-category links). Links to
+          `/search?traits=<slug>`, which `SearchPage.tsx` serves as a
+          genuinely non-empty filter-only result set. `entity.slug` (not `entity.id`) is the
           bare trait TOKEN every OTHER entity's own `traits`/`filters.
           traits` array carries (`build-search.ts`'s `foldTrait` is a
           lowercase fold of that same token — trait entity slugs are
-          already lowercase, D29-1 identity). */}
+          already lowercase). */}
       {entity.category === "trait" ? <TraitCrossNav trait={entity.slug} /> : null}
 
       {entity.body.length === 0 && entity.embeddedItems !== undefined ? (
@@ -118,7 +108,7 @@ export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCt
 
       <div className="codex-content codex-body">{renderNodes(entity.body, ctx)}</div>
 
-      {/* D29-135 — the whole card (heading included) is omitted when
+      {/* The whole Lore card (heading included) is omitted when
           suppression eats every section, not just left empty. */}
       {loreResult !== undefined && loreResult.nodes.length > 0 ? (
         <section className="codex-card codex-card-prose codex-lore">

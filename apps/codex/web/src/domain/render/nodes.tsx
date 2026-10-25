@@ -11,42 +11,42 @@ import { ErrorChip } from "../../ui";
 import { type ActionCost, CodexActionGlyph } from "./actionGlyph";
 
 /**
- * D29-24 — the ONE total `CodexNode -> React` renderer, mirroring gothic's
+ * The ONE total `CodexNode -> React` renderer, mirroring gothic's
  * `mdastToReact.tsx` shape: a flat switch over all 19 `CodexNode.kind`
  * values, `renderNodes` mapping over a list, an `ErrorChip`-carrying default
  * branch that can never throw. Unlike gothic's renderer (which resolves
  * targets via React context, `CrossRefResolverContext`), the embed
  * resolver/trait-membership set here are plain function parameters threaded
- * through every recursive call (`RenderCtx`) — D29-25's "injected, pure, no
- * fs/server dependency" requirement is easiest to keep honest that way, and
+ * through every recursive call (`RenderCtx`) — keeping the renderer injected,
+ * pure and free of any fs/server dependency is easiest that way, and
  * it keeps every render call directly unit-testable with a synthetic ctx.
  */
 
 // ---------------------------------------------------------------------------
-// RenderCtx — the D29-25 embed-inlining machinery (depth 1, cycle-guarded)
+// RenderCtx — the embed-inlining machinery (depth 1, cycle-guarded)
 // ---------------------------------------------------------------------------
 
 export interface RenderCtx {
-  /** D29-25: resolves an embed's `targetId` to its full entity. Injected,
-   * pure — S1 has no fs/server dependency; S2 wires this from the corpus
-   * reader. Returning `undefined` is treated exactly like an unresolved embed
+  /** Resolves an embed's `targetId` to its full entity. Injected, pure — the
+   * renderer has no fs/server dependency; the server wires this from the
+   * corpus reader. Returning `undefined` is treated exactly like an unresolved embed
    * (fail-soft: plain text of `display`), which also covers the defensive
    * case of a `resolved: true` node whose target the resolver doesn't carry. */
   resolveEmbed: (targetId: string) => CodexEntity | undefined;
-  /** D29-24: full `trait/<slug>` ids known to exist in the corpus — trait
-   * pills link only when a member (an injected SET so trait-membership stays
-   * pure/testable, per spec). */
+  /** Full `trait/<slug>` ids known to exist in the corpus — trait pills link
+   * only when a member (an injected SET so trait-membership stays
+   * pure/testable). */
   knownTraitIds: ReadonlySet<string>;
-  /** D29-25 depth cap: 0 while rendering an entity's own top-level content;
+  /** Embed depth cap: 0 while rendering an entity's own top-level content;
    * >0 once inside an inlined embed's body. An embed encountered at depth > 0
    * renders as a crossref-style link, never inlined further (depth stays 1). */
   embedDepth: number;
-  /** D29-25 cycle guard: target ids already being inlined along the current
+  /** Embed cycle guard: target ids already being inlined along the current
    * chain — belt-and-suspenders alongside the depth cap (a self-referencing
    * embed at depth 0 must not recurse forever even if the depth check were
    * ever relaxed). */
   visitedEmbeds: ReadonlySet<string>;
-  /** D29-109b (P11 S5, #15) — a per-PAGE heading-id assigner
+  /** A per-PAGE heading-id assigner
    * (`headingIds.ts`'s `createHeadingIdAssigner()`), called with a
    * heading's plain text to get its `id`. Optional: a bare `rootRenderCtx`
    * call (most existing unit tests, and any future direct construction)
@@ -69,7 +69,7 @@ export function rootRenderCtx(opts: {
 }
 
 /** A resolver that never resolves anything — every embed renders as
- * unresolved plain text. Handy for tests/pages that don't care about D29-25. */
+ * unresolved plain text. Handy for tests/pages that don't care about embeds. */
 export function noEmbeds(): RenderCtx["resolveEmbed"] {
   return () => undefined;
 }
@@ -89,19 +89,18 @@ const BLOCK_KINDS: ReadonlySet<CodexNode["kind"]> = new Set([
   "statRow",
 ]);
 
-/** D29-24 adversarial B2: `localizedBoilerplate` is the one INLINE kind whose
+/** `localizedBoilerplate` is the one INLINE kind whose
  * own `children` can hold BLOCK nodes (resolved `@Localize` values are block
  * HTML) — a naive `paragraph -> <p>` wrapping one would emit `<p><p>...</p>
- * </p>`, which the browser silently hoists (hydration mismatch class, spec
- * B2). `localizedBoilerplate` needs walking here; the other INLINE kind that
- * can render as a BLOCK element is `embed` — a resolved, depth-0, not-yet-
- * visited embed renders a `<div class="codex-embed-card">` (D29-25,
- * `renderEmbed` below), so a paragraph carrying one of those must also
- * become a `<div>` (S5 P3 real-corpus find: `creature/red-dragon-adult`'s
- * body places a resolved `creature-family` embed inline inside prose text,
- * producing `<p><div>...</div></p>` — invalid nesting the browser silently
- * re-parents, a hydration mismatch). Every other inline kind is a true leaf
- * (no `children` field at all). */
+ * </p>`, which the browser silently hoists (a hydration mismatch).
+ * `localizedBoilerplate` needs walking here; the other INLINE kind that can
+ * render as a BLOCK element is `embed` — a resolved, depth-0, not-yet-visited
+ * embed renders a `<div class="codex-embed-card">` (`renderEmbed` below), so a
+ * paragraph carrying one of those must also become a `<div>` (a real-corpus
+ * case: `creature/red-dragon-adult`'s body places a resolved `creature-family`
+ * embed inline inside prose text, producing `<p><div>...</div></p>` — invalid
+ * nesting the browser silently re-parents, a hydration mismatch). Every other
+ * inline kind is a true leaf (no `children` field at all). */
 function paragraphCarriesBlockContent(children: readonly CodexNode[], ctx: RenderCtx): boolean {
   return children.some((child) => {
     if (BLOCK_KINDS.has(child.kind)) return true;
@@ -117,8 +116,8 @@ function paragraphCarriesBlockContent(children: readonly CodexNode[], ctx: Rende
 // small display helpers
 // ---------------------------------------------------------------------------
 
-/** Foundry's `[[/act ...]]` macro vocabulary → action cost (D29-24
- * inlineAction: "action glyph where cost is knowable, else plain label").
+/** Foundry's `[[/act ...]]` macro vocabulary → action cost (inlineAction:
+ * an action glyph where the cost is knowable, else a plain label).
  * Provenance: the real corpus uses exactly 39 distinct `action` slugs across
  * all `inlineAction` nodes (exhaustive scan, bodies + embedded items); each
  * cost below is read from the corresponding `action/<slug>.json` entity's own
@@ -173,7 +172,7 @@ function humanizeSlug(slug: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// D29-139 (P14 S2) — heading inline-run whitespace normalization
+// heading inline-run whitespace normalization
 // ---------------------------------------------------------------------------
 
 /** `true` when `prev` and `next` need a space inserted between them — i.e.
@@ -215,16 +214,15 @@ function normalizeHeadingChildren(children: readonly InlineNode[]): InlineNode[]
 }
 
 // ---------------------------------------------------------------------------
-// D29-50 (P4.5 S5) — the tan "in-world artifact" callout ornament (style doc
-// §3.2): a thin double-hairline rule bracketing the box top+bottom, flared
-// into a small inward-pointing chevron at both ends. The corpus's
-// `CodexNode` taxonomy has no flavor-vs-mechanical distinction on `aside`/
-// resolved `embed` nodes (both just render generic block content), so per
-// the spec's own documented fallback BOTH get the tan family here — the
-// blue family (informational notices) is reserved for the edition banner +
-// the facet drawer's superseded explainer (`editionBanner.tsx`/
+// The tan "in-world artifact" callout ornament (from the style doc): a thin
+// double-hairline rule bracketing the box top+bottom, flared into a small
+// inward-pointing chevron at both ends. The corpus's `CodexNode` taxonomy
+// has no flavor-vs-mechanical distinction on `aside`/resolved `embed` nodes
+// (both just render generic block content), so BOTH get the tan family here
+// — the blue family (informational notices) is reserved for the edition
+// banner + the facet drawer's superseded explainer (`editionBanner.tsx`/
 // `FacetPanel.tsx`), never this renderer. Rendered as an inline SVG (never a
-// unicode glyph — the spec's explicit binding) so it scales cleanly with the
+// unicode glyph, by design) so it scales cleanly with the
 // callout's own width via `preserveAspectRatio="none"`.
 // ---------------------------------------------------------------------------
 
@@ -246,7 +244,7 @@ function CalloutTanRule(): ReactElement {
 }
 
 // ---------------------------------------------------------------------------
-// embed inlining (D29-25)
+// embed inlining
 // ---------------------------------------------------------------------------
 
 function embedLink(targetId: string, display: string, key: number): ReactNode {
@@ -262,7 +260,7 @@ function embedLink(targetId: string, display: string, key: number): ReactNode {
  * three conditions `renderEmbed` checks below, factored out so the B2
  * paragraph-wrapper guard can ask the question without duplicating (and
  * risking drifting from) that decision. `resolveEmbed` is an injected, pure,
- * in-memory lookup (D29-25) — calling it here too is cheap, no I/O. */
+ * in-memory lookup — calling it here too is cheap, no I/O. */
 function embedRendersAsBlock(node: Extract<CodexNode, { kind: "embed" }>, ctx: RenderCtx): boolean {
   if (!node.resolved) return false;
   if (!ctx.resolveEmbed(node.target)) return false;
@@ -270,16 +268,14 @@ function embedRendersAsBlock(node: Extract<CodexNode, { kind: "embed" }>, ctx: R
   return true;
 }
 
-/** D29-136 (P14 S2) — NEVER render `node.target` (a raw internal id/slug,
+/** NEVER render `node.target` (a raw internal id/slug,
  * e.g. "class-feature/advanced-alchemy", is not user-facing prose): both
  * the genuinely-unresolved branch and the defensive resolved-but-
- * unprefetched branch below render `display ?? nothing`. The draft's
- * `buildEmbedNode` `display` capture was dropped at spec time (0/2,714 real
- * `@Embed[...]` uses carry a `{label}` — zero coverage, and it was
- * transform code misfiled in the render slice); this fail-soft carries the
- * remaining ~6 genuinely-absent-on-AoN cases alone (most of which also sit
- * inside a lore section D29-135's suppression already removes — this is
- * the defensive floor, not the user-visible fix). */
+ * unprefetched branch below render `display ?? nothing`. Ingest captures
+ * no `{label}` for `@Embed[...]` (0/2,714 real uses carry one), so this
+ * fail-soft alone covers the ~6 genuinely-absent-on-AoN cases (most of which
+ * also sit inside a lore section the lore suppression already removes —
+ * this is the defensive floor, not the user-visible fix). */
 function unresolvedEmbedFallback(display: string | undefined, key: number): ReactNode {
   if (display === undefined) return null;
   return (
@@ -304,7 +300,7 @@ function renderEmbed(
     return unresolvedEmbedFallback(node.display, key);
   }
   if (ctx.embedDepth > 0 || ctx.visitedEmbeds.has(node.target)) {
-    // D29-25 depth cap + cycle guard: already inside an inlined body ->
+    // Embed depth cap + cycle guard: already inside an inlined body ->
     // render as a crossref-style link, never expand further.
     return embedLink(node.target, node.display ?? target.name, key);
   }
@@ -353,7 +349,7 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
         </a>
       );
     case "brokenRef":
-      // D29-2: NEVER a link — a plain span of the display text.
+      // NEVER a link — a plain span of the display text.
       return (
         <span key={key} data-broken-ref="">
           {node.display}
@@ -431,14 +427,14 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
     case "heading": {
       const depth = Math.min(Math.max(node.level, 1), 6);
       const Tag = `h${depth}` as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-      // D29-139 (P14 S2) — headings only, never paragraph/inline flow: the
+      // Headings only, never paragraph/inline flow: the
       // AoN `<title right=…>` extraction (`aonMarkup.ts`) sometimes splits
       // a heading into two adjacent verbatim text runs with no whitespace
       // of their own at the boundary ("Chemical Hardiness"+"Level 11" ->
       // "Chemical HardinessLevel 11" un-normalized); normalize BEFORE
       // computing the id, so the anchor id and the visible text agree.
       const children = normalizeHeadingChildren(node.children);
-      // D29-109b (P11 S5, #15) — SSR-visible anchor id, absent entirely when
+      // SSR-visible anchor id, absent entirely when
       // no per-page assigner is wired (`ctx.headingId` optional, see
       // `RenderCtx`'s own doc comment).
       const id = ctx.headingId?.(collectText(children));
@@ -497,8 +493,8 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
         </div>
       );
     case "statRow": {
-      // P10 (D29-91/-93/-94): a collapsed AoN statblock row. `codex-stat-line`
-      // / `codex-stat-line-cell` — deliberately NOT `codex-stat-row`, which is
+      // A collapsed AoN statblock row. `codex-stat-line` /
+      // `codex-stat-line-cell` — deliberately NOT `codex-stat-row`, which is
       // ALREADY TAKEN by the structured statblock's own Row component
       // (`statblock.tsx`, styled at `globals.css` — a collision would restyle
       // pages this round doesn't touch). Each cell reuses the same
@@ -523,7 +519,7 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
     }
 
     default: {
-      // Totality guarantee (D29-24): never throw. The 19-member union is
+      // Totality guarantee: never throw. The 19-member union is
       // exhaustive today, but a future corpus-schema kind reaching here
       // (or, in tests, a deliberately malformed node) still degrades to a
       // visible, non-throwing chip — the gothic `ErrorChip` idiom, wrapped so
@@ -548,6 +544,6 @@ export function renderNodes(nodes: readonly CodexNode[], ctx: RenderCtx): ReactN
 // Exported so tests asserting the totality gate share the attribute name.
 export const RENDER_ERROR_ATTR = "data-render-error";
 
-// D29-139 — exported for direct unit testing (nodes.test.tsx); the heading
+// Exported for direct unit testing (nodes.test.tsx); the heading
 // case above is the one production call site.
 export { normalizeHeadingChildren };

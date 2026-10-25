@@ -5,7 +5,7 @@ import { EditionIcon } from "../../ui";
 import type { RenderCtx } from "./nodes";
 
 /**
- * D29-22/-26 — every page shows an edition icon; a legacy member with
+ * Every page shows an edition icon; a legacy member with
  * `remasteredAs` shows a banner linking the remaster member(s); a remaster
  * member with `legacyOf` shows a compact "legacy version" link.
  */
@@ -14,11 +14,11 @@ export function EditionPill({ entity }: { entity: CodexEntity }): ReactElement {
 }
 
 /**
- * D29-109a (P11 S5, #14) — the pointer-box name: `Name (Book)` resolved via
+ * The pointer-box name: `Name (Book)` resolved via
  * `ctx.resolveEmbed` (the SAME depth-0 embed-prefetch map `entityPageData
  * .ts`'s `entityEmbedTargetIds` now also seeds with `remasteredAs`/
  * `legacyOf` ids — no second server round-trip). Raw-id fail-soft when the
- * target isn't in the map: post-D29-98 edition-pointer stripping (S1) keeps
+ * target isn't in the map: ingest's edition-pointer stripping keeps
  * genuine dangling pointers near-zero, so this is belt-and-braces, not the
  * common case.
  */

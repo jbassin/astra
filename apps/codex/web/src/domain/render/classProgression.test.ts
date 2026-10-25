@@ -9,7 +9,7 @@ import {
   stripClassProgressionTable,
 } from "./classProgression";
 
-describe("rankLabel (D29-119) — the 0..4 proficiency rank display mapping", () => {
+describe("rankLabel — the 0..4 proficiency rank display mapping", () => {
   it("maps every real rank value", () => {
     expect(rankLabel(0)).toBe("Untrained");
     expect(rankLabel(1)).toBe("Trained");
@@ -31,7 +31,7 @@ const FEAT_LEVELS: ClassStats["featLevels"] = {
   skillIncrease: [3, 5, 7],
 };
 
-describe("cadenceLabelsAtLevel (D29-119)", () => {
+describe("cadenceLabelsAtLevel", () => {
   it("a level with multiple simultaneous cadence entries returns all of them, lowercase", () => {
     expect(cadenceLabelsAtLevel(FEAT_LEVELS, 1)).toEqual(["class feat", "ancestry feat"]);
   });
@@ -57,7 +57,7 @@ describe("cadenceLabelsAtLevel (D29-119)", () => {
   });
 });
 
-describe("buildProgressionRows (D29-119)", () => {
+describe("buildProgressionRows", () => {
   const stats: Pick<ClassStats, "grantedFeatures" | "featLevels"> = {
     grantedFeatures: [
       { level: 1, name: "Reactive Strike", targetId: "class-feature/reactive-strike" },
@@ -86,7 +86,7 @@ describe("buildProgressionRows (D29-119)", () => {
     expect(row3?.cadence).toEqual(["general feat", "skill increase"]);
   });
 
-  it("the D29-114 targetId:null stub still appears in its own level's row (never dropped)", () => {
+  it("a targetId:null stub still appears in its own level's row (never dropped)", () => {
     const withStub: Pick<ClassStats, "grantedFeatures" | "featLevels"> = {
       grantedFeatures: [
         { level: 1, name: "Doctrine", targetId: "class-feature/doctrine" },
@@ -111,7 +111,7 @@ function textNode(content: string): InlineNode {
   return { kind: "text", content, marks: { bold: false, italic: false, superscript: false } };
 }
 
-describe("isClassProgressionTable / stripClassProgressionTable (D29-119)", () => {
+describe("isClassProgressionTable / stripClassProgressionTable", () => {
   const progressionTable: CodexNode = {
     kind: "table",
     rows: [

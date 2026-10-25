@@ -1,13 +1,13 @@
 import { sluggify } from "@astra/codex-corpus";
 
 /**
- * D29-109b (P11 S5, #15) — GitHub-slugger-style heading anchor ids. Reuses
+ * GitHub-slugger-style heading anchor ids. Reuses
  * the ingest lane's own `sluggify` (verbatim-ported from foundryvtt/pf2e,
  * `src/ingest/sluggify.ts`) as the base slug function rather than
  * reimplementing lowercase/apostrophe-strip/non-word-collapse a second
  * time — `traits.tsx` already imports across this same ingest/render
- * boundary (D29-24's own precedent), and the algorithm is already exactly
- * the GitHub-slugger shape the spec asks for (lowercase, strip apostrophes,
+ * boundary, and the algorithm is already exactly the GitHub-slugger shape
+ * (lowercase, strip apostrophes,
  * collapse runs of non-word characters to single hyphens, trim). Diacritics
  * are preserved (not stripped) — a literal accented heading keeps its own
  * character in the anchor, matching GitHub's own slugger behavior; this is

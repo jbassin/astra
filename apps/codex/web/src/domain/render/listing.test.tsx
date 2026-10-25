@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import type { CategoryDirectoryData } from "../../server/directoryData";
 import { CategoryDirectory } from "./listing";
 
-describe("CategoryDirectory (D29-27)", () => {
+describe("CategoryDirectory", () => {
   const data: CategoryDirectoryData = {
     totalEntities: 111,
     groups: [

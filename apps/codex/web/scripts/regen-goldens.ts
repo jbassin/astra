@@ -1,5 +1,5 @@
 /**
- * D29-29 tier 2 — regenerates the 7 committed flagship golden HTML files
+ * Regenerates the 7 committed flagship golden HTML files
  * (`apps/codex/web/goldens/*.html`) from the current renderer + the committed
  * fixture. Deterministic (no timestamps/randomness) so a re-run with no
  * source change produces byte-identical output — `goldens.test.tsx` asserts
@@ -11,8 +11,9 @@
  * Run via:
  *   pnpm --filter @astra/codex regen-goldens
  *
- * Hand-check the 7 files after any intentional renderer change (D29-29's
- * "vs hand-checked output" gate) before committing the regenerated goldens.
+ * Hand-check the 7 files after any intentional renderer change before
+ * committing the regenerated goldens: they are compared against
+ * hand-checked output.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -30,7 +31,7 @@ import type { RenderCtx } from "../src/domain/render/nodes";
 const GOLDENS_ROOT = join(import.meta.dirname, "..", "goldens");
 
 /**
- * D29-109b (P11 S5, #15) — a FRESH `headingId` assigner per call: `ctx` here
+ * A FRESH `headingId` assigner per call: `ctx` here
  * is `loadFixtureRenderEnv()`'s ONE shared embed-resolver/trait-index
  * object, reused across all 7 goldens below (cheap, stateless data) — but
  * heading-id collision tracking is PER-PAGE state, so baking it into that
@@ -65,15 +66,14 @@ function main(): void {
       html: renderEntityPage(requireEntity(byId, "creature/adamantine-dragon-adult"), ctx),
     },
     {
-      // P7 (D29-72/-73/-74, review M4): the joined dragon above LOST its
-      // structured-render markup to the D29-72 suppression — this
+      // The joined dragon above has an AoN body, so its structured
+      // statblock markup is suppressed in favour of the AoN prose — this
       // Foundry-only fixture (variantOf + lore-bearing + a range.increment
       // Rock strike) is the golden that keeps the structured render
       // byte-locked: retention (empty body), StrikeRow range, lore-in-Skills
-      // humanized, and the §5 variantOf risk, all in one file.
+      // humanized, and the variantOf case, all in one file.
       file: "creature-dragon-spellcaster.html",
-      title:
-        "creature/adamantine-dragon-adult-spellcaster — golden (P7 structured-render retention)",
+      title: "creature/adamantine-dragon-adult-spellcaster — golden (structured-render retention)",
       html: renderEntityPage(
         requireEntity(byId, "creature/adamantine-dragon-adult-spellcaster"),
         ctx,
@@ -108,7 +108,7 @@ function main(): void {
     },
     {
       file: "class-investigator.html",
-      title: "class/investigator@legacy — golden (D29-25 embed-inlining proof)",
+      title: "class/investigator@legacy — golden (embed-inlining proof)",
       html: renderEntityPage(requireEntity(byId, "class/investigator@legacy"), ctx),
     },
   ];

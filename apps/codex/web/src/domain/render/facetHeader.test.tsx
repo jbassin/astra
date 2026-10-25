@@ -13,8 +13,8 @@ import { noEmbeds, rootRenderCtx } from "./nodes";
 
 const ctx = rootRenderCtx({ resolveEmbed: noEmbeds(), knownTraitIds: new Set() });
 
-/** P4.5 S5 (D29-50): the header lines now wrap each label in a `<strong>`
- * (the bold-label/regular-value grammar, style doc §3.8) — a raw-HTML
+/** The header lines wrap each label in a `<strong>`
+ * (the bold-label/regular-value grammar from the style doc) — a raw-HTML
  * `toContain("Feat 13")` would fail on the tag boundary between the label
  * and its value even though the two remain adjacent text. Strip markup
  * before asserting so these tests check rendered TEXT content, tolerant of
@@ -140,8 +140,8 @@ describe("GenericFacetLine (the ~80 other categories)", () => {
     const out = text(renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />));
     expect(out).toContain("AC: 20");
     expect(out).toContain("HP: 80");
-    // P14 S2 (D29-138) — routed through `formatFacetValue`: "Size: lg" is
-    // now the humanized "Size: Large" (the raw code never reaches the UI).
+    // Routed through `formatFacetValue`: "size: lg" renders as the humanized
+    // "Size: Large" (the raw code never reaches the UI).
     expect(out).toContain("Size: Large");
   });
 
@@ -167,12 +167,12 @@ describe("GenericFacetLine (the ~80 other categories)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// P11 S2 (D29-104): the three GenericFacetLine leak/special-render fixes —
+// The three GenericFacetLine leak/special-render rules —
 // itemCategory joins SPILLOVER_KEYS, `valued` renders as a bare word only
 // when true, `actionCost` renders via the FeatFacetHeader glyph idiom.
 // ---------------------------------------------------------------------------
 
-describe("GenericFacetLine: itemCategory spillover suppression (D29-104)", () => {
+describe("GenericFacetLine: itemCategory spillover suppression", () => {
   it("itemCategory never leaks on a non-equipment generic-group entity (e.g. deity)", () => {
     const entity = entityWith("deity", { itemCategory: "deity", ac: 10 });
     const out = text(renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />));
@@ -181,7 +181,7 @@ describe("GenericFacetLine: itemCategory spillover suppression (D29-104)", () =>
   });
 });
 
-describe("GenericFacetLine: `valued` renders as a bare word only when true (D29-104)", () => {
+describe("GenericFacetLine: `valued` renders as a bare word only when true", () => {
   it("valued: true -> the single word 'Valued', no colon/value text", () => {
     const entity = entityWith("condition", { valued: true });
     const out = text(renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />));
@@ -204,7 +204,7 @@ describe("GenericFacetLine: `valued` renders as a bare word only when true (D29-
   });
 });
 
-describe("GenericFacetLine: `actionCost` renders via the action-glyph idiom (D29-104)", () => {
+describe("GenericFacetLine: `actionCost` renders via the action-glyph idiom", () => {
   it("a real action cost renders an ActionGlyph (the icon-font span), not 'Action Cost: 2' text", () => {
     const entity = entityWith("creature-ability", { actionCost: "2" });
     const html = renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />);
@@ -228,7 +228,7 @@ describe("GenericFacetLine: `actionCost` renders via the action-glyph idiom (D29
 });
 
 // ---------------------------------------------------------------------------
-// D29-62 (R3, P6): mastheadExtra rendering across all 5 call sites
+// mastheadExtra rendering across all 5 call sites
 // ---------------------------------------------------------------------------
 
 function plainText(content: string): MastheadExtraEntry["value"][number] {
@@ -239,7 +239,7 @@ function masthead(label: string, content: string): MastheadExtraEntry {
   return { label, value: [plainText(content)] };
 }
 
-describe("mastheadExtra rendering (D29-62)", () => {
+describe("mastheadExtra rendering", () => {
   it("SpellFacetHeader appends mastheadExtra pairs after its own typed parts", () => {
     const entity = entityWith(
       "spell",
