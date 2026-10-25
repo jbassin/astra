@@ -1,7 +1,7 @@
 // Ported from harrow's src/lib/draw.ts (imports re-pointed: DECK → @/generated/cards,
 // CROSS_SPREAD → ./spreads, fortune → ./fortune; the Fisher-Yates swap rewritten with
 // a temp for astra's strict indexing — same logic). Client-side only: Math.random +
-// Date.now run after hydration (the draw never executes during SSR — Decision D).
+// Date.now run after hydration (the draw never executes during SSR).
 
 import { DECK } from "@/generated/cards";
 

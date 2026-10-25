@@ -4,7 +4,7 @@ import { useIsMobile } from "@/lib/useIsMobile";
 import { FlipCard } from "./FlipCard";
 
 // Ported from harrow's src/components/CardSpread.tsx. Two changes: the local
-// matchMedia state → the shell's SSR-safe useIsMobile (Decision D — no hydration
+// matchMedia state → the shell's SSR-safe useIsMobile (no hydration
 // mismatch on the desktop-circle vs mobile-stack layout); the amber connectors
 // re-toned to gothic accent-amber. Strict-index accesses asserted (same geometry).
 interface CardSpreadProps {

@@ -6,9 +6,9 @@ import type { CardOrientation, TarotCard } from "@/domain/lib/types";
 import { CardName } from "./CardName";
 import { Icon } from "./Icon";
 
-// Ported from harrow's src/components/CardFront.tsx, re-skinned onto gothic (Decision
-// A): the well/deck tokens → gothic panel + the deck IDENTITY colour (Decision G,
-// applied via identityStyle → --identity-color, consumed by the .deck-* utilities).
+// Ported from harrow's src/components/CardFront.tsx, re-skinned onto gothic: the
+// well/deck tokens → gothic panel + the deck IDENTITY colour (applied via
+// identityStyle → --identity-color, consumed by the .deck-* utilities).
 // Structure + the golden SVG frame + glyph render unchanged; the gold is gothic
 // gold-leaf.
 

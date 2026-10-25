@@ -5,7 +5,7 @@ import { DECK } from "@/generated/cards";
 import goldenDeck from "./__fixtures__/deck.golden.json";
 import type { TarotCard } from "./types";
 
-// THE deck parity gate (spec 0017 gate I.1). `deck.golden.json` was captured by
+// THE deck parity gate. `deck.golden.json` was captured by
 // running harrow's ORIGINAL parser (/ruby/data/experiments/tarot/src/lib/parseCard.ts)
 // over its ORIGINAL .card files — an independent capture from the source repo. The
 // generated DECK (this repo's ported parser over the copied content) must reproduce

@@ -11,9 +11,9 @@ import { DrawButton } from "./DrawButton";
 import { FortuneDisplay } from "./FortuneDisplay";
 
 // Ported from harrow's ReadingView, with the useReducer view-state collapsed into
-// route-local state (Decision E/F — readings stay ephemeral, no context). The draw
+// route-local state (readings stay ephemeral, no context). The draw
 // (Math.random) runs only here, client-side (the / route mounts this behind
-// <ClientOnly>, Decision D). A new reading remounts ReadingContent (keyed on id) so
+// <ClientOnly>). A new reading remounts ReadingContent (keyed on id) so
 // the reveal sequence restarts — mirroring the source's `key={reading.id}`.
 export function ReadingSurface() {
   const [reading, setReading] = useState<Reading>(() => createReading());

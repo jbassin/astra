@@ -1,6 +1,6 @@
 // Ported from harrow's src/components/Icon.tsx. Renders a card's SVG glyph from its
 // `path` + `viewBox`, with decorative rule lines above/below and a 180° rotation when
-// reversed. The decorative gold is re-toned to gothic's gold-leaf (Decision A).
+// reversed. The decorative gold is re-toned to gothic's gold-leaf.
 
 const ICON_SIZE = 128;
 const GOLD = "#b4842f"; // gothic --color-gold-leaf

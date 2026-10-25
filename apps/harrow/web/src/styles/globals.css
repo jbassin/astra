@@ -1,4 +1,4 @@
-/* harrow's page shell, re-skinned onto gothic (Decision A — full re-skin). gothic's
+/* harrow's page shell, re-skinned onto gothic (a full re-skin). gothic's
  * theme.css (imported in __root) provides the tokens (--color-void/panel/ink/accent/…,
  * --font-display/body/mono) + Tailwind; this file owns harrow's structure (masthead /
  * hero / gallery / spreads / the reading surface). The bespoke starfield, brass oklch
@@ -161,7 +161,7 @@ a:hover {
 }
 
 /* === Card surface utilities (ported from harrow's index.css) ============== */
-/* Deck IDENTITY colour (Decision G): the card root spreads gothic's
+/* Deck IDENTITY colour: the card root spreads gothic's
  * identityStyle(deck.color) → sets --identity-color; these consume it, keeping
  * the four deck hues as the one bespoke accent over the gothic re-skin. */
 @layer utilities {
@@ -200,7 +200,7 @@ a:hover {
 }
 
 /* 3D card-flip utilities — ported verbatim from harrow (the -webkit- prefixes ARE
- * the Safari card-flip fix, J). Used by FlipCard (slice 5). */
+ * the Safari card-flip fix). Used by FlipCard. */
 @layer utilities {
   .preserve-3d {
     -webkit-transform-style: preserve-3d;
@@ -224,8 +224,8 @@ a:hover {
   }
 }
 
-/* Title shimmer — the matched-predicate reading title (slice 5), re-toned to the
- * gothic gold-leaf accent (Decision A). */
+/* Title shimmer — the matched-predicate reading title, re-toned to the
+ * gothic gold-leaf accent. */
 @keyframes shimmer-text {
   0% {
     background-position: -200% center;

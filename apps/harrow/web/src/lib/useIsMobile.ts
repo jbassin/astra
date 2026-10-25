@@ -2,7 +2,7 @@ import { useCallback, useSyncExternalStore } from "react";
 
 // SSR-safe responsive hook (copied from the strider template). Returns the
 // server-snapshot `false` during SSR, then corrects on hydrate — used by CardSpread
-// (slice 5) instead of a raw `window.matchMedia` read so the desktop-circle vs
+// instead of a raw `window.matchMedia` read so the desktop-circle vs
 // mobile-stack layout doesn't trip a hydration mismatch.
 export function useIsMobile(breakpoint = 768): boolean {
   const query = `(max-width: ${breakpoint - 1}px)`;
