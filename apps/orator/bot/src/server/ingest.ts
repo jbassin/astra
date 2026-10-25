@@ -39,7 +39,7 @@ const ingestDuration = lazyHistogram("astra.orator-backend", "astra.orator.inges
 /** How long `stop()` waits for in-flight jobs once their downloads are killed. */
 const STOP_WAIT_MS = 5_000;
 
-export interface IngestDeps {
+interface IngestDeps {
   store: LibraryStore;
   dataDir: string;
   ytdlp: YtDlp;
@@ -48,7 +48,7 @@ export interface IngestDeps {
   concurrency?: number;
 }
 
-export interface StartResult {
+interface StartResult {
   job: DownloadJob;
   done: Promise<void>;
 }

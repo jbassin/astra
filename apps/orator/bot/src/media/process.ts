@@ -11,7 +11,7 @@ const STDERR_TAIL_BYTES = 8192;
 /** How much of the stderr tail an error message quotes. */
 const MESSAGE_TAIL_CHARS = 600;
 
-export interface RunOptions {
+interface RunOptions {
   /** Kill the process group and reject with {@link ProcessTimeoutError} after this long. */
   timeoutMs?: number;
   /** Kill the process group and reject with {@link ProcessAbortedError} when this aborts. */
@@ -20,7 +20,7 @@ export interface RunOptions {
   onLine?: (line: string) => void;
 }
 
-export interface RunResult {
+interface RunResult {
   code: number;
   /** All of stdout, or "" when `onLine` consumed it. */
   stdout: string;

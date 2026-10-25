@@ -11,7 +11,7 @@ import { createHash, randomBytes } from "node:crypto";
 
 import { safeEqual } from "@astra/service-kit";
 
-export interface GeneratedKey {
+interface GeneratedKey {
   /** The raw secret — returned to the user exactly once, never stored. */
   readonly raw: string;
   /** SHA-256 hex of the raw key — what we persist + compare against. */

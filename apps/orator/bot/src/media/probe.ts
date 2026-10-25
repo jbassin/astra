@@ -16,7 +16,7 @@ export interface AudioProbe {
 export type AudioProber = (path: string) => Promise<AudioProbe>;
 
 /** Duration (ms) + codec via ffprobe JSON. */
-export async function probeDurationFormat(
+async function probeDurationFormat(
   path: string,
 ): Promise<{ durationMs?: number; format?: string }> {
   const { code, stdout } = await runProcess("ffprobe", [
@@ -53,7 +53,7 @@ export async function probeDurationFormat(
  * at high ingest concurrency. `runProcess` keeps only a bounded stderr tail, and the
  * final "Integrated loudness  I: -14.2 LUFS" summary lives at the very end.
  */
-export async function measureLoudness(path: string): Promise<number | undefined> {
+async function measureLoudness(path: string): Promise<number | undefined> {
   const { code, stderrTail } = await runProcess("ffmpeg", [
     "-nostats",
     "-i",

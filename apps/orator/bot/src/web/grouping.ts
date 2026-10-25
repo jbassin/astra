@@ -29,7 +29,7 @@ export function homeColoredTag(track: TrackWithTags): Tag | null {
   return colored[0] ?? null;
 }
 
-export interface TrackSection {
+interface TrackSection {
   /** Stable key: the home tag id, or "__other__" for uncolored tracks. */
   key: string;
   label: string;

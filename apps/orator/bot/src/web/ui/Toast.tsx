@@ -6,7 +6,7 @@
  */
 import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from "react";
 
-export type ToastVariant = "info" | "success" | "error";
+type ToastVariant = "info" | "success" | "error";
 
 interface Toast {
   id: number;

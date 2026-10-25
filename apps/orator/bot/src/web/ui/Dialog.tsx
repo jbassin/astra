@@ -23,7 +23,7 @@ import {
   useState,
 } from "react";
 
-export interface ConfirmOpts {
+interface ConfirmOpts {
   title: string;
   body?: ReactNode;
   confirmLabel?: string;
@@ -31,7 +31,7 @@ export interface ConfirmOpts {
   danger?: boolean;
 }
 
-export interface PromptOpts {
+interface PromptOpts {
   title: string;
   label?: string;
   defaultValue?: string;

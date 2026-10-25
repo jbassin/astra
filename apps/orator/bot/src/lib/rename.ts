@@ -17,7 +17,7 @@ export type RenameOp =
   | { kind: "collapseWhitespace" }
   | { kind: "set"; value: string };
 
-export interface RenamePreviewRow {
+interface RenamePreviewRow {
   readonly id: number;
   readonly from: string;
   readonly to: string;

@@ -20,7 +20,7 @@ import type { VoiceStateResolver } from "./voice";
 // unreachable IPv6 address. Force IPv4 process-wide before any connection.
 dns.setDefaultResultOrder("ipv4first");
 
-export interface BotHandle {
+interface BotHandle {
   client: Client;
   engine: PlaybackEngine;
   stop: () => void;
