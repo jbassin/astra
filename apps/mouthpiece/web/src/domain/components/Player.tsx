@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 // scrub would be overwritten by `timeupdate` and `skip`'s clamp would use a stale
 // duration. State still drives the render; the refs mirror it for the listeners.
 
-export interface PlayerProps {
+interface PlayerProps {
   id: string;
   src: string;
   title: string;
