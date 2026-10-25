@@ -2,9 +2,8 @@
 
 KDL config never holds plaintext secrets — only `ref="sops:KEY"` pointers. The real
 values live in the SOPS-encrypted file (`deploy/sops/secrets.enc.yaml`), decrypted at
-*access* time, not at load. So a config tree with refs whose keys aren't present yet
-(e.g. the Discord/Cloudflare secrets that land in Phases 4/6) still loads; only a
-`.resolve()` on a missing key raises.
+*access* time, not at load. So a config tree with refs whose keys aren't present in the
+SOPS file or the environment still loads; only a `.resolve()` on a missing key raises.
 
 Resolution order for `sops:KEY`:
 1. an env var named `KEY` upper-cased (deploy injection / CI) — wins;

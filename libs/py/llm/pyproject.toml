@@ -1,7 +1,7 @@
 [project]
 name = "astra-llm"
 version = "0.0.0"
-description = "Shared LLM client (litellm + dspy) replacing @faerrin/llm — truncation guard, prompt caching, forced-tool→Pydantic, cost→OTel."
+description = "Shared LLM client (litellm transport, dspy program layer): truncation guard, prompt caching, forced-tool output to Pydantic, cost metered to OTel."
 requires-python = ">=3.12"
 dependencies = [
     "litellm>=1.50",
