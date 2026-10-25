@@ -86,7 +86,7 @@ export function normalizeUserId(raw: unknown): string {
 }
 
 /** Registers every handler into `CONFIG.queries` under its wire method: each bridge tool
- * in {@link TOOL_HANDLERS}, plus the S3 `ping` diagnostic (not an MCP tool; nothing on
+ * in {@link TOOL_HANDLERS}, plus the `ping` diagnostic (not an MCP tool; nothing on
  * the server calls it today). Call once, on the `init` hook (Foundry's `CONFIG` global
  * exists by then, before `ready` dials the bridge). */
 export function registerHandlers(): void {

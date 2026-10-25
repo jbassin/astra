@@ -2,7 +2,7 @@ import { defineConfig } from "tsdown";
 
 /**
  * Bundles the Foundry module into the single self-contained ESM file `module.json`
- * declares (`esmodules: ["dist/main.js"]`, D11) — Foundry's browser fetches + `import()`s
+ * declares (`esmodules: ["dist/main.js"]`) — Foundry's browser fetches + `import()`s
  * this file directly, with no `node_modules` alongside it, so every dependency
  * (including the workspace-linked `@astra/portal-shared` envelope + its own `zod`
  * transitive dep) must be inlined, never left as a bare specifier the browser can't

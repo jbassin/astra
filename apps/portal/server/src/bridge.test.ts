@@ -51,7 +51,7 @@ function waitForCloseWithReason(ws: WebSocket): Promise<{ code: number; reason: 
   });
 }
 
-/** A fake Foundry module: dials the bridge, completes the D6 handshake, and answers
+/** A fake Foundry module: dials the bridge, completes the auth handshake, and answers
  * whatever `query` messages a test tells it to (or none, to exercise the timeout path). */
 class FakeModule {
   readonly ws: WebSocket;
@@ -146,7 +146,7 @@ describe("Bridge (Foundry-free)", () => {
     mod.close();
   });
 
-  it("carries the S3 auth meta (world/system/version) onto the status snapshot", async () => {
+  it("carries the auth meta (world/system/version) onto the status snapshot", async () => {
     const meta: AuthMeta = {
       worldId: "faerrin",
       world: "Faerrin",
@@ -183,7 +183,7 @@ describe("Bridge (Foundry-free)", () => {
     expect(bridge.getStatus()).toEqual({ connected: false });
   });
 
-  it("authenticates cleanly with no meta at all (pre-S3 module build)", async () => {
+  it("authenticates cleanly with no meta at all (an older module build)", async () => {
     const mod = new FakeModule(url);
     await mod.ready();
     expect(bridge.getStatus()).toEqual({ connected: true });
@@ -272,7 +272,7 @@ describe("Bridge (Foundry-free)", () => {
   });
 });
 
-describe("Bridge versioned handshake, designation and replacement (svc-2)", () => {
+describe("Bridge versioned handshake, designation and replacement", () => {
   const started: Array<{ bridge: Bridge; server: HttpServer }> = [];
 
   async function start(

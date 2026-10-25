@@ -11,8 +11,8 @@
  * Every environment touchpoint is an injected dependency (`BridgeClientOptions`)
  * instead of a direct reference to the real Foundry/browser globals — so the whole
  * wire-parsing/dispatch/reconnect state machine is unit-testable with a fake
- * `WebSocket` and fake timers, with zero Foundry runtime involved (S3's Foundry-free
- * constraint). `main.ts` supplies the real `WebSocket` global + `handlers/index.ts`'s
+ * `WebSocket` and fake timers, with zero Foundry runtime involved.
+ * `main.ts` supplies the real `WebSocket` global + `handlers/index.ts`'s
  * `dispatchQuery` (which DOES touch `game`/`CONFIG`) on the `ready` hook.
  */
 import {
@@ -94,7 +94,7 @@ const defaultClearTimeout: (handle: unknown) => void = (handle) => {
 export interface BridgeClientOptions {
   /** `wss://<portal public-origin>/ws` — the module's `ws-url` setting. */
   wsUrl: string;
-  /** The D6 module->server handshake secret — the module's `bridge-api-key` setting. */
+  /** The module->server handshake secret — the module's `bridge-api-key` setting. */
   apiKey: string;
   /** Called fresh on every connect attempt (so a `main.ts` that re-reads `game.world`
    * etc. each time never ships a stale snapshot, even though in practice these don't

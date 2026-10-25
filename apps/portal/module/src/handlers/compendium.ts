@@ -77,9 +77,9 @@ async function handleSearchCompendium(rawParams: unknown): Promise<SearchCompend
  * never a world uuid, so this tool can never be used to duplicate an already-imported
  * actor), take its OWN `toObject()` verbatim (never a hand-authored pf2e `system.*`
  * payload), strip the id (Foundry regenerates one per copy) and set the resolved
- * folder, then create `quantity` copies via the forward-safe `getDocumentClass` (D5 /
- * v13->v15 deprecation note). Returns the actual created documents (not just a
- * compact row) — `create-token`'s `uuid` path (D13 "import-then-tokenize") needs the
+ * folder, then create `quantity` copies via the forward-safe `getDocumentClass` (see
+ * the v13->v15 deprecation note in `types/foundry.d.ts`). Returns the actual created
+ * documents (not just a compact row) — `create-token`'s `uuid` path ("import-then-tokenize") needs the
  * real created Actor to call `getTokenDocument` on directly, not a re-fetch through
  * `game.actors` (Foundry's own world collection updates reactively on
  * `createDocuments`, but there's no cheaper way to get the SAME object back than just

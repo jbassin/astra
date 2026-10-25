@@ -20,7 +20,7 @@ export const COMPATIBILITY_MINIMUM = "13";
  * default; an empty value means "not configured yet", not a real endpoint. */
 export const SETTING_WS_URL = "ws-url";
 
-/** The D6 module->server handshake secret (`cfg.portal.bridgeApiKey` on the server). */
+/** The module->server handshake secret (`cfg.portal.bridgeApiKey` on the server). */
 export const SETTING_BRIDGE_API_KEY = "bridge-api-key";
 
 /** The designated-dialer gate. Empty (default) = any GM session may
@@ -29,7 +29,7 @@ export const SETTING_BRIDGE_API_KEY = "bridge-api-key";
  * over the single bridge socket. */
 export const SETTING_BRIDGE_USER_ID = "bridge-user-id";
 
-/** D8: creates ON by default. S3 only registers this setting; S5's write tools read
+/** Writes are ON by default. `main.ts` registers this setting; the write tools read
  * it as one of the three write-gate checks (isGM AND bridge-key AND this setting). */
 export const SETTING_ALLOW_WRITES = "allow-write-operations";
 

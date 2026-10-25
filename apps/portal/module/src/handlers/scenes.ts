@@ -52,7 +52,7 @@ function handleGetCurrentScene(rawParams: unknown): GetCurrentSceneResult {
  * document on a scene (an explicit `sceneId`, or the active scene when omitted),
  * mapping the wire's `config` subset onto Foundry's `LightData` shape 1:1. Returns
  * only the created light's embedded uuid, hand-built as `Scene.<id>.AmbientLight.
- * <id>` (D-13 — there is no scene-read tool to fetch it back through). */
+ * <id>` (there is no scene-read tool to fetch it back through). */
 async function handleCreateLight(rawParams: unknown): Promise<CreateLightResult> {
   const params = CreateLightParams.parse(rawParams);
   try {

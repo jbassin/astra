@@ -57,8 +57,8 @@ export interface PortalServerOptions {
    * absolute `manifest`/`download` URLs so Foundry's install-by-Manifest-URL and
    * update checks resolve back to this server. */
   publicOrigin: string;
-  /** Directory holding the built Foundry module (`module.json` + `dist/main.js`,
-   * S6/D11) — see `index.ts`'s `MODULE_DIR` for how this resolves both locally and
+  /** Directory holding the built Foundry module (`module.json` +
+   * `dist/main.js`) — see `index.ts`'s `MODULE_DIR` for how this resolves both locally and
    * in the built image. */
   moduleDir: string;
   /** `cfg.portal.oauthStatePath` — the bind-mounted JSON file
@@ -66,7 +66,7 @@ export interface PortalServerOptions {
    * survives a `just up` redeploy. */
   oauthStatePath: string;
   /** Test-only access-token TTL override (seconds) — production always takes the
-   * D-7 default (3600s) baked into `PortalOAuthProvider`; tests shorten this to
+   * default (3600s) baked into `PortalOAuthProvider`; tests shorten this to
    * exercise expiry without a 1h sleep. Not config-sourced (no prod knob needed). */
   accessTokenTtlS?: number;
   /** Register the kit's ordered shutdown with observe's SIGTERM handling. Only the
@@ -105,7 +105,7 @@ export function createPortalServer(opts: PortalServerOptions): PortalServer {
   // check.
   const { app: authApp, provider: oauthProvider } = createOAuthSubApp({
     statePath: opts.oauthStatePath,
-    consentKey: opts.mcpApiKey, // D-1: reuse the existing /mcp key as the consent password
+    consentKey: opts.mcpApiKey, // reuse the existing /mcp key as the consent password
     publicOrigin: opts.publicOrigin,
     accessTokenTtlS: opts.accessTokenTtlS,
   });

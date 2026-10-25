@@ -59,7 +59,7 @@ async function handleCreateItem(rawParams: unknown): Promise<CreateItemResult> {
       warnings = collectRuleWarnings(item.name, sentSystem, item);
     } else {
       // World items have no owning actor, so pf2e's data-prep (which instantiates
-      // rule elements) never runs on them — there is nothing to read back (D-7).
+      // rule elements) never runs on them — there is nothing to read back.
       const docClass = getDocumentClass("Item");
       created = await createChecked(docClass, payload);
     }

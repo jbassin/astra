@@ -26,9 +26,9 @@ import {
 /** `create-actor` — hand-authors a new NPC/hazard actor
  * from scratch, or clones+patches a compendium base (`baseUuid`), then creates any
  * embedded `items[]` alongside it in the same call. `writeGate` counts the actor
- * itself plus every requested item (D-8); the actor's own creation never gets a RE
+ * itself plus every requested item against the create cap; the actor's own creation never gets a RE
  * read-back (actors don't carry rule elements directly), but each embedded item does
- * once it's OWNED by the actor (D-7). */
+ * once it's OWNED by the actor. */
 async function handleCreateActor(rawParams: unknown): Promise<CreateActorResult> {
   const params = CreateActorParams.parse(rawParams);
   const itemCount = params.items?.length ?? 0;
@@ -98,7 +98,7 @@ function requireActorMethod<
   return fn;
 }
 
-/** D-14 read-back: after ANY apply-condition action, report the resulting state by
+/** Condition read-back: after ANY apply-condition action, report the resulting state by
  * inspecting the actor's own `itemTypes.condition` array directly — the same surface
  * `ActorPF2e#increaseCondition` itself reads internally (verified `pf2e-7.12.2`
  * `src/module/actor/base.ts:1777`) — rather than trusting any one action method's own
@@ -112,7 +112,7 @@ function readConditionState(
   return { active: match !== undefined, value: match?.value ?? undefined };
 }
 
-/** D-14's persistent-damage special case, verified against pf2e-7.12.2's own
+/** The persistent-damage special case, verified against pf2e-7.12.2's own
  * `PersistentDamageEditor#onClickAdd` (`src/module/item/condition/persistent-damage-
  * editor.ts:114-130`): a persistent-damage instance is created by taking
  * `game.pf2e.ConditionManager.getCondition("persistent-damage").toObject()` and
@@ -120,7 +120,7 @@ function readConditionState(
  * `actor.createEmbeddedDocuments("Item", [...])` — NEVER `actor.increaseCondition`,
  * which for this one slug opens `PersistentDamageEditor` as a GM-browser dialog
  * instead of creating anything at all (`src/module/actor/base.ts:1766-1770`), a UI
- * trigger this bridge must never cause. The created item is portal-stamped (D-6) like
+ * trigger this bridge must never cause. The created item is portal-stamped like
  * every other document this module creates. */
 async function createPersistentDamage(
   actor: FoundryActor,
@@ -163,7 +163,7 @@ async function createPersistentDamage(
  * OWN `decreaseCondition` — which already special-cases persistent-damage as a plain
  * delete-by-key with no dialog risk at all (`src/module/actor/base.ts:1745-1750`), so
  * that half needs no bespoke handling here. A `toggle` decides which branch it is by
- * reading the CURRENT state first (D-14 read-back, reused for the decision as well as
+ * reading the CURRENT state first (the condition read-back, reused for the decision as well as
  * the result). */
 async function applyPersistentDamage(
   actor: FoundryActor,
@@ -181,7 +181,7 @@ async function applyPersistentDamage(
 }
 
 /** Every non-`persistent-damage` slug: pf2e's own `ConditionManager`-backed actor
- * methods handle add/remove/toggle correctly with no dialog risk (D-14) — this
+ * methods handle add/remove/toggle correctly with no dialog risk — this
  * module never hand-builds a condition item for these. `decreaseCondition` takes no
  * amount parameter of its own (`pf2e-7.12.2` `src/module/actor/base.ts:1737-1759`
  * steps by exactly 1 per call), so a `decrease` with `value > 1` is applied as that
@@ -211,7 +211,7 @@ async function applyStandardCondition(
  * item except in the persistent-damage non-dialog path (see
  * {@link applyPersistentDamage}). `writeGate(1)` because this IS a write (it creates
  * or mutates a condition item embedded on the actor) even though it never counts
- * against the D-8 create cap (server `mcp.ts` registers no `creates` for this tool). */
+ * against the create cap (server `mcp.ts` registers no `creates` for this tool). */
 async function handleApplyCondition(rawParams: unknown): Promise<ApplyConditionResult> {
   const params = ApplyConditionParams.parse(rawParams);
   try {

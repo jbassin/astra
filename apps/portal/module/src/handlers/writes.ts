@@ -1,6 +1,6 @@
 /**
  * The write path every write tool goes through: the write gate, the audit line,
- * folder lookup, the D-7 rule read-back, and create/update wrappers that turn Foundry's
+ * folder lookup, the rule-element read-back, and create/update wrappers that turn Foundry's
  * `DataModelValidationError` into a typed `validation-failed`.
  */
 import { BridgeError } from "@astra/portal-shared";
@@ -18,10 +18,10 @@ import { MODULE_ID, SETTING_ALLOW_WRITES } from "../constants";
 const MODULE_MAX_CREATES_CEILING = 50;
 
 /** A structured, greppable console line for every write attempt (denied or not) — the
- * module-side half of the D8 audit trail (the server-side half lives in `mcp.ts`'s
+ * module-side half of the write audit trail (the server-side half lives in `mcp.ts`'s
  * `registerBridgeTool` `audit` flag). Deliberately plain `console.*`, not the
  * `BridgeClient`'s injected `log` callback: `dispatchQuery`/handlers have no reference
- * to that callback (it's `main.ts`-local), and D14's bridge-forwarded log-event wire
+ * to that callback (it's `main.ts`-local), and a bridge-forwarded log-event wire
  * shape is a separate, not-yet-built feature — this is a local, always-on record. */
 export function auditLog(tool: string, params: unknown, outcome: string): void {
   // oxlint-disable-next-line no-console -- Foundry module: the browser console is the GM's log
@@ -30,13 +30,13 @@ export function auditLog(tool: string, params: unknown, outcome: string): void {
   );
 }
 
-/** The D8 write gate — every write handler calls this first, before touching any
+/** The write gate — every write handler calls this first, before touching any
  * Foundry document API. Three independent, typed-reason checks:
  *  (a) `game.user?.isGM` — re-checked here even though `dispatchQuery` already checks
  *      it for every query: this is the write-specific line of defense, so a future
  *      change to `dispatchQuery`'s own gate (e.g. relaxing it for some read-only
  *      method) can never accidentally loosen write auth too;
- *  (b) the `allow-write-operations` module setting (D8, default true);
+ *  (b) the `allow-write-operations` module setting (default true);
  *  (c) `count` against the module's hard ceiling — see {@link MODULE_MAX_CREATES_CEILING}
  *      for why the REAL configured cap lives server-side instead.
  * Throws {@link BridgeError} on the first failing check.
@@ -76,7 +76,7 @@ export function resolveFolderId(
   return match.id;
 }
 
-/** Detects Foundry's `DataModelValidationError` (D-7) without importing the class —
+/** Detects Foundry's `DataModelValidationError` without importing the class —
  * it isn't part of this module's deliberately-minimal ambient surface (see
  * `types/foundry.d.ts`'s header policy), so this checks the runtime error's own
  * name/constructor-name string instead of `instanceof`. Real Foundry throws this
@@ -90,7 +90,7 @@ function isDataModelValidationError(err: unknown): boolean {
 }
 
 /** Wraps a `FoundryDocumentClass#create()` call, mapping a `DataModelValidationError`
- * to a typed `validation-failed` (D-7, message preserved verbatim — the caller is an
+ * to a typed `validation-failed` (message preserved verbatim — the caller is an
  * LLM, the error text is its repair loop) and a `create()` that resolved to nothing
  * to a typed `foundry-error`. */
 export async function createChecked(
@@ -157,7 +157,7 @@ export async function updateChecked(
   }
 }
 
-/** D-7 RE read-back: after an item is created OWNED (embedded on an actor — only then
+/** Rule-element read-back: after an item is created OWNED (embedded on an actor — only then
  * does pf2e instantiate rule elements at data-prep), inspect what actually came back.
  * Two findings, both surfaced as plain strings naming the item:
  *  - an instantiated rule element with `ignored === true` (a bad/unknown RE — pf2e

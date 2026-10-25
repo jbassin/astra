@@ -1,7 +1,7 @@
 /**
  * Builders for the payloads the write tools hand to Foundry's `create()`: the portal
  * creation stamp every created document carries, and the clone-or-author create payload
- * `create-actor` and `create-item` share. A payload's pf2e `system` stays opaque (D-7);
+ * `create-actor` and `create-item` share. A payload's pf2e `system` stays opaque;
  * only the fields portal itself sets are typed.
  */
 import { BridgeError } from "@astra/portal-shared";
@@ -28,7 +28,7 @@ export function portalStamp(tool: string): PortalStamp {
 
 /** Merges a portal stamp (optionally plus more flag data) onto an existing `flags`
  * object without disturbing whatever the caller/base document already put there —
- * the additive-only half of D-6 (a hand-authored document's OWN flags, e.g. a cloned
+ * the stamp is additive-only (a hand-authored document's OWN flags, e.g. a cloned
  * compendium item's existing `flags.pf2e`, must survive untouched). A missing or
  * non-object `flags` counts as empty. */
 export function withStamp(
@@ -40,7 +40,7 @@ export function withStamp(
   return foundry.utils.mergeObject(base, { ...portalStamp(tool), ...extra }, { inplace: false });
 }
 
-/** The `system` a payload sends, when it is an object: what the D-7 rule-element read-back
+/** The `system` a payload sends, when it is an object: what the rule-element read-back
  * (`collectRuleWarnings`) compares the created item against. */
 export function payloadSystem(
   payload: Readonly<Record<string, unknown>>,
@@ -50,7 +50,7 @@ export function payloadSystem(
 
 /** What a caller of `create-actor` or `create-item` asks for. */
 export interface CreateRequest {
-  /** A compendium document to clone and patch (D-1); absent means author from scratch. */
+  /** A compendium document to clone and patch; absent means author from scratch. */
   baseUuid?: string;
   name: string;
   /** The pf2e subtype; used only when authoring from scratch (a clone keeps its own). */
@@ -70,12 +70,12 @@ export interface CreatePayload extends Record<string, unknown> {
   flags: Record<string, unknown>;
 }
 
-/** D-1 hybrid clone+patch, shared by `create-actor`/`create-item`. With a `baseUuid`:
+/** Clone+patch or author from scratch, shared by `create-actor`/`create-item`. With a `baseUuid`:
  * resolve the compendium document (never a world uuid — mirrors `cloneFromCompendium`'s
  * own guard), take its `toObject()` verbatim, strip the id, then deep-merge the caller's
  * `name`/`system`/`img` on top via `foundry.utils.mergeObject` (never mutates the source
  * compendium document — `toObject()` already handed back a fresh plain object). Without
- * one: author `{name, type, system?, img?}` from scratch (D-1's other branch). Either way,
+ * one: author `{name, type, system?, img?}` from scratch. Either way,
  * then set `folder` when given and stamp `flags` for `tool`, merging `extraFlags` in. */
 export async function buildCreatePayload(
   tool: string,

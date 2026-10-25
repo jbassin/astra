@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { BRIDGE_WS_PATH, MCP_HTTP_PATH, SERVICE_NAME } from "./constants";
 
 describe("portal-server wire constants", () => {
-  it("names its own telemetry service (no config service-name field, D3)", () => {
+  it("names its own telemetry service (no config service-name field)", () => {
     expect(SERVICE_NAME).toBe("astra.portal");
   });
 

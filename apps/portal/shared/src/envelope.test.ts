@@ -20,7 +20,7 @@ describe("portal-shared bridge envelope", () => {
     expect(BridgeMessage.parse(msg)).toEqual(msg);
   });
 
-  it("round-trips an auth handshake carrying the S3 world/system meta", () => {
+  it("round-trips an auth handshake carrying the world/system meta", () => {
     const msg = {
       type: "auth",
       apiKey: "secret-key",

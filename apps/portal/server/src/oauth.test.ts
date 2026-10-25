@@ -58,7 +58,7 @@ async function startServer(oauthStatePath: string, accessTokenTtlS?: number) {
 }
 
 /** Registers a public (`token_endpoint_auth_method: "none"`) DCR client with the
- * given redirect_uris — mirrors claude.ai's own registration shape (scope doc §1). */
+ * given redirect_uris — mirrors claude.ai's own registration shape. */
 async function registerClient(
   origin: string,
   redirectUris: string[],
@@ -650,7 +650,7 @@ describe("/mcp dual auth — the OAuth side", () => {
     }
   });
 
-  it("an expired OAuth access token is rejected with 401 + the D-9 WWW-Authenticate header", async () => {
+  it("an expired OAuth access token is rejected with 401 + the WWW-Authenticate header", async () => {
     const state = newOauthStatePath();
     const handle = await startServer(state.path, 1); // 1s TTL
     const origin = `http://127.0.0.1:${handle.port}`;

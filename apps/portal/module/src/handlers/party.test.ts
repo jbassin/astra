@@ -239,7 +239,7 @@ describe("query-party and query-player", () => {
     it("summary hero points come from the STORED source, not the zeroed live tree", async () => {
       // pf2e's data preparation leaves live system.resources.heroPoints at 0/0 —
       // hero points are GM-awarded meta-currency stored in source ({1,3} in the
-      // fixture). Rendered 0/0 live at the S4 gate while the party row said 1/3.
+      // fixture). Rendered 0/0 in a live check while the party row said 1/3.
       const argyleDoc = fixtureActorDoc("argyle", {
         resources: { heroPoints: { value: 0, max: 0 } },
       });
@@ -305,7 +305,7 @@ describe("query-party and query-player", () => {
     });
 
     it("spells entry DC falls back to the ACTOR-level live spellDC when the live entry's is also 0", async () => {
-      // Second S4 live find: the live embedded entry's system.spelldc.dc is ALSO 0 —
+      // A second live find: the live embedded entry's system.spelldc.dc is ALSO 0 —
       // pf2e derives the DC onto the entry's `statistic` class instance, not its
       // system tree. The actor-level system.attributes.spellDC.value (a verified
       // path) is the reliable live home.

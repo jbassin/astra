@@ -10,7 +10,7 @@
 import { z } from "zod";
 
 /**
- * Typed reasons an MCP tool call can fail (D6 auth, D8 write-gate, liveness). Every
+ * Typed reasons an MCP tool call can fail (bridge auth, the write gate, liveness). Every
  * denial/failure path in portal-server + the module must map to one of these — never
  * a bare string — so an MCP client can branch on `error.code`.
  */
@@ -59,7 +59,7 @@ export class BridgeError extends Error {
 
 /**
  * World/system identity the module already knows at handshake time — sent so
- * `bridge-status` (the S3 acceptance) can report world/system/version with no extra
+ * `bridge-status` can report world/system/version with no extra
  * bridge round-trip. Optional: an older/mid-upgrade module build that doesn't send it
  * yet must still authenticate cleanly (BridgeStatus just carries less).
  *
@@ -218,7 +218,7 @@ export type McpResponse = z.infer<typeof McpResponse>;
  * The version-skew recovery shape: a well-formed error `response` envelope whose
  * `error.code` ISN'T one of `BridgeErrorCode`'s closed enum members — the exact
  * shape a 0.4.0+ module sends when it returns a code this build's `BridgeErrorCode`
- * doesn't know yet (e.g. a rolled-back pre-0028 server talking to a 0.4.0 module
+ * doesn't know yet (e.g. a rolled-back older server talking to a 0.4.0 module
  * that returns `not-a-player-character`/`ambiguous-name`). `code` is only checked
  * for being a non-empty string here — {@link McpResponseErr}'s stricter `code:
  * BridgeErrorCode` already covers every KNOWN code, so this schema only ever

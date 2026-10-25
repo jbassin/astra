@@ -70,11 +70,11 @@ function stringifyReturned(value: unknown): string | undefined {
 /** `execute-macro` — runs an existing world macro immediately, as
  * the GM. Gated by BOTH the normal write gate and the module's own `allow-macro-
  * execution` setting, independently switchable off without touching `allow-write-
- * operations` — reuses the `writes-disabled` code (D-11's final error-code list has
+ * operations` — reuses the `writes-disabled` code (the shared error-code list has
  * no separate "execution-disabled" entry) with a message naming THIS specific
  * setting, so an LLM client can still tell the two refusals apart by text even though
  * `.code` is shared. A macro's own command text was already audited in full at
- * create (create-macro, D-9); this audit line only ever needs id+name+outcome. */
+ * create (create-macro); this audit line only ever needs id+name+outcome. */
 async function handleExecuteMacro(rawParams: unknown): Promise<ExecuteMacroResult> {
   const params = ExecuteMacroParams.parse(rawParams);
   try {
