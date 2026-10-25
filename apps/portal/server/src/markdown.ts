@@ -1,5 +1,5 @@
 /**
- * D28-6 — the four player-facing query tools return markdown, not JSON: the module
+ * The four player-facing query tools return markdown, not JSON: the module
  * stays dumb (typed compact JSON over the wire, unchanged — see `module/src/handlers/`), this
  * file is where that JSON becomes LLM-friendly prose. Two concerns:
  *
@@ -12,7 +12,7 @@
  *  - the `render*` functions: one per `query-party`/`query-player` section, each a
  *    pure `(typed result) -> string` function (server-side, so it's unit-testable with
  *    no Foundry/bridge in the loop). `renderPlayerSpells`/`renderPlayerFeats` carry the
- *    D28-11 hard 12,000-char cap: a full render that would exceed it is discarded in
+ *    hard 12,000-char cap: a full render that would exceed it is discarded in
  *    favor of a deterministic group-level summary (names + counts, no cursor state)
  *    plus a line telling the caller how to narrow the next query.
  */
@@ -75,7 +75,7 @@ function stripEnrichers(html: string): string {
   );
 }
 
-/** Foundry rich-text HTML -> markdown (D28-6). Deliberately lossy-but-safe: known
+/** Foundry rich-text HTML -> markdown. Deliberately lossy-but-safe: known
  * block/inline tags become their markdown equivalent, everything else (including any
  * tag this function doesn't special-case) is stripped down to plain text — the output
  * NEVER contains a `<...>` tag. */
@@ -285,13 +285,13 @@ function renderSpellsFull(section: PlayerSpellsSection): string {
     }
     lines.push("");
   }
-  lines.push("Full spell descriptions: use query-item with a spell's id (S3).");
+  lines.push("Full spell descriptions: use query-item with a spell's id.");
   return lines.join("\n").trim();
 }
 
-/** D28-11's group-level summary: names + counts only, no traits/prepared state, plus
+/** The group-level spell summary: names + counts only, no traits/prepared state, plus
  * the explicit re-query instruction — deterministic, no cursor state. This is the
- * DEFAULT view for an unfiltered request (D28-11 as amended 2026-07-11) and the
+ * DEFAULT view for an unfiltered request and the
  * over-cap fallback for a filtered one. */
 function renderSpellsSummary(
   section: PlayerSpellsSection,
@@ -324,7 +324,7 @@ function renderPlayerSpells(
   section: PlayerSpellsSection,
   filters: { entry?: string; rank?: number },
 ): string {
-  // D28-11 as amended 2026-07-11 (stakeholder): an UNFILTERED request always gets the
+  // By stakeholder decision (2026-07-11), an UNFILTERED request always gets the
   // group summary — Argyle's real full render already exceeds the cap and spell lists
   // only grow, so the default view must not flip shape when a level-up crosses the
   // threshold. Full detail is opt-in via entry/rank, with the cap as the backstop.
@@ -349,7 +349,7 @@ function renderFeatsFull(section: PlayerFeatsSection): string {
   return lines.join("\n").trim();
 }
 
-/** D28-11's group-level fallback for feats: per-category names + counts only. */
+/** The group-level fallback for feats: per-category names + counts only. */
 function renderFeatsSummary(section: PlayerFeatsSection): string {
   const lines = ["# Feats (summary — the full render exceeded the size limit)\n"];
   const byCategory = new Map<string, string[]>();
@@ -414,7 +414,7 @@ function extractSpellFilters(params: unknown): { entry?: string; rank?: number }
 /** `query-player`'s render dispatch — one function per section, plumbed through
  * `mcp.ts`'s `registerBridgeTool` `render` config. `params` is the tool call's raw
  * (already zod-parsed) arguments, needed only by the `spells` section to echo the
- * caller's own entry/rank filter back in the D28-11 cap-fallback hint text. */
+ * caller's own entry/rank filter back in the cap-fallback hint text. */
 export function renderQueryPlayer(result: QueryPlayerResult, params: unknown): string {
   switch (result.section) {
     case "summary":
@@ -435,7 +435,7 @@ export function renderQueryPlayer(result: QueryPlayerResult, params: unknown): s
 }
 
 // ---------------------------------------------------------------------------
-// query-item (0028 S3, D28-5/D28-6)
+// query-item
 // ---------------------------------------------------------------------------
 
 function provenanceLabel(provenance: "world" | "embedded" | "compendium", extra?: string): string {
@@ -491,7 +491,7 @@ function renderItemDetail(result: Extract<QueryItemResult, { kind: "item" }>): s
     lines.push(htmlToMarkdown(item.description));
   }
   const full = lines.join("\n").trim();
-  // Same D28-11 idiom as the player sections: a description could in principle be
+  // Same size-cap idiom as the player sections: a description could in principle be
   // long enough to blow the cap (a handful of pf2e items run long) — truncate
   // rather than drop the rest of the item's structured fields, which already
   // rendered above the description.
@@ -505,7 +505,7 @@ export function renderQueryItem(result: QueryItemResult): string {
 }
 
 // ---------------------------------------------------------------------------
-// query-rolls (0028 S3, D28-3/D28-10/D28-12)
+// query-rolls
 // ---------------------------------------------------------------------------
 
 function renderDice(row: RollRow): string {
@@ -540,7 +540,7 @@ function renderModifiers(row: RollRow): string {
 }
 
 /** Reads `query-rolls`' `format` param (player-feedback fast-follow) — a purely
- * server-side presentation switch (D28-6's split: the module's wire shape never
+ * server-side presentation switch (the module's wire shape never
  * changes). Anything other than the literal string "json" renders markdown, the
  * unchanged default. */
 function extractRollsFormat(params: unknown): "markdown" | "json" {

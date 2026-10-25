@@ -1,5 +1,5 @@
 /**
- * @astra/portal-module entry point (spec 0023 S3) — bundled by tsdown into the single
+ * @astra/portal-module entry point — bundled by tsdown into the single
  * `dist/main.js` esmodule `module.json` declares (`esmodules: ["dist/main.js"]`, no
  * externals: Foundry's browser `import()`s this file directly, no `node_modules`
  * alongside it).
@@ -46,7 +46,7 @@ function registerSettings(): void {
     hint:
       "Optional local opt-out: when set, only the Foundry user with this id dials the " +
       "portal bridge. The portal server decides which user may hold the bridge " +
-      "(portal.bridge-user-id) regardless. Changes take effect on your next reload (F5).",
+      "(portal.bridge-user-id) regardless. Changes take effect on your next reload (F5).", // decision-ids: ignore[code-in-parens] -- F5 is the browser reload key
     scope: "world",
     config: true,
     type: String,
@@ -57,7 +57,7 @@ function registerSettings(): void {
     name: "Allow write operations",
     hint:
       "Let a connected MCP client create tokens/items/journals in this world. On by " +
-      "default (D8) — reads are always allowed regardless of this setting.",
+      "default — reads are always allowed regardless of this setting.",
     scope: "world",
     config: true,
     type: Boolean,
@@ -67,7 +67,7 @@ function registerSettings(): void {
   game.settings.register(MODULE_ID, SETTING_ALLOW_MACRO_EXECUTION, {
     name: "Allow macro execution",
     hint:
-      "Let a connected MCP client run existing macros immediately, as the GM (0026 D-9) — " +
+      "Let a connected MCP client run existing macros immediately, as the GM — " +
       "a script macro is arbitrary GM-privileged JavaScript. On by default; switch off to block " +
       'ONLY execution (creating/editing macros via "Allow write operations" is unaffected).',
     scope: "world",
@@ -98,7 +98,7 @@ Hooks.once("init", () => {
 });
 
 Hooks.once("ready", () => {
-  // The hard liveness/security gate (spec 0023 module section): a non-GM session
+  // The hard liveness/security gate: a non-GM session
   // never dials the bridge at all, full stop — the settings above are configured by
   // (and only visible to) the GM, but this is the actual boundary.
   if (!game.user?.isGM) return;
@@ -106,7 +106,7 @@ Hooks.once("ready", () => {
   const userId = game.user.id;
   const userName = game.user.name;
 
-  // 0027 D27-2/D27-9: the designated-dialer gate, right after the isGM gate above —
+  // The designated-dialer gate, right after the isGM gate above —
   // empty (default) is purely additive (today's any-GM behavior), so this whole block
   // is a no-op until the GM sets the setting.
   const bridgeUserId = normalizeUserId(game.settings.get(MODULE_ID, SETTING_BRIDGE_USER_ID));

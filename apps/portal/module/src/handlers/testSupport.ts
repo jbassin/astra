@@ -7,7 +7,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 /** Loads one of the live-derived, committed test fixtures under `../tests/fixtures/`
- * (0028 S2 — real `Actor.toObject()` payloads pulled read-only through the live
+ * (real `Actor.toObject()` payloads pulled read-only through the live
  * bridge 2026-07-11: the party actor, Argyle's full 577 KB worst-case-scale sheet,
  * and the familiar Othello — see the fixtures dir for provenance). Same shape every
  * `get-document` result already carries: `{uuid, document}`. */
@@ -47,7 +47,7 @@ export function fakePack(opts: {
   label: string;
   system?: string;
   entries?: FoundryCompendiumIndexEntry[];
-  /** 0028 S3 (D28-5) — the pack's per-role visibility config; omit for a pack a
+  /** The pack's per-role visibility config; omit for a pack a
    * test never puts through the `query-item` compendium-visibility gate. */
   ownership?: FoundryCompendiumOwnership;
 }): FoundryCompendiumCollection {
@@ -73,7 +73,7 @@ export function fakeDoc(opts: {
   data?: Record<string, unknown>;
   type?: string;
   flags?: Record<string, unknown>;
-  /** 0028 S3 (D28-5) — the compendium collection key this doc "came from", for
+  /** The compendium collection key this doc "came from", for
    * `query-item`'s compendium branch (real Foundry's `Document#pack`); omit for a
    * world/embedded stand-in. */
   pack?: string;
@@ -96,12 +96,12 @@ export function fakeDoc(opts: {
     toObject: () => structuredClone(opts.data ?? { _id: opts.id, name: opts.name }),
     getTokenDocument: (pos: { x: number; y: number }) =>
       Promise.resolve({ toObject: () => ({ x: pos.x, y: pos.y, name: opts.name }) }),
-    // 0026 S2's default: an actor stand-in that just echoes back whatever embedded
-    // item payloads it's given (no `rules`, matching the D-7 "absent = no warnings"
-    // defensive case) — S2 tests needing control over the returned `rules` override
+    // Default: an actor stand-in that just echoes back whatever embedded
+    // item payloads it's given (no `rules`, matching the read-back's "absent = no warnings"
+    // defensive case) — tests needing control over the returned `rules` override
     // this with `fakeItemEmbedded`'s `fn` instead.
     createEmbeddedDocuments: fakeCreateEmbeddedDocuments,
-    // 0026 S3 defaults: never called/read unless a test explicitly exercises
+    // Defaults: never called/read unless a test explicitly exercises
     // apply-condition (`fakeConditionActor` below overrides all four) — present here
     // only so every existing `fakeDoc`/`fakeScene`/`fakeActorDocumentClass` call site
     // (S3/S4/S2, none of which touch conditions) keeps satisfying `FoundryActor`'s
@@ -134,7 +134,7 @@ export function fakeCreateEmbeddedDocuments(
 }
 
 /** A plain, non-mutating deep merge good enough to stand in for real Foundry's
- * `foundry.utils.mergeObject` in these Foundry-free tests (0026 S2) — objects merge
+ * `foundry.utils.mergeObject` in these Foundry-free tests — objects merge
  * key-by-key recursively, anything else (arrays included, matching real Foundry's own
  * "arrays replace wholesale" semantics) is a plain overwrite. */
 export function deepMergeObject<T extends Record<string, unknown>>(
@@ -193,7 +193,7 @@ export function fakeItemEmbedded(rulesByIndex: Record<number, FoundryRuleElement
 }
 
 /** A `FoundryDocumentClass` whose `create`/`createDocuments` always reject with the
- * given rejection — for simulating Foundry's `DataModelValidationError` (0026 S2 D-7).
+ * given rejection — for simulating Foundry's `DataModelValidationError`.
  * Wrapped in a function (rather than `Promise.reject(rejection)` inline on the object
  * literal) to sidestep oxlint's `promise/no-promise-in-callback` heuristic, which
  * otherwise flags an inline reject of a captured error-shaped variable. */
@@ -243,23 +243,23 @@ export interface FoundryStubOverrides {
   /** S5 — the world-settings map `game.settings.get` reads from, keyed by setting key
    * (namespace ignored, this module only ever registers its own). */
   settings?: Record<string, unknown>;
-  /** 0027 S1 — this session's `game.user.id`/`.name`; override to simulate a
+  /** This session's `game.user.id`/`.name`; override to simulate a
    * non-designated session under the `bridge-user-id` setting. */
   userId?: string;
   userName?: string;
-  /** S5 — `getDocumentClass` per document type; see {@link fakeDocumentClass}. */
+  /** `getDocumentClass` per document type; see {@link fakeDocumentClass}. */
   getDocumentClass?: (documentName: string) => FoundryDocumentClass;
-  /** 0026 S3 — `execute-macro`'s `game.macros.get` lookup. */
+  /** `execute-macro`'s `game.macros.get` lookup. */
   macros?: FoundryMacro[];
-  /** 0026 S3 — `apply-condition`'s persistent-damage non-dialog path
+  /** `apply-condition`'s persistent-damage non-dialog path
    * (`game.pf2e.ConditionManager.getCondition`); defaults to a stand-in returning a
    * bare `{system: {value: {value: null}}}` persistent-damage source, close enough to
    * real pf2e's compendium condition source for these Foundry-free tests. */
   conditionManager?: FoundryPf2eConditionManager;
-  /** 0028 S2 — `query-party`'s owner-player-name resolution (`game.users.get`);
-   * defaults to empty (no test before S2 needed a real `game.users` lookup). */
+  /** `query-party`'s owner-player-name resolution (`game.users.get`);
+   * defaults to empty. */
   users?: FoundryUser[];
-  /** 0028 S3 — `query-rolls`' chat-message history (`game.messages`); defaults to
+  /** `query-rolls`' chat-message history (`game.messages`); defaults to
    * empty. `size` is derived from the array length, matching real Foundry's
    * `Collection#size` (a `Map` subclass). */
   messages?: FoundryChatMessage[];
@@ -288,10 +288,10 @@ export function stubFoundry(isGM: boolean, overrides: FoundryStubOverrides = {})
     },
     folders: fakeValuesCollection(overrides.folders ?? []),
     macros: fakeValuesCollection(overrides.macros ?? []),
-    // 0027 S1 — dispatchQuery's designated-dialer re-check is a plain id comparison
+    // dispatchQuery's designated-dialer re-check is a plain id comparison
     // against the settings value, never `game.users` (that resolvability lookup is
     // `main.ts`'s `ready`-hook concern, covered in `main.test.ts`) — an empty default
-    // is enough there. 0028 S2's `query-party` owner-player resolution DOES read
+    // is enough there. `query-party`'s owner-player resolution DOES read
     // `game.users.get`, hence the override.
     users: fakeValuesCollection(overrides.users ?? []),
     messages: {
@@ -317,13 +317,13 @@ export function stubFoundry(isGM: boolean, overrides: FoundryStubOverrides = {})
     (() => {
       throw new Error("getDocumentClass not stubbed in this test");
     });
-  // 0026 S2 — `foundry.utils.mergeObject` backs the D-1 baseUuid clone+patch path and
-  // the D-6 stamp merge; {@link deepMergeObject} is a plain stand-in, real enough for
+  // `foundry.utils.mergeObject` backs the baseUuid clone+patch path and
+  // the `portalStamp` merge; {@link deepMergeObject} is a plain stand-in, real enough for
   // these Foundry-free tests.
   globalThis.foundry = { utils: { mergeObject: deepMergeObject } };
 }
 
-/** A minimal fake `FoundryDocumentClass` (S5) — `createDocuments`/`create` just mint
+/** A minimal fake `FoundryDocumentClass` — `createDocuments`/`create` just mint
  * a sequential id per call and hand back a {@link fakeDoc}-shaped result, recording
  * every payload it was given in `created` so tests can assert on exactly what
  * a handler sent (e.g. that `_id` was stripped, `folder` was resolved to an id). */
@@ -351,11 +351,11 @@ export function fakeDocumentClass(
   return { docClass, created };
 }
 
-/** Like {@link fakeDocumentClass} but for `getDocumentClass("Actor")` specifically
- * (0026 S2): the minted actor's `createEmbeddedDocuments` is the given stub, so a
+/** Like {@link fakeDocumentClass} but for `getDocumentClass("Actor")` specifically:
+ * the minted actor's `createEmbeddedDocuments` is the given stub, so a
  * `create-actor` test can control/inspect exactly what happens when its embedded
  * `items[]` get created, while `created` still records the actor's OWN payload (for
- * asserting the D-6 stamp landed on the actor as well as its items). */
+ * asserting the portal stamp landed on the actor as well as its items). */
 export function fakeActorDocumentClass(
   embeddedFn: (
     embeddedName: string,

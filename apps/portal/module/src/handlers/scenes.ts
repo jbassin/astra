@@ -20,7 +20,7 @@ import { cloneFromCompendium } from "./compendium";
 import { portalStamp, withStamp } from "./payloads";
 import { auditLog, createEmbeddedChecked, writeGate } from "./writes";
 
-/** `list-scenes` (spec 0023 S4) — every scene in the world, GM's own `active` flag. */
+/** `list-scenes` — every scene in the world, GM's own `active` flag. */
 function handleListScenes(rawParams: unknown): ListScenesResult {
   ListScenesParams.parse(rawParams);
   const scenes = Array.from(game.scenes.values()).map((scene) => ({
@@ -31,7 +31,7 @@ function handleListScenes(rawParams: unknown): ListScenesResult {
   return { scenes };
 }
 
-/** `get-current-scene` (spec 0023 S4) — `scene: null` when the world is idle (no active
+/** `get-current-scene` — `scene: null` when the world is idle (no active
  * scene) is a normal, non-error result: an idle world isn't a failure to report. */
 function handleGetCurrentScene(rawParams: unknown): GetCurrentSceneResult {
   GetCurrentSceneParams.parse(rawParams);
@@ -48,7 +48,7 @@ function handleGetCurrentScene(rawParams: unknown): GetCurrentSceneResult {
   return { scene: info };
 }
 
-/** `create-light` (spec 0026 S2/D-13/D-6) — places a new `AmbientLight` embedded
+/** `create-light` — places a new `AmbientLight` embedded
  * document on a scene (an explicit `sceneId`, or the active scene when omitted),
  * mapping the wire's `config` subset onto Foundry's `LightData` shape 1:1. Returns
  * only the created light's embedded uuid, hand-built as `Scene.<id>.AmbientLight.
@@ -111,7 +111,7 @@ async function handleCreateLight(rawParams: unknown): Promise<CreateLightResult>
   }
 }
 
-/** `create-token` (spec 0023 S5/D13 "import-then-tokenize") — resolves the actor
+/** `create-token` ("import-then-tokenize") — resolves the actor
  * either from an existing world `actorId` or by importing `uuid` first (reusing
  * {@link importFromCompendium}, so the same clone-only/folder/write-gate rules apply
  * either way), then drops `quantity` tokens onto the active scene, each offset by one
@@ -160,7 +160,7 @@ async function handleCreateToken(rawParams: unknown): Promise<CreateTokenResult>
         y: params.y + i * gridSize,
       });
       const obj = tokenDoc.toObject();
-      // 0026 D-6 retrofit: the token document itself is a portal creation too.
+      // The token document itself is a portal creation too, so it carries the stamp.
       obj.flags = withStamp(obj.flags, "create-token");
       tokenData.push(obj);
     }

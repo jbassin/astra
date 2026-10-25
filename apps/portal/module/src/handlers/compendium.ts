@@ -20,7 +20,7 @@ import { withStamp } from "./payloads";
 import { byRankThenName, DEFAULT_SEARCH_LIMIT, matchRank } from "./shared";
 import { auditLog, resolveFolderId, writeGate } from "./writes";
 
-/** `list-compendium-packs` (spec 0023 S4) — every `game.packs` entry, so an LLM client
+/** `list-compendium-packs` — every `game.packs` entry, so an LLM client
  * can pick pack ids for `search-compendium`'s `packIds` filter or just browse what's on
  * disk. No search/filter of its own — that's `search-compendium`'s job. */
 function handleListCompendiumPacks(rawParams: unknown): ListCompendiumPacksResult {
@@ -36,8 +36,8 @@ function handleListCompendiumPacks(rawParams: unknown): ListCompendiumPacksResul
   return { packs };
 }
 
-/** `search-compendium` (spec 0023 S4/D12) — live-iterate every candidate pack's index
- * (no precomputed cross-pack cache in v1, the D12 fast-follow), filter by a
+/** `search-compendium` — live-iterate every candidate pack's index
+ * (no precomputed cross-pack cache yet), filter by a
  * case-insensitive substring match on name, merge + rank, truncate to `limit`. */
 async function handleSearchCompendium(rawParams: unknown): Promise<SearchCompendiumResult> {
   const { query, type, packIds, limit } = SearchCompendiumParams.parse(rawParams);
@@ -73,7 +73,7 @@ async function handleSearchCompendium(rawParams: unknown): Promise<SearchCompend
   return { results };
 }
 
-/** Clone-from-compendium core (D5): resolve `uuid` (must be a compendium document —
+/** Clone-from-compendium core: resolve `uuid` (must be a compendium document —
  * never a world uuid, so this tool can never be used to duplicate an already-imported
  * actor), take its OWN `toObject()` verbatim (never a hand-authored pf2e `system.*`
  * payload), strip the id (Foundry regenerates one per copy) and set the resolved
@@ -83,7 +83,7 @@ async function handleSearchCompendium(rawParams: unknown): Promise<SearchCompend
  * real created Actor to call `getTokenDocument` on directly, not a re-fetch through
  * `game.actors` (Foundry's own world collection updates reactively on
  * `createDocuments`, but there's no cheaper way to get the SAME object back than just
- * keeping the one `createDocuments` already handed us). `tool` (0026 D-6 retrofit)
+ * keeping the one `createDocuments` already handed us). `tool`
  * names the actual calling tool ("import-from-compendium" or "create-token") for the
  * stamp each clone gets — additive onto `flags`, never disturbing whatever the source
  * compendium document's own flags already carried. */
@@ -117,7 +117,7 @@ export async function cloneFromCompendium(
   );
 }
 
-/** `import-from-compendium` (spec 0023 S5/D5) — {@link cloneFromCompendium} plus the
+/** `import-from-compendium` — {@link cloneFromCompendium} plus the
  * compact-row projection this tool's result shape wants. */
 async function importFromCompendium(
   uuid: string,
@@ -133,7 +133,7 @@ async function importFromCompendium(
   }));
 }
 
-/** `import-from-compendium` (spec 0023 S5/D5). */
+/** `import-from-compendium`. */
 async function handleImportFromCompendium(rawParams: unknown): Promise<ImportFromCompendiumResult> {
   const params = ImportFromCompendiumParams.parse(rawParams);
   try {

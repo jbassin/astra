@@ -51,7 +51,7 @@ export function buildSummary(doc: FoundryDocumentLike, src: Pf2eSource): PlayerS
     xp: fullPool(actorXp(system)),
     hp: hp?.value !== undefined ? { value: hp.value, max: hp.max, temp: hp.temp } : undefined,
     // Hero points come from the stored source (pf2e zeroes the live value; 0/0 rendered at
-    // the 0028 S4 live gate while the source said 1/3).
+    // in live testing while the source said 1/3).
     heroPoints: fullPool(actorHeroPoints(source, system)),
     ancestry: firstItemName(src, "ancestry"),
     heritage: firstItemName(src, "heritage"),
@@ -64,17 +64,17 @@ export function buildSummary(doc: FoundryDocumentLike, src: Pf2eSource): PlayerS
   };
 }
 
-/** `query-player`'s `notes` section (0028 S2, S3-amended) — deity (an embedded
+/** `query-player`'s `notes` section — deity (an embedded
  * `deity`-type item's name, never gated) plus non-empty biography prose fields,
  * EXCLUDING any subsection the GM has left/set GM-only via pf2e's own biography
  * visibility toggles (`actorBiography(...).visible`, `pf2e/actor.ts`). Two of the
  * four prose fields (`likes`/`dislikes` under `personality`; `campaignNotes` under
  * `campaign`) share a flag with sibling fields this section doesn't surface; gating by
  * that shared flag is correct, it's the section pf2e itself groups them under.
- * D28-5's uniform rationale
+ * The uniform rationale
  * — the bridge runs as GM and must not leak GM-hidden content in ANY scope —
- * applies here too (the S2-amendment gap this fixes): the shared player key having
- * no per-player identity (D28-1) means "hide this from players" always means
+ * applies here too: the shared player key having
+ * no per-player identity means "hide this from players" always means
  * "hide from every holder of this key", the same posture as a GM-hidden world item
  * or a spoiler compendium pack. */
 export function buildNotes(src: Pf2eSource): PlayerNotesSection {

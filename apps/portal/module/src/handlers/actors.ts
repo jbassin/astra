@@ -23,7 +23,7 @@ import {
   writeGate,
 } from "./writes";
 
-/** `create-actor` (spec 0026 S2/D-1/D-6/D-7) — hand-authors a new NPC/hazard actor
+/** `create-actor` — hand-authors a new NPC/hazard actor
  * from scratch, or clones+patches a compendium base (`baseUuid`), then creates any
  * embedded `items[]` alongside it in the same call. `writeGate` counts the actor
  * itself plus every requested item (D-8); the actor's own creation never gets a RE
@@ -206,7 +206,7 @@ async function applyStandardCondition(
   }
 }
 
-/** `apply-condition` (spec 0026 S3/D-14) — wraps `game.pf2e.ConditionManager`'s own
+/** `apply-condition` — wraps `game.pf2e.ConditionManager`'s own
  * actor-side surface for increase/decrease/toggle; never hand-builds a condition
  * item except in the persistent-damage non-dialog path (see
  * {@link applyPersistentDamage}). `writeGate(1)` because this IS a write (it creates

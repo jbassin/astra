@@ -43,13 +43,13 @@ function findSlotState(slots: readonly Pf2eSlot[], spellId: string): SpellSlotSt
   return undefined;
 }
 
-/** `query-player`'s `spells` section (0028 S2/D28-11) — groups by spellcasting entry
+/** `query-player`'s `spells` section — groups by spellcasting entry
  * then rank (slot rank when the spell is in a prepared slot, else its own innate
  * `system.level.value`), names + traits only (full descriptions are `query-item`'s
- * job, S3). Both `entryFilter`/`rankFilter` narrow the module-side result — cheap,
- * since these are already the full parsed source items; the D28-11 12,000-char
- * markdown cap and its group-summary fallback are entirely server-side (D28-6: the
- * module stays dumb, it never measures or truncates markdown). */
+ * job). Both `entryFilter`/`rankFilter` narrow the module-side result — cheap,
+ * since these are already the full parsed source items; the 12,000-char
+ * markdown cap and its group-summary fallback are entirely server-side (the
+ * module stays dumb: it never measures or truncates markdown). */
 export function buildSpells(
   doc: FoundryDocumentLike,
   src: Pf2eSource,
@@ -74,7 +74,7 @@ export function buildSpells(
       continue;
     }
     // The entry DC is derived: 0 in the stored source for a prepared caster and on the
-    // live entry's own system (0028 S4 live finds), so `spellcastingEntryDc` falls back to
+    // live entry's own system (both found in live testing), so `spellcastingEntryDc` falls back to
     // the live actor's `attributes.spellDC.value`.
     const dc = spellcastingEntryDc(entry, liveSystem(doc.items?.get(entryId)), liveActor);
     const slots = entrySlots(entry);

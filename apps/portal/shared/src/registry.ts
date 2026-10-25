@@ -109,7 +109,7 @@ function quantityCount(params: unknown): number {
   return typeof quantity === "number" ? quantity : 1;
 }
 
-/** create-actor's create count (0026 D-8): the actor itself plus every embedded
+/** create-actor's create count: the actor itself plus every embedded
  * `items[]` entry requested alongside it. Cascade-created documents (e.g. GrantItem
  * REs) are not pre-counted, deliberately (unknowable pre-flight, fully audited). */
 function actorCreateCount(params: unknown): number {
@@ -281,14 +281,14 @@ export const PORTAL_TOOLS = {
   // Write tools (D8: writes on by default). Every one writes to the live campaign world,
   // and the description says so. Creates count against the per-request cap;
   // apply-condition, update-document, delete-document and execute-macro mutate or act
-  // and don't (0026 D-8).
+  // and don't.
 
   "import-from-compendium": defineTool({
     description:
       "WRITES to the live 'Faerrin' FoundryVTT world: clones a compendium document (an actor, " +
       "item, etc. — found via search-compendium/get-document) into the world as a new document, " +
       "verbatim except for a freshly assigned id and (optionally) a folder. Never invents or " +
-      "edits pf2e system data — this is a clone, not a hand-authored creation (D5). Creates 1 " +
+      "edits pf2e system data — this is a clone, not a hand-authored creation. Creates 1 " +
       "copy by default; pass `quantity` for more. Rejected if write operations are disabled in " +
       "Foundry, the connected session isn't a GM, or the request exceeds the configured " +
       "per-request create cap.",
@@ -490,7 +490,7 @@ export const BRIDGE_TOOL_NAMES = PORTAL_TOOL_NAMES.filter(
   (name): name is BridgeToolName => PORTAL_TOOLS[name].runsOn === "bridge",
 );
 
-/** D28-8: the player key's tool subset. The server registers only these under the
+/** The player key's tool subset. The server registers only these under the
  * player key, so an admin-only tool is unknown to a player client, not merely denied. */
 export const PLAYER_TOOL_NAMES: ReadonlySet<PortalToolName> = new Set(
   PORTAL_TOOL_NAMES.filter((name) => PORTAL_TOOLS[name].access === "player"),

@@ -1,6 +1,7 @@
 /**
- * The Streamable-HTTP MCP surface (spec 0023 D4/D10) — bearer-gated on
- * `cfg.portal.mcpApiKey` (the MCP-client hop of D6's two-hop auth), mounted at
+ * The Streamable-HTTP MCP surface — bearer-gated on
+ * `cfg.portal.mcpApiKey` (the MCP-client hop of the two-hop auth; the module's bridge
+ * secret is the other), mounted at
  * {@link MCP_HTTP_PATH} on the portal HTTP server. {@link buildMcpServer} registers one
  * MCP tool per entry of the `PORTAL_TOOLS` registry in `@astra/portal-shared`; this
  * file adds only what is server-side by nature: the bridge round-trip, the create cap,
@@ -10,7 +11,7 @@
  * `StreamableHTTPServerTransport` per request. That's the simplest correct shape here
  * — portal has no per-session state of its own (the bridge is the one stateful thing,
  * and it's a module-level singleton shared across every request), and Claude Code +
- * Claude Desktop (D10) both speak plain request/response Streamable-HTTP fine without
+ * Claude Desktop both speak plain request/response Streamable-HTTP fine without
  * a server-held session.
  */
 
@@ -61,7 +62,7 @@ function auditWrite(tool: string, params: unknown, outcome: string): void {
   });
 }
 
-/** 0028 D28-6: the player-facing query tools render their bridge result as markdown
+/** The player-facing query tools render their bridge result as markdown
  * instead of raw JSON. The module stays dumb (typed compact JSON over the wire); this
  * is a server-side presentation choice. Every other tool returns its result as JSON. */
 const RENDERERS: { [K in PortalToolName]?: (result: ToolResult<K>, params: unknown) => string } = {
@@ -186,7 +187,7 @@ function registerTool(
 }
 
 /**
- * D28-8 — the player key's tool subset, derived from each registry entry's `access`.
+ * The player key's tool subset, derived from each registry entry's `access`.
  * `buildMcpServer` registers only these under `scope: "player"`, and the tools/list
  * tests assert both directions against it (player sees exactly these five; admin sees
  * all 22).
@@ -194,9 +195,9 @@ function registerTool(
 export const PLAYER_TOOL_NAMES: ReadonlySet<string> = REGISTRY_PLAYER_TOOL_NAMES;
 
 /**
- * D28-8 — resolved once per `/mcp` request in the auth branch below. `scope` drives
+ * Resolved once per `/mcp` request in the auth branch below. `scope` drives
  * tool-list filtering (OAuth and the admin key both resolve to `"admin"`); `method` is
- * the D28-9 telemetry label threaded into every tool-call span/counter so player usage
+ * the telemetry label threaded into every tool-call span/counter so player usage
  * is distinguishable from admin-key/OAuth usage in SigNoz, independent of scope.
  */
 export interface AuthContext {
@@ -206,9 +207,9 @@ export interface AuthContext {
 
 /** Registers every portal MCP tool against one `Bridge` instance, in registry order
  * (which is the `tools/list` order). `maxCreatesPerRequest` is
- * `cfg.portal.maxCreatesPerRequest` (D8), so write tools can reject an oversized batch
- * before it ever reaches the bridge. `auth` (D28-8) picks the registered tool subset
- * (`scope`) and labels every tool-call span/counter (`method`, D28-9). */
+ * `cfg.portal.maxCreatesPerRequest`, so write tools can reject an oversized batch
+ * before it ever reaches the bridge. `auth` picks the registered tool subset
+ * (`scope`) and labels every tool-call span/counter (`method`). */
 export function buildMcpServer(
   bridge: Bridge,
   maxCreatesPerRequest: number,
@@ -230,7 +231,7 @@ export function buildMcpServer(
   return server;
 }
 
-/** The seam this file needs from {@link PortalOAuthProvider} (spec 0025 D-3) —
+/** The seam this file needs from {@link PortalOAuthProvider} —
  * narrower than the full `OAuthServerProvider` surface so `mcp.ts` doesn't couple to
  * `oauth.ts`'s registration/consent/persistence machinery, just token verification.
  * `verifyAccessToken` throws (`InvalidTokenError`) on an unknown/expired token —
@@ -240,17 +241,16 @@ export interface OAuthTokenVerifier {
   verifyAccessToken(token: string): Promise<unknown>;
 }
 
-/** Builds the `/mcp` request handler: tri-way auth check (spec 0025 D-3 + 0028 D28-1/
- * D28-8), then a stateless Streamable-HTTP round-trip. Takes the resolved keys (not
- * the config/SecretRef) so tests never need real SOPS secrets.
+/** Builds the `/mcp` request handler: tri-way auth check, then a stateless
+ * Streamable-HTTP round-trip. Takes the resolved keys (not the config/SecretRef) so tests never need real SOPS secrets.
  *
  * Auth: the admin static bearer (`mcpApiKey`, exact match — Claude Code stays
- * untouched) OR the player static bearer (`playerMcpApiKey`, exact match, 0028 D28-1)
- * OR a valid, unexpired OAuth access token (`oauth.verifyAccessToken`, spec 0025 S1).
+ * untouched) OR the player static bearer (`playerMcpApiKey`, exact match)
+ * OR a valid, unexpired OAuth access token (`oauth.verifyAccessToken`).
  * Each resolves an {@link AuthContext}: admin key and OAuth both resolve `scope:
  * "admin"` (the full tool set, unchanged); the player key resolves `scope: "player"`
- * (D28-8's `PLAYER_TOOL_NAMES` subset). Every 401 — missing header, wrong scheme, bad
- * key, invalid/expired OAuth token — carries the spec's D-9 `WWW-Authenticate: Bearer
+ * (the `PLAYER_TOOL_NAMES` subset). Every 401 — missing header, wrong scheme, bad
+ * key, invalid/expired OAuth token — carries the `WWW-Authenticate: Bearer
  * resource_metadata="<url>"` header so an OAuth-aware client (claude.ai) discovers
  * where to start the authorization flow; the URL is computed once here via the SDK's
  * own {@link getOAuthProtectedResourceMetadataUrl} (never hand-built) since it must

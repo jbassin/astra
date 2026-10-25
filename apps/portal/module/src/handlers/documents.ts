@@ -24,9 +24,9 @@ import { portalStamp } from "./payloads";
 import { byRankThenName, DEFAULT_SEARCH_LIMIT, matchRank } from "./shared";
 import { auditLog, resolveFolderId, updateChecked, writeGate } from "./writes";
 
-/** `get-document` (spec 0023 S4) — `fromUuid` is the one forward-safe resolver that
+/** `get-document` — `fromUuid` is the one forward-safe resolver that
  * works uniformly across compendium (`Compendium.<pack>.<type>.<id>`) and world
- * (`Actor.<id>` etc.) uuids alike; the full `toObject()` payload crosses opaque (D5). */
+ * (`Actor.<id>` etc.) uuids alike; the full `toObject()` payload crosses opaque. */
 async function handleGetDocument(rawParams: unknown): Promise<GetDocumentResult> {
   const { uuid } = GetDocumentParams.parse(rawParams);
   const doc = await fromUuid(uuid);
@@ -45,7 +45,7 @@ const WORLD_COLLECTIONS: Record<WorldSearchType, () => FoundryWorldCollection> =
   scenes: () => game.scenes,
 };
 
-/** `search-world` (spec 0023 S4) — filters the requested world collections (all four
+/** `search-world` — filters the requested world collections (all four
  * by default) by a case-insensitive substring match on name; same rank/merge/truncate
  * shape as `search-compendium` (one search idiom for both surfaces). */
 function handleSearchWorld(rawParams: unknown): SearchWorldResult {
@@ -74,12 +74,12 @@ function handleSearchWorld(rawParams: unknown): SearchWorldResult {
   return { results: rows.slice(0, limit ?? DEFAULT_SEARCH_LIMIT).map(({ _rank, ...row }) => row) };
 }
 
-/** `update-document` (spec 0026 S3/D-10) — generic dot-path diff-merge update by
- * uuid, resolved the same forward-safe way `get-document` already does. The D-10
+/** `update-document` — generic dot-path diff-merge update by
+ * uuid, resolved the same forward-safe way `get-document` already does. The derived-path
  * deny-list ONLY applies to `type: "character"` actors (NPCs/hazards/items/scenes/
  * macros have no such restriction); it's a pre-flight check on the REQUESTED keys,
  * not a read-back, so a denied path never reaches `doc.update()` at all. The audit
- * line carries the touched PATHS, never the values (0026 S3 scope — values may be
+ * line carries the touched PATHS, never the values (values may be
  * long HTML; the server-side audit already logs the full params). */
 async function handleUpdateDocument(rawParams: unknown): Promise<UpdateDocumentResult> {
   const params = UpdateDocumentParams.parse(rawParams);
@@ -115,8 +115,8 @@ async function handleUpdateDocument(rawParams: unknown): Promise<UpdateDocumentR
   }
 }
 
-/** `delete-document` (spec 0026 S3/D-4) — refuses anything not stamped
- * `flags["astra-portal"].created === true` (D-6): portal can only clean up after
+/** `delete-document` — refuses anything not stamped
+ * `flags["astra-portal"].created === true`: portal can only clean up after
  * itself, never destroy hand-authored content. Works uniformly for world AND
  * embedded uuids (`Scene.<id>.AmbientLight.<id>`, `Actor.<id>.Item.<id>`) — `fromUuid`
  * resolves both, and Foundry's `document.delete()` on an embedded doc delegates to
@@ -147,7 +147,7 @@ async function handleDeleteDocument(rawParams: unknown): Promise<DeleteDocumentR
   }
 }
 
-/** `create-journal` (spec 0023 S5) — a v13 pf2e-independent write (no `system.*`
+/** `create-journal` — a v13 pf2e-independent write (no `system.*`
  * involved at all): a `JournalEntry` with one `JournalEntryPage` of type `"text"`
  * carrying the given HTML `content`. */
 async function handleCreateJournal(rawParams: unknown): Promise<CreateJournalResult> {
@@ -160,7 +160,7 @@ async function handleCreateJournal(rawParams: unknown): Promise<CreateJournalRes
       name: params.name,
       folder: folderId,
       pages: [{ name: params.name, type: "text", text: { content: params.content } }],
-      // 0026 D-6 retrofit: journals are a portal creation too.
+      // Journals are a portal creation too, so they carry the stamp.
       flags: portalStamp("create-journal"),
     });
     if (!created) {

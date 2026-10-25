@@ -4,7 +4,7 @@ import type { BridgeClientOptions } from "./bridgeClient";
 import { SETTING_BRIDGE_API_KEY, SETTING_BRIDGE_USER_ID, SETTING_WS_URL } from "./constants";
 
 // `BridgeClient` is dialed for real by `main.ts`'s `ready` hook — mocked here so the
-// 0027 S1 designated-dialer gate can be asserted on WITHOUT ever opening a socket
+// designated-dialer gate can be asserted on WITHOUT ever opening a socket
 // (`vi.hoisted` because `vi.mock`'s factory is hoisted above regular module-scope
 // `const`s, same TDZ reasoning the vitest docs call out).
 const { BridgeClientMock, startSpy } = vi.hoisted(() => {
@@ -30,7 +30,7 @@ function fakeUsersCollection(users: FoundryUser[]): FoundryUsersCollection {
 }
 
 /** Stubs just enough of the ambient Foundry `game` global for the `ready` hook's
- * designated-dialer gate (0027 S1) — `main.ts` never touches packs/actors/items/etc.
+ * designated-dialer gate — `main.ts` never touches packs/actors/items/etc.
  * itself (that's `handlers/`' surface), so those collections stay empty stand-ins. */
 function stubGame(opts: {
   userId: string;
@@ -63,7 +63,7 @@ function stubGame(opts: {
     scenes: { ...emptyCollection<FoundryScene>(), active: null },
     folders: emptyCollection<FoundryFolder>(),
     macros: emptyCollection<FoundryMacro>(),
-    // 0028 S3 — `main.ts` never touches `game.messages` itself (that's
+    // `main.ts` never touches `game.messages` itself (that's
     // `handlers/rolls.ts`'s `query-rolls` surface), so an empty stand-in is enough here.
     messages: { contents: [], size: 0 },
     users: fakeUsersCollection(opts.users ?? [user]),
@@ -71,7 +71,7 @@ function stubGame(opts: {
   };
 }
 
-describe("portal-module main — ready hook designated-dialer gate (0027 S1, Foundry-free)", () => {
+describe("portal-module main — ready hook designated-dialer gate (Foundry-free)", () => {
   // Definite-assignment assertion: assigned in `beforeAll` below, read in every `it`.
   let readyHook!: () => void;
 

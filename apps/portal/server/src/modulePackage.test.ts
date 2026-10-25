@@ -1,5 +1,5 @@
 /**
- * Spec 0023 S6 — the module-package routes (D11 install-by-Manifest-URL): the
+ * The module-package routes Foundry installs from by Manifest URL: the
  * rendered `module.json` carries absolute manifest/download URLs, `portal.zip`
  * round-trips (unzip with fflate and assert both entries, including the SAME
  * rendered manifest inside the zip — the installed copy must carry the manifest
@@ -35,11 +35,11 @@ function writeBuiltModule(dir: string): void {
   writeFileSync(join(dir, "dist", "main.js"), "export const hi = () => 'portal module';\n");
 }
 
-describe("module-package routes (spec 0023 S6)", () => {
+describe("module-package routes", () => {
   let moduleDir: string;
   // These tests don't exercise OAuth at all (that's oauth.test.ts) — a fresh
   // per-test tmp-dir state path is just what `createPortalServer` now requires to
-  // construct (spec 0025 S1).
+  // construct.
   let oauthDir: string;
   let handle: PortalServerHandle & { port: number };
   let baseUrl: string;

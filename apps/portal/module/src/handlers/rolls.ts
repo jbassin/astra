@@ -20,8 +20,8 @@ import {
 } from "./rollsCursor";
 import { resolveByName } from "./shared";
 
-/** D28-3's non-negotiable public-only privacy filter, baked in module-side — never
- * a param. Three prongs, the third the adversarial B1 backstop: `whisper.length
+/** The non-negotiable public-only privacy filter, baked in module-side — never
+ * a param. Three prongs, the third a backstop for pf2e's own secret rolls: `whisper.length
  * === 0 ∧ blind !== true ∧ flags.pf2e.context.secret !== true`. With the
  * GM-toggleable world setting `metagame_secretChecks` ON, pf2e skips the forced
  * gmroll/blindroll rewrite for secret checks (`pf2e.mjs:23942`) — a secret
@@ -35,7 +35,7 @@ function isPublicRollMessage(
   return msg.whisper.length === 0 && msg.blind !== true && context?.secret !== true;
 }
 
-/** D28-13's actor-filter resolution for `query-rolls`' `actor` param: a uuid/bare-
+/** The actor-filter resolution for `query-rolls`' `actor` param: a uuid/bare-
  * id resolves directly to that world actor id; anything else resolves BY NAME the
  * same way `query-player` does ({@link resolveByName} — exact-then-unambiguous-
  * prefix, typed `ambiguous-name`/`not-found` on failure). */
@@ -56,9 +56,9 @@ function toEpochMs(value: number | string): number {
   return typeof value === "number" ? value : Date.parse(value);
 }
 
-/** `query-rolls` (0028 S3/D28-3/D28-10/D28-12) — filters `game.messages.contents`
- * (verified uncapped, D28-10) down to public roll messages, newest-first with
- * `(timestamp,_id)` cursor pagination. The D28-3 privacy filter is unconditional;
+/** `query-rolls` — filters `game.messages.contents`
+ * (verified uncapped) down to public roll messages, newest-first with
+ * `(timestamp,_id)` cursor pagination. The privacy filter is unconditional;
  * every other filter (`actor`/`type`/`outcome`/`since`/`until`) composes with it
  * and with each other. */
 async function handleQueryRolls(rawParams: unknown): Promise<QueryRollsResult> {

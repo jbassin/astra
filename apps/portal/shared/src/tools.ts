@@ -1,13 +1,13 @@
 /**
- * Param + result contracts for portal's six S4 read tools (spec 0023 slice S4). Both
+ * Param + result contracts for portal's MCP tools. Both
  * sides (the Foundry module's `handlers/` and portal-server's `mcp.ts`) import these
  * so the wire shape can't drift between them — the module parses incoming params with
  * these schemas at the edge (KDL-at-the-edges' sibling rule for the bridge wire), and
  * the server uses the same param schemas as each MCP tool's `inputSchema`.
  *
- * Deliberately **compact and LLM-friendly** (D5): an index/search row is a handful of
+ * Deliberately **compact and LLM-friendly**: an index/search row is a handful of
  * scalars (uuid/id/name/type/pack/...), never a modeled pf2e `system.*` tree. A single
- * document fetch (`get-document`) crosses as `z.unknown()` — the whole point of D5 is
+ * document fetch (`get-document`) crosses as `z.unknown()` — the whole point is
  * that portal never hand-authors pf2e schemas, so the full `toObject()` payload is
  * opaque cargo the LLM client reasons about directly.
  */
@@ -108,7 +108,7 @@ export const GetDocumentParams = z
   .strict();
 export type GetDocumentParams = z.infer<typeof GetDocumentParams>;
 
-/** The full `toObject()` payload, opaque by design (D5) — never model pf2e `system.*`. */
+/** The full `toObject()` payload, opaque by design — never model pf2e `system.*`. */
 export const GetDocumentResult = z
   .object({
     uuid: z.string(),
@@ -206,11 +206,11 @@ export const GetCurrentSceneResult = z
 export type GetCurrentSceneResult = z.infer<typeof GetCurrentSceneResult>;
 
 // ---------------------------------------------------------------------------
-// import-from-compendium (S5 write tool — D5 clone-from-compendium ONLY)
+// import-from-compendium (write tool — clone-from-compendium ONLY)
 // ---------------------------------------------------------------------------
 
 /** A generous absolute sanity bound on any single call's create count — NOT the real
- * D8 cap. The real cap is `cfg.portal.maxCreatesPerRequest` (server-enforced, pre-
+ * create cap. The real cap is `cfg.portal.maxCreatesPerRequest` (server-enforced, pre-
  * bridge) plus the module's own hard `MODULE_MAX_CREATES_CEILING` backstop; this is
  * just enough to reject an obviously-malformed request (e.g. `quantity: 1e9`) at parse
  * time rather than let it reach either cap check. */
@@ -218,7 +218,7 @@ const SANE_QUANTITY_MAX = 1000;
 
 export const ImportFromCompendiumParams = z
   .object({
-    // D5: this tool ONLY clones from a compendium; a world uuid is rejected.
+    // This tool ONLY clones from a compendium; a world uuid is rejected.
     uuid: z
       .string()
       .min(1)
@@ -245,7 +245,7 @@ export const ImportFromCompendiumParams = z
   .strict();
 export type ImportFromCompendiumParams = z.infer<typeof ImportFromCompendiumParams>;
 
-/** One created world document — same compact shape as the S4 search rows. */
+/** One created world document — same compact shape as the search rows. */
 export const ImportedDocumentRow = z
   .object({
     uuid: z.string(),
@@ -264,7 +264,7 @@ export const ImportFromCompendiumResult = z
 export type ImportFromCompendiumResult = z.infer<typeof ImportFromCompendiumResult>;
 
 // ---------------------------------------------------------------------------
-// create-token (S5 write tool — D13 import-then-tokenize)
+// create-token (write tool — import-then-tokenize)
 // ---------------------------------------------------------------------------
 
 export const CreateTokenParams = z
@@ -324,7 +324,7 @@ export const CreateTokenResult = z
 export type CreateTokenResult = z.infer<typeof CreateTokenResult>;
 
 // ---------------------------------------------------------------------------
-// create-journal (S5 write tool)
+// create-journal (write tool)
 // ---------------------------------------------------------------------------
 
 export const CreateJournalParams = z
@@ -352,11 +352,11 @@ export const CreateJournalResult = z
 export type CreateJournalResult = z.infer<typeof CreateJournalResult>;
 
 // ---------------------------------------------------------------------------
-// S1 authoring tools (spec 0026) — 8 new write tools superseding 0023 D5 for
-// these tools only (D-1 hybrid: clone-from-compendium-then-patch via `baseUuid`,
+// Authoring tools — 8 write tools that, unlike the read tools, do carry pf2e
+// `system` data (a hybrid: clone-from-compendium-then-patch via `baseUuid`,
 // OR full hand-authored `system` JSON where no base fits). Every create is
-// portal-stamped module-side (D-6) and every create result carries a
-// `warnings` array (D-7 read-back): pf2e's `npc`/`spell`/`equipment`/... types
+// portal-stamped module-side and every create result carries a
+// `warnings` array (a read-back): pf2e's `npc`/`spell`/`equipment`/... types
 // are template.json — no schema validation, garbage stored silently — and rule
 // elements (system.rules) are never DB-validated (a bad RE just goes
 // `ignored: true` at actor data-prep). A create can report "ok" and still be
@@ -384,7 +384,7 @@ export const CreateActorParams = z
       .optional()
       .describe(
         "Opaque pf2e system data, deep-merged over Foundry's actor-type defaults (never " +
-          "modeled or validated at this layer — D-7). NPCs take ability MODIFIERS directly at " +
+          "modeled or validated at this layer). NPCs take ability MODIFIERS directly at " +
           "abilities.<key>.mod (not scores), plus attributes.{ac.value, hp.value, hp.max, " +
           "speed}, saves.<key>.value, perception.mod, skills.<slug>.base, traits.{value, " +
           "rarity, size.value}, details.level.value. Omit entirely to accept Foundry's bare " +
@@ -409,7 +409,7 @@ export const CreateActorParams = z
       .optional()
       .describe(
         "A compendium document's uuid (from search-compendium) to clone as the starting point, " +
-          "then patch with `system`/`items` on top (D-1 hybrid) — the safest path when a " +
+          "then patch with `system`/`items` on top — the safest path when a " +
           "reasonably close statblock already exists; the source compendium document is never " +
           "modified.",
       ),
@@ -437,7 +437,7 @@ export const CreateActorResult = z
     warnings: z
       .array(z.string())
       .describe(
-        "D-7 read-back findings — e.g. a rule element that came back ignored at data-prep, or a " +
+        "Read-back findings — e.g. a rule element that came back ignored at data-prep, or a " +
           "template.json field that plainly didn't take. Always present, even when empty: an " +
           "empty array is itself the signal that the read-back ran and found nothing wrong.",
       ),
@@ -449,7 +449,7 @@ export type CreateActorResult = z.infer<typeof CreateActorResult>;
 
 /** The pf2e item subtypes portal can author. A mix of DataModel types (`effect`,
  * `condition`, `melee`, `feat`, `action` — strictly validated) and template.json types
- * (the rest — no schema validation, D-7). */
+ * (the rest — no schema validation). */
 export const Pf2eItemType = z.enum([
   "effect",
   "spell",
@@ -475,13 +475,13 @@ export const CreateItemParams = z
     type: Pf2eItemType.describe(
       '"effect"/"condition"/"melee"/"feat"/"action" are DataModels — strictly validated, a bad ' +
         "field throws a typed validation-failed error. The rest are template.json types — no " +
-        "schema validation, garbage stored silently (D-7).",
+        "schema validation, garbage stored silently.",
     ),
     system: z
       .record(z.string(), z.unknown())
       .optional()
       .describe(
-        "Opaque pf2e system data, deep-merged over the type's defaults (D-7). Rule elements " +
+        "Opaque pf2e system data, deep-merged over the type's defaults. Rule elements " +
           "ride system.rules — an unvalidated array; a bad RE is silently marked ignored:true " +
           "at actor data-prep and surfaced here as warnings[] when this item is created " +
           'embedded on an actor. AURAS ARE A TWO-ITEM PATTERN: this item carries {key:"Aura", ' +
@@ -507,7 +507,7 @@ export const CreateItemParams = z
       .optional()
       .describe(
         "A compendium document's uuid (from search-compendium) to clone as the starting point, " +
-          "then patch with `system` on top (D-1 hybrid) — strongly preferred for spells (keeps " +
+          "then patch with `system` on top — strongly preferred for spells (keeps " +
           "pf2e's math sane) and for anything with a close-enough existing source.",
       ),
     rulesSelections: z
@@ -532,7 +532,7 @@ export const CreateItemResult = z
     warnings: z
       .array(z.string())
       .describe(
-        "D-7 read-back findings — rule elements found ignored:true after this item was " +
+        "Read-back findings — rule elements found ignored:true after this item was " +
           "instantiated (an unknown RE key, a malformed Aura/TokenLight config, ...). Always " +
           "present, even when empty.",
       ),
@@ -697,9 +697,7 @@ export const CreateLightResult = z
           "scene-read tool that lists lights (a scene's full document is large — walls, tiles, " +
           "...); this uuid is the only handle you get back.",
       ),
-    warnings: z
-      .array(z.string())
-      .describe("D-7 read-back findings; always present, even when empty."),
+    warnings: z.array(z.string()).describe("Read-back findings; always present, even when empty."),
   })
   .strict();
 export type CreateLightResult = z.infer<typeof CreateLightResult>;
@@ -714,7 +712,7 @@ export const CreateMacroParams = z
     name: z.string().min(1).describe("The macro's display name."),
     macroType: MacroType.describe(
       '"script" runs arbitrary JavaScript with the executing user\'s privileges — through this ' +
-        'bridge that is always the GM (see execute-macro, D-9). "chat" posts `command` as a ' +
+        'bridge that is always the GM (see execute-macro). "chat" posts `command` as a ' +
         "chat message when run. Named macroType, not type, to avoid colliding with the " +
         "document-type conventions used by create-actor/create-item.",
     ),
@@ -733,9 +731,7 @@ export const CreateMacroResult = z
     uuid: z.string(),
     id: z.string(),
     name: z.string(),
-    warnings: z
-      .array(z.string())
-      .describe("D-7 read-back findings; always present, even when empty."),
+    warnings: z.array(z.string()).describe("Read-back findings; always present, even when empty."),
   })
   .strict();
 export type CreateMacroResult = z.infer<typeof CreateMacroResult>;
@@ -794,7 +790,7 @@ export const DeleteDocumentParams = z
         "A world or embedded document uuid to permanently delete. REFUSED with a typed " +
           'not-portal-created error unless the document is stamped flags["astra-portal"]' +
           ".created — portal can only clean up documents it made itself; hand-authored content " +
-          "can never be destroyed through this tool (D-4).",
+          "can never be destroyed through this tool.",
       ),
   })
   .strict();
@@ -841,10 +837,10 @@ export const ExecuteMacroResult = z
 export type ExecuteMacroResult = z.infer<typeof ExecuteMacroResult>;
 
 // ---------------------------------------------------------------------------
-// 0028 S2 — query-party / query-player (the player-key read-only tool subset,
-// spec D28-4/D28-6/D28-11). Module -> server wire shape stays typed compact JSON
-// (D5's discipline, unchanged); the SERVER renders this into markdown for the
-// player-facing tool result (D28-6) — the renderers live in portal-server's
+// query-party / query-player (part of the player-key read-only tool subset).
+// Module -> server wire shape stays typed compact JSON (the read tools'
+// discipline, unchanged); the SERVER renders this into markdown for the
+// player-facing tool result — the renderers live in portal-server's
 // markdown.ts, not here.
 // ---------------------------------------------------------------------------
 
@@ -853,7 +849,7 @@ export type ExecuteMacroResult = z.infer<typeof ExecuteMacroResult>;
 export const QueryPartyParams = z.object({}).strict();
 export type QueryPartyParams = z.infer<typeof QueryPartyParams>;
 
-/** A full player-character roster row (D28-4) — party actor member resolved to
+/** A full player-character roster row — party actor member resolved to
  * `type: "character"`. `ownerPlayer` is best-effort (an OWNER-level (3) ownership
  * entry resolved against `game.users`, excluding the GM) and omitted when no such
  * entry resolves. */
@@ -872,7 +868,7 @@ export const PartyPcRow = z
   .strict();
 export type PartyPcRow = z.infer<typeof PartyPcRow>;
 
-/** A labeled minimal row for a non-`character` party member (D28-4) — verified live:
+/** A labeled minimal row for a non-`character` party member — verified live:
  * the party's own familiar, Othello, carries `system.master.id`. */
 export const PartyCompanionRow = z
   .object({
@@ -995,7 +991,7 @@ export const PlayerSaveRow = z
   .strict();
 export type PlayerSaveRow = z.infer<typeof PlayerSaveRow>;
 
-/** The D28-2 curated derived-stats projection — read off the LIVE prepared actor,
+/** The curated derived-stats projection — read off the LIVE prepared actor,
  * fail-soft per field (a missing/wrong-shaped pf2e-internal path renders the field
  * absent here, never throws; `warnings` names every field that came back missing). */
 export const PlayerStatsSection = z
@@ -1128,14 +1124,13 @@ export const QueryPlayerResult = z.discriminatedUnion("section", [
 export type QueryPlayerResult = z.infer<typeof QueryPlayerResult>;
 
 // ---------------------------------------------------------------------------
-// 0028 S3 — query-item / query-rolls (D28-3/D28-5/D28-10/D28-12/D28-13). Same
-// module-typed-JSON / server-renders-markdown split as S2's query-party/query-player
-// (D28-6) — the renderers live in portal-server's markdown.ts, not here.
+// query-item / query-rolls. Same module-typed-JSON / server-renders-markdown
+// split as query-party/query-player — the renderers live in portal-server's markdown.ts, not here.
 // ---------------------------------------------------------------------------
 
 // --- query-item ---
 
-/** Where a hit/detail item lives (D28-5's tri-scope search: world items, items
+/** Where a hit/detail item lives (`query-item`'s tri-scope search: world items, items
  * embedded on party members, and compendium items). */
 export const ItemProvenance = z.enum(["world", "embedded", "compendium"]);
 export type ItemProvenance = z.infer<typeof ItemProvenance>;
@@ -1195,9 +1190,9 @@ export const QueryItemHitRow = z
   .strict();
 export type QueryItemHitRow = z.infer<typeof QueryItemHitRow>;
 
-/** A single item's full detail (D28-5) — the raw `description` HTML is rendered to
- * markdown server-side (D28-6); everything else is a small, hand-picked read
- * projection (the same narrow-read-side-exception posture as D28-2's stats section). */
+/** A single item's full detail — the raw `description` HTML is rendered to
+ * markdown server-side; everything else is a small, hand-picked read
+ * projection (the same narrow-read-side-exception posture as query-player's stats section). */
 export const QueryItemDetail = z
   .object({
     uuid: z.string(),
@@ -1221,7 +1216,7 @@ export const QueryItemDetail = z
     description: z
       .string()
       .optional()
-      .describe("Raw Foundry rich-text HTML; rendered to markdown server-side (D28-6)."),
+      .describe("Raw Foundry rich-text HTML; rendered to markdown server-side."),
   })
   .strict();
 export type QueryItemDetail = z.infer<typeof QueryItemDetail>;
@@ -1283,7 +1278,7 @@ export const RollModifierRow = z
   .strict();
 export type RollModifierRow = z.infer<typeof RollModifierRow>;
 
-/** D28-12's compact per-message roll row, parsed from the stored serialized-Roll
+/** The compact per-message roll row, parsed from the stored serialized-Roll
  * JSON — never re-evaluated. */
 export const RollRow = z
   .object({
@@ -1332,7 +1327,7 @@ export const QueryRollsParams = z
       .describe(
         "Restrict to rolls from one actor — a world actor uuid/id, or a name (case-insensitive " +
           "exact match preferred, falling back to an unambiguous prefix match — same resolution " +
-          "as query-player's name param, D28-13). Matches either the roll's speaker or its pf2e " +
+          "as query-player's name param). Matches either the roll's speaker or its pf2e " +
           "origin actor.",
       ),
     type: z
@@ -1385,9 +1380,9 @@ export const QueryRollsParams = z
   .strict();
 export type QueryRollsParams = z.infer<typeof QueryRollsParams>;
 
-/** Newest-first page of public roll messages (D28-3's privacy filter is baked in
+/** Newest-first page of public roll messages (the privacy filter is baked in
  * module-side, never a param). `totalMessages` is the RAW `game.messages` collection
- * size (all messages, not just qualifying rolls) — the spec Risks' message-count probe. */
+ * size (all messages, not just qualifying rolls), a probe for how large the log has grown. */
 export const QueryRollsResult = z
   .object({
     rows: z.array(RollRow),
@@ -1405,7 +1400,7 @@ export type QueryRollsResult = z.infer<typeof QueryRollsResult>;
 /** Liveness + handshake snapshot for the `bridge-status` tool. Everything but
  * `connected` comes straight from the module's auth `meta` (`AuthMeta`), so an older
  * module build that doesn't send a field just leaves it absent. `userId`/`userName`
- * (0027 D27-8) prove which Foundry session (e.g. the headless "Portal" account) holds
+ * prove which Foundry session (e.g. the headless "Portal" account) holds
  * the bridge. */
 export const BridgeStatusResult = z
   .object({

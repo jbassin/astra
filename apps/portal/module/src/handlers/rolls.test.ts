@@ -60,7 +60,7 @@ describe("query-rolls", () => {
   describe("live messages carry hydrated Roll instances, not JSON strings", () => {
     it("builds a row from a LIVE message whose rolls[] are Roll INSTANCES", async () => {
       // Live `game.messages` documents hydrate `rolls` into Roll instances whose
-      // toJSON() restores the stored shape — found live at the 0028 S4 gate, where
+      // toJSON() restores the stored shape — found in live testing, where
       // every page row silently failed to build (rows=0, hasMore=true).
       const instance = {
         toJSON: () =>

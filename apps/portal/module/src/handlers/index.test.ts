@@ -77,7 +77,7 @@ describe("a method this module build never registered", () => {
   it("a query for a tool an older module build never registered surfaces a typed error, never a hang", async () => {
     // Deliberately DON'T call registerHandlers() — simulates a 0.3.0 module whose
     // CONFIG.queries registry has never heard of "portal.query-item"/"portal.
-    // query-rolls" at all (the server-0.4.0/module-0.3.0 deploy-window skew, D28-14).
+    // query-rolls" at all (the server-0.4.0/module-0.3.0 deploy-window skew).
     stubFoundry(true);
     const err = await dispatchQuery("portal.query-item", { name: "anything" }).catch(
       (e: unknown) => e,

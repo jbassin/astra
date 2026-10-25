@@ -1,5 +1,5 @@
 /**
- * The real Chromium `PageAdapter` (spec 0027 D27-6/-7/-9/-10) — one warm, persistent
+ * The real Chromium `PageAdapter` — one warm, persistent
  * page for process life (vellum-render's browser-lifecycle pattern, `--no-sandbox`),
  * driving the actual Foundry v13.351 `/join` mechanics verified in the scope doc
  * (`thoughts/archive/research/2026-07-08-headless-gm-0027-thoughts.md` §2.3, read from
@@ -15,7 +15,7 @@ import { chromium } from "playwright";
 import type { PageAdapter, PageClassification } from "./supervisor";
 
 export interface PlaywrightDriverOptions {
-  /** The Foundry origin to navigate to (D27-3 — the public edge, e.g.
+  /** The Foundry origin to navigate to (the public edge, e.g.
    * `https://btl.iridi.cc`). */
   origin: string;
 }
@@ -43,15 +43,15 @@ export function createPlaywrightPageAdapter(opts: PlaywrightDriverOptions): Page
 
   async function launch(): Promise<void> {
     // Full teardown-and-relaunch on every call (both the initial launch AND crash
-    // recovery) — an ephemeral profile per launch (D27-10), so there's never a stale
+    // recovery) — an ephemeral profile per launch, so there's never a stale
     // localStorage to worry about; the noCanvas seed below still runs fresh every time
-    // per D27-7's explicit "re-seeded on every (re)launch".
+    // because it must be re-seeded on every (re)launch.
     await teardown();
     browser = await chromium.launch({ args: ["--no-sandbox"] });
     // Playwright's default 1280x720 is below Foundry's 1366x768 minimum (it logs a
     // loud console error and disclaims feature breakage below that).
     context = await browser.newContext({ viewport: { width: 1600, height: 900 } });
-    // D27-7: seed core.noCanvas=true BEFORE any page script runs, via an init script —
+    // Seed core.noCanvas=true BEFORE any page script runs, via an init script —
     // this applies on every navigation in this context regardless of what a prior
     // session might have left in localStorage (moot here since the profile is
     // ephemeral, but it's the correct primitive either way: Canvas.initialize() reads
@@ -65,7 +65,7 @@ export function createPlaywrightPageAdapter(opts: PlaywrightDriverOptions): Page
       }
     });
     const p = await context.newPage();
-    // D27-9: re-emit warn/error console lines through the supervisor's own telemetry —
+    // Re-emit warn/error console lines through the supervisor's own telemetry —
     // nobody watches a headless devtools console, so this is the only way a
     // misconfigured bridge-user-id (which only logs a module warning) becomes visible.
     p.on("console", (msg) => {
@@ -98,19 +98,19 @@ export function createPlaywrightPageAdapter(opts: PlaywrightDriverOptions): Page
     // reflects the server's CURRENT state; if the server is unreachable this goto
     // throws → the supervisor maps it to `broken` → bounded relaunch backoff (the
     // S3-proven unreachable-origin path). A plain GET of the origin is read-only —
-    // D27-1's "never interfere with /setup" politeness is untouched.
+    // the "never interfere with /setup" rule is untouched.
     await p.goto(opts.origin, { waitUntil: "load" });
     path = new URL(p.url()).pathname;
     if (path === "/join") return "join";
     if (path === "/game") return "in-world";
-    // D27-6: /setup, /auth, and / (a shut-down world's post-redirect landing page,
+    // /setup, /auth, and / (a shut-down world's post-redirect landing page,
     // scope doc §2.3) all mean "the world isn't up" — back off, never interfere.
     if (path === "/setup" || path === "/auth" || path === "/") return "world-down";
-    // Belt-and-suspenders DOM probe (D27-6's "a couple of DOM probes") for the rarer
+    // Belt-and-suspenders DOM probe for the rarer
     // case a redirect lands somewhere unexpected but the join form is still present.
     const joinFormVisible = (await p.locator(JOIN_FORM_SELECTOR).count()) > 0;
-    // Unknown page, no join form → world-down (safe backoff + re-probe), per D27-6's
-    // "join UI absent" clause — classifying it in-world would idle forever on e.g. an
+    // Unknown page, no join form → world-down (safe backoff + re-probe): with
+    // the join UI absent, classifying it in-world would idle forever on e.g. an
     // unexpected /license page while reporting healthy.
     return joinFormVisible ? "join" : "world-down";
   }
@@ -128,7 +128,7 @@ export function createPlaywrightPageAdapter(opts: PlaywrightDriverOptions): Page
       throw new Error(`no /join user-select option matches configured gm-username`);
     }
 
-    // D27-14: the password is passed as a page.evaluate argument (typed/POSTed inside
+    // The password is passed as a page.evaluate argument (typed/POSTed inside
     // the page, exactly like a human typing it) — never interpolated into a log line
     // or error message we construct.
     const redirect = await p.evaluate(

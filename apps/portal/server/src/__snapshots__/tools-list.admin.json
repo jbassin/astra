@@ -254,7 +254,7 @@
         "type": "object",
         "properties": {
           "actor": {
-            "description": "Restrict to rolls from one actor — a world actor uuid/id, or a name (case-insensitive exact match preferred, falling back to an unambiguous prefix match — same resolution as query-player's name param, D28-13). Matches either the roll's speaker or its pf2e origin actor.",
+            "description": "Restrict to rolls from one actor — a world actor uuid/id, or a name (case-insensitive exact match preferred, falling back to an unambiguous prefix match — same resolution as query-player's name param). Matches either the roll's speaker or its pf2e origin actor.",
             "type": "string",
             "minLength": 1
           },
@@ -332,7 +332,7 @@
     },
     {
       "name": "import-from-compendium",
-      "description": "WRITES to the live 'Faerrin' FoundryVTT world: clones a compendium document (an actor, item, etc. — found via search-compendium/get-document) into the world as a new document, verbatim except for a freshly assigned id and (optionally) a folder. Never invents or edits pf2e system data — this is a clone, not a hand-authored creation (D5). Creates 1 copy by default; pass `quantity` for more. Rejected if write operations are disabled in Foundry, the connected session isn't a GM, or the request exceeds the configured per-request create cap.",
+      "description": "WRITES to the live 'Faerrin' FoundryVTT world: clones a compendium document (an actor, item, etc. — found via search-compendium/get-document) into the world as a new document, verbatim except for a freshly assigned id and (optionally) a folder. Never invents or edits pf2e system data — this is a clone, not a hand-authored creation. Creates 1 copy by default; pass `quantity` for more. Rejected if write operations are disabled in Foundry, the connected session isn't a GM, or the request exceeds the configured per-request create cap.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -457,7 +457,7 @@
             "description": "The actor's display name."
           },
           "system": {
-            "description": "Opaque pf2e system data, deep-merged over Foundry's actor-type defaults (never modeled or validated at this layer — D-7). NPCs take ability MODIFIERS directly at abilities.<key>.mod (not scores), plus attributes.{ac.value, hp.value, hp.max, speed}, saves.<key>.value, perception.mod, skills.<slug>.base, traits.{value, rarity, size.value}, details.level.value. Omit entirely to accept Foundry's bare defaults (a valid, if blank, actor).",
+            "description": "Opaque pf2e system data, deep-merged over Foundry's actor-type defaults (never modeled or validated at this layer). NPCs take ability MODIFIERS directly at abilities.<key>.mod (not scores), plus attributes.{ac.value, hp.value, hp.max, speed}, saves.<key>.value, perception.mod, skills.<slug>.base, traits.{value, rarity, size.value}, details.level.value. Omit entirely to accept Foundry's bare defaults (a valid, if blank, actor).",
             "type": "object",
             "propertyNames": {
               "type": "string"
@@ -476,7 +476,7 @@
             }
           },
           "baseUuid": {
-            "description": "A compendium document's uuid (from search-compendium) to clone as the starting point, then patch with `system`/`items` on top (D-1 hybrid) — the safest path when a reasonably close statblock already exists; the source compendium document is never modified.",
+            "description": "A compendium document's uuid (from search-compendium) to clone as the starting point, then patch with `system`/`items` on top — the safest path when a reasonably close statblock already exists; the source compendium document is never modified.",
             "type": "string",
             "minLength": 1
           },
@@ -530,10 +530,10 @@
               "backpack",
               "kit"
             ],
-            "description": "\"effect\"/\"condition\"/\"melee\"/\"feat\"/\"action\" are DataModels — strictly validated, a bad field throws a typed validation-failed error. The rest are template.json types — no schema validation, garbage stored silently (D-7)."
+            "description": "\"effect\"/\"condition\"/\"melee\"/\"feat\"/\"action\" are DataModels — strictly validated, a bad field throws a typed validation-failed error. The rest are template.json types — no schema validation, garbage stored silently."
           },
           "system": {
-            "description": "Opaque pf2e system data, deep-merged over the type's defaults (D-7). Rule elements ride system.rules — an unvalidated array; a bad RE is silently marked ignored:true at actor data-prep and surfaced here as warnings[] when this item is created embedded on an actor. AURAS ARE A TWO-ITEM PATTERN: this item carries {key:\"Aura\", radius, effects:[{uuid, affects, events, save, removeOnExit}]} pointing at a SEPARATE companion effect item (create it first, world or compendium uuid) that carries the actual modifier rule elements — the aura carrier alone does nothing. A spell is castable only once system.location.value equals a spellcastingEntry item's id — create the entry first. For a creature that should visibly glow, put a TokenLight rule element here (it moves with the token); create-light instead places static, unattached scene furniture (a torch, a room's ambient glow) — the two tools are not interchangeable.",
+            "description": "Opaque pf2e system data, deep-merged over the type's defaults. Rule elements ride system.rules — an unvalidated array; a bad RE is silently marked ignored:true at actor data-prep and surfaced here as warnings[] when this item is created embedded on an actor. AURAS ARE A TWO-ITEM PATTERN: this item carries {key:\"Aura\", radius, effects:[{uuid, affects, events, save, removeOnExit}]} pointing at a SEPARATE companion effect item (create it first, world or compendium uuid) that carries the actual modifier rule elements — the aura carrier alone does nothing. A spell is castable only once system.location.value equals a spellcastingEntry item's id — create the entry first. For a creature that should visibly glow, put a TokenLight rule element here (it moves with the token); create-light instead places static, unattached scene furniture (a torch, a room's ambient glow) — the two tools are not interchangeable.",
             "type": "object",
             "propertyNames": {
               "type": "string"
@@ -545,7 +545,7 @@
             "type": "string"
           },
           "baseUuid": {
-            "description": "A compendium document's uuid (from search-compendium) to clone as the starting point, then patch with `system` on top (D-1 hybrid) — strongly preferred for spells (keeps pf2e's math sane) and for anything with a close-enough existing source.",
+            "description": "A compendium document's uuid (from search-compendium) to clone as the starting point, then patch with `system` on top — strongly preferred for spells (keeps pf2e's math sane) and for anything with a close-enough existing source.",
             "type": "string",
             "minLength": 1
           },
@@ -698,7 +698,7 @@
               "script",
               "chat"
             ],
-            "description": "\"script\" runs arbitrary JavaScript with the executing user's privileges — through this bridge that is always the GM (see execute-macro, D-9). \"chat\" posts `command` as a chat message when run. Named macroType, not type, to avoid colliding with the document-type conventions used by create-actor/create-item."
+            "description": "\"script\" runs arbitrary JavaScript with the executing user's privileges — through this bridge that is always the GM (see execute-macro). \"chat\" posts `command` as a chat message when run. Named macroType, not type, to avoid colliding with the document-type conventions used by create-actor/create-item."
           },
           "command": {
             "type": "string",
@@ -832,7 +832,7 @@
           "uuid": {
             "type": "string",
             "minLength": 1,
-            "description": "A world or embedded document uuid to permanently delete. REFUSED with a typed not-portal-created error unless the document is stamped flags[\"astra-portal\"].created — portal can only clean up documents it made itself; hand-authored content can never be destroyed through this tool (D-4)."
+            "description": "A world or embedded document uuid to permanently delete. REFUSED with a typed not-portal-created error unless the document is stamped flags[\"astra-portal\"].created — portal can only clean up documents it made itself; hand-authored content can never be destroyed through this tool."
           }
         },
         "required": [

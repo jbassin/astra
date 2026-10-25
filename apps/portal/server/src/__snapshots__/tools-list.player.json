@@ -113,7 +113,7 @@
         "type": "object",
         "properties": {
           "actor": {
-            "description": "Restrict to rolls from one actor — a world actor uuid/id, or a name (case-insensitive exact match preferred, falling back to an unambiguous prefix match — same resolution as query-player's name param, D28-13). Matches either the roll's speaker or its pf2e origin actor.",
+            "description": "Restrict to rolls from one actor — a world actor uuid/id, or a name (case-insensitive exact match preferred, falling back to an unambiguous prefix match — same resolution as query-player's name param). Matches either the roll's speaker or its pf2e origin actor.",
             "type": "string",
             "minLength": 1
           },

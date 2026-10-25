@@ -1,5 +1,5 @@
 /**
- * portal-headless entrypoint (spec 0027 S2, D27-5/-6/-9/-10/-11). Telemetry (traces,
+ * portal-headless entrypoint. Telemetry (traces,
  * metrics, logs, HTTP spans, the SIGTERM flush) is already installed by
  * `node --import @astra/observe/register`; this reads config, wires the Playwright page
  * adapter into the `Supervisor` state machine, then binds `/health`. Mirrors
@@ -38,7 +38,7 @@ const worldDownDwellMsCounter = lazyCounter(
 );
 const consoleCounter = lazyCounter(SERVICE_NAME, "astra.portal_headless.module_console", {
   description:
-    "Captured page-console warn/error lines (D27-9 — makes a misconfigured " +
+    "Captured page-console warn/error lines (makes a misconfigured " +
     "bridge-user-id diagnosable from SigNoz instead of a devtools console nobody has open)",
 });
 
@@ -59,7 +59,7 @@ async function main(): Promise<void> {
   const supervisor = new Supervisor({
     page,
     username: ph.gmUsername,
-    // Resolved fresh at every login call, never cached (D27-14) — this closure is the
+    // Resolved fresh at every login call, never cached — this closure is the
     // ONLY place the plaintext password exists outside the page context itself.
     resolvePassword: () => gmPassword.require(),
     reloadIntervalMs: ph.reloadIntervalHours * 60 * 60 * 1000,

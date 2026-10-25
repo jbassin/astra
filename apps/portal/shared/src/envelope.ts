@@ -1,8 +1,8 @@
 /**
  * The bridge wire envelope — every message shape that crosses the module<->
- * portal-server WebSocket (spec 0023 D4 "a WebSocket server the module dials" / D6
- * "two-hop key auth"). Both sides (the Foundry module + portal-server) import this
- * package so the contract can't drift between them.
+ * portal-server WebSocket (a WebSocket server the module dials, authenticated by
+ * the module's half of the two-hop key auth). Both sides (the Foundry module +
+ * portal-server) import this package so the contract can't drift between them.
  *
  * KDL-at-the-edges' sibling rule for the wire: parse into these schemas immediately
  * on receipt, never thread a raw JSON-parsed blob through bridge/tool code.
@@ -17,29 +17,29 @@ import { z } from "zod";
 export const BridgeErrorCode = z.enum([
   "bridge-offline", // no Foundry module currently connected (the liveness constraint)
   "unauthorized", // wrong/missing mcp-api-key or bridge-api-key
-  "not-gm", // the connected Foundry session isn't a GM (D8 write gate)
+  "not-gm", // the connected Foundry session isn't a GM (the write gate)
   "writes-disabled", // the module's allow-write-operations setting is off
-  "cap-exceeded", // max-creates-per-request exceeded (D8)
+  "cap-exceeded", // max-creates-per-request exceeded
   "timeout", // the module didn't answer a query within the bridge timeout
   "not-found", // a read resolved no such document (e.g. a bad get-document uuid) — a
-  // normal, branchable outcome, not a generic Foundry-side failure (S4)
+  // normal, branchable outcome, not a generic Foundry-side failure
   "foundry-error", // the module's Foundry-side call itself threw
   "not-portal-created", // delete-document refused a document not stamped
-  // flags["astra-portal"].created — portal can only clean up after itself (0026 D-4/D-6)
+  // flags["astra-portal"].created — portal can only clean up after itself
   "validation-failed", // a pf2e DataModel rejected the payload (DataModelValidationError,
-  // Foundry's message preserved verbatim) or a known-derived PC path was targeted (0026 D-7/D-10)
-  "execution-failed", // execute-macro's script/chat macro threw at runtime (0026 D-9);
+  // Foundry's message preserved verbatim) or a known-derived PC path was targeted
+  "execution-failed", // execute-macro's script/chat macro threw at runtime;
   // the thrown error's message is preserved, distinct from the module dispatch itself failing
   "not-designated", // dispatchQuery's defense-in-depth refusal when bridge-user-id is set
-  // and this session isn't the matching user (0027 D27-2/D27-9) — distinct from "not-gm"
+  // and this session isn't the matching user — distinct from "not-gm"
   // because the session IS a GM, just not the one designated to dial
-  "not-a-player-character", // query-player's D28-4 predicate refused a resolved actor
+  "not-a-player-character", // query-player's player-character predicate refused a resolved actor
   // whose type isn't "character"/"familiar" (an npc/party/loot/vehicle/hazard uuid)
-  "ambiguous-name", // query-player's D28-13 name resolution matched more than one
+  "ambiguous-name", // query-player's name resolution matched more than one
   // candidate (neither an exact nor an unambiguous-prefix match) — the error message
   // lists the candidates so the caller can retry with a uuid instead
   "bridge-replaced", // the query was in flight on a bridge socket that a newer socket
-  // for the same Foundry user replaced (a GM tab reload mid-call); retry it (SVC-18)
+  // for the same Foundry user replaced (a GM tab reload mid-call); retry it
 ]);
 export type BridgeErrorCode = z.infer<typeof BridgeErrorCode>;
 
@@ -63,7 +63,7 @@ export class BridgeError extends Error {
  * bridge round-trip. Optional: an older/mid-upgrade module build that doesn't send it
  * yet must still authenticate cleanly (BridgeStatus just carries less).
  *
- * `userId`/`userName` (0027 D27-8) are the connected Foundry user's identity — also
+ * `userId`/`userName` are the connected Foundry user's identity — also
  * optional for the same reason, and the mechanism that lets `bridge-status` prove
  * *which* session (e.g. the headless "Portal" account) holds the bridge.
  */
@@ -132,7 +132,7 @@ export const PROTOCOL_MISMATCH_MODULE_STALE = "module-stale";
 export const PROTOCOL_MISMATCH_SERVER_STALE = "server-stale";
 
 /**
- * The module's handshake immediately after dialing the bridge WS (D6). `protocol` and
+ * The module's handshake immediately after dialing the bridge WS. `protocol` and
  * `moduleVersion` are absent only from a legacy (protocol 0, module 0.4.x) build.
  */
 export const AuthMsg = z
@@ -215,7 +215,7 @@ export const McpResponse = z.discriminatedUnion("ok", [McpResponseOk, McpRespons
 export type McpResponse = z.infer<typeof McpResponse>;
 
 /**
- * D28-14's skew-recovery shape: a well-formed error `response` envelope whose
+ * The version-skew recovery shape: a well-formed error `response` envelope whose
  * `error.code` ISN'T one of `BridgeErrorCode`'s closed enum members — the exact
  * shape a 0.4.0+ module sends when it returns a code this build's `BridgeErrorCode`
  * doesn't know yet (e.g. a rolled-back pre-0028 server talking to a 0.4.0 module
@@ -238,7 +238,7 @@ export type McpResponseErrUnknownCode = z.infer<typeof McpResponseErrUnknownCode
 
 /**
  * The full bridge wire envelope. A `Map<id, {resolve,reject,timeout}>` request
- * tracker (S2) keys off `McpQuery.id`/`McpResponse.id`; everything else is
+ * tracker keys off `McpQuery.id`/`McpResponse.id`; everything else is
  * connection-lifecycle (`auth`/`ping`/`pong`).
  */
 export const BridgeMessage = z.discriminatedUnion("type", [

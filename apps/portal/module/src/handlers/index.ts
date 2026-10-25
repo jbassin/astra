@@ -102,7 +102,7 @@ export function registerHandlers(): void {
  * `McpQuery.method` in `@astra/portal-shared`). Re-checks `game.user?.isGM` as defense
  * in depth: the `ready` hook already refuses to DIAL the bridge at all for a non-GM
  * session, but this is the last line of defense against a session that started as GM
- * and was demoted while its socket stayed open. Also re-checks the 0027 D27-2/D27-9
+ * and was demoted while its socket stayed open. Also re-checks the
  * designated-dialer setting for the same reason — the GM may repoint `bridge-user-id`
  * on an already-adopted socket without an F5.
  *
