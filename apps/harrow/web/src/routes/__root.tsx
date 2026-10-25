@@ -1,12 +1,10 @@
 import { ShaderBackground, starfield } from "@astra/backdrop";
-/// <reference types="vite/client" />
 import { SiteDocument, siteHead } from "@astra/site-kit/document";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import "@astra/site-kit/theme";
 
 import "@/styles/globals.css";
 
-import ClientOnly from "@/components/ClientOnly/ClientOnly";
 import { SITE } from "@/generated/site";
 
 export const Route = createRootRoute({
@@ -17,9 +15,7 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <SiteDocument rum={() => import("@/observe/rumConfig")} forceDarkTheme>
-      <ClientOnly>
-        <ShaderBackground spec={starfield} />
-      </ClientOnly>
+      <ShaderBackground spec={starfield} />
       <header className="site-head">
         <Link to="/" className="site-brand">
           ✦ {SITE.title}
