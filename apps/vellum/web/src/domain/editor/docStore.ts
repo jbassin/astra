@@ -58,7 +58,7 @@ function newId(): string {
   return `doc-${Date.now()}-${fallbackCounter}`;
 }
 
-export function createDoc(source = "", opts?: { id?: string; now?: number }): VellumDoc {
+function createDoc(source = "", opts?: { id?: string; now?: number }): VellumDoc {
   return {
     id: opts?.id ?? newId(),
     title: deriveTitle(source),

@@ -22,7 +22,7 @@ export interface Renderer {
   render(req: RenderRequest): Promise<Buffer>;
 }
 
-export interface RenderAppOptions {
+interface RenderAppOptions {
   /** config.kdl `vellum-render.service-name`. */
   serviceName: string;
   /** config.kdl `vellum-frontend.public-origin`: the deployed editor's origin. */
