@@ -20,7 +20,7 @@ import { CheckMark, CrossMark, FlameMark, MenhirMark } from "../marks";
 import type { PlayerSnapshot } from "../schema";
 import { shapeAt } from "../shapes";
 
-export interface PlayerViewProps {
+interface PlayerViewProps {
   snapshot: PlayerSnapshot;
   receivedAt: number;
   onAnswer: (option: number) => void;

@@ -56,7 +56,7 @@ export function parseQuizFile(filePath: string): Quiz {
   return QuizSchema.parse({ id, ...quiz });
 }
 
-export interface QuizLoadResult {
+interface QuizLoadResult {
   quizzes: Quiz[];
   /** One line per excluded file — WARN-logged by the caller, never ERROR. */
   warnings: string[];

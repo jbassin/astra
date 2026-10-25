@@ -26,7 +26,7 @@ const SSE_HEADERS = {
   connection: "keep-alive",
 } as const;
 
-export interface AppOptions {
+interface AppOptions {
   /** Absolute path to the built app (vite `dist/`). */
   distDir: string;
   /** Runtime construction options — a fresh RoomsRuntime is built per createApp

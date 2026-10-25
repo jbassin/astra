@@ -8,7 +8,6 @@
  */
 import { SHAPES, type Shape } from "./schema";
 
-export { SHAPES };
 export type { Shape };
 
 export function shapeAt(index: number): Shape {
