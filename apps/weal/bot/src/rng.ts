@@ -1,5 +1,5 @@
 /**
- * The flavor-line RNG seam (spec 0032 D32-14). The v1 roller owned the bot's only
+ * The flavor-line RNG seam. The v1 roller owned the bot's only
  * RNG surface; with rolls moved into `@astra/weal-engine` (entropy = the 32-byte
  * seed), the bot's remaining randomness is picking flavor lines — this is that
  * surface, injectable so the handler suite stays deterministic.

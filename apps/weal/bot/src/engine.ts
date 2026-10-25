@@ -1,13 +1,13 @@
 /**
- * The engine seam (spec 0032 D32-14/D32-17) — everything between the bot and
+ * The engine seam — everything between the bot and
  * `@astra/weal-engine`:
  *
  * - {@link runEngine}: one evaluate call. Trap containment is the wrapper's
  *   job: a wasm trap comes back as an ordinary `stage:"internal"` error, and
  *   the wrapper has already re-instantiated the wasm.
- * - {@link passesNoiseGate}: D32-14's error-visibility gate, so ordinary chat
- *   can never trigger a visible error reply.
- * - {@link loadValidatedFuncs}: the D32-17 boot algorithm — `funcs_v2` rows in
+ * - {@link passesNoiseGate}: the error-visibility gate, so ordinary chat can
+ *   never trigger a visible error reply.
+ * - {@link loadValidatedFuncs}: the boot algorithm — `funcs_v2` rows in
  *   id order, each loaded (parsed, type-checked AND evaluated) after the prior
  *   valid rows; a failing row is skipped with a WARN naming it, so one bad
  *   save never breaks the other rolls.
@@ -42,7 +42,7 @@ export function runEngine(
   return { kind: "error", error: result };
 }
 
-// --- the D32-14 noise gate -----------------------------------------------------------
+// --- the noise gate -----------------------------------------------------------------
 
 /** A die token anywhere not glued to a preceding word char (`d20`, `4d6kh3`). */
 const DIE_TOKEN_RE = /(^|[^a-zA-Z0-9_])\d*d\d/;
@@ -56,7 +56,7 @@ const WORD_RE = /[a-z][a-zA-Z0-9_]*/g;
 /**
  * Should a non-parse engine error be VISIBLE for this source? True when the
  * source contains a die token, `let`/`match`, an operator, or a word matching a
- * saved name — so `lol` / `brb` / `:p` chat noise stays silent (D32-14).
+ * saved name — so `lol` / `brb` / `:p` chat noise stays silent.
  */
 export function passesNoiseGate(source: string, savedNames: readonly string[]): boolean {
   if (DIE_TOKEN_RE.test(source)) return true;
@@ -72,13 +72,13 @@ export function passesNoiseGate(source: string, savedNames: readonly string[]): 
 
 /**
  * A lone atom literal (`:p`) — evaluates fine (atoms are displayable) but is
- * chat noise, suppressed on the OK path per the D32-14 gate's intent.
+ * chat noise, suppressed on the OK path for the same reason as the noise gate.
  */
 export function isBareAtom(source: string): boolean {
   return /^:[a-z][a-z0-9-]*$/.test(source);
 }
 
-// --- the D32-17 boot algorithm -------------------------------------------------------
+// --- the boot algorithm -------------------------------------------------------------
 
 const ZERO_SEED = new Uint8Array(32);
 
@@ -126,8 +126,8 @@ export function loadValidatedFuncs(
  * roll runs against the whole runtime saves list, and the engine re-loads that
  * list (parse, type-check AND evaluate each save, in order) on every message.
  * So the first, trivial roll reproduces exactly what any later roll does first
- * — a save that fails to evaluate breaks it (before the WEAL-1 fix,
- * `|| 2d20kh1` did exactly this). The rest cover builtins a save can shadow:
+ * — a save that fails to evaluate breaks it (`|| 2d20kh1` once did exactly
+ * this, through an engine bug since fixed). The rest cover builtins a save can shadow:
  * saves and builtins share one namespace (a saved function can act as a die
  * suffix), so `save(:kh, 3)` breaks every `kh` roll and `save(:save, 3)` breaks
  * saving itself — including the re-save that would fix it.
@@ -184,7 +184,8 @@ export interface SaveRefusal {
 export type SaveCheck = { ok: true } | ({ ok: false } & SaveRefusal);
 
 /**
- * Dry-run a new or replacement save before persisting it (WEAL-2). `saves` is
+ * Dry-run a new or replacement save before persisting it, so one bad save
+ * can't break every later roll. `saves` is
  * the runtime list a later roll will evaluate (`[name, source]` in id order).
  * The candidate list appends the new save last, exactly where the next roll
  * and the next boot will see it, since a new row gets the highest id.
@@ -195,9 +196,9 @@ export type SaveCheck = { ok: true } | ({ ok: false } & SaveRefusal);
  *    does not block the save.
  * 2. a {@link guardUses} use of the new name hits an engine fault
  *    (`stage:"internal"`): a macro that loads fine but trips an engine bug
- *    whenever it is used (a checker/interpreter disagreement, the class WEAL-1
- *    was). Type, eval and fuel errors don't count: they say the use doesn't
- *    fit (`f + 1` on a function) or reflect the player's own logic
+ *    whenever it is used (a checker/interpreter disagreement, the class of bug
+ *    that once broke `|| 2d20kh1`). Type, eval and fuel errors don't count:
+ *    they say the use doesn't fit (`f + 1` on a function) or reflect the player's own logic
  *    (`|x| x / 0`).
  *
  * Passing (1) also means the save survives a restart: the boot load evaluates

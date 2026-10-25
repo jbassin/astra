@@ -1,5 +1,5 @@
 /**
- * Message pipeline (spec 0032 §5 gates D/E, locally-testable cases) — the full
+ * Message pipeline (the locally-testable cases) — the full
  * classify → engine → host+webhook → persistence → overlay flow, exercised dry
  * with fakes (no Discord/Postgres/network) against the REAL committed wasm
  * engine under a fixed seed (deterministic goldens).
@@ -187,7 +187,7 @@ describe("die rolls (real engine, seeded)", () => {
     const h = harness();
     await handleMessage("2d20kh1 + 7", PROFILE, h.deps);
     expect(h.sent[0]?.fields).toEqual([["Results", "2d20 ⟪~~4~~,15⟫kh1 + 7 = `22`"]]);
-    // BOTH sampled dice persist, kept and dropped alike (D32-17)
+    // BOTH sampled dice persist, kept and dropped alike
     expect(h.store.inserts).toEqual([
       [20, 4, 42, 1],
       [20, 15, 42, 1],
@@ -233,7 +233,7 @@ describe("value displays (the Knife invented flow)", () => {
   });
 });
 
-describe("error visibility + the noise gate (D32-14)", () => {
+describe("error visibility + the noise gate", () => {
   test("`lol` (bare unknown word) stays silent despite the type error", async () => {
     const h = harness();
     await handleMessage("lol", PROFILE, h.deps);
@@ -367,7 +367,7 @@ describe("roll history is written after the reply (ADR 0025)", () => {
   });
 });
 
-describe("saves (D32-15/17)", () => {
+describe("saves", () => {
   test("save flow: funcs_v2 insert + savedNames update + weal-fenced source embed", async () => {
     const h = harness();
     await handleMessage("save(:smite, |x| x + 3)", PROFILE, h.deps);
@@ -392,8 +392,8 @@ describe("saves (D32-15/17)", () => {
   });
 });
 
-describe("the save guard (WEAL-2)", () => {
-  test("`save(:adv, || 2d20kh1)` is kept, and every use rolls fresh (WEAL-1)", async () => {
+describe("the save guard", () => {
+  test("`save(:adv, || 2d20kh1)` is kept, and every use rolls fresh", async () => {
     const h = harness();
     await handleMessage("save(:adv, || 2d20kh1)", PROFILE, h.deps);
     expect(h.store.funcsV2).toEqual([{ id: 1, name: "adv", source: "|| kh(pool(2, d20), 1)" }]);
@@ -447,7 +447,7 @@ describe("the save guard (WEAL-2)", () => {
   });
 
   test("a macro that loads but breaks on use is refused (kind `use`)", async () => {
-    // No real input reaches an engine internal error since the WEAL-1 fix, so
+    // No real input reaches an engine internal error since the nullary-macro fix, so
     // the engine reports one for the guard's `atk()` use.
     const h = harness();
     const internal = "internal error: boom — the checker should have rejected this";
@@ -469,7 +469,7 @@ describe("the save guard (WEAL-2)", () => {
   });
 });
 
-describe("persistence guards (D32-17)", () => {
+describe("persistence guards", () => {
   test("4d6kh3 writes all 4 sampled rows incl. the dropped die", async () => {
     const h = harness();
     await handleMessage("4d6kh3", PROFILE, h.deps);
@@ -498,7 +498,7 @@ describe("persistence guards (D32-17)", () => {
   });
 });
 
-describe("plots (D32-16)", () => {
+describe("plots", () => {
   test("plot(d6): GSR embed w/ attachment image + mean/std; no rows, no broadcast", async () => {
     const h = harness();
     await handleMessage("plot(d6)", PROFILE, h.deps);

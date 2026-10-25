@@ -37,7 +37,7 @@ const SSE_HEADERS = {
 
 export interface AppOptions {
   /** Shared secret required in the `@astra/weal-wire` token header on ingest. Must be non-blank:
-   * there is no open mode (fail closed, 0037 SEC-12) — createApp throws on a blank token. */
+   * there is no open mode (fail closed) — createApp throws on a blank token. */
   token: string;
   /** Absolute path to the built overlay (vite `dist/`). */
   distDir: string;
@@ -148,8 +148,8 @@ export function createDefinition(opts: AppOptions): {
     });
   }
 
-  // Bun.file(...) → @astra/site-kit's `serveFile` (the `send`-backed Range/206
-  // bridge S4 built; R3, 0022 S8). index.html is served separately above (it needs
+  // Static files go through @astra/site-kit's `serveFile` (`send`-backed, with
+  // Range/206 support). index.html is served separately above (it needs
   // the RUM-endpoint injection), so this only ever hits built hashed assets.
   async function serveStatic(req: Request): Promise<Response> {
     const pathname = decodeURIComponent(new URL(req.url).pathname);

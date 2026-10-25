@@ -13,7 +13,7 @@ import { requireIngestToken } from "./src/startup";
 const cfg = loadConfig();
 const log = logger(cfg.wealOverlay.serviceName);
 const port = cfg.wealOverlay.port;
-// Fail closed (0037 SEC-12): no token = refuse to start, never an open public ingest.
+// Fail closed: no token = refuse to start, never an open public ingest.
 let token = "";
 try {
   token = requireIngestToken(cfg.wealOverlay.token);

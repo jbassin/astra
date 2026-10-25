@@ -15,7 +15,7 @@ beforeAll(async () => {
   writeFileSync(join(dist, "index.html"), "<!doctype html><title>eerie test</title>");
   running = startServer({ port: 0, token: "s3cret", distDir: dist });
   const ready = await running.server.ready();
-  // srvx has no `.port` (R3, 0022 S8 — B3); `.url` includes a trailing slash
+  // srvx has no `.port`; `.url` includes a trailing slash
   // (e.g. "http://0.0.0.0:1234/") — strip it so `${base}/api/...` doesn't
   // produce a double-slash path (site-kit's ssrServer.test.ts precedent).
   base = (ready.url ?? "").replace(/\/$/, "");

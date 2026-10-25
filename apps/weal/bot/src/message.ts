@@ -1,13 +1,13 @@
 /**
  * Pure message classification + embed/overlay builders. Classification (trim +
  * reseed detection) is the faerrin port, unchanged; the builders are rewired
- * off `@astra/weal-engine`'s display contract (spec 0032 D32-15/D32-18).
+ * off `@astra/weal-engine`'s display contract.
  *
  * Every builder that feeds an embed clamps defensively to Discord's limits
- * (title 256 / field value 1024 — D32-15): the engine caps headline ≤ 80 and
+ * (title 256 / field value 1024): the engine caps headline ≤ 80 and
  * renderText ≤ 900 in-engine, but the bot never trusts that at the seam.
  *
- * Note: the GSR/Rex/Els/Whiskers goodness banks live in the ontology (K8). The
+ * Note: the GSR/Rex/Els/Whiskers goodness banks live in the ontology. The
  * small Knife-host UI strings (number/reseed flavor) are NOT goodness banks —
  * they stay here as bot constants, faithful to faerrin.
  */
@@ -18,7 +18,7 @@ import { type RollMessage, RollMessageSchema } from "@astra/weal-wire";
 import type { SaveRefusal } from "./engine";
 import type { Profile } from "./roster";
 
-/** Cosmetic seed (K10) — shown in footers, never actually seeds the engine. */
+/** Cosmetic seed — shown in footers, never actually seeds the engine. */
 export interface SeedInfo {
   seed: number;
   blameId: number;
@@ -80,7 +80,7 @@ export function thumbnailFor(
   return hostAvatar;
 }
 
-// --- defensive truncation (D32-15) ---------------------------------------------------
+// --- defensive truncation -----------------------------------------------------------
 
 /** Discord's embed-title limit. */
 export const TITLE_LIMIT = 256;
@@ -101,9 +101,9 @@ export function truncate(s: string, max: number): string {
   return s.length <= max ? s : `${s.slice(0, max - 1)}…`;
 }
 
-// --- roll-embed builders (D32-15) ----------------------------------------------------
+// --- roll-embed builders ------------------------------------------------------------
 
-/** `{characterName}: {headline}` + tag; null goodness = no tag (D32-11). */
+/** `{characterName}: {headline}` + tag; null goodness = no tag. */
 export function dieTitle(
   characterName: string,
   headline: string,
@@ -115,7 +115,7 @@ export function dieTitle(
   return truncate(base, TITLE_LIMIT);
 }
 
-/** Footer takes the goodness word; null → "okay" (D32-15). */
+/** Footer takes the goodness word; null → "okay". */
 export function dieFooter(goodness: WealGoodness | null, seed: number, blame: string): string {
   switch (goodness ?? "okay") {
     case "crit":
@@ -134,9 +134,9 @@ export function dieFooter(goodness: WealGoodness | null, seed: number, blame: st
 /**
  * The `Results` field for a roll embed: the render trace with its final value
  * backticked — `` 4d6 ⟪6,~~1~~,3,6⟫kh3 = `15` ``. The engine's renderText already
- * ends in `= {headline}` (§3), so the D32-15 template's naive append would double
- * the value; strip the trailing plain value and re-append it backticked (S7
- * clarification). Falls back to the naive form if the tail ever diverges.
+ * ends in `= {headline}`, so naively appending `` = `{headline}` `` would double
+ * the value; strip the trailing plain value and re-append it backticked.
+ * Falls back to the naive form if the tail ever diverges.
  */
 export function resultsField(display: WealDieDisplay): [string, string] {
   const tail = ` = ${display.headline}`;
@@ -146,7 +146,7 @@ export function resultsField(display: WealDieDisplay): [string, string] {
   return ["Results", truncate(text, FIELD_LIMIT)];
 }
 
-// --- error reply (D32-14) ------------------------------------------------------------
+// --- error reply --------------------------------------------------------------------
 
 /**
  * The source line containing the span, with a caret line under the span.
@@ -173,7 +173,7 @@ export function fenced(text: string): string {
 /**
  * The visible-error description: the engine message, a fenced span excerpt
  * (when a span is present), and `(in {name})` for prelude errors. A prelude
- * span points into the failing SAVE's source (D32-11), so callers pass the
+ * span points into the failing SAVE's source, so callers pass the
  * saves list and the excerpt is drawn from that source, not the message.
  */
 export function errorDescription(
@@ -225,7 +225,7 @@ export function saveRefusal(
   };
 }
 
-// --- overlay payload (D32-18) --------------------------------------------------------
+// --- overlay payload ----------------------------------------------------------------
 
 /**
  * The roll message weal-overlay shows, built through the shared wire schema
@@ -254,7 +254,7 @@ export function overlayPayload(
   });
 }
 
-// --- classification (port of handler.rs trim + parse_func; plot dropped per K4) ------
+// --- classification (port of handler.rs trim + parse_func, minus plot) --------------
 
 function trimStartMatches(s: string, pat: string): string {
   let t = s;
@@ -291,7 +291,7 @@ const FUNC_RE = /^\s*(.+)\((.*)\)\s*$/;
 
 /**
  * Classify a raw message: empty → ignore; `reseed()` → reseed; everything else → a
- * roll attempt. faerrin's `plot(base,interval)` command is dropped (K4 — historical
+ * roll attempt. faerrin's `plot(base,interval)` command is dropped (historical
  * viz moves to akasha-frontend); the in-engine `plot()` builtin still classifies as
  * a roll.
  */

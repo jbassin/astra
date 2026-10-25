@@ -125,7 +125,7 @@ export class Gateway {
       username: msg.host.name,
       avatarURL: msg.host.avatar || undefined,
       embeds: [buildEmbed(msg)],
-      // Plot PNGs ride as attachments the embed references (D32-16).
+      // Plot PNGs ride as attachments the embed references (`attachment://plot.png`).
       files: msg.files?.map((f) => new AttachmentBuilder(Buffer.from(f.data), { name: f.name })),
     });
   }

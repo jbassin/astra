@@ -1,16 +1,16 @@
 /**
  * Message orchestration — classify → engine → embeds/persistence/overlay, with
  * the discord.js + Postgres + overlay I/O behind an injectable
- * {@link HandlerDeps} so the whole pipeline unit-tests dry (spec 0032 S6).
+ * {@link HandlerDeps} so the whole pipeline unit-tests dry.
  *
- * Rolls are evaluated by `@astra/weal-engine` (D32-14): parse failures stay
+ * Rolls are evaluated by `@astra/weal-engine`: parse failures stay
  * silent (chat noise); player errors (type/eval/fuel/prelude) reply visibly
  * only past the noise gate; an engine fault (`stage:"internal"`, incl. a wasm
  * trap the wrapper contained) always gets a short generic reply and an ERROR
  * log with the detail. Roll history is an archive written after the reply
  * (ADR 0025): a slow or failed write never delays or breaks a reply. Only
  * roll-resolving results write history; plot-only results skip it AND the
- * overlay broadcast (D32-16/17). A save persists only after the save
+ * overlay broadcast. A save persists only after the save
  * guard ({@link checkNewSave}) dry-runs it against the current saves; a
  * refused save gets a reply and is neither stored nor added to the list.
  */
@@ -66,9 +66,9 @@ export interface OutgoingMessage {
   fields: [string, string][];
   thumbnail?: string;
   footer?: string;
-  /** Embed image URL — `attachment://plot.png` for the D32-16 plot embed. */
+  /** Embed image URL — `attachment://plot.png` for a plot embed. */
   image?: string;
-  /** File attachments forwarded to the webhook send (D32-16). */
+  /** File attachments forwarded to the webhook send (a plot's PNG). */
   files?: { name: string; data: Uint8Array }[];
 }
 
@@ -80,7 +80,7 @@ export interface HandlerDeps {
   /** The runtime save list for the engine (`[name, source]` in id order). */
   initFuncs: () => [string, string][];
   addFunc: (name: string, source: string) => void;
-  /** Saved names for the D32-14 noise gate. */
+  /** Saved names, for the noise gate (a saved name makes an error visible). */
   savedNames: () => string[];
   /** 32 bytes of engine entropy per roll (crypto in the gateway, fixed in tests). */
   seed: () => Uint8Array;
@@ -167,7 +167,7 @@ async function doRoll(
   }
 
   const { displays, plots, saves: newSaves } = outcome.value;
-  // A lone atom literal (`:p`) evaluates fine but is chat noise — silent (D32-14).
+  // A lone atom literal (`:p`) evaluates fine but is chat noise — silent.
   if (isBareAtom(text) && plots.length === 0 && newSaves.length === 0) return;
 
   for (const display of displays) {
@@ -304,7 +304,7 @@ async function handleError(
   deps: HandlerDeps,
   span: Span,
 ): Promise<void> {
-  if (err.stage === "parse") return; // chat noise — silent, uncounted (D32-14)
+  if (err.stage === "parse") return; // chat noise — silent, uncounted
   errorsCounter.add(1, { stage: err.stage });
   if (err.stage === "internal") {
     await sendEngineFault(text, err, profile, deps, span);
