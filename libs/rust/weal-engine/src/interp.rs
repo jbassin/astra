@@ -8,8 +8,8 @@
 //! already carries its source span (see `infer`'s "Spans" docs, including
 //! the spans of checker-inserted nodes), and closures store their core body,
 //! so an error inside a closure applied later still points into the defining
-//! source. Errors without a span come from synthesized applications (the S4
-//! evaluator callback), the distribution engine and save serialization.
+//! source. Errors without a span come from synthesized applications (the
+//! distribution evaluator callback), the distribution engine and save serialization.
 //!
 //! # Environments and recursion
 //!
@@ -20,9 +20,9 @@
 //! environment on every application) — no `Rc` cycles exist, which also
 //! keeps save-serialization cycle detection a pure defensive check.
 //!
-//! # Save serialization (R21, scoping doc §5.5)
+//! # Save serialization
 //!
-//! `save(:name, v)` serializes `v` to SOURCE via the S1 printer: literals
+//! `save(:name, v)` serializes `v` to SOURCE via the canonical printer: literals
 //! directly; containers recursively; die trees as canonical constructor
 //! calls (`kh(pool(4, d6), 3)` — suffix chains don't survive, the
 //! constructor form re-parses and re-checks identically); closures as
@@ -154,7 +154,7 @@ impl<'f> Interp<'f> {
 
     /// Run one evaluator transition: apply the user closure to
     /// `(state, face, count)` with the effect guard armed. This is the
-    /// callback body S4's DP loop wraps into
+    /// callback body the distribution DP loop wraps into
     /// [`crate::dist_seam::dist_of_with`].
     ///
     /// The user closure sees ONLY faces that actually landed (count >= 1) —
@@ -706,7 +706,7 @@ pub fn append_display(cmd: &mut Cmd, v: &Value) {
 // Top-level drivers
 // ---------------------------------------------------------------------------
 
-/// Interpret an elaborated core tree (the pinned S3 entry point). Errors
+/// Interpret an elaborated core tree (the pinned interpreter entry point). Errors
 /// carry the core's own spans; [`run`] is the full driver (saves, display
 /// rules).
 pub fn interp(core: &CoreExpr, env: &Env, fuel: &mut Fuel) -> Result<(Value, Cmd), EvalError> {
@@ -1756,7 +1756,7 @@ mod tests {
     /// Deep-recursion tests run on a dedicated big-stack thread: reaching
     /// the 256 depth cap needs ~256 debug-build `eval` frames, which
     /// overflows libtest's default 2 MiB thread stack before the cap fires
-    /// (release/wasm frames are far smaller; S5 sizes the wasm stack, and
+    /// (release/wasm frames are far smaller; `.cargo/config.toml` sizes the wasm stack, and
     /// the parser's nesting cap keeps paren bombs out entirely).
     fn on_big_stack<T: Send + 'static>(f: impl FnOnce() -> T + Send + 'static) -> T {
         std::thread::Builder::new()

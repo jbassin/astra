@@ -1,9 +1,9 @@
 //! AST → canonical source pretty-printer.
 //!
-//! This is the future R21 save-serializer's core: it prints CANONICAL,
+//! This is the save serializer's core: it prints CANONICAL,
 //! re-parseable source — dice as `NdM` + suffixes, atoms as `:name`, lets with
 //! `;`, lambdas as `|a, b| body` — inserting parentheses only where precedence
-//! demands. The S1 contract is the round-trip property
+//! demands. Its contract is the round-trip property
 //! `lower(parse(print(a))) == a` for every AST the parser can produce (and any
 //! hand-built one).
 

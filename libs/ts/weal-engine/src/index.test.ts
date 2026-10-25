@@ -23,7 +23,7 @@ expectTypeOf<WealStage>().toEqualTypeOf<
 expectTypeOf<WealResult["ok"]>().toEqualTypeOf<boolean>();
 expectTypeOf<WealDieDisplay["standardDice"]>().toEqualTypeOf<Array<[number, number]>>();
 
-// The S5 golden seed (libs/rust/weal-engine/tests/render_goldens.rs).
+// The golden seed (libs/rust/weal-engine/tests/render_goldens.rs).
 const seed = new Uint8Array(32).fill(77);
 
 describe("@astra/weal-engine wasm smoke", () => {

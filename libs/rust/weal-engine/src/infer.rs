@@ -95,8 +95,8 @@ pub struct TypeError {
     pub span: Span,
 }
 
-/// The elaborated expression tree — the S3 interpreter's input, the closure
-/// body a [`crate::interp::ClosureValue`] stores, and what the R21 save
+/// The elaborated expression tree — the interpreter's input, the closure
+/// body a [`crate::interp::ClosureValue`] stores, and what the save
 /// serializer prints back to source. Every node carries its byte span into
 /// the source it was checked from (module docs, "Spans").
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -230,7 +230,7 @@ pub enum CoreKind {
     },
     /// A bare die literal. `count: Some(n)` = an open `Pool[Num]` of n dice;
     /// `count: None` = a single `Die[Num]`. Digits stay strings (arbitrary
-    /// precision is S3's business).
+    /// precision is the interpreter's business).
     Die {
         count: Option<String>,
         sides: String,

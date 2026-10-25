@@ -635,7 +635,7 @@ fn plot_takes_a_die() {
 #[test]
 fn save_types_any_atom_and_any_value() {
     assert_eq!(ty("save(:boom, |x| x)"), "Unit"); // functions saveable
-    // Kebab atom rejection is S3's RUNTIME job — the checker accepts it.
+    // Kebab atom rejection is the interpreter's RUNTIME job — the checker accepts it.
     assert_eq!(ty("save(:my-macro, 1)"), "Unit");
 }
 
