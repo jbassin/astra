@@ -14,7 +14,7 @@ import { chromium } from "playwright";
 
 import type { PageAdapter, PageClassification } from "./supervisor";
 
-export interface PlaywrightDriverOptions {
+interface PlaywrightDriverOptions {
   /** The Foundry origin to navigate to (the public edge, e.g.
    * `https://btl.iridi.cc`). */
   origin: string;

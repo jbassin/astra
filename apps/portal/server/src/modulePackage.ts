@@ -21,7 +21,7 @@ import { join } from "node:path";
 import { json } from "@astra/service-kit";
 import { strToU8, zipSync, type Zippable } from "fflate";
 
-export interface ModulePackageOptions {
+interface ModulePackageOptions {
   /** `cfg.portal.publicOrigin` — e.g. `https://portal.iridi.cc`. */
   publicOrigin: string;
   /** Directory containing `module.json` + a built `dist/main.js` (and optionally

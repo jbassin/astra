@@ -44,7 +44,7 @@ export function itemDescription(item: Pf2eSource): string | undefined {
 // --- physical items ---------------------------------------------------------------------
 
 export const PRICE_DENOMINATIONS = ["pp", "gp", "sp", "cp"] as const;
-export type Denomination = (typeof PRICE_DENOMINATIONS)[number];
+type Denomination = (typeof PRICE_DENOMINATIONS)[number];
 
 /** The stored `system.price.value` coins (`{gp: 4}`), numeric denominations only. The live
  * side normalizes this into a coins instance with every denomination present. */
@@ -69,7 +69,7 @@ export function itemQuantity(item: Pf2eSource): number | undefined {
   return numberOrUndefined(sys(item).quantity);
 }
 
-export interface Pf2eEquipped {
+interface Pf2eEquipped {
   readonly carryType?: string;
   readonly invested?: boolean;
 }
@@ -85,7 +85,7 @@ export function itemEquipped(item: Pf2eSource): Pf2eEquipped | undefined {
   };
 }
 
-export interface Pf2eRunes {
+interface Pf2eRunes {
   readonly potency?: number;
   readonly striking?: number;
   readonly resilient?: number;
@@ -105,7 +105,7 @@ export function itemRunes(item: Pf2eSource): Pf2eRunes | undefined {
   };
 }
 
-export interface Pf2eDamage {
+interface Pf2eDamage {
   readonly dice: number;
   readonly die: string;
   readonly damageType?: string;

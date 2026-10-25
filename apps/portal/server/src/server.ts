@@ -84,7 +84,7 @@ export interface PortalServerHandle {
 }
 
 /** The unbound server: its kit definition and the bridge's upgrade endpoint. */
-export interface PortalServer {
+interface PortalServer {
   bridge: Bridge;
   oauthProvider: PortalOAuthProvider;
   definition: ServiceDefinition;

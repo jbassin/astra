@@ -32,7 +32,7 @@ const BASE_BACKOFF_MS = 1_000;
  * but no point ever giving up either). */
 const MAX_BACKOFF_MS = 30_000;
 
-export type LogLevel = "info" | "warn" | "error";
+type LogLevel = "info" | "warn" | "error";
 export type LogFn = (level: LogLevel, message: string) => void;
 
 /** The close event fields this client reads (the DOM `CloseEvent` has both). */
@@ -62,7 +62,7 @@ export type WebSocketFactory = (url: string) => MinimalWebSocket;
  * what `BridgeError` from `@astra/portal-shared` satisfies structurally — `bridgeClient.ts`
  * deliberately doesn't import that class, so it stays decoupled from any particular
  * handler-registry implementation). Anything else thrown maps to `foundry-error`. */
-export interface DispatchError {
+interface DispatchError {
   code: BridgeErrorCode;
   message: string;
 }
