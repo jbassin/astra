@@ -29,12 +29,12 @@ export interface D3Config {
 
 export type ContentDetails = { title: string; links: string[]; tags: string[] };
 
-export interface GraphNode {
+interface GraphNode {
   id: string;
   text: string;
   tags: string[];
 }
-export interface GraphLink {
+interface GraphLink {
   source: GraphNode;
   target: GraphNode;
 }

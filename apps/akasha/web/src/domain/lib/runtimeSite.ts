@@ -131,7 +131,7 @@ function entryView(current: FullSlug, e: PageEntry): PageEntryView {
 }
 
 // ── resolver: URL path → page kind ────────────────────────────────────────────────
-export type Resolved =
+type Resolved =
   | { kind: "content"; slug: FullSlug }
   | { kind: "folder"; folder: string }
   | { kind: "alias"; redirUrl: string; ogSlug: string };

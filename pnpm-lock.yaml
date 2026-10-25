@@ -200,9 +200,6 @@ importers:
       d3-zoom:
         specifier: ^3.0.0
         version: 3.0.0
-      github-slugger:
-        specifier: ^2.0.0
-        version: 2.0.0
       pixi.js:
         specifier: 'catalog:'
         version: 8.19.0
@@ -4548,9 +4545,6 @@ packages:
     engines: {node: '>=16'}
     deprecated: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
     hasBin: true
-
-  github-slugger@2.0.0:
-    resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
 
   glob@13.0.6:
     resolution: {integrity: sha512-Wjlyrolmm8uDpm/ogGyXZXb1Z+Ca2B8NbJwqBVg0axK9GbBeoS7yGV6vjXnYdGm6X53iehEuxxbyiKp8QmN4Vw==}
@@ -9090,8 +9084,6 @@ snapshots:
       dargs: 8.1.0
       meow: 12.1.1
       split2: 4.2.0
-
-  github-slugger@2.0.0: {}
 
   glob@13.0.6:
     dependencies:
