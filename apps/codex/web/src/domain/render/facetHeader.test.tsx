@@ -310,7 +310,7 @@ describe("mastheadExtra rendering", () => {
 // IMPLEMENTATION-TIME FIX (P6 Track A): mastheadExtra must not duplicate a
 // label a header's own typed facet already rendered — a real bug found live
 // on spell/heal (Traditions/Range shown twice), armor/breastplate (Price/
-// Bulk twice), and feat/camouflage-coat (Prerequisites twice) once R3's
+// Bulk twice), and feat/camouflage-coat (Prerequisites twice) once the
 // masthead strip started populating mastheadExtra for real entities.
 // ---------------------------------------------------------------------------
 

@@ -11,7 +11,7 @@ import { resolveRulesTree } from "./rulesTreeData";
  * `rules-tree.json` carries the
  * CRLF-healed "Chapter 2: Tools" root, the Counteracting path-shift pair,
  * and a childless-adjacent shape — this suite proves the resolver hands
- * every one of those through UNCHANGED (S1 already did all the shaping;
+ * every one of those through UNCHANGED (ingest already did all the shaping;
  * this module is a passthrough, not a second transform).
  */
 describe("resolveRulesTree", () => {

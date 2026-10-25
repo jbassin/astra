@@ -72,7 +72,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* --- links + focus (style doc §4 — maroon at rest, gold-rule
+/* --- links + focus (the style doc's link rule — maroon at rest, gold-rule
    underline on hover, a gold-frame focus-visible ring in place of the
    generic browser default so keyboard nav stays in-voice) --- */
 a {
@@ -181,7 +181,7 @@ select:focus-visible,
 
 /* --- codex-card*: a plain parchment-elevated panel, used for
    statblocks/prose-asides/embedded-sidebar cards. codex-card-inset
-   (the in-body "aside" node) gets the style doc §3.4 gold double-line
+   (the in-body "aside" node) gets the style doc's gold double-line
    notched-corner art-frame treatment — a self-contained CSS-only
    approximation (an angular chamfer via `clip-path`, not the print book's
    curved scalloped cutaway) via a border + an inset `::before` echo line. --- */
@@ -529,8 +529,8 @@ select:focus-visible,
 .codex-entity-header {
   margin-bottom: 1.25rem;
 }
-/* --- the statblock/feat header row grammar, style doc
-   §3.5 — "Name (left) + type/level tag (right)... full-width thin hairline
+/* --- the statblock/feat header row grammar, per the style
+   doc — "Name (left) + type/level tag (right)... full-width thin hairline
    rule beneath the whole row (not just under the name)." The tag is in
    `--font-condensed` (the doc's Oswald "mechanical voice" slot);
    the name keeps codex's own established `--font-heading` small-caps voice
@@ -568,7 +568,7 @@ select:focus-visible,
   white-space: nowrap;
   padding-bottom: 0.2rem; /* optically align its baseline with the name */
 }
-/* the trait-pill row "immediately below the rule" (style doc §3.5) plus the
+/* the trait-pill row "immediately below the rule" (per the style doc) plus the
    rest of the entity's identifying metadata (edition/rarity/citation/aon
    link) — one flex row, wraps freely. */
 .codex-entity-meta-row {
@@ -662,7 +662,7 @@ select:focus-visible,
    both), so the TAN callout family (below,
    nodes.tsx) covers asides/embeds and the BLUE family covers this banner
    plus the facet drawer's superseded explainer (`FacetPanel.tsx`) — both
-   "informational notice" surfaces, style doc §3.3: a soft blue-gray field,
+   "informational notice" surfaces in the style doc: a soft blue-gray field,
    single hairline border, small filled corner dots (4 background-image
    radial-gradient layers — a CSS-only equivalent of the print book's
    corner-dot ornament, no unicode glyphs). --- */
@@ -708,7 +708,7 @@ select:focus-visible,
 
 /* --- the spell/equipment/feat/generic facet-header line
    (facetHeader.tsx) — the SAME bold-label/regular-value grammar as the
-   statblock's own `.codex-stat-label` (style doc §3.8: "bold = mechanical
+   statblock's own `.codex-stat-label` (the style doc: "bold = mechanical
    label"), one line above the statblock/body, " | "-separated parts. This
    is the "Feat 13 passive Prerequisites..." line, labeled. */
 .codex-facet-row {
@@ -810,9 +810,9 @@ select:focus-visible,
 .codex-aside {
   margin: 1rem 0;
 }
-/* --- the tan "in-world artifact" callout family (style
-   doc §3.2) — `codex-card-inset` (the `aside` node) already carries the
-   gold double-line notched-corner ART FRAME (style doc §3.4, kept as-is);
+/* --- the tan "in-world artifact" callout family (per the style
+   doc) — `codex-card-inset` (the `aside` node) already carries the
+   gold double-line notched-corner ART FRAME (from the style doc, kept as-is);
    `codex-embed-card` is the lighter sibling (no outer frame, same tan field
    + chevron-rule bracketing) since an inlined embed is a nested reference,
    not a standalone plate. Both wrap their body in the SAME chevron-flared
@@ -1676,7 +1676,7 @@ select:focus-visible,
   font-size: var(--density-row-data-size);
   color: var(--color-ink-dim);
 }
-/* Style-tokens doc §4 "Faceted list / data-dense view", tuned to the
+/* The style-tokens doc's "Faceted list / data-dense view", tuned to the
    single-line ~24px-pitch table register: hairline row separators, a hover
    wash + gold hairline top/bottom, a solid selected-row fill with a maroon
    "bookmark ribbon" left-edge bar (on the row's first `<td>` — a
@@ -2211,7 +2211,7 @@ select:focus-visible,
   }
 }
 
-/* --- the breadcrumb trail reuses the style doc §3.9
+/* --- the breadcrumb trail reuses the style doc's
    "chapter footer" typographic treatment ("CHAPTER N | SECTION TITLE",
    small-caps maroon) repurposed as a "you are here" trail — position kept
    (top of the entity, book -> ancestors -> current), literal page numbers
@@ -2326,7 +2326,7 @@ select:focus-visible,
   content-visibility: auto;
   contain-intrinsic-size: auto 400px;
 }
-/* The style doc §3.10 table convention's "header row" —
+/* The style doc's table convention's "header row" —
    applied to BOTH the plain `<h2>` group header and the "Other" bucket's
    `<summary>` disclosure (the two group-header variants
    `SourcesIndexView.tsx` renders), a bold gold rule directly UNDER the
@@ -2354,7 +2354,7 @@ select:focus-visible,
   flex-direction: column;
   margin-top: 0.75rem;
 }
-/* Style doc §3.10 — no cell borders, zebra tint on alternating rows using
+/* The style doc's table convention — no cell borders, zebra tint on alternating rows using
    the callout-blue hue at low opacity, left column (book name) bold.
    Vertical padding sits on the same tight secondary-surface register as the
    other row listings (0.15–0.25rem-class). */

@@ -90,7 +90,7 @@ const EMBED_OVERRIDES: readonly EmbedOverrideEntry[] = [
     // Quick Alchemy embed already links `action/quick-alchemy` (the page
     // precedent this table follows, not a coin flip). If a future review
     // finds `feat/` the richer target, STOP and record — do not silently
-    // swap (spec §6 risk note).
+    // swap.
     note: "TWO real candidates exist (feat/ and action/) — action/ chosen: the same page's other embed already links action/quick-alchemy.",
   },
   {

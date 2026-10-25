@@ -61,7 +61,7 @@ describe("statblock dedup: suppression when an AoN body is present", () => {
     expect(html).toContain(EMBEDDED);
   });
 
-  it("a Foundry-only variantOf creature (the dragon spellcaster) KEEPS the structured render — the §5 variantOf risk (empty body + full struct)", () => {
+  it("a Foundry-only variantOf creature (the dragon spellcaster) KEEPS the structured render — the variantOf risk (empty body + full struct)", () => {
     const spellcaster = requireEntity(byId, "creature/adamantine-dragon-adult-spellcaster");
     expect(spellcaster.body.length).toBe(0);
     expect(spellcaster.variantOf).toBe("creature/adamantine-dragon-adult");

@@ -258,7 +258,7 @@ describe("nodes.tsx: B2 adversarial — paragraph-carrying-block-children guard"
     expect(html([{ kind: "paragraph", children: [text("plain")] }])).toBe("<p>plain</p>");
   });
 
-  it("a paragraph carrying a RESOLVED depth-0 embed renders <div>, not <p><div>...</div></p> (S5 real-corpus find, `creature/red-dragon-adult`)", () => {
+  it("a paragraph carrying a RESOLVED depth-0 embed renders <div>, not <p><div>...</div></p> (real-corpus find, `creature/red-dragon-adult`)", () => {
     // The exact real shape: a paragraph of prose text with an inline `embed`
     // to a `creature-family` entry — the embed resolves and inlines a block
     // `codex-embed-card` div, which a naive `<p>` wrapper cannot
