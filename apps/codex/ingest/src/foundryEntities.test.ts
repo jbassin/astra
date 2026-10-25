@@ -786,7 +786,7 @@ describe("assembleFoundryEntity: excluded pack/type returns undefined", () => {
   });
 });
 
-describe("assembleFoundryEntity: the 5 extractor-gap categories", () => {
+describe("assembleFoundryEntity: ancestry, class, background, condition and heritage facets", () => {
   it("ancestry: extracts hp/size/speed off the bare system.hp/size/speed fields (verified on Tengu)", () => {
     const entity = assembleFoundryEntity({
       packDir: "ancestries",
