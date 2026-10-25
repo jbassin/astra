@@ -1,12 +1,12 @@
-//! The typed AST — the structure the S2 checker and S3 interpreter consume,
+//! The typed AST — the structure the type checker and interpreter consume,
 //! produced by lowering the rowan CST (`lower.rs`).
 //!
 //! Numeric literals are stored as NORMALIZED digit strings (underscores
-//! stripped) so arbitrary precision survives S1 without committing to a bigint
+//! stripped) so arbitrary precision survives parsing without committing to a bigint
 //! representation; die counts/sides likewise (lowering splits the fat token into
 //! `(count, sides, suffix-chain)` here).
 //!
-//! The AST is deliberately span-free and derives structural equality — the S1
+//! The AST is deliberately span-free and derives structural equality — the printer's
 //! round-trip property is `lower(parse(print(a))) == a`.
 
 /// Comparison operators — non-associative level 1; chains PARSE into one flat

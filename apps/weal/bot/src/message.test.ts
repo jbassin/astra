@@ -66,7 +66,7 @@ describe("defensive truncation (at the exact limit)", () => {
 
   test("an in-limit title/field passes through exactly", () => {
     expect(dieTitle("Argyle", "21", "good")).toBe("Argyle: 21");
-    // the trailing plain value is replaced by the backticked one (S7 clarification)
+    // the trailing plain value is replaced by the backticked one
     expect(resultsField(dieDisplay())).toEqual(["Results", "d20 ⟪14⟫ + 7 = `21`"]);
   });
 

@@ -1,4 +1,4 @@
-//! The S1 round-trip property: for every AST `a` the parser produces (and any
+//! The printer round-trip property: for every AST `a` the parser produces (and any
 //! hand-built one), `lower(parse(print(a))) == a` — and printed source parses
 //! with zero errors.
 

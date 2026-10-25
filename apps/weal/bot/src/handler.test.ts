@@ -48,7 +48,7 @@ const PROFILE: Profile = {
   edition: "pathfinder_2e",
 };
 
-/** The S5 golden seed (matches libs/ts/weal-engine's smoke suite). */
+/** The golden seed (matches libs/ts/weal-engine's smoke suite). */
 const SEED = new Uint8Array(32).fill(77);
 
 class FakeStore implements WealStore {

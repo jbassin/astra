@@ -1,13 +1,14 @@
 //! The stored saves format is pinned by a recorded fixture.
 //!
-//! Saves are stored as `[name, source]` rows: R21 serializes a saved value to
+//! Saves are stored as `[name, source]` rows: `save` serializes a saved value to
 //! weal SOURCE text, and the bot passes the rows back as `saves_json` on every
-//! call. `fixtures/saves_v1.json` was recorded from the engine before weal-5c
-//! (commit `b60777f5`) with the wasm API. It holds one save of every value kind
-//! the serializer handles (literals, containers, die trees, an open pool,
-//! closures with renamed and nested captures, a recursive function, builtin
-//! values), the exact output of each `save(...)` that produced them, and the
-//! exact output of programs run against those saves in both modes.
+//! call. `fixtures/saves_v1.json` was recorded with the wasm API from the engine
+//! before the interpreter moved to the checker's core tree (commit `b60777f5`).
+//! It holds one save of every value kind the serializer handles (literals,
+//! containers, die trees, an open pool, closures with renamed and nested
+//! captures, a recursive function, builtin values), the exact output of each
+//! `save(...)` that produced them, and the exact output of programs run against
+//! those saves in both modes.
 //!
 //! The test replays all of it through [`weal_engine::evaluate`] and demands
 //! byte-identical JSON, so it fails when the serializer prints a different

@@ -1,4 +1,4 @@
-//! S4 unit tests for `Weight`: representation invariant (u128 fast path,
+//! Unit tests for `Weight`: representation invariant (u128 fast path,
 //! checked promotion/demotion), bit caps, gcd/div, ordering across
 //! representations.
 

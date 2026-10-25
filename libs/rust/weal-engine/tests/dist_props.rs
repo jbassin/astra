@@ -1,4 +1,4 @@
-//! S4 property tests (seeded exhaustive small-space loops, no proptest):
+//! Distribution property tests (seeded exhaustive small-space loops, no proptest):
 //! denominator invariants, support bounds, keep-1 closed form ≡ pool
 //! recursion, explode/reroll identities, and the u128→BigUint promotion
 //! boundary.
