@@ -1,4 +1,4 @@
-// Production SSR entry for the vellum-frontend Compose service (Decision I). Thin
+// Production SSR entry for the vellum-frontend Compose service. Thin
 // caller over @astra/site-kit's createSsrServer: the srvx + static + SSR-span
 // spine lives in the lib; vellum-frontend supplies only what's app-specific — its
 // built SSR handler, the client-assets dir, and serviceName/port from config.kdl.

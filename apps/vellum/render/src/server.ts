@@ -1,8 +1,8 @@
 /**
- * Vellum render service (0013, D2) — a warm Node + Playwright sidecar that turns a
+ * Vellum render service: a warm Node + Playwright sidecar that turns a
  * posted document into a PNG of its [data-vellum-export] card. Serves the built
  * render assets from dist/ on the same origin so the render page + fonts load
- * locally (and the SEC-3 egress block can allow only same-origin). A SEPARATE
+ * locally (and the egress block can allow only same-origin). A SEPARATE
  * Compose unit from vellum-frontend; the editor reaches it same-origin via Caddy
  * (vellum.iridi.cc/render → this service). The service definition is `app.ts`.
  *
@@ -41,7 +41,7 @@ const { definition } = createRenderApp({
 const service = createService({
   ...definition,
   port: PORT,
-  // No srvx `idleTimeout` equivalent (R3, 0022 S8 — B3); the closest analog for
+  // srvx has no `idleTimeout` equivalent; the closest analog for
   // the Node runtime is `node.keepAliveTimeout` (mirrors ssrServer.ts / weal-overlay).
   node: { keepAliveTimeout: 30_000 },
 });

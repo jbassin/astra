@@ -4,7 +4,7 @@ import { chromium } from "playwright";
 import { RENDER_LIMITS, type RenderRequest } from "./caps";
 import { Semaphore } from "./semaphore";
 
-/** Error carrying an HTTP status, for caps hit mid-render (SEC-4). */
+/** Error carrying an HTTP status, for caps hit mid-render. */
 export class RenderCapError extends Error {
   readonly status: number;
   constructor(message: string, status = 413) {
@@ -15,10 +15,10 @@ export class RenderCapError extends Error {
 }
 
 /**
- * Warm-browser render service (OQ-1). Holds one Chromium for the life of the
+ * Warm-browser render service. Holds one Chromium for the life of the
  * process; each request gets a fresh, isolated context (per-request isolation),
- * with all network egress blocked except same-origin render assets (SEC-3) and
- * a concurrency gate in front of the shared browser (SEC-5). Ported verbatim
+ * with all network egress blocked except same-origin render assets and
+ * a concurrency gate in front of the shared browser. Ported verbatim
  * from faerrin pkg/vellum (now renders @astra/gothic's DocumentView via the
  * render-entry page).
  */
@@ -59,7 +59,7 @@ export class RenderService {
         deviceScaleFactor: req.scale,
       });
       try {
-        // SEC-3: block ALL network except same-origin render assets + data URIs.
+        // Block ALL network except same-origin render assets + data URIs.
         // Author-supplied URLs (images, remote fonts) never reach the network.
         await context.route("**/*", (route) => {
           const url = route.request().url();
@@ -87,7 +87,7 @@ export class RenderService {
         const target = page.locator("[data-vellum-export]");
         await target.waitFor({ state: "visible" });
 
-        // SEC-4: reject pathologically large rasters before screenshotting.
+        // Reject pathologically large rasters before screenshotting.
         const box = await target.boundingBox();
         if (box && box.width * box.height * req.scale * req.scale > RENDER_LIMITS.maxPixelArea) {
           throw new RenderCapError("rendered output exceeds pixel cap", 422);

@@ -18,14 +18,14 @@ describe("validateRenderRequest", () => {
     expect(validateRenderRequest({}).ok).toBe(false);
   });
 
-  test("rejects oversized source (SEC-4)", () => {
+  test("rejects oversized source with a 413", () => {
     const big = "x".repeat(RENDER_LIMITS.maxSourceBytes + 1);
     const result = validateRenderRequest({ source: big });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.status).toBe(413);
   });
 
-  test("rejects out-of-range scale (SEC-4 / R-16 cap)", () => {
+  test("rejects a scale outside the allowed range", () => {
     expect(validateRenderRequest({ source: "x", scale: 0 }).ok).toBe(false);
     expect(validateRenderRequest({ source: "x", scale: RENDER_LIMITS.maxScale + 1 }).ok).toBe(
       false,

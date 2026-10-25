@@ -56,7 +56,7 @@ function editorHighlights(token: string): boolean {
   return new RegExp(SIGIL.source, "i").test(token);
 }
 
-describe("sigil ↔ desugar sync (R2)", () => {
+describe("sigil ↔ desugar sync", () => {
   test("every action sigil the editor highlights is lowered to an action directive", () => {
     for (const tok of ACTION_TOKENS) {
       const sigil = `@${tok}`;

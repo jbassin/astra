@@ -1,7 +1,7 @@
 import type { ThemeMode } from "@astra/vellum-lang";
 
-/** Golden-image fixtures (NFR-9). Cover both skins + a multi-kind layout + the
- *  full-vellum fields/timeline constructs (0013 D4/D6). Ported from faerrin
+/** Golden-image fixtures. Cover both skins + a multi-kind layout + the
+ *  full-vellum fields/timeline constructs. Ported from faerrin
  *  pkg/vellum, ThemeMode now from @astra/vellum-lang. */
 export interface VisualFixture {
   name: string;

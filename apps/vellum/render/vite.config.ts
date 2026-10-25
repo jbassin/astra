@@ -10,7 +10,7 @@ import { defineConfig } from "vite";
 // single input is render.html → dist/render.html. @tailwindcss/vite compiles
 // gothic's theme.css (`@import "tailwindcss"` + `@theme` tokens + the `@source "./"`
 // that pulls DocumentView's utility classes); gothicFontsPlugin copies gothic's
-// fonts into dist/fonts so they load same-origin (the SEC-3 egress block forbids
+// fonts into dist/fonts so they load same-origin (the render page's egress block forbids
 // network fonts — they MUST be local or glyphs render blank). Importing
 // @astra/site-kit here REQUIRES vite's `--configLoader runner` (package.json).
 const ROOT = import.meta.dirname;

@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import { Semaphore } from "./semaphore";
 
 describe("Semaphore", () => {
-  test("limits concurrency and queues the rest (SEC-5)", async () => {
+  test("limits concurrency and queues the rest", async () => {
     const gate = new Semaphore(2);
     let active = 0;
     let maxActive = 0;

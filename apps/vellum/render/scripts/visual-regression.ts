@@ -1,16 +1,14 @@
 /**
- * Golden-image visual regression (D4). Renders each fixture through the real
+ * Golden-image visual regression. Renders each fixture through the real
  * RenderService and compares the PNG to a committed golden with a perceptual
  * tolerance. Goldens are authoritative ONLY in the pinned CI container
- * (`node:24-slim` + the Chromium the `playwright` lock pins, 0022 S11 — was
- * `oven/bun:1.3.14` through S9/S10) — cross-render AA/hinting drift exceeds the
- * tolerance otherwise — so they are (re)generated there with `--update`. This is a
- * NEW-BASELINE regression gate against astra's own gothic render, NOT a byte-match
+ * (`node:24-slim` + the Chromium the `playwright` lock pins), because
+ * anti-aliasing and hinting drift between environments exceeds the tolerance — so
+ * they are (re)generated there with `--update`. This is a NEW-BASELINE regression gate against astra's own gothic render, NOT a byte-match
  * to faerrin's (the void palette differs).
  *
- * Runtime-agnostic (node:fs + srvx only — R3, 0022 S9): runs under host Node 24 and
- * the pinned `node:24-slim` CI container (0022 S11 — the bun-container CI job is
- * gone; the golden contract is pinned to this Node image now).
+ * It uses only node:fs and srvx, so it runs under host Node 24 and in the pinned
+ * `node:24-slim` CI container, the image the goldens are pinned to.
  *
  *   node --import tsx scripts/visual-regression.ts            # compare (exit 1 on drift)
  *   node --import tsx scripts/visual-regression.ts --update   # (re)write goldens
@@ -52,7 +50,7 @@ async function isFile(p: string): Promise<boolean> {
 }
 
 // Minimal static server (this Chromium only ever fetches dist/ assets) — srvx +
-// @astra/site-kit's `serveFile` (runtime-agnostic, R3, 0022 S9). Reuses the same
+// @astra/site-kit's `serveFile`. Reuses the same
 // `send`-backed bridge server.ts does so JS/CSS assets get the right content-type
 // (a bare node:fs read left `/assets/*.js` untyped and Chromium refused to
 // execute the module script — found only by RUNNING this).

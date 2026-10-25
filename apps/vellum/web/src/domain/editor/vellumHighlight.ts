@@ -61,7 +61,7 @@ const ATTRS = /\{[^}\n]*\}/;
 const INLINE = /:([A-Za-z][\w-]*)\[[^\]\n]*\]/g;
 const KNOWN_INLINE = new Set(["action", "trait", "redact"]);
 /** Wiki cross-reference, `[[target]]` / `[[target#heading]]` / `[[target|alias]]`
- * (full-vellum, 0013 D6). Parsed by vellum-lang's `transformCrossRefs`; here it's
+ * (full vellum). Parsed by vellum-lang's `transformCrossRefs`; here it's
  * just decorated so it reads at a glance in the editor. */
 const CROSSREF = /\[\[[^\]\n]+\]\]/g;
 /** Authoring sigils (kept in sync with vellum-lang `surface.ts` `desugar`):
