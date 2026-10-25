@@ -1,4 +1,4 @@
-"""Shared ``dspy.RLM`` machinery (lifted from heartwood 0033 by 0034 D34-1).
+"""Shared ``dspy.RLM`` machinery (lifted from heartwood for reuse by mouthpiece).
 
 Not imported by ``astra_llm/__init__`` — it pulls in dspy's RLM and OpenTelemetry, and
 ``import astra_llm`` should stay light. Import ``astra_llm.rlm`` explicitly.
@@ -438,7 +438,7 @@ def sandbox_version(interpreter: Any) -> str | None:
     return str(out).strip() or None
 
 
-#: Set (non-empty) in the dagster-code image (0035 D35-2): the sandbox runs ``deno run
+#: Set (non-empty) in the dagster-code image: the sandbox runs ``deno run
 #: --cached-only`` so a runtime can never fetch a different Pyodide than the build warmed.
 CACHED_ONLY_ENV = "ASTRA_DENO_CACHED_ONLY"
 

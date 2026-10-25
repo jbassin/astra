@@ -1,4 +1,4 @@
-"""The one LLM retry policy (0037 LIB-5). ``LiteLLMClient`` owns it; callers do not loop.
+"""The one LLM retry policy. ``LiteLLMClient`` owns it; callers do not loop.
 
 Two kinds of failure, retried at two levels:
 

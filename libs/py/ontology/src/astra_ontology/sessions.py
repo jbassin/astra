@@ -40,7 +40,7 @@ __all__ = [
     "parse_session_overrides",
 ]
 
-#: What an episode is (0037 PIPE-22). ``session`` recaps one recorded session and is
+#: What an episode is. ``session`` recaps one recorded session and is
 #: numbered in its arc; ``recap`` (a multi-session capstone) and ``special`` (the
 #: prediction roundtable, say) have no transcript of their own, are not numbered, and are
 #: never read as a prior session.

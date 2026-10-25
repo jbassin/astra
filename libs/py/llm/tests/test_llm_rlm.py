@@ -1,4 +1,4 @@
-"""astra_llm.rlm under a non-heartwood scope (0034 D34-1). heartwood's own suite covers
+"""astra_llm.rlm under a non-heartwood scope. heartwood's own suite covers
 its bindings; these pin that the lifted pieces take their names from the caller."""
 
 from __future__ import annotations

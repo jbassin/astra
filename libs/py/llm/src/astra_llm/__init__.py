@@ -94,7 +94,7 @@ def make_dspy_lm(
 
     ``lm_kwargs`` pass straight through to the constructor (e.g. ``cache=False`` so a
     rerun makes real calls). ``lm_class`` swaps in a ``dspy.LM`` subclass (heartwood's
-    metering ``MeteredLM``, 0033 D33-10); it receives the same arguments. dspy is
+    metering ``MeteredLM``); it receives the same arguments. dspy is
     imported lazily so `import astra_llm` and the offline unit tests stay light.
     """
     import dspy

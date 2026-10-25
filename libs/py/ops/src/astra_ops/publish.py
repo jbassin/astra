@@ -3,7 +3,7 @@ two audio seeds (moved from the justfile, 0037 ops-1a; same steps, argv and exit
 
 Every git call runs in the astra-data clone (``git -C <config data.content-root>``), never in
 the code repo. The git-publish flock (``<data root>/locks/git-publish.lock``) allows one git
-publisher at a time (0036 D36-5): linguist-commit holds it for its whole run, the heartwood
+publisher at a time: linguist-commit holds it for its whole run, the heartwood
 commands from publish-sync through push and redeploy. ``astra_data_push`` never takes it
 itself: its callers hold it, and a second flock on a fresh descriptor would deadlock.
 

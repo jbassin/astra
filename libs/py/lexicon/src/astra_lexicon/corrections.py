@@ -6,7 +6,7 @@ case-insensitive alternation of named groups `(?P<sN>\\b{val}\\b)`; a match is r
 by the canonical of whichever group fired (first non-None wins, matching the JS "first
 defined arg" semantics), and the whole result is stripped.
 
-`defs.kdl` is the corrections SSOT (was `defs.yaml`, converted in 0020 S2b), edited by
+`defs.kdl` is the corrections SSOT (converted from `defs.yaml`), edited by
 hand. Loading goes through `astra_config.kdl`.
 
 An entry may also carry how the name is said, `entry "Faerrin" ipa="ˈfɛrɪn"`. mouthpiece

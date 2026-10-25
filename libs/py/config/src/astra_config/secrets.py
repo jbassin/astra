@@ -1,4 +1,4 @@
-"""Lazy SOPS secret-ref resolution (roadmap Decision E).
+"""Lazy SOPS secret-ref resolution.
 
 KDL config never holds plaintext secrets — only `ref="sops:KEY"` pointers. The real
 values live in the SOPS-encrypted file (`deploy/sops/secrets.enc.yaml`), decrypted at
@@ -10,8 +10,8 @@ Resolution order for `sops:KEY`:
 1. an env var named `KEY` upper-cased (deploy injection / CI) — wins;
 2. else the decrypted SOPS map (cached per file).
 
-A BLANK value — empty, or only ASCII whitespace — counts as UNSET at both steps (0037
-LIB-2). Compose injects every secret as `${KEY:-}`, so a container recreated without
+A BLANK value — empty, or only ASCII whitespace — counts as UNSET at both steps.
+Compose injects every secret as `${KEY:-}`, so a container recreated without
 `just up` sees the env var present but empty; that must not pass as a real secret. A
 blank env var falls through to the SOPS file exactly like an absent one, and a blank
 SOPS entry raises exactly like a missing one — so `resolve()` returns a non-blank value
@@ -20,7 +20,7 @@ rule with the same character set.
 
 Read a secret through `SecretRef.require()` (load-bearing: raises a `SecretUnsetError`
 naming the config key) or `SecretRef.optional()` (feature switch: unset → `None`). App
-code doesn't wrap `resolve()` itself (0037 LIB-2).
+code doesn't wrap `resolve()` itself.
 
 `sops -d` reads the age key from `SOPS_AGE_KEY_FILE`; we default that to the in-repo
 `deploy/sops/age.key` if it isn't already set in the environment.

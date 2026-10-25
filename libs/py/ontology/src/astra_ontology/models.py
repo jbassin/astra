@@ -1,7 +1,7 @@
 """Typed ontology-being schema, the source of truth for its shape: `canonical_json()`
 dumps it to `being.canonical.json`, which `libs/ts/ontology` (Zod, the same field set +
 snake_case keys) reads and re-checks field for field. `player_id` is the preserved dice
-FK (Decision F).
+FK.
 
 The `Annotated` markers say where each field sits in `being.kdl` for the shared
 decoder (`astra_config.kdl`); an unmarked field is the child node of its kebab name."""
@@ -50,7 +50,7 @@ class Campaign(_Base):
 class HostLines(_Base):
     """A weal-host's `host_says` flavor banks, keyed by roll goodness (mouth/host.rs).
 
-    Empty for bankless hosts (knife/master). Lifted into the ontology per 0009 K8 so
+    Empty for bankless hosts (knife/master). Lifted into the ontology so
     identity + voice live together; weal-bot reads these via the ontology accessor.
     """
 

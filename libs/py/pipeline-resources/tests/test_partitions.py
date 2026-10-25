@@ -91,7 +91,7 @@ def test_launch_ready_skips_while_the_migration_is_pending() -> None:
     assert not result.run_requests and result.skip_reason
 
 
-# ── blocking checks gate the next stage (0037 PIPE-12) ───────────────────────
+# ── blocking checks gate the next stage ──────────────────────────────────────
 @dg.asset(name="session_transcripts", partitions_def=sessions)
 def _upstream() -> None: ...
 
