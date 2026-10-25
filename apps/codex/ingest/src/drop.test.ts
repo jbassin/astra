@@ -30,7 +30,7 @@ function collector(): {
   return { reports, report: (cls, detail) => reports.push({ cls, detail }) };
 }
 
-describe("isDropCandidate (D29-14/-17)", () => {
+describe("isDropCandidate", () => {
   it("keeps an AoN-only (proseOnly) entity", () => {
     expect(
       isDropCandidate({
@@ -64,7 +64,7 @@ describe("isDropCandidate (D29-14/-17)", () => {
     ).toBe(false);
   });
 
-  it("keeps a Foundry-only creature or hazard (D29-17 carve-out)", () => {
+  it("keeps a Foundry-only creature or hazard (carve-out)", () => {
     expect(
       isDropCandidate({
         category: "creature",
@@ -169,8 +169,8 @@ describe("applyAonPrimaryDrop", () => {
       category: "creature",
       slug: "beluthus",
       name: "Beluthus",
-      // D29-133: real stats, so this fixture doesn't ALSO accidentally match
-      // the new unknownBookHuskDropFamily predicate (book:"unknown" + empty
+      // Real stats, so this fixture doesn't ALSO accidentally match the
+      // unknownBookHuskDropFamily predicate (book:"unknown" + empty
       // body/facets/traits) — this entity is meant to prove the ordinary
       // creature/hazard carve-out, not the husk-drop override.
       facets: { hp: 10 },
@@ -201,7 +201,7 @@ describe("applyAonPrimaryDrop", () => {
     expect(reports.filter((r) => r.cls === "aonPrimaryDrop")).toHaveLength(1);
   });
 
-  describe("D30-43 (0030 S1, B1): the homebrew keep-arm", () => {
+  describe("the homebrew keep-arm", () => {
     it("keeps a Foundry-only homebrew spell that would otherwise be dropped", () => {
       const homebrewSpell = entity({
         id: "spell/fixture-homebrew-bolt",
@@ -393,7 +393,7 @@ describe("applyAonPrimaryDrop", () => {
   });
 });
 
-describe("activationDropFamily (D29-98, P11 S1 — widened activation drop)", () => {
+describe("activationDropFamily (widened activation drop)", () => {
   it("family (i): a paren-leading AoN-only action name", () => {
     expect(
       activationDropFamily({
@@ -464,7 +464,7 @@ describe("activationDropFamily (D29-98, P11 S1 — widened activation drop)", ()
     ).toBeUndefined();
   });
 
-  it("a Foundry-native/merged action entity is NEVER touched, even with a paren-leading name (D29-98 is AoN-only-scoped — real corpus finding: adventure-specific-actions carry names like '(Affinity Ablaze) Arms of Balance: …')", () => {
+  it("a Foundry-native/merged action entity is NEVER touched, even with a paren-leading name (the drop is AoN-only-scoped — adventure-specific-actions carry names like '(Affinity Ablaze) Arms of Balance: …')", () => {
     expect(
       activationDropFamily({
         id: "action/affinity-ablaze-arms-of-balance",
@@ -515,7 +515,7 @@ describe("activationDropFamily (D29-98, P11 S1 — widened activation drop)", ()
   });
 });
 
-describe("applyAonPrimaryDrop — D29-98 widened activation drop (P11 S1)", () => {
+describe("applyAonPrimaryDrop — widened activation drop", () => {
   it("drops a paren-named (family i) AoN-only action even though it IS AoN-backed", () => {
     const debris = entity({
       id: "action/arcane-99",
@@ -564,7 +564,7 @@ describe("applyAonPrimaryDrop — D29-98 widened activation drop (P11 S1)", () =
     expect(result.accounting.activationDrop.total).toBe(0);
   });
 
-  it("activation-dropped entities do NOT count toward the D29-14/-17 byCategory/totalDropped accounting", () => {
+  it("activation-dropped entities do NOT count toward the AoN-primary byCategory/totalDropped accounting", () => {
     const debris = entity({
       id: "action/arcane-99",
       category: "action",
@@ -659,7 +659,7 @@ describe("applyAonPrimaryDrop — D29-98 widened activation drop (P11 S1)", () =
   });
 });
 
-describe("journalSectionHeaderDropFamily (D29-133, P14 S1)", () => {
+describe("journalSectionHeaderDropFamily", () => {
   it("matches a proseOnly Foundry-journal page with an EMPTY body", () => {
     expect(
       journalSectionHeaderDropFamily({
@@ -670,7 +670,7 @@ describe("journalSectionHeaderDropFamily (D29-133, P14 S1)", () => {
     ).toBe(true);
   });
 
-  it("does NOT match ancestry/index — same proseOnly + FJ book, but a NON-empty body (D29-133's own preserved-index carve-out)", () => {
+  it("does NOT match ancestry/index — same proseOnly + FJ book, but a NON-empty body (the preserved index page)", () => {
     expect(
       journalSectionHeaderDropFamily({
         proseOnly: true,
@@ -701,7 +701,7 @@ describe("journalSectionHeaderDropFamily (D29-133, P14 S1)", () => {
   });
 });
 
-describe("unknownBookHuskDropFamily (D29-133, P14 S1)", () => {
+describe("unknownBookHuskDropFamily", () => {
   function husk(
     overrides: Partial<CodexEntity> = {},
   ): Parameters<typeof unknownBookHuskDropFamily>[0] {
@@ -746,7 +746,7 @@ describe("unknownBookHuskDropFamily (D29-133, P14 S1)", () => {
   });
 });
 
-describe("applyAonPrimaryDrop — D29-133 debris drop-families (P14 S1)", () => {
+describe("applyAonPrimaryDrop — debris drop-families", () => {
   it("drops a journal-section-header entity even though it IS AoN-backed (proseOnly) — the override, same shape as activationDropFamily", () => {
     const debris = entity({
       id: "ancestry/common",
@@ -761,7 +761,7 @@ describe("applyAonPrimaryDrop — D29-133 debris drop-families (P14 S1)", () => 
     expect(result.keptEntities).toEqual([]);
     expect(result.accounting.journalSectionHeaderDrop).toBe(1);
     expect(reports.some((r) => r.cls === "journalSectionHeaderDropped")).toBe(true);
-    // NOT counted in the D29-14/-17 byCategory/totalDropped section (same
+    // NOT counted in the AoN-primary byCategory/totalDropped section (same
     // "kept separate" posture as activationDrop).
     expect(result.accounting.totalDropped).toBe(0);
     expect(result.accounting.byCategory).toEqual([]);
@@ -816,7 +816,7 @@ describe("applyAonPrimaryDrop — D29-133 debris drop-families (P14 S1)", () => 
   });
 });
 
-describe("reconcileInline embed overrides (D29-134, P14 S1)", () => {
+describe("reconcileInline embed overrides", () => {
   function embedEntity(embed: {
     target: string;
     resolved: boolean;

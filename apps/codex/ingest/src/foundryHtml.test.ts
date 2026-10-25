@@ -337,7 +337,7 @@ describe("parseFoundryHtml: structural tag mappings (synthetic, isolating one co
   });
 });
 
-describe("parseFoundryHtml: hard-fail posture (D29-9's drift tripwire)", () => {
+describe("parseFoundryHtml: hard-fail posture (the drift tripwire)", () => {
   it("hard-fails on an unmapped tag", () => {
     expect(() => parseFoundryHtml("<p>text <marquee>wat</marquee></p>", makeCtx())).toThrow(
       FoundryHtmlError,

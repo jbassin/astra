@@ -22,7 +22,7 @@ function makeCtx(): EnricherContext {
   return ctx;
 }
 
-describe("decideJournalPages: merge vs standalone (D29-8)", () => {
+describe("decideJournalPages: merge vs standalone", () => {
   const doc: JournalDoc = {
     _id: "journalEntry1",
     name: "Ancestries",
@@ -150,7 +150,7 @@ describe("assembleJournalPages: merge attaches loreBody, standalone becomes a pr
   });
 });
 
-describe("parseRemasterChanges: the redirect table (D29-7's pairing cross-check input)", () => {
+describe("parseRemasterChanges: the redirect table (the pairing cross-check input)", () => {
   it("parses a 4-column table with a Status column", () => {
     const doc: JournalDoc = {
       _id: "remasterChanges",

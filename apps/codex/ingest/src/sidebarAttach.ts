@@ -3,16 +3,16 @@ import type { CodexEntity } from "@astra/codex-corpus";
 import { normalizeUrlKey, type AonLinkTable } from "./aonLinkTable";
 
 /**
- * P4 (D29-39, spec §1's M8 finding): the `attachedSidebars` reverse-join —
- * every `sidebar`-category entity's OWN `aonUrl` IS its host page's url; 65
- * real host urls are SHARED by multiple corpus entities (a class page vs.
- * its 60+ class-feature docs), so a naive `aonUrl` string scan mis-attaches
- * (measured: naive first-match yields 64 class-feature "hosts" vs. the
- * correct 60 class + 1) — the FIX is the link table's own `pickCanonical`
- * page-owner rule (already resolves url → the winning doc's aonId at table-
- * build time, `aonLinkTable.ts`), then pass-4's `aonIdToFinalId` to survive
- * collision suffixing. This is a POST-identity step — never the S5d
- * parse-time repoint seam (pre-collision ids, wrong for this join).
+ * The `attachedSidebars` reverse-join — every `sidebar`-category entity's OWN
+ * `aonUrl` IS its host page's url; 65 real host urls are SHARED by multiple
+ * corpus entities (a class page vs. its 60+ class-feature docs), so a naive
+ * `aonUrl` string scan mis-attaches (measured: naive first-match yields 64
+ * class-feature "hosts" vs. the correct 60 class + 1) — the FIX is the link
+ * table's own `pickCanonical` page-owner rule (already resolves url → the
+ * winning doc's aonId at table-build time, `aonLinkTable.ts`), then pass-4's
+ * `aonIdToFinalId` to survive collision suffixing. This is a POST-identity
+ * step — never the parse-time legacy->remaster repoint seam (pre-collision
+ * ids, wrong for this join).
  */
 
 export type ReportFn = (cls: string, detail: string) => void;
@@ -29,18 +29,18 @@ export interface SidebarAttachResult {
   sidebarsTotal: number;
   sidebarsResolved: number;
   /** Per resolved-host-category sidebar count (e.g. `rules` → 361) — the
-   * spec's per-category attachment-coverage report table. */
+   * per-category attachment-coverage report table. */
   byHostCategory: SidebarHostCategoryCount[];
   maxPerHost: number;
   /** Distinct host entities that gained ≥1 sidebar — informational (the
-   * spec's own pins are all phrased per-SIDEBAR, not per-distinct-host). */
+   * coverage pins are all phrased per-SIDEBAR, not per-distinct-host). */
   hostsWithSidebars: number;
 }
 
 /**
  * Pure. `finalIdToAonId` is the inverse of `aonIdToFinalId` (built once by
  * the caller, `transform.ts`) — needed for the sidebar-ordering tie-break
- * (D29-39: "name asc, tie-break aonId").
+ * ("name asc, tie-break aonId").
  */
 export function attachSidebars(
   entities: readonly CodexEntity[],

@@ -22,7 +22,7 @@ function entity(
   };
 }
 
-describe("buildSourcesIndex (D29-43)", () => {
+describe("buildSourcesIndex", () => {
   it("classifies a book by the majority AoN primary_source_category among its citing docs", () => {
     const result = buildSourcesIndex({
       finalEntities: [entity("spell/a", "Core Rulebook"), entity("spell/b", "Core Rulebook")],
@@ -42,7 +42,7 @@ describe("buildSourcesIndex (D29-43)", () => {
     expect(result.stats.otherBooks).toBe(0);
   });
 
-  it("categoryCounts breaks entityCount down per category (D29-43 P4 S4)", () => {
+  it("categoryCounts breaks entityCount down per category", () => {
     const result = buildSourcesIndex({
       finalEntities: [
         entity("spell/a", "Core Rulebook"),
@@ -112,10 +112,10 @@ describe("buildSourcesIndex (D29-43)", () => {
     expect(result.stats.belowNinetyPctGuard).toBe(true);
   });
 
-  // 0030 S3 (D30-45): the LotI2 product-line override — consulted BEFORE the
-  // AoN majority vote, since the homebrew store never carries AoN citations
-  // at all (D30-43 routes it around the AoN join entirely).
-  describe("PRODUCT_LINE_OVERRIDE (D30-45)", () => {
+  // The LotI2 product-line override — consulted BEFORE the AoN majority
+  // vote, since the homebrew store never carries AoN citations at all (the
+  // homebrew loader routes it around the AoN join entirely).
+  describe("PRODUCT_LINE_OVERRIDE", () => {
     const HOMEBREW_BOOK = "Liturgy of the Iridite Vol.2";
 
     it("the override key equals bookNormalize's own output for the literal title", () => {
@@ -143,7 +143,7 @@ describe("buildSourcesIndex (D29-43)", () => {
       expect(result.stats.otherBooks).toBe(0);
     });
 
-    it("the LotI2 book-level license is OGL via BOOK_LICENSE_OVERRIDE (0030 S4 — both deriveBookLicense tiers need AoN-side presence)", () => {
+    it("the LotI2 book-level license is OGL via BOOK_LICENSE_OVERRIDE (both deriveBookLicense tiers need AoN-side presence)", () => {
       const result = buildSourcesIndex({
         finalEntities: [entity("spell/loti2", HOMEBREW_BOOK)],
         aonCitations: [],

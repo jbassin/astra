@@ -1,5 +1,5 @@
 /**
- * D29-13: the committed book→license table for AoN-only/journal-derived entities.
+ * The committed book→license table for AoN-only/journal-derived entities.
  * Foundry-derived entities read their license straight off `system.publication`
  * (`foundryEntities.ts`'s `deriveSourceAndEdition`) — this table exists ONLY for
  * content that has no in-source license field at all: AoN-only docs (which
@@ -7,8 +7,7 @@
  * Missile / Produce Flame — verified, no pack file for either) and
  * journal-derived prose.
  *
- * ## Derivation method (data-driven, then hand-spot-checked — spec's prescribed
- * process)
+ * ## Derivation method (data-driven, then hand-spot-checked)
  *
  * Every AoN doc carries a `primary_source` (book title) + `release_date`
  * (verified: 0 of 43,684 real docs miss either field). Aggregating
@@ -33,13 +32,13 @@
  * read `release_date: "2023-11-15"` in the live data, the earliest
  * remaster-line release.
  *
- * ## Hand spot-check (spec gate C's own three cases + a broader sample; all
+ * ## Hand spot-check (the three acceptance cases + a broader sample; all
  * verified against the generated table and real-world PF2e publishing history)
  *
- *   - "Player Core" (2023-11-15)      → ORC  ✓ (gate C: remastered Player Core)
- *   - "Core Rulebook" (2019-08-01)    → OGL  ✓ (gate C: pre-remaster CRB)
+ *   - "Player Core" (2023-11-15)      → ORC  ✓ (remastered Player Core)
+ *   - "Core Rulebook" (2019-08-01)    → OGL  ✓ (pre-remaster CRB)
  *   - "Core Rulebook" is Magic Missile's own `primary_source`               →
- *     `licenseForBook("Core Rulebook")` resolves OGL (gate C: AoN-only legacy
+ *     `licenseForBook("Core Rulebook")` resolves OGL (an AoN-only legacy
  *     spell resolves via the table — Magic Missile has no pack file at all).
  *   - "GM Core" (2023-11-15) → ORC; "Monster Core" (2024-03-27) → ORC
  *   - "Bestiary" (2019-08-01) → OGL; "Advanced Player's Guide" (2020-07-30) → OGL
@@ -55,7 +54,7 @@
  *
  * A future `just codex-refresh` against a newer AoN snapshot may introduce a
  * `primary_source` book title not listed below — `licenseForBook` returns
- * `"unknown"` for it (report-counted at S4, per spec, NOT a hard fail). Extend
+ * `"unknown"` for it (counted in the report, NOT a hard fail). Extend
  * this table by re-running the same two-rule derivation against the new
  * snapshot's `primary_source`/`release_date` fields and hand-spot-checking the
  * new entries, mirroring the process above — don't just guess.
@@ -339,8 +338,8 @@ export const BOOK_LICENSE: Readonly<Record<string, License>> = {
 
 /**
  * Resolves an AoN `primary_source`/`source` book title to its license,
- * `"unknown"` for anything not in `BOOK_LICENSE` (report-counted at S4, per
- * spec — a genuinely unclassifiable/not-yet-seen book, not an error). Applies
+ * `"unknown"` for anything not in `BOOK_LICENSE` (counted in the report — a
+ * genuinely unclassifiable/not-yet-seen book, not an error). Applies
  * `normalizeBookName` first so a CRLF-dirty or whitespace-varied spelling of a
  * known title still resolves.
  */

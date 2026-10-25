@@ -28,7 +28,7 @@ function collector(): { reports: string[]; report: (cls: string, detail: string)
   return { reports, report: (cls, detail) => reports.push(`${cls}: ${detail}`) };
 }
 
-describe("attachSidebars (D29-39, adversarial M8)", () => {
+describe("attachSidebars", () => {
   it("attaches a sidebar to its host via pickCanonical's own aonId -> aonIdToFinalId (post-identity)", () => {
     const host = entity({
       id: "rules/chapter",
@@ -59,7 +59,7 @@ describe("attachSidebars (D29-39, adversarial M8)", () => {
     expect(result.byHostCategory).toEqual([{ category: "rules", count: 1 }]);
   });
 
-  it("the M8 shared-url shape: a class page's url is shared by its class-feature docs — the sidebar attaches to the PAGE OWNER (pickCanonical's winner), not a feature", () => {
+  it("the shared-url shape: a class page's url is shared by its class-feature docs — the sidebar attaches to the PAGE OWNER (pickCanonical's winner), not a feature", () => {
     const classPage = entity({
       id: "class/witch",
       category: "class",

@@ -5,7 +5,7 @@ import { parseFoundryHtml } from "./foundryHtml";
 import type { UuidIndex } from "./uuidResolve";
 
 /**
- * D29-8: JournalEntry `pages[]` assembly (Deliverable 4). A JournalEntry is
+ * JournalEntry `pages[]` assembly. A JournalEntry is
  * ONE doc with `pages[]` — a different shape from Item/Actor docs
  * (`foundryEntities.ts`), so it gets its own module.
  *
@@ -18,8 +18,8 @@ import type { UuidIndex } from "./uuidResolve";
  *   1. `decideJournalPages` — pure slug/id logic, no HTML parsing: for each
  *      page, `sluggify(page.name)` under the journal's target category
  *      (`JOURNAL_TARGET_CATEGORY`) either matches an already-assembled
- *      Item-derived entity id (→ `merge`, D29-8's "journal page 'Anadi'
- *      enriches the ancestry entity `anadi`, it does NOT become `anadi-2`")
+ *      Item-derived entity id (→ `merge`: journal page "Anadi" enriches the
+ *      ancestry entity `anadi`, it does NOT become `anadi-2`)
  *      or doesn't (→ `standalone`, a `proseOnly` entity, report-counted).
  *      The caller registers every decision into the shared `UuidIndex`
  *      (`registerJournalPage`) right after this returns, for ALL FOUR target
@@ -28,11 +28,11 @@ import type { UuidIndex } from "./uuidResolve";
  *      registered resolution, parses each page's HTML body and produces the
  *      real merge/standalone results.
  *
- * `gm-screen`/`hero-point-deck` (D29-8's excluded journals) and `criticaldeck`
- * (S2 extension, `categoryMap.ts`) never reach this module at all — the
+ * `gm-screen`/`hero-point-deck` (the excluded journals) and `criticaldeck`
+ * (excluded in `categoryMap.ts`) never reach this module at all — the
  * caller only walks the four journals named below. `remaster-changes` is
- * parsed by `parseRemasterChanges` instead — NOT an entity (D29-8), a
- * redirect-table input for D29-7's legacy/remaster pairing at S4.
+ * parsed by `parseRemasterChanges` instead — NOT an entity, a
+ * redirect-table input for the join's legacy/remaster pairing.
  */
 
 // ---------------------------------------------------------------------------
@@ -52,7 +52,7 @@ export interface JournalDoc {
   pages: readonly JournalPageRaw[];
 }
 
-/** Journal pack basename → target codex category (D29-8; the real journal
+/** Journal pack basename → target codex category (the real journal
  * files present in `packs/pf2e/journals/` — verified: exactly 7 docs total,
  * `ancestries`/`archetypes`/`classes`/`domains` (these four) plus
  * `gm-screen`/`hero-point-deck` (excluded) plus `remaster-changes` (its own
@@ -66,14 +66,14 @@ export const JOURNAL_TARGET_CATEGORY: Readonly<Record<string, string>> = {
   domains: "domain",
 };
 
-/** The `journals` pack's other 3 docs (of its real 7 total) — D29-8's
+/** The `journals` pack's other 3 docs (of its real 7 total) — the
  * `gm-screen`/`hero-point-deck` exclusions, plus `remaster-changes` (never an
- * entity, D29-7's redirect-table input instead). Registered as `excluded`
+ * entity, the redirect-table input instead). Registered as `excluded`
  * targets (`registerExcludedJournal` below), NOT `broken` — a real `@UUID`
  * reference into gm-screen IS a legitimate GM-reference call-out in the
  * source material, same treatment as a Macro/RollTable reference (verified:
- * fixing this from an earlier "falls through to broken" draft measurably
- * shrank the real snapshot's `brokenRef` count). */
+ * letting them fall through to broken measurably inflates the real
+ * snapshot's `brokenRef` count). */
 export const EXCLUDED_JOURNAL_BASENAMES: ReadonlySet<string> = new Set([
   "gm-screen",
   "hero-point-deck",
@@ -81,8 +81,8 @@ export const EXCLUDED_JOURNAL_BASENAMES: ReadonlySet<string> = new Set([
 ]);
 
 /** Registers `doc` (one of `EXCLUDED_JOURNAL_BASENAMES`) and every one of its
- * pages as `excluded` targets in the shared uuid index — called by the
- * orchestrator once per excluded journal doc, alongside the real 4 journals'
+ * pages as `excluded` targets in the shared uuid index — called by
+ * `transform.ts` once per excluded journal doc, alongside the real 4 journals'
  * `decideJournalPages`/`registerJournalPage` calls (any order — independent
  * map insertions). */
 export function registerExcludedJournal(index: UuidIndex, packName: string, doc: JournalDoc): void {
@@ -114,11 +114,11 @@ export type JournalPageDecision =
     };
 
 /**
- * Phase 1 (D29-8): for each page, decide whether it merges into an existing
+ * Phase 1: for each page, decide whether it merges into an existing
  * Item-derived entity (by `{category}/{slug}` match) or becomes its own
  * standalone `proseOnly` entity. `knownEntityIds` is every entity id already
- * assigned by `foundryEntities.ts`'s walk over Item/Actor packs (S2 scope:
- * plain `{category}/{slug}` form, no `@legacy` suffix yet — see
+ * assigned by `foundryEntities.ts`'s walk over Item/Actor packs (at this
+ * stage: plain `{category}/{slug}` form, no `@legacy` suffix yet — see
  * `foundryEntities.ts`'s file header).
  */
 export function decideJournalPages(
@@ -151,7 +151,7 @@ export function decideJournalPages(
 }
 
 /** Registers every page decision's resolution into the shared uuid index
- * (the `index.registerJournalPage` calls D29-6's `uuidResolve.ts` exposes) —
+ * (the `index.registerJournalPage` calls `uuidResolve.ts` exposes) —
  * called once per journal, for ALL FOUR journals, before any HTML parsing
  * starts (see the module doc's ordering note). Kept here (not inlined at the
  * call site) since it's the one place that knows how to turn a
@@ -185,14 +185,14 @@ export interface JournalAssembly {
  * result (`{targetId, loreBody}`, for the caller to attach to the matching
  * entity) or a standalone `proseOnly` `CodexEntity`. `ctx` must already be
  * bound to THIS journal as its "containing document" (`createResolveUuid(index,
- * {_id: doc._id, pages: doc.pages})`, D29-6) so relative `@UUID[.<id>]`
+ * {_id: doc._id, pages: doc.pages})`) so relative `@UUID[.<id>]`
  * sibling-page refs resolve.
  *
  * Standalone entities have no in-source publication data at all (JournalEntry
  * docs carry none — verified) — `source`/`edition` fall back the same way
  * `foundryEntities.ts` falls back for a doc with missing publication
- * (`license: "unknown"`, `edition: "legacy"`, reported), pending S3's
- * `licenseMap.ts` + the S4 AoN join backfilling a real book/page citation.
+ * (`license: "unknown"`, `edition: "legacy"`, reported), until the AoN join
+ * and `licenseMap.ts` backfill a real book/page citation.
  */
 export function assembleJournalPages(
   journalDisplayName: string,
@@ -234,7 +234,7 @@ export function assembleJournalPages(
 }
 
 // ---------------------------------------------------------------------------
-// remaster-changes redirect table (D29-7's pairing cross-check input)
+// remaster-changes redirect table (the pairing cross-check input)
 // ---------------------------------------------------------------------------
 
 export interface RemasterRedirectEntry {
@@ -248,7 +248,7 @@ export interface RemasterRedirectEntry {
   oldId?: string;
   /** Preserved verbatim, INCLUDING the literal "—" em-dash some rows use for
    * "no replacement" (e.g. a feat whose "Altered mechanics" status leaves no
-   * successor) — not normalized to `undefined`, so S4 can tell "no
+   * successor) — not normalized to `undefined`, so the join can tell "no
    * replacement" apart from "cell didn't parse". */
   newName: string;
   newId?: string;
@@ -317,9 +317,9 @@ function flattenCellText(nodes: readonly CodexNode[]): { text: string; crossrefI
 /**
  * Parses the `remaster-changes` journal's 5 tabular pages (of its 7 total —
  * the intro and "Rules and Languages" pages are prose-only, contribute
- * nothing) into old-name→new-name redirect pairs, for S4's legacy/remaster
- * pairing cross-check (D29-7: "Foundry's `remaster-changes` journal cross-
- * check" against AoN's `remaster_id`/`legacy_id` arrays). NOT an entity —
+ * nothing) into old-name→new-name redirect pairs, for the join's
+ * legacy/remaster pairing cross-check (Foundry's `remaster-changes` journal
+ * checked against AoN's `remaster_id`/`legacy_id` arrays). NOT an entity —
  * this journal never appears in `JOURNAL_TARGET_CATEGORY`.
  */
 export function parseRemasterChanges(

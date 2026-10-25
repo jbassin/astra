@@ -3,11 +3,11 @@ import type { Edition, License } from "@astra/codex-corpus";
 import { licenseForBook } from "./licenseMap";
 
 /**
- * P4 (D29-39): book-LEVEL `edition`/`license` derivation — shared by the
+ * Book-LEVEL `edition`/`license` derivation — shared by the
  * rules-tree builder (`rulesTree.ts`) and the sources-index builder
  * (`sourcesIndexBuild.ts`), since both need the exact same rule (books
  * aren't entities, so neither `CodexEntity.edition`/`.source.license`
- * applies directly — spec's adversarial M11).
+ * applies directly).
  */
 
 const REMASTERED_TITLE_RE = /\(Remastered\)\s*$/i;
@@ -38,7 +38,7 @@ export function deriveBookEdition(book: string, memberEditions: readonly Edition
  * that table, fall back to a matching `source`-category entity's own
  * `source.license` (a Foundry-derived book can carry real in-source license
  * data with no AoN `licenseMap` entry at all); `"unknown"` only when NEITHER
- * source has an answer — never a guessed OGL/ORC (D29-39's explicit pin).
+ * source has an answer — never a guessed OGL/ORC.
  */
 export function deriveBookLicense(book: string, sourceEntityLicense?: License): License {
   const fromTable = licenseForBook(book);

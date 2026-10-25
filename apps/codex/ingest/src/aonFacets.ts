@@ -4,12 +4,10 @@ import { z } from "zod";
 import { REMASTER_CUTOVER_DATE, licenseForBook, normalizeBookName } from "./licenseMap";
 
 /**
- * AoN doc → `AonDocMeta` field extraction (D29-3/-7/-13, spec §2/§3,
- * Deliverable 3). One call per AoN ES hit across all 93 categories (C-5) —
- * the typed precursor row S4's `join.ts` consumes to build the final
- * `CodexEntity`/`Facets` (this module does NOT build `Facets` itself: field
- * OWNERSHIP between Foundry and AoN is a join-time decision, D29-7, out of
- * S3's scope).
+ * AoN doc → `AonDocMeta` field extraction. One call per AoN ES hit across
+ * all 93 categories — the typed precursor row `join.ts` consumes to build the
+ * final `CodexEntity`/`Facets` (this module does NOT build `Facets` itself:
+ * field OWNERSHIP between Foundry and AoN is a join-time decision).
  *
  * ## Field survey (verified against the real `2026-07-13` AoN snapshot, all
  * 93 category files, 43,684 docs)
@@ -25,7 +23,7 @@ import { REMASTER_CUTOVER_DATE, licenseForBook, normalizeBookName } from "./lice
  * entirely for prose-shaped categories like `background`/`article`/`sidebar`/
  * `rules`/`source`), `level` (`number`, spell rank / creature level / feat
  * level — absent for e.g. `archetype`), `breadcrumbs` (`string[]`, ONLY on
- * `rules` docs — the P4 rules-tree input), `remaster_id`/`legacy_id`
+ * `rules` docs — the rules-tree input), `remaster_id`/`legacy_id`
  * (`string[]` of AoN doc ids, verified ALWAYS an array when present across
  * every occurrence in the real snapshot — never a bare scalar — but
  * `normalizeIdList` below still defensively accepts a scalar in case a future
@@ -40,8 +38,7 @@ import { REMASTER_CUTOVER_DATE, licenseForBook, normalizeBookName } from "./lice
  * canonical one. `CodexEntity.source` (entity.ts) only has room for one
  * book/page, so this module keeps BOTH: `primarySource` (what becomes
  * `Source.book`/`page` at join time) and the full `allSources` list
- * (preserved for a future citation-list feature — not lost, per spec's "don't
- * quietly collapse scope").
+ * (preserved for a future citation-list feature — not lost).
  *
  * ## Page parsing
  *
@@ -62,9 +59,8 @@ import { REMASTER_CUTOVER_DATE, licenseForBook, normalizeBookName } from "./lice
  * downstream citation never renders the garbage and the license lookup
  * always hits.
  *
- * ## Edition derivation for AoN docs (a considered interpretation, not
- * spec-dictated verbatim — Foundry's own `remaster` boolean has no AoN
- * equivalent)
+ * ## Edition derivation for AoN docs (an interpretation — Foundry's own
+ * `remaster` boolean has no AoN equivalent)
  *
  * `remaster_id` non-empty → this doc IS the remaster half (points BACK at its
  * legacy predecessor's id) → `edition: "remaster"`. `legacy_id` non-empty →
@@ -103,21 +99,21 @@ function readStringArray(v: unknown): string[] {
   return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
 }
 
-/** P4 (D29-39): a `next_link`/`previous_link` raw field is `{label, url}` or
- * absent — this module only needs the `url` (the sibling-chain edge target;
- * `label` is display text `join.ts`/the P4 tree builder never needs). */
+/** A `next_link`/`previous_link` raw field is `{label, url}` or absent —
+ * this module only needs the `url` (the sibling-chain edge target; `label` is
+ * display text `join.ts`/the rules-tree builder never needs). */
 function readLinkUrl(v: unknown): string | undefined {
   if (v === null || typeof v !== "object") return undefined;
   const url = (v as Record<string, unknown>).url;
   return typeof url === "string" && url.length > 0 ? url : undefined;
 }
 
-/** P4 (D29-39, spec §1 "data wart"): 192 real GMG "Chapter 2: Tools" child
+/** 192 real GMG "Chapter 2: Tools" child
  * breadcrumb elements (plus 47 "Building Creatures" ones, 239 dirty elements
  * total repo-wide) carry embedded `\r`/`\n`/`\t` garbage — an ES indexing
  * artifact, the same disease `licenseMap.ts`'s `normalizeBookName` already
  * fixes for `primary_source`. Strips those three control characters entirely
- * (not just CRLF — spec explicitly calls out tab too), then collapses any
+ * (not just CRLF — tab too), then collapses any
  * remaining internal whitespace run to a single space and trims. Applied to
  * EVERY breadcrumb element before it's stored, so the corpus only ever holds
  * normalized strings — the tree builder never re-normalizes. */
@@ -130,8 +126,7 @@ export function normalizeBreadcrumbElement(raw: string): string {
 
 /** Defensive normalization for `remaster_id`/`legacy_id`: verified always an
  * array-or-absent across the real snapshot, but accepts a bare scalar too in
- * case a future refresh regresses this (D29-1's own "may be scalar-or-array"
- * caution). */
+ * case a future refresh regresses this ("may be scalar-or-array"). */
 function normalizeIdList(v: unknown): string[] {
   if (Array.isArray(v)) return v.filter((x): x is string => typeof x === "string");
   if (typeof v === "string" && v.length > 0) return [v];
@@ -177,9 +172,9 @@ export type SourceCitation = z.infer<typeof SourceCitationSchema>;
 export const AonDocMetaSchema = z
   .object({
     /** The raw AoN `_id` (e.g. `"spell-180"`) — kept because `remasterId`/
-     * `legacyId` are arrays of OTHER docs' `aonId`s; S4's join needs an
+     * `legacyId` are arrays of OTHER docs' `aonId`s; the join needs an
      * aonId → codexId map to resolve them, which this module doesn't build
-     * (out of S3 scope, needs the full corpus assembled first). */
+     * (it needs the full corpus assembled first). */
     aonId: z.string().min(1),
     category: z.string().min(1),
     name: z.string().min(1),
@@ -202,27 +197,27 @@ export const AonDocMetaSchema = z
     /** Raw AoN doc ids (NOT yet codex ids) this doc's legacy half(es) point
      * at — empty when unpaired. */
     legacyId: z.array(z.string()),
-    /** `rules`-category only (the P4 tree input) — absent for every other
+    /** `rules`-category only (the rules-tree input) — absent for every other
      * category, never an empty array (same convention as `CodexEntity`'s
      * `loreBody`/`proseOnly`). Every element is already normalized
      * (`normalizeBreadcrumbElement`, above) at extraction time. */
     breadcrumbs: z.array(z.string()).min(1).optional(),
-    /** P4 (D29-39): the raw AoN `next_link`/`previous_link.url` — per-level
-     * SIBLING chain edges (adversarial B1, NOT page-turn order), consumed
-     * transform-internally only by the P4 rules-tree builder to order a
+    /** The raw AoN `next_link`/`previous_link.url` — per-level SIBLING
+     * chain edges (NOT page-turn order), consumed transform-internally only
+     * by the rules-tree builder to order a
      * sibling group; never stored on `CodexEntity` (no `readingOrder`
      * field). Present whenever the raw doc carries the link (3,642/3,645
      * real rules docs carry `next_link`, same count minus 3 for `prev`). */
     nextUrl: z.string().min(1).optional(),
     prevUrl: z.string().min(1).optional(),
-    /** P4 (D29-39, D29-43): raw AoN `primary_source_category` (e.g.
+    /** Raw AoN `primary_source_category` (e.g.
      * "Rulebooks", "Lost Omens", "Adventure Paths") — the `/sources`
      * product-line signal, present on 43,684/43,684 real AoN docs. Consumed
      * only by the sources-index builder (book-level aggregate), never
      * stored on `CodexEntity` itself. */
     productLine: z.string().min(1).optional(),
     hasMarkdown: z.boolean(),
-    /** D29-33b (P3 S1): `creature`-category only — the display text mined
+    /** `creature`-category only — the display text mined
      * out of `creature_family_markdown`'s `"[Name](/MonsterFamilies.aspx?ID=…)"`
      * markdown-link form (verified: all 2,672 non-empty real occurrences
      * match this exact shape). `join.ts` populates `CodexEntity.facets.family`
@@ -231,7 +226,7 @@ export const AonDocMetaSchema = z
      * `creature_family_markdown` (no family grouping at all — a real,
      * measured gap, not an extraction miss). */
     family: z.string().min(1).optional(),
-    /** D29-60 (R8, P6): `equipment`-category only — AoN's raw
+    /** `equipment`-category only — AoN's raw
      * `item_category`/`item_subcategory` (verified: 36/75 distinct real
      * values respectively on the `equipment` category file, incl. 323
      * `"Runes"`-tagged items). Gated to `equipment` the same way `family` is
@@ -242,7 +237,7 @@ export const AonDocMetaSchema = z
      * would just be dead weight; `join.ts`'s `mergeJoined`/
      * `buildAonOnlyEntity` fill `CodexEntity.facets.itemCategory`/
      * `itemSubcategory` from these ONLY when Foundry's own `system.category`
-     * produced no value (D29-60's Foundry-wins-mechanics correction). */
+     * produced no value (Foundry wins on mechanics). */
     itemCategory: z.string().min(1).optional(),
     itemSubcategory: z.string().min(1).optional(),
   })
@@ -260,7 +255,7 @@ export type AonDocMeta = z.infer<typeof AonDocMetaSchema>;
  * expected residue) — carries the doc id so the caller (`transform.ts`) can
  * report it precisely, matching
  * `CategoryMapError`/`EnricherGrammarError`'s "hard-fail loudly, never guess"
- * posture (D29-6). */
+ * posture. */
 export class AonFacetError extends Error {
   readonly docId: string;
 
@@ -279,7 +274,7 @@ function required(docId: string, field: string, value: string | undefined): stri
 }
 
 // ---------------------------------------------------------------------------
-// D29-99: AoN name-template resolution
+// AoN name-template resolution
 // ---------------------------------------------------------------------------
 
 export type ReportFn = (cls: string, detail: string) => void;
@@ -287,7 +282,7 @@ export type ReportFn = (cls: string, detail: string) => void;
 const TRAITS_GLYPH_RE = /<%TRAITS%\d+%%>([\s\S]*?)<%END>/g;
 const ACTION_TYPES_GLYPH_RE = /<%ACTION\.TYPES#(\d+)%%>/g;
 
-/** The pinned `<%ACTION.TYPES#N%%>` -> action-cost-phrase table (D29-99) — NO
+/** The pinned `<%ACTION.TYPES#N%%>` -> action-cost-phrase table — NO
  * repo mapping source exists for this glyph (the census stores only
  * already-resolved verbatim strings), and a naive `#N -> "N Actions"` guess
  * is off-by-one on every one of the 9 real docs that carry the glyph (AoN's
@@ -299,8 +294,8 @@ const ACTION_TYPES_LABELS: ReadonlyMap<number, string> = new Map([
   [4, "Three Actions"],
 ]);
 
-/** Resolves AoN's raw glyph-template forms in a doc's `name` (D29-99,
- * `aonFacets.ts:362`'s own seam) — called BEFORE `required()` so a
+/** Resolves AoN's raw glyph-template forms in a doc's `name` — called
+ * BEFORE `required()` so a
  * template-only name still counts as present. `<%TRAITS%N%%>display<%END>`
  * is a trait-linked span (the numeric N is an AoN-internal trait id,
  * irrelevant here — only the `display` text between the tags survives);
@@ -309,7 +304,7 @@ const ACTION_TYPES_LABELS: ReadonlyMap<number, string> = new Map([
  * forms appear ONLY on `action`-category docs, never a third template form.
  * Report-counts `nameTemplateResolved` exactly once per doc whose raw name
  * actually contained a glyph (never double-counts a doc carrying both glyph
- * kinds) — the report is the caller's audit trail for the D29-99 pin
+ * kinds) — the report is the caller's audit trail for the pinned table
  * (exactly 12 real docs). A raw name with NO glyph is returned unchanged,
  * report untouched. */
 function resolveNameTemplates(raw: string, docId: string, report: ReportFn): string {
@@ -345,7 +340,7 @@ function resolveNameTemplates(raw: string, docId: string, report: ReportFn): str
  * activation-effect FRAGMENTS ("**Activate** ... **Effect** ..." markdown
  * with no title of their own; 51 of the 53 are marked
  * `exclude_from_search: true` by AoN itself). A nameless doc can't be a codex
- * entity at all (`slug = sluggify(name)` would be empty, D29-1), so the
+ * entity at all (`slug = sluggify(name)` would be empty), so the
  * caller skips + report-counts these BEFORE `extractAonMeta` (suggested
  * report class: `aonNamelessFragment`). Kept as a separate predicate — NOT a
  * silent skip inside `extractAonMeta` — so the skip is always a visible,
@@ -369,7 +364,7 @@ function deriveEdition(remasterId: string[], legacyId: string[], releaseDate: st
 }
 
 // ---------------------------------------------------------------------------
-// D29-33b: creature family (from `creature_family_markdown`)
+// creature family (from `creature_family_markdown`)
 // ---------------------------------------------------------------------------
 
 const FAMILY_MARKDOWN_RE = /^\[([^[\]]+)\]\([^()]+\)$/;
@@ -381,7 +376,7 @@ const FAMILY_MARKDOWN_RE = /^\[([^[\]]+)\]\([^()]+\)$/;
  * malformed value — this is a presentation/navigational facet, not
  * load-bearing identity data, matching `foundryEntities.ts`'s
  * `formatPrice`/`formatArea`-style facet helpers rather than the body-parse
- * hard-fail posture (D29-6/the README's "what a hard-fail means").
+ * hard-fail posture (the README's "what a hard-fail means").
  */
 function extractFamily(category: string, raw: unknown): string | undefined {
   if (category !== "creature") return undefined;
@@ -392,7 +387,7 @@ function extractFamily(category: string, raw: unknown): string | undefined {
 }
 
 // ---------------------------------------------------------------------------
-// D29-60 (R8, P6): equipment item_category/item_subcategory
+// equipment item_category/item_subcategory
 // ---------------------------------------------------------------------------
 
 /** `equipment`-category only — see the `AonDocMeta.itemCategory` field's own
@@ -413,8 +408,8 @@ function extractItemCategory(category: string, raw: unknown): string | undefined
  * `primary_source` (verified universal — a miss is drift, not residue).
  *
  * `report` is optional (defaults to a no-op) — only the real transform run
- * and any test specifically exercising D29-99 need to observe the
- * `nameTemplateResolved` counter; the ~40 pre-existing call sites across this
+ * and any test specifically exercising name-template resolution need to
+ * observe the `nameTemplateResolved` counter; the ~40 pre-existing call sites across this
  * module's own test file and `join.test.ts` construct fixtures that never
  * carry a glyph-template name, so they're left unchanged (an explicit
  * `ReportFn` at every one of those call sites would be pure churn with no

@@ -4,11 +4,11 @@ import { type EnricherContext, EnricherGrammarError, parseEnrichedText } from ".
 
 /**
  * Foundry description HTML (`system.description.value`, journal page
- * `text.content`) → `BlockNode[]` (D29-2, spec §2/§3). Hand-rolled (D29-9 — no new
- * deps; a lenient off-the-shelf parser is the wrong failure mode here): the tag
+ * `text.content`) → `BlockNode[]`. Hand-rolled (no new deps; a lenient
+ * off-the-shelf parser is the wrong failure mode here): the tag
  * vocabulary is small and closed, discovered by an empirical census over the real
  * `pf2e-8.3.0` snapshot (28,636 pack docs incl. embedded Actor items, plus the 4
- * included journal entries — see the codex-0029 memory for the full counts):
+ * included journal entries):
  *
  *   p strong hr em td li span tr ul th tbody table thead h1-h4 ol col section
  *   blockquote div colgroup caption sup br code
@@ -19,12 +19,12 @@ import { type EnricherContext, EnricherGrammarError, parseEnrichedText } from ".
  *
  * Every tag found is handled deliberately below (mapped to a CodexNode kind, or
  * explicitly flattened/dropped with a documented reason). An UNMAPPED tag is a
- * HARD FAIL (`FoundryHtmlError`, D29-9's drift tripwire) — never silently passed
+ * HARD FAIL (`FoundryHtmlError`, the drift tripwire) — never silently passed
  * through or stripped. `<img>` was verified absent (0 of 28,636 docs); `<a>`
  * (real hyperlinks) likewise never occurs — Foundry only ever links via the
  * `@UUID`/`@Embed` enrichers, handled by `enrichers.ts`.
  *
- * Text content inside any element runs through `parseEnrichedText` (Module 1) —
+ * Text content inside any element runs through `parseEnrichedText` (`enrichers.ts`) —
  * this module never resolves an enricher or decodes an entity itself.
  */
 
@@ -170,8 +170,8 @@ interface SequenceOptions {
    * field explicitly allows bare inline arrays (list items, table cells, mark
    * wrappers) — matches the `nodes.test.ts` fixture convention. */
   wrapLooseInline: boolean;
-  /** S4 emit-gate finding (real corpus, `PF2E.NPC.Abilities.Glossary.Engulf`
-   * among others — 139+ real uses): a `<p>` sometimes reopens mid-string with
+  /** Real corpus (`PF2E.NPC.Abilities.Glossary.Engulf` among others — 139+
+   * real uses): a `<p>` sometimes reopens mid-string with
    * no `</p>` in between at all (not just the already-handled "unclosed at
    * end of string" case, `consumeClose`'s own EOF tolerance). Standard HTML5
    * tag-omission rules treat a `<p>` immediately followed by another `<p>` as
@@ -180,9 +180,8 @@ interface SequenceOptions {
    * `stopAt` close) instead of recursing into it as this sequence's own
    * content. Without this, the reopening `<p>` got parsed as a nested
    * `paragraph` block sitting inside the OUTER paragraph's `InlineNode[]`
-   * children — a real schema violation only the emit-time zod validation
-   * gate (acceptance C) caught, since no S2 unit fixture exercised this exact
-   * malformed-markup shape. */
+   * children — a real schema violation that only the emit-time zod
+   * validation caught. */
   reopenBoundaryTag?: string;
 }
 
@@ -262,7 +261,7 @@ function parseSequence(
       }
       if (name === "br") {
         // Presentation-only line break (2 real uses in the whole snapshot) — no
-        // BreakNode kind exists in D29-2 and the volume doesn't justify one;
+        // BreakNode kind exists and the volume doesn't justify one;
         // flattened into a literal newline inside the surrounding text run.
         textBuf += "\n";
         continue;
@@ -297,8 +296,8 @@ function parseSequence(
       }
       case "code": {
         // Monospace styling (critical-deck flavor labels like "Melee"/"Ranged")
-        // — no `code`/monospace mark exists on `TextMarks` (D29-2 never asked
-        // for one), so this flattens transparently, same as a non-action-glyph
+        // — no `code`/monospace mark exists on `TextMarks`, so this flattens
+        // transparently, same as a non-action-glyph
         // span below.
         flushText();
         const inner = parseSequence(cursor, ctx, {
@@ -612,7 +611,7 @@ function skipUntilClose(cursor: TokenCursor, name: string): void {
 
 /**
  * Parses a Foundry description/journal-page HTML fragment into `BlockNode[]`
- * (D29-2's renderer contract). Any loose inline content at the very top level
+ * (the renderer contract). Any loose inline content at the very top level
  * (no wrapping block tag) is auto-wrapped into a synthetic paragraph, so the
  * return type is always fully block-shaped.
  */

@@ -79,7 +79,7 @@ describe("extractAonMeta: real fixture — creature family with level + traits",
   });
 });
 
-describe("extractAonMeta: D29-33b creature family (creature_family_markdown)", () => {
+describe("extractAonMeta: creature family (creature_family_markdown)", () => {
   function creatureHit(creatureFamilyMarkdown: unknown): AonHit {
     return {
       _id: "creature-9000",
@@ -138,7 +138,7 @@ describe("extractAonMeta: D29-33b creature family (creature_family_markdown)", (
 });
 
 describe("extractAonMeta: real fixture — rules family with breadcrumbs", () => {
-  it("carries breadcrumbs (the P4 rules-tree input) and no level/traits", () => {
+  it("carries breadcrumbs (the rules-tree input) and no level/traits", () => {
     const meta = extractAonMeta("rules", readFixture("rules-sample"));
     expect(meta.breadcrumbs).toEqual(["Mythic Rules", "Designing Mythic Encounters"]);
     expect(meta.level).toBeUndefined();
@@ -147,7 +147,7 @@ describe("extractAonMeta: real fixture — rules family with breadcrumbs", () =>
   });
 });
 
-describe("normalizeBreadcrumbElement (P4, D29-39 — the 192 GMG 'Chapter 2: Tools' CRLF elements)", () => {
+describe("normalizeBreadcrumbElement (the 192 GMG 'Chapter 2: Tools' CRLF elements)", () => {
   it("strips embedded \\r/\\n/\\t and collapses internal whitespace, matching a clean spelling", () => {
     expect(normalizeBreadcrumbElement("Chapter 2: Tools\r\n")).toBe("Chapter 2: Tools");
     expect(normalizeBreadcrumbElement("Chapter 2: Tools")).toBe("Chapter 2: Tools");
@@ -176,7 +176,7 @@ describe("normalizeBreadcrumbElement (P4, D29-39 — the 192 GMG 'Chapter 2: Too
   });
 });
 
-describe("extractAonMeta: P4 (D29-39) next/previous link + product-line extraction", () => {
+describe("extractAonMeta: next/previous link + product-line extraction", () => {
   function ruleHit(overrides: Record<string, unknown>): AonHit {
     return {
       _id: "rules-9002",
@@ -241,7 +241,7 @@ describe("extractAonMeta: real fixture — article stub", () => {
   });
 });
 
-describe("extractAonMeta: array normalization (remasterId/legacyId, D29-1)", () => {
+describe("extractAonMeta: array normalization (remasterId/legacyId)", () => {
   it("normalizes a scalar remaster_id/legacy_id to a single-element array (defensive — never seen live)", () => {
     const hit: AonHit = {
       _id: "spell-9999",
@@ -381,7 +381,7 @@ describe("aonSkipReason: the empty-name fragment class (53 real docs)", () => {
   });
 });
 
-describe("extractAonMeta: D29-99 name-template resolution (P11 S1)", () => {
+describe("extractAonMeta: name-template resolution", () => {
   function actionHit(id: string, name: string): AonHit {
     return {
       _id: id,
@@ -419,7 +419,7 @@ describe("extractAonMeta: D29-99 name-template resolution (P11 S1)", () => {
     );
   });
 
-  it("resolves BOTH glyph forms in the same name, and the D29-98 overlap case ('10 minutes (concentrate, manipulate)') lands in the digit drop family after resolution", () => {
+  it("resolves BOTH glyph forms in the same name, and the name-template/drop overlap case ('10 minutes (concentrate, manipulate)') lands in the digit drop family after resolution", () => {
     const meta = extractAonMeta(
       "action",
       actionHit(

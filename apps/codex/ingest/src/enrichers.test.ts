@@ -156,7 +156,7 @@ describe("parseCheckArg", () => {
     });
   });
 
-  it("captures unknown keys/flags into `extra` instead of hard-failing (D29-6: unknown KEYS in a known form don't fail)", () => {
+  it("captures unknown keys/flags into `extra` instead of hard-failing (unknown KEYS in a known form don't fail)", () => {
     const parsed = parseCheckArg("fortitude|dc:32|traits:curse,holy|overrideTraits");
     expect(parsed.extra).toEqual({ overrideTraits: true });
   });
@@ -258,7 +258,7 @@ describe("parseActionArg", () => {
   });
 });
 
-describe("mergeLocalizeMaps (D29-5 precedence)", () => {
+describe("mergeLocalizeMaps precedence", () => {
   it("re-en.json wins over en.json for a key present in both with differing text", () => {
     // Ascending precedence: earlier files lose to later ones.
     const merged = mergeLocalizeMaps([{ K: "from en" }, { K: "from re-en" }]);

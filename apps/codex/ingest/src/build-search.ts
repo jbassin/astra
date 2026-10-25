@@ -1,16 +1,15 @@
-// D29-34 (P3 S2) — the offline Pagefind index build over the corpus.
+// The offline Pagefind index build over the corpus.
 //
 // HOST-ONLY: the native Pagefind indexer peaks at ~3.8 GB RSS during
-// `writeFiles` at the full 44,808-entity corpus (measured, spec §1/§6) —
+// `writeFiles` at the full 44,808-entity corpus (measured) —
 // this script must NEVER be wired into `vite build`, a CI lane, or a Docker
-// build step (P5's compose/bind-mount design inherits this constraint
-// unchanged). Run it via `just codex-search-index` (host only).
+// build step (the web app's compose/bind-mount design inherits this
+// constraint). Run it via `just codex-search-index` (host only).
 //
-// Walks the corpus via `createCorpusReader` — the SAME fs layer P2's routes
-// read through (D29-23), not a second ad-hoc reader — extracts plain text
+// Walks the corpus via `createCorpusReader` — the SAME fs layer the web
+// app's routes read through, not a second ad-hoc reader — extracts plain text
 // per entity via the generalized `collectText`/`statsText` helpers in
-// `@astra/codex-corpus` (adversarial N9: no `collectText` symbol
-// existed before this slice), and calls Pagefind's NodeJS `addCustomRecord`
+// `@astra/codex-corpus`, and calls Pagefind's NodeJS `addCustomRecord`
 // directly with structured `meta`/`filters` — unlike akasha's
 // `build-search.ts` precedent (`addHTMLFile` over rendered HTML: akasha has
 // no structured facet data to carry), codex has real per-entity
@@ -20,7 +19,7 @@
 // "paths passed in, the CLI wrapper resolves the real ones" split as
 // `transform.ts`'s `runTransform`/`transformMain()` — so the CI-hermetic
 // fixture test (`build-search.test.ts`) can call it against the committed
-// fixture corpus + a fresh temp dir with zero `data/` reads (D29-12).
+// fixture corpus + a fresh temp dir with zero `data/` reads.
 
 import { mkdir, rm } from "node:fs/promises";
 import { parseArgs } from "node:util";
@@ -29,8 +28,8 @@ import { collectText, statsText, type CodexNode } from "@astra/codex-corpus";
 import { createCorpusReader, type CorpusReader } from "@astra/codex-corpus/reader";
 import * as pagefind from "pagefind";
 
-/** Trait case-folding for the search FILTER only (D29-32/D29-34: "trait
- * case-folding lives at the UI layer" / "traits (case-folded)") — lowercase
+/** Trait case-folding for the search FILTER only (trait case-folding lives at
+ * the UI layer, and the search filter is case-folded too) — lowercase
  * fold, matching the browse-layer convention exactly (1,082 raw strings ->
  * 644 distinct, measured). Corpus data itself, and the indexed CONTENT text,
  * stay verbatim; only the filter value is folded. */
@@ -39,7 +38,7 @@ function foldTrait(trait: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// D29-101b (P11 S1): "leads to..." exclusion — AoN's navigational
+// "leads to..." exclusion — AoN's navigational
 // prerequisite-chain heading ("Fledgling Flight leads to...") + its trailing
 // crossref-link paragraph ("Juvenile Flight") index as pure noise that
 // clobbers a real query's excerpt (measured 1,404 instances, ALL top-level
@@ -84,7 +83,7 @@ function stripLeadsTo(body: readonly CodexNode[]): CodexNode[] {
   return result;
 }
 
-// S4 (D29-36) real-corpus finding, recorded here so it isn't re-attempted
+// Real-corpus finding, recorded here so it isn't re-attempted
 // blind: `meta.title` gets NO ranking weight in Pagefind's `addCustomRecord`
 // path (display-only) — a single-common-word entity name (verified live on
 // "heal": `/spell/heal` doesn't crack the top 40 of ~2,676 "heal"-prefix
@@ -96,10 +95,9 @@ function stripLeadsTo(body: readonly CodexNode[]): CodexNode[] {
 // regression: Pagefind's excerpt window sometimes anchors inside that
 // injected span (most likely exactly when the query matches the entity's own
 // name — the highest-value case) and leaks the raw `data-pagefind-weight="…"`
-// attribute text into the rendered excerpt. Reverted; `/search`'s "entity
-// name -> top hit" gate uses a distinctive multi-word name instead ("red
-// dragon" — verified correct), matching the spec's own literal phrasing
-// ("try 'heal', 'red dragon'"), and "heal" is a documented, accepted
+// attribute text into the rendered excerpt. So `/search`'s "entity
+// name -> top hit" check uses a distinctive multi-word name instead ("red
+// dragon" — verified correct), and "heal" is a documented, accepted
 // limitation of Pagefind's default TF-based ranking for extremely common
 // single-word queries in a densely thematic corpus — not a codex bug.
 
@@ -126,14 +124,14 @@ export async function buildSearchIndex(
       // `row.id` is `"{category}/{slug}"` (optionally `@legacy`-suffixed) —
       // the slug segment (needed for `reader.entity()`) is everything after
       // the first "/"; a real `sluggify()` slug can never itself contain a
-      // "/" (D29-23's own traversal guard), so this split is exact.
+      // "/" (the reader's own traversal guard), so this split is exact.
       const slug = row.id.slice(category.length + 1);
       const entity = reader.entity(category, slug);
 
       const bodyText = collectText(stripLeadsTo(entity.body));
       const loreText = entity.loreBody !== undefined ? collectText(entity.loreBody) : "";
-      // Category-gated per D29-34's "a statsText() for creature/hazard": since
-      // S1's gap extractors, hp/size/ac/save facet fields also appear on
+      // Category-gated (statsText() for creature/hazard only): the gap
+      // extractors put hp/size/ac/save facet fields on
       // ancestry/class/vehicle/warfare-army — calling statsText unconditionally
       // would index spurious "HP 8 Size med" fragments on those categories.
       const stats =
@@ -144,8 +142,8 @@ export async function buildSearchIndex(
 
       // meta/filters read off the already-loaded `IndexRow` (`row`), not a
       // second copy off `entity` — `row` already carries every scalar field
-      // needed here (name/level/rarity/source/edition/traits/superseded,
-      // D29-33c); `entity` is fetched solely for body/loreBody/stats text.
+      // needed here (name/level/rarity/source/edition/traits/superseded);
+      // `entity` is fetched solely for body/loreBody/stats text.
       const meta: Record<string, string> = {
         title: row.name,
         category,
@@ -154,7 +152,7 @@ export async function buildSearchIndex(
       };
       if (row.level !== undefined) meta.level = String(row.level);
       if (row.rarity !== undefined) meta.rarity = row.rarity;
-      // D29-101a (P11 S1): the owning-class label, off the `Class`
+      // The owning-class label, off the `Class`
       // mastheadExtra entry (~1,254 class-feature entities) — values carry a
       // measured leading space, hence the `.trim()`.
       const classEntry = entity.mastheadExtra?.find((m) => m.label === "Class");
@@ -189,17 +187,17 @@ export async function buildSearchIndex(
     }
   }
 
-  // S4 real-corpus finding, not spec'd up front: Pagefind's `writeFiles` is
+  // Real-corpus finding: Pagefind's `writeFiles` is
   // NOT idempotent against a pre-existing `outDir` — content-hashed
   // fragment/index/filter/meta files from a PRIOR build are never cleaned up
   // (only NEW hashes get written), so a second `just codex-search-index` run
   // against the same directory silently accumulates duplicate near-identical
   // records for every re-indexed url forever (verified: two `.pf_fragment`
-  // files both claiming `"url":"/spell/heal"` after a second run — S2's
-  // original script never cleared `outDir`). A full `rm -rf` + recreate
-  // before every write is the fix — `just codex-search-index`/`codex-refresh`
-  // already treat this as a from-scratch rebuild (D29-34: "the search index
-  // rides the same bind-mount as the corpus"), so there is no state worth
+  // files both claiming `"url":"/spell/heal"` after a second run without
+  // clearing `outDir`). A full `rm -rf` + recreate before every write is the
+  // fix — `just codex-search-index`/`codex-refresh` already treat this as a
+  // from-scratch rebuild (the search index rides the same bind-mount as the
+  // corpus), so there is no state worth
   // preserving across a re-run.
   await rm(outDir, { recursive: true, force: true });
   await mkdir(outDir, { recursive: true });

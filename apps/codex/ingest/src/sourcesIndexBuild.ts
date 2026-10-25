@@ -9,12 +9,12 @@ import type {
 import { deriveBookEdition, deriveBookLicense } from "./bookMeta";
 
 /**
- * P4 (D29-43): the `/sources` aggregate index builder. `productLine` =
+ * The `/sources` aggregate index builder. `productLine` =
  * majority raw AoN `primary_source_category` across a book's CITING docs
  * (present on 43,684/43,684 real AoN docs — total for every AoN-cited
  * book); a book with zero AoN citations at all (the Foundry-only strings,
  * ~253 of them measured) gets no `productLine` — the "Other" bucket,
- * expected per spec, not a gap.
+ * expected, not a gap.
  */
 
 export interface AonBookCitation {
@@ -35,7 +35,7 @@ export interface SourcesIndexBuildInput {
    * book string lands on the exact same final key its entities use. */
   bookNameMap: ReadonlyMap<string, string>;
   /** final book → a matching `source`-category entity's own license (the
-   * D29-39 book-license derivation's second tier). */
+   * book-license derivation's second tier). */
   bookSourceLicense: ReadonlyMap<string, License>;
   /** final book → the matching `source`-category entity's own CodexId
    * (245 of the normalized books have one). */
@@ -50,17 +50,17 @@ export interface SourcesIndexStats {
   classifiedEntities: number;
   otherEntities: number;
   classifiedEntityPct: number;
-  /** D29-43's recalibrated guard: true when classified-book coverage is
-   * BELOW 90% of entities — a recorded deviation (fallback grouping is a
-   * frontend/S4 concern, this is just the trip-wire signal in the report). */
+  /** True when classified-book coverage is BELOW 90% of entities — a
+   * recorded deviation (fallback grouping is a frontend concern, this is
+   * just the trip-wire signal in the report). */
   belowNinetyPctGuard: boolean;
 }
 
 /**
- * D30-45: the homebrew product-line override, consulted BEFORE the AoN
+ * The homebrew product-line override, consulted BEFORE the AoN
  * majority vote below — the store's `system.publication.title` never carries
  * an AoN `primary_source_category` (zero citations, `loadHomebrewSide`
- * routes it around the AoN join entirely per D30-43), so the majority-vote
+ * routes it around the AoN join entirely), so the majority-vote
  * path alone would always drop it into the "Other" bucket. **Keyed on the
  * post-`bookNormalize` FINAL book string** — for this title the normalized
  * form IS the literal title (asserted in `sourcesIndexBuild.test.ts` against
@@ -71,11 +71,11 @@ export const PRODUCT_LINE_OVERRIDE: Readonly<Record<string, string>> = {
   "Liturgy of the Iridite Vol.2": "Homebrew",
 };
 
-/** Book-level license for override books (0030 S4): `deriveBookLicense`'s two
+/** Book-level license for override books: `deriveBookLicense`'s two
  * tiers (licenseMap membership; a matching `source`-category entity's own
- * license) both require AoN-side presence a homebrew book never has, so LotI2
- * fell to `"unknown"` — rendered as a literal "License unknown" badge on
- * `/sources` despite every one of its entities carrying `OGL` from
+ * license) both require AoN-side presence a homebrew book never has, so
+ * without this LotI2 falls to `"unknown"` — a literal "License unknown" badge
+ * on `/sources` despite every one of its entities carrying `OGL` from
  * `system.publication`. Same committed-override posture (and key contract) as
  * `PRODUCT_LINE_OVERRIDE` above. */
 export const BOOK_LICENSE_OVERRIDE: Readonly<Record<string, License>> = {
@@ -100,8 +100,8 @@ export function buildSourcesIndex(input: SourcesIndexBuildInput): {
 } {
   const entityCountByBook = new Map<string, number>();
   const editionsByBook = new Map<string, Edition[]>();
-  // P4 S4 (D29-43's "per-category count links into filtered browse"): the
-  // same `finalEntities` pass already used for `entityCountByBook` also
+  // Per-category counts (the `/sources` page links each into filtered
+  // browse): the same `finalEntities` pass already used for `entityCountByBook` also
   // carries `category` on every entity — a book -> category -> count
   // breakdown, for free, in the same loop.
   const categoryCountsByBook = new Map<string, Map<string, number>>();

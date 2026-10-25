@@ -9,31 +9,30 @@ import type {
 import { SUPPRESSED_EMBED_NODE, lookupEmbedOverride } from "./embedOverrides";
 
 /**
- * D29-14/-17: the AoN-primary drop pass — S5c, the final P1.5 slice. Runs
- * AFTER `join.ts`'s full 5-pass join (identity + crossref/embed patching
- * already complete) and BEFORE `emit.ts` writes anything to disk.
+ * The AoN-primary drop pass. Runs AFTER `join.ts`'s full 5-pass join
+ * (identity + crossref/embed patching already complete) and BEFORE
+ * `emit.ts` writes anything to disk.
  *
- * ## The policy (D29-14, supersedes the P1 "keep everything" default)
+ * ## The policy
  *
  * The corpus keeps:
  *   (a) every AoN-only entity (`proseOnly: true`),
  *   (b) every MERGED entity (has its own `aonUrl` — Foundry+AoN joined),
- *   (c) every 1:N variant of a merged family (`variantOf` set — D29-7; a
- *       variant has NO `aonUrl` of its own by construction, but it's still
- *       part of an AoN-backed family, not standalone Foundry-only content),
- *   (d) Foundry-only entities in `creature`/`hazard` ONLY (D29-17's
- *       carve-out — AP content readers look up that AoN doesn't index).
+ *   (c) every 1:N variant of a merged family (`variantOf` set; a variant
+ *       has NO `aonUrl` of its own by construction, but it's still part of
+ *       an AoN-backed family, not standalone Foundry-only content),
+ *   (d) Foundry-only entities in `creature`/`hazard` ONLY (the carve-out —
+ *       AP content readers look up that AoN doesn't index).
  * Every OTHER Foundry-only entity (no `aonUrl`, no `proseOnly`, no
  * `variantOf`, category outside the carve-out) is dropped — including the
  * four categories that are Foundry-only in their entirety (`boon`,
  * `pfs-boon`, `kingdom-feature`, `effect`, `categoryMap.ts`'s own documented
  * Foundry-only buckets) AND every partially-joined category's unjoined
  * residue (e.g. the weapon/armor/shield/class-feature/action/creature-ability
- * entities that still don't join even after D29-15's equivalence widening).
- * D29-98 (P11) widened this with the activation-debris families below;
- * D29-133 (P14) adds two more (`journalSectionHeaderDropFamily`/
- * `unknownBookHuskDropFamily`) — same "override the keep, checked first"
- * shape.
+ * entities that still don't join even after the join's equivalence widening).
+ * The activation-debris families below widen this, and two more debris
+ * families (`journalSectionHeaderDropFamily`/`unknownBookHuskDropFamily`)
+ * share the same "override the keep, checked first" shape.
  *
  * ## Why this needs its OWN crossref/embed re-validation pass
  *
@@ -54,10 +53,10 @@ import { SUPPRESSED_EMBED_NODE, lookupEmbedOverride } from "./embedOverrides";
  * this pass only ever needs "does the target id still exist in the kept
  * set").
  *
- * ## D29-134 (P14 S1): the embed override table is ALSO applied here, not
- * at `join.ts`'s `patchEmbed`
+ * ## The embed override table is ALSO applied here, not at `join.ts`'s
+ * `patchEmbed`
  *
- * The 20 repointable + 1 suppressed unresolved embeds this round fixes look,
+ * The 20 repointable + 1 suppressed unresolved embeds the table fixes look,
  * at `patchEmbed` time, like ordinary RESOLVED embeds — their raw targets
  * are real Foundry drafts that `join.ts` successfully resolves
  * (`resolved: true`); it's THIS pass's drop of those drafts (unjoined
@@ -79,11 +78,11 @@ export type ReportFn = (cls: string, detail: string) => void;
 const CARVE_OUT_CATEGORIES: ReadonlySet<string> = new Set(["creature", "hazard"]);
 
 // ---------------------------------------------------------------------------
-// D29-98 (P11 S1): widened activation-debris drop — folds INTO this same
-// pass (not a separate one) because the entities it targets are otherwise
-// AoN-backed `action` entities that D29-14/-17's own `isAonBacked` check
+// Widened activation-debris drop — folds INTO this same pass (not a
+// separate one) because the entities it targets are otherwise AoN-backed
+// `action` entities that the AoN-primary pass's own `isAonBacked` check
 // would keep unconditionally; this predicate overrides that for exactly the
-// two nameless-activation shapes below, runs on RESOLVED names (D29-99's
+// two nameless-activation shapes below, runs on RESOLVED names (the
 // extract-time rename already landed by the time this pass sees an entity —
 // the extract -> join -> drop pipeline order gives that for free), and is
 // entirely independent of category-carve-out/AoN-backing status.
@@ -109,7 +108,7 @@ const ACTIVATION_KEEP_LIST: ReadonlySet<string> = new Set([
 ]);
 
 // ---------------------------------------------------------------------------
-// D29-133 (P14 S1): two debris drop-families — zero-body Foundry-journal
+// Two debris drop-families — zero-body Foundry-journal
 // section dividers ("Common"/"Uncommon"/"Rare"/"Archetypes") and zero-stat
 // `book:"unknown"` creature husks. Both mirror `activationDropFamily`'s
 // shape (a clean structural predicate, no name regexes/ID keep-lists) and
@@ -118,7 +117,7 @@ const ACTIVATION_KEEP_LIST: ReadonlySet<string> = new Set([
 
 const FOUNDRY_JOURNAL_BOOK_PREFIX = "Foundry Journal:";
 
-/** `journalSectionHeaderDropFamily` (D29-133): a `proseOnly` Foundry-journal
+/** `journalSectionHeaderDropFamily`: a `proseOnly` Foundry-journal
  * page with an EMPTY body — a bare section-header divider
  * (`journals.ts:decideJournalPages`'s "non-matching page becomes its own
  * standalone entity with no content check" gap). Matches exactly 4 on the
@@ -140,7 +139,7 @@ export function journalSectionHeaderDropFamily(
   );
 }
 
-/** `unknownBookHuskDropFamily` (D29-133): an orphaned Foundry `creature`
+/** `unknownBookHuskDropFamily`: an orphaned Foundry `creature`
  * Actor with `book:"unknown"`, an empty body, zero facets, and zero traits —
  * a zero-stat husk with no extractable content at all. Matches exactly 5 on
  * the real corpus (`creature/{daji-level-1,daji-level-3,daji-level-5,flappy,
@@ -168,9 +167,9 @@ const HAS_OPEN_PAREN_RE = /\(/;
 const BARE_DURATION_RE = /^\d+\s+(?:minute|hour|day|round)s?$/i;
 
 /** Family (ii): a name starting with a digit that is an activation string — the
- * "1 hour (envision, Interact)" / "10 minutes (concentrate, manipulate)" shape
- * (stakeholder-widened amendment, D29-98), including the truncated form with no
- * closing paren ("1 minute (manipulate") and a bare duration ("1 minute"). */
+ * "1 hour (envision, Interact)" / "10 minutes (concentrate, manipulate)" shape,
+ * including the truncated form with no closing paren ("1 minute (manipulate")
+ * and a bare duration ("1 minute"). */
 function isDigitFamily(name: string): boolean {
   if (!DIGIT_LEADING_RE.test(name)) return false;
   return HAS_OPEN_PAREN_RE.test(name) || BARE_DURATION_RE.test(name.trim());
@@ -187,18 +186,17 @@ function isMarkupFamily(name: string): boolean {
 
 export type ActivationDropFamily = "paren" | "digit" | "markup";
 
-/** Which family (if any) `entity` matches — `undefined` for anything not a
- * drop candidate (wrong category, not AoN-only, on the keep-list, or
- * matching neither shape). Scoped to `proseOnly === true` (AoN-only, no
- * Foundry pairing at all — same predicate `isAonBacked` uses for that one
- * component) per D29-98's own wording ("drop AoN-only `action` entities") —
- * verified against the real corpus: a real-content Foundry action doc can
- * ALSO carry a parenthetical-prefixed name (e.g. AP-specific actions named
- * `"(Affinity Ablaze) Arms of Balance: …"`) that must NOT be swept up by
- * this nameless-activation-fragment predicate; every one of the 9 keep-list
- * entities is itself `proseOnly: true`, confirming the scope. Exported so a
- * caller/test can reason about family membership without re-deriving the
- * regexes. */
+/** Which family (if any) `entity` matches — `undefined` for anything not a drop
+ * candidate (wrong category, not AoN-only, on the keep-list, or matching
+ * neither shape). Scoped to `proseOnly === true` (AoN-only, no Foundry pairing
+ * at all — same predicate `isAonBacked` uses for that one component) — the
+ * policy drops AoN-only `action` entities only. Verified against the real
+ * corpus: a real-content Foundry action doc can ALSO carry a
+ * parenthetical-prefixed name (e.g. AP-specific actions named
+ * `"(Affinity Ablaze) Arms of Balance: …"`) that must NOT be swept up by this
+ * nameless-activation-fragment predicate; every one of the 9 keep-list entities
+ * is itself `proseOnly: true`, confirming the scope. Exported so a caller/test
+ * can reason about family membership without re-deriving the regexes. */
 export function activationDropFamily(
   entity: Pick<CodexEntity, "id" | "category" | "name" | "proseOnly">,
 ): ActivationDropFamily | undefined {
@@ -217,9 +215,8 @@ export interface ActivationDropAccounting {
   digitFamily: number;
   /** Family (iii): markup-only names. */
   markupFamily: number;
-  /** Every family-(ii) (digit-leading) dropped NAME — NOT capped (D29-98's
-   * own explicit "the report must list every family-(ii) name dropped"
-   * requirement, for orchestrator eyeball review before the S1 commit), one
+  /** Every family-(ii) (digit-leading) dropped NAME — NOT capped (the
+   * report lists every family-(ii) name dropped, for eyeball review), one
    * entry per dropped entity (`"id: name"`), sorted by id for determinism. */
   digitFamilyNames: string[];
 }
@@ -228,9 +225,9 @@ function isAonBacked(entity: CodexEntity): boolean {
   return entity.aonUrl !== undefined || entity.proseOnly === true || entity.variantOf !== undefined;
 }
 
-/** True when `entity` would be dropped under D29-14/-17 — exported for tests
- * + for anything that wants to reason about the policy without running the
- * whole pass. */
+/** True when `entity` would be dropped by the AoN-primary policy — exported
+ * for tests + for anything that wants to reason about the policy without
+ * running the whole pass. */
 export function isDropCandidate(
   entity: Pick<CodexEntity, "category" | "aonUrl" | "proseOnly" | "variantOf">,
 ): boolean {
@@ -250,11 +247,11 @@ function reconcileInline(
   switch (node.kind) {
     case "crossref":
       if (keptIds.has(node.targetId)) return node;
-      report("postDropBrokenRef", `${node.targetId} -> dropped by the D29-14 AoN-primary pass`);
+      report("postDropBrokenRef", `${node.targetId} -> dropped by the AoN-primary pass`);
       return { kind: "brokenRef", target: node.targetId, display: node.display };
     case "embed": {
-      // D29-134: the override lookup sits BEFORE the early-return below —
-      // see the file header's "D29-134" section for why this is the ONLY
+      // The override lookup sits BEFORE the early-return below — see the
+      // file header's embed-override section for why this is the ONLY
       // correct application point (patchEmbed never sees these as
       // unresolved; this pass's drop is what makes them unresolved).
       const override = lookupEmbedOverride(node.target);
@@ -267,7 +264,7 @@ function reconcileInline(
         return { ...node, target: override.to, resolved: keptIds.has(override.to) };
       }
       if (!node.resolved || keptIds.has(node.target)) return node;
-      report("postDropEmbedBroken", `${node.target} -> dropped by the D29-14 AoN-primary pass`);
+      report("postDropEmbedBroken", `${node.target} -> dropped by the AoN-primary pass`);
       return { ...node, resolved: false };
     }
     case "localizedBoilerplate":
@@ -307,7 +304,7 @@ function reconcileNode(node: CodexNode, keptIds: ReadonlySet<string>, report: Re
     case "divider":
       return node;
     case "statRow":
-      // P10 (D29-94): same "cells are InlineNode[][], map through
+      // Same "cells are InlineNode[][], map through
       // reconcileInline directly" shape as `join.ts`'s `patchNode`.
       return {
         ...node,
@@ -350,7 +347,7 @@ function reconcileCrossrefs(entities: readonly CodexEntity[], report: ReportFn):
 }
 
 // ---------------------------------------------------------------------------
-// drop accounting (S5c: the report's drop-accounting section)
+// drop accounting (the report's drop-accounting section)
 // ---------------------------------------------------------------------------
 
 export interface CategoryDropStat {
@@ -367,24 +364,23 @@ export interface DropAccounting {
   totalDropped: number;
   byCategory: CategoryDropStat[]; // sorted by category, dropped > 0 only
   carveOut: CarveOutStat[]; // sorted by category — creature/hazard Foundry-only-but-kept counts
-  /** D29-98 (P11 S1): the widened activation-debris drop — kept SEPARATE
-   * from `totalDropped`/`byCategory` above (a different policy: these
-   * entities ARE AoN-backed and would otherwise survive the D29-14/-17
-   * pass) so the report's D29-14/-17 section keeps its original meaning. */
+  /** The widened activation-debris drop — kept SEPARATE from
+   * `totalDropped`/`byCategory` above (a different policy: these entities
+   * ARE AoN-backed and would otherwise survive the AoN-primary pass) so the
+   * report's AoN-primary section counts only that policy's drops. */
   activationDrop: ActivationDropAccounting;
-  /** D29-98: `remasteredAs`/`legacyOf` edges stripped off SURVIVING entities
+  /** `remasteredAs`/`legacyOf` edges stripped off SURVIVING entities
    * that pointed into the (activation ∪ AoN-primary) drop set — one count
    * per stripped pointer, derive-at-build against the final predicate. */
   editionPointersStripped: number;
-  /** D29-133 (P14 S1): the journal-section-header debris drop (kept SEPARATE
-   * from `totalDropped`/`byCategory`, same rationale as `activationDrop` —
-   * these docs ARE `proseOnly` and would otherwise survive unconditionally).
-   * Pins at exactly 4 on the real corpus. */
+  /** The journal-section-header debris drop (kept SEPARATE from
+   * `totalDropped`/`byCategory`, same rationale as `activationDrop` — these
+   * docs ARE `proseOnly` and would otherwise survive unconditionally). Pins
+   * at exactly 4 on the real corpus. */
   journalSectionHeaderDrop: number;
-  /** D29-133 (P14 S1): the unknown-book creature-husk debris drop (kept
-   * SEPARATE for the same reason — these docs would otherwise survive via
-   * the `creature`/`hazard` carve-out). Pins at exactly 5 on the real
-   * corpus. */
+  /** The unknown-book creature-husk debris drop (kept SEPARATE for the same
+   * reason — these docs would otherwise survive via the `creature`/`hazard`
+   * carve-out). Pins at exactly 5 on the real corpus. */
   unknownBookHuskDrop: number;
 }
 
@@ -393,7 +389,7 @@ export interface DropResult {
   accounting: DropAccounting;
 }
 
-/** D29-98: strips every id in `dropSet` out of `ids`, report-counting each
+/** Strips every id in `dropSet` out of `ids`, report-counting each
  * removal; returns `undefined` (never `[]`) when nothing survives, matching
  * this schema's "absent, never empty array" convention elsewhere
  * (`loreBody`/`embeddedItems`/`attachedSidebars`). */
@@ -413,14 +409,13 @@ function stripDroppedIds(
   return survivors.length > 0 ? survivors : undefined;
 }
 
-/** D29-98: re-walks every KEPT entity's `remasteredAs`/`legacyOf` arrays,
- * dropping any id that points into `dropSet` (the union of this pass's
- * activation-drop AND the existing D29-14/-17 AoN-primary drop). Mirrors
- * `reconcileCrossrefs`' own "re-validate against the surviving set" posture,
- * but for the two top-level edition-pointer fields `reconcileNode`'s body/
- * loreBody/embeddedItems walk never touches — without this, S5's
- * `EditionBanner` would render a raw dangling id (D29-109a) on every kept
- * entity whose edition-pair sibling got dropped this pass (e.g.
+/** Re-walks every KEPT entity's `remasteredAs`/`legacyOf` arrays, dropping
+ * any id that points into `dropSet` (the union of every drop this pass
+ * makes). Mirrors `reconcileCrossrefs`' own "re-validate against the
+ * surviving set" posture, but for the two top-level edition-pointer fields
+ * `reconcileNode`'s body/loreBody/embeddedItems walk never touches — without
+ * this, the web app's `EditionBanner` would render a raw dangling id on
+ * every kept entity whose edition-pair sibling got dropped this pass (e.g.
  * `action/interact-142`). */
 function stripEditionPointers(
   entities: readonly CodexEntity[],
@@ -441,23 +436,22 @@ function stripEditionPointers(
 }
 
 /**
- * The full D29-14/-17/-18(post-drop)/D29-98 pass: partitions `entities` into
- * kept/dropped per BOTH policies (the original AoN-backing/carve-out
- * decision, plus the widened activation-debris override, which fires
- * regardless of AoN-backing), strips dangling `remasteredAs`/`legacyOf`
- * pointers off the survivors, re-validates crossrefs/embeds against the
- * surviving set, and returns both the final entity list AND the
- * drop-accounting the report renders. Pure — no disk I/O.
+ * The full drop pass: partitions `entities` into kept/dropped per BOTH policies
+ * (the AoN-backing/carve-out decision, plus the activation and debris
+ * drop-family overrides, which fire regardless of AoN-backing), strips dangling
+ * `remasteredAs`/`legacyOf` pointers off the survivors, re-validates
+ * crossrefs/embeds against the surviving set, and returns both the final entity
+ * list AND the drop-accounting the report renders. Pure — no disk I/O.
  *
- * D30-43 (0030 S1, review blocker B1) adds a THIRD override, checked ahead
- * of the other two: `homebrewIds` unconditionally keeps every entity whose
- * id is in the set — an id-set PARAMETER, never an entity marker field
+ * The homebrew keep-arm, checked after the drop-family overrides and ahead
+ * of the AoN-backed/carve-out decision: `homebrewIds` keeps every entity
+ * whose id is in the set — an id-set PARAMETER, never an entity marker field
  * (`CodexEntitySchema` is `.strict()`; a stray `origin:"homebrew"` field
  * would hard-fail `emitCorpus`'s `.parse()` for every homebrew doc). Without
  * this arm a homebrew spell/ritual (Foundry-only by construction: no
  * `aonUrl`, no `proseOnly`, no `variantOf`) would be dropped by the exact
- * same D29-14 policy that drops a genuine official Foundry-only spell — the
- * arm fires BEFORE the AoN-backed/carve-out decision so an official
+ * same AoN-primary policy that drops a genuine official Foundry-only spell —
+ * the arm fires BEFORE the AoN-backed/carve-out decision so an official
  * Foundry-only spell (never in `homebrewIds`) still drops normally.
  */
 export function applyAonPrimaryDrop(

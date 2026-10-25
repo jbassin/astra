@@ -36,7 +36,7 @@ describe("assembleFoundryEntity: real fixture — Balor (Actor, npc, embedded it
     readFileSync(join(FIXTURES, "foundry", "balor.json"), "utf8"),
   ) as RawFoundryDoc;
 
-  it("assembles the creature entity with facets from system.details.publication (D29-13)", () => {
+  it("assembles the creature entity with facets from system.details.publication", () => {
     const seenIds = new Set<string>();
     const reports: Array<{ cls: string; detail: string }> = [];
     const entity = assembleFoundryEntity({
@@ -68,7 +68,7 @@ describe("assembleFoundryEntity: real fixture — Balor (Actor, npc, embedded it
     expect(reports).toEqual([]); // no report-worthy residue on this fixture
   });
 
-  it("carries every embedded item, typed (no raw system JSON leak, S2 widening)", () => {
+  it("carries every embedded item, typed (no raw system JSON leak)", () => {
     const entity = assembleFoundryEntity({
       packDir: "pathfinder-bestiary",
       docClass: "Actor",
@@ -96,7 +96,7 @@ describe("assembleFoundryEntity: real fixture — Balor (Actor, npc, embedded it
     expect(dispellingStrike?.actionCost).toBe("free");
   });
 
-  it("D29-20 (P1.6): extracts CreatureStats — speeds/abilityMods/senses/languages/immunities/weaknesses/skills; null resistances OMITTED", () => {
+  it("extracts CreatureStats — speeds/abilityMods/senses/languages/immunities/weaknesses/skills; null resistances OMITTED", () => {
     const entity = assembleFoundryEntity({
       packDir: "pathfinder-bestiary",
       docClass: "Actor",
@@ -115,8 +115,8 @@ describe("assembleFoundryEntity: real fixture — Balor (Actor, npc, embedded it
     expect(stats?.languages).toEqual(["chthonian", "draconic", "empyrean"]);
     expect(stats?.immunities).toEqual(["fire"]);
     // Balor's raw `system.attributes.resistances` is a literal JSON `null` —
-    // the field must be OMITTED, never a null/empty passthrough (the S4
-    // emit-gate `present()` lesson applied to stats).
+    // the field must be OMITTED, never a null/empty passthrough (the
+    // `present()` guard applied to stats).
     expect(stats?.resistances).toBeUndefined();
     expect(stats?.weaknesses).toEqual([
       { type: "cold", value: 20 },
@@ -126,7 +126,7 @@ describe("assembleFoundryEntity: real fixture — Balor (Actor, npc, embedded it
     expect(stats?.skills).toMatchObject({ athletics: 37, intimidation: 38, stealth: 33 });
   });
 
-  it("D29-20 (P1.6): melee strike items carry attackBonus + flattened damage; spellcastingEntry carries dc/attack/tradition", () => {
+  it("melee strike items carry attackBonus + flattened damage; spellcastingEntry carries dc/attack/tradition", () => {
     const entity = assembleFoundryEntity({
       packDir: "pathfinder-bestiary",
       docClass: "Actor",
@@ -159,7 +159,7 @@ describe("assembleFoundryEntity: real fixture — Balor (Actor, npc, embedded it
   });
 });
 
-describe("assembleFoundryEntity: D29-73 (P7 S1) strike range extraction", () => {
+describe("assembleFoundryEntity: strike range extraction", () => {
   /** A minimal npc Actor carrying one `melee`-typed embedded item whose raw
    * `system.range` is overridden per test. */
   function creatureDoc(items: RawFoundryDoc[]): RawFoundryDoc {
@@ -272,7 +272,7 @@ describe("assembleFoundryEntity: D29-73 (P7 S1) strike range extraction", () => 
   });
 });
 
-describe("assembleFoundryEntity: D29-74 (P7 S1) lore-skill merge into stats.skills", () => {
+describe("assembleFoundryEntity: lore-skill merge into stats.skills", () => {
   function creatureDoc(
     items: RawFoundryDoc[],
     skills?: Record<string, { base?: number }>,
@@ -375,7 +375,7 @@ describe("assembleFoundryEntity: D29-74 (P7 S1) lore-skill merge into stats.skil
     expect(stats?.skills).toEqual({ "academia-lore": 8 });
   });
 
-  it("a lore item with no system.mod.value at all contributes nothing (present() guard, same S4 emit-gate convention)", () => {
+  it("a lore item with no system.mod.value at all contributes nothing (present() guard)", () => {
     const entity = assembleFoundryEntity({
       packDir: "pathfinder-bestiary",
       docClass: "Actor",
@@ -389,7 +389,7 @@ describe("assembleFoundryEntity: D29-74 (P7 S1) lore-skill merge into stats.skil
     expect(stats?.skills).toBeUndefined();
   });
 
-  it("a hazard's lore items never merge — HazardStatsSchema has no skills field, and no crash occurs (D29-74 hazard guard)", () => {
+  it("a hazard's lore items never merge — HazardStatsSchema has no skills field, and no crash occurs (hazard guard)", () => {
     const entity = assembleFoundryEntity({
       packDir: "hazards",
       docClass: "Actor",
@@ -414,7 +414,7 @@ describe("assembleFoundryEntity: D29-74 (P7 S1) lore-skill merge into stats.skil
   });
 });
 
-describe("assembleFoundryEntity: D29-20 (P1.6) HazardStats extraction", () => {
+describe("assembleFoundryEntity: HazardStats extraction", () => {
   function hazardDoc(): RawFoundryDoc {
     return {
       _id: "hazID000000001",
@@ -541,7 +541,7 @@ describe("assembleFoundryEntity: D29-20 (P1.6) HazardStats extraction", () => {
   });
 });
 
-describe("assembleFoundryEntity: equipment fans to weapon/armor/shield per doc type (D29-7)", () => {
+describe("assembleFoundryEntity: equipment fans to weapon/armor/shield per doc type", () => {
   function weaponDoc(overrides: Partial<RawFoundryDoc> = {}): RawFoundryDoc {
     return {
       _id: "wpnID0000000001",
@@ -607,7 +607,7 @@ describe("assembleFoundryEntity: equipment fans to weapon/armor/shield per doc t
   });
 });
 
-describe("assembleFoundryEntity: D29-19 npc-only creature import (P1.6)", () => {
+describe("assembleFoundryEntity: npc-only creature import", () => {
   it("EXCLUDES a character-typed Actor (iconics pregen) and reports excludedActors", () => {
     const reports: Array<{ cls: string; detail: string }> = [];
     const entity = assembleFoundryEntity({
@@ -633,7 +633,7 @@ describe("assembleFoundryEntity: D29-19 npc-only creature import (P1.6)", () => 
     expect(reports).toHaveLength(1);
   });
 
-  it("still assembles an npc-typed Actor in the same packs (the D29-19 narrowing is character-only)", () => {
+  it("still assembles an npc-typed Actor in the same packs (the narrowing is character-only)", () => {
     const entity = assembleFoundryEntity({
       packDir: "kingmaker-bestiary",
       docClass: "Actor",
@@ -674,7 +674,7 @@ describe("assembleFoundryEntity: D29-19 npc-only creature import (P1.6)", () => 
   });
 });
 
-describe("assembleFoundryEntity: license/edition fallback when publication is missing (D29-13)", () => {
+describe("assembleFoundryEntity: license/edition fallback when publication is missing", () => {
   it("reports missingPublication and defaults to license unknown / edition legacy", () => {
     const reports: Array<{ cls: string; detail: string }> = [];
     const entity = assembleFoundryEntity({
@@ -716,7 +716,7 @@ describe("assembleFoundryEntity: license/edition fallback when publication is mi
   });
 });
 
-describe("assembleFoundryEntity: slug mismatch + collision reporting (S2 scope: no legacy suffix yet)", () => {
+describe("assembleFoundryEntity: slug mismatch + collision reporting (no legacy suffix at assembly)", () => {
   it("reports a slugMismatch when the file basename disagrees with sluggify(name)", () => {
     const reports: Array<{ cls: string; detail: string }> = [];
     assembleFoundryEntity({
@@ -738,7 +738,7 @@ describe("assembleFoundryEntity: slug mismatch + collision reporting (S2 scope: 
     expect(reports.some((r) => r.cls === "slugMismatch")).toBe(true);
   });
 
-  it("reports a slugCollision for two docs resolving to the same id, keeping both distinct in-memory (S4's worklist)", () => {
+  it("reports a slugCollision for two docs resolving to the same id, keeping both distinct in-memory (join.ts resolves them)", () => {
     const reports: Array<{ cls: string; detail: string }> = [];
     const seenIds = new Set<string>();
     const doc = (name: string, id: string): RawFoundryDoc => ({
@@ -786,7 +786,7 @@ describe("assembleFoundryEntity: excluded pack/type returns undefined", () => {
   });
 });
 
-describe("assembleFoundryEntity: P3 S1 (D29-33a) — the 5 extractor-gap categories", () => {
+describe("assembleFoundryEntity: the 5 extractor-gap categories", () => {
   it("ancestry: extracts hp/size/speed off the bare system.hp/size/speed fields (verified on Tengu)", () => {
     const entity = assembleFoundryEntity({
       packDir: "ancestries",
@@ -976,9 +976,9 @@ describe("assembleFoundryEntity: P3 S1 (D29-33a) — the 5 extractor-gap categor
   });
 });
 
-describe("assembleFoundryEntity: D29-113 (P12 S1) ClassStats scalar extraction", () => {
+describe("assembleFoundryEntity: ClassStats scalar extraction", () => {
   /** A full, real-shaped `system` for a `class` Item — every field
-   * D29-113's `extractClassStats` reads, verified against the real Fighter
+   * `extractClassStats` reads, verified against the real Fighter
    * class doc (`hp:10, keyAbility:["dex","str"], perception:2,
    * savingThrows:{fortitude:2,reflex:2,will:1}, attacks (Advanced Trained,
    * simple/martial/unarmed=2), defenses (unarmored/light/medium/heavy=1),
@@ -1139,7 +1139,7 @@ describe("assembleFoundryEntity: D29-113 (P12 S1) ClassStats scalar extraction",
   });
 });
 
-describe("extractRawGrantedFeatures (D29-114, P12 S1)", () => {
+describe("extractRawGrantedFeatures", () => {
   it("converts system.items into a typed array, sorted by neither level nor name (caller's job) — insertion order preserved", () => {
     const reports: Array<{ cls: string; detail: string }> = [];
     const grants = extractRawGrantedFeatures(

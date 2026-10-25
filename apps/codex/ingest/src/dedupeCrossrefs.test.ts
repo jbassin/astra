@@ -32,7 +32,7 @@ function crossref(targetId: string, display: string): InlineNode {
   return { kind: "crossref", targetId, display };
 }
 
-describe("collapseAdjacentCrossrefs (D29-100, P11 S1)", () => {
+describe("collapseAdjacentCrossrefs", () => {
   it("the naga-domain shape: a real duplicate pair collapses to one crossref + one separator, non-dupes untouched", () => {
     // Mirrors the real `domain/naga-domain` masthead: Nalinivati, Ravithra
     // (legacy ID=218 + remaster ID=620, both repointed to `deity/ravithra`),
@@ -175,7 +175,7 @@ describe("collapseAdjacentCrossrefs (D29-100, P11 S1)", () => {
     expect(result.totalOccurrences).toBe(0);
   });
 
-  it("walks loreBody, embeddedItems, and hazard stats.disable/routine/reset (the P6 latent-gap surface)", () => {
+  it("walks loreBody, embeddedItems, and hazard stats.disable/routine/reset (the latent-gap surface)", () => {
     const dupeRun: InlineNode[] = [crossref("deity/x", "X"), text(", "), crossref("deity/x", "X")];
     const e = entity({
       id: "hazard/example",
@@ -244,7 +244,7 @@ describe("collapseAdjacentCrossrefs (D29-100, P11 S1)", () => {
     expect(table?.rows[0]?.cells[0]).toEqual([crossref("deity/x", "X")]);
   });
 
-  it("a statRow's cells (InlineNode[][], P10) also collapse", () => {
+  it("a statRow's cells (InlineNode[][]) also collapse", () => {
     const e = entity({
       id: "creature/example",
       category: "creature",

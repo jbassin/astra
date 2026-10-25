@@ -1,13 +1,13 @@
 /**
- * Snapshots the AoN Elasticsearch index to `<dataPath>/snapshots/aon/<YYYY-MM-DD>/`
- * (D29-5). Server-side only — the endpoint is Origin-allowlisted, and a plain Node
- * `fetch()` sends no Origin header at all, which is exactly why this works. Run via:
+ * Snapshots the AoN Elasticsearch index to `<dataPath>/snapshots/aon/<YYYY-MM-DD>/`.
+ * Server-side only — the endpoint is Origin-allowlisted, and a plain Node `fetch()`
+ * sends no Origin header at all, which is exactly why this works. Run via:
  *
  *   pnpm --filter @astra/codex-ingest cli fetch-aon
  *
  * Single-shot: writes one JSON file per category with the raw hits as fetched (`_id`,
  * `_source`, `sort`), then read-modify-writes the committed `corpus-manifest.json`
- * (D29-4). Never queried at build/render time — after this completes, P1 never touches
+ * Never queried at build/render time — after this completes, the ingest never touches
  * the network again.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -34,7 +34,7 @@ import { createThrottle } from "./throttle";
 
 const MANIFEST_PATH = join(dirname(fileURLToPath(import.meta.url)), "..", "corpus-manifest.json");
 
-// ≤4 req/s etiquette ceiling (D29-5) → a comfortable margin above the 250ms floor.
+// ≤4 req/s etiquette ceiling → a comfortable margin above the 250ms floor.
 const THROTTLE_INTERVAL_MS = 260;
 
 function todayIso(): string {

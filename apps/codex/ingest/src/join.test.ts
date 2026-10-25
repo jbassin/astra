@@ -121,7 +121,7 @@ describe("qualifierCandidates", () => {
 });
 
 // ---------------------------------------------------------------------------
-// domainCandidates (D29-15(1))
+// domainCandidates
 // ---------------------------------------------------------------------------
 
 describe("domainCandidates", () => {
@@ -141,11 +141,11 @@ describe("domainCandidates", () => {
 });
 
 // ---------------------------------------------------------------------------
-// D29-15/-16: category equivalence (P1.5 — the STOP-condition fix)
+// category equivalence
 // ---------------------------------------------------------------------------
 
-describe("matchFoundryEntity: D29-15 category equivalence", () => {
-  it("weapon exact-matches an AoN doc filed under 'equipment' (D29-15(2))", () => {
+describe("matchFoundryEntity: category equivalence", () => {
+  it("weapon exact-matches an AoN doc filed under 'equipment'", () => {
     const foundryWeapon = entity({
       id: "weapon/drake-rifle",
       category: "weapon",
@@ -373,7 +373,7 @@ describe("matchFoundryEntity: D29-15 category equivalence", () => {
   });
 });
 
-describe("runJoin: D29-15(6) tier-parenthetical fold via the weapon/armor/shield -> equipment equivalence", () => {
+describe("runJoin: tier-parenthetical fold via the weapon/armor/shield -> equipment equivalence", () => {
   const base = entity({
     id: "weapon/bracers-of-armor",
     category: "weapon",
@@ -417,11 +417,11 @@ describe("runJoin: D29-15(6) tier-parenthetical fold via the weapon/armor/shield
 });
 
 // ---------------------------------------------------------------------------
-// S5d: inbound-link repointing across cross-category merges
+// inbound-link repointing across cross-category merges
 // ---------------------------------------------------------------------------
 
-describe("runJoin: S5d — inbound AoN links repoint across cross-category merges", () => {
-  // The real, verified Accursed Staff shape (the S5d brief): the remaster
+describe("runJoin: inbound AoN links repoint across cross-category merges", () => {
+  // The real, verified Accursed Staff shape: the remaster
   // AoN `equipment` doc (url ID 2244) merges into the Foundry `weapon`
   // entity; its legacy twin (url ID 4778, SAME category+slug, different url)
   // stays an AoN-only entity that still owns the `equipment/accursed-staff`
@@ -547,7 +547,7 @@ describe("runJoin: S5d — inbound AoN links repoint across cross-category merge
     expect(reports.some((r) => r.cls === "aonBrokenLink")).toBe(true);
   });
 
-  it("the D29-14 drop pass reconciliation accepts the repointed ids (merged entities are kept, so repointed crossrefs survive)", () => {
+  it("the AoN-primary drop pass reconciliation accepts the repointed ids (merged entities are kept, so repointed crossrefs survive)", () => {
     const dropResult = applyAonPrimaryDrop(result.entities, report, new Set());
     const linker = dropResult.keptEntities.find((e) => e.id === "spell/linker");
     expect(crossrefTargets(linker)).toContain("weapon/accursed-staff");
@@ -940,14 +940,11 @@ describe("runJoin: crossref/embed patching", () => {
     expect(result.patchStats.brokenAfterPatch).toBe(0);
   });
 
-  // D29-59 (R4) fallout, P6: a real-corpus find while proving zero broken
-  // crossrefs into the R4-moved entities — `hazard/the-power-of-faith`'s
-  // `stats.reset` (D29-20's HazardStats.disable/routine/reset, enricher-HTML
-  // BlockNode[] fields) held a live crossref to `spell/consecrate`, which the
-  // real transform moves to `ritual/consecrate` (D29-59) — and pass 5 never
-  // walked `stats` at all, so it stayed a dangling `crossref`, not even
-  // report-visible. Fixed by extending the same per-draft patch loop to
-  // `stats.disable`/`routine`/`reset` when `stats.kind === "hazard"`.
+  // A real-corpus case: `hazard/the-power-of-faith`'s `stats.reset`
+  // (HazardStats.disable/routine/reset are enricher-HTML BlockNode[] fields)
+  // holds a live crossref to `spell/consecrate`, which the ritual move turns
+  // into `ritual/consecrate`. Pass 5 patches `stats.disable`/`routine`/`reset`
+  // when `stats.kind === "hazard"`, so it can't stay a dangling `crossref`.
   it("also patches HazardStats.disable/routine/reset — a dangling crossref there downgrades to brokenRef, not silently stale", () => {
     const hazard = entity({
       id: "hazard/trap",
@@ -1000,7 +997,7 @@ describe("runJoin: crossref/embed patching", () => {
 // field-ownership merge (mergeJoined directly)
 // ---------------------------------------------------------------------------
 
-describe("mergeJoined: field ownership (D29-7)", () => {
+describe("mergeJoined: field ownership", () => {
   const foundryEnt = entity({
     id: "spell/fireball",
     category: "spell",
@@ -1095,7 +1092,7 @@ describe("mergeJoined: field ownership (D29-7)", () => {
     expect(reports.some((r) => r.cls === "traitsMismatch")).toBe(true);
   });
 
-  it("D29-16: a CROSS-CATEGORY merge (e.g. weapon <- equipment) takes the AoN name, keeps Foundry's id/category", () => {
+  it("a CROSS-CATEGORY merge (e.g. weapon <- equipment) takes the AoN name, keeps Foundry's id/category", () => {
     const foundryWeapon = entity({
       id: "weapon/drake-rifle",
       category: "weapon",
@@ -1124,7 +1121,7 @@ describe("mergeJoined: field ownership (D29-7)", () => {
     expect(reports.some((r) => r.cls === "crossCategoryMerge")).toBe(true);
   });
 
-  it("a SAME-category merge keeps the Foundry name (unchanged S4 behavior)", () => {
+  it("a SAME-category merge keeps the Foundry name", () => {
     const foundryFireball = entity({ ...foundryEnt, name: "Fireball (Foundry Name)" });
     const merged = mergeJoined(foundryFireball, aonFireball, {
       aonMarkdownById: new Map(),
@@ -1140,10 +1137,10 @@ describe("mergeJoined: field ownership (D29-7)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// D29-33b: creature family, populated from the AoN meta at merge/AoN-only-build
+// creature family, populated from the AoN meta at merge/AoN-only-build
 // ---------------------------------------------------------------------------
 
-describe("mergeJoined: D29-33b creature family", () => {
+describe("mergeJoined: creature family", () => {
   const foundryDragon = entity({
     id: "creature/red-dragon",
     category: "creature",
@@ -1193,7 +1190,7 @@ describe("mergeJoined: D29-33b creature family", () => {
   });
 });
 
-describe("runJoin: D29-33b creature family on an AoN-only entity", () => {
+describe("runJoin: creature family on an AoN-only entity", () => {
   it("populates facets.family on a proseOnly creature with no Foundry counterpart", () => {
     const aonOnlyDragon = meta({
       aonId: "creature-9004",
@@ -1222,10 +1219,10 @@ describe("runJoin: D29-33b creature family on an AoN-only entity", () => {
 });
 
 // ---------------------------------------------------------------------------
-// D29-60 (R8, P6): AoN item_category/item_subcategory equipment fill-gap
+// AoN item_category/item_subcategory equipment fill-gap
 // ---------------------------------------------------------------------------
 
-describe("mergeJoined: D29-60 (R8) equipment itemCategory/itemSubcategory fill-gap", () => {
+describe("mergeJoined: equipment itemCategory/itemSubcategory fill-gap", () => {
   const deps = {
     aonMarkdownById: new Map(),
     resolveLink: () => ({
@@ -1279,7 +1276,7 @@ describe("mergeJoined: D29-60 (R8) equipment itemCategory/itemSubcategory fill-g
     expect(merged.facets.itemCategory).toBe("foundry-value");
   });
 
-  it("does NOT fill weapon/armor/shield (D29-60's corrected scope — their AoN item_category is a trivial constant)", () => {
+  it("does NOT fill weapon/armor/shield (their AoN item_category is a trivial constant)", () => {
     const foundryWeapon = entity({
       id: "weapon/chakri-lost-omens",
       category: "weapon",
@@ -1292,7 +1289,7 @@ describe("mergeJoined: D29-60 (R8) equipment itemCategory/itemSubcategory fill-g
       category: "weapon",
       name: "Chakri",
       slug: "chakri-lost-omens",
-      itemCategory: "Weapons", // AoN's trivial constant, per spec §1.1
+      itemCategory: "Weapons", // AoN's trivial constant
       itemSubcategory: "Base Weapons",
     });
     const merged = mergeJoined(foundryWeapon, weaponMeta, deps);
@@ -1301,8 +1298,8 @@ describe("mergeJoined: D29-60 (R8) equipment itemCategory/itemSubcategory fill-g
   });
 
   it("real spot-check shape: weapon/chakri-lost-omens keeps itemCategory 'advanced' even via the cross-category equipment equivalence match", () => {
-    // Mirrors the exact D29-60 §5A gate spot-check, but exercised through the
-    // weapon/armor/shield -> equipment CATEGORY_EQUIVALENCE rule (D29-15(2))
+    // Mirrors a real-corpus spot-check, but exercised through the
+    // weapon/armor/shield -> equipment CATEGORY_EQUIVALENCE rule
     // rather than a same-category weapon meta — the fill-gap must stay
     // scoped to `foundryEntity.category === "equipment"`, never fire for a
     // cross-category-merged weapon.
@@ -1325,7 +1322,7 @@ describe("mergeJoined: D29-60 (R8) equipment itemCategory/itemSubcategory fill-g
   });
 });
 
-describe("runJoin: D29-60 (R8) equipment fill-gap on an AoN-only entity", () => {
+describe("runJoin: equipment fill-gap on an AoN-only entity", () => {
   it("fills itemCategory/itemSubcategory on a proseOnly equipment entity with no Foundry counterpart", () => {
     const aonOnlyRune = meta({
       aonId: "equipment-9104",
@@ -1346,11 +1343,11 @@ describe("runJoin: D29-60 (R8) equipment fill-gap on an AoN-only entity", () => 
 });
 
 // ---------------------------------------------------------------------------
-// D29-59 (R4, P6): ritual re-categorization — the two required regression
+// ritual re-categorization — the two required regression
 // patterns (commune many-to-one; shadow-double/simulacrum fresh-slug)
 // ---------------------------------------------------------------------------
 
-describe("runJoin: D29-59 (R4) ritual re-categorization — fresh-slug mover (shadow-double/simulacrum)", () => {
+describe("runJoin: ritual re-categorization — fresh-slug mover (shadow-double/simulacrum)", () => {
   const shadowDoubleFoundry = entity({
     id: "spell/shadow-double",
     category: "spell",
@@ -1408,13 +1405,13 @@ describe("runJoin: D29-59 (R4) ritual re-categorization — fresh-slug mover (sh
   });
 });
 
-// D29-59's implementation-time correction: the real 2026-07-13 snapshot has 143
-// movers, not 55 — 87 of them carry NEITHER `legacyOf` NOR `remasterId` at all
+// The real 2026-07-13 snapshot has 143 ritual movers — 87 of them carry
+// NEITHER `legacyOf` NOR `remasterId` at all
 // (single-edition rituals with no legacy/remaster counterpart in the snapshot,
 // e.g. the real `ritual/unbearable-cacophony`). An implementation that only
 // handles paired movers (commune/shadow-double both carry a pairing) fails on
 // 87 of 143 — this is the third required regression case.
-describe("runJoin: D29-59 (R4) ritual re-categorization — pairing-less mover (no legacyOf/remasterId at all)", () => {
+describe("runJoin: ritual re-categorization — pairing-less mover (no legacyOf/remasterId at all)", () => {
   const cacophonyFoundry = entity({
     id: "spell/unbearable-cacophony",
     category: "spell",
@@ -1453,7 +1450,7 @@ describe("runJoin: D29-59 (R4) ritual re-categorization — pairing-less mover (
   });
 });
 
-describe("runJoin: D29-59 (R4) ritual re-categorization — commune many-to-one collision", () => {
+describe("runJoin: ritual re-categorization — commune many-to-one collision", () => {
   const communeFoundry = entity({
     id: "spell/commune",
     category: "spell",
@@ -1527,11 +1524,11 @@ describe("runJoin: D29-59 (R4) ritual re-categorization — commune many-to-one 
 });
 
 // ---------------------------------------------------------------------------
-// P4 (D29-39): breadcrumbs threading (the family precedent, top-level not
+// breadcrumbs threading (the family precedent, top-level not
 // facets) + the exposed aonIdToFinalId map
 // ---------------------------------------------------------------------------
 
-describe("runJoin: P4 (D29-39) breadcrumbs threading", () => {
+describe("runJoin: breadcrumbs threading", () => {
   it("threads breadcrumbs onto an AoN-only entity (buildAonOnlyEntity)", () => {
     const rulesDoc = meta({
       aonId: "rules-9010",

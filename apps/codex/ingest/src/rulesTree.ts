@@ -3,14 +3,13 @@ import type { Edition, License, RulesTreeBook, RulesTreeFile, TreeNode } from "@
 import { deriveBookEdition, deriveBookLicense } from "./bookMeta";
 
 /**
- * P4 (D29-39): the rules-tree builder — the parent-resolution + sibling-
- * ordering algorithm the spec pins in full. Pure: takes a flat per-doc input
- * list (already post-identity, post-book-normalize — the caller,
- * `transform.ts`, does the aonId→finalId/book-normalize/link-resolution
- * legwork) and returns the final `{books: [...]}` tree plus a stats object
- * for `report.ts`.
+ * The rules-tree builder — the parent-resolution + sibling-ordering algorithm.
+ * Pure: takes a flat per-doc input list (already post-identity,
+ * post-book-normalize — the caller, `transform.ts`, does the
+ * aonId→finalId/book-normalize/link-resolution legwork) and returns the final
+ * `{books: [...]}` tree plus a stats object for `report.ts`.
  *
- * ## Parent resolution (with the adversarial-mandated fallback + tie-breaks)
+ * ## Parent resolution (with the name-only fallback + tie-breaks)
  *
  * A node's parent doc = the rules doc in the SAME book whose `name` equals
  * the parent breadcrumb element AND whose own breadcrumb path equals the
@@ -26,8 +25,7 @@ import { deriveBookEdition, deriveBookLicense } from "./bookMeta";
  * `aonLinkTable.ts`'s own `pickCanonical` tie-break convention, not
  * numeric).
  *
- * ## Sibling ordering (adversarial B1 — raw links are SIBLING chains, not
- * page-turn)
+ * ## Sibling ordering (raw links are SIBLING chains, not page-turn)
  *
  * Children at every level are ordered by the next-chain RESTRICTED to that
  * sibling group: only a `nextAonId` whose target is ANOTHER MEMBER OF THE
@@ -241,7 +239,7 @@ function buildBookTree(
     parent.children.push(node);
   }
 
-  // ---- sibling ordering (adversarial B1) ----
+  // ---- sibling ordering ----
   let groupCount = 0;
   let fullyChainedCount = 0;
 
@@ -368,7 +366,7 @@ export interface BuildRulesTreeResult {
  * Pure: `docs` should be every FINAL (post-drop, post-book-normalize,
  * post-identity) `rules`-category entity, one `RulesDocInput` each.
  * `bookSourceLicense` is the caller's normalized-book → `source`-entity
- * license lookup (the D29-39 book-level license derivation's second tier,
+ * license lookup (the book-level license derivation's second tier,
  * `bookMeta.ts`'s `deriveBookLicense`).
  */
 export function buildRulesTree(

@@ -3,7 +3,7 @@ import type { InlineNode } from "@astra/codex-corpus";
 import type { AonDocMeta } from "./aonFacets";
 
 /**
- * D29-7: the AoN-URL → codex-id link table + resolver — what lets an
+ * The AoN-URL → codex-id link table + resolver — what lets an
  * AoN-internal markdown link (`[Agile](/Traits.aspx?ID=170)`, in the `markdown`
  * field `aonMarkup.ts` parses) become a `crossref` node pointing at a codex
  * entity, instead of leaking a raw AoN URL into the canonical corpus.
@@ -18,8 +18,7 @@ import type { AonDocMeta } from "./aonFacets";
  * different path prefixes, `Monsters.aspx` and `NPCs.aspx`, both captured
  * correctly just by trusting each doc's own field).
  *
- * ## Real gotcha #1 — urls are NOT unique (spec's "should be unique — verify,
- * report if not" caught something real)
+ * ## Real gotcha #1 — urls are NOT unique
  *
  * 2,270 of 36,422 distinct urls (out of 43,684 total docs) are shared by ≥2
  * docs. This is not corpus noise — AoN presents several DISTINCT doc records
@@ -104,7 +103,7 @@ export type ReportFn<Cls extends string = string> = (cls: Cls, detail: string) =
 export interface AonLinkEntry {
   readonly codexId: string;
   readonly name: string;
-  /** The winner doc's own raw AoN `_id` (S5d) — what lets a join-time
+  /** The winner doc's own raw AoN `_id` — what lets a join-time
    * resolver repoint a link to a CONSUMED (merged-into-Foundry) doc at its
    * merged entity's id with URL-level precision: `codexId` alone is the
    * ambiguous `{category}/{slug}` string, which a same-slug legacy twin at a
@@ -120,9 +119,9 @@ export interface AonLinkEntry {
 /** `byUrl` is keyed on the NORMALIZED form (`normalizeUrlKey`) of every
  * indexed doc's own `aonUrl` — never the raw/original casing, since lookups
  * normalize the same way. Pre-join: `codexId` is always the PLAIN
- * `{category}/{slug}` form (D29-1's `@legacy` suffix is a join-time decision
- * that needs cross-corpus pairing info this S3-only table doesn't have —
- * S4's `join.ts` is expected to patch any link resolved here that turns out
+ * `{category}/{slug}` form (the `@legacy` suffix is a join-time decision
+ * that needs cross-corpus pairing info this extraction-time table doesn't
+ * have — `join.ts` is expected to patch any link resolved here that turns out
  * to target a renamed-to-`@legacy` id). */
 export interface AonLinkTable {
   readonly byUrl: ReadonlyMap<string, AonLinkEntry>;
@@ -163,7 +162,7 @@ export function looksExternal(href: string): boolean {
 /** Pulls the `?ID=`/`&ID=` numeric query value out of an (already
  * lowercased-safe, case-insensitive-matched) url, or `undefined` when the url
  * has none (the bare category-overview pages, e.g. `/Traits.aspx`). Exported
- * for `aonDedup.ts` (D29-18), which reuses the EXACT same "does
+ * for `aonDedup.ts`, which reuses the EXACT same "does
  * `{category}-{urlQueryId}` reconstruct this doc's own `_id`" rule to pick the
  * canonical member of a same-category+slug+url+edition duplicate group — the
  * real 2026-07-13 snapshot's "parent doc + its own base-tier child doc share
@@ -290,12 +289,12 @@ const NO_MARKS = { bold: false, italic: false, superscript: false };
  * link it parses: known AoN-internal url → `crossref`; AoN-internal-shaped
  * but unresolvable url → `brokenRef` (report class `aonBrokenLink`); anything
  * that looks external (`http(s)://` or no `.aspx` at all — codex hosts no
- * outbound link policy in P1, spec D29-7) → a plain `text` node carrying just
+ * outbound link policy) → a plain `text` node carrying just
  * the link's display text (report class `externalLinkDropped`).
  *
- * **`repointByAonId` (optional, S5d)** — the join-time cross-category-merge
+ * **`repointByAonId` (optional)** — the join-time cross-category-merge
  * link fix. When the join consumes an AoN doc into a Foundry entity whose id
- * differs from the doc's own `{category}/{slug}` (a D29-15 cross-category
+ * differs from the doc's own `{category}/{slug}` (a cross-category
  * merge like equipment→weapon, or a qualifier-reorder/alias merge), the
  * doc's pre-join id no longer names a corpus entity — so a link resolved to
  * it would either die as a `brokenRef` at pass-5 patching or, WORSE,
@@ -307,8 +306,8 @@ const NO_MARKS = { bold: false, italic: false, superscript: false };
  * patch-time rewriting cannot fix this because a crossref node only carries
  * the ambiguous `{category}/{slug}` string. Every repoint is report-counted:
  * `crossCategoryLinkRepointed` when the category segment changed (the
- * D29-15 equivalence merges), `mergedLinkRepointed` when only the slug did
- * (qualifier-reorder/alias merges — pre-P1.5 these were already brokenRef,
+ * cross-category equivalence merges), `mergedLinkRepointed` when only the slug did
+ * (qualifier-reorder/alias merges — without the repoint these would be brokenRef,
  * so repointing them is a strict improvement, counted separately for a
  * clean audit).
  */

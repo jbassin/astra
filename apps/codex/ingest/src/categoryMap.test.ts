@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { CategoryMapError, isKnownPack, mapCategory } from "./categoryMap";
 
-describe("categoryMap: exclusions (D29-8 + S2 extension)", () => {
+describe("categoryMap: exclusions (incl. criticaldeck)", () => {
   it("excludes a *-effects pack wholesale, regardless of doc type", () => {
     expect(mapCategory("feat-effects", "effect")).toEqual({ kind: "excluded" });
     // campaign-effects's stray non-effect docs are excluded too (pack-level rule).
@@ -133,12 +133,12 @@ describe("isKnownPack", () => {
   });
 });
 
-describe("categoryMap: totality over the real (pack,type) census (D29-7)", () => {
+describe("categoryMap: totality over the real (pack,type) census", () => {
   // A small, hand-transcribed fixture of every distinct (pack,type) pair
   // observed in the real pf2e-8.3.0 snapshot (166 pairs total, walked once
   // against the real corpus while writing this map — see categoryMap.ts's file
-  // header). Not the full corpus (that stays a host-only run, D29-12's
-  // hermeticity pin) — just proof that the map is total over what's real.
+  // header). Not the full corpus (that stays a host-only run, so CI stays
+  // hermetic) — just proof that the map is total over what's real.
   const REAL_PAIRS: ReadonlyArray<readonly [string, string]> = [
     ["abomination-vaults-bestiary", "hazard"],
     ["abomination-vaults-bestiary", "npc"],

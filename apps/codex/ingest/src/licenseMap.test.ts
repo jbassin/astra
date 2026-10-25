@@ -7,7 +7,7 @@ import {
   normalizeBookName,
 } from "./licenseMap";
 
-describe("licenseForBook: spec gate C's own three spot-checks", () => {
+describe("licenseForBook: the three acceptance spot-checks", () => {
   it("resolves a remastered Player Core entity's book to ORC", () => {
     expect(licenseForBook("Player Core")).toBe("ORC");
   });

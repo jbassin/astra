@@ -1,5 +1,5 @@
 /**
- * Pure AoN Elasticsearch query-shape + pagination logic (D29-5). Kept free of any HTTP
+ * Pure AoN Elasticsearch query-shape + pagination logic. Kept free of any HTTP
  * concerns (that's `aonClient.ts`) so it's testable with a synthetic `search`/`agg`
  * function — no network, no git, no real endpoint required.
  */
@@ -29,8 +29,8 @@ export type AggFn = (body: unknown) => Promise<EsAggResponse>;
 const DEFAULT_PAGE_SIZE = 1000;
 const DEFAULT_CATEGORY_AGG_SIZE = 200;
 
-/** Category discovery: a `size:0` terms aggregation on `category` (D29-5 step 1;
- * live-verified — 93 buckets, `equipment` 8,642 / `feat` 8,460 at the top). */
+/** Category discovery: a `size:0` terms aggregation on `category` (the first
+ * fetch step; live-verified — 93 buckets, `equipment` 8,642 / `feat` 8,460 at the top). */
 export function buildCategoryAggQuery(
   size: number = DEFAULT_CATEGORY_AGG_SIZE,
 ): Record<string, unknown> {
@@ -86,7 +86,7 @@ export interface FetchAllOptions {
  * Pages an entire category via `search_after` — handles categories above the 10k
  * `size`/`from` depth limit (search_after has no such cap; `equipment` 8,642 and
  * `feat` 8,460 sit close to it today). `throttle`, if given, is awaited before every
- * request including the first, so the AoN etiquette ceiling (D29-5) covers the whole
+ * request including the first, so the AoN etiquette ceiling covers the whole
  * run, not just steady-state pages.
  */
 export async function fetchAllForCategory(

@@ -6,12 +6,12 @@ import type { UuidResolution } from "./enrichers";
 import { walkFiles } from "./fsWalk";
 
 /**
- * D29-6's `resolveUuid` — the concrete implementation `enrichers.ts` only
+ * `resolveUuid` — the concrete implementation `enrichers.ts` only
  * declares the shape of. Two-pass design:
  *
  *   1. `buildPackRegistry` reads `system.pf2e.json`'s `packs[].name → path` map
  *      and rewrites it to the real on-disk layout (`packs/X` release-layout →
- *      `packs/pf2e/X` snapshot nesting, D29-5/D29-6) — 10 real name/dir
+ *      `packs/pf2e/X` snapshot nesting) — 10 real name/dir
  *      mismatches (`actionspf2e→packs/actions`, etc., verified).
  *   2. `buildDocIndex` walks every registered pack's directory (pack dirs nest
  *      arbitrarily, e.g. `spells/spells/rank-1/…` — `walkFiles` handles that)
@@ -39,7 +39,7 @@ import { walkFiles } from "./fsWalk";
  *      unambiguous.
  *   3. Relative `@UUID[.<id>]` (66 real uses, ALL inside journal pages —
  *      `archetypes.json` ×6 referencing sibling pages, `gm-screen.json` ×60
- *      which never becomes an entity per D29-8 so its relative refs are moot)
+ *      which never becomes an entity so its relative refs are moot)
  *      resolve against the CONTAINING document's own sibling collection, not
  *      the global index — `createResolveUuid`'s `containing` param.
  */
@@ -68,7 +68,7 @@ interface RawSystemManifest {
  * Parses `system.pf2e.json`'s `packs[]` array into `{name, dir, docClass}`
  * entries — the `path` field is release-layout (`packs/X`), rewritten to the
  * dir name alone (`X`) since the caller already knows the snapshot nests every
- * pack under `packs/pf2e/` (D29-5's path-prefix rewrite).
+ * pack under `packs/pf2e/` (the path-prefix rewrite).
  */
 export function buildPackRegistry(systemManifest: unknown): readonly PackRegistryEntry[] {
   const manifest = systemManifest as RawSystemManifest;
@@ -102,8 +102,8 @@ export class UuidIndex {
    * `JournalEntry.<entryId>.JournalEntryPage.<pageId>` reference shape. */
   private readonly byJournalPage = new Map<string, IndexEntry>();
   /** Every distinct crossref target id registered so far — lets the
-   * orchestrator get "every codex entity id assigned so far" (needed as
-   * `journals.decideJournalPages`'s `knownEntityIds`, D29-8's merge-vs-
+   * `transform.ts` get "every codex entity id assigned so far" (needed as
+   * `journals.decideJournalPages`'s `knownEntityIds`, for the merge-vs-
    * standalone decision) WITHOUT a second metadata-only walk: `buildDocIndex`
    * already computes the exact same id every non-excluded Item/Actor doc
    * will get. */
@@ -155,19 +155,18 @@ export interface IndexableDoc {
  * Pass 1: walks every registered Item/Actor pack directory under
  * `packsRoot` (the real `<snapshot>/packs/pf2e` dir) and registers each doc's
  * resolution — `crossref` (codex id, via `categoryMap`) for an included doc,
- * `excluded` for a doc in an excluded pack (D29-8). Macro/RollTable packs are
- * always `excluded` (D29-6's "refs to excluded doc types" — Macro 123,
- * RollTable 22 real uses), as is the `criticaldeck` JournalEntry pack (S2
- * extension, `categoryMap.ts`) — its docs+pages ARE registered here (a real
+ * `excluded` for a doc in an excluded pack. Macro/RollTable packs are
+ * always `excluded` ("refs to excluded doc types" — Macro 123,
+ * RollTable 22 real uses), as is the `criticaldeck` JournalEntry pack
+ * (`categoryMap.ts`) — its docs+pages ARE registered here (a real
  * `@UUID`/`@Embed` reference into an excluded doc must resolve `excluded`,
- * not `broken`; a first pass at this treated every non-registered journal
- * target as `broken`, which wrongly caught real GM-reference links into
- * `gm-screen`/`hero-point-deck` too — fixed by having the orchestrator ALSO
- * call `journals.registerExcludedJournal` for those two + `remaster-changes`,
+ * not `broken`). Real GM-reference links into `gm-screen`/`hero-point-deck`
+ * must resolve `excluded` too, so `transform.ts` ALSO calls
+ * `journals.registerExcludedJournal` for those two + `remaster-changes`,
  * since they live inside the mixed "journals" pack this function doesn't
- * walk). The "journals" pack itself is NOT walked here at all — its 4 real
+ * walk. The "journals" pack itself is NOT walked here at all — its 4 real
  * reference-content journals get their per-page entries from
- * `registerJournalPage`, called by the orchestrator via `journals.ts`.
+ * `registerJournalPage`, called by `transform.ts` via `journals.ts`.
  */
 export function buildDocIndex(
   packsRoot: string,
@@ -176,15 +175,15 @@ export function buildDocIndex(
   const index = new UuidIndex();
 
   for (const entry of registry) {
-    // Macro/RollTable packs are always excluded (D29-6: Macro 123 / RollTable
-    // 22 real ref uses); an EXCLUDED JournalEntry pack (`criticaldeck` — S2
-    // extension, categoryMap.ts) is excluded the same way, including its
+    // Macro/RollTable packs are always excluded (Macro 123 / RollTable
+    // 22 real ref uses); an EXCLUDED JournalEntry pack (`criticaldeck`,
+    // categoryMap.ts) is excluded the same way, including its
     // pages (registered too, for symmetry with journals.ts's per-page
     // registration, even though nothing in the real corpus references a
     // criticaldeck page — verified). The "journals" pack itself is NOT fully
     // excluded (4 of its 7 docs are real reference content) — its excluded
     // sub-docs (gm-screen/hero-point-deck/remaster-changes) are registered
-    // by `journals.registerExcludedJournal`, called from the orchestrator,
+    // by `journals.registerExcludedJournal`, called from `transform.ts`,
     // not here.
     if (
       entry.docClass === "Macro" ||
@@ -210,7 +209,7 @@ export function buildDocIndex(
       if (file.relPath.endsWith("_folders.json")) continue;
       const doc = JSON.parse(readFileSync(file.absPath, "utf8")) as IndexableDoc;
       const decision: CategoryDecision = mapCategory(entry.dir, doc.type ?? "__NO_TYPE__");
-      // The file BASENAME is identity's ground truth (D29-1) — the same value
+      // The file BASENAME is identity's ground truth — the same value
       // `foundryEntities.ts`'s `assembleFoundryEntity` uses for the doc's real
       // entity id (verified byte-identical to `sluggify(doc.name)` for
       // 28,636/28,636 real docs, but using the basename here keeps this
@@ -283,7 +282,7 @@ export type ParsedUuid =
 
 /**
  * Parses a raw `@UUID[...]`/`@Embed[...]` target string into one of the three
- * real shapes (D29-6). Never throws — an unparseable string (none seen in the
+ * real shapes. Never throws — an unparseable string (none seen in the
  * real corpus) resolves as `{shape:"doc", pack:"", idOrName:<whole string>}`,
  * which will simply miss every index lookup and report `brokenRef` (the same
  * outcome a genuinely malformed reference deserves).
@@ -306,8 +305,8 @@ export function parseUuid(uuid: string): ParsedUuid {
   // shared "Spellcasting Archetypes" journal page) — stripped here, safe
   // because every real JournalEntryPage id is a bare 16-char alnum Foundry id
   // (verified: 0 counter-examples), never itself containing `#`. In-page
-  // anchors aren't a separate addressable target in this pipeline (P2
-  // concern, not P1) — the anchor is simply dropped, resolving to the whole
+  // anchors aren't a separate addressable target in this pipeline (a web-app
+  // concern) — the anchor is simply dropped, resolving to the whole
   // page's target same as a plain reference would.
   const journalMatch = /^JournalEntry\.([^.]+)\.JournalEntryPage\.([^#]+)/.exec(afterPack);
   if (journalMatch) {
@@ -335,7 +334,7 @@ export function parseUuid(uuid: string): ParsedUuid {
 }
 
 // ---------------------------------------------------------------------------
-// resolveUuid factory (D29-6: "ctx factory takes the containing document")
+// resolveUuid factory (the ctx factory takes the containing document)
 // ---------------------------------------------------------------------------
 
 /** The minimal shape `createResolveUuid` needs from whatever document is
@@ -344,13 +343,13 @@ export function parseUuid(uuid: string): ParsedUuid {
  * JournalEntry page and targets a SIBLING PAGE of the same entry — resolved
  * via the SAME `byJournalPage` index entries `journals.ts` registers for
  * absolute `JournalEntry.<id>.JournalEntryPage.<id>` refs from other docs
- * (D29-8's two-phase journal assembly: every page's merge/standalone target is
+ * (the two-phase journal assembly: every page's merge/standalone target is
  * decided and registered BEFORE any page's HTML is parsed, so a sibling's
  * resolution is always already present by the time a relative ref needs it).
  * An Actor doc's embedded `items` are supported structurally for the same
  * `.docId` grammar, but resolve `broken` today — zero real occurrences target
  * an embedded item (verified), and embedded items never become their own
- * addressable corpus entity (D29-3's assembly decision, `foundryEntities.ts`)
+ * addressable corpus entity (`foundryEntities.ts`'s assembly rule)
  * for a relative ref to legitimately land on. */
 export interface ContainingDoc {
   _id: string;
@@ -361,7 +360,7 @@ export interface ContainingDoc {
 /**
  * Builds the real `resolveUuid` callback `enrichers.ts` calls while parsing a
  * specific document's HTML. `containing` is that document (for relative-ref
- * resolution, D29-6) — pass the same doc whose own description/pages are being
+ * resolution) — pass the same doc whose own description/pages are being
  * parsed.
  */
 export function createResolveUuid(

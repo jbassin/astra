@@ -9,7 +9,7 @@ import { canonicalJson, canonicalJsonCompact, emitCorpus, writeCanonicalJsonComp
 
 const SAMPLE = { b: 2, a: 1, nested: { z: 9, y: [3, 2, 1] } };
 
-describe("canonicalJsonCompact (D29-33d)", () => {
+describe("canonicalJsonCompact", () => {
   it("sorts keys recursively, same as canonicalJson, but with no indentation", () => {
     expect(canonicalJsonCompact(SAMPLE)).toBe('{"a":1,"b":2,"nested":{"y":[3,2,1],"z":9}}\n');
   });
@@ -67,7 +67,7 @@ function entity(
   };
 }
 
-describe("emitCorpus: D29-33 (_index.json compact + facets/superseded rows)", () => {
+describe("emitCorpus: _index.json compact + facets/superseded rows", () => {
   function withTmpDir(fn: (corpusRoot: string) => void): void {
     const dir = mkdtempSync(join(tmpdir(), "codex-emit-corpus-test-"));
     try {
@@ -176,7 +176,7 @@ describe("emitCorpus: D29-33 (_index.json compact + facets/superseded rows)", ()
   });
 });
 
-describe("writeCanonicalJson (pre-existing, unaffected by D29-33d)", () => {
+describe("writeCanonicalJson (stays pretty-printed)", () => {
   it("still 2-space-indents", () => {
     expect(canonicalJson({ a: 1 })).toBe('{\n  "a": 1\n}\n');
   });

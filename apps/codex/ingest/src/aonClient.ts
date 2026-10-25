@@ -3,7 +3,7 @@ import { realDelay } from "./throttle";
 
 const AON_SEARCH_URL = "https://elasticsearch.aonprd.com/aon/_search";
 
-// The endpoint is Origin-allowlisted for the browser client (D29-5) — a plain Node
+// The endpoint is Origin-allowlisted for the browser client — a plain Node
 // `fetch()` sends no Origin header at all, which is exactly why this works server-side.
 // The descriptive contact UA is fetcher etiquette, not an auth requirement.
 const AON_USER_AGENT =
@@ -27,7 +27,7 @@ function isRetryableStatus(status: number): boolean {
 
 /**
  * POSTs a JSON search/agg body to the AoN Elasticsearch `_search` endpoint, retrying
- * transient 429/5xx with bounded exponential backoff (D29-5). Non-retryable statuses
+ * transient 429/5xx with bounded exponential backoff. Non-retryable statuses
  * (any other 4xx, or retries exhausted) throw immediately — no silent partial results.
  * `fetchImpl`/`retryDelay` are injectable so tests never hit the real network or sleep.
  */

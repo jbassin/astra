@@ -11,30 +11,29 @@ import {
 } from "@astra/codex-corpus";
 
 /**
- * D29-3: the deterministic corpus writer — S4's `emit.ts` (spec §3/§4 S4, this
- * deliverable). Takes the S4 join's final `CodexEntity[]` and writes
- * a corpus root (on the host, a release staging dir's `corpus/`):
+ * The deterministic corpus writer. Takes the join's final `CodexEntity[]` and
+ * writes a corpus root (on the host, a release staging dir's `corpus/`):
  *
- *   - `corpus/<category>/<slug>.json` — one file per entity (the P2 lazy-load
- *     unit); the file's slug segment is read off the entity's OWN `id` (its
- *     `{category}/{slug}` form, WITH any `@legacy`/`-2` collision suffix
- *     D29-1's identity resolution applied), never off the bare `slug` field
- *     (which stays the pre-suffix S2 value on a collision member — see
- *     `join.ts`'s `Draft` doc comment).
+ *   - `corpus/<category>/<slug>.json` — one file per entity (the web app's
+ *     lazy-load unit); the file's slug segment is read off the entity's OWN
+ *     `id` (its `{category}/{slug}` form, WITH any `@legacy`/`-2` collision
+ *     suffix the identity resolution applied), never off the bare `slug` field
+ *     (which stays the pre-suffix extract-time value on a collision member —
+ *     see `join.ts`'s `Draft` doc comment).
  *   - `corpus/<category>/_index.json` — slim `IndexRow[]` (via `toIndexRow`,
- *     entity.ts) sorted by id. Leading-underscore basename (D29-21, P1.6):
+ *     entity.ts) sorted by id. Leading-underscore basename:
  *     `sluggify()` can never emit a leading underscore, so this name can never
- *     collide with a real entity slug — it replaces the earlier plain
- *     `index.json`, which clobbered the two real `index`-slug entities
- *     (`ancestry/index`, `archetype/index`).
- *   - `corpus/manifest.json` — schemaVersion + the D29-4 source pins (copied
+ *     collide with a real entity slug (a plain `index.json` would clobber the
+ *     two real `index`-slug entities, `ancestry/index` and `archetype/index`).
+ *   - `corpus/manifest.json` — schemaVersion + the source pins (copied
  *     verbatim from the committed `corpus-manifest.json`, never regenerated
  *     here) + FINAL per-category entity counts + total size. Deliberately
  *     carries NO wall-clock timestamp of its own (`fetchedAt` is the pins'
- *     own, already-on-disk value) — the D-gate (two full runs over the same
- *     snapshots byte-identical) would break if this module stamped "now".
+ *     own, already-on-disk value) — the determinism check (two full runs over
+ *     the same snapshots byte-identical) would break if this module stamped
+ *     "now".
  *
- * ## Determinism (the D-gate, spec §5 acceptance D)
+ * ## Determinism (two runs over the same snapshots are byte-identical)
  *
  * Every JSON file here goes through `canonicalJson` — a serializer that sorts
  * object keys recursively (codepoint order, matching `manifest.ts`'s own
@@ -46,11 +45,11 @@ import {
  * stale file from an entity/category that no longer exists this run can never
  * survive alongside the new tree.
  *
- * ## Validation (acceptance C: 100% Zod-valid)
+ * ## Validation (100% Zod-valid)
  *
  * `CodexEntitySchema.parse` runs on every entity right before it's written —
  * this is the FIRST point in the whole pipeline a full `CodexEntity` is
- * actually zod-validated at runtime (S2/S3/S4 upstream only construct
+ * actually zod-validated at runtime (the upstream passes only construct
  * TS-typed object literals, checked at compile time, not runtime) — so a
  * schema violation hard-fails the emit pass here, per the drift-tripwire
  * posture the rest of the pipeline already uses for unknown enricher/markup
@@ -75,7 +74,7 @@ function sortKeysDeep(value: unknown): unknown {
 }
 
 /** Sorted-keys, 2-space-indented, trailing-LF JSON — the one serializer every
- * corpus file goes through, so "sorted object keys at every level" (D29-3) is
+ * corpus file goes through, so "sorted object keys at every level" is
  * a property of the writer, not something each caller has to remember. */
 export function canonicalJson(value: unknown): string {
   return `${JSON.stringify(sortKeysDeep(value), null, 2)}\n`;
@@ -91,12 +90,11 @@ export function writeCanonicalJson(path: string, value: unknown): number {
   return Buffer.byteLength(content);
 }
 
-/** D29-33d (P3 S1): sorted-keys, NO-indentation, trailing-LF JSON —
- * `_index.json`'s own serializer (switched off pretty-printed `canonicalJson`
- * this slice, ~31% smaller for free, measured). Determinism (sorted keys) is
- * preserved identically to `canonicalJson`; only the whitespace differs.
- * Entity files stay on `canonicalJson` — this is `_index.json`-only, no
- * 46k-file churn. */
+/** Sorted-keys, NO-indentation, trailing-LF JSON — `_index.json`'s own
+ * serializer (~31% smaller than pretty-printed `canonicalJson`, measured).
+ * Determinism (sorted keys) is preserved identically to `canonicalJson`; only
+ * the whitespace differs. Entity files stay on `canonicalJson` — this is
+ * `_index.json`-only, no 46k-file churn. */
 export function canonicalJsonCompact(value: unknown): string {
   return `${JSON.stringify(sortKeysDeep(value))}\n`;
 }
@@ -109,8 +107,8 @@ export function writeCanonicalJsonCompact(path: string, value: unknown): number 
   return Buffer.byteLength(content);
 }
 
-/** Writes plain text, guaranteeing exactly one trailing LF (D29-3's "LF,
- * trailing newline" applies to `report.md` too, which isn't JSON). */
+/** Writes plain text, guaranteeing exactly one trailing LF (the "LF, trailing
+ * newline" rule applies to `report.md` too, which isn't JSON). */
 export function writeCanonicalText(path: string, content: string): number {
   const withNewline = content.endsWith("\n") ? content : `${content}\n`;
   writeFileSync(path, withNewline);
@@ -141,8 +139,8 @@ function entityFileSlug(entity: Pick<CodexEntity, "id" | "category">): string {
 }
 
 // ---------------------------------------------------------------------------
-// corpus/manifest.json (D29-3's in-corpus summary — distinct from the
-// committed root `corpus-manifest.json`, D29-4's fetch-pin file)
+// corpus/manifest.json (the in-corpus summary — distinct from the
+// committed root `corpus-manifest.json`, the fetch-pin file)
 // ---------------------------------------------------------------------------
 
 export interface SnapshotPin {
@@ -171,7 +169,7 @@ export interface EmitCorpusInput {
    * on every call. */
   corpusRoot: string;
   entities: readonly CodexEntity[];
-  /** The D29-4 pins, read verbatim from the committed `corpus-manifest.json`
+  /** The source pins, read verbatim from the committed `corpus-manifest.json`
    * (never regenerated here — this module only ever COPIES them into
    * `corpus/manifest.json` for a single-file summary alongside the corpus). */
   pins: { foundry: SnapshotPin; aon: SnapshotPin };
@@ -191,7 +189,7 @@ export interface EmitCorpusResult {
  * Wipes `corpusRoot` and writes the full deterministic corpus tree: per-entity
  * files, per-category `_index.json`, and `corpus/manifest.json`. Every entity
  * is zod-validated (`CodexEntitySchema.parse`) right before its file is
- * written — acceptance C's "100% Zod-valid" is enforced HERE, not assumed.
+ * written — "100% Zod-valid" is enforced HERE, not assumed.
  */
 export function emitCorpus(input: EmitCorpusInput): EmitCorpusResult {
   const { corpusRoot, entities, pins } = input;

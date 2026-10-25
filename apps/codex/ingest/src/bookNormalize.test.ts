@@ -17,7 +17,7 @@ function entity(id: string, book: string): CodexEntity {
   };
 }
 
-describe("normalizeBookNames (D29-39)", () => {
+describe("normalizeBookNames", () => {
   it("rule 1: strips CRLF/tab garbage and collapses internal whitespace", () => {
     const entities = [
       entity("spell/a", "Draconic  Codex\r\n"),

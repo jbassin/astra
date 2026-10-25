@@ -254,7 +254,7 @@ describe("createLinkResolver", () => {
   });
 });
 
-describe("createLinkResolver: S5d repointByAonId (cross-category merge links)", () => {
+describe("createLinkResolver: repointByAonId (cross-category merge links)", () => {
   // The real, verified Accursed Staff shape: the remaster AoN equipment doc
   // (url ID 2244) was consumed by the Foundry weapon entity; its legacy twin
   // (url ID 4778) stayed an AoN-only entity — and BOTH urls collapse to the

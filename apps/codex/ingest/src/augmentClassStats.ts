@@ -4,48 +4,46 @@ import type { UuidResolution } from "./enrichers";
 import type { RawGrantedFeatureEntry } from "./foundryEntities";
 
 /**
- * D29-114/-115 (P12 S1) + D29-132 (P14 S1): the post-drop `augmentClassStats`
- * pass — a NEW transform pass mirroring the `drop.ts`/`sidebarAttach.ts`
- * precedent (runs over the FINAL kept entity set, right before `emit.ts`).
- * Two jobs, both requiring the final kept-id set / final entity population —
- * neither knowable at extract time (D29-113's scalar-only
- * `extractClassStats`):
+ * The post-drop `augmentClassStats` pass — a transform pass mirroring the
+ * `drop.ts`/`sidebarAttach.ts` precedent (runs over the FINAL kept entity
+ * set, right before `emit.ts`). Two jobs, both requiring the final kept-id
+ * set / final entity population — neither knowable at extract time
+ * (`extractClassStats` is scalar-only):
  *
- *   - `grantedFeatures` (D29-114, corrected D29-132): each stats-bearing
+ *   - `grantedFeatures`: each stats-bearing
  *     class's raw `system.items` manifest (`extractRawGrantedFeatures`,
  *     `foundryEntities.ts`), uuid-resolved through the EXISTING
  *     `uuidResolve` seam (`resolveUuid`, the same `createResolveUuid(index)`
  *     `transform.ts` already builds) to a PRE-COLLISION `class-feature/<slug>`
- *     id. **The P12 doc comment here previously claimed "0 renamed/suffixed,
- *     so the raw-uuid-resolved id equals the final id in every resolved
- *     case" — FALSE, corrected by P14's investigation.** `class-feature/`
- *     carries real same-slug collision families (e.g. ~47 separate AoN
+ *     id. **The raw-uuid-resolved id does NOT always equal the final id.**
+ *     `class-feature/` carries real same-slug collision families (e.g. ~47
+ *     separate AoN
  *     "Weapon Specialization" pages — one per class — all slugify to the
  *     SAME base `class-feature/weapon-specialization`, resolved by
  *     `join.ts`'s pass 3 residual-collision scheme into one unsuffixed
  *     winner + `-2`.."-N" siblings; a raw grant uuid resolves to the shared
- *     UNSUFFIXED preId regardless of which class is asking, so the old
- *     "resolvedId in keptIds -> use it" logic silently linked every
+ *     UNSUFFIXED preId regardless of which class is asking, so a naive
+ *     "resolvedId in keptIds -> use it" check would silently link every
  *     non-winning class to the WRONG winner's doc — measured: 164 of 503
- *     resolved grants, 26 of 27 classes affected pre-fix). D29-132 fixes
- *     this with a same-base-slug collision-family index over the FINAL kept
+ *     resolved grants, 26 of 27 classes). This pass handles that with a
+ *     same-base-slug collision-family index over the FINAL kept
  *     `class-feature` entities (`buildClassFeatureFamilies` below, base slug
  *     = strip a trailing `-\d+` / `@legacy` suffix — the `byCategory`
  *     enumeration shape `buildCategoryOptions` already uses): a family of
- *     size 1 resolves exactly as before (byte-identical, the 153
+ *     size 1 resolves by the plain kept-id check (the 153
  *     unambiguous grants); a family of size >1 disambiguates in priority
  *     order — (1) a `mastheadExtra` "Class" label whose text contains the
  *     granting class's name, (2) `legacyOf` naming `class/<grantingSlug
  *     >@legacy`, (3) a unique `level` match among the family — ties within
  *     rule (1)/(2) broken by (a) edition match with the granting class doc,
  *     then (b) lowest collision suffix; no rule resolving a single
- *     candidate -> `targetId: null` (R3 — never a wrong-class card; the
+ *     candidate -> `targetId: null` (never a wrong-class card; the
  *     existing null fail-soft at `classPageData.ts:129-137` already renders
  *     plain progression text for a null target). Verified on the real
  *     corpus: rules (2)/(3) never fire today (rule (1) alone resolves all
  *     344 disambiguated grants; 6 remain genuinely undeterminable -> null) —
  *     the cascade is real future-proofing, not current-corpus-load-bearing.
- *   - `subclassOptions` (D29-115): the curated `classSlug -> subclassCategory[]`
+ *   - `subclassOptions`: the curated `classSlug -> subclassCategory[]`
  *     map (`SUBCLASS_CATEGORY_MAP` below) + the CURRENT-EDITION UNION —
  *     `currentOptions(category) = docs with remasteredAs == ∅ ∪
  *     dedup(remasteredAs targets of the category's superseded docs)` — a
@@ -53,7 +51,7 @@ import type { RawGrantedFeatureEntry } from "./foundryEntities";
  *     `instinct`) has this union collapse to a no-op (its superseded docs'
  *     targets are already inside the 9-current set); a 100%-superseded
  *     category (e.g. `doctrine`, absorbed into `class-feature` by
- *     `join.ts`'s `CATEGORY_EQUIVALENCE`/D29-16) has it follow every pointer
+ *     `join.ts`'s `CATEGORY_EQUIVALENCE`) has it follow every pointer
  *     out into `class-feature/`. Legacy husks are ALSO emitted
  *     (`superseded: true`, for the site-convention `?superseded=1` reveal).
  */
@@ -61,12 +59,12 @@ import type { RawGrantedFeatureEntry } from "./foundryEntities";
 export type ReportFn = (cls: string, detail: string) => void;
 
 /**
- * The curated `classSlug -> subclassCategory[]` map (D29-115, spec's
- * per-doc-verified attribution table). `commander`/`fighter`/`guardian`/
+ * The curated `classSlug -> subclassCategory[]` map (a per-doc-verified
+ * attribution table). `commander`/`fighter`/`guardian`/
  * `magus`/`swashbuckler` map to `[]` — verified: no standalone subclass
- * options category for any of them this round (magus hybrid-studies/
- * exemplar ikons/animist practices are absorbed into `class-feature` and NOT
- * resurrected, per spec scope). Deliberately excludes `draconic-exemplar`
+ * options category for any of them (magus hybrid-studies/
+ * exemplar ikons/animist practices are absorbed into `class-feature` and
+ * deliberately NOT resurrected). Deliberately excludes `draconic-exemplar`
  * (a nested sub-choice of `bloodline/draconic`, not a tab),
  * `hellknight-order` (archetype), and `deviant-ability-classification`
  * (cross-class) — none of these are a `classSlug`'s own subclass category.
@@ -117,7 +115,7 @@ export interface AugmentClassStatsInput {
   classGrantedFeatures: ReadonlyMap<string, readonly RawGrantedFeatureEntry[]>;
   /** The existing `createResolveUuid(foundry.index)` instance — resolves a
    * `Compendium.pf2e.classfeatures.Item.<name>` uuid to its PRE-collision
-   * `class-feature/<slug>` id (D29-132: this id is the SHARED, unsuffixed
+   * `class-feature/<slug>` id (this id is the SHARED, unsuffixed
    * base of whatever same-slug collision family it belongs to — see the
    * file header for why "resolvedId in keptIds" alone is not enough to
    * disambiguate which family member a specific grant means). */
@@ -138,7 +136,7 @@ export interface AugmentClassStatsResult {
   /** Total subclassOptions rows emitted across every class (current +
    * legacy, all mapped categories). */
   subclassOptionsEmitted: number;
-  /** Per (class, category) current/legacy counts — the spec's spot-check
+  /** Per (class, category) current/legacy counts — the spot-check
    * pins (barbarian 9+6, sorcerer 18+10, cleric current == its 2 remaster
    * targets) live here, one row per mapped category actually processed
    * (never capped — small, ≤26 rows on the real corpus). */
@@ -162,7 +160,7 @@ function sortGrantedFeatures(features: readonly GrantedFeature[]): GrantedFeatur
 }
 
 // ---------------------------------------------------------------------------
-// D29-132 (P14 S1): same-base-slug collision-family disambiguation for
+// Same-base-slug collision-family disambiguation for
 // grantedFeatures — see the file header for the WHY.
 // ---------------------------------------------------------------------------
 
@@ -189,7 +187,7 @@ function collisionSuffixOf(id: string): number {
 }
 
 /** Builds the same-base-slug family index over every FINAL kept
- * `class-feature` entity (D29-132) — the shape `buildCategoryOptions`'s own
+ * `class-feature` entity — the shape `buildCategoryOptions`'s own
  * `byCategory` enumeration already uses, one level up. Built once per
  * `augmentClassStats` call, shared across every class's grant resolution. */
 function buildClassFeatureFamilies(
@@ -229,7 +227,7 @@ function inlineText(value: readonly InlineNode[]): string {
 }
 
 /** Rule (1): does `candidate`'s masthead "Class" label mention
- * `grantingClassName` (case-insensitive substring — review-verified moot on
+ * `grantingClassName` (case-insensitive substring — verified moot on
  * the real corpus, since no class name is a substring of another and 0
  * class-feature docs masthead more than one class)? */
 function mastheadNamesClass(candidate: CodexEntity, grantingClassName: string): boolean {
@@ -254,10 +252,10 @@ function breakGrantTie(candidates: readonly CodexEntity[], grantingClass: CodexE
   return winner.id;
 }
 
-/** The D29-132 disambiguation cascade for a family of size >1 — rule (1)
+/** The disambiguation cascade for a family of size >1 — rule (1)
  * masthead-Class-contains-name, else (2) `legacyOf` naming the granting
  * class's own `@legacy` id, else (3) a UNIQUE `level` match; no rule
- * resolving a single candidate (post tie-break) -> `null` (R3, never a
+ * resolving a single candidate (post tie-break) -> `null` (never a
  * wrong-class card). */
 function disambiguateGrantFamily(
   family: readonly CodexEntity[],
@@ -309,9 +307,9 @@ function buildGrantedFeatures(
 }
 
 /**
- * D29-115's current-edition union + legacy husks, for ONE mapped category.
+ * The current-edition union + legacy husks, for ONE mapped category.
  * STOP conditions (thrown — an unexplained delta here means the real
- * mechanism drifted from the spec's measured pins, per the P6/P10 rule):
+ * mechanism drifted from the measured pins):
  * the mapped category has zero entities in the kept corpus; a superseded
  * doc's `remasteredAs` has 0 or 2+ targets; a target isn't in the kept set;
  * a target lands outside BOTH `class-feature/` and the category's own

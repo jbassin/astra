@@ -2,8 +2,8 @@ import type { AonDocMeta } from "./aonFacets";
 import { normalizeUrlKey, urlQueryId } from "./aonLinkTable";
 
 /**
- * D29-18: the AoN url-duplicate dedup — a P1.5 prerequisite to the D29-14
- * drop pass. Runs BEFORE `join.ts` ever sees the AoN metas.
+ * The AoN url-duplicate dedup — a prerequisite to the AoN-primary drop
+ * pass. Runs BEFORE `join.ts` ever sees the AoN metas.
  *
  * ## The real, measured phenomenon (2026-07-13 snapshot)
  *
@@ -14,14 +14,14 @@ import { normalizeUrlKey, urlQueryId } from "./aonLinkTable";
  * carrying an `item_child_id` array) and `equipment-4778-4291` (the SAME
  * name "Accursed Staff", AoN's own base-TIER child doc, carrying an
  * `item_parent_id` back-pointer) — identical markdown, identical slug,
- * identical url, identical edition. Left undeduped, BOTH survive S3
+ * identical url, identical edition. Left undeduped, BOTH survive
  * extraction as separate `AonDocMeta`s; at most one can ever be the Foundry
  * join's match (`join.ts`'s `aonSlugIndex` keeps one winner per
  * `category/slug` key), so the LOSER becomes its own AoN-only entity at the
  * exact same pre-collision id as the winner's (possibly Foundry-joined)
  * entity — minting a phantom `-2`/`-3`/`-4` residual-collision suffix for
  * what is, in reality, ONE real-world item (verified: `equipment/
- * accursed-staff-3`/`-4` in the pre-P1.5 corpus both trace back to aonUrl
+ * accursed-staff-3`/`-4` in the pre-dedup corpus both trace back to aonUrl
  * ID 4778's parent+child duplicate, not to any genuine tier variation — the
  * `(Greater)`/`(Major)` tiers are already correctly DIFFERENT slugs and never
  * collide). 600 of the 982 duplicate docs are this equipment parent/child
@@ -49,24 +49,23 @@ import { normalizeUrlKey, urlQueryId } from "./aonLinkTable";
  * reconstructions — the real `item-bonus` case, whose ids never reconstruct
  * their parent's query id at all), fall back deterministically: prefer a doc
  * that carries markdown, then the lexicographically smallest `aonId` — never
- * arbitrary, never re-derived differently between runs (the D-gate).
+ * arbitrary, never re-derived differently between runs (determinism).
  *
- * ## The "hidden join candidate" trace (D29-18's second requirement)
+ * ## The "hidden join candidate" trace
  *
- * D29-18 also asks whether `join.ts`'s `aonSlugIndex` one-winner-per-slug
+ * A related question: does `join.ts`'s `aonSlugIndex` one-winner-per-slug
  * pick (a SEPARATE mechanism, unrelated to this dedup — it always keeps
  * exactly one meta per `category/slug` key even when several real, distinct
- * AoN docs share it) silently hides a real join candidate from some Foundry
- * entity, contributing to creature's 2,242 unjoined-Foundry residue.
+ * AoN docs share it) silently hide a real join candidate from some Foundry
+ * entity, contributing to creature's 2,242 unjoined-Foundry residue?
  * MEASURED directly against the real 2026-07-13 snapshot (not re-derived
- * here — see the codex-0029 memory / this slice's commit message): of the
- * full 2,242 unjoined-Foundry creature list, ZERO have a matching AoN
+ * here): of the full 2,242 unjoined-Foundry creature list, ZERO have a matching AoN
  * `creature` meta at their own slug (exact OR any `qualifierCandidates`
  * form) ANYWHERE in the full (pre-dedup) meta set — not merely "lost to the
  * one-winner pick", genuinely absent from AoN. The theory is REFUTED for
  * creature: `aonSlugIndex` cannot hide a candidate that doesn't exist, and
  * by construction (every meta with a given slug key always leaves SOME
- * meta at that key) it never drops a key to zero either. D29-17's carve-out
+ * meta at that key) it never drops a key to zero either. The creature carve-out
  * count is accurate as pure source asymmetry, not a join-mechanism bug. This
  * dedup pass still matters independently — collapsing genuine duplicates
  * before `aonSlugIndex` is built removes noise that would otherwise mint
@@ -107,9 +106,9 @@ function pickDedupWinner(group: readonly AonDocMeta[]): AonDocMeta {
 
 /**
  * Collapses same-`(category, slug, aonUrl, edition)` AoN metas to one
- * deterministic winner (D29-18). Pure: takes the full extracted meta list +
+ * deterministic winner. Pure: takes the full extracted meta list +
  * a report sink, returns the deduped list — sorted by `(category, slug,
- * aonId)` regardless of input/grouping order (the D-gate: two runs over the
+ * aonId)` regardless of input/grouping order (determinism: two runs over the
  * same snapshot must produce byte-identical output, and `Map` grouping order
  * alone isn't a strong enough guarantee to rely on for that). Every dropped
  * meta is report-counted (`aonUrlDuplicateCollapsed`) with the full group's

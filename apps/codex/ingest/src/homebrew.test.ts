@@ -16,12 +16,11 @@ import { UuidIndex } from "./uuidResolve";
 
 /**
  * Unit-level coverage for `loadHomebrewSide`/`assertNoHomebrewCollisions`/
- * `countHomebrewUuidRefs` (0030 S1, D30-42/-43/-46/-47) — the end-to-end
- * fixture-pipeline proof (real `@UUID` resolution against the official
- * `UuidIndex`, the report section, the negative-path collision throw) lives
- * in `transform.test.ts`'s "0030 S1" describe block instead, since
- * it needs the real committed Foundry fixture snapshot for a resolvable
- * `@UUID` target. This file exercises the loader/guard mechanics directly
+ * `countHomebrewUuidRefs` — the end-to-end fixture-pipeline proof (real
+ * `@UUID` resolution against the official `UuidIndex`, the report section,
+ * the negative-path collision throw) lives in `transform.test.ts`'s
+ * "homebrew ingest, end to end" describe block instead, since it needs the
+ * real committed Foundry fixture snapshot for a resolvable `@UUID` target. This file exercises the loader/guard mechanics directly
  * against small hand-written temp-dir fixtures.
  */
 
@@ -90,7 +89,7 @@ function traitDoc(
   return { name, description: { value: descriptionHtml } };
 }
 
-describe("loadHomebrewSide (D30-42)", () => {
+describe("loadHomebrewSide", () => {
   it("walks in sorted order regardless of filesystem write order", () => {
     const dir = freshHomebrewDir();
     // Written zzz, aaa, mmm — sorted output proves `walkFiles`'s own sort
@@ -107,7 +106,7 @@ describe("loadHomebrewSide (D30-42)", () => {
     ]);
   });
 
-  it("D30-42: the store file basename IS the id/slug (not sluggify(name))", () => {
+  it("the store file basename IS the id/slug (not sluggify(name))", () => {
     const dir = freshHomebrewDir();
     writeDoc(dir, "fixture-doc", plainSpellDoc("Fixture Doc"));
     const { report } = collector();
@@ -116,7 +115,7 @@ describe("loadHomebrewSide (D30-42)", () => {
     expect(result.entities[0]?.slug).toBe("fixture-doc");
   });
 
-  it("D30-43: a doc carrying system.ritual reroutes BOTH category and id to ritual/*; a plain doc does not", () => {
+  it("a doc carrying system.ritual reroutes BOTH category and id to ritual/*; a plain doc does not", () => {
     const dir = freshHomebrewDir();
     writeDoc(dir, "a-ritual", ritualDoc("A Ritual"));
     writeDoc(dir, "a-plain-spell", plainSpellDoc("A Plain Spell"));
@@ -232,7 +231,7 @@ describe("loadHomebrewSide (D30-42)", () => {
     }
   });
 
-  it("D30-46: slugMismatchCount increments exactly once per basename/sluggify(name) disagreement (possessive-apostrophe class)", () => {
+  it("slugMismatchCount increments exactly once per basename/sluggify(name) disagreement (possessive-apostrophe class)", () => {
     const dir = freshHomebrewDir();
     // sluggify() strips the apostrophe entirely ("almonks-drain"); the store
     // basename convention hyphenates it instead — a genuine disagreement.
@@ -256,7 +255,7 @@ describe("loadHomebrewSide (D30-42)", () => {
   });
 });
 
-describe("loadHomebrewTraits (D30-44, 0030 S2)", () => {
+describe("loadHomebrewTraits", () => {
   it("walks in sorted order regardless of filesystem write order", () => {
     const dir = freshHomebrewDir();
     writeDoc(dir, "seraphic", traitDoc("Seraphic"));
@@ -271,10 +270,10 @@ describe("loadHomebrewTraits (D30-44, 0030 S2)", () => {
     ]);
   });
 
-  it("D30-44: the file basename is the trait token id/slug, never sluggify(name)", () => {
+  it("the file basename is the trait token id/slug, never sluggify(name)", () => {
     const dir = freshHomebrewDir();
     // "Kosmoturgy Trait" would sluggify to "kosmoturgy-trait" — the basename
-    // wins regardless (same convention as the spell store's D30-42 identity,
+    // wins regardless (same convention as the spell store's identity rule,
     // but there's no slugMismatch report class here: the token IS the id by
     // construction, not a basename-vs-sluggify(name) comparison).
     writeDoc(dir, "kosmoturgy", traitDoc("Kosmoturgy Trait"));
@@ -285,7 +284,7 @@ describe("loadHomebrewTraits (D30-44, 0030 S2)", () => {
     expect(result.entities[0]?.name).toBe("Kosmoturgy Trait");
   });
 
-  it("D30-44: the exact field set — no level, no proseOnly, no aonUrl — plus the fixed edition/source/rarity", () => {
+  it("the exact field set — no level, no proseOnly, no aonUrl — plus the fixed edition/source/rarity", () => {
     const dir = freshHomebrewDir();
     writeDoc(dir, "memetics", traitDoc("Memetics"));
     const { report } = collector();
@@ -361,7 +360,7 @@ describe("loadHomebrewTraits (D30-44, 0030 S2)", () => {
   });
 });
 
-describe("assertNoHomebrewCollisions (D30-43, M3-widened)", () => {
+describe("assertNoHomebrewCollisions (pre-drop and post-drop sets)", () => {
   it("does not throw when no homebrew id collides with anything official", () => {
     const foundryAssembled = new Map<string, CodexEntity>([
       ["spell/heal", entity({ id: "spell/heal", category: "spell", slug: "heal", name: "Heal" })],
@@ -385,7 +384,7 @@ describe("assertNoHomebrewCollisions (D30-43, M3-widened)", () => {
       ["boon/x", entity({ id: "boon/x", category: "boon", slug: "x", name: "X" })],
     ]);
     // The official boon was DROPPED (not present in `kept`) — the guard
-    // still must catch the shadowing collision (the Gate-B drift vector).
+    // still must catch the shadowing collision (the crossref drift vector).
     expect(() => assertNoHomebrewCollisions(new Set(["boon/x"]), foundryAssembled, [])).toThrow(
       /homebrew id "boon\/x" collides with a pre-drop assembled official Foundry entity/,
     );
@@ -413,7 +412,7 @@ describe("assertNoHomebrewCollisions (D30-43, M3-widened)", () => {
   });
 });
 
-describe("countHomebrewUuidRefs (D30-46)", () => {
+describe("countHomebrewUuidRefs", () => {
   function withBody(body: BlockNode[]): CodexEntity {
     return entity({ id: "spell/x", category: "spell", slug: "x", name: "X", body });
   }
