@@ -2,10 +2,11 @@
 //
 // Plaintext config lives here as node args. Secrets are NEVER plaintext: a secret
 // is a `ref="sops:KEY"` pointer whose value lives in deploy/sops/secrets.enc.yaml
-// and is decrypted on demand by libs/{py,ts}/config (a secret's env override is an env var
-// named like the KEY, upper-cased). This file is the only place a value lives: the schemas
-// have no defaults, so every key below except a secret is required, and removing one fails
-// the load.
+// and is decrypted on demand by libs/{py,ts}/config. Env overrides are narrow: a
+// non-blank env var named like a secret's KEY, upper-cased, wins over the SOPS file,
+// and ASTRA_DATA_ROOT / ASTRA_CONTENT_ROOT override data.root / data.content-root. No
+// other key has an env override. The schemas have no defaults, so every key below
+// except a secret is required, and removing one fails the load.
 //
 // Each language's loader validates only the blocks its apps read and ignores the rest;
 // one CI test validates every block (libs/py/config `WholeConfig`). The models.py
@@ -60,8 +61,11 @@ data {
 }
 
 llm {
-    // Every LLM call routes through OpenRouter (GLM, DeepSeek); a model id is a full
-    // litellm `provider/model` string, passed straight through.
+    // Every chat-model call routes through OpenRouter (GLM, DeepSeek); a model id is a
+    // full litellm `provider/model` string, passed straight through. default-model runs
+    // linguist's episode summaries and chronicle and the substrate smoke. mouthpiece,
+    // heartwood and mouthpiece-producer pin their own `model`, and scribe's transcription
+    // runs on Groq (scribe.model).
     // litellm reads each provider key from its UPPER_CASED env var, injected from SOPS
     // at `just up` (per-service compose `environment:`).
     default-model "openrouter/z-ai/glm-5.2"
@@ -121,9 +125,9 @@ mouthpiece {
     // into the Dagster services at the same path (deploy/docker-compose.yml). Empty would resolve to the cwd — set it so a real pipeline
     // run lands here. (NB the mouthpiece-FRONTEND audio volume is separate.)
     episodes-path "mouthpiece/episodes"
-    // mouthpiece's OWN model for clean/enrich + the two-pass script — GLM 5.3 via
-    // OpenRouter (2026-09). Deliberately separate from llm.default-model: linguist's
-    // compiled dspy judge + heartwood were tuned on GLM 5.2 and stay there.
+    // mouthpiece's OWN model for clean/enrich + the two-pass recap script — GLM 5.3 via
+    // OpenRouter (2026-09). Deliberately separate from llm.default-model, which linguist's
+    // episode summaries and chronicle still run on (GLM 5.2).
     model "openrouter/z-ai/glm-5.3"
     // TTS backend for the episode audio: "elevenlabs" (Text-to-Dialogue, the live
     // backend) | "mock" (offline silence). The asset fails loud on a missing key —
@@ -208,11 +212,11 @@ akasha-frontend {
     service-name "astra.akasha-frontend"
     port 10365
     public-origin "https://akasha.iridi.cc"
-    // The in-container dir the session-audio volume mounts at. The SSR server serves
+    // The in-container dir the session audio mounts at. The SSR server serves
     // `<audio-dir>/<date>.mp3` same-origin at /audio/<date>.mp3 — the combined Craig
-    // recording each transcript page plays. A runtime volume (akasha-audio, ~31 GB),
-    // never baked into the image. This replaces the surviving faerrin
-    // static-audio.iridi.cc dependency; seed with `just akasha-seed`.
+    // recording each transcript page plays. A read-only bind mount of `<root>/audio/akasha`
+    // (deploy/docker-compose.yml), never baked into the image; seed it with
+    // `just akasha-seed`.
     audio-dir "/audio"
 }
 
@@ -227,9 +231,9 @@ mouthpiece-frontend {
     service-name "astra.mouthpiece-frontend"
     port 10366
     public-origin "https://mouthpiece.iridi.cc"
-    // The in-container dir the episode audio volume mounts at. The SSR server
-    // serves `<audio-dir>/<id>.mp3` same-origin at /audio/<id>.mp3 — the 173 MB of
-    // seeded audio is a runtime volume, never baked into the image.
+    // The in-container dir the episode audio mounts at. The SSR server serves
+    // `<audio-dir>/<id>.mp3` same-origin at /audio/<id>.mp3 — a read-only bind mount of
+    // `<root>/audio/mouthpiece` (deploy/docker-compose.yml), never baked into the image.
     audio-dir "/audio"
 }
 
@@ -317,9 +321,11 @@ ops {
 }
 
 mouthpiece-producer {
-    // The mouthpiece producer — a host-run, read-only dspy.RLM that briefs the
-    // recap script (moments, lore, callbacks) in place of the fixed wiki excerpts +
-    // continuity block. Experiment-only until a runtime decision is made.
+    // The mouthpiece producer — a read-only dspy.RLM that briefs the recap script
+    // (moments, lore, callbacks). The pipeline's session_brief asset runs it for every
+    // session, and session_script uses the brief in place of the fixed wiki excerpts +
+    // continuity block (no brief → the old prompt). The experiment-* keys drive only the
+    // host-run `just mouthpiece-experiment`.
     model "openrouter/deepseek/deepseek-v4.1-flash"      // main RLM loop
     sub-model "openrouter/deepseek/deepseek-v4.1-flash"  // llm_query / llm_query_batched
     max-iterations 30      // bounds MAIN-LM calls

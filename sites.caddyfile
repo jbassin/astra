@@ -24,6 +24,12 @@
 # with it even when the challenge TXT exists. Caddy's check follows that CNAME,
 # looks for the TXT at iridi.cc, and times out. So skip the check and wait a
 # fixed delay before asking Let's Encrypt to validate (it queries TXT directly).
+#
+# DNS and certificates for a new site block: the `*.iridi.cc` wildcard CNAME already
+# resolves every subdomain, so a new host needs no DNS record. Each host gets its own
+# certificate (no wildcard cert, no on-demand TLS): Caddy requests it through the
+# Cloudflare DNS challenge as soon as a reload loads the block, and the host fails TLS
+# handshakes until it arrives (at least the 60s propagation delay).
 
 (astra_site) {
 	tls {
@@ -76,8 +82,7 @@ strider.iridi.cc {
 # strider template. A read-only surface (no /editor), so no local_only gate. Like
 # strider it self-serves gothic's fonts from dist/ (gothicFontsPlugin), so /fonts/*
 # falls through to the reverse_proxy. /pagefind/* (the search index) is likewise just
-# static under dist/client. Compose publishes host port 10365. (Needs an
-# akasha.iridi.cc DNS record — manual, deferred like strider/orator/weal-overlay.)
+# static under dist/client. Compose publishes host port 10365.
 akasha.iridi.cc {
 	import astra_site
 	reverse_proxy localhost:10365
@@ -108,7 +113,6 @@ api.akasha.iridi.cc {
 }
 
 # heart.iridi.cc — alias host for akasha-frontend (same SSR service, port 10365).
-# (Needs a heart.iridi.cc DNS record — manual, like the other deferred hosts.)
 heart.iridi.cc {
 	import astra_site
 	reverse_proxy localhost:10365
@@ -118,8 +122,7 @@ heart.iridi.cc {
 # strider/akasha template. Read-only (no /editor → no local_only gate). Self-serves
 # gothic's fonts from dist/; /audio/<id>.mp3 is served by the SSR process off the
 # mounted audio volume, so it falls through to the reverse_proxy like any other
-# path. Compose publishes host port 10366. (Needs a mouthpiece.iridi.cc DNS record —
-# manual, deferred like strider/akasha/orator/weal-overlay.)
+# path. Compose publishes host port 10366.
 mouthpiece.iridi.cc {
 	import astra_site
 	reverse_proxy localhost:10366
@@ -127,9 +130,8 @@ mouthpiece.iridi.cc {
 
 # harrow — the tarot deck reader, a backend-less SSR frontend on the strider
 # template. Read-only (no editor); self-serves gothic's fonts from the
-# container. Compose publishes host port 10369. The harrow.iridi.cc DNS record already
-# exists (the old standalone deploy used it) — this block takes the host over; the old
-# stanza was removed from the parent reverse-proxy Caddyfile (was → localhost:10204).
+# container. Compose publishes host port 10369. This block took the host over from the
+# old standalone deploy, whose stanza is gone from the parent reverse-proxy Caddyfile.
 harrow.iridi.cc {
 	import astra_site
 	reverse_proxy localhost:10369
@@ -139,7 +141,7 @@ harrow.iridi.cc {
 # harrow. One homepage: a gothic card grid linking the player-facing sites (the links
 # are baked from each site's config public-origin at build time). Read-only (no
 # editor → no local_only gate); self-serves gothic's fonts from the container. Compose
-# publishes host port 10370. (Needs a ledger.iridi.cc DNS record — new subdomain.)
+# publishes host port 10370.
 ledger.iridi.cc {
 	import astra_site
 	reverse_proxy localhost:10370
@@ -149,7 +151,6 @@ ledger.iridi.cc {
 # Public with NO auth gate but NOINDEXED: the X-Robots-Tag header here is
 # layer 3 of 3 (the SSR HTML always carries a robots meta tag; /robots.txt Disallow-all
 # ships in the app's public/). Plain `header` (not `header ?`) — this must always win.
-# (*.iridi.cc wildcard — no manual DNS record; cert mints on first hit, ~20-60s flap.)
 codex.iridi.cc {
 	import astra_site
 	header X-Robots-Tag noindex
@@ -159,8 +160,7 @@ codex.iridi.cc {
 # 2e.iridi.cc — alias host for codex (same SSR service, port 10374). Mirrors the
 # heart.iridi.cc alias precedent above: same upstream, same noindex posture (still
 # public, no auth, three-layer noindexed; the header here is layer 3, same as
-# codex.iridi.cc's own). (*.iridi.cc wildcard — no manual DNS record; cert mints on
-# first hit, ~20-60s flap, same as every other alias host here.)
+# codex.iridi.cc's own).
 2e.iridi.cc {
 	import astra_site
 	header X-Robots-Tag noindex
@@ -174,7 +174,6 @@ codex.iridi.cc {
 # SSR frontend. The /editor UI is gated local_only (like strider) — the export still
 # works for local clients; a public visitor sees the read-only landing page. Self-serves
 # gothic's fonts from the container. Compose publishes 10367 (frontend) + 10368 (render).
-# (Needs a vellum.iridi.cc DNS record — manual, deferred like the other frontends.)
 vellum.iridi.cc {
 	import astra_site
 
@@ -201,7 +200,7 @@ vellum.iridi.cc {
 # weal-overlay — the dice-roll OBS overlay. SSE: flush_interval -1 disables
 # response buffering so text/event-stream reaches OBS immediately. The overlay
 # self-serves its fonts from dist/, so no gothic_fonts import. Compose publishes
-# host port 10361. (Needs a weal-overlay.iridi.cc DNS record — manual, like strider.)
+# host port 10361.
 weal-overlay.iridi.cc {
 	import astra_site
 	reverse_proxy localhost:10361 {
@@ -213,7 +212,7 @@ weal-overlay.iridi.cc {
 # operator SPA (one origin, M3). The SPA self-serves its gothic fonts from dist/
 # (gothicFontsPlugin copies them in), so no gothic_fonts import. Auth is handled in
 # the app (Discord OAuth + ontology allowlist), so no IP gate. Compose publishes
-# host port 10363. (Needs an orator.iridi.cc DNS record — manual, like strider.)
+# host port 10363.
 orator.iridi.cc {
 	import astra_site
 
@@ -238,8 +237,7 @@ orator.iridi.cc {
 # server-side manifest fetch resolves cleanly (D11 — install by Manifest URL =
 # https://portal.iridi.cc/module/module.json; the catch-all would cover it too, but
 # the explicit route documents intent + lets caching be tuned here later). Compose
-# publishes host port 10372. (Needs a portal.iridi.cc DNS record — *.iridi.cc is a
-# wildcard, so it should resolve without one, like ledger.)
+# publishes host port 10372.
 portal.iridi.cc {
 	import astra_site
 
@@ -265,7 +263,6 @@ portal.iridi.cc {
 # SSE event stream needs unbuffered proxying (weal-overlay/orator posture) — the
 # handle-wrapped matcher keeps the catch-all from claiming /api/events/* (which
 # would silently buffer EventSource frames).
-# (*.iridi.cc wildcard — no DNS record needed; cert mints on first hit.)
 menhir.iridi.cc {
 	import astra_site
 	header X-Robots-Tag noindex
@@ -322,8 +319,7 @@ signoz.iridi.cc {
 
 # Dagster UI — the pipeline control plane (run/asset/sensor management). Internal
 # admin surface, so local network only (import local_only). Compose's dagster-webserver
-# publishes host port 10350. (Needs a dagster.iridi.cc DNS record — manual, like the
-# other internal/outward-facing hosts.)
+# publishes host port 10350.
 dagster.iridi.cc {
 	import astra_site
 	import local_only

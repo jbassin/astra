@@ -36,8 +36,9 @@ from .retry import DEFAULT_RETRY_POLICY, RetryPolicy, RunBudget
 _log = get_logger("astra.llm")
 
 # Fallback when a caller passes no model (kept config-agnostic — this lib is a pure seam).
-# The PIPELINE is authoritative via config.kdl: scribe passes `scribe.model` and the
-# mouthpiece assets pass `llm.default-model`. Keep this in sync with config's default-model.
+# The PIPELINE is authoritative via config.kdl: each caller passes a model from it
+# (`llm.default-model`, `mouthpiece.model`, `heartwood.model`, ...). Keep this value in
+# sync with config's default-model.
 DEFAULT_MODEL = "openrouter/z-ai/glm-5.2"
 DEFAULT_MAX_TOKENS = 16_000
 #: Per-attempt request timeout (seconds). Bounds a single provider call so a stalled or

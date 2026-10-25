@@ -320,8 +320,9 @@ services:
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10375/healthz').then(r=>process.exit(r.ok?0:1))"]
 
   # --- strider: the first SSR frontend, the template for the later ones. One SSR
-  # process; the editor save runs in it as a TanStack server function (writes
-  # content/layers/*.md). The /editor UI is gated to the local network at the Caddy edge. ---
+  # process. The layer editor (a TanStack server function that writes
+  # content/layers/*.kdl) exists only under `vite dev`; the production build leaves it out.
+  # The Caddy edge still gates /editor to the local network. ---
   strider:
     <<: *astra-app
     build:
@@ -341,7 +342,7 @@ services:
   # --- akasha-frontend: the wiki read-surface — SSR Compose service, the second
   # frontend on the strider template. Build-time snapshot +
   # transcripts + Pagefind index baked into the image; no live backend.
-  # The combined session audio each transcript plays is a runtime bind mount (~31 GB),
+  # The combined session audio each transcript plays is a host bind mount (gigabytes),
   # served same-origin at /audio/<date>.mp3 — never in the image. Seed with
   # `just akasha-seed`. ---
   akasha-frontend:
@@ -411,8 +412,8 @@ services:
 
   # --- mouthpiece-frontend: the podcast read-surface — SSR Compose service,
   # the third frontend on the strider/akasha template. The
-  # episode catalog (snapshot) is baked into the image; the 173 MB of episode audio is
-  # a runtime bind mount, served same-origin at /audio/ — never in the image layer.
+  # episode catalog (snapshot) is baked into the image; the episode audio is a host
+  # bind mount, served same-origin at /audio/ — never in the image layer.
   # Seed it with `just mouthpiece-seed`. ---
   mouthpiece-frontend:
     <<: *astra-app

@@ -167,8 +167,8 @@ def heartwood_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     failed or canceled run is not retried (re-execute it). The sessions the old sensor
     adopted without running are marked materialized by the sessions migration (the
     paid-replay guard).
-    The ledger is never read here: the container's copy is image-baked, and the host runner
-    owns the published check."""
+    The ledger is never read here: it lives in the astra-data clone, which the Dagster
+    containers do not mount, and the host runner owns the published check."""
     return launch_ready(context, HEARTWOOD_STAGE, tags=CONCURRENCY_TAG)
 
 
