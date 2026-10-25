@@ -189,18 +189,6 @@ sops's default location, `~/.config/sops/age/keys.txt`; the developer tree also 
 SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt sops -d sops/secrets.enc.yaml
 ```
 
-## Telemetry smoke (prove the OTLP loop)
-
-```sh
-OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:10353 \
-  uv run --with opentelemetry-sdk --with opentelemetry-exporter-otlp-proto-http \
-  python telemetry-smoke/py_span.py            # ts span: see telemetry-smoke/ts_span.ts header
-
-docker exec signoz-clickhouse clickhouse-client -q \
-  "SELECT serviceName, count() FROM signoz_traces.distributed_signoz_index_v3 \
-   WHERE serviceName LIKE 'astra-smoke-%' GROUP BY serviceName"
-```
-
 ## Backups
 
 A nightly user timer (`astra-backup.timer`, 03:30, `just units-install backup`) writes one snapshot to
