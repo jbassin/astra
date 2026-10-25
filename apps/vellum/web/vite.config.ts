@@ -12,7 +12,7 @@ export default defineSiteConfig({
   root: ROOT,
   vite: {
     // Dev only: proxy the editor's same-origin PNG export (`POST /render`) and /health to the
-    // vellum-render service (D2). In production Caddy routes them, so dev keeps the same
+    // vellum-render service. In production Caddy routes them, so dev keeps the same
     // same-origin contract without an env var.
     server: {
       proxy: {

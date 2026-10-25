@@ -1,7 +1,7 @@
 import type { ThemeMode } from "@astra/vellum-lang";
 
 /**
- * SEC-4 resource caps. The render endpoint is public and unauthenticated, takes
+ * Resource caps. The render endpoint is public and unauthenticated, takes
  * arbitrary author markdown, and drives a shared headless Chromium — so every
  * input is bounded here, before anything reaches the browser. Ported verbatim
  * from faerrin pkg/vellum (ThemeMode now from @astra/vellum-lang).

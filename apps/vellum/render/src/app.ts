@@ -32,7 +32,8 @@ export interface RenderAppOptions {
   renderer: Renderer;
 }
 
-// SEC-5: coarse per-IP fixed-window rate limit in front of the browser pool.
+// A coarse per-IP fixed-window rate limit in front of the browser pool: the endpoint is
+// public, and each render costs a Chromium page.
 const RATE = { windowMs: 60_000, max: 60 };
 
 // The editor reaches /render same-origin via Caddy in prod; this allow-list only
@@ -91,10 +92,9 @@ export function createRenderApp(opts: RenderAppOptions): {
       : {};
   }
 
-  // The old Bun static-file call is now @astra/site-kit's `serveFile` (the
-  // `send`-backed Range/206 bridge S4 built; R3, 0022 S9) — reuse the same tested
-  // static-serving seam the SSR frontends and weal-overlay already use, instead of
-  // a fresh node:fs path.
+  // Static files go through @astra/site-kit's `serveFile` (`send`-backed, with
+  // Range/206 support): the same tested seam the SSR frontends and weal-overlay use,
+  // instead of a fresh node:fs path.
   async function serveStatic(req: Request, pathname: string): Promise<Response> {
     const rel = pathname === "/" ? "/index.html" : pathname;
     // Resolve inside DIST only — no path traversal.

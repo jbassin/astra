@@ -1,5 +1,5 @@
 /**
- * Minimal FIFO concurrency gate (SEC-5). Bounds how many renders hit the shared
+ * Minimal FIFO concurrency gate. Bounds how many renders hit the shared
  * warm browser at once; excess requests queue rather than crashing it. Ported
  * verbatim from faerrin pkg/vellum.
  */
