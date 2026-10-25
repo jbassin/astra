@@ -1,4 +1,4 @@
-"""``astra-heartwood-agent`` — the heartwood agent's host CLI (0033 D33-1, §5).
+"""``astra-heartwood-agent`` — the heartwood agent's host CLI.
 
     run <date> [--dry-run] [--model ID] [--sub-model ID]
                                   stage + run one session (never publishes); the last
@@ -6,7 +6,7 @@
                                   ``--sub-model`` override ``heartwood.model`` /
                                   ``sub-model`` for this run only (model comparisons)
     sessions [--from DATE]        pending faerrin dates, oldest first — dates the ledger
-                                  shows as published are skipped (D33-12)
+                                  shows as published are skipped
     publish-sync <run-dir>        apply an ``ok`` run's change-set to the live corpus
     ledger-append <run-dir>       append the run's publish line to agent-runs.jsonl
     ledger-revert <date> [--check]  append a revert line (``--check``: only verify the
@@ -31,7 +31,7 @@ Exit codes (stable — the recipes branch on them):
        double ledger append, or reverting a date that is not published
     5  budget-check stop: spent >= ``backfill-budget-usd``, or a ledger cost is unknown
 
-Telemetry exports from the host (D33-10): ``main`` runs inside ``astra_observe.run``, which
+Telemetry exports from the host: ``main`` runs inside ``astra_observe.run``, which
 picks the host collector endpoint and flushes on exit. ``cli()`` is the telemetry-free core
 tests drive.
 """

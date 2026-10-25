@@ -43,7 +43,7 @@ def build_script_user_content(
     episode continuity, the deterministic character roster, the cleaned transcript
     (speaker: text, line ids stripped), then wiki excerpts.
 
-    With a `brief_block` (0034 D34-7, the producer's notes) the brief takes the
+    With a `brief_block` (the producer's notes) the brief takes the
     continuity slot and REPLACES both the continuity block and the wiki excerpts;
     `continuity_block` and `grounding` are ignored. Empty → byte-identical to before."""
     if brief_block.strip() != "":

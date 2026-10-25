@@ -1,4 +1,4 @@
-"""scribe's blocking session checks (0037 PIPE-12) through ``dg.materialize``.
+"""scribe's blocking session checks through ``dg.materialize``.
 
 The zip, ffmpeg and Groq seams are stubbed as in ``test_scribe.py``; the checks read real
 zip files that the tests write under ``tmp_path`` (padded past the stub floor).

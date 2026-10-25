@@ -1,7 +1,7 @@
 """Campaign matching + billing + context (P4, port of `campaigns.ts`).
 
 The matching/billing/context LOGIC is linguist's; the campaign DATA is
-ontology-being (G3). ontology's `Role{player(slug), character, descriptions}` is
+ontology-being. ontology's `Role{player(slug), character, descriptions}` is
 adapted into faerrin's `roles[playerDisplayName] -> CharacterRole[]` view (the
 billing/context text bills players by display name, so the slug→name map matters).
 """

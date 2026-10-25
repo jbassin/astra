@@ -1,4 +1,4 @@
-"""mouthpiece's own Dagster resource: the TTS provider (0037 PIPE-16).
+"""mouthpiece's own Dagster resource: the TTS provider.
 
 The shared resources (config, paths, LLM client) live in `astra_pipeline_resources`; the
 TTS provider lives here because its implementations are mouthpiece's.

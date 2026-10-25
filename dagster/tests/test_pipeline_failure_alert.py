@@ -1,4 +1,4 @@
-"""The run-failure paging sensor (0037 PIPE-2): one ERROR on ``astra.pipeline`` per failed run.
+"""The run-failure paging sensor: one ERROR on ``astra.pipeline`` per failed run.
 
 Telemetry stays network-free: the ``exported`` fixture (``conftest.py``) runs observe's real
 provider wiring with in-memory exporters (``astra_observe.testing.capture``). Nothing here may

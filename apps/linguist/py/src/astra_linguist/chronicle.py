@@ -1,4 +1,4 @@
-"""Chronicle domain — the Show → Season → Episode campaign timeline (NLSpec 0019).
+"""Chronicle domain — the Show → Season → Episode campaign timeline.
 
 GLM-5.2 (via `astra_llm`) summarizes each recorded session into an `EpisodeSummary`
 and groups a show's episodes into seasons. This module holds the data models + the
@@ -99,7 +99,7 @@ class Chronicle(BaseModel):
 
     shows: list[ShowChronicle]
     # Fingerprint of the episode inputs this was built from — lets the aggregate
-    # asset skip the GLM grouping calls when nothing has changed (C9). Not content;
+    # asset skip the GLM grouping calls when nothing has changed. Not content;
     # the frontend ignores it.
     inputs_hash: str | None = None
 

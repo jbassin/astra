@@ -4,7 +4,7 @@ roundtable `Script` (0024 §4 rework of the beat-driven version).
 The TWO-PASS (the crux, ported from caster `script/index.ts`): Pass A `call_text`
 (free-text "raw imperfect transcript" — keeps the model out of the clean-podcast
 attractor) → Pass B `call_tool` (protective "dressing" into structured turns,
-forbidden to polish). Raw `libs/py/llm`, no dspy (H1); the verbatim prompts carry
+forbidden to polish). Raw `libs/py/llm`, no dspy; the verbatim prompts carry
 the craft. The `max_tokens→raise` guard + prompt caching come free from the client.
 
 The one-shot legacy arm (`two_pass=False`) is deleted (0024 §5) — two-pass is the
@@ -26,7 +26,7 @@ from .prompts import (
 )
 from .schemas import script_tool
 
-#: A 30-40 minute episode is a large output; give the model ample room (M12). Raised
+#: A 30-40 minute episode is a large output; give the model ample room. Raised
 #: 32k→64k with GLM 5.3: its reasoning tokens share this budget (see clean.py). Raised
 #: 64k→128k after the long 2026-10-1 session's Pass A hit 64k on all four attempts
 #: (GLM 5.3's OpenRouter completion cap is 131,072).

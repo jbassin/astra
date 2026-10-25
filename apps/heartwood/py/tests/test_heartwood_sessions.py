@@ -1,4 +1,4 @@
-"""The faerrin-world session filter + transcript access (0033 D33-6).
+"""The faerrin-world session filter + transcript access.
 
 Reads the committed transcripts + being.kdl: faerrin sessions are kept and resolve to a
 faerrin campaign slug; non-faerrin worlds (sedecium `observatory-slipped`, finnegan's-ring

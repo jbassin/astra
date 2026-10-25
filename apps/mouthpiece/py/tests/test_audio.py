@@ -1,4 +1,4 @@
-"""Stage 4/5 tests — TTS render + ffmpeg assembly (gates G, H) — hermetic.
+"""Stage 4/5 tests — TTS render + ffmpeg assembly — hermetic.
 
 No live ElevenLabs and no ffmpeg-on-PATH: the mock provider produces silent WAVs,
 ffmpeg is a fake runner that just touches output files, and the arg-builders are

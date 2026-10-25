@@ -1,4 +1,4 @@
-"""The staging workspace, op journal, change-set and publish sync (0033 D33-2, gate B).
+"""The staging workspace, op journal, change-set and publish sync.
 
 Hermetic: a tiny fixture corpus under tmp_path stands in for akasha's content/.
 """

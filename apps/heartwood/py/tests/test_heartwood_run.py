@@ -1,10 +1,10 @@
-"""One agent run end to end (0033 S3, gates C + the D33-9 outcomes).
+"""One agent run end to end, and its ok / incomplete / failed outcomes.
 
 ``run_session`` over a fixture corpus + fixture transcripts with scripted ``DummyLM``s
 (metered through the production mixin) — no network, no key, no paid calls.
 
 - The cap and failure tests use a fake interpreter (hermetic, run in CI).
-- ``test_scripted_run_through_real_deno`` is **gate C**: the real dspy
+- ``test_scripted_run_through_real_deno`` runs the real dspy
   ``PythonInterpreter`` (Deno + Pyodide) drives write → rejected write → fixed write →
   malformed reply → move + a raised tool error caught in sandbox code → ``llm_query`` +
   ``llm_query_batched`` → ``SUBMIT``. It skips when ``deno`` is absent (CI has none) and
@@ -215,7 +215,7 @@ def test_lm_factory_must_return_distinct_metered_lms(env) -> None:
         )
 
 
-# ── gate C: the scripted real-Deno run ──
+# ── the scripted real-Deno run ──
 def _step(reasoning: str, code: str) -> dict[str, str]:
     return {"reasoning": reasoning, "code": f"```python\n{code}\n```"}
 
@@ -257,7 +257,9 @@ SCRIPT = [
 ]
 
 
-@pytest.mark.skipif(not deno_available(), reason="deno not installed (CI) — gate C runs locally")
+@pytest.mark.skipif(
+    not deno_available(), reason="deno not installed (CI) — the real-Deno run is local-only"
+)
 def test_scripted_run_through_real_deno(env, spans) -> None:
     factory, _built = dummy_factory(
         SCRIPT, [{"response": "A grell is a floating brain."}, {"response": "A"}, {"response": "B"}]
@@ -286,7 +288,7 @@ def test_scripted_run_through_real_deno(env, spans) -> None:
     assert outputs[5] == "True 2"
     assert outputs[6].startswith("FINAL:")
 
-    # the change-set (D33-2): create→move nets to one creation at the final path
+    # the change-set: create→move nets to one creation at the final path
     cs = read_json(result.run_dir / "changeset.json")
     assert cs == {
         "created": ["Bestiary/Grell", "Bestiary/Grells/Grell Kin"],

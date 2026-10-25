@@ -1,4 +1,4 @@
-"""Chronicle GLM logic (NLSpec 0019) — the GLM-5.2 calls behind the chronicle assets.
+"""Chronicle GLM logic — the GLM-5.2 calls behind the chronicle assets.
 
 Pure, injectable, Dagster-free so it tests with a stub client (no key, no network):
 

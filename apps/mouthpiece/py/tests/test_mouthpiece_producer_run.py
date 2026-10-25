@@ -1,4 +1,4 @@
-"""The producer brief + one run end to end (0034 §4, D34-8) — DummyLMs, no network.
+"""The producer brief + one run end to end — DummyLMs, no network.
 
 The cap test uses a fake interpreter (hermetic, runs in CI). ``test_submit_through_real_deno``
 drives the real Deno + Pyodide sandbox: tool calls from sandbox code, then a typed

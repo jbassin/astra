@@ -1,4 +1,4 @@
-"""The code location loads, and its names are exactly the pinned set (0037 PIPE-15).
+"""The code location loads, and its names are exactly the pinned set.
 
 Dagster keys run history, dynamic partitions and sensor cursors on these names, so a
 rename silently orphans that state. A change here must be deliberate: update the pinned
@@ -51,9 +51,9 @@ CROSS_APP_DEPS = {
     "session_digest": {"session_transcripts", "session_episode_summary"},
     "session_wiki": {"session_transcripts"},
 }
-#: The resources the assets declare as parameters (0037 PIPE-16); a key is a parameter name.
+#: The resources the assets declare as parameters; a key is a parameter name.
 RESOURCES = {"astra_config", "llm", "pipeline_paths", "tts"}
-#: The blocking per-session checks (0037 PIPE-12), as ``asset:check``.
+#: The blocking per-session checks, as ``asset:check``.
 CHECKS = {
     "session_tracks:no_undated_recording",
     "session_tracks:single_recording",

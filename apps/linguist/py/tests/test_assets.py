@@ -1,4 +1,4 @@
-"""The linguist assets run through ``dg.materialize`` with fake resources (0037 PIPE-16).
+"""The linguist assets run through ``dg.materialize`` with fake resources.
 
 Paths point under ``tmp_path`` and the LLM is a stub, so no key, no network and no money.
 The being.kdl roster and the lexicon corrections are the real ones (read-only repo files).
@@ -159,7 +159,7 @@ def test_campaign_timeline_with_no_episodes_is_a_no_op(tmp_path: Path) -> None:
     assert not (tmp_path / "linguist" / "timeline" / "seasons.json").exists()
 
 
-# ── campaign_timeline_sensor: runs when a summary lands and the inputs changed (PIPE-20) ──
+# ── campaign_timeline_sensor: runs when a summary lands and the inputs changed ──
 
 
 def _summary_done(instance: dg.DagsterInstance, date: str) -> None:

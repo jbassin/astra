@@ -1,4 +1,4 @@
-"""The 0036 request protocol + host runner (D36-2, D36-3) — no recipe, no LLM, no network.
+"""The heartwood request protocol + host runner — no recipe, no LLM, no network.
 
 The command runner is injected: it writes what ``just heartwood-agent`` would print into
 the log (``RUN_DIR=`` + the ``committed`` line) and returns an exit code.

@@ -156,7 +156,8 @@ def session_transcript(
         tempfile.TemporaryDirectory() as work,
     ):
         script = build_transcript(tracks, roster, transcriber, Path(work) / "chunks")
-        # Atomic appearance for the transcript (N7): write `.tmp` then rename.
+        # A materialized partition means done, so the transcript appears whole or not at all:
+        # write `.tmp` then rename.
         atomic_write_text(out / "script.json", json.dumps(script))
         span.set_attribute("scribe.segments", len(script))
     _sessions_counter.add(1)
@@ -188,7 +189,7 @@ def session_cleanup(
 SCRIBE_ASSETS = [session_tracks, session_audio, session_transcript, session_cleanup]
 
 
-# ── blocking checks (0037 PIPE-12) ───────────────────────────────────────────
+# ── blocking checks ──────────────────────────────────────────────────────────
 # A failed check fails the run, so `pipeline_failure_alert` pages with the session key, and
 # skips the rest of the run: the tracks checks stop the Groq transcription, and the
 # transcript check stops `session_cleanup` (the tracks stay for a rerun). linguist's sensor

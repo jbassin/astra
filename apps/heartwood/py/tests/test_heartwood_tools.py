@@ -1,4 +1,4 @@
-"""The agent's host-side tools (0033 §3, gate B).
+"""The agent's host-side tools.
 
 Hermetic: a fixture corpus with a crossref web, a fixture ``being`` with one faerrin and
 one non-faerrin campaign, four fixture transcripts around the 2025-8-28 target (earlier
@@ -137,7 +137,7 @@ def test_non_ingestible_target_raises(env) -> None:
             )
 
 
-# ── path guards (gate B) ──
+# ── path guards ──
 @pytest.mark.parametrize("bad", ["../live/index", "/etc/passwd", "Bestiary/../../x", "x.vellum"])
 def test_bad_paths_raise_in_every_path_tool(env, bad: str) -> None:
     ws, t, _, _ = env
@@ -188,7 +188,7 @@ def test_search_wiki_cap(env) -> None:
     assert len(t.search_wiki("line")) == 200
 
 
-# ── write_page (D33-4, D33-5) ──
+# ── write_page ──
 def test_write_creates_with_inserted_frontmatter(env) -> None:
     ws, t, validator, _ = env
     assert t.write_page("Bestiary/New/Grell", "A grell.") == "created Bestiary/New/Grell"
@@ -345,7 +345,7 @@ def test_delete_page(env) -> None:
         t.delete_page("Org/Amber Call/People/Mr. Whiskers")
 
 
-# ── transcripts (D33-6) ──
+# ── transcripts ──
 def test_list_sessions_filters_world_and_future(env) -> None:
     _, t, _, _ = env
     assert t.list_sessions() == [

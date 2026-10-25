@@ -1,4 +1,4 @@
-"""The 0036 Dagster wiring (D36-7, D36-8): session_wiki's request/wait/outcome handling and
+"""The heartwood Dagster wiring: session_wiki's request/wait/outcome handling and
 the sensor on the shared sessions set. No host runner — a fake one writes results."""
 
 from __future__ import annotations
@@ -180,7 +180,7 @@ def test_definitions_and_no_retry_policy() -> None:
     assert dg.AssetKey("session_wiki") in {a.key for a in repo.asset_graph.asset_nodes}
 
 
-# ── session_wiki through dg.materialize, with fake resources (0037 PIPE-16) ──
+# ── session_wiki through dg.materialize, with fake resources ──
 def _materialize_wiki(tmp_path: Path, timeout_min: int) -> dg.ExecuteInProcessResult:
     from astra_pipeline_resources.testing import FakeConfig, paths_under
 

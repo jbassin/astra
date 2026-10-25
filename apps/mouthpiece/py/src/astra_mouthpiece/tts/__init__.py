@@ -1,8 +1,8 @@
 """Stage 4 — TTS: script → audio clips (ElevenLabs / mock).
 
 ElevenLabs (`mouthpiece.tts-provider`, the only live backend) renders runs of turns as
-pre-paced Text-to-Dialogue clips with the pronunciation IPA wrap + tag pass-through
-(M6). It is paid; CI uses the offline `MockTTSProvider`.
+pre-paced Text-to-Dialogue clips with the pronunciation IPA wrap + tag pass-through.
+It is paid; CI uses the offline `MockTTSProvider`.
 """
 
 from __future__ import annotations

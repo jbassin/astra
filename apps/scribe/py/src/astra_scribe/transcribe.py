@@ -1,10 +1,10 @@
-"""Per-track Groq transcription (Decision G) — VAD-trim → chunk → re-offset.
+"""Per-track Groq transcription — VAD-trim → chunk → re-offset.
 
 Replaces faerrin's whisperx + forced-align step. Per track: detect silence
 (ffmpeg) → voiced spans → chunks → cut+transcode each chunk to 16 kHz mono flac →
 Groq `whisper-large-v3` `verbose_json` (segments only, via `libs/py/llm`) →
 re-offset each chunk's segments back to the session timeline. Word timestamps are
-dropped (F1). The ffmpeg + Groq calls are injected, so the orchestration
+dropped (nothing downstream reads them). The ffmpeg + Groq calls are injected, so the orchestration
 unit-tests with stubs (no ffmpeg/network).
 """
 

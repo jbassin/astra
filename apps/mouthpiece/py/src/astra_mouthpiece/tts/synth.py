@@ -116,7 +116,7 @@ def _synthesize_per_turn(
 def _synthesize_dialogue_chunks(
     script: Script, provider: TTSProvider, voices: VoiceConfig, clips_dir: Path, lexicon: Lexicon
 ) -> list[TtsClip]:
-    # v3 path: render delivery tags, then inline IPA for known terms (M6).
+    # v3 path: render delivery tags, then inline IPA for known terms.
     def render(turn: ScriptTurn) -> str:
         return _apply(render_delivery(turn.text, turn.emotion, True), lexicon)
 

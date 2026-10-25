@@ -1,4 +1,4 @@
-"""Transcript domain models — byte-match faerrin `lib/types.ts` (P1).
+"""Transcript domain models — byte-match faerrin `lib/types.ts`.
 
 Field order matters: the serialized `data/{date}.json` is a downstream byte
 contract, so the fields are declared in faerrin's object-key order
@@ -14,7 +14,10 @@ from pydantic import BaseModel
 
 
 class RawLine(BaseModel):
-    """A raw transcript line from scribe (`script.json`). `words` is ignored (F1)."""
+    """A raw transcript line from scribe (`script.json`).
+
+    `words` is ignored: scribe drops word timestamps.
+    """
 
     start: float
     end: float

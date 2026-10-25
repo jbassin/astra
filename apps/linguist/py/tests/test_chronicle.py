@@ -1,4 +1,4 @@
-"""Chronicle domain tests (NLSpec 0019, slice S1) — hermetic.
+"""Chronicle domain tests — hermetic.
 
 Covers the show taxonomy (`show_index`), date→show resolution against the real
 committed transcript filenames, and the artifact-model shapes.

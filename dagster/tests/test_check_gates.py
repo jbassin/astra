@@ -1,4 +1,4 @@
-"""A failed scribe check keeps linguist's sensor from launching (0037 PIPE-12).
+"""A failed scribe check keeps linguist's sensor from launching.
 
 A failed blocking check fails its run but leaves the checked asset materialized, and
 ``scribe_output_sensor`` launches on that materialization. This runs the real scribe

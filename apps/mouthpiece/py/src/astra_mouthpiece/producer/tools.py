@@ -1,10 +1,10 @@
-"""The producer's read-only tools (0034 §3, D34-4, D34-5).
+"""The producer's read-only tools.
 
 ``ProducerTools`` binds one target session and exposes eleven lookups over the live trees:
 the akasha wiki, the entity registry, the chronicle, earlier same-show transcripts and
 earlier episode scripts. Nothing here writes anywhere.
 
-Boundary (D34-5): transcript, chronicle and script tools serve only sessions of the
+Boundary: transcript, chronicle and script tools serve only sessions of the
 target's show dated **strictly before** the target, `sessions.kdl` skips honoured (via
 ``show_for_date``), ordered by ``date_key``. The target's own cleaned transcript reaches
 the agent as an input, never through a tool.

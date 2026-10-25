@@ -1,4 +1,4 @@
-"""MeteredLM accounting, tool telemetry, and HeartwoodRLM robustness (0033 D33-8..D33-10).
+"""MeteredLM accounting, tool telemetry, and HeartwoodRLM robustness.
 
 Hermetic: no network, no Deno. LMs are ``DummyLM`` / a fake provider LM mixed with
 ``MeteringMixin`` (the same code path as the production ``MeteredLM``); spans go to an
@@ -84,7 +84,7 @@ def spans(telemetry_capture: Captured) -> InMemorySpanExporter:
     return telemetry_capture.span_exporter
 
 
-# ── MeteredLM accounting (D33-8) ──
+# ── MeteredLM accounting ──
 def test_meter_matches_dspy_history_and_sums_cost(fake_metrics, spans, telemetry_capture) -> None:
     lm = ProviderLM([0.002, 0.003], role="main")
     assert lm("hi") == ["hello"]
@@ -189,7 +189,7 @@ def test_lm_meter_snapshot_shape() -> None:
     assert copy.deepcopy(m) is m
 
 
-# ── tool telemetry (D33-10) ──
+# ── tool telemetry ──
 def _tool(path: str, regex: bool = False) -> list[dict[str, Any]]:
     """Search `path`. Returns [{'path'}]. Raises ValueError on 'bad'."""
     if path == "bad":
@@ -253,7 +253,7 @@ def test_tool_wrapper_outcomes_spans_and_reraise(fake_metrics, spans) -> None:
     assert tool_outcome("rejected: x") == "rejected" and tool_outcome(["rejected:"]) == "ok"
 
 
-# ── HeartwoodRLM (D33-9) ──
+# ── HeartwoodRLM ──
 class FakeInterpreter:
     """A CodeInterpreter stand-in: records code, returns 'ran'."""
 
@@ -388,7 +388,7 @@ def test_budget_note_skips_submit(fake_metrics, spans) -> None:
     assert "[Budget]" not in pred.trajectory[-1]["output"]
 
 
-# ── outcome (D33-9) ──
+# ── outcome ──
 def test_determine_status() -> None:
     assert determine_status(error=None, hit_cap=False) == "ok"
     assert determine_status(error=None, hit_cap=True) == "incomplete"

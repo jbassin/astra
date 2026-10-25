@@ -1,4 +1,4 @@
-"""scribe unit + parity tests (NLSpec 0005 gates B–G) — hermetic.
+"""scribe unit + parity tests — hermetic.
 
 No ffmpeg, no network, no Groq key: ffmpeg/Groq calls are injected stubs, the
 SoundStack parity runs on a committed real-transcript sample, and the VAD/chunk/
@@ -25,7 +25,7 @@ from astra_scribe.vad import chunk_spans, voiced_spans
 FIXTURE = Path(__file__).parent / "fixtures" / "sample-script.json"
 
 
-# Craig filename parsing (gate D) is tested in libs/py/sessions (astra_sessions.recordings).
+# Craig filename parsing is tested in libs/py/sessions (astra_sessions.recordings).
 def test_roster_filter() -> None:
     roster = Roster({"miked6187", "tanner"})
     assert roster.is_player("1-miked6187")
@@ -53,7 +53,7 @@ def test_extract_session_tracks_persists_players_only(tmp_path: Path) -> None:
     assert not dest.with_name(dest.name + ".partial").exists()
 
 
-# ── SoundStack time-merge (gate B) ─────────────────────────────────────────
+# ── SoundStack time-merge ──────────────────────────────────────────────────
 def test_soundstack_parity_round_trip() -> None:
     """Group a real (start-sorted) transcript by user → SoundStack → reproduces it."""
     script: list[dict[str, Any]] = json.loads(FIXTURE.read_text())
@@ -78,7 +78,7 @@ def test_soundstack_orders_by_start() -> None:
     assert [s["text"] for s in stack.drain()] == ["x", "y", "z"]
 
 
-# ── VAD / chunk / re-offset (gate C) ───────────────────────────────────────
+# ── VAD / chunk / re-offset ────────────────────────────────────────────────
 def test_voiced_spans_inverts_silence() -> None:
     # 0–10s track, silent 3–4 and 7–8 → three voiced runs (roll merges nothing here).
     spans = voiced_spans([(3.0, 4.0), (7.0, 8.0)], 10.0, pre_roll=0.0, post_roll=0.0, merge_gap=0.0)
@@ -308,7 +308,7 @@ def test_hallucination_gate_drops_only_when_both_signals_trip() -> None:
     assert [s["text"] for s in segs] == ["real line", "another line", "no metadata"]
 
 
-# ── ffmpeg arg-builders (gate F) ───────────────────────────────────────────
+# ── ffmpeg arg-builders ────────────────────────────────────────────────────
 def test_ffmpeg_arg_builders_are_pure() -> None:
     assert merge_args(["a.aac", "b.aac"], "out.mp3")[-3:] == ["mp3", "-y", "out.mp3"]
     assert "amix=inputs=2:duration=longest:normalize=0" in merge_args(["a", "b"], "o")
@@ -324,7 +324,7 @@ def test_parse_silences() -> None:
     assert parse_silences(log) == [(3.0, 4.0)]  # the unmatched trailing start is dropped
 
 
-# ── sensor partition logic (gate G) ────────────────────────────────────────
+# ── sensor partition logic ─────────────────────────────────────────────────
 def test_new_sessions_skips_known_and_unparseable(tmp_path: Path) -> None:
     zips = [tmp_path / n for n in ("g_c_2025-1-1_a.zip", "g_c_2025-2-2_b.zip", "bad.zip")]
     for z in zips:
@@ -435,7 +435,7 @@ def test_scribe_run_produces_outputs_cleans_up_counts_once(
 
 
 def test_scribe_failed_tail_retains_tracks_dir(monkeypatch: Any, tmp_path: Path) -> None:
-    """If transcription fails, the run fails and the persisted tracks are retained (B4)."""
+    """If transcription fails, the run fails and the persisted tracks are retained."""
     import dagster as dg
     from astra_scribe import assets
 
@@ -563,7 +563,7 @@ def test_craig_sensor_waits_for_the_sessions_migration(monkeypatch: Any, tmp_pat
     assert result.skip_reason
 
 
-# ── session_tracks takes the zip the sensor chose (0037 PIPE-23) ─────────────
+# ── session_tracks takes the zip the sensor chose ───────────────────────────
 def _tracks_run(monkeypatch: Any, tmp_path: Path, tags: dict[str, str]) -> tuple[Any, list[Path]]:
     """Materialize session_tracks for 2026-9-7 with ``tags``; return the result and the zips
     the extract step was handed. Two real zips carry the date, so the choice is visible."""

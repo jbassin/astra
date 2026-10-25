@@ -1,4 +1,4 @@
-"""The run ledger (0033 D33-12): publish/revert lines, published dates, budget.
+"""The run ledger: publish/revert lines, published dates, budget.
 
 Hermetic: every test writes its own ledger under tmp_path.
 """

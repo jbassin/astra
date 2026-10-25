@@ -1,10 +1,10 @@
-"""astra-scribe — the pipeline head (0005).
+"""astra-scribe — the pipeline head.
 
 Craig Discord recordings (`.zip`) → per-session merged `audio.mp3` + raw
 `script.json` (`[{start,end,text,user}]`, line-level, raw-id speakers), as Dagster
 partitioned assets (one per session/date). Transcription is the Groq
-`whisper-large-v3` API (Decision G) via `libs/py/llm` — no GPU, no local model,
-word timestamps dropped (F1). linguist (0006) resolves ids → speakers downstream.
+`whisper-large-v3` API via `libs/py/llm` — no GPU, no local model, and no word
+timestamps (nothing downstream reads them). linguist resolves ids → speakers downstream.
 """
 
 from __future__ import annotations

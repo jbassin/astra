@@ -1,4 +1,4 @@
-"""The mouthpiece episode chain through ``dg.materialize`` with fake resources (0037 PIPE-16).
+"""The mouthpiece episode chain through ``dg.materialize`` with fake resources.
 
 Paths point under ``tmp_path``, the LLM client is a stub, TTS is the offline mock and ffmpeg
 is a fake runner, so no key, no network and no money. The two LLM stages' prompt logic is
@@ -154,7 +154,7 @@ class _DialogueTts:
 def test_audio_clips_inline_the_defs_kdl_pronunciations(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """0037 PIPE-14: the IPA wrap runs in the asset, with the terms from `defs.kdl`."""
+    """The IPA wrap runs in the asset, with the terms from `defs.kdl`."""
     defs = tmp_path / "defs.kdl"
     defs.write_text('entry "Faerrin" ipa="ˈfɛrɪn" {\n    variant "Fairin"\n}\n', encoding="utf-8")
     monkeypatch.setattr(mp, "load_pronunciations", functools.partial(load_pronunciations, defs))

@@ -1,4 +1,4 @@
-// Production SSR entry for the mouthpiece-frontend Compose service (Decision I). Thin
+// Production SSR entry for the mouthpiece-frontend Compose service. Thin
 // caller over @astra/site-kit's createSsrServer: the srvx + static + SSR-span
 // spine lives in the lib; mouthpiece-frontend supplies only what's app-specific — its
 // built SSR handler, the client-assets dir, and serviceName/port from config.kdl.
@@ -19,7 +19,7 @@ createSsrServer({
   port,
   ssr: await loadSsrBuild(APP),
   clientDir: path.join(APP, "dist", "client"),
-  // The episode audio volume (D2) — served same-origin at /audio/<id>.mp3. The dir
-  // is the runtime mount; the 173 MB never enters the image (Decision I).
+  // The episode audio volume — served same-origin at /audio/<id>.mp3. The dir
+  // is the runtime mount; the 173 MB never enters the image.
   staticMounts: [{ urlPrefix: "/audio/", dir: audioDir }],
 });

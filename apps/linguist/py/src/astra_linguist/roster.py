@@ -1,4 +1,4 @@
-"""Speaker resolution — alias → display name + color, from ontology-being (P3/G3).
+"""Speaker resolution — alias → display name + color, from ontology-being.
 
 faerrin hardcoded `userToName`/`nameToColor`; astra reads `Player.aliases`→
 `Player.name` from ontology-being (verified to reproduce the same mapping). The

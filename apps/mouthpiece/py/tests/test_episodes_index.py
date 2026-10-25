@@ -174,7 +174,7 @@ def test_index_inlines_a_stripped_named_transcript(index) -> None:
     import re
 
     e = index.episodes[0]
-    assert e.transcript, "transcript turns are inlined into the manifest (D4)"
+    assert e.transcript, "transcript turns are inlined into the manifest"
     for line in e.transcript:
         # speaker labels resolve to host names; no leftover ElevenLabs [..] cues
         assert line.speaker in {"A", "B", "C"}

@@ -22,7 +22,7 @@ from astra_scribe import assets as scribe
 init_telemetry("astra.pipeline")
 
 
-# Run-failure paging (0037 PIPE-2). Dagster reports step failures on its own `dagster`
+# Run-failure paging. Dagster reports step failures on its own `dagster`
 # logger, which observe does not export, so a failed run used to leave no ERROR in SigNoz
 # and the Class A rule "astra error/fatal logs" (severity ERROR/FATAL, grouped by
 # service.name) never paged. This sensor logs exactly one ERROR per failed run on

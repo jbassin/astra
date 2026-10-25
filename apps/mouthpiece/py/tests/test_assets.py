@@ -1,4 +1,4 @@
-"""Dagster wiring structure test (gate J) — the code location builds; no live run.
+"""Dagster wiring structure test — the code location builds; no live run.
 
 Importing the assets builds `dg.Definitions` (Dagster validates the dep graph at
 construction); this asserts the 4-asset graph + the linguist sensor are
@@ -46,7 +46,7 @@ def test_session_script_depends_on_digest() -> None:
 
 
 def test_session_brief_sits_between_digest_and_script_and_has_no_retry() -> None:
-    """0035 D35-4/D35-6: brief after digest, script after brief; no retry (a paid ~10-min RLM);
+    """Brief after digest, script after brief; no retry (a paid ~10-min RLM);
     the sensor launches it and the module defs carry it."""
     assert {k.to_user_string() for k in mp.session_brief.dependency_keys} == {"session_digest"}
     assert "session_brief" in {k.to_user_string() for k in mp.session_script.dependency_keys}

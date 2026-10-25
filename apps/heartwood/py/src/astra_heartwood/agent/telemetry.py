@@ -1,4 +1,4 @@
-"""The agent's telemetry seams (0033 D33-10): the run-span parent, metrics, tool spans.
+"""The agent's telemetry seams: the run-span parent, metrics, tool spans.
 
 Every span the run emits is parented **explicitly** to the ``heartwood.agent.run``
 span's context, held in a ``RunParent``. Implicit (contextvar) parenting is not enough:
@@ -29,7 +29,7 @@ SCOPE = "astra.heartwood"
 
 log = get_logger("astra.heartwood.agent")
 
-#: ``LmMeter`` / ``RunParent`` live in ``astra_llm.rlm`` (0034 D34-1); re-exported here.
+#: ``LmMeter`` / ``RunParent`` live in ``astra_llm.rlm``; re-exported here.
 __all__ = [
     "SCOPE",
     "LmMeter",

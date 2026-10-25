@@ -1,4 +1,4 @@
-"""Session selection + transcript access — the faerrin-world filter (0033 D33-6).
+"""Session selection + transcript access — the faerrin-world filter.
 
 heartwood ingests only ``world == "faerrin"`` campaigns. This composes chronicle's
 committed-filename session→show resolution (``show_for_date``, which already honors

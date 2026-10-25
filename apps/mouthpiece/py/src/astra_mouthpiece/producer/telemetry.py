@@ -1,4 +1,4 @@
-"""The producer's telemetry seams (0034 D34-9), on the shared ``astra_llm.rlm`` pieces.
+"""The producer's telemetry seams, on the shared ``astra_llm.rlm`` pieces.
 
 Spans: ``mouthpiece.producer.run`` (run.py), ``mouthpiece.producer.llm.call`` (``ProducerLM``),
 ``mouthpiece.producer.tool.<name>`` (``instrument_tool``), and

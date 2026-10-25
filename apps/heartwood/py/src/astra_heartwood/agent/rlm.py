@@ -1,4 +1,4 @@
-"""heartwood's bindings of the shared RLM machinery (0033 D33-9, D33-10; lifted 0034 D34-1).
+"""heartwood's bindings of the shared RLM machinery in ``astra_llm.rlm``.
 
 The logic lives in ``astra_llm.rlm``: ``MeteringMixin`` (per-call metering of
 ``dspy.LM.forward``) and ``HardenedRLM`` (absorbs one malformed main-LM reply, mirrors the
@@ -66,7 +66,7 @@ class MeteredLM(MeteringMixin, dspy.LM):
 
 
 class HeartwoodRLM(HardenedRLM):
-    """``HardenedRLM`` with heartwood's budget note (D33-9)."""
+    """``HardenedRLM`` with heartwood's budget note."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         kwargs.setdefault("budget_note", budget_note)

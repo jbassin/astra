@@ -3,7 +3,7 @@
 The sensor turns the disk-as-ledger (faerrin's `db.processed`) into Dagster
 partition state: a dropped zip whose session/date isn't yet a partition becomes a
 new partition + run request. The matching itself is pure so it unit-tests without
-Dagster (gate G).
+Dagster.
 """
 
 from __future__ import annotations
@@ -46,7 +46,7 @@ def new_sessions(zip_paths: Iterable[Path | str], existing_keys: set[str]) -> di
     return out
 
 
-# ── recordings per session: the facts the session_tracks checks gate on (0037 PIPE-12) ──
+# ── recordings per session: the facts the session_tracks checks gate on ──
 
 
 @dataclass(frozen=True)

@@ -1,4 +1,4 @@
-"""VAD-trim + chunking (F2/G2) — pure span math, so it unit-tests without ffmpeg.
+"""VAD-trim + chunking — pure span math, so it unit-tests without ffmpeg.
 
 `voiced_spans` inverts silencedetect's silence intervals into voiced (start,end)
 spans in **session time**, with a small pre/post-roll and adjacent-span merge.

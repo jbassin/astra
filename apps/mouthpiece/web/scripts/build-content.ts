@@ -11,7 +11,7 @@
 //   - src/generated/episodes.ts    — the lean catalog (grid + episode header);
 //   - src/generated/transcripts.ts — id → transcript lines (episode page only, so
 //     the ~440 KB of transcripts code-splits out of the grid bundle);
-//   - public/episodes.json         — the date→{link,title} deep-link map (D7), the
+//   - public/episodes.json         — the date→{link,title} deep-link map, the
 //     wiki/Discord contract; vite copies public/ into dist/client.
 
 import fs from "node:fs";
@@ -88,7 +88,7 @@ function emitEpisodes(episodes: ManifestEpisode[]): string {
     mp3Url: mp3Url(rest.id, rest.audioVersion),
   }));
   const body = [
-    "/** The episode catalog, read from mouthpiece-backend's episodes-index.json (D1).",
+    "/** The episode catalog, read from mouthpiece-backend's episodes-index.json.",
     " *  Sorted arc-then-date with recaps as arc capstones; the backend owns all the",
     " *  shaping. Transcript lines live in ./transcripts (split out of the grid bundle). */",
     "export interface GeneratedHost {",
@@ -115,7 +115,7 @@ function emitEpisodes(episodes: ManifestEpisode[]): string {
     "  hasAudio: boolean;",
     "  hasTranscript: boolean;",
     "  audioVersion: string;",
-    "  /** Same-origin audio URL with a content cache-bust (D2). */",
+    "  /** Same-origin audio URL with a content cache-bust. */",
     "  mp3Url: string;",
     "}",
     "",
@@ -148,7 +148,7 @@ function emitTranscripts(episodes: ManifestEpisode[]): string {
   return `transcripts: ${Object.keys(byId).length}`;
 }
 
-/** The /episodes.json deep-link map (D7) — date→{link,title} against public-origin,
+/** The /episodes.json deep-link map — date→{link,title} against public-origin,
  *  the wiki/Discord cross-system contract (faerrin face/src/pages/episodes.json.ts).
  *  Distinct from the build-INPUT episodes-index.json. */
 function emitDeepLinks(episodes: ManifestEpisode[], baseUrl: string): string {
