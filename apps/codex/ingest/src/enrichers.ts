@@ -316,9 +316,9 @@ function splitTopLevel(s: string, sep: string): string[] {
 const KNOWN_TAGS = new Set(["UUID", "Check", "Damage", "Localize", "Template", "Embed"]);
 const KNOWN_ROLL_KINDS = new Set(["r", "br", "gmr", "act"]);
 
-export type EnricherForm = "UUID" | "Check" | "Damage" | "Localize" | "Template" | "Embed" | "roll";
+type EnricherForm = "UUID" | "Check" | "Damage" | "Localize" | "Template" | "Embed" | "roll";
 
-export interface EnricherMatch {
+interface EnricherMatch {
   form: EnricherForm;
   /** Only set when `form === "roll"`: which of the four `[[/x` forms matched. */
   rollKind?: "r" | "br" | "gmr" | "act";
@@ -411,7 +411,7 @@ export function matchEnricher(text: string, fromIndex: number): EnricherMatch | 
 // per-form arg parsers (pure functions, exported for tests)
 // ---------------------------------------------------------------------------
 
-export interface ParsedCheckArg {
+interface ParsedCheckArg {
   type: string;
   dc?: number;
   basic?: boolean;
@@ -468,7 +468,7 @@ export function parseCheckArg(arg: string): ParsedCheckArg {
   return result;
 }
 
-export interface ParsedTemplateArg {
+interface ParsedTemplateArg {
   shape: string;
   distance: number;
 }
@@ -503,7 +503,7 @@ export function parseTemplateArg(arg: string): ParsedTemplateArg {
   return { shape, distance };
 }
 
-export interface DamagePart {
+interface DamagePart {
   formula: string;
   type?: string;
 }
@@ -572,7 +572,7 @@ export function formatDamageDisplay(parts: readonly DamagePart[]): string {
     .join(", ");
 }
 
-export interface ParsedActionArg {
+interface ParsedActionArg {
   action: string;
   options: Record<string, string>;
 }

@@ -35,7 +35,7 @@ import {
 } from "@astra/codex-corpus/releases";
 import { loadConfig } from "@astra/config";
 
-export { CorpusUnservableError, inspectCorpus, type InspectedCorpus };
+export { CorpusUnservableError };
 
 /** Walk up from `startDir` until the ingest package's committed `fixtures/picks/` marker
  * (the generated `fixtures/entities/` may not exist yet) is found beside this app, at
@@ -65,7 +65,7 @@ export function fixtureCorpusRoot(): string {
 }
 
 /** The inputs that pick the corpus root, passed in so the rules are testable. */
-export interface CorpusRootInputs {
+interface CorpusRootInputs {
   /** `CODEX_CORPUS_ROOT`, if set: an explicit root, used as given. The vitest setup and
    * the e2e suite pin it to the fixture; it may name the fixture in any mode. */
   explicitRoot: string | undefined;
@@ -161,7 +161,7 @@ interface ActiveCorpus {
 }
 
 /** A process's view of the served corpus: the active release and a per-request pin. */
-export interface CorpusSource {
+interface CorpusSource {
   /** The active corpus as of now (switching first if `current` moved). */
   served(): ServedCorpus;
   /** The reader for the pinned request, else for the active corpus. */
@@ -172,7 +172,7 @@ export interface CorpusSource {
 }
 
 /** How long a release that failed with a transient error waits before a retry. */
-export const TRANSIENT_RETRY_MS = 30_000;
+const TRANSIENT_RETRY_MS = 30_000;
 
 /** A corpus source over `inputs`, read on each check. The active corpus switches when
  * `current` names a new release; the check is one `readlink` per call. A new release

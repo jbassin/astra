@@ -1,6 +1,6 @@
 import type { CodexEntity } from "@astra/codex-corpus";
 
-export type ReportFn = (cls: string, detail: string) => void;
+type ReportFn = (cls: string, detail: string) => void;
 
 /**
  * The ingest-time "missing `level` -> `0`" default.

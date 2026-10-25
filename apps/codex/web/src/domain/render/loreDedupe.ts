@@ -227,7 +227,7 @@ function splitSections(nodes: readonly CodexNode[]): Section[] {
 // suppressLoreSections
 // ---------------------------------------------------------------------------
 
-export interface SuppressLoreSectionsOptions {
+interface SuppressLoreSectionsOptions {
   /** ClassPage only (step (a)): collision-base slugs of every granted
    * feature's resolved targetId — a lore section's embed nodes whose OWN
    * collision-base slug is a member are stripped BEFORE the coverage
@@ -242,7 +242,7 @@ export interface SuppressLoreSectionsOptions {
   extraReferenceText?: string;
 }
 
-export interface LoreDedupeResult {
+interface LoreDedupeResult {
   /** Surviving section content, in original document order (heading node,
    * when the section carried one, immediately followed by its surviving
    * body nodes) — ready to feed straight into `renderNodes`. Empty when

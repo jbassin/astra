@@ -74,7 +74,7 @@ export function orderProductLines(lines: readonly string[]): string[] {
   return order;
 }
 
-export interface SourcesGroup {
+interface SourcesGroup {
   /** `OTHER_GROUP_LABEL` for the ungrouped bucket, else the real product
    * line string every member book shares. */
   productLine: string;

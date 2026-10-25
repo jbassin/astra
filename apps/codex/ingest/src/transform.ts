@@ -113,7 +113,7 @@ import {
   createResolveUuid,
 } from "./uuidResolve";
 
-export type ReportFn = (cls: string, detail: string) => void;
+type ReportFn = (cls: string, detail: string) => void;
 export interface HardFailure {
   path: string;
   message: string;
@@ -342,7 +342,7 @@ function loadAonSide(snapshotDir: string, report: ReportFn, hardFailures: HardFa
 // The pass registry (passRegistry.ts runs it): parse -> join -> drop -> emit -> report
 // ---------------------------------------------------------------------------
 
-export interface TransformPaths {
+interface TransformPaths {
   /** The Foundry snapshot ROOT (contains `packs/pf2e`, `static/lang`,
    * `system.pf2e.json`) — the real host path is
    * `<dataPath>/snapshots/foundry/<tag>`; the fixture test points this at
@@ -405,7 +405,7 @@ export interface TransformSlots {
   report: { json: ReportJson; markdown: string };
 }
 
-export interface TransformContext extends PassContext {
+interface TransformContext extends PassContext {
   paths: TransformPaths;
   report: ReportFn;
   /** What `report` has recorded: per class, the count and the first five details. */
@@ -889,7 +889,7 @@ function buildTransformReport(
 // runTransform — validate the registry, then run it
 // ---------------------------------------------------------------------------
 
-export interface TransformOptions {
+interface TransformOptions {
   /** Run only this pass and the passes it reads from (debugging). The result then has
    * no report unless the pass is `report`; a pass that writes files still writes them. */
   only?: string;

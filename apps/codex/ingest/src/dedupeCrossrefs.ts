@@ -50,7 +50,7 @@ import type {
  * top level.
  */
 
-export type ReportFn = (cls: string, detail: string) => void;
+type ReportFn = (cls: string, detail: string) => void;
 
 type CrossrefNode = Extract<InlineNode, { kind: "crossref" }>;
 

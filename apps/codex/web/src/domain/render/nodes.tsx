@@ -543,7 +543,3 @@ export function renderNodes(nodes: readonly CodexNode[], ctx: RenderCtx): ReactN
 
 // Exported so tests asserting the totality gate share the attribute name.
 export const RENDER_ERROR_ATTR = "data-render-error";
-
-// Exported for direct unit testing (nodes.test.tsx); the heading
-// case above is the one production call site.
-export { normalizeHeadingChildren };

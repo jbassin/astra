@@ -23,8 +23,8 @@ export interface EsAggResponse {
   aggregations: { categories: { buckets: EsCategoryBucket[] } };
 }
 
-export type SearchFn = (body: unknown) => Promise<EsSearchResponse>;
-export type AggFn = (body: unknown) => Promise<EsAggResponse>;
+type SearchFn = (body: unknown) => Promise<EsSearchResponse>;
+type AggFn = (body: unknown) => Promise<EsAggResponse>;
 
 const DEFAULT_PAGE_SIZE = 1000;
 const DEFAULT_CATEGORY_AGG_SIZE = 200;
@@ -37,7 +37,7 @@ export function buildCategoryAggQuery(
   return { size: 0, aggs: { categories: { terms: { field: "category", size } } } };
 }
 
-export interface CategoryCount {
+interface CategoryCount {
   category: string;
   docCount: number;
 }
@@ -77,7 +77,7 @@ export function buildCategoryPageQuery(
   return body;
 }
 
-export interface FetchAllOptions {
+interface FetchAllOptions {
   pageSize?: number;
   throttle?: () => Promise<void>;
 }

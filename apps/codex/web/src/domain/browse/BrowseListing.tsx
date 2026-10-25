@@ -40,7 +40,7 @@ import {
 } from "./filterEngine";
 import { initialWindowRange, INITIAL_VIEWPORT_PX, OVERSCAN, ROW_PITCH_PX } from "./virtualization";
 
-export type FilterStateUpdater = (updater: (prev: BrowseFilterState) => BrowseFilterState) => void;
+type FilterStateUpdater = (updater: (prev: BrowseFilterState) => BrowseFilterState) => void;
 
 /** The split view is only live at/above this width; below
  * it row taps fully navigate instead (the CSS breakpoint, `globals.css`'s

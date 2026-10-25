@@ -44,7 +44,7 @@ import { hashFileEntries, sha256Hex } from "./hash";
 export const DEFAULT_KEEP = 3;
 
 /** `releases/<id>/release.json`. */
-export interface ReleaseRecord {
+interface ReleaseRecord {
   id: string;
   createdAt: string;
   schemaVersion: number;
@@ -53,7 +53,7 @@ export interface ReleaseRecord {
   aonSnapshotDate: string | null;
 }
 
-export class ReleaseError extends Error {
+class ReleaseError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "ReleaseError";
@@ -71,7 +71,7 @@ export function hashReleaseTree(dir: string): string {
 
 /** The same hash over `corpus/` alone. The corpus is byte-deterministic (two transforms of
  * the same snapshots match); the Pagefind index is not. */
-export function hashCorpusTree(dir: string): string {
+function hashCorpusTree(dir: string): string {
   return hashTops(dir, ["corpus"]);
 }
 
@@ -93,7 +93,7 @@ interface ManifestCounts {
 }
 
 /** What a valid staged tree describes. */
-export interface ValidatedRelease {
+interface ValidatedRelease {
   schemaVersion: number;
   totalEntityCount: number;
   foundryTag: string | null;
@@ -189,7 +189,7 @@ export function validateReleaseTree(dir: string): ValidatedRelease {
 }
 
 /** Copies `src` to `dst` as hardlinks (a plain copy across filesystems). */
-export function linkTree(src: string, dst: string): void {
+function linkTree(src: string, dst: string): void {
   for (const file of walkFiles(src)) {
     const to = join(dst, file.relPath);
     mkdirSync(dirname(to), { recursive: true });
@@ -303,7 +303,7 @@ export function switchCurrent(releasesDir: string, id: string): void {
   renameSync(tmp, join(releasesDir, CURRENT_LINK));
 }
 
-export interface ListedRelease extends ReleaseRecord {
+interface ListedRelease extends ReleaseRecord {
   current: boolean;
 }
 
@@ -457,7 +457,7 @@ function currentEntityCount(releasesDir: string): { id: string; count: number } 
   }
 }
 
-export interface PublishOptions {
+interface PublishOptions {
   releasesDir: string;
   stagingDir: string;
   /** Accept a release with fewer entities than the current one. */

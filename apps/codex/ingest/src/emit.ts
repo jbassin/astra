@@ -143,11 +143,11 @@ function entityFileSlug(entity: Pick<CodexEntity, "id" | "category">): string {
 // committed root `corpus-manifest.json`, the fetch-pin file)
 // ---------------------------------------------------------------------------
 
-export interface SnapshotPin {
+interface SnapshotPin {
   readonly [key: string]: unknown;
 }
 
-export interface CorpusOutputManifest {
+interface CorpusOutputManifest {
   schemaVersion: number;
   foundry: SnapshotPin;
   aon: SnapshotPin;
@@ -164,7 +164,7 @@ export interface CorpusOutputManifest {
 // without importing the ingest code; re-exported for the ingest scripts.
 export { CORPUS_SCHEMA_VERSION };
 
-export interface EmitCorpusInput {
+interface EmitCorpusInput {
   /** The corpus root (a release staging dir's `corpus/`) — wiped and rewritten wholesale
    * on every call. */
   corpusRoot: string;

@@ -143,7 +143,7 @@ export function toDisplayResult(fragment: PagefindSearchFragment): SearchDisplay
   };
 }
 
-export interface CategoryGroup {
+interface CategoryGroup {
   category: string;
   items: SearchDisplayResult[];
 }
@@ -195,7 +195,7 @@ export const NAME_BOOST_HYDRATE_WINDOW = 60;
 /** Max size of the pinned "Name matches" group, both surfaces. */
 export const NAME_MATCH_PIN_CAP = 8;
 
-export interface PartitionedNameMatches {
+interface PartitionedNameMatches {
   /** Exact/prefix name matches, ranked exact-before-prefix then
    * level-then-name, capped at `cap`. */
   pinned: SearchDisplayResult[];

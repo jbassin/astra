@@ -78,7 +78,7 @@ import {
 const PAGE_SIZE = 20;
 const DEBOUNCE_MS = 180;
 
-export type SearchSearchUpdater = (updater: (prev: SearchPageSearch) => SearchPageSearch) => void;
+type SearchSearchUpdater = (updater: (prev: SearchPageSearch) => SearchPageSearch) => void;
 
 interface ResultPage {
   stubs: PagefindSearchResultStub[];

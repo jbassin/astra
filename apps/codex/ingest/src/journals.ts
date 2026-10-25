@@ -1,6 +1,6 @@
 import { type CodexEntity, type BlockNode, type CodexNode, sluggify } from "@astra/codex-corpus";
 
-import type { EnricherContext, ReportClass as EnricherReportClass } from "./enrichers";
+import type { EnricherContext } from "./enrichers";
 import { parseFoundryHtml } from "./foundryHtml";
 import type { UuidIndex } from "./uuidResolve";
 
@@ -92,7 +92,7 @@ export function registerExcludedJournal(index: UuidIndex, packName: string, doc:
   }
 }
 
-export type ReportFn = (cls: string, detail: string) => void;
+type ReportFn = (cls: string, detail: string) => void;
 
 // ---------------------------------------------------------------------------
 // phase 1: decide merge/standalone targets (no HTML parsing)
@@ -170,12 +170,12 @@ export function decisionToResolution(decision: JournalPageDecision): {
 // phase 2: parse bodies, produce merge results + standalone entities
 // ---------------------------------------------------------------------------
 
-export interface JournalMergeResult {
+interface JournalMergeResult {
   targetId: string;
   loreBody: BlockNode[];
 }
 
-export interface JournalAssembly {
+interface JournalAssembly {
   merges: JournalMergeResult[];
   standalone: CodexEntity[];
 }
@@ -373,7 +373,3 @@ export function parseRemasterChanges(
 
   return entries;
 }
-
-// Re-exported so consumers of `journals.ts` don't also need a direct import of
-// `enrichers.ts` for the report-class type when wiring `report()` through.
-export type { EnricherReportClass };

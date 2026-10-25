@@ -26,7 +26,7 @@ import type { InlineNode } from "@astra/codex-corpus";
  * entry is applied (replaced with an inert empty text node, since a repoint
  * map has no way to DELETE a children-array entry).
  */
-export type EmbedOverrideEntry =
+type EmbedOverrideEntry =
   | { from: string; kind: "repoint"; to: string; note: string }
   | { from: string; kind: "suppress"; note: string };
 
