@@ -1,8 +1,8 @@
 import type { RollEvent } from "./schema";
 
-export type FeedStatus = "open" | "closed";
+type FeedStatus = "open" | "closed";
 
-export interface FeedOptions {
+interface FeedOptions {
   /** SSE endpoint; same-origin default works in prod and (via vite proxy) in dev. */
   url?: string;
   onRoll: (event: RollEvent) => void;

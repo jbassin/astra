@@ -1,7 +1,7 @@
 import type { Application, Ticker } from "pixi.js";
 import { Container, Graphics } from "pixi.js";
 
-export interface BurstOptions {
+interface BurstOptions {
   /** origin in CSS pixels. */
   x: number;
   y: number;
