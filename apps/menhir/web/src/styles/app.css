@@ -1,5 +1,5 @@
 /**
- * menhir's app stylesheet (D31-6). Plain CSS, no tailwind — the parchment
+ * menhir's app stylesheet. Plain CSS, no tailwind — the parchment
  * ground (tokens.css) wearing genuine Kahoot energy: big saturated shape
  * buttons, hard bevels, motion on every beat, a celebratory podium. Player
  * views are phone-first (390px target); host views are desktop/projection
@@ -571,7 +571,7 @@ input {
 }
 
 /* The phone tile carries NO label (the player projection never ships option
- * text — §4a), so the glyph IS the button: centred and as big as the tile can
+ * text), so the glyph IS the button: centred and as big as the tile can
  * hold, not a small chip parked against the left edge. */
 .answer-grid--phone .answer-tile,
 .locked-in-seal .answer-tile {

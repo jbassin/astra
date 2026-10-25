@@ -1,12 +1,12 @@
 /**
- * The single S1/S2 wire contract (spec §4a) + the quiz-file shape (D31-4). Zod
+ * The single server/client wire contract + the quiz-file shape. Zod
  * validates both an untrusted KDL-parsed quiz file and every outbound SSE snapshot
  * frame — `game.ts`'s projections are built to satisfy these types, and `rooms.ts`/
  * `src/server.ts` import only these, never raw KDL nodes (KDL at the edges).
  */
 import { z } from "zod";
 
-// --- quiz files (D31-4) ---------------------------------------------------------
+// --- quiz files ----------------------------------------------------------------
 
 export const QuizOptionSchema = z
   .object({
@@ -39,12 +39,12 @@ export type QuizOption = z.infer<typeof QuizOptionSchema>;
 export type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
 export type Quiz = z.infer<typeof QuizSchema>;
 
-/** The four Kahoot answer identities (D31-6) — shape+color double encoding, index-mapped. */
+/** The four Kahoot answer identities — shape+color double encoding, index-mapped. */
 export const SHAPES = ["triangle", "diamond", "circle", "square"] as const;
 export type Shape = (typeof SHAPES)[number];
 export const ShapeSchema = z.enum(SHAPES);
 
-// --- the snapshot union (spec §4a) -----------------------------------------------
+// --- the snapshot union ----------------------------------------------------------
 //
 // Common fields on every non-`gone` frame. `gone` deliberately carries ONLY
 // `{phase:"gone"}` (spec, verbatim) — an unknown/GC'd room has no state to
@@ -156,10 +156,10 @@ export type HostSnapshot = z.infer<typeof HostSnapshotSchema>;
 export type PlayerSnapshot = z.infer<typeof PlayerSnapshotSchema>;
 export type GoneSnapshot = z.infer<typeof GoneSchema>;
 
-/** The single terminal frame for an unknown/GC'd room (D31-2) — never a 404. */
+/** The single terminal frame for an unknown/GC'd room — never a 404. */
 export const GONE_SNAPSHOT: GoneSnapshot = { phase: "gone" };
 
-// --- results.jsonl row (D31-10) --------------------------------------------------
+// --- results.jsonl row -----------------------------------------------------------
 
 export const ResultRowSchema = z
   .object({

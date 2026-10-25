@@ -1,5 +1,5 @@
 /**
- * KDL → Zod quiz loader (D31-4). Decoded by `@astra/config` `decodeKdl`, resolved off
+ * KDL → Zod quiz loader. Decoded by `@astra/config` `decodeKdl`, resolved off
  * import.meta.dirname (never cwd — the weal-overlay distDir idiom), Zod-validated
  * at server start. A malformed file is EXCLUDED from the listing and logged at
  * WARN — not ERROR (a quiz typo must not page ops via the live SigNoz Class-A

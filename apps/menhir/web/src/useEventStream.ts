@@ -1,7 +1,7 @@
 /**
- * The SSE client (spec §3/D31-2): one `EventSource` per mounted connection,
+ * The SSE client: one `EventSource` per mounted connection,
  * every frame parsed through the shared Zod union (`schema.ts` — the single
- * S1/S2 wire contract) before it ever reaches a component, and a manual
+ * server/client wire contract) before it ever reaches a component, and a manual
  * resubscribe when the browser gives up on the connection (native
  * auto-retry only fires while the source is still CONNECTING; once it flips
  * to CLOSED — which srvx's `.unref()`'d heartbeat/GC don't trigger, but a
@@ -18,7 +18,7 @@ export interface EventStreamState<S> {
   snapshot: S | null;
   /** `performance.now()` at the moment `snapshot` was received — the anchor
    * countdown math re-derives "now" from, every animation frame, instead of
-   * trusting the client's wall clock (D31-2). */
+   * trusting the client's wall clock. */
   receivedAt: number;
 }
 

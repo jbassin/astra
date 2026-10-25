@@ -1,5 +1,5 @@
 /**
- * A path-routed SPA with no router lib (spec §3) — reads `location.pathname`
+ * A path-routed SPA with no router lib — reads `location.pathname`
  * directly. `navigate()` wraps `history.pushState`/`replaceState` and fires a
  * synthetic `popstate` (which neither native call does) so `usePathname`'s
  * listener picks up same-tab navigations, not just browser back/forward.
@@ -22,7 +22,7 @@ export function navigate(path: string, opts?: { replace?: boolean }): void {
   window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
-/** `?code=` prefill (D31-12) — uppercased to match the code alphabet, empty
+/** `?code=` prefill — uppercased to match the code alphabet, empty
  * string (not null) when absent so callers can feed it straight into a
  * controlled input's initial value. */
 export function codeFromQuery(search: string): string {

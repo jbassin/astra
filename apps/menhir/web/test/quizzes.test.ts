@@ -66,7 +66,7 @@ test("parseQuizFile throws on the malformed file directly (loadQuizzes is what c
   expect(() => parseQuizFile(join(dir, "broken.kdl"))).toThrow();
 });
 
-test("the shipped starter quiz (D31-4) loads cleanly with 5 questions", () => {
+test("the shipped starter quiz loads cleanly with 5 questions", () => {
   const dir = join(import.meta.dirname, "..", "quizzes");
   const { quizzes, warnings } = loadQuizzes(dir);
   expect(warnings).toEqual([]);

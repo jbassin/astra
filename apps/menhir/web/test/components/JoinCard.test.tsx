@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 /**
- * Join-card prefill from `?code=` (D31-12/spec S2 test list): the host lobby
+ * Join-card prefill from `?code=`: the host lobby
  * QR encodes `<public-origin>/?code=<CODE>`, and the player view must read it
  * back into the join card's code field on load — `codeFromQuery` is the pure
  * parser (router.ts), this pins the `JoinCard` component actually uses it.

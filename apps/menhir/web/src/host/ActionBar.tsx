@@ -1,6 +1,6 @@
 /**
- * Host controls (spec §3): start/next/end, disabled per phase — `next` is
- * always the D31-3 absolute action (force-closes a live question), `end`
+ * Host controls: start/next/end, disabled per phase — `next` is
+ * always the absolute action (force-closes a live question), `end`
  * works from any non-podium phase. Labels adapt so a room full of players
  * always knows what "next" is about to do.
  */

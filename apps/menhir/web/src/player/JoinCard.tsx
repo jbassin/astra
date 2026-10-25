@@ -1,7 +1,6 @@
 /**
- * The player join card (spec §3) — code prefilled from `?code=` (D31-12,
- * `codeFromQuery`), name field, 16px+ inputs (tokens.css) so iOS Safari never
- * zooms the viewport on focus.
+ * The player join card — code prefilled from `?code=` (`codeFromQuery`), name
+ * field, 16px+ inputs (tokens.css) so iOS Safari never zooms the viewport on focus.
  *
  * Each field is its own `.field` block: the first pass left `<label>` and
  * `<input>` as inline siblings in a bare `<div>`, so "Your name" sat wrapped

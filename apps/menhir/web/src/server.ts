@@ -115,7 +115,7 @@ function definition(runtime: RoomsRuntime, distDir: string): ServiceDefinition {
   }
 
   // Bun.file(...) → @astra/site-kit's `serveFile` (the `send`-backed Range/206
-  // bridge, R3 0022 S8). index.html is served separately above; this only ever
+  // bridge). index.html is served separately above; this only ever
   // hits built hashed assets — and the SPA fallback covers /, /host, /host/:code.
   async function serveStatic(req: Request): Promise<Response> {
     const pathname = decodeURIComponent(new URL(req.url).pathname);

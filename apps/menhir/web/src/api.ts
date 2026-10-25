@@ -1,5 +1,5 @@
 /**
- * Fetch wrappers for the §4 API. Every success shape is Zod-validated (KDL at
+ * Fetch wrappers for the server API. Every success shape is Zod-validated (KDL at
  * the edges' sibling discipline — never trust an unparsed `Response.json()`),
  * mirroring the schema.ts snapshot union this file's `hostAction` response
  * reuses directly (`HostSnapshotSchema`) so both the SSE feed and the

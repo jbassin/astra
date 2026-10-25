@@ -1,5 +1,5 @@
 /**
- * localStorage persistence (D31-8/D31-9): the player identity `{code,
+ * localStorage persistence: the player identity `{code,
  * roomNonce, playerId, name}` under `menhir:room` (so a recycled room code
  * can't false-match a stale identity — the nonce is the guard) and the host
  * credential `{code, hostToken}` under `menhir:host`. Every read is

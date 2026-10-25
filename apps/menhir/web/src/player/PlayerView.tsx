@@ -1,6 +1,6 @@
 /**
- * The player's phase-rendering surface (spec §3) — one pure component
- * switching over the full `PlayerSnapshot` union (§4a: lobby, question,
+ * The player's phase-rendering surface — one pure component
+ * switching over the full `PlayerSnapshot` union (lobby, question,
  * reveal, scoreboard, podium, gone), fed by whatever container connects the
  * SSE feed. Kept presentational (snapshot + callbacks in, JSX out) so it's
  * directly unit-testable against hand-built fixtures for every phase.

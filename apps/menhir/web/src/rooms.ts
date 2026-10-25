@@ -1,5 +1,5 @@
 /**
- * The room runtime (D31-3/D31-8/D31-9) — the imperative shell around the pure
+ * The room runtime — the imperative shell around the pure
  * `game.ts` reducer. Owns `Map<code, Room>` (in-memory, ephemeral), ONE timer
  * per room (after every reduction it is reconciled with `deadlineOf(state)`, so it
  * matches the state by construction), the per-room SSE sink registry (host sinks + a refcounted
@@ -28,14 +28,14 @@ import {
 import { appendResultRow } from "./results";
 import { GONE_SNAPSHOT, type HostSnapshot, type Quiz } from "./schema";
 
-// 23-letter unambiguous alphabet (no 0/O/1/I) — D31-8.
+// 23-letter unambiguous alphabet (no 0/O/1/I).
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ";
 const CODE_LENGTH = 4;
 const HEARTBEAT_MS = 15_000;
 const DEFAULT_GC_INTERVAL_MS = 5 * 60_000;
 const DEFAULT_ROOM_TTL_MS = 2 * 60 * 60_000;
 
-// D31-11 — lazyCounter defers real-instrument creation to first add(), so these are
+// lazyCounter defers real-instrument creation to first add(), so these are
 // safe at module scope wherever the module is imported (see libs/ts/observe's doc).
 const gamesStartedCounter = lazyCounter("astra.menhir", "menhir.games.started", {
   description: "Games created via POST /api/game",

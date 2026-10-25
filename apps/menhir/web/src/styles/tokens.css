@@ -1,7 +1,7 @@
 /**
- * menhir's own design tokens (D31-6). Base palette VALUES are copied from
+ * menhir's own design tokens. Base palette VALUES are copied from
  * `apps/codex/web/src/styles/tokens.css` (the "Liturgy of the Iridite" parchment
- * system) — menhir owns its own copy, same precedent as codex's own D29-46/R6
+ * system) — menhir owns its own copy, same precedent as codex's own tokens
  * (codex dropped gothic outright rather than importing it; menhir never had a
  * gothic dependency to begin with, so this file is the base palette from day
  * one, plus the Kahoot answer-identity accents this app adds on top).
@@ -9,7 +9,7 @@
  * Fonts are self-hosted via @fontsource (imported in main.tsx, mirroring
  * codex's __root.tsx): Cinzel (display), Cormorant SC (heading — the token
  * this file needs it for), EB Garamond (body), Oswald (condensed — timer +
- * score digits, D31-6).
+ * score digits).
  */
 :root {
   /* --- parchment base (values from apps/codex/web/src/styles/tokens.css) --- */
@@ -40,9 +40,9 @@
   --font-display: "Cinzel", serif; /* rare, ceremonial — the menhir wordmark */
   --font-heading: "Cormorant SC", serif; /* question text, section headings */
   --font-body: "EB Garamond", serif; /* prose, labels */
-  --font-condensed: "Oswald", sans-serif; /* timer + score digits (D31-6) */
+  --font-condensed: "Oswald", sans-serif; /* timer + score digits */
 
-  /* --- Kahoot answer identities (D31-6) — shape+color double encoding ---
+  /* --- Kahoot answer identities — shape+color double encoding ---
    *
    * `--shape-*` is the IDENTITY value the spec pins; `--shape-*-deep` is the
    * bottom of each tile's ramp and `--shape-*-edge` the hard bevel under it.

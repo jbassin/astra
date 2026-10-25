@@ -71,7 +71,7 @@ function start(state: RoomState, now = 0): RoomState {
   ).state;
 }
 
-describe("scoring (D31-5) — worked table", () => {
+describe("scoring — worked table", () => {
   test("correct-answer formula, streak +100 from the 2nd consecutive, base rounding", () => {
     let state = createRoom(0);
     state = join(state, "p1", "Alice", 0);
@@ -221,7 +221,7 @@ describe("scoring (D31-5) — worked table", () => {
   });
 });
 
-describe("absolute host actions (D31-3)", () => {
+describe("absolute host actions", () => {
   test("two identical `next` calls advance exactly once", () => {
     let state = createRoom(0);
     state = join(state, "p1", "Eve", 0);
@@ -261,7 +261,7 @@ describe("absolute host actions (D31-3)", () => {
   });
 });
 
-describe("early close (D31-3)", () => {
+describe("early close", () => {
   test("zero connected roster members never early-closes, even with an answer recorded", () => {
     let state = createRoom(0);
     state = join(state, "p1", "Gia", 0); // joined but NEVER connected
@@ -315,7 +315,7 @@ describe("deadlineOf (the one source of the question deadline)", () => {
   });
 });
 
-describe("stale timerFired (D31-3)", () => {
+describe("stale timerFired", () => {
   test("a timerFired armed for a phase/index we've moved past no-ops", () => {
     let state = createRoom(0);
     state = join(state, "p1", "Jael", 0);
@@ -340,7 +340,7 @@ describe("stale timerFired (D31-3)", () => {
   });
 });
 
-describe("join (D31-9)", () => {
+describe("join", () => {
   test("first join is lobby-gated: rejected mid-game for an unknown playerId", () => {
     let state = createRoom(0);
     state = join(state, "p1", "Kess", 0);
@@ -383,7 +383,7 @@ describe("join (D31-9)", () => {
     let state = createRoom(0);
     state = join(state, "p1", "Mira", 0);
     // "p1" IS a known playerId in this room, but the nonce is wrong (the
-    // recycled-code scenario, D31-8) — this must be treated as unknown, not
+    // recycled-code scenario) — this must be treated as unknown, not
     // re-attached. Still in lobby + a free name, so branch 2 succeeds.
     const result = reduce(
       state,
@@ -410,7 +410,7 @@ describe("join (D31-9)", () => {
   });
 });
 
-describe("answer (D31-3/D31-5)", () => {
+describe("answer", () => {
   test("first answer wins — a second answer for the same question is rejected, idempotent", () => {
     // Deliberately never connects (kept in the "zero connected" regime) so the
     // early-close predicate can't fire and flip the phase to "reveal" out from
@@ -445,7 +445,7 @@ describe("answer (D31-3/D31-5)", () => {
   });
 });
 
-describe("projections (§4a) never leak answers pre-reveal", () => {
+describe("projections never leak answers pre-reveal", () => {
   test("the player question projection carries no option text or correct flag", () => {
     let state = createRoom(0);
     state = join(state, "p1", "Rho", 0);
@@ -473,7 +473,7 @@ describe("projections (§4a) never leak answers pre-reveal", () => {
   });
 });
 
-describe("podium (D31-10)", () => {
+describe("podium", () => {
   test("`end` from any phase reaches podium and marks aborted", () => {
     let state = createRoom(0);
     state = join(state, "p1", "Tam", 0);

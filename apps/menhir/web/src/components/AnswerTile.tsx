@@ -1,5 +1,5 @@
 /**
- * One shape-colored answer identity (D31-6) — the single component both the
+ * One shape-colored answer identity — the single component both the
  * host's labeled option cards (question/reveal) and the player's label-free
  * shape buttons (question) render through, so the shape→color mapping never
  * drifts between the two roles. Always a `<button>` (oxlint's
@@ -17,7 +17,7 @@ import { ShapeGlyph, type Shape } from "../shapes";
 export interface AnswerTileProps {
   shape: Shape;
   /** Host cards show the option text; the player projection never carries it
-   * (spec §4a — no answer-leaking full state to devtools). */
+   * (no answer-leaking full state to devtools). */
   label?: string;
   /** Reveal-phase per-option answer count (host only). */
   count?: number;

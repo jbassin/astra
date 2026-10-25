@@ -1,6 +1,6 @@
 import QRCode from "qrcode";
 /**
- * Client-side QR render (D31-12) — the `qrcode` npm package draws straight to
+ * Client-side QR render — the `qrcode` npm package draws straight to
  * a data URL in the browser (SVG/canvas under the hood), no external image
  * service. Encodes the lobby snapshot's `joinUrl` (`<public-origin>/?code=…`,
  * server-injected — never hardcoded here).

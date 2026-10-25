@@ -1,5 +1,5 @@
 /**
- * Results file (D31-10) — one JSONL row appended per finished game (including
+ * Results file — one JSONL row appended per finished game (including
  * aborted ones — `end` from any phase still records). Fail-soft: a write error is
  * a real outage signal (data loss, unlike a quiz typo) so it logs at ERROR, but
  * must never crash the game.

@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 /**
- * Shape-button count mapping (spec S2 test list): the player question screen
+ * Shape-button count mapping: the player question screen
  * must render exactly `optionCount` answer tiles, for every option count the
- * quiz schema allows (2-4, D31-4). Each tile's shape comes from the fixed
+ * quiz schema allows (2-4). Each tile's shape comes from the fixed
  * `SHAPES` index mapping (triangle/diamond/circle/square) so this also pins
  * that a 2-option question shows triangle+diamond, not some other pair.
  */

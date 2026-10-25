@@ -1,6 +1,6 @@
 /**
- * The player container (`/` — spec §3): owns the join flow, localStorage
- * re-attach (D31-9 branch 1 — silent, on mount, off whatever `menhir:room`
+ * The player container (`/`): owns the join flow, localStorage
+ * re-attach (join branch 1 — silent, on mount, off whatever `menhir:room`
  * holds), and the SSE connection once joined. `PlayerView` stays pure;
  * this is the only place that touches `api.ts`/`storage.ts`/network.
  */
@@ -51,7 +51,7 @@ export function PlayerApp() {
       : { kind: "join", pending: false, error: null },
   );
 
-  // D31-9 branch 1 — silent re-attach on mount for whatever room was stored,
+  // Join branch 1 — silent re-attach on mount for whatever room was stored,
   // one shot (this effect never re-runs; `initialRoom` is a stable useState
   // value). A failed re-attach (unknown code / rejected) drops back to a
   // fresh join card rather than surfacing an error — the stored identity is
