@@ -2,7 +2,7 @@
  *  learn the flavor by editing examples, not reading a syntax reference.
  *  Ported verbatim from faerrin pkg/vellum, plus the full-vellum
  *  fields/timeline/crossref templates. */
-export interface Template {
+interface Template {
   id: string;
   title: string;
   source: string;

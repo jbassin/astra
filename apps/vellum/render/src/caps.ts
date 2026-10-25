@@ -25,9 +25,7 @@ export interface RenderRequest {
   scale: number;
 }
 
-export type Validation =
-  | { ok: true; value: RenderRequest }
-  | { ok: false; status: number; error: string };
+type Validation = { ok: true; value: RenderRequest } | { ok: false; status: number; error: string };
 
 const MODES: ReadonlySet<ThemeMode> = new Set(["mechanical", "diegetic"]);
 

@@ -3,7 +3,7 @@ import { useCallback, useRef, useState } from "react";
 
 import { requestPng } from "./exportClient";
 
-export type ExportStatus =
+type ExportStatus =
   | { state: "idle" }
   | { state: "exporting" }
   | { state: "done" }

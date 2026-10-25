@@ -2,10 +2,10 @@ import LZString from "lz-string";
 
 const PREFIX = "doc=";
 /** Practical URL length ceiling before we warn. */
-export const MAX_HASH_LENGTH = 8000;
+const MAX_HASH_LENGTH = 8000;
 
 /** Compress a document into a URL-hash-safe token. Pure. */
-export function encodeDoc(source: string): string {
+function encodeDoc(source: string): string {
   return LZString.compressToEncodedURIComponent(source);
 }
 
