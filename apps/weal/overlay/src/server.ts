@@ -35,7 +35,7 @@ const SSE_HEADERS = {
   connection: "keep-alive",
 } as const;
 
-export interface AppOptions {
+interface AppOptions {
   /** Shared secret required in the `@astra/weal-wire` token header on ingest. Must be non-blank:
    * there is no open mode (fail closed) — createApp throws on a blank token. */
   token: string;
@@ -69,7 +69,7 @@ async function isFile(p: string): Promise<boolean> {
 }
 
 /** Build the service definition + its hub without binding a port. */
-export function createDefinition(opts: AppOptions): {
+function createDefinition(opts: AppOptions): {
   hub: RollHub;
   definition: ServiceDefinition;
 } {

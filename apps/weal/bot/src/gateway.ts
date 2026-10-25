@@ -32,7 +32,7 @@ import type { Roster } from "./roster";
 
 const log = getLogger("astra.weal-bot");
 
-export interface GatewayConfig {
+interface GatewayConfig {
   discordToken: string;
   /** weal-overlay's ingest URL; empty disables the broadcast. */
   feedWsUrl: string;
