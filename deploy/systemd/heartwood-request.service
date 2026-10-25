@@ -7,7 +7,7 @@ OnFailure=astra-alert@%n.service
 
 [Service]
 Type=oneshot
-# Runs the recipe from the deploy checkout (0037 item 2c), with the venv + vellum-lang node
+# Runs the recipe from the deploy checkout, with the venv + vellum-lang node
 # deps deploy.sh keeps in sync there; the request files and run artifacts live under the
 # data root (config heartwood.requests-path / artifacts-path).
 WorkingDirectory=/ruby/data/astra-deploy

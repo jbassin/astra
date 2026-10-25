@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# astra deploy (0037 OPS-3) — the ONE way production gets built and started.
+# astra deploy — the ONE way production gets built and started.
 #
 #   deploy.sh [--sha REV] [--dry-run] [--skip-failed] [--force] [SERVICE...]
 #                                                    build + (re)start SERVICEs (none = all)
@@ -40,7 +40,7 @@
 #      source, venv or validator deps under a running agent (waits up to
 #      HOST_TOOLING_LOCK_TIMEOUT s, default 600, then exits 9 with nothing changed). A
 #      deploy at the checkout's current sha with an in-sync venv takes no lock.
-#   4. decrypt SOPS on the host and export each secret UPPER_CASED (roadmap Decision E: the
+#   4. decrypt SOPS on the host and export each secret UPPER_CASED (the
 #      compose `environment:` blocks pass the keys each service needs, and @astra/config's
 #      env-override path resolves them in-container — no sops/age key/secrets in any image)
 #   5. create the data root's dirs as uid 1000 (the compose binds refuse a missing source)

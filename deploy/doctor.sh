@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# astra host doctor (0037 ops-2, OPS-17/OPS-26) — a read-only health check of this host.
+# astra host doctor — a read-only health check of this host.
 #
 #   doctor.sh            run every check; exit 1 if any check FAILs (warnings do not fail)
 #

@@ -1,4 +1,4 @@
-# SOPS config — which age recipients can decrypt which files (roadmap Decision E).
+# SOPS config — which age recipients can decrypt which files.
 # The recipient below is the PUBLIC half of deploy/sops/age.key; the private key
 # (gitignored) decrypts at load via SOPS_AGE_KEY_FILE.
 creation_rules:

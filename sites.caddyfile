@@ -1,10 +1,10 @@
 # astra host-edge sites — imported by the shared reverse proxy at
 # /ruby/data/reverse-proxy/Caddyfile (custom caddy binary w/ the cloudflare-dns
 # plugin), the same way faerrin's sites.caddyfile is. Add this line to that file:
-#   import /ruby/data/astra-deploy/sites.caddyfile   (the deploy checkout, 0037 OPS-3)
+#   import /ruby/data/astra-deploy/sites.caddyfile   (the deploy checkout)
 # (and drop faerrin's strider import — both can't own strider.iridi.cc at once).
 #
-# Decision I: frontends are SSR Compose services, REVERSE-PROXIED here (not the
+# Frontends are SSR Compose services, REVERSE-PROXIED here (not the
 # static `file_server` faerrin used). Reload with `just caddy-reload`.
 #
 # The Cloudflare ACME-DNS token is NOT committed: `{$CF_API_TOKEN}` is substituted
@@ -49,11 +49,11 @@
 # reverse-proxy Caddyfile; blocks here can `import local_only` directly (don't
 # redeclare it, that collides on reload).
 
-# strider — the first SSR frontend (more blocks follow as 0011-0013 ship). The
+# strider — the first SSR frontend (the later frontends' blocks follow). The
 # compose `strider` service publishes host port 10360. It self-serves gothic's
 # fonts from dist/ (site-kit's gothicFontsPlugin copies them in at build), so
 # /fonts/* falls through to the reverse_proxy — no gothic_fonts import, matching
-# orator/weal-overlay. 0011-0013 inherit this.
+# orator/weal-overlay. The later frontends inherit this.
 strider.iridi.cc {
 	import astra_site
 
@@ -72,7 +72,7 @@ strider.iridi.cc {
 	}
 }
 
-# akasha-frontend — the wiki read-surface (0011), the second SSR frontend on the
+# akasha-frontend — the wiki read-surface, the second SSR frontend on the
 # strider template. A read-only surface (no /editor), so no local_only gate. Like
 # strider it self-serves gothic's fonts from dist/ (gothicFontsPlugin), so /fonts/*
 # falls through to the reverse_proxy. /pagefind/* (the search index) is likewise just
@@ -114,10 +114,10 @@ heart.iridi.cc {
 	reverse_proxy localhost:10365
 }
 
-# mouthpiece-frontend — the podcast read-surface (0012), the third SSR frontend on the
+# mouthpiece-frontend — the podcast read-surface, the third SSR frontend on the
 # strider/akasha template. Read-only (no /editor → no local_only gate). Self-serves
 # gothic's fonts from dist/; /audio/<id>.mp3 is served by the SSR process off the
-# mounted audio volume (D2), so it falls through to the reverse_proxy like any other
+# mounted audio volume, so it falls through to the reverse_proxy like any other
 # path. Compose publishes host port 10366. (Needs a mouthpiece.iridi.cc DNS record —
 # manual, deferred like strider/akasha/orator/weal-overlay.)
 mouthpiece.iridi.cc {
@@ -125,8 +125,8 @@ mouthpiece.iridi.cc {
 	reverse_proxy localhost:10366
 }
 
-# harrow — the tarot deck reader (0017), a backend-less SSR frontend on the strider
-# template (Decision I). Read-only (no editor); self-serves gothic's fonts from the
+# harrow — the tarot deck reader, a backend-less SSR frontend on the strider
+# template. Read-only (no editor); self-serves gothic's fonts from the
 # container. Compose publishes host port 10369. The harrow.iridi.cc DNS record already
 # exists (the old standalone deploy used it) — this block takes the host over; the old
 # stanza was removed from the parent reverse-proxy Caddyfile (was → localhost:10204).
@@ -135,7 +135,7 @@ harrow.iridi.cc {
 	reverse_proxy localhost:10369
 }
 
-# ledger — the astra landing page (0018), the simplest SSR frontend, a sibling of
+# ledger — the astra landing page, the simplest SSR frontend, a sibling of
 # harrow. One homepage: a gothic card grid linking the player-facing sites (the links
 # are baked from each site's config public-origin at build time). Read-only (no
 # editor → no local_only gate); self-serves gothic's fonts from the container. Compose
@@ -145,8 +145,8 @@ ledger.iridi.cc {
 	reverse_proxy localhost:10370
 }
 
-# codex — the PF2e compendium/rules browser (0029), SSR frontend on port 10374.
-# Public with NO auth gate (C-8) but NOINDEXED (C-1): the X-Robots-Tag header here is
+# codex — the PF2e compendium/rules browser, SSR frontend on port 10374.
+# Public with NO auth gate but NOINDEXED: the X-Robots-Tag header here is
 # layer 3 of 3 (the SSR HTML always carries a robots meta tag; /robots.txt Disallow-all
 # ships in the app's public/). Plain `header` (not `header ?`) — this must always win.
 # (*.iridi.cc wildcard — no manual DNS record; cert mints on first hit, ~20-60s flap.)
@@ -156,19 +156,19 @@ codex.iridi.cc {
 	reverse_proxy localhost:10374
 }
 
-# 2e.iridi.cc — alias host for codex (same SSR service, port 10374), R7 (0029 P6,
-# D29-66/-71). Mirrors the heart.iridi.cc alias precedent above: same upstream, same
-# noindex posture (still C-1/C-8 — public, no auth, three-layer noindexed; the header
-# here is layer 3, same as codex.iridi.cc's own). (*.iridi.cc wildcard — no manual DNS
-# record; cert mints on first hit, ~20-60s flap, same as every other alias host here.)
+# 2e.iridi.cc — alias host for codex (same SSR service, port 10374). Mirrors the
+# heart.iridi.cc alias precedent above: same upstream, same noindex posture (still
+# public, no auth, three-layer noindexed; the header here is layer 3, same as
+# codex.iridi.cc's own). (*.iridi.cc wildcard — no manual DNS record; cert mints on
+# first hit, ~20-60s flap, same as every other alias host here.)
 2e.iridi.cc {
 	import astra_site
 	header X-Robots-Tag noindex
 	reverse_proxy localhost:10374
 }
 
-# vellum-frontend — the document-forge editor (0013), the fourth SSR frontend on the
-# strider/akasha template. Two upstreams (D2, mirroring faerrin's old vellum block):
+# vellum-frontend — the document-forge editor, the fourth SSR frontend on the
+# strider/akasha template. Two upstreams (mirroring faerrin's old vellum block):
 # /render + /health proxy to the vellum-render service (the PNG render sidecar), so the
 # editor's export POSTs same-origin; everything else (the editor + preview) goes to the
 # SSR frontend. The /editor UI is gated local_only (like strider) — the export still
@@ -198,7 +198,7 @@ vellum.iridi.cc {
 	}
 }
 
-# weal-overlay — the dice-roll OBS overlay (0009). SSE: flush_interval -1 disables
+# weal-overlay — the dice-roll OBS overlay. SSE: flush_interval -1 disables
 # response buffering so text/event-stream reaches OBS immediately. The overlay
 # self-serves its fonts from dist/, so no gothic_fonts import. Compose publishes
 # host port 10361. (Needs a weal-overlay.iridi.cc DNS record — manual, like strider.)
@@ -209,7 +209,7 @@ weal-overlay.iridi.cc {
 	}
 }
 
-# orator-backend — the Discord music console (0010): Bun.serve REST + the served
+# orator-backend — the Discord music console: Bun.serve REST + the served
 # operator SPA (one origin, M3). The SPA self-serves its gothic fonts from dist/
 # (gothicFontsPlugin copies them in), so no gothic_fonts import. Auth is handled in
 # the app (Discord OAuth + ontology allowlist), so no IP gate. Compose publishes
@@ -231,7 +231,7 @@ orator.iridi.cc {
 	}
 }
 
-# portal — the FoundryVTT MCP+WS bridge server (0023). Two upstream concerns on one
+# portal — the FoundryVTT MCP+WS bridge server. Two upstream concerns on one
 # origin: the SSE-shaped Streamable-HTTP `/mcp` surface + the bridge `/ws` upgrade
 # (flush_interval -1, mirroring weal-overlay/orator's SSE matchers — WS upgrades need
 # the same unbuffered proxying), and an explicit `/module/*` route so Foundry's
@@ -259,8 +259,8 @@ portal.iridi.cc {
 	}
 }
 
-# menhir — the Kahoot-style session-opener quiz (0031), a Compose SSE service on
-# port 10375. No auth (stakeholder R4; per-game hostToken guards host actions).
+# menhir — the Kahoot-style session-opener quiz, a Compose SSE service on
+# port 10375. No auth (stakeholder choice; per-game hostToken guards host actions).
 # Noindexed 3-layer like codex (meta + robots.txt in the app, header here). The
 # SSE event stream needs unbuffered proxying (weal-overlay/orator posture) — the
 # handle-wrapped matcher keeps the catch-all from claiming /api/events/* (which

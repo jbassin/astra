@@ -38,10 +38,10 @@ NIC_IFACE="${WATCHDOG_NIC_IFACE:-enp4s0}"
 # its OWN timer — if that died, this script wouldn't be running.)
 WATCHED_TIMERS=(craig-sync.timer linguist-commit.timer heartwood-request.timer
   astra-backup.timer astra-restore-test.timer astra-metrics.timer)
-# Event-driven path units (0036): a .path unit has no next-elapse, so check_timer would call
+# Event-driven path units: a .path unit has no next-elapse, so check_timer would call
 # it "not armed" — these get check_path_unit (is-active only).
 WATCHED_PATHS=(linguist-commit.path heartwood-request.path)
-# `just heartwood-backfill` (0033 §5) deliberately stops linguist-commit.{timer,path} for
+# `just heartwood-backfill` deliberately stops linguist-commit.{timer,path} for
 # the whole run and holds this lock; while it exists the checks of every unit it stops
 # (BACKFILL_SUPPRESSED) are skipped (journal-only), so a planned suppression never pages. A hard-killed backfill
 # leaves the lock behind: `just heartwood-backfill-reset` re-arms the units + removes it.
@@ -55,7 +55,7 @@ BACKFILL_SUPPRESSED=" linguist-commit.timer linguist-commit.path heartwood-reque
 # ('Trigger: n/a') until the triggered run finishes, or momentarily re-arming. Those blips
 # clear in ~1s; a genuine wedge/disarm persists for minutes. We re-probe a bad reading a
 # few times over a short window and only page if it stays bad across ALL of them.
-# Freshness checks (0037 ops-2). The backup runs nightly at 03:30, so a newest snapshot older
+# Freshness checks. The backup runs nightly at 03:30, so a newest snapshot older
 # than 36 h means at least one night was missed. The restore test runs weekly, so its last pass
 # may be 7 days old; 9 days leaves room for one late run. Both read the same BACKUP_ROOT as
 # astra-backup.sh, which writes the restore-test stamp only on a PASS.
@@ -71,7 +71,7 @@ GIT_PUBLISH_LOCK="${GIT_PUBLISH_LOCK:-$DATA_ROOT/locks/git-publish.lock}"
 HOST_TOOLING_LOCK="${HOST_TOOLING_LOCK:-$DATA_ROOT/locks/host-tooling.lock}"
 # WATCHDOG_ENTITY_CHECK_CMD replaces the seed command (tests only).
 ENTITY_CHECK_CMD="${WATCHDOG_ENTITY_CHECK_CMD:-}"
-# SigNoz rule drift: `astra-ops signoz-rules-check` (0037 ops-4), read-only against the SigNoz
+# SigNoz rule drift: `astra-ops signoz-rules-check`, read-only against the SigNoz
 # API with ops.signoz-api-key from SOPS. WATCHDOG_RULES_CHECK_CMD replaces it (tests only).
 RULES_CHECK_CMD="${WATCHDOG_RULES_CHECK_CMD:-}"
 
@@ -467,7 +467,7 @@ check_timer() {
   return 0
 }
 
-# --- freshness checks (0037 ops-2). Not wrapped in confirm(): files on a local disk and a
+# --- freshness checks. Not wrapped in confirm(): files on a local disk and a
 # lock-guarded seed run do not flap, so one reading per tick is the truth. ---
 
 # Seconds since an epoch timestamp, as whole hours.

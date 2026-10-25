@@ -136,7 +136,7 @@ services:
     !!merge <<: *db-depend
     image: signoz/signoz-otel-collector:${OTELCOL_TAG:-v0.144.5}
     container_name: signoz-otel-collector
-    # astra (0037 OPS-8): the collector is the one SigNoz container the astra apps reach.
+    # astra: the collector is the one SigNoz container the astra apps reach.
     # It joins `telemetry` (the Node apps) and `pipeline` (Dagster) beside signoz-net, so
     # the apps never share a net with ClickHouse. The node-exporter scrape still goes out
     # through the signoz-net gateway 172.27.0.1. Both nets are declared below and in

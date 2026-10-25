@@ -7,7 +7,7 @@ OnFailure=astra-alert@%n.service
 
 [Service]
 Type=oneshot
-# Runs the recipe from the deploy checkout (0037 item 2c), with the venv deploy.sh keeps in
+# Runs the recipe from the deploy checkout, with the venv deploy.sh keeps in
 # sync there; every path it touches comes from config.kdl, under the data root
 # /ruby/data/astra-state, never this checkout.
 WorkingDirectory=/ruby/data/astra-deploy
@@ -20,7 +20,7 @@ WorkingDirectory=/ruby/data/astra-deploy
 # line, re-run `just units-install linguist-commit` (daemon-reload) or systemd keeps the old one.
 ExecStart=/home/jbassin/.cargo/bin/just linguist-commit --yes
 # A oneshot has no start timeout by default, and the watchdog treats a timer whose service is
-# still activating as healthy, so a wedged run would look green forever (0037 OPS-10). Runs
+# still activating as healthy, so a wedged run would look green forever. Runs
 # take 3 s typically, 59 s at most (journal, 2026-10-15 to 10-24), but the worst legitimate
 # run waits up to 30 min for the git-publish lock (a heartwood run holds it), up to 30 min
 # for the deploy lock, then builds and health-checks a frontend (about 10 min). 90 min covers
