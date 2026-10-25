@@ -3,9 +3,10 @@
 Comments and test names describe the code as it is now. The history of why it got that way
 lives in git and in the ADRs. So this fails when a line ADDED since the merge base with the
 base ref (default `origin/main`, the range commitlint lints) cites a spec, decision, phase,
-slice, gate or tech-debt finding ID, such as `D29-83`, `P9 S1`, `0037 OPS-3`, `gate C` or
-`(R3, P6)`. IDs that are already there do not fail it, even on a line the change rewraps or
-moves; the per-area sweeps remove those.
+slice, gate or tech-debt finding ID, such as `D29-83`, `P9 S1`, `0037 OPS-3`, `gate C`,
+`(R3, P6)`, a stage tag (`the S2 checker`), a section (`§3`), a requirement code (`R21`,
+`D-7`), a lane slug (`svc-2`) or a spec slug (`codex-0029`). IDs that are already there do
+not fail it, even on a line the change rewraps or moves; the per-area sweeps remove those.
 
 Allowed everywhere: an ADR reference (`ADR 0015`), the sanctioned link to a decision that
 still binds the code. Not checked: Markdown, data and content files (only source and
@@ -38,6 +39,8 @@ EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 
 # The tech-debt lanes whose finding IDs (`WEAL-1`) the paydown plan uses.
 LANES = "ASY|CDX|FE|LIB|OPS|PIPE|PROC|REPO|SEC|SMELL|SVC|TEST|WEAL"
+# The same lanes as lower-case slugs (`svc-2`), less `test-`: `test-1` is a common fixture name.
+LANE_SLUGS = "|".join(lane for lane in LANES.lower().split("|") if lane != "test")
 # One short spec-local code: a capital letter and a number (`R3`, `F12`, `S5d`).
 CODE = r"[A-Z]\d{1,3}[a-z]?"
 
@@ -48,8 +51,8 @@ RULES: dict[str, tuple[re.Pattern[str], str]] = {
         "a per-spec decision ID such as D29-83",
     ),
     "phase-slice": (
-        re.compile(r"\bP\d+(?:\.\d+)?[ /]S\d+[a-z]?\b"),
-        "a phase and slice tag such as P9 S1",
+        re.compile(r"\bP\d+(?:\.\d+)?[ /-]S\d+[a-z]?\b"),
+        "a phase and slice tag such as P9 S1 or P3-S1",
     ),
     "finding-id": (
         re.compile(rf"\b(?:{LANES})-\d+\b"),
@@ -70,6 +73,50 @@ RULES: dict[str, tuple[re.Pattern[str], str]] = {
     "code-in-parens": (
         re.compile(rf"(?<![\w.$\]])\({CODE}(?:(?:, ?| ?/ ?| ){CODE})*\)"),
         "a bare spec code in parentheses such as (R3, P6) or (F3)",
+    ),
+    # Not after a word, `.` or `$` (identifiers: `S3_BUCKET`, `foo.S1`), nor after `P9 `,
+    # `0022 ` or `P3-` (phase-slice and spec-ref already report those), nor the AWS service.
+    # A tag that is a whole string literal (`title="S1"`, a season) is a value.
+    "stage-tag": (
+        re.compile(
+            r"(?<![\w.$\"'])(?<!\d[ /-])(?<!AWS )S\d{1,2}[a-z]?\b(?!://| ?[Bb]uckets?\b)"
+            r"|(?<=[\"'])S\d{1,2}[a-z]?\b(?![\"']|://| ?[Bb]uckets?\b)"
+        ),
+        "a bare slice or stage tag such as S3 or the S2 checker",
+    ),
+    # A section of a spec or plan; a section of a Markdown doc in the repo (`MARKDOWN.md §5`)
+    # still describes the code, so it passes.
+    "section-ref": (
+        re.compile(r"(?<!\.md )§ ?\d+(?:\.\d+)*[A-Za-z]?"),
+        "a spec section reference such as §3 or §4.1",
+    ),
+    # R, K and D only: E1-E14 style codes are error catalogues (vellum-lang) and episode
+    # numbers, F5 is a key, and other letters are tiers, grid cells and PF2e codes. A code that
+    # is a whole string literal (`id="R1"`) is a value, and `deadly D8` is a die.
+    "requirement-code": (
+        re.compile(
+            r"(?<![\w.$#\"'-])(?<![Dd]eadly )(?<![Ff]atal )[DKR]\d{1,2}[a-z]?\b(?!-)"
+            r"|(?<=[\"'])[DKR]\d{1,2}[a-z]?\b(?![-\"'])"
+        ),
+        "a bare spec requirement or decision code such as R21, K4 or D5",
+    ),
+    # Not C-: `C-1` is arithmetic as often as a code.
+    "dashed-code": (
+        re.compile(r"\b(?:AD|D|FR|K|NFR|OQ|Q|R)-\d{1,3}[a-z]?\b"),
+        "a dashed spec code such as D-7, R-16, OQ-1 or NFR-9",
+    ),
+    "lane-slug": (
+        re.compile(rf"(?<![\w-])(?:{LANE_SLUGS}|kit|p\d{{1,2}})-\d+[a-z]?\b"),
+        "a lower-case lane or slice slug such as svc-2, ops-1a, kit-1a or p3-0",
+    ),
+    "slice-number": (
+        re.compile(r"\b[Ss]lices? \d+[a-z]?\b"),
+        "a numbered plan slice such as slice 5",
+    ),
+    # 0010-0099 only: `spell-0001` is a fixture ID; a path or link (`gm-0027-thoughts.md`) is not.
+    "spec-slug": (
+        re.compile(r"\b[a-z]+-00[1-9]\d\b(?![-.\w])"),
+        "a spec-numbered slug such as codex-0029 or pre-0024",
     ),
 }
 
@@ -144,15 +191,21 @@ def _diff_path(header: str) -> str | None:
     return target[2:] if target.startswith("b/") else target
 
 
+# A comment marker at the start of a line, dropped when the removed lines are joined.
+COMMENT_LEAD = re.compile(r"^\s*(?:#+:?|//+!?|/?\*+/?|--|;+|\"\"\"|''')?\s*")
+
+
 def check_diff(diff: str) -> list[Violation]:
     """Every rule match on an added line of a unified diff (`git diff` output).
 
     A match the same diff also removes (anywhere in the diff, as often) is carried, not
     introduced: rewrapping a comment or moving code between files keeps the IDs it already had
-    until its area's sweep. Only an ID the change adds fails.
+    until its area's sweep. Only an ID the change adds fails. The removed lines are searched as
+    one run of words, with line breaks and leading comment markers dropped, so a rewrap that
+    splits `P9 S1` over two lines (leaving a bare `S1` for stage-tag) still carries it.
     """
     added: list[tuple[str, int, str]] = []
-    removed: collections.Counter[tuple[str, str]] = collections.Counter()
+    removed_lines: list[str] = []
     path: str | None = None
     lineno = 0
     for line in diff.splitlines():
@@ -167,17 +220,25 @@ def check_diff(diff: str) -> list[Violation]:
                 added.append((path, lineno, line[1:]))
             lineno += 1
         elif line.startswith("-"):
-            removed.update((v.rule, v.match) for v in check_line("", 0, line[1:]))
+            removed_lines.append(COMMENT_LEAD.sub("", line[1:]))
         elif line.startswith(" "):
             lineno += 1
+    removed = " ".join(" ".join(removed_lines).split())
+    carried: collections.Counter[tuple[str, str]] = collections.Counter()
     violations: list[Violation] = []
     for path, lineno, text in added:
         for v in check_line(path, lineno, text):
-            if removed[v.rule, v.match] > 0:
-                removed[v.rule, v.match] -= 1
+            match = " ".join(v.match.split())
+            if carried[v.rule, match] < _occurrences(match, removed):
+                carried[v.rule, match] += 1
             else:
                 violations.append(v)
     return violations
+
+
+def _occurrences(match: str, text: str) -> int:
+    """How often `match` appears in `text` with no word character either side."""
+    return len(re.findall(rf"(?<!\w){re.escape(match)}(?!\w)", text))
 
 
 def git(*args: str) -> str:

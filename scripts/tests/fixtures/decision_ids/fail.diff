@@ -32,3 +32,13 @@ index 7777777..8888888 100644
 +++ b/justfile
 @@ -100,0 +101 @@
 +# The row-pitch drift guard (P9/S1), from the akasha structural gate (0007/F3).
+diff --git a/apps/portal/server/src/stage.ts b/apps/portal/server/src/stage.ts
+new file mode 100644
+index 0000000..9999999
+--- /dev/null
++++ b/apps/portal/server/src/stage.ts
+@@ -0,0 +1,4 @@
++// The S2 checker keeps the §3 depth cap.
++// Ported in P3-S1 for R21 and the D-7 read-back.
++test("bridge handshake (svc-2)", () => {});
++// Landed in slice 5; see the codex-0029 memory.
