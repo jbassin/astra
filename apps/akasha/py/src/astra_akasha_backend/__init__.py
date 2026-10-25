@@ -3,10 +3,8 @@
 Owns the SSOT setting corpus (full-vellum, under ``content/``), and the host-run
 snapshot (``uv run akasha-snapshot``) that validates it (via the TS parser, a Node step)
 and emits the build-time metadata index + page→page crossref edge list that akasha-frontend
-(0011) builds the site from and mouthpiece-backend reads for grounding.
-
-The one-shot faerrin-wiki→vellum converter is TS (``libs/ts/vellum-lang/scripts/
-convert-wiki.ts``); the snapshot here is Python (metadata-only).
+builds the site from and mouthpiece-backend reads for grounding. The snapshot is
+metadata-only.
 """
 
 from __future__ import annotations
