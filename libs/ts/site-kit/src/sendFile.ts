@@ -23,6 +23,13 @@ function toNodeReq(req: Request): NodeReqShape {
   return { headers, method: req.method };
 }
 
+export interface ServeFileOptions {
+  /** Cache for a year as `immutable`: only for a file whose name carries its content hash. */
+  immutable?: boolean;
+}
+
+const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
+
 // Fetch `Response` forbids a body on these statuses (spec: "null body status").
 const NULL_BODY_STATUS = new Set([204, 205, 304]);
 
@@ -105,8 +112,17 @@ class CapturingRes extends PassThrough {
  * path with a dot-segment; with a root it checks only the part below the root, so a
  * checkout under a dot-folder (an agent worktree in `.claude/worktrees/`) still serves
  * its built assets. Without a root it checks the whole absolute path.
+ *
+ * `send` answers `Cache-Control: public, max-age=0` by default, so the browser revalidates
+ * every load. Pass `{ immutable: true }` only for a content-hashed file (vite's `assets/`
+ * output): its name changes whenever its bytes do, so a year-long cache is safe.
  */
-export function serveFile(req: Request, filePath: string, root?: string): Promise<Response> {
+export function serveFile(
+  req: Request,
+  filePath: string,
+  root?: string,
+  opts: ServeFileOptions = {},
+): Promise<Response> {
   const nodeReq = toNodeReq(req);
   return new Promise<Response>((resolve, reject) => {
     let settled = false;
@@ -145,10 +161,11 @@ export function serveFile(req: Request, filePath: string, root?: string): Promis
     // a listener here would silently divert every error path away from `res` and
     // into an emitted event nothing here is designed to translate back to a
     // Response, leaving the promise (and the client) hanging.
+    const cache = opts.immutable ? { maxAge: ONE_YEAR_MS, immutable: true } : {};
     const stream =
       root === undefined
-        ? send(nodeReq as unknown as Readable, filePath)
-        : send(nodeReq as unknown as Readable, relative(root, filePath), { root });
+        ? send(nodeReq as unknown as Readable, filePath, cache)
+        : send(nodeReq as unknown as Readable, relative(root, filePath), { root, ...cache });
     stream.pipe(res);
   });
 }

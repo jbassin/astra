@@ -19,7 +19,7 @@ export { generateRouteTree, staleRouteTreeFiles, type RouteTreeOptions } from ".
 // internally; exported too so the repo's other hand-rolled Node servers
 // (weal-overlay, orator-backend) reuse the same tested bridge
 // instead of re-implementing the Bun.file → Node static-serving seam.
-export { serveFile } from "./sendFile";
+export { type ServeFileOptions, serveFile } from "./sendFile";
 export { ssrExternalsPlugin, undeclaredSsrImports } from "./ssrExternals";
 export {
   createSsrServer,

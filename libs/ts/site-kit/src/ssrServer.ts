@@ -93,6 +93,14 @@ export function staticMountPath(mount: StaticMount, pathname: string): string | 
   return `${mount.dir}/${rel}`;
 }
 
+/** URL prefix of vite's content-hashed client output (`build.assetsDir`, default `assets`). */
+const HASHED_ASSET_PREFIX = "/assets/";
+
+/** True for a client path under vite's hashed `assets/` dir. Pure. */
+function isHashedAssetPath(pathname: string): boolean {
+  return pathname.startsWith(HASHED_ASSET_PREFIX);
+}
+
 async function isFile(p: string): Promise<boolean> {
   try {
     return (await stat(p)).isFile();
@@ -148,11 +156,15 @@ export function createSsrServer(opts: SsrServerOptions): Server {
         return new Response("Not found", { status: 404 });
       }
       // Serve built client assets (hashed bundles, fonts, favicon) directly. The
-      // root path always goes to SSR so "/" renders the document, not a file.
+      // root path always goes to SSR so "/" renders the document, not a file. Files
+      // under /assets/ carry vite's content hash and are cached as immutable; the rest
+      // (fonts, favicon, public/ files) keep `send`'s revalidating default.
       if (url.pathname !== "/") {
         const filePath = `${clientDir}${url.pathname}`;
         if (filePath.startsWith(clientDir) && (await isFile(filePath))) {
-          return serveFile(req, filePath, clientDir);
+          return serveFile(req, filePath, clientDir, {
+            immutable: isHashedAssetPath(url.pathname),
+          });
         }
       }
       // One render span per SSR'd request (assets above short-circuit), a child of the

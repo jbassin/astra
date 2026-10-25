@@ -31,6 +31,8 @@ beforeAll(async () => {
   const clientDir = join(root, "client");
   mkdirSync(clientDir, { recursive: true });
   writeFileSync(join(clientDir, "app.css"), CLIENT_ASSET);
+  mkdirSync(join(clientDir, "assets"));
+  writeFileSync(join(clientDir, "assets", "index-Bx3f9a1c.js"), "console.log(1)");
 
   const audioDir = join(root, "audio");
   mkdirSync(audioDir);
@@ -95,6 +97,22 @@ describe("built client assets (served ahead of SSR)", () => {
     const res = await fetch(`${base}/app.css`);
     expect(res.status).toBe(200);
     expect(await res.text()).toBe(CLIENT_ASSET);
+  });
+
+  test("a hashed file under /assets/ is cached for a year as immutable", async () => {
+    const res = await fetch(`${base}/assets/index-Bx3f9a1c.js`);
+    expect(res.status).toBe(200);
+    expect(res.headers.get("cache-control")).toBe("public, max-age=31536000, immutable");
+  });
+
+  test("an unhashed file outside /assets/ still revalidates", async () => {
+    const res = await fetch(`${base}/app.css`);
+    expect(res.headers.get("cache-control")).toBe("public, max-age=0");
+  });
+
+  test("the SSR'd document is never cached as immutable", async () => {
+    const res = await fetch(`${base}/`);
+    expect(res.headers.get("cache-control") ?? "").not.toContain("immutable");
   });
 });
 
