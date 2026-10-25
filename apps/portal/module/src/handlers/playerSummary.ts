@@ -38,7 +38,7 @@ export function buildSummary(doc: FoundryDocumentLike, src: Pf2eSource): PlayerS
   const hp = actorHp(system);
   const masterId = familiarMasterId(system);
   // Resolve the master's NAME like the party companion row does — an id is useless
-  // to a player-facing render (S4 live-gate find).
+  // to a player-facing render (found in a live check).
   const master = masterId !== undefined ? (game.actors.get(masterId)?.name ?? masterId) : undefined;
 
   return {

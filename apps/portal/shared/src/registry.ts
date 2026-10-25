@@ -278,7 +278,7 @@ export const PORTAL_TOOLS = {
     kind: "read",
   }),
 
-  // Write tools (D8: writes on by default). Every one writes to the live campaign world,
+  // Write tools (writes are on by default). Every one writes to the live campaign world,
   // and the description says so. Creates count against the per-request cap;
   // apply-condition, update-document, delete-document and execute-macro mutate or act
   // and don't.
@@ -305,7 +305,7 @@ export const PORTAL_TOOLS = {
       "WRITES to the live 'Faerrin' FoundryVTT world: drops a token onto the currently active " +
       "scene at (x, y), visible to everyone in the game immediately. Either tokenizes an actor " +
       "that already exists in the world (`actorId`) or imports a compendium document first and " +
-      "then tokenizes it (`uuid`, D13) — give exactly one of the two. `quantity` drops multiple " +
+      "then tokenizes it (`uuid`) — give exactly one of the two. `quantity` drops multiple " +
       "tokens, each offset by one grid square so they don't stack exactly. Fails with a typed " +
       "'not-found' error if there's no active scene. Same write-gate/cap/audit rules as " +
       "import-from-compendium.",
@@ -337,7 +337,7 @@ export const PORTAL_TOOLS = {
       "WRITES to the live 'Faerrin' FoundryVTT world: hand-authors a new NPC or hazard actor " +
       "(type), either from scratch via a `system` JSON payload and embedded `items` (strikes, " +
       "actions, spellcasting), or by cloning an existing compendium statblock (`baseUuid`) and " +
-      "patching it (D-1 hybrid — prefer this when a close base exists). NPC actors get NO " +
+      "patching it (prefer this when a close base exists). NPC actors get NO " +
       "schema validation from Foundry — garbage system data is stored silently; hazards ARE " +
       "strictly validated. The result's `warnings` array reports anything that looked wrong " +
       "after creation (e.g. an ignored rule element) — always check it, a clean-looking result " +

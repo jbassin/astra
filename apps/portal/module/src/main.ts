@@ -5,7 +5,7 @@
  * alongside it).
  *
  * Two hooks:
- *  - `init` — register the three world-scoped, GM-restricted settings (D8: writes ON
+ *  - `init` — register the three world-scoped, GM-restricted settings (writes ON
  *    by default) + the `CONFIG.queries` handler registry (`handlers/index.ts`).
  *  - `ready` — the hard GM gate (non-GM sessions never dial the bridge at all — the
  *    module setting alone isn't a security boundary, this is), then read the settings
@@ -34,7 +34,7 @@ function registerSettings(): void {
   });
   game.settings.register(MODULE_ID, SETTING_BRIDGE_API_KEY, {
     name: "Portal bridge API key",
-    hint: "Must match the bridge-api-key configured on the portal server (D6 two-hop auth).",
+    hint: "Must match the bridge-api-key configured on the portal server.",
     scope: "world",
     config: true,
     type: String,

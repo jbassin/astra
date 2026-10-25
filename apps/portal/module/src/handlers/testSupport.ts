@@ -23,9 +23,9 @@ export function loadFixture(name: "party" | "argyle" | "othello"): {
 }
 
 /** A fake `FoundryPacksCollection`/`FoundryWorldCollection`/`FoundryScenesCollection`/
- * `FoundryFoldersCollection` — `values()` covers every S4 handler (see
- * `types/foundry.d.ts`'s own minimal-surface philosophy); `get(id)` is S5's addition
- * (`create-token`'s `actorId` path) — harmless on collections that never call it.
+ * `FoundryFoldersCollection` — `values()` covers the read handlers (see
+ * `types/foundry.d.ts`'s own minimal-surface philosophy); `get(id)` serves
+ * `create-token`'s `actorId` path — harmless on collections that never call it.
  * Deliberately unconstrained/cast rather than `T extends {id?: string}`: some callers
  * (compendium packs/index entries) have no `id` field at all, and TypeScript's "weak
  * type" detection rejects assigning a zero-overlap object to an all-optional-props
@@ -60,8 +60,8 @@ export function fakePack(opts: {
 }
 
 /** Returns a {@link FoundryActor} (a superset of `FoundryDocumentLike`) so every
- * existing S4 call site — journal/item/scene stand-ins that never call
- * `getTokenDocument` — keeps working unchanged, while S5's actor-specific tests get a
+ * journal/item/scene stand-in that never calls
+ * `getTokenDocument` works unchanged, while the actor-specific tests get a
  * working `getTokenDocument` stub for free (the returned "token" is just the given
  * position + this doc's name, enough for `create-token`'s offset-math assertions). */
 export function fakeDoc(opts: {
@@ -91,8 +91,8 @@ export function fakeDoc(opts: {
     // `toObject()` always hands back a FRESH plain-object clone, never the live
     // document's own backing data — a caller that mutates what it gets back (as
     // `resolveBasePayload`/`cloneFromCompendium` deliberately do, stripping `_id`)
-    // must never be able to corrupt this fake's "source" doc as a side effect (0026
-    // S2's "baseUuid clones-then-patches without mutating the source" acceptance).
+    // must never be able to corrupt this fake's "source" doc as a side effect (the
+    // "baseUuid clones-then-patches without mutating the source" tests rely on it).
     toObject: () => structuredClone(opts.data ?? { _id: opts.id, name: opts.name }),
     getTokenDocument: (pos: { x: number; y: number }) =>
       Promise.resolve({ toObject: () => ({ x: pos.x, y: pos.y, name: opts.name }) }),
@@ -104,7 +104,7 @@ export function fakeDoc(opts: {
     // Defaults: never called/read unless a test explicitly exercises
     // apply-condition (`fakeConditionActor` below overrides all four) — present here
     // only so every existing `fakeDoc`/`fakeScene`/`fakeActorDocumentClass` call site
-    // (S3/S4/S2, none of which touch conditions) keeps satisfying `FoundryActor`'s
+    // (most of which never touch conditions) keeps satisfying `FoundryActor`'s
     // now-required condition surface.
     increaseCondition: () => Promise.resolve(null),
     decreaseCondition: () => Promise.resolve(),
@@ -113,11 +113,11 @@ export function fakeDoc(opts: {
   };
 }
 
-/** S5's `create-token` landing call — by default just echoes each given token payload
+/** `create-token`'s landing call — by default just echoes each given token payload
  * back as a minted doc (so a test asserting on the RESULT's x/y sees exactly what
  * `actor.getTokenDocument().toObject()` produced), with a distinct sequential id per
  * token. Override for a test that wants to assert on the exact `data` it was called
- * with (S3/S4 scenes never call this at all). */
+ * with (the read-tool scene tests never call this at all). */
 export function fakeCreateEmbeddedDocuments(
   embeddedName: string,
   data: Record<string, unknown>[],
@@ -157,7 +157,7 @@ export function isPlainObject(v: unknown): v is Record<string, unknown> {
   return v !== null && typeof v === "object" && !Array.isArray(v);
 }
 
-/** S2 (0026) — a `createEmbeddedDocuments` stub for the D-7 RE read-back tests: mints
+/** A `createEmbeddedDocuments` stub for the rule-element read-back tests: mints
  * one item per given payload, optionally stamping a specific `rules` array onto the
  * item at a given index (everything else falls back to no `rules` at all — the
  * defensive "absent means unknown, not everything-failed" case). Records every call's
@@ -240,7 +240,7 @@ export interface FoundryStubOverrides {
   scenes?: FoundryScene[];
   folders?: FoundryFolder[];
   fromUuid?: (uuid: string) => Promise<FoundryDocumentLike | null>;
-  /** S5 — the world-settings map `game.settings.get` reads from, keyed by setting key
+  /** The world-settings map `game.settings.get` reads from, keyed by setting key
    * (namespace ignored, this module only ever registers its own). */
   settings?: Record<string, unknown>;
   /** This session's `game.user.id`/`.name`; override to simulate a
@@ -266,7 +266,7 @@ export interface FoundryStubOverrides {
 }
 
 /** Stubs the ambient Foundry globals the handlers touch (`game`, `CONFIG`,
- * `fromUuid`, `getDocumentClass`) — S3/S4/S5 are all Foundry-free, so these are plain
+ * `fromUuid`, `getDocumentClass`) — the handler tests are all Foundry-free, so these are plain
  * objects, not a real Foundry runtime. */
 export function stubFoundry(isGM: boolean, overrides: FoundryStubOverrides = {}): void {
   globalThis.game = {

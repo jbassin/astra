@@ -15,7 +15,7 @@ type MessageListener = (ev: { data: string }) => void;
 
 /** A fake `WebSocket` — just enough of the `MinimalWebSocket` surface to drive
  * `BridgeClient` manually (`open()`/`receive()`/`remoteClose()`) instead of a real
- * socket (S3 is entirely Foundry-free; this is deliberately browser-free too). */
+ * socket (the bridge client is Foundry-free; this is deliberately browser-free too). */
 class FakeSocket implements MinimalWebSocket {
   readonly sent: string[] = [];
   #openListener: Listener | null = null;

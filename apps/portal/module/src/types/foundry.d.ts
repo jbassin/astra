@@ -43,7 +43,7 @@ interface FoundrySystem {
  * pf2e `system.*`), the rest is plain document identity. `type`/`flags` are
  * optional: most read-tool stand-ins never carry either, and both are genuinely
  * absent on some real document kinds — `type` is `update-document`'s "is this a PC" discriminator
- * (`documentName === "Actor" && type === "character"`), `flags` is D-4's stamp-read
+ * (`documentName === "Actor" && type === "character"`), `flags` is `delete-document`'s stamp-read
  * surface (`flags["astra-portal"]?.created`). */
 interface FoundryDocumentLike {
   readonly id: string;
@@ -67,7 +67,7 @@ interface FoundryDocumentLike {
    * actors` resolves is already the live, prepared instance in real Foundry, so no
    * separate "get the live one" call is ever needed — this field is just that same
    * instance's own `system` property, read directly instead of through `toObject()`.
-   * Deliberately opaque (`Record<string, unknown>`, D5) and optional (not every
+   * Deliberately opaque (`Record<string, unknown>`) and optional (not every
    * document kind this module touches carries one, e.g. a Macro/Scene/AmbientLight) —
    * `query-player`'s own path-reader treats an absent/wrong-shaped path as "unknown"
    * fail-soft, never a throw (pf2e-internal paths can drift). */
@@ -149,14 +149,14 @@ interface FoundryCompendiumCollection {
 }
 
 /** `game.packs` — iterated wholesale by both `list-compendium-packs` and
- * `search-compendium` (D12 live-iterate, no precomputed cache in v1). */
+ * `search-compendium` (iterated live; there is no precomputed cache). */
 interface FoundryPacksCollection {
   values(): IterableIterator<FoundryCompendiumCollection>;
 }
 
 /** A world-scoped `WorldCollection` (`game.actors`/`game.items`/`game.journal`). `get`
- * is S5's addition (`create-token`'s `actorId` path resolves an existing world actor by
- * id) — every S4 stub already indexes by `id`, so it costs S4 nothing. */
+ * serves `create-token`'s `actorId` path, which resolves an existing world actor by
+ * id; every test stub already indexes by `id`. */
 interface FoundryWorldCollection<T extends FoundryDocumentLike = FoundryDocumentLike> {
   values(): IterableIterator<T>;
   get(id: string): T | undefined;
@@ -180,7 +180,7 @@ interface FoundryRuleElement {
   readonly ignored?: boolean;
 }
 
-/** The subset of an embedded Item document the D-7 RE read-back inspects — a superset
+/** The subset of an embedded Item document the rule-element read-back inspects — a superset
  * of {@link FoundryDocumentLike} that MAY carry instantiated `rules`. `rules` is
  * optional/absent both for a fresh non-Foundry stub and, in the real client, for any
  * item that hasn't gone through actor data-prep — both are treated identically
@@ -411,7 +411,7 @@ interface FoundryHooks {
 
 // `var`, not `const`/`let`: only a `var`-declared global gets merged onto the
 // `globalThis` TYPE, which the handlers/bridgeClient test suites need in order to stub
-// `game`/`CONFIG` (`globalThis.game = {...}`) — S3 is Foundry-free, so these are plain
+// `game`/`CONFIG` (`globalThis.game = {...}`) — those tests are Foundry-free, so these are plain
 // objects assigned per-test, never Foundry's real (runtime-injected, never reassigned)
 // globals.
 declare var game: FoundryGame;
@@ -434,7 +434,7 @@ declare var ui: FoundryUi | undefined;
  * `handlers/testSupport.ts` stubs it per-test (the handler tests are Foundry-free too). */
 declare var fromUuid: (uuid: string) => Promise<FoundryDocumentLike | null>;
 /** Foundry's forward-safe document-class resolver (avoids a hardcoded `Actor`/`Item`/
- * `JournalEntry` global reference — the v13->v15 deprecation cliff, spec Risks). S5's
+ * `JournalEntry` global reference — the v13->v15 deprecation cliff). The
  * write handlers are its only callers. Same `var` reasoning as `fromUuid`. */
 declare var getDocumentClass: (documentName: string) => FoundryDocumentClass;
 

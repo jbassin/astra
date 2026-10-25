@@ -130,7 +130,7 @@ describe("create-actor", () => {
 describe("apply-condition", () => {
   afterEach(teardownFoundry);
 
-  /** A pf2e-ConditionManager-backed fake actor (D-14): tracks condition state as a
+  /** A pf2e-ConditionManager-backed fake actor: tracks condition state as a
    * local mutable array so a handler's increase/decrease/toggle/createEmbeddedDocuments
    * call and the subsequent read-back see one consistent world, with no real pf2e/
    * Foundry runtime. `calls` records which underlying method actually fired, so a
@@ -209,7 +209,7 @@ describe("apply-condition", () => {
       action: "decrease",
     })) as { active: boolean };
     // This fake's decreaseCondition removes on any call (see helper) — proving the
-    // wrapper dispatches to decreaseCondition at all, which is the S3 contract;
+    // wrapper dispatches to decreaseCondition at all, which is this module's contract;
     // pf2e's own step-by-1 arithmetic is pf2e's problem, not this module's.
     expect(actor.calls.decrease).toBe(1);
     expect(result.active).toBe(false);

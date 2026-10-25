@@ -90,7 +90,7 @@ class FakeModule {
   }
 }
 
-describe("bridge handshake end to end (svc-2: MCP client + fake module over real sockets)", () => {
+describe("bridge handshake end to end (MCP client + fake module over real sockets)", () => {
   let handle: (PortalServerHandle & { port: number }) | undefined;
   const clients: Client[] = [];
   const modules: FakeModule[] = [];
@@ -231,7 +231,8 @@ describe("bridge handshake end to end (svc-2: MCP client + fake module over real
     const { wsUrl, mcp } = await startPortal({ bridgeUserId: PORTAL_USER });
     const old = dial(wsUrl, { meta: { userId: PORTAL_USER } });
     await old.ready();
-    // The old tab never answers; before svc-2 this call hung for the full query timeout.
+    // The old tab never answers; without the bridge-replaced failure this call would hang
+    // for the full query timeout.
     const inFlight = callJson(mcp, "list-scenes");
     await sleep(50);
 

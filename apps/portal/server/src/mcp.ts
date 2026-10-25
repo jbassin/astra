@@ -49,9 +49,9 @@ const mcpResultMismatches = lazyCounter(SERVICE_NAME, "astra.portal.mcp.result_m
   description: "Module results that failed their registry result schema, by tool",
 });
 
-/** S5/D8 audit trail — a dedicated, greppable INFO log line for every write-tool call
+/** The write audit trail — a dedicated, greppable INFO log line for every write-tool call
  * (both allowed and denied), independent of the tracer span every tool already gets.
- * Mitigates the spec Risks' "Default-ON writes on a live campaign": a full record of
+ * Mitigates the risk of default-ON writes on a live campaign: a full record of
  * every create an LLM client issued against "Faerrin", searchable in SigNoz by
  * `portal.audit.tool`. Only `kind: "write"` registry entries call this. */
 function auditWrite(tool: string, params: unknown, outcome: string): void {
@@ -83,7 +83,7 @@ function renderResult(name: PortalToolName, result: unknown, params: unknown): s
 /** Checks a module result against the tool's registry `result` schema. A mismatch is
  * reported (WARN log and counter), never enforced: the original result is still
  * returned unchanged, so MCP clients see exactly what they saw before this check
- * existed. Enforcing it as a typed error is a protocol change (svc-2). */
+ * existed. Enforcing it as a typed error would be a protocol change. */
 function checkResult(name: PortalToolName, result: unknown): void {
   const parsed = PORTAL_TOOLS[name].result.safeParse(result);
   if (parsed.success) return;
@@ -105,7 +105,7 @@ function checkResult(name: PortalToolName, result: unknown): void {
  * never a hang.
  *
  * Write tools add two concerns: `creates` rejects an oversized batch with a typed
- * `cap-exceeded` error and NO bridge round-trip at all (D8 — the module's own hard
+ * `cap-exceeded` error and NO bridge round-trip at all (the module's own hard
  * ceiling is a second, independent backstop, see `handlers/writes.ts`'s
  * `MODULE_MAX_CREATES_CEILING`), and every call emits the {@link auditWrite} line,
  * allowed or denied.

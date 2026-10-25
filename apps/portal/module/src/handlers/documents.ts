@@ -134,7 +134,7 @@ async function handleDeleteDocument(rawParams: unknown): Promise<DeleteDocumentR
       throw new BridgeError(
         "not-portal-created",
         `refusing to delete ${params.uuid} — it carries no astra-portal creation stamp; this ` +
-          "tool can only delete documents portal itself created (D-4)",
+          "tool can only delete documents portal itself created",
       );
     }
     // Same narrowing-cast reasoning as `update-document`.

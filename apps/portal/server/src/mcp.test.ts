@@ -21,7 +21,7 @@ const MCP_API_KEY = "test-mcp-key";
 const PLAYER_MCP_API_KEY = "test-player-mcp-key";
 const BRIDGE_API_KEY = "test-bridge-key";
 const MAX_CREATES_PER_REQUEST = 10;
-// S6's module-package routes are exercised separately (modulePackage.test.ts); these
+// The module-package routes are exercised separately (modulePackage.test.ts); these
 // MCP-tool tests never hit /module/*, so a non-existent moduleDir is fine (any request
 // would just 503, per modulePackage.ts).
 const TEST_PUBLIC_ORIGIN = "https://portal.test";
@@ -35,8 +35,8 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/** A fake Foundry module for the S4 read-tool tests — dials the bridge, completes the
- * D6 handshake, and answers whatever `query` a test scripts (mirrors bridge.test.ts's
+/** A fake Foundry module for the MCP-tool tests — dials the bridge, completes the
+ * auth handshake, and answers whatever `query` a test scripts (mirrors bridge.test.ts's
  * FakeModule, scoped to what these MCP-tool round-trip tests need). */
 class FakeModule {
   readonly ws: WebSocket;
@@ -134,7 +134,7 @@ describe("the /mcp Streamable-HTTP surface (Foundry-free)", () => {
     expect(res.headers.get("www-authenticate")).toMatch(/^Bearer resource_metadata="/);
   });
 
-  it("every 401 carries a D-9 WWW-Authenticate header pointing at a working PRM endpoint", async () => {
+  it("every 401 carries a WWW-Authenticate header pointing at a working PRM endpoint", async () => {
     const res = await fetch(mcpUrl, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -147,7 +147,7 @@ describe("the /mcp Streamable-HTTP surface (Foundry-free)", () => {
     expect(match).toBeTruthy();
     const metadataUrl = new URL(match?.[1] ?? "");
     // The URL is built from TEST_PUBLIC_ORIGIN (the configured public origin), not
-    // the real ephemeral test port — exactly D-9's contract.
+    // the real ephemeral test port.
     expect(metadataUrl.href).toBe(`${TEST_PUBLIC_ORIGIN}/.well-known/oauth-protected-resource/mcp`);
 
     // Fetch the PRM at the equivalent path on the actual ephemeral test server.
@@ -282,7 +282,7 @@ describe("the /mcp Streamable-HTTP surface (Foundry-free)", () => {
       }
     }
 
-    // D-11 loudness spot-checks: the write descriptions state loudly that they WRITE
+    // Loudness spot-checks: the write descriptions state loudly that they WRITE
     // to the live campaign, and the riskiest tools name their own guardrails.
     const description = (tool: string): string =>
       tools.find((t) => t.name === tool)?.description ?? "";
@@ -397,7 +397,7 @@ describe("write tools (Foundry-free)", () => {
       playerMcpApiKey: PLAYER_MCP_API_KEY,
       bridgeApiKey: BRIDGE_API_KEY,
       bridgeTimeoutMs: 250,
-      maxCreatesPerRequest: 2, // deliberately small — S5's cap-pre-check test relies on it
+      maxCreatesPerRequest: 2, // deliberately small — the cap-pre-check test relies on it
       publicOrigin: TEST_PUBLIC_ORIGIN,
       moduleDir: TEST_MODULE_DIR,
       oauthStatePath: TEST_OAUTH_STATE_PATH,
@@ -663,10 +663,10 @@ describe("authoring tools (Foundry-free)", () => {
     // Mirrors the module's own `dispatchQuery` behavior for a method with no
     // registered handler (module/src/handlers/): a BridgeError with code
     // "foundry-error" and a message naming the unknown method — verified by reading
-    // handlers/ directly (S1 is Foundry-free, so this test stubs that exact shape
-    // rather than exercising the real module). This proves the server's new S1
+    // handlers/ directly (this test is Foundry-free, so it stubs that exact shape
+    // rather than exercising the real module). This proves the server's newer
     // tools stay safe to register even against an OLD, not-yet-updated module
-    // build (D-12's versioning discipline covers the human GM-refresh side).
+    // build (module versioning covers the human GM-refresh side).
     const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
     const mod = new FakeModule(wsUrl);
     await mod.ready();
@@ -796,7 +796,7 @@ describe("player key + tool scoping (Foundry-free)", () => {
     await client.close();
   });
 
-  it("a wrong key (neither admin nor player) still 401s with the D-9 resource_metadata discovery header", async () => {
+  it("a wrong key (neither admin nor player) still 401s with the resource_metadata discovery header", async () => {
     const res = await fetch(mcpUrl, {
       method: "POST",
       headers: { "content-type": "application/json", authorization: "Bearer not-a-real-key" },
@@ -980,7 +980,7 @@ describe("query-party / query-player (markdown rendering, Foundry-free)", () => 
     mod.close();
   });
 
-  it("both tools are reachable via the PLAYER key too (already in PLAYER_TOOL_NAMES since S1)", async () => {
+  it("both tools are reachable via the PLAYER key too (both are in PLAYER_TOOL_NAMES)", async () => {
     const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
     const mod = new FakeModule(wsUrl);
     await mod.ready();

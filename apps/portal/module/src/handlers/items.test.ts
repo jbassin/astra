@@ -38,7 +38,7 @@ describe("create-item", () => {
       system: auraSystem,
     });
     // Pass-through untouched: the companion effect's uuid rides verbatim, never
-    // validated/rewritten at this layer (D-7's "structurally opaque" posture).
+    // validated/rewritten at this layer (pf2e system data stays structurally opaque here).
     const sentSystem = created[0]?.system as typeof auraSystem;
     expect(sentSystem.rules[0]?.effects[0]?.uuid).toBe("Item.companion-effect-1");
     // A world item has no owner, so pf2e never instantiates its rule elements —

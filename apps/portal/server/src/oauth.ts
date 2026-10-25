@@ -3,13 +3,13 @@
  * `https://portal.iridi.cc/mcp` as a custom connector, which requires DCR +
  * authorization-code+PKCE + discovery metadata (claude.ai does not support static
  * bearer auth for custom connectors). Built on the MCP SDK's own audited toolkit
- * (`mcpAuthRouter` + its handlers, D-5) — this module supplies only what the SDK
+ * (`mcpAuthRouter` + its handlers) — this module supplies only what the SDK
  * doesn't ship: an `OAuthServerProvider`/clients-store implementation
  * ({@link PortalOAuthProvider}), a single-user HTML consent page, and a JSON-file
- * persistence layer for registered clients + hashed tokens (D-2, so a claude.ai
+ * persistence layer for registered clients + hashed tokens (so a claude.ai
  * connection survives a `just up` redeploy).
  *
- * Single-user by design (D-1): the "user" consents by typing the same
+ * Single-user by design: the "user" consents by typing the same
  * `portal_mcp_api_key` that already bearer-gates `/mcp` — no new SOPS secret, no
  * accounts, no sessions/cookies. The whole flow is two HTTP round-trips: GET
  * `/authorize` renders the consent form (this module renders HTML directly to
@@ -64,7 +64,7 @@ const oauthRejections = lazyCounter(SERVICE_NAME, "astra.portal.oauth.rejections
   description: "OAuth requests rejected before a token was issued, by reason",
 });
 
-/** D-4: the only redirect URIs DCR will register. claude.ai's hosted callback is an
+/** The only redirect URIs DCR will register. claude.ai's hosted callback is an
  * exact string; native/CLI clients (RFC 8252) get any loopback port. Mirrors the
  * SDK's own `redirectUriMatches` loopback-hostname set (`server/auth/handlers/
  * authorize.js`) — that function governs the PER-REQUEST redirect_uri check the
@@ -92,7 +92,7 @@ function sha256Hex(value: string): string {
   return createHash("sha256").update(value).digest("hex");
 }
 
-// --- persisted state (D-2) --------------------------------------------------------
+// --- persisted state --------------------------------------------------------------
 //
 // One JSON file: registered clients + hashed tokens. Pending consents and
 // authorization codes are DELIBERATELY absent from this shape — they're memory-only
@@ -114,7 +114,7 @@ interface StoredRefreshToken {
 interface PersistedState {
   version: 1;
   clients: Record<string, OAuthClientInformationFull>;
-  /** Keyed by sha256 hex of the token — the token itself is never stored (D-7). */
+  /** Keyed by sha256 hex of the token — the token itself is never stored. */
   accessTokens: Record<string, StoredAccessToken>;
   refreshTokens: Record<string, StoredRefreshToken>;
 }
@@ -206,12 +206,12 @@ interface AuthCodeEntry {
 }
 
 export interface PortalOAuthProviderOptions {
-  /** Bind-mounted state file path (D-2) — `cfg.portal.oauthStatePath`. */
+  /** Bind-mounted state file path — `cfg.portal.oauthStatePath`. */
   statePath: string;
-  /** The already-resolved `portal_mcp_api_key` (D-1) — the consent-page password.
+  /** The already-resolved `portal_mcp_api_key` — the consent-page password.
    * Never logged, never echoed in any response body. */
   consentKey: string;
-  /** Access-token lifetime in seconds (D-7; production default 3600 via the
+  /** Access-token lifetime in seconds (production default 3600 via the
    * fallback below). Test-only override for the expiry acceptance case. */
   accessTokenTtlS?: number;
 }
@@ -248,7 +248,7 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
     persistState(this.#statePath, this.#state);
   }
 
-  // --- OAuthRegisteredClientsStore (DCR, D-4) --------------------------------
+  // --- OAuthRegisteredClientsStore (DCR) -------------------------------------
 
   getClient(clientId: string): OAuthClientInformationFull | undefined {
     return this.#state.clients[clientId];
@@ -291,7 +291,7 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
     return full;
   }
 
-  // --- consent flow (D-10) ----------------------------------------------------
+  // --- consent flow ----------------------------------------------------------
 
   #prunePendingConsents(): void {
     const cutoff = Date.now() - PENDING_CONSENT_TTL_MS;
@@ -301,7 +301,7 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
   }
 
   /** SDK entry point: renders the consent page directly to `res` (200 HTML) rather
-   * than redirecting immediately. This is a deliberate two-request split (D-10):
+   * than redirecting immediately. This is a deliberate two-request split:
    * the actual authorization-response redirect only happens once `POST /consent`
    * (below) approves — `authorize()`'s job here is just to stage a 10-min-TTL
    * pending consent and show the form. By the time this runs, the SDK's own
@@ -339,7 +339,7 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
     return entry;
   }
 
-  /** Wrong-key retry (D-10): re-stage the SAME client/params under a fresh
+  /** Wrong-key retry: re-stage the SAME client/params under a fresh
    * pendingId so the consent form can be shown again with an error line. */
   renewPendingConsent(clientId: string, params: AuthorizationParams): string {
     this.#prunePendingConsents();
@@ -349,7 +349,7 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
   }
 
   /** Constant-time check of a submitted consent-form key against the configured
-   * `portal_mcp_api_key` (D-1); neither the contents nor the length leak. */
+   * `portal_mcp_api_key`; neither the contents nor the length leak. */
   verifyConsentKey(candidate: string): boolean {
     return safeEqual(candidate, this.#consentKey);
   }
@@ -441,7 +441,7 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
     });
   }
 
-  /** Rotation (D-7, OAuth 2.1 public-client requirement): the presented refresh
+  /** Rotation (an OAuth 2.1 public-client requirement): the presented refresh
    * token is deleted unconditionally before a new pair is issued, so a dead/reused
    * refresh token can never succeed twice. */
   // oxlint-disable-next-line require-await -- implements the MCP SDK's async OAuth provider interface
@@ -489,7 +489,7 @@ export class PortalOAuthProvider implements OAuthServerProvider, OAuthRegistered
     };
   }
 
-  /** Called directly by `mcp.ts`'s dual-auth check in S2 (not by `mcpAuthRouter`
+  /** Called directly by `mcp.ts`'s dual-auth check (not by `mcpAuthRouter`
    * itself — the SDK's bearer middleware, `requireBearerAuth`, is Express-only and
    * portal's `/mcp` stays on the raw-node handler). */
   // oxlint-disable-next-line require-await -- implements the MCP SDK's async OAuth provider interface
@@ -585,17 +585,17 @@ function renderConsentErrorPage(message: string): string {
 </html>`;
 }
 
-// --- the sub-app factory (D-6) --------------------------------------------------
+// --- the sub-app factory --------------------------------------------------------
 
 export interface CreateOAuthSubAppOptions {
   /** `cfg.portal.oauthStatePath`. */
   statePath: string;
-  /** The resolved `portal_mcp_api_key` (D-1) — reused as the consent password. */
+  /** The resolved `portal_mcp_api_key` — reused as the consent password. */
   consentKey: string;
   /** `cfg.portal.publicOrigin` — the OAuth issuer + the `/mcp` resource server URL
-   * (D-9: PRM `resource` must exact-match `<publicOrigin>/mcp`). */
+   * (PRM `resource` must exact-match `<publicOrigin>/mcp`). */
   publicOrigin: string;
-  /** Test-only access-token TTL override (D-7 default 3600s otherwise). */
+  /** Test-only access-token TTL override (default 3600s otherwise). */
   accessTokenTtlS?: number;
 }
 
@@ -609,7 +609,7 @@ export interface OAuthSubApp {
   provider: PortalOAuthProvider;
 }
 
-/** Builds the provider + the Express sub-app that fronts it (D-6: portal does NOT
+/** Builds the provider + the Express sub-app that fronts it (portal does NOT
  * become an Express server — this app is only ever invoked as a plain `(req,res)`
  * function from the raw dispatch in `server.ts`, for the handful of OAuth paths). */
 export function createOAuthSubApp(opts: CreateOAuthSubAppOptions): OAuthSubApp {
@@ -628,7 +628,7 @@ export function createOAuthSubApp(opts: CreateOAuthSubAppOptions): OAuthSubApp {
       provider,
       issuerUrl,
       resourceServerUrl,
-      // D-8: advertised but not enforced on /mcp (single-user). `offline_access`
+      // Scopes are advertised but not enforced on /mcp (single-user). `offline_access`
       // is what makes claude.ai request a refresh token.
       scopesSupported: ["portal", "offline_access"],
     }),

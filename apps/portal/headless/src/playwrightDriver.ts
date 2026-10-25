@@ -2,11 +2,11 @@
  * The real Chromium `PageAdapter` — one warm, persistent
  * page for process life (vellum-render's browser-lifecycle pattern, `--no-sandbox`),
  * driving the actual Foundry v13.351 `/join` mechanics verified in the scope doc
- * (`thoughts/archive/research/2026-07-08-headless-gm-0027-thoughts.md` §2.3, read from
+ * (`thoughts/archive/research/2026-07-08-headless-gm-0027-thoughts.md`, read from
  * the live server's own `scripts/foundry.mjs`). Deliberately thin and NOT exercised in
  * unit CI (no Chromium there, mirroring vellum-render) — all the branching logic lives
  * in `supervisor.ts`, which IS unit-tested via a fake `PageAdapter`. Verify the DOM
- * selectors below live at S4 acceptance (the scope doc's own "not verified" section:
+ * selectors below against a live world (the scope doc's own "not verified" section:
  * the `/join` network shape is source-proven, its exact select-element markup is not).
  */
 import type { Browser, BrowserContext, Page } from "playwright";
@@ -97,14 +97,14 @@ export function createPlaywrightPageAdapter(opts: PlaywrightDriverOptions): Page
     // 2026-07-09: the acceptance-E container bounce). Re-navigate so the classification
     // reflects the server's CURRENT state; if the server is unreachable this goto
     // throws → the supervisor maps it to `broken` → bounded relaunch backoff (the
-    // S3-proven unreachable-origin path). A plain GET of the origin is read-only —
+    // tested unreachable-origin path). A plain GET of the origin is read-only —
     // the "never interfere with /setup" rule is untouched.
     await p.goto(opts.origin, { waitUntil: "load" });
     path = new URL(p.url()).pathname;
     if (path === "/join") return "join";
     if (path === "/game") return "in-world";
     // /setup, /auth, and / (a shut-down world's post-redirect landing page,
-    // scope doc §2.3) all mean "the world isn't up" — back off, never interfere.
+    // per the scope doc) all mean "the world isn't up" — back off, never interfere.
     if (path === "/setup" || path === "/auth" || path === "/") return "world-down";
     // Belt-and-suspenders DOM probe for the rarer
     // case a redirect lands somewhere unexpected but the join form is still present.
