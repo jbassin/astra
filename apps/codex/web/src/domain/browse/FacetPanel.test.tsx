@@ -36,19 +36,10 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { OTHER_GROUP_LABEL, PINNED_PRODUCT_LINE_ORDER } from "@/domain/sources/sourcesModel";
+import { row } from "@/testSupport";
 
 import { FacetPanel, TRAITS_INITIAL_RENDER_COUNT } from "./FacetPanel";
 import { emptyFilterState, type BrowseFilterState } from "./filterEngine";
-
-function row(overrides: Partial<IndexRow> & Pick<IndexRow, "id" | "name">): IndexRow {
-  return {
-    traits: [],
-    source: { book: "Test Book", license: "unknown" },
-    edition: "remaster",
-    superseded: false,
-    ...overrides,
-  };
-}
 
 // A level-bearing category so `LevelSection` (a `RangeInputs` consumer)
 // actually renders — `categoryHasLevelCoverage` requires at least one row

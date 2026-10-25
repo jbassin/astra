@@ -1,21 +1,12 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
-
-import { CodexEntitySchema, type EmbeddedItem } from "@astra/codex-corpus";
+import type { EmbeddedItem } from "@astra/codex-corpus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { fixtureCorpusRoot } from "../../server/corpusFs";
-import { noEmbeds, rootRenderCtx } from "./nodes";
+import { loadEntity, noEmbedsCtx } from "@/testSupport";
+
 import { CreatureStatblock, EmbeddedItemSections, HazardStatblock } from "./statblock";
 
-const FIXTURE_ROOT = fixtureCorpusRoot();
-
-function loadEntity(relPath: string) {
-  return CodexEntitySchema.parse(JSON.parse(readFileSync(join(FIXTURE_ROOT, relPath), "utf8")));
-}
-
-const ctx = rootRenderCtx({ resolveEmbed: noEmbeds(), knownTraitIds: new Set() });
+const ctx = noEmbedsCtx();
 
 describe("CreatureStatblock (against the real adamantine-dragon-adult fixture)", () => {
   const dragon = loadEntity("creature/adamantine-dragon-adult.json");

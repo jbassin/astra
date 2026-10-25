@@ -1,17 +1,9 @@
 import type { IndexRow } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import { computeWindowedListing, initialWindowRange, ROW_PITCH_PX } from "./virtualization";
+import { row } from "@/testSupport";
 
-function row(overrides: Partial<IndexRow> & Pick<IndexRow, "id" | "name">): IndexRow {
-  return {
-    traits: [],
-    source: { book: "Test Book", license: "unknown" },
-    edition: "remaster",
-    superseded: false,
-    ...overrides,
-  };
-}
+import { computeWindowedListing, initialWindowRange, ROW_PITCH_PX } from "./virtualization";
 
 /** A synthetic, hermetic >60-row fixture (never the real corpus) —
  * zero-padded names so lexicographic order == numeric order, letting every

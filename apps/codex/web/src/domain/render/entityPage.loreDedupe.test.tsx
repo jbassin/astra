@@ -2,6 +2,8 @@ import type { CodexEntity } from "@astra/codex-corpus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
+import { loreCardHtml } from "@/testSupport";
+
 import { EntityPage } from "./entityPage";
 import { loadFixtureRenderEnv, requireEntity } from "./fixtureLoader";
 
@@ -13,12 +15,6 @@ import { loadFixtureRenderEnv, requireEntity } from "./fixtureLoader";
  * `entityPage.dedup.test.tsx`'s `loadFixtureRenderEnv`/`requireEntity`
  * idiom for a real-fixture predicate proof.
  */
-
-const LORE_CARD_RE = /<section class="codex-card codex-card-prose codex-lore">[\s\S]*?<\/section>/;
-
-function loreCardHtml(html: string): string | undefined {
-  return LORE_CARD_RE.exec(html)?.[0];
-}
 
 describe("entityPage.tsx + loreDedupe: ancestry/anadi", () => {
   const { byId, ctx } = loadFixtureRenderEnv();

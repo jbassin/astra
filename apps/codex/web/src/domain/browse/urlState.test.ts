@@ -1,6 +1,7 @@
 import type { IndexRow } from "@astra/codex-corpus";
-import { defaultParseSearch } from "@tanstack/react-router";
 import { describe, expect, it } from "vitest";
+
+import { parseQuery } from "@/testSupport";
 
 import { FACET_DEFS } from "./facetDefs";
 import {
@@ -20,15 +21,6 @@ import {
   withEntryPreserved,
   type BrowseSearch,
 } from "./urlState";
-
-/** `defaultParseSearch`'s return type (`AnySchema`) doesn't expose named
- * property access — this test file only ever treats its result as the same
- * `Record<string, unknown>` `validateBrowseSearch` accepts from the real
- * router pipeline, so a single narrow cast at the call site stands in for
- * the router's own internal typing. */
-function parseQuery(queryString: string): Record<string, unknown> {
-  return defaultParseSearch(queryString);
-}
 
 // ---------------------------------------------------------------------------
 // the documented example query string, run through the REAL

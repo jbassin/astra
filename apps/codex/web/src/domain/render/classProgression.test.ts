@@ -1,5 +1,7 @@
-import type { ClassStats, CodexNode, InlineNode } from "@astra/codex-corpus";
+import type { ClassStats, CodexNode } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
+
+import { text as textNode } from "@/testSupport";
 
 import {
   buildProgressionRows,
@@ -106,10 +108,6 @@ describe("buildProgressionRows", () => {
     expect(rows.every((r) => r.grants.length === 0)).toBe(true);
   });
 });
-
-function textNode(content: string): InlineNode {
-  return { kind: "text", content, marks: { bold: false, italic: false, superscript: false } };
-}
 
 describe("isClassProgressionTable / stripClassProgressionTable", () => {
   const progressionTable: CodexNode = {

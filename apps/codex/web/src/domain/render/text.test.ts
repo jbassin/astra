@@ -1,11 +1,5 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
-
 import {
-  CodexEntitySchema,
   type BlockNode,
-  type InlineNode,
-  type TextMarks,
   capitalize,
   collectText,
   firstParagraphSummary,
@@ -15,23 +9,7 @@ import {
 } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import { fixtureCorpusRoot } from "../../server/corpusFs";
-
-const FIXTURE_ROOT = fixtureCorpusRoot();
-
-function loadEntity(relPath: string) {
-  return CodexEntitySchema.parse(JSON.parse(readFileSync(join(FIXTURE_ROOT, relPath), "utf8")));
-}
-
-const PLAIN_MARKS: TextMarks = { bold: false, italic: false, superscript: false };
-
-function text(content: string, marks: Partial<TextMarks> = {}): InlineNode {
-  return { kind: "text", content, marks: { ...PLAIN_MARKS, ...marks } };
-}
-
-function para(...children: InlineNode[]): BlockNode {
-  return { kind: "paragraph", children };
-}
+import { loadEntity, text, para } from "@/testSupport";
 
 describe("capitalize / humanizeFacetKey / humanizeSlug (existing helpers, unchanged)", () => {
   it("capitalize", () => {

@@ -1,18 +1,8 @@
-import type { SourceIndexEntry } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
-import { groupSourcesByProductLine, OTHER_GROUP_LABEL } from "./sourcesModel";
+import { sourceEntry as book } from "@/testSupport";
 
-function book(overrides: Partial<SourceIndexEntry> = {}): SourceIndexEntry {
-  return {
-    book: "Some Book",
-    license: "unknown",
-    edition: "remaster",
-    entityCount: 1,
-    categoryCounts: { spell: 1 },
-    ...overrides,
-  };
-}
+import { groupSourcesByProductLine, OTHER_GROUP_LABEL } from "./sourcesModel";
 
 describe("groupSourcesByProductLine", () => {
   it("groups books with no productLine into the Other bucket", () => {

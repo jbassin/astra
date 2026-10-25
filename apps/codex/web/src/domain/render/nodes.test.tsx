@@ -1,21 +1,11 @@
-import type { CodexEntity, BlockNode, CodexNode, InlineNode, TextMarks } from "@astra/codex-corpus";
+import type { CodexEntity, BlockNode, CodexNode } from "@astra/codex-corpus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
+import { text, para } from "@/testSupport";
+
 import { createHeadingIdAssigner } from "./headingIds";
 import { noEmbeds, renderNodes, rootRenderCtx } from "./nodes";
-
-const PLAIN_MARKS: TextMarks = { bold: false, italic: false, superscript: false };
-
-function text(content: string, marks: Partial<TextMarks> = {}): InlineNode {
-  return { kind: "text", content, marks: { ...PLAIN_MARKS, ...marks } };
-}
-
-/** Wraps inline content in a `paragraph` — `CodexEntity.body` is `BlockNode[]`,
- * so a bare `text`/`embed` node can't sit at the top level of a body. */
-function para(...children: InlineNode[]): BlockNode {
-  return { kind: "paragraph", children };
-}
 
 function baseCtx(overrides: Partial<Parameters<typeof rootRenderCtx>[0]> = {}) {
   return rootRenderCtx({ resolveEmbed: noEmbeds(), knownTraitIds: new Set(), ...overrides });

@@ -13,6 +13,7 @@ import { useLayoutEffect, useState, type ReactElement } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { EntityPageData } from "@/server/entityPageData";
+import { row } from "@/testSupport";
 
 import { BrowseListing } from "./BrowseListing";
 import { emptyFilterState, type BrowseFilterState } from "./filterEngine";
@@ -32,16 +33,6 @@ if (typeof HTMLDialogElement.prototype.showModal !== "function") {
   HTMLDialogElement.prototype.close = function (this: HTMLDialogElement) {
     this.removeAttribute("open");
     this.dispatchEvent(new Event("close"));
-  };
-}
-
-function row(overrides: Partial<IndexRow> & Pick<IndexRow, "id" | "name">): IndexRow {
-  return {
-    traits: [],
-    source: { book: "Test Book", license: "unknown" },
-    edition: "remaster",
-    superseded: false,
-    ...overrides,
   };
 }
 

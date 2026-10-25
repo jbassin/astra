@@ -1,5 +1,7 @@
-import type { BlockNode, CodexNode, HeadingNode, InlineNode, TextMarks } from "@astra/codex-corpus";
+import type { BlockNode, CodexNode, HeadingNode, InlineNode } from "@astra/codex-corpus";
 import { describe, expect, it, vi } from "vitest";
+
+import { text, para } from "@/testSupport";
 
 import {
   collisionBaseSlug,
@@ -16,16 +18,6 @@ import {
  * ClassPage/EntityPage integration tests exercise the real anadi/witch
  * fixtures separately).
  */
-
-const PLAIN_MARKS: TextMarks = { bold: false, italic: false, superscript: false };
-
-function text(content: string): InlineNode {
-  return { kind: "text", content, marks: { ...PLAIN_MARKS } };
-}
-
-function para(...children: InlineNode[]): BlockNode {
-  return { kind: "paragraph", children };
-}
 
 function heading(level: number, content: string): HeadingNode {
   return { kind: "heading", level, children: [text(content)] };

@@ -2,9 +2,10 @@ import type { CodexEntity, Facets } from "@astra/codex-corpus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
+import { noEmbedsCtx } from "@/testSupport";
+
 import { EntityPage } from "./entityPage";
 import { loadFixtureRenderEnv, requireEntity } from "./fixtureLoader";
-import { noEmbeds, rootRenderCtx } from "./nodes";
 
 /**
  * The header size chip: `facets.size` present AND category in
@@ -13,7 +14,7 @@ import { noEmbeds, rootRenderCtx } from "./nodes";
  * element at all, ever — never an empty `<span>`.
  */
 
-const CTX = rootRenderCtx({ resolveEmbed: noEmbeds(), knownTraitIds: new Set() });
+const CTX = noEmbedsCtx();
 
 function makeEntity(category: string, facets: Facets): CodexEntity {
   return {
