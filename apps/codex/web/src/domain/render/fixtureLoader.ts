@@ -18,7 +18,7 @@ import { type RenderCtx, rootRenderCtx } from "./nodes";
  * index. It reads the fixture files directly, not through the server's corpus reader.
  */
 
-export const FIXTURE_ROOT = fixtureCorpusRoot();
+const FIXTURE_ROOT = fixtureCorpusRoot();
 
 function loadFixtureEntities(): CodexEntity[] {
   const entities: CodexEntity[] = [];
@@ -42,7 +42,7 @@ function loadTraitIndex(): ReadonlySet<string> {
   return new Set(rows.map((r) => r.id));
 }
 
-export interface FixtureRenderEnv {
+interface FixtureRenderEnv {
   entities: CodexEntity[];
   byId: ReadonlyMap<string, CodexEntity>;
   ctx: RenderCtx;

@@ -167,7 +167,7 @@ const SourceCitationSchema = z
     page: z.number().int().positive().optional(),
   })
   .strict();
-export type SourceCitation = z.infer<typeof SourceCitationSchema>;
+type SourceCitation = z.infer<typeof SourceCitationSchema>;
 
 export const AonDocMetaSchema = z
   .object({
@@ -277,7 +277,7 @@ function required(docId: string, field: string, value: string | undefined): stri
 // AoN name-template resolution
 // ---------------------------------------------------------------------------
 
-export type ReportFn = (cls: string, detail: string) => void;
+type ReportFn = (cls: string, detail: string) => void;
 
 const TRAITS_GLYPH_RE = /<%TRAITS%\d+%%>([\s\S]*?)<%END>/g;
 const ACTION_TYPES_GLYPH_RE = /<%ACTION\.TYPES#(\d+)%%>/g;

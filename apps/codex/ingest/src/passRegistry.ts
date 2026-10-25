@@ -25,7 +25,7 @@ export interface PassContext {
   hardFailureCount: () => number;
 }
 
-export interface Pass<S, R extends keyof S, W extends keyof S, C extends PassContext> {
+interface Pass<S, R extends keyof S, W extends keyof S, C extends PassContext> {
   name: string;
   phase: PassPhase;
   /** One sentence: what the pass does. Shown by `transform --list-passes`. */
@@ -55,7 +55,7 @@ export function definePass<S, C extends PassContext>() {
     pass as unknown as AnyPass<S, C>;
 }
 
-export class PassRegistryError extends Error {
+class PassRegistryError extends Error {
   override name = "PassRegistryError";
 }
 
@@ -194,7 +194,7 @@ export interface PassRun {
   counts: Record<string, number>;
 }
 
-export interface RunPassesResult<S> {
+interface RunPassesResult<S> {
   state: Partial<S>;
   runs: PassRun[];
   /** True when the run stopped at the hard-failure gate after the parse phase. */

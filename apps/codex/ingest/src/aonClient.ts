@@ -11,7 +11,7 @@ const AON_USER_AGENT =
 
 export type FetchLike = (url: string, init: RequestInit) => Promise<Response>;
 
-export interface AonClientOptions {
+interface AonClientOptions {
   fetchImpl?: FetchLike;
   userAgent?: string;
   maxRetries?: number;
@@ -19,7 +19,7 @@ export interface AonClientOptions {
   backoffBaseMs?: number;
 }
 
-export type AonSearchFn = <T = unknown>(body: unknown) => Promise<T>;
+type AonSearchFn = <T = unknown>(body: unknown) => Promise<T>;
 
 function isRetryableStatus(status: number): boolean {
   return status === 429 || (status >= 500 && status < 600);

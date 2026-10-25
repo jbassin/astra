@@ -200,10 +200,7 @@ function toTrailItem(n: TreeNode): RulesTrailItem {
  * part here at all (the full, unpruned tree is walked), so it does NOT
  * re-chain the pager.
  */
-export function resolveRulesNav(
-  tree: RulesTreeFile,
-  entity: CodexEntity,
-): RulesNavData | undefined {
+function resolveRulesNav(tree: RulesTreeFile, entity: CodexEntity): RulesNavData | undefined {
   const book = tree.books.find((b) => b.book === entity.source.book);
   if (!book) return undefined;
 

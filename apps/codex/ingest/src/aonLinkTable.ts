@@ -91,14 +91,14 @@ import type { AonDocMeta } from "./aonFacets";
  * lightweight test fixture without constructing a full `AonDocMeta`. */
 export type LinkTableDoc = Pick<AonDocMeta, "aonId" | "category" | "slug" | "aonUrl" | "name">;
 
-export type LinkTableReportClass = "duplicateUrlCollision" | "duplicateUrlAmbiguous";
-export type LinkResolverReportClass =
+type LinkTableReportClass = "duplicateUrlCollision" | "duplicateUrlAmbiguous";
+type LinkResolverReportClass =
   | "aonBrokenLink"
   | "externalLinkDropped"
   | "crossCategoryLinkRepointed"
   | "mergedLinkRepointed";
 
-export type ReportFn<Cls extends string = string> = (cls: Cls, detail: string) => void;
+type ReportFn<Cls extends string = string> = (cls: Cls, detail: string) => void;
 
 export interface AonLinkEntry {
   readonly codexId: string;

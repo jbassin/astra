@@ -15,7 +15,7 @@ import { normalizeUrlKey, type AonLinkTable } from "./aonLinkTable";
  * ids, wrong for this join).
  */
 
-export type ReportFn = (cls: string, detail: string) => void;
+type ReportFn = (cls: string, detail: string) => void;
 
 export interface SidebarHostCategoryCount {
   category: string;

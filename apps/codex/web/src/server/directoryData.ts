@@ -10,7 +10,7 @@ import type { CorpusReader } from "@astra/codex-corpus/reader";
 
 import { categoryGroupOf, type CategoryGroup } from "../domain/render/categoryGroup";
 
-export interface DirectoryCategoryRow {
+interface DirectoryCategoryRow {
   category: string;
   count: number;
 }

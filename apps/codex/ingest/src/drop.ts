@@ -73,7 +73,7 @@ import { SUPPRESSED_EMBED_NODE, lookupEmbedOverride } from "./embedOverrides";
  * for the table itself.
  */
 
-export type ReportFn = (cls: string, detail: string) => void;
+type ReportFn = (cls: string, detail: string) => void;
 
 const CARVE_OUT_CATEGORIES: ReadonlySet<string> = new Set(["creature", "hazard"]);
 
@@ -184,7 +184,7 @@ function isMarkupFamily(name: string): boolean {
   return !ALPHANUMERIC_RE.test(name.replaceAll(MARKUP_TAG_RE, ""));
 }
 
-export type ActivationDropFamily = "paren" | "digit" | "markup";
+type ActivationDropFamily = "paren" | "digit" | "markup";
 
 /** Which family (if any) `entity` matches — `undefined` for anything not a drop
  * candidate (wrong category, not AoN-only, on the keep-list, or matching

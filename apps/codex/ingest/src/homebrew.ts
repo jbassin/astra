@@ -55,7 +55,7 @@ import { createResolveUuid, type UuidIndex } from "./uuidResolve";
  * section all see traits and spells/rituals alike).
  */
 
-export type ReportFn = (cls: string, detail: string) => void;
+type ReportFn = (cls: string, detail: string) => void;
 
 export interface HardFailure {
   path: string;
@@ -363,7 +363,7 @@ export function assertNoHomebrewCollisions(
 // only the broken case reports today).
 // ---------------------------------------------------------------------------
 
-export interface UuidRefCounts {
+interface UuidRefCounts {
   resolved: number;
   broken: number;
 }

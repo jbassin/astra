@@ -56,7 +56,7 @@ const CONNECTIVES: ReadonlyArray<{ token: string; label: "to" | "or" }> = [
 /** The right-hand phrase of the one open-ended composite ("Single Action or more Actions"). */
 const OPEN_ENDED_SUFFIX = "more Actions";
 
-export type NormalizedActionGlyph =
+type NormalizedActionGlyph =
   | { kind: "single"; cost: ActionCost }
   | { kind: "composite"; left: ActionCost; connective: "to" | "or"; right: ActionCost }
   | { kind: "openEnded"; left: ActionCost; connective: "to" | "or" }

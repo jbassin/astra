@@ -291,7 +291,7 @@ export function sortRows(
 // list must stay useful once a selection is made).
 // ---------------------------------------------------------------------------
 
-export type FacetDimension =
+type FacetDimension =
   | { kind: "traits" }
   | { kind: "level" }
   | { kind: "rarity" }
@@ -459,7 +459,7 @@ export function categoryHasRarityCoverage(rows: readonly IndexRow[]): boolean {
 // exercised indirectly through a React component.
 // ---------------------------------------------------------------------------
 
-export type TraitTriState = "include" | "exclude" | "neutral";
+type TraitTriState = "include" | "exclude" | "neutral";
 
 export function traitTriState(filter: TraitFilter, trait: string): TraitTriState {
   if (filter.include.has(trait)) return "include";
@@ -652,7 +652,7 @@ export function sortOptionsByActionCostRank(options: readonly OptionCount[]): Op
  * `sortOptionsFor`'s optional `comparator` config carries, for a caller
  * whose ordering fits neither a declared rank table nor a plain label sort
  * (`/search`'s numeric `level` facet, -2..28, and its Category facet). */
-export type OptionComparator = (a: OptionCount, b: OptionCount) => number;
+type OptionComparator = (a: OptionCount, b: OptionCount) => number;
 
 /**
  * The ONE option-sort convention every `FacetPanel.tsx` section (and

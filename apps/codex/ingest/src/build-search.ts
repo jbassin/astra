@@ -101,7 +101,7 @@ function stripLeadsTo(body: readonly CodexNode[]): CodexNode[] {
 // limitation of Pagefind's default TF-based ranking for extremely common
 // single-word queries in a densely thematic corpus — not a codex bug.
 
-export interface BuildSearchIndexResult {
+interface BuildSearchIndexResult {
   pageCount: number;
   outDir: string;
 }
