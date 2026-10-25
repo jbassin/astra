@@ -1,5 +1,5 @@
 /**
- * D29-11: the fixture extractor. Reads the REAL, already-fetched Foundry/AoN
+ * The fixture extractor. Reads the REAL, already-fetched Foundry/AoN
  * snapshots (`<codex.data-path>/snapshots/`) and the REAL emitted corpus
  * (the current release's, `<codex.data-path>/releases/current/corpus/`, produced
  * by `just codex-build` — run that FIRST) and writes the fixture's small, deterministic,
@@ -10,12 +10,12 @@
  *   - `fixtures/raw/foundry/` + `fixtures/raw/aon/` — a real-shaped MINI
  *     snapshot (same directory layout the real fetchers produce) covering a
  *     hand-picked ~30-doc parser-grammar subset PLUS every doc needed to
- *     reproduce, end to end, the identity/join proof points D29-11 calls
- *     out by name: the Heal legacy/remaster shared-slug pair, Magic
+ *     reproduce, end to end, the identity/join proof points
+ *     the fixture exists for: the Heal legacy/remaster shared-slug pair, Magic
  *     Missile→Force Barrage (AoN-only legacy, no shared slug), the
  *     Adamantine Dragon qualifier-reorder + 1:N spellcaster variant, the
  *     Camouflage Coat alias, the Anadi journal-page merge, a real
- *     residual (non-pair) `-2` collision (Grick), and (S5c/D29-14/-17) the
+ *     residual (non-pair) `-2` collision (Grick), and the
  *     AoN-primary drop pass itself: a Foundry-only `boon` doc (Desna's
  *     Major Boon) that must NOT survive into the emitted corpus, and a
  *     genuine Foundry-only creature (Dune Candle) that must survive it via
@@ -28,14 +28,14 @@
  *     that category, to stay lean) plus whatever additional entities are
  *     needed to cover every `CodexNode` kind at least once across the whole
  *     fixture. These are NOT reprocessed by the pipeline test — only
- *     zod-validated as a schema-drift guard (D29-11's "coverage-matrix
- *     canonical entities all parse through CodexEntitySchema").
+ *     zod-validated as a schema-drift guard (every coverage-matrix
+ *     canonical entity parses through CodexEntitySchema).
  *
  * It then builds the fixture corpus from the new inputs into a temp dir and
  * ASSERTS the full coverage matrix over it (fails loudly, listing exactly
- * what's missing) — this is the mechanism D29-11 requires, not a best-effort
- * sampler. Synthetic rows and test-only patches live in code
- * (`fixtureCorpus.ts`), so a re-extract never loses them.
+ * what's missing) — a guarantee, not a best-effort sampler. Synthetic rows and
+ * test-only patches live in code (`fixtureCorpus.ts`), so a re-extract never
+ * loses them.
  *
  * Run via:
  *   pnpm --filter @astra/codex-ingest cli extract-fixture
@@ -72,7 +72,7 @@ import {
 
 const APP_ROOT = join(import.meta.dirname, "..");
 const FIXTURE_ROOT = join(APP_ROOT, "fixtures");
-const BUDGET_BYTES = 2 * 1024 * 1024; // D29-11 revised budget (spec §5 acceptance G), NOT the ≤5MB in D29-11's own prose — see the module doc + the final report for the discrepancy.
+const BUDGET_BYTES = 2 * 1024 * 1024; // the fixture's committed byte budget
 
 // ---------------------------------------------------------------------------
 // 1. required + supplemental RAW Foundry doc picks
@@ -86,16 +86,16 @@ const BUDGET_BYTES = 2 * 1024 * 1024; // D29-11 revised budget (spec §5 accepta
 interface FoundryPick {
   relPath: string;
   reason: string;
-  /** P12 S1 (D29-120): when present, trims the copied class Item's
+  /** When present, trims the copied class Item's
    * `system.items` granted-feature dict down to exactly these `name`
-   * entries (verbatim otherwise — every OTHER field, incl. the D29-113
-   * scalar-stats fields, is untouched). Used for the cleric "stub" pick — a
+   * entries (verbatim otherwise — every OTHER field, incl. the
+   * scalar class-stats fields, is untouched). Used for the cleric "stub" pick — a
    * real class doc's full granted-feature manifest, trimmed so the fixture
    * exercises BOTH `augmentClassStats` outcomes deterministically: a
    * resolved grant (has a matching AoN class-feature pick below) and a
    * Foundry-only unjoined one (`first-doctrine.json` is copied as its own
    * RAW pick so uuid resolution succeeds structurally, but no AoN
-   * counterpart exists — D29-14 drops it, reproducing the real
+   * counterpart exists — the AoN-primary drop pass drops it, reproducing the real
    * `targetId: null` case without needing the class's full real 16-item
    * manifest). */
   keepItemNames?: readonly string[];
@@ -110,11 +110,11 @@ const REQUIRED_FOUNDRY_PICKS: readonly FoundryPick[] = [
   {
     relPath: "pathfinder-monster-core/adamantine-dragon-adult.json",
     reason:
-      "dragon qualifier-reorder normalization (base) + P1.6 statblock-bearing dragon (melee bonus/damageRolls/speeds — spec §9's 'red-dragon-adult or equivalent')",
+      "dragon qualifier-reorder normalization (base) + statblock-bearing dragon (melee bonus/damageRolls/speeds)",
   },
   {
     relPath: "pathfinder-monster-core/adamantine-dragon-adult-spellcaster.json",
-    reason: "dragon 1:N spellcaster variantOf + P1.6 spellcastingEntry spelldc/tradition",
+    reason: "dragon 1:N spellcaster variantOf + spellcastingEntry spelldc/tradition",
   },
   { relPath: "ancestries/anadi.json", reason: "journal-page merge target (Anadi)" },
   {
@@ -128,17 +128,17 @@ const REQUIRED_FOUNDRY_PICKS: readonly FoundryPick[] = [
   {
     relPath: "boons-and-curses/desna-major-boon.json",
     reason:
-      "D29-14 AoN-primary drop pass: Foundry-only category (boon) — must NOT survive into the emitted corpus",
+      "AoN-primary drop pass: Foundry-only category (boon) — must NOT survive into the emitted corpus",
   },
   {
     relPath: "abomination-vaults-bestiary/book-2-hands-of-the-devil/dune-candle.json",
     reason:
-      "D29-17 carve-out: a genuine Foundry-only creature (no AoN counterpart at all) — must SURVIVE the drop pass",
+      "creature/hazard carve-out: a genuine Foundry-only creature (no AoN counterpart at all) — must SURVIVE the drop pass",
   },
   {
     relPath: "hazards/gravehall-trap.json",
     reason:
-      "D29-20 (P1.6): a COMPLEX hazard (isComplex + disable + routine + hardness/stealth) — HazardStats extraction proof; web-lurker-deadfall below stays the simple-hazard grammar pick",
+      "a COMPLEX hazard (isComplex + disable + routine + hardness/stealth) — HazardStats extraction proof; web-lurker-deadfall below stays the simple-hazard grammar pick",
   },
 ];
 
@@ -157,7 +157,7 @@ const SUPPLEMENTAL_FOUNDRY_PICKS: readonly FoundryPick[] = [
   { relPath: "hazards/web-lurker-deadfall.json", reason: "hazard grammar" },
 ];
 
-/** P12 S1 (D29-113..116/D29-120): the `augmentClassStats` pass's own fixture
+/** The `augmentClassStats` pass's own fixture
  * coverage — fighter (clean 16/16 grants: every raw grant resolves, no
  * nulls), cleric (a trimmed 2-item stub: "Doctrine" resolves, "First
  * Doctrine" stays Foundry-only-and-dropped, reproducing `targetId: null`),
@@ -169,12 +169,12 @@ const SUPPLEMENTAL_FOUNDRY_PICKS: readonly FoundryPick[] = [
 const CLASS_STATS_FOUNDRY_PICKS: readonly FoundryPick[] = [
   {
     relPath: "classes/fighter.json",
-    reason: "D29-113/-114: clean 16/16 granted-feature resolution",
+    reason: "clean 16/16 granted-feature resolution",
   },
   {
     relPath: "classes/cleric.json",
     reason:
-      "D29-114 stub case: system.items trimmed to Doctrine (resolves) + First Doctrine (stays Foundry-only-and-dropped -> targetId:null)",
+      "stub case: system.items trimmed to Doctrine (resolves) + First Doctrine (stays Foundry-only-and-dropped -> targetId:null)",
     keepItemNames: ["Doctrine", "First Doctrine"],
   },
   // fighter's 16 granted class-features (each paired with an AoN
@@ -198,34 +198,34 @@ const CLASS_STATS_FOUNDRY_PICKS: readonly FoundryPick[] = [
   },
   { relPath: "class-features/armor-mastery.json", reason: "fighter grant (level 17)" },
   { relPath: "class-features/versatile-legend.json", reason: "fighter grant (level 19)" },
-  // cleric's "Doctrine" grant resolution + D29-115 doctrine subclass
+  // cleric's "Doctrine" grant resolution + doctrine subclass
   // absorption (Cloistered Cleric / Warpriest remaster halves merge into
   // class-feature/*, matching CATEGORY_EQUIVALENCE's real doctrine->
   // class-feature rule).
   { relPath: "class-features/doctrine.json", reason: "cleric's Doctrine grant resolves" },
   {
     relPath: "class-features/first-doctrine.json",
-    reason: "raw pick only, deliberately NO matching AoN doc — D29-114 null-out proof",
+    reason: "raw pick only, deliberately NO matching AoN doc — targetId null-out proof",
   },
   {
     relPath: "class-features/cloistered-cleric.json",
-    reason: "D29-115: absorbs doctrine-4 (remaster Cloistered Cleric) via CATEGORY_EQUIVALENCE",
+    reason: "absorbs doctrine-4 (remaster Cloistered Cleric) via CATEGORY_EQUIVALENCE",
   },
   {
     relPath: "class-features/warpriest.json",
-    reason: "D29-115: absorbs doctrine-5 (remaster Warpriest) via CATEGORY_EQUIVALENCE",
+    reason: "absorbs doctrine-5 (remaster Warpriest) via CATEGORY_EQUIVALENCE",
   },
-  // witch's D29-115 two-category (lesson/patron) absorbed-remaster targets —
+  // witch's two-category (lesson/patron) absorbed-remaster targets —
   // "Lesson of the Elements"/"The Unseen Broker" deliberately have NO
   // class-features pick (they stay AoN-only intra-category pairs, matching
   // the real corpus).
   {
     relPath: "class-features/lesson-of-bargains.json",
-    reason: "D29-115: absorbs lesson-34 (remaster Lesson of Bargains)",
+    reason: "absorbs lesson-34 (remaster Lesson of Bargains)",
   },
   {
     relPath: "class-features/baba-yaga.json",
-    reason: "D29-115: absorbs patron-27 (remaster Baba Yaga)",
+    reason: "absorbs patron-27 (remaster Baba Yaga)",
   },
 ];
 
@@ -243,7 +243,7 @@ const JOURNALS_PACK_DIR = "journals";
  * (`EXCLUDED_JOURNAL_BASENAMES` + `JOURNAL_TARGET_CATEGORY`, journals.ts) —
  * trimmed here to keep the fixture small: only the pages named in
  * `JOURNAL_KEPT_PAGES` carry real content (the Anadi journal-merge proof
- * point, plus — D29-21/P1.6 — the two real "Index" pages whose standalone
+ * point, plus the two real "Index" pages whose standalone
  * entities the old `index.json` category index used to CLOBBER; keeping them
  * lets the CI pipeline test prove the `_index.json` rescue end-to-end); every
  * other page is dropped (`pages: []`), which is a legal, well-formed
@@ -280,7 +280,7 @@ const REQUIRED_AON_PICKS: readonly AonPick[] = [
     category: "condition",
     id: "condition-92",
     reason:
-      "0030 S1 (D30-42, B3): Slowed (remaster) — the AoN join partner for the real conditions/slowed.json Foundry pick, so condition/slowed SURVIVES the AoN-primary drop pass and the homebrew UUID-resolution fixture proof (fixture-warding-glyph.json's @UUID[...conditionitems...Slowed]) resolves as a real crossref, not a post-drop brokenRef",
+      "Slowed (remaster) — the AoN join partner for the real conditions/slowed.json Foundry pick, so condition/slowed SURVIVES the AoN-primary drop pass and the homebrew UUID-resolution fixture proof (fixture-warding-glyph.json's @UUID[...conditionitems...Slowed]) resolves as a real crossref, not a post-drop brokenRef",
   },
   { category: "spell", id: "spell-148", reason: "Heal legacy" },
   { category: "spell", id: "spell-1554", reason: "Heal remaster" },
@@ -299,83 +299,83 @@ const REQUIRED_AON_PICKS: readonly AonPick[] = [
   },
   { category: "ancestry", id: "ancestry-42", reason: "Anadi (journal-merge target, AoN side)" },
   { category: "feat", id: "feat-5337", reason: "Camoflage Coat (alias-join target)" },
-  // P4 (D29-39/D29-44) — the rules-tree/sidebar-attach/sources-index fixture
-  // composition (see the module doc's "part A" note).
+  // The rules-tree/sidebar-attach/sources-index fixture composition.
   {
     category: "rules",
     id: "rules-994",
-    reason: "P4: 'Chapter 2: Tools' — the depth-3 chain's breadcrumb-less root (GMG)",
+    reason: "'Chapter 2: Tools' — the depth-3 chain's breadcrumb-less root (GMG)",
   },
   {
     category: "rules",
     id: "rules-995",
     reason:
-      "P4: 'Building Creatures' — depth-2 mid node, real CRLF-dirty breadcrumbs (['Chapter 2: Tools\\r\\n'])",
+      "'Building Creatures' — depth-2 mid node, real CRLF-dirty breadcrumbs (['Chapter 2: Tools\\r\\n'])",
   },
   {
     category: "rules",
     id: "rules-1002",
     reason:
-      "P4: 'Ability Modifiers' — depth-3 leaf, COMPLETE ancestor chain, both breadcrumb elements CRLF-dirty",
+      "'Ability Modifiers' — depth-3 leaf, COMPLETE ancestor chain, both breadcrumb elements CRLF-dirty",
   },
   {
     category: "rules",
     id: "rules-3280",
     reason:
-      "P4: Counteracting (remaster half, Player Core, Chapter 8/Afflictions) — the edition path-shift pair",
+      "Counteracting (remaster half, Player Core, Chapter 8/Afflictions) — the edition path-shift pair",
   },
   {
     category: "rules",
     id: "rules-371",
     reason:
-      "P4: Counteracting (legacy half, Core Rulebook, Chapter 9/General Rules) — DIFFERENT path than its remaster pair",
+      "Counteracting (legacy half, Core Rulebook, Chapter 9/General Rules) — DIFFERENT path than its remaster pair",
   },
   {
     category: "rules",
     id: "rules-2001",
-    reason: "P4: 'Tools of Play' — attached-sidebar host (rules category)",
+    reason: "'Tools of Play' — attached-sidebar host (rules category)",
   },
-  { category: "sidebar", id: "sidebar-2121", reason: "P4: 'Dice' — attaches to rules-2001's url" },
+  { category: "sidebar", id: "sidebar-2121", reason: "'Dice' — attaches to rules-2001's url" },
   {
     category: "class",
     id: "class-16",
-    reason: "P4: Witch (legacy) — the M8 shared-url host (/Classes.aspx?ID=16)",
+    reason: "Witch (legacy) — the shared-url host (/Classes.aspx?ID=16)",
   },
   {
     category: "class-feature",
     id: "class-feature-402",
-    reason: "P4: 'Ability Boosts' — shares class-16's url, must NOT itself become a sidebar host",
+    reason: "'Ability Boosts' — shares class-16's url, must NOT itself become a sidebar host",
   },
   {
     category: "sidebar",
     id: "sidebar-1046",
-    reason: "P4: 'In Service to the Unknown' — attaches to the shared class-16 url (M8 case)",
+    reason: "'In Service to the Unknown' — attaches to the shared class-16 url",
   },
-  { category: "source", id: "source-1", reason: "P4: 'Core Rulebook' — the D29-44 source entity" },
-  // P11 S1 (D29-98/-99/-100) — fixture-level regression coverage for all
-  // three P11 ingest mechanisms, currently ZERO at fixture level.
+  { category: "source", id: "source-1", reason: "'Core Rulebook' — the source entity" },
+  // Fixture-level regression coverage for the activation-debris drop, the
+  // name-template resolution and the adjacent-crossref dedupe.
   {
     category: "action",
     id: "action-2910",
-    reason: "D29-98 family (i): paren-leading nameless-activation debris '(arcane)' — dropped",
+    reason:
+      "activation-debris family (i): paren-leading nameless-activation debris '(arcane)' — dropped",
   },
   {
     category: "action",
     id: "action-4171",
     reason:
-      "D29-99 name-template resolution: ACTION.TYPES glyph resolves to a name in NEITHER drop family (survives, renamed)",
+      "name-template resolution: ACTION.TYPES glyph resolves to a name in NEITHER drop family (survives, renamed)",
   },
   {
     category: "action",
     id: "action-2461",
     reason:
-      "D29-99/D29-98 overlap: TRAITS-glyph template resolves to '10 minutes (concentrate, manipulate)' — a family (ii) drop AFTER resolution",
+      "name-template/activation-debris overlap: TRAITS-glyph template resolves to '10 minutes (concentrate, manipulate)' — a family (ii) drop AFTER resolution",
   },
   {
     category: "domain",
     id: "domain-113",
     reason:
-      "D29-100 adjacent-crossref dedupe: Naga domain's Deities masthead double-links Ravithra (legacy ID=218 + remaster ID=620 both repoint to deity/ravithra)",
+      "adjacent-crossref dedupe: Naga domain's Deities masthead double-links Ravithra (legacy ID=218 + remaster ID=620 both repoint to deity/ravithra)",
   },
   {
     category: "deity",
@@ -397,20 +397,19 @@ const REQUIRED_AON_PICKS: readonly AonPick[] = [
   {
     category: "feat",
     id: "feat-2649",
-    reason:
-      "D29-101b leads-to exclusion: 'Fledgling Flight leads to...' heading + crossref paragraph",
+    reason: "leads-to exclusion: 'Fledgling Flight leads to...' heading + crossref paragraph",
   },
   {
     category: "feat",
     id: "feat-2653",
     reason: "Juvenile Flight — resolves feat-2649's 'leads to...' crossref target",
   },
-  // P12 S1 (D29-113..116/D29-120) — the `augmentClassStats` fixture coverage.
+  // The `augmentClassStats` fixture coverage.
   { category: "class", id: "class-35", reason: "Fighter (remaster) — clean 16/16 grants" },
   {
     category: "class",
     id: "class-33",
-    reason: "Cleric (remaster) — D29-114 stub (Doctrine resolves, First Doctrine nulls)",
+    reason: "Cleric (remaster) — stub (Doctrine resolves, First Doctrine nulls)",
   },
   // fighter's 16 granted-feature AoN docs — all real Fighter-class-page
   // hits (url /Classes.aspx?ID=35), each name-exact-matching its
@@ -437,7 +436,7 @@ const REQUIRED_AON_PICKS: readonly AonPick[] = [
     reason:
       "Doctrine (Cleric remaster page ID=33, matching the class-33 pick) — cleric's ONE resolved grant",
   },
-  // cleric's doctrine subclass pair (D29-115: the 100%-superseded-category
+  // cleric's doctrine subclass pair (the 100%-superseded-category
   // shape — both legacy halves stay standalone `doctrine/*`, both remaster
   // halves absorb into `class-feature/*`).
   {
@@ -460,7 +459,7 @@ const REQUIRED_AON_PICKS: readonly AonPick[] = [
     id: "doctrine-5",
     reason: "Warpriest (remaster) — absorbed into class-feature/warpriest",
   },
-  // witch's lesson/patron pair — D29-115's OTHER shape: an intra-category
+  // witch's lesson/patron pair — the OTHER absorption shape: an intra-category
   // legacy/remaster pair that is NOT absorbed (no Foundry class-features
   // doc exists for either "Lesson of the Elements" or "The Unseen Broker"),
   // alongside one absorbed pair per category (Lesson of Bargains / Baba
@@ -510,7 +509,7 @@ const REQUIRED_AON_PICKS: readonly AonPick[] = [
 
 const FIXTURE_ALIASES = {
   _description:
-    "Trimmed for the CI fixture (D29-11) — a subset of the committed apps/codex/ingest/join-aliases.json covering exactly the one alias this fixture's raw docs can exercise (camouflage-coat). See the real file for the full hand-curated list.",
+    "Trimmed for the CI fixture — a subset of the committed apps/codex/ingest/join-aliases.json covering exactly the one alias this fixture's raw docs can exercise (camouflage-coat). See the real file for the full hand-curated list.",
   aliases: [
     {
       foundryId: "feat/camouflage-coat",
@@ -521,7 +520,7 @@ const FIXTURE_ALIASES = {
 };
 
 // ---------------------------------------------------------------------------
-// 4. the homebrew mini fixture (D30-47, 0030 S1)
+// 4. the homebrew mini fixture
 // ---------------------------------------------------------------------------
 
 interface HomebrewFixtureDoc {
@@ -532,12 +531,12 @@ interface HomebrewFixtureDoc {
 /** Hand-authored synthetic docs — NOT copied from the real 175-doc
  * `apps/assay/py/homebrew/spells/` store, unlike every Foundry/AoN raw pick
  * above. The real store is versioned assay content, not a codex fetch
- * snapshot; hand-splicing IT into the fixture would be the exact P12
+ * snapshot; hand-splicing IT into the fixture would be the exact
  * "hand-spliced fixtures get wiped by a canonical-coverage sweep" trap this
  * whole extractor exists to avoid. These docs ARE the canonical fixture
  * source — emitted by this script like everything else under
- * `fixtures/raw/`, never hand-edited afterward. Three, per D30-47: a plain
- * spell (no ritual, no `@UUID`), a `system.ritual` ritual (D30-43 reroute),
+ * `fixtures/raw/`, never hand-edited afterward. Three: a plain
+ * spell (no ritual, no `@UUID`), a `system.ritual` ritual (the ritual reroute),
  * and a spell bearing a real `@UUID[Compendium.pf2e.conditionitems.Item.
  * Slowed]` ref — "Slowed" resolves because `conditions/slowed.json` is
  * already a `SUPPLEMENTAL_FOUNDRY_PICKS` entry above (same official
@@ -552,7 +551,7 @@ const HOMEBREW_FIXTURE_DOCS: readonly HomebrewFixtureDoc[] = [
       system: {
         description: {
           value:
-            "<p>A 0030 S1 fixture spell (plain, no ritual, no @UUID refs) — synthetic content only.</p>",
+            "<p>A homebrew fixture spell (plain, no ritual, no @UUID refs) — synthetic content only.</p>",
         },
         level: { value: 1 },
         publication: { license: "OGL", remaster: true, title: "Liturgy of the Iridite Vol.2" },
@@ -573,7 +572,7 @@ const HOMEBREW_FIXTURE_DOCS: readonly HomebrewFixtureDoc[] = [
       system: {
         description: {
           value:
-            "<p>A 0030 S1 fixture ritual — synthetic content only, exercises the D30-43 ritual reroute.</p>",
+            "<p>A homebrew fixture ritual — synthetic content only, exercises the ritual reroute.</p>",
         },
         level: { value: 5 },
         publication: { license: "OGL", remaster: true, title: "Liturgy of the Iridite Vol.2" },
@@ -598,7 +597,7 @@ const HOMEBREW_FIXTURE_DOCS: readonly HomebrewFixtureDoc[] = [
       system: {
         description: {
           value:
-            "<p>A 0030 S1 fixture spell — on a failed save, the target becomes @UUID[Compendium.pf2e.conditionitems.Item.Slowed] for 1 round.</p>",
+            "<p>A homebrew fixture spell — on a failed save, the target becomes @UUID[Compendium.pf2e.conditionitems.Item.Slowed] for 1 round.</p>",
         },
         level: { value: 3 },
         publication: { license: "OGL", remaster: true, title: "Liturgy of the Iridite Vol.2" },
@@ -612,13 +611,13 @@ const HOMEBREW_FIXTURE_DOCS: readonly HomebrewFixtureDoc[] = [
   },
 ];
 
-/** D30-47's 4th synthetic doc (0030 S2, D30-44) — the school-trait shape is
+/** The 4th synthetic homebrew doc — the school-trait shape is
  * structurally unrelated to the 3 spell-shaped docs above (`{name,
  * description}`, no `_id`/`type`/`system`), so it's its own small array
  * rather than folded into `HOMEBREW_FIXTURE_DOCS`. Written to a SEPARATE
  * `fixtures/raw/homebrew-traits/` dir (mirrors the real store's
  * `homebrew/traits/` sibling of `homebrew/spells/`) — synthetic, not copied
- * from the real 8-doc school-trait store (same P12 rationale as the spell
+ * from the real 8-doc school-trait store (same rationale as the spell
  * docs above: hand-splicing real assay content into the fixture is the trap
  * this whole extractor exists to avoid). */
 const HOMEBREW_TRAIT_FIXTURE_DOCS: readonly HomebrewFixtureDoc[] = [
@@ -628,20 +627,20 @@ const HOMEBREW_TRAIT_FIXTURE_DOCS: readonly HomebrewFixtureDoc[] = [
       name: "Fixture School Trait",
       description: {
         value:
-          "<p>A 0030 S2 fixture school-trait doc — synthetic content only, exercises the D30-44 trait assembly path.</p>",
+          "<p>A homebrew fixture school-trait doc — synthetic content only, exercises the trait assembly path.</p>",
       },
     },
   },
 ];
 
-/** D30-47's negative-path collision fixture — deliberately basenamed
+/** The homebrew negative-path collision fixture — deliberately basenamed
  * "fireball" so its homebrew id (`spell/fireball`) collides with the real
  * `spells/spells/rank-3/fireball.json` supplemental Foundry pick above.
  * Lives OUTSIDE `fixtures/raw/homebrew/` (a SEPARATE directory the default
  * pipeline test never points `TransformPaths.homebrewDir` at) so the normal
  * fixture transform run never sees it — only a dedicated test constructing
  * its own `TransformPaths` with `homebrewDir` pointed here asserts the
- * D30-43 collision guard throws. */
+ * homebrew id collision guard throws. */
 const HOMEBREW_COLLISION_FIXTURE_DOC: HomebrewFixtureDoc = {
   basename: "fireball",
   doc: {
@@ -651,7 +650,7 @@ const HOMEBREW_COLLISION_FIXTURE_DOC: HomebrewFixtureDoc = {
     system: {
       description: {
         value:
-          "<p>D30-43 negative-path fixture — this basename deliberately collides with the official spell/fireball id.</p>",
+          "<p>Collision-guard negative-path fixture — this basename deliberately collides with the official spell/fireball id.</p>",
       },
       level: { value: 3 },
       publication: { license: "OGL", remaster: true, title: "Liturgy of the Iridite Vol.2" },
@@ -665,7 +664,7 @@ const HOMEBREW_COLLISION_FIXTURE_DOC: HomebrewFixtureDoc = {
 };
 
 /** Writes `fixtures/raw/homebrew/` (3 docs, read by the default pipeline
- * test), `fixtures/raw/homebrew-traits/` (1 doc, D30-44/0030 S2, read by the
+ * test), `fixtures/raw/homebrew-traits/` (1 doc, read by the
  * same default pipeline test), and `fixtures/raw/homebrew-collision/` (1
  * doc, read only by the dedicated negative-path collision test) —
  * wholesale-wiped + rewritten, same "committed fixture, never hand-edited"
@@ -716,8 +715,7 @@ function fail(message: string): never {
   process.exit(1);
 }
 
-/** D29-19 knock-on (P1.6, measured on the real post-S6 corpus): the corpus's
- * ONLY blockquote nodes — the 8 the P2 spec's §1 census counted — lived in
+/** The corpus's ONLY blockquote nodes (8 of them) lived in
  * `paizo-pregens`/`kingmaker-bestiary` `character` docs (pregen flavor
  * quotes), all of which the npc-only import now excludes; the AoN grammar
  * maps nothing to blockquote either. The kind is therefore corpus-EXTINCT
@@ -725,13 +723,13 @@ function fail(message: string): never {
  * silently dropping the kind from the matrix, it's allowlisted here and the
  * extractor ASSERTS the extinction corpus-wide — if a future refresh
  * reintroduces a blockquote anywhere, that assertion fails and this list
- * must shrink (the fixture then covers it again automatically). P2's
+ * must shrink (the fixture then covers it again automatically). The
  * renderer still unit-covers the kind with a synthetic node (its per-kind
  * tests never needed a corpus entity). */
 const KNOWN_EXTINCT_KINDS: ReadonlySet<string> = new Set(["blockquote"]);
 
-/** All `CodexNode.kind` values (P10, D29-93/94: 19-member union — 8 block + 11
- * inline) — the coverage matrix this extractor asserts against. */
+/** All `CodexNode.kind` values (19-member union — 8 block + 11 inline) —
+ * the coverage matrix this extractor asserts against. */
 const ALL_NODE_KINDS: readonly string[] = [
   "paragraph",
   "heading",
@@ -779,7 +777,7 @@ function collectKinds(node: CodexNode, into: Set<string>): void {
       for (const c of node.children) collectKinds(c, into);
       return;
     case "statRow":
-      // P10 (D29-94): cells are InlineNode[][] — recurse the same as any
+      // cells are InlineNode[][] — recurse the same as any
       // other cell-shaped field (table's own case above).
       for (const cell of node.cells) for (const c of cell) collectKinds(c, into);
       return;
@@ -818,9 +816,9 @@ interface ClassDocWithItems {
   system?: { items?: Record<string, { name?: string }> };
 }
 
-/** P12 S1 (D29-120): trims a copied class Item's `system.items` dict down to
+/** Trims a copied class Item's `system.items` dict down to
  * exactly the entries named in `keepNames` (`FoundryPick.keepItemNames`'s
- * own doc comment) — every other field on the doc (incl. the D29-113 scalar
+ * own doc comment) — every other field on the doc (incl. the scalar
  * stats the class doc's own `system.*` carries) passes through verbatim. */
 function trimClassItems(doc: unknown, keepNames: readonly string[], relPath: string): unknown {
   const typed = doc as ClassDocWithItems;
@@ -975,7 +973,7 @@ function buildRawFixture(
     rawBytes += Buffer.byteLength(content);
   }
 
-  // ---- static/lang/*.json — one real trimmed file (re-en.json, D29-5's
+  // ---- static/lang/*.json — one real trimmed file (re-en.json, the
   // highest-precedence file) carrying exactly the @Localize keys this
   // fixture's raw docs (transitively) reference; the other 4 exist as empty
   // objects (loadLangMap in transform.ts reads all 5 names unconditionally). ----
@@ -1055,7 +1053,7 @@ function listCorpusEntities(corpusRoot: string): CorpusEntityRef[] {
     const categoryDir = join(corpusRoot, category);
     if (!statSync(categoryDir).isDirectory()) continue;
     for (const file of readdirSync(categoryDir).sort()) {
-      if (file === "_index.json") continue; // the D29-21 per-category index, not an entity
+      if (file === "_index.json") continue; // the per-category index, not an entity
       const path = join(categoryDir, file);
       out.push({ category, file, path, size: statSync(path).size });
     }
@@ -1063,8 +1061,8 @@ function listCorpusEntities(corpusRoot: string): CorpusEntityRef[] {
   return out;
 }
 
-/** Required canonical-form picks by exact entity id — the D29-11 identity/
- * join proof points that must land in `fixtures/entities/` verbatim (these
+/** Required canonical-form picks by exact entity id — the identity/join
+ * proof points that must land in `fixtures/entities/` verbatim (these
  * are the OUTPUT of the real transform; the raw-doc subset above separately
  * proves the pipeline can REPRODUCE them from scratch). */
 const REQUIRED_CANONICAL_IDS: readonly string[] = [
@@ -1078,91 +1076,85 @@ const REQUIRED_CANONICAL_IDS: readonly string[] = [
   "feat/camouflage-coat",
   "creature/grick",
   "creature/grick-2",
-  // D29-17 carve-out proof point (S5c): a genuine Foundry-only creature that
-  // survives the D29-14 drop pass BECAUSE creature is carved out — see the
+  // The carve-out proof point: a genuine Foundry-only creature that survives
+  // the AoN-primary drop pass BECAUSE creature is carved out — see the
   // coverage-matrix assertion below. NOTE `boon` is deliberately NOT listed
-  // here anymore (S5c): the D29-14 drop pass removes the ENTIRE `boon`
+  // here: the AoN-primary drop pass removes the ENTIRE `boon`
   // category from the real emitted corpus, so there is no longer a `boon`
   // entity anywhere to select — `desna-major-boon.json` stays a RAW pick
   // (proves the pipeline drops it end-to-end, transform.test.ts) but has no
   // canonical-form counterpart to require here.
   "creature/dune-candle",
-  // D29-21 (P1.6): the two real `index`-slug entities the old `index.json`
-  // category index used to clobber — required verbatim so P2's route tests
+  // The two real `index`-slug entities the old `index.json` category index
+  // used to clobber — required verbatim so the web app's route tests
   // can prove the rescue against the fixture corpus.
   "ancestry/index",
   "archetype/index",
-  // D29-20 (P1.6): a statblock-bearing complex hazard (isComplex + disable +
+  // A statblock-bearing complex hazard (isComplex + disable +
   // routine + hardness/stealth in `stats`).
   "hazard/gravehall-trap",
-  // P2 S1 (D29-25): the `class` category's own coverage pick
+  // The `class` category's own coverage pick
   // (`class/investigator@legacy`, chosen as the smallest-file representative)
   // carries 3 real `embed` nodes in its body, all targeting these 3 `action`
-  // docs — required so the S1 class golden proves real depth-1 embed
+  // docs — required so the class golden proves real depth-1 embed
   // inlining (not just a synthetic unit-test chain). None of the three
   // themselves embed anything further (verified against the real corpus), so
-  // this fixture does NOT also exercise the M7 "second-layer renders as a
+  // this fixture does NOT also exercise the "second-layer renders as a
   // link" case on a real entity — that's covered by a dedicated synthetic
   // unit test instead (see nodes.test.tsx's cycle/depth-guard cases).
   "class/investigator@legacy",
-  // P2 S1 golden (`rules-nature-crafting.html`) — a real rules-body render
-  // fixture predating P4; the "rules" category's smallest-file auto-pick
-  // used to satisfy this, before P4's own required rules picks (below)
-  // claimed that category's coverage slot.
+  // The `rules-nature-crafting.html` golden — a real rules-body render; the
+  // required rules picks below claim the "rules" category's smallest-file
+  // coverage slot, so it is required here by id.
   "rules/nature-crafting-3",
   "action/pursue-a-lead-2",
   "action/clue-in-2",
   "action/devise-a-stratagem@legacy",
-  // P2 S2 (D29-22 adversarial): a non-ASCII real slug — proves the router's
+  // A non-ASCII real slug — proves the router's
   // `pathParamsAllowedCharacters`-free default already round-trips non-ASCII
   // path segments end to end (encode/decode), a genuine full creature
   // statblock (not a stub), verified against the real corpus.
   "creature/ixamè",
-  // P4 (D29-39/D29-44) — real ids, verified against the live corpus by
+  // The rules-tree/sidebar-attach picks — real ids, verified against the live corpus by
   // `aonUrl` (not guessed by slug: many same-named rules docs across 45
   // books collide and push a pick onto a `-N`/`@legacy` suffix, e.g. this
   // "Ability Modifiers" is `ability-modifiers-2`, not the bare slug).
   "rules/chapter-2-tools", // depth-3 chain root, breadcrumb-less
-  "rules/building-creatures@legacy", // depth-3 chain mid (CRLF-dirty source, D29-39 heals it)
+  "rules/building-creatures@legacy", // depth-3 chain mid (CRLF-dirty source, the rules tree heals it)
   "rules/ability-modifiers-2", // depth-3 chain leaf — COMPLETE ancestor chain present
   "rules/counteracting-2", // Counteracting remaster half (Player Core, Ch8/Afflictions)
   "rules/counteracting-4", // Counteracting legacy half (Core Rulebook, Ch9/General Rules) — DIFFERENT path
   "rules/tools-of-play", // attached-sidebar host (rules category)
   "sidebar/dice", // attaches to rules/tools-of-play
-  "class/witch@legacy", // the M8 shared-url host (/Classes.aspx?ID=16)
+  "class/witch@legacy", // the shared-url host (/Classes.aspx?ID=16)
   "class-feature/ability-boosts-15", // shares the SAME url — must NOT be a sidebar host
-  "sidebar/in-service-to-the-unknown", // attaches to class/witch@legacy (M8 case)
-  "source/core-rulebook", // the D29-44 source entity
-  // P6 (D29-65, Track B glyph gate + Integration's real-specimen check): the
-  // fixture corpus had ZERO free-action entities before this — the smallest
-  // real `facets.actionCost === "free"` feat.
+  "sidebar/in-service-to-the-unknown", // attaches to class/witch@legacy (shared url)
+  "source/core-rulebook", // the source entity
+  // The fixture corpus's only free-action entity — the smallest real
+  // `facets.actionCost === "free"` feat (the action-glyph checks need one).
   "feat/spellshape-channel",
-  // P6 (D29-59, R4 ritual re-categorization) — the widened selection list the
-  // spec's own §4 Track A gate requires, so downstream tracks' deferred
-  // real-specimen proofs have material: the commune many-to-one pair (a
+  // The ritual re-categorization specimens: the commune many-to-one pair (a
   // single mover, `ritual/commune`, whose `legacyOf` lists BOTH legacy
   // halves — the exact-slug collider `ritual/commune@legacy` AND the
   // fresh-slug `ritual/commune-with-nature`), the shadow-double/simulacrum
-  // fresh-slug pair, and (implementation-time addition, D29-59's own
-  // correction note — the real 143-mover population is 87/143 pairing-less,
-  // not the rare case the spec first assumed) a pairing-less mover with
-  // neither `legacyOf` nor `remasteredAs` at all.
+  // fresh-slug pair, and a pairing-less mover with neither `legacyOf` nor
+  // `remasteredAs` at all (87 of the real 143 movers are pairing-less).
   "ritual/commune",
   "ritual/commune@legacy",
   "ritual/commune-with-nature",
   "ritual/shadow-double",
   "ritual/simulacrum",
   "ritual/unbearable-cacophony",
-  // P7 (D29-72, review M3): a JOINED vehicle carrying both a non-empty body
+  // A JOINED vehicle carrying both a non-empty body
   // AND non-empty embeddedItems (16 body blocks + 4 action items, verified
   // against the real corpus) — the category-smallest vehicle auto-pick has
-  // zero embeddedItems, so the S2 vehicle item-section-suppression test
+  // zero embeddedItems, so the vehicle item-section-suppression test
   // can't run hermetically without this.
   "vehicle/armored-sleigh",
-  // P11 S1 (D29-101b): a real "leads to..." prerequisite-chain heading +
+  // A real "leads to..." prerequisite-chain heading +
   // crossref paragraph — `build-search.test.ts`'s end-to-end proof that the
   // excluded excerpt text never lands in the search index. (`class-feature/
-  // ability-boosts-15`, already required above, already covers D29-101a's
+  // ability-boosts-15`, already required above, already covers the
   // `meta.class` mechanism — it carries a real `Class` mastheadExtra entry.)
   "feat/fledgling-flight",
 ];
@@ -1332,7 +1324,7 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
   if (dragonVariant && dragonVariant.variantOf !== "creature/adamantine-dragon-adult") {
     problems.push("dragon spellcaster variantOf mismatch");
   }
-  // D29-20 (P1.6): the statblock-bearing dragon must carry CreatureStats +
+  // The statblock-bearing dragon must carry CreatureStats +
   // a melee strike with attackBonus/damage; the spellcaster variant must
   // carry a spellcastingEntry with dc/tradition.
   if (dragonBase) {
@@ -1354,7 +1346,7 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
       );
     }
   }
-  const complexHazard = requireEntity("hazard/gravehall-trap", "P1.6 complex hazard");
+  const complexHazard = requireEntity("hazard/gravehall-trap", "complex hazard");
   if (complexHazard) {
     const hs = complexHazard.stats?.kind === "hazard" ? complexHazard.stats : undefined;
     if (
@@ -1369,9 +1361,9 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
       );
     }
   }
-  // D29-21 (P1.6): the two rescued `index`-slug entities.
-  requireEntity("ancestry/index", "D29-21 index-slug rescue");
-  requireEntity("archetype/index", "D29-21 index-slug rescue");
+  // The two rescued `index`-slug entities.
+  requireEntity("ancestry/index", "index-slug rescue");
+  requireEntity("archetype/index", "index-slug rescue");
 
   const alias = requireEntity("feat/camouflage-coat", "alias-driven join");
   if (alias && alias.aonUrl === undefined)
@@ -1383,75 +1375,72 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
   requireEntity("creature/grick", "-2 collision (winner)");
   requireEntity("creature/grick-2", "-2 collision (residual member)");
 
-  // S5c/D29-14/-17: the AoN-primary drop pass already ran (this reads the
+  // The AoN-primary drop pass already ran (this reads the
   // REAL post-drop emitted corpus) — so a Foundry-only-category entity like
   // the old `boon` pick can no longer exist ANYWHERE to select (the whole
-  // category is gone). Assert that directly, and require the D29-17
+  // category is gone). Assert that directly, and require the
   // carve-out proof point instead: a genuine Foundry-only CREATURE, which
   // the drop pass must have kept.
   for (const droppedCategory of ["boon", "pfs-boon", "kingdom-feature", "effect"]) {
     if (allRealCategories.has(droppedCategory)) {
       problems.push(
-        `category "${droppedCategory}" should have been fully removed by the D29-14 drop pass but still has entities in the real corpus`,
+        `category "${droppedCategory}" should have been fully removed by the AoN-primary drop pass but still has entities in the real corpus`,
       );
     }
   }
-  const carveOut = requireEntity("creature/dune-candle", "D29-17 Foundry-only carve-out");
+  const carveOut = requireEntity("creature/dune-candle", "Foundry-only carve-out");
   if (carveOut && (carveOut.aonUrl !== undefined || carveOut.proseOnly === true)) {
     problems.push("creature/dune-candle should be Foundry-only (no aonUrl, not proseOnly)");
   }
 
-  // P4 (D29-39/D29-44): the rules-tree/sidebar-attach coverage proof points.
-  const root = requireEntity("rules/chapter-2-tools", "P4 depth-3 chain root");
+  // The rules-tree/sidebar-attach coverage proof points.
+  const root = requireEntity("rules/chapter-2-tools", "depth-3 chain root");
   if (root && (root.breadcrumbs?.length ?? 0) > 0) {
     problems.push("rules/chapter-2-tools should be breadcrumb-less (a tree root)");
   }
-  const mid = requireEntity("rules/building-creatures@legacy", "P4 depth-3 chain mid");
+  const mid = requireEntity("rules/building-creatures@legacy", "depth-3 chain mid");
   if (mid && mid.breadcrumbs?.[0] !== "Chapter 2: Tools") {
     problems.push(
       `rules/building-creatures@legacy.breadcrumbs should be CRLF-healed to ["Chapter 2: Tools"], got ${JSON.stringify(mid.breadcrumbs)}`,
     );
   }
-  const leaf = requireEntity("rules/ability-modifiers-2", "P4 depth-3 chain leaf");
+  const leaf = requireEntity("rules/ability-modifiers-2", "depth-3 chain leaf");
   if (leaf && (leaf.breadcrumbs?.length ?? 0) !== 2) {
     problems.push("rules/ability-modifiers-2 should carry a 2-element (depth-3) breadcrumb chain");
   }
-  const counterRemaster = requireEntity("rules/counteracting-2", "P4 edition path-shift pair");
-  const counterLegacy = requireEntity("rules/counteracting-4", "P4 edition path-shift pair");
+  const counterRemaster = requireEntity("rules/counteracting-2", "edition path-shift pair");
+  const counterLegacy = requireEntity("rules/counteracting-4", "edition path-shift pair");
   if (
     counterRemaster &&
     counterLegacy &&
     JSON.stringify(counterRemaster.breadcrumbs) === JSON.stringify(counterLegacy.breadcrumbs)
   ) {
-    problems.push("the Counteracting pair should carry DIFFERENT breadcrumb paths (D29-39)");
+    problems.push("the Counteracting pair should carry DIFFERENT breadcrumb paths");
   }
-  const rulesHost = requireEntity("rules/tools-of-play", "P4 attached-sidebar rules host");
+  const rulesHost = requireEntity("rules/tools-of-play", "attached-sidebar rules host");
   if (rulesHost && !rulesHost.attachedSidebars?.includes("sidebar/dice")) {
     problems.push("rules/tools-of-play should have attachedSidebars including sidebar/dice");
   }
-  requireEntity("sidebar/dice", "P4 attached-sidebar rules host");
-  const classHost = requireEntity("class/witch@legacy", "P4 M8 shared-url host");
+  requireEntity("sidebar/dice", "attached-sidebar rules host");
+  const classHost = requireEntity("class/witch@legacy", "shared-url host");
   if (classHost && !classHost.attachedSidebars?.includes("sidebar/in-service-to-the-unknown")) {
     problems.push(
       "class/witch@legacy should have attachedSidebars including sidebar/in-service-to-the-unknown",
     );
   }
-  const sharedUrlFeature = requireEntity(
-    "class-feature/ability-boosts-15",
-    "P4 M8 shared-url non-host",
-  );
+  const sharedUrlFeature = requireEntity("class-feature/ability-boosts-15", "shared-url non-host");
   if (sharedUrlFeature && sharedUrlFeature.attachedSidebars !== undefined) {
     problems.push(
       "class-feature/ability-boosts-15 shares its url with class/witch@legacy and must NOT itself be a sidebar host",
     );
   }
-  requireEntity("sidebar/in-service-to-the-unknown", "P4 M8 shared-url case");
-  requireEntity("source/core-rulebook", "P4 source entity");
+  requireEntity("sidebar/in-service-to-the-unknown", "shared-url case");
+  requireEntity("source/core-rulebook", "source entity");
 
-  // P12 S1 (D29-113..116/D29-120): the augmentClassStats fixture coverage —
+  // The augmentClassStats fixture coverage —
   // sourced from `FIXTURE_PIPELINE_IDS` (the fixture's OWN trimmed pipeline
   // rerun, `fixtureCorpus.ts`), not the real corpus.
-  const fighterClass = requireEntity("class/fighter", "P12 clean 16/16 grants");
+  const fighterClass = requireEntity("class/fighter", "clean 16/16 grants");
   if (fighterClass) {
     if (fighterClass.stats?.kind !== "class") {
       problems.push("class/fighter should carry ClassStats (stats.kind === 'class')");
@@ -1464,7 +1453,7 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
       }
     }
   }
-  const clericClass = requireEntity("class/cleric", "P12 stub case (targetId:null proof)");
+  const clericClass = requireEntity("class/cleric", "stub case (targetId:null proof)");
   if (clericClass) {
     if (clericClass.stats?.kind !== "class") {
       problems.push("class/cleric should carry ClassStats (stats.kind === 'class')");
@@ -1477,7 +1466,7 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
       }
       if (firstDoctrine?.targetId !== null) {
         problems.push(
-          'class/cleric "First Doctrine" grant should be targetId:null (D29-14 unjoined-residue drop)',
+          'class/cleric "First Doctrine" grant should be targetId:null (unjoined-residue drop)',
         );
       }
       const subclass = clericClass.stats.subclassOptions ?? [];
@@ -1488,7 +1477,7 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
       }
     }
   }
-  const witchClass = requireEntity("class/witch", "P12 two-category subclass pills");
+  const witchClass = requireEntity("class/witch", "two-category subclass pills");
   if (witchClass) {
     if (witchClass.stats?.kind !== "class") {
       problems.push("class/witch should carry ClassStats (stats.kind === 'class')");
@@ -1499,19 +1488,19 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
       }
     }
   }
-  requireEntity("class-feature/doctrine", "P12 cleric's resolved grant target");
-  requireEntity("class-feature/cloistered-cleric", "P12 doctrine absorbed-remaster target");
-  requireEntity("class-feature/warpriest", "P12 doctrine absorbed-remaster target");
-  requireEntity("doctrine/cloistered-cleric", "P12 doctrine legacy husk");
-  requireEntity("doctrine/warpriest", "P12 doctrine legacy husk");
-  requireEntity("class-feature/lesson-of-bargains", "P12 lesson absorbed-remaster target");
-  requireEntity("lesson/lesson-of-the-elements", "P12 lesson intra-category current");
-  requireEntity("lesson/lesson-of-the-elements@legacy", "P12 lesson intra-category legacy");
-  requireEntity("lesson/lesson-of-bargains", "P12 lesson legacy husk");
-  requireEntity("class-feature/baba-yaga", "P12 patron absorbed-remaster target");
-  requireEntity("patron/the-unseen-broker", "P12 patron intra-category current");
-  requireEntity("patron/baba-yaga", "P12 patron legacy husk");
-  requireEntity("patron/pacts", "P12 patron intra-category legacy");
+  requireEntity("class-feature/doctrine", "cleric's resolved grant target");
+  requireEntity("class-feature/cloistered-cleric", "doctrine absorbed-remaster target");
+  requireEntity("class-feature/warpriest", "doctrine absorbed-remaster target");
+  requireEntity("doctrine/cloistered-cleric", "doctrine legacy husk");
+  requireEntity("doctrine/warpriest", "doctrine legacy husk");
+  requireEntity("class-feature/lesson-of-bargains", "lesson absorbed-remaster target");
+  requireEntity("lesson/lesson-of-the-elements", "lesson intra-category current");
+  requireEntity("lesson/lesson-of-the-elements@legacy", "lesson intra-category legacy");
+  requireEntity("lesson/lesson-of-bargains", "lesson legacy husk");
+  requireEntity("class-feature/baba-yaga", "patron absorbed-remaster target");
+  requireEntity("patron/the-unseen-broker", "patron intra-category current");
+  requireEntity("patron/baba-yaga", "patron legacy husk");
+  requireEntity("patron/pacts", "patron intra-category legacy");
 
   if (problems.length > 0) {
     fail(`coverage matrix FAILED:\n  - ${problems.join("\n  - ")}`);
@@ -1554,7 +1543,7 @@ export function extractFixtureMain(): void {
   const rawBytes = buildRawFixture(cfg, manifest.foundry.tag, manifest.aon.snapshotDate);
   console.log(`  raw subset: ${rawBytes} bytes`);
 
-  console.log("\nBuilding the homebrew mini fixture (D30-47, 0030 S1)...");
+  console.log("\nBuilding the homebrew mini fixture...");
   const homebrewBytes = buildHomebrewFixture();
   console.log(`  homebrew subset: ${homebrewBytes} bytes`);
 
