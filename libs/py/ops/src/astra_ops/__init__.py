@@ -1,4 +1,4 @@
-"""astra-ops: the host ops CLI (0037 ops-1a).
+"""astra-ops: the host ops CLI.
 
 The justfile keeps one thin wrapper per command, so systemd units, docs and bots still call
 ``just <recipe>``; the logic lives here. ``context`` holds the seams every command uses (the

@@ -1,5 +1,5 @@
 """The astra-data publish chain: linguist-commit, the clone push, mouthpiece-publish and the
-two audio seeds (moved from the justfile, 0037 ops-1a; same steps, argv and exit codes).
+two audio seeds (moved from the justfile; same steps, argv and exit codes).
 
 Every git call runs in the astra-data clone (``git -C <config data.content-root>``), never in
 the code repo. The git-publish flock (``<data root>/locks/git-publish.lock``) allows one git

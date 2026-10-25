@@ -659,13 +659,13 @@ codex-real-corpus:
 # ==== builds: portal module, assay book, weal wasm ============================================
 
 # dist/ is gitignored; the server's Docker build packages module.json + dist/ into portal.zip
-# (D11 — install by Manifest URL, no host file-drop in steady state).
+# (Foundry installs it by Manifest URL; no host file-drop in steady state).
 # Bundle the Foundry module (tsdown -> apps/portal/module/dist/main.js).
 portal-module-build:
     pnpm --filter @astra/portal-module build
 
-# D11's primary path is the Manifest URL (https://portal.iridi.cc/module/module.json), which
-# Foundry fetches itself. This builds the module and copies module.json + dist/ into the live
+# The primary install path is the Manifest URL (https://portal.iridi.cc/module/module.json),
+# which Foundry fetches itself. This builds the module and copies module.json + dist/ into the live
 # Foundry data dir (FOUNDRY_DATA_DIR, default the foundry_faerrin container's bind source);
 # Foundry re-reads it on the next world launch or module refresh. No restart.
 # File-drop FALLBACK install of the Foundry module into the live Foundry data dir.
@@ -710,7 +710,7 @@ book *flags:
 # which the dependency panic locations name, to /cargo. It goes in via
 # --config, which cargo appends to the config file's rustflags array; a
 # RUSTFLAGS env var would REPLACE that array and drop the stack flag.
-# Deterministic: two runs → byte-identical gen/ (recorded at S5).
+# Deterministic: two runs → byte-identical gen/.
 weal_bindgen_version := "0.2.127"
 weal_wasm_opt_version := "124"
 weal_stamp := "wasm-bindgen=" + weal_bindgen_version + " wasm-opt=" + weal_wasm_opt_version

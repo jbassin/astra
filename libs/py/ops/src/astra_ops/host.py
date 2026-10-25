@@ -1,5 +1,5 @@
 """Host installs: the systemd user units, the watchdog's sudoers drop-ins and the Foundry
-module fallback (moved from the justfile, 0037 ops-1b).
+module fallback (moved from the justfile).
 
 **units-install [GROUP...]** links each group's units (``deploy/systemd/units.txt``; no group =
 all of them) from the deploy checkout into ``~/.config/systemd/user``, runs daemon-reload,
@@ -19,7 +19,7 @@ mount vanishes; ``astra-ethtool``: retrain or renegotiate a frame-corrupting NIC
 passes ``visudo -c`` before it is installed, so a bad file can never lock sudo. The check
 afterwards is non-destructive (``sudo -n -l <cmd>`` never runs the command).
 
-**portal-module-install** is the file-drop FALLBACK for the Foundry module (D11's primary path
+**portal-module-install** is the file-drop FALLBACK for the Foundry module (the primary install path
 is the Manifest URL, which Foundry fetches itself): build the module, then copy module.json and
 dist/main.js into the live Foundry data dir's ``Data/modules/portal/`` (``FOUNDRY_DATA_DIR``).
 """

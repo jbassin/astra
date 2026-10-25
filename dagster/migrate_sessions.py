@@ -1,4 +1,4 @@
-"""Fold the per-app session partition sets into the shared ``sessions`` set (0037 pipe-4b).
+"""Fold the per-app session partition sets into the shared ``sessions`` set.
 
 Run it in the code server container, where ``DAGSTER_HOME`` points at the instance:
 
@@ -55,7 +55,7 @@ from astra_pipeline_resources.partitions import (
 
 #: The tag (and metadata) on an adoption's runless materialization, and the marker value.
 ADOPTED_TAG = "astra/adopted"
-ADOPTED_VALUE = "pipe-4b"
+ADOPTED_VALUE = "pipe-4b"  # decision-ids: ignore[lane-slug] -- a stored marker value
 
 #: ``run`` exit codes.
 REFUSED_IN_FLIGHT = 2

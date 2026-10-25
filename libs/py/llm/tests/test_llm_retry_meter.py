@@ -1,4 +1,4 @@
-"""The one retry policy and the one meter (0037 lib-6), on replayed litellm responses."""
+"""The one retry policy and the one meter, on replayed litellm responses."""
 
 from __future__ import annotations
 
@@ -45,7 +45,7 @@ _TOOL_REQ = ToolCallRequest(system="sys", user_content="content", tool=_TOOL)
 # --- retry policy -----------------------------------------------------------------------
 def test_content_failures_share_one_per_call_budget() -> None:
     """A missing tool call and two invalid replies spend the 3 attempts together (before
-    lib-6 this call could bill 9: 3 validation tries x 3 tool tries)."""
+    the one policy this call could bill 9: 3 validation tries x 3 tool tries)."""
     client, calls = _replay("tool_missing", "tool_invalid", "tool_invalid", "tool_ok")
     with pytest.raises(LlmError, match="failed validation after 3 attempts") as exc:
         client.call_structured(_Beat, system="sys", user_content="hi")

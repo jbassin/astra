@@ -1,4 +1,4 @@
-// astra ontology-being — per-session overrides (0037 pipe-10), next to being.kdl.
+// astra ontology-being — per-session overrides, next to being.kdl.
 //
 // The GM's corrections for single sessions, which the pipeline reads instead of guessing.
 // Schema: `astra_ontology.sessions` (`SessionOverride`). One node per session:

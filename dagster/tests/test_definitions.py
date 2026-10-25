@@ -33,7 +33,7 @@ JOBS = {
     "__anonymous_asset_job_linguist_output_sensor",
     "__anonymous_asset_job_scribe_output_sensor",
 }
-#: None since 0037 pipe-10: `campaign_timeline_sensor` replaced the hourly schedule.
+#: None: `campaign_timeline_sensor` replaced the hourly schedule.
 SCHEDULES: set[str] = set()
 SENSORS = {
     "campaign_timeline_sensor",
@@ -43,9 +43,9 @@ SENSORS = {
     "pipeline_failure_alert",
     "scribe_output_sensor",
 }
-#: One shared set since 0037 pipe-4b (``astra_pipeline_resources.partitions``).
+#: One shared set (``astra_pipeline_resources.partitions``).
 PARTITIONS = {"sessions"}
-#: The cross-app dependencies (0037 pipe-4b): downstream asset -> its upstream assets.
+#: The cross-app dependencies: downstream asset -> its upstream assets.
 CROSS_APP_DEPS = {
     "session_transcripts": {"session_transcript"},
     "session_digest": {"session_transcripts", "session_episode_summary"},

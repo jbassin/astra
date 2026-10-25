@@ -1,4 +1,4 @@
-"""The schema of `sessions.kdl`, ontology-being's per-session overrides (0037 pipe-10).
+"""The schema of `sessions.kdl`, ontology-being's per-session overrides.
 
 `being.kdl` says who plays whom; `sessions.kdl` holds the GM's corrections for single
 sessions, which the pipeline reads instead of guessing:

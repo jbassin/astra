@@ -42,7 +42,7 @@ def test_defs_variants_merge_into_a_linked_page() -> None:
 
 
 def test_acceptance_resolve_yshael_to_ichel() -> None:
-    """The Phase-1 acceptance case (§8.4): a never-listed garble resolves via phonetics
+    """The Phase-1 acceptance case: a never-listed garble resolves via phonetics
     (Ichel's page is not in the fixture wiki, so here it resolves to the defs entity)."""
     r = resolve("Y'shael")
     assert r.status == "resolved"

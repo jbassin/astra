@@ -1,5 +1,5 @@
 """units-install, alert-sudoers-install and portal-module-install replay the old install
-recipes' children (0037 ops-1b): the old `_unit-link` dependency (link from the deploy
+recipes' children: the old `_unit-link` dependency (link from the deploy
 checkout, then daemon-reload), then each group's enable."""
 
 from __future__ import annotations

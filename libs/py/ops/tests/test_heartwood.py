@@ -1,5 +1,5 @@
 """heartwood-agent / heartwood-revert / the push-deploy tail replay the old recipes' exact argv
-sequence and lock order (0037 ops-1a): host-tooling shared, dropped before waiting for
+sequence and lock order: host-tooling shared, dropped before waiting for
 git-publish, retaken shared, released before the redeploy."""
 
 from __future__ import annotations

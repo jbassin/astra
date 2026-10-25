@@ -1,8 +1,8 @@
-"""The astra-data publish chain replays the old recipes' exact argv sequence (0037 ops-1a).
+"""The astra-data publish chain replays the old recipes' exact argv sequence.
 
 Each test scripts every child process and lock step the command takes, in order; the
 scripted runner fails on any other call. The expected argv lists are the ones the bash
-recipes ran (`justfile` before ops-1a), with ``just <sub-recipe>`` hops replaced by the
+recipes ran (the `justfile` before the move), with ``just <sub-recipe>`` hops replaced by the
 sub-recipe's own children.
 """
 

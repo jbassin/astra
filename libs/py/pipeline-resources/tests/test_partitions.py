@@ -77,7 +77,8 @@ def test_migration_pending_only_with_legacy_partitions_and_no_marker() -> None:
     assert not migration_pending(instance)  # a fresh instance
     instance.add_dynamic_partitions("heartwood_sessions", ["a"])
     assert migration_pending(instance)
-    instance.run_storage.set_cursor_values({MIGRATION_MARKER: "pipe-4b"})
+    marker = "pipe-4b"  # decision-ids: ignore[lane-slug] -- the stored marker value
+    instance.run_storage.set_cursor_values({MIGRATION_MARKER: marker})
     assert not migration_pending(instance)
     instance.run_storage.set_cursor_values({MIGRATION_MARKER: ""})  # blanked by --down
     assert migration_pending(instance)

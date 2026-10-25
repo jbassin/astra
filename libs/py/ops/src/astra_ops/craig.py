@@ -1,5 +1,5 @@
 """craig-sync: bridge new Craig recordings from the Drive FUSE mount into scribe's local
-incoming dir (moved from the justfile, 0037 ops-1b; same steps, children and exit codes).
+incoming dir (moved from the justfile; same steps, children and exit codes).
 
 Docker can't bind-mount the google-drive-ocamlfuse mount (it is not in the daemon's
 namespace), so the host copies new zips down; the craig_drop_sensor, watching the local dir,
