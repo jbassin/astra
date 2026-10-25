@@ -9,7 +9,7 @@ import {
   type Service,
   type ServiceDefinition,
 } from "@astra/service-kit";
-import { serveFile } from "@astra/site-kit";
+import { isHashedAssetPath, serveFile } from "@astra/site-kit";
 import { trace } from "@opentelemetry/api";
 import type { Server } from "srvx";
 import { z } from "zod";
@@ -126,7 +126,8 @@ function definition(runtime: RoomsRuntime, distDir: string): ServiceDefinition {
       return new Response("forbidden\n", { status: 403 });
     }
     if (!(await isFile(target))) return serveIndex(); // SPA fallback (/host, /host/:code, ...)
-    return serveFile(req, target);
+    // Vite's content-hashed /assets/ files are cached as immutable; the rest revalidate.
+    return serveFile(req, target, undefined, { immutable: isHashedAssetPath(pathname) });
   }
 
   return {

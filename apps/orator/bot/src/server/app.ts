@@ -31,7 +31,7 @@ import {
   type Service,
   type ServiceDefinition,
 } from "@astra/service-kit";
-import { serveFile } from "@astra/site-kit";
+import { isHashedAssetPath, serveFile } from "@astra/site-kit";
 import type { Server } from "srvx";
 
 import type { LibraryStore } from "../db/store";
@@ -233,7 +233,12 @@ function defineApp(config: AppConfig, store: LibraryStore, deps: AppDeps): Servi
     }
     const candidate =
       pathname === "/" || pathname.endsWith("/") ? resolve(target, "index.html") : target;
-    if (await isFile(candidate)) return serveFile(req, candidate);
+    // Vite's content-hashed /assets/ files are cached as immutable; the rest (and the
+    // index.html fallback) revalidate.
+    if (await isFile(candidate)) {
+      const immutable = candidate === target && isHashedAssetPath(pathname);
+      return serveFile(req, candidate, undefined, { immutable });
+    }
     const indexPath = resolve(config.distDir, "index.html");
     if (await isFile(indexPath)) return serveFile(req, indexPath);
     return new Response("not found\n", { status: 404 });

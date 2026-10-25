@@ -1,4 +1,4 @@
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -13,6 +13,8 @@ let base: string;
 beforeAll(async () => {
   const dist = mkdtempSync(join(tmpdir(), "eerie-dist-"));
   writeFileSync(join(dist, "index.html"), "<!doctype html><title>eerie test</title>");
+  mkdirSync(join(dist, "assets"));
+  writeFileSync(join(dist, "assets", "index-Bx3f9a1c.js"), "console.log('hashed')");
   running = startServer({ port: 0, token: "s3cret", distDir: dist });
   const ready = await running.server.ready();
   // srvx has no `.port`; `.url` includes a trailing slash
@@ -66,6 +68,14 @@ test("serves the built overlay index at /", async () => {
   const res = await fetch(`${base}/`);
   expect(res.status).toBe(200);
   expect(await res.text()).toContain("<title>eerie test</title>");
+});
+
+test("hashed /assets/ files are cached as immutable; the document is not", async () => {
+  const asset = await fetch(`${base}/assets/index-Bx3f9a1c.js`);
+  expect(asset.status).toBe(200);
+  expect(asset.headers.get("cache-control")).toBe("public, max-age=31536000, immutable");
+  const doc = await fetch(`${base}/`);
+  expect(doc.headers.get("cache-control") ?? "").not.toContain("immutable");
 });
 
 test("blocks path traversal", async () => {

@@ -24,6 +24,7 @@ export { type ServeFileOptions, serveFile } from "./sendFile";
 export { ssrExternalsPlugin, undeclaredSsrImports } from "./ssrExternals";
 export {
   createSsrServer,
+  isHashedAssetPath,
   loadSsrBuild,
   type SsrHandler,
   type SsrRoute,

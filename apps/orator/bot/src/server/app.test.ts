@@ -1,3 +1,7 @@
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
 import { describe, expect, test } from "vitest";
 
 import { FakeStore } from "../db/fake-store";
@@ -170,5 +174,27 @@ describe("body validation (zod schemas; the codes are the handlers' own)", () =>
     const res = await send(method, path, body);
     expect(res.status).toBe(400);
     expect(await res.json()).toEqual({ error: code });
+  });
+});
+
+describe("static SPA caching", () => {
+  test("hashed /assets/ files are cached as immutable; the document is not", async () => {
+    const dist = mkdtempSync(join(tmpdir(), "orator-dist-"));
+    writeFileSync(join(dist, "index.html"), "<!doctype html><title>orator</title>");
+    writeFileSync(join(dist, "app.js"), "console.log('unhashed')");
+    mkdirSync(join(dist, "assets"));
+    writeFileSync(join(dist, "assets", "index-Bx3f9a1c.js"), "console.log('hashed')");
+    const app = makeApp(testConfig({ distDir: dist }));
+
+    const asset = await app.handle(get("/assets/index-Bx3f9a1c.js"));
+    expect(asset.status).toBe(200);
+    expect(asset.headers.get("cache-control")).toBe("public, max-age=31536000, immutable");
+    const unhashed = await app.handle(get("/app.js"));
+    expect(unhashed.headers.get("cache-control")).toBe("public, max-age=0");
+    // A missing hashed name falls back to index.html, which must stay revalidating.
+    const missing = await app.handle(get("/assets/gone-00000000.js"));
+    expect(missing.headers.get("cache-control") ?? "").not.toContain("immutable");
+    const doc = await app.handle(get("/"));
+    expect(doc.headers.get("cache-control") ?? "").not.toContain("immutable");
   });
 });
