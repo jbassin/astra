@@ -12,16 +12,16 @@ import { createHeadingIdAssigner } from "./headingIds";
 import type { RenderCtx } from "./nodes";
 
 /**
- * D29-29 tier 2 — the 7 committed flagship goldens, byte-exact (mirrors
+ * The 7 committed flagship goldens, byte-exact (mirrors
  * `scripts/regen-goldens.ts` construction exactly). A drift here means
  * either an unintentional renderer regression (fix the renderer) or an
  * intentional change (re-run `scripts/regen-goldens.ts`, hand-check the 7
- * files, commit them — the spec's "vs hand-checked output" gate).
+ * files, commit them).
  */
 
 const GOLDENS_ROOT = join(import.meta.dirname, "../../../goldens");
 
-// D29-109b (P11 S5) — mirrors `scripts/regen-goldens.ts`'s own
+// Mirrors `scripts/regen-goldens.ts`'s own
 // `renderEntityPage` EXACTLY (a fresh per-call `headingId` assigner, never
 // baked into the shared fixture-env `ctx`) — see that file's comment.
 function renderEntityPage(entity: CodexEntity, ctx: RenderCtx): string {
@@ -36,7 +36,7 @@ function page(title: string, bodyHtml: string): string {
   );
 }
 
-describe("D29-29 tier 2: the 7 flagship goldens are byte-exact", () => {
+describe("the 7 flagship goldens are byte-exact", () => {
   const { byId, ctx } = loadFixtureRenderEnv();
 
   function expectGoldenMatches(file: string, title: string, html: string): void {
@@ -52,13 +52,13 @@ describe("D29-29 tier 2: the 7 flagship goldens are byte-exact", () => {
     renderEntityPage(requireEntity(byId, "creature/adamantine-dragon-adult"), ctx),
   );
 
-  // P7 (D29-72, review M4): the joined dragon above lost its structured
-  // render to the suppression — this Foundry-only variant golden locks the
-  // SURVIVING structured render byte-exactly (retention + StrikeRow range +
-  // humanized lore-in-Skills + variantOf, spec §4 B).
+  // The joined dragon above has an AoN body, so its structured render is
+  // suppressed — this Foundry-only variant golden locks the SURVIVING
+  // structured render byte-exactly (retention + StrikeRow range +
+  // humanized lore-in-Skills + variantOf).
   expectGoldenMatches(
     "creature-dragon-spellcaster.html",
-    "creature/adamantine-dragon-adult-spellcaster — golden (P7 structured-render retention)",
+    "creature/adamantine-dragon-adult-spellcaster — golden (structured-render retention)",
     renderEntityPage(requireEntity(byId, "creature/adamantine-dragon-adult-spellcaster"), ctx),
   );
 
@@ -95,7 +95,7 @@ describe("D29-29 tier 2: the 7 flagship goldens are byte-exact", () => {
 
   expectGoldenMatches(
     "class-investigator.html",
-    "class/investigator@legacy — golden (D29-25 embed-inlining proof)",
+    "class/investigator@legacy — golden (embed-inlining proof)",
     renderEntityPage(requireEntity(byId, "class/investigator@legacy"), ctx),
   );
 });

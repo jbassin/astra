@@ -6,13 +6,12 @@ import { EntityPage } from "./entityPage";
 import { loadFixtureRenderEnv, requireEntity } from "./fixtureLoader";
 
 /**
- * P14 S2 (D29-135) — the Lore-card suppression pass against the REAL
- * `ancestry/anadi` fixture (the review's own "canary set", corrected: no
- * test may assert "You Might…"/"Others Probably…" present IN THE LORE CARD
+ * The Lore-card suppression pass against the REAL `ancestry/anadi` fixture.
+ * No test may assert "You Might…"/"Others Probably…" present IN THE LORE CARD
  * — both are byte-identical in the body too, so they correctly suppress
  * from lore; the body copy is what stays visible). Mirrors
  * `entityPage.dedup.test.tsx`'s `loadFixtureRenderEnv`/`requireEntity`
- * idiom (P7's own precedent for a real-fixture predicate proof).
+ * idiom for a real-fixture predicate proof.
  */
 
 const LORE_CARD_RE = /<section class="codex-card codex-card-prose codex-lore">[\s\S]*?<\/section>/;
@@ -21,7 +20,7 @@ function loreCardHtml(html: string): string | undefined {
   return LORE_CARD_RE.exec(html)?.[0];
 }
 
-describe("entityPage.tsx + loreDedupe: ancestry/anadi (P14 S2, D29-135)", () => {
+describe("entityPage.tsx + loreDedupe: ancestry/anadi", () => {
   const { byId, ctx } = loadFixtureRenderEnv();
 
   function render(entity: CodexEntity): string {

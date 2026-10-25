@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { displayCategoryName } from "./displayCategoryName";
 
-describe("displayCategoryName (D29-109d seam, created early by P11 S4/D29-112)", () => {
+describe("displayCategoryName", () => {
   it("falls back to humanizeSlug for every category with no override", () => {
     expect(displayCategoryName("feat")).toBe("Feat");
     expect(displayCategoryName("creature-family")).toBe("Creature Family");

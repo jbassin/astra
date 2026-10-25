@@ -10,10 +10,10 @@ import {
 } from "./actionGlyph";
 
 /**
- * D29-24 adversarial B1 — vocabulary coverage. Every one of the 25 distinct
+ * Vocabulary coverage. Every one of the 25 distinct
  * `actionGlyph.cost` tokens actually present in the real corpus (verified by
  * an exhaustive scan over ~46k entities' bodies + embedded items) is listed
- * here; the last two are the spec's own named "genuinely unknown" residue.
+ * here; the last two are the "genuinely unknown" residue.
  */
 describe("normalizeCodexActionGlyph: the real corpus vocabulary (25 distinct tokens)", () => {
   it("bare long forms", () => {

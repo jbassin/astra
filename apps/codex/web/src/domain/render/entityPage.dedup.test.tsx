@@ -6,18 +6,18 @@ import { EntityPage } from "./entityPage";
 import { loadFixtureRenderEnv, requireEntity } from "./fixtureLoader";
 
 /**
- * P7 (D29-72) — the statblock-dedup seam, both directions (spec §4 C):
+ * The statblock-dedup seam, both directions:
  * body-present entities suppress the structured render (statblock cards +
  * embedded-item sections); Foundry-only (`body: []`) entities KEEP it; and
  * `MastheadExtraFallback` is never suppressed. The synthetic clone cases pin
  * the PREDICATE itself — body-presence, not a category list and not
- * `aonUrl` (spec §5: "the suppression test must pin the *predicate*").
+ * `aonUrl`.
  */
 
 const STATBLOCK = "codex-statblock";
 const EMBEDDED = "codex-embedded-items";
 
-describe("D29-72: suppression when an AoN body is present", () => {
+describe("statblock dedup: suppression when an AoN body is present", () => {
   const { byId, ctx } = loadFixtureRenderEnv();
 
   function render(entity: CodexEntity): string {
@@ -34,7 +34,7 @@ describe("D29-72: suppression when an AoN body is present", () => {
     expect(html).toContain("codex-body"); // the body itself renders
   });
 
-  it("a joined hazard (gravehall-trap) is suppressed the same way, but its MastheadExtraFallback Complexity line STILL renders (D29-62 pairs live only there)", () => {
+  it("a joined hazard (gravehall-trap) is suppressed the same way, but its MastheadExtraFallback Complexity line STILL renders (those label/value pairs live only there)", () => {
     const trap = requireEntity(byId, "hazard/gravehall-trap");
     expect(trap.body.length).toBeGreaterThan(0);
     expect(trap.mastheadExtra?.[0]?.label).toBe("Complexity"); // fixture pin
@@ -73,7 +73,7 @@ describe("D29-72: suppression when an AoN body is present", () => {
   it("PREDICATE PIN (synthetic): the same joined dragon with its body emptied gets the structured render BACK — body-presence decides, nothing else", () => {
     const dragon = requireEntity(byId, "creature/adamantine-dragon-adult");
     // aonUrl intact: proves the predicate is NOT aonUrl-presence (a
-    // no-markdown join can set aonUrl with a Foundry-fallback body, D29-72).
+    // no-markdown join can set aonUrl with a Foundry-fallback body).
     const emptied: CodexEntity = { ...dragon, body: [] };
     expect(emptied.aonUrl).toBeDefined();
     const html = render(emptied);
@@ -90,7 +90,7 @@ describe("D29-72: suppression when an AoN body is present", () => {
     expect(html).not.toContain(EMBEDDED);
   });
 
-  it("BONUS FIX (D29-72 review find): an AoN-only prose creature no longer renders an empty codex-statblock shell", () => {
+  it("an AoN-only prose creature no longer renders an empty codex-statblock shell", () => {
     // Synthetic AoN-only shape: body present, no stats, no embeddedItems —
     // the old unconditional <CreatureStatblock/> rendered an empty
     // `codex-statblock` section for these (statblock.tsx has no null guard);

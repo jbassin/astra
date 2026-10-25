@@ -1,5 +1,5 @@
-// P12 S3 (D29-119) — the pure, directly-testable derivations `ClassPage.tsx`
-// builds its progression table and Core Traits box from. Split out of the
+// The pure, directly-testable derivations `ClassPage.tsx` builds its
+// progression table and Core Traits box from. Split out of the
 // component itself (same "pure core / thin JSX shell" split `nodes.tsx`'s
 // `collectEmbedTargetIds` already uses) so the level-grouping/cadence/
 // suppression logic is unit-testable without a React render.
@@ -11,10 +11,9 @@ import {
   collectText,
 } from "@astra/codex-corpus";
 
-/** D29-119 — proficiency ranks are numeric 0..4 everywhere in `ClassStats`
+/** Proficiency ranks are numeric 0..4 everywhere in `ClassStats`
  * (perception/savingThrows/attacks/defenses); this is the ONE render-side
- * display mapping every one of those rows shares (the spec's own "ranks stay
- * numeric 0-4; display mapping is render-side" text, D29-113). `default`
+ * display mapping every one of those rows shares. `default`
  * degrades to a bare "Rank N" rather than throwing — belt-and-braces, the
  * schema itself already constrains every real value to 0..4. */
 export function rankLabel(rank: number): string {
@@ -34,8 +33,8 @@ export function rankLabel(rank: number): string {
   }
 }
 
-/** D29-119 — the progression table's cadence-cell text, lowercase, exactly
- * the spec's own literal wording ("class feat", "skill increase", ...). Order
+/** The progression table's cadence-cell text, lowercase ("class feat",
+ * "skill increase", ...). Order
  * matches `ClassFeatLevelsSchema`'s own field order (`entity.ts`). */
 const CADENCE_LABELS: ReadonlyArray<{
   key: keyof ClassStats["featLevels"];
@@ -51,7 +50,7 @@ const CADENCE_LABELS: ReadonlyArray<{
 /** Every cadence label that fires at `level` (0, 1, or more — a level can
  * carry several cadence entries at once, e.g. fighter's level 2 is BOTH a
  * class feat and a skill feat level). Never assumes a "standard" cadence —
- * each array is read verbatim off `featLevels`, per D29-113's own measured
+ * each array is read verbatim off `featLevels`, given the measured
  * irregular cases (investigator/rogue dense 2-20; swashbuckler's 13-entry
  * skillFeatLevels). */
 export function cadenceLabelsAtLevel(
@@ -65,9 +64,9 @@ export function cadenceLabelsAtLevel(
   return labels;
 }
 
-/** D29-119 — one progression-table row: every grant at `level` (raw, in the
- * augment pass's own (level, name) sorted order — including the D29-114
- * `targetId: null` stubs, which the caller renders as plain text) plus every
+/** One progression-table row: every grant at `level` (raw, in the augment
+ * pass's own (level, name) sorted order — including the `targetId: null`
+ * stubs, which the caller renders as plain text) plus every
  * cadence label active at `level`. A level with neither is still emitted
  * (both arrays empty) — the caller renders an em-dash for that case, never
  * skips the row (levels 1-20 always render, spec's own "rows 1-20" text). */
@@ -95,7 +94,7 @@ export function buildProgressionRows(
   return rows;
 }
 
-/** D29-119 — the structural suppression predicate: a `table` node whose
+/** The structural suppression predicate: a `table` node whose
  * header row is EXACTLY `["Your Level", "Class Features"]` (measured: occurs
  * exactly once across all 27 real stats-bearing classes — the raw AoN
  * progression table, now redundant with the structured render above it).

@@ -11,8 +11,8 @@ import {
 } from "./loreDedupe";
 
 /**
- * P14 S2 (D29-135) — direct unit coverage of the section-split + shingle-
- * coverage machinery, independent of any fixture/render pipeline (the
+ * Direct unit coverage of the section-split + shingle-coverage
+ * machinery, independent of any fixture/render pipeline (the
  * ClassPage/EntityPage integration tests exercise the real anadi/witch
  * fixtures separately).
  */
@@ -51,7 +51,7 @@ describe("LORE_SUPPRESSION_THRESHOLD", () => {
   });
 });
 
-describe("collisionBaseSlug (D29-132 idiom, mirrored render-side)", () => {
+describe("collisionBaseSlug (the ingest-side collision idiom, mirrored)", () => {
   it("an unsuffixed id is unchanged", () => {
     expect(collisionBaseSlug("class-feature/perception-expertise")).toBe(
       "class-feature/perception-expertise",
@@ -182,7 +182,7 @@ describe("suppressLoreSections: (a) ClassPage-only base-slug embed removal", () 
       heading(2, "Basic Lesson"),
       // bare, unsuffixed target — the real corpus shape (a lore embed
       // carries the collision-family's bare base slug, never the
-      // post-D29-132 SUFFIXED stream targetId).
+      // collision-SUFFIXED stream targetId).
       para(embed("class-feature/basic-lesson")),
     ];
     const result = suppressLoreSections(loreBody, body, {
@@ -192,7 +192,7 @@ describe("suppressLoreSections: (a) ClassPage-only base-slug embed removal", () 
     expect(result.suppressedSections).toBe(1);
   });
 
-  it("without grantedBaseSlugs (EntityPage's own call shape), the same embed is NOT stripped by (a) — it renders fail-soft empty via D29-136 instead, same end result but a different mechanism", () => {
+  it("without grantedBaseSlugs (EntityPage's own call shape), the same embed is NOT stripped by (a) — it renders fail-soft empty instead, same end result but a different mechanism", () => {
     const body: CodexNode[] = [para(text("unrelated class body prose"))];
     const loreBody: CodexNode[] = [
       heading(2, "Basic Lesson"),

@@ -6,15 +6,15 @@ import {
 } from "@astra/codex-corpus";
 
 /**
- * P14 S2 (D29-135) — render-time lore/body deduplication. Two entry points,
- * sharing the same section-splitting + 5-word-shingle coverage machinery:
+ * Render-time lore/body deduplication. Two entry points, sharing
+ * the same section-splitting + 5-word-shingle coverage machinery:
  *
  *   - `suppressLoreSections` — the Lore card's own suppression pass, wired
  *     into BOTH `entityPage.tsx` (ancestry etc.) and `ClassPage.tsx`
  *     (loreBody). Splits `loreBody` into sections at EVERY heading, any
- *     level — the review-corrected granularity (spec header: a top-level-
- *     only split produced one giant "Class Features" H1 section on every
- *     class, coverage 0.59-0.89, whole-section-suppressing the UNIQUE
+ *     level (a top-level-only split produced one giant "Class Features"
+ *     H1 section on every class, coverage 0.59-0.89, whole-section-
+ *     suppressing the UNIQUE
  *     alchemist Versatile Vial table along with the genuine dup prose
  *     around it — at per-heading granularity the table's own section
  *     scores ~0.01 and survives while the dup chapter scores ~0.96 and
@@ -97,17 +97,16 @@ function shingleCoverage(sectionText: string, referenceText: string): number {
 }
 
 // ---------------------------------------------------------------------------
-// the D29-132 collision-base-slug idiom, mirrored here (render-side —
+// the ingest-side collision-base-slug idiom, mirrored here (render-side —
 // deliberately NOT imported from `ingest/augmentClassStats.ts`: the render
 // lane stays dependency-free of the transform lane, same "no fs/server
 // dependency" posture `nodes.tsx` already keeps, extended to "no ingest
 // dependency"). Strips a trailing `@legacy` marker then a trailing `-N`
 // collision suffix — the exact same two-step `classFeatureBaseSlug` uses,
 // so a lore embed's bare pre-collision target and a granted feature's
-// post-D29-132 SUFFIXED targetId land on the identical key (the review
-// blocker this exists to fix: exact-id membership is a no-op for 260/469
-// lore embeds, since loreBody embeds carry the bare base slug while the
-// post-fix stream ids are suffixed).
+// collision-SUFFIXED targetId land on the identical key (exact-id
+// membership is a no-op for 260/469 lore embeds, since loreBody embeds carry
+// the bare base slug while the stream ids are suffixed).
 // ---------------------------------------------------------------------------
 
 const TRAILING_SUFFIX_RE = /-(\d+)$/;
@@ -122,7 +121,7 @@ export function collisionBaseSlug(id: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// D29-135(a): ClassPage-only embed removal by collision-base-slug. Walks the
+// Step (a): ClassPage-only embed removal by collision-base-slug. Walks the
 // full node tree (embeds can sit inside a paragraph/list-item/table-cell,
 // not just at the section's own top level) — mirrors `nodes.tsx`'s
 // `paragraphCarriesBlockContent`/`walkEmbedTargets` traversal shape.
@@ -229,7 +228,7 @@ function splitSections(nodes: readonly CodexNode[]): Section[] {
 // ---------------------------------------------------------------------------
 
 export interface SuppressLoreSectionsOptions {
-  /** ClassPage only (D29-135a): collision-base slugs of every granted
+  /** ClassPage only (step (a)): collision-base slugs of every granted
    * feature's resolved targetId — a lore section's embed nodes whose OWN
    * collision-base slug is a member are stripped BEFORE the coverage
    * check. Absent/undefined on `EntityPage` (ancestry etc., which has no
@@ -255,7 +254,7 @@ export interface LoreDedupeResult {
 }
 
 /**
- * The Lore-card suppression pass (D29-135). Per section: (a) ClassPage only
+ * The Lore-card suppression pass. Per section: (a) ClassPage only
  * — strip embed nodes matching `options.grantedBaseSlugs`; (b) 5-word-
  * shingle-test the section's remaining text against `body`'s text (+
  * `options.extraReferenceText`) — coverage >= `LORE_SUPPRESSION_THRESHOLD`
@@ -337,14 +336,13 @@ export interface CoveredFeatureRef {
 }
 
 /**
- * D29-135's ClassPage Description extension: strips a `body` feature-
- * heading section when its heading text case-insensitively matches a
- * granted feature's name AND the section's prose is covered (same
- * shingle threshold) by THAT feature's own stream body — belt-and-
- * suspenders, an exact name match ALONE never strips (the review-upheld
- * containment: a class re-using a heading name for genuinely different
- * flavor text must survive). The preamble (no heading) is never a
- * candidate — there's no feature name to match against.
+ * The ClassPage Description extension: strips a `body` feature-heading section
+ * when its heading text case-insensitively matches a granted feature's name AND
+ * the section's prose is covered (same shingle threshold) by THAT feature's own
+ * stream body — belt-and-suspenders, an exact name match ALONE never strips (a
+ * class re-using a heading name for genuinely different flavor text must
+ * survive). The preamble (no heading) is never a candidate — there's no feature
+ * name to match against.
  */
 export function stripCoveredFeatureSections(
   body: readonly CodexNode[],

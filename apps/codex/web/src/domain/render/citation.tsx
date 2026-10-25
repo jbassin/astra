@@ -2,9 +2,9 @@ import type { Source } from "@astra/codex-corpus";
 import type { ReactElement } from "react";
 
 /**
- * D29-26 — the source citation line: book + page + a license badge. License
+ * The source citation line: book + page + a license badge. License
  * `unknown` -> the badge is OMITTED (not a "License: unknown" line); book
- * `"unknown"` -> the WHOLE line is omitted (fail-soft, spec D29-26).
+ * `"unknown"` -> the WHOLE line is omitted (fail-soft).
  */
 export function Citation({ source }: { source: Source }): ReactElement | null {
   if (source.book === "unknown") return null;

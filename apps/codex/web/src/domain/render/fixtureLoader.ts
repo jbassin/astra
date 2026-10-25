@@ -15,7 +15,7 @@ import { type RenderCtx, rootRenderCtx } from "./nodes";
  * Shared, deterministic loader for the fixture corpus (`fixtureCorpusRoot()`) — used by
  * the totality test, the golden-regen script, and the golden byte-exact
  * test, so all three see the exact same entity set / embed resolver / trait
- * index (S1 is frontend-free: no corpus reader yet, D29-23 is S2's job).
+ * index. It reads the fixture files directly, not through the server's corpus reader.
  */
 
 export const FIXTURE_ROOT = fixtureCorpusRoot();

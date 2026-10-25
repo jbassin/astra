@@ -1,8 +1,8 @@
 /**
- * D29-26 — which page-shape group a category belongs to. `category` is a
- * free string on `CodexEntity` (the join owns the authoritative list,
- * `entity.ts`'s own file comment) — this is P2's own small, closed mapping
- * from that string to one of the five rendering groups the spec names.
+ * Which page-shape group a category belongs to. `category` is a free string
+ * on `CodexEntity` (the join owns the authoritative list, `entity.ts`'s own
+ * file comment) — this is a small, closed mapping from that string to one of
+ * the five rendering groups.
  */
 export type CategoryGroup = "creature" | "hazard" | "spell" | "equipment" | "feat" | "generic";
 

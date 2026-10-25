@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 //
 // `Popover` (mounted unconditionally by `EntityRenderPane`) reads
-// `useRouterState` (D29-28) — needs a real router context to mount at all,
+// `useRouterState` — needs a real router context to mount at all,
 // same convention `BrowseListing.test.tsx` already uses for its own
 // router-dependent island tests.
 
@@ -14,10 +14,9 @@ import type { EntityPageData } from "../../server/entityPageData";
 import { EntityRenderPane } from "./EntityRenderPane";
 
 /**
- * P10 (D29-95) — "the browse split-view drawer inherits [the size chip] via
- * `EntityRenderPane`" — one assertion suffices, since `EntityRenderPane`
- * passes `entity`/`ctx` into `EntityPage` unmodified (spec R1: reuse
- * verbatim, no extra work).
+ * The browse split-view drawer inherits the size chip via `EntityRenderPane`.
+ * One assertion suffices, since `EntityRenderPane` passes `entity`/`ctx` into
+ * `EntityPage` unmodified.
  */
 
 function renderWithRouter(component: () => ReactElement) {
@@ -43,7 +42,7 @@ const CREATURE_DATA: EntityPageData = {
   embedCapHit: false,
 };
 
-describe("EntityRenderPane: size chip drawer inheritance (P10, D29-95)", () => {
+describe("EntityRenderPane: size chip drawer inheritance", () => {
   it("the split-view drawer renders the same header size chip as the standalone route", async () => {
     renderWithRouter(() => <EntityRenderPane data={CREATURE_DATA} superseded={false} />);
     await screen.findByText("Test Drawer Creature");

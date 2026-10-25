@@ -43,7 +43,7 @@ describe("CreatureStatblock (against the real adamantine-dragon-adult fixture)",
     expect(out).not.toContain("undefined");
   });
 
-  it("D29-74 (P7): a merged lore-skill slug renders HUMANIZED — 'Mining Lore +24', never first-char-only 'Mining-lore'", () => {
+  it("a merged lore-skill slug renders HUMANIZED — 'Mining Lore +24', never first-char-only 'Mining-lore'", () => {
     const out = renderToStaticMarkup(<CreatureStatblock entity={dragon} />);
     expect(out).toContain("Mining Lore +24");
     expect(out).not.toContain("Mining-lore");
@@ -99,7 +99,7 @@ describe("EmbeddedItemSections (dragon strikes/actions + spellcaster variant's s
     expect(renderToStaticMarkup(<EmbeddedItemSections items={[]} ctx={ctx} />)).toBe("");
   });
 
-  it("D29-73 (P7): a strike's transform-baked range renders as a parenthetical after the trait pills (the spellcaster's Rock, range increment 120)", () => {
+  it("a strike's transform-baked range renders as a parenthetical after the trait pills (the spellcaster's Rock, range increment 120)", () => {
     const out = renderToStaticMarkup(
       <EmbeddedItemSections items={spellcaster.embeddedItems ?? []} ctx={ctx} />,
     );
@@ -107,14 +107,14 @@ describe("EmbeddedItemSections (dragon strikes/actions + spellcaster variant's s
     expect(out).toContain("codex-strike-range");
   });
 
-  it("D29-73 (P7): a range-less melee strike renders no range parenthetical (Jaws)", () => {
+  it("a range-less melee strike renders no range parenthetical (Jaws)", () => {
     const jaws = (dragon.embeddedItems ?? []).filter((i) => i.name === "Jaws");
     expect(jaws).toHaveLength(1);
     const out = renderToStaticMarkup(<EmbeddedItemSections items={jaws} ctx={ctx} />);
     expect(out).not.toContain("codex-strike-range");
   });
 
-  it("D29-75 (P7): lore items are EXCLUDED from the abilities bucket — the bonus lives in the Skills row instead", () => {
+  it("lore items are EXCLUDED from the abilities bucket — the bonus lives in the Skills row instead", () => {
     const items = spellcaster.embeddedItems ?? [];
     expect(items.some((i) => i.type === "lore")).toBe(true); // fixture pin: Mining Lore exists
     const out = renderToStaticMarkup(<EmbeddedItemSections items={items} ctx={ctx} />);
@@ -122,7 +122,7 @@ describe("EmbeddedItemSections (dragon strikes/actions + spellcaster variant's s
   });
 });
 
-describe("D29-76 (P7): empty-stub filter in the abilities bucket (synthetic items)", () => {
+describe("empty-stub filter in the abilities bucket (synthetic items)", () => {
   function item(overrides: Partial<EmbeddedItem> & { name: string; slug: string }): EmbeddedItem {
     return { type: "action", traits: [], body: [], ...overrides };
   }

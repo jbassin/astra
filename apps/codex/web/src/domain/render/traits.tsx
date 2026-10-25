@@ -15,8 +15,8 @@ function TraitPill({ name }: { name: string }): ReactElement {
 }
 
 /**
- * D29-24: trait pills link to `/trait/{slug}` ONLY when that trait exists in
- * the corpus's `trait` category (907 entities, spec §2) — numeric qualifiers
+ * Trait pills link to `/trait/{slug}` ONLY when that trait exists in
+ * the corpus's `trait` category (907 entities) — numeric qualifiers
  * like `reach-15` and other non-glossary tokens render as plain (unlinked)
  * pills. Corpus `traits[]` arrays already carry lowercase-hyphenated slugs
  * (verified against the real corpus — e.g. `magical`/`reach-15`/`centaur`),
@@ -24,8 +24,7 @@ function TraitPill({ name }: { name: string }): ReactElement {
  * `trait/${token}` lookup — no `sluggify()` round-trip needed here.
  *
  * `knownTraitIds` is an injected `ReadonlySet<string>` (of full `trait/<slug>`
- * ids) so this stays pure/testable (D29-24's "design the trait-membership
- * input as an injected set" instruction) — S2 wires it from the real
+ * ids) so this stays pure and testable; the server wires it from the real
  * `trait/_index.json` rows.
  */
 function traitHref(token: string): string {

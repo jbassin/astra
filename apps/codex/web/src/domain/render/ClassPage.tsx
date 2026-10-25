@@ -4,22 +4,19 @@ import {
   collectText,
   humanizeSlug,
 } from "@astra/codex-corpus";
-// P12 S3 (D29-119/-120) — the bespoke `class` page composition, swapping in
-// for the S2 placeholder (`routes/class/$slug.tsx`'s `ClassMainPane`) when
-// `entity.stats?.kind === "class"`. This is a FULL composition root (mirrors
-// `EntityRenderPane.tsx`, not a component IT wraps) — item 6 of the spec's
-// own render order is "Attached sidebars as today", meaning ClassPage itself
-// owns that section, so it also owns the same `<Popover/>` mount
-// `EntityRenderPane` does for every other standalone entity page. (No
-// `<TableOfContents/>` here — stakeholder-dropped post-P12: the class page's
-// own fixed section order + the progression table's per-level anchors already
-// cover in-page navigation, so the "On this page" box was redundant chrome.)
+// The bespoke `class` page composition, which `routes/class/$slug.tsx`'s
+// `ClassMainPane` renders when `entity.stats?.kind === "class"`. This is a
+// FULL composition root (mirrors `EntityRenderPane.tsx`, not a component IT
+// wraps): ClassPage itself owns the attached-sidebars section, so it also
+// owns the same `<Popover/>` mount `EntityRenderPane` does for every other
+// standalone entity page. (No "On this page" table of contents, by
+// stakeholder decision: the class page's own fixed section order + the
+// progression table's per-level anchors already cover in-page navigation.)
 // The `popover-hint` class on this component's own root article is NOT
 // optional polish: `Popover.tsx` fetches a hovered crossref's target page and
 // clones whatever carries that class — 1,066 `class-feature/*` docs crossref
 // `class/*`, so a class page missing it would silently break every one of
-// those hover cards (the exact review blocker D29-119's header-extraction
-// step exists to protect).
+// those hover cards (the reason `EntityHeader` is shared).
 import { Fragment, useEffect, useMemo, useState, type ReactElement, type ReactNode } from "react";
 
 import type { ClassPageData, SlimFeatureDoc } from "../../server/classPageData";
@@ -69,8 +66,8 @@ function Row({ label, children }: { label: string; children: ReactNode }): React
   );
 }
 
-/** `[]` -> "Chosen at 1st level" (psychic — the one real 0-length case,
- * D29-113); otherwise every ability slug's full name, "or"-joined (the
+/** `[]` -> "Chosen at 1st level" (psychic — the one real 0-length case);
+ * otherwise every ability slug's full name, "or"-joined (the
  * common 1-2 element case: cleric's `["wis"]` -> "Wisdom", fighter's
  * `["dex","str"]` -> "Dexterity or Strength" — kept in the corpus's own
  * array order, never re-sorted). */
@@ -104,7 +101,7 @@ function CoreTraitsBox({
     `Advanced ${rankLabel(stats.attacks.advanced)}`,
     `Unarmed ${rankLabel(stats.attacks.unarmed)}`,
   ];
-  // D29-113 — `other` is a fixed 5th key on every raw doc, empty on 24/27;
+  // `other` is a fixed 5th key on every raw doc, empty on 24/27;
   // gated on the same non-empty-name predicate extract-time emission used
   // (never an empty "Rank 0" row for the 24 that don't carry a real one).
   if (stats.attacks.other !== undefined) {
@@ -167,7 +164,7 @@ function ProgressionRowCells({
 }): ReactElement {
   const parts: ReactNode[] = [];
   for (const grant of row.grants) {
-    // D29-114 — a `targetId: null` stub (the 17 real cases, e.g. cleric's
+    // A `targetId: null` stub (the 17 real cases, e.g. cleric's
     // "First Doctrine") renders as PLAIN TEXT, never a dead link; same
     // fallback for the belt-and-braces case where `targetId` resolved at
     // augment time but `resolveGrantedFeatures` still failed to read the doc
@@ -260,10 +257,10 @@ function SubclassPillButton({
 
 /** Renders one selected subclass doc's full prose inline: a heading (real
  * `id`, from the SAME per-page assigner every other heading here uses — SSR-
- * selected ones surface in the ToC by construction, D29-119's own accepted
- * "client-toggle-added headings don't" trade-off) + its body. `extraEmbeds`
+ * selected ones get stable ids by construction; client-toggle-added ones
+ * are an accepted trade-off) + its body. `extraEmbeds`
  * is set ONLY for a client-fetched (non-SSR) doc — its own self-contained
- * `EntityPageData.embeds` map, since the D29-117 merged `data.embeds` only
+ * `EntityPageData.embeds` map, since the merged `data.embeds` only
  * ever covers the class body + granted features + SSR-selected subclasses. */
 function SubclassDocSection({
   doc,
@@ -313,7 +310,7 @@ function SubclassSection({
   // re-render, while satisfying `react-hooks/exhaustive-deps` at each step.
   const options = useMemo(() => stats.subclassOptions ?? [], [stats]);
 
-  // D29-115/-119 — grouped by category, preserving each category's own
+  // Grouped by category, preserving each category's own
   // first-encounter order (the augment pass's own array order — cleric: one
   // "doctrine" row; witch/champion/psychic/wizard: two labeled rows).
   const byCategory = useMemo(() => {
@@ -337,10 +334,10 @@ function SubclassSection({
   const [extra, setExtra] = useState<ReadonlyMap<string, EntityPageData>>(new Map());
 
   useEffect(() => {
-    // Effects never run during SSR (React's own contract — `TableOfContents.
-    // tsx`'s own comment) — this only ever fires client-side, after
-    // hydration, on a genuine `?subclass=` change. Unselected pills fetch ON
-    // DEMAND here via the existing `memoizedEntity` client seam (D29-117):
+    // Effects never run during SSR (React's own contract) — this only ever
+    // fires client-side, after hydration, on a genuine `?subclass=` change.
+    // Unselected pills fetch ON DEMAND here via the `memoizedEntity` client
+    // seam:
     // an already-SSR-resolved id is skipped, and `memoizedEntity`'s own
     // promise cache absorbs a duplicate call for an in-flight id (this
     // effect's deps intentionally don't chase referential identity too
@@ -459,7 +456,7 @@ export function ClassPage({
   // whatever's now on the page, with no cross-render state to keep in sync.
   const ctx: RenderCtx = { ...baseCtx, headingId: createHeadingIdAssigner() };
 
-  // D29-119 (review-corrected) — pre-assign the section + stream heading ids
+  // Pre-assign the section + stream heading ids
   // IN RENDER ORDER, from this SAME assigner, before building any JSX: the
   // progression table (rendered at position 2) needs the stream headings'
   // ids (rendered at position 4) for its anchor hrefs.
@@ -477,7 +474,7 @@ export function ClassPage({
     entity.body,
   );
   if (suppressedCount !== 1) {
-    // Belt-and-braces (D29-119's own "assert exactly-one" text) — measured
+    // Belt-and-braces (expect exactly one) — measured
     // exactly 1 on all 27 real stats-bearing classes; a future re-snapshot
     // drifting this is worth a loud dev-time signal, not a 500.
     // oxlint-disable-next-line no-console -- SSR render warning to stdout; codex has no OTel logger yet
@@ -486,8 +483,7 @@ export function ClassPage({
         `table to suppress from the Description body, found ${suppressedCount}.`,
     );
   }
-  // P14 S2 (D29-135) — completes P12's own declared "dedup'd Description"
-  // intent: `entity.body`'s own "Class Features" chapter restates each
+  // De-duplicate the Description: `entity.body`'s own "Class Features" chapter restates each
   // granted feature's prose a SECOND time (the stream above is the first),
   // under a heading matching the feature's own name — strip any such
   // section whose prose the stream's OWN feature body covers (belt-and-
@@ -500,18 +496,18 @@ export function ClassPage({
     grantedFeatures,
   );
 
-  // Real-corpus finding (S3 build verification, `alchemist`/several others):
-  // `loreBody` (a merged Foundry JOURNAL page — D29-8, e.g. alchemist's own
-  // "Roleplaying the Alchemist" entry) independently restates the SAME
-  // proficiency-summary + progression table a second time when present —
-  // the identical redundancy-with-the-structured-render concern D29-119's
-  // suppression predicate targets, just via a SECOND source document rather
-  // than `entity.body` itself. Its own duplicate progression table is
-  // stripped the same way first; the P14 S2 suppression pass (D29-135) then
+  // Real-corpus finding (`alchemist`/several others): `loreBody` (a merged
+  // Foundry JOURNAL page, e.g. alchemist's own "Roleplaying the Alchemist"
+  // entry) independently restates the SAME proficiency-summary +
+  // progression table a second time when present — the identical
+  // redundancy-with-the-structured-render concern the progression-table
+  // predicate targets, just via a SECOND source document rather than
+  // `entity.body` itself. Its own duplicate progression table is stripped
+  // the same way first; the lore suppression pass then
   // runs per-heading-section over what's left, ALSO removing (a) any embed
   // node restating a granted feature by its collision-base slug (a lore
   // embed carries the bare base slug — e.g. "class-feature/perception-
-  // expertise" — while the post-D29-132 stream targetId is suffixed, e.g.
+  // expertise" — while the stream targetId carries a collision suffix, e.g.
   // "-8"; exact-id membership would be a no-op here) and (b) any section
   // whose remaining prose the widened reference text (body + every granted
   // feature's own stream body) covers.
@@ -575,7 +571,7 @@ export function ClassPage({
       {/* Same convention as `EntityPage` — additive (several real classes DO
           carry `loreBody`, e.g. alchemist's "Roleplaying the Alchemist"
           journal merge, verified against the real corpus) — never silently
-          drop it. D29-135 — the whole card (heading included) is omitted
+          drop it. The whole card (heading included) is omitted
           when suppression eats every section, not just left empty. */}
       {loreResult !== undefined && loreResult.nodes.length > 0 ? (
         <section className="codex-card codex-card-prose codex-lore">
