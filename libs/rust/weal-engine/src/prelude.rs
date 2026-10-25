@@ -1,4 +1,4 @@
-//! The D32-19 prelude: the ONE builtin registry.
+//! The prelude: the ONE builtin registry.
 //!
 //! Every builtin is defined once, as a row of [`BUILTINS`]: its name, its
 //! curried arity, how the checker types it ([`Typing`]), its native
@@ -16,7 +16,7 @@
 //!
 //! Saturated calls run through [`dispatch`] (currying and partial
 //! application are `Interp::apply`'s job). Runtime shape checks are
-//! DEFENSIVE — the S2 checker guarantees well-typedness — and surface as
+//! DEFENSIVE — the checker guarantees well-typedness — and surface as
 //! `Internal` errors; user-reachable failures (construction validity, caps,
 //! save-name validation, effects-in-evaluate) are proper eval/fuel errors.
 
@@ -91,7 +91,7 @@ pub struct Call {
     /// Which builtin runs (rows that share an implementation tell apart by it).
     pub builtin: Builtin,
     /// True only for a DIRECT `dm` call whose argument was syntactically a
-    /// dict literal (D32-4).
+    /// dict literal.
     pub dm_literal: bool,
     pub span: Option<Span>,
 }
@@ -110,7 +110,7 @@ pub struct BuiltinDef {
     pub typing: Typing,
     pub run: Impl,
     /// The die-suffix spelling elaborates to this builtin instead (the `e`
-    /// alias canonicalizes to `explode`, D32-19).
+    /// alias canonicalizes to `explode`).
     pub suffix_as: Option<Builtin>,
     /// The player guide's one-line description (markdown).
     pub doc: &'static str,
@@ -730,7 +730,7 @@ fn require_function_free(faces: &[Value], what: &str, span: Option<Span>) -> Res
 
 /// Run a saturated builtin. `args.len()` equals the row's arity.
 /// `dm_literal` is true only for a DIRECT `dm` call whose argument was
-/// syntactically a dict literal (D32-4).
+/// syntactically a dict literal.
 pub fn dispatch(
     interp: &mut Interp<'_>,
     builtin: Builtin,
@@ -781,7 +781,7 @@ fn dl(_: &mut Interp<'_>, mut args: Vec<Value>, call: Call) -> Result<Value, Eva
         return Err(EvalError::eval("dl needs at least one face", call.span));
     }
     require_function_free(&faces, "dl", call.span)?;
-    // Duplicate faces are legal; order = list order (R4).
+    // Duplicate faces are legal; order = list order.
     Ok(Value::Die(DieTree::Dl { faces }))
 }
 
@@ -804,7 +804,7 @@ fn dm(_: &mut Interp<'_>, mut args: Vec<Value>, call: Call) -> Result<Value, Eva
         faces.push((face, w));
     }
     if !call.dm_literal {
-        // Face SORT order fallback (D32-4) via the total structural order.
+        // Face SORT order fallback via the total structural order.
         faces.sort_by(|a, b| total_cmp(&a.0, &b.0));
     }
     Ok(Value::Die(DieTree::Dm { faces }))
@@ -817,7 +817,7 @@ fn evaluate(_: &mut Interp<'_>, mut args: Vec<Value>, _: Call) -> Result<Value, 
     if !matches!(func, Value::Closure(_) | Value::Builtin(_)) {
         return Err(internal("evaluate's transition must be a function"));
     }
-    // Symbolic until S4 — the DP runs through dist_seam::dist_of_with when a
+    // Symbolic until needed — the DP runs through dist_seam::dist_of_with when a
     // distribution is demanded.
     Ok(Value::Die(DieTree::Evaluate {
         pool,
@@ -1065,7 +1065,7 @@ fn save(interp: &mut Interp<'_>, mut args: Vec<Value>, call: Call) -> Result<Val
     interp.effect_guard(span)?;
     let value = args.pop().expect("arity 2");
     let name_atom = as_atom(&args[0], "save's first argument")?;
-    // D32-19: the atom must match the IDENT regex `[a-z][a-zA-Z0-9_]*`. Atom
+    // The atom must match the IDENT regex `[a-z][a-zA-Z0-9_]*`. Atom
     // charset is `[a-z][a-z0-9-]*`, so in practice this rejects kebab names —
     // but check the full regex defensively.
     let mut chars = name_atom.chars();

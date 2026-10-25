@@ -10,7 +10,7 @@
 use crate::ast::{Expr, MatchPat, Pattern};
 use std::fmt::Write;
 
-/// Precedence levels, matching the D32-2 climb. Higher binds tighter.
+/// Precedence levels, matching the parser's precedence climb. Higher binds tighter.
 /// let/match/lambda = 0 (they extend maximally to the right), cmp = 1,
 /// add/sub = 2, mul/div = 3, unary-neg = 4, postfix = 5, atoms = 6.
 fn level(e: &Expr) -> u8 {

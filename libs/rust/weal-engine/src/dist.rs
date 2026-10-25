@@ -1,4 +1,4 @@
-//! The exact-distribution engine (S4) — the icepool port (D32-10).
+//! The exact-distribution engine — a port of the icepool library's core.
 //!
 //! Pure and value-agnostic: everything is generic over a face type
 //! `F: Ord + Clone` and never touches the interpreter's `Value`. The
@@ -6,14 +6,14 @@
 //!
 //! Contents:
 //! - [`Weight`] — exact nonnegative integer weights, `u128` fast path with
-//!   checked promotion to `BigUint`, bit-length capped (D32-12).
+//!   checked promotion to `BigUint`, bit-length capped by the budget.
 //! - [`Dist`] — a distribution: sorted `BTreeMap<F, Weight>` entries plus an
-//!   **explicit face-order vector** (D32-4) and a cached denominator.
+//!   **explicit face-order vector** (the order display reads) and a cached denominator.
 //! - [`combine`]/[`try_combine`]/[`Dist::map`]/[`mix`] — cartesian binary
 //!   ops, unary remap, and the weighted-lcm mixture.
 //! - [`KeepTuple`] + [`eval_pool`] — the pool recursion (pop-extreme +
 //!   weighted-Pascal `comb_row` + keep-tuple + level memo + `skip_weight`
-//!   dump), iterating faces in DESCENDING `Ord` order (D32-8).
+//!   dump), iterating faces in DESCENDING `Ord` order (the evaluator contract).
 //! - [`sum_pool`] (with the keep-1 closed forms [`highest_1`]/[`lowest_1`])
 //!   and [`successes`].
 //! - [`explode`] / [`reroll_faces`] / [`reroll_face`] — bounded die-level
@@ -21,7 +21,7 @@
 //! - Numeric-face statistics: exact-rational mean/variance, 6-place decimal
 //!   mean/std, `quantity_le`/`quantity_ge`.
 //!
-//! Budgets (D32-12): every allocation/growth point checks a [`Budget`] the
+//! Budgets: every allocation/growth point checks a [`Budget`] the
 //! caller threads **before** growing; exhaustion is
 //! `DistError::Budget { counter }`.
 //!

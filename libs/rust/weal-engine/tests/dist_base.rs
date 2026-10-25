@@ -1,4 +1,4 @@
-//! S4 unit tests for `Dist` core: constructors, D32-4 face-order semantics,
+//! Unit tests for `Dist` core: constructors, face-order semantics,
 //! combine/map/mix, simplify, statistics helpers.
 
 use weal_engine::dist::{

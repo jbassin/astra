@@ -1,4 +1,4 @@
-//! The D32-12 budget: caps enforced at the distribution-engine level.
+//! The distribution budget: caps enforced at the distribution-engine level.
 //!
 //! The caller threads one [`Budget`] through every dist-building call; each
 //! allocation/growth point checks BEFORE growing and aborts with
@@ -10,7 +10,7 @@ use std::fmt;
 /// An error from the distribution engine.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum DistError {
-    /// A D32-12 budget counter was exhausted. `counter` is one of
+    /// A budget counter was exhausted. `counter` is one of
     /// `"transitions"`, `"states"`, `"support"`, `"weight_bits"`,
     /// `"explode_depth"`, `"pool_count"`.
     Budget { counter: &'static str },
@@ -42,9 +42,9 @@ impl fmt::Display for DistError {
 
 impl Error for DistError {}
 
-/// The D32-12 budget the caller threads through the engine.
+/// The budget the caller threads through the engine.
 ///
-/// The four public fields are LIMITS (defaults = the D32-12 consts); the
+/// The four public fields are LIMITS (defaults = the `DEFAULT_*` consts); the
 /// private fields track usage. `transitions` is cumulative work
 /// (`next`-callback invocations plus weighted-Pascal `comb_row` cells —
 /// the row cells are the pool DP's other super-linear cost, so they count
@@ -54,26 +54,26 @@ impl Error for DistError {}
 /// any single weight (checked inside every [`super::Weight`] op).
 #[derive(Debug, Clone)]
 pub struct Budget {
-    /// DP-transition limit (D32-12 default: 1,000,000).
+    /// DP-transition limit (default: 1,000,000).
     pub transitions: u64,
-    /// Concurrent state-map entry limit (D32-12 default: 200,000).
+    /// Concurrent state-map entry limit (default: 200,000).
     pub states: u64,
-    /// Support size limit per die (D32-12 default: 50,000).
+    /// Support size limit per die (default: 50,000).
     pub support: u64,
-    /// Bigint bit-length limit per weight (D32-12 default: 16,384).
+    /// Bigint bit-length limit per weight (default: 16,384).
     pub weight_bits: u64,
     used_transitions: u64,
     peak_states: u64,
 }
 
 impl Budget {
-    /// D32-12: DP transitions <= 1,000,000.
+    /// Default cap: DP transitions <= 1,000,000.
     pub const DEFAULT_TRANSITIONS: u64 = 1_000_000;
-    /// D32-12: state-map entries <= 200,000.
+    /// Default cap: state-map entries <= 200,000.
     pub const DEFAULT_STATES: u64 = 200_000;
-    /// D32-12: support size per die <= 50,000.
+    /// Default cap: support size per die <= 50,000.
     pub const DEFAULT_SUPPORT: u64 = 50_000;
-    /// D32-12: bigint bits per weight <= 16,384.
+    /// Default cap: bigint bits per weight <= 16,384.
     pub const DEFAULT_WEIGHT_BITS: u64 = 16_384;
 
     /// A budget with custom limits and zero usage.

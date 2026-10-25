@@ -1,7 +1,7 @@
 /* @ts-self-types="./weal_engine.d.ts" */
 
 /**
- * The D32-11 export (`--target nodejs`).
+ * The single wasm export (`--target nodejs`).
  * @param {string} source
  * @param {string} saves_json
  * @param {Uint8Array} seed

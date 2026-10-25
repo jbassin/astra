@@ -1,22 +1,22 @@
-//! The S3 ↔ S4 seam: everything in the interpreter (and S5's api layer)
-//! that needs an actual DISTRIBUTION goes through [`dist_of`] /
-//! [`dist_of_with`], which lower a symbolic [`DieTree`] into S4's generic
+//! The interpreter ↔ distribution-engine seam: everything in the interpreter
+//! (and the api layer) that needs an actual DISTRIBUTION goes through [`dist_of`] /
+//! [`dist_of_with`], which lower a symbolic [`DieTree`] into the generic
 //! [`Dist`] engine and hand back a [`SeamDist`] whose faces are plain
 //! [`Value`]s again.
 //!
-//! # Face representation (amended D32-8)
+//! # Face representation
 //!
 //! Internally every distribution is a `Dist<Face>`:
 //!
 //! - **Numeric faces** (`Face::Num` = Num/`BigInt`, `Face::Dec` = scaled
-//!   i128) carry NO rank: their `Ord` is numeric. The D32-4 face-order
+//!   i128) carry NO rank: their `Ord` is numeric. The face-order
 //!   VECTOR still preserves construction order (`dm([3: 1, 1: 2])` keeps
 //!   `[3, 1]` for goodness/display), but pool iteration and keep-tuples run
-//!   in numeric sorted order — this is the amended-D32-8 behavior: for
+//!   in numeric sorted order. So for
 //!   numeric dice the evaluator sees faces in DESCENDING NUMERIC order and
 //!   `kh`/`kl` keep numerically-highest/lowest dice, regardless of the
 //!   display order.
-//! - **Non-numeric faces** (`Face::Ranked`) bake the face's D32-4
+//! - **Non-numeric faces** (`Face::Ranked`) bake the face's
 //!   face-order RANK into the wrapper at construction time, so sorted
 //!   (`Ord`) order == face order. `eval_pool`'s descending sorted iteration
 //!   is therefore descending FACE-ORDER for atom/str/bool/other dice, and
@@ -35,9 +35,9 @@
 //! `Leaf` = `sum_pool` over the uniform die (the keep-1 closed forms fire
 //! via `sum_pool`'s own dispatch); `Const` = a one-face constant; `Dl`/`Dm`
 //! = uniform/weighted with rank-baked faces where non-numeric; `BinOp` =
-//! `try_combine` with S3's Num semantics (truncating division; a zero in
+//! `try_combine` with the interpreter's Num semantics (truncating division; a zero in
 //! the divisor's support is the same visible "division by zero" eval error
-//! S3 raises for constants); `Cmp` = `try_combine` into the Bool die
+//! the interpreter raises for constants); `Cmp` = `try_combine` into the Bool die
 //! (equality on any equatable faces, ordering on Num faces only — the
 //! checker guarantees it); `Neg`/`MinMax` = `map`/`combine` on Num faces;
 //! `Explode`/`Reroll`/`RerollFace` = the die-level ops on Num faces (a
@@ -49,12 +49,12 @@
 //! # Evaluate + the callback
 //!
 //! `DieTree::Evaluate` runs the user transition through [`dist_of_with`]'s
-//! callback: `(func, state, face, count)` — amended at S4b to carry the
+//! callback: `(func, state, face, count)`, which carries the
 //! node's own transition `func`, so nested/multiple `Evaluate` nodes in one
-//! tree each apply their own closure. S3 provides the body via
-//! `Interp::run_evaluator_step` (which arms the D32-7 effect guard).
+//! tree each apply their own closure. The interpreter provides the body via
+//! `Interp::run_evaluator_step` (which arms the effect guard).
 //! Plain [`dist_of`] (no callback) FAILS on `Evaluate` nodes with an
-//! `Internal` error — the interpreter/S5 must route evaluator-bearing trees
+//! `Internal` error — the interpreter and api layer must route evaluator-bearing trees
 //! through [`dist_of_with`]. Evaluator `EvalError`s are threaded out of the
 //! DP intact (kind/span preserved) via a capture slot around
 //! `DistError::External`.
@@ -62,10 +62,10 @@
 //! # Budgets and errors
 //!
 //! Each `dist_of`/`dist_of_with` call constructs a fresh
-//! [`Budget::default`] (the D32-12 limits) and threads it through the whole
-//! lowering. S3's [`crate::fuel::Fuel`] has no distribution counters (they
-//! are S4's per D32-12), so there is no shared fuel object — S5 wires the
-//! wasm-level budget later. `DistError::Budget { counter }` maps to an
+//! [`Budget::default`] (the default limits) and threads it through the whole
+//! lowering. The interpreter's [`crate::fuel::Fuel`] has no distribution counters (they
+//! belong to the distribution engine), so there is no shared fuel object; the
+//! wasm-level `budget` scales interpreter steps only. `DistError::Budget { counter }` maps to an
 //! `EvalError` with `kind = Fuel` whose message preserves the counter name
 //! (`"fuel exhausted: <counter>"`); every other engine error maps to
 //! `kind = Eval`.
@@ -83,7 +83,7 @@ use crate::dist::{
 use crate::value::{DEC_SCALE, DieTree, EvalError, Keep, MinMaxOp, PoolTree, Value, total_cmp};
 
 // ---------------------------------------------------------------------------
-// Error mapping (D32-12 counters → fuel-kind EvalErrors)
+// Error mapping (budget counters → fuel-kind EvalErrors)
 // ---------------------------------------------------------------------------
 
 impl From<DistError> for EvalError {
@@ -100,7 +100,7 @@ impl From<DistError> for EvalError {
 // ---------------------------------------------------------------------------
 
 /// The seam's face type (module docs): numeric faces order numerically,
-/// non-numeric faces order by their baked D32-4 face-order rank.
+/// non-numeric faces order by their baked face-order rank.
 #[derive(Debug, Clone)]
 pub(crate) enum Face {
     Num(BigInt),
@@ -209,21 +209,20 @@ impl Eq for StateKey {}
 // The public callback + result types
 // ---------------------------------------------------------------------------
 
-/// The unsized evaluator-transition function type (D32-8, amended at S4b to
-/// carry the node's transition function). Arguments: transition func (the
+/// The unsized evaluator-transition function type. Arguments: transition func (the
 /// `Evaluate` node's closure value), current state, face value, count of
 /// kept dice showing that face; returns the next state.
 pub type EvaluatorFn<'a> = dyn FnMut(&Value, &Value, &Value, u64) -> Result<Value, EvalError> + 'a;
 
-/// The evaluator callback [`dist_of_with`] takes — S3 provides the body via
+/// The evaluator callback [`dist_of_with`] takes — the interpreter provides the body via
 /// `Interp::run_evaluator_step` (effect guard armed).
 pub type EvaluatorCallback<'a, 'b> = &'a mut EvaluatorFn<'b>;
 
-/// A computed distribution with plain [`Value`] faces — the surface S5's
+/// A computed distribution with plain [`Value`] faces — the surface the
 /// goodness/plot/sample layers read.
 ///
 /// `support`/`min_face`/`max_face`/`quantity_*` follow the SORTED (`Ord`)
-/// order; `face_order`/`position_of` follow the D32-4 face-order vector.
+/// order; `face_order`/`position_of` follow the face-order vector.
 #[derive(Debug, Clone)]
 pub struct SeamDist(Dist<Face>);
 
@@ -246,7 +245,7 @@ impl SeamDist {
         self.0.support_len()
     }
 
-    /// The D32-4 face-order vector, as plain values.
+    /// The face-order vector, as plain values.
     pub fn face_order(&self) -> Vec<Value> {
         self.0.face_order().iter().map(Face::value).collect()
     }
@@ -276,7 +275,7 @@ impl SeamDist {
     }
 
     /// Exact mean as a 6-place decimal string — `Some` for Num or Dec
-    /// faces, `None` otherwise (D32-10).
+    /// faces, `None` otherwise.
     pub fn mean_decimal(&self) -> Option<String> {
         if let Some(d) = self.num_projection() {
             return Some(dist::mean_decimal(&d));
@@ -377,7 +376,7 @@ fn sqrt_rational_decimal(vn: &BigInt, vd: &BigUint) -> String {
 // Entry points
 // ---------------------------------------------------------------------------
 
-/// Compute the exact distribution of `tree` with a fresh default D32-12
+/// Compute the exact distribution of `tree` with a fresh default
 /// budget. Fails with an `Internal` error on [`DieTree::Evaluate`] nodes —
 /// route evaluator-bearing trees through [`dist_of_with`].
 pub fn dist_of(tree: &DieTree) -> Result<SeamDist, EvalError> {
@@ -451,7 +450,7 @@ fn build(
                 BinOp::Mul => Ok(a * b),
                 BinOp::Div => {
                     if *b == BigInt::ZERO {
-                        // Same visible error S3 raises for constant zero
+                        // Same visible error the interpreter raises for constant zero
                         // divisors; zero here sits in the divisor's support.
                         Err(EvalError::eval("division by zero", None))
                     } else {
@@ -652,7 +651,7 @@ fn const_face(v: &Value) -> Face {
 }
 
 /// Wrap a `dl`/`dm` face list: Num/Dec faces pass through rankless (numeric
-/// `Ord`); anything else gets its D32-4 face-order rank baked in
+/// `Ord`); anything else gets its face-order rank baked in
 /// (first-occurrence order — duplicates share the first occurrence's rank).
 /// Faces are homogeneous by the checker; a mix is an `Internal` error.
 fn wrap_faces<'a>(faces: impl IntoIterator<Item = &'a Value>) -> Result<Vec<Face>, EvalError> {
@@ -709,7 +708,7 @@ fn faces_from_num(d: Dist<BigInt>, budget: &Budget) -> Result<Dist<Face>, EvalEr
 
 /// Fold a pool's keep chain into ONE keep-tuple: the kept set is always a
 /// contiguous window of sorted positions; each `Keep` re-keeps within the
-/// current window (S3 validated the bounds at construction — violations
+/// current window (the interpreter validated the bounds at construction — violations
 /// here are `Internal`).
 fn keep_tuple(pool: &PoolTree) -> Result<KeepTuple, EvalError> {
     let count = usize::try_from(pool.count).map_err(|_| EvalError::fuel("pool_count", None))?;

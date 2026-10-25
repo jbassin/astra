@@ -1,5 +1,5 @@
-//! S5 §3 render goldens — byte-exact under the pinned seed `[77u8; 32]`
-//! (spec 0032 §3; gate C).
+//! Render goldens — byte-exact under the pinned seed `[77u8; 32]`, one per
+//! row of the spec's render table.
 //!
 //! The spec table's SHAPE is the contract; its example faces were
 //! illustrative. Under this crate's sampling order and seed the drawn faces
@@ -53,7 +53,7 @@ fn assert_row(src: &str, render_text: &str, headline: &str, dice: &[(u64, u64)])
     assert_eq!(got, dice, "{src}");
 }
 
-// -- the §3 table (each row byte-exact) -------------------------------------
+// -- the render table (each row byte-exact) --------------------------------
 
 #[test]
 fn table_d20_plus_7() {
@@ -114,7 +114,7 @@ fn table_dl_constructor_leaf() {
 
 #[test]
 fn table_explode_chain() {
-    // The chain draw (6→1) records BOTH faces in standardDice (D32-11).
+    // The chain draw (6→1) records BOTH faces in standardDice.
     assert_row(
         "2d6e2",
         "2d6e2 ⟪6→1,3⟫ = 10",
@@ -130,7 +130,7 @@ fn table_die_free_math_collapses() {
 
 #[test]
 fn evaluate_renders_pool_faces_and_state() {
-    // §3: `evaluate()` renders `evaluate(NdM) ⟪sampled pool faces⟫ = state`.
+    // `evaluate()` renders `evaluate(NdM) ⟪sampled pool faces⟫ = state`.
     assert_row(
         "evaluate(pool(4, d6), 0, |s, f, c| s + f * c)",
         "evaluate(4d6) ⟪6,1,3,6⟫ = 16",
@@ -300,7 +300,7 @@ fn sampling_is_deterministic_per_seed() {
     assert_ne!(a, c);
 }
 
-// -- the D32-8 count-0 amendment (goodness/dist divergence regression) ------
+// -- count-0 transitions are the identity (goodness/dist divergence regression)
 
 #[test]
 fn evaluate_goodness_reflects_the_landed_face_dist() {

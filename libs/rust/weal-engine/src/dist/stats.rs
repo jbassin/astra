@@ -1,5 +1,5 @@
-//! Numeric-face statistics (D32-10): exact-rational mean/variance reduced
-//! at the end, 6-place decimal strings for the D32-11 plot fields, and the
+//! Numeric-face statistics: exact-rational mean/variance reduced
+//! at the end, 6-place decimal strings for the API's plot fields, and the
 //! cumulative-quantity helpers the closed forms and goodness need.
 
 use num_bigint::{BigInt, BigUint, Sign};
@@ -97,7 +97,7 @@ pub(crate) fn rational_to_decimal(num: &BigInt, den: &BigUint) -> String {
 }
 
 /// Exact mean rendered as a 6-place decimal string (round-half-away-from-
-/// zero) — the D32-11 `plots[].mean` payload.
+/// zero) — the API's `plots[].mean` payload.
 pub fn mean_decimal<F: NumFace>(die: &Dist<F>) -> String {
     let (num, den) = mean_rational(die);
     rational_to_decimal(&num, &den)

@@ -1,4 +1,4 @@
-//! Recoverable recursive-descent parser producing the rowan CST per the D32-2
+//! Recoverable recursive-descent parser producing the rowan CST for the weal
 //! grammar.
 //!
 //! Grammar notes implemented here:
@@ -450,7 +450,7 @@ impl Parser<'_> {
         self.start_node(ARM_PAT);
         match self.peek() {
             Some(MINUS) => {
-                // Negative pattern literal (D32-2 review note).
+                // Negative pattern literal.
                 self.bump();
                 match self.peek() {
                     Some(NUM | DEC) => self.bump(),
@@ -511,7 +511,7 @@ impl Parser<'_> {
         let cp = self.checkpoint();
         self.parse_add();
         if matches!(self.peek(), Some(LT | LE | GT | GE | EQ_EQ | NOT_EQ)) {
-            // Non-assoc level, but chains PARSE into one flat node (D32-2);
+            // Non-assoc level, but chains PARSE into one flat node;
             // the type stage rejects chains of length > 1.
             self.start_node_at(cp, CMP_CHAIN);
             while matches!(self.peek(), Some(LT | LE | GT | GE | EQ_EQ | NOT_EQ)) {
@@ -584,7 +584,7 @@ impl Parser<'_> {
         }
     }
 
-    /// Label words use the ident charset `[a-z][a-z0-9_]*` (D32-6 — no kebab).
+    /// Label words use the ident charset `[a-z][a-z0-9_]*` (no kebab).
     /// A `DIE`-shaped word like `d6` is accepted when it fits the charset.
     fn parse_label_word(&mut self) {
         match self.peek() {
@@ -709,7 +709,7 @@ impl Parser<'_> {
         }
     }
 
-    /// The `[`-fork (D32-2): `[:]` = empty dict; `[]` = empty list; otherwise
+    /// The `[`-fork: `[:]` = empty dict; `[]` = empty list; otherwise
     /// parse the first expression and dispatch on `:`.
     fn parse_list_or_dict(&mut self) {
         let cp = self.checkpoint();
@@ -785,7 +785,7 @@ impl Parser<'_> {
         self.finish_node();
     }
 
-    /// Only `\"`, `\\`, `\n` are legal escapes (D32-1).
+    /// Only `\"`, `\\`, `\n` are legal escapes.
     fn validate_str_escapes(&mut self, token_index: usize) {
         let t = self.tokens[token_index];
         let text = &self.src[t.start..t.end];

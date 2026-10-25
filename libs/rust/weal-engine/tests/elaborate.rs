@@ -1,5 +1,5 @@
-//! Elaboration-shape assertions: the CoreExpr contract S3 consumes —
-//! suffix lowering (D32-5), inserted sum calls (D32-4), dm literal-order
+//! Elaboration-shape assertions: the CoreExpr contract the interpreter consumes —
+//! suffix lowering, inserted sum calls, dm literal-order
 //! metadata, and shadow-proof Prelude nodes.
 
 use weal_engine::ast::BinOp;

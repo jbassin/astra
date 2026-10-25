@@ -1,9 +1,9 @@
-//! S3 runtime values (spec 0032 §4 S3).
+//! The interpreter's runtime values.
 //!
 //! Dice are SYMBOLIC TREES in v2: evaluating a die expression builds a
 //! [`DieTree`] describing the distribution; the actual distribution math is
-//! S4's (`dist.rs`, reached through [`crate::dist_seam`]) and the render tree
-//! is S5's (derived from these trees).
+//! the distribution engine's (`dist.rs`, reached through [`crate::dist_seam`])
+//! and the render tree is the renderer's (derived from these trees).
 //!
 //! # Equality, ordering, hashing
 //!
@@ -15,7 +15,7 @@
 //!   (structural function equality is not exposed to the language — the
 //!   checker rejects it; this is the defensive fallback).
 //! - [`total_cmp`] is a TOTAL, panic-free structural order on function-free
-//!   values, used for `dm` face sorting (D32-4) and future evaluate-state
+//!   values, used for `dm` face sorting and future evaluate-state
 //!   distributions. Cross-variant order is the variant rank listed on
 //!   [`Value`]; floats order by `f64::total_cmp`; dicts compare their
 //!   entries sorted by key. On function-BEARING values it degrades to a
@@ -31,7 +31,7 @@ use std::hash::{Hash, Hasher};
 use std::rc::Rc;
 
 // ---------------------------------------------------------------------------
-// Dec fixed-point (D32-1: 19.6 — i128 scaled 10^6, range ±10^19)
+// Dec fixed-point (19.6 — i128 scaled 10^6, range ±10^19)
 // ---------------------------------------------------------------------------
 
 /// The Dec scale factor: values are stored as `i128` multiples of 10^-6.
@@ -39,7 +39,7 @@ pub const DEC_SCALE: i128 = 1_000_000;
 /// The Dec range bound on the SCALED representation: ±10^19 × 10^6 = ±10^25.
 pub const DEC_LIMIT: i128 = 10_000_000_000_000_000_000_000_000;
 
-/// Range-check a scaled Dec (post-op, D32-1). Out of range = visible eval
+/// Range-check a scaled Dec (post-op). Out of range = visible eval
 /// error.
 pub fn dec_check(scaled: i128, span: Option<Span>) -> Result<i128, EvalError> {
     if scaled.abs() > DEC_LIMIT {
@@ -94,10 +94,9 @@ pub fn dec_to_text(scaled: i128) -> String {
 // Errors
 // ---------------------------------------------------------------------------
 
-/// Distinguishes the wasm API's error stages (D32-11): ordinary evaluation
-/// errors vs fuel/cap exhaustion. `Internal` marks engine seams that are not
-/// implemented yet (the S4 dist stub) or invariant violations — it should
-/// never surface from a well-typed program once S4 lands.
+/// Distinguishes the wasm API's error stages: ordinary evaluation
+/// errors vs fuel/cap exhaustion. `Internal` marks invariant violations — it
+/// should never surface from a well-typed program.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ErrorKind {
     Eval,
@@ -126,8 +125,7 @@ impl EvalError {
         }
     }
 
-    /// A fuel/cap exhaustion error; `counter` names the exhausted counter
-    /// (D32-12).
+    /// A fuel/cap exhaustion error; `counter` names the exhausted counter.
     pub fn fuel(counter: &str, span: Option<Span>) -> EvalError {
         EvalError {
             message: format!("fuel exhausted: {counter}"),
@@ -146,19 +144,19 @@ impl EvalError {
 }
 
 // ---------------------------------------------------------------------------
-// Die trees (the S4/S5 seam)
+// Die trees (what the distribution engine and the renderer read)
 // ---------------------------------------------------------------------------
 
-/// `min` vs `max` over `Die[Num]` operands (symbolic — S4 computes it).
+/// `min` vs `max` over `Die[Num]` operands (symbolic — the distribution engine computes it).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum MinMaxOp {
     Min,
     Max,
 }
 
-/// One applied keep-spec (D32-5 pool-shape suffixes). Keeps chain: each
+/// One applied keep-spec (the pool-shape suffixes). Keeps chain: each
 /// re-keep applies to the currently-kept dice, so the kept set is always a
-/// contiguous window of sorted positions — S4 folds the chain into its
+/// contiguous window of sorted positions — the distribution engine folds the chain into its
 /// keep-tuple.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Keep {
@@ -178,7 +176,7 @@ impl Keep {
 
 /// A pool: `count` copies of one die plus the applied keep chain (empty =
 /// keep all). (count, underlying die, keep-spec) are all directly
-/// recoverable for S4 (distribution) and S5 (render) — this is the pinned
+/// recoverable for the distribution engine and the renderer — this is the pinned
 /// pool-bearing shape; `kh`/`kl` push onto `keep` rather than wrapping the
 /// tree in dedicated nodes.
 #[derive(Debug, Clone, PartialEq)]
@@ -196,28 +194,29 @@ impl PoolTree {
     }
 }
 
-/// A symbolic die: the exact distribution is computed on demand by S4
-/// (`dist_seam::dist_of`); S5 derives the render tree from this shape.
+/// A symbolic die: the exact distribution is computed on demand by the
+/// distribution engine (`dist_seam::dist_of`); the renderer derives the render
+/// tree from this shape.
 ///
-/// Face order (D32-4) is carried structurally: `Leaf` = numeric ascending,
+/// Face order is carried structurally: `Leaf` = numeric ascending,
 /// `Dl` = the faces vector's order, `Dm` = the faces vector's order (the
 /// interpreter has already applied the dm-literal-order rule when building
-/// it), mixtures/binary ops = left order then unseen right faces (S4's job).
+/// it), mixtures/binary ops = left order then unseen right faces (the distribution engine's job).
 #[derive(Debug, Clone, PartialEq)]
 pub enum DieTree {
     /// Sum of `count` uniform dice with faces `1..=sides`. Validated at
-    /// construction: `count >= 1`, `sides >= 1` (D32-4). `count == 1` is a
+    /// construction: `count >= 1`, `sides >= 1`. `count == 1` is a
     /// plain `dM`.
     Leaf { count: u64, sides: u64 },
     /// A one-face "die" — a constant lifted into die arithmetic (die⊗const
-    /// operands, D32-4).
+    /// operands).
     Const(Box<Value>),
-    /// `dl([...])` — equal-weight faces, order = list order (R4). A leaf
-    /// constructor in the render tree (D32-19).
+    /// `dl([...])` — equal-weight faces, order = list order. A leaf
+    /// constructor in the render tree.
     Dl { faces: Vec<Value> },
     /// `dm([face: weight, ...])` — weighted faces. Order = dict-literal
     /// insertion order when the call site was a literal (`dm_literal_order`),
-    /// else the [`total_cmp`] structural sort (D32-4). A leaf constructor.
+    /// else the [`total_cmp`] structural sort. A leaf constructor.
     Dm { faces: Vec<(Value, BigUint)> },
     /// die ⊗ die / die ⊗ const arithmetic (constants appear as [`DieTree::Const`]).
     BinOp {
@@ -225,7 +224,7 @@ pub enum DieTree {
         lhs: Box<DieTree>,
         rhs: Box<DieTree>,
     },
-    /// A LIFTED comparison — `Die[Bool]` by the product construction (D32-3).
+    /// A LIFTED comparison — `Die[Bool]` by the product construction.
     Cmp {
         op: CmpOp,
         lhs: Box<DieTree>,
@@ -239,8 +238,7 @@ pub enum DieTree {
         lhs: Box<DieTree>,
         rhs: Box<DieTree>,
     },
-    /// `explode(die, depth)` — bounded die-level expansion (depth ≤ 8,
-    /// D32-12).
+    /// `explode(die, depth)` — bounded die-level expansion (depth ≤ 8).
     Explode { inner: Box<DieTree>, depth: u64 },
     /// `reroll(die, faces)` — reroll-once on any listed face.
     Reroll {
@@ -249,16 +247,16 @@ pub enum DieTree {
     },
     /// The `r` suffix — single-face reroll-once on a `Die[Num]`.
     RerollFace { inner: Box<DieTree>, face: BigInt },
-    /// A render label (D32-6): `Die[T] -> Die[T]`, distribution-transparent.
+    /// A render label: `Die[T] -> Die[T]`, distribution-transparent.
     Label { word: String, inner: Box<DieTree> },
-    /// `sum(pool)` — the D32-4 closing coercion. The interpreter collapses
+    /// `sum(pool)` — the closing sum coercion. The interpreter collapses
     /// `sum(pool(N, dM))` (keep-less, plain leaf) to `Leaf{N, M}` and
     /// `sum(pool(1, X))` (keep-less) to `X`; other shapes keep this node.
     Sum { pool: PoolTree },
-    /// `successes(pool, target)` — dedicated node (simplest for S4).
+    /// `successes(pool, target)` — dedicated node (simplest for the distribution engine).
     Successes { pool: PoolTree, target: BigInt },
-    /// `evaluate(pool, init, func)` — the user-evaluator DP (D32-8). `func`
-    /// is a closure value; S4 runs it through the interpreter callback seam
+    /// `evaluate(pool, init, func)` — the user-evaluator DP. `func`
+    /// is a closure value; the distribution engine runs it through the interpreter callback seam
     /// (`dist_seam`). A leaf constructor in the render tree.
     Evaluate {
         pool: PoolTree,
@@ -290,7 +288,7 @@ pub enum Value {
     Float(f64),
     Str(String),
     /// Atom name WITHOUT the leading `:`. Plain `String` (no interning —
-    /// structural equality is what matters; S4 interns for its `Face` enum).
+    /// structural equality is what matters; the distribution engine interns for its `Face` enum).
     Atom(String),
     Tuple(Vec<Value>),
     List(Vec<Value>),
@@ -324,13 +322,13 @@ impl Value {
         Value::Num(BigInt::from(n))
     }
 
-    /// The runtime Bool (D32-3): atoms `:true` / `:false`.
+    /// The runtime Bool: atoms `:true` / `:false`.
     pub fn bool(b: bool) -> Value {
         Value::Atom(if b { "true" } else { "false" }.to_owned())
     }
 
     /// Does this value contain a function anywhere? (Runtime mirror of the
-    /// D32-3 equatable check — used defensively for die faces.)
+    /// checker's equatable check — used defensively for die faces.)
     pub fn contains_function(&self) -> bool {
         match self {
             Value::Closure(_) | Value::Builtin(_) => true,
@@ -712,25 +710,25 @@ fn die_cmp(a: &DieTree, b: &DieTree) -> Ordering {
 }
 
 // ---------------------------------------------------------------------------
-// The Cmd accumulator (D32-7)
+// The Cmd accumulator
 // ---------------------------------------------------------------------------
 
 /// One display: the value to show, plus its die tree when the value is a die
-/// (S5 samples/renders from the tree).
+/// (the renderer samples and renders from the tree).
 #[derive(Debug, Clone, PartialEq)]
 pub struct DisplayItem {
     pub value: Value,
     pub die: Option<DieTree>,
 }
 
-/// A `save` effect: the validated name and the R21-serialized source.
+/// A `save` effect: the validated name and the serialized source.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SaveCmd {
     pub name: String,
     pub source: String,
 }
 
-/// The effect accumulator threaded through one interpretation (D32-7):
+/// The effect accumulator threaded through one interpretation:
 /// `roll` appends displays, `plot` appends die trees, `save` appends
 /// serialized sources; the top-level driver appends the final displayable
 /// value last.

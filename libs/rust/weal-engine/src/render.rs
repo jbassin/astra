@@ -1,4 +1,4 @@
-//! S5 — the render tree + sampling (spec 0032 §3, D32-11, D32-15).
+//! The render tree + sampling.
 //!
 //! A die display's [`DieTree`] is sampled with a host-seeded ChaCha20 rng:
 //! leaves are sampled LEFT-TO-RIGHT in source order (tree order — lhs before
@@ -11,9 +11,9 @@
 //!
 //! - `Leaf{count,sides}` draws `count` uniform faces; each `(sides, face)`
 //!   pair is recorded into `standardDice` (kept, dropped, and chain draws
-//!   alike — D32-11).
+//!   alike).
 //! - `Dl`/`Dm` draw one face by exact weight over the denominator; they
-//!   contribute NO `standardDice` rows (R20).
+//!   contribute NO `standardDice` rows.
 //! - `Explode` chains draws while a draw equals the inner die's maximum
 //!   face, up to `depth` ADDITIONAL draws (matching `dist::explode`); the
 //!   chain renders `face→face→…`.
@@ -24,13 +24,13 @@
 //! - `Cmp` compares the two sampled operands; `BinOp`/`Neg`/`MinMax`
 //!   compute; `Sum`/`Successes` fold the sampled pool; `Evaluate` runs the
 //!   transition closure over the sampled kept multiset in DESCENDING sorted
-//!   order (amended D32-8), grouped per distinct face.
-//! - Pools sort draws by value (numeric order for Num/Dec faces, D32-4
+//!   order, grouped per distinct face.
+//! - Pools sort draws by value (numeric order for Num/Dec faces,
 //!   face-order rank otherwise, draw index as the stable tie-break) and fold
 //!   the keep chain over the contiguous sorted window; dropped draws render
 //!   struck through (`~~n~~`).
 //!
-//! # Collapse policy (§3, in order)
+//! # Collapse policy (in order)
 //!
 //! (1) die-free subtrees are already values (`Const` nodes — the
 //! interpreter folds die-free math before the tree exists); (2) user calls
@@ -40,8 +40,8 @@
 //! collapse to `{label-or-dice-summary} = value` (parenthesized inside a
 //! larger expression); (5) floor: `= value`, ellipsized to fit.
 //!
-//! Goodness reads the top-level die's distribution face-order vector
-//! (D32-11): position 0 = fumble, last = crit, otherwise thirds by position
+//! Goodness reads the top-level die's distribution face-order vector:
+//! position 0 = fumble, last = crit, otherwise thirds by position
 //! index (`pos * 3 / len` → bad/okay/good); `None` when the support has one
 //! face.
 
@@ -53,18 +53,18 @@ use num_bigint::{BigInt, BigUint};
 use rand_chacha::ChaCha20Rng;
 use rand_core::{Rng, SeedableRng};
 
-/// The D32-15 renderText budget (chars).
+/// The renderText budget (chars).
 pub const RENDER_TEXT_MAX: usize = 900;
-/// The D32-11 headline budget (chars).
+/// The headline budget (chars).
 pub const HEADLINE_MAX: usize = 80;
-/// The §3 render-depth bound (render-tree depth, root = 1).
+/// The render-depth bound (render-tree depth, root = 1).
 const RENDER_DEPTH_MAX: usize = 4;
 
 // ---------------------------------------------------------------------------
-// Goodness (R24)
+// Goodness
 // ---------------------------------------------------------------------------
 
-/// The five goodness bands (D32-11).
+/// The five goodness bands.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
 #[serde(rename_all = "lowercase")]
 #[cfg_attr(test, derive(ts_rs::TS), ts(rename = "WealGoodness"))]
@@ -111,12 +111,12 @@ pub fn goodness_of(dist: &SeamDist, sampled: &Value) -> Option<Goodness> {
 }
 
 // ---------------------------------------------------------------------------
-// Value formatting + markdown escaping (D32-15)
+// Value formatting + markdown escaping
 // ---------------------------------------------------------------------------
 
 /// Markdown-escape user-controlled text (Str content): backslash-prefix
 /// backtick (killing any backtick run), `*`, `~` (killing `~~`), and `_` —
-/// exactly the D32-15 set. Backslash itself is NOT re-escaped here: the
+/// and nothing else. Backslash itself is NOT re-escaped here: the
 /// source-escaping pass in [`format_str`] already doubled literal
 /// backslashes, and a second pass would mangle them.
 pub fn markdown_escape(s: &str) -> String {
@@ -356,7 +356,7 @@ pub(crate) fn die_summary(t: &DieTree) -> String {
     summary_impl(t, true)
 }
 
-/// The full die repr (labels shown inline) — the D32-16 plot title.
+/// The full die repr (labels shown inline) — the plot title.
 pub fn die_repr(t: &DieTree) -> String {
     summary_impl(t, false)
 }
@@ -381,7 +381,7 @@ enum RKind {
     Plain,
     /// A binary-operator chain FLATTENED across one precedence level (a
     /// left-associative run `a + b - c` is ONE node, so an additive chain
-    /// costs one render-depth level — §3 depth counts nesting, not chain
+    /// costs one render-depth level — depth counts nesting, not chain
     /// length). A same-precedence rhs (explicit parens in source) stays a
     /// nested child and re-parenthesizes via the precedence rule.
     Chain {
@@ -398,7 +398,7 @@ enum RKind {
         word: String,
         inner: Box<RN>,
     },
-    /// A §3-collapsed subtree: `{summary} = value`.
+    /// A collapsed subtree: `{summary} = value`.
     Collapsed,
 }
 
@@ -406,7 +406,7 @@ fn collapse(rn: &mut RN) {
     rn.kind = RKind::Collapsed;
 }
 
-/// Collapse every subtree that sits beyond the §3 depth bound. `Plain`
+/// Collapse every subtree that sits beyond the render-depth bound. `Plain`
 /// nodes are already bare values — never collapsed.
 fn enforce_depth(rn: &mut RN, depth: usize) {
     if matches!(rn.kind, RKind::Plain) {
@@ -573,7 +573,7 @@ impl PoolSample {
     }
 }
 
-/// The S5 sampler: one ChaCha20 stream shared across every display of one
+/// The sampler: one ChaCha20 stream shared across every display of one
 /// evaluation, plus the running `standardDice` rows (drained per display by
 /// the api layer).
 pub struct Sampler {
@@ -762,7 +762,7 @@ impl Sampler {
 
     /// Sort key rank for pool draws: numeric values order numerically
     /// (`total_cmp` covers Num/Dec); non-numeric faces order by the die's
-    /// D32-4 face-order rank (matching the engine's rank-baked sort).
+    /// face-order rank (matching the engine's rank-baked sort).
     fn pool_sorted_indices(
         &self,
         pool: &PoolTree,
@@ -995,7 +995,7 @@ impl Sampler {
             }
             DieTree::Evaluate { pool, init, func } => {
                 let ps = self.sample_pool(pool, it)?;
-                // Kept values in DESCENDING sorted order (amended D32-8),
+                // Kept values in DESCENDING sorted order,
                 // grouped per distinct face.
                 let mut kept = ps.kept_values();
                 let sorted = self.pool_sorted_indices(
@@ -1038,7 +1038,7 @@ fn op_str(op: CmpOp) -> &'static str {
 }
 
 /// Compute a tree's distribution with the interpreter as the evaluate
-/// callback (fresh D32-12 dist budget per call, per the seam contract).
+/// callback (fresh default dist budget per call, per the seam contract).
 pub fn dist_with(t: &DieTree, it: &mut Interp<'_>) -> Result<SeamDist, EvalError> {
     let mut cb = |func: &Value, state: &Value, face: &Value, count: u64| {
         it.run_evaluator_step(func, state, face, count)
@@ -1050,7 +1050,7 @@ pub fn dist_with(t: &DieTree, it: &mut Interp<'_>) -> Result<SeamDist, EvalError
 // The display driver
 // ---------------------------------------------------------------------------
 
-/// One fully-rendered die display (the D32-11 `kind:"die"` payload).
+/// One fully-rendered die display (the API's `kind:"die"` payload).
 #[derive(Debug, Clone, PartialEq)]
 pub struct RenderedDisplay {
     pub render_text: String,
@@ -1061,7 +1061,7 @@ pub struct RenderedDisplay {
 }
 
 /// Sample + render one die display: distribution (for goodness), leaf
-/// sampling, then the §3 collapse policy down to the 900-char budget.
+/// sampling, then the collapse policy down to the 900-char budget.
 pub fn render_die_display(
     tree: &DieTree,
     sampler: &mut Sampler,
@@ -1107,7 +1107,7 @@ mod tests {
     use crate::dist_seam::dist_of;
 
     #[test]
-    fn markdown_escape_covers_the_d32_15_set() {
+    fn markdown_escape_covers_backtick_star_tilde_and_underscore() {
         assert_eq!(markdown_escape("a*b_c~~d`e"), "a\\*b\\_c\\~\\~d\\`e");
         // A backtick RUN is killed backtick-by-backtick.
         assert_eq!(markdown_escape("``"), "\\`\\`");

@@ -1,4 +1,4 @@
-//! The keep-tuple (icepool `generator/keep.py`, D32-10).
+//! The keep-tuple (a port of icepool's `generator/keep.py`).
 //!
 //! One signed count per SORTED position of the pool (ascending): `kh`/`kl`/
 //! middle/negative keeps are all this one mechanism. `4d6kh3` =

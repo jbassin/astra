@@ -1,4 +1,4 @@
-//! Generative tests over well-typed weal programs (WEAL-10): a seeded
+//! Generative tests over well-typed weal programs: a seeded
 //! generator builds random programs that are well-typed by construction and
 //! computes, alongside each one, what it must evaluate to. Every program is
 //! then checked end to end through the real pipeline:
@@ -17,7 +17,7 @@
 //! The grammar leans on functions: nullary functions (`|| e`, `let f() = e`,
 //! called as `f()`), one-parameter functions, immediately applied lambdas,
 //! closures over earlier bindings, and folds. That is the class of program the
-//! WEAL-1 bug lived in, which fixed lists of cases never reached.
+//! nullary-function bug lived in, which fixed lists of cases never reached.
 //!
 //! No proptest: like `dist_props.rs`, the generator is seeded (ChaCha20, a
 //! crate dependency already), so a failure reproduces exactly. The failing
@@ -308,7 +308,7 @@ impl Gen {
                 (format!("-({s})"), -hi, -lo)
             }
             7 => {
-                // A pool keep, closed by the arithmetic around it (D32-4).
+                // A pool keep, closed by the arithmetic around it.
                 let c = 1 + self.below(3);
                 let s = self.pick(&[4i128, 6, 20]);
                 let (r, rv) = self.num(d);

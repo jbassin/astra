@@ -1,4 +1,4 @@
-//! Logos tokenizer per D32-1.
+//! Logos tokenizer for the weal v2 language.
 //!
 //! Notable decisions carried from the spec:
 //! - The die literal + its suffix run is ONE fat token
@@ -52,7 +52,7 @@ pub enum Tok {
     #[token("match", priority = 100)]
     MatchKw,
 
-    /// The fat die token — explicit priority over `Ident` (D32-1).
+    /// The fat die token — explicit priority over `Ident`, so no name shadows a die.
     #[regex(r"([0-9][0-9_]*)?d[0-9][0-9_]*([a-z]+[0-9]*)*", priority = 20)]
     Die,
 

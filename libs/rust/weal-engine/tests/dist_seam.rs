@@ -1,8 +1,8 @@
-//! S4b seam tests: end-to-end THROUGH THE LANGUAGE (check → interp →
+//! Seam tests: end-to-end THROUGH THE LANGUAGE (check → interp →
 //! `dist_of`/`dist_of_with`) with exact hand-computed weights — node
-//! coverage for every `DieTree` kind, the amended-D32-8 face-order
+//! coverage for every `DieTree` kind, the face-order
 //! semantics, evaluate() with the interpreter callback, keep-chain
-//! composition, budget errors, and the `SeamDist` accessors S5 reads.
+//! composition, budget errors, and the `SeamDist` accessors the renderer reads.
 
 use num_bigint::{BigInt, BigUint};
 use weal_engine::dist::{Budget, Dist, KeepTuple, sum_pool};
@@ -144,7 +144,7 @@ fn keep_chain_composes_to_the_middle_window() {
     assert_eq!(d.denominator(), w(100_000));
 }
 
-// -- Dl / Dm face order (D32-4) --------------------------------------------
+// -- Dl / Dm face order ----------------------------------------------------
 
 #[test]
 fn dl_atoms_keep_list_order_and_rank() {
@@ -154,7 +154,7 @@ fn dl_atoms_keep_list_order_and_rank() {
     assert_eq!(d.position_of(&atom("fine")), Some(0));
     assert_eq!(d.position_of(&atom("great")), Some(2));
     assert_eq!(d.position_of(&atom("missing")), None);
-    // Sorted order == face order for ranked faces (amended D32-8).
+    // Sorted order == face order for ranked faces.
     let support: Vec<Value> = d.support().into_iter().map(|(v, _)| v).collect();
     assert_eq!(support, faces);
     assert_eq!(d.min_face(), atom("fine"));
@@ -173,7 +173,7 @@ fn dl_duplicate_faces_merge_onto_the_first_occurrence() {
 #[test]
 fn dm_literal_keeps_insertion_order_while_support_sorts_numerically() {
     let d = dist("dm([3: 1, 1: 2])");
-    // The face-order VECTOR keeps dict-literal insertion order (D32-4)…
+    // The face-order VECTOR keeps dict-literal insertion order…
     assert_eq!(d.face_order(), vec![num(3), num(1)]);
     assert_eq!(d.position_of(&num(3)), Some(0));
     // …while the sorted support (pool iteration, min/max) is numeric.
@@ -382,7 +382,7 @@ fn successes_respects_the_keep_chain() {
     assert_eq!(d.denominator(), w(36));
 }
 
-// -- evaluate() (D32-8) -----------------------------------------------------
+// -- evaluate() -------------------------------------------------------------
 
 #[test]
 fn evaluate_hit_counting_is_the_exact_binomial() {
@@ -400,7 +400,7 @@ fn evaluate_hit_counting_is_the_exact_binomial() {
 #[test]
 fn evaluate_iterates_faces_in_descending_face_order() {
     // Encode the visit sequence into the state. The closure fires only for
-    // LANDED faces (the D32-8 count-0 amendment), so each path's digits are
+    // LANDED faces (a count-0 transition is the identity), so each path's digits are
     // its distinct faces in descending rank order: {a,b} → 21 (never 12),
     // {a,c} → 31, {b,c} → 32; doubles see one face.
     let tree = die_of(
@@ -468,7 +468,7 @@ fn evaluate_matches_the_sum_engine_on_a_kept_numeric_pool() {
 
 #[test]
 fn evaluate_effects_inside_the_transition_surface_the_guard_error() {
-    // S = Unit so the roll() call type-checks; the D32-7 runtime guard must
+    // S = Unit so the roll() call type-checks; the runtime effect guard must
     // still reject it once the DP applies the closure.
     let tree = die_of("evaluate(pool(1, d6), (), |s, f, n| roll(f))");
     let e = dist_with_interp(&tree).unwrap_err();
@@ -487,7 +487,7 @@ fn plain_dist_of_refuses_evaluate_trees_but_dist_of_with_runs_them() {
     assert_eq!(num_support(&d), vec![(2, 36)]);
 }
 
-// -- budget (D32-12) --------------------------------------------------------
+// -- budget ----------------------------------------------------------------
 
 #[test]
 fn giant_support_is_a_fuel_error_naming_the_counter() {

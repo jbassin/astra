@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 publish = false
 
-# cdylib: the wasm32 build emits weal_engine.wasm for wasm-bindgen (D32-11);
+# cdylib: the wasm32 build emits weal_engine.wasm for wasm-bindgen;
 # rlib keeps native tests/examples linking as before.
 [lib]
 crate-type = ["cdylib", "rlib"]

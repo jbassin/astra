@@ -1,4 +1,4 @@
-//! S5 D32-11 API contract tests: full-pipeline JSON goldens, error stages,
+//! API contract tests: full-pipeline JSON goldens, error stages,
 //! `mode:"check"`, budget scaling, plots, saves.
 
 use serde_json::Value as Json;
@@ -64,8 +64,8 @@ fn fuel_stage_names_the_counter() {
     let v = parse(&eval("10001d6", "[]", 0, "run"));
     assert_eq!(v["stage"], "fuel");
     assert_eq!(v["message"], "fuel exhausted: pool count");
-    // The depth-cap case needs a big-stack thread in debug builds (the S3
-    // pattern; the wasm build sizes its stack for the same reason — §6).
+    // The depth-cap case needs a big-stack thread in debug builds (the
+    // interpreter tests do the same; the wasm build sizes its stack for the same reason).
     let v = std::thread::Builder::new()
         .stack_size(32 * 1024 * 1024)
         .spawn(|| parse(&eval("let f(x) = f(x); f(1)", "[]", 0, "run")))
@@ -151,7 +151,7 @@ fn check_mode_validates_saves_in_order() {
     assert_eq!(v["ok"], Json::Bool(true));
 }
 
-// -- budget (D32-12: interpreter steps only) --------------------------------
+// -- budget (interpreter steps only) ---------------------------------------
 
 #[test]
 fn budget_scales_interpreter_steps_only() {
@@ -265,7 +265,7 @@ fn concat_lists_of_dice() {
 
 #[test]
 fn deferred_arith_maps_over_dice_at_runtime() {
-    // The D32-4 amendment end-to-end: the lambda's die param lifts and the
+    // Deferred die-lifting arithmetic end-to-end: the lambda's die param lifts and the
     // interpreter builds the symbolic +1 per element.
     let v = parse(&eval("map([d6, d6], _ + 1)", "[]", 0, "run"));
     assert_eq!(v["ok"], Json::Bool(true));
@@ -357,7 +357,7 @@ fn reduce_empty_is_eval_error() {
     );
 }
 
-// -- nullary functions (WEAL-1) ---------------------------------------------
+// -- nullary functions ------------------------------------------------------
 
 /// `save(:adv, || 2d20kh1)` as the engine serializes it.
 const NULLARY_ADV_SAVES: &str = "[[\"adv\", \"|| kh(pool(2, d20), 1)\"]]";
@@ -373,7 +373,7 @@ fn headlines(v: &Json) -> Vec<String> {
 
 #[test]
 fn nullary_function_calls_run_the_body() {
-    // Every case from the WEAL-1 finding: each used to fail with an internal
+    // Every case from the nullary-function bug report: each used to fail with an internal
     // error or return no display at all.
     for (src, want) in [
         ("let f() = 3; f()", "3"),
