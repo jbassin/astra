@@ -1,276 +1,218 @@
 # assay
 
-Quantitative + comparables-based spell power scoring for PF2e homebrew (0030 round 3) —
-calibrated against the official spell corpus. Damage and hybrid damage+condition spells get a
-quantitative rank-equivalent score; hostile effect (condition-only) spells get a **comparables**
-view (top-5 similar official spells + an induced rank range) and a **prior-anchored price card** —
-explicitly labeled priors, not fits.
+assay is the campaign's PF2e homebrew spell workbench. It has three products
+([ADR 0019](../../../docs/adr/0019-assay-scope.md)):
 
-**Provenance / specs:** `thoughts/archive/specs/0030-assay-round3-spec.md` (D30-21..27) — read this
-first, it is the locked round-3 design (status header carries the stakeholder-fork history: the
-original generative control-spell fit was killed by adversarial review, replaced by comparables).
-`thoughts/archive/specs/0030-assay-round2-spec.md` (D30-1..11) is still authoritative for the damage
-ladder + Stage A/B mechanics, which round 3 carries unchanged. Round 1's scope doc (data reality,
-extractor traps) still applies: `thoughts/archive/research/2026-07-19-assay-spell-power-0030-thoughts.md`.
+1. **The scorer** measures a spell's power against the official spell corpus. It fits a damage
+   ladder, builds comparables corpora for effect and buff spells, and writes the committed
+   reports in `results/`. `assay score` and `assay score-homebrew` apply it to one spell or to
+   the whole store.
+2. **The homebrew store** (`homebrew/`) is the single source of truth for the campaign's 173
+   homebrew spells (`homebrew/spells/`) and the 8 school traits (`homebrew/traits/`). Each file
+   is a hand-edited, Foundry-shaped JSON doc. codex ingests the store as the source book
+   "Liturgy of the Iridite Vol.2" (abbreviation LotI2).
+3. **The book**, *Liturgy of the Iridite Vol.2*, is a LaTeX build of the store
+   (`books/liturgy_vol2/`), compiled with tectonic.
 
-## What the pipeline does
+## Commands
 
-1. **Effect extraction** (`extract.py` + `conditions.py`) — every spell's description is parsed
+All commands run from the repo root. Telemetry goes to SigNoz as `astra.assay`; set
+`OTEL_SDK_DISABLED=true` to silence export noise in local runs.
+
+| Command | What it does |
+| --- | --- |
+| `uv run assay price [--data-root PATH]` | Fits the scorer against the Foundry snapshot and rewrites `results/` and `out/` (below). |
+| `uv run assay score --spell PATH` | Scores one Foundry-shaped spell JSON (a store file works) against the committed `results/`. |
+| `uv run assay score-homebrew` | Scores every store spell into `out/homebrew/scores.json` and prints a table. |
+| `uv run assay homebrew-revisions` | Diffs the store against a fresh re-conversion of the vendored set into `homebrew/revisions.md`. |
+| `uv run assay store check` / `store fmt` | Validates the store against its model and format / rewrites it canonically. |
+| `uv run assay export-codex [--data-root PATH]` | Rebuilds `out/spell-power.json` alone from the snapshot and the committed `results/`, without refitting. |
+| `just book [--no-compile]` | Runs `assay export-book`: the `.tex` and, unless `--no-compile`, the PDF. |
+| `just assay-store-check` | `assay store check` with telemetry off; part of `just check` and CI. |
+
+Tests: `uv run pytest apps/assay/py`. They never touch the Foundry snapshot: they run off the
+committed fixtures in `tests/fixtures/` (real corpus files, one per extractor trap), the
+committed store and the committed `results/`.
+
+## The scorer
+
+### Inputs and outputs
+
+`price` reads the main-list spells (`packs/pf2e/spells/spells/`, no focus spells or rituals)
+from the Foundry snapshot that codex ingest fetched, under
+`<codex.data-path>/snapshots/foundry/pf2e-<version>/`. `--data-root` overrides
+`codex.data-path`. With several `pf2e-<version>` dirs, the highest version wins, compared
+numerically. Without a snapshot, `price` fails with a clear message. The current snapshot is
+`pf2e-8.3.0`, with 1,144 main-list spell files.
+
+`price` writes, from scratch on every run:
+
+- `results/` (committed): `fitted-params.json` (the fitted ladder and corpus sizes, under keys
+  `round2`..`round4`), `point-tables.md` (the prior card and multiplier tables),
+  `power-ledger.md` (every spell, scored or ledgered), `validation.md` (the validation gates),
+  `comparables-corpus.json`, `buff-comparables-corpus.json` and `comparables-spot.md`.
+- `out/` (gitignored): `features.json`, `spell-power.json`.
+
+Rerunning `price` on the current snapshot reproduces the committed `results/` byte for byte.
+`score` and `score-homebrew` need no snapshot: they read the committed `results/`.
+
+### How a spell is scored
+
+1. **Effect extraction** (`extract.py`, `conditions.py`, `effects.py`). The description is parsed
    for `@UUID[...conditionitems.Item.X]` condition refs, degree-of-success attribution (four
-   explicit rules — direct / preamble-affected / as-failure-inherits / plain-text-repeat, the last
-   **case-insensitive**, D30-21a), duration classification, and status/circumstance modifiers
-   (now carrying real degree + duration, and matching en-dash/unicode-minus signs, D30-21b/c).
-   Round-3 additions: `target_raw` (the spell's own `target.value` prose), prose-only save
-   detection (`has_prose_save`/`prose_save_statistic` — "must attempt a &lt;X&gt; save" when
-   `defense.save` is structurally null), and a `hostile_area_phrase` flag ("each creature"/"each
-   enemy"). Overlay-variant spells (heal/harm-style) score per variant via a base-onto-overlay deep
-   merge; a small mechanically-derived scaling family (force barrage and 5 siblings) uses a
-   hand-maintained per-action-count EV table; literal `@Damage[...]` inline rolls recover EV where
-   no structured `damage` entry exists.
-2. **Hostility routing** (`ledger.py`'s `classify_hostility`, D30-22, per-ROW) — hostile iff a
-   structured save, an attack-roll trait, a prose-save, or a hostile-area phrase; beneficial iff
-   every condition instance sits at a non-graduated degree AND the target prose reads cooperative;
-   otherwise ambiguous, resolved toward hostile only if a tiered condition sits at a real graduated
-   degree, else ledgered `routing-ambiguous`.
-3. **Damage/hybrid pricing** (`pricing.py`) — a **pure-anchored damage ladder**
-   (`log EV = a + b·log(rank)`, fit on a strict pure-damage subset, singleton-sensitivity reported)
-   plus fitted effective-target/range structural multipliers and declared action-cost constants.
-   Damage and hybrid spells score directly against this ladder — **unchanged from round 2, this
-   IS the recommended tool for them.**
-4. **Comparables** (`comparables.py`, D30-23) — for any hostile effect or hybrid spell, a
-   deterministic profile (a weighted atom vector — per-condition×value AND tier-aggregated,
-   D30-4/8b coverage×duration weights — plus structural coordinates: action bucket,
-   effective-target, range bucket, damage-EV band) and a similarity formula (cosine over the atom
-   vector, ×(1−small penalty) per structural mismatch, ×0.5 on an incapacitation-flag mismatch —
-   ONE documented formula, no fitted parameters). Output: the top-5 official comparables + the
-   induced rank RANGE (min–max, median highlighted) — **never a point score**. A warning prints
-   whenever the range touches rank 9–10 (review F9: zero hostile r10 trainers exist to anchor on).
-5. **Prior-anchored price card** (`priors.py`, D30-24) — replaces round-2's fitted per-condition
-   price card (superseded — kept as a provenance appendix in `point-tables.md`). Every
-   condition×value gets a labeled PRIOR: each tier is anchored on one named real spell/rule
-   (T4: a fight-ender on failure ≈ a full same-rank slot; T3: Slowed 1 for 1 minute ≈ a full
-   rank-3 slot; T2: Frightened 1 on success ≈ the rank-1 Fear benchmark; T1: cantrip-adjacent),
-   stated unit-coherently as `V ≈ Budget/w_repr` with `w_repr` printed. Plus the marginal-rider
-   guidance (GM Core's -1-rank rule, ×0.5–0.75 of same-rank budget) and the coverage/duration
-   multiplier tables.
-6. **Full-population routing/ledger** (`ledger.py` + `report2.py`) — every spell lands either in
-   the scored population or a **typed unscored ledger** (summon / wall-terrain / teleport-utility /
-   effect-item-payload / beneficial-effect / routing-ambiguous / raw-modifier-only /
-   low-confidence / non-literal formula / long-cast / …) — coverage is honest, never silently
-   partial.
+   rules: direct, preamble-affected, as-failure-inherits, and a case-insensitive plain-text
+   repeat), duration, and status/circumstance modifiers (en-dash and unicode-minus signs
+   included). It also reads `target_raw`, a prose-only save ("must attempt a <X> save" when
+   `defense.save` is null) and a hostile-area phrase ("each creature", "each enemy").
+   `@UUID[Compendium.pf2e.spell-effects.Item.<Name>]` refs join the effect item's
+   `system.rules` (FlatModifier, TempHP, Resistance, Weakness, BaseSpeed, DamageDice) as atoms,
+   evaluated at the spell's own base rank, never the effect item's `level`. Overlay variants
+   (heal/harm style) score per variant; force barrage and five siblings use a hand-maintained
+   per-action-count EV table; literal `@Damage[...]` rolls recover EV where no structured
+   damage exists.
+2. **Hostility routing** (`ledger.py`'s `classify_hostility`, per row). A row is hostile if it
+   has a structured save, an attack-roll trait, a prose save or a hostile-area phrase. It is
+   beneficial if every condition sits at a non-graduated degree and the target prose reads
+   cooperative. Otherwise it is ambiguous: hostile if a tiered condition sits at a real
+   graduated degree, else ledgered `routing-ambiguous`.
+3. **Damage and hybrid pricing** (`pricing.py`). A damage ladder, `log EV = a + b·log(rank)`, is
+   fit on a strict pure-damage subset (n=27, R²=0.967; the singleton-sensitivity fit is
+   reported too), with fitted effective-target and range multipliers and declared action-cost
+   constants. Damage and hybrid spells get a rank-equivalent score against it. Cantrips get
+   their own ladder; it has only 2 observations, so it is intercept-only and borrows the main
+   ladder's multipliers.
+4. **Comparables** (`comparables.py`). A hostile effect or hybrid spell gets a deterministic
+   profile: a weighted condition-atom vector plus structural coordinates (action bucket,
+   effective target, range bucket, damage-EV band). Similarity is cosine over the atoms, times a
+   small penalty per structural mismatch, times 0.5 on an incapacitation mismatch, with no fitted
+   parameters. The output is the top 5 official comparables and the induced rank **range**
+   (min–max, median highlighted), never a point score. A warning prints when the range touches
+   rank 9–10, because no hostile rank-10 spells exist to anchor on. A match below 0.1 similarity
+   or with no shared atoms becomes a `no-comparable-profile` ledger entry. The hostile corpus
+   has 313 profiles; cantrips have none.
+5. **Buff comparables** (`buffs.py`). Rows routed `beneficial-effect` (including modifier-only
+   rows like Heroism and rows the effect join promoted, like Mystic Armor) get comparables from
+   a separate beneficial-only corpus of 145 profiles, never mixed with the hostile one.
+   Spells with several effect items collapse to a base variant; a choice-of-N form (Animal Form)
+   is tagged and its profile suppressed.
+6. **Prior card** (`priors.py`). Every condition×value gets a labeled prior, not a fit. Each tier
+   is anchored on one named rule or spell (T4: a fight-ender on failure ≈ a full same-rank slot;
+   T3: Slowed 1 for 1 minute ≈ a full rank-3 slot; T2: Frightened 1 on success ≈ the rank-1 Fear
+   benchmark; T1: cantrip-adjacent), stated as `V ≈ Budget/w_repr`. The card adds GM Core's
+   marginal-rider guidance and the coverage and duration multipliers.
+7. **Summon band check** (`summons.py`). The 14 summon-trait main-list spells are checked
+   against the GM Screen journal's level curve; 13 have a base level in prose (Phantasmal
+   Minion has none). Drift fails the check.
+8. **Full-population ledger** (`ledger.py`, `report2.py`). Every row is either scored (558) or
+   lands in a typed ledger (657): summon, wall-terrain, teleport-utility, effect-item-payload,
+   beneficial-effect, routing-ambiguous, raw-modifier-only, low-confidence, non-literal
+   formula, long-cast and others. Coverage is complete, never silently partial.
 
-Cantrips get an independent parallel ladder (same method, own pure subset — currently very thin,
-n=2, so it's intercept-only; structural multipliers fall back to the main ladder's). The
-comparables corpus does not cover cantrips (too thin to be useful).
+### Validation (`results/validation.md`)
 
-## Running it
+The validation gates report misses with a diagnosis rather than tuning them away:
 
-```bash
-uv run assay price                # -> results/{fitted-params.json,point-tables.md,power-ledger.md,
-                                   #    validation.md,comparables-corpus.json,comparables-spot.md}
-                                   #    and out/{features.json,spell-power.json} (gitignored)
-uv run assay score --spell <path> # score one Foundry-shaped spell JSON against the committed fit
-```
+- The damage ladder tracks the community 7×rank budget within 6% at ranks 3–10.
+- Comparables leave-one-out passes 4 of 10 roster spells (40%) against a 70% target. The
+  neighbors are the right kind (fear spells cluster with Fear), but spells that share a
+  condition profile differ in rank through quality the atoms cannot see (area, targets, riders).
+  That is why effect spells get a range.
+- Disintegrate reads hot because its attack-then-save double gate is not modeled.
+- The summon curve check passes, and the export is byte-identical across two runs.
 
-`price` writes `results/fitted-params.json` from scratch on every run (keys `round2`..`round4`),
-so it works on a fresh tree. The round-1 model and its `fit` and `extract` commands are gone;
-git history has them.
+### The codex export
 
-`--data-root` overrides the codex data path (default: `codex.data-path` from `config.kdl` via
-`astra_config` — config-single-source, never hardcoded). If the Foundry snapshot isn't present
-(e.g. a host where `codex.data-path` has no `snapshots/` yet), `price` fails soft with a clear
-message. With several `pf2e-<version>` snapshot directories, the highest version wins, compared
-numerically (`pf2e-10.0.0` beats `pf2e-9.0.0`). The test suite never touches the snapshot — it
-runs entirely off the committed fixtures under `tests/fixtures/` (real corpus files, one per extractor trap — see `apps/codex/ingest/fixtures`
-for the precedent of committing corpus provenance this way). `assay score` never needs the live
-snapshot either — it reads the committed `results/fitted-params.json` +
-`results/comparables-corpus.json` artifacts, both reproducible via `assay price`.
+`price` (and `export-codex` alone) writes `out/spell-power.json`: one entry per spell file,
+keyed `spell/<slug>` (1,144 entries; 34 multi-row files collapse to one entry with the rest
+under `variants[]`), with stable reason codes from `export.REASON_CODE_MAP`. Nothing reads this
+file today: codex has no Assay block, and no recipe copies it. A copy from July 2026 sits at
+`<codex.data-path>/assay/spell-power.json`.
 
-## Homebrew workflow
+### Out of scope
 
-`assay score --spell <path>` reads the same Foundry `system` shape the corpus uses, and routes
-your spell down one of three paths:
+Wall and terrain sub-models, forced-movement atoms, any generative control-spell fit,
+teleportation and utility valuation, focus-spell band comparison, ritual scoring and
+legacy-spell scoring.
 
-1. **Damage or hybrid (has real EV)** — the quantitative round-2 score: rank-equivalent verdict
-   (HOT/COLD/in band) against the pure-anchored ladder. If the spell ALSO carries a hostile
-   condition (a hybrid), it gets comparables too (item 2 below), printed alongside the
-   quantitative verdict — never instead of it.
-2. **Hostile effect spell (ev=0, D30-22 routes it hostile)** — comparables: the top-5 most
-   similar official spells (name, rank, shared/differing condition atoms) and the induced rank
-   RANGE (never a point score), plus a per-condition pointer into the D30-24 prior card. Also
-   prints the round-2 Stage-B fitted score labeled **superseded, reference only** — see
-   `results/point-tables.md`'s appendix for why it's no longer trusted as the primary verdict.
-3. **Beneficial/buff or routing-ambiguous** — a plain message: beneficial effects are out of
-   round-3 scope (buff pricing needs target-prose maturity first, per the spec §3); ambiguous
-   routing is flagged for manual GM judgment, not auto-priced.
+## Scoring a homebrew spell
 
-### The condition markup contract (still load-bearing for both paths 1 and 2)
+`assay score --spell <path>` reads the Foundry `system` shape and takes one of three paths:
 
-To score a homebrew spell that inflicts a condition, write its description with the **real
-markup**, not plain English:
+1. **Damage or hybrid (real EV):** a rank-equivalent verdict (HOT, COLD or in band) against the
+   ladder. A hybrid also gets comparables, printed alongside the verdict.
+2. **Hostile effect spell (EV 0, routed hostile):** the top 5 comparables (name, rank, shared
+   and differing atoms), the induced rank range and a pointer into the prior card per condition.
+   It also prints the old fitted Stage-B score, labeled "superseded, reference only";
+   `point-tables.md`'s appendix explains why it is no longer the verdict.
+3. **Beneficial or routing-ambiguous:** a plain message. Ambiguous routing needs a GM's
+   judgment. `assay score` does not print buff comparables; `score-homebrew` shows the buff range
+   for store spells.
+
+### The condition markup contract
+
+To score a spell that inflicts a condition, write its description with the real markup, not
+plain English:
 
 ```html
 <p><strong>Failure</strong> The target is @UUID[Compendium.pf2e.conditionitems.Item.Frightened]{Frightened 2}.</p>
 <p><strong>Critical Failure</strong> The target is @UUID[Compendium.pf2e.conditionitems.Item.Frightened]{Frightened 3}.</p>
 ```
 
-- The `@UUID[Compendium.pf2e.conditionitems.Item.<Name>]{<Name> <value>}` tag is what the
-  extractor keys on (bracket-bounded capture — a bare `<Name>` with no `{value}` defaults to
-  value 1 for valued-typed conditions, e.g. Frightened/Sickened/Clumsy/Enfeebled/Stupefied/
-  Drained/Stunned/Slowed/Doomed).
-- Wrap each outcome in `<strong>Critical Success</strong>` / `<strong>Success</strong>` /
-  `<strong>Failure</strong>` / `<strong>Critical Failure</strong>` — the four attribution rules
-  (see `conditions.py`) need this structure to attach a condition to the right outcome and read
-  its duration from that section's own prose (`"for 1 round"` / `"for 1 minute"` / …).
-- If your spell has no structured `defense.save` but a save DOES exist in prose, write it as
-  **"...must attempt a &lt;Statistic&gt; save."** (D30-21d's `detect_prose_save` family) — this is
-  what tells D30-22's routing your spell is hostile even without the structured field.
-- An area/linked-check spell with no save at all (e.g. a Demoralize-linked emanation) needs
-  **"each creature"/"each enemy"** phrasing somewhere in the description for D30-22 to route it
-  hostile — otherwise it may be misread as a touch/self buff.
-- **`assay score` WARNS** when the description contains plain condition-word text (e.g.
-  "frightened") with **zero** `@UUID[...conditionitems.Item.X]` refs anywhere — that shape would
-  otherwise silently score as pure damage (an overscore), since the pricing model has nothing to
-  key its condition-tier lookup on.
+- The extractor keys on `@UUID[Compendium.pf2e.conditionitems.Item.<Name>]{<Name> <value>}`.
+  A bare `<Name>` with no `{value}` means value 1 for valued conditions (Frightened, Sickened,
+  Clumsy, Enfeebled, Stupefied, Drained, Stunned, Slowed, Doomed).
+- Wrap each outcome in `<strong>Critical Success</strong>`, `<strong>Success</strong>`,
+  `<strong>Failure</strong>` or `<strong>Critical Failure</strong>`. The attribution rules
+  (`conditions.py`) need this structure to attach a condition to an outcome and read its
+  duration from that section's prose ("for 1 round", "for 1 minute").
+- With no structured `defense.save` but a save in prose, write "...must attempt a <Statistic>
+  save." That is how routing sees the spell as hostile.
+- An area spell with no save (a Demoralize-linked emanation, say) needs "each creature" or "each
+  enemy" in the description, or it may read as a touch or self buff.
+- `assay score` warns when the description has a plain condition word ("frightened") and no
+  `@UUID[...conditionitems.Item.X]` ref. That shape would otherwise score as pure damage.
 
-## The homebrew canonical store (`homebrew/spells/`)
+## The homebrew store
 
-`apps/assay/py/homebrew/spells/<slug>.json` is the **single source of truth** for the campaign's 173
-homebrew spells going forward — one Foundry-shaped JSON per spell, **committed**, and meant to be
-hand-edited directly (balance repairs, reaction-trigger fixes, dice tweaks — whatever a stakeholder
-decides). It was seeded once from the vendored `run_balance` conversion set
-(`vendor/run_balance/`, see below) via the adapter in `homebrew.py`; the vendor directory is
-**provenance-only** from here on — nothing downstream reads it.
+`homebrew/spells/<slug>.json` holds one spell per file, committed and edited by hand. The store
+was seeded once (commit `b7b990d4`) from the vendored `run_balance` conversion set
+(`vendor/run_balance/`, 176 spells; see `VENDORED.md`) through the adapter in `homebrew.py`.
+Three vendored spells were never seeded (hardlight-bridge, lesser-wish, mystic-negation), and
+every store spell now deviates from its baseline; `homebrew/revisions.md` lists each deviation.
+Nothing downstream reads `vendor/`; only `homebrew-revisions` re-converts it. There is no seed
+command: a re-seed would overwrite hand edits and bring back deleted or renamed spells.
+`homebrew.seed_homebrew(store_dir)` builds a scratch store for tests and refuses the canonical
+store and any directory that already holds spell files.
 
-```bash
-uv run assay score-homebrew           # scores every spell IN THE STORE (never touches vendor/) ->
-                                       #   out/homebrew/scores.json (gitignored, reproducible)
-uv run assay homebrew-revisions       # diffs the store against a FRESH vendor re-conversion ->
-                                       #   homebrew/revisions.md (committed) — field-level summary
-                                       #   of every hand edit (formula/range/cast time/description
-                                       #   length/…)
-uv run assay score --spell homebrew/spells/<slug>.json   # score one store file directly
-```
+Every store file carries a `flags.assay` block: `seededFrom` (`repo`, `commit`,
+`originalName`, `convertedName`) and `adapterWarnings` (recorded at seed time). The extractor
+never reads `flags`.
 
-**The loop:** hand-edit spells in the store as balance decisions land → `assay
-score-homebrew` to see the current scoring picture → `assay homebrew-revisions` to see exactly
-which spells deviate from the original conversion and how, before those edits go live anywhere
-downstream (codex ingest, a possible Foundry compendium module). There is no seed command any
-more: the store was seeded once (commit `b7b990d4`), and a re-seed would overwrite hand edits and
-bring back spells the stakeholder deleted or renamed. `homebrew.seed_homebrew(store_dir)` only
-bakes a scratch baseline store for tests, and refuses the canonical store and any non-empty
-directory.
+**Model and format.** `store.py` holds a strict Pydantic model for a spell file and a trait
+file, fitted to the data as stored: unknown keys and type coercion fail. Every file is
+canonical JSON: sorted keys, 2-space indent, non-ASCII text as-is, one trailing newline (the
+same rule as `being.canonical.json`). `assay store check` fails on a model or format problem;
+after a hand edit, run `uv run assay store fmt`, which rewrites each file from its own parsed
+value and so cannot change content. A repeated key in any object fails `check`, and `fmt`
+leaves that file alone rather than keep one value. Sorted keys put heightening rank `"10"`
+before `"4"`; the consumers ignore key order.
 
-Every store file carries a `flags.assay` block: `seededFrom` (`repo`/`commit`/`originalName`/
-`convertedName` — provenance back to the exact vendored commit) and `adapterWarnings` (recorded
-once at seed time, since `score-homebrew` no longer re-runs the adapter — see below). Both are
-inert to `extract_spell`, which never reads `data["flags"]` at all.
-
-**Model and format.** `store.py` holds a strict Pydantic model for a spell file and a trait file
-(`homebrew/traits/`), fitted to the data as stored: unknown keys and type coercion fail. Every file
-is canonical JSON: sorted keys, 2-space indent, non-ASCII text as-is, one trailing newline (the
-same rule as `being.canonical.json`). `just assay-store-check` (in `just check` and CI) runs
-`assay store check`, which fails on a model or format problem; after a hand edit, run
-`uv run assay store fmt`, which rewrites each file from its own parsed value and so cannot change
-content. A repeated key in any object fails `check`, and `fmt` leaves that file alone rather than
-keep one value. Sorted keys put heightening rank `"10"` before `"4"`; the consumers ignore key
-order (the reformat left the codex transform, `price`, `score-homebrew` and `export-book` output
-identical).
-
-## Validation verdicts (see `results/validation.md` for the real numbers)
-
-**Round 2 gates (V1′–V4′, damage/hybrid axis, carried unchanged):** all report honest misses with
-diagnosis (no silent tuning): V1′'s wider spread is the expected cost of round 2's smaller,
-better-identified structural axis; V3′'s misses split into an architectural extrapolation mismatch
-(now moot for effect spells — see round 3 below) and an unmodeled mechanic (Disintegrate's
-attack-then-save double-gate). V4′ (ladder vs. the community 7×rank line) tracks tightly, within
-±6% rank 3–10.
-
-**Round 3 gates (V-A..V-D, `thoughts/archive/specs/0030-assay-round3-spec.md` D30-25):** V-A
-(comparables leave-one-out) reports an honest 40% pass rate against the ≥70% target — the
-neighbors are QUALITATIVELY correct (fear-themed spells cluster with Fear, mind-control spells
-with Paralyze) but two spells sharing a condition profile can differ enormously in overall rank
-due to unmodeled quality (bigger area, more targets, extra riders) — exactly the dimension the
-round-3 redesign exists to sidestep by reporting a range instead of a point. V-B (extraction-fix
-proof) and V-C (routing proof) both pass with exact/near-exact real-corpus numbers (see the S1
-commit `3783473` and `validation.md`). V-D (damage-side carry) is byte-identical to round 2's
-shipped ladder.
-
-## Round 4: buff comparables + summon bands + the codex export
-
-**Provenance:** `thoughts/archive/specs/0030-assay-round4-spec.md` (D30-35..38). Three additions on
-top of round 3's engine, all Track A (assay-only) — the codex-side render lives in
-`apps/codex/web/**`, out of this app's scope.
-
-1. **Spell-effect join** (`effects.py`, D30-35) — every spell's description is scanned for
-   `@UUID[Compendium.pf2e.spell-effects.Item.<Name>]` refs (colon-tolerant, bracket-bounded); the
-   referenced item's `system.rules` (FlatModifier/TempHP/Resistance/Weakness/BaseSpeed/DamageDice)
-   become a per-selector atom vector, evaluated at the **spell's own base rank** (never the effect
-   item's own `level` field — they disagree on 29/263 real joined pairs). `@item.level`/
-   `@spell.rank` expressions cover the ternary family, closed-form arithmetic
-   (`2*@item.level`/`ceil`/`floor`/`clamped`/`match…when…btwn`), and flag `expr-unresolved` for
-   runtime-only shapes (`@actor.*`, mustache `{item|flags...}`); a level-family predicate
-   (`gte(parent:level, N)`) gates the atom at base rank, anything else tags it `conditional`.
-   Multi-effect spells (20 real corpus cases) collapse to a base variant per a small documented
-   merge rule (degree-split keeps the failure row; duration/rank-heightened variants and
-   `Effect: X Immunity` markers are dropped; a genuine choice-of-N fan — Animal Form's 13 shapes —
-   is tagged, profile suppressed, same treatment as BattleForm).
-2. **Buff population + comparables** (`buffs.py`, D30-36) — every row `ledger.classify_row` routes
-   `beneficial-effect` now includes raw-modifier-only rows (Heroism, Protection) and effect-join
-   PROMOTED rows (spells that were pure `no-priceable-effect` skips before the join — Mystic Armor,
-   Mountain Resilience, Resist Energy, …) routed through the SAME D30-22 hostility test (a
-   hostile-shaped promoted row, e.g. Blood Vendetta, still lands hostile, never beneficial — the
-   join gives it its first priceable signal, not a beneficial default). Comparables reuse
-   `comparables.py`'s engine wholesale on a beneficial-only atom vector (buffs never carry a
-   damage EV band) — a hard population firewall, never mixed with the hostile corpus.
-3. **Summon band check** (`summons.py`, D30-37) — the 14 real summon-TRAIT main-list spells (fixed
-   a dead round-2/3 regex that could never match), base max-level parsed from prose (en-dash
-   tolerant), checked against the GM Screen journal's own declared curve (STOP on drift).
-4. **Codex export** (`export.py`, D30-38) — `assay export-codex` builds the cross-track contract
-   artifact, `apps/assay/py/out/spell-power.json` (gitignored, reproducible — the orchestrator places
-   a copy into `<codex.data-path>/assay/` (`just codex-refresh` does this); this app never writes there itself). One
-   entry per spell FILE (`spell/<slug>`, slug = the file's own basename), multi-row files collapse
-   to one entry with the rest under `variants[]`; a documented reason-code map keeps internal
-   ledger prose off the wire; a similarity floor (below 0.1 OR zero shared atoms) degrades a
-   comparables miss to a typed `no-comparable-profile` ledger entry instead of an alphabetical-junk
-   top-5 (fixed in BOTH the hostile and buff engines).
-
-```bash
-uv run assay price          # now also builds the buff corpus + writes out/spell-power.json
-uv run assay export-codex   # rebuild the export artifact alone, off the committed corpora
-```
-
-See `results/validation.md`'s "Round 4 gates" section (W-A..W-D) for the real re-derived numbers.
-
-## Out of scope (still, per the spec §3/round-4 status header)
-
-Wall/terrain sub-models, forced-movement atoms, any generative control-spell fit (dead until a
-schema captures effect QUALITY, not just identity), teleportation/utility valuation, focus-spell
-band comparison, ritual scoring, legacy-spell scoring. The codex RENDER surface
-(`apps/codex/web/**`'s Assay block) is Track B's own scope, spec'd alongside but not built here.
+**Consumers.** codex ingest reads the store from the checkout it runs in, so a store change
+reaches codex only through a codex build (see Operations). The book reads the store and the
+traits.
 
 ## Operations
-
-assay has three products: the **scorer** (everything above), the **homebrew store**
-(`homebrew/spells/`, 173 spells, plus `homebrew/traits/` for the 8 school traits), and the
-**book** *Liturgy of the Iridite Vol.2*, a LaTeX build of the store. codex ingests the store
-as the source "Liturgy of the Iridite Vol.2" (abbreviation LotI2).
-
-The review workshop is archived ([ADR 0019](../../../docs/adr/0019-assay-scope.md)). Its files
-live under `thoughts/archive/assay-workshop/`: the scriptorium review UI source (`review-ui/`)
-and the one-off review paperwork that sat in `results/` (`homebrew-triage.md`,
-`sweep-brief-v3.md`, `homebrew-item7/`, `homebrew-fleet/`, `final-review/`). The scriptorium's
-state is archived in `thoughts/archive/scriptorium-review-state/`. That `comments.jsonl` is an
-append log: drop the ids that later `op: delete` lines retract before reading it. The vendor
-adapter in `homebrew.py` stays, because `homebrew-revisions` needs it.
 
 **Edit a store spell.**
 
 1. Edit `homebrew/spells/<slug>.json`. For description-only edits, substitute raw text; a
    `json.load`/`json.dump` round trip rewrites escaping and newlines across the file.
-2. `uv run assay score-homebrew` and check that score and routing changed only where intended.
+2. `uv run assay store fmt`, then `uv run assay score-homebrew`, and check that score and
+   routing changed only where intended.
 3. `uv run assay homebrew-revisions` to regenerate `homebrew/revisions.md`.
-4. To publish to codex, follow "Transform-only change" in `apps/codex/web/README.md`.
+4. To publish to codex, follow "Transform-only change" in
+   [`apps/codex/web/README.md`](../../codex/web/README.md#operations). To update the book, run
+   `just book` and commit the `.tex` diff.
 
 To measure a variant, edit the store file, run `score-homebrew`, then restore the file. Never
 commit a probe.
@@ -281,8 +223,9 @@ against official spell names (the Foundry snapshot and codex's full id space, in
 AoN-only spells).
 
 **Build the book.** The book sources live in `books/`: `liturgy_vol2/` (the LaTeX book) and
-`liturgy_vol1/` (the retired Homebrewery source, kept for reference). They moved here from
-`apps/codex/web/books/`; codex never read them.
+`liturgy_vol1/` (the retired Homebrewery source, kept for reference). The book has front
+matter, a table of contents and eight school chapters, each an opener, a spell-list table and
+the school's spells by rank and name. Prose fragments live in `books/liturgy_vol2/content/`.
 
 ```bash
 just book               # .tex + PDF into apps/assay/py/books/liturgy_vol2/
@@ -300,6 +243,12 @@ becomes a placeholder. The `processed/` art is committed source: it is the hand-
 color-graded finish of the raw generations in `preprocessed/`, which is local-only and
 git-ignored, and no script derives one from the other. The fonts are licensed for personal use
 only: flag this before distributing the PDF.
+
+**The archived review workshop.** The workshop files live under
+`thoughts/archive/assay-workshop/`: the scriptorium review UI source (`review-ui/`) and the
+one-off review paperwork (`results/`). The scriptorium's state is in
+`thoughts/archive/scriptorium-review-state/`. Its `comments.jsonl` is an append log: drop the
+ids that later `op: delete` lines retract before reading it.
 
 ## Traps
 
@@ -321,8 +270,10 @@ only: flag this before distributing the PDF.
   block first and any rolled table after it (the Unfathomable Song layout), or the table's
   conditions go unpriced.
 - A routing flip after a text edit can be the correct result. Compare `assay score --spell`
-  before and after the edit before blaming the lens. `OTEL_SDK_DISABLED=true` silences export
-  noise in local runs.
+  before and after the edit before blaming the lens.
+- Effect-item atoms are evaluated at the spell's base rank. `@actor.*` and mustache expressions
+  are tagged `expr-unresolved`; a predicate other than a level check tags the atom
+  `conditional`.
 
 **Store and adapter**
 - Set-wide policy lives in the adapter (`homebrew.py`); per-spell judgment lives in the store.
@@ -335,10 +286,10 @@ only: flag this before distributing the PDF.
   `area: null` with dimensions in prose.
 - When a review adds a new field class, check that `homebrew-revisions` diffs it
   (`_DIFF_FIELDS`).
-- oxfmt ignores `homebrew/**` and `vendor/**` but formats `results/**` JSON; run
+- oxfmt ignores `homebrew/**`, `books/**` and `vendor/**` but formats `results/**` JSON; run
   `pnpm run format` before committing generated ledgers.
 - Before any PF2e rules claim (area behavior, condition mechanics), grep the codex corpus
-  rules docs under `<codex.data-path>/corpus/rules/` and quote them.
+  rules docs under `<codex.data-path>/releases/current/corpus/rules/` and quote them.
 
 **Book (XeTeX via tectonic)**
 - `\needspace` is broken inside `multicols`: it checks the page, not the column. Use a
