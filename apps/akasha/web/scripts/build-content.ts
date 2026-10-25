@@ -235,7 +235,7 @@ function emitTranscriptBodies(bodies: Record<string, { html: string; minutes: nu
     [
       "/** Transcript bodies, code-split one lazy module per session (each ~1 MB) so the",
       " *  ~115 MB of HTML never enters the main bundle. transcriptBodyFn imports these",
-      " *  server-side; the route loader injects the body at SSR (slice 7). */",
+      " *  server-side; the route loader injects the body at SSR. */",
       "export const TRANSCRIPT_BODIES: Record<string, () => Promise<{ default: string }>> = {",
       ...thunks,
       "};",

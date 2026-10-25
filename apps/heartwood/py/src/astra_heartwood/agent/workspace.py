@@ -345,7 +345,7 @@ class Workspace:
 
     # ── publish ──
     def publish_sync(self, live_content_dir: Path) -> ChangeSet:
-        """Apply the change-set to ``live_content_dir`` (§5 step 2); return it.
+        """Apply the change-set to ``live_content_dir`` (the publish step); return it.
 
         Raises ``PublishConflict`` — having written nothing — if any touched live path's
         hash differs from the baseline (or exists where baseline had none).

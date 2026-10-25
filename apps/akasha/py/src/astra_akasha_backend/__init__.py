@@ -6,7 +6,7 @@ and emits the build-time metadata index + page→page crossref edge list that ak
 (0011) builds the site from and mouthpiece-backend reads for grounding.
 
 The one-shot faerrin-wiki→vellum converter is TS (``libs/ts/vellum-lang/scripts/
-convert-wiki.ts``); the snapshot here is Python (metadata-only, D2).
+convert-wiki.ts``); the snapshot here is Python (metadata-only).
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""Publish-step helpers for ``just heartwood-agent`` / ``heartwood-revert`` (0033 §5).
+"""Publish-step helpers for ``just heartwood-agent`` / ``heartwood-revert``.
 
 - ``commit_message(run_dir)`` — the session commit's full message: subject
   ``feat(akasha): heartwood agent <date>``, then counts + model + cost, then the agent's

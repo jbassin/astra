@@ -10,7 +10,7 @@ writes the run artifacts — on failure too:
 
 Outcome: **ok** — the agent called ``SUBMIT``; **incomplete** — the iteration
 cap forced the extract fallback; **failed** — an exception escaped the main loop.
-Nothing here publishes: ``publish-sync`` is a separate step (§5, S4).
+Nothing here publishes: ``publish-sync`` is a separate step.
 
 Sandbox environment: dspy launches bare ``deno`` with ``os.environ`` (dspy 3.2.1
 ``primitives/python_interpreter.py:142,329``), so ``prepare_sandbox_env`` puts

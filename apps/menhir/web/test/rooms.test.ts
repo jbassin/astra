@@ -108,7 +108,7 @@ function phaseOf(runtime: ReturnType<typeof createRoomsRuntime>, code: string, h
   return out.snapshot.phase;
 }
 
-describe("rooms runtime timer policy (S2b review blocker)", () => {
+describe("rooms runtime timer policy", () => {
   test("a mid-question answer does not disarm the countdown; the timer still closes the question", () => {
     const clock = new TestClock();
     const { runtime, code, hostToken, p1 } = bootGame(clock);

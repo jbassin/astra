@@ -3,8 +3,7 @@
 // (page-specific: SidebarImage, Backlinks). The Popover island mounts once here.
 // `<body data-slug>` is set in __root (the Graph + TranscriptPlayer contract).
 //
-// Graph (slice 6) lives in the right sidebar — lazy + ClientOnly so pixi never
-// reaches SSR. Search (slice 8) joins later.
+// Graph lives in the right sidebar — lazy + ClientOnly so pixi never reaches SSR.
 import { lazy, type ReactNode, Suspense } from "react";
 
 import ClientOnly from "@/components/ClientOnly/ClientOnly";

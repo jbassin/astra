@@ -58,7 +58,7 @@ describe("view builders", () => {
     expect(v.crumbs[0]?.displayName).toBe("Home");
     const titles = v.backlinks.map((b) => b.label);
     expect([...titles].sort()).toEqual(titles); // sorted by title
-    // slice 4: the build-rendered vellum body + reading time
+    // the build-rendered vellum body + reading time
     expect(v.bodyHtml).toContain("data-vellum-export");
     expect(v.readingMinutes).toBeGreaterThanOrEqual(1);
   });

@@ -1,11 +1,11 @@
-"""The agent's task signature + instructions (0033 §4).
+"""The agent's task signature + instructions.
 
 The docstring of ``MaintainWiki`` is the instruction text dspy places ahead of its own
-RLM template and the tool list (dspy 3.2.1 ``predict/rlm.py:300-309``). It covers all ten §4
-requirements. The mechanics and anti-slop sections were tightened after the first real dry run
-(2025-8-28: a "resistant to bludgeoning" leak and heavy ` -- ` use). The Bad/Good scrapyard and
-roller-rink pair and the filler-word list are reused from the 0020 proposer's ``voice.py``
-(``DRAFT_SYSTEM``) and ``lint.py`` (tell-lint), deleted in ``f3a834b4``; recover with
+RLM template and the tool list (dspy 3.2.1 ``predict/rlm.py:300-309``). It covers all ten of
+the agent's requirements. The mechanics and anti-slop sections were tightened after the first
+real dry run (2025-8-28: a "resistant to bludgeoning" leak and heavy ` -- ` use). The Bad/Good
+scrapyard and roller-rink pair and the filler-word list are reused from the 0020 proposer's
+``voice.py`` (``DRAFT_SYSTEM``) and ``lint.py`` (tell-lint), deleted in ``f3a834b4``; recover with
 ``git show f3a834b4^:apps/heartwood/py/src/astra_heartwood/proposer/voice.py``.
 
 There is deliberately **no ``wiki_index`` input**: dspy re-injects every input variable

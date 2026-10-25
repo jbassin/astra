@@ -6,8 +6,8 @@ Pure, injectable, Dagster-free so it tests with a stub client (no key, no networ
 - `build_episode_entry` — resolve the session's show + summarize → the committed
   `EpisodeEntry`.
 
-Season grouping (the aggregate side) lives alongside this in `chronicle_llm` too, added
-in slice S3. All GLM calls go through `astra_llm.LiteLLMClient.call_structured` on the
+Season grouping (the aggregate side) lives alongside this in `chronicle_llm` too.
+All GLM calls go through `astra_llm.LiteLLMClient.call_structured` on the
 config-single-source `llm.default-model` (GLM-5.2) — never a provider SDK, never the
 dspy judge (wrong task; see the 0019 scope doc).
 """

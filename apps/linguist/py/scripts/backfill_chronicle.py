@@ -6,7 +6,7 @@ already exist are skipped, so a re-run only fills gaps. Run from the repo root:
 
     uv run python apps/linguist/py/scripts/backfill_chronicle.py
 
-This is the one-time S4 backfill; new sessions flow through the Dagster assets
+This is the one-time backfill; new sessions flow through the Dagster assets
 automatically. Unmatched sessions (an older campaign outside the 7 shows) are skipped.
 """
 
