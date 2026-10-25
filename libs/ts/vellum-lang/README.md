@@ -32,8 +32,6 @@ Run from the repo root with `node --import tsx libs/ts/vellum-lang/scripts/<name
 - `gen-fixtures.ts`: regenerates `fixtures/vellum/<name>.ast.json` and `.meta.json` from the
   `.vellum` files. Run it after an intentional grammar or AST change and review the diff.
 - `dump-meta.ts`: the TS half of `just vellum-parity` (reads a JSON list of paths on stdin).
-- `convert-wiki.ts --dest <corpus> [--src <wiki>]`: the one-shot converter from the old
-  Obsidian wiki to vellum. The corpus it writes lives in the astra-data clone.
 
 It reads no config; `@astra/config` is a dev dependency of the scripts and tests only.
 
