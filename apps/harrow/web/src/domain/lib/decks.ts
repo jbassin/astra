@@ -1,5 +1,5 @@
 // Ported verbatim from harrow's src/data/decks.ts. The four deck taxonomy entries —
-// id, label, and the identity colour (Decision G: kept as the one bespoke accent the
+// id, label, and the identity colour (kept as the one bespoke accent the
 // full gothic re-skin preserves; applied via gothic's identityStyle seam in the
 // components, not inlined). Static config, not derived from content.
 

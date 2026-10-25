@@ -6,7 +6,7 @@ import { PREDICATES } from "../data/predicates";
 import { evaluatePredicate, matchedPredicate } from "./predicates";
 import type { TarotCard } from "./types";
 
-// Predicate-selection gate (spec 0017 gate I.2). Three layers:
+// Predicate-selection gate. Three layers:
 //   1. the 29 labels are locked VERBATIM against the source data/predicates.ts (the
 //      authoritative list — catches a dropped/typo'd predicate);
 //   2. evaluatePredicate is checked against HAND-COMPUTED expectations on synthetic

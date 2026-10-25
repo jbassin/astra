@@ -2,9 +2,8 @@ import { identityStyle } from "@astra/gothic";
 
 import type { Deck } from "@/domain/lib/decks";
 
-// Ported from harrow's src/components/CardBack.tsx, re-skinned onto gothic (Decision
-// A): surface→panel, the deck colour via identityStyle (Decision G) consumed by the
-// .deck-* utilities.
+// Ported from harrow's src/components/CardBack.tsx, re-skinned onto gothic:
+// surface→panel, the deck colour via identityStyle consumed by the .deck-* utilities.
 interface CardBackProps {
   deck: Deck;
   className?: string;

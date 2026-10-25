@@ -4,7 +4,7 @@ import { generateCombinedFortune } from "./fortune";
 import { CROSS_SPREAD } from "./spreads";
 import type { DrawnCard, TarotCard } from "./types";
 
-// Fortune-template gate (spec 0017 gate I.2). Math.random is stubbed so `pick` always
+// Fortune-template gate. Math.random is stubbed so `pick` always
 // selects template index 0 — making the output deterministic — then we assert the
 // interpolation (cardName reversed-suffix, meaning-by-orientation, fortune text) is
 // woven into each position's template-0 string in order.

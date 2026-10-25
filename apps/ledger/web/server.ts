@@ -1,4 +1,4 @@
-// Production SSR entry for the ledger Compose service (Decision I). Thin caller over
+// Production SSR entry for the ledger Compose service. Thin caller over
 // @astra/site-kit's createSsrServer: the srvx + static + SSR-span spine lives
 // in the lib; ledger supplies only what's app-specific — its built SSR handler, the
 // client-assets dir, and serviceName/port from config.kdl. No staticMounts: ledger

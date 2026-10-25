@@ -6,9 +6,9 @@ import type { TarotCard } from "@/domain/lib/types";
 import { CardFront } from "./CardFront";
 import { CardName } from "./CardName";
 
-// Ported from harrow's src/components/CardRow.tsx, re-skinned onto gothic (Decision A):
+// Ported from harrow's src/components/CardRow.tsx, re-skinned onto gothic:
 // surface/well/rim/brass/mist/ghost tokens → gothic panel/rule/accent-amber/ink-dim/
-// ink-faint; deck colour via identityStyle (Decision G). The gallery encyclopedia row.
+// ink-faint; deck colour via identityStyle. The gallery encyclopedia row.
 interface CardRowProps {
   card: TarotCard;
 }

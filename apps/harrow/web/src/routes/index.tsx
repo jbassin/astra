@@ -5,7 +5,7 @@ import { ReadingSurface } from "@/domain/components/ReadingSurface";
 import { SITE } from "@/generated/site";
 
 // The live draw (harrow's ReadingView). The draw uses Math.random, so it runs ONLY
-// client-side (Decision D): SSR renders the deterministic fallback, and ReadingSurface
+// client-side: SSR renders the deterministic fallback, and ReadingSurface
 // hydrates + draws on mount. No hydration mismatch.
 export const Route = createFileRoute("/")({
   component: HomeComponent,
