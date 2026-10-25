@@ -83,8 +83,11 @@ export function describeSsrSmoke(opts: SsrSmokeOptions): void {
   describe("SSR smoke", () => {
     beforeAll(async () => {
       if (bundleIsStale(appRoot)) {
+        // vitest sets NODE_ENV=test, and vite builds a dev bundle (import.meta.env.DEV true)
+        // under it; the smoke checks the production bundle, so build it as one.
         await execFileAsync("pnpm", [...(opts.build ?? DEFAULT_BUILD)], {
           cwd: appRoot,
+          env: { ...process.env, NODE_ENV: "production" },
           maxBuffer: 256 * 1024 * 1024,
         });
       }
