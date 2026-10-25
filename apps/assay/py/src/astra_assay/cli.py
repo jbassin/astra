@@ -294,7 +294,7 @@ def cmd_price(args: argparse.Namespace) -> None:
         _write_comparables_spot(va_results, va_share)
 
         print(
-            f"assay price: pure n={len(pure)} (excl. singleton, R2={ladder.r_squared:.3f})  "
+            f"assay price: pure n={len(pure)} (excl. singleton, R²={ladder.r_squared:.3f})  "
             f"trainers n={len(trainers)}  scored n={len(population.scored)}  "
             f"ledgered n={sum(population.ledger.values())}  comparables corpus n={len(corpus)}  "
             f"V-A share={va_share:.1%}  buff corpus n={len(buff_corpus)}  "
@@ -519,8 +519,9 @@ def _write_point_tables_v2(
     lines.append(
         "Stage A/B still runs (it feeds the appendix below and the comparables atom-vector "
         "weighting, `pricing.instance_weight`) but its per-condition PRICE output is no longer "
-        "the recommended design tool — see round-2's build record (`0030-assay-round2-spec.md` "
-        "§5) for the full V3′ diagnosis of why (Fear/Slow/Synesthesia score 1–4 ranks cold: Stage "
+        "the recommended design tool — see section 5 of round-2's build record "
+        "(`0030-assay-round2-spec.md`) for the full V3′ diagnosis of why (Fear/Slow/Synesthesia "
+        "score 1–4 ranks cold: Stage "
         "A's β's are learned from PARTIAL hybrid discounts, then reused by Stage B to justify an "
         "entire control-spell budget — an extrapolation the architecture was never validated for)."
     )
@@ -769,7 +770,7 @@ def _write_validation_v2(
         "residual spread in `power-ledger.md`'s hybrid rows and the condition price card in "
         "`point-tables.md` — mid-tier T2/T3 budget fractions land in the "
         f"{stage_a.beta[Tier.T2]:.2f}-{stage_a.beta[Tier.T3]:.2f} β range, consistent with the "
-        "~0.5-0.75-of-budget mid-rank hybrid observation (see the S2 build record for the numeric "
+        "~0.5-0.75-of-budget mid-rank hybrid observation (see the build record for the numeric "
         "walk-through)."
     )
     lines.append("")
@@ -832,7 +833,7 @@ def _write_validation_v2(
     lines.append("## V-B — extraction-fix proof")
     lines.append("")
     lines.append(
-        "See the S1 commit (`3783473`, `feat(assay): S1 payload fixes + hostility routing`) for "
+        "See commit `3783473` (the payload fixes and hostility routing) for "
         "the full numeric derivation. Summary: Sleep extracts its Unconscious payload at "
         "Failure/Critical Failure (was silently dropped — case-sensitive rule (iii)) AND its "
         "Success-row en-dash '–1 status penalty to Perception checks' modifier (was silently "
@@ -842,7 +843,7 @@ def _write_validation_v2(
         "restoration: **84 spells'** condition-instance count changes under the fix (spec "
         "estimated ~50 — same order of magnitude; 7 of those flip from SkipRecord to a scored/"
         "ledgered row entirely: Sleep, Bane, Web, Levitate, Malediction, Hypnotize, Ring of "
-        "Truth). All pins re-derived post-fix in the S1 commit message; the pure-damage ladder "
+        "Truth). All pins re-derived post-fix in that commit's message; the pure-damage ladder "
         "(n=27, slope/intercept) came out BYTE-IDENTICAL to round 2's shipped values — none of "
         "the 27 pure-subset spells happened to have a condition ref restored by these fixes."
     )
@@ -873,7 +874,9 @@ def _write_validation_v2(
         "(Undetected/Hidden DO carry real tiers here, exercising `classify_hostility` directly)."
     )
     lines.append("")
-    lines.append(f"Route counts (ev=0.0 rows, real corpus post-S1-fix): **{routing_counts}**.")
+    lines.append(
+        f"Route counts (ev=0.0 rows, real corpus after the payload fixes): **{routing_counts}**."
+    )
     lines.append("")
     lines.append(f"Named `routing-ambiguous` list ({len(ambiguous_names)}):")
     lines.append("")
@@ -882,7 +885,7 @@ def _write_validation_v2(
     lines.append(
         "Damage-side non-regression: Fireball's V2′ spot-check above is unchanged from round 2 "
         "(the pure-damage population and ladder are byte-identical); no damage-side extraction "
-        "path was touched by S1."
+        "path was touched by the payload fixes."
     )
     lines.append("")
 

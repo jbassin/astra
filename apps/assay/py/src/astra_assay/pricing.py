@@ -259,7 +259,7 @@ def rank_equivalent(ev: float, ladder: LadderFit) -> float:
 
 # ---------------------------------------------------------------------------
 # Coverage arithmetic applied per condition-instance (not per-spell
-# cross-degree merging — see the S2 build-record note on this simplification).
+# cross-degree merging — see the build-record note on this simplification).
 # ---------------------------------------------------------------------------
 
 _DEGREE_PROBABILITY = {
@@ -310,7 +310,7 @@ def instance_weight(
     x duration x within-tier offset). Each ConditionInstance
     already carries its own attributed degree, so this treats every instance
     as an independent weighted line rather than re-merging same-condition
-    multi-degree coverage sets — a documented simplification (see the S2
+    multi-degree coverage sets — a documented simplification (see the
     build record)."""
     prob_table = _DEGREE_PROBABILITY_BOSS if boss_weighted else _DEGREE_PROBABILITY
     p = prob_table.get(degree, 0.0)

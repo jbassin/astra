@@ -1,7 +1,7 @@
 """Unit tests for the comparables engine — synthetic profiles only
 (no real corpus reads; the real-corpus behavior is exercised via
 `test_assay_extract.py`'s routing-fixture tests and manual verification in
-the S2 build record)."""
+the build record)."""
 
 from __future__ import annotations
 

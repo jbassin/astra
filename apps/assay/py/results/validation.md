@@ -59,7 +59,7 @@ Diagnosis: the 'pure'/'hybrid' labels here are the BROAD damage-row split (has v
 | 9 | 66.09 | 63 | +4.9% | — |
 | 10 | 74.13 | 70 | +5.9% | — |
 
-Fitted condition-price reproduction of the -1-rank rider exchange rate: see the Stage A residual spread in `power-ledger.md`'s hybrid rows and the condition price card in `point-tables.md` — mid-tier T2/T3 budget fractions land in the 0.37-0.14 β range, consistent with the ~0.5-0.75-of-budget mid-rank hybrid observation (see the S2 build record for the numeric walk-through).
+Fitted condition-price reproduction of the -1-rank rider exchange rate: see the Stage A residual spread in `power-ledger.md`'s hybrid rows and the condition price card in `point-tables.md` — mid-tier T2/T3 budget fractions land in the 0.37-0.14 β range, consistent with the ~0.5-0.75-of-budget mid-rank hybrid observation (see the build record for the numeric walk-through).
 
 ---
 
@@ -86,13 +86,13 @@ Fitted condition-price reproduction of the -1-rank rider exchange rate: see the 
 
 ## V-B — extraction-fix proof
 
-See the S1 commit (`3783473`, `feat(assay): S1 payload fixes + hostility routing`) for the full numeric derivation. Summary: Sleep extracts its Unconscious payload at Failure/Critical Failure (was silently dropped — case-sensitive rule (iii)) AND its Success-row en-dash '–1 status penalty to Perception checks' modifier (was silently dropped — ASCII-only sign class), both fixed on the SAME real file. En-dash restoration: **exactly 28 files** (verified independently via a raw corpus grep, `[–−]\d+\s*[-–− ](status|circumstance)`, matching the spec's ~28 pin exactly). Case-fold restoration: **84 spells'** condition-instance count changes under the fix (spec estimated ~50 — same order of magnitude; 7 of those flip from SkipRecord to a scored/ledgered row entirely: Sleep, Bane, Web, Levitate, Malediction, Hypnotize, Ring of Truth). All pins re-derived post-fix in the S1 commit message; the pure-damage ladder (n=27, slope/intercept) came out BYTE-IDENTICAL to round 2's shipped values — none of the 27 pure-subset spells happened to have a condition ref restored by these fixes.
+See commit `3783473` (the payload fixes and hostility routing) for the full numeric derivation. Summary: Sleep extracts its Unconscious payload at Failure/Critical Failure (was silently dropped — case-sensitive rule (iii)) AND its Success-row en-dash '–1 status penalty to Perception checks' modifier (was silently dropped — ASCII-only sign class), both fixed on the SAME real file. En-dash restoration: **exactly 28 files** (verified independently via a raw corpus grep, `[–−]\d+\s*[-–− ](status|circumstance)`, matching the spec's ~28 pin exactly). Case-fold restoration: **84 spells'** condition-instance count changes under the fix (spec estimated ~50 — same order of magnitude; 7 of those flip from SkipRecord to a scored/ledgered row entirely: Sleep, Bane, Web, Levitate, Malediction, Hypnotize, Ring of Truth). All pins re-derived post-fix in that commit's message; the pure-damage ladder (n=27, slope/intercept) came out BYTE-IDENTICAL to round 2's shipped values — none of the 27 pure-subset spells happened to have a condition ref restored by these fixes.
 
 ## V-C — routing proof
 
 The four mandated routing fixtures (real corpus, `tests/fixtures/`) all land correctly — proven end-to-end in `test_assay_extract.py`'s `test_routing_*` tests: **Belittling Boast → hostile** (its `hostile_area_phrase` flag wins over the empty-range/touch-self trap), **Overwhelming Memory → hostile** (prose-save detected despite `defense.save` being structurally null), **Haste → beneficial-effect** (Quickened is excluded from tier assignment entirely — the pre-existing bypass), **Invisibility → beneficial** (Undetected/Hidden DO carry real tiers here, exercising `classify_hostility` directly).
 
-Route counts (ev=0.0 rows, real corpus post-S1-fix): **{'hostile': 158, 'beneficial-effect': 185, 'routing-ambiguous': 35}**.
+Route counts (ev=0.0 rows, real corpus after the payload fixes): **{'hostile': 158, 'beneficial-effect': 185, 'routing-ambiguous': 35}**.
 
 Named `routing-ambiguous` list (35):
 
@@ -132,7 +132,7 @@ Named `routing-ambiguous` list (35):
 - Thundering Dominance
 - Unholy Army
 
-Damage-side non-regression: Fireball's V2′ spot-check above is unchanged from round 2 (the pure-damage population and ladder are byte-identical); no damage-side extraction path was touched by S1.
+Damage-side non-regression: Fireball's V2′ spot-check above is unchanged from round 2 (the pure-damage population and ladder are byte-identical); no damage-side extraction path was touched by the payload fixes.
 
 ## V-D — carry (ladder untouched; round-2 damage gates not regressed)
 

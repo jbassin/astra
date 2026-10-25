@@ -2,7 +2,7 @@
 
 Foundry damage entries carry a ``formula`` string. Round 1 only needs the
 average value (EV), so this module is deliberately narrow: it recognizes the
-shapes the corpus actually contains (§1 census: 357 ``NdM``, 5 ``NdM+K``,
+shapes the corpus actually contains (the corpus census: 357 ``NdM``, 5 ``NdM+K``,
 18 flat) and rejects anything else with a reason string for the skip ledger
 (e.g. the one ``@item.rank`` focus-spell formula, out of round-1 scope).
 """

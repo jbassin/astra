@@ -247,7 +247,7 @@ def test_render_table_latex_wide_header_not_squeezed_narrow() -> None:
 
 
 def test_render_table_latex_label_column_capped_for_prose_column() -> None:
-    """S5 column-width rework (Eye Stalks defect): a label-ish column with
+    """Column-width rework (Eye Stalks defect): a label-ish column with
     ONE outlier long cell ("Disintegration Ray" alongside mostly-short "X
     Ray" labels) used to jump the WHOLE column to a flat 12em bucket the
     instant any single word passed 13 characters — starving the prose
@@ -323,7 +323,7 @@ def test_render_table_latex_breakable_shape() -> None:
 
 
 def test_emit_spell_list_latex_explicit_rowcolor_not_rowcolors() -> None:
-    """S5 row-height fix: the chapter spell-list table used to hand row
+    """Row-height fix: the chapter spell-list table used to hand row
     striping to \\rowcolors{2}{TableBlue}{TableWhite} (colortbl's automatic
     per-row counter) — empirically, ONLY in the full multi-chapter book (a
     single-table reproduction never showed it), a handful of that table's

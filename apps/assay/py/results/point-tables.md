@@ -135,7 +135,7 @@ multipliers)
 ## Appendix: round-2 fitted condition price card (SUPERSEDED — known-noisy,
 kept for provenance)
 
-Stage A/B still runs (it feeds the appendix below and the comparables atom-vector weighting, `pricing.instance_weight`) but its per-condition PRICE output is no longer the recommended design tool — see round-2's build record (`0030-assay-round2-spec.md` §5) for the full V3′ diagnosis of why (Fear/Slow/Synesthesia score 1–4 ranks cold: Stage A's β's are learned from PARTIAL hybrid discounts, then reused by Stage B to justify an entire control-spell budget — an extrapolation the architecture was never validated for).
+Stage A/B still runs (it feeds the appendix below and the comparables atom-vector weighting, `pricing.instance_weight`) but its per-condition PRICE output is no longer the recommended design tool — see section 5 of round-2's build record (`0030-assay-round2-spec.md`) for the full V3′ diagnosis of why (Fear/Slow/Synesthesia score 1–4 ranks cold: Stage A's β's are learned from PARTIAL hybrid discounts, then reused by Stage B to justify an entire control-spell budget — an extrapolation the architecture was never validated for).
 
 Hybrid trainer n=136, R²=0.040, α=-0.288.
 
