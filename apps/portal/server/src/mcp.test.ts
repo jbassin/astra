@@ -104,285 +104,296 @@ describe("the /mcp Streamable-HTTP surface (Foundry-free)", () => {
     await handle.close();
   });
 
-  it("rejects a request with no Authorization header", async () => {
-    const res = await fetch(mcpUrl, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
+  describe("bearer auth", () => {
+    it("rejects a request with no Authorization header", async () => {
+      const res = await fetch(mcpUrl, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
+      });
+      expect(res.status).toBe(401);
+      expect(await res.json()).toEqual({ error: "unauthorized" });
     });
-    expect(res.status).toBe(401);
-    expect(await res.json()).toEqual({ error: "unauthorized" });
+
+    it("rejects a request with the wrong bearer key", async () => {
+      const res = await fetch(mcpUrl, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: "Bearer nope" },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
+      });
+      expect(res.status).toBe(401);
+    });
+
+    it("rejects a garbage bearer token (neither the static key nor a valid OAuth token)", async () => {
+      const res = await fetch(mcpUrl, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: "Bearer totally-made-up" },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
+      });
+      expect(res.status).toBe(401);
+      expect(await res.json()).toEqual({ error: "unauthorized" });
+      expect(res.headers.get("www-authenticate")).toMatch(/^Bearer resource_metadata="/);
+    });
+
+    it("every 401 carries a WWW-Authenticate header pointing at a working PRM endpoint", async () => {
+      const res = await fetch(mcpUrl, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
+      });
+      expect(res.status).toBe(401);
+
+      const header = res.headers.get("www-authenticate");
+      const match = /^Bearer resource_metadata="([^"]+)"$/.exec(header ?? "");
+      expect(match).toBeTruthy();
+      const metadataUrl = new URL(match?.[1] ?? "");
+      // The URL is built from TEST_PUBLIC_ORIGIN (the configured public origin), not
+      // the real ephemeral test port.
+      expect(metadataUrl.href).toBe(
+        `${TEST_PUBLIC_ORIGIN}/.well-known/oauth-protected-resource/mcp`,
+      );
+
+      // Fetch the PRM at the equivalent path on the actual ephemeral test server.
+      const prmRes = await fetch(new URL(metadataUrl.pathname, `http://127.0.0.1:${handle.port}`));
+      expect(prmRes.status).toBe(200);
+      const prm = (await prmRes.json()) as Record<string, unknown>;
+      expect(prm.resource).toBe(`${TEST_PUBLIC_ORIGIN}${MCP_HTTP_PATH}`);
+      expect(prm.authorization_servers).toEqual([new URL(TEST_PUBLIC_ORIGIN).href]);
+    });
   });
 
-  it("rejects a request with the wrong bearer key", async () => {
-    const res = await fetch(mcpUrl, {
-      method: "POST",
-      headers: { "content-type": "application/json", authorization: "Bearer nope" },
-      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
-    });
-    expect(res.status).toBe(401);
-  });
+  describe("tools/list", () => {
+    it("surfaces per-param .describe() text in tools/list (the LLM-facing schema docs)", async () => {
+      // Found live (2026-07-07 acceptance): without a JSON-schema description on
+      // search-compendium's `type`, an MCP client guesses the pf2e subtype ("npc") and
+      // silently gets zero results — the zod JSDoc never crosses the wire, .describe() does.
+      const transport = new StreamableHTTPClientTransport(mcpUrl, {
+        requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
+      });
+      const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+      await client.connect(transport);
 
-  it("rejects a garbage bearer token (neither the static key nor a valid OAuth token)", async () => {
-    const res = await fetch(mcpUrl, {
-      method: "POST",
-      headers: { "content-type": "application/json", authorization: "Bearer totally-made-up" },
-      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
-    });
-    expect(res.status).toBe(401);
-    expect(await res.json()).toEqual({ error: "unauthorized" });
-    expect(res.headers.get("www-authenticate")).toMatch(/^Bearer resource_metadata="/);
-  });
+      const { tools } = await client.listTools();
+      const propDescription = (tool: string, prop: string): string => {
+        const schema = tools.find((t) => t.name === tool)?.inputSchema as
+          | { properties?: Record<string, { description?: string }> }
+          | undefined;
+        return schema?.properties?.[prop]?.description ?? "";
+      };
+      expect(propDescription("search-compendium", "type")).toContain("metadata.type");
+      expect(propDescription("import-from-compendium", "folder")).toContain("EXISTING");
+      expect(propDescription("create-journal", "folder")).toContain("EXISTING");
+      expect(propDescription("create-token", "actorId")).toContain("Exactly one of");
 
-  it("every 401 carries a WWW-Authenticate header pointing at a working PRM endpoint", async () => {
-    const res = await fetch(mcpUrl, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
-    });
-    expect(res.status).toBe(401);
-
-    const header = res.headers.get("www-authenticate");
-    const match = /^Bearer resource_metadata="([^"]+)"$/.exec(header ?? "");
-    expect(match).toBeTruthy();
-    const metadataUrl = new URL(match?.[1] ?? "");
-    // The URL is built from TEST_PUBLIC_ORIGIN (the configured public origin), not
-    // the real ephemeral test port.
-    expect(metadataUrl.href).toBe(`${TEST_PUBLIC_ORIGIN}/.well-known/oauth-protected-resource/mcp`);
-
-    // Fetch the PRM at the equivalent path on the actual ephemeral test server.
-    const prmRes = await fetch(new URL(metadataUrl.pathname, `http://127.0.0.1:${handle.port}`));
-    expect(prmRes.status).toBe(200);
-    const prm = (await prmRes.json()) as Record<string, unknown>;
-    expect(prm.resource).toBe(`${TEST_PUBLIC_ORIGIN}${MCP_HTTP_PATH}`);
-    expect(prm.authorization_servers).toEqual([new URL(TEST_PUBLIC_ORIGIN).href]);
-  });
-
-  it("serves the bridge-status tool (offline, no module connected) through a real MCP client round-trip", async () => {
-    const transport = new StreamableHTTPClientTransport(mcpUrl, {
-      requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
-    });
-    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
-    await client.connect(transport);
-
-    const result = await client.callTool({ name: "bridge-status" });
-    const [content] = result.content as Array<{ type: "text"; text: string }>;
-    expect(content).toBeDefined();
-    if (!content) throw new Error("unreachable — asserted above");
-    expect(JSON.parse(content.text)).toEqual({ connected: false });
-
-    await client.close();
-  });
-
-  it("bridge-status round-trips the module's userName identity via a stub bridge module", async () => {
-    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
-    const mod = new FakeModule(wsUrl, { userId: "user1", userName: "Portal" });
-    await mod.ready();
-
-    const transport = new StreamableHTTPClientTransport(mcpUrl, {
-      requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
-    });
-    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
-    await client.connect(transport);
-
-    const result = await client.callTool({ name: "bridge-status" });
-    const [content] = result.content as Array<{ type: "text"; text: string }>;
-    if (!content) throw new Error("unreachable — asserted above");
-    expect(JSON.parse(content.text)).toEqual({
-      connected: true,
-      userId: "user1",
-      userName: "Portal",
+      await client.close();
     });
 
-    await client.close();
-    mod.close();
-  });
+    it("lists all 22 tools (18 GM tools + query-party/query-player/query-item/query-rolls), every new field described", async () => {
+      const transport = new StreamableHTTPClientTransport(mcpUrl, {
+        requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
+      });
+      const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+      await client.connect(transport);
 
-  it("surfaces per-param .describe() text in tools/list (the LLM-facing schema docs)", async () => {
-    // Found live (2026-07-07 acceptance): without a JSON-schema description on
-    // search-compendium's `type`, an MCP client guesses the pf2e subtype ("npc") and
-    // silently gets zero results — the zod JSDoc never crosses the wire, .describe() does.
-    const transport = new StreamableHTTPClientTransport(mcpUrl, {
-      requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
-    });
-    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
-    await client.connect(transport);
+      const { tools } = await client.listTools();
+      expect(tools.map((t) => t.name).sort()).toEqual(
+        [
+          "bridge-status",
+          "list-compendium-packs",
+          "search-compendium",
+          "get-document",
+          "search-world",
+          "list-scenes",
+          "get-current-scene",
+          "import-from-compendium",
+          "create-token",
+          "create-journal",
+          "create-actor",
+          "create-item",
+          "create-light",
+          "create-macro",
+          "apply-condition",
+          "update-document",
+          "delete-document",
+          "execute-macro",
+          "query-party",
+          "query-player",
+          "query-item",
+          "query-rolls",
+        ].sort(),
+      );
 
-    const { tools } = await client.listTools();
-    const propDescription = (tool: string, prop: string): string => {
-      const schema = tools.find((t) => t.name === tool)?.inputSchema as
-        | { properties?: Record<string, { description?: string }> }
-        | undefined;
-      return schema?.properties?.[prop]?.description ?? "";
-    };
-    expect(propDescription("search-compendium", "type")).toContain("metadata.type");
-    expect(propDescription("import-from-compendium", "folder")).toContain("EXISTING");
-    expect(propDescription("create-journal", "folder")).toContain("EXISTING");
-    expect(propDescription("create-token", "actorId")).toContain("Exactly one of");
-
-    await client.close();
-  });
-
-  it("lists all 22 tools (18 GM tools + query-party/query-player/query-item/query-rolls), every new field described", async () => {
-    const transport = new StreamableHTTPClientTransport(mcpUrl, {
-      requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
-    });
-    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
-    await client.connect(transport);
-
-    const { tools } = await client.listTools();
-    expect(tools.map((t) => t.name).sort()).toEqual(
-      [
-        "bridge-status",
-        "list-compendium-packs",
-        "search-compendium",
-        "get-document",
-        "search-world",
-        "list-scenes",
-        "get-current-scene",
-        "import-from-compendium",
-        "create-token",
-        "create-journal",
-        "create-actor",
-        "create-item",
-        "create-light",
-        "create-macro",
-        "apply-condition",
-        "update-document",
-        "delete-document",
-        "execute-macro",
-        "query-party",
-        "query-player",
-        "query-item",
-        "query-rolls",
-      ].sort(),
-    );
-
-    // Every field on every new tool's schema must carry a .describe() — the 0023
-    // acceptance lesson (zod JSDoc never crosses the wire, .describe() does).
-    const schemaOf = (tool: string): { properties?: Record<string, { description?: string }> } =>
-      tools.find((t) => t.name === tool)?.inputSchema ?? {};
-    const newToolFields: Record<string, string[]> = {
-      "create-actor": ["type", "name", "system", "items", "baseUuid", "folder", "img"],
-      "create-item": ["name", "type", "system", "actorId", "baseUuid", "rulesSelections", "img"],
-      "apply-condition": ["actorId", "slug", "action", "value", "persistentDamage"],
-      "create-light": ["sceneId", "x", "y", "hidden", "config"],
-      "create-macro": ["name", "macroType", "command", "img"],
-      "update-document": ["uuid", "updates"],
-      "delete-document": ["uuid"],
-      "execute-macro": ["macroId"],
-      "query-player": ["name", "uuid", "section", "entry", "rank"],
-      "query-item": ["uuid", "name", "limit"],
-      "query-rolls": ["actor", "type", "outcome", "since", "until", "cursor", "limit", "format"],
-    };
-    for (const [tool, fields] of Object.entries(newToolFields)) {
-      const properties = schemaOf(tool).properties ?? {};
-      for (const field of fields) {
-        expect(properties[field]?.description, `${tool}.${field} should be described`).toBeTruthy();
+      // Every field on every new tool's schema must carry a .describe() — the 0023
+      // acceptance lesson (zod JSDoc never crosses the wire, .describe() does).
+      const schemaOf = (tool: string): { properties?: Record<string, { description?: string }> } =>
+        tools.find((t) => t.name === tool)?.inputSchema ?? {};
+      const newToolFields: Record<string, string[]> = {
+        "create-actor": ["type", "name", "system", "items", "baseUuid", "folder", "img"],
+        "create-item": ["name", "type", "system", "actorId", "baseUuid", "rulesSelections", "img"],
+        "apply-condition": ["actorId", "slug", "action", "value", "persistentDamage"],
+        "create-light": ["sceneId", "x", "y", "hidden", "config"],
+        "create-macro": ["name", "macroType", "command", "img"],
+        "update-document": ["uuid", "updates"],
+        "delete-document": ["uuid"],
+        "execute-macro": ["macroId"],
+        "query-player": ["name", "uuid", "section", "entry", "rank"],
+        "query-item": ["uuid", "name", "limit"],
+        "query-rolls": ["actor", "type", "outcome", "since", "until", "cursor", "limit", "format"],
+      };
+      for (const [tool, fields] of Object.entries(newToolFields)) {
+        const properties = schemaOf(tool).properties ?? {};
+        for (const field of fields) {
+          expect(
+            properties[field]?.description,
+            `${tool}.${field} should be described`,
+          ).toBeTruthy();
+        }
       }
-    }
 
-    // Loudness spot-checks: the write descriptions state loudly that they WRITE
-    // to the live campaign, and the riskiest tools name their own guardrails.
-    const description = (tool: string): string =>
-      tools.find((t) => t.name === tool)?.description ?? "";
-    expect(description("create-actor")).toContain("WRITES to the live 'Faerrin'");
-    expect(description("delete-document")).toContain("not-portal-created");
-    expect(description("execute-macro")).toContain("AS THE GM");
+      // Loudness spot-checks: the write descriptions state loudly that they WRITE
+      // to the live campaign, and the riskiest tools name their own guardrails.
+      const description = (tool: string): string =>
+        tools.find((t) => t.name === tool)?.description ?? "";
+      expect(description("create-actor")).toContain("WRITES to the live 'Faerrin'");
+      expect(description("delete-document")).toContain("not-portal-created");
+      expect(description("execute-macro")).toContain("AS THE GM");
 
-    await client.close();
+      await client.close();
+    });
   });
 
-  it("maps a bridge-offline BridgeError to an isError result when no module is connected", async () => {
-    const transport = new StreamableHTTPClientTransport(mcpUrl, {
-      requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
-    });
-    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
-    await client.connect(transport);
+  describe("read-tool calls", () => {
+    it("serves the bridge-status tool (offline, no module connected) through a real MCP client round-trip", async () => {
+      const transport = new StreamableHTTPClientTransport(mcpUrl, {
+        requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
+      });
+      const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+      await client.connect(transport);
 
-    const result = await client.callTool({ name: "list-scenes", arguments: {} });
-    expect(result.isError).toBe(true);
-    const [content] = result.content as Array<{ type: "text"; text: string }>;
-    if (!content) throw new Error("unreachable — asserted above");
-    expect(JSON.parse(content.text)).toEqual({
-      code: "bridge-offline",
-      message: "no Foundry module is connected",
-    });
+      const result = await client.callTool({ name: "bridge-status" });
+      const [content] = result.content as Array<{ type: "text"; text: string }>;
+      expect(content).toBeDefined();
+      if (!content) throw new Error("unreachable — asserted above");
+      expect(JSON.parse(content.text)).toEqual({ connected: false });
 
-    await client.close();
-  });
-
-  it("search-compendium round-trips params + the module's result through a real MCP client", async () => {
-    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
-    const mod = new FakeModule(wsUrl);
-    await mod.ready();
-
-    const canned = {
-      results: [
-        {
-          uuid: "Compendium.pf2e.pathfinder-bestiary.Actor.g1",
-          id: "g1",
-          name: "Goblin Warrior",
-          type: "Actor",
-          pack: "pf2e.pathfinder-bestiary",
-          packLabel: "Pathfinder Bestiary",
-        },
-      ],
-    };
-    mod.onQuery((q) => {
-      expect(q.method).toBe("portal.search-compendium");
-      expect(q.params).toEqual({ query: "goblin" });
-      mod.respond(q.id, canned);
+      await client.close();
     });
 
-    const transport = new StreamableHTTPClientTransport(mcpUrl, {
-      requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
-    });
-    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
-    await client.connect(transport);
+    it("bridge-status round-trips the module's userName identity via a stub bridge module", async () => {
+      const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+      const mod = new FakeModule(wsUrl, { userId: "user1", userName: "Portal" });
+      await mod.ready();
 
-    const result = await client.callTool({
-      name: "search-compendium",
-      arguments: { query: "goblin" },
-    });
-    expect(result.isError).toBeFalsy();
-    const [content] = result.content as Array<{ type: "text"; text: string }>;
-    if (!content) throw new Error("unreachable — asserted above");
-    expect(JSON.parse(content.text)).toEqual(canned);
+      const transport = new StreamableHTTPClientTransport(mcpUrl, {
+        requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
+      });
+      const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+      await client.connect(transport);
 
-    await client.close();
-    mod.close();
-  });
+      const result = await client.callTool({ name: "bridge-status" });
+      const [content] = result.content as Array<{ type: "text"; text: string }>;
+      if (!content) throw new Error("unreachable — asserted above");
+      expect(JSON.parse(content.text)).toEqual({
+        connected: true,
+        userId: "user1",
+        userName: "Portal",
+      });
 
-  it("get-document maps the module's typed not-found error onto an isError result", async () => {
-    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
-    const mod = new FakeModule(wsUrl);
-    await mod.ready();
-
-    mod.onQuery((q) => {
-      mod.respondError(q.id, "not-found", "not found: Actor.nope");
+      await client.close();
+      mod.close();
     });
 
-    const transport = new StreamableHTTPClientTransport(mcpUrl, {
-      requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
-    });
-    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
-    await client.connect(transport);
+    it("maps a bridge-offline BridgeError to an isError result when no module is connected", async () => {
+      const transport = new StreamableHTTPClientTransport(mcpUrl, {
+        requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
+      });
+      const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+      await client.connect(transport);
 
-    const result = await client.callTool({
-      name: "get-document",
-      arguments: { uuid: "Actor.nope" },
-    });
-    expect(result.isError).toBe(true);
-    const [content] = result.content as Array<{ type: "text"; text: string }>;
-    if (!content) throw new Error("unreachable — asserted above");
-    expect(JSON.parse(content.text)).toEqual({
-      code: "not-found",
-      message: "not found: Actor.nope",
+      const result = await client.callTool({ name: "list-scenes", arguments: {} });
+      expect(result.isError).toBe(true);
+      const [content] = result.content as Array<{ type: "text"; text: string }>;
+      if (!content) throw new Error("unreachable — asserted above");
+      expect(JSON.parse(content.text)).toEqual({
+        code: "bridge-offline",
+        message: "no Foundry module is connected",
+      });
+
+      await client.close();
     });
 
-    await client.close();
-    mod.close();
+    it("search-compendium round-trips params + the module's result through a real MCP client", async () => {
+      const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+      const mod = new FakeModule(wsUrl);
+      await mod.ready();
+
+      const canned = {
+        results: [
+          {
+            uuid: "Compendium.pf2e.pathfinder-bestiary.Actor.g1",
+            id: "g1",
+            name: "Goblin Warrior",
+            type: "Actor",
+            pack: "pf2e.pathfinder-bestiary",
+            packLabel: "Pathfinder Bestiary",
+          },
+        ],
+      };
+      mod.onQuery((q) => {
+        expect(q.method).toBe("portal.search-compendium");
+        expect(q.params).toEqual({ query: "goblin" });
+        mod.respond(q.id, canned);
+      });
+
+      const transport = new StreamableHTTPClientTransport(mcpUrl, {
+        requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
+      });
+      const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+      await client.connect(transport);
+
+      const result = await client.callTool({
+        name: "search-compendium",
+        arguments: { query: "goblin" },
+      });
+      expect(result.isError).toBeFalsy();
+      const [content] = result.content as Array<{ type: "text"; text: string }>;
+      if (!content) throw new Error("unreachable — asserted above");
+      expect(JSON.parse(content.text)).toEqual(canned);
+
+      await client.close();
+      mod.close();
+    });
+
+    it("get-document maps the module's typed not-found error onto an isError result", async () => {
+      const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+      const mod = new FakeModule(wsUrl);
+      await mod.ready();
+
+      mod.onQuery((q) => {
+        mod.respondError(q.id, "not-found", "not found: Actor.nope");
+      });
+
+      const transport = new StreamableHTTPClientTransport(mcpUrl, {
+        requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
+      });
+      const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+      await client.connect(transport);
+
+      const result = await client.callTool({
+        name: "get-document",
+        arguments: { uuid: "Actor.nope" },
+      });
+      expect(result.isError).toBe(true);
+      const [content] = result.content as Array<{ type: "text"; text: string }>;
+      if (!content) throw new Error("unreachable — asserted above");
+      expect(JSON.parse(content.text)).toEqual({
+        code: "not-found",
+        message: "not found: Actor.nope",
+      });
+
+      await client.close();
+      mod.close();
+    });
   });
 });
 
