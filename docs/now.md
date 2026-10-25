@@ -1,19 +1,21 @@
 # Now
 
-Updated 2026-10-23.
+Updated 2026-10-25.
 
 ## In flight
 
-- **Tech-debt paydown 0037: Phase 2 is done** apart from slices that wait on Josh or heartwood
-  gate E; **Phase 3 has started** (p3-0 is live). The status lines and checklist are section 0.1
-  of [`thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`](../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md).
+- **Tech-debt paydown 0037, Phase 3.** The comment sweeps, READMEs, tests-by-behaviour, dead-code
+  pass and four frontend fixes have landed (status line 2026-10-25 in section 0.1 of
+  [`thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`](../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md)).
+  Agents are building fe-c (akasha SPA navigation, ADR 0031), fe-d (one design-token source,
+  ADR 0032) and p3-ratchet (CI fails when a debt count rises).
 
 ## Next action
 
-Phase 3: per-area comment sweeps (remove the existing decision IDs that `just no-decision-ids
---all` counts), behaviour-named tests, per-domain READMEs and `CLAUDE.md` files, dead code, the
-frontend items (fe-c and fe-d keep today's look) and the CI ratchets. Calls parked for Josh are
-under "Paydown decisions (Josh)" in the backlog; steps only he can do are under "Smaller calls".
+Merge fe-c, fe-d and p3-ratchet, then deploy the frontends. Then the remaining agent items: the
+stale comments listed in the backlog, immutable assets for the four non-site-kit servers, and the
+site-kit dark-mode leftovers. Calls parked for Josh are under "Paydown decisions (Josh)" in the
+backlog; steps only he can do are under "Smaller calls".
 
 ## Blocked or waiting
 
