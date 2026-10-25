@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 
 /**
- * Identity-color seam (Decision I5). Per-player/host colors are NOT part of
+ * Identity-color seam. Per-player/host colors are NOT part of
  * gothic's framework palette — their VALUES live in ontology-being
  * (`Player.color`, `WealHost.color`, `guest_color`). gothic only applies them as
  * a RUNTIME CSS variable (`--identity-color`), because Tailwind is static and

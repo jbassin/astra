@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * One-shot faerrin-wiki → full-vellum converter (astra 0007, decision E3/F2).
+ * One-shot faerrin-wiki → full-vellum converter.
  *
  *   node --import tsx \
  *     libs/ts/vellum-lang/scripts/convert-wiki.ts --dest <corpus> [--src <wiki>]
@@ -11,7 +11,7 @@
  * report (convert-report.json) flagging any page that still needs a human eye.
  * The TS validator (validate-corpus.ts) is the zero-error-chips gate that follows.
  *
- * Per-page rules (NLSpec 0007 §"Converter rules"):
+ * Per-page rules:
  *   1. frontmatter → normalize + BAKE the faerrin git-modified date into `date:`.
  *   2. prose / [[wikilinks]] / md+AON links → pass through (vellum is CommonMark+).
  *   3. Obsidian callouts `> [!type] Title` → `:::handout` / `:::edict`.

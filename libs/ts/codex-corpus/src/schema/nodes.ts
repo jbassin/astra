@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * CodexNode — the P2 renderer contract (D29-2, spec §2/§3). ONE Zod discriminated
+ * CodexNode — the renderer contract. ONE Zod discriminated
  * union over 19 kinds, no `dangerouslySetInnerHTML` of source-derived HTML anywhere
  * downstream. `CORPUS_SCHEMA_VERSION` (`src/ingest/emit.ts`) bumps on ANY breaking
  * change here (a kind added/removed/reshaped) — NOT the committed root
@@ -14,9 +14,9 @@ import { z } from "zod";
  *     structural; their recursive fields (`children`/`items`/`rows`/`caption`) hold
  *     arbitrary `CodexNode`s (block-in-block for nested lists/asides, or bare inline
  *     runs for simple list items — both are real shapes in the corpus). `statRow`
- *     (P10, D29-93) is the one exception: its `cells` field holds `InlineNode[][]`,
+ *     is the one exception: its `cells` field holds `InlineNode[][]`,
  *     not recursive `CodexNode[]` — an AoN statblock row is always paragraph-shaped
- *     content (D29-91), never block-in-block.
+ *     content, never block-in-block.
  *   - INLINE (text/crossref/brokenRef/check/damage/inlineRoll/inlineAction/template/
  *     embed/actionGlyph/localizedBoilerplate) — leaves; no inline-in-inline nesting
  *     (styling is carried on `text` via `marks`, never by wrapping one inline node in
@@ -33,10 +33,10 @@ import { z } from "zod";
  *     optional fields — `join.ts` flips `resolved` in place once it resolves a raw
  *     `@Embed`/`<document>` reference against the corpus, so the node's shape is
  *     stable across the pre-join/post-join transform stages.
- *   - Images and `<column>`/`<center>` are NOT node kinds (D29-2): images are
+ *   - Images and `<column>`/`<center>` are NOT node kinds: images are
  *     dropped at transform (report-counted), columns/centers flatten to sequential
  *     blocks before nodes are ever constructed — neither survives into this schema.
- *     `<row>` is the one exception (P10, D29-91/D29-93): a row whose parsed
+ *     `<row>` is the one exception: a row whose parsed
  *     children are ALL paragraphs, with no wrapper tag opened anywhere inside its
  *     own scope, and at least 2 children, collapses to a `statRow` block instead of
  *     flattening — see `aonMarkup.ts`'s own file header for the full candidacy
@@ -51,7 +51,7 @@ import { z } from "zod";
  *   - `check` gained an optional `extra: Record<string, string | boolean>` — real
  *     `@Check[...]` pipe-args carry far more keys than `dc`/`basic`/`traits`
  *     (`against`, `defense`, `showDC`, `name`, `options`, `overrideTraits`,
- *     `immutable`, `roller`, `rollerRole`, all verified in the packs). Per D29-6's
+ *     `immutable`, `roller`, `rollerRole`, all verified in the packs). Per the
  *     "unknown FORMS hard-fail, not unknown keys within a known form" policy, these
  *     survive in `extra` (bare flags become `true`) instead of hard-failing or being
  *     silently dropped; `enrichers.ts` also `report()`s each one so drift is visible.
@@ -91,17 +91,17 @@ const TextNode = z
 
 /** A resolved internal reference (Foundry `@UUID`, an AoN internal `[label](/Url…)`
  * link, or a same-corpus `<document>` embed target) — `targetId` is always a codex
- * entity id (`{category}/{slug}` or `{category}/{slug}@legacy`, D29-1), never a raw
+ * entity id (`{category}/{slug}` or `{category}/{slug}@legacy`), never a raw
  * Foundry uuid or AoN URL. */
 const CrossrefNode = z
   .object({ kind: z.literal("crossref"), targetId: z.string().min(1), display: z.string() })
   .strict();
 
-/** An unresolved reference, preserved as plain text (D29-6): relative `@UUID[.<id>]`
+/** An unresolved reference, preserved as plain text: relative `@UUID[.<id>]`
  * that didn't resolve within its own document, a broken alias, etc. `target` keeps
  * the raw unresolved reference string for the transform report; `excludedRef`
  * (Macro/RollTable targets) uses this same node shape at render time — the
- * distinction is a report CLASS, not a schema kind (D29-6). */
+ * distinction is a report CLASS, not a schema kind. */
 const BrokenRefNode = z
   .object({ kind: z.literal("brokenRef"), target: z.string(), display: z.string() })
   .strict();
@@ -123,7 +123,7 @@ const CheckNode = z
   })
   .strict();
 
-/** `@Damage` (D29-6): raw formula kept verbatim (depth-aware bracket parse, e.g.
+/** `@Damage`: raw formula kept verbatim (depth-aware bracket parse, e.g.
  * `(floor((@actor.level+1)/2)+1)d6[poison]`) alongside a computed human-readable
  * string; actor-relative formulas display as formula text (reference site, not a
  * VTT — no `@actor.*` evaluation happens anywhere in this pipeline). */
@@ -138,7 +138,7 @@ const DamageNode = z
   })
   .strict();
 
-/** All three `[[/r`/`[[/br`/`[[/gmr` forms (D29-6) share this shape; `rollKind` is
+/** All three `[[/r`/`[[/br`/`[[/gmr` forms share this shape; `rollKind` is
  * the enricher's own roll-form tag, distinct from this node's `kind` discriminant. */
 const InlineRollNode = z
   .object({
@@ -149,7 +149,7 @@ const InlineRollNode = z
   })
   .strict();
 
-/** The `[[/act …]]` form (D29-6, 1,343 uses) — a Foundry action-macro reference, not
+/** The `[[/act …]]` form (1,343 uses) — a Foundry action-macro reference, not
  * a dice roll. */
 const InlineActionNode = z
   .object({
@@ -160,7 +160,7 @@ const InlineActionNode = z
   })
   .strict();
 
-/** `@Template` (D29-6): area-effect shape + distance, e.g.
+/** `@Template`: area-effect shape + distance, e.g.
  * `@Template[emanation|distance:30]`. */
 const TemplateNode = z
   .object({
@@ -173,7 +173,7 @@ const TemplateNode = z
   })
   .strict();
 
-/** Covers Foundry `@Embed` AND AoN `<document>` (D29-2). Pre-join, `target` is the
+/** Covers Foundry `@Embed` AND AoN `<document>`. Pre-join, `target` is the
  * raw uuid/AoN-doc reference and `resolved` is `false`; `join.ts` resolves it to a
  * codex entity id in place and flips `resolved` to `true`. Inlining the embed's
  * content is a P2 render decision, not this schema's concern. */
@@ -233,7 +233,7 @@ export interface HeadingNode {
   level: number;
   children: InlineNode[];
   /** The AoN `<title right=…>` right-annotation string (action cost/level, e.g.
-   * "Cantrip 1") — absent for Foundry-sourced headings (D29-2). */
+   * "Cantrip 1") — absent for Foundry-sourced headings. */
   meta?: string;
 }
 export interface ListNode {
@@ -261,7 +261,7 @@ export interface AsideNode {
   kind: "aside";
   children: CodexNode[];
 }
-/** P10 (D29-91/D29-93): an AoN `<row gap="…">` statblock row collapsed at ingest
+/** An AoN `<row gap="…">` statblock row collapsed at ingest
  * (see `aonMarkup.ts` for the candidacy rule + boundary-trim semantics). `cells`
  * is `InlineNode[][]`, not recursive `CodexNode[]` — every real candidate corpus-
  * wide is paragraph-shaped inline content, never block-in-block. */
@@ -340,12 +340,12 @@ const InlineNodeSchema = z.discriminatedUnion("kind", [
   LocalizedBoilerplateNodeSchema,
 ]);
 
-/** P10 (D29-93): `cells` is `z.array(InlineNodeSchema)`, not a `z.lazy` recursive
+/** `cells` is `z.array(InlineNodeSchema)`, not a `z.lazy` recursive
  * field — same reason it sits down here rather than up with the other leaf
  * schemas: it needs the already-built eager `InlineNodeSchema` above, which in
  * turn needs `LocalizedBoilerplateNodeSchema` already built (the same ordering
  * constraint documented at that schema's own definition). `cells.length >= 2` +
- * every cell non-empty are the D29-93 Zod pins; a cell can never trim to fully
+ * every cell non-empty are the Zod pins; a cell can never trim to fully
  * empty in practice (`aonMarkup.ts`'s `inlineIsMeaningful` filters all-whitespace
  * paragraphs upstream, before a row is ever a candidate), so the non-empty pin is
  * satisfiable by construction, not just aspirational. */

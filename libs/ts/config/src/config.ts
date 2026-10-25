@@ -7,7 +7,7 @@
  * `WholeConfig` holds every namespace, and one CI test validates the real file against it.
  *
  * Every namespace and plaintext field is required: values live only in `config.kdl`. A
- * secret field is a lazy `SecretRef`, or undefined when the KDL sets no ref (Decision E).
+ * secret field is a lazy `SecretRef`, or undefined when the KDL sets no ref.
  * `.strict()` inside each namespace mirrors Pydantic's `extra="forbid"`: a mistyped KDL
  * key throws instead of being dropped.
  */

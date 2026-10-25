@@ -4,22 +4,22 @@ import { BlockNodeSchema, InlineNodeSchema } from "./nodes";
 import type { BlockNode } from "./nodes";
 
 /**
- * CodexEntity — the canonical, joined, license-labeled corpus row (D29-1/-3/-7/-8/-13,
- * spec §2/§3). One JSON file per entity at `corpus/<category>/<slug>.json`
- * (`<slug>@legacy.json` for the legacy half of a shared-slug remaster pair, D29-1); a
+ * CodexEntity — the canonical, joined, license-labeled corpus row. One JSON file per
+ * entity at `corpus/<category>/<slug>.json`
+ * (`<slug>@legacy.json` for the legacy half of a shared-slug remaster pair); a
  * slim projection of every entity (`IndexRow`, below) lands in
- * `corpus/<category>/_index.json` (D29-21: leading-underscore, `sluggify()` can never
+ * `corpus/<category>/_index.json` (leading underscore: `sluggify()` can never
  * emit one, so this can never collide with a real entity slug). The EMITTED corpus's
  * own schema generation is `CORPUS_SCHEMA_VERSION` in `src/ingest/emit.ts` (bump
  * alongside a breaking change here — a required field added/removed/reshaped, an
  * id-format change) — NOT the committed root `corpus-manifest.json`'s own
- * `schemaVersion`, a different concept (that one pins upstream FETCH versions, D29-4;
+ * `schemaVersion`, a different concept (that one pins upstream FETCH versions;
  * see `src/schema/manifest.ts` and `emit.ts`'s own doc comment on this distinction).
  *
  * Ambiguities resolved while writing this contract:
  *   - `category` is `z.string()`, not a literal enum — the join owns the authoritative
  *     category list (`apps/codex/ingest/src/categoryMap.ts`, keyed on (Foundry pack, doc
- *     type) per D29-7) and AoN alone ships 93 of them; duplicating that list here as a
+ *     type)) and AoN alone ships 93 of them; duplicating that list here as a
  *     zod enum would just be a second place for it to drift out of sync.
  *   - The id regex is deliberately loose (`{category}/{slug}` with an optional
  *     `@legacy` suffix, any non-slash/non-whitespace characters either side) — real
@@ -42,8 +42,8 @@ import type { BlockNode } from "./nodes";
 
 /** Loose by design — see the file-level comment. Matches both a plain id
  * (`spell/heal`) and a legacy-pair member (`spell/heal@legacy`). Exported
- * (P4, D29-39) so `src/schema/rulesTree.ts`/`sourcesIndex.ts` share the
- * repo's single reference convention (adversarial N13) instead of
+ * so `src/schema/rulesTree.ts`/`sourcesIndex.ts` share the
+ * repo's single reference convention instead of
  * re-declaring the regex. */
 export const CodexId = z
   .string()
@@ -59,7 +59,7 @@ export type Edition = z.infer<typeof EditionSchema>;
 export const LicenseSchema = z.enum(["ORC", "OGL", "unknown"]);
 export type License = z.infer<typeof LicenseSchema>;
 
-/** D29-13: Foundry-derived entities read this off `system.publication` (Items) /
+/** Foundry-derived entities read this off `system.publication` (Items) /
  * `system.details.publication` (Actors, verified on `monster-core`'s Balor); AoN-only
  * and journal-derived entities have no in-source license field and resolve via the
  * committed `apps/codex/ingest/src/licenseMap.ts` book table instead — `license` still
@@ -74,7 +74,7 @@ export const SourceSchema = z
 export type Source = z.infer<typeof SourceSchema>;
 
 // ---------------------------------------------------------------------------
-// facets (D29-3's "facet fields per category", pragmatic shape)
+// facets (the facet fields per category, pragmatic shape)
 //
 // ONE flat object: named optional fields for the mechanically-rich categories
 // verified against the real corpus (creature/spell/equipment-family/feat — see the
@@ -138,7 +138,7 @@ export const FacetsSchema = z
     hands: z.string().optional(), // e.g. "1", "2" (Foundry usage.hands, when present)
     usage: z.string().optional(), // e.g. "held-in-one-hand", "worn"
     itemCategory: z.string().optional(), // e.g. "martial", "simple", "unarmored"
-    /** D29-60 (R8, P6): AoN's `item_category` fill-gap sibling — `equipment`
+    /** AoN's `item_category` fill-gap sibling — `equipment`
      * corpus category only (`join.ts`'s `mergeJoined`/`buildAonOnlyEntity`),
      * e.g. "Scrolls", "Alchemical Tools" (AoN's `item_subcategory`, 75
      * distinct real values on the `equipment` category file, verified). */
@@ -150,7 +150,7 @@ export const FacetsSchema = z
     prerequisites: z.array(z.string()).optional(),
     actionCost: z.string().optional(), // e.g. "1", "2", "3", "reaction", "free", "passive"
 
-    // P3 S1 (D29-33a) — the 5 extractor-gap categories. Category-gated
+    // The 5 extractor-gap categories. Category-gated
     // extraction (`foundryEntities.ts`'s `extractFacets`, unlike the
     // field-presence-driven fields above) since these raw field NAMES are not
     // guaranteed unique across categories the way e.g. `system.price`/
@@ -208,18 +208,18 @@ export const EmbeddedItemSchema = z
     actionCost: z.string().optional(),
     traits: z.array(z.string()),
     body: z.array(BlockNodeSchema),
-    /** D29-20 (P1.6): a `melee`-typed strike item's to-hit bonus
+    /** A `melee`-typed strike item's to-hit bonus
      * (`system.bonus.value`, e.g. `+29`). Absent for every non-strike item
      * type. */
     attackBonus: z.number().optional(),
-    /** D29-20 (P1.6): a `melee`-typed strike item's flattened damage rolls
+    /** A `melee`-typed strike item's flattened damage rolls
      * (`system.damageRolls`, e.g. `["3d12+15 piercing", "2d6 fire"]`) —
      * `${damage} ${damageType}` per roll, insertion order preserved (the raw
      * `damageRolls` object's own key order, stable across re-transforms since
      * it's read verbatim off disk every run). Absent for every non-strike
      * item type. */
     damage: z.array(z.string().min(1)).optional(),
-    /** D29-73 (P7): a `melee`-typed strike item's `system.range.{increment,max}`,
+    /** A `melee`-typed strike item's `system.range.{increment,max}`,
      * transform-baked to an AoN-format display string (precedent: `damage`
      * above is already a transform-baked display string, not raw JSON) —
      * `"range {max} feet"` for a max-only ranged strike, `"range increment
@@ -231,13 +231,13 @@ export const EmbeddedItemSchema = z
      * `thrown-N` traits already cover the common thrown-weapon case
      * separately). */
     range: z.string().optional(),
-    /** D29-20 (P1.6): a `spellcastingEntry`-typed item's spell DC
+    /** A `spellcastingEntry`-typed item's spell DC
      * (`system.spelldc.dc`). Absent for every other item type. */
     dc: z.number().optional(),
-    /** D29-20 (P1.6): a `spellcastingEntry`-typed item's spell attack modifier
+    /** A `spellcastingEntry`-typed item's spell attack modifier
      * (`system.spelldc.value`). Absent for every other item type. */
     attack: z.number().optional(),
-    /** D29-20 (P1.6): a `spellcastingEntry`-typed item's magic tradition
+    /** A `spellcastingEntry`-typed item's magic tradition
      * (`system.tradition.value`, e.g. `"arcane"`). Absent for every other item
      * type. */
     tradition: z.string().optional(),
@@ -246,7 +246,7 @@ export const EmbeddedItemSchema = z
 export type EmbeddedItem = z.infer<typeof EmbeddedItemSchema>;
 
 // ---------------------------------------------------------------------------
-// Stats (D29-20, P1.6 addendum, schemaVersion 1->2 — see `src/ingest/emit.ts`'s
+// Stats (added in schemaVersion 1->2 — see `src/ingest/emit.ts`'s
 // `CORPUS_SCHEMA_VERSION`) — a typed, discriminated statblock projection for
 // the two structured Actor categories (`creature`/`hazard`). Kept as its OWN
 // top-level field, NOT stuffed into `facets` (whose `.catchall(FacetValue)`
@@ -318,7 +318,7 @@ export const CreatureStatsSchema = z
     /** `system.attributes.weaknesses[]`. */
     weaknesses: z.array(TypedValueSchema).optional(),
     /** `system.skills.*.base`, keyed on the skill slug (e.g. `"stealth"`),
-     * PLUS (D29-74, P7) `type:"lore"` embedded items' `system.mod.value`
+     * PLUS `type:"lore"` embedded items' `system.mod.value`
      * keyed on `sluggify(name)` (e.g. `"gambling-lore"`) — merged by
      * `foundryEntities.ts`'s `mergeLoreSkills`. Keys stay slugs; display
      * humanization is render-side (`humanizeSlug` in `SkillsRow`/`statsText`). */
@@ -341,7 +341,7 @@ export const HazardStatsSchema = z
     /** `system.details.isComplex`. */
     isComplex: z.boolean().optional(),
     /** `system.details.disable` — enricher HTML, parsed via the existing
-     * `parseFoundryHtml` path (NOT a scalar, D29-20). */
+     * `parseFoundryHtml` path (NOT a scalar). */
     disable: z.array(BlockNodeSchema).optional(),
     /** `system.details.routine` — same treatment as `disable`. */
     routine: z.array(BlockNodeSchema).optional(),
@@ -352,14 +352,14 @@ export const HazardStatsSchema = z
 export type HazardStats = z.infer<typeof HazardStatsSchema>;
 
 // ---------------------------------------------------------------------------
-// ClassStats (P12 S1, D29-113..115) — a typed statblock projection for the
+// ClassStats — a typed statblock projection for the
 // `class` category. Two layers, built at different pipeline stages:
 //   - the SCALAR fields (keyAbility..featLevels) are extract-time
-//     (`foundryEntities.ts`'s `extractClassStats`, D29-113) — deterministic
+//     (`foundryEntities.ts`'s `extractClassStats`) — deterministic
 //     field mapping off the raw class Item's `system.*` shape, same
 //     fail-soft posture as `CreatureStats`/`HazardStats`.
-//   - `grantedFeatures`/`subclassOptions` are POST-DROP (D29-114/-115,
-//     `src/ingest/augmentClassStats.ts`) — they need the FINAL kept-id set
+//   - `grantedFeatures`/`subclassOptions` are POST-DROP
+//     (`src/ingest/augmentClassStats.ts`) — they need the FINAL kept-id set
 //     (grantedFeatures' targetId nulling) and the final `class-feature`/
 //     subclass-category entity sets (subclassOptions' current-edition
 //     union), neither of which exists at extract time (subclass AoN-only
@@ -415,7 +415,7 @@ const ClassTrainedSkillsSchema = z
  * `system.skillIncreaseLevels.value` — five `number[]` verbatim, never
  * assumed to follow the "standard" cadence (investigator/rogue are dense
  * 2-20/1-20; swashbuckler's skillFeatLevels is an irregular 13-entry set —
- * measured, D29-113). */
+ * measured). */
 const ClassFeatLevelsSchema = z
   .object({
     classFeat: z.array(z.number().int()),
@@ -426,10 +426,10 @@ const ClassFeatLevelsSchema = z
   })
   .strict();
 
-/** D29-114: one `system.items` grant off the raw class Item, uuid-resolved
+/** One `system.items` grant off the raw class Item, uuid-resolved
  * through the existing `uuidResolve`/`categoryMap` seam. `targetId` is the
  * resolved id ONLY when it lands in the final kept entity set (`null`
- * otherwise — the D29-14 unjoined-residue drops, e.g. cleric's "First
+ * otherwise — the unjoined-residue drops, e.g. cleric's "First
  * Doctrine".."Final Doctrine") — this nulling IS the referential validation
  * (`emit.ts`'s own Zod pass is shape-only). The 17 real null cases still
  * appear in the progression table as plain text (render-side, S3) — never
@@ -443,9 +443,9 @@ export const GrantedFeatureSchema = z
   .strict();
 export type GrantedFeature = z.infer<typeof GrantedFeatureSchema>;
 
-/** D29-115: one subclass pill — either a CURRENT option (`superseded:
+/** One subclass pill — either a CURRENT option (`superseded:
  * false`, `targetId` may point into `class-feature/` when the option's
- * remaster half was absorbed there by `CATEGORY_EQUIVALENCE`, D29-16) or a
+ * remaster half was absorbed there by `CATEGORY_EQUIVALENCE`) or a
  * LEGACY husk (`superseded: true`, `targetId` is the husk's own id, for the
  * site-convention `?superseded=1` reveal). `category` is always the curated
  * map's category LABEL (the pill-row grouping), even when `targetId` points
@@ -479,11 +479,11 @@ export const ClassStatsSchema = z
     /** `system.spellcasting` — raw 0/1, converted to boolean. */
     spellcasting: z.boolean(),
     featLevels: ClassFeatLevelsSchema,
-    /** D29-114 (post-drop `augmentClassStats` pass) — absent until that pass
+    /** Set by the post-drop `augmentClassStats` pass — absent until that pass
      * runs; never an empty array (a stats-bearing class always has ≥1 raw
      * grant in the real corpus). */
     grantedFeatures: z.array(GrantedFeatureSchema).optional(),
-    /** D29-115 (post-drop `augmentClassStats` pass) — absent for a class
+    /** Set by the post-drop `augmentClassStats` pass — absent for a class
      * mapped to zero subclass categories (commander/fighter/guardian/magus/
      * swashbuckler) or until the pass runs; never an empty array otherwise. */
     subclassOptions: z.array(SubclassOptionSchema).optional(),
@@ -499,7 +499,7 @@ export const StatsSchema = z.discriminatedUnion("kind", [
 export type Stats = z.infer<typeof StatsSchema>;
 
 // ---------------------------------------------------------------------------
-// D29-62 (R3, P6): mastheadExtra — the AoN masthead's non-"Source" bold-label
+// mastheadExtra — the AoN masthead's non-"Source" bold-label
 // lines the ingest-time structural strip (`aonMarkup.ts`'s `stripMasthead`)
 // pulls out of `body`, re-surfaced by the render layer's facet-header
 // components (`domain/render/facetHeader.tsx`). `value` is `InlineNode[]`
@@ -536,21 +536,21 @@ export const CodexEntitySchema = z
     level: z.number().optional(),
     traits: z.array(z.string()),
     rarity: z.string().optional(),
-    /** D29-1/-7: AoN `remaster_id`/`legacy_id` are arrays (multi-member pairs are
+    /** AoN `remaster_id`/`legacy_id` are arrays (multi-member pairs are
      * real, e.g. one legacy spell splitting into several remaster spells) — kept as
      * arrays here even though the common case is a single-element array. */
     remasteredAs: z.array(CodexId).optional(),
     legacyOf: z.array(CodexId).optional(),
-    /** D29-7: a Foundry 1:N variant (e.g. a `(Adult, Spellcaster)` creature) points
+    /** A Foundry 1:N variant (e.g. a `(Adult, Spellcaster)` creature) points
      * at the ONE AoN doc all its siblings share. */
     variantOf: CodexId.optional(),
     aonUrl: z.string().min(1).optional(),
     body: z.array(BlockNodeSchema),
-    /** D29-8: journal-page prose merged by slug into the matching Item-derived
+    /** Journal-page prose merged by slug into the matching Item-derived
      * entity — set only when a journal page actually merged in; absent otherwise
      * (never an empty array). */
     loreBody: z.array(BlockNodeSchema).optional(),
-    /** D29-8: a journal page (or AoN doc) with no matching Item-derived entity
+    /** A journal page (or AoN doc) with no matching Item-derived entity
      * becomes its own standalone entity in that category instead of merging. */
     proseOnly: z.literal(true).optional(),
     facets: FacetsSchema,
@@ -559,13 +559,13 @@ export const CodexEntitySchema = z
      * categories and for Actors with zero embedded items (never an empty
      * array, same convention as `loreBody`). */
     embeddedItems: z.array(EmbeddedItemSchema).optional(),
-    /** D29-20 (P1.6): a typed statblock projection for `creature`/`hazard`
+    /** A typed statblock projection for `creature`/`hazard`
      * entities — see `StatsSchema` above. Absent for every other category and
      * for a creature/hazard with nothing extractable (a `character`-excluded
-     * Actor never reaches assembly at all, D29-19; an AoN-only `proseOnly`
+     * Actor never reaches assembly at all; an AoN-only `proseOnly`
      * creature/hazard has no Foundry Actor doc to extract from). */
     stats: StatsSchema.optional(),
-    /** P4 (D29-39): the AoN `breadcrumbs` ancestor-name chain (own name
+    /** The AoN `breadcrumbs` ancestor-name chain (own name
      * EXCLUDED, own name is a leaf) — rules-only in practice (the field
      * mirrors `facets.family`'s "same disease, top-level not facets"
      * precedent: rules is 100% `proseOnly` so `facets` is always `{}`, and
@@ -575,10 +575,10 @@ export const CodexEntitySchema = z
      * `AonDocMeta.breadcrumbs` (already normalized at extraction,
      * `aonFacets.ts`'s `normalizeBreadcrumbElement`). Additive/optional — no
      * schemaVersion bump (same rule as every other optional field on this
-     * type). Consumed only by the P4 `rules-tree.json` builder — `IndexRow`
-     * stays untouched (D29-39: the tree ships as its own artifact). */
+     * type). Consumed only by the `rules-tree.json` builder — `IndexRow`
+     * stays untouched (the tree ships as its own artifact). */
     breadcrumbs: z.array(z.string()).optional(),
-    /** P4 (D29-39): reverse-joined `sidebar`-category entities whose OWN AoN
+    /** Reverse-joined `sidebar`-category entities whose OWN AoN
      * `url` resolves (via the link table's `pickCanonical` page-owner rule
      * → aonId → pass-4 `aonIdToFinalId`, a POST-identity step) to THIS
      * entity as host — set on ANY category (stakeholder: attached sidebars
@@ -588,7 +588,7 @@ export const CodexEntitySchema = z
      * (never an empty array, same convention as `loreBody`/`embeddedItems`).
      * Additive/optional — no schemaVersion bump. */
     attachedSidebars: z.array(CodexId).optional(),
-    /** D29-62 (R3, P6): the AoN masthead's non-"Source" bold-label lines
+    /** The AoN masthead's non-"Source" bold-label lines
      * (Target/Bloodline, AC Bonus/Dex Cap/…, Cost/Primary Check/…) — stripped
      * out of `body` at ingest time and re-rendered by the facet-header
      * components. Ordered, preserving masthead order; absent (never `[]`)
@@ -600,9 +600,9 @@ export const CodexEntitySchema = z
 export type CodexEntity = z.infer<typeof CodexEntitySchema>;
 
 // ---------------------------------------------------------------------------
-// IndexRow (D29-3: the slim per-category facet row, NO body)
+// IndexRow (the slim per-category facet row, NO body)
 //
-// P3 S1 (D29-33c) widening: `facets` (trimmed to the calling category's
+// Widened with `facets` (trimmed to the calling category's
 // `facetKeys.ts` allowlist — 73 categories emit none, so the key is OMITTED
 // entirely rather than an empty object, same "absent, never a defaulted
 // empty" convention every other optional field on this row already follows)

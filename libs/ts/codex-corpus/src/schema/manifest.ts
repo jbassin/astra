@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * Corpus pin manifest (D29-4, spec §2/§3): the single source of truth for which
+ * Corpus pin manifest: the single source of truth for which
  * upstream snapshot versions the ingest pipeline is pinned to, plus the doc counts and
  * content hashes that prove a snapshot on disk matches what was last fetched.
  * Committed at `apps/codex/ingest/corpus-manifest.json` — unlike the gitignored
@@ -34,7 +34,7 @@ const AonSnapshot = z
   .object({
     snapshotDate: z.string().nullable(),
     docCount: z.number().int().nonnegative(),
-    // Per-category doc counts (D29-4) — the one open-ended map in the manifest shape,
+    // Per-category doc counts — the one open-ended map in the manifest shape,
     // hence the only field `serializeManifest` needs to key-sort for determinism.
     categoryCounts: z.record(z.string(), z.number().int().nonnegative()),
     sha256: Sha256Hex,
@@ -52,7 +52,7 @@ export const CorpusManifestSchema = z
 
 export type CorpusManifest = z.infer<typeof CorpusManifestSchema>;
 
-/** Starting pin (D29-4): Foundry tag `pf2e-8.3.0`, no AoN snapshot yet. */
+/** Starting pin: Foundry tag `pf2e-8.3.0`, no AoN snapshot yet. */
 export const INITIAL_FOUNDRY_TAG = "pf2e-8.3.0";
 
 export function emptyManifest(): CorpusManifest {
@@ -68,7 +68,7 @@ export function parseManifest(data: unknown): CorpusManifest {
 }
 
 /**
- * Deterministic serializer (D29-3's determinism gate applied to the manifest itself):
+ * Deterministic serializer (the corpus determinism rule applied to the manifest itself):
  * fixed field order taken from the schema shape (not object insertion order) plus
  * `aon.categoryCounts` keys sorted lexicographically, 2-space indent, trailing LF. Equal
  * `CorpusManifest` values always produce byte-identical output.

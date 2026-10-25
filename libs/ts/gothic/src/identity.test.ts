@@ -7,8 +7,8 @@ import {
   identityStyle,
 } from "./identity";
 
-/** I5: identity colors come from ontology-being as runtime CSS vars, with a visible fallback. */
-describe("identity-color seam (I5)", () => {
+/** Identity colors come from ontology-being as runtime CSS vars, with a visible fallback. */
+describe("identity-color seam", () => {
   test("resolves a raw color string", () => {
     expect(identityColor("#ff8800")).toBe("#ff8800");
   });

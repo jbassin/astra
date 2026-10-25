@@ -1,5 +1,5 @@
 // @astra/weal-engine — the typed ESM wrapper over the committed
-// wasm-bindgen artifact (spec 0032 D32-11/D32-13).
+// wasm-bindgen artifact.
 //
 // The generated glue in ../gen is CommonJS (gen/package.json pins
 // {"type":"commonjs"}); `module.createRequire` loads it from ESM without
@@ -31,7 +31,7 @@ let gen = require(GLUE_SPECIFIER) as GenModule;
  * Drop and re-require the CommonJS glue, re-instantiating the wasm module from
  * the committed bytes (the glue reads + instantiates at require time).
  * {@link evaluate} calls this itself after a caught wasm trap — post-trap
- * engine state is undefined (spec D32-14) — so callers never need to; it also
+ * engine state is undefined — so callers never need to; it also
  * serves as the memory high-water release.
  */
 export function reinstantiate(): void {
@@ -42,7 +42,7 @@ export function reinstantiate(): void {
 // The JSON contract's types are generated from the Rust response shapes
 // (`libs/rust/weal-engine/src/api.rs`, via ts-rs) into ../gen/weal_api.d.ts by
 // `just weal-engine-build`; the crate's `ts_bindings_are_current` test fails
-// when that file lags the Rust. The D32-11 error stages: `parse`/`type`/`eval`/
+// when that file lags the Rust. The error stages: `parse`/`type`/`eval`/
 // `fuel`/`prelude` are the player's (their source, their saves, their budget);
 // `internal` is the engine's own fault — an invariant violation the engine
 // reports, or a wasm trap this wrapper caught (message prefix `engine trap:`).
@@ -102,9 +102,9 @@ export type WealValueDisplay = Extract<WealDisplay, { kind: "value" }>;
  * list, with host-supplied entropy.
  *
  * @param source  the message text
- * @param saves   `[name, source]` pairs in id order (D32-17 boot order)
+ * @param saves   `[name, source]` pairs in id order (the boot order)
  * @param seed    32 bytes of host entropy (fixed in tests → deterministic)
- * @param budget  interpreter-step budget; 0 = the engine default (D32-12)
+ * @param budget  interpreter-step budget; 0 = the engine default
  * @param mode    `"run"` = full pipeline; `"check"` = parse+type only
  *
  * A wasm trap (a Rust panic, or a stack overflow the in-engine

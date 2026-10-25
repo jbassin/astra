@@ -5,7 +5,7 @@ import { describe, expect, test } from "vitest";
 import { DocumentView } from "./components/DocumentView";
 
 /**
- * The CI-enforced "gothic renders that AST" gate (0004 exit gate H) — browser-free.
+ * The CI-enforced check that gothic renders the vellum AST — browser-free.
  * One fixture exercises EVERY VellumDocument node type + the 4 new constructs;
  * we render it through `react-dom/server` and assert structure + totality. The
  * human visual gallery is Storybook; the PNG goldens are vellum-frontend's.

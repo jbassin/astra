@@ -1,14 +1,14 @@
 /**
  * `sluggify` — ported VERBATIM from foundryvtt/pf2e `src/util/misc.ts` @ tag
  * `pf2e-8.3.0` (Apache-2.0; https://github.com/foundryvtt/pf2e), the file fetched
- * per D29-5 specifically to source this port (it is not in the packs sparse clone).
+ * specifically to source this port (it is not in the packs sparse clone).
  * Only the pure-string logic is ported — the source function's non-string sanity
  * check logs via `console.warn` and the `"bactrian"` branch throws a pf2e-specific
  * `ErrorPF2e`; both are reproduced with plain equivalents (`throw new Error(...)`)
  * since neither the Foundry client runtime nor `ErrorPF2e` exists in this
  * ingest-script context.
  *
- * D29-1: `slug = sluggify(name)` (the plain/default form, `camel: null`) is codex's
+ * `slug = sluggify(name)` (the plain/default form, `camel: null`) is codex's
  * entity identity. The `"dromedary"`/`"bactrian"` camel-case variants are ported
  * alongside it for completeness (they're one recursive case in upstream's own
  * function) but nothing in the P1 ingest pipeline calls them — identity uses only

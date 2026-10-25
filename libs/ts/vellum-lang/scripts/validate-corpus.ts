@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
- * Corpus structural validator (astra 0007, decision F3 — the TS Node step that
- * makes TS the structural authority, D2).
+ * Corpus structural validator (the TS Node step that makes TS the structural
+ * authority).
  *
  *   node --import tsx \
  *     libs/ts/vellum-lang/scripts/validate-corpus.ts --dir <corpus>
  *
  * Parses every `.vellum` page with the reference parser and reports two things,
- * failing on either (NLSpec 0007 exit gate B + the §1 collision scan):
+ * failing on either (zero error chips, plus the collision scan):
  *
  *   1. ERROR CHIPS — where gothic's renderer would emit a visible `?…`:
  *      unknown/malformed inline directives (`:action[seven]`, `:trait[]`, an

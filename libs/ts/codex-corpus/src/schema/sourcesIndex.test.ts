@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { SourcesIndexFileSchema, parseSourcesIndexFile } from "./sourcesIndex";
 
-describe("SourcesIndexFileSchema (D29-43)", () => {
+describe("SourcesIndexFileSchema", () => {
   it("round-trips a classified book and an 'Other'-bucket book (no productLine)", () => {
     const file = {
       books: [

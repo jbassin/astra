@@ -69,7 +69,7 @@ describe("CodexNode: flat leaf kinds", () => {
     expect(parseCodexNode({ kind: "divider" })).toEqual({ kind: "divider" });
   });
 
-  it("rejects an unknown discriminant kind (the hard-fail posture, D29-6)", () => {
+  it("rejects an unknown discriminant kind (the hard-fail posture)", () => {
     expect(() => parseCodexNode({ kind: "image", src: "x.png" })).toThrow();
   });
 
@@ -79,7 +79,7 @@ describe("CodexNode: flat leaf kinds", () => {
 });
 
 describe("CodexNode: recursive block kinds", () => {
-  it("round-trips a nested list (list-in-list-item, D29-2's 'items = node arrays')", () => {
+  it("round-trips a nested list (list-in-list-item: items are node arrays)", () => {
     const node: CodexNode = {
       kind: "list",
       ordered: false,

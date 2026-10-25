@@ -53,8 +53,8 @@ export function humanizeSlug(slug: string): string {
 /**
  * `includeTables` splits this one switch between two callers with genuinely
  * different postures: `firstParagraphSummary` wants a short "description"
- * fragment (a table's cell text was never a natural summary line, D29-26's
- * own reasoning below); `collectText` (S2, D29-34) wants EVERY word on the
+ * fragment (a table's cell text was never a natural summary line, see the
+ * reasoning below); `collectText` wants EVERY word on the
  * page indexed for search, table cells included — a creature's resistance
  * table or a class-feature's progression table is real searchable content.
  */
@@ -89,7 +89,7 @@ function collectNodeText(node: CodexNode, includeTables: boolean): string {
         .map((item) => item.map((n) => collectNodeText(n, includeTables)).join(" "))
         .join(" ");
     case "table":
-      // A table's cell text isn't a natural "description" fragment (D29-26's own
+      // A table's cell text isn't a natural "description" fragment (the entity's
       // `body` prose is what a summary line is for) — deliberately excluded from
       // `firstParagraphSummary`, same as the renderer's own posture of never
       // dumping structural content flat. `collectText` opts back in.
@@ -107,7 +107,7 @@ function collectNodeText(node: CodexNode, includeTables: boolean): string {
     case "divider":
       return "";
     case "statRow":
-      // P10 (D29-94): cells joined with a single space, NO trailing newline —
+      // Cells joined with a single space, NO trailing newline —
       // no existing case here emits a newline and both callers (the meta
       // description below, and `collectText`'s Pagefind body) whitespace-
       // collapse anyway, so a plain space join is provably byte-stable.
@@ -118,13 +118,13 @@ function collectNodeText(node: CodexNode, includeTables: boolean): string {
 }
 
 /**
- * The route head/meta description (spec S2 bullet: "description from
- * first-paragraph collectText"): plain text of the entity's FIRST top-level
+ * The route head/meta description (the description comes from the first
+ * paragraph): plain text of the entity's FIRST top-level
  * `paragraph` node, whitespace-collapsed and length-capped. Returns `""` for a
  * body with no paragraph at all (e.g. an entity whose body opens with a table or
  * list) — the route omits the meta tag rather than render an empty one.
  *
- * P10 (D29-94) fallback: when the body has NO paragraph at all, fall back to
+ * Fallback: when the body has NO paragraph at all, fall back to
  * the first `statRow`'s joined text rather than "" — an accepted improvement
  * for the categories whose lead block collapses into a stat row (vehicle/
  * siege-weapon/warfare-army, whose masthead-following content used to open
@@ -142,9 +142,8 @@ export function firstParagraphSummary(body: readonly CodexNode[], maxLen = 200):
 }
 
 // ---------------------------------------------------------------------------
-// S2 (D29-34, adversarial N9): full-document plain-text extraction for the
-// Pagefind index build (`apps/codex/ingest/src/build-search.ts`) — no `collectText`/
-// `statsText` symbol existed before this slice.
+// Full-document plain-text extraction for the Pagefind index build
+// (`apps/codex/ingest/src/build-search.ts`).
 // ---------------------------------------------------------------------------
 
 /**
@@ -177,13 +176,13 @@ const ABILITY_ORDER = ["str", "dex", "con", "int", "wis", "cha"] as const;
  * Mirrors `statblock.tsx`'s React rows field-for-field (kept as a separate,
  * plain-text implementation — React reconciliation output isn't a string);
  * every other category's `Facets` (price/bulk/traditions/...) is
- * deliberately out of scope here, per the spec's own "creature/hazard
- * stats" framing — those scalar values are thin enough to live as filters
- * only. NOT safe to call unconditionally across categories: since P3 S1's
- * gap extractors, `hp`/`size` (ancestry), `hp` (class), and `hp`/`ac`/
+ * deliberately out of scope here (only creature/hazard stats are indexed) —
+ * those scalar values are thin enough to live as filters only. NOT safe to
+ * call unconditionally across categories: since the extractor-gap categories
+ * gained facets, `hp`/`size` (ancestry), `hp` (class), and `hp`/`ac`/
  * `fortitudeSave`/`size` (vehicle, warfare-army) appear on non-statblock
  * categories too — the caller (`apps/codex/ingest/src/build-search.ts`) gates on
- * `category === "creature" || "hazard"` per D29-34's own scoping.
+ * `category === "creature" || "hazard"`.
  */
 export function statsText(facets: Facets, stats: Stats | undefined): string {
   const parts: string[] = [];
@@ -224,11 +223,11 @@ export function statsText(facets: Facets, stats: Stats | undefined): string {
       parts.push(w.value !== undefined ? `Weakness ${w.type} ${w.value}` : `Weakness ${w.type}`);
     }
     if (stats.skills) {
-      // D29-74 (P7): `humanizeSlug`, not first-char `capitalize` — `skills`
+      // `humanizeSlug`, not first-char `capitalize` — `skills`
       // keys include multi-word lore slugs since the lore merge
       // ("gambling-lore" must index as "Gambling Lore", never
       // "Gambling-lore"); single-word core skills are unchanged. Mirrors
-      // `statblock.tsx`'s SkillsRow, same D29-74 render blocker.
+      // `statblock.tsx`'s SkillsRow.
       for (const [name, mod] of Object.entries(stats.skills)) {
         parts.push(`${humanizeSlug(name)} ${fmtMod(mod)}`);
       }

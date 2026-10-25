@@ -13,8 +13,8 @@ const CROSSREF_CLASS =
  *
  * By default gothic renders it as a link-styled **placeholder** showing
  * `alias ?? target`, carrying `target`/`heading` on `data-*` attributes — gothic
- * does NOT resolve targets (L6). A consumer that knows the URL map (akasha-frontend
- * 0011) injects a resolver via `<DocumentView resolveCrossref>`; when it returns a
+ * does NOT resolve targets. A consumer that knows the URL map (akasha-frontend)
+ * injects a resolver via `<DocumentView resolveCrossref>`; when it returns a
  * hit this renders a real `<a href>` instead (still carrying the `data-*` attrs so
  * Popover/backlink tooling can hook it).
  */

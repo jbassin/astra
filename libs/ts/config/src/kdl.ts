@@ -1,5 +1,5 @@
 /**
- * KDL at the edge: one typed decoder for every KDL file astra reads (0037 LIB-12), the
+ * KDL at the edge: one typed decoder for every KDL file astra reads, the
  * TS twin of `libs/py/config` `astra_config.kdl`.
  *
  * `@bgotink/kdl` parses; `loadKdl` turns its nodes into a plain `KNode` tree once, and

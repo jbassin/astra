@@ -31,7 +31,7 @@ describe("@astra/ontology", () => {
     expect(being.players.map((p) => p.player_id)).toEqual([1, 2, 3, 4, 5]);
     const josh = being.players.find((p) => p.slug === "josh");
     expect(josh?.is_dm).toBe(true);
-    expect(josh?.color).toBe("rgb(232,184,232)"); // aether theme.scss set (I5)
+    expect(josh?.color).toBe("rgb(232,184,232)"); // the aether theme.scss color
     const jorge = being.players.find((p) => p.slug === "jorge");
     expect(jorge?.snowflakes).toEqual(["712150290169593856", "753011285003730955"]);
   });

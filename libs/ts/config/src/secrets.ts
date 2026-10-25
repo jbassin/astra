@@ -1,11 +1,11 @@
 /**
  * Lazy SOPS secret-ref resolution — the TS twin of `libs/py/config/secrets.py`
- * (roadmap Decision E). Same contract: KDL holds only `ref="sops:KEY"`; values live
+ * Same contract: KDL holds only `ref="sops:KEY"`; values live
  * in the SOPS-encrypted file and decrypt on `.resolve()`, env var (KEY upper-cased)
  * winning over the file.
  *
- * A BLANK value — empty, or only ASCII whitespace — counts as UNSET at both steps (0037
- * LIB-2). Compose injects every secret as `${KEY:-}`, so a container recreated without
+ * A BLANK value — empty, or only ASCII whitespace — counts as UNSET at both steps.
+ * Compose injects every secret as `${KEY:-}`, so a container recreated without
  * `just up` sees the env var present but empty; that must not pass as a real secret. A
  * blank env var falls through to the SOPS file exactly like an absent one, and a blank
  * SOPS entry throws exactly like a missing one — so `resolve()` returns a non-blank value
@@ -13,7 +13,7 @@
  *
  * Read a secret through `SecretRef.require()` (load-bearing: throws a `SecretUnsetError`
  * naming the config key) or `SecretRef.optional()` (feature switch: unset → undefined).
- * App code doesn't wrap `resolve()` itself (0037 LIB-2).
+ * App code doesn't wrap `resolve()` itself.
  */
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";

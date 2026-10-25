@@ -3,25 +3,24 @@ import { z } from "zod";
 import { CodexId, EditionSchema, LicenseSchema } from "./entity";
 
 /**
- * `sources-index.json` (D29-43, spec §3 P4 S1 deliverable) — the `/sources`
+ * `sources-index.json` — the `/sources`
  * aggregate book index, grouped by AoN `primary_source_category` ("product
- * line"). One row per normalized `source.book` string (post the D29-39
+ * line"). One row per normalized `source.book` string (post the
  * mechanical book-name normalization pass — see `src/ingest/bookNormalize.ts`)
  * across the WHOLE corpus, not just rules — distinct from `/source`'s own
  * P3 faceted listing of the 245 `source`-category book ENTITIES (both
- * remain, D29-43's "relationship to the existing `/source` category
- * listing" note).
+ * remain).
  *
  * `productLine` is absent for the ~253-book "Other" bucket (Foundry-only
- * book strings with zero AoN citations, D29-43 — EXPECTED, not a gap).
- * `license`/`edition` are the D29-39 book-level derivation (title
+ * book strings with zero AoN citations — EXPECTED, not a gap).
+ * `license`/`edition` are the book-level derivation (title
  * "(Remastered)" override, licenseMap/source-entity lookup, `"unknown"`
  * pill never a guessed OGL). `sourceEntityRef` links to the book's own
  * `source/{slug}` entity page when one exists (245 of the ~C normalized
- * books) — absent for sourceless books (renders without the link, D29-43).
+ * books) — absent for sourceless books (renders without the link).
  *
- * `categoryCounts` (P4 S4, D29-43's "per-category count links into filtered
- * browse" deliverable): the SAME `entityCount` total, broken down per
+ * `categoryCounts` (backs the per-category count links into filtered
+ * browse): the SAME `entityCount` total, broken down per
  * `CodexEntity.category` — `{category: count}`, every key's value ≥ 1 (a
  * category with zero of this book's entities is simply omitted, never a
  * `0`-valued key, matching every other "absent, never a defaulted empty"
