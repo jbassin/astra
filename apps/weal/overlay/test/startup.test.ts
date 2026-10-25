@@ -22,7 +22,7 @@ afterEach(() => {
   delete process.env[ENV];
 });
 
-describe("requireIngestToken (fail closed, 0037 SEC-12)", () => {
+describe("requireIngestToken (fail closed)", () => {
   test.each(["", "   ", "\t\n"])("refuses a blank injected token %j", (blank) => {
     process.env[ENV] = blank;
     expect(() => requireIngestToken(ref())).toThrow(

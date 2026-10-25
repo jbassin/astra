@@ -1,9 +1,9 @@
 /**
- * The weal roll-history + macro store — Postgres via postgres.js (Decision F,
- * 0022 S5). Two tables: `dice` (one row per sampled NdM die, keyed by the
- * load-bearing `player_id`) and `funcs_v2` (weal v2 saved sources, spec 0032
- * D32-17). The live database also still holds the v1 `funcs` table, a dead
- * archive the bot neither creates nor reads.
+ * The weal roll-history + macro store — Postgres via postgres.js. Two tables:
+ * `dice` (one row per sampled NdM die, keyed by the load-bearing `player_id`)
+ * and `funcs_v2` (weal v2 saved sources, loaded in id order at boot). The live
+ * database also still holds the v1 `funcs` table, a dead archive the bot
+ * neither creates nor reads.
  *
  * The pathological-pool **save-guards** live here, in the bot, not the DB — a
  * novelty roll like `10000d10000` is still rolled & shown, just not persisted.
@@ -37,15 +37,15 @@ export interface FuncV2 {
 export interface WealStore {
   /** One roll's dice (`[base, face]` pairs) as one multi-row insert. */
   insertDice(dice: readonly [number, number][], playerId: number, blameId: number): Promise<void>;
-  /** `funcs_v2` in id order — the D32-17 boot-load. */
+  /** `funcs_v2` in id order, for the boot load (a later row can use an earlier one). */
   getAllFuncsV2(): Promise<FuncV2[]>;
   insertFuncV2(name: string, source: string): Promise<void>;
 }
 
 /**
  * `save_die`'s guards as a pure function over the engine's `standardDice`
- * pairs (`[base, face]` — kept, dropped, and explosion-chain draws alike,
- * D32-11): the rows that should persist. Empty when the pool is too large;
+ * pairs (`[base, face]` — kept, dropped, and explosion-chain draws alike, as
+ * v1 recorded them): the rows that should persist. Empty when the pool is too large;
  * per-die when a base is too big.
  */
 export function diceToPersist(standardDice: readonly [number, number][]): [number, number][] {
@@ -65,7 +65,7 @@ export async function saveDice(
   await store.insertDice(dice, playerId, blameId);
 }
 
-/** postgres.js-backed Postgres implementation of {@link WealStore} (R3, 0022 S5 — off Bun.SQL onto the Node-runtime-portable postgres.js; tagged-template call sites are unchanged). */
+/** postgres.js-backed Postgres implementation of {@link WealStore}. */
 export class PostgresStore implements WealStore {
   readonly #sql: postgres.Sql;
 

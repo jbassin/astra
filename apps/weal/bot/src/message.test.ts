@@ -1,5 +1,5 @@
 /**
- * Pure builders (spec 0032 D32-15/D32-18): defensive truncation at Discord's
+ * Pure builders: defensive truncation at Discord's
  * exact limits, the error-reply fence/caret helpers, and the overlay payload.
  */
 
@@ -35,7 +35,7 @@ function dieDisplay(over: Partial<WealDieDisplay> = {}): WealDieDisplay {
   };
 }
 
-describe("defensive truncation (D32-15 boundary)", () => {
+describe("defensive truncation (at the exact limit)", () => {
   test("truncate leaves strings at the limit untouched", () => {
     const exact = "x".repeat(100);
     expect(truncate(exact, 100)).toBe(exact);
@@ -76,7 +76,7 @@ describe("defensive truncation (D32-15 boundary)", () => {
   });
 });
 
-describe("goodness presentation (D32-15)", () => {
+describe("goodness presentation", () => {
   test("crit/fumble tag the title; others (incl. null) don't", () => {
     expect(dieTitle("A", "20", "crit")).toBe("A: 20 [Crit!]");
     expect(dieTitle("A", "1", "fumble")).toBe("A: 1 [Fumble!]");
@@ -89,7 +89,7 @@ describe("goodness presentation (D32-15)", () => {
   });
 });
 
-describe("error-reply helpers (D32-14)", () => {
+describe("error-reply helpers", () => {
   test("spanExcerpt draws carets under the span", () => {
     expect(spanExcerpt("xyzzy + 1", { start: 0, end: 5 })).toBe("xyzzy + 1\n^^^^^");
     expect(spanExcerpt("4d7kq2", { start: 3, end: 5 })).toBe("4d7kq2\n   ^^");
@@ -178,7 +178,7 @@ describe("saveRefusal (the save guard's reply)", () => {
   });
 });
 
-describe("overlayPayload (D32-18)", () => {
+describe("overlayPayload", () => {
   test("numeric rolls keep the wire shape; expression = plain source", () => {
     expect(overlayPayload("Jorge", "d20 + 7", dieDisplay())).toEqual({
       v: 1,
@@ -211,7 +211,7 @@ describe("overlayPayload (D32-18)", () => {
 });
 
 describe("trimContent (fence stripping)", () => {
-  test("a pasted save confirmation (a ```weal fence) becomes its source (WEAL-29)", () => {
+  test("a pasted save confirmation (a ```weal fence) becomes its source", () => {
     expect(trimContent("```weal\n|| kh(pool(2, d20), 1)\n```")).toBe("|| kh(pool(2, d20), 1)");
   });
 

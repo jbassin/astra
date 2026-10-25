@@ -1,5 +1,5 @@
 /**
- * The engine seam (spec 0032 D32-14/D32-17): noise gate, the funcs_v2 boot
+ * The engine seam: noise gate, the funcs_v2 boot
  * load and the save guard — real wasm where possible, a scripted evaluate for
  * engine faults (no real input reaches an internal error). Trap containment
  * itself is the wrapper's, tested in libs/ts/weal-engine.
@@ -27,7 +27,7 @@ const SEED = new Uint8Array(32).fill(77);
  */
 const EVAL_FAILS = "1 / 0";
 
-describe("passesNoiseGate (D32-14)", () => {
+describe("passesNoiseGate (which errors are visible)", () => {
   test("die tokens pass", () => {
     expect(passesNoiseGate("d20", [])).toBe(true);
     expect(passesNoiseGate("4d6kh3", [])).toBe(true);
@@ -91,7 +91,7 @@ describe("runEngine", () => {
   });
 });
 
-describe("loadValidatedFuncs (the D32-17 boot load, real wasm)", () => {
+describe("loadValidatedFuncs (the funcs_v2 boot load, real wasm)", () => {
   test("valid rows are kept in id order; later rows see earlier saves", () => {
     const rows = [
       { id: 1, name: "bonus", source: "3" },
@@ -180,12 +180,12 @@ describe("loadValidatedFuncs (the D32-17 boot load, real wasm)", () => {
   });
 });
 
-/** `save(:adv, || 2d20kh1)` as the engine serializes it (WEAL-2's reported macro). */
+/** `save(:adv, || 2d20kh1)` as the engine serializes it (a macro a player reported broken). */
 const NULLARY_ADV = "|| kh(pool(2, d20), 1)";
 
 /**
  * The real engine, except that the guard's wrapped use `use` reports an
- * internal error. No real input reaches one since the WEAL-1 fix, so this
+ * internal error. No real input reaches one since the nullary-macro fix, so this
  * stands in for the next checker/interpreter disagreement.
  */
 function internalErrorOn(use: string): typeof evaluate {
@@ -219,7 +219,7 @@ describe("checkNewSave (the save guard, real wasm)", () => {
     expect(check.shadowsBuiltin).toBe(false);
   });
 
-  test("the reported nullary macro loads, rolls and is accepted (WEAL-1)", () => {
+  test("the reported nullary macro loads, rolls and is accepted", () => {
     expect(loadValidatedFuncs([{ id: 1, name: "adv", source: NULLARY_ADV }])).toEqual([
       ["adv", NULLARY_ADV],
     ]);
@@ -353,7 +353,7 @@ describe("checkNewSave (the save guard, real wasm)", () => {
 
 describe("isInternalError", () => {
   test("stage internal is internal; ordinary errors aren't", () => {
-    // No real input reaches an engine internal error since the WEAL-1 fix; the
+    // No real input reaches an engine internal error since the nullary-macro fix; the
     // stage is the engine's contract (`api.rs`), pinned by its own tests.
     expect(
       isInternalError({
@@ -364,7 +364,7 @@ describe("isInternalError", () => {
         preludeName: null,
       }),
     ).toBe(true);
-    // The pre-fix WEAL-1 input is now an ordinary type error.
+    // The input that used to hit the nullary-macro bug is now an ordinary type error.
     const nullary = runEngine("x + 1", [["x", "|| 3"]], SEED);
     expect(nullary.kind === "error" && nullary.error.stage).toBe("type");
     for (const source of ["xyzzy + 1", "1 / 0", "10000d10000"]) {

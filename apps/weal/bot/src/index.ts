@@ -29,8 +29,8 @@ async function main(): Promise<void> {
   // Apply pending schema migrations; a refusal (an edited applied migration) stops startup.
   const migrated = await store.migrate();
   (migrated.ahead.length > 0 ? log.warn : log.info)(describeResult(migrated));
-  // D32-17 boot: funcs_v2 in id order, each mode:"check"-validated against the
-  // prior valid rows; stale rows are WARN-skipped inside loadValidatedFuncs.
+  // Boot load: funcs_v2 in id order, each loaded (and evaluated) after the prior
+  // valid rows; a failing row is WARN-skipped inside loadValidatedFuncs.
   const rows = await store.getAllFuncsV2();
   const funcs = loadValidatedFuncs(rows);
   log.info(`loaded ${funcs.length}/${rows.length} saved weal v2 sources`);

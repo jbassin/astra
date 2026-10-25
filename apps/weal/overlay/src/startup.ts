@@ -1,5 +1,5 @@
 /**
- * Startup guard — weal-overlay fails CLOSED (0037 SEC-12). Without the shared ingest
+ * Startup guard — weal-overlay fails CLOSED. Without the shared ingest
  * token, `POST /api/v1/roll` on the public host would accept anyone's rolls, so a
  * missing or blank token stops the process at boot instead of running open. The usual
  * cause is a container recreated with a plain `docker compose up -d` instead of

@@ -1,7 +1,7 @@
 /**
- * Flavor-line selection: hostSays takes the ENGINE's goodness directly (spec
- * 0032 D32-14 — the v1 thirds math is gone) and draws from the right ontology
- * bank, reading the real GSR lines (K8). Null goodness → the okay bank.
+ * Flavor-line selection: hostSays takes the ENGINE's goodness directly (the v1
+ * thirds math is gone) and draws from the right ontology bank, reading the real
+ * GSR lines. Null goodness → the okay bank.
  */
 
 import { loadBeing, type WealHost } from "@astra/ontology";
@@ -33,7 +33,7 @@ test("fumble goodness → a GSR fumble line", () => {
   expect(line).toBe(gsr.lines.fumble[0] as string);
 });
 
-test("null goodness draws from the okay bank (D32-11)", () => {
+test("null goodness draws from the okay bank", () => {
   const { line } = hostSays(gsr, null, firstRng);
   expect(line).toBe(gsr.lines.okay[0] as string);
 });

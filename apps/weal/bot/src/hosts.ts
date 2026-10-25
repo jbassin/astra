@@ -1,12 +1,12 @@
 /**
  * Host flavor-line selection. Host identities **and** flavor lines live in the
- * ontology (`ontology-being` `weal-host`, per 0009 K8); this module is the pure
+ * ontology (`ontology-being` `weal-host`), not in code; this module is the pure
  * "given a goodness + a host, pick a flavor line" logic the handler calls.
  *
- * Goodness is computed **by the engine** now (spec 0032 D32-11: in-engine from
- * the face-order vector; `null` = one-face support / non-die display → the okay
- * bank, no tag). The v1 `goodnessOf`/`invertGoodness` thirds math is deleted
- * with the v1 roller.
+ * Goodness is computed **by the engine** now (from the die's face order: first
+ * face = fumble, last = crit; `null` = one-face support or a non-die display,
+ * which draws from the okay bank with no tag). The v1
+ * `goodnessOf`/`invertGoodness` thirds math is deleted with the v1 roller.
  *
  * Faithful to faerrin: `hostSays` only ever speaks as **GSR** today. The host
  * is an explicit parameter, so a future host switch is a caller/ontology
@@ -21,7 +21,7 @@ import type { FlavorRng } from "./rng";
 
 /**
  * Pick a flavor line for the roll's goodness from `host`'s ontology banks.
- * `null` goodness draws from the okay bank (D32-11).
+ * `null` goodness draws from the okay bank.
  */
 export function hostSays(
   host: WealHost,

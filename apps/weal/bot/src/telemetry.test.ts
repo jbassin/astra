@@ -1,5 +1,5 @@
 /**
- * Telemetry adds (spec 0032 D32-20), asserted through a mocked `@astra/observe`
+ * Telemetry adds, asserted through a mocked `@astra/observe`
  * (the real module's instruments are no-ops without installed telemetry): the
  * `weal.v2.errors{stage}` / `weal.v2.fuel_aborts` counters, the engine-fault
  * ERROR (a Class-A rule pages Discord on ERROR, so only engine faults use it),
@@ -102,7 +102,7 @@ beforeEach(() => {
   for (const k of Object.keys(spanAttrs)) delete spanAttrs[k];
 });
 
-describe("counters (D32-20)", () => {
+describe("counters", () => {
   test("a fuel abort counts weal.v2.errors{stage:fuel} AND weal.v2.fuel_aborts", async () => {
     await handleMessage("10000d10000", PROFILE, deps());
     expect(counted).toContainEqual({ name: "weal.v2.errors", attrs: { stage: "fuel" } });
@@ -185,7 +185,7 @@ describe("roll history failures", () => {
   });
 });
 
-describe("boot validation logging (D32-17)", () => {
+describe("boot validation logging", () => {
   test("a stale funcs_v2 row is skipped with exactly a WARN naming it", () => {
     const rows = [
       { id: 1, name: "bonus", source: "3" },
@@ -222,7 +222,7 @@ describe("save guard telemetry", () => {
   });
 });
 
-describe("span attributes (D32-20)", () => {
+describe("span attributes", () => {
   test("a roll sets weal.goodness + weal.engine_ms on the message span", async () => {
     await handleMessage("d6", PROFILE, deps());
     expect(spanAttrs["weal.goodness"]).toBe("crit");

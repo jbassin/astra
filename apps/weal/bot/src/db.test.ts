@@ -1,6 +1,6 @@
 /**
- * Store logic — the save-guards over engine `standardDice` pairs (spec 0032
- * D32-17), unit-tested with a fake store. db.pg.test.ts runs the real
+ * Store logic — the save-guards over engine `standardDice` pairs, unit-tested
+ * with a fake store. db.pg.test.ts runs the real
  * PostgresStore and its migrations against a throwaway Postgres.
  */
 
