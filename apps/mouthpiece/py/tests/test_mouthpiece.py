@@ -215,7 +215,7 @@ def test_folder_index_pages_title_by_parent_and_dont_collide() -> None:
     assert {e.path for e in entries} == {"Geography/Quiet Below/index", "Divinity/index"}
 
 
-# ── user content (0024 §4.1 — ordering, id-stripping, roster omission) ─────────
+# ── user content (ordering, id-stripping, roster omission) ─────────────────────
 def test_script_user_content_orders_sections_and_strips_line_ids() -> None:
     digest = _digest(session_id="000.x.2025-1-1")
     cleaned = [(5, "Bram", "hello"), (6, "Maeve", "hi")]

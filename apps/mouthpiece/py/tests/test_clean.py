@@ -1,4 +1,4 @@
-"""clean+enrich (0024 §3, S3) unit tests — hermetic, additive-and-unwired.
+"""clean+enrich unit tests — hermetic, additive-and-unwired.
 
 No live LLM call: `FakeClient` implements the `LlmClient` protocol and computes a
 verdict per window from the `[Wn]` markers actually present in a batch's rendered
@@ -449,7 +449,7 @@ def test_window_verdict_rejects_bad_category() -> None:
         )
 
 
-# ── Stage-3 re-read drift guard (§4.3) ──────────────────────────────────────────────
+# ── Stage-3 re-read drift guard ─────────────────────────────────────────────────────
 
 
 def _digest_with_lines(n: int) -> SessionDigest:

@@ -1,4 +1,4 @@
-"""Roster — the deterministic `THE TABLE:` block for Pass A (0024 §4.1.3).
+"""Roster — the deterministic `THE TABLE:` block for Pass A.
 
 Speaker→character mapping already happens upstream of mouthpiece (linguist bills
 speakers to character names before writing the canonical transcript), so the roster

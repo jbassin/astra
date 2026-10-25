@@ -5,10 +5,9 @@ import { formatRuntime } from "@/domain/lib/format";
 import { EPISODES } from "@/generated/episodes";
 import { TRANSCRIPTS } from "@/generated/transcripts";
 
-// The episode page (slice 4 — gothic re-skin of faerrin face's [id].astro). Header +
-// native-audio placeholder + synopsis + speaker-colored transcript. The custom
-// <Player> island (MediaSession/scrubbing/resume) replaces the native audio in
-// slice 5. The loader does the SSR 404; the component reads the static, fully-typed
+// The episode page (a gothic re-skin of faerrin face's [id].astro). Header + the
+// custom <Player> island (MediaSession/scrubbing/resume) + synopsis + speaker-colored
+// transcript. The loader does the SSR 404; the component reads the static, fully-typed
 // generated modules directly. Dotted `$id` round-trips losslessly (Risk 2).
 // Roles are keyed by host NAME, not seat: seat C has held two different hosts (Pip, the
 // Instigator, on the pre-2026-06 episodes; Nell, the Newcomer, from 2026-09).
@@ -59,9 +58,9 @@ function EpisodeComponent() {
         </div>
       </header>
 
-      {/* The custom Player island (slice 5) — MediaSession / pointer-capture
+      {/* The custom Player island — MediaSession / pointer-capture
           scrubbing / localStorage resume. SSR-renders the transport + hydrates; the
-          audio serves once seeded (D2, slice 6). */}
+          audio serves once seeded. */}
       <section className="ep-player" aria-label="Player">
         <Player
           id={episode.id}

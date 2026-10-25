@@ -1,4 +1,4 @@
-"""The producer comparison (0034 §5): one brief, the two-pass script once per model arm,
+"""The producer comparison: one brief, the two-pass script once per model arm,
 and a report against the live script.
 
 Writes only into ``run_dir``: the producer artifacts, ``script.<arm>.json`` per arm,
@@ -264,7 +264,7 @@ def run_experiment(
     producer: Any = run_producer,
     client_factory: Any = arm_client,
 ) -> ExperimentResult:
-    """Run the comparison for ``date`` (§5). ``arms`` filters ``experiment-models``.
+    """Run the comparison for ``date``. ``arms`` filters ``experiment-models``.
 
     A ``failed`` producer stops before any script call.
     """

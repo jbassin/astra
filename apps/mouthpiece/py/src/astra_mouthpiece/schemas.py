@@ -6,7 +6,7 @@ fixtures); `script.parse_script` validates it into the snake_case Pydantic model
 The description text is byte-identical to faerrin (the model sees it); only the
 Python source line-wrapping differs.
 
-`clean_filter_tool` / `clean_enrich_tool` (0024 §3) are net-new — not ported from
+`clean_filter_tool` / `clean_enrich_tool` are net-new — not ported from
 caster — for the clean+enrich Stage-2 replacement (`clean.py`); camelCase kept for
 the same house style (`wikiRefs`).
 """
@@ -89,7 +89,7 @@ script_tool = ToolSpec(
 )
 
 
-# ── clean: filter (0024 §3.1) ─────────────────────────────────────────────────
+# ── clean: filter ─────────────────────────────────────────────────────────────
 
 CLEAN_FILTER_TOOL_NAME = "record_window_verdicts"
 
@@ -152,7 +152,7 @@ clean_filter_tool = ToolSpec(
 )
 
 
-# ── clean: enrich (0024 §3.2) ──────────────────────────────────────────────────
+# ── clean: enrich ──────────────────────────────────────────────────────────────
 
 CLEAN_ENRICH_TOOL_NAME = "record_session_enrichment"
 

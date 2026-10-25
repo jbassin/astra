@@ -4,7 +4,7 @@ import { EpisodeCard } from "@/domain/components/EpisodeCard";
 import { formatRuntime, sumRuntimeMs } from "@/domain/lib/format";
 import { EPISODES, SITE } from "@/generated/episodes";
 
-// The episode grid (slice 4 — gothic re-skin of faerrin face's index). Masthead +
+// The episode grid (a gothic re-skin of faerrin face's index). Masthead +
 // footer live in __root; this route owns the hero (count + summed runtime) + the
 // EpisodeCard grid. EPISODES is a static, fully-typed generated module.
 export const Route = createFileRoute("/")({

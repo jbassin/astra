@@ -34,7 +34,7 @@ def cleaned_turns_for(
 ) -> list[tuple[int, str, str]]:
     """The session's cleaned turns `(line_id, speaker, text)`.
 
-    Stage-3 re-read guard (0024 §4.3): re-parse the canonical transcript fresh rather
+    Stage-3 re-read guard: re-parse the canonical transcript fresh rather
     than trusting anything cached from Stage 2 — a FROM_FAILURE re-execution could have
     regenerated it, and kept_ranges are line-id ranges into a SPECIFIC file. Symmetric
     with Stage 2: hallucination lines are dropped BEFORE the ranges apply.

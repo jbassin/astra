@@ -1,4 +1,4 @@
-"""The 0034 comparison (§5) — hermetic: a fake producer and a scripted LLM client."""
+"""The producer comparison — hermetic: a fake producer and a scripted LLM client."""
 
 from __future__ import annotations
 

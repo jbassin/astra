@@ -116,7 +116,7 @@ def test_the_catalog_carries_the_kind_and_reads_an_old_snapshot() -> None:
     assert EpisodeEntry.model_validate(dumped).kind == "session"
 
 
-# ── sessions.kdl overrides (0037 pipe-10) ────────────────────────────────────
+# ── sessions.kdl overrides ───────────────────────────────────────────────────
 
 
 def test_the_sidecar_sets_kind_and_title_in_the_catalog(tmp_path: Path) -> None:

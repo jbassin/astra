@@ -137,7 +137,7 @@ def session_digest(
     pipeline_paths: PipelinePaths,
     llm: LlmResource,
 ) -> dg.MaterializeResult:
-    """linguist canonical transcript → clean + enrich `SessionDigest` (Stage 2, 0024 §3)."""
+    """linguist canonical transcript → clean + enrich `SessionDigest` (Stage 2)."""
     date = context.partition_key
     with _tracer.start_as_current_span("mouthpiece.session_digest") as span:
         span.set_attribute("mouthpiece.date", date)
@@ -217,14 +217,14 @@ def session_script(
     llm: LlmResource,
 ) -> dg.MaterializeResult:
     """digest + cleaned transcript + akasha grounding → the two-pass tavern-tone
-    `Script` (Stage 3, 0024 §4)."""
+    `Script` (Stage 3)."""
     key = context.partition_key
     root = pipeline_paths.episodes
     transcripts = pipeline_paths.transcripts
     with _tracer.start_as_current_span("mouthpiece.session_script") as span:
         span.set_attribute("mouthpiece.key", key)
         digest = _read_digest(root, key)
-        # Stage-3 re-read guard (§4.3) — shared with the 0034 producer (inputs.py).
+        # Stage-3 re-read guard — shared with the producer (inputs.py).
         cleaned_turns = cleaned_turns_for(key, digest, transcript_dir=transcripts)
         pages = pages_from_corpus(load_corpus(pipeline_paths.akasha_content))
         hosts = load_hosts()
@@ -241,7 +241,7 @@ def session_script(
         )
         season = season_for(key, show.slug, seasons_path=pipeline_paths.seasons) if show else None
         continuity_block = build_continuity_block(prior, season)
-        # Deterministic character roster (§4.1.3) — same best-effort posture as
+        # Deterministic character roster — same best-effort posture as
         # continuity: an unmatched/excluded show yields no roster block, not an error.
         roster_block = build_roster_block(show.slug) if show else ""
         # The producer brief: when present it replaces the wiki excerpts +
@@ -347,7 +347,7 @@ def session_episode(
         )
 
 
-# ── the cross-episode catalog (D1, plan 0012) ────────────────────────────────
+# ── the cross-episode catalog ────────────────────────────────────────────────
 
 
 def _episode_hosts() -> dict[str, EpisodeHost]:

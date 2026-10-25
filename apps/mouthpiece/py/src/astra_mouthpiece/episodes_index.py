@@ -11,7 +11,7 @@ This is the producer half of the producer/consumer split (with the
 The **backend owns** everything: id-parse, the sort (``astra_sessions.date_sort_key``),
 the per-arc episode numbering, the arc display title (from
 ontology-being ``campaign.name`` — Python is the ontology truth), the audio duration
-(``ffprobe`` over the seeded mp3s, D5), the cache-bust token, and the displayable
+(``ffprobe`` over the seeded mp3s), the cache-bust token, and the displayable
 transcript (``strip_audio_tags`` over each turn + host names from ontology-being).
 The frontend reads this one manifest and ports no helpers.
 
@@ -170,7 +170,7 @@ class EpisodeEntry(_CamelModel):
 
     id: str
     #: ``session``, ``recap`` or ``special`` (`models.EpisodeKind`). A snapshot written
-    #: before 0037 pipe-10 has none; it reads as `kind_from_id`.
+    #: before episode kinds were stored has none; it reads as `kind_from_id`.
     kind: EpisodeKind
 
     @model_validator(mode="before")
@@ -196,7 +196,7 @@ class EpisodeEntry(_CamelModel):
     has_transcript: bool
     #: Cache-bust token for `mp3Url` (`size36-mtime36`); "" when no mp3 on disk.
     audio_version: str
-    #: The roundtable transcript (speaker-attributed, audio-tags stripped) — D4.
+    #: The roundtable transcript (speaker-attributed, audio-tags stripped).
     transcript: list[TranscriptLine]
 
 
