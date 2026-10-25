@@ -102,7 +102,7 @@ jobs:
               - 'pnpm-lock.yaml'
               - 'justfile'
               - '.github/**'
-            # P9 S1 (D29-83) — the row-pitch drift guard needs a real Chromium,
+            # codex: the row-pitch drift guard needs a real Chromium,
             # same "own pinned-container job" posture as vellumRender above.
             codex:
               - 'apps/codex/web/**'
@@ -266,7 +266,7 @@ jobs:
       - uses: ./.github/actions/setup-pnpm
       - run: just pg-test
 
-  # The akasha corpus structural gate (0007/F3): the TS reference parser asserts
+  # The akasha corpus structural gate: the TS reference parser asserts
   # zero error chips + zero sigil collisions over every converted vellum page. The real
   # wiki lives in the astra-data repo (heartwood validates the whole corpus before every
   # commit there); CI runs the gate over the checked-in fixture wiki.
@@ -292,10 +292,10 @@ jobs:
       - uses: ./.github/actions/setup-pnpm
       - run: just vellum-parity
 
-  # The vellum-render golden-image gate (0013 D4). Runs in the PINNED container
+  # The vellum-render golden-image gate. Runs in the PINNED container
   # node:24-slim with the Chromium the `playwright` lock pins (same env the
   # vellum-render image uses, so goldens don't drift — the golden contract is
-  # pinned to this exact image, 0022 S11). Builds the render-entry, then compares
+  # pinned to this exact image). Builds the render-entry, then compares
   # each fixture's PNG to its committed golden (>0.5% pixel drift fails).
   vellum-visual-regression:
     needs: changes

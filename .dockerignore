@@ -6,7 +6,7 @@
 #
 # ⚠ Keep it a pure deny-list: no `!` re-includes. A wildcard re-include stops the BuildKit
 # client from pruning excluded directories, so it walks all of them (.git, .claude/worktrees,
-# every node_modules) and fails on any it cannot read. The old allowlist (0037 OPS-1) had to
+# every node_modules) and fails on any it cannot read. The old allowlist had to
 # stay literal for that reason; it existed because the deny-list before it let
 # dagster/Dockerfile bake ~23 GB of in-tree runtime data. That data now lives under the data
 # root (config.kdl data.root), outside every checkout, and the published datasets live in
