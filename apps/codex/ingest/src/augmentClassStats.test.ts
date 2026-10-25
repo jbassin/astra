@@ -65,7 +65,7 @@ function run(input: Partial<AugmentClassStatsInput> & Pick<AugmentClassStatsInpu
   return { result, reports };
 }
 
-describe("augmentClassStats: grantedFeatures (D29-114)", () => {
+describe("augmentClassStats: grantedFeatures", () => {
   it("resolves a grant whose uuid targets a KEPT entity", () => {
     const fighter = classEntity({ id: "class/fighter", slug: "fighter", name: "Fighter" });
     const shieldBlock = entity({
@@ -96,7 +96,7 @@ describe("augmentClassStats: grantedFeatures (D29-114)", () => {
     expect(result.grantedFeaturesUnresolved).toBe(0);
   });
 
-  it("nulls a grant whose uuid resolves structurally but the target was DROPPED (not in the final kept set) — the D29-14 cleric 'First Doctrine' case", () => {
+  it("nulls a grant whose uuid resolves structurally but the target was DROPPED (not in the final kept set) — the cleric 'First Doctrine' case", () => {
     const raw: RawGrantedFeatureEntry[] = [
       {
         level: 1,
@@ -112,7 +112,8 @@ describe("augmentClassStats: grantedFeatures (D29-114)", () => {
       classGrantedFeatures: new Map([["class/fighter", raw]]),
       // Resolves structurally (a real class-feature/first-doctrine doc
       // WOULD exist as a Foundry doc), but it never made it into the final
-      // kept entity set (`entities` above) — D29-14 dropped it.
+      // kept entity set (`entities` above) — the AoN-primary drop pass
+      // removed it.
       resolveUuid: resolverFrom({
         "Compendium.pf2e.classfeatures.Item.First Doctrine": {
           kind: "crossref",
@@ -187,8 +188,8 @@ describe("augmentClassStats: grantedFeatures (D29-114)", () => {
 });
 
 /** A `class-feature` masthead "Class" entry naming `className` (real-corpus
- * shape — the value carries a measured leading space, `build-search.ts`'s
- * own D29-101a note). */
+ * shape — the value carries a measured leading space, per `build-search.ts`'s
+ * own `meta.class` note). */
 function mastheadClass(className: string): CodexEntity["mastheadExtra"] {
   return [
     {
@@ -210,7 +211,7 @@ function classFeature(
   return entity({ category: "class-feature", slug: "weapon-specialization", ...overrides });
 }
 
-describe("augmentClassStats: grantedFeatures same-slug collision-family disambiguation (D29-132)", () => {
+describe("augmentClassStats: grantedFeatures same-slug collision-family disambiguation", () => {
   const SHARED_UUID = "Compendium.pf2e.classfeatures.Item.Weapon Specialization";
   const SHARED_RESOLUTION: UuidResolution = {
     kind: "crossref",
@@ -221,7 +222,7 @@ describe("augmentClassStats: grantedFeatures same-slug collision-family disambig
     { level: 7, name: "Weapon Specialization", uuid: SHARED_UUID },
   ];
 
-  it("family size 1 (no collision): resolves exactly as the pre-D29-132 naive check would — byte-identical", () => {
+  it("family size 1 (no collision): resolves exactly as the plain kept-id check would", () => {
     const fighter = classEntity({ id: "class/fighter", slug: "fighter", name: "Fighter" });
     const soleDoc = classFeature({
       id: "class-feature/weapon-specialization",
@@ -240,7 +241,7 @@ describe("augmentClassStats: grantedFeatures same-slug collision-family disambig
     ]);
   });
 
-  it("rule (1) masthead match: two classes sharing the identical Foundry grant uuid each resolve to THEIR OWN masthead-matched doc — pre-D29-132 both would wrongly resolve to the collision WINNER (fighter's)", () => {
+  it("rule (1) masthead match: two classes sharing the identical Foundry grant uuid each resolve to THEIR OWN masthead-matched doc, not both to the collision WINNER (fighter's)", () => {
     const fighter = classEntity({ id: "class/fighter", slug: "fighter", name: "Fighter" });
     const swashbuckler = classEntity({
       id: "class/swashbuckler",
@@ -278,7 +279,7 @@ describe("augmentClassStats: grantedFeatures same-slug collision-family disambig
         : "?";
 
     expect(fighterTarget).toBe("class-feature/weapon-specialization");
-    // THE bug this proves fixed: pre-D29-132, `keptIds.has(resolvedId)` alone
+    // THE bug this guards against: `keptIds.has(resolvedId)` alone
     // would make this ALSO "class-feature/weapon-specialization" (fighter's
     // doc) — wrong-class prose on the swashbuckler page.
     expect(swashbucklerTarget).toBe("class-feature/weapon-specialization-2");
@@ -340,7 +341,7 @@ describe("augmentClassStats: grantedFeatures same-slug collision-family disambig
     expect(targetId).toBe("class-feature/weapon-specialization-2");
   });
 
-  it("no rule resolves a single candidate -> null (R3, NEVER a wrong-class card)", () => {
+  it("no rule resolves a single candidate -> null (NEVER a wrong-class card)", () => {
     // guardian also maps to [] (no subclass categories) — and its masthead
     // never appears in either candidate below, so NEITHER rule (1) NOR
     // rule (2) fires; both candidates share the SAME level, so rule (3)'s
@@ -430,7 +431,7 @@ describe("augmentClassStats: grantedFeatures same-slug collision-family disambig
   });
 });
 
-describe("augmentClassStats: subclassOptions (D29-115)", () => {
+describe("augmentClassStats: subclassOptions", () => {
   it("a LIVING category (no absorption): the union collapses to a no-op — current = the non-superseded docs, legacy = the husks pointing back at them", () => {
     const barbarian = classEntity({ id: "class/barbarian", slug: "barbarian", name: "Barbarian" });
     const animal = entity({

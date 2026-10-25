@@ -1,8 +1,8 @@
 /**
  * Snapshots the foundryvtt/pf2e repo at the pinned tag (read from the committed
- * manifest, D29-4) to `<dataPath>/snapshots/foundry/<tag>/` (D29-5). Shallow blobless
- * sparse clone into a scratch dir under `<dataPath>/tmp/`, copies only the paths P1
- * needs, then deletes the clone. Run via:
+ * manifest) to `<dataPath>/snapshots/foundry/<tag>/`. Shallow blobless sparse clone
+ * into a scratch dir under `<dataPath>/tmp/`, copies only the paths the ingest needs,
+ * then deletes the clone. Run via:
  *
  *   pnpm --filter @astra/codex-ingest cli fetch-foundry
  *
@@ -35,11 +35,11 @@ import { hashDirectory } from "./hash";
 
 const REPO_URL = "https://github.com/foundryvtt/pf2e.git";
 
-// What P1 needs out of the repo (D29-5): the pf2e pack tree ONLY (packs/sf2e/ is a
+// What the ingest needs out of the repo: the pf2e pack tree ONLY (packs/sf2e/ is a
 // sibling tree, out of scope — see module doc above); every locale file under
 // static/lang/ (re-en.json alone resolves more @Localize keys than en.json); the
 // packs name→path registry (verified filename: system.pf2e.json, at the repo root);
-// and the sluggify port source (D29-1) — NOT included in the packs sparse clone, so
+// and the sluggify port source — NOT included in the packs sparse clone, so
 // it's fetched here.
 const SNAPSHOT_ENTRIES: ReadonlyArray<{ rel: string; kind: "dir" | "file" }> = [
   { rel: "packs/pf2e", kind: "dir" },

@@ -3,9 +3,9 @@ import type { CodexEntity } from "@astra/codex-corpus";
 export type ReportFn = (cls: string, detail: string) => void;
 
 /**
- * D29-61(a) (R9, P6): the ingest-time "missing `level` -> `0`" default.
+ * The ingest-time "missing `level` -> `0`" default.
  * Runs as its own finalization pass — AFTER `join.ts`'s identity resolution
- * (R4's ritual move has already settled every entity's final `category`) and
+ * (the ritual move has already settled every entity's final `category`) and
  * AFTER `drop.ts`'s AoN-primary drop (so this sees the FINAL emitted entity
  * set, not a pre-drop superset) — and BEFORE `emit.ts` writes anything.
  *
@@ -14,9 +14,8 @@ export type ReportFn = (cls: string, detail: string) => void;
  * Reuses the repo's own existing precedent floor — `schema/facetKeys.ts`'s
  * "coverage ≥40% of the category's final entities" classifier, quoted
  * verbatim in that file's own top comment — rather than inventing a new
- * threshold (spec §1.3's corrected scope). A full per-category sweep of the
- * real corpus (verified, spec §1.3) found a clean bimodal split: 19
- * categories at EXACTLY 100% coverage (kept below for forward-safety only —
+ * threshold. A full per-category sweep of the real corpus found a clean
+ * bimodal split: 19 categories at EXACTLY 100% coverage (kept below for forward-safety only —
  * this default never actually fires for them at this snapshot) plus 4 more
  * at 97.7–99.97% (`equipment` 99.97%, `creature` 99.93%, `curse` 97.83%,
  * `disease` 97.73% — the genuinely affected categories, 10 real entities

@@ -10,13 +10,13 @@ import { buildSearchIndex } from "./build-search";
 import { fixtureCorpusRoot } from "./fixtureCorpus";
 
 /**
- * D29-37's CI-hermetic search-build test: runs the REAL `buildSearchIndex` —
+ * The CI-hermetic search-build test: runs the REAL `buildSearchIndex` —
  * the exact code path `just codex-search-index` uses — over the committed
  * fixture corpus (`apps/codex/ingest/fixtures/entities/`), writing to a fresh
- * `os.tmpdir()` dir (never `fixtures/` or `data/`, D29-12: CI has no
+ * `os.tmpdir()` dir (never `fixtures/` or `data/`: CI has no
  * `data/` at all). `pagefind` is a plain npm devDependency, so this needs
  * zero network and zero host-only machinery — the ~3.8 GB RSS sharp edge
- * only shows up at the REAL corpus's 44,808-entity scale (S2's host gate,
+ * only shows up at the REAL corpus's 44,808-entity scale (a host-only run,
  * not here).
  */
 
@@ -33,7 +33,7 @@ afterEach(() => {
 
 /** Sum of the fixture manifest's `categoryCounts` — the same "reconciles
  * exactly against the emitted corpus" invariant `manifest.json`'s own
- * `totalEntityCount` carries on a real corpus (D29-21). */
+ * `totalEntityCount` carries on a real corpus. */
 function fixtureEntityCount(): number {
   const manifest = JSON.parse(readFileSync(join(fixtureCorpusRoot(), "manifest.json"), "utf8")) as {
     categoryCounts: Record<string, number>;
@@ -122,7 +122,7 @@ describe("buildSearchIndex over the generated fixture corpus (CI-hermetic)", () 
   });
 
   /** Decompresses+parses every `.pf_fragment` file and returns the one whose
-   * `url` matches `"/<id>"` — the shared lookup the D29-101 tests below use
+   * `url` matches `"/<id>"` — the shared lookup the meta.class/"leads to..." tests below use
    * (mirrors the "url round-trips" test's own decompress-and-scan idiom).
    * Each decompressed fragment carries a short opaque Pagefind magic-prefix
    * (`"pagefind_dcd"`, verified) before the JSON body — sliced off by
@@ -140,11 +140,11 @@ describe("buildSearchIndex over the generated fixture corpus (CI-hermetic)", () 
     return undefined;
   }
 
-  it("D29-101a (P11 S1): meta.class carries the trimmed Class mastheadExtra label", async () => {
+  it("meta.class carries the trimmed Class mastheadExtra label", async () => {
     const outDir = freshOutDir();
     const reader = createCorpusReader(fixtureCorpusRoot());
     await buildSearchIndex(reader, outDir);
-    // `class-feature/ability-boosts-15` (P4 fixture pick) carries a real
+    // `class-feature/ability-boosts-15` (fixture pick) carries a real
     // `Class` mastheadExtra entry in the real corpus (verified: "Witch").
     const fragment = findFragment(outDir, "class-feature/ability-boosts-15");
     expect(fragment).toBeDefined();
@@ -153,7 +153,7 @@ describe("buildSearchIndex over the generated fixture corpus (CI-hermetic)", () 
     expect(meta?.class).not.toMatch(/^\s|\s$/); // trimmed, no leading/trailing whitespace
   });
 
-  it("D29-101a: an entity with no Class mastheadExtra label carries no meta.class", async () => {
+  it("an entity with no Class mastheadExtra label carries no meta.class", async () => {
     const outDir = freshOutDir();
     const reader = createCorpusReader(fixtureCorpusRoot());
     await buildSearchIndex(reader, outDir);
@@ -163,11 +163,11 @@ describe("buildSearchIndex over the generated fixture corpus (CI-hermetic)", () 
     expect(meta?.class).toBeUndefined();
   });
 
-  it("D29-101b (P11 S1): a 'leads to...' heading + its crossref paragraph never lands in the indexed content", async () => {
+  it("a 'leads to...' heading + its crossref paragraph never lands in the indexed content", async () => {
     const outDir = freshOutDir();
     const reader = createCorpusReader(fixtureCorpusRoot());
     await buildSearchIndex(reader, outDir);
-    // `feat/fledgling-flight` (P11 S1 fixture pick) carries a real "Fledgling
+    // `feat/fledgling-flight` (fixture pick) carries a real "Fledgling
     // Flight leads to..." heading + a "Juvenile Flight" crossref paragraph.
     const fragment = findFragment(outDir, "feat/fledgling-flight");
     expect(fragment).toBeDefined();

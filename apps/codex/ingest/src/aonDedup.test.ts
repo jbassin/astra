@@ -25,7 +25,7 @@ function collector(): { reports: string[]; report: (cls: string, detail: string)
   return { reports, report: (cls, detail) => reports.push(`${cls}: ${detail}`) };
 }
 
-describe("dedupeAonMetas (D29-18)", () => {
+describe("dedupeAonMetas", () => {
   it("passes non-duplicate metas through unchanged", () => {
     const a = meta({ aonId: "equipment-1", category: "equipment", name: "Sword", slug: "sword" });
     const b = meta({ aonId: "equipment-2", category: "equipment", name: "Shield", slug: "shield" });

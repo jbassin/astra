@@ -1,12 +1,12 @@
 import type { BlockNode, CodexNode, InlineNode } from "@astra/codex-corpus";
 
 /**
- * The Foundry enricher grammar (D29-6, spec §2/§3): `@UUID[...]`, `@Check[...]`,
+ * The Foundry enricher grammar: `@UUID[...]`, `@Check[...]`,
  * `@Damage[...]`, `@Localize[...]`, `@Template[...]`, `@Embed[...]` (each with an
  * optional trailing `{label}`) plus the four inline-roll forms `[[/r ...]]`,
  * `[[/br ...]]`, `[[/gmr ...]]`, `[[/act ...]]` (also each with an optional
  * `{label}`). No seventh `@Tag[` form and no fifth `[[/x` form exist in the pinned
- * `pf2e-8.3.0` snapshot (verified exhaustively — see the codex-0029 memory) — an
+ * `pf2e-8.3.0` snapshot (verified exhaustively) — an
  * unrecognized form is a HARD FAIL (`EnricherGrammarError`, carrying the exact
  * source span), never a silent passthrough. Plain `@` in prose (emails etc.) can't
  * trip this: the detector requires `@Identifier[` (an identifier immediately
@@ -23,7 +23,7 @@ import type { BlockNode, CodexNode, InlineNode } from "@astra/codex-corpus";
 
 /** Thrown for anything the grammar can't account for: an unrecognized `@Tag[`/
  * `[[/x` form, an unresolvable `@Localize` key (a fetch/merge bug, not content
- * drift — D29-5 guarantees all 200 real keys resolve), or malformed/unterminated
+ * drift — the merged lang map covers all 200 real keys), or malformed/unterminated
  * bracket nesting. `source`/`start`/`end` carry the exact span so a caller
  * (`transform.ts`) can report `doc id + snippet`, not just a
  * message. */
@@ -36,8 +36,8 @@ export class EnricherGrammarError extends Error {
     super(message);
     this.name = "EnricherGrammarError";
     // Plain field assignment, not a TS constructor parameter property — the
-    // repo's TS ran under Node's native strip-only TS support (D29-9's script
-    // runtime), which rejects that shorthand; `erasableSyntaxOnly` still does.
+    // repo's TS ran under Node's native strip-only TS support, which rejects
+    // that shorthand; `erasableSyntaxOnly` still does.
     this.source = source;
     this.start = start;
     this.end = end;
@@ -45,7 +45,7 @@ export class EnricherGrammarError extends Error {
 }
 
 // ---------------------------------------------------------------------------
-// context (D29-6: `@UUID`/`@Localize` resolution is injected, never resolved here)
+// context (`@UUID`/`@Localize` resolution is injected, never resolved here)
 // ---------------------------------------------------------------------------
 
 /** What `ctx.resolveUuid` reports back for a raw `@UUID[...]` target. The
@@ -59,7 +59,7 @@ export type UuidResolution =
   | { kind: "broken" };
 
 /** Non-fatal report classes this module emits via `ctx.report` — expected,
- * by-design residue (D29-6), not bugs. `transform.ts` aggregates these into the
+ * by-design residue, not bugs. `transform.ts` aggregates these into the
  * corpus report; nothing here throws for them. */
 export type ReportClass =
   | "excludedRef"
@@ -71,7 +71,7 @@ export type ReportClass =
 
 export interface EnricherContext {
   resolveUuid(uuid: string): UuidResolution;
-  /** The merged `static/lang/*.json` map (D29-5): `re-en.json` wins over
+  /** The merged `static/lang/*.json` map: `re-en.json` wins over
    * `en.json`, everything else lowest — see `mergeLocalizeMaps` below. */
   localize: ReadonlyMap<string, string>;
   report(cls: ReportClass, detail: string): void;
@@ -79,7 +79,7 @@ export interface EnricherContext {
    * Recursively parses HTML block markup. Required (not optional): 69 of the 200
    * real `@Localize` keys resolve to values containing block tags (`<p>`/`<ul>`/
    * `<hr>`/headings) or further nested enrichers, not flat text (see
-   * `nodes.ts`'s "S2 widenings" note on `localizedBoilerplate`) — a caller that
+   * `nodes.ts`'s note on `localizedBoilerplate`) — a caller that
    * forgot to wire this up should fail loudly instead of silently truncating
    * resolved boilerplate to nothing. In production this is always
    * `(html) => parseFoundryHtml(html, ctx)` (bound by whoever constructs the
@@ -90,7 +90,7 @@ export interface EnricherContext {
 }
 
 // ---------------------------------------------------------------------------
-// @Localize map merge (D29-5: re-en.json > en.json > everything else)
+// @Localize map merge (re-en.json > en.json > everything else)
 // ---------------------------------------------------------------------------
 
 /**
@@ -98,7 +98,7 @@ export interface EnricherContext {
  * `{"PF2E":{"NPC":{"Abilities":{"Glossary":{"Darkvision":"..."}}}}}` →
  * `"PF2E.NPC.Abilities.Glossary.Darkvision"`) and merges the given files in
  * *ascending* precedence (later files win). Callers pass files in the order
- * `[action-en, kingmaker-en, sf2e-overrides-en, en, re-en]` (D29-5's "re-en.json
+ * `[action-en, kingmaker-en, sf2e-overrides-en, en, re-en]` ("re-en.json
  * wins over en.json, others lowest" — empirically verified: of the 200 distinct
  * `@Localize` keys real docs actually use, `en.json` ∪ `re-en.json` alone covers
  * all 200 (94 + 106, zero gap); the only overlap across the whole merged map is 3
@@ -203,7 +203,7 @@ export function decodeEntities(text: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// depth-aware bracket helpers (D29-6's core grammar constraint)
+// depth-aware bracket helpers (the grammar's core constraint)
 // ---------------------------------------------------------------------------
 
 /** `text[openIdx]` must be `'['`. Returns the index of the matching `']'`
@@ -418,7 +418,7 @@ export interface ParsedCheckArg {
   traits?: string[];
   /** Every other pipe-key/bare-flag (`against`, `defense`, `showDC`, `name`,
    * `options`, `overrideTraits`, `immutable`, `roller`, `rollerRole`, ... —
-   * verified at real scale). D29-6: unknown FORMS hard-fail; unknown KEYS within a
+   * verified at real scale). Unknown FORMS hard-fail; unknown KEYS within a
    * known form don't — they're captured here instead of being dropped or failing
    * the whole transform. */
   extra: Record<string, string | boolean>;
@@ -448,7 +448,7 @@ export function parseCheckArg(arg: string): ParsedCheckArg {
     const key = part.slice(0, colonIdx);
     const value = part.slice(colonIdx + 1);
     if (key === "dc") {
-      // S4 emit-gate finding (real corpus, e.g. `@Check[crafting|dc:@self.level]`):
+      // Real corpus, e.g. `@Check[crafting|dc:@self.level]`:
       // an actor-relative DC formula isn't a plain number — `Number(...)` on it
       // is NaN, which `CheckNode.dc` (a `z.number()`) rejects at emit-time
       // validation. Same posture `@Damage` already documents for actor-relative
@@ -555,7 +555,7 @@ function stripOuterParens(formula: string): string {
 /** `(2d8+4)[slashing]` → `"2d8+4 slashing"`; multi-part formulas join with
  * `", "`; a bare untyped part displays as just its formula text. Actor-relative
  * formulas (`@actor.level`, `@item.rank`, ...) are never evaluated — this is a
- * reference site, not a VTT (D29-6) — they display as their literal formula
+ * reference site, not a VTT — they display as their literal formula
  * text. */
 export function formatDamageDisplay(parts: readonly DamagePart[]): string {
   return parts
@@ -688,7 +688,7 @@ function buildLocalizeNode(match: EnricherMatch, ctx: EnricherContext): InlineNo
       match.arg,
       match.start,
       match.end,
-      `unresolved @Localize key "${key}" — fetch/merge bug, not content drift (D29-5 guarantees coverage)`,
+      `unresolved @Localize key "${key}" — fetch/merge bug, not content drift (the merged lang map covers every real key)`,
     );
   }
   const children: CodexNode[] = BLOCK_TAG_RE.test(resolved)
@@ -748,7 +748,7 @@ function buildNode(match: EnricherMatch, ctx: EnricherContext): InlineNode {
 /**
  * Splits `text` into plain-text runs (decoded, → `text` nodes) and enricher nodes,
  * in source order. Throws `EnricherGrammarError` on the FIRST unrecognized
- * enricher form or malformed bracket nesting encountered (D29-6's hard-fail
+ * enricher form or malformed bracket nesting encountered (the hard-fail
  * posture) — callers that need to enumerate every failure across a large corpus
  * catch per-document and continue to the next document; collecting every failure within a single
  * string isn't attempted here, since a hard-fail is meant to stop and be fixed,

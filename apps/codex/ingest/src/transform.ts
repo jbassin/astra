@@ -164,7 +164,7 @@ interface FoundrySide {
   entities: Map<string, CodexEntity>;
   redirects: RemasterRedirectEntry[];
   index: UuidIndex;
-  /** D29-114 (P12 S1): class entity id -> its raw `system.items`
+  /** Class entity id -> its raw `system.items`
    * granted-feature manifest (`foundryEntities.ts`'s
    * `extractRawGrantedFeatures`) — captured during the SAME walk that
    * assembles `entities` (the raw doc is right there), so the post-drop
@@ -200,7 +200,7 @@ function loadFoundrySide(
     registerExcludedJournal(index, "journals", doc);
   }
 
-  // D29-8's two-phase journal ordering: decide + register every page's target
+  // Two-phase journal ordering: decide + register every page's target
   // BEFORE any HTML (Item/Actor OR journal) is parsed.
   const journals = new Map<
     string,
@@ -241,10 +241,9 @@ function loadFoundrySide(
         });
         if (entity) {
           entities.set(entity.id, entity);
-          // D29-114 (P12 S1): capture the raw granted-feature manifest for
-          // every `class` doc, right here where the raw `doc` is still in
-          // scope — the post-drop `augmentClassStats` pass needs it, and this
-          // is the ONLY place in the pipeline the raw pack JSON is read.
+          // Capture the raw granted-feature manifest for every `class` doc,
+          // right here where the raw `doc` is still in scope — the post-drop
+          // `augmentClassStats` pass needs it, and this is the ONLY place in the pipeline the raw pack JSON is read.
           if (entity.category === "class") {
             const grants = extractRawGrantedFeatures(doc.system, report, entity.id);
             if (grants) classGrantedFeatures.set(entity.id, grants);
@@ -353,14 +352,14 @@ export interface TransformPaths {
    * real host path `<dataPath>/snapshots/aon/<date>`; fixture test points
    * this at `apps/codex/ingest/fixtures/raw/aon`. */
   aonSnapshotDir: string;
-  /** The homebrew store root (D30-42, 0030 S1) — versioned repo content
+  /** The homebrew store root — versioned repo content
    * (`apps/assay/py/homebrew/spells/`), resolved from the repo root by
    * `defaultHomebrewDirs()`, NOT via `cfg.codex.dataPath` (config-single-source
    * isn't violated — this isn't fetched data). Host-run only; the codex Docker
    * image never contains `apps/assay/py`. The fixture test points this at
    * `apps/codex/ingest/fixtures/raw/homebrew`. */
   homebrewDir: string;
-  /** The homebrew school-TRAIT store root (D30-44, 0030 S2) — a SIBLING of
+  /** The homebrew school-TRAIT store root — a SIBLING of
    * `homebrewDir` (`apps/assay/py/homebrew/traits/`), resolved the same way
    * (`defaultHomebrewDirs()`, host-run only). The fixture
    * test points this at `apps/codex/ingest/fixtures/raw/homebrew-traits`. */
@@ -370,7 +369,7 @@ export interface TransformPaths {
    * (`release.ts build`); the fixture test points this at a fresh temp dir. */
   corpusRoot: string;
   aliasesFile: JoinAliasesFile;
-  /** The D29-4 pins to copy into `corpus/manifest.json` — read from the
+  /** The snapshot pins to copy into `corpus/manifest.json` — read from the
    * committed `corpus-manifest.json` on the real host run; the fixture test
    * supplies its own small stand-in pin object (not a real fetch pin). */
   pins: { foundry: CorpusManifest["foundry"]; aon: CorpusManifest["aon"] };
@@ -381,7 +380,7 @@ export interface TransformSlots {
   foundry: FoundrySide;
   homebrew: HomebrewSide;
   homebrewTraits: HomebrewTraitsSide;
-  /** The raw AoN extraction, before the D29-18 dedupe. */
+  /** The raw AoN extraction, before the url-duplicate dedupe. */
   aon: AonSide;
   /** The deduped AoN docs every later pass uses. */
   aonMetas: readonly AonDocMeta[];
@@ -443,7 +442,7 @@ export const TRANSFORM_PASSES = [
     name: "load-homebrew",
     phase: "parse",
     summary: "Parse the homebrew spell store against the official uuid index.",
-    // D30-42 (0030 S1): its ctx resolves `@UUID[...conditionitems...]` refs against
+    // Its ctx resolves `@UUID[...conditionitems...]` refs against
     // the OFFICIAL `foundry.index` (an empty index would downgrade all 70 ref-bearing
     // homebrew docs to brokenRef).
     reads: ["foundry"],
@@ -465,7 +464,7 @@ export const TRANSFORM_PASSES = [
     name: "load-homebrew-traits",
     phase: "parse",
     summary: "Parse the homebrew school-trait store against the official uuid index.",
-    // D30-44 (0030 S2): a separate loader, because the trait store's
+    // A separate loader, because the trait store's
     // `{name,description}` shape isn't a Foundry pack doc.
     reads: ["foundry"],
     writes: ["homebrewTraits"],
@@ -491,7 +490,7 @@ export const TRANSFORM_PASSES = [
   pass({
     name: "dedupe-aon",
     phase: "build",
-    summary: "Collapse duplicate AoN docs to one deterministic winner (D29-18).",
+    summary: "Collapse duplicate AoN docs to one deterministic winner.",
     // Before the link table and the join see them: duplicate ES entries would
     // otherwise mint phantom `-N` residual collisions (aonDedup.ts's header).
     reads: ["aon"],
@@ -550,7 +549,7 @@ export const TRANSFORM_PASSES = [
     name: "merge-homebrew",
     phase: "build",
     summary: "Combine the homebrew spells, rituals and traits into one entity list.",
-    // D30-43 (0030 S1): homebrew never enters the AoN join (no aonUrl, no legacyOf/
+    // Homebrew never enters the AoN join (no aonUrl, no legacyOf/
     // remasteredAs, so superseded:false by construction); it merges in at the drop.
     reads: ["homebrew", "homebrewTraits"],
     writes: ["homebrewEntities"],
@@ -562,9 +561,9 @@ export const TRANSFORM_PASSES = [
   pass({
     name: "aon-primary-drop",
     phase: "build",
-    summary: "Drop Foundry-only entities and AoN-only activation debris (D29-14/-17/-98).",
+    summary: "Drop Foundry-only entities and AoN-only activation debris.",
     // Keeps the creature/hazard carve-out and, through its `homebrewIds` arm, every
-    // homebrew entity. Then the M3-widened hard guard: never a silent overwrite (see
+    // homebrew entity. Then the hard collision guard: never a silent overwrite (see
     // `assertNoHomebrewCollisions` for the two id spaces it checks and why).
     reads: ["joined", "homebrewEntities", "foundry"],
     writes: ["drop"],
@@ -583,7 +582,7 @@ export const TRANSFORM_PASSES = [
   pass({
     name: "dedupe-crossrefs",
     phase: "build",
-    summary: "Collapse adjacent duplicate crossrefs over the kept set (D29-100).",
+    summary: "Collapse adjacent duplicate crossrefs over the kept set.",
     // Right after the drop, on its kept set: the drop's own `reconcileCrossrefs` has
     // already downgraded any now-dangling crossref to `brokenRef`.
     reads: ["drop"],
@@ -599,8 +598,8 @@ export const TRANSFORM_PASSES = [
   pass({
     name: "level-default",
     phase: "build",
-    summary: "Default a missing level to 0 on the final entity set (D29-61(a)).",
-    // Every entity's final `category` is settled by now (R4's ritual move).
+    summary: "Default a missing level to 0 on the final entity set.",
+    // Every entity's final `category` is settled by now (including the join's ritual move).
     reads: ["crossrefDedupe"],
     writes: ["levelDefault"],
     run: ({ crossrefDedupe }, ctx) => ({
@@ -611,7 +610,7 @@ export const TRANSFORM_PASSES = [
   pass({
     name: "normalize-books",
     phase: "build",
-    summary: "Normalize book names across Foundry and AoN (D29-39).",
+    summary: "Normalize book names across Foundry and AoN.",
     // Before emit: the entity files and `_index.json` must carry the normalized names.
     reads: ["levelDefault", "aonMetas"],
     writes: ["bookNorm"],
@@ -626,7 +625,7 @@ export const TRANSFORM_PASSES = [
   pass({
     name: "attach-sidebars",
     phase: "build",
-    summary: "Reverse-join sidebars onto their host entities (D29-39).",
+    summary: "Reverse-join sidebars onto their host entities.",
     reads: ["bookNorm", "linkTable", "joined", "finalIdToAonId"],
     writes: ["sidebars"],
     run: ({ bookNorm, linkTable, joined, finalIdToAonId }, ctx) => ({
@@ -647,7 +646,7 @@ export const TRANSFORM_PASSES = [
   pass({
     name: "augment-class-stats",
     phase: "build",
-    summary: "Add granted features and subclass options to class stats (D29-114/-115).",
+    summary: "Add granted features and subclass options to class stats.",
     // Over the FINAL kept set (grantedFeatures' targetId nulling checks final-set
     // membership; subclassOptions reads final `remasteredAs`), and before emit.
     reads: ["sidebars", "foundry"],
@@ -702,7 +701,7 @@ export const TRANSFORM_PASSES = [
   pass({
     name: "rules-tree",
     phase: "build",
-    summary: "Build and write rules-tree.json (D29-39).",
+    summary: "Build and write rules-tree.json.",
     // Reads `emit` only for order: emit wipes the corpus root first.
     reads: ["finalEntities", "finalIdToAonId", "aonMetas", "linkTable", "bookSources", "emit"],
     writes: ["rulesTree"],
@@ -744,7 +743,7 @@ export const TRANSFORM_PASSES = [
   pass({
     name: "sources-index",
     phase: "build",
-    summary: "Build and write sources-index.json (D29-43).",
+    summary: "Build and write sources-index.json.",
     // Reads `emit` only for order: emit wipes the corpus root first.
     reads: ["finalEntities", "aonMetas", "bookNorm", "bookSources", "emit"],
     writes: ["sourcesIndex"],
@@ -829,13 +828,12 @@ function buildTransformReport(
   ctx: TransformContext,
 ): ReportJson {
   const { homebrew, homebrewTraits, homebrewEntities } = slots;
-  // D30-46 (0030 S1, review blocker B2): the homebrew provenance pin lives in
-  // report.json/report.md, NOT `corpus/manifest.json` (`.strict()` — an added key
-  // throws at `parseManifest` before the transform even starts). D30-44 (0030 S2):
-  // `emittedByCategory`/`uuidRefs*` cover the COMBINED spells+rituals+traits set;
-  // `dir`/`docsIn`/`sha256` stay scoped to the spells STORE, with the traits store's
-  // own provenance in the `traits*` fields rather than one dir/hash pair spanning two
-  // directories.
+  // The homebrew provenance pin lives in report.json/report.md, NOT
+  // `corpus/manifest.json` (`.strict()` — an added key throws at `parseManifest`
+  // before the transform even starts). `emittedByCategory`/`uuidRefs*` cover the
+  // COMBINED spells+rituals+traits set; `dir`/`docsIn`/`sha256` stay scoped to the
+  // spells STORE, with the traits store's own provenance in the `traits*` fields
+  // rather than one dir/hash pair spanning two directories.
   const homebrewCategoryCounts: Record<string, number> = {};
   for (const e of homebrewEntities) {
     homebrewCategoryCounts[e.category] = (homebrewCategoryCounts[e.category] ?? 0) + 1;
@@ -871,7 +869,7 @@ function buildTransformReport(
       entitiesTouched: slots.crossrefDedupe.entitiesTouched,
     },
     foundrySnapshotDocCount: slots.foundry.entities.size,
-    // Deliberately the RAW extracted count (pre-D29-18-dedup), matching
+    // Deliberately the RAW extracted count (before the url-duplicate dedup), matching
     // `foundrySnapshotDocCount`'s "how big was the snapshot" framing; the dedup's own
     // removal count is the `aonUrlDuplicateCollapsed` report class.
     aonSnapshotDocCount: slots.aon.metas.length,
@@ -958,7 +956,7 @@ export function runTransform(paths: TransformPaths, opts: TransformOptions = {})
   };
 }
 
-/** The real homebrew stores (D30-42 spells, D30-44 school traits): versioned repo
+/** The real homebrew stores (spells and school traits): versioned repo
  * content under `apps/assay/py/homebrew/`, NOT `cfg.codex.dataPath` (this isn't fetched
  * data). Resolved from the repo root rather than `import.meta.dirname` + `../..`, so
  * the path holds however deep codex or assay sit under `apps/`. Host-run only; the

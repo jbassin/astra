@@ -17,25 +17,23 @@ import type { UuidResolution } from "./enrichers";
 import type { RemasterRedirectEntry } from "./journals";
 
 /**
- * D29-7/-1/-8: the cross-corpus join + identity finalization (spec §4 S4,
- * assignment brief). Takes the S2 Foundry-assembled entities (Item/Actor +
- * journal merges/standalone, all still at their S2 plain `{category}/{slug}`
- * ids — `foundryEntities.ts`'s file header) and the S3 AoN doc metas
- * (`aonFacets.ts`) and produces the FINAL entity set: matched, field-owned,
- * identity-finalized (legacy-pair `@legacy` suffixing + residual-collision
- * suffixing), crossref/embed-patched.
+ * The cross-corpus join + identity finalization. Takes the Foundry-assembled
+ * entities (Item/Actor + journal merges/standalone, all still at their plain
+ * `{category}/{slug}` ids — `foundryEntities.ts`'s file header) and the AoN
+ * doc metas (`aonFacets.ts`) and produces the FINAL entity set: matched,
+ * field-owned, identity-finalized (legacy-pair `@legacy` suffixing +
+ * residual-collision suffixing), crossref/embed-patched.
  *
  * Orchestration is 5 passes, each pure over the previous pass's output (no
  * disk I/O in this module — `transform.ts` owns that):
  *
  *   1. `matchEntities` — exact slug match, THEN qualifier-reorder
- *      normalization, THEN `join-aliases.json` (D29-7's 3-tier match order),
- *      grouped by AoN doc id to detect Foundry 1:N variants (D29-7's
- *      `variantOf`).
+ *      normalization, THEN `join-aliases.json` (the 3-tier match order),
+ *      grouped by AoN doc id to detect Foundry 1:N variants (`variantOf`).
  *   2. `buildDrafts` — assembles one `Draft` (a `CodexEntity` at its PRE-
  *      rename plain id) per Foundry entity (joined/variant/unjoined) and per
- *      un-consumed AoN meta (AoN-only, D29-7's third entity class).
- *   3. identity resolution — D29-1's collision resolution: shared-slug
+ *      un-consumed AoN meta (AoN-only, the third entity class).
+ *   3. identity resolution — collision resolution: shared-slug
  *      legacy/remaster pairs get `@legacy`, residual collisions get
  *      deterministic `-2`/`-3`… suffixes. Sets `finalId` directly on each
  *      `Draft` (NOT a `preId -> finalId` map — `preId` is exactly the
@@ -43,7 +41,7 @@ import type { RemasterRedirectEntry } from "./journals";
  *      can't hold two different values for two different drafts that share
  *      one; see the pass's own comment below).
  *   4. finalize — stamps final ids, resolves `variantOf`, sets
- *      `remasteredAs`/`legacyOf` from the aonId graph (D29-1's arrays,
+ *      `remasteredAs`/`legacyOf` from the aonId graph (AoN's pairing arrays,
  *      looked up by the globally-unique aonId, never the ambiguous slug).
  *   5. crossref/embed patching — walks every entity's `body`/`loreBody`/
  *      `embeddedItems[].body`; a crossref whose plain-id target still names a
@@ -51,13 +49,13 @@ import type { RemasterRedirectEntry } from "./journals";
  *      always keeps that bare id), one that names nothing real becomes
  *      `brokenRef`; embed nodes (carrying a genuinely unique aonId/Foundry
  *      uuid, not the ambiguous slug) are resolved for the first time here and
- *      CAN reach a suffixed/`@legacy` target correctly (D29-1's "crossref
- *      patching" bullet — see `patchCrossref`'s own doc comment for the real
- *      ambiguity this can't fully solve for plain crossrefs specifically).
+ *      CAN reach a suffixed/`@legacy` target correctly (see `patchCrossref`'s
+ *      own doc comment for the real ambiguity this can't fully solve for
+ *      plain crossrefs specifically).
  *
- * Field ownership (D29-7, orchestrator decision documented at `mergeJoined`
- * below): Foundry wins mechanics, AoN wins prose/citations. Legacy/remaster
- * pairing (D29-1): AoN's `remasterId`/`legacyId` arrays are PRIMARY; the
+ * Field ownership (documented at `mergeJoined` below): Foundry wins
+ * mechanics, AoN wins prose/citations. Legacy/remaster pairing: AoN's
+ * `remasterId`/`legacyId` arrays are PRIMARY; the
  * Foundry `remaster-changes` redirect table is a CROSS-CHECK ONLY
  * (`crossCheckRedirects` below) — disagreements are report-counted, AoN's own
  * pairing always wins (never silently overridden).
@@ -86,7 +84,7 @@ export function buildAliasMap(file: JoinAliasesFile): ReadonlyMap<string, string
 }
 
 // ---------------------------------------------------------------------------
-// D29-7's qualifier-reorder normalization
+// qualifier-reorder normalization
 // ---------------------------------------------------------------------------
 
 const QUALIFIER_RE = /^(.*\S)\s*\(([^()]+)\)\s*$/;
@@ -94,7 +92,7 @@ const QUALIFIER_RE = /^(.*\S)\s*\(([^()]+)\)\s*$/;
 /**
  * Foundry `"X (A)"` / `"X (A, B)"` → candidate AoN-slug keys, in try-order:
  * `"A X"`, then (only when ≥2 qualifiers) `"A B X"` (all qualifiers, original
- * order), then bare `"X"` — exactly D29-7's verified creature divergence
+ * order), then bare `"X"` — exactly the verified creature divergence
  * (`"Adamantine Dragon (Adult)"` → AoN `"Adult Adamantine Dragon"`). Returns
  * `[]` for a name with no trailing parenthetical.
  */
@@ -121,7 +119,7 @@ export function qualifierCandidates(name: string): string[] {
 }
 
 // ---------------------------------------------------------------------------
-// D29-15's domain "X Domain" -> "X" normalization
+// domain "X Domain" -> "X" normalization
 // ---------------------------------------------------------------------------
 
 const DOMAIN_SUFFIX_RE = /^(.*\S)\s+Domain$/i;
@@ -130,7 +128,7 @@ const DOMAIN_SUFFIX_RE = /^(.*\S)\s+Domain$/i;
  * Foundry's `domains` journal pages are literally named "X Domain" (e.g.
  * "Air Domain", "Abomination Domain" — verified against the real
  * `journals/domains.json`); AoN's own `domain` category names the SAME
- * concept just "X" ("Air", "Abomination"). D29-15(1): strip the trailing
+ * concept just "X" ("Air", "Abomination"). Strip the trailing
  * " Domain" suffix (case-insensitive — matches this repo's other
  * normalization functions' posture) and try the bare base as a candidate.
  * Returns `[]` for a name with no trailing " Domain" (every other category —
@@ -145,12 +143,12 @@ export function domainCandidates(name: string): string[] {
 }
 
 // ---------------------------------------------------------------------------
-// D29-15/-16: join-time category equivalence (the P1.5 STOP-condition fix)
+// join-time category equivalence
 // ---------------------------------------------------------------------------
 
 /**
  * One equivalence rule: search AoN's `category` in addition to the Foundry
- * entity's own category. `requireLevelAgreement` (D29-15(4)) restricts the
+ * entity's own category. `requireLevelAgreement` restricts the
  * rule to the EXACT-match tier only (skips the qualifier-reorder normalized
  * tier — "name agreement" here means the slug match came from a literal,
  * un-reordered name, not a creature-style qualifier permutation) and adds a
@@ -167,12 +165,11 @@ export interface EquivalenceRule {
 }
 
 /**
- * D29-15(3): class-feature ↔ the AoN class-subsystem categories. The 8
- * named in the spec (ikon/lesson/epithet/arcane-school/bloodline/doctrine/
- * instinct/mystery) plus the real siblings this slice found by running every
- * one of AoN's 93 categories' slugs against the full 841-doc real
- * `class-features` Foundry pack (measured, not guessed — see this slice's
- * commit message for the counts): patron, mythic-calling, apparition,
+ * Class-feature ↔ the AoN class-subsystem categories. The 8 core ones
+ * (ikon/lesson/epithet/arcane-school/bloodline/doctrine/instinct/mystery)
+ * plus the real siblings found by running every one of AoN's 93 categories'
+ * slugs against the full 841-doc real `class-features` Foundry pack
+ * (measured, not guessed): patron, mythic-calling, apparition,
  * implement, hybrid-study, cause, hellknight-order, racket, style, way,
  * muse, arcane-thesis, research-field, subconscious-mind, conscious-mind,
  * practice, hunters-edge, innovation, tenet. Deliberately excludes every
@@ -180,12 +177,12 @@ export interface EquivalenceRule {
  * category in kind (action/feat/creature/spell/trait/rules/archetype/
  * category-page/sidebar/class-sample/…) — those hits are coincidental
  * short-name collisions (e.g. a class feature and an unrelated spell both
- * named "Fireball"), not the pattern D29-15(3) describes; widening to them
+ * named "Fireball"), not the class-subsystem pattern; widening to them
  * would risk real wrong-joins, not just missed ones. `bloodline` is kept
  * despite scoring ZERO real hits (Foundry names bloodline picks
  * "Bloodline: Draconic", colon-prefixed — a form neither `qualifierCandidates`
- * nor `domainCandidates` normalizes, and D29-15 doesn't ask for a new
- * normalization form) — it's still spec-named, so still tried; the 0-hit
+ * nor `domainCandidates` normalizes, and no normalization form for it
+ * exists) — it's one of the 8 core categories, so still tried; the 0-hit
  * outcome is real and report-visible, not silently swallowed.
  */
 const CLASS_SUBSYSTEM_CATEGORIES: readonly string[] = [
@@ -219,17 +216,17 @@ const CLASS_SUBSYSTEM_CATEGORIES: readonly string[] = [
 ];
 
 /**
- * D29-15's full equivalence table, keyed on the FOUNDRY entity's own
+ * The full equivalence table, keyed on the FOUNDRY entity's own
  * category (one-directional — an AoN `equipment`/`ritual`/`feat` doc that
  * ISN'T consumed by one of these cross-category matches still becomes its
- * own AoN-only entity in its own category, D29-7's third entity class, so
+ * own AoN-only entity in its own category, the third entity class, so
  * nothing is lost by not also widening the reverse direction).
- *   (2) weapon/armor/shield ↔ equipment — AoN files magic weapons/armor/
- *       shields under its `equipment` category (categoryMap-vs-AoN mismatch,
- *       not a tier-splitting problem, per the P1.5 review finding).
- *   (3) class-feature ↔ the class-subsystem categories, see above.
- *   (4) action ↔ relic/tactic/feat, WITH the level-agreement guard.
- *   (5) spell ↔ ritual — Foundry files rituals inside its `spells` pack.
+ *   - weapon/armor/shield ↔ equipment — AoN files magic weapons/armor/
+ *     shields under its `equipment` category (a categoryMap-vs-AoN mismatch,
+ *     not a tier-splitting problem).
+ *   - class-feature ↔ the class-subsystem categories, see above.
+ *   - action ↔ relic/tactic/feat, WITH the level-agreement guard.
+ *   - spell ↔ ritual — Foundry files rituals inside its `spells` pack.
  */
 export const CATEGORY_EQUIVALENCE: ReadonlyMap<string, readonly EquivalenceRule[]> = new Map([
   ["weapon", [{ category: "equipment" }]],
@@ -253,17 +250,17 @@ function levelsAgree(a: number | undefined, b: number | undefined): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// D29-59 (R4, P6): the ritual re-categorization override
+// the ritual re-categorization override
 // ---------------------------------------------------------------------------
 
 /**
- * Detects the ONE targeted exception to D29-16's "id/category keep Foundry's
+ * Detects the ONE targeted exception to the "id/category keep Foundry's
  * finer category untouched" posture: a Foundry `"spell"` entity matched
  * against an AoN doc whose OWN category is `"ritual"` — i.e. matched purely
  * via `CATEGORY_EQUIVALENCE`'s `spell -> ritual` rule (Foundry files rituals
  * inside its `spells` pack; every other equivalence rule — weapon/armor/
  * shield -> equipment, class-feature -> subsystems, action -> relic/tactic/
- * feat — keeps D29-16's original posture unchanged). When this holds, the
+ * feat — keeps the Foundry id/category). When this holds, the
  * merged entity's identity moves to the AoN category (`ritual/<slug>`)
  * instead of staying at the Foundry-derived `spell/<slug>` (`runJoin`'s pass
  * 1/2 below apply the actual override; this predicate is shared by both so
@@ -286,11 +283,11 @@ export interface MatchResult {
 
 /**
  * Matches one Foundry entity against the AoN metas in its own category PLUS
- * (D29-15) any category `CATEGORY_EQUIVALENCE` names for it, in strict
+ * any category `CATEGORY_EQUIVALENCE` names for it, in strict
  * priority order: EXACT slug (own category, then each equivalence category
  * in table order) BEFORE any NORMALIZED (qualifier-reorder / domain-suffix)
  * candidate is tried (own category, then each non-guarded equivalence
- * category) — this is what makes D29-15(6)'s tier-parenthetical fold work
+ * category) — this is what makes the tier-parenthetical fold work
  * for free: `qualifierCandidates`'s own bare-base candidate already matches
  * a base item's plain AoN doc once weapon/armor/shield can see the
  * `equipment` category, so a Foundry `"X (Greater)"` tier variant that has
@@ -323,7 +320,7 @@ export function matchFoundryEntity(
     ...(entity.category === "domain" ? domainCandidates(entity.name) : []),
   ];
   for (const rule of rules) {
-    if (rule.requireLevelAgreement) continue; // exact-only for these pairs (D29-15(4))
+    if (rule.requireLevelAgreement) continue; // exact-only for these pairs
     for (const candidateSlug of normalizedCandidates) {
       const hit = aonSlugIndex.get(`${rule.category}/${candidateSlug}`);
       if (hit) return { aonId: hit.aonId, via: "normalized" };
@@ -339,7 +336,7 @@ export function matchFoundryEntity(
   return undefined;
 }
 
-/** D29-7's Foundry 1:N variant rule: the base of a join group is the entity
+/** The Foundry 1:N variant rule: the base of a join group is the entity
  * with the shortest name, then alphabetical (deterministic — never depends on
  * map/iteration order). */
 export function pickVariantBase(entities: readonly CodexEntity[]): CodexEntity {
@@ -353,14 +350,13 @@ export function pickVariantBase(entities: readonly CodexEntity[]): CodexEntity {
 }
 
 // ---------------------------------------------------------------------------
-// field ownership (D29-7)
+// field ownership
 // ---------------------------------------------------------------------------
 
 /** AoN book titles never carry Foundry's "Pathfinder " prefix (verified: e.g.
  * Foundry `"Pathfinder Bestiary"` vs AoN `"Bestiary"`) — stripped before
  * comparing so this systematic naming-convention difference doesn't flood the
- * report as a false "citationBookMismatch" on nearly every joined entity
- * (documented judgment call, not spec-dictated verbatim). */
+ * report as a false "citationBookMismatch" on nearly every joined entity. */
 function normalizeBookForCompare(title: string): string {
   return title
     .replace(/^Pathfinder\s+/i, "")
@@ -383,13 +379,12 @@ export interface JoinDeps {
 }
 
 /**
- * Merges one matched (Foundry, AoN) pair per D29-7's field ownership:
+ * Merges one matched (Foundry, AoN) pair per the field ownership rules:
  * **Foundry wins mechanics** (facets, embeddedItems, level/traits/rarity —
  * kept from `foundryEntity` verbatim; disagreements vs. the AoN side are
  * report-counted, never applied). **AoN wins prose + citations**: `body` =
- * the AoN markdown parse when the AoN doc has markdown (the orchestrator
- * decision this deliverable owns, D29-7's brief), else Foundry's own body is
- * kept (AoN-markdown-less docs + this is also the codepath for Foundry-only
+ * the AoN markdown parse when the AoN doc has markdown, else Foundry's own
+ * body is kept (AoN-markdown-less docs + this is also the codepath for Foundry-only
  * entities, which never call this function at all); `source.book`/`page`
  * come from AoN's `primarySource`, `source.license` keeps Foundry's own value
  * when known (Foundry has real in-source license data) and only falls back
@@ -397,19 +392,19 @@ export interface JoinDeps {
  * (journal-derived) is untouched — a separate field entirely, unaffected by
  * which side "wins" `body`.
  *
- * **D29-16 (new): identity on a CROSS-CATEGORY merge** (`meta.category !==
+ * **Identity on a CROSS-CATEGORY merge** (`meta.category !==
  * foundryEntity.category` — i.e. this pair only matched via
- * `CATEGORY_EQUIVALENCE`, D29-15). `id`/`category`/URL keep Foundry's finer
+ * `CATEGORY_EQUIVALENCE`). `id`/`category`/URL keep Foundry's finer
  * category untouched (already true by construction — this function never
  * touches `foundryEntity.id`/`.category`, only spreads them through), but
  * the entity's `name` switches to AoN's (`meta.name`, "the AoN NAME wins on
  * merged entities" — AoN is the source-of-truth prose corpus, and a
  * cross-category pair is exactly the case where the two sides' naming
  * conventions can genuinely diverge, e.g. a Foundry weapon entity merged
- * against its AoN `equipment` doc). A SAME-category match (the D29-7
- * majority case) is unaffected — `name` stays Foundry's, matching S4's
- * original, unchanged behavior; this is deliberately scoped to the NEW
- * cross-category case only, not a blanket rename of every joined entity.
+ * against its AoN `equipment` doc). A SAME-category match (the majority
+ * case) is unaffected — `name` stays Foundry's; this is deliberately scoped
+ * to the cross-category case only, not a blanket rename of every joined
+ * entity.
  */
 export function mergeJoined(
   foundryEntity: CodexEntity,
@@ -417,7 +412,7 @@ export function mergeJoined(
   deps: JoinDeps,
 ): CodexEntity {
   const markdown = deps.aonMarkdownById.get(meta.aonId);
-  // D29-62 (R3): the AoN masthead strip runs on the AoN-markdown-parsed body
+  // The AoN masthead strip runs on the AoN-markdown-parsed body
   // ONLY (the masthead's bold-label-lines-before-a-divider shape is an AoN
   // convention — Foundry HTML bodies, kept verbatim when the AoN doc has no
   // markdown, never go through it).
@@ -486,20 +481,19 @@ export function mergeJoined(
     );
   }
 
-  // D29-33b/D29-60: AoN-owned facet fill-ins, computed ONCE into a single
-  // `facets` value — `family` and R8's `itemCategory`/`itemSubcategory`
-  // fill-in used to each be their own `...(cond ? {facets: {...}} : {})`
-  // spread entry in the object literal below; two such entries would have
-  // the SECOND one silently clobber the first's `facets` key entirely
-  // (object-spread, not a merge) the moment both conditions were ever true
+  // AoN-owned facet fill-ins, computed ONCE into a single `facets` value —
+  // `family` and the `itemCategory`/`itemSubcategory` fill-in must not be
+  // separate `...(cond ? {facets: {...}} : {})` spread entries in the object
+  // literal below: the SECOND would silently clobber the first's `facets`
+  // key entirely (object-spread, not a merge) whenever both conditions hold
   // on the same entity.
   let facets: Facets = foundryEntity.facets;
   if (meta.family !== undefined) facets = { ...facets, family: meta.family };
-  // D29-60 (R8): AoN's item_category/item_subcategory fill Foundry's gap —
+  // AoN's item_category/item_subcategory fill Foundry's gap —
   // Foundry-wins-mechanics stays the rule (never overwrites an existing
   // Foundry-derived value), scoped to the `equipment` corpus category only
   // (weapon/armor/shield's own AoN item_category is a trivial "Weapons"/
-  // "Armor"/"Shields" constant, D29-60's corrected design, §1.1).
+  // "Armor"/"Shields" constant).
   if (foundryEntity.category === "equipment") {
     if (facets.itemCategory === undefined && meta.itemCategory !== undefined) {
       facets = { ...facets, itemCategory: meta.itemCategory };
@@ -516,12 +510,12 @@ export function mergeJoined(
     aonUrl: meta.aonUrl,
     ...(crossCategory ? { name: meta.name } : {}),
     facets,
-    // P4 (D29-39): the AoN breadcrumb ancestor chain, top-level (NOT
+    // The AoN breadcrumb ancestor chain, top-level (NOT
     // facets — rules is 100% proseOnly, this field exists for the rare
     // cross-category-merged rules doc, if any, mirroring `family`'s own
     // "additive, AoN-owned, no Foundry equivalent" posture).
     ...(meta.breadcrumbs !== undefined ? { breadcrumbs: meta.breadcrumbs } : {}),
-    // D29-62 (R3): the masthead's non-"Source" bold-label lines, re-surfaced
+    // The masthead's non-"Source" bold-label lines, re-surfaced
     // by the facet-header render components — absent when the AoN doc had
     // no markdown at all (Foundry body kept verbatim, `parsedMasthead`
     // `undefined`) or when the masthead run collected zero non-"Source"
@@ -532,10 +526,10 @@ export function mergeJoined(
   };
 }
 
-/** AoN-only entity (D29-7's third class): no Foundry counterpart at all —
+/** AoN-only entity (the third entity class): no Foundry counterpart at all —
  * either the category has no Foundry pack, or this particular AoN doc didn't
- * match. `facets: {}` (no AoN-specific facet extraction in this deliverable's
- * scope — mirrors `journals.ts`'s own standalone-entity convention).
+ * match. Facets carry only the AoN-owned fill-ins below (no other AoN-specific
+ * facet extraction — mirrors `journals.ts`'s own standalone-entity convention).
  * `proseOnly: true` uniformly (judgment call, documented at the call site in
  * `runJoin`). */
 function buildAonOnlyEntity(meta: AonDocMeta, deps: JoinDeps): CodexEntity {
@@ -549,7 +543,7 @@ function buildAonOnlyEntity(meta: AonDocMeta, deps: JoinDeps): CodexEntity {
       : undefined;
   const body: BlockNode[] = parsedMasthead ? parsedMasthead.body : [];
 
-  // D29-33b/D29-60: same "family, then equipment item_category/
+  // Same "family, then equipment item_category/
   // item_subcategory" fill-in `mergeJoined` computes — see that function's
   // own comment for why this has to be ONE `facets` value, not two separate
   // conditional-spread `facets` entries.
@@ -578,13 +572,13 @@ function buildAonOnlyEntity(meta: AonDocMeta, deps: JoinDeps): CodexEntity {
     aonUrl: meta.aonUrl,
     body,
     proseOnly: true,
-    // D29-33b: an AoN-only creature still carries its own family (the field
+    // An AoN-only creature still carries its own family (the field
     // never depends on a Foundry counterpart existing).
     facets,
-    // P4 (D29-39): rules docs are ~100% AoN-only — this is the primary path
+    // Rules docs are ~100% AoN-only — this is the primary path
     // `breadcrumbs` reaches the corpus through.
     ...(meta.breadcrumbs !== undefined ? { breadcrumbs: meta.breadcrumbs } : {}),
-    // D29-62 (R3): see `mergeJoined`'s identical comment.
+    // See `mergeJoined`'s identical comment.
     ...(parsedMasthead?.mastheadExtra !== undefined
       ? { mastheadExtra: parsedMasthead.mastheadExtra }
       : {}),
@@ -600,7 +594,7 @@ interface Draft {
   preId: string;
   /** Set for a join base and for an AoN-only entity; unset for an unjoined
    * Foundry-only entity and for a variant extra (extras don't own their
-   * shared aonId — D29-7's "NO aonUrl/citations of their own"). */
+   * shared aonId — they get NO aonUrl/citations of their own). */
   aonId?: string;
   origin: "foundry" | "aon";
   /** The post-collision-resolution id (pass 3 sets this on the DRAFT OBJECT
@@ -610,7 +604,7 @@ interface Draft {
    * two different drafts that share one). Defaults to `preId` until pass 3
    * runs. */
   finalId: string;
-  /** D29-59 (R4): set ONLY on a ritual-move draft (`isRitualMove`) — the
+  /** Set ONLY on a ritual-move draft (`isRitualMove`) — the
    * entity's ORIGINAL Foundry-derived pre-join id (`spell/<slug>`), before
    * the override moved `preId`/`finalId` to `ritual/<slug>`. Every OTHER
    * pass that resolves a raw Foundry id against this draft (a Foundry
@@ -658,18 +652,17 @@ export interface JoinResult {
   patchStats: PatchStats;
   pairingCount: number;
   aliasesApplied: Array<{ foundryId: string; aonId: string; note: string }>;
-  /** P4 (D29-39): pass-4's own aonId -> finalId map, exposed so a POST-join
-   * caller (the P4 rules-tree/sidebar-attachment builders, `transform.ts`)
-   * can do the exact same "byUrl -> aonId -> aonIdToFinalId" post-identity
-   * resolution the spec pins — never the S5d parse-time repoint seam, which
-   * returns pre-collision ids (spec §1's "verified in code" note). Keyed on
-   * the globally-unique aonId, safe regardless of collisions. */
+  /** Pass-4's own aonId -> finalId map, exposed so a POST-join caller (the
+   * rules-tree/sidebar-attachment builders, `transform.ts`) can do the exact
+   * same "byUrl -> aonId -> aonIdToFinalId" post-identity resolution — never
+   * the parse-time link-repoint seam, which returns pre-collision ids. Keyed
+   * on the globally-unique aonId, safe regardless of collisions. */
   aonIdToFinalId: ReadonlyMap<string, string>;
 }
 
 export interface RunJoinInput {
-  /** Every S2 Foundry-origin entity (Item/Actor-assembled + journal merges +
-   * journal standalone), keyed by its S2 plain `{category}/{slug}` id. */
+  /** Every Foundry-origin entity (Item/Actor-assembled + journal merges +
+   * journal standalone), keyed by its plain `{category}/{slug}` id. */
   foundryEntities: ReadonlyMap<string, CodexEntity>;
   aonMetas: readonly AonDocMeta[];
   aonMarkdownById: ReadonlyMap<string, string>;
@@ -678,7 +671,7 @@ export interface RunJoinInput {
   aliasesFile: JoinAliasesFile;
   /** Resolves a raw Foundry `@Embed` uuid (the `Compendium.pf2e....` form) to
    * a `UuidResolution` — optional: the caller only has this when it rebuilt
-   * the S2 `UuidIndex`; without it, Foundry-origin embed
+   * the `UuidIndex`; without it, Foundry-origin embed
    * nodes are report-counted as unresolved rather than resolved (AoN
    * `<document>` embeds always resolve regardless, via the aonId map this
    * module builds for legacy pairing anyway). */
@@ -687,7 +680,7 @@ export interface RunJoinInput {
 }
 
 /**
- * The full S4 join (spec §4 S4, this deliverable): matches, merges, finalizes
+ * The full join: matches, merges, finalizes
  * identity, and patches crossrefs. See the file header for the 5-pass shape.
  */
 export function runJoin(input: RunJoinInput): JoinResult {
@@ -706,12 +699,12 @@ export function runJoin(input: RunJoinInput): JoinResult {
     if (!existing) {
       aonSlugIndex.set(key, m);
     } else if (existing.edition !== "remaster" && m.edition === "remaster") {
-      // D29-1's COMMON case (an unrenamed remaster pair, e.g. Heal) shares
+      // The COMMON case (an unrenamed remaster pair, e.g. Heal) shares
       // ITS OWN (category,slug) between the legacy and remaster AoN docs —
       // NOT rare. A Foundry entity matching this slug should match the
       // REMASTER doc (Foundry's own content mirrors the current ruleset;
       // the legacy half, when it has no Foundry counterpart at all, becomes
-      // the AoN-only entity that gets the `@legacy` suffix, D29-1). Any
+      // the AoN-only entity that gets the `@legacy` suffix). Any
       // OTHER same-slug duplicate (not a legacy/remaster pair at all —
       // genuinely rare) keeps whichever meta was indexed first, deterministic
       // regardless of `aonMetas`'s own input order.
@@ -720,7 +713,7 @@ export function runJoin(input: RunJoinInput): JoinResult {
   }
 
   // ---- pass 1: match ----
-  // Runs BEFORE the link resolver is built (S5d): the resolver needs to know
+  // Runs BEFORE the link resolver is built: the resolver needs to know
   // which AoN docs the join CONSUMED so it can repoint inbound links to
   // those docs at their merged entity's id — see `repointByAonId` below.
   const matchByFoundryId = new Map<string, MatchResult>();
@@ -755,10 +748,10 @@ export function runJoin(input: RunJoinInput): JoinResult {
     for (const e of entities) if (e.id !== base.id) variantOfByPreId.set(e.id, base.id);
   }
 
-  // S5d: the cross-category-merge link repoint map (aonId -> the consuming
+  // The cross-category-merge link repoint map (aonId -> the consuming
   // Foundry entity's id), consumed by `createLinkResolver`. A merged AoN
   // doc's own pre-join id (`{category}/{slug}`) stops naming a corpus entity
-  // the moment the merge lands on a Foundry id that differs — every D29-15
+  // the moment the merge lands on a Foundry id that differs — every
   // cross-category equivalence match by construction, plus qualifier-reorder
   // and alias matches within one category. Inbound markdown links to such a
   // doc's url would otherwise resolve to the dead id (→ brokenRef at pass-5)
@@ -777,7 +770,7 @@ export function runJoin(input: RunJoinInput): JoinResult {
   for (const [aonId, basePreId] of baseIdByAonId) {
     const meta = aonMetaById.get(aonId);
     if (!meta) throw new Error(`runJoin: unreachable — no meta for matched aonId "${aonId}"`);
-    // D29-59 (R4): a ritual-move base's identity lands at the AoN doc's OWN
+    // A ritual-move base's identity lands at the AoN doc's OWN
     // `{category}/{slug}` (the override below, pass 2) — which is exactly
     // the "natural" target this map exists to redirect AWAY from for every
     // OTHER cross-category merge. Skip it here (never register a repoint)
@@ -830,7 +823,7 @@ export function runJoin(input: RunJoinInput): JoinResult {
       const meta = aonMetaById.get(match.aonId);
       if (!meta) throw new Error(`runJoin: unreachable — no meta for aonId "${match.aonId}"`);
       const merged = mergeJoined(entity, meta, deps);
-      // D29-59 (R4): the ritual-move override — the ONE targeted exception
+      // The ritual-move override — the ONE targeted exception
       // to "a merged draft's preId is the Foundry entity's own id" (see
       // `isRitualMove`'s own doc comment for the exact matched-via-which-
       // equivalence-rule test). `rawFoundryPreId` keeps the ORIGINAL
@@ -990,17 +983,17 @@ export function runJoin(input: RunJoinInput): JoinResult {
   // `aonIdToFinalId` is keyed on the globally-UNIQUE aonId (never the
   // ambiguous preId) — safe regardless of collisions, and the only map that
   // can genuinely DISAMBIGUATE which specific corpus doc (legacy vs.
-  // remaster) a reference meant (D29-1's legacy/remaster arrays, and AoN
+  // remaster) a reference meant (AoN's legacy/remaster arrays, and AoN
   // `<document id>` embeds, both address by aonId, never by the shared
   // slug string).
   const aonIdToFinalId = new Map<string, string>();
   // `foundryFinalIdByPreId` is keyed on the Foundry entity's OWN pre-join id
-  // — safe because Foundry ids never collide AMONG THEMSELVES (S2's own
+  // — safe because Foundry ids never collide AMONG THEMSELVES (assembly's own
   // `slugCollision` report already collapsed any true Foundry-vs-Foundry
   // duplicate before this module ever saw it); used for `variantOf`
   // resolution (a variant's base is always a Foundry-origin draft) and for
   // Foundry `@Embed` uuid resolution (`resolveForeignEmbed` returns a
-  // Foundry-origin preId, never an AoN one). D29-59: a ritual-move draft is
+  // Foundry-origin preId, never an AoN one). A ritual-move draft is
   // registered under BOTH its (overridden) `preId` and its
   // `rawFoundryPreId` — a Foundry `@Embed` targeting the entity by its
   // ORIGINAL `spell/<slug>` uuid-resolved id, or a same-aonId variant's
@@ -1072,18 +1065,14 @@ export function runJoin(input: RunJoinInput): JoinResult {
         patchEmbeddedItem(item, patchCtx),
       );
     }
-    // D29-59 (R4) fallout, P6: `HazardStats.disable`/`routine`/`reset`
-    // (D29-20) are BlockNode[] enricher-HTML fields — crossref/embed-bearing
-    // exactly like `body`/`loreBody`, but this pass never walked them before
-    // P6 (nothing had ever renamed or dropped a target a stats block
-    // referenced, so the gap was latent). R4's ritual move is the first
-    // change to actually stale one — a real corpus find, verified by a
-    // full-corpus scan for dangling pre-move ids:
+    // `HazardStats.disable`/`routine`/`reset` are BlockNode[] enricher-HTML
+    // fields — crossref/embed-bearing exactly like `body`/`loreBody`, so they
+    // need the same patching. The ritual move stales real ones (verified by
+    // a full-corpus scan for dangling pre-move ids):
     // `hazard/the-power-of-faith`'s `stats.reset` links `spell/consecrate`,
     // which moves to `ritual/consecrate`; left unpatched this stays a live
-    // `crossref` pointing at a dead id, silently (not even report-visible,
-    // since this content was never in the patched set at all). Patched
-    // here, mirroring `body`/`loreBody` exactly.
+    // `crossref` pointing at a dead id, silently (not even report-visible).
+    // Patched here, mirroring `body`/`loreBody` exactly.
     if (d.entity.stats?.kind === "hazard") {
       const stats = d.entity.stats;
       if (stats.disable)
@@ -1107,7 +1096,7 @@ export function runJoin(input: RunJoinInput): JoinResult {
 }
 
 // ---------------------------------------------------------------------------
-// remaster-changes redirect cross-check (D29-7: Foundry cross-check, AoN wins)
+// remaster-changes redirect cross-check (Foundry cross-checks, AoN wins)
 // ---------------------------------------------------------------------------
 
 function crossCheckRedirects(
@@ -1116,7 +1105,7 @@ function crossCheckRedirects(
   report: ReportFn,
 ): RedirectCrossCheck {
   // Keyed by preId for lookup convenience only — `r.oldId`/`r.newId` come
-  // from Foundry's OWN crossref resolution (D29-6), which always names a
+  // from Foundry's OWN crossref resolution, which always names a
   // SPECIFIC Foundry-origin doc, never an ambiguous shared slug, so a
   // preId-keyed map is safe here even though it wouldn't be for the general
   // collision case (ties to a single Draft object, whose own `.finalId` is
@@ -1144,7 +1133,7 @@ function crossCheckRedirects(
 }
 
 // ---------------------------------------------------------------------------
-// crossref/embed patching (D29-1's "crossref patching" bullet)
+// crossref/embed patching
 // ---------------------------------------------------------------------------
 
 interface PatchCtx {
@@ -1157,8 +1146,8 @@ interface PatchCtx {
 }
 
 /**
- * A crossref's `targetId` is always a PLAIN pre-join id (set by S2's
- * `resolveUuid`/S3's link resolver, both string-only, no richer provenance) —
+ * A crossref's `targetId` is always a PLAIN pre-join id (set by Foundry's
+ * `resolveUuid`/AoN's link resolver, both string-only, no richer provenance) —
  * so it's INHERENTLY ambiguous for a shared-slug collision group (nodes.ts's
  * `CrossrefNode` has no field to say "the legacy one specifically"). By
  * construction (pass 3), exactly one member of every collision group keeps
@@ -1167,8 +1156,8 @@ interface PatchCtx {
  * rewrite needed); one that names nothing real becomes `brokenRef`. This
  * means a plain crossref can never be patched to reach the SUFFIXED member of
  * its own collision group specifically — a real, documented residue class
- * (see the file header), not fixable without widening `CrossrefNode` itself
- * (out of this deliverable's scope). AoN `<document>`/Foundry `@Embed`
+ * (see the file header), not fixable without widening `CrossrefNode` itself.
+ * AoN `<document>`/Foundry `@Embed`
  * targets don't have this problem (`patchEmbed` below) because they carry a
  * genuinely unique id (aonId / Foundry uuid), not the shared slug string.
  */
@@ -1203,7 +1192,7 @@ function patchEmbed(node: Extract<CodexNode, { kind: "embed" }>, ctx: PatchCtx):
   }
 
   // Not a Foundry uuid → an AoN raw doc id (every genuine `<document id>` embed
-  // target, D29-2/D29-7).
+  // target).
   const finalId = ctx.aonIdToFinalId.get(node.target);
   if (finalId) {
     ctx.stats.resolvedEmbeds++;
@@ -1267,7 +1256,7 @@ function patchNode(node: CodexNode, ctx: PatchCtx): CodexNode {
     case "aside":
       return { ...node, children: node.children.map((c) => patchNode(c, ctx)) };
     case "statRow":
-      // P10 (D29-94): cells are `InlineNode[][]`, not recursive `CodexNode[]`
+      // Cells are `InlineNode[][]`, not recursive `CodexNode[]`
       // — map through `patchInline` directly (same shape as paragraph/heading
       // `children` above), never `patchNode` (which would need a `CodexNode`).
       return { ...node, cells: node.cells.map((cell) => cell.map((c) => patchInline(c, ctx))) };

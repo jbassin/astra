@@ -20,34 +20,32 @@ import type { SidebarAttachResult } from "./sidebarAttach";
 import type { SourcesIndexStats } from "./sourcesIndexBuild";
 
 /**
- * D29-3/§3: the transform report — THE P1 acceptance artifact (spec §3, §4 S4's
- * gate: "report reviewed BY THE STAKEHOLDER — join rates + residues are a
- * judgment call, not a threshold"). Pure builders only: `buildReportJson`/
+ * The transform report — reviewed by a human, not gated on a threshold (join
+ * rates + residues are a judgment call). Pure builders only: `buildReportJson`/
  * `buildReportMarkdown` return the `report.json` object / `report.md` string;
  * writing either to disk is the transform orchestrator's job
  * (`transform.ts`), same division of labor as `emit.ts` owns writing the
  * corpus itself.
  *
- * Per spec §3, the report covers: per-category in/out counts (both sources),
- * unknown-enricher occurrences (fatal, §3's "will be zero or the run died" —
- * surfaced here as `hardFailureCount`, present for completeness even though a
- * non-zero value means this report was never reached in a real run), broken
- * crossrefs by class, join hit/miss per category + capped unjoined lists,
- * slug collisions + resolutions, legacy-pair counts + pairing disagreements,
- * license/edition breakdowns, size totals (hooks — `emit.ts` fills them in;
- * `undefined` here just means "not measured at this stage"), and the applied
- * alias list.
+ * The report covers: per-category in/out counts (both sources),
+ * unknown-enricher occurrences (fatal, so zero or the run died — surfaced here
+ * as `hardFailureCount`, present for completeness even though a non-zero value
+ * means this report was never reached in a real run), broken crossrefs by
+ * class, join hit/miss per category + capped unjoined lists, slug collisions +
+ * resolutions, legacy-pair counts + pairing disagreements, license/edition
+ * breakdowns, size totals (hooks — `emit.ts` fills them in; `undefined` here
+ * just means "not measured at this stage"), and the applied alias list.
  *
  * ## A known limitation, documented rather than fabricated
  *
- * "Excluded" counts (D29-8's whole-pack/doc-type exclusions, `categoryMap.ts`)
+ * "Excluded" counts (the whole-pack/doc-type exclusions, `categoryMap.ts`)
  * are NOT tracked anywhere upstream today — an excluded (pack, type) pair
  * never reaches `assembleFoundryEntity` at all, so no counter exists for it.
  * This report surfaces per-category IN (assembled) / OUT (final, post-join)
  * counts and the generic `reportCounts` class tally (which does carry
  * `missingPublication`/`unknownLicense`/etc.), but does not claim an
- * "excluded" number it has no source for — a real gap to close in a future
- * slice if the stakeholder wants it, not silently invented here.
+ * "excluded" number it has no source for — a real gap, not silently invented
+ * here.
  */
 
 // ---------------------------------------------------------------------------
@@ -59,8 +57,7 @@ export interface SizeTotals {
   entityFileCount?: number;
 }
 
-/** D29-100 (P11 S1): see `ReportInput.adjacentCrossrefDedupe`'s own doc
- * comment. */
+/** See `ReportInput.adjacentCrossrefDedupe`'s own doc comment. */
 export interface AdjacentCrossrefDedupeStats {
   totalOccurrences: number;
   entitiesTouched: number;
@@ -77,58 +74,55 @@ export interface ReportInput {
   hardFailureCount: number;
   /** The PRE-drop join result — `join.categoryStats`/`collisions`/etc. stay
    * the join-QUALITY measurement (foundryIn/aonIn/exact/normalized/alias/
-   * unjoined lists), unaffected by the D29-14 drop pass, because that's what
-   * the STOP-condition / D29-15/-18 acceptance criteria audit. */
+   * unjoined lists), unaffected by the AoN-primary drop pass, because that's
+   * what the join-quality STOP conditions audit. */
   join: JoinResult;
-  /** S5c/D29-14: the POST-drop entity set actually written to the corpus —
-   * every "final" summary stat (`finalEntityCount`, per-category `finalOut`,
-   * license/edition breakdowns, proseOnly/variant counts) is computed from
-   * THIS, not `join.entities` (which still includes every dropped
-   * Foundry-only entity). */
+  /** The POST-drop entity set actually written to the corpus — every "final"
+   * summary stat (`finalEntityCount`, per-category `finalOut`, license/edition
+   * breakdowns, proseOnly/variant counts) is computed from THIS, not
+   * `join.entities` (which still includes every dropped Foundry-only
+   * entity). */
   finalEntities: readonly CodexEntity[];
-  /** S5c: the D29-14 drop-accounting section's data (per-category dropped
-   * counts + the D29-17 carve-out kept counts + D29-98's activation-drop
-   * sub-section). */
+  /** The drop-accounting section's data (per-category dropped counts + the
+   * carve-out kept counts + the activation-drop sub-section). */
   dropAccounting: DropAccounting;
-  /** D29-100 (P11 S1): the whole-document adjacent-crossref dedupe pass's
-   * stats — `totalOccurrences` is the 1,147-occurrence pin (also visible via
-   * the generic `adjacentCrossrefDeduped` reportCounts class, one call per
-   * occurrence); `entitiesTouched` is the separate 123-entity pin, which has
-   * no generic-counter equivalent. */
+  /** The whole-document adjacent-crossref dedupe pass's stats —
+   * `totalOccurrences` is the 1,147-occurrence pin (also visible via the
+   * generic `adjacentCrossrefDeduped` reportCounts class, one call per
+   * occurrence); `entitiesTouched` is the separate 123-entity pin, which has no
+   * generic-counter equivalent. */
   adjacentCrossrefDedupe: AdjacentCrossrefDedupeStats;
   foundrySnapshotDocCount: number;
   aonSnapshotDocCount: number;
   sizeTotals?: SizeTotals;
-  /** P4 (D29-39) S1: the four new report sections — all four builders'
-   * stats objects, threaded straight through (no re-derivation here, same
-   * "pure builder consumes upstream stats" posture this module already
-   * follows for `join`/`dropAccounting`). */
+  /** Four report sections — all four builders' stats objects, threaded straight
+   * through (no re-derivation here, same "pure builder consumes upstream stats"
+   * posture this module already follows for `join`/`dropAccounting`). */
   bookNormalization: BookNormalizeResult;
   sidebarAttachment: SidebarAttachResult;
   rulesTree: RulesTreeStats;
   sourcesIndex: SourcesIndexStats;
-  /** P12 S1 (D29-114/-115): the post-drop class-stats augment pass's
-   * counters (the `entities` array itself isn't needed here — it's already
-   * folded into `finalEntities` above by the time the report is built). */
+  /** The post-drop class-stats augment pass's counters (the `entities` array
+   * itself isn't needed here — it's already folded into `finalEntities` above
+   * by the time the report is built). */
   classStatsAugment: Omit<AugmentClassStatsResult, "entities">;
-  /** D30-46 (0030 S1, review blocker B2): the homebrew ingest provenance —
-   * lives here (report.json/report.md) rather than `corpus/manifest.json`
-   * (`.strict()`, no room for a new key without a hard parse-crash at
-   * `parseManifest`, before the transform even starts). */
+  /** The homebrew ingest provenance — lives here (report.json/report.md) rather
+   * than `corpus/manifest.json` (`.strict()`, no room for a new key without a
+   * hard parse-crash at `parseManifest`, before the transform even starts). */
   homebrew: HomebrewSectionJson;
 }
 
-/** D30-46: `{dir,count,sha256}` (via the existing `hashDirectory`) plus the
- * D30-42/-43 ingest-quality pins — emitted-per-category counts, `@UUID`
+/** `{dir,count,sha256}` (via the existing `hashDirectory`) plus the homebrew
+ * ingest-quality pins — emitted-per-category counts, `@UUID`
  * resolved-as-crossref vs brokenRef, the expected 17 possessive-apostrophe
- * `slugMismatch`es, and the collision-guard result. `dir`/`docsIn`/`sha256`
- * are scoped to the spells STORE specifically; `emittedByCategory`/
- * `uuidRefsResolved`/`uuidRefsBroken` cover the COMBINED spells+rituals+
- * traits set (D30-44, 0030 S2 — a single "what did homebrew emit" view, so
+ * `slugMismatch`es, and the collision-guard result. `dir`/`docsIn`/`sha256` are
+ * scoped to the spells STORE specifically; `emittedByCategory`/
+ * `uuidRefsResolved`/`uuidRefsBroken` cover the COMBINED
+ * spells+rituals+traits set (a single "what did homebrew emit" view, so
  * `trait: 8` shows up in `emittedByCategory` alongside `spell`/`ritual`).
  * `traitsDir`/`traitsDocsIn`/`traitsSha256` are the trait STORE's own
- * provenance triple, kept separate rather than conflated into one dir/hash
- * pair spanning two directories. */
+ * provenance triple, kept separate rather than conflated into one dir/hash pair
+ * spanning two directories. */
 export interface HomebrewSectionJson {
   dir: string;
   docsIn: number;
@@ -138,11 +132,11 @@ export interface HomebrewSectionJson {
   slugMismatchCount: number;
   collisionGuardOk: boolean;
   sha256: string;
-  /** D30-44 (0030 S2): the trait store dir (`apps/assay/py/homebrew/traits/`). */
+  /** The trait store dir (`apps/assay/py/homebrew/traits/`). */
   traitsDir: string;
-  /** D30-44 (0030 S2): docs read in from `traitsDir` (8 on the real store). */
+  /** Docs read in from `traitsDir` (8 on the real store). */
   traitsDocsIn: number;
-  /** D30-44 (0030 S2): `hashDirectory(traitsDir)`. */
+  /** `hashDirectory(traitsDir)`. */
   traitsSha256: string;
 }
 
@@ -188,14 +182,14 @@ export function computeVariantCount(entities: readonly CodexEntity[]): number {
 }
 
 // ---------------------------------------------------------------------------
-// P1.6 (D29-19/-20, slice S6): statblock extraction coverage
+// Statblock extraction coverage
 //
 // One row per extracted field: how many of the FINAL (post-drop) entities in
 // the relevant population carry it, as a raw count + a percentage. A field's
 // absence is often legitimate (an AoN-only creature/hazard has no Foundry
 // Actor doc to extract from at all; a carve-out creature may genuinely lack a
-// given sub-field in source) — this is a visibility tool for the stakeholder
-// review (spec §9's "per-field extraction coverage %"), not a pass/fail gate.
+// given sub-field in source) — this is a visibility tool for human review
+// (per-field extraction coverage %), not a pass/fail gate.
 // ---------------------------------------------------------------------------
 
 export interface FieldCoverageRow {
@@ -223,7 +217,7 @@ function hasHazardStats(e: CodexEntity): e is CodexEntity & { stats: HazardStats
 }
 
 /** Per-field coverage over every `creature` entity in the final corpus
- * (D29-20's `CreatureStats` fields). */
+ * (the `CreatureStats` fields). */
 export function computeCreatureStatsCoverage(entities: readonly CodexEntity[]): FieldCoverageRow[] {
   const creatures = entities.filter((e) => e.category === "creature");
   const total = creatures.length;
@@ -241,7 +235,7 @@ export function computeCreatureStatsCoverage(entities: readonly CodexEntity[]): 
 }
 
 /** Per-field coverage over every `hazard` entity in the final corpus
- * (D29-20's `HazardStats` fields). */
+ * (the `HazardStats` fields). */
 export function computeHazardStatsCoverage(entities: readonly CodexEntity[]): FieldCoverageRow[] {
   const hazards = entities.filter((e) => e.category === "hazard");
   const total = hazards.length;
@@ -258,7 +252,7 @@ export function computeHazardStatsCoverage(entities: readonly CodexEntity[]): Fi
 
 /** Per-field coverage over embedded items (not entities) — a `melee`/
  * `spellcastingEntry` item's own field presence, scanned across every kept
- * entity's `embeddedItems` (D29-20's strike/spellcasting fields). */
+ * entity's `embeddedItems` (the strike/spellcasting fields). */
 export function computeEmbeddedItemStatsCoverage(
   entities: readonly CodexEntity[],
 ): FieldCoverageRow[] {
@@ -307,12 +301,12 @@ function computeStatsCoverage(entities: readonly CodexEntity[]): StatsCoverage {
 }
 
 // ---------------------------------------------------------------------------
-// P3 S1 (D29-32/-33): facet-coverage section — per-category, per-key
+// Facet-coverage section — per-category, per-key
 // coverage/cardinality over the FINAL (post-drop) corpus, for EVERY key any
 // entity in that category actually carries in `facets` (not just the ones
 // `facetKeys.ts` shipped) — so a candidate the classifier DROPPED (e.g.
 // `equipment.itemCategory`, `familiar-ability.actionCost`) is just as
-// visible here as one it kept (`shipped: true`), per D29-33a's "no silent
+// visible here as one it kept (`shipped: true`), per the "no silent
 // junk facets" guard: a fail is a correct, visible outcome, not a miss.
 // ---------------------------------------------------------------------------
 
@@ -389,10 +383,10 @@ export interface FamilyCoverage {
   distinctFamilies: number;
 }
 
-/** D29-33b: `creature.facets.family` coverage — measured over ALL final
+/** `creature.facets.family` coverage — measured over ALL final
  * `creature` entities (not just AoN-derived ones), so the denominator
  * matches every other coverage figure in this report. Ships in
- * `facetKeys.ts` regardless of this number (a stakeholder-sanctioned
+ * `facetKeys.ts` regardless of this number (a deliberately chosen
  * navigational facet, not classifier-gated). */
 export function computeFamilyCoverage(entities: readonly CodexEntity[]): FamilyCoverage {
   const creatures = entities.filter((e) => e.category === "creature");
@@ -412,12 +406,10 @@ export interface SupersededBreakdown {
   remasterEdition: number;
 }
 
-/** D29-33c: the `IndexRow.superseded` predicate's own count, broken down by
- * `edition` — cross-checked (adversarial B2) against an independent scan of
- * `remasteredAs` non-empty across entity files in this slice's own
- * verification, not by this function (this IS that scan, applied to
- * `finalEntities` — the emitted `_index.json` rows are `toIndexRow`'s
- * projection of the exact same entities). */
+/** The `IndexRow.superseded` predicate's own count, broken down by
+ * `edition` — a `remasteredAs`-non-empty scan over `finalEntities` (the
+ * emitted `_index.json` rows are `toIndexRow`'s projection of the exact same
+ * entities). */
 export function computeSupersededBreakdown(entities: readonly CodexEntity[]): SupersededBreakdown {
   const superseded = entities.filter((e) => (e.remasteredAs?.length ?? 0) > 0);
   return {
@@ -428,7 +420,7 @@ export function computeSupersededBreakdown(entities: readonly CodexEntity[]): Su
 }
 
 // ---------------------------------------------------------------------------
-// P4 (D29-39) S1: report-JSON projections of the four new builders' stats
+// Report-JSON projections of the four builders' stats
 // (BookNormalizeResult carries a full `entities[]` array — never put on
 // `report.json`; every other field here is already report-shaped).
 // ---------------------------------------------------------------------------
@@ -469,9 +461,9 @@ function sidebarAttachmentJson(r: SidebarAttachResult): SidebarAttachmentJson {
   };
 }
 
-/** P12 S1 (D29-114/-115): the post-drop class-stats augment pass's report
- * projection — pins at (real corpus) 27 classStatsEmitted / 503 resolved /
- * 17 unresolved grants / derive-at-build subclassOptionsEmitted. */
+/** The post-drop class-stats augment pass's report projection — pins at (real
+ * corpus) 27 classStatsEmitted / 503 resolved / 17 unresolved grants /
+ * derive-at-build subclassOptionsEmitted. */
 export interface ClassStatsAugmentJson {
   classStatsEmitted: number;
   grantedFeaturesResolved: number;
@@ -514,7 +506,7 @@ export interface ReportJson {
   hardFailureCount: number;
   foundrySnapshotDocCount: number;
   aonSnapshotDocCount: number;
-  /** The POST-drop corpus size (D29-14) — `finalEntities.length`. */
+  /** The POST-drop corpus size — `finalEntities.length`. */
   finalEntityCount: number;
   categories: CategoryJoinJson[];
   collisions: CollisionReport[];
@@ -530,35 +522,35 @@ export interface ReportJson {
   variantCount: number;
   reportCounts: Record<string, number>;
   sizeTotals: SizeTotals;
-  /** S5c/D29-14/-98: the drop-accounting section. */
+  /** The drop-accounting section. */
   dropAccounting: DropAccounting;
-  /** D29-100 (P11 S1): the adjacent-crossref-dedupe pass's stats. */
+  /** The adjacent-crossref-dedupe pass's stats. */
   adjacentCrossrefDedupe: AdjacentCrossrefDedupeStats;
-  /** D29-19 (P1.6): `character`-typed Actors excluded before assembly
+  /** `character`-typed Actors excluded before assembly
    * (`reportCounts.excludedActors` — pulled out to its own top-level field
-   * since spec §9 calls it out by name, not just generic residue). */
+   * because it is a headline number, not just generic residue). */
   excludedActorsCount: number;
-  /** D29-20 (P1.6): per-field extraction coverage % over the final corpus. */
+  /** Per-field extraction coverage % over the final corpus. */
   statsCoverage: StatsCoverage;
-  /** P3 S1 (D29-32/-33): per-category, per-key facet coverage/cardinality —
+  /** Per-category, per-key facet coverage/cardinality —
    * every candidate the classifier considered, shipped or dropped. */
   facetCoverage: FacetCoverageRow[];
-  /** D29-33b: `creature.family` coverage (ships regardless of the number). */
+  /** `creature.family` coverage (ships regardless of the number). */
   familyCoverage: FamilyCoverage;
-  /** D29-33c: the `superseded` predicate's count, by edition (adversarial
-   * B2's 10,970 legacy + 42 remaster = 11,012 pin). */
+  /** The `superseded` predicate's count, by edition (pinned at 10,970
+   * legacy + 42 remaster = 11,012). */
   supersededBreakdown: SupersededBreakdown;
-  /** P4 (D29-39) S1: the mechanical book-name normalization pass. */
+  /** The mechanical book-name normalization pass. */
   bookNormalization: BookNormalizationJson;
-  /** P4 (D29-39) S1: the `attachedSidebars` reverse-join. */
+  /** The `attachedSidebars` reverse-join. */
   sidebarAttachment: SidebarAttachmentJson;
-  /** P4 (D29-39) S1: the `rules-tree.json` builder's stats. */
+  /** The `rules-tree.json` builder's stats. */
   rulesTree: RulesTreeStats;
-  /** P4 (D29-43) S1: the `sources-index.json` builder's stats. */
+  /** The `sources-index.json` builder's stats. */
   sourcesIndex: SourcesIndexStats;
-  /** P12 S1 (D29-114/-115): the post-drop class-stats augment pass. */
+  /** The post-drop class-stats augment pass. */
   classStatsAugment: ClassStatsAugmentJson;
-  /** D30-46 (0030 S1): the homebrew ingest provenance section. */
+  /** The homebrew ingest provenance section. */
   homebrew: HomebrewSectionJson;
 }
 
@@ -640,15 +632,14 @@ function mdTable(
 const LOW_JOIN_THRESHOLD = 50;
 
 /**
- * Builds `report.md` (spec §3: "make report.md scannable — tables,
- * worst-offender lists"). STOP-condition categories (spec §6 Risks: a
- * mechanical category with BOTH sources present sitting <50% joined after
- * normalization + aliases) are called out at the TOP, not buried in the
- * per-category table.
+ * Builds `report.md`, kept scannable (tables, worst-offender lists).
+ * STOP-condition categories (a mechanical category with BOTH sources present
+ * sitting <50% joined after normalization + aliases) are called out at the TOP,
+ * not buried in the per-category table.
  */
 export function buildReportMarkdown(json: ReportJson): string {
   const lines: string[] = [];
-  lines.push("# codex P1 transform report", "");
+  lines.push("# codex transform report", "");
   lines.push(
     `Foundry snapshot: **${json.foundrySnapshotDocCount}** docs · AoN snapshot: **${json.aonSnapshotDocCount}** docs · final corpus: **${json.finalEntityCount}** entities · hard failures: **${json.hardFailureCount}**`,
     "",
@@ -675,7 +666,7 @@ export function buildReportMarkdown(json: ReportJson): string {
         ]),
       ),
       "",
-      "Per spec §6 Risks: re-decide the join key with the stakeholder before P2 — do NOT silently fuzzy-match.",
+      "Re-decide the join key with a human before relying on these categories — do NOT silently fuzzy-match.",
       "",
     );
   } else {
@@ -793,7 +784,7 @@ export function buildReportMarkdown(json: ReportJson): string {
 
   lines.push("## Legacy/remaster pairing", "");
   lines.push(
-    `${json.legacyPairing.pairingCount} remasteredAs/legacyOf edges set from AoN's own \`remaster_id\`/\`legacy_id\` arrays (primary source of truth, D29-7). Foundry \`remaster-changes\` cross-check: ${json.legacyPairing.redirectCrossCheck.agreements} agree, ${json.legacyPairing.redirectCrossCheck.disagreements} disagree (AoN wins on disagreement).`,
+    `${json.legacyPairing.pairingCount} remasteredAs/legacyOf edges set from AoN's own \`remaster_id\`/\`legacy_id\` arrays (primary source of truth). Foundry \`remaster-changes\` cross-check: ${json.legacyPairing.redirectCrossCheck.agreements} agree, ${json.legacyPairing.redirectCrossCheck.disagreements} disagree (AoN wins on disagreement).`,
     "",
   );
 
@@ -870,9 +861,9 @@ export function buildReportMarkdown(json: ReportJson): string {
     "",
   );
 
-  lines.push("## AoN-primary drop pass (D29-14/-17)", "");
+  lines.push("## AoN-primary drop pass", "");
   lines.push(
-    `The corpus keeps every AoN-only entity, every merged entity, every variant of a merged family, and Foundry-only entities in the \`creature\`/\`hazard\` carve-out (D29-17) — every OTHER Foundry-only entity is dropped at emit. **${json.dropAccounting.totalDropped}** entities dropped across ${json.dropAccounting.byCategory.length} categories.`,
+    `The corpus keeps every AoN-only entity, every merged entity, every variant of a merged family, and Foundry-only entities in the \`creature\`/\`hazard\` carve-out — every OTHER Foundry-only entity is dropped at emit. **${json.dropAccounting.totalDropped}** entities dropped across ${json.dropAccounting.byCategory.length} categories.`,
     "",
   );
   lines.push("### Dropped, by category", "");
@@ -885,7 +876,7 @@ export function buildReportMarkdown(json: ReportJson): string {
       : "Nothing dropped.",
     "",
   );
-  lines.push("### Carve-out (D29-17) — Foundry-only entities KEPT anyway", "");
+  lines.push("### Carve-out — Foundry-only entities KEPT anyway", "");
   lines.push(
     json.dropAccounting.carveOut.length > 0
       ? mdTable(
@@ -896,17 +887,14 @@ export function buildReportMarkdown(json: ReportJson): string {
     "",
   );
 
-  lines.push("## Activation-debris drop pass (D29-98, P11 S1)", "");
+  lines.push("## Activation-debris drop pass", "");
   lines.push(
-    `Widened drop of AoN-only \`action\` entities whose (RESOLVED, post-D29-99) name matches a family: (i) starts with \`(\` — the "(manipulate)" shape; (ii) starts with a digit AND is an activation string — the "1 hour (envision, Interact)" shape, a truncated "1 minute (manipulate", or a bare "1 minute"; (iii) markup debris with nothing alphanumeric, such as "</u>". The 9-entity keep-list (\`action/manipulate\`, \`concentrate\`, \`concentration\`, \`command\`, \`concentrate-manipulate\`, \`envision\`, \`concentration-3\`, \`concentration-4\`, \`spellshape\`) survives regardless (real inbound crossrefs/embeds). **${json.dropAccounting.activationDrop.total}** dropped — **${json.dropAccounting.activationDrop.parenFamily}** family (i) / **${json.dropAccounting.activationDrop.digitFamily}** family (ii) / **${json.dropAccounting.activationDrop.markupFamily}** family (iii). Dangling \`remasteredAs\`/\`legacyOf\` edges into the FULL drop set (activation ∪ AoN-primary) stripped off survivors: **${json.dropAccounting.editionPointersStripped}**.`,
+    `Widened drop of AoN-only \`action\` entities whose RESOLVED name matches a family: (i) starts with \`(\` — the "(manipulate)" shape; (ii) starts with a digit AND is an activation string — the "1 hour (envision, Interact)" shape, a truncated "1 minute (manipulate", or a bare "1 minute"; (iii) markup debris with nothing alphanumeric, such as "</u>". The 9-entity keep-list (\`action/manipulate\`, \`concentrate\`, \`concentration\`, \`command\`, \`concentrate-manipulate\`, \`envision\`, \`concentration-3\`, \`concentration-4\`, \`spellshape\`) survives regardless (real inbound crossrefs/embeds). **${json.dropAccounting.activationDrop.total}** dropped — **${json.dropAccounting.activationDrop.parenFamily}** family (i) / **${json.dropAccounting.activationDrop.digitFamily}** family (ii) / **${json.dropAccounting.activationDrop.markupFamily}** family (iii). Dangling \`remasteredAs\`/\`legacyOf\` edges into the FULL drop set (activation ∪ AoN-primary) stripped off survivors: **${json.dropAccounting.editionPointersStripped}**.`,
     "",
   );
+  lines.push("### Family (ii) — every digit-leading dropped name (for eyeball review)", "");
   lines.push(
-    "### Family (ii) — every digit-leading dropped name (orchestrator eyeball review)",
-    "",
-  );
-  lines.push(
-    "The widened family-(ii) predicate is new and un-censused at spec time — every dropped name is listed here in FULL (never capped) for review before the S1 commit.",
+    "The family-(ii) predicate is the broadest of the three — every dropped name is listed here in FULL (never capped) for review.",
     "",
   );
   lines.push(
@@ -919,21 +907,21 @@ export function buildReportMarkdown(json: ReportJson): string {
     "",
   );
 
-  lines.push("## Debris drop-families (D29-133, P14 S1)", "");
+  lines.push("## Debris drop-families", "");
   lines.push(
     `Two more predicate drop-families, same "override the keep, checked first" shape as the activation-debris family above. **Journal section headers** (\`journalSectionHeaderDropFamily\`: a \`proseOnly\` Foundry-journal page with an EMPTY body — a bare section-header divider journals.ts's merge-vs-standalone decision never content-checked): **${json.dropAccounting.journalSectionHeaderDrop}** dropped (pins at 4 on the real corpus — \`ancestry/{common,uncommon,rare}\`, \`archetype/archetypes\`; \`ancestry/index\`/\`archetype/index\` are non-empty-body and survive). **Unknown-book creature husks** (\`unknownBookHuskDropFamily\`: a \`creature\` doc with \`book:"unknown"\`, empty body, zero facets, zero traits — an orphaned Foundry Actor with nothing extractable): **${json.dropAccounting.unknownBookHuskDrop}** dropped (pins at 5 — \`creature/{daji-level-1,daji-level-3,daji-level-5,flappy,twinsprout}\`).`,
     "",
   );
 
-  lines.push("## Adjacent-crossref dedupe (D29-100, P11 S1)", "");
+  lines.push("## Adjacent-crossref dedupe", "");
   lines.push(
     `Whole-document post-join pre-emit walk over body + loreBody + embeddedItems + mastheadExtra + hazard stats.disable/routine/reset — collapses RUNS of crossref nodes with identical targetId and equivalent (apostrophe/case-folded) display, separated only by whitespace/punctuation-only text, to one crossref + one separator. **${json.adjacentCrossrefDedupe.totalOccurrences}** duplicate occurrences collapsed across **${json.adjacentCrossrefDedupe.entitiesTouched}** entities (epicenter: \`domain/*\` "Deities" masthead lists).`,
     "",
   );
 
-  lines.push("## Statblock extraction (P1.6 — D29-19/-20/-21)", "");
+  lines.push("## Statblock extraction", "");
   lines.push(
-    `\`character\`-typed Actors excluded before assembly (D29-19 npc-only creature import): **${json.excludedActorsCount}**.`,
+    `\`character\`-typed Actors excluded before assembly (npc-only creature import): **${json.excludedActorsCount}**.`,
     "",
   );
   lines.push(
@@ -954,7 +942,7 @@ export function buildReportMarkdown(json: ReportJson): string {
   coverageTable("HazardStats fields (hazard category)", json.statsCoverage.hazard);
   coverageTable("EmbeddedItem strike/spellcasting fields", json.statsCoverage.embeddedItems);
 
-  lines.push("## Facet coverage (P3 S1 — D29-32/-33)", "");
+  lines.push("## Facet coverage", "");
   lines.push(
     "Per-category, per-key coverage/cardinality for every `facets` key ANY entity in that category carries — `shipped=yes` means `facetKeys.ts` allowlists it onto `IndexRow.facets` (the classifier: coverage ≥40% and cardinality in the soft 2..~60 range); `shipped=no` is a candidate the classifier dropped — it still round-trips into the per-entity `facets` field (page detail), just never a browse/search filter. `SPILLOVER_FACET_KEYS` (`featLevel`/`rank`, proven exact `level` duplicates) are banned from every allowlist regardless of their own coverage/cardinality below.",
     "",
@@ -974,12 +962,12 @@ export function buildReportMarkdown(json: ReportJson): string {
     ),
     "",
   );
-  lines.push("### `creature.family` coverage (D29-33b)", "");
+  lines.push("### `creature.family` coverage", "");
   lines.push(
-    `**${json.familyCoverage.count}** of **${json.familyCoverage.ofTotal}** final creature entities (**${json.familyCoverage.pct}%**) carry a \`family\` value — **${json.familyCoverage.distinctFamilies}** distinct families. Ships in \`facetKeys.ts\` regardless of this number (a stakeholder-sanctioned navigational facet, D29-33b) — the gap is real, not an extraction miss: AoN's own \`creature_family_markdown\` is empty on the remaining docs, and Foundry-only/variant creatures have no AoN meta to populate it from at all.`,
+    `**${json.familyCoverage.count}** of **${json.familyCoverage.ofTotal}** final creature entities (**${json.familyCoverage.pct}%**) carry a \`family\` value — **${json.familyCoverage.distinctFamilies}** distinct families. Ships in \`facetKeys.ts\` regardless of this number (a deliberately chosen navigational facet) — the gap is real, not an extraction miss: AoN's own \`creature_family_markdown\` is empty on the remaining docs, and Foundry-only/variant creatures have no AoN meta to populate it from at all.`,
     "",
   );
-  lines.push("## Book-name normalization (P4 — D29-39)", "");
+  lines.push("## Book-name normalization", "");
   lines.push(
     `${json.bookNormalization.distinctBefore} distinct raw \`source.book\` strings collapse to **${json.bookNormalization.distinctAfter}** — ${json.bookNormalization.prefixMergeCount} prefix merges (\`"Pathfinder " + <AoN book>\`), ${json.bookNormalization.caseFoldGroupCount} case-fold groups. Mechanical only — no hand-curated aliases (residual splits accepted).`,
     "",
@@ -995,7 +983,7 @@ export function buildReportMarkdown(json: ReportJson): string {
     "",
   );
 
-  lines.push("## Attached sidebars (P4 — D29-39)", "");
+  lines.push("## Attached sidebars", "");
   lines.push(
     `${json.sidebarAttachment.sidebarsResolved}/${json.sidebarAttachment.sidebarsTotal} sidebar entities resolved to a living host (via pickCanonical → aonId → aonIdToFinalId); **${json.sidebarAttachment.hostsWithSidebars}** distinct hosts gained ≥1 sidebar; max sidebars on one host: **${json.sidebarAttachment.maxPerHost}**.`,
     "",
@@ -1011,7 +999,7 @@ export function buildReportMarkdown(json: ReportJson): string {
     "",
   );
 
-  lines.push("## Rules tree (P4 — D29-39)", "");
+  lines.push("## Rules tree", "");
   lines.push(
     `${json.rulesTree.totalDocs} rules docs across **${json.rulesTree.bookCount}** books · **${json.rulesTree.rootCount}** roots (**${json.rulesTree.childlessRootCount}** childless) · **${json.rulesTree.syntheticCount}** synthetic nodes (pinned at 3 — growth is report-visible, not silently accepted) · **${json.rulesTree.parentTieBreakCount}** parent tie-breaks (lowest aonId).`,
     "",
@@ -1050,7 +1038,7 @@ export function buildReportMarkdown(json: ReportJson): string {
     "",
   );
 
-  lines.push("## Sources index (P4 — D29-43)", "");
+  lines.push("## Sources index", "");
   lines.push(
     mdTable(
       [
@@ -1081,7 +1069,7 @@ export function buildReportMarkdown(json: ReportJson): string {
     "",
   );
 
-  lines.push("### `superseded` breakdown (D29-33c)", "");
+  lines.push("### `superseded` breakdown", "");
   lines.push(
     mdTable(
       ["total superseded", "legacy edition", "remaster edition"],
@@ -1098,7 +1086,7 @@ export function buildReportMarkdown(json: ReportJson): string {
     "",
   );
 
-  lines.push("## Class stats augment (P12 S1 — D29-114/-115)", "");
+  lines.push("## Class stats augment", "");
   lines.push(
     mdTable(
       [
@@ -1117,7 +1105,7 @@ export function buildReportMarkdown(json: ReportJson): string {
       ],
     ),
     "",
-    "`grantedFeatures.targetId` nulls out a D29-14 unjoined-residue drop (e.g. cleric's First..Final Doctrine) — the class doc's own uuid-resolved grant still appears in the progression table as plain text (render-side), never silently dropped.",
+    "`grantedFeatures.targetId` nulls out an AoN-primary unjoined-residue drop (e.g. cleric's First..Final Doctrine) — the class doc's own uuid-resolved grant still appears in the progression table as plain text (render-side), never silently dropped.",
     "",
   );
   lines.push("### Subclass options per (class, category) — spot-check pins", "");
@@ -1136,13 +1124,13 @@ export function buildReportMarkdown(json: ReportJson): string {
     "",
   );
 
-  lines.push("## Homebrew ingest (D30-42..48, 0030 S1/S2)", "");
+  lines.push("## Homebrew ingest", "");
   lines.push(
-    `\`${json.homebrew.dir}\` — **${json.homebrew.docsIn}** docs in, sha256 \`${json.homebrew.sha256}\`. Collision guard: **${json.homebrew.collisionGuardOk ? "OK" : "FAILED"}** (a failure would have aborted the run before this report was built — see D30-43's widened guard).`,
+    `\`${json.homebrew.dir}\` — **${json.homebrew.docsIn}** docs in, sha256 \`${json.homebrew.sha256}\`. Collision guard: **${json.homebrew.collisionGuardOk ? "OK" : "FAILED"}** (a failure would have aborted the run before this report was built).`,
     "",
   );
   lines.push(
-    `Plus \`${json.homebrew.traitsDir}\` (D30-44) — **${json.homebrew.traitsDocsIn}** school-trait docs in, sha256 \`${json.homebrew.traitsSha256}\`.`,
+    `Plus \`${json.homebrew.traitsDir}\` — **${json.homebrew.traitsDocsIn}** school-trait docs in, sha256 \`${json.homebrew.traitsSha256}\`.`,
     "",
   );
   lines.push("### Emitted, by category", "");

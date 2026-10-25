@@ -23,8 +23,7 @@ import {
 import { UuidIndex } from "./uuidResolve";
 
 /**
- * D29-11's CI-hermetic pipeline test (spec §3/§4 S4, deliverable 4): runs the
- * REAL `runTransform` — the exact code path the host CLI and `just
+ * The CI-hermetic pipeline test: runs the REAL `runTransform` — the exact code path the host CLI and `just
  * codex-refresh` use — over the committed fixture's raw-doc subset
  * (`apps/codex/ingest/fixtures/raw/`), zero network, zero `codex.data-path` reads.
  * Asserts: zero hard failures, byte-determinism across two independent runs,
@@ -38,9 +37,9 @@ const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), "..", "fixtures")
 const RAW_FOUNDRY = join(FIXTURES, "raw", "foundry");
 const RAW_AON = join(FIXTURES, "raw", "aon");
 const RAW_HOMEBREW = join(FIXTURES, "raw", "homebrew");
-/** D30-44 (0030 S2): the school-trait sibling of `RAW_HOMEBREW`. */
+/** The school-trait sibling of `RAW_HOMEBREW`. */
 const RAW_HOMEBREW_TRAITS = join(FIXTURES, "raw", "homebrew-traits");
-/** D30-47: lives OUTSIDE `RAW_HOMEBREW` — the negative-path collision
+/** Lives OUTSIDE `RAW_HOMEBREW` — the negative-path collision
  * fixture (basename "fireball", colliding with the real official
  * `spell/fireball` fixture pick), read only by the dedicated collision-guard
  * test below. */
@@ -94,7 +93,7 @@ function collectEntityFiles(corpusRoot: string): string[] {
     const categoryDir = join(corpusRoot, category);
     if (!statSync(categoryDir).isDirectory()) continue;
     for (const file of readdirSync(categoryDir).sort()) {
-      if (file === "_index.json") continue; // the D29-21 per-category index, not an entity
+      if (file === "_index.json") continue; // the per-category index, not an entity
       files.push(join(categoryDir, file));
     }
   }
@@ -162,7 +161,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     }
   });
 
-  it("the D29-11 coverage-matrix canonical entities all still parse through CodexEntitySchema (indexes through IndexRowSchema)", () => {
+  it("the coverage-matrix canonical entities all still parse through CodexEntitySchema (indexes through IndexRowSchema)", () => {
     const files = collectAllJsonFiles(ENTITIES_DIR);
     expect(files.length).toBeGreaterThan(0);
     let entityCount = 0;
@@ -170,27 +169,26 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     for (const file of files) {
       const raw = JSON.parse(readFileSync(file, "utf8"));
       if (file.endsWith("/_index.json")) {
-        // D29-21: the fixture-scoped per-category index — an IndexRow array.
+        // The fixture-scoped per-category index — an IndexRow array.
         expect(Array.isArray(raw), file).toBe(true);
         for (const row of raw as unknown[]) {
           expect(() => IndexRowSchema.parse(row), file).not.toThrow();
         }
         indexCount++;
       } else if (file.endsWith("/manifest.json")) {
-        // D29-21: the fixture-scoped corpus manifest — categoryCounts present.
+        // The fixture-scoped corpus manifest — categoryCounts present.
         const manifest = raw as { schemaVersion?: number; categoryCounts?: unknown };
         // The generated `fixtures/entities/manifest.json` (`fixtureCorpus.ts`
-        // writes `CORPUS_SCHEMA_VERSION`, 5 since D29-116's ClassStats); the
+        // writes `CORPUS_SCHEMA_VERSION`, 5 since ClassStats); the
         // transform's own manifest is separately checked via `runOnce()` below.
         expect(manifest.schemaVersion, file).toBe(5);
         expect(typeof manifest.categoryCounts, file).toBe("object");
       } else if (file.endsWith("/rules-tree.json")) {
-        // P4 (D29-39/D29-44): the fixture-scoped rules tree — its own schema,
+        // The fixture-scoped rules tree — its own schema,
         // not a CodexEntity.
         expect(() => RulesTreeFileSchema.parse(raw), file).not.toThrow();
       } else if (file.endsWith("/sources-index.json")) {
-        // P4 (D29-43/D29-44): the fixture-scoped sources index — its own
-        // schema, not a CodexEntity.
+        // The fixture-scoped sources index — its own schema, not a CodexEntity.
         expect(() => SourcesIndexFileSchema.parse(raw), file).not.toThrow();
       } else {
         expect(() => CodexEntitySchema.parse(raw), file).not.toThrow();
@@ -201,7 +199,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     expect(indexCount).toBeGreaterThan(0);
   });
 
-  it("D29-21: the fixture corpus carries a manifest whose categoryCounts reconcile exactly against its entity files", () => {
+  it("the fixture corpus carries a manifest whose categoryCounts reconcile exactly against its entity files", () => {
     const manifest = JSON.parse(readFileSync(join(ENTITIES_DIR, "manifest.json"), "utf8")) as {
       categoryCounts: Record<string, number>;
       totalEntityCount: number;
@@ -250,7 +248,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     expect(barrage.id).toBe("spell/force-barrage");
   });
 
-  it("S5c/D29-14: the Foundry-only 'boon' category is dropped end-to-end (present in the report's drop-accounting, absent from the emitted corpus)", () => {
+  it("the Foundry-only 'boon' category is dropped end-to-end (present in the report's drop-accounting, absent from the emitted corpus)", () => {
     const corpusRoot = freshCorpusDir();
     const result = runOnce(corpusRoot);
     expect(result.hardFailures).toEqual([]);
@@ -261,7 +259,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     expect(boonDrop?.dropped).toBeGreaterThanOrEqual(1);
   });
 
-  it("S5c/D29-17: a genuine Foundry-only creature (Dune Candle) SURVIVES the drop pass via the creature carve-out", () => {
+  it("a genuine Foundry-only creature (Dune Candle) SURVIVES the drop pass via the creature carve-out", () => {
     const corpusRoot = freshCorpusDir();
     const result = runOnce(corpusRoot);
     expect(result.hardFailures).toEqual([]);
@@ -277,7 +275,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     expect(carveOut?.kept).toBeGreaterThanOrEqual(1);
   });
 
-  it("S6/D29-20: the statblock dragon carries CreatureStats + strike attackBonus/damage + spellcaster dc/tradition end-to-end", () => {
+  it("the statblock dragon carries CreatureStats + strike attackBonus/damage + spellcaster dc/tradition end-to-end", () => {
     const corpusRoot = freshCorpusDir();
     const result = runOnce(corpusRoot);
     expect(result.hardFailures).toEqual([]);
@@ -313,7 +311,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     expect(entry?.tradition).toBe("primal");
   });
 
-  it("S6/D29-20: the complex hazard (Gravehall Trap) carries HazardStats with isComplex/disable/routine/stealth end-to-end", () => {
+  it("the complex hazard (Gravehall Trap) carries HazardStats with isComplex/disable/routine/stealth end-to-end", () => {
     const corpusRoot = freshCorpusDir();
     const result = runOnce(corpusRoot);
     expect(result.hardFailures).toEqual([]);
@@ -329,18 +327,18 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     expect(Array.isArray(trap.stats?.routine)).toBe(true);
     expect(trap.stats?.routine.length).toBeGreaterThan(0);
     expect(trap.stats?.reset).toBeUndefined(); // empty string in source
-    // Hazards keep the creature-style named facets (D29-20).
+    // Hazards keep the creature-style named facets.
     expect(trap.facets).toMatchObject({ ac: 20, hp: 60, fortitudeSave: 15 });
   });
 
-  it("S6/D29-21: the per-category index is `_index.json` and the rescued `index`-slug entities coexist with it", () => {
+  it("the per-category index is `_index.json` and the rescued `index`-slug entities coexist with it", () => {
     const corpusRoot = freshCorpusDir();
     const result = runOnce(corpusRoot);
     expect(result.hardFailures).toEqual([]);
 
     // The category index moved to `_index.json` — no plain `index.json` index
     // file survives anywhere as an index (an `index.json` present now is a
-    // REAL entity, the exact clobber class D29-21 kills).
+    // REAL entity, the exact clobber class the `_index.json` name prevents).
     const spellIndex = JSON.parse(readFileSync(join(corpusRoot, "spell", "_index.json"), "utf8"));
     expect(Array.isArray(spellIndex)).toBe(true);
     expect(spellIndex.length).toBeGreaterThan(0);
@@ -355,19 +353,19 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     );
     expect(archetypeIndexEntity.id).toBe("archetype/index");
 
-    // File-count reconciliation (D29-21's "manifest counts reconcile exactly
-    // against find|wc"): entity files == manifest totalEntityCount.
+    // File-count reconciliation (manifest counts reconcile exactly against
+    // find|wc): entity files == manifest totalEntityCount.
     const manifest = JSON.parse(readFileSync(join(corpusRoot, "manifest.json"), "utf8"));
     expect(collectEntityFiles(corpusRoot)).toHaveLength(manifest.totalEntityCount);
-    // P12 S1 (D29-113..116): CORPUS_SCHEMA_VERSION bumped 4->5.
+    // CORPUS_SCHEMA_VERSION is 5 (ClassStats).
     expect(manifest.schemaVersion).toBe(5);
   });
 
-  it("S6/D29-19: a character-typed Actor is excluded (excludedActors report class + top-level count)", () => {
+  it("a character-typed Actor is excluded (excludedActors report class + top-level count)", () => {
     // The fixture raw subset carries no `character` doc (they're all excluded
     // content by design) — so this asserts the ZERO case flows through the
     // report shape correctly; the non-zero case is unit-covered in
-    // foundryEntities.test.ts and proven on the real corpus at the S6 gate.
+    // foundryEntities.test.ts and proven on the real corpus.
     const result = runOnce(freshCorpusDir());
     expect(result.hardFailures).toEqual([]);
     expect(result.reportJson?.excludedActorsCount).toBe(0);
@@ -377,8 +375,8 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     expect(result.reportJson?.statsCoverage.hazard.length).toBeGreaterThan(0);
   });
 
-  describe("P11 S1 (D29-98/-99/-100) — end-to-end fixture regression coverage", () => {
-    it("D29-98 family (i): a paren-leading AoN-only action ('(arcane)') is dropped end-to-end", () => {
+  describe("activation-debris drop, name templates and crossref dedupe — end-to-end fixture regression coverage", () => {
+    it("drop family (i): a paren-leading AoN-only action ('(arcane)') is dropped end-to-end", () => {
       const corpusRoot = freshCorpusDir();
       const result = runOnce(corpusRoot);
       expect(result.hardFailures).toEqual([]);
@@ -391,7 +389,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       );
     });
 
-    it("D29-99/D29-98 overlap: a TRAITS-glyph-templated name resolves to '10 minutes (concentrate, manipulate)' and is THEN dropped as digit family (ii)", () => {
+    it("name-template/drop overlap: a TRAITS-glyph-templated name resolves to '10 minutes (concentrate, manipulate)' and is THEN dropped as digit family (ii)", () => {
       const corpusRoot = freshCorpusDir();
       const result = runOnce(corpusRoot);
       expect(result.hardFailures).toEqual([]);
@@ -401,12 +399,11 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
         ),
       ).toBe(true);
       // nameTemplateResolved fires at extract time even though the entity is
-      // dropped downstream — the extract -> join -> drop order (D29-98's own
-      // "resolved names for free" note).
+      // dropped downstream — the extract -> join -> drop order.
       expect(result.reportJson?.reportCounts.nameTemplateResolved).toBeGreaterThanOrEqual(1);
     });
 
-    it("D29-99: an ACTION.TYPES-glyph-templated name resolves via the PINNED table (not the naive off-by-one) and survives (neither drop family)", () => {
+    it("an ACTION.TYPES-glyph-templated name resolves via the PINNED table (not the naive off-by-one) and survives (neither drop family)", () => {
       const corpusRoot = freshCorpusDir();
       const result = runOnce(corpusRoot);
       expect(result.hardFailures).toEqual([]);
@@ -425,7 +422,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       );
     });
 
-    it("D29-100: the naga domain page's duplicate Ravithra masthead crossref (legacy+remaster repoint) collapses to one", () => {
+    it("the naga domain page's duplicate Ravithra masthead crossref (legacy+remaster repoint) collapses to one", () => {
       const corpusRoot = freshCorpusDir();
       const result = runOnce(corpusRoot);
       expect(result.hardFailures).toEqual([]);
@@ -440,7 +437,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       expect(result.reportJson?.adjacentCrossrefDedupe.entitiesTouched).toBeGreaterThanOrEqual(1);
     });
 
-    it("D29-101b prerequisite: the fixture carries a real 'leads to...' heading + crossref paragraph (feat/fledgling-flight), for build-search.test.ts's own exclusion proof", () => {
+    it("search-exclusion prerequisite: the fixture carries a real 'leads to...' heading + crossref paragraph (feat/fledgling-flight), for build-search.test.ts's own exclusion proof", () => {
       const corpusRoot = freshCorpusDir();
       const result = runOnce(corpusRoot);
       expect(result.hardFailures).toEqual([]);
@@ -458,7 +455,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     });
   });
 
-  describe("P14 S1 (D29-132) — grants same-slug collision-family disambiguation, end to end", () => {
+  describe("grants same-slug collision-family disambiguation, end to end", () => {
     // The fixture's fighter (real) + witch (real) class Items both grant the
     // SHARED Foundry item `Compendium.pf2e.classfeatures.Item.Weapon
     // Specialization` (verified against the real `pf2e-8.3.0` snapshot — witch
@@ -472,10 +469,10 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     // tie-break) as `class-feature/weapon-specialization`; Witch's AoN doc
     // stays unjoined and gets the residual `-2` suffix. A raw grant uuid
     // resolves to the UNSUFFIXED shared preId regardless of which class
-    // grants it — pre-D29-132, `keptIds.has(preId)` alone would resolve BOTH
-    // fighter's AND witch's grant to fighter's doc (the bug, provably
-    // reproduced below); post-D29-132, the masthead "Class" disambiguation
-    // (rule 1) resolves each to its OWN doc.
+    // grants it — `keptIds.has(preId)` alone would resolve BOTH fighter's AND
+    // witch's grant to fighter's doc (the bug the assertions below guard
+    // against); the masthead "Class" disambiguation (rule 1) resolves each to
+    // its OWN doc.
     it("fighter's Weapon Specialization grant resolves to the Fighter-mastheaded doc (the collision winner)", () => {
       const corpusRoot = freshCorpusDir();
       const result = runOnce(corpusRoot);
@@ -487,7 +484,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       expect(grant?.targetId).toBe("class-feature/weapon-specialization");
     });
 
-    it("witch's Weapon Specialization grant resolves to the Witch-mastheaded doc, NOT fighter's (the D29-132 fix — pre-fix this would wrongly resolve to fighter's)", () => {
+    it("witch's Weapon Specialization grant resolves to the Witch-mastheaded doc, NOT fighter's (a bare kept-id check would wrongly resolve to fighter's)", () => {
       const corpusRoot = freshCorpusDir();
       const result = runOnce(corpusRoot);
       expect(result.hardFailures).toEqual([]);
@@ -496,9 +493,9 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       const grant = witch.stats.grantedFeatures.find(
         (g: { name: string }) => g.name === "Weapon Specialization",
       );
-      // The pre-D29-132 bug: `keptIds.has("class-feature/weapon-specialization")`
-      // is true (it's fighter's doc) regardless of which class is asking, so
-      // this would have wrongly been "class-feature/weapon-specialization" too.
+      // The bug this guards: `keptIds.has("class-feature/weapon-specialization")`
+      // is true (it's fighter's doc) regardless of which class is asking, so a
+      // bare kept-id check would wrongly yield "class-feature/weapon-specialization" too.
       expect(grant?.targetId).toBe("class-feature/weapon-specialization-2");
       expect(grant?.targetId).not.toBe("class-feature/weapon-specialization");
 
@@ -520,8 +517,8 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     });
   });
 
-  describe("0030 S1 (D30-42/-43/-46/-47) — homebrew ingest, end to end", () => {
-    it("D30-42: the plain homebrew spell assembles with the store basename as its id/slug", () => {
+  describe("homebrew ingest, end to end", () => {
+    it("the plain homebrew spell assembles with the store basename as its id/slug", () => {
       const corpusRoot = freshCorpusDir();
       const result = runOnce(corpusRoot);
       expect(result.hardFailures).toEqual([]);
@@ -532,12 +529,12 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       expect(spell.slug).toBe("fixture-cinder-bolt");
       expect(spell.edition).toBe("remaster");
       expect(spell.source).toEqual({ license: "OGL", book: "Liturgy of the Iridite Vol.2" });
-      // Homebrew never enters the AoN join (D30-43) — no aonUrl, superseded
+      // Homebrew never enters the AoN join — no aonUrl, superseded
       // false by construction.
       expect(spell.aonUrl).toBeUndefined();
     });
 
-    it("D30-43: the system.ritual-bearing doc reroutes to ritual/* (both category AND id)", () => {
+    it("the system.ritual-bearing doc reroutes to ritual/* (both category AND id)", () => {
       const corpusRoot = freshCorpusDir();
       const result = runOnce(corpusRoot);
       expect(result.hardFailures).toEqual([]);
@@ -552,7 +549,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       expect(ritual.category).toBe("ritual");
     });
 
-    it("D30-42 (B3): the @UUID[...conditionitems...] ref resolves as a real crossref against the official UuidIndex (not brokenRef)", () => {
+    it("the @UUID[...conditionitems...] ref resolves as a real crossref against the official UuidIndex (not brokenRef)", () => {
       const corpusRoot = freshCorpusDir();
       const result = runOnce(corpusRoot);
       expect(result.hardFailures).toEqual([]);
@@ -565,7 +562,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       expect(ref?.targetId).toBe("condition/slowed");
     });
 
-    it("D30-46: the report carries a homebrew section reconciling the 3 spell-store fixture docs (2 spell / 1 ritual, 1 resolved ref, 0 broken) plus the 1 trait-store fixture doc", () => {
+    it("the report carries a homebrew section reconciling the 3 spell-store fixture docs (2 spell / 1 ritual, 1 resolved ref, 0 broken) plus the 1 trait-store fixture doc", () => {
       const result = runOnce(freshCorpusDir());
       expect(result.hardFailures).toEqual([]);
       expect(result.reportJson?.homebrew).toMatchObject({
@@ -585,7 +582,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       expect(result.reportMarkdown).toContain("Homebrew ingest");
     });
 
-    it("D30-44: the fixture school-trait doc assembles with the exact field set — no level, no proseOnly", () => {
+    it("the fixture school-trait doc assembles with the exact field set — no level, no proseOnly", () => {
       const corpusRoot = freshCorpusDir();
       const result = runOnce(corpusRoot);
       expect(result.hardFailures).toEqual([]);
@@ -614,10 +611,10 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     });
 
     it("keep-arm regression: the pre-existing 'boon dropped' + 'Dune Candle carve-out survives' behavior is untouched by threading homebrewIds through", () => {
-      // Both already asserted above (S5c/D29-14, S5c/D29-17) — re-running
+      // Both already asserted above (the boon drop, the Dune Candle carve-out) — re-running
       // `runOnce` here (which now always merges the 3 homebrew fixture docs
       // in) re-proves those SAME official-content outcomes still hold, i.e.
-      // the D30-43 keep-arm doesn't leak into official drop decisions.
+      // the homebrew keep-arm doesn't leak into official drop decisions.
       const corpusRoot = freshCorpusDir();
       const result = runOnce(corpusRoot);
       expect(result.hardFailures).toEqual([]);
@@ -630,7 +627,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       expect(duneCandle.id).toBe("creature/dune-candle");
     });
 
-    it("D30-43 (M3-widened guard): a homebrew id colliding with an official corpus id throws, naming the id", () => {
+    it("a homebrew id colliding with any official corpus id throws, naming the id", () => {
       expect(() =>
         runTransform({
           foundrySnapshotDir: RAW_FOUNDRY,

@@ -1,7 +1,7 @@
 import type { InlineNode } from "@astra/codex-corpus";
 
 /**
- * D29-134 (P14 S1): a hand-curated dead-embed-target → real-id override
+ * A hand-curated dead-embed-target → real-id override
  * table — the `join-aliases.json` pattern (a small, committed, per-entry-
  * justified hand-curated map), but a plain TS module rather than a JSON
  * file: `drop.ts` (this table's sole consumer, `reconcileInline`'s embed
@@ -10,16 +10,16 @@ import type { InlineNode } from "@astra/codex-corpus";
  * `join-aliases.json` is.
  *
  * Each `from` is the raw pre-collision embed target id these AoN loreBody/
- * body `<document>` embeds actually carry (orchestrator-verified on disk
- * 2026-07-19). The Foundry Item doc that id names is a JOINABLE draft that
- * D29-14's AoN-primary drop removes as unjoined `class-feature`/`feat`
+ * body `<document>` embeds actually carry (verified on disk 2026-07-19).
+ * The Foundry Item doc that id names is a JOINABLE draft that the
+ * AoN-primary drop removes as unjoined `class-feature`/`feat`
  * residue (`join.ts`'s `CLASS_SUBSYSTEM_CATEGORIES` (`join.ts:182-210`)
  * omits `feat`/`rules`/`eidolon`, and `qualifierCandidates`
  * (`join.ts:92-112`) strips only parenthetical qualifiers, not trailing
- * "Innovation"/"Eidolon" words — the two join-time gaps this round does NOT
- * fix, D29-134's "no URL churn" call). `to` is the real surviving corpus
+ * "Innovation"/"Eidolon" words — two join-time gaps left open on purpose so
+ * no existing URL changes). `to` is the real surviving corpus
  * entity that holds the same content under a different id/category (all 20
- * repoint targets orchestrator-verified to exist on disk 2026-07-19). One
+ * repoint targets verified to exist on disk 2026-07-19). One
  * entry (`feat/innate-venom`, vishkanya's self-embed) is `kind: "suppress"`
  * instead — its text is already inline in its own body, so the embed is
  * pure redundancy; see `drop.ts`'s `reconcileInline` for how a `suppress`
@@ -85,7 +85,7 @@ const EMBED_OVERRIDES: readonly EmbedOverrideEntry[] = [
     from: "class-feature/quick-alchemy",
     kind: "repoint",
     to: "action/quick-alchemy",
-    // D29-134 / risk register: two real candidates exist (`feat/` and
+    // Two real candidates exist (`feat/` and
     // `action/`) — `action/` is chosen because the SAME page's other
     // Quick Alchemy embed already links `action/quick-alchemy` (the page
     // precedent this table follows, not a coin flip). If a future review
@@ -139,7 +139,7 @@ export const SUPPRESSED_EMBED_NODE: InlineNode = {
 };
 
 /** Looks up `target` (an embed node's raw `target` string, pre-override) in
- * the D29-134 table — `undefined` when `target` has no override entry
+ * the override table — `undefined` when `target` has no override entry
  * (the normal case for every embed NOT in the hand-curated table). */
 export function lookupEmbedOverride(target: string): EmbedOverrideEntry | undefined {
   return OVERRIDE_MAP.get(target);

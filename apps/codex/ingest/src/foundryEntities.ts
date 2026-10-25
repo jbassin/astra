@@ -16,37 +16,31 @@ import type { EnricherContext } from "./enrichers";
 import { parseFoundryHtml } from "./foundryHtml";
 
 /**
- * Foundry pack doc → `CodexEntity` (D29-1/-3/-7/-8/-13, spec §2/§3, Deliverable
- * 3). One call per non-excluded Item/Actor pack doc — the caller (`parse-
+ * Foundry pack doc → `CodexEntity`. One call per non-excluded Item/Actor pack
+ * doc — the caller (`parse-
  * foundry.ts`) walks packs via `categoryMap.ts` + `uuidResolve.ts`'s pack
  * registry and hands each doc here with a ready-made `EnricherContext` (its
  * `resolveUuid` already bound to THIS doc as the "containing document" for
- * relative `@UUID[.<id>]` resolution, D29-6).
+ * relative `@UUID[.<id>]` resolution).
  *
- * S2 scope note (no legacy-suffix / no join): identity here is always the
- * plain `{category}/{slug}` form — D29-1's `@legacy` suffixing requires
- * knowing which same-slug pairs are true remaster/legacy PAIRS (vs. unrelated
- * collisions), which needs the AoN side (`remaster_id`/`legacy_id`) that
- * doesn't exist until S3/S4. Same-slug collisions found here are collected +
- * reported (see `report("slugCollision", ...)`), not resolved — S4's
- * worklist, per the assignment brief.
+ * No legacy suffix and no join here: identity is always the plain
+ * `{category}/{slug}` form. The `@legacy` suffixing requires knowing which
+ * same-slug pairs are true remaster/legacy PAIRS (vs. unrelated collisions),
+ * which needs the AoN side (`remaster_id`/`legacy_id`) that only `join.ts`
+ * has. Same-slug collisions found here are collected + reported (see
+ * `report("slugCollision", ...)`), not resolved — `join.ts` resolves them.
  *
- * P1.6 widening (D29-19/-20, slice S6): `character`-typed Actors are now
- * EXCLUDED before assembly (D29-19, "npc-only creature import") — see the
- * exclusion check at the top of `assembleFoundryEntity`. `creature`/`hazard`
- * entities additionally gain a typed `stats` projection (`extractCreatureStats`/
- * `extractHazardStats`) and `melee`/`spellcastingEntry` embedded items gain
- * `attackBonus`/`damage`/`dc`/`attack`/`tradition` (`extractStrikeFields`/
- * `extractSpellcastingFields`) — schemaVersion 1->2, `src/ingest/emit.ts`'s
- * `CORPUS_SCHEMA_VERSION`.
- *
- * P7 S1 widening (D29-73/D29-74): `melee`-typed embedded items additionally
- * gain a transform-baked `range` display string off `system.range.
- * {increment,max}` (`extractStrikeFields`'s new `formatStrikeRange` call) —
- * schemaVersion 2->3. And a creature's `type:"lore"` embedded items'
- * `system.mod.value` now merges into `stats.skills` (`mergeLoreSkills`,
- * called from `extractCreatureStats`) — same `skills` record shape, no
- * schema change of its own.
+ * `character`-typed Actors are EXCLUDED before assembly ("npc-only creature
+ * import") — see the exclusion check at the top of `assembleFoundryEntity`.
+ * `creature`/`hazard` entities gain a typed `stats` projection
+ * (`extractCreatureStats`/`extractHazardStats`) and `melee`/`spellcastingEntry`
+ * embedded items gain `attackBonus`/`damage`/`dc`/`attack`/`tradition`
+ * (`extractStrikeFields`/`extractSpellcastingFields`). `melee`-typed embedded
+ * items also gain a transform-baked `range` display string off
+ * `system.range.{increment,max}` (`formatStrikeRange`), and a creature's
+ * `type:"lore"` embedded items' `system.mod.value` merges into `stats.skills`
+ * (`mergeLoreSkills`, called from `extractCreatureStats`) — same `skills`
+ * record shape.
  */
 
 // ---------------------------------------------------------------------------
@@ -66,14 +60,14 @@ interface RawTraits {
   traditions?: string[];
 }
 
-/** `system.attributes.speed` (D29-20/P1.6, creature). */
+/** `system.attributes.speed` (creature). */
 interface RawSpeed {
   value?: number;
   otherSpeeds?: Array<{ type?: string; value?: number }>;
 }
 
-/** `system.attributes.{immunities,resistances,weaknesses}[]` entries (D29-20/
- * P1.6) — immunities carry only `type`; resistances/weaknesses also carry a
+/** `system.attributes.{immunities,resistances,weaknesses}[]` entries —
+ * immunities carry only `type`; resistances/weaknesses also carry a
  * numeric `value`. One shared raw shape covers both (immunities simply never
  * populate `value`). */
 interface RawTypedValue {
@@ -81,20 +75,20 @@ interface RawTypedValue {
   value?: number;
 }
 
-/** `system.perception` (D29-20/P1.6, creature). */
+/** `system.perception` (creature). */
 interface RawPerception {
   mod?: number;
   details?: string;
   senses?: Array<{ type?: string; acuity?: string; range?: number }>;
 }
 
-/** `system.attributes.stealth` (D29-20/P1.6, hazard). */
+/** `system.attributes.stealth` (hazard). */
 interface RawStealth {
   value?: number;
   details?: string;
 }
 
-/** class Item `system.attacks` (D29-113/P12 S1) — proficiency ranks per
+/** class Item `system.attacks` — proficiency ranks per
  * weapon-group column; `other` is a fixed 5th key on ALL 27 raw docs
  * (verified), empty (`{name:"",rank:0}`) on 24. */
 interface RawClassAttacks {
@@ -105,7 +99,7 @@ interface RawClassAttacks {
   other?: { name?: string; rank?: number };
 }
 
-/** class Item `system.defenses` (D29-113/P12 S1) — proficiency ranks per
+/** class Item `system.defenses` — proficiency ranks per
  * armor-category column. */
 interface RawClassDefenses {
   unarmored?: number;
@@ -114,7 +108,7 @@ interface RawClassDefenses {
   heavy?: number;
 }
 
-/** class Item `system.savingThrows` (D29-113/P12 S1) — bare numeric ranks
+/** class Item `system.savingThrows` — bare numeric ranks
  * (verified on Fighter: `{fortitude:2,reflex:2,will:1}`), NOT the nested
  * Actor `saves.*.value` shape `saves` below holds for creature/hazard. */
 interface RawClassSavingThrows {
@@ -124,20 +118,19 @@ interface RawClassSavingThrows {
 }
 
 /** class Item `system.{class,ancestry,skill,general}FeatLevels`/
- * `skillIncreaseLevels` (D29-113/P12 S1) — each a `{value: number[]}`
- * wrapper. */
+ * `skillIncreaseLevels` — each a `{value: number[]}` wrapper. */
 interface RawClassFeatLevels {
   value?: number[];
 }
 
-/** class Item `system.items` (D29-114/P12 S1) — the granted-feature
+/** class Item `system.items` — the granted-feature
  * manifest: an opaque-keyed dict of `{level, name, uuid}` entries, each
  * `uuid` a `Compendium.pf2e.classfeatures.Item.<name>`-shaped reference
  * (verified: all 520 real raw grants). Read only by
  * `extractRawGrantedFeatures` below — the post-drop `augmentClassStats` pass
- * (D29-114) needs this raw manifest (subclass AoN-only docs, and thus the
- * final kept-id set a grant's uuid resolves against, don't exist until
- * AFTER `join.ts`/`drop.ts` run) so `transform.ts`'s orchestrator carries the
+ * needs this raw manifest (subclass AoN-only docs, and thus the final kept-id
+ * set a grant's uuid resolves against, don't exist until AFTER
+ * `join.ts`/`drop.ts` run) so `transform.ts` carries the
  * RETURNED TYPED array forward as a side channel — never the raw dict
  * itself, keeping "raw shapes never leaked past this module" intact. */
 interface RawClassGrantedFeature {
@@ -152,12 +145,12 @@ interface RawSystem {
   details?: {
     publication?: RawPublication;
     level?: { value?: number };
-    /** D29-20/P1.6 (hazard): `system.details.languages` doesn't exist —
+    /** Hazard: `system.details.languages` doesn't exist —
      * languages live here only for creatures; kept on the shared `details`
      * shape since both Actor kinds nest their type-specific fields under it. */
     languages?: { value?: string[] };
-    /** D29-20/P1.6 (hazard): enricher HTML, parsed via `parseFoundryHtml`
-     * (`foundryEntities.ts`'s `extractHazardStats`), not a scalar. */
+    /** Hazard: enricher HTML, parsed via `parseFoundryHtml`
+     * (`extractHazardStats`), not a scalar. */
     disable?: string;
     routine?: string;
     reset?: string;
@@ -171,7 +164,7 @@ interface RawSystem {
     immunities?: RawTypedValue[];
     resistances?: RawTypedValue[];
     weaknesses?: RawTypedValue[];
-    /** D29-20/P1.6 (hazard). */
+    /** Hazard. */
     hardness?: number;
     stealth?: RawStealth;
   };
@@ -182,33 +175,33 @@ interface RawSystem {
   };
   /** Two distinct real shapes share this one raw field name: a creature
    * Actor's `system.perception` (a nested `RawPerception` object) and a
-   * class Item's `system.perception` (D29-113/P12 S1, a BARE NUMBER — the
+   * class Item's `system.perception` (a BARE NUMBER — the
    * proficiency rank, verified on Fighter: `2`) — same "shared field name,
    * disjoint category populations" convention as `range` below. Read via
    * `perceptionObject()`/a bare `typeof === "number"` check, never a direct
    * property access, so the two shapes can never cross-contaminate. */
   perception?: RawPerception | number;
-  /** D29-20/P1.6 (creature): `system.abilities.*.mod`. */
+  /** Creature: `system.abilities.*.mod`. */
   abilities?: Partial<Record<"str" | "dex" | "con" | "int" | "wis" | "cha", { mod?: number }>>;
-  /** D29-20/P1.6 (creature): `system.skills.*.base`, keyed on the skill slug. */
+  /** Creature: `system.skills.*.base`, keyed on the skill slug. */
   skills?: Record<string, { base?: number }>;
-  /** class Item `system.savingThrows`/`attacks`/`defenses` (D29-113/P12 S1). */
+  /** class Item `system.savingThrows`/`attacks`/`defenses`. */
   savingThrows?: RawClassSavingThrows;
   attacks?: RawClassAttacks;
   defenses?: RawClassDefenses;
-  /** class Item `system.spellcasting` (D29-113/P12 S1) — raw 0/1. */
+  /** class Item `system.spellcasting` — raw 0/1. */
   spellcasting?: number;
   classFeatLevels?: RawClassFeatLevels;
   ancestryFeatLevels?: RawClassFeatLevels;
   generalFeatLevels?: RawClassFeatLevels;
   skillFeatLevels?: RawClassFeatLevels;
   skillIncreaseLevels?: RawClassFeatLevels;
-  /** class Item `system.items` (D29-114/P12 S1) — see `RawClassGrantedFeature`'s
+  /** class Item `system.items` — see `RawClassGrantedFeature`'s
    * own doc comment. Distinct from `RawFoundryDoc.items` (the top-level
    * embedded-item ARRAY every Actor doc carries) — this is a DICT, one level
    * deeper, under `system`. */
   items?: Record<string, RawClassGrantedFeature>;
-  /** D29-74 (P7, `lore`-typed embedded item): `system.mod.value` — the
+  /** `lore`-typed embedded item: `system.mod.value` — the
    * lore's flat skill bonus (verified on `abberton-ruffian`'s "Gambling
    * Lore" = 1 / `ailuran`'s "Silver Lore" = 13), merged into the owning
    * creature's `stats.skills` by `mergeLoreSkills` below. */
@@ -225,8 +218,8 @@ interface RawSystem {
   /** Two distinct real shapes share this one raw field name: a spell Item's
    * `system.range.value` (a free-text string, e.g. "30 feet"/"touch" — read
    * by `extractFacets`'s `facets.range`) and a `melee`-typed embedded
-   * strike's `system.range.{increment,max}` (D29-73/P7, `formatStrikeRange`
-   * below) — both nullable numbers in the raw JSON (`{"increment": null,
+   * strike's `system.range.{increment,max}` (`formatStrikeRange` below) —
+   * both nullable numbers in the raw JSON (`{"increment": null,
    * "max": 10}`, verified on `abberton-ruffian`'s Thrown Bottle /
    * `ailuran`'s Boomerang). Harmless to share one interface: a spell's
    * `range` object never carries `increment`/`max`, and a strike's never
@@ -236,18 +229,18 @@ interface RawSystem {
   area?: { type?: string; value?: number };
   duration?: { value?: string; sustained?: boolean };
   defense?: { save?: { basic?: boolean; statistic?: string } };
-  /** D29-20/P1.6 (`melee`-typed embedded item): `system.bonus.value`. */
+  /** `melee`-typed embedded item: `system.bonus.value`. */
   bonus?: { value?: number };
-  /** D29-20/P1.6 (`melee`-typed embedded item): `system.damageRolls`, an
-   * object keyed on an opaque per-roll id — iteration/`Object.values` order is
-   * the JSON's own on-disk key order, stable across re-transforms (the D-gate
-   * reads the same bytes off disk every run). */
+  /** `melee`-typed embedded item: `system.damageRolls`, an object keyed on an
+   * opaque per-roll id — iteration/`Object.values` order is the JSON's own
+   * on-disk key order, stable across re-transforms (every run reads the same
+   * bytes off disk). */
   damageRolls?: Record<string, { damage?: string; damageType?: string }>;
-  /** D29-20/P1.6 (`spellcastingEntry`-typed embedded item). */
+  /** `spellcastingEntry`-typed embedded item. */
   spelldc?: { dc?: number; value?: number };
   tradition?: { value?: string };
 
-  // ---- P3 S1 (D29-33a): the 5 extractor-gap categories. These raw field
+  // ---- the 5 extractor-gap categories. These raw field
   // NAMES are not guaranteed structurally unique across categories the way
   // e.g. `price`/`bulk` are — `extractGapFacets` below gates every read on
   // `category` before touching them (see that function's own comment). ----
@@ -270,15 +263,15 @@ interface RawSystem {
    * "Academia Lore") — real, typed here for shape-fidelity, but
    * deliberately NOT read by `extractGapFacets` (near-1:1 cardinality,
    * would fail the classifier). class Item `system.trainedSkills`
-   * (D29-113/P12 S1) shares this same field name/shape — `.value` is its
+   * shares this same field name/shape — `.value` is its
    * fixed skill-slug list too, plus `.additional` (a bare number of
    * player-chosen bonus trained skills) which background's own doc never
    * carries. */
   trainedSkills?: { value?: string[]; lore?: string[]; additional?: number };
   /** condition Item `system.value` — `.isValued` is read; `.value` (the
    * numeric magnitude itself, e.g. clumsy 1/2/3) is real, typed for
-   * shape-fidelity, but out of this slice's scope (a per-condition numeric
-   * range, not a flat facet). */
+   * shape-fidelity, but not read (a per-condition numeric range, not a flat
+   * facet). */
   value?: { isValued?: boolean; value?: number | null };
   /** heritage Item `system.ancestry` — `.slug` is read; `.name`/`.uuid` are
    * real (typed for shape-fidelity) but redundant with the slug for facet
@@ -297,11 +290,11 @@ export interface RawFoundryDoc {
 export type ReportFn = (cls: string, detail: string) => void;
 
 // ---------------------------------------------------------------------------
-// source/edition (D29-13)
+// source/edition
 // ---------------------------------------------------------------------------
 
 /** Actors carry publication at `system.details.publication`; every other
- * Item-shaped doc carries it at `system.publication` (D29-13, verified on
+ * Item-shaped doc carries it at `system.publication` (verified on
  * Balor vs. Fireball/weapons/feats/etc). */
 function readPublication(
   system: RawSystem | undefined,
@@ -311,15 +304,14 @@ function readPublication(
 }
 
 /**
- * D29-13: `source.license` + `edition` from the doc's own publication data.
+ * `source.license` + `edition` from the doc's own publication data.
  * Missing publication (163 real docs — Kingmaker armies, iconics, pregens,
  * verified) or a license value outside ORC/OGL resolves `"unknown"`
- * (report-counted, per spec allowed as residue reviewed at S4). `remaster`
- * absent OR `false` both read as `edition: "legacy"` — a doc with genuinely no
- * publication metadata has no signal either way, so defaulting to the more
- * conservative (non-remaster) edition is the documented S2 choice, distinct
- * from the `missingPublication` report class that already flags it for
- * review.
+ * (report-counted, allowed as reviewed residue). `remaster` absent OR `false`
+ * both read as `edition: "legacy"` — a doc with genuinely no publication
+ * metadata has no signal either way, so this defaults to the more
+ * conservative (non-remaster) edition, distinct from the `missingPublication`
+ * report class that already flags it for review.
  */
 function deriveSourceAndEdition(
   publication: RawPublication | undefined,
@@ -345,8 +337,7 @@ function deriveSourceAndEdition(
 // facets (field-presence-driven, not category-gated — every field below is
 // optional in FacetsSchema, and reading a field that happens not to exist for
 // a given category is harmless; this avoids a second, redundant category
-// dispatch alongside categoryMap.ts's, per the deliverable's "facets per
-// entity.ts's typed sets" brief)
+// dispatch alongside categoryMap.ts's)
 // ---------------------------------------------------------------------------
 
 const DENOM_ORDER = ["pp", "gp", "sp", "cp"] as const;
@@ -393,22 +384,20 @@ function extractActionCost(system: RawSystem | undefined): string | undefined {
 }
 
 /**
- * S4 emit-gate finding (real corpus, not caught by any S2/S3 unit fixture): a
- * real minority of docs carry an explicit JSON `null` for a field this module
- * otherwise treats as "absent" (`system.category`, `system.attributes.ac.value`,
- * a hazard's AC, ...) — a bare `!== undefined` check let those literal
- * `null`s through into a non-nullable-typed `Facets` field, failing
- * `CodexEntitySchema.parse` at emit time (acceptance C's 100%-Zod-valid gate
- * is the FIRST real runtime validation of a full `CodexEntity`, so this is
- * exactly the kind of drift it exists to catch). A type-guard narrows the
- * same optional-chain expression the same way `!== undefined` did, so every
- * call site below is a mechanical swap, not a logic change. */
+ * A real minority of docs carry an explicit JSON `null` for a field this
+ * module otherwise treats as "absent" (`system.category`,
+ * `system.attributes.ac.value`, a hazard's AC, ...) — a bare `!== undefined`
+ * check lets those literal `null`s through into a non-nullable-typed `Facets`
+ * field, failing `CodexEntitySchema.parse` at emit time (the emit-time
+ * validation is the first runtime check of a full `CodexEntity`). This
+ * type-guard narrows the same optional-chain expression the way
+ * `!== undefined` does, but also rejects `null`. */
 function present<T>(v: T | null | undefined): v is T {
   return v !== null && v !== undefined;
 }
 
 /**
- * P3 S1 (D29-33a): the 5 extractor-gap categories — ancestry (hp/size/speed),
+ * The 5 extractor-gap categories — ancestry (hp/size/speed),
  * class (keyAbility/hp), background (trainedSkills), condition (the
  * value-bearing flag), heritage (ancestry linkage). CATEGORY-GATED (unlike
  * `extractFacets`'s field-presence-driven posture above) because these raw
@@ -419,8 +408,8 @@ function present<T>(v: T | null | undefined): v is T {
  * facet. Every candidate here still ships into `entity.facets` regardless of
  * whether it clears `facetKeys.ts`'s classifier (report.md's facet-coverage
  * section records the measured outcome; a failing candidate stays
- * page-detail-only, never a browse/search filter, per D29-33a's "no silent
- * junk facets" guard).
+ * page-detail-only, never a browse/search filter — no silent junk
+ * facets).
  */
 function extractGapFacets(category: string, system: RawSystem | undefined): Facets {
   switch (category) {
@@ -459,7 +448,7 @@ function extractGapFacets(category: string, system: RawSystem | undefined): Face
 
 /** Narrows the shared `system.perception` field to its creature-Actor
  * (`RawPerception` object) shape — a class Item's own `system.perception` is
- * a bare number (D29-113/P12 S1), which this returns `undefined` for. See
+ * a bare number, which this returns `undefined` for. See
  * the `RawSystem.perception` field's own doc comment. */
 function perceptionObject(p: RawSystem["perception"]): RawPerception | undefined {
   return typeof p === "object" ? p : undefined;
@@ -511,7 +500,7 @@ function extractFacets(system: RawSystem | undefined, category: string): Facets 
 }
 
 // ---------------------------------------------------------------------------
-// stats (D29-20, P1.6 addendum) — deterministic field mapping off the Actor
+// stats — deterministic field mapping off the Actor
 // `system.*` shape into the typed `CreatureStats`/`HazardStats` union. Every
 // helper here follows the same convention as `extractFacets` above: absent
 // source field -> absent (never defaulted/never an empty array/object) — see
@@ -599,11 +588,11 @@ function extractSkills(skills: RawSystem["skills"]): CreatureStats["skills"] | u
   return Object.keys(out).length > 0 ? out : undefined;
 }
 
-/** D29-74 (P7): folds `type:"lore"` embedded items' `system.mod.value` into
+/** Folds `type:"lore"` embedded items' `system.mod.value` into
  * the creature's `skills` record, keyed on `sluggify(item.name)` — the same
  * slug convention `assembleEmbeddedItem`'s own `slug` field uses — so the
  * lore bonus (otherwise visible only on the embedded item) surfaces in the
- * structured Skills row too (`SkillsRow`, render-side, S2). Two guarded
+ * structured Skills row too (`SkillsRow`, render-side). Two guarded
  * cases (both report-visible, never silent):
  *   - a lore slug that collides with a genuine CORE skill key (report class
  *     `loreSkillCoreCollision`) — the real corpus carries zero of these
@@ -645,10 +634,10 @@ function mergeLoreSkills(
 
 /** Extracts `CreatureStats` from an Actor's `system` — only called for
  * `category === "creature"` docs (npc/familiar; `character` docs never reach
- * assembly at all, D29-19). Returns `undefined` when nothing at all is
+ * assembly at all). Returns `undefined` when nothing at all is
  * extractable (e.g. a bare-bones familiar) rather than an all-empty object,
  * matching `embeddedItems`/`loreBody`'s own "never an empty placeholder"
- * convention. `items` (D29-74, P7): the Actor's raw embedded-item list, so
+ * convention. `items`: the Actor's raw embedded-item list, so
  * lore skills can merge into `skills` — see `mergeLoreSkills`. */
 function extractCreatureStats(
   system: RawSystem | undefined,
@@ -691,15 +680,13 @@ function extractCreatureStats(
 /** `disable`/`routine`/`reset` are enricher HTML parsed via the existing
  * `parseFoundryHtml` path — but fail-SOFT per field (report class
  * `hazardStatsHtmlFailed`, field omitted), unlike the entity `body` path's
- * hard-fail posture. Rationale (S6 real-transform finding): exactly one
+ * hard-fail posture. Rationale (found on a real transform): exactly one
  * upstream pack doc (`pfs-season-6-bestiary/6-00/historys-repetition-7-8`)
  * carries a genuine TYPO in its `disable` field (`@Check[thievery|dc:28
- * (expert)` — the closing `]` is missing in the published pack), markup that
- * was never parsed before P1.6 opened these three fields. A hard fail there
- * would abort the whole transform on data this pipeline can't fix; omitting
- * the one broken field and counting it keeps the failure loud + report-
- * visible (spec §5 B's "explicitly allowlisted, report-visible decision")
- * without weakening the body path's drift tripwire. */
+ * (expert)` — the closing `]` is missing in the published pack). A hard fail
+ * there would abort the whole transform on data this pipeline can't fix;
+ * omitting the one broken field and counting it keeps the failure loud +
+ * report-visible without weakening the body path's drift tripwire. */
 function parseHazardHtmlSoft(
   html: string | null | undefined,
   field: string,
@@ -717,7 +704,7 @@ function parseHazardHtmlSoft(
 
 /** Extracts `HazardStats` from a hazard Actor's `system` — only called for
  * `category === "hazard"` docs. `disable`/`routine`/`reset` are enricher HTML
- * (D29-20: NOT scalars), parsed via the same `parseFoundryHtml(html, ctx)`
+ * (NOT scalars), parsed via the same `parseFoundryHtml(html, ctx)`
  * path every other body field in this module already uses (fail-soft per
  * field — see `parseHazardHtmlSoft` above). */
 function extractHazardStats(
@@ -738,8 +725,7 @@ function extractHazardStats(
       : undefined;
   // `present()` (not a bare `!== undefined`) throughout — the real corpus
   // carries literal JSON `null` for routine/disable/reset/isComplex on a
-  // minority of hazard docs (the S4 emit-gate lesson, re-proven live on the
-  // first S6 real-transform run).
+  // minority of hazard docs (see `present()`'s doc comment).
   const isComplex = present(system?.details?.isComplex) ? system.details.isComplex : undefined;
   const disable = parseHazardHtmlSoft(system?.details?.disable, "disable", ctx, report);
   const routine = parseHazardHtmlSoft(system?.details?.routine, "routine", ctx, report);
@@ -766,8 +752,8 @@ function extractHazardStats(
 }
 
 // ---------------------------------------------------------------------------
-// class stats (D29-113, P12 S1) — the SCALAR model only; `grantedFeatures`/
-// `subclassOptions` are the D29-114/-115 post-drop `augmentClassStats` pass
+// class stats — the SCALAR model only; `grantedFeatures`/
+// `subclassOptions` are the post-drop `augmentClassStats` pass
 // (see that module + `ClassStatsSchema`'s own file comment for why).
 // ---------------------------------------------------------------------------
 
@@ -870,10 +856,10 @@ function extractClassStats(
   };
 }
 
-/** D29-114 (P12 S1): a class Item's `system.items` granted-feature manifest,
+/** A class Item's `system.items` granted-feature manifest,
  * converted to a typed array — see `RawClassGrantedFeature`'s own doc
  * comment for why this is the seam that keeps raw JSON from leaking past
- * this module into `transform.ts`'s orchestrator (which needs the raw
+ * this module into `transform.ts` (which needs the raw
  * uuid/level/name triples for the post-drop `augmentClassStats` pass).
  * Returns `undefined` when the raw dict is absent/empty (never an empty
  * array — the "absent, not defaulted" convention every extractor here
@@ -914,7 +900,7 @@ function extractStats(
   id: string,
 ): Stats | undefined {
   if (category === "creature") return extractCreatureStats(system, items, report);
-  // D29-74 (P7) guard: hazard docs' `type:"lore"` embedded items (0/1,309
+  // Guard: hazard docs' `type:"lore"` embedded items (0/1,309
   // real hazard docs today, verified) are deliberately NOT merged anywhere —
   // `HazardStatsSchema` has no `skills` field at all. A future hazard lore
   // item must not vanish silently here without deliberate schema work first
@@ -926,7 +912,7 @@ function extractStats(
 }
 
 // ---------------------------------------------------------------------------
-// embedded items (S2 widening, entity.ts's EmbeddedItemSchema)
+// embedded items (entity.ts's EmbeddedItemSchema)
 // ---------------------------------------------------------------------------
 
 function formatDamageRoll(
@@ -950,21 +936,21 @@ function extractDamage(damageRolls: RawSystem["damageRolls"]): string[] | undefi
   return out.length > 0 ? out : undefined;
 }
 
-/** D29-73 (P7): a `melee`-typed strike item's `system.range.{increment,max}`
+/** A `melee`-typed strike item's `system.range.{increment,max}`
  * → an AoN-format display string. `increment` wins if both are set —
  * defensive only, 0/12,942 raw melee items in the real corpus carry both
  * (verified); the tiebreak is exercisable by synthetic unit test only. Both
  * raw fields are nullable numbers (`{"increment": null, "max": 10}`), hence
- * `present()` rather than a bare `!== undefined` (the same S4 emit-gate
- * literal-`null` lesson `extractHazardStats`'s own comment documents). */
+ * `present()` rather than a bare `!== undefined` (the same literal-`null`
+ * case `present()`'s own comment documents). */
 function formatStrikeRange(range: RawSystem["range"] | undefined): string | undefined {
   if (present(range?.increment)) return `range increment ${range.increment} feet`;
   if (present(range?.max)) return `range ${range.max} feet`;
   return undefined;
 }
 
-/** D29-20 (P1.6) + D29-73 (P7): a `melee`-typed strike item's to-hit bonus,
- * flattened damage rolls, and (P7) formatted range. Absent for every other
+/** A `melee`-typed strike item's to-hit bonus, flattened damage rolls, and
+ * formatted range. Absent for every other
  * item type (the source fields simply don't exist on them). */
 function extractStrikeFields(
   system: RawSystem | undefined,
@@ -979,7 +965,7 @@ function extractStrikeFields(
   };
 }
 
-/** D29-20 (P1.6): a `spellcastingEntry`-typed item's DC/attack/tradition.
+/** A `spellcastingEntry`-typed item's DC/attack/tradition.
  * Absent for every other item type. */
 function extractSpellcastingFields(
   system: RawSystem | undefined,
@@ -1007,7 +993,7 @@ function assembleEmbeddedItem(item: RawFoundryDoc, ctx: EnricherContext): Embedd
     ...(actionCost !== undefined ? { actionCost } : {}),
     traits: item.system?.traits?.value ?? [],
     body,
-    // D29-20: field-presence-driven, not item-type-gated (mirrors
+    // Field-presence-driven, not item-type-gated (mirrors
     // `extractFacets`'s own posture) — a non-strike/non-spellcasting item
     // simply has none of these raw fields, so the extractors return {}.
     ...extractStrikeFields(item.system),
@@ -1022,7 +1008,7 @@ function assembleEmbeddedItem(item: RawFoundryDoc, ctx: EnricherContext): Embedd
 export interface AssembleFoundryEntityParams {
   packDir: string;
   docClass: "Actor" | "Item";
-  /** The pack file's own basename (no `.json`) — D29-1's identity source; also
+  /** The pack file's own basename (no `.json`) — the identity source; also
    * checked against `sluggify(doc.name)` (report class `slugMismatch` on
    * disagreement — verified 0/28,636 in the real snapshot, so this should
    * never fire on real data). */
@@ -1031,7 +1017,7 @@ export interface AssembleFoundryEntityParams {
   ctx: EnricherContext;
   report: ReportFn;
   /** Every codex id assigned SO FAR in this run, `id → true` — used only to
-   * detect + report same-slug collisions (S4's worklist, not resolved here).
+   * detect + report same-slug collisions (`join.ts` resolves them, not here).
    * Mutated in place (the caller owns one shared set across the whole walk). */
   seenIds: Set<string>;
 }
@@ -1039,7 +1025,7 @@ export interface AssembleFoundryEntityParams {
 /**
  * Assembles one non-excluded Item/Actor pack doc into a `CodexEntity`.
  * Returns `undefined` when `categoryMap.ts` says this (pack,type) pair is
- * excluded (D29-8) — the caller should simply skip it (still present in the
+ * excluded — the caller should simply skip it (still present in the
  * uuid index as an `excluded` target via `uuidResolve.ts`, independent of this
  * function).
  */
@@ -1048,17 +1034,17 @@ export function assembleFoundryEntity(
 ): CodexEntity | undefined {
   const { packDir, docClass, basename, doc, ctx, report, seenIds } = params;
 
-  // D29-19 (P1.6, stakeholder): npc-only creature import — `character`-typed
+  // npc-only creature import — `character`-typed
   // Actors (the `iconics` per-level pregens, `paizo-pregens`, and Kingmaker
   // companion builds) are PC builds whose AC/HP/saves are runtime-derived by
-  // the pf2e system (the 0028 source-vs-live finding), not statable from
+  // the pf2e system (verified source vs. live), not statable from
   // source — excluded here (report-counted `excludedActors`), BEFORE
   // `categoryMap.ts` ever sees the doc (categoryMap.ts's own `character` ->
   // `creature` mapping stays documented/tested there for completeness; this
   // exclusion runs first in the real pipeline so that mapping is never
   // reached for a live `character` doc). This narrows the FOUNDRY import
   // only — an AoN-joined pregen twin (e.g. `creature/amiri-level-1`) still
-  // ships as an AoN-only page, D29-14(a); it just never merges with a
+  // ships as an AoN-only page; it just never merges with a
   // Foundry `character` doc anymore.
   if (docClass === "Actor" && doc.type === "character") {
     report("excludedActors", `${packDir}/${basename}.json: "${doc.name}"`);

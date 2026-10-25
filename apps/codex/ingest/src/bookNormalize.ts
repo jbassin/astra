@@ -1,12 +1,11 @@
 import type { CodexEntity } from "@astra/codex-corpus";
 
 /**
- * P4 (D29-39): the mechanical book-name normalization pass — stakeholder:
- * "mechanical only, no hand-curation" (spec §2). Runs over EVERY final
- * entity's `source.book` string (corpus-wide, not just rules — the P4 tree/
- * sources-index scoping needs a clean per-book key, and `source.book` feeds
- * browse facets + search meta + collision disambiguation too, spec §6's
- * "site-wide blast radius" risk note).
+ * The mechanical book-name normalization pass — mechanical rules only, no
+ * hand-curation. Runs over EVERY final entity's `source.book` string
+ * (corpus-wide, not just rules — the rules tree and sources index need a clean
+ * per-book key, and `source.book` feeds browse facets + search meta +
+ * collision disambiguation too, so a change here has site-wide reach).
  *
  * Three mechanical rules, in order:
  *   1. Whitespace: trim + strip embedded `\r`/`\n`/`\t` + collapse internal
@@ -21,13 +20,13 @@ import type { CodexEntity } from "@astra/codex-corpus";
  *   2. Case-insensitive dedup: cleaned strings that only differ by case
  *      collapse to one canonical spelling — an AoN-known spelling wins over
  *      a Foundry-only one (measured a no-op today, 0 groups — ships anyway,
- *      cheap and future-proof, per spec).
+ *      cheap and future-proof).
  *   3. The conservative prefix rule: a Foundry-only string (one that never
  *      appears as any AoN doc's own `primary_source`) exactly equal to
  *      `"Pathfinder " + <a known AoN book name>` merges into that AoN name
  *      (measured: 23 distinct book strings / 408 entities in the real
  *      corpus). NO fuzzy/hand-curated aliasing — a residual split (any two
- *      strings that don't mechanically collapse) is accepted, per spec.
+ *      strings that don't mechanically collapse) is accepted.
  */
 
 const PATHFINDER_PREFIX = "Pathfinder ";
@@ -60,13 +59,13 @@ export interface BookNormalizeResult {
    * (pre-collapse) onto the same final book key entities now carry. */
   bookNameMap: ReadonlyMap<string, string>;
   /** Every RAW book string whose final normalized form differs from itself
-   * — the D29-39 "full before→after mapping table" for `report.md`. Sorted
+   * — the full before→after mapping table for `report.md`. Sorted
    * by `from` for determinism. */
   mergeTable: BookMergeRow[];
   distinctBefore: number;
   distinctAfter: number;
   /** Distinct book strings collapsed by rule 3 specifically (not raw
-   * variants, not entity count — spec's "merges 23 of them"). */
+   * variants, not entity count — 23 in the real corpus). */
   prefixMergeCount: number;
   /** Distinct case-insensitive groups with >1 member found by rule 2
    * (measured 0 in the real corpus — ships anyway). */

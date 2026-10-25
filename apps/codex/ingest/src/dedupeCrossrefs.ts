@@ -8,17 +8,17 @@ import type {
 } from "@astra/codex-corpus";
 
 /**
- * D29-100 (P11 S1): whole-document adjacent-crossref dedupe — ONE post-join,
- * pre-emit walk (drop.ts-adjacent, this is the ONE owner: body crossrefs
- * finalize in `join.ts` pass 5, masthead crossrefs at the parse-time
- * resolver seam, and pass 5 never walks `mastheadExtra` at all — so "after
- * resolution" isn't one place upstream; this pass is).
+ * Whole-document adjacent-crossref dedupe — ONE post-join, pre-emit walk
+ * (drop.ts-adjacent, this is the ONE owner: body crossrefs finalize in
+ * `join.ts` pass 5, masthead crossrefs at the parse-time resolver seam, and
+ * pass 5 never walks `mastheadExtra` at all — so "after resolution" isn't
+ * one place upstream; this pass is).
  *
  * ## Root cause
  *
  * AoN cites legacy/remaster same-named pairs as TWO distinct links (e.g.
  * `Deities.aspx?ID=218` + `?ID=620`, both "Ravithra"); codex's deliberate
- * legacy->remaster link repointing (P1 S5d / P6 family) lands both on the
+ * legacy->remaster link repointing lands both on the
  * SAME `targetId`, producing identical adjacent crossrefs
  * ("Ravithra, Ravithra" in a domain page's Deities masthead list — the
  * epicenter, `domain/*`). Since the repointing itself is by design
@@ -28,7 +28,7 @@ import type {
  * ## The walk
  *
  * Covers `body` + `loreBody` + `embeddedItems[].body` + `mastheadExtra[]
- * .value` + hazard `stats.disable`/`routine`/`reset` (the P6 latent-gap
+ * .value` + hazard `stats.disable`/`routine`/`reset` (a latent-gap
  * surface this module ALSO closes — 0 dupes there today, but walking it
  * keeps the gap closed going forward). Collapses RUNS (not just pairs — a
  * genuine triple exists in the real corpus) of crossref nodes with
@@ -204,7 +204,7 @@ export interface CollapseCrossrefsResult {
 }
 
 /**
- * The full D29-100 pass: walks every entity's body/loreBody/embeddedItems/
+ * The full adjacent-crossref dedupe pass: walks every entity's body/loreBody/embeddedItems/
  * mastheadExtra/hazard-stats surfaces, collapsing adjacent duplicate
  * crossref runs. Pure — no disk I/O. Report-counts `adjacentCrossrefDeduped`
  * once per dropped duplicate node (NOT once per entity — the report class's

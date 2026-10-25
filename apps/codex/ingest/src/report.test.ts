@@ -327,7 +327,7 @@ describe("buildReportJson", () => {
     expect(Object.keys(json.reportCounts)).toEqual(["alpha", "zebra"]);
   });
 
-  it("S5c: final* stats (finalEntityCount, license/edition breakdown, per-category finalOut) come from finalEntities (POST-drop), not join.entities", () => {
+  it("final* stats (finalEntityCount, license/edition breakdown, per-category finalOut) come from finalEntities (POST-drop), not join.entities", () => {
     const preDropOnly = entity({
       id: "boon/dropped",
       category: "boon",
@@ -452,7 +452,7 @@ describe("buildReportMarkdown", () => {
     expect(md).toContain("None applied in this run.");
   });
 
-  it("S5c: renders the drop-accounting section (per-category drops + carve-out kept counts)", () => {
+  it("renders the drop-accounting section (per-category drops + carve-out kept counts)", () => {
     const dropAccounting: DropAccounting = {
       totalDropped: 536,
       byCategory: [
@@ -485,7 +485,7 @@ describe("buildReportMarkdown", () => {
     expect(md).toContain("No carve-out entities in this run.");
   });
 
-  it("D29-98 (P11 S1): renders the activation-drop section, incl. the FULL family-(ii) name list", () => {
+  it("renders the activation-drop section, incl. the FULL family-(ii) name list", () => {
     const dropAccounting: DropAccounting = {
       totalDropped: 0,
       byCategory: [],
@@ -515,13 +515,13 @@ describe("buildReportMarkdown", () => {
     expect(md).toContain("action/ten-min-99: 10 minutes (concentrate, manipulate)");
   });
 
-  it("D29-98: renders the 'no family-(ii) names dropped' placeholder when the list is empty", () => {
+  it("renders the 'no family-(ii) names dropped' placeholder when the list is empty", () => {
     const json = buildReportJson(baseInput({}));
     const md = buildReportMarkdown(json);
     expect(md).toContain("No family-(ii) names dropped this run.");
   });
 
-  it("D29-100 (P11 S1): renders the adjacent-crossref-dedupe section", () => {
+  it("renders the adjacent-crossref-dedupe section", () => {
     const json = buildReportJson(
       baseInput({ adjacentCrossrefDedupe: { totalOccurrences: 1147, entitiesTouched: 123 } }),
     );
@@ -531,7 +531,7 @@ describe("buildReportMarkdown", () => {
     expect(md).toContain("123");
   });
 
-  it("D29-19/-20 (P1.6): renders the excludedActors count + the statblock coverage tables", () => {
+  it("renders the excludedActors count + the statblock coverage tables", () => {
     const json = buildReportJson(
       baseInput({
         reportCounts: new Map([["excludedActors", 7]]),
@@ -556,7 +556,7 @@ describe("buildReportMarkdown", () => {
   });
 });
 
-describe("P1.6 (D29-19/-20): stats + embedded-item field coverage", () => {
+describe("stats + embedded-item field coverage", () => {
   it("computeCreatureStatsCoverage counts only creature-kind stats, per field", () => {
     const entities: CodexEntity[] = [
       entity({
@@ -663,7 +663,7 @@ describe("P1.6 (D29-19/-20): stats + embedded-item field coverage", () => {
   });
 });
 
-describe("P3 S1 (D29-32/-33): facet coverage / family coverage / superseded breakdown", () => {
+describe("facet coverage / family coverage / superseded breakdown", () => {
   describe("computeFacetCoverage", () => {
     it("computes coverage% + cardinality per key, one row per (category, key) pair actually present", () => {
       const entities: CodexEntity[] = [
@@ -860,7 +860,7 @@ describe("P3 S1 (D29-32/-33): facet coverage / family coverage / superseded brea
     expect(md).toContain("superseded");
   });
 
-  it("D30-46 (0030 S1): the homebrew section passes through buildReportJson and renders in buildReportMarkdown", () => {
+  it("the homebrew section passes through buildReportJson and renders in buildReportMarkdown", () => {
     const json = buildReportJson(
       baseInput({
         homebrew: {

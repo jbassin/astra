@@ -13,7 +13,7 @@ import {
   parseUuid,
 } from "./uuidResolve";
 
-describe("parseUuid: the four real reference shapes (D29-6)", () => {
+describe("parseUuid: the four real reference shapes", () => {
   it("parses a relative .docId", () => {
     expect(parseUuid(".ZrEmfrgDlmlhdvQg")).toEqual({
       shape: "relative",
@@ -162,7 +162,7 @@ describe("buildDocIndex + createResolveUuid: crossref/excluded/broken", () => {
     });
   });
 
-  it("resolves a Macro/RollTable reference as excluded (D29-6: 123 Macro / 22 RollTable refs)", () => {
+  it("resolves a Macro/RollTable reference as excluded (123 Macro / 22 RollTable real refs)", () => {
     const index = buildDocIndex(root(), registry);
     const resolveUuid = createResolveUuid(index);
     expect(resolveUuid("Compendium.pf2e.pf2e-macros.Macro.Impersonate: Deception")).toEqual({

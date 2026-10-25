@@ -1,11 +1,11 @@
 import type { BlockNode, CodexNode, InlineNode, TableRow, TextMarks } from "@astra/codex-corpus";
 
 /**
- * AoN `markdown` field → `BlockNode[]` (D29-2, spec §4 S3). The field mixes real
- * markdown with AoN's custom pseudo-HTML tags; the grammar is undocumented (spec
- * §6) and was discovered by an empirical census over the REAL 2026-07-13 snapshot
- * (43,684 docs across 93 categories, every doc has a non-empty `markdown`).
- * Hand-rolled per D29-9 — an unmapped tag/entity/construct is a HARD FAIL
+ * AoN `markdown` field → `BlockNode[]`. The field mixes real markdown with AoN's
+ * custom pseudo-HTML tags; the grammar is undocumented and was discovered by an
+ * empirical census over the REAL 2026-07-13 snapshot (43,684 docs across 93
+ * categories, every doc has a non-empty `markdown`).
+ * Hand-rolled — an unmapped tag/entity/construct is a HARD FAIL
  * (`AonMarkupError`), never a silent passthrough.
  *
  * Tag census (open+close combined; every name below is deliberately handled):
@@ -21,7 +21,7 @@ import type { BlockNode, CodexNode, InlineNode, TableRow, TextMarks } from "@ast
  * `---` divider lines 53,310 · `## `/`### ` headings 926 (levels 2/3 only) ·
  * `- ` list lines 13,100 · numbered-markdown lists 0 (`<ol>` HTML is used
  * instead) · pipe tables 0 · blockquote `>` 0 · backticks 0 · entities: only
- * `&amp;`/`&lt;`/`&gt;` · CRLF in 40,684 docs (normalized to LF first, D29-7).
+ * `&amp;`/`&lt;`/`&gt;` · CRLF in 40,684 docs (normalized to LF first).
  *
  * Mapping decisions (each verified against the census — see the numbers above):
  *   - `<title level=N right="…">` → heading (level 1–4; non-empty `right` — the
@@ -44,12 +44,11 @@ import type { BlockNode, CodexNode, InlineNode, TableRow, TextMarks } from "@ast
  *     "Single Action", "Two Actions or Three Actions"). The 9,161 empty
  *     `string=""` uses mean "no glyph" (textual activation time follows) —
  *     dropped with a report count (actionGlyph.cost has min-length 1).
- *   - `<column>` → FLATTENED to sequential blocks (layout, not content — D29-2
+ *   - `<column>` → FLATTENED to sequential blocks (layout, not content —
  *     verbatim; columns nest, flattening recurses). `<row>` mostly flattens the
- *     same way, EXCEPT (P10, D29-91/D29-93 — amends the D29-2 verbatim-flatten
- *     posture): a row whose parsed children are ALL paragraphs, with NO wrapper
- *     tag (`row`/`column`/`center`) opened anywhere inside its own scope, and
- *     at least 2 children, collapses to a `statRow` block (`cells:
+ *     same way, EXCEPT: a row whose parsed children are ALL paragraphs, with NO
+ *     wrapper tag (`row`/`column`/`center`) opened anywhere inside its own
+ *     scope, and at least 2 children, collapses to a `statRow` block (`cells:
  *     InlineNode[][]`, one cell per child paragraph's inline run, trimmed at
  *     cell boundaries) instead of flattening — the AoN statblock stat-line
  *     idiom (`Str +7 … Cha +5`, `AC 32 Fort +25 …`). Candidacy is decided
@@ -67,11 +66,10 @@ import type { BlockNode, CodexNode, InlineNode, TableRow, TextMarks } from "@ast
  *     (`target` = the raw doc id, `resolved: false` — the gate runner resolves);
  *     `level` is a render-depth hint (dropped silently); `override-title-right`
  *     (407 uses) is dropped WITH a report count (it's real content — an
- *     archetype-adjusted feat level — but embed has no meta field; revisit in P2
- *     if the count matters). Attrs legitimately span newlines here.
- *   - `<image src>` (3,193, all self-closed) → DROPPED, report-counted (D29-2:
- *     art we neither host nor hotlink; the spec's "22 hits" was a sampling
- *     undercount — the full-corpus number is 3,193).
+ *     archetype-adjusted feat level — but embed has no meta field; revisit if the
+ *     count matters). Attrs legitimately span newlines here.
+ *   - `<image src>` (3,193, all self-closed) → DROPPED, report-counted (art we
+ *     neither host nor hotlink).
  *   - `<table>` → table node: HTML-shaped rows only (no markdown pipe tables
  *     exist); `thead`/`tbody`/`tfoot` flatten to their rows; `<th>` marks its
  *     row as header; `colspan`/`rowspan`/`bgcolor`/`class`/`style`/`border` are
@@ -106,7 +104,7 @@ import type { BlockNode, CodexNode, InlineNode, TableRow, TextMarks } from "@ast
  *   - unbalanced `**`/`_` emphasis at paragraph end (the ~155 partial cases) →
  *     the dangling toggle stays applied to the trailing text, report-counted.
  *
- * Link handling (D29-7): `[display](href)` markdown links go through
+ * Link handling: `[display](href)` markdown links go through
  * `ctx.resolveLink` — internal (`/Traits.aspx?ID=170`-style), absolute external
  * (paizo.com product pages), and bare-domain hrefs alike; href and display are
  * entity-decoded first, and a display that itself contains link markdown (the
@@ -678,7 +676,7 @@ function fail(tok: Token | undefined, message: string): never {
 }
 
 // ---------------------------------------------------------------------------
-// P10 (D29-91/D29-93): `<row>` statRow candidacy + boundary trim
+// `<row>` statRow candidacy + boundary trim
 // ---------------------------------------------------------------------------
 
 /** Bumped once on EVERY `row`/`column`/`center` open, at the moment `parseSequence`
@@ -687,7 +685,7 @@ function fail(tok: Token | undefined, message: string): never {
  * recurses into its children, then compares: any wrapper opened anywhere inside
  * that recursion (at any depth — the counter is shared across the whole call
  * stack) bumps the counter again, so a post-recursion mismatch means "some
- * wrapper opened inside my scope" — the D29-91 candidacy condition (a). This is
+ * wrapper opened inside my scope" — statRow candidacy condition (a). This is
  * the "per-row-invocation counter sampled around the recursive `parseSequence`
  * call" the census's instrumented-recorder prototype proved out. Module-scope is
  * safe: `parseAonMarkdown` is fully synchronous (no `await` inside), so two
@@ -698,7 +696,7 @@ let wrapperOpenSeq = 0;
 
 /** Drops boundary TEXT nodes that trim to fully empty, then `trimStart`s the
  * (new) first node's content and `trimEnd`s the (new) last node's content when
- * they're text — D29-91's cell-boundary trim (census: "AC 32 " trailing
+ * they're text — the statRow cell-boundary trim (census: "AC 32 " trailing
  * whitespace). Non-text boundary nodes are never dropped (no "trim to empty"
  * concept applies to them). A single surviving node gets both trimStart AND
  * trimEnd applied (equivalent to a plain `.trim()`) since the same index is read
@@ -736,12 +734,12 @@ function trimCellBoundary(children: readonly InlineNode[]): InlineNode[] {
   return result;
 }
 
-/** D29-91 condition (b)+(c): every parsed child is a `paragraph`, boundary-
- * trimmed into a `statRow` cell. Returns `undefined` when any child isn't a
+/** StatRow candidacy conditions (b)+(c): every parsed child is a `paragraph`,
+ * boundary-trimmed into a `statRow` cell. Returns `undefined` when any child isn't a
  * paragraph (a candidate row never has a non-paragraph child by construction —
  * a wrapper containing one would already have failed condition (a) — but this
  * stays a real check, not an assumption) or when `children` is empty (an empty
- * row keeps flattening to nothing, D29-91). Doesn't itself check the `>= 2`
+ * row keeps flattening to nothing). Doesn't itself check the `>= 2`
  * cell-count gate — the caller decides collapse vs. single-cell-kept vs. plain
  * flatten from the returned array's length. */
 function collectStatRowCells(children: readonly BlockNode[]): InlineNode[][] | undefined {
@@ -876,11 +874,10 @@ function parseSequence(cursor: TokenCursor, ctx: AonParseCtx, opts: SequenceOpti
         continue;
       }
       case "row": {
-        // P10 (D29-91/D29-93): a candidate collapses to `statRow`; everything
-        // else still flattens to sequential blocks exactly like `<column>`/
-        // `<center>` (D29-2 verbatim posture, amended only for the candidate
-        // case). See `collectStatRowCells`/`wrapperOpenSeq`'s own doc comments
-        // for the candidacy mechanics.
+        // A candidate collapses to `statRow`; everything else still flattens
+        // to sequential blocks exactly like `<column>`/`<center>` (verbatim
+        // posture, except for the candidate case). See `collectStatRowCells`/
+        // `wrapperOpenSeq`'s own doc comments for the candidacy mechanics.
         flushFlow();
         wrapperOpenSeq++;
         const preChildWrapperSeq = wrapperOpenSeq;
@@ -904,7 +901,7 @@ function parseSequence(cursor: TokenCursor, ctx: AonParseCtx, opts: SequenceOpti
       }
       case "column":
       case "center": {
-        // Layout wrappers — flatten to sequential blocks (D29-2). Still bump
+        // Layout wrappers — flatten to sequential blocks. Still bump
         // `wrapperOpenSeq` (an enclosing `<row>`'s candidacy check must see a
         // nested column/center the same as a nested row).
         flushFlow();
@@ -1327,8 +1324,8 @@ function parseTable(cursor: TokenCursor, ctx: AonParseCtx, scopes: ReadonlySet<s
 // ---------------------------------------------------------------------------
 
 /**
- * Parses one AoN doc's `markdown` into `BlockNode[]` (D29-2's renderer
- * contract). CRLF is normalized to LF FIRST (D29-7). Loose inline content
+ * Parses one AoN doc's `markdown` into `BlockNode[]` (the renderer's
+ * contract). CRLF is normalized to LF FIRST. Loose inline content
  * always wraps into paragraphs, so the return is fully block-shaped. Throws
  * `AonMarkupError` on anything outside the discovered grammar.
  */
@@ -1347,7 +1344,7 @@ export function parseAonMarkdown(markdown: string, ctx: AonParseCtx): BlockNode[
 }
 
 // ---------------------------------------------------------------------------
-// D29-62 (R3, P6): the structural masthead strip
+// the structural masthead strip
 // ---------------------------------------------------------------------------
 
 /** One collected masthead line: `label` = the bold lead text (trimmed),
@@ -1363,12 +1360,12 @@ export interface MastheadStripResult {
    * follows) removed — everything else untouched, in order. */
   body: BlockNode[];
   /** Every collected pair whose label isn't "Source" (already rendered via
-   * `Citation`, D29-24) — absent, never `[]`, when the masthead run
+   * `Citation`) — absent, never `[]`, when the masthead run
    * collected zero non-"Source" pairs. */
   mastheadExtra?: MastheadPair[];
 }
 
-/** Whole-row-or-nothing check (D29-92): a leading statRow unwraps into masthead
+/** Whole-row-or-nothing check: a leading statRow unwraps into masthead
  * pairs only when EVERY cell qualifies as a masthead line (cell[0] is a `text`
  * node with `marks.bold === true`, same test a bold-first paragraph gets below).
  * Returns `undefined` the moment any cell doesn't qualify — the caller stops
@@ -1385,7 +1382,7 @@ function statRowAsMastheadPairs(cells: readonly InlineNode[][]): MastheadPair[] 
 }
 
 /**
- * D29-62: strips the AoN masthead's bold-label lines out of `body` and
+ * Strips the AoN masthead's bold-label lines out of `body` and
  * returns the leftover pairs as `mastheadExtra` — a general STRUCTURAL walk
  * (no category name, no per-field enumeration, no divider dependency),
  * verified against real samples spanning spell/feat/equipment/weapon/armor/
@@ -1396,7 +1393,7 @@ function statRowAsMastheadPairs(cells: readonly InlineNode[][]): MastheadPair[] 
  *   2. Walk forward while the current node is EITHER a `paragraph` whose
  *      FIRST child is a `text` node with `marks.bold === true` (a masthead
  *      line: `label` = the bold text's own content, trimmed; `value` = every
- *      other child) OR — P10, D29-92 — a `statRow` every one of whose cells
+ *      other child) OR a `statRow` every one of whose cells
  *      qualifies the same way (`statRowAsMastheadPairs`; a statRow with even
  *      one non-qualifying cell stops the walk BEFORE it, whole-row-or-nothing,
  *      report-counted). Stop at the first node that matches neither (a
@@ -1408,10 +1405,10 @@ function statRowAsMastheadPairs(cells: readonly InlineNode[][]): MastheadPair[] 
  *      straight into prose), stop cleanly — nothing extra is consumed, so
  *      the body's own prose survives intact.
  *
- * Pure except for the optional `report` sink (P10 addition, used only for the
+ * Pure except for the optional `report` sink (used only for the
  * statRow partial-consumption drift tripwire above — every OTHER path here is
  * still a total, side-effect-free walk): an entity with no masthead shape at
- * all (most `rules`/`lore` docs, per R3's own scope) simply collects zero
+ * all (most `rules`/`lore` docs) simply collects zero
  * pairs and loses nothing but a possible leading H1.
  */
 export function stripMasthead(

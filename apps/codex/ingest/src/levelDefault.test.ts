@@ -26,7 +26,7 @@ function entity(
   };
 }
 
-describe("LEVEL_BEARING_CATEGORIES (D29-61a)", () => {
+describe("LEVEL_BEARING_CATEGORIES", () => {
   it("is exactly the 23 named categories", () => {
     expect([...LEVEL_BEARING_CATEGORIES].sort()).toEqual(
       [
@@ -68,7 +68,7 @@ describe("LEVEL_BEARING_CATEGORIES (D29-61a)", () => {
   });
 });
 
-describe("applyLevelDefault (R9(a), D29-61a)", () => {
+describe("applyLevelDefault", () => {
   it("defaults a missing level to 0 on a level-bearing category", () => {
     const { entities, defaultedCount } = applyLevelDefault(
       [entity({ id: "equipment/adventurers-pack", category: "equipment" })],
