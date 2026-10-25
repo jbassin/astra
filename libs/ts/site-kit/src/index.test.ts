@@ -32,7 +32,7 @@ describe("@astra/site-kit vite plugins", () => {
     const p = contentWatchPlugin({
       root: "/tmp/app",
       script: "/tmp/app/scripts/build-content.ts",
-      contentDir: "/tmp/app/content",
+      inputs: ["/tmp/app/content"],
       generatedDir: "/tmp/app/src/generated",
       invalidate: ["x.ts"],
     });

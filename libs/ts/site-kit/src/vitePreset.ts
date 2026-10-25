@@ -51,6 +51,13 @@ export interface SiteConfigOptions {
    */
   generated?: ReadonlyArray<string>;
   /**
+   * Absolute paths (files or dirs) outside the app that `build-content.ts` reads, such as an
+   * astra-data snapshot or corpus. Dev regenerates the content when one changes, as it does for
+   * the app's `content/` and `scripts/` dirs and config.kdl, which are always watched. Called
+   * only when the dev server starts, so `vite build` never resolves these paths.
+   */
+  contentInputs?: () => ReadonlyArray<string>;
+  /**
    * Whether the app uses gothic's theme (`@astra/site-kit/theme`). Default true. False leaves
    * out `gothicFontsPlugin` and `@tailwindcss/vite`, for an app that styles itself (codex).
    */
@@ -65,7 +72,8 @@ export interface SiteConfigOptions {
  * `--configLoader runner` (see the README).
  *
  * - `contentWatchPlugin` (when `generated` is set) runs `scripts/build-content.ts` at build
- *   start and on content edits in dev, so the content pipeline never reaches the client bundle.
+ *   start and, in dev, whenever one of its inputs changes (`content/`, `scripts/`, config.kdl,
+ *   `contentInputs`), so the content pipeline never reaches the client bundle.
  * - `gothicFontsPlugin` (unless `theme: false`) serves gothic's fonts in dev and copies them to
  *   `dist/client/fonts`.
  * - `@tailwindcss/vite` (unless `theme: false`) compiles gothic's theme.css; without it the
@@ -88,7 +96,12 @@ export function defineSiteConfig(opts: SiteConfigOptions): UserConfig {
             contentWatchPlugin({
               root,
               script: path.join(root, "scripts", "build-content.ts"),
-              contentDir: path.join(root, "content"),
+              inputs: () => [
+                path.join(root, "content"),
+                path.join(root, "scripts"),
+                siteConfigFile(root),
+                ...(opts.contentInputs?.() ?? []),
+              ],
               generatedDir: path.join(root, "src", "generated"),
               invalidate: opts.generated,
             }),
