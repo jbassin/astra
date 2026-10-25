@@ -1,23 +1,22 @@
-// P12 S2 (D29-118) — the `/class` + `/class/{slug}` shell: a narrow
-// class-list rail + a main pane, shared by BOTH the bare `/class` index
-// route and every `/class/{slug}` detail route (mirrors the existing
-// `RulesLayout.tsx` "one shared sidebar+main component, two route files"
-// precedent — see that file's own header comment).
+// The `/class` + `/class/{slug}` shell: a narrow class-list rail + a main
+// pane, shared by BOTH the bare `/class` index route and every `/class/{slug}`
+// detail route (mirrors the `RulesLayout.tsx` "one shared sidebar+main
+// component, two route files" pattern — see that file's own header comment).
 //
-// P12 S3 (D29-119/-120) — the rail's real styling + mobile fallback: a
-// native `<details>`/`<summary>` disclosure, the SAME zero-JS pattern
-// `RulesLayout.tsx` already established (`.codex-rules-sidebar-disclosure`)
-// — always-open + sticky on desktop, collapsible with content-first
-// ordering below the shared `.codex-rules-layout` 56rem breakpoint
-// (`globals.css`'s own "no new breakpoint system" rule).
+// The rail's mobile fallback is a native `<details>`/`<summary>` disclosure,
+// the SAME zero-JS pattern as `RulesLayout.tsx`
+// (`.codex-rules-sidebar-disclosure`) — always-open + sticky on desktop,
+// collapsible with content-first ordering below the shared
+// `.codex-rules-layout` 56rem breakpoint (`globals.css`'s own "no new
+// breakpoint system" rule).
 
 import type { ReactElement, ReactNode } from "react";
 
 import type { ClassRailData, ClassRailRow } from "@/server/classPageData";
 
 /** A rail row's own href — carries the CURRENT `superseded` state forward
- * (D29-48/M7's own site convention: "every row's own href carries it once
- * the view is widened") so following a rail link between two class pages
+ * (the site convention: "every row's own href carries it once the view is
+ * widened") so following a rail link between two class pages
  * doesn't silently collapse the reveal. */
 function railRowHref(row: ClassRailRow, superseded: boolean): string {
   return superseded ? `/${row.id}?superseded=1` : `/${row.id}`;
@@ -66,7 +65,7 @@ export function ClassBrowse({
 }): ReactElement {
   return (
     <div className="codex-class-browse">
-      {/* P12 S3 — the `RulesLayout.tsx` disclosure mechanism verbatim: NO
+      {/* The `RulesLayout.tsx` disclosure mechanism verbatim: NO
           `open` attribute (collapsed-by-default markup), desktop shows the
           rail regardless via unconditional CSS, only the mobile media query
           gates on `[open]` — zero JS breakpoint logic, an uncontrolled DOM
@@ -92,9 +91,9 @@ export function ClassBrowse({
                 ))
               : null}
           </ul>
-          {/* D29-118 — the site-convention `?superseded=1` reveal (the `/rules`/
-              `$category/` precedent's own toggle microcopy), scoped to the ≤49
-              rail rows (no virtualization, no pagination — spec's own text). */}
+          {/* The site-convention `?superseded=1` reveal (the `/rules`/`$category/`
+              toggle microcopy), scoped to the ≤49 rail rows (no virtualization,
+              no pagination). */}
           {rail.hidden.length > 0 ? (
             <a
               className="codex-class-rail-toggle"

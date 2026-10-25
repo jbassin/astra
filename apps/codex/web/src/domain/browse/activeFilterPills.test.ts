@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { activeFilterPills } from "./activeFilterPills";
 import { emptyFilterState, setLevelRange, type BrowseFilterState } from "./filterEngine";
 
-describe("activeFilterPills (P4.5 S4, D29-49)", () => {
+describe("activeFilterPills", () => {
   it("an empty filter state yields no pills", () => {
     expect(activeFilterPills(emptyFilterState(), "feat", vi.fn())).toEqual([]);
   });

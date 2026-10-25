@@ -1,10 +1,10 @@
-// P3 S3 (D29-32) — the UI metadata layer over `src/schema/facetKeys.ts`'s
+// The UI metadata layer over `src/schema/facetKeys.ts`'s
 // per-category KEY allowlist. `facetKeys.ts` owns WHICH keys are worth a
 // filter per category; this module owns HOW to render/parse/label each of
 // those keys, category-agnostically (the same key name means the same thing
 // everywhere it's allowlisted — `weapon.usage` and `equipment.usage` are both
 // "how the item is worn/wielded" strings, just different cardinalities of the
-// same field, D29-32's own text). `traits` is deliberately absent here — it's
+// same field). `traits` is deliberately absent here — it's
 // a CORE facet (every category, tri-state), handled directly by
 // `FacetPanel.tsx`/`filterEngine.ts`, never routed through this per-key map.
 //
@@ -14,7 +14,7 @@
 // category dispatch would just duplicate `facetKeys.ts`'s own allowlist for
 // no benefit (no def below actually varies its shape by category).
 
-// P10 (D29-95): a relative import, not the `@/*` alias — this module is now
+// A relative import, not the `@/*` alias — this module is now
 // reachable from `entityPage.tsx` (the header size chip's `SIZE_LABELS`
 // reuse), which sits in `regen-goldens.ts`'s import graph; that script runs under
 // tsx, which follows `@/*` only through the tsconfig of its working directory, so
@@ -68,7 +68,7 @@ export interface FacetDef {
 }
 
 // ---------------------------------------------------------------------------
-// price -> copper (D29-32: "pp=1000·gp=100·sp=10·cp=1, a `per 10` batch
+// price -> copper ("pp=1000·gp=100·sp=10·cp=1, a `per 10` batch
 // suffix DIVIDES for per-item value"). Format verified against
 // `foundryEntities.ts`'s own `formatPrice`: `"<amount> <denom>[, <amount>
 // <denom>...][ per <n>]"`, e.g. "1700 gp", "2 sp", "5 gp, 3 sp per 10".
@@ -101,7 +101,7 @@ export function parsePriceToCopper(raw: string): number | null {
 }
 
 // ---------------------------------------------------------------------------
-// spell.range -> a hybrid bucket (D29-32: "range(parsed hybrid: numeric-feet
+// spell.range -> a hybrid bucket ("range(parsed hybrid: numeric-feet
 // buckets + touch/self special values)"). An `enum` widget over the bucket
 // id, not a numeric range slider.
 // ---------------------------------------------------------------------------
@@ -151,10 +151,10 @@ function asNumber(value: RawFacetValue): number | null {
   return null;
 }
 
-// Foundry PF2e size slugs (verified: exactly this 6-value set, D29-32/
+// Foundry PF2e size slugs (verified: exactly this 6-value set, per
 // facetKeys.ts provenance — creature 85.6%/6, hazard 90.2%/2 (a subset),
 // vehicle 68.6%/4 (also a subset), ancestry 50.5%/4 (also a subset)).
-// Exported (P10, D29-95) so `entityPage.tsx`'s header size chip reuses this
+// Exported so `entityPage.tsx`'s header size chip reuses this
 // SAME map rather than writing a third one — the listing column
 // (`columnDefs.tsx`'s `renderSize`) deliberately keeps its own raw
 // uppercased-slug rendering (a table-density convention), the header wants
@@ -168,7 +168,7 @@ export const SIZE_LABELS: Readonly<Record<string, string>> = {
   grg: "Gargantuan",
 };
 
-// `system.time.value` (feat/creature-ability `actionCost`, D29-32/
+// `system.time.value` (feat/creature-ability `actionCost`, per
 // facetKeys.ts provenance — feat 70.5%/6, creature-ability 56.5%/6).
 const ACTION_COST_LABELS: Readonly<Record<string, string>> = {
   "1": "1 Action",
@@ -179,10 +179,9 @@ const ACTION_COST_LABELS: Readonly<Record<string, string>> = {
   passive: "Passive",
 };
 
-// Exported (P12 S3, D29-119) so `ClassPage.tsx`'s Core Traits box reuses this
-// SAME map for the key-ability row ("Strength or Dexterity") rather than
-// writing a third one — same "additive reuse, no behavior change" posture as
-// `SIZE_LABELS`'s own P10 export comment above.
+// Exported so `ClassPage.tsx`'s Core Traits box reuses this SAME map for the
+// key-ability row ("Strength or Dexterity") rather than writing a third one,
+// as with `SIZE_LABELS` above.
 export const ABILITY_LABELS: Readonly<Record<string, string>> = {
   str: "Strength",
   dex: "Dexterity",
@@ -329,7 +328,7 @@ export function labelFor(def: FacetDef, value: string): string {
 }
 
 /**
- * P13 S1 (D29-122) — the precedence-respecting label a facet option should
+ * The precedence-respecting label a facet option should
  * actually DISPLAY: `def`'s own `labelMap` entry wins outright (checked
  * directly against the map, never via `labelFor`'s raw-value fallback,
  * which would be indistinguishable from "no entry" once returned);

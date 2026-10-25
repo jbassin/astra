@@ -5,10 +5,9 @@
 // runs under a real `window` — same convention `BrowseListing.test.tsx`
 // already uses (opting into jsdom per-file, plain "node" is codex's default).
 //
-// `@/server/corpusFns` is mocked wholesale — `memoizedEntity` (P8 S3,
-// D29-82) only cares HOW MANY TIMES the underlying `getEntityPage` fetch
-// runs, never its real payload shape (that's `entityPageData.test.ts`'s
-// job, testing `resolveEntityPageData` directly).
+// `@/server/corpusFns` is mocked wholesale — `memoizedEntity` only cares
+// HOW MANY TIMES the underlying `getEntityPage` fetch runs, never its real
+// payload shape (that's `entityPageData.test.ts`'s job, testing `resolveEntityPageData` directly).
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -33,7 +32,7 @@ afterEach(() => {
   getCategoryListing.mockReset();
 });
 
-describe("memoizedEntity (P8 S3, D29-82)", () => {
+describe("memoizedEntity", () => {
   it("fetches once and caches by (category, slug) — a revisit is a cache hit, not a re-fetch", async () => {
     getEntityPage.mockResolvedValue({ entity: { name: "Heal" } });
     const a = await memoizedEntity("spell", "heal");

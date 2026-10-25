@@ -31,14 +31,14 @@ function parseQuery(queryString: string): Record<string, unknown> {
 }
 
 // ---------------------------------------------------------------------------
-// the literal spec example, run through the REAL `@tanstack/router-core`
-// query-string parser (not a hand simulation) — this is what actually proves
-// the B1 gotcha (a `+` include sigil would be silently eaten by
+// the documented example query string, run through the REAL
+// `@tanstack/router-core` query-string parser (not a hand simulation) — this
+// is what actually proves the gotcha (a `+` include sigil would be silently eaten by
 // `URLSearchParams`) never regresses, since `defaultParseSearch` IS the
 // pipeline stage that does that eating.
 // ---------------------------------------------------------------------------
 
-describe("urlState: the literal D29-35 example query string, via the real router parser", () => {
+describe("urlState: the documented example query string, via the real router parser", () => {
   const QUERY =
     "?traits=fire,-agile&level=-2..5&rarity=rare,unique&f.actionCost=1,reaction&q=drag&legacy=1";
 
@@ -73,7 +73,7 @@ describe("urlState: the literal D29-35 example query string, via the real router
     expect(state.facetEnum.get("actionCost")).toEqual(new Set(["1"]));
   });
 
-  it("a bare `+` (the B1 sigil this codec deliberately avoids) decodes to a space, proving why include has no marker", () => {
+  it("a bare `+` (the sigil this codec deliberately avoids) decodes to a space, proving why include has no marker", () => {
     // Demonstrates the actual failure mode a `+`-prefixed include sigil would
     // hit: `URLSearchParams`/`qss` treat `+` as an encoded space.
     const raw = parseQuery("?traits=%2Bholy");
@@ -85,7 +85,7 @@ describe("urlState: the literal D29-35 example query string, via the real router
   });
 });
 
-describe("urlState: empty state <-> clean URL (D29-35)", () => {
+describe("urlState: empty state <-> clean URL", () => {
   it("the empty filter state encodes to {} (a clean URL)", () => {
     const search = filterStateToSearch(emptyFilterState());
     expect(search).toEqual({});
@@ -110,8 +110,8 @@ describe("urlState: range param decode/encode", () => {
     expect(decodeRangeParam("..5")).toEqual({ max: 5 });
     expect(decodeRangeParam("-2..")).toEqual({ min: -2 });
   });
-  // P6 D29-61(d) — the `!`-bang forever-decode contract: `RangeFilter` no
-  // longer has a `has-value` field at all (D29-61(b)), so a trailing `!` on
+  // The `!`-bang forever-decode contract: `RangeFilter` no longer has a
+  // `has-value` field at all, so a trailing `!` on
   // an old shared link is now pure legacy syntax — TOLERATED (never a parse
   // failure) and IGNORED (contributes nothing to the decoded filter), never
   // re-emitted by the encoder.
@@ -141,7 +141,7 @@ describe("urlState: range param decode/encode", () => {
   });
 });
 
-// Found via a REAL-corpus S3 spot check (not spec'd up front): `creature.
+// Found via a REAL-corpus spot check: `creature.
 // family` values are compound comma-bearing strings (e.g. "Dragon, Black",
 // 380 occurrences measured) and `source.book` titles carry embedded commas
 // too (240 measured) — a naive `.split(",")` silently shredded them into two
@@ -197,7 +197,7 @@ describe("urlState: comma-containing values (the real-corpus family/book bug)", 
     expect(restored.facetEnum.get("family")).toEqual(new Set(["Weird\\Family, Name"]));
   });
 
-  it("the spec's literal comma-free examples stay BYTE-IDENTICAL (no escaping overhead)", () => {
+  it("the documented comma-free examples stay BYTE-IDENTICAL (no escaping overhead)", () => {
     const original = {
       ...emptyFilterState(),
       traits: { include: new Set(["fire"]), exclude: new Set(["agile"]) },
@@ -270,7 +270,7 @@ describe("urlState: hostile / unknown params never throw", () => {
     expect(validateBrowseSearch({ superseded: "yes" }).superseded).toBeUndefined();
   });
 
-  describe("P4.5 D29-48: legacy=1/legacy=true decode as a superseded alias, forever", () => {
+  describe("legacy=1/legacy=true decode as a superseded alias, forever", () => {
     it("legacy=1 decodes to superseded:true", () => {
       expect(validateBrowseSearch({ legacy: 1 }).superseded).toBe(true);
     });
@@ -295,7 +295,7 @@ describe("urlState: hostile / unknown params never throw", () => {
     });
   });
 
-  describe("P8 S1 (D29-78): ?sort= widened to name|-name|level|-level|<facetKey>|-<facetKey>|rarity|-rarity", () => {
+  describe("?sort= accepts name|-name|level|-level|<facetKey>|-<facetKey>|rarity|-rarity", () => {
     it("a genuinely unknown key (not real ANYWHERE) falls back to absent, same as before", () => {
       expect(validateBrowseSearch({ sort: "banana" }).sort).toBeUndefined();
       expect(validateBrowseSearch({ sort: "-banana" }).sort).toBeUndefined();
@@ -342,8 +342,8 @@ describe("urlState: hostile / unknown params never throw", () => {
 
 // ---------------------------------------------------------------------------
 // property round-trip: encode -> decode -> encode is stable, over a
-// hand-rolled deterministic PRNG (no fast-check dependency in this repo, D29
-// hard rule: no new dependencies).
+// hand-rolled deterministic PRNG (no fast-check dependency in this repo, by
+// the no-new-dependencies rule).
 // ---------------------------------------------------------------------------
 
 function mulberry32(seed: number): () => number {
@@ -377,7 +377,7 @@ const ENUM_FACET_KEYS = Object.entries(FACET_DEFS)
 const RANGE_FACET_KEYS = Object.entries(FACET_DEFS)
   .filter(([, def]) => def.widget === "range")
   .map(([key]) => key);
-// P8 S1 (D29-78 adversarial M6) — the widened `?sort=` value space:
+// The `?sort=` value space:
 // name|-name|level|-level|rarity|-rarity|<facetKey>|-<facetKey>, "rarity"
 // included even though it's not a `FACET_DEFS` key at all (`urlState.ts`'s
 // own `SORT_CORE_KEYS` special case — a real `columnDefs.ts` sort key that
@@ -501,14 +501,12 @@ describe("urlState: BrowseSearch typing sanity", () => {
 });
 
 // ---------------------------------------------------------------------------
-// P4.5 S4 (D29-49) — `?entry=` codec + the B3 preserve-across-facet-write
-// resync (`withEntryPreserved`). Independent of the facet-param codec above
-// (spec's own text: "a new URL-codec round-trip test for `entry`
-// (independent of the facet params, since it's addressed by a plain string,
-// not a Set/Map)").
+// `?entry=` codec + the preserve-across-facet-write resync
+// (`withEntryPreserved`). Independent of the facet-param codec above, since
+// `entry` is addressed by a plain string, not a Set/Map.
 // ---------------------------------------------------------------------------
 
-describe("urlState: `entry` codec (P4.5 S4, D29-49)", () => {
+describe("urlState: `entry` codec", () => {
   it("decodes a plain entry param via the real router parser", () => {
     const raw = parseQuery("?entry=fireball");
     expect(validateBrowseSearch(raw).entry).toBe("fireball");
@@ -545,7 +543,7 @@ describe("urlState: `entry` codec (P4.5 S4, D29-49)", () => {
   });
 });
 
-describe("urlState: withEntryPreserved (adversarial B3)", () => {
+describe("urlState: withEntryPreserved", () => {
   it("preserves `entry` across an ordinary facet-state write", () => {
     const state = { ...emptyFilterState(), rarity: new Set(["rare"]) };
     const currentSearch: BrowseSearch = { entry: "fireball" };

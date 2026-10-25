@@ -13,7 +13,7 @@ function row(overrides: Partial<IndexRow> & Pick<IndexRow, "id" | "name">): Inde
   };
 }
 
-/** A synthetic, hermetic >60-row fixture (never the real corpus — gate G) —
+/** A synthetic, hermetic >60-row fixture (never the real corpus) —
  * zero-padded names so lexicographic order == numeric order, letting every
  * assertion below check ordering by plain string comparison. */
 function manyRows(count: number): IndexRow[] {
@@ -25,7 +25,7 @@ function manyRows(count: number): IndexRow[] {
   );
 }
 
-describe("initialWindowRange (D29-84 — the derived, not asserted, SSR window)", () => {
+describe("initialWindowRange (the derived, not asserted, SSR window)", () => {
   it("40 visible rows (960px / 24px) + 20 overscan on EACH side -> exactly [0, 60) for any count >= 60", () => {
     expect(initialWindowRange(60)).toEqual({ startIndex: 0, endIndex: 60 });
     expect(initialWindowRange(8_485)).toEqual({ startIndex: 0, endIndex: 60 });
@@ -48,8 +48,8 @@ describe("initialWindowRange (D29-84 — the derived, not asserted, SSR window)"
   });
 });
 
-describe("computeWindowedListing (D29-89 — the loader's SSR-only windowed projection)", () => {
-  it("slices exactly the derived window, in ascending name order (the default sort, gate B)", () => {
+describe("computeWindowedListing (the loader's SSR-only windowed projection)", () => {
+  it("slices exactly the derived window, in ascending name order (the default sort)", () => {
     const rows = manyRows(200);
     const result = computeWindowedListing("feat", rows, {});
     expect(result.rows).toHaveLength(60);
@@ -92,10 +92,10 @@ describe("computeWindowedListing (D29-89 — the loader's SSR-only windowed proj
     expect(on.eligibleCount).toBe(6);
   });
 
-  // D29-111 (P11 S4) — `hiddenCount`: the reveal control's "N hidden" total,
+  // `hiddenCount`: the reveal control's "N hidden" total,
   // fixed per category and INDEPENDENT of the superseded toggle (unlike
   // `eligibleCount` above, which flips meaning with it).
-  describe("hiddenCount (D29-111)", () => {
+  describe("hiddenCount", () => {
     it("counts every superseded row in the category, regardless of the superseded toggle", () => {
       const rows = [
         ...manyRows(5),
@@ -135,10 +135,9 @@ describe("computeWindowedListing (D29-89 — the loader's SSR-only windowed proj
     });
   });
 
-  // P9 S1 — `entryVisible`: found live (a fresh `?entry=` deep link beyond
-  // the SSR window incorrectly rendered "isn't shown under the current
-  // filters" under NO active filter at all) while verifying this slice
-  // against the real corpus; regression-guarded here hermetically.
+  // `entryVisible`: a fresh `?entry=` deep link beyond the SSR window once
+  // rendered "isn't shown under the current filters" under NO active filter
+  // at all; regression-guarded here hermetically.
   it("entryVisible is undefined when no entrySlug is given", () => {
     const result = computeWindowedListing("feat", manyRows(200), {});
     expect(result.entryVisible).toBeUndefined();

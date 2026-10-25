@@ -12,7 +12,7 @@ import {
   parsePriceToCopper,
 } from "./facetDefs";
 
-describe("facetDefs.ts: D29-32 conformance", () => {
+describe("facetDefs.ts: conformance with FACET_KEYS", () => {
   it("FACET_DEFS keys == the union of every FACET_KEYS entry, exactly", () => {
     const defKeys = Object.keys(FACET_DEFS).sort();
     expect(defKeys).toEqual([...allFacetKeys()]);
@@ -100,7 +100,7 @@ describe("facetDefs.ts: D29-32 conformance", () => {
   });
 });
 
-describe("parsePriceToCopper (D29-32)", () => {
+describe("parsePriceToCopper", () => {
   it.each([
     ["1700 gp", 170_000],
     ["2 sp", 20],
@@ -122,7 +122,7 @@ describe("parsePriceToCopper (D29-32)", () => {
   });
 });
 
-describe("numericValueFor / enumTagsFor (D29-32 missing-key + parse plumbing)", () => {
+describe("numericValueFor / enumTagsFor (missing-key + parse plumbing)", () => {
   it("numericValueFor parses price to copper via the def's parseNumeric", () => {
     const def = FACET_DEFS.price;
     expect(def).toBeDefined();

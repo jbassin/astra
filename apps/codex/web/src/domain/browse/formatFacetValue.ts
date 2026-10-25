@@ -1,17 +1,16 @@
-// P13 S1 (D29-122) — the facet-VALUE display humanizer. Distinct from
+// The facet-VALUE display humanizer. Distinct from
 // `displayCategoryName.ts` (which humanizes a CATEGORY name, e.g. "creature-
 // ability" -> "Creature Ability") and from `facetDefs.ts`'s own per-key
 // `labelMap` (which owns a SPECIFIC key's raw-value -> label overrides,
 // e.g. `size`'s `grg` -> "Gargantuan"). This module is the GENERIC fallback
 // every enum facet's raw value flows through when its own def carries no
-// `labelMap` entry for that value — the review-corrected mechanism (a
-// generic "compound-word split" is mechanically impossible on a GLUED token
-// like "ancestryfeature": there's no delimiter to split on) — a curated
-// exceptions map is what actually fixes those.
+// `labelMap` entry for that value. A generic "compound-word split" is
+// mechanically impossible on a GLUED token like "ancestryfeature" (there's no
+// delimiter to split on); a curated exceptions map is what fixes those.
 //
-// PRECEDENCE (review-pinned, spec D29-122): a facet's existing `facetDefs.ts`
-// `labelMap` entry always wins outright; this module is the fallback ONLY
-// for values with no labelMap entry. `facetDefs.ts`'s own `humanizedLabelFor`
+// PRECEDENCE: a facet's existing `facetDefs.ts` `labelMap` entry always wins
+// outright; this module is the fallback ONLY for values with no labelMap
+// entry. `facetDefs.ts`'s own `humanizedLabelFor`
 // implements that precedence (never call this module BEFORE checking a
 // def's labelMap, and never run it a second time over a labelMap's own
 // output — see that function's doc comment for the "no double-formatting"
@@ -22,11 +21,10 @@
 // wiring) can reach for it with no layering/bundle concern whatsoever.
 
 /**
- * Curated exceptions — the mechanism the spec's adversarial review pinned
- * (`"the curated map IS the mechanism"`): every entry here exists because
- * S1's real-corpus sweep (88 categories, every `FACET_KEYS`-allowlisted enum
- * facet — see the sweep record in the S1 build note) found a value the
- * generic pass below can't fix on its own. Two families:
+ * Curated exceptions (`"the curated map IS the mechanism"`): every entry
+ * here exists because a real-corpus sweep (88 categories, every
+ * `FACET_KEYS`-allowlisted enum facet) found a value the generic pass below
+ * can't fix on its own. Two families:
  *
  *   - **glued compounds** (no delimiter at all): `feat`/`deity`/
  *     `creature-ability`'s `itemCategory` facet ("ancestryfeature" /
@@ -37,8 +35,8 @@
  *     and needs NO entry here — only the glued "worn"-prefixed family does).
  *
  * `creature`/`hazard`/`vehicle`/`ancestry`'s `facets.size` codes are ALSO
- * duplicated here (`tiny`/`sm`/`med`/`lg`/`huge`/`grg`) per the spec's own
- * explicit pin, even though `facetDefs.ts`'s own `SIZE_LABELS` labelMap
+ * duplicated here (`tiny`/`sm`/`med`/`lg`/`huge`/`grg`) on purpose, even
+ * though `facetDefs.ts`'s own `SIZE_LABELS` labelMap
  * already covers every real call site and wins first (this module's own
  * precedence rule, above) — so a size VALUE reaching this formatter via any
  * OTHER path (no `FacetDef`/labelMap in scope at all) still humanizes
@@ -51,7 +49,7 @@ const CURATED_FACET_VALUE_LABELS: Readonly<Record<string, string>> = {
   deityboon: "Deity Boon",
 
   // --- equipment/weapon `usage` — Foundry's own glued "worn<slot>" slugs
-  // (24 distinct values measured against the real corpus, S1's sweep) ---
+  // (24 distinct values measured against the real corpus) ---
   wornamulet: "Worn (Amulet)",
   wornanklets: "Worn (Anklets)",
   wornarmbands: "Worn (Armbands)",
@@ -88,7 +86,7 @@ const CURATED_FACET_VALUE_LABELS: Readonly<Record<string, string>> = {
 };
 
 /** Small words that stay lowercase in the generic title-case pass UNLESS
- * they're the very first token — the spec's own worked example
+ * they're the very first token — the worked example
  * ("held-in-one-hand" -> "Held in One Hand", not "Held In One Hand") pins
  * this: a naive per-word capitalize would over-capitalize "in". */
 const TITLE_CASE_STOPWORDS: ReadonlySet<string> = new Set([
@@ -136,7 +134,7 @@ const BRACKET_LIST_RE = /^\[([\s\S]*)]$/;
 /**
  * Parses a Python-repr-shaped stringified list (`"['arcane', 'divine']"` —
  * the corpus's own serialization artifact on SOME array-typed facet values,
- * per the spec's explicit D29-122 pin) into its member strings, stripping
+ * which must be unpacked) into its member strings, stripping
  * single/double quotes and whitespace per element. `null` when `value`
  * isn't bracket-wrapped at all (the overwhelmingly common case — real
  * facet-value strings are never accidentally bracket-wrapped). An empty

@@ -7,7 +7,7 @@ import { fixtureCorpusRoot } from "@/server/corpusFs";
 import { enumTagsFor, facetDefFor, humanizedLabelFor } from "./facetDefs";
 import { formatFacetValue } from "./formatFacetValue";
 
-describe("formatFacetValue (D29-122)", () => {
+describe("formatFacetValue", () => {
   it("empty string -> Unspecified", () => {
     expect(formatFacetValue("")).toBe("Unspecified");
   });
@@ -66,13 +66,13 @@ describe("formatFacetValue (D29-122)", () => {
   });
 });
 
-describe("humanizedLabelFor precedence (D29-122): labelMap wins, formatFacetValue is fallback-only", () => {
+describe("humanizedLabelFor precedence: labelMap wins, formatFacetValue is fallback-only", () => {
   it("a def WITH a labelMap entry for the value returns that entry verbatim, never re-formatted", () => {
     const def = facetDefFor("size");
     expect(def).toBeDefined();
     if (!def) return;
     // "med" -> "Medium" via facetDefs.ts's own SIZE_LABELS — formatFacetValue
-    // ALSO maps "med" -> "Medium" (D29-122's own duplication pin), so this
+    // ALSO maps "med" -> "Medium" (a deliberate duplicate), so this
     // proves idempotence (whichever path serves it, the string is identical
     // and is never run through the formatter a second time on top).
     expect(humanizedLabelFor(def, "med")).toBe("Medium");
@@ -111,7 +111,7 @@ describe("humanizedLabelFor precedence (D29-122): labelMap wins, formatFacetValu
   });
 });
 
-describe("formatFacetValue sweep gate (D29-122): no bracket/quote residue reaches a display label anywhere in the real facet-value corpus", () => {
+describe("formatFacetValue sweep: no bracket/quote residue reaches a display label anywhere in the real facet-value corpus", () => {
   it("every observed enum-facet tag across the fixture corpus formats to bracket/quote-free text", () => {
     const reader = createCorpusReader(fixtureCorpusRoot());
     let checkedAny = false;

@@ -1,9 +1,9 @@
-// P4.5 S4 (D29-49, adversarial B2) — the `/{category}` split-view route's
+// The `/{category}` split-view route's
 // module-scoped, CATEGORY-KEYED client-side memo around `getCategoryListing`.
 // Mirrors `pagefindClient.ts`'s memoized-module-promise idiom (this repo's
 // existing pattern for exactly this "fetch once, share across the whole page
 // load" shape) — without it, `loaderDeps` (required so the loader re-runs at
-// all on a row click, B1) makes the naive loader re-fetch the ENTIRE
+// all on a row click) makes the naive loader re-fetch the ENTIRE
 // 8,485-row `feat` payload over the network on every single row click, a
 // silently-expensive regression the latency gates alone wouldn't catch.
 //
@@ -60,8 +60,8 @@ export function _resetListingClientForTests(): void {
 }
 
 // ---------------------------------------------------------------------------
-// P8 S3 (D29-82) — a parallel per-slug entity memo. `?entry=<slug>` split-view
-// previews (row click AND, new here, j/k-focus-follow) and the standalone
+// A parallel per-slug entity memo. `?entry=<slug>` split-view
+// previews (row click AND j/k-focus-follow) and the standalone
 // `/{category}/{slug}` full-page route both resolve through this ONE cache,
 // so pressing Enter to open the full page after j/k-scanning past it is a
 // cache hit, not a second network round-trip — same `typeof window` SSR

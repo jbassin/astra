@@ -20,7 +20,7 @@ import { searchToFilterState, withEntryPreserved, type BrowseSearch } from "./ur
 
 // jsdom (pinned 29.1.1, `vitest.config.ts`'s own environment) doesn't yet
 // implement `HTMLDialogElement.showModal()`/`.close()` (real Chromium —
-// Playwright's actual test target for the S4 acceptance gates — does) — a
+// Playwright's test target — does) — a
 // standard testing-library-era polyfill so `BrowseListing.tsx`'s filter
 // drawer can stay idiomatic (real `showModal`/`close`) rather than working
 // around a jsdom gap in production code. `open` attribute reflection (used
@@ -122,12 +122,12 @@ function Harness({
   );
 }
 
-/** `EntityRenderPane`'s `<Popover/>` reads `useRouterState` (D29-28) — it
+/** `EntityRenderPane`'s `<Popover/>` reads `useRouterState` — it
  * needs a real router context to mount at all, same convention
  * `Omnibar.test.tsx` already uses for its own router-dependent island. Only
  * the two tests that actually render entity DATA (and therefore mount
  * `EntityRenderPane`) need this; every other test in this file renders a
- * bare `BrowseListing` with no router context, same as before P4.5 S4. */
+ * bare `BrowseListing` with no router context. */
 function renderWithRouter(component: () => ReactElement) {
   const rootRoute = createRootRoute({ component });
   const router = createRouter({ routeTree: rootRoute });
@@ -156,9 +156,9 @@ class FakeResizeObserver {
   }
 }
 
-/** P13 S2 (D29-123) — the reactive counterpart to `mockSplitViewViewport`:
- * that helper is a STATIC stand-in (no `change` events ever fire), fine for
- * every pre-P13 click-time `matchMedia` read, but `useTwoColumnFilterTier`
+/** The reactive counterpart to `mockSplitViewViewport`: that helper is a
+ * STATIC stand-in (no `change` events ever fire), fine for every click-time
+ * `matchMedia` read, but `useTwoColumnFilterTier`
  * (`BrowseListing.tsx`) needs a `MediaQueryList` that can actually FIRE a
  * `change` event mid-test to exercise "tier-crossing while open closes the
  * panel" — jsdom has no real `matchMedia` at all (same gap
@@ -199,7 +199,7 @@ function StatefulHarness() {
   );
 }
 
-describe("BrowseListing (D29-35)", () => {
+describe("BrowseListing", () => {
   it("renders every row and the 'N of M shown' count with no filters active", () => {
     render(<StatefulHarness />);
     expect(screen.getByText("3 of 3 shown")).not.toBeNull();
@@ -208,7 +208,7 @@ describe("BrowseListing (D29-35)", () => {
     expect(screen.getByText("Charlie")).not.toBeNull();
   });
 
-  it("does not navigate rows to popovers (D29-28 carried forward — no data-crossref on listing rows)", () => {
+  it("does not navigate rows to popovers (no data-crossref on listing rows)", () => {
     const { container } = render(<StatefulHarness />);
     expect(container.querySelector("[data-crossref]")).toBeNull();
   });
@@ -289,7 +289,7 @@ describe("BrowseListing (D29-35)", () => {
     expect(screen.queryByText("Alpha")).toBeNull();
   });
 
-  it("collision disambiguation appends source.book (abbreviation-with-fallback, R10/D29-68) when two visible rows share a name", () => {
+  it("collision disambiguation appends source.book (abbreviation-with-fallback) when two visible rows share a name", () => {
     const collidingRows: IndexRow[] = [
       row({ id: "feat/one", name: "Heal", source: { book: "Player Core", license: "ORC" } }),
       row({ id: "feat/two", name: "Heal", source: { book: "Secrets of Magic", license: "OGL" } }),
@@ -333,13 +333,13 @@ describe("BrowseListing (D29-35)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// D29-111 (P11 S4, R3, #13/#3e/#3f) — the superseded-reveal control: the
-// count-row's "Show N hidden (superseded) →"/"Hide superseded ←" toggle, and
-// the all-superseded empty-state copy for the 10 real-corpus categories with
+// The superseded-reveal control: the count-row's "Show N hidden
+// (superseded) →"/"Hide superseded ←" toggle, and the all-superseded
+// empty-state copy for the 10 real-corpus categories with
 // zero non-superseded rows (e.g. /doctrine).
 // ---------------------------------------------------------------------------
 
-describe("BrowseListing: superseded-reveal control (D29-111)", () => {
+describe("BrowseListing: superseded-reveal control", () => {
   it("renders no reveal control at all when the category has no superseded rows", () => {
     render(<StatefulHarness />);
     expect(screen.queryByText(/hidden \(superseded\)/)).toBeNull();
@@ -455,7 +455,7 @@ describe("BrowseListing: superseded-reveal control (D29-111)", () => {
     expect(screen.queryByText(/superseded \(legacy\)/)).toBeNull();
   });
 
-  it("hiddenCountOverride wins over the locally-computed count while present (the P9 SSR-window pending case)", () => {
+  it("hiddenCountOverride wins over the locally-computed count while present (the SSR-window pending case)", () => {
     render(
       <BrowseListing
         category="feat"
@@ -472,7 +472,7 @@ describe("BrowseListing: superseded-reveal control (D29-111)", () => {
   });
 });
 
-describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
+describe("BrowseListing split view", () => {
   afterEach(() => {
     // jsdom has no real `matchMedia` of its own (unlike Playwright's actual
     // Chromium target) — undo the per-test stand-in rather than leaking it
@@ -499,12 +499,12 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
     // defaults `detail` to 0 unless told otherwise, indistinguishable from
     // a keyboard-triggered activation click without this — see the
     // `detail === 0` test right below, which exercises exactly that other
-    // branch, D29-82's own "Enter is native link activation" case).
+    // branch, the "Enter is native link activation" case).
     fireEvent.click(link, { detail: 1 });
     expect(onEntrySelect).toHaveBeenCalledWith("alpha");
   });
 
-  it("P8 S3 (D29-82) — a KEYBOARD-triggered click (detail: 0, e.g. Enter on a focused row) does NOT call onEntrySelect — native link activation opens the full page instead of the split-view preview", () => {
+  it("a KEYBOARD-triggered click (detail: 0, e.g. Enter on a focused row) does NOT call onEntrySelect — native link activation opens the full page instead of the split-view preview", () => {
     mockSplitViewViewport(true);
     const onEntrySelect = vi.fn();
     render(
@@ -522,8 +522,8 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
     // Real browsers set `detail: 0` on a keyboard-activated (Enter/Space)
     // click, vs >= 1 for a genuine mouse click — the one reliable signal
     // `handleRowClick` uses to let Enter through to native navigation
-    // rather than intercepting it into the split-view preview (spec's own
-    // "no separate Enter handler").
+    // rather than intercepting it into the split-view preview (there is
+    // no separate Enter handler).
     fireEvent.click(link, { detail: 0 });
     expect(onEntrySelect).not.toHaveBeenCalled();
   });
@@ -546,7 +546,7 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
     expect(onEntrySelect).not.toHaveBeenCalled();
   });
 
-  it("row href is the plain canonical entity URL, and carries ?superseded=1 when the view is widened (adversarial M7)", () => {
+  it("row href is the plain canonical entity URL, and carries ?superseded=1 when the view is widened", () => {
     const plain = render(
       <BrowseListing
         category="feat"
@@ -593,15 +593,15 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
     expect(headings.length).toBeGreaterThanOrEqual(2);
   });
 
-  it("a facet change preserves `entry` (adversarial B3) — clicking a trait chip does not deselect the right pane", async () => {
+  it("a facet change preserves `entry` — clicking a trait chip does not deselect the right pane", async () => {
     const alpha = ROWS[0] as IndexRow;
     renderWithRouter(() => <Harness entrySlug="alpha" entryData={entityPageDataFor(alpha)} />);
     const filtersButton = await screen.findByRole("button", { name: /^Filters/ });
     fireEvent.click(filtersButton);
     const chip = screen.getByRole("button", { name: /agile/ });
     fireEvent.click(chip); // include "agile" -> filters Alpha OUT of the visible list
-    // P13 S2 (D29-123) — "opening... preserves `?entry=`... closing restores
-    // the still-selected preview": no `matchMedia` mock is installed in this
+    // "Opening... preserves `?entry=`... closing restores the
+    // still-selected preview": no `matchMedia` mock is installed in this
     // describe block, so `isTwoColumnTier` reads its SSR-safe default
     // (`true`) — the pane occupies the entry-pane cell while open, hiding
     // the preview WITHOUT touching `entry` at all; close it (the pane's own
@@ -625,9 +625,9 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
   });
 });
 
-describe("BrowseListing active-filter pills + drawer (P4.5 S4, D29-49)", () => {
+describe("BrowseListing active-filter pills + drawer", () => {
   afterEach(() => {
-    // P13 S2 (D29-123) — undo any per-test `matchMedia` stand-in rather than
+    // Undo any per-test `matchMedia` stand-in rather than
     // leaking it into later tests (only the row-click-closes-the-pane case
     // below installs one, but a thrown assertion mid-test would otherwise
     // skip an inline cleanup line).
@@ -645,33 +645,31 @@ describe("BrowseListing active-filter pills + drawer (P4.5 S4, D29-49)", () => {
     fireEvent.click(screen.getByRole("button", { name: /fire/ }));
     expect(screen.getByLabelText("Active filters")).not.toBeNull();
     expect(screen.getByText("1 of 3 shown")).not.toBeNull();
-    // P13 S2 (D29-123) — DELIBERATELY CHANGED PIN: "Clear all" is no longer
-    // unique — the pane header (D29-124) carries its OWN "Clear all" too.
-    // Close the pane (the Filters toggle) first, disambiguating back down
-    // to the pills row's own button, exactly like a real user would (they
-    // can't see two "Clear all"s at once either — only one container is
-    // ever live, D29-123's own "exactly one container" pin).
+    // "Clear all" is not unique — the pane header carries its OWN "Clear
+    // all" too. Close the pane (the Filters toggle) first, disambiguating
+    // back down to the pills row's own button, exactly like a real user
+    // would (they can't see two "Clear all"s at once either — only one
+    // filter container is ever live).
     fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
     fireEvent.click(screen.getByRole("button", { name: "Clear all" }));
     expect(screen.getByText("3 of 3 shown")).not.toBeNull();
     expect(screen.queryByLabelText("Active filters")).toBeNull();
   });
 
-  it("P13 S2 (D29-123) — DELIBERATELY CHANGED PIN: the pane (not a <dialog>) carries the unmodified FacetPanel on the two-column tier, and opening it never mutates state", () => {
+  it("the pane (not a <dialog>) carries the unmodified FacetPanel on the two-column tier, and opening it never mutates state", () => {
     render(<StatefulHarness />);
     expect(screen.getByText("3 of 3 shown")).not.toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
     // No `matchMedia` mock in this describe block -> `isTwoColumnTier` reads
     // its SSR-safe default (`true`) -> the pane, not the dialog, is the live
-    // container (D29-123's own "two-column tier" branch) — the OLD pin here
-    // was `document.querySelector("dialog .codex-facet-panel")`.
+    // container (the "two-column tier" branch).
     expect(document.querySelector(".codex-filter-pane .codex-facet-panel")).not.toBeNull();
     expect(document.querySelector("dialog .codex-facet-panel")).toBeNull();
     // no filter got applied just by opening the pane.
     expect(screen.getByText("3 of 3 shown")).not.toBeNull();
   });
 
-  it("P13 S2 (D29-123) — the Filters button toggles aria-expanded and returns to it on close", () => {
+  it("the Filters button toggles aria-expanded and returns to it on close", () => {
     render(<StatefulHarness />);
     const filtersButton = screen.getByRole("button", { name: /^Filters/ });
     expect(filtersButton.getAttribute("aria-expanded")).toBe("false");
@@ -679,16 +677,16 @@ describe("BrowseListing active-filter pills + drawer (P4.5 S4, D29-49)", () => {
     expect(filtersButton.getAttribute("aria-expanded")).toBe("true");
     fireEvent.click(screen.getByRole("button", { name: "Close filters" }));
     expect(filtersButton.getAttribute("aria-expanded")).toBe("false");
-    expect(document.activeElement).toBe(filtersButton); // D29-123: close -> focus returns to the Filters button
+    expect(document.activeElement).toBe(filtersButton); // close -> focus returns to the Filters button
   });
 
-  it("P13 S2 (D29-123) — opening focuses the pane's ✕ button", () => {
+  it("opening focuses the pane's ✕ button", () => {
     render(<StatefulHarness />);
     fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Close filters" }));
   });
 
-  it("P13 S2 (D29-123) — row click while filtering closes the pane and shows that entry's preview", () => {
+  it("row click while filtering closes the pane and shows that entry's preview", () => {
     mockSplitViewViewport(true);
     render(<StatefulHarness />);
     fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
@@ -697,7 +695,7 @@ describe("BrowseListing active-filter pills + drawer (P4.5 S4, D29-49)", () => {
     expect(document.querySelector(".codex-filter-pane")).toBeNull();
   });
 
-  it("P13 S2 (D29-123) — the focus-after-mount effect never steals focus from an open pane", () => {
+  it("the focus-after-mount effect never steals focus from an open pane", () => {
     render(<StatefulHarness />);
     // Focus a row first (so the focus-after-mount effect has a persisted
     // `focusedSlug` to act on), then open the pane and change a facet — a
@@ -714,7 +712,7 @@ describe("BrowseListing active-filter pills + drawer (P4.5 S4, D29-49)", () => {
   });
 });
 
-describe("BrowseListing pane-swap tier-cross (P13 S2, D29-123)", () => {
+describe("BrowseListing pane-swap tier-cross", () => {
   afterEach(() => {
     Reflect.deleteProperty(window, "matchMedia");
   });
@@ -766,14 +764,14 @@ describe("BrowseListing pane-swap tier-cross (P13 S2, D29-123)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// P8 S1 (D29-78) — the table register: sortable headers, aria-sort on the
+// The table register: sortable headers, aria-sort on the
 // <th> (never the button), the jump strip/letter-header removal (already
 // covered above by the pre-existing "no letter anchors" assertion — the
 // table register makes that unconditionally true now, not just under level
 // sort), and the container-driven FULL/COMPACT collapse.
 // ---------------------------------------------------------------------------
 
-describe("BrowseListing: sortable column headers (D29-78 acceptance gate C)", () => {
+describe("BrowseListing: sortable column headers", () => {
   it("renders a real <table> with column headers, no Sort <select> anywhere", () => {
     render(<StatefulHarness />);
     expect(document.querySelector("table.codex-listing-table")).not.toBeNull();
@@ -840,7 +838,7 @@ describe("BrowseListing: sortable column headers (D29-78 acceptance gate C)", ()
   });
 });
 
-describe("BrowseListing: container-driven FULL/COMPACT column collapse (D29-78)", () => {
+describe("BrowseListing: container-driven FULL/COMPACT column collapse", () => {
   afterEach(() => {
     Reflect.deleteProperty(globalThis, "ResizeObserver");
     FakeResizeObserver.instances = [];
@@ -885,7 +883,7 @@ describe("BrowseListing: container-driven FULL/COMPACT column collapse (D29-78)"
 });
 
 // ---------------------------------------------------------------------------
-// P8 S3 (D29-82) — j/k real-focus browsing, the debounced+replace preview
+// j/k real-focus browsing, the debounced+replace preview
 // commit, the input/dialog/narrow-container guards, and the desktop-only
 // hint line.
 // ---------------------------------------------------------------------------
@@ -916,10 +914,10 @@ function PreviewHarness({
   );
 }
 
-describe("BrowseListing keyboard nav + hint (D29-82)", () => {
+describe("BrowseListing keyboard nav + hint", () => {
   afterEach(() => {
     vi.useRealTimers();
-    // P13 S2 (D29-123) — undo any per-test `matchMedia` stand-in
+    // Undo any per-test `matchMedia` stand-in
     // (`mockSplitViewViewport`) rather than leaking it into later tests in
     // this describe block, same convention `BrowseListing split view`'s own
     // afterEach documents.
@@ -962,14 +960,12 @@ describe("BrowseListing keyboard nav + hint (D29-82)", () => {
     expect(document.activeElement).toBe(input); // unchanged — "j" was free to type
   });
 
-  // P13 S2 (D29-123) — DELIBERATELY CHANGED PIN, meaning preserved: "j/k
-  // inert while focus is in filter UI" now covers BOTH live containers
+  // "j/k inert while focus is in filter UI" covers BOTH live containers
   // (`FILTER_UI_SELECTOR`, `BrowseListing.tsx`), not just a `<dialog>` — no
   // `matchMedia` mock here means `isTwoColumnTier` defaults `true`, so the
   // live container is the PANE (`.codex-filter-pane`, no "Done" button
-  // there — that's sheet-only, D29-124), and the close button (always
-  // present in both variants) is the stand-in focus target instead of the
-  // old sheet-only "Done".
+  // there — that's sheet-only), and the close button (present in both
+  // variants) is the focus target.
   it("guard: j/k are inert while focus sits inside the open filter pane", () => {
     render(<PreviewHarness onEntryPreview={() => {}} />);
     fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));

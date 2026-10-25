@@ -28,14 +28,14 @@ function renderCell(col: ColumnDef, r: IndexRow): string {
 }
 
 // ---------------------------------------------------------------------------
-// A: totality — every one of the real 88 categories -> a non-empty column
+// totality — every one of the real 88 categories -> a non-empty column
 // set (Name/Source are the guaranteed floor), over the SAME hermetic fixture
 // corpus `facetDefs.test.ts`'s own conformance suite and `corpusFs.test.ts`
 // already use (`fixtures/entities/`, all 88 category dirs present — proven
 // below by the exact count, not an approximation).
 // ---------------------------------------------------------------------------
 
-describe("columnDefs: totality (D29-78 acceptance gate A)", () => {
+describe("columnDefs: totality", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
   const categories = reader.categories();
 
@@ -89,8 +89,8 @@ describe("columnDefs: totality (D29-78 acceptance gate A)", () => {
   // NOTE: a "no column ever renders every row as an em-dash" check is NOT
   // run against the fixture corpus here — that invariant is guaranteed by
   // `facetKeys.ts`'s own emit-time ≥40%-coverage classifier over the REAL
-  // 44,808-entity corpus (independently verified for every group below,
-  // this slice's own report), not something a 1-3-row-per-category FIXTURE
+  // 44,808-entity corpus (independently verified for every group below),
+  // not something a 1-3-row-per-category FIXTURE
   // sample can reproduce (e.g. the fixture's single `equipment`/
   // `creature-ability` row happens to lack `price`/`bulk`/`actionCost` —
   // real coverage there is 51.7%/54.5%/70.5%). The em-dash-renders-for-
@@ -98,7 +98,7 @@ describe("columnDefs: totality (D29-78 acceptance gate A)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// D30-44 (0030 S1): the school-trait level-less guard — a stray `level` on
+// The school-trait level-less guard — a stray `level` on
 // ANY trait row (a future homebrew school-trait doc, e.g.) would flip
 // `categoryHasLevelCoverage("trait")` and put a Lvl column on every /trait
 // row site-wide (the trait category is otherwise uniformly level-less).
@@ -106,7 +106,7 @@ describe("columnDefs: totality (D29-78 acceptance gate A)", () => {
 // INVARIANT itself, not a snapshot of the fixture's current content.
 // ---------------------------------------------------------------------------
 
-describe("columnDefs: D30-44 school-trait level-less invariant", () => {
+describe("columnDefs: school-trait level-less invariant", () => {
   it("columnsFor('trait', rows) is unchanged when a level-less trait row is added", () => {
     const before = columnsFor("trait", [row({ id: "trait/a", name: "A" })]);
     const after = columnsFor("trait", [
@@ -129,7 +129,7 @@ describe("columnDefs: D30-44 school-trait level-less invariant", () => {
 });
 
 // ---------------------------------------------------------------------------
-// group column sets (D29-78's 5 sets), spot-checked against the spec text
+// group column sets (5 sets), spot-checked against the column design
 // ---------------------------------------------------------------------------
 
 describe("columnDefs: per-group column sets", () => {
@@ -197,10 +197,10 @@ describe("columnDefs: per-group column sets", () => {
 });
 
 // ---------------------------------------------------------------------------
-// C: rank comparators
+// rank comparators
 // ---------------------------------------------------------------------------
 
-describe("columnDefs: rank comparators (D29-78 acceptance gate C)", () => {
+describe("columnDefs: rank comparators", () => {
   it("rarity: uncommon < rare", () => {
     const rows = [
       row({ id: "a", name: "A", rarity: "rare" }),
@@ -247,7 +247,7 @@ describe("columnDefs: rank comparators (D29-78 acceptance gate C)", () => {
 
     const desc = sortRows(rows, "-actionCost", comparator).map((r) => r.id);
     expect(desc.slice(0, 3)).toEqual(["b", "e", "c"]); // 2 < reaction < free, REVERSED
-    expect(desc.slice(3).sort()).toEqual(["a", "d"]); // still LAST under desc — the D29-78 rule
+    expect(desc.slice(3).sort()).toEqual(["a", "d"]); // still LAST under desc — missing always sorts last
   });
 
   it("actionCost/castTime rank: the 8-token enumerated prefix orders correctly", () => {
@@ -400,19 +400,18 @@ describe("columnDefs: cell renderers", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Source/Range are deliberately NOT sortable — see this slice's own report
-// for the rationale (the spec's enumerated comparator list never names
-// either).
+// Source/Range are deliberately NOT sortable (the sortable-column list never
+// names either).
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// P11 S2 (D29-102) — every non-Name column's border-box `width` must leave
+// Every non-Name column's border-box `width` must leave
 // room for its own `padding: 4px 0.5rem` cell padding, not just its p99
-// rendered-character-count (the pre-fix state left ~3px of actual content
-// room on some columns under border-box sizing).
+// rendered-character-count (without it, border-box sizing left ~3px of
+// actual content room on some columns).
 // ---------------------------------------------------------------------------
 
-describe("columnDefs: non-Name widths reserve the cell's own padding (D29-102)", () => {
+describe("columnDefs: non-Name widths reserve the cell's own padding", () => {
   it("every non-Name column's width is a calc() adding 1rem (the two 0.5rem cell paddings)", () => {
     const cols = [
       ...columnsFor("spell", [row({ id: "spell/a", name: "A", level: 1 })]),

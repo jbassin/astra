@@ -42,16 +42,16 @@ import { initialWindowRange, INITIAL_VIEWPORT_PX, OVERSCAN, ROW_PITCH_PX } from 
 
 export type FilterStateUpdater = (updater: (prev: BrowseFilterState) => BrowseFilterState) => void;
 
-/** P4.5 S4 (D29-49) — the split view is only live at/above this width; below
+/** The split view is only live at/above this width; below
  * it row taps fully navigate instead (the CSS breakpoint, `globals.css`'s
  * `.codex-browse-layout`, uses the mirrored `max-width: 56rem` — a hair
  * below this so the two never disagree at exactly 56rem). Read at CLICK
  * time (never at render time), so the row markup itself never differs
  * between desktop/mobile — "one component, one breakpoint-gated behavior
- * branch, not two components" (spec's own text). */
+ * branch, not two components". */
 const SPLIT_VIEW_MEDIA = "(min-width: 56.0625rem)";
 
-/** P8 S3 (D29-82) — how long a j/k-focused row must "settle" before its
+/** How long a j/k-focused row must "settle" before its
  * `?entry=` preview commits, mirroring `Omnibar.tsx`'s own `DEBOUNCE_MS`
  * (that file's own module-scope constant isn't exported — this is the same
  * value, independently named for this file's own debounce). Holding `j`
@@ -59,13 +59,13 @@ const SPLIT_VIEW_MEDIA = "(min-width: 56.0625rem)";
  * never one per row. */
 const FOCUS_SETTLE_MS = 180;
 
-/** Row-anchor selector shared by the focus-follow listener and the P9 S2
- * (D29-85) slug->anchor lookup below — every row's name cell renders exactly
+/** Row-anchor selector shared by the focus-follow listener and the
+ * slug->anchor lookup below — every row's name cell renders exactly
  * one such anchor (`displayName()` below), tagged with `data-entry-slug` so
  * neither caller needs to re-derive `rowSlug` from the DOM. */
 const ROW_ANCHOR_SELECTOR = ".codex-listing-name";
 
-/** P9 S2 (D29-85) — resolves a row's anchor by SLUG, never by array index
+/** Resolves a row's anchor by SLUG, never by array index
  * into `document.activeElement`/a live NodeList: `focusedSlug` (persisted
  * React state, `BrowseListing`'s own) is the single source of truth for
  * "which row is active," and this is the one place that turns a slug back
@@ -74,19 +74,19 @@ const ROW_ANCHOR_SELECTOR = ".codex-listing-name";
  * caller (the rendered-range-keyed effect below) treats as "keep waiting,"
  * never a timer.
  *
- * `preventScroll: true` (orchestrator review): a bare `.focus()` on an
+ * `preventScroll: true`: a bare `.focus()` on an
  * off-viewport element makes the browser scroll it into view — and the
  * focus-after-mount effect deliberately fires on EVERY rendered-range
  * change, including a wheel-scroll bringing the persisted row back toward
  * the window, where it MOUNTS while still up to OVERSCAN×pitch (~480px)
- * OUTSIDE the viewport. Without this flag, that remount's focus call
- * yanked the scroll position out of the user's hands mid-wheel, against
- * their gesture. Safe for every caller: the j/k path's positioning is
- * already owned by `scheduleScrollToIndex(align:"auto")` (the target is
- * in-viewport before focus lands), the D29-90 row-click path's row is by
- * definition visible, and native Tab does its own scroll before the focus
- * event ever fires — positioning stays 100% the virtualizer's job; focus
- * is now side-effect-free. */
+ * OUTSIDE the viewport. Without this flag, that remount's focus call would
+ * yank the scroll position out of the user's hands mid-wheel, against their
+ * gesture. Safe for every caller: the j/k path's positioning is already
+ * owned by `scheduleScrollToIndex(align:"auto")` (the target is in-viewport
+ * before focus lands), the whole-row click path's row is by definition
+ * visible, and native Tab does its own scroll before the focus event ever
+ * fires — positioning stays 100% the virtualizer's job; focus is
+ * side-effect-free. */
 function focusAnchorForSlug(container: HTMLElement, slug: string): boolean {
   const anchors = container.querySelectorAll<HTMLAnchorElement>(ROW_ANCHOR_SELECTOR);
   for (const anchor of anchors) {
@@ -99,7 +99,7 @@ function focusAnchorForSlug(container: HTMLElement, slug: string): boolean {
 }
 
 /**
- * P13 S2 (D29-123) — a reactive read of the SAME breakpoint `SPLIT_VIEW_MEDIA`
+ * A reactive read of the SAME breakpoint `SPLIT_VIEW_MEDIA`
  * (above) already gates at click-time in `handleRowClick`/`handleRowBodyClick`
  * below: whether the two-column `.codex-browse-layout` grid — and therefore
  * the entry-pane grid cell the pane-swap needs to occupy — exists AT ALL
@@ -109,10 +109,9 @@ function focusAnchorForSlug(container: HTMLElement, slug: string): boolean {
  * pane easily clears 600px once it's the only column, well before the
  * `max-width: 56rem` grid collapse that actually hides `.codex-entry-pane`
  * kicks in) — reusing it verbatim would try to render the pane into a cell
- * CSS has already `display: none`d, an invisible panel, not "the sheet" the
- * spec's own Risk section documents as the actual outcome at that width
- * ("56rem collapse means a mid-width desktop window gets the sheet... 56rem
- * boundary pinned in a test", gate D) — this hook is what makes that literal.
+ * CSS has already `display: none`d, an invisible panel. A mid-width desktop
+ * window below the 56rem collapse gets the sheet instead (a test pins that
+ * boundary); this hook is what makes that literal.
  *
  * Returns `null` until the first client-side reading lands (always `null` at
  * SSR and on the hydration pass). A Filters click CAN land before that
@@ -139,22 +138,19 @@ function useTwoColumnFilterTier(): boolean | null {
   return isTwoColumn;
 }
 
-/** P13 S2 (D29-123) — j/k suppression + the focus-after-mount steal-guard
- * both need "is DOM focus currently inside filter UI," covering BOTH
- * possible live containers (the two-column pane and the narrow-tier
- * `<dialog>` sheet) — replaces the old bare `closest("dialog")` guard, which
- * only ever covered the second one and would silently stop covering
- * anything the moment the pane (not a `<dialog>` at all) became the live
- * container on desktop. */
+/** j/k suppression + the focus-after-mount steal-guard both need "is DOM
+ * focus currently inside filter UI," covering BOTH possible live containers
+ * (the two-column pane and the narrow-tier `<dialog>` sheet). A bare
+ * `closest("dialog")` would miss the pane, which is not a `<dialog>`. */
 const FILTER_UI_SELECTOR = "dialog, .codex-filter-pane";
 
 /**
- * P8 S1 (D29-78) — "the compact set applies whenever the LIST CONTAINER is
+ * "The compact set applies whenever the LIST CONTAINER is
  * narrow ... via container query or measured width — keyed to the
  * container, never the viewport." A `ResizeObserver` on the listing pane
  * itself (not `window.matchMedia`) is what makes this genuinely
  * container-driven rather than viewport-driven: it's the ONE mechanism that
- * naturally covers every scenario the spec names — split view open (the
+ * naturally covers every narrow scenario — split view open (the
  * 416px pane), the 640–896px non-split band's narrow end, AND mobile —
  * without this component needing to know WHY its container is narrow.
  * `undefined`/no `ResizeObserver` (SSR, or a test env that doesn't polyfill
@@ -176,7 +172,7 @@ function useNarrowListingContainer(ref: { current: HTMLElement | null }): boolea
   return narrow;
 }
 
-/** Click-to-sort header cycle (D29-78): asc -> desc -> back to the name-asc
+/** Click-to-sort header cycle: asc -> desc -> back to the name-asc
  * default. Switching to a DIFFERENT column always starts fresh at ascending
  * — only re-clicking the SAME already-active column advances the cycle. */
 function nextSortForClick(current: string, key: string): string {
@@ -187,15 +183,15 @@ function nextSortForClick(current: string, key: string): string {
 }
 
 /**
- * D29-35 — the faceted `/{category}` listing island. Purely a function of
+ * The faceted `/{category}` listing island. Purely a function of
  * `state`/`rows`/`onStateChange` (no router/URL awareness of its own): the
- * ROUTE FILE (`routes/$category/index.tsx`) owns the URL<->state codec (P4.5
- * D29-48: a plain per-page `superseded` URL read, no site-wide toggle), so
+ * ROUTE FILE (`routes/$category/index.tsx`) owns the URL<->state codec (a
+ * plain per-page `superseded` URL read, no site-wide toggle), so
  * this component stays directly render-testable with a plain
  * `BrowseFilterState` object — same posture as `listing.tsx`'s
  * presentational components over already-fetched data.
  *
- * P4.5 S4 (D29-49) — now a split-column view (except `rules`, which never
+ * A split-column view (except `rules`, which never
  * reaches this route at all — a static top-level route always out-ranks
  * `$category` for the literal path `/rules`, so no runtime guard is needed
  * here): the left pane is this same listing, narrower; the right pane is
@@ -225,15 +221,14 @@ export function BrowseListing({
 }: {
   category: string;
   rows: readonly IndexRow[];
-  /** P9 S1 (D29-89) — `undefined` for every ordinary caller (SPA
-   * navigations, tests): `rows` IS the full array, and the count line/
-   * virtualizer both derive their totals from it locally, exactly as
-   * before this slice. Set ONLY by the route while a cold load's SSR
+  /** `undefined` for every ordinary caller (SPA navigations, tests): `rows`
+   * IS the full array, and the count line/virtualizer both derive their
+   * totals from it locally. Set ONLY by the route while a cold load's SSR
    * window (`rows.length < totalCount`) hasn't been replaced by the full
    * array yet — the eventual TRUE row count under the current URL's
    * filter/sort, so the count line and the virtualizer's bottom spacer are
-   * both correct on arrival (the router's D29-84 "full final scroll height
-   * on arrival") instead of transiently reading `rows.length`. */
+   * both correct on arrival (the router needs the full final scroll height
+   * on arrival) instead of transiently reading `rows.length`. */
   totalCount?: number;
   /** Same pending-window override as `totalCount`, for the count line's
    * "of N" denominator (`eligibleCount`, below) — always supplied together
@@ -243,11 +238,11 @@ export function BrowseListing({
    * selection passes the active filters — `entryRow`/`entryVisible` below
    * normally derive from `rows.find(...)`, which is wrong while `rows` is
    * only the SSR window (a deep-linked entry sorted outside that window
-   * would read as "filtered out" under NO active filter at all — found live
-   * verifying this slice, `virtualization.ts`'s own doc comment on
+   * would read as "filtered out" under NO active filter at all — see
+   * `virtualization.ts`'s own doc comment on
    * `WindowedCategoryListing.entryVisible`). */
   entryVisibleOverride?: boolean;
-  /** D29-111 (P11 S4) — same pending-window override pattern as
+  /** Same pending-window override pattern as
    * `eligibleCountOverride` above, for the reveal control's "N hidden"
    * total: a locally-computed count over ≤60 windowed rows is WRONG on a
    * cold load (see `virtualization.ts`'s own doc comment on
@@ -263,29 +258,29 @@ export function BrowseListing({
    * entrySlug})` payload — `null` for a genuinely unknown slug, `undefined`
    * only alongside an `undefined` `entrySlug` (no fetch was attempted). */
   entryData?: EntityPageData | null;
-  /** Desktop/tablet row click (D29-49): the ROUTE performs the actual
+  /** Desktop/tablet row click: the ROUTE performs the actual
    * `navigate({search: {...search, entry: slug}})` non-replace push; this
    * component just reports which row's raw slug was clicked. */
   onEntrySelect: (slug: string) => void;
-  /** P8 S3 (D29-82) — focus-follow preview: fired at most once per
+  /** Focus-follow preview: fired at most once per
    * `FOCUS_SETTLE_MS` settle window after DOM focus lands on a row anchor
    * (j/k or Tab), already deduped against the currently-shown `entrySlug`.
    * The ROUTE performs the actual `navigate({..., replace: true})` — same
    * "component reports, route navigates" split as `onEntrySelect`, but
    * REPLACE instead of push (never adds a history entry). */
   onEntryPreview: (slug: string) => void;
-  /** D29-111 (P11 S4) — the superseded-reveal control's own navigate: the
+  /** The superseded-reveal control's own navigate: the
    * ROUTE performs a FUNCTIONAL search merge (`search: (prev) => ({...prev,
    * superseded})`) with `resetScroll: false` — deliberately NOT routed
    * through `onStateChange` (which the general facet-write path uses,
    * ordinary `resetScroll: true` included): revealing/hiding superseded
    * rows isn't a new search, and jumping the user back to the top of a
    * long, already-scrolled listing just to widen the edition filter would
-   * be jarring (measured, the review's own reasoning) — this is its own
+   * be jarring — this is its own
    * "component reports, route navigates" callback, same split as
    * `onEntrySelect`/`onEntryPreview` above. */
   onSupersededReveal: (superseded: boolean) => void;
-  /** P9 S2 (D29-84) — the current URL's window scroll-restoration entry
+  /** The current URL's window scroll-restoration entry
    * (`scrollY`), if TanStack's `useElementScrollRestoration` found one — the
    * ROUTE reads it (that hook needs real router context, which this
    * component deliberately doesn't have, see the file-level doc comment
@@ -296,7 +291,7 @@ export function BrowseListing({
    * which is also what every ordinary caller/test gets by not passing this
    * prop at all). */
   restoredScrollY?: number;
-  /** P13 S3 (D29-121/-128) — the loader's `CategoryListingData.sourceLines`
+  /** The loader's `CategoryListingData.sourceLines`
    * (`routes/$category/index.tsx`'s own `data.sourceLines`), threaded
    * straight through to `FacetPanel`'s grouped Source section — this
    * component never reads/derives it itself, matching every other
@@ -309,13 +304,12 @@ export function BrowseListing({
   // Local echo of the quick-filter text so typing feels instant; the actual
   // filter state (and therefore the URL) updates on every keystroke too —
   // no debounce needed, `applyFilters` over a few thousand rows is well
-  // under a frame (measured — see the spec's §5 F perf gate).
+  // under a frame (measured).
   const [queryText, setQueryText] = useState(state.query);
-  // P13 S2 (D29-123) — renamed from `drawerOpen`: local component state,
-  // client-only-true (the SSR/first-hydration-pass value is always `false`
-  // — see the file-level `filtersOpen` prop doc below in the JSX for the
-  // SSR-posture proof this relies on), NOT URL state (matches the old
-  // dialog's own non-shareable behavior, spec's own note).
+  // Local component state, client-only-true (the SSR/first-hydration-pass
+  // value is always `false` — see the sheet's comment below in the JSX for
+  // the SSR-posture proof this relies on), NOT URL state: an open filter
+  // panel is not shareable.
   const [filtersOpen, setFiltersOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const listingPaneRef = useRef<HTMLDivElement>(null);
@@ -331,7 +325,7 @@ export function BrowseListing({
     entrySlugRef.current = entrySlug;
   }, [entrySlug]);
 
-  // P13 S2 (D29-123) — refs for the open/close focus-management effect
+  // Refs for the open/close focus-management effect
   // (declared much further down, deliberately — see that effect's own
   // comment for why): the JSX below needs these ref objects attached to the
   // real buttons regardless of where the EFFECT that reads them lives.
@@ -345,20 +339,20 @@ export function BrowseListing({
   // `onClose` (below) is the DOM -> React-state bridge for the Esc/backdrop
   // paths that don't go through our own "Filters"/"Done" buttons.
   //
-  // P13 S2 (D29-123) — the dialog is now NARROW-TIER ONLY (the two-column
-  // tier renders the pane inline instead, never opening this element at
-  // all): `shouldShowModal` folds that in, so a `filtersOpen` flip on the
-  // two-column tier never calls `showModal()`. The SAME effect also
-  // implements "tier-crossing while open closes the panel" (pinned,
-  // D29-123) — detected via `prevIsTwoColumnRef`, checked and acted on
+  // The dialog is NARROW-TIER ONLY (the two-column tier renders the pane
+  // inline instead, never opening this element at all): `shouldShowModal`
+  // folds that in, so a `filtersOpen` flip on the two-column tier never
+  // calls `showModal()`. The SAME effect also implements "tier-crossing
+  // while open closes the panel" (pinned in a test) — detected via
+  // `prevFilterTierRef`, checked and acted on
   // FIRST (a single early `return`) so a live tier flip can never also fall
   // through into the `shouldShowModal` branch below and momentarily
   // re-open a sheet on the SAME commit it's supposed to be closing.
   //
   // Only a change between two REAL readings is a crossing. The first reading
-  // replaces the unknown `null`; counting it as a crossing closed a sheet
-  // opened by a Filters click that landed before the reading (found by the
-  // interaction guard's narrow-tier case under CPU load).
+  // replaces the unknown `null`; counting it as a crossing would close a
+  // sheet opened by a Filters click that landed before the reading (the
+  // interaction guard's narrow-tier case hits this under CPU load).
   const prevFilterTierRef = useRef(filterTier);
   useEffect(() => {
     const prevTier = prevFilterTierRef.current;
@@ -376,7 +370,7 @@ export function BrowseListing({
     if (!shouldShowModal && dialog.open) dialog.close();
   }, [filtersOpen, filterTier]);
 
-  // P13 S2 (D29-123) — Esc sequencing on the two-column-tier PANE (no
+  // Esc sequencing on the two-column-tier PANE (no
   // `<dialog>` there to lean on the native cancel/close-watcher path the
   // narrow-tier sheet uses instead, see the effect above): a plain
   // `document`-level keydown listener, active only while the pane is
@@ -397,7 +391,7 @@ export function BrowseListing({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [filtersOpen, isTwoColumnTier]);
 
-  // P8 S1 (D29-78) — the per-category column model, memoized on the same
+  // The per-category column model, memoized on the same
   // (category, rows) pair `columnsFor` itself only needs (its two coverage
   // checks are computed once per listing here, not per row/render).
   const cols = useMemo(() => columnsFor(category, rows), [category, rows]);
@@ -422,7 +416,7 @@ export function BrowseListing({
     [cols, sortBaseKey],
   );
 
-  // P9 S1 (D29-89) — re-running `applyFilters`/`sortRows` over `rows` is
+  // Re-running `applyFilters`/`sortRows` over `rows` is
   // idempotent whether `rows` is the full array (ordinary case) OR the
   // route's SSR window (already filtered/sorted server-side by the SAME
   // pure functions, same `state` — filtering an already-filtered set with
@@ -439,15 +433,15 @@ export function BrowseListing({
     () => (state.superseded ? rows.length : rows.filter((r) => !r.superseded).length),
     [rows, state.superseded],
   );
-  // D29-111 (P11 S4) — the reveal control's "N hidden" total: a fixed
+  // The reveal control's "N hidden" total: a fixed
   // per-category count, deliberately NOT keyed on `state.superseded` (unlike
   // `localEligibleCount` above) — see `virtualization.ts`'s own doc comment
   // on `WindowedCategoryListing.hiddenCount` for why this needs the same
   // override-prop treatment as `eligibleCount`.
   const localHiddenCount = useMemo(() => rows.filter((r) => r.superseded).length, [rows]);
-  // D29-87 (R3) — "N of N shown" counts the ARRAY, not the mounted DOM;
+  // "N of N shown" counts the ARRAY, not the mounted DOM;
   // `totalCount`/`eligibleCountOverride` (set by the route ONLY during the
-  // D29-89 pending window) keep that count line reading the eventual TRUE
+  // cold-load pending window) keep that count line reading the eventual TRUE
   // total immediately, instead of the transient `rows.length` the SSR
   // window alone would give.
   const displayTotalCount = totalCount ?? visible.length;
@@ -464,34 +458,33 @@ export function BrowseListing({
       entrySlug !== undefined ? rows.find((r) => rowSlug(r, category) === entrySlug) : undefined,
     [rows, entrySlug, category],
   );
-  // P9 S1 (D29-89) — `entryVisibleOverride` wins while present (the SSR
+  // `entryVisibleOverride` wins while present (the SSR
   // windowed pass, computed against the FULL corpus server-side); falls
   // back to the ordinary `rows`-derived check once it's gone (the full
   // array has landed, or this was never a windowed render at all).
   const entryVisible =
     entryVisibleOverride ?? (entryRow !== undefined && visibleIds.has(entryRow.id));
 
-  // P9 S2 (D29-83/-84/-85) — the virtualizer now lives HERE, not inside
-  // `ListingTable`: both D29-85 (slug-persisted j/k needs `scrollToIndex` +
-  // the rendered range to know when a target row has mounted) and D29-84
-  // (deep-link centering, reload-at-depth sync) are keyboard/router-level
+  // The virtualizer lives HERE, not inside `ListingTable`: both
+  // slug-persisted j/k (needs `scrollToIndex` + the rendered range to know
+  // when a target row has mounted) and deep-link centering/reload-at-depth
+  // sync are keyboard/router-level
   // concerns this component already owns, and `ListingTable` stays a plain
   // presentational renderer over the `virtualRows`/spacer arithmetic it's
   // handed. `tableRef` is created here and threaded down so the scrollMargin
   // measurement below can still read the real `<table>`'s document offset.
   const tableRef = useRef<HTMLTableElement>(null);
-  // D29-83 (review M3) — `scrollMargin` = the table's own document-top
-  // offset, ref-measured in a POST-hydration effect only: both the server
-  // pass and the client's FIRST pass render with 0 (so the hydration ranges
-  // agree byte-for-byte), and this effect's `setState` re-renders with the
-  // true margin afterward — a client-only correction, never part of the
-  // hydration comparison itself. P9 S2: promoted `useEffect` -> `useLayoutEffect`
-  // (still strictly post-hydration-commit, so the hydration-mismatch
-  // invariant above is untouched) so the D29-84 mount-sync effect below,
-  // which depends on `scrollMargin` to compute correct pixel offsets, always
-  // settles in the SAME pre-paint window — gate E's "no flash beyond one
-  // frame" needs both corrections to land before the browser's first paint,
-  // not across two.
+  // `scrollMargin` = the table's own document-top offset, ref-measured in a
+  // POST-hydration effect only: both the server pass and the client's FIRST
+  // pass render with 0 (so the hydration ranges agree byte-for-byte), and
+  // this effect's `setState` re-renders with the true margin afterward — a
+  // client-only correction, never part of the hydration comparison itself.
+  // A `useLayoutEffect` (still strictly post-hydration-commit, so the
+  // hydration-mismatch invariant above is untouched) so the mount-sync
+  // effect below, which depends on `scrollMargin` to compute correct pixel
+  // offsets, always settles in the SAME pre-paint window — "no flash beyond
+  // one frame" needs both corrections to land before the browser's first
+  // paint, not across two.
   const [scrollMargin, setScrollMargin] = useState(0);
   useLayoutEffect(() => {
     const el = tableRef.current;
@@ -503,7 +496,7 @@ export function BrowseListing({
     count: displayTotalCount,
     estimateSize: () => ROW_PITCH_PX,
     overscan: OVERSCAN,
-    // D29-84 — identical on the server pass and the client's first pass;
+    // Identical on the server pass and the client's first pass;
     // only `scrollMargin` (above) ever differs, and only post-hydration.
     initialRect: { width: 0, height: INITIAL_VIEWPORT_PX },
     initialOffset: 0,
@@ -512,7 +505,7 @@ export function BrowseListing({
   });
   const virtualRows = virtualizer.getVirtualItems();
 
-  // P9 S2 (D29-85) — a rAF-coalesced `scrollToIndex`: calling the virtualizer
+  // A rAF-coalesced `scrollToIndex`: calling the virtualizer
   // once PER KEYDOWN (a rapid "j" burst — holding the key down produces
   // native OS key-repeat well over 30/s, verified against real Chromium) can
   // call `scrollToIndex` — and therefore `window.scrollTo` — more often than
@@ -523,9 +516,8 @@ export function BrowseListing({
   // `scrollToIndex` itself just calls `scrollToFn`/schedules an rAF
   // reconcile, it never updates `scrollOffset`/notifies directly) — under a
   // fast-enough burst the mounted window can measurably get STUCK short of
-  // the true target for a real, human-reachable span (found live driving
-  // this exact case in Chromium while writing S2's own Playwright coverage:
-  // a 160-keydown burst left the mounted range short and never recovered on
+  // the true target for a real, human-reachable span (in Chromium, a
+  // 160-keydown burst left the mounted range short and never recovered on
   // its own, even seconds later). Batching every keydown's target down to AT
   // MOST one real `scrollToIndex` call per animation frame (always the
   // LATEST target — never queued/coalesced-then-replayed) keeps pace with
@@ -555,7 +547,7 @@ export function BrowseListing({
     [],
   );
 
-  // P9 S2 (D29-84) — the mount-time precedence gate: a scroll-restoration
+  // The mount-time precedence gate: a scroll-restoration
   // entry for this exact URL WINS over deep-link centering (back-nav/reload
   // returns where the user was; centering is for fresh arrivals only).
   // `initialScrollResolvedRef` — set exactly ONCE this decision is actually
@@ -565,15 +557,14 @@ export function BrowseListing({
   // pass, only present in the SSR-shipped WINDOW's `data.rows` (60 items —
   // `computeWindowedListing` never special-cases a deep entrySlug into that
   // slice, only `entryVisible` accounts for it), so `visible.findIndex(...)`
-  // genuinely returns -1 on that first pass — a real bug found live running
-  // this exact case in Chromium: keying this effect on `scrollMargin` alone
-  // (as S2 first shipped it) meant that first `idx === -1` was FINAL, the
-  // D29-89 post-hydration full-array fetch landing moments later never got a
-  // second look, and the row never centered — `visible` (now also a
-  // dependency) is what lets this effect get a SECOND chance once that fetch
-  // actually lands, while the ref is what still stops it from re-centering
-  // on every LATER `visible` change a filter/sort/j-k/click causes (D29-84's
-  // own "centering is for fresh arrivals only") — `visible.length >=
+  // genuinely returns -1 on that first pass. Keyed on `scrollMargin` alone,
+  // that first `idx === -1` would be FINAL: the post-hydration full-array
+  // fetch landing moments later would never get a second look, and the row
+  // would never center. `visible` (also a dependency) is what lets this
+  // effect get a SECOND chance once that fetch actually lands, while the ref
+  // is what still stops it from re-centering on every LATER `visible` change
+  // a filter/sort/j-k/click causes (centering is for fresh arrivals only) —
+  // `visible.length >=
   // displayTotalCount` is the signal that the full array has landed, so an
   // entrySlug that's STILL not found at that point is conclusively
   // unknown/filtered-out (not just "hasn't arrived yet"), and the ref locks
@@ -612,20 +603,18 @@ export function BrowseListing({
   }, [scrollMargin, visible, displayTotalCount]);
   // oxlint-enable react-hooks/exhaustive-deps
 
-  // P9 S2 (D29-85) — the active row, PERSISTED as a SLUG (never a DOM index
-  // or `document.activeElement` reference): every j/k press resolves it
-  // against the CURRENT `visible` array below, so wheel-scroll unmounting
-  // the focused anchor (the browser moves focus to `<body>`) never loses
+  // The active row, PERSISTED as a SLUG (never a DOM index or
+  // `document.activeElement` reference): every j/k press resolves it against
+  // the CURRENT `visible` array below, so wheel-scroll unmounting the
+  // focused anchor (the browser moves focus to `<body>`) never loses
   // position, and a filter/sort change that drops the slug out of `visible`
-  // reads as "unfocused" (matches the pre-P9 filtered-out-focused-row
-  // behavior) rather than throwing or pinning a stale index.
+  // reads as "unfocused" rather than throwing or pinning a stale index.
   //
   // `focusedSlugRef` mirrors the state SYNCHRONOUSLY, written by the same
   // `setFocusedSlug` call that updates the state — the keydown handler below
   // reads the REF, never the state/its derived index, so a burst of several
   // "j" keydowns dispatched within one browser task (holding the key down;
-  // real, not just a test artifact — found while writing S2's own j-scan
-  // Playwright/unit coverage) each see the position the PREVIOUS keydown in
+  // real, not just a test artifact) each see the position the PREVIOUS keydown in
   // the same burst just set, instead of every press in the burst reading the
   // same stale `useMemo`-derived index from before React had a chance to
   // re-render and reattach the listener with a fresh closure.
@@ -653,7 +642,7 @@ export function BrowseListing({
 
   function handleRowClick(e: MouseEvent<HTMLAnchorElement>, row: IndexRow) {
     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // new-tab/etc — let it through
-    // P8 S3 (D29-82) — "Enter is then native link activation on the focused
+    // "Enter is then native link activation on the focused
     // anchor -> the full entity page; no separate Enter handler": a
     // keyboard-triggered `click` (Enter/Space on a focused `<a>`) carries
     // `detail === 0` in every evergreen browser (a real mouse click's
@@ -663,7 +652,7 @@ export function BrowseListing({
     // Enter always fully navigates, even in split view where a MOUSE click
     // on the same anchor intercepts into the `?entry=` preview below.
     //
-    // P13 S2 (D29-123) — "Enter-on-focused-row while filtering closes the
+    // "Enter-on-focused-row while filtering closes the
     // pane": needs NO explicit handling here — this early return means
     // Enter takes the native full-navigation path unconditionally (the
     // browser leaves this page entirely), which trivially "closes" any open
@@ -673,7 +662,7 @@ export function BrowseListing({
     if (typeof window === "undefined" || !window.matchMedia(SPLIT_VIEW_MEDIA).matches) return; // mobile: full nav
     e.preventDefault();
     onEntrySelect(rowSlug(row, category));
-    // P13 S2 (D29-123) — "row click while filtering closes the pane and
+    // "Row click while filtering closes the pane and
     // shows that entry's preview (selection wins)": this branch only ever
     // executes on the desktop split-view path (the two guards above already
     // filtered out mobile-nav and keyboard-Enter-native-nav), so closing
@@ -682,7 +671,7 @@ export function BrowseListing({
     setFiltersOpen(false);
   }
 
-  /** P9 S2 (D29-90, stakeholder amendment) — the whole-row click target:
+  /** The whole-row click target:
    * clicking ANYWHERE on a `<tr>` selects it, with the SAME semantics as
    * `handleRowClick` above, by direct implementation (never a synthetic
    * `anchor.click()` — that carries `detail === 0`, which `handleRowClick`
@@ -711,38 +700,36 @@ export function BrowseListing({
       return;
     }
     onEntrySelect(rowSlug(row, category));
-    setFiltersOpen(false); // P13 S2 (D29-123) — see `handleRowClick`'s own comment above
-    // D29-90 — "move DOM focus to that row's name anchor so j/k continues
-    // from the clicked row"; the anchor is already mounted (this row was
-    // just clicked), so a direct synchronous focus call suffices — no need
-    // for the rendered-range-keyed wait the D29-85 j/k path uses below.
+    setFiltersOpen(false); // see `handleRowClick`'s own comment above
+    // Move DOM focus to that row's name anchor so j/k continues from the
+    // clicked row; the anchor is already mounted (this row was just
+    // clicked), so a direct synchronous focus call suffices — no need for
+    // the rendered-range-keyed wait the j/k path uses below.
     const container = listingPaneRef.current;
     if (container) focusAnchorForSlug(container, rowSlug(row, category));
   }
 
-  // P8 S3 (D29-82) — preview-follows-focus: whenever DOM focus lands on a
+  // Preview-follows-focus: whenever DOM focus lands on a
   // row anchor (j/k below, or a plain Tab), commit `?entry=` after a settle
   // window via REPLACE navigation (never the click path's push). Delegated
   // on the listing pane container (one listener, not one per row) via the
   // native `focusin` event (bubbles, unlike `focus`).
   //
-  // P9 S2 — `onEntryPreview` mirrored into a ref (`onEntryPreviewRef`, same
+  // `onEntryPreview` is mirrored into a ref (`onEntryPreviewRef`, same
   // "latest ref" pattern as `entrySlugRef` above), so `scheduleEntryPreview`
   // itself can be a referentially STABLE `useCallback` (`[]` deps) instead of
   // depending on `[onEntryPreview]` directly. This matters because
   // `onEntryPreview` is an inline arrow PROP (`routes/$category/index.tsx`) —
-  // a NEW function identity on every render of the ROUTE — and D29-89's own
+  // a NEW function identity on every render of the ROUTE — and the
   // post-hydration full-array fetch (`CategoryIndexComponent`'s `setFullRows`)
   // causes exactly one such extra route re-render, asynchronously, sometime
-  // after mount. Before this fix, THAT re-render's new `onEntryPreview`
-  // reference rippled into a new `scheduleEntryPreview`, which reinstalled
-  // the `onFocusIn` effect below, whose CLEANUP unconditionally
+  // after mount. Without the ref, THAT re-render's new `onEntryPreview`
+  // reference would ripple into a new `scheduleEntryPreview`, which would
+  // reinstall the `onFocusIn` effect below, whose CLEANUP unconditionally
   // `clearTimeout`s the in-flight settle timer — silently cancelling a
   // pending preview commit with nothing left to reschedule it if the
-  // reinstall landed between the last focus move and the 180ms mark. A real,
-  // P9-introduced bug (P8 had no async post-mount route re-render to race
-  // against) found live running this slice's own Playwright coverage: j-scan
-  // to a real row, wait several seconds, `?entry=` never committed. Keeping
+  // reinstall landed between the last focus move and the 180ms mark (j-scan
+  // to a real row, wait several seconds, `?entry=` never commits). Keeping
   // `scheduleEntryPreview`/the effect stable regardless of how often the
   // ROUTE re-renders removes the race at its root instead of chasing timing.
   const onEntryPreviewRef = useRef(onEntryPreview);
@@ -771,8 +758,8 @@ export function BrowseListing({
       const slug = target.dataset.entrySlug;
       if (slug === undefined) return;
       scheduleEntryPreview(slug);
-      // P9 S2 (D29-85) — ANY real focus arriving at a row anchor (a plain
-      // Tab, or the `.focus()` calls j/k and the D29-90 row-body click make
+      // ANY real focus arriving at a row anchor (a plain Tab, or the
+      // `.focus()` calls j/k and the whole-row click make
       // below) reconciles the persisted slug — so a subsequent j/k press
       // always resumes from wherever focus ACTUALLY is, not just from the
       // last j/k-initiated move.
@@ -785,17 +772,17 @@ export function BrowseListing({
     };
   }, [scheduleEntryPreview, setFocusedSlug]);
 
-  // P9 S2 (D29-85) — focus-after-mount: whenever the virtualizer's rendered
+  // Focus-after-mount: whenever the virtualizer's rendered
   // range changes (a j/k `scrollToIndex` call below mounting the target row,
   // or an ordinary wheel-scroll bringing it back into the window), check
   // whether `focusedSlug`'s anchor now EXISTS in the mounted DOM and move
   // real focus onto it if so — keyed off `virtualRows` (the rendered range),
-  // NEVER a timer, matching D29-85's own text. A no-op whenever the anchor
+  // NEVER a timer. A no-op whenever the anchor
   // is already focused (`focusAnchorForSlug`'s own guard) or isn't mounted
   // yet (the common case for most renders — this effect just fires again
   // next time `virtualRows` changes, until the target eventually mounts).
   //
-  // P13 S2 (D29-123 review blocker) — guarded on `filtersOpen`: EVERY facet
+  // Guarded on `filtersOpen`: EVERY facet
   // toggle inside the pane/sheet re-renders this component, which can change
   // `virtualRows` (the visible set narrowed/widened) — without this guard,
   // this effect would fire on that SAME re-render and yank real DOM focus
@@ -813,17 +800,15 @@ export function BrowseListing({
     focusAnchorForSlug(container, focusedSlug);
   }, [focusedSlug, virtualRows, filtersOpen]);
 
-  // P13 S2 (D29-123) — open -> the pane/sheet's own ✕; close -> back to the
-  // "Filters" toggle button (spec's own "Focus:" bullet). A plain
-  // was-open-last-render ref (not a dependency-array trick) distinguishes an
-  // actual open<->close TRANSITION from every other re-render this component
-  // goes through while `filtersOpen` itself hasn't changed. `preventScroll:
-  // true` (found live running the interaction guard's own new pane-swap
-  // cases): the SAME UA "scroll a newly-focused element into view" behavior
-  // `focusAnchorForSlug`'s own comment documents.
+  // Open -> the pane/sheet's own ✕; close -> back to the "Filters" toggle
+  // button. A plain was-open-last-render ref (not a dependency-array trick)
+  // distinguishes an actual open<->close TRANSITION from every other
+  // re-render this component goes through while `filtersOpen` itself hasn't
+  // changed. `preventScroll: true`: the SAME UA "scroll a newly-focused
+  // element into view" behavior `focusAnchorForSlug`'s own comment documents.
   //
-  // DECLARED AFTER the row-refocus effect immediately above on purpose (a
-  // real bug found live running the interaction guard): both effects share
+  // DECLARED AFTER the row-refocus effect immediately above on purpose: both
+  // effects share
   // `filtersOpen` in their dependency array, so a close (Escape/✕/row-click)
   // fires BOTH in the SAME commit — React runs a component's effects in
   // DECLARATION order, and the row-refocus effect's own `filtersOpen` guard
@@ -831,9 +816,9 @@ export function BrowseListing({
   // `false`, that guard clears and it happily re-focuses whatever row was
   // active BEFORE the pane ever opened (a stale `focusedSlug` a j-scan set
   // minutes earlier survives untouched the whole time the pane was open).
-  // With this effect declared EARLIER (as first written), the row-refocus
-  // effect ran AFTER it in the same commit and silently stole focus back
-  // onto that row, defeating "closing returns focus to the Filters button."
+  // With this effect declared EARLIER, the row-refocus effect would run
+  // AFTER it in the same commit and silently steal focus back onto that row,
+  // defeating "closing returns focus to the Filters button."
   // Declaring this one LAST guarantees it always has the final word.
   //
   // Keyed on `filterContainerLive`, not bare `filtersOpen`: an open that
@@ -849,7 +834,7 @@ export function BrowseListing({
     wasFilterContainerLiveRef.current = filterContainerLive;
   }, [filterContainerLive]);
 
-  // P9 S2 (D29-85) — j/k resolve the next/prev row purely off `visible` +
+  // j/k resolve the next/prev row purely off `visible` +
   // `focusedSlugRef` (the SYNCHRONOUS ref above — read fresh on every
   // keydown, never a `focusedIndex` value captured in this closure at
   // attach-time, which a rapid same-task "j" burst would otherwise see as
@@ -865,16 +850,11 @@ export function BrowseListing({
   // link activation, `handleRowClick`'s own `e.detail === 0` early-return
   // above). Guard: inert while `document.activeElement` is a form control
   // (covers the Omnibar's own `<input>` too — typing "j"/"k" there must
-  // never hijack focus) or sits inside the live filter UI (P13 S2, D29-123
-  // — `FILTER_UI_SELECTOR` covers BOTH possible containers, the narrow-tier
-  // `<dialog>` sheet AND the two-column-tier `.codex-filter-pane`; the old
-  // bare `closest("dialog")` guard died here — a desktop pane isn't a
-  // `<dialog>` at all, and the P4.5-era `BrowseListing.test.tsx:815`-area
-  // pin's MEANING — "j/k inert while focus is in filter UI" — is preserved
-  // under the new selector, only the container shape changed), and inert on
-  // narrow containers (S1's own `narrow` tier state — no preview pane to
-  // browse into there; matches split view's own container-driven posture,
-  // D29-78).
+  // never hijack focus) or sits inside the live filter UI
+  // (`FILTER_UI_SELECTOR` covers BOTH possible containers, the narrow-tier
+  // `<dialog>` sheet AND the two-column-tier `.codex-filter-pane`), and inert
+  // on narrow containers (the `narrow` container state — no preview pane to
+  // browse into there; matches split view's own container-driven posture).
   useEffect(() => {
     if (narrow) return;
     function onKeyDown(e: globalThis.KeyboardEvent) {
@@ -902,9 +882,9 @@ export function BrowseListing({
       const nextRow = visible[nextIndex];
       if (!nextRow) return;
       setFocusedSlug(rowSlug(nextRow, category));
-      // `align: "auto"` (review M6) — minimal scroll, the
+      // `align: "auto"` — minimal scroll, the
       // `scrollIntoView({block:"nearest"})` equivalent; `center` is reserved
-      // for the D29-84 deep-link-arrival effect above. The focus-after-mount
+      // for the deep-link-arrival effect above. The focus-after-mount
       // effect (above) picks up once `virtualRows` reflects `nextIndex` —
       // this call itself never focuses anything directly. rAF-coalesced
       // (`scheduleScrollToIndex`, above) — never a raw `virtualizer
@@ -918,23 +898,20 @@ export function BrowseListing({
   return (
     <div className="codex-listing">
       <header className="codex-listing-header">
-        {/* D29-112 (P11 S4) — the root header now carries the VISIBLE title
-            (`HeaderTitle.tsx`, resolved via `useMatches`/`params.category`)
-            for this LISTING route (a parent/listing surface, still in scope
-            after the later stakeholder redirect that scoped
-            header-carries-title away from entity/class pages specifically —
-            see `HeaderTitle.tsx`'s own comment); this in-content h1 stays in
-            the SSR DOM (document outline + a11y tree intact, `globals.css`'s
-            sr-only rule on this class) purely for that reason — exactly one
-            visible h1 per document. Still `displayCategoryName` (D29-109d,
-            created early by this same decision), same as the header's own
-            title text and this route's `<title>`. */}
+        {/* The root header carries the VISIBLE title (`HeaderTitle.tsx`,
+            resolved via `useMatches`/`params.category`) for this LISTING
+            route (a parent/listing surface; entity/class pages don't get a
+            header title — see `HeaderTitle.tsx`'s own comment); this
+            in-content h1 stays in the SSR DOM (document outline + a11y tree
+            intact, `globals.css`'s sr-only rule on this class) purely for
+            that reason — exactly one visible h1 per document. It uses
+            `displayCategoryName`, same as the header's own title text and
+            this route's `<title>`. */}
         <h1 className="codex-listing-title">{displayCategoryName(category)}</h1>
-        {/* D29-112 — count line + hint + the D29-111 reveal control + the
-            search input + Filters button compact to ONE slim row
-            (`.codex-listing-count-row` extended, `.codex-listing-controls`
-            deleted) now that the h1 above is out of the visual flow —
-            reclaims the ~120px the two used to cost stacked. */}
+        {/* Count line + hint + the superseded-reveal control + the search
+            input + Filters button share ONE slim row
+            (`.codex-listing-count-row`), since the h1 above is out of the
+            visual flow — saves the ~120px two stacked rows would cost. */}
         <div className="codex-listing-count-row">
           <p className="codex-listing-count">
             {displayTotalCount.toLocaleString()} of {displayEligibleCount.toLocaleString()} shown
@@ -944,9 +921,9 @@ export function BrowseListing({
             hiddenCount={displayHiddenCount}
             onReveal={onSupersededReveal}
           />
-          {/* P8 S3 (D29-82) — desktop-only hint, right of the count line;
-              hidden under the same narrow-container condition that drops
-              the split view/compact columns (S1's own `narrow` tier state):
+          {/* Desktop-only hint, right of the count line; hidden under the
+              same narrow-container condition that drops the split
+              view/compact columns (the `narrow` container state):
               plain text, no dismiss state, AT-readable as ordinary content
               (not an ARIA live region — it never changes). */}
           {!narrow ? (
@@ -959,7 +936,7 @@ export function BrowseListing({
             value={queryText}
             onChange={handleQueryChange}
           />
-          {/* P13 S2 (D29-123) — the Filters button is now a real TOGGLE
+          {/* The Filters button is a real TOGGLE
               (`aria-expanded` + a solid visual state while open), not a
               one-way "open the drawer" trigger — closing again is the same
               button, mirroring the ✕/Esc/row-click close paths below. */}
@@ -1000,14 +977,13 @@ export function BrowseListing({
       <div className="codex-browse-layout">
         <div className="codex-listing-pane" ref={listingPaneRef}>
           {visible.length === 0 ? (
-            // D29-111 (R3, #13/#3e/#3f) — the 10 all-superseded categories
-            // (e.g. /doctrine) used to render the honest-but-misleading
-            // "Nothing in this category yet." even though every entry DOES
-            // exist, just superseded-hidden; distinguish that case from a
+            // The 10 all-superseded categories (e.g. /doctrine) must not
+            // render the misleading "Nothing in this category yet.": every
+            // entry DOES exist, just superseded-hidden. Distinguish that case
+            // from a
             // GENUINELY empty category (zero entries, superseded or not —
             // `displayEligibleCount === 0` under the WIDENED toggle too) and
-            // from the ordinary filtered-to-zero case (`BrowseEmptyState`,
-            // unchanged).
+            // from the ordinary filtered-to-zero case (`BrowseEmptyState`).
             !state.superseded && displayHiddenCount > 0 && displayEligibleCount === 0 ? (
               <div className="codex-empty-state">
                 <p>
@@ -1048,7 +1024,7 @@ export function BrowseListing({
           )}
         </div>
 
-        {/* P13 S2 (D29-123) — the pane-swap: on the two-column tier, opening
+        {/* The pane-swap: on the two-column tier, opening
             the Filters button moves the panel content HERE (the SAME grid
             cell `.codex-entry-pane` normally occupies) instead of the
             `<dialog>` below — mutually exclusive with the entry-pane branch
@@ -1080,19 +1056,18 @@ export function BrowseListing({
             </div>
           </div>
         ) : (
-          /* P4.5 S4 (D29-49) — the split-view right pane. CSS-hidden (not
+          /* The split-view right pane. CSS-hidden (not
              React-conditional) at/below the split-view breakpoint
              (`globals.css`), so a deep link's SSR HTML always contains the
-             full entity body regardless of the requester's viewport (the
-             curl-provable acceptance gate) — only the CSS visually hides it
-             on a narrow screen, where row taps never populate `entry` in the
+             full entity body regardless of the requester's viewport
+             (provable with curl) — only the CSS visually hides it on a
+             narrow screen, where row taps never populate `entry` in the
              first place (real content, `display:none`, never removed from
-             the DOM). P13 S2 — `aria-live="polite"` now scopes to ONLY this
-             branch (never the filter pane above): a live region hosting
-             filter-panel interactions would flood assistive tech on every
-             facet toggle (D29-124 review catch); this ternary already keeps
-             the two as separate sibling subtrees, so no attribute-toggling
-             was needed, only the split itself. */
+             the DOM). `aria-live="polite"` scopes to ONLY this branch (never
+             the filter pane above): a live region hosting filter-panel
+             interactions would flood assistive tech on every facet toggle;
+             this ternary keeps the two as separate sibling subtrees, so no
+             attribute-toggling is needed. */
           <div className="codex-entry-pane" aria-live="polite">
             {entrySlug === undefined ? (
               <p className="codex-entry-pane-placeholder">Select a row to preview it here.</p>
@@ -1121,22 +1096,21 @@ export function BrowseListing({
         )}
       </div>
 
-      {/* D29-49, P13 S2 (D29-123) — the narrow-tier filter SHEET: a native
-          `<dialog>` wrapping the UNMODIFIED `FacetPanel` section tree
-          (`<aside>` inside, untouched). SSR posture (review blocker, pinned):
+      {/* The narrow-tier filter SHEET: a native `<dialog>` wrapping the
+          UNMODIFIED `FacetPanel` section tree (`<aside>` inside, untouched).
+          SSR posture (pinned in a test):
           the `<dialog>` host + `FacetPanel` stay UNCONDITIONALLY MOUNTED
           here — the condition below is `isTwoColumnTier && filtersOpen`
           (render `null`), never a bare `filtersOpen` gate, so at SSR
           (`filtersOpen` is ALWAYS false pre-hydration/on the first client
           pass) this evaluates to `false && filtersOpen` = false regardless
           of `isTwoColumnTier`'s own SSR-default value — FacetPanel renders,
-          dialog stays closed (no `showModal()` call), exactly matching
-          "today." Only once a user opens the panel ON THE TWO-COLUMN TIER
+          dialog stays closed (no `showModal()` call). Only once a user opens the panel ON THE TWO-COLUMN TIER
           does this go empty ("the dialog host stays mounted, empty" — its
           content lives in the pane above instead); on the narrow tier this
           is the live, visible sheet. Opening never mutates `state` — every
-          facet change already writes straight to the URL live, same as
-          before; "Done"/Esc/backdrop are purely dismissive. */}
+          facet change already writes straight to the URL live;
+          "Done"/Esc/backdrop are purely dismissive. */}
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- native `<dialog>` "click the ::backdrop to dismiss" idiom: `<dialog>` IS the interactive/modal element (not a plain div), Escape already closes it via the same `onClose`, and this onClick only ever fires for a genuine backdrop click (the `e.target === dialogRef.current` guard). */}
       <dialog
         ref={dialogRef}
@@ -1177,9 +1151,9 @@ export function BrowseListing({
   );
 }
 
-/** P13 S2 (D29-124) — the pane/sheet's shared sticky header: "Clear all" +
- * ✕ ONLY, never a count (the toolbar count row is canonical + un-occluded
- * under pane-swap — D29-124's own review blocker). Module-scope (not an
+/** The pane/sheet's shared sticky header: "Clear all" + ✕ ONLY, never a
+ * count (the toolbar count row is canonical + un-occluded under
+ * pane-swap). Module-scope (not an
  * inline nested component) so oxlint's `no-unstable-nested-components` stays
  * quiet, same convention `editionOptionLabel` (`FacetPanel.tsx`) documents. */
 function FilterPaneHeader({
@@ -1216,7 +1190,7 @@ function FilterPaneHeader({
   );
 }
 
-/** D29-111 (P11 S4, R3, #13/#3e/#3f) — the count row's superseded-reveal
+/** The count row's superseded-reveal
  * control: "N of N shown" honesty comes from the note, not the denominator
  * (the denominator keeps its existing "visible under the current toggle"
  * meaning, `displayEligibleCount` above). Reuses the `/rules` inline
@@ -1272,11 +1246,11 @@ function canonicalHref(data: EntityPageData, superseded: boolean): string {
 }
 
 /** A row's own href — identical for both branches of the breakpoint-gated
- * click behavior (D29-49's own "one component" text): mobile fully
- * navigates here; desktop's `onClick` intercepts and calls `preventDefault`
- * instead, but the href still governs a middle-click/cmd-click "open in new
- * tab". Carries `?superseded=1` when the current view is widened (M7) —
- * exactly the mobile-nav case's edition-context-symmetry requirement. */
+ * click behavior ("one component"): mobile fully navigates here; desktop's
+ * `onClick` intercepts and calls `preventDefault` instead, but the href
+ * still governs a middle-click/cmd-click "open in new tab". Carries
+ * `?superseded=1` when the current view is widened, so the mobile-nav case
+ * keeps the same edition context. */
 function rowHref(row: IndexRow, superseded: boolean): string {
   return superseded ? `/${row.id}?superseded=1` : `/${row.id}`;
 }
@@ -1292,13 +1266,13 @@ function displayName(
     <a
       href={rowHref(row, superseded)}
       className="codex-listing-name"
-      // P9 S1 (D29-86, R6) — the name column is single-line now (nowrap +
+      // The name column is single-line (nowrap +
       // ellipsis); `title` carries the FULL name for hover/AT whenever the
       // fixed-layout column is too narrow to show it in full (the
-      // collision suffix below already had its own `title`, on the BOOK —
+      // collision suffix below has its own `title`, on the BOOK —
       // this is the one on the NAME itself).
       title={row.name}
-      // P8 S3 (D29-82) — the j/k scan + focus-follow listener read this
+      // The j/k scan + focus-follow listener read this
       // directly rather than re-deriving `rowSlug` from the DOM.
       data-entry-slug={rowSlug(row, category)}
       onClick={(e) => onRowClick(e, row)}
@@ -1315,37 +1289,33 @@ function displayName(
 }
 
 /**
- * P8 S1 (D29-78) — the table register that replaces the old letter-grouped/
- * level-ordered `<ul>` split (`LetterGroupedList`/`LevelOrderedList` — R2:
- * "the render-path split collapses into ONE flat sorted renderer"). Real
+ * The table register: ONE flat sorted renderer for every sort order. Real
  * `<table>`/`<thead>`/`<th scope="col">`/`<tbody>` semantics (not a CSS
- * grid): every row here is only ever clickable via its name-cell anchor
- * (never the full row), same as the pre-table markup, so a `<tr>`'s
- * inability to be wrapped in `<a>` costs nothing — "row-level click/
- * keyboard delegation to the name-cell anchor" is what this component
- * already did. Traits are gone from the row entirely (D29-79 — the drawer/
- * entity page keep them).
+ * grid): every row's single focusable/link element is its name-cell anchor
+ * (the whole-row click is a pointer-only widening, `onRowBodyClick`), so a
+ * `<tr>`'s inability to be wrapped in `<a>` costs nothing. Rows carry no
+ * traits (the drawer/entity page show them).
  *
- * P9 S1 (D29-83/-84) — windowed via `useWindowVirtualizer` (the DOCUMENT
+ * Windowed via `useWindowVirtualizer` (the DOCUMENT
  * scrolls, `.codex-listing-pane` carries no `overflow` of its own —
  * `globals.css`): `<tbody>` = a top spacer `<tr>` + the mounted window +
  * a bottom spacer `<tr>`, each spacer's height living on its OWN single
  * `<td colSpan style={{height, padding:0, border:"none"}}>` (never the
  * `<tr>` itself — cross-engine `<tr>` height + `border-collapse` is
- * unreliable, review N6) and `aria-hidden` (N7, compensated by
- * `aria-rowcount`/`aria-rowindex` below, R5). Spacer HEIGHT is plain
+ * unreliable) and `aria-hidden` (compensated by
+ * `aria-rowcount`/`aria-rowindex` below). Spacer HEIGHT is plain
  * `index * ROW_PITCH_PX` arithmetic (never the virtualizer's own
  * `item.start`/`.end`, which bake in `scrollMargin` — a document-relative
  * offset that's meaningless as an IN-TABLE, row-relative spacer height); the
  * constant pitch (`estimateSize`, no `measureElement`) is exactly why this
- * arithmetic can stay this simple. `totalRowCount` (D29-89) is a SEPARATE
+ * arithmetic can stay this simple. `totalRowCount` is a SEPARATE
  * input from `rows.length`: while the SSR window is still the only data on
  * hand, `rows` may be shorter than the eventual full count, but the
  * virtualizer's own `count` — and therefore the bottom spacer, and the
  * total scroll height on arrival — already reflects the FULL count
  * (`ListingTable`'s own `rows[item.index]` guard below no-ops for any
- * index the caller hasn't populated yet, matching D29-89's own accepted
- * risk window). `getItemKey` returns each row's real slug id (never the
+ * index the caller hasn't populated yet, an accepted cold-load risk
+ * window). `getItemKey` returns each row's real slug id (never the
  * bare index) so react's own reconciliation survives the window sliding. */
 function ListingTable({
   category,
@@ -1365,14 +1335,14 @@ function ListingTable({
   category: string;
   cols: readonly ColumnDef[];
   rows: readonly IndexRow[];
-  /** D29-89 — the virtualizer's own `count` (may exceed `rows.length` while
+  /** The virtualizer's own `count` (may exceed `rows.length` while
    * only the SSR window has landed); defaults to `rows.length` for every
    * OTHER caller (SPA navigations, tests) where `rows` is already the full
    * array. */
   totalRowCount?: number;
-  /** P9 S2 — the virtualizer itself now lives in `BrowseListing` (the D29-85/
-   * -84 keyboard + deep-link mechanics need `scrollToIndex`/the rendered
-   * range from there); `ListingTable` stays a plain renderer over the
+  /** The virtualizer itself lives in `BrowseListing` (the keyboard +
+   * deep-link mechanics need `scrollToIndex`/the rendered range from
+   * there); `ListingTable` stays a plain renderer over the
    * already-computed rendered range + spacer arithmetic. */
   virtualRows: readonly VirtualItem[];
   tableRef: RefObject<HTMLTableElement | null>;
@@ -1380,7 +1350,7 @@ function ListingTable({
   superseded: boolean;
   selectedId?: string;
   onRowClick: (e: MouseEvent<HTMLAnchorElement>, row: IndexRow) => void;
-  /** P9 S2 (D29-90) — the whole-row click target; see `BrowseListing`'s own
+  /** The whole-row click target; see `BrowseListing`'s own
    * `handleRowBodyClick` for the full guard order. */
   onRowBodyClick: (e: MouseEvent<HTMLTableRowElement>, row: IndexRow) => void;
   sort: string;
@@ -1398,8 +1368,8 @@ function ListingTable({
     <table
       className="codex-listing-table"
       ref={tableRef}
-      // R5 (stakeholder-resolved) — Tab now reaches only the MOUNTED window
-      // (j/k is the sanctioned full traversal, D29-85); these compensate so
+      // Tab reaches only the MOUNTED window (j/k is the full keyboard
+      // traversal); these compensate so
       // AT still announces true position ("row 4,200 of 8,485") even though
       // most rows aren't in the DOM at all. Valid without `role="grid"`,
       // matching this table's existing `aria-sort`/`scope="col"` bar.
@@ -1431,7 +1401,7 @@ function ListingTable({
         ) : null}
         {virtualRows.map((virtualRow) => {
           const row = rows[virtualRow.index];
-          // D29-89's own accepted risk window: the mounted range can
+          // The accepted cold-load risk window: the mounted range can
           // (briefly, only on a cold load) reach beyond `rows.length`
           // before the full array has landed — no-op for that index rather
           // than throwing; the row appears once the fetch resolves and
@@ -1445,7 +1415,7 @@ function ListingTable({
                 row.id === selectedId && "codex-listing-row-selected",
               )}
               aria-rowindex={virtualRow.index + 1}
-              // D29-90: the row click is a pointer-target widening ONLY (no `role`/`tabindex` on the `<tr>` — the name anchor stays the row's single focusable element, R5/keyboard path untouched, see `BrowseListing`'s own `handleRowBodyClick` doc comment).
+              // The row click is a pointer-target widening ONLY (no `role`/`tabindex` on the `<tr>` — the name anchor stays the row's single focusable element, keyboard path untouched, see `BrowseListing`'s own `handleRowBodyClick` doc comment).
               onClick={(e) => onRowBodyClick(e, row)}
             >
               {cols.map((col) => (
@@ -1476,8 +1446,8 @@ function ListingTable({
 }
 
 /**
- * D29-78 — `aria-sort` lives on the header CELL, never the inner `<button>`
- * (undefined there per WAI-ARIA, adversarial M5); the button is the plain
+ * `aria-sort` lives on the header CELL, never the inner `<button>`
+ * (undefined there per WAI-ARIA); the button is the plain
  * click target, carrying a visible caret only once it's the active column
  * (an `aria-hidden` glyph — the cell's own `aria-sort` already carries the
  * meaning for AT).
@@ -1493,7 +1463,7 @@ function ColumnHeaderCell({
   desc: boolean;
   onSortClick: (key: string) => void;
 }): ReactElement {
-  // P9 S1 (D29-86) — `table-layout: fixed` sizes each column off an
+  // `table-layout: fixed` sizes each column off an
   // explicit width on a cell in the table's FIRST row (`<thead>`), so
   // `col.width` (the measured `ch` authority, `columnDefs.tsx`) lands here,
   // not on every `<tbody>` cell — `undefined` for `NAME_COLUMN` leaves the

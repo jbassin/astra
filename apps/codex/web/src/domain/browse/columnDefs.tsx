@@ -12,17 +12,16 @@ import {
 } from "./filterEngine";
 
 /**
- * P8 S1 (D29-78) — the per-category listing COLUMN model, replacing the flat
- * five-field row grammar (name/traits/level+rarity/source/icon) with real
- * aligned, sortable-by-header columns. One authority for three concerns a
- * plain component tree would otherwise scatter: what to SHOW (`render`),
- * what to SORT BY (`comparator`, resolved by `comparatorForSort` below), and
- * what SURVIVES the narrow-container collapse (`compact`).
+ * The per-category listing COLUMN model: real aligned columns, sortable by
+ * header. One authority for three concerns a plain component tree would
+ * otherwise scatter: what to SHOW (`render`), what to SORT BY (`comparator`,
+ * resolved by `comparatorForSort` below), and what SURVIVES the
+ * narrow-container collapse (`compact`).
  *
- * `.tsx` (not the spec snippet's literal `.ts`) because `render` returns
- * JSX (`<ActionGlyph/>` etc.) — every other JSX-bearing module in this
- * domain (`BrowseListing.tsx`, `render/actionGlyph.tsx`) is `.tsx` too; a
- * `.ts` file can't contain a JSX literal under this repo's tsconfig.
+ * `.tsx` (not `.ts`) because `render` returns JSX (`<ActionGlyph/>` etc.) —
+ * every other JSX-bearing module in this domain (`BrowseListing.tsx`,
+ * `render/actionGlyph.tsx`) is `.tsx` too; a `.ts` file can't contain a JSX
+ * literal under this repo's tsconfig.
  */
 export interface ColumnDef {
   /** `"name"`/`"level"`/`"rarity"`/`"source"` (core `IndexRow` fields) or a
@@ -44,34 +43,31 @@ export interface ColumnDef {
   comparator?: "text" | "numeric" | { rank: readonly string[] };
   /** Survives the narrow-container (< `NARROW_CONTAINER_WIDTH_PX`) collapse
    * — Name/Lvl(if present)/Source only, uniformly across every category
-   * (D29-78's "Name · Lvl-if-covered · Source · icon" compact recipe; the
+   * (the "Name · Lvl-if-covered · Source · icon" compact recipe; the
    * edition icon itself is never a `ColumnDef` at all, see `columnsFor`'s
    * own comment). */
   compact?: boolean;
-  /** P9 S1 (D29-86) — a `ch`-based CSS length, applied to the column's
+  /** A `ch`-based CSS length, applied to the column's
    * header `<th>` (which is what `table-layout: fixed` actually measures —
    * the CSS2.1 fixed-layout algorithm sizes each column off an explicit
    * width on a cell in the table's FIRST row, i.e. `<thead>`, not every
    * `<tbody>` cell). Chosen from a one-time 99th-percentile RENDERED-value-
    * width measurement against the real corpus (46,192 rows at measurement
-   * time; P11 S1 dropped ~1,384 nameless `action` debris entities, ~44,808
-   * post-drop — the columns measured here (never `action`-only facets like
-   * castTime/range) are not expected to shift, but NOT re-measured this
-   * round; a future column-width slice should re-run the measurement rather
-   * than trust this note — `measure, don't guess` — see this slice's own
-   * build report for the raw numbers), plus a
-   * 1ch safety buffer; genuine outliers beyond that still degrade gracefully
-   * via the `.codex-listing-table td`'s own `overflow: hidden;
+   * time; ~1,384 nameless `action` debris entities have since been dropped,
+   * which should not shift these non-`action` columns, but they were not
+   * re-measured — re-run the measurement before changing a width: `measure,
+   * don't guess`), plus a 1ch safety buffer; genuine outliers beyond that
+   * still degrade gracefully via the `.codex-listing-table td`'s own `overflow: hidden;
    * text-overflow: ellipsis` (below). `undefined` for `NAME_COLUMN` only —
    * the fixed-layout remainder rule gives Name whatever width is left once
    * every OTHER declared column (+ the icon column) claims its share
-   * (`.codex-listing-col-name { width: 100% }` is DELETED, adversarial M5 —
+   * (there is deliberately no `.codex-listing-col-name { width: 100% }`:
    * an explicit 100% next to explicit `ch` siblings over-constrains the
    * algorithm instead of "Name takes the remainder"). */
   width?: string;
 }
 
-/** D29-78's container-query threshold ("< ~600px content width — i.e. split
+/** The container-query threshold ("< ~600px content width — i.e. split
  * view open, or narrow viewports incl. mobile"). Exported so
  * `BrowseListing.tsx`'s measured-width hook and its own tests share the one
  * number. */
@@ -99,7 +95,7 @@ function rawStringValue(col: ColumnDef, row: IndexRow): string | undefined {
 }
 
 // ---------------------------------------------------------------------------
-// the feat Type override map (D29-78: "the feat itemCategory 7-value
+// the feat Type override map ("the feat itemCategory 7-value
 // override map: classfeature->'Class Feature', ancestryfeature->'Ancestry
 // Feature', deityboon->'Deity Boon', rest capitalized") — measured against
 // the real corpus (feat: class/ancestry/skill/general/classfeature/
@@ -127,7 +123,7 @@ function displayTextFor(col: ColumnDef, row: IndexRow): string | undefined {
 }
 
 // ---------------------------------------------------------------------------
-// actionCost/castTime rank (D29-78): "free < reaction < 1 < '1 or 2' < '1 to
+// actionCost/castTime rank: "free < reaction < 1 < '1 or 2' < '1 to
 // 3' < 2 < '2 or 3' < 3 < time-strings (by parsed duration: rounds <
 // minutes < hours < days) < passive" — passive sorts with missing, LAST.
 // The 8-token enumerated prefix is a plain lookup; a real corpus time-string
@@ -136,7 +132,7 @@ function displayTextFor(col: ColumnDef, row: IndexRow): string | undefined {
 // any genuinely unenumerated composite (the corpus's 3 "2 to 2 rounds"
 // residue values, `actionGlyph.tsx`'s own "genuinely unknown" case) fall
 // through to `undefined` — `sortByComparator`'s missing-branch (unconditional
-// regardless of `desc`) is what actually puts them LAST, matching D29-78.
+// regardless of `desc`) is what actually puts them LAST.
 // ---------------------------------------------------------------------------
 
 const ACTION_COST_ORDER: readonly string[] = [
@@ -289,7 +285,7 @@ function renderActionCost(row: IndexRow): ReactNode {
   if (raw === undefined) return EM_DASH;
   const cost = normalizeActionCost(raw);
   if (cost) return <ActionGlyph cost={cost} />;
-  // "passive" (not in the action-glyph vocabulary, D29-78) — plain text.
+  // "passive" (not in the action-glyph vocabulary) — plain text.
   return <span className="codex-col-passive">{capitalize(raw)}</span>;
 }
 
@@ -316,11 +312,9 @@ function renderPrice(row: IndexRow): ReactNode {
 }
 
 /** `range` (spell): `feet -> ft` + em-dash for missing, truncated w/ `title`
- * (D29-78 adversarial B-U1: the worst real value is 47 chars — ft-
- * abbreviation alone can't save the row, hence the truncate treatment on
- * top of it too). NOT sortable (no comparator declared, D29-78's enumerated
- * comparator list never names Range) — see this slice's own report for the
- * rationale. */
+ * (the worst real value is 47 chars — ft-abbreviation alone can't save the
+ * row, hence the truncate treatment on top of it too). NOT sortable: no
+ * comparator is declared, as the sortable-column list never names Range. */
 function renderRange(row: IndexRow): ReactNode {
   const raw = row.facets?.range;
   if (raw === undefined || raw.trim() === "") return EM_DASH;
@@ -335,20 +329,18 @@ function renderRange(row: IndexRow): ReactNode {
 // ---------------------------------------------------------------------------
 // shared columns (identical across every group that carries them)
 //
-// P9 S1 (D29-86) — `width` below is a one-time 99th-percentile RENDERED-
-// value-CHARACTER-COUNT measurement against the real corpus (46,192 rows at
-// measurement time; P11 S1 dropped ~1,384 nameless `action` debris
-// entities, ~44,808 post-drop — the raw n=/p99/max figures below are the
-// ORIGINAL measurement, NOT re-run this round; a future column-width slice
-// should re-measure rather than trust this note stale)
-// (`ch` is inherently a per-font approximation even for a measured value —
-// the established convention `.codex-col-truncate { max-width: 14rem }`
-// already used before this slice), +1ch safety buffer, +1ch again where the
-// rendered form can add a short suffix/label the raw facet value alone
+// `width` below is a one-time 99th-percentile RENDERED-value-CHARACTER-COUNT
+// measurement against the real corpus (46,192 rows at measurement time;
+// ~1,384 nameless `action` debris entities have since been dropped — the raw
+// n=/p99/max figures below are that original measurement, not re-run;
+// re-measure rather than trust them stale) (`ch` is inherently a per-font
+// approximation even for a measured value, as with the existing
+// `.codex-col-truncate { max-width: 14rem }`), +1ch safety buffer, +1ch
+// again where the rendered form can add a short suffix/label the raw facet value alone
 // doesn't carry. Raw p99/max, measured via a throwaway script against
-// `apps/codex/web/data/corpus/` (not committed — corpus-derived, hermeticity,
-// gate G):
-//   source (ALL categories, abbreviateBook() output): n=46,192 (pre-P11) p99=8 max=18
+// `apps/codex/web/data/corpus/` (not committed: it is corpus-derived, and
+// the test suite must stay hermetic):
+//   source (ALL categories, abbreviateBook() output): n=46,192 p99=8 max=18
 //   level (ALL categories): p99=2 max=2
 //   spell.castTime (raw facet, pre-glyph): p99=10 max=13
 //   spell.range (raw facet, pre-"feet"->"ft" abbreviation): p99=9 max=46
@@ -375,8 +367,8 @@ const NAME_COLUMN: ColumnDef = {
   comparator: "text",
   compact: true,
   render: renderName,
-  // No declared width — the fixed-layout remainder rule (D29-86, own
-  // interface doc comment).
+  // No declared width — the fixed-layout remainder rule (see the `width`
+  // doc comment on `ColumnDef`).
 };
 
 const LEVEL_COLUMN: ColumnDef = {
@@ -387,7 +379,7 @@ const LEVEL_COLUMN: ColumnDef = {
   comparator: "numeric",
   compact: true,
   render: renderLevel,
-  // P11 S2 (D29-102) — every non-Name `ch` width below is wrapped
+  // Every non-Name `ch` width below is wrapped
   // `calc(Nch + 1rem)`: the fixed-layout `width` on `<th>` is a BORDER-BOX
   // measurement (site-wide `box-sizing: border-box`), but the `ch` figure
   // above is a raw rendered-VALUE-character-count measurement that never
@@ -396,15 +388,12 @@ const LEVEL_COLUMN: ColumnDef = {
   // live-measured, near-total loss on some columns, e.g. the level `<th>`'s
   // ~19px border-box left ~3px of actual content room). `1rem` = the two
   // `0.5rem` horizontal cell paddings; the `ch` comment above each column
-  // stays the untouched original p99/max measurement, unaffected by this
-  // fix (see this slice's own build report for the drift-guard proof this
-  // doesn't just move the clip elsewhere).
+  // stays the original p99/max measurement, unaffected by the padding term.
   width: "calc(3ch + 1rem)", // p99=2 ("-2".."28") + 1ch buffer
 };
 
-// Not sortable (D29-78's enumerated sortable-comparator list — numeric HP/
-// AC/Price/Bulk, rank Cast/Actions/Size/Rarity, text Type — never names
-// Source; see this slice's own report for the rationale).
+// Not sortable: the sortable-column list (numeric HP/AC/Price/Bulk, rank
+// Cast/Actions/Size/Rarity, text Type) never names Source.
 const SOURCE_COLUMN: ColumnDef = {
   key: "source",
   label: "Source",
@@ -412,7 +401,7 @@ const SOURCE_COLUMN: ColumnDef = {
   sortable: false,
   compact: true,
   render: renderSource,
-  // P11 S2 (D29-102) drift-guard find: `9ch` (p99=8 + 1ch buffer) genuinely
+  // `9ch` (p99=8 + 1ch buffer) genuinely
   // clipped the real corpus's "COCA-ECPG" (9 chars, p99+1) — `ch` is a
   // per-font approximation pinned to the "0" glyph's width (this file's own
   // "measure, don't guess" comment above), and this uppercase-heavy,
@@ -539,7 +528,7 @@ const TYPE_COLUMN: ColumnDef = {
 };
 
 // ---------------------------------------------------------------------------
-// category -> group -> full column set (D29-78's 5 sets)
+// category -> group -> full column set (5 sets)
 // ---------------------------------------------------------------------------
 
 type ColumnGroup = "spell" | "creatureHazardVehicle" | "equipment" | "featAbility" | "fallback";
@@ -577,17 +566,17 @@ function baseColumnsFor(category: string): readonly ColumnDef[] {
 }
 
 /**
- * The single column-model authority (D29-78). `rows` is the listing's own
+ * The single column-model authority. `rows` is the listing's own
  * (already-loaded) row set — used ONLY to run the two coverage-aware drops
- * once per listing (adversarial B-U3): `level` (64/88 categories are 0%
+ * once per listing: `level` (64/88 categories are 0%
  * covered — `categoryHasLevelCoverage`, reused verbatim from
  * `filterEngine.ts`) and `rarity` (degenerate cardinality-1 on rules/trait/
- * source/article, absent on sidebar — `categoryHasRarityCoverage`, the new
+ * source/article, absent on sidebar — `categoryHasRarityCoverage`, its
  * analog). Every OTHER facet column here is already gated at emit time by
  * `facetKeys.ts`'s own ≥40%-coverage/≥2-cardinality classifier, so it needs
  * no live check. `Name`/`Source` never drop — the guaranteed floor is
  * `Name · Source` (e.g. `sidebar`, `rules`), never an all-em-dash column.
- * The edition icon is deliberately NOT a `ColumnDef` at all (D29-78: "not a
+ * The edition icon is deliberately NOT a `ColumnDef` at all ("not a
  * labeled column") — `BrowseListing.tsx` appends it as a fixed end cell
  * unconditionally, in both the full and compact tiers.
  */
