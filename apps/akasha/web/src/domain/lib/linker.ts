@@ -33,7 +33,7 @@ export function escapeHtml(s: string): string {
     .replaceAll('"', "&quot;");
 }
 
-export interface Linker {
+interface Linker {
   /**
    * HTML-escape `text`, then auto-link proper-noun mentions to internal pages,
    * resolved relative to `fromSlug`. Each linked target's SimpleSlug is recorded

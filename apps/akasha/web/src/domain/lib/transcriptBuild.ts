@@ -29,7 +29,7 @@ import { loadTranscripts, type Transcript } from "./transcript";
 /** Transcripts that match no campaign land here (faerrin UNSORTED_FOLDER). */
 const UNSORTED_FOLDER = "Unsorted";
 
-export interface TranscriptBuild {
+interface TranscriptBuild {
   docs: SiteDoc[];
   bodies: Record<string, { html: string; minutes: number }>;
 }
