@@ -68,13 +68,13 @@ export function serviceNameFor(entry: string, config: object = loadConfig()): st
 }
 
 /** Whether a socket's remote address is this host's loopback (IPv4, IPv6 or mapped). */
-export function isLoopback(address: string | undefined): boolean {
+function isLoopback(address: string | undefined): boolean {
   if (address === undefined) return false;
   return address === "::1" || address.startsWith("127.") || address.startsWith("::ffff:127.");
 }
 
 /** Whether an inbound request URL (path and query) is the health check. */
-export function isHealthCheck(url: string | undefined): boolean {
+function isHealthCheck(url: string | undefined): boolean {
   return url === HEALTHZ_PATH || url?.startsWith(`${HEALTHZ_PATH}?`) === true;
 }
 
@@ -91,7 +91,7 @@ let instrumented = false;
  * so both `import http from "node:http"` and `import { createServer } from "node:http"`
  * in app code (which loads after this) see them.
  */
-export function instrumentHttp(): void {
+function instrumentHttp(): void {
   if (instrumented) return;
   instrumented = true;
   // Stable HTTP semantic conventions (`http.request.method`, `url.path`,
@@ -117,7 +117,7 @@ export function instrumentHttp(): void {
   syncBuiltinESMExports();
 }
 
-export interface NodeTelemetryOptions extends InitOptions {
+interface NodeTelemetryOptions extends InitOptions {
   /** Install the SIGTERM/SIGINT/beforeExit handler (default true; tests pass false). */
   handleSignals?: boolean;
 }
