@@ -2,8 +2,7 @@
  * Vellum Structured Syntax (VSS). A pure, total `source → source` pass that
  * compiles a brace/bracket-delimited *structural* surface into vellum's
  * canonical `:::`-directive markdown, *before* the inline sigil `desugar` and
- * remark run (see `parseMarkdown`). See the spec:
- * `thoughts/vellum/specs/2026-06-09-vellum-structured-syntax.md`.
+ * remark run (see `parseMarkdown`).
  *
  * Design axiom: **braces for STRUCTURE, markdown for CONTENT.** VSS is a
  * structural compiler, not a replacement parser — it never reimplements

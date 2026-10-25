@@ -6,9 +6,11 @@ metadata:
 ---
 
 Never base a judgment, review card or sweep rule on a PF2e rules claim from recall. The full
-remaster and legacy rules text is greppable under `<codex.data-path>/corpus/rules/` (today
-`/ruby/data/astra-state/codex/data/corpus/rules/`, for example `emanation.json`). Grep it and quote
-it.
+remaster and legacy rules text is greppable in the current codex release, under
+`<codex.data-path>/releases/current/corpus/rules/` (today
+`/ruby/data/astra-state/codex/data/releases/current/corpus/rules/`, for example `emanation.json`).
+Grep it and quote it. The flat `<codex.data-path>/corpus/` beside it is an old pre-release copy;
+don't use it.
 
 **Why:** a review card once said "emanations move with you by RAW". That is backwards: an emanation
 "issues forth from each side of your space"; moving is the aura trait's behavior. The wrong premise

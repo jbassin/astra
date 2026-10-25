@@ -17,7 +17,7 @@ import { createResolveUuid, type UuidIndex } from "./uuidResolve";
 
 /**
  * The homebrew loader — walks the committed
- * `apps/assay/py/homebrew/spells/*.json` store (the canonical 175-doc "Liturgy
+ * `apps/assay/py/homebrew/spells/*.json` store (the canonical 173-doc "Liturgy
  * of the Iridite Vol.2" set) and assembles it through the SAME
  * `assembleFoundryEntity` the official Foundry side uses (no parallel
  * assembly logic) — the store's own shape (`{name,_id,flags,type:"spell",
@@ -29,7 +29,7 @@ import { createResolveUuid, type UuidIndex } from "./uuidResolve";
  * private `makeCtx(foundry.index, new Map(), report)` verbatim, duplicated
  * locally below rather than imported, which would create a circular import
  * — `transform.ts` calls `loadHomebrewSide`) so the store's
- * `@UUID[Compendium.pf2e.conditionitems.Item.<Condition>]` refs (70/175 on
+ * `@UUID[Compendium.pf2e.conditionitems.Item.<Condition>]` refs (65/173 on
  * the real store) resolve against real official condition entities; an
  * empty localize map is fine (the store carries zero `@Localize`/`@Damage`/
  * `@Check` enrichers, verified).
@@ -37,7 +37,7 @@ import { createResolveUuid, type UuidIndex } from "./uuidResolve";
  * Identity: the store file BASENAME is the slug —
  * `assembleFoundryEntity` already does exactly this (`basename` wins over
  * `sluggify(doc.name)`, `slugMismatch` report-only on disagreement) with
- * zero changes needed here; 17/175 possessive-apostrophe names disagree by
+ * zero changes needed here; 17/173 possessive-apostrophe names disagree by
  * design (`slugMismatchCount` below feeds the homebrew report section).
  *
  * Ritual reroute: the docs carrying a raw `system.ritual` object
