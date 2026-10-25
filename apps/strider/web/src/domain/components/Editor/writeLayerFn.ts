@@ -5,10 +5,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { writeLayer } from "../../../../scripts/writeLayer";
 
 // Editor save endpoint as a TanStack Start server function — the idiomatic way to
-// run server-only code in this stack (handled in dev and prod alike; the node:fs
-// write + validation stay out of the client bundle). The editor UI that calls
-// this is gated to the local network at the Caddy edge (the write endpoint's auth
-// is a deliberate accepted risk — see memory strider-editor-auth-accepted).
+// run server-only code in this stack (the node:fs write + validation stay out of the
+// client bundle). Only `vite dev` reaches it: the /editor route imports the editor
+// behind `import.meta.env.DEV`, so a production build leaves this module out.
 //
 // The mutation is traced (span + counter + log to SigNoz) so it's observable and
 // doubles as the editor's audit trail — telemetry-from-day-one (principle #1).
