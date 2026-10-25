@@ -62,7 +62,7 @@ byte-stable between runs (its filter files differ), so compare indexes by page c
 ## Traps
 
 **Corpus and ingest**
-- Run the real transform before trusting any count in a spec, test or golden. Counts derived
+- Run the real transform before trusting any count in a doc, test or golden. Counts derived
   from a proxy (grepping one field, raw AoN doc counts) have been wrong in both directions.
 - Foundry packs have no `system.slug`; the pack file basename is the slug. AoN URLs are not
   unique (tiered items, class/class-feature twins), so join by `pickCanonical`, never by URL.
@@ -107,8 +107,8 @@ byte-stable between runs (its filter files differ), so compare indexes by page c
 - `extract-fixture` (host-only) re-picks `fixtures/raw/` and `fixtures/picks/` from the real
   snapshots and the current release, then checks the coverage matrix over a fresh fixture
   build. A re-extract drops the one hand-made raw doc, `class-feature-9001` in
-  `fixtures/raw/aon/class-feature.json` (witch's Weapon Specialization, the D29-132 case in
-  `transform.test.ts`): restore that hit from git afterwards.
+  `fixtures/raw/aon/class-feature.json` (witch's Weapon Specialization, which a
+  `transform.test.ts` case needs): restore that hit from git afterwards.
 - The site finds the fixture corpus by walking up from its own code to
   `<dir>/ingest/fixtures/picks` (`apps/codex/web/src/server/corpusFs.ts`), so moving this
   package or `fixtures/` breaks the site's fixture root. The site's `corpusFs.test.ts` checks
@@ -130,9 +130,9 @@ snapshots/foundry/<tag>/    ─┐
 snapshots/aon/<date>/       ─┘
 ```
 
-Two ONE-SHOT snapshots (`<codex.data-path>/snapshots/`, outside the repo — fetched once,
-never queried again at transform/build time), parsed by two independent grammars, joined into
-one canonical entity per real game element, and written as a deterministic corpus tree.
+Two snapshots under `<codex.data-path>/snapshots/` (outside the repo; fetched once, never
+queried at transform time) are parsed by two independent grammars, joined into one canonical
+entity per real game element, and written as a deterministic corpus tree.
 
 ### Module map
 
@@ -143,7 +143,7 @@ one canonical entity per real game element, and written as a deterministic corpu
 | Parse (AoN) | `src/{aonFacets,aonMarkup,aonLinkTable}.ts` | Facet extraction + the `markdown` field's custom-tag grammar → `CodexNode`s; the AoN-URL→codex-id link table. |
 | Join | `src/join.ts` | Slug match → qualifier-reorder normalization → `join-aliases.json`; field ownership (Foundry wins mechanics, AoN wins prose/citations); identity finalization (`@legacy`/`-2` suffixing); crossref/embed patching. |
 | Emit | `src/emit.ts` | Deterministic corpus writer — sorted keys, sorted file order, zod-validates every entity. |
-| Report | `src/report.ts` | Pure builders for `report.json`/`report.md` — the P1 acceptance artifact. |
+| Report | `src/report.ts` | Pure builders for `report.json`/`report.md`. |
 | Search | `src/build-search.ts` | The Pagefind index over a corpus tree. |
 | Release | `src/releaseStore.ts`, `src/release.ts` | Staging, validation, content-hash ids, the `current` swap, rollback, pruning. |
 | Orchestrate | `src/transform.ts`, `src/passRegistry.ts`, `src/cli.ts` | `TRANSFORM_PASSES` lists every pass; `runTransform()` validates and runs it; the CLI wraps each step. |
@@ -184,90 +184,57 @@ The transform and the indexer take explicit output dirs (`transform --out <dir>`
 `search-index --corpus <dir> --out <dir>`) and never write a served release; `just
 codex-build` (`release build`) runs both into a staging dir and publishes it.
 
-`just codex-refresh` **refuses to run if `git status --porcelain -- apps/codex/ingest` is
-non-empty** — a refresh rewrites the committed `corpus-manifest.json` pin, and that diff
-must be reviewable on its own (the linguist-commit-timer lesson: never let a generated-file
-change ride in on top of unrelated in-progress edits). Commit first.
+`just codex-refresh` refuses to run if `git status --porcelain -- apps/codex/ingest` is
+non-empty: a refresh rewrites the committed `corpus-manifest.json` pin, and that diff must be
+reviewable on its own. Commit first.
 
-A real run takes about a minute end to end (~15s for the transform stage, ~30s for the
-index) and produces about 45,000 entities / ~625 MB of corpus (under `codex.data-path`,
-never in the repo; see the corpus layout below).
+A real run takes about a minute end to end and produces about 45,000 entities in 88
+categories, about 555 MB of corpus (under `codex.data-path`, never in the repo).
 
 ## Corpus layout (`releases/<id>/corpus/`)
 
 ```
 corpus/
   <category>/
-    <slug>.json          one file per entity (the P2 lazy-load unit)
-    <slug>@legacy.json    the legacy half of a shared-slug remaster pair (D29-1)
-    _index.json          slim facet rows for the whole category (id/name/level/traits/
-                          rarity/source/edition/superseded + a per-category-allowlisted
-                          `facets` subset, D29-33c — NO body), sorted by id, COMPACT
-                          JSON (no indentation, D29-33d — ~31% smaller; still key-sorted
-                          + trailing LF, same determinism guarantee as every other
-                          corpus file). The leading underscore is load-bearing (D29-21):
-                          sluggify() can never emit one, so this file can never clobber
-                          a real entity slug (the old plain index.json ate the two real
-                          `index`-slug entities, ancestry/index + archetype/index)
-  manifest.json           schemaVersion + the D29-4 source pins + final per-category
-                          counts + total size (NOT the same file as the committed
-                          apps/codex/ingest/corpus-manifest.json — that one pins
-                          what to FETCH; this one summarizes what got EMITTED).
-                          totalEntityCount reconciles EXACTLY against a find|wc over
-                          the entity files (D29-21)
+    <slug>.json           one file per entity
+    <slug>@legacy.json    the legacy half of a remaster pair that shares a slug
+    _index.json           slim rows for the whole category, no body (see below)
+  manifest.json           schemaVersion, source pins, per-category counts, total size
+  rules-tree.json         the rules books as trees (the site's /rules)
+  sources-index.json      one row per source book, grouped by product line (the site's /sources)
   report.json / report.md the transform report (see below)
 ```
 
-### schemaVersion 2 (P1.6, D29-19/-20/-21)
+- `_index.json` holds id, name, level, traits, rarity, source, edition, `superseded` and the
+  `facets` subset that `facetKeys.ts` (`@astra/codex-corpus`) allows for that category. It is
+  sorted by id and written as compact JSON. The leading underscore matters: `sluggify()` never
+  emits one, so the file can never clobber a real entity (there are real `index` slugs).
+- `manifest.json` summarizes what was emitted. It is not the committed `corpus-manifest.json`,
+  which pins what to fetch. `totalEntityCount` matches a count of the entity files exactly.
+- `creature` and `hazard` entities carry a typed `stats` statblock projection; `class` entities
+  carry typed class `stats` (key ability, HP, proficiencies, feat cadence, granted features and
+  subclass options), built by `augmentClassStats.ts` over the final kept entity set.
+- Foundry `character` Actors (pregens, companions) are excluded before assembly: their numbers
+  are derived at run time by the pf2e system. The report counts them (`excludedActorsCount`).
+- A broken field in a hazard's `disable`/`routine`/`reset` HTML is omitted and counted
+  (`hazardStatsHtmlFailed`); entity `body` parsing still hard-fails.
 
-- **npc-only creature import (D29-19):** `type: "character"` Actors (iconics pregens,
-  paizo-pregens, Kingmaker companions — 150 docs) are excluded before assembly; their
-  AC/HP/saves are runtime-derived by the pf2e system, not statable from source. The
-  ~16 AoN-indexed pregen twins still ship as AoN-only pages (D29-14(a)). Report field:
-  `excludedActorsCount`.
-- **`stats` (D29-20):** `creature`/`hazard` entities carry a typed, discriminated
-  statblock projection — CreatureStats (speeds/abilityMods/senses/languages/
-  immunities/resistances/weaknesses/skills) or HazardStats (hardness/stealth/
-  isComplex + disable/routine/reset as parsed `BlockNode[]`). `EmbeddedItem` gains
-  `attackBonus`/`damage[]` on `melee` strikes and `dc`/`attack`/`tradition` on
-  `spellcastingEntry` items. Extraction is deterministic field mapping; absent source
-  fields are omitted. The report carries per-field extraction coverage tables.
-- **P7 additions (D29-73/D29-74, schemaVersion 2→3):** `melee` strikes additionally
-  carry an optional `range` display string baked from `system.range.{increment,max}`
-  ("range 10 feet" max-only / "range increment 120 feet"; increment wins if both —
-  0 real docs carry both). And `type:"lore"` embedded items' `system.mod.value`
-  merges into the creature's `stats.skills` as `sluggify(name) → mod`
-  (`mergeLoreSkills` — core-skill collisions guarded + reported as
-  `loreSkillCoreCollision` (0 real), same-slug duplicates last-write-wins +
-  reported as `loreSkillDuplicateSlug` (3 real)); hazards have no `skills` field —
-  a future hazard lore item needs deliberate schema work (guard comment at
-  `extractStats`).
-- One upstream pack typo (`pfs-season-6-bestiary/.../historys-repetition-7-8`, an
-  unterminated `@Check[` in its hazard `disable` field) is handled fail-soft: the one
-  broken field is omitted and counted as `hazardStatsHtmlFailed` — entity `body`
-  parsing keeps its hard-fail posture.
-
-Every file is written through one of two canonical serializers, both key-sorted
-(codepoint order, recursively) with a trailing LF: `canonicalJson` (2-space indent) for
-every entity file + `manifest.json` + the reports, and `canonicalJsonCompact` (no
-indentation, D29-33d) for `_index.json` only. Two full transform runs over the same
-snapshots produce a **byte-identical** `corpus/` tree —
-verify with `diff -r` after copying a run aside. `emit.ts` wipes its output dir (a fresh
-staging dir on the host) before every write, so a stale file from a category/entity that no
-longer exists can't survive a re-transform.
+Every file goes through one of two canonical serializers, both key-sorted (codepoint order,
+recursively) with a trailing LF: `canonicalJson` (2-space indent) for everything except
+`_index.json`, which uses `canonicalJsonCompact`. Array order in `rules-tree.json` is meaningful
+and kept. `emit.ts` wipes its output dir before every write, so a stale file can't survive a
+re-transform. To check determinism, copy a run aside and `diff -r` it against a second run.
 
 ## The transform report
 
-`report.md`/`report.json` are the P1 acceptance artifact — read `report.md` first. It
-covers, per category: Foundry-in/AoN-in/final-out counts, join rate (exact / qualifier-
-normalized / alias), unjoined residues (capped lists); slug collisions (legacy-pair vs.
-residual); legacy/remaster pairing + the Foundry `remaster-changes` cross-check;
-crossref/embed patch stats; license/edition breakdowns; and non-fatal report-class
-counts (broken refs, mismatches, dropped images, ...). **Join rates are a judgment
-call, not a threshold** — a category sitting under 50% joined with both sources present
-gets a `⚠ STOP-condition` callout at the top of the report; per spec §6, that's a signal
-to re-decide the join key with a human before P2, not something this pipeline
-auto-corrects.
+Read `report.md` first after a transform. It covers, per category: Foundry-in, AoN-in and
+final-out counts; join rate (exact, qualifier-normalized, alias); unjoined residues (capped
+lists); slug collisions (legacy pair or residual); legacy/remaster pairing and the Foundry
+`remaster-changes` cross-check; crossref/embed patch stats; license/edition breakdowns; and
+non-fatal report-class counts (broken refs, mismatches, dropped images, ...). **Join rates are a judgment call,
+not a threshold.** A category under 50% joined with both sources present gets a
+`⚠ STOP-condition` callout at the top of the report. That means the join key needs a human
+decision; the pipeline does not correct it.
 
 ## Adding a join alias
 
@@ -310,28 +277,25 @@ landmines the real corpus has already turned up), re-run, confirm zero failures.
 ## The fixture (`fixtures/`: committed inputs, generated corpus)
 
 CI needs the transform and every test to run with **zero network and zero reads under
-`codex.data-path`**.
-`fixtures/` holds a small (~1.8 MB) committed set of inputs taken from the real data, and a
-fixture corpus generated from them:
+`codex.data-path`**. `fixtures/` holds a small (~1.8 MB, within a 2 MiB budget) committed set
+of inputs taken from the real data, and a fixture corpus generated from them:
 
 ```
 fixtures/
   raw/
     foundry/    a real-shaped mini Foundry snapshot (packs/pf2e/<pack>/..., static/lang/,
-                system.pf2e.json) — ~30 hand-picked real docs, enough to reproduce the
+                system.pf2e.json): about 50 hand-picked real docs, enough to reproduce the
                 Heal legacy/remaster pair, Magic Missile -> Force Barrage, the Adamantine
-                Dragon qualifier-reorder + 1:N variant, the Camouflage Coat alias, and the
-                Anadi journal-page merge from scratch when re-parsed
-    aon/        the matching real AoN doc hits (spell/creature/ancestry/feat), same
-                {category, hits:[...]} shape the real fetcher produces
+                Dragon qualifier-reorder + 1:N variant, the Camouflage Coat alias, the
+                Anadi journal-page merge and the class-stats cases from scratch
+    aon/        the matching real AoN doc hits, in the {category, hits:[...]} shape the
+                real fetcher produces
     homebrew*/  the homebrew mini store (inline docs in extract-fixture.ts)
   join-aliases.json   trimmed to the one alias entry this fixture's raw docs exercise
-  picks/        111 canonical-form-ONLY entities (no raw source) copied verbatim from a real
-                emitted corpus — one representative per codex category (the smallest
-                entity in that category) plus whatever else is needed to cover every
-                CodexNode kind at least once (`blockquote` is allowlisted as
-                corpus-extinct post-D29-19 — the only blockquotes lived in the excluded
-                pregen docs — and the extractor re-proves that extinction on every run)
+  picks/        111 canonical-form-only entities copied verbatim from a real emitted corpus:
+                the smallest entity in each category, plus whatever else covers every
+                CodexNode kind (`blockquote` is allowlisted as extinct: the only ones lived
+                in the excluded pregen docs, and the extractor re-checks that every run)
   entities/     GENERATED, gitignored: the fixture corpus (235 entities) that tests, guards
                 and goldens read
 ```
@@ -340,8 +304,8 @@ fixtures/
 (class stats, doctrine/lesson/patron subclasses) from a `runTransform` run over `raw/`, prose
 trimmed to a stub; and patches and synthetic rows defined in code (the 90 `ritual/virt-*`
 rows, the basic-lesson collision pair, and test-only additions to `class/witch` and
-`class-feature/reactive-strike`), each naming the test that needs it. It derives the D29-21
-read surface the server expects: a per-category `_index.json`, `manifest.json`,
+`class-feature/reactive-strike`), each naming the test that needs it. It derives the read
+surface the server expects: a per-category `_index.json`, `manifest.json`,
 `rules-tree.json` and `sources-index.json`. The output is deterministic; nothing edits it by
 hand.
 
@@ -350,8 +314,8 @@ real snapshots and the current release (host-only, rare). It then builds the fix
 corpus into a temp dir and **asserts the full coverage matrix** over it — every category,
 every `CodexNode` kind, the legacy pair, the alias join, the qualifier-reorder + variantOf
 pair, a journal-merged entity, a residual `-2` collision, a Foundry-only / AoN-only entity,
-and the class-stats cases. It fails loudly (listing exactly what's missing) rather than
-silently shipping a gap. The 2 MB budget covers the committed inputs.
+and the class-stats cases. It fails loudly, listing exactly what is missing, and fails when
+the committed inputs exceed the 2 MiB budget.
 
 `src/transform.test.ts` is the CI-hermetic pipeline test: it calls the exact same
 `runTransform()` the real CLI uses, twice, over `fixtures/raw/`, into two fresh temp
