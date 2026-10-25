@@ -1,6 +1,6 @@
 """Typed config schema: every namespace of `ontology/ontology-config/config.kdl`.
 
-Each language validates only the namespaces its apps read (0037 LIB-1 interim):
+Each language validates only the namespaces its apps read:
 
 * `Config` holds the Python-read namespaces; `load_config()` returns it and ignores the
   rest, so a bad value in a TS-only block cannot stop a Python process.
@@ -20,9 +20,9 @@ Every field has a reader outside the config libraries and tests: the CI test
 `tests/test_config_readers.py` fails on a field nothing reads, so delete a field when its
 last reader goes.
 
-Values live only in `config.kdl` (0037 LIB-1): every namespace and every plaintext field
+Values live only in `config.kdl`: every namespace and every plaintext field
 is required and has no default, so a missing key fails the load instead of falling back to
-a code value. A secret field is `SecretRef | None` (lazy, Decision E); an absent ref reads
+a code value. A secret field is `SecretRef | None` (resolved lazily); an absent ref reads
 as `None`, which `SecretRef.require()` callers treat as unset. `extra="forbid"` inside each
 namespace turns a mistyped KDL key into a loud error instead of a silent drop.
 
@@ -111,7 +111,7 @@ class ScribeConfig(_Base):
     data_path: DataPath
     incoming_path: DataPath
     tmp_path: DataPath
-    model: str  # full litellm id (Groq Whisper, Decision G)
+    model: str  # full litellm id (Groq Whisper)
     groq_api_key: Secret | None = None
 
 
@@ -172,7 +172,7 @@ class OratorConfig(_Base):
 
 
 class StriderConfig(_Base):
-    # The SSR frontend service (Decision I). service_name + port are the single
+    # The SSR frontend service. service_name + port are the single
     # source for server.ts (bind + telemetry name) and vite's dev port; service_name
     # also derives the browser RUM name (``{service_name}-rum``).
     service_name: str
@@ -182,9 +182,9 @@ class StriderConfig(_Base):
 
 
 class AkashaFrontendConfig(_Base):
-    # The akasha wiki read-surface (0011) — same SSR-frontend contract as Strider
-    # (Decision I). service_name + port are the single source for server.ts +
-    # vite's dev port; service_name also derives the browser RUM name.
+    # The akasha wiki read-surface — same SSR-frontend contract as Strider.
+    # service_name + port are the single source for server.ts + vite's dev port;
+    # service_name also derives the browser RUM name.
     service_name: str
     port: int
     # Absolute base URL baked into the build-emitted RSS/sitemap/og links.
@@ -196,21 +196,21 @@ class AkashaFrontendConfig(_Base):
 
 
 class MouthpieceFrontendConfig(_Base):
-    # The podcast read-surface (0012) — same SSR-frontend contract as Strider
-    # (Decision I). service_name + port are the single source for server.ts +
-    # vite's dev port; service_name also derives the browser RUM name. Distinct
+    # The podcast read-surface — same SSR-frontend contract as Strider.
+    # service_name + port are the single source for server.ts + vite's dev port;
+    # service_name also derives the browser RUM name. Distinct
     # from MouthpieceConfig (the backend).
     service_name: str
     port: int
     # Absolute base URL baked into the build-emitted /episodes.json deep-link map.
     public_origin: str
-    # In-container dir the audio volume mounts at; served same-origin at /audio/ (D2).
+    # In-container dir the audio volume mounts at; served same-origin at /audio/.
     audio_dir: str
 
 
 class VellumFrontendConfig(_Base):
-    # The PF2e document-forge editor (0013) — same SSR-frontend contract as the
-    # other frontends (Decision I). service_name + port are the single source for
+    # The PF2e document-forge editor — same SSR-frontend contract as the other
+    # frontends. service_name + port are the single source for
     # server.ts + vite's dev port; service_name also derives the browser RUM name.
     # The PNG export POSTs same-origin to /render (Caddy routes it to vellum-render).
     service_name: str
@@ -220,16 +220,16 @@ class VellumFrontendConfig(_Base):
 
 
 class VellumRenderConfig(_Base):
-    # The PNG render service (0013) — a Bun.serve + Playwright sidecar, a SEPARATE
-    # Compose unit from vellum-frontend (D2). service_name names its telemetry; port
+    # The PNG render service — a Bun.serve + Playwright sidecar, a SEPARATE
+    # Compose unit from vellum-frontend. service_name names its telemetry; port
     # is the bind port (the editor reaches it same-origin via Caddy).
     service_name: str
     port: int
 
 
 class HarrowConfig(_Base):
-    # The tarot deck reader (0017) — a standalone SSR frontend on the strider
-    # template (Decision I), a sibling of strider (interactive, backend-less).
+    # The tarot deck reader — a standalone SSR frontend on the strider
+    # template, a sibling of strider (interactive, backend-less).
     # service_name + port are the single source for server.ts + vite's dev port;
     # service_name also derives the browser RUM name. No backend/audio — every card
     # glyph is inline SVG.
@@ -239,8 +239,8 @@ class HarrowConfig(_Base):
 
 
 class LedgerConfig(_Base):
-    # The astra landing page (0018) — a backend-less SSR frontend on the strider
-    # template (Decision I), a sibling of Harrow. service_name + port are the single
+    # The astra landing page — a backend-less SSR frontend on the strider
+    # template, a sibling of Harrow. service_name + port are the single
     # source for server.ts + vite's dev port; service_name also derives the browser
     # RUM name. It links to the other sites by reading their public_origin from this
     # same config at build time — no hardcoded URLs.
@@ -249,7 +249,7 @@ class LedgerConfig(_Base):
 
 
 class HeartwoodConfig(_Base):
-    # The heartwood wiki-maintainer agent (0033 D33-7) — a host-run dspy.RLM. model
+    # The heartwood wiki-maintainer agent — a host-run dspy.RLM. model
     # drives the main loop, sub_model serves llm_query/llm_query_batched (two distinct
     # LM instances even when equal). max_iterations bounds main-LM calls, max_llm_calls
     # sub-LM calls; max_tokens is per call (reasoning shares it). backfill_budget_usd
@@ -261,7 +261,7 @@ class HeartwoodConfig(_Base):
     max_tokens: int
     max_output_chars: int
     backfill_budget_usd: float
-    # 0036: the Dagster↔host request dir (same path in the containers) and how long the
+    # The Dagster↔host request dir (same path in the containers) and how long the
     # session_wiki asset waits for the host runner's result before failing.
     requests_path: DataPath
     request_timeout_minutes: int
@@ -270,7 +270,7 @@ class HeartwoodConfig(_Base):
 
 
 class MouthpieceProducerConfig(_Base):
-    # The mouthpiece producer (0034 D34-3) — a host-run, read-only dspy.RLM that writes
+    # The mouthpiece producer — a host-run, read-only dspy.RLM that writes
     # the recap script's brief. model/sub_model/max_* mirror HeartwoodConfig. The
     # experiment's script arms pair experiment_models[i] with experiment_max_tokens[i].
     # A one-argument KDL node loads as a scalar, so both lists accept a bare value.
@@ -292,47 +292,46 @@ class MouthpieceProducerConfig(_Base):
 
 
 class PortalConfig(_Base):
-    # portal (0023) — MCP+WS server for the live FoundryVTT "Faerrin" world, on the
+    # portal — MCP+WS server for the live FoundryVTT "Faerrin" world, on the
     # orator-backend template. service_name names its telemetry (the
-    # @astra/observe/register hook reads it; D3's "no browser RUM surface" still holds).
+    # @astra/observe/register hook reads it; portal has no browser RUM surface).
     service_name: str
     port: int
     public_origin: str
-    # Two-hop auth (D6): mcp_api_key bearer-gates /mcp (MCP client -> server);
+    # Two-hop auth: mcp_api_key bearer-gates /mcp (MCP client -> server);
     # bridge_api_key gates the Foundry module's WS handshake (module -> server).
     bridge_timeout_ms: int
-    max_creates_per_request: int  # the D8 write-gate cap
+    max_creates_per_request: int  # the write-gate cap
     # The Foundry user id the server lets hold the bridge socket; "" = no designation.
     bridge_user_id: str
     mcp_api_key: Secret | None = None
-    # 0028 D28-1: the player-facing static key, a second bearer compared alongside
-    # mcp_api_key in the /mcp auth branch — resolves the read-only D28-8 tool subset.
+    # The player-facing static key, a second bearer compared alongside
+    # mcp_api_key in the /mcp auth branch — resolves the read-only player tool subset.
     player_mcp_api_key: Secret | None = None
     bridge_api_key: Secret | None = None
-    # 0025 D-2: the bind-mounted JSON file holding OAuth-registered clients +
+    # The bind-mounted JSON file holding OAuth-registered clients +
     # hashed tokens, on the new portal-oauth bind mount — survives `just up`
     # redeploys (unlike the in-memory pending-consent/auth-code state).
     oauth_state_path: str
 
 
 class PortalHeadlessConfig(_Base):
-    # portal-headless (0027 D27-5/-13) — the supervised headless-Chromium GM session, a
-    # SEPARATE Compose unit from portal-server (health-only, not edge-routed).
-    # service_name names its telemetry, as in PortalConfig. gm_password is the D27-4
-    # dedicated "Portal" Foundry account's password, resolved only at login time (D27-14 —
-    # never logged).
+    # portal-headless — the supervised headless-Chromium GM session, a SEPARATE
+    # Compose unit from portal-server (health-only, not edge-routed). service_name
+    # names its telemetry, as in PortalConfig. gm_password is the dedicated "Portal"
+    # Foundry account's password, resolved only at login time and never logged.
     service_name: str
     port: int
-    foundry_origin: str  # D27-3: the public edge
+    foundry_origin: str  # the public edge
     world: str
     gm_username: str
     gm_password: Secret | None = None
-    reload_interval_hours: int  # D27-10 slow-leak insurance knob; 0 disables it
+    reload_interval_hours: int  # slow-leak insurance knob; 0 disables it
 
 
 class CodexConfig(_Base):
-    # The PF2e reference site (0029) — a public-but-noindexed build-time ingest +
-    # SSR frontend on the strider template (Decision I), sibling of portal-headless
+    # The PF2e reference site — a public-but-noindexed build-time ingest +
+    # SSR frontend on the strider template, sibling of portal-headless
     # (flat package, no browser RUM surface yet). service_name + port are the single
     # source for the server bind; no PORT env. data_path is the gitignored corpus
     # dir the ingest pipeline writes to.
@@ -354,11 +353,11 @@ class OpsConfig(_Base):
 
 
 class MenhirConfig(_Base):
-    # menhir (0031) — a Kahoot-style session-opener quiz, on the weal-overlay
-    # template (srvx server + SSE fan-out + vite React SPA, no auth per R4). Same
+    # menhir — a Kahoot-style session-opener quiz, on the weal-overlay
+    # template (srvx server + SSE fan-out + vite React SPA, no auth). Same
     # config-single-source contract: server.ts binds this port + names telemetry;
     # no PORT env. results_path is the JSONL append target (a data path; the
-    # container mounts it at the same absolute path, D29-53 convention).
+    # container mounts it at the same absolute path, the data-path convention).
     service_name: str
     port: int
     public_origin: str

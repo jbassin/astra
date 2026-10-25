@@ -1,4 +1,4 @@
-"""The Dagster resources the pipeline apps share (0037 PIPE-16).
+"""The Dagster resources the pipeline apps share.
 
 An asset declares what it needs as a parameter, and Dagster injects it by key:
 

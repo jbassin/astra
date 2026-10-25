@@ -16,7 +16,7 @@ def test_players_preserve_player_id_and_identity() -> None:
     assert [p.player_id for p in being.players] == [1, 2, 3, 4, 5]  # FKs preserved, in order
     josh = by_slug["josh"]
     assert josh.is_dm and josh.is_admin
-    assert josh.color == "rgb(232,184,232)"  # aether theme.scss set (I5)
+    assert josh.color == "rgb(232,184,232)"  # the aether theme.scss color
     assert "jbassin" in josh.aliases and "iiri__" in josh.aliases
     assert by_slug["jorge"].snowflakes == ["712150290169593856", "753011285003730955"]
 

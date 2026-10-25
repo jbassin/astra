@@ -1,4 +1,4 @@
-"""The one repo-root finder (0037 LIB-11). The TS twin is `libs/ts/config/src/root.ts`.
+"""The one repo-root finder. The TS twin is `libs/ts/config/src/root.ts`.
 
 Every path the libraries derive from the checkout (`config.kdl`, the SOPS file, its age
 key) starts here, so there is one marker (`ontology/ontology-config`) and one failure mode:

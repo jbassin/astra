@@ -1,4 +1,4 @@
-"""The one ``sessions`` partition set every per-session asset shares (0037 PIPE-1).
+"""The one ``sessions`` partition set every per-session asset shares.
 
 One partition per session, keyed by the session date (``YYYY-M-D``, not zero-padded).
 ``craig_drop_sensor`` is the only code that adds keys. Each downstream stage has one sensor
@@ -93,7 +93,7 @@ def tried_sessions(instance: dg.DagsterInstance, asset: dg.AssetKey) -> set[str]
 def session_check(
     *, asset: dg.AssetKey | dg.AssetsDefinition | str, name: str, description: str
 ) -> Callable[[Callable[..., dg.AssetCheckResult]], dg.AssetChecksDefinition]:
-    """A blocking, per-session asset check on ``asset`` (0037 PIPE-12).
+    """A blocking, per-session asset check on ``asset``.
 
     Blocking: a failed result fails the run (so ``pipeline_failure_alert`` pages with the
     session key) and skips the assets after ``asset`` in that run. Per-session: the result

@@ -5,7 +5,7 @@
     model = cfg.llm.default_model                 # plaintext
     key = cfg.llm.openrouter_api_key.require()    # SOPS-decrypted on demand; raises if unset
 
-Parse-at-edge (Decision E): KDL is read here and validated straight into the typed
+Parse-at-edge: KDL is read here and validated straight into the typed
 `Config`; secrets stay as `SecretRef` until `.require()` / `.optional()`.
 
 `load_config()` validates only the namespaces Python reads; `load_whole_config()`

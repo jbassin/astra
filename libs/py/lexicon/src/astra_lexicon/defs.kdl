@@ -1,4 +1,4 @@
-// Canonical-names correction vocabulary (was defs.yaml; 0020 S2b).
+// Canonical-names correction vocabulary (converted from defs.yaml).
 // Each `entry` is a correct proper noun; `variant`s are ASR mistranscriptions
 // authored as regex fragments (intentionally unescaped) — stored verbatim.
 // An optional `ipa="…"` property (no slashes) is how mouthpiece's TTS says the name.

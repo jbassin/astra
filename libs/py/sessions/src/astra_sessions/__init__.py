@@ -1,4 +1,4 @@
-"""Session identity shared by the pipeline apps (0037 PIPE-9).
+"""Session identity shared by the pipeline apps.
 
 A session is keyed by its date in the non-zero-padded ``YYYY-M-D`` form (``2025-8-28``).
 That string is the Dagster partition key of every pipeline app, the name of each per-session

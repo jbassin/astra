@@ -1,4 +1,4 @@
-"""The one LLM meter (0037 LIB-4): every billed LLM attempt, from every path, is recorded here.
+"""The one LLM meter: every billed LLM attempt, from every path, is recorded here.
 
 Both paths report through ``record_attempt``: ``LiteLLMClient`` (priced from the static
 table in ``pricing.py``) and the dspy ``MeteringMixin`` in ``astra_llm.rlm`` (priced from

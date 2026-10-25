@@ -165,7 +165,7 @@ def test_cost_known_model_and_unknown_zero() -> None:
     assert cost_usd("no-such-model", TokenCounts(1_000_000, 0, 0, 0)) == 0.0
 
 
-# --- transcription seam (scribe 0005, gate E) ------------------------------------------
+# --- transcription seam (scribe) -------------------------------------------------------
 def test_transcribe_normalizes_verbose_json_segments(tmp_path: Any) -> None:
     from astra_llm import Segment, transcribe
 
@@ -190,7 +190,7 @@ def test_transcribe_normalizes_verbose_json_segments(tmp_path: Any) -> None:
         Segment(start=1.5, end=2.0, text="there"),
     ]
     assert captured["model"] == "groq/whisper-large-v3"
-    assert captured["response_format"] == "verbose_json"  # segments only; words dropped (F1)
+    assert captured["response_format"] == "verbose_json"  # segments only; words dropped
 
 
 def test_transcribe_parses_no_speech_prob_and_avg_logprob(tmp_path: Any) -> None:

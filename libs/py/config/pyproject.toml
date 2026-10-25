@@ -1,7 +1,7 @@
 [project]
 name = "astra-config"
 version = "0.0.0"
-description = "KDL config loader + lazy SOPS secret-ref resolver → typed Pydantic config (parse-at-edge, Decision E)."
+description = "KDL config loader + lazy SOPS secret-ref resolver → typed Pydantic config (parse-at-edge)."
 requires-python = ">=3.12"
 dependencies = [
     "ckdl>=1.0",

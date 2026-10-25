@@ -1,4 +1,4 @@
-"""astra-vellum-lang — the metadata-only vellum extractor (D2).
+"""astra-vellum-lang — the metadata-only vellum extractor.
 
 TS owns the full `VellumDocument` AST + structural validation; this extracts just the
 `{frontmatter, crossrefs}` akasha-backend (0007) needs to build the page index +

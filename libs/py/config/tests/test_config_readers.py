@@ -1,4 +1,4 @@
-"""Every config field has a reader: the CI check against dead config (0037 LIB-9).
+"""Every config field has a reader: the CI check against dead config.
 
 A field that nothing reads costs an edit in `config.kdl`, Pydantic and Zod, and it misleads
 the next reader (`llm.default-max-tokens` looked like it set the client's limit). This test

@@ -1,4 +1,4 @@
-"""Generate the TS config schema (Zod) from the Pydantic models (0037 LIB-1).
+"""Generate the TS config schema (Zod) from the Pydantic models.
 
 `generate()` returns the text of `libs/ts/config/src/config.gen.ts` (`OUTPUT`). It is one of
 the generated artifacts `scripts/ontology_gen.py` owns: `just ontology-gen` writes it and

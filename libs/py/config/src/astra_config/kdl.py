@@ -1,4 +1,4 @@
-"""KDL at the edge: one typed decoder for every KDL file astra reads (0037 LIB-12).
+"""KDL at the edge: one typed decoder for every KDL file astra reads.
 
 ckdl parses; `load_kdl` turns its untyped nodes into a frozen `KNode` tree once, and
 `decode(Model, node)` maps that tree onto a Pydantic model. Walkers declare a schema

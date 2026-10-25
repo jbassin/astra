@@ -1,7 +1,7 @@
 [project]
 name = "astra-vellum-lang"
 version = "0.0.0"
-description = "Metadata-only vellum extractor (D2): frontmatter + crossref set. TS owns the full AST; this feeds akasha-backend's page index + backlink graph."
+description = "Metadata-only vellum extractor: frontmatter + crossref set. TS owns the full AST; this feeds akasha-backend's page index + backlink graph."
 requires-python = ">=3.12"
 dependencies = [
     "pydantic>=2",
