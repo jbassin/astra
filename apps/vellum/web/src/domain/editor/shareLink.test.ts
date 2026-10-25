@@ -16,7 +16,7 @@ describe("share link", () => {
     expect(decodeDoc("")).toBeNull();
   });
 
-  test("isShareable flags oversized documents (R-20)", () => {
+  test("isShareable flags oversized documents", () => {
     expect(isShareable("small")).toBe(true);
     // High-entropy (poorly compressible) content via a deterministic LCG, so
     // the encoded form genuinely exceeds the hash ceiling.

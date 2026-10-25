@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 
 import { SIGIL } from "./vellumHighlight";
 
-// R2 (slice 3): the editor's SIGIL regex (vellumHighlight.ts) duplicates vellum-lang's
+// The editor's SIGIL regex (vellumHighlight.ts) duplicates vellum-lang's
 // surface.ts `desugar` token set — the editor highlights `@2`/`#fire`/`||x||` as "this
 // will desugar to a directive". If surface.ts's action list (or the editor's copy)
 // drifts, the editor would lie about what renders. This gate ties the two together:

@@ -1,4 +1,4 @@
-/** First-run document (R-19b) — also the living example of the directive flavor. */
+/** First-run document — also the living example of the directive flavor. */
 export const WELCOME_DOC = `:::statblock[Vox-Thrall Acolyte]{level="Creature 2" traits="undead,mindless,imperial"}
 A hollowed servitor wired to a vox-caster, endlessly reciting purged liturgy.
 

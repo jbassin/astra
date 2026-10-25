@@ -19,7 +19,7 @@ import styles from "./editor.module.css";
  */
 const tabIndents = [indentUnit.of("  "), Prec.low(keymap.of([indentWithTab]))];
 
-/** CM6 theme wired to gothic tokens (NFR-3: colors via vars, no hex). */
+/** CM6 theme wired to gothic tokens (colors via vars, no hex). */
 const gothicTheme = EditorView.theme(
   {
     "&": {

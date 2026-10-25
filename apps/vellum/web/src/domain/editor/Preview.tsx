@@ -7,7 +7,7 @@ import styles from "./editor.module.css";
 /**
  * Live preview. Renders the same renderer library the export service will use
  * (@astra/gothic's DocumentView), inside the [data-vellum-export] boundary — so
- * "what you see" is "what the PNG will be" (R-15). No `resolveCrossref` is
+ * "what you see" is "what the PNG will be". No `resolveCrossref` is
  * passed: an authoring tool has no resolved edge graph, so `[[crossrefs]]`
  * render as gothic's styled placeholders (the intended standalone behavior).
  */

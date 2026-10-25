@@ -18,7 +18,7 @@ function downloadBlob(blob: Blob, filename: string): void {
   URL.revokeObjectURL(url);
 }
 
-/** R-15a: copy the PNG to the clipboard (best-effort; download already ran). */
+/** Copy the PNG to the clipboard (best-effort; download already ran). */
 async function copyToClipboard(blob: Blob): Promise<void> {
   try {
     if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
@@ -30,7 +30,7 @@ async function copyToClipboard(blob: Blob): Promise<void> {
 }
 
 function explain(err: unknown): string {
-  // A failed fetch (service down) surfaces as a TypeError (R-21 / R-23).
+  // A failed fetch (service down) surfaces as a TypeError.
   if (err instanceof TypeError) {
     return "Render service unreachable — is vellum-render running?";
   }
@@ -38,7 +38,7 @@ function explain(err: unknown): string {
 }
 
 /**
- * Drives PNG export with explicit states (R-21). Serializes its own calls so a
+ * Drives PNG export with explicit states. Serializes its own calls so a
  * mashed button can't fire concurrent exports.
  */
 export function useExport(): {

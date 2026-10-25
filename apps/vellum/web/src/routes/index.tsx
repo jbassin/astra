@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 // The landing page. vellum is an authoring tool, not a read-surface, so the home
-// route is a thin door into the editor (the real surface — slice 2, an `ssr: false`
-// client route). Kept SSR so the masthead + telemetry/RUM render server-side.
+// route is a thin door into the editor (the real surface, the `ssr: false`
+// client route `/editor`). Kept SSR so the masthead + telemetry/RUM render server-side.
 export const Route = createFileRoute("/")({
   component: HomeComponent,
 });

@@ -1,4 +1,4 @@
-/* Editor shell (mechanical chrome). Colors via gothic `--color-*` vars (NFR-3).
+/* Editor shell (mechanical chrome). Colors via gothic `--color-*` vars, no hex.
  * A CSS module (the one place vellum-frontend uses one) so the editor chrome's
  * generic class names (toolbar/brand/pane/…) can't collide with the global page
  * shell. Lives entirely under the `ssr: false` /editor route, so no hydration

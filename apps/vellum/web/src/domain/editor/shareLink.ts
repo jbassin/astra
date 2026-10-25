@@ -1,7 +1,7 @@
 import LZString from "lz-string";
 
 const PREFIX = "doc=";
-/** Practical URL length ceiling before we warn (R-20). */
+/** Practical URL length ceiling before we warn. */
 export const MAX_HASH_LENGTH = 8000;
 
 /** Compress a document into a URL-hash-safe token. Pure. */
@@ -27,7 +27,7 @@ export function hashToDoc(hash: string): string | null {
   return decodeDoc(raw.slice(PREFIX.length));
 }
 
-/** Whether the encoded form is small enough to share as a link (R-20). */
+/** Whether the encoded form is small enough to share as a link. */
 export function isShareable(source: string): boolean {
   return docToHash(source).length <= MAX_HASH_LENGTH;
 }

@@ -1,5 +1,5 @@
 /* Render-page surface. The screenshotted [data-vellum-export] element gets an
-   opaque void backdrop + padding so exported PNGs are non-transparent (R-15b) and
+   opaque void backdrop + padding so exported PNGs are non-transparent and
    match the editor's preview surface. Colors via gothic `--color-*` vars. */
 * {
   box-sizing: border-box;

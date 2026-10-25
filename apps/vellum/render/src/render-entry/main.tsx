@@ -11,7 +11,7 @@ import "./render.css";
  * Render-only entry. The render service (Playwright) loads this page and calls
  * `window.vellumRender(source, mode)`, then screenshots [data-vellum-export]. It
  * uses the SAME renderer (@astra/gothic's DocumentView) as the editor preview, so
- * the PNG matches what the author sees (R-15). Ported verbatim from faerrin
+ * the PNG matches what the author sees. Ported verbatim from faerrin
  * pkg/vellum src/render-entry (imports repointed at @astra/{vellum-lang,gothic}).
  */
 declare global {
@@ -32,7 +32,7 @@ window.vellumRender = (source, mode) =>
   new Promise<void>((resolve) => {
     const document_ = parseDocument(source, { mode: normalizeMode(mode) });
     root.render(<DocumentView document={document_} />);
-    // Wait for layout + webfonts so the screenshot is deterministic (R-17).
+    // Wait for layout + webfonts so the screenshot is deterministic.
     requestAnimationFrame(() => {
       void document.fonts.ready.then(() => {
         requestAnimationFrame(() => resolve());
