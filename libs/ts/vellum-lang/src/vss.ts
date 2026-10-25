@@ -61,7 +61,7 @@ interface Body {
   end: number;
   /** No matching `}` before EOF. */
   unterminated: boolean;
-  /** A bare canonical `:::` fence appeared inside the body (E14, §5 rule 5). */
+  /** A bare canonical `:::` fence appeared inside the body (error case E14). */
   nestedColon: boolean;
 }
 
@@ -361,7 +361,7 @@ function parseColumns(s: string, j: number, depth: number): Parsed {
   return { node: { type: "columns", groups, errors }, end: p };
 }
 
-// ── brace matcher (§5) ──────────────────────────────────────────────────────
+// ── brace matcher ───────────────────────────────────────────────────────────
 
 /**
  * Find the `}` matching the `{` at `open`, tracking markdown lexical state so
@@ -597,10 +597,10 @@ function escapeLabel(title: string): string {
 }
 
 /**
- * Sanitize an error reason placed inside `:vsserr[reason]` (R-4 must not
- * self-break). Backslash-escapes `[`/`]` so a reason echoing author input (e.g.
- * a title containing `]`) can't close the label early; collapses newlines and
- * truncates to ~80 chars.
+ * Sanitize an error reason placed inside `:vsserr[reason]` (the error
+ * marker must not self-break). Backslash-escapes `[`/`]` so a reason echoing
+ * author input (e.g. a title containing `]`) can't close the label early;
+ * collapses newlines and truncates to ~80 chars.
  */
 function sanitize(reason: string): string {
   return reason

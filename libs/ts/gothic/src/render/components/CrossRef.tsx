@@ -9,7 +9,7 @@ const CROSSREF_CLASS =
   "text-accent underline decoration-dotted underline-offset-2 [[data-mode=diegetic]_&]:text-wax";
 
 /**
- * An inline cross-reference (`[[target#heading|alias]]`, full-vellum §3.2).
+ * An inline cross-reference (`[[target#heading|alias]]`).
  *
  * By default gothic renders it as a link-styled **placeholder** showing
  * `alias ?? target`, carrying `target`/`heading` on `data-*` attributes — gothic

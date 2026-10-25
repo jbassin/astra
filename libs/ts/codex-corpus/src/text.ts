@@ -30,7 +30,7 @@ export function humanizeFacetKey(key: string): string {
  * hyphen-split humanizer (no camelCase boundary handling, unlike
  * `humanizeFacetKey` above — trait tokens and corpus `category` strings are
  * already lowercase-hyphenated, never camelCase) shared by `traits.tsx`
- * (trait-token display names) and S3's category directory/listing pages
+ * (trait-token display names) and the codex category directory/listing pages
  * (category display names) so the two don't drift into two copies of the same
  * five-line function. */
 export function humanizeSlug(slug: string): string {
@@ -42,7 +42,7 @@ export function humanizeSlug(slug: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// S2: plain-text extraction — the route head/meta `<meta name="description">`
+// Plain-text extraction — the route head/meta `<meta name="description">`
 // needs a plain string, not React nodes, so this is a SEPARATE small total
 // switch over `CodexNode` (not a reuse of `nodes.tsx`'s `renderNode`, which
 // returns `ReactNode` and is keyed for React reconciliation, not string

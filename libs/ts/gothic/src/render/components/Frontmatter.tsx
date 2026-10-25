@@ -10,7 +10,7 @@ export function hasFrontmatterHeader(fm: FrontmatterData): boolean {
 }
 
 /**
- * The page header derived from a document's YAML frontmatter (full-vellum §3.1):
+ * The page header derived from a document's YAML frontmatter:
  * the title (ruled display heading) + the tag set (as pills). `aliases`/`img`/
  * `extra` are metadata for akasha (resolution, hero image) — not rendered here.
  */

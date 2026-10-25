@@ -31,12 +31,11 @@ import type { Facets } from "./entity";
  * is likewise explicitly excluded, never a facet.
  *
  * ## Per-category provenance (measured against the real 44,808-entity/
- * 88-category corpus this slice — S1 — was built against; re-verify against
+ * 88-category corpus this module was built against; re-verify against
  * a fresh `report.md` facet-coverage section after any corpus refresh)
  *
  * Only 15/88 categories carry ANY `facets` key at all (facets populate only
- * on Foundry-merged entities, never `proseOnly` — the P3 spec's own §1
- * finding). Of those 15:
+ * on Foundry-merged entities, never `proseOnly`). Of those 15:
  *
  *   - **feat** (8,484 total): `actionCost` 70.5%/6, `itemCategory` 70.5%/7 —
  *     both pass; `prerequisites` explicitly excluded (see above).

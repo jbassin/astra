@@ -14,8 +14,8 @@
  * function) but nothing in the P1 ingest pipeline calls them — identity uses only
  * the default form.
  *
- * ⭐ Empirical vector gate finding (see `sluggify.vectors.json` and the codex-0029
- * gotchas memory): the real snapshot carries NO `system.slug` field anywhere (0 of
+ * ⭐ Empirical vector gate finding (see `sluggify.vectors.json` and the codex ingest
+ * README): the real snapshot carries NO `system.slug` field anywhere (0 of
  * 28,636 docs, verified exhaustively) — ground truth for the fixture is each pack
  * file's own basename, which upstream's own build tooling names via this exact
  * function. An exhaustive check against all 28,636 real docs found the port

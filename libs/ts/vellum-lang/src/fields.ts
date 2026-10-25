@@ -1,5 +1,5 @@
 /**
- * Field-list parsing (full-vellum §3.3). A `:::fields` block's body is a run of
+ * Field-list parsing. A `:::fields` block's body is a run of
  * `Term :: value` lines; `term` is flattened to queryable text, `value` keeps its
  * inline mdast (links + `[[crossref]]`s). The ` :: ` split is scoped strictly here so
  * it can't collide with inline `:` directives. Total: a line without `::` becomes

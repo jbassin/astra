@@ -42,8 +42,8 @@ import { z } from "zod";
  *     flattening — see `aonMarkup.ts`'s own file header for the full candidacy
  *     rule. A single-cell or nested-wrapper row still flattens exactly as before.
  *
- * S2 widenings (`apps/codex/ingest/src/enrichers.ts`, verified against the real
- * Foundry snapshot — see the codex-0029 memory for the full census):
+ * Enricher widenings (`apps/codex/ingest/src/enrichers.ts`, verified against the
+ * real Foundry snapshot):
  *   - `check`/`template`/`damage` gained an optional `label` — the enricher's
  *     trailing `{label}` suffix (a Foundry chat-display override, distinct from any
  *     `name:` pipe-key) is real at scale (Check 136, Template 487, Damage 7 uses)
@@ -118,7 +118,7 @@ const CheckNode = z
     label: z.string().optional(),
     /** Permissive catch-all for every other real pipe-key/bare-flag (`against`,
      * `defense`, `showDC`, `name`, `options`, `overrideTraits`, `immutable`,
-     * `roller`, `rollerRole`, ...) — see the file-level "S2 widenings" note. */
+     * `roller`, `rollerRole`, ...) — see the file-level "Enricher widenings" note. */
     extra: z.record(z.string(), z.union([z.string(), z.boolean()])).optional(),
   })
   .strict();
@@ -203,7 +203,7 @@ const ActionGlyphNode = z
  * together (standard zod recursive-schema pattern; evaluation order works because
  * `z.lazy` callbacks only run at parse time, never at module-load time). */
 /** `localizedBoilerplate` is hand-written (not `z.infer`) because its `children`
- * field is recursive (`CodexNode[]`, see the file-level "S2 widenings" note) — it
+ * field is recursive (`CodexNode[]`, see the file-level "Enricher widenings" note) — it
  * can't be inferred until `CodexNode` itself exists below. */
 export interface LocalizedBoilerplateNode {
   kind: "localizedBoilerplate";

@@ -1,5 +1,5 @@
 /**
- * YAML frontmatter (full-vellum §3.1). The leading `---…---` block is split off the
+ * YAML frontmatter. The leading `---…---` block is split off the
  * source (the SAME split the Python extractor does, so the two agree), parsed with the
  * `yaml` package, and normalized into the typed `Frontmatter`. Total — bad or absent
  * YAML yields empty frontmatter, never throws.

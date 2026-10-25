@@ -5,7 +5,7 @@ import type { ReactElement } from "react";
 import { renderNodes } from "../mdastToReact";
 
 /**
- * A timeline (`:::timeline`, full-vellum §3.4) — the structured replacement for
+ * A timeline (`:::timeline`) — the structured replacement for
  * the wiki's raw `<ul><li>` HTML. Each entry carries an optional `{marker}`
  * (era/date) shown in a left rail; the rest is the entry's content. A
  * marker-less entry keeps an empty rail cell so the content column stays aligned.

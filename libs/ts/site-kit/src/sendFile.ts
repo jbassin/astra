@@ -1,5 +1,5 @@
 // Bridges the `send` package (Range/206, conditional-GET, etag/last-modified — the
-// load-bearing static-file semantics the audio mounts depend on, S6) into a Web Fetch
+// load-bearing static-file semantics the audio mounts depend on) into a Web Fetch
 // `Response`. `send` is Node-http shaped: it reads `req.headers`/`req.method` and pipes
 // bytes into a `ServerResponse`-like sink via `res.setHeader`/`res.write`/`res.end`. No
 // published adapter bridges that to Fetch, so this is a small, self-contained one:
