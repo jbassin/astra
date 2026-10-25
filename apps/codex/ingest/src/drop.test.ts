@@ -8,27 +8,7 @@ import {
   journalSectionHeaderDropFamily,
   unknownBookHuskDropFamily,
 } from "./drop";
-
-function entity(
-  overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "category" | "slug" | "name">,
-): CodexEntity {
-  return {
-    edition: "remaster",
-    source: { book: "unknown", license: "unknown" },
-    traits: [],
-    body: [],
-    facets: {},
-    ...overrides,
-  };
-}
-
-function collector(): {
-  reports: Array<{ cls: string; detail: string }>;
-  report: (cls: string, detail: string) => void;
-} {
-  const reports: Array<{ cls: string; detail: string }> = [];
-  return { reports, report: (cls, detail) => reports.push({ cls, detail }) };
-}
+import { entity, collector } from "./testSupport";
 
 describe("isDropCandidate", () => {
   it("keeps an AoN-only (proseOnly) entity", () => {

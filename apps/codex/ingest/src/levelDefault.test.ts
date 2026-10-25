@@ -2,14 +2,7 @@ import type { CodexEntity } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
 import { LEVEL_BEARING_CATEGORIES, applyLevelDefault } from "./levelDefault";
-
-function collector(): {
-  reports: Array<{ cls: string; detail: string }>;
-  report: (cls: string, detail: string) => void;
-} {
-  const reports: Array<{ cls: string; detail: string }> = [];
-  return { reports, report: (cls, detail) => reports.push({ cls, detail }) };
-}
+import { collector } from "./testSupport";
 
 function entity(
   overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "category">,

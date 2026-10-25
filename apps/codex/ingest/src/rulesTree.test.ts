@@ -2,6 +2,7 @@ import type { License, TreeNode } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
 import { buildRulesTree, type RulesDocInput } from "./rulesTree";
+import { lineCollector as collector } from "./testSupport";
 
 function doc(
   overrides: Partial<RulesDocInput> & Pick<RulesDocInput, "aonId" | "finalId" | "name" | "book">,
@@ -12,11 +13,6 @@ function doc(
     superseded: false,
     ...overrides,
   };
-}
-
-function collector(): { reports: string[]; report: (cls: string, detail: string) => void } {
-  const reports: string[] = [];
-  return { reports, report: (cls, detail) => reports.push(`${cls}: ${detail}`) };
 }
 
 const NO_LICENSE = new Map<string, License>();

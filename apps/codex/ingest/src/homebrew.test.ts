@@ -12,6 +12,7 @@ import {
   loadHomebrewTraits,
   type HardFailure,
 } from "./homebrew";
+import { entity, collector } from "./testSupport";
 import { UuidIndex } from "./uuidResolve";
 
 /**
@@ -23,27 +24,6 @@ import { UuidIndex } from "./uuidResolve";
  * real committed Foundry fixture snapshot for a resolvable `@UUID` target. This file exercises the loader/guard mechanics directly
  * against small hand-written temp-dir fixtures.
  */
-
-function entity(
-  overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "category" | "slug" | "name">,
-): CodexEntity {
-  return {
-    edition: "remaster",
-    source: { book: "unknown", license: "unknown" },
-    traits: [],
-    body: [],
-    facets: {},
-    ...overrides,
-  };
-}
-
-function collector(): {
-  reports: Array<{ cls: string; detail: string }>;
-  report: (cls: string, detail: string) => void;
-} {
-  const reports: Array<{ cls: string; detail: string }> = [];
-  return { reports, report: (cls, detail) => reports.push({ cls, detail }) };
-}
 
 const tempDirs: string[] = [];
 function freshHomebrewDir(): string {

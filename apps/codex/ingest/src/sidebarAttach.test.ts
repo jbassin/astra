@@ -1,31 +1,13 @@
-import type { CodexEntity } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
 import type { AonLinkTable } from "./aonLinkTable";
 import { attachSidebars } from "./sidebarAttach";
-
-function entity(
-  overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "category" | "slug" | "name">,
-): CodexEntity {
-  return {
-    edition: "remaster",
-    source: { book: "Test Book", license: "unknown" },
-    traits: [],
-    body: [],
-    facets: {},
-    ...overrides,
-  };
-}
+import { testBookEntity as entity, lineCollector as collector } from "./testSupport";
 
 function linkTable(
   entries: Record<string, { codexId: string; aonId: string; name: string }>,
 ): AonLinkTable {
   return { byUrl: new Map(Object.entries(entries)) };
-}
-
-function collector(): { reports: string[]; report: (cls: string, detail: string) => void } {
-  const reports: string[] = [];
-  return { reports, report: (cls, detail) => reports.push(`${cls}: ${detail}`) };
 }
 
 describe("attachSidebars", () => {
