@@ -16,13 +16,13 @@ import {
   stringsOrUndefined,
 } from "./data";
 
-export interface Pf2eHp {
+interface Pf2eHp {
   readonly value?: number;
   readonly max?: number;
   readonly temp?: number;
 }
 
-export interface Pf2ePool {
+interface Pf2ePool {
   readonly value?: number;
   readonly max?: number;
 }
@@ -108,7 +108,7 @@ export function liveNumberAt(
   return numberOrUndefined(at(live ?? {}, path));
 }
 
-export interface Pf2eSkill {
+interface Pf2eSkill {
   readonly slug: string;
   readonly label?: string;
   readonly rank?: number;
@@ -170,7 +170,7 @@ const BIOGRAPHY_VISIBILITY_DEFAULTS: Readonly<Record<string, boolean>> = {
 
 export type BiographySection = "appearance" | "backstory" | "personality" | "campaign";
 
-export interface Pf2eBiography {
+interface Pf2eBiography {
   readonly appearance?: string;
   readonly backstory?: string;
   readonly likes?: string;

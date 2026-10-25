@@ -200,7 +200,7 @@ export const PLAYER_TOOL_NAMES: ReadonlySet<string> = REGISTRY_PLAYER_TOOL_NAMES
  * the telemetry label threaded into every tool-call span/counter so player usage
  * is distinguishable from admin-key/OAuth usage in SigNoz, independent of scope.
  */
-export interface AuthContext {
+interface AuthContext {
   scope: "admin" | "player";
   method: "admin-key" | "player-key" | "oauth";
 }
@@ -210,7 +210,7 @@ export interface AuthContext {
  * `cfg.portal.maxCreatesPerRequest`, so write tools can reject an oversized batch
  * before it ever reaches the bridge. `auth` picks the registered tool subset
  * (`scope`) and labels every tool-call span/counter (`method`). */
-export function buildMcpServer(
+function buildMcpServer(
   bridge: Bridge,
   maxCreatesPerRequest: number,
   auth: AuthContext,
@@ -237,7 +237,7 @@ export function buildMcpServer(
  * `verifyAccessToken` throws (`InvalidTokenError`) on an unknown/expired token —
  * `createMcpRequestHandler` below treats any rejection as "not an OAuth token" and
  * falls through to the 401. */
-export interface OAuthTokenVerifier {
+interface OAuthTokenVerifier {
   verifyAccessToken(token: string): Promise<unknown>;
 }
 

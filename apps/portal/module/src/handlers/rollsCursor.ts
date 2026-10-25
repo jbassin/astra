@@ -4,7 +4,7 @@
  */
 
 /** A row's sort key: a chat message, or the position a cursor names. */
-export interface RollPosition {
+interface RollPosition {
   timestamp: number;
   id: string;
 }

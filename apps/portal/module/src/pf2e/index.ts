@@ -37,7 +37,6 @@ export {
   type Pf2eFlags,
   type Pf2eSource,
   type Pf2eSystem,
-  type Side,
   sourceItems,
   sourceOf,
   sourceSystem,

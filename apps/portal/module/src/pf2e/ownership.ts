@@ -10,7 +10,7 @@
 import { type Pf2eSource, record } from "./data";
 
 /** Foundry's ownership levels, by name. */
-export const OWNERSHIP_LEVELS: ReadonlyMap<string, number> = new Map([
+const OWNERSHIP_LEVELS: ReadonlyMap<string, number> = new Map([
   ["INHERIT", -1],
   ["NONE", 0],
   ["LIMITED", 1],

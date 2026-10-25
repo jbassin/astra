@@ -205,7 +205,7 @@ interface AuthCodeEntry {
   createdAt: number;
 }
 
-export interface PortalOAuthProviderOptions {
+interface PortalOAuthProviderOptions {
   /** Bind-mounted state file path — `cfg.portal.oauthStatePath`. */
   statePath: string;
   /** The already-resolved `portal_mcp_api_key` — the consent-page password.
@@ -587,7 +587,7 @@ function renderConsentErrorPage(message: string): string {
 
 // --- the sub-app factory --------------------------------------------------------
 
-export interface CreateOAuthSubAppOptions {
+interface CreateOAuthSubAppOptions {
   /** `cfg.portal.oauthStatePath`. */
   statePath: string;
   /** The resolved `portal_mcp_api_key` — reused as the consent password. */
@@ -599,7 +599,7 @@ export interface CreateOAuthSubAppOptions {
   accessTokenTtlS?: number;
 }
 
-export interface OAuthSubApp {
+interface OAuthSubApp {
   /** Mount this at the dispatch root for `/authorize`, `/token`, `/register`,
    * `/revoke`, `/.well-known/*`, and {@link OAUTH_CONSENT_PATH} — call it as a bare
    * `(req, res)` function (`server.ts`'s raw-node dispatch). */

@@ -6,7 +6,7 @@ import { sourceItems, sourceOf } from "../pf2e";
 import { ownershipDefaultVisible, packVisibleToPlayers, partyMemberUuids } from "./itemAccess";
 import { byRankThenName, DEFAULT_SEARCH_LIMIT, matchRank } from "./shared";
 
-export interface ItemHitRow {
+interface ItemHitRow {
   uuid: string;
   id: string;
   name: string;
