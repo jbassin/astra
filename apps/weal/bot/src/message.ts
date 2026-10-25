@@ -285,7 +285,7 @@ export function trimContent(s: string): string {
   return t.trim();
 }
 
-export type MessageAction = { kind: "empty" } | { kind: "reseed" } | { kind: "roll"; text: string };
+type MessageAction = { kind: "empty" } | { kind: "reseed" } | { kind: "roll"; text: string };
 
 const FUNC_RE = /^\s*(.+)\((.*)\)\s*$/;
 

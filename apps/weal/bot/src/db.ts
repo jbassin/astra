@@ -24,7 +24,7 @@ export const MIGRATIONS_DIR = resolve(findPackageRoot(import.meta.dirname), "mig
 /** Skip pools larger than this many dice (each die is one row). */
 export const MAX_POOL = 30;
 /** Skip any die whose base exceeds this (no real polyhedral die is bigger). */
-export const MAX_BASE = 100;
+const MAX_BASE = 100;
 
 /** A weal v2 saved source (`funcs_v2` row; id drives the boot-load order). */
 export interface FuncV2 {

@@ -1,7 +1,7 @@
 import type { RollEvent } from "./schema";
 
 /** A connected SSE client: a sink that receives raw, pre-formatted SSE frames. */
-export type SseClient = (frame: string) => void;
+type SseClient = (frame: string) => void;
 
 /**
  * In-memory fan-out for roll events. The server wraps each /feed connection's

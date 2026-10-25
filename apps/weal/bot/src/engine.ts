@@ -28,7 +28,7 @@ export interface EngineHooks {
 }
 
 /** A run's outcome: ok, or an engine-reported error (incl. a contained trap). */
-export type EngineOutcome = { kind: "ok"; value: WealOk } | { kind: "error"; error: WealErr };
+type EngineOutcome = { kind: "ok"; value: WealOk } | { kind: "error"; error: WealErr };
 
 /** Evaluate one source against the saves list. */
 export function runEngine(
@@ -181,7 +181,7 @@ export interface SaveRefusal {
   shadowsBuiltin: boolean;
 }
 
-export type SaveCheck = { ok: true } | ({ ok: false } & SaveRefusal);
+type SaveCheck = { ok: true } | ({ ok: false } & SaveRefusal);
 
 /**
  * Dry-run a new or replacement save before persisting it, so one bad save
