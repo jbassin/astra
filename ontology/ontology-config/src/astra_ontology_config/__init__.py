@@ -1,10 +1,13 @@
 """astra-ontology-config — owns `config.kdl`, the consolidated astra config inventory.
 
-The data file is the source of truth; this package just pins its path and delegates
-loading to `astra_config`. Every py subsystem reads config via:
+The data file is the source of truth; this package pins its path next to the package and
+delegates loading to `astra_config`:
 
     from astra_ontology_config import load
     cfg = load()
+
+Most Python code calls `astra_config.load_config()` directly instead, which finds the same
+file from the repo root. Both return the same `Config`.
 """
 
 from __future__ import annotations

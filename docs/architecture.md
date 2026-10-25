@@ -116,7 +116,8 @@ in the [runbook](runbook.md).
 ```
 apps/        apps/<domain>/<role>/: py (the uv member) or web, bot, overlay, render, controller,
              ingest (pnpm)
-libs/py/     config, llm, observe, ontology, lexicon, sessions, vellum-lang (+ _smoke)
+libs/py/     config, llm, observe, ontology, lexicon, sessions, vellum-lang, ops, pipeline-resources
+             (+ _smoke)
 libs/ts/     config, observe, ontology, gothic, site-kit, service-kit, content-build, backdrop,
              vellum-lang, codex-corpus, pg-migrate, weal-engine (the committed wasm build), weal-wire
              (+ _smoke)

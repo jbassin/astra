@@ -528,7 +528,7 @@ interface HomebrewFixtureDoc {
   doc: Record<string, unknown>;
 }
 
-/** Hand-authored synthetic docs — NOT copied from the real 175-doc
+/** Hand-authored synthetic docs — NOT copied from the real 173-doc
  * `apps/assay/py/homebrew/spells/` store, unlike every Foundry/AoN raw pick
  * above. The real store is versioned assay content, not a codex fetch
  * snapshot; hand-splicing IT into the fixture would be the exact

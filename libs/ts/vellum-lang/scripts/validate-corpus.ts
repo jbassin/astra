@@ -18,7 +18,10 @@
  *      an accidental collision in existing text and must be escaped/reworded.
  *      (`--allow-sigils` suppresses category 2 for the rare intentional case.)
  *
- * The akasha-backend Dagster asset shells out to this; CI runs it as a job.
+ * Callers: `akasha-snapshot` validates before it writes the snapshot, heartwood's
+ * agent validator checks each candidate page set, the heartwood-agent and
+ * heartwood-revert commands (astra_ops) run it over the whole corpus, and the CI
+ * job `corpus-validate` runs it over the fixture wiki.
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";

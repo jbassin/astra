@@ -91,7 +91,7 @@ is LIVE). The special's script and digest carry `kind: "special"`; its id keeps 
 is `{session_id, synopsis, kind}` with no `stats`. Never show the dossier or script to the GM; report stats
 only. Both live in `apps/mouthpiece/tools` (`astra-mouthpiece-tools`, ADR 0023), which runs
 from a host checkout and is not in the Dagster image. Its roundtable `render` imports this
-package's private `_provider` and `_voices`, so keep their signatures.
+package's private `assets._voices` and `resources.default_tts`, so keep their signatures.
 
 ## Traps
 
