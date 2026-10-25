@@ -3,7 +3,7 @@
 The codex ingest pipeline (0029) writes a gitignored corpus under
 ``<codex.data-path>/snapshots/foundry/pf2e-<version>/packs/pf2e/spells/spells/``
 (main "slot" spells only — focus/rituals sit in sibling dirs, out of round-1
-scope per R1). The path root is config-single-source: read from
+scope). The path root is config-single-source: read from
 ``cfg.codex.data_path`` via ``astra_config``, never hardcoded. The version
 segment is globbed (``pf2e-*``), never pinned, so a snapshot refresh doesn't
 require a code change.

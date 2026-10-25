@@ -1,4 +1,4 @@
-"""Per-spell feature extraction (design doc §1/§3) —
+"""Per-spell feature extraction (see the design doc) —
 every extractor trap handled, round 1 AND round 2.
 
 Reads one Foundry spell JSON (``system.*``) and produces either a
@@ -38,13 +38,13 @@ from pydantic import BaseModel
 from . import conditions, effects
 from .dice import parse_formula
 
-#: Damage types treated as "rarely resisted" per the design doc §3 predictor —
+#: Damage types treated as "rarely resisted" per the design doc's predictor —
 #: force/spirit/mental/vitality/void, plus untyped/empty (no resistance keys off
 #: these in the pf2e system).
 RARE_DAMAGE_TYPES = frozenset({"force", "spirit", "mental", "vitality", "void", "untyped", ""})
 
 #: Cast times bucketed as "long-cast" — excluded from the combat-damage fit when
-#: they carry damage (§1 trap 4; census-verified: exactly 1 such spell, Bandit's
+#: they carry damage (a corpus trap; census-verified: exactly 1 such spell, Bandit's
 #: Doom, in the whole main-slot corpus — the doc's "likely ~0" prediction held).
 LONG_CAST_TIMES = frozenset({"1 minute", "5 minutes", "10 minutes", "30 minutes", "1 hour"})
 
@@ -309,7 +309,7 @@ def normalize_action_time(raw: str) -> tuple[float | None, ActionBucket, bool]:
     if r == "1 or 2":
         return 1.5, ActionBucket.ONE_HALF, False
     if r == "2 to 2 rounds":
-        # Malformed corpus value (§1 trap 4, ×3) — treat as a 2-action spell, flagged.
+        # Malformed corpus value (a corpus trap, ×3) — treat as a 2-action spell, flagged.
         return 2.0, ActionBucket.TWO, True
     # Unrecognized shape (shouldn't occur post long-cast exclusion, but stay defensive):
     # fall back to the 2-action bucket, flagged for the report.
@@ -327,7 +327,7 @@ def _bucket_for_feet(feet: float) -> RangeBucket:
 
 
 def parse_range(raw: str) -> tuple[float | None, RangeBucket, bool]:
-    """Range string → (feet or None, bucket, flagged) — §1 trap 5."""
+    """Range string → (feet or None, bucket, flagged), a corpus trap."""
     r = raw.strip()
     if r in ("", "touch", "self"):
         return 0.0, RangeBucket.TOUCH_SELF, False
@@ -384,7 +384,7 @@ _ARRIVE_DEPART_RE = re.compile(
 
 
 def _is_summon(name: str, traits: list[str], description: str = "") -> bool:
-    """Summons are their own sub-model (out of round-2 scope, §3) — excluded
+    """Summons are their own sub-model (out of round-2 scope) — excluded
     from inline-damage recovery even when they carry literal @Damage tokens
     (a summoned creature's whole attack menu, not the spell's own EV).
     Creatively-named "summon a mythic being briefly" spells (Beseech
@@ -435,7 +435,7 @@ def _overlay_variant_data(data: dict[str, Any]) -> list[tuple[dict[str, Any], st
 
 
 #: The mechanically-derived scaling family (variable cast time +
-#: damage + no overlays; re-derived at build, see the S1 report), keyed by
+#: damage + no overlays; re-derived at build, see the build record), keyed by
 #: file stem (lowercase, no extension), value = {action count -> hand-verified
 #: EV}. Zero-EV action counts (pure-buff casts, e.g. Ibex's Harvest at 1/2
 #: actions) are simply omitted — they route to the ledger as beneficial/no
@@ -509,7 +509,7 @@ def extract_single(  # noqa: C901 -- over the complexity limit; ratchet, split i
     apply_mod_flag = False
     rejected_reasons: list[str] = []
 
-    for key, entry in damage.items():  # random-ID keys (§1 trap 1) — never index "0" directly
+    for key, entry in damage.items():  # random-ID keys (a corpus trap) — never index "0" directly
         kinds = entry.get("kinds") or []
         is_dmg = "damage" in kinds
         is_heal = "healing" in kinds
@@ -521,12 +521,12 @@ def extract_single(  # noqa: C901 -- over the complexity limit; ratchet, split i
             continue
         ev = parsed.ev
         if entry.get("applyMod"):
-            ev += 4.0  # §1 trap 6: applyMod → +4 flat, flagged
+            ev += 4.0  # corpus trap: applyMod → +4 flat, flagged
             apply_mod_flag = True
         dtype = entry.get("type") or "untyped"
         category = entry.get("category")
         if is_dmg:
-            # A dual-kind entry (["damage","healing"], §1 trap 2) is an
+            # A dual-kind entry (["damage","healing"], a corpus trap) is an
             # UNRESOLVED base-template ambiguity — round 1's rule (count as
             # damage) still applies here; overlay variants resolve it to one
             # kind or the other before this loop ever runs.
@@ -911,7 +911,7 @@ def extract_spell_variants(
 def _extract_heightening(
     sysd: dict[str, Any], plain_keys: set[str]
 ) -> tuple[int | None, float | None]:
-    """Interval-type heightening only; degenerate shapes (§1 trap: `type: null`,
+    """Interval-type heightening only; degenerate shapes (a corpus trap: `type: null`,
     `fixed`+empty-levels) and non-damage-matching entries all collapse to
     ``(None, None)`` — the V2 validation gate skips those spells."""
     heightening = sysd.get("heightening") or {}

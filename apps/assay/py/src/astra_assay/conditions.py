@@ -5,8 +5,8 @@ priced condition instances. It owns:
 
 - the condition vocabulary + severity **tier table** — an implementation
   artifact, hand-curated from the PF2e Core Rulebook condition list against the
-  real corpus census (``conditions_census.py``-style counts, see the S1 build
-  record for per-condition n);
+  real corpus census (``conditions_census.py``-style counts; the build record
+  has per-condition n);
 - **degree-section splitting** + the **four explicit attribution rules**
   (review-mandated: positional splitting alone mis-handles synesthesia/
   command/paralyze);
@@ -312,7 +312,7 @@ _AFFECTED_RE = re.compile(r"\bis\s+affected\b|\baffected\s+for\b", re.IGNORECASE
 #: The sign character class now accepts en-dash (–, common in
 #: the corpus's copy-edited prose, e.g. Sleep's "–1 status penalty") and
 #: the unicode minus sign (−), not just ASCII hyphen-minus. ~28 spells
-#: were silently missed under the ASCII-only class (S1 re-derived pin, see
+#: were silently missed under the ASCII-only class (a re-derived pin, see
 #: the build record).
 _STATUS_MOD_RE = re.compile(
     r"([+\-–−]\s?\d+)\s*[-–− ](status|circumstance)\s+(penalty|bonus)\s+to\s+"
@@ -456,13 +456,13 @@ def _plain_mentions(text: str, name: str) -> bool:
     """A bare condition name in prose, NOT inside an @UUID tag (those are
     already captured by `_find_direct_refs`) — rule (iii).
 
-    Case-INSENSITIVE (the S1 payload-restoring fix — the corpus
+    Case-INSENSITIVE (the payload-restoring fix — the corpus
     routinely spells a repeated condition name lowercase mid-sentence, e.g.
     Sleep's Failure/Critical Failure "The creature falls unconscious.",
     while the @UUID tag it repeats is title-cased "Unconscious". The
     original case-sensitive pattern silently dropped ~50 spells' worth of
     plain-text repeats — Sleep's entire unconscious payload among them, see
-    the S1 build record)."""
+    the build record)."""
     pattern = _PLAIN_NAME_RE_CACHE.get(name)
     if pattern is None:
         pattern = re.compile(rf"(?<!Item\.){re.escape(name)}\b", re.IGNORECASE)

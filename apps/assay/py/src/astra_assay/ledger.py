@@ -1,7 +1,7 @@
 """Round-2 full-population routing — classify every
 extracted row/skip into a scored bucket or a typed unscored-ledger reason.
 
-S1's extraction pass already separates "has a priceable mechanical signal"
+The extraction pass (``extract.py``) already separates "has a priceable mechanical signal"
 (a ``SpellFeatures`` row) from "genuine extraction dead-end" (a
 ``SkipRecord``, reason string). This module does the round-2-specific work
 on top of that split:
@@ -9,11 +9,11 @@ on top of that split:
 - **routes SpellFeatures rows** into damage-scoreable / condition-scoreable /
   beneficial-effect / low-confidence, using only fields already on
   the row (no re-reading the snapshot);
-- **sub-classifies the S1 "no-priceable-effect" skip catch-all** into
+- **sub-classifies the extractor's "no-priceable-effect" skip catch-all** into
   summon / wall-terrain / teleport-utility / effect-item-payload / other —
   this DOES need the raw spell JSON (traits/description aren't on
   ``SkipRecord``), so it re-reads each skip's source file once, keyed off the
-  ``file`` field S1 already carries.
+  ``file`` field it already carries.
 """
 
 from __future__ import annotations
@@ -50,7 +50,7 @@ _NON_GRADUATED_DEGREES = frozenset({"unconditional", "on-hit"})
 
 
 def _is_friendly_target(row: SpellFeatures) -> bool:
-    """The beneficial target-prose test. **Engineer judgment (S1 build
+    """The beneficial target-prose test. **Engineer judgment (build
     record):** the spec's literal "self/touch/willing-or-ally" wording is a
     strict substring match on none of Haste's real target text ("1
     creature", range 30 ft — no literal "willing"/"ally" word at all), yet
@@ -158,11 +158,11 @@ def classify_row(row: SpellFeatures) -> str | None:
         # restricts severity pricing to the condition-tier table, and this
         # branch by definition carries no tiered condition instance.
         return "raw-modifier-only (not priced — severity is priced only from condition tiers)"
-    return "no-priceable-effect"  # shouldn't occur (S1 would have skipped it)
+    return "no-priceable-effect"  # shouldn't occur (the extractor would have skipped it)
 
 
 def classify_unpriced_skip(data: dict, reason: str) -> str:
-    """Sub-classify S1's catch-all skip reasons into the typed ledger
+    """Sub-classify the extractor's catch-all skip reasons into the typed ledger
     categories, using the raw spell JSON (traits/description)."""
     if "long-cast time" in reason:
         return "long-cast (out of combat-damage scope)"

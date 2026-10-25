@@ -421,7 +421,7 @@ def _col_max_word_len(block: _Block, col_idx: int, header_text: str) -> int:
     narrow-column sizing must survive whatever the row DATA contains, not
     just the header label. A short header like "Ray" paired with long row
     values ("Disintegration Ray") was getting the narrow bucket on header
-    length alone and clipping mid-word (S3 live-render catch, Eye Stalks
+    length alone and clipping mid-word (caught in a live render, Eye Stalks
     d8 table) — measuring only the header reproduces that bug."""
     max_len = 0
     texts = [header_text] + [row[col_idx] for row in block.rows if col_idx < len(row)]
@@ -433,7 +433,7 @@ def _col_max_word_len(block: _Block, col_idx: int, header_text: str) -> int:
 
 def _col_max_cell_len(block: _Block, col_idx: int, header_text: str) -> int:
     """Longest CELL (the whole label, not a single word) in a column,
-    header + every row — the S5 column-width rework sizes a label-ish
+    header + every row — the column-width rework sizes a label-ish
     column off this (how wide it needs to be to show its typical entry on
     one line), not off a flat word-length bucket."""
     max_len = 0
@@ -443,7 +443,7 @@ def _col_max_cell_len(block: _Block, col_idx: int, header_text: str) -> int:
     return max_len
 
 
-# S5 column-width rework (Eye Stalks defect): the old bucket scheme jumped a
+# Column-width rework (Eye Stalks defect): the old bucket scheme jumped a
 # WHOLE column straight to a flat 12em the instant ANY single word in it
 # passed 13 characters ("Disintegration Ray" has one 14-char word) — so one
 # outlier cell dragged the entire "Ray" column (mostly 8-11-char "X Ray"
@@ -472,7 +472,7 @@ def _render_table_latex(block: _Block, warnings: list[str]) -> str:
         # Every non-last column is sized to its OWN natural content width
         # (longest cell, floored by the longest single word so a word never
         # gets force-broken narrower than itself, capped at _COL_CAP_EM so
-        # no label column can crowd the prose column) — see the S5 rework
+        # no label column can crowd the prose column) — see the column-width rework
         # note above _COL_CHAR_EM. The trailing column is always "X": the
         # flexible remainder, and because every other column is capped
         # small, X ends up the widest column by far, exactly where the
@@ -506,7 +506,7 @@ def _render_table_latex(block: _Block, warnings: list[str]) -> str:
                 cols.append(r"p{" + f"{width_em:.2f}" + "em}")
     colspec = "@{}" + " ".join(cols) + "@{}"
 
-    # BREAKABLE emission (S4 live-render catch, "Eye Stalks" table): a single
+    # BREAKABLE emission (caught in a live render, "Eye Stalks" table): a single
     # multi-row tabularx has no page-break points, so an in-block table taller
     # than one column either overflows into the footer or — worse, confirmed
     # against the pre-fix PDF — silently LOSES whatever text falls past the
@@ -728,7 +728,7 @@ def _pills_latex(rec: SpellRecord, warnings: list[str]) -> str:
 
 def emit_spell_latex(rec: SpellRecord) -> str:
     """``SpellRecord`` -> a full ``blockhead``/``blockrule``/body/postamble
-    LaTeX spell block (mirrors the S1-approved ``sample.tex`` usage of
+    LaTeX spell block (mirrors the stakeholder-approved ``sample.tex`` usage of
     ``liturgy.sty``'s spell-block macros). Emission-time warnings (e.g. an
     unrecognized action-glyph span) are appended into ``rec.warnings``."""
     parts: list[str] = [
@@ -759,8 +759,8 @@ def _emit_spell_list_latex(
     school: str, spells: list[SpellRecord], summaries: dict[str, str], warnings: list[str]
 ) -> str:
     """The chapter spell-list table (Rank/Spell/Actions/Summary) — the same
-    striped ``tabularx`` shape as the S1 sample's Antillurgy Spells table."""
-    # Explicit \rowcolor per data row (S5 row-height fix), NOT the automatic
+    striped ``tabularx`` shape as ``sample.tex``'s Antillurgy Spells table."""
+    # Explicit \rowcolor per data row (the row-height fix), NOT the automatic
     # \rowcolors{2}{...}{...} counter this table used before: \rowcolors
     # drives colortbl's internal \rownum counter, which — empirically, in
     # the FULL multi-chapter book (never reproducible in an isolated
@@ -1030,7 +1030,7 @@ def _render_neutral_element(el: NElement, warnings: list[str]) -> str:
 
 def _render_note_latex(note: NNote, warnings: list[str]) -> str:
     """A ``#####``-headed note box renders its title as bold-lead text (the
-    S1-approved pattern — ``liturgynote`` boxes use ``\\textbf{title} \\\\``,
+    stakeholder-approved pattern — ``liturgynote`` boxes use ``\\textbf{title} \\\\``,
     not a titlesec heading command, per ``sample.tex``'s Almonk epigraph)."""
     children = note.children
     parts: list[str] = []

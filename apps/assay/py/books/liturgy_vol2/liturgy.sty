@@ -114,7 +114,7 @@
 % matter (cover/credits/Reading This Book/How to Read a Spell Block/
 % Contents) renders under THIS default, so it must not be a chapter label
 % (was literally "Chapter 1 | Antillurgy", leaking a wrong chapter title
-% onto 5 pre-chapter pages — S3 live-render catch).
+% onto 5 pre-chapter pages — caught in a live render).
 \newcommand{\liturgyfootnotelabel}{Liturgy of the Iridite \textbar\ Volume II}
 \newcommand{\liturgyfooterart}{%
   \ifodd\value{page}
@@ -201,7 +201,7 @@
 % 53-61, the whole book 62 -> 63pp), so per the fallback rule this stayed
 % at 0.30\textwidth rather than shipping a book-length regression.
 %
-% S5 NO-CROP round (stakeholder: "we can substantially cut down on the
+% NO-CROP round (stakeholder: "we can substantially cut down on the
 % prose ... I'd rather get the full art" -- explicit authorization to trim
 % opener prose in exchange for showing the art UNCROPPED): the delivered
 % art is a tall, narrow ~610x1650px slice (ratio ~0.370, verified against
@@ -214,7 +214,7 @@
 % the \clip in \openerartimage removes at most a hairline sliver (<0.3%)
 % on the few images slightly above the minimum ratio and NOTHING on
 % mercuromancy -- never a letterboxing gap. \openerreserve is now DERIVED
-% from the window (not the other way around, S1-S4's direction): the
+% from the window (not the other way around, as the earlier rounds did): the
 % window height is fixed page geometry, so ratio*height fixes the window
 % width, and reserve is just that plus the 0.5cm prose gutter.
 \newcommand{\openerartratio}{0.370}
@@ -231,12 +231,12 @@
 \newlength{\openerwindowheight}
 \setlength{\openerwindowheight}{\dimexpr\paperheight-\openerwindowtop-\openerwindowbottom\relax}
 % width = the no-crop target ratio times the (fixed) window height --
-% see the S5 comment above. \openerreserve then adds back the 0.5cm prose
+% see the NO-CROP comment above. \openerreserve then adds back the 0.5cm prose
 % gutter that keeps the art clear of the narrowed text column.
 \newlength{\openerwindowwidth}
 \setlength{\openerwindowwidth}{\openerartratio\openerwindowheight}
 \setlength{\openerreserve}{\dimexpr\openerwindowwidth+0.5cm\relax}
-% S5 no-crop round narrowed the opener measure from ~12.45cm to ~9.65cm
+% The no-crop round narrowed the opener measure from ~12.45cm to ~9.65cm
 % (0.70\textwidth -> ~0.54\textwidth), which pushed a handful of lines --
 % mostly ones ending in a long unhyphenated compound like "timestream" --
 % into a badly Overfull \hbox (up to ~24pt, visibly clipped text touching
@@ -292,7 +292,7 @@
 % overlaps inward and covers the art's outer rim.
 \newlength{\openerframebleed}
 \setlength{\openerframebleed}{1.5mm}
-% S5 corner-mask round (stakeholder: art corners poked past the frame's
+% Corner-mask round (stakeholder: art corners poked past the frame's
 % corner ornaments): the corner tile (assets/img/frame-gold.png, 292x292bp
 % slice) is mostly TRANSPARENT except a thin gold L-bracket hugging the
 % outer edge with a rounded/chamfered inner joint (verified visually) --
@@ -379,10 +379,10 @@
 % assets/img/processed/<school>.(png|jpg) (book.py's fail-soft lookup swaps
 % \openerartslot for this the moment the file exists). Vol1-style FRAMED
 % WINDOW: the art fills the reserved column's full height at its OWN
-% native aspect (\openerwindowwidth is derived from \openerartratio, S5
-% round, so this is a no-crop fit, not cover-fit center-cropping) with no
+% native aspect (\openerwindowwidth is derived from \openerartratio in
+% the no-crop round, so this is a no-crop fit, not cover-fit center-cropping) with no
 % distortion and no letterboxing; the tikz \clip is chamfered
-% (\openerartclip, S5 corner-mask round) rather than a plain rectangle so
+% (\openerartclip, the corner-mask round) rather than a plain rectangle so
 % the art's own corner recedes under the frame's bracket instead of
 % poking past it; a true gold 9-patch frame (\openerdrawframe) is drawn on
 % top, straddling the window edge the same way vol1's border-image does.
@@ -468,7 +468,7 @@
   \end{scope}\end{tikzpicture}}\vspace{3pt}\par}
 
 % ---------------------------------------------------------------- note box
-% needspace DROPPED (S3 live-render catch): it measures against
+% needspace DROPPED (caught in a live render): it measures against
 % \pagegoal/\pagetotal (whole-page, per the \blockhead note above) and, once
 % enough content follows LATER in the document, was observed to fire a
 % spurious break that silently discarded the openerbody narrowing on the
