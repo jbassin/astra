@@ -9,7 +9,7 @@ export interface Deck {
   color: string;
 }
 
-export const DECKS: Record<string, Deck> = {
+const DECKS: Record<string, Deck> = {
   hierophant: {
     id: "hierophant",
     label: "Hierophant",

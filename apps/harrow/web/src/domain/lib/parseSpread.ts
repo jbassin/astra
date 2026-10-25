@@ -14,7 +14,7 @@ const POSITION_LABELS: Record<string, string> = {
   outcome: "Outcome",
 };
 
-export interface ParsedSpreadRaw {
+interface ParsedSpreadRaw {
   id: string;
   date: string;
   name: string;
