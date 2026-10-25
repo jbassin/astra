@@ -1,11 +1,11 @@
 /**
- * portal-server entrypoint (spec 0023 S2) — the MCP+WS server for the live FoundryVTT
+ * portal-server entrypoint — the MCP+WS server for the live FoundryVTT
  * "Faerrin" world. Telemetry (traces, metrics, logs, HTTP spans, the SIGTERM flush) is
  * already installed by `node --import @astra/observe/register`; this reads config, then
  * binds the service (`/health`, `/healthz`, the Streamable-HTTP `/mcp`, the bridge WS at
  * `/ws`). No Discord-style "optional" degraded mode (contrast orator-backend): both SOPS
- * keys are load-bearing per D6, so a missing key fails startup loudly rather than serving
- * with auth effectively disabled.
+ * keys (the MCP bearer and the bridge secret) are load-bearing, so a missing key fails
+ * startup loudly rather than serving with auth effectively disabled.
  */
 import { join } from "node:path";
 
@@ -17,8 +17,8 @@ import { listen } from "./server";
 
 const log = logger(SERVICE_NAME);
 
-// The Foundry module's build output (S6/D11) — `apps/portal/module/{module.json,
-// dist/main.js}`, a sibling of `apps/portal/server`. Resolved from this package's root
+// The Foundry module's build output, served for install by Manifest URL —
+// `apps/portal/module/{module.json,dist/main.js}`, a sibling of `apps/portal/server`. Resolved from this package's root
 // (not `process.cwd()`, and not `import.meta.dirname`, which is `src/` under vitest and
 // `dist-server/` in the image), so it works the same in both: the Dockerfile's `portal`
 // target copies `apps/portal/module` (module.json + the built dist/) beside
@@ -50,9 +50,10 @@ async function main(): Promise<void> {
     maxCreatesPerRequest: cfg.portal.maxCreatesPerRequest,
     publicOrigin: cfg.portal.publicOrigin,
     moduleDir: MODULE_DIR,
-    // Spec 0025 D-2 — the bind-mounted OAuth state file (registered clients +
-    // hashed tokens); D-1 reuses the mcpApiKey resolved above as the consent
-    // password, threaded through inside `createPortalServer` (no new SOPS key).
+    // The bind-mounted OAuth state file (registered clients + hashed tokens), so
+    // claude.ai stays connected across a restart. The consent password is the
+    // mcpApiKey resolved above, threaded through inside `createPortalServer`, so
+    // OAuth needs no new SOPS key.
     oauthStatePath: cfg.portal.oauthStatePath,
     handleShutdown: true,
   });

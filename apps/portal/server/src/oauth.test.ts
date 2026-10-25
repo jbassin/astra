@@ -1,9 +1,9 @@
 /**
- * Spec 0025 S1 — the portal OAuth 2.1 authorization server, exercised against a
+ * The portal OAuth 2.1 authorization server, exercised against a
  * real ephemeral-port `listen()` (the same harness `mcp.test.ts` uses), hermetic
- * (no SOPS/network): discovery metadata, DCR's D-4 allowlist, the full
+ * (no SOPS/network): discovery metadata, DCR's redirect_uri allowlist, the full
  * authorize→consent→token PKCE flow, refresh rotation, revocation, expiry, and
- * the D-2 persistence/corruption contract.
+ * the state-file persistence/corruption contract.
  */
 import { createHash, randomBytes } from "node:crypto";
 import { mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
@@ -168,7 +168,7 @@ async function fullFlow(
   return { clientId, accessToken: tokens.access_token, refreshToken: tokens.refresh_token, state };
 }
 
-describe("OAuth discovery metadata (spec 0025 D-9)", () => {
+describe("OAuth discovery metadata", () => {
   let handle: PortalServerHandle & { port: number };
   let origin: string;
   let stateDir: string;
@@ -203,7 +203,7 @@ describe("OAuth discovery metadata (spec 0025 D-9)", () => {
   });
 });
 
-describe("DCR redirect_uri allowlist (spec 0025 D-4)", () => {
+describe("DCR redirect_uri allowlist", () => {
   let handle: PortalServerHandle & { port: number };
   let origin: string;
   let stateDir: string;
@@ -245,7 +245,7 @@ describe("DCR redirect_uri allowlist (spec 0025 D-4)", () => {
   });
 });
 
-describe("the full authorize -> consent -> token PKCE flow (spec 0025 D-10)", () => {
+describe("the full authorize -> consent -> token PKCE flow", () => {
   let handle: PortalServerHandle & { port: number };
   let origin: string;
   let stateDir: string;
@@ -378,7 +378,7 @@ describe("the full authorize -> consent -> token PKCE flow (spec 0025 D-10)", ()
   });
 });
 
-describe("refresh rotation (spec 0025 D-7)", () => {
+describe("refresh rotation", () => {
   let handle: PortalServerHandle & { port: number };
   let origin: string;
   let stateDir: string;
@@ -417,7 +417,7 @@ describe("refresh rotation (spec 0025 D-7)", () => {
   });
 });
 
-describe("revocation + verifyAccessToken (spec 0025)", () => {
+describe("revocation + verifyAccessToken", () => {
   let handle: PortalServerHandle & { port: number };
   let origin: string;
   let stateDir: string;
@@ -455,7 +455,7 @@ describe("revocation + verifyAccessToken (spec 0025)", () => {
   });
 });
 
-describe("access-token expiry (spec 0025 D-7)", () => {
+describe("access-token expiry", () => {
   it("verifyAccessToken rejects an expired token", async () => {
     const state = newOauthStatePath();
     const handle = await startServer(state.path, 1); // 1s TTL
@@ -471,7 +471,7 @@ describe("access-token expiry (spec 0025 D-7)", () => {
   });
 });
 
-describe("persistence across a restart (spec 0025 D-2)", () => {
+describe("persistence across a restart", () => {
   it("a second listen() on the SAME state file still verifies the token and knows the client", async () => {
     const state = newOauthStatePath();
     let handle = await startServer(state.path);
@@ -521,7 +521,7 @@ describe("persistence across a restart (spec 0025 D-2)", () => {
   });
 });
 
-describe("token-material log hygiene (spec 0025 Scope-6 hard rule)", () => {
+describe("token-material log hygiene (token material never reaches a log)", () => {
   let handle: PortalServerHandle & { port: number };
   let origin: string;
   let stateDir: string;
@@ -592,7 +592,7 @@ describe("token-material log hygiene (spec 0025 Scope-6 hard rule)", () => {
   // (HTML + JSON error bodies) never leaks token material.
 });
 
-describe("/mcp dual auth — the OAuth side (spec 0025 S2, D-3)", () => {
+describe("/mcp dual auth — the OAuth side", () => {
   it("an OAuth-issued access token calls a real tool through StreamableHTTPClientTransport", async () => {
     const state = newOauthStatePath();
     const handle = await startServer(state.path);
@@ -622,7 +622,7 @@ describe("/mcp dual auth — the OAuth side (spec 0025 S2, D-3)", () => {
     }
   });
 
-  it("an OAuth-issued access token resolves the full admin tool list, unaffected by player scoping (0028 D28-8)", async () => {
+  it("an OAuth-issued access token resolves the full admin tool list, unaffected by player scoping", async () => {
     const state = newOauthStatePath();
     const handle = await startServer(state.path);
     const origin = `http://127.0.0.1:${handle.port}`;

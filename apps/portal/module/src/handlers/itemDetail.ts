@@ -17,9 +17,9 @@ import {
 } from "../pf2e";
 import { type ResolvedItem } from "./itemAccess";
 
-/** D28-5's small pf2e-item read projection, shared by every `query-item` detail
+/** The small pf2e-item read projection, shared by every `query-item` detail
  * fetch — a hand-picked list of display fields (the same narrow read-side
- * exception posture as D28-2), never a modeled write schema. Every field is
+ * exception posture as query-player's stats), never a modeled write schema. Every field is
  * fail-soft (a missing/wrong-shaped source path is simply omitted). */
 function extractItemDetailFields(src: Pf2eSource): {
   level?: number;

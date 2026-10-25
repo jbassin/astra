@@ -17,11 +17,10 @@ export interface PortalStamp {
   "astra-portal": { created: true; tool: string; ts: string };
 }
 
-/** D-6 — every document any portal tool creates gets this stamped into its `flags`,
+/** Every document any portal tool creates gets this stamped into its `flags`,
  * additively merged alongside whatever flags the payload already carries. `delete-
- * document` (0026 S3) reads `flags["astra-portal"].created` back to refuse deleting
- * anything portal didn't make itself — so this must land on every create path (this
- * S2 slice's four new handlers AND the three 0023 write handlers, retrofitted).
+ * document` reads `flags["astra-portal"].created` back to refuse deleting
+ * anything portal didn't make itself — so this must land on every create path.
  * Never applied to an update — only to a document at the moment it's created. */
 export function portalStamp(tool: string): PortalStamp {
   return { "astra-portal": { created: true, tool, ts: new Date().toISOString() } };

@@ -25,7 +25,7 @@ import {
   writeGate,
 } from "./writes";
 
-/** `create-item` (spec 0026 S2/D-1/D-6/D-7) — hand-authors a new item from scratch or
+/** `create-item` — hand-authors a new item from scratch or
  * clones+patches a compendium base, either as a standalone world item or embedded
  * directly on an actor (`actorId`). `rulesSelections` pre-seeds
  * `flags.pf2e.rulesSelections` (the ChoiceSet-modal-avoidance pass-through, spec
@@ -78,9 +78,9 @@ async function handleCreateItem(rawParams: unknown): Promise<CreateItemResult> {
   }
 }
 
-/** `query-item` (0028 S3/D28-5/D28-13) — an id/uuid fetch renders ONE item's full
+/** `query-item` — an id/uuid fetch renders ONE item's full
  * detail; a name search returns a provenance-labeled hit LIST (never a single
- * item, even when exactly one hit matches — D28-5's adversarial-pass answer on
+ * item, even when exactly one hit matches — so a caller always sees
  * cross-scope name collisions, e.g. a world "Dagger" AND an embedded "Dagger"). */
 async function handleQueryItem(rawParams: unknown): Promise<QueryItemResult> {
   const params = QueryItemParams.parse(rawParams);

@@ -1,8 +1,8 @@
 /**
- * svc-2's real-protocol tests: a real MCP SDK client over Streamable HTTP against a fake
+ * Real-protocol tests: a real MCP SDK client over Streamable HTTP against a fake
  * Foundry module speaking the real bridge envelope over a real WebSocket. Covers each
  * handshake close code, the version mismatch, server-side designation and the queries a
- * replaced socket used to strand (SVC-18). Unit-level edge cases live in bridge.test.ts.
+ * replaced socket used to strand until the timeout. Unit-level edge cases live in bridge.test.ts.
  */
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -227,7 +227,7 @@ describe("bridge handshake end to end (svc-2: MCP client + fake module over real
     expect((await callJson(mcp, "bridge-status")).body).toMatchObject({ userId: "gm-a" });
   });
 
-  it("4004 + SVC-18: a tab reload mid-call fails the in-flight tool call at once with bridge-replaced", async () => {
+  it("4004: a tab reload mid-call fails the in-flight tool call at once with bridge-replaced", async () => {
     const { wsUrl, mcp } = await startPortal({ bridgeUserId: PORTAL_USER });
     const old = dial(wsUrl, { meta: { userId: PORTAL_USER } });
     await old.ready();

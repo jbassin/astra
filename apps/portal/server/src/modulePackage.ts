@@ -1,5 +1,5 @@
 /**
- * Serves the Foundry module as an installable package (spec 0023 D11 — install by
+ * Serves the Foundry module as an installable package (Foundry installs it by
  * Manifest URL): `GET /module/module.json` — the module's manifest, rendered at
  * request time with **absolute** `manifest`/`download` URLs from
  * `cfg.portal.publicOrigin` (config-single-source — no hardcoded host) — and
@@ -8,7 +8,7 @@
  * if the module ever grows one) zipped with `fflate` (tiny, zero-dep `zipSync`, no
  * system zip binary needed).
  *
- * The Docker build (S6) already produced `moduleDir/module.json` +
+ * The Docker build already produced `moduleDir/module.json` +
  * `moduleDir/dist/main.js` — nothing is built here, only packaged, and the zip is
  * cached in memory after the first request (keyed by `moduleDir`, so tests using
  * distinct temp dirs don't cross-pollute). If the module hasn't been built yet

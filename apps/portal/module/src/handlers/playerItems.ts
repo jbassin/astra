@@ -22,7 +22,7 @@ import {
 
 const FEAT_CATEGORY_FALLBACK = "other";
 
-/** `query-player`'s `feats` section (0028 S2) — grouped by category (`system.category`,
+/** `query-player`'s `feats` section — grouped by category (`system.category`,
  * e.g. "ancestry"/"class"/"skill"/"general"/"classfeature") with the feat's own level. */
 export function buildFeats(src: Pf2eSource): PlayerFeatsSection {
   const feats: PlayerFeatRow[] = sourceItems(src)
@@ -54,7 +54,7 @@ const INVENTORY_ITEM_TYPES = new Set([
   "ammo",
 ]);
 
-/** `query-player`'s `inventory` section (0028 S2) — every embedded item whose type is
+/** `query-player`'s `inventory` section — every embedded item whose type is
  * physical gear, with quantity/bulk/carry-state/runes. Fusion/property runes are
  * summarized as short labels (e.g. "+1 potency", "striking 2") rather than the raw
  * rune source objects. */

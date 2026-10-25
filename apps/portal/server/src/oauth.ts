@@ -1,5 +1,5 @@
 /**
- * The portal OAuth 2.1 authorization server (spec 0025 S1) — lets claude.ai add
+ * The portal OAuth 2.1 authorization server — lets claude.ai add
  * `https://portal.iridi.cc/mcp` as a custom connector, which requires DCR +
  * authorization-code+PKCE + discovery metadata (claude.ai does not support static
  * bearer auth for custom connectors). Built on the MCP SDK's own audited toolkit
@@ -602,9 +602,9 @@ export interface CreateOAuthSubAppOptions {
 export interface OAuthSubApp {
   /** Mount this at the dispatch root for `/authorize`, `/token`, `/register`,
    * `/revoke`, `/.well-known/*`, and {@link OAUTH_CONSENT_PATH} — call it as a bare
-   * `(req, res)` function (`server.ts`'s raw-node dispatch, D-6). */
+   * `(req, res)` function (`server.ts`'s raw-node dispatch). */
   app: Express;
-  /** Exposed so `server.ts`/`mcp.ts` (S2) can call `verifyAccessToken` for the
+  /** Exposed so `server.ts`/`mcp.ts` can call `verifyAccessToken` for the
    * `/mcp` dual-auth check without re-parsing the state file. */
   provider: PortalOAuthProvider;
 }

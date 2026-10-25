@@ -122,7 +122,7 @@ const META: AuthMsg["meta"] = {
   foundryVersion: "13.351",
 };
 
-describe("BridgeClient (spec 0023 S3 — Foundry-free)", () => {
+describe("BridgeClient (Foundry-free)", () => {
   afterEach(() => {
     vi.useRealTimers();
   });

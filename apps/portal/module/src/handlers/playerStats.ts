@@ -12,9 +12,9 @@ import {
 import { MODULE_ID } from "../constants";
 import { liveNumberAt, liveSkills, liveSystem, type Pf2eSystem } from "../pf2e";
 
-/** Reads a dot-path off the LIVE prepared actor's `system` tree (D28-2) — fail-soft:
+/** Reads a dot-path off the LIVE prepared actor's `system` tree — fail-soft:
  * a missing/wrong-shaped path logs a module `console.warn` naming the path and
- * returns `undefined`, NEVER throws (the spec's Risks: pf2e-internal derived paths
+ * returns `undefined`, NEVER throws (pf2e-internal derived paths
  * can drift across system majors, and a familiar/edge-case actor may legitimately
  * lack a path like `attributes.classDC`). `warnings` collects the same message the
  * console gets, so `query-player`'s `stats` result carries a machine-readable record
@@ -36,7 +36,7 @@ function readDerivedNumber(
 const SAVE_SLUGS = ["fortitude", "reflex", "will"];
 const ABILITY_SLUGS = ["str", "dex", "con", "int", "wis", "cha"];
 
-/** `query-player`'s `stats` section (0028 S2/D28-2) — the curated derived-stats
+/** `query-player`'s `stats` section — the curated derived-stats
  * projection, read off the LIVE prepared actor (`doc.system`, never `toObject()`):
  * AC, saves, perception, ability modifiers, class DC, spell DC. Every individual
  * field is read via {@link readDerivedNumber} — fail-soft per field, never throws. */
@@ -68,7 +68,7 @@ export function buildStats(doc: FoundryDocumentLike): PlayerStatsSection {
   };
 }
 
-/** `query-player`'s `skills` section (0028 S2) — the LIVE `system.skills` map, which
+/** `query-player`'s `skills` section — the LIVE `system.skills` map, which
  * (unlike stored source) carries a total `value`/`dc` per skill AND every lore skill
  * (added by `prepareSkills()`'s loreItems merge, verified in pf2e.mjs). */
 export function buildSkills(doc: FoundryDocumentLike): PlayerSkillsSection {

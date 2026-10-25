@@ -30,7 +30,7 @@ interface ParsedRollJson {
   terms?: unknown;
 }
 
-/** D28-12 — parses the stored serialized-Roll JSON string (`client/dice/roll.mjs#
+/** Parses the stored serialized-Roll JSON string (`client/dice/roll.mjs#
  * toJSON`: `{class, formula, total, evaluated, terms[]}`) — everything needed for
  * a markdown row is already in the stored JSON, this NEVER re-evaluates the roll.
  * A malformed/unparseable string (shouldn't happen for a write-validated
@@ -45,8 +45,8 @@ function parseRollJson(
       parsed = JSON.parse(roll) as ParsedRollJson;
     } else if (roll !== null && typeof roll === "object") {
       // LIVE `game.messages` documents hydrate `rolls` into Roll INSTANCES — the
-      // serialized-JSON-strings shape exists only in stored source data (found at the
-      // 0028 S4 live gate: every page row silently failed to build). Round-tripping
+      // serialized-JSON-strings shape exists only in stored source data (found in
+      // live testing: every page row silently failed to build). Round-tripping
       // through JSON.stringify invokes the instances' own toJSON() recursively,
       // producing exactly the stored shape either way.
       parsed = JSON.parse(JSON.stringify(roll)) as ParsedRollJson;
@@ -76,7 +76,7 @@ function parseRollJson(
 /** Strips HTML down to plain text and takes a short leading fragment — the
  * module-side fallback when `flags.pf2e.modifierName` is absent (a plain `/roll`
  * or an older pf2e message shape). The server owns full HTML->markdown rendering
- * (D28-6); this is only ever a short derived LABEL, never shipped as prose. */
+ * itself; this is only ever a short derived LABEL, never shipped as prose. */
 function deriveCheckNameFromFlavor(flavor: string | undefined): string | undefined {
   if (!flavor) return undefined;
   const stripped = flavor
@@ -124,7 +124,7 @@ function buildRollModifiers(flags: Pf2eFlags): RollModifierRow[] | undefined {
  * the message's first roll doesn't parse (skipped, never fails the whole page).
  * `originItemName` resolves `flags.pf2e.origin.uuid` (verified `pf2e.mjs`'s
  * `Item#getOriginData`: `{actor, uuid, type, rollOptions}` — NO name field is ever
- * stored, so this is the one per-row `fromUuid` call D28-12's shape requires;
+ * stored, so this is the one per-row `fromUuid` call the row shape requires;
  * bounded by the page `limit`, never the full scanned history). */
 export async function buildRollRow(
   msg: FoundryChatMessage,

@@ -19,9 +19,9 @@ import { buildSkills, buildStats } from "./playerStats";
 import { buildNotes, buildSummary } from "./playerSummary";
 import { resolveByName } from "./shared";
 
-/** `query-player`'s D28-13 resolution: `uuid` (a full `Actor.<id>` uuid, or a bare
+/** `query-player`'s actor resolution: `uuid` (a full `Actor.<id>` uuid, or a bare
  * world actor id — either form accepted) resolves via `fromUuid`; `name` resolves via
- * {@link resolveByName} across every world actor (the D28-4 type predicate is checked
+ * {@link resolveByName} across every world actor (the player-character type predicate is checked
  * AFTER resolution, uniformly for both paths, so an unambiguous name match against an
  * NPC still resolves — and then gets the correct typed `not-a-player-character`
  * refusal, not a confusing `not-found`). The params schema's own `.refine()` already
@@ -37,7 +37,7 @@ async function resolvePlayerActor(params: QueryPlayerParams): Promise<FoundryDoc
   return resolveByName(Array.from(game.actors.values()), params.name as string);
 }
 
-/** `query-player` (0028 S2/D28-4/D28-11) — resolves the target actor (D28-13), refuses
+/** `query-player` — resolves the target actor, refuses
  * anything that isn't `type ∈ {character, familiar}` with the typed
  * `not-a-player-character` error, then builds exactly the requested `section`. */
 async function handleQueryPlayer(rawParams: unknown): Promise<QueryPlayerResult> {

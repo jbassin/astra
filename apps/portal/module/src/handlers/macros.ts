@@ -15,9 +15,9 @@ import { MODULE_ID, SETTING_ALLOW_MACRO_EXECUTION } from "../constants";
 import { portalStamp } from "./payloads";
 import { auditLog, createChecked, writeGate } from "./writes";
 
-/** `create-macro` (spec 0026 S2/D-6/D-9) — creates a script or chat macro; verified
- * (spec Verified footprint) that Foundry NEVER executes a macro on create, only via
- * the separate `execute-macro` tool (0026 S3). D-9's audit-the-full-command-text
+/** `create-macro` — creates a script or chat macro; verified
+ * that Foundry NEVER executes a macro on create, only via
+ * the separate `execute-macro` tool. The audit-the-full-command-text
  * requirement is satisfied for free: {@link auditLog} already serializes the whole
  * `params` object, which carries `command` verbatim. */
 async function handleCreateMacro(rawParams: unknown): Promise<CreateMacroResult> {
@@ -67,7 +67,7 @@ function stringifyReturned(value: unknown): string | undefined {
     : text;
 }
 
-/** `execute-macro` (spec 0026 S3/D-9) — runs an existing world macro immediately, as
+/** `execute-macro` — runs an existing world macro immediately, as
  * the GM. Gated by BOTH the normal write gate and the module's own `allow-macro-
  * execution` setting, independently switchable off without touching `allow-write-
  * operations` — reuses the `writes-disabled` code (D-11's final error-code list has

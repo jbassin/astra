@@ -26,7 +26,7 @@ const MAX_CREATES_PER_REQUEST = 10;
 // would just 503, per modulePackage.ts).
 const TEST_PUBLIC_ORIGIN = "https://portal.test";
 const TEST_MODULE_DIR = "/nonexistent/portal-module-fixture";
-// Spec 0025 S1 — these tests never touch OAuth (that's oauth.test.ts); a single
+// These tests never touch OAuth (that's oauth.test.ts); a single
 // shared per-file tmp path is enough to satisfy `createPortalServer`'s now-required
 // oauthStatePath (the file is never actually written unless a token is issued).
 const TEST_OAUTH_STATE_PATH = join(mkdtempSync(join(tmpdir(), "portal-oauth-")), "state.json");
@@ -81,7 +81,7 @@ class FakeModule {
   }
 }
 
-describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () => {
+describe("the /mcp Streamable-HTTP surface (Foundry-free)", () => {
   let handle: PortalServerHandle & { port: number };
   let mcpUrl: URL;
 
@@ -174,7 +174,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     await client.close();
   });
 
-  it("bridge-status round-trips the 0027 D27-8 userName identity via a stub bridge module", async () => {
+  it("bridge-status round-trips the module's userName identity via a stub bridge module", async () => {
     const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
     const mod = new FakeModule(wsUrl, { userId: "user1", userName: "Portal" });
     await mod.ready();
@@ -223,7 +223,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     await client.close();
   });
 
-  it("lists all 22 tools (spec 0026 S1's 18 + 0028's query-party/query-player/query-item/query-rolls), every new field described", async () => {
+  it("lists all 22 tools (18 GM tools + query-party/query-player/query-item/query-rolls), every new field described", async () => {
     const transport = new StreamableHTTPClientTransport(mcpUrl, {
       requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
     });
@@ -293,7 +293,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     await client.close();
   });
 
-  it("maps a bridge-offline BridgeError to an isError result when no module is connected (S4)", async () => {
+  it("maps a bridge-offline BridgeError to an isError result when no module is connected", async () => {
     const transport = new StreamableHTTPClientTransport(mcpUrl, {
       requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
     });
@@ -312,7 +312,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     await client.close();
   });
 
-  it("search-compendium round-trips params + the module's result through a real MCP client (S4)", async () => {
+  it("search-compendium round-trips params + the module's result through a real MCP client", async () => {
     const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
     const mod = new FakeModule(wsUrl);
     await mod.ready();
@@ -354,7 +354,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     mod.close();
   });
 
-  it("get-document maps the module's typed not-found error onto an isError result (S4)", async () => {
+  it("get-document maps the module's typed not-found error onto an isError result", async () => {
     const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
     const mod = new FakeModule(wsUrl);
     await mod.ready();
@@ -386,7 +386,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
   });
 });
 
-describe("S5 write tools (spec 0023 D8 — Foundry-free)", () => {
+describe("write tools (Foundry-free)", () => {
   let handle: PortalServerHandle & { port: number };
   let mcpUrl: URL;
 
@@ -444,7 +444,7 @@ describe("S5 write tools (spec 0023 D8 — Foundry-free)", () => {
     mod.close();
   });
 
-  it("allows an at-cap create-token and round-trips it through the bridge (S5/D13)", async () => {
+  it("allows an at-cap create-token and round-trips it through the bridge", async () => {
     const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
     const mod = new FakeModule(wsUrl);
     await mod.ready();
@@ -538,7 +538,7 @@ describe("S5 write tools (spec 0023 D8 — Foundry-free)", () => {
   // presence is a one-line, low-risk addition reviewed by inspection instead.
 });
 
-describe("S1 authoring tools (spec 0026 — Foundry-free)", () => {
+describe("authoring tools (Foundry-free)", () => {
   let handle: PortalServerHandle & { port: number };
   let mcpUrl: URL;
 
@@ -636,7 +636,7 @@ describe("S1 authoring tools (spec 0026 — Foundry-free)", () => {
 
   it("update-document/delete-document/execute-macro never trip the create cap even at 1 above it", async () => {
     // maxCreatesPerRequest is 2 in this describe block; these three tools register
-    // with no `creates`/`cap` at all (0026 D-8: mutations/actions, not creates), so a
+    // with no `creates`/`cap` at all (they are mutations/actions, not creates), so a
     // large `updates` payload must never be rejected as cap-exceeded.
     const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
     const mod = new FakeModule(wsUrl);
@@ -693,7 +693,7 @@ describe("S1 authoring tools (spec 0026 — Foundry-free)", () => {
   });
 });
 
-describe("0028 S1 — player key + tool scoping (Foundry-free)", () => {
+describe("player key + tool scoping (Foundry-free)", () => {
   let handle: PortalServerHandle & { port: number };
   let mcpUrl: URL;
 
@@ -730,7 +730,7 @@ describe("0028 S1 — player key + tool scoping (Foundry-free)", () => {
     const { tools } = await client.listTools();
     const names = tools.map((t) => t.name);
 
-    // 0028 S3 acceptance: exactly five, both directions (this test + the
+    // Exactly five, both directions (this test + the
     // "player-key subset" identity check below), not merely a subset-of.
     for (const name of names) {
       expect(PLAYER_TOOL_NAMES.has(name)).toBe(true);
@@ -771,11 +771,10 @@ describe("0028 S1 — player key + tool scoping (Foundry-free)", () => {
     await client.close();
   });
 
-  it("the admin key sees the full 22-tool list (the spec's final admin count), unaffected by player scoping (D28-8)", async () => {
+  it("the admin key sees the full 22-tool list, unaffected by player scoping", async () => {
     const client = await clientWith(MCP_API_KEY);
     const { tools } = await client.listTools();
-    // 18 (0023/0026) + query-party + query-player + query-item + query-rolls
-    // (0028 S2/S3) = 22.
+    // 18 GM tools + query-party + query-player + query-item + query-rolls = 22.
     expect(tools.length).toBe(22);
     expect(tools.map((t) => t.name)).toContain("bridge-status");
     expect(tools.map((t) => t.name)).toContain("search-world");
@@ -807,7 +806,7 @@ describe("0028 S1 — player key + tool scoping (Foundry-free)", () => {
     expect(res.headers.get("www-authenticate")).toMatch(/^Bearer resource_metadata="/);
   });
 
-  it("the player key value never appears in any captured response body or header (D28-9 hygiene)", async () => {
+  it("the player key value never appears in any captured response body or header", async () => {
     // A successful player-key round trip.
     const client = await clientWith(PLAYER_MCP_API_KEY);
     const listResult = await client.listTools();
@@ -835,7 +834,7 @@ describe("0028 S1 — player key + tool scoping (Foundry-free)", () => {
   });
 });
 
-describe("0028 S2 — query-party / query-player (markdown rendering, Foundry-free)", () => {
+describe("query-party / query-player (markdown rendering, Foundry-free)", () => {
   let handle: PortalServerHandle & { port: number };
   let mcpUrl: URL;
 
@@ -867,7 +866,7 @@ describe("0028 S2 — query-party / query-player (markdown rendering, Foundry-fr
     return client;
   }
 
-  it("query-party renders the module's typed result as markdown (D28-6), not JSON", async () => {
+  it("query-party renders the module's typed result as markdown, not JSON", async () => {
     const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
     const mod = new FakeModule(wsUrl);
     await mod.ready();
@@ -1014,7 +1013,7 @@ describe("0028 S2 — query-party / query-player (markdown rendering, Foundry-fr
   });
 });
 
-describe("0028 S3 — query-item / query-rolls (markdown rendering, Foundry-free)", () => {
+describe("query-item / query-rolls (markdown rendering, Foundry-free)", () => {
   let handle: PortalServerHandle & { port: number };
   let mcpUrl: URL;
 
@@ -1230,7 +1229,7 @@ describe("0028 S3 — query-item / query-rolls (markdown rendering, Foundry-free
     mod.close();
   });
 
-  it("both tools are reachable via the PLAYER key (D28-8/final PLAYER_TOOL_NAMES)", async () => {
+  it("both tools are reachable via the PLAYER key (PLAYER_TOOL_NAMES)", async () => {
     const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
     const mod = new FakeModule(wsUrl);
     await mod.ready();
@@ -1249,7 +1248,7 @@ describe("0028 S3 — query-item / query-rolls (markdown rendering, Foundry-free
     mod.close();
   });
 
-  it("D28-14: an unknown module error code resolves as a typed foundry-error tool result, not a hang", async () => {
+  it("an unknown module error code resolves as a typed foundry-error tool result, not a hang", async () => {
     const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
     const mod = new FakeModule(wsUrl);
     await mod.ready();

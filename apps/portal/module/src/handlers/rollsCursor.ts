@@ -1,5 +1,5 @@
 /**
- * `query-rolls`' page order and cursor (D28-10): newest first with an `_id` tiebreak, and
+ * `query-rolls`' page order and cursor: newest first with an `_id` tiebreak, and
  * a `timestamp:id` cursor resolved against that same order.
  */
 
@@ -22,7 +22,7 @@ export function encodeRollsCursor(c: RollPosition): string {
   return `${c.timestamp}:${c.id}`;
 }
 
-/** Newest-first-with-`_id`-tiebreak total order (D28-10) — `compareRowsDesc(a,b) <
+/** Newest-first-with-`_id`-tiebreak total order — `compareRowsDesc(a,b) <
  * 0` means `a` sorts BEFORE `b` (newer, or same-timestamp-and-greater-id). Cursor
  * semantics are defined directly against this same comparator ({@link
  * isAfterCursor}) so the two can never drift out of sync. */

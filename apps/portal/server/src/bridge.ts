@@ -1,9 +1,8 @@
 /**
- * The Foundry-module bridge (spec 0023 D4/D6) — a `ws` WebSocketServer mounted on the
- * portal HTTP server at {@link BRIDGE_WS_PATH}. The Foundry module (S3) dials this,
- * completes a one-shot versioned `{type:"auth",apiKey,protocol}` handshake (D6's
- * module→server hop), gets an `auth-ok` back, and from then on answers correlation-id'd
- * {@link McpQuery}/{@link McpResponse} pairs the MCP tool layer (`mcp.ts`) issues via
+ * The Foundry-module bridge — a `ws` WebSocketServer mounted on the portal HTTP server
+ * at {@link BRIDGE_WS_PATH}. The Foundry module dials this, completes a one-shot
+ * versioned `{type:"auth",apiKey,protocol}` handshake, gets an `auth-ok` back, and
+ * from then on answers correlation-id'd {@link McpQuery}/{@link McpResponse} pairs the MCP tool layer (`mcp.ts`) issues via
  * {@link Bridge.sendQuery}.
  *
  * The handshake checks run in a fixed order, each with its own close code
@@ -71,7 +70,7 @@ const queryDuration = lazyHistogram(SERVICE_NAME, "astra.portal.bridge.query_dur
 export type BridgeStatus = BridgeStatusResult;
 
 export interface BridgeOptions {
-  /** `cfg.portal.bridgeApiKey.resolve()` — the module's handshake secret (D6). */
+  /** `cfg.portal.bridgeApiKey.resolve()` — the module's handshake secret. */
   bridgeApiKey: string;
   /** `cfg.portal.bridgeTimeoutMs` — how long {@link Bridge.sendQuery} waits for a reply. */
   queryTimeoutMs: number;
@@ -98,7 +97,7 @@ interface ResolvedBridgeOptions {
 
 interface Pending {
   /** The socket the query went out on: only that socket's close or replacement may
-   * settle it early (SVC-18). */
+   * settle it early, so a replaced socket's queries fail at once instead of timing out. */
   ws: WebSocket;
   resolve: (result: unknown) => void;
   reject: (err: BridgeError) => void;
@@ -126,7 +125,7 @@ function safeJsonParse(text: string): unknown {
 }
 
 /**
- * D28-14's skew fix: `#onMessage` only reaches this once `BridgeMessage.safeParse`
+ * Version-skew recovery: `#onMessage` only reaches this once `BridgeMessage.safeParse`
  * has ALREADY failed — so if the message is otherwise a well-formed error
  * `response` envelope (checked via {@link McpResponseErrUnknownCode}, which is
  * identical to `McpResponse`'s error variant except `error.code` is any non-empty
@@ -162,7 +161,7 @@ function recoverSkewedErrorResponse(
  * - A new socket for the same user as the current one **replaces** it (a GM reloading
  *   their tab must reconnect at once, not wait out the dead socket's heartbeat). The old
  *   socket is closed with `replaced` and its in-flight queries fail with
- *   `bridge-replaced` instead of hanging until the timeout (SVC-18).
+ *   `bridge-replaced` instead of hanging until the timeout.
  * - A new socket for a different user while one is connected (possible only with no
  *   designation) is closed with `busy`, so two GM sessions can never take turns
  *   replacing each other.
@@ -341,7 +340,7 @@ export class Bridge {
     }
   }
 
-  /** Retire a socket that a newer one for the same user replaced (SVC-18). */
+  /** Retire a socket that a newer one for the same user replaced. */
   #replace(prior: WebSocket): void {
     prior.removeAllListeners();
     prior.on("error", () => {
@@ -396,7 +395,7 @@ export class Bridge {
           severityText: "WARN",
           body:
             `bridge received a response with an unknown error code "${recovered.originalCode}" ` +
-            "— mapping to foundry-error (module/server version skew — D28-14)",
+            "— mapping to foundry-error (module/server version skew)",
         });
         this.#onResponse(recovered.response);
         return;

@@ -136,7 +136,7 @@ export function liveSkills(live: Pf2eSystem<"live"> | undefined): Pf2eSkill[] {
   return skills;
 }
 
-/** The update paths that are derived on a player character (0026 D-10). pf2e's
+/** The update paths that are derived on a player character. pf2e's
  * `CharacterSystemSource` types `perception`/`saves`/`traits` as `never`, and AC and class
  * DC are recomputed every data-prep cycle, so a write to any of them on a `character` actor
  * is discarded or corrupts data prep. NPCs store these and may be written. */

@@ -27,8 +27,8 @@ import {
 } from "../pf2e";
 import { fullPool } from "./playerSummary";
 
-/** `query-party` (0028 S2/D28-4) — resolves the party actor(s) by `type === "party"`
- * AT QUERY TIME (never hardcoded, spec Verified footprint), unions every resolved
+/** `query-party` — resolves the party actor(s) by `type === "party"`
+ * AT QUERY TIME (never hardcoded), unions every resolved
  * party's `system.details.members` uuid refs (pf2e allows multiple parties; this
  * world has one), then splits each resolved member into a full PC row (`type ===
  * "character"`) or a labeled minimal companion row (anything else — the live world's
@@ -64,7 +64,7 @@ async function handleQueryParty(rawParams: unknown): Promise<QueryPartyResult> {
   return { partyName, pcs, companions };
 }
 
-/** Best-effort owner-player-name resolution (D28-4's roster row) — an OWNER-level
+/** Best-effort owner-player-name resolution (for the roster row) — an OWNER-level
  * (3) `ownership` entry (excluding the special `"default"` key) resolved against
  * `game.users`, skipping the GM's own OWNER grant (every document carries one). Omits
  * the field entirely rather than guessing when nothing resolves. */

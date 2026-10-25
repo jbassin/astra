@@ -95,7 +95,7 @@ class FakeModule {
   }
 
   /** Sends an error `response` with an ARBITRARY `code` string — including one
-   * outside the closed `BridgeErrorCode` enum, for the D28-14 skew test below. A
+   * outside the closed `BridgeErrorCode` enum, for the version-skew test below. A
    * real module would never construct this deliberately; it's the shape a
    * pre-rollback server sees from a 0.4.0+ module returning an additive error
    * code the server doesn't know yet. */
@@ -108,7 +108,7 @@ class FakeModule {
   }
 }
 
-describe("Bridge (spec 0023 S2 — Foundry-free)", () => {
+describe("Bridge (Foundry-free)", () => {
   let bridge: Bridge;
   let server: HttpServer;
   let url: string;
@@ -160,7 +160,7 @@ describe("Bridge (spec 0023 S2 — Foundry-free)", () => {
     mod.close();
   });
 
-  it("carries the 0027 D27-8 userId/userName identity onto the status snapshot", async () => {
+  it("carries the module's userId/userName identity onto the status snapshot", async () => {
     const meta: AuthMeta = {
       worldId: "faerrin",
       world: "Faerrin",
@@ -242,13 +242,12 @@ describe("Bridge (spec 0023 S2 — Foundry-free)", () => {
     second.close();
   });
 
-  it("D28-14: maps a well-formed response envelope with an unknown error code to a typed foundry-error, never a silent drop-to-timeout", async () => {
+  it("maps a well-formed response envelope with an unknown error code to a typed foundry-error, never a silent drop-to-timeout", async () => {
     const mod = new FakeModule(url);
     await mod.ready();
     mod.onQuery((q) => {
       // A code this build's BridgeErrorCode enum has never heard of — the exact
-      // shape a 0.4.0+ module sends a rolled-back pre-0028 server (spec Risks'
-      // "rollback symmetry" scenario).
+      // shape a 0.4.0+ module sends to a server rolled back to an older build.
       mod.respondErrorRaw(q.id, "some-future-code-this-server-does-not-know", "future skew");
     });
     // queryTimeoutMs is 250 in this describe block's beforeEach — if the fix
@@ -261,7 +260,7 @@ describe("Bridge (spec 0023 S2 — Foundry-free)", () => {
     mod.close();
   });
 
-  it("D28-14: a genuinely unparseable message still falls through to the normal drop (no false-positive recovery)", async () => {
+  it("a genuinely unparseable message still falls through to the normal drop (no false-positive recovery)", async () => {
     const mod = new FakeModule(url);
     await mod.ready();
     // Not even valid JSON — must NOT be mistaken for a recoverable skewed response.
@@ -391,7 +390,7 @@ describe("Bridge versioned handshake, designation and replacement (svc-2)", () =
     first.close();
   });
 
-  it("SVC-18: a same-user reconnect replaces the old socket and fails its in-flight query at once with bridge-replaced", async () => {
+  it("a same-user reconnect replaces the old socket and fails its in-flight query at once with bridge-replaced", async () => {
     const { bridge, url } = await start({ bridgeUserId: "portal-user" });
     const old = new FakeModule(url, BRIDGE_API_KEY, { userId: "portal-user" });
     await old.ready();

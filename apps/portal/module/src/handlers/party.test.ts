@@ -11,8 +11,8 @@ describe("query-party and query-player", () => {
    * Foundry's `system` on a live/prepared instance is a strict superset of the stored
    * source (derived fields merged in) — {@link liveSystemFor} builds a realistic
    * synthetic superset for the `stats`/`skills` tests, since the fixtures themselves
-   * (captured via `toObject()`) provably lack every derived field (D28-2's whole
-   * premise, verified: `system.abilities` is `null` in every one of them). */
+   * (captured via `toObject()`) provably lack every derived field (the reason the stats
+   * read the live actor, verified: `system.abilities` is `null` in every one of them). */
   function fixtureActorDoc(
     name: "party" | "argyle" | "othello",
     liveSystem?: Record<string, unknown>,
@@ -32,7 +32,7 @@ describe("query-party and query-player", () => {
     };
   }
 
-  /** A synthetic "live prepared actor" `system` tree — the derived fields D28-2's
+  /** A synthetic "live prepared actor" `system` tree — the derived fields the
    * `stats`/`skills` sections read, none of which any fixture's stored source ever
    * carries. Values are plausible but not real pf2e math (Foundry-free tests only
    * verify this module reads/renders the right PATHS, not pf2e's own arithmetic). */
@@ -307,7 +307,7 @@ describe("query-party and query-player", () => {
     it("spells entry DC falls back to the ACTOR-level live spellDC when the live entry's is also 0", async () => {
       // Second S4 live find: the live embedded entry's system.spelldc.dc is ALSO 0 —
       // pf2e derives the DC onto the entry's `statistic` class instance, not its
-      // system tree. The actor-level system.attributes.spellDC.value (D28-2 verified
+      // system tree. The actor-level system.attributes.spellDC.value (a verified
       // path) is the reliable live home.
       const argyleDoc = fixtureActorDoc("argyle", {
         attributes: { spellDC: { value: 24 } },

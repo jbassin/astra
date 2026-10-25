@@ -1,5 +1,5 @@
 /**
- * Minimal ambient FoundryVTT global declarations (spec 0023 S3) — ONLY the surface this
+ * Minimal ambient FoundryVTT global declarations — ONLY the surface this
  * module actually touches: `game.user.isGM`, `game.world.{id,title}`,
  * `game.system.{id,version}`, `game.version`, `game.settings.{register,get}`,
  * `Hooks.once`, and `CONFIG.queries`.
@@ -9,7 +9,7 @@
  * and churns on every Foundry/system release. A 6-name ambient stub is trivial to keep
  * in sync with the one v13 surface we call, and a typecheck here never breaks on an
  * unrelated upstream Foundry API change. Extend this file only when a new handler
- * (S4/S5) touches a genuinely new part of the Foundry global surface.
+ * touches a genuinely new part of the Foundry global surface.
  *
  * No `import`/`export` here on purpose: a `.d.ts` file with neither is treated as an
  * ambient SCRIPT (not a module) by TypeScript, so every top-level `declare` below is
@@ -17,8 +17,8 @@
  * `export {}` just to unlock one) needed.
  */
 
-/** The subset of `foundry.documents.User` this module reads. `id`/`name` (0027
- * D27-8/D27-9) back the designated-dialer gate + the identity `bridge-status` surfaces
+/** The subset of `foundry.documents.User` this module reads. `id`/`name` back the
+ * designated-dialer gate + the identity `bridge-status` surfaces
  * — every real Foundry `User` document already carries both. */
 interface FoundryUser {
   readonly id: string;
@@ -38,11 +38,11 @@ interface FoundrySystem {
   readonly version: string;
 }
 
-/** The subset of a Foundry Document (actor/item/journal/scene/compendium entry) the S4
- * read tools touch — `toObject()` is the D5 "opaque cargo" escape hatch (never model
- * pf2e `system.*`), the rest is plain document identity. `type`/`flags` (0026 S3) are
- * optional: most S3/S4 read-tool stand-ins never carry either, and both are genuinely
- * absent on some real document kinds — `type` is D-10's "is this a PC" discriminator
+/** The subset of a Foundry Document (actor/item/journal/scene/compendium entry) the read
+ * tools touch — `toObject()` is the "opaque cargo" escape hatch (never model
+ * pf2e `system.*`), the rest is plain document identity. `type`/`flags` are
+ * optional: most read-tool stand-ins never carry either, and both are genuinely
+ * absent on some real document kinds — `type` is `update-document`'s "is this a PC" discriminator
  * (`documentName === "Actor" && type === "character"`), `flags` is D-4's stamp-read
  * surface (`flags["astra-portal"]?.created`). */
 interface FoundryDocumentLike {
@@ -55,13 +55,13 @@ interface FoundryDocumentLike {
   readonly flags?: Record<string, unknown>;
   /** The compendium collection key this document came from (real Foundry's own
    * `Document#pack`, verified `client/documents/abstract/client-document.mjs:77/85`
-   * — `null`/`undefined` for a world/embedded document). 0028 S3's `query-item`
-   * uses this to find the owning `FoundryCompendiumCollection` (for the D28-5
+   * — `null`/`undefined` for a world/embedded document). `query-item`
+   * uses this to find the owning `FoundryCompendiumCollection` (for the
    * pack-visibility gate) without re-parsing it out of the uuid string. */
   readonly pack?: string | null;
-  /** The LIVE (prepared) `system` data tree — 0028 S2's `query-player` `stats`/`skills`
+  /** The LIVE (prepared) `system` data tree — `query-player`'s `stats`/`skills`
    * sections read AC/saves/perception/ability-mods/class-DC/spell-DC/skill-totals off
-   * this directly (D28-2: these are runtime-derived by pf2e's `prepareData()` and are
+   * this directly (these are runtime-derived by pf2e's `prepareData()` and are
    * simply absent from `toObject()`'s stored source — verified live, e.g. `system.
    * abilities` is `null` in source). Every world/embedded document `fromUuid`/`game.
    * actors` resolves is already the live, prepared instance in real Foundry, so no
@@ -70,18 +70,18 @@ interface FoundryDocumentLike {
    * Deliberately opaque (`Record<string, unknown>`, D5) and optional (not every
    * document kind this module touches carries one, e.g. a Macro/Scene/AmbientLight) —
    * `query-player`'s own path-reader treats an absent/wrong-shaped path as "unknown"
-   * fail-soft, never a throw (D28-2 Risks: pf2e-internal paths can drift). */
+   * fail-soft, never a throw (pf2e-internal paths can drift). */
   readonly system?: Record<string, unknown>;
   /** An Actor's LIVE embedded-items collection (real Foundry: an `EmbeddedCollection`;
-   * only `.get()` is typed — only-what-we-touch policy). 0028 S4 fix: `buildSpells`
+   * only `.get()` is typed — only-what-we-touch policy). `buildSpells`
    * reads a spellcasting entry's DERIVED `spelldc.dc` off the live embedded item
    * (the stored source's is 0 for a prepared caster). Absent on non-Actor documents. */
   readonly items?: { get(id: string): FoundryDocumentLike | undefined };
   toObject(): Record<string, unknown>;
 }
 
-/** The instance-mutation surface `update-document` (0026 S3 D-10) and
- * `delete-document` (D-4) need — every world/embedded document `fromUuid` can
+/** The instance-mutation surface `update-document` and
+ * `delete-document` need — every world/embedded document `fromUuid` can
  * resolve supports both `update()`/`delete()` in real Foundry (Actor/Item/Scene/
  * AmbientLight/Macro alike). Deliberately narrower than baking these onto the base
  * `FoundryDocumentLike`: every OTHER handler in this module only ever reads/creates,
@@ -95,7 +95,7 @@ interface FoundryMutableDocument extends FoundryDocumentLike {
 
 /** A `CompendiumCollection#getIndex()` (or `#index`) entry — Foundry 13 index rows
  * carry their own `uuid` (`Compendium.<pack>.<type>.<id>`), so it's never
- * hand-constructed (spec 0023 S4). */
+ * hand-constructed. */
 interface FoundryCompendiumIndexEntry {
   readonly _id: string;
   readonly uuid: string;
@@ -121,7 +121,7 @@ interface FoundryCompendiumMetadata {
  * mjs:231-236` — `config.ownership ?? metadata.ownership ?? the schema default`),
  * each value one of `CONST.DOCUMENT_OWNERSHIP_LEVELS`' string keys ("INHERIT"/
  * "NONE"/"LIMITED"/"OBSERVER"/"OWNER"; verified `common/constants.mjs:372-397`).
- * 0028 S3's `query-item` (D28-5) reads `PLAYER` directly rather than calling the
+ * `query-item` reads `PLAYER` directly rather than calling the
  * real `getUserLevel(user)` with the bridge's own GM user — that call ALWAYS
  * resolves OWNER for a GM (verified `compendium-collection.mjs:451-452`:
  * `testUserPermission` short-circuits `user.isGM ? OWNER : getUserLevel(user)`,
@@ -131,7 +131,7 @@ interface FoundryCompendiumMetadata {
  * of its real player-facing config, the exact leak the adversarial B2 finding
  * flagged). Live pf2e system.json (2026-07-11): 67/94 packs (bestiaries) ship
  * `PLAYER: "LIMITED"`, 27/94 (rules content) ship `"OBSERVER"` — LIMITED(1) is
- * BELOW the D28-5 `OBSERVER`(2) gate, so most bestiary packs are correctly
+ * BELOW the `OBSERVER`(2) visibility gate, so most bestiary packs are correctly
  * excluded from a player-key search. */
 interface FoundryCompendiumOwnership {
   readonly GAMEMASTER?: string;
@@ -143,7 +143,7 @@ interface FoundryCompendiumOwnership {
 interface FoundryCompendiumCollection {
   readonly collection: string; // e.g. "pf2e.pathfinder-monster-core"
   readonly metadata: FoundryCompendiumMetadata;
-  /** 0028 S3 (D28-5) — see {@link FoundryCompendiumOwnership}. */
+  /** `query-item`'s pack-visibility gate — see {@link FoundryCompendiumOwnership}. */
   readonly ownership?: FoundryCompendiumOwnership;
   getIndex(options?: { fields?: string[] }): Promise<FoundryCompendiumIndex>;
 }
@@ -163,13 +163,13 @@ interface FoundryWorldCollection<T extends FoundryDocumentLike = FoundryDocument
 }
 
 /** The subset of a Foundry `TokenDocument` this module touches — an unsaved token doc
- * fresh off `Actor#getTokenDocument`, not yet embedded in a scene (S5 D13). */
+ * fresh off `Actor#getTokenDocument`, not yet embedded in a scene. */
 interface FoundryTokenDocumentLike {
   toObject(): Record<string, unknown>;
 }
 
 /** One instantiated pf2e rule element on an OWNED item, as read back from `.rules`
- * after `createEmbeddedDocuments` (0026 S2 D-7) — `ignored: true` is pf2e's own
+ * after `createEmbeddedDocuments` — `ignored: true` is pf2e's own
  * fail-soft marker for a bad/unknown RE (it `console.warn`s at data-prep rather than
  * rejecting the create; `system.rules` itself is never DB-validated). A WORLD item
  * (no owning actor) never gets this array populated at all — data-prep only runs on
@@ -190,7 +190,7 @@ interface FoundryItemLike extends FoundryDocumentLike {
 }
 
 /** One pf2e condition item as read off an actor's own `itemTypes.condition` array
- * (0026 S3 D-14) — the same surface `ActorPF2e#increaseCondition` itself reads
+ * — the same surface `ActorPF2e#increaseCondition` itself reads
  * internally (verified `pf2e-7.12.2` `src/module/actor/base.ts:1777`), so this is the
  * cheapest post-action read-back: no separate `ActorConditions` collection API
  * needed. `value: null` covers both a valueless condition (e.g. "prone") and a
@@ -201,12 +201,12 @@ interface FoundryConditionLike {
   readonly value: number | null;
 }
 
-/** A world Actor (S5) — extends the general document surface with the one
+/** A world Actor — extends the general document surface with the one
  * actor-specific call `create-token` needs: cloning the actor's prototype token at a
- * given position (D13 "import-then-tokenize"), plus (0026 S2) embedding items
+ * given position ("import-then-tokenize"), plus embedding items
  * directly on the actor (`create-actor`'s `items[]`, `create-item`'s `actorId` path)
  * — the return type carries {@link FoundryItemLike} so callers can read `.rules`
- * straight off the result without an extra cast. (0026 S3 D-14) adds pf2e's own
+ * straight off the result without an extra cast. It also carries pf2e's own
  * `ConditionManager`-backed condition mutators + the `itemTypes.condition` read-back
  * surface — required, not optional: every actor in a pf2e world carries them (this
  * module targets pf2e exclusively), so a handler that can't find them at runtime
@@ -224,13 +224,13 @@ interface FoundryActor extends FoundryDocumentLike {
   readonly itemTypes: { readonly condition: readonly FoundryConditionLike[] };
 }
 
-/** A world Macro (0026 S3 D-9) — `execute()` is Foundry's own run-immediately call;
- * `create-macro` (S2) never invokes it, only `execute-macro` (S3) does. */
+/** A world Macro — `execute()` is Foundry's own run-immediately call;
+ * `create-macro` never invokes it, only `execute-macro` does. */
 interface FoundryMacro extends FoundryDocumentLike {
   execute(): Promise<unknown>;
 }
 
-/** `game.pf2e.ConditionManager` (0026 S3 D-14) — the ONE static call `apply-
+/** `game.pf2e.ConditionManager` — the ONE static call `apply-
  * condition`'s persistent-damage non-dialog path needs: a fresh, un-owned
  * `persistent-damage` condition source to merge `{formula, damageType, dc}` onto
  * (verified `pf2e-7.12.2` `src/module/item/condition/persistent-damage-editor.ts`
@@ -244,7 +244,7 @@ interface FoundryPf2eNamespace {
   readonly ConditionManager: FoundryPf2eConditionManager;
 }
 
-/** A world Folder (S5) — `import-from-compendium`/`create-journal`'s `folder` param
+/** A world Folder — `import-from-compendium`/`create-journal`'s `folder` param
  * resolves against this by name + `type` (the target document's `documentName`); never
  * created on the fly (a missing folder is a typed "not-found", not a silent skip). */
 interface FoundryFolder {
@@ -257,14 +257,14 @@ interface FoundryFoldersCollection {
   values(): IterableIterator<FoundryFolder>;
 }
 
-/** One `ChatMessage` document as `0028 S3`'s `query-rolls` reads it — Foundry v13
+/** One `ChatMessage` document as `query-rolls` reads it — Foundry v13
  * schema (verified `common/documents/chat-message.mjs`; v13 RENAMED `user`->
  * `author`, a deprecated getter for `user` remains but this module never uses it).
  * `rolls` is an array of serialized-Roll JSON STRINGS (`client/dice/roll.mjs#
  * toJSON` — `{class, formula, total, evaluated, terms[]}`, parsed module-side,
- * never re-evaluated); `whisper`/`blind`/`flags.pf2e.context.secret` are D28-3's
+ * never re-evaluated); `whisper`/`blind`/`flags.pf2e.context.secret` are the
  * three-prong public-only privacy filter. `content` (the rendered HTML) is
- * DELIBERATELY not part of this ambient surface — D28-12 never ships it. */
+ * DELIBERATELY not part of this ambient surface — `query-rolls` never ships it. */
 interface FoundryChatMessage {
   readonly id: string;
   readonly timestamp: number;
@@ -279,7 +279,7 @@ interface FoundryChatMessage {
   readonly blind: boolean;
   /** STORED source data carries serialized-Roll JSON strings; a LIVE `game.messages`
    * document hydrates them into Roll INSTANCES (objects whose `toJSON()` restores the
-   * stored shape) — 0028 S4 live-gate find. `parseRollJson` accepts both. */
+   * stored shape), found in live testing. `parseRollJson` accepts both. */
   readonly rolls: ReadonlyArray<string | object>;
   readonly flavor?: string;
   readonly flags?: Record<string, unknown>;
@@ -290,13 +290,13 @@ interface FoundryChatMessage {
  * `CONFIG.ChatMessage.batchSize` are UI-only caps, not collection caps). A
  * `Collection` (`Map` subclass) — `.contents` is `Array.from(this.values())`
  * (`common/utils/collection.mjs:24-26`), insertion order tracking ascending
- * `timestamp`; `.size` is the raw collection count (D28-10's `totalMessages`). */
+ * `timestamp`; `.size` is the raw collection count (`query-rolls`' `totalMessages`). */
 interface FoundryMessagesCollection {
   readonly size: number;
   readonly contents: readonly FoundryChatMessage[];
 }
 
-/** `game.users` (0027 D27-2/D27-9) — the world's user list; `get` backs the
+/** `game.users` — the world's user list; `get` backs the
  * designated-dialer resolvability check (`bridge-user-id` -> a real user, or not).
  * Deliberately its own interface rather than `FoundryWorldCollection<FoundryUser>`:
  * that generic is constrained to {@link FoundryDocumentLike} (uuid/toObject/...), which
@@ -305,7 +305,7 @@ interface FoundryUsersCollection {
   get(id: string): FoundryUser | undefined;
 }
 
-/** A Foundry Document class's static creation surface (S5 D5) — `getDocumentClass`
+/** A Foundry Document class's static creation surface — `getDocumentClass`
  * below is the forward-safe way to reach it (avoiding a hardcoded `Actor`/`Item`/
  * `JournalEntry` global reference, which the v13->v15 deprecation notes flag). */
 interface FoundryDocumentClass {
@@ -334,7 +334,7 @@ interface FoundryScene extends FoundryDocumentLike {
   readonly width: number;
   readonly height: number;
   readonly tokens: FoundryTokensCollection;
-  /** `create-token`'s (S5 D13) landing call — embeds the token doc(s) produced by
+  /** `create-token`'s landing call — embeds the token doc(s) produced by
    * `Actor#getTokenDocument` into this scene. */
   createEmbeddedDocuments(
     embeddedName: string,
@@ -377,24 +377,24 @@ interface FoundryGame {
   readonly items: FoundryWorldCollection;
   readonly journal: FoundryWorldCollection;
   readonly scenes: FoundryScenesCollection;
-  /** S5's folder-by-name lookup surface (`import-from-compendium`/`create-journal`). */
+  /** The folder-by-name lookup surface (`import-from-compendium`/`create-journal`). */
   readonly folders: FoundryFoldersCollection;
-  /** `execute-macro`'s (0026 S3) macro-by-id lookup. */
+  /** `execute-macro`'s macro-by-id lookup. */
   readonly macros: FoundryWorldCollection<FoundryMacro>;
-  /** `query-rolls`'s (0028 S3, D28-3/D28-10) chat-message history. */
+  /** `query-rolls`' chat-message history. */
   readonly messages: FoundryMessagesCollection;
-  /** `apply-condition`'s (0026 S3 D-14) persistent-damage non-dialog path. Required,
+  /** `apply-condition`'s persistent-damage non-dialog path. Required,
    * not optional — same "this module targets pf2e exclusively" reasoning as
    * `FoundryActor`'s condition methods. */
   readonly pf2e: FoundryPf2eNamespace;
-  /** The designated-dialer gate's (0027 D27-2/D27-9) user-by-id lookup — resolves
+  /** The designated-dialer gate's user-by-id lookup — resolves
    * `bridge-user-id` against the world's actual user list to distinguish "some other
    * GM is designated" from "the setting is misconfigured". */
   readonly users: FoundryUsersCollection;
 }
 
 /** One entry of Foundry 13's `CONFIG.queries` registry — the dispatch surface a `query`
- * message on the bridge WS is routed through (spec 0023 module section). Foundry awaits
+ * message on the bridge WS is routed through. Foundry awaits
  * whatever comes back, so a plain (non-`Promise`) return is fine too. */
 type FoundryQueryHandler = (params: unknown) => unknown;
 
@@ -430,16 +430,16 @@ interface FoundryUi {
 }
 declare var ui: FoundryUi | undefined;
 /** Foundry's global UUID resolver (`Compendium.<pack>.<type>.<id>` or a bare world
- * document id) — `get-document` (S4) is its one caller. Same `var` reasoning as above:
- * `handlers/testSupport.ts` stubs it per-test (S4 is Foundry-free too). */
+ * document id) — `get-document` is its one caller. Same `var` reasoning as above:
+ * `handlers/testSupport.ts` stubs it per-test (the handler tests are Foundry-free too). */
 declare var fromUuid: (uuid: string) => Promise<FoundryDocumentLike | null>;
 /** Foundry's forward-safe document-class resolver (avoids a hardcoded `Actor`/`Item`/
  * `JournalEntry` global reference — the v13->v15 deprecation cliff, spec Risks). S5's
  * write handlers are its only callers. Same `var` reasoning as `fromUuid`. */
 declare var getDocumentClass: (documentName: string) => FoundryDocumentClass;
 
-/** The one `foundry.utils` helper this module calls (0026 S2 D-1 hybrid `baseUuid`
- * clone+patch path, and the D-6 stamp merge): a plain, non-mutating deep merge. Real
+/** The one `foundry.utils` helper this module calls (the `baseUuid`
+ * clone+patch path, and the `portalStamp` merge): a plain, non-mutating deep merge. Real
  * Foundry's `mergeObject` takes many more options (array-insertion keys, strict mode,
  * ...); this module only ever needs `{inplace: false}`. */
 interface FoundryUtils {
@@ -458,7 +458,7 @@ interface FoundryNamespace {
  * this per-test, never the real Foundry-injected global. */
 declare var foundry: FoundryNamespace;
 
-// Note (0026 S2, D-7): Foundry's `DataModelValidationError` class is deliberately NOT
+// Note: Foundry's `DataModelValidationError` class is deliberately NOT
 // part of this ambient surface — importing/declaring the real class would pull in far
 // more of Foundry's DataModel machinery than this module otherwise touches. handlers/writes.ts
 // detects it defensively at the call site instead, by checking the thrown error's own

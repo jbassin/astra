@@ -1,9 +1,9 @@
 /**
- * Supervisor state-machine unit tests (spec 0027 S2 acceptance list) — a fake
+ * Supervisor state-machine unit tests — a fake
  * `PageAdapter` drives every classification/failure path with `vi.useFakeTimers()`
  * (CI must not sleep; mirrors `apps/portal/module/src/bridgeClient.test.ts`'s idiom).
  * Zero Chromium, zero Foundry — the real `playwrightDriver.ts` is exercised only
- * live (S4), never in unit CI (mirrors vellum-render).
+ * live, never in unit CI (mirrors vellum-render).
  */
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -54,7 +54,7 @@ class FakePageAdapter implements PageAdapter {
     this.#consoleCb = cb;
   }
 
-  /** Test helper: simulate a captured `page.on("console")` line (D27-9). */
+  /** Test helper: simulate a captured `page.on("console")` line. */
   emitConsole(level: "warn" | "error", text: string): void {
     this.#consoleCb?.(level, text);
   }
@@ -64,7 +64,7 @@ class FakePageAdapter implements PageAdapter {
   }
 }
 
-describe("Supervisor (spec 0027 S2 — hermetic)", () => {
+describe("Supervisor (hermetic)", () => {
   afterEach(() => {
     vi.useRealTimers();
   });
@@ -172,7 +172,7 @@ describe("Supervisor (spec 0027 S2 — hermetic)", () => {
     await vi.advanceTimersByTimeAsync(1_000); // base backoff before the recovery probe
 
     // Recovering from `broken` calls launch() again (the ONLY place noCanvas is
-    // re-seeded, D27-7) before re-classifying.
+    // re-seeded) before re-classifying.
     expect(page.launches).toBe(2);
     expect(sup.relaunches).toBe(1);
     expect(sup.state).toBe("in-world");
@@ -292,7 +292,7 @@ describe("Supervisor (spec 0027 S2 — hermetic)", () => {
     sup.stop();
   });
 
-  it("never logs the password, even across a failed login retry (D27-14)", async () => {
+  it("never logs the password, even across a failed login retry", async () => {
     vi.useFakeTimers();
     const page = new FakePageAdapter();
     page.classifyImpl = () => "join";
@@ -317,7 +317,7 @@ describe("Supervisor (spec 0027 S2 — hermetic)", () => {
     sup.stop();
   });
 
-  it("re-emits a captured page-console warn/error line as both a log and an event (D27-9)", async () => {
+  it("re-emits a captured page-console warn/error line as both a log and an event", async () => {
     vi.useFakeTimers();
     const page = new FakePageAdapter();
     page.classifyImpl = () => "in-world";

@@ -26,11 +26,11 @@ import {
 } from "./markdown";
 
 /** The same committed, live-derived Argyle fixture the module's `handlers/party.test.ts`
- * uses (0028 S2 provenance: a real `Actor.toObject()` pulled read-only through the
+ * uses (provenance: a real `Actor.toObject()` pulled read-only through the
  * live bridge 2026-07-11 — the worst-case-scale PC, 196 spells / 39 feats). Loaded
  * here too so this file can (a) pull REAL HTML samples for the golden
- * `htmlToMarkdown` tests and (b) measure a REAL rendered-markdown size for the D28-11
- * cap, as the spec requires — portal-server has no dependency on portal-module (the
+ * `htmlToMarkdown` tests and (b) measure a REAL rendered-markdown size for the 12,000-char
+ * cap — portal-server has no dependency on portal-module (the
  * two packages are deliberately disjoint), so this mirrors `handlers/party.ts`'s
  * `buildSpells`/`buildFeats` grouping logic locally rather than importing it. */
 function loadArgyleFixture(): { uuid: string; document: Record<string, unknown> } {
@@ -42,7 +42,7 @@ function loadArgyleFixture(): { uuid: string; document: Record<string, unknown> 
 }
 
 /** Mirrors `handlers/party.ts`'s `buildSpells` (module-side, Foundry-ambient, not
- * importable here) closely enough to drive a REAL D28-11 size measurement against
+ * importable here) closely enough to drive a REAL size-cap measurement against
  * Argyle's actual 196 spells — not synthetic data. */
 function buildSpellsSectionFromFixture(document: Record<string, unknown>): PlayerSpellsSection {
   const items = document.items as Record<string, unknown>[];
@@ -136,7 +136,7 @@ function buildFeatsSectionFromFixture(document: Record<string, unknown>): Player
   return { section: "feats", feats };
 }
 
-describe("htmlToMarkdown (D28-6) — golden tests over real Argyle HTML samples", () => {
+describe("htmlToMarkdown — golden tests over real Argyle HTML samples", () => {
   it("strips <p>/<hr>/<strong> and never leaves raw HTML for a spell description", () => {
     // "Ancient Dust" — a real spell description from the Argyle fixture, chosen for
     // its <hr>-separated degree-of-success block and <strong> tags.
@@ -206,7 +206,7 @@ describe("htmlToMarkdown (D28-6) — golden tests over real Argyle HTML samples"
   });
 });
 
-describe("renderQueryParty (D28-4)", () => {
+describe("renderQueryParty", () => {
   it("renders a PC table + a labeled companion row", () => {
     const result: QueryPartyResult = {
       partyName: "The Party",
@@ -366,7 +366,7 @@ describe("renderQueryPlayer — summary/stats/skills/inventory/notes", () => {
   });
 });
 
-describe("D28-11 hard 12,000-char cap — measured against the real Argyle fixture", () => {
+describe("hard 12,000-char cap — measured against the real Argyle fixture", () => {
   const { document } = loadArgyleFixture();
 
   it("feats (39 real feats) render in full, comfortably under the cap", () => {
@@ -377,7 +377,7 @@ describe("D28-11 hard 12,000-char cap — measured against the real Argyle fixtu
     expect(md.length).toBeLessThan(12_000);
   });
 
-  it("spells (196 real spells, 189 linked to the 2 entries): an UNFILTERED request always gets the group summary (D28-11 as amended 2026-07-11)", () => {
+  it("spells (196 real spells, 189 linked to the 2 entries): an UNFILTERED request always gets the group summary", () => {
     const section = buildSpellsSectionFromFixture(document);
     const totalSpells = section.entries.reduce(
       (n, e) => n + e.ranks.reduce((m, r) => m + r.spells.length, 0),
@@ -423,7 +423,7 @@ describe("D28-11 hard 12,000-char cap — measured against the real Argyle fixtu
   });
 });
 
-describe("renderQueryItem (0028 S3, D28-5/D28-6)", () => {
+describe("renderQueryItem", () => {
   it("renders a provenance-labeled hit list, never a single item even for one hit", () => {
     const result: QueryItemResult = {
       kind: "hits",
@@ -546,7 +546,7 @@ describe("renderQueryItem (0028 S3, D28-5/D28-6)", () => {
   });
 });
 
-describe("renderQueryRolls (0028 S3, D28-3/D28-10/D28-12)", () => {
+describe("renderQueryRolls", () => {
   it("renders a table with speaker/check/type/outcome/formula-total/dice + the totalMessages footer", () => {
     const result: QueryRollsResult = {
       rows: [

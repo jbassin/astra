@@ -139,7 +139,7 @@ export async function createEmbeddedChecked(
   }
 }
 
-/** Mirrors {@link createChecked} for the mutation path (0026 S3 D-10) — maps a
+/** Mirrors {@link createChecked} for the mutation path — maps a
  * `DataModelValidationError` from `doc.update()` to the same typed `validation-failed`
  * (Foundry's message preserved verbatim; the caller is an LLM, the message IS its
  * repair loop). `update-document` is the only caller. */

@@ -1,5 +1,5 @@
 /**
- * portal-headless constants (spec 0027 D27-5/-6) — the supervised headless-Chromium GM
+ * portal-headless constants — the supervised headless-Chromium GM
  * session that keeps a dedicated Foundry account ("Portal") logged into the live pf2e
  * "Faerrin" world 24/7, so portal's MCP tools never need a human browser tab open.
  * Split out so the entrypoint, the supervisor, and tests share one literal.
@@ -7,7 +7,7 @@
 
 /** De-collided from `astra.portal` per the heartwood lesson
  * ([[heartwood-0020-gotchas]]) — this is a separate Compose unit from portal-server
- * (D27-5) and needs its own identity in SigNoz even though it has no browser RUM
+ * and needs its own identity in SigNoz even though it has no browser RUM
  * surface of its own. */
 export const SERVICE_NAME = "astra.portal-headless";
 
@@ -17,7 +17,7 @@ export const SERVICE_NAME = "astra.portal-headless";
  * the bridge WS. */
 export const BASE_BACKOFF_MS = 1_000;
 
-/** Backoff never grows past this (D27-6 — never give up). */
+/** Backoff never grows past this (the supervisor never gives up). */
 export const MAX_BACKOFF_MS = 30_000;
 
 /** Continuous time in `in-world` before a subsequent drop counts as a fresh outage

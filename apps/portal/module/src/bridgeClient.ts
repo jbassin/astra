@@ -1,5 +1,5 @@
 /**
- * The Foundry-side half of the bridge (spec 0023 D1/D6/S3): dials portal-server's WS,
+ * The Foundry-side half of the bridge: dials portal-server's WS,
  * sends the versioned `{type:"auth",apiKey,protocol,moduleVersion,meta}` handshake,
  * waits for `auth-ok`, answers heartbeat pings, and routes `query` messages to an
  * injected `dispatch` function, wrapping the result/error into a `McpResponse`.
@@ -219,7 +219,7 @@ export class BridgeClient {
           this.#refused(
             "error",
             `the portal module (${PORTAL_VERSION}) is stale for this portal server. Update ` +
-              "the module in Foundry, then reload (F5).",
+              "the module in Foundry, then reload (F5).", // decision-ids: ignore[code-in-parens] -- F5 is the browser reload key
             true,
           );
           return "stop";

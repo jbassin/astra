@@ -41,7 +41,7 @@ describe("portal-shared bridge envelope", () => {
     expect(AuthMsg.parse(msg)).toEqual(msg);
   });
 
-  it("round-trips an auth handshake carrying the 0027 D27-8 userId/userName meta", () => {
+  it("round-trips an auth handshake carrying the userId/userName meta", () => {
     const msg = {
       type: "auth",
       apiKey: "secret-key",
@@ -106,16 +106,16 @@ describe("portal-shared bridge envelope", () => {
         "timeout",
         "not-found",
         "foundry-error",
-        // 0026 D-11 — additive, wire shape untouched.
+        // Additive, wire shape untouched.
         "not-portal-created",
         "validation-failed",
         "execution-failed",
-        // 0027 D27-9 — additive, wire shape untouched.
+        // Additive, wire shape untouched.
         "not-designated",
-        // 0028 S2 D28-4/D28-13 — additive, wire shape untouched.
+        // Additive, wire shape untouched.
         "not-a-player-character",
         "ambiguous-name",
-        // svc-2 SVC-18 — server-side only (a replaced socket's in-flight queries).
+        // Server-side only (a replaced socket's in-flight queries).
         "bridge-replaced",
       ].sort(),
     );
@@ -163,7 +163,7 @@ describe("portal-shared bridge envelope", () => {
     expect(() => AuthMsg.parse({ type: "auth", apiKey: "k", extra: true })).toThrow();
   });
 
-  describe("McpResponseErrUnknownCode (0028 D28-14 skew-recovery)", () => {
+  describe("McpResponseErrUnknownCode (version-skew recovery)", () => {
     it("accepts a well-formed error response whose code isn't in BridgeErrorCode", () => {
       const r = {
         type: "response",

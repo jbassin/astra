@@ -1,5 +1,5 @@
 /**
- * `/health` tests (spec 0027 D27-11). `snapshotFromSupervisor` is the ONE place the
+ * `/health` tests. `snapshotFromSupervisor` is the ONE place the
  * `ok` semantics live — process-up + browser-connected only, `world-down` is a
  * reported state, never a reason `ok` goes false — so most of this is table-driven
  * against that function; a couple of tests hit the real `node:http` server end to end.
@@ -25,7 +25,7 @@ function source(overrides: Partial<SupervisorSnapshotSource>): SupervisorSnapsho
   };
 }
 
-describe("snapshotFromSupervisor (D27-11 ok semantics)", () => {
+describe("snapshotFromSupervisor (ok semantics)", () => {
   it("world-down + browser connected is still ok: true — a reported state, not unhealthy", () => {
     const snap = snapshotFromSupervisor(source({ state: "world-down", browserConnected: true }));
     expect(snap).toEqual({

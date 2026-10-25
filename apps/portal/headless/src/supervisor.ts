@@ -1,16 +1,16 @@
 /**
- * The headless-GM supervisor state machine (spec 0027 D27-6) — a coarse loop over one
+ * The headless-GM supervisor state machine — a coarse loop over one
  * persistent Chromium page: classify by URL + a couple of DOM probes, then act. Every
  * environment touchpoint (the browser, the clock, timers, logging, metrics) is an
  * injected dependency ({@link SupervisorDeps}), so the whole classify/login/backoff/
  * reload/relaunch loop is unit-testable with a fake {@link PageAdapter} and fake timers
- * — zero Chromium involved (S2's hermetic constraint; the real Playwright driver in
+ * — zero Chromium involved (unit CI stays hermetic; the real Playwright driver in
  * `playwrightDriver.ts` is deliberately thin and untested in unit CI, mirroring
  * vellum-render). Shaped after the module's `bridgeClient.ts` (same injected-timer /
  * injected-clock / capped-exponential-backoff idiom, applied here to Foundry's `/join`
  * instead of the bridge WS).
  *
- * States (D27-6): `in-world` (idle/monitor) · `join` (drive login) · `world-down`
+ * States: `in-world` (idle/monitor) · `join` (drive login) · `world-down`
  * (backoff-idle, NEVER a login/setup interaction) · `broken` (crash/hang/nav-error →
  * relaunch). The state machine doesn't hardcode *why* a probe classifies as `join` vs
  * `world-down` (kick, reload, world shutdown, cold boot all just reclassify on the next
@@ -31,16 +31,16 @@ export type PageClassification = "join" | "in-world" | "world-down";
  * failure maps to. */
 export type SupervisorState = PageClassification | "broken";
 
-/** The page-driving seam (D27-6/-7/-9/-10). Production: `playwrightDriver.ts`'s
+/** The page-driving seam. Production: `playwrightDriver.ts`'s
  * `createPlaywrightPageAdapter`. Tests: a fake implementing just this surface — no
  * Foundry, no Chromium. */
 export interface PageAdapter {
   /** (Re)launch the browser (or reset an existing one), reseed `core.noCanvas=true`
-   * (D27-7 — client-scoped localStorage, must be set before the app loads on EVERY
+   * (client-scoped localStorage, must be set before the app loads on EVERY
    * (re)launch, not just the first), and navigate to the Foundry origin. Called once at
    * supervisor start, and again every time the supervisor recovers from `broken` — so a
-   * single method covers both "first launch" and "relaunch after a crash" (D27-10's
-   * noCanvas-reseed requirement holds identically for both). */
+   * single method covers both "first launch" and "relaunch after a crash" (the
+   * noCanvas reseed holds identically for both). */
   launch(): Promise<void>;
   /** Classify the current page state. Throws (or rejects) to signal a crash/hang/nav
    * error — the supervisor maps that to `broken` and relaunches. */
@@ -49,13 +49,13 @@ export interface PageAdapter {
    * `{userid, password, action:"join"}`, follow the redirect. Throws on failure (wrong
    * password, unresolvable username, a `/join` DOM that doesn't match expectations). */
   login(username: string, password: string): Promise<void>;
-  /** Force a page reload (D27-10's periodic hygiene knob) while healthy. */
+  /** Force a page reload (the periodic hygiene knob) while healthy. */
   reload(): Promise<void>;
   /** Whether the underlying browser process is still connected — the ONLY thing
-   * `/health`'s `ok` field asserts alongside process-up (D27-11). */
+   * `/health`'s `ok` field asserts alongside process-up. */
   isBrowserConnected(): boolean;
   /** Register the callback the adapter invokes for every captured `page.on("console")`
-   * warn/error line (D27-9). Called once, at supervisor start, before the first
+   * warn/error line. Called once, at supervisor start, before the first
    * `launch()` — so no console line is ever missed. */
   onConsole(cb: (level: "warn" | "error", text: string) => void): void;
   /** Tear everything down (SIGTERM path). */
@@ -77,13 +77,13 @@ export type LogFn = (level: LogLevel, message: string) => void;
 
 export interface SupervisorDeps {
   page: PageAdapter;
-  /** The Foundry username to select on `/join` ("Portal", D27-4). Not a secret. */
+  /** The Foundry username to select on `/join` ("Portal"). Not a secret. */
   username: string;
-  /** Resolves the GM password fresh at EVERY login call (D27-14) — never cached,
+  /** Resolves the GM password fresh at EVERY login call — never cached,
    * never logged. A `SecretRef.resolve()` closure in production; a plain closure in
    * tests. */
   resolvePassword: () => string;
-  /** 0 disables the periodic reload knob (D27-10); otherwise the interval in ms. */
+  /** 0 disables the periodic reload knob; otherwise the interval in ms. */
   reloadIntervalMs: number;
   /** How often to re-probe while `in-world` (default {@link DEFAULT_POLL_INTERVAL_MS}
    * from `constants.ts`, injectable so tests don't need to advance 30s of fake time). */
@@ -110,7 +110,7 @@ function errMsg(err: unknown): string {
 }
 
 /**
- * Drives the classify → act → schedule-next loop forever (D27-6 — never gives up).
+ * Drives the classify → act → schedule-next loop forever (it never gives up).
  * Call {@link start} once; {@link stop} tears down the page and cancels any pending
  * probe.
  */
@@ -154,7 +154,7 @@ export class Supervisor {
     return this.#deps.page.isBrowserConnected();
   }
 
-  /** Launches the browser, wires the console capture (D27-9), and starts probing. */
+  /** Launches the browser, wires the console capture, and starts probing. */
   async start(): Promise<void> {
     this.#stopped = false;
     this.#lastReloadAt = this.#now();
@@ -247,7 +247,7 @@ export class Supervisor {
   /** The core cycle: recover from `broken` if needed, classify, act, schedule the next
    * probe. Always re-classifies rather than trusting the previous state — a kick,
    * reload, or world shutdown just shows up as a different classification on the next
-   * probe (D27-6's deliberate coarseness). */
+   * probe (deliberately coarse). */
   async #probe(): Promise<void> {
     if (this.#stopped) return;
 
@@ -275,7 +275,7 @@ export class Supervisor {
 
     switch (classification) {
       case "world-down":
-        // D27-6: NEVER touch /setup — just idle-backoff and reclassify later.
+        // NEVER touch /setup — just idle-backoff and reclassify later.
         this.#enterWorldDown();
         this.#scheduleNext(this.#nextBackoff());
         return;
@@ -295,7 +295,7 @@ export class Supervisor {
     const password = this.#deps.resolvePassword();
     try {
       // `password` never touches a log line or thrown-error message we construct —
-      // it exists only in this local binding and the argument to `login()` (D27-14).
+      // it exists only in this local binding and the argument to `login()`.
       await this.#deps.page.login(this.#deps.username, password);
     } catch (err) {
       this.#log("warn", `login attempt failed for ${this.#deps.username}: ${errMsg(err)}`);

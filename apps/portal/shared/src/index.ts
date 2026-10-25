@@ -1,5 +1,5 @@
 // @astra/portal-shared — the contract portal-server and the Foundry module share:
-// - `envelope.ts`: the bridge WS envelope (spec 0023 D4/D6). Parse a raw WS message into
+// - `envelope.ts`: the bridge WS envelope. Parse a raw WS message into
 //   `BridgeMessage` on receipt; never thread a raw JSON blob through bridge code.
 // - `tools.ts`: each tool's param and result schemas (compact, LLM-friendly rows, not
 //   modeled pf2e — see the file header).

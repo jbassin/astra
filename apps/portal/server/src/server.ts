@@ -29,7 +29,7 @@ import { createOAuthSubApp, type PortalOAuthProvider } from "./oauth";
 const MODULE_JSON_PATH = "/module/module.json";
 const MODULE_ZIP_PATH = "/module/portal.zip";
 
-// The SDK's own OAuth endpoints (spec 0025 D-5/D-6) — everything `mcpAuthRouter`
+// The SDK's own OAuth endpoints — everything `mcpAuthRouter`
 // mounts itself, plus `/.well-known/*` (the fallback below). `OAUTH_CONSENT_PATH` is
 // astra-owned but lives on the same Express sub-app.
 const OAUTH_PATHS = ["/authorize", "/token", "/register", "/revoke", OAUTH_CONSENT_PATH];
@@ -37,9 +37,9 @@ const OAUTH_PATHS = ["/authorize", "/token", "/register", "/revoke", OAUTH_CONSE
 export interface PortalServerOptions {
   port: number;
   mcpApiKey: string;
-  /** `cfg.portal.playerMcpApiKey` (0028 D28-1) — the second static bearer, compared
+  /** `cfg.portal.playerMcpApiKey` — the second static bearer, compared
    * alongside `mcpApiKey` in the `/mcp` auth branch; a match resolves `scope: "player"`
-   * (D28-8's read-only tool subset) instead of the admin scope. Load-bearing like
+   * (the read-only tool subset) instead of the admin scope. Load-bearing like
    * `mcpApiKey`/`bridgeApiKey` (resolved via `SecretRef.require()` in `index.ts`), never
    * logged. */
   playerMcpApiKey: string;
@@ -50,10 +50,10 @@ export interface PortalServerOptions {
   bridgeUserId?: string;
   /** Test-only override of the oldest accepted bridge protocol (see `BridgeOptions`). */
   minBridgeProtocol?: number;
-  /** `cfg.portal.maxCreatesPerRequest` (D8) — the S5 write tools' per-request create
+  /** `cfg.portal.maxCreatesPerRequest` — the write tools' per-request create
    * cap, enforced in `mcp.ts` BEFORE a write query reaches the bridge at all. */
   maxCreatesPerRequest: number;
-  /** `cfg.portal.publicOrigin` (S6/D11) — baked into the rendered module.json's
+  /** `cfg.portal.publicOrigin` — baked into the rendered module.json's
    * absolute `manifest`/`download` URLs so Foundry's install-by-Manifest-URL and
    * update checks resolve back to this server. */
   publicOrigin: string;
@@ -61,7 +61,7 @@ export interface PortalServerOptions {
    * S6/D11) — see `index.ts`'s `MODULE_DIR` for how this resolves both locally and
    * in the built image. */
   moduleDir: string;
-  /** `cfg.portal.oauthStatePath` (spec 0025 D-2) — the bind-mounted JSON file
+  /** `cfg.portal.oauthStatePath` — the bind-mounted JSON file
    * holding registered OAuth clients + hashed tokens, so a claude.ai connection
    * survives a `just up` redeploy. */
   oauthStatePath: string;
@@ -76,7 +76,7 @@ export interface PortalServerOptions {
 
 export interface PortalServerHandle {
   bridge: Bridge;
-  /** Spec 0025 S1 — exposed so tests can call `verifyAccessToken` directly without
+  /** Exposed so tests can call `verifyAccessToken` directly without
    * re-parsing the OAuth state file. */
   oauthProvider: PortalOAuthProvider;
   /** The kit's ordered shutdown: stop accepting, close the bridge (1001), drain. */
@@ -99,10 +99,10 @@ export function createPortalServer(opts: PortalServerOptions): PortalServer {
     bridgeUserId: opts.bridgeUserId,
     minProtocol: opts.minBridgeProtocol,
   });
-  // Spec 0025 D-6: portal does NOT become an Express app — `authApp` is only ever
+  // Portal does NOT become an Express app — `authApp` is only ever
   // invoked as a bare `(req, res)` function, for the handful of OAuth paths. Built
-  // before `handleMcp` (S2) so its `provider` is available for the `/mcp` dual-auth
-  // check (D-3).
+  // before `handleMcp` so its `provider` is available for the `/mcp` dual-auth
+  // check.
   const { app: authApp, provider: oauthProvider } = createOAuthSubApp({
     statePath: opts.oauthStatePath,
     consentKey: opts.mcpApiKey, // D-1: reuse the existing /mcp key as the consent password

@@ -19,7 +19,7 @@ export interface ItemHitRow {
 
 type ItemHitCandidate = ItemHitRow & { _rank: number };
 
-/** D28-5's tri-scope name search, merged/ranked/truncated the same way as
+/** The tri-scope name search, merged/ranked/truncated the same way as
  * `search-compendium`/`search-world` ({@link matchRank}/{@link byRankThenName}). */
 export async function searchItemsByName(
   name: string,
@@ -67,7 +67,7 @@ export async function searchItemsByName(
   }
 
   // Compendium items — only packs a player-role user could actually see
-  // (D28-5's B2 gate), restricted to Item-type packs.
+  // (the pack visibility gate), restricted to Item-type packs.
   const itemPacks = Array.from(game.packs.values()).filter(
     (p) => p.metadata.type === "Item" && packVisibleToPlayers(p),
   );

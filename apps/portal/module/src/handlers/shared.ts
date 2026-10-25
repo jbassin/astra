@@ -10,7 +10,7 @@ import { BridgeError } from "@astra/portal-shared";
 export const DEFAULT_SEARCH_LIMIT = 25;
 
 /** Ranks a substring match: an exact-prefix hit (`pos === 0`) always outranks any
- * later-position substring hit; ties break stably by name (spec 0023 S4 D12). */
+ * later-position substring hit; ties break stably by name. */
 export function matchRank(name: string, needle: string): number | undefined {
   const pos = name.toLowerCase().indexOf(needle);
   if (pos === -1) return undefined;
@@ -24,7 +24,7 @@ export function byRankThenName<T extends { name: string }>(
   return a._rank - b._rank || a.name.localeCompare(b.name);
 }
 
-/** Case-insensitive exact-then-unambiguous-prefix name resolution (D28-13), shared by
+/** Case-insensitive exact-then-unambiguous-prefix name resolution, shared by
  * `query-player`'s `name` param. Throws typed `ambiguous-name` (additive `BridgeErrorCode`
  * member) naming every candidate when neither pass narrows to exactly one, or `not-found`
  * when nothing matches at all. */
