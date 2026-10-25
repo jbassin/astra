@@ -79,8 +79,8 @@ a:hover {
   font-size: 0.8rem;
 }
 
-/* --- page wrap + hero (placeholder landing; the gallery/spreads/reading surfaces
-       arrive in slices 4–5) --- */
+/* --- page wrap + hero (placeholder landing; the gallery and spreads
+       have their own routes) --- */
 .wrap {
   width: 100%;
   max-width: 64rem;

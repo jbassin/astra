@@ -1,4 +1,4 @@
-"""The S4 publish CLI (0033 §5): publish-sync, ledger-append/-revert, budget-check,
+"""The publish CLI: publish-sync, ledger-append/-revert, budget-check,
 sessions ledger skip, commit-message wrapping, unresolved-delta.
 
 Hermetic: drives ``cli.cli()`` (no telemetry) against fixture corpora, run dirs and

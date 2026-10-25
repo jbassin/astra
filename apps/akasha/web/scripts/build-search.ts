@@ -22,7 +22,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.resolve(HERE, "../dist/client/pagefind");
 
 /** A page's rendered body: wiki bodies are in BODIES, transcript bodies are the
- *  code-split lazy chunks (slice 7). */
+ *  code-split lazy chunks. */
 async function bodyFor(slug: string): Promise<string> {
   const baked = BODIES[slug];
   if (baked) return baked.html;

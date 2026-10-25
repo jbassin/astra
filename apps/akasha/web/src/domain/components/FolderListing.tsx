@@ -1,6 +1,6 @@
 // A folder listing page: breadcrumbs ❯ folder title, then the child page list
 // (ports the folder branch of faerrin's [...slug].astro). If the folder has an
-// index.vellum its body renders in slice 4; slice 3 ships the listing.
+// index.vellum, its body renders above the listing.
 import { ArticleTitle } from "@/domain/components/ArticleTitle";
 import { Breadcrumbs } from "@/domain/components/Breadcrumbs";
 import { PageLayout } from "@/domain/components/PageLayout";

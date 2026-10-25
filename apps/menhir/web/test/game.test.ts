@@ -303,7 +303,7 @@ describe("deadlineOf (the one source of the question deadline)", () => {
       phase: "question",
       questionIndex: 0,
     });
-    // An answer or a connect keeps the same deadline (the S2b disarm bug class).
+    // An answer or a connect keeps the same deadline (the disarm-on-answer bug class).
     state = connect(state, "p1", 2_000);
     expect(deadlineOf(state)?.at).toBe(1_000 + q.time * 1000);
     state = reduce(

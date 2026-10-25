@@ -82,7 +82,7 @@ export interface ContentView {
    *  the route loader via the transcriptBody server fn (see `transcript`). */
   bodyHtml: string;
   /** true for a reconstituted transcript page (Script/<campaign>/<date>) — its body
-   *  is code-split + server-loaded, not baked into the BODIES bundle (slice 7). */
+   *  is code-split + server-loaded, not baked into the BODIES bundle. */
   transcript: boolean;
   showBreadcrumbs: boolean;
   crumbs: Crumb[];

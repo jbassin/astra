@@ -371,7 +371,7 @@ class HeartwoodTools(SessionToolsMixin):
             return False
 
     def tools(self) -> list[Callable[..., Any]]:
-        """The bound tool callables, in §3 order."""
+        """The bound tool callables."""
         return [
             self.list_pages,
             self.read_page,

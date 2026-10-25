@@ -13,7 +13,7 @@
  * this file adds an optional `result` alongside for the handful of events whose
  * caller needs more than a state diff to answer an HTTP request (join's assigned
  * playerId, join/answer's rejection reason) — the state+effects contract is
- * unchanged, `result` is a documented, disclosed extension (see the S1 build
+ * unchanged, `result` is a documented, disclosed extension (see the build
  * record / handoff report for the rationale).
  */
 import { must } from "./assert";

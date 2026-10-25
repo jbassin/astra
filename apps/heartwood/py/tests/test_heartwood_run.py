@@ -345,7 +345,7 @@ def test_non_ingestible_date_raises_before_staging(env) -> None:
     assert not env["artifacts_root"].exists()
 
 
-# ── CLI per-run model overrides (S5 prep: model comparisons via dry runs) ──
+# ── CLI per-run model overrides (model comparisons via dry runs) ───────────
 def _cli_run(env, monkeypatch, argv: list[str]) -> tuple[int, dict[str, Any], list[str]]:
     """Drive ``cli run`` with the fixture env + dummy LMs; return (exit, summary, models
     the LM factory was asked for)."""
