@@ -28,7 +28,6 @@ astra-ontology-entity = { workspace = true }
 astra-pipeline-resources = { workspace = true }
 astra-scribe = { workspace = true }
 astra-sessions = { workspace = true }
-astra-smoke = { workspace = true }
 astra-smoke-substrate = { workspace = true }
 astra-vellum-lang = { workspace = true }
 

@@ -27,7 +27,6 @@ members = [
     "astra-pipeline-resources",
     "astra-scribe",
     "astra-sessions",
-    "astra-smoke",
     "astra-smoke-substrate",
     "astra-vellum-lang",
 ]
@@ -679,11 +678,6 @@ requires-dist = [
     { name = "astra-llm", editable = "libs/py/llm" },
     { name = "astra-ontology", editable = "libs/py/ontology" },
 ]
-
-[[package]]
-name = "astra-smoke"
-version = "0.0.0"
-source = { editable = "libs/py/_smoke" }
 
 [[package]]
 name = "astra-smoke-substrate"
