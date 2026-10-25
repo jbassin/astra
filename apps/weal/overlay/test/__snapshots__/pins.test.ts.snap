@@ -4,7 +4,7 @@ exports[`weal-overlay HTTP responses match the pre-migration pins > asset 1`] = 
 {
   "body": "console.log('pinned')",
   "broadcast": [],
-  "cacheControl": "public, max-age=0",
+  "cacheControl": "public, max-age=31536000, immutable",
   "contentType": "text/javascript; charset=utf-8",
   "status": 200,
 }

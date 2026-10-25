@@ -96,8 +96,11 @@ export function staticMountPath(mount: StaticMount, pathname: string): string | 
 /** URL prefix of vite's content-hashed client output (`build.assetsDir`, default `assets`). */
 const HASHED_ASSET_PREFIX = "/assets/";
 
-/** True for a client path under vite's hashed `assets/` dir. Pure. */
-function isHashedAssetPath(pathname: string): boolean {
+/**
+ * True for a client path under vite's hashed `assets/` dir. Pure. Exported so the repo's
+ * hand-rolled static servers pass `{ immutable }` to `serveFile` by the same rule.
+ */
+export function isHashedAssetPath(pathname: string): boolean {
   return pathname.startsWith(HASHED_ASSET_PREFIX);
 }
 

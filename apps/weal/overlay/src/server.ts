@@ -11,7 +11,7 @@ import {
   type Service,
   type ServiceDefinition,
 } from "@astra/service-kit";
-import { serveFile } from "@astra/site-kit";
+import { isHashedAssetPath, serveFile } from "@astra/site-kit";
 import { INGEST_PATH, requestToken } from "@astra/weal-wire";
 import type { Server } from "srvx";
 
@@ -161,7 +161,8 @@ function createDefinition(opts: AppOptions): {
       return new Response("forbidden\n", { status: 403 });
     }
     if (!(await isFile(target))) return serveIndex(); // SPA fallback
-    return serveFile(req, target);
+    // Vite's content-hashed /assets/ files are cached as immutable; the rest revalidate.
+    return serveFile(req, target, undefined, { immutable: isHashedAssetPath(pathname) });
   }
 
   const definition: ServiceDefinition = {

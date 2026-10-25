@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -30,6 +30,8 @@ const QUIZ: Quiz = {
 beforeAll(async () => {
   const dist = mkdtempSync(join(tmpdir(), "menhir-dist-"));
   writeFileSync(join(dist, "index.html"), "<!doctype html><title>menhir test</title>");
+  mkdirSync(join(dist, "assets"));
+  writeFileSync(join(dist, "assets", "index-Bx3f9a1c.js"), "console.log('hashed')");
   const resultsDir = mkdtempSync(join(tmpdir(), "menhir-results-"));
   resultsPath = join(resultsDir, "results.jsonl");
 
@@ -209,4 +211,12 @@ test("answering with an unknown playerId is rejected 400", async () => {
 test("joining an unknown room code is 404", async () => {
   const res = await postJson("/api/game/QQQQ/join", { name: "Nobody" });
   expect(res.status).toBe(404);
+});
+
+test("hashed /assets/ files are cached as immutable; the document is not", async () => {
+  const asset = await fetch(`${base}/assets/index-Bx3f9a1c.js`);
+  expect(asset.status).toBe(200);
+  expect(asset.headers.get("cache-control")).toBe("public, max-age=31536000, immutable");
+  const doc = await fetch(`${base}/`);
+  expect(doc.headers.get("cache-control") ?? "").not.toContain("immutable");
 });

@@ -9,7 +9,7 @@ import { resolve } from "node:path";
 
 import { getTracer, lazyCounter, lazyHistogram, logger } from "@astra/observe";
 import { createHandler, route, type ServiceDefinition } from "@astra/service-kit";
-import { serveFile } from "@astra/site-kit";
+import { isHashedAssetPath, serveFile } from "@astra/site-kit";
 import { SpanStatusCode } from "@opentelemetry/api";
 
 import { type RenderRequest, validateRenderRequest } from "./caps";
@@ -101,7 +101,8 @@ export function createRenderApp(opts: RenderAppOptions): {
     const full = resolve(DIST, `.${rel}`);
     if (!full.startsWith(DIST)) return new Response("forbidden", { status: 403 });
     if (!(await isFile(full))) return new Response("not found", { status: 404 });
-    return serveFile(req, full);
+    // Vite's content-hashed /assets/ files are cached as immutable; the rest revalidate.
+    return serveFile(req, full, undefined, { immutable: isHashedAssetPath(rel) });
   }
 
   /** A CORS preflight: 204 with the allow headers when the origin is allowed. */
