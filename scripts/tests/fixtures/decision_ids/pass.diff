@@ -75,3 +75,28 @@ index eeeeeee..0000000
 +++ /dev/null
 @@ -1,1 +0,0 @@
 -# D29-1 (P1 S1): deleted lines never fail.
+diff --git a/apps/assay/py/src/astra_assay/lookalikes.py b/apps/assay/py/src/astra_assay/lookalikes.py
+new file mode 100644
+index 0000000..7878787
+--- /dev/null
++++ b/apps/assay/py/src/astra_assay/lookalikes.py
+@@ -0,0 +1,5 @@
++# An AWS S3 bucket, the F5 key, a deadly D8 die, 2d6 damage, v0.5 and #D2A2E1 are not IDs.
++RUBRIC = {"id": "R1", "episode": "E14", "fixture": "test-1", "row": "spell-0001"}
++# MARKDOWN.md §5 still describes this; C-1 is the last column; UTF-8 and GLM-5 are names.
++# Stage 2 lowers the parse; S3_BUCKET and foo.S1 are identifiers; a slice of 3 rows.
++# See thoughts/archive/research/2026-07-08-headless-gm-0027-thoughts.md for the history.
+diff --git a/apps/orator/bot/src/server/app.ts b/apps/orator/bot/src/server/app.ts
+index 9090909..0101010 100644
+--- a/apps/orator/bot/src/server/app.ts
++++ b/apps/orator/bot/src/server/app.ts
+@@ -5,2 +5,2 @@
+-// The same fallback shape as P9
+-// S1 (§3 of the spec).
++// The same fallback shape as P9 S1 (§3
++// of the spec).
+@@ -20,2 +20,2 @@
+-// The pager the S3 slice reused, P4 S2.
+-  // R21 serializes saves.
++// The pager the S3 slice reused, P4
++  /* S2; R21 serializes saves. */
