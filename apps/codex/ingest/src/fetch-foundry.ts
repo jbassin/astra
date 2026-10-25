@@ -6,8 +6,8 @@
  *
  *   pnpm --filter @astra/codex-ingest cli fetch-foundry
  *
- * The repo also carries an `sf2e` (Starfinder) tree — explicitly out of scope (spec
- * §7): only `packs/pf2e/` is ever fetched, never `packs/sf2e/`.
+ * The repo also carries an `sf2e` (Starfinder) tree — explicitly out of scope:
+ * only `packs/pf2e/` is ever fetched, never `packs/sf2e/`.
  */
 import { execFileSync } from "node:child_process";
 import {

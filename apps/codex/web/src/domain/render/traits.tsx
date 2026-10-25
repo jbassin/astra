@@ -36,7 +36,7 @@ function traitHref(token: string): string {
  * (only the `trait` category's OWN entities carry a canonical `name`, keyed
  * by the very same slug) — this is a best-effort humanization for the common
  * case, not a canonical-name lookup. Delegates to `text.ts`'s shared
- * `humanizeSlug` (S3 factored the hyphen-split logic out so the category
+ * `humanizeSlug` (the hyphen-split logic lives there so the category
  * directory/listing pages reuse it instead of a second copy). */
 export function humanizeTraitToken(token: string): string {
   return humanizeSlug(token);

@@ -5,8 +5,8 @@
  * it).
  *
  * Hex values are the style-tokens doc's own extraction from the 36 reference
- * pages (`thoughts/archive/research/2026-07-14-codex-0029-p45-style-tokens.md`
- * §1) — treat them as a strong starting palette, not laser-measured swatches.
+ * pages (`thoughts/archive/research/2026-07-14-codex-0029-p45-style-tokens.md`)
+ * — treat them as a strong starting palette, not laser-measured swatches.
  *
  * KEPT NAMES, parchment values (every gothic-era `--color-*`/`--font-*`
  * custom property `globals.css` consumes resolves here, to parchment values
@@ -16,13 +16,13 @@
  * `--font-body`. Gothic's `--font-mono` is `--font-condensed` here.
  *
  * NEW tokens (no gothic equivalent): `--font-heading` (a second display face
- * for H2/H3 — Cinzel reads too heavy at smaller sizes, style doc §2a), the
+ * for H2/H3 — Cinzel reads too heavy at smaller sizes, per the style doc), the
  * named maroon/gold/callout/pill tokens (so a component can reach for the
  * semantic name directly instead of via the legacy `--color-accent*` alias),
- * and the web-only link tokens (style doc §4 — not printed in the source).
+ * and the web-only link tokens (the style doc's — not printed in the source).
  */
 :root {
-  /* --- new semantic tokens (style doc §1) --- */
+  /* --- new semantic tokens (from the style doc's palette) --- */
   --color-page-bg-alt: #e9e1ce;
   --color-page-vignette: rgb(0 0 0 / 8%);
   --color-heading-maroon: #7a2e2c;
@@ -47,7 +47,7 @@
   --pill-amber-border: #c9a227;
   --pill-text: #f3e9d2;
 
-  /* Link treatment (web-only invention, style doc §4). */
+  /* Link treatment (a web-only invention in the style doc). */
   --color-link: #7a2e2c;
   --color-link-hover: #b99b5d;
 

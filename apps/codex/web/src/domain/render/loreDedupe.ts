@@ -38,8 +38,8 @@ import {
  * the section is kept WHOLE, never partially trimmed (spec: "coverage >=
  * threshold -> suppress; below -> keep it whole"). Tuning this is a
  * one-line change; the canary tests (real-corpus survivor shapes: shisk's
- * Heritages, alchemist's Versatile Vial table) are the safety net (spec §6
- * risk — "the suppression heuristic is the round's real correctness
+ * Heritages, alchemist's Versatile Vial table) are the safety net (the
+ * spec's risk note: "the suppression heuristic is the round's real correctness
  * risk"). */
 export const LORE_SUPPRESSION_THRESHOLD = 0.5;
 
@@ -75,7 +75,7 @@ function shinglesOf(words: readonly string[], size: number): ReadonlySet<string>
  * decides suppression before this ever runs on one, but this stays total.
  *
  * The window size ADAPTS DOWN to `min(SHINGLE_SIZE, sectionWords.length)`
- * rather than always using a fixed 5 — real-corpus finding (S2 build
+ * rather than always using a fixed 5 — real-corpus finding (build
  * verification, every class's "Perception" subsection): a short section
  * ("Expert in Perception", 3 words) restating a short body passage
  * byte-identically was surviving un-suppressed, because a 3-word section

@@ -479,7 +479,7 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
         </table>
       );
     case "blockquote":
-      // Corpus-extinct (KNOWN_EXTINCT_KINDS, spec §1 amendment) — unit-covered
+      // Corpus-extinct (KNOWN_EXTINCT_KINDS) — unit-covered
       // via a synthetic node only; still a real, total case here.
       return <blockquote key={key}>{renderNodes(node.children, ctx)}</blockquote>;
     case "divider":
