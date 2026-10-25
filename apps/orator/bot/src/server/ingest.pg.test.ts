@@ -45,6 +45,9 @@ function ytdlp(hang: Set<string>, release?: AbortSignal): YtDlp {
 
 describe.skipIf(TEST_DATABASE_URL === undefined)(
   "ingest shutdown and resume (real Postgres)",
+  // Each test boots, stops and resumes a job against a real database; under several parallel
+  // `just ci` runs that takes longer than vitest's 5 s default.
+  { timeout: 20_000 },
   () => {
     let db: ScratchDatabase;
     let dataDir: string;
