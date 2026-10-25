@@ -4,7 +4,7 @@ import {
   type CompletionResult,
 } from "@codemirror/autocomplete";
 
-/** R-13: `/` snippets that scaffold the field order nobody memorizes. */
+/** `/` snippets that scaffold the field order nobody memorizes. */
 interface Snippet {
   label: string;
   detail: string;
@@ -14,7 +14,7 @@ interface Snippet {
 // Block + column snippets emit VSS (one recommended structural surface): the
 // author never counts colons, and brace nesting computes fence depth. Canonical
 // `:::` still parses — it's just no longer the snippet default (MARKDOWN.md §5).
-// The full-vellum constructs (fields/timeline/crossref) are appended in slice 3.
+// The full-vellum constructs (fields/timeline/crossref) come last.
 const SNIPPETS: Snippet[] = [
   {
     label: "/statblock",

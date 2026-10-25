@@ -10,7 +10,7 @@ import {
 import { tags as t } from "@lezer/highlight";
 
 /**
- * Editor syntax highlighting in the gothic palette (NFR-3: colors via CSS vars,
+ * Editor syntax highlighting in the gothic palette (colors via CSS vars,
  * no hex). Two layers:
  *   1. a HighlightStyle re-theming the markdown tokens lezer-markdown emits
  *      (headings, emphasis, code, links, …) to the void skin, and
@@ -66,7 +66,7 @@ const KNOWN_INLINE = new Set(["action", "trait", "redact"]);
 const CROSSREF = /\[\[[^\]\n]+\]\]/g;
 /** Authoring sigils (kept in sync with vellum-lang `surface.ts` `desugar`):
  * `@action`, `||redact||`, `#trait`. Highlighted like the directives they expand
- * to. (The R2 sync test guards this set against the lowerer — sigilSync.test.ts.)
+ * to. (The sigil sync test guards this set against the lowerer — sigilSync.test.ts.)
  * Exported so that test can assert the editor highlights exactly what parseDocument
  * lowers. */
 export const SIGIL =

@@ -1,8 +1,8 @@
 /* vellum-frontend's page shell, re-skinned onto gothic. gothic's theme.css (imported
  * in __root) provides the tokens (--color-void/panel/ink/accent/…, --font-display/
  * body/mono) + reset baseline; this file owns the masthead / landing hero / the
- * editor-shell frame. The editor's own (CodeMirror + preview + toolbar) styling lands
- * with the port in slice 2. Plain CSS layered after gothic (which already imports
+ * editor-shell frame. The editor's own (CodeMirror + preview + toolbar) styling lives
+ * in its CSS module (editor.module.css). Plain CSS layered after gothic (which already imports
  * tailwindcss + @source). */
 
 /* In @layer base so it sits below gothic's @layer-components content styles —

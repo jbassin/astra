@@ -1,5 +1,5 @@
 /**
- * Multi-document store (R-19). Pure reducers over a {docs, activeId} state plus
+ * Multi-document store. Pure reducers over a {docs, activeId} state plus
  * thin localStorage load/save with migration from the old single-document key.
  * The editor is one active doc at a time; new/switch/rename/delete operate here.
  * Ported verbatim from faerrin pkg/vellum.

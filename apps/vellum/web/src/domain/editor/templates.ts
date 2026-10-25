@@ -1,7 +1,7 @@
-/** R-14: starter documents. The gallery is the living documentation — people
+/** Starter documents. The gallery is the living documentation — people
  *  learn the flavor by editing examples, not reading a syntax reference.
- *  Ported verbatim from faerrin pkg/vellum (full-vellum fields/timeline/crossref
- *  templates are added in slice 3). */
+ *  Ported verbatim from faerrin pkg/vellum, plus the full-vellum
+ *  fields/timeline/crossref templates. */
 export interface Template {
   id: string;
   title: string;

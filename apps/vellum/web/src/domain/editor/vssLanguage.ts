@@ -45,7 +45,7 @@ const titleTag = Tag.define();
 const attrKeyTag = Tag.define();
 const braceTag = Tag.define();
 
-/** Maps the VSS node tags onto the gothic palette (NFR-3: vars, no hex),
+/** Maps the VSS node tags onto the gothic palette (vars, no hex),
  * matching the canonical-directive decoration colors in vellumHighlight. */
 export const vssHighlighting: Extension = syntaxHighlighting(
   HighlightStyle.define([

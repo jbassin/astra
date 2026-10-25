@@ -10,7 +10,7 @@ export const RENDER_LIMITS = {
   /** Max source size (bytes). Bounds parse + DOM cost. */
   maxSourceBytes: 64 * 1024,
   minScale: 1,
-  /** R-16: user-controllable scale is capped (amplification vector otherwise). */
+  /** User-controllable scale is capped (amplification vector otherwise). */
   maxScale: 4,
   defaultScale: 2,
   /** Hard ceiling on rasterized pixels (scale² × viewport) — OOM guard. */

@@ -51,7 +51,7 @@ export function VellumEditor() {
     }
   }, []);
 
-  // Debounced persist of the active doc's source (R-19 autosave). Keyed on
+  // Debounced persist of the active doc's source (autosave). Keyed on
   // `source`; the store is read inside the setter, so no extra deps are needed.
   useEffect(() => {
     const id = setTimeout(() => {
