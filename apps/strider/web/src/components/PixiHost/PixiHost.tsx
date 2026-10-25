@@ -2,6 +2,8 @@ import { useRouterState } from "@tanstack/react-router";
 import type { Application } from "pixi.js";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
+import { prefersReducedMotion } from "@/lib/prefersReducedMotion";
+
 import { PixiContext, type PixiCtx } from "./pixiContext";
 
 import styles from "./PixiHost.module.css";
@@ -54,8 +56,11 @@ export default function PixiHost({ children }: Props) {
       bg.mesh.label = "background";
       a.stage.addChild(bg.mesh);
 
+      // The map shares this ticker, so reduced motion freezes the background's clock at 0
+      // (one still frame) rather than stopping the ticker. Read each frame, so a change to
+      // the preference applies without a reload.
       const start = performance.now();
-      bgTick = () => bg.update(performance.now() - start);
+      bgTick = () => bg.update(prefersReducedMotion() ? 0 : performance.now() - start);
       a.ticker.add(bgTick);
       bgDestroy = bg.destroy;
 

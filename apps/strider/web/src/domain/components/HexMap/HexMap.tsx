@@ -31,6 +31,7 @@ import {
 import type { LayerAnimation, Region, SkeinRegion, SkeinState } from "@/domain/lib/layers";
 import type { OverlayId } from "@/domain/lib/overlays";
 import { TITHE_FADE_MS, TITHE_FILL_MS, TITHE_FLIP_MS, TITHE_HOLD_MS } from "@/domain/lib/timeline";
+import { prefersReducedMotion } from "@/lib/prefersReducedMotion";
 
 import { AnimationManager } from "./animationManager";
 import {
@@ -41,13 +42,7 @@ import {
   totalEdgeLength,
 } from "./animations";
 import { paintRegionBorder, paintRegionFill } from "./mapPaint";
-import {
-  drawEdgesPath,
-  hexVertsAtPixel,
-  prefersReducedMotion,
-  strokePolyline,
-  WORLD_VIEWBOX,
-} from "./pixiScene";
+import { drawEdgesPath, hexVertsAtPixel, strokePolyline, WORLD_VIEWBOX } from "./pixiScene";
 import {
   computeSkeinCurve,
   connectionEndpoints,

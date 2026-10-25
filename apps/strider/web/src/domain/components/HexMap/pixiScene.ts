@@ -51,8 +51,3 @@ export function attachWorld(app: Application): WorldHandle {
   fitToViewport(app.renderer.width, app.renderer.height);
   return { world, fit: fitToViewport };
 }
-
-export function prefersReducedMotion(): boolean {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
