@@ -1,11 +1,11 @@
-// Real-HTTP integration test for createSsrServer's srvx + send rewrite (0022 S4).
+// Real-HTTP integration test for createSsrServer's srvx + send server.
 // Runs a live server on an ephemeral port against temp-dir static mounts and a fake
 // SSR handler, then drives it with plain `fetch()` — the same code path production
 // traffic takes. THE load-bearing assertion is the Range/206 case: the audio mounts
-// (S6) depend on `send` producing byte-exact partial responses through this server.
+// depend on `send` producing byte-exact partial responses through this server.
 //
 // Note: vitest's worker always runs Node (no `Bun` global — see
-// apps/weal/overlay/vitest.config.ts, unchanged pre-/post-0022 S11), so this
+// apps/weal/overlay/vitest.config.ts), so this
 // exercises the real Node srvx adapter, not a Bun stand-in.
 
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";

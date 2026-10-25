@@ -7,8 +7,8 @@
  *   import { Panel, Title, Button } from "@astra/gothic";
  *
  * The framework palette lives in the theme; per-player/host IDENTITY colors come
- * from ontology-being (I5) and are applied via `identityStyle` as runtime CSS
- * vars. gothic renders the vellum-lang AST (0004); it never parses or resolves
+ * from ontology-being and are applied via `identityStyle` as runtime CSS
+ * vars. gothic renders the vellum-lang AST; it never parses or resolves
  * crossrefs.
  */
 

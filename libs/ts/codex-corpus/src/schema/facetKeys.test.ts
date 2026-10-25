@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { CodexEntitySchema, FacetsSchema } from "./entity";
 import { FACET_KEYS, SPILLOVER_FACET_KEYS, facetKeysFor } from "./facetKeys";
 
-describe("facetKeys.ts: D29-32/-33 conformance", () => {
+describe("facetKeys.ts: classifier conformance", () => {
   it("every SPILLOVER_FACET_KEYS entry is absent from every FACET_KEYS allowlist", () => {
     for (const [category, keys] of Object.entries(FACET_KEYS)) {
       for (const spillover of SPILLOVER_FACET_KEYS) {
@@ -45,7 +45,7 @@ describe("facetKeys.ts: D29-32/-33 conformance", () => {
     expect(facetKeysFor("a-category-that-does-not-exist")).toEqual([]);
   });
 
-  it("the pinned big-12 sets match the spec's D29-32 measured facts exactly", () => {
+  it("the pinned big-12 sets match the measured corpus facts exactly", () => {
     expect(facetKeysFor("feat")).toEqual(["actionCost", "itemCategory"]);
     expect(facetKeysFor("creature")).toEqual([
       "size",
@@ -76,7 +76,7 @@ describe("facetKeys.ts: D29-32/-33 conformance", () => {
     expect(facetKeysFor("deity")).toEqual(["itemCategory"]);
   });
 
-  it("the 5 extractor-gap categories all cleared the classifier (D29-33a)", () => {
+  it("the 5 extractor-gap categories all cleared the classifier", () => {
     expect(facetKeysFor("ancestry")).toEqual(["hp", "size", "speed"]);
     expect(facetKeysFor("class")).toEqual(["hp", "keyAbility"]);
     expect(facetKeysFor("background")).toEqual(["trainedSkills"]);

@@ -1,5 +1,5 @@
 /**
- * The one repo-root finder (0037 LIB-11), the twin of `libs/py/config` `root.py`. Every
+ * The one repo-root finder, the twin of `libs/py/config` `root.py`. Every
  * path the libraries derive from the checkout (`config.kdl`, the SOPS file, its age key,
  * `being.kdl`, the fixtures) starts here: one marker (`ontology/ontology-config`), and a
  * throw when no ancestor holds it. Nothing falls back to a guessed path.

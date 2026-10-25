@@ -1,5 +1,5 @@
 /**
- * A blank secret (empty or ASCII-whitespace-only) counts as UNSET (0037 LIB-2) — the TS
+ * A blank secret (empty or ASCII-whitespace-only) counts as UNSET — the TS
  * twin of `libs/py/config/tests/test_config_blank_secrets.py`, same cases.
  *
  * Compose injects every secret as `${KEY:-}`, so a container recreated without `just up`

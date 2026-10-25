@@ -18,13 +18,13 @@ function baseEntity(overrides: Partial<CodexEntity> = {}): CodexEntity {
   };
 }
 
-describe("CodexEntity: identity + pairing (D29-1/-7)", () => {
+describe("CodexEntity: identity + pairing", () => {
   it("round-trips a plain entity", () => {
     const entity = baseEntity();
     expect(parseCodexEntity(entity)).toEqual(entity);
   });
 
-  it("accepts a shared-slug legacy-pair id (the Heal/Heal case, D29-1)", () => {
+  it("accepts a shared-slug legacy-pair id (the Heal/Heal case)", () => {
     const legacy = baseEntity({
       id: "spell/heal@legacy",
       edition: "legacy",
@@ -65,7 +65,7 @@ describe("CodexEntity: identity + pairing (D29-1/-7)", () => {
   });
 });
 
-describe("CodexEntity: P4 (D29-39) breadcrumbs + attachedSidebars", () => {
+describe("CodexEntity: breadcrumbs + attachedSidebars", () => {
   it("round-trips breadcrumbs (top-level, not facets)", () => {
     const entity = baseEntity({
       category: "rules",
@@ -88,7 +88,7 @@ describe("CodexEntity: P4 (D29-39) breadcrumbs + attachedSidebars", () => {
   });
 });
 
-describe("CodexEntity: P6 (D29-60/-62) itemSubcategory + mastheadExtra", () => {
+describe("CodexEntity: itemSubcategory + mastheadExtra", () => {
   it("round-trips facets.itemSubcategory (equipment-only fill-gap field, R8)", () => {
     const entity = baseEntity({
       category: "equipment",
@@ -124,7 +124,7 @@ describe("CodexEntity: P6 (D29-60/-62) itemSubcategory + mastheadExtra", () => {
   });
 });
 
-describe("CodexEntity: license + prose fields (D29-8/-13)", () => {
+describe("CodexEntity: license + prose fields", () => {
   it("allows an unknown license (report-counted residue)", () => {
     const entity = baseEntity({ source: { book: "Some Adventure Path", license: "unknown" } });
     expect(parseCodexEntity(entity)).toEqual(entity);
@@ -158,7 +158,7 @@ describe("CodexEntity: license + prose fields (D29-8/-13)", () => {
   });
 });
 
-describe("CodexEntity: embeddedItems (S2 widening, foundryEntities.ts)", () => {
+describe("CodexEntity: embeddedItems (foundryEntities.ts)", () => {
   it("accepts an Actor-derived entity's embedded items", () => {
     const entity = baseEntity({
       id: "creature/balor",
@@ -191,7 +191,7 @@ describe("CodexEntity: embeddedItems (S2 widening, foundryEntities.ts)", () => {
     expect(() => CodexEntitySchema.parse(bad)).toThrow();
   });
 
-  it("accepts a melee strike item's attackBonus/damage (D29-20/P1.6)", () => {
+  it("accepts a melee strike item's attackBonus/damage", () => {
     const entity = baseEntity({
       id: "creature/red-dragon-adult",
       category: "creature",
@@ -210,7 +210,7 @@ describe("CodexEntity: embeddedItems (S2 widening, foundryEntities.ts)", () => {
     expect(parseCodexEntity(entity)).toEqual(entity);
   });
 
-  it("accepts a spellcastingEntry item's dc/attack/tradition (D29-20/P1.6)", () => {
+  it("accepts a spellcastingEntry item's dc/attack/tradition", () => {
     const entity = baseEntity({
       id: "creature/red-dragon-adult",
       category: "creature",
@@ -231,7 +231,7 @@ describe("CodexEntity: embeddedItems (S2 widening, foundryEntities.ts)", () => {
   });
 });
 
-describe("CodexEntity.stats (D29-20/P1.6, schemaVersion 1->2)", () => {
+describe("CodexEntity.stats (schemaVersion 1->2)", () => {
   it("accepts a CreatureStats entity with every sub-field populated", () => {
     const entity = baseEntity({
       id: "creature/red-dragon-adult",
@@ -297,7 +297,7 @@ describe("CodexEntity.stats (D29-20/P1.6, schemaVersion 1->2)", () => {
   });
 });
 
-describe("CodexEntity.stats: ClassStats (D29-113..115/P12 S1, schemaVersion 4->5)", () => {
+describe("CodexEntity.stats: ClassStats (schemaVersion 4->5)", () => {
   it("accepts a ClassStats entity with scalar fields only (pre-augmentClassStats shape)", () => {
     const entity = baseEntity({
       id: "class/fighter",
@@ -480,7 +480,7 @@ describe("Facets: typed fields + catchall passthrough", () => {
   });
 });
 
-describe("toIndexRow (D29-3 slim facet row)", () => {
+describe("toIndexRow (slim facet row)", () => {
   it("carries id/name/level/traits/rarity/source/edition/superseded and drops body", () => {
     const entity = baseEntity({ level: 1, rarity: "common" });
     const row = toIndexRow(entity, []);
@@ -509,7 +509,7 @@ describe("toIndexRow (D29-3 slim facet row)", () => {
     ]);
   });
 
-  describe("D29-33c: facets trimmed to the allowlist", () => {
+  describe("facets trimmed to the allowlist", () => {
     it("omits `facets` entirely when the allowlist doesn't match anything on the entity", () => {
       const entity = baseEntity({ facets: { rank: 1, traditions: ["divine", "primal"] } });
       const row = toIndexRow(entity, ["actionCost"]); // spell never carries actionCost
@@ -526,7 +526,7 @@ describe("toIndexRow (D29-3 slim facet row)", () => {
     });
   });
 
-  describe("D29-33c: superseded (remasteredAs non-empty, NOT edition === legacy)", () => {
+  describe("superseded (remasteredAs non-empty, NOT edition === legacy)", () => {
     it("is false when remasteredAs is absent", () => {
       expect(toIndexRow(baseEntity(), []).superseded).toBe(false);
     });

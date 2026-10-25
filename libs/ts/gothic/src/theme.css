@@ -8,7 +8,7 @@
  * generates a utility (`bg-panel`, `text-accent`, `font-display`, …).
  *
  * Per-player/host IDENTITY colors are NOT here — they come from ontology-being
- * (I5) and are applied as runtime CSS vars (`--identity-color`) via `identity.ts`,
+ * and are applied as runtime CSS vars (`--identity-color`) via `identity.ts`,
  * referenced through arbitrary values (`text-[var(--identity-color)]`). gothic owns
  * only the framework palette.
  *

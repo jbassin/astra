@@ -1,9 +1,9 @@
 /**
  * Cross-reference parsing (full-vellum §3.2). `[[target#heading|alias]]` is split out
  * of mdast `text` nodes into custom `crossref` nodes by a post-parse unist transform
- * (K1) — pure + total, and it naturally skips code spans (separate node types). It
- * does NOT resolve targets; that is akasha-backend's job (0007). The same grammar is
- * mirrored by the Python regex scan (K2); the shared `.meta.json` is the parity gate.
+ * — pure + total, and it naturally skips code spans (separate node types). It
+ * does NOT resolve targets; that is akasha-backend's job. The same grammar is
+ * mirrored by the Python regex scan; the shared `.meta.json` is the parity gate.
  */
 import type { PhrasingContent, Root, Text } from "mdast";
 import { visit } from "unist-util-visit";

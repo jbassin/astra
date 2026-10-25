@@ -1,4 +1,4 @@
-// Production SSR entry for an astra TanStack Start frontend (Decision I) — the
+// Production SSR entry for an astra TanStack Start frontend — the
 // reusable spine lifted from strider's `server.ts`. An app's `server.ts` is now a
 // thin caller: read `serviceName`/`port` from config.kdl (config-single-source),
 // import its own built SSR handler + client dir (content-pipeline-specific), and
@@ -8,7 +8,7 @@
 // hashed client bundle under dist/client/. This wraps both: static client assets
 // are served straight from disk; everything else falls through to the TanStack
 // Start SSR handler. Caddy reverse-proxies the whole service (it does not
-// static-serve the site — Decision I).
+// static-serve the site).
 //
 // Telemetry is not wired here: the process runs under `node --import
 // @astra/observe/register`, which installs the providers, an HTTP server span per
@@ -60,8 +60,8 @@ export interface SsrServerOptions {
   clientDir: string;
   /**
    * Extra static dirs served under a URL prefix, ahead of SSR — e.g. mouthpiece's
-   * audio volume at "/audio/" (Decision I keeps large media out of the image: it's
-   * a runtime volume, served same-origin here). A path matching a prefix is served
+   * audio volume at "/audio/" (large media stays out of the image: it's a
+   * runtime volume, served same-origin here). A path matching a prefix is served
    * from the dir or 404s; it never falls through to SSR.
    */
   staticMounts?: StaticMount[];
@@ -102,9 +102,9 @@ async function isFile(p: string): Promise<boolean> {
 }
 
 /**
- * Start the SSR server (srvx — runs on Node; R3, Decision-per-spec 0022):
+ * Start the SSR server (srvx — runs on Node):
  * static-serve built client assets (Range/206-capable via `send`, `./sendFile.ts` —
- * THE property the audio mounts depend on, S6), SSR everything else under an
+ * THE property the audio mounts depend on), SSR everything else under an
  * `ssr.render` span, and close the server on shutdown. Returns the srvx server handle.
  */
 export function createSsrServer(opts: SsrServerOptions): Server {
@@ -126,8 +126,8 @@ export function createSsrServer(opts: SsrServerOptions): Server {
     hostname,
     // @astra/observe/register owns SIGTERM/SIGINT (our onShutdown hook, then the
     // telemetry flush); srvx's built-in graceful-shutdown plugin would install a
-    // second pair of handlers that race it, so it's off. No srvx `idleTimeout` equivalent exists (B3);
-    // the closest analog for the Node runtime is `node.keepAliveTimeout` (srvx
+    // second pair of handlers that race it, so it's off. No srvx `idleTimeout` equivalent
+    // exists; the closest analog for the Node runtime is `node.keepAliveTimeout` (srvx
     // spreads `node` straight into `http.createServer()` — ignored on non-Node
     // adapters), which isn't semantically identical to Bun's idle-connection
     // timeout but is the nearest available knob.

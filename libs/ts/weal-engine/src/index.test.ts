@@ -1,4 +1,4 @@
-// The D32-13 wasm smoke: loads the REAL committed artifact in gen/ and
+// The wasm smoke: loads the REAL committed artifact in gen/ and
 // proves the seam end-to-end — a stale/corrupt artifact reds CI here
 // without cargo in the loop.
 

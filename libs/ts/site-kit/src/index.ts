@@ -17,7 +17,7 @@ export { loadSiteConfig, siteConfigFile } from "./config";
 export { generateRouteTree, staleRouteTreeFiles, type RouteTreeOptions } from "./routeTree";
 // `serveFile` is the `send`-backed Range/206 bridge `createSsrServer` uses
 // internally; exported too so the repo's other hand-rolled Node servers
-// (weal-overlay, orator-backend — R3, 0022 S8) reuse the same tested bridge
+// (weal-overlay, orator-backend) reuse the same tested bridge
 // instead of re-implementing the Bun.file → Node static-serving seam.
 export { serveFile } from "./sendFile";
 export { ssrExternalsPlugin, undeclaredSsrImports } from "./ssrExternals";

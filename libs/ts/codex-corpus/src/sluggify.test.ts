@@ -17,7 +17,7 @@ const vectorsFile = JSON.parse(readFileSync(vectorsPath, "utf8")) as {
   vectors: Vector[];
 };
 
-describe("sluggify vector gate (D29-1, real corpus filenames)", () => {
+describe("sluggify vector gate (real corpus filenames)", () => {
   it("loaded a non-trivial fixture", () => {
     expect(vectorsFile.vectors.length).toBeGreaterThan(100);
   });

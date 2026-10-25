@@ -1,4 +1,4 @@
-// D29-23 — the corpus read layer's `node:fs` half: a plain-function seam over a corpus root
+// The corpus read layer's `node:fs` half: a plain-function seam over a corpus root
 // on disk, traversal-guarded to that root. It lives on its own subpath
 // (`@astra/codex-corpus/reader`) so `node:fs` never reaches a client bundle through the
 // browser-safe root entry.
@@ -16,7 +16,7 @@ import { parseSourcesIndexFile, type SourcesIndexFile } from "./schema/sourcesIn
 
 /** Thrown for both a genuinely-unknown category/slug AND a rejected (malformed /
  * traversal-attempting) one — the traversal guard IS the auth story for the
- * HTTP-reachable serverFn endpoints (D29-23), and from the caller's point of view
+ * HTTP-reachable serverFn endpoints, and from the caller's point of view
  * both cases are the same "this isn't a real page" 404. */
 export class CorpusNotFoundError extends Error {
   constructor(message: string) {
@@ -33,7 +33,7 @@ export interface CorpusReader {
   /** Every category directory name, from `manifest.json`'s `categoryCounts` —
    * cached forever (the corpus is immutable per process). */
   categories(): readonly string[];
-  /** S3 (D29-27 root category directory) — the same `manifest.json`
+  /** For the root category directory — the same `manifest.json`
    * `categoryCounts` map `categories()` derives its key list from, but with the
    * counts kept: `{category: entityCount}`. Cached alongside `categoriesCache`
    * (one manifest read, not two). */
@@ -41,15 +41,15 @@ export interface CorpusReader {
   /** A category's slim `_index.json` rows — cached forever per category. */
   index(category: string): readonly IndexRow[];
   /** One entity, read + `JSON.parse` fresh per call — no cache, and NO
-   * per-request Zod (D29-23's own words: the corpus is emit-validated at P1
-   * acceptance C, so runtime re-validation is repeated work for no safety gain —
+   * per-request Zod (the corpus is validated when it is emitted, so runtime
+   * re-validation is repeated work for no safety gain —
    * an entity page's embed prefetch would otherwise Zod-parse ~46 files per
    * request on a big class page). Type-level trust via a cast; runtime guarding
    * is the traversal checks plus unreadable-JSON → `CorpusNotFoundError`. Throws
    * `CorpusNotFoundError` for an unknown category, a malformed/
    * traversal-attempting slug, a missing file, or a file that isn't JSON. */
   entity(category: string, slug: string): CodexEntity;
-  /** P4 (D29-39/40) — `rules-tree.json`, a SIBLING of `manifest.json` (not
+  /** `rules-tree.json`, a SIBLING of `manifest.json` (not
    * per-category, unlike `index()`). Cached forever after first read, AND
    * Zod-validated at that first read — unlike `entity()`'s explicit
    * "no per-request Zod" (a per-request cost argument that doesn't apply
@@ -59,7 +59,7 @@ export interface CorpusReader {
    * `treeModel.ts`). Throws `CorpusNotFoundError` for a missing/unreadable/
    * schema-invalid file. */
   rulesTree(): RulesTreeFile;
-  /** P4 S4 (D29-43) — `sources-index.json`, a SIBLING of `manifest.json` (the
+  /** `sources-index.json`, a SIBLING of `manifest.json` (the
    * exact same "one small artifact, cached + Zod-validated once per process"
    * posture as `rulesTree()` above — see that method's own doc comment for
    * why per-request Zod is skipped for `entity()` but not here). Throws
@@ -78,9 +78,9 @@ function within(root: string, name: string): string {
   return target;
 }
 
-/** D29-23's traversal guard on a slug: no path separators, no `..`, no leading
+/** The traversal guard on a slug: no path separators, no `..`, no leading
  * underscore (reserved for `_index.json` — a real `sluggify()` output can never
- * start with `_`, D29-21). Applied before the slug ever reaches a filesystem
+ * start with `_`). Applied before the slug ever reaches a filesystem
  * path. */
 function assertValidSlug(slug: string): void {
   if (
@@ -95,7 +95,7 @@ function assertValidSlug(slug: string): void {
 }
 
 /**
- * The D29-23 factory. Pure over `rootDir` — no config/env reads inside, so it's
+ * The corpus reader factory. Pure over `rootDir` — no config/env reads inside, so it's
  * directly unit-testable against `fixtures/entities/` (or any other real corpus
  * root) with zero mocking.
  */
@@ -127,8 +127,8 @@ export function createCorpusReader(rootDir: string): CorpusReader {
       throw new CorpusNotFoundError(`unknown category: ${JSON.stringify(category)}`);
     }
     // `within()` too, even though a categories()-member can't structurally carry a
-    // traversal segment — defense in depth, D29-23's own "resolved path must stay
-    // within root" wording applies to every read, not just the slug.
+    // traversal segment — defense in depth: the "resolved path must stay within
+    // root" rule applies to every read, not just the slug.
     return within(rootDir, category);
   }
 
@@ -143,7 +143,7 @@ export function createCorpusReader(rootDir: string): CorpusReader {
       const indexPath = within(categoryDir, "_index.json");
       let rows: IndexRow[];
       try {
-        // No per-row Zod (D29-23) — `_index.json` is emit-validated alongside the
+        // No per-row Zod — `_index.json` is emit-validated alongside the
         // entities it summarizes; a cast suffices (see `entity()`'s doc comment).
         rows = JSON.parse(readFileSync(indexPath, "utf8")) as IndexRow[];
       } catch (err) {

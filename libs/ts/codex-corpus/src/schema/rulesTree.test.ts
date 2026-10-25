@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { RulesTreeFileSchema, parseRulesTreeFile } from "./rulesTree";
 
-describe("RulesTreeFileSchema (D29-39)", () => {
+describe("RulesTreeFileSchema", () => {
   it("round-trips a nested tree with a mix of real and synthetic nodes", () => {
     const file = {
       books: [

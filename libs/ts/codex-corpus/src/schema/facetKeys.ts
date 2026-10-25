@@ -1,20 +1,18 @@
 import type { Facets } from "./entity";
 
 /**
- * D29-32/-33 (P3 S1, adversarial B3): the per-category facet-KEY allowlist —
+ * The per-category facet-KEY allowlist —
  * keys into `entity.facets` ONLY. The core row fields (`level`/`rarity`/
  * `traits`/`source`/`edition`) are already top-level `IndexRow` fields and
  * never appear here — this module is exclusively about which of `Facets`'s
  * named fields are worth exposing as a FILTER for a given category.
  *
- * Owned by S1 (this slice) so `emit.ts` can trim `IndexRow.facets` at write
- * time; imported UNCHANGED by S3's `src/domain/browse/facetDefs.ts` (the UI
- * metadata layer — widget/labelMap/parse per key) — a conformance test there
- * asserts `facetDefs` keys == `facetKeys` exactly. Nothing under
- * `src/domain/` exists yet (S3), so this module has zero repo dependents
- * beyond `emit.ts` today.
+ * `emit.ts` uses it to trim `IndexRow.facets` at write time, and the codex
+ * web app's `src/domain/browse/facetDefs.ts` (the UI metadata layer —
+ * widget/labelMap/parse per key) imports it UNCHANGED — a conformance test
+ * there asserts `facetDefs` keys == `facetKeys` exactly.
  *
- * ## The classifier (D29-32)
+ * ## The classifier
  *
  * A candidate key SHIPS here when, measured against the real corpus:
  * coverage ≥40% of the category's final entities AND cardinality in the
@@ -44,7 +42,7 @@ import type { Facets } from "./entity";
  *     both pass; `prerequisites` explicitly excluded (see above).
  *   - **creature** (7,296 total): `size` 85.6%/6, `hp` 85.6%/281, `ac`
  *     85.6%/50, `fortitudeSave`/`reflexSave`/`willSave` 85.6%/~45-48,
- *     `perception` 85.6%/47 — all pass. `family` (D29-33b, AoN
+ *     `perception` 85.6%/47 — all pass. `family` (AoN
  *     `creature_family_markdown`) ships REGARDLESS of the classifier — a
  *     stakeholder-sanctioned navigational facet even though its measured
  *     coverage (36.6% of final creature entities — AoN-derived-only,
@@ -98,7 +96,7 @@ import type { Facets } from "./entity";
  * `rules`/`item-bonus`/`trait` never appear in the facets-bearing 15 at
  * all — core-only, per the spec's explicit pin.
  *
- * ## The 5 extractor-gap categories (D29-33a)
+ * ## The 5 extractor-gap categories
  *
  * `ancestry`/`class`/`background`/`condition`/`heritage` gained NEW facet
  * extraction this slice (`foundryEntities.ts`'s category-gated
@@ -125,8 +123,8 @@ import type { Facets } from "./entity";
  *
  * Every one of these 6 ships below. Had any failed, it would still round-trip
  * into `entity.facets` (page detail) — dropped from THIS allowlist only,
- * never silently discarded from the corpus itself (D29-33a's "no silent junk
- * facets" guard) — see `report.md`'s facet-coverage section (S1) for the
+ * never silently discarded from the corpus itself (the "no silent junk
+ * facets" guard) — see `report.md`'s facet-coverage section for the
  * live-measured numbers this doc comment transcribes.
  */
 

@@ -13,7 +13,7 @@ import type { Plugin, ViteDevServer } from "vite";
 import { tsxLoader } from "./tsxLoader";
 
 // `build-content.ts` scripts run as a Node subprocess under tsx (`./tsxLoader.ts`), never a
-// binary looked up on PATH: 0022 S11 found a hardcoded `bun` here that failed silently in
+// binary looked up on PATH: a hardcoded `bun` here once failed silently in
 // the node:24-slim Docker build stage, masked on a dev host by a stale `src/generated/*`.
 
 export interface ContentWatchOptions {

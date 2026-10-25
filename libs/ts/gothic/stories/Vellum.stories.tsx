@@ -5,9 +5,9 @@ import { DocumentView } from "../src/render";
 
 /**
  * The vellum AST gallery — one story per `VellumDocument` node type, including
- * the four full-vellum constructs new in 0004 (frontmatter, crossref, fields,
+ * the four full-vellum constructs (frontmatter, crossref, fields,
  * timeline). Flip the **Mode** toolbar to see each in mechanical vs diegetic.
- * This gallery is 0004's deferred exit gate H: "gothic renders that AST."
+ * This gallery is the visual check that gothic renders the vellum AST.
  */
 const meta: Meta = {
   title: "Vellum/Nodes",

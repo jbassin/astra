@@ -59,7 +59,7 @@ interface Body {
   text: string;
   /** Index just past the matching `}` (or EOF). */
   end: number;
-  /** No matching `}` before EOF (E3). */
+  /** No matching `}` before EOF. */
   unterminated: boolean;
   /** A bare canonical `:::` fence appeared inside the body (E14, §5 rule 5). */
   nestedColon: boolean;
@@ -269,7 +269,7 @@ function parseBlockTail(
     // Anything else before the body opens.
     if (lineStart) {
       // A new line that isn't a `|` attr or a `{` body means the block opener
-      // ended without a body (E2/E9). Leave the line for the outer markdown.
+      // ended without a body. Leave the line for the outer markdown.
       return {
         node: errNode(`@${kind} "${title}": missing { body }`),
         end: r,
@@ -366,7 +366,7 @@ function parseColumns(s: string, j: number, depth: number): Parsed {
 /**
  * Find the `}` matching the `{` at `open`, tracking markdown lexical state so
  * structural braces are counted but braces inside code spans / fenced code /
- * escapes are not. A bare `:::` directive in the body is flagged (E14).
+ * escapes are not. A bare `:::` directive in the body is flagged.
  */
 function matchBody(s: string, open: number): Body {
   const len = s.length;
@@ -497,7 +497,7 @@ function matchBody(s: string, open: number): Body {
     }
     k++;
   }
-  // EOF before close (E3).
+  // EOF before close.
   return { text: s.slice(open + 1), end: len, unterminated: true, nestedColon };
 }
 

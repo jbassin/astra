@@ -6,8 +6,8 @@ import { DocumentView } from "./components/DocumentView";
 import type { CrossRefResolver } from "./crossrefResolver";
 
 /**
- * The crossref resolver seam (N3 spike → 0011 akasha-frontend). gothic renders a
- * crossref as an unresolved placeholder by default (L6); a consumer-injected
+ * The crossref resolver seam (used by akasha-frontend). gothic renders a
+ * crossref as an unresolved placeholder by default; a consumer-injected
  * resolver turns it into a real `<a href>`. Proves: default unchanged, resolver
  * hits become links (carrying the `data-*` attrs), and a `null` (dangling target)
  * falls back to the placeholder — all under `react-dom/server` (SSR-safe).
