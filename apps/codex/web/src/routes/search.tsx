@@ -4,8 +4,8 @@ import { SearchPage } from "@/domain/search/SearchPage";
 import { validateSearchPageSearch, type SearchPageSearch } from "@/domain/search/searchUrlState";
 
 /**
- * D29-36 — `/search`: the results page. No loader (search is entirely
- * client-fetched off the built Pagefind index, D29-34 — there is nothing for
+ * `/search`: the results page. No loader (search is entirely
+ * client-fetched off the built Pagefind index — there is nothing for
  * the server to read at request time); the route SSRs the shell + a
  * `<noscript>` no-JS notice (search genuinely cannot work without JS, so
  * this is an honest degrade, not a progressive-enhancement placeholder) and

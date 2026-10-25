@@ -3,16 +3,16 @@ import { createRouter, Link, useRouterState } from "@tanstack/react-router";
 
 import { routeTree } from "./routeTree.gen";
 
-/** D29-109e (P11 S5, #20) — pure slug derivation from an attempted pathname,
- * decoupled from `useRouterState()`'s own hook (same "pure fn + thin
- * router-coupled wrapper" split `HeaderTitle.tsx`'s `deriveHeaderTitle`
- * established, D29-112) so it's directly unit-testable with plain strings,
- * no router mount required. Strips leading/trailing slashes and
- * percent-decodes; `""` (the bare root, or a pathname that decodes to
- * nothing at all) means "no slug worth searching for" — the caller omits
- * the search link entirely rather than linking a bare `/search?q=`. A
- * malformed percent-escape falls back to the raw (still-encoded) text
- * rather than throwing — a 404 page must never itself error. */
+/** Pure slug derivation from an attempted pathname, decoupled from
+ * `useRouterState()`'s own hook (same "pure fn + thin router-coupled wrapper"
+ * split as `HeaderTitle.tsx`'s `deriveHeaderTitle`) so it's directly
+ * unit-testable with plain strings, no router mount required. Strips
+ * leading/trailing slashes and percent-decodes; `""` (the bare root, or a
+ * pathname that decodes to nothing at all) means "no slug worth searching for"
+ * — the caller omits the search link entirely rather than linking a bare
+ * `/search?q=`. A malformed percent-escape falls back to the raw
+ * (still-encoded) text rather than throwing — a 404 page must never itself
+ * error. */
 export function slugFromPathname(pathname: string): string {
   const stripped = pathname.replace(/^\/+/, "").replace(/\/+$/, "");
   try {
@@ -55,7 +55,7 @@ export function getRouter() {
   return createRouter({
     routeTree,
     ...siteRouterOptions({ notFound: DefaultNotFoundComponent }),
-    // D29-22/M9: `@legacy`-suffixed ids (`spell/heal@legacy`) are real, verbatim
+    // `@legacy`-suffixed ids (`spell/heal@legacy`) are real, verbatim
     // corpus ids in the `$slug` param. The router's OWN param decode already
     // round-trips `@` fine either way, but `<Link params={...}>` INTERPOLATION
     // percent-encodes any character not on this allowlist — without it, a Link

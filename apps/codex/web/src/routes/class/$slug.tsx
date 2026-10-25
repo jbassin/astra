@@ -10,27 +10,24 @@ import type { ClassPageData } from "@/server/classPageData";
 import { getClassPage } from "@/server/corpusFns";
 
 /**
- * P12 S2 (D29-117/-118) — `/class/{slug}`: the bespoke class page's route
- * shell. Static-over-dynamic precedence (same `/rules` precedent
- * `routes/class/index.tsx`'s own comment cites) means every `class/*` id
- * (`/class/fighter`, `/class/investigator@legacy`, ...) resolves HERE now,
- * never through the generic `$category/$slug` route — `/class` is fully
- * owned by this directory going forward (spec's own explicit "no fallback
- * to $category for class URLs" text).
+ * `/class/{slug}`: the bespoke class page's route shell. Static-over-dynamic
+ * precedence (same `/rules` precedent `routes/class/index.tsx`'s own comment
+ * cites) means every `class/*` id (`/class/fighter`,
+ * `/class/investigator@legacy`, ...) resolves HERE, never through the
+ * generic `$category/$slug` route — there is no fallback to `$category` for
+ * class URLs.
  *
- * THIS SLICE renders the shell + dispatch seam only — see `ClassMainPane`
- * below for exactly where S3's bespoke `<ClassPage>` composition plugs in.
- * Every `/class/{slug}` page (stats-bearing AND fail-soft alike) renders
- * through the EXISTING `EntityRenderPane` today.
+ * `ClassMainPane` (below) dispatches: a stats-bearing class renders the
+ * bespoke `<ClassPage>`; every other `class/*` doc renders through the
+ * generic `EntityRenderPane`.
  *
- * `loaderDeps` (REQUIRED, the codified P4.5 lesson the spec calls out by
- * name): BOTH `subclass` and `superseded` — `subclass` is load-bearing
- * (toggling `?subclass=` must re-run `getClassPage` so SSR fetches the
- * newly-selected subclass's body, acceptance D's own "an in-app `?subclass=`
- * change re-runs the loader" gate); `superseded` only gates the RAIL's
+ * `loaderDeps` (REQUIRED — declare every search param a route reads): BOTH
+ * `subclass` and `superseded` — `subclass` is load-bearing (toggling
+ * `?subclass=` must re-run `getClassPage` so SSR fetches the
+ * newly-selected subclass's body); `superseded` only gates the RAIL's
  * render (the page itself always renders regardless, same as `RulesLayout`'s
  * own "a superseded entity page always renders" posture) but is declared
- * per the spec's explicit D29-118 text regardless.
+ * anyway.
  */
 interface ClassSlugSearch {
   superseded?: boolean;
@@ -47,12 +44,12 @@ function toBool(raw: unknown): boolean {
  * (spec's own "no reserved-param collision" review note). Deduplicated,
  * first-occurrence order; empty/whitespace-only tokens dropped.
  *
- * S3 addition (verified against the pinned `@tanstack/router-core@1.171.14`
+ * Array input (verified against the pinned `@tanstack/router-core@1.171.14`
  * default search (de)serializer directly — `stringifySearchWith`/
  * `parseSearchWith`, `searchParams.js`): a genuine `string[]` VALUE written
  * via `navigate({search})` round-trips as a real JS array (`typeof ===
  * "object"` -> `JSON.stringify` on write, `JSON.parse` succeeds on read) —
- * so a client-side subclass-pill toggle (this slice, `ClassSlugComponent`)
+ * so a client-side subclass-pill toggle (`ClassSlugComponent`)
  * needs `raw.subclass` to ALSO be accepted as an already-decoded array, not
  * just the original comma-joined STRING a hand-typed/shared URL carries
  * (confirmed via `defaultParseSearch`/`defaultStringifySearch` run directly
@@ -114,13 +111,13 @@ export const Route = createFileRoute("/class/$slug")({
 });
 
 /**
- * D29-117/-118/-119 — the main-pane dispatch seam. `stats.kind === "class"`
+ * The main-pane dispatch seam. `stats.kind === "class"`
  * is the ONE predicate `<ClassPage>` keys its bespoke render off of (Core
  * Traits/progression/subclass pills/feature stream/description) —
  * `data.grantedFeatures`/`data.selectedSubclasses` (already resolved server-
  * side) feed it directly. The 20 `@legacy` + 2 miscategorized `class/` docs
  * (no `stats.kind === "class"`) keep rendering the EXISTING generic pane
- * permanently, INSIDE the shell (D29-118's own "no dead ends" text).
+ * permanently, INSIDE the shell (no dead ends).
  */
 function ClassMainPane({
   data,
@@ -165,7 +162,7 @@ function ClassSlugComponent() {
         superseded={superseded}
         selectedSubclassIds={selectedSubclassIds}
         onSubclassToggle={(targetId) => {
-          // D29-119 — "component reports, route navigates" (the site's own
+          // "Component reports, route navigates" (the site's own
           // established split, `BrowseListing.tsx`'s `onSupersededReveal`):
           // add-vs-remove against the CURRENT url is decided here, then a
           // functional search merge (preserves every other active param)

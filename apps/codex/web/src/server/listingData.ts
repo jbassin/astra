@@ -1,16 +1,14 @@
-// S3 (D29-27, superseded by D29-35) — the `/{category}` faceted listing's pure
-// core, split the same way `entityPageData.ts` is (see that file's own comment
-// on why the split matters: nothing under `src/routes/` imports this directly,
-// only `corpusFns.ts` and this app's own tests do).
+// The `/{category}` faceted listing's pure core, split the same way
+// `entityPageData.ts` is (see that file's own comment on why the split
+// matters: nothing under `src/routes/` imports this directly, only
+// `corpusFns.ts` and this app's own tests do).
 //
-// P3 S3 (D29-35): the P2 `ListingRow` trim (name/level/rarity/source/edition
-// only, no `traits`/`facets`/`superseded`) is DEAD — "the /{category} loader
-// ships the FULL enriched row set (loses P2's ListingRow trim — rows now =
-// IndexRow incl. facets/traits/superseded)". The filter engine needs every
-// field on every row (traits for tri-state, facets for the derived-facet
-// panel, superseded for the legacy toggle) to run client-side at all, so this
-// module is now a thin sort-and-shape-null wrapper over `reader.index()`
-// rather than a field-dropping projection.
+// The loader ships the FULL `IndexRow` set (facets/traits/superseded
+// included), not a trimmed listing row. The filter engine needs every field on
+// every row (traits for tri-state, facets for the derived-facet panel,
+// superseded for the legacy toggle) to run client-side at all, so this module
+// is a thin sort-and-shape-null wrapper over `reader.index()` rather than a
+// field-dropping projection.
 
 import type { IndexRow } from "@astra/codex-corpus";
 import { CorpusNotFoundError, type CorpusReader } from "@astra/codex-corpus/reader";
@@ -20,19 +18,19 @@ import { OTHER_GROUP_LABEL } from "../domain/sources/sourcesModel";
 export interface CategoryListingData {
   category: string;
   rows: IndexRow[];
-  /** P13 S3 (D29-121) — raw `source.book` value -> product-line group name,
+  /** Raw `source.book` value -> product-line group name,
    * built from the FULL category row set (never a windowed/filtered subset)
    * joined against `reader.sourcesIndex()`. Every book that appears anywhere
    * in `rows` has a key here (fail-soft to `OTHER_GROUP_LABEL`, see
    * `buildSourceLines`'s own doc comment) — the panel's grouped Source
-   * section (`FacetPanel.tsx`'s `SourceSection`, D29-128) looks values up by
+   * section (`FacetPanel.tsx`'s `SourceSection`) looks values up by
    * the SAME raw book string `sourceBookValueOf`/the URL codec already use;
    * this map is presentation-only, it never crosses back into the filter
    * engine or the URL. */
   sourceLines: Record<string, string>;
 }
 
-/** D29-121 — one-time (not per-request) warn when `sources-index.json` is
+/** One-time (not per-request) warn when `sources-index.json` is
  * missing/malformed: `reader.sourcesIndex()` doesn't cache a THROWN attempt
  * (only a successful parse, `corpusFs.ts`), so a genuinely absent artifact
  * would otherwise re-throw — and this module would otherwise re-warn — on
@@ -46,9 +44,8 @@ export interface CategoryListingData {
  */
 let warnedMissingSourcesIndex = false;
 
-/** D29-121 — `source.book` -> product line, fail-soft THREE ways (spec's own
- * enumeration): a book whose `sourcesIndex()` entry carries no `productLine`
- * (the ~253-book "Other" bucket, `sourcesModel.ts`'s own EXPECTED-not-a-gap
+/** `source.book` -> product line, fail-soft THREE ways: a book whose
+ * `sourcesIndex()` entry carries no `productLine` (the ~253-book "Other" bucket, `sourcesModel.ts`'s own EXPECTED-not-a-gap
  * note), a book with NO entry in the index at all, and — the one this
  * function itself guards against — the index FILE being missing/malformed
  * (`sourcesIndex()` throws `CorpusNotFoundError`) all resolve to
@@ -78,7 +75,7 @@ function bookToProductLine(reader: CorpusReader): ReadonlyMap<string, string> {
   }
 }
 
-/** D29-121 — built from `rows` (the caller's FULL category row set, never a
+/** Built from `rows` (the caller's FULL category row set, never a
  * windowed/filtered subset — `resolveCategoryListing` itself only ever sees
  * the whole `_index.json`, so this is automatic here, not something this
  * function has to enforce). One entry per DISTINCT `source.book` value
@@ -94,7 +91,7 @@ function buildSourceLines(rows: readonly IndexRow[], reader: CorpusReader): Reco
   return sourceLines;
 }
 
-/** `null` for an unknown category (`CorpusNotFoundError`, D29-23's guard) — same
+/** `null` for an unknown category (the reader's `CorpusNotFoundError`) — same
  * "unknown thing -> null crosses the RPC boundary as a plain value" convention
  * `resolveEntityPageData` uses, so the route loader's `notFound()` call is
  * identical shape either way. */
@@ -111,8 +108,8 @@ export function resolveCategoryListing(
   }
   // A-Z by name — the filter engine re-sorts (name/level) over whatever's
   // actually VISIBLE after filtering; this base ordering just keeps the
-  // unfiltered payload deterministic (matches the emit-time / D29-27
-  // precedent) rather than leaving it in on-disk `_index.json` order.
+  // unfiltered payload deterministic (matching the emit-time sort) rather
+  // than leaving it in on-disk `_index.json` order.
   const sorted = [...rows].sort((a, b) => a.name.localeCompare(b.name));
   return { category, rows: sorted, sourceLines: buildSourceLines(sorted, reader) };
 }

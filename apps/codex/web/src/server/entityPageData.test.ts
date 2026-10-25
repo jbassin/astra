@@ -5,21 +5,21 @@ import { fixtureCorpusRoot } from "./corpusFs";
 import { resolveEntityPageData } from "./entityPageData";
 
 /**
- * D29-25/D29-29 tier 3 — `resolveEntityPageData`'s embed-prefetch + trait-index
+ * `resolveEntityPageData`'s embed-prefetch + trait-index
  * assembly, over the fixture corpus (`createCorpusReader(fixtureCorpusRoot())`, no
  * config/Start-runtime involved — see `entityPageData.ts`'s own comment on why
  * this is a plain function in its own file rather than co-located with the
  * `createServerFn`-wrapped one in `corpusFns.ts`).
  */
-describe("resolveEntityPageData (D29-23/-25)", () => {
+describe("resolveEntityPageData", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
 
-  it("resolves a plain entity with no BODY embeds, but the D29-109a edition-pointer prefetch still populates the map", () => {
+  it("resolves a plain entity with no BODY embeds, but the edition-pointer prefetch still populates the map", () => {
     // `spell/heal` has no `embed` nodes in its body, but DOES carry a
-    // `legacyOf: ["spell/heal@legacy"]` pointer — D29-109a (P11 S5, #14)
-    // folds that into this SAME prefetch map (`EditionBanner`'s pointer-box
-    // name resolves through it), so `embeds` is no longer `{}` for this
-    // entity even though it carries zero body embeds.
+    // `legacyOf: ["spell/heal@legacy"]` pointer — that pointer folds into
+    // this SAME prefetch map (`EditionBanner`'s pointer-box name resolves
+    // through it), so `embeds` is not `{}` for this entity even though it
+    // carries zero body embeds.
     const data = resolveEntityPageData(reader, { category: "spell", slug: "heal" });
     expect(data).not.toBeNull();
     expect(data?.entity.id).toBe("spell/heal");
@@ -28,10 +28,10 @@ describe("resolveEntityPageData (D29-23/-25)", () => {
     expect(data?.embedCapHit).toBe(false);
   });
 
-  it("an unresolvable remasteredAs/legacyOf pointer fail-softs — never thrown, simply absent from embeds (D29-109a)", () => {
+  it("an unresolvable remasteredAs/legacyOf pointer fail-softs — never thrown, simply absent from embeds", () => {
     // `class/investigator@legacy` carries `remasteredAs: ["class/investigator"]`,
     // but `class/investigator` (the remaster target) has NO fixture file —
-    // post-D29-98 stripping keeps this near-zero in the real corpus, but
+    // the ingest strips dangling pointers, so this is near-zero in the real corpus, but
     // the fixture happens to demonstrate the belt-and-braces fail-soft path
     // for free. This must NOT throw, and must NOT appear as an embeds key.
     const data = resolveEntityPageData(reader, {
@@ -68,7 +68,7 @@ describe("resolveEntityPageData (D29-23/-25)", () => {
     for (const id of data?.knownTraitIds ?? []) expect(id.startsWith("trait/")).toBe(true);
   });
 
-  it("resolves the D29-21 rescued index-slug entities", () => {
+  it("resolves entities whose slug is literally index", () => {
     expect(resolveEntityPageData(reader, { category: "ancestry", slug: "index" })?.entity.id).toBe(
       "ancestry/index",
     );
@@ -97,7 +97,7 @@ describe("resolveEntityPageData (D29-23/-25)", () => {
     expect(resolveEntityPageData(reader, { category: "spell", slug: "_index" })).toBeNull();
   });
 
-  it("a non-rules entity carries no `rulesNav` at all (other categories' payloads unchanged, D29-41)", () => {
+  it("a non-rules entity carries no `rulesNav` at all (only rules entities get nav data)", () => {
     const data = resolveEntityPageData(reader, { category: "spell", slug: "heal" });
     expect(data?.rulesNav).toBeUndefined();
     expect(Object.hasOwn(data ?? {}, "rulesNav")).toBe(false);
@@ -111,16 +111,16 @@ describe("resolveEntityPageData (D29-23/-25)", () => {
 });
 
 /**
- * P4 S4 (D29-42) — the `attachedSidebars` resolution, over the fixture's own
- * D29-44 shapes: a rules host (`rules/tools-of-play` -> `sidebar/dice`, a
- * non-superseded sidebar) and the M8 shared-url case
+ * The `attachedSidebars` resolution, over the fixture's own shapes: a rules
+ * host (`rules/tools-of-play` -> `sidebar/dice`, a non-superseded sidebar)
+ * and the shared-url case
  * (`class/witch@legacy` -> `sidebar/in-service-to-the-unknown`, itself
  * SUPERSEDED — the same real-corpus shape the fixture copied verbatim also
  * happens to prove the fail-soft path: the real corpus's `class/witch@legacy`
  * carries a SECOND sidebar id, `sidebar/key-terms-38`, that was never
  * hand-picked into the fixture — it must be skipped, not thrown).
  */
-describe("resolveEntityPageData attachedSidebars (D29-42)", () => {
+describe("resolveEntityPageData attachedSidebars", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
 
   it("resolves a rules host's attached sidebar to its full body/citation", () => {
@@ -168,15 +168,15 @@ describe("resolveEntityPageData attachedSidebars (D29-42)", () => {
 });
 
 /**
- * P4 S3 (D29-41) — the trail/sidebar-book/pager derivation, over the fixture
- * corpus's own `rules-tree.json` (the same D29-44 composition S2's route
- * tests already exercise: the CRLF-healed depth-3 GMG chain, the
- * path-shifted Counteracting legacy/remaster pair, a fully-synthetic
- * ancestor chain, two single-doc books). Reproduced by hand from
+ * The trail/sidebar-book/pager derivation, over the fixture corpus's own
+ * `rules-tree.json` (the same composition the `/rules` route tests exercise:
+ * the CRLF-healed depth-3 GMG chain, the path-shifted Counteracting
+ * legacy/remaster pair, a fully-synthetic ancestor chain, two single-doc
+ * books). Reproduced by hand from
  * `fixtures/entities/rules-tree.json` in this file's own header comment —
  * see that file for the raw shape.
  */
-describe("resolveEntityPageData rulesNav (D29-41 — trail/sidebar/pager)", () => {
+describe("resolveEntityPageData rulesNav (trail/sidebar/pager)", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
 
   it("a root doc (no ancestors) renders its own trail head: book -> self, no ancestors", () => {

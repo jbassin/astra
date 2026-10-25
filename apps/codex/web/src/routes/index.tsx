@@ -3,12 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { HeroSearch } from "@/domain/search/HeroSearch";
 
 /**
- * P4.5 S2 (D29-47, feedback #3/R4) — the real landing page: the eight big
- * tiles + a front-and-center search box. Replaces the P2 throwaway category
- * directory that used to live at `/` (moved verbatim to `/categories`,
- * `categories.tsx` — the "browse all categories" link below points there).
- * No loader — this page reads nothing off the corpus itself, unlike the old
- * directory it replaced.
+ * The landing page: the eight big tiles + a front-and-center search box.
+ * The full category directory lives at `/categories` (`categories.tsx` —
+ * the "browse all categories" link below points there). No loader — this
+ * page reads nothing off the corpus itself.
  */
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -17,7 +15,7 @@ export const Route = createFileRoute("/")({
   component: IndexComponent,
 });
 
-/** The 8 R4 tiles, in the spec's own §2 D29-47 order — each a big linked
+/** The 8 landing tiles, in design order — each a big linked
  * card in the parchment voice, not a facet UI. */
 const LANDING_TILES: readonly { label: string; href: string }[] = [
   { label: "Creatures", href: "/creature" },

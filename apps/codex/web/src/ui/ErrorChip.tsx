@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 
 /**
- * D29-46 — codex's own placeholder for an unknown/malformed directive,
+ * Codex's own placeholder for an unknown/malformed directive,
  * EXACT prop-signature parity with the gothic lib's `ErrorChip`. Totality:
  * the rest of the document still renders; the broken node shows a labeled
  * chip, never a throw.

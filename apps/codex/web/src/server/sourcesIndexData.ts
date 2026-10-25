@@ -1,5 +1,5 @@
-// P4 S4 (D29-43) — the `/sources` aggregate index's pure core. Mirrors
-// `rulesTreeData.ts` exactly: S1's `sourcesIndexBuild.ts` already did every
+// The `/sources` aggregate index's pure core. Mirrors
+// `rulesTreeData.ts` exactly: the ingest's `sourcesIndexBuild.ts` already did every
 // grouping/derivation decision at TRANSFORM time, so there is no further
 // server-side shaping here — the route loader ships the artifact as-is, and
 // `src/domain/sources/sourcesModel.ts` (the pure client-independent grouping

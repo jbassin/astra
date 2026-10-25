@@ -14,7 +14,7 @@ function node(overrides: Partial<TreeNode> & Pick<TreeNode, "name">): TreeNode {
   return { children: [], ...overrides };
 }
 
-describe("nodeKeyFor (D29-40)", () => {
+describe("nodeKeyFor", () => {
   it("a real (id-bearing) node keys on its CodexId alone, ignoring book/path", () => {
     const n = node({ name: "Counteracting", id: "rules/counteracting-2" });
     expect(nodeKeyFor("Player Core", ["Chapter 8", "Afflictions"], n)).toBe(
@@ -114,7 +114,7 @@ describe("computeOpen (the akasha computeOpen port)", () => {
   });
 });
 
-describe("pruneForSuperseded (D29-40 superseded-visibility semantics)", () => {
+describe("pruneForSuperseded (superseded-visibility semantics)", () => {
   it("legacyOn=true is a no-op (returns every node)", () => {
     const tree: TreeNode[] = [node({ name: "A", id: "rules/a", superseded: true, children: [] })];
     expect(pruneForSuperseded(tree, true)).toEqual(tree);
@@ -180,10 +180,10 @@ describe("pruneForSuperseded (D29-40 superseded-visibility semantics)", () => {
     expect(pruneForSuperseded(tree, false)).toEqual([]);
   });
 
-  describe("currentId (S3 — the sidebar 'you are here' guard)", () => {
+  describe("currentId (the sidebar 'you are here' guard)", () => {
     it("a superseded childless node matching currentId survives, unlike the plain (no currentId) call", () => {
       const tree: TreeNode[] = [node({ name: "A", id: "rules/a", superseded: true })];
-      expect(pruneForSuperseded(tree, false)).toEqual([]); // the S2 baseline: still drops
+      expect(pruneForSuperseded(tree, false)).toEqual([]); // the plain call: still drops
       const withCurrent = pruneForSuperseded(tree, false, "rules/a");
       expect(withCurrent).toHaveLength(1);
       expect(withCurrent[0]?.id).toBe("rules/a");
@@ -228,7 +228,7 @@ describe("pruneForSuperseded (D29-40 superseded-visibility semantics)", () => {
   });
 });
 
-describe("filterTreeByQuery (D29-40 name quick-filter)", () => {
+describe("filterTreeByQuery (name quick-filter)", () => {
   const tree: TreeNode[] = [
     node({
       name: "Chapter 2: Tools",
@@ -271,7 +271,7 @@ describe("filterTreeByQuery (D29-40 name quick-filter)", () => {
   });
 });
 
-describe("dfsPreOrder (S3 pager reuse)", () => {
+describe("dfsPreOrder (rules pager order)", () => {
   it("flattens root, then children depth-first, left to right — the page-turn order", () => {
     const tree: TreeNode[] = [
       node({
@@ -312,7 +312,7 @@ describe("dfsPreOrder (S3 pager reuse)", () => {
   });
 });
 
-describe("sortBooksForDisplay (D29-108b — the /rules book display order)", () => {
+describe("sortBooksForDisplay (the /rules book display order)", () => {
   it("the four remaster cores sort first, in their fixed reading order, regardless of input order", () => {
     const books = [
       { book: "Monster Core" },

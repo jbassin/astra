@@ -7,7 +7,7 @@ import { createServerFn } from "@tanstack/react-start";
 // out of the client bundle; the client gets a typed fetch stub. The createServerFn
 // MUST stay in app source (the tanstackStart vite plugin transforms it here);
 // @astra/site-kit owns the generic glue (startRum). This is the per-app seam
-// (D29-30: RUM service `astra.codex-rum`).
+// (RUM service `astra.codex-rum`).
 export const getRumConfig = createServerFn({ method: "GET" }).handler(() => {
   const cfg = loadConfig();
   return {

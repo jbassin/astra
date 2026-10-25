@@ -1,17 +1,15 @@
 // @vitest-environment jsdom
 //
-// D29-101c (P11 S1): the filter-only-search regression test. `/pagefind/
-// pagefind.js` genuinely doesn't exist in this test environment (D29-12),
-// so `loadPagefind()`'s real fail-soft path always resolves `null` and
+// The filter-only-search regression test. `/pagefind/pagefind.js`
+// genuinely doesn't exist in this test environment (no `data/`), so `loadPagefind()`'s real fail-soft path always resolves `null` and
 // there's no way to OBSERVE which argument reaches `pf.search` without
 // mocking the module — unlike `Omnibar.test.tsx` (which never needs to,
 // since it only ever asserts the fail-soft-disabled-input UI). `SearchPage`
 // takes `search`/`onSearchChange` as plain props (no router context needed),
 // so it mounts directly.
 //
-// P13 S3 (D29-130) — `filterCountsFixture` (below) is the per-test knob for
-// `pf.filters()`'s resolved value, so the new facet-rendering describe
-// block can drive `SearchPage`'s shared-primitive sections with arbitrary
+// `filterCountsFixture` (below) is the per-test knob for `pf.filters()`'s
+// resolved value, so the facet-rendering describe block can drive `SearchPage`'s shared-primitive sections with arbitrary
 // counts without a second mock setup.
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
@@ -39,7 +37,7 @@ afterEach(() => {
   filterCountsFixture = {};
 });
 
-describe("SearchPage filter-only search (D29-101c)", () => {
+describe("SearchPage filter-only search", () => {
   it("passes null (not empty string) to pf.search when the query is empty but a filter is set", async () => {
     render(<SearchPage search={{ traits: "fire" }} onSearchChange={() => {}} />);
     await waitFor(() => expect(searchSpy).toHaveBeenCalled());
@@ -67,24 +65,19 @@ describe("SearchPage filter-only search (D29-101c)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// P13 S3 (D29-130) — SearchPage now renders its facet sections through the
-// SAME shared primitives `FacetPanel.tsx` uses (`facetControls.tsx`), fed
-// Pagefind's own `filterCounts` as data. DELIBERATELY CHANGED PINS from the
-// pre-slice hand-copied `FilterSection`:
-//   - Rarity now RANK-orders common/uncommon/rare/unique (was raw-key
-//     alphabetical: common/rare/uncommon/unique) — `sortOptionsFor`'s
-//     general "rarity" dimension exception now applies here too.
-//   - Edition gets the shared icon+VISIBLE-text label (was an icon-only
-//     glyph via this file's own now-deleted `editionOptionLabel`).
-//   - Level and Category are UNCHANGED in effect (numeric / raw-key order
-//     respectively) but now reach that order via an explicit `comparator`
-//     passed to the shared `sortOptionsFor`, not this file's own deleted
-//     `sortedEntries` helper.
-//   - The Superseded control's loud blue callout is gone, replaced by the
-//     same one-line muted caption `FacetPanel.tsx`'s own consolidated
-//     control uses (D29-129); the toggle's OWN behavior (writes `superseded`
-//     via `onSearchChange`, no scroll-behavior concern on this un-paned
-//     layout) is UNCHANGED.
+// SearchPage renders its facet sections through the SAME shared primitives
+// `FacetPanel.tsx` uses (`facetControls.tsx`), fed Pagefind's own
+// `filterCounts` as data. What these tests pin:
+//   - Rarity RANK-orders common/uncommon/rare/unique (not raw-key
+//     alphabetical) — `sortOptionsFor`'s general "rarity" dimension
+//     exception applies here too.
+//   - Edition gets the shared icon+VISIBLE-text label.
+//   - Level and Category keep numeric / raw-key order respectively, via an
+//     explicit `comparator` passed to the shared `sortOptionsFor`.
+//   - The Superseded control uses the same one-line muted caption
+//     `FacetPanel.tsx`'s own control uses, not a loud blue callout; the
+//     toggle writes `superseded` via `onSearchChange`, with no
+//     scroll-behavior concern on this un-paned layout.
 // ---------------------------------------------------------------------------
 
 function sectionFor(title: string): HTMLElement {
@@ -111,7 +104,7 @@ function checkboxLabels(section: HTMLElement): string[] {
   );
 }
 
-describe("SearchPage facet sections via the shared primitives (P13 S3, D29-130)", () => {
+describe("SearchPage facet sections via the shared primitives", () => {
   it("Level sorts NUMERICALLY (-2..28), not lexically — the comparator seam `sortOptionsFor` needed for this facet", async () => {
     // >CHIP_MAX_OPTIONS(8) options -> checkbox rows, not chips; lexical
     // order would read "-2","0","1","10","2","20","28","3","5","7" (string
@@ -143,7 +136,7 @@ describe("SearchPage facet sections via the shared primitives (P13 S3, D29-130)"
     expect(chipLabels(sectionFor("Rarity"))).toEqual(["Common", "Uncommon", "Rare", "Unique"]);
   });
 
-  it("Category keeps its pre-existing raw-key locale order via an explicit comparator, labels stay humanized (displayCategoryName was ALREADY wired pre-slice, not double-humanized)", async () => {
+  it("Category keeps its pre-existing raw-key locale order via an explicit comparator, labels stay humanized once (displayCategoryName, not double-humanized)", async () => {
     filterCountsFixture = { category: { spell: 1, "creature-ability": 1, feat: 1 } };
     render(<SearchPage search={{}} onSearchChange={() => {}} />);
     await waitFor(() => expect(screen.getByText("Category")).not.toBeNull());
@@ -174,7 +167,7 @@ describe("SearchPage facet sections via the shared primitives (P13 S3, D29-130)"
   });
 });
 
-describe("SearchPage Superseded control — restyled (D29-130), behavior unchanged", () => {
+describe("SearchPage Superseded control — shared muted caption", () => {
   it("uses the shared muted caption, not the old loud blue callout", async () => {
     render(<SearchPage search={{}} onSearchChange={() => {}} />);
     await screen.findByLabelText("Include superseded content");

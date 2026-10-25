@@ -58,7 +58,7 @@ function writeRelease(dataPath: string, id: string, header: Record<string, unkno
   return root;
 }
 
-// D29-23: `createCorpusReader(rootDir)` is a pure factory, directly unit-testable
+// `createCorpusReader(rootDir)` is a pure factory, directly unit-testable
 // against `fixtures/entities/` — no config/mocking involved. Every traversal-guard
 // branch gets its own case here (the guard IS the auth story for the
 // HTTP-reachable serverFn endpoints).
@@ -68,7 +68,7 @@ describe("fixtureCorpusRoot", () => {
   });
 });
 
-describe("createCorpusReader (D29-23)", () => {
+describe("createCorpusReader", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
 
   it("categories(): every fixture category, sorted", () => {
@@ -123,7 +123,7 @@ describe("createCorpusReader (D29-23)", () => {
     expect(entity.id).toBe("creature/grick-2");
   });
 
-  it("entity(): the D29-21 rescued `index`-slug entities", () => {
+  it("entity(): entities whose slug is literally `index`", () => {
     expect(reader.entity("ancestry", "index").id).toBe("ancestry/index");
     expect(reader.entity("archetype", "index").id).toBe("archetype/index");
   });
@@ -169,7 +169,7 @@ describe("createCorpusReader (D29-23)", () => {
     expect(() => reader.index("not-a-real-category")).toThrow(CorpusNotFoundError);
   });
 
-  // P4 S2 (D29-40): `rules-tree.json` is a SIBLING of `manifest.json`, not
+  // `rules-tree.json` is a SIBLING of `manifest.json`, not
   // per-category — its own describe block below, mirroring `index()`'s own
   // case shape (cached, real content, unknown-artifact failure mode).
   it("rulesTree(): the fixture artifact, real book content", () => {
@@ -191,7 +191,7 @@ describe("createCorpusReader (D29-23)", () => {
   });
 });
 
-describe("createCorpusReader.rulesTree() failure modes (D29-23 idiom)", () => {
+describe("createCorpusReader.rulesTree() failure modes", () => {
   it("throws CorpusNotFoundError when rules-tree.json is missing from the root", () => {
     // A root with a manifest.json but no rules-tree.json (any real corpus
     // category dir works as a stand-in "root" that lacks the artifact —
@@ -202,10 +202,9 @@ describe("createCorpusReader.rulesTree() failure modes (D29-23 idiom)", () => {
   });
 });
 
-// P4 S4 (D29-43) — `sourcesIndex()` mirrors `rulesTree()`'s own describe
-// blocks above exactly (a sibling artifact, same cache/Zod/failure-mode
-// posture).
-describe("createCorpusReader.sourcesIndex() (D29-43)", () => {
+// `sourcesIndex()` mirrors `rulesTree()`'s own describe blocks above exactly
+// (a sibling artifact, same cache/Zod/failure-mode posture).
+describe("createCorpusReader.sourcesIndex()", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
 
   it("the fixture artifact, real book content", () => {
@@ -228,7 +227,7 @@ describe("createCorpusReader.sourcesIndex() (D29-43)", () => {
   });
 });
 
-describe("createCorpusReader.sourcesIndex() failure modes (D29-23 idiom)", () => {
+describe("createCorpusReader.sourcesIndex() failure modes", () => {
   it("throws CorpusNotFoundError when sources-index.json is missing from the root", () => {
     const reader = createCorpusReader(`${fixtureCorpusRoot()}/spell`);
     expect(() => reader.sourcesIndex()).toThrow(CorpusNotFoundError);

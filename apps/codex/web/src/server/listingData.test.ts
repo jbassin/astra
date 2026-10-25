@@ -11,7 +11,7 @@ import { OTHER_GROUP_LABEL } from "@/domain/sources/sourcesModel";
 import { fixtureCorpusRoot } from "./corpusFs";
 import { resolveCategoryListing } from "./listingData";
 
-/** P13 S3 (D29-121) — a minimal in-memory `CorpusReader` double, for the
+/** A minimal in-memory `CorpusReader` double, for the
  * `sourceLines` fail-soft cases the real fixture corpus can't exercise on
  * its own (its own `sources-index.json` happens to carry NO `productLine`
  * at all — every real-fixture book is already "Other", see the sanity test
@@ -53,10 +53,9 @@ function indexRow(
 }
 
 /**
- * D29-27/D29-29 tier 3, superseded by P3 D29-35 — the `/{category}` faceted
- * listing's pure core, over the fixture corpus.
+ * The `/{category}` faceted listing's pure core, over the fixture corpus.
  */
-describe("resolveCategoryListing (D29-27/D29-35)", () => {
+describe("resolveCategoryListing", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
 
   it("returns every row for a real category, A-Z sorted by name", () => {
@@ -75,7 +74,7 @@ describe("resolveCategoryListing (D29-27/D29-35)", () => {
     }
   });
 
-  it("D29-35: the loader ships the FULL IndexRow (traits/facets/superseded), the P2 trim is dead", () => {
+  it("the loader ships the FULL IndexRow (traits/facets/superseded), not a trimmed row", () => {
     const data = resolveCategoryListing(reader, "spell");
     const row = data?.rows.find((r) => r.id === "spell/heal");
     expect(row).toBeDefined();
@@ -103,7 +102,7 @@ describe("resolveCategoryListing (D29-27/D29-35)", () => {
     expect(resolveCategoryListing(reader, "not-a-real-category")).toBeNull();
   });
 
-  it("D29-121: against the real fixture corpus, every row's book gets a sourceLines entry (the fixture's own sources-index.json carries no productLine yet, so today every book resolves to Other)", () => {
+  it("against the real fixture corpus, every row's book gets a sourceLines entry (the fixture's own sources-index.json carries no productLine yet, so today every book resolves to Other)", () => {
     const data = resolveCategoryListing(reader, "spell");
     expect(data).not.toBeNull();
     for (const row of data?.rows ?? []) {
@@ -113,7 +112,7 @@ describe("resolveCategoryListing (D29-27/D29-35)", () => {
 });
 
 /**
- * P13 S3 (D29-121) — `sourceLines`: built from the FULL category row set
+ * `sourceLines`: built from the FULL category row set
  * joined against `reader.sourcesIndex()`, fail-soft three ways (a
  * `productLine: null`/absent book, a book with no entry at all, and the
  * index FILE itself missing/malformed). The real fixture corpus's own
@@ -122,7 +121,7 @@ describe("resolveCategoryListing (D29-27/D29-35)", () => {
  * non-Other line) needs a synthetic `CorpusReader` double instead —
  * `fakeReader`, above.
  */
-describe("resolveCategoryListing — sourceLines (D29-121)", () => {
+describe("resolveCategoryListing — sourceLines", () => {
   it("happy path: a book WITH a real productLine maps to it; a book with productLine:null falls soft to Other", () => {
     const reader = fakeReader({
       rows: [indexRow("Alpha Book"), indexRow("Beta Book")],

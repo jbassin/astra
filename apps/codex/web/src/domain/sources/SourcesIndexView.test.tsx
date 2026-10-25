@@ -15,7 +15,7 @@ function book(overrides: Partial<SourceIndexEntry> = {}): SourceIndexEntry {
   };
 }
 
-describe("SourcesIndexView (D29-43)", () => {
+describe("SourcesIndexView", () => {
   it("renders a classified group as a plain (non-collapsed) section", () => {
     const html = renderToStaticMarkup(
       <SourcesIndexView books={[book({ book: "Core Rulebook", productLine: "Rulebooks" })]} />,

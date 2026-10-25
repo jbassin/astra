@@ -4,17 +4,16 @@ import { SourcesIndexView } from "@/domain/sources/SourcesIndexView";
 import { getSourcesIndex } from "@/server/corpusFns";
 
 /**
- * D29-43 — `/sources`: the aggregate book index (ALL ~496 normalized book
+ * `/sources`: the aggregate book index (ALL ~496 normalized book
  * strings, incl. the Foundry-only "Other" bucket), grouped by product line,
- * distinct from `/source`'s own P3 faceted listing of the 245 `source`-
- * category book ENTITIES (both remain — spec's own "relationship to the
- * existing `/source` category listing" note). A FLAT top-level route file,
+ * distinct from `/source`'s own faceted listing of the 245 `source`-category
+ * book ENTITIES (both exist). A FLAT top-level route file,
  * matching `rules.tsx`/`search.tsx`'s own pattern (a static path segment
  * out-ranks any dynamic `$category` match for the literal `/sources`
  * segment, the same verified-safe precedence `/rules` already relies on).
  *
- * No `validateSearch`/state at all (D29-43: "a plain server-rendered page —
- * NO island") — the "Other" bucket's collapse state is a native `<details>`
+ * No `validateSearch`/state at all (a plain server-rendered page, no
+ * island) — the "Other" bucket's collapse state is a native `<details>`
  * (zero JS), and there is no facet/filter UI on this page.
  */
 export const Route = createFileRoute("/sources")({

@@ -15,28 +15,25 @@ import { NAV_ITEMS, type NavItem } from "./navData";
 const HOVER_OPEN_DELAY_MS = 120;
 
 /**
- * P4.5 S2 (D29-47), CURATED P11 S4 (D29-110) — the global header nav: 5
+ * The global header nav: 5
  * category dropdowns (Player/Spells/Equipment/GM/Setting) + the bare
  * "Rules"/"Sources"/"All categories" links, spanning the CURATED 28-category
  * set (`navData.ts` owns the grouping — the long tail lives at
  * `/categories`/the omnibar/in-context links instead). No headless-UI
- * dependency (repo idiom, scope doc §7 risks) — every dropdown panel is a
+ * dependency (repo idiom) — every dropdown panel is a
  * real, ALWAYS-rendered `<ul>` of `<a>` tags; a JS-disabled client reaches
  * every category link because the panel's no-JS reveal is pure CSS
  * `:hover` on the container (`globals.css`'s `.codex-nav-item:hover
  * .codex-nav-panel`), not a mount/unmount. JS only adds: click-to-toggle,
  * hover-INTENT (a short open delay so a mouse merely passing over the
- * trigger doesn't flash it open), and the full keyboard contract (D29-47):
+ * trigger doesn't flash it open), and the full keyboard contract:
  * Tab reaches the trigger; Enter/Space/ArrowDown opens + focuses the first
  * item; ArrowUp/ArrowDown move focus within; Escape closes + returns focus
  * to the trigger; Tab out of an open panel closes it.
  *
- * D29-110 also DELETES the old Rules split control (a plain `<a>` label
- * plus a separate caret `<button>` disclosing an 8-category dropdown tail,
- * adversarial M4 from D29-47): "Rules" is a bare `kind: "link"` item now,
- * same shape as "Sources"/"All categories", so it renders via the plain
- * `PlainNavLink` branch below like every other bare link — no dropdown, no
- * caret, no second tab stop.
+ * "Rules" is a bare `kind: "link"` item, same shape as "Sources"/"All
+ * categories", so it renders via the plain `PlainNavLink` branch below like
+ * every other bare link — no dropdown, no caret, no second tab stop.
  */
 function useDropdown(itemCount: number) {
   const [open, setOpen] = useState(false);
@@ -194,14 +191,9 @@ function NavDropdown({ item }: { item: NavItem }): ReactElement {
         onKeyDown={dd.onTriggerKeyDown}
       >
         {item.label}
-        {/* P8 S2 (D29-80b): the same `▾` affordance every dropdown trigger
-            carries — aria-hidden so the button's accessible name stays just
-            `item.label` (unchanged from before this, still matched by
-            `getByRole("button", {name: item.label})` in tests and by AT).
-            D29-110: this was originally described as matching the Rules
-            split control's own separate caret — that control (and its
-            `.codex-nav-caret` class) is gone now, Rules being a bare link
-            like every other non-dropdown item. */}
+        {/* The `▾` affordance every dropdown trigger carries — aria-hidden so
+            the button's accessible name stays just `item.label` (matched by
+            `getByRole("button", {name: item.label})` in tests and by AT). */}
         <span aria-hidden="true" className="codex-nav-trigger-caret">
           ▾
         </span>

@@ -1,17 +1,11 @@
 import type { ReactElement } from "react";
 
 /**
- * SVG `<symbol>`/`<use>` dedupe (P8 follow-up, flagged ready in the P8 S4
- * build record — `/feat` measured 8.04 MB/630 KB gz, +35% gz vs P3, "the
- * per-row Cast-glyph inline SVGs are the growth"). Originally deduped 5
- * shapes (`actionGlyph.tsx`'s pip chevron/reaction hook/free-action diamond
- * + `EditionIcon.tsx`'s Four-Point Spark/History Ring); the 3 action-glyph
- * shapes are GONE now — a later stakeholder directive ("use the icons in
- * pathfinder-icons.ttf") switched `actionGlyph.tsx` to the real Paizo icon
- * font (self-hosted `@font-face`, `globals.css`) instead of inline-traced
- * SVG, so this host only carries the 2 `EditionIcon.tsx` shapes now (still
- * genuinely deduped — `/feat` alone SSRs thousands of edition-icon `<use>`s
- * against these same 2 symbols).
+ * SVG `<symbol>`/`<use>` dedupe: per-row inline SVGs bloat big listings
+ * (`/feat` SSRs thousands of edition icons). This host carries the 2
+ * `EditionIcon.tsx` shapes (Four-Point Spark/History Ring); action glyphs
+ * use the real Paizo icon font instead (`actionGlyph.tsx`, self-hosted
+ * `@font-face` in `globals.css`), so they need no symbols here.
  *
  * This component renders the shapes ONCE as `<symbol>` definitions inside
  * one hidden host `<svg>`; every call site emits a tiny `<svg><use

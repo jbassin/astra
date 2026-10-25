@@ -16,11 +16,11 @@ afterEach(() => {
   _resetPagefindClientForTests();
 });
 
-describe("loadPagefind (D29-34 fail-soft)", () => {
+describe("loadPagefind (fail-soft)", () => {
   it("resolves to null when the runtime doesn't exist (CI/dev-hermetic — no build has run)", async () => {
     // No mocking needed: `/pagefind/pagefind.js` is a real static asset that
     // only exists after a real `just codex-search-index` build — it is
-    // GENUINELY absent in this test environment (D29-12: no `data/`), so the
+    // GENUINELY absent in this test environment (no `data/`), so the
     // dynamic import genuinely fails, exercising the real fail-soft path.
     const pf = await loadPagefind();
     expect(pf).toBeNull();
@@ -44,7 +44,7 @@ describe("loadPagefind (D29-34 fail-soft)", () => {
   });
 });
 
-describe("supersededFilter (D29-36 M4)", () => {
+describe("supersededFilter", () => {
   it("omits the filter key when legacy is on", () => {
     expect(supersededFilter(true)).toBeUndefined();
   });
@@ -101,7 +101,7 @@ describe("toDisplayResult", () => {
     expect(d.name).toBe("/spell/heal");
   });
 
-  it("D29-101a/c (P11 S1): projects meta.class when present", () => {
+  it("projects meta.class when present", () => {
     const d = toDisplayResult(
       fragment({
         meta: {
@@ -116,13 +116,13 @@ describe("toDisplayResult", () => {
     expect(d.class).toBe("Witch");
   });
 
-  it("D29-101a/c: class is undefined when meta carries no class key", () => {
+  it("class is undefined when meta carries no class key", () => {
     const d = toDisplayResult(fragment({}));
     expect(d.class).toBeUndefined();
   });
 });
 
-describe("groupByCategory (D29-36 omnibar type-ahead)", () => {
+describe("groupByCategory (omnibar type-ahead)", () => {
   function result(over: Partial<SearchDisplayResult>): SearchDisplayResult {
     return {
       id: "x",
@@ -152,7 +152,7 @@ describe("groupByCategory (D29-36 omnibar type-ahead)", () => {
   });
 });
 
-describe("partitionNameMatches (P8 S3, D29-81 — exact-name search boost)", () => {
+describe("partitionNameMatches (exact-name search boost)", () => {
   function result(over: Partial<SearchDisplayResult>): SearchDisplayResult {
     return {
       id: over.url ?? "x",

@@ -1,17 +1,15 @@
-// P3 S4 (D29-36) — the header search omnibar, mounted on every page
-// (`__root.tsx`). Lazy-loads the Pagefind runtime on FIRST FOCUS (never
-// eagerly — `pagefindClient.ts`'s own file header on why), 180ms-debounced
-// type-ahead with a token/sequence stale-guard, results grouped by category
-// (top ~8 overall, `pagefindClient.ts`'s `groupByCategory`), the M5
-// same-name-book-inline collision rule (the SAME `collidingNames` helper
-// D29-35 built for listings — extended to search per that adversarial note,
-// not a second implementation), full keyboard nav (arrows/Enter/Esc,
+// The header search omnibar, mounted on every page (`__root.tsx`).
+// Lazy-loads the Pagefind runtime on FIRST FOCUS (never eagerly —
+// `pagefindClient.ts`'s own file header on why), 180ms-debounced type-ahead
+// with a token/sequence stale-guard, results grouped by category (top ~8
+// overall, `pagefindClient.ts`'s `groupByCategory`), the same-name
+// book-inline collision rule (the SAME `collidingNames` helper the listings
+// use, not a second implementation), full keyboard nav (arrows/Enter/Esc,
 // Ctrl/Cmd-K global focus — akasha's own muscle-memory precedent), and the
-// D29-34 fail-soft disabled state when the index isn't built.
+// fail-soft disabled state when the index isn't built.
 //
-// P4.5 D29-48's original R3 carve-out ("search NEVER hides superseded
-// content by default") is AMENDED by P6 R11 (D29-67): the omnibar now hides
-// superseded content by default too, matching every other surface. It has
+// The omnibar hides superseded content by default, matching every other
+// surface. It has
 // no reveal control of its own (that lives on the full `/search` page,
 // `SearchPage.tsx`) and no URL/facet state to read it from, so it always
 // passes the fixed `supersededFilter(false)` value — `pagefindClient.ts`'s
@@ -58,7 +56,7 @@ export function Omnibar(): ReactElement {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [results, setResults] = useState<SearchDisplayResult[]>([]);
-  // D29-81 — how many of `results`' LEADING items are the pinned "Name
+  // How many of `results`' LEADING items are the pinned "Name
   // matches" group (always a prefix of `results`, so keyboard nav's
   // `rankOf`/`highlight` over the full flat array still walks pinned-then-
   // categories in visual top-to-bottom order with no separate index space).
@@ -88,10 +86,10 @@ export function Omnibar(): ReactElement {
       if (!pf || token !== tokenRef.current) return;
       // "count executed searches (debounced executions, not keystrokes)" —
       // fired exactly once per debounced, non-empty, successfully-loaded
-      // search attempt (D29-38). Fire-and-forget: telemetry must never block
+      // search attempt. Fire-and-forget: telemetry must never block
       // or fail the actual search UX.
       void recordSearch({ data: { surface: "omnibar" } }).catch(() => undefined);
-      // R11 (D29-67): always hide superseded content — the omnibar carries
+      // Always hide superseded content — the omnibar carries
       // no reveal state of its own, so this is a fixed `false`, never a
       // live toggle.
       const supersededFilterValue = supersededFilter(false);
@@ -101,7 +99,7 @@ export function Omnibar(): ReactElement {
           : {};
       const res = await pf.search(trimmed, searchOptions).catch(() => null);
       if (!res || token !== tokenRef.current) return;
-      // D29-81 — hydrate a WIDER window than we'll ever display: an
+      // Hydrate a WIDER window than we'll ever display: an
       // exact-name hit can rank below `MAX_RESULTS` (the measured `fireball`
       // case, rank 10), and stub `.data()` is the only way to learn a
       // result's name to check for that in the first place. Still far short
@@ -147,7 +145,7 @@ export function Omnibar(): ReactElement {
     window.setTimeout(() => setOpen(false), 150);
   };
 
-  // D29-81 — `results` is [pinned..., categorized...]; slice the pinned
+  // `results` is [pinned..., categorized...]; slice the pinned
   // prefix off before grouping so it never also appears inside a category
   // group below (the "pinned hits are not repeated below" dedupe).
   const pinnedGroup = useMemo(() => results.slice(0, pinnedCount), [results, pinnedCount]);
@@ -216,7 +214,7 @@ export function Omnibar(): ReactElement {
   const showDropdown = open && !disabled && query.trim() !== "";
 
   // Shared row markup for both the pinned "Name matches" group and the
-  // regular category groups below it (D29-81) — factored out rather than
+  // regular category groups below it — factored out rather than
   // duplicated inline across the two `.map` calls.
   function renderRow(item: SearchDisplayResult): ReactElement {
     const idx = rankOf.get(item.id) ?? -1;
@@ -243,12 +241,10 @@ export function Omnibar(): ReactElement {
           {item.level !== undefined ? (
             <span className="codex-listing-level">Lvl {item.level}</span>
           ) : null}
-          {/* D29-101c render half (P11 S5) — rarity + owning class ONLY
-              (level already rendered above; category rides the group
-              header, the draft's per-row category would have duplicated
-              it). Both are the S1-built `meta.rarity`/`meta.class` search
-              index fields, already carried unrendered on
-              `SearchDisplayResult` since S1. */}
+          {/* Rarity + owning class ONLY (level already rendered above;
+              category rides the group header, a per-row category would
+              duplicate it). Both are the `meta.rarity`/`meta.class` search
+              index fields carried on `SearchDisplayResult`. */}
           {item.rarity !== undefined ? (
             <span className="codex-rarity">{capitalize(item.rarity)}</span>
           ) : null}

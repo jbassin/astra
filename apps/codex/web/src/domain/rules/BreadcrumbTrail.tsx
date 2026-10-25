@@ -1,8 +1,7 @@
-// P4 S3 (D29-41) — the rules entity-page breadcrumb trail: book › ancestors ›
-// self. A plain, frontend-free component (no router/state) — every input is
-// already resolved server-side by `entityPageData.ts`'s `resolveRulesNav`
-// (D29-41's own "one serverFn, no second round trip" text), so this file
-// only renders. Mirrors akasha-frontend's `.breadcrumb-container`/
+// The rules entity-page breadcrumb trail: book › ancestors › self. A plain,
+// frontend-free component (no router/state) — every input is already resolved
+// server-side by `entityPageData.ts`'s `resolveRulesNav` (one serverFn, no
+// second round trip), so this file only renders. Mirrors akasha-frontend's `.breadcrumb-container`/
 // `.breadcrumb-element` structure (its own CSS-class naming precedent for a
 // breadcrumb, though akasha's own component isn't reused — that one walks a
 // flat build-time slug tree, this walks the rules tree's ancestor array).
@@ -16,11 +15,11 @@ export function BreadcrumbTrail({
   ancestors,
   currentName,
 }: {
-  /** The book display name — never linked (books aren't tree nodes, D29-41). */
+  /** The book display name — never linked (books aren't tree nodes). */
   book: string;
   /** Root-first ancestor chain, own name excluded (that's `currentName`).
    * `id` present -> a real doc, linked; absent -> a synthetic group node,
-   * plain text (D29-41's own rule). */
+   * plain text. */
   ancestors: readonly RulesTrailItem[];
   /** The entity's own name — always the trail's last element, always plain
    * text (the "you are here" convention, never a link to itself). */
@@ -32,7 +31,7 @@ export function BreadcrumbTrail({
         <li className="codex-rules-breadcrumb-item">{book}</li>
         {ancestors.map((a, i) => (
           // Ancestor names aren't globally unique (generic chapter titles
-          // recur across books, D29-39) and synthetic ancestors have no id
+          // recur across books) and synthetic ancestors have no id
           // — index-keying is the only stable option for this fixed-shape,
           // server-rendered, never-reordered array.
           // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders

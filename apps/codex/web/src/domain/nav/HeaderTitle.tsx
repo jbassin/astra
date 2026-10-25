@@ -4,8 +4,8 @@ import type { ReactElement } from "react";
 import { displayCategoryName } from "@/domain/render/displayCategoryName";
 
 /**
- * D29-112 (P11 S4, R4, #13e) — the root header's title-into-header
- * mechanism. Mechanism PINNED by the spec: reads the RESOLVED matches via
+ * The root header's title-into-header mechanism. It reads the RESOLVED
+ * matches via
  * `useMatches()` (never an effect-based "context setter" — that's
  * client-only, which would flash the wordmark before the title lands and
  * disagree with the SSR pass entirely, a hydration mismatch by
@@ -13,29 +13,25 @@ import { displayCategoryName } from "@/domain/render/displayCategoryName";
  * router match tree, so this is flash-free and hydration-safe by
  * construction — no `useEffect`/`useState` anywhere in this file.
  *
- * Stakeholder redirect (post-D29-112): header-carries-title is scoped to
+ * Header-carries-title is scoped to
  * PARENT/LISTING surfaces only — "when going to a SPECIFIC page, the title
  * shouldn't replace the codex header; that behavior should only be for the
  * parent pages like /spell." SPECIFIC pages (an entity's own
  * `/{category}/{slug}` — including rules DOCS, which land on this exact
  * same route — and the bespoke `/class/$slug` page) now fall through to the
- * `default: null` case below (wordmark), and their own in-content h1 is
- * VISIBLE again (`EntityHeader.tsx`/`ClassPage.tsx` — the `standalone`
- * sr-only mechanism this decision introduced is removed outright, not just
- * bypassed, since nothing renders it any more).
+ * `default: null` case below (wordmark), and their own in-content h1 stays
+ * VISIBLE (`EntityHeader.tsx`/`ClassPage.tsx`).
  *
  * - listing routes (`/$category/`) — title = `displayCategoryName(params.
- *   category)`. No loader dependency at all (immune to the D29-89 SSR
+ *   category)`. No loader dependency at all (immune to the SSR
  *   windowed-projection timing — `params` resolves before any loader data
- *   does). UNCHANGED — a parent/listing surface.
+ *   does). A parent/listing surface.
  * - the `/rules` tree-browser route itself — title = `displayCategoryName
  *   ("rules")` ("Rules"), a fixed page name (no params/loaderData needed).
- *   UNCHANGED — a parent surface (the tree browser, not an individual doc).
+ *   A parent surface (the tree browser, not an individual doc).
  * - everything else (landing `/`, `/search`, `/categories`, `/sources`, a
  *   specific entity/rules-doc/class page, an unmatched/404 path) — `null`,
- *   meaning "keep the wordmark" (the ONLY home affordance before D29-112
- *   existed — `deriveHeaderTitle` returning `null` is exactly how that
- *   survives unmodified).
+ *   meaning "keep the wordmark".
  */
 
 interface MinimalRouteMatch {
@@ -73,9 +69,8 @@ export function HeaderTitle(): ReactElement {
   const title = deriveHeaderTitle(matches);
 
   if (title === null) {
-    // Unchanged from before this decision — landing/`/search`/`/categories`/
-    // `/sources` (and any unmatched path) keep the wordmark, the site's
-    // ONLY home affordance until this slice added the glyph below.
+    // Landing/`/search`/`/categories`/`/sources` (and any unmatched path)
+    // keep the wordmark as their home affordance.
     return (
       <Link to="/" className="site-brand">
         codex
@@ -93,8 +88,8 @@ export function HeaderTitle(): ReactElement {
         <img src="/favicon.svg" alt="" width={20} height={20} />
       </Link>
       {/* mobile: ellipsizes via `globals.css`, never wraps the bar taller
-          (D29-112's own mobile requirement) — `min-width: 0` on both this
-          and the wrapper above is what lets it actually shrink. */}
+          — `min-width: 0` on both this and the wrapper above is what lets
+          it actually shrink. */}
       <span className="site-header-title-text">{title}</span>
     </div>
   );

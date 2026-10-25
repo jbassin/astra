@@ -1,12 +1,10 @@
-// S3 (D29-27) — the category directory's pure core, served at the demoted
-// `/categories` route since P4.5 S2 (D29-47 — `/` itself is now the R4
-// landing page). Mirrors
-// `entityPageData.ts`'s split: a plain function over an injected `CorpusReader`,
-// directly unit-testable against the fixture corpus with zero
-// createServerFn/Start-runtime machinery, called from `corpusFns.ts`'s thin
-// wrapper. Explicitly THROWAWAY (spec: "no facet UI, no pagination, no sort") —
-// grouping reuses the render layer's own `categoryGroupOf` (S1) rather than
-// inventing a second taxonomy just for this page.
+// The category directory's pure core, served at `/categories` (`/` is the
+// landing page). Mirrors `entityPageData.ts`'s split: a plain function over an
+// injected `CorpusReader`, directly unit-testable against the fixture corpus
+// with zero createServerFn/Start-runtime machinery, called from
+// `corpusFns.ts`'s thin wrapper. Deliberately minimal (no facet UI, no
+// pagination, no sort) — grouping reuses the render layer's own
+// `categoryGroupOf` rather than inventing a second taxonomy just for this page.
 
 import type { CorpusReader } from "@astra/codex-corpus/reader";
 
@@ -28,7 +26,7 @@ export interface CategoryDirectoryData {
 }
 
 /** Display order for the 6 `CategoryGroup`s — the 5 named groups (each backing a
- * bespoke facet/statblock header, D29-26) first, `generic` (the ~80 other
+ * bespoke facet/statblock header) first, `generic` (the ~80 other
  * categories) last. */
 const GROUP_ORDER: readonly CategoryGroup[] = [
   "creature",

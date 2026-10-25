@@ -5,12 +5,11 @@
 // per-file (same convention as `Omnibar.tsx`'s own sibling islands).
 //
 // No mocking of `pagefindClient.loadPagefind` — `/pagefind/pagefind.js`
-// genuinely doesn't exist in this test environment (D29-12: no `data/`, no
+// genuinely doesn't exist in this test environment (no `data/`, no
 // built index), so every test here exercises the REAL fail-soft path
 // end-to-end. The success-path rendering (grouped type-ahead, keyboard nav
-// landing on a real result) is proven against the REAL built index via
-// Playwright at the S4 gate — see the session report; `pagefindClient.test.ts`
-// covers the grouping/collision/projection logic those renders depend on in
+// landing on a real result) is checked against the REAL built index in a
+// browser, not here; `pagefindClient.test.ts` covers the grouping/collision/projection logic those renders depend on in
 // isolation.
 
 import { createRootRoute, createRouter, RouterProvider } from "@tanstack/react-router";
@@ -26,7 +25,7 @@ function renderOmnibar() {
   return render(<RouterProvider router={router} />);
 }
 
-describe("Omnibar (D29-36)", () => {
+describe("Omnibar", () => {
   beforeEach(() => {
     _resetPagefindClientForTests();
   });

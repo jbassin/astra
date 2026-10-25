@@ -6,12 +6,10 @@ import { fixtureCorpusRoot } from "@/server/corpusFs";
 import { allNavCategories, NAV_ITEMS } from "./navData";
 
 /**
- * D29-47/D29-110 conformance gate — mirrors `facetDefs.test.ts`'s own
- * conformance-gate idiom. Originally (D29-47) `navData.ts`'s category union
- * had to equal the full corpus category list exactly; D29-110 (P11 S4)
- * curates the nav down to 28 categories, so that union-equality assert is
- * GONE (deliberately — the whole point of curation is that most of the 88
- * are no longer nav-assigned) and replaced by a subset check: every curated
+ * Nav conformance gate — mirrors `facetDefs.test.ts`'s own conformance-gate
+ * idiom. The nav is curated down to 28 categories, so there is
+ * deliberately no union-equality assert against the corpus (most of the 88
+ * are not nav-assigned); instead a subset check: every curated
  * category must still be a REAL corpus category (no typo'd/stale slug), and
  * the curated count is pinned at exactly 28. The corpus-census "exactly 88"
  * assert STAYS — it anchors the subset check (curated categories are
@@ -22,7 +20,7 @@ import { allNavCategories, NAV_ITEMS } from "./navData";
  * `facetDefs.test.ts` itself reads), so this holds under both CI (fixture
  * only) and a real corpus checkout alike.
  */
-describe("navData.ts: D29-110 curated nav IA conformance", () => {
+describe("navData.ts: curated nav IA conformance", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
   const expectedCategories = [...reader.categories()].sort();
 
@@ -37,7 +35,7 @@ describe("navData.ts: D29-110 curated nav IA conformance", () => {
     }
   });
 
-  it("allNavCategories() totals exactly 28 (D29-110's curated set)", () => {
+  it("allNavCategories() totals exactly 28 (the curated set)", () => {
     expect(allNavCategories().length).toBe(28);
   });
 
@@ -57,14 +55,13 @@ describe("navData.ts: D29-110 curated nav IA conformance", () => {
         expect(item.categories?.length ?? 0).toBeGreaterThan(0);
       } else {
         expect(item.href).toBeTruthy();
-        // D29-110: the old Rules split control (a link ALSO carrying a
-        // dropdown tail) is gone — every link item today is bare.
+        // no link item also carries a dropdown tail — every link is bare.
         expect(item.categories ?? []).toHaveLength(0);
       }
     }
   });
 
-  it("Rules is a bare direct link to /rules, no dropdown tail (D29-110: the split control is gone)", () => {
+  it("Rules is a bare direct link to /rules, no dropdown tail", () => {
     const rules = NAV_ITEMS.find((item) => item.label === "Rules");
     expect(rules).toBeDefined();
     expect(rules?.kind).toBe("link");

@@ -14,8 +14,8 @@ import { GLYPH_IDS } from "./GlyphDefs";
  * `.codex-edition-remaster` amber hook (and the default
  * `--color-ink-dim`) keep working unchanged.
  *
- * P8-follow-up dedupe (`GlyphDefs.tsx`) — the traced path data for both
- * shapes (Four-Point Spark / History Ring) now lives ONCE as `<symbol
+ * SVG dedupe (`GlyphDefs.tsx`) — the traced path data for both
+ * shapes (Four-Point Spark / History Ring) lives ONCE as `<symbol
  * id={GLYPH_IDS.remaster|legacy}>`, mounted once in `src/routes/__root.tsx`;
  * every instance below emits `<use href="#...">` instead of re-emitting the
  * path `d=` string (measured: 6,173 uses of these 2 shapes on a single

@@ -7,16 +7,16 @@ import { EditionIcon } from "@/ui";
 import { groupSourcesByProductLine, OTHER_GROUP_LABEL } from "./sourcesModel";
 
 /**
- * D29-43 — the `/sources` page body: a plain server-rendered view (NO
+ * The `/sources` page body: a plain server-rendered view (NO
  * island — this file owns zero React state/hooks), grouped by product line
  * via `sourcesModel.ts`'s pure grouping. Every book row links its
  * `sourceEntityRef` (when present) and each of its per-category counts into
- * the EXISTING P3 filtered-browse URL codec (`urlState.ts`'s `joinCsv` — the
+ * the EXISTING filtered-browse URL codec (`urlState.ts`'s `joinCsv` — the
  * same backslash-comma-escaping a `book=` param round-trips through
  * `$category/`'s own `validateBrowseSearch` -> `decodeCsvSet`, no new filter
  * machinery). The "Other" bucket renders as a native `<details>`, collapsed
- * by default (D29-43 — zero JS/hydration risk, S3's own disclosure
- * precedent, `RulesLayout.tsx`'s sidebar).
+ * by default (zero JS/hydration risk, the same disclosure pattern as
+ * `RulesLayout.tsx`'s sidebar).
  */
 export function SourcesIndexView({ books }: { books: readonly SourceIndexEntry[] }): ReactElement {
   const groups = groupSourcesByProductLine(books);
@@ -60,13 +60,13 @@ export function SourcesIndexView({ books }: { books: readonly SourceIndexEntry[]
 }
 
 /** A single book's own filtered-browse href for one category — the EXISTING
- * `book=` core-facet param (`urlState.ts`), pre-selected to exactly this
- * book. `joinCsv` handles the comma-escaping a bare `.split(",")` would
- * shred (the real corpus's own comma-bearing book titles, D29-35's own
- * finding); `encodeURIComponent` percent-encodes the escaped value for the
- * raw `<a href>` (this page has no island/router `Link`, so the href is
- * hand-built — `%20` for a literal space avoids the qss `+`-decodes-to-space
- * landmine `urlState.ts`'s own file header warns about). */
+ * `book=` core-facet param (`urlState.ts`), pre-selected to exactly this book.
+ * `joinCsv` handles the comma-escaping a bare `.split(",")` would shred (the
+ * real corpus has comma-bearing book titles); `encodeURIComponent`
+ * percent-encodes the escaped value for the raw `<a href>` (this page has no
+ * island/router `Link`, so the href is hand-built — `%20` for a literal space
+ * avoids the qss `+`-decodes-to-space landmine `urlState.ts`'s own file header
+ * warns about). */
 function categoryBrowseHref(category: string, book: string): string {
   return `/${category}?book=${encodeURIComponent(joinCsv([book]))}`;
 }

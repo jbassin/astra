@@ -1,4 +1,4 @@
-// D29-23 — which corpus this server process reads, and whether it may serve it. The
+// Which corpus this server process reads, and whether it may serve it. The
 // reader itself (`createCorpusReader`, traversal-guarded `node:fs` reads) lives in
 // `@astra/codex-corpus/reader`. Imported ONLY from `corpusFns.ts` (server fns) and the
 // server entry — NEVER from a route/component file, so `node:fs` (and the corpus's
@@ -254,7 +254,7 @@ export function createCorpusSource(
 }
 
 /** This process's source, created on first use: this module must run no side effects at
- * import (the client-bundle leak guard, D29-23). Its inputs are `CODEX_CORPUS_ROOT`,
+ * import (the client-bundle leak guard). Its inputs are `CODEX_CORPUS_ROOT`,
  * `codex.data-path` and the dev flag. */
 let processSource: CorpusSource | undefined;
 function source(): CorpusSource {

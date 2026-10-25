@@ -1,52 +1,44 @@
-// P3 S4 (D29-36) — the `/search` results page island. The route file
-// (`routes/search.tsx`) SSRs the shell + a `<noscript>` no-JS notice; this
-// component is the client-only worker — mounted unconditionally (its own
-// first render, both server and client, shows the same "loading the search
-// index…" state, so there's no hydration mismatch to guard with a
-// `<ClientOnly>` wrapper, unlike e.g. harrow's `Math.random` draw).
+// The `/search` results page island. The route file (`routes/search.tsx`)
+// SSRs the shell + a `<noscript>` no-JS notice; this component is the
+// client-only worker — mounted unconditionally (its own first render, both
+// server and client, shows the same "loading the search index…" state, so
+// there's no hydration mismatch to guard with a `<ClientOnly>` wrapper,
+// unlike e.g. harrow's `Math.random` draw).
 //
 // Shares code with the Omnibar rather than duplicating it: `pagefindClient
 // .loadPagefind`/`toDisplayResult` (the SAME memoized runtime import — a
 // visit that already warmed the Omnibar's load doesn't re-fetch
-// `pagefind.js`), `domain/browse/filterEngine.collidingNames` (M5, the same
-// rule D29-35 defined for listings) and `domain/browse/EmptyState
-// .BrowseEmptyState` (M6, the literal "same component serves `/search`" the
-// spec calls for). The URL codec is `searchUrlState.ts`'s own
-// `SearchPageSearch`/`SearchFilterState` shape (not `BrowseSearch` —
-// D29-35 vs D29-36).
+// `pagefind.js`), `domain/browse/filterEngine.collidingNames` (the same
+// collision rule the listings use) and `domain/browse/EmptyState
+// .BrowseEmptyState` (the same empty state the listings render). The URL
+// codec is `searchUrlState.ts`'s own `SearchPageSearch`/`SearchFilterState`
+// shape, not the listings' `BrowseSearch`.
 //
-// P4.5 D29-48 (adversarial M1)'s original R3 carve-out — search NEVER hides
-// superseded content by default — is AMENDED by P6 R11 (D29-67): `/search`
-// now hides superseded content by default too, matching every other
+// `/search` hides superseded content by default, matching every other
 // surface (browse/rules/sidebars). The filter-area reveal control below
-// (`SupersededSection`) mirrors `domain/browse/FacetPanel.tsx`'s own
-// D29-48 idiom (explainer copy + "Include superseded content" checkbox),
-// wired through `searchUrlState.ts`'s own `superseded` field/`?superseded=`
-// param rather than a re-adaptation of the deleted site-wide toggle.
+// (`SupersededSection`) mirrors `domain/browse/FacetPanel.tsx`'s own idiom
+// (explainer copy + "Include superseded content" checkbox), wired through
+// `searchUrlState.ts`'s own `superseded` field/`?superseded=` param; there
+// is no site-wide toggle.
 //
-// P13 S3 (D29-130) — the hand-copied `FilterSection`/`SupersededSection`
-// markup this file used to carry (their own ranges, pre-this-slice: roughly
-// 425-460 and 469-491) DIES, replaced by the shared presentational
-// primitives `domain/browse/facetControls.tsx` exports (`FacetSection`,
+// Facet sections render through the shared presentational primitives
+// `domain/browse/facetControls.tsx` exports (`FacetSection`,
 // `ToggleChipRow`/`EnumOptionList`, `editionOptionLabel`) — the SAME chip
 // -vs-checkbox split (`CHIP_MAX_OPTIONS`) and rank-order sort
 // (`filterEngine.ts`'s `sortOptionsFor`) `FacetPanel.tsx` uses. This file
 // KEEPS everything the primitives don't own: `SearchFilterState`/
 // `searchUrlState.ts`, its Pagefind-derived `filterCounts` (passed to the
 // primitives AS DATA, never recomputed there), its inline 26rem-rail layout
-// (no pane-swap, no dialog — `BrowseListing.tsx`'s own D29-123 container
-// mechanism doesn't apply here, there's no preview pane), and its OWN
-// ordering exceptions via `sortOptionsFor`'s comparator seam: `level` stays
-// NUMERIC (-2..28, never the primitive's default label-sort) and `category`
-// keeps its pre-existing raw-key locale order (never `sortOptionsFor`'s
-// rarity-rank/label-sort defaults, which don't apply to a facet with no
-// browse counterpart at all). Rarity and Edition, by contrast, DELIBERATELY
-// pick up `sortOptionsFor`'s general behavior with no comparator override —
-// Rarity now rank-orders common/uncommon/rare/unique (was a raw-key
-// alphabetical sort: common/rare/uncommon/unique) and Edition gets the
-// shared icon+VISIBLE-text treatment (was an icon-only glyph) — both
-// DELIBERATE pin changes, not oversights (see the S3 build record's own
-// enumerated pin list).
+// (no pane-swap, no dialog — `BrowseListing.tsx`'s container mechanism
+// doesn't apply here, there's no preview pane), and its OWN ordering
+// exceptions via `sortOptionsFor`'s comparator seam: `level` stays NUMERIC
+// (-2..28, never the primitive's default label-sort) and `category` keeps
+// its raw-key locale order (never `sortOptionsFor`'s rarity-rank/label-sort
+// defaults, which don't apply to a facet with no browse counterpart at
+// all). Rarity and Edition, by contrast, DELIBERATELY pick up
+// `sortOptionsFor`'s general behavior with no comparator override — Rarity
+// rank-orders common/uncommon/rare/unique and Edition gets the shared
+// icon+VISIBLE-text treatment.
 
 import { capitalize } from "@astra/codex-corpus";
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactElement } from "react";
@@ -91,7 +83,7 @@ export type SearchSearchUpdater = (updater: (prev: SearchPageSearch) => SearchPa
 interface ResultPage {
   stubs: PagefindSearchResultStub[];
   /** [pinned name-matches..., naturally-ranked rest...] — a prefix of
-   * length `pinnedCount` is the pinned "Name matches" group (D29-81). */
+   * length `pinnedCount` is the pinned "Name matches" group. */
   items: SearchDisplayResult[];
   /** How many of `items`' leading entries are pinned. */
   pinnedCount: number;
@@ -99,9 +91,8 @@ interface ResultPage {
    * cursor. Distinct from `items.length` because a pin can be found beyond
    * the display budget (`PAGE_SIZE`) inside the wider hydration window, in
    * which case more of `stubs` were consumed than got displayed; when
-   * nothing was pinned this equals `items.length` (`PAGE_SIZE`) exactly,
-   * matching the pre-D29-81 cursor so an un-boosted query's pagination is
-   * byte-identical to before. */
+   * nothing was pinned this equals `items.length` (`PAGE_SIZE`) exactly, so
+   * an un-boosted query paginates exactly as if there were no boost. */
   consumed: number;
 }
 
@@ -169,11 +160,11 @@ export function SearchPage({
     setSearching(true);
     timerRef.current = window.setTimeout(() => {
       void recordSearch({ data: { surface: "page" } }).catch(() => undefined);
-      // D29-101c: pass `null` (not `""`) when the trimmed query is empty —
+      // Pass `null` (not `""`) when the trimmed query is empty —
       // measured live, `pf.search("", {filters})` returns 0 results
       // regardless of filters, while `pf.search(null, {filters})` returns
       // the filter-only set (686-scale) — without this, filter-only
-      // `/search` (incl. the D29-109c trait link) is dead.
+      // `/search` (incl. the trait-pill search link) is dead.
       const trimmedQuery = state.query.trim();
       void pf
         .search(trimmedQuery.length > 0 ? state.query : null, { filters: pagefindFilters(state) })
@@ -185,7 +176,7 @@ export function SearchPage({
             setSearching(false);
             return;
           }
-          // D29-81 — same widened-hydration-window boost as the Omnibar,
+          // The same widened-hydration-window boost as the Omnibar,
           // "ahead of page 1" only (`loadMore` below is untouched — the
           // widened window already covers well past a single page, so a
           // rank-10 hit like `fireball` is caught on this very first scan).
@@ -199,9 +190,8 @@ export function SearchPage({
             pinned.length > 0
               ? [...pinned, ...rest.slice(0, PAGE_SIZE - pinned.length)]
               : hydrated.slice(0, PAGE_SIZE);
-          // No pin found: the cursor stays at `PAGE_SIZE` (byte-identical to
-          // pre-D29-81 pagination — "non-name queries pass through
-          // unchanged" extends to `loadMore` too). A pin found beyond
+          // No pin found: the cursor stays at `PAGE_SIZE` (non-name queries
+          // pass through unchanged, `loadMore` included). A pin found beyond
           // `PAGE_SIZE` inside the wider window: the cursor advances to
           // `scanCount` (everything already scanned), so `loadMore` doesn't
           // re-fetch/re-display the tail of that window.
@@ -218,7 +208,7 @@ export function SearchPage({
   async function loadMore() {
     if (!result || !pf) return;
     const token = tokenRef.current;
-    // D29-81 — cursor is `consumed` (how much of `stubs` this page has
+    // The cursor is `consumed` (how much of `stubs` this page has
     // already scanned), not `items.length` (how much it DISPLAYED) — the
     // two only diverge when a pin was found beyond `PAGE_SIZE` inside the
     // wider hydration window; see `ResultPage.consumed`'s own comment.
@@ -256,7 +246,7 @@ export function SearchPage({
     });
   }
 
-  // P6 R11 (D29-67) — the reveal control's own setter: `superseded` is a
+  // The reveal control's own setter: `superseded` is a
   // plain boolean, not a multi-select dimension, so it gets its own tiny
   // updater rather than being forced through `toggleDimension`'s Set shape.
   function setSuperseded(next: boolean) {
@@ -307,14 +297,12 @@ export function SearchPage({
 
       <div className="codex-browse-layout">
         <aside className="codex-facet-panel" aria-label="Filters">
-          {/* D29-130: Category keeps its PRE-EXISTING raw-key locale order
-              (never sortOptionsFor's rarity-rank/label-sort defaults — this
-              facet has no browse counterpart at all) — an explicit
-              comparator, same as `level` below, is the seam that preserves
-              it. `displayCategoryName` was ALREADY the labelOf here
-              pre-slice (checked first, per the spec's own "ONLY if it
-              doesn't already have it" instruction) — kept verbatim, not
-              double-humanized. */}
+          {/* Category keeps its raw-key locale order (never
+              sortOptionsFor's rarity-rank/label-sort defaults — this facet
+              has no browse counterpart at all) — an explicit comparator,
+              same as `level` below, is the seam that preserves it.
+              `displayCategoryName` is the labelOf, applied once (never
+              double-humanized). */}
           <SearchFacetSection
             title="Category"
             dimension="category"
@@ -324,7 +312,7 @@ export function SearchPage({
             comparator={(a, b) => a.value.localeCompare(b.value)}
             onToggle={(v) => toggleDimension("category", v)}
           />
-          {/* D29-130/D29-126: level stays NUMERIC (-2..28) via an explicit
+          {/* Level stays NUMERIC (-2..28) via an explicit
               comparator — sortOptionsFor's own default (label-sort) would
               otherwise scramble it string-lexically ("-2" < "1" < "10"...). */}
           <SearchFacetSection
@@ -335,11 +323,10 @@ export function SearchPage({
             comparator={(a, b) => Number(a.value) - Number(b.value)}
             onToggle={(v) => toggleDimension("level", v)}
           />
-          {/* D29-130 pin change: NO comparator passed — Rarity now rank
-              -orders common/uncommon/rare/unique via sortOptionsFor's own
-              "rarity" dimension exception (`FacetPanel.tsx`'s same rule),
-              replacing the old raw-key alphabetical order
-              (common/rare/uncommon/unique). */}
+          {/* NO comparator passed — Rarity rank-orders
+              common/uncommon/rare/unique via sortOptionsFor's own "rarity"
+              dimension exception (`FacetPanel.tsx`'s same rule), not a
+              raw-key alphabetical order. */}
           <SearchFacetSection
             title="Rarity"
             dimension="rarity"
@@ -348,10 +335,9 @@ export function SearchPage({
             labelOf={capitalize}
             onToggle={(v) => toggleDimension("rarity", v)}
           />
-          {/* D29-130/D29-126: Edition gets the shared icon+VISIBLE-text
-              treatment (was an icon-only glyph) via the primitive imported
-              from `facetControls.tsx`, the SAME reference `FacetPanel.tsx`
-              now imports too. */}
+          {/* Edition gets the shared icon+VISIBLE-text treatment via the
+              primitive imported from `facetControls.tsx`, the SAME
+              reference `FacetPanel.tsx` imports. */}
           <SearchFacetSection
             title="Edition"
             dimension="edition"
@@ -381,7 +367,7 @@ export function SearchPage({
             <BrowseEmptyState onClearFilters={handleClear} noun="results" />
           ) : (
             <>
-              {/* D29-81 — `result.items` is [pinned..., rest...]; the pinned
+              {/* `result.items` is [pinned..., rest...]; the pinned
                   prefix (length `result.pinnedCount`) renders as its own
                   "Name matches" group ABOVE the plain results list, exact/
                   prefix name hits are never duplicated in the list below. */}
@@ -417,7 +403,7 @@ export function SearchPage({
   );
 }
 
-// D29-81 — the single result-row renderer shared by the pinned "Name
+// The single result-row renderer shared by the pinned "Name
 // matches" group and the plain results list below it; module-scope (not
 // nested inside `SearchPage`) since it's used as a JSX tag, matching this
 // file's existing `SearchFacetSection`/`SupersededSection` convention.
@@ -443,10 +429,8 @@ function SearchResultRow({
         {displayCategoryName(item.category)}
         {item.level !== undefined ? ` · Lvl ${item.level}` : ""}
         {item.rarity !== undefined ? ` · ${capitalize(item.rarity)}` : ""}
-        {/* D29-101c render half (P11 S5) — the owning-class label (S1's
-            `meta.class`, class-feature entities), the one field `/search`
-            rows were still missing (rarity/level/category already
-            rendered). */}
+        {/* The owning-class label (`meta.class`, class-feature
+            entities). */}
         {item.class !== undefined ? ` · ${item.class}` : ""}
         <span title={item.book}> · {abbreviateBook(item.book) ?? item.book}</span>
       </span>
@@ -463,21 +447,18 @@ function SearchResultRow({
 }
 
 /**
- * P13 S3 (D29-130) — `/search`'s own facet section: `FacetSection` +
+ * `/search`'s own facet section: `FacetSection` +
  * `ToggleChipRow`/`EnumOptionList` (the SAME `CHIP_MAX_OPTIONS` split
  * `FacetPanel.tsx`'s `CoreEnumSection` uses), fed Pagefind's OWN counts as
- * data. No `activeCount`/`onClear` passed to `FacetSection` (D29-124's
+ * data. No `activeCount`/`onClear` passed to `FacetSection` (the
  * badge/per-section-clear treatment is a `FacetPanel`/browse-pane concept —
- * `/search` never had a per-section clear before this slice and nothing
- * here asks for one now, so this stays a plain titled section exactly like
- * the old `FilterSection` was). `comparator`, when supplied, wins outright
- * over `sortOptionsFor`'s own dimension-name rank tables — `level`
- * (NUMERIC, -2..28) and `category` (this facet's pre-existing raw-key
- * locale order) are the two callers below that need one; Rarity and
- * Edition deliberately pass none, so they now pick up `sortOptionsFor`'s
- * general rarity-rank / label-sort behavior instead of the old raw-key
- * alphabetical order — a DELIBERATE pin change, not an oversight (see the
- * S3 build record).
+ * `/search` has no per-section clear, so this stays a plain titled
+ * section). `comparator`, when supplied, wins outright over
+ * `sortOptionsFor`'s own dimension-name rank tables — `level` (NUMERIC,
+ * -2..28) and `category` (this facet's raw-key locale order) are the two
+ * callers below that need one; Rarity and Edition deliberately pass none,
+ * so they pick up `sortOptionsFor`'s general rarity-rank / label-sort
+ * behavior rather than a raw-key alphabetical order.
  */
 function SearchFacetSection({
   title,
@@ -525,19 +506,15 @@ function SearchFacetSection({
   );
 }
 
-// P6 R11 (D29-67), restyled P13 S3 (D29-130) — the `/search` reveal control:
-// now wrapped in the SAME shared `FacetSection` (title-row chrome only, no
-// badge/clear — matches `SearchFacetSection` above) and the SAME muted
-// one-line caption `FacetPanel.tsx`'s own `SupersededSection` uses in place
-// of the old loud blue callout (`.codex-callout-blue`/
-// `.codex-facet-superseded-explainer` — dead now, nothing else on `/search`
-// renders them; `FacetPanel.tsx`'s D29-129 consolidation made the same call
-// for browse). Still a separate, search-owned component rather than an
-// import from `FacetPanel.tsx`: that file's version is wired to
+// The `/search` reveal control: wrapped in the SAME shared `FacetSection`
+// (title-row chrome only, no badge/clear — matches `SearchFacetSection`
+// above) with the SAME muted one-line caption `FacetPanel.tsx`'s own
+// `SupersededSection` uses. A separate, search-owned component rather than
+// an import from `FacetPanel.tsx`: that file's version is wired to
 // `BrowseFilterState`/`StateUpdater` + the `onSupersededReveal`
-// resetScroll-divergence plumbing (D29-129) — `/search` has no such
-// divergence (no pane-swap, no scroll-preserving navigate split) to route
-// around, just a plain boolean setter.
+// resetScroll-divergence plumbing — `/search` has no such divergence (no
+// pane-swap, no scroll-preserving navigate split) to route around, just a
+// plain boolean setter.
 function SupersededSection({
   checked,
   onToggle,

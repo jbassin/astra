@@ -4,8 +4,7 @@
 // needs a real DOM (`fireEvent`, `document.body`), so it opts into jsdom
 // per-file (same convention as `HeaderNav.test.tsx`).
 //
-// D29-105a (S3) — ZERO prior coverage existed for `Popover.tsx`. Per the
-// spec: computed `pointer-events` is NOT assertable here (`globals.css`
+// Computed `pointer-events` is NOT assertable here (`globals.css`
 // never loads under jsdom/vitest) — every assertion below is class-based or
 // behavioral (DOM presence, `.active-popover` toggling, timer-driven
 // open/close), never a computed style. `fetch` is hand-mocked as a plain
@@ -20,9 +19,8 @@ import { initPopovers } from "./Popover";
 
 /** A minimal stand-in for the fetched target page's SSR HTML — just enough
  * shape (`.popover-hint` wrapper, a `.codex-entity-name` h1) to exercise the
- * clone-and-extract path `Popover.tsx` actually runs, and to prove the B1
- * case the spec's review flagged: the cloned title must survive into the
- * popover, never get stripped. */
+ * clone-and-extract path `Popover.tsx` actually runs, and to prove the
+ * cloned title survives into the popover, never stripped. */
 const POPOVER_HTML = `<article class="popover-hint">
   <h1 class="codex-entity-name">Test Entity</h1>
   <p>Body copy for the hover preview.</p>
@@ -62,7 +60,7 @@ function mountTrigger(): HTMLAnchorElement {
   return document.querySelector("a") as HTMLAnchorElement;
 }
 
-describe("initPopovers (D29-105a — grace-delay close + panel hover bridge)", () => {
+describe("initPopovers (grace-delay close + panel hover bridge)", () => {
   afterEach(() => {
     vi.clearAllTimers();
     vi.useRealTimers();
@@ -70,7 +68,7 @@ describe("initPopovers (D29-105a — grace-delay close + panel hover bridge)", (
     document.body.innerHTML = "";
   });
 
-  it("hovering a crossref link opens the popover with a visible title (the B1 case)", async () => {
+  it("hovering a crossref link opens the popover with a visible title", async () => {
     stubFetch();
     const link = mountTrigger();
     const cleanup = initPopovers();
@@ -81,9 +79,8 @@ describe("initPopovers (D29-105a — grace-delay close + panel hover bridge)", (
     const popover = document.getElementById(`popover-${link.pathname}`);
     expect(popover).not.toBeNull();
     expect(popover?.classList.contains("active-popover")).toBe(true);
-    // the cloned page's h1 must survive — D29-105b's compact CSS scopes to
-    // exactly this selector, and the review's headline catch was a draft
-    // that would have deleted it site-wide.
+    // the cloned page's h1 must survive — the popover's compact CSS scopes
+    // to exactly this selector rather than deleting it site-wide.
     expect(popover?.querySelector(".codex-entity-name")?.textContent).toBe("Test Entity");
 
     cleanup();
@@ -101,8 +98,8 @@ describe("initPopovers (D29-105a — grace-delay close + panel hover bridge)", (
 
     vi.useFakeTimers();
     fireEvent.mouseLeave(link);
-    // still open immediately after mouseleave — the pre-D29-105a behavior
-    // (instant `clearActivePopover()`, no timer at all) would fail this.
+    // still open immediately after mouseleave — an instant
+    // `clearActivePopover()` (no timer at all) would fail this.
     expect(popover.classList.contains("active-popover")).toBe(true);
     vi.advanceTimersByTime(199);
     expect(popover.classList.contains("active-popover")).toBe(true);
