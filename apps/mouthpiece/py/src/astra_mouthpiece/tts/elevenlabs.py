@@ -1,4 +1,4 @@
-"""ElevenLabs Text-to-Dialogue provider (network-deferred — gate K).
+"""ElevenLabs Text-to-Dialogue provider (needs the network, so CI never calls it).
 
 The model is `mouthpiece.elevenlabs-model` (eleven_v4 since 2026-09-28).
 The credential resolves via `astra_config` (verified), but the live dialogue

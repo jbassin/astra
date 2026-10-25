@@ -1,4 +1,4 @@
-"""One producer run over one session (0034 §4, D34-5..D34-9).
+"""One producer run over one session.
 
 ``run_producer(date)`` loads the session's digest + cleaned turns (``inputs.py``, shared
 with ``session_script``), builds the read-only tools (each wrapped for telemetry), builds
@@ -9,7 +9,7 @@ into ``<run_dir>`` — on failure too:
 ``brief.json`` + ``brief.md`` (only with a brief), ``trajectory.json``, ``warnings.json``,
 ``summary.json``.
 
-Outcome (D34-8): **ok** — the agent SUBMITted a valid brief; **incomplete** — the cap forced
+Outcome: **ok** — the agent SUBMITted a valid brief; **incomplete** — the cap forced
 the extract fallback and it produced a valid brief; **failed** — an exception, or no valid
 brief. Nothing here writes outside ``run_dir``.
 """
@@ -85,14 +85,14 @@ def render_transcript(turns: list[tuple[int, str, str]]) -> str:
 
 
 def wiki_head(content_dir: Path = CONTENT_DIR) -> dict[str, Any]:
-    """The last commit touching the wiki tree + whether it has local changes (D34-5).
+    """The last commit touching the wiki tree + whether it has local changes.
 
     Asks git from inside ``content_dir``, so it works whichever repo holds the wiki.
     """
 
     def git(*args: str) -> str:
         # The dagster-code image has no git; subprocess.run raises FileNotFoundError for a
-        # missing binary whatever check= says (0035 D35-7) — degrade to "unknown".
+        # missing binary whatever check= says — degrade to "unknown".
         try:
             proc = subprocess.run(
                 ["git", "-C", str(content_dir), *args],

@@ -1,4 +1,4 @@
-"""mouthpiece-backend unit tests (NLSpec 0008 gates C-F, reworked by 0024) — hermetic.
+"""mouthpiece-backend unit tests — hermetic.
 
 No live ElevenLabs/OpenRouter call and no ffmpeg-on-PATH: the LLM client is a stub
 implementing the `LlmClient` protocol (`call_text`/`call_tool`), grounding runs on
@@ -86,7 +86,7 @@ def _cleaned_turns() -> list[tuple[int, str, str]]:
     return [(1, "Archie", "they did a thing")]
 
 
-# ── prompts (gate C — load-bearing lines + interpolation; three hosts, two friends + newcomer) ──
+# ── prompts (load-bearing lines + interpolation; three hosts, two friends + newcomer) ──
 def test_improv_prompt_is_the_two_friends_recap_prompt() -> None:
     p = build_improv_system_prompt(HOSTS)
     assert "recorded podcast RECAP between three co-hosts" in p
@@ -170,7 +170,7 @@ def test_dressing_prompt_forbids_polishing() -> None:
     assert 'NEVER verbalize them as the words "quote" / "end quote"' in flat
 
 
-# ── grounding (gate D — akasha seam, pure over injected pages; flat wiki_refs) ──
+# ── grounding (akasha seam, pure over injected pages; flat wiki_refs) ──
 def test_ground_digest_matches_by_title_and_basename() -> None:
     pages = [
         GroundingPage(path="Geography/Calaria/Wrenford", title="Wrenford", text="A town."),
@@ -237,7 +237,7 @@ def test_script_user_content_orders_sections_and_strips_line_ids() -> None:
     assert withc.index("PREVIOUSLY: stuff") < withc.index("Bram: hello")
 
 
-# ── two-pass script generation (gate C) ────────────────────────────────────
+# ── two-pass script generation ─────────────────────────────────────────────
 def test_generate_script_calls_text_then_tool() -> None:
     client = StubClient(
         text="Bram: hey\nMaeve: hi",
@@ -301,7 +301,7 @@ def test_parse_script_rejects_bad_speaker() -> None:
         parse_script("sid", {"title": "t", "turns": [{"speaker": "Z", "text": "x"}]}, HOSTS)
 
 
-# ── lint (gate E — verbatim metrics) ───────────────────────────────────────
+# ── lint (verbatim metrics) ────────────────────────────────────────────────
 def _script_from_fixture(path: Path) -> Script:
     raw = json.loads(path.read_text())
     turns = [ScriptTurn(speaker=t["speaker"], text=t["text"]) for t in raw["turns"]]
@@ -354,7 +354,7 @@ def test_load_hosts_carries_the_three_seat_roster() -> None:
     assert "never bluffs" in hosts.c.persona
 
 
-# ── 0034 producer brief seam (gate B) ────────────────────────────────────────
+# ── producer brief seam ──────────────────────────────────────────────────────
 def _golden_inputs() -> tuple[SessionDigest, list[tuple[int, str, str]], list[GroundingEntry]]:
     digest = SessionDigest(
         session_id="000.x.2025-1-1",

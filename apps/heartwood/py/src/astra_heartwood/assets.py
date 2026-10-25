@@ -3,11 +3,11 @@ partitions, after linguist's ``session_transcripts``, and the sensor that launch
 each faerrin session.
 
 ``session_wiki`` does not run the agent (the dagster-code image has no node, git, push key
-or docker — 0036 D3). It files ``<requests-path>/<date>.request.json`` and waits for the
+or docker). It files ``<requests-path>/<date>.request.json`` and waits for the
 host ``heartwood-request`` unit to run ``just heartwood-agent <date>`` and write the
 result (``requests.py``). A failed result logs ERROR on ``astra.heartwood`` — the SigNoz
 Class A rule pages Discord — and fails the run without retry: a paid 15–55 min agent run
-must never repeat on its own. Mouthpiece runs in parallel and does not wait (0036 D1).
+must never repeat on its own. Mouthpiece runs in parallel and does not wait.
 """
 
 import time
@@ -25,7 +25,7 @@ from astra_pipeline_resources.partitions import SessionStage, launch_ready, sess
 from . import requests as rq
 from .agent.sessions import faerrin_session
 
-#: Run tag capped at 1 concurrent run in dagster/dagster.yaml (0036 D36-9): a waiting
+#: Run tag capped at 1 concurrent run in dagster/dagster.yaml: a waiting
 #: session_wiki holds a run slot, so two of them must never starve the pipeline.
 CONCURRENCY_TAG = {"astra/heartwood": "session_wiki"}
 POLL_SECONDS = 30
@@ -127,7 +127,7 @@ def run_session_wiki(
 def session_wiki(
     context: dg.AssetExecutionContext, astra_config: AstraConfig, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
-    """Request a heartwood run for this session from the host and wait for it (0036 D36-8).
+    """Request a heartwood run for this session from the host and wait for it.
 
     NO retry policy: the agent is a paid 15–55 min run."""
     try:

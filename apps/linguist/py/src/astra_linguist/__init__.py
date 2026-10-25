@@ -7,7 +7,7 @@ Python Dagster assets (per-session partitions):
   - canonical_transcript : the line-numbered `NNNNNN\\t…` form (→ 0008 + 0011)
 
 It owns *processing* only — wiki pages, auto-linking, and rendering are
-akasha-frontend (D4). Speakers + campaigns come from ontology-being (G3).
+akasha-frontend. Speakers + campaigns come from ontology-being.
 """
 
 from __future__ import annotations

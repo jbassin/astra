@@ -1,4 +1,4 @@
-"""The build-time snapshot (NLSpec 0007 §7 / gate F, decisions D/F4).
+"""The build-time snapshot of the akasha corpus, committed and diffed in CI.
 
 The snapshot = the validated vellum corpus (the ``.vellum`` files themselves) +
 this **metadata JSON**: per page ``{frontmatter, date, crossrefs}`` plus the
@@ -32,7 +32,7 @@ _tracer = get_tracer("astra.akasha-backend")
 REPO_ROOT = find_repo_root(Path(__file__))
 #: The committed snapshot JSON (config `data.akasha-snapshot`).
 SNAPSHOT_PATH = Path(load_config().data.akasha_snapshot) / "akasha-snapshot.json"
-#: The TS structural validator (F3) — `validate_corpus` shells out to it.
+#: The TS structural validator — `validate_corpus` shells out to it.
 VALIDATOR = REPO_ROOT / "libs/ts/vellum-lang/scripts/validate-corpus.ts"
 #: tsx's Node loader (``node --import <it> file.ts``), from vellum-lang's own install: the
 #: deploy checkout installs only that package's node deps, so the root has no tsx there.
@@ -79,9 +79,9 @@ def build_from_corpus(content_dir: Path | str = CONTENT_DIR) -> dict[str, Any]:
 
 
 def validate_corpus(content_dir: Path | str = CONTENT_DIR) -> None:
-    """Run the TS structural validator (F3); raise on any error chip/collision.
+    """Run the TS structural validator; raise on any error chip/collision.
 
-    Runs host-side via ``node`` (0022 S11 — off bun; the dagster image ships
+    Runs host-side via ``node`` (the repo no longer uses bun; the dagster image ships
     neither bun nor node, so this only runs on the host, matching the pipeline
     live-run gotchas). Node 24 must be on the host's PATH.
     """

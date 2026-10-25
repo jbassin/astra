@@ -18,7 +18,7 @@ run_coordinator:
   config:
     # The pipeline runs are heavy (Whisper transcription, LLM distill/script, TTS) — cap
     # concurrency low so they don't pile 10-deep and thrash the box (the default is 10).
-    # 2 → 3 with heartwood (0036 D36-9): a session_wiki run holds a slot for its whole
+    # 3, not 2, because of heartwood: a session_wiki run holds a slot for its whole
     # host-side wait (15–55 min) while using no CPU, so it must not halve pipeline capacity.
     max_concurrent_runs: 3
     # ...and at most one of them waits at a time (the host runs them serially anyway), so a

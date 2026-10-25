@@ -1,4 +1,4 @@
-"""Backfill the chronicle artifacts for every already-committed session (NLSpec 0019).
+"""Backfill the chronicle artifacts for every already-committed session.
 
 Generates `timeline/episodes/<date>.json` for each campaign-matched session (the 7
 shows) via GLM-5.2, then builds `timeline/seasons.json`. Resumable: episode files that

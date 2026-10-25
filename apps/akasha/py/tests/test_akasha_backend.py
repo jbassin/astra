@@ -1,6 +1,6 @@
-"""akasha-backend tests (NLSpec 0007 gates D/F/G) — pure Python, no bun.
+"""akasha-backend tests: loader, crossrefs and snapshot parity — pure Python, no node.
 
-The TS structural validator (gate B) runs in the `corpus-validate` CI job + the
+The TS structural validator runs in the `corpus-validate` CI job + the
 host snapshot; these tests exercise the Python runtime side without shelling out.
 
 They run against the checked-in fixture (`fixtures/astra-data/akasha/`), a small slice of
@@ -36,7 +36,7 @@ FIXTURE_SNAPSHOT = FIXTURE / "snapshot" / "akasha-snapshot.json"
 
 
 def test_load_corpus_reads_every_page() -> None:
-    """Gate G: the loader (the mouthpiece read path) loads the whole corpus."""
+    """The loader (the mouthpiece read path) loads the whole corpus."""
     pages = load_corpus(FIXTURE_CONTENT)
     # A known deity page parses to fields-bearing metadata + a baked date.
     host = next(p for p in pages if p.path == "Divinity/Outer Gods/Iridescent Host")
@@ -45,7 +45,7 @@ def test_load_corpus_reads_every_page() -> None:
 
 
 def test_crossref_resolution_page_to_page() -> None:
-    """Gate D: crossrefs resolve to page paths; dangling targets stay unresolved."""
+    """Crossrefs resolve to page paths; dangling targets stay unresolved."""
     pages = load_corpus(FIXTURE_CONTENT)
     by_path = {p.path: p.path for p in pages}
     by_stem: dict[str, list[str]] = {}
@@ -58,7 +58,7 @@ def test_crossref_resolution_page_to_page() -> None:
     assert (
         resolve_target("Org/Iridescent Church", by_path, by_stem) == "Org/Iridescent Church/index"
     )
-    # A genuine red-link (no such page) stays unresolved — reported, not fatal (E4).
+    # A genuine red-link (no such page) stays unresolved — reported, not fatal.
     assert resolve_target("Iconoclasm", by_path, by_stem) is None
 
     edges = resolve_corpus(pages)
@@ -68,7 +68,7 @@ def test_crossref_resolution_page_to_page() -> None:
 
 
 def test_snapshot_is_deterministic_and_committed() -> None:
-    """Gate F / M6: a fresh build matches the committed snapshot (the parity gate)."""
+    """A fresh build matches the committed snapshot (the parity check)."""
     pages = load_corpus(FIXTURE_CONTENT)
     edges = resolve_corpus(pages)
     fresh = canonical_json(build_snapshot(pages, edges))
@@ -81,6 +81,6 @@ def test_snapshot_is_deterministic_and_committed() -> None:
 
 
 def test_corpus_dir_is_the_configured_content() -> None:
-    """The loader defaults to config's `data.akasha-content` (E2), not a stray dir."""
+    """The loader defaults to config's `data.akasha-content`, not a stray dir."""
     assert Path(load_config().data.akasha_content) == CONTENT_DIR
     assert CONTENT_DIR.is_absolute()

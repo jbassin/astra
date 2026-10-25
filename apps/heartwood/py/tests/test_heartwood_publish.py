@@ -51,7 +51,7 @@ def write_summary(run_dir: Path, *, status: str = "ok", cost: float | None = 0.5
         "counts": {"created": 1, "updated": 1, "moved": 0, "deleted": 1},
         "iterations": 9,
         "tokens": 45678,
-        "changelog": "- Created Bestiary/Grell (L2).",
+        "changelog": "- Created Bestiary/Grell.",
     }
     s.update(extra)
     (run_dir / "summary.json").write_text(json.dumps(s), encoding="utf-8")
@@ -187,7 +187,7 @@ def test_commit_message_shape(run_dir: Path) -> None:
         in lines
     )
     assert "Cost: $0.5000 (9 iterations, 45,678 tokens)" in lines
-    assert lines[lines.index("Changelog:") + 1] == "- Created Bestiary/Grell (L2)."
+    assert lines[lines.index("Changelog:") + 1] == "- Created Bestiary/Grell."
 
 
 def test_commit_message_unknown_cost_and_empty_changelog(run_dir: Path) -> None:

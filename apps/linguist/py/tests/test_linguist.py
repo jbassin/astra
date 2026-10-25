@@ -1,4 +1,4 @@
-"""linguist parity + unit tests (NLSpec 0006 gates B–D) — hermetic.
+"""linguist parity + unit tests — hermetic.
 
 The formatted-transcript transform is a downstream byte contract, so it's tested
 byte-for-byte against a real faerrin `data/{date}.json` produced from the same
@@ -23,7 +23,7 @@ def _resolver() -> SpeakerResolver:
     return SpeakerResolver.from_being()
 
 
-# ── formatted_transcript byte-parity (gate B) ──────────────────────────────
+# ── formatted_transcript byte-parity ───────────────────────────────────────
 def test_formatted_transcript_parity() -> None:
     raw = [
         RawLine(**line)
@@ -41,7 +41,7 @@ def test_formatted_transcript_parity() -> None:
     assert to_json(transcript) == expected
 
 
-# ── speaker resolution from ontology-being (gate D) ────────────────────────
+# ── speaker resolution from ontology-being ─────────────────────────────────
 def test_speaker_resolution() -> None:
     resolver = _resolver()
     # Known aliases → player name + --text{Name} (matches faerrin's roster).
@@ -52,7 +52,7 @@ def test_speaker_resolution() -> None:
     assert resolver.resolve("craigbot").model_dump() == {"name": "craigbot", "color": "--textGuest"}
 
 
-# ── defs.kdl correction replacer (gate C) ─────────────────────────────────
+# ── defs.kdl correction replacer ──────────────────────────────────────────
 def test_correction_replacer_basics() -> None:
     replace = build_replacer({"Anouk": ["Anak", "Anuk", "Onyx"], "Calaria": ["Galaria"]})
     assert replace("the Anak met Galaria") == "the Anouk met Calaria"
@@ -67,7 +67,7 @@ def test_real_defs_loads_and_corrects() -> None:
     assert replace("and then Anak spoke") == "and then Anouk spoke"
 
 
-# ── campaign match / billing / context / canonical (gates E/F) ─────────────
+# ── campaign match / billing / context / canonical ─────────────────────────
 from astra_linguist.campaigns import (  # noqa: E402
     CampaignView,
     CharacterRole,
@@ -180,7 +180,7 @@ def test_process_session_end_to_end() -> None:
     assert artifacts.canonical.startswith("000001\tGandolf: Gandolf casts a spell.  ")
 
 
-# ── real-data end-to-end parity (gates E/F/I) ──────────────────────────────
+# ── real-data end-to-end parity ────────────────────────────────────────────
 def test_real_session_canonical_parity() -> None:
     """A real session's data.json → match → context → canonical reproduces its committed
     transcript byte-for-byte (the whole deterministic pipeline).

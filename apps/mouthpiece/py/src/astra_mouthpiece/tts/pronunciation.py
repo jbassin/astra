@@ -2,8 +2,8 @@
 
 Maps an invented proper noun (Faerrin/Pathfinder names TTS mangles) → its IPA,
 injected inline as `/…/`, which ElevenLabs honors. Only meaningful on the dialogue
-path (M6) — the mock would read the slashes aloud. The terms are the `ipa=` properties
-of the canonical-names `defs.kdl` (`astra_lexicon.load_pronunciations`, 0037 PIPE-14).
+path — the mock would read the slashes aloud. The terms are the `ipa=` properties
+of the canonical-names `defs.kdl` (`astra_lexicon.load_pronunciations`).
 """
 
 from __future__ import annotations

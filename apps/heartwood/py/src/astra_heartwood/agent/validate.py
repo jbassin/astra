@@ -1,4 +1,4 @@
-"""The per-write content rail (0033 D33-4): akasha's TS structural validator.
+"""The per-write content rail: akasha's TS structural validator.
 
 ``write_page`` hands a private temp dir holding the one candidate page to a
 ``Validator``. The real one shells out to ``validate-corpus.ts --dir <dir>`` under node

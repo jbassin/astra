@@ -1,4 +1,4 @@
-"""One agent run over one session (0033 D33-7..D33-11, §6 S3).
+"""One agent run over one session.
 
 ``run_session(date)`` creates the staging workspace, builds the tools (each wrapped for
 telemetry), builds two distinct metered LMs (main + sub), runs ``HeartwoodRLM`` over the
@@ -8,7 +8,7 @@ writes the run artifacts — on failure too:
 ``<run>/ops.jsonl`` (the journal, written as it goes), ``trajectory.json``,
 ``changeset.json``, ``diff.patch``, ``summary.json``.
 
-Outcome (D33-9): **ok** — the agent called ``SUBMIT``; **incomplete** — the iteration
+Outcome: **ok** — the agent called ``SUBMIT``; **incomplete** — the iteration
 cap forced the extract fallback; **failed** — an exception escaped the main loop.
 Nothing here publishes: ``publish-sync`` is a separate step (§5, S4).
 
@@ -37,7 +37,7 @@ from astra_config import load_config
 from astra_config.models import HeartwoodConfig
 from astra_linguist.chronicle import TRANSCRIPT_DIR
 
-# Sandbox helpers live in astra_llm.rlm (0034 D34-1); re-exported for callers and the
+# Sandbox helpers live in astra_llm.rlm; re-exported for callers and the
 # `heartwood-sandbox-warm` recipe, which imports them from here.
 from astra_llm.rlm import deno_available as deno_available
 from astra_llm.rlm import make_interpreter as make_interpreter
@@ -83,7 +83,7 @@ def default_lm_factory(cfg: HeartwoodConfig) -> LmFactory:
 
 # ── outcome ────────────────────────────────────────────────────────────────
 def determine_status(*, error: BaseException | None, hit_cap: bool) -> RunStatus:
-    """D33-9. ``hit_cap`` wins over an error: an exception from the forced extract after
+    """The run's outcome. ``hit_cap`` wins over an error: an exception from the forced extract after
     the cap still leaves the run *incomplete* (the loop itself ended at the cap)."""
     if hit_cap:
         return "incomplete"
@@ -138,7 +138,7 @@ def run_session(
     resolver: Callable[[str], Resolution] = resolve,
     run_id: str | None = None,
 ) -> RunResult:
-    """Stage, run the agent over session ``date``, and write the artifacts (D33-11).
+    """Stage, run the agent over session ``date``, and write the artifacts.
 
     Never publishes. Raises only for setup errors before the run starts (e.g. ``date``
     is not an ingestible faerrin session); every error inside the run becomes a

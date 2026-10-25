@@ -67,7 +67,7 @@ def merge_audio(
     """ffmpeg amix the player tracks into one mp3 (padded to the longest).
 
     Writes to a `.tmp` then renames so the output only ever appears whole — a
-    materialized partition = "done" (N7), so a crash mid-write must not leave a
+    materialized partition = "done", so a crash mid-write must not leave a
     half-written `audio.mp3`. (ffmpeg can't infer the muxer from `.tmp`, which is
     why `merge_args` sets `-f mp3` explicitly.)
     """

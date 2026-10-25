@@ -1,4 +1,4 @@
-"""The explicit episode kind (0037 PIPE-22) and its reader for files written before it.
+"""The explicit episode kind and its reader for files written before it.
 
 The file shapes below are the ones on disk in ``mouthpiece/episodes`` (listed 2026-10-24):
 a live session dir (script ``hosts/session_id/title/turns``, digest with ``stats``), a recap

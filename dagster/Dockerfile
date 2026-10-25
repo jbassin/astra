@@ -62,7 +62,7 @@ COPY ontology ontology
 RUN uv sync --frozen --no-dev --package astra-pipeline
 
 # Deno for dspy's RLM sandbox (Deno + Pyodide) — the mouthpiece producer's session_brief
-# asset (0035 D35-1). Pinned to the host's 2.5.6. dspy's runner.js imports an UNPINNED
+# asset. Pinned to the host's 2.5.6. dspy's runner.js imports an UNPINNED
 # npm:pyodide + deno.land/std@0.186.0, so warm them into DENO_DIR here (network at build
 # time) and run the sandbox cache-only at runtime (ASTRA_DENO_CACHED_ONLY → `deno run
 # --cached-only`, astra_llm.rlm.make_interpreter): a runtime can never fetch a different

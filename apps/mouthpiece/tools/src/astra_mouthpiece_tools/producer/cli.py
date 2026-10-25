@@ -1,4 +1,4 @@
-"""``astra-mouthpiece-producer`` — the producer's host CLI (0034 D34-2, §5).
+"""``astra-mouthpiece-producer`` — the producer's host CLI.
 
     brief <date> [--model ID]     run the producer over one session; writes brief.json /
                                   brief.md / trajectory / warnings / summary into a fresh

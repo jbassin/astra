@@ -1,4 +1,4 @@
-"""Chronicle GLM-logic tests (NLSpec 0019, slice S2) — hermetic, stubbed LLM.
+"""Chronicle GLM-logic tests — hermetic, stubbed LLM.
 
 No key, no network: a fake structured client returns a canned `EpisodeSummary`, so we
 test the prompt assembly, model pass-through, and show resolution / entry assembly.
@@ -91,7 +91,7 @@ def test_build_episode_entry_unknown_date_is_unmatched() -> None:
     assert entry.show == "unmatched"
 
 
-# ── season grouping (S3) ────────────────────────────────────────────────────
+# ── season grouping ─────────────────────────────────────────────────────────
 def _entry(date: str, show: str, title: str = "T") -> EpisodeEntry:
     return EpisodeEntry(
         date=date,

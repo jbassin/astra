@@ -1,6 +1,6 @@
 """Pydantic models — the caster pipeline contracts (ported from caster `types.ts`).
 
-Typed I/O comes from these models, NOT dspy signatures (H1): clean+enrich (0024 §3)
+Typed I/O comes from these models, NOT dspy signatures: clean+enrich
 returns a `SessionDigest`, the two-pass script returns a `Script`.
 """
 

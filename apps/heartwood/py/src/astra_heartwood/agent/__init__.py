@@ -1,2 +1,2 @@
-"""The heartwood wiki-maintainer agent (0033 D33-1): sessions, dates, and (from S2) the
+"""The heartwood wiki-maintainer agent: sessions, dates, the
 staging workspace, tools, RLM, run, ledger, and CLI."""

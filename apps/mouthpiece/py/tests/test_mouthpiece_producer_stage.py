@@ -1,4 +1,4 @@
-"""The producer pipeline stages (0035 D35-4/D35-5/D35-7) — hermetic, fake producer."""
+"""The producer pipeline stages — hermetic, fake producer."""
 
 from __future__ import annotations
 

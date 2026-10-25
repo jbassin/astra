@@ -126,7 +126,7 @@ def session_episode_summary(
     pipeline_paths: PipelinePaths,
     llm: LlmResource,
 ) -> dg.MaterializeResult:
-    """Summarize one session into a Rich chronicle `EpisodeEntry` (NLSpec 0019).
+    """Summarize one session into a Rich chronicle `EpisodeEntry`.
 
     Runs automatically after `session_transcripts` (it reads that asset's
     `data/{date}.json`) and writes `timeline/episodes/{date}.json`. **Live** — spends
@@ -180,7 +180,7 @@ def campaign_timeline(
     by first-session date, and (per show) calls GLM-5.2 to assign contiguous seasons,
     writing `timeline/seasons.json`. `campaign_timeline_sensor` launches it after a new
     episode summary, and only when the inputs changed. **Skips the GLM calls when the
-    episode inputs are unchanged** (C9), so a hand materialize is a no-op too."""
+    episode inputs are unchanged**, so a hand materialize is a no-op too."""
     entries = load_episode_entries(pipeline_paths.chronicle_episodes)
     if not entries:
         return dg.MaterializeResult(metadata={"shows": 0, "status": "no episodes yet"})
@@ -257,7 +257,7 @@ def _timeline_paths() -> PipelinePaths:
 )
 def campaign_timeline_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     """Rebuild the seasons after a new `session_episode_summary` materialization, and only
-    when the episode inputs changed (0037 PIPE-20).
+    when the episode inputs changed.
 
     The cursor is the storage id of the newest summary materialization seen. A newer one
     requests one run if `timeline_is_current` says `seasons.json` is stale, so an unchanged

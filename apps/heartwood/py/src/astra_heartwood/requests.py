@@ -1,7 +1,7 @@
-"""The Dagster ↔ host request protocol (0036 D36-2) and the host runner (D36-3).
+"""The Dagster ↔ host request protocol and the host runner.
 
 Dagster's ``session_wiki`` asset cannot run the agent (the dagster-code image has no node
-for the vellum validator, no git, no push key, no docker — 0036 D3), so it files
+for the vellum validator, no git, no push key, no docker), so it files
 ``<requests-path>/<date>.request.json`` and waits. The host ``heartwood-request`` unit runs
 ``drain_requests``, which runs ``just heartwood-agent <date> --yes`` (unattended) per pending
 request and writes ``<date>.result.json``. Both sides import this module; nothing here
@@ -249,7 +249,7 @@ def drain_requests(
     ledger_path: Path = ledger.LEDGER_PATH,
     backfill_lock: Path = BACKFILL_LOCK,
 ) -> DrainReport:
-    """Process every pending request, oldest first, re-scanning until none is left (D36-3)."""
+    """Process every pending request, oldest first, re-scanning until none is left."""
     report = DrainReport()
     logs = root / "logs"
     logs.mkdir(parents=True, exist_ok=True)

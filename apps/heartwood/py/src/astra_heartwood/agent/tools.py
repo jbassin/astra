@@ -1,4 +1,4 @@
-"""The agent's host-side tools (0033 §3, D33-3..D33-6).
+"""The agent's host-side tools.
 
 ``make_tools(ws, target_date=…, validator=…)`` returns the eleven tool callables the
 RLM sees, bound to one staging ``Workspace`` and one target session. Each tool's
@@ -9,7 +9,7 @@ Rules every tool follows: errors **raise** ``ValueError`` (the sandbox bridge tu
 into a catchable ``RuntimeError``); only ``read_page`` / ``write_page`` / ``read_transcript``
 return strings; returns are plain JSON types and never ``None`` (``None`` crosses the
 bridge as ``""``). Wiki tools touch staging only. Transcript tools serve only the
-permitted sessions: faerrin-world, `sessions.kdl` skips honored, dated ≤ the target (D6).
+permitted sessions: faerrin-world, `sessions.kdl` skips honored, dated ≤ the target.
 """
 
 from __future__ import annotations
@@ -63,7 +63,7 @@ def frontmatter_date(text: str) -> str | None:
 
 
 def stamp_date(text: str, *, existing: str | None, target_iso: str) -> str:
-    """Set ``text``'s frontmatter ``date`` to ``max(existing, target)`` (D33-5).
+    """Set ``text``'s frontmatter ``date`` to ``max(existing, target)``.
 
     ``existing`` is the ``date:`` value of the page being replaced (``None`` for a new
     page); the agent's own ``date`` is ignored. The winning value is written verbatim

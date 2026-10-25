@@ -1,4 +1,4 @@
-"""Page→page crossref resolution (NLSpec 0007 §6 / gate D, decision E4).
+"""Page→page crossref resolution: a dangling target is reported, never fatal.
 
 Resolves each ``[[target]]`` to an akasha **page path** (the Quartz "shortest"
 rule, applied to paths — the *slug* form stays 0011's job, so URL semantics

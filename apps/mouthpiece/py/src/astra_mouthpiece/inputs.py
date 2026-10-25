@@ -1,4 +1,4 @@
-"""Script-stage inputs, Dagster-free (0034 D34-11).
+"""Script-stage inputs, Dagster-free so the producer CLI can read them too.
 
 `cleaned_turns_for` is the single re-derivation of a session's cleaned transcript, shared
 by `assets.session_script` and the 0034 producer experiment so the two cannot drift. It
@@ -53,7 +53,7 @@ def cleaned_turns_for(
 
 
 def brief_path(key: str, *, root: Path | None = None) -> Path:
-    """`episodes/<key>/brief.json` — the producer brief `session_script` reads (0035 D35-8)."""
+    """`episodes/<key>/brief.json` — the producer brief `session_script` reads."""
     return (root if root is not None else episodes_root()) / key / "brief.json"
 
 

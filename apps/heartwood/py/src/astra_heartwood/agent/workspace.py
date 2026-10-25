@@ -1,4 +1,4 @@
-"""The staging workspace, op journal, change-set and publish sync (0033 D33-2, D33-11).
+"""The staging workspace, op journal, change-set and publish sync.
 
 A run never touches the live corpus while the agent works. ``Workspace.create`` copies
 the wiki (config ``data.akasha-content``) into

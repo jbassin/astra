@@ -1,13 +1,13 @@
-"""The cross-episode catalog — `episodes_index` (D1, plan 0012).
+"""The cross-episode catalog — `episodes_index`.
 
 mouthpiece-backend's per-session graph writes a flat tree under
 ``episodes_path/<session_id>/`` (script.json, digest.json, ``<id>.episode.mp3``,
 ``<id>.transcript.md``) but emits **no cross-episode index**. mouthpiece-frontend
-(0012) needs one to build its grid + episode pages, so this asset globs the
+needs one to build its grid + episode pages, so this asset globs the
 session dirs and writes a single sorted **``episodes-index.json``** manifest.
 
-This is the producer half of the producer/consumer split (spec 0012, D6 — revised:
-the **transcript is inlined** so the frontend is a pure single-artifact consumer).
+This is the producer half of the producer/consumer split (with the
+**transcript inlined** so the frontend is a pure single-artifact consumer).
 The **backend owns** everything: id-parse, the sort (``astra_sessions.date_sort_key``),
 the per-arc episode numbering, the arc display title (from
 ontology-being ``campaign.name`` — Python is the ontology truth), the audio duration

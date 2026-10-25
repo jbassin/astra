@@ -1,5 +1,5 @@
-/* mouthpiece-frontend's page shell + the podcast surface, re-skinned onto gothic
- * (D3). gothic's theme.css (imported in __root) provides the tokens (--color-void/
+/* mouthpiece-frontend's page shell + the podcast surface, re-skinned onto gothic.
+ * gothic's theme.css (imported in __root) provides the tokens (--color-void/
  * panel/ink/accent/…, --font-display/body/mono) + reset baseline; this file keeps
  * face's *structure* (masthead / hero / episode grid / episode page / transcript)
  * rebuilt in the gothic void idiom — the neon "Marathon HUD" chrome is dropped.
@@ -41,7 +41,7 @@ a:hover {
 
 /* Speaker palette — current hosts are A=Bram, B=Maeve; C (Pip) is retired but kept so
  * the legacy three-host episodes still color their transcripts. Not ontology-being
- * colors; mouthpiece hosts are the roundtable, not wiki players (D4). */
+ * colors; mouthpiece hosts are the roundtable, not wiki players. */
 :root {
   --speaker-A: var(--color-accent);
   --speaker-B: var(--color-accent-amber);

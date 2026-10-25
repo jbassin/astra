@@ -1,4 +1,4 @@
-"""The producer's read-only tools (0034 §3) — gate C: read-only + the show/time boundary."""
+"""The producer's read-only tools: they write nothing and honour the show/time boundary."""
 
 from __future__ import annotations
 
@@ -127,7 +127,7 @@ def _tree_hash(root: Path) -> str:
     return h.hexdigest()
 
 
-# ── boundary (D34-5) ──
+# ── boundary ──
 def test_permitted_dates_are_same_show_strictly_earlier_and_not_excluded(tree) -> None:
     dates = permitted_dates(TARGET, "show-a", transcript_dir=tree["transcript_dir"], shows=SHOWS)
     assert dates == ["2025-12-1", "2026-1-1"]  # date_key order, not string order
@@ -162,7 +162,7 @@ def test_scripts_skip_recaps_find_legacy_dirs_and_name_hosts(tree) -> None:
 
 
 def test_scripts_skip_a_special_by_its_stored_kind(tree) -> None:
-    """A special whose id has no recap marker is still not a prior session (0037 PIPE-22)."""
+    """A special whose id has no recap marker is still not a prior session."""
     raw = _script("session_id", "000.show-a.2026-1-1", "lower", "special Galzu")
     special = tree["scripts_root"] / "special"  # sorts after 2026-1-1, so it would win
     special.mkdir()
@@ -199,7 +199,7 @@ def test_wiki_tools_and_resolve(tree) -> None:
     assert r["canonical"] == "Galzu" and r["page_exists"] is True and r["candidates"] == ["Galzu"]
 
 
-# ── read-only (D34-4, gate C) ──
+# ── read-only ──
 def test_no_tool_writes_anything(tree, monkeypatch: pytest.MonkeyPatch) -> None:
     before = _tree_hash(tree["root"])
     t = make(tree)

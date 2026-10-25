@@ -1,4 +1,4 @@
-"""The TTS backend protocol — ported from caster `tts/provider.ts` (M6).
+"""The TTS backend protocol — ported from caster `tts/provider.ts`.
 
 Kept minimal so it's trivially mockable. A provider that sets `dialogue = True`
 and implements `synthesize_dialogue` renders several turns at once with natural

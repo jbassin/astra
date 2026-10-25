@@ -190,7 +190,7 @@ def session_brief(
 
     NO retry policy: a ~10-minute paid RLM must not run 4× (litellm retries transient
     provider errors per call). A failed producer still materializes — with no
-    `brief.json` — so `session_script` falls back to the old prompt (0035 D2)."""
+    `brief.json` — so `session_script` falls back to the old prompt."""
     key = context.partition_key
     with _tracer.start_as_current_span("mouthpiece.session_brief") as span:
         span.set_attribute("mouthpiece.key", key)
@@ -244,7 +244,7 @@ def session_script(
         # Deterministic character roster (§4.1.3) — same best-effort posture as
         # continuity: an unmatched/excluded show yields no roster block, not an error.
         roster_block = build_roster_block(show.slug) if show else ""
-        # The producer brief (0035 D35-5): when present it replaces the wiki excerpts +
+        # The producer brief: when present it replaces the wiki excerpts +
         # continuity in Pass A; absent/unreadable → today's prompt, unchanged.
         brief_block, brief_outcome = script_brief_block(key, hosts, root=root)
         span.set_attribute("mouthpiece.script.brief", "used" if brief_block else "fallback")
@@ -281,7 +281,7 @@ def session_audio_clips(
 ) -> dg.MaterializeResult:
     """Script → TTS clips + manifest (Stage 4; ElevenLabs / mock).
 
-    The dialogue path inlines the IPA of every `defs.kdl` entry that has one (M6)."""
+    The dialogue path inlines the IPA of every `defs.kdl` entry that has one."""
     key = context.partition_key
     root = pipeline_paths.episodes
     with _tracer.start_as_current_span("mouthpiece.session_audio_clips") as span:

@@ -5,7 +5,7 @@ Writes only into ``run_dir``: the producer artifacts, ``script.<arm>.json`` per 
 ``script.baseline.json`` (a copy of the live ``episodes/<date>/script.json``),
 ``cost.json`` and ``report.md``. No TTS, nothing under ``episodes/``, no commit.
 
-Per-arm cost (D34-10): each arm gets its own ``LiteLLMClient``, whose ledger adds up every
+Per-arm cost: each arm gets its own ``LiteLLMClient``, whose ledger adds up every
 billed attempt (``client.snapshot()``, ``astra_llm.meter``). The static price table has a
 DeepSeek row, so the DeepSeek arm is priced, not silently 0; ``priced`` records whether
 every model used had a row.
@@ -266,7 +266,7 @@ def run_experiment(
 ) -> ExperimentResult:
     """Run the comparison for ``date`` (§5). ``arms`` filters ``experiment-models``.
 
-    A ``failed`` producer stops before any script call (D34-8).
+    A ``failed`` producer stops before any script call.
     """
     cfg = config if config is not None else load_config().mouthpiece_producer
     if len(cfg.experiment_models) != len(cfg.experiment_max_tokens):
@@ -276,7 +276,7 @@ def run_experiment(
         pairs = [(m, t) for m, t in pairs if m in arms or arm_slug(m) in arms]
         if not pairs:
             raise ValueError(f"no configured arm matches {arms}")
-    # The --reuse-brief path never builds a dspy LM, which is where the key is set (D34-10).
+    # The --reuse-brief path never builds a dspy LM, which is where the key is set.
     ensure_openrouter_env()
     out = run_dir if run_dir is not None else ARTIFACTS_ROOT / date / new_run_id()
     out.mkdir(parents=True, exist_ok=True)

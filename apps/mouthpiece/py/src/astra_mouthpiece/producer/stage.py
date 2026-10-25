@@ -1,9 +1,9 @@
-"""The pipeline stages around the producer (0035 D35-4, D35-5), Dagster-free so they unit-test.
+"""The pipeline stages around the producer, Dagster-free so they unit-test.
 
 ``produce_brief`` is the ``session_brief`` asset body: run the producer, keep only the latest
 run's artifacts under ``episodes/<key>/producer/<run_id>/``, write ``brief.json`` on success and
 remove any stale one on failure. It never raises an ``Exception`` — a failed producer must not
-block the episode (D2); the script falls back to the old prompt.
+block the episode; the script falls back to the old prompt.
 
 ``script_brief_block`` is what ``session_script`` asks: the rendered brief and whether it was
 ``used``, absent (``fallback``) or unreadable (``invalid``, also a fallback).
