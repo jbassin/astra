@@ -6,7 +6,7 @@
  */
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
-export interface MenuItem {
+interface MenuItem {
   label: string;
   onSelect: () => void;
   danger?: boolean;

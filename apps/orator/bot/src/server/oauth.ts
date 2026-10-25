@@ -11,7 +11,7 @@ export interface OAuthConfig {
   readonly redirectUri: string;
 }
 
-export interface DiscordUser {
+interface DiscordUser {
   readonly id: string;
   readonly username: string;
 }

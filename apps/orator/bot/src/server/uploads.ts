@@ -11,7 +11,7 @@ import { extname, resolve } from "node:path";
 import type { LibraryStore, Track } from "../db/store";
 import type { AudioProbe, AudioProber } from "../media/probe";
 
-export interface UploadResult {
+interface UploadResult {
   created: Track[];
   errors: { name: string; error: string }[];
 }

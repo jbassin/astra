@@ -8,7 +8,7 @@
  */
 import { runProcess, tailForMessage } from "./process";
 
-export interface PlaylistEntry {
+interface PlaylistEntry {
   videoId: string;
   title: string;
 }
@@ -104,7 +104,7 @@ export function parseMetaLine(line: string): DownloadResult | null {
   };
 }
 
-export interface YtDlpLimits {
+interface YtDlpLimits {
   /** Wall-clock limit on one playlist listing (`orator.ytdlp-enumerate-timeout-s`). */
   enumerateTimeoutMs: number;
   /** Wall-clock limit on one download (`orator.ytdlp-download-timeout-s`). */

@@ -30,7 +30,7 @@ function esc(s: string): string {
     .replaceAll('"', "&quot;");
 }
 
-export function dataUri(svg: string): string {
+function dataUri(svg: string): string {
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
@@ -73,11 +73,11 @@ function frame(inner: string, bg = BG): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}" viewBox="0 0 ${SIZE} ${SIZE}"><rect width="${SIZE}" height="${SIZE}" fill="${bg}"/>${inner}</svg>`;
 }
 
-export function emptySvg(): string {
+function emptySvg(): string {
   return frame("");
 }
 
-export function backSvg(): string {
+function backSvg(): string {
   // "Up" (one level up to collections). A stemmed up-arrow — visually distinct from the
   // stemless next/prev page chevrons so the two roles don't read the same.
   const inner =
@@ -87,7 +87,7 @@ export function backSvg(): string {
   return frame(inner);
 }
 
-export function pagerSvg(dir: "prev" | "next"): string {
+function pagerSvg(dir: "prev" | "next"): string {
   const arrow =
     dir === "next"
       ? `<path d="M44 54 L72 86 L100 54" fill="none" stroke="${ACCENT}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>`
@@ -95,26 +95,26 @@ export function pagerSvg(dir: "prev" | "next"): string {
   return frame(`${arrow}${textBlock([dir === "next" ? "Next" : "Prev"], "#9aa0aa", 128, 0, 20)}`);
 }
 
-export function pageInfoSvg(page: number, total: number): string {
+function pageInfoSvg(page: number, total: number): string {
   return frame(
     textBlock(["Page"], "#9aa0aa", 50, 0, 20) + textBlock([`${page}/${total}`], FG, 96, 0, 40),
   );
 }
 
-export function stopSvg(): string {
+function stopSvg(): string {
   return frame(
     `<rect x="48" y="40" width="48" height="48" rx="6" fill="#c8504a"/>${textBlock(["Stop"], "#9aa0aa", 124, 0, 20)}`,
   );
 }
 
-export function playPauseSvg(playing: boolean): string {
+function playPauseSvg(playing: boolean): string {
   const glyph = playing
     ? `<rect x="50" y="40" width="14" height="48" rx="3" fill="${FG}"/><rect x="80" y="40" width="14" height="48" rx="3" fill="${FG}"/>`
     : `<path d="M54 38 L54 90 L98 64 Z" fill="${FG}"/>`;
   return frame(glyph + textBlock([playing ? "Pause" : "Play"], "#9aa0aa", 124, 0, 20));
 }
 
-export function collectionSvg(name: string): string {
+function collectionSvg(name: string): string {
   const folder =
     `<rect x="34" y="40" width="76" height="52" rx="6" fill="#2a2e37"/>` +
     `<rect x="34" y="34" width="40" height="14" rx="4" fill="#2a2e37"/>`;

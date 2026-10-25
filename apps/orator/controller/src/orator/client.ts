@@ -2,7 +2,7 @@ import { normalizeOrigin } from "../settings";
 import { emitSpan } from "../telemetry";
 import type { Collection, NowPlaying, Tag, Track, TrackQuery } from "./types";
 
-export interface OratorConfig {
+interface OratorConfig {
   /** e.g. "https://orator.iridi.cc" or "http://localhost:8788". Trailing slash tolerated. */
   origin: string;
   /** A `orator_…` API key minted in orator's web UI. Sent as `Authorization: Bearer …`. */
