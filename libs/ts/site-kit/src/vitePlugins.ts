@@ -21,8 +21,13 @@ export interface ContentWatchOptions {
   root: string;
   /** Absolute path to the app's `build-content.ts`. */
   script: string;
-  /** Absolute path to the app's `content/` dir (watched in dev). */
-  contentDir: string;
+  /**
+   * Absolute paths (files or dirs) the build script reads: the app's `content/` and `scripts/`,
+   * config.kdl, and any data outside the app (a snapshot, a corpus). A dev edit to any file
+   * under one of them regenerates the content. A function is called only when the dev server
+   * starts, so a build never resolves paths it does not watch.
+   */
+  inputs: ReadonlyArray<string> | (() => ReadonlyArray<string>);
   /** Absolute path to the app's generated-modules dir (`src/generated`). */
   generatedDir: string;
   /** Generated module basenames to invalidate on a content edit (app-domain). */
@@ -30,12 +35,31 @@ export interface ContentWatchOptions {
 }
 
 /**
- * Runs the app's `build-content.ts` (content/*.md → src/generated/*.ts) at
- * buildStart and re-runs it on content edits in dev. The script runs as a
- * subprocess so its fs/remark/gray-matter imports never reach the client bundle.
+ * Whether a changed file is one of the build script's inputs: the input itself or a file under
+ * an input dir. Files in the generated dir (the script's own output) and dotfiles (editor swap
+ * files, `.gitkeep`) never count. Pure.
+ */
+export function isContentInput(
+  file: string,
+  inputs: ReadonlyArray<string>,
+  generatedDir: string,
+): boolean {
+  if (file === generatedDir || file.startsWith(generatedDir + path.sep)) return false;
+  if (path.basename(file).startsWith(".")) return false;
+  return inputs.some((input) => file === input || file.startsWith(input + path.sep));
+}
+
+/** How long dev waits after the last input change before regenerating, so a burst of edits
+ * (a pull of the data clone) runs the script once. */
+const REBUILD_DEBOUNCE_MS = 100;
+
+/**
+ * Runs the app's `build-content.ts` (content → src/generated/*.ts) at buildStart and re-runs it
+ * in dev when any of its inputs changes. The script runs as a subprocess so its
+ * fs/remark/gray-matter imports never reach the client bundle.
  */
 export function contentWatchPlugin(opts: ContentWatchOptions): Plugin {
-  const { root, script, contentDir, generatedDir, invalidate } = opts;
+  const { root, script, inputs, generatedDir, invalidate } = opts;
 
   function rebuild(): void {
     const result = spawnSync("node", ["--import", tsxLoader(), script], {
@@ -46,10 +70,6 @@ export function contentWatchPlugin(opts: ContentWatchOptions): Plugin {
     if (result.status !== 0) console.error("[content-watch] build-content failed");
   }
 
-  const isContentFile = (file: string) =>
-    file.startsWith(contentDir + path.sep) &&
-    (file.endsWith(".md") || file.endsWith(".kdl") || file.endsWith(".vellum"));
-
   return {
     name: "site-kit:content-watch",
     buildStart() {
@@ -57,10 +77,12 @@ export function contentWatchPlugin(opts: ContentWatchOptions): Plugin {
       rebuild();
     },
     configureServer(server: ViteDevServer) {
-      server.watcher.add(contentDir);
+      const watched = typeof inputs === "function" ? inputs() : inputs;
+      server.watcher.add([...watched]);
 
-      const onChange = (file: string) => {
-        if (!isContentFile(file)) return;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const regenerate = () => {
+        timer = undefined;
         rebuild();
         // Invalidate generated modules so the next HMR cycle picks up new data.
         for (const name of invalidate) {
@@ -68,6 +90,11 @@ export function contentWatchPlugin(opts: ContentWatchOptions): Plugin {
           if (mod) server.moduleGraph.invalidateModule(mod);
         }
         server.ws.send({ type: "full-reload" });
+      };
+      const onChange = (file: string) => {
+        if (!isContentInput(path.resolve(file), watched, generatedDir)) return;
+        clearTimeout(timer);
+        timer = setTimeout(regenerate, REBUILD_DEBOUNCE_MS);
       };
 
       server.watcher.on("change", onChange);

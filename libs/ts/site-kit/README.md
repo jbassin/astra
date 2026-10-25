@@ -14,7 +14,7 @@ preset.
 
 | File | Calls | App-specific options |
 |---|---|---|
-| `vite.config.ts` | `defineSiteConfig` (`@astra/site-kit/vite`) | `root`; `generated` (the modules `build-content.ts` writes; dev invalidates them; omit it when the app has no content step); `theme: false` for an app that doesn't use gothic; optional `vite` merged over the preset |
+| `vite.config.ts` | `defineSiteConfig` (`@astra/site-kit/vite`) | `root`; `generated` (the modules `build-content.ts` writes; dev invalidates them; omit it when the app has no content step); `contentInputs` (a function returning the paths outside the app that `build-content.ts` reads, such as an astra-data snapshot; akasha and mouthpiece set it); `theme: false` for an app that doesn't use gothic; optional `vite` merged over the preset |
 | `vitest.config.ts` | `defineSiteVitestConfig` (`@astra/site-kit/vitest`) | `root`; `environment: "node"`; `generatedContent: false` when there is no `build-content.ts`; extra `globalSetup` and `setupFiles` |
 | `src/router.tsx` | `createRouter({ routeTree, ...siteRouterOptions({ notFound }) })` (`/router`) | `notFound`: `{ heading, message, homeLabel }` or a component; other router options go after the spread (codex's `pathParamsAllowedCharacters`) |
 | `src/routes/__root.tsx` | `head: () => siteHead({ title, description, meta? })`, `<SiteDocument>` (`/document`), `import "@astra/site-kit/theme"` | `rum={() => import("@/observe/rumConfig")}`, `forceDarkTheme`, `head` (extra head nodes), `bodyProps`, the body as children |
@@ -73,7 +73,7 @@ scaffolded app in a scratch dir.
 | `loadSsrBuild` | `server.ts` | imports `<app>/dist/server/server.js` by path and returns its handler |
 | `defineServerBundle` (`@astra/site-kit/bundle`) | `tsdown.config.ts` | the server bundle's tsdown config (see "Server bundles") |
 | `serveFile`, `staticMountPath` | servers | `send`-backed file serving with Range/206, 304 and 416 (`{ immutable: true }` for content-hashed files); traversal-guarded mount paths |
-| `contentWatchPlugin` | `vite.config.ts` | runs the app's `scripts/build-content.ts` (as a Node subprocess) at build start and on content edits in dev |
+| `contentWatchPlugin` | `vite.config.ts` | runs the app's `scripts/build-content.ts` (as a Node subprocess) at build start, and in dev whenever a file under one of its inputs changes: `content/`, `scripts/`, config.kdl and `contentInputs` (any extension; dotfiles and `src/generated/` ignored; edits within 100 ms coalesce into one run) |
 | `gothicFontsPlugin` | `vite.config.ts` | serves gothic's fonts in dev and copies them to `dist/client/fonts` at build |
 | `ssrExternalsPlugin` | `vite.config.ts` | at build, inlines into the SSR bundle every package that isn't one of the app's own `dependencies`; `just ssr-externals-check` (run by `just ts-build`) fails on an SSR bundle or server bundle (`dist-server/`) that imports or `require`s anything else |
 | `loadSiteConfig` | `vite.config.ts`, build scripts | reads `config.kdl` by walking up from `process.cwd()` |
