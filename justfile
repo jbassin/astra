@@ -295,7 +295,7 @@ reverse_proxy_dir := "/ruby/data/reverse-proxy"
 sops_age_key := "deploy/sops/age.key"
 sops_file := "deploy/sops/secrets.enc.yaml"
 
-# The one data root (0037 Phase 1 item 2c): ALL runtime state — the astra-data clone, every
+# The one data root: ALL runtime state — the astra-data clone, every
 # service's state dirs, audio, Postgres, the deploy record, locks — lives here, never in a
 # code checkout. Mirrors config.kdl data.root (whose comment lists the layout); the same
 # ASTRA_DATA_ROOT variable overrides both. The containers run as 1000:1000, so the source
@@ -303,7 +303,7 @@ sops_file := "deploy/sops/secrets.enc.yaml"
 # as root); `artifacts-init` (run by every deploy) creates them.
 data_root := env_var_or_default("ASTRA_DATA_ROOT", "/ruby/data/astra-state")
 
-# The deploy checkout (0037 OPS-3): the only tree that builds production (`just deploy`) and
+# The deploy checkout: the only tree that builds production (`just deploy`) and
 # the tree every host unit runs from. `units-install` links the units from here, the backfill
 # runs this checkout's recipes, and deploy.sh keeps its venv + node deps in sync. Mirrors
 # deploy.sh's ASTRA_DEPLOY_ROOT default.
@@ -334,11 +334,11 @@ ops := quote(uv_bin) + " run --frozen --no-sync astra-ops --data-root " + quote(
 
 # ==== deploy: the Docker stack (deploy/) and the host doctor ==================================
 
-# Deploy production (0037 OPS-3): everything lives in deploy/deploy.sh (header = steps,
+# Deploy production: everything lives in deploy/deploy.sh (header = steps,
 # flags, exit codes, where the live sha is recorded). Builds ONLY from the deploy checkout
 # ($ASTRA_DEPLOY_ROOT, default /ruby/data/astra-deploy) at a PUSHED commit — origin/main, or
 # `--sha <rev>` for a rollback — never from this working tree, so push first. Takes the
-# deploy lock, injects the SOPS secrets (Decision E), labels every image with the sha.
+# deploy lock, injects the SOPS secrets, labels every image with the sha.
 #   just deploy                     whole stack at origin/main
 #   just deploy akasha-frontend     one service (same secret injection — never use a bare
 #                                   `docker compose up -d <svc>`, it starts it with no secrets)
@@ -443,8 +443,8 @@ akasha-seed *flags:
 
 # dspy's PythonInterpreter runs Deno + Pyodide, and its runner.js imports an UNPINNED
 # `npm:pyodide` + deno.land/std, fetched into the Deno cache on first use (network). Run once
-# per host, and again after a Deno-cache wipe or a new Pyodide release — then re-run gate C
-# (the scripted real-Deno test). Prints the resolved Pyodide version for the build record.
+# per host, and again after a Deno-cache wipe or a new Pyodide release — then re-run the
+# scripted real-Deno test. Prints the resolved Pyodide version for the build record.
 # dspy calls bare `deno`, hence the PATH; `prepare_sandbox_env` also sets DENO_NO_PACKAGE_JSON
 # and a real-path DENO_DIR — the same env every agent run uses.
 # Warm the heartwood agent's sandbox (Deno + Pyodide).
@@ -526,7 +526,7 @@ mouthpiece-experiment date *flags: mouthpiece-sandbox-warm
 mouthpiece-roundtable *args: mouthpiece-sandbox-warm
     cd "{{justfile_directory()}}" && export PATH="$HOME/.deno/bin:$PATH" && {{uv_bin}} run --frozen --no-sync astra-mouthpiece-roundtable "$@"
 
-# ==== backups and alerting as code (0037 OPS-6): astra-backup.sh, SigNoz rules, host metrics ===
+# ==== backups and alerting as code: astra-backup.sh, SigNoz rules, host metrics ===============
 # Nightly snapshot to the sda disk (/ruby/data/plex/data/astra-backups): pg_dump of the three
 # astra databases, the irreplaceable state dirs and the SigNoz alert rules; 14 daily + 8 weekly
 # kept. The script's header has what, why, retention and the manual restore. `just units-install
@@ -582,7 +582,7 @@ smoke:
 
 # ==== codex (0029): corpus releases ===========================================================
 
-# Refresh the codex corpus (D29-4): re-fetch both snapshots, then build and publish a new
+# Refresh the codex corpus: re-fetch both snapshots, then build and publish a new
 # release (`codex-build`). A deliberate, diffable event, never implicit in a build —
 # refuses to run if the git index is dirty under apps/codex/ingest (the
 # corpus-manifest.json diff must be reviewable alone, the linguist-commit-timer
@@ -623,7 +623,7 @@ codex-build *flags:
     echo "codex-build: report.md summary:"
     head -n 40 "$codex_data/releases/current/corpus/report.md"
 
-# Rebuild only the codex Pagefind index (D29-34) over the current release's corpus and
+# Rebuild only the codex Pagefind index over the current release's corpus and
 # publish it as a new release (the corpus is hardlinked, not copied). Same host-only
 # posture as codex-build.
 codex-search-index *flags:
@@ -706,7 +706,7 @@ book *flags:
 # HARD-REQUIRED at pinned versions (committed bytes must be
 # machine-independent): wasm-bindgen-cli 0.2.127 (== the crate's wasm-bindgen
 # pin) and binaryen wasm-opt version 124; mise.toml installs both.
-# Machine-independent bytes (WEAL-4): --remap-path-prefix rewrites $CARGO_HOME,
+# Machine-independent bytes: --remap-path-prefix rewrites $CARGO_HOME,
 # which the dependency panic locations name, to /cargo. It goes in via
 # --config, which cargo appends to the config file's rustflags array; a
 # RUSTFLAGS env var would REPLACE that array and drop the stack flag.

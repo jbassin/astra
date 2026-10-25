@@ -3,12 +3,12 @@ dist/
 # Each Node service's tsdown server bundle (libs/ts/site-kit/src/serverBundle.ts)
 dist-server/
 # …but the weal-engine's dist(ribution) module is source, not build output
-# (the unanchored pattern above silently swallowed it — 0032 S4 merge)
+# (the unanchored pattern above once silently swallowed it)
 !libs/rust/weal-engine/src/dist/
 
-# Developer scratch (research notes, old logs). Runtime state no longer lives here: since
-# 0037 item 2c all of it is under the data root /ruby/data/astra-state (config.kdl
-# data.root), outside every checkout.
+# Developer scratch (research notes, old logs). Runtime state no longer lives here:
+# all of it is under the data root /ruby/data/astra-state (config.kdl data.root), outside
+# every checkout.
 /artifacts/
 
 # Storybook static build (gothic's dev/preview surface; regenerated, not source)
