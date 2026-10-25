@@ -1,9 +1,8 @@
-// P3 S3 (D29-32/-35) — the pure faceted-browse filter engine over
-// `IndexRow[]`. Zero framework/DOM deps (unit-tested exhaustively BEFORE any
-// UI exists per the spec's own §6 risk callout: "filter-engine correctness
-// with missing keys is the likeliest logic-bug nest").
+// The pure faceted-browse filter engine over `IndexRow[]`. Zero
+// framework/DOM deps, so it is unit-tested exhaustively on its own:
+// filter-engine correctness with missing keys is the likeliest logic-bug nest.
 //
-// ## Missing-key semantics (D29-32, revised by P6 R9(b)/D29-61(b))
+// ## Missing-key semantics
 //
 // Entities without a facet key form an implicit "—" bucket:
 //   - an ENUM include-selection on that facet drops them (can't match a
@@ -11,7 +10,7 @@
 //   - a TRAIT exclude-selection never drops them (they trivially don't carry
 //     the excluded trait either);
 //   - a RANGE filter drops them the moment EITHER `min` or `max` is set
-//     (D29-61(b) — "bounds-imply-has-value": typing a number means "I only
+//     ("bounds-imply-has-value": typing a number means "I only
 //     want rows with a number," so bound presence alone is the has-value
 //     signal now). The prior design required a SEPARATE explicit
 //     `has-value: true` gate on top of min/max — that field is gone from
@@ -47,14 +46,13 @@ export interface TraitFilter {
 }
 
 /**
- * P8 S1 (D29-78) — widened from the closed `"name" | "level"` union to the
- * open grammar `name|-name|level|-level|<facetKey>|-<facetKey>` (a leading
- * `-` means descending): a plain `string` type, since the facet-key half of
+ * The open grammar `name|-name|level|-level|<facetKey>|-<facetKey>` (a
+ * leading `-` means descending): a plain `string` type, since the facet-key half of
  * the space is open-ended (whatever `columnDefs.ts`'s per-category column
  * set carries) and can't be enumerated here without this module importing
  * that one (a layering cycle — `columnDefs.ts` already imports from here).
- * Validity is checked in TWO places, on purpose (the spec's own "unknown/
- * inapplicable... fall back to name silently"):
+ * Validity is checked in TWO places, on purpose ("unknown/inapplicable...
+ * fall back to name silently"):
  *   - "unknown" (not a real key ANYWHERE, e.g. `?sort=banana`) is rejected at
  *     the URL-decode layer (`urlState.ts`'s `isValidSortKey` — that module
  *     knows the full key vocabulary via `facetDefFor` + the "rarity" core
@@ -74,7 +72,7 @@ export type SortMode = string;
 export interface BrowseFilterState {
   /** Name quick-filter, substring, case-insensitive. */
   query: string;
-  /** Show `superseded` rows too (P4.5 D29-48: a plain per-page URL read, no
+  /** Show `superseded` rows too (a plain per-page URL read, no
    * site-wide toggle — see `urlState.ts`'s own header for the `legacy`
    * back-compat alias). */
   superseded: boolean;
@@ -142,7 +140,7 @@ function matchesTraits(row: IndexRow, filter: TraitFilter): boolean {
 }
 
 /** `undefined`/`null` (`n`) -> included only when the filter carries NO
- * bound at all (D29-61(b): "bounds-imply-has-value" — a missing row is
+ * bound at all ("bounds-imply-has-value" — a missing row is
  * excluded whenever the filter carries ANY typed bound, `min` or `max`). A
  * present value still has to clear min/max either way. */
 function matchesRange(n: number | null | undefined, filter: RangeFilter | undefined): boolean {
@@ -154,7 +152,7 @@ function matchesRange(n: number | null | undefined, filter: RangeFilter | undefi
 }
 
 /** `undefined` `tags` (missing key) -> included only when `selected` is empty
- * (D29-32's "an include-selection on that facet drops them"). */
+ * ("an include-selection on that facet drops them"). */
 function matchesEnum(
   tags: readonly string[] | null | undefined,
   selected: ReadonlySet<string>,
@@ -207,12 +205,12 @@ export function applyFilters(rows: readonly IndexRow[], state: BrowseFilterState
 }
 
 /**
- * P8 S1 (D29-78) — a column-agnostic sort-key value extractor + comparator,
+ * A column-agnostic sort-key value extractor + comparator,
  * built by `columnDefs.ts`'s `comparatorForSort` for a facet/rank/numeric/
  * text column and handed to `sortRows` below. `valueOf` returning
  * `undefined`/`null` means "no value for this row" — folds into the SAME
  * missing-last rule `sortRows` already enforced for `level` (extended here
- * to hold under every comparator, in both directions — the D29-78 "passive
+ * to hold under every comparator, in both directions — the "passive
  * sorts with missing, LAST" rule is just `columnDefs.ts`'s `actionCostRank`
  * returning `undefined` for `"passive"`, no special-casing needed here).
  */
@@ -231,8 +229,8 @@ function defaultCompare(a: number | string, b: number | string): number {
 
 /** The single missing-last-under-every-direction sort primitive: `desc` only
  * ever flips the sign of a PRESENT-vs-PRESENT comparison — a missing value
- * unconditionally sorts after a present one, in both directions (D29-78:
- * "missing-last holds for every comparator, including under desc"). Ties
+ * unconditionally sorts after a present one, in both directions
+ * ("missing-last holds for every comparator, including under desc"). Ties
  * (including both-missing) break by name, matching every sort mode's prior
  * convention. */
 function sortByComparator(rows: readonly IndexRow[], desc: boolean, rc: RowComparator): IndexRow[] {
@@ -257,19 +255,17 @@ const LEVEL_COMPARATOR: RowComparator = { valueOf: (row) => row.level };
 
 /**
  * name (default): plain A-Z. level: ascending, the "—" (no `level`) bucket
- * LAST (adversarial M7/M8 — never coerce a missing level to 0). Both break
+ * LAST (never coerce a missing level to 0). Both break
  * ties by name so the ordering is deterministic.
  *
- * P8 S1 (D29-78) widening, ADDITIVE-OPTIONAL: `sort` now carries the full
- * `name|-name|level|-level|<facetKey>|-<facetKey>` grammar (a leading `-` =
- * descending) and `comparator` is a NEW optional third argument — every
- * existing 2-arg call site (`sortRows(rows, "name")`/`sortRows(rows,
- * "level")`) keeps compiling AND behaving byte-identically, since `"name"`/
- * `"level"` (with no leading `-`) hit the exact same built-in branches below
- * they always did. A `comparator` is required for anything other than name/
- * level — its absence there is the "inapplicable/unknown -> name silently"
- * fallback (`SortMode`'s own file comment above spells out why that's split
- * across this module and `urlState.ts`).
+ * `sort` carries the full `name|-name|level|-level|<facetKey>|-<facetKey>`
+ * grammar (a leading `-` = descending) and `comparator` is an optional third
+ * argument — a 2-arg call (`sortRows(rows, "name")`/`sortRows(rows,
+ * "level")`) hits the built-in branches below. A `comparator` is required
+ * for anything other than name/level — its absence there is the
+ * "inapplicable/unknown -> name silently" fallback (`SortMode`'s own file
+ * comment above spells out why that's split across this module and
+ * `urlState.ts`).
  */
 export function sortRows(
   rows: readonly IndexRow[],
@@ -287,13 +283,12 @@ export function sortRows(
 }
 
 // ---------------------------------------------------------------------------
-// "ambient" rows for a facet's own option list (D29-32 "Facet option lists +
+// "ambient" rows for a facet's own option list ("Facet option lists +
 // live counts computed from the rows"): counts for facet X are computed
 // against rows filtered by every OTHER active filter but NOT X's own
 // selection — otherwise selecting one option would starve every sibling
-// option's count to zero (a real faceted-search usability trap, not spec'd
-// explicitly but necessary for the option list to stay useful once a
-// selection is made).
+// option's count to zero (a real faceted-search usability trap: the option
+// list must stay useful once a selection is made).
 // ---------------------------------------------------------------------------
 
 export type FacetDimension =
@@ -305,7 +300,7 @@ export type FacetDimension =
   | { kind: "facet"; key: string };
 
 /**
- * Also exported (P4.5 S4, D29-49) for `activeFilterPills.ts`'s per-pill
+ * Also exported for `activeFilterPills.ts`'s per-pill
  * "remove this one dimension" action — the exact same "state minus one
  * dimension" shape `ambientRows` already needed for facet option counts, so
  * the pill-removal action reuses it rather than growing a parallel set of
@@ -375,7 +370,7 @@ export function enumOptionCounts(rows: readonly IndexRow[], key: string): Option
     .sort((a, b) => a.value.localeCompare(b.value));
 }
 
-/** "N without data" for a facet (D29-32) — counted against the ambient row
+/** "N without data" for a facet — counted against the ambient row
  * set (rows.length after every OTHER filter, minus this facet's own
  * selection), never the raw full corpus. */
 export function missingCount(rows: readonly IndexRow[], key: string): number {
@@ -389,7 +384,7 @@ export function missingCount(rows: readonly IndexRow[], key: string): number {
 }
 
 /** Data-derived bounds for a range facet — NEVER default a lower bound to
- * 0/1 (adversarial M8; `level` spans -2..28 corpus-wide). `null` when no row
+ * 0/1 (`level` spans -2..28 corpus-wide). `null` when no row
  * carries a usable value at all. */
 export function rangeBounds(
   rows: readonly IndexRow[],
@@ -419,7 +414,7 @@ export function facetValueOf(key: string): (row: IndexRow) => number | null {
 }
 
 // ---------------------------------------------------------------------------
-// collision disambiguation (D29-35): two VISIBLE rows sharing a display name
+// collision disambiguation: two VISIBLE rows sharing a display name
 // get `source.book` appended inline — mechanical, computed over whatever row
 // set is actually being rendered.
 // ---------------------------------------------------------------------------
@@ -433,14 +428,14 @@ export function collidingNames(rows: readonly Pick<IndexRow, "name">[]): Readonl
 }
 
 /** `level`'s facet-independent flag: whether ANY row in the category carries
- * a `level` at all (D29-32: "level (hidden where the category has 0%
+ * a `level` at all ("level (hidden where the category has 0%
  * coverage — e.g. trait, action)"). */
 export function categoryHasLevelCoverage(rows: readonly IndexRow[]): boolean {
   return rows.some((row) => row.level !== undefined);
 }
 
 /**
- * P8 S1 (D29-78 adversarial B-U3) — the `rarity` analog of
+ * The `rarity` analog of
  * `categoryHasLevelCoverage`, for `columnDefs.ts`'s fallback-category Rarity
  * column: the SAME classifier `facetKeys.ts` already uses for a `facets.*`
  * key (coverage ≥ 40% of rows AND cardinality ≥ 2 — a degenerate
@@ -542,7 +537,7 @@ export function setSupersededFilter(
   return { ...state, superseded };
 }
 
-/** The M6 "clear filters" affordance — back to the clean-URL empty state
+/** The "clear filters" affordance — back to the clean-URL empty state
  * entirely (sort/superseded included, not just facet selections). */
 export function clearAllFilters(): BrowseFilterState {
   return emptyFilterState();
@@ -575,12 +570,12 @@ export const sourceBookValueOf = (row: IndexRow): string | undefined => row.sour
 export const editionValueOf = (row: IndexRow): string | undefined => row.edition;
 
 // ---------------------------------------------------------------------------
-// P11 S2 (D29-107 b/c) — option-list re-sorts for two `FacetPanel.tsx` CoreEnum
+// Option-list re-sorts for two `FacetPanel.tsx` CoreEnum
 // sections. Both take `scalarOptionCounts`'s already-tallied output and
 // re-order it; they never change WHICH options appear, only their order.
 // ---------------------------------------------------------------------------
 
-/** D29-107(b): Source options sort by the DISPLAYED label (case-insensitive),
+/** Source options sort by the DISPLAYED label (case-insensitive),
  * not `scalarOptionCounts`'s default raw-value alphabetical order — the
  * Source section renders `abbreviateBook(book) ?? book`, so sorting on the
  * raw `book` string put entries in an order that looked arbitrary next to
@@ -598,7 +593,7 @@ export function sortOptionsByLabel(
   );
 }
 
-/** D29-107(c): Rarity's tier order — `{common, uncommon, rare, unique}` — is
+/** Rarity's tier order — `{common, uncommon, rare, unique}` — is
  * a SORT over whatever values `scalarOptionCounts` already found present in
  * the rows, never a whitelist/enumerated option SOURCE: an order array used
  * to drive the option list itself would silently vanish any value it didn't
@@ -624,7 +619,7 @@ export function sortOptionsByRarityRank(options: readonly OptionCount[]): Option
   });
 }
 
-/** P13 S1 (D29-126) — the `actionCost` facet's own filter-list rank order:
+/** The `actionCost` facet's own filter-list rank order:
  * 1/2/3/free/reaction/passive, the PF2e rulebook's own conventional
  * action-type listing order. DISTINCT from `columnDefs.tsx`'s own
  * `actionCostRank` (a free-text time-DURATION rank for TABLE sort, which
@@ -656,19 +651,17 @@ export function sortOptionsByActionCostRank(options: readonly OptionCount[]): Op
 /** A comparator over two already-tallied `OptionCount`s — the seam
  * `sortOptionsFor`'s optional `comparator` config carries, for a caller
  * whose ordering fits neither a declared rank table nor a plain label sort
- * (S3's `/search` numeric `level` facet, -2..28, and its Category facet). */
+ * (`/search`'s numeric `level` facet, -2..28, and its Category facet). */
 export type OptionComparator = (a: OptionCount, b: OptionCount) => number;
 
 /**
- * P13 S1 (D29-126) — the ONE option-sort convention every `FacetPanel.tsx`
- * section (and, from S3, `SearchPage.tsx`) calls through, replacing the
- * three ad-hoc conventions this file's own header comment used to flag
- * (source label-sort / rarity rank-sort / raw alphabetical) with two
- * declared rank exceptions and a case-insensitive DISPLAYED-label sort for
- * everything else. `config.comparator`, when supplied, always wins outright
- * — it's checked BEFORE the dimension name, so a caller with its own
- * numeric/custom ordering never has to fight a rank-table match on a
- * coincidentally-named dimension.
+ * The ONE option-sort convention every `FacetPanel.tsx` section (and
+ * `SearchPage.tsx`) calls through: two declared rank exceptions and a
+ * case-insensitive DISPLAYED-label sort for everything else.
+ * `config.comparator`, when supplied, always wins outright — it's checked
+ * BEFORE the dimension name, so a caller with its own numeric/custom
+ * ordering never has to fight a rank-table match on a coincidentally-named
+ * dimension.
  */
 export function sortOptionsFor(
   dimension: string,

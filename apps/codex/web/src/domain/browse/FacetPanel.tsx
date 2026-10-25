@@ -49,16 +49,14 @@ import { formatFacetValue } from "./formatFacetValue";
 export type StateUpdater = (updater: (prev: BrowseFilterState) => BrowseFilterState) => void;
 
 // ---------------------------------------------------------------------------
-// range widget (D29-131 — kept exactly as-is, no stepper/slider redesign)
+// range widget (plain min/max inputs, no stepper or slider)
 // ---------------------------------------------------------------------------
 
-// P6 R9(b,c) (D29-61): the separate "Must have a value" checkbox is DELETED
-// — a typed min/max bound now implies has-value on its own
-// (`filterEngine.ts`'s bounds-imply-has-value rewrite), so there's no longer
-// a distinct gate for a checkbox to control. The missing-count context that
-// used to sit next to the checkbox is folded straight into the min/max
-// `Input` placeholders themselves (informational, not actionable, once the
-// checkbox is gone) rather than growing a new UI element.
+// No separate "Must have a value" checkbox: a typed min/max bound implies
+// has-value on its own (`filterEngine.ts`'s bounds-imply-has-value rule), so
+// there is no distinct gate for a checkbox to control. The missing-count
+// context sits in the min/max `Input` placeholders themselves
+// (informational, not actionable) rather than in a UI element of its own.
 function RangeInputs({
   value,
   bounds,
@@ -216,9 +214,9 @@ function CoreEnumSection({
   onChange: StateUpdater;
   valueOf: (row: IndexRow) => string | undefined;
   /** Rarity/Edition supply their own module-scope labels above/in
-   * `facetControls.tsx` (P13 S3: Source moved OUT of this shared section
-   * entirely, into its own `SourceSection` below — grouping doesn't fit this
-   * component's flat option-list shape). Omitted -> the plain identity
+   * `facetControls.tsx` (Source is not in this shared section: it has its
+   * own `SourceSection` below, because grouping doesn't fit this component's
+   * flat option-list shape). Omitted -> the plain identity
    * label. */
   labelOf?: (value: string) => ReactNode;
   /** Plain-STRING projection of a value for `OptionSearch`'s substring
@@ -272,14 +270,13 @@ function CoreEnumSection({
 }
 
 // ---------------------------------------------------------------------------
-// Source (P13 S3, D29-121/-128): specialized OUT of `CoreEnumSection` into
-// its own grouped rendering — the flat `sourceBook` dimension, the URL
-// values (raw book strings, untouched), and the ambient-count mechanism
-// (`ambientRows`/`scalarOptionCounts`) are ALL the same as before; only the
-// PRESENTATION groups the same option list by product line. Order/labels
-// come from `sourcesModel.ts` (`orderProductLines`/`OTHER_GROUP_LABEL`),
-// reused rather than re-declared (the review's own blocker on the draft's
-// forked order).
+// Source: its own grouped rendering, separate from `CoreEnumSection`. The
+// flat `sourceBook` dimension, the URL values (raw book strings, untouched),
+// and the ambient-count mechanism (`ambientRows`/`scalarOptionCounts`) are
+// the same as every other enum section's; only the PRESENTATION groups the
+// option list by product line. Order/labels come from `sourcesModel.ts`
+// (`orderProductLines`/`OTHER_GROUP_LABEL`), reused rather than re-declared
+// so the two orders can't drift.
 // ---------------------------------------------------------------------------
 
 /** A book's own display label: full name + abbreviation suffix
@@ -300,7 +297,7 @@ function sourceOptionLabel(book: string): ReactElement {
  * `OptionSearch`/`sortOptionsFor`'s own text-based matching/sorting — a
  * query for "LOAG" matches here (the suffix), while a query for the book's
  * own full title matches via `filterOptionsByQuery`'s OTHER check (the raw
- * `opt.value`, always the full book string) — between the two, D29-128's
+ * `opt.value`, always the full book string) — between the two,
  * "OptionSearch matches name AND code" is covered without any bespoke
  * matching logic of its own. */
 function sourceOptionLabelText(book: string): string {
@@ -311,8 +308,8 @@ function sourceOptionLabelText(book: string): string {
 interface SourceProductLineGroup {
   productLine: string;
   options: OptionCount[];
-  /** Sum of every member book's own ambient count — D29-128's "per-group
-   * counts = sum of member ambient counts", independent of any active
+  /** Sum of every member book's own ambient count ("per-group counts = sum
+   * of member ambient counts"), independent of any active
    * OptionSearch query (the group header's own count is never filtered). */
   count: number;
 }
@@ -350,7 +347,7 @@ function SourceSection({
   state: BrowseFilterState;
   onChange: StateUpdater;
   /** `source.book` -> product-line group name, from the loader's own
-   * `CategoryListingData.sourceLines` (D29-121) — a map built over the FULL
+   * `CategoryListingData.sourceLines` — a map built over the FULL
    * category, threaded down through `BrowseListing`/`FacetPanel` verbatim,
    * never re-derived here. */
   sourceLines: Record<string, string>;
@@ -359,7 +356,7 @@ function SourceSection({
   const rawOptions = scalarOptionCounts(ambient, sourceBookValueOf);
   const sorted = sortOptionsFor("sourceBook", rawOptions, { labelOf: sourceOptionLabelText });
   const [query, setQuery] = useState("");
-  // Manually-toggled groups (D29-128: group headers are chrome, a plain
+  // Manually-toggled groups (group headers are chrome, a plain
   // expand/collapse — never a select-all) — ADDITIVE to the two automatic
   // expand rules below (a selected book's group, or a matching group while
   // searching), never a replacement for them.
@@ -388,10 +385,9 @@ function SourceSection({
       <ul className="codex-source-groups">
         {groups.map((group) => {
           const visibleOptions = filterOptionsByQuery(group.options, query, sourceOptionLabelText);
-          // D29-128: while a query is active, a group with zero matches
-          // among its own members simply doesn't render at all — nothing in
-          // the spec asks for an empty, expanded, header-only group to stay
-          // visible, and hiding it keeps the search result set exactly the
+          // While a query is active, a group with zero matches among its
+          // own members doesn't render at all: an empty, expanded,
+          // header-only group would be noise, and hiding it keeps the search result set exactly the
           // matching books (plus any group that ALSO holds a selection, the
           // `hasSelected` branch below).
           const hasSelected = group.options.some((o) => selected.has(o.value));
@@ -446,7 +442,7 @@ function LevelSection({
   state: BrowseFilterState;
   onChange: StateUpdater;
 }): ReactElement | null {
-  if (!categoryHasLevelCoverage(rows)) return null; // D29-32: hidden at 0% coverage
+  if (!categoryHasLevelCoverage(rows)) return null; // hidden at 0% coverage
   const ambient = ambientRows(rows, state, { kind: "level" });
   const bounds = rangeBounds(rows, levelValueOf);
   const missing = countMissingByValue(ambient, levelValueOf);
@@ -467,12 +463,12 @@ function LevelSection({
 }
 
 // ---------------------------------------------------------------------------
-// Traits (D29-127): tri-state cycle/semantics/URL behavior UNTOUCHED. New:
+// Traits: the tri-state include/exclude/reset cycle, plus
 // selected-first ordering, a bounded initial render + "Show all N" expander,
 // AT-legible per-chip aria-labels, the tri-state gesture hint, OptionSearch.
 // ---------------------------------------------------------------------------
 
-/** N = 40 (D29-127): the initial bounded render, after selected-first +
+/** N = 40: the initial bounded render, after selected-first +
  * alphabetical ordering. An active search query (or "Show all") bypasses
  * this entirely — never a hard cap on what's reachable, only on what
  * renders by default. Exported for direct unit testing. */
@@ -493,7 +489,7 @@ function TraitsSection({
   const [showAll, setShowAll] = useState(false);
   if (options.length === 0) return null;
 
-  // D29-127: selected (include OR exclude) chips pin to the FRONT of the
+  // Selected (include OR exclude) chips pin to the FRONT of the
   // list — each partition stays alphabetical internally (traitOptionCounts'
   // own order, preserved by a stable `.filter()` split).
   const selectedFirst = [
@@ -502,7 +498,7 @@ function TraitsSection({
   ];
 
   const visible = filterOptionsByQuery(selectedFirst, query, (v) => v);
-  // D29-125: an active query bypasses the 40-bound entirely; so does
+  // An active query bypasses the 40-bound entirely; so does
   // "Show all".
   const bounded =
     query.trim() !== "" || showAll ? visible : visible.slice(0, TRAITS_INITIAL_RENDER_COUNT);
@@ -526,7 +522,7 @@ function TraitsSection({
       <ul className="codex-trait-chips">
         {bounded.map((opt) => {
           const tri = traitTriState(state.traits, opt.value);
-          // AT-legible (review): aria-pressed alone can't distinguish
+          // AT-legible: aria-pressed alone can't distinguish
           // include from exclude.
           const ariaLabel =
             tri === "include"
@@ -560,19 +556,17 @@ function TraitsSection({
 }
 
 // ---------------------------------------------------------------------------
-// P13 S2 (D29-129 consolidation) — the superseded-visibility control: ONE
-// control identity, same `?superseded=` state as the toolbar's own reveal
-// button (`BrowseListing.tsx`'s `SupersededRevealControl`). The blue
-// callout explainer DIES (was the loudest element in the panel per the
-// spec's own Problem statement); a one-line muted caption replaces it.
-// CRITICAL (the review's own catch): this writes through `onSupersededReveal`
-// — the SAME functional-merge, `resetScroll: false` navigate the toolbar
-// control already uses (`routes/$category/index.tsx`'s own doc comment on
-// that prop) — NEVER through the general `onChange`/`setSupersededFilter`
-// path, which would route through `onStateChange`'s default `resetScroll:
-// true` and yank a long, already-scrolled listing back to the top just for
-// widening this one toggle (the exact divergence the review caught). No
-// badge/clear × here (D29-124 scopes that to real facet DIMENSIONS; this
+// The superseded-visibility control: ONE control identity, same
+// `?superseded=` state as the toolbar's own reveal button
+// (`BrowseListing.tsx`'s `SupersededRevealControl`). A one-line muted
+// caption explains it; no callout box.
+// CRITICAL: this writes through `onSupersededReveal` — the SAME
+// functional-merge, `resetScroll: false` navigate the toolbar control uses
+// (`routes/$category/index.tsx`'s own doc comment on that prop) — NEVER
+// through the general `onChange`/`setSupersededFilter` path, which would
+// route through `onStateChange`'s default `resetScroll: true` and yank a
+// long, already-scrolled listing back to the top just for widening this one
+// toggle. No badge/clear × here (those are for real facet DIMENSIONS; this
 // section's own checkbox already IS its own clear affordance).
 // ---------------------------------------------------------------------------
 
@@ -618,12 +612,12 @@ export function FacetPanel({
   rows: readonly IndexRow[];
   state: BrowseFilterState;
   onChange: StateUpdater;
-  /** P13 S2 (D29-129 consolidation) — the Superseded section's own control
+  /** The Superseded section's own control
    * writes through THIS, not `onChange` — see `SupersededSection`'s own
    * comment for why. Threaded straight from `BrowseListing`'s own prop of
    * the same name (the toolbar reveal's callback), never re-derived. */
   onSupersededReveal: (superseded: boolean) => void;
-  /** P13 S3 (D29-121/-128) — the loader's `CategoryListingData.sourceLines`,
+  /** The loader's `CategoryListingData.sourceLines`,
    * threaded verbatim through `BrowseListing` for `SourceSection`'s own
    * grouping. Optional + defaults to `{}` (every book falls to
    * `OTHER_GROUP_LABEL`, one flat "Other" group) so callers that don't care

@@ -53,7 +53,7 @@ function row(overrides: Partial<IndexRow> & Pick<IndexRow, "id" | "name">): Inde
   };
 }
 
-describe("filterEngine: tri-state trait semantics (D29-32/-35)", () => {
+describe("filterEngine: tri-state trait semantics", () => {
   const fire = row({ id: "feat/a", name: "A", traits: ["fire", "agile"] });
   const nonFire = row({ id: "feat/b", name: "B", traits: ["agile"] });
   const neither = row({ id: "feat/c", name: "C", traits: [] });
@@ -145,14 +145,14 @@ describe("filterEngine: missing-key '—' bucket (the likeliest logic-bug nest)"
     expect(result).toEqual(["creature/a", "creature/b", "creature/c"]);
   });
 
-  it("P6 D29-61(b): a typed min/max bound EXCLUDES missing-key rows — bounds imply has-value", () => {
+  it("a typed min/max bound EXCLUDES missing-key rows — bounds imply has-value", () => {
     const state: BrowseFilterState = {
       ...emptyFilterState(),
       facetRange: new Map([["hp", { min: 10, max: 100 }]]),
     };
     // withHp (50) is inside 10..100; withoutHp/withSize have no hp at all
-    // and ARE now excluded by the mere presence of a min/max bound — the
-    // separate `has-value` gate this rule replaces is gone (D29-61(b)).
+    // and ARE excluded by the mere presence of a min/max bound — there is no
+    // separate `has-value` gate.
     expect(applyFilters(rows, state).map((r) => r.id)).toEqual(["creature/a"]);
   });
 
@@ -190,7 +190,7 @@ describe("filterEngine: missing-key '—' bucket (the likeliest logic-bug nest)"
     expect(applyFilters([traitless], state)).toEqual([traitless]);
   });
 
-  it("level (core, range-shaped) follows the same bounds-imply-has-value rule (D29-61(b)) — a typed bound excludes a level-missing row", () => {
+  it("level (core, range-shaped) follows the same bounds-imply-has-value rule — a typed bound excludes a level-missing row", () => {
     const withLevel = row({ id: "feat/a", name: "A", level: 5 });
     const withoutLevel = row({ id: "trait/a", name: "B" });
     const state: BrowseFilterState = { ...emptyFilterState(), level: { min: 0, max: 10 } };
@@ -319,7 +319,7 @@ describe("filterEngine: sort", () => {
     expect(sortRows(rows, "level").map((r) => r.id)).toEqual(["b", "a"]);
   });
 
-  it("level sort never coerces a missing level to 0/1 (M8) — it lands after level 28, not before -2", () => {
+  it("level sort never coerces a missing level to 0/1 — it lands after level 28, not before -2", () => {
     const rows = [
       row({ id: "high", name: "High", level: 28 }),
       row({ id: "none", name: "None" }),
@@ -328,7 +328,7 @@ describe("filterEngine: sort", () => {
     expect(sortRows(rows, "level").map((r) => r.id)).toEqual(["low", "high", "none"]);
   });
 
-  // P8 S1 (D29-78) — the widened grammar's built-in-only (no comparator arg)
+  // The sort grammar's built-in-only (no comparator arg)
   // half: "-name"/"-level" reuse the exact same built-in name/level logic
   // `sortRows`'s original 2-arg call sites (above) already exercise, just
   // reversed — proving the 2-arg call sites keep compiling AND behaving
@@ -431,7 +431,7 @@ describe("filterEngine: ambientRows (self-exclusion for option counts)", () => {
 });
 
 describe("filterEngine: bounds + level coverage + collisions", () => {
-  it("rangeBounds is data-derived, never defaults a lower bound to 0/1 (M8)", () => {
+  it("rangeBounds is data-derived, never defaults a lower bound to 0/1", () => {
     const rows = [row({ id: "a", name: "A", level: -2 }), row({ id: "b", name: "B", level: 28 })];
     expect(rangeBounds(rows, levelValueOf)).toEqual({ min: -2, max: 28 });
   });
@@ -451,10 +451,9 @@ describe("filterEngine: bounds + level coverage + collisions", () => {
     expect(categoryHasLevelCoverage(rows)).toBe(true);
   });
 
-  // P8 S1 (D29-78 adversarial B-U3) — the rarity analog, real-corpus-pinned:
-  // rules/trait/source/article are 100%-covered but cardinality-1 (every
-  // measured row is "common", real numbers this slice's own report
-  // records); sidebar is 0%-covered (no row carries `rarity` at all).
+  // The rarity analog, real-corpus-pinned: rules/trait/source/article are
+  // 100%-covered but cardinality-1 (every measured row is "common"); sidebar
+  // is 0%-covered (no row carries `rarity` at all).
   describe("categoryHasRarityCoverage", () => {
     it("false when every row is missing rarity entirely (e.g. sidebar)", () => {
       const rows = [row({ id: "sidebar/a", name: "A" }), row({ id: "sidebar/b", name: "B" })];
@@ -525,7 +524,7 @@ describe("filterEngine: emptyFilterState / isEmptyFilterState / isRangeFilterAct
     expect(isRangeFilterActive(undefined)).toBe(false);
   });
 
-  it("isRangeFilterActive is true when either min or max is set (D29-61(b): no separate has-value field anymore)", () => {
+  it("isRangeFilterActive is true when either min or max is set (no separate has-value field)", () => {
     expect(isRangeFilterActive({ min: 1 })).toBe(true);
     expect(isRangeFilterActive({ max: 1 })).toBe(true);
   });
@@ -634,10 +633,10 @@ describe("filterEngine: core scalar option counts (rarity/source.book/edition)",
 });
 
 // ---------------------------------------------------------------------------
-// P11 S2 (D29-107 b/c) — the two CoreEnumSection option re-sorts.
+// The two CoreEnumSection option re-sorts.
 // ---------------------------------------------------------------------------
 
-describe("sortOptionsByLabel (D29-107b — Source sorts by its DISPLAYED label)", () => {
+describe("sortOptionsByLabel (Source sorts by its DISPLAYED label)", () => {
   it("sorts by the label projection, case-insensitively — NOT the raw value", () => {
     // Raw values pre-sorted the OTHER way round by `scalarOptionCounts`'s own
     // alphabetical-on-raw-value order; the label projection reverses it.
@@ -671,7 +670,7 @@ describe("sortOptionsByLabel (D29-107b — Source sorts by its DISPLAYED label)"
   });
 });
 
-describe("sortOptionsByRarityRank (D29-107c — a SORT, never a whitelist)", () => {
+describe("sortOptionsByRarityRank (a SORT, never a whitelist)", () => {
   it("orders common < uncommon < rare < unique, regardless of input/count order", () => {
     const options: OptionCount[] = [
       { value: "unique", count: 2031 },
@@ -709,10 +708,10 @@ describe("sortOptionsByRarityRank (D29-107c — a SORT, never a whitelist)", () 
 });
 
 // ---------------------------------------------------------------------------
-// P13 S1 (D29-126) — the unified `sortOptionsFor` entry point.
+// The unified `sortOptionsFor` entry point.
 // ---------------------------------------------------------------------------
 
-describe("sortOptionsByActionCostRank (D29-126 — 1/2/3/free/reaction/passive, the PF2e listing order)", () => {
+describe("sortOptionsByActionCostRank (1/2/3/free/reaction/passive, the PF2e listing order)", () => {
   it("orders the 6 real observed values 1/2/3/free/reaction/passive regardless of input order", () => {
     const options: OptionCount[] = [
       { value: "passive", count: 3837 },
@@ -746,7 +745,7 @@ describe("sortOptionsByActionCostRank (D29-126 — 1/2/3/free/reaction/passive, 
   });
 });
 
-describe("sortOptionsFor (D29-126 — the ONE convention, declared rank exceptions)", () => {
+describe("sortOptionsFor (the ONE convention, declared rank exceptions)", () => {
   it("dimension 'rarity' delegates to the rank sort", () => {
     const options: OptionCount[] = [
       { value: "unique", count: 1 },
@@ -780,7 +779,7 @@ describe("sortOptionsFor (D29-126 — the ONE convention, declared rank exceptio
       { value: "-2", count: 1 },
       { value: "10", count: 1 },
     ];
-    // the S3 `/search` numeric `level` facet's own shape: a plain numeric
+    // the `/search` numeric `level` facet's own shape: a plain numeric
     // comparator over string-typed values, nothing to do with rarity/
     // actionCost's rank tables even if `dimension` coincidentally matched one.
     const sorted = sortOptionsFor("rarity", options, {

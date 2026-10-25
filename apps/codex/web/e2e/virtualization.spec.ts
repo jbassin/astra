@@ -192,7 +192,7 @@ test.describe("listing virtualization", () => {
     const { deepLinkSlug } = ritualDiscovery;
     const res = await page.goto(`/ritual?entry=${deepLinkSlug}`, { waitUntil: "load" });
     const ssrHtml = (await res?.text()) ?? "";
-    await check("gate D — the entry pane SSRs server-side (not a client-only fetch flash)", () => {
+    await check("the entry pane SSRs server-side (not a client-only fetch flash)", () => {
       expect.soft(ssrHtml).toContain("codex-entry-pane");
       expect.soft(ssrHtml).toContain("codex-entity-page");
     });
@@ -475,7 +475,7 @@ test.describe("filter pane", () => {
     const viaToolbar = await scrollAfterSupersededToggle("toolbar");
     test.skip(viaPane === null || viaToolbar === null, "/ritual has no superseded rows to reveal");
     await check(
-      "the pane's Superseded toggle has scroll PARITY with the toolbar reveal (D29-129 behavioral identity)",
+      "the pane's Superseded toggle has scroll PARITY with the toolbar reveal (behavioral identity)",
       () =>
         expect
           .soft(

@@ -1,4 +1,4 @@
-// P3 S3 (D29-35) — the `/{category}` browse URL codec. Human-readable params:
+// The `/{category}` browse URL codec. Human-readable params:
 // `?traits=fire,-agile&level=-2..5&rarity=rare,unique&f.actionCost=1,reaction
 // &q=drag&superseded=1` (derived facet keys namespaced `f.<key>`; core facets
 // bare). One module, two directions:
@@ -16,17 +16,17 @@
 //   - `filterStateToSearch` — state -> the same `BrowseSearch` shape, used to
 //     reflect live filter state into the address bar (a router search
 //     replace) and to build shareable hrefs. The empty state encodes to `{}`
-//     (D29-35 "empty state = clean URL" — `@tanstack/router-core`'s qss
+//     ("empty state = clean URL" — `@tanstack/router-core`'s qss
 //     `encode()` already omits `undefined`-valued keys, so an object with
 //     every field `undefined` serializes to no query string at all).
 //
-// P4.5 D29-48: `legacy` was renamed `superseded` (self-documenting parity
-// with `IndexRow.superseded`/Pagefind's own `filters.superseded` key) — a
-// bare `legacy=1`/`legacy=true` still DECODES as an alias forever (every
-// shared link that predates this rename, including P4's own acceptance
-// fixture), but the encoder only ever emits `superseded`.
+// `legacy` was renamed `superseded` (self-documenting parity with
+// `IndexRow.superseded`/Pagefind's own `filters.superseded` key) — a bare
+// `legacy=1`/`legacy=true` still DECODES as an alias forever (every shared
+// link that predates the rename, including an acceptance fixture), but the
+// encoder only ever emits `superseded`.
 //
-// **Include sigil = NO marker; exclude = `-`** (adversarial B1: a bare `+`
+// **Include sigil = NO marker; exclude = `-`** (a bare `+`
 // decodes to a literal space — `URLSearchParams`'s
 // `application/x-www-form-urlencoded` convention, and `qss`'s `decode()` is a
 // thin wrapper over exactly that — so a `+`-prefixed include marker would be
@@ -57,19 +57,19 @@ export type BrowseSearch = {
   book?: string;
   edition?: string;
   q?: string;
-  /** P4.5 D29-48: renamed from `legacy`. `legacy=1`/`legacy=true` still
+  /** Renamed from `legacy`. `legacy=1`/`legacy=true` still
    * DECODES as an alias (see `validateBrowseSearch` below) — forever, not a
    * deprecation window — but the encoder below only ever emits `superseded`. */
   superseded?: boolean;
   sort?: string;
-  /** P4.5 S4 (D29-49) — the split-view selection: the raw corpus id SEGMENT
+  /** The split-view selection: the raw corpus id SEGMENT
    * (identical format to the `/{category}/{slug}` route's own `slug` param,
    * including `@legacy`/`-N` collision suffixes), never the full
    * `{category}/{slug}` id. Lives OUTSIDE `BrowseFilterState` on purpose —
    * it's route/selection state, not a filter — so `filterStateToSearch`
    * (below) never touches it; every write path that calls
    * `filterStateToSearch` must resync it back in via `withEntryPreserved`
-   * (adversarial B3) or a facet change would silently deselect the right
+   * or a facet change would silently deselect the right
    * pane. */
   entry?: string;
 } & Record<string, string | boolean | undefined>;
@@ -84,10 +84,9 @@ function toBool(raw: unknown): boolean {
 }
 
 /**
- * P8 S1 (D29-78 adversarial M6) — `?sort=` widened from the closed
- * `"level"`-literal-match to `name|-name|level|-level|<facetKey>|-
- * <facetKey>` (a leading `-` = descending). This is the "unknown" half of
- * the spec's "unknown/inapplicable values fall back to name silently" rule
+ * `?sort=` accepts `name|-name|level|-level|<facetKey>|-<facetKey>` (a
+ * leading `-` = descending). This is the "unknown" half of the
+ * "unknown/inapplicable values fall back to name silently" rule
  * (`filterEngine.ts`'s `SortMode` doc comment covers the other half, the
  * per-category "inapplicable" case this module can't see): a key that is
  * NOT `name`/`level`/`rarity` and not a real `facetKeys.ts` key (via
@@ -137,8 +136,8 @@ export function validateBrowseSearch(raw: Record<string, unknown>): BrowseSearch
     const v = str(raw.q);
     if (v !== "") out.q = v;
   }
-  // P4.5 D29-48: `superseded` is the real param; a bare `legacy=1`/`legacy=
-  // true` link (every shared link before this rename, incl. P4's own
+  // `superseded` is the real param; a bare `legacy=1`/`legacy=true` link
+  // (every shared link before the rename, incl. the
   // `rules/building-creatures@legacy?legacy=true` acceptance fixture)
   // decodes as an alias FOREVER, never a deprecation window. `superseded`'s
   // own PRESENCE (any value, even a falsy one) wins over `legacy` when both
@@ -174,14 +173,14 @@ export function validateBrowseSearch(raw: Record<string, unknown>): BrowseSearch
 // Fully defensive: any string that doesn't match the shape decodes to `{}`
 // (no filter), never throws.
 //
-// P6 D29-61(d) — the `!`-bang forever-decode contract: this param used to
+// The `!`-bang forever-decode contract: this param used to
 // carry an optional trailing `!` marking the now-DELETED `has-value` gate
 // (`f.hp=10..100!`/a bare `f.hp=..!`). `RangeFilter` no longer has a
-// `has-value` field at all (D29-61(b) folded that gate into bound presence
+// `has-value` field at all (that gate is folded into bound presence
 // itself — see `filterEngine.ts`), so the bang is pure legacy syntax now.
 // The decoder still MATCHES and TOLERATES a trailing `!` on any shared link
 // that predates this change (the repo's established `?legacy=` alias
-// posture, P4.5 D29-48, applied to the same class of problem) — it simply
+// posture, applied to the same class of problem) — it simply
 // carries no meaning anymore and is dropped, never causing a parse failure.
 // The encoder NEVER emits one: the canonical form is bang-less forever, and
 // migrates on the next in-app navigation once a stale link round-trips
@@ -193,7 +192,7 @@ const RANGE_RE = /^(-?\d+(?:\.\d+)?)?\.\.(-?\d+(?:\.\d+)?)?(!)?$/;
 export function decodeRangeParam(raw: string): RangeFilter {
   const m = RANGE_RE.exec(raw);
   if (!m) return {};
-  const [, minStr, maxStr] = m; // the optional trailing `!` (group 3) is matched-and-ignored, D29-61(d)
+  const [, minStr, maxStr] = m; // the optional trailing `!` (group 3) is matched-and-ignored
   const out: RangeFilter = {};
   if (minStr !== undefined && minStr !== "") out.min = Number(minStr);
   if (maxStr !== undefined && maxStr !== "") out.max = Number(maxStr);
@@ -204,14 +203,14 @@ export function encodeRangeParam(filter: RangeFilter): string | undefined {
   if (!isRangeFilterActive(filter)) return undefined;
   const min = filter.min !== undefined ? String(filter.min) : "";
   const max = filter.max !== undefined ? String(filter.max) : "";
-  return `${min}..${max}`; // never emits the legacy `!` bang (D29-61(d))
+  return `${min}..${max}`; // never emits the legacy `!` bang
 }
 
 // ---------------------------------------------------------------------------
 // trait / plain-enum csv encode/decode
 //
-// **Escaped, not naive, `,`-splitting** (found via a REAL-corpus S3 spot
-// check, not spec'd up front): most facet values never contain a literal
+// **Escaped, not naive, `,`-splitting** (found via a REAL-corpus spot
+// check): most facet values never contain a literal
 // comma (traits, actionCost, size, ...) — but `creature.family` does 380
 // times over (e.g. `"Dragon, Black"`) and `source.book` does 240 times
 // (e.g. titles with an embedded subtitle comma) — measured against the real
@@ -221,15 +220,14 @@ export function encodeRangeParam(filter: RangeFilter): string | undefined {
 // (and `\` itself) at the STRING level — independent of URL percent-
 // encoding, which has already fully happened by the time this module ever
 // sees the value — fixes it while staying byte-identical for every value
-// that never needed escaping in the first place, including the spec's own
+// that never needed escaping in the first place, including the
 // literal `traits=fire,-agile` / `rarity=rare,unique` /
 // `f.actionCost=1,reaction` examples (none of those tokens contain a `,`).
 // ---------------------------------------------------------------------------
 
-// Exported (P3 S4, D29-36) so `domain/search/searchUrlState.ts` reuses the
-// SAME comma-escaping — not a re-implementation — for the `/search` route's
-// own CSV-multi-select params (category/rarity/edition/level/traits): purely
-// additive, no behavior change to this module's own callers.
+// Exported so `domain/search/searchUrlState.ts` reuses the SAME
+// comma-escaping — not a re-implementation — for the `/search` route's own
+// CSV-multi-select params (category/rarity/edition/level/traits).
 export function splitCsv(raw: string): string[] {
   const tokens: string[] = [];
   let current = "";
@@ -352,8 +350,7 @@ export function filterStateToSearch(state: BrowseFilterState): BrowseSearch {
   if (state.query.trim() !== "") out.q = state.query.trim();
   if (state.superseded) out.superseded = true;
   // "name" is the default — never serialized, same "empty state = clean
-  // URL" convention as every other field here (P8 S1 widening of the old
-  // literal `"level"`-only check).
+  // URL" convention as every other field here.
   if (state.sort !== "name") out.sort = state.sort;
 
   for (const [key, selected] of state.facetEnum) {
@@ -368,7 +365,7 @@ export function filterStateToSearch(state: BrowseFilterState): BrowseSearch {
 }
 
 /**
- * P4.5 S4 (D29-49, adversarial B3) — the split-view route's OWN
+ * The split-view route's OWN
  * `onStateChange` resync: `filterStateToSearch` rebuilds the search object
  * from `BrowseFilterState` alone and knows nothing about `entry` (it lives
  * outside that state, see `BrowseSearch.entry`'s own comment above), so any

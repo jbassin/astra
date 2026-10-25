@@ -5,14 +5,13 @@ import { EditionIcon, Input } from "@/ui";
 import type { OptionCount } from "./filterEngine";
 
 /**
- * P13 S1 (D29-130) — the shared presentational primitives, extracted out of
- * `FacetPanel.tsx` so `SearchPage.tsx` (S3) can consume the SAME widgets
- * instead of maintaining its own hand-copied section markup. Every
+ * The shared presentational primitives, used by both `FacetPanel.tsx` and
+ * `SearchPage.tsx` so neither keeps its own hand-copied section markup. Every
  * component here takes options/selection/labels AS DATA (plus an optional
  * comparator, `filterEngine.ts`'s `sortOptionsFor`) — none of them recompute
  * ambient counts or re-derive WHICH options exist; that stays the caller's
  * job (`FacetPanel.tsx`'s own `ambientRows`/`enumOptionCounts` today,
- * `SearchPage.tsx`'s Pagefind-derived `filterCounts` state from S3).
+ * `SearchPage.tsx`'s Pagefind-derived `filterCounts` state).
  */
 
 // ---------------------------------------------------------------------------
@@ -27,20 +26,20 @@ export function FacetSection({
   children,
 }: {
   title: string;
-  /** P13 S1 (D29-125) — `OptionSearch`'s own toggle button (and, once
-   * expanded, its input) render here: the spec's own "a magnifier button in
-   * the section title row" wording. Rendered as a DIRECT sibling of the
-   * `<h3>` inside one flex row (not a wrapping element) so `OptionSearch`
-   * can stay a plain component returning a Fragment. */
+  /** `OptionSearch`'s own toggle button (and, once expanded, its input)
+   * render here: a magnifier button in the section title row. Rendered as a
+   * DIRECT sibling of the `<h3>` inside one flex row (not a wrapping
+   * element) so `OptionSearch` can stay a plain component returning a
+   * Fragment. */
   titleExtra?: ReactNode;
-  /** P13 S2 (D29-124) — "active sections show a value-count badge on the
+  /** "Active sections show a value-count badge on the
    * title + a per-section clear ×": the number of currently-selected values
    * for this dimension (an active range counts as 1 — `isRangeFilterActive`
    * over a `RangeFilter`, `filterEngine.ts`). `0`/`undefined` renders
    * NEITHER the badge nor the clear button — every caller passes the real
    * count unconditionally, this component gates on it being truthy so a
    * facet with no active selection stays exactly as plain as it always was
-   * (`SupersededSection`, D29-129, deliberately never passes this — its own
+   * (`SupersededSection` deliberately never passes this — its own
    * checkbox already IS the clear affordance). */
   activeCount?: number;
   /** Required whenever `activeCount` is truthy (the caller's own dimension
@@ -48,15 +47,14 @@ export function FacetSection({
    * "state minus one dimension" helper `activeFilterPills.ts`'s per-pill
    * remove action already reuses, `filterEngine.ts`). */
   onClear?: () => void;
-  // P11 S2 (D29-107a) — widened from `ReactElement | null` to `ReactNode`:
-  // a `filterable` `CoreEnumSection`/`TraitsSection` now renders TWO
-  // siblings (the type-ahead `Input` + the option list), wrapped in a
-  // Fragment — a Fragment element is always truthy, so the `!children`
-  // "hide the whole section when empty" gate below intentionally no longer
-  // fires for those two sections (the type-ahead input itself must stay
-  // visible even when it has filtered the option list down to zero matches,
-  // so the reader can clear it) — every OTHER (non-filterable) caller still
-  // passes a single `ReactElement | null` exactly as before, unaffected.
+  // `ReactNode`, not `ReactElement | null`: a `filterable`
+  // `CoreEnumSection`/`TraitsSection` renders TWO siblings (the type-ahead
+  // `Input` + the option list), wrapped in a Fragment — a Fragment element is
+  // always truthy, so the `!children` "hide the whole section when empty"
+  // gate below intentionally does not fire for those two sections (the
+  // type-ahead input itself must stay visible even when it has filtered the
+  // option list down to zero matches, so the reader can clear it) — every
+  // OTHER (non-filterable) caller passes a single `ReactElement | null`.
   children: ReactNode;
 }): ReactElement | null {
   if (!children) return null;
@@ -85,8 +83,8 @@ export function FacetSection({
 }
 
 // ---------------------------------------------------------------------------
-// OptionSearch (D29-125) — the generalized default-hidden option-list
-// search, replacing the two hardcoded P11 type-aheads (Source/Traits).
+// OptionSearch — the generalized default-hidden option-list search, shared
+// by every long option list (Source, Traits and the rest).
 // ---------------------------------------------------------------------------
 
 /** ≥ this many options -> the magnifier affordance appears at all. Below it,
@@ -133,8 +131,8 @@ function MagnifierGlyph(): ReactElement {
  * `aria-expanded`; the input (when expanded) autofocuses ONLY on a
  * user-triggered expand (a mount that starts pre-expanded, per the ≥100
  * default, does NOT steal page focus). Esc, or a blur while the query is
- * empty, collapses AND clears the query (D29-125: "Esc/blur-with-empty-
- * value collapses" — collapsing always clears, so a hidden input never
+ * empty, collapses AND clears the query ("Esc/blur-with-empty-value
+ * collapses" — collapsing always clears, so a hidden input never
  * leaves an invisible active filter behind).
  */
 export function OptionSearch({
@@ -192,7 +190,7 @@ export function OptionSearch({
           }}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
-              // P13 S2 (D29-123 Esc sequencing) — `stopPropagation()` alone
+              // Esc sequencing: `stopPropagation()` alone
               // is NOT enough here: this app hydrates via `hydrateRoot(
               // document, ...)` (the TanStack Start client entry), so
               // React's OWN top-level event delegation listener lives on
@@ -219,7 +217,7 @@ export function OptionSearch({
 }
 
 /**
- * D29-125 — substring match against BOTH the displayed label and the raw
+ * Substring match against BOTH the displayed label and the raw
  * value (so "AP147" still finds its book even when the Source section
  * displays it as a full title, and vice versa). An empty query returns
  * `options` unchanged (no copy needed).
@@ -238,13 +236,12 @@ export function filterOptionsByQuery<T extends { value: string }>(
 }
 
 // ---------------------------------------------------------------------------
-// editionOptionLabel (D29-126/-130) — the Edition dimension's shared
-// icon+VISIBLE-text label, moved here from `FacetPanel.tsx` (P13 S3) so
-// `SearchPage.tsx`'s own Edition section can render the SAME widened
-// treatment ("Remaster"/"Legacy" text, not an icon-only glyph) instead of
-// maintaining its own icon-only copy. A stable module-scope reference (not
-// an inline arrow) so oxlint's `no-unstable-nested-components` doesn't flag
-// a JSX-returning closure defined during render.
+// editionOptionLabel — the Edition dimension's shared icon+VISIBLE-text
+// label, so `FacetPanel.tsx` and `SearchPage.tsx`'s Edition sections render
+// the SAME treatment ("Remaster"/"Legacy" text, not an icon-only glyph). A
+// stable module-scope reference (not an inline arrow) so oxlint's
+// `no-unstable-nested-components` doesn't flag a JSX-returning closure
+// defined during render.
 // ---------------------------------------------------------------------------
 
 export function editionOptionLabel(value: string): ReactElement {
@@ -262,7 +259,7 @@ export function editionOptionLabel(value: string): ReactElement {
 // ---------------------------------------------------------------------------
 
 /** ≤ this many options -> a `ToggleChipRow`; more -> `EnumOptionList`'s
- * checkbox rows (D29-126: real cardinalities cluster 2/4/6/7 then jump to
+ * checkbox rows (real cardinalities cluster 2/4/6/7 then jump to
  * 15+ — nothing straddles this boundary). */
 export const CHIP_MAX_OPTIONS = 8;
 
@@ -295,8 +292,7 @@ export function EnumOptionList({
           </label>
         </li>
       ))}
-      {/* P13 S1 (D29-126): "— without data: N" -> "Unspecified (N)" —
-          informational-only, semantics unchanged. */}
+      {/* "Unspecified (N)": informational only, never a filter. */}
       {missing > 0 ? <li className="codex-facet-missing">Unspecified ({missing})</li> : null}
     </ul>
   );

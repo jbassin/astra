@@ -3,10 +3,9 @@ import type { ReactElement } from "react";
 import { Button } from "@/ui";
 
 /**
- * D29-35 adversarial M6 — a filtered-to-zero listing/search result: an
- * explicit message plus a one-click "clear filters" affordance. Built once
- * here, reusable (spec's own words: "same component serves `/search`",
- * D29-36's S4 route imports this unchanged).
+ * A filtered-to-zero listing or search result: an explicit message plus a
+ * one-click "clear filters" affordance. The `/search` route reuses this
+ * component unchanged.
  */
 export function BrowseEmptyState({
   onClearFilters,

@@ -1,45 +1,34 @@
 // @vitest-environment jsdom
 //
-// P6 R9(c) (D29-61(c)) — the "Must have a value" checkbox is deleted from
-// `RangeInputs` outright (not just hidden), since a typed min/max bound now
-// implies has-value on its own (`filterEngine.ts`'s bounds-imply-has-value
-// rewrite, D29-61(b)). This file is the DOM-assert half of Track C's §5D
-// gate ("the checkbox gone from every `FacetPanel` render") — the
-// grep-provable half (zero `has-value` references repo-wide) is a plain
-// repo-wide grep, not a test. `filterEngine.test.ts` covers the matching
-// engine-level half of the gate (a typed bound excluding missing-value
-// rows) — this file only proves the UI surface.
+// Range widgets: `RangeInputs` has no "Must have a value" checkbox, since a
+// typed min/max bound implies has-value on its own (`filterEngine.ts`'s
+// bounds-imply-has-value rule). This file proves the UI surface (the checkbox
+// is absent from every `FacetPanel` render); `filterEngine.test.ts` covers
+// the engine-level half (a typed bound excluding missing-value rows).
 //
-// P13 S1 (D29-122/125-127/130) — DELIBERATELY CHANGED PINS from the P11 era,
-// enumerated here (see the S1 build record for the full list):
-//   - the "Filter source"/"Filter traits" `TypeAheadInput` placeholders die,
-//     replaced by `OptionSearch`'s "Search <section>…" family — AND
-//     `OptionSearch` only renders (as a magnifier BUTTON first) once a
-//     section clears `OPTION_SEARCH_THRESHOLD` (20) options, so the old
-//     2-row Source/Traits fixtures are WIDENED here to clear that threshold
-//     (below it, D29-125 says no search affordance renders at all — the OLD
-//     always-on `TypeAheadInput` pin is obsolete by design, not an oversight).
-//   - Rarity's option labels are now Title Case ("Common"/"Uncommon"/"Rare"/
-//     "Unique", via `formatFacetValue`) instead of the raw lowercase corpus
-//     value — AND Rarity (4 options) now renders as `ToggleChipRow` chips,
-//     not `EnumOptionList` checkboxes (`CHIP_MAX_OPTIONS` = 8, D29-126) — so
-//     the old `.codex-facet-option-label` selector is replaced with
-//     `.codex-toggle-chip`.
+// Option search and labels:
+//   - `OptionSearch` ("Search <section>…") renders, as a magnifier BUTTON
+//     first, only once a section clears `OPTION_SEARCH_THRESHOLD` (20)
+//     options; below it no search affordance renders at all. The Source and
+//     Traits fixtures are therefore wide enough to clear that threshold.
+//   - Rarity's option labels are Title Case ("Common"/"Uncommon"/"Rare"/
+//     "Unique", via `formatFacetValue`), not the raw lowercase corpus value,
+//     and Rarity (4 options) renders as `ToggleChipRow` chips, not
+//     `EnumOptionList` checkboxes (`CHIP_MAX_OPTIONS` = 8), so the selector
+//     is `.codex-toggle-chip`.
 //
-// P13 S3 (D29-121/-128) — Source's own P13 S1/D29-107 pins are SUPERSEDED
-// again, deliberately, by the grouped rendering below:
-//   - the flat "abbreviation-only" option label ("GMG") is replaced by "full
-//     book name + abbreviation suffix" ("Gamemastery Guide" + "GMG" in a
-//     sibling span) — a bare `getByText("GMG")` no longer matches; every
-//     Source test below queries the full name and/or a regex for the code.
-//   - options no longer render as one flat list at all — they're grouped
-//     into collapsed-by-default product-line disclosures
-//     (`.codex-source-group`), so most assertions now expand a group first
+// Source's grouped rendering:
+//   - an option label is "full book name + abbreviation suffix" ("Gamemastery
+//     Guide" + "GMG" in a sibling span), so a bare `getByText("GMG")` doesn't
+//     match; every Source test queries the full name and/or a regex for the
+//     code.
+//   - options are grouped into collapsed-by-default product-line disclosures
+//     (`.codex-source-group`), so most assertions expand a group first
 //     (`toggleGroup`/a matching OptionSearch query/a selected book) before
 //     asserting a book's own label is visible.
-//   - `FacetPanel` gains an optional `sourceLines` prop (default `{}` —
-//     every book groups under "Other") — every Source test now either
-//     passes `MANY_SOURCE_LINES` (two real pinned groups) or exercises the
+//   - `FacetPanel`'s optional `sourceLines` prop defaults to `{}` (every book
+//     groups under "Other"); every Source test either passes
+//     `MANY_SOURCE_LINES` (two real pinned groups) or exercises the
 //     default/fail-soft shape explicitly.
 
 import type { IndexRow } from "@astra/codex-corpus";
@@ -81,7 +70,7 @@ function renderPanel(state: BrowseFilterState = emptyFilterState()) {
   );
 }
 
-describe("FacetPanel range widgets — no 'Must have a value' checkbox anywhere (D29-61(c))", () => {
+describe("FacetPanel range widgets — no 'Must have a value' checkbox anywhere", () => {
   it("renders the Level range inputs with zero checkboxes in that section", () => {
     renderPanel();
     const levelHeading = screen.getByText("Level");
@@ -107,14 +96,13 @@ describe("FacetPanel range widgets — no 'Must have a value' checkbox anywhere 
 });
 
 // ---------------------------------------------------------------------------
-// P13 S1 (D29-125) — OptionSearch: threshold-gated, magnifier-first,
+// OptionSearch: threshold-gated, magnifier-first,
 // substring match on BOTH label and raw value.
 // ---------------------------------------------------------------------------
 
 /** 22 distinct source books (> `OPTION_SEARCH_THRESHOLD` = 20, so the Source
  * section's `OptionSearch` actually renders) — "Gamemastery Guide"/"Core
- * Rulebook" are kept among them for the label-sort + narrowing assertions
- * (D29-107 a/b's original pins, preserved in spirit). */
+ * Rulebook" are kept among them for the label-sort + narrowing assertions. */
 const MANY_SOURCE_ROWS: IndexRow[] = [
   row({
     id: "feat/gmg",
@@ -140,7 +128,7 @@ const MANY_SOURCE_ROWS: IndexRow[] = [
   ),
 ];
 
-/** P13 S3 (D29-128) — `MANY_SOURCE_ROWS`' own 22 books grouped two ways: the
+/** `MANY_SOURCE_ROWS`' own 22 books grouped two ways: the
  * two named books ("Gamemastery Guide"/"Core Rulebook") in the PINNED
  * "Rulebooks" line, the 20 generated "Filler Volume" books in the PINNED
  * "Adventure Paths" line — both pinned, so the group order this drives is a
@@ -186,7 +174,7 @@ function toggleGroup(productLine: string): void {
   fireEvent.click(screen.getByRole("button", { name: `Toggle ${productLine}` }));
 }
 
-describe("FacetPanel: Source section — grouped by product line (P13 S3, D29-121/-128)", () => {
+describe("FacetPanel: Source section — grouped by product line", () => {
   it("below the OptionSearch threshold (20), no search affordance renders at all", () => {
     const twoBookRows: IndexRow[] = [
       row({
@@ -265,7 +253,7 @@ describe("FacetPanel: Source section — grouped by product line (P13 S3, D29-12
       screen.getByRole("button", { name: "Toggle Rulebooks" }).getAttribute("aria-expanded"),
     ).toBe("true");
     // "Ancestry Guide · LOAG"-style: full name + abbreviation suffix, both
-    // present (D29-128) — the two book rows here abbreviate as CRB/GMG.
+    // present — the two book rows here abbreviate as CRB/GMG.
     expect(screen.getByText("Gamemastery Guide")).not.toBeNull();
     expect(screen.getByText(/GMG/)).not.toBeNull();
     expect(screen.getByText("Core Rulebook")).not.toBeNull();
@@ -440,7 +428,7 @@ describe("FacetPanel: Source section — grouped by product line (P13 S3, D29-12
   });
 });
 
-describe("FacetPanel: Traits section (D29-107a, D29-125 OptionSearch, D29-127 restyle)", () => {
+describe("FacetPanel: Traits section (tri-state chips, OptionSearch, bounded render)", () => {
   it("at/above the threshold, a magnifier button expands to a search input that narrows the visible trait chips", () => {
     render(
       <FacetPanel
@@ -534,7 +522,7 @@ describe("FacetPanel: Traits section (D29-107a, D29-125 OptionSearch, D29-127 re
   });
 });
 
-describe("FacetPanel: Rarity section (D29-107c rank order + D29-126 chips + D29-122 Title Case)", () => {
+describe("FacetPanel: Rarity section (rank order, chips, Title Case labels)", () => {
   const RARITY_ROWS: IndexRow[] = [
     row({ id: "condition/a", name: "A", rarity: "unique" }),
     row({ id: "condition/b", name: "B", rarity: "common" }),
@@ -580,7 +568,7 @@ describe("FacetPanel: Rarity section (D29-107c rank order + D29-126 chips + D29-
   });
 });
 
-describe("FacetPanel: Edition section (D29-126 icon + VISIBLE text)", () => {
+describe("FacetPanel: Edition section (icon + VISIBLE text)", () => {
   it("renders BOTH the icon and the visible 'Remaster'/'Legacy' text, not icon-only", () => {
     const editionRows: IndexRow[] = [
       row({ id: "feat/r", name: "R", edition: "remaster" }),
@@ -613,7 +601,7 @@ describe("FacetPanel: Edition section (D29-126 icon + VISIBLE text)", () => {
   });
 });
 
-describe("FacetPanel: derived enum facet humanization + 'Unspecified (N)' (D29-122/126)", () => {
+describe("FacetPanel: derived enum facet humanization + 'Unspecified (N)'", () => {
   const CREATURE_ROWS: IndexRow[] = [
     row({ id: "creature/a", name: "A", facets: { size: "med" } }),
     row({ id: "creature/b", name: "B", facets: { size: "lg" } }),
@@ -669,7 +657,7 @@ describe("FacetPanel: derived enum facet humanization + 'Unspecified (N)' (D29-1
   });
 });
 
-describe("FacetPanel: custom checkbox styling hook (D29-126) present without removing the real input", () => {
+describe("FacetPanel: custom checkbox styling hook present without removing the real input", () => {
   it("a >8-option enum section (Source) still renders a real <input type=checkbox> per option, once its group is expanded", () => {
     render(
       <FacetPanel
@@ -678,9 +666,9 @@ describe("FacetPanel: custom checkbox styling hook (D29-126) present without rem
         state={emptyFilterState()}
         onChange={vi.fn()}
         onSupersededReveal={vi.fn()}
-        // No sourceLines -> a single "Other" group (P13 S3, D29-128's own
-        // fail-soft default) — expand it to reach the checkbox rows, since
-        // every group renders collapsed by default now.
+        // No sourceLines -> a single "Other" group (the fail-soft default)
+        // — expand it to reach the checkbox rows, since every group renders
+        // collapsed by default.
       />,
     );
     const sourceHeading = screen.getByText("Source");
@@ -693,10 +681,10 @@ describe("FacetPanel: custom checkbox styling hook (D29-126) present without rem
 });
 
 // ---------------------------------------------------------------------------
-// P13 S2 (D29-124) — active-section value-count badge + per-section clear ×.
+// Active-section value-count badge + per-section clear ×.
 // ---------------------------------------------------------------------------
 
-describe("FacetPanel: active-section badge + per-section clear (D29-124)", () => {
+describe("FacetPanel: active-section badge + per-section clear", () => {
   const RARITY_ROWS: IndexRow[] = [
     row({ id: "condition/a", name: "A", rarity: "unique" }),
     row({ id: "condition/b", name: "B", rarity: "common" }),
@@ -789,7 +777,7 @@ describe("FacetPanel: active-section badge + per-section clear (D29-124)", () =>
     expect(updater(state).level).toEqual({});
   });
 
-  it("the Superseded section never carries a badge or clear × (its own checkbox is its clear affordance, D29-129)", () => {
+  it("the Superseded section never carries a badge or clear × (its own checkbox is its clear affordance)", () => {
     const state: BrowseFilterState = { ...emptyFilterState(), superseded: true };
     render(
       <FacetPanel
@@ -809,12 +797,12 @@ describe("FacetPanel: active-section badge + per-section clear (D29-124)", () =>
 });
 
 // ---------------------------------------------------------------------------
-// P13 S2 (D29-129 consolidation) — the Superseded toggle writes through
+// The Superseded toggle writes through
 // `onSupersededReveal`, NEVER `onChange`, and the blue callout explainer is
 // gone (a one-line muted caption replaces it).
 // ---------------------------------------------------------------------------
 
-describe("FacetPanel: Superseded section consolidation (D29-129)", () => {
+describe("FacetPanel: Superseded section writes through onSupersededReveal", () => {
   it("the blue callout explainer is gone; a plain muted caption replaces it", () => {
     const { container } = render(
       <FacetPanel

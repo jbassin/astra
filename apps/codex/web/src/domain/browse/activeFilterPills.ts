@@ -1,4 +1,4 @@
-// P4.5 S4 (D29-49) — the active-filter pill summary row rendered ABOVE the
+// The active-filter pill summary row rendered ABOVE the
 // listing, now the only always-visible trace of `FacetPanel`'s selections
 // since the panel itself moved into a dismissible `<dialog>` drawer
 // (`BrowseListing.tsx`): without a summary, a user who applied a filter and
@@ -37,7 +37,7 @@ export interface ActiveFilterPill {
   /** Stable React key + (for `f.*` dimensions) the facet key itself. */
   key: string;
   label: string;
-  /** P13 S1 (D29-129) — set ONLY when `label` was truncated: the pill's
+  /** Set ONLY when `label` was truncated: the pill's
    * `title` attribute carries the FULL untruncated value list (a native
    * hover tooltip), so truncation never loses information, only display
    * width. `undefined` when nothing was truncated (the DOM `title` attr is
@@ -46,7 +46,7 @@ export interface ActiveFilterPill {
   onRemove: () => void;
 }
 
-/** D29-129 — "Label: A, B +N more" once a labeled value list exceeds 2
+/** "Label: A, B +N more" once a labeled value list exceeds 2
  * entries (first 2, alphabetically for determinism over `Set` iteration
  * order — full list always available via the pill's `title` attribute).
  * `parts` is already the per-value DISPLAY strings (traits' own `-excluded`
@@ -66,9 +66,9 @@ function truncatedList(
 }
 
 function rangeLabel(title: string, filter: RangeFilter): string {
-  // D29-61(b): `RangeFilter` no longer carries a separate `has-value` field —
-  // any typed bound already implies "must have a value" (filterEngine.ts),
-  // so there's no longer a distinct state to append a suffix for here.
+  // `RangeFilter` has no separate `has-value` field: any typed bound already
+  // implies "must have a value" (filterEngine.ts), so there is no distinct
+  // state to append a suffix for here.
   const bounds = `${filter.min ?? "…"}–${filter.max ?? "…"}`;
   return `${title}: ${bounds}`;
 }
@@ -123,7 +123,7 @@ export function activeFilterPills(
   if (state.sourceBook.size > 0) {
     pills.push({
       key: "sourceBook",
-      // R10 (D29-68) — abbreviation-with-fallback, same as the FacetPanel
+      // Abbreviation-with-fallback, same as the FacetPanel
       // Source section and every other compact-surface site.
       ...enumPill("Source", state.sourceBook, (v) => abbreviateBook(v) ?? v),
       onRemove: () => onChange((prev) => withoutDimension(prev, { kind: "sourceBook" })),
@@ -146,10 +146,9 @@ export function activeFilterPills(
   for (const facetKey of facetKeysFor(category)) {
     const def = facetDefFor(facetKey);
     const title = def?.label ?? humanizeFacetKey(facetKey);
-    // P13 S1 (D29-122) — the precedence-respecting humanizer, replacing the
-    // raw-fallback `labelFor`: a pill showing "classfeature" instead of
-    // "Class Feature" is the same raw-data leak the facet panel itself
-    // fixes, just on a different surface.
+    // The precedence-respecting humanizer, not the raw-fallback `labelFor`: a
+    // pill showing "classfeature" instead of "Class Feature" is the same
+    // raw-data leak the facet panel itself fixes, just on a different surface.
     const labelOf = (v: string) => humanizedLabelFor(def, v);
 
     const enumSelected = state.facetEnum.get(facetKey);
