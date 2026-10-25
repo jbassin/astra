@@ -1,4 +1,4 @@
-# Astra deploy substrate (roadmap Decision H):
+# Astra deploy substrate:
 #   - SigNoz (ClickHouse + zookeeper + UI + otel-collector + schema migrator),
 #     vendored under deploy/signoz/ and `include`d so its own relative mounts
 #     (../common/...) resolve correctly. Published ports remapped into 10350-10399.
@@ -15,7 +15,7 @@ name: astra
 include:
   - path: signoz/docker/docker-compose.yaml
 
-# Every astra service: the restart policy. Networks are least-privilege (0037 OPS-8, SEC-13);
+# Every astra service: the restart policy. Networks are least-privilege;
 # the `networks:` block at the end of this file maps who joins which net and why. A YAML
 # merge does not merge lists, so a service that needs more than its anchor's networks lists
 # all of them. node-exporter and smart-exporter set their own network_mode instead.
@@ -65,7 +65,7 @@ x-dagster-healthcheck: &dagster-healthcheck
   retries: 5
   start_period: 90s
 
-# Labels on every image built here (0037 OPS-3), so `docker inspect` answers "which commit
+# Labels on every image built here, so `docker inspect` answers "which commit
 # is this container running". deploy/deploy.sh exports ASTRA_REVISION (the full sha it
 # checked out) and ASTRA_REVISION_DATE (that commit's date — not the wall clock, so
 # redeploying the same sha leaves the image config, and so the containers, unchanged). A
@@ -95,7 +95,7 @@ x-dagster-env: &dagster-env
   DAGSTER_PG_USERNAME: ${DAGSTER_PG_USERNAME:-dagster}
   DAGSTER_PG_PASSWORD: ${DAGSTER_PG_PASSWORD:-dagster}
   DAGSTER_PG_DB: ${DAGSTER_PG_DB:-dagster}
-  # Pipeline secrets injected as env by `just up` (Decision E) so the assets'
+  # Pipeline secrets injected as env by `just up` so the assets'
   # LLM/transcription calls resolve their `ref="sops:KEY"`s in-container (the code
   # server, daemon, and run workers all inherit this anchor).
   GROQ_API_KEY: ${GROQ_API_KEY:-}
@@ -137,7 +137,7 @@ x-dagster-volumes: &dagster-pipeline-volumes
   - { <<: *bind, source: /ruby/data/astra-state/astra-data/linguist/data, target: /ruby/data/astra-state/astra-data/linguist/data }
   - { <<: *bind, source: /ruby/data/astra-state/astra-data/linguist/timeline, target: /ruby/data/astra-state/astra-data/linguist/timeline }
   - { <<: *bind, source: /ruby/data/astra-state/mouthpiece/episodes, target: /ruby/data/astra-state/mouthpiece/episodes }
-  # The akasha wiki, LIVE and read-only (0035 D35-3): the producer (session_brief) and the
+  # The akasha wiki, LIVE and read-only: the producer (session_brief) and the
   # script fallback's grounding read it. Before this the container read the copy baked in
   # at the last `just up`, missing everything heartwood published since. Nothing in Dagster
   # writes here (the akasha snapshot runs on the host, because it needs node).
@@ -146,7 +146,7 @@ x-dagster-volumes: &dagster-pipeline-volumes
   # (astra_ontology_entity.resolve). The directory (not the file) is mounted so a git
   # checkout/rebase in the clone that replaces entity.kdl's inode stays visible.
   - { <<: *bind, source: /ruby/data/astra-state/astra-data/entity, target: /ruby/data/astra-state/astra-data/entity, read_only: true }
-  # heartwood.requests-path (0036): session_wiki files <date>.request.json here and waits for
+  # heartwood.requests-path: session_wiki files <date>.request.json here and waits for
   # the host heartwood-request unit's <date>.result.json. Identical path on both sides; the
   # dir is created by deploy.sh init_artifacts as uid 1000.
   - { <<: *bind, source: /ruby/data/astra-state/heartwood/requests, target: /ruby/data/astra-state/heartwood/requests }
@@ -237,7 +237,7 @@ services:
       dagster-code:
         condition: service_healthy
 
-  # --- weal: the dice/host bot's roll-history + macro store (0009, Decision F) ---
+  # --- weal: the dice/host bot's roll-history + macro store ---
   weal-postgres:
     <<: *astra-postgres
     container_name: astra-weal-postgres
@@ -269,7 +269,7 @@ services:
     depends_on:
       weal-postgres:
         condition: service_healthy
-    # SOPS secrets injected as env by `just up` (Decision E); config's env-override
+    # SOPS secrets injected as env by `just up`; config's env-override
     # resolves the `ref="sops:KEY"`s in-container. Empty when not run via `just up`
     # (degrades).
     environment:
@@ -289,7 +289,7 @@ services:
     image: astra-weal-overlay:local
     container_name: astra-weal-overlay
     networks: [telemetry, weal-feed]
-    # Shared weal↔overlay token (Decision E env injection via `just up`).
+    # Shared weal↔overlay token (env injection via `just up`).
     environment:
       WEAL_TOKEN: ${WEAL_TOKEN:-}
     ports:
@@ -298,10 +298,10 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10361/healthz').then(r=>process.exit(r.ok?0:1))"]
 
-  # menhir: the Kahoot-style session-opener quiz (0031). SSE behind Caddy with
-  # flush_interval -1. No secrets (no auth, D31-9's hostToken is minted per game).
+  # menhir: the Kahoot-style session-opener quiz. SSE behind Caddy with
+  # flush_interval -1. No secrets (no auth; the hostToken is minted per game).
   # Results JSONL rides an IDENTICAL-PATH rw bind mount (host path == container
-  # path — plain config fields have no env override, the D29-53 convention);
+  # path — plain config fields have no env override, the Dagster pipeline-volume convention);
   # deploy.sh init_artifacts pre-creates the dir as uid 1000.
   menhir:
     <<: *astra-app
@@ -319,7 +319,7 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10375/healthz').then(r=>process.exit(r.ok?0:1))"]
 
-  # --- strider: the first SSR frontend (Decision I), the template for 0011-0013. One SSR
+  # --- strider: the first SSR frontend, the template for the later ones. One SSR
   # process; the editor save runs in it as a TanStack server function (writes
   # content/layers/*.md). The /editor UI is gated to the local network at the Caddy edge. ---
   strider:
@@ -338,11 +338,11 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10360/').then(r=>process.exit(r.ok?0:1))"]
 
-  # --- akasha-frontend: the wiki read-surface (0011) — SSR Compose service (Decision
-  # I), the second 0011-0013 frontend on the strider template. Build-time snapshot +
-  # transcripts + Pagefind index baked into the image; no live backend (Decision D).
+  # --- akasha-frontend: the wiki read-surface — SSR Compose service, the second
+  # frontend on the strider template. Build-time snapshot +
+  # transcripts + Pagefind index baked into the image; no live backend.
   # The combined session audio each transcript plays is a runtime bind mount (~31 GB),
-  # served same-origin at /audio/<date>.mp3 — never in the image (D2). Seed with
+  # served same-origin at /audio/<date>.mp3 — never in the image. Seed with
   # `just akasha-seed`. ---
   akasha-frontend:
     <<: *astra-app
@@ -371,11 +371,11 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10365/').then(r=>process.exit(r.ok?0:1))"]
 
-  # --- codex (0029): the PF2e compendium/rules browser — SSR Compose service
-  # (Decision I), on the runtime-mount model (not akasha's baked one): nothing
+  # --- codex: the PF2e compendium/rules browser — SSR Compose service,
+  # on the runtime-mount model (not akasha's baked one): nothing
   # content-shaped is baked into the image — the corpus + Pagefind search index
-  # arrive as immutable releases on a read-only bind mount, request-time reads (D29-31).
-  # D29-53: the mount is an IDENTICAL host-path==container-path bind, the Dagster
+  # arrive as immutable releases on a read-only bind mount, request-time reads.
+  # The mount is an IDENTICAL host-path==container-path bind, the Dagster
   # pipeline-volume convention applied to a frontend for the first time — codex's
   # `codex.data-path` (config.kdl) is a host-absolute path consumed VERBATIM by
   # both `pnpm start` on the host and this container, and plain config fields have
@@ -396,7 +396,7 @@ services:
     # compose only maps the published host port below.
     ports:
       - "10374:10374" # codex SSR (astra range) — also reachable directly
-    # D29-53: identical-path read-only bind mount (host path == container path) of the
+    # Identical-path read-only bind mount (host path == container path) of the
     # releases dir under codex.data-path (config.kdl) = /ruby/data/astra-state/codex/data.
     # `just codex-build` writes each release to releases/<id>/ and swaps the relative
     # releases/current symlink, which the server follows per request (no restart, no
@@ -409,10 +409,10 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10374/').then(r=>process.exit(r.ok?0:1))"]
 
-  # --- mouthpiece-frontend: the podcast read-surface (0012) — SSR Compose service
-  # (Decision I), the third 0011-0013 frontend on the strider/akasha template. The
+  # --- mouthpiece-frontend: the podcast read-surface — SSR Compose service,
+  # the third frontend on the strider/akasha template. The
   # episode catalog (snapshot) is baked into the image; the 173 MB of episode audio is
-  # a runtime bind mount, served same-origin at /audio/ — never in the image layer (D2).
+  # a runtime bind mount, served same-origin at /audio/ — never in the image layer.
   # Seed it with `just mouthpiece-seed`. ---
   mouthpiece-frontend:
     <<: *astra-app
@@ -438,8 +438,8 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10366/').then(r=>process.exit(r.ok?0:1))"]
 
-  # --- vellum-frontend: the document-forge editor (0013) — SSR Compose service
-  # behind Caddy (Decision I). The editor route is client-only (ssr:false); the PNG
+  # --- vellum-frontend: the document-forge editor — SSR Compose service
+  # behind Caddy. The editor route is client-only (ssr:false); the PNG
   # export POSTs same-origin /render, which Caddy routes to vellum-render below. ---
   vellum-frontend:
     <<: *astra-app
@@ -457,7 +457,7 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10367/').then(r=>process.exit(r.ok?0:1))"]
 
-  # --- vellum-render: the PNG render service (0013, D2) — a SEPARATE unit, the first
+  # --- vellum-render: the PNG render service — a SEPARATE unit, the first
   # browser-in-a-container in astra (warm Chromium, egress-blocked, semaphore-gated).
   # Caddy routes vellum.iridi.cc/render + /health here. The Dockerfile chowns
   # /ms-playwright so the (non-root) Chromium can read its browser bundle; the profile is
@@ -480,7 +480,7 @@ services:
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10368/healthz').then(r=>process.exit(r.ok?0:1))"]
       start_period: 25s
 
-  # --- orator: the music bot's library store (0010, Decision F) ---
+  # --- orator: the music bot's library store ---
   orator-postgres:
     <<: *astra-postgres
     container_name: astra-orator-postgres
@@ -516,7 +516,7 @@ services:
     depends_on:
       orator-postgres:
         condition: service_healthy
-    # SOPS secrets injected as env by `just up` (Decision E) → config env-override
+    # SOPS secrets injected as env by `just up` → config env-override
     # resolves them in-container.
     environment:
       ORATOR_DISCORD_KEY: ${ORATOR_DISCORD_KEY:-}
@@ -531,8 +531,8 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10363/healthz').then(r=>process.exit(r.ok?0:1))"]
 
-  # --- harrow: the tarot deck reader (0017) — SSR Compose service behind Caddy
-  # (Decision I), a backend-less sibling of strider. No DB, no audio/asset volume
+  # --- harrow: the tarot deck reader — SSR Compose service behind Caddy,
+  # a backend-less sibling of strider. No DB, no audio/asset volume
   # (every card glyph is inline SVG). Port/service-name from config.kdl. ---
   harrow:
     <<: *astra-app
@@ -550,7 +550,7 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10369/').then(r=>process.exit(r.ok?0:1))"]
 
-  # --- ledger: the astra landing page (0018) — the simplest SSR frontend, a sibling
+  # --- ledger: the astra landing page — the simplest SSR frontend, a sibling
   # of harrow. One homepage: a gothic card grid linking the player-facing sites. No
   # backend, no DB, no volume — the linked URLs are baked from each site's config
   # public-origin at build time. Port/service-name from config.kdl. ---
@@ -570,12 +570,12 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10370/').then(r=>process.exit(r.ok?0:1))"]
 
-  # --- portal (0023): the FoundryVTT MCP+WS bridge server. TS on the orator-backend
-  # template (D3, no build step for the server itself — the Dockerfile DOES build the
+  # --- portal: the FoundryVTT MCP+WS bridge server. TS on the orator-backend
+  # template (no build step for the server itself — the Dockerfile DOES build the
   # Foundry module, tsdown -> module/dist/main.js, packaged at runtime by the server
-  # itself into an installable zip, D11). No frontend/SSR here: portal-server binds
-  # /health and /healthz, /mcp (Streamable-HTTP, D4/D10), /ws (the bridge, D6), and
-  # /module/{module.json,portal.zip} (S6 install-by-Manifest-URL). Behind Caddy at
+  # itself into an installable zip). No frontend/SSR here: portal-server binds
+  # /health and /healthz, /mcp (Streamable-HTTP), /ws (the bridge), and
+  # /module/{module.json,portal.zip} (install-by-Manifest-URL). Behind Caddy at
   # portal.iridi.cc; nothing works unless the GM has "Faerrin" launched (the liveness
   # constraint — bridge-status surfaces "offline", never a hang). ---
   portal:
@@ -587,18 +587,18 @@ services:
         APP: portal/server
     image: astra-portal:local
     container_name: astra-portal
-    # SOPS secrets injected as env by `just up` (Decision E); config's env-override
-    # resolves the D6 `ref="sops:..."` keys in-container, plus the 0028 D28-1 player
+    # SOPS secrets injected as env by `just up`; config's env-override
+    # resolves the `ref="sops:..."` keys in-container, plus the player-facing
     # key. All three are load-bearing (index.ts throws at startup if any is
     # unresolved — no degraded mode, unlike orator's optional Discord token).
     environment:
       PORTAL_MCP_API_KEY: ${PORTAL_MCP_API_KEY:-}
       # NB: the env-override name is the SOPS key upper-cased (portal_player_api_key →
-      # PORTAL_PLAYER_API_KEY), NOT the kdl field name — the mismatch crash-looped the
-      # 0028 S4 deploy.
+      # PORTAL_PLAYER_API_KEY), NOT the kdl field name — the mismatch once crash-looped a
+      # deploy.
       PORTAL_PLAYER_API_KEY: ${PORTAL_PLAYER_API_KEY:-}
       PORTAL_BRIDGE_API_KEY: ${PORTAL_BRIDGE_API_KEY:-}
-    # 0025 OAuth state (registered claude.ai clients + hashed tokens) bind-mounted
+    # OAuth state (registered claude.ai clients + hashed tokens) bind-mounted
     # from the data root so connections survive redeploys; container path matches kdl
     # portal.oauth-state-path (/data/oauth/state.json). Writes land 1000:1000.
     volumes:
@@ -609,13 +609,13 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10372/healthz').then(r=>process.exit(r.ok?0:1))"]
 
-  # --- portal-headless (0027): the supervised headless-Chromium GM session — a
+  # --- portal-headless: the supervised headless-Chromium GM session — a
   # dedicated Foundry account ("Portal", full GM) permanently logged into the live
   # pf2e "Faerrin" world through the public edge, so portal's MCP tools work with no
-  # human browser tab open. A SEPARATE unit from portal-server (D27-5): health-only,
+  # human browser tab open. A SEPARATE unit from portal-server: health-only,
   # not edge-routed (no Caddy entry), on `telemetry` alone; it reaches Foundry through the
-  # public edge (D27-3), not a compose network. Follows
-  # vellum-render's browser-in-a-container lifecycle with D27-10's long-lived-tab
+  # public edge, not a compose network. Follows
+  # vellum-render's browser-in-a-container lifecycle with the long-lived-tab
   # deltas: `shm_size` (Docker's 64MB `/dev/shm` default is the known Chromium OOM
   # source for a process-life-long page) and a generous `start_period` (Chromium warm-up
   # + first navigation + `/join`). ---
@@ -629,10 +629,10 @@ services:
     image: astra-portal-headless:local
     container_name: astra-portal-headless
     shm_size: "1gb"
-    # SOPS secret injected as env by `just up` (Decision E); config's env-override
-    # resolves the D27-13 `ref="sops:foundry_portal_gm_password"` key in-container.
+    # SOPS secret injected as env by `just up`; config's env-override
+    # resolves the `ref="sops:foundry_portal_gm_password"` key in-container.
     # Load-bearing (index.ts throws at startup if unresolved, mirroring portal's two
-    # keys) — a dummy value is fine for non-live acceptance runs, since D27-6's
+    # keys) — a dummy value is fine for non-live acceptance runs, since the health
     # classifier never reaches the login step against a world-down/unreachable target.
     environment:
       FOUNDRY_PORTAL_GM_PASSWORD: ${FOUNDRY_PORTAL_GM_PASSWORD:-}
@@ -640,7 +640,7 @@ services:
       - "10373:10373" # portal-headless (astra range) — health-only, not edge-routed
     healthcheck:
       <<: *node-healthcheck
-      # D27-11: process-up + browser-connected ONLY — `world-down` is a reported
+      # Process-up + browser-connected ONLY — `world-down` is a reported
       # `state`, never unhealthy (a restart can't launch a world; a restart-loop during
       # the GM's maintenance window would be noise).
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10373/health').then(r=>r.json()).then(j=>process.exit(j.ok?0:1))"]
@@ -718,7 +718,7 @@ services:
 # is uid 70 via its entrypoint). SigNoz keeps its own named volumes (declared in the
 # vendored signoz include — clickhouse/sqlite/zookeeper).
 
-# Least-privilege networks (0037 OPS-8, SEC-13). Every subnet is pinned: signoz-net to its
+# Least-privilege networks. Every subnet is pinned: signoz-net to its
 # live 172.27.0.0/16, the astra nets to 10.27.N.0/24 (free on this host), so a `down`/`up`
 # can never hand 172.27/16 to another net. A bridge network does not filter by port,
 # so every member of a net can reach every port of every other member; each net therefore

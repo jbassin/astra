@@ -1,5 +1,5 @@
-# The systemd user units each `just units-install <group>` links from the deploy checkout
-# (0037 OPS-3, OPS-17): one group per line, the group name first, then its units. Installing a
+# The systemd user units each `just units-install <group>` links from the deploy checkout:
+# one group per line, the group name first, then its units. Installing a
 # group links every unit, runs daemon-reload, then enables (--now) its timer and path units.
 # deploy/doctor.sh reads this file too: it checks each unit is linked and each timer and path
 # unit enabled, and names `just units-install <group>` (the first group that lists the unit).

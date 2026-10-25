@@ -7,7 +7,7 @@ OnFailure=astra-alert@%n.service
 
 [Service]
 Type=oneshot
-# Runs the recipe from the deploy checkout (0037 OPS-3); the recipe reads its destination
+# Runs the recipe from the deploy checkout; the recipe reads its destination
 # (scribe.incoming-path = /ruby/data/astra-state/scribe/incoming) from config.kdl through
 # that checkout's venv, which deploy.sh keeps in sync. It never writes to the checkout.
 WorkingDirectory=/ruby/data/astra-deploy

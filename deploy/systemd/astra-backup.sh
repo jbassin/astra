@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# astra nightly backup (0037 OPS-6) — everything the stack needs that is NOT in git.
+# astra nightly backup — everything the stack needs that is NOT in git.
 #
 #   astra-backup.sh run                    take one snapshot, then prune (astra-backup.timer)
 #   astra-backup.sh restore-test [SNAP]    prove the newest (or named) snapshot restores
@@ -41,7 +41,7 @@
 #             docker exec -i astra-weal-postgres pg_restore -U weal -d weal --clean \
 #               --if-exists --no-owner --single-transaction < latest/postgres/weal.dump
 #   state     rsync -a latest/state/audio/orator/ /ruby/data/astra-state/audio/orator/
-#             (any dir likewise; snapshots taken before 0037 item 2c used the old
+#             (any dir likewise; snapshots taken before the deploy checkout used the old
 #             developer-tree layout: state/artifacts/audio/orator/, state/apps/...)
 #   rules     re-create each latest/signoz/rules/*.json with the signoz_create_alert MCP
 #             tool (or POST /api/v1/rules); the discord-ops channel is re-created from the
