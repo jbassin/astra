@@ -32,7 +32,7 @@ test("appends one JSONL line per call, creating the parent dir if needed", async
 
 test("a write failure is fail-soft — never throws", async () => {
   // A path whose "directory" is actually a file can never be created/written —
-  // this must resolve, not reject, per D31-10 (a quiz-typo-adjacent outage must
+  // this must resolve, not reject (a quiz-typo-adjacent outage must
   // not crash the game).
   const dir = mkdtempSync(join(tmpdir(), "menhir-results-badpath-"));
   const blocker = join(dir, "not-a-dir");

@@ -1,5 +1,5 @@
 /**
- * The four Kahoot answer identities (D31-6) — shape+color double encoding.
+ * The four Kahoot answer identities — shape+color double encoding.
  * `SHAPES`/`Shape` are the server's own source of truth (`./schema`); this
  * module only adds the client-side glyph + color rendering, index-mapped the
  * same way `game.ts`'s `shapeFor(index)` is (option 0 = triangle, 1 =

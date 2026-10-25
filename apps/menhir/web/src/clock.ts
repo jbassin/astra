@@ -1,9 +1,9 @@
 /**
- * Countdown math (D31-2): "every frame carries `serverNow`; `question`
- * frames carry `endsAt`; clients render the difference" — and per the S2
- * brief, recompute the offset every animation frame, never trust the client
- * clock. `useRemainingMs` anchors on `performance.now()` (monotonic, immune
- * to wall-clock adjustments) at the moment a snapshot arrived, then re-derives
+ * Countdown math: every frame carries `serverNow`, `question` frames carry
+ * `endsAt`, and clients render the difference, recomputing the offset every
+ * animation frame and never trusting the client clock. `useRemainingMs` anchors
+ * on `performance.now()` (monotonic, immune to wall-clock adjustments) at the
+ * moment a snapshot arrived, then re-derives
  * "server now" on every `requestAnimationFrame` tick as
  * `serverNow + (performance.now() - receivedAt)` — the client's own clock
  * value (`Date.now()`) never enters the calculation.

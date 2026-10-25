@@ -1,7 +1,7 @@
 /**
- * The host's phase-rendering surface (spec §3) — the desktop/projection
+ * The host's phase-rendering surface — the desktop/projection
  * counterpart to `player/PlayerView.tsx`, same shape: one pure component
- * switching over the full `HostSnapshot` union (§4a), fed by whatever
+ * switching over the full `HostSnapshot` union, fed by whatever
  * container owns the SSE connection + host-action dispatch.
  *
  * Composition rule for this screen: it is READ FROM ACROSS A ROOM. Every phase
@@ -61,9 +61,7 @@ export function HostView({
       <div className="host-shell host-shell--gone">
         <section className="gone-screen">
           <h1>This game has ended</h1>
-          <p>
-            The room is no longer active (a redeploy ends any live game — D31-2). Start a new one.
-          </p>
+          <p>The room is no longer active (a redeploy ends any live game). Start a new one.</p>
           <a className="btn" href="/host">
             Back to quiz picker
           </a>

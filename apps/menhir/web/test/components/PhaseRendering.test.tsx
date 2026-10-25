@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 /**
- * Phase rendering across the union (spec S2 test list): `PlayerView` and
- * `HostView` each switch over the FULL snapshot union (§4a — lobby, question,
+ * Phase rendering across the union: `PlayerView` and
+ * `HostView` each switch over the FULL snapshot union (lobby, question,
  * reveal, scoreboard, podium, gone). Every fixture here is parsed through the
  * real Zod schema before rendering, so a schema drift (a renamed/removed
  * field) fails this test instead of silently rendering `undefined`.

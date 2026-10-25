@@ -1,5 +1,5 @@
 /**
- * The root of the path-routed SPA (spec §3) — no router lib, just
+ * The root of the path-routed SPA — no router lib, just
  * `location.pathname` (`usePathname`, router.ts). `/host` and `/host/:code`
  * go to the host container; everything else (`/`, and any stray path — the
  * server's SPA fallback already routes here) is the player view.

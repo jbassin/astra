@@ -1,7 +1,7 @@
 /**
- * The pure menhir game engine (D31-3). `reduce(state, event, now) → {state, effects}`
+ * The pure menhir game engine. `reduce(state, event, now) → {state, effects}`
  * is the single source of truth for every phase transition + the scoring formula
- * (D31-5); `rooms.ts` is the only caller, owning the timer handle, the SSE sink
+ * `rooms.ts` is the only caller, owning the timer handle, the SSE sink
  * registry, and IO (the `appendResults` effect). Nothing in this file touches the
  * clock or a scheduler directly — `now` is always injected — so every event
  * sequence here is driven by hand in tests, no fake timers required.
@@ -24,7 +24,7 @@ import { type Quiz, type Shape, SHAPES } from "./schema";
 export type Phase = "lobby" | "question" | "reveal" | "scoreboard" | "podium";
 
 /** `{option, t, pointsGained}` — the single source for delta/pointsGained/rank/tiebreak
- * (spec §4a). `option: null` = the player never answered (timeout). */
+ * `option: null` = the player never answered (timeout). */
 export interface AwardRecord {
   option: number | null;
   t: number;
@@ -36,7 +36,7 @@ export interface PlayerRecord {
   name: string;
   score: number;
   streak: number;
-  /** Sum of each question's charged time (min(t,T), or T for a timeout) — the D31-5 tiebreak. */
+  /** Sum of each question's charged time (min(t,T), or T for a timeout) — the score tiebreak. */
   totalTime: number;
   /** ≥1 live SSE sink right now (rooms.ts refcounts tabs down to this one flag). */
   connected: boolean;
@@ -114,7 +114,7 @@ function clamp(v: number, lo: number, hi: number): number {
   return Math.min(Math.max(v, lo), hi);
 }
 
-/** SHAPES is a fixed 4-tuple and options.length is Zod-bounded to 2-4 (D31-4), so
+/** SHAPES is a fixed 4-tuple and options.length is Zod-bounded to 2-4, so
  * this index is always in range — `must` documents that invariant instead of `!`. */
 function shapeFor(index: number): Shape {
   return must(SHAPES[index], `option index ${index} has no shape (max 4 options)`);
@@ -231,7 +231,7 @@ function buildResultRow(
   };
 }
 
-/** any → podium: append the results row (D31-10), including aborted games. */
+/** any → podium: append the results row, including aborted games. */
 function toPodium(state: RoomState, aborted: boolean, now: number): ReduceResult {
   const next: RoomState = { ...state, phase: "podium", aborted, questionStartedAt: null };
   return {
@@ -243,7 +243,7 @@ function toPodium(state: RoomState, aborted: boolean, now: number): ReduceResult
   };
 }
 
-/** Re-check the early-close predicate (D31-3) after an answer/connect/disconnect.
+/** Re-check the early-close predicate after an answer/connect/disconnect.
  * A room with zero connected roster members NEVER early-closes (explicit guard,
  * kept even though `answeredCount > 0` alone would almost always imply it — the
  * spec calls this out as an invariant to hold under every edge case). */
@@ -278,7 +278,7 @@ function handleCreate(event: Extract<GameEvent, { type: "create" }>, now: number
   return { state, effects: [] };
 }
 
-// --- join (D31-9) -------------------------------------------------------------------
+// --- join ---------------------------------------------------------------------------
 
 function handleJoin(state: RoomState, event: Extract<GameEvent, { type: "join" }>): ReduceResult {
   const known = event.roomNonce === state.roomNonce && state.players.has(event.playerId);
@@ -328,7 +328,7 @@ function handleJoin(state: RoomState, event: Extract<GameEvent, { type: "join" }
   };
 }
 
-// --- answer (D31-5 scoring) -----------------------------------------------------
+// --- answer (scoring) -----------------------------------------------------------
 
 function handleAnswer(
   state: RoomState,
@@ -381,7 +381,7 @@ function handleAnswer(
   return { state: next, effects: [{ kind: "broadcast" }], result: { kind: "accepted" } };
 }
 
-// --- hostAction (D31-3 absolute actions) -----------------------------------------
+// --- hostAction (absolute actions) -----------------------------------------------
 
 function handleHostAction(
   state: RoomState,
@@ -492,7 +492,7 @@ export function reduce(state: RoomState | null, event: GameEvent, now: number): 
   return result;
 }
 
-// --- projections (spec §4a) -------------------------------------------------------
+// --- projections ------------------------------------------------------------------
 //
 // Pure derivations of RoomState → the wire snapshot, so they're testable with the
 // same hand-driven clock as the reducer. `rooms.ts` calls these when executing a

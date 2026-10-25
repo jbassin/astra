@@ -43,7 +43,7 @@ beforeAll(async () => {
     },
   });
   const ready = await running.server.ready();
-  // srvx has no `.port` (R3, 0022 S8 — B3); `.url` includes a trailing slash.
+  // srvx has no `.port`; `.url` includes a trailing slash.
   base = (ready.url ?? "").replace(/\/$/, "");
 });
 
@@ -71,7 +71,7 @@ test("GET /api/quizzes lists the loaded quiz", async () => {
   expect(await res.json()).toEqual([{ id: "smoke-quiz", title: "Smoke Quiz", questionCount: 1 }]);
 });
 
-test("unmatched /api/* returns an explicit 404 JSON, not the SPA fallback (spec §4)", async () => {
+test("unmatched /api/* returns an explicit 404 JSON, not the SPA fallback", async () => {
   const res = await fetch(`${base}/api/nope`);
   expect(res.status).toBe(404);
   expect(res.headers.get("content-type")).toContain("application/json");
@@ -83,7 +83,7 @@ test("the static SPA fallback serves index.html for /host/:code", async () => {
   expect(await res.text()).toContain("<title>menhir test</title>");
 });
 
-test("SSE to an unknown room code never 404s — it streams a terminal gone frame (D31-2)", async () => {
+test("SSE to an unknown room code never 404s — it streams a terminal gone frame", async () => {
   const res = await fetch(`${base}/api/events/ZZZZ?role=host`);
   expect(res.status).toBe(200);
   expect(res.headers.get("content-type")).toContain("text/event-stream");
@@ -98,7 +98,7 @@ test("full happy path: create -> join -> answer -> host actions -> podium, with 
   const create = await postJson("/api/game", { quizId: "smoke-quiz" });
   expect(create.status).toBe(200);
   const { code, hostToken } = (await create.json()) as { code: string; hostToken: string };
-  expect(code).toMatch(/^[ABCDEFGHJKMNPQRSTUVWXYZ]{4}$/); // D31-8's 23-letter unambiguous alphabet
+  expect(code).toMatch(/^[ABCDEFGHJKMNPQRSTUVWXYZ]{4}$/); // the 23-letter unambiguous alphabet
 
   const joinRes = await postJson(`/api/game/${code}/join`, { name: "Alice" });
   expect(joinRes.status).toBe(200);
@@ -133,12 +133,12 @@ test("full happy path: create -> join -> answer -> host actions -> podium, with 
   expect(answer.status).toBe(200);
 
   // Re-attach (same playerId + roomNonce) works mid-game and is exempt from the
-  // lobby gate / name check — the D31-9 branch.
+  // lobby gate / name check — the re-attach branch.
   const reattach = await postJson(`/api/game/${code}/join`, { name: "Alice", playerId, roomNonce });
   expect(reattach.status).toBe(200);
 
   // Nobody opened an SSE stream, so connectedRosterCount=0 and the question
-  // does NOT early-close (D31-3) — the host must force it via `next`.
+  // does NOT early-close — the host must force it via `next`.
   const forceClose = await postJson(`/api/game/${code}/host`, {
     hostToken,
     action: "next",
@@ -177,7 +177,7 @@ test("full happy path: create -> join -> answer -> host actions -> podium, with 
   expect(winner.name).toBe("Alice");
   expect(winner.score).toBeGreaterThan(900);
 
-  // D31-10: the results row lands on disk (async write — poll briefly).
+  // The results row lands on disk (async write — poll briefly).
   let lines: string[] = [];
   for (let i = 0; i < 20; i++) {
     try {

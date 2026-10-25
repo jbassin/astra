@@ -1,6 +1,6 @@
 /**
- * `/host` — quiz picker (spec §3): lists `GET /api/quizzes`, creates a game
- * on selection, then `history.replaceState`s to `/host/:code` (D31-9). Bare
+ * `/host` — quiz picker: lists `GET /api/quizzes`, creates a game
+ * on selection, then `history.replaceState`s to `/host/:code`. Bare
  * `/host` with a live stored game (`menhir:host`) offers "resume" instead of
  * forcing a fresh create.
  */

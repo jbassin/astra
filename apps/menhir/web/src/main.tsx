@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client";
 
-// menhir's self-hosted parchment-system fonts (D31-6) — mirrors codex's
+// menhir's self-hosted parchment-system fonts — mirrors codex's
 // __root.tsx font-import list verbatim (same weights: Cinzel 700 for the rare
 // display wordmark, Cormorant SC 600 for headings/question text, EB Garamond
 // for body prose, Oswald for the condensed timer/score digits).

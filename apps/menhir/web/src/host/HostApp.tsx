@@ -1,5 +1,5 @@
 /**
- * The host container (`/host` + `/host/:code` — spec §3/D31-9): picks the
+ * The host container (`/host` + `/host/:code`): picks the
  * quiz picker or the live game view off the pathname, owns the SSE
  * connection + host-action dispatch once a code is present. `HostView` stays
  * pure; this is the only place that touches `api.ts`/`storage.ts`/network.

@@ -1,5 +1,5 @@
 /**
- * The countdown (spec §3 host + player question screens).
+ * The countdown (host + player question screens).
  *
  * Two presentations off ONE piece of math (`useCountdownState`): a ring with a
  * numeric readout, and a full-width draining bar. The bar exists because the
