@@ -2,7 +2,7 @@
 // stops + the value-noise/fbm GLSL helpers (lifted from harrow's starfield so the
 // look is preserved). Each shader composes `${NOISE_GLSL}` into its fragment.
 
-export type Triple = readonly [number, number, number];
+type Triple = readonly [number, number, number];
 
 /** A vec3 uniform value (RGB 0–1) as the Float32Array Pixi wants. */
 export const vec3 = (c: Triple): Float32Array => Float32Array.from(c);

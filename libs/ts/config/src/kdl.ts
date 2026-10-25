@@ -90,7 +90,7 @@ export function loadKdl(path: string): KNode {
 }
 
 /** A JS field name (camelCase or snake_case) → its KDL kebab-case node name. */
-export function kebab(name: string): string {
+function kebab(name: string): string {
   return name.replaceAll("_", "-").replaceAll(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
 }
 

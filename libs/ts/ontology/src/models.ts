@@ -9,7 +9,7 @@
  */
 import { z } from "zod";
 
-export const PlayerSchema = z
+const PlayerSchema = z
   .object({
     slug: z.string(),
     name: z.string(),
@@ -42,7 +42,7 @@ export const CampaignSchema = z
   })
   .strict();
 
-export const HostLinesSchema = z
+const HostLinesSchema = z
   .object({
     crit: z.array(z.string()),
     good: z.array(z.string()),
@@ -63,7 +63,7 @@ export const WealHostSchema = z
   })
   .strict();
 
-export const PodcastPersonaSchema = z
+const PodcastPersonaSchema = z
   .object({
     slug: z.string(),
     name: z.string(),

@@ -18,7 +18,7 @@ import type { BackdropSpec } from "./types";
 // Pixi v8 binds the spec's uniforms under one resource group keyed `${name}Uniforms`;
 // the inner keys (uTime + the spec's) match the `uniform` names in the fragment.
 
-export interface ShaderBackground {
+interface ShaderBackground {
   mesh: Container;
   update: (elapsedMs: number) => void;
   destroy: () => void;
