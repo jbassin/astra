@@ -90,7 +90,7 @@ export interface AppConfig {
   rumEndpoint: string;
 }
 
-export interface AppDeps {
+interface AppDeps {
   fetchImpl?: (input: string, init?: RequestInit) => Promise<Response>;
   now?: () => number;
   makeState?: () => string;
@@ -284,7 +284,7 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
   return { store, config, handle };
 }
 
-export interface RunningServer {
+interface RunningServer {
   server: Server;
   service: Service;
   app: App;

@@ -24,7 +24,7 @@ const tracksPlayed = lazyCounter("astra.orator-backend", "astra.orator.tracks.pl
 });
 
 // The now-playing shape is an API response, so it is defined with the others in ../api/types.ts.
-export type { LoopMode, NowPlaying, PlaybackStatus };
+export type { NowPlaying };
 
 export class PlaybackError extends Error {
   readonly status: number;
@@ -35,7 +35,7 @@ export class PlaybackError extends Error {
   }
 }
 
-export interface PlaybackDeps {
+interface PlaybackDeps {
   store: PlaybackStore;
   voice: VoiceAdapter;
   resolver: VoiceStateResolver;
@@ -45,7 +45,7 @@ export interface PlaybackDeps {
   clearTimer?: (t: ReturnType<typeof setTimeout>) => void;
 }
 
-export interface PlayRequest {
+interface PlayRequest {
   trackIds: number[];
   /** Discord user to follow into a voice channel. */
   userId?: string;

@@ -1,19 +1,6 @@
 /**
- * Color helpers for tag swatches. orator stores tag colors as `#rrggbb` (or null). The 8-swatch
- * curated palette mirrors orator's web UI (pkg/orator/src/web/grouping.ts) for visual parity.
+ * Color helpers for tag swatches. orator stores tag colors as `#rrggbb` (or null).
  */
-
-/** orator's curated tag palette (name → hex), for reference/fallback parity. */
-export const ORATOR_PALETTE: Record<string, string> = {
-  Crimson: "#c8504a",
-  Amber: "#c8a24a",
-  Sage: "#6fa86f",
-  Teal: "#4aa6a0",
-  Azure: "#4a7fc8",
-  Violet: "#9a6fc8",
-  Rose: "#c86f9a",
-  Slate: "#6b7280",
-};
 
 /** Fallback fill for an uncolored tag (orator renders these as a plain chip). */
 export const NEUTRAL = "#6b7280";

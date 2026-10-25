@@ -19,7 +19,7 @@ import { randomBytes } from "node:crypto";
 const ENDPOINT = "https://otel.iridi.cc/v1/traces";
 const SERVICE_NAME = "astra.orator-controller";
 
-export interface SpanRecord {
+interface SpanRecord {
   /** Span name, e.g. `orator GET`. */
   name: string;
   /** `Date.now()` at start / end (ms). */

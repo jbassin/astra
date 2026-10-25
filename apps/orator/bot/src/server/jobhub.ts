@@ -3,7 +3,7 @@
  * idea but keyed by job id, so a browser watching one import only receives that
  * job's frames. Listeners receive ready-to-write SSE frame strings.
  */
-export type SseListener = (frame: string) => void;
+type SseListener = (frame: string) => void;
 
 export class JobHub {
   private readonly subs = new Map<number, Set<SseListener>>();

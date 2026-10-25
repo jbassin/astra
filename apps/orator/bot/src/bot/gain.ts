@@ -4,7 +4,7 @@
  * never re-encoding the source. A true-peak limiter guards against clipping when
  * boosting quiet tracks. Ported verbatim from faerrin `pkg/lark/src/bot/gain.ts`.
  */
-export interface GainOptions {
+interface GainOptions {
   /** Target integrated loudness, LUFS (e.g. -16). */
   targetLufs: number;
   /** Cap on positive boost to avoid amplifying noise/clipping (default +12 dB). */
