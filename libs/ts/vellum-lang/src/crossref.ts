@@ -1,5 +1,5 @@
 /**
- * Cross-reference parsing (full-vellum §3.2). `[[target#heading|alias]]` is split out
+ * Cross-reference parsing. `[[target#heading|alias]]` is split out
  * of mdast `text` nodes into custom `crossref` nodes by a post-parse unist transform
  * — pure + total, and it naturally skips code spans (separate node types). It
  * does NOT resolve targets; that is akasha-backend's job. The same grammar is

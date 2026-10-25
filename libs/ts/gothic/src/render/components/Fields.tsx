@@ -5,7 +5,7 @@ import type { ReactElement } from "react";
 import { renderNodes } from "../mdastToReact";
 
 /**
- * A deity/stat field-list (`:::fields`, full-vellum §3.3). Each item is one
+ * A deity/stat field-list (`:::fields`). Each item is one
  * `Term :: value` line — `term` is queryable flat text, `value` keeps its inline
  * content (links + `[[crossref]]`s, rendered via the shared renderer). Laid out
  * as a definition list: terms in a label column, values beside them.

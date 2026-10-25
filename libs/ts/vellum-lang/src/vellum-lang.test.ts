@@ -8,7 +8,7 @@ import type { VellumFields, VellumTimeline } from "./model";
 import { parseDocument, parseMarkdown } from "./parse";
 import { compileVss } from "./vss";
 
-describe("frontmatter (§3.1)", () => {
+describe("frontmatter", () => {
   test("parses + normalizes tags/aliases (string or list) and preserves extras", () => {
     const fm = parseFrontmatter(
       "title: Belvedere\ntags:\n  - Watcher\n  - Religious\naliases: The Enclave\nkind: org",
@@ -34,7 +34,7 @@ describe("frontmatter (§3.1)", () => {
   });
 });
 
-describe("crossref (§3.2)", () => {
+describe("crossref", () => {
   test("splits all four forms out of a text run", () => {
     const parts = splitCrossRefs("see [[A]], [[B|bee]], [[C#h]], [[D#h|dee]] end");
     const refs = parts.filter((p) => (p as { type: string }).type === "crossref") as unknown[];
@@ -59,7 +59,7 @@ describe("crossref (§3.2)", () => {
   });
 });
 
-describe("field-list (§3.3)", () => {
+describe("field-list", () => {
   test("splits Term :: value, flattens term, keeps inline value (incl. crossref)", () => {
     const doc = parseDocument(":::fields\nCategory :: Outer God\nDomains :: see [[air]]\n:::");
     const fields = doc.nodes[0] as VellumFields;
@@ -79,7 +79,7 @@ describe("field-list (§3.3)", () => {
   });
 });
 
-describe("timeline (§3.4)", () => {
+describe("timeline", () => {
   test("parses {marker} entries from a list; strips the marker from content", () => {
     const doc = parseDocument(
       ":::timeline\n- {0ag} The crack appears in [[Færrin]].\n- A later age.\n:::",

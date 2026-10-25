@@ -28,9 +28,9 @@ import type { BlockNode } from "./nodes";
  *     pattern would reject genuine slugs.
  *   - `aonUrl` is `z.string()` (not `z.string().url()`/`z.url()`): AoN's own `url`
  *     field is a site-relative path (`/Spells.aspx?ID=148`), not an absolute URL.
- *   - S2 widening (`foundryEntities.ts`): Actor-derived entities gained
- *     `embeddedItems: EmbeddedItem[]` — spec §1 forbids leaking raw system JSON
- *     past P1, so an Actor's embedded items (spells, actions, strikes, ...) get
+ *   - `embeddedItems` (`foundryEntities.ts`): Actor-derived entities carry
+ *     `embeddedItems: EmbeddedItem[]` — raw system JSON never leaks past
+ *     ingest, so an Actor's embedded items (spells, actions, strikes, ...) get
  *     the same typed name/slug/traits/body treatment as top-level entities,
  *     just nested; see `EmbeddedItemSchema` below for why it can't live inside
  *     `facets` instead. Additive/optional, no schemaVersion bump.
@@ -182,9 +182,9 @@ export const FacetsSchema = z
 export type Facets = z.infer<typeof FacetsSchema>;
 
 // ---------------------------------------------------------------------------
-// EmbeddedItem (S2 widening, `foundryEntities.ts`) — an Actor's embedded items
+// EmbeddedItem (`foundryEntities.ts`) — an Actor's embedded items
 // (spells, actions, strikes, auras, ...), NOT promoted to their own corpus
-// entity. Verbatim system JSON never leaks past P1 (spec §1) — every field
+// entity. Verbatim system JSON never leaks past ingest — every field
 // here is the same typed shape the top-level entity itself uses (name/slug/
 // traits/body via `parseFoundryHtml`), just nested one level. Kept on
 // `CodexEntity` directly (not inside `facets`) because `FacetsSchema`'s
@@ -432,7 +432,7 @@ const ClassFeatLevelsSchema = z
  * otherwise — the unjoined-residue drops, e.g. cleric's "First
  * Doctrine".."Final Doctrine") — this nulling IS the referential validation
  * (`emit.ts`'s own Zod pass is shape-only). The 17 real null cases still
- * appear in the progression table as plain text (render-side, S3) — never
+ * appear in the progression table as plain text (render-side) — never
  * silently dropped from `grantedFeatures` itself. */
 export const GrantedFeatureSchema = z
   .object({
@@ -554,7 +554,7 @@ export const CodexEntitySchema = z
      * becomes its own standalone entity in that category instead of merging. */
     proseOnly: z.literal(true).optional(),
     facets: FacetsSchema,
-    /** S2 widening: an Actor-derived entity's embedded items (spells, actions,
+    /** An Actor-derived entity's embedded items (spells, actions,
      * strikes, ...) — see `EmbeddedItemSchema` above. Absent for non-Actor
      * categories and for Actors with zero embedded items (never an empty
      * array, same convention as `loreBody`). */
@@ -571,7 +571,7 @@ export const CodexEntitySchema = z
      * precedent: rules is 100% `proseOnly` so `facets` is always `{}`, and
      * this is genuinely hierarchical navigation data, not a facet). Threaded
      * through both `join.ts` construction sites (`buildAonOnlyEntity`/
-     * `mergeJoined`, the `creature.family` P3-S1 precedent) verbatim from
+     * `mergeJoined`, the `creature.family` precedent) verbatim from
      * `AonDocMeta.breadcrumbs` (already normalized at extraction,
      * `aonFacets.ts`'s `normalizeBreadcrumbElement`). Additive/optional — no
      * schemaVersion bump (same rule as every other optional field on this

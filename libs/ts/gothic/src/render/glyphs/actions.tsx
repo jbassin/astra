@@ -41,7 +41,7 @@ function Pip({ x }: { x: number }): ReactElement {
 }
 
 /**
- * Inline SVG action glyph (NOT an icon font — AD-7/L2: icon fonts blank out in
+ * Inline SVG action glyph (NOT an icon font: icon fonts blank out in
  * rasterized PNG export). `fill: currentColor` so theme CSS controls color.
  */
 export function ActionGlyph({ cost }: { cost: ActionCost }): ReactElement {

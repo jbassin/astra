@@ -2,7 +2,7 @@ import type { CrossRef as CrossRefNode } from "@astra/vellum-lang";
 import { createContext } from "react";
 
 /**
- * The crossref resolver seam (full-vellum §3.2; akasha-frontend 0011 / N3).
+ * The crossref resolver seam.
  *
  * gothic deliberately does NOT know how to turn a `[[target]]` into a URL (L6 —
  * that's the consuming app's job, computed from akasha-backend's resolved

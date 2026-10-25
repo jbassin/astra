@@ -89,7 +89,7 @@ describe("CodexEntity: breadcrumbs + attachedSidebars", () => {
 });
 
 describe("CodexEntity: itemSubcategory + mastheadExtra", () => {
-  it("round-trips facets.itemSubcategory (equipment-only fill-gap field, R8)", () => {
+  it("round-trips facets.itemSubcategory (equipment-only fill-gap field)", () => {
     const entity = baseEntity({
       category: "equipment",
       facets: { itemCategory: "Runes", itemSubcategory: "Weapon Property Runes" },
@@ -97,7 +97,7 @@ describe("CodexEntity: itemSubcategory + mastheadExtra", () => {
     expect(parseCodexEntity(entity)).toEqual(entity);
   });
 
-  it("round-trips mastheadExtra (top-level, rich InlineNode value, R3)", () => {
+  it("round-trips mastheadExtra (top-level, rich InlineNode value)", () => {
     const entity = baseEntity({
       mastheadExtra: [
         {

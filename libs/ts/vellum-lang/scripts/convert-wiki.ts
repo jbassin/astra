@@ -52,7 +52,7 @@ interface PageReport {
   flags: string[];
 }
 
-/** All `.md` pages under SRC, excluding `Script/` (transcripts ≠ vellum, D4). */
+/** All `.md` pages under SRC, excluding `Script/` (transcripts are not vellum). */
 function walkPages(dir: string, acc: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);

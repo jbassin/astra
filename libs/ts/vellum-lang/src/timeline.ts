@@ -1,5 +1,5 @@
 /**
- * Timeline parsing (full-vellum §3.4), the structured replacement for the wiki's raw
+ * Timeline parsing, the structured replacement for the wiki's raw
  * `<ul><li>` HTML. A `:::timeline` block's body is a markdown list; each item carries an
  * optional leading `{marker}` (era/date) and its content as mdast nodes. Total: a
  * non-list body becomes one marker-less entry (degrade, don't drop).

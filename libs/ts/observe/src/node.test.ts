@@ -1,6 +1,6 @@
 // What `@astra/observe/register` installs, with in-memory exporters: inbound HTTP server
 // spans (node:http, through srvx as every service serves) and outbound fetch spans
-// (undici). The container check in the lib-7a report proves the real register hook.
+// (undici). Only a check in a real container proves the real register hook.
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";

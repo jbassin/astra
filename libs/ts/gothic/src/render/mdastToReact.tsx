@@ -11,7 +11,7 @@ import { ActionGlyph, normalizeActionCost } from "./glyphs/actions";
 
 /**
  * Renderable node = an mdast node OR a `crossref` (which `@astra/vellum-lang`
- * splices into phrasing content as a custom node — full-vellum §3.2). mdast's
+ * splices into phrasing content as a custom node). mdast's
  * own `Nodes` union doesn't know about it, so we widen the renderer's input.
  */
 export type RenderableNode = Nodes | CrossRefNode;
@@ -56,7 +56,7 @@ function renderDirective(
 function renderNode(node: RenderableNode, key: number): ReactNode {
   switch (node.type) {
     case "crossref":
-      // full-vellum §3.2 — a link-styled placeholder; resolution is 0007's job.
+      // A link-styled placeholder, or a link when a resolver hits (`CrossRef.tsx`).
       return <CrossRef key={key} node={node} />;
     case "text":
       return node.value;

@@ -81,7 +81,7 @@ export interface VellumColumns {
 }
 
 /**
- * A deity/stat field-list from a `:::fields` block (full-vellum §3.3). Each item
+ * A deity/stat field-list from a `:::fields` block. Each item
  * is one `Term :: value` line: `term` is the flat text (so akasha can *query* a
  * deity's "Domains"), `value` keeps its inline mdast (links + `[[crossref]]`s).
  */
@@ -91,7 +91,7 @@ export interface VellumFields {
 }
 
 /**
- * A timeline from a `:::timeline` block (full-vellum §3.4), replacing the wiki's
+ * A timeline from a `:::timeline` block, replacing the wiki's
  * raw `<ul><li>` HTML. Each entry carries an optional `{marker}` (era/date) and
  * the entry's content as mdast nodes.
  */
@@ -104,7 +104,7 @@ export interface VellumTimeline {
 export type VellumNode = VellumBlock | VellumProse | VellumColumns | VellumFields | VellumTimeline;
 
 /**
- * An inline cross-reference parsed from `[[target#heading|alias]]` (full-vellum §3.2).
+ * An inline cross-reference parsed from `[[target#heading|alias]]`.
  * vellum-lang **parses only** — resolution to a URL/entity + the backlink graph is
  * akasha-backend's job (0007). Inserted into mdast phrasing content as a custom node.
  */
@@ -116,7 +116,7 @@ export interface CrossRef {
 }
 
 /**
- * Typed, validated YAML frontmatter (full-vellum §3.1). The known keys mirror the
+ * Typed, validated YAML frontmatter. The known keys mirror the
  * wiki's Obsidian frontmatter; anything else is preserved in `extra` (akasha may add
  * `kind`/`folder`/`slug`). The Python extractor produces the identical shape.
  */

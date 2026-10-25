@@ -24,7 +24,7 @@ import { CodexId, EditionSchema, LicenseSchema } from "./entity";
  * `CodexEntity.category` — `{category: count}`, every key's value ≥ 1 (a
  * category with zero of this book's entities is simply omitted, never a
  * `0`-valued key, matching every other "absent, never a defaulted empty"
- * corpus convention). Additive over the S1-shipped shape — every book has
+ * corpus convention). Additive over the original shape — every book has
  * ≥1 entity (`entityCountByBook`'s own keys, `sourcesIndexBuild.ts`), so
  * this is never an empty object; kept REQUIRED (not optional) since it's
  * cheap to compute and never legitimately absent. Feeds each book row's
