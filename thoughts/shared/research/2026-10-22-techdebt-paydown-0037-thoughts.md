@@ -354,6 +354,17 @@ token source keep today's look exactly (no stakeholder sign-off needed); assay t
   Phase 3 started: p3-0 `87f16f93` (CI rejects new decision IDs; ~4,600 existing ones are left
   for the sweeps). Waiting on Josh: lib-5, pipe-4c, pipe-6 ($), pipe-9 and ops-9 (rclone OAuth),
   ops-3 (sudo), ops-6 (Renovate install); on heartwood gate E: pipe-7a, pipe-7b.
+- **Status 2026-10-25 (session 6).** Phase 3 comment sweeps are done: two passes over every area
+  (#84–#91, then the widened gate #92 and #94–#97) take `no-decision-ids --all` from ~4,600
+  matches to 1. p3-docs: READMEs for the 25 members that had none (#96); codex README cut from
+  88 KB to 19 KB, assay README corrected, ASTRA.md names every subsystem (#93); stale statements
+  fixed (#99). p3-tests: codex test builders shared, large test files grouped by behaviour (#98).
+  p3-dead: knip unused exports 109 → 42 and exported types 209 → 21, the smoke packages and
+  telemetry smoke deleted (#102). fe items: strider editor dev-only (ADR 0024), immutable hashed
+  assets, reduced-motion backdrops, dev regeneration on real inputs (#100, deployed). In flight:
+  fe-c akasha SPA (ADR 0031), fe-d one token source (ADR 0032), p3-ratchet. Left after those:
+  the weal v1 `funcs` drop (a migration that deletes 11 rows; flag first), immutable assets for
+  menhir, weal-overlay, orator and vellum-render, and the site-kit dark-mode leftovers.
 - Wave 2 list: repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
   `[tool.uv.sources]` (after repo-2); lib-3 dead config and the every-field-has-a-reader check
   (after lib-2, pipe-2); lib-7b Python observe bootstrap; lib-8a typed KDL decoders; lib-9 vellum

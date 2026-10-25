@@ -146,8 +146,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
   `/ruby/data/astra-state/codex/data/{corpus,search}` (kept for a code rollback past cdx-4) — agent.
 - `codex-refresh`/`codex-build` still interpolate `{{flags}}` in bash; move them into astra-ops —
   agent.
-- weal: the live v1 `funcs` table (11 rows) is orphaned since weal-4 and svc-4; drop it with its own
-  `0002_drop_funcs.sql` after exporting the rows — a flagged step (WEAL-14) — agent.
 - pg-migrate: if the database connection dies mid-migration, postgres.js can hang boot instead of
   failing (data is safe: the transaction rolls back; the deploy health wait reports it) — agent.
 - pipe-4b follow-ups: `migrate_sessions.py --allow-launch` should take session keys, not a count;
@@ -162,8 +160,8 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
   `eerie`, `lark`, `mouth`, `wretch-reconcile`: none enabled, all point into the deleted
   `/ruby/data/experiments/faerrin` tree) — agent.
 - Flaky under parallel load (several `just ci` runs at once): codex `ssrSmoke`'s first request times
-  out at 5 s, and codex `build-search.test.ts` "page_count matches the fixture manifest" failed
-  once — agent.
+  out at 5 s, codex `build-search.test.ts` "page_count matches the fixture manifest" failed
+  once, and orator's `ingest.pg.test.ts` shutdown-order test timed out at 5 s once — agent.
 - App-level repo-root walk-ups remain in `apps/akasha/py` `snapshot.py` and `apps/assay/py`
   `book.py` (lib-2 covered the libraries) — agent.
 - vellum visual regression still binds the fixed port 5350 (it runs only in its CI container) —
@@ -204,9 +202,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Frontends
 
-- strider's editor becomes dev-only ([ADR 0024](adr/0024-strider-editor-dev-only.md)): `/editor` and
-  its write server function still ship in the production build, and production saves vanish on
-  recreate (FE-21) — agent; `apps/strider/web/src/routes/editor.tsx`.
 - akasha still navigates with full-page links; move to SPA navigation with server functions — agent;
   [ADR 0031](adr/0031-akasha-spa-navigation.md).
 - One design-token source for gothic and the parchment theme — agent; [ADR 0032](adr/0032-one-design-token-source.md).
@@ -214,14 +209,11 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
   the gothic `theme.css` font-copy note, the compose strider comment ("content/layers/*.md"), the
   `config.kdl` header's env-override wording, the `sites.caddyfile` "manual DNS record" notes,
   akasha `build-content.ts`'s Bun `import.meta.dir` note — agent; Phase 3 comment sweep.
+- menhir, weal-overlay, orator and vellum-render still serve vite `/assets/*` with `max-age=0`; pass
+  `{ immutable: true }` to `serveFile` as site-kit does (menhir has a response pins test) — agent.
 - Optional: a vellum dialogue construct so transcripts need no hand-bolded speakers; a pause or
   reduced-motion guard for strider's always-on faction tint — Josh decides.
-- Hashed assets revalidate on every load (FE-15) — agent.
-- Dev mode does not regenerate content when its real inputs change (FE-10) — agent.
-- Animated backdrops ignore reduced motion (FE-17) — agent.
 
 ## Docs
 
-- `ASTRA.md` omits most current subsystems; rewrite it — agent; Phase 3.
 - Campaign content (`menagerie-puzzles.md`, `sheets/`) sits at the code root; move it out — Josh to say where.
-- The codex README is 98 KB, mostly round-by-round history; cut it to current state — agent; Phase 3.
