@@ -1,4 +1,4 @@
-"""The `episodes_index` catalog (D1, plan 0012) — pure helpers + the build over
+"""The `episodes_index` catalog — pure helpers + the build over
 the committed golden fixtures (the 7 real `through-a-song-darkly` sessions:
 6 regular + 1 mega recap).
 

@@ -1,7 +1,7 @@
-"""Stage 2 — clean + enrich (0024 §3), the distill/beats successor.
+"""Stage 2 — clean + enrich, the distill/beats successor.
 
 A windowed keep/drop OOC filter (heartwood's architecture — `filter.py`, ported here
-with mouthpiece's wider D4 bar: combat and all narrative content stay IN) that never
+with mouthpiece's wider keep bar: combat and all narrative content stay IN) that never
 re-emits transcript text (F1 — verdicts + line-id ranges only, deterministic
 assembly), plus one enrich call on the cleaned transcript for `synopsis` + flat
 `wiki_refs`. LLM via `call_tool` (the old `digest.py` pattern: raw
@@ -9,7 +9,7 @@ assembly), plus one enrich call on the cleaned transcript for `synopsis` + flat
 
 `apply_kept_ranges` is THE single deterministic assembly function used by both
 Stage 2 (the enrich input, here) and Stage 3 (the Pass A input, `assets.py`).
-`assert_no_drift` is the Stage-3 re-read guard (§4.3): the canonical transcript is
+`assert_no_drift` is the Stage-3 re-read guard: the canonical transcript is
 re-parsed from disk between stages, so a line-count mismatch against
 `digest.stats.lines` means it changed underneath the pipeline (e.g. a FROM_FAILURE
 re-execution) — never apply stale `kept_ranges` to a different transcript.
@@ -30,7 +30,7 @@ from .schemas import clean_enrich_tool, clean_filter_tool
 
 # Scene-sized windows; filter calls batched under a word budget (heartwood
 # filter.py:22-23); below this many kept lines the session is treated as degenerate
-# ASR noise (§3.1 sanity floor) rather than rendered into a garbage episode.
+# ASR noise (the sanity floor) rather than rendered into a garbage episode.
 FILTER_WINDOW_TURNS = 20
 FILTER_BATCH_WORDS = 12_000
 KEPT_LINES_FLOOR = 150
@@ -49,7 +49,7 @@ _Category = Literal["noise", "logistics", "life", "bookkeeping", "asr_noise", "c
 
 
 class DegenerateTranscriptError(RuntimeError):
-    """Raised when the cleaned transcript falls below `KEPT_LINES_FLOOR` (§3.1).
+    """Raised when the cleaned transcript falls below `KEPT_LINES_FLOOR`.
 
     A degenerate ASR session (e.g. the 2026-7-6 ~600x-bare-"you" transcript) must fail
     the asset loudly here, never silently render a near-empty or garbage episode.
@@ -62,7 +62,7 @@ class EnrichParseError(ValueError):
 
 class TranscriptDriftError(RuntimeError):
     """Raised when a re-read canonical transcript's line count doesn't match
-    `digest.stats.lines` (§4.3 Stage-3 guard).
+    `digest.stats.lines` (the Stage-3 guard).
 
     The canonical transcript changed between `session_digest` (Stage 2) and
     `session_script` (Stage 3) — e.g. linguist regenerated it across a
@@ -76,7 +76,7 @@ class WindowVerdict(BaseModel):
     """The per-window keep/drop classification the filter LLM emits.
 
     `decision` is the only load-bearing field; `category` is observability-only
-    (§3.1) — it is never used to override or contradict `decision`.
+    — it is never used to override or contradict `decision`.
     """
 
     window: int
@@ -282,7 +282,7 @@ def apply_kept_ranges(turns: list[Turn], ranges: list[tuple[int, int]]) -> list[
 
 
 def assert_no_drift(turns: list[Turn], digest: SessionDigest) -> None:
-    """Stage-3 re-read guard (§4.3): raise `TranscriptDriftError` unless the
+    """Stage-3 re-read guard: raise `TranscriptDriftError` unless the
     freshly re-parsed transcript has exactly the line count `digest.stats.lines`
     recorded at Stage 2. Call this BEFORE `apply_kept_ranges` on a re-read
     transcript — a silently-stale `kept_ranges` would keep/drop the wrong lines.

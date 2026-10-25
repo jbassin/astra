@@ -1,4 +1,4 @@
-"""The producer's output (0034 §4.2): the ``ProducerBrief`` schema, the post-run citation
+"""The producer's output: the ``ProducerBrief`` schema, the post-run citation
 check, and the markdown block Pass A reads.
 
 The agent SUBMITs a dict; dspy validates it against ``ProducerBrief`` inside the loop and

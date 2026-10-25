@@ -1,4 +1,4 @@
-"""The producer's task signature + instructions (0034 §4.1).
+"""The producer's task signature + instructions.
 
 The docstring of ``ProduceBrief`` is the instruction text dspy places ahead of its own RLM
 template and the tool list. Inputs are immutable values only: dspy re-injects every input

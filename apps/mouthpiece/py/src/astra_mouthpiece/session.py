@@ -37,7 +37,7 @@ def build_episode_script(
     brief_block: str = "",
 ) -> Script:
     """Ground the digest against the akasha pages, then run the two-pass script
-    over the cleaned transcript (0024 §4)."""
+    over the cleaned transcript."""
     grounding = ground_digest(digest, pages)
     return generate_script(
         client,

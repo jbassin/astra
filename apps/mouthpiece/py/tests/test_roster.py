@@ -1,4 +1,4 @@
-"""Roster block tests (0024 §4.1.3) — hermetic, driven off the real `being.kdl`.
+"""Roster block tests — hermetic, driven off the real `being.kdl`.
 
 `through-a-song-darkly` (the main campaign) already exercises all three rendering
 cases against real data: a GM role with zero descs, a class-less PC (Arctos), and a

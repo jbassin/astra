@@ -19,7 +19,7 @@ RECAP_MARKER = "-recap-of-"
 
 def kind_from_id(session_id: str) -> EpisodeKind:
     """The kind an episode file without a ``kind`` field has: ``recap`` for a recap-form
-    id, else ``session``. Files written before 0037 pipe-10 carry no ``kind``."""
+    id, else ``session``. Files written before episode kinds were stored carry no ``kind``."""
     return "recap" if RECAP_MARKER in session_id else "session"
 
 
@@ -54,14 +54,14 @@ SpeakerId = Literal["A", "B", "C"]
 
 class DroppedRange(BaseModel):
     """One inclusive line-id span the Stage-2 filter dropped — the human-reviewable
-    audit trail (0024 §3.3)."""
+    audit trail."""
 
     range: tuple[int, int]
     category: str
 
 
 class DigestStats(BaseModel):
-    """Coverage stats for one session's filter pass (mirrors the §8 span attrs)."""
+    """Coverage stats for one session's filter pass (mirrors the filter span's attributes)."""
 
     lines: int
     kept_lines: int
@@ -73,7 +73,7 @@ class DigestStats(BaseModel):
 
 
 class SessionDigest(BaseModel):
-    """The clean+enrich artifact for one session (0024 §3.3 — replaces beats/discarded).
+    """The clean+enrich artifact for one session (replaces beats/discarded).
 
     The cleaned transcript itself is NOT stored — Stage 3 re-derives it from the
     canonical transcript + `kept_ranges` (single source of truth; auditable; keeps
@@ -83,7 +83,7 @@ class SessionDigest(BaseModel):
 
     session_id: str
     synopsis: str
-    #: Stored since 0037 pipe-10; an older file gets `kind_from_id`.
+    #: An older file without this field gets `kind_from_id`.
     kind: EpisodeKind = "session"
     wiki_refs: list[str] = []
     kept_ranges: list[tuple[int, int]] = []
@@ -154,7 +154,7 @@ class Script(BaseModel):
 
     session_id: str
     title: str
-    #: Stored since 0037 pipe-10; an older file gets `kind_from_id`.
+    #: An older file without this field gets `kind_from_id`.
     kind: EpisodeKind = "session"
     hosts: HostConfig
     turns: list[ScriptTurn]

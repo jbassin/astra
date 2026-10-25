@@ -1,5 +1,5 @@
 """Stage 3 — script: digest + cleaned transcript + grounding → a tavern-tone
-roundtable `Script` (0024 §4 rework of the beat-driven version).
+roundtable `Script` (the rework of the beat-driven version).
 
 The TWO-PASS (the crux, ported from caster `script/index.ts`): Pass A `call_text`
 (free-text "raw imperfect transcript" — keeps the model out of the clean-podcast
@@ -7,7 +7,7 @@ attractor) → Pass B `call_tool` (protective "dressing" into structured turns,
 forbidden to polish). Raw `libs/py/llm`, no dspy; the verbatim prompts carry
 the craft. The `max_tokens→raise` guard + prompt caching come free from the client.
 
-The one-shot legacy arm (`two_pass=False`) is deleted (0024 §5) — two-pass is the
+The one-shot legacy arm (`two_pass=False`) is deleted — two-pass is the
 only path now.
 """
 

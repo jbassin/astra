@@ -6,7 +6,7 @@
 // Reads ONE committed build artifact — mouthpiece-backend's `episodes-index.json`
 // (the akasha-snapshot pattern: deterministic, no live backend at build). The
 // backend owns all the shaping (sort, arc titles, episode numbers, ffprobe
-// duration, the stripped + name-resolved transcript — D1/D4/D5/D6); the frontend is
+// duration, the stripped + name-resolved transcript); the frontend is
 // a pure consumer and ports no helpers. Emits:
 //   - src/generated/episodes.ts    — the lean catalog (grid + episode header);
 //   - src/generated/transcripts.ts — id → transcript lines (episode page only, so
@@ -74,7 +74,7 @@ interface Manifest {
   episodes: ManifestEpisode[];
 }
 
-/** Same-origin audio URL with face's `?v=` cache-bust (D2 — served off the mounted
+/** Same-origin audio URL with face's `?v=` cache-bust (served off the mounted
  *  volume at /audio/<id>.mp3; the 173 MB never enters the bundle or the image). */
 function mp3Url(id: string, audioVersion: string): string {
   const base = `/audio/${id}.mp3`;
@@ -133,7 +133,7 @@ function emitTranscripts(episodes: ManifestEpisode[]): string {
   for (const e of episodes) byId[e.id] = e.transcript;
   const body = [
     "/** Episode transcripts (speaker-attributed, audio-tags stripped, host names",
-    " *  resolved — all by the backend, D4), keyed by episode id. Imported only by the",
+    " *  resolved — all by the backend), keyed by episode id. Imported only by the",
     " *  episode route so the grid bundle stays lean. */",
     "export interface GeneratedTranscriptLine {",
     "  speaker: string;",

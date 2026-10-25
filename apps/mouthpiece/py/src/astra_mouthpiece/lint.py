@@ -1,7 +1,8 @@
 """ "Tavern-ness" linter — ported VERBATIM from caster `script/lint.ts` (M9, the
 golden A/B gate). Mechanical metrics over a Script quantifying how much it reads
-like friends at a tavern table vs. a polished podcast: R1-R4 + R6 (max 10). R5
-(room/sensory) retired; R7-R9 are human/LLM-judgment, out of scope here.
+like friends at a tavern table vs. a polished podcast: five mechanical criteria (max 10), the
+ids in `THRESHOLDS`. The room/sensory criterion is retired; the three human/LLM-judgment
+criteria are out of scope here.
 
 Thresholds are PROVISIONAL (set against fixtures, not real episodes). Recalibrate
 against the committed faerrin `out/*.script.json` reference outputs before treating
@@ -241,7 +242,7 @@ def compute_metrics(script: Script) -> LintMetrics:
         max(means_present) - min(means_present) if len(means_present) > 1 else 0.0
     )
 
-    # R1: vocabulary distinctness — pairwise Jaccard distance of top words.
+    # Vocabulary distinctness — pairwise Jaccard distance of top words.
     vocab_sets = [_top_content_words(ts, 15) for ts in per_speaker_turns]
     pairs = [(0, 1), (0, 2), (1, 2)]
     dists = [
@@ -316,7 +317,7 @@ THRESHOLDS: tuple[Threshold, ...] = (
         two=0.25,
         one=0.12,
     ),
-    # R5 (room/sensory) retired — preserves R1-R9 numbering (R6 keeps its id).
+    # The room/sensory criterion is retired; the other criteria keep their ids.
     Threshold(
         id="R6",
         label="quip density (clean-line ratio)",
@@ -344,7 +345,7 @@ class CriterionScore(BaseModel):
 class LintReport(BaseModel):
     metrics: LintMetrics
     criteria: list[CriterionScore]
-    #: Sum of the mechanical criteria (R1-R4 and R6; max = len(THRESHOLDS) * 2).
+    #: Sum of the mechanical criteria (max = len(THRESHOLDS) * 2).
     mechanical_subtotal: int
     #: Mechanical criteria scored 0 — a single one means a podcast tell survived.
     zeros: list[str]
@@ -372,7 +373,8 @@ def score_script(script: Script) -> LintReport:
 def format_report(report: LintReport) -> str:
     """Human-readable report for the CLI / calibration note."""
     max_score = len(THRESHOLDS) * 2
-    lines = ["Tavern-ness (mechanical rubric R1-R4, R6; PROVISIONAL thresholds)"]
+    rubric = "R1-R4, R6"  # decision-ids: ignore[requirement-code] -- the rubric's criterion ids
+    lines = [f"Tavern-ness (mechanical rubric {rubric}; PROVISIONAL thresholds)"]
     for c in report.criteria:
         bar = "●" * c.score + "○" * (2 - c.score)
         val = str(int(c.value)) if float(c.value).is_integer() else f"{c.value:.2f}"

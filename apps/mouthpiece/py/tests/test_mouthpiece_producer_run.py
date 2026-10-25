@@ -57,7 +57,7 @@ def brief_dict(**over: Any) -> dict[str, Any]:
     return base
 
 
-# ── brief (§4.2) ──
+# ── brief ──
 def test_check_citations_repairs_and_reports() -> None:
     brief = ProducerBrief.model_validate(
         brief_dict(

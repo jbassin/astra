@@ -1,18 +1,18 @@
 """The prompts — the two-friends recap tone lives here.
 
 `build_improv_system_prompt` (Pass A) and `build_dressing_system_prompt` (Pass B)
-are the load-bearing craft; Pass B's wording is unchanged from the pre-0024 port
+are the load-bearing craft; Pass B's wording is unchanged from the original port
 (identical to faerrin `pkg/caster/src/script/prompt.ts`, only the `${{hosts.X}}`
-interpolation becomes an f-string). Pass A was targeted-rewritten by 0024 §4.2: it
+interpolation becomes an f-string). Pass A was later rewritten: it
 now debates the session TRANSCRIPT directly (a cleaned, not-distilled transcript —
-0024 replaced the distill/beats Stage 2 with `clean.py`), so it is no longer
+`clean.py` replaced the distill/beats Stage 2), so it is no longer
 byte-identical to any faerrin source. 2026-09 reworked Pass A again, off the DEBATE
 format (which had over-tuned Maeve into a contrarian: propose/object/repeat) into two
 friends reliving the session — build-on-each-other, trade theories, live in the world;
 disagreement is seasoning. Pass B's tag vocabulary is provider-neutral (ElevenLabs passes
 it through).
 
-`CLEAN_FILTER_SYSTEM` and `ENRICH_SYSTEM` (0024 §3) are the clean+enrich Stage-2
+`CLEAN_FILTER_SYSTEM` and `ENRICH_SYSTEM` are the clean+enrich Stage-2
 system prompts (net-new, not ported from faerrin).
 """
 
@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from .models import GroundingEntry, HostConfig, SessionDigest
 
-# ── user content (cleaned transcript + roster + grounding, 0024 §4.1) ──────────
+# ── user content (cleaned transcript + roster + grounding) ─────────────────────
 
 
 def _render_cleaned_transcript(turns: list[tuple[int, str, str]]) -> str:
@@ -39,7 +39,7 @@ def build_script_user_content(
     continuity_block: str = "",
     brief_block: str = "",
 ) -> str:
-    """Per-session user content, rendered in order (§4.1): header + synopsis, prior-
+    """Per-session user content, rendered in order: header + synopsis, prior-
     episode continuity, the deterministic character roster, the cleaned transcript
     (speaker: text, line ids stripped), then wiki excerpts.
 
@@ -287,7 +287,7 @@ def build_dressing_user_content(transcript: str) -> str:
     return f"RAW TRANSCRIPT (format this as-is; do not improve it):\n\n{transcript}"
 
 
-# ── clean: filter (0024 §3.1) ─────────────────────────────────────────────────
+# ── clean: filter ─────────────────────────────────────────────────────────────
 
 CLEAN_FILTER_SYSTEM = (
     "You are a producer's assistant preparing a raw, machine-transcribed tabletop RPG "
@@ -333,7 +333,7 @@ CLEAN_FILTER_SYSTEM = (
 )
 
 
-# ── clean: enrich (0024 §3.2) ──────────────────────────────────────────────────
+# ── clean: enrich ──────────────────────────────────────────────────────────────
 
 ENRICH_SYSTEM = (
     "You are writing the public blurb and reference list for one episode of a "

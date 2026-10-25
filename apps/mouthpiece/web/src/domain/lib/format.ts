@@ -1,6 +1,6 @@
 // Display helpers ported from faerrin face/src/lib/episodes.ts. The only pure logic
-// the frontend still ports (the backend owns all the catalog/transcript shaping —
-// D6, revised); kept here in src/domain/lib like the akasha template.
+// the frontend still ports (the backend owns all the catalog/transcript shaping);
+// kept here in src/domain/lib like the akasha template.
 
 /** Format a millisecond runtime as "M:SS" (or "H:MM:SS" past an hour). */
 export function formatRuntime(ms: number): string {
