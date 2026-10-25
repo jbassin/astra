@@ -10,7 +10,7 @@
   "name": "Fixture Colliding Fireball",
   "system": {
     "description": {
-      "value": "<p>D30-43 negative-path fixture — this basename deliberately collides with the official spell/fireball id.</p>"
+      "value": "<p>Collision-guard negative-path fixture — this basename deliberately collides with the official spell/fireball id.</p>"
     },
     "level": {
       "value": 3

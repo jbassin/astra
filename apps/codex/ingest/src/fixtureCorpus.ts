@@ -154,7 +154,7 @@ function trimmedBodyPlaceholder(id: string): BlockNode[] {
   return [
     paragraph(
       text(
-        `P12 S1 (D29-113..120) fixture stub — "${id}"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.`,
+        `Placeholder fixture stub — "${id}"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.`,
       ),
     ),
   ];
@@ -215,7 +215,7 @@ export const PIPELINE_PATCHES: readonly PipelinePatch[] = [
     // points at witch's own suffixed `class-feature/basic-lesson-2` (a synthetic row below).
     id: "class/witch",
     neededBy:
-      "src/domain/render/ClassPage.test.tsx (Description extension and Lore card suppression, D29-135); src/server/classPageData.test.ts (grant level wins over doc level)",
+      "src/domain/render/ClassPage.test.tsx (Description extension and Lore card suppression); src/server/classPageData.test.ts (grant level wins over doc level)",
     apply: (e) => {
       if (e.stats?.kind !== "class") throw new Error("fixture: class/witch has no ClassStats");
       const grants = [
@@ -226,7 +226,7 @@ export const PIPELINE_PATCHES: readonly PipelinePatch[] = [
         // A grant whose target doc has another level: witch's level-13 Weapon Specialization
         // grant points at fighter's level-7 doc, so the class page must show the grant's
         // level (classPageData.test.ts). The transform itself resolves witch's grant to its
-        // own `class-feature/weapon-specialization-2` (D29-132, transform.test.ts).
+        // own `class-feature/weapon-specialization-2` (transform.test.ts).
         if (g.name === "Weapon Specialization") g.targetId = "class-feature/weapon-specialization";
       }
       grants.sort((a, b) => a.level - b.level);
@@ -239,7 +239,7 @@ export const PIPELINE_PATCHES: readonly PipelinePatch[] = [
           heading2("Weapon Specialization"),
           paragraph(
             text(
-              `P14 S2 (D29-135) fixture stub — this paragraph deliberately does NOT restate class-feature/weapon-specialization's own prose, proving the Description-strip's belt-and-suspenders rule: a heading NAME match alone (this heading is literally "Weapon Specialization", matching witch's own level-13 grant) must never strip a section whose actual content differs.`,
+              `Synthetic fixture stub — this paragraph deliberately does NOT restate class-feature/weapon-specialization's own prose, proving the Description-strip's belt-and-suspenders rule: a heading NAME match alone (this heading is literally "Weapon Specialization", matching witch's own level-13 grant) must never strip a section whose actual content differs.`,
             ),
           ),
         ],
@@ -333,7 +333,7 @@ function virtRitual(n: number): CodexEntity {
     body: [
       paragraph(
         text(
-          `P9 S2 (D29-89/-85) synthetic fixture row #${num}, generated only to grow the committed fixture corpus's ritual category past the SSR_WINDOW=60 threshold for real-browser interaction coverage (frontier j/k, deep-link centering, scroll restoration) — never asserted on for content, only for its position in the sorted listing.`,
+          `Synthetic fixture row #${num}, generated only to grow the committed fixture corpus's ritual category past the SSR_WINDOW=60 threshold for real-browser interaction coverage (frontier j/k, deep-link centering, scroll restoration) — never asserted on for content, only for its position in the sorted listing.`,
         ),
       ),
     ],
@@ -341,7 +341,7 @@ function virtRitual(n: number): CodexEntity {
   };
 }
 
-/** A "Basic Lesson" class feature of the given class (the collision family D29-135 tests). */
+/** A "Basic Lesson" class feature of the given class (the collision family the lore tests use). */
 function basicLesson(args: {
   slug: string;
   aonUrl: string;
@@ -396,7 +396,7 @@ export const SYNTHETIC_ROWS: readonly SyntheticRowSet[] = [
     // own grant is the suffixed `-2`. witch's loreBody embeds the bare id, so lore stripping
     // must match by base slug, and the wrong class's text must never render.
     neededBy:
-      "src/domain/render/ClassPage.test.tsx (base-slug embed matching, D29-135), with the class/witch patch",
+      "src/domain/render/ClassPage.test.tsx (base-slug embed matching), with the class/witch patch",
     rows: () => [
       basicLesson({
         slug: "basic-lesson",
@@ -404,7 +404,7 @@ export const SYNTHETIC_ROWS: readonly SyntheticRowSet[] = [
         className: "Investigator",
         level: 1,
         source: { book: "Player Core", license: "ORC", page: 209 },
-        prose: `P14 S2 (D29-135) fixture stub — this is the COLLISION-FAMILY WINNER (bare, unsuffixed) "class-feature/basic-lesson" doc, deliberately belonging to a DIFFERENT class (Investigator) than witch's own suffixed sibling "class-feature/basic-lesson-2" — proves base-slug embed stripping doesn't care which family member a lore embed happens to resolve to.`,
+        prose: `Synthetic fixture stub — this is the COLLISION-FAMILY WINNER (bare, unsuffixed) "class-feature/basic-lesson" doc, deliberately belonging to a DIFFERENT class (Investigator) than witch's own suffixed sibling "class-feature/basic-lesson-2" — proves base-slug embed stripping doesn't care which family member a lore embed happens to resolve to.`,
       }),
       basicLesson({
         slug: "basic-lesson-2",

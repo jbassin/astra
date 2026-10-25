@@ -10,7 +10,7 @@
   "name": "Fixture Warding Glyph",
   "system": {
     "description": {
-      "value": "<p>A 0030 S1 fixture spell — on a failed save, the target becomes @UUID[Compendium.pf2e.conditionitems.Item.Slowed] for 1 round.</p>"
+      "value": "<p>A homebrew fixture spell — on a failed save, the target becomes @UUID[Compendium.pf2e.conditionitems.Item.Slowed] for 1 round.</p>"
     },
     "level": {
       "value": 3

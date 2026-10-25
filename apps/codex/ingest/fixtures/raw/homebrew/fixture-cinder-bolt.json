@@ -10,7 +10,7 @@
   "name": "Fixture Cinder Bolt",
   "system": {
     "description": {
-      "value": "<p>A 0030 S1 fixture spell (plain, no ritual, no @UUID refs) — synthetic content only.</p>"
+      "value": "<p>A homebrew fixture spell (plain, no ritual, no @UUID refs) — synthetic content only.</p>"
     },
     "level": {
       "value": 1
