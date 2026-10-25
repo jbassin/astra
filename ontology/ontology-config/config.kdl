@@ -1,4 +1,4 @@
-// astra config — the consolidated faerrin env inventory (roadmap Decision E).
+// astra config — the consolidated faerrin env inventory.
 //
 // Plaintext config lives here as node args. Secrets are NEVER plaintext: a secret
 // is a `ref="sops:KEY"` pointer whose value lives in deploy/sops/secrets.enc.yaml
@@ -21,7 +21,7 @@ data {
     // file means the same thing everywhere). ASTRA_DATA_ROOT overrides `root` (a test and
     // dev seam; the host scripts read the same variable for the same root).
     //
-    // All runtime data lives under `root`, never in a code checkout (0037 Phase 1 item 2c):
+    // All runtime data lives under `root`, never in a code checkout:
     // one flat dir per service. deploy/deploy.sh init_artifacts creates the uid-1000 dirs
     // (keep it in step with this list):
     //   astra-data/              the astra-data clone (content-root, below)
@@ -30,9 +30,9 @@ data {
     //   scribe/tmp/              scribe scratch
     //   linguist/script/         linguist operator state (the campaign-matched context)
     //   mouthpiece/episodes/     the episode corpus: per-session renders + .last-rendered
-    //   mouthpiece/experiments/  producer and roundtable runs (0034)
+    //   mouthpiece/experiments/  producer and roundtable runs
     //   heartwood/               per-run agent artifacts, backfill.log, backfill.lock
-    //   heartwood/requests/      the Dagster <-> host request files (0036), logs/ inside
+    //   heartwood/requests/      the Dagster <-> host request files, logs/ inside
     //   codex/data/              codex releases/ (corpus + Pagefind index), AoN + Foundry snapshots
     //   menhir/                  menhir results.jsonl
     //   audio/{akasha,mouthpiece,orator}/  audio the frontends and orator serve
@@ -100,7 +100,7 @@ scribe {
     data-path "scribe/data"
     incoming-path "scribe/incoming"
     tmp-path "scribe/tmp"
-    // Transcription model — full litellm id (Decision G uses Groq Whisper, not whisperx).
+    // Transcription model — full litellm id (Groq Whisper, not whisperx).
     // scribe reads this and passes it to TrackTranscriber; this value is authoritative.
     model "groq/whisper-large-v3"
     groq-api-key ref="sops:groq_api_key"
@@ -119,7 +119,7 @@ mouthpiece {
     // Where the per-session asset graph writes (digest/script/clips/episode.mp3/
     // transcript.md per session), which the host publisher globs. Bind-mounted
     // into the Dagster services at the same path (deploy/docker-compose.yml). Empty would resolve to the cwd — set it so a real pipeline
-    // run lands here. (NB the mouthpiece-FRONTEND audio volume is separate, D2.)
+    // run lands here. (NB the mouthpiece-FRONTEND audio volume is separate.)
     episodes-path "mouthpiece/episodes"
     // mouthpiece's OWN model for clean/enrich + the two-pass script — GLM 5.3 via
     // OpenRouter (2026-09). Deliberately separate from llm.default-model: linguist's
@@ -162,7 +162,7 @@ orator {
     service-name "astra.orator-backend"
     guild-id "753007205510545469"
     // In-cluster Postgres (Compose service DNS); creds match deploy/ POSTGRES_*
-    // defaults; prod overrides at the Phase-6 cutover. Library store (Decision F).
+    // defaults; production may override them. The music-library store.
     database-url "postgres://orator:orator@orator-postgres:5432/orator"
     // Deploy values are the single source (config-single-source) — orator-backend
     // binds this port + origin directly; no PORT/env overrides. Behind Caddy at
@@ -187,7 +187,7 @@ orator {
 }
 
 strider {
-    // The SSR frontend service (Decision I) — the template for 0011-0013. Deploy
+    // The SSR frontend service — the template for the later frontends. Deploy
     // values are the single source (config-single-source): server.ts binds this
     // port + names telemetry with service-name; no PORT env. Behind Caddy at
     // strider.iridi.cc → host 10360. service-name also derives the browser RUM
@@ -199,8 +199,8 @@ strider {
 }
 
 akasha-frontend {
-    // The akasha wiki read-surface (0011) — an SSR frontend on the strider
-    // template (Decision I). Same config-single-source contract as strider:
+    // The akasha wiki read-surface — an SSR frontend on the strider
+    // template. Same config-single-source contract as strider:
     // server.ts binds this port + names telemetry; no PORT env. Behind Caddy at
     // akasha.iridi.cc → host 10365. service-name derives the browser RUM name
     // (`{service-name}-rum`). public-origin = the absolute base URL baked into
@@ -211,14 +211,14 @@ akasha-frontend {
     // The in-container dir the session-audio volume mounts at. The SSR server serves
     // `<audio-dir>/<date>.mp3` same-origin at /audio/<date>.mp3 — the combined Craig
     // recording each transcript page plays. A runtime volume (akasha-audio, ~31 GB),
-    // never baked into the image (Decision I). This replaces the surviving faerrin
+    // never baked into the image. This replaces the surviving faerrin
     // static-audio.iridi.cc dependency; seed with `just akasha-seed`.
     audio-dir "/audio"
 }
 
 mouthpiece-frontend {
-    // The podcast read-surface (0012) — an SSR frontend on the strider/akasha
-    // template (Decision I). Same config-single-source contract: server.ts binds
+    // The podcast read-surface — an SSR frontend on the strider/akasha
+    // template. Same config-single-source contract: server.ts binds
     // this port + names telemetry; no PORT env. Behind Caddy at mouthpiece.iridi.cc
     // → host 10366. service-name derives the browser RUM name (`{service-name}-rum`).
     // public-origin = the absolute base URL baked into the build-emitted
@@ -227,15 +227,15 @@ mouthpiece-frontend {
     service-name "astra.mouthpiece-frontend"
     port 10366
     public-origin "https://mouthpiece.iridi.cc"
-    // The in-container dir the episode audio volume mounts at (D2). The SSR server
+    // The in-container dir the episode audio volume mounts at. The SSR server
     // serves `<audio-dir>/<id>.mp3` same-origin at /audio/<id>.mp3 — the 173 MB of
-    // seeded audio is a runtime volume, never baked into the image (Decision I).
+    // seeded audio is a runtime volume, never baked into the image.
     audio-dir "/audio"
 }
 
 vellum-frontend {
-    // The PF2e document forge (0013) — the editor read/write surface, an SSR frontend
-    // on the strider/akasha template (Decision I). Same config-single-source contract:
+    // The PF2e document forge — the editor read/write surface, an SSR frontend
+    // on the strider/akasha template. Same config-single-source contract:
     // server.ts binds this port + names telemetry; no PORT env. Behind Caddy at
     // vellum.iridi.cc → host 10367. service-name derives the browser RUM name
     // (`{service-name}-rum`). public-origin = the absolute base URL (the share-link
@@ -247,18 +247,18 @@ vellum-frontend {
 }
 
 vellum-render {
-    // The PNG render service (0013) — a Bun.serve + Playwright sidecar (warm Chromium,
+    // The PNG render service — a Bun.serve + Playwright sidecar (warm Chromium,
     // per-request isolated contexts, egress-blocked, semaphore-gated). Same
     // config-single-source contract: the server binds this port + names telemetry; no
     // PORT env. The editor reaches it same-origin via Caddy (vellum.iridi.cc/render →
-    // host 10368). A SEPARATE Compose unit from vellum-frontend (D2).
+    // host 10368). A SEPARATE Compose unit from vellum-frontend.
     service-name "astra.vellum-render"
     port 10368
 }
 
 harrow {
-    // The tarot deck reader (0017) — a standalone SSR frontend on the strider
-    // template (Decision I), a sibling of strider (interactive, backend-less). Same
+    // The tarot deck reader — a standalone SSR frontend on the strider
+    // template, a sibling of strider (interactive, backend-less). Same
     // config-single-source contract: server.ts binds this port + names telemetry; no
     // PORT env. Behind Caddy at harrow.iridi.cc → host 10369. service-name derives
     // the browser RUM name (`{service-name}-rum`). public-origin = the absolute base
@@ -270,8 +270,8 @@ harrow {
 }
 
 ledger {
-    // The astra landing page (0018) — a backend-less SSR frontend on the strider
-    // template (Decision I), a sibling of harrow. One homepage: a gothic card grid
+    // The astra landing page — a backend-less SSR frontend on the strider
+    // template, a sibling of harrow. One homepage: a gothic card grid
     // linking to the player-facing sites (strider/akasha/mouthpiece/harrow/vellum).
     // Same config-single-source contract: server.ts binds this port + names
     // telemetry; no PORT env. Behind Caddy at ledger.iridi.cc → host 10370.
@@ -283,8 +283,8 @@ ledger {
 }
 
 heartwood {
-    // The heartwood wiki-maintainer agent (0033) — a host-run dspy.RLM that reads one
-    // faerrin session transcript and edits the akasha wiki (no review site; the 0020
+    // The heartwood wiki-maintainer agent — a host-run dspy.RLM that reads one
+    // faerrin session transcript and edits the akasha wiki (no review site; the old
     // review surface is retired). Both LMs route through astra_llm (OpenRouter); the
     // run builds two distinct LM instances even when the ids match (role = instance).
     model "openrouter/deepseek/deepseek-v4.1-flash"      // main RLM loop
@@ -294,7 +294,7 @@ heartwood {
     max-tokens 64000       // per LM call; reasoning tokens share it (GLM lesson)
     max-output-chars 10000 // REPL output shown back per iteration (dspy default)
     backfill-budget-usd 100 // cumulative backfill ceiling — stakeholder 2026-10-10 (≈2× the ~$50 estimate)
-    // 0036: the Dagster session_wiki asset files <date>.request.json here and waits for the
+    // The Dagster session_wiki asset files <date>.request.json here and waits for the
     // host runner's <date>.result.json. Bind-mounted at the SAME path into the Dagster
     // services (deploy/docker-compose.yml) and created by `just artifacts-init`.
     requests-path "heartwood/requests"
@@ -317,9 +317,9 @@ ops {
 }
 
 mouthpiece-producer {
-    // The mouthpiece producer (0034) — a host-run, read-only dspy.RLM that briefs the
+    // The mouthpiece producer — a host-run, read-only dspy.RLM that briefs the
     // recap script (moments, lore, callbacks) in place of the fixed wiki excerpts +
-    // continuity block. Experiment-only until the 0034 D4 runtime decision.
+    // continuity block. Experiment-only until a runtime decision is made.
     model "openrouter/deepseek/deepseek-v4.1-flash"      // main RLM loop
     sub-model "openrouter/deepseek/deepseek-v4.1-flash"  // llm_query / llm_query_batched
     max-iterations 30      // bounds MAIN-LM calls
@@ -336,19 +336,19 @@ mouthpiece-producer {
 }
 
 portal {
-    // portal (0023) — a TypeScript MCP+WS server for the live FoundryVTT "Faerrin"
-    // campaign world, on the orator-backend template (D3: no build step, no browser
+    // portal — a TypeScript MCP+WS server for the live FoundryVTT "Faerrin"
+    // campaign world, on the orator-backend template (no build step, no browser
     // RUM surface). service-name names its telemetry (read by @astra/observe/register).
     // Same config-single-source contract otherwise: the server binds this port; no
-    // PORT env. Behind Caddy at portal.iridi.cc → host 10372 (S6).
+    // PORT env. Behind Caddy at portal.iridi.cc → host 10372.
     service-name "astra.portal"
     port 10372
     public-origin "https://portal.iridi.cc"
-    // Two-hop auth (D6): mcp-api-key bearer-gates the Streamable-HTTP /mcp surface
+    // Two-hop auth: mcp-api-key bearer-gates the Streamable-HTTP /mcp surface
     // (MCP client -> server); bridge-api-key gates the Foundry module's WS
     // handshake (module -> server). bridge-timeout-ms bounds a stalled
     // module round-trip (typed "timeout" error, never a hang — the liveness
-    // constraint). max-creates-per-request is the D8 write-gate cap.
+    // constraint). max-creates-per-request is the write-gate cap.
     bridge-timeout-ms 15000
     max-creates-per-request 10
     // The one Foundry user allowed to hold the bridge socket: the dedicated "Portal"
@@ -356,44 +356,44 @@ portal {
     // (close code 4003). "" = no designation: the first user keeps the bridge.
     bridge-user-id "xlC6LfQ7godJVVFf"
     mcp-api-key ref="sops:portal_mcp_api_key"
-    // 0028 D28-1 — the player-facing static key: a second bearer compared alongside
-    // mcp-api-key in the /mcp auth branch, resolving to the read-only D28-8 tool
+    // The player-facing static key: a second bearer compared alongside
+    // mcp-api-key in the /mcp auth branch, resolving to the read-only tool
     // subset instead of the admin scope. Same load-bearing contract as mcp-api-key
-    // (requireSecret, no degraded mode). Value minted at S4 (stakeholder-gated).
+    // (requireSecret, no degraded mode). Value minted by the stakeholder.
     player-mcp-api-key ref="sops:portal_player_api_key"
     bridge-api-key ref="sops:portal_bridge_api_key"
-    // 0025 OAuth state file (registered clients + hashed tokens) — on the
+    // OAuth state file (registered clients + hashed tokens) — on the
     // portal-oauth bind mount, so a claude.ai connection survives `just up`.
     oauth-state-path "/data/oauth/state.json"
 }
 
 portal-headless {
-    // portal-headless (0027 D27-5/-13) — a supervised headless-Chromium GM session, a
+    // portal-headless — a supervised headless-Chromium GM session, a
     // dedicated Foundry account ("Portal", full GM) permanently logged into the live
     // pf2e "Faerrin" world through the public edge, so portal's MCP tools work with no
-    // human browser tab open (spec 0027). A SEPARATE Compose unit from portal-server:
+    // human browser tab open. A SEPARATE Compose unit from portal-server:
     // health-only, not edge-routed (no Caddy entry).
     service-name "astra.portal-headless"
     port 10373
-    // D27-3: the public edge — the exact path a human browser takes.
+    // The public edge — the exact path a human browser takes.
     foundry-origin "https://btl.iridi.cc"
     world "faerrin"
     gm-username "Portal"
-    // D27-4/-14: the dedicated account's password, resolved only at login time —
-    // never logged. Set at S4 with the stakeholder.
+    // The dedicated account's password, resolved only at login time —
+    // never logged. Set with the stakeholder.
     gm-password ref="sops:foundry_portal_gm_password"
-    // D27-10: periodic page reload while healthy (slow-leak insurance); 0 disables.
+    // Periodic page reload while healthy (slow-leak insurance); 0 disables.
     reload-interval-hours 24
 }
 
 codex {
-    // The PF2e reference site (0029) — a public-but-noindexed build-time ingest +
-    // SSR frontend on the strider template (Decision I). Same config-single-source
+    // The PF2e reference site — a public-but-noindexed build-time ingest +
+    // SSR frontend on the strider template. Same config-single-source
     // contract: the server binds this port; no PORT env. Behind Caddy at
     // codex.iridi.cc → host 10374. data-path is the dir the ingest pipeline
     // (`just codex-build`) writes releases/ to, under data.root; the server reads
-    // releases/current. P2 S3 (D29-30) wired client RUM (src/observe/{rum,
-    // rumConfig}.ts, startRum in __root's mount effect) — it reads the top-level
+    // releases/current. Client RUM (src/observe/{rum,
+    // rumConfig}.ts, startRum in __root's mount effect) reads the top-level
     // telemetry.rum-endpoint (above).
     service-name "astra.codex"
     port 10374
@@ -401,12 +401,12 @@ codex {
 }
 
 menhir {
-    // menhir (0031) — a Kahoot-style session-opener quiz, on the weal-overlay
-    // template (srvx server + SSE fan-out + vite React SPA, no auth per R4). Same
+    // menhir — a Kahoot-style session-opener quiz, on the weal-overlay
+    // template (srvx server + SSE fan-out + vite React SPA, no auth by stakeholder choice). Same
     // config-single-source contract: server.ts binds this port + names telemetry;
     // no PORT env. Behind Caddy at menhir.iridi.cc → host 10375. results-path is the
-    // JSONL append target (identical-path bind mount, D29-53 convention — plain config
-    // fields have no env override).
+    // JSONL append target (identical-path bind mount, the Dagster pipeline-volume
+    // convention — plain config fields have no env override).
     service-name "astra.menhir"
     port 10375
     public-origin "https://menhir.iridi.cc"

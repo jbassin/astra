@@ -1,4 +1,4 @@
-// astra ontology-being — the META truth store (roadmap 0002 §B).
+// astra ontology-being — the META truth store.
 //
 // Consolidates three faerrin sources into one tree:
 //   * mouth/players.toml            → players (snowflakes, player_id, is_dm/admin)
@@ -7,7 +7,7 @@
 //
 // This is META (who plays whom, host send-identities, podcast personas) — NOT in-world
 // setting characters (those are akasha). `player-id` integers are load-bearing dice FKs
-// (preserve verbatim). Identity color hexes are owned here (I5): the player values are the
+// (preserve verbatim). Identity color hexes are owned here: the player values are the
 // live-site (aether theme.scss) set; host hexes come from mouth/host.rs.
 
 // --- players (the real people) -------------------------------------------------------
