@@ -67,9 +67,9 @@ const queryDuration = lazyHistogram(SERVICE_NAME, "astra.portal.bridge.query_dur
 
 /** Liveness + handshake snapshot for the `bridge-status` tool; the schema lives in the
  * tool registry (`BridgeStatusResult` in `@astra/portal-shared`). */
-export type BridgeStatus = BridgeStatusResult;
+type BridgeStatus = BridgeStatusResult;
 
-export interface BridgeOptions {
+interface BridgeOptions {
   /** `cfg.portal.bridgeApiKey.resolve()` — the module's handshake secret. */
   bridgeApiKey: string;
   /** `cfg.portal.bridgeTimeoutMs` — how long {@link Bridge.sendQuery} waits for a reply. */

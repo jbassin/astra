@@ -13,7 +13,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 /** `flags["astra-portal"]`: the stamp `delete-document` reads back. */
-export interface PortalStamp {
+interface PortalStamp {
   "astra-portal": { created: true; tool: string; ts: string };
 }
 
@@ -49,7 +49,7 @@ export function payloadSystem(
 }
 
 /** What a caller of `create-actor` or `create-item` asks for. */
-export interface CreateRequest {
+interface CreateRequest {
   /** A compendium document to clone and patch; absent means author from scratch. */
   baseUuid?: string;
   name: string;
@@ -61,7 +61,7 @@ export interface CreateRequest {
 
 /** A document create payload: the fields portal sets, plus (for a clone) the rest of the
  * base document's stored source, verbatim. */
-export interface CreatePayload extends Record<string, unknown> {
+interface CreatePayload extends Record<string, unknown> {
   name?: unknown;
   type?: unknown;
   system?: unknown;

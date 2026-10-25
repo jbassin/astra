@@ -8,7 +8,7 @@
  */
 import { createServer, type Server } from "node:http";
 
-export interface HealthSnapshot {
+interface HealthSnapshot {
   /** process-up + browser-connected ONLY — never false because of
    * `world-down`, never true because of `in-world` alone. */
   ok: boolean;

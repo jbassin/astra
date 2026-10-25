@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 export type Pf2eFixtureName = "pc" | "npc" | "spell" | "feat" | "item";
 
-export interface Pf2eFixture {
+interface Pf2eFixture {
   /** Where each side came from, and whether it was captured or synthesized. */
   provenance: string;
   uuid: string;
@@ -22,7 +22,7 @@ export interface Pf2eFixture {
   };
 }
 
-export function loadPf2eFixture(name: Pf2eFixtureName): Pf2eFixture {
+function loadPf2eFixture(name: Pf2eFixtureName): Pf2eFixture {
   const path = fileURLToPath(new URL(`../../tests/fixtures/pf2e/${name}.json`, import.meta.url));
   return JSON.parse(readFileSync(path, "utf8")) as Pf2eFixture;
 }

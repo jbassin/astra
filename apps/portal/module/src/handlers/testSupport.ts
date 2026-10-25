@@ -31,7 +31,7 @@ export function loadFixture(name: "party" | "argyle" | "othello"): {
  * type" detection rejects assigning a zero-overlap object to an all-optional-props
  * constraint — casting inside `get`'s body sidesteps that without weakening the
  * collection's own declared element type. */
-export function fakeValuesCollection<T>(items: T[]): {
+function fakeValuesCollection<T>(items: T[]): {
   values(): IterableIterator<T>;
   get(id: string): T | undefined;
 } {
@@ -153,7 +153,7 @@ export function deepMergeObject<T extends Record<string, unknown>>(
   return result as T;
 }
 
-export function isPlainObject(v: unknown): v is Record<string, unknown> {
+function isPlainObject(v: unknown): v is Record<string, unknown> {
   return v !== null && typeof v === "object" && !Array.isArray(v);
 }
 
@@ -232,7 +232,7 @@ export function fakeScene(opts: {
   };
 }
 
-export interface FoundryStubOverrides {
+interface FoundryStubOverrides {
   packs?: FoundryCompendiumCollection[];
   actors?: FoundryActor[];
   items?: FoundryDocumentLike[];

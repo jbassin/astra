@@ -72,10 +72,10 @@ export type SupervisorEvent =
   | { type: "world-down-dwell"; ms: number }
   | { type: "console"; level: "warn" | "error"; text: string };
 
-export type LogLevel = "info" | "warn" | "error";
-export type LogFn = (level: LogLevel, message: string) => void;
+type LogLevel = "info" | "warn" | "error";
+type LogFn = (level: LogLevel, message: string) => void;
 
-export interface SupervisorDeps {
+interface SupervisorDeps {
   page: PageAdapter;
   /** The Foundry username to select on `/join` ("Portal"). Not a secret. */
   username: string;

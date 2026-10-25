@@ -49,7 +49,7 @@ export function rollOriginUuid(flags: Pf2eFlags): string | undefined {
 
 /** One serialized `ModifierPF2e#toObject()` entry of `flags.pf2e.modifiers`. `enabled` and
  * `ignored` are true only for a literal `true`. */
-export interface Pf2eRollModifier {
+interface Pf2eRollModifier {
   label?: string;
   modifier?: number;
   type?: string;
