@@ -1,4 +1,4 @@
-// The operator UI is a client-only SPA served as static `dist/` (M3) — it has no
+// The operator UI is a client-only SPA served as static `dist/` — it has no
 // TanStack Start server boundary, so unlike the strider template (which resolves
 // the RUM endpoint via a `createServerFn`), it fetches a small PUBLIC endpoint on
 // orator-backend. The server reads it from config.kdl (config-single-source), so

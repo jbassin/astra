@@ -1,5 +1,5 @@
 /**
- * Loudness-normalization gain (lark B25/D5). Pure math + ffmpeg filter string —
+ * Loudness-normalization gain. Pure math + ffmpeg filter string —
  * the engine applies the measured-vs-target delta as live gain at playback,
  * never re-encoding the source. A true-peak limiter guards against clipping when
  * boosting quiet tracks. Ported verbatim from faerrin `pkg/lark/src/bot/gain.ts`.

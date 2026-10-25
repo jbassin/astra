@@ -121,7 +121,7 @@ describe("oauth login + callback", () => {
   });
 });
 
-describe("fail closed (0037 SVC-2)", () => {
+describe("fail closed", () => {
   test("an empty allowlist admits no session", async () => {
     const token = signSession("allowed-uid", SECRET);
     const app = makeApp(testConfig({ allowlist: new Set() }));

@@ -1,5 +1,5 @@
 /**
- * In-process VoiceAdapter over @discordjs/voice (plan D1). Runs inside the Bun
+ * In-process VoiceAdapter over @discordjs/voice. Runs inside the Bun
  * server — Bun handles voice fine once Discord's DAVE/E2EE requirement is met
  * (@discordjs/voice ≥0.19 + @snazzah/davey); the earlier "Bun can't do voice"
  * conclusion was actually a 4017 DAVE close on the old 0.18. Pipes the source

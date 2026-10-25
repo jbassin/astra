@@ -56,7 +56,7 @@ body {
   padding: 1.5rem;
 }
 
-/* Auth prompt (F9): a compact, centered card instead of a full-width panel with
+/* Auth prompt: a compact, centered card instead of a full-width panel with
    the prompt + button marooned in the corner. */
 .card--auth {
   max-width: 22rem;

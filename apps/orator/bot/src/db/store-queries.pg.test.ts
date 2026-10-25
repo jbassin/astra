@@ -1,5 +1,5 @@
 /**
- * How many statements the batched store methods send to a real Postgres (SVC-10's N+1 list).
+ * How many statements the batched store methods send to a real Postgres (the former N+1 hot spots).
  * Each count is the number of statements postgres.js sends, transaction `begin`/`commit` included.
  * Runs only under `just pg-test` (a throwaway Postgres); never point it at the live database.
  *

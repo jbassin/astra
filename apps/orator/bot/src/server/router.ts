@@ -26,7 +26,7 @@ export interface Session {
 export interface ApiConfig {
   /** The single guild orator serves (voice debug). */
   guildId: string;
-  /** Absolute data dir where ingested audio is written (uploads/ingest, slice 5). */
+  /** Absolute data dir where ingested audio is written (uploads/ingest). */
   dataDir: string;
 }
 

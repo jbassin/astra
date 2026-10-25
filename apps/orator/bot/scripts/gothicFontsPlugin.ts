@@ -7,7 +7,7 @@ import type { Plugin } from "vite";
 // gothic owns the webfonts (theme.css references absolute /fonts/*). The strider
 // SSR template lets the host Caddy file-serve them straight from the gothic dir.
 // orator-backend instead serves its operator SPA as a self-contained static
-// `dist/` (M3, `serveStatic`), so this plugin (a) serves /fonts in `vite dev`
+// `dist/` (`serveStatic`), so this plugin (a) serves /fonts in `vite dev`
 // and (b) copies the gothic fonts into `dist/fonts/` at build — gothic stays the
 // single source of truth, no font copy is vendored into git.
 

@@ -1,5 +1,5 @@
 /**
- * Stream Deck API-key management (lark B26). Bound to the logged-in user; the raw
+ * Stream Deck API-key management. Bound to the logged-in user; the raw
  * key is returned only once at creation. These routes require a **web session** —
  * an API key cannot mint or revoke keys (so the orator-controller plugin, which
  * has no session, can only *consume* a key the operator mints here).
@@ -52,7 +52,7 @@ export const keyRoutes: ApiRoute[] = [
         keyHash: gen.hash,
         keyPrefix: gen.prefix,
       });
-      // The raw key is shown exactly once here and never retrievable again (B26).
+      // The raw key is shown exactly once here and never retrievable again.
       return json({ ...publicKey(stored), key: gen.raw }, 201);
     },
   }),

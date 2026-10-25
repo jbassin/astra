@@ -23,7 +23,7 @@ export interface VoiceAdapter {
   positionMs(): number;
 }
 
-/** Resolves which voice channel a given Discord user is currently in (D8/B1). */
+/** Resolves which voice channel a given Discord user is currently in. */
 export interface VoiceStateResolver {
   /** May be sync (tests) or async (REST fallback when the gateway cache misses). */
   channelOf(userId: string): string | null | Promise<string | null>;

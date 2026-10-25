@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { extractVideoId, isPlaylistUrl } from "./ytdlp";
 
-describe("isPlaylistUrl (B20/B21)", () => {
+describe("isPlaylistUrl", () => {
   test("a real list= is a playlist", () => {
     expect(isPlaylistUrl("https://youtube.com/watch?v=abc&list=PL123")).toBe(true);
   });

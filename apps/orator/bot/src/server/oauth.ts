@@ -1,5 +1,5 @@
 /**
- * Discord OAuth2 authorization-code flow (lark §8). Only the `identify` scope is
+ * Discord OAuth2 authorization-code flow. Only the `identify` scope is
  * requested. URL building is pure; the token+user exchange takes an injectable
  * `fetch` so it is unit-testable without hitting Discord. This runs only at login
  * — the resulting identity is minted into a stateless signed cookie (`sessions.ts`).

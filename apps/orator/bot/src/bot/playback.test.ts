@@ -123,7 +123,7 @@ beforeEach(() => {
   voice = new FakeVoice();
 });
 
-describe("join / follow-the-operator (B1)", () => {
+describe("join / follow-the-operator", () => {
   test("joins the operator's channel", async () => {
     await engine().join({ userId: "op" });
     expect(voice.channel).toBe("chan-1");
@@ -137,7 +137,7 @@ describe("join / follow-the-operator (B1)", () => {
   });
 });
 
-describe("play / stop (B4/B5/D6)", () => {
+describe("play / stop", () => {
   test("play joins + plays first track with gain filter", async () => {
     const e = engine();
     const t1 = mkTrack("a");
@@ -148,7 +148,7 @@ describe("play / stop (B4/B5/D6)", () => {
     expect(np.status).toBe("playing");
     expect(np.queueLength).toBe(2);
   });
-  test("stop clears queue but stays connected (D6)", async () => {
+  test("stop clears queue but stays connected", async () => {
     const e = engine();
     await e.play({ trackIds: [mkTrack("a")], userId: "op" });
     const np = await e.stop();
@@ -158,7 +158,7 @@ describe("play / stop (B4/B5/D6)", () => {
   });
 });
 
-describe("queue advance + loop (B7/B8)", () => {
+describe("queue advance + loop", () => {
   test("finishing advances to next track", async () => {
     const e = engine();
     const [a, b] = [mkTrack("a"), mkTrack("b")];
@@ -200,7 +200,7 @@ describe("queue advance + loop (B7/B8)", () => {
   });
 });
 
-describe("resilient skip (B10)", () => {
+describe("resilient skip", () => {
   test("a track that fails to play is skipped and marked error", async () => {
     const e = engine();
     const a = mkTrack("a");
@@ -219,7 +219,7 @@ describe("resilient skip (B10)", () => {
   });
 });
 
-describe("auto-leave (B2)", () => {
+describe("auto-leave", () => {
   test("empty channel arms a timer that leaves; rejoin cancels it", async () => {
     // Holder (not a bare `let`) so TS keeps the callback's type instead of
     // narrowing to the initial `null` (the assignment happens inside setTimer).
@@ -245,7 +245,7 @@ describe("auto-leave (B2)", () => {
   });
 });
 
-describe("async channel resolution (REST fallback, D8)", () => {
+describe("async channel resolution (REST fallback)", () => {
   test("play awaits an async resolver and joins the resolved channel", async () => {
     const asyncResolver: VoiceStateResolver = {
       channelOf: async (uid) => (uid === "op" ? "chan-async" : null),
@@ -264,7 +264,7 @@ describe("async channel resolution (REST fallback, D8)", () => {
   });
 });
 
-describe("serialization (B9)", () => {
+describe("serialization", () => {
   test("interleaved commands resolve to a consistent state", async () => {
     const e = engine();
     const [a, b, c] = [mkTrack("a"), mkTrack("b"), mkTrack("c")];

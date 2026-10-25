@@ -87,7 +87,7 @@ export class OratorController {
 
   private applySettings(settings: OratorGlobalSettings): void {
     this.generation++;
-    // astra change (M4/slice 8): the orator-backend origin is configurable (birdfeed
+    // astra change: the orator-backend origin is configurable (birdfeed
     // hardcoded lark.iridi.cc). The operator sets both the origin + a pasted API key.
     this.client = isConfigured(settings)
       ? new OratorClient({ origin: normalizeOrigin(settings.oratorOrigin), key: settings.apiKey })

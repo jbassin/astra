@@ -1,5 +1,5 @@
 /**
- * The orator HTTP app (lark §7), served by `@astra/service-kit`. `createApp()`
+ * The orator HTTP app, served by `@astra/service-kit`. `createApp()`
  * returns a pure `handle(req)` that can be unit-tested without binding a port,
  * opening a Discord connection, or hitting the network. `startServer()` binds it.
  *
@@ -7,7 +7,7 @@
  * RUM config are public kit routes; everything else under `/api/` is one kit route
  * group whose `authenticate` resolves the actor from a **web session** (Discord OAuth
  * → signed cookie) OR a Bearer **API key** (same `uid` either way) and answers 401
- * before any route lookup. The operator allowlist is derived from the ontology (M1)
+ * before any route lookup. The operator allowlist is derived from the ontology
  * and threaded in as `config.allowlist`.
  *
  * astra port: the sync `bun:sqlite` `db` → the async `LibraryStore`; cookie
@@ -112,7 +112,7 @@ interface Actor {
 
 /** The service definition: everything `createApp` and `startServer` serve. */
 function defineApp(config: AppConfig, store: LibraryStore, deps: AppDeps): ServiceDefinition {
-  // Defence in depth behind the entrypoint's startup guards (0037 SVC-2): HMAC with a
+  // Defence in depth behind the entrypoint's startup guards: HMAC with a
   // blank key would let anyone mint a valid session cookie.
   if (isBlankSecret(config.sessionSecret)) {
     throw new Error("orator createApp: sessionSecret is blank — refusing to sign sessions");
@@ -130,7 +130,7 @@ function defineApp(config: AppConfig, store: LibraryStore, deps: AppDeps): Servi
     return session;
   }
 
-  /** Resolve the actor from a web session OR a Stream Deck API key (B26/D4). */
+  /** Resolve the actor from a web session OR a Stream Deck API key. */
   async function authenticate(req: Request): Promise<Actor | null> {
     const session = getSession(req);
     if (session) return { session, method: "session" };
@@ -224,7 +224,7 @@ function defineApp(config: AppConfig, store: LibraryStore, deps: AppDeps): Servi
   }
 
   // Bun.file(...) → @astra/site-kit's `serveFile` (the `send`-backed Range/206
-  // bridge S4 built; R3, 0022 S8) — same fallback-to-index.html shape as before.
+  // bridge) — same fallback-to-index.html shape as before.
   async function serveStatic(req: Request): Promise<Response> {
     const pathname = decodeURIComponent(new URL(req.url).pathname);
     const target = resolve(config.distDir, `.${pathname}`);
@@ -299,7 +299,7 @@ export function startServer(
   const service = createService({
     ...defineApp(config, store, deps),
     port: config.port,
-    // Bun.serve → srvx (R3, 0022 S8 — B3). Bun's `idleTimeout: 60` (seconds) has no
+    // Bun.serve → srvx. Bun's `idleTimeout: 60` (seconds) has no
     // srvx option; these are the closest Node analogs — `keepAliveTimeout` (idle time
     // on an already-served keep-alive connection) and `headersTimeout` (which Node
     // requires to exceed it).

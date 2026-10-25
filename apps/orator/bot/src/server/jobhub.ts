@@ -1,5 +1,5 @@
 /**
- * Per-job pub/sub for SSE download progress (plan B22). Mirrors eerie's hub
+ * Per-job pub/sub for SSE download progress. Mirrors eerie's hub
  * idea but keyed by job id, so a browser watching one import only receives that
  * job's frames. Listeners receive ready-to-write SSE frame strings.
  */

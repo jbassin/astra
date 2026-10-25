@@ -1,5 +1,5 @@
 /**
- * Operator allowlist (M1). Lark used a flat `LARK_ALLOWED_USER_IDS` env string;
+ * Operator allowlist. Lark used a flat `LARK_ALLOWED_USER_IDS` env string;
  * astra derives the allowlist from the ontology (config single-source, principle #2):
  * the union of every `is_admin` player's Discord snowflakes, plus an optional
  * additive `orator.allowedUserIds` override (comma/whitespace-separated) for

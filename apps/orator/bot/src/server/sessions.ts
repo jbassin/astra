@@ -1,5 +1,5 @@
 /**
- * Stateless signed session cookies (lark §8). A session is `uid.exp.sig` where
+ * Stateless signed session cookies. A session is `uid.exp.sig` where
  * sig = HMAC-SHA256(`uid.exp`, SESSION_SECRET), base64url. No DB row needed —
  * the cookie itself is the credential, tamper-evident and self-expiring. The
  * Discord OAuth dance is login-only (`oauth.ts`); after that this cookie is the

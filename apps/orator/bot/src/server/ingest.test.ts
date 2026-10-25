@@ -51,7 +51,7 @@ function service(ytdlp: YtDlp) {
   });
 }
 
-describe("single ingest (B20)", () => {
+describe("single ingest", () => {
   test("downloads one video → one ready track with loudness", async () => {
     const { job, done } = await service(stubYtDlp()).start("https://youtu.be/song1");
     expect(job.type).toBe("single");
@@ -65,7 +65,7 @@ describe("single ingest (B20)", () => {
   });
 });
 
-describe("playlist ingest (B21)", () => {
+describe("playlist ingest", () => {
   test("creates a collection and a track per entry", async () => {
     const entries = [
       { videoId: "a", title: "A" },
@@ -104,7 +104,7 @@ describe("playlist ingest (B21)", () => {
     expect(await store.listTracks({ collectionId: dest.id })).toHaveLength(2);
   });
 
-  test("one failing item → partial job, others still imported (B21)", async () => {
+  test("one failing item → partial job, others still imported", async () => {
     const entries = [
       { videoId: "ok1", title: "ok1" },
       { videoId: "bad", title: "bad" },
@@ -122,7 +122,7 @@ describe("playlist ingest (B21)", () => {
   });
 });
 
-describe("dedup (B23)", () => {
+describe("dedup", () => {
   test("re-importing an existing video links instead of duplicating", async () => {
     await store.createTrack({ title: "old", sourceType: "youtube", sourceVideoId: "dupe" });
     const { job, done } = await service(stubYtDlp()).start("https://youtu.be/dupe");
