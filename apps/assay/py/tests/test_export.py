@@ -1,4 +1,4 @@
-"""Unit tests for the D30-38 codex export artifact (spec 0030 round 4) —
+"""Unit tests for the codex export artifact (round 4) —
 reason-code mapping, the similarity floor (both engines), variant collapse,
 and a small on-disk integration exercising `build_export` end-to-end
 determinism."""
@@ -114,7 +114,7 @@ def test_reason_code_for_unknown_reason_falls_back() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Similarity floor (D30-38) — both engines, via `comparables.comparables_for`.
+# Similarity floor — both engines, via `comparables.comparables_for`.
 # ---------------------------------------------------------------------------
 
 
@@ -135,7 +135,7 @@ def test_similarity_floor_real_shared_atom_passes() -> None:
 
 
 # ---------------------------------------------------------------------------
-# _pick_primary — variant collapse (D30-38).
+# _pick_primary — variant collapse.
 # ---------------------------------------------------------------------------
 
 

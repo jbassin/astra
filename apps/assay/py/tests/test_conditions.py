@@ -1,6 +1,5 @@
-"""Unit tests for the round-2 condition extraction core (spec 0030 D30-2/D30-4/
-D30-5/D30-8b) — the four attribution rules, tier lookup, duration
-classification, and coverage arithmetic in isolation from spell JSON parsing.
+"""Unit tests for the round-2 condition extraction core — the four attribution rules, tier lookup,
+duration classification, and coverage arithmetic in isolation from spell JSON parsing.
 """
 
 from __future__ import annotations
@@ -34,7 +33,7 @@ def test_condition_tier_valued_promotion() -> None:
     assert condition_tier("Frightened", 1, DurationClass.INSTANT) == Tier.T2
     assert condition_tier("Frightened", 2, DurationClass.INSTANT) == Tier.T3
     assert condition_tier("Frightened", 3, DurationClass.INSTANT) == Tier.T3
-    # unvalued default-1 (D30-2a)
+    # unvalued default-1
     assert condition_tier("Frightened", None, DurationClass.INSTANT) == Tier.T2
 
 
@@ -56,14 +55,14 @@ def test_classify_duration_prose_first() -> None:
 
 def test_classify_duration_field_fallback() -> None:
     """No prose duration in the instance's own section — fall back to the
-    spell-level `duration.value` field (D30-2c)."""
+    spell-level `duration.value` field."""
     assert classify_duration("no duration text here", "1 minute") == DurationClass.MINUTE
     assert classify_duration("no duration text here", "") == DurationClass.INSTANT
     assert classify_duration("no duration text here", "1 round") == DurationClass.ROUND
 
 
 def test_coverage_weight_fail_only() -> None:
-    """fail-only ≈ 0.55 with the default crit-fail=1.5 severity (D30-4)."""
+    """fail-only ≈ 0.55 with the default crit-fail=1.5 severity."""
     w = coverage_weight(frozenset({"failure", "critical-failure"}))
     assert w == 0.10 * 1.5 + 0.40 * 1.0
     assert abs(w - 0.55) < 1e-9
@@ -102,14 +101,14 @@ def test_attribution_rule_values_distinct() -> None:
 
 
 # ---------------------------------------------------------------------------
-# D30-21a — case-insensitive rule (iii)
+# Case-insensitive rule (iii)
 # ---------------------------------------------------------------------------
 
 
 def test_plain_repeat_case_insensitive_sleep_shape() -> None:
     """Sleep's real shape: 'Unconscious' ref'd via @UUID in the preamble,
     then the Failure/Critical Failure sections repeat it in plain LOWERCASE
-    prose ("falls unconscious"). Before D30-21a this was silently dropped
+    prose ("falls unconscious"). Before the case-fold fix this was silently dropped
     (the plain-repeat regex was case-sensitive)."""
     html = (
         "<p>A creature that falls "
@@ -127,14 +126,14 @@ def test_plain_repeat_case_insensitive_sleep_shape() -> None:
 
 
 # ---------------------------------------------------------------------------
-# D30-21b — en-dash / unicode-minus modifier sign
+# En-dash / unicode-minus modifier sign
 # ---------------------------------------------------------------------------
 
 
 def test_status_modifier_en_dash_sign() -> None:
     """The corpus's copy-edited prose uses an en-dash for negative modifiers
     (Sleep: '–1 status penalty to Perception checks') — the ASCII-only
-    `[+-]` class silently missed these (~28 spells, D30-21b pin)."""
+    `[+-]` class silently missed these (~28 spells)."""
     html = "<p>The creature takes a –1 status penalty to Perception checks for 1 round.</p>"
     result = extract_condition_instances(
         html, spell_duration_value="", has_save=False, has_attack_trait=False
@@ -156,7 +155,7 @@ def test_status_modifier_unicode_minus_sign() -> None:
 
 
 # ---------------------------------------------------------------------------
-# D30-21c — modifier degree + duration attribution
+# Modifier degree + duration attribution
 # ---------------------------------------------------------------------------
 
 
@@ -194,7 +193,7 @@ def test_status_modifier_no_degree_markup_uses_default_degree() -> None:
 
 
 # ---------------------------------------------------------------------------
-# D30-21d — prose-save + hostile-area-phrase detection
+# Prose-save + hostile-area-phrase detection
 # ---------------------------------------------------------------------------
 
 

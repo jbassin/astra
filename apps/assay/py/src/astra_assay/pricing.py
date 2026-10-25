@@ -1,11 +1,11 @@
-"""Round-2 pricing (spec 0030 D30-1, D30-3, D30-4, D30-7, D30-8, D30-8b) —
+"""Round-2 pricing —
 the pure-anchored budget ladder, the two-stage tier-discount fit, and the
 full-population scorer + typed ledger.
 
 Everything downstream of the pure ladder is expressed in **log-discount
-space** (D30-3, review-pinned): Stage A learns tier coefficients β_T1..β_T3
+space** (review-pinned): Stage A learns tier coefficients β_T1..β_T3
 by OLS on the hybrid trainer population; β_T4 is a declared community-
-anchored prior (too few trainers to fit, D30-5); Stage B applies
+anchored prior (too few trainers to fit); Stage B applies
 ``p = 1 - exp(-Σ β_t · w_t)`` as a power FRACTION of the pure budget, so
 stacked riders can approach but never price past 100% of budget.
 
@@ -23,7 +23,7 @@ from .conditions import DURATION_FACTOR, DurationClass, Tier, within_tier_offset
 from .extract import ActionBucket, EffectiveTarget, SpellFeatures
 
 # ---------------------------------------------------------------------------
-# D30-3 — declared action-cost constants (the pure subset is definitionally
+# Declared action-cost constants (the pure subset is definitionally
 # 2-action, so this axis has zero variance there and can't be fit).
 # ---------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ def action_multiplier(bucket: ActionBucket) -> float:
 
 
 # ---------------------------------------------------------------------------
-# D30-1 — the pure-damage subset (re-derived under round-2 extraction)
+# The pure-damage subset (re-derived under round-2 extraction)
 # ---------------------------------------------------------------------------
 
 
@@ -99,7 +99,7 @@ def is_pure_cantrip(row: SpellFeatures) -> bool:
 
 
 def is_hybrid_trainer(row: SpellFeatures) -> bool:
-    """Stage A's fit population (D30-3): real structured damage AND at least
+    """Stage A's fit population: real structured damage AND at least
     one hostile-priceable (tier != None) condition instance, high confidence,
     non-cantrip."""
     return (
@@ -129,7 +129,7 @@ def _range_bucket_key(row: SpellFeatures) -> str:
 class LadderFit:
     """log(EV) = intercept + slope*log(rank) + Σ effective-target dummies +
     Σ range dummies (single/touch-self are the reference cells) — one
-    combined OLS regression on the pure subset (D30-1's ladder AND D30-3's
+    combined OLS regression on the pure subset (the ladder AND the
     effective-target/range structural multipliers share this one fit, per
     round 1's "collapse into one effective-target axis" finding)."""
 
@@ -226,7 +226,7 @@ class CantripLadderFit:
 
 
 def fit_cantrip_ladder(pure_cantrip_rows: list[SpellFeatures]) -> CantripLadderFit:
-    """Cantrips keep a separate ladder, "same method" per D30-1 — but the
+    """Cantrips keep a separate ladder, by the "same method" — but the
     real pure-cantrip population is only 2 rows (Electric Arc, Frostbite),
     too thin to also carry effective-target/range dummies (a 3-parameter
     design on 2 rows is a saturated, not-fit system). Intercept-only: the
@@ -251,14 +251,14 @@ def fit_cantrip_ladder(pure_cantrip_rows: list[SpellFeatures]) -> CantripLadderF
 
 def rank_equivalent(ev: float, ladder: LadderFit) -> float:
     """Invert the power-law ladder: EV -> a fractional rank whose budget()
-    equals EV (the "rank-equivalents" reporting currency, D30-9)."""
+    equals EV (the "rank-equivalents" reporting currency)."""
     if ev <= 0 or ladder.slope == 0:
         return float("nan")
     return math.exp((math.log(ev) - ladder.intercept) / ladder.slope)
 
 
 # ---------------------------------------------------------------------------
-# D30-4 — coverage arithmetic applied per condition-instance (not per-spell
+# Coverage arithmetic applied per condition-instance (not per-spell
 # cross-degree merging — see the S2 build-record note on this simplification).
 # ---------------------------------------------------------------------------
 
@@ -270,7 +270,7 @@ _DEGREE_PROBABILITY = {
     "on-hit": 1.0,  # the attack roll's own accuracy is priced elsewhere
     "unconditional": 1.0,
 }
-#: D30-4: "fail-only ≈ 0.55 and effect-on-success ADDS its success-row
+#: "fail-only ≈ 0.55 and effect-on-success ADDS its success-row
 #: value" — an instance explicitly attributed to "success" (fear's Frightened
 #: 1, a real if milder-VALUED outcome — the milder value is captured by the
 #: tier assignment, not here) is a genuine hit, not a zero: severity=1.0, the
@@ -284,7 +284,7 @@ _DEGREE_SEVERITY = {
     "on-hit": 1.0,
     "unconditional": 1.0,
 }
-#: D30-7 boss-weighted: "coverage degraded one outcome step" — a boss's
+#: Boss-weighted: "coverage degraded one outcome step" — a boss's
 #: better saves shift the WHOLE outcome distribution toward
 #: better-for-the-target results (not a relabeling of any one instance's own
 #: attributed degree, which — now that "success" carries real weight, see
@@ -306,8 +306,8 @@ _DEGREE_PROBABILITY_BOSS = {
 def instance_weight(
     condition: str, degree: str, duration: DurationClass, *, boss_weighted: bool = False
 ) -> float:
-    """One condition-instance's contribution to its tier's Σw (D30-4 coverage
-    x D30-8b duration x D30-5 within-tier offset). Each ConditionInstance
+    """One condition-instance's contribution to its tier's Σw (coverage
+    x duration x within-tier offset). Each ConditionInstance
     already carries its own attributed degree, so this treats every instance
     as an independent weighted line rather than re-merging same-condition
     multi-degree coverage sets — a documented simplification (see the S2
@@ -321,10 +321,10 @@ def instance_weight(
 
 
 # ---------------------------------------------------------------------------
-# D30-5 — tier severity: β_T1..T3 fitted (Stage A), β_T4 a declared prior.
+# Tier severity: β_T1..T3 fitted (Stage A), β_T4 a declared prior.
 # ---------------------------------------------------------------------------
 
-#: β_T4 prior derivation (no data — ~6 trainers is too thin, D30-5): targets
+#: β_T4 prior derivation (no data — ~6 trainers is too thin): targets
 #: ~80% of budget for a SINGLE failure-only, ~1-round-duration T4 application
 #: (w = 0.40 * 1.0 * 0.6 * 1.15(Paralyzed's within-tier offset) ≈ 0.276) —
 #: 1 - exp(-β * 0.276) = 0.80 -> β ≈ 5.83, rounded to a clean 6.0. This
@@ -362,11 +362,11 @@ def tier_weights(row: SpellFeatures, *, boss_weighted: bool = False) -> dict[Tie
 
 
 def fit_stage_a(trainers: list[SpellFeatures], ladder: LadderFit, *, structural_fn) -> StageAFit:
-    """Stage A (D30-3): OLS WITH an intercept, in log-discount space, on the
+    """Stage A: OLS WITH an intercept, in log-discount space, on the
     hybrid trainer population. ``z_i = log EV_i - log Budget(r_i) -
     log structural_i = α - Σ_t β_t w_i,t + ε_i`` — fit z on (w_T1,w_T2,w_T3)
     with an intercept; β_t = -(fitted coefficient on w_t). T4 is excluded
-    from the design (declared prior, not fit — too few trainers, D30-5)."""
+    from the design (declared prior, not fit — too few trainers)."""
     tiers = (Tier.T1, Tier.T2, Tier.T3)
     x_rows = []
     z_rows = []
@@ -408,7 +408,7 @@ def stage_b_power_fraction(
     row: SpellFeatures, stage_a: StageAFit, *, boss_weighted: bool = False
 ) -> float:
     """p = 1 - exp(-Σ_t β_t · w_t) — the exp link keeps stacked riders from
-    pricing past 100% of budget (D30-3)."""
+    pricing past 100% of budget."""
     w = tier_weights(row, boss_weighted=boss_weighted)
     total = sum(stage_a.beta[t] * w[t] for t in w)
     return 1.0 - math.exp(-total)

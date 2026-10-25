@@ -1,4 +1,4 @@
-"""Round-2 results generation (spec 0030 D30-9, D30-10) — full-population
+"""Round-2 results generation — full-population
 scoring, the condition price card, and the V1'-V4' validation gates, all
 computed against the real extracted corpus (no asserted numbers).
 """
@@ -152,7 +152,7 @@ def score_population(
 
 
 # ---------------------------------------------------------------------------
-# Condition price card (D30-10)
+# Condition price card
 # ---------------------------------------------------------------------------
 
 
@@ -383,10 +383,10 @@ def validate_v4_prime(ladder: pricing.LadderFit) -> list[V4PrimeRow]:
 
 
 # ---------------------------------------------------------------------------
-# Round 3 — V-A comparables leave-one-out gate (spec 0030 D30-25)
+# Round 3 — V-A comparables leave-one-out gate
 # ---------------------------------------------------------------------------
 
-#: The V-A enumerated roster (spec D30-25's own list, official spell names).
+#: The V-A enumerated roster (the spec's own list, official spell names).
 ROSTER_V_A: tuple[str, ...] = (
     "Fear",
     "Slow",
@@ -415,7 +415,7 @@ class VALooResult:
 def validate_v_a_loo(
     roster: tuple[str, ...], corpus: list[comparables_mod.ComparableProfile]
 ) -> tuple[list[VALooResult], float]:
-    """D30-25 V-A: for each roster spell, its OWN corpus row is excluded
+    """V-A: for each roster spell, its OWN corpus row is excluded
     (leave-one-out) before computing its top-5 comparables; PASS iff the
     top-5's median rank sits within ±1 of the spell's own rank. Target:
     ≥70% of the roster passes."""

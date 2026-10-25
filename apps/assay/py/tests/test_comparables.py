@@ -1,4 +1,4 @@
-"""Unit tests for the D30-23 comparables engine — synthetic profiles only
+"""Unit tests for the comparables engine — synthetic profiles only
 (no real corpus reads; the real-corpus behavior is exercised via
 `test_assay_extract.py`'s routing-fixture tests and manual verification in
 the S2 build record)."""
@@ -113,7 +113,7 @@ def test_similarity_identical_profile_is_one() -> None:
 
 
 def test_similarity_structural_mismatch_reduces_score() -> None:
-    """Same atom vector, differing action bucket — the D30-23 declared
+    """Same atom vector, differing action bucket — the declared
     STRUCTURAL_MISMATCH_PENALTY applies (×0.90 per mismatch, ONE mismatch
     here)."""
     a = _profile("A", 3, {"X": 1.0}, action_bucket=ActionBucket.TWO)

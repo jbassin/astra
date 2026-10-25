@@ -1,11 +1,11 @@
-"""Spell-effect item join + rule extraction (spec 0030 D30-35, round 4).
+"""Spell-effect item join + rule extraction (round 4).
 
 Every main-list spell can reference a "Spell Effect: X" item (the Foundry
 pf2e system's own mechanism for applying a spell's lasting rider — buffs,
 resistances, speed changes, …) via an inline
 ``@UUID[Compendium.pf2e.spell-effects.Item.<Name>]`` markup token in its
 ``description``. Round 1-3 never looked at these tokens at all; round 4's
-whole buff-population fix (D30-36) depends on joining them.
+whole buff-population fix depends on joining them.
 
 **The join** (re-derived, real corpus): 510 spell-effect items, unique names;
 222 main-list spells carry >=1 ref in their base (non-heightened) description,
@@ -58,7 +58,7 @@ def build_effect_index(effect_docs: list[dict[str, Any]]) -> dict[str, dict[str,
 
 
 # ---------------------------------------------------------------------------
-# Multi-effect merge (D30-35: "base-variant only") — 20 real spells carry >1
+# Multi-effect merge (keep the base variant only) — 20 real spells carry >1
 # distinct ref name. No single spec-pinned algorithm covers all 20 shapes;
 # this is an engineer judgment call (build-record-documented, round-3 Haste
 # precedent) built from the real 20-spell census:
@@ -67,7 +67,7 @@ def build_effect_index(effect_docs: list[dict[str, Any]]) -> dict[str, dict[str,
 #   (Shield, Guidance) is dropped outright — not a mechanical variant;
 # - a plain unqualified name ("X") sibling alongside qualified ones ("X
 #   (Success)", "X (8 hours)", "X (3rd Rank)", …) is the base — degree-split
-#   pairs keep the FAILURE-row per D30-35, and an unqualified sibling IS that
+#   pairs keep the FAILURE-row, and an unqualified sibling IS that
 #   failure/default row (Draw Ire's "(Success)" bonus is additive-on-success,
 #   the unqualified text is what applies otherwise); duration/rank-heightened
 #   variants ("(8 hours)", "(24 hours)", "(3rd Rank)", "(9th level)") are
@@ -260,7 +260,7 @@ def evaluate_at_base_rank(raw_value: Any, base_rank: int) -> tuple[float | None,
 # ---------------------------------------------------------------------------
 # Predicate evaluation — level-family (`parent:level`/`item:level` gte/lte/
 # gt/lt) resolved at base rank; anything else tags the atom `conditional`
-# rather than emitting a valued atom (D30-35).
+# rather than emitting a valued atom.
 # ---------------------------------------------------------------------------
 
 _LEVEL_PREDICATE_SUBJECTS = frozenset({"parent:level", "item:level", "self:level"})
@@ -295,13 +295,13 @@ def evaluate_predicate(predicate: list[Any] | None, base_rank: int) -> tuple[boo
 
 # ---------------------------------------------------------------------------
 # Rule-key -> atom extraction. FlatModifier/TempHP/Resistance/Weakness/
-# BaseSpeed/DamageDice are the "atom" families (D30-35's explicit list, plus
+# BaseSpeed/DamageDice are the "atom" families (the spec's explicit list, plus
 # DamageDice — a documented widening: a numeric per-strike damage rider is
 # exactly as extractable as a FlatModifier, and without it several
 # hostile-shaped effect-only spells — Bone Flense among them — would carry
 # zero atoms at all and be indistinguishable from a true tag-only effect).
 # Every other rule key becomes a bare `rule:<Key>` tag. BattleForm suppresses
-# the WHOLE atom set for its effect (D30-35) and is tagged `battle-form`.
+# the WHOLE atom set for its effect and is tagged `battle-form`.
 # ---------------------------------------------------------------------------
 
 _ATOM_RULE_KEYS = frozenset(
@@ -483,7 +483,7 @@ def join_effects(
     base_rank: int,
     effect_index: dict[str, dict[str, Any]] | None,
 ) -> EffectProfile | None:
-    """The full D30-35 join: find every effect ref in this (heightened-
+    """The full spell-effect join: find every effect ref in this (heightened-
     stripped) description, resolve the multi-effect merge, and build the
     chosen effect's profile. ``None`` when there's no ref at all, or the
     index wasn't supplied (tests running fixture-only)."""

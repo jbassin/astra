@@ -368,7 +368,7 @@ def _build_damage(spell: dict[str, Any]) -> tuple[dict[str, dict[str, Any]], boo
     tier has no dice (Falling Star's shape: the dice only live in the lead-in
     narrative, `successTiers` is all prose-only "half/full/double damage").
     A pure-healing spell (`"regains NdM(+K) HP"`, no damage dice found at
-    all) recovers as a single `kinds:["healing"]` entry, D30-8(ii)'s 1:1
+    all) recovers as a single `kinds:["healing"]` entry, under the declared 1:1
     healing-vs-damage-budget convention.
 
     Two exclusions run before dice are counted toward EV, both real-corpus
@@ -1511,7 +1511,7 @@ def score_all(store_dir: Path | None = None) -> list[dict[str, Any]]:
     mirrors the official pipeline exactly: `report2.py`'s own
     `_damage_row_kind` labels a healing row `"healing"` but scores it
     through the SAME `has_damage = row.ev > 0.0` / ladder-budget path as
-    any other damage row (D30-8(ii)'s declared 1:1 healing-vs-damage-budget
+    any other damage row (the declared 1:1 healing-vs-damage-budget
     convention — see `extract.py`'s `is_healing` docstring); `export.
     build_entry_for_row` (reused here) carries no healing distinction of
     its own at all (`entry["kind"]` is `"quantitative"` either way). This

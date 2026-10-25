@@ -75,7 +75,7 @@ def test_extract_damage_dice_flat_modifier() -> None:
 
 
 def test_extract_damage_dice_en_dash_minus() -> None:
-    """D30-21b's own en-dash trap, recurring here: the vendor prose is
+    """The official extraction's en-dash trap, recurring here: the vendor prose is
     copy-edited with real en-dashes/unicode minus, not ASCII hyphen-minus."""
     pairs = homebrew._extract_damage_dice("The target takes 2d6–2 cold damage.")
     assert pairs == [("2d6-2", "cold")]
@@ -341,7 +341,7 @@ def test_monstrous_copy_eye_stalks_end_to_end_table_dice_excluded() -> None:
 
 # ---------------------------------------------------------------------------
 # Question 3: healing rows mirror the official pipeline's own treatment
-# (scored 1:1 against the SAME damage ladder, D30-8(ii)) — this module adds
+# (scored 1:1 against the SAME damage ladder) — this module adds
 # an `isHealing` triage field on top, without changing the scoring math.
 # ---------------------------------------------------------------------------
 
@@ -977,7 +977,7 @@ def test_seed_bakes_every_vendored_spell_into_an_empty_dir(tmp_path: Path) -> No
 
 
 def test_seed_refuses_a_dir_that_already_holds_spells(tmp_path: Path) -> None:
-    """ASY-5: a re-seed over a hand-edited store would overwrite edits and bring back spells
+    """A re-seed over a hand-edited store would overwrite edits and bring back spells
     the stakeholder deleted or renamed, so a non-empty dir is refused and left untouched."""
     store_dir = tmp_path / "spells"
     store_dir.mkdir()
@@ -991,7 +991,7 @@ def test_seed_refuses_a_dir_that_already_holds_spells(tmp_path: Path) -> None:
 
 
 def test_seed_refuses_the_canonical_store(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """ASY-5: the canonical store is refused even when it is empty. The constant is pointed at
+    """The canonical store is refused even when it is empty. The constant is pointed at
     a temp dir so the test never touches the committed store."""
     canonical = tmp_path / "canonical"
     monkeypatch.setattr(homebrew, "HOMEBREW_STORE_DIR", canonical)

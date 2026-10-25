@@ -1,4 +1,4 @@
-"""Unit tests for round-2 report generation (spec 0030 D30-8/D30-9) — the
+"""Unit tests for round-2 report generation — the
 full-population scorer end-to-end on a small synthetic corpus."""
 
 from __future__ import annotations

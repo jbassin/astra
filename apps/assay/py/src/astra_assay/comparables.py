@@ -1,4 +1,4 @@
-"""Effect-spell comparables engine (spec 0030 D30-23) — a deterministic
+"""Effect-spell comparables engine — a deterministic
 similarity model over hostile-effect and hybrid spells, no fitted
 parameters.
 
@@ -12,14 +12,14 @@ POINT score for an effect spell, it finds the most similar OFFICIAL spells
 by mechanical profile and reports their rank RANGE. No regression, no
 extrapolation — nearest-neighbor by construction.
 
-**The one formula (D30-23):**
+**The one formula:**
 
     similarity(a, b) = cosine(atoms_a, atoms_b)
                         × (1 − STRUCTURAL_MISMATCH_PENALTY) ** n_mismatches
                         × (INCAP_MISMATCH_MULTIPLIER if incap flags differ else 1.0)
 
 where the atom vector is the union of per-condition×value weighted atoms
-(D30-4/8b coverage×duration weight, via `pricing.instance_weight` — the
+(the coverage×duration weight, via `pricing.instance_weight` — the
 SAME weighting already used for Stage A/B, reused here as a similarity
 metric rather than a price) and the four tier-aggregate weights
 (`pricing.tier_weights`), and structural coordinates are action bucket,
@@ -40,10 +40,10 @@ from . import pricing
 from .conditions import DurationClass, atom_key
 from .extract import ActionBucket, EffectiveTarget, RangeBucket, SpellFeatures
 
-#: D30-23 — declared, not fitted. A "small penalty" per mismatching
+#: Declared, not fitted. A "small penalty" per mismatching
 #: structural coordinate.
 STRUCTURAL_MISMATCH_PENALTY = 0.10
-#: D30-23 — declared. Halves similarity when the incapacitation flag differs
+#: Declared. Halves similarity when the incapacitation flag differs
 #: (an incap spell's real-world power depends heavily on the target's own
 #: level in a way a non-incap spell's never does — treated as a hard
 #: structural signal, not a soft one).
@@ -51,18 +51,18 @@ INCAP_MISMATCH_MULTIPLIER = 0.5
 
 #: EV-band thresholds (fraction of same-rank pure budget) — declared
 #: constants, used only to add a coarse damage-magnitude coordinate for
-#: hybrid spells; absent (None) for pure condition-control rows (D30-23:
-#: "damage EV band if any").
+#: hybrid spells; absent (None) for pure condition-control rows (the
+#: coordinate is "damage EV band if any").
 _EV_BAND_LOW = 0.33
 _EV_BAND_MID = 0.66
 
-#: D30-38 (round 4) — the similarity floor. Round 3's `top_comparables`
+#: The similarity floor (round 4). Round 3's `top_comparables`
 #: always returned SOMETHING (top-k by `(-similarity, name)`), which for a
 #: target whose atom vector shares NOTHING real with the corpus degenerates
 #: to every candidate scoring 0.0 and the "top-5" becoming pure alphabetical
 #: junk — indistinguishable from a real match at a glance. Below this floor
 #: (or zero shared non-tier atoms), a caller must treat the target as having
-#: NO usable comparables (D30-38: `kind:"ledger"`, `reasonCode:
+#: NO usable comparables (the export writes `kind:"ledger"`, `reasonCode:
 #: "no-comparable-profile"`) rather than print the junk top-5. This is the
 #: SAME latent bug in both the hostile-condition engine (present since round
 #: 3) and the new buff engine — one fix, both callers.
@@ -82,7 +82,7 @@ class ComparableProfile:
     range_bucket: RangeBucket
     ev_band: str | None
     incapacitation: bool
-    #: D30-38 (round 4) — the source file's relative path (`SpellFeatures.
+    #: The source file's relative path (`SpellFeatures.
     #: file`), the join key onto a codex slug (`Path(file).stem`, per the
     #: P1 finding that a pack file's basename IS `sluggify(name)` — 0
     #: disagreements over the whole real corpus). Empty for a profile built
@@ -106,7 +106,7 @@ def _ev_band(row: SpellFeatures, ladder: pricing.LadderFit) -> str | None:
 
 
 def build_atom_vector(row: SpellFeatures, *, boss_weighted: bool = False) -> dict[str, float]:
-    """D30-23's weighted atom vector, BOTH per-condition×value (fine-grained
+    """The weighted atom vector, BOTH per-condition×value (fine-grained
     identity) AND tier-aggregated (coarse severity-class overlap) —
     concatenated into one flat vector namespace (`tier:` prefix avoids
     collision with any real condition name)."""
@@ -142,7 +142,7 @@ def build_profile(row: SpellFeatures, ladder: pricing.LadderFit) -> ComparablePr
 
 
 def is_comparable_candidate(row: SpellFeatures) -> bool:
-    """D30-23's population gate: any hostile effect OR hybrid spell — i.e. a
+    """The comparables population gate: any hostile effect OR hybrid spell — i.e. a
     row with at least one hostile-priceable (tier-assigned) condition
     instance. Pure-damage-only rows (no atoms at all) and beneficial/
     ambiguous rows are excluded — nothing meaningful to compare on."""
@@ -162,7 +162,7 @@ def _cosine(a: dict[str, float], b: dict[str, float]) -> float:
 
 
 def similarity(a: ComparableProfile, b: ComparableProfile) -> float:
-    """The one documented D30-23 formula — see the module docstring."""
+    """The one documented similarity formula — see the module docstring."""
     score = _cosine(a.atom_vector, b.atom_vector)
     mismatches = 0
     if a.action_bucket != b.action_bucket:
@@ -171,7 +171,7 @@ def similarity(a: ComparableProfile, b: ComparableProfile) -> float:
         mismatches += 1
     if a.range_bucket != b.range_bucket:
         mismatches += 1
-    # "damage EV band if any" (D30-23): a pure hostile-effect spell (ev_band
+    # "damage EV band if any": a pure hostile-effect spell (ev_band
     # None) vs a hybrid carrying real damage (ev_band set) is itself a real
     # structural difference — a hybrid packs a whole extra damage-EV budget
     # on top of the same condition profile, which the atom vector alone
@@ -200,7 +200,7 @@ class ComparableMatch:
     similarity: float
     shared_atoms: list[str]
     differing_atoms: list[str]
-    #: D30-38 — the matched profile's own `file` (for the codex id join;
+    #: The matched profile's own `file` (for the codex id join;
     #: `""` when the corpus profile predates this field, e.g. an old
     #: committed fixture in a test that never set it).
     file: str = ""
@@ -232,7 +232,7 @@ def top_comparables(
 
 
 def has_usable_comparables(matches: list[ComparableMatch]) -> bool:
-    """D30-38's similarity floor: the #1 match must clear
+    """The similarity floor: the #1 match must clear
     `SIMILARITY_FLOOR` (0.1) AND share at least one non-tier atom — else
     treat the target as having NO usable comparables at all (both engines)."""
     if not matches:
@@ -257,11 +257,11 @@ def comparables_for(
     k: int = 5,
     exclude_name: str | None = None,
 ) -> ComparablesResult:
-    """D30-23's induced rank RANGE — min–max of the top-k's ranks, median
+    """The induced rank RANGE — min–max of the top-k's ranks, median
     highlighted, never a point score. The r10 extrapolation warning (review
     F9: zero hostile r10 trainers) fires whenever ANY of the top-k ranks is
     9 or 10 — the range touches the thin/unobserved top of the ladder.
-    D30-38: below the similarity floor, this returns NO matches at all
+    Below the similarity floor, this returns NO matches at all
     (`has_usable_comparables` would say so too — callers that need the
     typed reason should call that directly)."""
     matches = top_comparables(target, corpus, k=k, exclude_name=exclude_name)
@@ -279,8 +279,8 @@ def comparables_for(
 
 def build_corpus(rows: list[SpellFeatures], ladder: pricing.LadderFit) -> list[ComparableProfile]:
     """Every official row eligible per `is_comparable_candidate` — hostile
-    effect (ev=0) AND hybrid (ev>0) rows both included, per D30-23 ("For
-    any hostile effect or hybrid spell"). Ledger-only rows (beneficial/
+    effect (ev=0) AND hybrid (ev>0) rows both included: the engine covers
+    "any hostile effect or hybrid spell". Ledger-only rows (beneficial/
     ambiguous/low-confidence/etc.) are excluded by the caller before this
     runs (see `cli.py`'s corpus-build step, which filters through
     `ledger.classify_row`/`classify_hostility` first)."""

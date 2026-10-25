@@ -1,6 +1,6 @@
 # assay — full-population power ledger (round 2/3)
 
-**Round 3 note:** the `condition-control` rows below still carry their Stage-B fitted score (kept for population-wide reference — this is what informs the Stage A/B appendix in `point-tables.md`), but it is **no longer the recommended per-spell design tool** for hostile effect spells. Use `uv run assay score --spell <path>` for a homebrew effect spell — it returns D30-23 comparables (top-5 official neighbors + a rank RANGE) and D30-24 prior-card pointers instead of this fitted point score. See `README.md`'s homebrew workflow.
+**Round 3 note:** the `condition-control` rows below still carry their Stage-B fitted score (kept for population-wide reference — this is what informs the Stage A/B appendix in `point-tables.md`), but it is **no longer the recommended per-spell design tool** for hostile effect spells. Use `uv run assay score --spell <path>` for a homebrew effect spell — it returns comparables (top-5 official neighbors + a rank RANGE) and prior-card pointers instead of this fitted point score. See `README.md`'s homebrew workflow.
 
 ## Scored population (n=558, non-cantrip n=525)
 
@@ -572,7 +572,7 @@ Sorted hottest -> coldest by residual rank-equivalent (score vs. own nominal ran
 
 </details>
 
-## Typed unscored ledger (D30-8)
+## Typed unscored ledger
 
 Total ledgered (any reason): 657
 
@@ -582,7 +582,7 @@ Total ledgered (any reason): 657
 | beneficial-effect | 185 | Bullhorn, Eat Fire, Glamorize, Glowing Trail, Guidance |
 | long-cast (out of combat-damage scope) | 96 | Read Aura, Alarm, Breadcrumbs, Disguise Magic, Foraging Friends |
 | routing-ambiguous | 35 | Figment, Forbidding Ward, Invoke True Name, Light, Protect Companion |
-| raw-modifier-only (not priced — D30-5 restricts severity to condition tiers) | 23 | Airburst, Bane, Celestial Accord, Ill Omen, Infuse Vitality |
+| raw-modifier-only (not priced — severity is priced only from condition tiers) | 23 | Airburst, Bane, Celestial Accord, Ill Omen, Infuse Vitality |
 | summon | 18 | Summon Instrument, Summon Animal, Summon Construct, Summon Fey, Summon Lesser Servitor |
 | extraction edge case | 16 | Chromatic Ray, Chromatic Wall, Elemental Breath (Metal), Elemental Breath (Earth), Elemental Breath (Air) |
 | teleport/utility | 14 | Fated Confrontation, Far-Flung Fetch, Behold the Weave, Rally Point, Infiltrator's Tunnel |

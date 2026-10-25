@@ -1,13 +1,13 @@
-"""Round-2 full-population routing (spec 0030 D30-8) — classify every
+"""Round-2 full-population routing — classify every
 extracted row/skip into a scored bucket or a typed unscored-ledger reason.
 
 S1's extraction pass already separates "has a priceable mechanical signal"
 (a ``SpellFeatures`` row) from "genuine extraction dead-end" (a
 ``SkipRecord``, reason string). This module does the round-2-specific work
-D30-8 asks for on top of that split:
+on top of that split:
 
 - **routes SpellFeatures rows** into damage-scoreable / condition-scoreable /
-  beneficial-effect (D30-8i) / low-confidence, using only fields already on
+  beneficial-effect / low-confidence, using only fields already on
   the row (no re-reading the snapshot);
 - **sub-classifies the S1 "no-priceable-effect" skip catch-all** into
   summon / wall-terrain / teleport-utility / effect-item-payload / other —
@@ -30,27 +30,27 @@ _TELEPORT_RE = re.compile(
 )
 _WALL_RE = re.compile(r"\bwall of\b|\bwall\b.{0,20}\bcreates?\b", re.IGNORECASE)
 _SPELL_EFFECTS_RE = re.compile(r"Compendium\.pf2e\.spell-effects")
-#: D30-37 fix (round 4) — the round-2/3 regex (`^summon\s`) was DEAD CODE: it
+#: Round-4 fix: the round-2/3 regex (`^summon\s`) was DEAD CODE: it
 #: matched against each bare TRAIT STRING itself (e.g. `"summon"`), which
 #: never starts with "summon " (a trailing space) — `^summon\s` can never
 #: match the 6-character trait word "summon". The real signal is TRAIT-LIST
 #: MEMBERSHIP: `"summon" in traits` (case-insensitive).
 
-#: D30-22's beneficial-side target-prose signal ("self/touch/willing-or-ally
+#: The hostility routing's beneficial-side target-prose signal ("self/touch/willing-or-ally
 #: target prose"). "Hostile" qualifiers veto it outright.
 _FRIENDLY_TARGET_RE = re.compile(r"\b(self|yourself|willing|ally|allies)\b", re.IGNORECASE)
 _HOSTILE_TARGET_RE = re.compile(r"\b(enemy|enemies|unwilling|hostile creature)\b", re.IGNORECASE)
 _PLAIN_CREATURE_COUNT_RE = re.compile(r"^\d+\s+creatures?$", re.IGNORECASE)
 
 #: The four degree keys treated as "not a graduated degree-of-success outcome"
-#: for D30-22's "all-unconditional degrees" test — `on-hit` (an attack-roll
+#: for the hostility routing's "all-unconditional degrees" test — `on-hit` (an attack-roll
 #: spell's single hit branch) reads the same as `unconditional` here (neither
 #: is a save-outcome ladder).
 _NON_GRADUATED_DEGREES = frozenset({"unconditional", "on-hit"})
 
 
 def _is_friendly_target(row: SpellFeatures) -> bool:
-    """D30-22's beneficial target-prose test. **Engineer judgment (S1 build
+    """The beneficial target-prose test. **Engineer judgment (S1 build
     record):** the spec's literal "self/touch/willing-or-ally" wording is a
     strict substring match on none of Haste's real target text ("1
     creature", range 30 ft — no literal "willing"/"ally" word at all), yet
@@ -72,7 +72,7 @@ def _is_friendly_target(row: SpellFeatures) -> bool:
 
 
 def classify_hostility(row: SpellFeatures) -> str:
-    """D30-22 — per-ROW hostility routing (overlay variants can differ; each
+    """Per-ROW hostility routing (overlay variants can differ; each
     variant row carries its own `has_save`/`condition_instances`/etc., so no
     extra plumbing is needed beyond calling this per row).
 
@@ -120,7 +120,7 @@ def classify_row(row: SpellFeatures) -> str | None:
         return "low-confidence extraction"
     hostile_conditions = [ci for ci in row.condition_instances if ci.tier is not None]
     if hostile_conditions:
-        # D30-22: a tier-priceable condition instance exists, but tier
+        # A tier-priceable condition instance exists, but tier
         # assignment alone no longer implies "route hostile" — the explicit
         # per-row hostility classification decides.
         hostility = classify_hostility(row)
@@ -130,18 +130,18 @@ def classify_row(row: SpellFeatures) -> str | None:
             return "beneficial-effect"
         return "routing-ambiguous"
     if row.condition_ref:
-        # every instance is beneficial/non-control (D30-8i: buffs go to the
+        # every instance is beneficial/non-control (buffs go to the
         # ledger — Stage B's coverage arithmetic is undefined for them). This
-        # bucket IS component 1 of D30-36's buff population (`buffs.py`
+        # bucket IS component 1 of the buff population (`buffs.py`
         # re-reads it by this exact reason string).
         return "beneficial-effect"
     has_buff_signal = bool(row.status_modifiers) or bool(
         row.effect_profile is not None and (row.effect_profile.atoms or row.effect_profile.tags)
     )
     if has_buff_signal:
-        # D30-36 (round 4) — a raw status/circumstance modifier OR a joined
+        # A raw status/circumstance modifier OR a joined
         # effect's atoms/tags, with NO condition ref at all, still needs the
-        # SAME D30-22 hostility routing every condition-bearing row gets
+        # SAME hostility routing every condition-bearing row gets
         # (heroism/protection are exactly this shape — Heroism's own
         # description reads as a plain "+1 status bonus" line, no @UUID
         # condition ref anywhere). `classify_hostility` already generalizes
@@ -154,15 +154,15 @@ def classify_row(row: SpellFeatures) -> str | None:
         if hostility == "ambiguous":
             return "routing-ambiguous"
         # hostile-shaped raw-modifier/effect-only rows (Bone Flense, Blood
-        # Vendetta, Fungal Infestation among them) stay unpriced — D30-5
+        # Vendetta, Fungal Infestation among them) stay unpriced — the design
         # restricts severity pricing to the condition-tier table, and this
         # branch by definition carries no tiered condition instance.
-        return "raw-modifier-only (not priced — D30-5 restricts severity to condition tiers)"
+        return "raw-modifier-only (not priced — severity is priced only from condition tiers)"
     return "no-priceable-effect"  # shouldn't occur (S1 would have skipped it)
 
 
 def classify_unpriced_skip(data: dict, reason: str) -> str:
-    """Sub-classify S1's catch-all skip reasons into the D30-8 typed ledger
+    """Sub-classify S1's catch-all skip reasons into the typed ledger
     categories, using the raw spell JSON (traits/description)."""
     if "long-cast time" in reason:
         return "long-cast (out of combat-damage scope)"

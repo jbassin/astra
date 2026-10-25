@@ -8,7 +8,7 @@ from astra_assay.cli import build_parser, write_fitted_params
 
 
 def test_fitted_params_writer_does_not_read_the_previous_file(tmp_path: Path) -> None:
-    """ASY-5: `price` used to merge into the old file, so it failed on a fresh tree and kept
+    """`price` used to merge into the old file, so it failed on a fresh tree and kept
     whatever stale keys (round 1's `main`/`cantrip`) were already there."""
     path = tmp_path / "results" / "fitted-params.json"
     path.parent.mkdir()
@@ -27,7 +27,7 @@ def test_fitted_params_writer_works_on_a_fresh_tree(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize("command", ["fit", "extract", "seed-homebrew"])
 def test_removed_commands_are_gone(command: str) -> None:
-    """ASY-5: `fit` wiped the parameters the other commands read, `seed-homebrew` could bring
+    """`fit` wiped the parameters the other commands read, `seed-homebrew` could bring
     back deleted spells, and `extract` duplicated part of `price`."""
     with pytest.raises(SystemExit):
         build_parser().parse_args([command])

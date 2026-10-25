@@ -1,4 +1,4 @@
-"""Unit tests for the D30-24 prior-anchored condition price card."""
+"""Unit tests for the prior-anchored condition price card."""
 
 from __future__ import annotations
 

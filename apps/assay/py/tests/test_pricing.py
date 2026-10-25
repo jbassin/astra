@@ -1,6 +1,5 @@
-"""Unit tests for the round-2 pricing pipeline (spec 0030 D30-1/D30-3/D30-5/
-D30-7) — ladder fit mechanics, tier-weight computation, and Stage B scoring,
-independent of the real corpus (a small synthetic pure/hybrid population).
+"""Unit tests for the round-2 pricing pipeline — ladder fit mechanics, tier-weight computation, and
+Stage B scoring, independent of the real corpus (a small synthetic pure/hybrid population).
 """
 
 from __future__ import annotations
@@ -130,11 +129,11 @@ def test_instance_weight_duration_and_offset() -> None:
     round_w = pricing.instance_weight("Paralyzed", "failure", DurationClass.ROUND)
     instant_w = pricing.instance_weight("Paralyzed", "failure", DurationClass.INSTANT)
     minute_w = pricing.instance_weight("Paralyzed", "failure", DurationClass.MINUTE)
-    assert instant_w < round_w < minute_w  # D30-8b duration factors are monotone
+    assert instant_w < round_w < minute_w  # duration factors are monotone
 
 
 def test_instance_weight_success_degree_is_nonzero() -> None:
-    """The D30-4 fix: an instance explicitly attributed to "success" (a real,
+    """An instance explicitly attributed to "success" (a real,
     if milder-valued, outcome) must carry nonzero weight — round 1's bug had
     this hardcoded to 0, silently erasing spells like Fear's success-row
     Frightened 1."""
@@ -143,7 +142,7 @@ def test_instance_weight_success_degree_is_nonzero() -> None:
 
 
 def test_stage_b_power_fraction_never_exceeds_one() -> None:
-    """The exp link's whole point (D30-3): stacked riders approach but never
+    """The exp link's whole point: stacked riders approach but never
     price past 100% of budget, even with an absurdly large weight."""
     stage_a = pricing.StageAFit(
         beta={Tier.T1: 0.0, Tier.T2: 0.5, Tier.T3: 0.3, Tier.T4: pricing.BETA_T4_PRIOR},

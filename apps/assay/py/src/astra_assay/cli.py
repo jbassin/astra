@@ -4,7 +4,7 @@ homebrew-revisions / export-book / store check / store fmt.
     uv run assay price [--data-root PATH]     # ladder + Stage A/B + comparables + priors → results/
     uv run assay score --spell PATH           # score one spell JSON (round-3 model; also
                                                #   scores a single canonical homebrew store file)
-    uv run assay export-codex [--data-root PATH]  # codex artifact (D30-38) → out/spell-power.json
+    uv run assay export-codex [--data-root PATH]  # codex artifact → out/spell-power.json
     uv run assay score-homebrew               # score the canonical store -> out/homebrew/
                                                #   scores.json
     uv run assay homebrew-revisions           # diff the store vs. a fresh vendor re-conversion
@@ -70,8 +70,8 @@ COMPARABLES_CORPUS_PATH = RESULTS_DIR / "comparables-corpus.json"
 COMPARABLES_SPOT_PATH = RESULTS_DIR / "comparables-spot.md"
 BUFF_CORPUS_PATH = RESULTS_DIR / "buff-comparables-corpus.json"
 EXPORT_PATH = OUT_DIR / "spell-power.json"
-#: D30-37 — the GM Screen journal entry/page the declared summon curve is
-#: verified against at build (spec 0030 D30-37, STOP on disagreement).
+#: The GM Screen journal entry/page the declared summon curve is
+#: verified against at build (the build stops on any disagreement).
 _SUMMON_JOURNAL_ENTRY_ID = "S55aqwWIzpQRFhcq"
 _SUMMON_JOURNAL_PAGE_ID = "8gcp880pEWZ9VPnF"
 
@@ -80,7 +80,7 @@ _tracer = get_tracer("astra.assay")
 
 @dataclass
 class Round4Report:
-    """Everything `_write_validation_v2`'s round-4 (D30-35..38) section needs
+    """Everything `_write_validation_v2`'s round-4 section needs
     — gathered once in `cmd_price`, kept as a plain bag rather than growing
     that function's already-long parameter list further."""
 
@@ -94,7 +94,7 @@ class Round4Report:
 
 
 # ---------------------------------------------------------------------------
-# Round 2 — assay price (D30-1, D30-3, D30-5, D30-8, D30-9, D30-10)
+# Round 2 — assay price
 # ---------------------------------------------------------------------------
 
 
@@ -138,9 +138,9 @@ def write_fitted_params(params: dict[str, dict], path: Path = FITTED_PARAMS_PATH
 
 
 def cmd_price(args: argparse.Namespace) -> None:
-    """Round 2's full pipeline: pure-anchored ladder (D30-1) -> Stage A tier
-    discounts (D30-3/D30-5) -> Stage B + full-population scoring (D30-8) ->
-    results/ regeneration (D30-10). This is the command whose output is
+    """Round 2's full pipeline: pure-anchored ladder -> Stage A tier
+    discounts -> Stage B + full-population scoring ->
+    results/ regeneration. This is the command whose output is
     committed."""
     with _tracer.start_as_current_span("assay.price") as span:
         paths = resolve_snapshot(args.data_root)
@@ -169,9 +169,9 @@ def cmd_price(args: argparse.Namespace) -> None:
             rows, extract_result.skipped, paths.spells_dir, ladder, cantrip_ladder, stage_a
         )
 
-        # D30-23 — the comparables corpus: every OFFICIAL row that actually
+        # The comparables corpus: every OFFICIAL row that actually
         # SCORES (ledger.classify_row is None — damage rows always score;
-        # ev=0 condition rows only when D30-22 routes them hostile) AND
+        # ev=0 condition rows only when hostility routing calls them hostile) AND
         # carries at least one hostile-priceable atom.
         scored_rows = [r for r in rows if ledger.classify_row(r) is None]
         corpus = comparables.build_corpus(scored_rows, ladder)
@@ -187,7 +187,7 @@ def cmd_price(args: argparse.Namespace) -> None:
         va_results, va_share = report2.validate_v_a_loo(report2.ROSTER_V_A, corpus)
 
         # -------------------------------------------------------------
-        # Round 4 (D30-35..38): buff comparables + summon band + export.
+        # Round 4: buff comparables + summon band + export.
         # -------------------------------------------------------------
         buff_corpus = buffs.build_buff_corpus(rows)
         BUFF_CORPUS_PATH.write_text(
@@ -303,11 +303,11 @@ def cmd_price(args: argparse.Namespace) -> None:
 
 
 def cmd_export_codex(args: argparse.Namespace) -> None:
-    """D30-38: (re)build the codex export artifact alone, off the committed
+    """Rebuild the codex export artifact alone, off the committed
     comparables corpora — does NOT re-run `assay price`'s full fit (use that
     first if the corpora are stale). Writes ONLY to
     `apps/assay/py/out/spell-power.json` — never into `apps/codex/web/` (the
-    orchestrator places it there at integration, D30-41)."""
+    orchestrator places it there at integration)."""
     with _tracer.start_as_current_span("assay.export-codex") as span:
         paths = resolve_snapshot(args.data_root)
         extract_result = extract_all(paths.spells_dir)
@@ -356,7 +356,7 @@ def cmd_export_codex(args: argparse.Namespace) -> None:
 
 def _collect_summon_rows(spells_dir: Path) -> list[dict]:
     """The 14 real summon-trait main-list spells + their base-level prose
-    extraction, for the W-C build-record table (D30-37)."""
+    extraction, for the W-C build-record table."""
     out: list[dict] = []
     for path in sorted(spells_dir.glob("**/*.json")):
         data = load_spell_json(path)
@@ -382,10 +382,10 @@ def _write_point_tables_v2(
 ) -> None:
     lines = ["# assay — damage-budget tables + prior-anchored price card (round 3)", ""]
     lines.append("Generated by `uv run assay price`. Methodology: spec")
-    lines.append("`thoughts/archive/specs/0030-assay-round3-spec.md` (D30-21..27); damage-ladder")
-    lines.append("mechanics carried unchanged from `0030-assay-round2-spec.md` (D30-1..11).")
+    lines.append("`thoughts/archive/specs/0030-assay-round3-spec.md`; damage-ladder")
+    lines.append("mechanics carried unchanged from `0030-assay-round2-spec.md`.")
     lines.append("")
-    lines.append("## Pure-anchored damage ladder (D30-1)")
+    lines.append("## Pure-anchored damage ladder")
     lines.append("")
     lines.append(
         f"Shipped ladder EXCLUDES the rank-9 singleton (Detonate Magic): "
@@ -408,9 +408,7 @@ def _write_point_tables_v2(
     lines.append(f"Cantrip ladder (intercept-only, n={cantrip_ladder.n_obs}): ")
     lines.append(f"budget = **{cantrip_ladder.budget():.2f}** (all pure cantrips are rank 1).")
     lines.append("")
-    lines.append(
-        "## Effective-target + range structural multipliers (D30-3, fit on the pure subset)"
-    )
+    lines.append("## Effective-target + range structural multipliers (fit on the pure subset)")
     lines.append("")
     lines.append("| Axis | Level | Multiplier |")
     lines.append("|---|---|---|")
@@ -422,7 +420,7 @@ def _write_point_tables_v2(
         lines.append(f"| range | {level} | ×{math.exp(coef):.3f} |")
     lines.append("")
     lines.append(
-        "## Action-cost multipliers (D30-3, DECLARED constants — zero variance on the pure subset)"
+        "## Action-cost multipliers (DECLARED constants — zero variance on the pure subset)"
     )
     lines.append("")
     lines.append("| Action | Multiplier |")
@@ -430,7 +428,7 @@ def _write_point_tables_v2(
     for bucket, mult in pricing.ACTION_MULTIPLIER.items():
         lines.append(f"| {bucket.value} | ×{mult:.2f} |")
     lines.append("")
-    lines.append("## Prior-anchored condition price card (D30-24 — PRIMARY, replaces the")
+    lines.append("## Prior-anchored condition price card (PRIMARY, replaces the")
     lines.append("round-2 fitted card below)")
     lines.append("")
     lines.append(
@@ -549,14 +547,14 @@ def _write_point_tables_v2(
     lines.append("")
     lines.append("---")
     lines.append("")
-    lines.append("## Buff prior card (D30-36, round 4)")
+    lines.append("## Buff prior card (round 4)")
     lines.append("")
     lines.append(
         "**No pricing — the round-1 generative-fit tombstone stands.** Buff spells are now "
         "comparables citizens (see `results/buff-comparables-corpus.json` + the W-B section in "
         "`validation.md`); this section is PACK-CURVE ANCHORS ONLY — labeled priors, illustrating "
         "how a few well-known official buffs scale, never a fitted price. Every value below is "
-        "the SAME `effects.build_effect_profile` evaluation the join itself uses (D30-35), just "
+        "the SAME `effects.build_effect_profile` evaluation the join itself uses, just "
         "re-run at a handful of illustrative ranks to show the curve — the spell's own base-rank "
         "row in the export/comparables corpus carries only the FIRST point; the heightened tiers "
         "live in this card ONLY, by design."
@@ -588,8 +586,8 @@ def _write_power_ledger_v2(population: report2.Population) -> None:
         "score (kept for population-wide reference — this is what informs the Stage A/B appendix "
         "in `point-tables.md`), but it is **no longer the recommended per-spell design tool** for "
         "hostile effect spells. Use `uv run assay score --spell <path>` for a homebrew effect "
-        "spell — it returns D30-23 comparables (top-5 official neighbors + a rank RANGE) and "
-        "D30-24 prior-card pointers instead of this fitted point score. See `README.md`'s "
+        "spell — it returns comparables (top-5 official neighbors + a rank RANGE) and "
+        "prior-card pointers instead of this fitted point score. See `README.md`'s "
         "homebrew workflow."
     )
     lines.append("")
@@ -636,7 +634,7 @@ def _write_power_ledger_v2(population: report2.Population) -> None:
     lines.append("</details>")
     lines.append("")
 
-    lines.append("## Typed unscored ledger (D30-8)")
+    lines.append("## Typed unscored ledger")
     lines.append("")
     total_ledgered = sum(population.ledger.values())
     lines.append(f"Total ledgered (any reason): {total_ledgered}")
@@ -675,7 +673,7 @@ def _write_validation_v2(
         "Diagnosis: the 'pure'/'hybrid' labels here are the BROAD damage-row split "
         "(has vs. lacks a condition ref), not the strict `pricing.is_pure` ladder-fit subset "
         "(n=28) — round 2 deliberately narrowed the structural axis to effective-target + "
-        "range + action (D30-3's identifiability fix for round 1's collinear area/targeting "
+        "range + action (the identifiability fix for round 1's collinear area/targeting "
         "terms), so facets round 1 modeled (area type, damage-type class, passive defense, "
         "sustained, rarity) now show up as unmodeled spread here. A real, expected trade-off "
         "for a smaller, better-identified structural model, not a metric artifact."
@@ -736,12 +734,12 @@ def _write_validation_v2(
         "top of an already-real damage floor. Stage B then reuses those same β's via "
         "`p = 1-exp(-Σβw)` to justify the ENTIRE rank budget for a pure control spell with zero "
         "damage — a linear extrapolation the hybrid-trained coefficients were never asked to "
-        "support at that scale. This is inherent to D30-3's two-stage architecture as specified, "
+        "support at that scale. This is inherent to the two-stage architecture as specified, "
         "not a bug in this build."
     )
     lines.append(
         "2. **Disintegrate scores hot because its double-gate (attack roll, THEN a Fortitude "
-        "save) isn't structurally modeled** — D30-3's structural axis is effective-target + "
+        "save) isn't structurally modeled** — the structural axis is effective-target + "
         "range + action only; a spell needing to clear two independent rolls has no discount "
         "applied, so its nominal EV reads as simply 'above budget'. The spec's own V3′ text "
         "names this exact nuance ('disintegrate (double-gate)') as expected diagnosis territory, "
@@ -769,7 +767,7 @@ def _write_validation_v2(
     lines.append(
         "Fitted condition-price reproduction of the -1-rank rider exchange rate: see the Stage A "
         "residual spread in `power-ledger.md`'s hybrid rows and the condition price card in "
-        "`point-tables.md` — mid-tier (T2/T3) budget fractions land in the "
+        "`point-tables.md` — mid-tier T2/T3 budget fractions land in the "
         f"{stage_a.beta[Tier.T2]:.2f}-{stage_a.beta[Tier.T3]:.2f} β range, consistent with the "
         "~0.5-0.75-of-budget mid-rank hybrid observation (see the S2 build record for the numeric "
         "walk-through)."
@@ -777,12 +775,12 @@ def _write_validation_v2(
     lines.append("")
 
     # -----------------------------------------------------------------
-    # Round 3 (D30-25): V-A comparables LOO, V-B extraction-fix proof,
+    # Round 3: V-A comparables LOO, V-B extraction-fix proof,
     # V-C routing proof, V-D carry.
     # -----------------------------------------------------------------
     lines.append("---")
     lines.append("")
-    lines.append("# Round 3 gates (spec `0030-assay-round3-spec.md`, D30-25)")
+    lines.append("# Round 3 gates (spec `0030-assay-round3-spec.md`)")
     lines.append("")
 
     lines.append("## V-A — comparables leave-one-out (target ≥70% median-rank within ±1)")
@@ -804,7 +802,7 @@ def _write_validation_v2(
         f"**{'PASS' if va_pass else 'FAIL'}** (target ≥70%)"
     )
     lines.append(
-        "- **Qualitative neighbor-spot check (D30-25's separate requirement — "
+        "- **Qualitative neighbor-spot check (the spec's separate requirement — "
         "'fear's neighbors should be fear-family, not random'): PASSES convincingly.** Every "
         "roster spell's top-5 shares its EXACT condition atoms (see the `shared_atoms` field in "
         "`results/comparables-corpus.json`/`comparables-spot.md`) — Fear's neighbors "
@@ -831,7 +829,7 @@ def _write_validation_v2(
     )
     lines.append("")
 
-    lines.append("## V-B — extraction-fix proof (D30-21)")
+    lines.append("## V-B — extraction-fix proof")
     lines.append("")
     lines.append(
         "See the S1 commit (`3783473`, `feat(assay): S1 payload fixes + hostility routing`) for "
@@ -850,7 +848,7 @@ def _write_validation_v2(
     )
     lines.append("")
 
-    lines.append("## V-C — routing proof (D30-22)")
+    lines.append("## V-C — routing proof")
     lines.append("")
     routing_counts: dict[str, int] = {"hostile": 0, "beneficial-effect": 0, "routing-ambiguous": 0}
     ambiguous_names: list[str] = []
@@ -895,7 +893,8 @@ def _write_validation_v2(
         f"intercept={ladder.intercept:.4f} — "
         "byte-identical to round 2's shipped values (slope 1.0892, intercept 1.7979, R²=0.967). "
         "V1′/V2′/V3′/V4′ above are unchanged in mechanism (only the underlying population shifted "
-        "per V-C's routing counts, which is the EXPECTED consequence of D30-22, not a regression)."
+        "per V-C's routing counts, which is the EXPECTED consequence of the hostility routing, "
+        "not a regression)."
     )
     lines.append("")
 
@@ -917,7 +916,7 @@ def _append_round4_sections(
 ) -> None:
     lines.append("---")
     lines.append("")
-    lines.append("# Round 4 gates (spec `0030-assay-round4-spec.md`, D30-35..38)")
+    lines.append("# Round 4 gates (spec `0030-assay-round4-spec.md`)")
     lines.append("")
 
     # -- W-A: join --------------------------------------------------
@@ -935,7 +934,7 @@ def _append_round4_sections(
             elif t.startswith("conditional"):
                 conditional_atoms += 1
     promoted = [r for r in rows if r.recovery_path == "effect-join"]
-    lines.append("## W-A — join + rule extraction (D30-35)")
+    lines.append("## W-A — join + rule extraction")
     lines.append("")
     lines.append(
         f"Re-derived, real corpus: rows carrying a joined effect_profile: **{ref_bearing}** "
@@ -945,7 +944,7 @@ def _append_round4_sections(
         f"figure). Distinct joined effect items resolved: **{len(joined_names)}**. Atom-level "
         f"`expr-unresolved` tags: **{unresolved_atoms}**; `conditional` (non-level predicate) "
         f"tags: **{conditional_atoms}**. Effect-ref-bearing SkipRecords PROMOTED to real rows "
-        f'(D30-36\'s `recovery_path=="effect-join"`): **{len(promoted)}**.'
+        f'(`recovery_path=="effect-join"`): **{len(promoted)}**.'
     )
     lines.append("")
     lines.append(
@@ -976,7 +975,7 @@ def _append_round4_sections(
     lines.append("")
 
     # -- W-B: buff comparables ---------------------------------------
-    lines.append("## W-B — buff comparables (D30-36, roster LOO — REPORTED not gated)")
+    lines.append("## W-B — buff comparables (roster LOO — REPORTED not gated)")
     lines.append("")
     lines.append(
         f"Buff comparables corpus n=**{r4.buff_corpus_n}**. All 10 W-B roster spells present "
@@ -993,7 +992,7 @@ def _append_round4_sections(
     lines.append("")
 
     # -- W-C: summons -------------------------------------------------
-    lines.append("## W-C — summon band check (D30-37)")
+    lines.append("## W-C — summon band check")
     lines.append("")
     curve_status = "PASS" if r4.summon_curve_ok else f"**FAIL** — {r4.summon_curve_error}"
     lines.append(
@@ -1026,7 +1025,7 @@ def _append_round4_sections(
 
     # -- W-D: export ----------------------------------------------------
     er = r4.export_report
-    lines.append("## W-D — export (D30-38)")
+    lines.append("## W-D — export")
     lines.append("")
     lines.append(
         f"Double-run byte-identity: **{'PASS' if r4.export_deterministic else 'FAIL'}**. "
@@ -1058,15 +1057,14 @@ def _append_round4_sections(
 
 
 def _write_comparables_spot(va_results: list[report2.VALooResult], va_share: float) -> None:
-    """D30-26: `results/comparables-spot.md` — the V-A roster's LOO
+    """`results/comparables-spot.md` — the V-A roster's LOO
     neighbors, human-readable (the same data validation.md's V-A table
     carries, presented as the design-facing spot-check document)."""
     lines = ["# assay — comparables spot-check (the V-A roster, round 3)", ""]
     lines.append(
-        "Leave-one-out top-5 comparables for the D30-25 V-A enumerated roster — the same "
+        "Leave-one-out top-5 comparables for the V-A enumerated roster — the same "
         "engine `uv run assay score --spell <path>` runs for a homebrew effect spell. Generated "
-        "by `uv run assay price`. Methodology: `thoughts/archive/specs/0030-assay-round3-spec.md` "
-        "(D30-23)."
+        "by `uv run assay price`. Methodology: `thoughts/archive/specs/0030-assay-round3-spec.md`."
     )
     lines.append("")
     lines.append(f"**Gate: {va_share:.1%} within ±1 rank of median vs. ≥70% target** — see")
@@ -1126,7 +1124,7 @@ def _stage_a_from_json(d: dict) -> pricing.StageAFit:
     )
 
 
-#: Condition-word plain text the homebrew warning scans for (D30-10 nit) —
+#: Condition-word plain text the homebrew warning scans for —
 #: the visible condition vocabulary, not the internal beneficial/non-control
 #: exclusion set (a homebrew author writing "frightened" in prose with zero
 #: @UUID refs is the failure mode this guards against).
@@ -1170,7 +1168,7 @@ _CONDITION_WORDS = sorted(
 
 
 def _warn_condition_word_with_zero_refs(description_html: str) -> list[str]:
-    """D30-10 homebrew contract nit: a plain-English condition word with NO
+    """Homebrew contract check: a plain-English condition word with NO
     @UUID ref anywhere in the description would otherwise silently score as
     pure damage (an overscore) — warn, don't guess."""
     if "@UUID" in description_html and "conditionitems.Item" in description_html:
@@ -1188,9 +1186,9 @@ def _print_comparables(
     ladder: pricing.LadderFit,
     prior_card: list[priors.PriorCardRow],
 ) -> None:
-    """D30-23/26: the effect-spell / hybrid comparables output — top-5
+    """The effect-spell / hybrid comparables output — top-5
     official comparables + the induced rank RANGE (never a point score) +
-    the r10 extrapolation warning + D30-24 prior-card pointers for every
+    the r10 extrapolation warning + prior-card pointers for every
     hostile-priceable condition instance on the homebrew spell."""
     profile = comparables.build_profile(result, ladder)
     res = comparables.comparables_for(profile, corpus, k=5)
@@ -1215,7 +1213,7 @@ def _print_comparables(
     by_condition = {row.condition: row for row in prior_card}
     priced = [ci for ci in result.condition_instances if ci.tier is not None]
     if priced:
-        print("  prior card:   (see results/point-tables.md's D30-24 prior-anchored card)")
+        print("  prior card:   (see results/point-tables.md's prior-anchored card)")
         for ci in priced:
             label = ci.condition if ci.value is None else f"{ci.condition} {ci.value}"
             row = by_condition.get(label) or by_condition.get(ci.condition)
@@ -1278,7 +1276,7 @@ def cmd_score(args: argparse.Namespace) -> None:  # noqa: C901 -- over the compl
         has_hostile_condition = any(ci.tier is not None for ci in result.condition_instances)
 
         if result.ev > 0.0:
-            # Damage / hybrid path — D30-1..11's quantitative score, unchanged.
+            # Damage / hybrid path — round 2's quantitative score, unchanged.
             structural = active_ladder.structural_target_range(result) * pricing.action_multiplier(
                 result.action_bucket
             )
@@ -1296,14 +1294,14 @@ def cmd_score(args: argparse.Namespace) -> None:  # noqa: C901 -- over the compl
             kind = "hybrid (damage + conditions)" if has_hostile_condition else "damage"
             print(f"  kind:         {kind} (ev={result.ev:.2f})")
             print(f"  verdict:      {verdict}")
-            # D30-23: hybrids ALSO get comparables, alongside the quantitative score.
+            # Hybrids ALSO get comparables, alongside the quantitative score.
             if has_hostile_condition and not result.is_cantrip:
                 _print_comparables(result, corpus, ladder, prior_card)
         elif has_hostile_condition:
-            # D30-22 hostility routing decides the effect-spell path.
+            # Hostility routing decides the effect-spell path.
             hostility = ledger.classify_hostility(result)
             if hostility == "hostile":
-                print("  kind:         hostile effect spell — comparables + prior card (D30-23/24)")
+                print("  kind:         hostile effect spell — comparables + prior card")
                 if result.is_cantrip:
                     print("  note:         cantrip comparables corpus is too thin to be useful")
                 else:
@@ -1319,12 +1317,12 @@ def cmd_score(args: argparse.Namespace) -> None:  # noqa: C901 -- over the compl
                         )
             elif hostility == "beneficial":
                 print(
-                    "  kind:         beneficial/buff effect (D30-22 routes this beneficial, not "
-                    "hostile) — beneficial-effect pricing is out of round-3 scope (D30-8i/§3)."
+                    "  kind:         beneficial/buff effect (hostility routing calls this "
+                    "beneficial, not hostile) — beneficial-effect pricing is out of round-3 scope."
                 )
             else:
                 print(
-                    "  kind:         AMBIGUOUS hostility (D30-22 — no save/attack-roll/prose-save/"
+                    "  kind:         AMBIGUOUS hostility (no save/attack-roll/prose-save/"
                     "hostile-area signal, and the target prose doesn't clearly read as friendly "
                     "either) — flag for manual GM judgment; not auto-priced."
                 )
@@ -1334,7 +1332,7 @@ def cmd_score(args: argparse.Namespace) -> None:  # noqa: C901 -- over the compl
                 print(
                     "  kind:         beneficial/buff effect — every condition on this spell is "
                     "excluded from hostile pricing (e.g. Quickened/Invisible-class) — out of "
-                    "round-3 scope (D30-8i/§3)."
+                    "round-3 scope."
                 )
             else:
                 print(f"  kind:         no priceable damage or hostile condition ({reason})")
@@ -1375,7 +1373,7 @@ def build_parser() -> argparse.ArgumentParser:
         "export-codex",
         help=(
             "build the codex cross-track artifact -> out/spell-power.json "
-            "(D30-38; run `price` first — reads its committed corpora)"
+            "(run `price` first — reads its committed corpora)"
         ),
     )
     p_export.add_argument(
