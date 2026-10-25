@@ -1,17 +1,17 @@
-//! The S2 checker + elaborator: rank-1 HM with let-generalization plus the
-//! pinned D32-3 extensions (singleton-atom unions with per-position variance,
+//! The checker + elaborator: rank-1 HM with let-generalization plus the
+//! pinned extensions (singleton-atom unions with per-position variance,
 //! match-driven param inference, exhaustiveness/redundancy, monomorphic
 //! recursion, lifted die comparisons, deferred equatable constraints), the
-//! D32-4 sum coercion, and D32-5 die-suffix resolution.
+//! sum coercion, and die-suffix resolution.
 //!
-//! # The S3 input contract — [`CoreExpr`]
+//! # The interpreter's input contract — [`CoreExpr`]
 //!
-//! `check(&Expr, &SpanTree, extra_env)` elaborates the S1 AST into a
-//! [`CoreExpr`], which is what the S3 interpreter consumes:
+//! `check(&Expr, &SpanTree, extra_env)` elaborates the parsed AST into a
+//! [`CoreExpr`], which is what the interpreter consumes:
 //!
 //! - **No [`crate::ast::DieSuffix`] remains.** `CoreKind::Die` is a bare
 //!   `(count, sides)` literal: `count: None` = a single die (`Die[Num]`),
-//!   `count: Some(n)` = an OPEN `Pool[Num]` of n dice (D32-5). Every die
+//!   `count: Some(n)` = an OPEN `Pool[Num]` of n dice. Every die
 //!   suffix has been elaborated into explicit calls: die-shape suffixes wrap
 //!   the underlying die (`4d6e2` → `pool(4, explode(d6, 2))`), pool-shape
 //!   suffixes wrap the pool (`4d6e2kh3` → `kh(pool(4, explode(d6, 2)), 3)`).
@@ -22,13 +22,13 @@
 //!   is immune to user shadowing (`let sum = 5; 2d6kh1 + sum` still sums the
 //!   pool). User-written identifiers stay [`CoreKind::Ident`] and resolve
 //!   through the runtime environment (which includes the prelude).
-//! - **Explicit `sum` calls** (D32-4): wherever a `Pool[Num]` met a position
+//! - **Explicit `sum` calls**: wherever a `Pool[Num]` met a position
 //!   demanding a die/number-ish type (arithmetic/comparison operands, unary
 //!   negation, a `Die[_]`-demanding call argument, a `[label]`, min/max/roll
 //!   arguments, and the TOP-LEVEL result), the elaborated tree carries
 //!   `Prelude(Builtin::Sum)` applied to the pool. A `Pool[T ≠ Num]` in such a
 //!   position is the pinned targeted error.
-//! - **dm literal face order** (D32-4): `CoreKind::Call.dm_literal_order` is
+//! - **dm literal face order**: `CoreKind::Call.dm_literal_order` is
 //!   `true` exactly when the call is to the (unshadowed) prelude `dm` AND its
 //!   first argument is syntactically a dict literal — the interpreter then
 //!   takes face order from that literal's entry order (which `CoreKind::Dict`
@@ -39,19 +39,18 @@
 //!
 //! # Spans
 //!
-//! The AST is span-free (S1 round-trip Eq), so the checker threads the
-//! parallel [`SpanTree`] produced by `lower_root_spanned` and every
-//! [`TypeError`] carries a byte-accurate span into the original source
-//! (D32-11).
+//! The AST is span-free (so the parser round-trip can compare it with `Eq`), so
+//! the checker threads the parallel [`SpanTree`] produced by `lower_root_spanned`
+//! and every [`TypeError`] carries a byte-accurate span into the original source.
 //!
 //! The checker also stamps a span on every [`CoreExpr`] node it emits, so the
 //! interpreter walks this one tree and runtime errors point into the source.
 //! A node elaborated from a source node takes that node's span. A node the
-//! checker INSERTS takes the span of the source node it elaborates: the D32-4
+//! checker INSERTS takes the span of the source node it elaborates: the inserted
 //! `sum` wrapper (and its `sum` callee) the span of the expression it closes,
-//! every node of a D32-5 suffix elaboration (`pool`, the suffix calls, their
+//! every node of a die-suffix elaboration (`pool`, the suffix calls, their
 //! numeric arguments) the die literal's span, and the implicit `()` of a
-//! WEAL-1 `f()` call the call's span. Closure bodies keep their spans, so an
+//! nullary `f()` call the call's span. Closure bodies keep their spans, so an
 //! error inside a closure applied later still points into its defining source.
 //!
 //! # Documented decisions within the pinned envelope
@@ -68,10 +67,10 @@
 //!   when called DIRECTLY with their full argument count; used first-class
 //!   (or partially applied) they take their primary signature (`Num`-based).
 //!   `roll` used first-class is `T -> Unit` (function-free `T`).
-//! - `min`/`max` are `Num`/`Die[Num]` only (D32-19) — no Dec/Float overloads.
+//! - `min`/`max` are `Num`/`Die[Num]` only — no Dec/Float overloads.
 //! - A `LetFn` return annotation is a CHECK on the inferred type, not a
 //!   widening.
-//! - **A nullary function is `Unit -> T`** (WEAL-1). A zero-parameter lambda
+//! - **A nullary function is `Unit -> T`**. A zero-parameter lambda
 //!   (`|| e`) or `let f() = e` takes one implicit `Unit` parameter, and a
 //!   call with no arguments (`f()`) elaborates to `Call{f, [Unit]}`, so the
 //!   interpreter runs the body on EVERY call (its dice and effects re-run).
@@ -89,7 +88,7 @@ use std::collections::{BTreeSet, HashMap};
 // Public surface
 // ---------------------------------------------------------------------------
 
-/// A type error with a byte span into the original source (D32-11).
+/// A type error with a byte span into the original source.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TypeError {
     pub message: String,
@@ -222,7 +221,7 @@ pub enum CoreKind {
     Call {
         callee: Box<CoreExpr>,
         args: Vec<CoreExpr>,
-        /// D32-4 dm face-order metadata — see the module docs.
+        /// dm literal face-order metadata — see the module docs.
         dm_literal_order: bool,
     },
     Label {
@@ -259,7 +258,7 @@ impl CoreKind {
     }
 }
 
-/// How a prelude name types (D32-19).
+/// How a prelude name types.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum PreludeEntry {
     /// One scheme.
@@ -272,7 +271,7 @@ pub enum PreludeEntry {
     RollVariadic,
 }
 
-/// The D32-19 prelude type signatures, in registry order (derived from
+/// The prelude type signatures, in registry order (derived from
 /// [`crate::prelude::BUILTINS`]).
 pub fn prelude_types() -> Vec<(&'static str, PreludeEntry)> {
     BUILTINS
@@ -282,7 +281,7 @@ pub fn prelude_types() -> Vec<(&'static str, PreludeEntry)> {
 }
 
 /// Check + elaborate. `extra_env` = the saves' type schemes (name → scheme);
-/// they shadow prelude names and are suffix-eligible (D32-5).
+/// they shadow prelude names and are suffix-eligible.
 pub fn check(
     expr: &Expr,
     spans: &SpanTree,
@@ -291,7 +290,7 @@ pub fn check(
     let mut env = Env::base(extra_env);
     let mut ck = Checker::default();
     let (core, ty) = ck.infer(expr, spans, &mut env)?;
-    // D32-7: a bare top-level Pool[Num] display auto-sums via the D32-4
+    // A bare top-level Pool[Num] display auto-sums via the sum
     // coercion; a top-level Pool[T ≠ Num] is the targeted error.
     let (core, ty) = ck.sum_if_pool(core, ty, spans.span)?;
     ck.solve_arith()?;
@@ -390,10 +389,9 @@ struct Deferred {
     site: EquatableSite,
 }
 
-/// A pending die-lifting arithmetic decision (the 2026-08-10 D32-4
-/// amendment): created whenever an operand's shape is still a Var (so
-/// `Num` vs `Die[Num]` is undecidable at the operator), solved in
-/// [`Checker::solve_arith`] after inference — by which point outer
+/// A pending die-lifting arithmetic decision: created whenever an
+/// operand's shape is still a Var (so `Num` vs `Die[Num]` is undecidable
+/// at the operator), solved in [`Checker::solve_arith`] after inference — by which point outer
 /// context (a call site, a list element join) has usually resolved it.
 /// Still-unresolved operands take the documented `Num` default.
 #[derive(Debug, Clone)]
@@ -546,7 +544,7 @@ impl Checker {
         }
         // Migrate deferred constraints that mention quantified vars into the
         // scheme so every instantiation re-checks them (generic wrappers
-        // around evaluate — D32-3).
+        // around evaluate).
         let mut kept = Vec::new();
         let mut moved = Vec::new();
         for d in std::mem::take(&mut self.deferred) {
@@ -686,7 +684,7 @@ impl Checker {
         }
     }
 
-    /// Variance-aware merge of two types (D32-3): `Join` in covariant
+    /// Variance-aware merge of two types: `Join` in covariant
     /// positions (atom unions take the set UNION), `Meet` in function
     /// domains (set INTERSECTION; empty = error). Returns the merged type.
     fn merge(&mut self, a: &Type, b: &Type, mode: JoinMode, span: Span) -> Result<Type, TypeError> {
@@ -750,7 +748,7 @@ impl Checker {
         }
     }
 
-    /// One-directional subsumption `sub ≤ sup` (D32-3 subset widening:
+    /// One-directional subsumption `sub ≤ sup` (subset widening:
     /// singleton ≤ union ≤ Atom), contravariant in function domains.
     /// Unresolved variables on either side bind to the other type.
     fn subsume(&mut self, sub: &Type, sup: &Type, span: Span) -> Result<(), TypeError> {
@@ -794,7 +792,7 @@ impl Checker {
         }
     }
 
-    // -- D32-4 sum coercion -------------------------------------------------
+    // -- sum coercion -----------------------------------------------------
 
     /// The inserted `sum` takes the span of the source node it closes.
     fn sum_call(inner: CoreExpr, span: Span) -> CoreExpr {
@@ -806,7 +804,7 @@ impl Checker {
         .at(span)
     }
 
-    /// If `ty` is a pool, close it with an inserted `sum` (D32-4). A pool of
+    /// If `ty` is a pool, close it with an inserted `sum`. A pool of
     /// non-Num faces in a die-demanding position is the pinned targeted
     /// error. Non-pool types pass through untouched.
     fn sum_if_pool(
@@ -886,7 +884,7 @@ impl Checker {
                     vt = self.merge(&vt, &v_ty, JoinMode::Join, vsp.span)?;
                     cores.push((kc, vc));
                 }
-                // D32-3 equatable: dict keys must be function-free (deferred
+                // Equatable: dict keys must be function-free (deferred
                 // while a type var).
                 self.deferred.push(Deferred {
                     ty: kt.clone(),
@@ -935,7 +933,7 @@ impl Checker {
                         Type::die(Type::Num)
                     }
                     v @ Type::Var(_) => {
-                        // Same D32-4 amendment as infer_binary: negation is
+                        // Same deferral as infer_binary: negation is
                         // shape-preserving, so defer the Num-vs-Die[Num] choice.
                         let ret = self.fresh();
                         self.arith.push(ArithPending {
@@ -1033,7 +1031,7 @@ impl Checker {
                 body,
             } => {
                 let vsp = &sp.children[0];
-                // D32-3 monomorphic recursion: the name is in scope in its
+                // Monomorphic recursion: the name is in scope in its
                 // own body at a MONOTYPE; generalized only afterwards.
                 let mut ptys = Vec::new();
                 for _ in params {
@@ -1108,12 +1106,12 @@ impl Checker {
         let (lsp, rsp) = (&sp.children[0], &sp.children[1]);
         let (lc, lt) = self.infer(lhs, lsp, env)?;
         let (rc, rt) = self.infer(rhs, rsp, env)?;
-        // Arithmetic is a die/number-demanding position: pools close (D32-4).
+        // Arithmetic is a die/number-demanding position: pools close.
         let (lc, lt) = self.sum_if_pool(lc, lt, lsp.span)?;
         let (rc, rt) = self.sum_if_pool(rc, rt, rsp.span)?;
         let rl = self.resolve(&lt);
         let rr = self.resolve(&rt);
-        // D32-4 amendment (2026-08-10): a Var operand whose partner is Num,
+        // A Var operand whose partner is Num,
         // Die, or another Var can still go EITHER way (scalar or lifted) —
         // defer the decision instead of pinning Num at the operator, so
         // `map([d6], _ + 1)` / `let f(d) = d + 1; f(d6)` lift once the
@@ -1231,7 +1229,7 @@ impl Checker {
         };
         let is_eq = matches!(op, CmpOp::EqEq | CmpOp::NotEq);
         let ty = if lifted {
-            // D32-3: ANY die operand lifts to Die[Bool] — the product
+            // ANY die operand lifts to Die[Bool] — the product
             // construction. Ordering needs numeric faces; equality joins the
             // face/scalar types structurally.
             let rl = self.resolve(&lt);
@@ -1323,7 +1321,7 @@ impl Checker {
         sp: &SpanTree,
         env: &mut Env,
     ) -> Result<(CoreExpr, Type), TypeError> {
-        // Special-cased builtins (overloads/variadics — D32-19), only when
+        // Special-cased builtins (overloads/variadics), only when
         // called DIRECTLY through their unshadowed prelude name.
         if let Expr::Ident(name) = callee
             && let Some((Binding::Special(sb), _)) = env.lookup(name)
@@ -1339,13 +1337,13 @@ impl Checker {
                 _ => {} // wrong arity: fall through to the primary scheme
             }
         }
-        // D32-4 dm literal-order metadata (syntactic rule).
+        // dm literal-order metadata (syntactic rule).
         let dm_literal_order = matches!(callee, Expr::Ident(n) if n == "dm")
             && matches!(env.lookup("dm"), Some((_, Origin::Prelude(Builtin::Dm))))
             && matches!(args.first(), Some(Expr::Dict(_)));
         let (ccore, mut fty) = self.infer(callee, &sp.children[0], env)?;
         if args.is_empty() {
-            // WEAL-1: `f()` applies `f` to `()`, so the callee must be `Unit -> T`.
+            // `f()` applies `f` to `()`, so the callee must be `Unit -> T`.
             let ret = match self.resolve(&fty) {
                 Type::Arrow(dom, cod) => {
                     self.subsume(&Type::Unit, &dom, sp.span)?;
@@ -1383,8 +1381,8 @@ impl Checker {
             let rf = self.resolve(&fty);
             match rf {
                 Type::Arrow(dom, cod) => {
-                    // D32-4: a pool meeting a Die-demanding parameter closes
-                    // with sum; other domains keep the pool open (D32-5).
+                    // A pool meeting a Die-demanding parameter closes
+                    // with sum; other domains keep the pool open.
                     let (ac, aty) = if matches!(self.resolve(&aty), Type::Pool(_))
                         && matches!(self.resolve(&dom), Type::Die(_))
                     {
@@ -1534,7 +1532,7 @@ impl Checker {
         ))
     }
 
-    // -- die suffixes (D32-5) ----------------------------------------------
+    // -- die suffixes -----------------------------------------------------
 
     fn infer_die(
         &mut self,
@@ -1551,7 +1549,7 @@ impl Checker {
             }
             .at(sp.span);
             let ty = if count.is_some() {
-                Type::pool(Type::Num) // open pool (D32-5)
+                Type::pool(Type::Num) // open pool
             } else {
                 Type::die(Type::Num)
             };
@@ -1572,7 +1570,7 @@ impl Checker {
             })?;
             let (schemes, callee) = match env.lookup_nonlocal(&sfx.name) {
                 Some((Binding::Poly(s), Origin::Prelude(b))) => {
-                    // Canonicalize the `e` alias to `explode` (D32-19).
+                    // Canonicalize the `e` alias to `explode`.
                     let canonical = b.def().suffix_as.unwrap_or(b);
                     (vec![s], CoreKind::Prelude(canonical).at(sp.span))
                 }
@@ -1712,7 +1710,7 @@ impl Checker {
         }
     }
 
-    // -- match (D32-3) -----------------------------------------------------
+    // -- match ------------------------------------------------------------
 
     fn infer_match(
         &mut self,
@@ -1725,7 +1723,7 @@ impl Checker {
         let (score, sty) = self.infer(scrutinee, ssp, env)?;
         // A lambda param (or other var) scrutinee infers its type from the
         // arm patterns: EXACT union of the arms' atoms, wildcard keeps it a
-        // fresh var (D32-3).
+        // fresh var.
         if let Type::Var(v) = self.resolve(&sty) {
             let pats: Vec<&MatchPat> = arms.iter().map(|(p, _)| p).collect();
             if let Some(demanded) = self.demand_from_pats(&pats, sp.span)? {
@@ -1761,7 +1759,7 @@ impl Checker {
         ))
     }
 
-    /// The D32-3 pattern-driven scrutinee type: `Some(union)` for all-atom
+    /// The pattern-driven scrutinee type: `Some(union)` for all-atom
     /// arms, `None` (stays a fresh var) when a wildcard/binder arm exists
     /// alongside atoms, ground literal/tuple demands otherwise.
     fn demand_from_pats(
@@ -1924,7 +1922,7 @@ impl Checker {
         }
     }
 
-    /// Exhaustiveness + redundancy (D32-3) via pattern usefulness.
+    /// Exhaustiveness + redundancy via pattern usefulness.
     fn check_arms(
         &self,
         arms: &[(MatchPat, Expr)],
@@ -1974,7 +1972,7 @@ impl Checker {
 }
 
 /// The type of a user function with these parameter types: the curried arrow
-/// chain, except that zero parameters mean `Unit -> ret` (WEAL-1), never a
+/// chain, except that zero parameters mean `Unit -> ret`, never a
 /// bare `ret`.
 fn fn_type(params: Vec<Type>, ret: Type) -> Type {
     if params.is_empty() {

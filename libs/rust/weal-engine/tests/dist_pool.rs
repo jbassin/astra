@@ -1,4 +1,4 @@
-//! S4 unit tests for the pool DP: hand-checked small pools, the D32-8
+//! Unit tests for the pool DP: hand-checked small pools, the evaluator's
 //! descending-order contract, keep semantics, successes, die-level ops, and
 //! per-counter budget aborts.
 

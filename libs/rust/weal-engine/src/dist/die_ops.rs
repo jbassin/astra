@@ -1,4 +1,4 @@
-//! Die-level ops (D32-10): bounded explode and reroll-once substitution.
+//! Die-level ops: bounded explode and reroll-once substitution.
 
 use std::collections::BTreeMap;
 
@@ -6,7 +6,7 @@ use super::base::{Dist, SumFace, mix};
 use super::budget::{Budget, DistError};
 use super::weight::Weight;
 
-/// D32-12 construction cap: explode depth <= 8.
+/// Construction cap: explode depth <= 8.
 pub const MAX_EXPLODE_DEPTH: u32 = 8;
 
 /// Bounded explode on the MAXIMUM face (icepool `Die.explode` defaults:

@@ -3,14 +3,14 @@
 //!
 //! Numeric literals are stored as NORMALIZED digit strings (underscores
 //! stripped) so arbitrary precision survives S1 without committing to a bigint
-//! representation; die counts/sides likewise (D32-5 splits the fat token into
+//! representation; die counts/sides likewise (lowering splits the fat token into
 //! `(count, sides, suffix-chain)` here).
 //!
 //! The AST is deliberately span-free and derives structural equality — the S1
 //! round-trip property is `lower(parse(print(a))) == a`.
 
 /// Comparison operators — non-associative level 1; chains PARSE into one flat
-/// [`Expr::Cmp`] node and are rejected later at the type stage (D32-2).
+/// [`Expr::Cmp`] node and are rejected later at the type stage.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CmpOp {
     Lt,
@@ -55,12 +55,12 @@ impl BinOp {
 }
 
 /// One die-suffix application from the fat token: longest `[a-z]+` = name,
-/// following digits = optional Num argument (D32-5).
+/// following digits = optional Num argument.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DieSuffix {
     pub name: String,
     /// Normalized digits; `None` for a digit-less suffix like `4d6kh`
-    /// (parses fine — rejected at the type stage per D32-5).
+    /// (parses fine — the type stage rejects a suffix that needs an argument).
     pub arg: Option<String>,
 }
 
@@ -72,7 +72,7 @@ pub enum Pattern {
     Tuple(Vec<Pattern>),
 }
 
-/// Match-arm patterns (D32-2 `mpat`) — negative literals allowed.
+/// Match-arm patterns — negative literals allowed.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum MatchPat {
     /// `-`? num-lit; `neg` records the leading minus.
@@ -106,7 +106,7 @@ pub enum Expr {
         body: Box<Expr>,
     },
     /// Function sugar `let name(params) annot? = value; body` — kept distinct
-    /// from [`Expr::Let`] because D32-3 gives it different recursion scoping.
+    /// from [`Expr::Let`] because the function's own name is in scope in its body.
     LetFn {
         name: String,
         params: Vec<String>,
@@ -138,17 +138,17 @@ pub enum Expr {
     /// Prefix `-`.
     Neg(Box<Expr>),
     /// `callee(args)`. Placeholder arguments have already been desugared into
-    /// lambdas by lowering (D32-2), so no placeholder node exists here.
+    /// lambdas by lowering, so no placeholder node exists here.
     Call {
         callee: Box<Expr>,
         args: Vec<Expr>,
     },
-    /// `expr[word]` render label (D32-6).
+    /// `expr[word]` render label.
     Label {
         expr: Box<Expr>,
         word: String,
     },
-    /// A die literal split from the fat token (D32-5).
+    /// A die literal split from the fat token.
     Die {
         /// Normalized digits; `None` for the bare `dM` form.
         count: Option<String>,

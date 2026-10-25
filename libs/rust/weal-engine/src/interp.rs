@@ -1,6 +1,6 @@
-//! The S3 tree-walking interpreter (spec 0032 §4 S3): eager, environment-
-//! based, capture-by-value closures with currying, the D32-7 effect
-//! accumulator + runtime guard, D32-12 fuel, and the R21 save serializer.
+//! The tree-walking interpreter: eager, environment-based, capture-by-value
+//! closures with currying, the effect accumulator + runtime guard, fuel, and
+//! the save serializer.
 //!
 //! # Spans
 //!
@@ -34,7 +34,7 @@
 //! (with free-occurrence rewriting) so that checker-inserted `Prelude`
 //! references — which print as bare idents — can't be re-captured on
 //! reload. Documented limitation: an OPEN `Pool` value serializes as its
-//! constructor chain, and the D32-7 top-level sum coercion closes it on
+//! constructor chain, and the top-level sum coercion closes it on
 //! reload (`Pool[Num]` comes back as `Die[Num]`) — inherent to the
 //! source-text save contract.
 
@@ -123,7 +123,7 @@ impl std::fmt::Debug for ClosureValue {
 // ---------------------------------------------------------------------------
 
 /// One interpretation's mutable state: fuel, the effect accumulator, and the
-/// D32-7 evaluate-guard depth.
+/// evaluate-guard depth.
 pub struct Interp<'f> {
     pub(crate) fuel: &'f mut Fuel,
     pub(crate) cmd: Cmd,
@@ -143,7 +143,7 @@ impl<'f> Interp<'f> {
         self.cmd
     }
 
-    /// The D32-7 runtime guard: effects are illegal inside evaluator
+    /// The runtime effect guard: effects are illegal inside evaluator
     /// closures.
     pub(crate) fn effect_guard(&self, span: Option<Span>) -> Result<(), EvalError> {
         if self.evaluate_depth > 0 {
@@ -161,7 +161,7 @@ impl<'f> Interp<'f> {
     /// the language semantic the render sampler and the README define. The
     /// DP loop still transitions through every support face for state
     /// alignment, but a count-0 transition is the identity, never a closure
-    /// application (D32-8 amendment at the goodness/dist-divergence fix).
+    /// application (so goodness and the distribution agree).
     pub fn run_evaluator_step(
         &mut self,
         func: &Value,
@@ -266,7 +266,7 @@ impl<'f> Interp<'f> {
                 dm_literal_order,
             } => {
                 let f = self.eval(callee, env)?;
-                // Direct `roll(…)` is variadic (D32-19).
+                // Direct `roll(…)` is variadic.
                 if let Value::Builtin(b) = &f
                     && b.builtin == Builtin::Roll
                     && b.args.is_empty()
@@ -385,7 +385,7 @@ impl<'f> Interp<'f> {
                         env = env_bind(&env, name.clone(), v);
                     }
                     if rc.params.is_empty() {
-                        // WEAL-1: a nullary closure is `Unit -> T`. It consumes
+                        // A nullary closure is `Unit -> T`. It consumes
                         // the implicit `()` and runs its body on every call.
                         match queue.pop_front() {
                             Some(Value::Unit) => {}
@@ -463,7 +463,7 @@ fn internal_shape(what: &str, v: &Value) -> EvalError {
     ))
 }
 
-// -- die construction (D32-4 validity + D32-12 caps) ------------------------
+// -- die construction (validity + construction caps) -----------------------
 
 fn eval_die(count: Option<&str>, sides: &str, span: Option<Span>) -> Result<Value, EvalError> {
     let sides_big: BigInt = sides
@@ -577,7 +577,7 @@ pub(crate) fn cmp_values(
     r: Value,
     span: Option<Span>,
 ) -> Result<Value, EvalError> {
-    // ANY die operand lifts to Die[Bool] (D32-3).
+    // ANY die operand lifts to Die[Bool].
     if matches!(l, Value::Die(_)) || matches!(r, Value::Die(_)) {
         return Ok(Value::Die(DieTree::Cmp {
             op,
@@ -616,9 +616,9 @@ pub(crate) fn cmp_values(
 pub(crate) fn arith(op: BinOp, l: Value, r: Value, span: Option<Span>) -> Result<Value, EvalError> {
     use crate::value::{DEC_SCALE, dec_check, dec_check_big};
     if matches!(l, Value::Die(_)) || matches!(r, Value::Die(_)) {
-        // die ⊗ die / die ⊗ const stays symbolic (D32-4). A CONSTANT zero
+        // die ⊗ die / die ⊗ const stays symbolic. A CONSTANT zero
         // divisor is caught here; a zero inside a divisor die's support is
-        // S4's check.
+        // the distribution engine's check.
         if op == BinOp::Div && matches!(&r, Value::Num(n) if *n == BigInt::ZERO) {
             return Err(EvalError::eval("division by zero", span));
         }
@@ -643,7 +643,7 @@ pub(crate) fn arith(op: BinOp, l: Value, r: Value, span: Option<Span>) -> Result
         },
         (Value::Dec(a), Value::Dec(b)) => match op {
             // |a|,|b| ≤ 10^25 so add/sub can't overflow i128; range-check
-            // post-op (D32-1).
+            // post-op.
             BinOp::Add => Ok(Value::Dec(dec_check(a + b, span)?)),
             BinOp::Sub => Ok(Value::Dec(dec_check(a - b, span)?)),
             // Mul/Div intermediates need BigInt; truncation toward zero.
@@ -676,9 +676,9 @@ pub(crate) fn arith(op: BinOp, l: Value, r: Value, span: Option<Span>) -> Result
     }
 }
 
-// -- display rules (D32-7) --------------------------------------------------
+// -- display rules ----------------------------------------------------------
 
-/// Append a value's displays per D32-7: dice + scalars display; lists/
+/// Append a value's displays: dice + scalars display; lists/
 /// tuples flatten recursively (one display per displayable element);
 /// Unit/closures/dicts/open-pools are silent.
 pub fn append_display(cmd: &mut Cmd, v: &Value) {
@@ -716,7 +716,7 @@ pub fn interp(core: &CoreExpr, env: &Env, fuel: &mut Fuel) -> Result<(Value, Cmd
 }
 
 // ---------------------------------------------------------------------------
-// Save serialization (R21)
+// Save serialization
 // ---------------------------------------------------------------------------
 
 /// Serialize a value to canonical re-parseable source (module docs).
@@ -1525,7 +1525,7 @@ mod tests {
     #[test]
     fn bare_die_and_pool_sum_collapse() {
         assert_eq!(value_of("d6"), Value::Die(leaf(1, 6)));
-        // Top-level open pool auto-sums (D32-7) and collapses to a leaf.
+        // Top-level open pool auto-sums and collapses to a leaf.
         assert_eq!(value_of("2d6"), Value::Die(leaf(2, 6)));
     }
 
@@ -1881,7 +1881,7 @@ mod tests {
         assert!(it.effect_guard(None).is_ok());
     }
 
-    // -- saves (R21 + D32-19) -----------------------------------------------
+    // -- saves ----------------------------------------------------------------
 
     #[test]
     fn save_rejects_kebab_names() {

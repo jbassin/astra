@@ -28,7 +28,7 @@ pub enum SyntaxKind {
     // --- literal / name tokens ---
     /// `[a-z][a-zA-Z0-9_]*` (not `let`/`match`, not shadowing a die form).
     IDENT,
-    /// `[A-Z][a-zA-Z0-9_]*` — type names for `let` annotations (D32-2 annot).
+    /// `[A-Z][a-zA-Z0-9_]*` — type names for `let` annotations.
     TYPE_NAME,
     /// `:` + `[a-z][a-z0-9-]*` (kebab allowed in atoms only).
     ATOM,
@@ -40,7 +40,7 @@ pub enum SyntaxKind {
     FLOAT,
     /// `"…"` with `\"` `\\` `\n` escapes only.
     STR,
-    /// The fat die token (D32-1):
+    /// The fat die token (a die literal plus its whole suffix run):
     /// `([0-9][0-9_]*)?d[0-9][0-9_]*([a-z]+[0-9]*)*`, priority over IDENT.
     DIE,
     /// `_` — placeholder in call-argument position, wildcard in patterns.
@@ -100,9 +100,9 @@ pub enum SyntaxKind {
     /// `callee(args)`.
     CALL_EXPR,
     ARG_LIST,
-    /// One call argument — the placeholder-binding boundary (D32-2).
+    /// One call argument — the boundary a `_` placeholder binds up to.
     ARG,
-    /// `expr[word]` postfix label (D32-6).
+    /// `expr[word]` postfix label.
     LABEL_EXPR,
     /// A die literal (the fat DIE token wrapped as an expression).
     DIE_EXPR,

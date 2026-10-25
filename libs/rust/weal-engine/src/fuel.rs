@@ -1,6 +1,6 @@
-//! The D32-12 fuel counters owned by S3: interpreter steps, interpreter
+//! The fuel counters the interpreter owns: interpreter steps, interpreter
 //! recursion depth, and the construction caps (pool count, explode depth).
-//! The S4 distribution counters (DP transitions, state-map entries, support
+//! The distribution counters (DP transitions, state-map entries, support
 //! size, bigint bits) live with the dist engine.
 //!
 //! A **step** = one `Interp::eval` node visit. **Depth** = the `eval`
@@ -13,7 +13,7 @@
 use crate::lower::Span;
 use crate::value::EvalError;
 
-/// Interpreter step budget (D32-12; compile-time const, tuned at S7).
+/// Interpreter step budget (a compile-time const).
 pub const INTERP_STEPS: u64 = 2_000_000;
 /// Construction cap: pool count (checked BEFORE allocation).
 pub const POOL_COUNT_CAP: u64 = 10_000;
@@ -30,7 +30,7 @@ pub struct Fuel {
 }
 
 impl Fuel {
-    /// A fuel budget with a custom step count (the D32-11 `budget` scales
+    /// A fuel budget with a custom step count (the API's `budget` scales
     /// interpreter steps only; depth/construction caps stay fixed).
     pub fn new(steps: u64) -> Fuel {
         Fuel {

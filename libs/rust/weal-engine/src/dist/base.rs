@@ -1,7 +1,7 @@
-//! The distribution type + cartesian ops + weighted-lcm mixture (D32-10).
+//! The distribution type + cartesian ops + weighted-lcm mixture.
 //!
 //! A [`Dist`] keeps its entries in a sorted map (the DP's business) AND an
-//! explicit face-order vector (D32-4 — goodness, `evaluate` iteration, and
+//! explicit face-order vector (goodness, `evaluate` iteration, and
 //! render read the vector, never the map order).
 
 use std::collections::BTreeMap;
@@ -85,7 +85,7 @@ impl<F: Ord + Clone> Dist<F> {
 
     /// A uniform die over `faces_in_order` (each occurrence weight 1).
     /// Duplicates are legal: weights merge and the FIRST occurrence fixes
-    /// the face's order position (D32-4).
+    /// the face's order position.
     pub fn uniform(faces_in_order: Vec<F>, budget: &Budget) -> Result<Dist<F>, DistError> {
         if faces_in_order.is_empty() {
             return Err(DistError::Empty);
@@ -160,7 +160,7 @@ impl<F: Ord + Clone> Dist<F> {
         &self.denominator
     }
 
-    /// The explicit face-order vector (D32-4).
+    /// The explicit face-order vector (the order display and goodness read).
     pub fn face_order(&self) -> &[F] {
         &self.face_order
     }
@@ -203,7 +203,7 @@ impl<F: Ord + Clone> Dist<F> {
 
     /// Unary remap. Face collisions merge weights; the result's face order
     /// is the first-occurrence order of images while walking `self`'s face
-    /// order (D32-4).
+    /// order.
     pub fn map<T, G>(&self, budget: &Budget, mut f: G) -> Result<Dist<T>, DistError>
     where
         T: Ord + Clone,
@@ -247,7 +247,7 @@ fn merge_entry<F: Ord + Clone>(
 /// lifted comparisons producing a 2-outcome Bool-ish dist — the caller
 /// passes the op.
 ///
-/// Face order (D32-4, pinned interpretation for ops): iterate the LEFT
+/// Face order (the pinned interpretation for ops): iterate the LEFT
 /// operand's face order in the outer loop and the right operand's in the
 /// inner loop; each result face's position is fixed by its first
 /// production. (For faces passed through unchanged this reduces to "left
@@ -312,7 +312,7 @@ where
 /// the MINIMAL common denominator. Zero-weight components are dropped; all
 /// components zero => `DistError::Empty`.
 ///
-/// Face order (D32-4): components in argument order, faces within each
+/// Face order: components in argument order, faces within each
 /// component in its own face order, first occurrence wins.
 pub fn mix<F: Ord + Clone>(
     components: &[(Dist<F>, Weight)],

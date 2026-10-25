@@ -1,4 +1,4 @@
-//! The S2 type representation (D32-3).
+//! The type representation used by the checker.
 //!
 //! `Bool` is NOT a constructor — it is an alias for the atom union
 //! `:false | :true`, and [`Type`]'s `Display` prints that union back as
@@ -78,7 +78,7 @@ impl Type {
     }
 
     /// Does this (resolved) type contain a function anywhere? Used by the
-    /// equatable check (D32-3): dict keys / evaluator states / `==` operands
+    /// equatable check: dict keys / evaluator states / `==` operands
     /// must be function-free.
     pub fn contains_arrow(&self) -> bool {
         match self {
@@ -189,7 +189,7 @@ impl EquatableSite {
     }
 }
 
-/// A deferred function-free (equatable) constraint (D32-3): checked on the
+/// A deferred function-free (equatable) constraint: checked on the
 /// RESOLVED type once inference finishes; silent while the type stays an
 /// unconstrained variable; a ground arrow landing there = type error.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -198,8 +198,8 @@ pub struct EquatableConstraint {
     pub site: EquatableSite,
 }
 
-/// A deferred die-lifting arithmetic constraint (the 2026-08-10 D32-4
-/// amendment): `l ⊕ r = ret`, where a Var operand may still resolve to
+/// A deferred die-lifting arithmetic constraint (so `x + 1` works whether
+/// `x` is a number or a die): `l ⊕ r = ret`, where a Var operand may still resolve to
 /// either `Num` or `Die[Num]` — the choice is made at solve time (end of
 /// checking, or per instantiation when carried by a scheme), defaulting
 /// to `Num` when nothing resolves it. `r = None` is unary negation

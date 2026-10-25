@@ -1,5 +1,5 @@
-//! Parser goldens (D32-2/D32-5/D32-6): lowered-AST debug-format expected
-//! strings, covering the slice's pinned cases plus every §3 input.
+//! Parser goldens: lowered-AST debug-format expected strings, covering the
+//! pinned grammar cases plus every input in the spec's render table.
 
 use weal_engine::parse_to_ast;
 
@@ -32,7 +32,7 @@ fn tuple_literal() {
     check("{1, 2}", r#"Tuple([Num("1"), Num("2")])"#);
 }
 
-/// Nearest-match binding (D32-2): in `match x | 1 -> match y | …`, every
+/// Nearest-match binding: in `match x | 1 -> match y | …`, every
 /// subsequent arm belongs to the INNER match — the outer match keeps exactly
 /// one arm. Parenthesize the inner match to break out.
 #[test]
@@ -67,7 +67,7 @@ fn labeled_dice_sum() {
     );
 }
 
-/// Placeholder desugaring (D32-2): each `_` binds to the smallest enclosing
+/// Placeholder desugaring: each `_` binds to the smallest enclosing
 /// syntactic argument — the outer `_` becomes the parameter of `f`'s argument
 /// lambda, the inner `_` the parameter of `g`'s argument lambda: TWO separate
 /// single-parameter lambdas, not one.
@@ -98,7 +98,7 @@ fn placeholder_params_avoid_user_names() {
 }
 
 /// Comparison chains PARSE into one flat chain node (rejection happens at the
-/// type stage, never at parse — D32-2 review m6).
+/// type stage, never at parse).
 #[test]
 fn comparison_chain_parses_flat() {
     check(
@@ -116,7 +116,7 @@ fn negative_pattern_literal() {
     );
 }
 
-// --- every §3 input-column entry ---
+// --- every input-column entry of the spec's render table ---
 
 #[test]
 fn s3_d20_plus_7() {
@@ -195,7 +195,7 @@ fn die_suffix_chain_splits_left_to_right() {
 #[test]
 fn digit_less_suffix_parses() {
     // `4d6kh` PARSES; "every suffix takes its Num" is a TYPE-stage error
-    // (D32-5), not a parse error.
+    // not a parse error.
     check(
         "4d6kh",
         r#"Die { count: Some("4"), sides: "6", suffixes: [DieSuffix { name: "kh", arg: None }] }"#,

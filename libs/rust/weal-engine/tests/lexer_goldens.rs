@@ -1,4 +1,4 @@
-//! Lexer goldens (D32-1): exact token streams, trivia included.
+//! Lexer goldens: exact token streams, trivia included.
 
 use weal_engine::lexer::lex_debug;
 

@@ -1,11 +1,11 @@
-//! S5 — the D32-11 wasm API: ONE export,
+//! The wasm API: ONE export,
 //! `evaluate(source, saves_json, seed, budget, mode) -> String` (JSON).
 //!
 //! The pure function is target-independent and natively unit-tested; the
 //! wasm-bindgen wrapper (`wasm32` only) is a one-liner over it. NO
 //! `getrandom` anywhere — entropy is the 32 host seed bytes.
 //!
-//! # Contract pins (D32-11)
+//! # Contract pins
 //!
 //! - `saves_json` = `[[name, source], …]` in id order. A malformed saves
 //!   payload is a HOST bug; it reports `stage:"prelude"` without a name.
@@ -18,7 +18,7 @@
 //!   `preludeName` + a span into THAT save's source), and `internal` (an
 //!   `Internal` engine error: an invariant a well-typed program should never
 //!   break; the message keeps its `internal error:` prefix).
-//! - `budget` scales interpreter steps ONLY (D32-12): non-zero = the
+//! - `budget` scales interpreter steps ONLY: non-zero = the
 //!   absolute interpreter-step budget for the run (0 = the 2,000,000
 //!   default). Depth/construction caps and the distribution budget are
 //!   untouched. (Design call, recorded: the u32 is the step count itself —
@@ -165,7 +165,7 @@ struct OkJson {
     warnings: Vec<String>,
 }
 
-/// The D32-11 error stages (module docs).
+/// The error stages a failed evaluation reports (module docs).
 #[derive(Serialize, Clone, Copy)]
 #[serde(rename_all = "lowercase")]
 #[cfg_attr(test, derive(ts_rs::TS), ts(rename = "WealStage"))]
@@ -387,7 +387,7 @@ fn run_mode(source: &str, saves: &[(String, String)], seed: &[u8], budget: u32) 
 mod wasm {
     use wasm_bindgen::prelude::*;
 
-    /// The D32-11 export (`--target nodejs`).
+    /// The single wasm export (`--target nodejs`).
     #[wasm_bindgen]
     pub fn evaluate(
         source: &str,

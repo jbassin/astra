@@ -20,7 +20,7 @@
 //!    and elaboration against the prelude plus the given save schemes, as
 //!    [`CompileStage::Type`] on failure.
 //! 4. [`Checked::eval`]: the interpreter on the caller's [`Fuel`]
-//!    ([`fuel_for_budget`] turns the wasm `budget` into one), with the D32-7
+//!    ([`fuel_for_budget`] turns the wasm `budget` into one), with the
 //!    display rules applied.
 //!
 //! Saves ([`load_saves`]) run stages 1 to 3 on each entry against the
@@ -126,7 +126,7 @@ impl Checked {
         save_scheme(&self.ty)
     }
 
-    /// Stage 4: interpret in `env` on `fuel`, then apply the D32-7 display
+    /// Stage 4: interpret in `env` on `fuel`, then apply the display
     /// rules (the final displayable value is appended last).
     pub fn eval(&self, env: &Env, fuel: &mut Fuel) -> Result<RunOutput, EvalError> {
         let mut it = Interp::new(fuel);
@@ -138,7 +138,7 @@ impl Checked {
 }
 
 /// The interpreter fuel for a wasm `budget`: 0 is the default step budget,
-/// anything else the absolute step count (D32-12; it scales steps only).
+/// anything else the absolute step count (it scales steps only).
 pub fn fuel_for_budget(budget: u32) -> Fuel {
     if budget == 0 {
         Fuel::default()
@@ -192,7 +192,7 @@ pub struct SaveError {
 
 /// Load `(name, source)` saves in order, each checked against the prelude
 /// plus the prior saves. Evaluation runs on a FRESH default fuel (saves are
-/// fuel-exempt per D32-11, bounded by row count) and discards the save's own
+/// fuel-exempt, bounded by row count) and discards the save's own
 /// effects, so its `roll`/`plot` don't replay on every message. An eval
 /// error keeps its bare message whatever its kind.
 pub fn load_saves(saves: &[(String, String)], mode: SaveLoad) -> Result<Saves, SaveError> {
@@ -224,9 +224,9 @@ pub fn load_saves(saves: &[(String, String)], mode: SaveLoad) -> Result<Saves, S
 // ---------------------------------------------------------------------------
 
 /// The result of [`run`]: the final value plus the effect accumulator with
-/// the D32-7 display rules applied (final displayable value appended last).
+/// the display rules applied (final displayable value appended last).
 /// Displays carry [`crate::value::DieTree`]s, never rolled numbers —
-/// sampling is S5's.
+/// sampling is the renderer's.
 #[derive(Debug, Clone, PartialEq)]
 pub struct RunOutput {
     pub value: Value,
@@ -234,7 +234,7 @@ pub struct RunOutput {
 }
 
 /// A [`run`] failure. `Check` covers parse + type errors (the wasm API
-/// stages them separately); `Save` is a failing SAVES entry (D32-11
+/// stages them separately); `Save` is a failing SAVES entry (the API's
 /// `stage:"prelude"` — `span` points into THAT save's source); `Eval`
 /// carries the eval/fuel kind.
 #[derive(Debug, Clone, PartialEq)]

@@ -1,30 +1,30 @@
-//! weal-engine — the weal v2 dice-language engine (spec 0032).
+//! weal-engine — the weal v2 dice-language engine.
 //!
-//! Slice S1: lexer (logos, fat die token), lossless rowan CST, recoverable
+//! Front end: lexer (logos, fat die token), lossless rowan CST, recoverable
 //! recursive-descent parser, typed AST + lowering (fat-die split, placeholder
-//! desugaring), and the canonical pretty-printer (the future R21
-//! save-serializer core). Round-trip property: for every AST `a`,
+//! desugaring), and the canonical pretty-printer (the core of the
+//! save serializer). Round-trip property: for every AST `a`,
 //! `lower(parse(print(a))) == a`.
 //!
-//! Slice S2: the type checker + elaborator (`types` + `infer`) — rank-1 HM
-//! with the D32-3 union lattice, D32-4 sum coercion, D32-5 suffix
-//! resolution, and elaboration into [`CoreExpr`] (the S3 input contract; see
+//! Types: the type checker + elaborator (`types` + `infer`) — rank-1 HM
+//! with a union lattice for atoms, sum coercion of pools, type-directed die-suffix
+//! resolution, and elaboration into [`CoreExpr`] (the interpreter's input; see
 //! the `infer` module docs).
 //!
-//! Slice S3: runtime values + symbolic die trees (`value`), the
+//! Runtime: values + symbolic die trees (`value`), the
 //! tree-walking interpreter with fuel/effects/saves (`interp` + `fuel` +
 //! `prelude`). [`run`] (in `pipeline`, which holds the parse → lower → check
-//! → eval stages every entry point shares) is the top-level driver; S5's
+//! → eval stages every entry point shares) is the top-level driver; the
 //! wasm API composes the same stages.
 //!
-//! Slice S4: the exact-distribution engine (`dist`, the icepool port) and —
-//! at S4b — the wired seam (`dist_seam`): `dist_of`/`dist_of_with` lower a
+//! Distributions: the exact-distribution engine (`dist`, the icepool port) and
+//! the seam to it (`dist_seam`): `dist_of`/`dist_of_with` lower a
 //! symbolic [`DieTree`] into the engine and return a `SeamDist` with plain
 //! [`Value`] faces (evaluate(), lifted comparisons, min/max on dice, and
-//! the distribution accessors S5 reads).
+//! the distribution accessors the renderer reads).
 //!
-//! Slice S5: the render tree + seeded sampling + goodness (`render`), the
-//! D32-16 PMF plot (`plot`), and the D32-11 JSON seam (`api`) — [`evaluate`]
+//! Output: the render tree + seeded sampling + goodness (`render`), the
+//! PMF plot (`plot`), and the JSON seam (`api`) — [`evaluate`]
 //! is the single function the wasm module exports.
 
 pub mod api;

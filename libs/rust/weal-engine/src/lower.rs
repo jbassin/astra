@@ -1,10 +1,10 @@
 //! CST → typed-AST lowering.
 //!
-//! Two D32 rules live here:
-//! - **Fat die token split (D32-5):** the single DIE token becomes
+//! Two language rules live here:
+//! - **Fat die token split:** the single DIE token becomes
 //!   `(count, sides, Vec<DieSuffix>)` — longest `[a-z]+` run = suffix name,
 //!   the digits following it = its Num argument.
-//! - **Placeholder desugaring (D32-2):** each `_` binds to the smallest
+//! - **Placeholder desugaring:** each `_` binds to the smallest
 //!   enclosing syntactic argument expression (the `ARG` node); `_`s sharing
 //!   that argument form ONE lambda with parameters in occurrence order. In
 //!   `f(_ + g(_))` the outer `_` becomes the parameter of `f`'s argument
@@ -14,9 +14,9 @@
 //!
 //! Lowering additionally produces a [`SpanTree`] — a parallel structure that
 //! mirrors the [`Expr`] tree shape and carries byte spans into the ORIGINAL
-//! source for every node (the AST itself stays span-free by design so the S1
-//! round-trip `Eq` property holds). The S2 checker threads the two trees in
-//! lockstep to give every `TypeError` a byte-accurate span (D32-11).
+//! source for every node (the AST itself stays span-free by design so the parser's
+//! round-trip `Eq` property holds). The checker threads the two trees in
+//! lockstep to give every `TypeError` a byte-accurate span.
 
 use crate::ast::{BinOp, CmpOp, DieSuffix, Expr, MatchPat, Pattern};
 use crate::cst::{SyntaxKind, SyntaxNode, SyntaxToken};
@@ -512,7 +512,7 @@ impl Ctx {
 
     /// Lower one call argument — the placeholder-binding boundary. Any `_`s
     /// lowered directly under this argument become ONE lambda wrapping it,
-    /// parameters in occurrence order (D32-2). The generated lambda's span is
+    /// parameters in occurrence order. The generated lambda's span is
     /// the whole argument's span.
     fn lower_arg(&mut self, arg: &SyntaxNode) -> Result<Lowered, LowerError> {
         let span = node_span(arg);
@@ -674,7 +674,7 @@ fn lower_arm_pat(node: &SyntaxNode) -> Result<MatchPat, LowerError> {
 /// with its NAME's byte offsets relative to the token start.
 type SplitDie = (Option<String>, String, Vec<(DieSuffix, (usize, usize))>);
 
-/// Split the fat die token (D32-5): optional count digits, `d`, sides digits,
+/// Split the fat die token: optional count digits, `d`, sides digits,
 /// then a suffix run — longest `[a-z]+` = name, following digits = Num arg.
 fn split_die(text: &str) -> SplitDie {
     let bytes = text.as_bytes();

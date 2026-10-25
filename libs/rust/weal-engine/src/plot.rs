@@ -1,10 +1,10 @@
-//! S5 — the D32-16 PMF plot: an 800×450 bar chart of a die's exact
+//! The PMF plot: an 800×450 bar chart of a die's exact
 //! distribution, rendered into an in-memory RGB buffer, PNG-encoded (`png`
 //! crate) and base64'd.
 //!
 //! # The wasm text DEVIATION (recorded)
 //!
-//! D32-9 pinned "plotters w/ `ab_glyph` + bitmap backend" for text under
+//! The plan was "plotters w/ `ab_glyph` + bitmap backend" for text under
 //! wasm32. In the released crate (0.3.7, and master at build time) the
 //! `ab_glyph` font backend is **cfg'd OUT on `wasm32-unknown-unknown`**:
 //! plotters hard-selects its `web` backend there, whose `estimate_layout`
@@ -12,7 +12,7 @@
 //! plotters draws the GEOMETRY only (background, bars, axis frame, grid —
 //! no code path that touches its font machinery), and every piece of text
 //! (title, axis labels) is rasterized directly with the `ab_glyph` crate
-//! over ONE embedded font — the same font stack D32-9 intended, identical
+//! over ONE embedded font — the same font stack the plan intended, identical
 //! pixels on native and wasm, and the label-pixel golden exercises exactly
 //! the code the wasm module runs.
 //!
@@ -31,7 +31,7 @@ use crate::dist_seam::SeamDist;
 use crate::render::{ellipsize, format_value_plain};
 use crate::value::EvalError;
 
-/// Plot dimensions (D32-16).
+/// Plot dimensions.
 pub const PLOT_WIDTH: u32 = 800;
 pub const PLOT_HEIGHT: u32 = 450;
 
@@ -218,7 +218,7 @@ pub fn encode_png(rgb: &[u8]) -> Result<Vec<u8>, EvalError> {
     Ok(out)
 }
 
-/// The full D32-16 pipeline: PMF chart → PNG → base64.
+/// The full plot pipeline: PMF chart → PNG → base64.
 pub fn plot_png_base64(dist: &SeamDist, title: &str) -> Result<String, EvalError> {
     let rgb = render_plot_rgb(dist, title)?;
     let png = encode_png(&rgb)?;

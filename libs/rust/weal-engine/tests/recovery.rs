@@ -25,7 +25,7 @@ fn garbage_after_valid_expression() {
     assert_eq!(parsed.syntax().text().to_string(), src);
 }
 
-/// Placeholder outside call-argument position is a PARSE error (D32-2).
+/// Placeholder outside call-argument position is a PARSE error.
 #[test]
 fn placeholder_outside_call_argument() {
     let src = "_ + 1";
@@ -60,7 +60,7 @@ fn invalid_string_escape_has_exact_span() {
 
 #[test]
 fn label_word_charset_is_enforced() {
-    // Uppercase violates D32-6's [a-z][a-z0-9_]* (kebab stays atom-only).
+    // Uppercase violates the label charset [a-z][a-z0-9_]* (kebab stays atom-only).
     let parsed = parse("2d8[Fire]");
     assert!(!parsed.errors.is_empty());
     assert!(parsed.errors[0].message.contains("label word"));

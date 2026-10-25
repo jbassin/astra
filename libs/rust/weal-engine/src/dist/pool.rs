@@ -1,4 +1,4 @@
-//! The pool algorithm (D32-10): icepool's pop-extreme recursion with the
+//! The pool algorithm: icepool's pop-extreme recursion with the
 //! weighted-Pascal `comb_row`, the keep-tuple, per-level memoization, and
 //! the `skip_weight` all-remaining dump — flattened to an iterative
 //! per-face level map (equivalent to the memoized forward recursion of
@@ -7,8 +7,8 @@
 //! never scales with support size).
 //!
 //! Iteration order: [`eval_pool`] visits faces in DESCENDING `Ord` order
-//! (D32-8). Note the keep-tuple is defined over SORTED positions, so `Ord`
-//! order is the only coherent iteration order — for dice whose D32-4
+//! (the user-evaluator contract). The keep-tuple is defined over SORTED positions, so `Ord`
+//! order is the only coherent iteration order — for dice whose
 //! face-order vector differs from sorted order (`dl`/`dm`), the evaluator
 //! still sees sorted-descending faces. The transition callback sees EVERY
 //! face of the die exactly once, with the kept count of dice showing it
@@ -83,7 +83,7 @@ fn accumulate<K: Ord>(
 }
 
 /// The pool DP over `count` copies of `die`, iterating faces in the given
-/// direction. `descending` is the D32-8 public contract; ascending is used
+/// direction. `descending` is the public evaluator contract; ascending is used
 /// internally only for order-agnostic callbacks (sums, successes) when the
 /// keep-tuple's zero-skew prefers it (icepool's `lo_hi_skip` heuristic).
 fn eval_pool_ordered<F, S>(
@@ -210,7 +210,7 @@ where
 }
 
 /// Evaluate a pool of `count` copies of `die` under `keep` with a
-/// user-style transition (D32-8).
+/// user-style transition (the engine side of `evaluate()`).
 ///
 /// Faces are visited in DESCENDING `Ord` order, each exactly once; the
 /// callback receives the kept count of dice showing that face (0 and

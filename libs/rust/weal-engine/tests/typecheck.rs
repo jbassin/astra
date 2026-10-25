@@ -1,4 +1,4 @@
-//! The S2 accept/reject suite (spec §4 S2): typing, the D32-3 union
+//! The checker's accept/reject suite: typing, the union
 //! lattice, exhaustiveness/redundancy, monomorphic recursion, equatable
 //! deferral, lifted die comparisons, numeric-mixing rejection, and spans.
 
@@ -51,7 +51,7 @@ fn arbitrary_length_num_literal_infers_without_panicking() {
 #[test]
 fn dice_and_pool_types() {
     assert_eq!(ty("d20"), "Die[Num]");
-    // A bare NdM is an open Pool[Num]; the top level sums it (D32-7).
+    // A bare NdM is an open Pool[Num]; the top level sums it.
     assert_eq!(ty("2d6"), "Die[Num]");
     assert_eq!(ty("dl([:fine, :good])"), "Die[:fine | :good]");
 }
@@ -70,7 +70,7 @@ fn list_element_mismatch_rejected() {
     assert!(e.message.contains("mismatch"), "{}", e.message);
 }
 
-// -- numeric mixing (R6) ----------------------------------------------------
+// -- numeric mixing ---------------------------------------------------------
 
 #[test]
 fn num_plus_dec_rejected() {
@@ -381,7 +381,7 @@ fn unbound_identifier_with_span() {
     assert_eq!(e.span, (0, 3));
 }
 
-// -- sum coercion + pools (D32-4) -------------------------------------------
+// -- sum coercion + pools --------------------------------------------------
 
 #[test]
 fn pool_plus_num_accepts_via_sum() {
@@ -416,7 +416,7 @@ fn negation_coerces_pools() {
     err("-(:a)");
 }
 
-// -- die suffixes (D32-5) ---------------------------------------------------
+// -- die suffixes ----------------------------------------------------------
 
 #[test]
 fn suffix_chains_type_check() {
@@ -475,7 +475,7 @@ fn die_shape_suffix_via_extra_env() {
     assert_eq!(t.to_string(), "Die[Num]");
 }
 
-// -- labels (D32-6) ---------------------------------------------------------
+// -- labels ----------------------------------------------------------------
 
 #[test]
 fn labels_apply_to_dice() {
@@ -489,7 +489,7 @@ fn labels_apply_to_dice() {
     );
 }
 
-// -- prelude signatures (D32-19) --------------------------------------------
+// -- prelude signatures ----------------------------------------------------
 
 #[test]
 fn prelude_core_signatures() {
@@ -544,7 +544,7 @@ fn list_toolkit_rejects() {
     err("map([1], |x| x) + 1"); // a list is not a number
 }
 
-// -- deferred die-lifting arithmetic (the 2026-08-10 D32-4 amendment) -------
+// -- deferred die-lifting arithmetic ---------------------------------------
 // A Var operand no longer pins Num at the operator; the scalar-vs-lifted
 // choice is solved after inference (or per instantiation via the scheme),
 // defaulting to Num when nothing resolves it.
@@ -607,7 +607,7 @@ fn min_max_overloads() {
     assert_eq!(ty("max(1, 2)"), "Num");
     assert_eq!(ty("min(d20, 5)"), "Die[Num]");
     assert_eq!(ty("max(2d6kh1, d6)"), "Die[Num]"); // pool sum-coerces
-    err("min(1.5, 2.5)"); // Num + Die[Num] only (D32-19)
+    err("min(1.5, 2.5)"); // Num + Die[Num] only
 }
 
 #[test]
@@ -639,7 +639,7 @@ fn save_types_any_atom_and_any_value() {
     assert_eq!(ty("save(:my-macro, 1)"), "Unit");
 }
 
-// -- evaluate + equatable-deferred (D32-3 / D32-8) --------------------------
+// -- evaluate + equatable-deferred -----------------------------------------
 
 #[test]
 fn evaluate_accepts_a_well_shaped_closure() {
@@ -711,7 +711,7 @@ fn reduce_types() {
     err("reduce([1], 0)"); // second argument is a function
 }
 
-// -- nullary functions (WEAL-1): `Unit -> T` ---------------------------------
+// -- nullary functions: `Unit -> T` ----------------------------------------
 
 #[test]
 fn nullary_functions_are_unit_arrows() {

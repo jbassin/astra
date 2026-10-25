@@ -1,4 +1,4 @@
-//! Exact nonnegative integer weights (D32-10): a `u128` fast path with
+//! Exact nonnegative integer weights: a `u128` fast path with
 //! checked promotion to `num_bigint::BigUint`.
 //!
 //! All arithmetic is exact. Every checked op takes a `max_bits` cap (the
