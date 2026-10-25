@@ -5,19 +5,10 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import { fixtureCorpusRoot } from "@/server/corpusFs";
+import { row } from "@/testSupport";
 
 import { columnsFor, comparatorForSort, type ColumnDef } from "./columnDefs";
 import { sortRows } from "./filterEngine";
-
-function row(overrides: Partial<IndexRow> & Pick<IndexRow, "id" | "name">): IndexRow {
-  return {
-    traits: [],
-    source: { book: "Test Book", license: "unknown" },
-    edition: "remaster",
-    superseded: false,
-    ...overrides,
-  };
-}
 
 function keysOf(cols: readonly ColumnDef[]): string[] {
   return cols.map((c) => c.key);

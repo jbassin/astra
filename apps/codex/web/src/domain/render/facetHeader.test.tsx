@@ -2,6 +2,8 @@ import type { CodexEntity, Facets, MastheadExtraEntry } from "@astra/codex-corpu
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
+import { noEmbedsCtx } from "@/testSupport";
+
 import {
   EquipmentFacetHeader,
   FeatFacetHeader,
@@ -9,9 +11,8 @@ import {
   MastheadExtraFallback,
   SpellFacetHeader,
 } from "./facetHeader";
-import { noEmbeds, rootRenderCtx } from "./nodes";
 
-const ctx = rootRenderCtx({ resolveEmbed: noEmbeds(), knownTraitIds: new Set() });
+const ctx = noEmbedsCtx();
 
 /** The header lines wrap each label in a `<strong>`
  * (the bold-label/regular-value grammar from the style doc) — a raw-HTML

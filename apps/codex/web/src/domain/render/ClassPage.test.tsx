@@ -9,6 +9,8 @@ import { createRootRoute, createRouter, RouterProvider } from "@tanstack/react-r
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { loreCardHtml } from "@/testSupport";
+
 import { resolveClassPageData, type ClassPageData } from "../../server/classPageData";
 import { fixtureCorpusRoot } from "../../server/corpusFs";
 import { ClassPage } from "./ClassPage";
@@ -211,12 +213,6 @@ describe("ClassPage: description suppression", () => {
 // through the real `resolveClassPageData` -> `ClassPage` pipeline (not just
 // the pure `loreDedupe.test.ts` unit coverage).
 // ---------------------------------------------------------------------------
-
-const LORE_CARD_RE = /<section class="codex-card codex-card-prose codex-lore">[\s\S]*?<\/section>/;
-
-function loreCardHtml(html: string): string | undefined {
-  return LORE_CARD_RE.exec(html)?.[0];
-}
 
 describe("ClassPage: Description extension — stream-covered feature-heading sections", () => {
   it("witch: the body's 'Basic Lesson' section (name-matches the grant AND covered by its stream body) is stripped from the Description", async () => {

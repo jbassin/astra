@@ -5,7 +5,9 @@ import { join } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { noEmbeds, renderNodes, rootRenderCtx } from "../domain/render/nodes";
+import { noEmbedsCtx } from "@/testSupport";
+
+import { renderNodes } from "../domain/render/nodes";
 
 const CSS = readFileSync(join(import.meta.dirname, "globals.css"), "utf8").replaceAll(
   /\/\*[\s\S]*?\*\//g,
@@ -21,7 +23,7 @@ function brokenRefSelector(): string {
 
 describe("broken references", () => {
   it("the stylesheet's broken-ref rule matches the element the renderer emits", () => {
-    const ctx = rootRenderCtx({ resolveEmbed: noEmbeds(), knownTraitIds: new Set() });
+    const ctx = noEmbedsCtx();
     const markup = renderToStaticMarkup(
       <>{renderNodes([{ kind: "brokenRef", target: "spell/gone", display: "Gone Spell" }], ctx)}</>,
     );

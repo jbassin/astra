@@ -5,15 +5,13 @@
 // `@testing-library/react` and genuinely needs a DOM, so it opts in
 // per-file, same as `BrowseListing.test.tsx`.
 
-import type { RulesTreeBook, TreeNode } from "@astra/codex-corpus";
+import type { RulesTreeBook } from "@astra/codex-corpus";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { RulesTree } from "./RulesTree";
+import { treeNode as node } from "@/testSupport";
 
-function node(overrides: Partial<TreeNode> & Pick<TreeNode, "name">): TreeNode {
-  return { children: [], ...overrides };
-}
+import { RulesTree } from "./RulesTree";
 
 function book(overrides: Partial<RulesTreeBook> & Pick<RulesTreeBook, "book">): RulesTreeBook {
   return { edition: "remaster", license: "ORC", hiddenWhenLegacyOff: 0, nodes: [], ...overrides };

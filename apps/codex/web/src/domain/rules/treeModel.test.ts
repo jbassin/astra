@@ -1,6 +1,8 @@
 import type { TreeNode } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
+import { treeNode as node } from "@/testSupport";
+
 import {
   computeOpen,
   dfsPreOrder,
@@ -9,10 +11,6 @@ import {
   pruneForSuperseded,
   sortBooksForDisplay,
 } from "./treeModel";
-
-function node(overrides: Partial<TreeNode> & Pick<TreeNode, "name">): TreeNode {
-  return { children: [], ...overrides };
-}
 
 describe("nodeKeyFor", () => {
   it("a real (id-bearing) node keys on its CodexId alone, ignoring book/path", () => {

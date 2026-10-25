@@ -1,5 +1,6 @@
-import { defaultParseSearch } from "@tanstack/react-router";
 import { describe, expect, it } from "vitest";
+
+import { parseQuery } from "@/testSupport";
 
 import {
   emptySearchFilterState,
@@ -12,14 +13,6 @@ import {
   type SearchFilterState,
   type SearchPageSearch,
 } from "./searchUrlState";
-
-/** Same posture as `domain/browse/urlState.test.ts`: run the REAL
- * `@tanstack/router-core` query-string parser, not a hand simulation — this
- * is what actually proves the B1 gotcha (a bare `+` decoding to a space)
- * never regresses on `/search`'s own params. */
-function parseQuery(queryString: string): Record<string, unknown> {
-  return defaultParseSearch(queryString);
-}
 
 describe("validateSearchPageSearch", () => {
   it("empty query string -> {}", () => {

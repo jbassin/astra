@@ -2,6 +2,7 @@ import type { IndexRow } from "@astra/codex-corpus";
 import { describe, expect, it } from "vitest";
 
 import { abbreviateBook } from "@/domain/sources/abbreviations";
+import { row } from "@/testSupport";
 
 import {
   ambientRows,
@@ -42,16 +43,6 @@ import {
   type BrowseFilterState,
   type OptionCount,
 } from "./filterEngine";
-
-function row(overrides: Partial<IndexRow> & Pick<IndexRow, "id" | "name">): IndexRow {
-  return {
-    traits: [],
-    source: { book: "Test Book", license: "unknown" },
-    edition: "remaster",
-    superseded: false,
-    ...overrides,
-  };
-}
 
 describe("filterEngine: tri-state trait semantics", () => {
   const fire = row({ id: "feat/a", name: "A", traits: ["fire", "agile"] });

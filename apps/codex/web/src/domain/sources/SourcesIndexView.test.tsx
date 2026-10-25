@@ -1,19 +1,9 @@
-import type { SourceIndexEntry } from "@astra/codex-corpus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { SourcesIndexView } from "./SourcesIndexView";
+import { sourceEntry as book } from "@/testSupport";
 
-function book(overrides: Partial<SourceIndexEntry> = {}): SourceIndexEntry {
-  return {
-    book: "Some Book",
-    license: "unknown",
-    edition: "remaster",
-    entityCount: 1,
-    categoryCounts: { spell: 1 },
-    ...overrides,
-  };
-}
+import { SourcesIndexView } from "./SourcesIndexView";
 
 describe("SourcesIndexView", () => {
   it("renders a classified group as a plain (non-collapsed) section", () => {
