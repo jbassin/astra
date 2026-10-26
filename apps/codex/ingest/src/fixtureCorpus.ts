@@ -573,26 +573,95 @@ function sameTree(a: string, b: string): boolean {
   return true;
 }
 
+/** The lock `ensureFixtureCorpus` holds while it builds, compares and swaps. A directory, since
+ * `mkdir` is atomic; named so the `.entities-build-*` gitignore entry covers it. */
+const LOCK_DIR = join(FIXTURES_DIR, ".entities-build-lock");
+/** How long to wait for another process's build before giving up (one build is ~0.5 s). */
+const LOCK_WAIT_MS = 120_000;
+/** A lock with no owner file this old was left by a process that died while taking it. */
+const LOCK_ORPHAN_MS = 30_000;
+
+function sleepSync(ms: number): void {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function errnoCode(e: unknown): unknown {
+  return e instanceof Error && "code" in e ? e.code : undefined;
+}
+
+/** Whether the lock's owner is gone: its process no longer runs, or it never wrote its pid. */
+function lockIsStale(): boolean {
+  const lock = statSync(LOCK_DIR, { throwIfNoEntry: false });
+  if (!lock) return false; // released meanwhile
+  let pid: number;
+  try {
+    pid = Number(readFileSync(join(LOCK_DIR, "pid"), "utf8"));
+  } catch (e) {
+    if (errnoCode(e) !== "ENOENT") throw e;
+    return Date.now() - lock.mtimeMs > LOCK_ORPHAN_MS;
+  }
+  try {
+    process.kill(pid, 0);
+    return false;
+  } catch (e) {
+    return errnoCode(e) === "ESRCH";
+  }
+}
+
+/** Runs `fn` holding the fixture lock, so only one process at a time builds and swaps. */
+function withFixtureLock<T>(fn: () => T): T {
+  const deadline = Date.now() + LOCK_WAIT_MS;
+  for (;;) {
+    try {
+      mkdirSync(LOCK_DIR);
+      break;
+    } catch (e) {
+      if (errnoCode(e) !== "EEXIST") throw e;
+    }
+    if (lockIsStale()) {
+      rmSync(LOCK_DIR, { recursive: true, force: true });
+      continue;
+    }
+    if (Date.now() > deadline) {
+      throw new Error(
+        `fixture: ${LOCK_DIR} has been held for over ${LOCK_WAIT_MS / 1000} s; remove it if no ` +
+          `test run is building the fixture corpus`,
+      );
+    }
+    sleepSync(50);
+  }
+  try {
+    writeFileSync(join(LOCK_DIR, "pid"), String(process.pid));
+    return fn();
+  } finally {
+    rmSync(LOCK_DIR, { recursive: true, force: true });
+  }
+}
+
 /**
  * Brings `fixtures/entities/` up to date and returns its path. It builds a fresh copy (about
- * half a second) next to the target and swaps it in only when the bytes differ, so
- * processes that run it while others read the fixture never disturb them.
+ * half a second) next to the target and swaps it in only when the bytes differ.
+ *
+ * Several processes run this at once: the global setups of both codex packages, the e2e
+ * server, a second `just ci` in the same checkout. The build, the compare and the swap happen
+ * under one lock, so the second process finds the first one's fresh copy and leaves it alone.
+ * Without the lock, two processes that both saw a stale copy each swapped, and the second
+ * deleted the first's new copy while that run's tests were reading it (build-search.test.ts
+ * then counted fewer entities than the manifest lists). The swap moves the old copy aside
+ * before renaming the new one in, so the path is missing only between two renames.
  */
 export function ensureFixtureCorpus(): string {
-  const staging = mkdtempSync(join(FIXTURES_DIR, ".entities-build-"));
-  try {
-    const fresh = join(staging, "entities");
-    buildFixtureCorpus(fresh);
-    if (sameTree(fresh, FIXTURE_CORPUS_DIR)) return FIXTURE_CORPUS_DIR;
-    rmSync(FIXTURE_CORPUS_DIR, { recursive: true, force: true });
+  return withFixtureLock(() => {
+    const staging = mkdtempSync(join(FIXTURES_DIR, ".entities-build-"));
     try {
+      const fresh = join(staging, "entities");
+      buildFixtureCorpus(fresh);
+      if (sameTree(fresh, FIXTURE_CORPUS_DIR)) return FIXTURE_CORPUS_DIR;
+      if (existsSync(FIXTURE_CORPUS_DIR)) renameSync(FIXTURE_CORPUS_DIR, join(staging, "old"));
       renameSync(fresh, FIXTURE_CORPUS_DIR);
-    } catch (e) {
-      // Another process swapped in its own build first; fine when it is the same build.
-      if (!sameTree(fresh, FIXTURE_CORPUS_DIR)) throw e;
+      return FIXTURE_CORPUS_DIR;
+    } finally {
+      rmSync(staging, { recursive: true, force: true });
     }
-    return FIXTURE_CORPUS_DIR;
-  } finally {
-    rmSync(staging, { recursive: true, force: true });
-  }
+  });
 }

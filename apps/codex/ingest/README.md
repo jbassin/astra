@@ -51,7 +51,10 @@ tests/fixtures/        parser samples for the unit tests
 
 `@astra/codex-ingest/fixture` (`src/fixtureCorpus.ts`) is the one export other packages use:
 `ensureFixtureCorpus()`, `buildFixtureCorpus()` and `FIXTURE_CORPUS_DIR`. The site's vitest
-setup, its e2e server and its golden regeneration call it.
+setup, its e2e server and its golden regeneration call it. It builds, compares and swaps under
+the lock directory `fixtures/.entities-build-lock`, so concurrent runs in one checkout never
+delete each other's fresh copy. If a killed run leaves the lock behind, the next run removes it
+once the owner's pid is gone; it waits at most 120 s otherwise.
 
 ## Determinism
 
