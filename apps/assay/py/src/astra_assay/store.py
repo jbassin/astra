@@ -22,10 +22,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar, Literal
 
+from astra_config import find_repo_root
 from astra_observe import get_tracer
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
-APP_ROOT = Path(__file__).resolve().parents[2]  # src/astra_assay/store.py -> apps/assay/py
+# From the repo-root marker, not a count of parent directories, so it holds however deep
+# this module sits.
+APP_ROOT = find_repo_root(Path(__file__)) / "apps" / "assay" / "py"
 STORE_ROOT = APP_ROOT / "homebrew"
 SPELLS_SUBDIR = "spells"
 TRAITS_SUBDIR = "traits"

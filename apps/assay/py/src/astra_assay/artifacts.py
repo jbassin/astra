@@ -18,9 +18,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, TypedDict
 
+from astra_config import find_repo_root
+
 from . import comparables, pricing
 
-APP_ROOT = Path(__file__).resolve().parents[2]  # src/astra_assay/artifacts.py -> apps/assay/py
+# From the repo-root marker, not a count of parent directories, so it holds however deep
+# this module sits.
+APP_ROOT = find_repo_root(Path(__file__)) / "apps" / "assay" / "py"
 RESULTS_DIR = APP_ROOT / "results"
 FITTED_PARAMS_PATH = RESULTS_DIR / "fitted-params.json"
 COMPARABLES_CORPUS_PATH = RESULTS_DIR / "comparables-corpus.json"
