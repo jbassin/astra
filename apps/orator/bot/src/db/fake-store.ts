@@ -283,8 +283,9 @@ export class FakeStore implements LibraryStore {
   tagsForTrack(_trackId: number): Promise<Tag[]> {
     return notImpl("tagsForTrack");
   }
+  /** The fake holds no tags, so every track has none (lets the track list run). */
   tagsForTracks(_trackIds: number[]): Promise<Map<number, Tag[]>> {
-    return notImpl("tagsForTracks");
+    return Promise.resolve(new Map());
   }
   addTagsToTracks(_trackIds: number[], _tagIds: number[]): Promise<number> {
     return notImpl("addTagsToTracks");

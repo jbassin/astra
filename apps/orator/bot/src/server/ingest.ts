@@ -161,6 +161,11 @@ export class IngestService {
       info = await this.deps.ytdlp.enumerate(job.source_url, this.#stopper.signal);
     } catch (err) {
       if (this.#stopping) return; // shutdown: the next boot lists it again
+      // The message ends with yt-dlp's stderr tail (`createYtDlp`); log it as well as storing it.
+      log.emit({
+        severityText: "ERROR",
+        body: `playlist listing failed (job ${job.id}): ${err instanceof Error ? err.message : String(err)}`,
+      });
       await store.updateDownloadJob(job.id, { status: "error", error: (err as Error).message });
       await this.publish(job.id);
       return;
@@ -355,9 +360,10 @@ export class IngestService {
     // Loudness on ingest, best-effort.
     let loudnessLufs: number | null = null;
     if (this.deps.prober) {
-      const probe: AudioProbe = await this.deps
-        .prober(result.filePath)
-        .catch((): AudioProbe => ({}));
+      const probe: AudioProbe = await this.deps.prober(result.filePath).catch((err: unknown) => {
+        reportIgnored("orator.ingest-probe", err);
+        return {};
+      });
       loudnessLufs = probe.loudnessLufs ?? null;
     }
     const fileSize = await stat(result.filePath)

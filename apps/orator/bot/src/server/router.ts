@@ -74,7 +74,19 @@ export function apiRoute<Body = unknown>(route: ApiRoute<Body>): ApiRoute<Body> 
 
 /** Parse a positive integer route param, throwing 400 otherwise. */
 export function intParam(params: Record<string, string>, name: string): number {
-  const n = Number(params[name]);
-  if (!Number.isInteger(n) || n <= 0) throw new HttpError(400, `invalid_${name}`);
+  return positiveInt(params[name], name);
+}
+
+/** Parse an optional positive integer (a query parameter or form field): `undefined` when it is
+ * absent or empty, 400 `invalid_<name>` when it is anything but a positive integer, so a value
+ * like `abc` never reaches Postgres as `NaN`. */
+export function optionalIntParam(raw: string | null | undefined, name: string): number | undefined {
+  if (raw === null || raw === undefined || raw === "") return undefined;
+  return positiveInt(raw, name);
+}
+
+function positiveInt(raw: string | undefined, name: string): number {
+  const n = raw !== undefined && /^\d+$/.test(raw) ? Number(raw) : Number.NaN;
+  if (!Number.isSafeInteger(n) || n <= 0) throw new HttpError(400, `invalid_${name}`);
   return n;
 }

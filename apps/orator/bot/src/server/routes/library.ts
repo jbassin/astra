@@ -14,7 +14,15 @@ import type { PlaylistWithItems, TrackWithTags } from "../../api/types";
 import type { Track } from "../../db/store";
 import { previewBulkRename, RenameError, type RenameOp } from "../../lib/rename";
 import { ids, INVALID_BODY, int, jsonBody, text } from "../bodies";
-import { type ApiCtx, type ApiRoute, apiRoute, HttpError, intParam, json } from "../router";
+import {
+  type ApiCtx,
+  type ApiRoute,
+  apiRoute,
+  HttpError,
+  intParam,
+  json,
+  optionalIntParam,
+} from "../router";
 
 async function trackWithTags(ctx: ApiCtx, track: Track): Promise<TrackWithTags> {
   return { ...track, tags: await ctx.store.tagsForTrack(track.id) };
@@ -77,11 +85,11 @@ export const libraryRoutes: ApiRoute[] = [
     path: "/api/v1/tracks",
     handler: async (ctx) => {
       const sp = ctx.url.searchParams;
-      const page = Math.max(Number(sp.get("page") ?? "1"), 1);
-      const limit = Math.min(Math.max(Number(sp.get("limit") ?? "200"), 1), 500);
+      const page = optionalIntParam(sp.get("page"), "page") ?? 1;
+      const limit = Math.min(optionalIntParam(sp.get("limit"), "limit") ?? 200, 500);
       const tracks = await ctx.store.listTracks({
-        collectionId: sp.get("collection") ? Number(sp.get("collection")) : undefined,
-        tagId: sp.get("tag") ? Number(sp.get("tag")) : undefined,
+        collectionId: optionalIntParam(sp.get("collection"), "collection"),
+        tagId: optionalIntParam(sp.get("tag"), "tag"),
         q: sp.get("q") ?? undefined,
         limit,
         offset: (page - 1) * limit,

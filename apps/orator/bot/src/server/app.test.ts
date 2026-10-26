@@ -177,6 +177,47 @@ describe("body validation (zod schemas; the codes are the handlers' own)", () =>
   });
 });
 
+describe("query parameters (a non-numeric value is a 400, never NaN in SQL)", () => {
+  const cookie = `orator_session=${signSession("allowed-uid", SECRET)}`;
+  function list(query: string) {
+    return makeApp().handle(
+      new Request(`https://orator.test/api/v1/tracks?${query}`, { headers: { cookie } }),
+    );
+  }
+
+  test.each([
+    ["collection=abc", "invalid_collection"],
+    ["tag=1x", "invalid_tag"],
+    ["page=two", "invalid_page"],
+    ["limit=-5", "invalid_limit"],
+    ["page=0", "invalid_page"],
+    ["collection=1.5", "invalid_collection"],
+  ])("GET /api/v1/tracks?%s answers 400 %s", async (query, code) => {
+    const res = await list(query);
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: code });
+  });
+
+  test("valid and empty parameters still list", async () => {
+    expect((await list("collection=&tag=&page=1&limit=900")).status).toBe(200);
+  });
+
+  test("a non-numeric upload collectionId answers 400", async () => {
+    const form = new FormData();
+    form.append("files", new File(["x"], "a.mp3"));
+    form.append("collectionId", "abc");
+    const res = await makeApp().handle(
+      new Request("https://orator.test/api/v1/ingest/upload", {
+        method: "POST",
+        headers: { cookie },
+        body: form,
+      }),
+    );
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: "invalid_collectionId" });
+  });
+});
+
 describe("static SPA caching", () => {
   test("hashed /assets/ files are cached as immutable; the document is not", async () => {
     const dist = mkdtempSync(join(tmpdir(), "orator-dist-"));

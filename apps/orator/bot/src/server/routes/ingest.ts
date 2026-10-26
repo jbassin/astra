@@ -6,7 +6,7 @@
  */
 
 import { int, jsonBody, text } from "../bodies";
-import { type ApiRoute, apiRoute, HttpError, intParam, json } from "../router";
+import { type ApiRoute, apiRoute, HttpError, intParam, json, optionalIntParam } from "../router";
 import { handleUpload } from "../uploads";
 
 const SSE_HEADERS = {
@@ -30,7 +30,11 @@ export const ingestRoutes: ApiRoute[] = [
       const files = form.getAll("files").filter((f): f is File => f instanceof File);
       if (files.length === 0) throw new HttpError(400, "no_files");
       const collectionRaw = form.get("collectionId");
-      const collectionId = collectionRaw ? Number(collectionRaw) : null;
+      const collectionId =
+        optionalIntParam(
+          typeof collectionRaw === "string" ? collectionRaw : null,
+          "collectionId",
+        ) ?? null;
       const result = await handleUpload({
         store: ctx.store,
         dataDir: ctx.config.dataDir,
