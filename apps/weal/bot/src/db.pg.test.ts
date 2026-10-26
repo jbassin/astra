@@ -14,9 +14,9 @@ import {
   TEST_DATABASE_URL,
 } from "@astra/pg-migrate/testing";
 import postgres from "postgres";
-import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
 
-import { MIGRATIONS_DIR, PostgresStore, saveDice } from "./db";
+import { CLOSE_TIMEOUT_S, MIGRATIONS_DIR, PostgresStore, saveDice } from "./db";
 
 describe.skipIf(TEST_DATABASE_URL === undefined)("PostgresStore (real Postgres)", () => {
   let db: ScratchDatabase;
@@ -111,4 +111,50 @@ describe.skipIf(TEST_DATABASE_URL === undefined)("migrations over a pre-ledger d
       await db.drop();
     }
   });
+});
+
+describe.skipIf(TEST_DATABASE_URL === undefined)("PostgresStore.close (real Postgres)", () => {
+  test("returns within its bound after the backend is killed mid-query", async () => {
+    const db = await createScratchDatabase(TEST_DATABASE_URL ?? "");
+    const store = new PostgresStore(db.url);
+    const admin = postgres(db.url, { onnotice: () => {} });
+    const locked = Promise.withResolvers<undefined>();
+    const release = Promise.withResolvers<undefined>();
+    let holder: Promise<unknown> = Promise.resolve();
+    try {
+      await store.migrate();
+      // Hold a lock so the store's next query waits inside Postgres, then terminate its backend.
+      holder = admin.begin(async (tx) => {
+        await tx`lock table funcs_v2 in access exclusive mode`;
+        locked.resolve(undefined);
+        await release.promise;
+      });
+      await locked.promise;
+      const query = store.getAllFuncsV2().then(
+        () => undefined,
+        (e: unknown) => e,
+      );
+      await vi.waitFor(
+        async () => {
+          const rows = await admin`select pg_terminate_backend(pid) as ok from pg_stat_activity
+            where datname = current_database() and wait_event_type = 'Lock'
+              and query like 'select id::int as id, name, source from funcs_v2%'`;
+          expect(rows.some((r) => r.ok === true)).toBe(true);
+        },
+        { timeout: 5_000, interval: 50 },
+      );
+      expect(await query).toBeInstanceOf(Error);
+      release.resolve(undefined);
+      await holder;
+      // A plain `sql.end()` never returns here (postgres.js 3.4.9).
+      const started = Date.now();
+      await store.close();
+      expect(Date.now() - started).toBeLessThan((CLOSE_TIMEOUT_S + 2) * 1_000);
+    } finally {
+      release.resolve(undefined);
+      await Promise.allSettled([holder]); // it rejects only when the test failed first
+      await admin.end({ timeout: 2 });
+      await db.drop();
+    }
+  }, 30_000);
 });

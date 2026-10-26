@@ -94,9 +94,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - Dashboards using orator's old `orator.api` span should switch to the route-named server spans — agent.
 - codex: once release-based serving has run a while, delete the old flat
   `/ruby/data/astra-state/codex/data/{corpus,search}` (kept for a code rollback past cdx-4) — agent.
-- orator and weal `PostgresStore.close()` call `sql.end()` with no timeout; after a killed
-  connection postgres.js 3.4.9 waits on it for ever, so shutdown can hang (seen in the
-  pg-migrate kill test) — agent.
 - pipe-4b follow-ups: `migrate_sessions.py --allow-launch` should take session keys, not a count;
   `plan_down` ignores the sensor ledgers; dagster/README should name exactly what resets a sensor
   cursor (`dagster sensor cursor --delete`, a sensor or location rename) — agent.
