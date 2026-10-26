@@ -88,8 +88,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 - portal `/mcp`: register the abort listener before `handleRequest` resolves (or check
   `req.signal.aborted`) so an early disconnect can't leak a request's McpServer — agent.
-- weal: the old-vs-new harness found 5 inputs that already end in stage `internal` (they page);
-  turn each into a user error — agent.
 - scribe incoming holds two zips for 2026-10-12; resolve per the scribe README's
   "Blocking checks" (fresh run, not a re-execute) when that session is processed — Josh.
 - The edge cannot renew the non-astra hosts it also serves (plex, ntfy, qbit, annex, apex, news):
@@ -127,16 +125,10 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Services
 
-- weal: skip a bad existing save at load time instead of breaking every roll — agent; weal track.
-- weal: write roll history after the reply ([ADR 0025](adr/0025-weal-roll-history-archive.md)); parse
-  depth is limited only by message length (WEAL-21); pasting the bot's own save confirmation fails
-  silently (WEAL-29) — agent.
 - `just portal-module-install` fails with EACCES because Foundry leaves the module dir root-owned;
   copy as root — agent; [`apps/portal/README.md`](../apps/portal/README.md).
 - orator: yt-dlp errors are discarded and child processes have no timeout (SVC-15); a non-numeric
   query parameter sends `NaN` to Postgres (SVC-19) — agent.
-- weal: once weal-bot and weal-overlay both run the weal-4 release, drop the old
-  `x-eerie-token` header name (`LEGACY_TOKEN_HEADER` in `libs/ts/weal-wire`) — agent.
 
 ## Frontends
 
