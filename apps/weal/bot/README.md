@@ -231,7 +231,9 @@ A saved function whose name is all lowercase letters and whose shape fits become
 suffix**: after `save(:pow, |die, n| explode(die, n))`, both `pow(d6, 2)` and `4d6pow2` work.
 
 Every roll re-loads every save, so one bad save could break every roll for everyone. The bot
-therefore dry-runs a new save before keeping it, and refuses it (with a reply saying why) when:
+therefore dry-runs a new save before keeping it, and refuses it (with a reply saying why) when
+either of the following holds. Boot runs the same check on every stored save and skips the ones
+it refuses (see Operations):
 
 - with it saved, one of a few everyday rolls would fail where it worked before: `d20`,
   `2d20kh1 + 1`, `2d20kl1`, `d6e1`, `d6r1`, `plot(d6)`, `save(:x, 1)`. This catches a save that
@@ -328,10 +330,12 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
   The `dice` table is a write-only archive written after the reply (ADR 0025): the bot does not
   wait for it, and a failed write only logs a WARN and counts `weal.dice.persist_failures`, so a
   database outage never blocks rolls. Saves live in `funcs_v2` (append-only; latest per name
-  wins). At boot every row is loaded in id order, exactly as a roll loads it (parsed,
-  type-checked and evaluated after the valid rows before it); a row that fails is skipped with a
-  WARN naming it (`skipping saved weal source: funcs_v2 row <id> (<name>)`), and every other save
-  and roll keeps working.
+  wins). At boot every row goes through the save guard in id order, after the rows kept before
+  it: the same check a new save gets (it must load, must not break an everyday roll, and using
+  it must not hit an engine fault). A refused row is skipped with one WARN naming it and the
+  failing probe (`skipping saved weal source: funcs_v2 row <id> (<name>): <kind> <probe>: <stage>:
+  <message>`), and every other save and roll keeps working. A row refused for an engine fault logs at
+  ERROR instead. Boot costs about ten evaluations per row (100 rows load in under 2 s).
 - **Overlay:** rolls broadcast to weal-overlay (`weal.feed-ws-url`) with the plain source text as
   `expression` and the headline as `display` (atom rolls send `total: 0`). The message is built
   through the shared schema in `@astra/weal-wire`, which the overlay validates with too; a change
@@ -353,8 +357,7 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
   `@astra/weal-engine` (the engine's builtin registry); keep its everyday-roll list in step with it.
 - **`check` mode alone cannot validate a save.** It parses and type-checks saves but never evaluates
   them, so a stored source that type-checks but fails to evaluate (`1 / 0`) would pass it and fail
-  every roll. That is why the boot load uses `mode:"run"` and the guard runs real rolls and real
-  uses. (Before the WEAL-1 engine fix, every `|| e` save was such a source.)
+  every roll. That is why the boot load and the save guard run real rolls and real uses (`mode:"run"`). (Before the WEAL-1 engine fix, every `|| e` save was such a source.)
 - **A wasm trap reaches the bot as an ordinary `internal` error.** `@astra/weal-engine` catches the
   trap, re-instantiates the wasm and returns `{ok:false, stage:"internal"}` with a message starting
   `engine trap:`; the bot never sees a throw. Input can't cause one on purpose: the parser

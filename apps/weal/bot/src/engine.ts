@@ -8,9 +8,9 @@
  * - {@link passesNoiseGate}: the error-visibility gate, so ordinary chat can
  *   never trigger a visible error reply.
  * - {@link loadValidatedFuncs}: the boot algorithm — `funcs_v2` rows in
- *   id order, each loaded (parsed, type-checked AND evaluated) after the prior
- *   valid rows; a failing row is skipped with a WARN naming it, so one bad
- *   save never breaks the other rolls.
+ *   id order, each put through the save guard after the rows kept before it;
+ *   a refused row is skipped with a WARN naming it, so one bad save never
+ *   breaks the other rolls.
  * - {@link checkNewSave}: the save guard — dry-runs a new save against the
  *   runtime saves list before anything persists it.
  */
@@ -82,21 +82,26 @@ export function isBareAtom(source: string): boolean {
 
 const ZERO_SEED = new Uint8Array(32);
 
-/** What loading a save runs: nothing of its own, so only the saves list is evaluated. */
-const LOAD_PROBE = "()";
-
 /**
- * Load `funcs_v2` rows (already in id order), each appended after the prior
- * valid rows and loaded exactly the way every roll loads it: a `mode:"run"` of
- * a do-nothing source, so the engine parses, type-checks AND evaluates the
- * saves list. (`mode:"check"` never evaluates a save, so a source like `1 / 0`
- * would pass it and then fail every roll.) Failing rows are skipped with a
- * WARN naming them. Returns the runtime save list; the engine consumes it in
+ * Load `funcs_v2` rows (already in id order), keeping each row only if the
+ * save guard ({@link checkNewSave}) would accept it today, appended after the
+ * rows kept before it. So a stored row gets exactly the check a new save gets:
+ *
+ * - it must load the way every roll loads it (`mode:"run"`, so the engine
+ *   parses, type-checks AND evaluates the saves list; `mode:"check"` never
+ *   evaluates a save, so `1 / 0` would pass it and then fail every roll);
+ * - it must not break one of the {@link GUARD_ROLLS} for everyone. A row that
+ *   loads cleanly can still do that: `kh = 3` (from before the guard existed)
+ *   breaks every `kh` roll, and a row named `save` blocks every later save;
+ * - using it must not hit an engine fault, which would page on every use.
+ *
+ * A refused row is skipped with one WARN naming it; every other row and roll
+ * keeps working. Returns the runtime save list; the engine consumes it in
  * order, so a later row of the same name wins.
  *
- * Cost: row k re-loads the k-1 valid rows before it, so boot is quadratic in
- * the row count; each load is a fuel-bounded evaluation, cheap at campaign
- * scale.
+ * Cost: each row costs one guard check (about ten evaluations), and each
+ * evaluation re-loads the rows kept before it, so boot is quadratic in the
+ * row count. Each evaluation is fuel-bounded and cheap at campaign scale.
  */
 export function loadValidatedFuncs(
   rows: readonly FuncV2[],
@@ -104,14 +109,16 @@ export function loadValidatedFuncs(
 ): [string, string][] {
   const valid: [string, string][] = [];
   for (const row of rows) {
-    const outcome = runEngine(LOAD_PROBE, [...valid, [row.name, row.source]], ZERO_SEED, hooks);
-    if (outcome.kind === "ok") {
+    const check = checkNewSave(row.name, row.source, valid, hooks);
+    if (check.ok) {
       valid.push([row.name, row.source]);
     } else {
-      const { stage, message } = outcome.error;
+      const { stage, message } = check.error;
+      // A skipped row is handled, so WARN; an engine fault is an engine bug, and
+      // ERROR is how an operator hears of one (it pages Discord, Class A).
       log.emit({
-        severityText: "WARN",
-        body: `skipping saved weal source: funcs_v2 row ${row.id} (${row.name}): ${stage}: ${message}`,
+        severityText: isInternalError(check.error) ? "ERROR" : "WARN",
+        body: `skipping saved weal source: funcs_v2 row ${row.id} (${row.name}): ${check.kind} \`${check.probe}\`: ${stage}: ${message}`,
         attributes: { "weal.save": row.name, "weal.stage": stage },
       });
     }
@@ -201,8 +208,8 @@ type SaveCheck = { ok: true } | ({ ok: false } & SaveRefusal);
  *    they say the use doesn't fit (`f + 1` on a function) or reflect the player's own logic
  *    (`|x| x / 0`).
  *
- * Passing (1) also means the save survives a restart: the boot load evaluates
- * the same list in the same order, which `run` already did.
+ * The boot load ({@link loadValidatedFuncs}) runs this same check on every
+ * stored row, in id order, so a save accepted here is kept across restarts.
  *
  * Cost: every probe runs under the engine's default fuel, like any message,
  * with a fixed seed. The guard rolls are fixed and cheap, so they cost what
