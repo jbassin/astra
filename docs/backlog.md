@@ -88,8 +88,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
       book use now, and sending the co-author a disagreement report. Blocks asy-3.
 - [ ] **Paid verification for pipe-4c and pipe-6.** Recommend verifying both on the next real
       session instead of a forced re-render, so nothing extra is spent; your flag before deploy.
-- [ ] **Campaign content** (`menagerie-puzzles.md`, `sheets/`): astra-data is public and the
-      puzzles may spoil the players. Recommend a private repo. Blocks that part of p3-docs.
 
 ## Waiting on an event
 
@@ -195,4 +193,3 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Docs
 
-- Campaign content (`menagerie-puzzles.md`, `sheets/`) sits at the code root; move it out — Josh to say where.
