@@ -1,4 +1,5 @@
 import { identityStyle } from "@astra/gothic";
+import { gothic } from "@astra/gothic/palette";
 
 import { getDeck } from "@/domain/lib/decks";
 import type { CardOrientation, TarotCard } from "@/domain/lib/types";
@@ -12,7 +13,7 @@ import { Icon } from "./Icon";
 // Structure + the golden SVG frame + glyph render unchanged; the gold is gothic
 // gold-leaf.
 
-const GOLD = "#b4842f"; // gothic --color-gold-leaf
+const GOLD = gothic.hex.goldLeaf;
 
 interface CardFrontProps {
   card: TarotCard;

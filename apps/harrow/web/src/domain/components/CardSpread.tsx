@@ -1,3 +1,5 @@
+import { gothic } from "@astra/gothic/palette";
+
 import type { DrawnCard, Spread } from "@/domain/lib/types";
 import { useIsMobile } from "@/lib/useIsMobile";
 
@@ -14,7 +16,7 @@ interface CardSpreadProps {
 
 const W = 860;
 const H = 980;
-const GOLD = "#f0b46e"; // gothic --color-accent-amber
+const GOLD = gothic.hex.accentSecondary;
 
 // 5 positions on a circle (r=335, cx=430, cy=519), equally spaced at 72°.
 const POSITIONS: Array<{ x: number; y: number }> = [

@@ -2,6 +2,12 @@
    src/routes/__root.tsx. This file keeps only akasha-frontend's reset + the page
    shell. The Quartz 3-column grid + sidebars land with the islands (later slices). */
 
+/* The Graph island reads Quartz's CSS-var names (--secondary, --gray, …) through
+   getComputedStyle to colour nodes, labels and links. getComputedStyle can return a
+   var() unresolved and pixi.js needs a parseable colour, so gothic generates them as
+   concrete hex from its token source. */
+@import "@astra/gothic/graph-palette.css";
+
 /* The reset lives in @layer base so it sits BELOW gothic's @layer components
    content styles (and Tailwind's utilities). Unlayered, the bare `* { margin:0;
    padding:0 }` overrode every gothic-content margin/padding — paragraph spacing,
@@ -403,23 +409,7 @@ h2:has(> .tag-link) {
   height: auto;
 }
 
-/* ── Graph (faerrin Graph island) ─────────────────────────────────────────────────
-   The verbatim-ported Graph reads these Quartz CSS-var names via getComputedStyle to
-   color nodes/labels/links. They're shimmed here to the gothic void palette as
-   CONCRETE hex (not `var(--color-*)`): getComputedStyle returns a custom property's
-   value with var() references left unresolved in some browsers, and pixi.js needs a
-   parseable color. Values mirror @astra/gothic's tokens. */
-:root {
-  --secondary: #6dd5c0; /* current page node — gothic --color-accent */
-  --tertiary: #f0b46e; /* visited / tag nodes — --color-accent-amber */
-  --gray: #7a8a99; /* default node + active link — --color-ink-dim */
-  --light: #090c10; /* tag fill — --color-void */
-  --lightgray: #1e2730; /* idle link + borders — --color-rule */
-  --dark: #dce8f0; /* label text — --color-ink */
-  --darkgray: #7a8a99;
-  --bodyFont: "Caslon Antique", serif; /* label font — --font-body */
-}
-
+/* ── Graph (faerrin Graph island) ───────────────────────────────────────────────── */
 /* graph-slot reserves the column server-side (h3 + 250px graph-outer) so the
    client-only graph doesn't shift layout when it hydrates. */
 .graph-slot {

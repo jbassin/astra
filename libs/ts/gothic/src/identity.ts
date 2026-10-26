@@ -1,5 +1,7 @@
 import type { CSSProperties } from "react";
 
+import { gothic } from "./generated/palette";
+
 /**
  * Identity-color seam. Per-player/host colors are NOT part of
  * gothic's framework palette — their VALUES live in ontology-being
@@ -10,7 +12,7 @@ import type { CSSProperties } from "react";
  * `border-[var(--identity-color)]`.
  *
  * A missing/blank color falls back VISIBLY to a neutral (never crashes, never
- * an invalid CSS value) — ink-dim, so an un-themed speaker still reads.
+ * an invalid CSS value) — the muted text colour, so an un-themed speaker still reads.
  *
  * gothic does NOT import `@astra/ontology` (grow-as-consumed, J3): the FRONTEND
  * imports ontology-being, reads `Player.color` / `WealHost.color` / `guest_color`,
@@ -18,8 +20,8 @@ import type { CSSProperties } from "react";
  * (`{ color: string }`), so they pass straight through.
  */
 
-/** The visible neutral used when an entity has no color (ink-dim). */
-export const FALLBACK_IDENTITY_COLOR = "#7a8a99";
+/** The visible neutral used when an entity has no color (the muted text colour). */
+export const FALLBACK_IDENTITY_COLOR: string = gothic.hex.fgMuted;
 
 /** The CSS custom property gothic exposes identity color through. */
 export const IDENTITY_COLOR_VAR = "--identity-color";
