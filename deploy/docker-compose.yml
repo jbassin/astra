@@ -674,6 +674,7 @@ services:
           propagation: rslave
       # smart-exporter (below) writes smartmon.prom here; served via --collector.textfile.
       - { <<: *bind, source: /ruby/data/astra-state/node-exporter/textfile, target: /textfile, read_only: true }
+    # The stock image's ENTRYPOINT is node_exporter, so `command:` holds only its flags.
     command:
       - --path.rootfs=/host
       - --collector.ethtool
