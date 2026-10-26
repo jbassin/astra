@@ -279,6 +279,14 @@ just down-volumes         # also drop the SigNoz volumes (asks first; fresh onbo
 
 ## Traps
 
+- The edge imports `/ruby/data/astra-deploy/sites.caddyfile`, the deploy checkout's copy, so a
+  merged `sites.caddyfile` change is not live until a `just deploy` (any service) moves the
+  checkout; then `just caddy-reload`. Reloading first just reloads the old file.
+- A config file bind-mounted as a single file (the SigNoz collector's
+  `otel-collector-config.yaml`, its OpAMP config) keeps its old content in a running container
+  after a deploy: git replaces the file with a new inode and the mount still points at the old
+  one, and compose sees no container change to recreate. Run `docker restart <container>` after
+  the deploy, then check the file inside the container.
 - Every host unit's script runs from the deploy checkout, so a script edit goes live with the next
   `just deploy` after the push; a changed `.service`, `.timer` or `.path` file needs
   `just units-install <group>` re-run (the groups are in `deploy/systemd/units.txt`), or
