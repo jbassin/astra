@@ -306,16 +306,19 @@ export function createMcpRequestHandler(
       void transport.close();
       void server.close();
     };
+    // Stateless: one server and transport per request, closed once the answer has been
+    // sent or the client has gone away. The abort listener goes on before any await: a
+    // client that disconnects while `handleRequest` is still running would otherwise
+    // abort before anyone listens, and the server would never close. An already-aborted
+    // signal never fires `abort`, so check it once the response exists.
+    req.signal.addEventListener("abort", close, { once: true });
     try {
       await server.connect(transport);
       const res = await transport.handleRequest(req);
-      if (!res.body) {
+      if (!res.body || req.signal.aborted) {
         close();
         return res;
       }
-      // Stateless: one server and transport per request, closed once the answer has been
-      // sent or the client has gone away.
-      req.signal.addEventListener("abort", close, { once: true });
       const body = res.body.pipeThrough(new TransformStream({ flush: close }));
       return new Response(body, {
         status: res.status,
