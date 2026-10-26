@@ -616,15 +616,18 @@ def _write_validation_v2(
     lines.append("")
     graded = [c for c in checks if c.correct_side is not None]
     ungraded = [c.name for c in checks if c.correct_side is None]
+    verdict = "PASS" if share >= 0.75 else "FAIL"
+    scope = f" on the {len(graded)} graded spells only" if ungraded else ""
     lines.append(
         f"- {sum(1 for c in graded if c.correct_side)}/{len(graded)} graded spells correct-side "
-        f"({share:.1%}) — **{'PASS' if share >= 0.75 else 'FAIL'}**"
+        f"({share:.1%}) — **{verdict}{scope}**"
     )
     if ungraded:
         lines.append(
             f"- {', '.join(ungraded)}: hostile effect spells with no damage EV. They get "
             "comparables and a rank range, not a ladder residual, so this gate does not grade "
-            "them."
+            f"them, and its verdict says nothing about them ({len(ungraded)} of the "
+            f"{len(checks)} enumerated outliers)."
         )
     lines.append(
         "- Command's expected outcome IS the ledger (preamble-options exclusion, not a scoring "

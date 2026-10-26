@@ -34,8 +34,8 @@ Diagnosis: the 'pure'/'hybrid' labels here are the BROAD damage-row split (has v
 | Dizzying Colors | weak | comparables | — | n/a |
 | Disintegrate | weak | scored | +4.993 | **NO** |
 
-- 6/8 graded spells correct-side (75.0%) — **PASS**
-- Fear, Slow, Synesthesia, Dizzying Colors: hostile effect spells with no damage EV. They get comparables and a rank range, not a ladder residual, so this gate does not grade them.
+- 6/8 graded spells correct-side (75.0%) — **PASS on the 8 graded spells only**
+- Fear, Slow, Synesthesia, Dizzying Colors: hostile effect spells with no damage EV. They get comparables and a rank range, not a ladder residual, so this gate does not grade them, and its verdict says nothing about them (4 of the 12 enumerated outliers).
 - Command's expected outcome IS the ledger (preamble-options exclusion, not a scoring miss) — an asserted absence, same treatment as sure strike/shadow siphon/walls.
 
 **Diagnosis of the misses (no silent tuning — the honest read, round-1 precedent):**
