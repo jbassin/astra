@@ -680,8 +680,8 @@ portal-module-build:
     pnpm --filter @astra/portal-module build
 
 # The primary install path is the Manifest URL (https://portal.iridi.cc/module/module.json),
-# which Foundry fetches itself. This builds the module and copies module.json + dist/ into the live
-# Foundry data dir (FOUNDRY_DATA_DIR, default the foundry_faerrin container's bind source);
+# which Foundry fetches itself. This builds the module and copies module.json + dist/main.js into
+# the Foundry container (FOUNDRY_CONTAINER, default foundry_faerrin) with docker cp, so no sudo;
 # Foundry re-reads it on the next world launch or module refresh. No restart.
 # File-drop FALLBACK install of the Foundry module into the live Foundry data dir.
 portal-module-install:

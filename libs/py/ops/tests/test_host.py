@@ -4,7 +4,6 @@ checkout, then daemon-reload), then each group's enable."""
 
 from __future__ import annotations
 
-import os
 import shutil
 from pathlib import Path
 
@@ -283,40 +282,69 @@ def test_the_sudoers_files_exist() -> None:
 # --- portal module ---------------------------------------------------------------------------
 
 
-def test_portal_module_install_builds_then_copies(
+FILES = ("module.json", "dist/main.js")
+
+
+def built(module: Path) -> None:
+    (module / "dist").mkdir(parents=True)
+    (module / "module.json").write_text("{}")
+    (module / "dist" / "main.js").write_text("js")
+
+
+def test_portal_module_install_copies_through_the_container_as_root(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    """The backlog's EACCES: Foundry leaves the module dir root-owned, so the copy goes through
+    the Docker daemon and the result is handed back to the owner of Data/modules."""
+    monkeypatch.delenv("FOUNDRY_CONTAINER", raising=False)
     module = tmp_path / "repo" / "apps" / "portal" / "module"
-    foundry = tmp_path / "foundry"
-    monkeypatch.setenv("FOUNDRY_DATA_DIR", str(foundry))
-
-    def built() -> None:
-        (module / "dist").mkdir(parents=True)
-        (module / "module.json").write_text("{}")
-        (module / "dist" / "main.js").write_text("js")
-
-    steps: list[Step] = [Call(["pnpm", "--filter", "@astra/portal-module", "build"], effect=built)]
+    dest = "/data/Data/modules/portal"
+    root = ["docker", "exec", "--user", "0", "foundry_faerrin"]
+    steps: list[Step] = [
+        Call(["pnpm", "--filter", "@astra/portal-module", "build"], effect=lambda: built(module)),
+        Call([*root, "mkdir", "-p", f"{dest}/dist"]),
+        *(Call(["docker", "cp", str(module / n), f"foundry_faerrin:{dest}/{n}"]) for n in FILES),
+        Call([*root, "sh", "-c", f'chown -R "$(stat -c %u:%g /data/Data/modules)" {dest}']),
+    ]
     ctx, r = make_ctx(tmp_path, steps)
     assert cli.dispatch(ctx, "portal-module-install", []) == 0
     r.assert_done()
-    assert (foundry / "Data/modules/portal/dist/main.js").read_text() == "js"
-    assert (foundry / "Data/modules/portal/module.json").read_text() == "{}"
 
 
-def test_portal_module_install_reports_an_unwritable_dir(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+def test_portal_module_install_honours_foundry_container(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """The backlog's EACCES: Foundry leaves the module dir root-owned."""
-    if os.geteuid() == 0:
-        pytest.skip("root ignores the mode")
-    foundry = tmp_path / "foundry" / "Data" / "modules" / "portal"
-    foundry.mkdir(parents=True)
-    foundry.chmod(0o555)
-    monkeypatch.setenv("FOUNDRY_DATA_DIR", str(tmp_path / "foundry"))
-    ctx, r = make_ctx(tmp_path, [Call(["pnpm", "--filter", "@astra/portal-module", "build"])])
-    try:
-        assert cli.dispatch(ctx, "portal-module-install", []) == 1
-    finally:
-        foundry.chmod(0o755)
+    monkeypatch.setenv("FOUNDRY_CONTAINER", "foundry_test")
+    module = tmp_path / "repo" / "apps" / "portal" / "module"
+    dest = "/data/Data/modules/portal"
+    root = ["docker", "exec", "--user", "0", "foundry_test"]
+    steps: list[Step] = [
+        Call(["pnpm", "--filter", "@astra/portal-module", "build"], effect=lambda: built(module)),
+        Call([*root, "mkdir", "-p", f"{dest}/dist"]),
+        *(Call(["docker", "cp", str(module / n), f"foundry_test:{dest}/{n}"]) for n in FILES),
+        Call([*root, "sh", "-c", f'chown -R "$(stat -c %u:%g /data/Data/modules)" {dest}']),
+    ]
+    ctx, r = make_ctx(tmp_path, steps)
+    assert cli.dispatch(ctx, "portal-module-install", []) == 0
     r.assert_done()
-    assert "Permission denied" in capsys.readouterr().err
+
+
+def test_portal_module_install_stops_when_the_container_is_missing(tmp_path: Path) -> None:
+    module = tmp_path / "repo" / "apps" / "portal" / "module"
+    steps: list[Step] = [
+        Call(["pnpm", "--filter", "@astra/portal-module", "build"], effect=lambda: built(module)),
+        Call(["docker", "exec", "--user", "0", "foundry_faerrin", "mkdir", "-p",
+              "/data/Data/modules/portal/dist"], rc=1),
+    ]  # fmt: skip
+    ctx, r = make_ctx(tmp_path, steps)
+    assert cli.dispatch(ctx, "portal-module-install", []) == 1
+    r.assert_done()
+
+
+def test_portal_module_install_refuses_a_missing_build_output(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    ctx, r = make_ctx(tmp_path, [Call(["pnpm", "--filter", "@astra/portal-module", "build"])])
+    assert cli.dispatch(ctx, "portal-module-install", []) == 1
+    r.assert_done()
+    assert "did not produce" in capsys.readouterr().err
