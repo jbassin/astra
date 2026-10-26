@@ -113,7 +113,7 @@ check_edge() {
   local public=(-H "X-Forwarded-For: 203.0.113.7") hosts host path
   mapfile -t hosts < <(jq -r '[.. | .host? // empty | .[]] | unique | .[]' <<<"$adapted")
   for host in "${hosts[@]}"; do
-    for path in /healthz /health /api/v1/health '/healthz?probe=1'; do
+    for path in /healthz /healthz/ /healthz/x /health /health/ /api/v1/health /api/v1/health/ '/healthz?probe=1'; do
       expect 404 "$host" "$path" "${public[@]}"
     done
   done

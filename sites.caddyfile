@@ -59,7 +59,7 @@
 	# so it runs before each site's own handle blocks; astra_site is imported first, so it wins
 	# the overlap with vellum's @render (which also routes /health).
 	@public_health {
-		path /healthz /health /api/v1/health
+		path /healthz /healthz/* /health /health/* /api/v1/health /api/v1/health/*
 		not client_ip private_ranges 100.64.0.0/10
 	}
 	handle @public_health {
