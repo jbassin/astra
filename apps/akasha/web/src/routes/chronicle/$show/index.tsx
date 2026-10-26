@@ -1,12 +1,12 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
 import { ShowChronicle } from "@/domain/components/Chronicle";
-import { SHOWS } from "@/generated/chronicle";
+import { getChronicleShow } from "@/domain/lib/pageDataFns";
 
 // /chronicle/<show> — one show's seasons + compact episode cards (0019).
 export const Route = createFileRoute("/chronicle/$show/")({
-  loader: ({ params }) => {
-    const show = SHOWS.find((s) => s.show === params.show);
+  loader: async ({ params }) => {
+    const show = await getChronicleShow({ data: params.show });
     if (!show) throw notFound();
     return { slug: `chronicle/${show.show}`, show };
   },
