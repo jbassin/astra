@@ -3,7 +3,7 @@
  * (`just pg-test`, or the CI pg-test job); see ./testing.ts.
  */
 import postgres from "postgres";
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { migrate, MigrationError, parseMigrations } from "./index";
 import { createScratchDatabase, type ScratchDatabase, TEST_DATABASE_URL } from "./testing";
@@ -21,7 +21,9 @@ describe.skipIf(TEST_DATABASE_URL === undefined)("migrate (real Postgres)", () =
   });
 
   afterEach(async () => {
-    await sql.end();
+    // Bounded: after a killed connection postgres.js 3.4.9 keeps that connection's dead query
+    // and a plain `end()` waits on it for ever.
+    await sql.end({ timeout: 2 });
     await db.drop();
   });
 
@@ -106,6 +108,43 @@ describe.skipIf(TEST_DATABASE_URL === undefined)("migrate (real Postgres)", () =
     // With the lock free again, the same run succeeds.
     expect((await migrate(sql, parseMigrations([m1]))).applied).toHaveLength(1);
   });
+
+  test("a connection killed mid-migration fails the run instead of hanging", async () => {
+    const slow = {
+      file: "0002_slow.sql",
+      sql: "select pg_sleep(30); alter table t add column note text;",
+    };
+    const killer = postgres(db.url, { max: 1, onnotice: () => {} });
+    try {
+      await migrate(sql, parseMigrations([m1]));
+      const run = migrate(sql, parseMigrations([m1, slow])).then(
+        () => undefined,
+        (e: unknown) => e,
+      );
+      // Wait until the migration is inside pg_sleep, then terminate its backend.
+      await vi.waitFor(
+        async () => {
+          const rows = await killer`select pg_terminate_backend(pid) as ok from pg_stat_activity
+            where datname = current_database() and query like 'select pg_sleep(30)%'`;
+          expect(rows.some((r) => r.ok === true)).toBe(true);
+        },
+        { timeout: 5_000, interval: 50 },
+      );
+      const started = Date.now();
+      const err = await run;
+      expect(err).toBeInstanceOf(MigrationError);
+      expect(String(err)).toMatch(
+        /^MigrationError: the database connection was lost while migrating;.*0002_slow.sql failed/,
+      );
+      expect(Date.now() - started).toBeLessThan(10_000);
+    } finally {
+      await killer.end();
+    }
+    // The pool recovers: a fresh connection sees 0002 unapplied and can apply a fixed file.
+    expect(await columns()).toEqual(["id"]);
+    const r = await migrate(sql, parseMigrations([m1, m2]));
+    expect(r.applied.map((m) => m.version)).toEqual([2]);
+  }, 30_000);
 
   test("an `if not exists` migration over an existing schema only records itself", async () => {
     await sql.unsafe("create table t (id int primary key)");

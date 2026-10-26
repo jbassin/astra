@@ -13,7 +13,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { getTracer } from "@astra/observe";
-import { SpanStatusCode } from "@opentelemetry/api";
+import { type Span, SpanStatusCode } from "@opentelemetry/api";
 import type postgres from "postgres";
 
 /** One migration file, read and checksummed. */
@@ -184,22 +184,166 @@ export interface MigrateOptions {
 
 export const DEFAULT_LOCK_TIMEOUT_MS = 30_000;
 
-/** Run `stmt` on `conn`; on failure attach the error to `failure` instead of throwing. */
-async function cleanupStep(
-  conn: postgres.ReservedSql,
-  stmt: string,
-  failure: MigrationError | undefined,
-): Promise<unknown> {
-  try {
-    await conn.unsafe(stmt);
-    return undefined;
-  } catch (err) {
-    if (failure) {
-      failure.suppressed.push(err);
-      return undefined;
-    }
-    return err;
+/** postgres.js's own codes for a connection that closed or never opened, and the socket errors
+ * a dropped connection surfaces as. */
+const LOST_CONNECTION_CODES = new Set([
+  "CONNECTION_CLOSED",
+  "CONNECTION_ENDED",
+  "CONNECTION_DESTROYED",
+  "CONNECT_TIMEOUT",
+  "ECONNRESET",
+  "EPIPE",
+  "ETIMEDOUT",
+]);
+
+/**
+ * Whether `err` means the connection is gone: a postgres.js connection error, a socket error,
+ * a Postgres connection exception (SQLSTATE class 08), or the server ending the session
+ * (57P01 admin shutdown or `pg_terminate_backend`, 57P02 crash shutdown, 57P03 cannot connect
+ * now).
+ */
+export function isConnectionLost(err: unknown): boolean {
+  const code = err instanceof Error && "code" in err ? err.code : undefined;
+  if (typeof code !== "string") return false;
+  return (
+    LOST_CONNECTION_CODES.has(code) ||
+    /^08[0-9A-Z]{3}$/.test(code) ||
+    code === "57P01" ||
+    code === "57P02" ||
+    code === "57P03"
+  );
+}
+
+/** The reserved connection of one run. Every statement goes through {@link Session.run}, which
+ * notes a lost connection so that nothing touches or releases it afterwards. */
+class Session {
+  lost = false;
+  locked = false;
+
+  readonly #conn: postgres.ReservedSql;
+
+  constructor(conn: postgres.ReservedSql) {
+    this.#conn = conn;
   }
+
+  async run(stmt: string, params?: (string | number)[]): Promise<unknown> {
+    try {
+      return await this.#conn.unsafe(stmt, params);
+    } catch (err) {
+      if (isConnectionLost(err)) this.lost = true;
+      throw err;
+    }
+  }
+
+  /** Run one cleanup statement; on failure attach the error to `failure` instead of throwing. */
+  async cleanupStep(stmt: string, failure: MigrationError | undefined): Promise<unknown> {
+    try {
+      await this.run(stmt);
+      return undefined;
+    } catch (err) {
+      if (failure) {
+        failure.suppressed.push(err);
+        return undefined;
+      }
+      return err;
+    }
+  }
+
+  release(): void {
+    this.#conn.release();
+  }
+}
+
+/** Take the lock, read the ledger and apply each pending migration. Throws on any failure. */
+async function applyPending(
+  session: Session,
+  migrations: readonly Migration[],
+  lockTimeoutMs: number,
+  span: Span,
+): Promise<MigrateResult> {
+  // `if not exists` raises a NOTICE on every boot; keep it out of the logs.
+  await session.run("set client_min_messages = warning");
+  await session.run(`set lock_timeout = ${lockTimeoutMs}`);
+  try {
+    await session.run(LOCK_SQL);
+  } catch (err) {
+    if (session.lost) throw err;
+    throw new MigrationError(
+      `could not take the migration lock within ${lockTimeoutMs} ms; another session ` +
+        `holds it (see pg_locks where locktype = 'advisory'): ${String(err)}`,
+      { cause: err },
+    );
+  }
+  session.locked = true;
+  // The timeout bounds the wait for the advisory lock only; migrations run with the default.
+  await session.run("reset lock_timeout");
+  await session.run(LEDGER_DDL);
+  const applied = (await session.run(
+    "select version, name, checksum from schema_migrations order by version",
+  )) as AppliedMigration[];
+  const { pending, ahead } = plan(migrations, applied);
+  span.setAttribute("db.migrations.already_applied", applied.length);
+  span.setAttribute("db.migrations.pending", pending.length);
+  for (const mig of pending) await applyOne(session, mig);
+  return { applied: pending, alreadyApplied: applied.length, ahead };
+}
+
+/** One migration and its ledger row in one transaction, rolled back on failure. */
+async function applyOne(session: Session, mig: Migration): Promise<void> {
+  await session.run("begin");
+  try {
+    await session.run(mig.sql);
+    await session.run(
+      "insert into schema_migrations (version, name, checksum) values ($1, $2, $3)",
+      [mig.version, mig.name, mig.checksum],
+    );
+    await session.run("commit");
+  } catch (err) {
+    const migErr = new MigrationError(`${mig.file} failed and was rolled back: ${String(err)}`, {
+      cause: err,
+    });
+    if (!session.lost) await session.cleanupStep("rollback", migErr);
+    throw migErr;
+  }
+}
+
+/**
+ * Unlock, reset and release the connection, and return the run's failure, if any. Cleanup never
+ * replaces the first failure. After a clean run, a failed unlock still fails the run: the
+ * session may still hold the lock. A lost connection is neither cleaned up nor released: the
+ * pool already took it back. A run whose migrations all committed still stands then, since the
+ * lock ended with the session.
+ */
+async function cleanUp(
+  session: Session,
+  result: MigrateResult | undefined,
+  first: MigrationError | undefined,
+): Promise<MigrationError | undefined> {
+  let failure = first;
+  const cleanup = [
+    ...(session.locked ? [UNLOCK_SQL] : []),
+    "reset client_min_messages",
+    "reset lock_timeout",
+  ];
+  for (const stmt of cleanup) {
+    if (session.lost) break;
+    const err = await session.cleanupStep(stmt, failure);
+    if (err !== undefined && !session.lost) {
+      failure = new MigrationError(`cleanup after migrating failed (${stmt}): ${String(err)}`, {
+        cause: err,
+      });
+    }
+  }
+  if (!session.lost) {
+    session.release();
+    return failure;
+  }
+  if (!failure && result) return undefined;
+  return new MigrationError(
+    `the database connection was lost while migrating; Postgres rolled back the open ` +
+      `transaction and released the lock: ${failure?.message ?? "no error recorded"}`,
+    { cause: failure },
+  );
 }
 
 /**
@@ -209,7 +353,13 @@ async function cleanupStep(
  * that migration back, leaves the earlier ones applied, and throws.
  *
  * Waiting for the lock is bounded by `lockTimeoutMs` (default 30 s), so a lock held by a stuck
- * session fails boot loudly instead of hanging it. Every error the run throws is a
+ * session fails boot loudly instead of hanging it.
+ *
+ * If the connection dies mid-run, the run fails at once without touching the connection again.
+ * postgres.js has already returned the dead connection to its pool; another statement on the
+ * reserved handle, or releasing it, would hang or crash the process. Postgres itself rolls back
+ * the open transaction and drops the session's advisory lock when the session ends, so there is
+ * nothing to clean up. Every error the run throws is a
  * {@link MigrationError} for the first failure; a later failure while cleaning up (the
  * rollback, the unlock) goes on its `suppressed` list instead of replacing it.
  */
@@ -220,75 +370,18 @@ export function migrate(
 ): Promise<MigrateResult> {
   const lockTimeoutMs = Math.max(1, Math.floor(opts.lockTimeoutMs ?? DEFAULT_LOCK_TIMEOUT_MS));
   return getTracer("astra.pg-migrate").startActiveSpan("db.migrate", async (span) => {
-    const conn = await sql.reserve();
-    let locked = false;
+    const session = new Session(await sql.reserve());
     let result: MigrateResult | undefined;
     let failure: MigrationError | undefined;
     try {
-      // `if not exists` raises a NOTICE on every boot; keep it out of the logs.
-      await conn.unsafe("set client_min_messages = warning");
-      await conn.unsafe(`set lock_timeout = ${lockTimeoutMs}`);
-      try {
-        await conn.unsafe(LOCK_SQL);
-      } catch (err) {
-        throw new MigrationError(
-          `could not take the migration lock within ${lockTimeoutMs} ms; another session ` +
-            `holds it (see pg_locks where locktype = 'advisory'): ${String(err)}`,
-          { cause: err },
-        );
-      }
-      locked = true;
-      // The timeout bounds the wait for the advisory lock only; migrations run with the default.
-      await conn.unsafe("reset lock_timeout");
-      await conn.unsafe(LEDGER_DDL);
-      const applied = (await conn.unsafe(
-        "select version, name, checksum from schema_migrations order by version",
-      )) as unknown as AppliedMigration[];
-      const { pending, ahead } = plan(migrations, applied);
-      span.setAttribute("db.migrations.already_applied", applied.length);
-      span.setAttribute("db.migrations.pending", pending.length);
-      for (const mig of pending) {
-        await conn.unsafe("begin");
-        try {
-          await conn.unsafe(mig.sql);
-          await conn.unsafe(
-            "insert into schema_migrations (version, name, checksum) values ($1, $2, $3)",
-            [mig.version, mig.name, mig.checksum],
-          );
-          await conn.unsafe("commit");
-        } catch (err) {
-          const migErr = new MigrationError(
-            `${mig.file} failed and was rolled back: ${String(err)}`,
-            { cause: err },
-          );
-          await cleanupStep(conn, "rollback", migErr);
-          throw migErr;
-        }
-      }
-      result = { applied: pending, alreadyApplied: applied.length, ahead };
+      result = await applyPending(session, migrations, lockTimeoutMs, span);
     } catch (err) {
       failure =
         err instanceof MigrationError
           ? err
           : new MigrationError(`migration run failed: ${String(err)}`, { cause: err });
     }
-
-    // Cleanup never replaces the first failure. After a clean run, a failed unlock still
-    // fails the run: the session may still hold the lock.
-    const cleanup = [
-      ...(locked ? [UNLOCK_SQL] : []),
-      "reset client_min_messages",
-      "reset lock_timeout",
-    ];
-    for (const stmt of cleanup) {
-      const err = await cleanupStep(conn, stmt, failure);
-      if (err !== undefined) {
-        failure = new MigrationError(`cleanup after migrating failed (${stmt}): ${String(err)}`, {
-          cause: err,
-        });
-      }
-    }
-    conn.release();
+    failure = await cleanUp(session, result, failure);
 
     if (failure || !result) {
       const err = failure ?? new MigrationError("migration run ended without a result");

@@ -5,7 +5,15 @@ import { join } from "node:path";
 import type postgres from "postgres";
 import { describe, expect, test } from "vitest";
 
-import { checksum, loadMigrations, migrate, MigrationError, parseMigrations, plan } from "./index";
+import {
+  checksum,
+  isConnectionLost,
+  loadMigrations,
+  migrate,
+  MigrationError,
+  parseMigrations,
+  plan,
+} from "./index";
 
 const files = (...names: string[]) => names.map((file) => ({ file, sql: `-- ${file}` }));
 
@@ -92,15 +100,21 @@ describe("plan", () => {
   });
 });
 
-// A scripted connection: each statement answers no rows or throws, so the cleanup paths a dead
-// connection would take run without one. (postgres.js hangs on a reserved connection whose
-// backend was terminated, so a real-Postgres version of these tests is not practical.)
-function fakeSql(fail: (stmt: string) => boolean) {
+// A scripted connection: each statement answers no rows or throws, so the cleanup paths run
+// without a server. `lose` makes a statement fail the way a dropped connection does in
+// postgres.js (migrate.pg.test.ts kills a real one).
+function fakeSql(fail: (stmt: string) => boolean, lose: (stmt: string) => boolean = () => false) {
   const ran: string[] = [];
   let released = false;
   const conn = {
     unsafe: (stmt: string) => {
       ran.push(stmt);
+      if (lose(stmt))
+        return Promise.reject(
+          Object.assign(new Error("write CONNECTION_CLOSED"), {
+            code: "CONNECTION_CLOSED",
+          }),
+        );
       if (fail(stmt)) return Promise.reject(new Error(`failed: ${stmt}`));
       return Promise.resolve([]);
     },
@@ -134,6 +148,40 @@ describe("migrate cleanup", () => {
     );
     expect(f.ran).toContain("set lock_timeout = 50");
     expect(f.ran.some((s) => s.includes("advisory_unlock"))).toBe(false);
+  });
+
+  test("a connection lost mid-migration fails without touching or releasing it", async () => {
+    const f = fakeSql(
+      () => false,
+      (s) => s === "boom",
+    );
+    await expect(migrate(f.sql, ms)).rejects.toThrow(
+      /^the database connection was lost while migrating;.*0001_boom.sql failed/,
+    );
+    expect(f.ran.at(-1)).toBe("boom"); // no rollback, unlock or reset on the dead connection
+    expect(f.released()).toBe(false); // releasing would hand the pool a dead connection
+  });
+
+  test("a connection lost during the unlock after a clean run keeps the result", async () => {
+    const f = fakeSql(
+      () => false,
+      (s) => s.includes("advisory_unlock"),
+    );
+    const r = await migrate(f.sql, parseMigrations([{ file: "0001_ok.sql", sql: "ok" }]));
+    expect(r.applied.map((m) => m.file)).toEqual(["0001_ok.sql"]);
+    expect(f.ran.at(-1)).toContain("advisory_unlock");
+    expect(f.released()).toBe(false);
+  });
+
+  test.each([
+    ["CONNECTION_CLOSED", true],
+    ["ECONNRESET", true],
+    ["08006", true],
+    ["57P01", true],
+    ["22012", false],
+    ["55P03", false],
+  ])("isConnectionLost(%s) is %s", (code, lost) => {
+    expect(isConnectionLost(Object.assign(new Error("x"), { code }))).toBe(lost);
   });
 
   test("after a clean run, a failed unlock still fails the run", async () => {
