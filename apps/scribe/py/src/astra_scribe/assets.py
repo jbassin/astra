@@ -43,16 +43,20 @@ from astra_pipeline_resources.partitions import (
     session_check,
     sessions,
 )
-from astra_sessions import atomic_write_text, recording_key
+from astra_sessions import atomic_write_text
 
 from .roster import Roster
 from .sensor import (
     Recording,
+    extra_recordings,
     is_session_zip,
     new_sessions,
+    pick_recording,
+    read_recording,
     real_recordings,
     session_recordings,
     stray_recordings,
+    undatable_recordings,
 )
 from .session import build_transcript, extract_session_tracks, merge_audio
 from .transcribe import TrackTranscriber
@@ -87,7 +91,7 @@ def _session_zip(context: dg.AssetExecutionContext, incoming: str, date_key: str
     if not name:
         return _find_zip(incoming, date_key)
     zip_path = Path(incoming) / Path(name).name
-    if recording_key(zip_path) != date_key or not is_session_zip(zip_path):
+    if not is_session_zip(zip_path) or read_recording(zip_path).key != date_key:
         raise FileNotFoundError(
             f"the Craig zip {name} that craig_drop_sensor chose for session {date_key} is "
             f"not a recording of that date in {incoming}"
@@ -242,7 +246,7 @@ def single_recording(
         else (
             f"session {key} has {len(ids)} Craig recordings ({', '.join(_names(dated))}); "
             "only the first would be transcribed. Remove or merge the extra one, then "
-            "re-execute the run."
+            "launch a fresh scribe run (scribe README, 'Blocking checks'); do not re-execute."
         ),
         metadata={"session": key, "recordings": ids, "zips": _names(dated)},
     )
@@ -252,8 +256,8 @@ def single_recording(
     asset=session_tracks,
     name="no_undated_recording",
     description=(
-        "No undated Craig zip belongs to this session. An undated name is invisible to "
-        "the pipeline, so its recording would be lost."
+        "No undated Craig zip of another recording belongs to this session. With one, "
+        "only one of the two recordings is transcribed and the other is lost."
     ),
 )
 def no_undated_recording(
@@ -268,8 +272,9 @@ def no_undated_recording(
         description=None
         if not strays
         else (
-            f"session {key} has an undated Craig zip ({', '.join(_names(strays))}) that is "
-            "not the recording being processed. See the scribe README, 'Undated zip'."
+            f"session {key} has an undated Craig zip ({', '.join(_names(strays))}) of "
+            "another recording than the one being processed. Remove or merge the extra one, "
+            "then launch a fresh scribe run (scribe README, 'Blocking checks')."
         ),
         metadata={"session": key, "undated_zips": _names(strays)},
     )
@@ -318,11 +323,14 @@ SCRIBE_CHECKS = [single_recording, no_undated_recording, transcript_not_empty]
 def craig_drop_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     """Register a ``sessions`` partition + run request for each new Craig zip in `incoming_path`.
 
-    "New" means the zip's date is not a session yet. The sensor skips while the sessions
+    "New" means the zip's session is not a session yet: the date in a dated name, or for an
+    undated name the start date in its ``info.txt``. The sensor skips while the sessions
     migration is pending: an empty shared set would make every zip on disk look new.
 
-    An undated zip that no dated name covers can't become a session. The sensor logs one
-    WARN per such zip (the cursor remembers which) and names them in the skip reason."""
+    Two kinds of zip never reach a transcript. The sensor logs one WARN for each (the cursor
+    remembers which) and names them in the skip reason: an undated zip with no readable
+    start date, and a second recording of a session that already exists (it arrived after
+    the session's run, so no ``single_recording`` check saw it)."""
     incoming = load_config().scribe.incoming_path
     if not incoming or not Path(incoming).is_dir():
         return dg.SensorResult()
@@ -332,20 +340,14 @@ def craig_drop_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     existing = set(context.instance.get_dynamic_partitions(SESSIONS_NAME))
     found = new_sessions(zips, existing)
     adds = [sessions.build_add_request(list(found))] if found else []
-    strays = stray_recordings(real_recordings(zips))
+    notices = _untranscribed(context.instance, real_recordings(zips), existing)
     warned = _read_warned(context.cursor)
-    for stray in strays:
-        if stray.path.name not in warned:
-            _log.warning(
-                "scribe skips undated Craig zip %s (session %s per info.txt); hard-link it "
-                "under a dated name (scribe README, 'Undated zip')",
-                stray.path.name,
-                stray.key or "unknown",
-            )
+    for name, (_short, message) in sorted(notices.items()):
+        if name not in warned:
+            _log.warning(message)
     skip = (
-        "undated Craig zips, not sessions: "
-        + ", ".join(f"{s.path.name} ({s.key or 'no start time'})" for s in strays)
-        if strays and not found
+        "Craig zips not transcribed: " + ", ".join(short for short, _ in notices.values())
+        if notices and not found
         else None
     )
     return dg.SensorResult(
@@ -355,8 +357,50 @@ def craig_drop_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
         ],
         dynamic_partitions_requests=adds,
         skip_reason=skip,
-        cursor=json.dumps({"warned": sorted(s.path.name for s in strays)}),
+        cursor=json.dumps({"warned": sorted(notices)}),
     )
+
+
+def _untranscribed(
+    instance: dg.DagsterInstance, recordings: list[Recording], existing: set[str]
+) -> dict[str, tuple[str, str]]:
+    """Zip name -> (skip-reason text, WARN line) for each zip that no transcript covers: an
+    undated zip with no start date, and a second recording of an existing session."""
+    notices = {
+        r.path.name: (
+            f"{r.path.name} (no start date in info.txt)",
+            f"scribe skips undated Craig zip {r.path.name}: its info.txt has no readable "
+            "start date; hard-link it under a dated name (scribe README, 'Undated zip')",
+        )
+        for r in undatable_recordings(recordings)
+    }
+    for key in sorted({r.key for r in recordings if r.key in existing}):
+        in_use = _recording_in_use(instance, key, recordings)
+        if in_use is None:
+            continue
+        for extra in extra_recordings(recordings, in_use):
+            notices[extra.path.name] = (
+                f"{extra.path.name} (second recording of {key})",
+                f"scribe session {key} was transcribed from {in_use.path.name}; a second "
+                f"recording {extra.path.name} carries the same date and is not transcribed "
+                "(scribe README, 'Second recording')",
+            )
+    return notices
+
+
+def _recording_in_use(
+    instance: dg.DagsterInstance, key: str, recordings: list[Recording]
+) -> Recording | None:
+    """The recording session ``key`` was transcribed from: the zip its latest
+    ``session_tracks`` materialization names, else the one `pick_recording` chooses."""
+    mine = [r for r in recordings if r.key == key]
+    records = instance.fetch_materializations(
+        dg.AssetRecordsFilter(asset_key=session_tracks.key, asset_partitions=[key]), limit=1
+    ).records
+    mat = records[0].asset_materialization if records else None
+    named = mat.metadata.get("zip") if mat is not None else None
+    value = getattr(named, "value", None)
+    return next((r for r in mine if r.path.name == value), None) or pick_recording(mine)
 
 
 def _read_warned(cursor: str | None) -> set[str]:

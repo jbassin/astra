@@ -31,21 +31,6 @@ def is_session_zip(zip_path: Path | str) -> bool:
         return False
 
 
-def new_sessions(zip_paths: Iterable[Path | str], existing_keys: set[str]) -> dict[str, str]:
-    """Map of new session/date key → zip path for zips not yet partitioned.
-
-    A zip whose stem has no date field is skipped, as is a stub under MIN_ZIP_BYTES;
-    the first remaining zip wins if two map to the same date key (the
-    ``single_recording`` check then blocks the session).
-    """
-    out: dict[str, str] = {}
-    for zip_path in sorted(str(p) for p in zip_paths):
-        key = recording_key(zip_path)
-        if key and key not in existing_keys and key not in out and is_session_zip(zip_path):
-            out[key] = zip_path
-    return out
-
-
 # ── recordings per session: the facts the session_tracks checks gate on ──
 
 
@@ -109,7 +94,59 @@ def session_recordings(zip_paths: Iterable[Path | str], key: str) -> list[Record
 
 
 def stray_recordings(recordings: Iterable[Recording]) -> list[Recording]:
-    """The undated recordings that no dated name covers, so the pipeline never sees them."""
+    """The undated recordings that are not the recording `pick_recording` chooses for their
+    session (a dated name of the same recording counts as it)."""
     recordings = list(recordings)
-    dated_ids = {r.recording_id for r in recordings if r.dated}
-    return [r for r in recordings if not r.dated and r.recording_id not in dated_ids]
+    by_key: dict[str, list[Recording]] = {}
+    for rec in recordings:
+        by_key.setdefault(rec.key, []).append(rec)
+    strays: list[Recording] = []
+    for recs in by_key.values():
+        picked = pick_recording(recs)
+        strays += [
+            r
+            for r in recs
+            if not r.dated and (picked is None or r.recording_id != picked.recording_id)
+        ]
+    return strays
+
+
+def pick_recording(recordings: Iterable[Recording]) -> Recording | None:
+    """The recording a session uses when nothing names one: the first dated name in name
+    order, else the first undated one. ``new_sessions`` and an untagged ``session_tracks``
+    both use it."""
+    ordered = sorted(recordings, key=lambda r: (not r.dated, r.path.name))
+    return ordered[0] if ordered else None
+
+
+def new_sessions(zip_paths: Iterable[Path | str], existing_keys: set[str]) -> dict[str, str]:
+    """Map of new session/date key → zip path for zips not yet partitioned.
+
+    A dated name carries its key; an undated one takes the UTC date of its ``info.txt``
+    ``Start time:``. A stub under MIN_ZIP_BYTES is skipped, as is an undated zip with no
+    readable start date (the sensor logs it). When two recordings map to one key,
+    `pick_recording` chooses, and the ``single_recording`` or ``no_undated_recording``
+    check blocks the session.
+    """
+    by_key: dict[str, list[Recording]] = {}
+    for rec in real_recordings(zip_paths):
+        if rec.key and rec.key not in existing_keys:
+            by_key.setdefault(rec.key, []).append(rec)
+    out: dict[str, str] = {}
+    for key, recs in sorted(by_key.items()):
+        picked = pick_recording(recs)
+        if picked is not None:
+            out[key] = str(picked.path)
+    return out
+
+
+def undatable_recordings(recordings: Iterable[Recording]) -> list[Recording]:
+    """The undated recordings with no readable ``info.txt`` start date: no session can
+    claim them."""
+    return [r for r in recordings if not r.dated and not r.key]
+
+
+def extra_recordings(recordings: Iterable[Recording], in_use: Recording) -> list[Recording]:
+    """The recordings of ``in_use``'s session that are a different recording (another
+    recording id), so the session's transcript leaves them out."""
+    return [r for r in recordings if r.key == in_use.key and r.recording_id != in_use.recording_id]

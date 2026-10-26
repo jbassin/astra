@@ -38,14 +38,23 @@ Groq Whisper (`scribe.model`, `groq/whisper-large-v3`).
 
     The run costs about $2 of Groq. Once `transcript_not_empty` passes, the linguist
     sensor launches as usual, since linguist was never tried for the session.
-- **Undated zip.** A zip name must be `<guild>_<channel>_<date>_<id>` (four `_` fields, date
-  third). Any other name never becomes a session. `craig_drop_sensor` logs one WARN per such
-  zip, with the session date from its `info.txt`, and lists it in the tick's skip reason
-  until a dated name covers it. To recover one, hard-link it in
-  the incoming dir under a dated name, taking the date from the zip's `info.txt`
-  `Start time:` (UTC), for example
+- **Undated zip.** A dated name is `<guild>_<channel>_<date>_<id>` (four `_` fields, date
+  third). An undated zip takes its session from its `info.txt` `Start time:` (UTC date), so
+  `craig_drop_sensor` registers and runs it like a dated one; a dated name of the same
+  recording wins when both exist. An undated zip with no readable start date never becomes a
+  session: the sensor logs one WARN naming the file and lists it in the tick's skip reason.
+  To recover one, hard-link it in the incoming dir under a dated name, for example
   `ln craig-<rec>-<key>_<key>.aac.zip craig_<rec>_2026-10-5_00-00-00.aac.zip`. Keep the
   original name too, or craig-sync downloads it again.
+- **Second recording.** Craig makes a new recording when it is restarted mid-session. If the
+  second zip arrives after the session's scribe run, no check sees it: `craig_drop_sensor`
+  logs one WARN naming the session, the zip it was transcribed from and the extra zip, and
+  lists the extra zip in the skip reason. Nothing merges the two (their tracks have separate
+  clocks). Decide which recording is the session; if the transcribed one is wrong, move it to
+  `incoming/rejected/`, launch a fresh scribe run (see "Blocking checks") and re-run the
+  stages downstream that should change (see "Re-transcribe a session"; paid). To keep both
+  halves, merge them by hand into one zip first. The skip reason lists the extra zip until
+  it leaves the incoming dir.
 - **Re-transcribe a session.** Only the zip in the incoming dir is needed. Materialize all
   four scribe assets for the partition: `session_cleanup` deletes the extracted tracks, so a
   single tail cannot rerun without `session_tracks`. The sensors do not re-launch downstream
@@ -67,8 +76,9 @@ Groq Whisper (`scribe.model`, `groq/whisper-large-v3`).
   with only `info.txt` and `raw.dat` is a session nobody recorded; it produces nothing by
   design.
 - **Two zips for one date:** the first non-stub zip in sorted order would win, so the
-  `single_recording` check fails the session instead. Two names of one recording (the
-  hard-link recovery above) share a recording id and count once.
+  `single_recording` check (two dated zips) or `no_undated_recording` (an undated zip of
+  another recording) fails the session instead. Two names of one recording (the hard-link
+  recovery above) share a recording id and count once.
 - **Groq's 25 MB direct-upload cap.** Chunks are 16 kHz mono `s16` flac and at most
   `max_chunk_sec` 480 s, about 14.6 MiB each. Removing `-sample_fmt s16` or raising the chunk
   length brings back 413 errors.

@@ -188,38 +188,121 @@ def test_a_dated_name_is_read_without_opening_the_zip(tmp_path: Path) -> None:
     assert (rec.recording_id, rec.key, rec.dated) == ("hQEYwwabQv9w", DATE, True)
 
 
-# ── craig_drop_sensor names undated zips ────────────────────────────────────
-def _tick(monkeypatch: pytest.MonkeyPatch, incoming: Path, cursor: str | None = None) -> Any:
+# ── craig_drop_sensor: undated zips and second recordings ───────────────────
+def _tick(
+    monkeypatch: pytest.MonkeyPatch,
+    incoming: Path,
+    cursor: str | None = None,
+    instance: dg.DagsterInstance | None = None,
+) -> Any:
     monkeypatch.setattr(
         assets,
         "load_config",
         lambda: SimpleNamespace(scribe=SimpleNamespace(incoming_path=str(incoming))),
     )
-    context = dg.build_sensor_context(instance=sessions_instance(DATE), cursor=cursor)
+    context = dg.build_sensor_context(
+        instance=instance if instance is not None else sessions_instance(DATE), cursor=cursor
+    )
     return assets.craig_drop_sensor(context)
 
 
-def test_the_sensor_names_an_undated_zip_and_warns_once(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog: pytest.LogCaptureFixture
+def _warnings(caplog: pytest.LogCaptureFixture, name: str) -> list[str]:
+    return [r.getMessage() for r in caplog.records if name in r.getMessage()]
+
+
+def test_an_undated_zip_becomes_a_session_from_its_info_txt(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     _craig_zip(tmp_path / UNDATED, "hQEYwwabQv9w")
-    first = _tick(monkeypatch, tmp_path)
-    assert not first.run_requests
-    reason = first.skip_reason.skip_message
-    assert UNDATED in reason and DATE in reason
-    assert json.loads(first.cursor) == {"warned": [UNDATED]}
-    assert [r for r in caplog.records if UNDATED in r.getMessage()]
-    caplog.clear()
-    again = _tick(monkeypatch, tmp_path, first.cursor)
-    assert again.skip_reason == first.skip_reason  # still shown in the UI
-    assert not [r for r in caplog.records if UNDATED in r.getMessage()]  # but logged once
+    result = _tick(monkeypatch, tmp_path, instance=sessions_instance())
+    assert [(r.partition_key, r.tags) for r in result.run_requests] == [
+        (DATE, {assets.ZIP_TAG: UNDATED})
+    ]
+    assert result.skip_reason is None
 
 
-def test_the_sensor_is_quiet_once_the_undated_zip_has_a_dated_name(
+def test_a_dated_name_wins_over_an_undated_one_of_the_same_date(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     undated = _craig_zip(tmp_path / UNDATED, "hQEYwwabQv9w")
     os.link(undated, tmp_path / REAL)
+    result = _tick(monkeypatch, tmp_path, instance=sessions_instance())
+    assert [r.tags for r in result.run_requests] == [{assets.ZIP_TAG: REAL}]
+    assert stray_recordings([read_recording(tmp_path / REAL), read_recording(undated)]) == []
+
+
+def test_the_sensor_warns_once_about_an_undated_zip_with_no_start_date(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    _craig_zip(tmp_path / UNDATED, "hQEYwwabQv9w", start="not a date")
+    first = _tick(monkeypatch, tmp_path)
+    assert not first.run_requests
+    assert UNDATED in first.skip_reason.skip_message
+    assert json.loads(first.cursor) == {"warned": [UNDATED]}
+    assert _warnings(caplog, UNDATED)
+    caplog.clear()
+    again = _tick(monkeypatch, tmp_path, first.cursor)
+    assert again.skip_reason == first.skip_reason  # still shown in the UI
+    assert not _warnings(caplog, UNDATED)  # but logged once
+
+
+SECOND = "craig_xhzWjJp5Tga6_2026-10-5_22-44-56.aac.zip"
+
+
+def test_a_second_recording_after_the_run_is_named_not_ignored(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """The 2026-9-26 case: the session ran from one zip, then a second recording of the
+    same date arrived. No run sees it, so the sensor names it."""
+    _craig_zip(tmp_path / REAL, "hQEYwwabQv9w")
+    _craig_zip(tmp_path / SECOND, "xhzWjJp5Tga6")
+    instance = sessions_instance(DATE)
+    # The run used the later zip in name order, so the WARN must name the other one.
+    instance.report_runless_asset_event(
+        dg.AssetMaterialization(
+            asset_key="session_tracks", partition=DATE, metadata={"zip": SECOND}
+        )
+    )
+    first = _tick(monkeypatch, tmp_path, instance=instance)
+    assert not first.run_requests
+    assert f"{REAL} (second recording of {DATE})" in first.skip_reason.skip_message
+    (warning,) = _warnings(caplog, REAL)
+    assert f"transcribed from {SECOND}" in warning
+    assert json.loads(first.cursor) == {"warned": [REAL]}
+    caplog.clear()
+    _tick(monkeypatch, tmp_path, first.cursor, instance=instance)
+    assert not _warnings(caplog, REAL)
+
+
+def test_one_recording_under_two_names_is_not_a_second_recording(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    real = _craig_zip(tmp_path / REAL, "hQEYwwabQv9w")
+    os.link(real, tmp_path / UNDATED)
     result = _tick(monkeypatch, tmp_path)
     assert result.skip_reason is None
-    assert stray_recordings([read_recording(tmp_path / REAL), read_recording(undated)]) == []
+    assert json.loads(result.cursor) == {"warned": []}
+
+
+def test_session_tracks_takes_a_tagged_undated_zip_by_its_start_date(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    paths = paths_under(tmp_path)
+    _craig_zip(Path(paths.scribe_incoming) / UNDATED, "hQEYwwabQv9w")
+    handed: list[str] = []
+
+    def fake_extract(zip_path: Path, _dest: object, _roster: object, **_kw: object) -> list[Path]:
+        handed.append(Path(zip_path).name)
+        return []
+
+    monkeypatch.setattr(assets.Roster, "from_being", classmethod(lambda cls, _p: cls(set())))
+    monkeypatch.setattr(assets, "extract_session_tracks", fake_extract)
+    result = dg.materialize(
+        [assets.session_tracks],
+        partition_key=DATE,
+        instance=sessions_instance(DATE),
+        resources={"pipeline_paths": paths},
+        tags={assets.ZIP_TAG: UNDATED},
+    )
+    assert result.success
+    assert handed == [UNDATED]
