@@ -240,6 +240,17 @@ jobs:
       - uses: ./.github/actions/setup-pnpm
       - run: just routes-check
 
+  # Every committed file under libs/ts/gothic/src/generated/ matches a fresh generation from the
+  # token source (libs/ts/gothic/src/tokens/tokens.ts).
+  tokens-check:
+    needs: changes
+    if: needs.changes.outputs.ts == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm
+      - run: just tokens-check
+
   # The `*.pg.test.ts` suites against a real Postgres: the migration runner
   # (libs/ts/pg-migrate) and the orator and weal stores with their migrations. The
   # service runs the image compose runs. Each suite creates its own database on it.
@@ -468,6 +479,7 @@ jobs:
       - ts-test
       - ts-build
       - routes-check
+      - tokens-check
       - pg-test
       - corpus-validate
       - vellum-parity

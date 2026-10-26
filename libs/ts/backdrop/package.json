@@ -12,6 +12,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@astra/gothic": "workspace:*",
     "pixi.js": "catalog:"
   },
   "devDependencies": {

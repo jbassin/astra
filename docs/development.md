@@ -280,6 +280,10 @@ different directory than the source. What is still hand-maintained:
   `vite build` rewrite it; `just routes-gen` writes the same bytes without a server (run it after
   adding or renaming a route), and `just routes-check` (in `just check` and CI) fails when one is
   stale.
+- Theme colours, fonts and motion live once, in `libs/ts/gothic/src/tokens/tokens.ts`. Its outputs
+  under `libs/ts/gothic/src/generated/` (both themes' CSS, the pixi and GLSL palette) are committed;
+  run `just tokens-gen` after editing a token. `just tokens-check` (in `just check` and CI) fails
+  when one is stale. The gothic README has the old-to-new token name map.
 - Every frontend's SSR smoke test rebuilds `dist/` when it is missing or older than the app's
   sources or any `libs/ts` file (site-kit's `describeSsrSmoke`; codex's own smoke uses its
   `bundleIsStale`).

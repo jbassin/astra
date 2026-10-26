@@ -1,47 +1,16 @@
 /**
- * menhir's own design tokens. Base palette VALUES are copied from
- * `apps/codex/web/src/styles/tokens.css` (the "Liturgy of the Iridite" parchment
- * system) — menhir owns its own copy, same precedent as codex's own tokens
- * (codex dropped gothic outright rather than importing it; menhir never had a
- * gothic dependency to begin with, so this file is the base palette from day
- * one, plus the Kahoot answer-identity accents this app adds on top).
+ * menhir's own design tokens. The shared parchment theme (page, fg, accent, rule, the maroon and
+ * gold palette, the four type families) comes from `@astra/gothic/parchment-theme.css`, which
+ * `just tokens-gen` generates from gothic's token source (codex uses the same file); this file
+ * adds the Kahoot answer identities, the medals and the structural tokens menhir alone uses.
  *
  * Fonts are self-hosted via @fontsource (imported in main.tsx, mirroring
- * codex's __root.tsx): Cinzel (display), Cormorant SC (heading — the token
- * this file needs it for), EB Garamond (body), Oswald (condensed — timer +
- * score digits).
+ * codex's __root.tsx): Cinzel (display), Cormorant SC (heading — question text,
+ * section headings), EB Garamond (body), Oswald (condensed — timer + score digits).
  */
+@import "@astra/gothic/parchment-theme.css";
+
 :root {
-  /* --- parchment base (values from apps/codex/web/src/styles/tokens.css) --- */
-  --color-void: #eee7d8; /* page background */
-  --color-page-bg-alt: #e9e1ce;
-  --color-page-vignette: rgb(0 0 0 / 8%);
-  --color-ink: #231f1a;
-  --color-ink-dim: #4a4238;
-  --color-ink-faint: #8a7c63;
-
-  --color-heading-maroon: #7a2e2c;
-  --color-heading-maroon-dark: #5e211f;
-  --color-gold-rule: #b99b5d;
-  --color-gold-frame: #c2a46d;
-  --color-gold-frame-dark: #8c7038;
-
-  --color-callout-tan-bg: #e7d6b3;
-  --color-callout-tan-border: #3a2e22;
-
-  --color-accent: var(--color-heading-maroon);
-  --color-accent-amber: var(--color-gold-rule);
-  --color-rule: rgb(185 155 93 / 40%);
-  --color-rule-bright: var(--color-gold-frame);
-  --color-elevated: var(--color-callout-tan-bg);
-  --color-hover: rgb(220 231 236 / 70%);
-
-  /* --- type families --- */
-  --font-display: "Cinzel", serif; /* rare, ceremonial — the menhir wordmark */
-  --font-heading: "Cormorant SC", serif; /* question text, section headings */
-  --font-body: "EB Garamond", serif; /* prose, labels */
-  --font-condensed: "Oswald", sans-serif; /* timer + score digits */
-
   /* --- Kahoot answer identities — shape+color double encoding ---
    *
    * `--shape-*` is the IDENTITY value the spec pins; `--shape-*-deep` is the

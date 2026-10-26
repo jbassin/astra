@@ -7,8 +7,8 @@ out. Speed-scored (up to 1000/question + streak bonuses). No auth anywhere — a
 `hostToken` (minted at create, held in the host tab) is the only thing gating host controls.
 
 Spec: `thoughts/archive/specs/0031-menhir-spec.md` (D31-1..12). Template: weal-overlay
-(srvx/Node 24 + vite React SPA + SSE); styling: codex parchment tokens + the four Kahoot shape
-identities.
+(srvx/Node 24 + vite React SPA + SSE); styling: the parchment theme
+(`@astra/gothic/parchment-theme.css`) + the four Kahoot shape identities.
 
 ## Running a game
 

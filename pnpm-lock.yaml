@@ -295,6 +295,9 @@ importers:
       '@astra/config':
         specifier: workspace:*
         version: link:../../../libs/ts/config
+      '@astra/gothic':
+        specifier: workspace:*
+        version: link:../../../libs/ts/gothic
       '@astra/observe':
         specifier: workspace:*
         version: link:../../../libs/ts/observe
@@ -511,6 +514,9 @@ importers:
       '@astra/config':
         specifier: workspace:*
         version: link:../../../libs/ts/config
+      '@astra/gothic':
+        specifier: workspace:*
+        version: link:../../../libs/ts/gothic
       '@astra/observe':
         specifier: workspace:*
         version: link:../../../libs/ts/observe
@@ -1236,6 +1242,9 @@ importers:
 
   libs/ts/backdrop:
     dependencies:
+      '@astra/gothic':
+        specifier: workspace:*
+        version: link:../gothic
       pixi.js:
         specifier: 'catalog:'
         version: 8.19.0

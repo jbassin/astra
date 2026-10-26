@@ -2,8 +2,9 @@
  * @astra/gothic — the framework theme (Tailwind v4, CSS-first `@theme`).
  *
  * Frontends import this once: `@import "@astra/gothic/theme.css";` — it pulls in
- * Tailwind, the bundled 40k-gothic fonts, and the ~20 gothic design tokens. The
- * tokens live under Tailwind's `--color-*` / `--font-*` namespaces, so each one
+ * Tailwind, the bundled 40k-gothic fonts, and the gothic design tokens. The
+ * tokens are generated from `src/tokens/tokens.ts` (`just tokens-gen`) into an
+ * `@theme` block under Tailwind's `--color-*` / `--font-*` namespaces, so each one
  * both (a) emits a `:root` CSS custom property (the runtime source) AND (b)
  * generates a utility (`bg-panel`, `text-accent`, `font-display`, …).
  *
@@ -16,6 +17,8 @@
  * consuming frontend copies `@astra/gothic/fonts/*` into its `public/fonts/`.
  */
 @import "tailwindcss";
+/* The tokens: generated from src/tokens/tokens.ts by `just tokens-gen`. */
+@import "./generated/gothic-theme.css";
 
 /* gothic's React components carry Tailwind utility classes (DocumentView's
    `flex flex-col gap-5 font-body text-ink`, CrossRef's `text-accent underline …`,
@@ -61,49 +64,6 @@
   font-weight: 900;
   font-style: normal;
   font-display: swap;
-}
-
-@theme {
-  /* Void palette — teal cogitator-dataslate (mechanical default). */
-  --color-void: #090c10;
-  --color-panel: #0f1318;
-  --color-elevated: #171c24;
-  --color-hover: #1e2530;
-
-  --color-ink: #dce8f0;
-  --color-ink-dim: #7a8a99;
-  --color-ink-faint: #3a434f;
-
-  --color-accent: #6dd5c0; /* phosphor teal */
-  --color-accent-amber: #f0b46e;
-
-  --color-rule: #1e2730;
-  --color-rule-bright: #2f3c4e;
-
-  /* Diegetic substrate — aged Imperial parchment (the amber counterpart). */
-  --color-parchment: #d8c9a3;
-  --color-parchment-shade: #c2ad80;
-  --color-parchment-edge: #a98f5f;
-  --color-parchment-ink: #2c2114;
-  --color-parchment-ink-dim: #5c4a30;
-  --color-wax: #7c2a22; /* seal red */
-  --color-gold-leaf: #b4842f; /* illuminated drop-cap bronze */
-  --color-redaction: #120f0b; /* [DATA EXPUNGED] bar */
-
-  /* Type families. The emoji fallbacks (matched only for emoji codepoints, so
-     they never hijack the serif/mono text) keep kaomoji / emoji in user-authored
-     content — e.g. the akasha chat-log pages — from dropping to tofu boxes. */
-  --font-display: "ITC Serif Gothic", serif;
-  --font-body: "Caslon Antique", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", serif;
-  --font-mono:
-    "IBM Plex Mono", ui-monospace, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
-    monospace;
-
-  /* Motion. */
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --duration-fast: 120ms;
-  --duration-base: 220ms;
-  --duration-slow: 400ms;
 }
 
 /**
