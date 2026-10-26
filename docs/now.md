@@ -14,9 +14,9 @@ Updated 2026-10-26.
 ## Next action
 
 Thursday 2026-10-29's session is the live check of stage automation and resumable stages: follow
-"Thursday 2026-10-29 session" under "Waiting on an event" in the [backlog](backlog.md). After it,
-deploy Dagster with the merged pipeline fixes (#132, #133), which were held back so Thursday tests
-one change set.
+"Thursday 2026-10-29 session" under "Waiting on an event" in the [backlog](backlog.md). The merged
+pipeline fixes (#132, #133) were deployed 2026-10-26 so Thursday's cost reading uses the corrected
+GLM 5.3 price; craig_drop_sensor now skips 2026-9-26's second recording by name, as expected.
 
 ## Blocked or waiting
 
