@@ -75,6 +75,14 @@ Node indexing API and writes `dist/client/pagefind/`.
 - **Page data is cached for the session** (`defaultStaleTime: Infinity` in `router.tsx`): back,
   forward and revisits don't refetch. A client navigation to an alias follows it with a router
   redirect; only SSR renders the meta-refresh stub.
+- **A failed client navigation becomes a full page load.** Every deploy leaves open tabs on the
+  old build, and their next navigation asks the new server for old server-function ids or route
+  chunks. `RouteError` (the router's error component) then loads the target once
+  (`staleBuild.ts`); it shows the error page only when the failing URL is the one the document
+  was loaded with, so it never loops. An unknown server-function id gets a 500 that the client
+  resolves to `undefined` instead of throwing, so every loader wraps its call in `pageData()`,
+  which throws on `undefined`. Page-data functions return `null` for a missing page, never
+  `undefined`.
 - **Campaign routing is a heuristic.** `matchCampaign` (`campaigns.ts`) files a transcript under
   the first campaign, in `being.kdl` order, whose character names appear at least 15 times; else
   `Unsorted`. Reordering campaigns in `being.kdl` can move transcript URLs.
