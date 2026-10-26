@@ -1,3 +1,4 @@
+import { gothic } from "@astra/gothic/palette";
 import {
   type Application,
   type Container,
@@ -127,7 +128,7 @@ export interface BalatroPalette {
 export const DEFAULT_PALETTE: BalatroPalette = {
   colour1: [0.27, 0.42, 0.4],
   colour2: [0.42, 0.32, 0.18],
-  colour3: [0.035, 0.047, 0.063],
+  colour3: gothic.rgb.page,
 };
 
 export const TITHE_PALETTE: BalatroPalette = {

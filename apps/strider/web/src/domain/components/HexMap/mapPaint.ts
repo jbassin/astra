@@ -1,3 +1,4 @@
+import { gothic } from "@astra/gothic/palette";
 import type { GlowFilter } from "pixi-filters/glow";
 // Shared region fill/border painting + the map theme tokens, so HexMap and
 // EditorHexMap render regions identically (the two used to inline byte-identical
@@ -12,10 +13,10 @@ import { drawEdgesPath, hexVertsAtPixel } from "./pixiScene";
 export const mapTheme = {
   regionFill: "#0a0d12",
   regionFillAlpha: { active: 0.55, idle: 0.4 },
-  regionBorderColor: { active: "#6dd5c0", idle: "#f0b46e" },
+  regionBorderColor: { active: gothic.hex.accent, idle: gothic.hex.accentSecondary },
   regionBorderWidth: { active: 0.35, idle: 0.22 },
   regionBorderAlpha: { active: 0.9, idle: 0.55 },
-  regionBorderGlowColor: { active: 0x6dd5c0, idle: 0xf0b46e },
+  regionBorderGlowColor: { active: gothic.pixi.accent, idle: gothic.pixi.accentSecondary },
   regionBorderGlowStrength: { active: 1.4, idle: 0.8 },
 } as const;
 

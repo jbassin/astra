@@ -1,3 +1,4 @@
+import { parchment } from "@astra/gothic/palette";
 import QRCode from "qrcode";
 /**
  * Client-side QR render — the `qrcode` npm package draws straight to
@@ -21,7 +22,7 @@ export function QRCodeImage({ value, size = 220 }: QRCodeImageProps) {
     void QRCode.toDataURL(value, {
       margin: 1,
       width: size,
-      color: { dark: "#231f1a", light: "#f3e9d2" },
+      color: { dark: parchment.hex.fg, light: "#f3e9d2" },
     })
       .then((url) => {
         if (!cancelled) setDataUrl(url);

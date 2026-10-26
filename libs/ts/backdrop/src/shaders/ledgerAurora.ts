@@ -1,5 +1,7 @@
+import { gothic } from "@astra/gothic/palette";
+
 import type { BackdropSpec } from "../types";
-import { NOISE_GLSL, PAL, PREAMBLE, vec3 } from "./common";
+import { NOISE_GLSL, PREAMBLE, vec3 } from "./common";
 
 // ledger's backdrop — "aurora": a slow domain-warped flow field forms drifting
 // aurora curtains, brighter toward the top, shimmering in bands, with the colour
@@ -44,10 +46,10 @@ export const ledgerAurora: BackdropSpec = {
   name: "ledgerAurora",
   fragment: FRAGMENT,
   uniforms: {
-    uAuroraA: { value: vec3(PAL.teal), type: "vec3<f32>" },
-    uAuroraB: { value: vec3(PAL.amber), type: "vec3<f32>" },
-    uAuroraC: { value: vec3(PAL.parchment), type: "vec3<f32>" },
-    uSpace: { value: vec3(PAL.void), type: "vec3<f32>" },
+    uAuroraA: { value: vec3(gothic.rgb.accent), type: "vec3<f32>" },
+    uAuroraB: { value: vec3(gothic.rgb.accentSecondary), type: "vec3<f32>" },
+    uAuroraC: { value: vec3(gothic.rgb.parchment), type: "vec3<f32>" },
+    uSpace: { value: vec3(gothic.rgb.page), type: "vec3<f32>" },
     uIntensity: { value: 1.5, type: "f32" },
   },
 };

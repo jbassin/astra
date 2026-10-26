@@ -1,3 +1,4 @@
+import { gothic } from "@astra/gothic/palette";
 import { GlowFilter } from "pixi-filters/glow";
 import {
   type Application,
@@ -147,7 +148,7 @@ export default function HexMap(props: HexMapProps) {
         panelBg
           .clear()
           .rect(fr.left, fr.top, fr.width, fr.height)
-          .fill({ color: 0x0f1318, alpha: 0.85 });
+          .fill({ color: gothic.pixi.panel, alpha: 0.85 });
       }
     };
     fitToHost();
@@ -401,7 +402,7 @@ function buildScene(
       const g = new Graphics();
       g.poly(LOCAL_HEX_VERTS);
       g.fill({ color: faction ? faction.color : "#787c80" });
-      g.stroke({ color: "#090c10", width: 0.3 });
+      g.stroke({ color: gothic.hex.page, width: 0.3 });
       g.position.set(cx, cy);
       if (faction) {
         g.eventMode = "static";
@@ -442,7 +443,7 @@ function buildScene(
 
     factionBorderLayer.clear();
     drawEdgesPath(factionBorderLayer, factionBorders);
-    factionBorderLayer.stroke({ color: "#090c10", width: 0.5, cap: "round" });
+    factionBorderLayer.stroke({ color: gothic.hex.page, width: 0.5, cap: "round" });
   }
 
   setFactionState(
@@ -515,7 +516,7 @@ function buildScene(
             distance: 4,
             outerStrength: 0.8,
             innerStrength: 0,
-            color: 0xf0b46e,
+            color: gothic.pixi.accentSecondary,
             quality: 0.1,
           }),
         ];
@@ -656,7 +657,7 @@ function buildScene(
       cap: "round",
     });
     cg.base.stroke({
-      color: "#f0b46e",
+      color: gothic.hex.accentSecondary,
       width: 0.5,
       alpha: 0.6,
       cap: "round",
@@ -917,7 +918,7 @@ function buildScene(
         distance: 4,
         outerStrength: 0.8,
         innerStrength: 0,
-        color: 0xf0b46e,
+        color: gothic.pixi.accentSecondary,
         quality: 0.1,
       }),
     ];
@@ -939,7 +940,7 @@ function buildScene(
           overlay.moveTo(tail[0], tail[1]).lineTo(tail[2], tail[3]);
         }
         overlay.stroke({
-          color: "#f0b46e",
+          color: gothic.hex.accentSecondary,
           width: 0.22,
           alpha: 0.55,
           cap: "round",
@@ -1043,7 +1044,7 @@ function buildScene(
         overlay = new Graphics();
         overlay.poly(LOCAL_HEX_VERTS);
         overlay.fill({ color: prevColor });
-        overlay.stroke({ color: "#090c10", width: 0.2 });
+        overlay.stroke({ color: gothic.hex.page, width: 0.2 });
         const [cx, cy] = hexPixel(hex[0], hex[1]);
         overlay.position.set(cx, cy);
         animLayer.addChild(overlay);

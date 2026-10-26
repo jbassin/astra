@@ -2,8 +2,10 @@
 // `path` + `viewBox`, with decorative rule lines above/below and a 180° rotation when
 // reversed. The decorative gold is re-toned to gothic's gold-leaf.
 
+import { gothic } from "@astra/gothic/palette";
+
 const ICON_SIZE = 128;
-const GOLD = "#b4842f"; // gothic --color-gold-leaf
+const GOLD = gothic.hex.goldLeaf;
 
 interface IconProps {
   color: string;

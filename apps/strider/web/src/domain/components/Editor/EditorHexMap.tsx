@@ -1,3 +1,4 @@
+import { gothic } from "@astra/gothic/palette";
 import { GlowFilter } from "pixi-filters/glow";
 import { Application, Assets, Container, Graphics, Polygon, Sprite, type Texture } from "pixi.js";
 import { useEffect, useRef } from "react";
@@ -207,7 +208,7 @@ function buildEditorScene(
       distance: 6,
       outerStrength: 1.4,
       innerStrength: 0,
-      color: 0x6dd5c0,
+      color: gothic.pixi.accent,
       quality: 0.15,
     }),
   ];
@@ -223,7 +224,7 @@ function buildEditorScene(
       const g = new Graphics();
       g.poly(verts);
       g.fill({ color: faction.color });
-      g.stroke({ color: "#090c10", width: 0.2 });
+      g.stroke({ color: gothic.hex.page, width: 0.2 });
       g.eventMode = "static";
       g.cursor = "pointer";
       g.hitArea = new Polygon(verts);
@@ -241,7 +242,7 @@ function buildEditorScene(
     const g = new Graphics();
     g.poly(verts);
     g.fill({ color: "#787c80" });
-    g.stroke({ color: "#090c10", width: 0.2 });
+    g.stroke({ color: gothic.hex.page, width: 0.2 });
     g.eventMode = "static";
     g.cursor = "pointer";
     g.hitArea = new Polygon(verts);
@@ -252,7 +253,7 @@ function buildEditorScene(
   }
 
   drawEdgesPath(factionBorderLayer, CURRENT_FACTION_BORDERS);
-  factionBorderLayer.stroke({ color: "#090c10", width: 0.5, cap: "round" });
+  factionBorderLayer.stroke({ color: gothic.hex.page, width: 0.5, cap: "round" });
 
   // --- Regions state ---
   const regionEntries = new Map<string, { slug: string; fill: Graphics; border: Graphics }>();
@@ -278,7 +279,7 @@ function buildEditorScene(
             distance: 4,
             outerStrength: 0.8,
             innerStrength: 0,
-            color: 0xf0b46e,
+            color: gothic.pixi.accentSecondary,
             quality: 0.1,
           }),
         ];
@@ -345,7 +346,7 @@ function buildEditorScene(
     }
     haloGraphics.stroke({ color: "#06080b", width: 2.0, cap: "round" });
     baseGraphics.stroke({
-      color: "#f0b46e",
+      color: gothic.hex.accentSecondary,
       width: 0.5,
       alpha: 0.85,
       cap: "round",
@@ -416,7 +417,7 @@ function buildEditorScene(
         distance: 6,
         outerStrength: 2,
         innerStrength: 0,
-        color: 0x6dd5c0,
+        color: gothic.pixi.accent,
         quality: 0.15,
       }),
     ];
@@ -427,7 +428,7 @@ function buildEditorScene(
       const [cx, cy] = hexPixel(node.hex[0], node.hex[1]);
       pickRingLayer.circle(cx, cy, 1.8);
       pickRingLayer.stroke({
-        color: "#6dd5c0",
+        color: gothic.hex.accent,
         width: 0.35,
         alpha: 0.9,
       });
@@ -453,7 +454,7 @@ function buildEditorScene(
     const curve = computeSkeinCurve(x1, y1, x2, y2, sig);
     dashedPolylinePath(connectPreviewLayer, curve.samples, 1.2, 0.8);
     connectPreviewLayer.stroke({
-      color: "#6dd5c0",
+      color: gothic.hex.accent,
       width: 0.45,
       alpha: 0.85,
       cap: "round",
@@ -463,7 +464,7 @@ function buildEditorScene(
         distance: 4,
         outerStrength: 1.6,
         innerStrength: 0,
-        color: 0x6dd5c0,
+        color: gothic.pixi.accent,
         quality: 0.15,
       }),
     ];
@@ -481,7 +482,7 @@ function buildEditorScene(
       const verts = hexVertsAtPixel(cx, cy);
       const g = new Graphics();
       g.poly(verts);
-      g.fill({ color: "#6dd5c0", alpha: 0.55 });
+      g.fill({ color: gothic.hex.accent, alpha: 0.55 });
       g.eventMode = "static";
       g.cursor = "pointer";
       g.hitArea = new Polygon(verts);
@@ -498,7 +499,7 @@ function buildEditorScene(
     if (hexes.length > 0) {
       drawEdgesPath(selectionBorderLayer, computeRegionBorders(hexes));
       selectionBorderLayer.stroke({
-        color: "#6dd5c0",
+        color: gothic.hex.accent,
         width: 0.45,
         cap: "round",
       });

@@ -1,21 +1,12 @@
-// Shared building blocks for the astra backdrop shaders: the gothic-palette RGB
-// stops + the value-noise/fbm GLSL helpers (lifted from harrow's starfield so the
-// look is preserved). Each shader composes `${NOISE_GLSL}` into its fragment.
+// Shared building blocks for the astra backdrop shaders: the vec3 uniform helper and the
+// value-noise/fbm GLSL helpers (lifted from harrow's starfield so the look is preserved). Each
+// shader composes `${NOISE_GLSL}` into its fragment. Palette colours come from
+// `@astra/gothic/palette` (`gothic.rgb`), generated from gothic's token source.
 
 type Triple = readonly [number, number, number];
 
 /** A vec3 uniform value (RGB 0–1) as the Float32Array Pixi wants. */
 export const vec3 = (c: Triple): Float32Array => Float32Array.from(c);
-
-// The gothic palette (theme.css) as RGB 0–1 — keep these in sync with
-// libs/ts/gothic/src/theme.css `--color-*` if the palette ever shifts.
-export const PAL = {
-  teal: [0.427, 0.835, 0.753] as Triple, // --color-accent #6dd5c0
-  amber: [0.941, 0.706, 0.431] as Triple, // --color-accent-amber #f0b46e
-  parchment: [0.847, 0.788, 0.639] as Triple, // --color-parchment #d8c9a3
-  gold: [0.706, 0.518, 0.184] as Triple, // --color-gold-leaf #b4842f
-  void: [0.035, 0.047, 0.063] as Triple, // --color-void #090c10
-} as const;
 
 // Hashed value noise + 4-octave fbm — identical to harrow's starfield helpers, so
 // the starfield renders pixel-for-pixel as before once it consumes these.
