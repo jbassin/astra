@@ -86,8 +86,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Deploy and ops
 
-- portal `/mcp`: register the abort listener before `handleRequest` resolves (or check
-  `req.signal.aborted`) so an early disconnect can't leak a request's McpServer — agent.
 - scribe incoming holds two zips for 2026-10-12; resolve per the scribe README's
   "Blocking checks" (fresh run, not a re-execute) when that session is processed — Josh.
 - The edge cannot renew the non-astra hosts it also serves (plex, ntfy, qbit, annex, apex, news):
@@ -96,27 +94,18 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - Dashboards using orator's old `orator.api` span should switch to the route-named server spans — agent.
 - codex: once release-based serving has run a while, delete the old flat
   `/ruby/data/astra-state/codex/data/{corpus,search}` (kept for a code rollback past cdx-4) — agent.
-- pg-migrate: if the database connection dies mid-migration, postgres.js can hang boot instead of
-  failing (data is safe: the transaction rolls back; the deploy health wait reports it) — agent.
+- orator and weal `PostgresStore.close()` call `sql.end()` with no timeout; after a killed
+  connection postgres.js 3.4.9 waits on it for ever, so shutdown can hang (seen in the
+  pg-migrate kill test) — agent.
 - pipe-4b follow-ups: `migrate_sessions.py --allow-launch` should take session keys, not a count;
   `plan_down` ignores the sensor ledgers; dagster/README should name exactly what resets a sensor
   cursor (`dagster sensor cursor --delete`, a sensor or location rename) — agent.
 - portal: refresh the five pf2e fixtures (`apps/portal/module/tests/fixtures/pf2e/`) from the live
   world; their live sides are synthesised today — agent.
-- Delete the faerrin-era user unit files in `~/.config/systemd/user` (`dice-export`, `eerie`,
-  `lark`, `mouth`, `wretch-reconcile`: none enabled, all point into the deleted
-  `/ruby/data/experiments/faerrin` tree) — agent.
-- Flaky under parallel load (several `just ci` runs at once): codex `ssrSmoke`'s first request times
-  out at 5 s, codex `build-search.test.ts` "page_count matches the fixture manifest" failed
-  once, and orator's `ingest.pg.test.ts` shutdown-order test timed out at 5 s once — agent.
 - `apps/assay/py` `store.py`, `homebrew.py` and `artifacts.py` still find the app root by counting
   `Path.parents`; use `find_repo_root` as `book.py` does — agent.
-- vellum visual regression still binds the fixed port 5350 (it runs only in its CI container) —
-  agent.
 - Split the internal Docker network (the one theme P item kept) — agent; Phase 2.
 - `pip-audit` flags `diskcache` (via dspy), which has no fix — agent.
-- After the OpenTelemetry 1.45.1 upgrade deploys, confirm `astra.pipeline` logs still reach
-  SigNoz — main session.
 
 ## assay
 
@@ -125,10 +114,8 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Services
 
-- `just portal-module-install` fails with EACCES because Foundry leaves the module dir root-owned;
-  copy as root — agent; [`apps/portal/README.md`](../apps/portal/README.md).
-- orator: yt-dlp errors are discarded and child processes have no timeout (SVC-15); a non-numeric
-  query parameter sends `NaN` to Postgres (SVC-19) — agent.
+- Run `just portal-module-install` once against the live Foundry to confirm the `docker cp`
+  install (it also hands `Data/modules/portal` back to Foundry's user) — main session.
 
 ## Frontends
 
