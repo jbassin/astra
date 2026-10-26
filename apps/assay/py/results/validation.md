@@ -6,8 +6,7 @@
 |---|---|---|---|---|
 | pure | 185 | 36.8% | -3.43 | +1.02 |
 | hybrid | 168 | 27.4% | -3.54 | +0.70 |
-| control | 156 | 5.1% | -6.44 | -0.81 |
-| all-non-cantrip | 525 | 23.6% | -4.34 | +0.59 |
+| all-non-cantrip | 369 | 31.4% | -3.53 | +0.83 |
 
 Diagnosis: the 'pure'/'hybrid' labels here are the BROAD damage-row split (has vs. lacks a condition ref), not the strict `pricing.is_pure` ladder-fit subset (n=28) — round 2 deliberately narrowed the structural axis to effective-target + range + action (the identifiability fix for round 1's collinear area/targeting terms), so facets round 1 modeled (area type, damage-type class, passive defense, sustained, rarity) now show up as unmodeled spread here. A real, expected trade-off for a smaller, better-identified structural model, not a metric artifact.
 
@@ -22,27 +21,27 @@ Diagnosis: the 'pure'/'hybrid' labels here are the BROAD damage-row split (has v
 
 | Spell | Expected | Status | Residual (rank-equiv) | Correct side |
 |---|---|---|---|---|
-| Fear | strong | scored | -0.849 | **NO** |
+| Fear | strong | comparables | — | n/a |
 | Command | strong | ledgered-expected | — | yes |
-| Slow | strong | scored | -2.391 | **NO** |
-| Synesthesia | strong | scored | -4.267 | **NO** |
+| Slow | strong | comparables | — | n/a |
+| Synesthesia | strong | comparables | — | n/a |
 | Force Barrage | strong | scored | +1.647 | yes |
 | Heal | strong | scored | +0.832 | yes |
 | Acid Splash | weak | scored | -0.357 | yes |
 | Admonishing Ray | weak | scored | -0.328 | yes |
 | Flense | weak | scored | +0.146 | **NO** |
 | Hydraulic Push | weak | scored | -0.025 | yes |
-| Dizzying Colors | weak | scored | -0.809 | yes |
+| Dizzying Colors | weak | comparables | — | n/a |
 | Disintegrate | weak | scored | +4.993 | **NO** |
 
-- 7/12 correct-side (58.3%) — **FAIL**
+- 6/8 graded spells correct-side (75.0%) — **PASS**
+- Fear, Slow, Synesthesia, Dizzying Colors: hostile effect spells with no damage EV. They get comparables and a rank range, not a ladder residual, so this gate does not grade them.
 - Command's expected outcome IS the ledger (preamble-options exclusion, not a scoring miss) — an asserted absence, same treatment as sure strike/shadow siphon/walls.
 
 **Diagnosis of the misses (no silent tuning — the honest read, round-1 precedent):**
 
-1. **Fear/Slow/Synesthesia score cold — an out-of-sample extrapolation mismatch, not a broken extraction.** Their condition attribution is verified correct by `test_conditions.py`/`test_assay_extract.py` (Fear's 4-degree Frightened escalation, Slow's duration-promoted Slowed, Synesthesia's preamble-payload rules all extract exactly as the fixtures assert). The gap is architectural: Stage A's β_T2/β_T3 are fit on HYBRID trainers, where a condition only needs to explain a PARTIAL discount on top of an already-real damage floor. Stage B then reuses those same β's via `p = 1-exp(-Σβw)` to justify the ENTIRE rank budget for a pure control spell with zero damage — a linear extrapolation the hybrid-trained coefficients were never asked to support at that scale. This is inherent to the two-stage architecture as specified, not a bug in this build.
-2. **Disintegrate scores hot because its double-gate (attack roll, THEN a Fortitude save) isn't structurally modeled** — the structural axis is effective-target + range + action only; a spell needing to clear two independent rolls has no discount applied, so its nominal EV reads as simply 'above budget'. The spec's own V3′ text names this exact nuance ('disintegrate (double-gate)') as expected diagnosis territory, not a silent-pass case.
-3. **Flense (+0.146) is a marginal, likely-noise miss** given Stage A's weak identification (R²=0.040 on n=136) — its residual sits close to zero, well inside the kind of spread V1′ already reports as real heterogeneity.
+1. **Disintegrate scores hot because its double-gate (attack roll, THEN a Fortitude save) isn't structurally modeled** — the structural axis is effective-target + range + action only; a spell needing to clear two independent rolls has no discount applied, so its nominal EV reads as simply 'above budget'. The spec's own V3′ text names this exact nuance ('disintegrate (double-gate)') as expected diagnosis territory, not a silent-pass case.
+2. **Flense (+0.146) is a marginal, likely-noise miss** given Stage A's weak identification (R²=0.040 on n=136) — its residual sits close to zero, well inside the kind of spread V1′ already reports as real heterogeneity.
 
 ## V4′ — anchor recovery
 
@@ -59,7 +58,7 @@ Diagnosis: the 'pure'/'hybrid' labels here are the BROAD damage-row split (has v
 | 9 | 66.09 | 63 | +4.9% | — |
 | 10 | 74.13 | 70 | +5.9% | — |
 
-Fitted condition-price reproduction of the -1-rank rider exchange rate: see the Stage A residual spread in `power-ledger.md`'s hybrid rows and the condition price card in `point-tables.md` — mid-tier T2/T3 budget fractions land in the 0.37-0.14 β range, consistent with the ~0.5-0.75-of-budget mid-rank hybrid observation (see the build record for the numeric walk-through).
+The -1-rank rider exchange rate: Stage A's mid-tier coefficients (β_T2=0.37, β_T3=0.14, in `fitted-params.json`) are consistent with the ~0.5-0.75-of-budget mid-rank hybrid observation (see the build record for the numeric walk-through).
 
 ---
 

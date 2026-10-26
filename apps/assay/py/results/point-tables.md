@@ -49,7 +49,7 @@ budget = **5.00** (all pure cantrips are rank 1).
 | reaction | ×1.60 |
 
 ## Prior-anchored condition price card (PRIMARY, replaces the
-round-2 fitted card below)
+round-2 fitted card)
 
 **Every value here is a labeled PRIOR, never a fit.** Review F3/F4 killed round-2's fitted condition price card as a design tool (its own build record: the per-condition table is 'the per-instance rate, not the whole-spell aggregate' — never separately validated). Each tier is anchored on one named real spell/rule, unit-coherently stated as **V ≈ Budget/w_repr** (`w_repr` printed alongside every rate).
 
@@ -131,64 +131,6 @@ multipliers)
 | round | ×0.60 |
 | minute | ×1.00 |
 | long | ×1.20 |
-
-## Appendix: round-2 fitted condition price card (SUPERSEDED — known-noisy,
-kept for provenance)
-
-Stage A/B still runs (it feeds the appendix below and the comparables atom-vector weighting, `pricing.instance_weight`) but its per-condition PRICE output is no longer the recommended design tool — see section 5 of round-2's build record (`0030-assay-round2-spec.md`) for the full V3′ diagnosis of why (Fear/Slow/Synesthesia score 1–4 ranks cold: Stage A's β's are learned from PARTIAL hybrid discounts, then reused by Stage B to justify an entire control-spell budget — an extrapolation the architecture was never validated for).
-
-Hybrid trainer n=136, R²=0.040, α=-0.288.
-
-| Tier | β (operational, floored ≥0) | β (as-fitted, raw) | Basis |
-|---|---|---|---|
-| T1 | 0.0043 | 0.0043 | fitted (OLS) |
-| T2 | 0.3656 | 0.3656 | fitted (OLS) |
-| T3 | 0.1438 | 0.1438 | fitted (OLS) |
-| T4 | 6.0000 | 6.0000 | declared prior (too few trainers) |
-
-| Condition | Tier | Budget fraction *p* | Rank-equivalent @ rank 5 |
-|---|---|---|---|
-| Fascinated | T1 | 0.001 | 0.04 |
-| Sickened 1 | T1 | 0.001 | 0.04 |
-| Deafened | T1 | 0.001 | 0.03 |
-| Hidden | T1 | 0.001 | 0.03 |
-| Dazzled | T1 | 0.001 | 0.03 |
-| Concealed | T1 | 0.001 | 0.03 |
-| Fatigued | T1 | 0.001 | 0.03 |
-| Encumbered | T1 | 0.001 | 0.03 |
-| Wounded | T1 | 0.001 | 0.03 |
-| Undetected | T2 | 0.092 | 3.21 |
-| Grabbed | T2 | 0.088 | 3.07 |
-| Stupefied 1 | T2 | 0.088 | 3.07 |
-| Prone | T2 | 0.084 | 2.93 |
-| Frightened 1 | T2 | 0.084 | 2.93 |
-| Sickened 2 | T2 | 0.084 | 2.93 |
-| Drained 1 | T2 | 0.084 | 2.93 |
-| Slowed 1 | T2 | 0.084 | 2.93 |
-| Doomed 1 | T2 | 0.084 | 2.93 |
-| Clumsy 1 | T2 | 0.080 | 2.79 |
-| Enfeebled 1 | T2 | 0.080 | 2.79 |
-| Off-Guard | T2 | 0.072 | 2.50 |
-| Confused | T3 | 0.041 | 1.41 |
-| Blinded | T3 | 0.039 | 1.36 |
-| Stunned 1 | T3 | 0.037 | 1.30 |
-| Restrained | T3 | 0.036 | 1.24 |
-| Stupefied 2 | T3 | 0.036 | 1.24 |
-| Immobilized | T3 | 0.034 | 1.18 |
-| Frightened 2 | T3 | 0.034 | 1.18 |
-| Sickened 3 | T3 | 0.034 | 1.18 |
-| Drained 2 | T3 | 0.034 | 1.18 |
-| Slowed 2 | T3 | 0.034 | 1.18 |
-| Doomed 2 | T3 | 0.034 | 1.18 |
-| Fleeing | T3 | 0.032 | 1.12 |
-| Clumsy 2 | T3 | 0.032 | 1.12 |
-| Enfeebled 2 | T3 | 0.032 | 1.12 |
-| Controlled | T4 | 0.835 | 29.08 |
-| Petrified | T4 | 0.822 | 28.65 |
-| Paralyzed | T4 | 0.809 | 28.19 |
-| Stunned 3 | T4 | 0.795 | 27.70 |
-| Unconscious | T4 | 0.780 | 27.16 |
-| Dying | T4 | 0.763 | 26.59 |
 
 ---
 

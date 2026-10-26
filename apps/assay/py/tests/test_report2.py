@@ -1,5 +1,5 @@
-"""Unit tests for round-2 report generation — the
-full-population scorer end-to-end on a small synthetic corpus."""
+"""Unit tests for the report data — the full-population split and the
+validation gates, on a small synthetic corpus."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ import math
 
 import pytest
 from astra_assay import pricing, report2
-from astra_assay.conditions import Tier
 from astra_assay.extract import (
     ActionBucket,
     ConditionInstanceOut,
@@ -92,7 +91,7 @@ def _control_row(name: str, rank: int) -> SpellFeatures:
     )
 
 
-def test_score_population_splits_scored_and_ledgered(tmp_path) -> None:
+def test_score_population_splits_ladder_effect_and_ledger(tmp_path) -> None:
     rows = [_damage_row("Firebolt", 1, 7.0), _control_row("Frighten", 1)]
     skipped: list[SkipRecord] = []
     ladder = pricing.fit_ladder(
@@ -101,31 +100,41 @@ def test_score_population_splits_scored_and_ledgered(tmp_path) -> None:
     cantrip_ladder = pricing.CantripLadderFit(
         intercept=math.log(2.0), effective_target_coef={}, range_coef={}, n_obs=1, r_squared=1.0
     )
-    stage_a = pricing.StageAFit(
-        beta={Tier.T1: 0.0, Tier.T2: 0.2, Tier.T3: 0.15, Tier.T4: pricing.BETA_T4_PRIOR},
-        beta_raw={Tier.T1: 0.0, Tier.T2: 0.2, Tier.T3: 0.15, Tier.T4: pricing.BETA_T4_PRIOR},
-        alpha=0.0,
-        n_obs=10,
-        r_squared=0.1,
-    )
-    population = report2.score_population(rows, skipped, tmp_path, ladder, cantrip_ladder, stage_a)
-    assert len(population.scored) == 2
-    kinds = {s.name: s.kind for s in population.scored}
-    assert kinds["Firebolt"] == "pure-damage"
-    assert kinds["Frighten"] == "condition-control"
+    population = report2.score_population(rows, skipped, tmp_path, ladder, cantrip_ladder)
+    assert [(s.name, s.kind) for s in population.scored] == [("Firebolt", "pure-damage")]
+    assert population.hostile_effect_names == ["Frighten"]
+    assert population.scored_count == 2
     assert population.ledger == {}
 
 
 def test_v1_prime_groups_by_kind() -> None:
     scored = [
         report2.ScoredRow("A", 3, False, "pure-damage", 20.0, 3.1, 0.1),
-        report2.ScoredRow("B", 3, False, "condition-control", 5.0, 1.0, -2.0),
+        report2.ScoredRow("B", 3, False, "hybrid-damage", 15.0, 2.0, -1.0),
     ]
     results = report2.validate_v1_prime(scored)
     by_subpop = {r.subpop: r for r in results}
     assert by_subpop["pure"].n == 1
-    assert by_subpop["control"].n == 1
+    assert by_subpop["hybrid"].n == 1
     assert by_subpop["all-non-cantrip"].n == 2
+    assert "control" not in by_subpop
+
+
+def test_v3_prime_leaves_hostile_effect_spells_ungraded() -> None:
+    scored = [
+        report2.ScoredRow("Force Barrage", 1, False, "recovered-damage", 10.5, 2.6, 1.6),
+        report2.ScoredRow("Disintegrate", 6, False, "pure-damage", 66.0, 11.0, 5.0),
+    ]
+    checks, share = report2.validate_v3_prime(scored, ["Fear", "Dizzying Colors"])
+    by_name = {c.name: c for c in checks}
+    assert by_name["Fear"].status == "comparables"
+    assert by_name["Fear"].correct_side is None
+    assert by_name["Dizzying Colors"].correct_side is None
+    assert by_name["Command"].status == "ledgered-expected"
+    assert by_name["Force Barrage"].correct_side is True
+    assert by_name["Disintegrate"].correct_side is False
+    graded = [c for c in checks if c.correct_side is not None]
+    assert share == sum(1 for c in graded if c.correct_side) / len(graded)
 
 
 def test_v4_prime_tracks_community_line() -> None:

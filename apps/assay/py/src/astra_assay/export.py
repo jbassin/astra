@@ -21,19 +21,23 @@ collapse** (34 real multi-row slugs): a file that produced more than one
 to ONE entry — primary = the non-variant row if one exists, else the
 2-action variant, else the first by variant label — others ride under
 ``variants[]``.
+
+Each entry is ``score_to_entry`` over one ``scorer.Scorer.score`` result.
 """
 
 from __future__ import annotations
 
 import json
-import math
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from . import buffs, ledger, pricing, summons
 from . import comparables as comparables_mod
 from .extract import ExtractResult, SkipRecord, SpellFeatures, load_spell_json
+
+if TYPE_CHECKING:
+    # scorer.py imports this module's reason codes, so these imports are for typing only.
+    from .scorer import Scorer, SpellScore
 
 SCHEMA_VERSION = 1
 
@@ -92,168 +96,27 @@ class ExportReport:
     variant_collapse_count: int = 0
 
 
-def _quantitative_fields(
-    row: SpellFeatures,
-    ladder: pricing.LadderFit,
-    cantrip_ladder: pricing.CantripLadderFit,
-) -> dict[str, Any]:
-    active = cantrip_ladder if row.is_cantrip else ladder
-    structural = active.structural_target_range(row) * pricing.action_multiplier(row.action_bucket)
-    entry: dict[str, Any] = {"kind": "quantitative", "rank": row.rank, "ev": row.ev}
-    has_hostile_condition = any(ci.tier is not None for ci in row.condition_instances)
-    entry["population"] = "hostile" if has_hostile_condition else None
-    if row.is_cantrip:
-        budget = cantrip_ladder.budget() * structural
-        entry["budget"] = budget
-        entry["verdict"] = f"budget fraction {row.ev / budget:.2f}" if budget > 0 else "n/a"
-    else:
-        budget = ladder.budget(row.rank) * structural
-        entry["budget"] = budget
-        rank_equiv = (
-            pricing.rank_equivalent(row.ev / structural, ladder) if structural else float("nan")
-        )
-        if math.isnan(rank_equiv):
-            entry["verdict"] = "n/a"
-        else:
-            residual = rank_equiv - row.rank
-            entry["residualRanks"] = residual
-            if residual > 0.5:
-                entry["verdict"] = f"{residual:+.2f} ranks HOT"
-            elif residual < -0.5:
-                entry["verdict"] = f"{residual:+.2f} ranks COLD"
-            else:
-                entry["verdict"] = "in band"
-    return entry
-
-
-def _attach_hostile_comparables(
-    entry: dict[str, Any],
-    row: SpellFeatures,
-    ladder: pricing.LadderFit,
-    hostile_corpus: list[comparables_mod.ComparableProfile],
-) -> None:
-    if row.is_cantrip:
-        return
-    profile = comparables_mod.build_profile(row, ladder)
-    matches = comparables_mod.top_comparables(profile, hostile_corpus, k=5, exclude_name=row.name)
-    if not comparables_mod.has_usable_comparables(matches):
-        return
-    res = comparables_mod.comparables_for(profile, hostile_corpus, k=5, exclude_name=row.name)
-    entry["comparables"] = _matches_to_json(res.matches)
-    entry["rankRange"] = [res.rank_min, res.rank_max]
-
-
-def build_entry_for_row(
-    row: SpellFeatures,
-    *,
-    ladder: pricing.LadderFit,
-    cantrip_ladder: pricing.CantripLadderFit,
-    hostile_corpus: list[comparables_mod.ComparableProfile],
-    buff_corpus: list[comparables_mod.ComparableProfile],
-    is_summon_trait: bool,
-    raw_description: str,
-) -> dict[str, Any]:
-    """Public (not `_`-prefixed): this is the one place the round-2..4
-    scoring mechanism (quantitative verdict / comparables range / buff
-    comparables / typed ledger) is fully assembled into a JSON-shaped entry —
-    `build_export` uses it for the codex artifact, and `homebrew.py`'s
-    `score-homebrew` reuses it verbatim per spell (the "same code path as
-    `assay score`" requirement, without shelling out)."""
-    reason = ledger.classify_row(row)
-    entry: dict[str, Any]
-
-    if row.ev > 0.0:
-        entry = _quantitative_fields(row, ladder, cantrip_ladder)
-        has_hostile_condition = any(ci.tier is not None for ci in row.condition_instances)
-        if has_hostile_condition:
-            _attach_hostile_comparables(entry, row, ladder, hostile_corpus)
-    elif reason is None:
-        # A hostile condition-control row (Stage-B scored, ev==0) — the
-        # recommended tool is comparables, not the superseded fitted score.
-        entry = {"rank": row.rank, "population": "hostile"}
-        if row.is_cantrip:
-            entry["kind"] = "ledger"
-            entry["reasonCode"] = CANTRIP_TOO_THIN
-        else:
-            profile = comparables_mod.build_profile(row, ladder)
-            matches = comparables_mod.top_comparables(
-                profile, hostile_corpus, k=5, exclude_name=row.name
-            )
-            if comparables_mod.has_usable_comparables(matches):
-                res = comparables_mod.comparables_for(
-                    profile, hostile_corpus, k=5, exclude_name=row.name
-                )
-                entry["kind"] = "comparables"
-                entry["comparables"] = _matches_to_json(res.matches)
-                entry["rankRange"] = [res.rank_min, res.rank_max]
-            else:
-                entry["kind"] = "ledger"
-                entry["reasonCode"] = NO_COMPARABLE_PROFILE
-    elif reason == "beneficial-effect":
-        entry = {"rank": row.rank, "population": "beneficial"}
-        if buffs.is_buff_comparable_candidate(row):
-            profile = buffs.build_buff_profile(row)
-            matches = comparables_mod.top_comparables(
-                profile, buff_corpus, k=5, exclude_name=row.name
-            )
-            if comparables_mod.has_usable_comparables(matches):
-                res = comparables_mod.comparables_for(
-                    profile, buff_corpus, k=5, exclude_name=row.name
-                )
-                entry["kind"] = "buff-comparables"
-                entry["comparables"] = _matches_to_json(res.matches)
-                entry["rankRange"] = [res.rank_min, res.rank_max]
-            else:
-                entry["kind"] = "ledger"
-                entry["reasonCode"] = NO_COMPARABLE_PROFILE
-        else:
-            entry["kind"] = "ledger"
-            entry["reasonCode"] = NO_COMPARABLE_PROFILE
-    else:
-        entry = {
-            "rank": row.rank,
-            "kind": "ledger",
-            "population": None,
-            "reasonCode": reason_code_for(reason),
+def score_to_entry(score: SpellScore) -> dict[str, Any]:
+    """The JSON entry for one scored row: the shape codex reads from ``spell-power.json`` and
+    ``score-homebrew`` writes per spell."""
+    entry: dict[str, Any] = {"rank": score.rank, "kind": score.kind, "population": score.population}
+    if score.kind == "quantitative":
+        entry["ev"] = score.ev
+        entry["budget"] = score.budget
+        entry["verdict"] = score.verdict
+        if score.residual_ranks is not None:
+            entry["residualRanks"] = score.residual_ranks
+    if score.comparables is not None:
+        entry["comparables"] = _matches_to_json(score.comparables.matches)
+        entry["rankRange"] = [score.comparables.rank_min, score.comparables.rank_max]
+    if score.reason_code is not None:
+        entry["reasonCode"] = score.reason_code
+    if score.summon_band is not None:
+        entry["summonBand"] = {
+            "baseLevel": score.summon_band.base_level,
+            "curveLevel": score.summon_band.curve_level,
+            "delta": score.summon_band.delta,
         }
-
-    if is_summon_trait:
-        band = summons.summon_band(row.rank, raw_description)
-        if band is not None:
-            entry["summonBand"] = {
-                "baseLevel": band.base_level,
-                "curveLevel": band.curve_level,
-                "delta": band.delta,
-            }
-        if entry.get("population") is None:
-            entry["population"] = "summon"
-    return entry
-
-
-def _build_entry_for_skip(
-    skip: SkipRecord,
-    *,
-    raw_doc: dict[str, Any],
-    is_summon_trait: bool,
-    raw_description: str,
-) -> dict[str, Any]:
-    reason = ledger.classify_unpriced_skip(raw_doc, skip.reason)
-    rank = int((raw_doc.get("system", {}).get("level") or {}).get("value", 0))
-    entry: dict[str, Any] = {
-        "rank": rank,
-        "kind": "ledger",
-        "population": None,
-        "reasonCode": reason_code_for(reason),
-    }
-    if is_summon_trait:
-        band = summons.summon_band(rank, raw_description)
-        if band is not None:
-            entry["summonBand"] = {
-                "baseLevel": band.base_level,
-                "curveLevel": band.curve_level,
-                "delta": band.delta,
-            }
-        entry["population"] = "summon"
     return entry
 
 
@@ -272,10 +135,7 @@ def _pick_primary(rows: list[SpellFeatures]) -> tuple[SpellFeatures, list[SpellF
 def build_export(
     extract_result: ExtractResult,
     spells_dir: Path,
-    ladder: pricing.LadderFit,
-    cantrip_ladder: pricing.CantripLadderFit,
-    hostile_corpus: list[comparables_mod.ComparableProfile],
-    buff_corpus: list[comparables_mod.ComparableProfile],
+    scorer: Scorer,
 ) -> tuple[dict[str, Any], ExportReport]:
     rows_by_file: dict[str, list[SpellFeatures]] = {}
     for r in extract_result.rows:
@@ -311,37 +171,31 @@ def build_export(
         if file in rows_by_file:
             rows = rows_by_file[file]
             primary, others = _pick_primary(rows)
-            entry = build_entry_for_row(
-                primary,
-                ladder=ladder,
-                cantrip_ladder=cantrip_ladder,
-                hostile_corpus=hostile_corpus,
-                buff_corpus=buff_corpus,
-                is_summon_trait=is_summon_trait,
-                raw_description=raw_description,
+            entry = score_to_entry(
+                scorer.score(
+                    primary, is_summon_trait=is_summon_trait, raw_description=raw_description
+                )
             )
             if others:
                 report.variant_collapse_count += 1
                 variants = []
                 for o in sorted(others, key=lambda r: r.variant_label or r.name):
-                    v_entry = build_entry_for_row(
-                        o,
-                        ladder=ladder,
-                        cantrip_ladder=cantrip_ladder,
-                        hostile_corpus=hostile_corpus,
-                        buff_corpus=buff_corpus,
-                        is_summon_trait=is_summon_trait,
-                        raw_description=raw_description,
+                    v_entry = score_to_entry(
+                        scorer.score(
+                            o, is_summon_trait=is_summon_trait, raw_description=raw_description
+                        )
                     )
                     v_entry["label"] = o.variant_label or o.name
                     variants.append(v_entry)
                 entry["variants"] = variants
         else:
-            entry = _build_entry_for_skip(
-                skips_by_file[file][0],
-                raw_doc=_doc(file),
-                is_summon_trait=is_summon_trait,
-                raw_description=raw_description,
+            entry = score_to_entry(
+                scorer.score_skip(
+                    skips_by_file[file][0],
+                    _doc(file),
+                    is_summon_trait=is_summon_trait,
+                    raw_description=raw_description,
+                )
             )
 
         entries[codex_id] = entry

@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from astra_assay import comparables, export
+from astra_assay.artifacts import ModelArtifacts
 from astra_assay.extract import (
     ActionBucket,
     DamageTypeClass,
@@ -20,6 +21,7 @@ from astra_assay.extract import (
     SpellFeatures,
     TargetingClass,
 )
+from astra_assay.scorer import Scorer
 
 
 def _row(
@@ -250,10 +252,9 @@ def test_build_export_determinism_and_variant_collapse(tmp_path: Path) -> None:
         ],
     )
 
-    artifact1, report1 = export.build_export(
-        extract_result, spells_dir, ladder, cantrip_ladder, [], []
-    )
-    artifact2, _ = export.build_export(extract_result, spells_dir, ladder, cantrip_ladder, [], [])
+    scorer = Scorer(ModelArtifacts(ladder, cantrip_ladder, [], []))
+    artifact1, report1 = export.build_export(extract_result, spells_dir, scorer)
+    artifact2, _ = export.build_export(extract_result, spells_dir, scorer)
     assert export.dump_export(artifact1) == export.dump_export(artifact2)
 
     entries = artifact1["entries"]

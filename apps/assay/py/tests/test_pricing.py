@@ -1,5 +1,5 @@
-"""Unit tests for the round-2 pricing pipeline — ladder fit mechanics, tier-weight computation, and
-Stage B scoring, independent of the real corpus (a small synthetic pure/hybrid population).
+"""Unit tests for the pricing pipeline — ladder fit mechanics and tier-weight computation,
+independent of the real corpus (a small synthetic pure/hybrid population).
 """
 
 from __future__ import annotations
@@ -139,31 +139,6 @@ def test_instance_weight_success_degree_is_nonzero() -> None:
     Frightened 1."""
     w = pricing.instance_weight("Frightened", "success", DurationClass.ROUND)
     assert w > 0.0
-
-
-def test_stage_b_power_fraction_never_exceeds_one() -> None:
-    """The exp link's whole point: stacked riders approach but never
-    price past 100% of budget, even with an absurdly large weight."""
-    stage_a = pricing.StageAFit(
-        beta={Tier.T1: 0.0, Tier.T2: 0.5, Tier.T3: 0.3, Tier.T4: pricing.BETA_T4_PRIOR},
-        beta_raw={Tier.T1: 0.0, Tier.T2: 0.5, Tier.T3: 0.3, Tier.T4: pricing.BETA_T4_PRIOR},
-        alpha=0.0,
-        n_obs=10,
-        r_squared=0.1,
-    )
-    heavy = [
-        ConditionInstanceOut(
-            condition="Paralyzed",
-            value=None,
-            degree="failure",
-            duration="long",
-            rule="direct",
-            tier="T4",
-        )
-    ] * 5
-    row = _row("heavy-control", 5, 0.0, conditions=heavy)
-    p = pricing.stage_b_power_fraction(row, stage_a)
-    assert 0.0 < p < 1.0
 
 
 def test_boss_weighted_degrades_one_step_and_never_increases() -> None:

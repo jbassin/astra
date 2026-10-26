@@ -37,10 +37,10 @@ docstrings for the reasoning):
   string with an un-modeled qualifier, an unparseable area/range shape, a
   non-damage heightening text, …) is recorded as a per-spell adapter
   warning — never silently dropped.
-- Scoring reuses ``export.build_entry_for_row`` — the SAME assembly
-  ``assay export-codex`` runs per official spell (quantitative verdict /
-  comparables range / buff comparables / typed ledger) — so this module
-  never re-implements the scoring mechanism and never shells out per spell.
+- Scoring goes through ``scorer.Scorer`` — the SAME scorer ``assay score``
+  and ``assay export-codex`` use (quantitative verdict / comparables range /
+  buff comparables / typed ledger) — so this module never re-implements the
+  scoring mechanism and never shells out per spell.
 """
 
 from __future__ import annotations
@@ -56,15 +56,15 @@ from typing import Any
 
 from astra_observe import get_tracer
 
-from . import comparables, conditions, export, ledger, pricing, store
+from . import conditions, export, store
 from .extract import (
     LONG_CAST_TIMES,
     ActionBucket,
     SkipRecord,
-    extract_spell,
     normalize_action_time,
 )
 from .extract import parse_range as _extract_parse_range
+from .scorer import Scorer
 
 APP_ROOT = Path(__file__).resolve().parents[2]  # src/astra_assay/homebrew.py -> apps/assay/py
 VENDOR_SPELLS_PATH = (
@@ -84,15 +84,6 @@ HOMEBREW_SCORES_PATH = HOMEBREW_OUT_DIR / "scores.json"
 #: VENDORED.md`) — stamped into every seeded doc's `flags.assay.seededFrom`.
 _VENDOR_REPO = "run_balance"
 _VENDOR_COMMIT = "efc8e310210a2577411c62ee95f09a58ef79f164"
-#: Duplicated from ``cli.py`` deliberately (not imported): ``cli.py`` imports
-#: THIS module to register the new subcommands, so a `from .cli import ...`
-#: here would be a cli<->homebrew import cycle. These are one-line Path
-#: joins, cheap to keep in sync (both point at the same committed
-#: ``results/`` artifacts ``assay price`` writes).
-RESULTS_DIR = APP_ROOT / "results"
-FITTED_PARAMS_PATH = RESULTS_DIR / "fitted-params.json"
-COMPARABLES_CORPUS_PATH = RESULTS_DIR / "comparables-corpus.json"
-BUFF_CORPUS_PATH = RESULTS_DIR / "buff-comparables-corpus.json"
 
 _tracer = get_tracer("astra.assay")
 
@@ -1431,55 +1422,8 @@ def _write_revisions_md(report: RevisionsReport, path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Scoring — reuses `export.build_entry_for_row` (the same assembly
-# `export-codex` runs per official spell), never re-implements or shells out.
+# Scoring — through `scorer.Scorer`, the same scorer `export-codex` and `assay score` use.
 # ---------------------------------------------------------------------------
-
-
-def _load_ladder_and_corpora() -> tuple[
-    pricing.LadderFit,
-    pricing.CantripLadderFit,
-    list[comparables.ComparableProfile],
-    list[comparables.ComparableProfile],
-]:
-    if not FITTED_PARAMS_PATH.exists():
-        raise SystemExit(
-            f"assay score-homebrew: no fitted params at {FITTED_PARAMS_PATH} — "
-            "run `assay price` first."
-        )
-    params = json.loads(FITTED_PARAMS_PATH.read_text(encoding="utf-8"))
-    if "round2" not in params:
-        raise SystemExit("assay score-homebrew: results/fitted-params.json has no round2 params.")
-    r2 = params["round2"]
-    ladder = pricing.LadderFit(
-        intercept=r2["ladder"]["intercept"],
-        slope=r2["ladder"]["slope"],
-        effective_target_coef=r2["ladder"]["effective_target_coef"],
-        range_coef=r2["ladder"]["range_coef"],
-        n_obs=r2["ladder"]["n_obs"],
-        r_squared=r2["ladder"]["r_squared"],
-        excluded_singletons=r2["ladder"]["excluded_singletons"],
-    )
-    cantrip_ladder = pricing.CantripLadderFit(
-        intercept=r2["cantrip_ladder"]["intercept"],
-        effective_target_coef=r2["cantrip_ladder"]["effective_target_coef"],
-        range_coef=r2["cantrip_ladder"]["range_coef"],
-        n_obs=r2["cantrip_ladder"]["n_obs"],
-        r_squared=r2["cantrip_ladder"]["r_squared"],
-    )
-    hostile_corpus: list[comparables.ComparableProfile] = []
-    if COMPARABLES_CORPUS_PATH.exists():
-        hostile_corpus = [
-            comparables.profile_from_json(d)
-            for d in json.loads(COMPARABLES_CORPUS_PATH.read_text(encoding="utf-8"))
-        ]
-    buff_corpus: list[comparables.ComparableProfile] = []
-    if BUFF_CORPUS_PATH.exists():
-        buff_corpus = [
-            comparables.profile_from_json(d)
-            for d in json.loads(BUFF_CORPUS_PATH.read_text(encoding="utf-8"))
-        ]
-    return ladder, cantrip_ladder, hostile_corpus, buff_corpus
 
 
 def _routing_for(entry: dict[str, Any], *, has_hostile_condition: bool) -> str:
@@ -1496,10 +1440,9 @@ def _routing_for(entry: dict[str, Any], *, has_hostile_condition: bool) -> str:
 
 
 def score_all(store_dir: Path | None = None) -> list[dict[str, Any]]:
-    """Read the CANONICAL STORE (never converts from vendor at score time,
-    per the round-3 architecture change — `load_homebrew_store` is the only
-    spell-content read here) and score every doc through
-    `export.build_entry_for_row`, one Python call per spell, no subprocess.
+    """Read the CANONICAL STORE (never converts from vendor at score time —
+    `load_homebrew_store` is the only spell-content read here) and score every doc
+    through `Scorer.score_doc`, one Python call per spell, no subprocess.
     `store_dir` is overridable for tests; production code always reads
     `HOMEBREW_STORE_DIR`.
 
@@ -1510,24 +1453,23 @@ def score_all(store_dir: Path | None = None) -> list[dict[str, Any]]:
     Healing rows are NOT scored differently from damage rows — this
     mirrors the official pipeline exactly: `report2.py`'s own
     `_damage_row_kind` labels a healing row `"healing"` but scores it
-    through the SAME `has_damage = row.ev > 0.0` / ladder-budget path as
+    through the SAME `row.ev > 0.0` / ladder-budget path as
     any other damage row (the declared 1:1 healing-vs-damage-budget
-    convention — see `extract.py`'s `is_healing` docstring); `export.
-    build_entry_for_row` (reused here) carries no healing distinction of
-    its own at all (`entry["kind"]` is `"quantitative"` either way). This
+    convention — see `extract.py`'s `is_healing` docstring); the scorer
+    carries no healing distinction of its own at all (`entry["kind"]` is
+    `"quantitative"` either way). This
     module adds an `isHealing` field on top (sourced straight from
     `SpellFeatures.is_healing`) purely for scores.json triage segmentation
     — the scoring math itself is untouched, matching official behavior."""
-    ladder, cantrip_ladder, hostile_corpus, buff_corpus = _load_ladder_and_corpora()
+    scorer = Scorer.from_results()
     results: list[dict[str, Any]] = []
     for slug, data in load_homebrew_store(store_dir):
         sysd = data.get("system") or {}
-        description_html = ((sysd.get("description") or {}).get("value")) or ""
         name = str(data.get("name", slug))
         adapter_warnings = list(
             (((data.get("flags") or {}).get("assay") or {}).get("adapterWarnings")) or []
         )
-        result = extract_spell(data, f"homebrew/{slug}.json")
+        result, score = scorer.score_doc(data, f"homebrew/{slug}.json")
 
         record: dict[str, Any] = {
             "name": name,
@@ -1537,7 +1479,7 @@ def score_all(store_dir: Path | None = None) -> list[dict[str, Any]]:
         }
 
         if isinstance(result, SkipRecord):
-            reason_code = export.reason_code_for(ledger.classify_unpriced_skip(data, result.reason))
+            reason_code = score.reason_code
             record.update(
                 {
                     "rank": int((sysd.get("level") or {}).get("value", 0)),
@@ -1556,15 +1498,7 @@ def score_all(store_dir: Path | None = None) -> list[dict[str, Any]]:
             continue
 
         has_hostile_condition = any(ci.tier is not None for ci in result.condition_instances)
-        entry = export.build_entry_for_row(
-            result,
-            ladder=ladder,
-            cantrip_ladder=cantrip_ladder,
-            hostile_corpus=hostile_corpus,
-            buff_corpus=buff_corpus,
-            is_summon_trait=False,
-            raw_description=description_html,
-        )
+        entry = export.score_to_entry(score)
         entry["routing"] = _routing_for(entry, has_hostile_condition=has_hostile_condition)
         record.update(entry)
         record["isCantrip"] = result.is_cantrip
