@@ -28,9 +28,8 @@ Caddy at `weal-overlay.iridi.cc`. Config is the `weal-overlay` block in `config.
 
 - **Startup fails closed.** The server refuses to start with a blank ingest token; there is no open
   mode. Start it only through `just deploy`, which injects `WEAL_TOKEN`.
-- **The token header has two names for one release.** The server accepts `x-weal-token` or the old
-  `x-eerie-token`, and weal-bot sends both, so the two can deploy in either order. Drop the old
-  name once both run the release that added the new one (see the weal-wire README).
+- **The token travels only in `x-weal-token`.** The old `x-eerie-token` name is retired: a request
+  that carries only it gets 401 (see the weal-wire README).
 - **The SSE stream needs unbuffered proxying.** The Caddy stanza sets `flush_interval -1`; without it
   rolls arrive in bursts or not at all.
 - **Fonts are served from `public/fonts/`**, copied in, because the page requests absolute `/fonts/`

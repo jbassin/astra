@@ -131,15 +131,12 @@ exports[`weal-overlay HTTP responses match the pre-migration pins > ingest no to
 
 exports[`weal-overlay HTTP responses match the pre-migration pins > ingest old header 1`] = `
 {
-  "body": "",
-  "broadcast": [
-    "data: {"v":1,"user":"Kethra","expression":"d20","total":20,"display":"20","isCrit":true,"isFumble":false,"ts":"<ts>"}
-
+  "body": "unauthorized
 ",
-  ],
+  "broadcast": [],
   "cacheControl": null,
-  "contentType": null,
-  "status": 204,
+  "contentType": "text/plain;charset=UTF-8",
+  "status": 401,
 }
 `;
 

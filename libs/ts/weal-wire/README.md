@@ -13,14 +13,14 @@ import it, so a change here changes both sides at once; deploy them together
   own camelCase feed event.
 - `INGEST_PATH` (`/api/v1/roll`), the route weal-bot posts to. The full URL comes from
   `weal.feed-ws-url` in `config.kdl`.
-- `TOKEN_HEADER` (`x-weal-token`) and `LEGACY_TOKEN_HEADER` (`x-eerie-token`), the headers that
-  carry the shared `weal_token` secret.
+- `TOKEN_HEADER` (`x-weal-token`), the header that carries the shared `weal_token` secret;
+  `tokenHeaders(token)` builds it for weal-bot and `requestToken(headers)` reads it for
+  weal-overlay.
 
 ## Traps
 
 - **Keep the schema tolerant of extra keys.** `z.object` strips unknown keys, which lets an older
   bot that still sends a field the schema dropped keep working during a deploy. Don't make it
   `.strict()`.
-- **The token header has two names for one release.** weal-bot sends both and weal-overlay
-  accepts either, so the services can deploy in any order. Once both run this release, drop
-  `LEGACY_TOKEN_HEADER` from both sides.
+- **The old `x-eerie-token` header is gone.** weal-overlay accepts only `x-weal-token`, so a
+  weal-bot older than the weal-4 release (`3f724d84`) can no longer post rolls to it.

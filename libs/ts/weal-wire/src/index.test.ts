@@ -3,13 +3,13 @@ import { describe, expect, test } from "vitest";
 import { RollMessageSchema, requestToken, tokenHeaders } from "./index";
 
 describe("token headers", () => {
-  test("weal-bot sends the token under both names", () => {
-    expect(tokenHeaders("s3cret")).toEqual({ "x-weal-token": "s3cret", "x-eerie-token": "s3cret" });
+  test("weal-bot sends the token under x-weal-token only", () => {
+    expect(tokenHeaders("s3cret")).toEqual({ "x-weal-token": "s3cret" });
   });
 
-  test("weal-overlay reads either name, preferring the new one", () => {
+  test("weal-overlay reads x-weal-token and ignores the retired x-eerie-token", () => {
     expect(requestToken(new Headers(tokenHeaders("a")))).toBe("a");
-    expect(requestToken(new Headers({ "x-eerie-token": "old" }))).toBe("old");
+    expect(requestToken(new Headers({ "x-eerie-token": "old" }))).toBeNull();
     expect(requestToken(new Headers({ "x-weal-token": "new", "x-eerie-token": "old" }))).toBe(
       "new",
     );
