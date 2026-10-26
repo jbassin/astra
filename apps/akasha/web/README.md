@@ -83,6 +83,7 @@ Node indexing API and writes `dist/client/pagefind/`.
 - **Graph colours must be concrete hex.** The force graph reads Quartz-style variables
   (`--secondary`, `--gray`, …) with `getComputedStyle`. Define them in `globals.css` as hex, not
   `var(--color-*)`: some browsers return the unresolved `var()` text, which pixi can't parse.
+  This Quartz-named block is not dead: without it the graph draws no visible nodes or links.
 - **No pixi backdrop here.** The force graph already owns a pixi Application, so akasha uses the
   CSS nebula (`.site-backdrop` in `globals.css`) instead of `@astra/backdrop`.
 - **Read localStorage only in effects.** The Explorer seeds its open folders from the current slug
