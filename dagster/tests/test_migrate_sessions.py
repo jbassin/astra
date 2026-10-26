@@ -102,14 +102,38 @@ def test_dry_run_plans_previews_and_writes_nothing(mig: ModuleType, legacy) -> N
 def test_apply_refuses_when_the_sensors_would_launch(mig: ModuleType, legacy) -> None:
     assert mig.run(legacy, apply_changes=True) == mig.REFUSED_LAUNCH
     assert legacy.get_dynamic_partitions(SESSIONS_NAME) == []  # nothing written
-    assert mig.run(legacy, apply_changes=True, allow_launch=2) == mig.REFUSED_LAUNCH
+    # The keys must match the launch list exactly: a wrong key, or an extra one, refuses.
+    for wrong in (["h1"], ["h2", "h1"]):
+        assert mig.run(legacy, apply_changes=True, allow_launch=wrong) == mig.REFUSED_LAUNCH
+    assert legacy.get_dynamic_partitions(SESSIONS_NAME) == []
+
+
+def test_the_cli_takes_session_keys(mig: ModuleType, monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: dict[str, object] = {}
+
+    def fake_run(_instance: object, **kw: object) -> int:
+        seen.update(kw)
+        return 0
+
+    class _Instance:
+        def __enter__(self) -> object:
+            return self
+
+        def __exit__(self, *_a: object) -> None:
+            return None
+
+    monkeypatch.setattr(mig, "run", fake_run)
+    monkeypatch.setattr(mig.dg.DagsterInstance, "get", staticmethod(_Instance))
+    argv = ["--apply", "--allow-launch", "2026-10-5", "--allow-launch", "2026-10-12"]
+    assert mig.main(argv) == 0
+    assert seen["allow_launch"] == ["2026-10-5", "2026-10-12"]
 
 
 def test_apply_with_the_launch_named_keeps_history_and_is_idempotent(
     mig: ModuleType, legacy
 ) -> None:
     before = _materialized(legacy)
-    assert mig.run(legacy, apply_changes=True, allow_launch=1) == 0
+    assert mig.run(legacy, apply_changes=True, allow_launch=["h2"]) == 0
 
     assert sorted(legacy.get_dynamic_partitions(SESSIONS_NAME)) == [
         "h1", "h2", "s1", "s2", "stub",
@@ -132,7 +156,7 @@ def test_a_clean_instance_applies_without_flags(mig: ModuleType, legacy) -> None
 
 
 def test_adoption_marks_carry_the_tag(mig: ModuleType, legacy) -> None:
-    mig.run(legacy, apply_changes=True, allow_launch=1)
+    mig.run(legacy, apply_changes=True, allow_launch=["h2"])
     result = legacy.fetch_materializations(
         dg.AssetRecordsFilter(asset_key=dg.AssetKey("session_digest"), asset_partitions=["h1"]),
         limit=1,
@@ -157,14 +181,14 @@ def test_an_interrupted_apply_completes_on_rerun(
 
     monkeypatch.setattr(legacy, "report_runless_asset_event", crash_after_three)
     with pytest.raises(RuntimeError):
-        mig.run(legacy, apply_changes=True, allow_launch=1)
+        mig.run(legacy, apply_changes=True, allow_launch=["h2"])
     assert not migration_done(legacy)  # the sensors keep skipping
     # h1 got three non-root marks; its root is still unmarked, so h1 is still "never tried".
     todo = mig.plan(legacy)
     assert todo.adopt["h1"][-2:] == ["session_digest", "session_wiki"]
 
     monkeypatch.setattr(legacy, "report_runless_asset_event", real)
-    assert mig.run(legacy, apply_changes=True, allow_launch=1) == 0
+    assert mig.run(legacy, apply_changes=True, allow_launch=["h2"]) == 0
     after = _materialized(legacy)
     assert all({"h1", "h2"} <= after[a] for a in MOUTHPIECE_ALL)
 
@@ -177,12 +201,12 @@ def test_apply_refuses_with_runs_in_flight(
         "get_run_records",
         lambda **_kw: [type("R", (), {"dagster_run": type("D", (), {"run_id": "r1"})})],
     )
-    assert mig.run(legacy, apply_changes=True, allow_launch=1) == mig.REFUSED_IN_FLIGHT
+    assert mig.run(legacy, apply_changes=True, allow_launch=["h2"]) == mig.REFUSED_IN_FLIGHT
     assert legacy.get_dynamic_partitions(SESSIONS_NAME) == []
 
 
 def test_down_tops_up_the_old_sets_and_blanks_the_marker(mig: ModuleType, legacy) -> None:
-    mig.run(legacy, apply_changes=True, allow_launch=1)
+    mig.run(legacy, apply_changes=True, allow_launch=["h2"])
     # Two sessions after the cut-over: "new" went through scribe and linguist, "late" has
     # only been registered.
     legacy.add_dynamic_partitions(SESSIONS_NAME, ["new", "late"])
@@ -202,3 +226,17 @@ def test_down_tops_up_the_old_sets_and_blanks_the_marker(mig: ModuleType, legacy
     legacy.add_dynamic_partitions("scribe_sessions", ["meanwhile"])
     assert "meanwhile" in mig.plan(legacy).add
     assert legacy.run_storage.get_cursor_values({MIGRATION_MARKER}) == {MIGRATION_MARKER: ""}
+
+
+def test_down_counts_an_old_sensor_ledger_as_tried(
+    mig: ModuleType, legacy, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A session the old mouthpiece sensor launched whose run was later deleted: no
+    materialization or run says it was tried, only the ledger. The rollback must still add
+    it to the old set, or the old sensor would launch the paid stage again."""
+    mig.run(legacy, apply_changes=True, allow_launch=["h2"])
+    legacy.add_dynamic_partitions(SESSIONS_NAME, ["gone"])
+    monkeypatch.setattr(mig, "old_ledgers", lambda _i: {"session_digest": {"gone", "unknown"}})
+    down = mig.plan_down(legacy)
+    assert down["mouthpiece_sessions"] == ["gone"]  # "unknown" is not a session
+    assert down["heartwood_sessions"] == []

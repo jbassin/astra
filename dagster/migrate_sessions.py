@@ -8,8 +8,8 @@ Run it in the code server container, where ``DAGSTER_HOME`` points at the instan
 The default is a dry run that writes nothing. It prints the plan and exactly what each
 sensor would launch once the migration is done, with the sensors' own file checks.
 ``--apply`` refuses while a run is queued or in progress, and refuses unless that launch
-list is empty (or ``--allow-launch N`` names its length). It is idempotent, and safe to
-rerun after an interruption. In order, it:
+list is empty or ``--allow-launch <session key>`` (repeated) names exactly its sessions. It
+is idempotent, and safe to rerun after an interruption. In order, it:
 
 1. Adds every key of the four per-app sets to ``sessions``. Materialization history is
    keyed on asset key and partition key, not on the set's name, so every existing
@@ -24,18 +24,20 @@ rerun after an interruption. In order, it:
    runs at once, and 42 paid mouthpiece runs as soon as their chronicle summaries were
    materialized.
 3. Recomputes the launch list from the written state and sets the marker
-   `MIGRATION_MARKER` only if it still matches. The sensors skip until the marker is set.
+   `MIGRATION_MARKER` only if it still names exactly the allowed sessions. The sensors skip
+   until the marker is set.
 
 It deletes nothing: the old sets stay, so the old code still works after a rollback.
 ``--down --apply`` prepares that rollback: it adds to each old set the ``sessions`` keys
-whose stage the new code tried, so the old sensors do not run those stages again, and it
+whose stage the new code tried (or whose stage an old sensor's ledger says it launched),
+so the old sensors do not run those stages again, and it
 blanks the marker, so a later roll-forward runs the migration again and copies the
 sessions the old code added meanwhile.
 """
 
 import argparse
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Collection, Mapping, Sequence
 from dataclasses import dataclass, field
 
 import dagster as dg
@@ -52,6 +54,7 @@ from astra_pipeline_resources.partitions import (
     ready_sessions,
     tried_sessions,
 )
+from astra_pipeline_resources.stage_audit import old_ledgers
 
 #: The tag (and metadata) on an adoption's runless materialization, and the marker value.
 ADOPTED_TAG = "astra/adopted"
@@ -215,12 +218,19 @@ def plan_down(instance: dg.DagsterInstance) -> dict[str, list[str]]:
     """For a rollback: per old set, the ``sessions`` keys whose stage was tried but which
     the old set lacks (sessions the new code handled after the cut-over).
 
+    "Tried" is a materialization or a planned run, plus, for a downstream stage, a session
+    its old stage sensor's ledger (its stored cursor) says it launched: that is the only
+    record of a launch whose run was deleted. The stage automation sensors keep their own
+    "requested" latch in their cursors, which this does not read; a session they launched
+    counts through its run, so only one whose run was deleted would be missed.
+
     A session whose stage was never tried stays out, so the old sensor still treats it
     as new and runs it, exactly as before the migration."""
     shared = set(instance.get_dynamic_partitions(SESSIONS_NAME))
+    ledgers = old_ledgers(instance)
     return {
         stage.legacy_set: sorted(
-            (shared & _tried(instance, stage.root))
+            (shared & (_tried(instance, stage.root) | ledgers.get(stage.root, set())))
             - set(instance.get_dynamic_partitions(stage.legacy_set))
         )
         for stage in (SCRIBE, *DOWNSTREAM)
@@ -249,10 +259,11 @@ def _print_plan(todo: Plan) -> None:
         _say(f"runs in flight: {todo.in_flight}")
 
 
-def _print_launch(title: str, launch: Mapping[str, Sequence[str]]) -> int:
+def _print_launch(title: str, launch: Mapping[str, Sequence[str]]) -> set[str]:
+    """Print the launch list; return the sessions it would launch any stage for."""
     for asset, keys in launch.items():
         _say(f"{title} {asset}: {len(keys)} {list(keys)}")
-    return sum(len(keys) for keys in launch.values())
+    return {key for keys in launch.values() for key in keys}
 
 
 def run(
@@ -260,7 +271,7 @@ def run(
     *,
     apply_changes: bool,
     down: bool = False,
-    allow_launch: int = 0,
+    allow_launch: Collection[str] = (),
 ) -> int:
     """The CLI on a given instance: print the plan, and write it when ``apply_changes``."""
     if down:
@@ -286,19 +297,20 @@ def run(
     if todo.in_flight:
         _say("refusing to apply while runs are in flight", err=True)
         return REFUSED_IN_FLIGHT
-    if launches != allow_launch:
+    allowed = set(allow_launch)
+    if launches != allowed:
         _say(
-            f"refusing to apply: the sensors would launch {launches} run(s), "
-            f"--allow-launch is {allow_launch}",
+            f"refusing to apply: the sensors would launch for sessions {sorted(launches)}, "
+            f"--allow-launch names {sorted(allowed)}",
             err=True,
         )
         return REFUSED_LAUNCH
     apply(instance, todo)
     written = _print_launch("written state: the sensor would launch", sensor_preview(instance))
-    if written != allow_launch:
+    if written != allowed:
         _say(
-            f"not setting the marker: the written state would launch {written} run(s); "
-            "the sensors keep skipping",
+            f"not setting the marker: the written state would launch for sessions "
+            f"{sorted(written)}; the sensors keep skipping",
             err=True,
         )
         return REFUSED_LAUNCH
@@ -312,10 +324,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--apply", action="store_true", help="write; the default is a dry run")
     parser.add_argument(
         "--allow-launch",
-        type=int,
-        default=0,
-        metavar="N",
-        help="apply although the sensors would then launch exactly N runs",
+        action="append",
+        default=[],
+        metavar="KEY",
+        help=(
+            "a session key the sensors may launch once applied; repeat it to name every "
+            "session in the launch list (apply refuses unless they match exactly)"
+        ),
     )
     parser.add_argument(
         "--down",

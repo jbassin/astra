@@ -167,9 +167,19 @@ curl -s http://localhost:10350/graphql -H 'Content-Type: application/json' -d \
   '{"query":"mutation { setSensorCursor(sensorSelector: {repositoryLocationName: \"astra-pipeline\", repositoryName: \"__repository__\", sensorName: \"mouthpiece_automation\"}) { __typename } }"}'
 ```
 
-The conditions keep their latches in the sensor's cursor. Editing `StageReady` or a stage's
-file check keeps them. Editing a latch's own operands resets that latch, and a session
-waiting on a gate then needs a manual launch.
+The conditions keep their latches in the sensor's cursor, which Dagster stores per sensor
+under its code location, repository and sensor name. Exactly these reset it:
+
+- `setSensorCursor` with no cursor (above), or `dagster sensor cursor --delete <sensor>` in
+  the code server container.
+- Renaming the sensor, the code location (`astra-pipeline`, `workspace.yaml`) or the
+  repository: the renamed sensor is a new sensor with no cursor.
+- Losing the `dagster-postgres` data.
+
+Stopping and starting a sensor, a deploy, an image rebuild and editing `StageReady` or a
+stage's file check keep the cursor. Editing a latch's own operands (the stage's upstream
+asset, or the condition's structure) resets that one latch, and a session waiting on a gate
+then needs a manual launch.
 
 ### Blocking checks
 
@@ -360,7 +370,8 @@ disk. `dagster/migrate_sessions.py` (in the image at `/opt/dagster/app`) folds t
 - The default is a dry run that writes nothing. It prints the plan and exactly what each
   sensor would launch once the migration is done, with the sensors' own file checks.
 - `--apply` refuses while a run is in flight, and refuses unless that launch list is empty
-  or `--allow-launch N` names its length. It adds every old key to `sessions`
+  or `--allow-launch <session key>`, repeated, names exactly the sessions in it (one flag
+  per session, whatever stages it launches). It adds every old key to `sessions`
   (materialization history is keyed on asset key and partition key, so it shows as
   materialized again). It marks the sessions the old sensors adopted without running as
   materialized (`astra/adopted`, so the paid stages never replay them), each stage's first
@@ -371,7 +382,11 @@ disk. `dagster/migrate_sessions.py` (in the image at `/opt/dagster/app`) folds t
   and that key is unset. The old sets stay in Postgres.
 - `--down --apply` prepares a rollback to the old code: it adds the sessions the new code
   handled to the old sets and blanks the key, so a later roll-forward migrates again and
-  copies the sessions the old code added meanwhile.
+  copies the sessions the old code added meanwhile. "Handled" means a materialization, a
+  planned run, or an entry in the old stage sensor's stored ledger (`scribe_output_sensor`,
+  `linguist_output_sensor`, `heartwood_sensor`). It does not read the stage automation
+  sensors' cursors, so a session they launched whose run was then deleted would run again
+  under the old code: adopt it first.
 
 ```sh
 docker exec astra-dagster-code sh -c 'cd /opt/dagster/app && python migrate_sessions.py'
