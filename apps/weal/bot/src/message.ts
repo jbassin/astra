@@ -148,17 +148,34 @@ export function resultsField(display: WealDieDisplay): [string, string] {
 
 // --- error reply --------------------------------------------------------------------
 
+/** Columns of a long source line kept before the span's start in an excerpt. */
+const EXCERPT_BEFORE = 40;
+/** The widest excerpt line, so an error reply stays far inside Discord's limit. */
+const EXCERPT_WIDTH = 100;
+
 /**
  * The source line containing the span, with a caret line under the span.
- * A zero-width span (end-of-input errors) still draws one caret.
+ * A zero-width span (end-of-input errors) still draws one caret. A line wider
+ * than {@link EXCERPT_WIDTH} is cut to a window around the span's start, with
+ * `…` marking each cut (a paren bomb is one line thousands of columns wide).
  */
 export function spanExcerpt(source: string, span: WealSpan): string {
   const lineStart = source.lastIndexOf("\n", Math.max(0, span.start - 1)) + 1;
   const newline = source.indexOf("\n", span.start);
   const lineEnd = newline === -1 ? source.length : newline;
-  const line = source.slice(lineStart, lineEnd);
-  const caretStart = Math.min(span.start, lineEnd) - lineStart;
-  const caretLen = Math.max(1, Math.min(span.end, lineEnd) - span.start);
+  const caretAt = Math.min(span.start, lineEnd);
+  const caretEnd = Math.max(caretAt + 1, Math.min(span.end, lineEnd));
+  let from = lineStart;
+  let to = lineEnd;
+  if (lineEnd - lineStart > EXCERPT_WIDTH) {
+    from = Math.max(lineStart, caretAt - EXCERPT_BEFORE);
+    to = Math.min(lineEnd, from + EXCERPT_WIDTH);
+  }
+  const head = from > lineStart ? "…" : "";
+  const tail = to < lineEnd ? "…" : "";
+  const line = `${head}${source.slice(from, to)}${tail}`;
+  const caretStart = head.length + caretAt - from;
+  const caretLen = Math.max(1, Math.min(caretEnd, to) - caretAt);
   return `${line}\n${" ".repeat(caretStart)}${"^".repeat(caretLen)}`;
 }
 

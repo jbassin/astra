@@ -322,10 +322,16 @@ describe("engine faults (stage internal)", () => {
     expect(h.sent[0]?.title).toBe("engine fault");
   });
 
-  test("a paren bomb is a player's parse error (silent), not a fault; the next roll works", async () => {
+  test("a paren bomb gets a visible nesting-depth error, not a fault; the next roll works", async () => {
     const h = harness();
     await handleMessage(`${"(".repeat(2000)}d20${")".repeat(2000)}`, PROFILE, h.deps);
-    expect(h.sent).toEqual([]);
+    expect(h.sent).toHaveLength(1);
+    expect(h.sent[0]?.title).toBe("that didn't check out");
+    const contents = h.sent[0]?.contents ?? "";
+    expect(contents).toMatch(/^fuel exhausted: nesting depth: /);
+    // The excerpt is cut to a window, so the reply stays small.
+    expect(contents.length).toBeLessThan(600);
+    h.sent.length = 0;
     await handleMessage("d20 + 7", PROFILE, h.deps);
     expect(h.sent[0]?.title).toBe("Argyle: 11");
   });

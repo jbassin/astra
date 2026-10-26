@@ -157,10 +157,11 @@ describe("engine fault logging (stage internal)", () => {
     expect(spanAttrs["weal.stage"]).toBe("internal");
   });
 
-  test("a paren bomb logs nothing at ERROR and counts no error", async () => {
+  test("a paren bomb logs nothing at ERROR and counts as a fuel abort", async () => {
     await handleMessage(`${"(".repeat(2000)}d20${")".repeat(2000)}`, PROFILE, deps());
     expect(logged.some((l) => l.severityText === "ERROR")).toBe(false);
-    expect(counted.some((c) => c.name === "weal.v2.errors")).toBe(false);
+    expect(counted).toContainEqual({ name: "weal.v2.errors", attrs: { stage: "fuel" } });
+    expect(counted.some((c) => c.name === "weal.v2.fuel_aborts")).toBe(true);
   });
 
   test("a player's own error logs nothing at ERROR", async () => {

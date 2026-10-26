@@ -12,7 +12,10 @@
 //! 1. [`parse`]: the recoverable parser, with its source-nesting cap
 //!    (`MAX_NESTING_DEPTH`). The FIRST parse error fails the stage, as
 //!    [`CompileStage::Parse`] with the message prefixed `parse error: ` and
-//!    the error's own span.
+//!    the error's own span. A source past the nesting cap fails as
+//!    [`CompileStage::Limit`] instead (message prefixed `fuel exhausted: `,
+//!    like the interpreter's construction caps): it parsed as code, it is
+//!    just too big.
 //! 2. [`lower_parsed`] (or [`lower`] for stages 1 and 2 together): CST → AST
 //!    plus the parallel [`SpanTree`]. A lowering error is also
 //!    [`CompileStage::Parse`], unprefixed, spanning the whole source.
@@ -40,6 +43,8 @@ use crate::value::{Cmd, EvalError, Value};
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CompileStage {
     Parse,
+    /// The source passed a structural limit (the parser's nesting cap).
+    Limit,
     Type,
 }
 
@@ -64,9 +69,14 @@ impl From<CompileError> for TypeError {
 pub fn parse(src: &str) -> Result<Parse, CompileError> {
     let parsed = crate::parser::parse(src);
     if let Some(e) = parsed.errors.first() {
+        let (stage, prefix) = if parsed.too_deep {
+            (CompileStage::Limit, "fuel exhausted")
+        } else {
+            (CompileStage::Parse, "parse error")
+        };
         return Err(CompileError {
-            stage: CompileStage::Parse,
-            message: format!("parse error: {}", e.message),
+            stage,
+            message: format!("{prefix}: {}", e.message),
             span: e.span,
         });
     }
@@ -289,11 +299,15 @@ mod tests {
     }
 
     #[test]
-    fn the_nesting_cap_is_a_parse_stage_error() {
+    fn the_nesting_cap_is_a_limit_stage_error() {
         let src = format!("{}1{}", "(".repeat(300), ")".repeat(300));
         let e = lower(&src).expect_err("rejects");
-        assert_eq!(e.stage, CompileStage::Parse);
-        assert!(e.message.contains("too deeply nested"), "{}", e.message);
+        assert_eq!(e.stage, CompileStage::Limit);
+        assert!(
+            e.message.starts_with("fuel exhausted: nesting depth"),
+            "{}",
+            e.message
+        );
     }
 
     #[test]

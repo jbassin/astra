@@ -1784,7 +1784,7 @@ mod tests {
         }
         match run_src(&src) {
             Err(RunError::Check(e)) => {
-                assert!(e.message.contains("too deeply nested"), "{e:?}");
+                assert!(e.message.contains("nesting depth"), "{e:?}");
             }
             other => panic!("expected a nesting rejection, got {other:?}"),
         }

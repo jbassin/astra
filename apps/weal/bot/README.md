@@ -290,8 +290,9 @@ from the engine's builtin registry (`libs/rust/weal-engine/src/prelude.rs`); edi
 Every distribution is exact, so some expressions are genuinely enormous. The engine meters its
 own work and aborts with a visible `fuel exhausted: <counter>` error instead of hanging —
 `10000d10000` dies on `transitions`, `explode(d6, 9)` on the explode-depth cap (8),
-`let f(x) = f(x); f(1)` on recursion depth. If you hit a fuel wall, the expression isn't wrong,
-it's too big — shrink the pool or the depth.
+`let f(x) = f(x); f(1)` on recursion depth, and a source nested more than 256 levels deep (a
+paren bomb, a 300-term sum) on `nesting depth`. If you hit a fuel wall, the expression isn't
+wrong, it's too big — shrink the pool or the depth, or split the expression up.
 
 ### Goodness — how crit/fumble is decided
 
@@ -357,12 +358,13 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
   `@astra/weal-engine` (the engine's builtin registry); keep its everyday-roll list in step with it.
 - **`check` mode alone cannot validate a save.** It parses and type-checks saves but never evaluates
   them, so a stored source that type-checks but fails to evaluate (`1 / 0`) would pass it and fail
-  every roll. That is why the boot load and the save guard run real rolls and real uses (`mode:"run"`). (Before the WEAL-1 engine fix, every `|| e` save was such a source.)
+  every roll. That is why the boot load and the save guard run real rolls and real uses
+  (`mode:"run"`). (Before the WEAL-1 engine fix, every `|| e` save was such a source.)
 - **A wasm trap reaches the bot as an ordinary `internal` error.** `@astra/weal-engine` catches the
   trap, re-instantiates the wasm and returns `{ok:false, stage:"internal"}` with a message starting
   `engine trap:`; the bot never sees a throw. Input can't cause one on purpose: the parser
-  rejects a source nested more than 256 levels deep (a paren bomb, a 300-term sum) as a silent
-  parse error, before any stage that could overflow the stack.
+  rejects a source nested more than 256 levels deep (a paren bomb, a 300-term sum) before any
+  stage that could overflow the stack, as a visible `fuel exhausted: nesting depth` error.
 - **The v2 counters appear in SigNoz only after their first increment.** `weal.v2.errors` and
   `weal.v2.fuel_aborts` missing from the metric list is not a wiring bug while no engine error or
   fuel abort has happened.

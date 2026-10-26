@@ -18,9 +18,11 @@
 //! or wraps the offending tokens in `ERROR_NODE`s.
 //!
 //! Nesting is capped ([`MAX_NESTING_DEPTH`]): a tree deeper than the cap is
-//! a parse error, the only one reported. Every later stage (lowering, the
-//! checker, the interpreter) recurses on the tree, so without the cap a paren
-//! bomb overflows the host's stack and traps the wasm before fuel can stop it.
+//! reported as the only error, and [`Parse::too_deep`] is set so the pipeline
+//! can stage it as a limit (a visible player error) rather than a parse error
+//! (silent chat noise). Every later stage (lowering, the checker, the
+//! interpreter) recurses on the tree, so without the cap a paren bomb
+//! overflows the host's stack and traps the wasm before fuel can stop it.
 
 use crate::cst::{SyntaxKind, SyntaxNode};
 use crate::lexer::{Token, lex};
@@ -32,9 +34,12 @@ use SyntaxKind::*;
 /// both nested constructs and long left-associative chains like `1 + 1 + …`).
 pub const MAX_NESTING_DEPTH: usize = 256;
 
-/// The parse error a too-deep source reports (it replaces every other error).
+/// The error a too-deep source reports (it replaces every other error).
 pub fn too_deep_message() -> String {
-    format!("expression too deeply nested (more than {MAX_NESTING_DEPTH} levels)")
+    format!(
+        "nesting depth: the expression nests more than {MAX_NESTING_DEPTH} levels deep \
+         (brackets, calls, `let`s or terms in one chain); split it up"
+    )
 }
 
 /// A parse error with a byte span into the source.
@@ -49,6 +54,9 @@ pub struct ParseError {
 pub struct Parse {
     pub green: GreenNode,
     pub errors: Vec<ParseError>,
+    /// The source passed [`MAX_NESTING_DEPTH`]; `errors` then holds only
+    /// the nesting error.
+    pub too_deep: bool,
 }
 
 impl Parse {
@@ -83,7 +91,11 @@ pub fn parse(src: &str) -> Parse {
         }],
         None => parser.errors,
     };
-    Parse { green, errors }
+    Parse {
+        green,
+        errors,
+        too_deep: too_deep.is_some(),
+    }
 }
 
 /// The span of the first node deeper than [`MAX_NESTING_DEPTH`], if any.

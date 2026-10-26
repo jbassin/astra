@@ -14,7 +14,7 @@
 //!   anything — the boot-validation path; no dice roll, no displays.
 //! - `mode:"run"` = the full pipeline. Error stages: `parse` (source fails
 //!   to parse/lower), `type`, `eval`, `fuel` (any exhausted counter — fuel,
-//!   caps, or dist budget), `prelude` (a SAVES entry failed — carries
+//!   caps, dist budget, or the parser's nesting cap), `prelude` (a SAVES entry failed — carries
 //!   `preludeName` + a span into THAT save's source), and `internal` (an
 //!   `Internal` engine error: an invariant a well-typed program should never
 //!   break; the message keeps its `internal error:` prefix).
@@ -258,6 +258,8 @@ pub fn evaluate(source: &str, saves_json: &str, seed: &[u8], budget: u32, mode: 
 fn compile_err_json(e: CompileError) -> String {
     let stage = match e.stage {
         CompileStage::Parse => Stage::Parse,
+        // A structural cap, reported like the interpreter's caps.
+        CompileStage::Limit => Stage::Fuel,
         CompileStage::Type => Stage::Type,
     };
     err_json(stage, e.message, Some(e.span), None)
@@ -426,17 +428,19 @@ mod tests {
     }
 
     #[test]
-    fn a_paren_bomb_is_a_parse_error_not_a_trap() {
+    fn a_paren_bomb_is_a_fuel_error_not_a_trap() {
         let src = format!("{}1{}", "(".repeat(2000), ")".repeat(2000));
-        let v = parsed(&evaluate(&src, "[]", &[0u8; 32], 0, "run"));
-        assert_eq!(v["ok"], false);
-        assert_eq!(v["stage"], "parse");
-        assert!(
-            v["message"]
-                .as_str()
-                .is_some_and(|m| m.contains("expression too deeply nested")),
-            "{v}"
-        );
+        for mode in ["run", "check"] {
+            let v = parsed(&evaluate(&src, "[]", &[0u8; 32], 0, mode));
+            assert_eq!(v["ok"], false);
+            assert_eq!(v["stage"], "fuel", "{mode}");
+            assert!(
+                v["message"]
+                    .as_str()
+                    .is_some_and(|m| m.starts_with("fuel exhausted: nesting depth")),
+                "{v}"
+            );
+        }
     }
 
     /// The committed TS declarations of the JSON contract.
