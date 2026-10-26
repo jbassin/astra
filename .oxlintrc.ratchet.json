@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  // `just ratchet` (scripts/ratchet.py) lints with this config to count what the gate lets
+  // through: the rules .oxlintrc.json turns off, plus function length and complexity. It
+  // extends the gate config, so its plugins, ignore patterns and overrides apply unchanged.
+  "extends": ["./.oxlintrc.json"],
+  "rules": {
+    "no-unsafe-type-assertion": "warn",
+    "no-array-sort": "warn",
+    "no-array-reverse": "warn",
+    "no-await-in-loop": "warn",
+    "no-underscore-dangle": "warn",
+    "consistent-function-scoping": "warn",
+    "consistent-return": "warn",
+    "no-base-to-string": "warn",
+    "no-unnecessary-type-conversion": "warn",
+    "restrict-template-expressions": "warn",
+    "no-unnecessary-template-expression": "warn",
+    "no-unnecessary-boolean-literal-compare": "warn",
+    "unbound-method": "warn",
+    "no-unnecessary-type-parameters": "warn",
+    "max-lines-per-function": ["warn", { "max": 80 }],
+    "complexity": ["warn", { "max": 15 }]
+  }
+}

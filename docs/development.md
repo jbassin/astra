@@ -25,6 +25,7 @@ just check   # format + lint gate over the whole tree (the pre-commit hook runs 
 just fix     # apply formatters and safe autofixes for both lanes
 just test    # both test lanes
 just ci      # everything CI runs, incl. commitlint and no-decision-ids over origin/main..HEAD (pre-push runs it)
+just ratchet # fail if a debt count rose; --update lowers the baseline after a count falls
 just dev <domain>/<role>       # one TS app's dev server, e.g. just dev codex/web
 uv run pytest apps/<domain>/py # one Python app (they run as Dagster assets, no dev server)
 ```
@@ -186,6 +187,19 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
   per-area sweeps remove them. `scripts/check_decision_ids.py` lists the rules and exemptions,
   takes an inline exception with a reason (`decision-ids: ignore[<rule>] -- <why>`), and with
   `--all` counts every existing match.
+- **Debt only goes down.** `just ratchet` (in `just ci` and CI, about 15 seconds) counts what
+  the gates still let through: inline lint suppressions per rule (oxlint, ruff `noqa`, ty), the
+  oxlint rules that are off (a type-aware pass with `.oxlintrc.ratchet.json`), files over
+  500 and 1,000 lines, functions over 80 lines or complexity 15, catch blocks and broad excepts
+  that drop the error, `typing.Any`, env reads outside the config and observe libraries, and
+  knip's unused files, exports, types and dependencies (`knip.json`). It fails when a count
+  rises above `scripts/ratchet_baseline.json` and lists the sites in the files the change
+  touches. When a count falls, run `just ratchet --update` and commit the lowered baseline in
+  the same change; it never raises a number. A deliberate rise is a hand edit to the baseline,
+  explained in the commit message. `just ratchet --list <key>` prints every site behind one
+  count. A few measures are held at zero: lint rules cover TODO/FIXME (ruff `FIX`, oxlint
+  `no-warning-comments`), `@ts-ignore` (`ban-ts-comment`), bare `except:` and commented-out
+  Python, and the ratchet covers module-scope TS metric instruments and Rust TODOs.
 
 ## Adding an app
 

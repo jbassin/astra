@@ -63,7 +63,7 @@ test: (_each "test" "py-test,ts-test")
 # installs the crate's pinned toolchain on first use).
 # pg-test and infra-check need Docker on the host (a throwaway Postgres; the pinned tool images).
 # Run everything CI runs, locally (all but the container-only vellum render goldens).
-ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,tokens-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,no-decision-ids " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-e2e,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test,infra-check"))
+ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,tokens-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,no-decision-ids " + base + " HEAD,ratchet,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-e2e,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test,infra-check"))
 
 # `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
 # they run as Dagster assets; test them with `uv run pytest apps/<domain>/py`.
@@ -262,6 +262,14 @@ commitlint from="origin/main" to="HEAD":
 # CI job no-decision-ids: added code, comments and test names cite no spec, slice or finding ID.
 no-decision-ids base="origin/main" head="HEAD":
     uv run python scripts/check_decision_ids.py "$@"
+
+# The measures, the baseline (scripts/ratchet_baseline.json) and what to do when a count
+# falls or must rise are in scripts/ratchet.py's docstring. `--update` lowers the counts that
+# fell; `--list <key>` prints the sites behind one count. Takes about 15 seconds: a type-aware
+# oxlint pass and knip run beside the scan.
+# CI job ratchet: no debt count (lint suppressions, off rules, sizes, knip, the zero list) rises.
+ratchet *flags:
+    uv run python scripts/ratchet.py "$@"
 
 # The codex e2e suite (Playwright Test, apps/codex/web/e2e): its server generates the fixture
 # corpus and points CODEX_CORPUS_ROOT at it, so it never reads the real corpus. Needs the

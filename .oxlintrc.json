@@ -4,7 +4,8 @@
   // --report-unused-disable-directives). An exception for one line is an inline
   // `// oxlint-disable-next-line <rule> -- <why>` at that line, so it stays visible and
   // countable; `overrides` below is only for whole categories of file. Rules that are off
-  // repo-wide are ratchets: their counts are in the 0037 paydown doc (Phase 1 item 4).
+  // repo-wide are ratchets: `just ratchet` counts them (scripts/ratchet.py) and fails CI when
+  // a count rises above scripts/ratchet_baseline.json.
   "plugins": ["typescript", "unicorn", "oxc", "react", "jsx-a11y", "import", "promise"],
   "categories": {
     "correctness": "error",
@@ -45,6 +46,10 @@
     "eslint/require-await": "error",
     "no-floating-promises": "error",
     "no-unnecessary-type-assertion": "error",
+    // Held at zero (`just ratchet` counts the rest): no @ts-ignore or @ts-nocheck, a reason
+    // on every @ts-expect-error, and no TODO or FIXME comments (the backlog tracks work).
+    "typescript/ban-ts-comment": "error",
+    "no-warning-comments": ["error", { "terms": ["todo", "fixme"], "location": "anywhere" }],
 
     // astra's fire-and-forget terminal `.then()` (`void x.then(() => { sideEffect(); })`)
     // never chains further, so the last callback needn't return.

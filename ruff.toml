@@ -10,6 +10,9 @@ select = [
   "E", "F", "I", "UP", "B", "SIM",
   "RET", "DTZ", "TRY", "RUF", "ERA", "BLE", "PLW", "PERF", "PTH",
   "SLF", "ARG", "S", "T20", "C90",
+  # Held at zero (`just ratchet` counts the rest): no TODO, FIXME, XXX or HACK comments, and
+  # every noqa names its codes, so the ratchet can count suppressions per rule.
+  "FIX", "PGH004",
 ]
 ignore = [
   "TRY003",  # long messages in raise: every error here is built inline, on purpose
