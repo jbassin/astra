@@ -16,7 +16,7 @@ const duration = lazyHistogram(SERVICE, "akasha.page_data.duration", {
   unit: "ms",
 });
 
-export type PageKind = "wiki" | "home" | "tag" | "tag-index" | "chronicle" | "show" | "episode";
+type PageKind = "wiki" | "home" | "tag" | "tag-index" | "chronicle" | "show" | "episode";
 
 /** Runs one page-data lookup under a span; `null` counts as `not_found`. */
 export function tracePageData<T>(kind: PageKind, run: () => T | Promise<T>): Promise<T> {

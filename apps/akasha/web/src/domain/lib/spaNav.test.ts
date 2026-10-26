@@ -38,15 +38,15 @@ describe("spaHref", () => {
   });
 });
 
-describe("isBrowserClick", () => {
-  const anchor = (attrs: Record<string, string> = {}) => {
-    const a = document.createElement("a");
-    a.href = "/Timeline";
-    for (const [k, v] of Object.entries(attrs)) a.setAttribute(k, v);
-    return a;
-  };
-  const click = (init: MouseEventInit = {}) => new MouseEvent("click", { button: 0, ...init });
+const anchor = (attrs: Record<string, string> = {}) => {
+  const a = document.createElement("a");
+  a.href = "/Timeline";
+  for (const [k, v] of Object.entries(attrs)) a.setAttribute(k, v);
+  return a;
+};
+const click = (init: MouseEventInit = {}) => new MouseEvent("click", { button: 0, ...init });
 
+describe("isBrowserClick", () => {
   it("takes a plain left click", () => {
     expect(isBrowserClick(click(), anchor())).toBe(false);
     expect(isBrowserClick(click(), anchor({ target: "_self" }))).toBe(false);

@@ -17,7 +17,7 @@
 /** A token's value: a CSS literal, or a reference to another token of the same theme. */
 export type TokenValue = string | { readonly ref: string };
 
-export const ref = (name: string): TokenValue => ({ ref: name });
+const ref = (name: string): TokenValue => ({ ref: name });
 
 /** One CSS custom property. `name` excludes its namespace prefix (`--color-`, `--font-`, …). */
 export interface Token {
