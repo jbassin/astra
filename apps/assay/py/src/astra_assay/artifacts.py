@@ -16,7 +16,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, TypedDict
 
 from . import comparables, pricing
 
@@ -41,7 +41,29 @@ class ModelArtifacts:
     buff_corpus: list[comparables.ComparableProfile]
 
 
-def ladder_to_json(ladder: pricing.LadderFit) -> dict[str, Any]:
+class LadderJson(TypedDict):
+    """`pricing.LadderFit` as stored in `fitted-params.json`."""
+
+    intercept: float
+    slope: float
+    effective_target_coef: dict[str, float]
+    range_coef: dict[str, float]
+    n_obs: int
+    r_squared: float
+    excluded_singletons: bool
+
+
+class CantripLadderJson(TypedDict):
+    """`pricing.CantripLadderFit` as stored in `fitted-params.json`."""
+
+    intercept: float
+    effective_target_coef: dict[str, float]
+    range_coef: dict[str, float]
+    n_obs: int
+    r_squared: float
+
+
+def ladder_to_json(ladder: pricing.LadderFit) -> LadderJson:
     return {
         "intercept": ladder.intercept,
         "slope": ladder.slope,
@@ -53,7 +75,7 @@ def ladder_to_json(ladder: pricing.LadderFit) -> dict[str, Any]:
     }
 
 
-def ladder_from_json(d: dict[str, Any]) -> pricing.LadderFit:
+def ladder_from_json(d: LadderJson) -> pricing.LadderFit:
     return pricing.LadderFit(
         intercept=d["intercept"],
         slope=d["slope"],
@@ -65,7 +87,7 @@ def ladder_from_json(d: dict[str, Any]) -> pricing.LadderFit:
     )
 
 
-def cantrip_ladder_to_json(ladder: pricing.CantripLadderFit) -> dict[str, Any]:
+def cantrip_ladder_to_json(ladder: pricing.CantripLadderFit) -> CantripLadderJson:
     return {
         "intercept": ladder.intercept,
         "effective_target_coef": ladder.effective_target_coef,
@@ -75,7 +97,7 @@ def cantrip_ladder_to_json(ladder: pricing.CantripLadderFit) -> dict[str, Any]:
     }
 
 
-def cantrip_ladder_from_json(d: dict[str, Any]) -> pricing.CantripLadderFit:
+def cantrip_ladder_from_json(d: CantripLadderJson) -> pricing.CantripLadderFit:
     return pricing.CantripLadderFit(
         intercept=d["intercept"],
         effective_target_coef=d["effective_target_coef"],
