@@ -2,7 +2,7 @@
  * Response pins for the weal-overlay HTTP app: a fixed request sequence, each recorded as
  * its status, the headers clients read and the body. Every ingest credential case is here.
  * The snapshot was written before the service-kit migration; the migration must leave it
- * unchanged.
+ * unchanged. The one later change: the retired `x-eerie-token` header now gets 401.
  */
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";

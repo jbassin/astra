@@ -51,9 +51,9 @@ test("rejects ingest without the shared secret, or with a wrong one", async () =
   expect((await postRoll(roll("A", 5), tokenHeaders("s3cre"))).status).toBe(401);
 });
 
-test("accepts the token under either header name", async () => {
+test("accepts the token only under x-weal-token; the retired x-eerie-token gets 401", async () => {
   expect((await postRoll(roll("A", 5), { "x-weal-token": "s3cret" })).status).toBe(204);
-  expect((await postRoll(roll("A", 5), { "x-eerie-token": "s3cret" })).status).toBe(204);
+  expect((await postRoll(roll("A", 5), { "x-eerie-token": "s3cret" })).status).toBe(401);
 });
 
 test("accepts an authed valid roll (204) and rejects garbage (400)", async () => {

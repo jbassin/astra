@@ -10,21 +10,14 @@ export const INGEST_PATH = "/api/v1/roll";
 /** The header that carries the shared `weal_token` secret on ingest. */
 export const TOKEN_HEADER = "x-weal-token";
 
-/**
- * The header's old name. weal-bot sends both names and weal-overlay accepts either, so the
- * two services can deploy in any order. Drop it once both run a release that knows
- * {@link TOKEN_HEADER}.
- */
-export const LEGACY_TOKEN_HEADER = "x-eerie-token";
-
-/** The token headers weal-bot sends: the token under both names. */
+/** The token headers weal-bot sends. */
 export function tokenHeaders(token: string): Record<string, string> {
-  return { [TOKEN_HEADER]: token, [LEGACY_TOKEN_HEADER]: token };
+  return { [TOKEN_HEADER]: token };
 }
 
-/** The token an ingest request carries, read from either header name; null when absent. */
+/** The token an ingest request carries; null when absent. */
 export function requestToken(headers: Headers): string | null {
-  return headers.get(TOKEN_HEADER) ?? headers.get(LEGACY_TOKEN_HEADER);
+  return headers.get(TOKEN_HEADER);
 }
 
 /**
