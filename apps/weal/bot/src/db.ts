@@ -19,6 +19,14 @@ import postgres from "postgres";
 /** The numbered schema migrations (`NNNN_name.sql`). */
 export const MIGRATIONS_DIR = resolve(findPackageRoot(import.meta.dirname), "migrations");
 
+/**
+ * How long {@link PostgresStore.close} waits for in-flight queries before it drops the
+ * connections. Without a bound, postgres.js 3.4.9's `end()` waits for ever on a connection whose
+ * backend was killed mid-query. Kept under the shutdown hooks' share of
+ * `telemetry.shutdown-timeout-ms`.
+ */
+export const CLOSE_TIMEOUT_S = 3;
+
 /** Skip pools larger than this many dice (each die is one row). */
 export const MAX_POOL = 30;
 /** Skip any die whose base exceeds this (no real polyhedral die is bigger). */
@@ -102,7 +110,8 @@ export class PostgresStore implements WealStore {
     await this.#sql`insert into funcs_v2 (name, source) values (${name}, ${source})`;
   }
 
+  /** End the pool, waiting at most {@link CLOSE_TIMEOUT_S} for in-flight queries. */
   async close(): Promise<void> {
-    await this.#sql.end();
+    await this.#sql.end({ timeout: CLOSE_TIMEOUT_S });
   }
 }
