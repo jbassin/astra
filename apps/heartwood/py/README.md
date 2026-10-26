@@ -41,8 +41,36 @@ astra-ops CLI; the steps, lock order and exit codes are in `libs/py/ops/src/astr
 
 - **Redo a published session:** `heartwood-revert <date>` first. Re-requesting a published
   date is a no-op that reports `already-published`. `heartwood-revert` cannot undo a session
-  published before the astra-data clone's first (snapshot) commit; it exits 4, so undo those
-  by hand.
+  published before the astra-data clone's first (snapshot) commit of 2026-10-22, which is
+  every session published up to then: there is no publish commit to revert, so it refuses
+  with exit 4 and changes nothing. Undo those by hand (below).
+
+### Revert a session published before the snapshot
+
+LIVE. The run's `diff.patch` (baseline to published content) is the change to undo. Run from
+the deploy checkout (`cd /ruby/data/astra-deploy`), and stop if any step fails.
+
+1. Hold the git-publish lock for the whole procedure, so linguist-commit and the agent wait:
+   `flock /ruby/data/astra-state/locks/git-publish.lock bash`. Run the rest in that shell.
+2. Find the run: the last ledger line for the date names its `run_id`:
+   `grep '"date":"<date>"' /ruby/data/astra-state/astra-data/heartwood/agent-runs.jsonl`.
+3. Check that the reverse patch applies (a later session may have edited the same lines):
+   `git -C /ruby/data/astra-state/astra-data apply --check -R -p2 --directory=akasha/content
+   /ruby/data/astra-state/heartwood/<date>/<run_id>/diff.patch`. If it does not, undo those
+   pages by hand instead, or stop.
+4. Apply it: the same command without `--check`.
+5. Record and regenerate: `uv run astra-heartwood-agent ledger-revert <date>`, then
+   `uv run akasha-snapshot` and `uv run astra-ontology-entity-seed`, then validate the corpus
+   (the `validate_argv` command in `libs/py/ops/src/astra_ops/heartwood.py`, run with nvm's
+   node).
+6. Commit only the four paths: `git -C /ruby/data/astra-state/astra-data commit --only -m
+   "revert(akasha): heartwood agent <date>" -- akasha/content akasha/snapshot
+   heartwood/agent-runs.jsonl entity/entity.kdl` (`git add` new or deleted pages first).
+7. Push and redeploy: `just _heartwood-push-deploy`, then leave the lock shell.
+
+To restore a failed attempt before the commit: `git -C /ruby/data/astra-state/astra-data
+checkout -- akasha/content akasha/snapshot heartwood/agent-runs.jsonl entity/entity.kdl` and
+`git -C /ruby/data/astra-state/astra-data clean -fd akasha/content`.
 - **Failed or incomplete run** (exit 1, or 2 when the iteration cap is hit): nothing was
   published, and the asset failed and paged. Fix the cause, then re-execute the
   `session_wiki` run in Dagster or run `heartwood-agent <date>`.

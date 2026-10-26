@@ -462,7 +462,9 @@ def test_revert_content_conflict_aborts_exit_8(
     assert "  a.vel\n  b.vel\n" in capsys.readouterr().err
 
 
-def test_revert_no_commit_found_exit_4(tmp_path: Path) -> None:
+def test_revert_no_commit_found_exit_4(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    """A session published before the astra-data snapshot commit has no commit to revert:
+    refuse before any write and point at the manual procedure."""
     repo, cfg = setup(tmp_path)
     steps: list[Step] = [
         *revert_head(repo, cfg, "c\tfeat(akasha): heartwood agent other\n"),
@@ -471,6 +473,9 @@ def test_revert_no_commit_found_exit_4(tmp_path: Path) -> None:
     ctx, r = make_ctx(tmp_path, steps, config=cfg)
     assert heartwood.heartwood_revert(ctx, "d") == 4
     r.assert_done()
+    err = capsys.readouterr().err
+    assert "before the clone's first (snapshot) commit" in err
+    assert "Revert a session published before the snapshot" in err
 
 
 def test_revert_not_published_exit_4(tmp_path: Path) -> None:
