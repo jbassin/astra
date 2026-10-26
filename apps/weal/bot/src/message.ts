@@ -209,6 +209,28 @@ export function errorDescription(
   return parts.join("\n");
 }
 
+// --- nothing to roll -------------------------------------------------------------------
+
+/**
+ * The Knife's reply when a message evaluates fine but has nothing to show: its value is a
+ * function (or `()`), so there is no die to roll and no number to print. The usual case is
+ * a player pasting a save confirmation, whose fence holds the saved source (`|| …`), not a
+ * call. When `text` is exactly a saved source, name the save and show how to call it.
+ */
+export function nothingToRoll(
+  playerName: string,
+  text: string,
+  saves: readonly [string, string][],
+): { title: string; contents: string } {
+  const lead = `hmm ${playerName.toLowerCase()}, that's`;
+  const saved = saves.findLast(([, source]) => source === text)?.[0];
+  const contents =
+    saved === undefined
+      ? `${lead} a function, so there's nothing to roll. call it (\`f()\`, or \`f(3)\` if it takes inputs), or keep it with \`save(:name, …)\``
+      : `${lead} what \`${saved}\` holds: a function, so there's nothing to roll. call it instead: \`${saved}()\`, or \`${saved}(…)\` if it takes inputs`;
+  return { title: "nothing to roll", contents: truncate(contents, DESCRIPTION_LIMIT) };
+}
+
 // --- save refusal (the save guard) ---------------------------------------------------
 
 /**

@@ -12,8 +12,8 @@ Spec: `thoughts/archive/specs/0032-weal-v2-spec.md` (D32-1..20). Engine internal
 ## How the bot listens
 
 Every message from a rostered player is a roll candidate. Code fences and their one-word language
-tag (```` ```weal ````, ```` ```ocaml ````) are trimmed first, so pasting a macro in a fence works,
-including the bot's own save confirmation. Then:
+tag (```` ```weal ````, ```` ```ocaml ````) are trimmed first, so pasting a macro in a fence works.
+Then:
 
 - **Messages that don't parse are silently ignored** — ordinary chat is not an error.
 - **Messages that parse but fail type-check or evaluation get a visible error reply** (a
@@ -28,6 +28,12 @@ including the bot's own save confirmation. Then:
 - `reseed()` re-rolls the **cosmetic** seed shown in embed footers. It never affects actual
   rolls — the engine takes fresh entropy every time.
 - A lone atom (`:ready`) evaluates fine but is suppressed as chat noise.
+- **A message whose value is a function gets a "nothing to roll" reply** with how to call it.
+  The usual case is pasting the bot's own save confirmation: its fence holds the saved source
+  (`|| kh(pool(2, d20), 1)`), not a call, so it evaluates to the function and shows nothing.
+  When the text is exactly a saved source the reply names the save (`` call it instead:
+  `adv()` ``); otherwise it gives a generic hint, but only past the noise gate, so `|x| x`
+  stays silent.
 
 A roll reply's title is `{character}: {result}` (plus `[Crit!]`/`[Fumble!]`), and the Results
 field shows the trace: every die's sampled faces at the spot they were rolled, with dropped dice
