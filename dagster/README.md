@@ -193,7 +193,10 @@ transcription, and the transcript check stops `session_cleanup` (the tracks stay
 checked asset still counts as materialized, so it would trigger the next stage. A stage's
 `SessionStage.gates` closes that gap: linguist launches only for a session whose latest
 `transcript_not_empty` result passed (`blocked_sessions`). A session with no result, from
-before the checks, is not blocked. After you fix the cause, re-execute the run from
+before the checks, is not blocked. Behind the gate, linguist's `session_transcripts` itself
+fails (no retry, nothing written) on a `script.json` under the same floor
+(`astra_sessions.MIN_TRANSCRIPT_SEGMENTS`), so neither such a session nor a hand
+materialize publishes an empty transcript. After you fix the cause, re-execute the run from
 failure: the check runs again, and a pass opens the gate (the trigger waits for it). The exception is a tracks check fixed by removing or replacing a
 zip: the re-execution keeps the old run's `astra/craig-zip` tag, so launch a fresh run
 instead (scribe README, "Blocking checks"). Partitioned checks are a Dagster preview; `session_check` hides the
