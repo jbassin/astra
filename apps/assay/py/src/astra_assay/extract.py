@@ -171,7 +171,7 @@ class StatusModifierOut(BaseModel):
     #: field existed but was always "unknown"); now a real per-section degree
     #: / duration pair. Modifier pricing stays prior-only territory
     #: — these fields feed the build record's "hostile penalty-modifier
-    #: rows" pin and the prior card's narrative, not the Stage A/B fit.
+    #: rows" pin and the prior card's narrative, not the Stage A fit.
     degree: str = "unknown"
     duration: str = "instant"
 

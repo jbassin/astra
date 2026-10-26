@@ -1,6 +1,6 @@
-"""Round-2 results generation — full-population
-scoring, the condition price card, and the V1'-V4' validation gates, all
-computed against the real extracted corpus (no asserted numbers).
+"""Report data for ``assay price``: the full-population split (ladder-scored rows, hostile
+effect rows, typed ledger) and the V1'-V4' and V-A validation gates, all computed against the
+real extracted corpus (no asserted numbers).
 """
 
 from __future__ import annotations
@@ -12,7 +12,6 @@ from pathlib import Path
 from . import comparables as comparables_mod
 from . import ledger as ledger_mod
 from . import pricing
-from .conditions import Tier, within_tier_offset
 from .extract import SkipRecord, SpellFeatures
 
 # ---------------------------------------------------------------------------
@@ -22,23 +21,30 @@ from .extract import SkipRecord, SpellFeatures
 
 @dataclass
 class ScoredRow:
+    """A row with damage EV, read against the ladder."""
+
     name: str
     rank: int
     is_cantrip: bool
-    kind: str  # pure-damage | hybrid-damage | recovered-damage | healing | condition-control
-    ev_or_score: float
+    kind: str  # pure-damage | hybrid-damage | recovered-damage | healing
+    ev: float
     rank_equivalent: float | None
     residual_rank_equiv: float | None
-    boss_weighted_score: float | None = None
-    boss_weighted_rank_equivalent: float | None = None
-    is_incapacitation: bool = False
 
 
 @dataclass
 class Population:
+    #: Rows with damage EV, scored against the ladder.
     scored: list[ScoredRow]
+    #: Hostile effect rows (no damage EV): the scorer gives them comparables, not a ladder score.
+    hostile_effect_names: list[str]
     ledger: dict[str, int]  # typed reason -> count
     ledger_examples: dict[str, list[str]]  # typed reason -> a few example names
+
+    @property
+    def scored_count(self) -> int:
+        """Every row that gets a score: ladder-scored plus hostile effect."""
+        return len(self.scored) + len(self.hostile_effect_names)
 
 
 def _damage_row_kind(row: SpellFeatures) -> str:
@@ -57,9 +63,9 @@ def score_population(
     spells_dir: Path,
     ladder: pricing.LadderFit,
     cantrip_ladder: pricing.CantripLadderFit,
-    stage_a: pricing.StageAFit,
 ) -> Population:
     scored: list[ScoredRow] = []
+    hostile_effect_names: list[str] = []
     ledger_counts: dict[str, int] = {}
     ledger_examples: dict[str, list[str]] = {}
 
@@ -75,71 +81,33 @@ def score_population(
             _bump(reason, row.name)
             continue
 
-        cantrip = row.is_cantrip
-        has_damage = row.ev > 0.0
-        if has_damage:
-            structural = (
-                cantrip_ladder.structural_target_range(row)
-                if cantrip
-                else ladder.structural_target_range(row)
-            ) * pricing.action_multiplier(row.action_bucket)
-            normalized_ev = row.ev / structural if structural else row.ev
-            if cantrip:
-                budget = cantrip_ladder.budget() * structural
-                rank_equiv = None  # cantrips scale by character level, not spell rank
-                residual = math.log(row.ev) - math.log(budget) if budget > 0 else None
-            else:
-                budget = ladder.budget(row.rank) * structural
-                rank_equiv = pricing.rank_equivalent(normalized_ev, ladder)
-                residual = rank_equiv - row.rank if not math.isnan(rank_equiv) else None
-            scored.append(
-                ScoredRow(
-                    name=row.name,
-                    rank=row.rank,
-                    is_cantrip=cantrip,
-                    kind=_damage_row_kind(row),
-                    ev_or_score=row.ev,
-                    rank_equivalent=rank_equiv,
-                    residual_rank_equiv=residual,
-                )
-            )
+        if row.ev <= 0.0:
+            hostile_effect_names.append(row.name)
             continue
 
-        # condition-only control spell (Stage B)
-        active_ladder = cantrip_ladder if cantrip else ladder
-        score = pricing.score_condition_control(row, active_ladder, stage_a)
+        cantrip = row.is_cantrip
+        structural = (
+            cantrip_ladder.structural_target_range(row)
+            if cantrip
+            else ladder.structural_target_range(row)
+        ) * pricing.action_multiplier(row.action_bucket)
+        normalized_ev = row.ev / structural if structural else row.ev
         if cantrip:
-            rank_equiv = None
-            budget = cantrip_ladder.budget()
-            residual = math.log(score) - math.log(budget) if score > 0 and budget > 0 else None
+            budget = cantrip_ladder.budget() * structural
+            rank_equiv = None  # cantrips scale by character level, not spell rank
+            residual = math.log(row.ev) - math.log(budget) if budget > 0 else None
         else:
-            rank_equiv = pricing.rank_equivalent(score, ladder) if score > 0 else float("nan")
-            residual = (
-                rank_equiv - row.rank
-                if rank_equiv is not None and not math.isnan(rank_equiv)
-                else None
-            )
-        boss_score = None
-        boss_rank_equiv = None
-        if row.incapacitation and not cantrip:
-            boss_score = pricing.score_condition_control(
-                row, active_ladder, stage_a, boss_weighted=True
-            )
-            boss_rank_equiv = (
-                pricing.rank_equivalent(boss_score, ladder) if boss_score > 0 else None
-            )
+            rank_equiv = pricing.rank_equivalent(normalized_ev, ladder)
+            residual = rank_equiv - row.rank if not math.isnan(rank_equiv) else None
         scored.append(
             ScoredRow(
                 name=row.name,
                 rank=row.rank,
                 is_cantrip=cantrip,
-                kind="condition-control",
-                ev_or_score=score,
+                kind=_damage_row_kind(row),
+                ev=row.ev,
                 rank_equivalent=rank_equiv,
                 residual_rank_equiv=residual,
-                boss_weighted_score=boss_score,
-                boss_weighted_rank_equivalent=boss_rank_equiv,
-                is_incapacitation=row.incapacitation,
             )
         )
 
@@ -148,62 +116,12 @@ def score_population(
         reason = skip_reasons.get(f"{s.file}::{s.name}", s.reason)
         _bump(reason, s.name)
 
-    return Population(scored=scored, ledger=ledger_counts, ledger_examples=ledger_examples)
-
-
-# ---------------------------------------------------------------------------
-# Condition price card
-# ---------------------------------------------------------------------------
-
-
-@dataclass
-class ConditionPriceRow:
-    condition: str
-    tier: Tier
-    within_tier_offset: float
-    sample_weight_failure_only_round: float  # a representative w at failure-only, ~round duration
-    budget_fraction: float  # p at that representative w
-    rank_equivalent_at_rank5: float  # that p * Budget(5), reported as a rank-5 anchor example
-
-
-def condition_price_card(
-    stage_a: pricing.StageAFit, ladder: pricing.LadderFit
-) -> list[ConditionPriceRow]:
-    from .conditions import _FLAT_TIER, _VALUED_TIER, DurationClass  # lazy: avoids an import cycle
-
-    rows: list[ConditionPriceRow] = []
-    seen: set[str] = set()
-    for name, tier in _FLAT_TIER.items():
-        seen.add(name)
-        w = pricing.instance_weight(name, "failure", DurationClass.ROUND)
-        p = 1.0 - math.exp(-stage_a.beta[tier] * w)
-        rows.append(
-            ConditionPriceRow(
-                condition=name,
-                tier=tier,
-                within_tier_offset=within_tier_offset(name),
-                sample_weight_failure_only_round=w,
-                budget_fraction=p,
-                rank_equivalent_at_rank5=p * ladder.budget(5),
-            )
-        )
-    for name, thresholds in _VALUED_TIER.items():
-        for value, tier in thresholds:
-            label = f"{name} {value}"
-            seen.add(label)
-            w = pricing.instance_weight(name, "failure", DurationClass.ROUND)
-            p = 1.0 - math.exp(-stage_a.beta[tier] * w)
-            rows.append(
-                ConditionPriceRow(
-                    condition=label,
-                    tier=tier,
-                    within_tier_offset=within_tier_offset(name),
-                    sample_weight_failure_only_round=w,
-                    budget_fraction=p,
-                    rank_equivalent_at_rank5=p * ladder.budget(5),
-                )
-            )
-    return sorted(rows, key=lambda r: (r.tier.value, -r.budget_fraction))
+    return Population(
+        scored=scored,
+        hostile_effect_names=hostile_effect_names,
+        ledger=ledger_counts,
+        ledger_examples=ledger_examples,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -229,7 +147,6 @@ def validate_v1_prime(scored: list[ScoredRow]) -> list[V1PrimeResult]:
             for s in scored
             if s.kind in ("hybrid-damage", "recovered-damage") and not s.is_cantrip
         ],
-        "control": [s for s in scored if s.kind == "condition-control" and not s.is_cantrip],
         "all-non-cantrip": [
             s for s in scored if not s.is_cantrip and s.residual_rank_equiv is not None
         ],
@@ -298,9 +215,11 @@ def validate_v2_prime(
 class V3PrimeCheck:
     name: str
     expected: str
-    status: str  # "scored" | "ledgered-expected" | "ledgered-unexpected"
+    status: str  # "scored" | "comparables" | "ledgered-expected" | "ledgered-unexpected"
     residual_rank_equiv: float | None
-    correct_side: bool
+    #: None when the gate does not grade the spell: a hostile effect spell has no ladder
+    #: residual (it gets comparables instead).
+    correct_side: bool | None
 
 
 V3_STRONG = ("Fear", "Command", "Slow", "Synesthesia", "Force Barrage", "Heal")
@@ -318,45 +237,53 @@ V3_WEAK = (
 V3_EXPECTED_LEDGERED = frozenset({"Command"})
 
 
-def validate_v3_prime(scored: list[ScoredRow]) -> tuple[list[V3PrimeCheck], float]:
+def _v3_unscored(name: str, expected: str, hostile_effect_names: list[str]) -> V3PrimeCheck:
+    """A listed spell with no ladder row: ungraded when it routes to comparables, else a
+    ledger outcome (correct only when the ledger is the expected outcome)."""
+    if any(n.split(" (")[0] == name for n in hostile_effect_names):
+        return V3PrimeCheck(name, expected, "comparables", None, None)
+    expected_ledgered = expected == "strong" and name in V3_EXPECTED_LEDGERED
+    return V3PrimeCheck(
+        name,
+        expected,
+        "ledgered-expected" if expected_ledgered else "ledgered-unexpected",
+        None,
+        expected_ledgered,
+    )
+
+
+def validate_v3_prime(
+    scored: list[ScoredRow], hostile_effect_names: list[str]
+) -> tuple[list[V3PrimeCheck], float]:
+    """Grade each listed spell's best ladder residual against its expected side. The share
+    counts only graded spells (``correct_side`` is not None)."""
     checks: list[V3PrimeCheck] = []
     for name in V3_STRONG:
         matches = [s for s in scored if s.name.split(" (")[0] == name]
         if not matches:
-            expected_ledgered = name in V3_EXPECTED_LEDGERED
-            checks.append(
-                V3PrimeCheck(
-                    name,
-                    "strong",
-                    "ledgered-expected" if expected_ledgered else "ledgered-unexpected",
-                    None,
-                    expected_ledgered,
-                )
-            )
+            checks.append(_v3_unscored(name, "strong", hostile_effect_names))
             continue
         best = max(
             matches,
             key=lambda s: s.residual_rank_equiv if s.residual_rank_equiv is not None else -999,
         )
         r = best.residual_rank_equiv
-        correct = (r is not None and r > 0) if r is not None else False
-        checks.append(V3PrimeCheck(name, "strong", "scored", r, correct))
+        checks.append(V3PrimeCheck(name, "strong", "scored", r, r is not None and r > 0))
     for name in V3_WEAK:
         matches = [s for s in scored if s.name.split(" (")[0] == name]
         if not matches:
-            checks.append(V3PrimeCheck(name, "weak", "ledgered-unexpected", None, False))
+            checks.append(_v3_unscored(name, "weak", hostile_effect_names))
             continue
         best = min(
             matches,
             key=lambda s: s.residual_rank_equiv if s.residual_rank_equiv is not None else 999,
         )
         r = best.residual_rank_equiv
-        correct = (r is not None and r < 0) if r is not None else False
-        checks.append(V3PrimeCheck(name, "weak", "scored", r, correct))
+        checks.append(V3PrimeCheck(name, "weak", "scored", r, r is not None and r < 0))
 
-    n_evaluable = len(checks)
-    n_correct = sum(1 for c in checks if c.correct_side)
-    share = n_correct / n_evaluable if n_evaluable else float("nan")
+    graded = [c for c in checks if c.correct_side is not None]
+    n_correct = sum(1 for c in graded if c.correct_side)
+    share = n_correct / len(graded) if graded else float("nan")
     return checks, share
 
 

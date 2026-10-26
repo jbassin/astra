@@ -27,7 +27,7 @@ PRIORS anchored on four named real spells/rules, never fitted:
 w_repr printed alongside every rate.** For tier T with anchor rank R_T and
 representative weight w_repr_T (the named anchor condition's own real
 coverage×duration shape, via `pricing.instance_weight` — the SAME weight
-function Stage A/B used, reused here as a prior calibration point instead
+function the Stage A fit uses, reused here as a prior calibration point instead
 of a fitted one):
 
     RATE_T = Budget(R_T) / w_repr_T          (T1 uses the cantrip budget)

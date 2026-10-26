@@ -1,9 +1,8 @@
 """``assay`` console script — price / score / export-codex / score-homebrew /
 homebrew-revisions / export-book / store check / store fmt.
 
-    uv run assay price [--data-root PATH]     # ladder + Stage A/B + comparables + priors → results/
-    uv run assay score --spell PATH           # score one spell JSON (round-3 model; also
-                                               #   scores a single canonical homebrew store file)
+    uv run assay price [--data-root PATH]     # ladder + Stage A + comparables + priors → results/
+    uv run assay score --spell PATH           # score one spell JSON (a store file works)
     uv run assay export-codex [--data-root PATH]  # codex artifact → out/spell-power.json
     uv run assay score-homebrew               # score the canonical store -> out/homebrew/
                                                #   scores.json
@@ -16,6 +15,8 @@ The homebrew commands live in ``homebrew.py`` (registered via
 ``homebrew.register_subparsers``), next to the adapter for the vendored
 ``vendor/run_balance/pf2e_converted_spells`` conversion set the store was seeded from;
 ``export-book`` lives in ``book.py``; ``store check``/``store fmt`` live in ``store.py``.
+``score``, ``score-homebrew`` and ``export-codex`` all score through ``scorer.Scorer``, built
+from the committed model artifacts that ``artifacts.load_model_artifacts`` reads.
 
 Telemetry (standing principle): ``astra_observe.run`` wraps every subcommand and
 flushes on exit (see ``libs/py/observe``). Offline runs (no SigNoz reachable) still
@@ -35,6 +36,7 @@ import astra_observe
 from astra_observe import get_tracer
 
 from . import (
+    artifacts,
     book,
     buffs,
     comparables,
@@ -47,28 +49,32 @@ from . import (
     store,
     summons,
 )
+from .artifacts import (
+    BUFF_CORPUS_PATH,
+    COMPARABLES_CORPUS_PATH,
+    FITTED_PARAMS_PATH,
+    RESULTS_DIR,
+    ModelArtifacts,
+    ModelArtifactsNotFoundError,
+)
 from .conditions import Tier
 from .extract import (
     SkipRecord,
     SpellFeatures,
     build_effect_index_from_snapshot,
     extract_all,
-    extract_spell,
     load_spell_json,
 )
+from .scorer import Scorer, SpellScore
 from .snapshot import SnapshotNotFoundError, resolve_snapshot
 
-APP_ROOT = Path(__file__).resolve().parents[2]  # src/astra_assay/cli.py -> apps/assay/py
+APP_ROOT = artifacts.APP_ROOT
 OUT_DIR = APP_ROOT / "out"
-RESULTS_DIR = APP_ROOT / "results"
 FEATURES_PATH = OUT_DIR / "features.json"
-FITTED_PARAMS_PATH = RESULTS_DIR / "fitted-params.json"
 POINT_TABLES_PATH = RESULTS_DIR / "point-tables.md"
 POWER_LEDGER_PATH = RESULTS_DIR / "power-ledger.md"
 VALIDATION_PATH = RESULTS_DIR / "validation.md"
-COMPARABLES_CORPUS_PATH = RESULTS_DIR / "comparables-corpus.json"
 COMPARABLES_SPOT_PATH = RESULTS_DIR / "comparables-spot.md"
-BUFF_CORPUS_PATH = RESULTS_DIR / "buff-comparables-corpus.json"
 EXPORT_PATH = OUT_DIR / "spell-power.json"
 #: The GM Screen journal entry/page the declared summon curve is
 #: verified against at build (the build stops on any disagreement).
@@ -98,28 +104,6 @@ class Round4Report:
 # ---------------------------------------------------------------------------
 
 
-def _ladder_to_json(ladder: pricing.LadderFit) -> dict:
-    return {
-        "intercept": ladder.intercept,
-        "slope": ladder.slope,
-        "effective_target_coef": ladder.effective_target_coef,
-        "range_coef": ladder.range_coef,
-        "n_obs": ladder.n_obs,
-        "r_squared": ladder.r_squared,
-        "excluded_singletons": ladder.excluded_singletons,
-    }
-
-
-def _cantrip_ladder_to_json(ladder: pricing.CantripLadderFit) -> dict:
-    return {
-        "intercept": ladder.intercept,
-        "effective_target_coef": ladder.effective_target_coef,
-        "range_coef": ladder.range_coef,
-        "n_obs": ladder.n_obs,
-        "r_squared": ladder.r_squared,
-    }
-
-
 def _stage_a_to_json(stage_a: pricing.StageAFit) -> dict:
     return {
         "beta": {t.value: v for t, v in stage_a.beta.items()},
@@ -138,10 +122,9 @@ def write_fitted_params(params: dict[str, dict], path: Path = FITTED_PARAMS_PATH
 
 
 def cmd_price(args: argparse.Namespace) -> None:
-    """Round 2's full pipeline: pure-anchored ladder -> Stage A tier
-    discounts -> Stage B + full-population scoring ->
-    results/ regeneration. This is the command whose output is
-    committed."""
+    """The full fit: pure-anchored ladder -> Stage A tier coefficients -> comparables
+    corpora -> full-population split -> results/ regeneration. This is the command whose
+    output is committed."""
     with _tracer.start_as_current_span("assay.price") as span:
         paths = resolve_snapshot(args.data_root)
         extract_result = extract_all(paths.spells_dir)
@@ -166,7 +149,7 @@ def cmd_price(args: argparse.Namespace) -> None:
         stage_a = pricing.fit_stage_a(trainers, ladder, structural_fn=structural_fn)
 
         population = report2.score_population(
-            rows, extract_result.skipped, paths.spells_dir, ladder, cantrip_ladder, stage_a
+            rows, extract_result.skipped, paths.spells_dir, ladder, cantrip_ladder
         )
 
         # The comparables corpus: every OFFICIAL row that actually
@@ -175,11 +158,7 @@ def cmd_price(args: argparse.Namespace) -> None:
         # carries at least one hostile-priceable atom.
         scored_rows = [r for r in rows if ledger.classify_row(r) is None]
         corpus = comparables.build_corpus(scored_rows, ladder)
-        COMPARABLES_CORPUS_PATH.write_text(
-            json.dumps([comparables.profile_to_json(p) for p in corpus], indent=2, sort_keys=True)
-            + "\n",
-            encoding="utf-8",
-        )
+        COMPARABLES_CORPUS_PATH.write_text(artifacts.corpus_to_json(corpus), encoding="utf-8")
 
         prior_card = priors.build_prior_card(ladder, cantrip_ladder)
         tier_rates = {t: priors.tier_rate(t, ladder, cantrip_ladder) for t in Tier}
@@ -190,13 +169,7 @@ def cmd_price(args: argparse.Namespace) -> None:
         # Round 4: buff comparables + summon band + export.
         # -------------------------------------------------------------
         buff_corpus = buffs.build_buff_corpus(rows)
-        BUFF_CORPUS_PATH.write_text(
-            json.dumps(
-                [comparables.profile_to_json(p) for p in buff_corpus], indent=2, sort_keys=True
-            )
-            + "\n",
-            encoding="utf-8",
-        )
+        BUFF_CORPUS_PATH.write_text(artifacts.corpus_to_json(buff_corpus), encoding="utf-8")
         wb_results = buffs.validate_w_b_loo(buffs.ROSTER_W_B, buff_corpus)
 
         effect_index = build_effect_index_from_snapshot(paths.spells_dir)
@@ -217,21 +190,20 @@ def cmd_price(args: argparse.Namespace) -> None:
                 summon_curve_error = str(e)
         summon_rows = _collect_summon_rows(paths.spells_dir)
 
+        scorer = Scorer(ModelArtifacts(ladder, cantrip_ladder, corpus, buff_corpus))
         export_artifact, export_report = export.build_export(
-            extract_result, paths.spells_dir, ladder, cantrip_ladder, corpus, buff_corpus
+            extract_result, paths.spells_dir, scorer
         )
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         EXPORT_PATH.write_text(export.dump_export(export_artifact), encoding="utf-8")
-        export_artifact_2, _ = export.build_export(
-            extract_result, paths.spells_dir, ladder, cantrip_ladder, corpus, buff_corpus
-        )
+        export_artifact_2, _ = export.build_export(extract_result, paths.spells_dir, scorer)
         export_deterministic = export.dump_export(export_artifact) == export.dump_export(
             export_artifact_2
         )
 
         span.set_attribute("assay.price.pure_n", len(pure))
         span.set_attribute("assay.price.trainers_n", len(trainers))
-        span.set_attribute("assay.price.scored_n", len(population.scored))
+        span.set_attribute("assay.price.scored_n", population.scored_count)
         span.set_attribute("assay.price.ledger_n", sum(population.ledger.values()))
         span.set_attribute("assay.price.comparables_corpus_n", len(corpus))
         span.set_attribute("assay.price.v_a_share", va_share)
@@ -241,9 +213,9 @@ def cmd_price(args: argparse.Namespace) -> None:
         RESULTS_DIR.mkdir(parents=True, exist_ok=True)
         params: dict[str, dict] = {}
         params["round2"] = {
-            "ladder": _ladder_to_json(ladder),
-            "ladder_with_singleton": _ladder_to_json(ladder_with_singleton),
-            "cantrip_ladder": _cantrip_ladder_to_json(cantrip_ladder),
+            "ladder": artifacts.ladder_to_json(ladder),
+            "ladder_with_singleton": artifacts.ladder_to_json(ladder_with_singleton),
+            "cantrip_ladder": artifacts.cantrip_ladder_to_json(cantrip_ladder),
             "stage_a": _stage_a_to_json(stage_a),
         }
         params["round3"] = {
@@ -268,7 +240,6 @@ def cmd_price(args: argparse.Namespace) -> None:
             ladder,
             ladder_with_singleton,
             cantrip_ladder,
-            stage_a,
             prior_card,
             tier_rates,
             pack_curve,
@@ -295,7 +266,7 @@ def cmd_price(args: argparse.Namespace) -> None:
 
         print(
             f"assay price: pure n={len(pure)} (excl. singleton, R²={ladder.r_squared:.3f})  "
-            f"trainers n={len(trainers)}  scored n={len(population.scored)}  "
+            f"trainers n={len(trainers)}  scored n={population.scored_count}  "
             f"ledgered n={sum(population.ledger.values())}  comparables corpus n={len(corpus)}  "
             f"V-A share={va_share:.1%}  buff corpus n={len(buff_corpus)}  "
             f"export entries={export_report.entry_count} -> {RESULTS_DIR}"
@@ -303,8 +274,8 @@ def cmd_price(args: argparse.Namespace) -> None:
 
 
 def cmd_export_codex(args: argparse.Namespace) -> None:
-    """Rebuild the codex export artifact alone, off the committed
-    comparables corpora — does NOT re-run `assay price`'s full fit (use that
+    """Rebuild the codex export artifact alone, off the committed model
+    artifacts — does NOT re-run `assay price`'s full fit (use that
     first if the corpora are stale). Writes ONLY to
     `apps/assay/py/out/spell-power.json` — never into `apps/codex/web/` (the
     orchestrator places it there at integration)."""
@@ -312,37 +283,9 @@ def cmd_export_codex(args: argparse.Namespace) -> None:
         paths = resolve_snapshot(args.data_root)
         extract_result = extract_all(paths.spells_dir)
 
-        if not FITTED_PARAMS_PATH.exists():
-            raise SystemExit(
-                f"assay export-codex: no fitted params at {FITTED_PARAMS_PATH} — "
-                "run `assay price` first."
-            )
-        params = json.loads(FITTED_PARAMS_PATH.read_text(encoding="utf-8"))
-        r2 = params["round2"]
-        ladder = _ladder_from_json(r2["ladder"])
-        cantrip_ladder = _cantrip_ladder_from_json(r2["cantrip_ladder"])
+        scorer = Scorer.from_results()
 
-        if not COMPARABLES_CORPUS_PATH.exists():
-            raise SystemExit(
-                f"assay export-codex: no comparables corpus at {COMPARABLES_CORPUS_PATH} — "
-                "run `assay price` first."
-            )
-        hostile_corpus = [
-            comparables.profile_from_json(d)
-            for d in json.loads(COMPARABLES_CORPUS_PATH.read_text(encoding="utf-8"))
-        ]
-        buff_corpus = (
-            [
-                comparables.profile_from_json(d)
-                for d in json.loads(BUFF_CORPUS_PATH.read_text(encoding="utf-8"))
-            ]
-            if BUFF_CORPUS_PATH.exists()
-            else buffs.build_buff_corpus(extract_result.rows)
-        )
-
-        artifact, report_ = export.build_export(
-            extract_result, paths.spells_dir, ladder, cantrip_ladder, hostile_corpus, buff_corpus
-        )
+        artifact, report_ = export.build_export(extract_result, paths.spells_dir, scorer)
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         EXPORT_PATH.write_text(export.dump_export(artifact), encoding="utf-8")
 
@@ -375,7 +318,6 @@ def _write_point_tables_v2(
     ladder: pricing.LadderFit,
     ladder_with_singleton: pricing.LadderFit,
     cantrip_ladder: pricing.CantripLadderFit,
-    stage_a: pricing.StageAFit,
     prior_card: list[priors.PriorCardRow],
     tier_rates: dict[Tier, priors.TierRate],
     pack_curve: list[buffs.PackCurveAnchor] | None = None,
@@ -429,7 +371,7 @@ def _write_point_tables_v2(
         lines.append(f"| {bucket.value} | ×{mult:.2f} |")
     lines.append("")
     lines.append("## Prior-anchored condition price card (PRIMARY, replaces the")
-    lines.append("round-2 fitted card below)")
+    lines.append("round-2 fitted card)")
     lines.append("")
     lines.append(
         "**Every value here is a labeled PRIOR, never a fit.** Review F3/F4 killed round-2's "
@@ -513,39 +455,6 @@ def _write_point_tables_v2(
     for dc, factor in duration_factor.items():
         lines.append(f"| {dc} | ×{factor:.2f} |")
     lines.append("")
-    lines.append("## Appendix: round-2 fitted condition price card (SUPERSEDED — known-noisy,")
-    lines.append("kept for provenance)")
-    lines.append("")
-    lines.append(
-        "Stage A/B still runs (it feeds the appendix below and the comparables atom-vector "
-        "weighting, `pricing.instance_weight`) but its per-condition PRICE output is no longer "
-        "the recommended design tool — see section 5 of round-2's build record "
-        "(`0030-assay-round2-spec.md`) for the full V3′ diagnosis of why (Fear/Slow/Synesthesia "
-        "score 1–4 ranks cold: Stage "
-        "A's β's are learned from PARTIAL hybrid discounts, then reused by Stage B to justify an "
-        "entire control-spell budget — an extrapolation the architecture was never validated for)."
-    )
-    lines.append("")
-    lines.append(
-        f"Hybrid trainer n={stage_a.n_obs}, R²={stage_a.r_squared:.3f}, α={stage_a.alpha:.3f}."
-    )
-    lines.append("")
-    lines.append("| Tier | β (operational, floored ≥0) | β (as-fitted, raw) | Basis |")
-    lines.append("|---|---|---|---|")
-    for tier in (Tier.T1, Tier.T2, Tier.T3, Tier.T4):
-        basis = "fitted (OLS)" if tier != Tier.T4 else "declared prior (too few trainers)"
-        lines.append(
-            f"| {tier.value} | {stage_a.beta[tier]:.4f} | {stage_a.beta_raw[tier]:.4f} | {basis} |"
-        )
-    lines.append("")
-    lines.append("| Condition | Tier | Budget fraction *p* | Rank-equivalent @ rank 5 |")
-    lines.append("|---|---|---|---|")
-    lines.extend(
-        f"| {row.condition} | {row.tier.value} | {row.budget_fraction:.3f} | "
-        f"{row.rank_equivalent_at_rank5:.2f} |"
-        for row in report2.condition_price_card(stage_a, ladder)
-    )
-    lines.append("")
     lines.append("---")
     lines.append("")
     lines.append("## Buff prior card (round 4)")
@@ -582,53 +491,46 @@ def _write_point_tables_v2(
 
 def _write_power_ledger_v2(population: report2.Population) -> None:
     lines = ["# assay — full-population power ledger (round 2/3)", ""]
-    lines.append(
-        "**Round 3 note:** the `condition-control` rows below still carry their Stage-B fitted "
-        "score (kept for population-wide reference — this is what informs the Stage A/B appendix "
-        "in `point-tables.md`), but it is **no longer the recommended per-spell design tool** for "
-        "hostile effect spells. Use `uv run assay score --spell <path>` for a homebrew effect "
-        "spell — it returns comparables (top-5 official neighbors + a rank RANGE) and "
-        "prior-card pointers instead of this fitted point score. See `README.md`'s "
-        "homebrew workflow."
-    )
-    lines.append("")
     non_cantrip = sorted(
         (s for s in population.scored if not s.is_cantrip and s.residual_rank_equiv is not None),
         key=lambda s: s.residual_rank_equiv or 0.0,
         reverse=True,
     )
     lines.append(
-        f"## Scored population (n={len(population.scored)}, non-cantrip n={len(non_cantrip)})"
+        f"## Ladder-scored population (n={len(population.scored)}, "
+        f"non-cantrip n={len(non_cantrip)})"
     )
     lines.append("")
     lines.append(
-        "Sorted hottest -> coldest by residual rank-equivalent (score vs. own nominal rank)."
+        "Rows with damage EV, sorted hottest -> coldest by residual rank-equivalent "
+        "(EV vs. own nominal rank on the ladder)."
     )
     lines.append("")
-    lines.append("| Spell | Rank | Kind | EV/score | Residual (rank-equiv) | Boss-weighted resid |")
-    lines.append("|---|---|---|---|---|---|")
+    lines.append(
+        f"The {len(population.hostile_effect_names)} hostile effect rows (no damage EV) are "
+        "scored too, but by comparables, not the ladder: they get the top 5 official "
+        "neighbors and a rank range (`results/comparables-corpus.json`; "
+        "`uv run assay score --spell <path>` for a homebrew spell)."
+    )
+    lines.append("")
+    lines.append("| Spell | Rank | Kind | EV | Residual (rank-equiv) |")
+    lines.append("|---|---|---|---|---|")
     top = non_cantrip[:15]
     bottom = non_cantrip[-15:] if len(non_cantrip) > 15 else []
     for group in (top, bottom):
         if group is bottom and bottom:
-            lines.append("| … | | | | | |")
-        for s in group:
-            boss = (
-                f"{(s.boss_weighted_rank_equivalent or 0) - s.rank:+.2f}"
-                if s.boss_weighted_rank_equivalent is not None
-                else "—"
-            )
-            lines.append(
-                f"| {s.name} | {s.rank} | {s.kind} | {s.ev_or_score:.2f} | "
-                f"{s.residual_rank_equiv:+.2f} | {boss} |"
-            )
+            lines.append("| … | | | | |")
+        lines.extend(
+            f"| {s.name} | {s.rank} | {s.kind} | {s.ev:.2f} | {s.residual_rank_equiv:+.2f} |"
+            for s in group
+        )
     lines.append("")
     lines.append(f"<details><summary>Full non-cantrip ledger ({len(non_cantrip)} rows)</summary>")
     lines.append("")
-    lines.append("| Spell | Rank | Kind | EV/score | Residual (rank-equiv) |")
+    lines.append("| Spell | Rank | Kind | EV | Residual (rank-equiv) |")
     lines.append("|---|---|---|---|---|")
     lines.extend(
-        f"| {s.name} | {s.rank} | {s.kind} | {s.ev_or_score:.2f} | {s.residual_rank_equiv:+.2f} |"
+        f"| {s.name} | {s.rank} | {s.kind} | {s.ev:.2f} | {s.residual_rank_equiv:+.2f} |"
         for s in non_cantrip
     )
     lines.append("")
@@ -702,20 +604,28 @@ def _write_validation_v2(
     lines.append(f"- **{'PASS' if gate_v2 else 'FAIL'}**")
     lines.append("")
 
-    checks, share = report2.validate_v3_prime(population.scored)
+    checks, share = report2.validate_v3_prime(population.scored, population.hostile_effect_names)
     lines.append("## V3′ — known-outlier gate (enumerated list, ≥75% correct-side target)")
     lines.append("")
     lines.append("| Spell | Expected | Status | Residual (rank-equiv) | Correct side |")
     lines.append("|---|---|---|---|---|")
     for c in checks:
         r = f"{c.residual_rank_equiv:+.3f}" if c.residual_rank_equiv is not None else "—"
-        side = "yes" if c.correct_side else "**NO**"
+        side = "n/a" if c.correct_side is None else ("yes" if c.correct_side else "**NO**")
         lines.append(f"| {c.name} | {c.expected} | {c.status} | {r} | {side} |")
     lines.append("")
+    graded = [c for c in checks if c.correct_side is not None]
+    ungraded = [c.name for c in checks if c.correct_side is None]
     lines.append(
-        f"- {sum(1 for c in checks if c.correct_side)}/{len(checks)} correct-side "
+        f"- {sum(1 for c in graded if c.correct_side)}/{len(graded)} graded spells correct-side "
         f"({share:.1%}) — **{'PASS' if share >= 0.75 else 'FAIL'}**"
     )
+    if ungraded:
+        lines.append(
+            f"- {', '.join(ungraded)}: hostile effect spells with no damage EV. They get "
+            "comparables and a rank range, not a ladder residual, so this gate does not grade "
+            "them."
+        )
     lines.append(
         "- Command's expected outcome IS the ledger (preamble-options exclusion, not a scoring "
         "miss) — an asserted absence, same treatment as sure strike/shadow siphon/walls."
@@ -726,20 +636,7 @@ def _write_validation_v2(
     )
     lines.append("")
     lines.append(
-        "1. **Fear/Slow/Synesthesia score cold — an out-of-sample extrapolation mismatch, not "
-        "a broken extraction.** Their condition attribution is verified correct by "
-        "`test_conditions.py`/`test_assay_extract.py` (Fear's 4-degree Frightened escalation, "
-        "Slow's duration-promoted Slowed, Synesthesia's preamble-payload rules all extract "
-        "exactly as the fixtures assert). The gap is architectural: Stage A's β_T2/β_T3 are "
-        "fit on HYBRID trainers, where a condition only needs to explain a PARTIAL discount on "
-        "top of an already-real damage floor. Stage B then reuses those same β's via "
-        "`p = 1-exp(-Σβw)` to justify the ENTIRE rank budget for a pure control spell with zero "
-        "damage — a linear extrapolation the hybrid-trained coefficients were never asked to "
-        "support at that scale. This is inherent to the two-stage architecture as specified, "
-        "not a bug in this build."
-    )
-    lines.append(
-        "2. **Disintegrate scores hot because its double-gate (attack roll, THEN a Fortitude "
+        "1. **Disintegrate scores hot because its double-gate (attack roll, THEN a Fortitude "
         "save) isn't structurally modeled** — the structural axis is effective-target + "
         "range + action only; a spell needing to clear two independent rolls has no discount "
         "applied, so its nominal EV reads as simply 'above budget'. The spec's own V3′ text "
@@ -747,7 +644,7 @@ def _write_validation_v2(
         "not a silent-pass case."
     )
     lines.append(
-        "3. **Flense (+0.146) is a marginal, likely-noise miss** given Stage A's weak "
+        "2. **Flense (+0.146) is a marginal, likely-noise miss** given Stage A's weak "
         f"identification (R²={stage_a.r_squared:.3f} on n={stage_a.n_obs}) — its residual sits "
         "close to zero, well inside the kind of spread V1′ already reports as real heterogeneity."
     )
@@ -766,12 +663,10 @@ def _write_validation_v2(
         )
     lines.append("")
     lines.append(
-        "Fitted condition-price reproduction of the -1-rank rider exchange rate: see the Stage A "
-        "residual spread in `power-ledger.md`'s hybrid rows and the condition price card in "
-        "`point-tables.md` — mid-tier T2/T3 budget fractions land in the "
-        f"{stage_a.beta[Tier.T2]:.2f}-{stage_a.beta[Tier.T3]:.2f} β range, consistent with the "
-        "~0.5-0.75-of-budget mid-rank hybrid observation (see the build record for the numeric "
-        "walk-through)."
+        "The -1-rank rider exchange rate: Stage A's mid-tier coefficients "
+        f"(β_T2={stage_a.beta[Tier.T2]:.2f}, β_T3={stage_a.beta[Tier.T3]:.2f}, in "
+        "`fitted-params.json`) are consistent with the ~0.5-0.75-of-budget mid-rank hybrid "
+        "observation (see the build record for the numeric walk-through)."
     )
     lines.append("")
 
@@ -903,7 +798,7 @@ def _write_validation_v2(
 
     lines.append("## Ledger summary")
     lines.append("")
-    lines.append(f"Scored: {len(population.scored)} — Ledgered: {sum(population.ledger.values())}")
+    lines.append(f"Scored: {population.scored_count} — Ledgered: {sum(population.ledger.values())}")
     lines.append("")
 
     if round4 is not None:
@@ -1095,38 +990,6 @@ def _write_comparables_spot(va_results: list[report2.VALooResult], va_share: flo
     COMPARABLES_SPOT_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def _ladder_from_json(d: dict) -> pricing.LadderFit:
-    return pricing.LadderFit(
-        intercept=d["intercept"],
-        slope=d["slope"],
-        effective_target_coef=d["effective_target_coef"],
-        range_coef=d["range_coef"],
-        n_obs=d["n_obs"],
-        r_squared=d["r_squared"],
-        excluded_singletons=d["excluded_singletons"],
-    )
-
-
-def _cantrip_ladder_from_json(d: dict) -> pricing.CantripLadderFit:
-    return pricing.CantripLadderFit(
-        intercept=d["intercept"],
-        effective_target_coef=d["effective_target_coef"],
-        range_coef=d["range_coef"],
-        n_obs=d["n_obs"],
-        r_squared=d["r_squared"],
-    )
-
-
-def _stage_a_from_json(d: dict) -> pricing.StageAFit:
-    return pricing.StageAFit(
-        beta={Tier(k): v for k, v in d["beta"].items()},
-        beta_raw={Tier(k): v for k, v in d["beta_raw"].items()},
-        alpha=d["alpha"],
-        n_obs=d["n_obs"],
-        r_squared=d["r_squared"],
-    )
-
-
 #: Condition-word plain text the homebrew warning scans for —
 #: the visible condition vocabulary, not the internal beneficial/non-control
 #: exclusion set (a homebrew author writing "frightened" in prose with zero
@@ -1183,54 +1046,92 @@ def _warn_condition_word_with_zero_refs(description_html: str) -> list[str]:
     ]
 
 
-def _print_comparables(
-    result: SpellFeatures,
-    corpus: list[comparables.ComparableProfile],
-    ladder: pricing.LadderFit,
-    prior_card: list[priors.PriorCardRow],
-) -> None:
-    """The effect-spell / hybrid comparables output — top-5
-    official comparables + the induced rank RANGE (never a point score) +
-    the r10 extrapolation warning + prior-card pointers for every
-    hostile-priceable condition instance on the homebrew spell."""
-    profile = comparables.build_profile(result, ladder)
-    res = comparables.comparables_for(profile, corpus, k=5)
-    if not res.matches:
-        print(
-            "  comparables:  none found in the committed corpus (results/comparables-corpus.json)"
-        )
+def _print_comparables(found: comparables.ComparablesResult | None, *, corpus: str) -> None:
+    """The top official comparables and their rank RANGE (never a point score)."""
+    if found is None:
+        print(f"  comparables:  none usable in the committed {corpus} corpus")
         return
     print(
-        f"  comparables:  rank RANGE {res.rank_min}-{res.rank_max} "
-        f"(median {res.rank_median:g}) — never a point score"
+        f"  comparables:  {corpus} corpus, rank RANGE {found.rank_min}-{found.rank_max} "
+        f"(median {found.rank_median:g}) — never a point score"
     )
-    for m in res.matches:
+    for m in found.matches:
         shared = ", ".join(m.shared_atoms) or "(no shared atoms — structural/tier match only)"
         print(f"    - {m.name} (rank {m.rank}, sim={m.similarity:.3f}) shares: {shared}")
-    if res.r10_extrapolation_warning:
-        print(
-            "  WARNING:      the comparables range touches rank 9-10 — review F9: zero hostile "
-            "r10 trainers exist in the corpus at this ladder point, treat this range as an "
-            "extrapolation, not a confident anchor."
+
+
+def _print_prior_card_pointers(row: SpellFeatures, scorer: Scorer) -> None:
+    """A prior-card pointer for each hostile-priceable condition (and value) on the spell."""
+    priced = {
+        (ci.condition, ci.value): None for ci in row.condition_instances if ci.tier is not None
+    }
+    if not priced:
+        return
+    by_condition = {
+        r.condition: r for r in priors.build_prior_card(scorer.ladder, scorer.cantrip_ladder)
+    }
+    print("  prior card:   (see results/point-tables.md's prior-anchored card)")
+    for condition, value in priced:
+        label = condition if value is None else f"{condition} {value}"
+        card_row = by_condition.get(label) or by_condition.get(condition)
+        if card_row is None:
+            continue
+        req = (
+            "n/a"
+            if math.isnan(card_row.prior_rank_equivalent)
+            else f"{card_row.prior_rank_equivalent:.2f}"
         )
-    by_condition = {row.condition: row for row in prior_card}
-    priced = [ci for ci in result.condition_instances if ci.tier is not None]
-    if priced:
-        print("  prior card:   (see results/point-tables.md's prior-anchored card)")
-        for ci in priced:
-            label = ci.condition if ci.value is None else f"{ci.condition} {ci.value}"
-            row = by_condition.get(label) or by_condition.get(ci.condition)
-            if row is None:
-                continue
-            req = (
-                "n/a"
-                if math.isnan(row.prior_rank_equivalent)
-                else f"{row.prior_rank_equivalent:.2f}"
-            )
-            print(f"    - {label} ({row.tier.value}): prior ≈ {req} rank-equivalents (at ~1 round)")
+        print(
+            f"    - {label} ({card_row.tier.value}): prior ≈ {req} rank-equivalents (at ~1 round)"
+        )
 
 
-def cmd_score(args: argparse.Namespace) -> None:  # noqa: C901 -- over the complexity limit; ratchet, split it in Phase 2
+#: What `assay score` prints for a ledger entry, by reason code.
+_LEDGER_NOTES = {
+    export.CANTRIP_TOO_THIN: "hostile effect cantrip; the cantrip comparables corpus is too thin",
+    export.NO_COMPARABLE_PROFILE: "no official comparable clears the similarity floor",
+    "ambiguous": (
+        "AMBIGUOUS hostility (no save/attack-roll/prose-save/hostile-area signal, and the "
+        "target prose doesn't clearly read as friendly either) — needs a GM's judgment"
+    ),
+}
+
+
+def _print_score(row: SpellFeatures, score: SpellScore, scorer: Scorer) -> None:
+    """Format one `Scorer.score` result for the terminal."""
+    if score.kind == "quantitative":
+        hybrid = score.population == "hostile"
+        kind = "hybrid (damage + conditions)" if hybrid else "damage"
+        print(f"  kind:         {kind} (ev={score.ev:.2f})")
+        print(f"  verdict:      {score.verdict}")
+        if hybrid and not row.is_cantrip:
+            _print_comparables(score.comparables, corpus="hostile")
+    elif score.kind == "comparables":
+        print("  kind:         hostile effect spell — comparables + prior card")
+        _print_comparables(score.comparables, corpus="hostile")
+    elif score.kind == "buff-comparables":
+        print("  kind:         beneficial/buff effect — buff comparables")
+        _print_comparables(score.comparables, corpus="buff")
+    else:
+        population = f", {score.population}" if score.population else ""
+        print(f"  kind:         ledger ({score.reason_code}{population})")
+        note = _LEDGER_NOTES.get(score.reason_code or "", score.ledger_reason)
+        if note:
+            print(f"  note:         {note}")
+    if (
+        score.population == "hostile"
+        and score.comparables is not None
+        and score.comparables.r10_extrapolation_warning
+    ):
+        print(
+            "  WARNING:      the comparables range touches rank 9-10, and the hostile corpus has "
+            "no rank-10 spells to anchor on; treat this range as an extrapolation."
+        )
+    if score.population == "hostile" and not row.is_cantrip:
+        _print_prior_card_pointers(row, scorer)
+
+
+def cmd_score(args: argparse.Namespace) -> None:
     with _tracer.start_as_current_span("assay.score") as span:
         spell_path = Path(args.spell)
         data = load_spell_json(spell_path)
@@ -1245,102 +1146,20 @@ def cmd_score(args: argparse.Namespace) -> None:  # noqa: C901 -- over the compl
                 "structure (see README's homebrew template)."
             )
 
-        result = extract_spell(data, str(spell_path))
+        scorer = Scorer.from_results()
+        result, score = scorer.score_doc(data, str(spell_path))
         if isinstance(result, SkipRecord):
-            print(f"assay score: {result.name} could not be scored — {result.reason}")
+            print(f"assay score: {result.name} could not be extracted — {result.reason}")
+            print(f"  kind:         ledger ({score.reason_code})")
             span.set_attribute("assay.score.skipped", True)
             return
 
-        if not FITTED_PARAMS_PATH.exists():
-            raise SystemExit(
-                f"assay score: no fitted params at {FITTED_PARAMS_PATH} — run `assay price` first."
-            )
-        params = json.loads(FITTED_PARAMS_PATH.read_text(encoding="utf-8"))
-        if "round2" not in params:
-            raise SystemExit("assay score: results/fitted-params.json has no round2 params.")
-        r2 = params["round2"]
-        ladder = _ladder_from_json(r2["ladder"])
-        cantrip_ladder = _cantrip_ladder_from_json(r2["cantrip_ladder"])
-        stage_a = _stage_a_from_json(r2["stage_a"])
-        prior_card = priors.build_prior_card(ladder, cantrip_ladder)
-        corpus: list[comparables.ComparableProfile] = []
-        if COMPARABLES_CORPUS_PATH.exists():
-            corpus = [
-                comparables.profile_from_json(d)
-                for d in json.loads(COMPARABLES_CORPUS_PATH.read_text(encoding="utf-8"))
-            ]
-
         cantrip_note = ", cantrip" if result.is_cantrip else ""
         print(f"assay score: {result.name} (rank {result.rank}{cantrip_note})")
-
-        active_ladder: pricing.LadderFit | pricing.CantripLadderFit = (
-            cantrip_ladder if result.is_cantrip else ladder
-        )
-        has_hostile_condition = any(ci.tier is not None for ci in result.condition_instances)
-
-        if result.ev > 0.0:
-            # Damage / hybrid path — round 2's quantitative score, unchanged.
-            structural = active_ladder.structural_target_range(result) * pricing.action_multiplier(
-                result.action_bucket
-            )
-            if result.is_cantrip:
-                budget = cantrip_ladder.budget() * structural
-                verdict = f"budget fraction {result.ev / budget:.2f}" if budget > 0 else "n/a"
-            else:
-                rank_equiv = pricing.rank_equivalent(result.ev / structural, ladder)
-                residual = rank_equiv - result.rank
-                verdict = "in band"
-                if residual > 0.5:
-                    verdict = f"{residual:+.2f} ranks HOT"
-                elif residual < -0.5:
-                    verdict = f"{residual:+.2f} ranks COLD"
-            kind = "hybrid (damage + conditions)" if has_hostile_condition else "damage"
-            print(f"  kind:         {kind} (ev={result.ev:.2f})")
-            print(f"  verdict:      {verdict}")
-            # Hybrids ALSO get comparables, alongside the quantitative score.
-            if has_hostile_condition and not result.is_cantrip:
-                _print_comparables(result, corpus, ladder, prior_card)
-        elif has_hostile_condition:
-            # Hostility routing decides the effect-spell path.
-            hostility = ledger.classify_hostility(result)
-            if hostility == "hostile":
-                print("  kind:         hostile effect spell — comparables + prior card")
-                if result.is_cantrip:
-                    print("  note:         cantrip comparables corpus is too thin to be useful")
-                else:
-                    _print_comparables(result, corpus, ladder, prior_card)
-                    superseded = pricing.score_condition_control(result, active_ladder, stage_a)
-                    if superseded > 0:
-                        superseded_rank = pricing.rank_equivalent(superseded, ladder)
-                        print(
-                            f"  (superseded round-2 Stage-B fitted score, reference only: "
-                            f"{superseded:.2f} ≈ rank {superseded_rank:.2f} — see the review's "
-                            "V3′ extrapolation-mismatch diagnosis for why this is no longer "
-                            "trusted as the primary verdict)"
-                        )
-            elif hostility == "beneficial":
-                print(
-                    "  kind:         beneficial/buff effect (hostility routing calls this "
-                    "beneficial, not hostile) — beneficial-effect pricing is out of round-3 scope."
-                )
-            else:
-                print(
-                    "  kind:         AMBIGUOUS hostility (no save/attack-roll/prose-save/"
-                    "hostile-area signal, and the target prose doesn't clearly read as friendly "
-                    "either) — flag for manual GM judgment; not auto-priced."
-                )
-        else:
-            reason = ledger.classify_row(result)
-            if reason == "beneficial-effect":
-                print(
-                    "  kind:         beneficial/buff effect — every condition on this spell is "
-                    "excluded from hostile pricing (e.g. Quickened/Invisible-class) — out of "
-                    "round-3 scope."
-                )
-            else:
-                print(f"  kind:         no priceable damage or hostile condition ({reason})")
+        _print_score(result, score, scorer)
 
         span.set_attribute("assay.score.spell", result.name)
+        span.set_attribute("assay.score.kind", score.kind)
         span.set_attribute("assay.score.actual_ev", result.ev)
 
 
@@ -1353,8 +1172,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_price = sub.add_parser(
         "price",
         help=(
-            "ladder + Stage A/B + comparables corpus + prior card + full-population "
-            "scoring -> results/"
+            "ladder + Stage A + comparables corpora + prior card + full-population "
+            "split -> results/"
         ),
     )
     p_price.add_argument(
@@ -1365,8 +1184,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_score = sub.add_parser(
         "score",
         help=(
-            "score one homebrew spell JSON: damage/hybrid get the quantitative score, "
-            "hostile effect spells get comparables + the prior card (round 3)"
+            "score one spell JSON: damage/hybrid get the ladder verdict, hostile effect "
+            "spells get comparables + the prior card, buff spells get buff comparables"
         ),
     )
     p_score.add_argument("--spell", required=True, help="path to a Foundry-shaped spell JSON")
@@ -1397,5 +1216,5 @@ def main() -> None:
         args = parser.parse_args()
         try:
             args.func(args)
-        except SnapshotNotFoundError as e:
+        except (SnapshotNotFoundError, ModelArtifactsNotFoundError) as e:
             raise SystemExit(str(e)) from e

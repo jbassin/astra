@@ -15,10 +15,9 @@ import json
 from pathlib import Path
 
 import pytest
-from astra_assay import comparables, homebrew, ledger
+from astra_assay import artifacts, comparables, export, homebrew, ledger
 from astra_assay.extract import ActionBucket, SkipRecord, SpellFeatures, extract_spell
-
-RESULTS_DIR = homebrew.RESULTS_DIR
+from astra_assay.scorer import Scorer
 
 
 @pytest.fixture(scope="module")
@@ -347,7 +346,7 @@ def test_monstrous_copy_eye_stalks_end_to_end_table_dice_excluded() -> None:
 
 
 def test_healing_draught_scores_like_damage_but_flagged(seeded_store: Path) -> None:
-    if not homebrew.FITTED_PARAMS_PATH.exists():
+    if not artifacts.FITTED_PARAMS_PATH.exists():
         return
     results = homebrew.score_all(store_dir=seeded_store)
     by_name = {r["name"]: r for r in results}
@@ -358,7 +357,7 @@ def test_healing_draught_scores_like_damage_but_flagged(seeded_store: Path) -> N
 
 
 def test_non_healing_quantitative_row_flagged_false(seeded_store: Path) -> None:
-    if not homebrew.FITTED_PARAMS_PATH.exists():
+    if not artifacts.FITTED_PARAMS_PATH.exists():
         return
     results = homebrew.score_all(store_dir=seeded_store)
     by_name = {r["name"]: r for r in results}
@@ -865,23 +864,13 @@ def test_convert_falling_star_end_to_end() -> None:
 def test_score_falling_star_routes_quantitative_in_band() -> None:
     """The task's numeric spot-check: EV 35 ≈ 7×rank (the community anchor),
     routed through the real committed ladder fit."""
-    if not homebrew.FITTED_PARAMS_PATH.exists():
+    if not artifacts.FITTED_PARAMS_PATH.exists():
         return  # no committed fit artifact in this checkout — skip gracefully
-    ladder, cantrip_ladder, hostile_corpus, buff_corpus = homebrew._load_ladder_and_corpora()
     c = homebrew.convert_spell(_vendored("Falling Star"))
     result = extract_spell(c.foundry, "falling-star.json")
     assert isinstance(result, SpellFeatures)
-    from astra_assay import export as export_mod
 
-    entry = export_mod.build_entry_for_row(
-        result,
-        ladder=ladder,
-        cantrip_ladder=cantrip_ladder,
-        hostile_corpus=hostile_corpus,
-        buff_corpus=buff_corpus,
-        is_summon_trait=False,
-        raw_description=c.foundry["system"]["description"]["value"],
-    )
+    entry = export.score_to_entry(Scorer.from_results().score(result))
     assert entry["kind"] == "quantitative"
     assert entry["ev"] == 35.0
     # community anchor: 7 * rank == EV, exactly.
@@ -910,9 +899,10 @@ def test_convert_glitterdust_routes_hostile_with_condition_atoms() -> None:
 def test_score_glitterdust_returns_usable_comparables() -> None:
     """Same spell, scored against the real committed comparables corpus —
     must NOT degrade to a condition-free/no-comparable-profile ledger row."""
-    if not homebrew.COMPARABLES_CORPUS_PATH.exists() or not homebrew.FITTED_PARAMS_PATH.exists():
+    if not artifacts.COMPARABLES_CORPUS_PATH.exists() or not artifacts.FITTED_PARAMS_PATH.exists():
         return
-    ladder, _cantrip_ladder, hostile_corpus, _buff_corpus = homebrew._load_ladder_and_corpora()
+    model = artifacts.load_model_artifacts()
+    ladder, hostile_corpus = model.ladder, model.hostile_corpus
     c = homebrew.convert_spell(_vendored("Glitterdust"))
     result = extract_spell(c.foundry, "glitterdust.json")
     assert isinstance(result, SpellFeatures)
@@ -943,7 +933,7 @@ def test_convert_all_176_without_crash() -> None:
 
 
 def test_score_all_176_without_crash_and_routes_everything(seeded_store: Path) -> None:
-    if not homebrew.FITTED_PARAMS_PATH.exists():
+    if not artifacts.FITTED_PARAMS_PATH.exists():
         return
     results = homebrew.score_all(store_dir=seeded_store)
     assert len(results) == 176
@@ -957,7 +947,7 @@ def test_score_all_176_without_crash_and_routes_everything(seeded_store: Path) -
 def test_scores_json_is_valid_json_after_cli_write(seeded_store: Path) -> None:
     """`score_all`'s output round-trips through `json.dumps` cleanly (the
     same serialization `cmd_score_homebrew` writes to `out/homebrew/scores.json`)."""
-    if not homebrew.FITTED_PARAMS_PATH.exists():
+    if not artifacts.FITTED_PARAMS_PATH.exists():
         return
     results = homebrew.score_all(store_dir=seeded_store)
     text = json.dumps(results, indent=2, sort_keys=True)
@@ -1051,7 +1041,7 @@ def test_flags_pass_through_extraction_harmlessly() -> None:
 def test_score_all_reads_the_store_not_the_vendor_file(tmp_path: Path) -> None:
     """`score_all` must not silently fall back to converting the vendor
     file — an empty/missing store is a hard error."""
-    if not homebrew.FITTED_PARAMS_PATH.exists():
+    if not artifacts.FITTED_PARAMS_PATH.exists():
         return
     empty_store = tmp_path / "spells"
     empty_store.mkdir()

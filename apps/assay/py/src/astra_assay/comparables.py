@@ -20,7 +20,7 @@ extrapolation — nearest-neighbor by construction.
 
 where the atom vector is the union of per-condition×value weighted atoms
 (the coverage×duration weight, via `pricing.instance_weight` — the
-SAME weighting already used for Stage A/B, reused here as a similarity
+SAME weighting the Stage A fit uses, reused here as a similarity
 metric rather than a price) and the four tier-aggregate weights
 (`pricing.tier_weights`), and structural coordinates are action bucket,
 effective-target, range bucket, and EV band (present only on damage-bearing
