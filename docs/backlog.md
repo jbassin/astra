@@ -99,8 +99,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
   cursor (`dagster sensor cursor --delete`, a sensor or location rename) — agent.
 - portal: refresh the five pf2e fixtures (`apps/portal/module/tests/fixtures/pf2e/`) from the live
   world; their live sides are synthesised today — agent.
-- `apps/assay/py` `store.py`, `homebrew.py` and `artifacts.py` still find the app root by counting
-  `Path.parents`; use `find_repo_root` as `book.py` does — agent.
 - Split the internal Docker network (the one theme P item kept) — agent; Phase 2.
 - `pip-audit` flags `diskcache` (via dspy), which has no fix — agent.
 

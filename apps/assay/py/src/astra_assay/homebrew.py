@@ -54,6 +54,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from astra_config import find_repo_root
 from astra_observe import get_tracer
 
 from . import conditions, export, store
@@ -66,7 +67,9 @@ from .extract import (
 from .extract import parse_range as _extract_parse_range
 from .scorer import Scorer
 
-APP_ROOT = Path(__file__).resolve().parents[2]  # src/astra_assay/homebrew.py -> apps/assay/py
+# From the repo-root marker, not a count of parent directories, so it holds however deep
+# this module sits.
+APP_ROOT = find_repo_root(Path(__file__)) / "apps" / "assay" / "py"
 VENDOR_SPELLS_PATH = (
     APP_ROOT / "vendor" / "run_balance" / "pf2e_converted_spells" / "all_spells_pf2e.json"
 )
