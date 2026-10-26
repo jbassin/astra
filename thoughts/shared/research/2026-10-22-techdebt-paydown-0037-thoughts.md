@@ -373,6 +373,17 @@ token source keep today's look exactly (no stakeholder sign-off needed); assay t
   (#109). The weal v1 `funcs` table (11 rows) is exported to
   `/ruby/data/astra-state/weal/funcs-v1-2026-10-26.sql` and dropped by migration 0002 (#112).
   Phase 3 now waits only on the parked calls. cdx-alias is dropped: the aliases stay (ADR 0044).
+- **Status 2026-10-26 (session 7, later): Phase 3 is done; the paydown is closed.** Every parked
+  call was decided: aliases stay (ADR 0044); assay has one scorer and no Stage B (#119);
+  Renovate is live (#114); the campaign content is deleted (#118); pipe-4c and pipe-6 are built
+  and live (stage automation #126 with a read-only pre-flight and opt-in adoption, independently
+  reviewed; resumable paid stages and one retry policy #123), with Thursday 2026-10-29's session
+  as their live check. The agent backlog was cleared in the same session: edge health block and
+  render cap (#122, reviewed), weal (#124), services (#127), ops and watchdog (#120), network pin
+  test (#128; the split had shipped), book output path (#129), close timeouts and pprof (#131),
+  pipeline bugs (#132, #133; Dagster deploy held until after Thursday). What remains is in
+  `docs/backlog.md`: stakeholder gates, Josh's smaller calls, and decisions on republishing the
+  empty 2026-8-12/8-20/9-26 transcripts.
   The campaign content (`menagerie-puzzles.md`, `sheets/`) is deleted, not moved (Josh).
 - Wave 2 list: repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
   `[tool.uv.sources]` (after repo-2); lib-3 dead config and the every-field-has-a-reader check

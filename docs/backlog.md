@@ -50,16 +50,24 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 - [ ] Create a SigNoz service-account key (Editor role) and add it:
       `sops set deploy/sops/secrets.enc.yaml '["signoz_api_key"]' '"<key>"'` (merge in a PR), then
       `just signoz-rules-apply` (expect 8 new rules, 1 updated), `--yes`, `just signoz-rules-check`.
-      Until then the watchdog skips the rules check (ops-4).
+      Until then the watchdog skips the rules check (ops-4). Login lost? The MCP's `claude` service
+      account (admin) can mint a reset link: `GET /api/v1/getResetPasswordToken/<user id>` with its
+      `SIGNOZ-API-KEY`, then open `/password-reset?token=…` (agents are blocked from doing it).
+- [ ] Check from a device off the LAN (phone on cellular) that `https://orator.iridi.cc/healthz`
+      returns 404; the host itself counts as LAN and gets 200.
+- [ ] Remove the old `harrow` service from `/emerald/data/experiments/docker-compose.yaml` (the
+      container was removed 2026-10-26; the definition would recreate it).
 - [ ] Supply IPA for the campaign names TTS mispronounces: `ipa="…"` on entries in `defs.kdl`
       (pipe-5 wired it to ElevenLabs; no IPA data exists yet).
-### Paydown decisions (Josh)
-Parked during the Phase 2 run; everything they don't block keeps going. Each has a recommendation.
-- [ ] **Paid verification for pipe-4c and pipe-6.** Recommend verifying both on the next real
-      session instead of a forced re-render, so nothing extra is spent; your flag before deploy.
-
 ## Waiting on an event
 
+- **Thursday 2026-10-29 session** (main session): the first live run of stage automation and
+  resumable paid stages. Check that linguist, then heartwood and mouthpiece, launch on their own
+  after scribe; that each stage runs once; the `astra.mouthpiece.tts.clip_cache` and
+  `script.pass_cache` counters; and cost in SigNoz. Then deploy Dagster with the merged pipeline
+  fixes (second-recording WARN, undated zips, empty-transcript guard, relative clip paths, GLM
+  price), held back so Thursday tests one change set. Expect one craig_drop_sensor WARN for
+  2026-9-26 after that deploy.
 - **heartwood gate E** (agent, opened 2026-10-22): the next session must publish its wiki edits with
   no command. Check the astra-data commit, the ledger line and the `session_wiki` outcome.
   [`apps/heartwood/py/README.md`](../apps/heartwood/py/README.md)
@@ -69,19 +77,11 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 ## Pipeline
 
 - Common-word entity aliases (`war`, `giant`, `herald`) can make heartwood link wrongly — Josh/agent; curate `entity.kdl`.
-- Nothing checks the live `entity.kdl` for drift when `defs.kdl` or `being.kdl` change; run
-  `astra-ontology-entity-seed --check` from the watchdog — agent.
 - `defs.kdl` holds no `ipa=` pronunciations yet, so mouthpiece's TTS applies none; add the
   names the hosts mispronounce — Josh.
-- Confirm the GLM 5.3 price row (`astra_llm.pricing`, now $0.079/$4.80 per 1M from the
-  2026-10-12 OpenRouter listing) against today's listing — Josh/agent; needs a network call.
 
 ## Deploy and ops
 
-- scribe incoming holds two zips for 2026-10-12; resolve per the scribe README's
-  "Blocking checks" (fresh run, not a re-execute) when that session is processed — Josh.
-  (2026-10-26: the second one, `craig_EQJ0J7q9fe2T…`, is a 912-byte stub, which no check
-  counts, and the session is already processed; this item looks closed.)
 - 2026-9-26 had two real recordings. The session was transcribed from
   `craig_gd2cviJRhL0Q_2026-9-26_17-43-41` (330 MB) and came out empty;
   `craig_xhzWjJp5Tga6_2026-9-26_22-44-56` (579 MB) was never transcribed and is probably the
@@ -95,9 +95,8 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - The edge cannot renew the non-astra hosts it also serves (plex, ntfy, qbit, annex, apex, news):
   DNS-01 times out waiting for propagation (not the old token error). astra's hosts renewed fine —
   Josh (shared edge).
-- Dashboards using orator's old `orator.api` span should switch to the route-named server spans — agent.
-- codex: once release-based serving has run a while, delete the old flat
-  `/ruby/data/astra-state/codex/data/{corpus,search}` (kept for a code rollback past cdx-4) — agent.
+- codex: delete the old flat `/ruby/data/astra-state/codex/data/{corpus,search}` (kept for a code
+  rollback past cdx-4; release serving has run since 2026-10-23) — waits on Josh's yes.
 - portal: refresh the five pf2e fixtures (`apps/portal/module/tests/fixtures/pf2e/`) from the live
   world; their live sides are synthesised today — agent.
 - `pip-audit` flags `diskcache` (via dspy), which has no fix — agent.
@@ -105,7 +104,9 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 ## Services
 
 - Run `just portal-module-install` once against the live Foundry to confirm the `docker cp`
-  install (it also hands `Data/modules/portal` back to Foundry's user) — main session.
+  install (it also hands `Data/modules/portal` back to Foundry's user), then confirm
+  portal-headless reports module 0.5.0. Waits on the Foundry world being launched (it was down
+  on 2026-10-26 after the module update) — main session.
 
 ## Frontends
 
