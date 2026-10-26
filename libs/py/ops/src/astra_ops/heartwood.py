@@ -33,9 +33,10 @@ session's latest ``feat(akasha): heartwood agent <date>`` commit; the ledger, sn
 registry are restored from HEAD (they conflict on any non-latest revert) and regenerated; a
 ``reverted`` ledger line is appended; the corpus is validated; ``revert(akasha): heartwood
 agent <date>`` is committed (``--only``), pushed and redeployed. A content conflict (a later
-session edited the same lines) aborts the revert untouched. Exit codes: 4 not published / no
-commit found · 6 dirty tree or not on main · 7 snapshot/seed/validate failed ·
-8 revert/commit/push failed · 9 redeploy failed · 10 a lock busy for 30 min.
+session edited the same lines) aborts the revert untouched. Exit codes: 4 not published, or
+no publish commit (published before the clone's snapshot commit; undo by hand, heartwood
+README) · 6 dirty tree or not on main · 7 snapshot/seed/validate failed · 8 revert/commit/push
+failed · 9 redeploy failed · 10 a lock busy for 30 min.
 
 **Locks.** Both commands hold the host-tooling lock SHARED through every venv step, so a deploy
 never re-syncs the venv under them (deploy.sh step 3b takes it exclusively). Lock order:
@@ -463,7 +464,14 @@ def _revert_find_commit(ctx: Ctx, wiki: Wiki, date: str) -> str:
         "",
     )
     if not commit:
-        ctx.err(f"heartwood-revert: no commit titled '{subject}' in {wiki.repo}")
+        # The ledger says it is published, so it was published before the clone's first
+        # (snapshot) commit, which folded those edits in with no commit of their own.
+        ctx.err(
+            f"heartwood-revert: refusing — no commit titled '{subject}' in {wiki.repo}: "
+            f"{date} was published before the clone's first (snapshot) commit, so git cannot "
+            "revert it. Undo it by hand: apps/heartwood/py/README.md, 'Revert a session "
+            "published before the snapshot'. Nothing changed."
+        )
         raise Fail(4)
     shown = ctx.output([*git, "log", "-1", "--format=%h %s", commit])
     ctx.out(f"heartwood-revert: reverting {shown}")
