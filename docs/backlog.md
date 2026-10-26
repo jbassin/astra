@@ -194,10 +194,7 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
   copy as root — agent; [`apps/portal/README.md`](../apps/portal/README.md).
 - orator: yt-dlp errors are discarded and child processes have no timeout (SVC-15); a non-numeric
   query parameter sends `NaN` to Postgres (SVC-19) — agent.
-- weal: the live weal Postgres still holds the dead v1 `funcs` table (11 rows), which the bot no
-  longer creates or reads; export it under `artifacts/`, then drop it with an explicit migration
-  `apps/weal/bot/migrations/0002_drop_funcs.sql`, a flagged step because it deletes live rows
-  (WEAL-14). Once weal-bot and weal-overlay both run the weal-4 release, drop the old
+- weal: once weal-bot and weal-overlay both run the weal-4 release, drop the old
   `x-eerie-token` header name (`LEGACY_TOKEN_HEADER` in `libs/ts/weal-wire`) — agent.
 
 ## Frontends

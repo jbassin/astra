@@ -7,15 +7,12 @@ Updated 2026-10-26.
 - **Tech-debt paydown 0037, Phase 3.** Every agent item has landed: the comment sweeps, READMEs,
   tests by behaviour, dead code, the frontend fixes, akasha SPA navigation (ADR 0031), one design-token
   source (ADR 0032), the debt ratchet, immutable assets for the four non-site-kit servers and the
-  dark-mode script removal (status line 2026-10-26 in section 0.1 of
+  dark-mode script removal and the weal v1 `funcs` drop (status line 2026-10-26 in section 0.1 of
   [`thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`](../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md)).
 
 ## Next action
 
-Drop the dead weal v1 `funcs` table (11 live rows): export it under `artifacts/`, write the
-migration `apps/weal/bot/migrations/0002_drop_funcs.sql` and deploy it. It deletes live rows, so
-it needs Josh's flag first.
-After that, Phase 3 waits only on the calls under "Paydown decisions (Josh)" in the backlog; steps
+Phase 3 waits only on the calls under "Paydown decisions (Josh)" in the backlog; steps
 only he can do are under "Smaller calls".
 
 ## Blocked or waiting
