@@ -103,6 +103,15 @@ describe("error-reply helpers", () => {
     expect(spanExcerpt("let x = 1;\nx + zap", { start: 15, end: 18 })).toBe("x + zap\n    ^^^");
   });
 
+  test("a line wider than 100 columns is cut to a window around the span", () => {
+    const line = `${"(".repeat(300)}1${")".repeat(300)}`;
+    const [shown, carets] = spanExcerpt(line, { start: 256, end: 260 }).split("\n");
+    expect(shown).toBe(`…${"(".repeat(84)}1${")".repeat(15)}…`);
+    expect(carets).toBe(`${" ".repeat(41)}^^^^`);
+    // Near the start nothing is cut before the span.
+    expect(spanExcerpt(line, { start: 2, end: 3 })).toBe(`${"(".repeat(100)}…\n  ^`);
+  });
+
   test("fenced outruns any backtick run in the excerpt", () => {
     expect(fenced("plain")).toBe("```\nplain\n```");
     expect(fenced("a ``` b")).toBe("````\na ``` b\n````");

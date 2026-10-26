@@ -115,13 +115,13 @@ describe("trap containment", () => {
     expect(evaluate("2d6", [], seed, 0, "run")).toEqual(before);
   });
 
-  it("a paren bomb is a parse error, not a trap: the nesting cap stops it first", () => {
+  it("a paren bomb is a fuel error, not a trap: the nesting cap stops it first", () => {
     const deep = `${"(".repeat(2000)}1${")".repeat(2000)}`;
     const result = evaluate(deep, [], seed, 0, "run");
     expect(result.ok).toBe(false);
     if (result.ok) return;
-    expect(result.stage).toBe("parse");
-    expect(result.message).toBe("parse error: expression too deeply nested (more than 256 levels)");
+    expect(result.stage).toBe("fuel");
+    expect(result.message).toMatch(/^fuel exhausted: nesting depth: .*more than 256 levels/);
     expect(evaluate("2d6", [], seed, 0, "run").ok).toBe(true);
   });
 });

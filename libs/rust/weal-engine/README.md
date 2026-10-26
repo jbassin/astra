@@ -196,7 +196,8 @@ wasm `budget` argument scales interpreter steps ONLY (non-zero = the absolute st
 
 Source nesting is capped before any of these, in the parser (`MAX_NESTING_DEPTH` = 256 syntax-tree
 levels, counting left-associative chains such as `1 + 1 + …`). A deeper source is a single
-`stage:"parse"` error, `expression too deeply nested (more than 256 levels)`. Every later stage
+`stage:"fuel"` error, `fuel exhausted: nesting depth: …` (a `CompileStage::Limit` in the pipeline):
+it is code, just too big, so the bot shows it like any other cap. Every later stage
 recurses on the tree, so without the cap a paren bomb overflows the host's stack (V8's, under Node)
 and traps before fuel can stop it.
 

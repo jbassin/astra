@@ -84,9 +84,9 @@ describe("runEngine", () => {
     expect(outcome.error.stage).toBe("type");
   });
 
-  test("a paren bomb is a parse error (the nesting cap), and the next roll works", () => {
+  test("a paren bomb is a fuel error (the nesting cap), and the next roll works", () => {
     const outcome = runEngine(`${"(".repeat(2000)}1${")".repeat(2000)}`, [], SEED);
-    expect(outcome.kind === "error" && outcome.error.stage).toBe("parse");
+    expect(outcome.kind === "error" && outcome.error.stage).toBe("fuel");
     expect(runEngine("2d6", [], SEED).kind).toBe("ok");
   });
 });
