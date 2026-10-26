@@ -28,11 +28,10 @@ PRICING_USD_PER_1M: dict[str, ModelPricing] = {
         input=0.95, cache_read=0.095, cache_write=1.19, output=3.0
     ),
     # GLM 5.3 via OpenRouter — mouthpiece's model (mouthpiece.model). OpenRouter `/models`
-    # listing on 2026-10-12: $0.079/$4.80 per 1M (recorded in the 0034 producer spec's
-    # pre-run check; the 2026-09 row said $1.15/$3.50). cache_* kept at the 0.1x/1.25x
-    # ratios, since the listing gives no cache prices.
+    # listing on 2026-10-26: $0.0699 in, $1.40 out, $0.0689 cache read per 1M. The listing gives
+    # no cache-write price, so cache_write keeps the 1.25x-input ratio.
     "openrouter/z-ai/glm-5.3": ModelPricing(
-        input=0.079, cache_read=0.0079, cache_write=0.09875, output=4.80
+        input=0.0699, cache_read=0.0689, cache_write=0.087375, output=1.40
     ),
     # DeepSeek V4.1 Flash via OpenRouter — heartwood's agent model and the 0034 producer +
     # experiment arm. OpenRouter listing 2026-10-12: $0.15/$0.60 per 1M (was $0.30/$1.20
