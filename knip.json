@@ -1,0 +1,27 @@
+{
+  "$schema": "https://unpkg.com/knip@5.88.1/schema.json",
+  "ignore": [
+    "thoughts/**",
+    "**/src/generated/**",
+    "**/config.gen.ts",
+    "**/routeTree.gen.ts",
+    "libs/ts/weal-engine/gen/**"
+  ],
+  "workspaces": {
+    "apps/orator/controller": {
+      "entry": ["src/plugin.ts", "src/controller.ts", "src/actions/slot.ts"]
+    },
+    "apps/codex/web": {
+      "entry": ["src/server.ts", "e2e/server.ts", "scripts/*.ts"]
+    },
+    "apps/vellum/render": {
+      "entry": ["src/render-entry/main.tsx"]
+    },
+    "libs/ts/site-kit": {
+      "entry": ["scripts/*.ts"]
+    },
+    "libs/ts/vellum-lang": {
+      "entry": ["scripts/*.ts"]
+    }
+  }
+}

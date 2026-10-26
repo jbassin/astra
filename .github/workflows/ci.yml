@@ -461,6 +461,21 @@ jobs:
             just no-decision-ids "$BEFORE" "$AFTER"
           fi
 
+  # No debt count rises above scripts/ratchet_baseline.json (scripts/ratchet.py): lint
+  # suppressions per rule, the rules .oxlintrc.json turns off, file and function sizes, knip's
+  # unused exports and dependencies, env reads and the zero list. Any change can raise a
+  # count, so no path filter. The full history lets a failure list only the sites in the
+  # files the change touches (the merge base with origin/main).
+  ratchet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-uv
+      - uses: ./.github/actions/setup-pnpm
+      - run: just ratchet
+
   # The single status check branch protection will require. It needs every other
   # job: a failed or cancelled job fails it, and a job skipped by the path filter
   # counts as passed. It blocks; it does not notify anyone, by design.
@@ -491,6 +506,7 @@ jobs:
       - infra-check
       - commitlint
       - no-decision-ids
+      - ratchet
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
