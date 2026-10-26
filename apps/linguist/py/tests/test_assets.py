@@ -23,6 +23,7 @@ from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
 from astra_pipeline_resources.partitions import SESSIONS_NAME
 from astra_pipeline_resources.testing import FakeConfig, FakeLlm, paths_under
+from astra_sessions import MIN_TRANSCRIPT_SEGMENTS
 
 DATE = "2025-1-6"
 
@@ -76,7 +77,7 @@ def test_session_writes_outputs_and_summarizes_with_the_configured_model(
     name = _character_names(campaign)[0]
     raw = [
         {"start": float(i), "end": i + 0.5, "user": "someone", "text": f" {name} acts."}
-        for i in range(20)
+        for i in range(MIN_TRANSCRIPT_SEGMENTS)
     ]
     saved = tmp_path / "scribe" / "data" / "saved" / DATE
     saved.mkdir(parents=True)
@@ -103,6 +104,32 @@ def test_session_writes_outputs_and_summarizes_with_the_configured_model(
     assert canonical[0].name.split(".")[1] == entry.show
     assert client.calls == [("EpisodeSummary", "test/chronicle-model")]
     assert llm.clients == 1
+
+
+def test_an_empty_transcript_is_refused_and_nothing_is_written(tmp_path: Path) -> None:
+    """A hand materialize past scribe's `transcript_not_empty` gate: linguist fails without a
+    retry, writes no dataset for linguist-commit to publish, and never calls the LLM."""
+    raw = [{"start": float(i), "end": i + 0.5, "user": "someone", "text": " hi"} for i in range(3)]
+    for lines in ([], raw):
+        saved = tmp_path / "scribe" / "data" / "saved" / DATE
+        saved.mkdir(parents=True, exist_ok=True)
+        (saved / "script.json").write_text(json.dumps(lines))
+        client = _Client()
+        resources, llm, _config = _resources(tmp_path, client)
+        result = dg.materialize(
+            [assets.session_transcripts, assets.session_episode_summary],
+            partition_key=DATE,
+            instance=_instance(DATE),
+            resources=resources,
+            raise_on_error=False,
+        )
+        assert not result.success
+        (failure,) = [e for e in result.all_events if e.is_step_failure]
+        user_failure = failure.step_failure_data.user_failure_data
+        assert user_failure is not None
+        assert f"{len(lines)} segments" in (user_failure.description or "")
+        assert not (tmp_path / "linguist").exists()
+        assert llm.clients == 0 and client.calls == []
 
 
 def test_unmatched_session_skips_the_summary_without_a_client(tmp_path: Path) -> None:

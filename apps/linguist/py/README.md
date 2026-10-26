@@ -41,6 +41,10 @@ mouthpiece waits for a session's `session_episode_summary` to be materialized be
 
 ## Traps
 
+- **An empty transcript fails the run.** `session_transcripts` refuses, writing nothing, a
+  scribe `script.json` with fewer than `MIN_TRANSCRIPT_SEGMENTS` (100) lines, also on a hand
+  materialize. Re-transcribe the session (scribe README); don't lower the floor.
+
 - **Show = the transcript's filename slug.** `show_for_date` reads `<slug>` from
   `<NNN>.<slug>.<date>.txt`; the slug matches a `being.kdl` campaign. Sessions that match no
   campaign are left out of the chronicle and pass mouthpiece's gate ungated. The campaign

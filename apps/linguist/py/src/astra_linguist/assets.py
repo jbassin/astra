@@ -39,7 +39,7 @@ from astra_pipeline_resources.partitions import (
     stage_automation,
     stage_sensor,
 )
-from astra_sessions import atomic_write_text
+from astra_sessions import MIN_TRANSCRIPT_SEGMENTS, atomic_write_text
 
 from .campaigns import campaign_filename, campaign_views
 from .chronicle import (
@@ -104,7 +104,11 @@ LINGUIST_STAGE = SessionStage(
 def session_transcripts(
     context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
-    """Process one session: scribe script.json → formatted + context + canonical."""
+    """Process one session: scribe script.json → formatted + context + canonical.
+
+    Refuses, writing nothing, a ``script.json`` under ``MIN_TRANSCRIPT_SEGMENTS``: the
+    automation never launches for one (scribe's ``transcript_not_empty`` gate), but a hand
+    materialize, or a session from before the check, would publish an empty transcript."""
     date = context.partition_key
     being = load_being(BEING_KDL_PATH)
     data_dir = Path(pipeline_paths.linguist_data)
@@ -113,6 +117,17 @@ def session_transcripts(
 
     raw_path = Path(pipeline_paths.linguist_saved) / date / "script.json"
     raw = [RawLine(**line) for line in json.loads(raw_path.read_text(encoding="utf-8"))]
+    if len(raw) < MIN_TRANSCRIPT_SEGMENTS:
+        # Deterministic: a retry reads the same file. Fix scribe's output first.
+        raise dg.Failure(
+            description=(
+                f"session {date} script.json has {len(raw)} segments (the floor is "
+                f"{MIN_TRANSCRIPT_SEGMENTS}): an empty or broken transcript is not published. "
+                "Re-transcribe the session (scribe README)."
+            ),
+            metadata={"segments": len(raw), "floor": MIN_TRANSCRIPT_SEGMENTS},
+            allow_retries=False,
+        )
 
     artifacts = process_session(
         date,

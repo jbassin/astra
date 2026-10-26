@@ -17,6 +17,7 @@ from .atomic import atomic_write_text, temp_sibling
 from .dates import date_key, date_sort_key, format_date, iso_date, to_date
 from .recordings import recording_date, recording_key, track_index, track_user
 from .transcripts import (
+    MIN_TRANSCRIPT_SEGMENTS,
     TRANSCRIPT_LINE,
     TranscriptName,
     find_transcript,
@@ -25,6 +26,7 @@ from .transcripts import (
 )
 
 __all__ = [
+    "MIN_TRANSCRIPT_SEGMENTS",
     "TRANSCRIPT_LINE",
     "TranscriptName",
     "atomic_write_text",

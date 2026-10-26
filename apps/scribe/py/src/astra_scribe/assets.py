@@ -43,7 +43,7 @@ from astra_pipeline_resources.partitions import (
     session_check,
     sessions,
 )
-from astra_sessions import atomic_write_text
+from astra_sessions import MIN_TRANSCRIPT_SEGMENTS, atomic_write_text
 
 from .roster import Roster
 from .sensor import (
@@ -208,10 +208,6 @@ SCRIBE_ASSETS = [session_tracks, session_audio, session_transcript, session_clea
 # skips the rest of the run: the tracks checks stop the Groq transcription, and the
 # transcript check stops `session_cleanup` (the tracks stay for a rerun). linguist's automation
 # gates on the transcript check (`LINGUIST_STAGE.gates`), so no paid LLM stage launches.
-
-#: A real session has thousands of segments (3635 was the fewest by 2026-10); one under
-#: this floor is an empty or broken transcript, never a short session.
-MIN_TRANSCRIPT_SEGMENTS = 100
 
 
 def _recordings(pipeline_paths: PipelinePaths, key: str) -> list[Recording]:

@@ -19,6 +19,12 @@ _NAME = re.compile(r"^(?P<stem>.+)\.(?P<date>\d{4}-\d{1,2}-\d{1,2})\.txt$")
 #: which gives the same result on every real transcript line (checked 2026-10-24).
 TRANSCRIPT_LINE = re.compile(r"^(\d+)\t([^:]*):[ \t]?(.*)$")
 
+#: The fewest segments (scribe ``script.json`` lines) a real session transcript has. A real
+#: session has thousands (3635 was the fewest by 2026-10); fewer means an empty or broken
+#: transcript, never a short session. scribe's ``transcript_not_empty`` check fails under
+#: it, and linguist's ``session_transcripts`` refuses to publish such a transcript.
+MIN_TRANSCRIPT_SEGMENTS = 100
+
 
 @dataclass(frozen=True)
 class TranscriptName:
