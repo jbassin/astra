@@ -370,7 +370,9 @@ token source keep today's look exactly (no stakeholder sign-off needed); assay t
   comments (#104); live since 2026-10-25 at `bb6a1f65`. The dark-mode leftover was site-kit's
   `forceDarkTheme` script, which set a `saved-theme` attribute nothing reads; removed (#110). The
   `pg-test` flake on `main` was the orator ingest test stubs ignoring an already-aborted signal
-  (#109). Left in Phase 3: the weal v1 `funcs` drop (flag first), then the parked calls.
+  (#109). The weal v1 `funcs` table (11 rows) is exported to
+  `/ruby/data/astra-state/weal/funcs-v1-2026-10-26.sql` and dropped by migration 0002 (#112).
+  Phase 3 now waits only on the parked calls.
 - Wave 2 list: repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
   `[tool.uv.sources]` (after repo-2); lib-3 dead config and the every-field-has-a-reader check
   (after lib-2, pipe-2); lib-7b Python observe bootstrap; lib-8a typed KDL decoders; lib-9 vellum

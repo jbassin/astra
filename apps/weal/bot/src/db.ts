@@ -1,9 +1,7 @@
 /**
  * The weal roll-history + macro store — Postgres via postgres.js. Two tables:
  * `dice` (one row per sampled NdM die, keyed by the load-bearing `player_id`)
- * and `funcs_v2` (weal v2 saved sources, loaded in id order at boot). The live
- * database also still holds the v1 `funcs` table, a dead archive the bot
- * neither creates nor reads.
+ * and `funcs_v2` (weal v2 saved sources, loaded in id order at boot).
  *
  * The pathological-pool **save-guards** live here, in the bot, not the DB — a
  * novelty roll like `10000d10000` is still rolled & shown, just not persisted.
