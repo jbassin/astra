@@ -30,7 +30,12 @@ import dagster as dg
 from astra_observe import get_logger, get_meter, get_tracer
 from astra_ontology_being import BEING_KDL_PATH
 from astra_ontology_config import load as load_config
-from astra_pipeline_resources import AstraConfig, PipelinePaths, default_resources
+from astra_pipeline_resources import (
+    EXTERNAL_API_RETRY,
+    AstraConfig,
+    PipelinePaths,
+    default_resources,
+)
 from astra_pipeline_resources.partitions import (
     SESSIONS_NAME,
     SKIP_PENDING,
@@ -133,7 +138,12 @@ def session_audio(
     return dg.MaterializeResult(metadata={"tracks": len(tracks)})
 
 
-@dg.asset(partitions_def=sessions, group_name="scribe", deps=[session_tracks])
+@dg.asset(
+    partitions_def=sessions,
+    group_name="scribe",
+    deps=[session_tracks],
+    retry_policy=EXTERNAL_API_RETRY,
+)
 def session_transcript(
     context: dg.AssetExecutionContext, astra_config: AstraConfig, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:

@@ -9,9 +9,11 @@ An asset declares what it needs as a parameter, and Dagster injects it by key:
 - ``pipeline_paths`` (`PipelinePaths`): every runtime data path the assets read or write.
 - ``llm`` (`LlmResource`): builds the `astra_llm` client, with the OpenRouter key in place.
 
-An asset that calls an LLM wraps that work in `llm_failures_final()`, so a step whose LLM
-retries are spent fails once instead of being rerun by the asset's ``RetryPolicy``
-(`astra_llm.retry` explains the two retry levels).
+The client ``llm`` builds already treats its final failures as final for Dagster
+(`llm_failures_final`), so a step whose LLM retries are spent, or that a provider rejected
+with a 4xx, fails once instead of being rerun by the asset's ``RetryPolicy``
+(`astra_llm.retry` explains the two retry levels). The policy itself, and the assets that have
+none, are in `astra_pipeline_resources.retries`.
 
 Each app binds `default_resources()` in its ``defs``. The values are cached, so every app
 binds the same objects and ``dg.Definitions.merge`` accepts them (it rejects two different
@@ -27,13 +29,30 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from functools import cache
 from pathlib import Path
+from typing import TypeVar
 
 import dagster as dg
 from astra_config import Config, load_config
-from astra_llm import LiteLLMClient, LlmError, ensure_openrouter_env
+from astra_llm import (
+    DEFAULT_MAX_TOKENS,
+    DEFAULT_MODEL,
+    LiteLLMClient,
+    LlmError,
+    TextRequest,
+    ToolCallRequest,
+    ensure_openrouter_env,
+)
+from pydantic import BaseModel
+
+from .retries import EXTERNAL_API_RETRY, NO_RETRY, client_error_status
+
+_T = TypeVar("_T", bound=BaseModel)
 
 __all__ = [
+    "EXTERNAL_API_RETRY",
+    "NO_RETRY",
     "AstraConfig",
+    "FinalFailuresClient",
     "LlmResource",
     "PipelinePaths",
     "default_resources",
@@ -129,18 +148,22 @@ class LlmResource(dg.ConfigurableResource):
 
         ``caller`` (the asset's name, e.g. ``mouthpiece.session_script``) labels its calls on
         the LLM meter. Fresh per call, so each asset execution gets a full run retry budget.
+        Its final failures skip the asset's ``RetryPolicy`` (`FinalFailuresClient`).
         """
         ensure_openrouter_env()
-        return LiteLLMClient(caller=caller)
+        return FinalFailuresClient(caller=caller)
 
 
 @contextmanager
 def llm_failures_final() -> Iterator[None]:
-    """Turn a non-retryable `LlmError` into ``dg.Failure(allow_retries=False)``.
+    """Turn a failure that a step rerun would only repeat into
+    ``dg.Failure(allow_retries=False)``.
 
-    The client has already spent its retries on the billed content failure, so a step
-    rerun would re-bill the same failure (and every call before it). Other errors, such as
-    a transport error litellm gave up on, pass through for the asset's ``RetryPolicy``.
+    Two kinds: a non-retryable `LlmError` (the client has already spent its retries on a
+    billed content failure, so a rerun would re-bill it and every call before it), and a
+    provider's deterministic 4xx (`retries.client_error_status`: a bad request, a rejected
+    key, an oversized upload). Other errors, such as a 5xx or a transport error litellm gave
+    up on, pass through for the asset's ``RetryPolicy``.
     """
     try:
         yield
@@ -148,6 +171,48 @@ def llm_failures_final() -> Iterator[None]:
         if err.retryable:
             raise
         raise dg.Failure(description=str(err), allow_retries=False) from err
+    except Exception as err:
+        status = client_error_status(err)
+        if status is None:
+            raise
+        raise dg.Failure(
+            description=f"provider rejected the request ({status}): {err}", allow_retries=False
+        ) from err
+
+
+class FinalFailuresClient(LiteLLMClient):
+    """`LiteLLMClient` whose public calls run inside `llm_failures_final`, so an asset that
+    uses the ``llm`` resource gets the final-failure rule without wrapping its body."""
+
+    def call_tool(self, req: ToolCallRequest) -> dict[str, object]:
+        with llm_failures_final():
+            return super().call_tool(req)
+
+    def call_text(self, req: TextRequest) -> str:
+        with llm_failures_final():
+            return super().call_text(req)
+
+    def call_structured(
+        self,
+        output_model: type[_T],
+        *,
+        system: str,
+        user_content: str,
+        model: str = DEFAULT_MODEL,
+        max_tokens: int = DEFAULT_MAX_TOKENS,
+        tool_name: str = "record",
+        tool_description: str = "Record the structured result.",
+    ) -> _T:
+        with llm_failures_final():
+            return super().call_structured(
+                output_model,
+                system=system,
+                user_content=user_content,
+                model=model,
+                max_tokens=max_tokens,
+                tool_name=tool_name,
+                tool_description=tool_description,
+            )
 
 
 @cache

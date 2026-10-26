@@ -623,6 +623,7 @@ dependencies = [
     { name = "astra-llm" },
     { name = "dagster" },
     { name = "dagster-docker" },
+    { name = "pydantic" },
 ]
 
 [package.metadata]
@@ -631,6 +632,7 @@ requires-dist = [
     { name = "astra-llm", editable = "libs/py/llm" },
     { name = "dagster" },
     { name = "dagster-docker" },
+    { name = "pydantic", specifier = ">=2" },
 ]
 
 [[package]]

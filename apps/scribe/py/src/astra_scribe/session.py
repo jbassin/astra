@@ -15,6 +15,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from astra_pipeline_resources import llm_failures_final
 from astra_sessions import temp_sibling
 
 from . import audio
@@ -85,9 +86,13 @@ def build_transcript(
     transcriber: TrackTranscriber,
     work_dir: Path | str,
 ) -> list[dict[str, Any]]:
-    """Transcribe each player track, then time-merge to one user-tagged stream."""
+    """Transcribe each player track, then time-merge to one user-tagged stream.
+
+    A Groq rejection (a deterministic 4xx) fails the step without its Dagster retry
+    (`llm_failures_final`); a 5xx or a dropped connection keeps the retry."""
     stack = SoundStack()
-    for track in tracks:
-        segments = transcriber.transcribe_track(track, Path(work_dir) / track.stem)
-        stack.add(roster.user_of(track.stem), segments)
+    with llm_failures_final():
+        for track in tracks:
+            segments = transcriber.transcribe_track(track, Path(work_dir) / track.stem)
+            stack.add(roster.user_of(track.stem), segments)
     return stack.drain()

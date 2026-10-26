@@ -402,7 +402,11 @@ def _stub_scribe(
 
     def fake_transcript(*_a: Any, **_kw: Any) -> list[dict[str, Any]]:
         if transcript_raises:
-            raise RuntimeError("boom in transcription")
+            # Final, as a Groq 4xx is: a retryable error would wait out the step's
+            # RetryPolicy delays before the run failed.
+            import dagster as dg
+
+            raise dg.Failure(description="boom in transcription", allow_retries=False)
         return [{"start": 0.0, "end": 1.0, "text": "hi", "user": "miked6187"}]
 
     monkeypatch.setattr(assets, "build_transcript", fake_transcript)
@@ -626,3 +630,36 @@ def test_session_tracks_fails_when_the_tagged_zip_is_gone(monkeypatch: Any, tmp_
         result, handed = _tracks_run(monkeypatch, tmp_path, {assets.ZIP_TAG: name})
         assert not result.success
         assert handed == []
+
+
+class _GroqError(Exception):
+    def __init__(self, status_code: int) -> None:
+        super().__init__(f"groq HTTP {status_code}")
+        self.status_code = status_code
+
+
+class _FailingTranscriber(TrackTranscriber):
+    def __init__(self, status_code: int) -> None:
+        super().__init__()
+        self.status_code = status_code
+
+    def transcribe_track(self, *_a: object, **_kw: object) -> list[dict[str, object]]:
+        raise _GroqError(self.status_code)
+
+
+def test_a_groq_rejection_skips_the_step_retry(tmp_path: Path) -> None:
+    """A deterministic 4xx would fail every retry the same way, after re-transcribing every
+    track before it; a 5xx keeps the retry."""
+    import dagster as dg
+    import pytest
+    from astra_ontology_being import BEING_KDL_PATH
+    from astra_scribe.roster import Roster
+    from astra_scribe.session import build_transcript
+
+    roster = Roster.from_being(BEING_KDL_PATH)
+    track = tmp_path / "1-a.aac"
+    with pytest.raises(dg.Failure) as exc:
+        build_transcript([track], roster, _FailingTranscriber(413), tmp_path)
+    assert exc.value.allow_retries is False
+    with pytest.raises(_GroqError):
+        build_transcript([track], roster, _FailingTranscriber(503), tmp_path)

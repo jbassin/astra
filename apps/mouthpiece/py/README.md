@@ -29,6 +29,37 @@ snapshot. The only digest field read downstream is the top-level `synopsis`.
 catalog has fewer episodes than the snapshot on disk (a wrong path or a half-mounted corpus).
 Publish a deliberate removal with `just mouthpiece-publish --allow-shrink`.
 
+## Resuming paid stages
+
+`session_digest`, `session_script` and `session_audio_clips` carry the pipeline's shared
+retry policy (dagster README, "Retries"). The two most expensive stages save their paid work
+to the session dir as it finishes, so a retry, or a re-execution from failure, pays only for
+what is missing.
+
+- **TTS clips** (`tts/synth.py`). Each clip is `clips/<key>.<fmt>`, with its duration in
+  `clips/<key>.json`. `<key>` is a hash of the provider's `cache_identity` (ElevenLabs:
+  `elevenlabs:<model>:mp3`), the render mode, the format, and each line's voice, rendered
+  text (delivery tags and inline IPA included) and emotion. A clip whose files exist is
+  reused. So a second render of the same script renders nothing, and editing one turn
+  re-renders only the chunk that holds it (in dialogue mode a chunk is several turns).
+  After a whole render succeeds, files in `clips/` the new manifest does not use are deleted,
+  including clips under the old `NNN.<fmt>` names; a failed render deletes nothing.
+  `manifest.json` lists the clip paths in order, and `assemble.py` reads only those.
+- **Script passes** (`script_cache.py`). Pass A's transcript and each Pass B segment's
+  parsed tool output are saved to `script-cache/pass-a.<key>.txt` and
+  `script-cache/pass-b.<key>.json` as each finishes. `<key>` hashes the whole request (model,
+  `max_tokens`, system prompt and user content, which carries the cleaned transcript, digest,
+  grounding or brief, roster and continuity), so a changed input or prompt calls the model
+  again. A new Pass A changes every segment, so it misses every Pass B entry. A segment that
+  fails to parse is not saved. `session_script` deletes `script-cache/` after it writes
+  `script.json`, so a deliberate re-run with the same inputs gets a fresh script.
+
+SigNoz shows the caches working: the counters `astra.mouthpiece.tts.clip_cache` and
+`astra.mouthpiece.script.pass_cache` (attribute `outcome` = `hit` or `miss`; `pass` = `a` or
+`b`), and the span attributes `mouthpiece.clips_reused`, `mouthpiece.clips_rendered` and
+`mouthpiece.script.pass_{a,b}_{hit,miss}`. `astra.mouthpiece.tts.clips` counts only clips the
+provider rendered.
+
 ## Operations
 
 Renders are PAID (OpenRouter, ElevenLabs) and replace published content: flag them first.
@@ -38,7 +69,8 @@ Run long materializes detached (see `dagster/README.md`).
 
 1. Back up `script.json`, `manifest.json`, `<id>.episode.mp3` and `<id>.transcript.md` from
    the session dir; the render overwrites them. Optionally put a replacement `script.json`
-   in place.
+   in place. Clips for unchanged lines are reused; to pay for fresh takes of the same
+   lines, also move `clips/` aside.
 2. Run:
 
    ```sh
@@ -98,11 +130,14 @@ package's private `assets._voices` and `resources.default_tts`, so keep their si
 - **Secrets fail loud.** The TTS step raises when its key is empty (a container not started
   by `just deploy` has empty keys). There is no silent fallback to mock audio; `mock` runs
   only when `tts-provider` says so.
-- **Retries re-bill.** A deterministic ElevenLabs 4xx raises `TtsClientError`, which the asset
-  turns into a non-retryable failure. Keep new provider errors non-retryable. The LLM steps
-  run inside `llm_failures_final()`: when the client has spent its own retries on bad
-  replies (`astra_llm.retry`), the step fails without the asset's `RetryPolicy` rerun; only
-  transport errors get the rerun.
+- **Retries re-bill what is not cached.** `session_digest` has no resume cache, so its retry
+  pays for clean and enrich again. A deterministic ElevenLabs 4xx raises `TtsClientError`,
+  which the asset turns into a non-retryable failure. Keep new provider errors
+  non-retryable. The `llm` resource's client fails a step without the `RetryPolicy` rerun
+  when it has spent its own retries on bad replies (`astra_llm.retry`) or the provider
+  answered with a deterministic 4xx; only transport errors and 5xx get the rerun.
+- **A bad saved Pass A sticks until the run succeeds.** If Pass B keeps failing on a
+  transcript that Pass A got wrong, delete `script-cache/` before re-executing.
 - **Tag-only turns** such as `[stunned silence]` make ElevenLabs return 400; `speakable_turns`
   skips turns with no speech.
 - **Pronunciations live in `defs.kdl`.** `session_audio_clips` inlines `/ipa/` for the first

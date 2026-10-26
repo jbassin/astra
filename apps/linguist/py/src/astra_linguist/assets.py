@@ -24,6 +24,7 @@ from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
 from astra_pipeline_resources import (
+    EXTERNAL_API_RETRY,
     AstraConfig,
     LlmResource,
     PipelinePaths,
@@ -119,6 +120,7 @@ def session_transcripts(
     partitions_def=sessions,
     deps=[session_transcripts],
     group_name="chronicle",
+    retry_policy=EXTERNAL_API_RETRY,
 )
 def session_episode_summary(
     context: dg.AssetExecutionContext,
@@ -170,7 +172,7 @@ def session_episode_summary(
     )
 
 
-@dg.asset(deps=[session_episode_summary], group_name="chronicle")
+@dg.asset(deps=[session_episode_summary], group_name="chronicle", retry_policy=EXTERNAL_API_RETRY)
 def campaign_timeline(
     astra_config: AstraConfig, pipeline_paths: PipelinePaths, llm: LlmResource
 ) -> dg.MaterializeResult:
