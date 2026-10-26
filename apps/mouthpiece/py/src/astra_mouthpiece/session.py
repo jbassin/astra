@@ -16,6 +16,7 @@ from .assemble import BedOptions, FfmpegRunner, assemble_episode, run_ffmpeg
 from .grounding import GroundingPage, ground_digest
 from .models import HostConfig, Script, SessionDigest, VoiceConfig
 from .script import DEFAULT_SCRIPT_MAX_TOKENS, generate_script
+from .script_cache import ScriptPassCache
 from .tts.pronunciation import Lexicon
 from .tts.provider import TTSProvider
 from .tts.synth import DEFAULT_VOICES, synthesize_script
@@ -35,9 +36,10 @@ def build_episode_script(
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     continuity_block: str = "",
     brief_block: str = "",
+    cache: ScriptPassCache | None = None,
 ) -> Script:
     """Ground the digest against the akasha pages, then run the two-pass script
-    over the cleaned transcript."""
+    over the cleaned transcript, resuming from the passes saved in ``cache``."""
     grounding = ground_digest(digest, pages)
     return generate_script(
         client,
@@ -50,6 +52,7 @@ def build_episode_script(
         max_tokens=max_tokens,
         continuity_block=continuity_block,
         brief_block=brief_block,
+        cache=cache,
     )
 
 

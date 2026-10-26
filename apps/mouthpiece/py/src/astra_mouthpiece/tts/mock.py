@@ -49,6 +49,8 @@ class MockTTSProvider:
 
     format = "wav"
     dialogue = False
+    #: Names the clip cache's entries (`synth.clip_key`).
+    cache_identity = f"mock:wav-{_SAMPLE_RATE}"
 
     def synthesize(self, req: SynthesisRequest) -> SynthesisResult:
         # Estimate from the spoken words only — inline v3 tags aren't read aloud.

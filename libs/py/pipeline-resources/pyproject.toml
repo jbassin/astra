@@ -8,6 +8,7 @@ dependencies = [
     "astra-llm",
     "dagster",
     "dagster-docker",
+    "pydantic>=2",
 ]
 
 [build-system]

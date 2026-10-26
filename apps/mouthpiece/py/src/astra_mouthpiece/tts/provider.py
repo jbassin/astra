@@ -47,6 +47,11 @@ class TTSProvider(Protocol):
     ``synthesize_dialogue(req: DialogueRequest) -> SynthesisResult`` — duck-typed
     (not on the protocol) so single-clip providers like the mock stay assignable;
     the orchestrator reaches it via ``getattr`` when ``dialogue`` is True.
+
+    A provider should also set ``cache_identity``: a string naming everything besides the
+    voice and text that changes its audio (backend, model, output settings). The clip cache
+    keys on it (`synth.clip_key`), so changing it re-renders every clip; without it the
+    class name stands in.
     """
 
     format: str

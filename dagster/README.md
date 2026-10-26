@@ -110,6 +110,28 @@ zip: the re-execution keeps the old run's `astra/craig-zip` tag, so launch a fre
 instead (scribe README, "Blocking checks"). Partitioned checks are a Dagster preview; `session_check` hides the
 warning.
 
+## Retries
+
+Every asset makes an explicit retry decision, defined once in
+`astra_pipeline_resources.retries`. A step that calls a paid external API carries
+`retry_policy=EXTERNAL_API_RETRY`: 3 retries, 120 s, 240 s and 480 s after each failure, so a
+step rides out a provider outage of about 14 minutes. Those steps are scribe
+`session_transcript` (Groq), linguist `session_episode_summary` and `campaign_timeline`
+(GLM), and mouthpiece `session_digest`, `session_script` (GLM) and `session_audio_clips`
+(ElevenLabs). Every other asset is listed in `NO_RETRY` with the reason: local work, the
+~10-minute producer RLM (`session_brief`), and the 15-55 minute heartwood agent run
+(`session_wiki`). `tests/test_retry_policies.py` fails for an asset with neither, or with any
+other policy, so a new asset needs a decision before it ships.
+
+A retry reruns the whole step and re-bills what the step paid for, with two exceptions that
+resume from disk: mouthpiece's TTS clips and its saved script passes (mouthpiece README,
+"Resuming paid stages"). A Groq retry re-transcribes every track. A failure a rerun cannot
+fix skips the retry: `llm_failures_final` raises `dg.Failure(allow_retries=False)` for a spent
+LLM retry budget and for a deterministic provider 4xx (any 4xx except 408, 409, 425 and 429).
+The `llm` resource's client applies it to every LLM call, scribe applies it around
+transcription, and mouthpiece turns an ElevenLabs 4xx (`TtsClientError`) into the same
+failure. A re-execution from failure (see "Re-execute a failed run") resumes the same way.
+
 ## Resources
 
 Assets get their dependencies as Dagster resources, declared as parameters, never by
@@ -217,7 +239,8 @@ the sensor from launching that paid stage again, and resetting the cursor would 
 ### Add or rename a stage
 
 Register a new asset, sensor, schedule or job in its app's `assets.defs`, then add its name
-to the pinned sets in `tests/test_definitions.py`. A per-session asset uses `sessions`
+to the pinned sets in `tests/test_definitions.py`. Give it a retry decision: the shared
+policy or a `NO_RETRY` entry (see "Retries"). A per-session asset uses `sessions`
 from `astra_pipeline_resources.partitions` and declares its upstream in `deps`. Never
 rename an existing one: Dagster keys runs, partitions and sensor cursors on the names. A
 rename orphans that history, and a renamed partitions definition starts empty, so
@@ -273,9 +296,10 @@ docker exec astra-dagster-code sh -c 'cd /opt/dagster/app && python migrate_sess
   sessions migration turned that into runless materializations tagged `astra/adopted`
   (42 mouthpiece sessions, 54 heartwood sessions on 2026-10-23), so the UI shows them as
   materialized although no Dagster run produced them. The old cursors are unused now.
-- **Retries cost money.** mouthpiece's external-API steps carry a `RetryPolicy` (3 retries,
-  exponential from 120 s), and every retry re-bills. Deterministic 4xx errors raise
-  `dg.Failure(allow_retries=False)`; keep it that way for new provider errors.
+- **Retries cost money.** A retry re-bills everything the step paid for that it does not
+  cache on disk (see "Retries"). Keep new deterministic provider errors final
+  (`dg.Failure(allow_retries=False)`), and give a new paid stage a resume cache before
+  giving it the retry.
 - **One process per step.** The multiprocess executor runs each asset in its own process, so
   assets cannot share memory or a per-step temp dir (scribe persists tracks to
   `scribe.tmp-path`). Each step also gets its own trace ID; compare span timestamps to prove

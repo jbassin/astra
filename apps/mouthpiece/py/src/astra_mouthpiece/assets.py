@@ -27,6 +27,7 @@ from astra_linguist.chronicle import recent_prior_entries, season_for, show_for_
 from astra_observe import get_logger, get_meter, get_tracer
 from astra_ontology_being import session_overrides
 from astra_pipeline_resources import (
+    EXTERNAL_API_RETRY,
     AstraConfig,
     LlmResource,
     PipelinePaths,
@@ -52,6 +53,7 @@ from .models import AudioManifest, HostConfig, Script, SessionDigest, VoiceConfi
 from .producer.stage import produce_brief, script_brief_block
 from .resources import TtsResource, default_tts
 from .roster import build_roster_block
+from .script_cache import SCRIPT_CACHE_DIR, ScriptPassCache
 from .session import build_episode_script
 from .tts.provider import TtsClientError
 from .tts.synth import synthesize_script
@@ -114,22 +116,12 @@ def _read_script(root: Path, key: str) -> Script:
 
 # ── the 4-asset per-session graph ────────────────────────────────────────────
 
-# A transient external-API failure (an OpenRouter 5xx, an ElevenLabs blip)
-# shouldn't fail an unattended run — the sensor won't re-fire an already-partitioned
-# session, so a one-off provider outage would otherwise need a manual re-run. Retry the
-# step a few times with a growing delay to ride through a multi-minute outage (libs/py/llm
-# also retries within each attempt). Applied only to the steps that hit an external API;
-# the local ffmpeg assembly doesn't need it. The LLM steps run inside `llm_failures_final()`:
-# once the client has spent its own retries on a bad reply, the step fails without this
-# rerun (astra_llm.retry), so only transport failures are retried here.
-_EXTERNAL_RETRY = dg.RetryPolicy(max_retries=3, delay=120, backoff=dg.Backoff.EXPONENTIAL)
-
 
 @dg.asset(
     partitions_def=sessions,
     deps=[session_transcripts, session_episode_summary],
     group_name="mouthpiece",
-    retry_policy=_EXTERNAL_RETRY,
+    retry_policy=EXTERNAL_API_RETRY,
 )
 def session_digest(
     context: dg.AssetExecutionContext,
@@ -208,7 +200,7 @@ def session_brief(
     partitions_def=sessions,
     deps=[session_digest, session_brief],
     group_name="mouthpiece",
-    retry_policy=_EXTERNAL_RETRY,
+    retry_policy=EXTERNAL_API_RETRY,
 )
 def session_script(
     context: dg.AssetExecutionContext,
@@ -249,6 +241,8 @@ def session_script(
         brief_block, brief_outcome = script_brief_block(key, hosts, root=root)
         span.set_attribute("mouthpiece.script.brief", "used" if brief_block else "fallback")
         _brief_counter.add(1, {"outcome": brief_outcome})
+        # Passes saved by an earlier, failed attempt are reused (script_cache.py).
+        pass_cache = ScriptPassCache(_session_dir(root, key) / SCRIPT_CACHE_DIR)
         with llm_failures_final():
             script = build_episode_script(
                 llm.client("mouthpiece.session_script"),
@@ -260,11 +254,15 @@ def session_script(
                 continuity_block=continuity_block,
                 model=_llm_model(astra_config.get()),
                 brief_block=brief_block,
+                cache=pass_cache,
             )
+        for name, count in pass_cache.counts.items():
+            span.set_attribute(f"mouthpiece.script.{name}", count)
         span.set_attribute("mouthpiece.continuity_episodes", len(prior))
         span.set_attribute("mouthpiece.continuity_chars", len(continuity_block))
         span.set_attribute("mouthpiece.cleaned_lines", len(cleaned_turns))
         atomic_write_text(_session_dir(root, key) / "script.json", script.model_dump_json(indent=2))
+        pass_cache.clear()
         span.set_attribute("mouthpiece.turns", len(script.turns))
         _log.info("mouthpiece scripted %s → %d turns (%s)", key, len(script.turns), script.title)
         return dg.MaterializeResult(metadata={"turns": len(script.turns), "title": script.title})
@@ -274,7 +272,7 @@ def session_script(
     partitions_def=sessions,
     deps=[session_script],
     group_name="mouthpiece",
-    retry_policy=_EXTERNAL_RETRY,
+    retry_policy=EXTERNAL_API_RETRY,
 )
 def session_audio_clips(
     context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths, tts: TtsResource

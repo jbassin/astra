@@ -35,6 +35,7 @@ from astra_mouthpiece.models import (
     Script,
     ScriptTurn,
     SessionDigest,
+    SpeakerId,
     VoiceConfig,
 )
 from astra_mouthpiece.session import produce_episode
@@ -282,10 +283,11 @@ def test_dialogue_chunking_uses_the_provider_budget(
         bodies.append(json)
         return b"audio"
 
-    # 5 turns × 800 chars: both models pack two per request (≤1,800) → 3.
-    a = ScriptTurn(speaker="A", text="x" * 800)
-    b = ScriptTurn(speaker="B", text="y" * 800)
-    script = Script(session_id="sid", title="t", hosts=HOSTS, turns=[a, b, a, b, a])
+    # 5 distinct turns × 800 chars: both models pack two per request (≤1,800) → 3. The
+    # turns differ so no chunk repeats another (a repeated chunk is a clip-cache hit).
+    speakers: tuple[SpeakerId, SpeakerId] = ("A", "B")
+    turns = [ScriptTurn(speaker=speakers[i % 2], text=f"{i}" + "x" * 799) for i in range(5)]
+    script = Script(session_id="sid", title="t", hosts=HOSTS, turns=turns)
     provider = ElevenLabsTTSProvider("k", post=fake_post, model_id=model_id)
     synthesize_script(script, provider=provider, voices=VOICES, out_dir=tmp_path)
     assert len(bodies) == requests

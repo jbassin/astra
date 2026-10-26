@@ -1,13 +1,16 @@
 """The shared pipeline resources: config-sourced paths, one object per key, the LLM client."""
 
 from pathlib import Path
-from typing import Any
+from typing import NoReturn
 
 import astra_pipeline_resources as res
 import dagster as dg
 import pytest
 from astra_config import load_config
-from astra_llm import LlmError
+from astra_llm import LiteLLMClient, LlmError, TextRequest, ToolCallRequest, ToolSpec
+from pydantic import BaseModel
+
+_TOOL = ToolSpec(name="t", description="d", input_schema={})
 
 
 def test_paths_come_from_config() -> None:
@@ -47,15 +50,31 @@ def test_config_is_loaded_once_per_process() -> None:
 def test_llm_client_resolves_the_openrouter_key_first(monkeypatch: pytest.MonkeyPatch) -> None:
     calls: list[str] = []
     monkeypatch.setattr(res, "ensure_openrouter_env", lambda: calls.append("key") or "k")
+    client = res.LlmResource().client("mouthpiece.session_script")
+    assert isinstance(client, res.FinalFailuresClient)
+    assert client.caller == "mouthpiece.session_script"
+    assert calls == ["key"]
 
-    class Client:
-        def __init__(self, *, caller: str) -> None:
-            calls.append(f"client:{caller}")
 
-    monkeypatch.setattr(res, "LiteLLMClient", Client)
-    client: Any = res.LlmResource().client("mouthpiece.session_script")
-    assert isinstance(client, Client)
-    assert calls == ["key", "client:mouthpiece.session_script"]
+def test_the_resource_client_makes_spent_retries_final(monkeypatch: pytest.MonkeyPatch) -> None:
+    """An asset using the ``llm`` resource gets the final-failure rule without a wrapper."""
+
+    def spent(*_a: object, **_kw: object) -> NoReturn:
+        raise LlmError("Forced tool call failed after 3 attempts: no tool call")
+
+    names = ("call_tool", "call_text", "call_structured")
+    for name in names:
+        monkeypatch.setattr(LiteLLMClient, name, spent)
+    client = res.FinalFailuresClient(caller="x")
+    calls = (
+        lambda: client.call_tool(ToolCallRequest(system="s", user_content="u", tool=_TOOL)),
+        lambda: client.call_text(TextRequest(user_content="u")),
+        lambda: client.call_structured(BaseModel, system="s", user_content="u"),
+    )
+    for call in calls:
+        with pytest.raises(dg.Failure) as exc:
+            call()
+        assert exc.value.allow_retries is False
 
 
 def test_a_spent_llm_retry_is_final_for_dagster() -> None:
@@ -100,3 +119,31 @@ def test_a_transport_error_still_gets_the_retry_policy() -> None:
     result = dg.materialize([paid], raise_on_error=False)
     assert not result.success
     assert runs == [1, 1, 1]
+
+
+class _ProviderError(Exception):
+    def __init__(self, status_code: int) -> None:
+        super().__init__(f"HTTP {status_code}")
+        self.status_code = status_code
+
+
+@pytest.mark.parametrize("status", [400, 401, 404, 413, 422])
+def test_a_deterministic_provider_4xx_is_final(status: int) -> None:
+    with pytest.raises(dg.Failure) as exc, res.llm_failures_final():
+        raise _ProviderError(status)
+    assert exc.value.allow_retries is False
+
+
+@pytest.mark.parametrize("status", [408, 429, 500, 503])
+def test_a_transient_provider_status_keeps_the_retry(status: int) -> None:
+    with pytest.raises(_ProviderError), res.llm_failures_final():
+        raise _ProviderError(status)
+
+
+def test_the_shared_policy_retries_three_times_with_backoff() -> None:
+    policy = res.EXTERNAL_API_RETRY
+    assert (policy.max_retries, policy.delay, policy.backoff) == (
+        3,
+        120,
+        dg.Backoff.EXPONENTIAL,
+    )

@@ -79,6 +79,10 @@ class ElevenLabsTTSProvider:
         self._post = post
         self._model_id = model_id
         self.dialogue_budget = _DIALOGUE_BUDGETS.get(model_id, DEFAULT_DIALOGUE_BUDGET)
+        #: Names the clip cache's entries (`synth.clip_key`): everything besides the voice
+        #: and text that changes the audio. The requests send no `output_format` or voice
+        #: settings, so the API's defaults apply; add any you start sending here.
+        self.cache_identity = f"elevenlabs:{model_id}:{self.format}"
 
     def _headers(self) -> dict[str, str]:
         return {"xi-api-key": self._key, "Content-Type": "application/json"}

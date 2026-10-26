@@ -15,13 +15,20 @@ containers").
     process (`loaded_config()`).
   - `pipeline_paths` (`PipelinePaths`): every runtime data path the assets read or write,
     built from config by `from_config`.
-  - `llm` (`LlmResource`): `client(caller)` returns a fresh `astra_llm.LiteLLMClient` with the
+  - `llm` (`LlmResource`): `client(caller)` returns a fresh `FinalFailuresClient` (an
+    `astra_llm.LiteLLMClient` whose calls run inside `llm_failures_final()`) with the
     OpenRouter key in place, so each asset execution gets a full retry budget.
   `default_resources()` is cached, so every app's `defs` binds the same objects and
   `dg.Definitions.merge` accepts them.
-- `llm_failures_final()`: wrap an asset's LLM work in it. A non-retryable `LlmError` becomes
-  `dg.Failure(allow_retries=False)`, so the asset's `RetryPolicy` never re-bills a content
-  failure; transport errors pass through for the retry.
+- `llm_failures_final()`: a non-retryable `LlmError`, or an error carrying a deterministic
+  4xx status (`retries.client_error_status`), becomes `dg.Failure(allow_retries=False)`, so
+  the asset's `RetryPolicy` never re-bills a failure a rerun would repeat; transport errors
+  and 5xx pass through for the retry. The `llm` resource's client applies it already; wrap
+  other paid provider calls (scribe's transcription) in it.
+- **Retries** (`astra_pipeline_resources.retries`). `EXTERNAL_API_RETRY`, the one policy for
+  a step that calls a paid external API, and `NO_RETRY`, every other asset's name with the
+  reason it has none. `dagster/tests/test_retry_policies.py` holds every asset to one of the
+  two.
 - **Partitions** (`astra_pipeline_resources.partitions`). `sessions`, the one
   `DynamicPartitionsDefinition` (keys are session dates, `YYYY-M-D`). `SessionStage` and
   `launch_ready(context, stage)` are the body of each downstream stage sensor: they request one

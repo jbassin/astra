@@ -25,6 +25,7 @@ from .prompts import (
     build_script_user_content,
 )
 from .schemas import script_tool
+from .script_cache import ScriptPassCache, pass_key
 
 #: A 30-40 minute episode is a large output; give the model ample room. Raised
 #: 32k→64k with GLM 5.3: its reasoning tokens share this budget (see clean.py). Raised
@@ -134,21 +135,28 @@ def dress_transcript(
     *,
     model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
+    cache: ScriptPassCache | None = None,
 ) -> Script:
     """Pass B — protective dressing of a Pass A transcript into structured turns (no
-    polishing), one call per word-bounded segment; the title comes from the first."""
+    polishing), one call per word-bounded segment; the title comes from the first. A
+    segment whose output is in ``cache`` is not called again; each new one is saved once it
+    parses."""
+    cache = cache or ScriptPassCache(None)
+    system = build_dressing_system_prompt(hosts)
     title = ""
     turns: list[ScriptTurn] = []
     for i, segment in enumerate(_split_transcript(transcript, PASS_B_CHUNK_WORDS)):
-        raw = client.call_tool(
-            _tool_req(
-                build_dressing_system_prompt(hosts),
-                build_dressing_user_content(segment),
-                model,
-                max_tokens,
-            )
+        user_content = build_dressing_user_content(segment)
+        key = pass_key(
+            "b", model=model, max_tokens=max_tokens, system=system, user_content=user_content
         )
+        raw = cache.get_tool(key)
+        fresh = raw is None
+        if raw is None:
+            raw = client.call_tool(_tool_req(system, user_content, model, max_tokens))
         part = parse_script(session_id, raw, hosts)
+        if fresh:
+            cache.put_tool(key, raw)
         if i == 0:
             title = part.title
         turns.extend(part.turns)
@@ -167,6 +175,7 @@ def generate_script(
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     continuity_block: str = "",
     brief_block: str = "",
+    cache: ScriptPassCache | None = None,
 ) -> Script:
     """Pass A (free-text debate transcript) → Pass B (structured dressing, no
     polishing) — the only script-generation path (0024 deleted the one-shot arm).
@@ -175,16 +184,31 @@ def generate_script(
     GLM's structured tool output stalls typesetting a full long-episode transcript at once,
     so each segment gets its own Pass B call and the turns are concatenated (the title
     comes from the first segment). A short transcript is one segment — a single Pass B call,
-    unchanged. A `brief_block` (0034 producer notes) replaces grounding + continuity."""
+    unchanged. A `brief_block` (0034 producer notes) replaces grounding + continuity.
+
+    With a ``cache`` (`script_cache`), each pass is saved as it finishes and a pass whose
+    request matches a saved one is not called again, so a retry resumes."""
+    cache = cache or ScriptPassCache(None)
     user_content = build_script_user_content(
         digest, cleaned_turns, roster_block, grounding, continuity_block, brief_block
     )
-    # Pass A — raw, imperfect plaintext debate transcript.
-    transcript = client.call_text(
-        _text_req(build_improv_system_prompt(hosts), user_content, model, max_tokens)
+    system = build_improv_system_prompt(hosts)
+    key = pass_key(
+        "a", model=model, max_tokens=max_tokens, system=system, user_content=user_content
     )
+    # Pass A — raw, imperfect plaintext debate transcript.
+    transcript = cache.get_text(key)
+    if transcript is None:
+        transcript = client.call_text(_text_req(system, user_content, model, max_tokens))
+        cache.put_text(key, transcript)
     return dress_transcript(
-        client, transcript, digest.session_id, hosts, model=model, max_tokens=max_tokens
+        client,
+        transcript,
+        digest.session_id,
+        hosts,
+        model=model,
+        max_tokens=max_tokens,
+        cache=cache,
     )
 
 
