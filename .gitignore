@@ -57,9 +57,10 @@ target/
 .DS_Store
 apps/akasha/py/migrate/convert-report.json
 
-# assay's Liturgy books (ADR 0018): the .tex, style, fonts and finished art are committed;
-# every PDF (`just book` output), tectonic's compile log and the raw pre-crop art
-# generations under preprocessed/ (local-only scratch) are not.
+# assay's Liturgy books (ADR 0018): the .tex, style, fonts and finished art are committed.
+# `just book` writes the PDF to assay.book-out-path (under data.root), not here; these keep
+# a stray PDF (the retired Vol.1 export), a tectonic log and the raw pre-crop art generations
+# under preprocessed/ (local-only scratch) out of git.
 apps/assay/py/books/**/*.pdf
 apps/assay/py/books/**/*.log
 apps/assay/py/books/**/assets/img/preprocessed/

@@ -3,8 +3,9 @@
 Converts the canonical homebrew spell store (``apps/assay/py/homebrew/spells/``,
 173 Foundry-shaped docs) + the 8 school trait blurbs
 (``apps/assay/py/homebrew/traits/``) into a **LaTeX** book at
-``apps/assay/py/books/liturgy_vol2/liturgy_of_the_iridite_vol2.tex``, compiled
-with ``tectonic`` into a PDF alongside it. The visual style lives in the
+``apps/assay/py/books/liturgy_vol2/liturgy_of_the_iridite_vol2.tex`` (committed),
+compiled with ``tectonic`` into a PDF under ``assay.book-out-path`` (config.kdl, a
+runtime dir under ``data.root``; never in the checkout). The visual style lives in the
 stakeholder-approved ``liturgy.sty`` (parchment, chapter openers, spell-block
 plumbing, trait pills) — this module emits LaTeX *content* against that
 style layer; it never re-derives the look.
@@ -61,7 +62,9 @@ from . import store
 APP_ROOT = find_repo_root(Path(__file__)) / "apps" / "assay" / "py"
 STORE_DIR = store.STORE_ROOT / store.SPELLS_SUBDIR
 TRAITS_DIR = store.STORE_ROOT / store.TRAITS_SUBDIR
-DEFAULT_OUT_DIR = APP_ROOT / "books/liturgy_vol2"
+#: The book's committed sources: the generated ``.tex``, ``liturgy.sty``, ``content/`` and
+#: ``assets/``. tectonic compiles here; the PDF goes to :func:`default_pdf_dir`.
+BOOK_SRC_DIR = APP_ROOT / "books/liturgy_vol2"
 BOOK_TEX_NAME = "liturgy_of_the_iridite_vol2.tex"
 BOOK_PDF_NAME = "liturgy_of_the_iridite_vol2.pdf"
 
@@ -1376,14 +1379,14 @@ def build_book(
     art_dir: Path | None = None,
 ) -> BookResult:
     """Assemble the whole book. ``content_dir`` defaults to
-    ``DEFAULT_OUT_DIR/content`` (Track B's directory — consumed read-only,
+    ``BOOK_SRC_DIR/content`` (Track B's directory — consumed read-only,
     fail-soft when fragments are missing). ``art_dir`` defaults to
     ``<content_dir's parent>/assets/img/processed`` (the production layout
     is ``<out>/content`` + ``<out>/assets/img/processed``) — the stakeholder
     art drop point (``<slot>.png``/``<slot>.jpg``), consulted fail-soft: a
     missing dir or file just falls back to the existing placeholder/no-op,
     same as a missing content fragment."""
-    content_dir = content_dir if content_dir is not None else DEFAULT_OUT_DIR / "content"
+    content_dir = content_dir if content_dir is not None else BOOK_SRC_DIR / "content"
     if art_dir is None:
         art_dir = content_dir.parent / "assets" / "img" / "processed"
     report = BookReport()
@@ -1489,16 +1492,22 @@ def format_report(report: BookReport) -> str:
 _tracer = get_tracer("astra.assay")
 
 
+def default_pdf_dir() -> Path:
+    """``cfg.assay.book_out_path`` via astra_config: the runtime dir the PDF is written to."""
+    from astra_config import load_config
+
+    return Path(load_config().assay.book_out_path)
+
+
 def cmd_export_book(args: argparse.Namespace) -> None:
-    """Build the Vol.2 LaTeX book from the canonical store, write the
-    ``.tex`` into ``--out`` (default ``apps/assay/py/books/liturgy_vol2``), then
-    compile it with ``tectonic`` (skip via ``--no-compile``). Never touches
-    ``<out>/content/`` (Track B's directory — read-only input)."""
+    """Build the Vol.2 LaTeX book from the canonical store, write the committed
+    ``.tex`` into ``BOOK_SRC_DIR``, then compile it with ``tectonic`` (skip via
+    ``--no-compile``) into ``--out`` (default ``assay.book-out-path``). Never touches
+    ``BOOK_SRC_DIR/content/`` (Track B's directory — read-only input)."""
     with _tracer.start_as_current_span("assay.export-book") as span:
-        out_dir = Path(args.out).resolve() if args.out else DEFAULT_OUT_DIR
-        result = build_book(content_dir=out_dir / "content")
-        out_dir.mkdir(parents=True, exist_ok=True)
-        tex_path = out_dir / BOOK_TEX_NAME
+        src_dir = BOOK_SRC_DIR
+        result = build_book(content_dir=src_dir / "content")
+        tex_path = src_dir / BOOK_TEX_NAME
         tex_path.write_text(result.tex, encoding="utf-8")
         span.set_attribute("assay.export_book.spells", result.report.spells)
         span.set_attribute("assay.export_book.chapters", len(result.report.chapters))
@@ -1517,11 +1526,15 @@ def cmd_export_book(args: argparse.Namespace) -> None:
             span.set_attribute("assay.export_book.compiled", False)
             return
 
+        # tectonic runs in the source dir, so the .tex's relative `liturgy.sty`, fonts and
+        # art resolve; `--outdir` puts the PDF in the runtime dir, out of the checkout.
+        out_dir = Path(args.out).resolve() if args.out else default_pdf_dir()
+        out_dir.mkdir(parents=True, exist_ok=True)
         env = dict(os.environ)
         env["SOURCE_DATE_EPOCH"] = "0"
         proc = subprocess.run(
-            [tectonic, tex_path.name],
-            cwd=out_dir,
+            [tectonic, "--outdir", str(out_dir), tex_path.name],
+            cwd=src_dir,
             env=env,
             capture_output=True,
             text=True,
@@ -1545,13 +1558,14 @@ def register_subparsers(sub: argparse._SubParsersAction) -> None:
         "export-book",
         help=(
             "build the Liturgy of the Iridite Vol.2 LaTeX book from the canonical "
-            "homebrew store -> apps/assay/py/books/liturgy_vol2/"
+            "homebrew store: the .tex -> apps/assay/py/books/liturgy_vol2/, the PDF -> "
+            "assay.book-out-path"
         ),
     )
     p_book.add_argument(
         "--out",
         default=None,
-        help="output directory (default apps/assay/py/books/liturgy_vol2)",
+        help="PDF output directory (default: assay.book-out-path in config.kdl)",
     )
     p_book.add_argument(
         "--no-compile",

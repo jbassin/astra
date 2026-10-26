@@ -551,7 +551,15 @@ def test_frontmatter_art_fail_soft(tmp_path: Path) -> None:
 
 
 def test_committed_tex_matches_a_fresh_build() -> None:
-    # The PDF is a git-ignored build output (ADR 0018), so the committed .tex is the
+    # The PDF is a build output outside the checkout (ADR 0018), so the committed .tex is the
     # reviewable record of the book. A store or content edit without `just book` fails here.
-    committed = (book.DEFAULT_OUT_DIR / book.BOOK_TEX_NAME).read_text(encoding="utf-8")
+    committed = (book.BOOK_SRC_DIR / book.BOOK_TEX_NAME).read_text(encoding="utf-8")
     assert book.build_book().tex == committed, "stale book .tex: run `just book --no-compile`"
+
+
+def test_pdf_dir_is_the_configured_runtime_path(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    # The PDF goes to assay.book-out-path under data.root, never into the checkout.
+    monkeypatch.setenv("ASTRA_DATA_ROOT", str(tmp_path))
+    assert book.default_pdf_dir() == tmp_path / "assay" / "books"

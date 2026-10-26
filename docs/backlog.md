@@ -118,11 +118,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - After the OpenTelemetry 1.45.1 upgrade deploys, confirm `astra.pipeline` logs still reach
   SigNoz — main session.
 
-## assay
-
-- Move the books out of codex and the PDF out of git — agent;
-  [ADR 0018](adr/0018-book-binaries-stay-in-history.md), [ADR 0019](adr/0019-assay-scope.md).
-
 ## Services
 
 - `just portal-module-install` fails with EACCES because Foundry leaves the module dir root-owned;

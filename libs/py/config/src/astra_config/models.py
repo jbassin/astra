@@ -340,6 +340,12 @@ class CodexConfig(_Base):
     data_path: DataPath
 
 
+class AssayConfig(_Base):
+    # assay's book build (`assay export-book`). book_out_path is the dir the compiled
+    # Liturgy PDF is written to: a build output under data.root, never in a checkout.
+    book_out_path: DataPath
+
+
 class OpsConfig(_Base):
     # The host ops CLI (libs/py/ops). signoz_url is the SigNoz API as the HOST sees it (the
     # published port); signoz_api_key is a SigNoz service-account key (Viewer for
@@ -384,6 +390,7 @@ class Config(_Base):
     heartwood: HeartwoodConfig
     mouthpiece_producer: MouthpieceProducerConfig
     codex: CodexConfig
+    assay: AssayConfig
     ops: OpsConfig
 
     @model_validator(mode="after")

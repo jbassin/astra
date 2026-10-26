@@ -670,9 +670,9 @@ portal-module-build:
 portal-module-install:
     @{{ops}} portal-module-install "$@"
 
-# Regenerates the committed .tex from the homebrew store, then compiles the PDF with tectonic
-# into apps/assay/py/books/liturgy_vol2/. The PDF is a build output and git-ignored (ADR 0018);
-# commit the .tex diff. tectonic is a host tool, not in mise.toml; the recipe refuses any
+# Regenerates the committed .tex in apps/assay/py/books/liturgy_vol2/ from the homebrew store,
+# then compiles the PDF with tectonic into assay.book-out-path (config.kdl, under data.root;
+# `--out DIR` overrides). The PDF never lands in the checkout (ADR 0018); commit the .tex diff. tectonic is a host tool, not in mise.toml; the recipe refuses any
 # version but the one the committed .tex was proven with.
 # Build the Liturgy Vol.2 book (`--no-compile` writes only the .tex).
 book *flags:

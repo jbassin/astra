@@ -27,7 +27,7 @@ All commands run from the repo root. Telemetry goes to SigNoz as `astra.assay`; 
 | `uv run assay homebrew-revisions` | Diffs the store against a fresh re-conversion of the vendored set into `homebrew/revisions.md`. |
 | `uv run assay store check` / `store fmt` | Validates the store against its model and format / rewrites it canonically. |
 | `uv run assay export-codex [--data-root PATH]` | Rebuilds `out/spell-power.json` alone from the snapshot and the committed `results/`, without refitting. |
-| `just book [--no-compile]` | Runs `assay export-book`: the `.tex` and, unless `--no-compile`, the PDF. |
+| `just book [--no-compile] [--out DIR]` | Runs `assay export-book`: the committed `.tex` and, unless `--no-compile`, the PDF into `assay.book-out-path` (or `DIR`). |
 | `just assay-store-check` | `assay store check` with telemetry off; part of `just check` and CI. |
 
 Tests: `uv run pytest apps/assay/py`. They never touch the Foundry snapshot: they run off the
@@ -238,12 +238,17 @@ matter, a table of contents and eight school chapters, each an opener, a spell-l
 the school's spells by rank and name. Prose fragments live in `books/liturgy_vol2/content/`.
 
 ```bash
-just book               # .tex + PDF into apps/assay/py/books/liturgy_vol2/
+just book               # .tex into books/liturgy_vol2/, PDF into assay.book-out-path
 just book --no-compile  # .tex only
+just book --out DIR     # the PDF into DIR instead
 ```
 
-The PDF is a build output and git-ignored ([ADR 0018](../../../docs/adr/0018-book-binaries-stay-in-history.md));
-nothing serves it, so hand a reader the file `just book` writes. Commit the `.tex` diff:
+The PDF is a build output, so it never lands in the checkout
+([ADR 0018](../../../docs/adr/0018-book-binaries-stay-in-history.md)): tectonic compiles in
+`books/liturgy_vol2/` and writes the PDF to `assay.book-out-path` in `config.kdl`
+(`/ruby/data/astra-state/assay/books/liturgy_of_the_iridite_vol2.pdf`). Nothing serves it,
+so hand a reader that file. The retired Vol.1 PDF is not built by anything and not tracked;
+`.gitignore` still ignores any PDF under `books/`. Commit the `.tex` diff:
 `test_book.py` fails when the committed `.tex` differs from a fresh build. `just book` needs
 tectonic 0.17.0 on `PATH` (not in mise; `~/.cargo/bin/tectonic` on this host) and refuses any
 other version. The compile takes about 20 s with `SOURCE_DATE_EPOCH=0`, and both the `.tex` and
