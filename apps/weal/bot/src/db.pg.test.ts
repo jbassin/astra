@@ -28,7 +28,7 @@ describe.skipIf(TEST_DATABASE_URL === undefined)("PostgresStore (real Postgres)"
     store = new PostgresStore(db.url);
     sql = postgres(db.url);
     const first = await store.migrate();
-    expect(first.applied.map((m) => m.file)).toEqual(["0001_initial.sql"]);
+    expect(first.applied.map((m) => m.file)).toEqual(["0001_initial.sql", "0002_drop_funcs.sql"]);
     const second = await store.migrate();
     expect(second.applied).toEqual([]);
   });
@@ -83,19 +83,28 @@ describe.skipIf(TEST_DATABASE_URL === undefined)("PostgresStore (real Postgres)"
 });
 
 // The live upgrade path: a database built by the old boot-time `create table if not exists`
-// block, with rows in it, adopts migration 0001 without changing anything.
-describe.skipIf(TEST_DATABASE_URL === undefined)("0001 over a pre-ledger database", () => {
-  test("only records itself; the rows stay", async () => {
+// block, with rows in it and the dead v1 `funcs` table beside them, adopts 0001 without changing
+// anything, and 0002 drops only `funcs`.
+describe.skipIf(TEST_DATABASE_URL === undefined)("migrations over a pre-ledger database", () => {
+  test("0001 only records itself, 0002 drops v1 funcs, and the other rows stay", async () => {
     const db = await createScratchDatabase(TEST_DATABASE_URL ?? "");
     const sql = postgres(db.url, { onnotice: () => {} });
     const store = new PostgresStore(db.url);
     try {
       await sql.unsafe(readFileSync(join(MIGRATIONS_DIR, "0001_initial.sql"), "utf8"));
       await sql`insert into dice (base, value, player_id, blame_id) values (20, 5, 1, 1)`;
+      await sql`insert into funcs_v2 (name, source) values ('bonus', '3')`;
+      await sql`create table funcs (id bigserial primary key, name text not null, payload text not null)`;
+      await sql`insert into funcs (name, payload) values ('adv', '{}')`;
       const r = await store.migrate();
-      expect(r.applied.map((m) => m.file)).toEqual(["0001_initial.sql"]);
+      expect(r.applied.map((m) => m.file)).toEqual(["0001_initial.sql", "0002_drop_funcs.sql"]);
       const [n] = await sql`select count(*)::int as n from dice`;
       expect(n?.n).toBe(1);
+      const [saved] = await sql`select count(*)::int as n from funcs_v2`;
+      expect(saved?.n).toBe(1);
+      const [v1] =
+        await sql`select to_regclass('public.funcs') as t, to_regclass('public.funcs_id_seq') as s`;
+      expect(v1).toEqual({ t: null, s: null });
     } finally {
       await store.close();
       await sql.end();
