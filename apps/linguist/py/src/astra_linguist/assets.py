@@ -1,10 +1,11 @@
-"""Dagster wiring — the linguist assets and the scribe→linguist sensor.
+"""Dagster wiring — the linguist assets, their automation, and the timeline sensor.
 
 One partition per session/date in the pipeline's shared ``sessions`` set.
 `session_transcripts` depends on scribe's `session_transcript`: it reads that asset's
 `script.json`, runs the pipeline, and writes the three outputs (`data/{date}.json`, the
-campaign-matched `script/*.txt`, the canonical `transcripts/*.txt`).
-`scribe_output_sensor` launches it once scribe's transcript is materialized.
+campaign-matched `script/*.txt`, the canonical `transcripts/*.txt`). Its automation
+condition (`LINGUIST_STAGE`, evaluated by `linguist_automation`) launches it, with
+`session_episode_summary` in the same run, once scribe's transcript is materialized.
 
 NOTE: the plan models three assets (formatted/context/canonical); v1 ships one
 `session_transcripts` asset producing all three files (downstream consumers read
@@ -31,7 +32,13 @@ from astra_pipeline_resources import (
     default_resources,
     loaded_config,
 )
-from astra_pipeline_resources.partitions import SessionStage, launch_ready, sessions
+from astra_pipeline_resources.partitions import (
+    SessionStage,
+    follows,
+    sessions,
+    stage_automation,
+    stage_sensor,
+)
 from astra_sessions import atomic_write_text
 
 from .campaigns import campaign_filename, campaign_views
@@ -64,11 +71,36 @@ AUDIO_BASE = "/audio"
 #: does not import scribe. ``dagster/tests/test_definitions.py`` pins the edge.
 SCRIBE_TRANSCRIPT = dg.AssetKey("session_transcript")
 #: scribe's blocking check on that transcript (`astra_scribe.assets.transcript_not_empty`).
-#: The sensor launches linguist only once it passed; the test pins that it exists.
+#: linguist launches only once it passed; the test pins that it exists.
 SCRIBE_TRANSCRIPT_CHECK = dg.AssetCheckKey(SCRIBE_TRANSCRIPT, "transcript_not_empty")
 
 
-@dg.asset(partitions_def=sessions, group_name="linguist", deps=[SCRIBE_TRANSCRIPT])
+def _linguist_config():
+    from astra_ontology_config import load as load_config
+
+    return load_config().linguist
+
+
+def _has_script(key: str) -> bool:
+    saved = _linguist_config().ingest_saved_dir
+    return bool(saved) and has_script(saved, key)
+
+
+#: When linguist launches for a session (``dagster/migrate_sessions.py`` reads it too).
+LINGUIST_STAGE = SessionStage(
+    upstream=SCRIBE_TRANSCRIPT,
+    stage=dg.AssetKey("session_transcripts"),
+    keep=_has_script,
+    gates=(SCRIBE_TRANSCRIPT_CHECK,),
+)
+
+
+@dg.asset(
+    partitions_def=sessions,
+    automation_condition=stage_automation(LINGUIST_STAGE),
+    group_name="linguist",
+    deps=[SCRIBE_TRANSCRIPT],
+)
 def session_transcripts(
     context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
@@ -118,6 +150,7 @@ def session_transcripts(
 
 @dg.asset(
     partitions_def=sessions,
+    automation_condition=follows(session_transcripts),
     deps=[session_transcripts],
     group_name="chronicle",
     retry_policy=EXTERNAL_API_RETRY,
@@ -130,7 +163,7 @@ def session_episode_summary(
 ) -> dg.MaterializeResult:
     """Summarize one session into a Rich chronicle `EpisodeEntry`.
 
-    Runs automatically after `session_transcripts` (it reads that asset's
+    Runs in the same run as `session_transcripts` (it reads that asset's
     `data/{date}.json`) and writes `timeline/episodes/{date}.json`. **Live** — spends
     GLM-5.2 tokens per session via `astra_llm` (`call_structured`); the cost is
     metered as `astra.llm.cost_usd{caller="linguist.session_episode_summary"}`."""
@@ -282,40 +315,15 @@ def campaign_timeline_sensor(context: dg.SensorEvaluationContext) -> dg.SensorRe
     )
 
 
-def _has_script(key: str) -> bool:
-    saved = _linguist_config().ingest_saved_dir
-    return bool(saved) and has_script(saved, key)
-
-
-#: What `scribe_output_sensor` launches, and when (``dagster/migrate_sessions.py`` reads it).
-LINGUIST_STAGE = SessionStage(
-    upstream=SCRIBE_TRANSCRIPT,
-    stage=session_transcripts.key,
-    keep=_has_script,
-    gates=(SCRIBE_TRANSCRIPT_CHECK,),
+linguist_automation = stage_sensor(
+    "linguist_automation",
+    [session_transcripts, session_episode_summary],
+    description=(
+        "Runs session_transcripts then session_episode_summary for each session whose scribe "
+        "transcript was newly materialized, passed transcript_not_empty, has script.json, "
+        "and was never tried by linguist. Stop it to pause linguist launches."
+    ),
 )
-
-
-@dg.sensor(
-    target=[session_transcripts, session_episode_summary],
-    minimum_interval_seconds=30,
-    default_status=dg.DefaultSensorStatus.RUNNING,
-)
-def scribe_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
-    """Run linguist for each session whose scribe transcript is materialized, has passed
-    scribe's `transcript_not_empty` check, and whose `session_transcripts` was never
-    tried — the scribe→linguist trigger.
-
-    Each run materializes `session_transcripts` (apply known corrections) then
-    `session_episode_summary`, so a session is fully processed. A failed or canceled run is
-    not retried here (re-execute it); a session whose `script.json` is gone is skipped."""
-    return launch_ready(context, LINGUIST_STAGE)
-
-
-def _linguist_config():
-    from astra_ontology_config import load as load_config
-
-    return load_config().linguist
 
 
 def _to_json(value: object) -> str:
@@ -328,6 +336,6 @@ defs = dg.Definitions(
         session_episode_summary,
         campaign_timeline,
     ],
-    sensors=[scribe_output_sensor, campaign_timeline_sensor],
+    sensors=[linguist_automation, campaign_timeline_sensor],
     resources=default_resources(),
 )

@@ -1,9 +1,10 @@
-"""Dagster wiring — the episode graph and the linguist→mouthpiece sensor.
+"""Dagster wiring — the episode graph and its automation.
 
 One partition per session/date in the pipeline's shared ``sessions`` set.
 `session_digest` depends on linguist's `session_transcripts` and on
-`session_episode_summary` (the chronicle gate, 0021 Change B), and the sensor launches
-the graph once that summary is materialized. The five assets chain on disk under
+`session_episode_summary` (the chronicle gate), and its automation condition
+(`MOUTHPIECE_STAGE`, evaluated by `mouthpiece_automation`) launches the graph once that
+summary is materialized. The five assets chain on disk under
 ``episodes_path/<key>/`` (faerrin's `out/` disk-cache seams → asset materialization):
 
     session_digest → session_brief → session_script → session_audio_clips → session_episode
@@ -34,7 +35,13 @@ from astra_pipeline_resources import (
     default_resources,
     llm_failures_final,
 )
-from astra_pipeline_resources.partitions import SessionStage, launch_ready, sessions
+from astra_pipeline_resources.partitions import (
+    SessionStage,
+    follows,
+    sessions,
+    stage_automation,
+    stage_sensor,
+)
 from astra_sessions import atomic_write_text, parse_transcript_name
 
 from . import clean, linguist_io
@@ -117,8 +124,27 @@ def _read_script(root: Path, key: str) -> Script:
 # ── the 4-asset per-session graph ────────────────────────────────────────────
 
 
+def _has_transcript(key: str) -> bool:
+    """A canonical transcript exists and `sessions.kdl` does not mark the session skipped."""
+    if session_overrides().skipped(key):
+        return False
+    return linguist_io.transcript_for(key, linguist_io.TRANSCRIPT_DIR) is not None
+
+
+#: When the episode graph launches for a session (``dagster/migrate_sessions.py`` reads it
+#: too). The chronicle gate is the trigger on `session_episode_summary`, which also
+#: materializes (as skipped) for an excluded or unmatched show; such a session has no
+#: canonical transcript, so it never runs.
+MOUTHPIECE_STAGE = SessionStage(
+    upstream=session_episode_summary.key,
+    stage=dg.AssetKey("session_digest"),
+    keep=_has_transcript,
+)
+
+
 @dg.asset(
     partitions_def=sessions,
+    automation_condition=stage_automation(MOUTHPIECE_STAGE),
     deps=[session_transcripts, session_episode_summary],
     group_name="mouthpiece",
     retry_policy=EXTERNAL_API_RETRY,
@@ -173,7 +199,12 @@ def session_digest(
         )
 
 
-@dg.asset(partitions_def=sessions, deps=[session_digest], group_name="mouthpiece")
+@dg.asset(
+    partitions_def=sessions,
+    automation_condition=follows(session_digest),
+    deps=[session_digest],
+    group_name="mouthpiece",
+)
 def session_brief(
     context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
@@ -198,6 +229,7 @@ def session_brief(
 
 @dg.asset(
     partitions_def=sessions,
+    automation_condition=follows(session_digest, session_brief),
     deps=[session_digest, session_brief],
     group_name="mouthpiece",
     retry_policy=EXTERNAL_API_RETRY,
@@ -270,6 +302,7 @@ def session_script(
 
 @dg.asset(
     partitions_def=sessions,
+    automation_condition=follows(session_script),
     deps=[session_script],
     group_name="mouthpiece",
     retry_policy=EXTERNAL_API_RETRY,
@@ -320,7 +353,12 @@ def session_audio_clips(
         )
 
 
-@dg.asset(partitions_def=sessions, deps=[session_audio_clips], group_name="mouthpiece")
+@dg.asset(
+    partitions_def=sessions,
+    automation_condition=follows(session_audio_clips),
+    deps=[session_audio_clips],
+    group_name="mouthpiece",
+)
 def session_episode(
     context: dg.AssetExecutionContext, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
@@ -384,38 +422,17 @@ def build_episodes_index(root: Path | None = None) -> EpisodesIndex:
     return build_index(sessions, arc_titles=arc_titles, arc_main=arc_main, hosts=_episode_hosts())
 
 
-# ── sensor: linguist → mouthpiece ────────────────────────────────────────────
+# ── automation: linguist → mouthpiece ────────────────────────────────────────
 
-
-def _has_transcript(key: str) -> bool:
-    """A canonical transcript exists and `sessions.kdl` does not mark the session skipped."""
-    if session_overrides().skipped(key):
-        return False
-    return linguist_io.transcript_for(key, linguist_io.TRANSCRIPT_DIR) is not None
-
-
-#: What `linguist_output_sensor` launches, and when (``dagster/migrate_sessions.py`` reads it).
-MOUTHPIECE_STAGE = SessionStage(
-    upstream=session_episode_summary.key, stage=session_digest.key, keep=_has_transcript
+mouthpiece_automation = stage_sensor(
+    "mouthpiece_automation",
+    [session_digest, session_brief, session_script, session_audio_clips, session_episode],
+    description=(
+        "Runs the paid episode graph (digest → brief → script → audio clips → episode) for "
+        "each session whose session_episode_summary was newly materialized, has a canonical "
+        "transcript, and was never tried by mouthpiece. Stop it to pause mouthpiece launches."
+    ),
 )
-
-
-@dg.sensor(
-    target=[session_digest, session_brief, session_script, session_audio_clips, session_episode],
-    minimum_interval_seconds=30,
-    default_status=dg.DefaultSensorStatus.RUNNING,
-)
-def linguist_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
-    """Run the episode graph for each session whose chronicle summary is materialized and
-    whose `session_digest` was never tried, if it has a canonical transcript.
-
-    The chronicle gate (0021 Change B) is the dependency on `session_episode_summary`, which
-    also materializes (as skipped) for an excluded or unmatched show. A session that has
-    no canonical transcript (an unmatched campaign) never runs. A failed or canceled run
-    is not retried here; re-execute it. The sessions the old sensor adopted without running are
-    marked materialized by the sessions migration, so the paid chain never replays them
-    (the 2026-06-23 incident)."""
-    return launch_ready(context, MOUTHPIECE_STAGE)
 
 
 defs = dg.Definitions(
@@ -426,6 +443,6 @@ defs = dg.Definitions(
         session_audio_clips,
         session_episode,
     ],
-    sensors=[linguist_output_sensor],
+    sensors=[mouthpiece_automation],
     resources={**default_resources(), "tts": default_tts()},
 )

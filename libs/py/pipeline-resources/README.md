@@ -30,17 +30,19 @@ containers").
   reason it has none. `dagster/tests/test_retry_policies.py` holds every asset to one of the
   two.
 - **Partitions** (`astra_pipeline_resources.partitions`). `sessions`, the one
-  `DynamicPartitionsDefinition` (keys are session dates, `YYYY-M-D`). `SessionStage` and
-  `launch_ready(context, stage)` are the body of each downstream stage sensor: they request one
-  run per session whose upstream is materialized, whose blocking checks (`session_check`,
-  `blocked_sessions`) passed, and whose stage was never tried, with a deterministic `run_key`
-  and a ledger of launched sessions in the sensor cursor.
+  `DynamicPartitionsDefinition` (keys are session dates, `YYYY-M-D`). A downstream stage is a
+  `SessionStage`: `stage_automation(stage)` on its first asset, `follows(...)` on the rest, and
+  its app's `stage_sensor(...)`. The condition requests one run per session whose upstream got
+  a new materialization, whose blocking checks (`session_check`, `blocked_sessions`) passed,
+  and whose stage was never tried (`StageReady`, `ready_sessions`), once per session and never
+  for a session older than the sensor's first tick (dagster README, "Stage automation").
 - **Run launcher** (`astra_pipeline_resources.run_launcher`). `InstanceOnlyDockerRunLauncher`
   is Dagster's Docker launcher, except that it ignores the container settings and image a run's
   stored code origin carries; every run container gets exactly what `dagster.yaml` says.
 - **Test helpers** (`astra_pipeline_resources.testing`). `paths_under(tmp_path)`, `FakeConfig`,
-  `FakeLlm`, and instance helpers (`sessions_instance`, `mark_materialized`, `fail_partition`,
-  `cancel_partition`) for sensor tests.
+  `FakeLlm`, instance helpers (`sessions_instance`, `mark_materialized`, `fail_partition`,
+  `queue_partition`, `cancel_partition`), and `automation_tick`, one tick of an automation
+  sensor that returns its run requests and cursor without launching anything.
 
 ## Config
 

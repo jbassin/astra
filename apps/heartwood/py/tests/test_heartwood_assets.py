@@ -1,5 +1,5 @@
 """The heartwood Dagster wiring: session_wiki's request/wait/outcome handling and
-the sensor on the shared sessions set. No host runner — a fake one writes results."""
+its automation on the shared sessions set. No host runner — a fake one writes results."""
 
 from __future__ import annotations
 
@@ -11,8 +11,14 @@ import dagster as dg
 import pytest
 from astra_heartwood import assets
 from astra_heartwood import requests as rq
+from astra_linguist.assets import session_transcripts
 from astra_pipeline_resources.partitions import SESSIONS_NAME, sessions
-from astra_pipeline_resources.testing import fail_partition, mark_materialized, sessions_instance
+from astra_pipeline_resources.testing import (
+    automation_tick,
+    fail_partition,
+    mark_materialized,
+    sessions_instance,
+)
 
 
 def answer(root: Path, outcome: rq.Outcome, code: int, **kw: Any):
@@ -121,7 +127,7 @@ def test_a_stale_result_is_cleared_before_the_new_request(tmp_path: Path) -> Non
     assert seen == [None]
 
 
-# ── sensor ──
+# ── automation ──
 def _transcripts(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, dates: dict[str, bool]) -> Path:
     tdir = tmp_path / "transcripts"
     tdir.mkdir()
@@ -134,38 +140,65 @@ def _transcripts(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, dates: dict[st
     return tdir
 
 
-def _evaluate(instance: dg.DagsterInstance) -> dg.SensorResult:
-    result = assets.heartwood_sensor(dg.build_sensor_context(instance=instance))
-    assert isinstance(result, dg.SensorResult)
-    return result
+#: heartwood's definitions with linguist's partitioned upstream, as the code location
+#: loads them (alone, the upstream would be an unpartitioned stub).
+DEFS = dg.Definitions.merge(assets.defs, dg.Definitions(assets=[session_transcripts]))
 
 
-def test_sensor_runs_faerrin_sessions_whose_wiki_was_never_tried(
+class _Ticker:
+    def __init__(self, instance: dg.DagsterInstance) -> None:
+        self.instance, self.cursor = instance, None
+
+    def __call__(self) -> list[dg.RunRequest]:
+        requests, self.cursor = automation_tick(
+            DEFS, "heartwood_automation", self.instance, self.cursor
+        )
+        return requests
+
+
+def test_automation_runs_new_faerrin_sessions_whose_wiki_was_never_tried(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    dates = {"2026-10-12": True, "2026-10-19": True, "2026-10-20": False, "2026-10-26": True}
+    dates = {
+        "2026-10-5": True,
+        "2026-10-12": True,
+        "2026-10-19": True,
+        "2026-10-20": False,
+        "2026-10-26": True,
+    }
     _transcripts(tmp_path, monkeypatch, dates)
-    instance = sessions_instance(*dates, "2026-11-2")
-    # linguist finished all four; 2026-11-2 has no transcript yet. 2026-10-12 has a wiki
-    # (or was adopted by the migration); 2026-10-19 failed; 2026-10-20 is not faerrin.
-    mark_materialized(instance, "session_transcripts", *dates)
+    instance = sessions_instance("2026-10-5", "2026-10-12", "2026-10-19", "2026-10-20")
+    # Before the first tick: 2026-10-12 has a wiki (or was adopted by the migration),
+    # 2026-10-19 failed, 2026-10-5 was never tried but predates the sensor (no backfill).
+    mark_materialized(instance, "session_transcripts", "2026-10-5", "2026-10-12", "2026-10-19")
     mark_materialized(instance, "session_wiki", "2026-10-12")
     fail_partition(instance, "session_wiki", "2026-10-19")
+    tick = _Ticker(instance)
+    assert tick() == []
 
-    reqs = _evaluate(instance).run_requests or []
-    assert [r.partition_key for r in reqs] == ["2026-10-26"]
-    assert reqs[0].tags == assets.CONCURRENCY_TAG
+    # New: 2026-10-26 (faerrin) and 2026-10-20 (not faerrin); linguist re-run by hand for
+    # 2026-10-12 and 2026-10-19, whose wiki was tried.
+    instance.add_dynamic_partitions(SESSIONS_NAME, ["2026-10-26"])
+    mark_materialized(
+        instance, "session_transcripts", "2026-10-26", "2026-10-20", "2026-10-12", "2026-10-19"
+    )
+    (request,) = tick()
+    assert request.partition_key == "2026-10-26"
+    assert {k.to_user_string() for k in request.asset_selection or []} == {"session_wiki"}
+    assert request.tags.items() >= assets.CONCURRENCY_TAG.items()
+    assert tick() == []
 
 
-def test_sensor_waits_for_the_sessions_migration(
+def test_automation_waits_for_the_sessions_migration(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _transcripts(tmp_path, monkeypatch, {"2026-10-26": True})
     instance = sessions_instance("2026-10-26")
     instance.add_dynamic_partitions("heartwood_sessions", ["2026-10-12"])
+    tick = _Ticker(instance)
+    tick()
     mark_materialized(instance, "session_transcripts", "2026-10-26")
-    result = _evaluate(instance)
-    assert not result.run_requests and result.skip_reason
+    assert tick() == []
 
 
 def test_session_wiki_follows_the_transcript_on_the_shared_set() -> None:
@@ -176,7 +209,7 @@ def test_session_wiki_follows_the_transcript_on_the_shared_set() -> None:
 def test_definitions_and_no_retry_policy() -> None:
     assert assets.session_wiki.op.retry_policy is None
     repo = assets.defs.get_repository_def()
-    assert repo.has_sensor_def("heartwood_sensor")
+    assert repo.has_sensor_def("heartwood_automation")
     assert dg.AssetKey("session_wiki") in {a.key for a in repo.asset_graph.asset_nodes}
 
 
