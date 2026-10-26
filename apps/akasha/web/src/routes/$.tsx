@@ -3,6 +3,7 @@ import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { ContentArticle } from "@/domain/components/ContentArticle";
 import { FolderListing } from "@/domain/components/FolderListing";
 import { getWikiPage } from "@/domain/lib/pageDataFns";
+import { pageData } from "@/domain/lib/staleBuild";
 
 // The root catch-all — owns the whole namespace below "/" the way faerrin's
 // [...slug].astro did: content pages, folder listings (Foo and Foo/index both land
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/$")({
   // The page data comes from a server function, so the wiki bodies stay out of the
   // client bundle: SSR runs it inline, a client navigation fetches it.
   loader: async ({ params, location }) => {
-    const page = await getWikiPage({ data: params._splat ?? "" });
+    const page = pageData(await getWikiPage({ data: params._splat ?? "" }));
     if (!page) throw notFound();
     // A client navigation to an alias follows it at once. SSR still renders the
     // meta-refresh stub, which the Popover and old bookmarks expect.
