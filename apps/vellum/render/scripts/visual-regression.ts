@@ -31,8 +31,8 @@ import { FIXTURES } from "../test/visual/fixtures";
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const DIST = resolve(ROOT, "dist");
 const GOLDEN = resolve(ROOT, "test/visual/golden");
-const PORT = Number(process.env.VELLUM_VR_PORT ?? 5350);
-const BASE = `http://127.0.0.1:${PORT}`;
+/** 0 (the default) lets the OS pick a free port, so parallel runs never collide. */
+const PORT = Number(process.env.VELLUM_VR_PORT ?? 0);
 const UPDATE = process.argv.includes("--update");
 /** Allow up to 0.5% of pixels to differ (cross-render AA/hinting slack). */
 const MAX_DIFF_RATIO = 0.005;
@@ -56,6 +56,7 @@ async function isFile(p: string): Promise<boolean> {
 // execute the module script — found only by RUNNING this).
 const server = serve({
   port: PORT,
+  hostname: "127.0.0.1",
   async fetch(req) {
     const { pathname } = new URL(req.url);
     const full = resolve(DIST, `.${pathname === "/" ? "/index.html" : pathname}`);
@@ -65,6 +66,8 @@ const server = serve({
   },
 });
 await server.ready();
+if (!server.url) throw new Error("visual regression: the static server reported no address");
+const BASE = new URL(server.url).origin;
 
 const service = new RenderService(BASE);
 await service.start();
