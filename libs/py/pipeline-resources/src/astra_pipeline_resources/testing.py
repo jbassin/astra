@@ -87,18 +87,35 @@ def fail_partition(
     dg.materialize([_fails], partition_key=key, instance=instance, raise_on_error=False)
 
 
-def cancel_partition(instance: dg.DagsterInstance, asset: str, key: str) -> str:
-    """Create a run of ``asset`` for session ``key`` and cancel it; return its run id.
-
-    Dagster's partition status reports a canceled run as neither failed nor materialized,
-    the case that would make a sensor relaunch a terminated paid run."""
+def queue_partition(instance: dg.DagsterInstance, asset: str, key: str) -> dg.DagsterRun:
+    """Create a run of ``asset`` for session ``key`` and leave it queued, as the daemon
+    does when it submits a run request. Creating it records the planned materialization."""
 
     @dg.asset(name=asset, partitions_def=sessions)
     def _never_runs() -> None: ...
 
     job = dg.Definitions(assets=[_never_runs]).resolve_implicit_global_asset_job_def()
-    run = instance.create_run_for_job(
+    return instance.create_run_for_job(
         job_def=job, asset_selection=frozenset({_never_runs.key}), tags={"dagster/partition": key}
     )
+
+
+def cancel_partition(instance: dg.DagsterInstance, asset: str, key: str) -> str:
+    """Create a run of ``asset`` for session ``key`` and cancel it; return its run id.
+
+    Dagster's partition status reports a canceled run as neither failed nor materialized,
+    the case that would make a launch rule relaunch a terminated paid run."""
+    run = queue_partition(instance, asset, key)
     instance.report_run_canceled(run)
     return run.run_id
+
+
+def automation_tick(
+    defs: dg.Definitions, sensor: str, instance: dg.DagsterInstance, cursor: str | None = None
+) -> tuple[list[dg.RunRequest], str | None]:
+    """One tick of the automation sensor ``sensor`` in ``defs``: its run requests and the
+    cursor to pass to the next tick. Nothing is launched; the daemon would submit them."""
+    repo = defs.get_repository_def()
+    context = dg.build_sensor_context(instance=instance, repository_def=repo, cursor=cursor)
+    data = repo.get_sensor_def(sensor).evaluate_tick(context)
+    return list(data.run_requests or []), data.cursor

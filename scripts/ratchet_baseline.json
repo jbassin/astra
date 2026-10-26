@@ -1,5 +1,5 @@
 {
-  "env.reads-outside-config.prod": 39,
+  "env.reads-outside-config.prod": 40,
   "env.reads-outside-config.test": 26,
   "errors.py-silent-broad-except.prod": 6,
   "errors.py-silent-broad-except.test": 0,

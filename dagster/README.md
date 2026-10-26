@@ -63,27 +63,90 @@ lineage, and one run can materialize a session across apps.
 | Sensor | Launches | When |
 |---|---|---|
 | `craig_drop_sensor` | `session_tracks` → `session_audio` ∥ `session_transcript` → `session_cleanup` | a Craig zip in `scribe.incoming-path` whose date is not a session yet; it adds the key to `sessions` (the only code that does) |
-| `scribe_output_sensor` | `session_transcripts` → `session_episode_summary` | `session_transcript` is materialized, its `transcript_not_empty` check passed, and `script.json` exists |
-| `linguist_output_sensor` | `session_digest` → `session_brief` → `session_script` → `session_audio_clips` → `session_episode` | `session_episode_summary` is materialized (the chronicle gate) and a canonical transcript exists |
-| `heartwood_sensor` | `session_wiki` (waits for the host agent) | `session_transcripts` is materialized and the transcript is a faerrin campaign |
+| `linguist_automation` | `session_transcripts` → `session_episode_summary` | `session_transcript` got a new materialization, its `transcript_not_empty` check passed, and `script.json` exists |
+| `mouthpiece_automation` | `session_digest` → `session_brief` → `session_script` → `session_audio_clips` → `session_episode` | `session_episode_summary` got a new materialization (the chronicle gate) and a canonical transcript exists |
+| `heartwood_automation` | `session_wiki` (waits for the host agent), tagged `astra/heartwood` | `session_transcripts` got a new materialization and the transcript is a faerrin campaign |
 | `campaign_timeline_sensor` | `campaign_timeline` (unpartitioned, after `session_episode_summary`) | a `session_episode_summary` materialization newer than its cursor, no `campaign_timeline` run in flight, and the episode files no longer match `seasons.json`'s `inputs_hash` |
 
 The cross-app dependencies are `session_transcripts` on `session_transcript`,
 `session_digest` on `session_transcripts` and `session_episode_summary`, and `session_wiki`
-on `session_transcripts`. A downstream sensor launches its stage for a session only if the
-stage's first asset was never tried for it: no materialization and no run of any status,
-queued, running, failed or canceled (`ready_sessions` counts every planned
-materialization). Each request carries the run key `<stage asset>:<session>`, and the
-sensor's cursor keeps a ledger of the sessions it launched. So a failed or terminated stage
-stays as it is until you re-execute it, and re-running an upstream asset by hand never
-re-launches a paid stage. Eager automation (pipe-4c) is not on yet.
+on `session_transcripts`. The three `*_automation` sensors are Dagster automation condition
+sensors; each evaluates the conditions on one app's stage ("Stage automation" below). A
+stage launches for a session only if the stage's first asset was never tried for it: no
+materialization and no run of any status, queued, running, failed or canceled
+(`ready_sessions` counts every planned materialization). Each stage launches at most once
+per session, and never for a session that existed before its sensor's first tick. So a
+failed or terminated stage stays as it is until you re-execute it, and re-running an
+upstream asset by hand never re-launches a paid stage.
 
-`campaign_timeline_sensor` follows the same rule. Its cursor is the storage id of the
-newest summary materialization it has seen. It checks the episode inputs before it asks
+`campaign_timeline_sensor` stays a plain sensor, with the same never-retry rule. An
+automation condition cannot express it faithfully: it compares `seasons.json`'s
+`inputs_hash` with the episode files before it asks for a run, drops the trigger when they
+match, and keeps it while a rebuild is in flight, so it checks the inputs again after that
+run. Its cursor is the storage id of the newest summary materialization it has seen. It checks the episode inputs before it asks
 for a run, so a summary that changed nothing (an unmatched session's skip) starts no run,
 and a failed rebuild stays failed until you re-execute it. A summary written outside
 Dagster (the host chronicle backfill) does not trigger it: materialize `campaign_timeline`
 by hand. There is no schedule since 0037 pipe-10.
+
+### Stage automation
+
+Each stage's first asset carries `stage_automation(<STAGE>)`
+(`astra_pipeline_resources.partitions`). The stage's later assets carry `follows(...)`, so
+they join the same run and never launch on their own. A session is requested when all
+three parts of the first asset's condition hold:
+
+1. **Upstream updated.** The stage's upstream asset got a new materialization for the
+   session since the stage was last requested or materialized (`newly_updated` on that one
+   dependency, latched with `since_last_handled`). Dagster's `newly_updated` is empty on a
+   sensor's first evaluation, so no session that existed before then is launched (no
+   backfill). The latch holds while a gate or the file check is still false.
+2. **Never requested.** This condition never requested the session (`newly_requested`,
+   latched since the first evaluation). It replaces the old run key, so a stage is not
+   requested twice, even if its run is deleted.
+3. **Stage ready** (`StageReady`, a custom condition). The old sensors' rule, unchanged:
+   upstream materialized, gates passed, the stage's first asset never materialized nor
+   planned in any run, and the stage's file check. Dagster's own `missing()`,
+   `in_progress()` and `execution_failed()` cannot express "never tried": a canceled run
+   counts as none of them.
+
+This is not Dagster's `eager()`, which fires again whenever a dependency updates. The
+sensors run in the code server (`use_user_code_server`, which the custom condition needs)
+and ask for one plain run per session, so `dagster.yaml`'s queue limits apply and
+heartwood's runs carry `astra/heartwood`. They evaluate every 30 s.
+
+**Go-live.** The three sensors ship stopped (`default_status=STOPPED`), so the deploy that
+brings them launches nothing after scribe. Run the read-only pre-flight, then start them:
+
+```sh
+just pipeline-automation-preflight
+```
+
+It evaluates each sensor's first two ticks against the live instance in a read-only
+Postgres session (`dagster/automation_preflight.py`, `PGOPTIONS=-c
+default_transaction_read_only=on`) and prints every run they would request. Exit 0 means
+none: start `linguist_automation`, `mouthpiece_automation` and `heartwood_automation` under
+Automation in the UI. It also lists, per stage, the old sessions never tried with their
+upstream done. None of them launches on its own, but a new materialization of its upstream
+(a manual re-run) would launch it, as the old sensors would have. Dagster keeps a started
+sensor running across deploys.
+
+**Pause in an emergency.** Stop the app's sensor in the UI (Automation, then the sensor's
+toggle), or all three. A stopped sensor requests nothing. Runs already queued or running
+go on; terminate them with `just pipeline-terminate`. Stopping keeps the sensor's cursor,
+so on restart it catches up on the upstream updates made while it was stopped, under the
+same rules. To restart without catching up, clear the cursor first. That also forgets
+which sessions it requested, so only the never-tried rule then guards a session whose run
+was deleted.
+
+```sh
+curl -s http://localhost:10350/graphql -H 'Content-Type: application/json' -d \
+  '{"query":"mutation { setSensorCursor(sensorSelector: {repositoryLocationName: \"astra-pipeline\", repositoryName: \"__repository__\", sensorName: \"mouthpiece_automation\"}) { __typename } }"}'
+```
+
+The conditions keep their latches in the sensor's cursor. Editing `StageReady` or a stage's
+file check keeps them. Editing a latch's own operands resets that latch, and a session
+waiting on a gate then needs a manual launch.
 
 ### Blocking checks
 
@@ -100,12 +163,11 @@ asset's Checks tab.
 A failed check fails the run, so `pipeline_failure_alert` pages with the session key and
 the check's step name, and it skips the rest of that run: the tracks checks stop the Groq
 transcription, and the transcript check stops `session_cleanup` (the tracks stay). The
-checked asset still counts as materialized, so a sensor would launch the next stage on
-it. A stage's `SessionStage.gates` closes that gap: `scribe_output_sensor` launches
-linguist only for a session whose latest `transcript_not_empty` result passed
-(`blocked_sessions`). A session with no result, from before the checks, is not blocked.
-After you fix the cause, re-execute the run from failure: the check runs again, and a
-pass opens the gate. The exception is a tracks check fixed by removing or replacing a
+checked asset still counts as materialized, so it would trigger the next stage. A stage's
+`SessionStage.gates` closes that gap: linguist launches only for a session whose latest
+`transcript_not_empty` result passed (`blocked_sessions`). A session with no result, from
+before the checks, is not blocked. After you fix the cause, re-execute the run from
+failure: the check runs again, and a pass opens the gate (the trigger waits for it). The exception is a tracks check fixed by removing or replacing a
 zip: the re-execution keeps the old run's `astra/craig-zip` tag, so launch a fresh run
 instead (scribe README, "Blocking checks"). Partitioned checks are a Dagster preview; `session_check` hides the
 warning.
@@ -150,8 +212,8 @@ sees one object per key.
 A new asset parameter named after a key gets that resource. Don't name one `config`:
 Dagster reserves it for run config. Tests materialize with `dg.materialize(...,
 resources=...)`, using `astra_pipeline_resources.testing` (`paths_under(tmp_path)`,
-`FakeConfig`, `FakeLlm`); the four apps' `tests/` hold an example each. Sensors still
-read config directly.
+`FakeConfig`, `FakeLlm`); the four apps' `tests/` hold an example each. Sensors and the
+stages' file checks still read config directly.
 
 The episode catalog and the akasha snapshot are not assets: the host recipes
 `just mouthpiece-publish` and `uv run akasha-snapshot` build them (the snapshot needs node,
@@ -175,8 +237,8 @@ restarts without a rebuild and keeps the injected secrets (the same check applie
 
 ### Re-execute a failed run
 
-Sensors never re-launch a stage that was tried for a session, so a failed session stays
-failed until you re-execute it. In the UI, open the run and choose "Re-execute from failure". With GraphQL:
+The automation never re-launches a stage that was tried for a session, so a failed session
+stays failed until you re-execute it. In the UI, open the run and choose "Re-execute from failure". With GraphQL:
 
 ```sh
 curl -s http://localhost:10350/graphql -H 'Content-Type: application/json' -d \
@@ -207,7 +269,7 @@ docker exec astra-dagster-code sh -c 'cd /opt/dagster/app && dagster asset mater
 - A CLI materialize exports no telemetry. When you need traces, launch from the UI or with
   GraphQL `launchRun` (location `astra-pipeline`, repository `__repository__`, job
   `__ASSET_JOB`).
-- A manual materialize bypasses sensor gates, such as mouthpiece's chronicle gate.
+- A manual materialize bypasses the stages' gates, such as mouthpiece's chronicle gate.
 - The container has no `git`, `node` or `time` builtin. Bracket timings with `date +%s`.
 
 ### Re-run a session from scratch
@@ -229,27 +291,33 @@ docker exec astra-dagster-code sh -c 'cd /opt/dagster/app && dagster asset mater
    Add the mouthpiece assets (paid LLM and TTS) and `session_wiki` (a paid host agent run)
    only if they should rerun.
 
-Don't delete the partition: the sensors would not re-launch the stages anyway, because
+Don't delete the partition: the automation would not re-launch the stages anyway, because
 each stage was already tried for that session.
 
 **Don't delete runs.** A run's planned materializations are how Dagster remembers that a
-stage was tried. Deleting the run deletes them; then only the sensor's cursor ledger keeps
-the sensor from launching that paid stage again, and resetting the cursor would launch it.
+stage was tried. Deleting the run deletes them; then only the automation sensor's cursor
+(the "never requested" part) keeps that paid stage from launching again, and after a cursor
+reset the next upstream materialization would launch it.
 
 ### Add or rename a stage
 
 Register a new asset, sensor, schedule or job in its app's `assets.defs`, then add its name
 to the pinned sets in `tests/test_definitions.py`. Give it a retry decision: the shared
-policy or a `NO_RETRY` entry (see "Retries"). A per-session asset uses `sessions`
+policy or a `NO_RETRY` entry (see "Retries"). A new automation-launched stage gets a
+`SessionStage`, `stage_automation` on its first asset, `follows` on the rest, and a
+`stage_sensor` (pinned in `AUTOMATION`). Its upstream must be partitioned by `sessions`:
+one update of an unpartitioned upstream counts as an update of every session. A per-session
+asset uses `sessions`
 from `astra_pipeline_resources.partitions` and declares its upstream in `deps`. Never
 rename an existing one: Dagster keys runs, partitions and sensor cursors on the names. A
 rename orphans that history, and a renamed partitions definition starts empty, so
 `craig_drop_sensor` treats every zip on disk as new and launches paid runs.
 
-A new stage with its own sensor on `ready_sessions` would launch for every old session
-whose upstream is done, because the stage was never tried for any of them. Before it goes
-live, mark the old sessions materialized with a runless materialization tagged
-`astra/adopted` (the pattern in `dagster/migrate_sessions.py`).
+A new stage launches nothing for old sessions on its first evaluation. But every old
+session whose upstream is done counts as never tried, so a manual re-run of its upstream
+would launch the stage for it. To prevent that, mark the old sessions materialized with a
+runless materialization tagged `astra/adopted` (the pattern in
+`dagster/migrate_sessions.py`).
 
 ### The sessions migration (0037 pipe-4b)
 
@@ -281,7 +349,8 @@ docker exec astra-dagster-code sh -c 'cd /opt/dagster/app && python migrate_sess
 
 ## Traps
 
-- **Stale image.** A new asset added to a sensor's target is not live until the deploy. A
+- **Stale image.** A new asset added to a sensor's target or condition is not live until
+  the deploy. A
   one-shot per-partition asset that a stale image skipped never runs on its own; materialize
   it by hand for that partition.
 - **The chronicle gate is a Dagster materialization.** mouthpiece launches when
@@ -291,7 +360,7 @@ docker exec astra-dagster-code sh -c 'cd /opt/dagster/app && python migrate_sess
 - **Secrets come only from `just deploy`.** deploy.sh decrypts SOPS and exports the keys that
   the compose `x-dagster-env` anchor passes in. A container started with plain
   `docker compose up -d` gets empty keys, and paid steps fail with "needs the … secret".
-- **Adopted sessions.** Before the shared set, `linguist_output_sensor` and
+- **Adopted sessions.** Before the shared set, the old `linguist_output_sensor` and
   `heartwood_sensor` registered the whole backlog with no runs (cursor `adopted`). The
   sessions migration turned that into runless materializations tagged `astra/adopted`
   (42 mouthpiece sessions, 54 heartwood sessions on 2026-10-23), so the UI shows them as

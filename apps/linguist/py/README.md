@@ -3,8 +3,8 @@
 linguist turns scribe's raw `script.json` into the canonical session transcript and builds the
 chronicle (the Show → Season → Episode timeline on `akasha.iridi.cc/chronicle`). It runs as
 Dagster assets on the shared `sessions` partitions. `session_transcripts` depends on scribe's
-`session_transcript`, and `scribe_output_sensor` launches both assets below once it is
-materialized:
+`session_transcript`, and `linguist_automation` launches both assets below, in one run, once
+it gets a new materialization:
 
 - `session_transcripts` writes `linguist/transcripts/<NNN>.<slug>.<date>.txt` and
   `linguist/data/<date>.json` in the astra-data clone, plus the campaign-matched LLM context

@@ -1,17 +1,23 @@
 """Dagster wiring structure test — the code location builds; no live run.
 
 Importing the assets builds `dg.Definitions` (Dagster validates the dep graph at
-construction); this asserts the 4-asset graph + the linguist sensor are
-present with the expected keys.
+construction); this asserts the episode graph and its automation sensor are present
+with the expected keys, and ticks that sensor over an ephemeral instance.
 """
 
 from __future__ import annotations
 
 import dagster as dg
 import pytest
+from astra_linguist.assets import session_episode_summary, session_transcripts
 from astra_mouthpiece import assets as mp
 from astra_pipeline_resources.partitions import sessions
-from astra_pipeline_resources.testing import fail_partition, mark_materialized, sessions_instance
+from astra_pipeline_resources.testing import (
+    automation_tick,
+    fail_partition,
+    mark_materialized,
+    sessions_instance,
+)
 
 
 def test_defs_builds() -> None:
@@ -37,7 +43,7 @@ def test_the_episode_assets_have_expected_keys() -> None:
 
 def test_partition_and_sensor_present() -> None:
     assert mp.session_digest.partitions_def is sessions
-    assert mp.linguist_output_sensor.name == "linguist_output_sensor"
+    assert mp.mouthpiece_automation.name == "mouthpiece_automation"
 
 
 def test_session_script_depends_on_digest() -> None:
@@ -47,13 +53,13 @@ def test_session_script_depends_on_digest() -> None:
 
 def test_session_brief_sits_between_digest_and_script_and_has_no_retry() -> None:
     """Brief after digest, script after brief; no retry (a paid ~10-min RLM);
-    the sensor launches it and the module defs carry it."""
+    the automation sensor launches it and the module defs carry it."""
     assert {k.to_user_string() for k in mp.session_brief.dependency_keys} == {"session_digest"}
     assert "session_brief" in {k.to_user_string() for k in mp.session_script.dependency_keys}
     assert mp.session_brief.op.retry_policy is None
-    target = mp.linguist_output_sensor.targets[0]
-    targets = {a.key.to_user_string() for a in (target.assets_defs or [])}
-    assert "session_brief" in targets and "session_script" in targets
+    repo = mp.defs.get_repository_def()
+    targets = mp.mouthpiece_automation.asset_selection.resolve(repo.asset_graph)
+    assert {"session_brief", "session_script"} <= {k.to_user_string() for k in targets}
 
 
 def test_llm_model_is_mouthpieces_own_pin_with_the_shared_default_as_fallback() -> None:
@@ -114,42 +120,71 @@ def test_external_api_assets_have_a_retry_policy() -> None:
     assert mp.session_episode.op.retry_policy is None
 
 
-def _sensor(instance: dg.DagsterInstance) -> dg.SensorResult:
-    result = mp.linguist_output_sensor(dg.build_sensor_context(instance=instance))
-    assert isinstance(result, dg.SensorResult)
-    return result
+#: mouthpiece's definitions with linguist's partitioned assets, as the code location loads
+#: them (alone, the upstream would be an unpartitioned stub).
+DEFS = dg.Definitions.merge(
+    mp.defs, dg.Definitions(assets=[session_transcripts, session_episode_summary])
+)
+EPISODE_GRAPH = {
+    "session_digest",
+    "session_brief",
+    "session_script",
+    "session_audio_clips",
+    "session_episode",
+}
 
 
-def test_linguist_sensor_runs_chronicled_sessions_never_tried(
+class _Ticker:
+    def __init__(self, instance: dg.DagsterInstance) -> None:
+        self.instance, self.cursor = instance, None
+
+    def __call__(self) -> list[str | None]:
+        requests, self.cursor = automation_tick(
+            DEFS, "mouthpiece_automation", self.instance, self.cursor
+        )
+        for request in requests:
+            assert {k.to_user_string() for k in request.asset_selection or []} == EPISODE_GRAPH
+        return [r.partition_key for r in requests]
+
+
+def test_automation_runs_new_chronicled_sessions_never_tried(
     tmp_path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """The chronicle gate is the dependency: a session runs once its episode summary is
-    materialized, if it has a canonical transcript and mouthpiece never tried it."""
+    """The chronicle gate is the trigger: a session runs once its episode summary gets a new
+    materialization, if it has a canonical transcript and mouthpiece never tried it."""
     for date in ("2026-6-22", "2026-6-29", "2026-7-6", "2026-7-13"):
         (tmp_path / f"000.show.{date}.txt").write_text("x")
     monkeypatch.setattr(mp.linguist_io, "TRANSCRIPT_DIR", tmp_path)
-    instance = sessions_instance("2026-6-22", "2026-6-29", "2026-7-6", "2026-7-13", "2026-8-3")
-    # 2026-7-13: summary not yet materialized (gate closed). 2026-8-3: no canonical
-    # transcript (an unmatched campaign). 2026-6-29: already has an episode run.
-    summarized = ("2026-6-22", "2026-6-29", "2026-7-6", "2026-8-3")
-    mark_materialized(instance, "session_episode_summary", *summarized)
+    instance = sessions_instance("2026-6-22", "2026-6-29", "2026-7-6", "2026-8-3")
+    # Before the first tick: 2026-6-22 summarized and never tried (it predates the sensor),
+    # 2026-6-29 already has an episode run, 2026-7-6 failed.
+    mark_materialized(instance, "session_episode_summary", "2026-6-22", "2026-6-29", "2026-7-6")
     mark_materialized(instance, "session_digest", "2026-6-29")
     fail_partition(instance, "session_digest", "2026-7-6")  # failed stays failed
+    tick = _Ticker(instance)
+    assert tick() == []
 
-    result = _sensor(instance)
-    assert [rr.partition_key for rr in result.run_requests or []] == ["2026-6-22"]
-    assert not result.dynamic_partitions_requests
+    # New: 2026-7-13 summarized; 2026-8-3 has no canonical transcript (an unmatched
+    # campaign). The summaries of 2026-6-29 and 2026-7-6 are re-run by hand.
+    instance.add_dynamic_partitions("sessions", ["2026-7-13"])
+    mark_materialized(
+        instance, "session_episode_summary", "2026-7-13", "2026-8-3", "2026-6-29", "2026-7-6"
+    )
+    assert tick() == ["2026-7-13"]
+    assert tick() == []
 
 
-def test_linguist_sensor_waits_for_the_sessions_migration(
+def test_automation_waits_for_the_sessions_migration(
     tmp_path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     (tmp_path / "000.show.2026-6-22.txt").write_text("x")
     monkeypatch.setattr(mp.linguist_io, "TRANSCRIPT_DIR", tmp_path)
-    instance = sessions_instance()
+    instance = sessions_instance("2026-6-22")
     instance.add_dynamic_partitions("mouthpiece_sessions", ["2026-6-22"])
-    result = _sensor(instance)
-    assert not result.run_requests and result.skip_reason
+    tick = _Ticker(instance)
+    tick()
+    mark_materialized(instance, "session_episode_summary", "2026-6-22")
+    assert tick() == []
 
 
 def test_session_digest_waits_on_the_transcript_and_the_chronicle_summary() -> None:
