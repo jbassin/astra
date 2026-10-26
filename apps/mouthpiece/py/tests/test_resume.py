@@ -5,11 +5,15 @@ Fake providers count every paid call, so these prove what a retry pays for. No n
 
 from __future__ import annotations
 
+import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
 from astra_llm import TextRequest, ToolCallRequest
+from astra_mouthpiece.assemble import assemble_episode
 from astra_mouthpiece.models import (
+    AudioManifest,
     DigestStats,
     HostConfig,
     HostPersona,
@@ -101,7 +105,7 @@ def test_a_second_render_of_the_same_script_renders_nothing(tmp_path: Path) -> N
     m2 = synthesize_script(script, provider=second, voices=VOICES, out_dir=tmp_path)
     assert second.texts == []
     assert m2 == m1
-    assert all(Path(c.path).is_file() for c in m2.clips)
+    assert all(c.resolve(tmp_path).is_file() for c in m2.clips)
 
 
 def test_changing_one_turn_re_renders_exactly_that_clip(tmp_path: Path) -> None:
@@ -157,7 +161,7 @@ def test_a_successful_render_removes_clips_under_the_old_names(tmp_path: Path) -
         _script("one"), provider=CountingTurns(), voices=VOICES, out_dir=tmp_path
     )
     assert not (clips / "001.wav").exists()
-    assert Path(manifest.clips[0].path).parent == clips
+    assert manifest.clips[0].resolve(tmp_path).parent == clips
 
 
 def test_a_changed_voice_or_provider_misses_the_cache(tmp_path: Path) -> None:
@@ -190,7 +194,7 @@ def test_dialogue_chunks_are_cached_and_resume(tmp_path: Path) -> None:
     manifest = synthesize_script(script, provider=retry, voices=VOICES, out_dir=tmp_path)
     assert [r[0] for r in retry.requests] == ["bbbbbbbbbb", "cccccccccc"]
     assert manifest.mode == "dialogue"
-    assert [Path(c.path).read_bytes() for c in manifest.clips] == [
+    assert [c.resolve(tmp_path).read_bytes() for c in manifest.clips] == [
         b"aaaaaaaaaa",
         b"bbbbbbbbbb",
         b"cccccccccc",
@@ -369,3 +373,54 @@ def test_an_unparseable_segment_is_not_saved(tmp_path: Path) -> None:
         _generate(BadOnce(), cache)
     assert list((tmp_path / "script-cache").glob("pass-b.*")) == []
     assert len(list((tmp_path / "script-cache").glob("pass-a.*"))) == 1
+
+
+# ── manifests hold clip paths relative to the session dir ───────────────────
+def _ffmpeg_recorder(calls: list[list[str]]):
+    def run(args: list[str]) -> subprocess.CompletedProcess[str]:
+        calls.append(args)
+        if args[0] == "ffprobe":
+            out = '{"streams":[{"sample_rate":"24000","channels":1,"codec_name":"pcm_s16le"}]}'
+            return subprocess.CompletedProcess(args, 0, stdout=out)
+        Path(args[-1]).write_bytes(b"\x00")
+        return subprocess.CompletedProcess(args, 0, stdout="", stderr="")
+
+    return run
+
+
+def test_a_moved_session_dir_still_assembles_from_its_relative_manifest(
+    tmp_path: Path,
+) -> None:
+    script = _script("one", "two")
+    rendered = tmp_path / "rendered"
+    manifest = synthesize_script(script, provider=CountingTurns(), voices=VOICES, out_dir=rendered)
+    assert [c.path for c in manifest.clips] == [
+        f"clips/{c.resolve(rendered).name}" for c in manifest.clips
+    ]
+    moved = tmp_path / "moved"
+    shutil.move(rendered, moved)
+    calls: list[list[str]] = []
+    assemble_episode(manifest, script, out_dir=moved, run=_ffmpeg_recorder(calls))
+    probed = calls[0][-1]
+    assert probed == str(moved / manifest.clips[0].path)
+    assert Path(probed).is_file()
+
+
+def test_an_old_manifest_with_absolute_clip_paths_still_assembles(tmp_path: Path) -> None:
+    script = _script("one", "two")
+    manifest = synthesize_script(script, provider=CountingTurns(), voices=VOICES, out_dir=tmp_path)
+    absolute = [str(c.resolve(tmp_path).resolve()) for c in manifest.clips]
+    old = AudioManifest.model_validate(
+        {
+            **manifest.model_dump(),
+            "clips": [
+                {**c.model_dump(), "path": path}
+                for c, path in zip(manifest.clips, absolute, strict=True)
+            ],
+        }
+    )
+    calls: list[list[str]] = []
+    assemble_episode(old, script, out_dir=tmp_path / "elsewhere", run=_ffmpeg_recorder(calls))
+    assert calls[0][-1] == absolute[0]
+    faded_inputs = [a[a.index("-i") + 1] for a in calls if "afade" in " ".join(a)]
+    assert faded_inputs == absolute

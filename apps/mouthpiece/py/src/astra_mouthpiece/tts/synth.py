@@ -8,7 +8,8 @@ Clips are a cache keyed by content. Each clip is `<out_dir>/clips/<key>.<fmt>`, 
 backend, model and output settings), the render mode, the audio format, and each input's
 voice, rendered text and delivery. A clip whose file already exists is reused, not rendered,
 so a retry after a mid-render failure pays only for the clips that are missing, and a second
-render of the same script pays for none. Next to each clip, `<key>.json` holds its
+render of the same script pays for none. The manifest lists each clip as
+`clips/<key>.<fmt>`, relative to `out_dir`. Next to each clip, `<key>.json` holds its
 `duration_ms`. After a whole render succeeds, files in `clips/` that the new manifest does
 not use are deleted; a failed render deletes nothing. Delete `clips/` to force fresh takes.
 """
@@ -120,6 +121,10 @@ class _ClipStore:
 
     def audio_path(self, key: str) -> Path:
         return self.root / f"{key}.{self.fmt}"
+
+    def manifest_path(self, key: str) -> str:
+        """The clip's path in the manifest: relative to the session dir (``out_dir``)."""
+        return f"{self.root.name}/{key}.{self.fmt}"
 
     def meta_path(self, key: str) -> Path:
         return self.root / f"{key}.json"
@@ -241,10 +246,15 @@ def _synthesize_per_turn(
             store.fmt,
             [{"voice": req.voice, "text": req.text, "emotion": req.emotion}],
         )
-        path, duration = store.clip(key, lambda req=req: provider.synthesize(req))
+        _path, duration = store.clip(key, lambda req=req: provider.synthesize(req))
         keys.add(key)
         clips.append(
-            TtsClip(index=i + 1, speaker=turn.speaker, path=str(path), duration_ms=duration)
+            TtsClip(
+                index=i + 1,
+                speaker=turn.speaker,
+                path=store.manifest_path(key),
+                duration_ms=duration,
+            )
         )
     return clips, keys
 
@@ -278,9 +288,14 @@ def _synthesize_dialogue_chunks(
             [{"voice": d.voice, "text": d.text, "emotion": None} for d in inputs],
         )
         req = DialogueRequest(inputs=inputs)
-        path, duration = store.clip(key, lambda req=req: synth_dialogue(req))
+        _path, duration = store.clip(key, lambda req=req: synth_dialogue(req))
         keys.add(key)
         clips.append(
-            TtsClip(index=i + 1, speaker=chunk[0].speaker, path=str(path), duration_ms=duration)
+            TtsClip(
+                index=i + 1,
+                speaker=chunk[0].speaker,
+                path=store.manifest_path(key),
+                duration_ms=duration,
+            )
         )
     return clips, keys

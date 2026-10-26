@@ -103,7 +103,9 @@ def test_synthesize_script_mock_writes_clips(tmp_path: Path) -> None:
     )
     assert manifest.mode == "turns"
     assert len(manifest.clips) == 2
-    assert all(Path(c.path).exists() for c in manifest.clips)
+    assert all(c.resolve(tmp_path).exists() for c in manifest.clips)
+    # Clip paths are relative to the session dir, so a moved dir still assembles.
+    assert all(c.path.startswith("clips/") for c in manifest.clips)
 
 
 # ── assemble: pure arg-builders ────────────────────────────────────────────

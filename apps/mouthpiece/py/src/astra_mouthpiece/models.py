@@ -7,6 +7,7 @@ returns a `SessionDigest`, the two-pass script returns a `Script`.
 from __future__ import annotations
 
 from collections.abc import Mapping
+from pathlib import Path
 from typing import Any, Literal, get_args
 
 from astra_ontology.sessions import EpisodeKind, SessionOverrides
@@ -196,8 +197,14 @@ class TtsClip(BaseModel):
 
     index: int
     speaker: SpeakerId
+    #: Relative to the session dir (``clips/<key>.<fmt>``). Manifests written before
+    #: 2026-10-26 hold absolute paths; `resolve` reads both.
     path: str
     duration_ms: int
+
+    def resolve(self, session_dir: Path | str) -> Path:
+        """The clip's file: ``path`` under ``session_dir``, or ``path`` itself when absolute."""
+        return Path(session_dir) / self.path
 
 
 class AudioManifest(BaseModel):

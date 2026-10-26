@@ -226,6 +226,7 @@ def assemble_episode(
     script: Script,
     *,
     out_dir: Path | str,
+    clips_root: Path | str | None = None,
     bed: BedOptions | None = None,
     gap_options: GapOptions = DEFAULT_GAP_OPTIONS,
     fade_in_ms: int = DEFAULT_FADE_IN_MS,
@@ -235,7 +236,10 @@ def assemble_episode(
     run: FfmpegRunner = run_ffmpeg,
 ) -> tuple[Path, Path]:
     """Stitch a session's clips into one normalized episode + write a transcript.
-    Returns (episode_path, transcript_path). Requires ffmpeg/ffprobe on PATH."""
+    Returns (episode_path, transcript_path). Requires ffmpeg/ffprobe on PATH.
+
+    A relative clip path is resolved under ``clips_root`` (default ``out_dir``, the session
+    dir the clips were synthesized into); an old manifest's absolute path is used as is."""
     if not manifest.clips:
         raise ValueError(f"No clips to assemble for {manifest.session_id}.")
     out = Path(out_dir)
@@ -243,17 +247,19 @@ def assemble_episode(
     episode_path = out / f"{manifest.session_id}.episode.mp3"
     transcript_path = out / f"{manifest.session_id}.transcript.md"
     fmt = manifest.format
+    base = Path(clips_root) if clips_root is not None else out
+    files = [str(c.resolve(base)) for c in manifest.clips]
 
     with tempfile.TemporaryDirectory() as work_str:
         work = Path(work_str)
-        params = parse_probe(run(probe_args(manifest.clips[0].path)).stdout)
+        params = parse_probe(run(probe_args(files[0])).stdout)
 
         def silence_path(ms: int) -> str:
             return str(work / f"gap-{ms}.{fmt}")
 
         if manifest.mode == "dialogue":
             gaps = [chunk_gap_ms] * (len(manifest.clips) - 1)
-            clip_paths = [c.path for c in manifest.clips]
+            clip_paths = list(files)
             if len(manifest.clips) > 1:
                 run(make_silence_args(silence_path(chunk_gap_ms), chunk_gap_ms, params, fmt))
         else:
@@ -261,9 +267,9 @@ def assemble_episode(
             for ms in set(gaps):
                 run(make_silence_args(silence_path(ms), ms, params, fmt))
             clip_paths = []
-            for i, clip in enumerate(manifest.clips):
+            for i, clip_file in enumerate(files):
                 faded = str(work / f"clip-{i + 1:03d}.{fmt}")
-                run(fade_args(clip.path, faded, params, fmt, fade_in_ms, fade_out_ms))
+                run(fade_args(clip_file, faded, params, fmt, fade_in_ms, fade_out_ms))
                 clip_paths.append(faded)
 
         list_path = work / "concat.txt"

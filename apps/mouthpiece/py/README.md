@@ -44,7 +44,9 @@ what is missing.
   re-renders only the chunk that holds it (in dialogue mode a chunk is several turns).
   After a whole render succeeds, files in `clips/` the new manifest does not use are deleted,
   including clips under the old `NNN.<fmt>` names; a failed render deletes nothing.
-  `manifest.json` lists the clip paths in order, and `assemble.py` reads only those.
+  `manifest.json` lists the clip paths in order, relative to the session dir
+  (`clips/<key>.<fmt>`), and `assemble.py` reads only those. Manifests written before
+  2026-10-26 hold absolute paths; `assemble.py` still reads them as they are.
 - **Script passes** (`script_cache.py`). Pass A's transcript and each Pass B segment's
   parsed tool output are saved to `script-cache/pass-a.<key>.txt` and
   `script-cache/pass-b.<key>.json` as each finishes. `<key>` hashes the whole request (model,
