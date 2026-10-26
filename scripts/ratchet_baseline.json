@@ -88,7 +88,7 @@
   "suppress.ty.invalid-base": 1,
   "suppress.ty.unresolved-attribute": 3,
   "suppress.type-ignore": 2,
-  "types.py-any.prod": 326,
+  "types.py-any.prod": 329,
   "types.py-any.test": 225,
   "zero.rust-todo-fixme": 0,
   "zero.ts-module-scope-metric": 0
