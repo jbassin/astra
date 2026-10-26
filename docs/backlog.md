@@ -62,12 +62,10 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 ## Waiting on an event
 
 - **Thursday 2026-10-29 session** (main session): the first live run of stage automation and
-  resumable paid stages. Check that linguist, then heartwood and mouthpiece, launch on their own
-  after scribe; that each stage runs once; the `astra.mouthpiece.tts.clip_cache` and
-  `script.pass_cache` counters; and cost in SigNoz. Then deploy Dagster with the merged pipeline
-  fixes (second-recording WARN, undated zips, empty-transcript guard, relative clip paths, GLM
-  price), held back so Thursday tests one change set. Expect one craig_drop_sensor WARN for
-  2026-9-26 after that deploy.
+  resumable paid stages, with the pipeline fixes deployed 2026-10-26 (second-recording WARN,
+  undated zips, empty-transcript guard, relative clip paths, GLM price). Check that linguist, then
+  heartwood and mouthpiece, launch on their own after scribe; that each stage runs once; the
+  `astra.mouthpiece.tts.clip_cache` and `script.pass_cache` counters; and cost in SigNoz.
 - **heartwood gate E** (agent, opened 2026-10-22): the next session must publish its wiki edits with
   no command. Check the astra-data commit, the ledger line and the `session_wiki` outcome.
   [`apps/heartwood/py/README.md`](../apps/heartwood/py/README.md)
