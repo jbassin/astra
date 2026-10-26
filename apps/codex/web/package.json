@@ -15,6 +15,7 @@
   "dependencies": {
     "@astra/codex-corpus": "workspace:*",
     "@astra/config": "workspace:*",
+    "@astra/gothic": "workspace:*",
     "@astra/observe": "workspace:*",
     "@astra/site-kit": "workspace:*",
     "@floating-ui/dom": "catalog:",

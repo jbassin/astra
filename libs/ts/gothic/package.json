@@ -10,6 +10,9 @@
   "exports": {
     ".": "./src/index.ts",
     "./theme.css": "./src/theme.css",
+    "./parchment-theme.css": "./src/generated/parchment-theme.css",
+    "./graph-palette.css": "./src/generated/graph-palette.css",
+    "./palette": "./src/generated/palette.ts",
     "./fontsDir": "./src/fontsDir.ts",
     "./fonts/*": "./src/fonts/*"
   },

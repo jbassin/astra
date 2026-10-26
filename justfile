@@ -42,7 +42,7 @@ bootstrap:
     git config core.hooksPath .githooks
 
 # The fast format + lint gate for both lanes over the whole tree (pre-commit runs it on staged files).
-check: (_each "check" "ts-lint,py-lint,docs-check,ontology-check,routes-check,weal-engine-hash-check,assay-store-check")
+check: (_each "check" "ts-lint,py-lint,docs-check,ontology-check,routes-check,tokens-check,weal-engine-hash-check,assay-store-check")
 
 # Lint findings the tools can't fix are printed and don't stop the formatters; `just check`
 # shows what is left.
@@ -63,7 +63,7 @@ test: (_each "test" "py-test,ts-test")
 # installs the crate's pinned toolchain on first use).
 # pg-test and infra-check need Docker on the host (a throwaway Postgres; the pinned tool images).
 # Run everything CI runs, locally (all but the container-only vellum render goldens).
-ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,no-decision-ids " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-e2e,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test,infra-check"))
+ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,tokens-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,no-decision-ids " + base + " HEAD,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-e2e,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test,infra-check"))
 
 # `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
 # they run as Dagster assets; test them with `uv run pytest apps/<domain>/py`.
@@ -120,6 +120,13 @@ ontology-gen *flags:
 routes-gen *flags:
     node --import tsx libs/ts/site-kit/scripts/route-tree.ts "$@"
 
+# The one design-token source is libs/ts/gothic/src/tokens/tokens.ts (ADR 0032); this writes the
+# files under libs/ts/gothic/src/generated/: both themes' CSS, the akasha graph palette and the
+# pixi/GLSL palette. Run it after editing a token.
+# Regenerate gothic's token outputs; `--check` writes nothing and fails if one is stale.
+tokens-gen *flags:
+    node --import tsx libs/ts/gothic/scripts/tokens-gen.ts "$@"
+
 # Writes apps/<name>/web from libs/ts/site-kit/template/ (the next free port in 10350 to 10399
 # unless --port is given), adds the app's block to config.kdl and the fixture, its Pydantic
 # model, its compose service and its Caddy stanza, then regenerates the Zod schema and links the
@@ -161,6 +168,9 @@ ontology-check: (ontology-gen "--check")
 
 # CI job routes-check: no committed route tree is stale (`just routes-gen` fixes it).
 routes-check: (routes-gen "--check")
+
+# CI job tokens-check: no generated token file is stale (`just tokens-gen` fixes it).
+tokens-check: (tokens-gen "--check")
 
 # CI job py-typecheck: ty.
 py-typecheck:
