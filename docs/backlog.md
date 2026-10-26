@@ -68,38 +68,38 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Pipeline
 
-- A second recording on the same date is ignored — agent; product bug (paydown PIPE-12).
-- Empty transcripts are committed as successes — agent; product bug (PIPE-12).
-- The pronunciation lexicon is never loaded, so the IPA step never runs — agent; product bug (PIPE-14).
-- The GLM 5.3 row in the LLM price table has drifted from OpenRouter's price — agent; cost metering.
 - Common-word entity aliases (`war`, `giant`, `herald`) can make heartwood link wrongly — Josh/agent; curate `entity.kdl`.
-- An undated Craig zip is skipped silently; take the date from `info.txt` if it recurs — agent.
 - Nothing checks the live `entity.kdl` for drift when `defs.kdl` or `being.kdl` change; run
   `astra-ontology-entity-seed --check` from the watchdog — agent.
-- heartwood's `EXIT_MEANINGS[9]` text still says "or skipped" — agent.
-- Store episode clip paths relative to the session dir (the manifests hold absolute paths) — agent.
-- `heartwood-revert` cannot revert sessions published before the astra-data snapshot commit — agent.
-- Stale comments: the `config.kdl` `llm` comment (mouthpiece uses its own GLM 5.3 model and a recap
-  format), the `mouthpiece-producer` "experiment-only" comment, the akasha `audio-dir` and compose
-  "runtime volume" comments, heartwood-backend's pyproject description, the heartwood sensor's
-  "image-baked" docstring — agent; Phase 3 comment sweep.
+- `defs.kdl` holds no `ipa=` pronunciations yet, so mouthpiece's TTS applies none; add the
+  names the hosts mispronounce — Josh.
+- Confirm the GLM 5.3 price row (`astra_llm.pricing`, now $0.079/$4.80 per 1M from the
+  2026-10-12 OpenRouter listing) against today's listing — Josh/agent; needs a network call.
 
 ## Deploy and ops
 
 - scribe incoming holds two zips for 2026-10-12; resolve per the scribe README's
   "Blocking checks" (fresh run, not a re-execute) when that session is processed — Josh.
+  (2026-10-26: the second one, `craig_EQJ0J7q9fe2T…`, is a 912-byte stub, which no check
+  counts, and the session is already processed; this item looks closed.)
+- 2026-9-26 had two real recordings. The session was transcribed from
+  `craig_gd2cviJRhL0Q_2026-9-26_17-43-41` (330 MB) and came out empty;
+  `craig_xhzWjJp5Tga6_2026-9-26_22-44-56` (579 MB) was never transcribed and is probably the
+  session. Decide, then re-transcribe (scribe README, "Second recording"; about $2 of Groq,
+  plus the paid stages after it). craig_drop_sensor WARNs about it once after the next
+  Dagster deploy — Josh.
+- Empty transcripts already published in astra-data `linguist/data/`: 2026-8-12 and 2026-8-20
+  (0 lines, from sub-MiB Craig zips that predate the stub floor) and 2026-9-26 (above). The
+  2026-10-26 linguist guard stops new ones; removing these replaces published content —
+  Josh.
 - The edge cannot renew the non-astra hosts it also serves (plex, ntfy, qbit, annex, apex, news):
   DNS-01 times out waiting for propagation (not the old token error). astra's hosts renewed fine —
   Josh (shared edge).
 - Dashboards using orator's old `orator.api` span should switch to the route-named server spans — agent.
 - codex: once release-based serving has run a while, delete the old flat
   `/ruby/data/astra-state/codex/data/{corpus,search}` (kept for a code rollback past cdx-4) — agent.
-- pipe-4b follow-ups: `migrate_sessions.py --allow-launch` should take session keys, not a count;
-  `plan_down` ignores the sensor ledgers; dagster/README should name exactly what resets a sensor
-  cursor (`dagster sensor cursor --delete`, a sensor or location rename) — agent.
 - portal: refresh the five pf2e fixtures (`apps/portal/module/tests/fixtures/pf2e/`) from the live
   world; their live sides are synthesised today — agent.
-- Split the internal Docker network (the one theme P item kept) — agent; Phase 2.
 - `pip-audit` flags `diskcache` (via dspy), which has no fix — agent.
 
 ## Services
