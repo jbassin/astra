@@ -202,15 +202,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Frontends
 
-- akasha still navigates with full-page links; move to SPA navigation with server functions — agent;
-  [ADR 0031](adr/0031-akasha-spa-navigation.md).
-- One design-token source for gothic and the parchment theme — agent; [ADR 0032](adr/0032-one-design-token-source.md).
-- Stale comments: the `site-kit` index header ("Bun runtime", a nonexistent `gothicFontsDevPlugin`),
-  the gothic `theme.css` font-copy note, the compose strider comment ("content/layers/*.md"), the
-  `config.kdl` header's env-override wording, the `sites.caddyfile` "manual DNS record" notes,
-  akasha `build-content.ts`'s Bun `import.meta.dir` note — agent; Phase 3 comment sweep.
-- menhir, weal-overlay, orator and vellum-render still serve vite `/assets/*` with `max-age=0`; pass
-  `{ immutable: true }` to `serveFile` as site-kit does (menhir has a response pins test) — agent.
 - Optional: a vellum dialogue construct so transcripts need no hand-bolded speakers; a pause or
   reduced-motion guard for strider's always-on faction tint — Josh decides.
 

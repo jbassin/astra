@@ -1,21 +1,22 @@
 # Now
 
-Updated 2026-10-25.
+Updated 2026-10-26.
 
 ## In flight
 
-- **Tech-debt paydown 0037, Phase 3.** The comment sweeps, READMEs, tests-by-behaviour, dead-code
-  pass and four frontend fixes have landed (status line 2026-10-25 in section 0.1 of
+- **Tech-debt paydown 0037, Phase 3.** Every agent item has landed: the comment sweeps, READMEs,
+  tests by behaviour, dead code, the frontend fixes, akasha SPA navigation (ADR 0031), one design-token
+  source (ADR 0032), the debt ratchet, immutable assets for the four non-site-kit servers and the
+  dark-mode script removal (status line 2026-10-26 in section 0.1 of
   [`thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`](../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md)).
-  Agents are building fe-c (akasha SPA navigation, ADR 0031), fe-d (one design-token source,
-  ADR 0032) and p3-ratchet (CI fails when a debt count rises).
 
 ## Next action
 
-Merge fe-c, fe-d and p3-ratchet, then deploy the frontends. Then the remaining agent items: the
-stale comments listed in the backlog, immutable assets for the four non-site-kit servers, and the
-site-kit dark-mode leftovers. Calls parked for Josh are under "Paydown decisions (Josh)" in the
-backlog; steps only he can do are under "Smaller calls".
+Drop the dead weal v1 `funcs` table (11 live rows): export it under `artifacts/`, write the
+migration `apps/weal/bot/migrations/0002_drop_funcs.sql` and deploy it. It deletes live rows, so
+it needs Josh's flag first.
+After that, Phase 3 waits only on the calls under "Paydown decisions (Josh)" in the backlog; steps
+only he can do are under "Smaller calls".
 
 ## Blocked or waiting
 

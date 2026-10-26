@@ -365,6 +365,12 @@ token source keep today's look exactly (no stakeholder sign-off needed); assay t
   fe-c akasha SPA (ADR 0031), fe-d one token source (ADR 0032), p3-ratchet. Left after those:
   the weal v1 `funcs` drop (a migration that deletes 11 rows; flag first), immutable assets for
   menhir, weal-overlay, orator and vellum-render, and the site-kit dark-mode leftovers.
+- **Status 2026-10-26 (session 7).** Merged: fe-c akasha SPA (#106), fe-d one token source (#107),
+  p3-ratchet (#108), immutable assets for the four non-site-kit servers (#105) and the stale
+  comments (#104); live since 2026-10-25 at `bb6a1f65`. The dark-mode leftover was site-kit's
+  `forceDarkTheme` script, which set a `saved-theme` attribute nothing reads; removed (#110). The
+  `pg-test` flake on `main` was the orator ingest test stubs ignoring an already-aborted signal
+  (#109). Left in Phase 3: the weal v1 `funcs` drop (flag first), then the parked calls.
 - Wave 2 list: repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
   `[tool.uv.sources]` (after repo-2); lib-3 dead config and the every-field-has-a-reader check
   (after lib-2, pipe-2); lib-7b Python observe bootstrap; lib-8a typed KDL decoders; lib-9 vellum
