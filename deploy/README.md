@@ -33,7 +33,8 @@ layers (about 100 MB at most) and the two Chromium services share one ~1 GB brow
 that way: an `ARG APP` or a repo mount in an `os-*` stage makes every manifest change reinstall
 Chromium. Dagster and smart-exporter keep their own Dockerfiles. `just infra-check` (CI job
 `infra-check`) lints all of this before a deploy: compose config, `sites.caddyfile` under the
-edge's Caddy build, shellcheck, the systemd units and hadolint; `deploy/tests/infra-check.sh`
+edge's Caddy build (and its health gate and render cap, exercised with curl), shellcheck, the
+systemd units and hadolint; `deploy/tests/infra-check.sh`
 lists the pinned tool versions. The repo-root `.dockerignore` is a short deny-list; keep it free of `!` re-includes
 (its header says why).
 
@@ -140,7 +141,13 @@ custom caddy build with the Cloudflare DNS plugin) imports the deploy checkout's
 `sites.caddyfile`. That file carries no secret: the Cloudflare token is the `{$CF_API_TOKEN}`
 placeholder, which the edge's systemd drop-in supplies at start and `just caddy-reload` supplies on a
 reload (`just caddy-validate` dry-runs the merged config). Editor and admin routes are limited to
-the local network with `import local_only`.
+the local network with `import local_only`. `astra_site`, which every site block imports, also
+answers 404 to a public client on the health paths (`/healthz`, `/health`, `/api/v1/health`). The
+internal probers still work: compose healthchecks and the codex release prune call container ports,
+the deploy health wait and `astra-metrics` read Docker, and `astra-smoke` and Uptime Kuma reach the
+edge from the LAN (the router's hairpin NAT hands host traffic to Caddy as 192.168.0.1). A new
+prober that comes from outside the LAN must call the service's port instead. vellum's `/render`
+takes at most a 1 MB body (413 beyond it), set by `request_body` in its block.
 
 ### Networks
 

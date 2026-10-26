@@ -114,8 +114,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 
 ## Deploy and ops
 
-- vellum `/render` (public) reads its JSON body with no size cap; add a Caddy `request_body`
-  limit — agent.
 - portal `/mcp`: register the abort listener before `handleRequest` resolves (or check
   `req.signal.aborted`) so an early disconnect can't leak a request's McpServer — agent.
 - weal: the old-vs-new harness found 5 inputs that already end in stage `internal` (they page);
@@ -125,8 +123,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - The edge cannot renew the non-astra hosts it also serves (plex, ntfy, qbit, annex, apex, news):
   DNS-01 times out waiting for propagation (not the old token error). astra's hosts renewed fine —
   Josh (shared edge).
-- `/healthz` is reachable from the internet through the Caddy catch-alls; on orator each hit runs a
-  Postgres ping. Block `/healthz` at the edge (cheap) — agent.
 - Dashboards using orator's old `orator.api` span should switch to the route-named server spans — agent.
 - codex: once release-based serving has run a while, delete the old flat
   `/ruby/data/astra-state/codex/data/{corpus,search}` (kept for a code rollback past cdx-4) — agent.

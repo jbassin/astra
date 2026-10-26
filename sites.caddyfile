@@ -49,6 +49,22 @@
 	header ?X-Content-Type-Options nosniff
 	header ?X-Frame-Options SAMEORIGIN
 	header ?Strict-Transport-Security "max-age=31536000"
+
+	# Health paths are LAN-only on every host: a public client gets a bare 404. The services'
+	# /healthz (service-kit; orator's runs a Postgres ping), vellum-render and portal's /health,
+	# and orator's legacy /api/v1/health. The ranges are local_only's. Nothing internal loses
+	# its probe: compose healthchecks and the codex release prune call the container port, the
+	# deploy health wait and host-metrics read Docker, and astra-smoke and Uptime Kuma go through
+	# this edge from the LAN (hairpin NAT: the router hands them over as 192.168.0.1). A `handle`
+	# so it runs before each site's own handle blocks; astra_site is imported first, so it wins
+	# the overlap with vellum's @render (which also routes /health).
+	@public_health {
+		path /healthz /health /api/v1/health
+		not client_ip private_ranges 100.64.0.0/10
+	}
+	handle @public_health {
+		respond 404
+	}
 }
 
 # NB: (local_only) — gate to private IPs — is already defined by the parent
@@ -178,9 +194,15 @@ vellum.iridi.cc {
 	import astra_site
 
 	# The PNG render API → the vellum-render service (warm Chromium, egress-blocked,
-	# semaphore-gated). Same-origin so the editor needs no CORS / env var.
+	# semaphore-gated). Same-origin so the editor needs no CORS / env var. /health is
+	# LAN-only (astra_site's health gate). request_body caps the body at 1MB (over the cap
+	# → 413): the service rejects a source over 64 KiB, and JSON escaping can grow a valid
+	# source to at most 6× that (~384 KiB) as a body; the largest real document is ~9 KB.
 	@render path /render /health
 	handle @render {
+		request_body {
+			max_size 1MB
+		}
 		reverse_proxy localhost:10368
 	}
 
