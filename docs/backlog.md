@@ -107,11 +107,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - Split the internal Docker network (the one theme P item kept) — agent; Phase 2.
 - `pip-audit` flags `diskcache` (via dspy), which has no fix — agent.
 
-## assay
-
-- Move the books out of codex and the PDF out of git — agent;
-  [ADR 0018](adr/0018-book-binaries-stay-in-history.md), [ADR 0019](adr/0019-assay-scope.md).
-
 ## Services
 
 - Run `just portal-module-install` once against the live Foundry to confirm the `docker cp`

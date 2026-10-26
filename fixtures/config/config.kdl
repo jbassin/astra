@@ -76,6 +76,9 @@ codex {
     port 20001
     data-path "codex/data"
 }
+assay {
+    book-out-path "assay/books"
+}
 weal {
     service-name "astra.weal-bot"
     database-url ""

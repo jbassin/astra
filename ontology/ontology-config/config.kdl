@@ -36,6 +36,8 @@ data {
     //   heartwood/requests/      the Dagster <-> host request files, logs/ inside
     //   codex/data/              codex releases/ (corpus + Pagefind index), AoN + Foundry snapshots
     //   menhir/                  menhir results.jsonl
+    //   assay/books/             the Liturgy PDF (`just book` creates it on the host; no
+    //                            container uses it, so init_artifacts leaves it alone)
     //   audio/{akasha,mouthpiece,orator}/  audio the frontends and orator serve
     //   postgres/{dagster,orator,weal}/    PGDATA (uid 70, mode 0700, set by the postgres entrypoint)
     //   portal-oauth/            portal's OAuth state
@@ -404,6 +406,13 @@ codex {
     service-name "astra.codex"
     port 10374
     data-path "codex/data"
+}
+
+assay {
+    // assay's book build (`just book`, apps/assay/py/README.md). book-out-path is the dir
+    // the compiled Liturgy PDF is written to, under data.root: a build output, never in a
+    // checkout. The book sources and the committed .tex stay in apps/assay/py/books/.
+    book-out-path "assay/books"
 }
 
 menhir {
