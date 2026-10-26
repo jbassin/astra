@@ -3,7 +3,8 @@
 vellum-render turns a vellum document into a PNG. It keeps one warm headless Chromium (Playwright)
 and renders each request in a fresh browser context. Compose service `vellum-render`, port 10368,
 `service.name=astra.vellum-render`; Caddy routes `vellum.iridi.cc/render` and `/health` here
-(the editor in `apps/vellum/web` calls it same-origin). Endpoints: `POST /render` →
+(the editor in `apps/vellum/web` calls it same-origin). At the edge, `/render` bodies over 1 MB get
+413 before they reach the service, and `/health` answers only LAN clients. Endpoints: `POST /render` →
 `image/png`, `GET /health` → `{ready}`, and `/healthz` (the compose healthcheck). The service is
 defined in `src/app.ts` on `@astra/service-kit` and started by `src/server.ts`; on SIGTERM it
 drains in-flight renders, then closes Chromium. `src/pins.test.ts` pins every response against a

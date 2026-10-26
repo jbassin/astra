@@ -6,6 +6,12 @@
 #   caddy       `caddy adapt` and `caddy validate` on sites.caddyfile, imported by
 #               deploy/tests/edge-stub.caddyfile (the parent's `local_only` snippet), using the
 #               edge's own Caddy build (infra-check.Dockerfile target `caddy`).
+#   edge        runs sites.caddyfile's routes in that Caddy and checks two edge rules with curl:
+#               health paths answer 404 to a public client on every host but still reach the
+#               upstream from the LAN, and vellum's /render refuses a body over its cap (413).
+#               The adapted config is rewritten to plain HTTP on one port, with no TLS app, and
+#               X-Forwarded-For stands in for a public client IP. A stub upstream (it reads
+#               the whole body) listens on every port the sites proxy to. Needs jq and curl.
 #   shell       shellcheck on every tracked *.sh, *.bash and sh/bash-shebang file.
 #   systemd     `systemd-analyze --user verify` on deploy/systemd's units, in a container with
 #               the repo at /ruby/data/astra-deploy (the path the units run from).
@@ -53,6 +59,85 @@ check_caddy() {
     return 1
   fi
   echo "caddy: sites.caddyfile adapts and validates"
+}
+
+# The edge rules, exercised. The Caddyfile is adapted as-is; only the transport changes (see the
+# header), so every route, matcher and handle order under test is the one production loads.
+check_edge() {
+  build_tool caddy "$caddy_image" || return 1
+  local adapted scratch
+  adapted=$(run_tool "$caddy_image" caddy adapt --adapter caddyfile \
+    --config deploy/tests/edge-stub.caddyfile 2>/dev/null) || return 1
+  scratch=$(mktemp -d) || return 1
+  chmod 755 "$scratch"
+  # Trust X-Forwarded-For from the test client (Docker's gateway, a private address). The stub
+  # upstream echoes the request body, so it reads all of it (as vellum-render does); an
+  # upstream that answered unread would hide the cap.
+  jq '
+    ([.. | .dial? // empty] | unique | map(":" + split(":")[1])) as $ports
+    | del(.apps.tls)
+    | .apps.http.servers.srv0 |= (
+        .listen = [":8080"]
+        | .automatic_https = {disable: true}
+        | .trusted_proxies = {source: "static",
+            ranges: ["127.0.0.0/8", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]}
+        | .client_ip_headers = ["X-Forwarded-For"])
+    | .apps.http.servers.upstream = {
+        listen: $ports,
+        automatic_https: {disable: true},
+        routes: [{handle: [{handler: "static_response", status_code: 200,
+          body: "upstream {http.request.body}"}]}]}
+  ' <<<"$adapted" >"$scratch/edge.json" || return 1
+
+  local name="astra-infra-check-edge-$$" port rc=0
+  docker run -d --rm --name "$name" -p 127.0.0.1::8080 -v "$scratch:/cfg:ro" \
+    "$caddy_image" caddy run --config /cfg/edge.json >/dev/null || return 1
+  port=$(docker port "$name" 8080/tcp | head -n1 | sed 's/.*://')
+  local _
+  for _ in $(seq 50); do
+    curl -s -o /dev/null "http://127.0.0.1:$port/" && break
+    sleep 0.2
+  done
+
+  # expect STATUS HOST PATH [curl args...]: the request must answer STATUS.
+  expect() {
+    local want=$1 host=$2 path=$3 got
+    shift 3
+    got=$(curl -s -o /dev/null -w '%{http_code}' -H "Host: $host" "$@" \
+      "http://127.0.0.1:$port$path")
+    if [ "$got" != "$want" ]; then
+      echo "edge: $host$path answered $got, want $want (${*:-no extra curl args})" >&2
+      rc=1
+    fi
+  }
+  local public=(-H "X-Forwarded-For: 203.0.113.7") hosts host path
+  mapfile -t hosts < <(jq -r '[.. | .host? // empty | .[]] | unique | .[]' <<<"$adapted")
+  for host in "${hosts[@]}"; do
+    for path in /healthz /health /api/v1/health '/healthz?probe=1'; do
+      expect 404 "$host" "$path" "${public[@]}"
+    done
+  done
+  # The LAN still reaches every path a prober uses; a public client still reaches the sites.
+  expect 200 codex.iridi.cc /healthz
+  expect 200 menhir.iridi.cc /healthz
+  expect 200 orator.iridi.cc /healthz
+  expect 200 vellum.iridi.cc /health
+  expect 200 portal.iridi.cc /health
+  expect 200 codex.iridi.cc /spell/fireball "${public[@]}"
+  expect 200 orator.iridi.cc /api/v1/queue "${public[@]}"
+  # The render cap: a body holding the service's largest source passes; over 1MB is refused,
+  # with or without a Content-Length.
+  { printf '{"source":"'; head -c 65536 /dev/zero | tr '\0' a; printf '","mode":"mechanical"}'; } \
+    >"$scratch/ok.json"
+  head -c 2000000 /dev/zero | tr '\0' a >"$scratch/big.json"
+  expect 200 vellum.iridi.cc /render "${public[@]}" --data-binary "@$scratch/ok.json"
+  expect 413 vellum.iridi.cc /render "${public[@]}" --data-binary "@$scratch/big.json"
+  expect 413 vellum.iridi.cc /render "${public[@]}" -H "Transfer-Encoding: chunked" \
+    --data-binary "@$scratch/big.json"
+  docker rm -f "$name" >/dev/null 2>&1
+  rm -rf "$scratch"
+  [ "$rc" -eq 0 ] && echo "edge: health paths 404 to the public on ${#hosts[@]} hosts; /render caps at 1MB"
+  return "$rc"
 }
 
 shell_scripts() {
@@ -116,7 +201,7 @@ check_playwright() {
   echo "playwright $pinned"
 }
 
-checks=(compose caddy shell systemd hadolint playwright)
+checks=(compose caddy edge shell systemd hadolint playwright)
 if [ -n "${INFRA_CHECK_ONLY:-}" ]; then IFS=, read -ra checks <<<"$INFRA_CHECK_ONLY"; fi
 failed=()
 for c in "${checks[@]}"; do
