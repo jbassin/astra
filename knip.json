@@ -22,6 +22,9 @@
     },
     "libs/ts/vellum-lang": {
       "entry": ["scripts/*.ts"]
+    },
+    "libs/ts/gothic": {
+      "entry": ["scripts/*.ts"]
     }
   }
 }

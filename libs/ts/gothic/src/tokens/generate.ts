@@ -89,7 +89,7 @@ function paletteBlock(constName: string, themeName: string, theme: Theme): strin
   ];
 }
 
-export interface GeneratedFile {
+interface GeneratedFile {
   /** Path relative to the gothic package root. */
   readonly path: string;
   readonly contents: string;

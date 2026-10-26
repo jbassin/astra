@@ -12,7 +12,7 @@
  * reload.
  */
 
-export type ErrorAction = "show-error" | "reload" | "load";
+type ErrorAction = "show-error" | "reload" | "load";
 
 const pathAndQuery = (u: URL) => u.pathname + u.search;
 

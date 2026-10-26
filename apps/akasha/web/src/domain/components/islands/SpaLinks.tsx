@@ -14,7 +14,7 @@ export function SpaLinks() {
   const router = useRouter();
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      const anchor = (e.target as Element | null)?.closest?.("a[href]");
+      const anchor = e.target instanceof Element ? e.target.closest("a[href]") : null;
       if (!(anchor instanceof HTMLAnchorElement) || isBrowserClick(e, anchor)) return;
       const href = spaHref(new URL(anchor.href), new URL(window.location.href));
       if (href === null) return;

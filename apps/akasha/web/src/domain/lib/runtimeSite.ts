@@ -12,7 +12,7 @@
  * that, so PAGES and BODIES stay in the server build. Components import its types alone.
  */
 import { BODIES } from "@/generated/bodies";
-import { ALIASES, type GeneratedPage, PAGES, SITE } from "@/generated/site";
+import { ALIASES, type GeneratedPage, PAGES } from "@/generated/site";
 import { TRANSCRIPT_MINUTES } from "@/generated/transcripts";
 
 import {
@@ -30,8 +30,6 @@ import {
   type SiteDoc,
 } from "./site";
 import { type FullSlug, resolveRelative, type SimpleSlug } from "./slug";
-
-export { SITE };
 
 // ── reconstruct the queryable index from the generated pages ──────────────────────
 function reconstruct(pages: GeneratedPage[]): SiteData {

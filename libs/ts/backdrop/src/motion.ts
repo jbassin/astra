@@ -4,7 +4,7 @@
 // toggling it in the OS stops or restarts the animation without a reload.
 
 /** The media query a backdrop follows. */
-export const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
 /** The query in this browser, or undefined where there is no `matchMedia` (SSR, old engines). */
 export function reducedMotionMedia(): MediaQueryList | undefined {

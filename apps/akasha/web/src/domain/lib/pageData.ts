@@ -29,7 +29,7 @@ import type { FullSlug } from "./slug";
 
 const log = getLogger("astra.akasha-frontend");
 
-export type WikiPageData =
+type WikiPageData =
   | { kind: "content"; slug: string; title: string; view: ContentView }
   | { kind: "folder"; slug: string; title: string; view: FolderView }
   | { kind: "alias"; slug: string; title: string; redirUrl: string; ogSlug: string };
@@ -88,7 +88,7 @@ export function chronicleShowData(show: string): ChronicleShow | null {
   return SHOWS.find((s) => s.show === show) ?? null;
 }
 
-export interface ChronicleEpisodeData {
+interface ChronicleEpisodeData {
   slug: string;
   show: ChronicleShow;
   season: ChronicleSeason;
