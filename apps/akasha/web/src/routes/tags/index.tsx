@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { TagIndex } from "@/domain/components/TagListing";
-import { tagIndexView } from "@/domain/lib/runtimeSite";
+import { getTagIndex } from "@/domain/lib/pageDataFns";
 
 // /tags — the tag index (every tag + its first 10 pages). Ports faerrin
 // tags/[...tag].astro's tag="index" branch.
 export const Route = createFileRoute("/tags/")({
-  loader: () => {
-    const view = tagIndexView();
+  loader: async () => {
+    const view = await getTagIndex();
     return { slug: view.slug, view };
   },
   head: () => ({ meta: [{ title: "Tag Index — Akasha" }] }),

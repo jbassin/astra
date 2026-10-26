@@ -20,6 +20,14 @@ input is session audio: `/audio/<date>.mp3` is served from `/ruby/data/astra-sta
 - `transcripts/`: one lazy module per session, plus an index of import thunks.
 - `public/` endpoints: RSS `index.xml`, `sitemap.xml`, `static/contentIndex.json`.
 
+Route loaders get their page data from the server functions in `src/domain/lib/pageDataFns.ts`
+(the logic is in `pageData.ts`). SSR runs them inline; a client navigation fetches them. Only
+those functions import `bodies.ts`, the page index in `site.ts`, `chronicle.ts` and the
+transcript modules, so none of them reach the browser. The client bundle carries only the
+Explorer tree (`EXPLORER_TREE`) and the site title. Each call gets an `akasha.page_data` span,
+the `akasha.page_data.requests` counter (by `kind` and `outcome`) and the
+`akasha.page_data.duration` histogram.
+
 `pnpm run build` then runs `scripts/build-search.ts`, which feeds the rendered HTML to Pagefind's
 Node indexing API and writes `dist/client/pagefind/`.
 
@@ -41,9 +49,12 @@ Node indexing API and writes `dist/client/pagefind/`.
   old Quartz site. Don't "improve" them: any slug change renames pages and breaks bookmarks.
   Slugs keep commas (`Script/Through-a-Song,-Darkly/2025-10-20`) and unpadded dates.
 - **Transcript bodies never go into a bundle-wide module.** Each is about 1 MB. They stay one lazy
-  module per session and reach a page only through the `transcriptBody` server function
-  (`transcriptBodyFn.ts`), which keeps them out of the client bundle. Inlining them into
-  `bodies.ts` makes vitest run out of memory and ships them to every browser.
+  module per session and reach a page only through the `getWikiPage` server function
+  (`pageData.ts`). Inlining them into `bodies.ts` makes vitest run out of memory.
+- **Routes and components never import the generated content modules.** Importing `bodies.ts`,
+  `chronicle.ts`, `PAGES` from `site.ts` or `runtimeSite.ts` from a route or component puts
+  them back in the client bundle (about 1.7 MB with the real data). Go through a server
+  function in `pageDataFns.ts`; type-only imports are fine.
 - **Don't run two build-content passes at once** (for example typecheck and test in parallel).
   Both delete and rewrite `src/generated/transcripts/`, and the race fails with `ENOTEMPTY`.
 - **`<body data-slug>` is a contract.** The Graph and TranscriptPlayer islands read it, so every

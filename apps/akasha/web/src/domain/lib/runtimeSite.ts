@@ -1,5 +1,5 @@
 /**
- * Runtime site index — the SSR/client-safe view layer over the generated module.
+ * Runtime site index — the server-side view layer over the generated module.
  *
  * The generated `src/generated/site.ts` bakes the snapshot-derived PAGES (+ aliases,
  * Explorer tree, tag/folder lists). Here we reconstruct a queryable {@link SiteData}
@@ -8,9 +8,8 @@
  * loaders return. Components stay dumb: every href is pre-resolved here via the lifted
  * `resolveRelative`, and dates are ISO strings (formatted deterministically in the UI).
  *
- * This module imports only node-free code (site.ts is now node-free), so it is safe in
- * both the SSR server bundle and the client bundle (TanStack re-runs loaders on client
- * navigation).
+ * Only `pageData.ts` imports this module, and only the page-data server functions reach
+ * that, so PAGES and BODIES stay in the server build. Components import its types alone.
  */
 import { BODIES } from "@/generated/bodies";
 import { ALIASES, type GeneratedPage, PAGES, SITE } from "@/generated/site";
@@ -78,8 +77,8 @@ export interface ContentView {
   /** approximate reading time (minutes) — for ContentMeta */
   readingMinutes: number;
   /** build-rendered vellum body HTML (gothic + resolved crossrefs, N3). For a
-   *  transcript this is "" from contentView — the (much larger) body is loaded by
-   *  the route loader via the transcriptBody server fn (see `transcript`). */
+   *  transcript this is "" from contentView — `wikiPageData` (pageData.ts) fills in
+   *  the much larger code-split body (see `transcript`). */
   bodyHtml: string;
   /** true for a reconstituted transcript page (Script/<campaign>/<date>) — its body
    *  is code-split + server-loaded, not baked into the BODIES bundle. */

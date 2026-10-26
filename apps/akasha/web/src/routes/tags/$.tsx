@@ -1,15 +1,15 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
 import { TagPage } from "@/domain/components/TagListing";
-import { tagExists, tagView } from "@/domain/lib/runtimeSite";
+import { getTagPage } from "@/domain/lib/pageDataFns";
 
 // /tags/<tag> — pages carrying a tag (hierarchical tags allowed, e.g.
 // /tags/Divinity/Fiends). Ports faerrin tags/[...tag].astro's specific-tag branch.
 export const Route = createFileRoute("/tags/$")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const tag = params._splat ?? "";
-    if (!tagExists(tag)) throw notFound();
-    const view = tagView(tag);
+    const view = await getTagPage({ data: tag });
+    if (!view) throw notFound();
     return { slug: view.slug, tag, view };
   },
   head: ({ loaderData }) =>

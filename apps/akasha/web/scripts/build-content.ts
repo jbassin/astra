@@ -208,8 +208,8 @@ function emitBodies(site: SiteData, snapshot: Snapshot, skip: Set<string>): stri
 /**
  * Emit transcript bodies code-split: one lazy module per session under
  * `generated/transcripts/<i>.ts` (each ~1 MB), plus an index module of dynamic-import
- * thunks (`TRANSCRIPT_BODIES`) + a small minutes map (`TRANSCRIPT_MINUTES`). The
- * transcriptBody server fn imports the thunks (server-only), so the heavy HTML never
+ * thunks (`TRANSCRIPT_BODIES`) + a small minutes map (`TRANSCRIPT_MINUTES`). Only the
+ * page-data server functions (`pageData.ts`) import the thunks, so the heavy HTML never
  * enters the main or client bundle. Returns the count.
  */
 function emitTranscriptBodies(bodies: Record<string, { html: string; minutes: number }>): string {
@@ -234,8 +234,8 @@ function emitTranscriptBodies(bodies: Record<string, { html: string; minutes: nu
     "transcripts.ts",
     [
       "/** Transcript bodies, code-split one lazy module per session (each ~1 MB) so the",
-      " *  ~115 MB of HTML never enters the main bundle. transcriptBodyFn imports these",
-      " *  server-side; the route loader injects the body at SSR. */",
+      " *  ~115 MB of HTML never enters the main bundle. Only the page-data server",
+      " *  functions (pageData.ts) import these. */",
       "export const TRANSCRIPT_BODIES: Record<string, () => Promise<{ default: string }>> = {",
       ...thunks,
       "};",
