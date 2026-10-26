@@ -21,6 +21,7 @@ from astra_pipeline_resources.partitions import (
     stage_automation,
     stage_sensor,
 )
+from astra_pipeline_resources.stage_audit import adopt
 from astra_pipeline_resources.testing import (
     automation_tick,
     cancel_partition,
@@ -304,4 +305,15 @@ def test_the_later_assets_never_launch_on_their_own() -> None:
     tick = Ticker(instance)
     tick()
     mark_materialized(instance, "stage", "2026-10-29")
+    assert tick() == []
+
+
+def test_an_adopted_old_session_never_launches() -> None:
+    """The adoption a held session gets before the sensors start: a later upstream re-run
+    launches nothing, like any other tried stage."""
+    instance = existing_instance()
+    adopt(instance, STAGE, ["never-tried"])
+    tick = Ticker(instance)
+    assert tick() == []
+    upstream_done(instance, "never-tried")
     assert tick() == []
