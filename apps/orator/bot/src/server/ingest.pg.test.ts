@@ -23,18 +23,27 @@ import { JobHub } from "./jobhub";
 const PLAYLIST = "https://youtube.com/playlist?list=PL1";
 const ENTRIES = ["a", "b", "c"].map((videoId) => ({ videoId, title: videoId.toUpperCase() }));
 
+/**
+ * Rejects once any of `signals` aborts, including one that aborted before the call: `stop()` can
+ * land between an item's `downloading` write and its yt-dlp call, as `runProcess` allows for.
+ */
+function untilAborted(...signals: (AbortSignal | undefined)[]): Promise<never> {
+  return new Promise((_, reject) => {
+    const stop = () => reject(new Error("yt-dlp was stopped"));
+    for (const signal of signals) {
+      if (signal?.aborted) stop();
+      signal?.addEventListener("abort", stop);
+    }
+  });
+}
+
 /** Downloads every id at once except `hang`, which wait until `signal` (or `release`) aborts. */
 function ytdlp(hang: Set<string>, release?: AbortSignal): YtDlp {
   return {
     enumerate: () => Promise.resolve({ title: "OST", entries: ENTRIES }),
     download(target, destDir, onProgress, signal) {
       const videoId = target.videoId ?? "single";
-      if (hang.has(videoId))
-        return new Promise((_, reject) => {
-          const stop = () => reject(new Error("yt-dlp was stopped"));
-          signal?.addEventListener("abort", stop);
-          release?.addEventListener("abort", stop);
-        });
+      if (hang.has(videoId)) return untilAborted(signal, release);
       const filePath = join(destDir, `${videoId}.webm`);
       writeFileSync(filePath, "fake-audio");
       onProgress?.(100);
@@ -142,10 +151,7 @@ describe.skipIf(TEST_DATABASE_URL === undefined)(
       const store = new PostgresStore(db.url);
       const hangingList: YtDlp = {
         ...ytdlp(new Set()),
-        enumerate: (_url, signal) =>
-          new Promise((_, reject) =>
-            signal?.addEventListener("abort", () => reject(new Error("stopped"))),
-          ),
+        enumerate: (_url, signal) => untilAborted(signal),
       };
       const svc = ingest(store, hangingList);
       const { job, done } = await svc.start(PLAYLIST);
