@@ -47,40 +47,12 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       cap (recent episodes run 6.6k to 6.7k words).
 
 ### Smaller calls (Josh)
-- [ ] Install the Renovate GitHub app (Mend Renovate) on the astra repo; `renovate.json` is in place, so
-      its first run opens the Dependency Dashboard issue and a digest-pinning PR.
-- [ ] In `/ruby/data/astra-deploy`, delete the pre-move dirs `apps/{akasha,heartwood,mouthpiece}-backend`
-      and `apps/linguist/src`: they hold only ignored caches (checked 2026-10-26), and the agent is
-      blocked from deleting in the deploy checkout. The dev tree's copies are gone.
-- [ ] Confirm the Ashen Pact index page may stay visible on akasha (it was meant to be hidden; it is now in astra-data).
-- [ ] Portal: delete the pre-stamp Goblin Warrior debris in the world by hand; live-test the
-      unstamped-delete refusal and the `allow-macro-execution` off switch (opened 2026-07-08).
-- [ ] Remove the stale `iridi.cc` AAAA record (old ISP IPv6 prefix; opened 2026-08-10).
-- [ ] Optional: delete or rebase `origin/review/loti2-parentheticals` (closed pull request #1 from
-      July; the layout move makes it conflict).
-- [ ] Update the portal Foundry module to 0.5.0 (svc-2): in Foundry's module list choose Update
-      (the server serves the manifest at `https://portal.iridi.cc/module/module.json`), then
-      `just deploy --restart portal-headless` and reload open GM tabs. Until then the server takes
-      the 0.4.x module on the legacy path with a WARN. Foundry is 14.365; `module.json` is verified
-      only for 13.
-- [ ] Remove the SOPS keys `anthropic_api_key`, `cartesia_api_key` and `orator_controller_api_key` from
-      `deploy/sops/secrets.enc.yaml`; nothing reads them since pipe-2 and lib-3.
-- [ ] Delete the root-owned `/ruby/data/experiments/faerrin/pkg/wretch/data/saved` (nothing mounts
-      it since pipe-1).
 - [ ] Create a SigNoz service-account key (Editor role) and add it:
       `sops set deploy/sops/secrets.enc.yaml '["signoz_api_key"]' '"<key>"'` (merge in a PR), then
       `just signoz-rules-apply` (expect 8 new rules, 1 updated), `--yes`, `just signoz-rules-check`.
       Until then the watchdog skips the rules check (ops-4).
 - [ ] Supply IPA for the campaign names TTS mispronounces: `ipa="…"` on entries in `defs.kdl`
       (pipe-5 wired it to ElevenLabs; no IPA data exists yet).
-- [ ] Remove the faerrin-era unit files in `~/.config/systemd/user` (`dice-export`, `eerie`, `lark`,
-      `mouth`, `wretch-reconcile`; none enabled; keep `draftr`), and the scratch Docker volume
-      `2f8c8ab2…` an agent could not remove.
-- [ ] Activate mise in your shell (until then pyenv shims fail on bare `python3` in the repo).
-- [ ] orator: the physical Stream Deck test was never run (opened 2026-06-23; low priority).
-- [ ] Check whether the old standalone harrow container still runs unrouted on `localhost:10204`
-      and remove it (opened 2026-06-26).
-
 ### Paydown decisions (Josh)
 Parked during the Phase 2 run; everything they don't block keeps going. Each has a recommendation.
 - [ ] **Paid verification for pipe-4c and pipe-6.** Recommend verifying both on the next real
