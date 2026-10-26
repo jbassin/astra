@@ -57,8 +57,10 @@ Config is the `portal` and `portal-headless` blocks in `config.kdl`. Secrets: `p
   A server-only redeploy needs none of this: the module redials on its own (a 0.5.0+ module within
   seconds, since the server closes with 1001 on shutdown).
 - **Fallback install** (file drop): `just portal-module-install` builds the module and copies it
-  into the Foundry data dir. It fails with EACCES today because Foundry's own installer leaves that
-  directory owned by root (open follow-up); copy as root instead.
+  into `/data/Data/modules/portal` in the Foundry container (`FOUNDRY_CONTAINER`, default
+  `foundry_faerrin`) with `docker cp`, so no sudo is needed although Foundry has left that
+  directory root-owned. It then gives the directory to the owner of `Data/modules` (Foundry's own
+  user), so a later Manifest-URL update can overwrite it.
 - **Onboard a player:**
   ```
   claude mcp add --transport http portal-player https://portal.iridi.cc/mcp \

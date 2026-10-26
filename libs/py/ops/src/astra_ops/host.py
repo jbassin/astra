@@ -21,13 +21,16 @@ afterwards is non-destructive (``sudo -n -l <cmd>`` never runs the command).
 
 **portal-module-install** is the file-drop FALLBACK for the Foundry module (the primary install path
 is the Manifest URL, which Foundry fetches itself): build the module, then copy module.json and
-dist/main.js into the live Foundry data dir's ``Data/modules/portal/`` (``FOUNDRY_DATA_DIR``).
+dist/main.js into ``/data/Data/modules/portal/`` inside the Foundry container
+(``FOUNDRY_CONTAINER``, default ``foundry_faerrin``). The copy goes through the Docker daemon
+(``docker cp``, which writes as root), so the operator needs no sudo even though Foundry has left
+that directory root-owned. It then hands the directory to the owner of ``Data/modules`` (the
+container's Foundry user), so Foundry's own Manifest-URL update can overwrite it again.
 """
 
 from __future__ import annotations
 
 import os
-import shutil
 from pathlib import Path
 
 from .backfill import UNIT as BACKFILL_UNIT
@@ -57,7 +60,9 @@ SUDO_CHECKS = (
     ),
 )
 
-DEFAULT_FOUNDRY_DATA = "/emerald/data/apps/apps/foundry_faerrin/data"
+DEFAULT_FOUNDRY_CONTAINER = "foundry_faerrin"
+#: Foundry's module tree inside its container (the host's foundry data dir is mounted at /data).
+FOUNDRY_MODULES = "/data/Data/modules"
 
 
 def unit_groups(repo_root: Path) -> dict[str, list[str]]:
@@ -166,18 +171,22 @@ def alert_sudoers_install(ctx: Ctx) -> int:
 
 
 def portal_module_install(ctx: Ctx) -> int:
-    """Build the Foundry module and drop it into the live Foundry data dir (module
-    docstring). Foundry re-reads module.json on the next world launch or module refresh."""
+    """Build the Foundry module and copy it into the Foundry container (module docstring).
+    Foundry re-reads module.json on the next world launch or module refresh."""
     ctx.check(["pnpm", "--filter", "@astra/portal-module", "build"])  # `just portal-module-build`
-    data = os.environ.get("FOUNDRY_DATA_DIR") or DEFAULT_FOUNDRY_DATA
-    dest = Path(data) / "Data" / "modules" / "portal"
+    container = os.environ.get("FOUNDRY_CONTAINER") or DEFAULT_FOUNDRY_CONTAINER
+    dest = f"{FOUNDRY_MODULES}/portal"
     module = ctx.repo_root / "apps" / "portal" / "module"
-    try:
-        (dest / "dist").mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(module / "module.json", dest / "module.json")
-        shutil.copyfile(module / "dist" / "main.js", dest / "dist" / "main.js")
-    except OSError as exc:
-        ctx.err(f"portal-module-install: {exc.filename}: {exc.strerror}")
-        return 1
-    ctx.out(f"installed portal module -> {dest} (restart/refresh Foundry to pick it up)")
+    for name in ("module.json", "dist/main.js"):
+        if not (module / name).is_file():
+            ctx.err(f"portal-module-install: the build did not produce {module / name}")
+            return 1
+    as_root = ["docker", "exec", "--user", "0", container]
+    ctx.check([*as_root, "mkdir", "-p", f"{dest}/dist"])
+    for name in ("module.json", "dist/main.js"):
+        ctx.check(["docker", "cp", str(module / name), f"{container}:{dest}/{name}"])
+    # Hand the copy to whoever owns Data/modules (Foundry's own user), not root.
+    chown = f'chown -R "$(stat -c %u:%g {FOUNDRY_MODULES})" {dest}'
+    ctx.check([*as_root, "sh", "-c", chown])
+    ctx.out(f"installed portal module -> {container}:{dest} (refresh Foundry to load it)")
     return 0
