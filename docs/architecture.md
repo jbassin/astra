@@ -39,6 +39,13 @@ flowchart LR
 | Host jobs | systemd user units linked from the deploy checkout | `deploy/systemd/` |
 | CI | GitHub Actions; every job runs the `just` recipe of the same name | `.github/workflows/ci.yml` |
 
+The containers share no flat network. Each joins only the Docker networks it needs: the Node
+apps share `telemetry` with the SigNoz collector, the Dagster services and run containers share
+`pipeline` and `dagster-db`, each Postgres shares a network only with its app, and only the
+collector joins SigNoz's own network. The table of who joins what and why is in
+[`deploy/README.md`](../deploy/README.md) "Networks", and `deploy/tests/test_compose_networks.py`
+pins it.
+
 ## Public hosts
 
 All hosts are `*.iridi.cc` (a wildcard DNS record, so a new host needs no DNS change). Host ports
