@@ -306,8 +306,8 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
 - **No `.` method sugar** — `pool(4, d6)` style calls only.
 - **Errors are visible now** — v1 swallowed everything; v2 replies to type/eval/fuel errors on
   anything that looks like code (parse failures stay silent).
-- **Saved v1 macros did not migrate** — the old `funcs` store is a dead archive; re-`save` what
-  you use. Saves are now readable source text instead of opaque ASTs.
+- **Saved v1 macros did not migrate** — the old `funcs` store is gone (exported, see Traps); re-`save`
+  what you use. Saves are now readable source text instead of opaque ASTs.
 - Only lowercase `d` in die literals (`D20` no longer lexes as a die).
 - The language is typed and inferred — bad expressions are caught before anything rolls, and
   distributions (plots, goodness) are exact rather than sampled.
@@ -367,9 +367,8 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
   "loaded 0/0 saved weal v2 sources" is correct.
 - **The schema is the numbered files in `migrations/`** (`libs/ts/pg-migrate`), applied at boot.
   Change it with a new file, never by editing an applied one: weal-bot then refuses to start.
-  `0001_initial.sql` does not touch the dead v1 `funcs` table, so on the live database that table
-  stays as an orphan. Dropping it is its own migration (`0002_drop_funcs.sql`), and it deletes 11
-  live rows, so flag it first and export them before you ship it (backlog WEAL-14).
+  `0002_drop_funcs.sql` dropped the dead v1 `funcs` table (11 live rows); the export is
+  `/ruby/data/astra-state/weal/funcs-v1-2026-10-26.sql`, a pg_dump that restores with psql.
 - **`src/db.pg.test.ts` runs the real store against a throwaway Postgres** (`just pg-test`, the CI
   `pg-test` job); add a case there for any SQL change. Never point `ASTRA_TEST_DATABASE_URL` at the
   live `weal-postgres`.
