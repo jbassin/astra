@@ -74,8 +74,6 @@ processors:
 extensions:
   health_check:
     endpoint: 0.0.0.0:13133
-  pprof:
-    endpoint: 0.0.0.0:1777
 exporters:
   clickhousetraces:
     datasource: tcp://clickhouse:9000/signoz_traces
@@ -104,7 +102,6 @@ service:
       encoding: json
   extensions:
     - health_check
-    - pprof
   pipelines:
     traces:
       receivers: [otlp]

@@ -740,8 +740,8 @@ networks:
   # Every Node app plus the collector: the apps export OTLP to signoz-otel-collector:4318.
   # Not internal, because it carries the apps' outbound traffic (Discord, the public edge)
   # and their published ports. The apps can reach each other here; every app port is already
-  # published on the host, but the collector's unpublished pprof :1777 and health :13133 are
-  # reachable only from here and `pipeline`. Same subnet as in the vendored SigNoz file.
+  # published on the host, but the collector's unpublished health check :13133 is reachable
+  # only from here and `pipeline`. Same subnet as in the vendored SigNoz file.
   telemetry:
     ipam:
       config:

@@ -163,7 +163,6 @@ services:
       - SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION=true
       - SIGNOZ_OTEL_COLLECTOR_TIMEOUT=10m
     ports:
-      # - "1777:1777"     # pprof extension
       - "10352:4317" # OTLP gRPC (astra range)
       - "10353:4318" # OTLP HTTP (astra range)
   signoz-telemetrystore-migrator:
