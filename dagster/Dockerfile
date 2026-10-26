@@ -80,8 +80,8 @@ WORKDIR /opt/dagster/app
 COPY dagster/definitions.py ./
 # The one-time sessions partition migration: `python migrate_sessions.py`.
 COPY dagster/migrate_sessions.py ./
-# The stage automation read-only pre-flight: `python automation_preflight.py`.
-COPY dagster/automation_preflight.py ./
+# The stage automation read-only pre-flight and the opt-in adoption of held sessions.
+COPY dagster/automation_preflight.py dagster/adopt_held_sessions.py ./
 
 # DAGSTER_HOME holds the instance config (dagster.yaml) + the workspace file.
 ENV DAGSTER_HOME=/opt/dagster/home
