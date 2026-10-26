@@ -36,13 +36,18 @@ containers").
   a new materialization, whose blocking checks (`session_check`, `blocked_sessions`) passed,
   and whose stage was never tried (`StageReady`, `ready_sessions`), once per session and never
   for a session older than the sensor's first tick (dagster README, "Stage automation").
+  `stage_audit` lists the sessions a stage holds back (`held_sessions`, with the old stage
+  sensors' cursor ledgers from `old_ledgers`) and marks chosen ones tried (`adopt`), for the
+  dagster pre-flight and adoption scripts.
 - **Run launcher** (`astra_pipeline_resources.run_launcher`). `InstanceOnlyDockerRunLauncher`
   is Dagster's Docker launcher, except that it ignores the container settings and image a run's
   stored code origin carries; every run container gets exactly what `dagster.yaml` says.
 - **Test helpers** (`astra_pipeline_resources.testing`). `paths_under(tmp_path)`, `FakeConfig`,
   `FakeLlm`, instance helpers (`sessions_instance`, `mark_materialized`, `fail_partition`,
-  `queue_partition`, `cancel_partition`), and `automation_tick`, one tick of an automation
-  sensor that returns its run requests and cursor without launching anything.
+  `queue_partition`, `cancel_partition`), `stored_sessions_instance` and `seed_sensor_state`
+  (a temporary instance that stores sensor rows, and a row to seed), and `automation_tick`, one
+  tick of an automation sensor that returns its run requests and cursor without launching
+  anything.
 
 ## Config
 

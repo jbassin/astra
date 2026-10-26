@@ -389,13 +389,22 @@ doctor:
 pipeline-terminate run_id *flags:
     @{{ops}} pipeline-terminate "$@"
 
-# Evaluates the stage automation sensors' first two ticks against the live instance in a
-# read-only Postgres session (dagster/automation_preflight.py); launches and writes nothing.
-# Exit 0 = they would request no run, 1 = they would (don't start them), 2 = it could not finish.
-# Read-only: would the stage automation sensors launch anything now?
-pipeline-automation-preflight:
+# Evaluates the stage automation sensors' first two ticks and lists each stage's held
+# sessions, against the live instance in a read-only Postgres session
+# (dagster/automation_preflight.py); launches and writes nothing. Run it right before Start.
+# Exit 0 = safe to start, 1 = runs would be requested or sessions are held, 2 = it could not finish.
+# Read-only: is it safe to start the stage automation sensors?
+pipeline-automation-preflight *args:
     docker exec -e PGOPTIONS="-c default_transaction_read_only=on" astra-dagster-code \
-        sh -c 'cd /opt/dagster/app && python automation_preflight.py'
+        sh -c 'cd /opt/dagster/app && exec python automation_preflight.py "$@"' sh "$@"
+
+# dagster/adopt_held_sessions.py: lists exactly what it will mark and asks first (--yes skips);
+# --stage, --session and --include-recent narrow or widen it. Refuses while a stage
+# automation sensor is running.
+# Mark held sessions tried so the stage automation never launches them (LIVE, writes).
+pipeline-automation-adopt *args:
+    docker exec -it astra-dagster-code \
+        sh -c 'cd /opt/dagster/app && exec python adopt_held_sessions.py "$@"' sh "$@"
 
 # Never touches the astra project. Needs Docker; about 20 s. Not in `ci`.
 # Check deploy/wait-healthy.sh (deploy.sh's health wait) against throwaway alpine containers.

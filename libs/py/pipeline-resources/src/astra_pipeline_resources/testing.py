@@ -5,6 +5,8 @@ methods the asset calls. (A ``ConfigurableResource`` subclass would not do: Dags
 resources from their fields and drops private state.)
 """
 
+from collections.abc import Iterator
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
@@ -65,6 +67,14 @@ def sessions_instance(*keys: str) -> dg.DagsterInstance:
     return instance
 
 
+@contextmanager
+def stored_sessions_instance(*keys: str) -> Iterator[dg.DagsterInstance]:
+    """Like `sessions_instance`, on a temporary instance that also stores sensor rows."""
+    with dg.instance_for_test() as instance:
+        instance.add_dynamic_partitions(SESSIONS_NAME, list(keys))
+        yield instance
+
+
 def mark_materialized(instance: dg.DagsterInstance, asset: str, *keys: str) -> None:
     """Record a runless materialization of ``asset`` for each session key."""
     for key in keys:
@@ -119,3 +129,30 @@ def automation_tick(
     context = dg.build_sensor_context(instance=instance, repository_def=repo, cursor=cursor)
     data = repo.get_sensor_def(sensor).evaluate_tick(context)
     return list(data.run_requests or []), data.cursor
+
+
+def seed_sensor_state(
+    instance: dg.DagsterInstance, name: str, *, cursor: str | None = None, running: bool = False
+) -> None:
+    """Store a sensor's instigator row, as the daemon leaves it: its status and cursor."""
+    from dagster._core.remote_origin import (
+        RegisteredCodeLocationOrigin,
+        RemoteInstigatorOrigin,
+        RemoteRepositoryOrigin,
+    )
+    from dagster._core.scheduler.instigation import (
+        InstigatorState,
+        InstigatorStatus,
+        InstigatorType,
+        SensorInstigatorData,
+    )
+
+    repo = RemoteRepositoryOrigin(RegisteredCodeLocationOrigin("astra-pipeline"), "__repository__")
+    instance.add_instigator_state(
+        InstigatorState(
+            RemoteInstigatorOrigin(repo, name),
+            InstigatorType.SENSOR,
+            InstigatorStatus.RUNNING if running else InstigatorStatus.STOPPED,
+            SensorInstigatorData(cursor=cursor),
+        )
+    )

@@ -116,20 +116,43 @@ and ask for one plain run per session, so `dagster.yaml`'s queue limits apply an
 heartwood's runs carry `astra/heartwood`. They evaluate every 30 s.
 
 **Go-live.** The three sensors ship stopped (`default_status=STOPPED`), so the deploy that
-brings them launches nothing after scribe. Run the read-only pre-flight, then start them:
+brings them launches nothing after scribe. In order:
 
-```sh
-just pipeline-automation-preflight
-```
+1. Deploy: `just deploy dagster-code dagster-daemon dagster-webserver`.
+2. Run the read-only pre-flight: `just pipeline-automation-preflight`.
+3. If it lists held sessions, settle each one: launch a "just finished" one by hand, and
+   adopt the old ones with `just pipeline-automation-adopt` (it lists what it will mark and
+   asks first). Run the pre-flight again until it exits 0.
+4. Right away, start `linguist_automation`, `mouthpiece_automation` and
+   `heartwood_automation` under Automation in the UI. Dagster keeps a started sensor
+   running across deploys.
 
-It evaluates each sensor's first two ticks against the live instance in a read-only
-Postgres session (`dagster/automation_preflight.py`, `PGOPTIONS=-c
-default_transaction_read_only=on`) and prints every run they would request. Exit 0 means
-none: start `linguist_automation`, `mouthpiece_automation` and `heartwood_automation` under
-Automation in the UI. It also lists, per stage, the old sessions never tried with their
-upstream done. None of them launches on its own, but a new materialization of its upstream
-(a manual re-run) would launch it, as the old sensors would have. Dagster keeps a started
-sensor running across deploys.
+The pre-flight (`dagster/automation_preflight.py`) runs in a read-only Postgres session
+(`PGOPTIONS=-c default_transaction_read_only=on`), so it launches and writes nothing. It
+evaluates each sensor's first two ticks and prints every run they would request. The real
+first tick happens at Start, and the second tick here covers only the seconds between its
+two evaluations, so run it immediately before starting the sensors. It then lists, per
+stage, the **held** sessions: never tried, with their upstream done. None launches on its
+own, but a new materialization of its upstream (a manual re-run) would launch it. Each
+line shows when the upstream finished:
+
+- **just finished** (within `--recent-hours`, default 24): the upstream probably finished
+  while the sensors were stopped, so no tick will ever launch it (no backfill). Launch the
+  stage by hand.
+- **old, its run was deleted**: the old sensor's ledger (its cursor, still stored for
+  `scribe_output_sensor`, `linguist_output_sensor` or `heartwood_sensor`) says it launched
+  the stage, but the run is gone. Adopt it.
+- **old**: adopt it, or launch it by hand if it should run.
+
+Exit codes: 0 safe to start; 1 runs would be requested or sessions are held; 2 it could not
+finish (the sessions migration is pending, a refused write, or any other error).
+
+The adoption (`dagster/adopt_held_sessions.py`) writes a runless materialization of the
+stage's first asset tagged `astra/adopted`, which counts as tried. It marks every held
+session except the just-finished ones by default; `--stage <first asset>` and `--session
+<key>` narrow it, `--include-recent` adds the recent ones, and `--yes` skips the question.
+It refuses while a stage automation sensor is running. It marks only the first asset: a
+materialization of `session_episode_summary` would wake `campaign_timeline_sensor`.
 
 **Pause in an emergency.** Stop the app's sensor in the UI (Automation, then the sensor's
 toggle), or all three. A stopped sensor requests nothing. Runs already queued or running
@@ -297,7 +320,8 @@ each stage was already tried for that session.
 **Don't delete runs.** A run's planned materializations are how Dagster remembers that a
 stage was tried. Deleting the run deletes them; then only the automation sensor's cursor
 (the "never requested" part) keeps that paid stage from launching again, and after a cursor
-reset the next upstream materialization would launch it.
+reset the next upstream materialization would launch it. If you delete one anyway, adopt
+the session (`just pipeline-automation-adopt --stage <first asset> --session <key>`).
 
 ### Add or rename a stage
 
