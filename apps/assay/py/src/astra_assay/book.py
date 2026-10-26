@@ -51,11 +51,14 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
+from astra_config import find_repo_root
 from astra_observe import get_tracer
 
 from . import store
 
-APP_ROOT = Path(__file__).resolve().parents[2]  # src/astra_assay/book.py -> apps/assay/py
+# From the repo-root marker, not a count of parent directories, so it holds however deep
+# this module sits.
+APP_ROOT = find_repo_root(Path(__file__)) / "apps" / "assay" / "py"
 STORE_DIR = store.STORE_ROOT / store.SPELLS_SUBDIR
 TRAITS_DIR = store.STORE_ROOT / store.TRAITS_SUBDIR
 DEFAULT_OUT_DIR = APP_ROOT / "books/liturgy_vol2"
