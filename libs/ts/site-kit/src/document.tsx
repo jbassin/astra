@@ -41,24 +41,13 @@ export interface SiteDocumentProps {
   children: ReactNode;
   /** `() => import("@/observe/rumConfig")`. */
   rum: RumConfigLoader;
-  /**
-   * Set `saved-theme="dark"` on `<html>` before first paint, for the dark-only void theme
-   * (there is no light branch and no toggle).
-   */
-  forceDarkTheme?: boolean;
-  /** Extra head nodes, rendered after the theme script and before `<HeadContent />`. */
+  /** Extra head nodes, rendered before `<HeadContent />`. */
   head?: ReactNode;
   /** Attributes for `<body>` (such as akasha's `data-slug`). */
   bodyProps?: Omit<ComponentProps<"body">, "children"> & { [data: `data-${string}`]: string };
 }
 
-export function SiteDocument({
-  children,
-  rum,
-  forceDarkTheme,
-  head,
-  bodyProps,
-}: SiteDocumentProps) {
+export function SiteDocument({ children, rum, head, bodyProps }: SiteDocumentProps) {
   // Browser RUM: effects never run during SSR, and the dynamic imports keep the OTel web SDK
   // and the server-function stub out of the SSR render and the main client chunk. The ref
   // keeps the first loader, so a new inline arrow on re-render doesn't restart RUM.
@@ -72,14 +61,6 @@ export function SiteDocument({
   return (
     <html lang="en">
       <head>
-        {forceDarkTheme && (
-          <script
-            // oxlint-disable-next-line react/no-danger -- an inline pre-paint script built from a constant
-            dangerouslySetInnerHTML={{
-              __html: `document.documentElement.setAttribute("saved-theme","dark")`,
-            }}
-          />
-        )}
         {head}
         <HeadContent />
       </head>

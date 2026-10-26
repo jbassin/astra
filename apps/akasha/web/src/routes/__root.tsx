@@ -36,7 +36,6 @@ function RootComponent() {
   return (
     <SiteDocument
       rum={() => import("@/observe/rumConfig")}
-      forceDarkTheme
       head={
         // Speaker colors: `--text<Name>` vars + per-speaker transcript rules, generated
         // from ontology-being at build (see scripts/build-content.ts).

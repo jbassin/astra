@@ -71,7 +71,7 @@
   "suppress.oxlint.media-has-caption": 1,
   "suppress.oxlint.no-array-index-key": 24,
   "suppress.oxlint.no-console": 34,
-  "suppress.oxlint.no-danger": 7,
+  "suppress.oxlint.no-danger": 6,
   "suppress.oxlint.no-empty-pattern": 1,
   "suppress.oxlint.no-explicit-any": 26,
   "suppress.oxlint.no-map-spread": 1,

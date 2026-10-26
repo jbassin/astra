@@ -17,7 +17,7 @@ preset.
 | `vite.config.ts` | `defineSiteConfig` (`@astra/site-kit/vite`) | `root`; `generated` (the modules `build-content.ts` writes; dev invalidates them; omit it when the app has no content step); `contentInputs` (a function returning the paths outside the app that `build-content.ts` reads, such as an astra-data snapshot; akasha and mouthpiece set it); `theme: false` for an app that doesn't use gothic; optional `vite` merged over the preset |
 | `vitest.config.ts` | `defineSiteVitestConfig` (`@astra/site-kit/vitest`) | `root`; `environment: "node"`; `generatedContent: false` when there is no `build-content.ts`; extra `globalSetup` and `setupFiles` |
 | `src/router.tsx` | `createRouter({ routeTree, ...siteRouterOptions({ notFound }) })` (`/router`) | `notFound`: `{ heading, message, homeLabel }` or a component; other router options go after the spread (codex's `pathParamsAllowedCharacters`) |
-| `src/routes/__root.tsx` | `head: () => siteHead({ title, description, meta? })`, `<SiteDocument>` (`/document`), `import "@astra/site-kit/theme"` | `rum={() => import("@/observe/rumConfig")}`, `forceDarkTheme`, `head` (extra head nodes), `bodyProps`, the body as children |
+| `src/routes/__root.tsx` | `head: () => siteHead({ title, description, meta? })`, `<SiteDocument>` (`/document`), `import "@astra/site-kit/theme"` | `rum={() => import("@/observe/rumConfig")}`, `head` (extra head nodes), `bodyProps`, the body as children |
 | `src/ssrSmoke.test.ts` | `describeSsrSmoke` (`/ssrSmoke`) | `appRoot`, `routes: [{ path, status?, contains }]`, optional `build` |
 
 `defineSiteConfig` reads the dev port from the config.kdl block that `package.json` names in

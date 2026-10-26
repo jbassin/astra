@@ -185,7 +185,6 @@ describe("a scaffolded app builds and renders", () => {
     const home = results.get("/");
     expect(home?.status).toBe(200);
     expect(home?.html).toContain("<title>Demo Site</title>");
-    expect(home?.html).toContain('saved-theme","dark"');
     const missing = results.get("/__no-such-page");
     expect(missing?.status).toBe(404);
     expect(missing?.html).toContain("That page doesn’t exist.");
