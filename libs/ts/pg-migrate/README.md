@@ -34,4 +34,9 @@ directory and applies them at boot, before it serves anything.
   Later migrations should be plain DDL, not `if not exists`, so a mistake fails loudly.
 - **`@astra/pg-migrate/testing` creates and drops databases** on the server
   `ASTRA_TEST_DATABASE_URL` names. Only ever point it at a throwaway server.
+- **A connection that dies mid-run fails the run at once.** The runner then neither cleans up nor
+  releases the reserved connection: postgres.js has already taken it back, and touching it again
+  hangs or crashes the process (postgres.js 3.4.9). Postgres rolls back the open transaction and
+  drops the advisory lock with the session. Separately, after a killed connection a plain
+  `sql.end()` can wait for ever; pass `{ timeout }`.
 - Statements that cannot run inside a transaction (`create index concurrently`) are not supported.
