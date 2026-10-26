@@ -535,3 +535,25 @@ fn quantity_le_and_ge_on_d20() {
     assert_eq!(atoms.quantity_le(&atom("a")), Some(w(1)));
     assert_eq!(atoms.quantity_le(&atom("zzz")), None);
 }
+
+#[test]
+fn reroll_works_on_any_face_type() {
+    // `reroll : Die[a] -> List[a] -> Die[a]`. Non-Num faces used to fail with
+    // an internal error ("reroll needs Num faces"). Over 4: the matched face
+    // keeps R*w = 1, the other (D+R)*w = 3; the face order is unchanged.
+    let d = dist("reroll(dl([:a, :b]), [:a])");
+    assert_eq!(d.denominator(), w(4));
+    assert_eq!(d.weight_of(&atom("a")), w(1));
+    assert_eq!(d.weight_of(&atom("b")), w(3));
+    assert_eq!(d.face_order(), vec![atom("a"), atom("b")]);
+    // A comparison die (Bool faces, 3:3 over 6) and a Str die reweight the
+    // same way: :false keeps R*w = 3*3, :true gets (D+R)*w = 9*3.
+    let d = dist("reroll(d6 > 3, [:false])");
+    assert_eq!(d.weight_of(&atom("false")), w(9));
+    assert_eq!(d.weight_of(&atom("true")), w(27));
+    let d = dist("reroll(dl([\"x\", \"y\"]), [\"y\"])");
+    assert_eq!(d.weight_of(&Value::Str("y".to_owned())), w(1));
+    // An empty list leaves the die alone.
+    let d = dist("reroll(dl([:a, :b]), [])");
+    assert_eq!(d.weight_of(&atom("a")), d.weight_of(&atom("b")));
+}
