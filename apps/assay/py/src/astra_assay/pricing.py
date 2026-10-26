@@ -1,15 +1,12 @@
-"""Round-2 pricing —
-the pure-anchored budget ladder, the two-stage tier-discount fit, and the
-full-population scorer + typed ledger.
+"""The damage ladder and the Stage A tier fit.
 
-Everything downstream of the pure ladder is expressed in **log-discount
-space** (review-pinned): Stage A learns tier coefficients β_T1..β_T3
-by OLS on the hybrid trainer population; β_T4 is a declared community-
-anchored prior (too few trainers to fit); Stage B applies
-``p = 1 - exp(-Σ β_t · w_t)`` as a power FRACTION of the pure budget, so
-stacked riders can approach but never price past 100% of budget.
+The pure-anchored budget ladder (``fit_ladder``, ``fit_cantrip_ladder``) prices damage. Stage A
+(``fit_stage_a``) learns tier coefficients β_T1..β_T3 by OLS in **log-discount space** on the
+hybrid trainer population; β_T4 is a declared community-anchored prior (too few trainers to
+fit). ``instance_weight`` and ``tier_weights`` give each condition instance its
+coverage×duration weight; the comparables atom vectors reuse them.
 
-numpy stays isolated to this module and ``model.py`` (repo convention).
+numpy stays isolated to this module (repo convention).
 """
 
 from __future__ import annotations
@@ -338,7 +335,7 @@ class StageAFit:
     #: Operational tier coefficients — floored at 0 (see ``beta_raw`` for the
     #: as-fitted values). A negative β is a domain violation for the exp link
     #: (p = 1-exp(-Σβw) would go negative, not a valid power fraction), so a
-    #: below-zero fit is reported honestly but clamped for scoring — the same
+    #: below-zero fit is reported honestly but clamped — the same
     #: boundary-constrained-estimation move as flooring a fitted variance at
     #: zero, not silent tuning (both numbers ship in the build record).
     beta: dict[Tier, float]
@@ -402,37 +399,3 @@ def fit_stage_a(trainers: list[SpellFeatures], ladder: LadderFit, *, structural_
         r_squared=r_squared,
         residuals=dict(zip(names, (float(v) for v in resid), strict=True)),
     )
-
-
-def stage_b_power_fraction(
-    row: SpellFeatures, stage_a: StageAFit, *, boss_weighted: bool = False
-) -> float:
-    """p = 1 - exp(-Σ_t β_t · w_t) — the exp link keeps stacked riders from
-    pricing past 100% of budget."""
-    w = tier_weights(row, boss_weighted=boss_weighted)
-    total = sum(stage_a.beta[t] * w[t] for t in w)
-    return 1.0 - math.exp(-total)
-
-
-def score_condition_control(
-    row: SpellFeatures,
-    ladder: LadderFit | CantripLadderFit,
-    stage_a: StageAFit,
-    *,
-    boss_weighted: bool = False,
-) -> float:
-    """A condition-only control spell's score (Stage B applied): p * Budget *
-    structural (target/range/action)."""
-    p = stage_b_power_fraction(row, stage_a, boss_weighted=boss_weighted)
-    budget = ladder.budget(row.rank) if isinstance(ladder, LadderFit) else ladder.budget()
-    structural = ladder.structural_target_range(row) * action_multiplier(row.action_bucket)
-    return p * budget * structural
-
-
-def score_damage_row(row: SpellFeatures, ladder: LadderFit | CantripLadderFit) -> float:  # noqa: ARG001 -- unused function, kept in step with its siblings; delete in the dead-code sweep
-    """A pure/hybrid/recovered-damage row's own EV is the score directly (its
-    rank-equivalent is read off the ladder against its OWN structural
-    multipliers) — Stage A already validates that a hybrid's EV naturally
-    discounts below pure budget by the priced tier weight; this is not
-    double-applied here."""
-    return row.ev

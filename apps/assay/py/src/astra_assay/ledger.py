@@ -125,15 +125,15 @@ def classify_row(row: SpellFeatures) -> str | None:
         # per-row hostility classification decides.
         hostility = classify_hostility(row)
         if hostility == "hostile":
-            return None  # condition-only control spell — scored via Stage B
+            return None  # hostile effect spell — scored by comparables
         if hostility == "beneficial":
             return "beneficial-effect"
         return "routing-ambiguous"
     if row.condition_ref:
-        # every instance is beneficial/non-control (buffs go to the
-        # ledger — Stage B's coverage arithmetic is undefined for them). This
+        # every instance is beneficial/non-control, so the row is a buff. This
         # bucket IS component 1 of the buff population (`buffs.py`
-        # re-reads it by this exact reason string).
+        # re-reads it by this exact reason string; the scorer gives these rows
+        # buff comparables).
         return "beneficial-effect"
     has_buff_signal = bool(row.status_modifiers) or bool(
         row.effect_profile is not None and (row.effect_profile.atoms or row.effect_profile.tags)

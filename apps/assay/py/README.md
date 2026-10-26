@@ -22,7 +22,7 @@ All commands run from the repo root. Telemetry goes to SigNoz as `astra.assay`; 
 | Command | What it does |
 | --- | --- |
 | `uv run assay price [--data-root PATH]` | Fits the scorer against the Foundry snapshot and rewrites `results/` and `out/` (below). |
-| `uv run assay score --spell PATH` | Scores one Foundry-shaped spell JSON (a store file works) against the committed `results/`. |
+| `uv run assay score --spell PATH` | Scores one Foundry-shaped spell JSON (a store file works) against the committed `results/` and prints the result: the same score `score-homebrew` gives a store spell. |
 | `uv run assay score-homebrew` | Scores every store spell into `out/homebrew/scores.json` and prints a table. |
 | `uv run assay homebrew-revisions` | Diffs the store against a fresh re-conversion of the vendored set into `homebrew/revisions.md`. |
 | `uv run assay store check` / `store fmt` | Validates the store against its model and format / rewrites it canonically. |
@@ -55,6 +55,13 @@ numerically. Without a snapshot, `price` fails with a clear message. The current
 
 Rerunning `price` on the current snapshot reproduces the committed `results/` byte for byte.
 `score` and `score-homebrew` need no snapshot: they read the committed `results/`.
+
+**One scorer.** `score`, `score-homebrew` and `export-codex` (and `price`'s export step) all
+score through `scorer.Scorer`, built once from the ladders and corpora that
+`artifacts.load_model_artifacts` reads from `results/`. `Scorer.score` returns one result per
+extracted row; `export.score_to_entry` turns it into the JSON entry codex and
+`out/homebrew/scores.json` carry, and `assay score` prints it. A scoring change therefore
+reaches all three commands at once.
 
 ### How a spell is scored
 
@@ -106,7 +113,9 @@ Rerunning `price` on the current snapshot reproduces the committed `results/` by
 8. **Full-population ledger** (`ledger.py`, `report2.py`). Every row is either scored (558) or
    lands in a typed ledger (657): summon, wall-terrain, teleport-utility, effect-item-payload,
    beneficial-effect, routing-ambiguous, raw-modifier-only, low-confidence, non-literal
-   formula, long-cast and others. Coverage is complete, never silently partial.
+   formula, long-cast and others. Coverage is complete, never silently partial. Scored rows
+   with damage EV are read against the ladder (`power-ledger.md` lists them by residual);
+   hostile effect rows get comparables.
 
 ### Validation (`results/validation.md`)
 
@@ -136,17 +145,18 @@ legacy-spell scoring.
 
 ## Scoring a homebrew spell
 
-`assay score --spell <path>` reads the Foundry `system` shape and takes one of three paths:
+`assay score --spell <path>` reads the Foundry `system` shape and prints what the scorer
+returns for it, which is the same result `score-homebrew` records for a store spell. It takes
+one of four paths:
 
 1. **Damage or hybrid (real EV):** a rank-equivalent verdict (HOT, COLD or in band) against the
-   ladder. A hybrid also gets comparables, printed alongside the verdict.
-2. **Hostile effect spell (EV 0, routed hostile):** the top 5 comparables (name, rank, shared
-   and differing atoms), the induced rank range and a pointer into the prior card per condition.
-   It also prints the old fitted Stage-B score, labeled "superseded, reference only";
-   `point-tables.md`'s appendix explains why it is no longer the verdict.
-3. **Beneficial or routing-ambiguous:** a plain message. Ambiguous routing needs a GM's
-   judgment. `assay score` does not print buff comparables; `score-homebrew` shows the buff range
-   for store spells.
+   ladder. A hybrid also gets hostile comparables, printed alongside the verdict.
+2. **Hostile effect spell (EV 0, routed hostile):** the top 5 hostile comparables (name, rank,
+   similarity, shared atoms), the induced rank range and a pointer into the prior card per
+   condition.
+3. **Beneficial effect:** the top 5 buff comparables and their rank range.
+4. **Ledger:** the reason code. Routing-ambiguous spells need a GM's judgment; a spell with no
+   comparable above the similarity floor reads `no-comparable-profile`.
 
 ### The condition markup contract
 
