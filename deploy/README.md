@@ -178,13 +178,14 @@ Limits that remain:
   10351; the collector's OTLP ports 10352 and 10353; and the weal and orator Postgres ports
   10362 and 10364.
 - A bridge network does not filter by port. The apps on `telemetry` reach each other's ports,
-  which are published anyway, and the collector's unpublished pprof `:1777` and health
-  `:13133`, as do the Dagster services on `pipeline`.
+  which are published anyway, and the collector's unpublished health check `:13133`, as do the
+  Dagster services on `pipeline`.
 - A rollback to a commit from before the split leaves the `astra_*` networks behind, empty;
   remove them with `docker network rm`.
 - The vendored SigNoz compose (`signoz/docker/docker-compose.yaml`) carries local edits: the
-  remapped ports, the external URL, the collector's networks and the pinned subnets. Carry them
-  forward when upgrading SigNoz.
+  remapped ports, the external URL, the collector's networks and the pinned subnets. Its
+  collector config (`signoz/docker/otel-collector-config.yaml`) also drops the upstream `pprof`
+  extension, a debug endpoint nothing uses. Carry these forward when upgrading SigNoz.
 
 ## Secrets (SOPS + age)
 
