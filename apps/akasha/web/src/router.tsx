@@ -13,5 +13,8 @@ export function getRouter() {
         homeLabel: "Home",
       },
     }),
+    // Page data changes only with a deploy, so a page loaded once is never refetched:
+    // back/forward and revisits render from the router's cache.
+    defaultStaleTime: Infinity,
   });
 }

@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 
 import { ContentArticle } from "@/domain/components/ContentArticle";
 import { FolderListing } from "@/domain/components/FolderListing";
@@ -10,9 +10,15 @@ import { getWikiPage } from "@/domain/lib/pageDataFns";
 export const Route = createFileRoute("/$")({
   // The page data comes from a server function, so the wiki bodies stay out of the
   // client bundle: SSR runs it inline, a client navigation fetches it.
-  loader: async ({ params }) => {
+  loader: async ({ params, location }) => {
     const page = await getWikiPage({ data: params._splat ?? "" });
     if (!page) throw notFound();
+    // A client navigation to an alias follows it at once. SSR still renders the
+    // meta-refresh stub, which the Popover and old bookmarks expect.
+    if (page.kind === "alias" && typeof window !== "undefined") {
+      const to = new URL(page.redirUrl, new URL(location.pathname, window.location.origin));
+      throw redirect({ href: to.pathname + to.search + to.hash, replace: true });
+    }
     return page;
   },
   head: ({ loaderData }) =>

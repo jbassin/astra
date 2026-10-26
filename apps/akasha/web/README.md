@@ -62,8 +62,19 @@ Node indexing API and writes `dist/client/pagefind/`.
 - **TranscriptPlayer renders nothing.** It attaches imperatively to the SSR transcript markup
   (delegated click, binary search over line times). Keep it non-reactive: a transcript page has
   thousands of lines.
-- **Navigation is full-page `<a href>`** (gothic wiki links are plain links), so route loaders run
-  on the server. Islands still tear down their listeners in the effect cleanup.
+- **Navigation is client-side, but every page mounts fresh.** Gothic wiki links and the listings
+  are plain `<a href>`; the `SpaLinks` island catches clicks on them at the document and calls
+  `router.navigate` (`spaNav.ts` decides which links stay with the browser: other origins, files
+  such as `/audio/` and `index.xml`, and same-page `#anchors`, so `hashchange` still fires for
+  the TranscriptPlayer). `__root.tsx` keys the page on the rendered pathname, so each navigation
+  unmounts the old page and mounts the new one as a page load did. Every island must therefore
+  tear down its listeners, timers and pixi apps in the effect cleanup, and read the page (DOM,
+  `body[data-slug]`) in its mount effect. Code that navigates calls the router, never
+  `window.location`; code that rewrites the URL passes `history.state` through, or back/forward
+  loses its scroll position.
+- **Page data is cached for the session** (`defaultStaleTime: Infinity` in `router.tsx`): back,
+  forward and revisits don't refetch. A client navigation to an alias follows it with a router
+  redirect; only SSR renders the meta-refresh stub.
 - **Campaign routing is a heuristic.** `matchCampaign` (`campaigns.ts`) files a transcript under
   the first campaign, in `being.kdl` order, whose character names appear at least 15 times; else
   `Unsorted`. Reordering campaigns in `being.kdl` can move transcript URLs.

@@ -1,7 +1,10 @@
 /// <reference types="vite/client" />
 import { SiteDocument, siteHead } from "@astra/site-kit/document";
 import { createRootRoute, Outlet, useRouterState } from "@tanstack/react-router";
+import { Fragment } from "react";
 import "@astra/site-kit/theme";
+
+import { SpaLinks } from "@/domain/components/islands/SpaLinks";
 
 import "@/styles/globals.css";
 import { SPEAKER_CSS } from "@/generated/speakers";
@@ -24,6 +27,11 @@ function RootComponent() {
       return "";
     },
   });
+  // The page that is on screen: `location` moves to the next page as soon as a
+  // navigation starts, `resolvedLocation` only once its loader has finished.
+  const pathname = useRouterState({
+    select: (s) => (s.resolvedLocation ?? s.location).pathname,
+  });
 
   return (
     <SiteDocument
@@ -41,7 +49,13 @@ function RootComponent() {
           akasha already runs a WebGL force-graph, and a second pixi Application
           conflicts). Decorative, fixed behind all content. */}
       <div className="site-backdrop" aria-hidden="true" />
-      <Outlet />
+      <SpaLinks />
+      {/* Navigation is client-side, but each page mounts fresh, as a page load did: the
+          islands (Graph, Explorer, Search, TranscriptPlayer, Popover) set up against the
+          new page and tear down the old one. A hash change keeps the page mounted. */}
+      <Fragment key={pathname}>
+        <Outlet />
+      </Fragment>
     </SiteDocument>
   );
 }

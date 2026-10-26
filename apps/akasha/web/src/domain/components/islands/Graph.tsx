@@ -1,3 +1,4 @@
+import { useRouter } from "@tanstack/react-router";
 /**
  * Graph — React port of faerrin's Solid Graph island (a Quartz pixi/d3 force-graph).
  * The imperative pixi/d3 body (`renderGraph`) is ported VERBATIM; only the Solid
@@ -115,6 +116,8 @@ async function renderGraph(
   fullSlug: string,
   cfg: D3Config,
   rawData: Map<string, ContentDetails>,
+  // Opens a page by its href relative to `fullSlug` (a client navigation).
+  go: (href: string) => void,
 ): Promise<() => void> {
   const slug = simplifySlug(fullSlug as FullSlug);
   const visited = getVisited();
@@ -406,16 +409,14 @@ async function renderGraph(
           dragging = false;
           if (Date.now() - dragStartTime < 500) {
             const node = graphData.nodes.find((n) => n.id === event.subject.id);
-            window.location.assign(resolveRelative(fullSlug as FullSlug, node.id));
+            go(resolveRelative(fullSlug as FullSlug, node.id));
           }
           // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
         }) as any,
     );
   } else {
     for (const node of nodeRenderData) {
-      node.gfx.on("click", () =>
-        window.location.assign(resolveRelative(fullSlug as FullSlug, node.simulationData.id)),
-      );
+      node.gfx.on("click", () => go(resolveRelative(fullSlug as FullSlug, node.simulationData.id)));
     }
   }
 
@@ -481,9 +482,14 @@ export default function Graph() {
   const globalOuter = useRef<HTMLDivElement>(null);
   const globalContainer = useRef<HTMLDivElement>(null);
   const globalIcon = useRef<HTMLButtonElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const slug = document.body.dataset.slug ?? "";
+    const go = (href: string) => {
+      const url = new URL(href, window.location.href);
+      void router.navigate({ href: url.pathname + url.search + url.hash });
+    };
     addToVisited(simplifySlug(slug as FullSlug));
 
     // Async-abort guard: renderGraph awaits loadData() + pixi app.init(); if the
@@ -501,7 +507,7 @@ export default function Graph() {
       if (!el) return;
       const data = await loadData();
       if (disposed) return;
-      const cleanup = await renderGraph(el, slug, LOCAL_CFG, data);
+      const cleanup = await renderGraph(el, slug, LOCAL_CFG, data, go);
       if (disposed) {
         cleanup();
         return;
@@ -523,7 +529,7 @@ export default function Graph() {
       if (!el) return;
       const data = await loadData();
       if (disposed) return;
-      const cleanup = await renderGraph(el, slug, GLOBAL_CFG, data);
+      const cleanup = await renderGraph(el, slug, GLOBAL_CFG, data, go);
       if (disposed || !globalOuter.current?.classList.contains("active")) {
         cleanup();
         return;
@@ -552,7 +558,7 @@ export default function Graph() {
       for (const c of globalCleanups.splice(0)) c();
       escCleanup?.();
     };
-  }, []);
+  }, [router]);
 
   return (
     <div className="graph">
