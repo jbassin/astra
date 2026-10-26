@@ -388,6 +388,32 @@ describe("saves", () => {
     );
   });
 
+  test("pasting the bot's own save confirmation names the save and how to call it", async () => {
+    const h = harness();
+    await handleMessage("save(:adv, || 2d20kh1)", PROFILE, h.deps);
+    const confirmation = h.sent[0]?.contents ?? "";
+    const fence = confirmation.slice(confirmation.indexOf("```weal"));
+    await handleMessage(fence, PROFILE, h.deps);
+    expect(h.sent).toHaveLength(2);
+    expect(h.sent[1]?.host.slug).toBe("knife");
+    expect(h.sent[1]?.title).toBe("nothing to roll");
+    expect(h.sent[1]?.contents).toBe(
+      "hmm jorge, that's what `adv` holds: a function, so there's nothing to roll. call it instead: `adv()`, or `adv(…)` if it takes inputs",
+    );
+    // Nothing was saved again, and nothing was written to the roll history.
+    expect(h.store.funcsV2).toHaveLength(1);
+    expect(h.store.inserts).toEqual([]);
+  });
+
+  test("a function that isn't a save gets the generic hint; chat-shaped ones stay silent", async () => {
+    const h = harness();
+    await handleMessage("|x| x + 3", PROFILE, h.deps);
+    expect(h.sent[0]?.title).toBe("nothing to roll");
+    expect(h.sent[0]?.contents).toContain("call it (`f()`, or `f(3)` if it takes inputs)");
+    await handleMessage("|x| x", PROFILE, h.deps); // no die, operator or saved name
+    expect(h.sent).toHaveLength(1);
+  });
+
   test("replacing an existing save with a good one persists it", async () => {
     const h = harness([["bonus", "3"]]);
     await handleMessage("save(:bonus, 5)", PROFILE, h.deps);

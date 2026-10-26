@@ -47,6 +47,7 @@ import {
   FIELD_LIMIT,
   NUMBER_LINES,
   newSeedInfo,
+  nothingToRoll,
   overlayPayload,
   RESEED_LINES,
   resultsField,
@@ -169,6 +170,16 @@ async function doRoll(
   const { displays, plots, saves: newSaves } = outcome.value;
   // A lone atom literal (`:p`) evaluates fine but is chat noise — silent.
   if (isBareAtom(text) && plots.length === 0 && newSaves.length === 0) return;
+  // Nothing to show: the value is a function (or `()`), as when a player pastes a save
+  // confirmation's source. Say so, rather than going silent, if it looks like code.
+  if (displays.length === 0 && plots.length === 0 && newSaves.length === 0) {
+    const pastedSave = saves.some(([, source]) => source === text);
+    if (pastedSave || passesNoiseGate(text, deps.savedNames())) {
+      const { title, contents } = nothingToRoll(profile.playerName, text, saves);
+      await deps.send({ host: deps.host("knife"), title, contents, fields: [] });
+    }
+    return;
+  }
 
   for (const display of displays) {
     if (display.kind === "die") await handleDie(text, display, profile, deps, span);
