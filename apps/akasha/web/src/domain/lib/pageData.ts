@@ -9,7 +9,7 @@
  */
 import { getLogger } from "@astra/observe";
 
-import type { ChronicleEpisode, ChronicleSeason, ChronicleShow } from "@/generated/chronicle";
+import type { ChronicleEpisode, ChronicleSeason, ChronicleShow } from "@/domain/lib/chronicleTypes";
 import { SHOWS } from "@/generated/chronicle";
 import { TRANSCRIPT_BODIES } from "@/generated/transcripts";
 

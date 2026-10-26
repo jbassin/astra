@@ -42,7 +42,7 @@ describe("build-content", () => {
     expect(existsSync(chronicle)).toBe(true);
     const out = readFileSync(chronicle, "utf8");
     expect(out).toContain("export const SHOWS");
-    expect(out).toContain("export interface ChronicleEpisode");
+    expect(out).toContain("export type { ChronicleEpisode, ChronicleSeason, ChronicleShow }");
     // The backfilled timeline puts the main campaign first with its episodes linked.
     expect(out).toContain('"show": "through-a-song-darkly"');
     expect(out).toContain('"isMain": true');

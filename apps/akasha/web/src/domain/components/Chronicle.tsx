@@ -4,7 +4,7 @@
 // full detail. Data comes from the build-generated module (scripts/build-content.ts →
 // src/generated/chronicle.ts). Chronicle pages opt out of the wiki force-graph.
 import { PageLayout } from "@/domain/components/PageLayout";
-import type { ChronicleEpisode, ChronicleSeason, ChronicleShow } from "@/generated/chronicle";
+import type { ChronicleEpisode, ChronicleSeason, ChronicleShow } from "@/domain/lib/chronicleTypes";
 
 function countLabel(n: number, one: string, many: string): string {
   return `${n} ${n === 1 ? one : many}`;

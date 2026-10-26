@@ -330,35 +330,9 @@ interface RawChronicle {
 }
 
 const CHRONICLE_TYPES = [
-  "export interface ChronicleEpisode {",
-  "  date: string;",
-  "  episodeNumber: number;",
-  "  title: string;",
-  "  synopsis: string;",
-  "  keyBeats: string[];",
-  "  charactersPresent: string[];",
-  "  locations: string[];",
-  "  factions: string[];",
-  "  items: string[];",
-  "  cliffhanger: string;",
-  "  href: string | null;",
-  "}",
+  'import type { ChronicleShow } from "../domain/lib/chronicleTypes";',
   "",
-  "export interface ChronicleSeason {",
-  "  number: number;",
-  "  title: string;",
-  "  arcSummary: string;",
-  "  episodes: ChronicleEpisode[];",
-  "}",
-  "",
-  "export interface ChronicleShow {",
-  "  show: string;",
-  "  name: string;",
-  "  isMain: boolean;",
-  "  seasonCount: number;",
-  "  episodeCount: number;",
-  "  seasons: ChronicleSeason[];",
-  "}",
+  'export type { ChronicleEpisode, ChronicleSeason, ChronicleShow } from "../domain/lib/chronicleTypes";',
 ];
 
 /** Build the enriched chronicle data (shows → seasons → episodes) from the artifacts. */
