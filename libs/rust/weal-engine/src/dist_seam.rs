@@ -40,8 +40,9 @@
 //! the interpreter raises for constants); `Cmp` = `try_combine` into the Bool die
 //! (equality on any equatable faces, ordering on Num faces only — the
 //! checker guarantees it); `Neg`/`MinMax` = `map`/`combine` on Num faces;
-//! `Explode`/`Reroll`/`RerollFace` = the die-level ops on Num faces (a
-//! non-numeric operand is checker-prevented → `Internal`); `Label` is
+//! `Explode`/`RerollFace` = the die-level ops on Num faces (a non-numeric
+//! operand is checker-prevented → `Internal`); `Reroll` = the same op on any
+//! face type (its listed values are matched against the die's faces); `Label` is
 //! transparent; `Sum`/`Successes`/`Evaluate` fold the pool's keep chain
 //! into ONE `KeepTuple` (each `Keep` re-keeps the currently-kept contiguous
 //! window of sorted positions) and run the pool engine.
@@ -513,17 +514,17 @@ fn build(
             faces_from_num(out, budget)
         }
         DieTree::Reroll { inner, faces } => {
+            // `reroll : Die[a] -> List[a] -> Die[a]`, so any face type: match
+            // the listed values against the die's own faces (a Ranked face
+            // carries its rank, so it can't be rebuilt from the value alone).
             let d = build(inner, budget, ev.as_deref_mut())?;
-            let d = nums_of(&d, budget, "reroll")?;
-            let mut nums = Vec::with_capacity(faces.len());
-            for f in faces {
-                match f {
-                    Value::Num(n) => nums.push(n.clone()),
-                    _ => return Err(internal("reroll faces must be Num")),
-                }
-            }
-            let out = reroll_faces(&d, &nums, budget)?;
-            faces_from_num(out, budget)
+            let targets: Vec<Face> = d
+                .face_order()
+                .iter()
+                .filter(|f| faces.contains(&f.value()))
+                .cloned()
+                .collect();
+            Ok(reroll_faces(&d, &targets, budget)?)
         }
         DieTree::RerollFace { inner, face } => {
             let d = build(inner, budget, ev.as_deref_mut())?;

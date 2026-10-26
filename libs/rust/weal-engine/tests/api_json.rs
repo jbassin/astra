@@ -473,3 +473,23 @@ fn calling_a_non_function_with_no_arguments_is_a_type_error() {
         assert_eq!(v["stage"], "type", "{src}: {v}");
     }
 }
+
+#[test]
+fn reroll_on_non_num_dice_is_never_an_internal_error() {
+    // These five reached the engine's `internal` stage (which pages on-call):
+    // `reroll` type-checks for any face type, but the distribution only took Num
+    // faces. They now roll like any other die.
+    for src in [
+        "reroll(dl([:a, :b]), [:a])",
+        "reroll(dl([\"a\", \"b\"]), [\"a\"])",
+        "reroll(dl([1.5, 2.5]), [1.5])",
+        "reroll(dl([[1], [2]]), [[1]])",
+        "reroll(d6 > 3, [:true])",
+    ] {
+        let v = parse(&eval(src, "[]", 0, "run"));
+        assert_eq!(v["ok"], Json::Bool(true), "{src}: {v}");
+        assert_eq!(v["displays"][0]["kind"], "die", "{src}");
+        let v = parse(&eval(&format!("plot({src})"), "[]", 0, "run"));
+        assert_eq!(v["ok"], Json::Bool(true), "plot({src}): {v}");
+    }
+}
