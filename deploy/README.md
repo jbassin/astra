@@ -153,20 +153,32 @@ takes at most a 1 MB body (413 beyond it), set by `request_body` in its block.
 
 The containers sit on least-privilege networks, so a compromised frontend cannot reach a
 database, ClickHouse or the Dagster gRPC server. The `networks:` block at the end of
-`docker-compose.yml` says who joins each one and why:
+`docker-compose.yml` says who joins each one; this table says why each service is on its
+networks. Each "why" is a hostname the service dials (from `config.kdl`, `dagster/dagster.yaml`
+or `dagster/workspace.yaml`) or a hostname that dials it:
 
-| Network | Members |
-|---|---|
-| `telemetry` | every Node app and the SigNoz collector (OTLP to `signoz-otel-collector:4318`) |
-| `pipeline` | the Dagster code server, webserver and daemon, each run's container, and the collector |
-| `dagster-db` (internal) | dagster-postgres, the three Dagster services and each run's container |
-| `weal-db`, `orator-db` | each Postgres and its one app |
-| `weal-feed` | weal-bot and weal-overlay (the roll feed) |
-| `signoz-net` | SigNoz only: ClickHouse, zookeeper, the UI and the collector |
+| Service | Networks | Why |
+|---|---|---|
+| every Node app not listed below: strider, akasha-frontend, codex, mouthpiece-frontend, vellum-frontend, vellum-render, harrow, ledger, menhir, portal, portal-headless | `telemetry` | OTLP to `signoz-otel-collector:4318` (`telemetry.otlp-endpoint`); no other in-cluster call. Calls to other sites go through the public edge. |
+| weal-bot | `telemetry`, `weal-db`, `weal-feed` | OTLP; `weal-postgres:5432` (`weal.database-url`); `weal-overlay:10361` (`weal.feed-ws-url`) |
+| weal-overlay | `telemetry`, `weal-feed` | OTLP; weal-bot posts rolls to it |
+| orator-backend | `telemetry`, `orator-db` | OTLP; `orator-postgres:5432` (`orator.database-url`) |
+| weal-postgres, orator-postgres | `weal-db`, `orator-db` | called only by their one app |
+| dagster-postgres | `dagster-db` (internal) | called by the Dagster services and the run containers (`dagster.yaml` storage) |
+| dagster-code | `pipeline`, `dagster-db` | called on `dagster-code:4000` by the webserver and daemon (`workspace.yaml`); its sensors open the instance in Postgres; OTLP |
+| dagster-webserver, dagster-daemon | `pipeline`, `dagster-db` | `dagster-code:4000`, `dagster-postgres:5432`, OTLP |
+| each Dagster run container | `pipeline`, `dagster-db` | `dagster-postgres` for runs and events; OTLP; the provider APIs (Groq, ElevenLabs, OpenRouter). Set by `DAGSTER_RUN_NETWORK_*` and `dagster.yaml` |
+| SigNoz otel-collector | `signoz-net`, `telemetry`, `pipeline` | receives OTLP from both astra nets; writes to ClickHouse on `signoz-net`; scrapes node-exporter at the `signoz-net` gateway |
+| the other SigNoz containers | `signoz-net` | ClickHouse, zookeeper, the UI and the migrators talk only to each other |
+| node-exporter | host network | its NIC counters exist only in the host network namespace |
+| smart-exporter | none | it only writes a file |
 
-A new service gets `telemetry` from `*astra-app`. If it talks to another service or a store, it
-lists every network it needs, because a YAML merge does not merge lists. Every subnet is
-pinned: `signoz-net` to its live `172.27.0.0/16` (the collector scrapes node-exporter at
+`deploy/tests/test_compose_networks.py` pins this table. It fails when a service is added or
+changes networks, when a caller no longer shares a network with a host it dials, and when
+`config.kdl` or the Dagster yaml names a new in-cluster hostname. Update the test and this table
+together. A new service gets `telemetry` from `*astra-app`. If it talks to another service or a
+store, it lists every network it needs, because a YAML merge does not merge lists. Every subnet
+is pinned: `signoz-net` to its live `172.27.0.0/16` (the collector scrapes node-exporter at
 `172.27.0.1:9100`) and the astra networks to `10.27.N.0/24`.
 
 Limits that remain:
@@ -179,7 +191,9 @@ Limits that remain:
   10362 and 10364.
 - A bridge network does not filter by port. The apps on `telemetry` reach each other's ports,
   which are published anyway, and the collector's unpublished pprof `:1777` and health
-  `:13133`, as do the Dagster services on `pipeline`.
+  `:13133`, as do the Dagster services on `pipeline`. One network per app, each shared only with
+  the collector, would stop that, but every app port is reachable through the gateway anyway, so
+  a dozen more networks would buy only the two collector ports.
 - A rollback to a commit from before the split leaves the `astra_*` networks behind, empty;
   remove them with `docker network rm`.
 - The vendored SigNoz compose (`signoz/docker/docker-compose.yaml`) carries local edits: the

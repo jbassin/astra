@@ -236,8 +236,9 @@ different directory than the source. What is still hand-maintained:
    plus `COPY apps/<domain>/py` in `dagster/Dockerfile`.
 2. A service: a compose service in `deploy/docker-compose.yml` (port in 10350 to 10399, `<<:
    *astra-app` for the uid-1000 user, the `telemetry` network and restart policy; a service
-   that talks to a store or another service lists every network it needs, see
-   [`deploy/README.md`](../deploy/README.md) "Networks"; a healthcheck merging
+   that talks to a store or another service lists every network it needs, and pins them in
+   `deploy/tests/test_compose_networks.py`, see [`deploy/README.md`](../deploy/README.md)
+   "Networks"; a healthcheck merging
    `*node-healthcheck` with its own `test`, its secrets in `environment:`). A Node service's
    `build:` merges `*node-build` and sets `args`: `APP: <domain>/<role>`, plus `RUNTIME` when
    it needs ffmpeg or Chromium (the `node.Dockerfile` header lists the knobs). It sets no
