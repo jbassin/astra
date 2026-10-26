@@ -27,7 +27,13 @@ its library in the `orator-postgres` service (host port 10364). Config is the `o
   with yt-dlp's last stderr lines, so the reason shows without a manual repro.
 - **yt-dlp runs have wall-clock limits:** `orator.ytdlp-enumerate-timeout-s` for a playlist listing
   and `orator.ytdlp-download-timeout-s` for one download. On expiry orator kills yt-dlp's whole
-  process group (yt-dlp runs ffmpeg as a child) and fails the item with "yt-dlp timed out".
+  process group (yt-dlp runs ffmpeg as a child) and fails the item with "yt-dlp timed out". A
+  failed playlist listing is logged and stored on the job with the same stderr tail. ffprobe and
+  the ffmpeg loudness pass have fixed limits in `src/media/probe.ts` (60 s and 15 min); a probe
+  that fails or times out leaves the track without loudness and counts as an ignored error.
+- **Numeric query parameters are validated:** `/api/v1/tracks` `page`, `limit`, `collection` and
+  `tag` (and an upload's `collectionId`) must be positive integers or absent; anything else
+  answers 400 `invalid_<name>`. `limit` above 500 is clamped to 500.
 - **Stream Deck keys:** an operator mints an `orator_…` API key on the SPA's Keys page (needs a
   logged-in session). The controller can only use a key, never mint one.
 

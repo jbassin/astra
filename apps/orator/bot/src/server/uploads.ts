@@ -8,6 +8,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 
+import { reportIgnored } from "@astra/observe";
+
 import type { LibraryStore, Track } from "../db/store";
 import type { AudioProbe, AudioProber } from "../media/probe";
 
@@ -48,7 +50,10 @@ export async function handleUpload(opts: {
       // production write-target is unchanged).
       await writeFile(dest, Buffer.from(await file.arrayBuffer()));
       const probe: AudioProbe = opts.prober
-        ? await opts.prober(dest).catch((): AudioProbe => ({}))
+        ? await opts.prober(dest).catch((err: unknown): AudioProbe => {
+            reportIgnored("orator.upload-probe", err);
+            return {};
+          })
         : {};
       const track = await opts.store.createTrack({
         collectionId: opts.collectionId ?? null,

@@ -2,9 +2,17 @@
  * Audio probing via ffprobe/ffmpeg. Shells out to host binaries,
  * so it is **injected** into routes (the default real prober vs a test stub) and
  * never imported by unit tests — keeping the CI lane binary-free.
- * Both run through `runProcess` (`./process.ts`), which reads stdout and stderr together.
+ * Both run through `runProcess` (`./process.ts`), which reads stdout and stderr together, and
+ * each has a wall-clock limit so a stuck child can't hold an ingest or upload slot for ever. A
+ * timeout rejects the prober; callers treat the probe as best-effort and record the error.
  */
 import { runProcess } from "./process";
+
+/** ffprobe reads only the container header, so it finishes in well under a second. */
+const PROBE_TIMEOUT_MS = 60_000;
+/** ffmpeg's ebur128 pass decodes the whole file; a multi-hour track takes a minute or two even
+ * with several ingests running at once. */
+const LOUDNESS_TIMEOUT_MS = 15 * 60_000;
 
 export interface AudioProbe {
   durationMs?: number;
@@ -19,17 +27,21 @@ export type AudioProber = (path: string) => Promise<AudioProbe>;
 async function probeDurationFormat(
   path: string,
 ): Promise<{ durationMs?: number; format?: string }> {
-  const { code, stdout } = await runProcess("ffprobe", [
-    "-v",
-    "error",
-    "-show_entries",
-    "format=duration:stream=codec_name",
-    "-select_streams",
-    "a:0",
-    "-of",
-    "json",
-    path,
-  ]);
+  const { code, stdout } = await runProcess(
+    "ffprobe",
+    [
+      "-v",
+      "error",
+      "-show_entries",
+      "format=duration:stream=codec_name",
+      "-select_streams",
+      "a:0",
+      "-of",
+      "json",
+      path,
+    ],
+    { timeoutMs: PROBE_TIMEOUT_MS },
+  );
   if (code !== 0) return {};
   try {
     const parsed = JSON.parse(stdout) as {
@@ -54,16 +66,11 @@ async function probeDurationFormat(
  * final "Integrated loudness  I: -14.2 LUFS" summary lives at the very end.
  */
 async function measureLoudness(path: string): Promise<number | undefined> {
-  const { code, stderrTail } = await runProcess("ffmpeg", [
-    "-nostats",
-    "-i",
-    path,
-    "-af",
-    "ebur128",
-    "-f",
-    "null",
-    "-",
-  ]);
+  const { code, stderrTail } = await runProcess(
+    "ffmpeg",
+    ["-nostats", "-i", path, "-af", "ebur128", "-f", "null", "-"],
+    { timeoutMs: LOUDNESS_TIMEOUT_MS },
+  );
   if (code !== 0) return undefined;
   // Take the LAST "I: … LUFS" — the end-of-run integrated value, not a mid-stream sample.
   const matches = [...stderrTail.matchAll(/I:\s*(-?\d+(?:\.\d+)?)\s*LUFS/g)];
