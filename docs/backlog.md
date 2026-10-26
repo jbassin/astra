@@ -47,7 +47,6 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       cap (recent episodes run 6.6k to 6.7k words).
 
 ### Smaller calls (Josh)
-- [ ] Set the removal date for codex's "forever" URL aliases ([ADR 0026](adr/0026-codex-url-alias-removal-date.md)).
 - [ ] Confirm the Ashen Pact index page may stay visible on akasha (it was meant to be hidden; it is now in astra-data).
 - [ ] Portal: delete the pre-stamp Goblin Warrior debris in the world by hand; live-test the
       unstamped-delete refusal and the `allow-macro-execution` off switch (opened 2026-07-08).
@@ -88,8 +87,6 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 
 ### Paydown decisions (Josh)
 Parked during the Phase 2 run; everything they don't block keeps going. Each has a recommendation.
-- [ ] **codex alias removal date** ([ADR 0026](adr/0026-codex-url-alias-removal-date.md); same item
-      as above). Recommend 2027-01-01, since the site is noindexed. Blocks cdx-alias.
 - [ ] **assay canonical scoring engine.** The two engines disagree on 21 of 173 spells, and the
       Stage-B reference numbers follow the same call. Recommend keeping the engine the store and
       book use now, and sending the co-author a disagreement report. Blocks asy-3.

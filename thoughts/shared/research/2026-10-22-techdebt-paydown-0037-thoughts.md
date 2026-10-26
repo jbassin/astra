@@ -372,7 +372,7 @@ token source keep today's look exactly (no stakeholder sign-off needed); assay t
   `pg-test` flake on `main` was the orator ingest test stubs ignoring an already-aborted signal
   (#109). The weal v1 `funcs` table (11 rows) is exported to
   `/ruby/data/astra-state/weal/funcs-v1-2026-10-26.sql` and dropped by migration 0002 (#112).
-  Phase 3 now waits only on the parked calls.
+  Phase 3 now waits only on the parked calls. cdx-alias is dropped: the aliases stay (ADR 0044).
 - Wave 2 list: repo-3 compose anchors and mounted config (after repo-2); repo-4 pnpm catalogs, one
   `[tool.uv.sources]` (after repo-2); lib-3 dead config and the every-field-has-a-reader check
   (after lib-2, pipe-2); lib-7b Python observe bootstrap; lib-8a typed KDL decoders; lib-9 vellum
@@ -399,7 +399,7 @@ token source keep today's look exactly (no stakeholder sign-off needed); assay t
   content parked); p3-dead knip deletions; p3-fe-a..e frontend items (fe-c akasha SPA and fe-d
   tokens keep the look); p3-ratchet CI ratchets over section 8.
 - Blocked: cdx-8 popover and listing redesign waits for codex gate H; asy-3 single `Scorer`,
-  cdx-alias, ops-6 and the campaign-content move wait on the parked decisions.
+  ops-6 and the campaign-content move wait on the parked decisions.
 
 **Context for the next session:** the review page is
 https://claude.ai/artifact/PfwtSxfVtGGKnyFQ54RREH (Josh's verdicts live in its `reviews` store).

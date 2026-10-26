@@ -31,13 +31,13 @@ To change a decision, add a new ADR and mark the old one `Superseded by NNNN`; n
 | [0023](0023-mouthpiece-tools-package.md) | The mouthpiece experiment harness and roundtable move to a tools package | Accepted (done 2026-10-23) |
 | [0024](0024-strider-editor-dev-only.md) | strider's editor is dev-only | Accepted (done 2026-10-25) |
 | [0025](0025-weal-roll-history-archive.md) | weal roll history is an archive, written after the reply | Accepted (done 2026-10-24) |
-| [0026](0026-codex-url-alias-removal-date.md) | codex's "forever" URL aliases get a removal date | Accepted, not yet built |
+| [0026](0026-codex-url-alias-removal-date.md) | codex's "forever" URL aliases get a removal date | Superseded by 0044 |
 | [0027](0027-rust-ci-lane.md) | Rust gets a path-filtered CI lane and a source-hash check | Accepted (done) |
 | [0028](0028-replace-vite-plus.md) | Replace vite-plus with pnpm -r and root vitest projects | Accepted (done 2026-10-24) |
 | [0029](0029-python-312-mise-just.md) | Python 3.12, mise-pinned host tools, and one just entry point | Accepted (done) |
 | [0030](0030-dagster-docker-run-launcher.md) | Dagster adopts the Docker run launcher | Accepted |
-| [0031](0031-akasha-spa-navigation.md) | akasha uses SPA navigation with server functions | Accepted, not yet built |
-| [0032](0032-one-design-token-source.md) | One design-token source generates two themes | Accepted, not yet built |
+| [0031](0031-akasha-spa-navigation.md) | akasha uses SPA navigation with server functions | Accepted (done) |
+| [0032](0032-one-design-token-source.md) | One design-token source generates two themes | Accepted (done) |
 | [0033](0033-deploy-checkout-and-just-deploy.md) | Production builds from a deploy checkout with one deploy command | Accepted (done) |
 | [0034](0034-one-data-root.md) | All runtime data lives under /ruby/data/astra-state | Accepted (done) |
 | [0035](0035-astra-data-repo.md) | Pipeline output lives in the public astra-data repo | Accepted (done) |
@@ -49,3 +49,4 @@ To change a decision, add a new ADR and mark the old one `Superseded by NNNN`; n
 | [0041](0041-accepted-risk-no-secret-rotation.md) | Accepted risk: secrets are not rotated after appearing in chat | Accepted risk |
 | [0042](0042-accepted-risk-open-otlp-ingest.md) | Accepted risk: public unauthenticated OTLP ingest | Accepted risk |
 | [0043](0043-accepted-risk-minor-security-items.md) | Accepted risk: the smaller security findings | Accepted risk |
+| [0044](0044-codex-url-aliases-stay.md) | codex keeps its old URL forms permanently | Accepted |
