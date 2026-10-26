@@ -62,7 +62,7 @@ lineage, and one run can materialize a session across apps.
 
 | Sensor | Launches | When |
 |---|---|---|
-| `craig_drop_sensor` | `session_tracks` → `session_audio` ∥ `session_transcript` → `session_cleanup` | a Craig zip in `scribe.incoming-path` whose date is not a session yet; it adds the key to `sessions` (the only code that does) |
+| `craig_drop_sensor` | `session_tracks` → `session_audio` ∥ `session_transcript` → `session_cleanup` | a Craig zip in `scribe.incoming-path` whose date (an undated name: its `info.txt` start date) is not a session yet; it adds the key to `sessions` (the only code that does) |
 | `linguist_automation` | `session_transcripts` → `session_episode_summary` | `session_transcript` got a new materialization, its `transcript_not_empty` check passed, and `script.json` exists |
 | `mouthpiece_automation` | `session_digest` → `session_brief` → `session_script` → `session_audio_clips` → `session_episode` | `session_episode_summary` got a new materialization (the chronicle gate) and a canonical transcript exists |
 | `heartwood_automation` | `session_wiki` (waits for the host agent), tagged `astra/heartwood` | `session_transcripts` got a new materialization and the transcript is a faerrin campaign |
@@ -182,6 +182,10 @@ asset's Checks tab.
 | `single_recording` | `session_tracks` | two real Craig zips (different recording ids) carry the session date |
 | `no_undated_recording` | `session_tracks` | an undated zip whose `info.txt` start date is the session is not the recording in use |
 | `transcript_not_empty` | `session_transcript` | `script.json` has fewer than 100 segments |
+
+The tracks checks see only the zips present when the run starts. A second recording that
+arrives after the session's run is named by `craig_drop_sensor` in one WARN and in its skip
+reason instead (scribe README, "Second recording").
 
 A failed check fails the run, so `pipeline_failure_alert` pages with the session key and
 the check's step name, and it skips the rest of that run: the tracks checks stop the Groq
