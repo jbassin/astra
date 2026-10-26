@@ -47,19 +47,15 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       cap (recent episodes run 6.6k to 6.7k words).
 
 ### Smaller calls (Josh)
+- [ ] Install the Renovate GitHub app (Mend Renovate) on the astra repo; `renovate.json` is in place, so
+      its first run opens the Dependency Dashboard issue and a digest-pinning PR.
+- [ ] In `/ruby/data/astra-deploy`, delete the pre-move dirs `apps/{akasha,heartwood,mouthpiece}-backend`
+      and `apps/linguist/src`: they hold only ignored caches (checked 2026-10-26), and the agent is
+      blocked from deleting in the deploy checkout. The dev tree's copies are gone.
 - [ ] Confirm the Ashen Pact index page may stay visible on akasha (it was meant to be hidden; it is now in astra-data).
 - [ ] Portal: delete the pre-stamp Goblin Warrior debris in the world by hand; live-test the
       unstamped-delete refusal and the `allow-macro-execution` off switch (opened 2026-07-08).
 - [ ] Remove the stale `iridi.cc` AAAA record (old ISP IPv6 prefix; opened 2026-08-10).
-- [ ] Delete the pre-move app dirs the agent may not remove (`rm -rf` is blocked for it); they hold
-      only ignored build output and caches, and the state in them was copied to the new paths.
-      In the dev tree: `apps/{akasha,mouthpiece}-{backend,frontend}`, `apps/heartwood-backend`,
-      `apps/orator-{backend,controller}`, `apps/weal-{bot,overlay}`, `apps/vellum-{frontend,render}`,
-      `apps/_smoke-substrate`, `apps/assay/{out,review-ui,src,tests}`,
-      `apps/{linguist,scribe}/{src,tests}`, `apps/codex/{books,dist,node_modules}`, and
-      `apps/{harrow,ledger,menhir,strider}/{dist,node_modules,src}`. In
-      `/ruby/data/astra-deploy`: `apps/{akasha,heartwood,mouthpiece}-backend`, `apps/linguist/src`.
-      Until then the dev tree's pre-push `just ci` fails on `apps/orator-controller/.tsbuild`.
 - [ ] Optional: delete or rebase `origin/review/loti2-parentheticals` (closed pull request #1 from
       July; the layout move makes it conflict).
 - [ ] Update the portal Foundry module to 0.5.0 (svc-2): in Foundry's module list choose Update
@@ -90,8 +86,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - [ ] **assay canonical scoring engine.** The two engines disagree on 21 of 173 spells, and the
       Stage-B reference numbers follow the same call. Recommend keeping the engine the store and
       book use now, and sending the co-author a disagreement report. Blocks asy-3.
-- [ ] **Renovate or Dependabot.** Needs your GitHub app install. Recommend Renovate (pnpm catalogs,
-      uv, image digests; patch updates auto-merge behind `ci-ok`). Blocks ops-6.
 - [ ] **Paid verification for pipe-4c and pipe-6.** Recommend verifying both on the next real
       session instead of a forced re-render, so nothing extra is spent; your flag before deploy.
 - [ ] **Campaign content** (`menagerie-puzzles.md`, `sheets/`): astra-data is public and the
