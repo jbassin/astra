@@ -35,6 +35,14 @@ import { normalizeTag, slugify, uniqueSlug } from "../lib/text";
 /** The numbered schema migrations (`NNNN_name.sql`), applied at boot by {@link PostgresStore.migrate}. */
 export const MIGRATIONS_DIR = resolve(findPackageRoot(import.meta.dirname), "migrations");
 
+/**
+ * How long {@link PostgresStore.close} waits for in-flight queries before it drops the
+ * connections. Without a bound, postgres.js 3.4.9's `end()` waits for ever on a connection whose
+ * backend was killed mid-query. Kept under the shutdown hooks' share of
+ * `telemetry.shutdown-timeout-ms`.
+ */
+export const CLOSE_TIMEOUT_S = 3;
+
 // --- row types: the API sends these rows as they are, so they live with the other API shapes in
 // ../api/types.ts, which the SPA imports too. ApiKey stays here: its hash never leaves the server.
 
@@ -245,8 +253,9 @@ export class PostgresStore implements LibraryStore {
     return migrate(this.#sql, loadMigrations(MIGRATIONS_DIR));
   }
 
+  /** End the pool, waiting at most {@link CLOSE_TIMEOUT_S} for in-flight queries. */
   async close(): Promise<void> {
-    await this.#sql.end();
+    await this.#sql.end({ timeout: CLOSE_TIMEOUT_S });
   }
 
   async ping(): Promise<void> {
