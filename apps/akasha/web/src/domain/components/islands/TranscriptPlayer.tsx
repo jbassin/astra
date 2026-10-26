@@ -283,7 +283,8 @@ function initTranscriptPlayer(): (() => void) | null {
   const slug = document.body.dataset.slug ?? "";
   const seekTo = (second: number, user: string) => {
     if (!Number.isNaN(second)) audio.currentTime = second;
-    history.replaceState({}, "", `/${slug}#${second}-${user}`);
+    // Keep the router's history state (its entry key drives scroll restoration).
+    history.replaceState(history.state, "", `/${slug}#${second}-${user}`);
   };
   const onRootClick = (e: MouseEvent) => {
     const target = e.target as HTMLElement;
