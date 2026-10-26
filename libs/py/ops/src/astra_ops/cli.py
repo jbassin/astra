@@ -7,9 +7,9 @@
     mouthpiece-publish [FLAGS...]       regenerate the episode catalog snapshot (writes only)
     mouthpiece-seed [--yes]             LIVE: copy episode mp3s into the served audio dir
     akasha-seed [--yes]                 LIVE: copy session mp3s into the served audio dir
-    heartwood-agent DATE [FLAGS]        PAID + LIVE: run + publish one session
+    heartwood-agent DATE [FLAGS]        PAID + LIVE: run + publish one session (deploy checkout)
     heartwood-push-deploy [--yes]       LIVE: push the clone, redeploy akasha-frontend
-    heartwood-revert DATE [--yes]       LIVE: undo one published session
+    heartwood-revert DATE [--yes]       LIVE: undo one published session (deploy checkout)
     signoz-rules-check                  compare the live SigNoz alert rules with git (read-only)
     signoz-rules-apply [--yes]          plan (default) or apply deploy/signoz/rules to SigNoz
     host-metrics                        write the host probes' Prometheus textfile
@@ -23,6 +23,9 @@
     alert-sudoers-install               one-time ROOT step: the watchdog's sudoers drop-ins
     portal-module-install               build the Foundry module and drop it into Foundry
     pipeline-terminate RUN_ID [--yes]   LIVE: stop a Dagster run and its run container
+    codex-refresh [FLAGS]               re-fetch the codex snapshots, then codex-build
+    codex-build [FLAGS]                 build a codex release from the snapshots, make it current
+    vellum-parity-live                  Python and TS vellum agree on the real wiki (read-only)
 
 PATH OPTIONS (``--data-root``, ``--uv``, ``--mouthpiece-episodes``, ``--akasha-audio``,
 ``--deploy-root``, ``--just``, ``--craig-drop-dir``) default exactly as the justfile's
@@ -39,6 +42,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shlex
 import sys
 from collections.abc import Callable, Sequence
 from pathlib import Path
@@ -48,7 +52,19 @@ from astra_config import find_repo_root
 from astra_observe import get_logger, get_tracer
 from astra_ontology_config import load as load_config
 
-from . import backfill, craig, heartwood, host, host_metrics, pipeline, publish, signoz, smoke
+from . import (
+    backfill,
+    codex,
+    craig,
+    heartwood,
+    host,
+    host_metrics,
+    pipeline,
+    publish,
+    signoz,
+    smoke,
+    vellum,
+)
 from .context import Ctx, Fail
 
 log = get_logger("astra.ops")
@@ -194,6 +210,26 @@ def _mouthpiece_publish(ctx: Ctx, args: list[str]) -> int:
     return publish.mouthpiece_publish(ctx, args)
 
 
+#: Exit code when a command that must run from the deploy checkout runs from another tree.
+EXIT_NOT_DEPLOY_CHECKOUT = 64
+
+
+def _deploy_checkout_only(ctx: Ctx, command: str, args: list[str]) -> None:
+    """Refuse unless this package runs from the deploy checkout. heartwood-agent and
+    heartwood-revert publish to the live wiki, so from a developer tree they would run
+    unmerged code against live data. Everything that runs them unattended (the request
+    runner, the backfill) already runs the deploy checkout's recipes."""
+    if ctx.repo_root.resolve() == ctx.deploy_root.resolve():
+        return
+    line = shlex.join(["just", "-f", f"{ctx.deploy_root}/justfile", command, *args])
+    Ctx.err(
+        f"{command}: refusing — this is {ctx.repo_root}, not the deploy checkout "
+        f"{ctx.deploy_root}, and {command} would run this tree's code against live data. "
+        f"Push and merge first, then run:\n  {line}"
+    )
+    raise Fail(EXIT_NOT_DEPLOY_CHECKOUT)
+
+
 def _heartwood_agent(ctx: Ctx, args: list[str]) -> int:
     if not args or args[0].startswith("-"):
         Ctx.err(
@@ -202,6 +238,7 @@ def _heartwood_agent(ctx: Ctx, args: list[str]) -> int:
         return 64
     date, flags = args[0], args[1:]
     dry_run, push, model_flags, yes = heartwood.parse_agent_flags(flags)
+    _deploy_checkout_only(ctx, "heartwood-agent", args)
     what = AGENT_PAID_DRY if dry_run else AGENT_PAID_LIVE if push else AGENT_PAID_NO_PUSH
     ctx.confirm("heartwood-agent", what, yes=yes)
     return heartwood.heartwood_agent(ctx, date, dry_run=dry_run, push=push, model_flags=model_flags)
@@ -212,6 +249,7 @@ def _heartwood_revert(ctx: Ctx, args: list[str]) -> int:
         Ctx.err("heartwood-revert: usage: heartwood-revert DATE [--yes]")
         return 64
     yes = _only_yes("heartwood-revert", args[1:])
+    _deploy_checkout_only(ctx, "heartwood-revert", args)
     ctx.confirm("heartwood-revert", LIVE["heartwood-revert"], yes=yes)
     return heartwood.heartwood_revert(ctx, args[0])
 
@@ -301,6 +339,14 @@ def _host_metrics(ctx: Ctx, args: list[str]) -> int:
     return host_metrics.host_metrics(host_metrics_targets(ctx))
 
 
+def _codex_refresh(ctx: Ctx, args: list[str]) -> int:
+    return codex.codex_refresh(ctx, args)
+
+
+def _codex_build(ctx: Ctx, args: list[str]) -> int:
+    return codex.codex_build(ctx, args)
+
+
 def _smoke(ctx: Ctx, args: list[str]) -> int:
     _no_args("smoke", args)
     (textfile,) = ctx.config("ops.smoke-textfile")
@@ -329,6 +375,9 @@ COMMANDS: dict[str, Callable[[Ctx, list[str]], int]] = {
     "alert-sudoers-install": _bare("alert-sudoers-install", host.alert_sudoers_install),
     "portal-module-install": _bare("portal-module-install", host.portal_module_install),
     "pipeline-terminate": _pipeline_terminate,
+    "codex-refresh": _codex_refresh,
+    "codex-build": _codex_build,
+    "vellum-parity-live": _bare("vellum-parity-live", vellum.vellum_parity_live),
 }
 
 #: Commands that ask before they run (``--yes`` skips the question).

@@ -28,7 +28,7 @@ def _linked_units() -> list[tuple[str, str]]:
 
 def test_the_manifest_names_only_unit_files_that_exist() -> None:
     units = _linked_units()
-    assert len(units) == 19
+    assert len(units) == 21
     for _, unit in units:
         assert (REPO / "deploy" / "systemd" / unit).is_file(), unit
 

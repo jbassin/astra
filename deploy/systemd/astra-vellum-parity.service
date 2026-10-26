@@ -1,0 +1,20 @@
+[Unit]
+Description=astra vellum parity check — the Python and TS vellum parsers agree on every page of the live wiki
+Documentation=https://github.com/jbassin/astra
+# Class C alerting: page Discord when the parsers disagree on a page or the check cannot run
+# (alert-notify.sh debounces repeat failures of the same unit). A busy lock is a skipped run
+# (exit 0), so a long publish or deploy never pages. OnFailure is a [Unit] key.
+OnFailure=astra-alert@%n.service
+
+[Service]
+Type=oneshot
+# Runs the recipe from the deploy checkout, with the venv and vellum-lang node deps deploy.sh
+# keeps in sync there. Read-only: it reads the astra-data clone's wiki (config.kdl
+# data.akasha-content) and writes nothing. astra-ops finds node itself (this unit's PATH has
+# none).
+WorkingDirectory=/ruby/data/astra-deploy
+ExecStart=/home/jbassin/.cargo/bin/just vellum-parity-live
+# The check takes seconds. Before it, astra-ops waits up to 30 min for each lock (git-publish,
+# held through a heartwood agent run; host-tooling, held while a deploy re-syncs), then skips.
+TimeoutStartSec=75min
+Nice=10

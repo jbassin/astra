@@ -130,8 +130,6 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
 - Dashboards using orator's old `orator.api` span should switch to the route-named server spans — agent.
 - codex: once release-based serving has run a while, delete the old flat
   `/ruby/data/astra-state/codex/data/{corpus,search}` (kept for a code rollback past cdx-4) — agent.
-- `codex-refresh`/`codex-build` still interpolate `{{flags}}` in bash; move them into astra-ops —
-  agent.
 - pg-migrate: if the database connection dies mid-migration, postgres.js can hang boot instead of
   failing (data is safe: the transaction rolls back; the deploy health wait reports it) — agent.
 - pipe-4b follow-ups: `migrate_sessions.py --allow-launch` should take session keys, not a count;
@@ -139,31 +137,20 @@ Parked during the Phase 2 run; everything they don't block keeps going. Each has
   cursor (`dagster sensor cursor --delete`, a sensor or location rename) — agent.
 - portal: refresh the five pf2e fixtures (`apps/portal/module/tests/fixtures/pf2e/`) from the live
   world; their live sides are synthesised today — agent.
-- `just vellum-parity-live` (lib-9) is not scheduled; wire it into the watchdog or a timer — agent.
-- `deploy/node.Dockerfile` still mentions compose `command:` lines (repo-3 removed them) — agent.
-- ops-1b follow-ups: `codex-refresh` and `codex-build` (cdx-4's release recipes) still have
-  bash bodies that interpolate `{{flags}}`; make them one-line wrappers; delete the faerrin-era user unit files in `~/.config/systemd/user` (`dice-export`,
-  `eerie`, `lark`, `mouth`, `wretch-reconcile`: none enabled, all point into the deleted
+- Delete the faerrin-era user unit files in `~/.config/systemd/user` (`dice-export`, `eerie`,
+  `lark`, `mouth`, `wretch-reconcile`: none enabled, all point into the deleted
   `/ruby/data/experiments/faerrin` tree) — agent.
 - Flaky under parallel load (several `just ci` runs at once): codex `ssrSmoke`'s first request times
   out at 5 s, codex `build-search.test.ts` "page_count matches the fixture manifest" failed
   once, and orator's `ingest.pg.test.ts` shutdown-order test timed out at 5 s once — agent.
-- App-level repo-root walk-ups remain in `apps/akasha/py` `snapshot.py` and `apps/assay/py`
-  `book.py` (lib-2 covered the libraries) — agent.
+- `apps/assay/py` `store.py`, `homebrew.py` and `artifacts.py` still find the app root by counting
+  `Path.parents`; use `find_repo_root` as `book.py` does — agent.
 - vellum visual regression still binds the fixed port 5350 (it runs only in its CI container) —
   agent.
-- Compose `command:` lines duplicate each image's `CMD` and drift from it; delete them — agent
-  (repo-3).
-- The watchdog does not check `astra-backup.timer` or snapshot age, and the restore test is not
-  scheduled — agent.
-- `config.kdl` references a SOPS key that does not exist — agent (paydown OPS-5).
 - Split the internal Docker network (the one theme P item kept) — agent; Phase 2.
-- `pip-audit` flags `filelock` 3.29.4 (via dagster; three advisories, fixed in 4.2.1, a major bump)
-  — agent; check dagster accepts 4.x. `diskcache` (via dspy) has no fix.
+- `pip-audit` flags `diskcache` (via dspy), which has no fix — agent.
 - After the OpenTelemetry 1.45.1 upgrade deploys, confirm `astra.pipeline` logs still reach
   SigNoz — main session.
-- Manual `heartwood-agent`/`-revert` from the dev tree run dev code against live data; always use
-  `just -f /ruby/data/astra-deploy/justfile ...` — agent; consider making the recipes refuse.
 
 ## assay
 

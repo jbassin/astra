@@ -46,6 +46,7 @@ def test_the_groups_are_the_old_install_recipes() -> None:
             "astra-alert@.service", "astra-watchdog.service", "astra-watchdog.timer",
             "craig-sync.service", "linguist-commit.service", "astra-metrics.service",
             "astra-metrics.timer", "astra-smoke.service", "astra-smoke.timer",
+            "astra-vellum-parity.service", "astra-vellum-parity.timer",
         ],
         "backup": [
             "astra-backup.service", "astra-backup.timer", "astra-restore-test.service",
@@ -98,13 +99,16 @@ def test_all_groups_in_order_with_artifacts_init_before_heartwood(tmp_path: Path
         *linked(
             "astra-alert@.service", "astra-watchdog.service", "astra-watchdog.timer",
             "astra-metrics.service", "astra-metrics.timer", "astra-smoke.service",
-            "astra-smoke.timer",
+            "astra-smoke.timer", "astra-vellum-parity.service", "astra-vellum-parity.timer",
         ),
         sc("daemon-reload"),
-        sc("enable", "--now", "astra-watchdog.timer", "astra-metrics.timer", "astra-smoke.timer"),
+        sc(
+            "enable", "--now", "astra-watchdog.timer", "astra-metrics.timer", "astra-smoke.timer",
+            "astra-vellum-parity.timer",
+        ),
         sc(
             "list-timers", "astra-watchdog.timer", "astra-metrics.timer", "astra-smoke.timer",
-            "--no-pager",
+            "astra-vellum-parity.timer", "--no-pager",
         ),
         *linked(
             "astra-backup.service", "astra-backup.timer", "astra-restore-test.service",

@@ -188,7 +188,8 @@ Each session is a Dagster partition. The detailed commands (GraphQL calls, conta
 
 heartwood runs per session through Dagster: `session_wiki` files a request, and the host unit
 `heartwood-request` runs the agent and publishes to astra-data. Run manual commands against the
-deploy checkout (`just -f /ruby/data/astra-deploy/justfile ...`) so live data meets deployed code.
+deploy checkout (`just -f /ruby/data/astra-deploy/justfile ...`) so live data meets deployed code;
+`heartwood-agent` and `heartwood-revert` refuse to run from any other tree.
 Exit codes and details: [`apps/heartwood/py/README.md`](../apps/heartwood/py/README.md#operations).
 
 1. Read the run's log under `/ruby/data/astra-state/heartwood/requests/logs/` and its exit code.

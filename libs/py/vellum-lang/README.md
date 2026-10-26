@@ -26,7 +26,7 @@ It reads no config.
 - `just vellum-parity` (a CI job) runs `scripts/corpus_parity.py` over `fixtures/vellum`, the
   fixture wiki and strider's content, calling the TS `dump-meta.ts` for the other half.
   `just vellum-parity-live` runs it over the real wiki in the astra-data clone (read-only; not
-  in CI).
+  in CI; `astra-vellum-parity.timer` runs it daily and pages when it fails).
 
 ## Testing
 
