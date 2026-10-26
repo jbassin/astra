@@ -83,9 +83,6 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 
 ### Paydown decisions (Josh)
 Parked during the Phase 2 run; everything they don't block keeps going. Each has a recommendation.
-- [ ] **assay canonical scoring engine.** The two engines disagree on 21 of 173 spells, and the
-      Stage-B reference numbers follow the same call. Recommend keeping the engine the store and
-      book use now, and sending the co-author a disagreement report. Blocks asy-3.
 - [ ] **Paid verification for pipe-4c and pipe-6.** Recommend verifying both on the next real
       session instead of a forced re-render, so nothing extra is spent; your flag before deploy.
 
