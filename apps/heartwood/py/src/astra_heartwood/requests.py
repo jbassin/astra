@@ -51,7 +51,7 @@ EXIT_MEANINGS: dict[int, str] = {
     6: "dirty corpus/ledger/registry or not on main",
     7: "validate/snapshot/seed failed",
     8: "commit/rebase/push failed",
-    9: "redeploy failed or skipped",
+    9: "redeploy failed",
     10: "publish lock timeout, nothing written",
     64: "bad flag, or not confirmed (no --yes)",
     -1: "preflight: missing tool",

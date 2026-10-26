@@ -102,6 +102,7 @@ def test_pending_skips_matching_results_ignores_tmp_and_sorts_by_date(root: Path
 
 def test_meanings_and_next_steps() -> None:
     assert rq.meaning(2) == "incomplete (iteration cap)"
+    assert rq.meaning(9) == "redeploy failed"  # push_deploy never skips the redeploy
     assert rq.meaning(99) == "unexpected exit"
     assert "_heartwood-push-deploy" in rq.next_step(9, "d") and "do NOT" in rq.next_step(8, "d")
     assert "just heartwood-agent 2026-1-1" in rq.next_step(1, "2026-1-1")
