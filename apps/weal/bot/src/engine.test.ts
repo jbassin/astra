@@ -91,6 +91,19 @@ describe("runEngine", () => {
   });
 });
 
+/** `save(:adv, || 2d20kh1)` as the engine serializes it (a macro a player reported broken). */
+const NULLARY_ADV = "|| kh(pool(2, d20), 1)";
+
+/** Every source the save guard evaluates for a save named `name`, in order. */
+function guardProbes(name: string): string[] {
+  return [
+    ...GUARD_ROLLS,
+    `let _ = ${name} + 1; ()`,
+    `let _ = ${name}(1); ()`,
+    `let _ = ${name}(); ()`,
+  ];
+}
+
 describe("loadValidatedFuncs (the funcs_v2 boot load, real wasm)", () => {
   test("valid rows are kept in id order; later rows see earlier saves", () => {
     const rows = [
@@ -153,7 +166,7 @@ describe("loadValidatedFuncs (the funcs_v2 boot load, real wasm)", () => {
     expect(loadValidatedFuncs(rows)).toEqual([["bonus", "3"]]);
   });
 
-  test("each row is loaded by a run, after the valid rows before it", () => {
+  test("each row gets the save guard, run against the rows kept before it", () => {
     const calls: { source: string; list: [string, string][]; mode: string }[] = [];
     const spy: typeof evaluate = (source, list, seed, budget, mode) => {
       calls.push({ source, list, mode });
@@ -166,22 +179,57 @@ describe("loadValidatedFuncs (the funcs_v2 boot load, real wasm)", () => {
       ],
       { evaluateFn: spy },
     );
-    expect(calls).toEqual([
-      { source: "()", list: [["a", "1"]], mode: "run" },
-      {
-        source: "()",
-        list: [
-          ["a", "1"],
-          ["b", "2"],
-        ],
-        mode: "run",
-      },
-    ]);
+    expect(calls.every((c) => c.mode === "run")).toBe(true);
+    // Row 1's probes see only row 1; row 2's see row 1 then row 2.
+    const rowA = calls.filter((c) => c.list.length === 1);
+    const rowB = calls.filter((c) => c.list.length === 2);
+    expect(rowA.map((c) => c.source)).toEqual(guardProbes("a"));
+    expect(rowB.map((c) => c.source)).toEqual(guardProbes("b"));
+    expect(rowA.every((c) => c.list[0]?.[0] === "a")).toBe(true);
+    expect(
+      rowB.every(
+        (c) =>
+          JSON.stringify(c.list) ===
+          JSON.stringify([
+            ["a", "1"],
+            ["b", "2"],
+          ]),
+      ),
+    ).toBe(true);
+  });
+
+  test("a row that loads but breaks an everyday roll is skipped, and that roll works", () => {
+    // `kh = 3` loads cleanly (the old `()` boot probe kept it), then fails every
+    // `kh` roll. Rows like it predate the save guard.
+    const rows = [
+      { id: 1, name: "bonus", source: "3" },
+      { id: 2, name: "kh", source: "3" },
+      { id: 3, name: "save", source: "1" },
+    ];
+    const funcs = loadValidatedFuncs(rows);
+    expect(funcs).toEqual([["bonus", "3"]]);
+    expect(runEngine("2d20kh1 + bonus", funcs, SEED).kind).toBe("ok");
+    expect(runEngine("save(:fixed, 1)", funcs, SEED).kind).toBe("ok");
+  });
+
+  test("the reported nullary macro row is kept and rolls", () => {
+    const funcs = loadValidatedFuncs([{ id: 1, name: "adv", source: NULLARY_ADV }]);
+    expect(funcs).toEqual([["adv", NULLARY_ADV]]);
+    expect(runEngine("adv() + 7", funcs, SEED).kind).toBe("ok");
+    expect(runEngine("d20", funcs, SEED).kind).toBe("ok");
+  });
+
+  test("a row whose use hits an engine fault is skipped", () => {
+    const funcs = loadValidatedFuncs(
+      [
+        { id: 1, name: "atk", source: "|| d20 + 7" },
+        { id: 2, name: "bonus", source: "3" },
+      ],
+      { evaluateFn: internalErrorOn("atk()") },
+    );
+    expect(funcs).toEqual([["bonus", "3"]]);
   });
 });
-
-/** `save(:adv, || 2d20kh1)` as the engine serializes it (a macro a player reported broken). */
-const NULLARY_ADV = "|| kh(pool(2, d20), 1)";
 
 /**
  * The real engine, except that the guard's wrapped use `use` reports an

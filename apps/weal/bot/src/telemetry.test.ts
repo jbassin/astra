@@ -191,15 +191,19 @@ describe("boot validation logging", () => {
       { id: 1, name: "bonus", source: "3" },
       { id: 2, name: "bad", source: "1 +" },
       { id: 3, name: "zero", source: "1 / 0" },
+      { id: 4, name: "kh", source: "3" },
     ];
     expect(loadValidatedFuncs(rows)).toEqual([["bonus", "3"]]);
     const warns = logged.filter((l) => l.severityText === "WARN");
-    expect(warns).toHaveLength(2);
+    expect(warns).toHaveLength(3);
     expect(String(warns[0]?.body)).toContain("funcs_v2 row 2 (bad)");
     expect(String(warns[1]?.body)).toBe(
-      "skipping saved weal source: funcs_v2 row 3 (zero): prelude: division by zero",
+      "skipping saved weal source: funcs_v2 row 3 (zero): rolls `d20`: prelude: division by zero",
     );
     expect(warns[1]?.attributes).toEqual({ "weal.save": "zero", "weal.stage": "prelude" });
+    expect(String(warns[2]?.body)).toContain(
+      "skipping saved weal source: funcs_v2 row 4 (kh): rolls `2d20kh1 + 1`: type:",
+    );
     expect(logged.some((l) => l.severityText === "ERROR")).toBe(false);
   });
 });
