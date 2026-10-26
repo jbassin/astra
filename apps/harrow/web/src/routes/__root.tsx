@@ -14,7 +14,7 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <SiteDocument rum={() => import("@/observe/rumConfig")} forceDarkTheme>
+    <SiteDocument rum={() => import("@/observe/rumConfig")}>
       <ShaderBackground spec={starfield} />
       <header className="site-head">
         <Link to="/" className="site-brand">
