@@ -391,6 +391,14 @@ doctor:
 pipeline-terminate run_id *flags:
     @{{ops}} pipeline-terminate "$@"
 
+# Evaluates the stage automation sensors' first two ticks against the live instance in a
+# read-only Postgres session (dagster/automation_preflight.py); launches and writes nothing.
+# Exit 0 = they would request no run, 1 = they would (don't start them), 2 = it could not finish.
+# Read-only: would the stage automation sensors launch anything now?
+pipeline-automation-preflight:
+    docker exec -e PGOPTIONS="-c default_transaction_read_only=on" astra-dagster-code \
+        sh -c 'cd /opt/dagster/app && python automation_preflight.py'
+
 # Never touches the astra project. Needs Docker; about 20 s. Not in `ci`.
 # Check deploy/wait-healthy.sh (deploy.sh's health wait) against throwaway alpine containers.
 deploy-health-test:

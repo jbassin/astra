@@ -3,9 +3,9 @@
 mouthpiece turns each session transcript into a recap podcast episode with three hosts
 (seats A = Bram, B = Maeve, C = Nell; `podcast-persona` entries in `being.kdl`). It runs as a
 Dagster graph on the shared `sessions` partitions. `session_digest` depends on linguist's
-`session_transcripts` and `session_episode_summary`, and `linguist_output_sensor` launches the
-graph once that summary is materialized, for a session with a canonical transcript that
-mouthpiece never tried:
+`session_transcripts` and `session_episode_summary`, and `mouthpiece_automation` launches the
+graph once that summary gets a new materialization, for a session with a canonical transcript
+that mouthpiece never tried:
 
 1. `session_digest`: clean (windowed keep/drop of off-table talk) and enrich (synopsis and
    `wiki_refs`) into `digest.json`.
@@ -150,7 +150,7 @@ package's private `assets._voices` and `resources.default_tts`, so keep their si
   the kind, never on the id.
 - **`sessions.kdl` overrides** (`ontology/ontology-being/`, see `docs/runbook.md`, "Correct one
   session"). A `kind` there wins over the files, a `title` replaces the published catalog title
-  (not `script.json`'s), and `skip=#true` keeps `linguist_output_sensor` from launching the
+  (not `script.json`'s), and `skip=#true` keeps `mouthpiece_automation` from launching the
   session. The 2026-10-19 roundtable is marked `special` there, since its files predate `kind`.
 - **A re-render rewrites its whole snapshot entry** (the transcript is inlined), so large
   snapshot diffs are expected.

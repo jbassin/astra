@@ -1,6 +1,6 @@
-"""Dagster wiring for heartwood (0036): ``session_wiki`` on the shared ``sessions``
-partitions, after linguist's ``session_transcripts``, and the sensor that launches it for
-each faerrin session.
+"""Dagster wiring for heartwood: ``session_wiki`` on the shared ``sessions`` partitions,
+after linguist's ``session_transcripts``, and the automation that launches it for each
+faerrin session (`HEARTWOOD_STAGE`, evaluated by `heartwood_automation`).
 
 ``session_wiki`` does not run the agent (the dagster-code image has no node, git, push key
 or docker). It files ``<requests-path>/<date>.request.json`` and waits for the
@@ -20,7 +20,12 @@ from astra_linguist.assets import session_transcripts
 from astra_linguist.chronicle import TRANSCRIPT_DIR
 from astra_observe import get_logger, get_meter, get_tracer
 from astra_pipeline_resources import AstraConfig, PipelinePaths, default_resources
-from astra_pipeline_resources.partitions import SessionStage, launch_ready, sessions
+from astra_pipeline_resources.partitions import (
+    SessionStage,
+    sessions,
+    stage_automation,
+    stage_sensor,
+)
 
 from . import requests as rq
 from .agent.sessions import faerrin_session
@@ -123,7 +128,27 @@ def run_session_wiki(
     return meta
 
 
-@dg.asset(partitions_def=sessions, deps=[session_transcripts], group_name="heartwood")
+def is_faerrin(date: str, transcript_dir: Path | None = None) -> bool:
+    """True when this session's canonical transcript is a faerrin-world campaign."""
+    transcript_dir = transcript_dir if transcript_dir is not None else TRANSCRIPT_DIR
+    return faerrin_session(date, transcript_dir=transcript_dir) is not None
+
+
+#: When ``session_wiki`` launches for a session (``dagster/migrate_sessions.py`` reads it
+#: too). A linguist rewrite of a session that already has a wiki run never re-triggers it.
+#: The ledger is never read here: it lives in the astra-data clone, which the Dagster
+#: containers do not mount, and the host runner owns the published check.
+HEARTWOOD_STAGE = SessionStage(
+    upstream=session_transcripts.key, stage=dg.AssetKey("session_wiki"), keep=is_faerrin
+)
+
+
+@dg.asset(
+    partitions_def=sessions,
+    automation_condition=stage_automation(HEARTWOOD_STAGE),
+    deps=[session_transcripts],
+    group_name="heartwood",
+)
 def session_wiki(
     context: dg.AssetExecutionContext, astra_config: AstraConfig, pipeline_paths: PipelinePaths
 ) -> dg.MaterializeResult:
@@ -142,36 +167,19 @@ def session_wiki(
     return dg.MaterializeResult(metadata=meta)
 
 
-def is_faerrin(date: str, transcript_dir: Path | None = None) -> bool:
-    """True when this session's canonical transcript is a faerrin-world campaign."""
-    transcript_dir = transcript_dir if transcript_dir is not None else TRANSCRIPT_DIR
-    return faerrin_session(date, transcript_dir=transcript_dir) is not None
-
-
-#: What `heartwood_sensor` launches, and when (``dagster/migrate_sessions.py`` reads it).
-HEARTWOOD_STAGE = SessionStage(
-    upstream=session_transcripts.key, stage=session_wiki.key, keep=is_faerrin
+#: Runs ``session_wiki`` with `CONCURRENCY_TAG`, so the queue holds one at a time.
+heartwood_automation = stage_sensor(
+    "heartwood_automation",
+    [session_wiki],
+    run_tags=CONCURRENCY_TAG,
+    description=(
+        "Runs session_wiki (a paid host agent run) for each faerrin session whose "
+        "session_transcripts was newly materialized and whose wiki was never tried. "
+        "Stop it to pause heartwood launches."
+    ),
 )
-
-
-@dg.sensor(
-    target=[session_wiki],
-    minimum_interval_seconds=30,
-    default_status=dg.DefaultSensorStatus.RUNNING,
-)
-def heartwood_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
-    """Run ``session_wiki`` for each faerrin session whose ``session_transcripts`` is
-    materialized and whose wiki was never tried.
-
-    A linguist rewrite of a session that already has a wiki run never re-triggers, and a
-    failed or canceled run is not retried (re-execute it). The sessions the old sensor
-    adopted without running are marked materialized by the sessions migration (the
-    paid-replay guard).
-    The ledger is never read here: it lives in the astra-data clone, which the Dagster
-    containers do not mount, and the host runner owns the published check."""
-    return launch_ready(context, HEARTWOOD_STAGE, tags=CONCURRENCY_TAG)
 
 
 defs = dg.Definitions(
-    assets=[session_wiki], sensors=[heartwood_sensor], resources=default_resources()
+    assets=[session_wiki], sensors=[heartwood_automation], resources=default_resources()
 )

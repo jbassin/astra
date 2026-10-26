@@ -9,8 +9,8 @@ to $0.65 per session).
 The agent runs on the host, not in Dagster: `write_page` calls node (the vellum validator) and
 the publish step calls git, and the Dagster image has neither. The flow:
 
-1. `heartwood_sensor` sees a faerrin session whose `session_transcripts` is materialized and
-   whose wiki was never tried; `session_wiki` writes
+1. `heartwood_automation` sees a faerrin session whose `session_transcripts` got a new
+   materialization and whose wiki was never tried; `session_wiki` writes
    `/ruby/data/astra-state/heartwood/requests/<date>.request.json` (`heartwood.requests-path`)
    and waits up to `heartwood.request-timeout-minutes` (180).
 2. `heartwood-request.path` (plus an hourly timer) runs `just heartwood-requests` in the deploy

@@ -192,7 +192,7 @@ SCRIBE_ASSETS = [session_tracks, session_audio, session_transcript, session_clea
 # ── blocking checks ──────────────────────────────────────────────────────────
 # A failed check fails the run, so `pipeline_failure_alert` pages with the session key, and
 # skips the rest of the run: the tracks checks stop the Groq transcription, and the
-# transcript check stops `session_cleanup` (the tracks stay for a rerun). linguist's sensor
+# transcript check stops `session_cleanup` (the tracks stay for a rerun). linguist's automation
 # gates on the transcript check (`LINGUIST_STAGE.gates`), so no paid LLM stage launches.
 
 #: A real session has thousands of segments (3635 was the fewest by 2026-10); one under

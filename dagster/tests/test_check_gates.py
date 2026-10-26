@@ -1,21 +1,24 @@
-"""A failed scribe check keeps linguist's sensor from launching.
+"""A failed scribe check keeps linguist from launching.
 
 A failed blocking check fails its run but leaves the checked asset materialized, and
-``scribe_output_sensor`` launches on that materialization. This runs the real scribe
-assets and checks (zip, ffmpeg and Groq stubbed) and then the sensor's real launch rule,
-gates included, over the same instance.
+linguist's trigger is that materialization. This runs the real scribe assets and checks
+(zip, ffmpeg and Groq stubbed) and then ticks the code location's real
+``linguist_automation`` sensor, gates included, over the same instance.
 """
 
-import dataclasses
 from pathlib import Path
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 from typing import Any
 
+import astra_linguist.assets as linguist
 import dagster as dg
 import pytest
-from astra_linguist.assets import LINGUIST_STAGE
-from astra_pipeline_resources.partitions import launch_ready
-from astra_pipeline_resources.testing import FakeConfig, paths_under, sessions_instance
+from astra_pipeline_resources.testing import (
+    FakeConfig,
+    automation_tick,
+    paths_under,
+    sessions_instance,
+)
 from astra_scribe import assets as scribe
 
 
@@ -50,19 +53,21 @@ def _scribe_run(
 
 
 def test_an_empty_transcript_never_launches_linguist(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, definitions: ModuleType
 ) -> None:
+    saved = paths_under(tmp_path).linguist_saved
+    monkeypatch.setattr(
+        linguist, "_linguist_config", lambda: SimpleNamespace(ingest_saved_dir=saved)
+    )
     instance = sessions_instance("2026-9-26", "2026-10-5")
+    _, cursor = automation_tick(definitions.defs, "linguist_automation", instance)
+
     assert not _scribe_run(monkeypatch, tmp_path, instance, "2026-9-26", 0)
     assert _scribe_run(monkeypatch, tmp_path, instance, "2026-10-5", 4901)
     transcript = dg.AssetKey("session_transcript")
     assert instance.get_materialized_partitions(transcript) == {"2026-9-26", "2026-10-5"}
 
-    # The sensor's own rule; only its file check is relaxed (it reads the live saved dir).
-    stage = dataclasses.replace(LINGUIST_STAGE, keep=lambda _key: True)
-    result = launch_ready(dg.build_sensor_context(instance=instance), stage)
-    assert [r.partition_key for r in result.run_requests or []] == ["2026-10-5"]
-
-    ungated = dataclasses.replace(stage, gates=())
-    result = launch_ready(dg.build_sensor_context(instance=instance), ungated)
-    assert [r.partition_key for r in result.run_requests or []] == ["2026-10-5", "2026-9-26"]
+    requests, cursor = automation_tick(definitions.defs, "linguist_automation", instance, cursor)
+    assert [r.partition_key for r in requests] == ["2026-10-5"]
+    requests, _ = automation_tick(definitions.defs, "linguist_automation", instance, cursor)
+    assert requests == []
