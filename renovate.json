@@ -1,0 +1,82 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":semanticCommits", "docker:pinDigests"],
+  "timezone": "America/New_York",
+  "schedule": ["before 6am on monday"],
+  "prConcurrentLimit": 5,
+  "platformAutomerge": true,
+  "rangeStrategy": "auto",
+  "ignorePaths": ["**/node_modules/**", "deploy/signoz/**", "**/tests/**", "**/fixtures/**"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on the first day of the month"]
+  },
+  "cargo": {
+    "enabled": false
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "The uv pin in the CI setup action, kept in step with mise.toml",
+      "managerFilePatterns": ["/^\\.github/actions/setup-uv/action\\.yml$/"],
+      "matchStrings": ["version: \"(?<currentValue>[^\"]+)\""],
+      "depNameTemplate": "uv",
+      "packageNameTemplate": "astral-sh/uv",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "description": "The just pin in the CI setup action, kept in step with mise.toml",
+      "managerFilePatterns": ["/^\\.github/actions/setup-just/action\\.yml$/"],
+      "matchStrings": ["just-version: \"(?<currentValue>[^\"]+)\""],
+      "depNameTemplate": "just",
+      "packageNameTemplate": "casey/just",
+      "datasourceTemplate": "github-releases"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Patch, pin and digest updates merge themselves once ci-ok passes",
+      "matchUpdateTypes": ["patch", "pin", "digest"],
+      "automerge": true
+    },
+    {
+      "description": "One PR per tool pinned in two places",
+      "matchPackageNames": ["pnpm"],
+      "groupName": "pnpm"
+    },
+    {
+      "matchPackageNames": ["uv", "astral-sh/uv"],
+      "groupName": "uv"
+    },
+    {
+      "matchPackageNames": ["just", "casey/just"],
+      "groupName": "just"
+    },
+    {
+      "matchPackageNames": ["/^@opentelemetry//", "/^opentelemetry-/"],
+      "groupName": "opentelemetry"
+    },
+    {
+      "description": "weal-engine builds need these exact versions; bump them by hand with the crate",
+      "matchPackageNames": ["/wasm-bindgen/", "/binaryen/"],
+      "enabled": false
+    },
+    {
+      "description": "A Postgres major needs a data migration",
+      "matchPackageNames": ["postgres"],
+      "matchDatasources": ["docker"],
+      "allowedVersions": "<17"
+    },
+    {
+      "description": "Python stays on 3.12 (ADR 0029)",
+      "matchPackageNames": ["python"],
+      "allowedVersions": "<3.13"
+    },
+    {
+      "description": "Node follows even-numbered LTS lines; move to the next one by hand",
+      "matchPackageNames": ["node"],
+      "allowedVersions": "<25"
+    }
+  ]
+}

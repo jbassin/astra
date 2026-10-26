@@ -71,6 +71,13 @@ pnpm 10.34.4 (root `packageManager`, repeated in `mise.toml`); Node 24; Python 3
 TypeScript 5; Rust 1.96.0 with wasm-bindgen-cli 0.2.127 and wasm-opt 124 (hard-pinned in
 `just weal-engine-build`). Bump a pin deliberately, in every place that repeats it.
 
+**Dependency updates.** Renovate (`renovate.json`) opens update PRs on Monday mornings and refreshes
+the lockfiles monthly. Patch, pin and digest updates merge themselves once `ci-ok` passes; minor and
+major ones wait for review. Each tool pinned in two places (pnpm, uv, just) moves in one PR. It
+leaves alone the Rust crate and wasm-bindgen/binaryen (bump them with `just weal-engine-build`),
+Postgres majors, Python past 3.12 and odd-numbered Node lines. Its open and pending updates are on
+the Dependency Dashboard issue.
+
 **Python (uv).** Virtual workspace in the root `pyproject.toml`; members `apps/*/py`, `apps/*/tools`
 (hand-run tools the Dagster image does not install), `libs/py/*`, `ontology/*` and `dagster` (the
 code location, `astra-pipeline`). ruff (line length 100) lints and formats, ty (pinned `==0.0.51`, preview) type-checks,
