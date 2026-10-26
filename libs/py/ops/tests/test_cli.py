@@ -23,6 +23,7 @@ def test_unattended_without_yes_refuses_64_and_runs_nothing(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     ctx, r = make_ctx(tmp_path, [], tty=False)
+    ctx.deploy_root = ctx.repo_root  # past the heartwood commands' deploy-checkout guard
     for command, args in [
         ("linguist-commit", []),
         ("astra-data-push", []),
@@ -79,6 +80,30 @@ def test_bad_arguments_exit_64_before_asking(tmp_path: Path) -> None:
     assert cli.dispatch(ctx, "heartwood-agent", ["d", "--bogus"]) == 64
     assert cli.dispatch(ctx, "heartwood-agent", []) == 64
     assert cli.dispatch(ctx, "heartwood-revert", ["d", "extra"]) == 64
+    r.assert_done()
+
+
+@pytest.mark.parametrize(
+    ("command", "args"),
+    [("heartwood-agent", ["2026-1-2", "--dry-run"]), ("heartwood-revert", ["2026-1-2", "--yes"])],
+)
+def test_heartwood_refuses_outside_the_deploy_checkout(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], command: str, args: list[str]
+) -> None:
+    ctx, r = make_ctx(tmp_path, [], tty=True, answer="y")
+    ctx.prompt = lambda _q: pytest.fail("asked before the checkout was checked")
+    assert cli.dispatch(ctx, command, args) == cli.EXIT_NOT_DEPLOY_CHECKOUT
+    r.assert_done()
+    err = capsys.readouterr().err
+    assert f"not the deploy checkout {tmp_path}/deploy" in err
+    assert f"just -f {tmp_path}/deploy/justfile {command} {' '.join(args)}" in err
+
+
+def test_heartwood_runs_from_the_deploy_checkout(tmp_path: Path) -> None:
+    """Past the guard, the command goes on to its confirmation (declined here)."""
+    ctx, r = make_ctx(tmp_path, [], tty=True, answer="n")
+    ctx.deploy_root = ctx.repo_root
+    assert cli.dispatch(ctx, "heartwood-revert", ["2026-1-2"]) == 1
     r.assert_done()
 
 
@@ -247,4 +272,5 @@ def test_every_unit_runs_a_recipe_that_exists() -> None:
         "host-metrics",
         "linguist-commit",
         "smoke",
+        "vellum-parity-live",
     ]

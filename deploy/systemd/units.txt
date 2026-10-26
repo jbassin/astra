@@ -5,6 +5,6 @@
 # unit enabled, and names `just units-install <group>` (the first group that lists the unit).
 craig craig-sync.service craig-sync.timer
 linguist-commit linguist-commit.service linguist-commit.timer linguist-commit.path
-alert astra-alert@.service astra-watchdog.service astra-watchdog.timer craig-sync.service linguist-commit.service astra-metrics.service astra-metrics.timer astra-smoke.service astra-smoke.timer
+alert astra-alert@.service astra-watchdog.service astra-watchdog.timer craig-sync.service linguist-commit.service astra-metrics.service astra-metrics.timer astra-smoke.service astra-smoke.timer astra-vellum-parity.service astra-vellum-parity.timer
 backup astra-backup.service astra-backup.timer astra-restore-test.service astra-restore-test.timer
 heartwood-request heartwood-request.service heartwood-request.path heartwood-request.timer

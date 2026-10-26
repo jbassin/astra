@@ -1,0 +1,12 @@
+[Unit]
+Description=Run the astra vellum parity check over the live wiki daily, 06:10
+
+[Timer]
+# Daily, clear of the 03:30 backup and the Sunday 05:30 restore test. The wiki changes only
+# when heartwood publishes a session, so once a day is enough. Persistent catches up a run
+# missed while the host was off.
+OnCalendar=*-*-* 06:10:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -139,12 +139,10 @@ new-frontend name *flags:
     pnpm install
 
 # Not in CI (CI has no astra-data clone). Reads only; the path is config's data.akasha-content.
+# astra-vellum-parity.timer runs it daily from the deploy checkout and pages when it fails.
 # Run the vellum parity check over the real wiki in the astra-data clone.
 vellum-parity-live:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    dir="$({{uv_bin}} run --frozen --no-sync python -m astra_ontology_config data.akasha-content)"
-    exec {{uv_bin}} run --frozen --no-sync python libs/py/vellum-lang/scripts/corpus_parity.py --dir "$dir"
+    @{{ops}} vellum-parity-live "$@"
 
 # ==== ci jobs: one recipe per CI job (ci.yml runs `just <job>`; the names match the job ids) ===
 
@@ -600,52 +598,34 @@ smoke:
 
 # ==== codex (0029): corpus releases ===========================================================
 
-# Refresh the codex corpus: re-fetch both snapshots, then build and publish a new
-# release (`codex-build`). A deliberate, diffable event, never implicit in a build —
-# refuses to run if the git index is dirty under apps/codex/ingest (the
-# corpus-manifest.json diff must be reviewable alone, the linguist-commit-timer
-# lesson applied here too). Re-downloads ~259 MB (AoN) + the Foundry sparse
-# clone; not cheap, don't run casually. Flags go to codex-build (`--allow-shrink`).
+# A deliberate, diffable event, never implicit in a build: refuses to run if the git index is
+# dirty under apps/codex/ingest (the corpus-manifest.json diff must be reviewable alone, the
+# linguist-commit-timer lesson applied here too). Re-downloads ~259 MB (AoN) + the Foundry
+# sparse clone; not cheap, don't run casually. Flags go to codex-build (`--allow-shrink`).
+# Steps: libs/py/ops codex.py.
+# Refresh the codex corpus: re-fetch both snapshots, then build a new release (codex-build).
 codex-refresh *flags:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    cd "{{justfile_directory()}}"
-    if [ -n "$(git status --porcelain -- apps/codex/ingest)" ]; then
-      echo "codex-refresh: apps/codex/ingest has uncommitted changes — commit or stash first" >&2
-      echo "(the corpus-manifest.json diff from this refresh must be reviewable alone):" >&2
-      git status --porcelain -- apps/codex/ingest >&2
-      exit 1
-    fi
-    echo "codex-refresh: fetching Foundry snapshot..."
-    pnpm --filter @astra/codex-ingest cli fetch-foundry
-    echo "codex-refresh: fetching AoN snapshot..."
-    pnpm --filter @astra/codex-ingest cli fetch-aon
-    "{{just_executable()}}" codex-build {{flags}}
+    @{{ops}} codex-refresh "$@"
 
-# Build a codex release from the snapshots on disk and make it current: transform and
-# Pagefind index into <codex.data-path>/releases/.staging-*, validate (schema generation,
-# not the fixture, entity files match the manifest, no fewer entities than the current
-# release unless --allow-shrink, an index exists), rename to releases/<content hash>, then
-# swap the releases/current symlink. A running codex follows `current` per request: no
+# Transform and Pagefind index into <codex.data-path>/releases/.staging-*, validate (schema
+# generation, not the fixture, entity files match the manifest, no fewer entities than the
+# current release unless --allow-shrink, an index exists), rename to releases/<content hash>,
+# then swap the releases/current symlink. A running codex follows `current` per request: no
 # restart. Keeps the 3 newest releases plus the one codex serves (its /healthz; when codex
-# doesn't answer, prunes nothing). A rejected (rolled-back) release needs --force. HOST-ONLY (the indexer peaks at ~3.8 GB RSS):
-# never in CI, a Docker build or `vite build`. Run it from a clean checkout at a pushed
-# commit; the transform reads code and the homebrew store from the checkout.
+# doesn't answer, prunes nothing). A rejected (rolled-back) release needs --force. HOST-ONLY
+# (the indexer peaks at ~3.8 GB RSS): never in CI, a Docker build or `vite build`. Run it
+# from a clean checkout at a pushed commit; the transform reads code and the homebrew store
+# from the checkout. Prints the head of the new release's report.md. Steps: libs/py/ops
+# codex.py.
+# Build a codex release from the snapshots on disk and make it current.
 codex-build *flags:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    cd "{{justfile_directory()}}"
-    codex_data="$({{uv_bin}} run --frozen --no-sync python -m astra_ontology_config codex.data-path)"
-    pnpm --filter @astra/codex-ingest cli release build {{flags}}
-    echo ""
-    echo "codex-build: report.md summary:"
-    head -n 40 "$codex_data/releases/current/corpus/report.md"
+    @{{ops}} codex-build "$@"
 
 # Rebuild only the codex Pagefind index over the current release's corpus and
 # publish it as a new release (the corpus is hardlinked, not copied). Same host-only
 # posture as codex-build.
 codex-search-index *flags:
-    pnpm --filter @astra/codex-ingest cli release build --reuse-corpus {{flags}}
+    pnpm --filter @astra/codex-ingest cli release build --reuse-corpus "$@"
 
 # Make an older codex release current again: the given id, or by default the newest one
 # before the current release that no rollback rejected. The target must pass the same
@@ -653,7 +633,7 @@ codex-search-index *flags:
 # rollback, or a rebuild that hashes to it) needs --force. Instant; a running codex
 # follows on its next request. `just codex-rollback [<id>] [--force]`.
 codex-rollback *args:
-    pnpm --filter @astra/codex-ingest cli release rollback {{args}}
+    pnpm --filter @astra/codex-ingest cli release rollback "$@"
 
 # List the codex releases on disk, newest first; `*` marks the current one.
 codex-releases:

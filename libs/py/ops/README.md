@@ -4,7 +4,7 @@ The host ops CLI (0037 ops-1a, ops-1b). It holds the logic of the justfile's ops
 recipe is a one-line wrapper, so systemd units, docs and bots still run `just <recipe>`.
 `deploy/deploy.sh` stays bash (it is staged and re-executed by design); astra-ops calls it. Also
 still bash: `deploy/doctor.sh`, `deploy/systemd/alert-notify.sh` and `astra-backup.sh` (the
-backup recipes are one-line wrappers over it), and cdx-4's `codex-refresh` and `codex-build`.
+backup recipes are one-line wrappers over it).
 
 | just recipe | astra-ops command | confirmation |
 | --- | --- | --- |
@@ -13,9 +13,9 @@ backup recipes are one-line wrappers over it), and cdx-4's `codex-refresh` and `
 | `mouthpiece-publish [flags]` | `mouthpiece-publish` | none (writes the clone only) |
 | `mouthpiece-seed` | `mouthpiece-seed` | LIVE |
 | `akasha-seed` | `akasha-seed` | LIVE |
-| `heartwood-agent <date> [flags]` | `heartwood-agent` | PAID + LIVE (`--dry-run`: PAID) |
+| `heartwood-agent <date> [flags]` | `heartwood-agent` | PAID + LIVE (`--dry-run`: PAID); deploy checkout only |
 | `_heartwood-push-deploy` | `heartwood-push-deploy` | LIVE |
-| `heartwood-revert <date>` | `heartwood-revert` | LIVE |
+| `heartwood-revert <date>` | `heartwood-revert` | LIVE; deploy checkout only |
 | `signoz-rules-check` | `signoz-rules-check` | none (read-only) |
 | `signoz-rules-apply [--yes]` | `signoz-rules-apply` | dry run unless `--yes` |
 | `host-metrics` | `host-metrics` | none (rewrites one textfile) |
@@ -29,11 +29,20 @@ backup recipes are one-line wrappers over it), and cdx-4's `codex-refresh` and `
 | `alert-sudoers-install` | `alert-sudoers-install` | none (sudo asks for the password) |
 | `portal-module-install` | `portal-module-install` | none |
 | `pipeline-terminate <run-id>` | `pipeline-terminate` | LIVE |
+| `codex-refresh [flags]` | `codex-refresh` | none (re-fetches, then builds a release) |
+| `codex-build [flags]` | `codex-build` | none (builds a release and makes it current) |
+| `vellum-parity-live` | `vellum-parity-live` | none (read-only) |
 
 Modules: `publish.py` (the astra-data chain), `heartwood.py` (one session, revert),
 `backfill.py` (backfill, reset, the request runner), `craig.py` (craig-sync), `host.py` (the
-installs), `signoz.py` (the alert rules), `host_metrics.py` and `smoke.py`. Each module docstring has the
-steps, the lock order and the exit codes.
+installs), `signoz.py` (the alert rules), `host_metrics.py`, `smoke.py`, `codex.py` (the codex
+releases) and `vellum.py` (the live parity check). Each module docstring has the steps, the
+lock order and the exit codes.
+
+`heartwood-agent` and `heartwood-revert` refuse (exit 64) unless the package runs from the
+deploy checkout (`--deploy-root`, the justfile's `ASTRA_DEPLOY_ROOT`): from a developer tree
+they would run unmerged code against the live wiki. The refusal prints the
+`just -f /ruby/data/astra-deploy/justfile ...` line to run instead.
 
 ## SigNoz alert rules as code
 
@@ -78,6 +87,15 @@ to the journal; the run fails only when the file cannot be written. The sites re
 saffron's own address, so the check covers DNS, the edge, TLS and the app, not the path from
 outside the house network. When a marked page moves (a renamed wiki page, a new title),
 change its `Check` in the same pull request.
+
+## Live vellum parity
+
+`vellum-parity-live` (run daily at 06:10 by `astra-vellum-parity.timer`, installed by
+`just units-install alert`) runs `libs/py/vellum-lang/scripts/corpus_parity.py` over the real
+wiki in the astra-data clone: the Python and TS vellum parsers must agree on every page. It
+finds node itself (PATH, else the newest nvm install) and reads under the git-publish and
+host-tooling locks, both shared. A failure pages through `astra-alert@`; a lock still busy
+after 30 minutes skips the run with exit 0, so a long publish never pages.
 
 ## Operations
 

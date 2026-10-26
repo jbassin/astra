@@ -26,7 +26,8 @@ mouthpiece; neither waits for the other.
 ## Operations
 
 Run manual commands from the deploy checkout. The dev tree would run dev code against live
-data.
+data, so `heartwood-agent` and `heartwood-revert` refuse (exit 64) anywhere else and print the
+line below to run instead.
 
 ```sh
 just -f /ruby/data/astra-deploy/justfile heartwood-agent <date>            # PAID + LIVE

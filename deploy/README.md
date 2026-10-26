@@ -233,6 +233,11 @@ page, and "astra smoke metrics stale" when that file stops changing. The
 paging rules read nothing from the browser RUM services (`*-rum`), whose telemetry arrives
 through the public OTLP ingest ([ADR 0042](../docs/adr/0042-accepted-risk-open-otlp-ingest.md)).
 
+`astra-vellum-parity.timer` (daily at 06:10, `just units-install alert`) runs
+`just vellum-parity-live`, which checks that the Python and TS vellum parsers agree on every
+page of the live wiki, and pages through `astra-alert@` when they do not. The watchdog checks
+that this timer, like the backup and restore-test timers, stays armed.
+
 ## Host check
 
 `just doctor` (`deploy/doctor.sh`) checks this host read-only and exits 1 on any failure: each
@@ -268,6 +273,8 @@ just down-volumes         # also drop the SigNoz volumes (asks first; fresh onbo
   and with no terminal and no `--yes` it exits 64. A unit that runs one must pass `--yes`
   (`linguist-commit.service` does; a test checks every unit), and after a deploy that changes such
   a unit line, re-run its install recipe, or systemd keeps running the old line and it exits 64.
+  `heartwood-agent` and `heartwood-revert` also refuse (exit 64) outside the deploy checkout and
+  print the `just -f /ruby/data/astra-deploy/justfile ...` form to run instead.
   astra-ops holds the host-tooling lock shared only while it imports, so a deploy's `uv sync`
   never swaps packages under its imports; `uv run` itself and the console script still start
   before that lock (a tiny window, as with every other `uv run` from a unit).

@@ -37,7 +37,7 @@ NIC_IFACE="${WATCHDOG_NIC_IFACE:-enp4s0}"
 # Timers whose health == the pipeline is armed. (The watchdog can't meaningfully check
 # its OWN timer — if that died, this script wouldn't be running.)
 WATCHED_TIMERS=(craig-sync.timer linguist-commit.timer heartwood-request.timer
-  astra-backup.timer astra-restore-test.timer astra-metrics.timer)
+  astra-backup.timer astra-restore-test.timer astra-metrics.timer astra-vellum-parity.timer)
 # Event-driven path units: a .path unit has no next-elapse, so check_timer would call
 # it "not armed" — these get check_path_unit (is-active only).
 WATCHED_PATHS=(linguist-commit.path heartwood-request.path)

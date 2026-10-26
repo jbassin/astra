@@ -25,7 +25,8 @@ Exit codes (``astra_heartwood.requests.EXIT_MEANINGS`` mirrors them): 0 ok · 1 
 (or declined at the prompt) · 2 run incomplete (iteration cap) · 3 publish conflict ·
 4 publish refused · 6 dirty corpus/ledger/registry or not on main · 7 validate/snapshot/seed
 failed (restore printed) · 8 commit/rebase/push failed · 9 redeploy failed · 10 git-publish or
-host-tooling lock busy for 30 min, nothing written · 64 bad flag, or no terminal and no --yes.
+host-tooling lock busy for 30 min, nothing written · 64 bad flag, no terminal and no --yes, or
+not run from the deploy checkout (both commands; ``cli._deploy_checkout_only``).
 
 **heartwood-revert** undoes ONE published session — LIVE. ``git revert --no-commit`` of the
 session's latest ``feat(akasha): heartwood agent <date>`` commit; the ledger, snapshot and
