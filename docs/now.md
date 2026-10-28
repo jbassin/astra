@@ -1,6 +1,6 @@
 # Now
 
-Updated 2026-10-26.
+Updated 2026-10-28.
 
 ## In flight
 
@@ -10,6 +10,11 @@ Updated 2026-10-26.
 - **Live since 2026-10-26:** Dagster stage automation (three automation sensors, started after a
   clean pre-flight), resumable paid stages with one retry policy, the edge health block and
   `/render` body cap, the weal save guard, orator/portal/pg-migrate fixes, the vellum parity timer.
+- **Live since 2026-10-28:** mouthpiece's realism changes (#137 to #140): a spoken-style recap
+  prompt, Pass A on Kimi `kimi-k3.1-pro` with Pass B on GLM, ElevenLabs stability 0.0, linked
+  dialogue chunks, new voices for Maeve (Ellen) and Nell (Siren), and the first `defs.kdl`
+  pronunciations. The wiki renamed Ocelith to Osyluth and Macarius to Macharius. 2026-10-12 and
+  2026-10-19 were re-rendered with all of it.
 
 ## Next action
 
@@ -17,6 +22,8 @@ Thursday 2026-10-29's session is the live check of stage automation and resumabl
 "Thursday 2026-10-29 session" under "Waiting on an event" in the [backlog](backlog.md). The merged
 pipeline fixes (#132, #133) were deployed 2026-10-26 so Thursday's cost reading uses the corrected
 GLM 5.3 price; craig_drop_sensor now skips 2026-9-26's second recording by name, as expected.
+It is also the first session rendered on the 2026-10-28 mouthpiece changes; the backlog lists
+what to check.
 
 ## Blocked or waiting
 
