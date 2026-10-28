@@ -135,7 +135,15 @@ class ElevenLabsTTSProvider:
             body["settings"] = {"stability": self._stability}
         if req.previous_request_ids:
             body["previous_request_ids"] = req.previous_request_ids[-_MAX_PREVIOUS_IDS:]
-        audio, headers = self._post(_DIALOGUE_URL, self._headers(), body)
+        try:
+            audio, headers = self._post(_DIALOGUE_URL, self._headers(), body)
+        except TtsClientError:
+            # The link is best-effort: a stored ID can be days old, and a rejected one must
+            # not fail the episode. Retry once unlinked; a 4xx that persists raises as before.
+            if "previous_request_ids" not in body:
+                raise
+            del body["previous_request_ids"]
+            audio, headers = self._post(_DIALOGUE_URL, self._headers(), body)
         spoken = " ".join(strip_audio_tags(i.text) for i in req.inputs)
         return SynthesisResult(
             audio=audio, duration_ms=estimate_duration_ms(spoken), request_id=_request_id(headers)

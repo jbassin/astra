@@ -161,14 +161,14 @@ package's private `assets._voices` and `resources.default_tts`, so keep their si
 - **Timeouts.** `astra_llm` sets `REQUEST_TIMEOUT_S` (300) per attempt; only litellm's
   `timeout` can interrupt a blocked socket read. ElevenLabs calls use a 600 s timeout, and
   dialogue chunks are capped at 1,800 rendered chars for both `eleven_v3` and `eleven_v4`.
-- **Chunk linking is best-effort and its failure mode is untested.** Each dialogue chunk
-  sends the previous chunk's `request_id` (from the `request-id` response header) as
-  `previous_request_ids`; the API takes up to 3, mouthpiece sends 1. A chunk after a cached
-  clip sends the ID stored in that clip's `<key>.json`, which can be days old. How long
-  ElevenLabs honours an old ID is unknown. If it rejects a stale one with a 4xx, the render
-  fails with a non-retryable `TtsClientError`. To get past that, delete the stored
-  `request_id` from the previous clip's `<key>.json`. Clips from before 2026-10-27 and mock
-  clips have no ID, so the next chunk sends none.
+- **Chunk linking is best-effort.** Each dialogue chunk sends the previous chunk's
+  `request_id` (from the `request-id` response header) as `previous_request_ids`; the API
+  takes up to 3, mouthpiece sends 1. A chunk after a cached clip sends the ID stored in that
+  clip's `<key>.json`, which can be days old, and how long ElevenLabs honours an old ID is
+  unknown. If a linked request gets a 4xx, the provider retries it once without the link, so
+  a stale ID costs the smooth join, never the render; a 4xx on the unlinked retry raises
+  `TtsClientError` as before. Clips from before 2026-10-27 and mock clips have no ID, so
+  the next chunk sends none.
 - **The scoped ElevenLabs key lacks `user_read` and `voices_read`.** A 401 from `/v1/user` or
   the voices API does not mean the key is bad, and a 401 on synthesis can mean the account is
   out of credits. Check a voice id with one tiny text-to-speech call.
