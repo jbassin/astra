@@ -5,6 +5,7 @@ Fake providers count every paid call, so these prove what a retry pays for. No n
 
 from __future__ import annotations
 
+import json
 import shutil
 import subprocess
 from pathlib import Path
@@ -67,9 +68,13 @@ class CountingDialogue:
     dialogue_budget = 12
     cache_identity = "fake-dialogue:m1"
 
-    def __init__(self, fail_on: int | None = None) -> None:
+    def __init__(self, fail_on: int | None = None, *, ids: bool = False) -> None:
         self.requests: list[list[str]] = []
+        #: Each request's `previous_request_ids`, in render order.
+        self.previous: list[list[str]] = []
         self.fail_on = fail_on
+        #: When True, each render returns the request ID `req-<first input's text>`.
+        self.ids = ids
 
     def synthesize(self, req: SynthesisRequest) -> SynthesisResult:
         raise AssertionError("the dialogue path never renders single turns")
@@ -78,7 +83,12 @@ class CountingDialogue:
         if self.fail_on is not None and len(self.requests) + 1 == self.fail_on:
             raise Boom("provider down")
         self.requests.append([i.text for i in req.inputs])
-        return SynthesisResult(audio=("|".join(i.text for i in req.inputs)).encode(), duration_ms=7)
+        self.previous.append(list(req.previous_request_ids))
+        return SynthesisResult(
+            audio=("|".join(i.text for i in req.inputs)).encode(),
+            duration_ms=7,
+            request_id=f"req-{req.inputs[0].text}" if self.ids else None,
+        )
 
 
 def _script(*texts: str) -> Script:
@@ -226,6 +236,50 @@ def test_the_pronunciation_lexicon_is_part_of_the_dialogue_key(tmp_path: Path) -
         pronunciations={"Faerrin": "ˈfɛrɪn"},
     )
     assert len(with_ipa.requests) == 1
+
+
+def test_each_dialogue_chunk_links_to_the_previous_one(tmp_path: Path) -> None:
+    script = _script("aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc")
+    provider = CountingDialogue(ids=True)
+    manifest = synthesize_script(script, provider=provider, voices=VOICES, out_dir=tmp_path)
+    assert provider.previous == [[], ["req-aaaaaaaaaa"], ["req-bbbbbbbbbb"]]
+    meta = manifest.clips[1].resolve(tmp_path).with_suffix(".json").read_text()
+    assert json.loads(meta) == {"duration_ms": 7, "request_id": "req-bbbbbbbbbb"}
+
+
+def test_a_chunk_after_a_cached_clip_links_to_its_stored_id(tmp_path: Path) -> None:
+    synthesize_script(
+        _script("aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc"),
+        provider=CountingDialogue(ids=True),
+        voices=VOICES,
+        out_dir=tmp_path,
+    )
+    # Editing the middle chunk re-renders only it (the neighbour is not in the key), and it
+    # links to the cached first chunk's stored ID.
+    edited = CountingDialogue(ids=True)
+    synthesize_script(
+        _script("aaaaaaaaaa", "BBBBBBBBBB", "cccccccccc"),
+        provider=edited,
+        voices=VOICES,
+        out_dir=tmp_path,
+    )
+    assert edited.requests == [["BBBBBBBBBB"]]
+    assert edited.previous == [["req-aaaaaaaaaa"]]
+
+
+def test_a_cached_clip_without_a_stored_id_links_nothing(tmp_path: Path) -> None:
+    synthesize_script(
+        _script("aaaaaaaaaa"), provider=CountingDialogue(), voices=VOICES, out_dir=tmp_path
+    )
+    # A clip stored before request IDs were kept has only its duration.
+    (meta,) = (tmp_path / "clips").glob("*.json")
+    meta.write_text(json.dumps({"duration_ms": 7}))
+    later = CountingDialogue(ids=True)
+    synthesize_script(
+        _script("aaaaaaaaaa", "bbbbbbbbbb"), provider=later, voices=VOICES, out_dir=tmp_path
+    )
+    assert later.requests == [["bbbbbbbbbb"]]
+    assert later.previous == [[]]
 
 
 # ── script passes ────────────────────────────────────────────────────────────

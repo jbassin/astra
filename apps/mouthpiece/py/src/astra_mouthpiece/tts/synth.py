@@ -10,8 +10,12 @@ voice, rendered text and delivery. A clip whose file already exists is reused, n
 so a retry after a mid-render failure pays only for the clips that are missing, and a second
 render of the same script pays for none. The manifest lists each clip as
 `clips/<key>.<fmt>`, relative to `out_dir`. Next to each clip, `<key>.json` holds its
-`duration_ms`. After a whole render succeeds, files in `clips/` that the new manifest does
-not use are deleted; a failed render deletes nothing. Delete `clips/` to force fresh takes.
+`duration_ms` and the backend's `request_id` (null when it gave none). In dialogue mode each
+chunk names the previous chunk's stored `request_id` in `previous_request_ids`, so the join
+between chunks sounds continuous; the link is best-effort and not part of the key, so editing
+one chunk never re-renders its neighbours. After a whole render succeeds, files in `clips/`
+that the new manifest does not use are deleted; a failed render deletes nothing. Delete
+`clips/` to force fresh takes.
 """
 
 from __future__ import annotations
@@ -109,9 +113,19 @@ def clip_key(identity: str, mode: str, fmt: str, inputs: list[dict[str, str | No
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:24]
 
 
+@dataclass(frozen=True, slots=True)
+class _CachedClip:
+    """A clip's stored metadata (`<key>.json`)."""
+
+    duration_ms: int
+    #: The backend's ID for the render that made the clip, for the next chunk's
+    #: `previous_request_ids`; None for a mock clip or one stored before 2026-10-27.
+    request_id: str | None
+
+
 @dataclass(slots=True)
 class _ClipStore:
-    """The clips dir as a cache: `<key>.<fmt>` audio plus a `<key>.json` duration."""
+    """The clips dir as a cache: `<key>.<fmt>` audio plus `<key>.json` metadata."""
 
     root: Path
     fmt: str
@@ -129,36 +143,42 @@ class _ClipStore:
     def meta_path(self, key: str) -> Path:
         return self.root / f"{key}.json"
 
-    def cached_duration(self, key: str) -> int | None:
-        """The stored duration, when both files exist and the metadata parses."""
+    def cached(self, key: str) -> _CachedClip | None:
+        """The stored metadata, when both files exist and the metadata parses. A clip
+        written before `request_id` was stored reads with none."""
         audio, meta = self.audio_path(key), self.meta_path(key)
         if not (audio.is_file() and meta.is_file()):
             return None
         try:
-            duration = json.loads(meta.read_text(encoding="utf-8"))["duration_ms"]
+            data = json.loads(meta.read_text(encoding="utf-8"))
+            duration = data["duration_ms"]
         except (ValueError, KeyError, TypeError):
             return None
-        return duration if isinstance(duration, int) else None
+        if not isinstance(duration, int):
+            return None
+        request_id = data.get("request_id")
+        return _CachedClip(duration, request_id if isinstance(request_id, str) else None)
 
-    def clip(self, key: str, render: Callable[[], SynthesisResult]) -> tuple[Path, int]:
+    def clip(self, key: str, render: Callable[[], SynthesisResult]) -> _CachedClip:
         """The clip for ``key``: the cached file, or ``render()`` written atomically. The
         audio is written before its metadata, so a crash between them costs a re-render,
         never a clip with the wrong audio."""
-        duration = self.cached_duration(key)
-        if duration is not None:
+        cached = self.cached(key)
+        if cached is not None:
             self.reused += 1
             _instruments().cache.add(1, {"outcome": "hit", "mode": self.mode})
-            return self.audio_path(key), duration
+            return cached
         result = render()
         audio = self.audio_path(key)
         tmp = temp_sibling(audio)
         tmp.write_bytes(result.audio)
         tmp.replace(audio)
-        atomic_write_text(self.meta_path(key), json.dumps({"duration_ms": result.duration_ms}))
+        meta = {"duration_ms": result.duration_ms, "request_id": result.request_id}
+        atomic_write_text(self.meta_path(key), json.dumps(meta))
         self.rendered += 1
         _instruments().cache.add(1, {"outcome": "miss", "mode": self.mode})
         _instruments().clips.add(1, {"mode": self.mode})
-        return audio, result.duration_ms
+        return _CachedClip(result.duration_ms, result.request_id)
 
     def prune(self, keep: set[str]) -> int:
         """Delete every file in the dir that is not a kept clip or its metadata."""
@@ -246,14 +266,14 @@ def _synthesize_per_turn(
             store.fmt,
             [{"voice": req.voice, "text": req.text, "emotion": req.emotion}],
         )
-        _path, duration = store.clip(key, lambda req=req: provider.synthesize(req))
+        clip = store.clip(key, lambda req=req: provider.synthesize(req))
         keys.add(key)
         clips.append(
             TtsClip(
                 index=i + 1,
                 speaker=turn.speaker,
                 path=store.manifest_path(key),
-                duration_ms=duration,
+                duration_ms=clip.duration_ms,
             )
         )
     return clips, keys
@@ -279,6 +299,9 @@ def _synthesize_dialogue_chunks(
 
     clips: list[TtsClip] = []
     keys: set[str] = set()
+    # The previous chunk's request ID (rendered now or stored with its cached clip). It is
+    # sent but kept out of the key: linking is best-effort, and an edit must not cascade.
+    previous_id: str | None = None
     for i, chunk in enumerate(chunks):
         inputs = [DialogueInput(text=render(t), voice=voices.by_id(t.speaker)) for t in chunk]
         key = clip_key(
@@ -287,15 +310,18 @@ def _synthesize_dialogue_chunks(
             store.fmt,
             [{"voice": d.voice, "text": d.text, "emotion": None} for d in inputs],
         )
-        req = DialogueRequest(inputs=inputs)
-        _path, duration = store.clip(key, lambda req=req: synth_dialogue(req))
+        req = DialogueRequest(
+            inputs=inputs, previous_request_ids=[previous_id] if previous_id else []
+        )
+        clip = store.clip(key, lambda req=req: synth_dialogue(req))
+        previous_id = clip.request_id
         keys.add(key)
         clips.append(
             TtsClip(
                 index=i + 1,
                 speaker=chunk[0].speaker,
                 path=store.manifest_path(key),
-                duration_ms=duration,
+                duration_ms=clip.duration_ms,
             )
         )
     return clips, keys

@@ -36,12 +36,16 @@ retry policy (dagster README, "Retries"). The two most expensive stages save the
 to the session dir as it finishes, so a retry, or a re-execution from failure, pays only for
 what is missing.
 
-- **TTS clips** (`tts/synth.py`). Each clip is `clips/<key>.<fmt>`, with its duration in
-  `clips/<key>.json`. `<key>` is a hash of the provider's `cache_identity` (ElevenLabs:
-  `elevenlabs:<model>:mp3:stability=<s>`), the render mode, the format, and each line's
-  voice, rendered text (delivery tags and inline IPA included) and emotion; changing the
-  model or stability re-renders every clip. A clip whose files exist is reused. So a second render of the same script renders nothing, and editing one turn
-  re-renders only the chunk that holds it (in dialogue mode a chunk is several turns).
+- **TTS clips** (`tts/synth.py`). Each clip is `clips/<key>.<fmt>`, with its duration and
+  the ElevenLabs `request_id` in `clips/<key>.json`. `<key>` is a hash of the provider's
+  `cache_identity` (ElevenLabs: `elevenlabs:<model>:mp3:stability=<s>`), the render mode,
+  the format, and each line's voice, rendered text (delivery tags and inline IPA included)
+  and emotion; changing the model or stability re-renders every clip. A clip whose files
+  exist is reused. So a second render of the same script renders nothing, and editing one
+  turn re-renders only the chunk that holds it (in dialogue mode a chunk is several turns).
+  Each dialogue chunk names the previous chunk's stored `request_id` in
+  `previous_request_ids`, so the join sounds continuous. The neighbour is not in the key,
+  so an edit never cascades into re-rendering the chunks after it.
   After a whole render succeeds, files in `clips/` the new manifest does not use are deleted,
   including clips under the old `NNN.<fmt>` names; a failed render deletes nothing.
   `manifest.json` lists the clip paths in order, relative to the session dir
@@ -157,6 +161,14 @@ package's private `assets._voices` and `resources.default_tts`, so keep their si
 - **Timeouts.** `astra_llm` sets `REQUEST_TIMEOUT_S` (300) per attempt; only litellm's
   `timeout` can interrupt a blocked socket read. ElevenLabs calls use a 600 s timeout, and
   dialogue chunks are capped at 1,800 rendered chars for both `eleven_v3` and `eleven_v4`.
+- **Chunk linking is best-effort and its failure mode is untested.** Each dialogue chunk
+  sends the previous chunk's `request_id` (from the `request-id` response header) as
+  `previous_request_ids`; the API takes up to 3, mouthpiece sends 1. A chunk after a cached
+  clip sends the ID stored in that clip's `<key>.json`, which can be days old. How long
+  ElevenLabs honours an old ID is unknown. If it rejects a stale one with a 4xx, the render
+  fails with a non-retryable `TtsClientError`. To get past that, delete the stored
+  `request_id` from the previous clip's `<key>.json`. Clips from before 2026-10-27 and mock
+  clips have no ID, so the next chunk sends none.
 - **The scoped ElevenLabs key lacks `user_read` and `voices_read`.** A 401 from `/v1/user` or
   the voices API does not mean the key is bad, and a 401 on synthesis can mean the account is
   out of credits. Check a voice id with one tiny text-to-speech call.
