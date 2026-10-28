@@ -193,7 +193,8 @@ See [`libs/rust/weal-engine/README.md`](../libs/rust/weal-engine/README.md).
   `gate C`, `(R3, P6)`) to a source or config file. IDs already in the tree don't fail it; the
   per-area sweeps remove them. `scripts/check_decision_ids.py` lists the rules and exemptions,
   takes an inline exception with a reason (`decision-ids: ignore[<rule>] -- <why>`), and with
-  `--all` counts every existing match.
+  `--all` counts every existing match. It also matches model names shaped like a code
+  ("Kimi K3.1"), so name models by their lower-case provider id (`kimi-k3.1-pro`).
 - **Debt only goes down.** `just ratchet` (in `just ci` and CI, about 15 seconds) counts what
   the gates still let through: inline lint suppressions per rule (oxlint, ruff `noqa`, ty), the
   oxlint rules that are off (a type-aware pass with `.oxlintrc.ratchet.json`), files over

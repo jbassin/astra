@@ -42,9 +42,11 @@ Pointer: [`apps/assay/py/README.md`](../apps/assay/py/README.md).
 
 ### mouthpiece: episode shape (opened 2026-09-08, Josh)
 Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
-- [ ] Listen to the 2026-10-12 producer-brief episode.
-- [ ] Decide on Nell's question share and Maeve's floor share, and whether to enforce the ~6k-word
-      cap (recent episodes run 6.6k to 6.7k words).
+- [ ] Listen to the two spoken-style re-renders of 2026-10-28: 2026-10-12 ("No Visitors", 41 min)
+      and 2026-10-19 ("Six Spigots and the Sky That Does Nothing", 37.5 min). The pre-render
+      versions are in `mouthpiece/experiments/backup-2026-{10-12,10-19}-pre-spoken/`.
+- [ ] Decide whether to trim the 5,500-6,500-word target: Kimi lands at or over the top
+      (6,549 words in the last test; 2026-10-12 rendered at 41 min).
 
 ### Smaller calls (Josh)
 - [ ] Create a SigNoz service-account key (Editor role) and add it:
@@ -57,8 +59,6 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       returns 404; the host itself counts as LAN and gets 200.
 - [ ] Remove the old `harrow` service from `/emerald/data/experiments/docker-compose.yaml` (the
       container was removed 2026-10-26; the definition would recreate it).
-- [ ] Supply IPA for the campaign names TTS mispronounces: `ipa="…"` on entries in `defs.kdl`
-      (pipe-5 wired it to ElevenLabs; no IPA data exists yet).
 ## Waiting on an event
 
 - **Thursday 2026-10-29 session** (main session): the first live run of stage automation and
@@ -66,6 +66,9 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
   undated zips, empty-transcript guard, relative clip paths, GLM price). Check that linguist, then
   heartwood and mouthpiece, launch on their own after scribe; that each stage runs once; the
   `astra.mouthpiece.tts.clip_cache` and `script.pass_cache` counters; and cost in SigNoz.
+  It is also the first session on the 2026-10-28 mouthpiece changes: Pass A on
+  `kimi-k3.1-pro` (priced, so its cost shows in SigNoz), Pass B on GLM, stability 0.0, a
+  `request_id` in every `clips/<key>.json`, and the new IPA in the dialogue text.
 - **heartwood gate E** (agent, opened 2026-10-22): the next session must publish its wiki edits with
   no command. Check the astra-data commit, the ledger line and the `session_wiki` outcome.
   [`apps/heartwood/py/README.md`](../apps/heartwood/py/README.md)
@@ -75,8 +78,10 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 ## Pipeline
 
 - Common-word entity aliases (`war`, `giant`, `herald`) can make heartwood link wrongly — Josh/agent; curate `entity.kdl`.
-- `defs.kdl` holds no `ipa=` pronunciations yet, so mouthpiece's TTS applies none; add the
-  names the hosts mispronounce — Josh.
+- "ocelot" is left out of Osyluth's corrections because it is a real word, though the
+  transcripts' 10 uses are probably all Osyluth — Josh, if it keeps coming up.
+- Renaming Ocelith and Macarius Vesper (2026-10-28) broke their old akasha URLs, which now 404;
+  akasha has no redirects — agent, only if someone hits them.
 
 ## Deploy and ops
 
