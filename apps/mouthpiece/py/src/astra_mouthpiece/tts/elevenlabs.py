@@ -10,7 +10,7 @@ network; the default `post` uses httpx. mock is the offline fallback.
 from __future__ import annotations
 
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from typing import Any
 
 from astra_observe import get_meter
@@ -42,16 +42,25 @@ _DIALOGUE_BUDGETS = {
     "eleven_v4": DEFAULT_DIALOGUE_BUDGET,
 }
 
+#: The API takes up to 3 `previous_request_ids`; the orchestrator sends 1 (the chunk just
+#: before), and this caps anything longer to the newest 3.
+_MAX_PREVIOUS_IDS = 3
+
 #: HTTP timeout. A 9k-char v4 chunk took 146 s to render (the old 120 s would have timed
 #: out, and the RetryPolicy would have re-billed the chunk). Kept generous so a larger
 #: v4 budget stays safe to turn back on.
 _TIMEOUT_S = 600.0
 
-#: A `post(url, headers, json) -> bytes` seam; the default calls httpx.
-PostFn = Callable[[str, dict[str, str], dict[str, Any]], bytes]
+#: A `post(url, headers, json) -> (body, response headers)` seam; the default calls httpx.
+PostFn = Callable[[str, dict[str, str], dict[str, Any]], tuple[bytes, Mapping[str, str]]]
+
+#: The response header that carries a render's ID (for `previous_request_ids`).
+_REQUEST_ID_HEADER = "request-id"
 
 
-def _httpx_post(url: str, headers: dict[str, str], json: dict[str, Any]) -> bytes:
+def _httpx_post(
+    url: str, headers: dict[str, str], json: dict[str, Any]
+) -> tuple[bytes, Mapping[str, str]]:
     import httpx
 
     started = time.perf_counter()
@@ -60,9 +69,17 @@ def _httpx_post(url: str, headers: dict[str, str], json: dict[str, Any]) -> byte
         if 400 <= resp.status_code < 500:
             raise TtsClientError(resp.status_code, url, resp.text)
         resp.raise_for_status()
-        return resp.content
+        return resp.content, resp.headers
     finally:
         _tts_duration.record((time.perf_counter() - started) * 1000.0)
+
+
+def _request_id(headers: Mapping[str, str]) -> str | None:
+    """The render's ID from the response headers (matched case-insensitively), if any."""
+    for name, value in headers.items():
+        if name.lower() == _REQUEST_ID_HEADER and value:
+            return value
+    return None
 
 
 class ElevenLabsTTSProvider:
@@ -102,9 +119,11 @@ class ElevenLabsTTSProvider:
         body: dict[str, Any] = {"text": req.text, "model_id": self._model_id}
         if self._stability is not None:
             body["voice_settings"] = {"stability": self._stability}
-        audio = self._post(f"{_TTS_URL}/{req.voice}", self._headers(), body)
+        audio, headers = self._post(f"{_TTS_URL}/{req.voice}", self._headers(), body)
         return SynthesisResult(
-            audio=audio, duration_ms=estimate_duration_ms(strip_audio_tags(req.text))
+            audio=audio,
+            duration_ms=estimate_duration_ms(strip_audio_tags(req.text)),
+            request_id=_request_id(headers),
         )
 
     def synthesize_dialogue(self, req: DialogueRequest) -> SynthesisResult:
@@ -114,6 +133,10 @@ class ElevenLabsTTSProvider:
         }
         if self._stability is not None:
             body["settings"] = {"stability": self._stability}
-        audio = self._post(_DIALOGUE_URL, self._headers(), body)
+        if req.previous_request_ids:
+            body["previous_request_ids"] = req.previous_request_ids[-_MAX_PREVIOUS_IDS:]
+        audio, headers = self._post(_DIALOGUE_URL, self._headers(), body)
         spoken = " ".join(strip_audio_tags(i.text) for i in req.inputs)
-        return SynthesisResult(audio=audio, duration_ms=estimate_duration_ms(spoken))
+        return SynthesisResult(
+            audio=audio, duration_ms=estimate_duration_ms(spoken), request_id=_request_id(headers)
+        )

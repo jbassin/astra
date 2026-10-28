@@ -223,9 +223,9 @@ def test_dialogue_chunks_never_send_an_empty_input() -> None:
 
     bodies: list[dict] = []
 
-    def fake_post(url: str, headers: dict[str, str], json: dict) -> bytes:
+    def fake_post(url: str, headers: dict[str, str], json: dict) -> tuple[bytes, dict]:
         bodies.append(json)
-        return b"audio"
+        return b"audio", {}
 
     script = Script(
         session_id="sid",
@@ -281,9 +281,9 @@ def test_dialogue_chunking_uses_the_provider_budget(
 
     bodies: list[dict] = []
 
-    def fake_post(url: str, headers: dict[str, str], json: dict) -> bytes:
+    def fake_post(url: str, headers: dict[str, str], json: dict) -> tuple[bytes, dict]:
         bodies.append(json)
-        return b"audio"
+        return b"audio", {}
 
     # 5 distinct turns × 800 chars: both models pack two per request (≤1,800) → 3. The
     # turns differ so no chunk repeats another (a repeated chunk is a clip-cache hit).
@@ -302,9 +302,9 @@ def test_elevenlabs_sends_the_configured_stability() -> None:
 
     bodies: list[dict] = []
 
-    def fake_post(url: str, headers: dict[str, str], json: dict) -> bytes:
+    def fake_post(url: str, headers: dict[str, str], json: dict) -> tuple[bytes, dict]:
         bodies.append(json)
-        return b"audio"
+        return b"audio", {}
 
     provider = ElevenLabsTTSProvider("k", post=fake_post, stability=0.0)
     provider.synthesize_dialogue(DialogueRequest(inputs=[DialogueInput(text="hi", voice="v")]))
@@ -330,3 +330,42 @@ def test_stability_is_part_of_the_clip_cache_identity() -> None:
     }
     assert len(identities) == 3
     assert ElevenLabsTTSProvider("k").cache_identity == "elevenlabs:eleven_v4:mp3"
+
+
+def test_elevenlabs_returns_the_request_id_and_links_previous_requests() -> None:
+    from astra_mouthpiece.tts.elevenlabs import ElevenLabsTTSProvider
+    from astra_mouthpiece.tts.provider import DialogueInput, DialogueRequest, SynthesisRequest
+
+    bodies: list[dict] = []
+
+    def fake_post(url: str, headers: dict[str, str], json: dict) -> tuple[bytes, dict]:
+        bodies.append(json)
+        return b"audio", {"Request-Id": f"id-{len(bodies)}"}
+
+    provider = ElevenLabsTTSProvider("k", post=fake_post)
+    line = [DialogueInput(text="hi", voice="v")]
+    first = provider.synthesize_dialogue(DialogueRequest(inputs=line))
+    second = provider.synthesize_dialogue(
+        DialogueRequest(inputs=line, previous_request_ids=[first.request_id or ""])
+    )
+    single = provider.synthesize(SynthesisRequest(text="hi", voice="v"))
+    assert (first.request_id, second.request_id, single.request_id) == ("id-1", "id-2", "id-3")
+    assert "previous_request_ids" not in bodies[0]
+    assert bodies[1]["previous_request_ids"] == ["id-1"]
+
+
+def test_httpx_post_returns_the_body_and_headers(monkeypatch) -> None:
+    import httpx
+    from astra_mouthpiece.tts import elevenlabs
+
+    def fake_post(url, headers=None, json=None, timeout=None):
+        return httpx.Response(
+            200,
+            content=b"mp3",
+            headers={"request-id": "abc"},
+            request=httpx.Request("POST", url),
+        )
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    body, headers = elevenlabs._httpx_post("https://x/v1/text-to-dialogue", {}, {})
+    assert body == b"mp3" and elevenlabs._request_id(headers) == "abc"

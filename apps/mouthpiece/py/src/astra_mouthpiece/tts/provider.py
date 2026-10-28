@@ -7,7 +7,7 @@ turn-taking (ElevenLabs v3 Text-to-Dialogue); the orchestrator prefers it.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Protocol, runtime_checkable
 
 
@@ -24,6 +24,10 @@ class SynthesisRequest:
 class SynthesisResult:
     audio: bytes
     duration_ms: int
+    #: The backend's ID for this render (ElevenLabs: the `request-id` response header), which
+    #: a later dialogue request can name in `previous_request_ids`. None when the backend
+    #: gives none (the mock).
+    request_id: str | None = None
 
 
 @dataclass(slots=True)
@@ -37,6 +41,9 @@ class DialogueInput:
 @dataclass(slots=True)
 class DialogueRequest:
     inputs: list[DialogueInput]
+    #: Request IDs of the renders just before this one, oldest first, so the backend can
+    #: continue their prosody across the join. Sent only when non-empty; best-effort.
+    previous_request_ids: list[str] = field(default_factory=list)
 
 
 @runtime_checkable
