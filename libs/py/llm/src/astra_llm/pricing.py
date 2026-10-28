@@ -33,6 +33,12 @@ PRICING_USD_PER_1M: dict[str, ModelPricing] = {
     "openrouter/z-ai/glm-5.3": ModelPricing(
         input=0.0699, cache_read=0.0689, cache_write=0.087375, output=1.40
     ),
+    # Kimi K3.1 Pro via OpenRouter — mouthpiece's recap script (mouthpiece.script-model).
+    # OpenRouter `/models` listing on 2026-10-28: $2.00 in, $10.00 out, $0.20 cache read per
+    # 1M. No cache-write price is listed, so cache_write keeps the 1.25x-input ratio.
+    "openrouter/moonshotai/kimi-k3.1-pro": ModelPricing(
+        input=2.0, cache_read=0.2, cache_write=2.5, output=10.0
+    ),
     # DeepSeek V4.1 Flash via OpenRouter — heartwood's agent model and the 0034 producer +
     # experiment arm. OpenRouter listing 2026-10-12: $0.15/$0.60 per 1M (was $0.30/$1.20
     # at the 0033 scope); cache_* kept at the usual 0.1x/1.25x ratios.

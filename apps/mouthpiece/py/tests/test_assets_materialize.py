@@ -92,6 +92,7 @@ def test_the_chain_writes_every_output_under_the_injected_paths(
     Path(paths.akasha_content).mkdir(parents=True)
     config = FakeConfig()
     config.cfg.mouthpiece.model = "test/mouthpiece-model"
+    config.cfg.mouthpiece.script_model = "test/script-model"
     stub = object()
     llm = FakeLlm(stub)
     seen: dict[str, Any] = {}
@@ -120,7 +121,7 @@ def test_the_chain_writes_every_output_under_the_injected_paths(
     assert list(session.glob("*.episode.mp3")) and list(session.glob("*.transcript.md"))
     assert (paths.episodes / ".last-rendered").read_text() == DATE
     assert seen["digest"] == (stub, "test/mouthpiece-model")
-    assert seen["script"] == (stub, "test/mouthpiece-model", 2)
+    assert seen["script"] == (stub, "test/script-model", 2)
     assert seen["brief_root"] == paths.episodes
     # The saved passes resume a failed attempt only; a written script clears them.
     assert seen["script_cache"] == session / "script-cache"

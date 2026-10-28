@@ -232,6 +232,9 @@ turn being a complete, grammatical, information-dense thought. Real talk is mess
   exact — but she still says "yeah" and "mm" and restarts a sentence now and then;
   {c.name} is quick and eager, over-asks, stacks two questions, and says "wait" and
   "like" and "okay so" while she catches up.
+- THEY WEREN'T AT THE TABLE: the hosts are friends recapping a game other people
+  played, not players. The party is "they", the characters go by name, the players are
+  "the table" — never "we" or "us" for what the party did.
 - SHARE THE FLOOR: {hosts.a.name} talks most, but {hosts.b.name} carries at least a
   quarter of the words. She tells whole stretches of the story herself — the scenes she
   loved, the beats she reads differently — not only the names and lore he reaches for.

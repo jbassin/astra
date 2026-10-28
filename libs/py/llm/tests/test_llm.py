@@ -162,6 +162,10 @@ def test_cost_known_model_and_unknown_zero() -> None:
     glm53 = "openrouter/z-ai/glm-5.3"
     assert cost_usd(glm53, TokenCounts(1_000_000, 0, 0, 0)) == pytest.approx(0.0699)
     assert cost_usd(glm53, TokenCounts(0, 0, 0, 1_000_000)) == pytest.approx(1.40)
+    # Kimi K3.1 Pro (mouthpiece.script-model): $2.00/1M in, $10.00/1M out (2026-10-28).
+    kimi = "openrouter/moonshotai/kimi-k3.1-pro"
+    assert cost_usd(kimi, TokenCounts(1_000_000, 0, 0, 0)) == pytest.approx(2.0)
+    assert cost_usd(kimi, TokenCounts(0, 0, 0, 1_000_000)) == pytest.approx(10.0)
     assert cost_usd("no-such-model", TokenCounts(1_000_000, 0, 0, 0)) == 0.0
 
 

@@ -170,6 +170,8 @@ def test_improv_prompt_asks_for_speech_not_prose() -> None:
     # Try 4 left Maeve with under a quarter of the words and opened turns with "And the".
     assert "Maeve carries at least a quarter of the words" in flat
     assert "VARY HOW TURNS START" in flat
+    # Kimi's first script had Bram say "we" for the party 29 times.
+    assert "THEY WEREN'T AT THE TABLE" in flat
     assert "one filler or self-repair every two or three turns" in flat
     assert "Never stacked" in flat
     # Backchannel turns must stay speakable (ElevenLabs 400s on tag-only turns).

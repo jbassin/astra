@@ -76,6 +76,20 @@ def test_llm_model_is_mouthpieces_own_pin_with_the_shared_default_as_fallback() 
     assert mp._llm_model(cfg) == "test/shared-default"
 
 
+def test_script_model_overrides_the_pin_for_the_script_only() -> None:
+    """session_script reads `mouthpiece.script-model` (Kimi K3.1 Pro); clean/enrich keep
+    `mouthpiece.model`. An empty script-model falls back to the pin."""
+    from astra_pipeline_resources.testing import FakeConfig
+
+    cfg = FakeConfig().cfg
+    cfg.mouthpiece.model = "test/mouthpiece-pin"
+    cfg.mouthpiece.script_model = "test/script-model"
+    assert mp._script_model(cfg) == "test/script-model"
+    assert mp._llm_model(cfg) == "test/mouthpiece-pin"
+    cfg.mouthpiece.script_model = ""
+    assert mp._script_model(cfg) == "test/mouthpiece-pin"
+
+
 def test_tts_resource_reads_the_configured_provider_and_model() -> None:
     from astra_mouthpiece.resources import TtsResource, default_tts
     from astra_ontology_config import load
