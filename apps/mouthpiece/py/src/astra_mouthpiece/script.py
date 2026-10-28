@@ -172,6 +172,7 @@ def generate_script(
     *,
     roster_block: str = "",
     model: str | None = None,
+    dress_model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     continuity_block: str = "",
     brief_block: str = "",
@@ -187,7 +188,11 @@ def generate_script(
     unchanged. A `brief_block` (0034 producer notes) replaces grounding + continuity.
 
     With a ``cache`` (`script_cache`), each pass is saved as it finishes and a pass whose
-    request matches a saved one is not called again, so a retry resumes."""
+    request matches a saved one is not called again, so a retry resumes.
+
+    ``model`` writes Pass A; ``dress_model`` (default: ``model``) typesets Pass B. They differ
+    in production: Kimi writes the conversation, and GLM, which reliably makes the forced
+    tool call, typesets it."""
     cache = cache or ScriptPassCache(None)
     user_content = build_script_user_content(
         digest, cleaned_turns, roster_block, grounding, continuity_block, brief_block
@@ -206,7 +211,7 @@ def generate_script(
         transcript,
         digest.session_id,
         hosts,
-        model=model,
+        model=dress_model or model,
         max_tokens=max_tokens,
         cache=cache,
     )

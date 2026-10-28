@@ -288,6 +288,19 @@ def test_generate_script_calls_text_then_tool() -> None:
     assert "Bram: hey" in client.last_tool_req.user_content
 
 
+def test_generate_script_dresses_on_its_own_model() -> None:
+    # Kimi writes Pass A; GLM typesets Pass B (Kimi skipped the forced tool call in tests).
+    client = StubClient(
+        text="Bram: hey", tool={"title": "T", "turns": [{"speaker": "A", "text": "hey"}]}
+    )
+    generate_script(client, _digest(), _cleaned_turns(), [], HOSTS, model="kimi", dress_model="glm")
+    assert client.last_text_req.model == "kimi"
+    assert client.last_tool_req.model == "glm"
+    # Without a dress_model both passes use `model`.
+    generate_script(client, _digest(), _cleaned_turns(), [], HOSTS, model="kimi")
+    assert client.last_tool_req.model == "kimi"
+
+
 def test_generate_script_passes_roster_block_into_pass_a() -> None:
     client = StubClient(
         text="Bram: hey\nMaeve: hi",

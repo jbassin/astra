@@ -93,8 +93,9 @@ def _llm_model(cfg: Config) -> str:
 
 
 def _script_model(cfg: Config) -> str:
-    """The recap script's model (`mouthpiece.script-model`, Kimi `kimi-k3.1-pro`): only
-    session_script reads it. Empty falls back to `_llm_model`."""
+    """The recap script's Pass A model (`mouthpiece.script-model`, Kimi `kimi-k3.1-pro`):
+    only session_script reads it, and Pass B typesets on `_llm_model`. Empty falls back to
+    `_llm_model`."""
     return cfg.mouthpiece.script_model or _llm_model(cfg)
 
 
@@ -291,6 +292,7 @@ def session_script(
                 roster_block=roster_block,
                 continuity_block=continuity_block,
                 model=_script_model(astra_config.get()),
+                dress_model=_llm_model(astra_config.get()),
                 brief_block=brief_block,
                 cache=pass_cache,
             )

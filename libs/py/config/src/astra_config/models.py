@@ -133,9 +133,9 @@ class MouthpieceConfig(_Base):
     # The LLM for mouthpiece's clean/enrich/script calls — its OWN pin, separate from
     # `llm.default-model` (linguist's compiled judge + heartwood stay on that one).
     model: str
-    # The LLM for the two-pass recap script (session_script) only; clean/enrich stay on
-    # `model`. Kimi `kimi-k3.1-pro` since 2026-10-28: it follows the spoken-style turn and length
-    # rules that GLM 5.3 ignored. Empty falls back to `model`.
+    # The LLM that writes the recap script (session_script's Pass A only); clean, enrich and
+    # Pass B's typesetting stay on `model`. Kimi `kimi-k3.1-pro` since 2026-10-28: it follows
+    # the spoken-style turn and length rules that GLM 5.3 ignored. Empty falls back to `model`.
     script_model: str = ""
     # Which TTS backend renders episodes: "elevenlabs" (dialogue, live) or "mock" (offline
     # silence). The asset layer fails LOUD if the ElevenLabs key is missing — never a
