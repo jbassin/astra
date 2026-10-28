@@ -160,9 +160,15 @@ def test_improv_prompt_asks_for_speech_not_prose() -> None:
     flat = " ".join(p.split())
     assert "Ordinary spoken punctuation only" not in flat
     assert "SPOKEN, NOT WRITTEN" in flat
-    for texture in ("FILLERS", "FALSE STARTS", "BACKCHANNELS", "REAL INTERRUPTIONS"):
+    for texture in ("FILLERS", "FALSE STARTS", "SHORT TURNS", "BACKCHANNELS", "REAL INTERRUPTIONS"):
         assert texture in flat
-    assert "are seasoning" in flat and "never stacked" in flat
+    # The first regenerated script still ran 600-char monologues and few reactions.
+    assert "No turn runs past about 70 words" in flat
+    assert "at least every two or three turns of any explanation" in flat
+    # v2 still lifted a lore sentence from the producer brief nearly verbatim.
+    assert "NEVER COPY THE NOTES" in flat and "at least 30 turns of three words" in flat
+    assert "one filler or self-repair every two or three turns" in flat
+    assert "Never stacked" in flat
     # Backchannel turns must stay speakable (ElevenLabs 400s on tag-only turns).
     assert "has at least one real spoken word" in flat
     assert "Keep it natural, not cartoonish" in flat
