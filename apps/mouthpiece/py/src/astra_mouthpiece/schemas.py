@@ -3,8 +3,9 @@
 `script_tool` is ported verbatim from caster `script/schema.ts`: the model returns
 this shape (camelCase keys, matching the committed faerrin `*.script.json`
 fixtures); `script.parse_script` validates it into the snake_case Pydantic models.
-The description text is byte-identical to faerrin (the model sees it); only the
-Python source line-wrapping differs.
+The description text matched faerrin byte for byte until 2026-10-27, when the turn
+and text descriptions dropped "finish their thoughts" and moved the tag examples toward
+fewer, mostly non-verbal tags, to match the spoken-style prompts.
 
 `clean_filter_tool` / `clean_enrich_tool` are net-new — not ported from
 caster — for the clean+enrich Stage-2 replacement (`clean.py`); camelCase kept for
@@ -35,8 +36,7 @@ _TURNS_DESC = (
     "The dialogue in spoken order. Each turn is one host speaking. Write "
     "natural, conversational lines — not narration or stage directions. The "
     "three hosts should genuinely share the floor, unevenly; avoid a rigid "
-    "A-B-C rotation (two of them often run for a stretch while the third listens), "
-    "but mostly they take turns and finish their thoughts. "
+    "A-B-C rotation (two of them often run for a stretch while the third listens). "
     "Vary turn length hard (long riffs next to one-word reactions); most lines "
     "are plain talk, not a punchline per turn."
 )
@@ -49,13 +49,13 @@ _TEXT_DESC = (
     "an ellipsis for a trailing-off or hesitation, an em-dash for an abrupt cut, "
     "ALL-CAPS on a word for emphasis. You may embed inline ElevenLabs v3 audio "
     "tags in square brackets to direct delivery — these are a non-exhaustive "
-    "guide, infer similar ones: direction ([happy], [excited], [annoyed], "
-    "[thoughtful], [whisper], [deadpan]), non-verbal ([laughing], [chuckles], "
-    "[sighs], [exhales sharply], [inhales deeply], [clears throat], [short pause], "
-    "[long pause]); reach for an overlap tag ([interrupts], [overlapping]) only on "
-    "the rare line where one host genuinely cuts in. Place a tag right where the "
-    "delivery shifts; use them sparingly. Everything outside the brackets must be "
-    "plain speakable words."
+    "guide, infer similar ones: non-verbal ([laughs], [chuckles], [sighs], "
+    "[exhales], [inhales deeply], [clears throat], [short pause]) and, less often, "
+    "direction ([excited], [curious], [thoughtful], [dry], [exasperated]); reach "
+    "for an overlap tag ([interrupts], [overlapping]) only on the rare line where "
+    "one host genuinely cuts in. Place a tag right where the delivery shifts; most "
+    "turns need none, and a host should not get the same tag twice in a row. "
+    "Everything outside the brackets must be plain speakable words."
 )
 
 script_tool = ToolSpec(
