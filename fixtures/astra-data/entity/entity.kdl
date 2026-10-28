@@ -149,6 +149,10 @@ entity "Aurideon" {
     alias "Eridian"
     source "defs"
 }
+entity "Aurthalaxus" {
+    alias "Orthalax[iu]s"
+    source "defs"
+}
 entity "Austrene" {
     alias "Austrian"
     alias "Ostrand"
@@ -777,6 +781,10 @@ entity "Low-Mechanitor Exitum-ρ-15" {
     alias "Loma Canator Exitum Row 15"
     source "defs"
 }
+entity "Macharius" {
+    alias "Macarius"
+    source "defs"
+}
 entity "Major-Chaplain" {
     alias "major chaplain"
     source "defs"
@@ -912,6 +920,12 @@ entity "orreries" {
 }
 entity "orts" {
     alias "orcs"
+    source "defs"
+}
+entity "Osyluth" {
+    alias "Ocel[aeio]th"
+    alias "Oceliff"
+    alias "Ocelus"
     source "defs"
 }
 entity "our door" {
