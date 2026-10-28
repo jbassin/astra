@@ -92,6 +92,12 @@ def _llm_model(cfg: Config) -> str:
     return cfg.mouthpiece.model or cfg.llm.default_model
 
 
+def _script_model(cfg: Config) -> str:
+    """The recap script's model (`mouthpiece.script-model`, Kimi K3.1 Pro): only
+    session_script reads it. Empty falls back to `_llm_model`."""
+    return cfg.mouthpiece.script_model or _llm_model(cfg)
+
+
 def _out_root() -> Path:
     """`mouthpiece.episodes-path`, for the host-side catalog (the assets use their
     `pipeline_paths` resource)."""
@@ -284,7 +290,7 @@ def session_script(
                 hosts,
                 roster_block=roster_block,
                 continuity_block=continuity_block,
-                model=_llm_model(astra_config.get()),
+                model=_script_model(astra_config.get()),
                 brief_block=brief_block,
                 cache=pass_cache,
             )
