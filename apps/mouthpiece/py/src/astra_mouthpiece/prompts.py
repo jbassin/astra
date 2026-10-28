@@ -196,14 +196,22 @@ This is a CONVERSATION BETWEEN FRIENDS, so write it like one:
 SPOKEN, NOT WRITTEN: voice actors read this aloud, and it must sound like three real
 people talking off the cuff, not like prose being read. The failure to avoid is every
 turn being a complete, grammatical, information-dense thought. Real talk is messier:
-- FILLERS — "uh", "um", "like", "you know", "I mean", "okay so" — are seasoning. Use
-  them where a person actually reaches for a word or a thought: a few per host per
-  minute, never on every line, never stacked ("um, like, uh" is a cartoon).
+- FILLERS — "uh", "um", "like", "you know", "I mean", "okay so" — go where a person
+  actually reaches for a word or a thought. Real people use a LOT of them: roughly one
+  filler or self-repair every two or three turns, more in {hosts.a.name}'s long stories,
+  fewer in {hosts.b.name}'s. Never stacked ("um, like, uh" is a cartoon), never the same
+  one twice in a turn.
 - FALSE STARTS AND SELF-REPAIRS: a sentence that starts, stalls and restarts ("and they
   got this — this letter"), a thought corrected mid-air ("We'll get there. Or — well,
   no, they didn't, is the thing.").
+- SHORT TURNS: most turns are one to three sentences, under about 40 words. No turn runs
+  past about 70 words: when a host has a longer story, the others break it up — a
+  reaction, a question, a "wait, really?" — and the teller picks it back up. A story told
+  across five short turns with two interjections beats one paragraph.
 - BACKCHANNELS: while one host explains, the others react in short turns of their own —
-  "Mm-hm.", "Yeah.", "Right, right.", "It does.", "Poor guy." Every turn, however short,
+  "Mm-hm.", "Yeah.", "Right, right.", "It does.", "Poor guy." — at least every two or three
+  turns of any explanation. Count them: at least 30 turns of three words or fewer across
+  the episode, spread through it, not bunched. Every turn, however short,
   has at least one real spoken word; never a turn that is only a sound or a pause.
 - REAL INTERRUPTIONS: when someone cuts in, the line being cut stops mid-word or
   mid-phrase on an em-dash ("give or ta—"), the other host comes in, and the first often
@@ -211,7 +219,14 @@ turn being a complete, grammatical, information-dense thought. Real talk is mess
 - EXPLANATIONS SOUND SPOKEN: short pieces joined with "and" and "so", the plain word over
   the precise one, the point arrived at rather than delivered ("It's fuel. You dig it
   up. But the digging's the hard part, it's, um... it's fiddly."). No clause pile-ups,
-  no written compression like "ground-fuel, expert-refined, barrel-shaped".
+  no written compression like "ground-fuel, expert-refined, barrel-shaped". Lore comes
+  out in two or three short pieces with a reaction or question between them, never as
+  one tidy paragraph, and never in the wording of the wiki or the transcript: say it the
+  way you'd tell a friend over coffee.
+- NEVER COPY THE NOTES: the producer's notes and the wiki excerpts are reference prose
+  written to be read. Take the FACT from them and say it fresh, in a host's own words; no
+  sentence or long phrase of theirs belongs in a host's mouth. If six words in a row
+  match a note, the line is wrong.
 - VARY IT BY HOST: {hosts.a.name} rambles, chains "and"s, restarts his sentences and says
   "uh" when he reaches for a name; {hosts.b.name} is the crispest of the three — short and
   exact — but she still says "yeah" and "mm" and restarts a sentence now and then;
