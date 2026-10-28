@@ -294,3 +294,39 @@ def test_dialogue_chunking_uses_the_provider_budget(
     synthesize_script(script, provider=provider, voices=VOICES, out_dir=tmp_path)
     assert len(bodies) == requests
     assert all(b["model_id"] == model_id for b in bodies)
+
+
+def test_elevenlabs_sends_the_configured_stability() -> None:
+    from astra_mouthpiece.tts.elevenlabs import ElevenLabsTTSProvider
+    from astra_mouthpiece.tts.provider import DialogueInput, DialogueRequest, SynthesisRequest
+
+    bodies: list[dict] = []
+
+    def fake_post(url: str, headers: dict[str, str], json: dict) -> bytes:
+        bodies.append(json)
+        return b"audio"
+
+    provider = ElevenLabsTTSProvider("k", post=fake_post, stability=0.0)
+    provider.synthesize_dialogue(DialogueRequest(inputs=[DialogueInput(text="hi", voice="v")]))
+    provider.synthesize(SynthesisRequest(text="hi", voice="v"))
+    assert bodies[0]["settings"] == {"stability": 0.0}
+    assert bodies[1]["voice_settings"] == {"stability": 0.0}
+
+    # Unset sends no settings, so the API default applies.
+    bodies.clear()
+    plain = ElevenLabsTTSProvider("k", post=fake_post)
+    plain.synthesize_dialogue(DialogueRequest(inputs=[DialogueInput(text="hi", voice="v")]))
+    plain.synthesize(SynthesisRequest(text="hi", voice="v"))
+    assert "settings" not in bodies[0] and "voice_settings" not in bodies[1]
+
+
+def test_stability_is_part_of_the_clip_cache_identity() -> None:
+    from astra_mouthpiece.tts.elevenlabs import ElevenLabsTTSProvider
+
+    identities = {
+        ElevenLabsTTSProvider("k").cache_identity,
+        ElevenLabsTTSProvider("k", stability=0.0).cache_identity,
+        ElevenLabsTTSProvider("k", stability=0.5).cache_identity,
+    }
+    assert len(identities) == 3
+    assert ElevenLabsTTSProvider("k").cache_identity == "elevenlabs:eleven_v4:mp3"

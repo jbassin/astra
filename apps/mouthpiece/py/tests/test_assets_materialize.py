@@ -107,7 +107,9 @@ def test_the_chain_writes_every_output_under_the_injected_paths(
             "astra_config": config,
             "pipeline_paths": paths,
             "llm": llm,
-            "tts": TtsResource(provider="mock", elevenlabs_model="unused"),
+            "tts": TtsResource(
+                provider="mock", elevenlabs_model="unused", elevenlabs_stability=0.0
+            ),
         },
     )
 

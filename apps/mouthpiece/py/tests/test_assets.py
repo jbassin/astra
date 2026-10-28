@@ -82,8 +82,12 @@ def test_tts_resource_reads_the_configured_provider_and_model() -> None:
 
     cfg = load().mouthpiece
     tts = default_tts()
-    assert (tts.provider, tts.elevenlabs_model) == (cfg.tts_provider, cfg.elevenlabs_model)
-    mock = TtsResource(provider="mock", elevenlabs_model="unused").build()
+    assert (tts.provider, tts.elevenlabs_model, tts.elevenlabs_stability) == (
+        cfg.tts_provider,
+        cfg.elevenlabs_model,
+        cfg.elevenlabs_stability,
+    )
+    mock = TtsResource(provider="mock", elevenlabs_model="unused", elevenlabs_stability=0.0).build()
     assert type(mock).__name__ == "MockTTSProvider"
 
 
@@ -97,7 +101,9 @@ def test_elevenlabs_tts_fails_loud_without_key(monkeypatch, tmp_path) -> None:
     monkeypatch.setenv("ELEVENLABS_API_KEY", "")
     monkeypatch.setenv("ASTRA_SOPS_FILE", str(tmp_path / "absent.enc.yaml"))
     with pytest.raises(RuntimeError, match="elevenlabs_api_key"):
-        TtsResource(provider="elevenlabs", elevenlabs_model="eleven_v4").build()
+        TtsResource(
+            provider="elevenlabs", elevenlabs_model="eleven_v4", elevenlabs_stability=0.0
+        ).build()
 
 
 def test_voices_read_the_elevenlabs_ids() -> None:

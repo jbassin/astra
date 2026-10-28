@@ -73,22 +73,35 @@ class ElevenLabsTTSProvider:
     dialogue = True
 
     def __init__(
-        self, api_key: str, *, post: PostFn = _httpx_post, model_id: str = _MODEL_ID
+        self,
+        api_key: str,
+        *,
+        post: PostFn = _httpx_post,
+        model_id: str = _MODEL_ID,
+        stability: float | None = None,
     ) -> None:
         self._key = api_key
         self._post = post
         self._model_id = model_id
+        #: Voice stability (0-1, `mouthpiece.elevenlabs-stability`). None sends no settings,
+        #: so the API's default (0.5) applies.
+        self._stability = stability
         self.dialogue_budget = _DIALOGUE_BUDGETS.get(model_id, DEFAULT_DIALOGUE_BUDGET)
         #: Names the clip cache's entries (`synth.clip_key`): everything besides the voice
-        #: and text that changes the audio. The requests send no `output_format` or voice
-        #: settings, so the API's defaults apply; add any you start sending here.
-        self.cache_identity = f"elevenlabs:{model_id}:{self.format}"
+        #: and text that changes the audio. The requests send no `output_format`, so the
+        #: API's default applies; add any other setting you start sending here.
+        identity = f"elevenlabs:{model_id}:{self.format}"
+        if stability is not None:
+            identity += f":stability={stability:g}"
+        self.cache_identity = identity
 
     def _headers(self) -> dict[str, str]:
         return {"xi-api-key": self._key, "Content-Type": "application/json"}
 
     def synthesize(self, req: SynthesisRequest) -> SynthesisResult:
         body: dict[str, Any] = {"text": req.text, "model_id": self._model_id}
+        if self._stability is not None:
+            body["voice_settings"] = {"stability": self._stability}
         audio = self._post(f"{_TTS_URL}/{req.voice}", self._headers(), body)
         return SynthesisResult(
             audio=audio, duration_ms=estimate_duration_ms(strip_audio_tags(req.text))
@@ -99,6 +112,8 @@ class ElevenLabsTTSProvider:
             "model_id": self._model_id,
             "inputs": [{"text": i.text, "voice_id": i.voice} for i in req.inputs],
         }
+        if self._stability is not None:
+            body["settings"] = {"stability": self._stability}
         audio = self._post(_DIALOGUE_URL, self._headers(), body)
         spoken = " ".join(strip_audio_tags(i.text) for i in req.inputs)
         return SynthesisResult(audio=audio, duration_ms=estimate_duration_ms(spoken))
