@@ -1047,3 +1047,14 @@ entry "phlogiston" ipa="fləˈdʒɪstɒn" {
 }
 // Sentence-initial form: the IPA match is case-sensitive, the corrections are not.
 entry "Phlogiston" ipa="fləˈdʒɪstɒn"
+entry "Osyluth" ipa="ˈɑsɪlɪθ" {
+    variant "Ocel[aeio]th"
+    variant "Oceliff"
+    variant "Ocelus"
+}
+entry "Aurthalaxus" ipa="ˈɔrθəlæksəs" {
+    variant "Orthalax[iu]s"
+}
+entry "Macharius" ipa="məˈkɑriəs" {
+    variant "Macarius"
+}
