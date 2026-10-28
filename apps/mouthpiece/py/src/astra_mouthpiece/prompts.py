@@ -1,16 +1,18 @@
 """The prompts — the two-friends recap tone lives here.
 
 `build_improv_system_prompt` (Pass A) and `build_dressing_system_prompt` (Pass B)
-are the load-bearing craft; Pass B's wording is unchanged from the original port
-(identical to faerrin `pkg/caster/src/script/prompt.ts`, only the `${{hosts.X}}`
-interpolation becomes an f-string). Pass A was later rewritten: it
+are the load-bearing craft. Pass B began as a port of faerrin
+`pkg/caster/src/script/prompt.ts`; its tag guidance was rewritten 2026-10-27 (fewer,
+varied, mostly non-verbal tags). Pass A was later rewritten: it
 now debates the session TRANSCRIPT directly (a cleaned, not-distilled transcript —
 `clean.py` replaced the distill/beats Stage 2), so it is no longer
 byte-identical to any faerrin source. 2026-09 reworked Pass A again, off the DEBATE
 format (which had over-tuned Maeve into a contrarian: propose/object/repeat) into two
 friends reliving the session — build-on-each-other, trade theories, live in the world;
-disagreement is seasoning. Pass B's tag vocabulary is provider-neutral (ElevenLabs passes
-it through).
+disagreement is seasoning. 2026-10-27 made Pass A write SPEECH rather than prose (fillers,
+false starts, backchannel turns, real cut-offs), after a listening test where a hand-made
+messy rewrite of an excerpt clearly beat the polished original. Pass B's tag vocabulary is
+provider-neutral (ElevenLabs passes it through).
 
 `CLEAN_FILTER_SYSTEM` and `ENRICH_SYSTEM` are the clean+enrich Stage-2
 system prompts (net-new, not ported from faerrin).
@@ -146,8 +148,9 @@ Format: plain text, one line per turn, as
 {hosts.b.name}: what they said
 {c.name}: what they said
 Use the hosts' names as the speaker labels. NOTHING else — no headings, no audio tags,
-no stage directions, no markdown. Ordinary spoken punctuation only: an ellipsis for
-trailing off, an em-dash for a thought that gets cut off or a cut-in.
+no stage directions, no markdown. Punctuate it the way people TALK: commas, an ellipsis
+for trailing off or reaching for a word, an em-dash for a thought that restarts, breaks
+off, or gets cut into.
 
 This is a CONVERSATION BETWEEN FRIENDS, so write it like one:
 - They BUILD on each other. The default move when one host says something is "yes, and":
@@ -189,6 +192,33 @@ This is a CONVERSATION BETWEEN FRIENDS, so write it like one:
   the plain question and reads the fight like a player. If you could swap their names on
   a line and it would still fit, it's too generic. Let them laugh, finish each other's thoughts, and
   react in the moment ("oh no", "wait, WAIT—", "okay that's my favorite thing").
+
+SPOKEN, NOT WRITTEN: voice actors read this aloud, and it must sound like three real
+people talking off the cuff, not like prose being read. The failure to avoid is every
+turn being a complete, grammatical, information-dense thought. Real talk is messier:
+- FILLERS — "uh", "um", "like", "you know", "I mean", "okay so" — are seasoning. Use
+  them where a person actually reaches for a word or a thought: a few per host per
+  minute, never on every line, never stacked ("um, like, uh" is a cartoon).
+- FALSE STARTS AND SELF-REPAIRS: a sentence that starts, stalls and restarts ("and they
+  got this — this letter"), a thought corrected mid-air ("We'll get there. Or — well,
+  no, they didn't, is the thing.").
+- BACKCHANNELS: while one host explains, the others react in short turns of their own —
+  "Mm-hm.", "Yeah.", "Right, right.", "It does.", "Poor guy." Every turn, however short,
+  has at least one real spoken word; never a turn that is only a sound or a pause.
+- REAL INTERRUPTIONS: when someone cuts in, the line being cut stops mid-word or
+  mid-phrase on an em-dash ("give or ta—"), the other host comes in, and the first often
+  picks up from what they said ("Hundred fifty. Thank you."). A couple of these a night.
+- EXPLANATIONS SOUND SPOKEN: short pieces joined with "and" and "so", the plain word over
+  the precise one, the point arrived at rather than delivered ("It's fuel. You dig it
+  up. But the digging's the hard part, it's, um... it's fiddly."). No clause pile-ups,
+  no written compression like "ground-fuel, expert-refined, barrel-shaped".
+- VARY IT BY HOST: {hosts.a.name} rambles, chains "and"s, restarts his sentences and says
+  "uh" when he reaches for a name; {hosts.b.name} is the crispest of the three — short and
+  exact — but she still says "yeah" and "mm" and restarts a sentence now and then;
+  {c.name} is quick and eager, over-asks, stacks two questions, and says "wait" and
+  "like" and "okay so" while she catches up.
+Keep it natural, not cartoonish: the facts stay exactly as clear and the turns stay easy
+to follow. A listener should never notice the fillers, only that it sounds like people.
 
 Below is the session TRANSCRIPT itself — walk through it ROUGHLY IN THE ORDER IT
 HAPPENED, and let the conversation broadly follow that through-line so it's easy to
@@ -254,22 +284,31 @@ Map the speaker labels to ids: {mapping}.
 
 DO NOT improve the dialogue. This is the most important rule:
 - Do NOT make any line wittier, more complete, more articulate, smoother, or more
-  polished. Preserve every fumble, false start, self-correction, repetition,
-  interruption, trailing-off, one-word reaction, and dropped/unfinished thread EXACTLY
-  as written. If a line is awkward or unfinished, keep it awkward and unfinished.
+  polished. Preserve every filler ("uh", "um", "like", "you know"), fumble, false start,
+  self-correction, repetition, interruption, cut-off word, trailing-off, one-word
+  reaction, and dropped/unfinished thread EXACTLY as written. If a line is awkward or
+  unfinished, keep it awkward and unfinished.
 - Do NOT add, remove, merge, reorder, or "clean up" content. Same words, same order,
   same mess. Do NOT resolve anything the transcript left unresolved.
 
 What you MAY do (formatting only):
 - Split the raw text into one turn per speaker utterance, in order.
-- Add inline delivery tags in square brackets where the delivery the words already
-  imply shifts — direction ([happy], [excited], [curious], [thoughtful], [amused],
-  [deadpan], [sarcastic], [wistful]) and non-verbal ([laughing], [chuckles], [sighs],
-  [exhales sharply], [clears throat], [short pause], [long pause]). Put a direction tag
-  at the START of a turn whose whole delivery it colors; the TTS backend reads one
-  emotion per turn from it. Add an overlap tag ([interrupts], [overlapping]) only where
-  the raw transcript actually shows one host cutting in (never invent a cut-in the raw
-  text doesn't show). Use the tags where earned, and only tags that suit the speaker.
+- Add inline delivery tags in square brackets, SPARINGLY. Most turns get no tag at all:
+  the words, fillers and false starts already carry the delivery, and a tag on every
+  line makes the voices sound performed. Tag a turn only where the delivery the words
+  imply clearly shifts — at most about one turn in four.
+- Prefer the non-verbal sounds real speech has ([laughs], [chuckles], [sighs],
+  [exhales], [clears throat], [short pause]) over direction tags. Reach for a direction
+  tag ([excited], [curious], [thoughtful], [amused], [dry], [exasperated], [wistful])
+  only when a whole turn's mood is plainly different from the host's usual voice; put it
+  at the START of the turn it colors, since the TTS backend reads one emotion per turn
+  from it.
+- VARY the tags. Never give a host the same tag on two of their turns in a row, and
+  never let one tag become a host's habit ([deadpan] on every other line is the failure
+  to avoid). Use only tags that suit the speaker.
+- Add an overlap tag ([interrupts], [overlapping]) only where the raw transcript
+  actually shows one host cutting in (never invent a cut-in the raw text doesn't show).
+- A tag never stands alone: every turn keeps at least one spoken word.
 - Make text speakable for a TTS voice: spell out numbers, dates, symbols, and
   abbreviations in words; keep the ellipses, em-dashes, and single-word CAPS that carry
   prosody. Everything outside the [tags] must be plain speakable words — no markdown, no

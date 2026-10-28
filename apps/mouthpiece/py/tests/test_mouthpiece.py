@@ -154,6 +154,31 @@ def test_improv_prompt_steers_away_from_direct_quotes() -> None:
     assert 'no "quote ... end quote"' in flat
 
 
+def test_improv_prompt_asks_for_speech_not_prose() -> None:
+    # The 2026-10-27 listening test: a messy spoken rewrite beat the polished script.
+    p = build_improv_system_prompt(HOSTS)
+    flat = " ".join(p.split())
+    assert "Ordinary spoken punctuation only" not in flat
+    assert "SPOKEN, NOT WRITTEN" in flat
+    for texture in ("FILLERS", "FALSE STARTS", "BACKCHANNELS", "REAL INTERRUPTIONS"):
+        assert texture in flat
+    assert "are seasoning" in flat and "never stacked" in flat
+    # Backchannel turns must stay speakable (ElevenLabs 400s on tag-only turns).
+    assert "has at least one real spoken word" in flat
+    assert "Keep it natural, not cartoonish" in flat
+    assert "Bram rambles" in flat and "Maeve is the crispest" in flat
+    assert "Nell is quick and eager" in flat
+
+
+def test_dressing_prompt_tags_sparingly_and_keeps_the_mess() -> None:
+    flat = " ".join(build_dressing_system_prompt(HOSTS).split())
+    assert "SPARINGLY. Most turns get no tag at all" in flat
+    assert "Never give a host the same tag on two of their turns in a row" in flat
+    assert "Prefer the non-verbal sounds real speech has" in flat
+    assert "every turn keeps at least one spoken word" in flat
+    assert 'Preserve every filler ("uh", "um", "like", "you know")' in flat
+
+
 def test_dressing_prompt_forbids_polishing() -> None:
     p = build_dressing_system_prompt(HOSTS)
     assert "You are a careful transcript FORMATTER, not a writer." in p

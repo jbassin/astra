@@ -142,6 +142,14 @@ package's private `assets._voices` and `resources.default_tts`, so keep their si
   non-retryable. The `llm` resource's client fails a step without the `RetryPolicy` rerun
   when it has spent its own retries on bad replies (`astra_llm.retry`) or the provider
   answered with a deterministic 4xx; only transport errors and 5xx get the rerun.
+- **Scripts are written as speech.** Since 2026-10-27, Pass A asks for fillers, false
+  starts, backchannel turns and real cut-offs, and Pass B tags sparingly and varies its
+  tags, because a listening test found the polished style robotic. That change, like any
+  edit to a prompt or a `podcast-persona`, changes the system prompt and so the pass-cache
+  key: any saved `script-cache/` misses, and the next script render pays for Pass A and
+  every Pass B segment again. The `record_script` tool text is not in the key, so an edit
+  to `schemas.py` alone does not invalidate the cache. TTS clips for a new script
+  re-render too, since the line text changes.
 - **A bad saved Pass A sticks until the run succeeds.** If Pass B keeps failing on a
   transcript that Pass A got wrong, delete `script-cache/` before re-executing.
 - **Tag-only turns** such as `[stunned silence]` make ElevenLabs return 400; `speakable_turns`
