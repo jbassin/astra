@@ -354,6 +354,43 @@ def test_elevenlabs_returns_the_request_id_and_links_previous_requests() -> None
     assert bodies[1]["previous_request_ids"] == ["id-1"]
 
 
+def test_elevenlabs_retries_unlinked_when_a_previous_request_id_is_rejected() -> None:
+    from astra_mouthpiece.tts.elevenlabs import ElevenLabsTTSProvider
+    from astra_mouthpiece.tts.provider import DialogueInput, DialogueRequest, TtsClientError
+
+    bodies: list[dict] = []
+
+    def fake_post(url: str, headers: dict[str, str], json: dict) -> tuple[bytes, dict]:
+        bodies.append(dict(json))
+        if "previous_request_ids" in json:
+            raise TtsClientError(400, url, "unknown request id")
+        return b"audio", {"request-id": "fresh"}
+
+    provider = ElevenLabsTTSProvider("k", post=fake_post)
+    line = [DialogueInput(text="hi", voice="v")]
+    result = provider.synthesize_dialogue(
+        DialogueRequest(inputs=line, previous_request_ids=["stale"])
+    )
+    assert result.request_id == "fresh"
+    assert [("previous_request_ids" in b) for b in bodies] == [True, False]
+
+
+def test_elevenlabs_unlinked_4xx_still_raises() -> None:
+    from astra_mouthpiece.tts.elevenlabs import ElevenLabsTTSProvider
+    from astra_mouthpiece.tts.provider import DialogueInput, DialogueRequest, TtsClientError
+
+    calls: list[dict] = []
+
+    def fake_post(url: str, headers: dict[str, str], json: dict) -> tuple[bytes, dict]:
+        calls.append(json)
+        raise TtsClientError(400, url, "tag-only turn")
+
+    provider = ElevenLabsTTSProvider("k", post=fake_post)
+    with pytest.raises(TtsClientError):
+        provider.synthesize_dialogue(DialogueRequest(inputs=[DialogueInput(text="x", voice="v")]))
+    assert len(calls) == 1
+
+
 def test_httpx_post_returns_the_body_and_headers(monkeypatch) -> None:
     import httpx
     from astra_mouthpiece.tts import elevenlabs
