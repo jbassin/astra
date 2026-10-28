@@ -12,7 +12,7 @@ that mouthpiece never tried:
 2. `session_brief`: the producer, a read-only DeepSeek RLM over the transcript, the live wiki,
    the chronicle and earlier scripts, writes `brief.json`. If it fails, there is no brief and
    the script falls back to wiki grounding plus continuity (a WARN, no page).
-3. `session_script`: two passes on `mouthpiece.script-model` (Kimi K3.1 Pro; clean and enrich
+3. `session_script`: two passes on `mouthpiece.script-model` (Kimi `kimi-k3.1-pro`; clean and enrich
    stay on `mouthpiece.model`, GLM 5.3). Pass A writes the free-text
    conversation; Pass B typesets it into turns without improving it.
 4. `session_audio_clips`: ElevenLabs Text-to-Dialogue (`mouthpiece.tts-provider`,
@@ -167,7 +167,7 @@ package's private `assets._voices` and `resources.default_tts`, so keep their si
 - **Pass B is the slow part.** One structured call over a 6,000-word transcript stalls, so
   Pass B runs per segment of `PASS_B_CHUNK_WORDS` (2,200) and takes the title from the first
   segment. Pass A took up to an hour on GLM 5.3, which also ignored the spoken-style length
-  and short-turn rules; Kimi K3.1 Pro (2026-10-28) follows them but has once skipped Pass B's
+  and short-turn rules; Kimi `kimi-k3.1-pro` (2026-10-28) follows them but has once skipped Pass B's
   forced tool call, which the client's retry absorbed.
 - **Timeouts.** `astra_llm` sets `REQUEST_TIMEOUT_S` (300) per attempt; only litellm's
   `timeout` can interrupt a blocked socket read. ElevenLabs calls use a 600 s timeout, and

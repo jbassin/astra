@@ -134,7 +134,7 @@ class MouthpieceConfig(_Base):
     # `llm.default-model` (linguist's compiled judge + heartwood stay on that one).
     model: str
     # The LLM for the two-pass recap script (session_script) only; clean/enrich stay on
-    # `model`. Kimi K3.1 Pro since 2026-10-28: it follows the spoken-style turn and length
+    # `model`. Kimi `kimi-k3.1-pro` since 2026-10-28: it follows the spoken-style turn and length
     # rules that GLM 5.3 ignored. Empty falls back to `model`.
     script_model: str = ""
     # Which TTS backend renders episodes: "elevenlabs" (dialogue, live) or "mock" (offline
