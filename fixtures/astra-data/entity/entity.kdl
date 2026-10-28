@@ -137,6 +137,9 @@ entity "Atum" {
     alias "Adam"
     source "defs"
 }
+entity "Aurelia" {
+    source "defs"
+}
 entity "Aurideon" {
     alias "Iridiu[mn]"
     alias "Oridia[mn]"
@@ -333,6 +336,9 @@ entity "Dura" {
     alias "Dur"
     source "defs"
 }
+entity "Egan" {
+    source "defs"
+}
 entity "Elara Vance" {
     alias "Lara Vance"
     alias "Alara Vance"
@@ -464,6 +470,9 @@ entity "gale" {
     alias "gaol"
     source "defs"
 }
+entity "Galzu" {
+    source "defs"
+}
 entity "game" {
     alias "Kate"
     source "defs"
@@ -491,6 +500,9 @@ entity "Gaspar Caetano" {
 }
 entity "Ghosts of Raelion" {
     alias "ghosts\\s*of\\s*Raelio"
+    source "defs"
+}
+entity "Giacomo" {
     source "defs"
 }
 entity "Giannos" {
@@ -550,9 +562,17 @@ entity "Heir of the Plague" kind="deity" page="Divinity/Outer Gods/Heir of the P
     alias "Heir"
     source "akasha"
 }
+entity "Helmyster" {
+    alias "Hell?m[ie]ster"
+    alias "Helmstier"
+    source "defs"
+}
 entity "Herald" {
     alias "herald"
     alias "Harold"
+    source "defs"
+}
+entity "Hesperid" {
     source "defs"
 }
 entity "Hey, Aut" {
@@ -943,6 +963,12 @@ entity "Pharos" {
     alias "Firas"
     source "defs"
 }
+entity "phlogiston" {
+    alias "fl[oia]gist[oa]n"
+    alias "phagiston"
+    alias "logiston"
+    source "defs"
+}
 entity "Pluckwort" kind="person" being="jorge" {
     source "being"
 }
@@ -1169,6 +1195,9 @@ entity "Syrin" {
     alias "Siren"
     source "defs"
 }
+entity "Tali" {
+    source "defs"
+}
 entity "Tas" {
     alias "Taz"
     alias "Taz"
@@ -1295,6 +1324,9 @@ entity "Ugathal" {
     alias "Ugithul"
     alias "Ukathal"
     alias "Ukathals"
+    source "defs"
+}
+entity "Ulrich" {
     source "defs"
 }
 entity "Vaino" {
