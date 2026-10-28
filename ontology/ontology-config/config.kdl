@@ -138,6 +138,10 @@ mouthpiece {
     // ElevenLabs model for Text-to-Dialogue: "eleven_v4" since 2026-09-28 (was
     // "eleven_v3"; set it back here to roll back). Audio tags + IPA carry over.
     elevenlabs-model "eleven_v4"
+    // Voice stability (0-1) on every ElevenLabs request; the API's default is 0.5. Lower
+    // is more expressive. 0.0 since the 2026-10-27 listening test (0.5 sounded robotic).
+    // A change re-renders every clip (it is part of the clip cache key).
+    elevenlabs-stability 0.0
     elevenlabs-api-key ref="sops:elevenlabs_api_key"
 }
 

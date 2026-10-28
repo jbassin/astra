@@ -41,6 +41,7 @@ mouthpiece {
     model "openrouter/z-ai/glm-5.3"
     tts-provider "elevenlabs"
     elevenlabs-model "eleven_v4"
+    elevenlabs-stability 0.0
 }
 heartwood {
     model "openrouter/deepseek/deepseek-v4.1-flash"

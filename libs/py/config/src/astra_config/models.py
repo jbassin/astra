@@ -37,7 +37,14 @@ from __future__ import annotations
 import os
 from typing import Annotated, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, WithJsonSchema, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    WithJsonSchema,
+    field_validator,
+    model_validator,
+)
 
 from .secrets import SecretRef
 
@@ -132,6 +139,9 @@ class MouthpieceConfig(_Base):
     tts_provider: Literal["elevenlabs", "mock"]
     # ElevenLabs model id for the dialogue + single-turn calls (v4 since 2026-09-28).
     elevenlabs_model: str
+    # ElevenLabs voice stability, 0 to 1, sent on every request (the API defaults to 0.5).
+    # Lower is more expressive and less monotone.
+    elevenlabs_stability: Annotated[float, Field(ge=0.0, le=1.0)]
     elevenlabs_api_key: Secret | None = None
 
 

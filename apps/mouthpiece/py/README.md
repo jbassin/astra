@@ -15,7 +15,7 @@ that mouthpiece never tried:
 3. `session_script`: two passes on `mouthpiece.model` (GLM 5.3). Pass A writes the free-text
    conversation; Pass B typesets it into turns without improving it.
 4. `session_audio_clips`: ElevenLabs Text-to-Dialogue (`mouthpiece.tts-provider`,
-   `mouthpiece.elevenlabs-model`).
+   `mouthpiece.elevenlabs-model`, `mouthpiece.elevenlabs-stability`).
 5. `session_episode`: ffmpeg assembly, then it writes the `.last-rendered` sentinel.
 
 Each session's files are in `/ruby/data/astra-state/mouthpiece/episodes/<date>/`; the audio
@@ -38,9 +38,9 @@ what is missing.
 
 - **TTS clips** (`tts/synth.py`). Each clip is `clips/<key>.<fmt>`, with its duration in
   `clips/<key>.json`. `<key>` is a hash of the provider's `cache_identity` (ElevenLabs:
-  `elevenlabs:<model>:mp3`), the render mode, the format, and each line's voice, rendered
-  text (delivery tags and inline IPA included) and emotion. A clip whose files exist is
-  reused. So a second render of the same script renders nothing, and editing one turn
+  `elevenlabs:<model>:mp3:stability=<s>`), the render mode, the format, and each line's
+  voice, rendered text (delivery tags and inline IPA included) and emotion; changing the
+  model or stability re-renders every clip. A clip whose files exist is reused. So a second render of the same script renders nothing, and editing one turn
   re-renders only the chunk that holds it (in dialogue mode a chunk is several turns).
   After a whole render succeeds, files in `clips/` the new manifest does not use are deleted,
   including clips under the old `NNN.<fmt>` names; a failed render deletes nothing.

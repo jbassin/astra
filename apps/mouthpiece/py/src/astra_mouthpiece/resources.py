@@ -24,11 +24,15 @@ class TtsResource(dg.ConfigurableResource):
     provider: Literal["elevenlabs", "mock"]
     #: The ElevenLabs model id (`mouthpiece.elevenlabs-model`).
     elevenlabs_model: str
+    #: The ElevenLabs voice stability, 0 to 1 (`mouthpiece.elevenlabs-stability`).
+    elevenlabs_stability: float
 
     @classmethod
     def from_config(cls, cfg: Config) -> "TtsResource":
         return cls(
-            provider=cfg.mouthpiece.tts_provider, elevenlabs_model=cfg.mouthpiece.elevenlabs_model
+            provider=cfg.mouthpiece.tts_provider,
+            elevenlabs_model=cfg.mouthpiece.elevenlabs_model,
+            elevenlabs_stability=cfg.mouthpiece.elevenlabs_stability,
         )
 
     def build(self) -> TTSProvider:
@@ -38,7 +42,9 @@ class TtsResource(dg.ConfigurableResource):
             key = loaded_config().mouthpiece.elevenlabs_api_key
             if key is None:
                 raise SecretUnsetError("mouthpiece.elevenlabs-api-key has no ref= in config.kdl")
-            return ElevenLabsTTSProvider(key.require(), model_id=self.elevenlabs_model)
+            return ElevenLabsTTSProvider(
+                key.require(), model_id=self.elevenlabs_model, stability=self.elevenlabs_stability
+            )
         return MockTTSProvider()
 
 

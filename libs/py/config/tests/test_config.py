@@ -231,3 +231,12 @@ def test_default_paths_use_the_one_root(monkeypatch: pytest.MonkeyPatch) -> None
     root = find_repo_root()
     assert root / "ontology" / "ontology-config" / "config.kdl" == CONFIG_KDL_PATH
     assert default_secrets_file() == root / "deploy" / "sops" / "secrets.enc.yaml"
+
+
+@pytest.mark.parametrize("value", ["-0.1", "1.5"])
+def test_elevenlabs_stability_must_be_between_0_and_1(
+    fixture_with: FixtureWith, value: str
+) -> None:
+    bad = fixture_with("elevenlabs-stability 0.0", f"elevenlabs-stability {value}")
+    with pytest.raises(KdlDecodeError, match=r"mouthpiece > elevenlabs-stability"):
+        load_config(bad)
