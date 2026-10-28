@@ -375,7 +375,10 @@ def test_load_hosts_carries_the_three_seat_roster() -> None:
     hosts = load_hosts()
     assert (hosts.a.name, hosts.b.name) == ("Bram", "Maeve")
     assert hosts.c is not None and hosts.c.name == "Nell"
-    assert hosts.c.voice_id == "6u6JbqKdaQy89ENzLSju"  # the stakeholder-picked library voice
+    # The voices the stakeholder picked in the 2026-10-27 listening test.
+    assert hosts.a.voice_id == "3jR9BuQAOPMWUjWpi0ll"
+    assert hosts.b.voice_id == "BIvP0GN1cAtSRTxNHnWS"
+    assert hosts.c.voice_id == "eXpIbVcVbLo8ZJQDlDnl"  # ElevenLabs "Siren"
     assert "never bluffs" in hosts.c.persona
 
 
