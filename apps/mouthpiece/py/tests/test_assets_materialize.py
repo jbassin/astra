@@ -57,7 +57,7 @@ def _stub_stages(monkeypatch: pytest.MonkeyPatch, seen: dict[str, Any]) -> None:
         )
 
     def build_episode_script(client: Any, digest: Any, cleaned: Any, *a: Any, **kw: Any) -> Any:
-        seen["script"] = (client, kw["model"], len(cleaned))
+        seen["script"] = (client, kw["model"], kw["dress_model"], len(cleaned))
         kw["cache"].put_text("k", "a saved Pass A")
         seen["script_cache"] = kw["cache"].root
         hosts = a[1]
@@ -121,7 +121,7 @@ def test_the_chain_writes_every_output_under_the_injected_paths(
     assert list(session.glob("*.episode.mp3")) and list(session.glob("*.transcript.md"))
     assert (paths.episodes / ".last-rendered").read_text() == DATE
     assert seen["digest"] == (stub, "test/mouthpiece-model")
-    assert seen["script"] == (stub, "test/script-model", 2)
+    assert seen["script"] == (stub, "test/script-model", "test/mouthpiece-model", 2)
     assert seen["brief_root"] == paths.episodes
     # The saved passes resume a failed attempt only; a written script clears them.
     assert seen["script_cache"] == session / "script-cache"

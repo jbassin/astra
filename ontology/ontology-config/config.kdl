@@ -131,10 +131,12 @@ mouthpiece {
     // OpenRouter (2026-09). Deliberately separate from llm.default-model, which linguist's
     // episode summaries and chronicle still run on (GLM 5.2).
     model "openrouter/z-ai/glm-5.3"
-    // The recap script's model (session_script only; clean/enrich stay on `model` above).
-    // Kimi `kimi-k3.1-pro` since 2026-10-28: on the same spoken-style prompt it hit the length and
-    // short-turn targets GLM 5.3 missed (7,334 words and 36 short turns against GLM's 5,321
-    // and 8). About a dollar a script against GLM's cents. Set it to "" to roll back to `model`.
+    // The model that writes the recap script (session_script's Pass A only). Clean, enrich
+    // and Pass B's typesetting stay on `model` above: Kimi skipped Pass B's forced tool call
+    // on two of three attempts in one test, where GLM never did. Kimi `kimi-k3.1-pro` since
+    // 2026-10-28: on the same spoken-style prompt it hit the length and short-turn targets
+    // GLM 5.3 missed (7,334 words and 36 short turns against GLM's 5,321 and 8). About a
+    // dollar a script against GLM's cents. Set it to "" to roll back to `model`.
     script-model "openrouter/moonshotai/kimi-k3.1-pro"
     // TTS backend for the episode audio: "elevenlabs" (Text-to-Dialogue, the live
     // backend) | "mock" (offline silence). The asset fails loud on a missing key —
