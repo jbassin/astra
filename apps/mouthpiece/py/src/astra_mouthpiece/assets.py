@@ -93,7 +93,7 @@ def _llm_model(cfg: Config) -> str:
 
 
 def _script_model(cfg: Config) -> str:
-    """The recap script's model (`mouthpiece.script-model`, Kimi K3.1 Pro): only
+    """The recap script's model (`mouthpiece.script-model`, Kimi `kimi-k3.1-pro`): only
     session_script reads it. Empty falls back to `_llm_model`."""
     return cfg.mouthpiece.script_model or _llm_model(cfg)
 

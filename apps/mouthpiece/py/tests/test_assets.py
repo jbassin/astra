@@ -77,7 +77,7 @@ def test_llm_model_is_mouthpieces_own_pin_with_the_shared_default_as_fallback() 
 
 
 def test_script_model_overrides_the_pin_for_the_script_only() -> None:
-    """session_script reads `mouthpiece.script-model` (Kimi K3.1 Pro); clean/enrich keep
+    """session_script reads `mouthpiece.script-model` (Kimi `kimi-k3.1-pro`); clean/enrich keep
     `mouthpiece.model`. An empty script-model falls back to the pin."""
     from astra_pipeline_resources.testing import FakeConfig
 
