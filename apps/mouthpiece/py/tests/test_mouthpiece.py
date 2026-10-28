@@ -167,6 +167,9 @@ def test_improv_prompt_asks_for_speech_not_prose() -> None:
     assert "at least every two or three turns of any explanation" in flat
     # v2 still lifted a lore sentence from the producer brief nearly verbatim.
     assert "NEVER COPY THE NOTES" in flat and "at least 30 turns of three words" in flat
+    # Try 4 left Maeve with under a quarter of the words and opened turns with "And the".
+    assert "Maeve carries at least a quarter of the words" in flat
+    assert "VARY HOW TURNS START" in flat
     assert "one filler or self-repair every two or three turns" in flat
     assert "Never stacked" in flat
     # Backchannel turns must stay speakable (ElevenLabs 400s on tag-only turns).

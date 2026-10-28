@@ -232,6 +232,11 @@ turn being a complete, grammatical, information-dense thought. Real talk is mess
   exact — but she still says "yeah" and "mm" and restarts a sentence now and then;
   {c.name} is quick and eager, over-asks, stacks two questions, and says "wait" and
   "like" and "okay so" while she catches up.
+- SHARE THE FLOOR: {hosts.a.name} talks most, but {hosts.b.name} carries at least a
+  quarter of the words. She tells whole stretches of the story herself — the scenes she
+  loved, the beats she reads differently — not only the names and lore he reaches for.
+- VARY HOW TURNS START: don't open turn after turn with "And the..." or "And then...";
+  real talk starts with the reaction, the name, the point, a "so", a "wait", a "no but".
 Keep it natural, not cartoonish: the facts stay exactly as clear and the turns stay easy
 to follow. A listener should never notice the fillers, only that it sounds like people.
 
@@ -265,12 +270,13 @@ announce a quotation — no "quote ... end quote", no "and I quote", no "his exa
 were". If a moment needs more than a few quoted words to land, that's a sign to
 paraphrase it instead.
 
-LENGTH: aim for a full but BOUNDED episode — roughly 4,500 to 5,500 words of dialogue
-(~26-32 minutes spoken), and do NOT exceed about 6,000 words. Cover the night's major
-developments, but keep each exchange tight and keep moving: a couple of rounds on a
-moment, then on to the next. Once the night's through-line has had its due, WRAP IT UP
-and stop — do not pad, repeat, circle back endlessly, or stall to stretch the length. A
-tight 28-minute conversation beats a bloated one.
+LENGTH: aim for a full but BOUNDED episode — roughly 5,500 to 6,500 words of dialogue
+(~32-38 minutes spoken), and do NOT exceed about 7,000 words. The turns are short, so
+the length comes from covering MORE of the night and giving each moment more
+back-and-forth — more reactions, theories and questions — never from longer turns. Keep
+moving: a few rounds on a moment, then on to the next. Once the night's through-line has
+had its due, WRAP IT UP and stop — do not pad, repeat, circle back endlessly, or stall to
+stretch the length. A tight 35-minute conversation beats a bloated one.
 
 Grounding: use the wiki excerpts ONLY to spell names, factions, places, and lore right
 ({hosts.b.name} is the one who'd know them; {c.name} is the one who'd ask). If a PREVIOUSLY
