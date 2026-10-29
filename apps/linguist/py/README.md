@@ -36,8 +36,15 @@ mouthpiece waits for a session's `session_episode_summary` to be materialized be
   `uv run python apps/linguist/py/scripts/backfill_chronicle.py` on the host, then
   materialize `campaign_timeline` by hand.
 - **Fix a recurring mistranscription:** add a `variant` (a regex fragment) under the right
-  `entry` in `libs/py/lexicon/src/astra_lexicon/defs.kdl`, then deploy Dagster. The next
-  `session_transcripts` run applies it.
+  `entry` in `libs/py/lexicon/src/astra_lexicon/defs.kdl`, then deploy Dagster. New sessions
+  get it from `session_transcripts`. For stored text, `stored_corrections_sensor` sees the new
+  `defs.kdl` (its digest differs from the last `stored_corrections` materialization's
+  `defs_digest`) and launches `stored_corrections` once. That rewrites every transcript,
+  context script, `data/*.json`, chronicle entry and mouthpiece `script.json`, `brief.json` and
+  `digest.json` in place, and linguist-commit publishes the astra-data part. No reader
+  corrects text itself. The run takes several minutes (the replacer costs ~10 s per
+  transcript) and waits for any other run to finish. Its metadata lists the files changed per
+  group and any JSON skipped for an unexpected format.
 
 ## Traps
 

@@ -472,27 +472,3 @@ def test_generate_script_threads_the_brief_into_pass_a() -> None:
     )
     generate_script(client, _digest(), _cleaned_turns(), [], HOSTS, brief_block="NOTES: x")
     assert "NOTES: x" in client.last_text_req.user_content
-
-
-def test_cleaned_turns_apply_todays_corrections(tmp_path: Path) -> None:
-    # A transcript made before a defs.kdl entry existed keeps its mistranscriptions; the
-    # script stage corrects them, so "Ocelith" and "Oceloth" reach the model as one name.
-    from astra_mouthpiece.inputs import cleaned_turns_for
-    from astra_mouthpiece.models import DigestStats
-
-    (tmp_path / "000.through-a-song-darkly.2026-10-19.txt").write_text(
-        "000001\tArgyle: we ask Ocelith about the flogiston\n"
-        "000002\tGamemaster: Oceloth will say it's complicated\n",
-        encoding="utf-8",
-    )
-    digest = SessionDigest(
-        session_id="000.through-a-song-darkly.2026-10-19",
-        synopsis="syn",
-        kept_ranges=[(1, 2)],
-        stats=DigestStats(lines=2, kept_lines=2, windows=1, dropped_windows=0),
-    )
-    turns = cleaned_turns_for("2026-10-19", digest, transcript_dir=tmp_path)
-    assert [t[2] for t in turns] == [
-        "we ask Osyluth about the phlogiston",
-        "Osyluth will say it's complicated",
-    ]

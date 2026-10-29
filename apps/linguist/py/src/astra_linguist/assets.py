@@ -20,7 +20,7 @@ import json
 from pathlib import Path
 
 import dagster as dg
-from astra_lexicon import load_corrections
+from astra_lexicon import correct_file, defs_digest, load_corrections
 from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
@@ -330,6 +330,81 @@ def campaign_timeline_sensor(context: dg.SensorEvaluationContext) -> dg.SensorRe
     )
 
 
+def _stored_text(paths: PipelinePaths) -> dict[str, list[Path]]:
+    """Every stored file that carries transcript text, by group: linguist's own outputs and
+    the mouthpiece files a later run reads back (scripts, briefs, digests)."""
+    episodes = Path(paths.mouthpiece_episodes)
+    return {
+        "transcripts": sorted(paths.transcripts.glob("*.txt")),
+        "context_scripts": sorted(Path(paths.linguist_script).glob("*.txt")),
+        "data": sorted(Path(paths.linguist_data).glob("*.json")),
+        "chronicle": sorted(paths.chronicle_episodes.glob("*.json")),
+        **{
+            f"mouthpiece_{name}": sorted(episodes.glob(f"*/{name}.json"))
+            for name in ("script", "brief", "digest")
+        },
+    }
+
+
+@dg.asset(group_name="linguist")
+def stored_corrections(pipeline_paths: PipelinePaths) -> dg.MaterializeResult:
+    """Rewrite every stored transcript, chronicle entry and mouthpiece script, brief and
+    digest with today's `defs.kdl` corrections.
+
+    A file keeps the spellings of the day it was written, so a new `defs.kdl` entry reaches
+    the earlier ones only here; readers take stored text as it is. `stored_corrections_sensor`
+    launches it once per `defs.kdl` (the `defs_digest` metadata). No LLM; linguist-commit
+    publishes the astra-data changes."""
+    fix = load_corrections()
+    counts: dict[str, int] = {}
+    skipped: list[str] = []
+    for group, files in _stored_text(pipeline_paths).items():
+        counts[group] = 0
+        for path in files:
+            changed = correct_file(path, fix)
+            if changed is None:
+                skipped.append(str(path))
+            elif changed:
+                counts[group] += 1
+    for path in skipped:
+        _log.warning("stored_corrections: %s is JSON in an unexpected format; skipped", path)
+    _log.info("stored_corrections rewrote %d file(s): %s", sum(counts.values()), counts)
+    return dg.MaterializeResult(
+        metadata={
+            "defs_digest": defs_digest(),
+            "changed": counts,
+            "skipped": skipped,
+        }
+    )
+
+
+def _any_run_in_flight(instance: dg.DagsterInstance) -> bool:
+    """True while any run is queued or going: one could be writing a file the rewrite reads."""
+    return bool(instance.get_runs(filters=dg.RunsFilter(statuses=list(_IN_FLIGHT)), limit=1))
+
+
+@dg.sensor(
+    target=[stored_corrections],
+    minimum_interval_seconds=300,
+    default_status=dg.DefaultSensorStatus.RUNNING,
+)
+def stored_corrections_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
+    """Launch `stored_corrections` once for each `defs.kdl` it has not yet been applied with,
+    which in practice means after each deploy that changes a correction. It waits while any
+    other run is in flight. A failed run is not retried for the same `defs.kdl` (the run key):
+    re-execute it."""
+    digest = defs_digest()
+    records = context.instance.fetch_materializations(stored_corrections.key, limit=1).records
+    if records:
+        mat = records[0].asset_materialization
+        applied = mat.metadata.get("defs_digest") if mat else None
+        if applied is not None and applied.value == digest:
+            return dg.SensorResult(skip_reason="stored text is current with defs.kdl")
+    if _any_run_in_flight(context.instance):
+        return dg.SensorResult(skip_reason="a run is in flight")
+    return dg.SensorResult(run_requests=[dg.RunRequest(run_key=f"stored_corrections:{digest}")])
+
+
 linguist_automation = stage_sensor(
     "linguist_automation",
     [session_transcripts, session_episode_summary],
@@ -350,7 +425,8 @@ defs = dg.Definitions(
         session_transcripts,
         session_episode_summary,
         campaign_timeline,
+        stored_corrections,
     ],
-    sensors=[linguist_automation, campaign_timeline_sensor],
+    sensors=[linguist_automation, campaign_timeline_sensor, stored_corrections_sensor],
     resources=default_resources(),
 )

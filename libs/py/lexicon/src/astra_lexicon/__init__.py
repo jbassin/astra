@@ -10,6 +10,7 @@ defs/registry source is always supplied by the caller.
 
 from __future__ import annotations
 
+from .apply import correct_file, correct_text, correct_value, defs_digest
 from .corrections import (
     DEFS_PATH,
     Replacer,
@@ -50,6 +51,10 @@ __all__ = [
     "build_lexicon",
     "build_lexicon_from",
     "build_replacer",
+    "correct_file",
+    "correct_text",
+    "correct_value",
+    "defs_digest",
     "dice_sim",
     "edit_sim",
     "ensemble_sim",

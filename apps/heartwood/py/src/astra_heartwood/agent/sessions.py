@@ -16,10 +16,8 @@ No LLM or Dagster imports.
 
 from __future__ import annotations
 
-from functools import cache
 from pathlib import Path
 
-from astra_lexicon import Replacer, load_corrections
 from astra_linguist.chronicle import TRANSCRIPT_DIR, show_for_date, show_index
 from astra_ontology import faerrin_campaign_slugs, load_being
 from astra_ontology.models import Being
@@ -69,16 +67,5 @@ def transcript_path(date: str, *, transcript_dir: Path = TRANSCRIPT_DIR) -> Path
 
 
 def read_transcript(date: str, *, transcript_dir: Path = TRANSCRIPT_DIR) -> str:
-    """The full text of ``date``'s committed transcript, with today's `defs.kdl` corrections
-    applied: a transcript made before an entry existed keeps its old mistranscriptions, and
-    the agent would write them into the wiki (Ocelith for Osyluth, 2026-10-28)."""
-    text = transcript_path(date, transcript_dir=transcript_dir).read_text(encoding="utf-8")
-    # The replacer strips its result; keep the file's trailing newline.
-    fixed = _corrections()(text)
-    return fixed + "\n" if text.endswith("\n") else fixed
-
-
-@cache
-def _corrections() -> Replacer:
-    """`defs.kdl`'s corrections, compiled once: search_transcripts reads every session."""
-    return load_corrections()
+    """The full text of ``date``'s committed transcript."""
+    return transcript_path(date, transcript_dir=transcript_dir).read_text(encoding="utf-8")

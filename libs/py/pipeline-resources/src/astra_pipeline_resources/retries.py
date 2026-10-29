@@ -27,6 +27,7 @@ NO_RETRY: dict[str, str] = {
     "session_audio": "local work: ffmpeg merges the tracks",
     "session_cleanup": "local work: deletes the persisted tracks",
     "session_transcripts": "local work: formats scribe's transcript",
+    "stored_corrections": "local work: rewrites stored text with defs.kdl",
     "session_brief": (
         "a paid ~10-minute RLM must not run four times; litellm retries each call, and a "
         "failed producer still materializes with no brief"

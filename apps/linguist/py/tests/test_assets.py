@@ -262,6 +262,84 @@ def test_timeline_sensor_waits_while_a_timeline_run_is_in_flight(
     assert result.cursor is None  # not consumed: the next tick looks again
 
 
+# ── stored_corrections: stored text rewritten once per defs.kdl ──
+
+
+def _stale_store(root: Path) -> dict[str, Path]:
+    """One file per kind, each still spelling Osyluth as before 2026-10-28."""
+    files = {
+        "transcript": root / "linguist" / "transcripts" / "000.show.2025-1-6.txt",
+        "chronicle": root / "linguist" / "timeline" / "episodes" / "2025-1-6.json",
+        "script": root / "mouthpiece" / "episodes" / "000.show.2025-1-6" / "script.json",
+    }
+    for path in files.values():
+        path.parent.mkdir(parents=True, exist_ok=True)
+    files["transcript"].write_text("000001\tGM: Ocelith says no.\n", encoding="utf-8")
+    for key in ("chronicle", "script"):
+        files[key].write_text(
+            json.dumps({"text": "Ask Oceloth."}, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+    return files
+
+
+def test_stored_corrections_rewrites_every_kind_of_stored_text(tmp_path: Path) -> None:
+    files = _stale_store(tmp_path)
+    instance = dg.DagsterInstance.ephemeral()
+    result = dg.materialize(
+        [assets.stored_corrections],
+        resources={"pipeline_paths": paths_under(tmp_path)},
+        instance=instance,
+    )
+    assert result.success
+    assert files["transcript"].read_text(encoding="utf-8") == "000001\tGM: Osyluth says no.\n"
+    for key in ("chronicle", "script"):
+        assert json.loads(files[key].read_text(encoding="utf-8")) == {"text": "Ask Osyluth."}
+    meta = result.asset_materializations_for_node("stored_corrections")[0].metadata
+    assert meta["changed"].value == {
+        "transcripts": 1,
+        "context_scripts": 0,
+        "data": 0,
+        "chronicle": 1,
+        "mouthpiece_script": 1,
+        "mouthpiece_brief": 0,
+        "mouthpiece_digest": 0,
+    }
+    assert meta["defs_digest"].value == assets.defs_digest()
+
+
+def _corrections_tick(instance: dg.DagsterInstance) -> dg.SensorResult:
+    result = assets.stored_corrections_sensor(dg.build_sensor_context(instance=instance))
+    assert isinstance(result, dg.SensorResult)
+    return result
+
+
+def test_corrections_sensor_runs_once_per_defs(monkeypatch: Any, tmp_path: Path) -> None:
+    instance = dg.DagsterInstance.ephemeral()
+    first = _corrections_tick(instance)
+    assert [r.run_key for r in first.run_requests or []] == [
+        f"stored_corrections:{assets.defs_digest()}"
+    ]
+    resources = {"pipeline_paths": paths_under(tmp_path)}
+    assert dg.materialize([assets.stored_corrections], resources=resources, instance=instance)
+    assert not _corrections_tick(instance).run_requests
+    # A deploy with an edited defs.kdl: one more run.
+    monkeypatch.setattr(assets, "defs_digest", lambda: "edited")
+    assert [r.run_key for r in _corrections_tick(instance).run_requests or []] == [
+        "stored_corrections:edited"
+    ]
+
+
+def test_corrections_sensor_waits_while_any_run_is_in_flight() -> None:
+    instance = _instance(DATE)
+    job = assets.defs.get_repository_def().get_job("__anonymous_asset_job_campaign_timeline_sensor")
+    instance.create_run_for_job(
+        job_def=job,
+        asset_selection=frozenset({assets.campaign_timeline.key}),
+        status=dg.DagsterRunStatus.STARTED,
+    )
+    assert not _corrections_tick(instance).run_requests
+
+
 def test_defs_bind_the_shared_resources() -> None:
     repo = assets.defs.get_repository_def()
     assert {"astra_config", "pipeline_paths", "llm"} <= set(repo.get_top_level_resources())
