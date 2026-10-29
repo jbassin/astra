@@ -926,6 +926,8 @@ entity "Osyluth" {
     alias "Ocel[aeio]th"
     alias "Oceliff"
     alias "Ocelus"
+    alias "Osliff"
+    alias "ocelot"
     source "defs"
 }
 entity "our door" {
