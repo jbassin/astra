@@ -16,9 +16,11 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
 
 from .corrections import DEFS_PATH, Replacer
+
+#: A parsed JSON value.
+type Json = str | int | float | bool | None | list[Json] | dict[str, Json]
 
 
 def defs_digest(defs_path: Path | str = DEFS_PATH) -> str:
@@ -40,7 +42,7 @@ def correct_text(fix: Replacer, text: str) -> str:
     return "".join(_fix(fix, line) for line in text.splitlines(keepends=True))
 
 
-def correct_value(fix: Replacer, value: Any) -> Any:
+def correct_value(fix: Replacer, value: Json) -> Json:
     """`value` with every string in it corrected (object keys are left alone)."""
     if isinstance(value, str):
         return _fix(fix, value)
@@ -51,7 +53,7 @@ def correct_value(fix: Replacer, value: Any) -> Any:
     return value
 
 
-def _dump(value: Any, newline: bool) -> str:
+def _dump(value: Json, newline: bool) -> str:
     return json.dumps(value, indent=2, ensure_ascii=False) + ("\n" if newline else "")
 
 
