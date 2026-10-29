@@ -7,6 +7,7 @@ dependencies = [
     "astra-akasha-backend",
     "astra-config",
     "dagster",
+    "astra-lexicon",
     "astra-linguist",
     "astra-llm",
     "astra-observe",

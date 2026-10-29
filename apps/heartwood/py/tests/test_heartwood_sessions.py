@@ -67,3 +67,12 @@ def test_missing_transcript_raises(tmp_path: Path) -> None:
     (tmp_path / "000.some-show.2025-8-28.txt").write_text("x", encoding="utf-8")
     with pytest.raises(FileNotFoundError):
         transcript_path("2025-8-2", transcript_dir=tmp_path)
+
+
+def test_read_transcript_applies_todays_corrections(tmp_path: Path) -> None:
+    # An older transcript keeps "Ocelith"; the agent reads the corrected spelling.
+    (tmp_path / "000.through-a-song-darkly.2026-10-5.txt").write_text(
+        "000001\tAnzu: Ocelith, what is up with the mist?\n", encoding="utf-8"
+    )
+    text = read_transcript("2026-10-5", transcript_dir=tmp_path)
+    assert text == "000001\tAnzu: Osyluth, what is up with the mist?\n"
