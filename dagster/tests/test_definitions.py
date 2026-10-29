@@ -24,6 +24,7 @@ ASSETS = {
     "session_transcript",
     "session_transcripts",
     "session_wiki",
+    "stored_corrections",
 }
 #: The implicit all-assets job and one anonymous job per asset sensor (the automation
 #: sensors have none).
@@ -31,6 +32,7 @@ JOBS = {
     "__ASSET_JOB",
     "__anonymous_asset_job_campaign_timeline_sensor",
     "__anonymous_asset_job_craig_drop_sensor",
+    "__anonymous_asset_job_stored_corrections_sensor",
 }
 #: None: `campaign_timeline_sensor` replaced the hourly schedule.
 SCHEDULES: set[str] = set()
@@ -41,6 +43,7 @@ SENSORS = {
     "linguist_automation",
     "mouthpiece_automation",
     "pipeline_failure_alert",
+    "stored_corrections_sensor",
 }
 #: The stage automation sensors: each one's assets, the first one carrying the stage's
 #: launch condition. They ship stopped (see test_schedules_and_sensors_start_running).

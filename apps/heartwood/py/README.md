@@ -97,9 +97,6 @@ checkout -- akasha/content akasha/snapshot heartwood/agent-runs.jsonl entity/ent
 - **The systemd user PATH has no node (nvm only), uv or just.** The runner resolves each tool
   (`preflight ok: …` in the journal) and the recipes find node under `~/.nvm`. Never call bare
   `uv` from a unit.
-- **The agent reads transcripts corrected with today's `defs.kdl`.** `read_transcript` (and so
-  `search_transcripts`) re-applies the current spelling corrections, because a transcript made
-  before an entry existed keeps its old mistranscriptions. The committed files are unchanged.
 - **One git publisher at a time.** `/ruby/data/astra-state/locks/git-publish.lock` is held by
   linguist-commit, by `heartwood-agent` from publish-sync through redeploy, and by
   `heartwood-revert`. Never take it inside `_heartwood-push-deploy` or `_astra-data-push` (in

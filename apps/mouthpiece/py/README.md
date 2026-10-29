@@ -162,10 +162,11 @@ package's private `assets._voices` and `resources.default_tts`, so keep their si
   counts the terms. An edit is live after a Dagster deploy, for episodes rendered after it.
   Write the IPA with syllable breaks (`.`): Eleven v4 misread unbroken IPA (phlogiston as
   FLAH-gee-stahn) and read the broken form right in every name tested on 2026-10-28.
-- **The script stage re-applies today's corrections.** `cleaned_turns_for` runs the current
-  `defs.kdl` corrections over the transcript text, so a transcript made before an entry was
-  added still reaches the producer and Pass A with the right spelling. Without it, Kimi read
-  Ocelith and Oceloth as two characters and invented an owl familiar.
+- **Stored text is corrected on disk, not on read.** After a `defs.kdl` change reaches
+  Dagster, linguist's `stored_corrections` rewrites every transcript, chronicle entry and
+  episode `script.json`, `brief.json` and `digest.json` with it (linguist README). mouthpiece
+  reads them as they are. Before that, Kimi read Ocelith and Oceloth (both Osyluth) as two
+  characters and invented an owl familiar.
 - **GLM reasoning tokens share `max_tokens`.** Clean and enrich use
   `DEFAULT_CLEAN_MAX_TOKENS` (64,000); the script uses `DEFAULT_SCRIPT_MAX_TOKENS`
   (128,000). OpenRouter refuses to disable reasoning for GLM 5.3. `astra_llm`'s

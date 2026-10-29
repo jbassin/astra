@@ -80,16 +80,3 @@ def test_script_brief_block_used_fallback_invalid(tmp_path) -> None:
 def test_wiki_head_without_git_is_unknown_not_an_error(tmp_path, monkeypatch) -> None:
     monkeypatch.setenv("PATH", str(tmp_path))  # no git binary anywhere on PATH
     assert wiki_head(tmp_path) == {"sha": None, "dirty": False}
-
-
-def test_script_brief_block_applies_todays_corrections(tmp_path) -> None:
-    # A brief written before a defs.kdl entry existed keeps the old spellings.
-    (tmp_path / KEY).mkdir()
-    stale = brief_dict(
-        lore=[{"name": "Oceloth", "note": "Ocelith told them about flogiston.", "page": None}]
-    )
-    (tmp_path / KEY / "brief.json").write_text(json.dumps(stale))
-    block, outcome = script_brief_block(KEY, HOSTS, root=tmp_path)
-    assert outcome == "used"
-    assert "Ocel" not in block and "flogiston" not in block
-    assert "Osyluth told them about phlogiston." in block
