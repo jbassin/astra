@@ -232,6 +232,10 @@ turn being a complete, grammatical, information-dense thought. Real talk is mess
   exact — but she still says "yeah" and "mm" and restarts a sentence now and then;
   {c.name} is quick and eager, over-asks, stacks two questions, and says "wait" and
   "like" and "okay so" while she catches up.
+- ONE NAME, ONE CHARACTER: the transcript is speech-to-text, so a name can turn up spelled
+  several ways. Treat near-identical names as the same person and use the spelling the
+  notes, wiki or roster use. Never invent a character, a species or a relationship (whose
+  familiar, which faction) that the transcript and notes don't state.
 - THEY WEREN'T AT THE TABLE: the hosts are friends recapping a game other people
   played, not players. The party is "they", the characters go by name, the players are
   "the table" — never "we" or "us" for what the party did.

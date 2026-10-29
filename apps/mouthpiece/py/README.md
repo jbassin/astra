@@ -157,9 +157,15 @@ package's private `assets._voices` and `resources.default_tts`, so keep their si
   skips turns with no speech.
 - **Pronunciations live in `defs.kdl`.** `session_audio_clips` inlines `/ipa/` for the first
   use of each name per turn, taken from the `ipa=` property of an `entry` in
-  `libs/py/lexicon/src/astra_lexicon/defs.kdl` (`entry "Faerrin" ipa="ˈfɛrɪn"`). Only the
+  `libs/py/lexicon/src/astra_lexicon/defs.kdl` (`entry "Faerrin" ipa="ˈfɛə.rɪn"`). Only the
   dialogue path (ElevenLabs) applies them; the materialization's `pronunciations` metadata
   counts the terms. An edit is live after a Dagster deploy, for episodes rendered after it.
+  Write the IPA with syllable breaks (`.`): Eleven v4 misread unbroken IPA (phlogiston as
+  FLAH-gee-stahn) and read the broken form right in every name tested on 2026-10-28.
+- **The script stage re-applies today's corrections.** `cleaned_turns_for` runs the current
+  `defs.kdl` corrections over the transcript text, so a transcript made before an entry was
+  added still reaches the producer and Pass A with the right spelling. Without it, Kimi read
+  Ocelith and Oceloth as two characters and invented an owl familiar.
 - **GLM reasoning tokens share `max_tokens`.** Clean and enrich use
   `DEFAULT_CLEAN_MAX_TOKENS` (64,000); the script uses `DEFAULT_SCRIPT_MAX_TOKENS`
   (128,000). OpenRouter refuses to disable reasoning for GLM 5.3. `astra_llm`'s

@@ -203,7 +203,7 @@ entry "Gryphon" {
 entry "Bev Sirnow" {
     variant "Bev Cerno"
 }
-entry "Raelion" ipa="ˈreɪliɑn" {
+entry "Raelion" ipa="ˈreɪ.li.ɑn" {
     variant "Raelian"
     variant "Raylian"
     variant "Raylene"
@@ -229,7 +229,7 @@ entry "Sigzil Haight" {
 entry "Second Sun Diner" {
     variant "Second Son Diner"
 }
-entry "Anzu" ipa="ˈɑnzu" {
+entry "Anzu" ipa="ˈɑn.zu" {
     variant "Anzi"
     variant "Hanzo"
     variant "Ronzo"
@@ -482,7 +482,7 @@ entry "Archmechanic's" {
     variant "Arc Mechanics'"
     variant "Archmechanics'"
 }
-entry "Calaria" ipa="kəˈlɛəriə" {
+entry "Calaria" ipa="kə.ˈlɛə.ri.ə" {
     variant "Galeria"
     variant "Caleria"
     variant "Galarian"
@@ -706,7 +706,7 @@ entry "Ternion Heavy Industries" {
 entry "MoCuP" {
     variant "MOCUP"
 }
-entry "Giannos" ipa="ˈdʒɑnoʊs" {
+entry "Giannos" ipa="ˈdʒɑ.noʊs" {
     variant "Janus"
     variant "Giannis"
 }
@@ -868,7 +868,7 @@ entry "Manus" {
 entry "Verdant" {
     variant "Vernon"
 }
-entry "Ternion" ipa="ˈtɜrniɑn" {
+entry "Ternion" ipa="ˈtɜr.ni.ɑn" {
     variant "tourney"
     variant "Ternian"
     variant "Turnian"
@@ -1028,33 +1028,37 @@ entry "Berth Four" {
     variant "Bertha\\s*Ford"
 }
 // Pronunciations given by the GM on 2026-10-28 for names mouthpiece's TTS was guessing.
-entry "Egan" ipa="ˈiɡɪn"
-entry "Galzu" ipa="ˈɡɑlzu"
-entry "Tali" ipa="ˈtæli"
-entry "Ulrich" ipa="ˈʊlrɪx"
-entry "Aurelia" ipa="aʊˈreɪliə"
-entry "Hesperid" ipa="ˈhɛspərɪd"
-entry "Faerrin" ipa="ˈfɛərɪn"
-entry "Giacomo" ipa="ˈdʒɑkəmoʊ"
-entry "Helmyster" ipa="ˈhɛlmɛstər" {
+// Syllable breaks (`.`) before stress marks: on Eleven v4 they fix names the unbroken IPA
+// got wrong (phlogiston came out FLAH-gee-stahn).
+entry "Egan" ipa="ˈi.ɡɪn"
+entry "Galzu" ipa="ˈɡɑl.zu"
+entry "Tali" ipa="ˈtæ.li"
+entry "Ulrich" ipa="ˈʊl.rɪx"
+entry "Aurelia" ipa="aʊ.ˈreɪ.li.ə"
+entry "Hesperid" ipa="ˈhɛs.pə.rɪd"
+entry "Faerrin" ipa="ˈfɛə.rɪn"
+entry "Giacomo" ipa="ˈdʒɑ.kə.moʊ"
+entry "Helmyster" ipa="ˈhɛl.mɛs.tər" {
     variant "Hell?m[ie]ster"
     variant "Helmstier"
 }
-entry "phlogiston" ipa="fləˈdʒɪstɒn" {
+entry "phlogiston" ipa="flə.ˈdʒɪs.tɒn" {
     variant "fl[oia]gist[oa]n"
     variant "phagiston"
     variant "logiston"
 }
 // Sentence-initial form: the IPA match is case-sensitive, the corrections are not.
-entry "Phlogiston" ipa="fləˈdʒɪstɒn"
-entry "Osyluth" ipa="ˈɑsɪlɪθ" {
+entry "Phlogiston" ipa="flə.ˈdʒɪs.tɒn"
+entry "Osyluth" ipa="ˈɑ.sɪ.lɪθ" {
     variant "Ocel[aeio]th"
     variant "Oceliff"
     variant "Ocelus"
+    variant "Osliff"
+    variant "ocelot"
 }
-entry "Aurthalaxus" ipa="ˈɔrθəlæksəs" {
+entry "Aurthalaxus" ipa="ˈɔr.θə.læk.səs" {
     variant "Orthalax[iu]s"
 }
-entry "Macharius" ipa="məˈkɑriəs" {
+entry "Macharius" ipa="mə.ˈkɑ.ri.əs" {
     variant "Macarius"
 }

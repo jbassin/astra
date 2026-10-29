@@ -10,6 +10,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from astra_lexicon import load_corrections
+
 from . import clean, linguist_io
 from .models import SessionDigest
 
@@ -37,7 +39,8 @@ def cleaned_turns_for(
     Stage-3 re-read guard: re-parse the canonical transcript fresh rather
     than trusting anything cached from Stage 2 — a FROM_FAILURE re-execution could have
     regenerated it, and kept_ranges are line-id ranges into a SPECIFIC file. Symmetric
-    with Stage 2: hallucination lines are dropped BEFORE the ranges apply.
+    with Stage 2: hallucination lines are dropped BEFORE the ranges apply. The current
+    `defs.kdl` corrections then run over each line's text.
     """
     tpath = (
         linguist_io.transcript_for(key)
@@ -49,7 +52,12 @@ def cleaned_turns_for(
     turns = linguist_io.parse_canonical_transcript(tpath.read_text(encoding="utf-8"))
     clean.assert_no_drift(turns, digest)
     speech, _ = clean.drop_hallucinations(turns)
-    return clean.apply_kept_ranges(speech, digest.kept_ranges)
+    kept = clean.apply_kept_ranges(speech, digest.kept_ranges)
+    # Today's spelling corrections (defs.kdl), applied again: a transcript made before an
+    # entry was added keeps the old mistranscriptions, and the script model reads two
+    # spellings of one name as two people (Ocelith and Oceloth, 2026-10-28).
+    fix = load_corrections()
+    return [(line_id, speaker, fix(text)) for line_id, speaker, text in kept]
 
 
 def brief_path(key: str, *, root: Path | None = None) -> Path:

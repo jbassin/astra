@@ -78,8 +78,6 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 ## Pipeline
 
 - Common-word entity aliases (`war`, `giant`, `herald`) can make heartwood link wrongly — Josh/agent; curate `entity.kdl`.
-- "ocelot" is left out of Osyluth's corrections because it is a real word, though the
-  transcripts' 10 uses are probably all Osyluth — Josh, if it keeps coming up.
 - Renaming Ocelith and Macarius Vesper (2026-10-28) broke their old akasha URLs, which now 404;
   akasha has no redirects — agent, only if someone hits them.
 
