@@ -16,7 +16,8 @@ Updated 2026-10-29.
   script were generated into a scratch data root, checked (no Ocel*, no owl, one Osyluth, Othello
   matches the wiki), then rendered: "No, Actually, Six", 55,263 dialogue characters, 55 MB. The
   previous version is in `mouthpiece/experiments/backup-2026-10-19-pre-osyluth-fix/`.
-  2026-10-12 ("No Visitors") was left alone on Josh's instruction and still has the error.
+  2026-10-12 ("No Visitors") was left alone on Josh's instruction; checked afterwards, its script
+  and transcript page never mention Osyluth, so it has no such error to fix.
 - **Nothing else is being built.** The tech-debt paydown 0037 is closed (status line 2026-10-26 in section
   0.1 of [`thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`](../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md)),
   and the agent backlog it fed was cleared the same day.

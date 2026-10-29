@@ -42,9 +42,10 @@ Pointer: [`apps/assay/py/README.md`](../apps/assay/py/README.md).
 
 ### mouthpiece: episode shape (opened 2026-09-08, Josh)
 Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
-- [ ] 2026-10-12 ("No Visitors") still names Osyluth twice (Oceloth, an invented owl familiar,
-      and Ocelith). 2026-10-19 was fixed 2026-10-29; Josh said to leave 2026-10-12 for now. The
-      fix is the same: fresh brief and script into a scratch data root, check, then audio.
+- [ ] Older episodes' audio keeps old spellings their site text no longer has:
+      `stored_corrections` corrected the scripts behind the episode list (22 episodes, for
+      example the 2026-10-12 recap special says "Oceloth" twice in its audio), but nothing
+      re-renders audio. Re-rendering is paid and replaces published episodes — Josh.
 - [ ] Listen to the two spoken-style re-renders of 2026-10-28: 2026-10-12 ("No Visitors", 41 min)
       and 2026-10-19 (re-rendered again 2026-10-29 as "No, Actually, Six", 55 MB). The pre-render
       versions are in `mouthpiece/experiments/backup-2026-{10-12,10-19}-pre-spoken/`.
