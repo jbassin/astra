@@ -42,6 +42,10 @@ Pointer: [`apps/assay/py/README.md`](../apps/assay/py/README.md).
 
 ### mouthpiece: episode shape (opened 2026-09-08, Josh)
 Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
+- [ ] Fix the Osyluth error in the published 2026-10-12 and 2026-10-19 episodes (see `now.md`
+      "Handoff"): fresh brief and script into scratch, check, Josh's yes, then audio.
+- [ ] Decide whether to correct the stored old transcripts, chronicle entries and scripts once
+      with today's `defs.kdl` (replaces published transcripts) — Josh.
 - [ ] Listen to the two spoken-style re-renders of 2026-10-28: 2026-10-12 ("No Visitors", 41 min)
       and 2026-10-19 ("Six Spigots and the Sky That Does Nothing", 37.5 min). The pre-render
       versions are in `mouthpiece/experiments/backup-2026-{10-12,10-19}-pre-spoken/`.
