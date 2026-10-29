@@ -324,6 +324,7 @@ entry "Argyle" {
 entry "Benny" {
     variant "Bennett"
     variant "Banny"
+    variant "(?-i:Penny)"
 }
 entry "Aut" {
     variant "Ott"
@@ -1033,9 +1034,13 @@ entry "Berth Four" {
 entry "Egan" ipa="ˈi.ɡɪn"
 entry "Galzu" ipa="ˈɡɑl.zu"
 entry "Tali" ipa="ˈtæ.li"
-entry "Ulrich" ipa="ˈʊl.rɪx"
+entry "Ulrich" ipa="ˈʊl.rɪx" {
+    variant "Ulric"
+}
 entry "Aurelia" ipa="aʊ.ˈreɪ.li.ə"
-entry "Hesperid" ipa="ˈhɛs.pə.rɪd"
+entry "Hesperid" ipa="ˈhɛs.pə.rɪd" {
+    variant "Hesper(?:ide|d|ad|vid|in)"
+}
 entry "Faerrin" ipa="ˈfɛə.rɪn"
 entry "Giacomo" ipa="ˈdʒɑ.kə.moʊ"
 entry "Helmyster" ipa="ˈhɛl.mɛs.tər" {
@@ -1046,6 +1051,8 @@ entry "phlogiston" ipa="flə.ˈdʒɪs.tɒn" {
     variant "fl[oia]gist[oa]n"
     variant "phagiston"
     variant "logiston"
+    variant "phlogistine"
+    variant "phlegist"
 }
 // Sentence-initial form: the IPA match is case-sensitive, the corrections are not.
 entry "Phlogiston" ipa="flə.ˈdʒɪs.tɒn"
