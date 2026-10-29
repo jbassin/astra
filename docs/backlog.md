@@ -42,12 +42,11 @@ Pointer: [`apps/assay/py/README.md`](../apps/assay/py/README.md).
 
 ### mouthpiece: episode shape (opened 2026-09-08, Josh)
 Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
-- [ ] Fix the Osyluth error in the published 2026-10-12 and 2026-10-19 episodes (see `now.md`
-      "Handoff"): fresh brief and script into scratch, check, Josh's yes, then audio.
-- [ ] Decide whether to correct the stored old transcripts, chronicle entries and scripts once
-      with today's `defs.kdl` (replaces published transcripts) — Josh.
+- [ ] 2026-10-12 ("No Visitors") still names Osyluth twice (Oceloth, an invented owl familiar,
+      and Ocelith). 2026-10-19 was fixed 2026-10-29; Josh said to leave 2026-10-12 for now. The
+      fix is the same: fresh brief and script into a scratch data root, check, then audio.
 - [ ] Listen to the two spoken-style re-renders of 2026-10-28: 2026-10-12 ("No Visitors", 41 min)
-      and 2026-10-19 ("Six Spigots and the Sky That Does Nothing", 37.5 min). The pre-render
+      and 2026-10-19 (re-rendered again 2026-10-29 as "No, Actually, Six", 55 MB). The pre-render
       versions are in `mouthpiece/experiments/backup-2026-{10-12,10-19}-pre-spoken/`.
 - [ ] Decide whether to trim the 5,500-6,500-word target: Kimi lands at or over the top
       (6,549 words in the last test; 2026-10-12 rendered at 41 min).

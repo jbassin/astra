@@ -4,30 +4,19 @@ Updated 2026-10-29.
 
 ## In flight
 
-- **Handoff: Osyluth fix and two re-renders, stopped mid-way (2026-10-29).** Read this first.
-  - **Do not deploy Dagster from `main` before Thursday's session.** Live Dagster runs
-    `ded6125e`. `main` adds #144 (corrects the brief text before Pass A, fast, fine) and #145
-    (the producer corrects every earlier transcript, chronicle entry and script on read). #145 is
-    far too slow: correcting one transcript takes ~15 s, and the producer reads and searches
-    dozens, so a brief run crawled for 25+ min and was killed. Revert #145 (or make it fast)
-    before any Dagster deploy.
-  - **Published episodes still have the Osyluth error.** 2026-10-19 ("The Least Cheerful Live
-    Wire") and probably 2026-10-12 ("No Visitors") call Osyluth two characters (Oceloth, an
-    invented "owl familiar", and Ocelith). Cause: their producer briefs (`brief.json`, written
-    before the spelling fixes) say so, and the re-render reused them. Backups of earlier versions:
-    `/ruby/data/astra-state/mouthpiece/experiments/backup-2026-10-12-pre-spoken/`,
-    `backup-2026-10-19-pre-spoken/` and `backup-2026-10-19-six-spigots/` (all have the error too).
-  - **To fix an episode:** regenerate the brief and script into a scratch folder (not the live
-    episode), check them for Ocel*/"owl"/a second Osyluth, show Josh, and render audio only after
-    his yes (memory `check-script-before-audio`). The full live path is `--select
-    session_brief,session_script,session_audio_clips,session_episode`, never without
-    `session_brief` when its inputs changed.
-  - **Open decision (Josh):** correct the stored old transcripts, chronicle entries and episode
-    scripts once with today's `defs.kdl` and commit them, instead of correcting on every read.
-    That replaces published transcripts.
-  - **Local leftovers:** worktree `.claude/worktrees/producer-cache` (branch
-    `perf/producer-cached-corrections`, unpushed: per-run caching, not enough on its own; don't
-    merge as is) and `.claude/worktrees/names-fix` (merged branches only).
+- **Stored text is now corrected on disk (live 2026-10-29, #147, Dagster `bee13eaf`).**
+  linguist's `stored_corrections` rewrites every stored transcript, chronicle entry and
+  mouthpiece script, brief and digest whenever `defs.kdl` changes; no reader corrects text any
+  more (#145's slow producer path is gone). The first run took 1 h 55 min and changed 26
+  transcripts, 32 chronicle entries, 32 data files and 22 scripts; linguist-commit published
+  them (astra-data `5c11867`). It skipped one file whose JSON format differs: the 2026-10-19
+  recap special's `digest.json`. Backups of the mouthpiece files and context scripts from
+  before the run: `mouthpiece/experiments/backup-2026-10-29-pre-stored-corrections/`.
+- **2026-10-19 re-rendered without the Osyluth error (2026-10-29).** A fresh brief ($0.23) and
+  script were generated into a scratch data root, checked (no Ocel*, no owl, one Osyluth, Othello
+  matches the wiki), then rendered: "No, Actually, Six", 55,263 dialogue characters, 55 MB. The
+  previous version is in `mouthpiece/experiments/backup-2026-10-19-pre-osyluth-fix/`.
+  2026-10-12 ("No Visitors") was left alone on Josh's instruction and still has the error.
 - **Nothing else is being built.** The tech-debt paydown 0037 is closed (status line 2026-10-26 in section
   0.1 of [`thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`](../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md)),
   and the agent backlog it fed was cleared the same day.
@@ -42,7 +31,7 @@ Updated 2026-10-29.
 
 ## Next action
 
-First resolve #145 (above) without deploying `main` as is. Then: Thursday 2026-10-29's session is the live check of stage automation and resumable stages: follow
+Thursday 2026-10-29's session is the live check of stage automation and resumable stages: follow
 "Thursday 2026-10-29 session" under "Waiting on an event" in the [backlog](backlog.md). The merged
 pipeline fixes (#132, #133) were deployed 2026-10-26 so Thursday's cost reading uses the corrected
 GLM 5.3 price; craig_drop_sensor now skips 2026-9-26's second recording by name, as expected.

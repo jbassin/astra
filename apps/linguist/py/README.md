@@ -42,8 +42,9 @@ mouthpiece waits for a session's `session_episode_summary` to be materialized be
   `defs_digest`) and launches `stored_corrections` once. That rewrites every transcript,
   context script, `data/*.json`, chronicle entry and mouthpiece `script.json`, `brief.json` and
   `digest.json` in place, and linguist-commit publishes the astra-data part. No reader
-  corrects text itself. The run takes several minutes (the replacer costs ~10 s per
-  transcript) and waits for any other run to finish. Its metadata lists the files changed per
+  corrects text itself. The run is slow: the first took 1 h 55 min in the Dagster container
+  (the replacer costs ~10 s per 150 KB transcript). The sensor waits for other runs to finish
+  before it starts one. Its metadata lists the files changed per
   group and any JSON skipped for an unexpected format.
 
 ## Traps
