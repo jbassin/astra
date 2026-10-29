@@ -17,11 +17,13 @@ from __future__ import annotations
 
 import json
 from collections.abc import Callable
+from functools import cache
 from pathlib import Path
 from typing import Any
 
 from astra_akasha_backend.corpus import CONTENT_DIR, Page, load_corpus
 from astra_akasha_backend.crossref import resolve_corpus
+from astra_lexicon import Replacer, load_corrections
 from astra_linguist.chronicle import (
     EPISODES_DIR,
     SEASONS_PATH,
@@ -41,6 +43,20 @@ from astra_sessions.tools import MAX_RESULTS, SessionToolsMixin
 
 from ..episodes_index import is_recap, parse_id
 from ..models import stored_kind
+
+
+@cache
+def _corrections() -> Replacer:
+    """Today's `defs.kdl` corrections, compiled once. Earlier transcripts, chronicle entries
+    and scripts keep the spellings of their day (Osyluth as Oceloth and Ocelith until
+    2026-10-28), so every read of them goes through these."""
+    return load_corrections()
+
+
+def _fix(text: str) -> str:
+    """`text` with today's corrections; the replacer strips, so a trailing newline is kept."""
+    fixed = _corrections()(text)
+    return fixed + "\n" if text.endswith("\n") else fixed
 
 
 def permitted_dates(
@@ -146,7 +162,7 @@ class ProducerTools(SessionToolsMixin):
         path = find_transcript(date, self.transcript_dir)
         if path is None:
             raise ValueError(f"no transcript for {date!r}")
-        return path.read_text(encoding="utf-8")
+        return _fix(path.read_text(encoding="utf-8"))
 
     def _script_turns(self, date: str) -> list[tuple[str, str]]:
         raw = json.loads(self.scripts[date].read_text(encoding="utf-8"))
@@ -154,7 +170,7 @@ class ProducerTools(SessionToolsMixin):
         turns = []
         for turn in raw.get("turns") or []:
             letter = str(turn.get("speaker", "")).upper()
-            turns.append((names.get(letter, letter), str(turn.get("text", ""))))
+            turns.append((names.get(letter, letter), _fix(str(turn.get("text", "")))))
         return turns
 
     # ── wiki ──
@@ -201,8 +217,8 @@ class ProducerTools(SessionToolsMixin):
             out.append(
                 {
                     "date": d,
-                    "title": entry.summary.title if entry else "",
-                    "synopsis": entry.summary.synopsis if entry else "",
+                    "title": _fix(entry.summary.title) if entry else "",
+                    "synopsis": _fix(entry.summary.synopsis) if entry else "",
                     "has_transcript": True,
                     "has_script": d in self.scripts,
                 }
@@ -222,14 +238,14 @@ class ProducerTools(SessionToolsMixin):
         season = season_for(date, self.show, seasons_path=self.seasons_path)
         return {
             "date": date,
-            "title": s.title,
-            "synopsis": s.synopsis,
-            "key_beats": list(s.key_beats),
-            "cliffhanger": s.cliffhanger,
-            "characters_present": list(s.characters_present),
-            "locations": list(s.locations),
-            "factions": list(s.factions),
-            "items": list(s.items),
+            "title": _fix(s.title),
+            "synopsis": _fix(s.synopsis),
+            "key_beats": [_fix(b) for b in s.key_beats],
+            "cliffhanger": _fix(s.cliffhanger),
+            "characters_present": [_fix(c) for c in s.characters_present],
+            "locations": [_fix(x) for x in s.locations],
+            "factions": [_fix(x) for x in s.factions],
+            "items": [_fix(x) for x in s.items],
             "season": season.title if season else "",
         }
 
