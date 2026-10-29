@@ -221,6 +221,7 @@ entity "Bennix's" {
 entity "Benny" kind="person" being="mike" {
     alias "Bennett"
     alias "Banny"
+    alias "(?-i:Penny)"
     source "defs"
     source "being"
 }
@@ -577,6 +578,7 @@ entity "Herald" {
     source "defs"
 }
 entity "Hesperid" {
+    alias "Hesper(?:ide|d|ad|vid|in)"
     source "defs"
 }
 entity "Hey, Aut" {
@@ -983,6 +985,8 @@ entity "phlogiston" {
     alias "fl[oia]gist[oa]n"
     alias "phagiston"
     alias "logiston"
+    alias "phlogistine"
+    alias "phlegist"
     source "defs"
 }
 entity "Pluckwort" kind="person" being="jorge" {
@@ -1343,6 +1347,7 @@ entity "Ugathal" {
     source "defs"
 }
 entity "Ulrich" {
+    alias "Ulric"
     source "defs"
 }
 entity "Vaino" {
