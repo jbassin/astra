@@ -61,3 +61,23 @@ def test_load_corrections_over_real_defs() -> None:
     """The shipped defs.kdl loads and corrects a known real garble (Anak → Anouk)."""
     replace = load_corrections()
     assert replace("Anak") == "Anouk"
+
+
+def test_the_shipped_corrections_leave_correct_text_alone() -> None:
+    # stored_corrections re-applies them to stored text; a canonical holding one of its
+    # variants grew on every pass (https://btl.iridi.cc -> https://https://btl.iridi.cc.iridi.cc).
+    fix = load_corrections()
+    defs = load_defs()
+    assert [k for k in defs if fix(k) != k] == []
+    text = "Open https://btl.iridi.cc, ask the Children of the Heir and Osyluth at Gas-n-Go℠ now"
+    assert fix(text) == text
+
+
+def test_a_case_only_entry_still_fixes_case() -> None:
+    fix = build_replacer({"Fane": ["fane", "vein"]})
+    assert fix("the fane and the vein, the Fane") == "the Fane and the Fane, the Fane"
+
+
+def test_a_variant_with_its_own_group_maps_to_its_canonical() -> None:
+    fix = build_replacer({"Anouk": ["Anak"], "Osyluth": ["Oce(lot|loth|lith)"]})
+    assert fix("Ocelith met Anak") == "Osyluth met Anouk"
