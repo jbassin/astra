@@ -72,14 +72,37 @@ def load_pronunciations(defs_path: Path | str = DEFS_PATH) -> dict[str, str]:
     return {e.canonical: e.ipa.strip() for e in _entries(defs_path) if e.ipa and e.ipa.strip()}
 
 
+def _literal(canonical: str) -> str:
+    """`canonical` as a pattern that matches it exactly, case included, with a word boundary
+    on each edge that is a word character (`Gas-n-Go℠` ends on a symbol, where `\\b` never
+    matches)."""
+    head = r"\b" if re.match(r"\w", canonical) else ""
+    tail = r"\b" if re.search(r"\w$", canonical) else ""
+    # Case-sensitive: an entry may exist only to fix case (`fane` -> `Fane`).
+    return f"(?-i:{head}{escape_regex(canonical)}{tail})"
+
+
 def build_replacer(defs: dict[str, list[str]]) -> Replacer:
-    """Compile a defs mapping into the trim+replace function."""
+    """Compile a defs mapping into the trim+replace function.
+
+    Each canonical, in its exact case, comes first in the alternation and matches as itself,
+    so text that is already correct is left as it is and a second pass changes nothing.
+    Without that, a canonical that contains one of its variants grows on every pass
+    (`https://btl.iridi.cc` holds `BTL`, `Children of the Heir` holds `Children of the`), and
+    `stored_corrections` re-applies the corrections to stored text each time `defs.kdl`
+    changes."""
     patterns: list[str] = []
-    mapping: list[str] = []
+    #: Group name -> replacement; None keeps the matched text (an already-correct canonical).
+    mapping: dict[str, str | None] = {}
+    for key in defs:
+        name = f"s{len(mapping)}"
+        patterns.append(rf"(?P<{name}>{_literal(key)})")
+        mapping[name] = None
     for key, values in defs.items():
         for val in values:
-            patterns.append(rf"(?P<s{len(mapping)}>\b{val}\b)")
-            mapping.append(key)
+            name = f"s{len(mapping)}"
+            patterns.append(rf"(?P<{name}>\b{val}\b)")
+            mapping[name] = key
 
     if not patterns:
         return lambda text: text.strip()
@@ -87,10 +110,9 @@ def build_replacer(defs: dict[str, list[str]]) -> Replacer:
     pattern = re.compile("|".join(patterns), re.IGNORECASE)
 
     def replace(match: re.Match[str]) -> str:
-        for i, group in enumerate(match.groups()):
-            if group is not None:
-                return mapping[i]
-        return match.group(0)
+        # The named group closes after any group inside a variant, so it is the last one.
+        replacement = mapping.get(match.lastgroup or "")
+        return match.group(0) if replacement is None else replacement
 
     return lambda text: pattern.sub(replace, text).strip()
 
