@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 from astra_lexicon import (
     build_replacer,
     escape_regex,
@@ -81,3 +82,37 @@ def test_a_case_only_entry_still_fixes_case() -> None:
 def test_a_variant_with_its_own_group_maps_to_its_canonical() -> None:
     fix = build_replacer({"Anouk": ["Anak"], "Osyluth": ["Oce(lot|loth|lith)"]})
     assert fix("Ocelith met Anak") == "Osyluth met Anouk"
+
+
+def test_every_fragment_head_shape_dispatches_in_both_cases() -> None:
+    # The pattern buckets by first character; these are the heads defs.kdl uses.
+    fix = build_replacer(
+        {
+            "Immix": ["[IE]mix"],
+            "Penny": ["(?-i:Penny)", "Pennie"],
+            "12 Wins": [r"12\s*wins?"],
+            "USD": [r"\$"],
+            "Prime Marudine": [r"Prime\s*Marodine"],
+        }
+    )
+    assert fix("EMIX imix Imix") == "Immix Immix Immix"
+    assert fix("penny Penny PENNIE") == "penny Penny Penny"
+    assert fix("12wins, 12 win") == "12 Wins, 12 Wins"
+    assert fix("ids 5$5 and $") == "ids 5USD5 and $"  # \b\$\b, as before: needs word chars
+    assert fix("PRIME  MARODINE, PrimeMarodine") == "Prime Marudine, Prime Marudine"
+
+
+def test_the_first_defined_entry_wins_whatever_the_case() -> None:
+    fix = build_replacer({"Alpha": [r"foo\s*bar"], "Beta": ["foo"]})
+    assert fix("foo bar, Foo Bar, FOO, foo") == "Alpha, Alpha, Beta, Beta"
+
+
+def test_a_canonical_starting_on_a_symbol_still_matches_itself() -> None:
+    fix = build_replacer({"$5": ["five bucks"], "Anouk": ["Anak"]})
+    assert fix("$5 for Anak, five bucks") == "$5 for Anouk, $5"
+
+
+@pytest.mark.parametrize("fragment", ["(?:O|A)nak", "a?nak", "foo|bar", ".nak", "\\dnak"])
+def test_a_fragment_whose_first_character_cannot_be_read_is_rejected(fragment: str) -> None:
+    with pytest.raises(ValueError, match="Anouk"):
+        build_replacer({"Anouk": [fragment]})
