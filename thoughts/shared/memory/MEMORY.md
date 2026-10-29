@@ -8,6 +8,7 @@ Start with `docs/now.md` and `docs/backlog.md`; app facts are in each app's READ
 - [No silent scope cuts](no-silent-scope-cuts.md) — read when work outgrows your budget: surface the trade-off, never cut quietly.
 - [Verify before acting](verify-before-acting.md) — read before writing new logic or trusting odd output: find prior art, check twice.
 - [Live infra authorized](live-infra-changes-authorized.md) — read before a live step: routine deploys and units need a one-line note, not a yes.
+- [Check script before audio](check-script-before-audio.md) — read before testing script changes: generate the script alone, check it, get a yes, then render.
 - [Flag paid/live actions](flag-paid-live-actions.md) — read before spending money or replacing published content: flag it first.
 - [Deploy with just](deploy-apply-with-just.md) — read after changing deploy, edge or app code: commit, push, `just deploy`, verify.
 - [Config single source](config-single-source.md) — read when touching any config value: config.kdl plus the schemas that read it.

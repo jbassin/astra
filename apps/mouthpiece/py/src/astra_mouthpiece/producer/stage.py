@@ -16,6 +16,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any, Literal
 
+from astra_lexicon import load_corrections
 from astra_sessions import atomic_write_text
 
 from ..inputs import brief_path, episodes_root, read_brief
@@ -71,7 +72,9 @@ def produce_brief(
 def script_brief_block(
     key: str, hosts: HostConfig, *, root: Path | None = None
 ) -> tuple[str, BriefOutcome]:
-    """The Pass A brief block for ``key`` and how it was obtained."""
+    """The Pass A brief block for ``key`` and how it was obtained. Today's `defs.kdl`
+    corrections run over it, since a brief written before an entry existed keeps the old
+    spellings (it named Osyluth twice, as Oceloth and Ocelith, on 2026-10-28)."""
     try:
         brief = read_brief(key, root=root)
     except Exception as exc:  # noqa: BLE001 -- an unreadable brief falls back, logged
@@ -80,4 +83,4 @@ def script_brief_block(
     if brief is None:
         return "", "fallback"
     newcomer = hosts.c.name if hosts.c is not None else "The newcomer"
-    return render_brief(brief, newcomer=newcomer), "used"
+    return load_corrections()(render_brief(brief, newcomer=newcomer)), "used"
