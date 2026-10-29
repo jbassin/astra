@@ -231,3 +231,27 @@ def test_no_tool_writes_anything(tree, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.undo()
     assert _tree_hash(tree["root"]) == before
     assert len(t.tools()) == 11
+
+
+def test_earlier_sessions_read_with_todays_corrections(tree: dict[str, Any]) -> None:
+    # Older transcripts, chronicle entries and scripts keep their day's spellings.
+    root = tree["root"]
+    (tree["transcript_dir"] / "000.show-a.2026-1-1.txt").write_text(
+        "000001\tGamemaster: Ocelith says no.\n000002\tAda: Ask Oceloth.\n", encoding="utf-8"
+    )
+    entry = _entry("2026-1-1", "show-a", "Oceloth Speaks")
+    entry["summary"]["synopsis"] = "They ask Ocelith about flogiston."
+    (tree["episodes_dir"] / "2026-1-1.json").write_text(json.dumps(entry), encoding="utf-8")
+    (root / "episodes" / "2026-1-1" / "script.json").write_text(
+        json.dumps(_script("session_id", "000.show-a.2026-1-1", "lower", "Oceloth is an owl")),
+        encoding="utf-8",
+    )
+    t = make(tree)
+    assert t.read_transcript("2026-1-1") == (
+        "000001\tGamemaster: Osyluth says no.\n000002\tAda: Ask Osyluth.\n"
+    )
+    ep = t.read_episode("2026-1-1")
+    assert ep["title"] == "Osyluth Speaks"
+    assert ep["synopsis"] == "They ask Osyluth about phlogiston."
+    assert "Osyluth is an owl" in t.read_script("2026-1-1")
+    assert [e["title"] for e in t.list_episodes() if e["date"] == "2026-1-1"] == ["Osyluth Speaks"]
