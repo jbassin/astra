@@ -13,6 +13,16 @@
 //   title  the podcast episode title the mouthpiece catalog publishes.
 // An unknown property, a malformed key or a repeated key fails the load. The file is baked
 // into the Dagster image: an edit is live after `just deploy dagster-code dagster-daemon`.
+// akasha's build reads it too (a skipped session's transcript page stays in Script/Unsorted),
+// so a skip reaches akasha after `just deploy akasha-frontend`.
+
+session "2025-6-30" skip=#true {
+    note "Jorge's Starfinder game, not the Astra. Skipped with 2025-7-7 so it can never match a campaign; that session matched Deep Eyes only because \"Lev\" appears 14 times."
+}
+
+session "2025-7-7" skip=#true {
+    note "Jorge's Starfinder game, not the Astra. It matched Deep Eyes only because \"Lev\" appears 14 times."
+}
 
 session "2025-8-11" skip=#true {
     note "The Blue Remains, a different campaign with the same players. It matched Through a Song, Darkly only because \"Argyle\" appears 96 times."
