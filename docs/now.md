@@ -14,7 +14,7 @@ Updated 2026-10-29.
   before the run: `mouthpiece/experiments/backup-2026-10-29-pre-stored-corrections/`.
   The two hours were the replacer's flat 800-group alternation; #150 (2026-10-29) dispatches
   on the first character instead, 0.4 s per transcript with identical output, so the next run
-  should take about a minute. It reaches Dagster on the next `just deploy`.
+  should take about a minute. It is live in Dagster (`040de791`, deployed 2026-10-29).
 - **2026-10-19 re-rendered without the Osyluth error (2026-10-29).** A fresh brief ($0.23) and
   script were generated into a scratch data root, checked (no Ocel*, no owl, one Osyluth, Othello
   matches the wiki), then rendered: "No, Actually, Six", 55,263 dialogue characters, 55 MB. The
