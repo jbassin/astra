@@ -1,8 +1,10 @@
+import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { astraContentRoot } from "@astra/content-build";
-import { defaultBeingFile, loadBeing } from "@astra/ontology";
+import { defaultBeingFile, loadBeing, loadSessionOverrides, skippedKeys } from "@astra/ontology";
 import { describe, expect, it } from "vitest";
 
 import { loadTranscripts, type ScriptLine } from "./transcript";
@@ -59,6 +61,35 @@ describe("buildTranscripts", () => {
       const total = meta?.speakers.reduce((n, s) => n + s.lines, 0);
       expect(total).toBe(t.script.length);
     }
+  });
+});
+
+describe("sessions.kdl skips", () => {
+  // A session that clearly matches Through a Song, Darkly ("Argyle" on 20 lines).
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "akasha-skip-"));
+  const script = Array.from({ length: 20 }, (_, i) => ({
+    ...line("Josh", i),
+    text: "Argyle draws his blade.",
+  }));
+  fs.writeFileSync(
+    path.join(dir, "2025-8-11.json"),
+    JSON.stringify({ date: "2025-8-11", audio: "/audio/2025-8-11.mp3", script }),
+  );
+  const being = loadBeing(defaultBeingFile());
+
+  it("files a matching session under its campaign", () => {
+    const built = buildTranscripts(dir, [], being);
+    expect(built.docs.map((d) => d.slug)).toEqual(["Script/Through-a-Song,-Darkly/2025-8-11"]);
+  });
+
+  it("leaves a skipped session in Script/Unsorted, billed by player name", () => {
+    const built = buildTranscripts(dir, [], being, new Set(["2025-8-11"]));
+    expect(built.docs.map((d) => d.slug)).toEqual(["Script/Unsorted/2025-8-11"]);
+    expect(built.meta["Script/Unsorted/2025-8-11"]?.speakers[0]?.char).toBe("Josh");
+  });
+
+  it("reads the checkout's sessions.kdl skips, which include The Blue Remains", () => {
+    expect(skippedKeys(loadSessionOverrides()).has("2025-8-11")).toBe(true);
   });
 });
 

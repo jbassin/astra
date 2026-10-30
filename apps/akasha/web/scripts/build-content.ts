@@ -28,7 +28,7 @@ import {
   emitModule,
 } from "@astra/content-build";
 import type { CrossRefResolver } from "@astra/gothic";
-import { type Being, defaultBeingFile, loadBeing } from "@astra/ontology";
+import { type Being, defaultBeingFile, loadBeing, loadSkippedSessions } from "@astra/ontology";
 import { loadSiteConfig } from "@astra/site-kit";
 
 import { buildResolvers } from "../src/domain/lib/crossref";
@@ -466,8 +466,8 @@ const siteSource = defineContentSource({
     const wiki = buildSite(snapshot);
     const being = loadBeing(BEING);
     // Reconstitute transcript pages from linguist's sessions and merge them into the same
-    // graph as the snapshot pages — routing/edges/backlinks/Explorer/contentIndex all follow.
-    const transcripts = buildTranscripts(DATA_DIR, wiki.docs, being);
+    // graph as the snapshot pages (sessions.kdl skips stay Unsorted) — routing etc. follow.
+    const transcripts = buildTranscripts(DATA_DIR, wiki.docs, being, loadSkippedSessions());
     const site = indexDocs([...wiki.docs, ...transcripts.docs]);
     const transcriptSlugs = new Set(transcripts.docs.map((d) => d.slug));
     // loadSiteConfig finds config.kdl by walking up from the working directory, the

@@ -2,7 +2,8 @@
  * Build-time transcript reconstitution, done here rather than in linguist. Turns
  * linguist session JSON into wiki pages: matchCampaign routes each session into
  * `Script/<campaign>/`
- * (or `Script/Unsorted/`), the markup mirrors faerrin's `remark-transcript.mjs`
+ * (or `Script/Unsorted/`; a session `sessions.kdl` marks `skip=#true` matches no campaign,
+ * as linguist's `show_for_date` treats it), the markup mirrors faerrin's `remark-transcript.mjs`
  * OUTPUT shape (`audio[data-transcript]` + `.transcript-line` rows the
  * TranscriptPlayer attaches to), and the proper-noun linker auto-links mentions of
  * wiki pages. The produced SiteDocs merge into the same site graph as the snapshot
@@ -117,10 +118,15 @@ function renderTranscript(
  * targets (wiki page titles+aliases → slug); `being` supplies the campaign roster
  * + the player slug→name map.
  */
+/**
+ * @param skipped session dates `sessions.kdl` marks `skip=#true` (`skippedKeys`): they
+ *   match no campaign, so their pages stay in `Script/Unsorted/`.
+ */
 export function buildTranscripts(
   dataDir: string,
   corpus: SiteDoc[],
   being: Being,
+  skipped: ReadonlySet<string> = new Set(),
 ): TranscriptBuild {
   const nameBySlug = new Map(being.players.map((p) => [p.slug, p.name]));
 
@@ -143,7 +149,9 @@ export function buildTranscripts(
   const meta: Record<string, TranscriptMeta> = {};
 
   for (const transcript of transcripts) {
-    const match = matchCampaign(transcript, being.campaigns, nameBySlug);
+    const match = skipped.has(transcript.date)
+      ? null
+      : matchCampaign(transcript, being.campaigns, nameBySlug);
     const folder = match ? match.campaign.name : UNSORTED_FOLDER;
     const rel = transcriptRel(folder, transcript.date);
     const slug = slugifyFilePath(rel as FilePath);

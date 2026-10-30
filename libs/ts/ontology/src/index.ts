@@ -8,6 +8,8 @@
  * Python (`astra_ontology`) is the one `being.kdl` parser: `just ontology-gen` writes
  * `being.canonical.json` from it, and `just ontology-check` fails when the JSON is stale.
  * This package reads only that JSON and validates it with the strict `BeingSchema`.
+ * `sessions.kdl` (the per-session overrides) is the exception: `loadSessionOverrides`
+ * parses it directly, the twin of `astra_ontology.sessions`.
  */
 
 import { readFileSync } from "node:fs";
@@ -27,6 +29,17 @@ export {
   type Role,
   type WealHost,
 } from "./models";
+export {
+  defaultSessionsFile,
+  loadSessionOverrides,
+  loadSkippedSessions,
+  parseSessionOverrides,
+  type SessionOverride,
+  SessionOverrideSchema,
+  type SessionOverrides,
+  SessionOverridesSchema,
+  skippedKeys,
+} from "./sessions";
 
 /** `<repo-root>/ontology/ontology-being/being.canonical.json` (throws outside a checkout). */
 export function defaultBeingFile(): string {
