@@ -1,9 +1,16 @@
 # Now
 
-Updated 2026-10-29.
+Updated 2026-10-30.
 
 ## In flight
 
+- **akasha redesign is live (2026-10-30, #154 to #157, deployed `c5021a72`).** The stakeholders
+  asked for a complete redesign. akasha now has light and dark themes (following the system, with
+  a switch), Literata and Archivo instead of Caslon Antique, one colour per wiki section, a new
+  header and phone menu, episode-titled transcripts with a docked player, and new home, Sessions
+  and listing pages. gothic is unchanged; akasha re-themes its blocks from its own CSS. Plan and
+  design system: [`thoughts/shared/research/2026-10-29-akasha-redesign.md`](../thoughts/shared/research/2026-10-29-akasha-redesign.md).
+  Next: Josh shows it to the stakeholders; small follow-ups are in the backlog under Frontends.
 - **Stored text is now corrected on disk (live 2026-10-29, #147, Dagster `bee13eaf`).**
   linguist's `stored_corrections` rewrites every stored transcript, chronicle entry and
   mouthpiece script, brief and digest whenever `defs.kdl` changes; no reader corrects text any

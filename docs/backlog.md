@@ -117,6 +117,15 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 
 - Optional: a vellum dialogue construct so transcripts need no hand-bolded speakers; a pause or
   reduced-motion guard for strider's always-on faction tint — Josh decides.
+- akasha redesign (live 2026-10-30): show the stakeholders the new site and collect their
+  reaction — Josh.
+- akasha's transcript linker links common words to wiki pages ("Thought" goes to Bestiary
+  "Thoughts"); older than the redesign, now more visible with section-coloured underlines — agent.
+- gothic still generates `graph-palette.css` and lists akasha as its user; akasha owns its graph
+  palette since the redesign. Drop the file and its README row — agent.
+- akasha follow-ups, small: highlight the current entry in "On this page"; Pagefind shows
+  transcripts by date, not episode title; `build-content.ts` sits at the 500-line ratchet limit —
+  agent.
 
 ## Docs
 
