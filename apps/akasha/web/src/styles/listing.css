@@ -1,0 +1,254 @@
+/* Listings: folder and tag page lists, the tag index, the chronicle, and the router's error
+   and not-found pages. Slice D of the redesign restyles this file; until then the rules are
+   the pre-redesign ones on the new tokens and faces. */
+
+/* Router-wide error / not-found boundaries (see src/router.tsx). */
+.route-boundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 60vh;
+  padding: 2rem;
+  text-align: center;
+}
+
+.route-boundary button,
+.route-boundary a {
+  color: var(--ak-ink);
+  border: 1px solid currentcolor;
+  padding: 0.4rem 1rem;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+}
+
+/* Tag index: a bare <h2> wrapping a tag chip rendered oversized. Calm the heading
+   and separate the tag groups so the index is scannable. */
+h2:has(> .tag-link) {
+  margin-top: 1.4rem;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.section-li a.internal {
+  color: var(--ak-ink);
+  text-decoration: none;
+}
+.section-ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.section-li .meta {
+  color: var(--ak-muted);
+  font-size: 0.8rem;
+}
+.section-li h3 {
+  font-size: 1.05rem;
+  margin: 0.1rem 0;
+}
+.page-listing > p {
+  color: var(--ak-muted);
+  font-size: 0.85rem;
+  margin: 0.75rem 0;
+}
+
+/* ── chronicle (0019): Show → Season → Episode campaign timeline ──────────────────── */
+.chronicle-title {
+  font-family: var(--ak-sans);
+  color: var(--ak-ink);
+  margin: 0;
+}
+.chronicle-intro {
+  color: var(--ak-muted);
+  max-width: 42rem;
+  margin: 0.25rem 0 1.5rem;
+}
+.chronicle-crumb {
+  margin: 0 0 0.25rem;
+  font-size: 0.85rem;
+}
+
+/* shows index */
+.chronicle-shows {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+.chronicle-show-card {
+  display: block;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--ak-rule);
+  border-radius: 0.5rem;
+  background: color-mix(in oklab, var(--ak-ink) 4%, transparent);
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+.chronicle-show-card:hover {
+  border-color: var(--ak-ink);
+  background: color-mix(in oklab, var(--ak-ink) 8%, transparent);
+}
+.chronicle-show-name {
+  font-family: var(--ak-sans);
+  color: var(--ak-ink);
+  margin: 0.35rem 0 0.4rem;
+}
+.chronicle-show-meta {
+  color: var(--ak-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+.chronicle-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ak-muted);
+  border: 1px solid color-mix(in oklab, var(--ak-muted) 50%, transparent);
+  border-radius: 999px;
+  padding: 0.05rem 0.5rem;
+}
+
+/* season */
+.chronicle-season {
+  margin: 2rem 0;
+  border-top: 2px solid var(--ak-rule);
+  padding-top: 1rem;
+}
+.chronicle-season-title {
+  font-family: var(--ak-sans);
+  color: var(--ak-ink);
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0 0 0.4rem;
+}
+.chronicle-season-num {
+  color: var(--ak-muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.chronicle-arc {
+  color: var(--ak-muted);
+  font-style: italic;
+  max-width: 46rem;
+  margin: 0 0 1rem;
+}
+
+/* episode cards on the show page (compact: code + title + blurb → episode page) */
+.chronicle-ep-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 1rem;
+}
+.chronicle-ep-card {
+  display: block;
+  border: 1px solid var(--ak-rule);
+  border-radius: 0.5rem;
+  padding: 1rem 1.2rem;
+  background: color-mix(in oklab, var(--ak-ink) 3%, transparent);
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+.chronicle-ep-card:hover {
+  border-color: var(--ak-ink);
+  background: color-mix(in oklab, var(--ak-ink) 8%, transparent);
+}
+.chronicle-ep-card-title {
+  font-family: var(--ak-sans);
+  color: var(--ak-ink);
+  margin: 0.4rem 0 0.4rem;
+}
+.chronicle-ep-card-blurb {
+  color: var(--ak-muted);
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+/* episode detail page header */
+.chronicle-episode-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+.chronicle-code {
+  font-family: var(--ak-mono);
+  font-size: 0.78rem;
+  color: var(--ak-ink);
+  border: 1px solid color-mix(in oklab, var(--ak-ink) 45%, transparent);
+  border-radius: 0.3rem;
+  padding: 0.05rem 0.4rem;
+  white-space: nowrap;
+}
+.chronicle-episode-titles {
+  display: flex;
+  flex-direction: column;
+}
+.chronicle-date {
+  color: var(--ak-muted);
+  font-size: 0.78rem;
+}
+.chronicle-synopsis {
+  color: var(--ak-ink);
+  margin: 0.6rem 0;
+}
+.chronicle-beats {
+  color: var(--ak-muted);
+  margin: 0.5rem 0 0.75rem 1.1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.92rem;
+}
+.chronicle-tagrow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  margin: 0.3rem 0;
+  font-size: 0.82rem;
+}
+.chronicle-tagrow-label {
+  color: var(--ak-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.68rem;
+  min-width: 5.5rem;
+  flex-shrink: 0;
+}
+.chronicle-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.chronicle-tag {
+  border: 1px solid var(--ak-rule);
+  border-radius: 999px;
+  padding: 0.02rem 0.5rem;
+  color: var(--ak-ink);
+}
+.chronicle-cliffhanger {
+  margin: 0.75rem 0 0;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--ak-rule);
+  color: var(--ak-ink);
+}
+.chronicle-cliffhanger-label {
+  color: var(--ak-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.68rem;
+  margin-right: 0.4rem;
+}
+.chronicle-transcript-link {
+  margin-top: 1.5rem;
+}

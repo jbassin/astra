@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { computeOpen, folderSlugs, isPrefixOfCurrent, type TreeNode } from "./explorerState";
+import {
+  computeOpen,
+  folderSlugs,
+  isCurrentNode,
+  isPrefixOfCurrent,
+  pathToCurrent,
+  siblingWindow,
+  type TreeNode,
+  treeRootFor,
+} from "./explorerState";
 
 const tree: TreeNode[] = [
   {
@@ -50,5 +59,40 @@ describe("explorerState", () => {
     const open = computeOpen(tree, "Divinity/Anzu", saved);
     expect(open.get("Geography")).toBe(true);
     expect(open.get("Divinity")).toBe(true);
+  });
+
+  it("finds the top-level subtree that holds the page", () => {
+    expect(treeRootFor(tree, "Divinity/Fiends/Sigzil")?.slug).toBe("Divinity");
+    expect(treeRootFor(tree, "Geography/index")?.slug).toBe("Geography");
+    expect(treeRootFor(tree, "index")).toBeNull();
+    expect(treeRootFor(tree, "tags/Host")).toBeNull();
+    expect(treeRootFor(tree, "")).toBeNull();
+  });
+
+  it("marks a leaf, or a folder on its own index page, as current", () => {
+    const fiends = tree[0]?.children[0];
+    const sigzil = fiends?.children[0];
+    if (!fiends || !sigzil) throw new Error("fixture");
+    expect(isCurrentNode(fiends, "Divinity/Fiends/index")).toBe(true);
+    expect(isCurrentNode(fiends, "Divinity/Fiends/Sigzil")).toBe(false);
+    expect(isCurrentNode(sigzil, "Divinity/Fiends/Sigzil")).toBe(true);
+    expect(isCurrentNode(fiends, "")).toBe(false);
+  });
+
+  it("returns the current node with its neighbours", () => {
+    const divinity = tree[0]?.children ?? [];
+    expect(pathToCurrent(tree, "Divinity/Fiends/Sigzil").map((n) => n.slug)).toEqual([
+      "Divinity",
+      "Divinity/Fiends",
+      "Divinity/Fiends/Sigzil",
+    ]);
+    expect(siblingWindow(divinity, "Divinity/Anzu").map((n) => n.slug)).toEqual([
+      "Divinity/Fiends",
+      "Divinity/Anzu",
+    ]);
+    expect(siblingWindow(divinity, "Divinity/Fiends/Sigzil").map((n) => n.slug)).toEqual([
+      "Divinity/Fiends/Sigzil",
+    ]);
+    expect(siblingWindow(divinity, "Geography/X")).toEqual([]);
   });
 });

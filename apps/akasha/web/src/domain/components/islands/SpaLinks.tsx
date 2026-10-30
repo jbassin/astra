@@ -2,7 +2,7 @@
  * SpaLinks — routes clicks on internal `<a href>` through the router, so moving between
  * pages is a client navigation instead of a full page load. It renders nothing and
  * listens once on the document, which covers the build-rendered wiki bodies, the
- * listings, the Explorer, search results and Popover cards alike. `spaHref` decides
+ * listings, the section tree, search results and Popover cards alike. `spaHref` decides
  * which links the browser keeps (other origins, files, same-page anchors).
  */
 import { useRouter } from "@tanstack/react-router";

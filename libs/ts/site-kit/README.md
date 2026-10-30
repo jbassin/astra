@@ -84,6 +84,9 @@ scaffolded app in a scratch dir.
 
 ## Traps
 
+- **`SiteDocument`'s `<html>` and `<body>` both carry `suppressHydrationWarning`.** A pre-paint
+  script in `head` may set attributes on them before hydration (akasha's `data-theme` on
+  `<html>`). It covers only those elements' own attributes, not their children.
 - **Template files end in `.tmpl`,** so no linter, type checker, formatter or test runner reads
   them; tokens are `__name__`, `__camel__`, `__title__` and `__port__`. Only `scaffold.test.ts`
   checks them (it builds and renders a scaffolded app). Change a template like the shell file it
