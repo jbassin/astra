@@ -2,6 +2,7 @@ import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 
 import { ContentArticle } from "@/domain/components/ContentArticle";
 import { FolderListing } from "@/domain/components/FolderListing";
+import { TranscriptArticle } from "@/domain/components/TranscriptArticle";
 import { getWikiPage } from "@/domain/lib/pageDataFns";
 import { pageData } from "@/domain/lib/staleBuild";
 
@@ -29,7 +30,14 @@ export const Route = createFileRoute("/$")({
 
 function CatchAll() {
   const data = Route.useLoaderData();
-  if (data.kind === "content") return <ContentArticle view={data.view} />;
+  if (data.kind === "content") {
+    // A transcript gets its own page; a stale build without its meta falls back to the
+    // plain content page.
+    if (data.view.transcript && data.transcript) {
+      return <TranscriptArticle view={data.view} page={data.transcript} />;
+    }
+    return <ContentArticle view={data.view} />;
+  }
   if (data.kind === "folder") return <FolderListing view={data.view} />;
   return <AliasRedirect redirUrl={data.redirUrl} ogSlug={data.ogSlug} />;
 }

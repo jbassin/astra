@@ -12,7 +12,7 @@ import { getLogger } from "@astra/observe";
 import type { ChronicleEpisode, ChronicleSeason, ChronicleShow } from "@/domain/lib/chronicleTypes";
 import { SHOWS } from "@/generated/chronicle";
 import { PAGES } from "@/generated/site";
-import { TRANSCRIPT_BODIES } from "@/generated/transcripts";
+import { TRANSCRIPT_BODIES, TRANSCRIPT_META } from "@/generated/transcripts";
 
 import {
   descendantCounts,
@@ -38,6 +38,7 @@ import {
 } from "./runtimeSite";
 import { type SectionCounts, sectionCounts } from "./sections";
 import type { FullSlug } from "./slug";
+import { type TranscriptPageView, transcriptPageView } from "./transcriptMeta";
 
 /** Pages per section, for the section tree's head and the phone menu (root route loader). */
 export function sectionCountsData(): SectionCounts {
@@ -47,7 +48,14 @@ export function sectionCountsData(): SectionCounts {
 const log = getLogger("astra.akasha-frontend");
 
 type WikiPageData =
-  | { kind: "content"; slug: string; title: string; view: ContentView }
+  | {
+      kind: "content";
+      slug: string;
+      title: string;
+      view: ContentView;
+      /** Set for a transcript page (`view.transcript`): its episode, speakers and sessions. */
+      transcript?: TranscriptPageView;
+    }
   | { kind: "folder"; slug: string; title: string; view: ListingFolderView }
   | { kind: "alias"; slug: string; title: string; redirUrl: string; ogSlug: string };
 
@@ -57,8 +65,14 @@ export async function wikiPageData(path: string): Promise<WikiPageData | null> {
   if (!resolved) return null;
   if (resolved.kind === "content") {
     const view = contentView(resolved.slug);
-    // Transcript bodies are one lazy module per session, loaded only here.
-    if (view.transcript) view.bodyHtml = await transcriptBody(view.slug);
+    if (view.transcript) {
+      // Transcript bodies are one lazy module per session, loaded only here.
+      view.bodyHtml = await transcriptBody(view.slug);
+      const transcript = transcriptPageData(view.slug);
+      if (transcript) {
+        return { kind: "content", slug: view.slug, title: transcript.title, view, transcript };
+      }
+    }
     return { kind: "content", slug: view.slug, title: view.title, view };
   }
   if (resolved.kind === "folder") {
@@ -118,6 +132,21 @@ export function homePageData(): HomePageData {
     latest,
     updated: latest ? pagesUpdatedOn(PAGES, latest.date) : [],
   };
+}
+
+/**
+ * A transcript page's episode, facts, speakers and the campaign's sessions, from the build's
+ * TRANSCRIPT_META, the chronicle and the page index. Null when the build recorded no meta
+ * for the slug (a stale build); the page then renders as a plain content page.
+ */
+function transcriptPageData(slug: string): TranscriptPageView | null {
+  const meta = TRANSCRIPT_META[slug];
+  if (!meta) return null;
+  const folder = `${slug.split("/").slice(0, 2).join("/")}/`;
+  const siblings = Object.entries(TRANSCRIPT_META)
+    .filter(([s]) => s.startsWith(folder))
+    .map(([s, m]) => ({ slug: s, date: m.date }));
+  return transcriptPageView({ slug, meta, shows: SHOWS, siblings });
 }
 
 /** A transcript's body HTML, or "" when the slug has no code-split body. */

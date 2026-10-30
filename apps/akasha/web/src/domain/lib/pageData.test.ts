@@ -36,6 +36,25 @@ describe("wikiPageData", () => {
     if (page?.kind !== "content") return;
     expect(page.view.transcript).toBe(true);
     expect(page.view.bodyHtml).toContain("transcript-line");
+    // The transcript page's own data: facts, speakers and the campaign's sessions.
+    expect(page.transcript?.dateLabel).toMatch(/^[A-Z][a-z]+day \d{1,2} [A-Z][a-z]+ \d{4}$/);
+    expect(page.transcript?.durationLabel).toMatch(/min$|h$/);
+    expect(page.transcript?.speakers.length).toBeGreaterThan(0);
+    expect(page.title).toBe(page.transcript?.title);
+    const current = page.transcript?.rail.groups.flatMap((g) => g.items).filter((i) => i.current);
+    expect(current).toHaveLength(1);
+  });
+
+  it("labels a transcript the chronicle knows with its episode title", async () => {
+    // Every chronicle episode links its transcript; use the first one that has one.
+    const episode = chronicleIndexData()
+      .flatMap((s) => s.seasons.flatMap((se) => se.episodes))
+      .find((e) => e.href !== null && e.title !== e.date);
+    if (!episode?.href) return;
+    const page = await wikiPageData(decodeURI(episode.href.slice(1)));
+    if (page?.kind !== "content") throw new Error("expected a content page");
+    expect(page.transcript?.title).toBe(episode.title);
+    expect(page.transcript?.sessionLabel).toMatch(/^Session \d+, season \d+ episode \d+$/);
   });
 
   it("returns a folder listing and an alias stub", async () => {

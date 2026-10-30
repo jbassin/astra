@@ -1,0 +1,197 @@
+/* Transcript pages: the player docked to the bottom of the viewport (TranscriptArticle's
+   PlayerBar, driven by the TranscriptPlayer island). transcript.css imports this file and
+   sets `--tp-h`, the height the page keeps clear for it. */
+
+/* ── the docked player ──────────────────────────────────────────────────────────────── */
+.transcript-player {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: calc(var(--tp-h) + env(safe-area-inset-bottom, 0px));
+  padding: 0 40px env(safe-area-inset-bottom, 0px);
+  border-top: 1px solid var(--ak-rule);
+  background: var(--ak-surface);
+  color: var(--ak-muted);
+  font: 500 13px var(--ak-sans);
+}
+/* .ak-main spaces its children; the fixed player is out of the flow. */
+.ak-main > .transcript-player {
+  margin-top: 0;
+}
+.tp-controls,
+.tp-options {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+}
+.tp-options {
+  gap: 8px;
+}
+.tp-skip,
+.tp-play {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+}
+.tp-skip {
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ak-muted);
+  transition:
+    color var(--ak-ease),
+    background-color var(--ak-ease);
+}
+.tp-skip:hover {
+  background: var(--ak-sunk);
+  color: var(--ak-ink);
+}
+.tp-play {
+  border-radius: 50%;
+  background: var(--ak-ink);
+  color: var(--ak-surface);
+}
+.tp-play svg {
+  fill: currentColor;
+}
+.tp-icon-pause,
+.transcript-player.is-playing .tp-icon-play {
+  display: none;
+}
+.transcript-player.is-playing .tp-icon-pause {
+  display: block;
+}
+
+.tp-timeline {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+.tp-time {
+  flex: none;
+  min-width: 58px;
+  color: var(--ak-ink);
+  font-variant-numeric: tabular-nums;
+}
+.tp-total {
+  text-align: right;
+}
+
+.tp-scrubber {
+  --tp-pct: 0%;
+
+  flex: 1;
+  min-width: 0;
+  height: 24px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+}
+.tp-scrubber::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    var(--ak-sessions) var(--tp-pct),
+    var(--ak-rule) var(--tp-pct)
+  );
+}
+.tp-scrubber::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: var(--ak-ink);
+  box-shadow: 0 0 0 3px var(--ak-surface);
+  appearance: none;
+}
+.tp-scrubber::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--ak-rule);
+}
+.tp-scrubber::-moz-range-progress {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--ak-sessions);
+}
+.tp-scrubber::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ak-ink);
+  box-shadow: 0 0 0 3px var(--ak-surface);
+}
+
+.tp-speed,
+.tp-follow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--ak-rule);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ak-ink);
+  font: 600 13px var(--ak-sans);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--ak-ease),
+    background-color var(--ak-ease),
+    border-color var(--ak-ease);
+}
+.tp-speed {
+  min-width: 56px;
+  font-variant-numeric: tabular-nums;
+}
+.tp-speed:hover,
+.tp-follow:hover {
+  background: var(--ak-sunk);
+}
+.tp-follow[aria-pressed="true"] {
+  border-color: var(--ak-ink);
+  background: var(--ak-ink);
+  color: var(--ak-surface);
+}
+
+/* Below 760 px the player takes two rows: the timeline, then the buttons. */
+@media (max-width: 759px) {
+  .transcript-player {
+    flex-wrap: wrap;
+    align-content: center;
+    gap: 2px 8px;
+    padding: 6px 16px calc(6px + env(safe-area-inset-bottom, 0px));
+  }
+  .tp-timeline {
+    flex: 1 0 100%;
+    order: -1;
+    gap: 10px;
+  }
+  .tp-time {
+    min-width: 0;
+    font-size: 12px;
+  }
+  .tp-options {
+    margin-left: auto;
+  }
+  .tp-speed,
+  .tp-follow {
+    height: 44px;
+  }
+}

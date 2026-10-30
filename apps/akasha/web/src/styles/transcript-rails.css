@@ -1,0 +1,228 @@
+/* Transcript pages, beside the lines: "What happened" and "Speakers" (the side column)
+   and the campaign's sessions (the left rail). transcript.css imports this file. */
+
+/* ── side column: what happened, speakers ───────────────────────────────────────────── */
+.tp-aside > * + * {
+  margin-top: 26px;
+  padding-top: 26px;
+  border-top: 1px solid var(--ak-rule);
+}
+/* Long synopses are cut short; the chronicle entry below it has the whole text. */
+.tp-synopsis {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--ak-ink);
+  font: 400 16px/1.6 var(--ak-serif);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 9;
+  line-clamp: 9;
+}
+@media (max-width: 1179px) {
+  .tp-synopsis {
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
+  }
+}
+.tp-more {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--ak-ink);
+  font-weight: 600;
+  text-decoration: underline 2px;
+  text-decoration-color: var(--ak-sessions); /* it points into Sessions */
+  text-underline-offset: 4px;
+}
+
+.tp-speaker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  list-style: none;
+}
+.tp-speaker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  cursor: pointer;
+}
+.tp-speaker input {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border: 1.5px solid var(--sp, var(--ak-faint));
+  border-radius: 4px;
+  background: var(--sp, var(--ak-faint));
+  cursor: pointer;
+  appearance: none;
+}
+.tp-speaker input::after {
+  content: "";
+  width: 8px;
+  height: 4px;
+  border: solid var(--ak-surface);
+  border-width: 0 0 2px 2px;
+  transform: translate(0, -1px) rotate(-45deg);
+}
+.tp-speaker input:not(:checked) {
+  background: transparent;
+}
+.tp-speaker input:not(:checked)::after {
+  display: none;
+}
+.tp-speaker-name {
+  flex: 1;
+  min-width: 0;
+  color: var(--ak-ink);
+  font-weight: 500;
+}
+.tp-speaker input:not(:checked) ~ .tp-speaker-name {
+  color: var(--ak-muted);
+}
+.tp-speaker-player,
+.tp-speaker-lines {
+  color: var(--ak-faint);
+  font-size: 13px;
+}
+.tp-speaker-lines {
+  min-width: 44px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.tp-names {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  color: var(--ak-muted);
+  font-size: 13px;
+  cursor: pointer;
+}
+.tp-names-switch {
+  position: relative;
+  flex: none;
+  width: 30px;
+  height: 18px;
+  margin: 0;
+  border-radius: 9px;
+  background: var(--ak-faint);
+  cursor: pointer;
+  appearance: none;
+  transition: background-color var(--ak-ease);
+}
+.tp-names-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ak-surface);
+  transition: transform var(--ak-ease);
+}
+.tp-names-switch:checked {
+  background: var(--ak-ink);
+}
+.tp-names-switch:checked::after {
+  transform: translateX(12px);
+}
+
+/* ── left rail: the campaign's sessions ─────────────────────────────────────────────── */
+.tp-sessions {
+  font-size: 14px;
+}
+.tp-sessions-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px 2px;
+  color: var(--ak-ink);
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+.tp-sessions-head a {
+  color: inherit;
+  text-decoration: none;
+}
+.tp-sessions-head a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--hue);
+  text-underline-offset: 4px;
+}
+.tp-sessions-sub {
+  padding: 0 10px 14px 28px;
+  color: var(--ak-faint);
+  font-size: 13px;
+}
+.tp-season > summary {
+  display: flex;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--ak-muted);
+  line-height: 1.3;
+  list-style: none;
+  cursor: pointer;
+  transition:
+    color var(--ak-ease),
+    background-color var(--ak-ease);
+}
+.tp-season > summary::-webkit-details-marker {
+  display: none;
+}
+.tp-season > summary:hover,
+.tp-season[open] > summary {
+  color: var(--ak-ink);
+}
+.tp-season > summary:hover {
+  background: var(--ak-sunk);
+}
+.tp-season-number {
+  min-width: 18px;
+  color: var(--ak-faint);
+  font-variant-numeric: tabular-nums;
+}
+.tp-session-list {
+  list-style: none;
+}
+.tp-season .tp-session-list {
+  margin: 2px 0 6px 18px;
+  padding-left: 8px;
+  border-left: 1px solid var(--ak-rule);
+}
+.tp-session {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--ak-muted);
+  line-height: 1.3;
+  text-decoration: none;
+  transition:
+    color var(--ak-ease),
+    background-color var(--ak-ease);
+}
+.tp-session:hover {
+  background: var(--ak-sunk);
+  color: var(--ak-ink);
+}
+.tp-session.is-current {
+  background: color-mix(in srgb, var(--hue) 13%, transparent);
+  color: var(--ak-ink);
+  font-weight: 600;
+}
+.tp-session-date {
+  display: block;
+  margin-top: 2px;
+  color: var(--ak-faint);
+  font-size: 12px;
+  font-weight: 400;
+}
+.tp-session.is-current .tp-session-date {
+  color: var(--ak-muted); /* faint drops under 4.5:1 on the tint */
+}
