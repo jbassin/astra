@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { ALIASES } from "@/generated/site";
+import { ALIASES, PAGES } from "@/generated/site";
 import { TRANSCRIPT_MINUTES } from "@/generated/transcripts";
 
+import { hrefPath } from "./listingData";
+import { isoDay } from "./listingFormat";
 import {
   chronicleEpisodeData,
   chronicleIndexData,
@@ -15,6 +17,8 @@ import {
 } from "./pageData";
 
 // The server functions are thin wrappers over these; the loaders turn `null` into a 404.
+
+const titles = (list: { title: string }[]) => list.map((p) => p.title).toSorted();
 
 describe("wikiPageData", () => {
   it("returns a content page with its rendered body", async () => {
@@ -47,8 +51,47 @@ describe("wikiPageData", () => {
 });
 
 describe("the other pages", () => {
-  it("serves the home page as the index content page", () => {
-    expect(homePageData().slug).toBe("index");
+  it("serves the home page with the index content page", () => {
+    const home = homePageData();
+    expect(home.slug).toBe("index");
+    expect(home.view.slug).toBe("index");
+  });
+
+  it("puts the main campaign's latest session on the home page", () => {
+    const { latest } = homePageData();
+    const main = chronicleIndexData().find((s) => s.isMain);
+    expect(main).toBeDefined();
+    const dates = main?.seasons.flatMap((s) => s.episodes.map((e) => isoDay(e.date) ?? "")) ?? [];
+    expect(latest && isoDay(latest.date)).toBe(dates.toSorted().at(-1));
+    expect(latest?.earlier.length).toBe(Math.min(4, dates.length - 1));
+  });
+
+  it("lists the wiki pages dated on the latest session's day", () => {
+    const { latest, updated } = homePageData();
+    const day = latest ? isoDay(latest.date) : null;
+    const expected = PAGES.filter(
+      (p) =>
+        p.slug !== "index" &&
+        !p.slug.startsWith("Script/") &&
+        p.date !== undefined &&
+        isoDay(p.date) === day,
+    );
+    expect(titles(updated)).toEqual(titles(expected));
+  });
+
+  it("gives every folder row a section and a target that exists", async () => {
+    const page = await wikiPageData("Org");
+    expect(page?.kind).toBe("folder");
+    if (page?.kind !== "folder") return;
+    expect(page.view.title).toBe("Organisations");
+    expect(page.view.entries.length).toBeGreaterThan(0);
+    const rows = page.view.entries;
+    const targets = await Promise.all(rows.map((r) => wikiPageData(hrefPath(page.slug, r.href))));
+    rows.forEach((row, i) => {
+      expect(row.section).not.toBeNull();
+      expect(targets[i]?.kind, row.href).toBe(row.isFolder ? "folder" : "content");
+      if (!row.isFolder) expect(row.childLabel).toBeNull();
+    });
   });
 
   it("returns an empty body for a slug with no transcript module", async () => {
@@ -59,7 +102,9 @@ describe("the other pages", () => {
     expect(tagPageData("no-such-tag")).toBeNull();
     const [first] = tagIndexData().sections;
     expect(first).toBeDefined();
-    expect(tagPageData(first?.tag ?? "")?.title).toBe(`Tag: ${first?.tag}`);
+    const view = tagPageData(first?.tag ?? "");
+    expect(view?.tag).toBe(first?.tag);
+    expect(view?.entries.every((e) => e.section !== undefined)).toBe(true);
   });
 
   it("finds a chronicle show and episode, and null for unknown ones", () => {

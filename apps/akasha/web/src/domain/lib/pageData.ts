@@ -15,6 +15,16 @@ import { PAGES } from "@/generated/site";
 import { TRANSCRIPT_BODIES } from "@/generated/transcripts";
 
 import {
+  descendantCounts,
+  folderDisplayTitle,
+  type LatestSession,
+  latestSession,
+  type ListingRow,
+  listingRows,
+  pagesUpdatedOn,
+  type UpdatedPage,
+} from "./listingData";
+import {
   type ContentView,
   contentView,
   type FolderView,
@@ -38,7 +48,7 @@ const log = getLogger("astra.akasha-frontend");
 
 type WikiPageData =
   | { kind: "content"; slug: string; title: string; view: ContentView }
-  | { kind: "folder"; slug: string; title: string; view: FolderView }
+  | { kind: "folder"; slug: string; title: string; view: ListingFolderView }
   | { kind: "alias"; slug: string; title: string; redirUrl: string; ogSlug: string };
 
 /** The catch-all route's page: a content page, a folder listing or an alias stub. */
@@ -52,7 +62,7 @@ export async function wikiPageData(path: string): Promise<WikiPageData | null> {
     return { kind: "content", slug: view.slug, title: view.title, view };
   }
   if (resolved.kind === "folder") {
-    const view = folderView(resolved.folder);
+    const view = listingFolderView(folderView(resolved.folder));
     return { kind: "folder", slug: view.slug, title: view.title, view };
   }
   return {
@@ -64,9 +74,50 @@ export async function wikiPageData(path: string): Promise<WikiPageData | null> {
   };
 }
 
-/** The wiki home: the content page with slug "index". */
-export function homePageData(): ContentView {
-  return contentView("index" as FullSlug);
+// ── listings: folder pages, tag pages and the tag index ───────────────────────────
+
+/** Pages under each folder, for the child count on folder rows. */
+const DESCENDANTS = descendantCounts(PAGES.map((p) => p.slug));
+
+/** A folder page: its rows carry their section and child count, and its title has no
+ *  "Folder: " prefix. */
+export type ListingFolderView = Omit<FolderView, "entries"> & { entries: ListingRow[] };
+
+function listingFolderView(view: FolderView): ListingFolderView {
+  return {
+    ...view,
+    title: folderDisplayTitle(view.title, view.folder),
+    entries: listingRows(view.slug, view.entries, DESCENDANTS),
+  };
+}
+
+export type ListingTagView = Omit<TagView, "entries"> & { tag: string; entries: ListingRow[] };
+
+export type ListingTagIndexView = Omit<TagIndexView, "sections"> & {
+  sections: (Omit<TagIndexView["sections"][number], "entries"> & { entries: ListingRow[] })[];
+};
+
+// ── home ──────────────────────────────────────────────────────────────────────────
+
+export interface HomePageData {
+  slug: "index";
+  /** The wiki's own front page (its body is the "Recovered Log" handout). */
+  view: ContentView;
+  /** The main campaign's latest session and the ones before it; null with no chronicle. */
+  latest: LatestSession | null;
+  /** Wiki pages changed on the latest session's day. */
+  updated: UpdatedPage[];
+}
+
+/** The home page: the wiki's front page, the latest session and what changed after it. */
+export function homePageData(): HomePageData {
+  const latest = latestSession(SHOWS);
+  return {
+    slug: "index",
+    view: contentView("index" as FullSlug),
+    latest,
+    updated: latest ? pagesUpdatedOn(PAGES, latest.date) : [],
+  };
 }
 
 /** A transcript's body HTML, or "" when the slug has no code-split body. */
@@ -79,12 +130,23 @@ export async function transcriptBody(slug: string): Promise<string> {
   return "";
 }
 
-export function tagPageData(tag: string): TagView | null {
-  return tagExists(tag) ? tagView(tag) : null;
+export function tagPageData(tag: string): ListingTagView | null {
+  if (!tagExists(tag)) return null;
+  const view = tagView(tag);
+  return { ...view, tag, entries: listingRows(view.slug, view.entries, DESCENDANTS) };
 }
 
-export function tagIndexData(): TagIndexView {
-  return tagIndexView();
+export function tagIndexData(): ListingTagIndexView {
+  const view = tagIndexView();
+  return {
+    ...view,
+    sections: view.sections.map((s) => ({
+      tag: s.tag,
+      href: s.href,
+      overflow: s.overflow,
+      entries: listingRows(view.slug, s.entries, DESCENDANTS),
+    })),
+  };
 }
 
 export function chronicleIndexData(): ChronicleShow[] {

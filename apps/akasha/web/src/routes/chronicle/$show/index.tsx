@@ -4,7 +4,7 @@ import { ShowChronicle } from "@/domain/components/Chronicle";
 import { getChronicleShow } from "@/domain/lib/pageDataFns";
 import { pageData } from "@/domain/lib/staleBuild";
 
-// /chronicle/<show> — one show's seasons + compact episode cards (0019).
+// /chronicle/<show> — one show's seasons, each with a row per episode (0019).
 export const Route = createFileRoute("/chronicle/$show/")({
   loader: async ({ params }) => {
     const show = pageData(await getChronicleShow({ data: params.show }));
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/chronicle/$show/")({
     return { slug: `chronicle/${show.show}`, show };
   },
   head: ({ loaderData }) => ({
-    meta: [{ title: `${loaderData?.show.name ?? "Chronicle"} — Chronicle — Akasha` }],
+    meta: [{ title: `${loaderData?.show.name ?? "Sessions"} — Sessions — Akasha` }],
   }),
   component: ShowChroniclePage,
 });

@@ -48,6 +48,21 @@ Node indexing API and writes `dist/client/pagefind/`.
   page, and the right rail (`rightSidebar`, then the "Connections" graph). Below 1180 px the right
   rail moves under the page; below 1100 px the header's nav gives way to the phone menu; below
   860 px the left rail goes.
+- **Home.** `Home.tsx`, full width (`PageLayout rails={false}`, no rails): the hero and the
+  section spectrum (counts from the root loader), the latest session (the main campaign's
+  newest episode by date, with the four before it), "Updated after that session" (wiki pages
+  whose date, the commit that last changed them as a UTC day, equals that session's date; hidden
+  when there are none), then the wiki's own front page (`index`) with its title header hidden.
+  `homePageData` (`pageData.ts`, logic in `listingData.ts`) returns all of it with
+  `slug: "index"`.
+- **Listings.** Sessions (`Chronicle.tsx`), folder pages (`FolderListing.tsx`) and tag pages
+  (`TagListing.tsx`) share `ListingHead` (crumbs, title) and `PageList` (rows: hue dot, title,
+  a faint page count on folders, tag chips). `listingData.ts` adds each row's section and count
+  in the page-data function: it resolves the row's relative href against the listing's slug,
+  so runtimeSite's views stay unchanged. A section's own folder is titled by the section
+  ("Org" shows as "Organisations"). Dates show in words, in UTC (`listingFormat.ts`).
+- **Error and 404 pages** (`RouteError.tsx`) render inside the shell. When the root loader
+  itself failed, they render bare: the header and rails read its section counts.
 - **Theme.** Light, dark or system, stored in localStorage `akasha-theme` and shown as
   `data-theme` on `<html>` (`src/domain/lib/theme.ts`).
 

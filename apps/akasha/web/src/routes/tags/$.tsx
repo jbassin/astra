@@ -11,10 +11,10 @@ export const Route = createFileRoute("/tags/$")({
     const tag = params._splat ?? "";
     const view = pageData(await getTagPage({ data: tag }));
     if (!view) throw notFound();
-    return { slug: view.slug, tag, view };
+    return { slug: view.slug, view };
   },
   head: ({ loaderData }) =>
-    loaderData ? { meta: [{ title: `Tag: ${loaderData.tag} — Akasha` }] } : {},
+    loaderData ? { meta: [{ title: `${loaderData.view.tag} — Tags — Akasha` }] } : {},
   component: TagRoutePage,
 });
 

@@ -1,20 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { ContentArticle } from "@/domain/components/ContentArticle";
+import { Home } from "@/domain/components/Home";
 import { getHomePage } from "@/domain/lib/pageDataFns";
 import { pageData } from "@/domain/lib/staleBuild";
 
-// The wiki home is the content page with slug "index" (faerrin's root index.vellum).
-// The catch-all `$` route owns every other path; "/" is its own index route.
+// The home page: the hero, the latest session and the wiki's own front page (the content
+// page with slug "index", faerrin's root index.vellum). The catch-all `$` route owns every
+// other path; "/" is its own index route. The loader's data carries `slug: "index"`.
 export const Route = createFileRoute("/")({
-  loader: async () => {
-    const view = pageData(await getHomePage());
-    return { slug: view.slug, view };
-  },
+  loader: async () => pageData(await getHomePage()),
   component: HomePage,
 });
 
 function HomePage() {
-  const { view } = Route.useLoaderData();
-  return <ContentArticle view={view} />;
+  return <Home data={Route.useLoaderData()} />;
 }
