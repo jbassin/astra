@@ -184,11 +184,11 @@ describe("listing rows", () => {
       ],
       counts,
     );
-    expect(rows.map((r) => [r.section, r.childLabel])).toEqual([
-      ["org", "12 pages"],
-      ["people", "1 page"],
-      ["org", null],
-      ["org", null],
+    expect(rows.map((r) => [r.title, r.section, r.childLabel])).toEqual([
+      ["Empty", "org", null],
+      ["Iridescent Church", "org", "12 pages"],
+      ["People", "people", "1 page"],
+      ["Pontifex", "org", null],
     ]);
     const [campaign] = listingRows(
       "Script/index",
@@ -196,6 +196,31 @@ describe("listing rows", () => {
       counts,
     );
     expect(campaign).toMatchObject({ section: "sessions", childLabel: "3 transcripts" });
+  });
+});
+
+describe("listing row order and folder titles", () => {
+  it("orders rows by title, folders and pages together, ignoring case and accents", () => {
+    const rows = listingRows(
+      "Org/index",
+      [
+        entry("The Scale", "../Org/The-Scale/", true),
+        entry("ethervolt", "../Org/ethervolt", false),
+        entry("Blackline", "../Org/Blackline/", true),
+        entry("Ætherion Limited", "../Org/Ætherion-Limited/", true),
+        entry("Amber Call", "../Org/Amber-Call", false),
+        entry("Zeal", "../Org/Zeal", false),
+      ],
+      new Map(),
+    );
+    expect(rows.map((r) => r.title)).toEqual([
+      "Ætherion Limited",
+      "Amber Call",
+      "Blackline",
+      "ethervolt",
+      "The Scale",
+      "Zeal",
+    ]);
   });
 
   it("titles a section's folder by the section and drops the Folder prefix", () => {
