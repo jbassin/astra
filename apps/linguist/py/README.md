@@ -35,6 +35,11 @@ mouthpiece waits for a session's `session_episode_summary` to be materialized be
 - **Chronicle backfill** (resumable; skips episode files that exist):
   `uv run python apps/linguist/py/scripts/backfill_chronicle.py` on the host, then
   materialize `campaign_timeline` by hand.
+- **Earlier campaigns** (one-off): `uv run python apps/linguist/py/scripts/import_quartz.py
+  <astra-data root>` converts the 25 Deep Eyes and Færrin one-shot transcripts from the old
+  quartz site into `linguist/transcripts/`. It keeps any `linguist/data/<date>.json` already
+  there (the published ones for those dates have real line durations) and refuses the live
+  clone.
 - **Fix a recurring mistranscription:** add a `variant` (a regex fragment) under the right
   `entry` in `libs/py/lexicon/src/astra_lexicon/defs.kdl`, then deploy Dagster. New sessions
   get it from `session_transcripts`. For stored text, `stored_corrections_sensor` sees the new
