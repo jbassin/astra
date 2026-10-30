@@ -75,6 +75,10 @@ Node indexing API and writes `dist/client/pagefind/`.
   are ink with a 2 px underline in the target's hue: `a[data-section]` sets `--link-hue`
   (`wiki.css`) on any page, and the transcript linker (`linker.ts`) adds `data-section` too.
   gothic's blocks (cards, fields, timeline, tables, code) are styled in `wiki-blocks.css`.
+  A folder below a section with an index page (`/Org/Iridescent-Church`) renders the same way
+  in `FolderListing`, with its children under "In <title>" after the body; `folderView` reads
+  the index page's tags, date and rail. A section's own folder (`/Org`) and a folder with no
+  index keep the listing head; both carry the rail blocks that have something to show.
 - **Theme.** Light, dark or system, stored in localStorage `akasha-theme` and shown as
   `data-theme` on `<html>` (`src/domain/lib/theme.ts`).
 

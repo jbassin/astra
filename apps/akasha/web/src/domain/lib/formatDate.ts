@@ -1,6 +1,6 @@
 // Display date formatting: "5 June 2026". Forced to UTC so the SSR string and the
 // client-hydration string are byte-identical regardless of server/browser timezone (no
-// hydration mismatch). The dates are committer dates (N4), so the day is approximate anyway.
+// hydration mismatch). The dates are committer dates, so the day is approximate anyway.
 const MONTHS = [
   "January",
   "February",

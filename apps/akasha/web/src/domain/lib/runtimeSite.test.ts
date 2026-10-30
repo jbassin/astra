@@ -101,6 +101,24 @@ describe("view builders", () => {
       expect(e.href.startsWith("../") || e.href.startsWith("./")).toBe(true);
   });
 
+  it("folderView carries its index page's facts and rail: tags, date, toc, backlinks", () => {
+    const v = folderView("Org/Iridescent-Church");
+    expect(v.tags.map((t) => t.label)).toEqual(["Host", "Religious"]);
+    expect(v.date).toBeDefined();
+    expect(v.toc.length).toBeGreaterThanOrEqual(2);
+    for (const e of v.toc) expect(v.bodyHtml).toContain(`id="${e.id}"`);
+    expect(v.backlinks.length).toBeGreaterThan(0);
+    for (const b of v.backlinks) expect(b.href).not.toContain("Script/");
+    // The fixture's transcripts link to no wiki page.
+    expect(v.sessions).toBeNull();
+  });
+
+  it("folderView without an index page has no facts and no contents", () => {
+    const v = folderView("Bestiary");
+    expect(v.tags).toEqual([]);
+    expect(v.toc).toEqual([]);
+  });
+
   it("tagView + tagIndexView reflect real tags", () => {
     expect(tagExists("Catfolk")).toBe(true);
     expect(tagExists("NotARealTag")).toBe(false);
