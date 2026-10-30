@@ -63,24 +63,20 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       returns 404; the host itself counts as LAN and gets 200.
 - [ ] Remove the old `harrow` service from `/emerald/data/experiments/docker-compose.yaml` (the
       container was removed 2026-10-26; the definition would recreate it).
-## Waiting on an event
-
-- **Thursday 2026-10-29 session** (main session): the first live run of stage automation and
-  resumable paid stages, with the pipeline fixes deployed 2026-10-26 (second-recording WARN,
-  undated zips, empty-transcript guard, relative clip paths, GLM price). Check that linguist, then
-  heartwood and mouthpiece, launch on their own after scribe; that each stage runs once; the
-  `astra.mouthpiece.tts.clip_cache` and `script.pass_cache` counters; and cost in SigNoz.
-  It is also the first session on the 2026-10-28 mouthpiece changes: Pass A on
-  `kimi-k3.1-pro` (priced, so its cost shows in SigNoz), Pass B on GLM, stability 0.0, a
-  `request_id` in every `clips/<key>.json`, and the new IPA in the dialogue text.
-- **heartwood gate E** (agent, opened 2026-10-22): the next session must publish its wiki edits with
-  no command. Check the astra-data commit, the ledger line and the `session_wiki` outcome.
-  [`apps/heartwood/py/README.md`](../apps/heartwood/py/README.md)
-- **Pipeline failure alert** (agent): `pipeline_failure_alert` has never fired on a real failure;
-  find its ERROR record in SigNoz after the next one. [`dagster/README.md`](../dagster/README.md)
-
 ## Pipeline
 
+- GLM 5.2 (`llm.default-model`) returned a malformed `EpisodeSummary` for 2026-10-29 on all
+  3 attempts (`key_beats` as a cut-off string, the later fields missing); the transcript was a
+  normal size and a fresh run passed. Automation never re-requests a stage, so a failure like
+  this blocks mouthpiece until someone re-executes from failure — agent; consider moving the
+  summary to GLM 5.3 or retrying a validation failure once more at the run level.
+- linguist-commit's akasha-frontend redeploy waits 600 s for the host-tooling lock, but heartwood
+  holds it for its whole run and always starts on the same transcript, so on every session night
+  linguist-commit fails and pages (2026-10-29: exit 9 at 23:55; its next run redeployed). Skip
+  or defer the redeploy while a heartwood run holds the lock — agent.
+- The SigNoz counters read with `increase` undercount on Dagster steps: 2026-10-29 showed 0 Pass A
+  misses, 21 clip misses for 23 clips and $0 for Kimi, while the `astra.llm.call` spans showed the
+  real values. Read cost from the spans; find why the counters drop values — agent.
 - Common-word entity aliases (`war`, `giant`, `herald`) can make heartwood link wrongly — Josh/agent; curate `entity.kdl`.
 - Renaming Ocelith and Macarius Vesper (2026-10-28) broke their old akasha URLs, which now 404;
   akasha has no redirects — agent, only if someone hits them.

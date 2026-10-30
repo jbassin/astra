@@ -20,6 +20,18 @@ Updated 2026-10-31.
   and listing pages. gothic is unchanged; akasha re-themes its blocks from its own CSS. Plan and
   design system: [`thoughts/shared/research/2026-10-29-akasha-redesign.md`](../thoughts/shared/research/2026-10-29-akasha-redesign.md).
   Next: Josh shows it to the stakeholders; small follow-ups are in the backlog under Frontends.
+- **2026-10-29's session ran end to end on stage automation (2026-10-29 to 10-30).** craig-sync
+  copied `craig_CT9e5mbCaPsW_2026-10-29_23-38-7` (1.03 GB) at 23:35 and ignored two stub zips;
+  scribe launched 4 s later and took 8 min; linguist, heartwood and mouthpiece each launched on
+  their own, once, in order. Two things went wrong, both now in the backlog: GLM 5.2 returned a
+  malformed `EpisodeSummary` on all 3 attempts (a fresh re-execute from failure passed), and
+  linguist-commit's akasha redeploy timed out on heartwood's host-tooling lock (its next run
+  redeployed). heartwood published its wiki edits with no command (gate E passed: astra-data
+  `de47b83`, 6 created and 6 updated, $0.24), and `pipeline_failure_alert` logged its ERROR
+  record for the linguist failure. mouthpiece rendered "The Voice Behind the Wall": 368 turns,
+  23 clips (all with a `request_id`), 20 pronunciations inlined, 38 MB. Pass A on Kimi took
+  11 min ($0.29, priced); Pass B took about 2.5 min per segment. LLM cost from the
+  `astra.llm.call` spans: $0.77 across linguist and mouthpiece, plus heartwood's $0.24.
 - **Stored text is now corrected on disk (live 2026-10-29, #147, Dagster `bee13eaf`).**
   linguist's `stored_corrections` rewrites every stored transcript, chronicle entry and
   mouthpiece script, brief and digest whenever `defs.kdl` changes; no reader corrects text any
@@ -51,12 +63,8 @@ Updated 2026-10-31.
 
 ## Next action
 
-Thursday 2026-10-29's session is the live check of stage automation and resumable stages: follow
-"Thursday 2026-10-29 session" under "Waiting on an event" in the [backlog](backlog.md). The merged
-pipeline fixes (#132, #133) were deployed 2026-10-26 so Thursday's cost reading uses the corrected
-GLM 5.3 price; craig_drop_sensor now skips 2026-9-26's second recording by name, as expected.
-It is also the first session rendered on the 2026-10-28 mouthpiece changes; the backlog lists
-what to check.
+Nothing is scheduled. Pick from the backlog's "Pipeline" items opened by the 2026-10-29 session,
+or wait for Josh's calls below.
 
 ## Blocked or waiting
 
@@ -65,6 +73,5 @@ what to check.
   published content; the codex rollback-data deletion; the SigNoz Editor key; launching the
   Foundry world so the portal module install can be confirmed; an off-LAN `/healthz` check. See
   the backlog's "Smaller calls" and "Deploy and ops".
-- **heartwood gate E** and the **pipeline failure alert:** both resolve on the next session.
 - **Stakeholder gates** (codex gate H, weal gates D to F, the Liturgy Vol.2 review, the assay Foundry
   module, mouthpiece episode shape): waiting on Josh and the players.
