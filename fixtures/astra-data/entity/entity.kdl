@@ -243,9 +243,6 @@ entity "Bev Sirnow" {
     alias "Bev Cerno"
     source "defs"
 }
-entity "Big Fish" kind="person" being="noah" {
-    source "being"
-}
 entity "Black and White" {
     alias "black and white"
     source "defs"

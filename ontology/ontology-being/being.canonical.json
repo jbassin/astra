@@ -391,18 +391,11 @@
           "player": "jorge"
         },
         {
-          "character": "Big Fish",
-          "character_class": null,
-          "descriptions": [
-            "an adventurer in the GM's second campaign, set on Althane"
-          ],
-          "player": "noah"
-        },
-        {
           "character": "Dawnmonger",
           "character_class": null,
           "descriptions": [
-            "an adventurer in the GM's second campaign, set on Althane"
+            "an adventurer in the GM's second campaign, set on Althane; usually called \"Dawn\" or \"Don\" at the table",
+            "He took up the unfinished work of Big Fish, Noah's earlier character, who was blown up at the night market before the recordings begin."
           ],
           "player": "noah"
         },
