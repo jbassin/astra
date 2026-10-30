@@ -9,6 +9,12 @@ mouthpiece's producer and grounding read the content live; heartwood edits it. T
 is not a Dagster asset: the validator needs node, which the Dagster image lacks, so the
 heartwood recipes run it on the host.
 
+Page frontmatter has one field with a fixed meaning beyond `title`, `tags`, `aliases` and
+`img`: `campaigns`, the list of campaign slugs (`ontology/ontology-being/being.kdl`) a page's
+content came from, oldest first, repeats dropped. vellum-lang parses it in both languages,
+and the snapshot carries it as `frontmatter.campaigns` (`[]` when absent). heartwood sets it
+(see its README); set it by hand only with slugs from `being.kdl`.
+
 ## Operations
 
 **Edit the wiki by hand** (in the astra-data clone, on `main`):

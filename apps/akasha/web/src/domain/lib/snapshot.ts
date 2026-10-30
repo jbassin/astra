@@ -14,6 +14,8 @@ export interface SnapshotFrontmatter {
   title: string | null;
   tags: string[];
   aliases: string[];
+  /** The campaign slugs the page draws on, oldest first (heartwood stamps them). */
+  campaigns: string[];
   img: string | null;
   extra: Record<string, unknown>;
 }

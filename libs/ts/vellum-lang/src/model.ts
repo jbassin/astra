@@ -124,6 +124,8 @@ export interface Frontmatter {
   title?: string;
   tags: string[];
   aliases: string[];
+  /** The campaign slugs (`being.kdl`) the page draws on, oldest first; heartwood sets it. */
+  campaigns: string[];
   img?: string;
   extra: Record<string, unknown>;
 }

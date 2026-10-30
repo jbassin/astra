@@ -12,8 +12,8 @@ backlink graph. The full parser, with the document AST and structural validation
   YAML gives an empty `Frontmatter`.
 - `canonical_meta_json(source)`: the byte-stable JSON that the parity checks compare with the
   TS `canonicalMetaJson`.
-- The parts: `split_frontmatter`, `parse_frontmatter` (`title`, `tags`, `aliases`, `img`, and
-  every other key in `extra`) and `scan_crossrefs` (in document order, with fenced and inline
+- The parts: `split_frontmatter`, `parse_frontmatter` (`title`, `tags`, `aliases`,
+  `campaigns` with repeats dropped, `img`, and every other key in `extra`) and `scan_crossrefs` (in document order, with fenced and inline
   code removed first).
 
 It reads no config.

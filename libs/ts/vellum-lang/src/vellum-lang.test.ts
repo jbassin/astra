@@ -19,8 +19,15 @@ describe("frontmatter", () => {
     expect(fm.extra).toEqual({ kind: "org" });
   });
 
+  test("campaigns is a list of slugs: repeats dropped, first occurrence first", () => {
+    const fm = parseFrontmatter("campaigns: [deep-eyes, through-a-song-darkly, deep-eyes]");
+    expect(fm.campaigns).toEqual(["deep-eyes", "through-a-song-darkly"]);
+    expect(fm.extra).toEqual({});
+    expect(parseFrontmatter("tags: []").campaigns).toEqual([]);
+  });
+
   test("absent / blank / malformed YAML all yield empty frontmatter (total)", () => {
-    expect(parseFrontmatter("")).toEqual({ tags: [], aliases: [], extra: {} });
+    expect(parseFrontmatter("")).toEqual({ tags: [], aliases: [], campaigns: [], extra: {} });
     expect(parseFrontmatter("::: not yaml : : :").tags).toEqual([]);
     const { yaml, body } = splitFrontmatter("# No frontmatter here");
     expect(yaml).toBe("");

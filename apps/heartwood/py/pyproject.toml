@@ -16,6 +16,7 @@ dependencies = [
     "astra-ontology-being",
     "astra-ontology-config",
     "astra-ontology-entity",
+    "astra-vellum-lang",
 ]
 
 [project.scripts]
