@@ -101,7 +101,17 @@ export interface SessionsView {
   sessions: SessionLinkView[];
 }
 
-export interface ContentView {
+/** What the wiki page's right rail shows (WikiRail), for content pages and folder pages. */
+interface PageRail {
+  /** Wiki pages that link here, by title ("Mentioned on"). Transcripts are in `sessions`. */
+  backlinks: PageLinkView[];
+  /** Transcripts that link here; null when none do. */
+  sessions: SessionsView | null;
+  /** The body's headings and block titles ("On this page"). */
+  toc: TocEntry[];
+}
+
+export interface ContentView extends PageRail {
   slug: string;
   title: string;
   tags: LinkView[];
@@ -119,21 +129,18 @@ export interface ContentView {
   transcript: boolean;
   showBreadcrumbs: boolean;
   crumbs: Crumb[];
-  /** Wiki pages that link here, by title ("Mentioned on"). Transcripts are in `sessions`. */
-  backlinks: PageLinkView[];
-  /** Transcripts that link here; null when none do. */
-  sessions: SessionsView | null;
-  /** The body's headings and block titles ("On this page"). */
-  toc: TocEntry[];
 }
 
-export interface FolderView {
+export interface FolderView extends PageRail {
   slug: string;
   folder: string;
   title: string;
   crumbs: Crumb[];
   /** the folder index's own vellum body HTML (empty if the folder has no index page) */
   bodyHtml: string;
+  /** the folder index's tags and date, for the facts row (none without an index page) */
+  tags: LinkView[];
+  date?: string;
   itemsLabel: string;
   entries: PageEntryView[];
 }
@@ -281,9 +288,9 @@ export function sessionsView(
 }
 
 // ── view builders ─────────────────────────────────────────────────────────────────
-export function contentView(slug: FullSlug): ContentView {
-  const doc = SITE_DATA.bySlug.get(slug);
-  if (!doc) throw new Error(`no content doc for slug ${slug}`);
+/** The rail for a page (a content page or a folder's index): its backlinks split into wiki
+ *  pages and transcripts, and its body's contents. */
+function pageRail(slug: FullSlug): PageRail {
   const linking = backlinksFor(SITE_DATA, slug);
   const backlinks = linking
     .filter((f) => !isTranscriptSlug(f.slug))
@@ -293,6 +300,13 @@ export function contentView(slug: FullSlug): ContentView {
       href: resolveRelative(slug, f.slug),
       section: sectionOf(f.slug)?.id ?? null,
     }));
+  const transcripts = linking.filter((f) => isTranscriptSlug(f.slug));
+  return { backlinks, sessions: sessionsView(slug, transcripts), toc: BODIES[slug]?.toc ?? [] };
+}
+
+export function contentView(slug: FullSlug): ContentView {
+  const doc = SITE_DATA.bySlug.get(slug);
+  if (!doc) throw new Error(`no content doc for slug ${slug}`);
   const transcriptMinutes = TRANSCRIPT_MINUTES[slug];
   const isTranscript = transcriptMinutes !== undefined;
   const body = BODIES[slug];
@@ -309,12 +323,7 @@ export function contentView(slug: FullSlug): ContentView {
     transcript: isTranscript,
     showBreadcrumbs: slug !== "index",
     crumbs: breadcrumbsFor(SITE_DATA, slug, doc.title),
-    backlinks,
-    sessions: sessionsView(
-      slug,
-      linking.filter((f) => isTranscriptSlug(f.slug)),
-    ),
-    toc: body?.toc ?? [],
+    ...pageRail(slug),
   };
 }
 
@@ -332,6 +341,9 @@ export function folderView(folder: string): FolderView {
     title,
     crumbs: breadcrumbsFor(SITE_DATA, slug, crumbTitle),
     bodyHtml: BODIES[slug]?.html ?? "",
+    tags: idx ? idx.tags.map((t) => tagsLink(slug, t)) : [],
+    date: idx?.date?.toISOString(),
+    ...pageRail(slug),
     itemsLabel:
       children.length === 1
         ? "1 item under this folder"
