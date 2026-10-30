@@ -19,7 +19,11 @@ input is session audio: `/audio/<date>.mp3` is served from `/ruby/data/astra-sta
   stays gothic's placeholder span. `decorateBody` (`renderBody.tsx`) then adds, without changing
   the visible text: `data-section="<id>"` on every link into a section, ids on prose headings
   (h1 to h3) and blocks, a kind label in handout headers, and the page's contents list (`toc`).
-- `transcripts/`: one lazy module per session, plus an index of import thunks.
+- `transcripts/`: one lazy module per session, plus an index of import thunks and
+  `TRANSCRIPT_META` (each session's duration and per-speaker line counts, from
+  `transcriptBuild.ts`).
+- `speakers.ts`: `SPEAKER_CSS`, the speaker colours and per-speaker transcript rules
+  (`speakerColour.ts`).
 - `public/` endpoints: RSS `index.xml`, `sitemap.xml`, `static/contentIndex.json`.
 
 Route loaders get their page data from the server functions in `src/domain/lib/pageDataFns.ts`
@@ -81,6 +85,19 @@ Node indexing API and writes `dist/client/pagefind/`.
   index keep the listing head; both carry the rail blocks that have something to show.
 - **Theme.** Light, dark or system, stored in localStorage `akasha-theme` and shown as
   `data-theme` on `<html>` (`src/domain/lib/theme.ts`).
+- **Transcript pages.** `routes/$.tsx` sends a `Script/<campaign>/<date>` page to
+  `TranscriptArticle`. Its data (`transcriptPageData` in `pageData.ts`, built by
+  `transcriptMeta.ts`) joins `TRANSCRIPT_META` with the chronicle: the episode title (else
+  "Session of 17 February 2026"), "Session 17, season 3 episode 5", the duration, the
+  synopsis, and the campaign's sessions grouped by season for the left rail (`leftRail`).
+  "What happened" and "Speakers" sit in a column inside the page, not in PageLayout's right
+  rail, so below 1180 px they come between the header and the lines rather than after
+  thousands of lines. Transcript pages have no graph. A line by the same speaker as the line
+  before carries `is-cont` from the build, which hides its time and name. The player is
+  docked to the bottom of the viewport; `transcript.css` (with `transcript-rails.css` and
+  `transcript-player.css`) keeps `--tp-h` clear at the foot of the page. The Script subtree
+  of `EXPLORER_TREE` is labelled with episode titles (`labelScriptTree`), which the phone
+  menu and the Script folder pages show.
 
 ## Operations
 
@@ -110,9 +127,18 @@ Node indexing API and writes `dist/client/pagefind/`.
   Both delete and rewrite `src/generated/transcripts/`, and the race fails with `ENOTEMPTY`.
 - **`<body data-slug>` is a contract.** The Graph and TranscriptPlayer islands read it, so every
   route loader must return `slug`.
-- **TranscriptPlayer renders nothing.** It attaches imperatively to the SSR transcript markup
-  (delegated click, binary search over line times). Keep it non-reactive: a transcript page has
-  thousands of lines.
+- **TranscriptPlayer renders nothing.** It attaches imperatively to the SSR markup: the lines
+  and `<audio>` from the build, and the find bar, player and speaker checkboxes that
+  `TranscriptArticle` renders (delegated click, binary search over line times, one
+  `hide-<Name>` class on the root per hidden speaker). Keep it non-reactive: a transcript page
+  has thousands of lines. The island changes text and attributes inside those components, so
+  they are memoised and must never re-render; the play and pause icons are both rendered and
+  swapped in CSS rather than replaced.
+- **The router scrolls to a hash it sees in `replaceState`.** TanStack patches
+  `history.replaceState`, so when the player writes `#<second>-<user>` the router would scroll
+  that line into view on every click and `j`/`k`. The player passes
+  `__hashScrollIntoViewOptions: false` in the state (with the existing state spread in, which
+  keeps scroll restoration) to stop it.
 - **Navigation is client-side, but every page mounts fresh.** Gothic wiki links and the listings
   are plain `<a href>`; the `SpaLinks` island catches clicks on them at the document and calls
   `router.navigate` (`spaNav.ts` decides which links stay with the browser: other origins, files
@@ -138,7 +164,10 @@ Node indexing API and writes `dist/client/pagefind/`.
   the first campaign, in `being.kdl` order, whose character names appear at least 15 times; else
   `Unsorted`. Reordering campaigns in `being.kdl` can move transcript URLs.
 - **Speaker colours come from `being.kdl`.** linguist writes `user.color` as a CSS variable name
-  (`--textJorge`); build-content generates those variables from the player colours.
+  (`--textJorge`); build-content generates those variables from the player colours. They are
+  pastels for a dark page, so the light theme uses `--sp<Name>`: the same hue, darkened at
+  build (`readableOn` in `speakerColour.ts`) until it reaches 4.5:1 on page, surface and the
+  playing line's 12 % tint. Styles use `--sp`, never `--text<Name>` directly.
 - **Graph colours must be concrete hex.** The force graph reads the section hues (`--ak-<id>`)
   and Quartz-style variables (`--gray`, `--light`, `--lightgray`, `--dark`) with
   `getComputedStyle`, when it draws. akasha owns them: `tokens.css` defines each as a literal hex,

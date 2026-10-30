@@ -1,199 +1,134 @@
 /**
- * TranscriptPlayer — React port of faerrin's Solid island (itself a verbatim port of
- * quartz transcript.inline.ts). Progressive-enhancement: it renders NO markup of its
- * own and attaches behaviour to the server-emitted `.transcript-line` /
- * `audio[data-transcript]` markup (baked by transcriptBuild.ts). On a
- * non-transcript page `initTranscriptPlayer()` returns null (no audio) and nothing
- * binds.
+ * TranscriptPlayer: the transcript page's behaviour. It renders NO markup of its own. It binds
+ * imperatively to what the server rendered: the `.transcript-line` rows and the
+ * `audio[data-transcript]` baked by transcriptBuild.ts, and the find bar, the docked player
+ * and the speaker checkboxes rendered by TranscriptArticle. On any other page
+ * `initTranscriptPlayer()` returns null and nothing binds.
  *
- * Only the shell changed Solid→React: `onMount`→`useEffect([])`, `onCleanup`→the
- * effect's cleanup return (astra is an SPA, so every listener must go on unmount).
- * DO NOT rewrite reactively: transcripts render to 1.2–1.6 MB pages, so the
- * delegated-click + precomputed-seconds[] binary-search + single-root-class filtering
- * design is mandatory for performance. getElementById is kept
- * for `${second}-${user}` ids (digit-leading / dotted → invalid CSS selectors).
+ * DO NOT rewrite reactively: a transcript renders to a 1.2 to 1.6 MB page with thousands of
+ * lines, so the design is a delegated click, a precomputed seconds[] array searched by
+ * bisection, and speaker filtering by one class on the root (`hide-<Name>`, rules generated
+ * in SPEAKER_CSS). getElementById is kept for `${second}-${user}` ids (digit-leading and
+ * dotted ids are invalid CSS selectors).
+ *
+ * Every listener and timer goes in the teardown: each page mounts fresh (README trap).
+ *
+ * Keyboard: `/` find, Space play or pause, Left and Right 5 s, `j` and `k` next and previous
+ * line, `f` follow along; in the find field Enter and Shift+Enter step through matches and
+ * Escape clears.
  */
 import { useEffect } from "react";
 
+import { withStorage } from "@/domain/lib/storage";
+
 const SKIP_SECONDS = 10;
 const ARROW_SECONDS = 5;
+const SPEEDS = [1, 1.25, 1.5, 2] as const;
+const NAMES_KEY = "transcript-names";
+const FIND_HIGHLIGHT = "transcript-find";
+const FIND_CURRENT = "transcript-find-current";
 
-const icons = {
-  play: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>`,
-  pause: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>`,
-  back: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18V6l-8.5 6 8.5 6zM11.5 12l8.5 6V6l-8.5 6z"/></svg>`,
-  fwd: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18l8.5-6L4 6v12zM13 6v12l8.5-6L13 6z"/></svg>`,
-  locate: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9 3h-2.06A7 7 0 0013 5.06V3h-2v2.06A7 7 0 005.06 11H3v2h2.06A7 7 0 0011 18.94V21h2v-2.06A7 7 0 0018.94 13H21v-2zm-9 6a5 5 0 110-10 5 5 0 010 10z"/></svg>`,
-  prev: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 7l-5 5 5 5V7z"/></svg>`,
-  next: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 7v10l5-5-5-5z"/></svg>`,
-  names: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>`,
+const pad = (n: number) => String(n).padStart(2, "0");
+
+/** h:mm:ss, as the line times show it. */
+const clock = (t: number) => {
+  const s = Number.isFinite(t) && t > 0 ? Math.floor(t) : 0;
+  return `${Math.floor(s / 3600)}:${pad(Math.floor((s / 60) % 60))}:${pad(s % 60)}`;
 };
 
-const fmt = (t: number) => {
-  if (!Number.isFinite(t) || t < 0) t = 0;
-  const s = Math.floor(t % 60);
-  const m = Math.floor((t / 60) % 60);
-  const h = Math.floor(t / 3600);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
-};
+const speedLabel = (rate: number) => `${rate}×`;
 
-const el = <K extends keyof HTMLElementTagNameMap>(
-  tag: K,
-  cls?: string,
-  attrs?: Record<string, string>,
-): HTMLElementTagNameMap[K] => {
-  const node = document.createElement(tag);
-  if (cls) node.className = cls;
-  if (attrs) for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
-  return node;
-};
+/** The URL fragment as an element id. Line ids are ASCII, so only %XX escapes need undoing
+ *  (decodeURIComponent would throw on a malformed fragment). */
+const hashId = (hash: string) =>
+  hash
+    .slice(1)
+    .replaceAll(/%([0-9a-f]{2})/gi, (_, hex: string) =>
+      String.fromCodePoint(Number.parseInt(hex, 16)),
+    );
+
+/** The CSS Custom Highlight API, where the browser has it (marks find matches in place). */
+function highlightRegistry(): HighlightRegistry | null {
+  return typeof CSS !== "undefined" && "highlights" in CSS && typeof Highlight === "function"
+    ? CSS.highlights
+    : null;
+}
+
+/** Ranges over each occurrence of `q` (lower case) in an element's text nodes. */
+function rangesIn(el: Element, q: string): Range[] {
+  const out: Range[] = [];
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const text = node.nodeValue ?? "";
+    const lower = text.toLowerCase();
+    // Lower-casing can change the length of some characters; skip those nodes.
+    if (lower.length !== text.length) continue;
+    for (let i = lower.indexOf(q); i !== -1; i = lower.indexOf(q, i + q.length)) {
+      const r = document.createRange();
+      r.setStart(node, i);
+      r.setEnd(node, i + q.length);
+      out.push(r);
+    }
+  }
+  return out;
+}
 
 /** Initialize the player against the current page. Returns a teardown fn or null. */
 function initTranscriptPlayer(): (() => void) | null {
-  const audio = document.querySelector("audio[data-transcript]") as HTMLAudioElement | null;
-  const lines = Array.from(document.querySelectorAll(".transcript-line")) as HTMLElement[];
-  if (!audio || lines.length === 0) return null;
-
-  // oxlint-disable-next-line typescript/no-non-null-assertion -- the list is non-empty here
-  const root = lines[0]!.parentElement;
-  if (!root) return null;
+  const audio = document.querySelector<HTMLAudioElement>("audio[data-transcript]");
+  const player = document.querySelector<HTMLElement>(".transcript-player");
+  const lines = Array.from(document.querySelectorAll<HTMLElement>(".transcript-line"));
+  const root = lines[0]?.parentElement;
+  if (!audio || !player || !root) return null;
   root.classList.add("transcript-root");
-
-  const seconds = lines.map((l) => Number(l.dataset.second));
   audio.controls = false;
 
-  const player = el("div", "transcript-player");
-  const transport = el("div", "transcript-transport");
-
-  const btn = (cls: string, label: string, svg: string) => {
-    const b = el("button", cls, { type: "button", "aria-label": label, title: label });
-    b.innerHTML = svg;
-    return b;
+  const seconds = lines.map((l) => Number(l.dataset.second));
+  const listeners: (() => void)[] = [];
+  // Every listener goes through here, so the teardown removes them all.
+  const on = (target: EventTarget | null, type: string, listener: (e: Event) => void) => {
+    if (!target) return;
+    target.addEventListener(type, listener);
+    listeners.push(() => target.removeEventListener(type, listener));
   };
 
-  const playBtn = btn("tp-btn tp-play", "Play", icons.play);
-  const backBtn = btn("tp-btn", `Back ${SKIP_SECONDS}s`, icons.back);
-  const fwdBtn = btn("tp-btn", `Forward ${SKIP_SECONDS}s`, icons.fwd);
-  const locateBtn = btn("tp-btn tp-locate", "Jump to playing line", icons.locate);
+  // ── the docked player ───────────────────────────────────────────────────────────
+  const playBtn = player.querySelector<HTMLButtonElement>(".tp-play");
+  const backBtn = player.querySelector<HTMLButtonElement>(".tp-back");
+  const fwdBtn = player.querySelector<HTMLButtonElement>(".tp-fwd");
+  const scrubber = player.querySelector<HTMLInputElement>(".tp-scrubber");
+  const currentLabel = player.querySelector<HTMLElement>(".tp-current");
+  const totalLabel = player.querySelector<HTMLElement>(".tp-total");
+  const speedBtn = player.querySelector<HTMLButtonElement>(".tp-speed");
+  const speedValue = player.querySelector<HTMLElement>(".tp-speed-value");
+  const followBtn = player.querySelector<HTMLButtonElement>(".tp-follow");
+  // Until the audio's metadata loads (or when it can't), the build's duration stands in.
+  const builtDuration = Number(player.dataset.duration) || 0;
+  const duration = () =>
+    Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : builtDuration;
 
-  const scrubber = el("input", "tp-scrubber", {
-    type: "range",
-    min: "0",
-    max: "100",
-    step: "0.1",
-    value: "0",
-    "aria-label": "Seek",
-  });
-  const timeLabel = el("span", "tp-time");
-  timeLabel.textContent = "0:00 / 0:00";
-
-  transport.append(backBtn, playBtn, fwdBtn, scrubber, timeLabel, locateBtn);
-
-  const search = el("div", "transcript-search");
-  const searchInput = el("input", "tp-search-input", {
-    type: "search",
-    placeholder: "Search transcript…",
-    "aria-label": "Search transcript",
-  });
-  const searchCount = el("span", "tp-search-count");
-  const searchPrev = btn("tp-btn tp-search-nav", "Previous match", icons.prev);
-  const searchNext = btn("tp-btn tp-search-nav", "Next match", icons.next);
-  search.append(searchInput, searchCount, searchPrev, searchNext);
-
-  const filterRow = el("div", "transcript-filter");
-  const speakers = Array.from(new Set(lines.map((l) => l.dataset.user || "")))
-    .filter(Boolean)
-    .sort();
-  const chips = new Map<string, HTMLButtonElement>();
-  const chipLabels = new Map<string, HTMLElement>();
-  for (const sp of speakers) {
-    const chip = el("button", `tp-chip ${sp}`, {
-      type: "button",
-      "aria-pressed": "true",
-      title: `Toggle ${sp}`,
-    });
-    const dot = el("span", "tp-chip-dot");
-    const label = el("span", "tp-chip-label");
-    label.textContent = sp;
-    chip.append(dot, label);
-    chip.addEventListener("click", () => {
-      const hidden = root.classList.toggle(`hide-${sp}`);
-      chip.setAttribute("aria-pressed", hidden ? "false" : "true");
-    });
-    chips.set(sp, chip);
-    chipLabels.set(sp, label);
-    filterRow.append(chip);
-  }
-
-  // ── Name toggle (character ↔ real) ────────────────────────────────
-  // Lines carry both the real speaker (data-real) and the campaign character
-  // (data-char). Default is character names; the choice persists per browser.
-  // The control only appears when a session actually has character names (i.e.
-  // it matched a campaign) — otherwise the two are identical and a toggle is
-  // meaningless.
-  const nameSpans = Array.from(root.querySelectorAll(".transcript-name")) as HTMLElement[];
-  const hasCharacters = nameSpans.some((s) => (s.dataset.char ?? "") !== (s.dataset.real ?? ""));
-  const spToChar = new Map<string, string>();
-  for (const l of lines) {
-    const u = l.dataset.user || "";
-    if (u && !spToChar.has(u)) spToChar.set(u, l.dataset.char || u);
-  }
-
-  const NAMES_KEY = "transcript-names";
-  let nameMode: "char" | "real" = localStorage.getItem(NAMES_KEY) === "real" ? "real" : "char";
-  let namesBtn: HTMLButtonElement | null = null;
-
-  const applyNames = () => {
-    for (const s of nameSpans) {
-      const n = nameMode === "char" ? s.dataset.char : s.dataset.real;
-      s.textContent = `${n ?? ""}:`;
-    }
-    for (const [sp, labelEl] of chipLabels) {
-      labelEl.textContent = nameMode === "char" ? (spToChar.get(sp) ?? sp) : sp;
-    }
-    if (namesBtn) {
-      // oxlint-disable-next-line typescript/no-non-null-assertion -- the element is created just above
-      namesBtn.querySelector(".tp-names-label")!.textContent =
-        nameMode === "char" ? "Characters" : "Real names";
-      namesBtn.setAttribute("aria-pressed", String(nameMode === "char"));
-      namesBtn.title =
-        nameMode === "char"
-          ? "Showing character names — click for real names"
-          : "Showing real names — click for character names";
-    }
-  };
-
-  if (hasCharacters) {
-    namesBtn = el("button", "tp-names-toggle", { type: "button" });
-    namesBtn.innerHTML = `${icons.names}<span class="tp-names-label"></span>`;
-    namesBtn.addEventListener("click", () => {
-      nameMode = nameMode === "char" ? "real" : "char";
-      localStorage.setItem(NAMES_KEY, nameMode);
-      applyNames();
-    });
-    filterRow.insertBefore(namesBtn, filterRow.firstChild);
-  }
-  // Sync labels (chips default to character names even before any click).
-  applyNames();
-
-  player.append(transport, search, filterRow);
-  root.insertBefore(player, audio);
-  player.insertBefore(audio, player.firstChild);
-
-  const setPlayIcon = () => {
+  const setPlayState = () => {
     const playing = !audio.paused && !audio.ended;
-    playBtn.innerHTML = playing ? icons.pause : icons.play;
-    playBtn.setAttribute("aria-label", playing ? "Pause" : "Play");
-    playBtn.title = playing ? "Pause" : "Play";
+    player.classList.toggle("is-playing", playing);
+    playBtn?.setAttribute("aria-label", playing ? "Pause" : "Play");
   };
 
   let scrubbing = false;
+  const showPosition = (t: number) => {
+    const dur = duration();
+    const pct = dur ? Math.min(100, (t / dur) * 100) : 0;
+    if (currentLabel) currentLabel.textContent = clock(t);
+    if (totalLabel) totalLabel.textContent = clock(dur);
+    if (scrubber) {
+      scrubber.style.setProperty("--tp-pct", `${pct}%`);
+      scrubber.setAttribute("aria-valuetext", `${clock(t)} of ${clock(dur)}`);
+    }
+    return pct;
+  };
   const syncScrubber = () => {
     if (scrubbing) return;
-    const dur = audio.duration || 0;
-    scrubber.value = String(dur ? (audio.currentTime / dur) * 100 : 0);
-    timeLabel.textContent = `${fmt(audio.currentTime)} / ${fmt(dur)}`;
+    const pct = showPosition(audio.currentTime);
+    if (scrubber) scrubber.value = String(pct);
   };
 
   let activeIdx = -1;
@@ -203,7 +138,7 @@ function initTranscriptPlayer(): (() => void) | null {
     let ans = -1;
     while (lo <= hi) {
       const mid = (lo + hi) >> 1;
-      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- mid is within bounds
       if (seconds[mid]! <= t) {
         ans = mid;
         lo = mid + 1;
@@ -218,224 +153,284 @@ function initTranscriptPlayer(): (() => void) | null {
   const updateActive = () => {
     const idx = activeIndexFor(audio.currentTime);
     if (idx === activeIdx) return;
-    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
-    if (activeIdx >= 0) lines[activeIdx]!.classList.remove("is-playing");
+    lines[activeIdx]?.classList.remove("is-playing");
     activeIdx = idx;
-    if (idx >= 0) {
-      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
-      lines[idx]!.classList.add("is-playing");
-      // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
-      if (follow) lines[idx]!.scrollIntoView({ block: "center", behavior: "smooth" });
-    }
+    const line = lines[idx];
+    if (!line) return;
+    line.classList.add("is-playing");
+    if (follow) line.scrollIntoView({ block: "center", behavior: "smooth" });
   };
 
   const onTimeUpdate = () => {
     syncScrubber();
     updateActive();
   };
+  on(audio, "timeupdate", onTimeUpdate);
+  on(audio, "play", setPlayState);
+  on(audio, "pause", setPlayState);
+  on(audio, "ended", setPlayState);
+  on(audio, "loadedmetadata", syncScrubber);
+  on(audio, "durationchange", syncScrubber);
 
-  audio.addEventListener("timeupdate", onTimeUpdate);
-  audio.addEventListener("play", setPlayIcon);
-  audio.addEventListener("pause", setPlayIcon);
-  audio.addEventListener("ended", setPlayIcon);
-  audio.addEventListener("loadedmetadata", syncScrubber);
-  audio.addEventListener("durationchange", syncScrubber);
-
+  const seekBy = (delta: number) => {
+    audio.currentTime = Math.min(duration() || Infinity, Math.max(0, audio.currentTime + delta));
+  };
   const togglePlay = () => {
-    if (audio.paused) void audio.play();
+    if (audio.paused) void audio.play().catch(() => setPlayState());
     else audio.pause();
   };
-  playBtn.addEventListener("click", togglePlay);
-  backBtn.addEventListener("click", () => {
-    audio.currentTime = Math.max(0, audio.currentTime - SKIP_SECONDS);
+  on(playBtn, "click", togglePlay);
+  on(backBtn, "click", () => seekBy(-SKIP_SECONDS));
+  on(fwdBtn, "click", () => seekBy(SKIP_SECONDS));
+
+  on(scrubber, "input", () => {
+    scrubbing = true;
+    showPosition((Number(scrubber?.value) / 100) * duration());
   });
-  fwdBtn.addEventListener("click", () => {
-    audio.currentTime = Math.min(audio.duration || Infinity, audio.currentTime + SKIP_SECONDS);
+  on(scrubber, "change", () => {
+    audio.currentTime = (Number(scrubber?.value) / 100) * duration();
+    scrubbing = false;
+    syncScrubber();
   });
 
-  const onScrubInput = () => {
-    scrubbing = true;
-    const dur = audio.duration || 0;
-    timeLabel.textContent = `${fmt((Number(scrubber.value) / 100) * dur)} / ${fmt(dur)}`;
-  };
-  const onScrubChange = () => {
-    const dur = audio.duration || 0;
-    audio.currentTime = (Number(scrubber.value) / 100) * dur;
-    scrubbing = false;
-  };
-  scrubber.addEventListener("input", onScrubInput);
-  scrubber.addEventListener("change", onScrubChange);
+  on(speedBtn, "click", () => {
+    const i = SPEEDS.findIndex((s) => s === audio.playbackRate);
+    const next = SPEEDS[(i + 1) % SPEEDS.length] ?? 1;
+    audio.playbackRate = next;
+    if (speedValue) speedValue.textContent = speedLabel(next);
+  });
 
   const scrollToActive = () => {
-    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
-    if (activeIdx >= 0) lines[activeIdx]!.scrollIntoView({ block: "center", behavior: "smooth" });
+    lines[activeIdx]?.scrollIntoView({ block: "center", behavior: "smooth" });
   };
-  locateBtn.addEventListener("click", () => {
+  const toggleFollow = () => {
     follow = !follow;
-    locateBtn.classList.toggle("is-active", follow);
-    locateBtn.setAttribute("aria-pressed", String(follow));
-    locateBtn.title = follow ? "Following playback (click to stop)" : "Jump to playing line";
-    scrollToActive();
-  });
+    followBtn?.setAttribute("aria-pressed", String(follow));
+    if (follow) scrollToActive();
+  };
+  on(followBtn, "click", toggleFollow);
 
+  // ── lines: click to seek, deep links ────────────────────────────────────────────
   // body[data-slug] replaces Quartz's getFullSlug(window); without it, deep links
   // would write `/undefined#…`. __root.tsx sets it on every page.
   const slug = document.body.dataset.slug ?? "";
   const seekTo = (second: number, user: string) => {
     if (!Number.isNaN(second)) audio.currentTime = second;
-    // Keep the router's history state (its entry key drives scroll restoration).
-    history.replaceState(history.state, "", `/${slug}#${second}-${user}`);
+    // Keep the router's history state (its entry key drives scroll restoration). The router
+    // watches replaceState and would scroll the new hash's line into view; the flag stops it,
+    // so a click or j/k never moves the page.
+    history.replaceState(
+      { ...history.state, __hashScrollIntoViewOptions: false },
+      "",
+      `/${slug}#${second}-${user}`,
+    );
+    // Paused, timeupdate may not fire at once; mark the line now.
+    updateActive();
+    syncScrubber();
   };
-  const onRootClick = (e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (target.closest("a")) return;
+  on(root, "click", (e) => {
+    const target = e.target;
+    if (!(target instanceof Element) || target.closest("a")) return;
     if ((window.getSelection()?.toString().length ?? 0) > 0) return;
-    const line = target.closest(".transcript-line") as HTMLElement | null;
+    const line = target.closest<HTMLElement>(".transcript-line");
     if (!line || !root.contains(line)) return;
     seekTo(Number(line.dataset.second), line.dataset.user || "");
-  };
-  root.addEventListener("click", onRootClick);
+  });
 
+  let targetTimer: number | undefined;
+  const highlightHash = () => {
+    const id = hashId(window.location.hash);
+    if (!id) return;
+    const target = document.getElementById(id);
+    if (!target?.classList.contains("transcript-line")) return;
+    for (const l of root.querySelectorAll(".is-target")) l.classList.remove("is-target");
+    target.classList.add("is-target");
+    target.scrollIntoView({ block: "center" });
+    // A shared link starts the recording at its line.
+    const second = Number(target.dataset.second);
+    if (!Number.isNaN(second) && audio.paused) {
+      audio.currentTime = second;
+      updateActive();
+      syncScrubber();
+    }
+    window.clearTimeout(targetTimer);
+    targetTimer = window.setTimeout(() => target.classList.remove("is-target"), 2400);
+  };
+  on(window, "hashchange", highlightHash);
+
+  // ── speakers: show or hide each speaker's lines; character or real names ─────────
+  const aside = document.querySelector<HTMLElement>(".tp-speakers");
+  on(aside, "change", (e) => {
+    const box = e.target;
+    const user = box instanceof HTMLInputElement ? box.dataset.speaker : undefined;
+    if (box instanceof HTMLInputElement && user) {
+      root.classList.toggle(`hide-${user}`, !box.checked);
+    }
+  });
+
+  const nameSpans = Array.from(root.querySelectorAll<HTMLElement>(".transcript-name"));
+  const namesSwitch = aside?.querySelector<HTMLInputElement>(".tp-names-switch") ?? null;
+  const applyNames = (real: boolean) => {
+    for (const s of nameSpans) s.textContent = (real ? s.dataset.real : s.dataset.char) ?? "";
+  };
+  if (namesSwitch) {
+    // Character names by default; the choice persists per browser.
+    if (withStorage((s) => s.getItem(NAMES_KEY), null) === "real") {
+      namesSwitch.checked = true;
+      applyNames(true);
+    }
+    on(namesSwitch, "change", () => {
+      const mode = namesSwitch.checked ? "real" : "char";
+      withStorage((s) => s.setItem(NAMES_KEY, mode), undefined);
+      applyNames(namesSwitch.checked);
+    });
+  }
+
+  // ── find ────────────────────────────────────────────────────────────────────────
+  const findInput = document.querySelector<HTMLInputElement>(".tp-search-input");
+  const findCount = document.querySelector<HTMLElement>(".tp-search-count");
+  const findPrev = document.querySelector<HTMLButtonElement>(".tp-search-prev");
+  const findNext = document.querySelector<HTMLButtonElement>(".tp-search-next");
+  const registry = highlightRegistry();
+  let texts: string[] | null = null;
   let matches: HTMLElement[] = [];
   let matchPos = -1;
+
+  const setNavEnabled = (enabled: boolean) => {
+    if (findPrev) findPrev.disabled = !enabled;
+    if (findNext) findNext.disabled = !enabled;
+  };
+  setNavEnabled(false);
 
   const clearMatches = () => {
     for (const m of matches) m.classList.remove("search-match", "search-current");
     matches = [];
     matchPos = -1;
+    registry?.delete(FIND_HIGHLIGHT);
+    registry?.delete(FIND_CURRENT);
+    setNavEnabled(false);
   };
+  const query = () => findInput?.value.trim().toLowerCase() ?? "";
   const showMatch = (pos: number) => {
     if (matches.length === 0) return;
-    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
-    if (matchPos >= 0) matches[matchPos]!.classList.remove("search-current");
+    matches[matchPos]?.classList.remove("search-current");
     matchPos = (pos + matches.length) % matches.length;
-    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- matchPos is within bounds
     const m = matches[matchPos]!;
     m.classList.add("search-current");
+    if (registry) {
+      const content = m.querySelector(".transcript-content");
+      const current = content ? rangesIn(content, query()) : [];
+      registry.set(FIND_CURRENT, new Highlight(...current));
+    }
     m.scrollIntoView({ block: "center", behavior: "smooth" });
-    searchCount.textContent = `${matchPos + 1} / ${matches.length}`;
+    if (findCount) findCount.textContent = `${matchPos + 1} of ${matches.length}`;
   };
   const runSearch = () => {
     clearMatches();
-    const q = searchInput.value.trim().toLowerCase();
-    if (q.length < 2) {
-      searchCount.textContent = "";
+    const needle = query();
+    if (needle.length < 2) {
+      if (findCount) findCount.textContent = "";
       return;
     }
-    for (const line of lines) {
-      const content = line.querySelector(".transcript-content");
-      if (content && (content.textContent || "").toLowerCase().includes(q)) {
-        line.classList.add("search-match");
-        matches.push(line);
-      }
+    texts ??= lines.map((l) =>
+      (l.querySelector(".transcript-content")?.textContent ?? "").toLowerCase(),
+    );
+    const ranges: Range[] = [];
+    for (const [i, text] of texts.entries()) {
+      if (!text.includes(needle)) continue;
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- texts mirrors lines
+      const line = lines[i]!;
+      line.classList.add("search-match");
+      matches.push(line);
+      const content = registry ? line.querySelector(".transcript-content") : null;
+      if (content) ranges.push(...rangesIn(content, needle));
     }
+    if (registry && ranges.length > 0) registry.set(FIND_HIGHLIGHT, new Highlight(...ranges));
     if (matches.length === 0) {
-      searchCount.textContent = "0 / 0";
-    } else {
-      showMatch(0);
+      if (findCount) findCount.textContent = "No matches";
+      return;
     }
+    setNavEnabled(true);
+    showMatch(0);
   };
 
   let searchTimer: number | undefined;
-  const onSearchInput = () => {
+  on(findInput, "input", () => {
     window.clearTimeout(searchTimer);
     searchTimer = window.setTimeout(runSearch, 180);
-  };
-  searchInput.addEventListener("input", onSearchInput);
-  const onSearchKeydown = (e: KeyboardEvent) => {
+  });
+  on(findInput, "keydown", (e) => {
+    if (!(e instanceof KeyboardEvent)) return;
     if (e.key === "Enter") {
       e.preventDefault();
-      showMatch(matchPos + (e.shiftKey ? -1 : 1));
+      // Enter before the debounce fires searches at once.
+      if (matches.length === 0) {
+        window.clearTimeout(searchTimer);
+        runSearch();
+      } else {
+        showMatch(matchPos + (e.shiftKey ? -1 : 1));
+      }
     } else if (e.key === "Escape") {
-      searchInput.value = "";
+      if (findInput) findInput.value = "";
       clearMatches();
-      searchCount.textContent = "";
+      if (findCount) findCount.textContent = "";
     }
-  };
-  searchInput.addEventListener("keydown", onSearchKeydown);
-  searchPrev.addEventListener("click", () => showMatch(matchPos - 1));
-  searchNext.addEventListener("click", () => showMatch(matchPos + 1));
+  });
+  on(findPrev, "click", () => showMatch(matchPos - 1));
+  on(findNext, "click", () => showMatch(matchPos + 1));
 
-  const isTyping = (t: EventTarget | null) => {
-    const node = t as HTMLElement | null;
-    return !!node && (node.tagName === "INPUT" || node.tagName === "TEXTAREA");
-  };
+  // ── keyboard ────────────────────────────────────────────────────────────────────
+  const isTyping = (t: EventTarget | null) =>
+    t instanceof HTMLInputElement || t instanceof HTMLTextAreaElement;
+  const isHidden = (line: HTMLElement) =>
+    root.classList.contains(`hide-${line.dataset.user ?? ""}`);
+  // The next or previous line whose speaker is shown.
   const seekLine = (delta: number) => {
-    const idx = activeIdx >= 0 ? activeIdx + delta : 0;
-    const clamped = Math.max(0, Math.min(lines.length - 1, idx));
-    // oxlint-disable-next-line typescript/no-non-null-assertion -- the index is in bounds (loop bound or a check above)
-    const line = lines[clamped]!;
+    let idx = activeIdx >= 0 ? activeIdx + delta : 0;
+    for (let l = lines[idx]; l && isHidden(l); l = lines[idx]) idx += delta;
+    const line = lines[Math.max(0, Math.min(lines.length - 1, idx))];
+    if (!line) return;
     seekTo(Number(line.dataset.second), line.dataset.user || "");
+    line.scrollIntoView({ block: "nearest" });
   };
-  const onKeydown = (e: KeyboardEvent) => {
-    if (e.key === "/" && !isTyping(e.target)) {
-      e.preventDefault();
-      searchInput.focus();
-      return;
-    }
+  // The page's shortcuts, by key (letters in lower case).
+  const shortcuts: Record<string, () => void> = {
+    "/": () => {
+      findInput?.focus({ preventScroll: true });
+      findInput?.select();
+    },
+    " ": togglePlay,
+    arrowleft: () => seekBy(-ARROW_SECONDS),
+    arrowright: () => seekBy(ARROW_SECONDS),
+    j: () => seekLine(1),
+    k: () => seekLine(-1),
+    f: toggleFollow,
+  };
+  // These keys' default actions (typing a slash, scrolling the page) give way to the shortcut.
+  const claimed = new Set(["/", " "]);
+  on(document, "keydown", (e) => {
+    if (!(e instanceof KeyboardEvent) || e.ctrlKey || e.metaKey || e.altKey) return;
     if (isTyping(e.target)) return;
-    switch (e.key) {
-      case " ":
-        e.preventDefault();
-        togglePlay();
-        break;
-      case "ArrowLeft":
-        audio.currentTime = Math.max(0, audio.currentTime - ARROW_SECONDS);
-        break;
-      case "ArrowRight":
-        audio.currentTime = Math.min(audio.duration || Infinity, audio.currentTime + ARROW_SECONDS);
-        break;
-      case "j":
-      case "J":
-        seekLine(1);
-        break;
-      case "k":
-      case "K":
-        seekLine(-1);
-        break;
-      case "f":
-      case "F":
-        locateBtn.click();
-        break;
-    }
-  };
-  document.addEventListener("keydown", onKeydown);
+    const key = e.key.toLowerCase();
+    const run = shortcuts[key];
+    if (!run) return;
+    if (claimed.has(key)) e.preventDefault();
+    run();
+  });
 
-  const highlightHash = () => {
-    const id = decodeURIComponent(window.location.hash.slice(1));
-    if (!id) return;
-    const target = document.getElementById(id);
-    if (target) {
-      target.classList.add("is-target");
-      target.scrollIntoView({ block: "center" });
-      window.setTimeout(() => target.classList.remove("is-target"), 2400);
-    }
-  };
   highlightHash();
-  window.addEventListener("hashchange", highlightHash);
-
-  setPlayIcon();
+  setPlayState();
   syncScrubber();
   updateActive();
 
-  // Teardown — listeners + timer. (faerrin dropped the SPA DOM-restore as an MPA;
-  // astra is an SPA, but navigation unmounts the article + the injected player with
-  // it, so the document/window-scoped listeners must be removed here or they leak.)
   return () => {
     window.clearTimeout(searchTimer);
-    audio.removeEventListener("timeupdate", onTimeUpdate);
-    audio.removeEventListener("play", setPlayIcon);
-    audio.removeEventListener("pause", setPlayIcon);
-    audio.removeEventListener("ended", setPlayIcon);
-    audio.removeEventListener("loadedmetadata", syncScrubber);
-    audio.removeEventListener("durationchange", syncScrubber);
-    scrubber.removeEventListener("input", onScrubInput);
-    scrubber.removeEventListener("change", onScrubChange);
-    root.removeEventListener("click", onRootClick);
-    searchInput.removeEventListener("input", onSearchInput);
-    searchInput.removeEventListener("keydown", onSearchKeydown);
-    document.removeEventListener("keydown", onKeydown);
-    window.removeEventListener("hashchange", highlightHash);
+    window.clearTimeout(targetTimer);
+    for (const off of listeners) off();
+    registry?.delete(FIND_HIGHLIGHT);
+    registry?.delete(FIND_CURRENT);
+    audio.pause();
   };
 }
 

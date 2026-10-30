@@ -47,6 +47,7 @@ import {
 } from "../src/domain/lib/site";
 import { simplifySlug } from "../src/domain/lib/slug";
 import { loadSnapshot, type Snapshot } from "../src/domain/lib/snapshot";
+import { speakerCss } from "../src/domain/lib/speakerColour";
 import {
   buildContentIndex,
   renderRss,
@@ -54,6 +55,7 @@ import {
   type SiteMeta,
 } from "../src/domain/lib/staticEmit";
 import { buildTranscripts } from "../src/domain/lib/transcriptBuild";
+import { labelScriptTree, type TranscriptMeta } from "../src/domain/lib/transcriptMeta";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.resolve(HERE, "../src/generated");
@@ -116,9 +118,11 @@ function bodyOf(doc: SiteDoc): string {
 }
 
 /** The generated runtime module (slugs/backlinks/folders/tags/Explorer/aliases). */
-function emitGeneratedModule(site: SiteData, extraTree: TreeNode[] = []): string {
+function emitGeneratedModule(site: SiteData, shows: ChronicleShowData[]): string {
   const pages = site.docs.map(toGenerated);
-  const tree = [...buildExplorerTree(site), ...extraTree];
+  // The chronicle nests in the tree, and transcripts are labelled with their episode titles.
+  const tree = [...buildExplorerTree(site), ...chronicleTree(shows)];
+  labelScriptTree(tree, shows);
   const tags = allTags(site);
   const folders = allFolders(site);
   const aliases = buildAliases(site).map(toGeneratedAlias);
@@ -213,7 +217,10 @@ function emitBodies(site: SiteData, snapshot: Snapshot, skip: Set<string>): stri
  * page-data server functions (`pageData.ts`) import the thunks, so the heavy HTML never
  * enters the main or client bundle. Returns the count.
  */
-function emitTranscriptBodies(bodies: Record<string, { html: string; minutes: number }>): string {
+function emitTranscriptBodies(
+  bodies: Record<string, { html: string; minutes: number }>,
+  meta: Record<string, TranscriptMeta>,
+): string {
   const dir = path.join(OUT_DIR, "transcripts");
   fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(dir, { recursive: true });
@@ -237,10 +244,14 @@ function emitTranscriptBodies(bodies: Record<string, { html: string; minutes: nu
       "/** Transcript bodies, code-split one lazy module per session (each ~1 MB) so the",
       " *  ~115 MB of HTML never enters the main bundle. Only the page-data server",
       " *  functions (pageData.ts) import these. */",
+      'import type { TranscriptMeta } from "../domain/lib/transcriptMeta";',
+      "",
       "export const TRANSCRIPT_BODIES: Record<string, () => Promise<{ default: string }>> = {",
       ...thunks,
       "};",
       `export const TRANSCRIPT_MINUTES: Record<string, number> = ${JSON.stringify(minutes)};`,
+      "/** Each session's duration and speakers, for the transcript page (transcriptMeta.ts). */",
+      `export const TRANSCRIPT_META: Record<string, TranscriptMeta> = ${JSON.stringify(meta)};`,
       "",
     ].join("\n"),
   );
@@ -248,26 +259,15 @@ function emitTranscriptBodies(bodies: Record<string, { html: string; minutes: nu
 }
 
 /**
- * Emit the speaker-color module: `--text<Name>` CSS vars + the per-speaker
- * `.transcript-name`/`.tp-chip`/`hide-` rules from ontology-being. faerrin keyed
- * these off a hardcoded SCSS `$speakers` list + `theme.scss` vars; astra derives
- * them from being.kdl (the single source of truth). Injected as a <style> in __root.
+ * Emit the speaker-colour module from ontology-being (faerrin hardcoded an SCSS
+ * `$speakers` list; astra derives it from being.kdl): the colours and per-speaker transcript
+ * rules `speakerCss` builds (speakerColour.ts). Injected as a <style> in __root.
  */
 function emitSpeakers(being: Being): string {
-  const speakers = [
+  const css = speakerCss([
     ...being.players.map((p) => ({ name: p.name, color: p.color })),
     { name: "Guest", color: being.guest_color },
-  ];
-  const vars = speakers.map((s) => `  --text${s.name}: ${s.color};`).join("\n");
-  const rules = speakers
-    .map(
-      (s) =>
-        `.transcript-name.${s.name}{color:var(--text${s.name})}` +
-        `.tp-chip.${s.name} .tp-chip-dot{background:var(--text${s.name})}` +
-        `.transcript-root.hide-${s.name} .transcript-line.${s.name}{display:none}`,
-    )
-    .join("\n");
-  const css = `:root{\n${vars}\n}\n${rules}\n`;
+  ]);
   emitModule(
     OUT_DIR,
     "speakers.ts",
@@ -480,9 +480,9 @@ const siteSource = defineContentSource({
       transcripts.docs.map((d) => [d.title, `/${encodeURI(simplifySlug(d.slug))}`]),
     );
     const chronicleShows = buildChronicleShows(hrefByDate);
-    const moduleSummary = emitGeneratedModule(site, chronicleTree(chronicleShows));
+    const moduleSummary = emitGeneratedModule(site, chronicleShows);
     const bodiesSummary = emitBodies(site, snapshot, transcriptSlugs);
-    const transcriptSummary = emitTranscriptBodies(transcripts.bodies);
+    const transcriptSummary = emitTranscriptBodies(transcripts.bodies, transcripts.meta);
     const speakersSummary = emitSpeakers(being);
     const staticSummary = emitStatic(site, meta);
     const chronicleSummary = emitChronicle(chronicleShows);

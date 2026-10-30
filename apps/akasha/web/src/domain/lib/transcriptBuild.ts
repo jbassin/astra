@@ -3,7 +3,7 @@
  * linguist session JSON into wiki pages: matchCampaign routes each session into
  * `Script/<campaign>/`
  * (or `Script/Unsorted/`), the markup mirrors faerrin's `remark-transcript.mjs`
- * OUTPUT shape (`audio[data-transcript]` + `.transcript-line` rows the verbatim
+ * OUTPUT shape (`audio[data-transcript]` + `.transcript-line` rows the
  * TranscriptPlayer attaches to), and the proper-noun linker auto-links mentions of
  * wiki pages. The produced SiteDocs merge into the same site graph as the snapshot
  * pages (routing/edges/backlinks/Explorer), so the slug set ∪ covers faerrin's.
@@ -24,7 +24,8 @@ import {
   simplifySlug,
   slugifyFilePath,
 } from "./slug";
-import { loadTranscripts, type Transcript } from "./transcript";
+import { loadTranscripts, type ScriptLine, type Transcript } from "./transcript";
+import type { TranscriptMeta, TranscriptSpeaker } from "./transcriptMeta";
 
 /** Transcripts that match no campaign land here (faerrin UNSORTED_FOLDER). */
 const UNSORTED_FOLDER = "Unsorted";
@@ -32,6 +33,8 @@ const UNSORTED_FOLDER = "Unsorted";
 interface TranscriptBuild {
   docs: SiteDoc[];
   bodies: Record<string, { html: string; minutes: number }>;
+  /** Per-session facts for the page (duration, speakers), keyed by slug. */
+  meta: Record<string, TranscriptMeta>;
 }
 
 /** The `Script/<folder>/<date>` slug for a session (Quartz slug rules → URL parity). */
@@ -41,7 +44,35 @@ function transcriptRel(folder: string, date: string): string {
 
 const attr = escapeHtml;
 
+/** A line's timestamp as the page shows it: "00:32:15" becomes "0:32:15". */
+export function lineTime(start: string): string {
+  return start.replace(/^0(\d):/, "$1:");
+}
+
+/** The session's length in seconds: where its last line ends. */
+export function sessionSeconds(script: readonly ScriptLine[]): number {
+  let end = 0;
+  for (const l of script) end = Math.max(end, l.second + (l.duration || 0));
+  return end;
+}
+
+/** Lines per speaker, most first, with the character each speaker plays. */
+export function speakerStats(
+  script: readonly ScriptLine[],
+  match: MatchedCampaign | null,
+): TranscriptSpeaker[] {
+  const counts = new Map<string, number>();
+  for (const l of script) counts.set(l.user.name, (counts.get(l.user.name) ?? 0) + 1);
+  return [...counts]
+    .map(([user, lines]) => ({ user, char: characterFor(user, match), lines }))
+    .toSorted((a, b) => b.lines - a.lines || a.user.localeCompare(b.user));
+}
+
 /**
+ * The transcript's HTML: the `<audio>` the player drives, then one `.transcript-line` per
+ * line. A line by the same speaker as the line before carries `is-cont`, so the page hides
+ * its time and name without working that out at runtime.
+ *
  * @param linker built once over the wiki corpus (snapshot pages' titles+aliases).
  */
 function renderTranscript(
@@ -53,20 +84,26 @@ function renderTranscript(
   const { date, audio, script } = transcript;
   const hits = new Set<SimpleSlug>();
   const parts: string[] = [
-    `<audio id="audio-${attr(date)}" data-transcript="${attr(date)}" preload="auto" tabindex="0" controls type="audio/mpeg">` +
+    `<audio id="audio-${attr(date)}" data-transcript="${attr(date)}" preload="auto" type="audio/mpeg">` +
       `<source type="audio/mp3" src="${attr(audio)}" />` +
       `Sorry, your browser does not support HTML5 audio.</audio>`,
   ];
+  let previous: string | null = null;
   for (const line of script) {
     const name = line.user.name;
     const char = characterFor(name, match);
     const u = attr(name);
     const c = attr(char);
+    const time = attr(lineTime(line.start));
+    const cont = name === previous ? " is-cont" : "";
+    previous = name;
+    // The colon after the name is there for copying and screen readers; the layout hides it.
     parts.push(
-      `<div id="${attr(`${line.second}-${name}`)}" class="transcript-line ${u}" ` +
+      `<div id="${attr(`${line.second}-${name}`)}" class="transcript-line ${u}${cont}" ` +
         `data-second="${attr(String(line.second))}" data-user="${u}" data-char="${c}">` +
-        `<button class="transcript-time" type="button" aria-label="Seek to ${attr(line.start)}">${attr(line.start)}</button>` +
-        `<span class="transcript-name ${u}" data-real="${u}" data-char="${c}">${c}:</span>` +
+        `<button class="transcript-time" type="button" aria-label="Play from ${time}">${time}</button>` +
+        `<span class="transcript-name ${u}" data-real="${u}" data-char="${c}">${c}</span>` +
+        `<span class="transcript-colon">: </span>` +
         `<span class="transcript-content">${linker.link(line.text, slug, hits)}</span>` +
         `</div>`,
     );
@@ -103,6 +140,7 @@ export function buildTranscripts(
   const transcripts = loadTranscripts(dataDir);
   const docs: SiteDoc[] = [];
   const bodies: Record<string, { html: string; minutes: number }> = {};
+  const meta: Record<string, TranscriptMeta> = {};
 
   for (const transcript of transcripts) {
     const match = matchCampaign(transcript, being.campaigns, nameBySlug);
@@ -122,7 +160,12 @@ export function buildTranscripts(
       date: new Date(transcript.date),
     });
     bodies[slug] = { html, minutes };
+    meta[slug] = {
+      date: transcript.date,
+      durationSeconds: Math.round(sessionSeconds(transcript.script)),
+      speakers: speakerStats(transcript.script, match),
+    };
   }
 
-  return { docs, bodies };
+  return { docs, bodies, meta };
 }

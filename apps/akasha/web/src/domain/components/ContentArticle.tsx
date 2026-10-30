@@ -4,7 +4,6 @@
 import { ArticleTitle } from "@/domain/components/ArticleTitle";
 import { Breadcrumbs } from "@/domain/components/Breadcrumbs";
 import { ContentMeta } from "@/domain/components/ContentMeta";
-import { TranscriptPlayer } from "@/domain/components/islands/TranscriptPlayer";
 import { PageLayout } from "@/domain/components/PageLayout";
 import { WikiRail } from "@/domain/components/WikiRail";
 import type { ContentView } from "@/domain/lib/runtimeSite";
@@ -37,9 +36,6 @@ export function ContentArticle({ view }: { view: ContentView }) {
         // oxlint-disable-next-line react/no-danger -- body HTML rendered at build time from the wiki
         dangerouslySetInnerHTML={{ __html: view.bodyHtml }}
       />
-      {/* Progressive-enhancement: attaches to the SSR-emitted transcript markup on
-          Script pages; a no-op (returns null, binds nothing) on every other page. */}
-      <TranscriptPlayer />
     </PageLayout>
   );
 }
