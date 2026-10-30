@@ -66,6 +66,14 @@ player "tanner" {
 guest-color "rgb(235,235,236)"
 
 // --- campaigns (player → the PC[s] they play; "Gamemaster" marks the GM role) --------
+//
+// Append new campaigns at the END: a campaign's position is its transcript filename prefix
+// (`<0 main | 1 other><idx>.<slug>.<date>.txt`), so inserting one renames every later file.
+// weal's roster takes the first `main` campaign, so an earlier campaign is `main #false`.
+
+// The worlds of the Astra, the meta-setting the GM's campaigns share. heartwood ingests,
+// and the entity registry seeds player characters for, only campaigns set in these worlds.
+astra-worlds "faerrin" "althane" "ushas"
 
 campaign "through-a-song-darkly" {
     name "Through a Song, Darkly"
@@ -148,7 +156,7 @@ campaign "observatory-slipped" {
     name "Observatory, Slipped"
     edition "pathfinder_2e"
     main #false
-    world "sedecium"
+    world "ushas"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Foral" { desc "a field agent of Sedecium; a goblin gunslinger/rogue" }
     role player="mike" character="Scrazzy" { desc "a field agent of Sedecium; a human wizard" }
@@ -181,6 +189,42 @@ campaign "chuul-hunt" {
     role player="mike" character="Zulgrath" class="wizard" {
         desc "a teenage warrior of the tribe, hunting their first big game to be considered an adult; an orc wizard"
     }
+}
+
+campaign "deep-eyes" {
+    name "Deep Eyes"
+    edition "pathfinder_2e"
+    main #false
+    world "althane"
+    role player="josh" character="Gamemaster" class="gm"
+    role player="jorge" character="Lev" { desc "an adventurer in the GM's second campaign, set on Althane" }
+    role player="noah" character="Big Fish" { desc "an adventurer in the GM's second campaign, set on Althane" }
+    role player="noah" character="Dawnmonger" { desc "an adventurer in the GM's second campaign, set on Althane" }
+    role player="mike" character="Divex" { desc "an adventurer in the GM's second campaign, set on Althane" }
+    role player="tanner" character="Henrik" { desc "an adventurer in the GM's second campaign, set on Althane" }
+}
+
+campaign "the-midnight-sun" {
+    name "The Midnight Sun"
+    edition "pathfinder_2e"
+    main #false
+    world "faerrin"
+    role player="josh" character="Gamemaster" class="gm"
+    role player="noah" character="Banyan" { desc "a co-worker in Calaria's Actinium Convox, a weapons development convox; an orc" }
+    role player="tanner" character="Giancarlo" { desc "a co-worker in Calaria's Actinium Convox, a weapons development convox; a human" }
+    role player="mike" character="Crindle Vilksnake" { desc "a co-worker in Calaria's Actinium Convox, a weapons development convox" }
+}
+
+campaign "hildebrandt-heist" {
+    name "Hildebrandt Heist"
+    edition "pathfinder_2e"
+    main #false
+    world "faerrin"
+    role player="josh" character="Gamemaster" class="gm"
+    role player="noah" character="Adzuki" { desc "an employee of Hildebrandt Corporation, a military contractor; tall and elven-looking, with a ceremonial glaive" }
+    role player="tanner" character="Mika" { desc "an employee of Hildebrandt Corporation, a military contractor" }
+    role player="mike" character="Chris Gangle" { desc "an employee of Hildebrandt Corporation, a military contractor; an illusionist, its head of remote viewing" }
+    role player="jorge" character="Vint Cerf" { desc "an employee of Hildebrandt Corporation, a military contractor" }
 }
 
 // --- weal-host: weal-bot Discord message-send identities (mouth/host.rs) --------------

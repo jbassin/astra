@@ -77,6 +77,8 @@ export const BeingSchema = z
   .object({
     players: z.array(PlayerSchema),
     guest_color: z.string(),
+    // the Astra worlds: heartwood ingests only campaigns set in one of these
+    astra_worlds: z.array(z.string()),
     campaigns: z.array(CampaignSchema),
     weal_hosts: z.array(WealHostSchema),
     podcast_personas: z.array(PodcastPersonaSchema),

@@ -13,16 +13,16 @@ heartwood, akasha-backend, assay and the mouthpiece tools import it.
 - **Being.** `load_being(path)` returns the validated `Being`: `players` (`Player` with the
   `player_id` dice key, Discord snowflakes, recording aliases, colour), `campaigns` (`Campaign`
   with `Role` seats), `weal_hosts` (`WealHost` with its `HostLines` banks), `podcast_personas`
-  and `guest_color`. `canonical_json(being)` is the stable JSON TS reads.
-  `faerrin_campaign_slugs(being)` gives the campaigns set in the `faerrin` world, the only ones
-  heartwood ingests.
+  `guest_color` and `astra_worlds`. `canonical_json(being)` is the stable JSON TS reads.
+  `astra_campaign_slugs(being)` gives the campaigns set in a world of the Astra
+  (`astra_worlds`), the only ones heartwood ingests.
 - **Sessions** (`astra_ontology.sessions`). `load_session_overrides(path)` returns
   `SessionOverrides`: `get(key)`, `for_episode(episode_id)`, `skipped(key)`, `skipped_keys()`.
   Each `SessionOverride` carries `skip`, `kind` (`session`, `recap` or `special`), `title` and a
   `note`.
 - **Entities.** `parse_entities(path)` and `serialize_entities(entities)` read and write
   `entity.kdl`. `seed_entities(snapshot, defs, being)` derives entities from the akasha
-  snapshot, `defs.kdl` and the faerrin player characters, merging only names that fold to the
+  snapshot, `defs.kdl` and the Astra-world player characters, merging only names that fold to the
   same string; `merge_seed(fresh, existing)` merges a fresh seed over the existing registry.
 - **Resolution.** `Resolver(entities).resolve(name, kind_hint=None)` returns a `Resolution` with
   status `resolved`, `ambiguous` or `unknown`, a confidence and up to `RESOLVE_K` candidates. An

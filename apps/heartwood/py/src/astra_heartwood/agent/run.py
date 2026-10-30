@@ -54,7 +54,7 @@ from opentelemetry.trace import Status, StatusCode
 from .campaigns import campaign_context, stamp_campaign
 from .instructions import MaintainWiki
 from .rlm import HeartwoodRLM, MeteringMixin
-from .sessions import faerrin_session
+from .sessions import astra_session
 from .telemetry import RunParent, instrument_tool, instruments, log, tracer
 from .tools import HeartwoodTools
 from .validate import Validator, node_validator
@@ -152,12 +152,12 @@ def run_session(
     """Stage, run the agent over session ``date``, and write the artifacts.
 
     Never publishes. Raises only for setup errors before the run starts (e.g. ``date``
-    is not an ingestible faerrin session); every error inside the run becomes a
+    is not an ingestible Astra session); every error inside the run becomes a
     ``failed`` result with artifacts. ``dry_run`` is recorded in ``summary.json``.
     """
     cfg = config if config is not None else load_config().heartwood
-    if faerrin_session(date, being=being, transcript_dir=transcript_dir) is None:
-        raise ValueError(f"{date} is not an ingestible faerrin-world session")
+    if astra_session(date, being=being, transcript_dir=transcript_dir) is None:
+        raise ValueError(f"{date} is not an ingestible Astra-world session")
     started = time.monotonic()
     ws = Workspace.create(
         date, content_dir=content_dir, artifacts_root=artifacts_root, run_id=run_id

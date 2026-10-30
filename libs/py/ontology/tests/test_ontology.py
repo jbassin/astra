@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 from astra_config.kdl import KdlDecodeError
-from astra_ontology import canonical_json, faerrin_campaign_slugs, load_being
+from astra_ontology import astra_campaign_slugs, canonical_json, load_being
 from astra_ontology_being import CANONICAL_JSON_PATH, load
 
 
@@ -44,19 +44,40 @@ def test_song_darkly_and_double_pc() -> None:
     assert len(argyle.descriptions) == 3
 
 
-def test_world_field_and_faerrin_filter() -> None:
+def test_world_field_and_astra_filter() -> None:
     being = load()
     by_slug = {c.slug: c for c in being.campaigns}
-    # Each campaign declares its world; the two off-world arcs are not faerrin.
+    assert being.astra_worlds == ["faerrin", "althane", "ushas"]
+    # Each campaign declares its world; the two Tanner-run arcs are outside the Astra.
     assert by_slug["fey-in-the-mists"].world == "finnegan's ring"
-    assert by_slug["observatory-slipped"].world == "sedecium"
-    assert faerrin_campaign_slugs(being) == {
+    assert by_slug["chuul-hunt"].world == "chuul-hunt"
+    assert by_slug["observatory-slipped"].world == "ushas"
+    assert by_slug["deep-eyes"].world == "althane"
+    assert astra_campaign_slugs(being) == {
         "through-a-song-darkly",
         "a-hunt-of-metal-and-vine",
         "the-first-spark",
         "interred-in-iomenei",
         "fae-and-forest",
+        "observatory-slipped",
+        "deep-eyes",
+        "the-midnight-sun",
+        "hildebrandt-heist",
     }
+
+
+def test_earlier_campaigns_are_appended_and_not_main() -> None:
+    # A campaign's list position is its transcript filename prefix, so the earlier
+    # campaigns were appended after the existing ones; none of them is `main`.
+    slugs = [c.slug for c in load().campaigns]
+    assert slugs[-3:] == ["deep-eyes", "the-midnight-sun", "hildebrandt-heist"]
+    assert slugs.index("chuul-hunt") == 7
+    by_slug = {c.slug: c for c in load().campaigns}
+    deep_eyes = by_slug["deep-eyes"]
+    assert not deep_eyes.main
+    noah = [r.character for r in deep_eyes.roles if r.player == "noah"]
+    assert noah == ["Big Fish", "Dawnmonger"]  # two different characters
+    assert all(not by_slug[s].main for s in slugs[-3:])
 
 
 def test_gm_is_per_campaign_not_always_josh() -> None:

@@ -15,6 +15,9 @@ entity "a Will save" {
     alias "Uh\\s*We'll\\s*save"
     source "defs"
 }
+entity "Adzuki" kind="person" being="noah" {
+    source "being"
+}
 entity "Alfie Gallagher" {
     alias "Elfie Gallagher"
     source "defs"
@@ -178,6 +181,9 @@ entity "Bait-and-Tackle Shop" {
     alias "Bait and tackle shop"
     source "defs"
 }
+entity "Banyan" kind="person" being="noah" {
+    source "being"
+}
 entity "barghest" {
     alias "Barguest"
     alias "Barghest"
@@ -237,6 +243,9 @@ entity "Bev Sirnow" {
     alias "Bev Cerno"
     source "defs"
 }
+entity "Big Fish" kind="person" being="noah" {
+    source "being"
+}
 entity "Black and White" {
     alias "black and white"
     source "defs"
@@ -285,6 +294,9 @@ entity "Chorath" {
     alias "Korath"
     source "defs"
 }
+entity "Chris Gangle" kind="person" being="mike" {
+    source "being"
+}
 entity "Cliff" kind="person" being="jorge" {
     source "being"
 }
@@ -300,6 +312,9 @@ entity "Copperjaw" {
     alias "Coppajaw"
     source "defs"
 }
+entity "Crindle Vilksnake" kind="person" being="mike" {
+    source "being"
+}
 entity "Crowe" {
     alias "Crow"
     source "defs"
@@ -311,6 +326,9 @@ entity "Dame Quay" {
     alias "damn\\s*Quay"
     source "defs"
 }
+entity "Dawnmonger" kind="person" being="noah" {
+    source "being"
+}
 entity "Deosil" {
     alias "Diesel"
     source "defs"
@@ -320,10 +338,11 @@ entity "dhampir" {
     alias "Dompir"
     source "defs"
 }
-entity "Divex" {
+entity "Divex" kind="person" being="mike" {
     alias "Dybeck"
     alias "Dive-X"
     source "defs"
+    source "being"
 }
 entity "Divine Raiment" kind="deity" page="Divinity/Divine Raiment" {
     source "akasha"
@@ -441,10 +460,11 @@ entity "Floch" {
     alias "Floak"
     source "defs"
 }
-entity "Foral" {
+entity "Foral" kind="person" being="jorge" {
     alias "Forell"
     alias "Forl"
     source "defs"
+    source "being"
 }
 entity "Fort DC" {
     alias "fork, DC"
@@ -510,6 +530,9 @@ entity "Ghosts of Raelion" {
 entity "Giacomo" {
     source "defs"
 }
+entity "Giancarlo" kind="person" being="tanner" {
+    source "being"
+}
 entity "Giannos" {
     alias "Janus"
     alias "Giannis"
@@ -571,6 +594,9 @@ entity "Helmyster" {
     alias "Hell?m[ie]ster"
     alias "Helmstier"
     source "defs"
+}
+entity "Henrik" kind="person" being="tanner" {
+    source "being"
 }
 entity "Herald" {
     alias "herald"
@@ -768,6 +794,9 @@ entity "Letov" {
     alias "Latav"
     source "defs"
 }
+entity "Lev" kind="person" being="jorge" {
+    source "being"
+}
 entity "Lorandris" {
     alias "Laurentius"
     alias "Lorandrus"
@@ -847,6 +876,9 @@ entity "MetCon" {
     source "defs"
 }
 entity "Mickey" kind="person" being="tanner" {
+    source "being"
+}
+entity "Mika" kind="person" being="tanner" {
     source "being"
 }
 entity "MoCuP" {
@@ -936,9 +968,10 @@ entity "our door" {
     alias "Ardor"
     source "defs"
 }
-entity "Ozzie" {
+entity "Ozzie" kind="person" being="tanner" {
     alias "Ozzy"
     source "defs"
+    source "being"
 }
 entity "P'ter" {
     alias "Pterr"
@@ -1120,13 +1153,14 @@ entity "Scale" {
     alias "Scal"
     source "defs"
 }
-entity "Scrazzy" {
+entity "Scrazzy" kind="person" being="mike" {
     alias "Skrazi"
     alias "Scrazy"
     alias "Scrazzia"
     alias "Scrazi"
     alias "Scrazz"
     source "defs"
+    source "being"
 }
 entity "Second Sun Diner" {
     alias "Second Son Diner"
@@ -1374,6 +1408,9 @@ entity "Verdant Expanse" {
 entity "Vilksnake" {
     alias "vilk snake"
     source "defs"
+}
+entity "Vint Cerf" kind="person" being="jorge" {
+    source "being"
 }
 entity "Voidsong" {
     alias "Void Song"

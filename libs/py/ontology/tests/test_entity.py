@@ -21,6 +21,7 @@ def _being() -> Being:
     return Being(
         players=[],
         guest_color="",
+        astra_worlds=["faerrin", "althane"],
         weal_hosts=[],
         podcast_personas=[],
         campaigns=[
@@ -37,11 +38,19 @@ def _being() -> Being:
                 ],
             ),
             Campaign(
+                slug="second-arc",
+                name="Second Arc",
+                edition="pf2e",
+                main=False,
+                world="althane",  # another Astra world → its PCs are seeded too
+                roles=[Role(player="mike", character="Divex")],
+            ),
+            Campaign(
                 slug="off-world",
                 name="Off World",
                 edition="pf2e",
                 main=False,
-                world="sedecium",  # not faerrin → its PCs are NOT seeded
+                world="finnegan's ring",  # not an Astra world → its PCs are NOT seeded
                 roles=[Role(player="josh", character="Foral")],
             ),
         ],
@@ -95,7 +104,9 @@ def test_cross_source_unify_and_pc_boundary() -> None:
     assert ichel.being == "jorge"  # PC boundary marker preserved through the merge
     # Mango is a faerrin PC with no akasha/defs counterpart → person, being set, no page.
     assert by_name["Mango"].being == "noah" and by_name["Mango"].page is None
-    # Foral plays in a non-faerrin world → not seeded as a PC.
+    # Divex plays in althane, another Astra world → seeded as a PC.
+    assert by_name["Divex"].being == "mike"
+    # Foral plays outside the Astra → not seeded as a PC.
     assert "Foral" not in by_name
 
 

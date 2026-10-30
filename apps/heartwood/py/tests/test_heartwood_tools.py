@@ -1,7 +1,7 @@
 """The agent's host-side tools.
 
-Hermetic: a fixture corpus with a crossref web, a fixture ``being`` with one faerrin and
-one non-faerrin campaign, four fixture transcripts around the 2025-8-28 target (earlier
+Hermetic: a fixture corpus with a crossref web, a fixture ``being`` with one Astra-world and
+one non-Astra campaign, four fixture transcripts around the 2025-8-28 target (earlier
 same-world, earlier other-world, the target, a later same-world one), a fake validator
 and a fake resolver. One real-node validator test skips when node / node_modules are
 absent (CI's py-test lane).
@@ -56,6 +56,7 @@ def fixture_being() -> Being:
     return Being(
         players=[],
         guest_color="#000000",
+        astra_worlds=["faerrin"],
         campaigns=[campaign("song", "faerrin"), campaign("stars", "sedecium")],
         weal_hosts=[],
         podcast_personas=[],

@@ -1,9 +1,10 @@
-"""Session selection + transcript access — the faerrin-world filter.
+"""Session selection + transcript access — the Astra-world filter.
 
-heartwood ingests only ``world == "faerrin"`` campaigns. This composes chronicle's
-committed-filename session→show resolution (``show_for_date``, which already honors
-the `sessions.kdl` skips) with the faerrin world set (``faerrin_campaign_slugs``). An
-unmatched/unknown slug is simply *not* faerrin — never a crash.
+heartwood ingests only campaigns set in a world of the Astra (``being.kdl``
+``astra-worlds``). This composes chronicle's committed-filename session→show resolution
+(``show_for_date``, which already honors the `sessions.kdl` skips) with the Astra campaign
+set (``astra_campaign_slugs``). An unmatched/unknown slug is simply *not* an Astra session
+— never a crash.
 
 Transcripts are the ``<prefix>.<slug>.<date>.txt`` files under config ``data.linguist-transcripts``
 (``NNNNNN\\tSpeaker: text``, in the astra-data repo). Dates are non-zero-padded, so ordering uses
@@ -19,27 +20,27 @@ from __future__ import annotations
 from pathlib import Path
 
 from astra_linguist.chronicle import TRANSCRIPT_DIR, show_for_date, show_index
-from astra_ontology import faerrin_campaign_slugs, load_being
+from astra_ontology import astra_campaign_slugs, load_being
 from astra_ontology.models import Being
 from astra_ontology_being import BEING_KDL_PATH
 from astra_sessions import date_key, find_transcript, transcript_dates
 
 
-def faerrin_session(
+def astra_session(
     date: str, *, being: Being | None = None, transcript_dir: Path = TRANSCRIPT_DIR
 ) -> str | None:
-    """The campaign slug iff ``date`` is an ingestible faerrin-world session, else None.
+    """The campaign slug iff ``date`` is an ingestible Astra-world session, else None.
 
     ``None`` covers three drop reasons, all non-fatal: no committed transcript / unknown
     slug, a `sessions.kdl` skip (handled inside ``show_for_date``), or a campaign
-    in a non-faerrin world (e.g. sedecium, finnegan's ring). ``transcript_dir`` is the
+    outside the Astra (e.g. finnegan's ring, chuul-hunt). ``transcript_dir`` is the
     test seam (fixture transcripts + a fixture ``being``).
     """
     being = being if being is not None else load_being(BEING_KDL_PATH)
     show = show_for_date(date, transcript_dir=transcript_dir, shows=show_index(being))
     if show is None:
         return None
-    return show.slug if show.slug in faerrin_campaign_slugs(being) else None
+    return show.slug if show.slug in astra_campaign_slugs(being) else None
 
 
 def ingestible_dates(
@@ -52,7 +53,7 @@ def ingestible_dates(
         (
             d
             for d in dates
-            if faerrin_session(d, being=being, transcript_dir=transcript_dir) is not None
+            if astra_session(d, being=being, transcript_dir=transcript_dir) is not None
         ),
         key=date_key,
     )

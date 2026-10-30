@@ -3,7 +3,7 @@
 A registry of in-world *nouns* (people/places/things) — the targets heartwood
 resolves transcript mentions against. Seeded (not forked) from three committed
 sources: the akasha wiki snapshot, the `defs.kdl` correction vocabulary, and the
-faerrin player-characters in ontology-being. Persisted as a typed KDL file
+Astra-world player-characters in ontology-being. Persisted as a typed KDL file
 (`entity.kdl`); Python-only (no Zod twin, no canonical-JSON parity — a Python
 round-trip test guards stability instead).
 
@@ -127,13 +127,14 @@ def _defs_entities(defs: dict[str, list[str]]) -> list[Entity]:
 
 
 def _being_entities(being: Being) -> list[Entity]:
-    # Inline the faerrin filter (matches `faerrin_campaign_slugs`) to avoid importing
+    # Inline the Astra filter (matches `astra_campaign_slugs`) to avoid importing
     # the package __init__ from here — entity is imported *by* __init__.
-    faerrin = {c.slug for c in being.campaigns if c.world == "faerrin"}
+    worlds = set(being.astra_worlds)
+    astra = {c.slug for c in being.campaigns if c.world in worlds}
     out: list[Entity] = []
     seen: set[str] = set()
     for c in being.campaigns:
-        if c.slug not in faerrin:
+        if c.slug not in astra:
             continue
         for r in c.roles:
             if r.character == "Gamemaster":
@@ -165,7 +166,7 @@ def seed_entities(
     defs: dict[str, list[str]],
     being: Being,
 ) -> list[Entity]:
-    """Pure seed: akasha pages ∪ defs canonicals ∪ faerrin PCs, strict-deduped by fold.
+    """Pure seed: akasha pages ∪ defs canonicals ∪ Astra-world PCs, strict-deduped by fold.
 
     akasha is added first, so its `page`+`kind` are authoritative; defs and being
     contribute alias/source unions (and the `being` PC marker). Unification is by

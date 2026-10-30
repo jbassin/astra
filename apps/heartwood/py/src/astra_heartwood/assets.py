@@ -1,6 +1,6 @@
 """Dagster wiring for heartwood: ``session_wiki`` on the shared ``sessions`` partitions,
 after linguist's ``session_transcripts``, and the automation that launches it for each
-faerrin session (`HEARTWOOD_STAGE`, evaluated by `heartwood_automation`).
+Astra-world session (`HEARTWOOD_STAGE`, evaluated by `heartwood_automation`).
 
 ``session_wiki`` does not run the agent (the dagster-code image has no node, git, push key
 or docker). It files ``<requests-path>/<date>.request.json`` and waits for the
@@ -28,7 +28,7 @@ from astra_pipeline_resources.partitions import (
 )
 
 from . import requests as rq
-from .agent.sessions import faerrin_session
+from .agent.sessions import astra_session
 
 #: Run tag capped at 1 concurrent run in dagster/dagster.yaml: a waiting
 #: session_wiki holds a run slot, so two of them must never starve the pipeline.
@@ -128,10 +128,10 @@ def run_session_wiki(
     return meta
 
 
-def is_faerrin(date: str, transcript_dir: Path | None = None) -> bool:
-    """True when this session's canonical transcript is a faerrin-world campaign."""
+def is_astra(date: str, transcript_dir: Path | None = None) -> bool:
+    """True when this session's canonical transcript is an Astra-world campaign."""
     transcript_dir = transcript_dir if transcript_dir is not None else TRANSCRIPT_DIR
-    return faerrin_session(date, transcript_dir=transcript_dir) is not None
+    return astra_session(date, transcript_dir=transcript_dir) is not None
 
 
 #: When ``session_wiki`` launches for a session (``dagster/migrate_sessions.py`` reads it
@@ -139,7 +139,7 @@ def is_faerrin(date: str, transcript_dir: Path | None = None) -> bool:
 #: The ledger is never read here: it lives in the astra-data clone, which the Dagster
 #: containers do not mount, and the host runner owns the published check.
 HEARTWOOD_STAGE = SessionStage(
-    upstream=session_transcripts.key, stage=dg.AssetKey("session_wiki"), keep=is_faerrin
+    upstream=session_transcripts.key, stage=dg.AssetKey("session_wiki"), keep=is_astra
 )
 
 
@@ -173,7 +173,7 @@ heartwood_automation = stage_sensor(
     [session_wiki],
     run_tags=CONCURRENCY_TAG,
     description=(
-        "Runs session_wiki (a paid host agent run) for each faerrin session whose "
+        "Runs session_wiki (a paid host agent run) for each Astra-world session whose "
         "session_transcripts was newly materialized and whose wiki was never tried. "
         "Stop it to pause heartwood launches."
     ),

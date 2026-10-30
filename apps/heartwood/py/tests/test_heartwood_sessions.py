@@ -1,8 +1,9 @@
-"""The faerrin-world session filter + transcript access.
+"""The Astra-world session filter + transcript access.
 
-Reads the committed transcripts + being.kdl: faerrin sessions are kept and resolve to a
-faerrin campaign slug; non-faerrin worlds (sedecium `observatory-slipped`, finnegan's-ring
-`fey-in-the-mists`) and the mislabeled session `sessions.kdl` skips (2025-8-11) are dropped.
+Reads the committed transcripts + being.kdl: sessions of a campaign in an Astra world
+(faerrin, and ushas for `observatory-slipped`) are kept and resolve to its slug; a world
+outside the Astra (finnegan's-ring `fey-in-the-mists`) and the mislabeled session
+`sessions.kdl` skips (2025-8-11) are dropped.
 Absolute counts are NOT asserted (committed transcripts grow as sessions land).
 """
 
@@ -12,12 +13,12 @@ from pathlib import Path
 
 import pytest
 from astra_heartwood.agent.sessions import (
-    faerrin_session,
+    astra_session,
     ingestible_dates,
     read_transcript,
     transcript_path,
 )
-from astra_ontology import faerrin_campaign_slugs, load_being
+from astra_ontology import astra_campaign_slugs, load_being
 from astra_ontology_being import BEING_KDL_PATH
 from astra_sessions import date_key
 
@@ -25,28 +26,30 @@ KEPT = {
     "2026-6-8": "through-a-song-darkly",
     "2025-6-9": "a-hunt-of-metal-and-vine",
     "2026-2-10": "interred-in-iomenei",
+    "2026-4-6": "observatory-slipped",  # ushas, an Astra world
+    "2026-4-27": "observatory-slipped",
 }
-WORLD_DROP = ["2026-4-6", "2026-4-27", "2026-4-20"]
+WORLD_DROP = ["2026-4-20"]
 EXCLUDED = "2025-8-11"
 
 
-def test_faerrin_sessions_kept_with_slug() -> None:
+def test_astra_sessions_kept_with_slug() -> None:
     for date, slug in KEPT.items():
-        assert faerrin_session(date) == slug
+        assert astra_session(date) == slug
 
 
-def test_non_faerrin_worlds_and_excluded_dropped() -> None:
+def test_non_astra_worlds_and_excluded_dropped() -> None:
     for date in [*WORLD_DROP, EXCLUDED, "1999-1-1"]:
-        assert faerrin_session(date) is None
+        assert astra_session(date) is None
 
 
-def test_ingestible_dates_are_faerrin_and_chronological() -> None:
+def test_ingestible_dates_are_astra_and_chronological() -> None:
     being = load_being(BEING_KDL_PATH)
-    faerrin = faerrin_campaign_slugs(being)
+    astra = astra_campaign_slugs(being)
     dates = ingestible_dates(being=being)
     assert set(KEPT) <= set(dates)
     assert not (set(WORLD_DROP) | {EXCLUDED}) & set(dates)
-    assert all(faerrin_session(d, being=being) in faerrin for d in dates)
+    assert all(astra_session(d, being=being) in astra for d in dates)
     # date_key order, not string order (a string sort puts 2025-10-20 first)
     assert dates == sorted(dates, key=date_key)
     assert dates.index("2025-8-28") < dates.index("2025-10-20")

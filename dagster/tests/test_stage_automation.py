@@ -26,7 +26,7 @@ SENSORS = ("linguist_automation", "mouthpiece_automation", "heartwood_automation
 
 @pytest.fixture
 def files(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """script.json and a faerrin canonical transcript for ``SESSION``."""
+    """script.json and an Astra-world canonical transcript for ``SESSION``."""
     (tmp_path / SESSION).mkdir()
     (tmp_path / SESSION / "script.json").write_text("[]")
     (tmp_path / f"000.show.{SESSION}.txt").write_text("x")
@@ -34,7 +34,7 @@ def files(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         linguist, "_linguist_config", lambda: SimpleNamespace(ingest_saved_dir=str(tmp_path))
     )
     monkeypatch.setattr(mouthpiece.linguist_io, "TRANSCRIPT_DIR", tmp_path)
-    monkeypatch.setattr(heartwood, "faerrin_session", lambda _d, transcript_dir: "show")
+    monkeypatch.setattr(heartwood, "astra_session", lambda _d, transcript_dir: "show")
 
 
 class Pipeline:
