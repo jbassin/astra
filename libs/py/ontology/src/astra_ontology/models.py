@@ -43,7 +43,7 @@ class Campaign(_Base):
     name: str
     edition: str
     main: bool = False
-    world: str  # the setting played in (free-form; "faerrin" scopes heartwood ingestion)
+    world: str  # the setting played in (free-form; `Being.astra_worlds` scopes heartwood)
     roles: Annotated[list[Role], Children("role")]
 
 
@@ -85,6 +85,9 @@ class PodcastPersona(_Base):
 class Being(_Base):
     players: Annotated[list[Player], Children("player")]
     guest_color: str
+    #: The worlds of the Astra (the shared meta-setting): heartwood ingests, and the entity
+    #: registry seeds player characters for, only campaigns set in one of these.
+    astra_worlds: list[str] = []
     campaigns: Annotated[list[Campaign], Children("campaign")]
     weal_hosts: Annotated[list[WealHost], Children("weal-host")]
     podcast_personas: Annotated[list[PodcastPersona], Children("podcast-persona")]

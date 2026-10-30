@@ -16,6 +16,7 @@ function being(players: Partial<Being["players"][number]>[]): Being {
       color: p.color ?? "rgb(0,0,0)",
     })),
     guest_color: "",
+    astra_worlds: [],
     campaigns: [],
     weal_hosts: [],
     podcast_personas: [],

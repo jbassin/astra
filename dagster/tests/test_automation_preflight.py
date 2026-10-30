@@ -51,13 +51,13 @@ def adoption() -> ModuleType:
 
 @pytest.fixture(autouse=True)
 def files(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Every session has script.json, a canonical transcript, and is faerrin."""
+    """Every session has script.json, a canonical transcript, and is an Astra-world session."""
     monkeypatch.setattr(linguist, "has_script", lambda _saved, _key: True)
     monkeypatch.setattr(
         linguist, "_linguist_config", lambda: SimpleNamespace(ingest_saved_dir=str(tmp_path))
     )
     monkeypatch.setattr(mouthpiece.linguist_io, "transcript_for", lambda _k, _d: Path("t.txt"))
-    monkeypatch.setattr(heartwood, "faerrin_session", lambda _d, transcript_dir: "show")
+    monkeypatch.setattr(heartwood, "astra_session", lambda _d, transcript_dir: "show")
 
 
 @pytest.fixture

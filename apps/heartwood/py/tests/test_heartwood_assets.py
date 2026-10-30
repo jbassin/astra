@@ -135,7 +135,7 @@ def _transcripts(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, dates: dict[st
         (tdir / f"000.show.{date}.txt").write_text("000001\tGamemaster: hi\n")
     monkeypatch.setattr(assets, "TRANSCRIPT_DIR", tdir)
     monkeypatch.setattr(
-        assets, "faerrin_session", lambda d, transcript_dir: "show" if dates[d] else None
+        assets, "astra_session", lambda d, transcript_dir: "show" if dates[d] else None
     )
     return tdir
 
@@ -156,7 +156,7 @@ class _Ticker:
         return requests
 
 
-def test_automation_runs_new_faerrin_sessions_whose_wiki_was_never_tried(
+def test_automation_runs_new_astra_sessions_whose_wiki_was_never_tried(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     dates = {
@@ -176,7 +176,7 @@ def test_automation_runs_new_faerrin_sessions_whose_wiki_was_never_tried(
     tick = _Ticker(instance)
     assert tick() == []
 
-    # New: 2026-10-26 (faerrin) and 2026-10-20 (not faerrin); linguist re-run by hand for
+    # New: 2026-10-26 (Astra) and 2026-10-20 (not Astra); linguist re-run by hand for
     # 2026-10-12 and 2026-10-19, whose wiki was tried.
     instance.add_dynamic_partitions(SESSIONS_NAME, ["2026-10-26"])
     mark_materialized(

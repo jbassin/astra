@@ -49,7 +49,8 @@ def _write_episodes(episodes_dir: Path, entries: list[EpisodeEntry]) -> None:
 # ── show taxonomy ───────────────────────────────────────────────────────────
 def test_show_index_has_all_campaigns() -> None:
     shows = show_index()
-    assert len(shows) == 8
+    assert len(shows) == 11
+    assert shows["deep-eyes"].order == 8  # appended: the order is the filename prefix
     song = shows["through-a-song-darkly"]
     assert song.name == "Through a Song, Darkly"
     assert song.order == 0  # first in being.campaigns

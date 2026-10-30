@@ -5,6 +5,7 @@ This package owns three files:
 - `being.kdl`: the hand-edited roster. `player` nodes are the real people (name, the
   `player-id` dice key, Discord snowflakes, recording aliases, DM and admin flags, colour);
   `campaign` nodes list each show's world, edition and `role` seats (player to character);
+  `astra-worlds` lists the worlds of the Astra, the only campaigns heartwood ingests;
   `weal-host` nodes are weal-bot's Discord send identities with their flavour lines;
   `podcast-persona` nodes are mouthpiece's roundtable hosts with their ElevenLabs voices; and
   `guest-color` is the colour for an unknown speaker. In-world characters are not here; they
@@ -44,3 +45,7 @@ The tests live in `libs/py/ontology` (`uv run pytest libs/py/ontology`). `just o
 - **A `being.kdl` change also stales the real entity registry** in astra-data until the next
   heartwood run reseeds it (see [`ontology-entity`](../ontology-entity/README.md)).
 - **Some tests pin the roster.** The substrate smoke test asserts five players.
+- **Append new campaigns at the end.** A campaign's position in the list is its transcript
+  filename prefix (`<0 main | 1 other><idx>.<slug>.<date>.txt`), so inserting one renames the
+  later files. weal's roster takes the first `main` campaign, so an earlier campaign is
+  `main #false`.

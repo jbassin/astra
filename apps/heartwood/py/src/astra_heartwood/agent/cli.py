@@ -5,7 +5,7 @@
                                   stdout line is ``RUN_DIR=<path>``. ``--model`` /
                                   ``--sub-model`` override ``heartwood.model`` /
                                   ``sub-model`` for this run only (model comparisons)
-    sessions [--from DATE]        pending faerrin dates, oldest first — dates the ledger
+    sessions [--from DATE]        pending Astra dates, oldest first — dates the ledger
                                   shows as published are skipped
     publish-sync <run-dir>        apply an ``ok`` run's change-set to the live corpus
     ledger-append <run-dir>       append the run's publish line to agent-runs.jsonl
@@ -69,7 +69,7 @@ def pending_sessions(
     ledger_path: Path = ledger.LEDGER_PATH,
     dates: list[str] | None = None,
 ) -> list[str]:
-    """Ingestible faerrin dates, oldest first, from ``from_date`` on (inclusive), minus
+    """Ingestible Astra-world dates, oldest first, from ``from_date`` on (inclusive), minus
     the dates the ledger shows as published (latest line a non-reverted publish).
 
     ``dates`` is the test seam (defaults to ``ingestible_dates()``).

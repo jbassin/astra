@@ -301,7 +301,7 @@ ledger {
 
 heartwood {
     // The heartwood wiki-maintainer agent — a host-run dspy.RLM that reads one
-    // faerrin session transcript and edits the akasha wiki (no review site; the old
+    // Astra-world session transcript and edits the akasha wiki (no review site; the old
     // review surface is retired). Both LMs route through astra_llm (OpenRouter); the
     // run builds two distinct LM instances even when the ids match (role = instance).
     model "openrouter/deepseek/deepseek-v4.1-flash"      // main RLM loop

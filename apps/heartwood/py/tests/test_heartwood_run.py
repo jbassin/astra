@@ -52,7 +52,12 @@ TRANSCRIPTS = {
 def fixture_being() -> Being:
     camp = Campaign(slug="song", name="song", edition="pf2e", main=False, world="faerrin", roles=[])
     return Being(
-        players=[], guest_color="#000000", campaigns=[camp], weal_hosts=[], podcast_personas=[]
+        players=[],
+        guest_color="#000000",
+        astra_worlds=["faerrin"],
+        campaigns=[camp],
+        weal_hosts=[],
+        podcast_personas=[],
     )
 
 

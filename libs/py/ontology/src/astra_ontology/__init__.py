@@ -52,8 +52,8 @@ __all__ = [
     "Resolver",
     "Role",
     "WealHost",
+    "astra_campaign_slugs",
     "canonical_json",
-    "faerrin_campaign_slugs",
     "load_being",
     "merge_seed",
     "parse_entities",
@@ -73,10 +73,8 @@ def canonical_json(being: Being) -> str:
     return json.dumps(being.model_dump(), sort_keys=True, ensure_ascii=False, indent=2) + "\n"
 
 
-def faerrin_campaign_slugs(being: Being) -> set[str]:
-    """The campaign slugs set in the `faerrin` world — heartwood ingests only these.
-
-    Phase-2 note: session→campaign matching must *skip* session slugs absent from
-    being.kdl (an unmapped slug is not faerrin, never a crash).
-    """
-    return {c.slug for c in being.campaigns if c.world == "faerrin"}
+def astra_campaign_slugs(being: Being) -> set[str]:
+    """The campaign slugs set in a world of the Astra (`being.astra_worlds`): heartwood
+    ingests only these. A session slug absent from being.kdl is simply not one of them."""
+    worlds = set(being.astra_worlds)
+    return {c.slug for c in being.campaigns if c.world in worlds}

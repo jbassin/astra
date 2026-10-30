@@ -1,4 +1,9 @@
 {
+  "astra_worlds": [
+    "faerrin",
+    "althane",
+    "ushas"
+  ],
   "campaigns": [
     {
       "edition": "pathfinder_2e",
@@ -286,7 +291,7 @@
         }
       ],
       "slug": "observatory-slipped",
-      "world": "sedecium"
+      "world": "ushas"
     },
     {
       "edition": "pathfinder_2e",
@@ -365,6 +370,147 @@
       ],
       "slug": "chuul-hunt",
       "world": "chuul-hunt"
+    },
+    {
+      "edition": "pathfinder_2e",
+      "main": false,
+      "name": "Deep Eyes",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "josh"
+        },
+        {
+          "character": "Lev",
+          "character_class": null,
+          "descriptions": [
+            "an adventurer in the GM's second campaign, set on Althane"
+          ],
+          "player": "jorge"
+        },
+        {
+          "character": "Big Fish",
+          "character_class": null,
+          "descriptions": [
+            "an adventurer in the GM's second campaign, set on Althane"
+          ],
+          "player": "noah"
+        },
+        {
+          "character": "Dawnmonger",
+          "character_class": null,
+          "descriptions": [
+            "an adventurer in the GM's second campaign, set on Althane"
+          ],
+          "player": "noah"
+        },
+        {
+          "character": "Divex",
+          "character_class": null,
+          "descriptions": [
+            "an adventurer in the GM's second campaign, set on Althane"
+          ],
+          "player": "mike"
+        },
+        {
+          "character": "Henrik",
+          "character_class": null,
+          "descriptions": [
+            "an adventurer in the GM's second campaign, set on Althane"
+          ],
+          "player": "tanner"
+        }
+      ],
+      "slug": "deep-eyes",
+      "world": "althane"
+    },
+    {
+      "edition": "pathfinder_2e",
+      "main": false,
+      "name": "The Midnight Sun",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "josh"
+        },
+        {
+          "character": "Banyan",
+          "character_class": null,
+          "descriptions": [
+            "a co-worker in Calaria's Actinium Convox, a weapons development convox; an orc"
+          ],
+          "player": "noah"
+        },
+        {
+          "character": "Giancarlo",
+          "character_class": null,
+          "descriptions": [
+            "a co-worker in Calaria's Actinium Convox, a weapons development convox; a human"
+          ],
+          "player": "tanner"
+        },
+        {
+          "character": "Crindle Vilksnake",
+          "character_class": null,
+          "descriptions": [
+            "a co-worker in Calaria's Actinium Convox, a weapons development convox"
+          ],
+          "player": "mike"
+        }
+      ],
+      "slug": "the-midnight-sun",
+      "world": "faerrin"
+    },
+    {
+      "edition": "pathfinder_2e",
+      "main": false,
+      "name": "Hildebrandt Heist",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "josh"
+        },
+        {
+          "character": "Adzuki",
+          "character_class": null,
+          "descriptions": [
+            "an employee of Hildebrandt Corporation, a military contractor; tall and elven-looking, with a ceremonial glaive"
+          ],
+          "player": "noah"
+        },
+        {
+          "character": "Mika",
+          "character_class": null,
+          "descriptions": [
+            "an employee of Hildebrandt Corporation, a military contractor"
+          ],
+          "player": "tanner"
+        },
+        {
+          "character": "Chris Gangle",
+          "character_class": null,
+          "descriptions": [
+            "an employee of Hildebrandt Corporation, a military contractor; an illusionist, its head of remote viewing"
+          ],
+          "player": "mike"
+        },
+        {
+          "character": "Vint Cerf",
+          "character_class": null,
+          "descriptions": [
+            "an employee of Hildebrandt Corporation, a military contractor"
+          ],
+          "player": "jorge"
+        }
+      ],
+      "slug": "hildebrandt-heist",
+      "world": "faerrin"
     }
   ],
   "guest_color": "rgb(235,235,236)",

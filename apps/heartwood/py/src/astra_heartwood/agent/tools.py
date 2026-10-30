@@ -9,7 +9,7 @@ Rules every tool follows: errors **raise** ``ValueError`` (the sandbox bridge tu
 into a catchable ``RuntimeError``); only ``read_page`` / ``write_page`` / ``read_transcript``
 return strings; returns are plain JSON types and never ``None`` (``None`` crosses the
 bridge as ``""``). Wiki tools touch staging only. Transcript tools serve only the
-permitted sessions: faerrin-world, `sessions.kdl` skips honored, dated ≤ the target.
+permitted sessions: Astra-world, `sessions.kdl` skips honored, dated ≤ the target.
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ from astra_sessions import date_key, iso_date
 from astra_sessions.tools import SessionToolsMixin
 
 from .campaigns import page_campaigns, set_campaigns
-from .sessions import faerrin_session, ingestible_dates, read_transcript
+from .sessions import astra_session, ingestible_dates, read_transcript
 from .validate import Validator
 from .workspace import PAGE_SUFFIX, Workspace, check_path_key
 
@@ -131,7 +131,7 @@ def _link_text(target: str, heading: str | None, label: str | None) -> str:
 class HeartwoodTools(SessionToolsMixin):
     """The tool implementations; ``make_tools`` exposes the bound methods.
 
-    ``sessions`` maps each permitted date (≤ target, faerrin, not excluded) to its
+    ``sessions`` maps each permitted date (≤ target, Astra world, not excluded) to its
     campaign slug, oldest first. ``resolver`` defaults to the committed entity registry.
     """
 
@@ -145,9 +145,9 @@ class HeartwoodTools(SessionToolsMixin):
         being: Being | None = None,
         resolver: Callable[[str], Resolution] = resolve,
     ) -> None:
-        campaign = faerrin_session(target_date, being=being, transcript_dir=transcript_dir)
+        campaign = astra_session(target_date, being=being, transcript_dir=transcript_dir)
         if campaign is None:
-            raise ValueError(f"{target_date} is not an ingestible faerrin-world session")
+            raise ValueError(f"{target_date} is not an ingestible Astra-world session")
         self.ws = ws
         self.target_date = target_date
         self.campaign = campaign
@@ -159,7 +159,7 @@ class HeartwoodTools(SessionToolsMixin):
         self.sessions: dict[str, str] = {}
         for d in ingestible_dates(being=being, transcript_dir=transcript_dir):
             if date_key(d) <= limit:
-                slug = faerrin_session(d, being=being, transcript_dir=transcript_dir)
+                slug = astra_session(d, being=being, transcript_dir=transcript_dir)
                 if slug is not None:
                     self.sessions[d] = slug
         self._link_cache: tuple[int, LinkState] | None = None
@@ -401,7 +401,7 @@ def make_tools(
     resolver: Callable[[str], Resolution] = resolve,
 ) -> list[Callable[..., Any]]:
     """The agent's tools bound to ``ws`` and ``target_date`` (raises ``ValueError`` if the
-    target is not an ingestible faerrin session). ``transcript_dir`` / ``being`` /
+    target is not an ingestible Astra session). ``transcript_dir`` / ``being`` /
     ``resolver`` are test seams."""
     return HeartwoodTools(
         ws,
