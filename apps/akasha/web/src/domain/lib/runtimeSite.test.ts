@@ -2,15 +2,25 @@ import { describe, expect, it } from "vitest";
 
 import { ALIASES } from "@/generated/site";
 
+import type { ChronicleEpisode, ChronicleShow } from "./chronicleTypes";
 import {
   contentView,
   folderView,
   resolvePath,
+  sessionsView,
   tagExists,
   tagIndexView,
   tagView,
 } from "./runtimeSite";
-import type { FullSlug } from "./slug";
+import { sectionOfHref } from "./sections";
+import type { SiteDoc } from "./site";
+import { type FullSlug, simplifySlug } from "./slug";
+
+// A page URL on the Iridescent Host's level, for resolving its relative backlink hrefs.
+const BASE_HOST = "https://akasha.invalid/Divinity/Outer-Gods/Iridescent-Host";
+
+/** A slug literal as the branded type the view builders take. */
+const fullSlug = (s: string): FullSlug => s as FullSlug;
 
 // runtimeSite reconstructs the index from the generated module (emitted by
 // build-content via the global setup), so these assert the runtime resolver +
@@ -52,19 +62,34 @@ describe("resolvePath — URL → page kind (faerrin's catch-all)", () => {
 
 describe("view builders", () => {
   it("contentView exposes title, tag links, breadcrumbs, sorted backlinks, rendered body", () => {
-    const v = contentView("Timeline" as FullSlug);
+    const v = contentView(fullSlug("Timeline"));
     expect(v.title).toBe("Timeline");
     expect(v.showBreadcrumbs).toBe(true);
     expect(v.crumbs[0]?.displayName).toBe("Home");
     const titles = v.backlinks.map((b) => b.label);
-    expect([...titles].sort()).toEqual(titles); // sorted by title
+    expect(titles.toSorted()).toEqual(titles); // sorted by title
     // the build-rendered vellum body + reading time
     expect(v.bodyHtml).toContain("data-vellum-export");
     expect(v.readingMinutes).toBeGreaterThanOrEqual(1);
   });
 
+  it("contentView splits backlinks: wiki pages (with their section), not transcripts", () => {
+    const v = contentView(fullSlug("Divinity/Outer-Gods/Iridescent-Host"));
+    expect(v.backlinks.length).toBeGreaterThan(0);
+    for (const b of v.backlinks) {
+      expect(b.href).not.toContain("Script/");
+      expect(b.section).toBe(sectionOfHref(new URL(b.href, BASE_HOST).pathname)?.id ?? null);
+    }
+  });
+
+  it("contentView lists the body's headings and block titles, each an id in the body", () => {
+    const v = contentView(fullSlug("Divinity/Hierophant"));
+    expect(v.toc.length).toBeGreaterThanOrEqual(2);
+    for (const e of v.toc) expect(v.bodyHtml).toContain(`id="${e.id}"`);
+  });
+
   it("the home content view hides breadcrumbs", () => {
-    expect(contentView("index" as FullSlug).showBreadcrumbs).toBe(false);
+    expect(contentView(fullSlug("index")).showBreadcrumbs).toBe(false);
   });
 
   it("folderView lists children with a count label + relative hrefs", () => {
@@ -85,5 +110,118 @@ describe("view builders", () => {
     const idx = tagIndexView();
     expect(idx.sections.length).toBeGreaterThan(0);
     expect(idx.totalLabel).toMatch(/Found \d+ total tags/);
+  });
+});
+
+// ── sessionsView, against a small hand-made chronicle ─────────────────────────────
+function episode(date: string, title: string, href: string): ChronicleEpisode {
+  return {
+    date,
+    episodeNumber: 1,
+    title,
+    synopsis: "",
+    keyBeats: [],
+    charactersPresent: [],
+    locations: [],
+    factions: [],
+    items: [],
+    cliffhanger: "",
+    href,
+  };
+}
+
+function show(slug: string, name: string, isMain: boolean, eps: ChronicleEpisode[]) {
+  return {
+    show: slug,
+    name,
+    isMain,
+    seasonCount: 1,
+    episodeCount: eps.length,
+    seasons: [{ number: 1, title: "One", arcSummary: "", episodes: eps }],
+  } satisfies ChronicleShow;
+}
+
+/** A transcript page; its title is its session date. */
+function transcript(campaign: string, date: string): SiteDoc {
+  const slug = fullSlug(`Script/${campaign}/${date}`);
+  const [y = 0, m = 1, d = 1] = date.split("-").map(Number);
+  return {
+    rel: `${slug}.md`,
+    slug,
+    simple: simplifySlug(slug),
+    title: date,
+    tags: ["Script"],
+    aliases: [],
+    links: [],
+    date: new Date(Date.UTC(y, m - 1, d)),
+  };
+}
+
+const SHOWS = [
+  show("main", "Through a Song, Darkly", true, [
+    episode("2025-8-28", "First", "/Script/Through-a-Song,-Darkly/2025-8-28"),
+    // No summary: the chronicle's title falls back to the date.
+    episode("2025-9-4", "2025-9-4", "/Script/Through-a-Song,-Darkly/2025-9-4"),
+    episode("2026-10-1", "Last", "/Script/Through-a-Song,-Darkly/2026-10-1"),
+  ]),
+  show("spark", "The First Spark", false, [
+    episode("2025-3-5", "Kindling", "/Script/The-First-Spark/2025-3-5"),
+  ]),
+];
+const CHURCH = fullSlug("Org/Iridescent-Church/index");
+
+describe("sessionsView — the main campaign strip", () => {
+  it("is null when no transcript links to the page", () => {
+    expect(sessionsView(CHURCH, [], SHOWS)).toBeNull();
+  });
+
+  it("ticks the main campaign's linking episodes and labels the axis by month", () => {
+    const linking = [
+      transcript("Through-a-Song,-Darkly", "2026-10-1"),
+      transcript("Through-a-Song,-Darkly", "2025-8-28"),
+    ];
+    expect(sessionsView(CHURCH, linking, SHOWS)?.strip).toEqual({
+      show: "Through a Song, Darkly",
+      ticks: [
+        { date: "2025-8-28", hit: true },
+        { date: "2025-9-4", hit: false },
+        { date: "2026-10-1", hit: true },
+      ],
+      hits: 2,
+      start: "Aug 2025",
+      end: "Oct 2026",
+    });
+  });
+});
+
+describe("sessionsView — the list of linking sessions", () => {
+  it("lists every linking session oldest first, other campaigns named", () => {
+    const linking = [
+      transcript("Through-a-Song,-Darkly", "2025-9-4"),
+      transcript("The-First-Spark", "2025-3-5"),
+      transcript("Unsorted", "2024-10-15"),
+    ];
+    const v = sessionsView(CHURCH, linking, SHOWS);
+    expect(v?.sessions).toEqual([
+      {
+        href: "../../Script/Unsorted/2024-10-15",
+        date: "15 Oct 2024",
+        title: null,
+        show: "Unsorted",
+      },
+      {
+        href: "../../Script/The-First-Spark/2025-3-5",
+        date: "5 Mar 2025",
+        title: "Kindling",
+        show: "The First Spark",
+      },
+      {
+        href: "../../Script/Through-a-Song,-Darkly/2025-9-4",
+        date: "4 Sep 2025",
+        title: null,
+        show: null,
+      },
+    ]);
+    expect(v?.strip?.hits).toBe(1);
   });
 });

@@ -9,6 +9,9 @@
  * (backlinks / tags / breadcrumbs / listings). Re-runs on route change so the new
  * page's links get bound and the old ones torn down (N5 — astra is a SPA; faerrin
  * was MPA and re-mounted per page).
+ *
+ * The card's look (surface, rule border, 8 px radius, Literata at card size, the page's
+ * title and body without its crumbs and facts row) is in wiki.css under `.popover-inner`.
  */
 import { computePosition, flip, inline, shift } from "@floating-ui/dom";
 import { useRouterState } from "@tanstack/react-router";

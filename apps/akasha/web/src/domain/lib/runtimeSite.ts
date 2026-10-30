@@ -12,9 +12,13 @@
  * that, so PAGES and BODIES stay in the server build. Components import its types alone.
  */
 import { BODIES } from "@/generated/bodies";
+import { SHOWS } from "@/generated/chronicle";
 import { ALIASES, type GeneratedPage, PAGES } from "@/generated/site";
 import { TRANSCRIPT_MINUTES } from "@/generated/transcripts";
 
+import type { ChronicleEpisode, ChronicleShow } from "./chronicleTypes";
+import type { TocEntry } from "./renderBody";
+import { type SectionId, sectionOf } from "./sections";
 import {
   allFolders,
   allTags,
@@ -29,7 +33,7 @@ import {
   type SiteData,
   type SiteDoc,
 } from "./site";
-import { type FullSlug, resolveRelative, type SimpleSlug } from "./slug";
+import { type FullSlug, resolveRelative, type SimpleSlug, simplifySlug } from "./slug";
 
 // ── reconstruct the queryable index from the generated pages ──────────────────────
 function reconstruct(pages: GeneratedPage[]): SiteData {
@@ -65,6 +69,38 @@ export interface PageEntryView {
   isFolder: boolean;
 }
 
+/** A link to a page, with the page's section for its hue dot. */
+export interface PageLinkView extends LinkView {
+  section: SectionId | null;
+}
+
+/** One session whose transcript links to the page. */
+export interface SessionLinkView {
+  href: string;
+  /** "17 Feb 2026" */
+  date: string;
+  /** The chronicle's episode title, when the chronicle has the session. */
+  title: string | null;
+  /** The show's name, for a session outside the main campaign. */
+  show: string | null;
+}
+
+/** The right rail's "Sessions" block: which sessions' transcripts link to the page. */
+export interface SessionsView {
+  /** The main campaign strip: one tick per chronicle episode in order; null without one. */
+  strip: {
+    show: string;
+    /** One per episode, by session date; `hit` where its transcript links to the page. */
+    ticks: { date: string; hit: boolean }[];
+    hits: number;
+    /** "Aug 2025", "Oct 2026" */
+    start: string;
+    end: string;
+  } | null;
+  /** Every linking session, oldest first, other campaigns included. */
+  sessions: SessionLinkView[];
+}
+
 export interface ContentView {
   slug: string;
   title: string;
@@ -72,7 +108,7 @@ export interface ContentView {
   img?: string;
   /** the page's baked committer date (ISO), if any */
   date?: string;
-  /** approximate reading time (minutes) — for ContentMeta */
+  /** approximate reading time (minutes); no longer shown on wiki pages */
   readingMinutes: number;
   /** build-rendered vellum body HTML (gothic + resolved crossrefs, N3). For a
    *  transcript this is "" from contentView — `wikiPageData` (pageData.ts) fills in
@@ -83,7 +119,12 @@ export interface ContentView {
   transcript: boolean;
   showBreadcrumbs: boolean;
   crumbs: Crumb[];
-  backlinks: LinkView[];
+  /** Wiki pages that link here, by title ("Mentioned on"). Transcripts are in `sessions`. */
+  backlinks: PageLinkView[];
+  /** Transcripts that link here; null when none do. */
+  sessions: SessionsView | null;
+  /** The body's headings and block titles ("On this page"). */
+  toc: TocEntry[];
 }
 
 export interface FolderView {
@@ -168,14 +209,90 @@ export function resolvePath(rawPath: string): Resolved | null {
   return null;
 }
 
+// ── the "Sessions" rail block ───────────────────────────────────────────────────
+const isTranscriptSlug = (s: string): boolean => TRANSCRIPT_MINUTES[s] !== undefined;
+
+/** A transcript page's URL path, formed as build-content forms the chronicle's `href`. */
+const transcriptHref = (s: FullSlug): string => `/${encodeURI(simplifySlug(s))}`;
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** A session date ("2026-2-17", unpadded) as "Feb 2026" or "17 Feb 2026". */
+function sessionDate(date: string, withDay: boolean): string {
+  const [y = 0, m = 1, d = 1] = date.split("-").map(Number);
+  const month = `${MONTHS[m - 1] ?? ""} ${y}`;
+  return withDay ? `${d} ${month}` : month;
+}
+
+/**
+ * The "Sessions" block for page `slug`, from the transcripts that link to it: a strip of the
+ * main campaign's episodes (from the chronicle `shows`) and the list of every linking
+ * session, oldest first. Null when no transcript links to the page.
+ */
+export function sessionsView(
+  slug: FullSlug,
+  transcripts: SiteDoc[],
+  shows: ChronicleShow[] = SHOWS,
+): SessionsView | null {
+  if (transcripts.length === 0) return null;
+  const main = shows.find((s) => s.isMain);
+  const episodes: ChronicleEpisode[] = main?.seasons.flatMap((s) => s.episodes) ?? [];
+  const byHref = new Map(
+    shows.flatMap((show) =>
+      show.seasons.flatMap((season) =>
+        season.episodes.flatMap((episode) =>
+          episode.href ? [[episode.href, { show, episode }] as const] : [],
+        ),
+      ),
+    ),
+  );
+  const linked = new Set(transcripts.map((t) => transcriptHref(t.slug)));
+  const ticks = episodes.map((e) => ({ date: e.date, hit: e.href !== null && linked.has(e.href) }));
+  const first = episodes[0];
+  const last = episodes.at(-1);
+  const strip =
+    main && first && last
+      ? {
+          show: main.name,
+          ticks,
+          hits: ticks.filter((t) => t.hit).length,
+          start: sessionDate(first.date, false),
+          end: sessionDate(last.date, false),
+        }
+      : null;
+  const sessions = transcripts
+    .toSorted((a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0))
+    .map((t): SessionLinkView => {
+      const hit = byHref.get(transcriptHref(t.slug));
+      // The chronicle falls back to the date for an episode it has no summary for.
+      const title = hit && hit.episode.title !== hit.episode.date ? hit.episode.title : null;
+      // A session the chronicle lacks: Script/<campaign>/<date> names its campaign.
+      const folder = t.slug.split("/")[1]?.replaceAll("-", " ") ?? null;
+      const showName = hit ? hit.show.name : folder;
+      return {
+        href: resolveRelative(slug, t.slug),
+        // A transcript's title is its session date.
+        date: sessionDate(t.title, true),
+        title,
+        show: showName === main?.name ? null : showName,
+      };
+    });
+  return { strip, sessions };
+}
+
 // ── view builders ─────────────────────────────────────────────────────────────────
 export function contentView(slug: FullSlug): ContentView {
   const doc = SITE_DATA.bySlug.get(slug);
   if (!doc) throw new Error(`no content doc for slug ${slug}`);
-  const backlinks = backlinksFor(SITE_DATA, slug)
-    .slice()
-    .sort((a, b) => a.title.localeCompare(b.title))
-    .map((f) => ({ label: f.title, href: resolveRelative(slug, f.slug) }));
+  const linking = backlinksFor(SITE_DATA, slug);
+  const backlinks = linking
+    .filter((f) => !isTranscriptSlug(f.slug))
+    .toSorted((a, b) => a.title.localeCompare(b.title))
+    .map((f) => ({
+      label: f.title,
+      href: resolveRelative(slug, f.slug),
+      section: sectionOf(f.slug)?.id ?? null,
+    }));
   const transcriptMinutes = TRANSCRIPT_MINUTES[slug];
   const isTranscript = transcriptMinutes !== undefined;
   const body = BODIES[slug];
@@ -193,6 +310,11 @@ export function contentView(slug: FullSlug): ContentView {
     showBreadcrumbs: slug !== "index",
     crumbs: breadcrumbsFor(SITE_DATA, slug, doc.title),
     backlinks,
+    sessions: sessionsView(
+      slug,
+      linking.filter((f) => isTranscriptSlug(f.slug)),
+    ),
+    toc: body?.toc ?? [],
   };
 }
 
@@ -256,4 +378,4 @@ export function tagExists(tag: string): boolean {
   return allTags(SITE_DATA).includes(tag);
 }
 
-export type { Crumb };
+export type { Crumb, TocEntry };

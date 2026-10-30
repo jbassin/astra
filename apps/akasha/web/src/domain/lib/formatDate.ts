@@ -1,14 +1,22 @@
-// Display date formatting (ports faerrin Date.tsx formatDate: en-US, short month,
-// 2-digit day). Forced to UTC so the SSR string and the client-hydration string are
-// byte-identical regardless of server/browser timezone (no hydration mismatch). The
-// exact displayed day need not match faerrin (N4 — committer date, parity not required).
-const LOCALE = "en-US";
+// Display date formatting: "5 June 2026". Forced to UTC so the SSR string and the
+// client-hydration string are byte-identical regardless of server/browser timezone (no
+// hydration mismatch). The dates are committer dates (N4), so the day is approximate anyway.
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+] as const;
 
 export function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString(LOCALE, {
-    year: "numeric",
-    month: "short",
-    day: "2-digit",
-    timeZone: "UTC",
-  });
+  const d = new Date(iso);
+  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()] ?? ""} ${d.getUTCFullYear()}`;
 }

@@ -11,8 +11,10 @@
  * chain to resolve. astra has no remark chain, so the linker resolves each target
  * to a real href here (`resolveRelative` against the source slug, N6-style — the
  * corpus is the parity-gated snapshot) and emits `<a class="internal">` directly.
- * Text is HTML-escaped first (transcript text is plain), then linked.
+ * Text is HTML-escaped first (transcript text is plain), then linked. Each link carries
+ * `data-section` (the target's section id), which wiki.css turns into a hue underline.
  */
+import { sectionOf } from "./sections";
 import { type FullSlug, resolveRelative, type SimpleSlug, simplifySlug } from "./slug";
 
 /** One linkable wiki page: every alias `name` maps to the page's `slug`. */
@@ -67,7 +69,9 @@ export function buildLinker(entries: LinkEntry[]): Linker {
         if (slug === undefined) return match;
         hits?.add(simplifySlug(slug));
         const href = resolveRelative(fromSlug, slug);
-        return `<a href="${href}" class="internal">${match}</a>`;
+        const section = sectionOf(slug);
+        const attr = section ? ` data-section="${section.id}"` : "";
+        return `<a href="${href}" class="internal"${attr}>${match}</a>`;
       });
     },
   };

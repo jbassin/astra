@@ -32,7 +32,7 @@ import { type Being, defaultBeingFile, loadBeing } from "@astra/ontology";
 import { loadSiteConfig } from "@astra/site-kit";
 
 import { buildResolvers } from "../src/domain/lib/crossref";
-import { readingMinutes, renderBody } from "../src/domain/lib/renderBody";
+import { decorateBody, readingMinutes, renderBody } from "../src/domain/lib/renderBody";
 import {
   type AliasRedirect,
   allFolders,
@@ -176,27 +176,28 @@ function emitGeneratedModule(site: SiteData, extraTree: TreeNode[] = []): string
 function emitBodies(site: SiteData, snapshot: Snapshot, skip: Set<string>): string {
   const resolvers = buildResolvers(snapshot);
   const noResolver: CrossRefResolver = () => null;
-  const bodies: Record<string, { html: string; minutes: number }> = {};
+  const bodies: Record<string, ReturnType<typeof decorateBody> & { minutes: number }> = {};
   for (const d of site.docs) {
     // Transcript pages are code-split + server-loaded (emitTranscriptBodies), NOT
     // baked here — 76 × ~1 MB would blow up the BODIES bundle (+ client/SSR builds).
     if (skip.has(d.slug)) continue;
     const src = bodyOf(d);
     const pagePath = d.rel.replace(/\.md$/, "");
-    bodies[d.slug] = {
-      html: renderBody(src, resolvers.get(pagePath) ?? noResolver),
-      minutes: readingMinutes(src),
-    };
+    // decorateBody: link sections, heading and block ids, and the contents list (toc).
+    const html = renderBody(src, resolvers.get(pagePath) ?? noResolver);
+    bodies[d.slug] = { ...decorateBody(html, d.slug), minutes: readingMinutes(src) };
   }
   emitModule(
     OUT_DIR,
     "bodies.ts",
     [
       "/** Build-rendered vellum bodies (gothic DocumentView + resolved crossref hrefs,",
-      " *  N3) keyed by FullSlug — injected into the page via dangerouslySetInnerHTML. */",
+      " *  N3) keyed by FullSlug — injected into the page via dangerouslySetInnerHTML.",
+      " *  `toc` lists the body's headings and block titles by id (decorateBody). */",
       "export interface RenderedBody {",
       "  html: string;",
       "  minutes: number;",
+      "  toc: { id: string; text: string; level: 2 | 3 }[];",
       "}",
       `export const BODIES: Record<string, RenderedBody> = ${JSON.stringify(bodies)};`,
       "",

@@ -1,0 +1,263 @@
+/* gothic's rendered blocks on the wiki page (imported by wiki.css): cards (handout, deity),
+   deity fields, a fields list, a timeline, tables, code, logs and quotes. Surface, 1 px rule,
+   6 px radius, no top bar, no shadow, no rotation, no uppercase; the header row is the title
+   on the left and the kind on the right. Unlayered, so these beat gothic's @layer components
+   rules and Tailwind utilities. */
+
+/* ── body: blocks (gothic cards) ─────────────────────────────────────────────────── */
+.gothic-card {
+  padding: 24px 28px 26px;
+  border: 1px solid var(--ak-rule);
+  border-radius: 6px;
+  background: var(--ak-surface);
+  box-shadow: none;
+  color: var(--ak-ink);
+  transform: none;
+  scroll-margin-top: calc(var(--ak-header-h) + 24px);
+}
+.gothic-card::after {
+  content: none;
+}
+
+/* The header row: title on the left, the kind on the right, a hairline below. */
+.gothic-card > header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 16px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--ak-rule);
+  color: var(--ak-ink);
+  font-family: var(--ak-serif);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.ak-block-title,
+[data-kind="deity"] > header > span:first-child {
+  color: var(--ak-ink);
+  font-family: var(--ak-serif);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-transform: none;
+}
+.ak-block-title {
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.ak-block-kind,
+[data-kind="deity"] > header > span:last-child,
+[data-kind="deity"] > header > span:last-child > span {
+  flex: none;
+  color: var(--ak-faint);
+  font: 400 13px/1.4 var(--ak-sans);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+/* The deity header's kind reads "Deity, outer god". */
+[data-kind="deity"] > header > span:last-child {
+  gap: 0.3em;
+}
+[data-kind="deity"] > header > span:last-child > span:first-child {
+  text-transform: capitalize;
+}
+[data-kind="deity"] > header > span:last-child > span:first-child:not(:last-child)::after {
+  content: ",";
+}
+[data-kind="deity"] > header > span:last-child > span + span {
+  font-weight: 600;
+  text-transform: lowercase;
+}
+
+/* Handout (and edict) bodies. */
+.gothic-prose-body {
+  font-size: 17px;
+  line-height: 1.65;
+}
+.gothic-prose-body p {
+  margin: 0 0 1em;
+}
+:is(.gothic-card-body, .gothic-prose-body) :is(h1, h2, h3, h4, h5, h6) {
+  margin: 1.4em 0 0.5em;
+  color: var(--ak-ink);
+  font: 650 14px/1.35 var(--ak-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+:is(.gothic-card-body, .gothic-prose-body) > :first-child {
+  margin-top: 0;
+}
+
+/* Deity fields: a label column (Archivo 13 px, muted) beside the value (Literata 16 px),
+   baseline aligned. gothic renders each field as one <p> of a label <span> and inline
+   value nodes, so the label is pulled into the paragraph's left padding as an inline block,
+   which keeps it on the value's first baseline. */
+[data-kind="deity"] {
+  font-size: 16px;
+  line-height: 1.55;
+}
+[data-kind="deity"] > .gothic-content {
+  gap: 6px;
+  margin: 0;
+}
+[data-kind="deity"] > .gothic-content > p {
+  margin: 0;
+  padding-left: 170px;
+  line-height: 1.55;
+}
+[data-kind="deity"] > .gothic-content > p > span:first-child {
+  display: inline-block;
+  width: 150px;
+  margin: 0 20px 0 -170px;
+  color: var(--ak-muted);
+  font: 600 13px/1.3 var(--ak-sans);
+  letter-spacing: 0;
+  text-transform: none;
+  vertical-align: baseline;
+}
+/* "Devotee benefits" and the like: a sub-heading over its own run of fields. */
+[data-kind="deity"] > h3 {
+  margin: 20px 0 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ak-rule);
+  color: var(--ak-ink);
+  font: 650 14px/1.35 var(--ak-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* A fields list outside a deity (`:::fields`) and a timeline (`:::timeline`). */
+dl.gothic-content {
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 6px 20px;
+  align-items: baseline;
+}
+dl.gothic-content > div > dt {
+  color: var(--ak-muted);
+  font: 600 13px/1.3 var(--ak-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+ol.gothic-content {
+  gap: 10px 20px;
+  align-items: baseline;
+  padding-left: 16px;
+  border-left: 1px solid var(--ak-rule);
+}
+ol.gothic-content > li > span:first-child {
+  color: var(--ak-muted);
+  font: 600 13px/1.3 var(--ak-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Tables, code, logs and quotes. */
+.gothic-content table {
+  margin: 0 0 1.15em;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.gothic-content :is(th, td) {
+  padding: 8px 12px;
+  border: 1px solid var(--ak-rule);
+}
+.gothic-content th {
+  background: var(--ak-surface);
+  color: var(--ak-muted);
+  font: 600 13px/1.4 var(--ak-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.gothic-content tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--ak-surface) 50%, transparent);
+}
+.gothic-content code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--ak-sunk);
+  color: var(--ak-ink);
+  font-family: var(--ak-mono);
+  font-size: 0.85em;
+}
+.gothic-content pre {
+  margin: 0 0 1.15em;
+  padding: 16px 20px;
+  border: 1px solid var(--ak-rule);
+  border-radius: 6px;
+  background: var(--ak-surface);
+  color: var(--ak-ink);
+  font: 400 13.5px/1.75 var(--ak-mono);
+}
+.gothic-card pre {
+  padding: 0;
+  border: 0;
+}
+.gothic-content pre code {
+  padding: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+}
+.gothic-content blockquote {
+  margin: 0 0 1.15em;
+  padding: 0 0 0 1em;
+  border-left: 2px solid var(--ak-rule);
+  color: var(--ak-muted);
+}
+.gothic-content hr {
+  margin: 2em 0;
+  border: 0;
+  border-top: 1px solid var(--ak-rule);
+}
+
+@media (max-width: 859px) {
+  .gothic-card {
+    padding: 18px 18px 20px;
+  }
+  .gothic-card > header {
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+  .ak-block-title,
+  [data-kind="deity"] > header > span:first-child {
+    font-size: 20px;
+    line-height: 1.25;
+  }
+  .ak-block-kind,
+  [data-kind="deity"] > header > span:last-child,
+  [data-kind="deity"] > header > span:last-child > span {
+    font-size: 12px;
+  }
+  .gothic-prose-body {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+}
+
+/* Narrow cards stack a field's label over its value. */
+@media (max-width: 559px) {
+  [data-kind="deity"] > .gothic-content {
+    gap: 10px;
+  }
+  [data-kind="deity"] > .gothic-content > p {
+    padding-left: 0;
+  }
+  [data-kind="deity"] > .gothic-content > p > span:first-child {
+    display: block;
+    width: auto;
+    margin: 0 0 2px;
+  }
+  dl.gothic-content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  dl.gothic-content > div > dd {
+    margin-bottom: 8px;
+  }
+}

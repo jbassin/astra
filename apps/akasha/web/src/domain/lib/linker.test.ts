@@ -33,6 +33,13 @@ describe("buildLinker (faerrin proper-noun auto-linker)", () => {
     expect(out).toContain("anzulike"); // word boundary: no link inside a longer word
   });
 
+  it("marks each link with its target's section, and a link to no section with none", () => {
+    expect(linker.link("the Ghosts of Raelion", from)).toContain(
+      '<a href="../../Org/Ghosts" class="internal" data-section="org">',
+    );
+    expect(linker.link("Anzu", from)).toBe('<a href="../../Anzu" class="internal">Anzu</a>');
+  });
+
   it("records linked target slugs in the hits set", () => {
     const hits = new Set<SimpleSlug>();
     linker.link("Anzu met Raelion", from, hits);
