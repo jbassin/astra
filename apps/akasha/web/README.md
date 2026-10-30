@@ -58,8 +58,9 @@ Node indexing API and writes `dist/client/pagefind/`.
 - **Listings.** Sessions (`Chronicle.tsx`), folder pages (`FolderListing.tsx`) and tag pages
   (`TagListing.tsx`) share `ListingHead` (crumbs, title) and `PageList` (rows: hue dot, title,
   a faint page count on folders, tag chips). `listingData.ts` adds each row's section and count
-  in the page-data function: it resolves the row's relative href against the listing's slug,
-  so runtimeSite's views stay unchanged. A section's own folder is titled by the section
+  in the page-data function (it resolves the row's relative href against the listing's slug)
+  and orders the rows by title, ignoring case and accents, so runtimeSite's views (newest
+  first) stay unchanged. A section's own folder is titled by the section
   ("Org" shows as "Organisations"). Dates show in words, in UTC (`listingFormat.ts`).
 - **Error and 404 pages** (`RouteError.tsx`) render inside the shell. When the root loader
   itself failed, they render bare: the header and rails read its section counts.

@@ -41,22 +41,33 @@ export function descendantCounts(slugs: Iterable<string>): Map<string, number> {
  * resolve against it the way the browser resolves them.
  */
 export function hrefPath(listSlug: string, href: string): string {
-  let path = new URL(href, `https://akasha.invalid/${listSlug}`).pathname;
-  try {
-    path = decodeURIComponent(path);
-  } catch {
-    // A malformed escape: keep the encoded path.
-  }
-  return path.replaceAll(/^\/+|\/+$/g, "");
+  const path = new URL(href, `https://akasha.invalid/${listSlug}`).pathname;
+  return decodePath(path).replaceAll(/^\/+|\/+$/g, "");
 }
 
-/** Adds each entry's section and, for folders, the pages under it. */
+const UTF8 = new TextDecoder();
+
+/** Percent-decodes a path; unlike decodeURIComponent, a malformed sequence never throws. */
+function decodePath(path: string): string {
+  return path.replaceAll(/(?:%[0-9a-f]{2})+/gi, (run) =>
+    UTF8.decode(Uint8Array.from(run.slice(1).split("%"), (hex) => Number.parseInt(hex, 16))),
+  );
+}
+
+// Case- and accent-insensitive: "Æther" sorts with A, "ethervolt" with "Ethervolt".
+const TITLE_ORDER = new Intl.Collator("en", { sensitivity: "base", numeric: true });
+
+/**
+ * Adds each entry's section and, for folders, the pages under it, and orders the rows by
+ * title, folders and pages together. runtimeSite orders them by date, newest first, which
+ * reads as random with no dates on screen (the corpus was bulk-imported).
+ */
 export function listingRows(
   listSlug: string,
   entries: PageEntryView[],
   counts: Map<string, number>,
 ): ListingRow[] {
-  return entries.map((entry) => {
+  const rows = entries.map((entry) => {
     const path = hrefPath(listSlug, entry.href);
     const section = sectionOf(path)?.id ?? null;
     // A folder with nothing under it but its own index page shows no count.
@@ -64,6 +75,7 @@ export function listingRows(
     const childLabel = children > 0 ? pagesLabel(children, section === "sessions") : null;
     return { ...entry, section, childLabel };
   });
+  return rows.toSorted((a, b) => TITLE_ORDER.compare(a.title, b.title));
 }
 
 /**
