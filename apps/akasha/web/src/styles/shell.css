@@ -1,0 +1,793 @@
+/* The page shell: reset, base type, header, the three-column grid and its rails, the section
+   tree, the sections list, search, the graph, the phone menu, focus and motion. Page content
+   styles live in wiki.css, transcript.css, listing.css and home.css.
+
+   Breakpoints: the full header from 1330 px (below it the search field becomes an icon);
+   below 1180 px the right rail moves under the page; below 1100 px the header keeps only the
+   wordmark, search and the menu button; below 860 px (phones) the left rail goes. */
+
+/* The reset lives in @layer base so it sits BELOW gothic's @layer components
+   content styles (and Tailwind's utilities). Unlayered, the bare `* { margin:0;
+   padding:0 }` overrode every gothic-content margin/padding — paragraph spacing,
+   list indents, trait-pill and code-block padding all collapsed to 0 on rendered
+   vellum. Layering it fixes that while still zeroing the UA defaults on chrome. */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+html {
+  background-color: var(--ak-page);
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--ak-page);
+  color: var(--ak-ink);
+  font-family: var(--ak-serif);
+  font-optical-sizing: auto;
+  font-size: 18px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ak-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* ── small shared pieces ─────────────────────────────────────────────────────────── */
+.ak-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.ak-skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--ak-ink);
+  color: var(--ak-page);
+  font: 600 14px var(--ak-sans);
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.ak-skip-link:focus {
+  transform: none;
+}
+
+/* A section's hue dot; set `--hue` on it or an ancestor. */
+.ak-dot {
+  display: inline-block;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hue, var(--ak-faint));
+}
+
+.ak-count {
+  margin-left: auto;
+  color: var(--ak-faint);
+  font-size: 13px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-kbd {
+  padding: 0 6px;
+  border: 1px solid var(--ak-rule);
+  border-radius: 4px;
+  background: var(--ak-surface);
+  color: var(--ak-faint);
+  font: 400 12px/18px var(--ak-sans);
+  white-space: nowrap;
+}
+
+.ak-iconbtn {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ak-muted);
+  cursor: pointer;
+  transition:
+    color var(--ak-ease),
+    background-color var(--ak-ease);
+}
+.ak-iconbtn:hover {
+  background: var(--ak-sunk);
+  color: var(--ak-ink);
+}
+
+/* What a theme control shows for the theme on screen (CSS, so SSR matches hydration). */
+.ak-when-dark {
+  display: none;
+}
+.ak-when-light {
+  display: contents;
+}
+:root[data-theme="dark"] .ak-when-light {
+  display: none;
+}
+:root[data-theme="dark"] .ak-when-dark {
+  display: contents;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ak-when-light {
+    display: none;
+  }
+  :root:not([data-theme="light"]) .ak-when-dark {
+    display: contents;
+  }
+}
+
+/* ── header ──────────────────────────────────────────────────────────────────────── */
+.ak-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--ak-header-h);
+  border-bottom: 1px solid var(--ak-rule);
+  background: var(--ak-surface);
+}
+.ak-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  max-width: 1440px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.ak-wordmark {
+  flex: none;
+  color: var(--ak-ink);
+  font-family: var(--ak-serif);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.ak-nav {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+  align-self: stretch;
+  min-width: 0;
+  color: var(--ak-muted);
+  font: 500 14px var(--ak-sans);
+}
+.ak-nav-item {
+  display: flex;
+  align-items: stretch;
+}
+.ak-nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 11px;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--ak-ease);
+}
+.ak-nav-link:hover {
+  color: var(--ak-ink);
+}
+.ak-nav-link.is-current {
+  color: var(--ak-ink);
+  font-weight: 600;
+}
+.ak-nav-link.is-current::after {
+  content: "";
+  position: absolute;
+  right: 11px;
+  bottom: -1px;
+  left: 11px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--hue);
+}
+.ak-nav-sep {
+  align-self: center;
+  width: 1px;
+  height: 20px;
+  margin: 0 10px;
+  background: var(--ak-rule);
+}
+
+.ak-header-tools {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 36px;
+  margin-left: auto;
+}
+
+.ak-search-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 300px; /* the mockup's 272 px plus room for the "Ctrl K" hint */
+  height: 38px;
+  padding: 0 10px 0 12px;
+  border: 1px solid var(--ak-rule);
+  border-radius: 8px;
+  background: var(--ak-page);
+  color: var(--ak-faint);
+  font: 400 14px var(--ak-sans);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--ak-ease);
+}
+.ak-search-trigger:hover {
+  border-color: var(--ak-faint);
+}
+.ak-search-trigger-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ak-search-trigger-wide {
+  width: 100%;
+  height: 44px;
+  font-size: 15px;
+}
+
+.ak-search-icon,
+.ak-menu-button {
+  display: none;
+}
+
+@media (max-width: 1329px) {
+  .ak-header-tools > .ak-search-trigger {
+    display: none;
+  }
+  .ak-header-tools > .ak-search-icon {
+    display: inline-grid;
+  }
+  .ak-header-tools {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 1099px) {
+  .ak-nav,
+  .ak-theme-toggle {
+    display: none;
+  }
+  .ak-menu-button {
+    display: inline-grid;
+  }
+  .ak-header-tools {
+    gap: 4px;
+  }
+}
+
+@media (max-width: 859px) {
+  .ak-header-inner {
+    gap: 4px;
+    padding: 0 8px 0 16px;
+  }
+  .ak-header-inner > .ak-wordmark {
+    font-size: 22px;
+  }
+  .ak-header-tools > .ak-iconbtn {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ── body grid and rails ─────────────────────────────────────────────────────────── */
+.ak-frame {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr) 280px;
+  align-items: start;
+  gap: 64px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 40px 40px 96px;
+}
+.ak-frame.no-right {
+  grid-template-columns: 232px minmax(0, 1fr);
+}
+
+.ak-main {
+  min-width: 0;
+}
+.ak-main > * + * {
+  margin-top: 1.5rem;
+}
+
+.ak-rail {
+  min-width: 0;
+  color: var(--ak-muted);
+  font: 400 14px/1.45 var(--ak-sans);
+}
+
+.ak-rail-left {
+  position: sticky;
+  top: calc(var(--ak-header-h) + 40px);
+  max-height: calc(100vh - var(--ak-header-h) - 40px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 24px;
+  scrollbar-width: thin;
+}
+
+/* Right-rail blocks: a hairline between each. */
+.ak-rail-right > * + * {
+  margin-top: 26px;
+  padding-top: 26px;
+  border-top: 1px solid var(--ak-rule);
+}
+.ak-rail-title {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 12px;
+  color: var(--ak-ink);
+  font: 650 14px var(--ak-sans);
+}
+
+@media (max-width: 1179px) {
+  .ak-frame,
+  .ak-frame.no-right {
+    grid-template-columns: 232px minmax(0, 1fr);
+    gap: 48px;
+  }
+  .ak-rail-left {
+    grid-row: 1 / span 2;
+  }
+  .ak-rail-right {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 859px) {
+  .ak-frame,
+  .ak-frame.no-right {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+    padding: 24px 16px 64px;
+  }
+  .ak-rail-left {
+    display: none;
+  }
+  .ak-rail-right {
+    grid-column: 1;
+  }
+}
+
+/* ── section tree (left rail) ────────────────────────────────────────────────────── */
+.ak-tree {
+  font-size: 14px;
+}
+.ak-tree-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px 14px;
+  color: var(--ak-ink);
+  font-size: 15px;
+  font-weight: 650;
+}
+.ak-tree-head-link {
+  color: inherit;
+  text-decoration: none;
+}
+.ak-tree-head-link:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--hue);
+  text-underline-offset: 4px;
+}
+.ak-tree-list,
+.ak-tree-kids {
+  list-style: none;
+}
+.ak-tree-kids {
+  margin: 2px 0 6px 18px;
+  padding-left: 8px;
+  border-left: 1px solid var(--ak-rule);
+}
+.ak-tree-row {
+  display: flex;
+  align-items: flex-start;
+  border-radius: 6px;
+  transition: background-color var(--ak-ease);
+}
+.ak-tree-row:hover {
+  background: var(--ak-sunk);
+}
+.ak-tree-row.is-current {
+  background: color-mix(in srgb, var(--hue) 13%, transparent);
+}
+.ak-tree-link {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--ak-muted);
+  line-height: 1.3;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: color var(--ak-ease);
+}
+.ak-tree-row:hover .ak-tree-link,
+.ak-tree-row.is-current .ak-tree-link {
+  color: var(--ak-ink);
+}
+.ak-tree-row.is-current .ak-tree-link {
+  font-weight: 600;
+}
+.ak-tree-toggle {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ak-faint);
+  cursor: pointer;
+}
+.ak-tree-toggle:hover {
+  color: var(--ak-ink);
+}
+.ak-tree-toggle svg {
+  transition: transform var(--ak-ease);
+}
+.ak-tree-toggle[aria-expanded="false"] svg {
+  transform: rotate(-90deg);
+}
+
+/* ── sections list (left rail on home and tags; the phone menu) ──────────────────── */
+.ak-sections ul {
+  list-style: none;
+}
+.ak-section-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--ak-muted);
+  font: 500 14px var(--ak-sans);
+  text-decoration: none;
+  transition:
+    color var(--ak-ease),
+    background-color var(--ak-ease);
+}
+.ak-section-row:hover {
+  background: var(--ak-sunk);
+  color: var(--ak-ink);
+}
+
+.ak-sections-menu {
+  margin-top: 16px;
+}
+.ak-sections-menu .ak-section-row {
+  gap: 12px;
+  height: 48px;
+  padding: 0 4px;
+  border-bottom: 1px solid var(--ak-rule);
+  border-radius: 0;
+  color: var(--ak-ink);
+  font-size: 16px;
+}
+.ak-sections-menu .ak-section-row.is-current {
+  font-weight: 650;
+}
+.ak-menu-excerpt {
+  padding: 6px 0 10px 24px;
+  border-bottom: 1px solid var(--ak-rule);
+  list-style: none;
+  font: 400 15px var(--ak-sans);
+}
+.ak-menu-item {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: var(--ak-muted);
+  text-decoration: none;
+}
+.ak-menu-item.is-current {
+  background: color-mix(in srgb, var(--hue) 13%, transparent);
+  color: var(--ak-ink);
+  font-weight: 600;
+}
+.ak-menu-all {
+  color: var(--ak-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--ak-rule);
+  text-underline-offset: 4px;
+}
+
+/* ── phone menu sheet ────────────────────────────────────────────────────────────── */
+/* A native modal <dialog>, sized to the whole viewport. */
+.ak-phone-menu {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  border: 0;
+  background: var(--ak-surface);
+  color: var(--ak-ink);
+  font-family: var(--ak-sans);
+}
+.ak-phone-menu-head {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 8px 0 16px;
+  border-bottom: 1px solid var(--ak-rule);
+  background: var(--ak-surface);
+}
+.ak-phone-menu-head .ak-wordmark {
+  font-size: 22px;
+}
+.ak-phone-menu-head .ak-iconbtn {
+  width: 44px;
+  height: 44px;
+}
+.ak-phone-menu-body {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 16px 24px;
+}
+
+.ak-theme-row {
+  min-width: 0;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  color: var(--ak-muted);
+  font-size: 15px;
+}
+.ak-segments {
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--ak-rule);
+  border-radius: 8px;
+}
+.ak-segments button {
+  height: 44px;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  color: var(--ak-muted);
+  font: 500 14px var(--ak-sans);
+  cursor: pointer;
+}
+.ak-segments button[aria-pressed="true"] {
+  background: var(--ak-ink);
+  color: var(--ak-surface);
+  font-weight: 600;
+}
+
+/* ── search dialog ───────────────────────────────────────────────────────────────── */
+/* The native <dialog> covers the viewport; its padding is the click-outside area. */
+.ak-search-backdrop {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  overflow-y: auto;
+  padding: 12vh 16px 32px;
+  border: 0;
+  background: transparent;
+  color: var(--ak-ink);
+}
+/* Literal colour: ::backdrop doesn't inherit custom properties in every browser. */
+.ak-search-backdrop::backdrop,
+.ak-phone-menu::backdrop {
+  background: rgb(22 21 42 / 40%);
+}
+.ak-search-dialog {
+  max-width: 640px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--ak-rule);
+  border-radius: 10px;
+  background: var(--ak-surface);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 18%);
+  font-family: var(--ak-sans);
+}
+.ak-search-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--ak-rule);
+  color: var(--ak-faint);
+}
+.ak-search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ak-ink);
+  font: 400 17px var(--ak-sans);
+}
+.ak-search-input::placeholder {
+  color: var(--ak-faint);
+}
+.ak-search-input:focus {
+  outline: none;
+}
+.ak-search-input::-webkit-search-cancel-button {
+  display: none;
+}
+.ak-search-results {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 6px;
+  list-style: none;
+}
+.ak-search-result {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 6px;
+  color: var(--ak-ink);
+  text-decoration: none;
+}
+.ak-search-result:hover,
+.ak-search-result:focus-visible {
+  background: var(--ak-sunk);
+}
+.ak-search-result-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.ak-search-result-section {
+  margin-left: auto;
+  color: var(--ak-faint);
+  font-size: 13px;
+  font-weight: 400;
+}
+.ak-search-result-excerpt {
+  display: block;
+  margin-top: 2px;
+  color: var(--ak-muted);
+  font: 400 15px/1.5 var(--ak-serif);
+}
+.ak-search-result mark {
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--hue, var(--ak-ink)) 16%, transparent);
+  color: var(--ak-ink);
+}
+.ak-search-empty {
+  padding: 16px;
+  color: var(--ak-muted);
+  font-size: 14px;
+}
+
+/* ── graph ("Connections" in the right rail) ─────────────────────────────────────── */
+/* graph-slot reserves the space server-side (graph + legend) so the client-only graph
+   doesn't shift layout when it hydrates. */
+.graph-slot {
+  min-height: 252px;
+}
+.graph .graph-outer {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  border: 1px solid var(--ak-rule);
+  border-radius: 8px;
+  background: var(--ak-surface);
+}
+.graph .graph-container {
+  width: 100%;
+  height: 100%;
+}
+/* placeholder shown when a page has no graph connections */
+.graph .graph-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--ak-faint);
+  font-size: 13px;
+}
+.global-graph-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+}
+.ak-graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 10px;
+  list-style: none;
+  font-size: 12px;
+}
+.ak-graph-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ak-graph-legend .ak-dot {
+  width: 7px;
+  height: 7px;
+}
+.global-graph-outer {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: none;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ak-ink) 35%, transparent);
+}
+.global-graph-outer.active {
+  display: block;
+}
+.global-graph-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 80vw;
+  height: 80vh;
+  border: 1px solid var(--ak-rule);
+  border-radius: 10px;
+  background: var(--ak-surface);
+  transform: translate(-50%, -50%);
+}
+@media (max-width: 859px) {
+  .global-graph-container {
+    width: calc(100vw - 32px);
+  }
+}

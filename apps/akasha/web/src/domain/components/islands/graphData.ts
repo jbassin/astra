@@ -1,7 +1,7 @@
 /**
  * Graph data-shaping — the pure, DOM-free core lifted out of faerrin's Graph
  * island `renderGraph()` so it can be unit-tested without pixi/WebGL/jsdom (the
- * same split as Explorer's `explorerState.ts`). The imperative
+ * same split as the section tree's `explorerState.ts`). The imperative
  * pixi/d3 rendering stays verbatim in `Graph.tsx`; this module owns only the
  * link/tag extraction + depth-limited neighbourhood BFS + node/link assembly.
  *

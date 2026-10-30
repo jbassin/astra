@@ -12,6 +12,7 @@ import {
   chronicleIndexData,
   chronicleShowData,
   homePageData,
+  sectionCountsData,
   tagIndexData,
   tagPageData,
   wikiPageData,
@@ -32,6 +33,10 @@ export const getTagPage = createServerFn({ method: "GET" })
 
 export const getTagIndex = createServerFn({ method: "GET" }).handler(() =>
   tracePageData("tag-index", tagIndexData),
+);
+
+export const getSectionCounts = createServerFn({ method: "GET" }).handler(() =>
+  tracePageData("sections", sectionCountsData),
 );
 
 export const getChronicleIndex = createServerFn({ method: "GET" }).handler(() =>

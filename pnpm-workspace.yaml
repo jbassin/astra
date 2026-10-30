@@ -20,6 +20,8 @@ catalog:
   "@fontsource/eb-garamond": "^5.2.7"
   "@fontsource/ibm-plex-mono": "^5.2.7"
   "@fontsource/oswald": "^5.2.8"
+  "@fontsource-variable/archivo": "^5.3.0"
+  "@fontsource-variable/literata": "^5.3.0"
   "@opentelemetry/api": "^1.9.1"
   # Exact, and the same release `playwright` below resolves to (and deploy/node.Dockerfile's
   # PLAYWRIGHT_VERSION): a newer runner would pull in a second playwright. Only the codex e2e

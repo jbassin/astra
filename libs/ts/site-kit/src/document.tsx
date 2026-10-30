@@ -58,8 +58,10 @@ export function SiteDocument({ children, rum, head, bodyProps }: SiteDocumentPro
     );
   }, []);
 
+  // `suppressHydrationWarning` on <html>: a pre-paint script in `head` may set attributes
+  // there before hydration (akasha's `data-theme`). It covers only <html>'s own attributes.
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {head}
         <HeadContent />

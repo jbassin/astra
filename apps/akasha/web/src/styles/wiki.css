@@ -1,0 +1,134 @@
+/* The wiki page: content chrome (breadcrumbs, title, meta, tags, backlinks), the sidebar
+   image and the Popover card. Slice B of the redesign restyles this file; until then the
+   rules are the pre-redesign ones on the new tokens and faces. */
+
+/* Reading measure + size. The center grid column is ~52rem wide, which runs
+   wiki prose to 100+ characters per line at gothic's dense 16px. Cap the reading
+   content (header + body + listings) to ~68ch and lift the body a notch, matching
+   the mouthpiece episode page (the in-repo reading benchmark). */
+.ak-main > .page-header,
+.ak-main > .popover-hint {
+  max-width: 42rem;
+}
+.ak-main .gothic-prose {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+
+/* ── content chrome (breadcrumbs / title / meta / tags / backlinks / listings) ───── */
+.breadcrumb-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--ak-muted);
+}
+.breadcrumb-element {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.breadcrumb-container a {
+  color: var(--ak-muted);
+  text-decoration: none;
+}
+.breadcrumb-container a:hover {
+  color: var(--ak-ink);
+}
+.article-title {
+  font-family: var(--ak-sans);
+  font-size: 2.2rem;
+  line-height: 1.1;
+  margin: 0.5rem 0;
+}
+.content-meta {
+  display: flex;
+  gap: 0.75rem;
+  color: var(--ak-muted);
+  font-size: 0.85rem;
+}
+ul.tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+.tag-link {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--ak-rule);
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  line-height: 1.1;
+  color: var(--ak-ink);
+  text-decoration: none;
+}
+.tag-link:hover {
+  background: var(--ak-sunk);
+  border-color: var(--ak-faint);
+}
+
+.backlinks h3 {
+  font-family: var(--ak-sans);
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+}
+.backlinks ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.backlinks a {
+  color: var(--ak-ink);
+  text-decoration: none;
+}
+
+/* sidebar image */
+.sidebar-image img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--ak-rule);
+  object-fit: cover;
+}
+@media (max-width: 60rem) {
+  .desktop-only {
+    display: none;
+  }
+}
+
+/* ── Popover hover-preview card ──────────────────────────────────────────────────── */
+.popover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  pointer-events: none;
+}
+.popover.active-popover {
+  visibility: visible;
+  opacity: 1;
+}
+.popover-inner {
+  max-width: 28rem;
+  max-height: 22rem;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  background: var(--ak-sunk);
+  border: 1px solid var(--ak-rule);
+  border-radius: 0.4rem;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
+  font-size: 0.85rem;
+}
+.popover-inner img {
+  max-width: 100%;
+  height: auto;
+}

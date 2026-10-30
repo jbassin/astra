@@ -20,6 +20,8 @@
     "@astra/site-kit": "workspace:*",
     "@astra/vellum-lang": "workspace:*",
     "@floating-ui/dom": "catalog:",
+    "@fontsource-variable/archivo": "catalog:",
+    "@fontsource-variable/literata": "catalog:",
     "@opentelemetry/api": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",

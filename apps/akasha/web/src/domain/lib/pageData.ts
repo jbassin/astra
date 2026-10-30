@@ -11,6 +11,7 @@ import { getLogger } from "@astra/observe";
 
 import type { ChronicleEpisode, ChronicleSeason, ChronicleShow } from "@/domain/lib/chronicleTypes";
 import { SHOWS } from "@/generated/chronicle";
+import { PAGES } from "@/generated/site";
 import { TRANSCRIPT_BODIES } from "@/generated/transcripts";
 
 import {
@@ -25,7 +26,13 @@ import {
   type TagView,
   tagView,
 } from "./runtimeSite";
+import { type SectionCounts, sectionCounts } from "./sections";
 import type { FullSlug } from "./slug";
+
+/** Pages per section, for the section tree's head and the phone menu (root route loader). */
+export function sectionCountsData(): SectionCounts {
+  return sectionCounts(PAGES.map((p) => p.slug));
+}
 
 const log = getLogger("astra.akasha-frontend");
 

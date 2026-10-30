@@ -11,9 +11,11 @@ import { useRouter } from "@tanstack/react-router";
  *
  * Data comes from `/static/contentIndex.json` (the slim {title,links,tags} index
  * build-emitted by build-content); the current slug from `body[data-slug]` (set in
- * __root). Node/link/label colors read Quartz CSS vars via getComputedStyle — those
- * names are shimmed to the gothic void palette in globals.css. Every listener and pixi
- * app is torn down on unmount (the SPA teardown rule).
+ * __root). Nodes take their section's hue (`--ak-<section>`); links, labels and tag nodes
+ * read the Quartz variable names (`--gray`, `--dark`, …). All of them are read with
+ * getComputedStyle and are concrete hex per theme in tokens.css (canvas code can't use a
+ * `var()`). The graph redraws when the theme changes. Every listener and pixi app is torn
+ * down on unmount (the SPA teardown rule).
  */
 import { Tween as Tweened, Group as TweenGroup } from "@tweenjs/tween.js";
 import { drag } from "d3-drag";
@@ -28,9 +30,12 @@ import {
 import { select } from "d3-selection";
 import { zoom, zoomIdentity } from "d3-zoom";
 import { Application, Circle, Container, Graphics, Text } from "pixi.js";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { ExpandIcon } from "@/domain/components/icons";
+import { type Section, SECTIONS, sectionOf } from "@/domain/lib/sections";
 import { type FullSlug, resolveRelative, simplifySlug } from "@/domain/lib/slug";
+import { watchTheme } from "@/domain/lib/theme";
 
 import { buildGraphData, type ContentDetails, type D3Config } from "./graphData";
 
@@ -64,15 +69,6 @@ const GLOBAL_CFG: D3Config = {
   removeTags: [],
   focusOnHover: true,
   enableRadial: true,
-};
-
-const VISITED_KEY = "graph-visited";
-const getVisited = (): Set<string> =>
-  new Set(JSON.parse(localStorage.getItem(VISITED_KEY) ?? "[]"));
-const addToVisited = (slug: string) => {
-  const v = getVisited();
-  v.add(slug);
-  localStorage.setItem(VISITED_KEY, JSON.stringify([...v]));
 };
 
 const removeAllChildren = (node: HTMLElement) => {
@@ -118,9 +114,10 @@ async function renderGraph(
   rawData: Map<string, ContentDetails>,
   // Opens a page by its href relative to `fullSlug` (a client navigation).
   go: (href: string) => void,
+  // Told which sections the drawn nodes belong to (the legend).
+  onSections?: (sections: Section[]) => void,
 ): Promise<() => void> {
   const slug = simplifySlug(fullSlug as FullSlug);
-  const visited = getVisited();
   removeAllChildren(graph);
 
   const {
@@ -139,6 +136,7 @@ async function renderGraph(
   const data = rawData;
   // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
   const graphData: { nodes: any[]; links: any[] } = buildGraphData(data, slug, cfg);
+  onSections?.(SECTIONS.filter((s) => graphData.nodes.some((n) => sectionOf(n.id) === s)));
 
   // No edges → skip pixi entirely and show an intentional placeholder. Otherwise a
   // connection-less page (home, the tags index) renders an empty canvas that reads
@@ -155,7 +153,7 @@ async function renderGraph(
   const tweens = new Map<string, { update: (t: number) => void; stop: () => void }>();
 
   const width = graph.offsetWidth;
-  const height = Math.max(graph.offsetHeight, 250);
+  const height = Math.max(graph.offsetHeight, 200);
 
   const simulation = forceSimulation(graphData.nodes)
     .force("charge", forceManyBody().strength(-100 * repelForce))
@@ -167,26 +165,24 @@ async function renderGraph(
   const radius = (Math.min(width, height) / 2) * 0.8;
   if (enableRadial) simulation.force("radial", forceRadial(radius).strength(0.2));
 
-  // Quartz var names → shimmed to the gothic void palette in globals.css. Read as
-  // literal values (the shim is concrete hex, so getComputedStyle returns a color
-  // pixi can parse — a `var()` ref would come back unresolved in some browsers).
+  // Concrete hex per theme from tokens.css, read now, so a redraw after a theme change
+  // picks up the new values (a `var()` ref would come back unresolved in some browsers).
   const cs = getComputedStyle(document.documentElement);
+  const read = (name: string) => cs.getPropertyValue(name).trim();
   const computedStyleMap = {
-    "--secondary": cs.getPropertyValue("--secondary"),
-    "--tertiary": cs.getPropertyValue("--tertiary"),
-    "--gray": cs.getPropertyValue("--gray"),
-    "--light": cs.getPropertyValue("--light"),
-    "--lightgray": cs.getPropertyValue("--lightgray"),
-    "--dark": cs.getPropertyValue("--dark"),
-    "--darkgray": cs.getPropertyValue("--darkgray"),
-    "--bodyFont": cs.getPropertyValue("--bodyFont"),
+    "--gray": read("--gray"),
+    "--light": read("--light"),
+    "--lightgray": read("--lightgray"),
+    "--dark": read("--dark"),
+    "--bodyFont": read("--bodyFont"),
   };
+  const hueOf = new Map(SECTIONS.map((s) => [s.id, read(`--ak-${s.id}`)]));
 
+  // A node's colour says which section it belongs to; tags and home belong to none.
   // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
-  const color = (dd: any) => {
-    if (dd.id === slug) return computedStyleMap["--secondary"];
-    if (visited.has(dd.id) || dd.id.startsWith("tags/")) return computedStyleMap["--tertiary"];
-    return computedStyleMap["--gray"];
+  const color = (dd: any): string => {
+    const section = dd.id.startsWith("tags/") ? null : sectionOf(dd.id);
+    return (section && hueOf.get(section.id)) || computedStyleMap["--gray"];
   };
   // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
   function nodeRadius(dd: any) {
@@ -194,7 +190,9 @@ async function renderGraph(
       // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
       (l: any) => l.source.id === dd.id || l.target.id === dd.id,
     ).length;
-    return 2 + Math.sqrt(numLinks);
+    const r = 2 + Math.sqrt(numLinks);
+    // The page on screen is the largest node.
+    return dd.id === slug ? Math.max(r * 1.4, 7) : r;
   }
 
   let hoveredNodeId: string | null = null;
@@ -336,7 +334,12 @@ async function renderGraph(
       cursor: "pointer",
     })
       .circle(0, 0, nodeRadius(n))
-      .fill({ color: isTagNode ? computedStyleMap["--light"] : color(n) })
+      .fill({ color: isTagNode ? computedStyleMap["--light"] : color(n) });
+    // A faint ring around the page on screen.
+    if (nodeId === slug) {
+      gfx.circle(0, 0, nodeRadius(n) + 4).stroke({ width: 1.5, color: color(n), alpha: 0.35 });
+    }
+    gfx
       // oxlint-disable-next-line typescript/no-explicit-any -- d3 and pixi objects meet here untyped; typing this seam is a follow-up
       .on("pointerover", (e: any) => {
         updateHoverInfo(e.target.label);
@@ -348,7 +351,11 @@ async function renderGraph(
         label.alpha = oldLabelOpacity;
         if (!dragging) renderPixiFromD3();
       });
-    if (isTagNode) gfx.stroke({ width: 2, color: computedStyleMap["--tertiary"] });
+    if (isTagNode) {
+      gfx
+        .circle(0, 0, nodeRadius(n))
+        .stroke({ width: 1.5, color: computedStyleMap["--gray"], alignment: 1 });
+    }
     nodesContainer.addChild(gfx);
     labelsContainer.addChild(label);
     nodeRenderData.push({
@@ -473,8 +480,52 @@ async function renderGraph(
 
   return () => {
     stopAnimation = true;
-    app.destroy();
+    // removeView: a redraw (theme change) may replace this graph while the island stays
+    // mounted, so the old canvas must leave the DOM too.
+    app.destroy({ removeView: true });
   };
+}
+
+/**
+ * One graph drawn into a container, redrawn on demand. Async-abort guard: renderGraph awaits
+ * loadData() + pixi app.init(); if the island is torn down, the graph cleared, or a newer
+ * draw started (a theme change) mid-await, a resolved graph would append a canvas and start
+ * an unbounded rAF loop on an app nothing destroys. So each draw checks it is still current.
+ */
+function graphSlot(
+  container: () => HTMLElement | null,
+  slug: string,
+  cfg: D3Config,
+  go: (href: string) => void,
+  onSections?: (sections: Section[]) => void,
+) {
+  let gen = 0;
+  let disposed = false;
+  let cleanup: (() => void) | null = null;
+  const clear = () => {
+    gen++;
+    cleanup?.();
+    cleanup = null;
+  };
+  const draw = async () => {
+    clear();
+    const mine = gen;
+    const el = container();
+    if (!el) return;
+    const data = await loadData();
+    if (disposed || mine !== gen) return;
+    const drawn = await renderGraph(el, slug, cfg, data, go, onSections);
+    if (disposed || mine !== gen) {
+      drawn();
+      return;
+    }
+    cleanup = drawn;
+  };
+  const dispose = () => {
+    disposed = true;
+    clear();
+  };
+  return { draw, clear, dispose };
 }
 
 export default function Graph() {
@@ -483,6 +534,7 @@ export default function Graph() {
   const globalContainer = useRef<HTMLDivElement>(null);
   const globalIcon = useRef<HTMLButtonElement>(null);
   const router = useRouter();
+  const [legend, setLegend] = useState<Section[]>([]);
 
   useEffect(() => {
     const slug = document.body.dataset.slug ?? "";
@@ -490,93 +542,75 @@ export default function Graph() {
       const url = new URL(href, window.location.href);
       void router.navigate({ href: url.pathname + url.search + url.hash });
     };
-    addToVisited(simplifySlug(slug as FullSlug));
+    const local = graphSlot(() => localContainer.current, slug, LOCAL_CFG, go, setLegend);
+    const global = graphSlot(() => globalContainer.current, slug, GLOBAL_CFG, go);
+    void local.draw();
 
-    // Async-abort guard: renderGraph awaits loadData() + pixi app.init(); if the
-    // island is torn down mid-await, a resolved graph would append a canvas and
-    // start an unbounded rAF loop on an app nothing destroys. Bail + destroy.
-    let disposed = false;
-    let localCleanup: (() => void) | null = null;
-    const globalCleanups: (() => void)[] = [];
     let escCleanup: (() => void) | null = null;
-
-    const renderLocal = async () => {
-      localCleanup?.();
-      localCleanup = null;
-      const el = localContainer.current;
-      if (!el) return;
-      const data = await loadData();
-      if (disposed) return;
-      const cleanup = await renderGraph(el, slug, LOCAL_CFG, data, go);
-      if (disposed) {
-        cleanup();
-        return;
-      }
-      localCleanup = cleanup;
-    };
-    void renderLocal();
-
+    const isGlobalOpen = () => globalOuter.current?.classList.contains("active") ?? false;
     const hideGlobal = () => {
-      for (const c of globalCleanups.splice(0)) c();
+      global.clear();
       escCleanup?.();
       escCleanup = null;
       globalOuter.current?.classList.remove("active");
     };
-    const showGlobal = async () => {
+    const showGlobal = () => {
       globalOuter.current?.classList.add("active");
+      escCleanup?.();
       escCleanup = registerEscapeHandler(globalOuter.current, hideGlobal);
-      const el = globalContainer.current;
-      if (!el) return;
-      const data = await loadData();
-      if (disposed) return;
-      const cleanup = await renderGraph(el, slug, GLOBAL_CFG, data, go);
-      if (disposed || !globalOuter.current?.classList.contains("active")) {
-        cleanup();
-        return;
-      }
-      globalCleanups.push(cleanup);
+      void global.draw();
     };
+
+    // The colours are read when a graph draws, so a theme change redraws it.
+    const stopWatching = watchTheme(() => {
+      void local.draw();
+      if (isGlobalOpen()) void global.draw();
+    });
 
     const onShortcut = (e: KeyboardEvent) => {
       if (e.key === "g" && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
         e.preventDefault();
-        if (globalOuter.current?.classList.contains("active")) hideGlobal();
-        else void showGlobal();
+        if (isGlobalOpen()) hideGlobal();
+        else showGlobal();
       }
     };
     document.addEventListener("keydown", onShortcut);
-
     const iconEl = globalIcon.current;
-    const onIconClick = () => void showGlobal();
-    iconEl?.addEventListener("click", onIconClick);
+    iconEl?.addEventListener("click", showGlobal);
 
     return () => {
-      disposed = true;
+      stopWatching();
       document.removeEventListener("keydown", onShortcut);
-      iconEl?.removeEventListener("click", onIconClick);
-      localCleanup?.();
-      for (const c of globalCleanups.splice(0)) c();
+      iconEl?.removeEventListener("click", showGlobal);
+      local.dispose();
+      global.dispose();
       escCleanup?.();
     };
   }, [router]);
 
   return (
     <div className="graph">
-      <h3>Graph View</h3>
       <div className="graph-outer">
         <div ref={localContainer} className="graph-container" />
         <button
           ref={globalIcon}
-          className="global-graph-icon"
-          aria-label="Global Graph"
+          className="ak-iconbtn global-graph-icon"
+          aria-label="Open the full graph"
           type="button"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55" fill="currentColor">
-            <title>Global Graph</title>
-            <path d="M49,0c-3.309,0-6,2.691-6,6c0,1.035,0.263,2.009,0.726,2.86l-9.829,9.829C32.542,17.634,30.846,17,29,17 s-3.542,0.634-4.898,1.688l-7.669-7.669C16.785,10.424,17,9.74,17,9c0-2.206-1.794-4-4-4S9,6.794,9,9s1.794,4,4,4 c0.74,0,1.424-0.215,2.019-0.567l7.669,7.669C21.634,21.458,21,23.154,21,25s0.634,3.542,1.688,4.897L10.024,42.562 C8.958,41.595,7.549,41,6,41c-3.309,0-6,2.691-6,6s2.691,6,6,6s6-2.691,6-6c0-1.035-0.263-2.009-0.726-2.86l12.829-12.829 c1.106,0.86,2.44,1.436,3.898,1.619v10.16c-2.833,0.478-5,2.942-5,5.91c0,3.309,2.691,6,6,6s6-2.691,6-6c0-2.967-2.167-5.431-5-5.91 v-10.16c1.458-0.183,2.792-0.759,3.898-1.619l7.669,7.669C41.215,39.576,41,40.26,41,41c0,2.206,1.794,4,4,4s4-1.794,4-4 s-1.794-4-4-4c-0.74,0-1.424,0.215-2.019,0.567l-7.669-7.669C36.366,28.542,37,26.846,37,25s-0.634-3.542-1.688-4.897l9.665-9.665 C46.042,11.405,47.451,12,49,12c3.309,0,6-2.691,6-6S52.309,0,49,0z M11,9c0-1.103,0.897-2,2-2s2,0.897,2,2s-0.897,2-2,2 S11,10.103,11,9z M6,51c-2.206,0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S8.206,51,6,51z M33,49c0,2.206-1.794,4-4,4s-4-1.794-4-4 s1.794-4,4-4S33,46.794,33,49z M29,31c-3.309,0-6-2.691-6-6s2.691-6,6-6s6,2.691,6,6S32.309,31,29,31z M47,41c0,1.103-0.897,2-2,2 s-2-0.897-2-2s0.897-2,2-2S47,39.897,47,41z M49,10c-2.206,0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S51.206,10,49,10z" />
-          </svg>
+          <ExpandIcon />
         </button>
       </div>
+      {legend.length > 0 && (
+        <ul className="ak-graph-legend" aria-label="Sections in this graph">
+          {legend.map((s) => (
+            <li key={s.id} style={{ "--hue": s.hue }}>
+              <span className="ak-dot" aria-hidden="true" />
+              {s.label}
+            </li>
+          ))}
+        </ul>
+      )}
       <div ref={globalOuter} className="global-graph-outer">
         <div ref={globalContainer} className="global-graph-container" />
       </div>

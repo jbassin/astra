@@ -12,6 +12,12 @@ catalogs:
     '@floating-ui/dom':
       specifier: ^1.7.6
       version: 1.7.6
+    '@fontsource-variable/archivo':
+      specifier: ^5.3.0
+      version: 5.3.0
+    '@fontsource-variable/literata':
+      specifier: ^5.3.0
+      version: 5.3.0
     '@fontsource/cinzel':
       specifier: ^5.2.8
       version: 5.2.8
@@ -179,6 +185,12 @@ importers:
       '@floating-ui/dom':
         specifier: 'catalog:'
         version: 1.7.6
+      '@fontsource-variable/archivo':
+        specifier: 'catalog:'
+        version: 5.3.0
+      '@fontsource-variable/literata':
+        specifier: 'catalog:'
+        version: 5.3.0
       '@opentelemetry/api':
         specifier: 'catalog:'
         version: 1.9.1
@@ -2119,6 +2131,12 @@ packages:
 
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
+
+  '@fontsource-variable/archivo@5.3.0':
+    resolution: {integrity: sha512-HogK8FJelrD1o7TlZlkIVtHgc20bO5PZRWE7mUeUTdMN055alznQV6/00J00IBeu8FQAH4s3zW9UJNvKExXf+g==}
+
+  '@fontsource-variable/literata@5.3.0':
+    resolution: {integrity: sha512-1Jw7xvOcoGyB83lxB2nG4bfNbqtX2/TTbdh9sHAOmU064SvmSdulDtA5RBu5JYWf64fdaKX7xU+z3GO1T2bCHA==}
 
   '@fontsource/cinzel@5.2.8':
     resolution: {integrity: sha512-B9WeF/jPlOJOrcXfX96cy4KfM+s1QcU2C9W2hE3azBOBzPvzFkNpBovT5JmhAeicE/s4HZWKF9LF5hmEcqlbsw==}
@@ -6924,6 +6942,10 @@ snapshots:
       '@floating-ui/utils': 0.2.11
 
   '@floating-ui/utils@0.2.11': {}
+
+  '@fontsource-variable/archivo@5.3.0': {}
+
+  '@fontsource-variable/literata@5.3.0': {}
 
   '@fontsource/cinzel@5.2.8': {}
 

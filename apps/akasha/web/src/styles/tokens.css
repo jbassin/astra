@@ -1,0 +1,132 @@
+/* akasha's design tokens: colours (light and dark), section hues, faces, and the mapping of
+   gothic's tokens onto them so gothic's rendered blocks follow the theme.
+
+   Dark applies for an explicit choice (`data-theme="dark"` on <html>, set by the head
+   script and the theme controls) and for a dark system setting when the reader hasn't
+   chosen light. The two dark blocks below must stay identical.
+
+   Every colour here is a literal hex on purpose: the force graph reads the section hues
+   (`--ak-<section>`) and the Quartz-named graph variables with getComputedStyle, and canvas
+   code can't parse a `var()` (README trap). Every text colour reaches 4.5:1 on page and
+   surface in its theme. */
+
+:root {
+  color-scheme: light;
+
+  --ak-page: #f3f3f7;
+  --ak-surface: #ffffff;
+  --ak-sunk: #ebebf1;
+  --ak-ink: #1e1d2e;
+  --ak-muted: #55536c;
+  --ak-faint: #6b6983;
+  --ak-rule: #dadae4;
+
+  /* Section hues (sections.ts names them by id). */
+  --ak-bestiary: #a43b38;
+  --ak-divinity: #945000;
+  --ak-geography: #2f751d;
+  --ak-org: #007a75;
+  --ak-people: #006da6;
+  --ak-phenomena: #4e59b1;
+  --ak-rules: #7b489e;
+  --ak-sessions: #9b3b6e;
+  --ak-timeline: #6b6983; /* the faint ink */
+
+  /* The graph's Quartz variable names (Graph.tsx): links, labels, tag nodes. */
+  --gray: #6b6983;
+  --light: #ffffff;
+  --lightgray: #dadae4;
+  --dark: #1e1d2e;
+  --bodyFont: "Archivo Variable", system-ui, sans-serif;
+
+  /* Faces: Literata for reading, Archivo for the interface, Plex Mono for code and logs. */
+  --ak-serif: "Literata Variable", Georgia, serif;
+  --ak-sans: "Archivo Variable", system-ui, sans-serif;
+  --ak-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --ak-header-h: 64px;
+  --ak-ease: 120ms ease;
+
+  /* gothic's tokens, pointed at akasha's (unlayered, so they beat gothic's @theme). */
+  --color-page: var(--ak-page);
+  --color-void: var(--ak-page);
+  --color-panel: var(--ak-surface);
+  --color-elevated: var(--ak-surface);
+  --color-hover: var(--ak-sunk);
+  --color-fg: var(--ak-ink);
+  --color-ink: var(--ak-ink);
+  --color-fg-muted: var(--ak-muted);
+  --color-ink-dim: var(--ak-muted);
+  --color-fg-faint: var(--ak-faint);
+  --color-ink-faint: var(--ak-faint);
+  --color-rule: var(--ak-rule);
+  --color-rule-strong: var(--ak-rule);
+  --color-rule-bright: var(--ak-rule);
+  --color-accent: var(--ak-ink);
+  --color-accent-secondary: var(--ak-muted);
+  --color-accent-amber: var(--ak-muted);
+  --font-body: var(--ak-serif);
+  --font-display: var(--ak-sans);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ak-page: #16152a;
+  --ak-surface: #1e1d35;
+  --ak-sunk: #121124;
+  --ak-ink: #ecebf4;
+  --ak-muted: #aeacc6;
+  --ak-faint: #8f8dab;
+  --ak-rule: #302e4d;
+
+  --ak-bestiary: #fda19a;
+  --ak-divinity: #ebb16c;
+  --ak-geography: #98cf8b;
+  --ak-org: #59d4cd;
+  --ak-people: #71c9fa;
+  --ak-phenomena: #a9b8ff;
+  --ak-rules: #d3aaf3;
+  --ak-sessions: #f4a0c8;
+  --ak-timeline: #8f8dab;
+
+  --gray: #8f8dab;
+  --light: #1e1d35;
+  --lightgray: #302e4d;
+  --dark: #ecebf4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --ak-page: #16152a;
+    --ak-surface: #1e1d35;
+    --ak-sunk: #121124;
+    --ak-ink: #ecebf4;
+    --ak-muted: #aeacc6;
+    --ak-faint: #8f8dab;
+    --ak-rule: #302e4d;
+
+    --ak-bestiary: #fda19a;
+    --ak-divinity: #ebb16c;
+    --ak-geography: #98cf8b;
+    --ak-org: #59d4cd;
+    --ak-people: #71c9fa;
+    --ak-phenomena: #a9b8ff;
+    --ak-rules: #d3aaf3;
+    --ak-sessions: #f4a0c8;
+    --ak-timeline: #8f8dab;
+
+    --gray: #8f8dab;
+    --light: #1e1d35;
+    --lightgray: #302e4d;
+    --dark: #ecebf4;
+  }
+}
+
+@media (max-width: 859px) {
+  :root {
+    --ak-header-h: 56px;
+  }
+}
