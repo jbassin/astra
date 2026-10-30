@@ -88,6 +88,14 @@ class MaintainWiki(dspy.Signature):
     and never overwrite a later state with an earlier one. When the session contradicts
     the wiki, keep the wiki's version unless the session clearly supersedes it.
 
+    Several campaigns share this setting. `campaign_context` says which campaign this
+    session is from, its world, and which campaign is the current main one. Pages
+    describe the setting, never where a fact came from: page prose never mentions
+    campaigns or sessions. Each page's `campaigns` field records that, and it is set
+    for you. A player character from an earlier campaign is described as they were
+    when that campaign ended. A later campaign's state wins over an earlier one's, the
+    same as for a replayed session.
+
     Voice: before writing in a folder, read two or three of its pages and match their
     tone, person (some pages address the reader as "you"; keep that when you extend
     one), length and structure. When you change a page, keep the existing sentences
@@ -118,7 +126,8 @@ class MaintainWiki(dspy.Signature):
               driven slowly mad.
 
     Page format (vellum): each page starts with YAML frontmatter (`---` lines; keep
-    existing fields such as `tags` and `aliases`; the `date` field is set for you).
+    existing fields such as `tags` and `aliases`; `date` and `campaigns` are set for
+    you).
     Link pages with `[[Path/To/Page]]`, `[[Name]]` or `[[Target|label]]`. A link
     resolves by exact path or by page file name. A folder's main page is
     `<Folder>/index`, so link it as `[[Org/Blackline/index|Blackline]]`; a bare
@@ -137,8 +146,8 @@ class MaintainWiki(dspy.Signature):
     After `move_page` or `delete_page`, look at the returned `backlinks`: fix each of
     those pages' links to point at the new place, or remove the link on purpose.
 
-    REPL hygiene: `transcript`, `target_date` and `campaign` are reset before every
-    step, so store anything you derive under new variable names. Tools raise an
+    REPL hygiene: `transcript`, `target_date`, `campaign` and `campaign_context` are
+    reset before every step, so store anything you derive under new variable names. Tools raise an
     exception on errors (bad path, missing page, unavailable session); wrap calls in
     try/except where a failure is expected.
 
@@ -146,6 +155,9 @@ class MaintainWiki(dspy.Signature):
 
     target_date: str = dspy.InputField(desc="the session date, e.g. 2025-8-28")
     campaign: str = dspy.InputField(desc="the campaign slug this session belongs to")
+    campaign_context: str = dspy.InputField(
+        desc="the session's campaign and world, and the current main campaign"
+    )
     transcript: str = dspy.InputField(
         desc="the target session, one line per utterance: 'NNNNNN<TAB>Speaker: text'"
     )

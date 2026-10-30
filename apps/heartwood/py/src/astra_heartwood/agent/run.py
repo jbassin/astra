@@ -6,7 +6,9 @@ target transcript inside the ``heartwood.agent.run`` span, decides the outcome, 
 writes the run artifacts — on failure too:
 
 ``<run>/ops.jsonl`` (the journal, written as it goes), ``trajectory.json``,
-``changeset.json``, ``diff.patch``, ``summary.json``.
+``changeset.json``, ``diff.patch``, ``summary.json``. Before the change-set and diff are
+written, every page the run created, updated or moved gains the run's campaign in its
+``campaigns`` frontmatter (``campaigns.stamp_campaign``).
 
 Outcome: **ok** — the agent called ``SUBMIT``; **incomplete** — the iteration
 cap forced the extract fallback; **failed** — an exception escaped the main loop.
@@ -49,6 +51,7 @@ from astra_ontology_entity import resolve
 from opentelemetry import trace
 from opentelemetry.trace import Status, StatusCode
 
+from .campaigns import campaign_context, stamp_campaign
 from .instructions import MaintainWiki
 from .rlm import HeartwoodRLM, MeteringMixin
 from .sessions import faerrin_session
@@ -120,6 +123,14 @@ def _combined_cost(meters: list[dict[str, Any]]) -> float | None:
 def _write_json(path: Path, data: Any) -> Path:
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return path
+
+
+def _stamp(ws: Workspace, campaign: str, errors: list[str]) -> None:
+    """Add the run's campaign to every page it touched; a failure joins ``errors``."""
+    try:
+        stamp_campaign(ws, campaign)
+    except (RuntimeError, OSError, ValueError) as exc:  # journal/staging drift, a bad page
+        errors.append(f"campaigns: {exc}")
 
 
 # ── the run ────────────────────────────────────────────────────────────────
@@ -208,7 +219,12 @@ def run_session(
             if callable(start):
                 start()
             with dspy.context(lm=main_lm):
-                pred = rlm(target_date=date, campaign=impl.campaign, transcript=transcript)
+                pred = rlm(
+                    target_date=date,
+                    campaign=impl.campaign,
+                    campaign_context=campaign_context(impl.campaign, being),
+                    transcript=transcript,
+                )
         except BaseException as exc:  # noqa: BLE001 -- recorded below; non-Exceptions re-raised after artifacts
             error = exc
             span.record_exception(exc)
@@ -237,6 +253,7 @@ def run_session(
         )
         cs: ChangeSet | None = None
         artifact_errors: list[str] = []
+        _stamp(ws, impl.campaign, artifact_errors)
         try:
             cs = ws.write_changeset()
             artifacts["changeset"] = ws.run_dir / "changeset.json"

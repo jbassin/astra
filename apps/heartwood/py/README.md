@@ -23,6 +23,13 @@ Per-run artifacts (`diff.patch`, `summary.json`) land in
 `/ruby/data/astra-state/heartwood/<date>/<run-id>/`. heartwood runs in parallel with
 mouthpiece; neither waits for the other.
 
+**Campaigns.** Each page's `campaigns` frontmatter lists the campaign slugs (`being.kdl`) its
+content came from, oldest first. Code sets it, never the model: `write_page` keeps the list
+the page already had, and when the agent finishes, every page the run created, updated or
+moved gains the run's campaign (`agent/campaigns.py`), before `changeset.json` and
+`diff.patch` are written. The agent gets a `campaign_context` input (the session's campaign,
+its world, and the current main campaign) and is told never to mention campaigns in prose.
+
 ## Operations
 
 Run manual commands from the deploy checkout. The dev tree would run dev code against live
@@ -88,6 +95,22 @@ checkout -- akasha/content akasha/snapshot heartwood/agent-runs.jsonl entity/ent
   `just heartwood-backfill-reset`. The budget check sums the whole ledger, including
   automated runs, against `heartwood.backfill-budget-usd`. Steps and exit codes:
   `libs/py/ops/src/astra_ops/backfill.py`.
+- **Backfill `campaigns` from history** (one-off, for pages published before the stamp):
+  `apps/heartwood/py/scripts/backfill_campaigns.py` replays the ledger and each run's
+  `changeset.json`. It refuses to write into the live clone, so work in a clone of your own
+  and publish it like any hand edit:
+
+  ```sh
+  uv run python apps/heartwood/py/scripts/backfill_campaigns.py \
+    /ruby/data/astra-state/astra-data --dry-run               # summary only; safe on live
+  git clone <astra-data remote> /tmp/astra-data-campaigns
+  uv run python apps/heartwood/py/scripts/backfill_campaigns.py /tmp/astra-data-campaigns
+  ```
+
+  Then in that clone validate the corpus, regenerate the snapshot
+  (`ASTRA_CONTENT_ROOT=/tmp/astra-data-campaigns uv run akasha-snapshot`), commit
+  `akasha/content` and `akasha/snapshot`, and push. Under the git-publish lock, `git pull
+  --ff-only` the live clone, then `just deploy akasha-frontend`. A second run changes nothing.
 - **Install the request units:** `just units-install heartwood-request`. The runner recipe
   `just heartwood-requests` asks first; `heartwood-request.service` passes `--yes`. Warm the
   sandbox after a Deno or Pyodide change: `just heartwood-sandbox-warm`.
@@ -118,6 +141,13 @@ checkout -- akasha/content akasha/snapshot heartwood/agent-runs.jsonl entity/ent
   in-cluster collector name does not resolve on the host.
 - **The watchdog checks `.path` units with `check_path_unit`.** A `.path` unit has no next
   elapse time, so `check_timer` would report it as not armed.
+- **A move now always edits the page.** The end-of-run stamp adds the run's campaign to a
+  moved page, so `changeset.json` reports every move as `edited: true` unless the page
+  already listed that campaign.
+- **The `campaigns` backfill cannot follow hand restructures.** Pages that were moved,
+  merged or deleted by hand (outside heartwood) leave history at paths that no longer exist;
+  the backfill follows only `X` → `X/index`, and reports the rest (36 paths on 2026-10-30,
+  mostly creature pages merged into `Bestiary` family pages). Those campaigns are lost.
 - **Common-word aliases.** Pages named with ordinary words (the Ashen Pact deities `War`,
   `Giant`, `Herald`, `Pyre`, `Regent`, `Esoterica`) give the entity registry aliases such as
   `war` and `giant`, so `resolve()` can link ordinary words to them.

@@ -288,19 +288,26 @@ def test_scripted_run_through_real_deno(env, spans) -> None:
     assert outputs[5] == "True 2"
     assert outputs[6].startswith("FINAL:")
 
-    # the change-set: create→move nets to one creation at the final path
+    # the change-set: create→move nets to one creation at the final path; the moved page
+    # gained the run's campaign, so it counts as edited
     cs = read_json(result.run_dir / "changeset.json")
     assert cs == {
         "created": ["Bestiary/Grell", "Bestiary/Grells/Grell Kin"],
         "updated": [],
         "deleted": [],
-        "moved": [{"src": "Divinity/Aut", "dst": "Divinity/Old/Aut", "edited": False}],
+        "moved": [{"src": "Divinity/Aut", "dst": "Divinity/Old/Aut", "edited": True}],
     }
     grell = (result.run_dir / "content" / "Bestiary" / "Grell.vellum").read_text()
-    assert grell.startswith("---\ndate: 2025-08-28T00:00:00-04:00\ntags: []\n---\n")
-    assert "Bestiary/Grell.vellum" in (result.run_dir / "diff.patch").read_text()
+    assert grell.startswith(
+        "---\ndate: 2025-08-28T00:00:00-04:00\ntags: []\ncampaigns: [song]\n---\n"
+    )
+    aut = (result.run_dir / "content" / "Divinity" / "Old" / "Aut.vellum").read_text()
+    assert "\ncampaigns: [song]\n---\n" in aut
+    diff = (result.run_dir / "diff.patch").read_text()
+    assert "Bestiary/Grell.vellum" in diff and "+campaigns: [song]" in diff
     ops = (result.run_dir / "ops.jsonl").read_text().splitlines()
-    assert [json.loads(o)["op"] for o in ops] == ["write", "write", "move", "move"]
+    # the agent's two writes and two moves, then one campaign stamp per touched page
+    assert [json.loads(o)["op"] for o in ops] == ["write", "write", "move", "move"] + ["write"] * 3
 
     s = read_json(result.run_dir / "summary.json")
     assert s["status"] == "ok" and s["iterations"] == 7 and s["parse_errors"] == 1

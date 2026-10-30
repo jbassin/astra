@@ -5,7 +5,7 @@ import { buildResolvers, linkSection } from "./crossref";
 import { decorateBody, readingMinutes, renderBody } from "./renderBody";
 import type { Snapshot } from "./snapshot";
 
-const fm = { title: null, tags: [], aliases: [], img: null, extra: {} };
+const fm = { title: null, tags: [], aliases: [], campaigns: [], img: null, extra: {} };
 const snapshot: Snapshot = {
   pages: [
     { path: "A", date: null, frontmatter: fm, crossrefs: [] },

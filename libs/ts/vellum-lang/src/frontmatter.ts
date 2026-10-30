@@ -13,6 +13,7 @@ const FRONTMATTER_RE = /^---\r?\n([\s\S]*?)\r?\n---[ \t]*\r?\n?/;
 export const EMPTY_FRONTMATTER: Frontmatter = Object.freeze({
   tags: [],
   aliases: [],
+  campaigns: [],
   extra: {},
 });
 
@@ -29,24 +30,30 @@ function toStringArray(value: unknown): string[] {
   return [String(value)];
 }
 
+/** `toStringArray`, then drop repeats; the first occurrence keeps its place. */
+function toUniqueStringArray(value: unknown): string[] {
+  return [...new Set(toStringArray(value))];
+}
+
 /** Parse + normalize a frontmatter YAML body into the typed struct (total). */
 export function parseFrontmatter(yamlText: string): Frontmatter {
-  if (yamlText.trim() === "") return { tags: [], aliases: [], extra: {} };
+  if (yamlText.trim() === "") return { tags: [], aliases: [], campaigns: [], extra: {} };
   let raw: unknown;
   try {
     raw = parseYaml(yamlText);
   } catch {
-    return { tags: [], aliases: [], extra: {} };
+    return { tags: [], aliases: [], campaigns: [], extra: {} };
   }
   if (raw == null || typeof raw !== "object" || Array.isArray(raw)) {
-    return { tags: [], aliases: [], extra: {} };
+    return { tags: [], aliases: [], campaigns: [], extra: {} };
   }
 
-  const { title, tags, aliases, img, ...extra } = raw as Record<string, unknown>;
+  const { title, tags, aliases, campaigns, img, ...extra } = raw as Record<string, unknown>;
   return {
     title: title != null ? String(title) : undefined,
     tags: toStringArray(tags),
     aliases: toStringArray(aliases),
+    campaigns: toUniqueStringArray(campaigns),
     img: img != null ? String(img) : undefined,
     extra,
   };

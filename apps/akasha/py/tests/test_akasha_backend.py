@@ -77,6 +77,10 @@ def test_snapshot_is_deterministic_and_committed() -> None:
     # Structural sanity on the committed artifact.
     snap = json.loads(committed)
     assert all("frontmatter" in page for page in snap["pages"])
+    by_path = {page["path"]: page for page in snap["pages"]}
+    host = by_path["Divinity/Outer Gods/Iridescent Host"]["frontmatter"]
+    assert host["campaigns"] == ["through-a-song-darkly"]
+    assert by_path["Timeline"]["frontmatter"]["campaigns"] == []  # no history, no campaigns
     assert isinstance(snap["unresolved"], list)
 
 

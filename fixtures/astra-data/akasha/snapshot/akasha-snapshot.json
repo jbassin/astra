@@ -1215,6 +1215,7 @@
           "Rancorous Priest",
           "Vitriolite"
         ],
+        "campaigns": [],
         "extra": {
           "date": "2026-09-17T00:00:00-04:00"
         },
@@ -1245,6 +1246,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -1275,6 +1277,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -1330,6 +1333,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -1352,6 +1356,7 @@
       "date": "2026-04-13T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-04-13T00:00:00-04:00"
         },
@@ -1421,6 +1426,7 @@
         "aliases": [
           "Shackled Prince"
         ],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-18T00:00:00-04:00"
         },
@@ -1461,6 +1467,7 @@
       "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-18T00:00:00-04:00"
         },
@@ -1513,6 +1520,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -1593,6 +1601,7 @@
       "date": "2026-06-29T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-29T00:00:00-04:00"
         },
@@ -1618,6 +1627,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -1645,6 +1655,7 @@
         "aliases": [
           "Pulse"
         ],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -1672,6 +1683,7 @@
         "aliases": [
           "Heir"
         ],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -1709,6 +1721,9 @@
         "aliases": [
           "Host"
         ],
+        "campaigns": [
+          "through-a-song-darkly"
+        ],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -1741,6 +1756,7 @@
         "aliases": [
           "Judge"
         ],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -1771,6 +1787,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -1803,6 +1820,7 @@
         "aliases": [
           "Watcher"
         ],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -1853,6 +1871,7 @@
       "date": "2026-06-18T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-18T00:00:00-04:00"
         },
@@ -1878,6 +1897,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -1933,6 +1953,7 @@
       "date": "2026-06-06T22:12:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-06T22:12:21-04:00"
         },
@@ -1953,6 +1974,7 @@
       "date": "2026-06-06T22:12:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-06T22:12:21-04:00"
         },
@@ -1988,6 +2010,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -2028,6 +2051,7 @@
       "date": "2025-06-16T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2025-06-16T00:00:00-04:00"
         },
@@ -2070,6 +2094,7 @@
         "aliases": [
           "Whiskers"
         ],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -2112,6 +2137,7 @@
       "date": "2026-07-20T00:00:00-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-07-20T00:00:00-04:00"
         },
@@ -2155,6 +2181,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -2183,6 +2210,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -2233,6 +2261,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -2247,6 +2276,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -2299,6 +2329,7 @@
         "aliases": [
           "Horizon"
         ],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-22T00:00:00-04:00"
         },
@@ -2439,6 +2470,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },
@@ -2453,6 +2485,7 @@
       "date": "2026-06-05T16:40:21-04:00",
       "frontmatter": {
         "aliases": [],
+        "campaigns": [],
         "extra": {
           "date": "2026-06-05T16:40:21-04:00"
         },

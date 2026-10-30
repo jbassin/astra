@@ -327,6 +327,7 @@ dependencies = [
     { name = "astra-ontology-entity" },
     { name = "astra-pipeline-resources" },
     { name = "astra-sessions" },
+    { name = "astra-vellum-lang" },
     { name = "dagster" },
 ]
 
@@ -343,6 +344,7 @@ requires-dist = [
     { name = "astra-ontology-entity", editable = "ontology/ontology-entity" },
     { name = "astra-pipeline-resources", editable = "libs/py/pipeline-resources" },
     { name = "astra-sessions", editable = "libs/py/sessions" },
+    { name = "astra-vellum-lang", editable = "libs/py/vellum-lang" },
     { name = "dagster" },
 ]
 

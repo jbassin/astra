@@ -21,6 +21,13 @@ def test_frontmatter_normalizes_tags_aliases_and_keeps_extras() -> None:
     assert fm.extra == {"kind": "org"}
 
 
+def test_frontmatter_campaigns_drop_repeats_and_keep_first_order() -> None:
+    fm = parse_frontmatter("campaigns: [deep-eyes, through-a-song-darkly, deep-eyes]")
+    assert fm.campaigns == ["deep-eyes", "through-a-song-darkly"]
+    assert fm.extra == {}
+    assert parse_frontmatter("tags: []").campaigns == []
+
+
 def test_frontmatter_total_on_absent_blank_or_malformed() -> None:
     assert parse_frontmatter("").tags == []
     assert parse_frontmatter("[: not valid yaml").tags == []  # never throws

@@ -26,6 +26,7 @@ function canonicalMeta(meta: Metadata): unknown {
       title: meta.frontmatter.title ?? null,
       tags: meta.frontmatter.tags,
       aliases: meta.frontmatter.aliases,
+      campaigns: meta.frontmatter.campaigns,
       img: meta.frontmatter.img ?? null,
       extra: meta.frontmatter.extra,
     },

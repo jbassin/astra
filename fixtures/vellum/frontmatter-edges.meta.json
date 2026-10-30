@@ -21,6 +21,10 @@
       "The First Hierophant",
       "The Æon"
     ],
+    "campaigns": [
+      "deep-eyes",
+      "through-a-song-darkly"
+    ],
     "extra": {
       "created": "2024-01-15",
       "draft": false,

@@ -75,6 +75,11 @@ def _to_str_list(value: Any) -> list[str]:
     return [str(value)]
 
 
+def _to_unique_str_list(value: object) -> list[str]:
+    """``_to_str_list``, then drop repeats; the first occurrence keeps its place."""
+    return list(dict.fromkeys(_to_str_list(value)))
+
+
 def parse_frontmatter(yaml_text: str) -> Frontmatter:
     """Parse + normalize a frontmatter YAML body into the typed struct (total)."""
     if yaml_text.strip() == "":
@@ -86,7 +91,7 @@ def parse_frontmatter(yaml_text: str) -> Frontmatter:
     if not isinstance(raw, dict):
         return Frontmatter()
 
-    known = {"title", "tags", "aliases", "img"}
+    known = {"title", "tags", "aliases", "campaigns", "img"}
     extra = {k: v for k, v in raw.items() if k not in known}
     title = raw.get("title")
     img = raw.get("img")
@@ -94,6 +99,7 @@ def parse_frontmatter(yaml_text: str) -> Frontmatter:
         title=str(title) if title is not None else None,
         tags=_to_str_list(raw.get("tags")),
         aliases=_to_str_list(raw.get("aliases")),
+        campaigns=_to_unique_str_list(raw.get("campaigns")),
         img=str(img) if img is not None else None,
         extra=extra,
     )
@@ -136,6 +142,7 @@ def canonical_meta_json(source: str) -> str:
             "title": meta.frontmatter.title,
             "tags": meta.frontmatter.tags,
             "aliases": meta.frontmatter.aliases,
+            "campaigns": meta.frontmatter.campaigns,
             "img": meta.frontmatter.img,
             "extra": meta.frontmatter.extra,
         },

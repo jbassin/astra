@@ -31,6 +31,7 @@ from astra_ontology_entity import resolve
 from astra_sessions import date_key, iso_date
 from astra_sessions.tools import SessionToolsMixin
 
+from .campaigns import page_campaigns, set_campaigns
 from .sessions import faerrin_session, ingestible_dates, read_transcript
 from .validate import Validator
 from .workspace import PAGE_SUFFIX, Workspace, check_path_key
@@ -262,13 +263,13 @@ class HeartwoodTools(SessionToolsMixin):
 
     def write_page(self, path: str, text: str) -> str:
         """Create or replace page `path` with vellum `text` (parent folders are created; the
-        frontmatter date is set for you). Returns 'created <path>' or 'updated <path>'; when
-        some of the page's links match no page, a second line follows: 'unresolved links:
-        [[X]] (did you mean [[Y|X]]?), [[Z]]'. The page is written either way; rewrite it to
-        fix those links. Returns 'rejected: <validator report>' when the text fails validation
-        (nothing written; fix and retry). Raises ValueError on a bad path, a read-only page
-        (Timeline), a new page at the wiki root, or a new page beside or under another page
-        of the same name."""
+        frontmatter fields `date` and `campaigns` are set for you). Returns 'created <path>'
+        or 'updated <path>'; when some of the page's links match no page, a second line
+        follows: 'unresolved links: [[X]] (did you mean [[Y|X]]?), [[Z]]'. The page is
+        written either way; rewrite it to fix those links. Returns 'rejected: <validator
+        report>' when the text fails validation (nothing written; fix and retry). Raises
+        ValueError on a bad path, a read-only page (Timeline), a new page at the wiki root,
+        or a new page beside or under another page of the same name."""
         key = check_path_key(path)
         self._check_writable(key)
         file = self.ws.file(key)
@@ -276,8 +277,11 @@ class HeartwoodTools(SessionToolsMixin):
             raise ValueError("text must be non-empty vellum")
         if not file.is_file():
             self._check_new_path(key)
-        existing = frontmatter_date(file.read_text(encoding="utf-8")) if file.is_file() else None
+        old = file.read_text(encoding="utf-8") if file.is_file() else None
+        existing = frontmatter_date(old) if old is not None else None
         candidate = stamp_date(text, existing=existing, target_iso=self.target_iso)
+        # The page keeps the campaigns it had; the run's own is added after the agent ends.
+        candidate = set_campaigns(candidate, page_campaigns(old) if old is not None else [])
         if not candidate.endswith("\n"):
             candidate += "\n"
         with tempfile.TemporaryDirectory(prefix="heartwood-validate-") as tmp:
