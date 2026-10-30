@@ -16,7 +16,9 @@ input is session audio: `/audio/<date>.mp3` is served from `/ruby/data/astra-sta
 - `site.ts`: the page index (slugs, folders, tags, backlinks, aliases) from `buildSite(snapshot)`.
 - `bodies.ts`: every wiki page rendered once through gothic `DocumentView` to static HTML. Wiki
   links resolve through the snapshot's `edges` (`src/domain/lib/crossref.ts`); a dangling link
-  stays gothic's placeholder span.
+  stays gothic's placeholder span. `decorateBody` (`renderBody.tsx`) then adds, without changing
+  the visible text: `data-section="<id>"` on every link into a section, ids on prose headings
+  (h1 to h3) and blocks, a kind label in handout headers, and the page's contents list (`toc`).
 - `transcripts/`: one lazy module per session, plus an index of import thunks.
 - `public/` endpoints: RSS `index.xml`, `sitemap.xml`, `static/contentIndex.json`.
 
@@ -64,6 +66,15 @@ Node indexing API and writes `dist/client/pagefind/`.
   ("Org" shows as "Organisations"). Dates show in words, in UTC (`listingFormat.ts`).
 - **Error and 404 pages** (`RouteError.tsx`) render inside the shell. When the root loader
   itself failed, they render bare: the header and rails read its section counts.
+- **Wiki page.** `ContentArticle` renders the head (crumbs without Home, the top folder as its
+  section in its hue; the title; a facts row of tag chips and "Updated 5 June 2026"), the body,
+  and `WikiRail`: "On this page" (from two `toc` entries), "Sessions" (a tick per main-campaign
+  chronicle episode, filled where its transcript links here, and a list of every linking
+  session) and "Mentioned on" (wiki backlinks only). `contentView` (`runtimeSite.ts`) splits the
+  backlinks into wiki pages and transcripts and reads the chronicle for episode titles. Links
+  are ink with a 2 px underline in the target's hue: `a[data-section]` sets `--link-hue`
+  (`wiki.css`) on any page, and the transcript linker (`linker.ts`) adds `data-section` too.
+  gothic's blocks (cards, fields, timeline, tables, code) are styled in `wiki-blocks.css`.
 - **Theme.** Light, dark or system, stored in localStorage `akasha-theme` and shown as
   `data-theme` on `<html>` (`src/domain/lib/theme.ts`).
 
@@ -146,6 +157,13 @@ Node indexing API and writes `dist/client/pagefind/`.
   task after `close()`, so a handler must check `dialog.open` before acting on it (StrictMode's
   double effect otherwise closes the phone menu as it opens). The search dialog sits in
   `PageLayout`, outside the header, so hiding a header part at a breakpoint never hides it.
+- **gothic's body markup is restyled, not rewritten.** `wiki-blocks.css` overrides gothic's
+  `@layer components` rules and Tailwind utilities with unlayered rules keyed to the markup gothic
+  emits (`section[data-kind="deity"] > header > span:first-child` is the deity's name, each deity
+  field is a `<p>` of a label `<span>` and inline value nodes). A gothic markup change can break
+  these selectors silently: check a deity and a handout page after any gothic render change.
+  `decorateBody` scans React's static markup with a tag regex, which relies on React quoting
+  every attribute and escaping `<` and `>` inside values.
 - **Aliases are a `<meta http-equiv="refresh">` page, not a server redirect.** The Popover island
   and old bookmarks fetch the alias URL and expect HTML.
 - **Format dates in UTC** so the server and client render the same string.
