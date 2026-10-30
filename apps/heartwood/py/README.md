@@ -97,7 +97,8 @@ checkout -- akasha/content akasha/snapshot heartwood/agent-runs.jsonl entity/ent
   `libs/py/ops/src/astra_ops/backfill.py`.
 - **Backfill `campaigns` from history** (one-off, for pages published before the stamp):
   `apps/heartwood/py/scripts/backfill_campaigns.py` replays the ledger and each run's
-  `changeset.json`. It refuses to write into the live clone, so work in a clone of your own
+  `changeset.json`. The read-only Timeline gets no list (early runs edited it before it was
+  protected). It refuses to write into the live clone, so work in a clone of your own
   and publish it like any hand edit:
 
   ```sh

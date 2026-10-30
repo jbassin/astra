@@ -11,7 +11,9 @@ The replay follows the same rules as the stamp: a created page starts with the r
 campaign; an updated page gains it; a moved page keeps its list at the new path and gains
 it; a deleted page drops its list. A page no run touched gets nothing. A history path with
 no page now whose ``<path>/index`` exists (a page turned into a folder by hand) hands its
-list to that index page; any other such path is reported. The rebuilt list is
+list to that index page; any other such path is reported. Read-only pages
+(``PROTECTED_PAGES``, the hand-kept Timeline) get no history: early runs edited them
+before they became read-only. The rebuilt list is
 merged with whatever the page already holds (history first), so a hand-set campaign is
 never removed and a second pass changes nothing.
 
@@ -27,6 +29,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from .campaigns import merge, page_campaigns, set_campaigns
+from .tools import PROTECTED_PAGES
 from .workspace import PAGE_SUFFIX, ChangeSet, Workspace, path_key
 
 LEDGER = Path("heartwood/agent-runs.jsonl")
@@ -144,6 +147,8 @@ def backfill(root: Path, artifacts: Path, *, write: bool, forbidden: Path | None
         )
     report = Report()
     history = replay(load_runs(root / LEDGER, artifacts, report))
+    for path in PROTECTED_PAGES:
+        history.pop(path, None)
     content = root / CONTENT
     files = sorted(content.rglob(f"*{PAGE_SUFFIX}"))
     present = {path_key(content, f) for f in files}

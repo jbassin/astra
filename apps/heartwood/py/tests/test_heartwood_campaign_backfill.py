@@ -114,3 +114,16 @@ def test_refuses_to_write_into_the_forbidden_clone(world: tuple[Path, Path]) -> 
     with pytest.raises(ValueError, match="refusing to write"):
         backfill(root, arts, write=True, forbidden=root / "." / "")
     assert backfill(root, arts, write=False, forbidden=root).changed  # a dry run may read it
+
+
+def test_read_only_pages_get_no_history(tmp_path: Path) -> None:
+    root, arts = tmp_path / "astra-data", tmp_path / "heartwood"
+    _page(root / "akasha" / "content", "Timeline", "---\ntags: []\n---\nText.\n")
+    _record(arts, "1", "r1", ChangeSet(updated=["Timeline"]))  # edited before it was protected
+    (root / "heartwood").mkdir()
+    (root / "heartwood" / "agent-runs.jsonl").write_text(
+        json.dumps({"date": "1", "run_id": "r1", "campaign": "song"}) + "\n", encoding="utf-8"
+    )
+    report = backfill(root, arts, write=True)
+    assert report.changed == [] and report.missing == []
+    assert _campaigns(root) == {"Timeline": []}
