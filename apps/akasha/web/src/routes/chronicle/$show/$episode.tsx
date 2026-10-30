@@ -19,7 +19,7 @@ export const Route = createFileRoute("/chronicle/$show/$episode")({
       {
         title: loaderData
           ? `${loaderData.episode.title} — ${loaderData.show.name} — Akasha`
-          : "Chronicle — Akasha",
+          : "Sessions — Akasha",
       },
     ],
   }),

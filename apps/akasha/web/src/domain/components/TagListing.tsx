@@ -1,64 +1,54 @@
-// Tag pages (ports faerrin tags/[...tag].astro). The tag index lists every tag with
-// its first 10 pages; a tag page lists pages carrying that tag. Tag pages have NO
-// breadcrumbs (Quartz's Breadcrumbs returns null for the tags namespace).
-import { ArticleTitle } from "@/domain/components/ArticleTitle";
+// Tag pages (ports faerrin tags/[...tag].astro). A tag page lists the pages carrying the tag
+// (or a tag below it); the tag index shows every tag with its first few pages and a link to
+// the rest. Tags belong to no section, so these pages have no crumbs.
+import { ListingHead } from "@/domain/components/ListingHead";
 import { PageLayout } from "@/domain/components/PageLayout";
 import { PageList } from "@/domain/components/PageList";
-import type { TagIndexView, TagView } from "@/domain/lib/runtimeSite";
+import { pagesLabel, plural } from "@/domain/lib/listingFormat";
+import type { ListingTagIndexView, ListingTagView } from "@/domain/lib/pageData";
 
-export function TagPage({ view }: { view: TagView }) {
+/** Pages shown under each tag on the tag index. */
+const INDEX_ROWS = 3;
+
+export function TagPage({ view }: { view: ListingTagView }) {
   return (
     <PageLayout>
-      <div className="page-header">
-        <div className="popover-hint">
-          <ArticleTitle title={view.title} />
-        </div>
-      </div>
-      <div className="popover-hint">
-        <article />
-        <div className="page-listing">
-          <p>{view.itemsLabel}</p>
-          <div>
-            <PageList entries={view.entries} />
-          </div>
-        </div>
-      </div>
+      <ListingHead label="Tag" title={view.tag} />
+      <section className="ak-listing" aria-label={`Pages tagged ${view.tag}`}>
+        <p className="ak-listing-count">{pagesLabel(view.entries.length)}</p>
+        <PageList entries={view.entries} exceptTag={view.tag} />
+      </section>
     </PageLayout>
   );
 }
 
-export function TagIndex({ view }: { view: TagIndexView }) {
+export function TagIndex({ view }: { view: ListingTagIndexView }) {
   return (
     <PageLayout>
-      <div className="page-header">
-        <div className="popover-hint">
-          <ArticleTitle title={view.title} />
-        </div>
-      </div>
-      <div className="popover-hint">
-        <article />
-        <p>{view.totalLabel}</p>
-        <div>
-          {view.sections.map((s) => {
-            const total = s.entries.length + s.overflow;
-            return (
-              <div key={s.tag}>
-                <h2>
-                  <a className="internal tag-link" href={s.href}>
-                    {s.tag}
-                  </a>
-                </h2>
-                <div className="page-listing">
-                  <p>
-                    {total === 1 ? "1 item with this tag" : `${total} items with this tag`}
-                    {s.overflow > 0 && <span>{` (showing first ${s.entries.length})`}</span>}
-                  </p>
-                  <PageList entries={s.entries} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      <ListingHead title="Tags">
+        <p className="ak-list-lede">
+          {plural(view.sections.length, "tag", "tags")}, each with its first pages.
+        </p>
+      </ListingHead>
+      <div className="ak-tag-groups">
+        {view.sections.map((s) => {
+          const total = s.entries.length + s.overflow;
+          return (
+            <section key={s.tag} className="ak-tag-group">
+              <h2 className="ak-tag-group-title">
+                <a href={s.href}>{s.tag}</a>
+                <span className="ak-count">{pagesLabel(total)}</span>
+              </h2>
+              <PageList entries={s.entries.slice(0, INDEX_ROWS)} showTags={false} />
+              {total > INDEX_ROWS && (
+                <a className="ak-show-all" href={s.href}>
+                  Show all {total}
+                  <span className="ak-visually-hidden"> pages tagged {s.tag}</span>
+                </a>
+              )}
+            </section>
+          );
+        })}
       </div>
     </PageLayout>
   );

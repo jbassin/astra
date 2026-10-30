@@ -1,254 +1,464 @@
-/* Listings: folder and tag page lists, the tag index, the chronicle, and the router's error
-   and not-found pages. Slice D of the redesign restyles this file; until then the rules are
-   the pre-redesign ones on the new tokens and faces. */
+/* Listings: the listing head (crumbs, title, lede, facts), the rows of folder and tag pages,
+   the tag index, Sessions (the chronicle), the error and not-found pages, and the buttons and
+   chips the home page shares. */
 
-/* Router-wide error / not-found boundaries (see src/router.tsx). */
-.route-boundary {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  min-height: 60vh;
-  padding: 2rem;
-  text-align: center;
-}
-
-.route-boundary button,
-.route-boundary a {
-  color: var(--ak-ink);
-  border: 1px solid currentcolor;
-  padding: 0.4rem 1rem;
-  background: transparent;
-  cursor: pointer;
-  font: inherit;
-  text-decoration: none;
-}
-
-/* Tag index: a bare <h2> wrapping a tag chip rendered oversized. Calm the heading
-   and separate the tag groups so the index is scannable. */
-h2:has(> .tag-link) {
-  margin-top: 1.4rem;
-  font-size: 1rem;
-  font-weight: 400;
-}
-
-.section-li a.internal {
-  color: var(--ak-ink);
-  text-decoration: none;
-}
-.section-ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-.section-li .meta {
-  color: var(--ak-muted);
-  font-size: 0.8rem;
-}
-.section-li h3 {
-  font-size: 1.05rem;
-  margin: 0.1rem 0;
-}
-.page-listing > p {
-  color: var(--ak-muted);
-  font-size: 0.85rem;
-  margin: 0.75rem 0;
-}
-
-/* ── chronicle (0019): Show → Season → Episode campaign timeline ──────────────────── */
-.chronicle-title {
-  font-family: var(--ak-sans);
-  color: var(--ak-ink);
-  margin: 0;
-}
-.chronicle-intro {
-  color: var(--ak-muted);
-  max-width: 42rem;
-  margin: 0.25rem 0 1.5rem;
-}
-.chronicle-crumb {
-  margin: 0 0 0.25rem;
-  font-size: 0.85rem;
-}
-
-/* shows index */
-.chronicle-shows {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-  gap: 1rem;
-}
-.chronicle-show-card {
-  display: block;
-  padding: 1.1rem 1.25rem;
-  border: 1px solid var(--ak-rule);
-  border-radius: 0.5rem;
-  background: color-mix(in oklab, var(--ak-ink) 4%, transparent);
-  text-decoration: none;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
-}
-.chronicle-show-card:hover {
-  border-color: var(--ak-ink);
-  background: color-mix(in oklab, var(--ak-ink) 8%, transparent);
-}
-.chronicle-show-name {
-  font-family: var(--ak-sans);
-  color: var(--ak-ink);
-  margin: 0.35rem 0 0.4rem;
-}
-.chronicle-show-meta {
-  color: var(--ak-muted);
-  font-size: 0.85rem;
-  margin: 0;
-}
-.chronicle-badge {
-  display: inline-block;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ak-muted);
-  border: 1px solid color-mix(in oklab, var(--ak-muted) 50%, transparent);
-  border-radius: 999px;
-  padding: 0.05rem 0.5rem;
-}
-
-/* season */
-.chronicle-season {
-  margin: 2rem 0;
-  border-top: 2px solid var(--ak-rule);
-  padding-top: 1rem;
-}
-.chronicle-season-title {
-  font-family: var(--ak-sans);
-  color: var(--ak-ink);
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
-  margin: 0 0 0.4rem;
-}
-.chronicle-season-num {
-  color: var(--ak-muted);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.chronicle-arc {
-  color: var(--ak-muted);
-  font-style: italic;
-  max-width: 46rem;
-  margin: 0 0 1rem;
-}
-
-/* episode cards on the show page (compact: code + title + blurb → episode page) */
-.chronicle-ep-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-  gap: 1rem;
-}
-.chronicle-ep-card {
-  display: block;
-  border: 1px solid var(--ak-rule);
-  border-radius: 0.5rem;
-  padding: 1rem 1.2rem;
-  background: color-mix(in oklab, var(--ak-ink) 3%, transparent);
-  text-decoration: none;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
-}
-.chronicle-ep-card:hover {
-  border-color: var(--ak-ink);
-  background: color-mix(in oklab, var(--ak-ink) 8%, transparent);
-}
-.chronicle-ep-card-title {
-  font-family: var(--ak-sans);
-  color: var(--ak-ink);
-  margin: 0.4rem 0 0.4rem;
-}
-.chronicle-ep-card-blurb {
-  color: var(--ak-muted);
-  font-size: 0.9rem;
-  margin: 0 0 0.5rem;
-}
-/* episode detail page header */
-.chronicle-episode-head {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-}
-.chronicle-code {
-  font-family: var(--ak-mono);
-  font-size: 0.78rem;
-  color: var(--ak-ink);
-  border: 1px solid color-mix(in oklab, var(--ak-ink) 45%, transparent);
-  border-radius: 0.3rem;
-  padding: 0.05rem 0.4rem;
-  white-space: nowrap;
-}
-.chronicle-episode-titles {
-  display: flex;
-  flex-direction: column;
-}
-.chronicle-date {
-  color: var(--ak-muted);
-  font-size: 0.78rem;
-}
-.chronicle-synopsis {
-  color: var(--ak-ink);
-  margin: 0.6rem 0;
-}
-.chronicle-beats {
-  color: var(--ak-muted);
-  margin: 0.5rem 0 0.75rem 1.1rem;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  font-size: 0.92rem;
-}
-.chronicle-tagrow {
-  display: flex;
-  gap: 0.5rem;
-  align-items: baseline;
-  margin: 0.3rem 0;
-  font-size: 0.82rem;
-}
-.chronicle-tagrow-label {
-  color: var(--ak-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 0.68rem;
-  min-width: 5.5rem;
-  flex-shrink: 0;
-}
-.chronicle-tags {
+/* ── buttons and chips (the home page uses them too) ─────────────────────────────── */
+.ak-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem;
+  align-items: center;
+  gap: 12px;
 }
-.chronicle-tag {
+.ak-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: 600 15px/1.2 var(--ak-sans);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--ak-ease),
+    border-color var(--ak-ease);
+}
+.ak-button-primary {
+  background: var(--ak-ink);
+  color: var(--ak-page);
+}
+.ak-button-primary:hover {
+  background: color-mix(in oklab, var(--ak-ink) 86%, var(--ak-page));
+}
+.ak-button-quiet {
+  border-color: var(--ak-rule);
+  background: var(--ak-surface);
+  color: var(--ak-ink);
+}
+.ak-button-quiet:hover {
+  border-color: var(--ak-faint);
+}
+
+.ak-chip {
+  display: inline-block;
+  padding: 3px 11px;
   border: 1px solid var(--ak-rule);
   border-radius: 999px;
-  padding: 0.02rem 0.5rem;
-  color: var(--ak-ink);
-}
-.chronicle-cliffhanger {
-  margin: 0.75rem 0 0;
-  padding-top: 0.6rem;
-  border-top: 1px dashed var(--ak-rule);
-  color: var(--ak-ink);
-}
-.chronicle-cliffhanger-label {
+  background: var(--ak-surface);
   color: var(--ak-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 0.68rem;
-  margin-right: 0.4rem;
+  font: 400 13px/1.3 var(--ak-sans);
+  text-decoration: none;
 }
-.chronicle-transcript-link {
-  margin-top: 1.5rem;
+a.ak-chip {
+  transition: border-color var(--ak-ease);
+}
+a.ak-chip:hover {
+  border-color: var(--ak-faint);
+  color: var(--ak-ink);
+}
+
+/* ── listing head ────────────────────────────────────────────────────────────────── */
+.ak-list-head {
+  max-width: 52rem;
+}
+.ak-list-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-bottom: 16px;
+  color: var(--ak-faint);
+  font: 400 13px/1.4 var(--ak-sans);
+}
+.ak-list-crumb {
+  display: inline-flex;
+  gap: 8px;
+}
+.ak-list-crumbs a {
+  color: inherit;
+  text-decoration: none;
+}
+.ak-list-crumbs a:hover {
+  color: var(--ak-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ak-list-crumbs a.is-section {
+  color: var(--hue);
+  font-weight: 600;
+}
+.ak-list-label {
+  margin-bottom: 4px;
+  color: var(--ak-faint);
+  font: 500 14px var(--ak-sans);
+}
+.ak-list-title {
+  font-family: var(--ak-serif);
+  font-size: 60px;
+  font-weight: 500;
+  font-variation-settings: "opsz" 72;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.ak-list-lede {
+  max-width: 38rem;
+  margin-top: 20px;
+  color: var(--ak-muted);
+  font-size: 20px;
+  line-height: 1.55;
+}
+.ak-list-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin-top: 20px;
+  color: var(--ak-faint);
+  font: 400 14px/1.4 var(--ak-sans);
+}
+.ak-list-facts > :first-child {
+  color: var(--ak-muted);
+  font-weight: 600;
+}
+
+/* ── rows (folder pages, tag pages, the tag index) ───────────────────────────────── */
+/* The rows keep the prose measure, so they line up with a folder's own body above them. */
+.ak-listing {
+  max-width: 38rem;
+}
+.ak-main > .ak-listing {
+  margin-top: 40px;
+}
+.ak-listing-count {
+  margin-bottom: 8px;
+  color: var(--ak-faint);
+  font: 400 13px var(--ak-sans);
+}
+.ak-rows {
+  list-style: none;
+  border-top: 1px solid var(--ak-rule);
+}
+.ak-row {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  min-height: 48px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--ak-rule);
+}
+.ak-row-title {
+  flex: 1 1 12rem;
+  min-width: 0;
+  color: var(--ak-ink);
+  font-size: 18px;
+  line-height: 1.35;
+  text-decoration: none;
+}
+/* The whole row is the title link's hit area; the chips sit above it. */
+.ak-row-title::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+}
+.ak-row:hover .ak-row-title {
+  text-decoration: underline;
+  text-decoration-color: var(--hue, var(--ak-faint));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.ak-row-count {
+  color: var(--ak-faint);
+  font: 400 13px var(--ak-sans);
+  white-space: nowrap;
+}
+.ak-row-tags {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+}
+
+/* ── a folder index's own body ───────────────────────────────────────────────────── */
+.ak-main > .ak-folder-body {
+  max-width: 38rem;
+  margin-top: 32px;
+}
+/* Its header repeats the folder's title, which the listing head already shows. */
+.ak-folder-body > [data-vellum-export] > header:first-child {
+  display: none;
+}
+
+/* ── the tag index ───────────────────────────────────────────────────────────────── */
+.ak-tag-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: 40px 48px;
+  max-width: 52rem;
+}
+.ak-main > .ak-tag-groups {
+  margin-top: 48px;
+}
+.ak-tag-group-title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+  font: 650 17px/1.3 var(--ak-sans);
+}
+.ak-tag-group-title a {
+  color: var(--ak-ink);
+  text-decoration: none;
+}
+.ak-tag-group-title a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.ak-show-all {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ak-ink);
+  font: 600 14px var(--ak-sans);
+  text-decoration: underline;
+  text-decoration-color: var(--ak-rule);
+  text-underline-offset: 4px;
+}
+.ak-show-all:hover {
+  text-decoration-color: var(--ak-ink);
+}
+
+/* ── Sessions (the chronicle) ────────────────────────────────────────────────────── */
+.ak-show {
+  max-width: 52rem;
+}
+.ak-main > .ak-show {
+  margin-top: 56px;
+}
+.ak-show-title {
+  font: 650 26px/1.2 var(--ak-sans);
+  font-stretch: 108%;
+  letter-spacing: -0.01em;
+}
+.ak-show-title a {
+  color: var(--ak-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--ak-sessions);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+.ak-show-facts {
+  margin-top: 6px;
+  color: var(--ak-faint);
+  font: 400 14px var(--ak-sans);
+}
+
+.ak-season {
+  max-width: 52rem;
+  margin-top: 48px;
+  scroll-margin-top: calc(var(--ak-header-h) + 24px);
+}
+.ak-show .ak-season {
+  margin-top: 40px;
+}
+.ak-season-title {
+  font: 650 22px/1.25 var(--ak-sans);
+  font-stretch: 104%;
+}
+.ak-show .ak-season-title {
+  font-size: 19px;
+}
+.ak-season-arc {
+  max-width: 38rem;
+  margin-top: 10px;
+  color: var(--ak-muted);
+  font-size: 17px;
+  line-height: 1.6;
+}
+.ak-episodes {
+  margin-top: 18px;
+  list-style: none;
+  border-top: 1px solid var(--ak-rule);
+}
+.ak-episode-row {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ak-rule);
+  color: var(--ak-ink);
+  text-decoration: none;
+}
+.ak-episode-row time {
+  padding-top: 3px;
+  color: var(--ak-faint);
+  font: 400 14px/1.4 var(--ak-sans);
+  font-variant-numeric: tabular-nums;
+}
+.ak-episode-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ak-episode-title {
+  font-size: 18px;
+  line-height: 1.4;
+}
+.ak-episode-row:hover .ak-episode-title {
+  text-decoration: underline;
+  text-decoration-color: var(--ak-sessions);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.ak-episode-blurb {
+  color: var(--ak-muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.ak-show-rows {
+  margin-top: 16px;
+  list-style: none;
+  border-top: 1px solid var(--ak-rule);
+}
+.ak-show-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+  min-height: 48px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ak-rule);
+  color: var(--ak-ink);
+  text-decoration: none;
+}
+.ak-show-row-name {
+  flex: 1;
+  font-size: 18px;
+}
+.ak-show-row:hover .ak-show-row-name {
+  text-decoration: underline;
+  text-decoration-color: var(--ak-sessions);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.ak-show-row-facts {
+  color: var(--ak-faint);
+  font: 400 13px var(--ak-sans);
+}
+
+/* An episode's page. */
+.ak-episode {
+  max-width: 38rem;
+}
+.ak-main > .ak-episode {
+  margin-top: 36px;
+}
+.ak-episode > * + * {
+  margin-top: 32px;
+}
+.ak-episode-synopsis {
+  font-size: 18px;
+  line-height: 1.72;
+}
+.ak-episode-heading {
+  margin-bottom: 12px;
+  font: 650 19px/1.3 var(--ak-sans);
+}
+.ak-beats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 1.4em;
+  list-style: decimal;
+  font-size: 17px;
+  line-height: 1.6;
+}
+.ak-beats li::marker {
+  color: var(--ak-faint);
+  font: 400 14px var(--ak-sans);
+}
+.ak-chip-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ak-chip-group dt {
+  margin-bottom: 6px;
+  color: var(--ak-faint);
+  font: 400 13px var(--ak-sans);
+}
+.ak-chip-group ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+}
+.ak-cliffhanger {
+  padding: 4px 0 4px 20px;
+  border-left: 2px solid var(--ak-rule);
+}
+.ak-cliffhanger-label {
+  margin-bottom: 4px;
+  color: var(--ak-faint);
+  font: 400 13px var(--ak-sans);
+}
+.ak-cliffhanger p + p {
+  font-size: 17px;
+  font-style: italic;
+  line-height: 1.65;
+}
+
+/* ── error and not-found pages ───────────────────────────────────────────────────── */
+.ak-error {
+  max-width: 38rem;
+  padding: 24px 0 48px;
+}
+.ak-error-bare {
+  margin: 0 auto;
+  padding: 96px 16px;
+}
+.ak-error .ak-list-title {
+  font-size: 48px;
+}
+.ak-error .ak-actions {
+  margin-top: 32px;
+}
+.ak-error .ak-search-trigger {
+  width: 300px;
+  max-width: 100%;
+  height: 44px;
+}
+.ak-error-detail {
+  margin-top: 12px;
+  color: var(--ak-faint);
+  font: 400 13px/1.5 var(--ak-sans);
+  overflow-wrap: anywhere;
+}
+
+/* ── phones ──────────────────────────────────────────────────────────────────────── */
+@media (max-width: 859px) {
+  .ak-list-title {
+    font-size: 40px;
+  }
+  .ak-error .ak-list-title {
+    font-size: 34px;
+  }
+  .ak-list-lede {
+    font-size: 18px;
+  }
+  .ak-episode-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  .ak-episode-row time {
+    padding-top: 0;
+    font-size: 13px;
+  }
+  .ak-episode-synopsis {
+    font-size: 17px;
+  }
 }

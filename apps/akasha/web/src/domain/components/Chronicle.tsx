@@ -1,118 +1,144 @@
-// The campaign chronicle (0019): a Show → Season → Episode timeline. The index lists
-// every show (main first); a show page lists its seasons with a compact card (title +
-// blurb) per episode that links to the episode's own page; the episode page carries the
-// full detail. Data comes from the build-generated module (scripts/build-content.ts →
-// src/generated/chronicle.ts). Chronicle pages opt out of the wiki force-graph.
+// Sessions, the campaign chronicle (0019): Show, then Season, then Episode. `/chronicle`
+// lists the main campaign's seasons and episodes, then the other shows; a show page lists its
+// seasons; an episode page carries the full summary and a link to the transcript. Data comes
+// from the build-generated chronicle (scripts/build-content.ts, through the page-data server
+// functions). These pages have no graph.
+import { type ListCrumb, ListingHead } from "@/domain/components/ListingHead";
 import { PageLayout } from "@/domain/components/PageLayout";
 import type { ChronicleEpisode, ChronicleSeason, ChronicleShow } from "@/domain/lib/chronicleTypes";
+import { dayInWords, firstSentence, plural } from "@/domain/lib/listingFormat";
+import { SECTIONS } from "@/domain/lib/sections";
 
-function countLabel(n: number, one: string, many: string): string {
-  return `${n} ${n === 1 ? one : many}`;
+const SESSIONS_HUE = SECTIONS.find((s) => s.id === "sessions")?.hue;
+const SESSIONS_CRUMB: ListCrumb = { label: "Sessions", href: "/chronicle", hue: SESSIONS_HUE };
+
+const showFacts = (show: ChronicleShow) =>
+  `${plural(show.seasonCount, "season", "seasons")}, ${plural(show.episodeCount, "episode", "episodes")}`;
+
+/** "Season 3: The Pilgrimage"; just "Season 1" when the season has no title of its own. */
+function seasonHeading(season: ChronicleSeason): string {
+  const plain = `Season ${season.number}`;
+  return season.title && season.title !== plain ? `${plain}: ${season.title}` : plain;
 }
 
-/** /chronicle — the shows index (landing). */
+const seasonId = (season: ChronicleSeason) => `season-${season.number}`;
+
+/** A season: its heading, the arc summary, and a row per episode (date, title, the
+ *  synopsis's first sentence) linking to the episode's page. */
+function Season({
+  show,
+  season,
+  level,
+}: {
+  show: ChronicleShow;
+  season: ChronicleSeason;
+  level: "h2" | "h3";
+}) {
+  const Heading = level;
+  return (
+    <section className="ak-season" id={seasonId(season)}>
+      <Heading className="ak-season-title">{seasonHeading(season)}</Heading>
+      {season.arcSummary && <p className="ak-season-arc">{season.arcSummary}</p>}
+      <ol className="ak-episodes">
+        {season.episodes.map((episode) => (
+          <li key={episode.date}>
+            <a className="ak-episode-row" href={`/chronicle/${show.show}/${episode.date}`}>
+              <time dateTime={episode.date}>{dayInWords(episode.date)}</time>
+              <span className="ak-episode-text">
+                <span className="ak-episode-title">{episode.title}</span>
+                {episode.synopsis && (
+                  <span className="ak-episode-blurb">{firstSentence(episode.synopsis)}</span>
+                )}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+/** /chronicle: Sessions. */
 export function ChronicleIndex({ shows }: { shows: ChronicleShow[] }) {
+  const main = shows.find((s) => s.isMain);
+  const others = shows.filter((s) => s !== main);
   return (
     <PageLayout graph={false}>
-      <div className="page-header">
-        <h1 className="chronicle-title">Chronicle</h1>
-      </div>
-      <p className="chronicle-intro">
-        An automatically structured timeline of every recorded campaign — each show split into
-        seasons, each session an episode.
-      </p>
-      <div className="chronicle-shows">
-        {shows.map((show) => (
-          <a key={show.show} href={`/chronicle/${show.show}`} className="chronicle-show-card">
-            {show.isMain && <span className="chronicle-badge">Main campaign</span>}
-            <h2 className="chronicle-show-name">{show.name}</h2>
-            <p className="chronicle-show-meta">
-              {countLabel(show.seasonCount, "season", "seasons")} ·{" "}
-              {countLabel(show.episodeCount, "episode", "episodes")}
-            </p>
-          </a>
-        ))}
-      </div>
+      <ListingHead title="Sessions">
+        <p className="ak-list-lede">
+          Every session we have recorded, by campaign and season. Each one has a summary here and a
+          full transcript.
+        </p>
+      </ListingHead>
+      {main && (
+        <section className="ak-show" aria-labelledby="ak-main-show">
+          <h2 className="ak-show-title" id="ak-main-show">
+            <a href={`/chronicle/${main.show}`}>{main.name}</a>
+          </h2>
+          <p className="ak-show-facts">The main campaign: {showFacts(main)}</p>
+          {main.seasons.map((season) => (
+            <Season key={season.number} show={main} season={season} level="h3" />
+          ))}
+        </section>
+      )}
+      {others.length > 0 && (
+        <section className="ak-show" aria-labelledby="ak-other-shows">
+          <h2 className="ak-show-title" id="ak-other-shows">
+            Other campaigns
+          </h2>
+          <ul className="ak-show-rows">
+            {others.map((show) => (
+              <li key={show.show}>
+                <a className="ak-show-row" href={`/chronicle/${show.show}`}>
+                  <span className="ak-show-row-name">{show.name}</span>
+                  <span className="ak-show-row-facts">{showFacts(show)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </PageLayout>
   );
 }
 
-/** A compact episode card on the show page — title + blurb, links to the episode page. */
-function EpisodeCardLink({
-  showSlug,
-  seasonNumber,
-  episode,
-}: {
-  showSlug: string;
-  seasonNumber: number;
-  episode: ChronicleEpisode;
-}) {
-  return (
-    <a href={`/chronicle/${showSlug}/${episode.date}`} className="chronicle-ep-card">
-      <span className="chronicle-code">{`S${seasonNumber}E${episode.episodeNumber}`}</span>
-      <h4 className="chronicle-ep-card-title">{episode.title}</h4>
-      <p className="chronicle-ep-card-blurb">{episode.synopsis}</p>
-      <span className="chronicle-date">{episode.date}</span>
-    </a>
-  );
-}
-
-/** /chronicle/$show — one show's seasons, each a grid of compact episode cards. */
+/** /chronicle/$show: one show's seasons. */
 export function ShowChronicle({ show }: { show: ChronicleShow }) {
   return (
     <PageLayout graph={false}>
-      <div className="page-header">
-        <p className="chronicle-crumb">
-          <a href="/chronicle" className="internal">
-            Chronicle
-          </a>
+      <ListingHead crumbs={[SESSIONS_CRUMB, { label: show.name }]} title={show.name}>
+        <p className="ak-list-facts">
+          {show.isMain && <span>The main campaign</span>}
+          <span>{showFacts(show)}</span>
         </p>
-        <h1 className="chronicle-title">{show.name}</h1>
-        <p className="chronicle-show-meta">
-          {countLabel(show.seasonCount, "season", "seasons")} ·{" "}
-          {countLabel(show.episodeCount, "episode", "episodes")}
-        </p>
-      </div>
+      </ListingHead>
       {show.seasons.map((season) => (
-        <section key={season.number} className="chronicle-season">
-          <h3 className="chronicle-season-title">
-            <span className="chronicle-season-num">Season {season.number}</span>
-            {season.title}
-          </h3>
-          {season.arcSummary && <p className="chronicle-arc">{season.arcSummary}</p>}
-          <div className="chronicle-ep-grid">
-            {season.episodes.map((episode) => (
-              <EpisodeCardLink
-                key={episode.date}
-                showSlug={show.show}
-                seasonNumber={season.number}
-                episode={episode}
-              />
-            ))}
-          </div>
-        </section>
+        <Season key={season.number} show={show} season={season} level="h2" />
       ))}
     </PageLayout>
   );
 }
 
-function TagRow({ label, items }: { label: string; items: string[] }) {
+/** Characters, locations, factions or items: a faint label, then a chip each. */
+function ChipGroup({ label, items }: { label: string; items: string[] }) {
   if (items.length === 0) return null;
   return (
-    <div className="chronicle-tagrow">
-      <span className="chronicle-tagrow-label">{label}</span>
-      <span className="chronicle-tags">
-        {items.map((item) => (
-          <span key={item} className="chronicle-tag">
-            {item}
-          </span>
-        ))}
-      </span>
+    <div className="ak-chip-group">
+      <dt>{label}</dt>
+      <dd>
+        <ul>
+          {items.map((item) => (
+            <li key={item} className="ak-chip">
+              {item}
+            </li>
+          ))}
+        </ul>
+      </dd>
     </div>
   );
 }
 
-/** /chronicle/$show/$episode — one episode's full detail. */
+/** /chronicle/$show/$episode: one episode's summary. */
 export function EpisodeDetail({
   show,
   season,
@@ -122,60 +148,69 @@ export function EpisodeDetail({
   season: ChronicleSeason;
   episode: ChronicleEpisode;
 }) {
-  const code = `S${season.number}E${episode.episodeNumber}`;
+  const crumbs: ListCrumb[] = [
+    SESSIONS_CRUMB,
+    { label: show.name, href: `/chronicle/${show.show}` },
+    { label: `Season ${season.number}`, href: `/chronicle/${show.show}#${seasonId(season)}` },
+  ];
+  const groups = [
+    { label: "Characters", items: episode.charactersPresent },
+    { label: "Locations", items: episode.locations },
+    { label: "Factions", items: episode.factions },
+    { label: "Items", items: episode.items },
+  ].filter((g) => g.items.length > 0);
   return (
     <PageLayout graph={false}>
-      <div className="page-header">
-        <p className="chronicle-crumb">
-          <a href="/chronicle" className="internal">
-            Chronicle
-          </a>{" "}
-          /{" "}
-          <a href={`/chronicle/${show.show}`} className="internal">
-            {show.name}
-          </a>
+      <ListingHead crumbs={crumbs} title={episode.title}>
+        <p className="ak-list-facts">
+          <span>{show.name}</span>
+          <span>
+            Season {season.number}, episode {episode.episodeNumber}
+          </span>
+          <time dateTime={episode.date}>{dayInWords(episode.date)}</time>
         </p>
-        <div className="chronicle-episode-head">
-          <span className="chronicle-code">{code}</span>
-          <div className="chronicle-episode-titles">
-            <h1 className="chronicle-title">{episode.title}</h1>
-            <span className="chronicle-date">
-              Season {season.number} · {season.title} · {episode.date}
-            </span>
+      </ListingHead>
+
+      <div className="ak-episode">
+        {episode.synopsis && <p className="ak-episode-synopsis">{episode.synopsis}</p>}
+
+        {episode.keyBeats.length > 0 && (
+          <section aria-labelledby="ak-key-beats">
+            <h2 className="ak-episode-heading" id="ak-key-beats">
+              Key beats
+            </h2>
+            <ol className="ak-beats">
+              {episode.keyBeats.map((beat, i) => (
+                // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
+                <li key={i}>{beat}</li>
+              ))}
+            </ol>
+          </section>
+        )}
+
+        {groups.length > 0 && (
+          <dl className="ak-chip-groups">
+            {groups.map((g) => (
+              <ChipGroup key={g.label} label={g.label} items={g.items} />
+            ))}
+          </dl>
+        )}
+
+        {episode.cliffhanger && (
+          <aside className="ak-cliffhanger" aria-label="Cliffhanger">
+            <p className="ak-cliffhanger-label">Cliffhanger</p>
+            <p>{episode.cliffhanger}</p>
+          </aside>
+        )}
+
+        {episode.href && (
+          <div className="ak-actions">
+            <a className="ak-button ak-button-primary" href={episode.href}>
+              Read the transcript
+            </a>
           </div>
-        </div>
+        )}
       </div>
-
-      <p className="chronicle-synopsis">{episode.synopsis}</p>
-
-      {episode.keyBeats.length > 0 && (
-        <ol className="chronicle-beats">
-          {episode.keyBeats.map((beat, i) => (
-            // beats are ordered prose with no stable id; index key is correct here
-            // oxlint-disable-next-line react/no-array-index-key -- a static list in source order with no unique id; it never reorders
-            <li key={i}>{beat}</li>
-          ))}
-        </ol>
-      )}
-
-      <TagRow label="Characters" items={episode.charactersPresent} />
-      <TagRow label="Locations" items={episode.locations} />
-      <TagRow label="Factions" items={episode.factions} />
-      <TagRow label="Items" items={episode.items} />
-
-      {episode.cliffhanger && (
-        <p className="chronicle-cliffhanger">
-          <span className="chronicle-cliffhanger-label">Cliffhanger</span> {episode.cliffhanger}
-        </p>
-      )}
-
-      {episode.href && (
-        <p className="chronicle-transcript-link">
-          <a href={episode.href} className="internal">
-            Read the full transcript →
-          </a>
-        </p>
-      )}
     </PageLayout>
   );
 }

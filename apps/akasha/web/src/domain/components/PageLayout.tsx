@@ -23,6 +23,7 @@ export function PageLayout({
   rightSidebar,
   graph = true,
   leftRail,
+  rails = true,
 }: {
   children: ReactNode;
   /** Right-rail blocks above the graph; wrap each in `<section className="ak-rail-block">`. */
@@ -31,18 +32,23 @@ export function PageLayout({
   graph?: boolean;
   /** Replaces the section tree in the left rail. */
   leftRail?: ReactNode;
+  /** False drops both rails for a full-width page (the home page; home.css). */
+  rails?: boolean;
 }) {
-  const hasRight = graph || rightSidebar != null;
+  const hasRight = rails && (graph || rightSidebar != null);
+  const frameClass = !rails ? "ak-frame no-rails" : hasRight ? "ak-frame" : "ak-frame no-right";
   return (
     <div className="ak-page">
       <a className="ak-skip-link" href="#ak-main">
         Skip to the page
       </a>
       <SiteHeader />
-      <div className={hasRight ? "ak-frame" : "ak-frame no-right"}>
-        <aside className="ak-rail ak-rail-left" aria-label="Section pages">
-          {leftRail ?? <SectionTree />}
-        </aside>
+      <div className={frameClass}>
+        {rails && (
+          <aside className="ak-rail ak-rail-left" aria-label="Section pages">
+            {leftRail ?? <SectionTree />}
+          </aside>
+        )}
         <main id="ak-main" className="ak-main">
           {children}
         </main>

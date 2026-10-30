@@ -1,2 +1,326 @@
-/* The home page. Empty until slice D of the redesign: the home page renders as a wiki
-   content page (wiki.css) inside the shell. */
+/* The home page (Home.tsx): full width, no rails. The hero (the wordmark, the lede and the
+   section spectrum), the latest session beside the pages updated after it, then the wiki's
+   own front page. */
+
+/* PageLayout `rails={false}`: the page takes the whole frame. */
+.ak-frame.no-rails {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ak-home > * + * {
+  border-top: 1px solid var(--ak-rule);
+}
+
+/* ── hero ────────────────────────────────────────────────────────────────────────── */
+.ak-hero {
+  padding: 56px 0 72px;
+}
+.ak-hero-title {
+  font-family: var(--ak-serif);
+  font-size: 128px;
+  font-weight: 400;
+  font-variation-settings: "opsz" 72;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+.ak-hero-lede {
+  max-width: 34rem;
+  margin-top: 28px;
+  color: var(--ak-muted);
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+.ak-spectrum {
+  margin-top: 64px;
+}
+.ak-spectrum ul {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+}
+.ak-spectrum li {
+  flex-shrink: 1;
+  flex-basis: 96px;
+  min-width: 0;
+}
+.ak-spectrum a {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--ak-ink);
+  text-decoration: none;
+}
+.ak-spectrum-bar {
+  height: 14px;
+  margin-bottom: 8px;
+  border-radius: 3px;
+  background: var(--hue);
+}
+.ak-spectrum li:first-child .ak-spectrum-bar {
+  border-radius: 7px 3px 3px 7px;
+}
+.ak-spectrum li:last-child .ak-spectrum-bar {
+  border-radius: 3px 7px 7px 3px;
+}
+.ak-spectrum-label {
+  overflow: hidden;
+  font: 600 15px/1.3 var(--ak-sans);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ak-spectrum a:hover .ak-spectrum-label {
+  text-decoration: underline;
+  text-decoration-color: var(--hue);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.ak-spectrum-count {
+  color: var(--ak-faint);
+  font: 400 13px/1.3 var(--ak-sans);
+  white-space: nowrap;
+}
+.ak-spectrum-strip {
+  display: none;
+}
+
+/* ── the latest session and the pages updated after it ───────────────────────────── */
+.ak-home-band {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 96px;
+  padding: 56px 0 64px;
+}
+.ak-home-band.is-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+.ak-home-heading {
+  margin-bottom: 20px;
+  color: var(--ak-ink);
+  font: 650 15px/1.3 var(--ak-sans);
+}
+
+.ak-latest-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  color: var(--ak-muted);
+  font: 400 14px/1.4 var(--ak-sans);
+}
+.ak-latest-show {
+  color: var(--ak-sessions);
+  font-weight: 600;
+  text-decoration: none;
+}
+.ak-latest-show:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ak-latest-title {
+  max-width: 22ch;
+  margin: 12px 0 18px;
+  font-family: var(--ak-serif);
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.ak-latest-title a {
+  color: inherit;
+  text-decoration: none;
+}
+.ak-latest-title a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--ak-sessions);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+.ak-latest-synopsis {
+  max-width: 38rem;
+  font-size: 18px;
+  line-height: 1.65;
+}
+.ak-latest .ak-actions {
+  margin-top: 28px;
+}
+
+.ak-earlier {
+  margin-top: 48px;
+  list-style: none;
+}
+.ak-earlier a {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--ak-rule);
+  color: var(--ak-ink);
+  font-size: 17px;
+  line-height: 1.45;
+  text-decoration: none;
+}
+.ak-earlier time {
+  padding-top: 2px;
+  color: var(--ak-faint);
+  font: 400 14px/1.4 var(--ak-sans);
+  font-variant-numeric: tabular-nums;
+}
+.ak-earlier a:hover .ak-earlier-title {
+  text-decoration: underline;
+  text-decoration-color: var(--ak-sessions);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.ak-updated-sub {
+  margin: -8px 0 20px;
+  color: var(--ak-muted);
+  font-size: 16px;
+  line-height: 1.55;
+}
+.ak-updated-list {
+  list-style: none;
+}
+.ak-updated-list a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 10px 0;
+  border-top: 1px solid var(--ak-rule);
+  color: var(--ak-ink);
+  text-decoration: none;
+}
+.ak-updated-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 17px;
+  line-height: 1.35;
+}
+.ak-updated-section {
+  color: var(--ak-faint);
+  font: 400 13px var(--ak-sans);
+}
+.ak-updated-list a:hover .ak-updated-name {
+  text-decoration: underline;
+  text-decoration-color: var(--hue);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* ── the wiki's front page ───────────────────────────────────────────────────────── */
+.ak-home-archive {
+  padding-bottom: 32px;
+}
+/* The front page's own title header; the aside beside it names the page. */
+.ak-home-body > [data-vellum-export] > header:first-child {
+  display: none;
+}
+.ak-home-archive-note p {
+  color: var(--ak-muted);
+  font-size: 17px;
+  line-height: 1.6;
+}
+.ak-home-archive-note a {
+  color: var(--ak-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--ak-faint);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* ── narrower screens ────────────────────────────────────────────────────────────── */
+@media (max-width: 1179px) {
+  .ak-home-band {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 56px;
+  }
+}
+
+@media (max-width: 959px) {
+  .ak-home-band {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+  }
+}
+
+/* Phones: the spectrum becomes one unlabelled strip over a two-column list of the sections,
+   each bar shrunk to a dot. */
+@media (max-width: 859px) {
+  .ak-hero {
+    padding: 24px 0 48px;
+  }
+  .ak-hero-title {
+    font-size: 72px;
+  }
+  .ak-hero-lede {
+    margin-top: 20px;
+    font-size: 19px;
+  }
+  .ak-spectrum {
+    margin-top: 40px;
+  }
+  .ak-spectrum-strip {
+    display: flex;
+    gap: 2px;
+    height: 14px;
+    margin-bottom: 12px;
+  }
+  .ak-spectrum-strip span {
+    flex-basis: 0;
+    min-width: 4px;
+    border-radius: 2px;
+    background: var(--hue);
+  }
+  .ak-spectrum-strip span:first-child {
+    border-radius: 7px 2px 2px 7px;
+  }
+  .ak-spectrum-strip span:last-child {
+    border-radius: 2px 7px 7px 2px;
+  }
+  .ak-spectrum ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 16px;
+  }
+  .ak-spectrum a {
+    display: grid;
+    grid-template-columns: 10px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 0;
+    min-height: 52px;
+    padding: 6px 0;
+  }
+  .ak-spectrum-bar,
+  .ak-spectrum li:first-child .ak-spectrum-bar,
+  .ak-spectrum li:last-child .ak-spectrum-bar {
+    grid-row: 1 / span 2;
+    width: 10px;
+    height: 10px;
+    margin: 0;
+    border-radius: 50%;
+  }
+  .ak-spectrum-count {
+    grid-column: 2;
+  }
+  .ak-home-band {
+    padding: 40px 0 48px;
+  }
+  .ak-latest-title {
+    font-size: 30px;
+  }
+  .ak-latest-synopsis {
+    font-size: 17px;
+  }
+  .ak-earlier a {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  .ak-earlier time {
+    padding-top: 0;
+    font-size: 13px;
+  }
+}
