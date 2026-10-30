@@ -198,8 +198,10 @@ campaign "deep-eyes" {
     world "althane"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Lev" { desc "an adventurer in the GM's second campaign, set on Althane" }
-    role player="noah" character="Big Fish" { desc "an adventurer in the GM's second campaign, set on Althane" }
-    role player="noah" character="Dawnmonger" { desc "an adventurer in the GM's second campaign, set on Althane" }
+    role player="noah" character="Dawnmonger" {
+        desc "an adventurer in the GM's second campaign, set on Althane; usually called \"Dawn\" or \"Don\" at the table"
+        desc "He took up the unfinished work of Big Fish, Noah's earlier character, who was blown up at the night market before the recordings begin."
+    }
     role player="mike" character="Divex" { desc "an adventurer in the GM's second campaign, set on Althane" }
     role player="tanner" character="Henrik" { desc "an adventurer in the GM's second campaign, set on Althane" }
 }

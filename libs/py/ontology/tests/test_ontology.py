@@ -76,7 +76,8 @@ def test_earlier_campaigns_are_appended_and_not_main() -> None:
     deep_eyes = by_slug["deep-eyes"]
     assert not deep_eyes.main
     noah = [r.character for r in deep_eyes.roles if r.player == "noah"]
-    assert noah == ["Big Fish", "Dawnmonger"]  # two different characters
+    # Big Fish died before the recordings begin, so Noah's one recorded role is Dawnmonger.
+    assert noah == ["Dawnmonger"]
     assert all(not by_slug[s].main for s in slugs[-3:])
 
 
