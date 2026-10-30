@@ -1,7 +1,9 @@
 # akasha redesign
 
 - **Date:** 2026-10-29 (repo at `38df1428`)
-- **Status:** Josh approved the direction and the akasha-only scope on 2026-10-29. Building.
+- **Status:** Josh approved the direction and the akasha-only scope on 2026-10-29. All four
+  slices merged (#154 to #157) and deployed on 2026-10-30. Follow-ups are in `docs/backlog.md`
+  under Frontends.
 - **Why:** the stakeholders called the current site ugly and asked for a complete redesign.
 - **Mockup:** https://claude.ai/artifact/4c5Fj5v95T75Fd8aEWbwYn (private canvas). The screen
   sources and screenshots are on the main checkout at
@@ -12,15 +14,17 @@
 
 ## 0.1 Status and checklist
 
-- [ ] **A. Foundation.** Tokens, fonts, theme switch, header, layout shell, section tree, search,
-      graph, phone menu. Everything else builds on it, so it lands first.
-- [ ] **B. Wiki page.** Page head, prose and gothic block overrides, section-coloured links,
-      right rail (contents, sessions strip, "Mentioned on"), popover.
-- [ ] **C. Transcript page.** Episode header, line layout, docked player, speaker rail, sessions tree.
-- [ ] **D. Home and listings.** Home page, Sessions (chronicle) pages, folder and tag listings,
-      error and 404 pages.
-- [ ] **E. Finish.** Cross-page review at 1440 and 390 px in both themes, README traps, deploy
-      (flag to Josh first: it replaces the live look), `docs/now.md`.
+- [x] **A. Foundation.** Tokens, fonts, theme switch, header, layout shell, section tree, search,
+      graph, phone menu. Everything else builds on it, so it lands first. (#154)
+- [x] **B. Wiki page.** Page head, prose and gothic block overrides, section-coloured links,
+      right rail (contents, sessions strip, "Mentioned on"), popover. Folder index pages get the
+      same look. (#156)
+- [x] **C. Transcript page.** Episode header, line layout, docked player, speaker rail, sessions
+      tree. (#157)
+- [x] **D. Home and listings.** Home page, Sessions (chronicle) pages, folder and tag listings,
+      error and 404 pages. (#155)
+- [x] **E. Finish.** Each slice was reviewed at 1440 and 390 px in both themes; READMEs updated
+      in the slices; deployed `c5021a72` on 2026-10-30 (Josh: deploy once all slices merge).
 
 B, C and D run in parallel after A merges. Each owns its own stylesheet and components (see
 section 3), so their pull requests don't conflict.
