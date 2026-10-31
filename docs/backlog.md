@@ -123,6 +123,10 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
   "Thoughts"); older than the redesign, now more visible with section-coloured underlines — agent.
 - gothic still generates `graph-palette.css` and lists akasha as its user; akasha owns its graph
   palette since the redesign. Drop the file and its README row — agent.
+- The entity seed (`astra_ontology/entity.py`) merges a `being` character into any page of the
+  same name: Urth's Chuck (Mike, Cagley one-shot) marks the Harlequin NPC
+  `Org/The Harlequins/People/Chuck` as `being="mike"`. Harmless until something reads `being`;
+  scope the merge by campaign or world — agent.
 - akasha follow-ups, small: highlight the current entry in "On this page"; Pagefind shows
   transcripts by date, not episode title; `build-content.ts` sits at the 500-line ratchet limit —
   agent.
