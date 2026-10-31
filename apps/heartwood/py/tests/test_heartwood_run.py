@@ -300,19 +300,19 @@ def test_scripted_run_through_real_deno(env, spans) -> None:
         "created": ["Bestiary/Grell", "Bestiary/Grells/Grell Kin"],
         "updated": [],
         "deleted": [],
-        "moved": [{"src": "Divinity/Aut", "dst": "Divinity/Old/Aut", "edited": True}],
+        "moved": [{"src": "Divinity/Aut", "dst": "Divinity/Old/Aut", "edited": False}],
     }
     grell = (result.run_dir / "content" / "Bestiary" / "Grell.vellum").read_text()
     assert grell.startswith(
         "---\ndate: 2025-08-28T00:00:00-04:00\ntags: []\ncampaigns: [song]\n---\n"
     )
     aut = (result.run_dir / "content" / "Divinity" / "Old" / "Aut.vellum").read_text()
-    assert "\ncampaigns: [song]\n---\n" in aut
+    assert "campaigns" not in aut  # it listed no campaign, so the move leaves it unmarked
     diff = (result.run_dir / "diff.patch").read_text()
     assert "Bestiary/Grell.vellum" in diff and "+campaigns: [song]" in diff
     ops = (result.run_dir / "ops.jsonl").read_text().splitlines()
-    # the agent's two writes and two moves, then one campaign stamp per touched page
-    assert [json.loads(o)["op"] for o in ops] == ["write", "write", "move", "move"] + ["write"] * 3
+    # the agent's two writes and two moves, then one campaign stamp per new page
+    assert [json.loads(o)["op"] for o in ops] == ["write", "write", "move", "move"] + ["write"] * 2
 
     s = read_json(result.run_dir / "summary.json")
     assert s["status"] == "ok" and s["iterations"] == 7 and s["parse_errors"] == 1

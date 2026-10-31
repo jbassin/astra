@@ -143,9 +143,13 @@ checkout -- akasha/content akasha/snapshot heartwood/agent-runs.jsonl entity/ent
   in-cluster collector name does not resolve on the host.
 - **The watchdog checks `.path` units with `check_path_unit`.** A `.path` unit has no next
   elapse time, so `check_timer` would report it as not armed.
-- **A move now always edits the page.** The end-of-run stamp adds the run's campaign to a
-  moved page, so `changeset.json` reports every move as `edited: true` unless the page
-  already listed that campaign.
+- **A move usually edits the page.** The end-of-run stamp adds the run's campaign to a moved
+  page that already lists a campaign, so `changeset.json` reports that move as `edited: true`
+  unless the list already held this campaign.
+- **Pages with no `campaigns` list stay unmarked.** The stamp marks every page a run creates,
+  but an updated or moved page only if it already lists a campaign. The 62 unmarked pages
+  (2026-10-30) are shared lore: older Færrin world-building and the meta-setting. Stamping
+  them would show "Known from" with only the campaign that last touched them.
 - **The `campaigns` backfill cannot follow hand restructures.** Pages that were moved,
   merged or deleted by hand (outside heartwood) leave history at paths that no longer exist;
   the backfill follows only `X` → `X/index`, and reports the rest (36 paths on 2026-10-30,
