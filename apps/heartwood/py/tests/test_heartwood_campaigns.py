@@ -26,6 +26,7 @@ def being(*campaigns: tuple[str, str, str, bool]) -> Being:
     return Being(
         players=[],
         guest_color="#000000",
+        astra_worlds=["faerrin", "althane"],
         campaigns=[
             Campaign(slug=s, name=n, edition="pf2e", main=m, world=w, roles=[])
             for s, n, w, m in campaigns
