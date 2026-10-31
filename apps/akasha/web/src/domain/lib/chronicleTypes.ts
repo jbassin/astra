@@ -27,6 +27,8 @@ export interface ChronicleShow {
   show: string;
   name: string;
   isMain: boolean;
+  /** The GM's campaign count from being.kdl (Deep Eyes is 2); null for one-shots. */
+  campaignNumber: number | null;
   seasonCount: number;
   episodeCount: number;
   seasons: ChronicleSeason[];

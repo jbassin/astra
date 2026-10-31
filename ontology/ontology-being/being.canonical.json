@@ -10,6 +10,7 @@
       "edition": "pathfinder_2e",
       "main": true,
       "name": "Through a Song, Darkly",
+      "number": 3,
       "roles": [
         {
           "character": "Gamemaster",
@@ -71,6 +72,7 @@
       "edition": "pathfinder_2e",
       "main": false,
       "name": "Interred in Iomenei",
+      "number": null,
       "roles": [
         {
           "character": "Gamemaster",
@@ -118,6 +120,7 @@
       "edition": "pathfinder_2e",
       "main": false,
       "name": "Fae and Forest",
+      "number": null,
       "roles": [
         {
           "character": "Gamemaster",
@@ -165,6 +168,7 @@
       "edition": "pathfinder_2e",
       "main": false,
       "name": "A Hunt of Metal and Vine",
+      "number": null,
       "roles": [
         {
           "character": "Gamemaster",
@@ -212,6 +216,7 @@
       "edition": "pathfinder_2e",
       "main": false,
       "name": "The First Spark",
+      "number": null,
       "roles": [
         {
           "character": "Gamemaster",
@@ -259,6 +264,7 @@
       "edition": "pathfinder_2e",
       "main": false,
       "name": "Observatory, Slipped",
+      "number": null,
       "roles": [
         {
           "character": "Gamemaster",
@@ -298,6 +304,7 @@
       "edition": "pathfinder_2e",
       "main": false,
       "name": "Fey in the Mists",
+      "number": null,
       "roles": [
         {
           "character": "Gamemaster",
@@ -337,6 +344,7 @@
       "edition": "dnd_5e",
       "main": false,
       "name": "Chuul Hunt",
+      "number": null,
       "roles": [
         {
           "character": "Gamemaster",
@@ -376,6 +384,7 @@
       "edition": "pathfinder_2e",
       "main": false,
       "name": "Deep Eyes",
+      "number": 2,
       "roles": [
         {
           "character": "Gamemaster",
@@ -424,6 +433,7 @@
       "edition": "pathfinder_2e",
       "main": false,
       "name": "The Midnight Sun",
+      "number": null,
       "roles": [
         {
           "character": "Gamemaster",
@@ -463,6 +473,7 @@
       "edition": "pathfinder_2e",
       "main": false,
       "name": "Hildebrandt Heist",
+      "number": null,
       "roles": [
         {
           "character": "Gamemaster",
@@ -510,6 +521,7 @@
       "edition": "dnd_5e",
       "main": false,
       "name": "Risk of Ruin",
+      "number": 1,
       "roles": [
         {
           "character": "Gamemaster",
@@ -558,6 +570,7 @@
       "edition": "pathfinder_2e",
       "main": false,
       "name": "Urth",
+      "number": null,
       "roles": [
         {
           "character": "Gamemaster",

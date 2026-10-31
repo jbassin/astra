@@ -43,6 +43,8 @@ class Campaign(_Base):
     name: str
     edition: str
     main: bool = False
+    # The GM's campaign count (1, 2, 3); None for one-shots and other GMs' games.
+    number: int | None = None
     world: str  # the setting played in (free-form; `Being.astra_worlds` scopes heartwood)
     roles: Annotated[list[Role], Children("role")]
 

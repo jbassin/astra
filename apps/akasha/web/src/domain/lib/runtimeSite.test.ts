@@ -172,6 +172,7 @@ function show(slug: string, name: string, isMain: boolean, eps: ChronicleEpisode
     show: slug,
     name,
     isMain,
+    campaignNumber: null,
     seasonCount: 1,
     episodeCount: eps.length,
     seasons: [{ number: 1, title: "One", arcSummary: "", episodes: eps }],

@@ -6,6 +6,7 @@
 import { type ListCrumb, ListingHead } from "@/domain/components/ListingHead";
 import { PageLayout } from "@/domain/components/PageLayout";
 import type { ChronicleEpisode, ChronicleSeason, ChronicleShow } from "@/domain/lib/chronicleTypes";
+import { campaignLabel, groupShows } from "@/domain/lib/listingData";
 import { dayInWords, firstSentence, plural } from "@/domain/lib/listingFormat";
 import { SECTIONS } from "@/domain/lib/sections";
 
@@ -14,6 +15,29 @@ const SESSIONS_CRUMB: ListCrumb = { label: "Sessions", href: "/chronicle", hue: 
 
 const showFacts = (show: ChronicleShow) =>
   `${plural(show.seasonCount, "season", "seasons")}, ${plural(show.episodeCount, "episode", "episodes")}`;
+
+function ShowRows({ id, title, shows }: { id: string; title: string; shows: ChronicleShow[] }) {
+  if (shows.length === 0) return null;
+  return (
+    <section className="ak-show" aria-labelledby={id}>
+      <h2 className="ak-show-title" id={id}>
+        {title}
+      </h2>
+      <ul className="ak-show-rows">
+        {shows.map((show) => (
+          <li key={show.show}>
+            <a className="ak-show-row" href={`/chronicle/${show.show}`}>
+              <span className="ak-show-row-name">{show.name}</span>
+              <span className="ak-show-row-facts">
+                {[campaignLabel(show), showFacts(show)].filter(Boolean).join(" · ")}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 /** "Season 3: The Pilgrimage"; just "Season 1" when the season has no title of its own. */
 function seasonHeading(season: ChronicleSeason): string {
@@ -60,8 +84,7 @@ function Season({
 
 /** /chronicle: Sessions. */
 export function ChronicleIndex({ shows }: { shows: ChronicleShow[] }) {
-  const main = shows.find((s) => s.isMain);
-  const others = shows.filter((s) => s !== main);
+  const { main, earlier, oneShots } = groupShows(shows);
   return (
     <PageLayout graph={false}>
       <ListingHead title="Sessions">
@@ -75,29 +98,16 @@ export function ChronicleIndex({ shows }: { shows: ChronicleShow[] }) {
           <h2 className="ak-show-title" id="ak-main-show">
             <a href={`/chronicle/${main.show}`}>{main.name}</a>
           </h2>
-          <p className="ak-show-facts">The main campaign: {showFacts(main)}</p>
+          <p className="ak-show-facts">
+            {campaignLabel(main)}: {showFacts(main)}
+          </p>
           {main.seasons.map((season) => (
             <Season key={season.number} show={main} season={season} level="h3" />
           ))}
         </section>
       )}
-      {others.length > 0 && (
-        <section className="ak-show" aria-labelledby="ak-other-shows">
-          <h2 className="ak-show-title" id="ak-other-shows">
-            Other campaigns
-          </h2>
-          <ul className="ak-show-rows">
-            {others.map((show) => (
-              <li key={show.show}>
-                <a className="ak-show-row" href={`/chronicle/${show.show}`}>
-                  <span className="ak-show-row-name">{show.name}</span>
-                  <span className="ak-show-row-facts">{showFacts(show)}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <ShowRows id="ak-earlier-shows" title="Earlier campaigns" shows={earlier} />
+      <ShowRows id="ak-one-shots" title="One-shots" shows={oneShots} />
     </PageLayout>
   );
 }
@@ -108,7 +118,7 @@ export function ShowChronicle({ show }: { show: ChronicleShow }) {
     <PageLayout graph={false}>
       <ListingHead crumbs={[SESSIONS_CRUMB, { label: show.name }]} title={show.name}>
         <p className="ak-list-facts">
-          {show.isMain && <span>The main campaign</span>}
+          {campaignLabel(show) && <span>{campaignLabel(show)}</span>}
           <span>{showFacts(show)}</span>
         </p>
       </ListingHead>

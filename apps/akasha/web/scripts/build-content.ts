@@ -309,7 +309,8 @@ const CHRONICLE_TYPES = [
 ];
 
 /** Build the enriched chronicle data (shows → seasons → episodes) from the artifacts. */
-function buildChronicleShows(hrefByDate: Map<string, string>) {
+function buildChronicleShows(hrefByDate: Map<string, string>, being: Being) {
+  const numbers = new Map(being.campaigns.map((c) => [c.slug, c.number]));
   const seasonsPath = path.join(TIMELINE_DIR, "seasons.json");
   const episodesDir = path.join(TIMELINE_DIR, "episodes");
 
@@ -352,6 +353,7 @@ function buildChronicleShows(hrefByDate: Map<string, string>) {
       show: sh.show,
       name: sh.name,
       isMain: sh.is_main,
+      campaignNumber: numbers.get(sh.show) ?? null,
       seasonCount: sh.seasons.length,
       episodeCount,
       seasons,
@@ -451,7 +453,7 @@ const siteSource = defineContentSource({
     const hrefByDate = new Map(
       transcripts.docs.map((d) => [d.title, `/${encodeURI(simplifySlug(d.slug))}`]),
     );
-    const chronicleShows = buildChronicleShows(hrefByDate);
+    const chronicleShows = buildChronicleShows(hrefByDate, being);
     const moduleSummary = emitGeneratedModule(site, chronicleShows, being);
     const bodiesSummary = emitBodies(site, snapshot, transcriptSlugs);
     const transcriptSummary = emitTranscriptBodies(transcripts.bodies, transcripts.meta);

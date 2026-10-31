@@ -51,3 +51,6 @@ The tests live in `libs/py/ontology` (`uv run pytest libs/py/ontology`). `just o
   filename prefix (`<0 main | 1 other><idx>.<slug>.<date>.txt`), so inserting one renames the
   later files. weal's roster takes the first `main` campaign, so an earlier campaign is
   `main #false`.
+- **`number` is the GM's campaign count**: Risk of Ruin 1, Deep Eyes 2, Through a Song,
+  Darkly 3. akasha's Sessions page shows it ("Campaign 2") and lists numbered campaigns under
+  "Earlier campaigns", the rest under "One-shots". A one-shot or another GM's game has none.

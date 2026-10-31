@@ -37,6 +37,7 @@ export const CampaignSchema = z
     name: z.string(),
     edition: z.string(),
     main: z.boolean(),
+    number: z.number().int().positive().nullable(),
     world: z.string(),
     roles: z.array(RoleSchema),
   })

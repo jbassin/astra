@@ -276,7 +276,8 @@ push, and `just deploy orator-backend`. See [`apps/orator/bot/README.md`](../app
 
 Exactly one campaign in `ontology/ontology-being/being.kdl` has `main #true`.
 
-1. Flip the flags in `being.kdl`.
+1. Flip the flags in `being.kdl`. A new campaign of the GM's also gets the next `number`, so
+   akasha's Sessions page counts it.
 2. Regenerate `being.canonical.json` with `just ontology-gen` (`just ontology-check` fails until
    you do).
 3. Re-pin the main-campaign tests (`apps/linguist/py/tests/test_chronicle.py`,
