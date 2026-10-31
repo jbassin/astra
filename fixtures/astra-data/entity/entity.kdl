@@ -696,6 +696,7 @@ entity "Illmari" {
 }
 entity "Immix" {
     alias "[IE]mix"
+    alias "Imex"
     source "defs"
 }
 entity "in Hallia" {
@@ -773,6 +774,10 @@ entity "Kadou" {
     alias "Kato"
     source "defs"
 }
+entity "Karkov" {
+    alias "Kharkov"
+    source "defs"
+}
 entity "keystone" {
     alias "Aggie Stone"
     source "defs"
@@ -810,6 +815,10 @@ entity "Letov" {
 }
 entity "Lev" kind="person" being="jorge" {
     source "being"
+}
+entity "Lev'Myr" {
+    alias "Levmir"
+    source "defs"
 }
 entity "Lorandris" {
     alias "Laurentius"
@@ -982,6 +991,10 @@ entity "our door" {
     alias "Ardor"
     source "defs"
 }
+entity "Oxas" {
+    alias "Oxus"
+    source "defs"
+}
 entity "Ozzie" kind="person" being="tanner" {
     alias "Ozzy"
     source "defs"
@@ -1093,6 +1106,10 @@ entity "Ren" kind="person" being="jorge" {
 entity "Renge" {
     alias "Renga"
     alias "Rengo"
+    source "defs"
+}
+entity "Ret" {
+    alias "Rett"
     source "defs"
 }
 entity "Reverend" kind="person" being="noah" {
@@ -1266,6 +1283,8 @@ entity "Submechanitor" {
 }
 entity "Sundom" {
     alias "Sundump"
+    alias "Sondheim"
+    alias "Santham"
     alias "Sun Doom"
     alias "Sundum"
     alias "Sendum"
@@ -1355,6 +1374,10 @@ entity "Thistle Monroe" {
 }
 entity "Tithe" {
     alias "Aibh"
+    source "defs"
+}
+entity "Toleros" {
+    alias "Poleros"
     source "defs"
 }
 entity "Tormeré" {
