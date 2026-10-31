@@ -107,11 +107,11 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
    held the crew's regressed descendants with SeRaan (orange) deactivated, Big Fish was one of
    the nomadic Descendants. "The great ship Shoa" was heartwood misreading "the big Sundom
    ship, so…" (2025-5-5) and is gone. `defs.kdl` gains Karkov, Oxas, Lev'Myr, Toleros, Ret
-   (variant "Rett"), and Imex and Sondheim variants. Also fixed: KiRiin is Immix's Kaathe aide,
+   (variants "Rett", "Rhett"), and Imex and Sondheim variants. Also fixed: KiRiin is Immix's Kaathe aide,
    not a Ki-Rin (void-touched chitinous unicorns, campaigns 1 and 3), and Immix is "he"; Syrin's
    dream is the Ret, short for reticulum, never "Rhett" (astra-data `12ae48c`, `7964ad6`).
-   Three Deep Eyes lines still say "Rhett": a `Rhett` rule would also rewrite "Thanks, Rhett"
-   (2026-3-30), which is not the Ret. Original: **Slice 7, the questionnaire** for Josh (campaign 1 and Deep Eyes gaps); seeds in slice 7
+   `Ret` also takes "Rhett"; the one other hit, "Thanks, Rhett" (2026-3-30), names no one Josh
+   knows, so it is a mis-transcription either way. Original: **Slice 7, the questionnaire** for Josh (campaign 1 and Deep Eyes gaps); seeds in slice 7
    below.
 7. **Wrap-up:** tick section 5, update `docs/now.md` and `docs/backlog.md`, remove the
    finished agent worktrees under `.claude/worktrees/` (`git worktree list`).
