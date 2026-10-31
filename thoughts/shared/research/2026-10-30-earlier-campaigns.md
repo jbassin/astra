@@ -1,9 +1,9 @@
 # Earlier campaigns in akasha
 
 - **Date:** 2026-10-30
-- **Status:** Handoff written 2026-10-31 (section 0). Slices 1 to 4 and three added slices
-  (inline images, geography by world, the Urth show) are merged and published. Next: the
-  Urth content follow-up, the vault images, then the paid heartwood backfill.
+- **Status:** Handoff updated 2026-10-31 15:00 UTC (section 0). Slices 1 to 4, three added
+  slices, the Urth follow-up and the vault images are live. The heartwood backfill (0.2 step
+  4) is running; check it first. Then the chronicle backfill, the questionnaire, wrap-up.
 - **Goal:** the players carry knowledge from campaigns 1 and 2 that akasha doesn't have. Bring
   the recorded part of campaign 2 and its Færrin one-shots into akasha and the pipeline, mark
   which campaign each fact comes from, and fill the unrecorded gaps from Josh.
@@ -79,7 +79,23 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
    1600 px, JPEG quality 75: 0.3 to 0.8 MB each; the originals ran to 62 MB) and eight plots
    under `akasha/assets/configuration-space/`. `00009.jpg` and `remnant-map.jpg` were never
    embedded and stay out. The seed README now matches the live one.
-4. **heartwood backfill, paid and live.** Ask Josh first. `uv run astra-heartwood-agent
+4. **Running since 2026-10-31 03:06 UTC (Josh approved).** Check this first. State at 14:55
+   UTC: 24 of 27 sessions ok, no failures, $8.79 spent (ledger $32.33 of $100), wiki 531 to
+   619+ pages; about 30 to 60 min per session, so it should end near 16:00 to 17:00 UTC.
+   It runs as the user unit `heartwood-backfill` and logs to
+   `/ruby/data/astra-state/heartwood/backfill.log`. It publishes nothing until the end: then
+   it pushes astra-data once, redeploys akasha and re-arms linguist-commit and the request
+   runner (paused while it runs). To check: `systemctl --user is-active heartwood-backfill`,
+   then the log's last `=== heartwood backfill end` block. If it stopped early (exit 1:
+   budget or an agent failure), the log prints the resume command; a re-run skips published
+   dates. If the unit was hard-killed, run `just heartwood-backfill-reset` first. After it
+   ends: confirm the astra-data push and the live clone is clean, spot-check a few Deep Eyes
+   pages on akasha ("Known from: Deep Eyes"), and check that no page that lacked a
+   `campaigns` list gained one from an update (the rule from #171: heartwood stamps pages a
+   run creates, and updated or moved pages only if they already list a campaign; pages with
+   no list are shared lore). The 2024-10-21 dry run (`heartwood/2024-10-21/20261031T021415Z`)
+   was read and approved before #171; it predates the rule. Original instructions:
+   **heartwood backfill, paid and live.** Ask Josh first. `uv run astra-heartwood-agent
    sessions --from 2024-10-21` listed 27 dates on 2026-10-30 (the 25 imported plus
    Observatory, Slipped's 2026-4-6 and 2026-4-27); re-check before running. Dry-run the first
    date (`just -f /ruby/data/astra-deploy/justfile heartwood-agent 2024-10-21 --dry-run`) and
@@ -107,6 +123,10 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
 - **Place-like pages outside Geography, not moved:** `Org/The Harlequins/Providence/`,
   `Org/The Harlequins/Harlequin Town`, and fixed-site businesses (`Org/Luxottica`, `Org/Maple
   Tree Farms`, `Org/Sableclutch Scrap`, `Org/Opaline Reserve`, `Org/Hallia Exchange`).
+- **Configuration Space looks like *Anathem*.** The page's dialogue (a fraa, Barb, the wine
+  bottle and the potato) and its eight plots, restored 2026-10-30, appear to come from Neal
+  Stephenson's novel. Josh cleared the whole vault for publishing; raised once in case the
+  public site matters.
 - **Lost registry names.** "Afro-China" and "Elephant Graveyard of Wonders" are no longer
   entity names; adding them as aliases on `Org/Bisney and Dixar/Arcane Intelligence` would
   restore them.
@@ -319,7 +339,7 @@ Each slice is one pull request unless noted. Paid or live-content steps are flag
 - [x] Deploy #165 to #167 (`8650c097`, 2026-10-31)
 - [x] Urth content follow-up (0.2 step 2; astra-data `0bc667c`, 2026-10-30)
 - [x] Vault images added (0.2 step 3; astra-data `7fbb152`, 2026-10-30)
-- [ ] 5. heartwood backfill (paid)
+- [ ] 5. heartwood backfill (paid; running since 2026-10-31 03:06 UTC, #171 stamping rule first)
 - [ ] 6. Chronicle backfill (paid), Sessions label
 - [ ] 7. Questionnaire answered and written up
 - [ ] Wrap-up: now.md, backlog, heartwood, linguist and ontology READMEs
