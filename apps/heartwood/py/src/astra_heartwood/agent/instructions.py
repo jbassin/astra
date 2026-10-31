@@ -96,6 +96,12 @@ class MaintainWiki(dspy.Signature):
     when that campaign ended. A later campaign's state wins over an earlier one's, the
     same as for a replayed session.
 
+    Places are filed by world under `Geography`, whose index is the Astra:
+    `Geography/Færrin/...` (as `Geography/Færrin/Calaria`), `Geography/Althane/...`
+    and `Geography/Urth/...`. Færrin's alternate planes, such as the Black and White,
+    go under `Geography/Færrin/Alternate Planes/`, and the Joker Worlds of the
+    Infinite Horizon under `Geography/Færrin/Infinite Horizon/`.
+
     Voice: before writing in a folder, read two or three of its pages and match their
     tone, person (some pages address the reader as "you"; keep that when you extend
     one), length and structure. When you change a page, keep the existing sentences
