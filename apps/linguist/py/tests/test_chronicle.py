@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from astra_linguist.campaigns import MatchedCampaign, campaign_filename, campaign_views
 from astra_linguist.chronicle import (
     Chronicle,
     EpisodeEntry,
@@ -21,6 +22,8 @@ from astra_linguist.chronicle import (
     show_for_date,
     show_index,
 )
+from astra_ontology import load_being
+from astra_ontology_being import BEING_KDL_PATH
 
 
 def _entry(date: str, title: str = "T", show: str = "through-a-song-darkly") -> EpisodeEntry:
@@ -47,14 +50,25 @@ def _write_episodes(episodes_dir: Path, entries: list[EpisodeEntry]) -> None:
 
 
 # ── show taxonomy ───────────────────────────────────────────────────────────
-def test_show_index_has_all_campaigns() -> None:
-    shows = show_index()
-    assert len(shows) == 11
-    assert shows["deep-eyes"].order == 8  # appended: the order is the filename prefix
-    song = shows["through-a-song-darkly"]
-    assert song.name == "Through a Song, Darkly"
-    assert song.order == 0  # first in being.campaigns
-    assert [slug for slug, s in shows.items() if s.is_main] == ["through-a-song-darkly"]
+def test_show_index_follows_being() -> None:
+    being = load_being(BEING_KDL_PATH)
+    shows = show_index(being)
+    # Order is the campaign's position (the transcript filename prefix).
+    assert [(s.slug, s.order) for s in shows.values()] == [
+        (c.slug, i) for i, c in enumerate(being.campaigns)
+    ]
+    assert [slug for slug, s in shows.items() if s.is_main] == [
+        c.slug for c in being.campaigns if c.main
+    ]
+
+
+def test_every_campaign_filename_carries_its_slug() -> None:
+    # The show is read back from the filename slug, so a campaign whose name doesn't
+    # reduce to its slug would never find its own transcripts.
+    being = load_being(BEING_KDL_PATH)
+    for idx, view in enumerate(campaign_views(being)):
+        stem = campaign_filename(MatchedCampaign(campaign=view, idx=idx, billing={}))
+        assert stem.split(".", 1)[1] == being.campaigns[idx].slug
 
 
 # ── date → show resolution (real transcript filenames) ──────────────────────
