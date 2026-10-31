@@ -504,6 +504,54 @@
       ],
       "slug": "hildebrandt-heist",
       "world": "faerrin"
+    },
+    {
+      "edition": "dnd_5e",
+      "main": false,
+      "name": "Risk of Ruin",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "josh"
+        },
+        {
+          "character": "Zuggarian",
+          "character_class": "wizard",
+          "descriptions": [
+            "a merfolk wizard, usually called \"Zugg\"; one of the founders of Sedecium"
+          ],
+          "player": "jorge"
+        },
+        {
+          "character": "Rotok",
+          "character_class": "cleric",
+          "descriptions": [
+            "a half-orc cleric of Tempus; one of the founders of Sedecium"
+          ],
+          "player": "tanner"
+        },
+        {
+          "character": "T3C",
+          "character_class": "seeker",
+          "descriptions": [
+            "a warforged seeker; one of the founders of Sedecium",
+            "Later the Broker, leader of the Network on Althane in Deep Eyes"
+          ],
+          "player": "mike"
+        },
+        {
+          "character": "Dorcan",
+          "character_class": "druid",
+          "descriptions": [
+            "a firbolg druid; one of the founders of Sedecium"
+          ],
+          "player": "noah"
+        }
+      ],
+      "slug": "risk-of-ruin",
+      "world": "ushas"
     }
   ],
   "guest_color": "rgb(235,235,236)",

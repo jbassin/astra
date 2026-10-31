@@ -347,9 +347,10 @@ entity "Divine Raiment" kind="deity" page="Divinity/Divine Raiment" {
 entity "Divinity" kind="deity" page="Divinity/index" {
     source "akasha"
 }
-entity "Dorcan" {
+entity "Dorcan" kind="person" being="noah" {
     alias "Dorkin"
     source "defs"
+    source "being"
 }
 entity "Dura" {
     alias "Jura"
@@ -1083,6 +1084,9 @@ entity "Roll an arcana check" {
     alias "Roland or Krochek"
     source "defs"
 }
+entity "Rotok" kind="person" being="tanner" {
+    source "being"
+}
 entity "Roundhat Gang" {
     alias "Roundhat\\s*Kings"
     alias "Roundhead\\s*gang"
@@ -1245,6 +1249,9 @@ entity "Sundom" {
 entity "Syrin" {
     alias "Siren"
     source "defs"
+}
+entity "T3C" kind="person" being="mike" {
+    source "being"
 }
 entity "Tali" {
     source "defs"
@@ -1474,6 +1481,9 @@ entity "Zugg" {
     alias "ZUG"
     alias "Zuck"
     source "defs"
+}
+entity "Zuggarian" kind="person" being="jorge" {
+    source "being"
 }
 entity "Ætherion" {
     alias "Ethereum"

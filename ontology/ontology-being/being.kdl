@@ -229,6 +229,28 @@ campaign "hildebrandt-heist" {
     role player="jorge" character="Vint Cerf" { desc "an employee of Hildebrandt Corporation, a military contractor" }
 }
 
+// The GM's first campaign. Nothing was recorded; it is here for the roster and the world.
+campaign "risk-of-ruin" {
+    name "Risk of Ruin"
+    edition "dnd_5e"
+    main #false
+    world "ushas"
+    role player="josh" character="Gamemaster" class="gm"
+    role player="jorge" character="Zuggarian" class="wizard" {
+        desc "a merfolk wizard, usually called \"Zugg\"; one of the founders of Sedecium"
+    }
+    role player="tanner" character="Rotok" class="cleric" {
+        desc "a half-orc cleric of Tempus; one of the founders of Sedecium"
+    }
+    role player="mike" character="T3C" class="seeker" {
+        desc "a warforged seeker; one of the founders of Sedecium"
+        desc "Later the Broker, leader of the Network on Althane in Deep Eyes"
+    }
+    role player="noah" character="Dorcan" class="druid" {
+        desc "a firbolg druid; one of the founders of Sedecium"
+    }
+}
+
 // --- weal-host: weal-bot Discord message-send identities (mouth/host.rs) --------------
 
 weal-host "gsr" {
