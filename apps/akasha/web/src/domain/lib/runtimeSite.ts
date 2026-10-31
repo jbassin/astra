@@ -13,10 +13,11 @@
  */
 import { BODIES } from "@/generated/bodies";
 import { SHOWS } from "@/generated/chronicle";
-import { ALIASES, CAMPAIGN_NAMES, type GeneratedPage, PAGES } from "@/generated/site";
+import { ALIASES, CAMPAIGN_NAMES, PAGES } from "@/generated/site";
 import { TRANSCRIPT_MINUTES } from "@/generated/transcripts";
 
 import type { ChronicleEpisode, ChronicleShow } from "./chronicleTypes";
+import type { GeneratedPage } from "./generatedPage";
 import type { TocEntry } from "./renderBody";
 import { type SectionId, sectionOf } from "./sections";
 import {
