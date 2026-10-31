@@ -63,7 +63,7 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
    (seasons). The regroup also retitled two seasons and merged Observatory, Slipped's two
    seasons into one. `/chronicle/urth/2026-9-3` and `/Script/Urth/2026-9-3` serve. You don't
    need to wait for the timer: `just linguist-commit --yes` publishes and redeploys at once.
-3. **Vault images.** Copy the vault's images from `/home/jbassin/campaign-2/content/Assets/`
+3. **Done 2026-10-30.** **Vault images.** Copy the vault's images from `/home/jbassin/campaign-2/content/Assets/`
    into astra-data `akasha/assets/` (path form and rules: `libs/ts/vellum-lang/README.md`,
    akasha README) and put `![alt](path "caption")` back where the vault embedded them. The
    ones that matter most are the eight Configuration Space plots (`wick/00009`–`00028`), whose
@@ -75,6 +75,10 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
    `/tmp/claude-1000/-ruby-data-experiments-astra/20b37ef6-060c-4b4d-9409-962c48349ea9/scratchpad/convert/convert.py`
    (scratch; may be gone). Also add the "Inline images" paragraph to the live astra-data repo's
    `README.md` (the seed copy `deploy/astra-data/README.md` in astra already has it).
+   Result: astra-data `7fbb152`, deployed. Ten maps under `akasha/assets/maps/` (downscaled to
+   1600 px, JPEG quality 75: 0.3 to 0.8 MB each; the originals ran to 62 MB) and eight plots
+   under `akasha/assets/configuration-space/`. `00009.jpg` and `remnant-map.jpg` were never
+   embedded and stay out. The seed README now matches the live one.
 4. **heartwood backfill, paid and live.** Ask Josh first. `uv run astra-heartwood-agent
    sessions --from 2024-10-21` listed 27 dates on 2026-10-30 (the 25 imported plus
    Observatory, Slipped's 2026-4-6 and 2026-4-27); re-check before running. Dry-run the first
@@ -314,7 +318,7 @@ Each slice is one pull request unless noted. Paid or live-content steps are flag
 - [x] 4c. Urth registered as one show; `sessions.kdl` `campaign=` override (#167)
 - [x] Deploy #165 to #167 (`8650c097`, 2026-10-31)
 - [x] Urth content follow-up (0.2 step 2; astra-data `0bc667c`, 2026-10-30)
-- [ ] Vault images added (0.2 step 3)
+- [x] Vault images added (0.2 step 3; astra-data `7fbb152`, 2026-10-30)
 - [ ] 5. heartwood backfill (paid)
 - [ ] 6. Chronicle backfill (paid), Sessions label
 - [ ] 7. Questionnaire answered and written up
